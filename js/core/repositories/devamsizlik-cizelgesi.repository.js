@@ -19,11 +19,16 @@ const DevamsizlikCizelgesiRepository = {
 
   _belgeId(yil, ay){ return `${yil}-${ay}`; },
 
-  /* Tek bir ay dokümanını dinler (yoksa null döner). */
+  /* Tek bir ay dokümanını dinler (yoksa null döner). callback(doc, fromCache)
+     — fromCache bilgisi UI katmanına geçirilir çünkü Firestore'un yerel
+     önbellek kaynaklı bir kopyası, sunucudan doğru veri geldikten SONRA bile
+     arka planda gelip ekranı sessizce eski haline döndürebiliyor (bkz. tatil
+     modu bug'ı, js/app.js _dersSaatleriSunucuOnaylandi). UI bu bilgiyle aynı
+     korumayı burada da uygulayabilir. */
   ayDinle(yil, ay, callback, hataCb){
     return db.collection(COL.devamsizlikCizelgesi).doc(this._belgeId(yil, ay))
       .onSnapshot(
-        d => callback(d.exists ? { id: d.id, ...d.data() } : null),
+        d => callback(d.exists ? { id: d.id, ...d.data() } : null, d.metadata.fromCache),
         hataCb || hataGoster
       );
   },
