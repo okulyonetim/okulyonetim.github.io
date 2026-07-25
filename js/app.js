@@ -2529,10 +2529,16 @@ function sekmeAc(tab){
    uygulama genelinde zaten HER modal/detay panelinin açılışında eklenen
    ortak `document.body.classList.contains('modal-open')` işaretine
    bakılıyor — bu, tüm modülleri değiştirmeden aynı sinyali tek noktadan
-   okumayı sağlıyor. */
+   okumayı sağlıyor.
+   NATİF ANDROID'DE HİÇ GÖSTERİLMEZ: orada zaten MainActivity.java >
+   onBackPressed() donanım/jest geri tuşunu geriTusuIsle()'a bağlıyor —
+   bu buton sadece tarayıcı bağlamlarında (iOS Safari, Android Chrome,
+   masaüstü vb.) gerekli, native APK'da gereksiz bir tekrar olurdu. */
 function _topbarGeriBtnGuncelle(){
   const btn = document.getElementById('topbarGeriBtn');
   if(!btn) return;
+  const nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(nativeMi){ btn.style.display = 'none'; return; }
   const gosterilsin = document.body.classList.contains('modal-open') || (_sekmeGecmisi.length > 1);
   btn.style.display = gosterilsin ? 'flex' : 'none';
 }
