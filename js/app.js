@@ -3124,3 +3124,124 @@ function tumSablonlariIndir() {
   });
   gozlemci.observe(gövde, { attributes:true, attributeFilter:['class'] });
 })();
+
+/* ====================================================================
+   DÜZELTME: iOS'ta alt navigasyonun (bottom-nav) hâlâ taşması
+   ----------------------------------------------------------------
+   .bottom-nav position:fixed;bottom:0 kullanıyor. iOS Safari'de adres
+   çubuğu açılıp/kapandığında (kaydırma sırasında küçülüp büyüyor) ya da
+   bir input'a odaklanılıp klavye açıldığında, "layout viewport" ile
+   gerçekten görünen alan ("visual viewport") birbirinden ayrışıyor.
+   bottom:0 her zaman LAYOUT viewport'un altına göre hesaplandığı için,
+   bu iki değer farklılaştığı anlarda alt navigasyon ya ekranın dışına
+   taşıyor ya da klavyenin/araç çubuğunun ardında/üstünde yanlış yerde
+   görünüyor. Çözüm: window.visualViewport API'siyle gerçek görünür
+   alanın alt boşluğunu ölçüp `bottom` değerini buna göre canlı olarak
+   güncellemek. Bu, Android/masaüstünde visualViewport farkı olmadığı
+   için pratikte hiçbir şeyi değiştirmez, sadece iOS'taki kayma anlarını
+   düzeltir. ==========================================================
+   ==================================================================== */
+(function(){
+  const vv = window.visualViewport;
+  if(!vv) return;
+  let raf = null;
+  function altNavGuncelle(){
+    const nav = document.querySelector('.bottom-nav');
+    if(!nav) return;
+    const bosluk = Math.max(0, window.innerHeight - (vv.height + vv.offsetTop));
+    nav.style.bottom = bosluk + 'px';
+  }
+  function planla(){
+    if(raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(altNavGuncelle);
+  }
+  vv.addEventListener('resize', planla);
+  vv.addEventListener('scroll', planla);
+  window.addEventListener('orientationchange', planla);
+  planla();
+})();
+
+/* ====================================================================
+   YENİ: Web/iOS için gerçek "aşağı çekince yenile" (pull-to-refresh)
+   ----------------------------------------------------------------
+   Mevcut _pullToRefreshAyarla()/_pullToRefreshDerinlik mekanizması
+   (yukarıda) SADECE native (Capacitor/APK) tarafındaki
+   PullToRefreshPlugin'i açıp kapatıyordu — web/PWA/iOS Safari'de bu
+   köprü hiç yok, dolayısıyla o ortamlarda aşağı çekmenin sayfayı
+   yenilemeye HİÇBİR etkisi olmuyordu (sadece elastik kaydırma/rubber-
+   band görülüyordu). Bu blok, sadece native olmayan ortamlarda devreye
+   girip dokunmatik (touch) olaylarıyla kendi jestini uyguluyor; native
+   ortamda zaten native jest çalıştığı için burada hiçbir şey yapmıyor.
+
+   Var olan derinlik sayacına (_pullToRefreshDerinlik) saygı duyar: bir
+   modal/detay paneli açıkken (derinlik>0) jest başlamaz — böylece bir
+   modal içindeki listeyi aşağı kaydırırken yanlışlıkla sayfa
+   yenilenmez, tıpkı native tarafta olduğu gibi. ====================
+   ==================================================================== */
+(function(){
+  const nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(nativeMi) return;
+  if(!('ontouchstart' in window)) return;
+
+  const ESIK = 68;       // px — bu kadar çekilince bırakınca yenileme tetiklenir
+  const MAKS_CEKME = 110; // px — göstergenin inebileceği en alt nokta
+
+  const gosterge = document.createElement('div');
+  gosterge.className = 'ptr-gosterge';
+  gosterge.setAttribute('aria-hidden', 'true');
+  gosterge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v11"/><path d="M6.5 10l5.5 5.5L17.5 10"/><path d="M4.5 19.5h15"/></svg>';
+  document.addEventListener('DOMContentLoaded', ()=>{ document.body.appendChild(gosterge); });
+  if(document.readyState === 'complete' || document.readyState === 'interactive') document.body.appendChild(gosterge);
+
+  let baslangicY = 0, cekmeMesafesi = 0, aktif = false, yenileniyor = false;
+
+  function sayfaEnUstteMi(){
+    return (window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0) <= 0;
+  }
+  function jestUygunMu(){
+    return !yenileniyor && (typeof _pullToRefreshDerinlik === 'undefined' || _pullToRefreshDerinlik === 0) && sayfaEnUstteMi();
+  }
+  function sifirla(){
+    gosterge.style.transition = 'top .25s ease, opacity .25s ease';
+    gosterge.style.top = 'calc(-56px + env(safe-area-inset-top,0px))';
+    gosterge.style.opacity = '0';
+    cekmeMesafesi = 0;
+  }
+
+  document.addEventListener('touchstart', (e)=>{
+    if(e.touches.length !== 1 || !jestUygunMu()){ aktif = false; return; }
+    baslangicY = e.touches[0].clientY;
+    aktif = true;
+    gosterge.style.transition = 'none';
+  }, { passive:true });
+
+  document.addEventListener('touchmove', (e)=>{
+    if(!aktif || yenileniyor) return;
+    if(!sayfaEnUstteMi() || (typeof _pullToRefreshDerinlik !== 'undefined' && _pullToRefreshDerinlik !== 0)){ aktif = false; sifirla(); return; }
+    const fark = e.touches[0].clientY - baslangicY;
+    if(fark <= 0){ cekmeMesafesi = 0; gosterge.style.opacity = '0'; return; }
+    // Direnç: parmak ne kadar ilerlerse ilerlesin gösterge MAKS_CEKME'yi geçmiyor
+    cekmeMesafesi = Math.min(MAKS_CEKME, fark * 0.5);
+    if(e.cancelable) e.preventDefault();
+    gosterge.style.top = (-56 + cekmeMesafesi) + 'px';
+    gosterge.style.opacity = String(Math.min(1, cekmeMesafesi / ESIK));
+    gosterge.classList.toggle('ptr-hazir', cekmeMesafesi >= ESIK);
+  }, { passive:false });
+
+  function birak(){
+    if(!aktif) return;
+    aktif = false;
+    if(cekmeMesafesi >= ESIK){
+      yenileniyor = true;
+      gosterge.style.transition = 'top .2s ease';
+      gosterge.style.top = '16px';
+      gosterge.style.opacity = '1';
+      gosterge.classList.add('ptr-donuyor');
+      setTimeout(()=>{ window.location.reload(); }, 300);
+    } else {
+      sifirla();
+    }
+  }
+  document.addEventListener('touchend', birak, { passive:true });
+  document.addEventListener('touchcancel', birak, { passive:true });
+})();
