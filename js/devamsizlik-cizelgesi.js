@@ -98,19 +98,32 @@ function _devamsizlikBosDurumHtml(){
   `;
 }
 
+/* Okul Müdürü ve Müdür Yardımcısı her zaman listenin başında yer alır;
+   geri kalanlar alfabetik sıralanır. */
+function _devamsizlikRolOncelik(gorev){
+  const g = (gorev || '').trim().toLocaleUpperCase('tr-TR');
+  if(g === 'OKUL MÜDÜRÜ') return 0;
+  if(g === 'MÜDÜR YARDIMCISI') return 1;
+  return 2;
+}
+
 function _devamsizlikGridHtml(){
   const gunSayisi = DevamsizlikCizelgesiService.gunSayisi(devamsizlikYil, devamsizlikAy);
   const gunler = Array.from({length: gunSayisi}, (_, i) => i + 1);
   const ogretmenler = Object.values(devamsizlikAyDokumani.ogretmenler || {})
-    .sort((a,b) => (a.adSoyad||'').localeCompare(b.adSoyad||'', 'tr'));
+    .sort((a,b) => {
+      const oncelikFarki = _devamsizlikRolOncelik(a.gorev) - _devamsizlikRolOncelik(b.gorev);
+      if(oncelikFarki !== 0) return oncelikFarki;
+      return (a.adSoyad||'').localeCompare(b.adSoyad||'', 'tr');
+    });
 
   const gunAdlari = gunler.map(g => DevamsizlikCizelgesiService.GUN_KISA_ADLARI[DevamsizlikCizelgesiService.haftaGunu(devamsizlikYil, devamsizlikAy, g)]);
 
   const basligTr = `
     <tr>
-      <th class="dc-th-sabit dc-col-no">No</th>
+      <th class="dc-col-no">No</th>
       <th class="dc-th-sabit dc-col-ad" style="text-align:left;">Adı Soyadı</th>
-      <th class="dc-th-sabit dc-col-gorev" style="text-align:left;">Görevi</th>
+      <th class="dc-col-gorev" style="text-align:left;">Görevi</th>
       ${gunler.map(g => `<th style="min-width:26px;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,g)?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${g}</th>`).join('')}
       <th class="dc-col-toplam-ilk" style="min-width:34px;">Toplam<br>Saat</th>
       <th style="min-width:40px;">Toplam<br>Devam</th>
@@ -118,9 +131,9 @@ function _devamsizlikGridHtml(){
       <th class="dc-col-aciklama" style="text-align:left;">Açıklama</th>
     </tr>
     <tr>
-      <th class="dc-th-sabit dc-col-no"></th>
+      <th class="dc-col-no"></th>
       <th class="dc-th-sabit dc-col-ad"></th>
-      <th class="dc-th-sabit dc-col-gorev"></th>
+      <th class="dc-col-gorev"></th>
       ${gunAdlari.map((ad,i) => `<th style="font-size:10px;font-weight:500;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,gunler[i])?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${ad}</th>`).join('')}
       <th class="dc-col-toplam-ilk"></th>
       <th></th>
@@ -142,9 +155,9 @@ function _devamsizlikGridHtml(){
     const { toplamSaat, toplamDevam, toplamDevamsiz } = _devamsizlikSatirToplamlari(o, gunSayisi);
     return `
       <tr>
-        <td class="dc-th-sabit dc-col-no">${idx+1}</td>
-        <td class="dc-th-sabit dc-col-ad" style="text-align:left;white-space:nowrap;" title="${escapeHtml(o.adSoyad||'')}">${escapeHtml(o.adSoyad||'')}</td>
-        <td class="dc-th-sabit dc-col-gorev" style="text-align:left;white-space:nowrap;font-size:11px;color:var(--ink-muted);" title="${escapeHtml(o.gorev||'')}">${escapeHtml(o.gorev||'')}</td>
+        <td class="dc-col-no">${idx+1}</td>
+        <td class="dc-th-sabit dc-col-ad dc-ad-tikla" style="text-align:left;white-space:nowrap;" onclick="devamsizlikHaftalikSaatDuzenle('${o.ogretmenId}')" title="Haftalık ders saatlerini düzenlemek için tıklayın — ${escapeHtml(o.adSoyad||'')}">${escapeHtml(o.adSoyad||'')}</td>
+        <td class="dc-col-gorev" style="text-align:left;white-space:nowrap;font-size:11px;color:var(--ink-muted);" title="${escapeHtml(o.gorev||'')}">${escapeHtml(o.gorev||'')}</td>
         ${hucreler}
         <td class="dc-col-toplam-ilk" style="font-weight:700;">${toplamSaat}</td>
         <td style="font-weight:700;">${toplamDevam}</td>
@@ -198,6 +211,124 @@ function _devamsizlikLegendHtml(){
       `).join('')}
     </div>
   `;
+}
+
+/* ---------------- Haftalık ders saatleri (öğretmen adına tıklayınca) ----------------
+   o.haftalikSaatler = { pzt, sal, car, per, cum } — bu ayki otomatik "Devam" saatlerinin
+   hesaplanmasında kullanılır (bkz. DevamsizlikCizelgesiService._haftaIciSaat).
+   Kaynağı: kayıtlı bir değer varsa o kullanılır; yoksa ders programından otomatik
+   çekilir. Her durumda elle düzenlenebilir, "Ders Programından Çek" ile de
+   istenildiğinde tazelenebilir. */
+
+const DEVAMSIZLIK_HAFTA_GUNLERI = [
+  { anahtar: 'pzt', etiket: 'Pazartesi' },
+  { anahtar: 'sal', etiket: 'Salı' },
+  { anahtar: 'car', etiket: 'Çarşamba' },
+  { anahtar: 'per', etiket: 'Perşembe' },
+  { anahtar: 'cum', etiket: 'Cuma' }
+];
+
+function devamsizlikHaftalikSaatDuzenle(ogretmenId){
+  if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
+  if(!o) return;
+  const kayitliVarMi = o.haftalikSaatler && Object.values(o.haftalikSaatler).some(v => Number(v) > 0);
+  const baslangic = kayitliVarMi ? o.haftalikSaatler : _devamsizlikDersProgramindanHaftalikSaat(ogretmenId);
+
+  const body = `
+    <p style="margin:0 0 10px;font-size:13px;"><b>${escapeHtml(o.adSoyad)}</b> — Haftalık Ders Saatleri</p>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+      <button type="button" class="btn" style="font-size:12px;padding:6px 10px;" onclick="devamsizlikDersProgramindanCek('${ogretmenId}')">
+        <i data-lucide="refresh-cw"></i> Ders Programından Çek
+      </button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;min-width:340px;">
+        <thead>
+          <tr>${DEVAMSIZLIK_HAFTA_GUNLERI.map(g => `<th style="border:1px solid var(--border);padding:6px 4px;">${g.etiket}</th>`).join('')}</tr>
+        </thead>
+        <tbody>
+          <tr>${DEVAMSIZLIK_HAFTA_GUNLERI.map(g => `
+            <td style="border:1px solid var(--border);padding:4px;text-align:center;">
+              <input type="number" min="0" max="12" id="dcSaat_${g.anahtar}" value="${Number(baslangic[g.anahtar]) || 0}"
+                style="width:44px;text-align:center;padding:5px 2px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--ink);">
+            </td>
+          `).join('')}</tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:var(--ink-muted);margin-top:10px;">
+      Bu değerler, ayın otomatik "Devam" saatlerini hesaplamak için kullanılır. Kaydedince
+      bu aydaki elle değiştirilmemiş günler yeni saatlere göre otomatik güncellenir; elle
+      girdiğiniz kodlar (D/İ/Y/R/T/+) korunur.
+    </p>
+  `;
+  modalAc('Haftalık Ders Saatleri', body, () => devamsizlikHaftalikSaatKaydet(ogretmenId), null, 'Vazgeç');
+}
+
+/* NOT: Bu fonksiyon Ders Programı modülünün gerçek veri yapısı GÖRÜLMEDEN yazıldı
+   (o modülün dosyaları bu görüşmede paylaşılmadı). Aşağıdaki olası erişim noktaları
+   sırayla denenir; hiçbiri uymuyorsa sıfırla başlanır ve elle girilir. Ders Programı
+   modülünüzün gerçek servis/global adına göre bu fonksiyonu güncellemeniz gerekebilir. */
+function _devamsizlikDersProgramindanHaftalikSaat(ogretmenId){
+  const bos = { pzt: 0, sal: 0, car: 0, per: 0, cum: 0 };
+  try{
+    if(typeof DersProgramiService !== 'undefined' && typeof DersProgramiService.ogretmeninHaftalikSaatleri === 'function'){
+      return { ...bos, ...DersProgramiService.ogretmeninHaftalikSaatleri(ogretmenId) };
+    }
+    if(typeof dersProgrami !== 'undefined' && dersProgrami){
+      if(dersProgrami[ogretmenId]) return { ...bos, ...dersProgrami[ogretmenId] };
+      if(Array.isArray(dersProgrami)){
+        const GUN_ANAHTAR = ['pzt', 'sal', 'car', 'per', 'cum'];
+        const sonuc = { ...bos };
+        dersProgrami.filter(d => d.ogretmenId === ogretmenId).forEach(d => {
+          const anahtar = GUN_ANAHTAR[Number(d.gun) - 1];
+          if(anahtar) sonuc[anahtar] = (sonuc[anahtar] || 0) + 1;
+        });
+        return sonuc;
+      }
+    }
+  }catch(err){ console.warn('Ders programından otomatik saat çekilemedi:', err); }
+  return bos;
+}
+
+function devamsizlikDersProgramindanCek(ogretmenId){
+  const saatler = _devamsizlikDersProgramindanHaftalikSaat(ogretmenId);
+  DEVAMSIZLIK_HAFTA_GUNLERI.forEach(g => {
+    const alan = document.getElementById(`dcSaat_${g.anahtar}`);
+    if(alan) alan.value = saatler[g.anahtar] || 0;
+  });
+  toast('Ders programından çekildi. Kaydetmeyi unutmayın.');
+}
+
+async function devamsizlikHaftalikSaatKaydet(ogretmenId){
+  const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
+  if(!o) return;
+  const yeniHaftalikSaatler = {};
+  DEVAMSIZLIK_HAFTA_GUNLERI.forEach(g => {
+    const alan = document.getElementById(`dcSaat_${g.anahtar}`);
+    const deger = alan ? Number(alan.value) : 0;
+    yeniHaftalikSaatler[g.anahtar] = (isNaN(deger) || deger < 0) ? 0 : deger;
+  });
+  try{
+    o.haftalikSaatler = yeniHaftalikSaatler;
+    // Bu ay için otomatik (elle değiştirilmemiş) günleri yeni saatlere göre tazele —
+    // elle girilmiş kodlar (D/İ/Y/R/T/+) KORUNUR (devamsizlikOtomatikTazele ile aynı mantık,
+    // sadece bu tek öğretmene uygulanır).
+    const yeniGunler = DevamsizlikCizelgesiService.ogretmenAyiniOtomatikUret(o, devamsizlikYil, devamsizlikAy, resmiTatiller, ogretmenIzinleri);
+    const birlesikGunler = { ...o.gunler };
+    Object.keys(yeniGunler).forEach(gun => {
+      const mevcut = (o.gunler || {})[gun];
+      const elleMi = mevcut !== undefined && isNaN(Number(mevcut));
+      if(!elleMi) birlesikGunler[gun] = yeniGunler[gun];
+    });
+    o.gunler = birlesikGunler;
+    await DevamsizlikCizelgesiRepository.ogretmenVerisiSetle(devamsizlikYil, devamsizlikAy, ogretmenId, o);
+    toast('Haftalık ders saatleri kaydedildi, bu ayın günleri güncellendi.');
+    modalKapat();
+  }catch(err){
+    if(err.message !== 'yetkisiz') toast('Hata: ' + err.message);
+  }
 }
 
 /* ---------------- Hücre tıklama popup ---------------- */
@@ -271,21 +402,22 @@ async function devamsizlikAciklamaKaydet(ogretmenId){
 
 async function devamsizlikYeniAyOlustur(){
   if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return; }
-  const satirlar = (ogretmenler || []).map(o => ({
-    ogretmenId: o.id,
-    adSoyad: `${o.ad} ${o.soyad}`.trim(),
-    gorev: o.unvan || '',
-    // NOT: haftalık ders saati şu an uygulamada ayrı bir alan olarak tutulmuyor
-    // (Excel'deki "Öğretmenler" sayfasındaki Pzt-Cum saat sütunlarının karşılığı
-    // yok) — bu yüzden burada 0 ile başlatılıp Excel içe aktarma ile
-    // doldurulması bekleniyor. dersProgrami'ndan gün bazlı ders sayısı da
-    // otomatik hesaplanabilir; istenirse bir sonraki adımda eklenir.
-    pzt: 0, sal: 0, car: 0, per: 0, cum: 0
-  }));
+  const satirlar = (ogretmenler || []).map(o => {
+    const saatler = _devamsizlikDersProgramindanHaftalikSaat(o.id);
+    return {
+      ogretmenId: o.id,
+      adSoyad: `${o.ad} ${o.soyad}`.trim(),
+      gorev: o.unvan || '',
+      // Haftalık ders saati artık ders programından otomatik çekiliyor
+      // (bkz. _devamsizlikDersProgramindanHaftalikSaat); bulunamazsa 0 ile
+      // başlar ve öğretmen adına tıklanarak elle girilebilir.
+      pzt: saatler.pzt, sal: saatler.sal, car: saatler.car, per: saatler.per, cum: saatler.cum
+    };
+  });
   const map = DevamsizlikCizelgesiService.excelSatirlarindanAyOlustur(satirlar, devamsizlikYil, devamsizlikAy, ogretmenler, resmiTatiller, ogretmenIzinleri);
   try{
     await DevamsizlikCizelgesiService.ayOlustur(devamsizlikYil, devamsizlikAy, map);
-    toast('Çizelge oluşturuldu. Haftalık ders saatlerini Excel içe aktararak veya hücrelere tıklayarak düzenleyebilirsiniz.');
+    toast('Çizelge oluşturuldu. Haftalık ders saatlerini öğretmen adına tıklayarak veya Excel içe aktararak düzenleyebilirsiniz.');
   }catch(err){ if(err.message!=='yetkisiz') toast('Hata: '+err.message); }
 }
 
