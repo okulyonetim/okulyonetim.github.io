@@ -263,7 +263,7 @@ function devamsizlikHaftalikSaatDuzenle(ogretmenId){
       girdiğiniz kodlar (D/İ/Y/R/T/+) korunur.
     </p>
   `;
-  modalAc('Haftalık Ders Saatleri', body, () => devamsizlikHaftalikSaatKaydet(ogretmenId), null, 'Vazgeç');
+  modalAc('Haftalık Ders Saatleri', body, () => devamsizlikHaftalikSaatKaydet(ogretmenId), null, 'Kaydet');
 }
 
 /* NOT: Bu fonksiyon Ders Programı modülünün gerçek veri yapısı GÖRÜLMEDEN yazıldı
