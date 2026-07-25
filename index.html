@@ -48,9 +48,56 @@
       document.documentElement.setAttribute('data-skin','modern');
     }
   })();
+  /* DÜZELTME: iOS'ta ana ekrandan (standalone) açılan uygulama bazen İLK
+     açılışta "zoom yapılmış" gibi büyük görünüyor — bilinen bir WebKit
+     hatası: standalone modda viewport ölçeği ilk çizimde yanlış
+     hesaplanıyor, kullanıcı parmaklarıyla uzaklaştırınca (pinch-out)
+     WebKit ölçeği yeniden hesaplayıp düzeltiyor. Aynı yanlış ölçek,
+     sabit konumlu (position:fixed) alt navigasyonun da görsel olarak
+     taşmış/yanlış yerde görünmesine yol açıyor — ikisi aynı kök sebep.
+     Çözüm: viewport meta etiketinin içeriğini bir an değiştirip geri
+     almak, WebKit'i ölçeği yeniden hesaplamaya zorluyor; kullanıcının
+     elle yaptığı pinch-out'u otomatik olarak taklit ediyor. */
+  (function(){
+    var standaloneMi = (window.navigator.standalone === true) ||
+      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    if(!standaloneMi) return;
+    function viewportYenidenHesapla(){
+      var meta = document.querySelector('meta[name="viewport"]');
+      if(!meta) return;
+      var orijinal = meta.getAttribute('content');
+      meta.setAttribute('content', orijinal + ', maximum-scale=1');
+      setTimeout(function(){ meta.setAttribute('content', orijinal); }, 60);
+    }
+    if(document.readyState === 'complete') viewportYenidenHesapla();
+    else window.addEventListener('load', viewportYenidenHesapla);
+    // pageshow: iOS askıya alınmış uygulamayı öne getirdiğinde de tetiklenir
+    window.addEventListener('pageshow', viewportYenidenHesapla);
+  })();
   if('serviceWorker' in navigator){
+    /* DÜZELTME: iOS'ta ana ekrana eklenmiş (standalone) uygulama kapatılmıyor,
+       ASKIYA ALINIYOR — bu yüzden normal sekmelerdeki gibi sık sık yeniden
+       navigasyon olmuyor ve service worker'ın "yeni sürüm var mı?" kontrolü
+       çok geç tetikleniyor. Sonuç: standalone modda kullanıcı, tarayıcı
+       sekmesinde çoktan düzeltilmiş bir hatayı hâlâ eski (önbellekteki)
+       app.js/styles.css ile yaşamaya devam ediyor.
+       Çözüm iki parçalı: 1) uygulama her ön plana geldiğinde açıkça
+       reg.update() ile güncelleme sorulur; 2) yeni bir service worker
+       devreye girdiği an (controllerchange) sayfa otomatik yenilenir, böylece
+       kullanıcı elle "uygulamayı kapat/aç" yapmadan en güncel dosyaları alır. */
+    let _swYenilemeYapildi = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function(){
+      if(_swYenilemeYapildi) return;
+      _swYenilemeYapildi = true;
+      window.location.reload();
+    });
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('./service-worker.js').catch(function(err){
+      navigator.serviceWorker.register('./service-worker.js').then(function(reg){
+        document.addEventListener('visibilitychange', function(){
+          if(document.visibilityState === 'visible') reg.update().catch(function(){});
+        });
+        window.addEventListener('focus', function(){ reg.update().catch(function(){}); });
+      }).catch(function(err){
         console.warn('Service worker kaydedilemedi:', err);
       });
     });
