@@ -542,6 +542,22 @@
       <span>Analiz Hızı</span>
       <input type="range" id="hsHiz" min="200" max="800" step="50">
     </label>
+    <hr class="km-ayar-ayrac">
+    <label class="km-ayar-satir">
+      <span>Cevap Koyuluk Eşiği</span>
+      <input type="range" id="hsKoyuluk" min="10" max="50" step="1">
+    </label>
+    <p class="km-ayar-aciklama">Bir baloncuğun "işaretli" sayılması için ne kadar koyu olması gerektiği. Düşürürseniz soluk/açık renkli işaretler de yakalanır ama yanlış pozitif riski artar.</p>
+    <label class="km-ayar-satir">
+      <span>Ayırt Edicilik Farkı</span>
+      <input type="range" id="hsAyirtEdici" min="2" max="25" step="1">
+    </label>
+    <p class="km-ayar-aciklama">En koyu şıkla ikinci en koyu şık arasında gereken minimum fark. Çok soru "belirsiz/çoklu" çıkıyorsa (kağıt genel olarak koyu/renkli basılıysa) bunu düşürün.</p>
+    <label class="km-ayar-satir">
+      <span>Numara Ayırt Edicilik</span>
+      <input type="range" id="hsNumaraFark" min="1" max="10" step="1">
+    </label>
+    <p class="km-ayar-aciklama">Öğrenci numarası hanelerinde aynı mantık. Numara sürekli "belirsiz" veya yanlış çıkıyorsa deneyin — ama çok düşürmek yanlış haneyi güvenle seçme riskini artırır.</p>
     <button id="hsSifirla" class="ksk-btn" style="width:100%;margin-top:8px;">Varsayılana Sıfırla</button>
   </div>
 
