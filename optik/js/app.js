@@ -616,11 +616,16 @@ function ogrDetayAc(sonucId) {
     // Resim (doğru/yanlış baloncuk renklendirmeli)
     ogrDetayResimCiz(sonuc);
 
-    // Teşhis uyarıları kutusu artık kullanıcıya gösterilmiyor (sadece iç
-    // teşhis amaçlıydı) — sonuc.uyarilar verisi hâlâ kaydediliyor, sadece
-    // ekranda gizli tutuluyor.
+    // GEÇİCİ TEŞHİS: bu kutu normalde kullanıcıya gösterilmiyordu (sadece
+    // iç teşhis amaçlıydı, sonuc.uyarilar verisi hep kaydediliyordu — sadece
+    // ekranda gizliydi). Optik okuma sorununu teşhis etmek için ŞİMDİLİK
+    // tekrar gösteriliyor; sorun bulununca bu blok eski haline
+    // (display:none + içerik boş) döndürülmeli.
     const uyariKutusu = document.getElementById('ogrDetayUyarilar');
-    if (uyariKutusu) uyariKutusu.style.display = 'none';
+    if (uyariKutusu) {
+        uyariKutusu.textContent = (sonuc.uyarilar || []).join('\n') || '(uyarı yok)';
+        uyariKutusu.style.display = 'block';
+    }
 
 
     // Ders listesi
