@@ -2404,7 +2404,8 @@ body:has(#tab-asistan.active) .asistan-fab{display:none;}
 #tab-panel.dash-modern .hero-sosyal-ikon{
   width:36px; height:36px; display:flex; align-items:center;
   justify-content:center; transition:transform .15s ease; flex-shrink:0;
-  background:rgba(255,255,255,.20); border-radius:50%; padding:7px; box-sizing:border-box;
+  background:rgba(255,255,255,.30); border-radius:50%; padding:7px; box-sizing:border-box;
+  box-shadow:0 1px 4px rgba(0,0,0,.10);
 }
 #tab-panel.dash-modern .hero-sosyal-ikon svg{ width:100%; height:100%; }
 #tab-panel.dash-modern .hero-sosyal-link:hover .hero-sosyal-ikon{ transform:translateY(-2px); }
@@ -2424,6 +2425,7 @@ body:has(#tab-asistan.active) .asistan-fab{display:none;}
   flex:0 0 auto; width:32px; height:32px; border-radius:50%; background:#fff;
   border:1px solid var(--border,#e2e2e2); display:flex; align-items:center;
   justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.12);
+  color:#0EA5A4; /* globe/email gibi stroke="currentColor" kullanan ikonlar için (beyaz zeminde) */
 }
 .sosyal-link-satir .sosyal-link-ikon-sec{
   flex:0 0 auto; min-width:130px; padding:8px 10px; border-radius:10px;
