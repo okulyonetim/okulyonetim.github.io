@@ -58,12 +58,20 @@ const DevamsizlikCizelgesiRepository = {
   },
 
   /* Bir öğretmenin o aya ait tüm gün haritasını + haftalık saatlerini yazar
-     (Excel içe aktarma veya "haftalık çizelgeden otomatik doldur" akışı için). */
+     (Excel içe aktarma veya "haftalık çizelgeden otomatik doldur" akışı için).
+     ÖNEMLİ: burada [`ogretmenler.${ogretmenId}`] gibi NOKTALI bir computed-key
+     KULLANILMAZ — bu sadece update()'te bir alan yolu olarak yorumlanır.
+     set(..., {merge:true}) içinde noktalı bir key, "ogretmenler" alanının
+     İÇİNE değil, "ogretmenler.xyz" adında TAMAMEN AYRI/gerçek dışı bir üst
+     seviye alana yazar; gerçek ogretmenler haritası hiç güncellenmez ve tüm
+     düzenlemeler (haftalık saat, hücre kodu, açıklama) sessizce kaybolmuş
+     gibi görünür (ızgara/modal hep eski veriyi gösterir). Bunun yerine
+     GERÇEK iç içe (nested) bir obje veriyoruz; merge:true bunu doğru
+     şekilde sadece ilgili öğretmenin alt ağacına derin-birleştirir. */
   ogretmenVerisiSetle(yil, ay, ogretmenId, veri){
-    const yol = `ogretmenler.${ogretmenId}`;
     return db.collection(COL.devamsizlikCizelgesi).doc(this._belgeId(yil, ay)).set({
       yil, ay,
-      [yol]: veri,
+      ogretmenler: { [ogretmenId]: veri },
       guncellemeTarihi: new Date().toISOString()
     }, { merge: true });
   },
