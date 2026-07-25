@@ -1,0 +1,45 @@
+/* ====================================================================
+   css/devamsizlik-cizelgesi.css
+   Devamsızlık Çizelgesi modülü — Excel benzeri ızgara stilleri
+   ==================================================================== */
+
+#devamsizlikGridTablo th,
+#devamsizlikGridTablo td {
+  border: 1px solid var(--border);
+  padding: 4px 2px;
+}
+
+#devamsizlikGridTablo thead th {
+  background: var(--bg-card);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  font-weight: 700;
+}
+
+.dc-th-sabit {
+  position: sticky;
+  background: var(--bg-card);
+  z-index: 1;
+  padding: 4px 6px !important;
+}
+
+thead .dc-th-sabit { z-index: 3; }
+
+.dc-hucre {
+  cursor: pointer;
+  font-weight: 700;
+  color: #1a2a2a;
+  transition: filter 0.15s;
+}
+
+.dc-hucre:hover {
+  filter: brightness(0.92);
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+@media (max-width: 640px) {
+  #devamsizlikGridTablo { font-size: 10px; }
+  .dc-th-sabit { min-width: unset !important; }
+}
