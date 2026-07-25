@@ -40,6 +40,17 @@ thead .dc-th-sabit { z-index: 3; }
 .dc-th-sabit.dc-col-ad    { min-width: 150px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
 .dc-th-sabit.dc-col-gorev { min-width: 110px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
 
+/* ---- Toplam Saat / Toplam Devam / Toplam Devamsız / Açıklama sütunları ----
+   Gün sütunlarından ayırt edilsinler diye ince bir ayraç ve Açıklama için
+   sabit bir genişlik (uzun metinler '...' ile kısaltılır, tıklayınca
+   düzenleme popup'ı tam metni gösterir). */
+.dc-col-toplam-ilk { border-left: 2px solid var(--border); }
+.dc-col-aciklama { min-width: 110px; max-width: 160px; }
+
+@media (max-width: 640px) {
+  .dc-col-aciklama { min-width: 80px; max-width: 110px; }
+}
+
 .dc-hucre {
   cursor: pointer;
   font-weight: 700;
