@@ -108,15 +108,15 @@ function _devamsizlikGridHtml(){
 
   const basligTr = `
     <tr>
-      <th class="dc-th-sabit" style="left:0;min-width:28px;">No</th>
-      <th class="dc-th-sabit" style="left:28px;min-width:150px;text-align:left;">Adı Soyadı</th>
-      <th class="dc-th-sabit" style="left:178px;min-width:110px;text-align:left;">Görevi</th>
+      <th class="dc-th-sabit dc-col-no">No</th>
+      <th class="dc-th-sabit dc-col-ad" style="text-align:left;">Adı Soyadı</th>
+      <th class="dc-th-sabit dc-col-gorev" style="text-align:left;">Görevi</th>
       ${gunler.map(g => `<th style="min-width:26px;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,g)?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${g}</th>`).join('')}
     </tr>
     <tr>
-      <th class="dc-th-sabit" style="left:0;"></th>
-      <th class="dc-th-sabit" style="left:28px;"></th>
-      <th class="dc-th-sabit" style="left:178px;"></th>
+      <th class="dc-th-sabit dc-col-no"></th>
+      <th class="dc-th-sabit dc-col-ad"></th>
+      <th class="dc-th-sabit dc-col-gorev"></th>
       ${gunAdlari.map((ad,i) => `<th style="font-size:10px;font-weight:500;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,gunler[i])?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${ad}</th>`).join('')}
     </tr>
   `;
@@ -133,9 +133,9 @@ function _devamsizlikGridHtml(){
     }).join('');
     return `
       <tr>
-        <td class="dc-th-sabit" style="left:0;">${idx+1}</td>
-        <td class="dc-th-sabit" style="left:28px;text-align:left;white-space:nowrap;">${escapeHtml(o.adSoyad||'')}</td>
-        <td class="dc-th-sabit" style="left:178px;text-align:left;white-space:nowrap;font-size:11px;color:var(--ink-muted);">${escapeHtml(o.gorev||'')}</td>
+        <td class="dc-th-sabit dc-col-no">${idx+1}</td>
+        <td class="dc-th-sabit dc-col-ad" style="text-align:left;white-space:nowrap;" title="${escapeHtml(o.adSoyad||'')}">${escapeHtml(o.adSoyad||'')}</td>
+        <td class="dc-th-sabit dc-col-gorev" style="text-align:left;white-space:nowrap;font-size:11px;color:var(--ink-muted);" title="${escapeHtml(o.gorev||'')}">${escapeHtml(o.gorev||'')}</td>
         ${hucreler}
       </tr>
     `;
@@ -186,7 +186,7 @@ function devamsizlikHucreTikla(ogretmenId, gun){
     <p style="margin:0 0 10px;font-size:13px;"><b>${escapeHtml(o.adSoyad)}</b> — ${AY_ADLARI_TR[devamsizlikAy-1]} ${gun}, ${devamsizlikYil} (${DevamsizlikCizelgesiService.GUN_KISA_ADLARI[DevamsizlikCizelgesiService.haftaGunu(devamsizlikYil,devamsizlikAy,gun)]})</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       ${secenekler.map(s => `
-        <button class="btn" style="background:${s.renk};border:1px solid var(--border);${mevcutKod==s.kod?'outline:2px solid var(--ink);':''}"
+        <button class="btn dc-modal-btn" style="background:${s.renk};border:1px solid var(--border);${mevcutKod==s.kod?'outline:2px solid var(--ink);':''}"
           onclick="devamsizlikKodSec('${ogretmenId}', ${gun}, '${s.kod}')">${s.etiket}</button>
       `).join('')}
     </div>
