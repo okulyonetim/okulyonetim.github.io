@@ -158,6 +158,79 @@
     ]},
   ];
 
+  /* ---- Menü kartı özelleştirme (renk + isim) ----
+     Tamamen kişisel/cihaza özel bir tercih — kapak teması özelleştirmesiyle
+     (bkz. js/dashboard-ozellestirme.js) AYNI desende, Firestore'a YAZILMAZ,
+     sadece localStorage'da tutulur (cihazlar arası senkronize olmaz).
+     Varsayılan renk/ad değerleri "Varsayılana Döndür" için ayrıca saklanır,
+     sonra kayıtlı tercihler (varsa) GRUPLAR üzerine uygulanır — böylece
+     gridDoldur/listeIcerigiDoldur gibi mevcut hiçbir okuyucu değişmeden
+     otomatik olarak özelleştirilmiş değerleri kullanır. */
+  const _MENU_TERCIH_ANAHTARI = 'anMenuKartTercihleri';
+  const _GRUPLAR_VARSAYILAN = GRUPLAR.map(g => ({ renk: g.renk, ad: g.ad }));
+
+  function _menuTercihleriGetir(){
+    try{
+      const ham = localStorage.getItem(_MENU_TERCIH_ANAHTARI);
+      return ham ? JSON.parse(ham) : {};
+    }catch(e){ return {}; }
+  }
+  function _menuTercihleriKaydet(tercihler){
+    try{ localStorage.setItem(_MENU_TERCIH_ANAHTARI, JSON.stringify(tercihler)); }catch(e){}
+  }
+  (function _menuTercihleriUygula(){
+    const tercihler = _menuTercihleriGetir();
+    GRUPLAR.forEach((g,i)=>{
+      const t = tercihler[i];
+      if(!t) return;
+      if(t.renk) g.renk = t.renk;
+      if(t.ad) g.ad = t.ad;
+    });
+  })();
+
+  function _menuKartDuzenle(i){
+    const g = GRUPLAR[i];
+    const varsayilan = _GRUPLAR_VARSAYILAN[i];
+    const body = `
+      <div class="form-group"><label>Menü Adı</label><input id="anKartAdAlani" value="${escapeHtml(g.ad)}"></div>
+      <div class="form-group"><label>Renk</label>
+        <input type="color" id="anKartRenkAlani" value="${g.renk}" style="width:100%;height:44px;padding:2px;border-radius:8px;border:1px solid var(--border);cursor:pointer;">
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" id="anKartVarsayilanaDon" style="width:100%;margin-top:4px;">Varsayılana Döndür (${escapeHtml(varsayilan.ad)})</button>
+    `;
+    modalAc('Menü Kartını Düzenle', body, () => _menuKartKaydet(i), null, 'Kaydet');
+    const sifirlaBtn = document.getElementById('anKartVarsayilanaDon');
+    if(sifirlaBtn) sifirlaBtn.addEventListener('click', ()=>{
+      document.getElementById('anKartAdAlani').value = varsayilan.ad;
+      document.getElementById('anKartRenkAlani').value = varsayilan.renk;
+    });
+  }
+
+  function _menuKartKaydet(i){
+    const adAlani = document.getElementById('anKartAdAlani');
+    const renkAlani = document.getElementById('anKartRenkAlani');
+    const yeniAd = adAlani ? adAlani.value.trim() : '';
+    const yeniRenk = renkAlani ? renkAlani.value : '';
+    if(!yeniAd){ toast('Menü adı boş olamaz.'); return; }
+    const varsayilan = _GRUPLAR_VARSAYILAN[i];
+    const tercihler = _menuTercihleriGetir();
+    const ozelAd = yeniAd !== varsayilan.ad ? yeniAd : undefined;
+    const ozelRenk = (yeniRenk && yeniRenk.toLowerCase() !== varsayilan.renk.toLowerCase()) ? yeniRenk : undefined;
+    if(ozelAd || ozelRenk){
+      tercihler[i] = {};
+      if(ozelAd) tercihler[i].ad = ozelAd;
+      if(ozelRenk) tercihler[i].renk = ozelRenk;
+    } else {
+      delete tercihler[i];
+    }
+    _menuTercihleriKaydet(tercihler);
+    GRUPLAR[i].ad = yeniAd;
+    GRUPLAR[i].renk = yeniRenk || varsayilan.renk;
+    gridDoldur();
+    toast('Kaydedildi.');
+    modalKapat();
+  }
+
   function ogeGorulebilir(o){
     if(!o.modul) return true;
     return (typeof gorebilir !== 'function') || gorebilir(o.modul);
@@ -233,15 +306,24 @@
       const altGorunur = g.altGrup ? g.altGrup.ogeler.filter(ogeGorulebilir) : [];
       const toplam = gorunurOgeler.length + altGorunur.length;
       if(toplam === 0) return; // yetkisi olmayan kullanıcıya boş grup gösterilmez
-      const btn = document.createElement('button');
-      btn.className = 'an-grup-kart';
-      btn.style.background = `linear-gradient(150deg, ${g.renk}, ${g.renk}cc)`;
-      btn.innerHTML = `
+      // NOT: burası eskiden <button> idi; artık içine ayrı bir <button>
+      // (düzenle ikonu) nested edildiği için <div role="button"> yapıldı
+      // (buton içinde buton geçersiz HTML olurdu). Klavye erişimi için
+      // tabindex + Enter/Boşluk dinleyicisi eklendi.
+      const kart = document.createElement('div');
+      kart.className = 'an-grup-kart';
+      kart.setAttribute('role','button');
+      kart.tabIndex = 0;
+      kart.style.background = `linear-gradient(150deg, ${g.renk}, ${g.renk}cc)`;
+      kart.innerHTML = `
+        <button type="button" class="an-kart-duzenle-btn" title="Kartı düzenle" aria-label="Kartı düzenle">${ikonSvg2(I.ayarlar,12)}</button>
         <span class="an-rozet">${toplam}</span>
         <span class="an-ikon-cember">${ikonSvg2(g.ikon,22)}</span>
-        <span>${g.ad}</span>`;
-      btn.addEventListener('click', ()=> AltNav.git('liste', i));
-      kartGrid.appendChild(btn);
+        <span>${escapeHtml(g.ad)}</span>`;
+      kart.addEventListener('click', ()=> AltNav.git('liste', i));
+      kart.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); AltNav.git('liste', i); } });
+      kart.querySelector('.an-kart-duzenle-btn').addEventListener('click', (e)=>{ e.stopPropagation(); _menuKartDuzenle(i); });
+      kartGrid.appendChild(kart);
     });
   }
   function ikonSvg2(rawInner, sz){
