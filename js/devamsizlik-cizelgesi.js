@@ -263,35 +263,25 @@ function devamsizlikHaftalikSaatDuzenle(ogretmenId){
       girdiğiniz kodlar (D/İ/Y/R/T/+) korunur.
     </p>
   `;
-  modalAc('Haftalık Ders Saatleri', body, null, null, 'Vazgeç');
-  const kaydetBtn = document.getElementById('modalKaydetBtn');
-  if(kaydetBtn) kaydetBtn.onclick = () => devamsizlikHaftalikSaatKaydet(ogretmenId);
+  modalAc('Haftalık Ders Saatleri', body, () => devamsizlikHaftalikSaatKaydet(ogretmenId), null, 'Kaydet');
 }
 
-/* NOT: Bu fonksiyon Ders Programı modülünün gerçek veri yapısı GÖRÜLMEDEN yazıldı
-   (o modülün dosyaları bu görüşmede paylaşılmadı). Aşağıdaki olası erişim noktaları
-   sırayla denenir; hiçbiri uymuyorsa sıfırla başlanır ve elle girilir. Ders Programı
-   modülünüzün gerçek servis/global adına göre bu fonksiyonu güncellemeniz gerekebilir. */
+/* Ders Programı modülünün gerçek veri yapısı (js/alt-navigasyon.js
+   dersProgramimGoster fonksiyonundan doğrulandı): global `dersProgrami`
+   düz bir dizi, her öge bir ders saati kaydı: { ogretmenId, gun, saat,
+   sinif, ders } — `gun` Türkçe gün adı string'i (GUNLER: 'Pazartesi'..'Cuma').
+   O gün o öğretmene ait kaç kayıt varsa, o gün kaç ders saati var demektir. */
+const DEVAMSIZLIK_GUN_ESLESTIRME = { 'Pazartesi':'pzt', 'Salı':'sal', 'Çarşamba':'car', 'Perşembe':'per', 'Cuma':'cum' };
+
 function _devamsizlikDersProgramindanHaftalikSaat(ogretmenId){
   const bos = { pzt: 0, sal: 0, car: 0, per: 0, cum: 0 };
-  try{
-    if(typeof DersProgramiService !== 'undefined' && typeof DersProgramiService.ogretmeninHaftalikSaatleri === 'function'){
-      return { ...bos, ...DersProgramiService.ogretmeninHaftalikSaatleri(ogretmenId) };
-    }
-    if(typeof dersProgrami !== 'undefined' && dersProgrami){
-      if(dersProgrami[ogretmenId]) return { ...bos, ...dersProgrami[ogretmenId] };
-      if(Array.isArray(dersProgrami)){
-        const GUN_ANAHTAR = ['pzt', 'sal', 'car', 'per', 'cum'];
-        const sonuc = { ...bos };
-        dersProgrami.filter(d => d.ogretmenId === ogretmenId).forEach(d => {
-          const anahtar = GUN_ANAHTAR[Number(d.gun) - 1];
-          if(anahtar) sonuc[anahtar] = (sonuc[anahtar] || 0) + 1;
-        });
-        return sonuc;
-      }
-    }
-  }catch(err){ console.warn('Ders programından otomatik saat çekilemedi:', err); }
-  return bos;
+  if(typeof dersProgrami === 'undefined' || !Array.isArray(dersProgrami)) return bos;
+  const sonuc = { ...bos };
+  dersProgrami.filter(d => d.ogretmenId === ogretmenId).forEach(d => {
+    const anahtar = DEVAMSIZLIK_GUN_ESLESTIRME[d.gun];
+    if(anahtar) sonuc[anahtar]++;
+  });
+  return sonuc;
 }
 
 function devamsizlikDersProgramindanCek(ogretmenId){
@@ -382,9 +372,7 @@ function devamsizlikAciklamaDuzenle(ogretmenId){
     <p style="margin:0 0 10px;font-size:13px;"><b>${escapeHtml(o.adSoyad)}</b> — Açıklama</p>
     <textarea id="dcAciklamaAlani" rows="4" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--ink);resize:vertical;box-sizing:border-box;">${escapeHtml(o.aciklama||'')}</textarea>
   `;
-  modalAc('Açıklama Düzenle', body, null, null, 'Vazgeç');
-  const kaydetBtn = document.getElementById('modalKaydetBtn');
-  if(kaydetBtn) kaydetBtn.onclick = () => devamsizlikAciklamaKaydet(ogretmenId);
+  modalAc('Açıklama Düzenle', body, () => devamsizlikAciklamaKaydet(ogretmenId), null, 'Kaydet');
 }
 
 async function devamsizlikAciklamaKaydet(ogretmenId){
