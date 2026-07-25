@@ -28,13 +28,23 @@ const AY_ADLARI_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz'
 
 /* ---------------- Firestore bağlantısı ---------------- */
 
+/* Belge ID ('yil-ay') → sunucudan en az bir kez onaylı veri geldi mi?
+   Bir kez onaylandıktan sonra, o belge için gelen HERHANGİ bir fromCache
+   kopyası artık YOK SAYILIR — aksi halde kendi yazdığınız bir değişiklik
+   bile (ör. haftalık ders saati kaydı) arka planda gelen bayat bir önbellek
+   kopyasıyla sessizce eski haline dönebilir (bkz. tatil modu bug'ı). */
+let _devamsizlikSunucuOnaylandi = {};
+
 function devamsizlikBaglantilariKur(){
   _devamsizlikAyDinle();
 }
 
 function _devamsizlikAyDinle(){
   if(_devamsizlikDinleyici) _devamsizlikDinleyici();
-  _devamsizlikDinleyici = DevamsizlikCizelgesiRepository.ayDinle(devamsizlikYil, devamsizlikAy, doc => {
+  const belgeId = `${devamsizlikYil}-${devamsizlikAy}`;
+  _devamsizlikDinleyici = DevamsizlikCizelgesiRepository.ayDinle(devamsizlikYil, devamsizlikAy, (doc, fromCache) => {
+    if(fromCache && _devamsizlikSunucuOnaylandi[belgeId]) return; // bayat kopya — yok say
+    if(!fromCache) _devamsizlikSunucuOnaylandi[belgeId] = true;
     devamsizlikAyDokumani = doc;
     renderDevamsizlikCizelgesi();
   }, hataGoster);
@@ -98,12 +108,15 @@ function _devamsizlikBosDurumHtml(){
   `;
 }
 
-/* Okul Müdürü ve Müdür Yardımcısı her zaman listenin başında yer alır;
-   geri kalanlar alfabetik sıralanır. */
+/* Müdür ve Müdür Yardımcısı her zaman listenin başında yer alır; geri
+   kalanlar alfabetik sıralanır. Gerçek unvan değerleri
+   DevamsizlikCizelgesiService.IDARECI_UNVANLARI'ndan doğrulandı: 'Müdür',
+   'Müdür Yardımcısı' (bazı eski Excel içe aktarmalarında "Okul Müdürü" da
+   görülebildiği için o varyant da kabul edilir). */
 function _devamsizlikRolOncelik(gorev){
   const g = (gorev || '').trim().toLocaleUpperCase('tr-TR');
-  if(g === 'OKUL MÜDÜRÜ') return 0;
   if(g === 'MÜDÜR YARDIMCISI') return 1;
+  if(g === 'MÜDÜR' || g === 'OKUL MÜDÜRÜ') return 0;
   return 2;
 }
 
