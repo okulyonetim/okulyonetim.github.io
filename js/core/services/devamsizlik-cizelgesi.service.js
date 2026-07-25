@@ -3,7 +3,7 @@
    DEVAMSIZLIK ÇİZELGESİ MODÜLÜ — İŞ KURALLARI + YETKİ KONTROLÜ
 
    Bu katman:
-   - Yetki kontrolünü tek noktadan yapar (duzenleyebilir('ogretmenler')).
+   - Yetki kontrolünü tek noktadan yapar (duzenleyebilir('personel'), Personel İşleri menüsüyle uyumlu).
    - Bir günün OTOMATİK kodunu üretir: öğretmen izni / resmi tatil /
      hafta sonu / haftalık ders saati sırasıyla değerlendirilir.
    - Excel'den (Öğretmenler sayfası: ADI SOYADI, GÖREVİ, Pzt..Cum saatleri)
@@ -39,7 +39,7 @@ const DevamsizlikCizelgesiService = {
   HAFTAICI_ANAHTARLARI: ['pzt', 'sal', 'car', 'per', 'cum'],          // haftalikSaatler alan adları, Pzt→Cum
 
   _yetkiKontrol(){
-    if(!duzenleyebilir('ogretmenler')){ toast('Bu işlem için yetkiniz yok.'); return false; }
+    if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return false; }
     return true;
   },
 
