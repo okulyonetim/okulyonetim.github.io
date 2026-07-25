@@ -3087,89 +3087,40 @@ function tumSablonlariIndir() {
   });
 }
 
-/* Modal açıkken arka sayfa scroll engeli CSS üzerinden yönetiliyor:
-   body.modal-open { overflow:hidden; touch-action:none } — styles.css */
-
 /* ====================================================================
-   YENİ: Web/iOS için gerçek "aşağı çekince yenile" (pull-to-refresh)
+   DÜZELTME: Modal/detay paneli açıkken arka sayfanın kayması
    ----------------------------------------------------------------
-   Mevcut _pullToRefreshAyarla()/_pullToRefreshDerinlik mekanizması
-   (yukarıda) SADECE native (Capacitor/APK) tarafındaki
-   PullToRefreshPlugin'i açıp kapatıyordu — web/PWA/iOS Safari'de bu
-   köprü hiç yok, dolayısıyla o ortamlarda aşağı çekmenin sayfayı
-   yenilemeye HİÇBİR etkisi olmuyordu (sadece elastik kaydırma/rubber-
-   band görülüyordu). Bu blok, sadece native olmayan ortamlarda devreye
-   girip dokunmatik (touch) olaylarıyla kendi jestini uyguluyor; native
-   ortamda zaten native jest çalıştığı için burada hiçbir şey yapmıyor.
+   body.modal-open{overflow:hidden} tek başına yetersiz kalıyordu —
+   bazı mobil tarayıcı/WebView sürümlerinde, üstteki panel içinde
+   kaydırınca ALTINDAKİ sayfa da kayıyordu (scroll-through). Daha
+   güvenilir yöntem: modal açıkken body'yi position:fixed yapıp mevcut
+   kaydırma konumunu "top" ile sabitlemek, kapanınca eski konuma dönmek.
 
-   Var olan derinlik sayacına (_pullToRefreshDerinlik) saygı duyar: bir
-   modal/detay paneli açıkken (derinlik>0) jest başlamaz — böylece bir
-   modal içindeki listeyi aşağı kaydırırken yanlışlıkla sayfa
-   yenilenmez, tıpkı native tarafta olduğu gibi. ====================
-   ==================================================================== */
+   Bunu HER modal aç/kapa fonksiyonuna (modalAc, detayPanelKapat,
+   hizliEkleModalAc, vb. — çok sayıda ayrı yer var) tek tek eklemek
+   yerine, 'modal-open' class'ının eklenip çıkarılmasını MERKEZİ olarak
+   izleyen bir MutationObserver kullanılıyor — hangi fonksiyon class'ı
+   değiştirirse değiştirsin otomatik devreye girer, hiçbir mevcut
+   fonksiyona dokunmaya gerek kalmaz. ==================================================================== */
 (function(){
-  const nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-  if(nativeMi) return;
-  if(!('ontouchstart' in window)) return;
-
-  const ESIK = 68;       // px — bu kadar çekilince bırakınca yenileme tetiklenir
-  const MAKS_CEKME = 110; // px — göstergenin inebileceği en alt nokta
-
-  const gosterge = document.createElement('div');
-  gosterge.className = 'ptr-gosterge';
-  gosterge.setAttribute('aria-hidden', 'true');
-  gosterge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v11"/><path d="M6.5 10l5.5 5.5L17.5 10"/><path d="M4.5 19.5h15"/></svg>';
-  document.addEventListener('DOMContentLoaded', ()=>{ document.body.appendChild(gosterge); });
-  if(document.readyState === 'complete' || document.readyState === 'interactive') document.body.appendChild(gosterge);
-
-  let baslangicY = 0, cekmeMesafesi = 0, aktif = false, yenileniyor = false;
-
-  function sayfaEnUstteMi(){
-    return (window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0) <= 0;
-  }
-  function jestUygunMu(){
-    return !yenileniyor && (typeof _pullToRefreshDerinlik === 'undefined' || _pullToRefreshDerinlik === 0) && sayfaEnUstteMi();
-  }
-  function sifirla(){
-    gosterge.style.transition = 'top .25s ease, opacity .25s ease';
-    gosterge.style.top = 'calc(-56px + env(safe-area-inset-top,0px))';
-    gosterge.style.opacity = '0';
-    cekmeMesafesi = 0;
-  }
-
-  document.addEventListener('touchstart', (e)=>{
-    if(e.touches.length !== 1 || !jestUygunMu()){ aktif = false; return; }
-    baslangicY = e.touches[0].clientY;
-    aktif = true;
-    gosterge.style.transition = 'none';
-  }, { passive:true });
-
-  document.addEventListener('touchmove', (e)=>{
-    if(!aktif || yenileniyor) return;
-    if(!sayfaEnUstteMi() || (typeof _pullToRefreshDerinlik !== 'undefined' && _pullToRefreshDerinlik !== 0)){ aktif = false; sifirla(); return; }
-    const fark = e.touches[0].clientY - baslangicY;
-    if(fark <= 0){ cekmeMesafesi = 0; gosterge.style.opacity = '0'; return; }
-    // Direnç: parmak ne kadar ilerlerse ilerlesin gösterge MAKS_CEKME'yi geçmiyor
-    cekmeMesafesi = Math.min(MAKS_CEKME, fark * 0.5);
-    gosterge.style.top = (-56 + cekmeMesafesi) + 'px';
-    gosterge.style.opacity = String(Math.min(1, cekmeMesafesi / ESIK));
-    gosterge.classList.toggle('ptr-hazir', cekmeMesafesi >= ESIK);
-  }, { passive:true });
-
-  function birak(){
-    if(!aktif) return;
-    aktif = false;
-    if(cekmeMesafesi >= ESIK){
-      yenileniyor = true;
-      gosterge.style.transition = 'top .2s ease';
-      gosterge.style.top = '16px';
-      gosterge.style.opacity = '1';
-      gosterge.classList.add('ptr-donuyor');
-      setTimeout(()=>{ window.location.reload(); }, 300);
-    } else {
-      sifirla();
+  let _kilitliKaydirmaY = 0;
+  const gövde = document.body;
+  const gozlemci = new MutationObserver(()=>{
+    const kilitliOlmali = gövde.classList.contains('modal-open');
+    const suAnKilitli = gövde.style.position === 'fixed';
+    if(kilitliOlmali && !suAnKilitli){
+      _kilitliKaydirmaY = window.scrollY || window.pageYOffset || 0;
+      gövde.style.position = 'fixed';
+      gövde.style.top = (-_kilitliKaydirmaY) + 'px';
+      gövde.style.left = '0';
+      gövde.style.right = '0';
+    } else if(!kilitliOlmali && suAnKilitli){
+      gövde.style.position = '';
+      gövde.style.top = '';
+      gövde.style.left = '';
+      gövde.style.right = '';
+      window.scrollTo(0, _kilitliKaydirmaY);
     }
-  }
-  document.addEventListener('touchend', birak, { passive:true });
-  document.addEventListener('touchcancel', birak, { passive:true });
+  });
+  gozlemci.observe(gövde, { attributes:true, attributeFilter:['class'] });
 })();
