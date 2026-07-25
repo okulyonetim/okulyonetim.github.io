@@ -62,6 +62,7 @@ const MODUL_LISTESI = [
   {grup:'Yönetim', modul:'okulBilgileri', ad:'Okul Bilgileri'},
   {grup:'Yönetim', modul:'veri', ad:'Veri'},
   {grup:'Yönetim', modul:'ayarlar', ad:'Ayarlar'},
+  {grup:'Yönetim', modul:'ozelMenu', ad:'Özel Menü Grupları'},
 ];
 const _CIZELGELER_MODULLERI = MODUL_LISTESI.filter(m=>m.grup==='Çizelgeler').map(m=>m.modul);
 

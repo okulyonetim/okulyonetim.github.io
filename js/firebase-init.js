@@ -90,6 +90,7 @@ const COL = {
   kullanicilar:'oy_kullanicilar',       // {uid, email, ad, fotoUrl, admin:bool, aktif:bool, rolId, bagliOgretmenId, depolamaMuaf:bool (kategori bazlı depolama sınırlarından muaf mı)}
   // --- YENİ: Rol tabanlı yetkilendirme (Aşama 2) ---
   roller:'oy_roller',                   // {ad, kullaniciYonetimi:bool, yetkiler:{modulAdi:'gizle'|'goruntule'|'duzenle'}}
+  ozelMenu:'oy_ozelMenu',              // {ad, renk, sira, ogeler:[{ad, sekmeAd}], gorunurRoller:['rolId',...] veya [] (hepsi)
   // --- YENİ: Uygulama İçi Mesajlaşma (v9.0) ---
   konusmalar:'oy_konusmalar',           // {katilimciUidler:[uid,...], katilimciAdlari:{uid:ad}, grupMu:bool, grupAdi?, sonMesaj:{metin,gonderenUid,tarih}, guncellenmeTarihi, okunmayanlar:{uid:sayi}}
   mesajlar:'oy_mesajlar',               // {konusmaId, gonderenUid, gonderenAdi, metin, tarih}

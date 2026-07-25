@@ -2383,6 +2383,7 @@ const TEMBEL_MODUL_TABLOSU = {
     // dersListesi/bransListesi dinleyicileri artık burada değil — yukarıdaki
     // DÜZELTME notuna bkz. — koşulsuz olarak baglantilariKur() içinde başlıyor.
     if(typeof renderOptikAyarlari === 'function') renderOptikAyarlari();
+    renderOzelMenuYonetim();
   },
 };
 const _TEMBEL_BASLATILANLAR = new Set();
@@ -3124,3 +3125,150 @@ function tumSablonlariIndir() {
   });
   gozlemci.observe(gövde, { attributes:true, attributeFilter:['class'] });
 })();
+
+/* ====================================================================
+   ÖZEL MENÜ GRUPLARI YÖNETİMİ
+   Admin, Ayarlar ekranından yeni menü grupları oluşturur.
+   Gruplar Firestore'da (oy_ozelMenu) saklanır; alt-navigasyon.js
+   bunları okuyarak menüye ekler.
+   ==================================================================== */
+
+let _ozelMenuGruplar = []; // Firestore'dan yüklenen gruplar
+
+function renderOzelMenuYonetim(){
+  // Sadece admin görür
+  const adminMi = typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI && AKTIF_KULLANICI.admin === true;
+  const yetkiVar = adminMi || (typeof duzenleyebilir === 'function' && duzenleyebilir('ozelMenu'));
+  const bolum = document.getElementById('ozelMenuYonetimBolumu');
+  if(!bolum) return;
+  bolum.style.display = yetkiVar ? '' : 'none';
+  if(!yetkiVar) return;
+
+  db.collection(COL.ozelMenu).orderBy('sira').get().then(snap => {
+    _ozelMenuGruplar = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    _ozelMenuListesiRender();
+  }).catch(() => { _ozelMenuListesiRender(); });
+}
+
+function _ozelMenuListesiRender(){
+  const kap = document.getElementById('ozelMenuGrupListesi');
+  if(!kap) return;
+  if(!_ozelMenuGruplar.length){
+    kap.innerHTML = '<p class="empty-state">Henüz özel grup yok. Aşağıdan ekleyin.</p>';
+    return;
+  }
+  kap.innerHTML = _ozelMenuGruplar.map((g, idx) => `
+    <div style="border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--bg-card);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="width:14px;height:14px;border-radius:50%;background:${escapeHtml(g.renk||'#607D8B')};flex-shrink:0;display:inline-block;"></span>
+        <strong style="flex:1;font-size:14px;">${escapeHtml(g.ad||'—')}</strong>
+        <button class="btn btn-ghost btn-sm" onclick="ozelMenuGrupDuzenle('${g.id}')">✏️</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--red-danger);" onclick="ozelMenuGrupSil('${g.id}')">🗑</button>
+      </div>
+      <div style="font-size:12px;color:var(--ink-muted);padding-left:24px;">
+        ${(g.ogeler||[]).map(o => `<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;background:var(--nm-bg-dark);border-radius:6px;">${escapeHtml(o.ad)}</span>`).join('') || 'Öğe yok'}
+      </div>
+      ${(g.gorunurRoller||[]).length ? `<div style="font-size:11px;color:var(--ink-muted);margin-top:4px;padding-left:24px;">Roller: ${escapeHtml((g.gorunurRoller||[]).join(', '))}</div>` : '<div style="font-size:11px;color:var(--ink-muted);margin-top:4px;padding-left:24px;">Tüm roller görür</div>'}
+    </div>
+  `).join('');
+}
+
+function ozelMenuGrupEkle(){
+  _ozelMenuGrupModalAc(null);
+}
+
+function ozelMenuGrupDuzenle(id){
+  const g = _ozelMenuGruplar.find(x => x.id === id);
+  if(!g) return;
+  _ozelMenuGrupModalAc(g);
+}
+
+function _ozelMenuGrupModalAc(g){
+  // Rol listesini al
+  const rollerHtml = (typeof ROLLER_CACHE !== 'undefined' && ROLLER_CACHE.length)
+    ? ROLLER_CACHE.map(r => `
+        <label style="display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px;cursor:pointer;">
+          <input type="checkbox" value="${escapeHtml(r.id)}" ${(g && (g.gorunurRoller||[]).includes(r.id)) ? 'checked' : ''}>
+          ${escapeHtml(r.ad)}
+        </label>`).join('')
+    : '<p style="font-size:12px;color:var(--ink-muted);">Rol bulunamadı.</p>';
+
+  const ogelerBaslangic = g ? (g.ogeler||[]) : [];
+
+  const govde = `
+    <div class="form-group">
+      <label>Grup Adı</label>
+      <input id="omGrupAd" placeholder="örn: Yemekhane" value="${escapeHtml(g ? g.ad : '')}" style="width:100%;">
+    </div>
+    <div class="form-group">
+      <label>Renk (hex)</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="omGrupRenk" type="text" placeholder="#607D8B" value="${escapeHtml(g ? (g.renk||'#607D8B') : '#607D8B')}" style="flex:1;" oninput="document.getElementById('omRenkOnizleme').style.background=this.value">
+        <span id="omRenkOnizleme" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:${escapeHtml(g ? (g.renk||'#607D8B') : '#607D8B')};flex-shrink:0;"></span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Görünür Roller <span style="font-weight:400;color:var(--ink-muted);font-size:12px;">(hiç seçilmezse herkes görür)</span></label>
+      <div id="omRolSecim" style="max-height:130px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;">
+        ${rollerHtml}
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Menü Öğeleri</label>
+      <div id="omOgelerListesi" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;">
+        ${ogelerBaslangic.map((o, i) => `
+          <div style="display:flex;gap:6px;align-items:center;" data-oge-idx="${i}">
+            <input placeholder="Öğe adı" value="${escapeHtml(o.ad)}" style="flex:1;" class="om-oge-ad">
+            <input placeholder="Sekme adı (örn: yemekhane)" value="${escapeHtml(o.sekmeAd)}" style="flex:1;" class="om-oge-sekme">
+            <button type="button" class="btn btn-ghost btn-sm" style="color:var(--red-danger);flex-shrink:0;" onclick="this.closest('[data-oge-idx]').remove()">✕</button>
+          </div>`).join('')}
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="
+        const div=document.createElement('div');
+        const idx=Date.now();
+        div.setAttribute('data-oge-idx',idx);
+        div.style.cssText='display:flex;gap:6px;align-items:center;';
+        div.innerHTML='<input placeholder=\"Öğe adı\" style=\"flex:1;\" class=\"om-oge-ad\"><input placeholder=\"Sekme adı (örn: yemekhane)\" style=\"flex:1;\" class=\"om-oge-sekme\"><button type=\"button\" class=\"btn btn-ghost btn-sm\" style=\"color:var(--red-danger);flex-shrink:0;\" onclick=\"this.closest(\\\"[data-oge-idx]\\\").remove()\">✕</button>';
+        document.getElementById('omOgelerListesi').appendChild(div);
+      ">+ Öğe Ekle</button>
+    </div>
+  `;
+
+  modalAc(g ? '✏️ Grubu Düzenle' : '➕ Yeni Menü Grubu', govde, () => {
+    const ad = document.getElementById('omGrupAd').value.trim();
+    const renk = document.getElementById('omGrupRenk').value.trim() || '#607D8B';
+    if(!ad){ toast('Grup adı zorunludur.'); return; }
+
+    const gorunurRoller = [...document.querySelectorAll('#omRolSecim input[type=checkbox]:checked')].map(cb => cb.value);
+
+    const ogeler = [...document.querySelectorAll('#omOgelerListesi [data-oge-idx]')].map(div => ({
+      ad: (div.querySelector('.om-oge-ad').value || '').trim(),
+      sekmeAd: (div.querySelector('.om-oge-sekme').value || '').trim(),
+    })).filter(o => o.ad && o.sekmeAd);
+
+    const veri = {
+      ad, renk, gorunurRoller, ogeler,
+      sira: g ? (g.sira || 99) : (_ozelMenuGruplar.length + 1),
+    };
+
+    const islem = g
+      ? db.collection(COL.ozelMenu).doc(g.id).set(veri)
+      : db.collection(COL.ozelMenu).add(veri);
+
+    islem.then(() => {
+      toast(g ? 'Grup güncellendi.' : 'Grup eklendi.');
+      modalKapat();
+      renderOzelMenuYonetim();
+      // Alt navigasyon menüsünü de yenile
+      setTimeout(() => { if(typeof _ozelGruplariYukle === 'function') _ozelGruplariYukle(); }, 500);
+    }).catch(err => toast('Hata: ' + err.message));
+  });
+}
+
+function ozelMenuGrupSil(id){
+  if(!confirm('Bu grubu silmek istediğinize emin misiniz?')) return;
+  db.collection(COL.ozelMenu).doc(id).delete().then(() => {
+    toast('Grup silindi.');
+    renderOzelMenuYonetim();
+  }).catch(err => toast('Hata: ' + err.message));
+}

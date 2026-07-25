@@ -158,6 +158,60 @@
     ]},
   ];
 
+  /* ---- Firestore'dan özel menü gruplarını yükle ----
+     Admin, Ayarlar ekranından oy_ozelMenu koleksiyonuna grup ekler.
+     Bu fonksiyon uygulama hazır olduğunda bir kez çağrılır;
+     yüklenen gruplar GRUPLAR dizisinin sonuna eklenir. */
+  function _ozelGruplariYukle(){
+    if(typeof db === 'undefined' || typeof COL === 'undefined' || !COL.ozelMenu) return;
+    const aktifKullanici = (typeof AKTIF_KULLANICI !== 'undefined') ? AKTIF_KULLANICI : null;
+    const adminMi = aktifKullanici && aktifKullanici.admin === true;
+    const aktifRolId = aktifKullanici && aktifKullanici.rolId;
+
+    db.collection(COL.ozelMenu).orderBy('sira').get().then(snap => {
+      snap.forEach(doc => {
+        const veri = doc.data();
+        // Görünürlük kontrolü: gorunurRoller boşsa herkes görür
+        const gorunurRoller = veri.gorunurRoller || [];
+        const gorulsun = adminMi ||
+          gorunurRoller.length === 0 ||
+          (aktifRolId && gorunurRoller.includes(aktifRolId));
+        if(!gorulsun) return;
+
+        // Yetki kontrolü: ozelMenu modülüne en az goruntule yetkisi lazım
+        if(!adminMi && typeof yetkiSeviyesi === 'function'){
+          const seviye = yetkiSeviyesi('ozelMenu');
+          if(seviye === 'gizle') return;
+        }
+
+        const ogeler = (veri.ogeler || []).map(o => ({
+          ad: o.ad,
+          ikon: 'pano',
+          modul: null,
+          aksiyon: function(){ sekmeAc(o.sekmeAd); },
+        }));
+        if(ogeler.length === 0) return;
+
+        GRUPLAR.push({
+          ad: veri.ad || 'Özel Grup',
+          renk: veri.renk || '#607D8B',
+          ikon: I.pano,
+          ogeler: ogeler,
+          _ozelId: doc.id,
+        });
+      });
+      // Yüklendikten sonra menü açıksa ızgarayı yenile
+      if(typeof AltNav !== 'undefined' && AltNav._kuruldu){
+        AltNav.yenile();
+      }
+    }).catch(() => {/* sessiz geç — oy_ozelMenu henüz yoksa sorun değil */});
+  }
+
+  // Uygulama hazır olduğunda özel grupları yükle
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(_ozelGruplariYukle, 1500); // auth tamamlanıp AKTIF_KULLANICI dolana kadar bekle
+  });
+
   /* ---- Menü kartı özelleştirme (renk + isim) ----
      Tamamen kişisel/cihaza özel bir tercih — kapak teması özelleştirmesiyle
      (bkz. js/dashboard-ozellestirme.js) AYNI desende, Firestore'a YAZILMAZ,
