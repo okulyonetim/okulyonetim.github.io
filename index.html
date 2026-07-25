@@ -206,6 +206,14 @@
 
   <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
     <div class="topbar">
+      <!-- YENİ: Geri butonu — iOS Safari'de (native Android'in aksine) donanım/
+           gesture geri tuşu köprüsü olmadığından kullanıcının geri gidecek
+           hiçbir yolu yoktu. Aynı geriTusuIsle() mantığını (Android'de de
+           kullanılan) çağırır; varsayılan olarak gizli, sadece geri gidilecek
+           bir şey varken (bkz. js/app.js _topbarGeriBtnGuncelle) gösterilir. -->
+      <button class="topbar-bell" id="topbarGeriBtn" title="Geri" aria-label="Geri" style="display:none;" onclick="if(typeof geriTusuIsle==='function') geriTusuIsle();">
+        <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
+      </button>
       <button class="hamburger-btn" id="topbarHamburger" title="Menüyü aç" aria-label="Menüyü aç"><span></span><span></span><span></span></button>
       <div class="topbar-brand" onclick="sekmeAc('panel')" style="cursor:pointer;" title="Ana sayfaya dön">
         <img class="topbar-logo" src="assets/icon-192.png" alt="Koruk İlk-Ortaokulu logosu">
