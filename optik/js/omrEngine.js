@@ -90,7 +90,34 @@ window.OmrOkuyucu = (function () {
 
   // En koyu şık ile ikinci en koyu şık arasında olması gereken minimum fark.
   // Bunun altındaysa "belirsiz/çoklu işaret" olarak işaretlenir.
-  const AYIRT_EDICI_FARK = 0.10;
+  // ARTIK SABİT DEĞİL — Ayarlar sheet'inden canlı okunur (bkz. _koyulukEsikGetir
+  // ile aynı desen). Gerçek kullanım verisi gösterdi ki (bkz. "Koyuluk özeti"
+  // teşhis satırı) bazı kağıtlarda en kötü sorunun bile en koyu şıkkı eşiğin
+  // (KARANLIK_ESIK) rahatça üzerinde olabiliyor, ama işaretli/işaretsiz şıklar
+  // birbirine yeterince yakın koyulukta kalabiliyor — asıl darboğaz o zaman
+  // KARANLIK_ESIK değil bu fark oluyor.
+  function _ayirtEdiciFarkGetir() {
+    try {
+      if (window.HassasiyetAyarlari && typeof window.HassasiyetAyarlari.ayarlariGetir === 'function') {
+        const a = window.HassasiyetAyarlari.ayarlariGetir();
+        if (typeof a.ayirtEdiciFark === 'number' && !isNaN(a.ayirtEdiciFark)) return a.ayirtEdiciFark;
+      }
+    } catch (e) { /* ayarlar okunamazsa varsayılana düş */ }
+    return 0.10;
+  }
+
+  // Öğrenci numarası hanelerinde AYNI mantığın karşılığı (bkz. numaraOku /
+  // baloncukGrubundanEnKoyuyuSec) — ayrı bir ayar, çünkü numara hanelerinin
+  // doğal ayırt edicilik marjı cevap şıklarınkinden farklı olabilir.
+  function _numaraMinFarkGetir() {
+    try {
+      if (window.HassasiyetAyarlari && typeof window.HassasiyetAyarlari.ayarlariGetir === 'function') {
+        const a = window.HassasiyetAyarlari.ayarlariGetir();
+        if (typeof a.numaraMinFark === 'number' && !isNaN(a.numaraMinFark)) return a.numaraMinFark;
+      }
+    } catch (e) { /* ayarlar okunamazsa varsayılana düş */ }
+    return 0.02;
+  }
 
   // YENİ (teşhis): duzCanvasUret'in H matrisi testinin sonucu — formuOku
   // tarafından uyarılara eklenir.
@@ -1650,6 +1677,7 @@ window.OmrOkuyucu = (function () {
 
   function cevaplariCikar(cImageData, form, ppmm, genelDuzeltme) {
     const KARANLIK_ESIK = _koyulukEsikGetir(); // her okumada canlı okunur (Ayarlar sheet)
+    const AYIRT_EDICI_FARK = _ayirtEdiciFarkGetir(); // her okumada canlı okunur (Ayarlar sheet)
     const sorular = tumSorulariTopla(form);
     const cevaplar = [];
     const ornekNoktalari = []; // debug/görselleştirme: her şıkkın tam örnekleme noktası
@@ -1888,11 +1916,12 @@ window.OmrOkuyucu = (function () {
    * kullanıyor. Aynı güvenli deseni burada da uyguluyoruz.
    */
   function _basamakEnKoyusu(cImageData, bubbles, ppmm) {
-    // YENİ: 0.04 -> 0.02. Marjinal kontrastlı fotoğraflarda (bkz. Koyuluk
-    // özeti — genel maksimum bile 0.28 eşiğinin altında kalabiliyor) doğru
-    // basamak ile ikincisi arasındaki fark 0.04'ü aşamayıp "belirsiz/0"
-    // yazılıyordu (gözlemlenen: "103" -> "3", ilk iki hane boş sayıldı).
-    const MIN_FARK = 0.02;
+    // YENİ: 0.04 -> 0.02 -> artık sabit değil, Ayarlar sheet'inden canlı
+    // okunur (bkz. _numaraMinFarkGetir). Marjinal kontrastlı fotoğraflarda
+    // (bkz. Koyuluk özeti) doğru basamak ile ikincisi arasındaki fark küçük
+    // kalıp "belirsiz/0" yazılabiliyordu (gözlemlenen: "103" -> "3", ilk iki
+    // hane boş sayıldı).
+    const MIN_FARK = _numaraMinFarkGetir();
 
     const sikler = bubbles.map(function(b) {
       return { px: b.cx * ppmm, py: b.cy * ppmm, pr: b.r * ppmm };

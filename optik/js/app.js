@@ -2344,10 +2344,14 @@ function baslat() {
             const hd = document.getElementById('hsDoluluk');
             const hh = document.getElementById('hsHiz');
             const hk = document.getElementById('hsKoyuluk');
+            const ha = document.getElementById('hsAyirtEdici');
+            const hn = document.getElementById('hsNumaraFark');
             if (hy) hy.value = Math.round(a.yuzdelik * 100);
             if (hd) hd.value = Math.round(a.minDoluluk * 100);
             if (hh) hh.value = a.tespitAraligiMs;
             if (hk) hk.value = Math.round(a.koyulukEsik * 100);
+            if (ha) ha.value = Math.round(a.ayirtEdiciFark * 100);
+            if (hn) hn.value = Math.round(a.numaraMinFark * 100);
             if (canliSw) canliSw.checked = _canliModAktif;
             ayarSheet.hidden = false;
         });
@@ -2358,14 +2362,18 @@ function baslat() {
             const hd = document.getElementById('hsDoluluk');
             const hh = document.getElementById('hsHiz');
             const hk = document.getElementById('hsKoyuluk');
+            const ha = document.getElementById('hsAyirtEdici');
+            const hn = document.getElementById('hsNumaraFark');
             ayarlariKaydet({
                 yuzdelik: hy ? Number(hy.value) / 100 : undefined,
                 minDoluluk: hd ? Number(hd.value) / 100 : undefined,
                 tespitAraligiMs: hh ? Number(hh.value) : undefined,
                 koyulukEsik: hk ? Number(hk.value) / 100 : undefined,
+                ayirtEdiciFark: ha ? Number(ha.value) / 100 : undefined,
+                numaraMinFark: hn ? Number(hn.value) / 100 : undefined,
             });
         };
-        ['hsYuzdelik', 'hsDoluluk', 'hsHiz', 'hsKoyuluk'].forEach(id => {
+        ['hsYuzdelik', 'hsDoluluk', 'hsHiz', 'hsKoyuluk', 'hsAyirtEdici', 'hsNumaraFark'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('change', _ayarUygula);
         });
@@ -2377,10 +2385,14 @@ function baslat() {
             const hd = document.getElementById('hsDoluluk');
             const hh = document.getElementById('hsHiz');
             const hk = document.getElementById('hsKoyuluk');
+            const ha = document.getElementById('hsAyirtEdici');
+            const hn = document.getElementById('hsNumaraFark');
             if (hy) hy.value = Math.round(a.yuzdelik * 100);
             if (hd) hd.value = Math.round(a.minDoluluk * 100);
             if (hh) hh.value = a.tespitAraligiMs;
             if (hk) hk.value = Math.round(a.koyulukEsik * 100);
+            if (ha) ha.value = Math.round(a.ayirtEdiciFark * 100);
+            if (hn) hn.value = Math.round(a.numaraMinFark * 100);
         });
 
         // ── Kamera flaşı (torch) ──

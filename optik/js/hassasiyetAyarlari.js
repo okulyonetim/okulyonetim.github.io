@@ -15,6 +15,13 @@ export const VARSAYILAN = {
                            // (omrEngine.js: KARANLIK_ESIK — 0.10-0.50 arası mantıklı;
                            // düşürmek daha soluk işaretleri de yakalar ama yanlış
                            // pozitif riskini artırır)
+    ayirtEdiciFark: 0.10, // en koyu şıkla ikinci en koyu şık arasında gereken min fark
+                           // (omrEngine.js: AYIRT_EDICI_FARK) — bunun altındaysa
+                           // "çoklu/belirsiz işaret" sayılır. Düşürmek daha az soruyu
+                           // belirsiz sayar ama yanlış şık seçme riskini artırır.
+    numaraMinFark: 0.02,   // öğrenci numarası hanelerinde aynı mantık (omrEngine.js:
+                           // MIN_FARK) — çok düşük tutulursa aday hanelerin birbirine
+                           // çok yakın koyulukta olduğu (belirsiz) durumları ayırt edemez
 };
 
 export function ayarlariGetir() {
