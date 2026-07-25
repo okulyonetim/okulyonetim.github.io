@@ -2290,6 +2290,13 @@ function baslat() {
                 statusEl.textContent = 'Kamera açılıyor...';
                 await (mod.startCamera?.() || window.startCamera?.());
                 statusEl.textContent = 'Hazır';
+                // Kamera açılınca varsayılan olarak canlı tarama modu AÇIK
+                // başlasın (kullanıcı isterse Ayarlar'dan kapatabilir).
+                const canliSwBaslangic = document.getElementById('canliModSwitch');
+                if (canliSwBaslangic && !canliSwBaslangic.checked) {
+                    canliSwBaslangic.checked = true;
+                    canliSwBaslangic.dispatchEvent(new Event('change'));
+                }
                 // Torch butonunu sadece cihaz destekliyorsa göster.
                 const torchBtn = document.getElementById('kameraTorchBtn');
                 if (torchBtn) {
@@ -2336,9 +2343,11 @@ function baslat() {
             const hy = document.getElementById('hsYuzdelik');
             const hd = document.getElementById('hsDoluluk');
             const hh = document.getElementById('hsHiz');
+            const hk = document.getElementById('hsKoyuluk');
             if (hy) hy.value = Math.round(a.yuzdelik * 100);
             if (hd) hd.value = Math.round(a.minDoluluk * 100);
             if (hh) hh.value = a.tespitAraligiMs;
+            if (hk) hk.value = Math.round(a.koyulukEsik * 100);
             if (canliSw) canliSw.checked = _canliModAktif;
             ayarSheet.hidden = false;
         });
@@ -2348,13 +2357,15 @@ function baslat() {
             const hy = document.getElementById('hsYuzdelik');
             const hd = document.getElementById('hsDoluluk');
             const hh = document.getElementById('hsHiz');
+            const hk = document.getElementById('hsKoyuluk');
             ayarlariKaydet({
                 yuzdelik: hy ? Number(hy.value) / 100 : undefined,
                 minDoluluk: hd ? Number(hd.value) / 100 : undefined,
                 tespitAraligiMs: hh ? Number(hh.value) : undefined,
+                koyulukEsik: hk ? Number(hk.value) / 100 : undefined,
             });
         };
-        ['hsYuzdelik', 'hsDoluluk', 'hsHiz'].forEach(id => {
+        ['hsYuzdelik', 'hsDoluluk', 'hsHiz', 'hsKoyuluk'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('change', _ayarUygula);
         });
@@ -2365,9 +2376,11 @@ function baslat() {
             const hy = document.getElementById('hsYuzdelik');
             const hd = document.getElementById('hsDoluluk');
             const hh = document.getElementById('hsHiz');
+            const hk = document.getElementById('hsKoyuluk');
             if (hy) hy.value = Math.round(a.yuzdelik * 100);
             if (hd) hd.value = Math.round(a.minDoluluk * 100);
             if (hh) hh.value = a.tespitAraligiMs;
+            if (hk) hk.value = Math.round(a.koyulukEsik * 100);
         });
 
         // ── Kamera flaşı (torch) ──

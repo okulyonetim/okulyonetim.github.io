@@ -11,6 +11,10 @@ export const VARSAYILAN = {
     yuzdelik: 0.30,        // eşik: bölgenin en koyu %kaçı (0.10-0.50 arası mantıklı)
     minDoluluk: 0.45,      // minimum doluluk oranı (0.20-0.70)
     tespitAraligiMs: 350,  // canlı köşe tespiti döngü aralığı (200-800ms)
+    koyulukEsik: 0.28,     // cevap baloncuğu "işaretli" sayılması için min koyuluk oranı
+                           // (omrEngine.js: KARANLIK_ESIK — 0.10-0.50 arası mantıklı;
+                           // düşürmek daha soluk işaretleri de yakalar ama yanlış
+                           // pozitif riskini artırır)
 };
 
 export function ayarlariGetir() {

@@ -72,7 +72,21 @@ window.OmrOkuyucu = (function () {
   // NOT: isaretKoyulukPuani artık şablonun kendi pembe/bordo baskı rengini
   // büyük ölçüde eleyip sadece renksiz (siyah/gri) piksellere puan verdiği
   // için taban gürültü düştü; bu eşik buna göre biraz düşürüldü.
-  const KARANLIK_ESIK = 0.28;
+  //
+  // ARTIK SABİT DEĞİL: Ayarlar sheet'indeki "Cevap Koyuluk Eşiği"
+  // kaydırıcısından (hassasiyetAyarlari.js: koyulukEsik) CANLI okunur —
+  // her tarama denemesinde güncel değeri alır, kod değiştirmeden/yeniden
+  // derlemeden kamera ekranından ayarlanabilir. window.HassasiyetAyarlari
+  // herhangi bir sebeple yüklenmemişse eski sabit değere (0.28) düşer.
+  function _koyulukEsikGetir() {
+    try {
+      if (window.HassasiyetAyarlari && typeof window.HassasiyetAyarlari.ayarlariGetir === 'function') {
+        const a = window.HassasiyetAyarlari.ayarlariGetir();
+        if (typeof a.koyulukEsik === 'number' && !isNaN(a.koyulukEsik)) return a.koyulukEsik;
+      }
+    } catch (e) { /* ayarlar okunamazsa varsayılana düş */ }
+    return 0.28;
+  }
 
   // En koyu şık ile ikinci en koyu şık arasında olması gereken minimum fark.
   // Bunun altındaysa "belirsiz/çoklu işaret" olarak işaretlenir.
@@ -1635,6 +1649,7 @@ window.OmrOkuyucu = (function () {
 
 
   function cevaplariCikar(cImageData, form, ppmm, genelDuzeltme) {
+    const KARANLIK_ESIK = _koyulukEsikGetir(); // her okumada canlı okunur (Ayarlar sheet)
     const sorular = tumSorulariTopla(form);
     const cevaplar = [];
     const ornekNoktalari = []; // debug/görselleştirme: her şıkkın tam örnekleme noktası
@@ -1755,6 +1770,7 @@ window.OmrOkuyucu = (function () {
    * tutuluyor.
    */
   function baloncukGrubundanEnKoyuyuSec(cImageData, bubbles, ppmm) {
+    const KARANLIK_ESIK = _koyulukEsikGetir(); // her okumada canlı okunur (Ayarlar sheet)
     const sikler = bubbles.map((b) => ({ px: b.cx * ppmm, py: b.cy * ppmm, pr: b.r * ppmm }));
 
     // YEREL DİKEY KAYMA KİLİDİ (bkz. satirIcinDikeyKaymaBul'un başındaki
