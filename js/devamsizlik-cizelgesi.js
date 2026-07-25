@@ -112,12 +112,20 @@ function _devamsizlikGridHtml(){
       <th class="dc-th-sabit dc-col-ad" style="text-align:left;">Adı Soyadı</th>
       <th class="dc-th-sabit dc-col-gorev" style="text-align:left;">Görevi</th>
       ${gunler.map(g => `<th style="min-width:26px;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,g)?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${g}</th>`).join('')}
+      <th class="dc-col-toplam-ilk" style="min-width:34px;">Toplam<br>Saat</th>
+      <th style="min-width:40px;">Toplam<br>Devam</th>
+      <th style="min-width:40px;">Toplam<br>Devamsız</th>
+      <th class="dc-col-aciklama" style="text-align:left;">Açıklama</th>
     </tr>
     <tr>
       <th class="dc-th-sabit dc-col-no"></th>
       <th class="dc-th-sabit dc-col-ad"></th>
       <th class="dc-th-sabit dc-col-gorev"></th>
       ${gunAdlari.map((ad,i) => `<th style="font-size:10px;font-weight:500;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,gunler[i])?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${ad}</th>`).join('')}
+      <th class="dc-col-toplam-ilk"></th>
+      <th></th>
+      <th></th>
+      <th class="dc-col-aciklama"></th>
     </tr>
   `;
 
@@ -131,12 +139,17 @@ function _devamsizlikGridHtml(){
       else if(kod !== undefined && kod !== null && kod !== ''){ renk = DEVAMSIZLIK_DEVAM_RENK; metin = kod; }
       return `<td class="dc-hucre" style="background:${renk};" onclick="devamsizlikHucreTikla('${o.ogretmenId}', ${g})" title="${o.adSoyad} — Gün ${g}">${metin}</td>`;
     }).join('');
+    const { toplamSaat, toplamDevam, toplamDevamsiz } = _devamsizlikSatirToplamlari(o, gunSayisi);
     return `
       <tr>
         <td class="dc-th-sabit dc-col-no">${idx+1}</td>
         <td class="dc-th-sabit dc-col-ad" style="text-align:left;white-space:nowrap;" title="${escapeHtml(o.adSoyad||'')}">${escapeHtml(o.adSoyad||'')}</td>
         <td class="dc-th-sabit dc-col-gorev" style="text-align:left;white-space:nowrap;font-size:11px;color:var(--ink-muted);" title="${escapeHtml(o.gorev||'')}">${escapeHtml(o.gorev||'')}</td>
         ${hucreler}
+        <td class="dc-col-toplam-ilk" style="font-weight:700;">${toplamSaat}</td>
+        <td style="font-weight:700;">${toplamDevam}</td>
+        <td style="font-weight:700;">${toplamDevamsiz}</td>
+        <td class="dc-hucre dc-col-aciklama" style="text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" onclick="devamsizlikAciklamaDuzenle('${o.ogretmenId}')" title="${escapeHtml(o.aciklama||'Açıklama eklemek için tıklayın')}">${escapeHtml(o.aciklama||'')}</td>
       </tr>
     `;
   }).join('');
@@ -144,9 +157,29 @@ function _devamsizlikGridHtml(){
   return `
     <table id="devamsizlikGridTablo" style="border-collapse:collapse;width:100%;font-size:12px;text-align:center;">
       <thead>${basligTr}</thead>
-      <tbody>${satirlarHtml || `<tr><td colspan="${gunSayisi+3}" style="padding:20px;color:var(--ink-muted);">Bu ayda henüz öğretmen yok.</td></tr>`}</tbody>
+      <tbody>${satirlarHtml || `<tr><td colspan="${gunSayisi+7}" style="padding:20px;color:var(--ink-muted);">Bu ayda henüz öğretmen yok.</td></tr>`}</tbody>
     </table>
   `;
+}
+
+/* ---------------- Satır toplamları (Excel şablonundaki AI/AJ/AK mantığıyla aynı) ----------------
+   Toplam Saat   = sayısal (Devam) hücrelerin toplamı
+   Toplam Devam  = sayısal (Devam) hücre SAYISI
+   Toplam Devamsız = D (Devamsız) + R (Raporlu) + İ (İzinli) hücre SAYISI
+   Not: Y (Yarım Gün), T (Tatil) ve + (Görevlendirme) hiçbirine dahil edilmez —
+   orijinal Excel şablonundaki COUNTIF(...,"D")+COUNTIF(...,"R")+COUNTIF(...,"İ")
+   formülüyle birebir aynı davranış. */
+function _devamsizlikSatirToplamlari(o, gunSayisi){
+  let toplamSaat = 0, toplamDevam = 0, toplamDevamsiz = 0;
+  for(let g = 1; g <= gunSayisi; g++){
+    const kod = (o.gunler || {})[g];
+    if(kod === undefined || kod === null || kod === '') continue;
+    if(kod === 'D' || kod === 'İ' || kod === 'R'){ toplamDevamsiz++; continue; }
+    if(DEVAMSIZLIK_KOD_BILGI[kod]) continue; // Y, T, + — ne devam ne devamsız
+    const saat = Number(kod);
+    if(!isNaN(saat)){ toplamSaat += saat; toplamDevam++; }
+  }
+  return { toplamSaat, toplamDevam, toplamDevamsiz };
 }
 
 function _devamsizlikLegendHtml(){
@@ -199,6 +232,34 @@ function devamsizlikHucreTikla(ogretmenId, gun){
 async function devamsizlikKodSec(ogretmenId, gun, kod){
   try{
     await DevamsizlikCizelgesiService.gunGuncelle(devamsizlikYil, devamsizlikAy, ogretmenId, gun, kod);
+    toast('Kaydedildi.');
+    modalKapat();
+  }catch(err){
+    if(err.message !== 'yetkisiz') toast('Hata: ' + err.message);
+  }
+}
+
+/* ---------------- Açıklama düzenleme popup ---------------- */
+
+function devamsizlikAciklamaDuzenle(ogretmenId){
+  if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
+  if(!o) return;
+  const body = `
+    <p style="margin:0 0 10px;font-size:13px;"><b>${escapeHtml(o.adSoyad)}</b> — Açıklama</p>
+    <textarea id="dcAciklamaAlani" rows="4" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--ink);resize:vertical;box-sizing:border-box;">${escapeHtml(o.aciklama||'')}</textarea>
+  `;
+  modalAc('Açıklama Düzenle', body, () => devamsizlikAciklamaKaydet(ogretmenId), null, 'Vazgeç');
+}
+
+async function devamsizlikAciklamaKaydet(ogretmenId){
+  const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
+  if(!o) return;
+  const alan = document.getElementById('dcAciklamaAlani');
+  const deger = alan ? alan.value.trim() : '';
+  try{
+    o.aciklama = deger;
+    await DevamsizlikCizelgesiRepository.ogretmenVerisiSetle(devamsizlikYil, devamsizlikAy, ogretmenId, o);
     toast('Kaydedildi.');
     modalKapat();
   }catch(err){
@@ -308,7 +369,10 @@ async function devamsizlikExceldenIceAktar(file){
 
 function _devamsizlikAyIzgarasindanOku(wb, sheetName, yil, ay){
   const aoa = sayfayiDiziyeCevir(wb, sheetName);
-  const basliklar = aoa[1]; // A2..: NO, ADI SOYADI, GÖREVİ, 1, 2, 3...
+  const basliklar = aoa[1]; // A2..: NO, ADI SOYADI, GÖREVİ, 1, 2, 3..., Toplam Saat, Toplam Devam, Toplam Devamsız, Açıklama
+  // Toplam sütunları JS tarafında yeniden hesaplanır (bkz. _devamsizlikSatirToplamlari),
+  // bu yüzden sadece Açıklama'nın hangi sütunda olduğu bulunur.
+  const aciklamaSutunu = basliklar.findIndex(b => normBaslik(b) === 'AÇIKLAMA');
   const map = {};
   for(let r = 4; r < aoa.length; r++){ // 5. satırdan (index 4) itibaren öğretmen satırları
     const row = aoa[r];
@@ -320,13 +384,15 @@ function _devamsizlikAyIzgarasindanOku(wb, sheetName, yil, ay){
     const ogretmenId = eslesen ? eslesen.id : `disaridan_${DevamsizlikCizelgesiService['_slug'](adSoyad)}`;
     const gunler = {};
     for(let c = 3; c < row.length; c++){
+      if(c === aciklamaSutunu) continue; // günlerle karışmasın
       const gunNo = Number(basliklar[c]);
       if(!gunNo || gunNo < 1 || gunNo > 31) continue;
       const deger = row[c];
       if(deger === null || deger === undefined || deger === '') continue;
       gunler[gunNo] = typeof deger === 'number' ? deger : String(deger).trim();
     }
-    map[ogretmenId] = { ogretmenId, adSoyad, gorev, haftalikSaatler: (map[ogretmenId] && map[ogretmenId].haftalikSaatler) || {}, gunler };
+    const aciklama = aciklamaSutunu !== -1 && row[aciklamaSutunu] ? String(row[aciklamaSutunu]).trim() : '';
+    map[ogretmenId] = { ogretmenId, adSoyad, gorev, haftalikSaatler: (map[ogretmenId] && map[ogretmenId].haftalikSaatler) || {}, gunler, aciklama };
   }
   return map;
 }
