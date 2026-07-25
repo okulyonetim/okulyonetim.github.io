@@ -3186,11 +3186,10 @@ function tumSablonlariIndir() {
     if(fark <= 0){ cekmeMesafesi = 0; gosterge.style.opacity = '0'; return; }
     // Direnç: parmak ne kadar ilerlerse ilerlesin gösterge MAKS_CEKME'yi geçmiyor
     cekmeMesafesi = Math.min(MAKS_CEKME, fark * 0.5);
-    if(e.cancelable) e.preventDefault();
     gosterge.style.top = (-56 + cekmeMesafesi) + 'px';
     gosterge.style.opacity = String(Math.min(1, cekmeMesafesi / ESIK));
     gosterge.classList.toggle('ptr-hazir', cekmeMesafesi >= ESIK);
-  }, { passive:false });
+  }, { passive:true });
 
   function birak(){
     if(!aktif) return;
