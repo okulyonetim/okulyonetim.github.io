@@ -108,6 +108,12 @@ const COL = {
   yillikPlanBasliklari:'oy_yillikPlanBasliklari', // {ad, sira} — tüm derslerin ortak kullandığı "ana başlık" havuzu (Tema, Kazanım, Etkinlik vb.)
   yillikPlanTanimlari:'oy_yillikPlanTanimlari',   // {dersAdi, seviye(1-8), egitimOgretimYili, sutunlar:[baslikId,...], satirlar:[{ay,hafta,tarihBaslangic,tarihBitis,saat,degerler:{baslikId:metin}}]}
   ogretmenYillikPlanSecimleri:'oy_ogretmenYillikPlanSecimleri', // belge ID = ogretmenId; {ogretmenId, planIdler:[planId,...]}
+  // --- YENİ: Devamsızlık Çizelgesi modülü ---
+  devamsizlikCizelgesi:'oy_devamsizlikCizelgesi', // belge ID = 'YIL-AY' (ör. '2026-5'); {yil, ay,
+                                         //   ogretmenler:{ [ogretmenId]:{adSoyad, gorev,
+                                         //     haftalikSaatler:{pzt,sal,car,per,cum}, // Excel içe aktarımından/gün oluşturmadan gelen haftalık ders saati
+                                         //     gunler:{ '1':'5', '2':'T', ... } } },   // gün no(1-31) -> sayı(ders saati=Devam) | 'D'|'İ'|'Y'|'R'|'T'|'+'
+                                         //   olusturmaTarihi, guncellemeTarihi}
   yillikPlanNotlari:'oy_yillikPlanNotlari',       // belge ID = `${ogretmenId}_${planId}`; {ogretmenId, planId, notlar:{haftaIndex:metin}}
 };
 

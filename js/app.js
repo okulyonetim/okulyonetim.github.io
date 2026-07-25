@@ -2425,6 +2425,7 @@ const TEMBEL_MODUL_TABLOSU = {
   // sinavBaglantilariKur() baglantilariKur() içinde koşulsuz çağrılıyor.
   // yillikPlan: artık burada değil — koşulsuz olarak baglantilariKur() içinde başlatılıyor (bkz. yukarıdaki not).
   dokumanlar:     () => { if(typeof dokumanlarBaglantisiKur === 'function') dokumanlarBaglantisiKur(); },
+  devamsizlikCizelgesi: () => { if(typeof devamsizlikBaglantilariKur === 'function') devamsizlikBaglantilariKur(); },
   ayarlar: () => {
     // dersListesi/bransListesi dinleyicileri artık burada değil — yukarıdaki
     // DÜZELTME notuna bkz. — koşulsuz olarak baglantilariKur() içinde başlıyor.

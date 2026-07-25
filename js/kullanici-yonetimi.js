@@ -71,7 +71,10 @@ const _CIZELGELER_MODULLERI = MODUL_LISTESI.filter(m=>m.grup==='Çizelgeler').ma
 // 'sinavIslemleri' izni üzerinden yapılandırılmış. Adminlerin tüm
 // rolleri yeniden ayarlamasına gerek kalmasın diye bu iki yeni sekme
 // ID'si, yetki kontrolünde şeffafça 'sinavIslemleri'ye eşleniyor.
-const MODUL_ALIAS = { yaziliSinavlar:'sinavIslemleri', denemeSinavlari:'sinavIslemleri' };
+// Devamsızlık Çizelgesi ayrı bir yetki anahtarı tanımlamaz — Öğretmenler
+// modülüyle aynı yetkiyi kullanır (bkz. js/core/services/ogretmen-izin.service.js'te
+// aynı gerekçeyle yapılan aynı tasarım kararı).
+const MODUL_ALIAS = { yaziliSinavlar:'sinavIslemleri', denemeSinavlari:'sinavIslemleri', devamsizlikCizelgesi:'ogretmenler' };
 function yetkiSeviyesi(modul){
   modul = MODUL_ALIAS[modul] || modul;
   if(!AKTIF_KULLANICI) return 'gizle';
