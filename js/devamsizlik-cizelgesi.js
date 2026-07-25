@@ -263,7 +263,9 @@ function devamsizlikHaftalikSaatDuzenle(ogretmenId){
       girdiğiniz kodlar (D/İ/Y/R/T/+) korunur.
     </p>
   `;
-  modalAc('Haftalık Ders Saatleri', body, () => devamsizlikHaftalikSaatKaydet(ogretmenId), null, 'Kaydet');
+  modalAc('Haftalık Ders Saatleri', body, null, null, 'Vazgeç');
+  const kaydetBtn = document.getElementById('modalKaydetBtn');
+  if(kaydetBtn) kaydetBtn.onclick = () => devamsizlikHaftalikSaatKaydet(ogretmenId);
 }
 
 /* NOT: Bu fonksiyon Ders Programı modülünün gerçek veri yapısı GÖRÜLMEDEN yazıldı
@@ -380,7 +382,9 @@ function devamsizlikAciklamaDuzenle(ogretmenId){
     <p style="margin:0 0 10px;font-size:13px;"><b>${escapeHtml(o.adSoyad)}</b> — Açıklama</p>
     <textarea id="dcAciklamaAlani" rows="4" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--ink);resize:vertical;box-sizing:border-box;">${escapeHtml(o.aciklama||'')}</textarea>
   `;
-  modalAc('Açıklama Düzenle', body, () => devamsizlikAciklamaKaydet(ogretmenId), null, 'Vazgeç');
+  modalAc('Açıklama Düzenle', body, null, null, 'Vazgeç');
+  const kaydetBtn = document.getElementById('modalKaydetBtn');
+  if(kaydetBtn) kaydetBtn.onclick = () => devamsizlikAciklamaKaydet(ogretmenId);
 }
 
 async function devamsizlikAciklamaKaydet(ogretmenId){
