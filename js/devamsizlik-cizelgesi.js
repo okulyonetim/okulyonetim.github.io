@@ -170,7 +170,7 @@ function _devamsizlikLegendHtml(){
 /* ---------------- Hücre tıklama popup ---------------- */
 
 function devamsizlikHucreTikla(ogretmenId, gun){
-  if(!duzenleyebilir('ogretmenler')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return; }
   const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
   if(!o) return;
   const haftasonu = DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil, devamsizlikAy, gun);
@@ -209,7 +209,7 @@ async function devamsizlikKodSec(ogretmenId, gun, kod){
 /* ---------------- Yeni ay oluştur (öğretmen listesinden, otomatik) ---------------- */
 
 async function devamsizlikYeniAyOlustur(){
-  if(!duzenleyebilir('ogretmenler')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return; }
   const satirlar = (ogretmenler || []).map(o => ({
     ogretmenId: o.id,
     adSoyad: `${o.ad} ${o.soyad}`.trim(),
@@ -260,7 +260,7 @@ async function devamsizlikOtomatikTazele(){
 
 async function devamsizlikExceldenIceAktar(file){
   if(!file) return;
-  if(!duzenleyebilir('ogretmenler')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return; }
   try{
     const wb = await workbookOku(file);
     // Ayarlar sayfası varsa yıl/ay oradan okunur (kullanıcı elle seçtiği dönemi ezmesin diye sorulur).

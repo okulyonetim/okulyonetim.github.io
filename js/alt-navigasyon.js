@@ -144,6 +144,7 @@
       {ad:'Tebliğ-Tebellüğ İmza Sirküsü', ikon:'damga', modul:'personel', aksiyon:cagir('TebligTebellugSirkusu','ac')},
       {ad:'Puantaj & İmza Sirküsü', ikon:'saat', modul:'personel', aksiyon:cagir('PuantajSistemi','ac')},
       {ad:'Dilekçe & İzinler', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','ac')},
+      {ad:'Devamsızlık Çizelgesi', ikon:'takvim', modul:'personel', aksiyon:git('devamsizlikCizelgesi')},
     ], altGrup:{ ad:'Diploma İşlemleri', ikon:'imza', ogeler:[
       {ad:'Diploma Kayıt Talep Dilekçesi', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','acDiploma')},
       {ad:'Diploma Okul Dilekçesi', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','acDiplomaCevap')},
