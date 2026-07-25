@@ -2517,7 +2517,35 @@ function sekmeAc(tab){
     if(_sekmeGecmisi.length > 40) _sekmeGecmisi.shift();
   }
   _geriGidiliyor = false;
+  _topbarGeriBtnGuncelle();
 }
+
+/* YENİ: iOS Safari'de (native Android'in aksine) donanım/gesture geri tuşu
+   köprüsü yok — kullanıcının uygulama içinde geri gidecek görünür bir yolu
+   hiç olmuyordu. Aynı geriTusuIsle() mantığını çağıran görünür bir topbar
+   butonu eklendi (bkz. index.html #topbarGeriBtn); bu fonksiyon o butonu
+   sadece gerçekten "geri gidilecek bir şey" varken gösterir.
+   NOT: her overlay/modal türünü (onlarca farklı ID) tek tek izlemek yerine,
+   uygulama genelinde zaten HER modal/detay panelinin açılışında eklenen
+   ortak `document.body.classList.contains('modal-open')` işaretine
+   bakılıyor — bu, tüm modülleri değiştirmeden aynı sinyali tek noktadan
+   okumayı sağlıyor. */
+function _topbarGeriBtnGuncelle(){
+  const btn = document.getElementById('topbarGeriBtn');
+  if(!btn) return;
+  const gosterilsin = document.body.classList.contains('modal-open') || (_sekmeGecmisi.length > 1);
+  btn.style.display = gosterilsin ? 'flex' : 'none';
+}
+(function(){
+  // body üzerindeki class değişikliklerini (modal-open eklenip/kaldırılmasını)
+  // izleyip her değişimde geri butonunu güncel tutar — tek tek her modal
+  // açma/kapama fonksiyonuna dokunmaya gerek bırakmaz.
+  const _gozlemci = new MutationObserver(_topbarGeriBtnGuncelle);
+  document.addEventListener('DOMContentLoaded', function(){
+    _gozlemci.observe(document.body, { attributes:true, attributeFilter:['class'] });
+    _topbarGeriBtnGuncelle();
+  });
+})();
 
 /* Android MainActivity.onBackPressed() tarafından çağrılır.
    Dönüş değerleri: 'handled' (bir şey kapatıldı/geri gidildi, native hiçbir
