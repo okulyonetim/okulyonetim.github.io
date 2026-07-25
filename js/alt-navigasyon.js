@@ -188,34 +188,149 @@
     });
   })();
 
+  /* ---- Serbest renk seçici: hue çubuğu + doygunluk/parlaklık kare alanı ----
+     Android WebView'lerde <input type="color"> bazen tam bir renk çarkı
+     değil, kısıtlı bir hazır palet gösteriyor (cihaza göre değişiyor). Bu
+     yüzden DOM/pointer-events tabanlı, cihazdan bağımsız aynı davranan kendi
+     seçicimiz var — hex kutusuyla iki yönlü senkronize. */
+  function _hexToRgb(hex){
+    hex = hex.replace('#','');
+    if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+    const num = parseInt(hex,16);
+    return { r:(num>>16)&255, g:(num>>8)&255, b:num&255 };
+  }
+  function _rgbToHex(r,g,b){
+    return '#' + [r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+  }
+  function _rgbToHsv(r,g,b){
+    r/=255; g/=255; b/=255;
+    const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+    let h=0;
+    if(d!==0){
+      if(max===r) h = 60*(((g-b)/d)%6);
+      else if(max===g) h = 60*((b-r)/d+2);
+      else h = 60*((r-g)/d+4);
+    }
+    if(h<0) h+=360;
+    return { h, s: max===0?0:d/max, v: max };
+  }
+  function _hsvToRgb(h,s,v){
+    const c=v*s, x=c*(1-Math.abs((h/60)%2-1)), m=v-c;
+    let r,g,b;
+    if(h<60){r=c;g=x;b=0;} else if(h<120){r=x;g=c;b=0;} else if(h<180){r=0;g=c;b=x;}
+    else if(h<240){r=0;g=x;b=c;} else if(h<300){r=x;g=0;b=c;} else {r=c;g=0;b=x;}
+    return { r:(r+m)*255, g:(g+m)*255, b:(b+m)*255 };
+  }
+  function _renkSeciciOlustur(kapsayici, mevcutHex, degisimCb){
+    const rgb0 = _hexToRgb(mevcutHex);
+    let { h, s, v } = _rgbToHsv(rgb0.r, rgb0.g, rgb0.b);
+    kapsayici.innerHTML = `
+      <div class="rs-sv-alan" id="rsSvAlan"><div class="rs-sv-nokta" id="rsSvNokta"></div></div>
+      <div class="rs-hue-alan" id="rsHueAlan"><div class="rs-hue-nokta" id="rsHueNokta"></div></div>
+    `;
+    const svAlan = kapsayici.querySelector('#rsSvAlan');
+    const svNokta = kapsayici.querySelector('#rsSvNokta');
+    const hueAlan = kapsayici.querySelector('#rsHueAlan');
+    const hueNokta = kapsayici.querySelector('#rsHueNokta');
+
+    function ciz(bildir){
+      svAlan.style.background = `linear-gradient(to top, #000, rgba(0,0,0,0)), linear-gradient(to right, #fff, hsl(${h},100%,50%))`;
+      svNokta.style.left = (s*100)+'%';
+      svNokta.style.top = ((1-v)*100)+'%';
+      hueNokta.style.left = (h/360*100)+'%';
+      if(bildir!==false && typeof degisimCb==='function'){
+        const rgb = _hsvToRgb(h,s,v);
+        degisimCb(_rgbToHex(rgb.r, rgb.g, rgb.b));
+      }
+    }
+    function svTut(clientX, clientY){
+      const r = svAlan.getBoundingClientRect();
+      s = Math.max(0, Math.min(1, (clientX-r.left)/r.width));
+      v = 1 - Math.max(0, Math.min(1, (clientY-r.top)/r.height));
+      ciz();
+    }
+    function hueTut(clientX){
+      const r = hueAlan.getBoundingClientRect();
+      h = Math.max(0, Math.min(1, (clientX-r.left)/r.width)) * 360;
+      ciz();
+    }
+    let svAktif=false, hueAktif=false;
+    svAlan.addEventListener('pointerdown', e=>{ svAktif=true; svAlan.setPointerCapture(e.pointerId); svTut(e.clientX,e.clientY); });
+    svAlan.addEventListener('pointermove', e=>{ if(svAktif) svTut(e.clientX,e.clientY); });
+    svAlan.addEventListener('pointerup', ()=> svAktif=false);
+    svAlan.addEventListener('pointercancel', ()=> svAktif=false);
+    hueAlan.addEventListener('pointerdown', e=>{ hueAktif=true; hueAlan.setPointerCapture(e.pointerId); hueTut(e.clientX); });
+    hueAlan.addEventListener('pointermove', e=>{ if(hueAktif) hueTut(e.clientX); });
+    hueAlan.addEventListener('pointerup', ()=> hueAktif=false);
+    hueAlan.addEventListener('pointercancel', ()=> hueAktif=false);
+
+    ciz(false); // ilk çizim — henüz bir şey kaydedilmedi, callback'i tetiklemesin
+    return {
+      hexAyarla(hex){
+        const rgb = _hexToRgb(hex);
+        ({ h, s, v } = _rgbToHsv(rgb.r, rgb.g, rgb.b));
+        ciz(false);
+      }
+    };
+  }
+
   function _menuKartDuzenle(i){
     const g = GRUPLAR[i];
     const varsayilan = _GRUPLAR_VARSAYILAN[i];
     const body = `
       <div class="form-group"><label>Menü Adı</label><input id="anKartAdAlani" value="${escapeHtml(g.ad)}"></div>
-      <div class="form-group"><label>Renk</label>
-        <input type="color" id="anKartRenkAlani" value="${g.renk}" style="width:100%;height:44px;padding:2px;border-radius:8px;border:1px solid var(--border);cursor:pointer;">
+      <div class="form-group">
+        <label>Renk</label>
+        <div id="anKartRenkSecici" class="rs-govde"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+          <div id="anKartRenkOnizleme" class="rs-onizleme"></div>
+          <input id="anKartRenkHex" maxlength="7" style="flex:1;font-family:monospace;text-transform:uppercase;" placeholder="#RRGGBB">
+        </div>
       </div>
-      <button type="button" class="btn btn-ghost btn-sm" id="anKartVarsayilanaDon" style="width:100%;margin-top:4px;">Varsayılana Döndür (${escapeHtml(varsayilan.ad)})</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="anKartVarsayilanaDon" style="width:100%;margin-top:10px;">Varsayılana Döndür (${escapeHtml(varsayilan.ad)})</button>
     `;
     modalAc('Menü Kartını Düzenle', body, () => _menuKartKaydet(i), null, 'Kaydet');
+
+    const hexAlani = document.getElementById('anKartRenkHex');
+    const onizleme = document.getElementById('anKartRenkOnizleme');
+    const seciciKapsayici = document.getElementById('anKartRenkSecici');
+
+    const secici = _renkSeciciOlustur(seciciKapsayici, g.renk, (hex)=>{
+      hexAlani.value = hex.toUpperCase();
+      onizleme.style.background = hex;
+    });
+    hexAlani.value = g.renk.toUpperCase();
+    onizleme.style.background = g.renk;
+
+    hexAlani.addEventListener('change', ()=>{
+      let deger = hexAlani.value.trim();
+      if(!/^#?[0-9a-fA-F]{6}$/.test(deger)){ hexAlani.value = onizleme.style.background; return; } // geçersizse eski değere dön
+      if(!deger.startsWith('#')) deger = '#'+deger;
+      hexAlani.value = deger.toUpperCase();
+      onizleme.style.background = deger;
+      secici.hexAyarla(deger);
+    });
+
     const sifirlaBtn = document.getElementById('anKartVarsayilanaDon');
     if(sifirlaBtn) sifirlaBtn.addEventListener('click', ()=>{
       document.getElementById('anKartAdAlani').value = varsayilan.ad;
-      document.getElementById('anKartRenkAlani').value = varsayilan.renk;
+      hexAlani.value = varsayilan.renk.toUpperCase();
+      onizleme.style.background = varsayilan.renk;
+      secici.hexAyarla(varsayilan.renk);
     });
   }
 
   function _menuKartKaydet(i){
     const adAlani = document.getElementById('anKartAdAlani');
-    const renkAlani = document.getElementById('anKartRenkAlani');
+    const hexAlani = document.getElementById('anKartRenkHex');
     const yeniAd = adAlani ? adAlani.value.trim() : '';
-    const yeniRenk = renkAlani ? renkAlani.value : '';
+    const yeniRenk = hexAlani ? hexAlani.value.trim() : '';
     if(!yeniAd){ toast('Menü adı boş olamaz.'); return; }
+    if(!/^#[0-9a-fA-F]{6}$/.test(yeniRenk)){ toast('Geçerli bir renk seçin.'); return; }
     const varsayilan = _GRUPLAR_VARSAYILAN[i];
     const tercihler = _menuTercihleriGetir();
     const ozelAd = yeniAd !== varsayilan.ad ? yeniAd : undefined;
-    const ozelRenk = (yeniRenk && yeniRenk.toLowerCase() !== varsayilan.renk.toLowerCase()) ? yeniRenk : undefined;
+    const ozelRenk = (yeniRenk.toLowerCase() !== varsayilan.renk.toLowerCase()) ? yeniRenk : undefined;
     if(ozelAd || ozelRenk){
       tercihler[i] = {};
       if(ozelAd) tercihler[i].ad = ozelAd;
@@ -225,7 +340,7 @@
     }
     _menuTercihleriKaydet(tercihler);
     GRUPLAR[i].ad = yeniAd;
-    GRUPLAR[i].renk = yeniRenk || varsayilan.renk;
+    GRUPLAR[i].renk = yeniRenk;
     gridDoldur();
     toast('Kaydedildi.');
     modalKapat();
