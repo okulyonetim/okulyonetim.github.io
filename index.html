@@ -48,32 +48,6 @@
       document.documentElement.setAttribute('data-skin','modern');
     }
   })();
-  /* DÜZELTME: iOS'ta ana ekrandan (standalone) açılan uygulama bazen İLK
-     açılışta "zoom yapılmış" gibi büyük görünüyor — bilinen bir WebKit
-     hatası: standalone modda viewport ölçeği ilk çizimde yanlış
-     hesaplanıyor, kullanıcı parmaklarıyla uzaklaştırınca (pinch-out)
-     WebKit ölçeği yeniden hesaplayıp düzeltiyor. Aynı yanlış ölçek,
-     sabit konumlu (position:fixed) alt navigasyonun da görsel olarak
-     taşmış/yanlış yerde görünmesine yol açıyor — ikisi aynı kök sebep.
-     Çözüm: viewport meta etiketinin içeriğini bir an değiştirip geri
-     almak, WebKit'i ölçeği yeniden hesaplamaya zorluyor; kullanıcının
-     elle yaptığı pinch-out'u otomatik olarak taklit ediyor. */
-  (function(){
-    var standaloneMi = (window.navigator.standalone === true) ||
-      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
-    if(!standaloneMi) return;
-    function viewportYenidenHesapla(){
-      var meta = document.querySelector('meta[name="viewport"]');
-      if(!meta) return;
-      var orijinal = meta.getAttribute('content');
-      meta.setAttribute('content', orijinal + ', maximum-scale=1');
-      setTimeout(function(){ meta.setAttribute('content', orijinal); }, 60);
-    }
-    if(document.readyState === 'complete') viewportYenidenHesapla();
-    else window.addEventListener('load', viewportYenidenHesapla);
-    // pageshow: iOS askıya alınmış uygulamayı öne getirdiğinde de tetiklenir
-    window.addEventListener('pageshow', viewportYenidenHesapla);
-  })();
   if('serviceWorker' in navigator){
     window.addEventListener('load', function(){
       navigator.serviceWorker.register('./service-worker.js').catch(function(err){
