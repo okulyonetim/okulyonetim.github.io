@@ -232,8 +232,10 @@ function devamsizlikHaftalikSaatDuzenle(ogretmenId){
   if(!duzenleyebilir('personel')){ toast('Bu işlem için yetkiniz yok.'); return; }
   const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
   if(!o) return;
-  const kayitliVarMi = o.haftalikSaatler && Object.values(o.haftalikSaatler).some(v => Number(v) > 0);
-  const baslangic = kayitliVarMi ? o.haftalikSaatler : _devamsizlikDersProgramindanHaftalikSaat(ogretmenId);
+  // NOT: burada ders programından otomatik ÇEKİLMEZ — sadece kayıtlı değer
+  // gösterilir. Programdan çekmek isteyen "Ders Programından Çek" butonuna
+  // basar (devamsizlikDersProgramindanCek).
+  const baslangic = o.haftalikSaatler || {};
 
   const body = `
     <p style="margin:0 0 10px;font-size:13px;"><b>${escapeHtml(o.adSoyad)}</b> — Haftalık Ders Saatleri</p>
@@ -304,22 +306,29 @@ async function devamsizlikHaftalikSaatKaydet(ogretmenId){
   });
   try{
     o.haftalikSaatler = yeniHaftalikSaatler;
-    // Bu ay için otomatik (elle değiştirilmemiş) günleri yeni saatlere göre tazele —
-    // elle girilmiş kodlar (D/İ/Y/R/T/+) KORUNUR (devamsizlikOtomatikTazele ile aynı mantık,
-    // sadece bu tek öğretmene uygulanır).
-    const yeniGunler = DevamsizlikCizelgesiService.ogretmenAyiniOtomatikUret(o, devamsizlikYil, devamsizlikAy, resmiTatiller, ogretmenIzinleri);
-    const birlesikGunler = { ...o.gunler };
-    Object.keys(yeniGunler).forEach(gun => {
-      const mevcut = (o.gunler || {})[gun];
-      const elleMi = mevcut !== undefined && isNaN(Number(mevcut));
-      if(!elleMi) birlesikGunler[gun] = yeniGunler[gun];
-    });
-    o.gunler = birlesikGunler;
+    // Deseni doğrudan bu ayın ilgili günlerine YAZAR (örn. Pazartesi=4 girildiyse
+    // ayın TÜM pazartesileri 4 olur) — DevamsizlikCizelgesiService.HAFTAICI_ANAHTARLARI
+    // (['pzt','sal','car','per','cum'], haftaGunu() 1..5 ile aynı sırada) kullanılır.
+    // Zaten elle bir harf koduyla (T/İ/R/Y/D/+) işaretlenmiş günlere DOKUNULMAZ.
+    // Yazılan her gün elleGunler'e işaretlenir ki "Otomatik Doldur/Tazele" bunu SİLMESİN.
+    const gunSayisi = DevamsizlikCizelgesiService.gunSayisi(devamsizlikYil, devamsizlikAy);
+    const gunler = { ...(o.gunler || {}) };
+    const elleGunler = { ...(o.elleGunler || {}) };
+    for(let gun = 1; gun <= gunSayisi; gun++){
+      const haftaGunuIndex = DevamsizlikCizelgesiService.haftaGunu(devamsizlikYil, devamsizlikAy, gun); // 0=Paz..6=Cmt
+      if(haftaGunuIndex < 1 || haftaGunuIndex > 5) continue; // hafta sonu — dokunma
+      const anahtar = DevamsizlikCizelgesiService.HAFTAICI_ANAHTARLARI[haftaGunuIndex - 1];
+      if(DEVAMSIZLIK_KOD_BILGI[gunler[gun]]) continue; // T/İ/R/Y/D/+ elle işaretli — dokunma
+      gunler[gun] = yeniHaftalikSaatler[anahtar];
+      elleGunler[gun] = true;
+    }
+    o.gunler = gunler;
+    o.elleGunler = elleGunler;
     await DevamsizlikCizelgesiRepository.ogretmenVerisiSetle(devamsizlikYil, devamsizlikAy, ogretmenId, o);
-    toast('Haftalık ders saatleri kaydedildi, bu ayın günleri güncellendi.');
+    toast('Haftalık ders saatleri kaydedildi, bu ayın ilgili günleri güncellendi.');
     modalKapat();
   }catch(err){
-    if(err.message !== 'yetkisiz') toast('Hata: ' + err.message);
+    toast('Hata: ' + err.message);
   }
 }
 
@@ -332,6 +341,7 @@ function devamsizlikHucreTikla(ogretmenId, gun){
   const haftasonu = DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil, devamsizlikAy, gun);
   const otomatikSaat = DevamsizlikCizelgesiService['_haftaIciSaat'](o.haftalikSaatler, devamsizlikYil, devamsizlikAy, gun);
   const mevcutKod = (o.gunler || {})[gun];
+  const mevcutSayisalMi = mevcutKod !== undefined && mevcutKod !== null && mevcutKod !== '' && !DEVAMSIZLIK_KOD_BILGI[mevcutKod];
 
   const secenekler = [
     { kod: String(otomatikSaat || 0), etiket: `Devam (${otomatikSaat || 0} saat)`, renk: DEVAMSIZLIK_DEVAM_RENK },
@@ -346,19 +356,51 @@ function devamsizlikHucreTikla(ogretmenId, gun){
           onclick="devamsizlikKodSec('${ogretmenId}', ${gun}, '${s.kod}')">${s.etiket}</button>
       `).join('')}
     </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+      <label for="dcSaatManuel" style="font-size:12.5px;color:var(--ink-muted);white-space:nowrap;">Manuel ders saati:</label>
+      <input type="number" id="dcSaatManuel" min="0" max="12" value="${mevcutSayisalMi ? mevcutKod : ''}" placeholder="ör. 3"
+        style="width:64px;text-align:center;padding:6px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--ink);">
+      <button type="button" class="btn btn-primary" style="font-size:12.5px;padding:6px 12px;" onclick="devamsizlikSaatKaydet('${ogretmenId}', ${gun})">Kaydet</button>
+    </div>
     ${haftasonu ? `<p style="font-size:11px;color:var(--ink-muted);margin-top:10px;">Not: Bu gün hafta sonuna denk geliyor. Manuel seçim yine de geçerli olur.</p>` : ''}
   `;
   modalAc(`Gün ${gun} — Kod Seç`, body, null, null, 'Kapat');
   document.getElementById('modalKaydetBtn').style.display = 'none';
 }
 
+/* Kod butonlarından biri seçildiğinde (D/İ/Y/R/T/+ ya da "Devam (N saat)") ve
+   manuel saat girişinde — ikisi de o günü elleGunler'e işaretler ki
+   "Otomatik Doldur/Tazele" bu günü asla ezmesin. */
 async function devamsizlikKodSec(ogretmenId, gun, kod){
+  const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
+  if(!o) return;
   try{
-    await DevamsizlikCizelgesiService.gunGuncelle(devamsizlikYil, devamsizlikAy, ogretmenId, gun, kod);
+    o.gunler = { ...(o.gunler || {}), [gun]: kod };
+    o.elleGunler = { ...(o.elleGunler || {}), [gun]: true };
+    await DevamsizlikCizelgesiRepository.ogretmenVerisiSetle(devamsizlikYil, devamsizlikAy, ogretmenId, o);
     toast('Kaydedildi.');
     modalKapat();
   }catch(err){
-    if(err.message !== 'yetkisiz') toast('Hata: ' + err.message);
+    toast('Hata: ' + err.message);
+  }
+}
+
+async function devamsizlikSaatKaydet(ogretmenId, gun){
+  const alan = document.getElementById('dcSaatManuel');
+  const metin = alan ? alan.value.trim() : '';
+  if(metin === ''){ toast('Bir saat değeri girin.'); return; }
+  const saat = Number(metin);
+  if(isNaN(saat) || saat < 0){ toast('Geçerli bir saat girin.'); return; }
+  const o = devamsizlikAyDokumani.ogretmenler[ogretmenId];
+  if(!o) return;
+  try{
+    o.gunler = { ...(o.gunler || {}), [gun]: saat };
+    o.elleGunler = { ...(o.elleGunler || {}), [gun]: true };
+    await DevamsizlikCizelgesiRepository.ogretmenVerisiSetle(devamsizlikYil, devamsizlikAy, ogretmenId, o);
+    toast('Kaydedildi.');
+    modalKapat();
+  }catch(err){
+    toast('Hata: ' + err.message);
   }
 }
 
@@ -415,16 +457,17 @@ async function devamsizlikYeniAyOlustur(){
 
 async function devamsizlikOtomatikTazele(){
   if(!devamsizlikAyDokumani) return;
-  if(!confirm('Tüm öğretmenlerin ELLE değiştirilmemiş günleri, güncel izin/resmi tatil verisine göre yeniden hesaplanacak. Elle girilmiş kodlar (D/İ/Y/R/T/+) KORUNUR. Devam edilsin mi?')) return;
+  if(!confirm('Tüm öğretmenlerin ELLE değiştirilmemiş günleri, güncel izin/resmi tatil verisine göre yeniden hesaplanacak. Elle girdiğiniz haftalık ders saatleri, tekil gün düzenlemeleri ve D/İ/Y/R/T/+ kodları KORUNUR. Devam edilsin mi?')) return;
   const ogretmenler_ = Object.values(devamsizlikAyDokumani.ogretmenler || {});
   for(const o of ogretmenler_){
     const yeniGunler = DevamsizlikCizelgesiService.ogretmenAyiniOtomatikUret(o, devamsizlikYil, devamsizlikAy, resmiTatiller, ogretmenIzinleri);
-    // Elle girilmiş (harf) kodları koru: sadece sayısal (otomatik) hücreleri güncelle.
+    // Sadece elleGunler'de İŞARETLENMEMİŞ günler güncellenir — elle girilmiş
+    // her şey (haftalık desen, tekil saat girişi, D/İ/Y/R/T/+) korunur.
+    const elle = o.elleGunler || {};
     const birlesikGunler = { ...o.gunler };
     Object.keys(yeniGunler).forEach(gun => {
-      const mevcut = (o.gunler || {})[gun];
-      const elleMi = mevcut !== undefined && isNaN(Number(mevcut));
-      if(!elleMi) birlesikGunler[gun] = yeniGunler[gun];
+      if(elle[gun]) return;
+      birlesikGunler[gun] = yeniGunler[gun];
     });
     o.gunler = birlesikGunler;
     await DevamsizlikCizelgesiRepository.ogretmenVerisiSetle(devamsizlikYil, devamsizlikAy, o.ogretmenId, o);
@@ -507,6 +550,7 @@ function _devamsizlikAyIzgarasindanOku(wb, sheetName, yil, ay){
     const eslesen = DevamsizlikCizelgesiService['_adaGoreOgretmenBul'](ogretmenler, adSoyad);
     const ogretmenId = eslesen ? eslesen.id : `disaridan_${DevamsizlikCizelgesiService['_slug'](adSoyad)}`;
     const gunler = {};
+    const elleGunler = {};
     for(let c = 3; c < row.length; c++){
       if(c === aciklamaSutunu) continue; // günlerle karışmasın
       const gunNo = Number(basliklar[c]);
@@ -514,9 +558,10 @@ function _devamsizlikAyIzgarasindanOku(wb, sheetName, yil, ay){
       const deger = row[c];
       if(deger === null || deger === undefined || deger === '') continue;
       gunler[gunNo] = typeof deger === 'number' ? deger : String(deger).trim();
+      elleGunler[gunNo] = true; // Excel'den gelen gerçek veri — Otomatik Tazele bunu SİLMEZ
     }
     const aciklama = aciklamaSutunu !== -1 && row[aciklamaSutunu] ? String(row[aciklamaSutunu]).trim() : '';
-    map[ogretmenId] = { ogretmenId, adSoyad, gorev, haftalikSaatler: (map[ogretmenId] && map[ogretmenId].haftalikSaatler) || {}, gunler, aciklama };
+    map[ogretmenId] = { ogretmenId, adSoyad, gorev, haftalikSaatler: (map[ogretmenId] && map[ogretmenId].haftalikSaatler) || {}, gunler, elleGunler, aciklama };
   }
   return map;
 }
