@@ -1852,6 +1852,24 @@ window.OmrOkuyucu = (function () {
    * Numara basamakları için eşiksiz seçici.
    * En koyu baloncuğu döndürür. İşaretli baloncuk ile işaretsizler
    * arasındaki fark en az MIN_FARK olmalı; yoksa belirsiz sayılır.
+   *
+   * DÜZELTME (kök neden — "her seferinde farklı/az öğrenci numarası"
+   * hatası): bu fonksiyon önceden HER baloncuğu, sütun için hiçbir
+   * dikey-kayma düzeltmesi yapmadan, aramaOrani=1.3 (yani ±1.3×yarıçap)
+   * ile bağımsız arıyordu. Ama numara sütunundaki 0-9 baloncukları
+   * arasındaki GERÇEK dikey mesafe sadece 2.5×yarıçap'tır (bkz.
+   * layoutEngine.js numaraAlaniHesapla: hucreYukseklik=5×ölçek,
+   * baloncukYaricap=2×ölçek). ±1.3r'lik arama, yarı-mesafeyi (1.25r) bile
+   * aşıyor — işaretsiz bir hanenin araması, hemen üstündeki/altındaki
+   * işaretli komşu haneye "kayabiliyor". Fotoğraftaki en ufak açı/kağıt
+   * eğriliği farkı bu kaymanın yönünü değiştirdiğinden, aynı kağıt bile
+   * çekimden çekime farklı (veya boş) numara üretiyordu.
+   *
+   * Hemen yanındaki Kitapçık Türü/Form Kodu okuyucusu
+   * (baloncukGrubundanEnKoyuyuSec) bu tuzağa düşmüyordu çünkü (a) tek tek
+   * baloncuklara bakmadan ÖNCE tüm sütunu satirIcinDikeyKaymaBul ile doğru
+   * satıra kilitliyor, (b) çok daha dar bir pencere (aramaOrani=0.5)
+   * kullanıyor. Aynı güvenli deseni burada da uyguluyoruz.
    */
   function _basamakEnKoyusu(cImageData, bubbles, ppmm) {
     // YENİ: 0.04 -> 0.02. Marjinal kontrastlı fotoğraflarda (bkz. Koyuluk
@@ -1859,16 +1877,34 @@ window.OmrOkuyucu = (function () {
     // basamak ile ikincisi arasındaki fark 0.04'ü aşamayıp "belirsiz/0"
     // yazılıyordu (gözlemlenen: "103" -> "3", ilk iki hane boş sayıldı).
     const MIN_FARK = 0.02;
-    const sonuclar = bubbles.map(function(b) {
-      const px = b.cx * ppmm;
-      const py = b.cy * ppmm;
-      const pr = b.r * ppmm;
-      // YENİ: 0.5 -> 1.3 (cevap baloncukları için genişletilen değerle
-      // TUTARLI hale getirildi). Bu fonksiyon kendi sabit (ve çok dar) bir
-      // pencere kullanıyordu — cevaplariCikar'daki genişletmeden hiç
-      // etkilenmiyordu, bu yüzden numara okuma hâlâ küçük bir homografi
-      // sapmasında bile yanlış/komşu baloncuğu buluyordu.
-      const s = baloncukKaranlikOraniYerelArama(cImageData, px, py, pr, 1.3, 0.12);
+
+    const sikler = bubbles.map(function(b) {
+      return { px: b.cx * ppmm, py: b.cy * ppmm, pr: b.r * ppmm };
+    });
+
+    // ADIM 1: baloncukGrubundanEnKoyuyuSec ile AYNI mantık — basılı çember
+    // sinyaline bakarak sütunun tamamını (öğrencinin işaretinden bağımsız
+    // olarak) doğru dikey konuma kilitle.
+    let dy = 0;
+    if (sikler.length >= 2) {
+      const yler = sikler.map((s) => s.py).sort((a, b) => a - b);
+      const araliklar = [];
+      for (let i = 1; i < yler.length; i++) araliklar.push(yler[i] - yler[i - 1]);
+      const ortAralik = araliklar.reduce((a, b) => a + b, 0) / araliklar.length;
+      if (ortAralik > 0) {
+        dy = satirIcinDikeyKaymaBul(cImageData, sikler, ortAralik, false, false);
+      }
+    }
+
+    // ADIM 2: sütun-kilitli konum etrafında, HER hane için dar bir pencerede
+    // (aramaOrani=0.5 — komşu haneye taşmayacak kadar küçük, ADIM 1 zaten
+    // kaba hizalamayı düzelttiğinden geniş bir pencereye gerek yok) gerçek
+    // dolgu oranını ölç.
+    const sonuclar = bubbles.map(function(b, i) {
+      const px = sikler[i].px;
+      const py = sikler[i].py + dy;
+      const pr = sikler[i].pr;
+      const s = baloncukKaranlikOraniYerelArama(cImageData, px, py, pr, 0.5, 0.12);
       return { deger: b.deger !== undefined ? b.deger : b.harf, oran: s.oran };
     });
     sonuclar.sort(function(a, b) { return b.oran - a.oran; });

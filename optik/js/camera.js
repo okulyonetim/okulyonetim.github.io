@@ -47,6 +47,41 @@ const KOSE_TESPIT_ANALIZ_GENISLIK = 480; // YENİ: 360'ta ince (0.35mm) çerçev
 // Yeni bir başarılı tespitte güncellenir, kamera durdurulduğunda sıfırlanır.
 let _sonBulunanCerceveKoseleri = null;
 
+// YENİ: canlı önizlemede ÇİZİLEN köşe noktaları — ham (her turda değişebilen,
+// gürültülü) tespiti DEĞİL, üstel hareketli ortalamayla (EMA) YUMUŞATILMIŞ
+// halini kullanır. SORUN: sayfaKoseleriniAraCV her 350ms'de sıfırdan/dar bir
+// ROI'de yeniden Canny+findContours çalıştırıyor; ışık/titreme/en ufak kamera
+// sarsıntısı konturun bulunan 4 köşesini birkaç piksel oynatabiliyor — bu,
+// ekranda "köşe yakalayıcıların sürekli farklı yerde gezinmesi" olarak
+// gözlemleniyor. _sonBulunanCerceveKoseleri (takip ROI ipucu) ve stabilite/
+// otomatik-tetikleme mantığı YİNE HAM tespiti kullanmaya devam ediyor (bunlar
+// zaten kendi toleranslarına sahip) — sadece GÖRSEL gösterge yumuşatılıyor.
+let _gosterilenKoseler = null;
+const KOSE_YUMUSATMA_ALFA = 0.35; // 0=hiç güncelleme (donuk), 1=yumuşatmasız (eski davranış)
+
+/** Ham tespiti, önceki gösterilen konum ile karıştırıp (EMA) yumuşatılmış köşeleri döndürür. */
+function _koseleriYumusat(hamKoseler) {
+    const anahtarlar = ["solUst", "sagUst", "solAlt", "sagAlt"];
+    if (!_tumKoselerVarMi(hamKoseler)) {
+        // Bu turda köşe bulunamadıysa: gösterilen köşeleri aniden "kırmızıya"
+        // düşürmek yerine bir önceki yumuşatılmış konumu bir süre koru —
+        // kısa süreli tek-kare kayıplarında gösterge titremesin.
+        return _gosterilenKoseler;
+    }
+    if (!_gosterilenKoseler) {
+        _gosterilenKoseler = {};
+        anahtarlar.forEach(k => { _gosterilenKoseler[k] = { x: hamKoseler[k].x, y: hamKoseler[k].y }; });
+        return _gosterilenKoseler;
+    }
+    anahtarlar.forEach(k => {
+        _gosterilenKoseler[k] = {
+            x: _gosterilenKoseler[k].x + (hamKoseler[k].x - _gosterilenKoseler[k].x) * KOSE_YUMUSATMA_ALFA,
+            y: _gosterilenKoseler[k].y + (hamKoseler[k].y - _gosterilenKoseler[k].y) * KOSE_YUMUSATMA_ALFA,
+        };
+    });
+    return _gosterilenKoseler;
+}
+
 // ---- Canlı tarama modu durumu ----
 let _canliModAktif = false;
 let _canliIsleniyor = false;       // tam okuma o an çalışıyor mu (döngü bu sürece dokunmaz)
@@ -78,6 +113,7 @@ function _koseTespitDurdur() {
     }
     _koseTespitTemizle();
     _sonBulunanCerceveKoseleri = null; // eski oturumun takip noktası yeni oturuma sızmasın
+    _gosterilenKoseler = null; // yumuşatma durumu da sıfırlansın — yeni oturum eski konumdan başlamasın
 }
 
 /** İki köşe kümesinin (analiz çözünürlüğünde) birbirine yeterince yakın olup olmadığını kontrol eder. */
@@ -176,23 +212,26 @@ function _koseTespitCalistir() {
             sagAlt: { x: dispW * 0.92, y: dispH * 0.93 },
         };
 
+        // Ham tespiti (bulunduMu için) SAKLA, ama çizim için yumuşatılmış
+        // konumu kullan — bkz. _koseleriYumusat notu yukarıda.
+        const yumusakKoseler = _koseleriYumusat(koseler) || {};
+
         const ekranNoktalari = {};
 
         Object.keys(BEKLENEN).forEach((konum) => {
 
-            const nokta = koseler[konum];
-            let cx, cy, bulunduMu;
+            const bulunduMu = !!koseler[konum]; // ham tespit: bu turda GERÇEKTEN bulundu mu (renk için)
+            const nokta = yumusakKoseler[konum] || koseler[konum]; // konum için: yumuşatılmış varsa o, yoksa ham
+            let cx, cy;
 
             if (nokta) {
                 const fx = nokta.x * geriOlcek;
                 const fy = nokta.y * geriOlcek;
                 cx = (fx - ofsX) * kapsamaOlcek;
                 cy = (fy - ofsY) * kapsamaOlcek;
-                bulunduMu = true;
             } else {
                 cx = BEKLENEN[konum].x;
                 cy = BEKLENEN[konum].y;
-                bulunduMu = false;
             }
 
             ekranNoktalari[konum] = { x: cx, y: cy, bulunduMu };
