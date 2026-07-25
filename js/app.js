@@ -454,7 +454,6 @@ window.uygulamaHtmlYazdir = uygulamaHtmlYazdir;
    Artık herkes kendi Google hesabıyla giriş yapıyor, kimlik Kullanıcı
    Yönetimi'nden kurulan hesap-öğretmen bağlantısıyla (bkz. js/auth.js
    AKTIF_KULLANICI.bagliOgretmenId) otomatik çözülüyor — elle seçim yok. */
-let _ilkAcilistaKullaniciSorFlag = false;
 function _ilkAcilistaKullaniciSor(){}
 
 /* ====================================================================
@@ -795,11 +794,6 @@ function kademeAlanlariniOku(prefix){
   const kadroEl = document.getElementById(`${prefix}_kadroKademesi`);
   return { kadroKademesi: kadroEl ? kadroEl.value : '', gorevYeriKademeleri };
 }
-// Geriye dönük uyumluluk: eski tekil-kademe adları hâlâ çağıran kod varsa çalışsın.
-const ogretmenKademeEtiket = kademeEtiket;
-const ogretmenKademeHucresi = kademeHucresi;
-function ogretmenFiiliKademe(o){ const l = kademeFiiliListesi(o); return l[0] || ''; }
-const OGRETMEN_KADEME_SECENEKLERI = KADEME_SECENEKLERI;
 
 let _ogretmenKademeFiltre = '';
 function ogretmenKademeFiltreSec(k){
@@ -903,11 +897,6 @@ let okulBilgileriAyari = null;
    gerektiğinde bu yardımcılar üzerinden okulBilgileriAyari.ilkokulAdi /
    ortaokulAdi'na erişilir (Okul Bilgileri sayfasında girilir); ikisi de
    boşsa genel okulAdi'na düşülür. */
-function sinifKademesi(sinif){
-  const s = parseInt(sinif && sinif.seviye);
-  if(isNaN(s)) return '';
-  return s <= 4 ? 'ilkokul' : 'ortaokul';
-}
 function okulAdiKademeye(kademe){
   const genel = (okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
   if(!okulBilgileriAyari) return genel;
@@ -934,7 +923,7 @@ const SOSYAL_IKON_SECENEKLERI = [
    birden çok kez basılsa bile (hero + form önizlemesi) tüm kopyalar aynı
    tanıma sahip olduğundan görsel olarak sorun oluşturmaz. */
 const SOSYAL_IKON_SVG = {
-  globe:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  globe:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0EA5A4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
   instagram:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><linearGradient id="igBrandGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FEDA75"/><stop offset="28%" stop-color="#FA7E1E"/><stop offset="55%" stop-color="#D62976"/><stop offset="80%" stop-color="#962FBF"/><stop offset="100%" stop-color="#4F5BD5"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5.5" ry="5.5" fill="url(#igBrandGrad)"/><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.6" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="12" cy="12" r="3.4" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="17.3" cy="6.7" r="1.15" fill="#fff"/></svg>',
   x:'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
   facebook:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94z"/></svg>',
@@ -1181,11 +1170,6 @@ function dersModalAc(gun, saat, mevcut){
 /* Nöbet Programı: bkz. js/nobet.js (tarih bazlı aylık modül) */
 
 /* ============== HATIRLATICILAR ============== */
-function hatirlaticiFiltreSec(f){
-  hatirlaticiFiltre = f;
-  document.querySelectorAll('#tab-hatirlaticilar .filtre-btn').forEach(b=>b.classList.toggle('active', b.dataset.f===f));
-  renderHatirlaticilar();
-}
 function renderHatirlaticilar(){
   const hedef = document.getElementById('hatirlaticiListesi');
   if(!hedef) return; // Hatırlatıcılar sekmesi Takvim moduluyle değiştirildi — eski konteyner artık yok
@@ -2946,24 +2930,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(app) app.classList.add('ready','show');
   }
 });
-
-/* ============== ÖĞRENCİ LİSTESİ EXCEL ŞABLONU ============== */
-function ogrenciSablonIndir(){
-  const wb = XLSX.utils.book_new();
-  const basliklar = [
-    'Öğrenci Adı', 'Öğrenci No', 'Cinsiyet', 'Veli Adı', 'Yakınlık',
-    'Telefon 1', 'Telefon 2', 'Telefon 3', 'Adres', 'Sınıf', 'Servis', 'Notlar'
-  ];
-  const ornekler = [
-    ['Ayşe Demir', '1001', 'Kız', 'Fatma Demir', 'Anne', '0532 000 00 01', '0532 000 00 02', '', 'Merkez Mah. No:5', '5-A', '1. Servis', ''],
-    ['Mehmet Kaya', '1002', 'Erkek', 'Ali Kaya', 'Baba', '0533 000 00 01', '', '', 'Yıldız Mah. No:12', '5-B', '', ''],
-  ];
-  const ws = XLSX.utils.aoa_to_sheet([basliklar, ...ornekler]);
-  ws['!cols'] = basliklar.map((_,i)=>({wch: i===8||i===0?30:i===3?20:15}));
-  XLSX.utils.book_append_sheet(wb, ws, 'Öğrenci Listesi');
-  XLSX.writeFile(wb, 'Ogrenci_Listesi_Sablonu.xlsx');
-}
-
 
 function telefonTemizle(t){ return String(t||'').replace(/[^0-9+]/g,''); }
 function telefonAra(telefon){ const no=telefonTemizle(telefon); if(no) window.location.href=`tel:${no}`; }
