@@ -137,7 +137,7 @@ function _devamsizlikGridHtml(){
       <th class="dc-col-no">No</th>
       <th class="dc-th-sabit dc-col-ad" style="text-align:left;">Adı Soyadı</th>
       <th class="dc-col-gorev" style="text-align:left;">Görevi</th>
-      ${gunler.map(g => `<th style="min-width:26px;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,g)?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${g}</th>`).join('')}
+      ${gunler.map(g => `<th style="min-width:26px;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,g)?`background:${DEVAMSIZLIK_HAFTASONU_RENK};color:#2a2a2a;`:''}">${g}</th>`).join('')}
       <th class="dc-col-toplam-ilk" style="min-width:34px;">Toplam<br>Saat</th>
       <th style="min-width:40px;">Toplam<br>Devam</th>
       <th style="min-width:40px;">Toplam<br>Devamsız</th>
@@ -147,7 +147,7 @@ function _devamsizlikGridHtml(){
       <th class="dc-col-no"></th>
       <th class="dc-th-sabit dc-col-ad"></th>
       <th class="dc-col-gorev"></th>
-      ${gunAdlari.map((ad,i) => `<th style="font-size:10px;font-weight:500;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,gunler[i])?`background:${DEVAMSIZLIK_HAFTASONU_RENK};`:''}">${ad}</th>`).join('')}
+      ${gunAdlari.map((ad,i) => `<th style="font-size:10px;font-weight:500;${DevamsizlikCizelgesiService.haftaSonuMu(devamsizlikYil,devamsizlikAy,gunler[i])?`background:${DEVAMSIZLIK_HAFTASONU_RENK};color:#2a2a2a;`:''}">${ad}</th>`).join('')}
       <th class="dc-col-toplam-ilk"></th>
       <th></th>
       <th></th>
