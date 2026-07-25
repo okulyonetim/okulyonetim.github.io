@@ -148,7 +148,15 @@
 }
 
 *{ box-sizing: border-box; }
-html, body{ margin:0; padding:0; max-width:100%; overflow-x:hidden; }
+/* DÜZELTME (kök sebep): iOS Safari'de sayfa en üstteyken/en altındayken
+   aşağı/yukarı çekilirse tarayıcının doğal "elastik kaydırma" (rubber-band)
+   efekti devreye giriyor. iOS/WebKit'te bu bounce sırasında position:fixed
+   öğeler (örn. .bottom-nav) sayfayla BİRLİKTE kayıyor — "alt navigasyon
+   yukarı taşıyor" ve "sayfa aşağı iniyor" şikayetlerinin kök sebebi bu.
+   Aynı native bounce, aşağı çekince tetiklenmesi istenen kendi
+   pull-to-refresh jestimizle de çakışıp onu geçersiz kılıyordu. Native
+   bounce'ı tamamen kapatıp jesti tamamen kendi JS'imizle yönetiyoruz. */
+html, body{ margin:0; padding:0; max-width:100%; overflow-x:hidden; overscroll-behavior-y: none; }
 body{
   font-family: var(--font-body);
   background: var(--nm-bg);
@@ -3801,19 +3809,6 @@ body.nav-open::after{ display:none !important; }
   display:flex; align-items:center; justify-content:center; gap:6px;
   font-family:inherit; font-size:12.5px; font-weight:700; color:#E5484D; cursor:pointer;
 }
-
-/* =========================================================================
-   DÜZELTME: iOS Safari'de alt navigasyonun taşması
-   ----------------------------------------------------------------
-   .bottom-nav position:fixed;bottom:0 kullanıyor. iOS Safari'de adres
-   çubuğu açılıp kapandığında veya klavye açıldığında "layout viewport"
-   ile "visual viewport" birbirinden ayrışıyor — fixed öğeler layout
-   viewport'a göre konumlandığı için gerçek görünür alanın altına taşıyor
-   ya da içerikle üst üste biniyor. `bottom` değeri artık app.js'teki
-   visualViewport dinleyicisiyle JS'ten canlı güncelleniyor; burada sadece
-   JS'in bunu yumuşak biçimde uygulaması için geçiş ekleniyor. ==========
-   ========================================================================= */
-.bottom-nav{ transition: bottom .15s ease-out; }
 
 /* =========================================================================
    YENİ: Web/iOS için "aşağı çekince yenile" (pull-to-refresh)
