@@ -3801,3 +3801,38 @@ body.nav-open::after{ display:none !important; }
   display:flex; align-items:center; justify-content:center; gap:6px;
   font-family:inherit; font-size:12.5px; font-weight:700; color:#E5484D; cursor:pointer;
 }
+
+/* =========================================================================
+   DÜZELTME: iOS Safari'de alt navigasyonun taşması
+   ----------------------------------------------------------------
+   .bottom-nav position:fixed;bottom:0 kullanıyor. iOS Safari'de adres
+   çubuğu açılıp kapandığında veya klavye açıldığında "layout viewport"
+   ile "visual viewport" birbirinden ayrışıyor — fixed öğeler layout
+   viewport'a göre konumlandığı için gerçek görünür alanın altına taşıyor
+   ya da içerikle üst üste biniyor. `bottom` değeri artık app.js'teki
+   visualViewport dinleyicisiyle JS'ten canlı güncelleniyor; burada sadece
+   JS'in bunu yumuşak biçimde uygulaması için geçiş ekleniyor. ==========
+   ========================================================================= */
+.bottom-nav{ transition: bottom .15s ease-out; }
+
+/* =========================================================================
+   YENİ: Web/iOS için "aşağı çekince yenile" (pull-to-refresh)
+   ----------------------------------------------------------------
+   Mevcut _pullToRefreshAyarla/_pullToRefreshDerinlik mekanizması SADECE
+   native (Capacitor/APK) köprüsünü aç/kapatıyordu — web/iOS Safari'de
+   hiçbir karşılığı yoktu, bu yüzden aşağı çekince sayfa yenilenmiyor,
+   sadece elastik kaydırma (rubber-band) oluyordu. Aşağıdaki gösterge,
+   app.js'teki dokunmatik (touch) dinleyicileriyle birlikte çalışır.
+   ========================================================================= */
+.ptr-gosterge{
+  position:fixed; top:calc(-56px + env(safe-area-inset-top,0px)); left:50%;
+  transform:translateX(-50%); width:36px; height:36px; border-radius:50%;
+  background:var(--bg-card,#fff); box-shadow:0 4px 14px rgba(16,24,40,.2);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9800; opacity:0; pointer-events:none; color:#2563EB;
+  transition: top .25s ease, opacity .25s ease;
+}
+[data-theme="dark"] .ptr-gosterge{ background:#1C2A2E; color:#5B8DFF; }
+.ptr-gosterge svg{ width:19px; height:19px; display:block; }
+.ptr-gosterge.ptr-donuyor svg{ animation: ptrDonSpin .7s linear infinite; }
+@keyframes ptrDonSpin{ to{ transform:rotate(360deg); } }
