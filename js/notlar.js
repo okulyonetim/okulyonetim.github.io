@@ -46,7 +46,6 @@ let _czPinchZoomBaslangic = 1;
 // Offscreen buffer — SADECE çizim içeriği (şeffaf zemin)
 let _czOffCanvas = null;
 let _czOffCtx = null;
-let _czAnimFrame = null;
 
 // Zemin + şablon KENDİ katmanında tutulur; böylece zemin rengi değiştiğinde
 // çizim içeriği (şeffaf pikseller) üstüne yeniden bindirilir, eski opak

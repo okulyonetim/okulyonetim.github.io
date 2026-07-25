@@ -939,72 +939,6 @@ function _raporServisOturmaGoster(servisIdFiltre) {
   _raporPenceresiniAc(html, '🚌 Servis Oturma Planı');
 }
 
-/* _soRaporGovdeHtml → servis-oturma.js içindeki soRaporGovdeHtml'e taşındı (v3.1) */
-function _soRaporGovdeHtml_KALDIRILDI(servis, plan) {
-  const kapasite   = plan.kapasite   || 14;
-  const siraSayisi = plan.siraSayisi || 7;
-  const duzen      = plan.duzen      || 'cift';
-  const soforVar   = plan.soforKoltuguVarMi !== false;
-  const bugun      = new Date().toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
-
-  const koltukMap = {};
-  (plan.koltuklar || []).forEach(k => { koltukMap[k.no] = k; });
-
-  const siraKoltukSayisi = duzen === 'tek' ? 3 : duzen === 'dort' ? 6 : 4;
-  const gercekKapasite = Math.min(kapasite, siraSayisi * siraKoltukSayisi);
-
-  const koltukKutu = (no) => {
-    const veri = koltukMap[no];
-    const doluMu = !!(veri && (veri.ogrenciId || veri.ogrenciAdi));
-    const rezerveMi = !!(veri && veri.rezerve);
-    const ad = doluMu ? (veri.ogrenciAdi || '') : '';
-    const kisa = ad.length > 10 ? ad.substring(0, 9) + '…' : ad;
-    const sinifAdi = rezerveMi ? 'so-rapor-rezerve' : doluMu ? 'so-rapor-dolu' : 'so-rapor-bos';
-    return `<div class="so-rapor-koltuk ${sinifAdi}">
-      <span class="so-rapor-koltuk-no">${no}</span>
-      ${kisa ? `<span class="so-rapor-koltuk-ad">${escapeHtml(kisa)}</span>` : ''}
-    </div>`;
-  };
-
-  let html = `<div class="so-rapor-bilgi">
-    🚌 ${escapeHtml(servis.servisAdi || 'Servis')} &nbsp;·&nbsp; Şoför: ${escapeHtml(servis.soforAdi || '—')} &nbsp;·&nbsp; ${escapeHtml(bugun)}
-  </div>`;
-
-  html += `<div class="so-rapor-govde">
-    <div class="so-rapor-ust-etiket"><span>🚪 GİRİŞ KAPISI</span><span>🚨 ACİL ÇIKIŞ</span></div>`;
-
-  if (soforVar) {
-    const refakatciVarMi = plan.soforYaniSayisi === 2;
-    html += `<div class="so-rapor-sofor-sira">
-      <div class="so-rapor-koltuk so-rapor-sofor-koltuk">🧑‍✈️</div>
-      ${refakatciVarMi ? `<div class="so-rapor-koltuk so-rapor-refakatci-koltuk">🧑‍🏫</div>` : ''}
-    </div>`;
-  }
-
-  let koltukNo = 1;
-  for (let sira = 0; sira < siraSayisi && koltukNo <= gercekKapasite; sira++) {
-    html += '<div class="so-rapor-sira">';
-    const solSayisi = (duzen === 'tek') ? 1 : 2;
-    for (let k = 0; k < solSayisi && koltukNo <= gercekKapasite; k++) { html += koltukKutu(koltukNo); koltukNo++; }
-    html += '<div class="so-rapor-koridor"></div>';
-    for (let k = 0; k < 2 && koltukNo <= gercekKapasite; k++) { html += koltukKutu(koltukNo); koltukNo++; }
-    if (duzen === 'dort') {
-      html += '<div class="so-rapor-koridor"></div>';
-      for (let k = 0; k < 2 && koltukNo <= gercekKapasite; k++) { html += koltukKutu(koltukNo); koltukNo++; }
-    }
-    html += '</div>';
-  }
-
-  html += `</div>
-  <div class="so-rapor-lejant">
-    <span style="color:#166534;">🟩 Dolu</span>&nbsp;|&nbsp;
-    <span style="color:#1e40af;">🟦 Rezerve</span>&nbsp;|&nbsp;
-    <span style="color:#6b7280;">⬜ Boş</span>
-  </div>`;
-
-  return html;
-}
-
 /* ================================================================
    DERS PROGRAMI ÇARŞAF RAPORLARI — 4 tip
    ================================================================ */
@@ -1166,10 +1100,6 @@ function _crsfDersHtml(sinif, ders, ogretmenId) {
   const ogrHtml   = ogretmenId ? `<div class="c-ogr">${escapeHtml(ogretmenAdi(ogretmenId))}</div>` : '';
   return sinifHtml + dersHtml + ogrHtml;
 }
-function _crsfDers(ders) {
-  return ders ? `<div class="c-ders">${escapeHtml(ders)}</div>` : '';
-}
-
 function _crsfMeta() {
   const gc = id => document.getElementById(id)?.checked ?? false;
   const gv = id => document.getElementById(id)?.value?.trim() || '';
