@@ -3126,42 +3126,6 @@ function tumSablonlariIndir() {
 })();
 
 /* ====================================================================
-   DÜZELTME: iOS'ta alt navigasyonun (bottom-nav) hâlâ taşması
-   ----------------------------------------------------------------
-   .bottom-nav position:fixed;bottom:0 kullanıyor. iOS Safari'de adres
-   çubuğu açılıp/kapandığında (kaydırma sırasında küçülüp büyüyor) ya da
-   bir input'a odaklanılıp klavye açıldığında, "layout viewport" ile
-   gerçekten görünen alan ("visual viewport") birbirinden ayrışıyor.
-   bottom:0 her zaman LAYOUT viewport'un altına göre hesaplandığı için,
-   bu iki değer farklılaştığı anlarda alt navigasyon ya ekranın dışına
-   taşıyor ya da klavyenin/araç çubuğunun ardında/üstünde yanlış yerde
-   görünüyor. Çözüm: window.visualViewport API'siyle gerçek görünür
-   alanın alt boşluğunu ölçüp `bottom` değerini buna göre canlı olarak
-   güncellemek. Bu, Android/masaüstünde visualViewport farkı olmadığı
-   için pratikte hiçbir şeyi değiştirmez, sadece iOS'taki kayma anlarını
-   düzeltir. ==========================================================
-   ==================================================================== */
-(function(){
-  const vv = window.visualViewport;
-  if(!vv) return;
-  let raf = null;
-  function altNavGuncelle(){
-    const nav = document.querySelector('.bottom-nav');
-    if(!nav) return;
-    const bosluk = Math.max(0, window.innerHeight - (vv.height + vv.offsetTop));
-    nav.style.bottom = bosluk + 'px';
-  }
-  function planla(){
-    if(raf) cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(altNavGuncelle);
-  }
-  vv.addEventListener('resize', planla);
-  vv.addEventListener('scroll', planla);
-  window.addEventListener('orientationchange', planla);
-  planla();
-})();
-
-/* ====================================================================
    YENİ: Web/iOS için gerçek "aşağı çekince yenile" (pull-to-refresh)
    ----------------------------------------------------------------
    Mevcut _pullToRefreshAyarla()/_pullToRefreshDerinlik mekanizması
