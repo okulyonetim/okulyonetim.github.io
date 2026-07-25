@@ -26,19 +26,20 @@
 
 thead .dc-th-sabit { z-index: 3; }
 
-/* ---- Sabit sütun genişlik + left ofseti HER ZAMAN BİRLİKTE tanımlanır ----
-   Önceden left değeri JS'te satır içi style ile, min-width ise burada media
-   query ile ayrı ayrı belirleniyordu; mobilde min-width değişince left aynı
-   kalıyor ve sütunlar kayıyordu. Artık ikisi de bu sınıflarda, aynı yerde. */
-.dc-col-no    { left: 0; }
-.dc-col-ad    { left: 28px; }
-.dc-col-gorev { left: 178px; }
-/* width (max-width DAHİL) sabitlenir; sadece min-width verirsek nowrap içerik
-   (uzun ad/unvan) hücreyi min-width'in ÜZERİNE büyütür ve left ofseti yine
-   gerçek sütun sınırıyla uyuşmaz hale gelir. */
-.dc-th-sabit.dc-col-no    { min-width: 28px;  max-width: 28px; }
-.dc-th-sabit.dc-col-ad    { min-width: 150px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
-.dc-th-sabit.dc-col-gorev { min-width: 110px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+/* ---- Adı Soyadı artık TEK sabit (sticky) sütun ----
+   No ve Görevi artık sağa kaydırınca ekrandan çıkar (sticky değil) — sadece
+   Adı Soyadı left:0'da sabit kalır. Tek sticky sütun kaldığı için left ofseti
+   ile genişlik arasında senkron kaybı riski de ortadan kalkmış oluyor. */
+.dc-col-ad { left: 0; }
+.dc-th-sabit.dc-col-ad { min-width: 150px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+
+/* No ve Görevi: sadece genişlik amaçlı, sticky DEĞİL. */
+.dc-col-no    { min-width: 28px; }
+.dc-col-gorev { min-width: 110px; }
+
+/* Adı Soyadı artık tıklanabilir (haftalık ders saatleri popup'ını açar) */
+.dc-ad-tikla { cursor: pointer; }
+.dc-ad-tikla:hover { text-decoration: underline; }
 
 /* ---- Toplam Saat / Toplam Devam / Toplam Devamsız / Açıklama sütunları ----
    Gün sütunlarından ayırt edilsinler diye ince bir ayraç ve Açıklama için
@@ -66,17 +67,9 @@ thead .dc-th-sabit { z-index: 3; }
 
 @media (max-width: 640px) {
   #devamsizlikGridTablo { font-size: 10px; }
-  /* min-width'i "unset" ETMİYORUZ: sıfırlarsak sütun gerçek genişliği içeriğe
-     göre belirlenir ama left ofsetleri (yukarıda) hâlâ masaüstü değerlerinde
-     kalır ve sütunlar birbirinin üstüne biner. Bunun yerine daha dar ama
-     SABİT bir genişlik veriyoruz ve left'i de aynı oranda güncelliyoruz —
-     ikisi burada, aynı yerde, birlikte değişiyor. */
-  .dc-th-sabit.dc-col-no    { min-width: 22px; max-width: 22px; }
-  .dc-th-sabit.dc-col-ad    { min-width: 90px; max-width: 90px; }
-  .dc-th-sabit.dc-col-gorev { min-width: 70px; max-width: 70px; }
-  .dc-col-no    { left: 0; }
-  .dc-col-ad    { left: 22px; }
-  .dc-col-gorev { left: 112px; }
+  .dc-th-sabit.dc-col-ad { min-width: 90px; max-width: 90px; }
+  .dc-col-no    { min-width: 22px; }
+  .dc-col-gorev { min-width: 70px; }
 }
 
 /* ---- Popup (modal) seçenek butonları: white-space:nowrap taşmasını önle ----
