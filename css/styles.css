@@ -148,15 +148,7 @@
 }
 
 *{ box-sizing: border-box; }
-/* DÜZELTME (kök sebep): iOS Safari'de sayfa en üstteyken/en altındayken
-   aşağı/yukarı çekilirse tarayıcının doğal "elastik kaydırma" (rubber-band)
-   efekti devreye giriyor. iOS/WebKit'te bu bounce sırasında position:fixed
-   öğeler (örn. .bottom-nav) sayfayla BİRLİKTE kayıyor — "alt navigasyon
-   yukarı taşıyor" ve "sayfa aşağı iniyor" şikayetlerinin kök sebebi bu.
-   Aynı native bounce, aşağı çekince tetiklenmesi istenen kendi
-   pull-to-refresh jestimizle de çakışıp onu geçersiz kılıyordu. Native
-   bounce'ı tamamen kapatıp jesti tamamen kendi JS'imizle yönetiyoruz. */
-html, body{ margin:0; padding:0; max-width:100%; overflow-x:hidden; overscroll-behavior-y: none; }
+html, body{ margin:0; padding:0; max-width:100%; overflow-x:hidden; }
 body{
   font-family: var(--font-body);
   background: var(--nm-bg);
@@ -2233,7 +2225,7 @@ body.tatil-aktif .tatil-gizle {
 .ni-harita   { background: rgba(72,187,120,0.18); }
 
 /* Modal açıkken sayfa kaymasını engelle */
-body.modal-open { overflow: hidden; }
+body.modal-open { overflow: hidden; touch-action: none; }
 
 /* ===== AI Asistan ===== */
 .asistan-msg{display:flex;}
@@ -3809,25 +3801,3 @@ body.nav-open::after{ display:none !important; }
   display:flex; align-items:center; justify-content:center; gap:6px;
   font-family:inherit; font-size:12.5px; font-weight:700; color:#E5484D; cursor:pointer;
 }
-
-/* =========================================================================
-   YENİ: Web/iOS için "aşağı çekince yenile" (pull-to-refresh)
-   ----------------------------------------------------------------
-   Mevcut _pullToRefreshAyarla/_pullToRefreshDerinlik mekanizması SADECE
-   native (Capacitor/APK) köprüsünü aç/kapatıyordu — web/iOS Safari'de
-   hiçbir karşılığı yoktu, bu yüzden aşağı çekince sayfa yenilenmiyor,
-   sadece elastik kaydırma (rubber-band) oluyordu. Aşağıdaki gösterge,
-   app.js'teki dokunmatik (touch) dinleyicileriyle birlikte çalışır.
-   ========================================================================= */
-.ptr-gosterge{
-  position:fixed; top:calc(-56px + env(safe-area-inset-top,0px)); left:50%;
-  transform:translateX(-50%); width:36px; height:36px; border-radius:50%;
-  background:var(--bg-card,#fff); box-shadow:0 4px 14px rgba(16,24,40,.2);
-  display:flex; align-items:center; justify-content:center;
-  z-index:9800; opacity:0; pointer-events:none; color:#2563EB;
-  transition: top .25s ease, opacity .25s ease;
-}
-[data-theme="dark"] .ptr-gosterge{ background:#1C2A2E; color:#5B8DFF; }
-.ptr-gosterge svg{ width:19px; height:19px; display:block; }
-.ptr-gosterge.ptr-donuyor svg{ animation: ptrDonSpin .7s linear infinite; }
-@keyframes ptrDonSpin{ to{ transform:rotate(360deg); } }
