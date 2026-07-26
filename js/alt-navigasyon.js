@@ -168,20 +168,21 @@
     const adminMi = aktifKullanici && aktifKullanici.admin === true;
     const aktifRolId = aktifKullanici && aktifKullanici.rolId;
 
+    // Önce mevcut özel grupları GRUPLAR'dan temizle
+    const ilkOzelIdx = GRUPLAR.findIndex(gr => gr._ozelId !== undefined);
+    if(ilkOzelIdx > -1) GRUPLAR.splice(ilkOzelIdx, GRUPLAR.length - ilkOzelIdx);
+
     db.collection(COL.ozelMenu).orderBy('sira').get().then(snap => {
       snap.forEach(doc => {
         const veri = doc.data();
-        // Görünürlük kontrolü: gorunurRoller boşsa herkes görür
         const gorunurRoller = veri.gorunurRoller || [];
         const gorulsun = adminMi ||
           gorunurRoller.length === 0 ||
           (aktifRolId && gorunurRoller.includes(aktifRolId));
         if(!gorulsun) return;
 
-        // Yetki kontrolü: ozelMenu modülüne en az goruntule yetkisi lazım
         if(!adminMi && typeof yetkiSeviyesi === 'function'){
-          const seviye = yetkiSeviyesi('ozelMenu');
-          if(seviye === 'gizle') return;
+          if(yetkiSeviyesi('ozelMenu') === 'gizle') return;
         }
 
         const ogeler = (veri.ogeler || []).map(o => ({
@@ -200,16 +201,18 @@
           _ozelId: doc.id,
         });
       });
-      // Yüklendikten sonra menü açıksa ızgarayı yenile
       if(typeof AltNav !== 'undefined' && AltNav._kuruldu){
         AltNav.yenile();
       }
-    }).catch(() => {/* sessiz geç — oy_ozelMenu henüz yoksa sorun değil */});
+    }).catch(() => {});
   }
+
+  // Global erişim — app.js'teki kaydet fonksiyonu çağırabilsin
+  window._ozelGruplariYukle = _ozelGruplariYukle;
 
   // Uygulama hazır olduğunda özel grupları yükle
   document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(_ozelGruplariYukle, 1500); // auth tamamlanıp AKTIF_KULLANICI dolana kadar bekle
+    setTimeout(_ozelGruplariYukle, 1500);
   });
 
   /* ---- Menü kartı özelleştirme (renk + isim) ----

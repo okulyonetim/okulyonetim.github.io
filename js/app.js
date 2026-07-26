@@ -3157,20 +3157,60 @@ function _ozelMenuListesiRender(){
     kap.innerHTML = '<p class="empty-state">Henüz özel grup yok. Aşağıdan ekleyin.</p>';
     return;
   }
-  kap.innerHTML = _ozelMenuGruplar.map((g, idx) => `
-    <div style="border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--bg-card);">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-        <span style="width:14px;height:14px;border-radius:50%;background:${escapeHtml(g.renk||'#607D8B')};flex-shrink:0;display:inline-block;"></span>
-        <strong style="flex:1;font-size:14px;">${escapeHtml(g.ad||'—')}</strong>
-        <button class="btn btn-ghost btn-sm" onclick="ozelMenuGrupDuzenle('${g.id}')">✏️</button>
-        <button class="btn btn-ghost btn-sm" style="color:var(--red-danger);" onclick="ozelMenuGrupSil('${g.id}')">🗑</button>
-      </div>
-      <div style="font-size:12px;color:var(--ink-muted);padding-left:24px;">
-        ${(g.ogeler||[]).map(o => `<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;background:var(--nm-bg-dark);border-radius:6px;">${escapeHtml(o.ad)}</span>`).join('') || 'Öğe yok'}
-      </div>
-      ${(g.gorunurRoller||[]).length ? `<div style="font-size:11px;color:var(--ink-muted);margin-top:4px;padding-left:24px;">Roller: ${escapeHtml((g.gorunurRoller||[]).join(', '))}</div>` : '<div style="font-size:11px;color:var(--ink-muted);margin-top:4px;padding-left:24px;">Tüm roller görür</div>'}
-    </div>
-  `).join('');
+  const rolMap = {};
+  if(typeof ROLLER_CACHE !== 'undefined') ROLLER_CACHE.forEach(r => { rolMap[r.id] = r.ad; });
+  kap.innerHTML = '';
+  _ozelMenuGruplar.forEach(g => {
+    const rolAdlari = (g.gorunurRoller||[]).map(id => rolMap[id] || id).join(', ');
+    const kart = document.createElement('div');
+    kart.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--bg-card);';
+
+    // Başlık satırı
+    const baslik = document.createElement('div');
+    baslik.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px;';
+    const renkNokta = document.createElement('span');
+    renkNokta.style.cssText = 'width:14px;height:14px;border-radius:50%;background:' + escapeHtml(g.renk||'#607D8B') + ';flex-shrink:0;display:inline-block;';
+    const adText = document.createElement('strong');
+    adText.style.cssText = 'flex:1;font-size:14px;';
+    adText.textContent = g.ad || '—';
+    const duzenleBtn = document.createElement('button');
+    duzenleBtn.className = 'btn btn-ghost btn-sm';
+    duzenleBtn.textContent = '✏️';
+    duzenleBtn.onclick = (function(id){ return function(){ ozelMenuGrupDuzenle(id); }; })(g.id);
+    const silBtn = document.createElement('button');
+    silBtn.className = 'btn btn-ghost btn-sm';
+    silBtn.style.color = 'var(--red-danger)';
+    silBtn.textContent = '🗑';
+    silBtn.onclick = (function(id){ return function(){ ozelMenuGrupSil(id); }; })(g.id);
+    baslik.appendChild(renkNokta);
+    baslik.appendChild(adText);
+    baslik.appendChild(duzenleBtn);
+    baslik.appendChild(silBtn);
+    kart.appendChild(baslik);
+
+    // Öğeler
+    const ogelerDiv = document.createElement('div');
+    ogelerDiv.style.cssText = 'font-size:12px;color:var(--ink-muted);padding-left:24px;';
+    if((g.ogeler||[]).length){
+      (g.ogeler||[]).forEach(o => {
+        const chip = document.createElement('span');
+        chip.style.cssText = 'display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;background:var(--nm-bg-dark);border-radius:6px;';
+        chip.textContent = o.ad;
+        ogelerDiv.appendChild(chip);
+      });
+    } else {
+      ogelerDiv.textContent = 'Öğe yok';
+    }
+    kart.appendChild(ogelerDiv);
+
+    // Roller
+    const rolDiv = document.createElement('div');
+    rolDiv.style.cssText = 'font-size:11px;color:var(--ink-muted);margin-top:4px;padding-left:24px;';
+    rolDiv.textContent = rolAdlari ? 'Roller: ' + rolAdlari : 'Tüm roller görür';
+    kart.appendChild(rolDiv);
+
+    kap.appendChild(kart);
+  });
 }
 
 function ozelMenuGrupEkle(){
@@ -3183,58 +3223,141 @@ function ozelMenuGrupDuzenle(id){
   _ozelMenuGrupModalAc(g);
 }
 
+function _ozelMenuOgeEkle(){
+  const liste = document.getElementById('omOgelerListesi');
+  if(!liste) return;
+  const satir = document.createElement('div');
+  satir.style.cssText = 'display:flex;gap:6px;align-items:center;';
+  satir.setAttribute('data-oge-idx', Date.now());
+  const inpAd = document.createElement('input');
+  inpAd.placeholder = 'Öğe adı';
+  inpAd.style.flex = '1';
+  inpAd.className = 'om-oge-ad';
+  const inpSekme = document.createElement('input');
+  inpSekme.placeholder = 'Sekme adı (örn: yemekhane)';
+  inpSekme.style.flex = '1';
+  inpSekme.className = 'om-oge-sekme';
+  const silBtn = document.createElement('button');
+  silBtn.type = 'button';
+  silBtn.className = 'btn btn-ghost btn-sm';
+  silBtn.style.cssText = 'color:var(--red-danger);flex-shrink:0;';
+  silBtn.textContent = '✕';
+  silBtn.onclick = () => satir.remove();
+  satir.appendChild(inpAd);
+  satir.appendChild(inpSekme);
+  satir.appendChild(silBtn);
+  liste.appendChild(satir);
+}
+
 function _ozelMenuGrupModalAc(g){
-  // Rol listesini al
-  const rollerHtml = (typeof ROLLER_CACHE !== 'undefined' && ROLLER_CACHE.length)
-    ? ROLLER_CACHE.map(r => `
-        <label style="display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px;cursor:pointer;">
-          <input type="checkbox" value="${escapeHtml(r.id)}" ${(g && (g.gorunurRoller||[]).includes(r.id)) ? 'checked' : ''}>
-          ${escapeHtml(r.ad)}
-        </label>`).join('')
-    : '<p style="font-size:12px;color:var(--ink-muted);">Rol bulunamadı.</p>';
+  const govdeEl = document.createElement('div');
 
-  const ogelerBaslangic = g ? (g.ogeler||[]) : [];
+  // Grup adı
+  const adGrup = document.createElement('div');
+  adGrup.className = 'form-group';
+  const adLabel = document.createElement('label');
+  adLabel.textContent = 'Grup Adı';
+  const inpAd = document.createElement('input');
+  inpAd.id = 'omGrupAd';
+  inpAd.placeholder = 'örn: Yemekhane';
+  inpAd.value = g ? (g.ad||'') : '';
+  inpAd.style.width = '100%';
+  adGrup.appendChild(adLabel);
+  adGrup.appendChild(inpAd);
+  govdeEl.appendChild(adGrup);
 
-  const govde = `
-    <div class="form-group">
-      <label>Grup Adı</label>
-      <input id="omGrupAd" placeholder="örn: Yemekhane" value="${escapeHtml(g ? g.ad : '')}" style="width:100%;">
-    </div>
-    <div class="form-group">
-      <label>Renk (hex)</label>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input id="omGrupRenk" type="text" placeholder="#607D8B" value="${escapeHtml(g ? (g.renk||'#607D8B') : '#607D8B')}" style="flex:1;" oninput="document.getElementById('omRenkOnizleme').style.background=this.value">
-        <span id="omRenkOnizleme" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:${escapeHtml(g ? (g.renk||'#607D8B') : '#607D8B')};flex-shrink:0;"></span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Görünür Roller <span style="font-weight:400;color:var(--ink-muted);font-size:12px;">(hiç seçilmezse herkes görür)</span></label>
-      <div id="omRolSecim" style="max-height:130px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;">
-        ${rollerHtml}
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Menü Öğeleri</label>
-      <div id="omOgelerListesi" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;">
-        ${ogelerBaslangic.map((o, i) => `
-          <div style="display:flex;gap:6px;align-items:center;" data-oge-idx="${i}">
-            <input placeholder="Öğe adı" value="${escapeHtml(o.ad)}" style="flex:1;" class="om-oge-ad">
-            <input placeholder="Sekme adı (örn: yemekhane)" value="${escapeHtml(o.sekmeAd)}" style="flex:1;" class="om-oge-sekme">
-            <button type="button" class="btn btn-ghost btn-sm" style="color:var(--red-danger);flex-shrink:0;" onclick="this.closest('[data-oge-idx]').remove()">✕</button>
-          </div>`).join('')}
-      </div>
-      <button type="button" class="btn btn-ghost btn-sm" onclick="
-        const div=document.createElement('div');
-        const idx=Date.now();
-        div.setAttribute('data-oge-idx',idx);
-        div.style.cssText='display:flex;gap:6px;align-items:center;';
-        div.innerHTML='<input placeholder=\"Öğe adı\" style=\"flex:1;\" class=\"om-oge-ad\"><input placeholder=\"Sekme adı (örn: yemekhane)\" style=\"flex:1;\" class=\"om-oge-sekme\"><button type=\"button\" class=\"btn btn-ghost btn-sm\" style=\"color:var(--red-danger);flex-shrink:0;\" onclick=\"this.closest(\\\"[data-oge-idx]\\\").remove()\">✕</button>';
-        document.getElementById('omOgelerListesi').appendChild(div);
-      ">+ Öğe Ekle</button>
-    </div>
-  `;
+  // Renk
+  const renkGrup = document.createElement('div');
+  renkGrup.className = 'form-group';
+  const renkLabel = document.createElement('label');
+  renkLabel.textContent = 'Renk (hex)';
+  const renkSatir = document.createElement('div');
+  renkSatir.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  const inpRenk = document.createElement('input');
+  inpRenk.id = 'omGrupRenk';
+  inpRenk.type = 'text';
+  inpRenk.placeholder = '#607D8B';
+  inpRenk.value = g ? (g.renk||'#607D8B') : '#607D8B';
+  inpRenk.style.flex = '1';
+  const onizleme = document.createElement('span');
+  onizleme.id = 'omRenkOnizleme';
+  onizleme.style.cssText = 'width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:' + (g ? (g.renk||'#607D8B') : '#607D8B') + ';flex-shrink:0;';
+  inpRenk.oninput = () => { onizleme.style.background = inpRenk.value; };
+  renkSatir.appendChild(inpRenk);
+  renkSatir.appendChild(onizleme);
+  renkGrup.appendChild(renkLabel);
+  renkGrup.appendChild(renkSatir);
+  govdeEl.appendChild(renkGrup);
 
-  modalAc(g ? '✏️ Grubu Düzenle' : '➕ Yeni Menü Grubu', govde, () => {
+  // Roller
+  const rolGrup = document.createElement('div');
+  rolGrup.className = 'form-group';
+  rolGrup.innerHTML = '<label>Görünür Roller <span style="font-weight:400;color:var(--ink-muted);font-size:12px;">(hiç seçilmezse herkes görür)</span></label>';
+  const rolKap = document.createElement('div');
+  rolKap.id = 'omRolSecim';
+  rolKap.style.cssText = 'max-height:130px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;';
+  if(typeof ROLLER_CACHE !== 'undefined' && ROLLER_CACHE.length){
+    ROLLER_CACHE.forEach(r => {
+      const lbl = document.createElement('label');
+      lbl.style.cssText = 'display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px;cursor:pointer;';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = r.id;
+      cb.checked = !!(g && (g.gorunurRoller||[]).includes(r.id));
+      lbl.appendChild(cb);
+      lbl.appendChild(document.createTextNode(' ' + r.ad));
+      rolKap.appendChild(lbl);
+    });
+  } else {
+    rolKap.innerHTML = '<p style="font-size:12px;color:var(--ink-muted);">Rol bulunamadı.</p>';
+  }
+  rolGrup.appendChild(rolKap);
+  govdeEl.appendChild(rolGrup);
+
+  // Öğeler
+  const ogeGrup = document.createElement('div');
+  ogeGrup.className = 'form-group';
+  const ogeLabel = document.createElement('label');
+  ogeLabel.textContent = 'Menü Öğeleri';
+  const ogeListe = document.createElement('div');
+  ogeListe.id = 'omOgelerListesi';
+  ogeListe.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-bottom:8px;';
+  (g ? (g.ogeler||[]) : []).forEach((o, i) => {
+    const satir = document.createElement('div');
+    satir.style.cssText = 'display:flex;gap:6px;align-items:center;';
+    satir.setAttribute('data-oge-idx', i);
+    const inpA = document.createElement('input');
+    inpA.placeholder = 'Öğe adı';
+    inpA.value = o.ad||'';
+    inpA.style.flex = '1';
+    inpA.className = 'om-oge-ad';
+    const inpS = document.createElement('input');
+    inpS.placeholder = 'Sekme adı (örn: yemekhane)';
+    inpS.value = o.sekmeAd||'';
+    inpS.style.flex = '1';
+    inpS.className = 'om-oge-sekme';
+    const silBtn = document.createElement('button');
+    silBtn.type = 'button';
+    silBtn.className = 'btn btn-ghost btn-sm';
+    silBtn.style.cssText = 'color:var(--red-danger);flex-shrink:0;';
+    silBtn.textContent = '✕';
+    silBtn.onclick = () => satir.remove();
+    satir.appendChild(inpA);
+    satir.appendChild(inpS);
+    satir.appendChild(silBtn);
+    ogeListe.appendChild(satir);
+  });
+  const ogeEkleBtn = document.createElement('button');
+  ogeEkleBtn.type = 'button';
+  ogeEkleBtn.className = 'btn btn-ghost btn-sm';
+  ogeEkleBtn.textContent = '+ Öğe Ekle';
+  ogeEkleBtn.onclick = _ozelMenuOgeEkle;
+  ogeGrup.appendChild(ogeLabel);
+  ogeGrup.appendChild(ogeListe);
+  ogeGrup.appendChild(ogeEkleBtn);
+  govdeEl.appendChild(ogeGrup);
+
+  modalAc(g ? '✏️ Grubu Düzenle' : '➕ Yeni Menü Grubu', govdeEl, () => {
     const ad = document.getElementById('omGrupAd').value.trim();
     const renk = document.getElementById('omGrupRenk').value.trim() || '#607D8B';
     if(!ad){ toast('Grup adı zorunludur.'); return; }
@@ -3259,8 +3382,8 @@ function _ozelMenuGrupModalAc(g){
       toast(g ? 'Grup güncellendi.' : 'Grup eklendi.');
       modalKapat();
       renderOzelMenuYonetim();
-      // Alt navigasyon menüsünü de yenile
-      setTimeout(() => { if(typeof _ozelGruplariYukle === 'function') _ozelGruplariYukle(); }, 500);
+      // Alt navigasyon menüsünü yenile
+      setTimeout(() => { if(typeof window._ozelGruplariYukle === 'function') window._ozelGruplariYukle(); }, 300);
     }).catch(err => toast('Hata: ' + err.message));
   });
 }
