@@ -3323,6 +3323,33 @@ function _ozelMenuOgeEkle(){
 function _ozelMenuGrupModalAc(g){
   const govdeEl = document.createElement('div');
 
+  // Mevcut grup seçici — yeni grup oluşturmak yerine zaten var olan bir
+  // özel grubu seçip öğeleriyle birlikte doğrudan burada düzenlemeyi
+  // sağlar (aşağı inip kalem ikonuna basmaya gerek kalmadan).
+  if(_ozelMenuGruplar.length){
+    const seciciGrup = document.createElement('div');
+    seciciGrup.className = 'form-group';
+    const seciciLabel = document.createElement('label');
+    seciciLabel.textContent = 'Grup';
+    const sec = document.createElement('select');
+    sec.id = 'omGrupSecici';
+    sec.style.width = '100%';
+    sec.appendChild(new Option('➕ Yeni Grup Oluştur', ''));
+    _ozelMenuGruplar.forEach(mg => sec.appendChild(new Option(mg.ad || '—', mg.id)));
+    sec.value = g ? g.id : '';
+    sec.onchange = () => {
+      if(sec.value){
+        const secilen = _ozelMenuGruplar.find(x => x.id === sec.value);
+        _ozelMenuGrupModalAc(secilen || null);
+      } else {
+        _ozelMenuGrupModalAc(null);
+      }
+    };
+    seciciGrup.appendChild(seciciLabel);
+    seciciGrup.appendChild(sec);
+    govdeEl.appendChild(seciciGrup);
+  }
+
   // Grup adı
   const adGrup = document.createElement('div');
   adGrup.className = 'form-group';
