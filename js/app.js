@@ -3481,10 +3481,30 @@ function _ozelMenuGrupKaydet(g){
 
     const gorunurRoller = [...document.querySelectorAll('#omRolSecim input[type=checkbox]:checked')].map(cb => cb.value);
 
-    const ogeler = [...document.querySelectorAll('#omOgelerListesi [data-oge-idx]')].map(div => ({
-      ad: (div.querySelector('.om-oge-ad').value || '').trim(),
-      sekmeAd: _omSekmeDegeriAl(div),
-    })).filter(o => o.ad && o.sekmeAd);
+    // DÜZELTME: Eskiden ad-VEYA-sekmeAd eksik olan satırlar hiçbir uyarı
+    // vermeden sessizce atlanıyordu — bu yüzden bir öğeye ad yazılıp sekme
+    // seçilmesi unutulduğunda grup "başarıyla" kaydediliyor ama 0 öğeyle
+    // kalıyordu (ve 0 öğeli özel gruplar navigasyondan TAMAMEN eleniyor,
+    // bkz. js/alt-navigasyon.js _ozelGruplariYukle). Artık YARIM dolu bir
+    // satır varsa kaydetme durdurulup kullanıcı uyarılıyor.
+    const satirlar = [...document.querySelectorAll('#omOgelerListesi [data-oge-idx]')];
+    const ogeler = [];
+    const eksikSatirlar = [];
+    satirlar.forEach((div, i) => {
+      const adVal = (div.querySelector('.om-oge-ad').value || '').trim();
+      const sekmeVal = _omSekmeDegeriAl(div);
+      if(!adVal && !sekmeVal) return; // hiç dokunulmamış boş satır — yok say
+      if(!adVal || !sekmeVal){ eksikSatirlar.push(i + 1); return; }
+      ogeler.push({ ad: adVal, sekmeAd: sekmeVal });
+    });
+    if(eksikSatirlar.length){
+      toast('Öğe ' + eksikSatirlar.join(', ') + ' eksik: hem ad hem sekme seçili olmalı. Düzeltip tekrar kaydedin.');
+      return;
+    }
+    if(ogeler.length === 0){
+      toast('Uyarı: Bu grubun hiç öğesi yok — menüde GÖRÜNMEYECEK. En az bir öğe ekleyin.');
+      return;
+    }
 
     const veri = {
       ad, renk, gorunurRoller, ogeler,

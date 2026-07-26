@@ -195,19 +195,22 @@ function _ndOgeleriYonetAc(grupAnahtari){
   const g = liste.find(x => x.anahtar === grupAnahtari);
   if(!g) return;
 
+  const altBaslik = g.altGrup ? g.altGrup.ad : 'Alt Bölüm (henüz yok — öğe eklenince oluşur)';
   const html = `
     <p style="color:var(--ink-muted);font-size:12.5px;margin-bottom:10px;">
-      "${escapeHtml(g.ad)}" grubundaki öğeleri sıralayın, gizleyin, başka gruba taşıyın ya da yeni öğe ekleyin.
+      "${escapeHtml(g.ad)}" grubundaki öğeleri sıralayın, gizleyin, başka gruba/bölüme taşıyın ya da yeni öğe ekleyin.
     </p>
+    <h4 style="font-size:13px;margin:0 0 6px;">Ana Liste</h4>
     <div id="ndOgeAnaListe" style="margin-bottom:14px;"></div>
-    ${g.altGrup ? `<h4 style="font-size:13px;margin:10px 0 6px;">${escapeHtml(g.altGrup.ad)}</h4><div id="ndOgeAltListe" style="margin-bottom:14px;"></div>` : ''}
+    <h4 style="font-size:13px;margin:10px 0 6px;">${escapeHtml(altBaslik)}</h4>
+    <div id="ndOgeAltListe" style="margin-bottom:14px;"></div>
     <button class="btn btn-amber btn-sm" id="ndYeniOgeEkleBtn" style="margin-top:6px;">➕ Yeni Öğe Ekle</button>
   `;
   modalAc('Öğeleri Yönet', html, null, null, 'Kaydet');
   document.getElementById('modalKaydetBtn').style.display = 'none'; // bu modalda anlık kaydetme var, ayrı "Kaydet" gerekmiyor
 
   _ndOgeAltListeCiz(grupAnahtari, 'ana');
-  if(g.altGrup) _ndOgeAltListeCiz(grupAnahtari, 'alt');
+  _ndOgeAltListeCiz(grupAnahtari, 'alt');
 
   document.getElementById('ndYeniOgeEkleBtn').onclick = () => _ndYeniOgeModalAc(g);
 }
@@ -244,14 +247,23 @@ function _ndOgeAltListeCiz(grupAnahtari, bolum){
     gizleBtn.onclick = () => _ndOgeGizleDegistir(o.anahtar, !o._gizliMi, grupAnahtari, bolum);
 
     const tasiSel = document.createElement('select');
-    tasiSel.style.cssText = 'font-size:11px;max-width:110px;';
+    tasiSel.style.cssText = 'font-size:11px;max-width:130px;';
     tasiSel.appendChild(new Option('Taşı...', ''));
     liste.forEach(hedefG => {
-      tasiSel.appendChild(new Option(hedefG.ad, hedefG.anahtar));
+      // Aynı grubun aynı bölümüne "taşımayı" seçenek olarak göstermenin
+      // anlamı yok (zaten orada) — diğer tüm grup×bölüm kombinasyonları sunulur.
+      if(!(hedefG.anahtar === grupAnahtari && bolum === 'ana')){
+        tasiSel.appendChild(new Option(hedefG.ad + ' — Ana Liste', hedefG.anahtar + '|ana'));
+      }
+      if(!(hedefG.anahtar === grupAnahtari && bolum === 'alt')){
+        const altAd = hedefG.altGrup ? hedefG.altGrup.ad : 'Alt Bölüm (yeni)';
+        tasiSel.appendChild(new Option(hedefG.ad + ' — ' + altAd, hedefG.anahtar + '|alt'));
+      }
     });
     tasiSel.onchange = () => {
       if(!tasiSel.value) return;
-      _ndOgeTasi(o.anahtar, tasiSel.value, grupAnahtari, bolum);
+      const [hedefGrup, hedefBolum] = tasiSel.value.split('|');
+      _ndOgeTasi(o.anahtar, hedefGrup, hedefBolum, grupAnahtari, bolum);
     };
 
     [yukselBtn, inBtn, gizleBtn, tasiSel].forEach(el => satir.appendChild(el));
@@ -286,20 +298,23 @@ function _ndOgeGizleDegistir(anahtar, gizliOlacak, grupAnahtari, bolum){
   _ndKaydetSessiz(nd, () => { _ndOgeAltListeCiz(grupAnahtari, bolum); });
 }
 
-/* Öğeyi başka bir gruba taşır — hedef grubun ana listesinin SONUNA ekler
+/* Öğeyi başka bir grup/bölüme taşır — hedef bölümün SONUNA ekler
    (mevcut hedef öğe sayısı kadar sira vererek), kaynak bölümdeki diğer
    öğelere dokunmaz. */
-function _ndOgeTasi(anahtar, hedefGrupAnahtari, kaynakGrupAnahtari, kaynakBolum){
+function _ndOgeTasi(anahtar, hedefGrupAnahtari, hedefBolum, kaynakGrupAnahtari, kaynakBolum){
   const liste = _ndTumListeyiGetir();
   const hedefG = liste.find(x => x.anahtar === hedefGrupAnahtari);
   if(!hedefG) return;
-  const mevcutSayi = (hedefG.ogeler || []).length;
+  const altGrupMu = hedefBolum === 'alt';
+  const mevcutSayi = altGrupMu ? (hedefG.altGrup ? hedefG.altGrup.ogeler.length : 0) : (hedefG.ogeler || []).length;
   const nd = _ndVerisiOku();
-  nd.ogeYerlesimi[anahtar] = { grup: hedefGrupAnahtari, altGrupMu: false, sira: mevcutSayi };
+  nd.ogeYerlesimi[anahtar] = { grup: hedefGrupAnahtari, altGrupMu, sira: mevcutSayi };
+  const hedefBolumAdi = altGrupMu ? (hedefG.altGrup ? hedefG.altGrup.ad : 'Alt Bölüm') : 'Ana Liste';
   _ndKaydetSessiz(nd, () => {
-    toast('Öğe taşındı: ' + hedefG.ad);
+    toast('Öğe taşındı: ' + hedefG.ad + ' — ' + hedefBolumAdi);
     _ndOgeAltListeCiz(kaynakGrupAnahtari, kaynakBolum);
     _ndOgeAltListeCiz(hedefGrupAnahtari, 'ana');
+    _ndOgeAltListeCiz(hedefGrupAnahtari, 'alt');
     _ndListesiCiz();
   });
 }
@@ -329,6 +344,7 @@ function _ndYeniOgeModalAc(g){
     return;
   }
   const sekmeSecici = (typeof _sekmeSeciciOlustur === 'function') ? _sekmeSeciciOlustur('') : null;
+  const altAd = g.altGrup ? g.altGrup.ad : 'Alt Bölüm (yeni oluşturulacak)';
   const html = `
     <div class="form-group">
       <label>Öğe Adı</label>
@@ -338,17 +354,25 @@ function _ndYeniOgeModalAc(g){
       <label>Sekme</label>
       <div id="ndYeniOgeSekmeYer"></div>
     </div>
+    <div class="form-group">
+      <label>Nereye eklensin?</label>
+      <select id="ndYeniOgeBolum" style="width:100%;">
+        <option value="ana">Ana Liste</option>
+        <option value="alt">${escapeHtml(altAd)}</option>
+      </select>
+    </div>
   `;
   modalAc('Yeni Öğe Ekle — ' + g.ad, html, () => {
     const ad = document.getElementById('ndYeniOgeAd').value.trim();
     const sekmeAd = (typeof _omSekmeDegeriAl === 'function')
       ? _omSekmeDegeriAl(document.getElementById('ndYeniOgeSekmeYer'))
       : '';
+    const altGrupMu = document.getElementById('ndYeniOgeBolum').value === 'alt';
     if(!ad){ toast('Öğe adı gerekli.'); return; }
     if(!sekmeAd){ toast('Bir sekme seçin.'); return; }
     const nd = _ndVerisiOku();
     const anahtar = 'ek_' + Date.now().toString(36) + Math.floor(Math.random()*1000);
-    nd.ekOgeler.push({ anahtar, ad, sekmeAd, grup: g.anahtar, altGrupMu: false });
+    nd.ekOgeler.push({ anahtar, ad, sekmeAd, grup: g.anahtar, altGrupMu });
     _ndKaydet(nd, 'Öğe eklendi.');
     modalKapat();
   }, null, 'Ekle');
