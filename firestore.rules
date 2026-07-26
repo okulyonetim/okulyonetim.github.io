@@ -64,6 +64,14 @@ service cloud.firestore {
       allow write: if adminMi();
     }
 
+    // ========== NAVİGASYON DÜZENİ ==========
+    // Grup/öğe sırası, gizleme, ad/renk override: herkes okur (menüyü
+    // render etmek için gerekli), sadece admin değiştirebilir.
+    match /oy_navDuzeni/{id} {
+      allow read: if girisYapmis();
+      allow write: if adminMi();
+    }
+
     // ========== KULLANıCı İSTATİSTİKLERİ ==========
     // Kullanıcı istatistikleri: herkes SADECE KENDİ belgesini yazabilir
     // (başkasının sayaçlarını değiştiremez), okuma sadece admin'e açık.
