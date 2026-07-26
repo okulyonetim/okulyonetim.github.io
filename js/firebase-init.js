@@ -91,6 +91,27 @@ const COL = {
   // --- YENİ: Rol tabanlı yetkilendirme (Aşama 2) ---
   roller:'oy_roller',                   // {ad, kullaniciYonetimi:bool, yetkiler:{modulAdi:'gizle'|'goruntule'|'duzenle'}}
   ozelMenu:'oy_ozelMenu',              // {ad, renk, sira, ogeler:[{ad, sekmeAd}], gorunurRoller:['rolId',...] veya [] (hepsi)
+  // --- YENİ: Admin Navigasyon Düzeni (grup/öğe sırası, gizleme, ad/renk override, öğe taşıma) ---
+  // Tek doküman: oy_navDuzeni/ayarlar
+  // {
+  //   grupSirasi: ['g1','g3','g2', ..., 'ozel_<docId>', ...],           // GRUPLAR'daki 'anahtar' değerlerinin admin tarafından belirlenen sırası (yoksa dosyadaki varsayılan sıra kullanılır)
+  //   grupGizli: { g4: true, ... },                                     // anahtar -> true ise o grup TÜM kullanıcılardan (adminin kendisi hariç) gizlenir
+  //   grupOverride: { g1: { ad:'Öğrenciler', renk:'#123456' }, ... },    // built-in grup adı/rengi admin tarafından değiştirilmişse (özel gruplarda zaten kendi ad/renk alanı var, override'a gerek yok)
+  //   ogeYerlesimi: {                                                   // built-in + özel TÜM öğelerin hangi grupta, hangi sırada, hangi bölümde (ana liste / altGrup) olduğu
+  //     g1_ogrenciler: { grup:'g1', altGrupMu:false, sira:0 },
+  //     g7alt_sok:     { grup:'g7', altGrupMu:true,  sira:2 },
+  //     ...
+  //   },
+  //   ogeGizli: { g1_odevTakip: true, ... },                            // anahtar -> true ise öğe herkesten gizlenir
+  //   ekOgeler: [ { anahtar:'ek_1234', ad:'Kulüp Formu', sekmeAd:'notlar', grup:'g7', altGrupMu:false }, ... ],
+  //                                                                      // admin'in built-in bir gruba sonradan eklediği,
+  //                                                                      // katalogda karşılığı olmayan yeni öğeler
+  //   guncellemeTarihi: ISO
+  // }
+  // NOT: ogeYerlesimi/grupSirasi'nda YALNIZCA admin tarafından fiilen değiştirilmiş kayıtlar tutulur;
+  // hiç dokunulmamış öğe/grup için dosyadaki (alt-navigasyon.js) varsayılan sıra/konum geçerlidir.
+  // Böylece yeni eklenen built-in öğeler otomatik olarak doğru yerde belirir, dokümanı güncellemek gerekmez.
+  navDuzeni:'oy_navDuzeni',
   // --- YENİ: Uygulama İçi Mesajlaşma (v9.0) ---
   konusmalar:'oy_konusmalar',           // {katilimciUidler:[uid,...], katilimciAdlari:{uid:ad}, grupMu:bool, grupAdi?, sonMesaj:{metin,gonderenUid,tarih}, guncellenmeTarihi, okunmayanlar:{uid:sayi}}
   mesajlar:'oy_mesajlar',               // {konusmaId, gonderenUid, gonderenAdi, metin, tarih}

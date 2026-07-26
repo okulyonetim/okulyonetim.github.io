@@ -83,96 +83,264 @@
     };
   }
 
-  /* ---- 8 grup kataloğu — gerçek modül/aksiyon bağlantılarıyla ---- */
-  const GRUPLAR = [
-    { ad:'Öğretmen & Öğrenciler', renk:'#0A9E82', ikon:I.ogretmen, ogeler:[
-      {ad:'Öğretmenler', ikon:'ogretmen', modul:'ogretmenler', aksiyon:git('ogretmenler')},
-      {ad:'Öğrenciler', ikon:'ogrenci', modul:'ogrenciler', aksiyon:git('ogrenciler')},
-      {ad:'Sınıflar', ikon:'sinif', modul:'siniflar', aksiyon:git('siniflar')},
-      {ad:'Öğrenci Listesi Oluşturucu', ikon:'liste', modul:null, aksiyon:function(){ sekmeAc('ogretmenListe'); if(typeof ogretmenListeSekmesiAc==='function') ogretmenListeSekmesiAc(); }},
-      {ad:'Ödev Takip Çizelgesi', ikon:'liste', modul:'odevTakip', aksiyon:git('odevTakip', function(){ if(typeof renderOncListesi==='function') renderOncListesi('odevTakip'); })},
-      {ad:'Not Çizelgesi', ikon:'liste', modul:'notCizelgesi', aksiyon:git('notCizelgesi', function(){ if(typeof renderOncListesi==='function') renderOncListesi('notCizelgesi'); })},
+  /* ---- 8 grup kataloğu — gerçek modül/aksiyon bağlantılarıyla ----
+     ÖNEMLİ: Bu, DEĞİŞMEYEN kaynak kataloktur (built-in gruplar/öğeler,
+     sabit 'anahtar' değerleriyle). Fiilen EKRANDA gösterilen/işlenen
+     dizi aşağıdaki `GRUPLAR` (let) değişkenidir — admin navigasyon
+     düzeni (oy_navDuzeni) + özel gruplar (oy_ozelMenu) bu katalogla
+     birleştirilerek her yüklemede yeniden inşa edilir; bkz.
+     _gruplariYenidenOlustur(). */
+  const GRUPLAR_KATALOG = [
+    { anahtar:'g1', ad:'Öğretmen & Öğrenciler', renk:'#0A9E82', ikon:I.ogretmen, ogeler:[
+      {anahtar:'g1_ogretmenler',ad:'Öğretmenler', ikon:'ogretmen', modul:'ogretmenler', aksiyon:git('ogretmenler')},
+      {anahtar:'g1_ogrenciler',ad:'Öğrenciler', ikon:'ogrenci', modul:'ogrenciler', aksiyon:git('ogrenciler')},
+      {anahtar:'g1_siniflar',ad:'Sınıflar', ikon:'sinif', modul:'siniflar', aksiyon:git('siniflar')},
+      {anahtar:'g1_ogrListeOlusturucu',ad:'Öğrenci Listesi Oluşturucu', ikon:'liste', modul:null, aksiyon:function(){ sekmeAc('ogretmenListe'); if(typeof ogretmenListeSekmesiAc==='function') ogretmenListeSekmesiAc(); }},
+      {anahtar:'g1_odevTakip',ad:'Ödev Takip Çizelgesi', ikon:'liste', modul:'odevTakip', aksiyon:git('odevTakip', function(){ if(typeof renderOncListesi==='function') renderOncListesi('odevTakip'); })},
+      {anahtar:'g1_notCizelgesi',ad:'Not Çizelgesi', ikon:'liste', modul:'notCizelgesi', aksiyon:git('notCizelgesi', function(){ if(typeof renderOncListesi==='function') renderOncListesi('notCizelgesi'); })},
     ]},
-    { ad:'Sınavlar ve Not İşlemleri', renk:'#1F6FD1', ikon:I.yazili, ogeler:[
-      {ad:'Yazılı Sınavlar', ikon:'yazili', modul:'sinavIslemleri', aksiyon:git('yaziliSinavlar')},
-      {ad:'Deneme Sınavları', ikon:'deneme', modul:'sinavIslemleri', aksiyon:git('denemeSinavlari')},
-      {ad:'Deneme Sonuçları', ikon:'odul', modul:'denemeSonuclari', aksiyon:function(){ if(typeof sinavSonuclariAc==='function') sinavSonuclariAc('deneme'); }},
-      {ad:'Test Sonuçları', ikon:'liste', modul:'testSonuclari', aksiyon:function(){ if(typeof sinavSonuclariAc==='function') sinavSonuclariAc('test'); }},
-      {ad:'Ders Et. Kat. Puan Dağıtımı', ikon:'puan', modul:'sinavIslemleri', aksiyon:cagir('KriterDagitimAraci','ac')},
-      {ad:'Proje Değerlendirme Ölçeği', ikon:'olcek', modul:'sinavIslemleri', aksiyon:cagir('ProjeDegerlendirmeAraci','ac')},
-      {ad:'Optik Okuma (OMR)', ikon:'tarama', modul:'optikOkuma', aksiyon:cagir('OptikSistemi','ac')},
+    { anahtar:'g2', ad:'Sınavlar ve Not İşlemleri', renk:'#1F6FD1', ikon:I.yazili, ogeler:[
+      {anahtar:'g2_yaziliSinavlar',ad:'Yazılı Sınavlar', ikon:'yazili', modul:'sinavIslemleri', aksiyon:git('yaziliSinavlar')},
+      {anahtar:'g2_denemeSinavlari',ad:'Deneme Sınavları', ikon:'deneme', modul:'sinavIslemleri', aksiyon:git('denemeSinavlari')},
+      {anahtar:'g2_denemeSonuclari',ad:'Deneme Sonuçları', ikon:'odul', modul:'denemeSonuclari', aksiyon:function(){ if(typeof sinavSonuclariAc==='function') sinavSonuclariAc('deneme'); }},
+      {anahtar:'g2_testSonuclari',ad:'Test Sonuçları', ikon:'liste', modul:'testSonuclari', aksiyon:function(){ if(typeof sinavSonuclariAc==='function') sinavSonuclariAc('test'); }},
+      {anahtar:'g2_kriterDagitim',ad:'Ders Et. Kat. Puan Dağıtımı', ikon:'puan', modul:'sinavIslemleri', aksiyon:cagir('KriterDagitimAraci','ac')},
+      {anahtar:'g2_projeDegerlendirme',ad:'Proje Değerlendirme Ölçeği', ikon:'olcek', modul:'sinavIslemleri', aksiyon:cagir('ProjeDegerlendirmeAraci','ac')},
+      {anahtar:'g2_optikOkuma',ad:'Optik Okuma (OMR)', ikon:'tarama', modul:'optikOkuma', aksiyon:cagir('OptikSistemi','ac')},
     ]},
-    { ad:'İletişim & Haberler', renk:'#EE5A45', ikon:I.mesaj, ogeler:[
-      {ad:'Mesajlaşma', ikon:'mesaj', modul:'mesajlasma', aksiyon:git('mesajlasma')},
-      {ad:'Haberler', ikon:'haber', modul:'haberler', aksiyon:git('haberler')},
-      {ad:'Duyurular', ikon:'duyuru', modul:'duyurular', aksiyon:git('duyurular')},
-      {ad:'Anketler', ikon:'anket', modul:'anket', aksiyon:git('anket')},
+    { anahtar:'g3', ad:'İletişim & Haberler', renk:'#EE5A45', ikon:I.mesaj, ogeler:[
+      {anahtar:'g3_mesajlasma',ad:'Mesajlaşma', ikon:'mesaj', modul:'mesajlasma', aksiyon:git('mesajlasma')},
+      {anahtar:'g3_haberler',ad:'Haberler', ikon:'haber', modul:'haberler', aksiyon:git('haberler')},
+      {anahtar:'g3_duyurular',ad:'Duyurular', ikon:'duyuru', modul:'duyurular', aksiyon:git('duyurular')},
+      {anahtar:'g3_anket',ad:'Anketler', ikon:'anket', modul:'anket', aksiyon:git('anket')},
     ]},
-    { ad:'Programlar', renk:'#0EA766', ikon:I.takvim, ogeler:[
-      {ad:'Ders Programı', ikon:'yazili', modul:'dersProgrami', aksiyon:git('dersProgrami')},
-      {ad:'Nöbet Programı', ikon:'kalkan', modul:'nobet', aksiyon:git('nobet')},
-      {ad:'Yıllık Plan', ikon:'liste', modul:'yillikPlan', aksiyon:git('yillikPlan')},
+    { anahtar:'g4', ad:'Programlar', renk:'#0EA766', ikon:I.takvim, ogeler:[
+      {anahtar:'g4_dersProgrami',ad:'Ders Programı', ikon:'yazili', modul:'dersProgrami', aksiyon:git('dersProgrami')},
+      {anahtar:'g4_nobet',ad:'Nöbet Programı', ikon:'kalkan', modul:'nobet', aksiyon:git('nobet')},
+      {anahtar:'g4_yillikPlan',ad:'Yıllık Plan', ikon:'liste', modul:'yillikPlan', aksiyon:git('yillikPlan')},
     ]},
-    { ad:'Takvim & Notlar', renk:'#1F9FD1', ikon:I.takvim, ogeler:[
-      {ad:'Takvim', ikon:'takvim', modul:'takvim', aksiyon:git('takvim')},
-      {ad:'Notlar', ikon:'not', modul:'notlar', aksiyon:git('notlar')},
+    { anahtar:'g5', ad:'Takvim & Notlar', renk:'#1F9FD1', ikon:I.takvim, ogeler:[
+      {anahtar:'g5_takvim',ad:'Takvim', ikon:'takvim', modul:'takvim', aksiyon:git('takvim')},
+      {anahtar:'g5_notlar',ad:'Notlar', ikon:'not', modul:'notlar', aksiyon:git('notlar')},
     ]},
-    { ad:'Taşıma', renk:'#7C52D6', ikon:I.otobus, ogeler:[
-      {ad:'Taşıma İşlemleri', ikon:'otobus', modul:'tasima', aksiyon:git('tasima')},
-      {ad:'Harita', ikon:'harita', modul:'harita', aksiyon:function(){ if(typeof haritaSekmesiAc==='function') haritaSekmesiAc(); else sekmeAc('harita'); }},
+    { anahtar:'g6', ad:'Taşıma', renk:'#7C52D6', ikon:I.otobus, ogeler:[
+      {anahtar:'g6_tasima',ad:'Taşıma İşlemleri', ikon:'otobus', modul:'tasima', aksiyon:git('tasima')},
+      {anahtar:'g6_harita',ad:'Harita', ikon:'harita', modul:'harita', aksiyon:function(){ if(typeof haritaSekmesiAc==='function') haritaSekmesiAc(); else sekmeAc('harita'); }},
     ]},
-    { ad:'Döküman & Evraklar', renk:'#F2A03D', ikon:I.klasor, ogeler:[
-      {ad:'Dökümanlar', ikon:'klasor', modul:'dokumanlar', aksiyon:git('dokumanlar')},
-      {ad:'Evrak Takibi', ikon:'evrak', modul:'evrak', aksiyon:git('evrak')},
-      {ad:'Mevzuat', ikon:'mevzuat', modul:'mevzuat', aksiyon:git('mevzuat')},
-      {ad:'Aylık İşler', ikon:'saat', modul:'periyodikIsler', aksiyon:git('periyodikIsler')},
-      {ad:'Akademik Takvim', ikon:'takvim', modul:'akademikTakvim', aksiyon:function(){ if(typeof akademikTakvimAc==='function') akademikTakvimAc(); }},
-      {ad:'Kontrol Listeleri', ikon:'liste', modul:'kontrolListeleri', aksiyon:function(){ if(typeof kontrolListeleriAc==='function') kontrolListeleriAc(); }},
-    ], altGrup:{ ad:'Raporlar', ikon:'rapor', ogeler:[
-      {ad:'Maarif Model', ikon:'odul', modul:'maarifRapor', aksiyon:git('maarifRapor')},
-      {ad:'Belirli Gün ve Haftalar', ikon:'takvim', modul:'belirliGunler', aksiyon:git('belirliGunler')},
-      {ad:'ŞÖK', ikon:'kalkan', modul:'sok', aksiyon:git('sok')},
-      {ad:'Zümre', ikon:'ogretmen', modul:'zumre', aksiyon:git('zumre')},
-      {ad:'Sosyal Kulüpler', ikon:'kalp', modul:'sosyalKulupler', aksiyon:git('sosyalKulupler')},
-      {ad:'Rehberlik', ikon:'pusula', modul:'rehberlik', aksiyon:git('rehberlik')},
-      {ad:'Yıllık Planlar & BEP Planları', ikon:'pano', modul:'bepPlani', aksiyon:git('bepPlani')},
-      {ad:'Diğer Evraklar', ikon:'dosya', modul:'digerEvrak', aksiyon:git('digerEvrak')},
+    { anahtar:'g7', ad:'Döküman & Evraklar', renk:'#F2A03D', ikon:I.klasor, ogeler:[
+      {anahtar:'g7_dokumanlar',ad:'Dökümanlar', ikon:'klasor', modul:'dokumanlar', aksiyon:git('dokumanlar')},
+      {anahtar:'g7_evrak',ad:'Evrak Takibi', ikon:'evrak', modul:'evrak', aksiyon:git('evrak')},
+      {anahtar:'g7_mevzuat',ad:'Mevzuat', ikon:'mevzuat', modul:'mevzuat', aksiyon:git('mevzuat')},
+      {anahtar:'g7_periyodikIsler',ad:'Aylık İşler', ikon:'saat', modul:'periyodikIsler', aksiyon:git('periyodikIsler')},
+      {anahtar:'g7_akademikTakvim',ad:'Akademik Takvim', ikon:'takvim', modul:'akademikTakvim', aksiyon:function(){ if(typeof akademikTakvimAc==='function') akademikTakvimAc(); }},
+      {anahtar:'g7_kontrolListeleri',ad:'Kontrol Listeleri', ikon:'liste', modul:'kontrolListeleri', aksiyon:function(){ if(typeof kontrolListeleriAc==='function') kontrolListeleriAc(); }},
+    ], altGrup:{ anahtar:'g7alt', ad:'Raporlar', ikon:'rapor', ogeler:[
+      {anahtar:'g7alt_maarifRapor',ad:'Maarif Model', ikon:'odul', modul:'maarifRapor', aksiyon:git('maarifRapor')},
+      {anahtar:'g7alt_belirliGunler',ad:'Belirli Gün ve Haftalar', ikon:'takvim', modul:'belirliGunler', aksiyon:git('belirliGunler')},
+      {anahtar:'g7alt_sok',ad:'ŞÖK', ikon:'kalkan', modul:'sok', aksiyon:git('sok')},
+      {anahtar:'g7alt_zumre',ad:'Zümre', ikon:'ogretmen', modul:'zumre', aksiyon:git('zumre')},
+      {anahtar:'g7alt_sosyalKulupler',ad:'Sosyal Kulüpler', ikon:'kalp', modul:'sosyalKulupler', aksiyon:git('sosyalKulupler')},
+      {anahtar:'g7alt_rehberlik',ad:'Rehberlik', ikon:'pusula', modul:'rehberlik', aksiyon:git('rehberlik')},
+      {anahtar:'g7alt_bepPlani',ad:'Yıllık Planlar & BEP Planları', ikon:'pano', modul:'bepPlani', aksiyon:git('bepPlani')},
+      {anahtar:'g7alt_digerEvrak',ad:'Diğer Evraklar', ikon:'dosya', modul:'digerEvrak', aksiyon:git('digerEvrak')},
     ]}},
-    { ad:'Personel İşleri', renk:'#B5651D', ikon:I.gorevli, ogeler:[
-      {ad:'Personeller', ikon:'gorevli', modul:'personel', aksiyon:git('personel')},
-      {ad:'Maaş Değişikliği', ikon:'banka', modul:'personel', aksiyon:cagir('MaasDegisiklikFormu','ac')},
-      {ad:'Tebliğ-Tebellüğ İmza Sirküsü', ikon:'damga', modul:'personel', aksiyon:cagir('TebligTebellugSirkusu','ac')},
-      {ad:'Puantaj & İmza Sirküsü', ikon:'saat', modul:'personel', aksiyon:cagir('PuantajSistemi','ac')},
-      {ad:'Dilekçe & İzinler', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','ac')},
-      {ad:'Devamsızlık Çizelgesi', ikon:'takvim', modul:'personel', aksiyon:git('devamsizlikCizelgesi')},
-    ], altGrup:{ ad:'Diploma İşlemleri', ikon:'imza', ogeler:[
-      {ad:'Diploma Kayıt Talep Dilekçesi', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','acDiploma')},
-      {ad:'Diploma Okul Dilekçesi', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','acDiplomaCevap')},
+    { anahtar:'g8', ad:'Personel İşleri', renk:'#B5651D', ikon:I.gorevli, ogeler:[
+      {anahtar:'g8_personel',ad:'Personeller', ikon:'gorevli', modul:'personel', aksiyon:git('personel')},
+      {anahtar:'g8_maasDegisiklik',ad:'Maaş Değişikliği', ikon:'banka', modul:'personel', aksiyon:cagir('MaasDegisiklikFormu','ac')},
+      {anahtar:'g8_tebligTebellug',ad:'Tebliğ-Tebellüğ İmza Sirküsü', ikon:'damga', modul:'personel', aksiyon:cagir('TebligTebellugSirkusu','ac')},
+      {anahtar:'g8_puantaj',ad:'Puantaj & İmza Sirküsü', ikon:'saat', modul:'personel', aksiyon:cagir('PuantajSistemi','ac')},
+      {anahtar:'g8_dilekce',ad:'Dilekçe & İzinler', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','ac')},
+      {anahtar:'g8_devamsizlik',ad:'Devamsızlık Çizelgesi', ikon:'takvim', modul:'personel', aksiyon:git('devamsizlikCizelgesi')},
+    ], altGrup:{ anahtar:'g8alt', ad:'Diploma İşlemleri', ikon:'imza', ogeler:[
+      {anahtar:'g8alt_diplomaKayit',ad:'Diploma Kayıt Talep Dilekçesi', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','acDiploma')},
+      {anahtar:'g8alt_diplomaCevap',ad:'Diploma Okul Dilekçesi', ikon:'imza', modul:'personel', aksiyon:cagir('DilekceSistemi','acDiplomaCevap')},
     ]}},
-    { ad:'Ayarlar', renk:'#4E5A63', ikon:I.ayarlar, ogeler:[
-      {ad:'Ayarlar', ikon:'ayarlar', modul:'ayarlar', aksiyon:git('ayarlar')},
-      {ad:'Okul Bilgileri', ikon:'bina', modul:'okulBilgileri', aksiyon:git('okulBilgileri')},
-      {ad:'Veriler', ikon:'veritabani', modul:'veri', aksiyon:git('veri')},
-      {ad:'Kullanıcı İşlemleri', ikon:'kalkan', modul:'kullaniciYonetimi', aksiyon:git('kullaniciYonetimi')},
-      {ad:'Kullanıcı İstatistikleri', ikon:'liste', modul:'kullaniciYonetimi', aksiyon:git('istatistikler', function(){ if(typeof renderIstatistikler==='function') renderIstatistikler(); })},
+    { anahtar:'g9', ad:'Ayarlar', renk:'#4E5A63', ikon:I.ayarlar, ogeler:[
+      {anahtar:'g9_ayarlar',ad:'Ayarlar', ikon:'ayarlar', modul:'ayarlar', aksiyon:git('ayarlar')},
+      {anahtar:'g9_okulBilgileri',ad:'Okul Bilgileri', ikon:'bina', modul:'okulBilgileri', aksiyon:git('okulBilgileri')},
+      {anahtar:'g9_veriler',ad:'Veriler', ikon:'veritabani', modul:'veri', aksiyon:git('veri')},
+      {anahtar:'g9_kullaniciIslemleri',ad:'Kullanıcı İşlemleri', ikon:'kalkan', modul:'kullaniciYonetimi', aksiyon:git('kullaniciYonetimi')},
+      {anahtar:'g9_istatistikler',ad:'Kullanıcı İstatistikleri', ikon:'liste', modul:'kullaniciYonetimi', aksiyon:git('istatistikler', function(){ if(typeof renderIstatistikler==='function') renderIstatistikler(); })},
     ]},
   ];
 
+  /* ---- EKRANDA GÖSTERİLEN dizi — _gruplariYenidenOlustur() tarafından
+     her yeniden inşada baştan doldurulur (splice ile, referans sabit
+     kalır ki gridDoldur/listeIcerigiDoldur gibi index-tabanlı okuyucular
+     etkilenmesin). Başlangıçta (aşağıda) katalogla dolduruluyor; özel
+     gruplar/nav düzeni Firestore'dan gelince tekrar inşa edilir. */
+  let GRUPLAR = [];
+
+  // Firestore'dan yüklenen özel gruplar (ham veri, henüz katalogla
+  // birleştirilmemiş) — bkz. _ozelGruplariYukle()
+  let _ozelGruplarVerisi = [];
+  // Firestore'dan yüklenen admin navigasyon düzeni (oy_navDuzeni/ayarlar) —
+  // bkz. _navDuzeniYukle(). Hiç kaydedilmemişse {} (tüm gruplar/öğeler
+  // dosyadaki varsayılan sırada/görünür kalır).
+  let _navDuzeniVerisi = {};
+
+  /* ---- Katalog + özel gruplar + admin navigasyon düzenini BİRLEŞTİRİR.
+     dahilGizliler=false  → herkese gösterilecek nihai liste (gizli grup/
+                             öğeler tamamen elenir) — GRUPLAR bunu kullanır.
+     dahilGizliler=true   → Navigasyon Düzeni EDİTÖRÜ için: hiçbir şey
+                             elenmez, gizli olanlar `_gizliMi:true` ile
+                             işaretlenerek listede kalır (admin görüp
+                             tekrar açabilsin diye).
+     Kural: oy_navDuzeni dokümanında SADECE fiilen değiştirilmiş
+     grup/öğe kayıtları bulunur; hiç dokunulmamış olanlar bu dosyadaki
+     varsayılan sırayı/görünürlüğü korur — böylece yeni eklenen built-in
+     bir öğe otomatik doğru yerde belirir, düzen dokümanını güncellemek
+     gerekmez. */
+  function _navDuzeniInsaEt(dahilGizliler){
+    const nd = _navDuzeniVerisi || {};
+    const grupSirasi = nd.grupSirasi || [];
+    const grupGizli = nd.grupGizli || {};
+    const grupOverride = nd.grupOverride || {};
+    const ogeYerlesimi = nd.ogeYerlesimi || {};
+    const ogeGizli = nd.ogeGizli || {};
+    const ekOgeler = nd.ekOgeler || [];
+
+    // 1) Kaynak grupları topla (katalog + özel), her birini sığ kopyala
+    //    (override'lar orijinal katalog nesnelerini KİRLETMESİN — her
+    //    yeniden inşada temiz katalogdan başlanır).
+    const kaynakGruplar = GRUPLAR_KATALOG.map(g => ({
+      anahtar:g.anahtar, ad:g.ad, renk:g.renk, ikon:g.ikon,
+      altGrup: g.altGrup ? { anahtar:g.altGrup.anahtar, ad:g.altGrup.ad, ikon:g.altGrup.ikon } : null,
+    })).concat(_ozelGruplarVerisi.map(g => ({
+      anahtar:g.anahtar, ad:g.ad, renk:g.renk, ikon:g.ikon, altGrup:null, _ozelId:g._ozelId,
+    })));
+
+    const grupMap = new Map(); // anahtar -> grup gövdesi (ogeler doldurulacak)
+    kaynakGruplar.forEach(g => grupMap.set(g.anahtar, Object.assign(g, { ogeler:[], _gizliMi: grupGizli[g.anahtar] === true })));
+
+    // 2) Tüm öğeleri (built-in ana + altGrup + özel) tek bir havuzda topla;
+    //    her birinin "asıl" konumunu (hangi grup/bölüm/sıra) sakla.
+    const itemPool = []; // {anahtar, oge, asilGrup, asilBolum, asilSira}
+    function ogeleriTopla(ogeler, grupAnahtari, bolum){
+      (ogeler||[]).forEach((o, idx) => {
+        itemPool.push({ anahtar:o.anahtar, oge:o, asilGrup:grupAnahtari, asilBolum:bolum, asilSira:idx });
+      });
+    }
+    GRUPLAR_KATALOG.forEach(g => {
+      ogeleriTopla(g.ogeler, g.anahtar, 'ana');
+      if(g.altGrup) ogeleriTopla(g.altGrup.ogeler, g.anahtar, 'alt');
+    });
+    _ozelGruplarVerisi.forEach(g => ogeleriTopla(g.ogeler, g.anahtar, 'ana'));
+    // Admin'in built-in bir gruba sonradan eklediği "ek öğeler"
+    // (bkz. oy_navDuzeni.ekOgeler) — Navigasyon Düzeni editöründen eklenir.
+    ekOgeler.forEach((eo, idx) => {
+      itemPool.push({
+        anahtar: eo.anahtar,
+        oge: { anahtar: eo.anahtar, ad: eo.ad, ikon:'pano', modul:null, aksiyon: function(){ sekmeAc(eo.sekmeAd); } },
+        asilGrup: eo.grup,
+        asilBolum: eo.altGrupMu ? 'alt' : 'ana',
+        asilSira: 10000 + idx, // varsayılan olarak grubun sonuna eklenir
+      });
+    });
+
+    // 3) Grup adı/rengi override (sadece built-in gruplar için anlamlı;
+    //    özel gruplar zaten kendi ad/renk alanına Ayarlar'dan sahip).
+    Object.keys(grupOverride).forEach(anahtar => {
+      const g = grupMap.get(anahtar);
+      if(!g) return;
+      const ov = grupOverride[anahtar];
+      if(ov.ad) g.ad = ov.ad;
+      if(ov.renk) g.renk = ov.renk;
+    });
+
+    // 4) Her öğeyi etkin grup/bölüme yerleştir.
+    //    NOT: Bir grup admin tarafından yeniden sıralandığında, editör
+    //    o gruptaki TÜM öğeler için sira yazar — böylece dokunulmamış
+    //    öğelerin asilSira'sıyla çakışma olmaz. Başka gruptan TAŞINAN
+    //    bir öğeye ise hedef gruptaki mevcut öğe sayısından büyük bir
+    //    sira verilir (listenin sonuna eklenir).
+    const bolumler = new Map(); // "grupAnahtari|bolum" -> [{sira, oge, gizliMi}]
+    function bolumAnahtari(g,b){ return g+'|'+b; }
+    itemPool.forEach(kayit => {
+      const gizliMi = ogeGizli[kayit.anahtar] === true;
+      if(gizliMi && !dahilGizliler) return; // kalıcı olarak gizlenmiş, herkes görmez
+      const yerlesim = ogeYerlesimi[kayit.anahtar];
+      const hedefGrup = (yerlesim && yerlesim.grup) || kayit.asilGrup;
+      if(!grupMap.has(hedefGrup)) return; // hedef grup artık yok (silinmiş özel grup vb.) — öğeyi at
+      const hedefBolum = yerlesim ? (yerlesim.altGrupMu ? 'alt' : 'ana') : kayit.asilBolum;
+      const sira = yerlesim && typeof yerlesim.sira === 'number' ? yerlesim.sira : kayit.asilSira;
+      const anahtar = bolumAnahtari(hedefGrup, hedefBolum);
+      if(!bolumler.has(anahtar)) bolumler.set(anahtar, []);
+      const ogeKopya = dahilGizliler ? Object.assign({}, kayit.oge, { _gizliMi: gizliMi }) : kayit.oge;
+      bolumler.get(anahtar).push({ sira, oge:ogeKopya });
+    });
+
+    // 5) Her grup için ana ogeler + altGrup ogeler dizilerini sıraya göre kur.
+    grupMap.forEach((g, anahtar) => {
+      const ana = (bolumler.get(bolumAnahtari(anahtar,'ana')) || []).sort((a,b)=>a.sira-b.sira).map(k=>k.oge);
+      const alt = (bolumler.get(bolumAnahtari(anahtar,'alt')) || []).sort((a,b)=>a.sira-b.sira).map(k=>k.oge);
+      g.ogeler = ana;
+      if(g.altGrup){
+        g.altGrup = { anahtar:g.altGrup.anahtar, ad:g.altGrup.ad, ikon:g.altGrup.ikon, ogeler:alt };
+      } else if(alt.length){
+        // Öğe, altGrup'u olmayan bir gruba "alt bölüm"e taşınmışsa
+        // (editörde mümkün), jenerik bir kapsayıcı oluştur.
+        g.altGrup = { anahtar:anahtar+'_altSanal', ad:'Diğer', ikon:'pano', ogeler:alt };
+      }
+    });
+
+    // 6) Grup sırası: admin sırası + belirtilmeyenler katalog/özel doğal
+    //    sırada sona eklenir. dahilGizliler=false ise gizli gruplar
+    //    TAMAMEN elenir; true ise (editör) listede _gizliMi ile kalır.
+    const siraliAnahtarlar = [];
+    const eklendi = new Set();
+    grupSirasi.forEach(a => { if(grupMap.has(a) && !eklendi.has(a)){ siraliAnahtarlar.push(a); eklendi.add(a); } });
+    kaynakGruplar.forEach(g => { if(!eklendi.has(g.anahtar)){ siraliAnahtarlar.push(g.anahtar); eklendi.add(g.anahtar); } });
+
+    const nihaiListe = siraliAnahtarlar
+      .filter(a => dahilGizliler || grupMap.get(a)._gizliMi !== true)
+      .map(a => grupMap.get(a));
+
+    // 7) Kişisel (cihaza özel) renk/isim tercihini built-in gruplara uygula —
+    //    admin düzeninin ÜZERİNE biner (kullanıcının kendi tercihi son söz).
+    //    NOT: Editör görünümünde (dahilGizliler=true) UYGULANMAZ — admin
+    //    kendi düzenlediği değerleri görmeli, kendi cihazının kişisel
+    //    tercihini değil.
+    if(!dahilGizliler && typeof _menuTercihleriGetir === 'function'){
+      const tercihler = _menuTercihleriGetir();
+      nihaiListe.forEach(g => {
+        if(g._ozelId !== undefined) return; // özel gruplarda kişisel tercih yok
+        const t = tercihler[g.anahtar];
+        if(!t) return;
+        if(t.renk) g.renk = t.renk;
+        if(t.ad) g.ad = t.ad;
+      });
+    }
+
+    return nihaiListe;
+  }
+
+  function _gruplariYenidenOlustur(){
+    const nihaiListe = _navDuzeniInsaEt(false);
+    GRUPLAR.length = 0;
+    GRUPLAR.push(...nihaiListe);
+  }
+  // İlk (senkron) doldurma — Firestore verisi henüz gelmeden önce bile
+  // GRUPLAR boş kalmasın diye sadece katalogla bir kez inşa edilir.
+  _gruplariYenidenOlustur();
+
+  function _yenidenInsaVeYenile(){
+    _gruplariYenidenOlustur();
+    if(typeof AltNav !== 'undefined' && AltNav._kuruldu) AltNav.yenile();
+  }
+
   /* ---- Firestore'dan özel menü gruplarını yükle ----
      Admin, Ayarlar ekranından oy_ozelMenu koleksiyonuna grup ekler.
-     Bu fonksiyon uygulama hazır olduğunda bir kez çağrılır;
-     yüklenen gruplar GRUPLAR dizisinin sonuna eklenir. */
+     Bu fonksiyon uygulama hazır olduğunda bir kez çağrılır; sonucu
+     _ozelGruplarVerisi'ne yazıp tam yeniden inşayı tetikler. */
   function _ozelGruplariYukle(){
     if(typeof db === 'undefined' || typeof COL === 'undefined' || !COL.ozelMenu) return;
     const aktifKullanici = (typeof AKTIF_KULLANICI !== 'undefined') ? AKTIF_KULLANICI : null;
     const adminMi = aktifKullanici && aktifKullanici.admin === true;
     const aktifRolId = aktifKullanici && aktifKullanici.rolId;
 
-    // Önce mevcut özel grupları GRUPLAR'dan temizle
-    const ilkOzelIdx = GRUPLAR.findIndex(gr => gr._ozelId !== undefined);
-    if(ilkOzelIdx > -1) GRUPLAR.splice(ilkOzelIdx, GRUPLAR.length - ilkOzelIdx);
-
     db.collection(COL.ozelMenu).orderBy('sira').get().then(snap => {
+      const yeniListe = [];
       snap.forEach(doc => {
         const veri = doc.data();
         const gorunurRoller = veri.gorunurRoller || [];
@@ -185,7 +353,8 @@
           if(yetkiSeviyesi('ozelMenu') === 'gizle') return;
         }
 
-        const ogeler = (veri.ogeler || []).map(o => ({
+        const ogeler = (veri.ogeler || []).map((o, idx) => ({
+          anahtar: 'ozel_' + doc.id + '_' + idx,
           ad: o.ad,
           ikon: 'pano',
           modul: null,
@@ -193,7 +362,8 @@
         }));
         if(ogeler.length === 0) return;
 
-        GRUPLAR.push({
+        yeniListe.push({
+          anahtar: 'ozel_' + doc.id,
           ad: veri.ad || 'Özel Grup',
           renk: veri.renk || '#607D8B',
           ikon: I.pano,
@@ -201,30 +371,54 @@
           _ozelId: doc.id,
         });
       });
-      if(typeof AltNav !== 'undefined' && AltNav._kuruldu){
-        AltNav.yenile();
-      }
+      _ozelGruplarVerisi = yeniListe;
+      _yenidenInsaVeYenile();
     }).catch(() => {});
   }
 
-  // Global erişim — app.js'teki kaydet fonksiyonu çağırabilsin
-  window._ozelGruplariYukle = _ozelGruplariYukle;
+  /* ---- Firestore'dan admin navigasyon düzenini yükle ----
+     oy_navDuzeni/ayarlar tek dokümanını bir kez çeker; sonucu
+     _navDuzeniVerisi'ne yazıp tam yeniden inşayı tetikler. Navigasyon
+     Düzeni editörü (Ayarlar) bir kaydetme sonrası bunu tekrar çağırır. */
+  function _navDuzeniYukle(){
+    if(typeof db === 'undefined' || typeof COL === 'undefined' || !COL.navDuzeni) return;
+    db.collection(COL.navDuzeni).doc('ayarlar').get().then(doc => {
+      _navDuzeniVerisi = doc.exists ? (doc.data() || {}) : {};
+      _yenidenInsaVeYenile();
+    }).catch(() => {});
+  }
 
-  // Uygulama hazır olduğunda özel grupları yükle
+  // Global erişim — app.js'teki kaydet fonksiyonları ve Navigasyon Düzeni
+  // editörü çağırabilsin
+  window._ozelGruplariYukle = _ozelGruplariYukle;
+  window._navDuzeniYukle = _navDuzeniYukle;
+  window._navDuzeniVerisiGetir = () => _navDuzeniVerisi;
+  window._navDuzeniKatalogGetir = () => GRUPLAR_KATALOG;
+  window._ozelGruplarVerisiGetir = () => _ozelGruplarVerisi;
+  // Navigasyon Düzeni editörü için: HİÇBİR ŞEY elenmeden (gizli grup/öğeler
+  // dahil, _gizliMi bayraklı) güncel birleşik liste.
+  window._navDuzeniTumGruplarGetir = () => _navDuzeniInsaEt(true);
+
+  // Uygulama hazır olduğunda özel grupları ve navigasyon düzenini yükle
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(_ozelGruplariYukle, 1500);
+    setTimeout(_navDuzeniYukle, 1500);
   });
 
   /* ---- Menü kartı özelleştirme (renk + isim) ----
      Tamamen kişisel/cihaza özel bir tercih — kapak teması özelleştirmesiyle
      (bkz. js/dashboard-ozellestirme.js) AYNI desende, Firestore'a YAZILMAZ,
      sadece localStorage'da tutulur (cihazlar arası senkronize olmaz).
-     Varsayılan renk/ad değerleri "Varsayılana Döndür" için ayrıca saklanır,
-     sonra kayıtlı tercihler (varsa) GRUPLAR üzerine uygulanır — böylece
-     gridDoldur/listeIcerigiDoldur gibi mevcut hiçbir okuyucu değişmeden
-     otomatik olarak özelleştirilmiş değerleri kullanır. */
-  const _MENU_TERCIH_ANAHTARI = 'anMenuKartTercihleri';
-  const _GRUPLAR_VARSAYILAN = GRUPLAR.map(g => ({ renk: g.renk, ad: g.ad }));
+     ÖNEMLİ: tercihler artık dizi INDEX'i değil, sabit 'anahtar' değeriyle
+     saklanır (admin navigasyon düzeni grupları yeniden sıralayabildiği
+     için index artık kararlı bir kimlik değil). Varsayılan renk/ad
+     değerleri (katalogdan, "Varsayılana Döndür" için) anahtar bazlı ayrı
+     bir sözlükte tutulur. Kayıtlı tercihlerin fiilen GRUPLAR'a uygulanması
+     _gruplariYenidenOlustur() içinde (admin düzeninden SONRA, üzerine
+     binecek şekilde) yapılır. */
+  const _MENU_TERCIH_ANAHTARI = 'anMenuKartTercihleriV2';
+  const _GRUPLAR_VARSAYILAN = {};
+  GRUPLAR_KATALOG.forEach(g => { _GRUPLAR_VARSAYILAN[g.anahtar] = { renk: g.renk, ad: g.ad }; });
 
   function _menuTercihleriGetir(){
     try{
@@ -235,15 +429,6 @@
   function _menuTercihleriKaydet(tercihler){
     try{ localStorage.setItem(_MENU_TERCIH_ANAHTARI, JSON.stringify(tercihler)); }catch(e){}
   }
-  (function _menuTercihleriUygula(){
-    const tercihler = _menuTercihleriGetir();
-    GRUPLAR.forEach((g,i)=>{
-      const t = tercihler[i];
-      if(!t) return;
-      if(t.renk) g.renk = t.renk;
-      if(t.ad) g.ad = t.ad;
-    });
-  })();
 
   /* ---- Serbest renk seçici: hue çubuğu + doygunluk/parlaklık kare alanı ----
      Android WebView'lerde <input type="color"> bazen tam bir renk çarkı
@@ -333,7 +518,7 @@
 
   function _menuKartDuzenle(i){
     const g = GRUPLAR[i];
-    const varsayilan = _GRUPLAR_VARSAYILAN[i] || { ad: g.ad, renk: g.renk }; // özel gruplar için fallback
+    const varsayilan = _GRUPLAR_VARSAYILAN[g.anahtar] || { ad: g.ad, renk: g.renk }; // özel gruplar için fallback
     const ozelGrupMu = g._ozelId !== undefined;
     const body = `
       <div class="form-group"><label>Menü Adı</label><input id="anKartAdAlani" value="${escapeHtml(g.ad)}"></div>
@@ -402,16 +587,16 @@
     }
 
     // Yerleşik gruplar → localStorage'a kaydet
-    const varsayilan = _GRUPLAR_VARSAYILAN[i] || { ad: g.ad, renk: g.renk };
+    const varsayilan = _GRUPLAR_VARSAYILAN[g.anahtar] || { ad: g.ad, renk: g.renk };
     const tercihler = _menuTercihleriGetir();
     const ozelAd = yeniAd !== varsayilan.ad ? yeniAd : undefined;
     const ozelRenk = (yeniRenk.toLowerCase() !== varsayilan.renk.toLowerCase()) ? yeniRenk : undefined;
     if(ozelAd || ozelRenk){
-      tercihler[i] = {};
-      if(ozelAd) tercihler[i].ad = ozelAd;
-      if(ozelRenk) tercihler[i].renk = ozelRenk;
+      tercihler[g.anahtar] = {};
+      if(ozelAd) tercihler[g.anahtar].ad = ozelAd;
+      if(ozelRenk) tercihler[g.anahtar].renk = ozelRenk;
     } else {
-      delete tercihler[i];
+      delete tercihler[g.anahtar];
     }
     _menuTercihleriKaydet(tercihler);
     GRUPLAR[i].ad = yeniAd;

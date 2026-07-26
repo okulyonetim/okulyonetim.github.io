@@ -2384,6 +2384,7 @@ const TEMBEL_MODUL_TABLOSU = {
     // DÜZELTME notuna bkz. — koşulsuz olarak baglantilariKur() içinde başlıyor.
     if(typeof renderOptikAyarlari === 'function') renderOptikAyarlari();
     renderOzelMenuYonetim();
+    if(typeof renderNavDuzeniYonetim === 'function') renderNavDuzeniYonetim();
   },
 };
 const _TEMBEL_BASLATILANLAR = new Set();
@@ -3498,7 +3499,10 @@ function _ozelMenuGrupKaydet(g){
       toast(g ? 'Grup güncellendi.' : 'Grup eklendi.');
       modalKapat();
       renderOzelMenuYonetim();
-      setTimeout(() => { if(typeof window._ozelGruplariYukle === 'function') window._ozelGruplariYukle(); }, 300);
+      setTimeout(() => {
+        if(typeof window._ozelGruplariYukle === 'function') window._ozelGruplariYukle();
+        setTimeout(() => { if(typeof renderNavDuzeniYonetim === 'function') renderNavDuzeniYonetim(); }, 350);
+      }, 300);
     }).catch(err => toast('Hata: ' + err.message));
 }
 
@@ -3507,5 +3511,9 @@ function ozelMenuGrupSil(id){
   db.collection(COL.ozelMenu).doc(id).delete().then(() => {
     toast('Grup silindi.');
     renderOzelMenuYonetim();
+    setTimeout(() => {
+      if(typeof window._ozelGruplariYukle === 'function') window._ozelGruplariYukle();
+      setTimeout(() => { if(typeof renderNavDuzeniYonetim === 'function') renderNavDuzeniYonetim(); }, 350);
+    }, 300);
   }).catch(err => toast('Hata: ' + err.message));
 }
