@@ -333,7 +333,8 @@
 
   function _menuKartDuzenle(i){
     const g = GRUPLAR[i];
-    const varsayilan = _GRUPLAR_VARSAYILAN[i];
+    const varsayilan = _GRUPLAR_VARSAYILAN[i] || { ad: g.ad, renk: g.renk }; // özel gruplar için fallback
+    const ozelGrupMu = g._ozelId !== undefined;
     const body = `
       <div class="form-group"><label>Menü Adı</label><input id="anKartAdAlani" value="${escapeHtml(g.ad)}"></div>
       <div class="form-group">
@@ -344,7 +345,7 @@
           <input id="anKartRenkHex" maxlength="7" style="flex:1;font-family:monospace;text-transform:uppercase;" placeholder="#RRGGBB">
         </div>
       </div>
-      <button type="button" class="btn btn-ghost btn-sm" id="anKartVarsayilanaDon" style="width:100%;margin-top:10px;">Varsayılana Döndür (${escapeHtml(varsayilan.ad)})</button>
+      ${!ozelGrupMu ? `<button type="button" class="btn btn-ghost btn-sm" id="anKartVarsayilanaDon" style="width:100%;margin-top:10px;">Varsayılana Döndür (${escapeHtml(varsayilan.ad)})</button>` : ''}
     `;
     modalAc('Menü Kartını Düzenle', body, () => _menuKartKaydet(i), null, 'Kaydet');
 
@@ -384,7 +385,24 @@
     const yeniRenk = hexAlani ? hexAlani.value.trim() : '';
     if(!yeniAd){ toast('Menü adı boş olamaz.'); return; }
     if(!/^#[0-9a-fA-F]{6}$/.test(yeniRenk)){ toast('Geçerli bir renk seçin.'); return; }
-    const varsayilan = _GRUPLAR_VARSAYILAN[i];
+
+    const g = GRUPLAR[i];
+    // Özel gruplar (Firestore'dan gelenler) → Firestore'a kaydet
+    if(g._ozelId){
+      if(typeof db !== 'undefined' && typeof COL !== 'undefined' && COL.ozelMenu){
+        db.collection(COL.ozelMenu).doc(g._ozelId).update({ ad: yeniAd, renk: yeniRenk })
+          .catch(() => {});
+      }
+      GRUPLAR[i].ad = yeniAd;
+      GRUPLAR[i].renk = yeniRenk;
+      gridDoldur();
+      toast('Kaydedildi.');
+      modalKapat();
+      return;
+    }
+
+    // Yerleşik gruplar → localStorage'a kaydet
+    const varsayilan = _GRUPLAR_VARSAYILAN[i] || { ad: g.ad, renk: g.renk };
     const tercihler = _menuTercihleriGetir();
     const ozelAd = yeniAd !== varsayilan.ad ? yeniAd : undefined;
     const ozelRenk = (yeniRenk.toLowerCase() !== varsayilan.renk.toLowerCase()) ? yeniRenk : undefined;
