@@ -3223,6 +3223,77 @@ function ozelMenuGrupDuzenle(id){
   _ozelMenuGrupModalAc(g);
 }
 
+/* Uygulamadaki tüm mevcut sekmeleri (data-tab) toplar; Ayarlar'da
+   "Sekme adı" alanını elle yazmak yerine açılır listeden seçmek için
+   kullanılır. Kaynak: DOM'daki .nav-tab[data-tab] butonları (nt-label
+   metniyle birlikte), index.html'de statik olarak tanımlı sekmelerin
+   tamamını kapsar. */
+function _mevcutSekmeleriTopla(){
+  const gorulen = new Set();
+  const liste = [];
+  document.querySelectorAll('.nav-tab[data-tab]').forEach(btn => {
+    const tab = btn.getAttribute('data-tab');
+    if(!tab || gorulen.has(tab)) return;
+    gorulen.add(tab);
+    const etiketEl = btn.querySelector('.nt-label');
+    const label = etiketEl ? etiketEl.textContent.trim() : tab;
+    liste.push({ tab, label });
+  });
+  liste.sort((a,b) => a.label.localeCompare(b.label, 'tr'));
+  return liste;
+}
+
+/* "Sekme adı" alanı için select + (gerektiğinde) elle-yazma input'undan
+   oluşan bir kapsayıcı üretir. sekmeAd verilirse ve mevcut sekmeler
+   arasında yoksa (örn. henüz eklenmemiş özel bir sekme) otomatik olarak
+   "Diğer (elle yaz)" seçilir ve değer metin kutusuna yazılır. */
+function _sekmeSeciciOlustur(sekmeAd){
+  const sekmeler = _mevcutSekmeleriTopla();
+  const sarmalayici = document.createElement('div');
+  sarmalayici.className = 'om-oge-sekme-wrap';
+
+  const sel = document.createElement('select');
+  sel.className = 'om-oge-sekme om-oge-sekme-select';
+  sel.style.width = '100%';
+  sel.appendChild(new Option('Sekme seçin...', ''));
+  sekmeler.forEach(s => sel.appendChild(new Option(`${s.label} (${s.tab})`, s.tab)));
+  sel.appendChild(new Option('Diğer (elle yaz)', '__custom__'));
+
+  const custom = document.createElement('input');
+  custom.placeholder = 'Sekme adı (örn: yemekhane)';
+  custom.style.cssText = 'width:100%;margin-top:6px;display:none;';
+  custom.className = 'om-oge-sekme-custom';
+
+  sel.onchange = () => { custom.style.display = sel.value === '__custom__' ? '' : 'none'; };
+
+  if(sekmeAd){
+    const eslesen = sekmeler.find(s => s.tab === sekmeAd);
+    if(eslesen){
+      sel.value = sekmeAd;
+    } else {
+      sel.value = '__custom__';
+      custom.style.display = '';
+      custom.value = sekmeAd;
+    }
+  }
+
+  sarmalayici.appendChild(sel);
+  sarmalayici.appendChild(custom);
+  return sarmalayici;
+}
+
+/* Bir öğe satırındaki sekme seçici kapsayıcısından nihai sekme değerini
+   okur (select'ten ya da "Diğer" seçiliyse elle yazılan metinden). */
+function _omSekmeDegeriAl(satir){
+  const sel = satir.querySelector('.om-oge-sekme-select');
+  if(!sel) return '';
+  if(sel.value === '__custom__'){
+    const custom = satir.querySelector('.om-oge-sekme-custom');
+    return custom ? custom.value.trim() : '';
+  }
+  return sel.value.trim();
+}
+
 function _ozelMenuOgeEkle(){
   const liste = document.getElementById('omOgelerListesi');
   if(!liste) return;
@@ -3243,12 +3314,9 @@ function _ozelMenuOgeEkle(){
   silBtn.onclick = () => satir.remove();
   ust.appendChild(inpAd);
   ust.appendChild(silBtn);
-  const inpSekme = document.createElement('input');
-  inpSekme.placeholder = 'Sekme adı (örn: yemekhane)';
-  inpSekme.style.width = '100%';
-  inpSekme.className = 'om-oge-sekme';
+  const sekmeSecici = _sekmeSeciciOlustur('');
   satir.appendChild(ust);
-  satir.appendChild(inpSekme);
+  satir.appendChild(sekmeSecici);
   liste.appendChild(satir);
 }
 
@@ -3344,13 +3412,9 @@ function _ozelMenuGrupModalAc(g){
     silBtn.onclick = () => satir.remove();
     ust.appendChild(inpA);
     ust.appendChild(silBtn);
-    const inpS = document.createElement('input');
-    inpS.placeholder = 'Sekme adı (örn: yemekhane)';
-    inpS.value = o.sekmeAd||'';
-    inpS.style.width = '100%';
-    inpS.className = 'om-oge-sekme';
+    const sekmeSecici = _sekmeSeciciOlustur(o.sekmeAd||'');
     satir.appendChild(ust);
-    satir.appendChild(inpS);
+    satir.appendChild(sekmeSecici);
     ogeListe.appendChild(satir);
   });
   const ogeEkleBtn = document.createElement('button');
@@ -3391,7 +3455,7 @@ function _ozelMenuGrupKaydet(g){
 
     const ogeler = [...document.querySelectorAll('#omOgelerListesi [data-oge-idx]')].map(div => ({
       ad: (div.querySelector('.om-oge-ad').value || '').trim(),
-      sekmeAd: (div.querySelector('.om-oge-sekme').value || '').trim(),
+      sekmeAd: _omSekmeDegeriAl(div),
     })).filter(o => o.ad && o.sekmeAd);
 
     const veri = {
