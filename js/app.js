@@ -3357,7 +3357,26 @@ function _ozelMenuGrupModalAc(g){
   ogeGrup.appendChild(ogeEkleBtn);
   govdeEl.appendChild(ogeGrup);
 
-  modalAc(g ? '✏️ Grubu Düzenle' : '➕ Yeni Menü Grubu', govdeEl, () => {
+  // modalAc innerHTML bekliyor — DOM elementi yerleştir
+  const modalBody = document.getElementById('modalBody');
+  document.getElementById('modalTitle').textContent = g ? '✏️ Grubu Düzenle' : '➕ Yeni Menü Grubu';
+  modalBody.innerHTML = '';
+  modalBody.appendChild(govdeEl);
+  const silBtn = document.getElementById('modalSilBtn');
+  silBtn.style.display = 'none'; silBtn.onclick = null;
+  const kaydetBtn = document.getElementById('modalKaydetBtn');
+  kaydetBtn.style.display = 'inline-flex';
+  kaydetBtn.textContent = 'Kaydet';
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.classList.add('modal-open');
+  if(typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
+  kaydetBtn.onclick = () => {
+    try { _ozelMenuGrupKaydet(g); }
+    catch(e){ console.error(e); toast('Hata: ' + e.message); }
+  };
+}
+
+function _ozelMenuGrupKaydet(g){
     const ad = document.getElementById('omGrupAd').value.trim();
     const renk = document.getElementById('omGrupRenk').value.trim() || '#607D8B';
     if(!ad){ toast('Grup adı zorunludur.'); return; }
@@ -3382,10 +3401,8 @@ function _ozelMenuGrupModalAc(g){
       toast(g ? 'Grup güncellendi.' : 'Grup eklendi.');
       modalKapat();
       renderOzelMenuYonetim();
-      // Alt navigasyon menüsünü yenile
       setTimeout(() => { if(typeof window._ozelGruplariYukle === 'function') window._ozelGruplariYukle(); }, 300);
     }).catch(err => toast('Hata: ' + err.message));
-  });
 }
 
 function ozelMenuGrupSil(id){
