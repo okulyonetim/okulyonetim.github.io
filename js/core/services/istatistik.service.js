@@ -29,20 +29,27 @@ const IstatistikService = {
     return db.collection(COL.kullaniciIstatistikleri).doc(uid);
   },
 
-  /* Ortak: belge yoksa oluşturur (merge:true), varsa günceller. Hatalar
-     sessizce loglanır — istatistik kaydı asla kullanıcının asıl işlemini
-     (not kaydetme, dosya yükleme vb.) engellememeli/başarısız kılmamalı. */
+  /* Ortak: belge yoksa oluşturur, varsa günceller. Hatalar sessizce
+     loglanır — istatistik kaydı asla kullanıcının asıl işlemini (not
+     kaydetme, dosya yükleme vb.) engellememeli/başarısız kılmamalı.
+
+     DÜZELTME (depolama kullanımı hep 0 görünme ihtimaline karşı): nokta
+     içeren iç içe alan adları (ör. "depolamaKullanimi.dokuman") sadece
+     update()'te KESİN olarak garanti; set(...,{merge:true}) ile aynı
+     davranış çoğu durumda çalışsa da resmi olarak update() kadar garanti
+     değil. Artık önce belgenin var olduğundan set(merge:true) ile emin
+     olunuyor (boş bir yazımla), SONRA gerçek alanlar update() ile
+     yazılıyor — nokta'lı iç içe alan artık kesin doğru yere yazılır.
+     Ayrıca hata artık konsola daha görünür şekilde loglanıyor. */
   async _guncelle(alanlar){
     const ben = this._kimlik();
     if(!ben || !ben.uid || !db) return;
+    const ref = this._belgeRef(ben.uid);
     try{
-      await this._belgeRef(ben.uid).set({
-        ad: ben.ad,
-        guncellenmeTarihi: firebase.firestore.FieldValue.serverTimestamp(),
-        ...alanlar
-      }, { merge: true });
+      await ref.set({ ad: ben.ad, guncellenmeTarihi: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      await ref.update(alanlar);
     }catch(e){
-      console.warn('İstatistik kaydedilemedi (yoksayıldı):', e);
+      console.error('[İstatistik] Kaydedilemedi:', e, 'alanlar:', alanlar);
     }
   },
 
@@ -76,9 +83,10 @@ const IstatistikService = {
      fonksiyon hedef uid'i açıkça alır. */
   depolamaKullanimCikarUid(uid, kategori, bayt){
     if(!bayt || !kategori || !uid || !db) return;
-    db.collection(COL.kullaniciIstatistikleri).doc(uid).set({
-      [`depolamaKullanimi.${kategori}`]: firebase.firestore.FieldValue.increment(-bayt)
-    }, { merge:true }).catch(e => console.warn('İstatistik (depolama) güncellenemedi (yoksayıldı):', e));
+    const ref = db.collection(COL.kullaniciIstatistikleri).doc(uid);
+    ref.set({}, { merge:true })
+      .then(() => ref.update({ [`depolamaKullanimi.${kategori}`]: firebase.firestore.FieldValue.increment(-bayt) }))
+      .catch(e => console.error('[İstatistik] Depolama (uid ile) güncellenemedi:', e));
   },
 
   notEklemeKaydet(){
