@@ -176,6 +176,11 @@ function _ndGrupAdRenkModalAc(g){
     } else {
       nd.grupOverride[g.anahtar] = { ad: yeniAd, renk: yeniRenk };
     }
+    // DÜZELTME: bu cihazda o gruba ait eski kişisel renk/ad tercihi varsa
+    // temizle — yoksa admin'in az önce girdiği yeni değer, kendi menüsünde
+    // eski kişisel tercih tarafından gölgelenip "eski haline dönmüş" gibi
+    // görünmeye devam eder (bkz. js/alt-navigasyon.js _menuKisiselTercihTemizle).
+    if(typeof window._menuKisiselTercihTemizle === 'function') window._menuKisiselTercihTemizle(g.anahtar);
     _ndKaydet(nd, 'Grup güncellendi.');
     modalKapat();
   }, null, 'Kaydet');

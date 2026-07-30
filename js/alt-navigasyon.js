@@ -373,7 +373,14 @@
       });
       _ozelGruplarVerisi = yeniListe;
       _yenidenInsaVeYenile();
-    }).catch(() => {});
+    }).catch(e => {
+      // DÜZELTME: Eskiden hata sessizce yutulup bir daha hiç denenmiyordu —
+      // özellikle auth henüz tamamlanmadan (izin hatası) tetiklenirse özel
+      // gruplar o oturum boyunca navigasyonda hiç görünmüyordu. Şimdi konsola
+      // yazılıyor ve bir kez kısa gecikmeyle tekrar deneniyor.
+      console.warn('Özel menü grupları yüklenemedi, tekrar denenecek:', e);
+      setTimeout(_ozelGruplariYukle, 3000);
+    });
   }
 
   /* ---- Firestore'dan admin navigasyon düzenini yükle ----
@@ -385,7 +392,14 @@
     db.collection(COL.navDuzeni).doc('ayarlar').get().then(doc => {
       _navDuzeniVerisi = doc.exists ? (doc.data() || {}) : {};
       _yenidenInsaVeYenile();
-    }).catch(() => {});
+    }).catch(e => {
+      // DÜZELTME: bkz. _ozelGruplariYukle() üstündeki aynı not — sessiz
+      // yutma + tekrar deneme yokluğu, admin düzeninin (yeni grup/öğe,
+      // renk vb.) uygulama yeniden açıldığında hiç yüklenmemesine yol
+      // açabiliyordu.
+      console.warn('Navigasyon düzeni yüklenemedi, tekrar denenecek:', e);
+      setTimeout(_navDuzeniYukle, 3000);
+    });
   }
 
   // Global erişim — app.js'teki kaydet fonksiyonları ve Navigasyon Düzeni
@@ -398,11 +412,27 @@
   // Navigasyon Düzeni editörü için: HİÇBİR ŞEY elenmeden (gizli grup/öğeler
   // dahil, _gizliMi bayraklı) güncel birleşik liste.
   window._navDuzeniTumGruplarGetir = () => _navDuzeniInsaEt(true);
+  window._menuKisiselTercihTemizle = _menuKisiselTercihTemizle;
 
-  // Uygulama hazır olduğunda özel grupları ve navigasyon düzenini yükle
+  // DÜZELTME (kök sebep): Bu ikisi eskiden DOMContentLoaded'dan 1500ms sonra
+  // KÖRÜ KÖRÜNE (auth/AKTIF_KULLANICI durumundan habersiz) çağrılıyordu.
+  // auth.js'deki onAuthStateChanged asenkron kullanıcı belgesi okuması
+  // (+ rol okuması) yavaş bir ağda 1500ms'den uzun sürebiliyor; Firestore
+  // kuralları artık request.auth != null gerektirdiği için bu durumda okuma
+  // izin hatasıyla reddediliyor, sessizce yutuluyor ve BİR DAHA HİÇ
+  // denenmiyordu — sonuçta Ayarlar'dan yeni eklenen grup/öğe/renk o oturum
+  // boyunca gerçek navigasyonda hiç görünmüyordu (Ayarlar ekranları kendi
+  // taze Firestore okumalarını yaptığı için orada doğru görünüyordu).
+  // Artık gerçek "kullanıcı hazır" sinyaliyle (auth.js -> uygulamaBaslat
+  // sonrası) tetikleniyor; DOMContentLoaded+geç zamanlı sürüm sadece
+  // savunma amaçlı yedek olarak kalıyor.
+  function _navVerileriniYukle(){
+    _ozelGruplariYukle();
+    _navDuzeniYukle();
+  }
+  window._navVerileriniYukle = _navVerileriniYukle;
   document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(_ozelGruplariYukle, 1500);
-    setTimeout(_navDuzeniYukle, 1500);
+    setTimeout(_navVerileriniYukle, 6000); // yedek: auth sinyali hiç gelmezse
   });
 
   /* ---- Menü kartı özelleştirme (renk + isim) ----
@@ -428,6 +458,24 @@
   }
   function _menuTercihleriKaydet(tercihler){
     try{ localStorage.setItem(_MENU_TERCIH_ANAHTARI, JSON.stringify(tercihler)); }catch(e){}
+  }
+  // DÜZELTME (kök sebep — renk "eski haline dönüyor" hatası): kişisel/cihaza
+  // özel kart renk-ad tercihi, gerçek navigasyonda admin'in Navigasyon Düzeni
+  // ayarından yaptığı değişikliğin ÜZERİNE biniyor (bkz. _navDuzeniInsaEt
+  // adım 7) — ama Ayarlar'daki editör ekranı bu kişisel tercihi hiç
+  // uygulamıyor, admin'in girdiği değeri gösteriyor. Sonuç: admin kendi
+  // cihazında bir grubu daha önce (⚙️ "Kartı Düzenle" ile) kişisel olarak
+  // özelleştirmişse, sonradan Navigasyon Düzeni'nden yaptığı renk/ad
+  // değişikliği Ayarlar'da doğru görünür ama GERÇEK menüde eski (kişisel)
+  // değere "geri dönmüş" gibi görünür. Admin built-in bir grubun resmi ad/
+  // rengini değiştirdiğinde bu fonksiyon kendi cihazındaki eski kişisel
+  // tercihi temizler ki yaptığı değişikliği kendi menüsünde de görsün.
+  function _menuKisiselTercihTemizle(anahtar){
+    const tercihler = _menuTercihleriGetir();
+    if(tercihler[anahtar]){
+      delete tercihler[anahtar];
+      _menuTercihleriKaydet(tercihler);
+    }
   }
 
   /* ---- Serbest renk seçici: hue çubuğu + doygunluk/parlaklık kare alanı ----

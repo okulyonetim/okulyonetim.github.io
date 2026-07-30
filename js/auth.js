@@ -277,6 +277,12 @@ function authDinleyiciKur(){
       if(typeof IstatistikService !== 'undefined') IstatistikService.girisKaydet();
       if(typeof uygulamaBaslat === 'function') uygulamaBaslat();
 
+      // DÜZELTME: alt-navigasyon.js'deki özel grup/nav-düzeni yüklemesi
+      // artık burada, kullanıcı GERÇEKTEN hazır olduğunda tetikleniyor —
+      // eskiden sabit bir zamanlayıcıyla, auth'tan bağımsız çalışıyordu ve
+      // yavaş girişte izin hatasına takılıp bir daha hiç yeniden denenmiyordu.
+      if(typeof window._navVerileriniYukle === 'function') window._navVerileriniYukle();
+
       // YENİ: Native tarafa (Android) "uygulama gerçekten hazır" sinyali
       // gönder — pull-to-refresh göstergesinin sabit bir süre yerine
       // GERÇEKTEN hazır olana kadar dönmesi için. window.Capacitor yoksa
