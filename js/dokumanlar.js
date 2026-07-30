@@ -1069,7 +1069,16 @@ function _dokGaussCoz(A, B) {
    S/B Metin: gri tonlama + Otsu eşiklemesiyle tam siyah-beyaz (ikili)
    tarama görünümü — metin belgeleri için en yüksek okunabilirlik. */
 function _dokBelgeModuUygula(ctx, w, h) {
-  const kucukW = Math.max(8, Math.round(w / 24)), kucukH = Math.max(8, Math.round(h / 24));
+  // ÖNEMLİ: bir önceki sürümde renk kaymasını önlemek için TEK gri
+  // (luminans) arka plan kullanılmıştı — ama bu, kağıdın/ışığın gerçek
+  // renk tonuna (pembemsi) hiç dokunmuyordu, sadece parlaklığı düzeltip
+  // pembe tonu olduğu gibi bırakıyordu. Asıl düzeltme KANAL BAŞINA yerel
+  // beyaz dengesi olmalı — önceki denemedeki rastgele leke sorunu, arka
+  // plan tahmininin ÇOK küçük/gürültülü bir gride dayanmasından
+  // kaynaklanıyordu. Şimdi daha büyük/yumuşak bir gride dayandırılıyor VE
+  // düzeltme oranı makul bir aralıkla sınırlandırılıyor — hem gerçek renk
+  // kaymasını düzeltir hem de gürültüden kaynaklı lekelenmeyi önler.
+  const kucukW = Math.max(10, Math.round(w / 40)), kucukH = Math.max(10, Math.round(h / 40));
   const kucukCanvas = document.createElement('canvas');
   kucukCanvas.width = kucukW; kucukCanvas.height = kucukH;
   kucukCanvas.getContext('2d').drawImage(ctx.canvas, 0, 0, kucukW, kucukH);
@@ -1081,12 +1090,13 @@ function _dokBelgeModuUygula(ctx, w, h) {
 
   const veri = ctx.getImageData(0, 0, w, h);
   const p = veri.data;
+  const MIN_ORAN = 0.55, MAX_ORAN = 1.9;
   for (let i = 0; i < p.length; i += 4) {
-    const bgGri = Math.max((arkaplan[i] + arkaplan[i + 1] + arkaplan[i + 2]) / 3, 1);
-    const oran = 235 / bgGri;
-    p[i]     = Math.max(0, Math.min(255, p[i] * oran));
-    p[i + 1] = Math.max(0, Math.min(255, p[i + 1] * oran));
-    p[i + 2] = Math.max(0, Math.min(255, p[i + 2] * oran));
+    for (let k = 0; k < 3; k++) {
+      const bg = Math.max(arkaplan[i + k], 1);
+      const oran = Math.max(MIN_ORAN, Math.min(MAX_ORAN, 235 / bg));
+      p[i + k] = Math.max(0, Math.min(255, p[i + k] * oran));
+    }
   }
   ctx.putImageData(veri, 0, 0);
 
@@ -1115,7 +1125,7 @@ function _dokBeyazDengesi(ctx, w, h) {
 
   const ortR = toplamR / sayac, ortG = toplamG / sayac, ortB = toplamB / sayac;
   const hedefGri = (ortR + ortG + ortB) / 3;
-  const sinirla = (k) => Math.max(0.7, Math.min(1.4, k));
+  const sinirla = (k) => Math.max(0.6, Math.min(1.6, k));
   const kR = sinirla(hedefGri / Math.max(ortR, 1));
   const kG = sinirla(hedefGri / Math.max(ortG, 1));
   const kB = sinirla(hedefGri / Math.max(ortB, 1));
