@@ -222,7 +222,7 @@ function dokumanYukleModalAc() {
             <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="dokumanResimPdfIndir()">⬇ İndir</button>
             <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="dokumanResimPdfPaylas()">📤 Paylaş</button>
           </div>
-          <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Resimleri seçtikten sonra "Kırp/Döndür/Sırala" ile düzenleyin — 4 köşeli dikdörtgen kırpma (büyüteçli), yamuk çekilmiş belgeler için perspektif düzeltme, döndürme, sıralama; Belge Modu/Gri Tonlama/Siyah-Beyaz Metin filtreleri ve Parlaklık/Kontrast ayarı var. Sonra "PDF Oluştur"a basın; PDF hazır olunca Dökümanlar'a kaydedebilir ya da doğrudan İndir/Paylaş ile WhatsApp/Drive/e-postaya gönderebilirsiniz.</div>
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Resimleri seçtikten sonra "Kırp/Döndür/Sırala" ile düzenleyin — 4 köşeyi (birbirinden bağımsız, büyüteçli) belgenin gerçek köşelerine sürükleyin, yamuksa bile otomatik düz dikdörtgene dönüştürülür; ayrıca döndürme, sıralama, Belge Modu/Gri Tonlama/Siyah-Beyaz Metin filtreleri ve Parlaklık/Kontrast ayarı var. Sonra "PDF Oluştur"a basın; PDF hazır olunca Dökümanlar'a kaydedebilir ya da doğrudan İndir/Paylaş ile WhatsApp/Drive/e-postaya gönderebilirsiniz.</div>
         </div>
         <div id="dok_panel_url" style="display:none;">
           <input id="dok_url" placeholder="https://drive.google.com/..." style="width:100%;">
@@ -323,7 +323,7 @@ async function dokumanResimlerSecildi(input) {
 
     _dokResimListe.push({
       blob: f, url,
-      kirpma: null, kose: null, mod: 'dikdortgen', filtre: 'orijinal',
+      kose: null, filtre: 'orijinal',
       parlaklik: 0, kontrast: 0,
       ad: f.name
     });
@@ -445,18 +445,14 @@ function _dokEditorOlustur() {
     <div style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
         <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:44vh;user-select:none;-webkit-user-drag:none;">
-        <svg id="dokEditorSvg" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;display:none;" viewBox="0 0 1 1" preserveAspectRatio="none">
+        <svg id="dokEditorSvg" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 1 1" preserveAspectRatio="none">
           <polygon id="dokEditorPoligon" points="0.06,0.06 0.94,0.06 0.94,0.94 0.06,0.94" fill="rgba(255,152,0,.18)" stroke="#ff9800" stroke-width="0.006" vector-effect="non-scaling-stroke"></polygon>
+          <polyline id="dokEditorKenarVurgu" points="" fill="none" stroke="#4caf50" stroke-width="0.014" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="display:none;"></polyline>
         </svg>
-        <div id="dokEditorKirpma" style="position:absolute;border:2px solid #4caf50;box-shadow:0 0 0 9999px rgba(0,0,0,.5);pointer-events:none;"></div>
-        <div id="dokEditorTutTL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
-        <div id="dokEditorTutTR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
-        <div id="dokEditorTutBR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
-        <div id="dokEditorTutBL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
-        <div id="dokEditorKoseTL" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
-        <div id="dokEditorKoseTR" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
-        <div id="dokEditorKoseBR" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
-        <div id="dokEditorKoseBL" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
+        <div id="dokEditorKoseTL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
+        <div id="dokEditorKoseTR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
+        <div id="dokEditorKoseBR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
+        <div id="dokEditorKoseBL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
         <div id="dokEditorBuyutec" style="display:none;position:absolute;width:100px;height:100px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;background-repeat:no-repeat;z-index:30;">
           <div style="position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;border:2px solid #ff1744;box-sizing:border-box;"></div>
         </div>
@@ -464,8 +460,7 @@ function _dokEditorOlustur() {
     </div>
     <div style="padding:10px 12px;background:#17171d;flex-shrink:0;">
       <div style="display:flex;gap:6px;margin-bottom:8px;">
-        <button id="dokEditorModBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimModDegistir()">▭ Dikdörtgen Kırpma</button>
-        <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimKirpmaSifirla()">↺ Sıfırla</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimKirpmaSifirla()">↺ Köşeleri Sıfırla</button>
       </div>
       <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
         <button id="dokFiltreOrijinalBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('orijinal')">Orijinal</button>
@@ -481,7 +476,7 @@ function _dokEditorOlustur() {
         <label style="font-size:11px;color:#ccc;display:flex;justify-content:space-between;">◐ Kontrast <span id="dokKontrastDeger">0</span></label>
         <input type="range" id="dokKontrastSlider" min="-50" max="50" value="0" style="width:100%;" oninput="dokumanResimKontrastDegisti(this.value)">
       </div>
-      <div style="font-size:10px;color:#999;margin-bottom:8px;">Perspektif modunda turuncu 4 köşeyi belgenin gerçek köşelerine sürükleyin (yamuksa bile) — çıkışta düz dikdörtgene dönüştürülür. Bir köşeyi sürüklerken büyüteç parmağınızın üstünde beliriyor. Önizlemedeki filtre/parlaklık/kontrast yaklaşıktır, gerçek sonuç "PDF Oluştur"da işlenir.</div>
+      <div style="font-size:10px;color:#999;margin-bottom:8px;">Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Önizlemedeki filtre/parlaklık/kontrast yaklaşıktır, gerçek sonuç işleme sırasında uygulanır.</div>
       <div id="dokEditorSerit" style="display:flex;gap:6px;overflow-x:auto;padding:6px 0;"></div>
     </div>
   `;
@@ -493,10 +488,6 @@ function _dokEditorOlustur() {
     const it = _dokResimListe[_dokResimEditorIndex];
     if (it) _dokBuyutecAc(it.url);
   };
-  document.getElementById('dokEditorTutTL').addEventListener('pointerdown', surukleBaslat('tl'));
-  document.getElementById('dokEditorTutTR').addEventListener('pointerdown', surukleBaslat('tr'));
-  document.getElementById('dokEditorTutBR').addEventListener('pointerdown', surukleBaslat('br'));
-  document.getElementById('dokEditorTutBL').addEventListener('pointerdown', surukleBaslat('bl'));
   ['TL', 'TR', 'BR', 'BL'].forEach(k => {
     document.getElementById('dokEditorKose' + k).addEventListener('pointerdown', surukleBaslat('kose-' + k.toLowerCase()));
   });
@@ -541,7 +532,8 @@ function _dokEditorResmiYukle(index) {
   if (it.kontrast === undefined) it.kontrast = 0;
   const img = document.getElementById('dokEditorImg');
   img.onload = () => {
-    _dokEditorModuUygula(it);
+    if (!it.kose) it.kose = _dokVarsayilanKose();
+    _dokEditorPoligonCiz(it.kose);
     _dokFiltrePillGuncelle(it.filtre);
     const parlakSlider = document.getElementById('dokParlaklikSlider');
     const kontrastSlider = document.getElementById('dokKontrastSlider');
@@ -556,39 +548,8 @@ function _dokEditorResmiYukle(index) {
   _dokEditorSeritCiz();
 }
 
-/* Dikdörtgen kırpma ile perspektif (4 köşe) modu arasında geçiş —
-   ilgili tutamaç/poligon gösterilir, diğeri gizlenir. */
-function dokumanResimModDegistir() {
-  const it = _dokResimListe[_dokResimEditorIndex];
-  if (!it) return;
-  it.mod = it.mod === 'perspektif' ? 'dikdortgen' : 'perspektif';
-  _dokEditorModuUygula(it);
-}
-
-function _dokEditorModuUygula(it) {
-  const perspektifMi = it.mod === 'perspektif';
-  ['dokEditorKirpma', 'dokEditorTutTL', 'dokEditorTutTR', 'dokEditorTutBR', 'dokEditorTutBL'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = perspektifMi ? 'none' : '';
-  });
-  document.getElementById('dokEditorSvg').style.display = perspektifMi ? 'block' : 'none';
-  ['dokEditorKoseTL', 'dokEditorKoseTR', 'dokEditorKoseBR', 'dokEditorKoseBL'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = perspektifMi ? '' : 'none';
-  });
-  const modBtn = document.getElementById('dokEditorModBtn');
-  if (modBtn) modBtn.textContent = perspektifMi ? '◈ Perspektif (4 köşe)' : '▭ Dikdörtgen Kırpma';
-
-  if (perspektifMi) {
-    if (!it.kose) it.kose = _dokVarsayilanKose();
-    _dokEditorPoligonCiz(it.kose);
-  } else {
-    _dokEditorKirpmaKutusunuUygula(it.kirpma);
-  }
-}
-
 function _dokVarsayilanKose() {
-  return { tl: { x: 0.06, y: 0.06 }, tr: { x: 0.94, y: 0.06 }, br: { x: 0.94, y: 0.94 }, bl: { x: 0.06, y: 0.94 } };
+  return { tl: { x: 0.03, y: 0.03 }, tr: { x: 0.97, y: 0.03 }, br: { x: 0.97, y: 0.97 }, bl: { x: 0.03, y: 0.97 } };
 }
 
 function _dokEditorPoligonCiz(kose) {
@@ -601,28 +562,23 @@ function _dokEditorPoligonCiz(kose) {
   });
 }
 
-function _dokEditorKirpmaKutusunuUygula(kirpma) {
-  const k = kirpma || { x: 0.02, y: 0.02, w: 0.96, h: 0.96 };
-  const kutu = document.getElementById('dokEditorKirpma');
-  kutu.style.left = (k.x * 100) + '%';
-  kutu.style.top = (k.y * 100) + '%';
-  kutu.style.width = (k.w * 100) + '%';
-  kutu.style.height = (k.h * 100) + '%';
-  _dokEditorTutamaclariYerlestir();
+/* Bir köşe sürüklenirken, o köşeye bağlı İKİ KENARI (önceki-bu köşe ve
+   bu köşe-sonraki köşe) ayrı bir çizgiyle vurgular — kullanıcı sadece
+   izole bir nokta değil, hangi iki kenarı hareket ettirdiğini görsün diye. */
+const _DOK_KOSE_SIRA = ['tl', 'tr', 'br', 'bl'];
+function _dokEditorKenarVurgusuGuncelle(kose, aktifKoseAdi) {
+  const vurgu = document.getElementById('dokEditorKenarVurgu');
+  if (!vurgu || !aktifKoseAdi) return;
+  const idx = _DOK_KOSE_SIRA.indexOf(aktifKoseAdi);
+  const onceki = _DOK_KOSE_SIRA[(idx + 3) % 4];
+  const sonraki = _DOK_KOSE_SIRA[(idx + 1) % 4];
+  vurgu.setAttribute('points', `${kose[onceki].x},${kose[onceki].y} ${kose[aktifKoseAdi].x},${kose[aktifKoseAdi].y} ${kose[sonraki].x},${kose[sonraki].y}`);
+  vurgu.style.display = 'block';
 }
 
-function _dokEditorTutamaclariYerlestir() {
-  const kutu = document.getElementById('dokEditorKirpma');
-  const tl = document.getElementById('dokEditorTutTL');
-  const tr = document.getElementById('dokEditorTutTR');
-  const br = document.getElementById('dokEditorTutBR');
-  const bl = document.getElementById('dokEditorTutBL');
-  if (!kutu || !tl || !tr || !br || !bl) return;
-  const sol = kutu.style.left, ust = kutu.style.top, gen = kutu.style.width, yuk = kutu.style.height;
-  tl.style.left = sol; tl.style.top = ust;
-  tr.style.left = `calc(${sol} + ${gen})`; tr.style.top = ust;
-  br.style.left = `calc(${sol} + ${gen})`; br.style.top = `calc(${ust} + ${yuk})`;
-  bl.style.left = sol; bl.style.top = `calc(${ust} + ${yuk})`;
+function _dokEditorKenarVurgusuGizle() {
+  const vurgu = document.getElementById('dokEditorKenarVurgu');
+  if (vurgu) vurgu.style.display = 'none';
 }
 
 function _dokKirpmaSuruklemeIsle(e) {
@@ -636,62 +592,19 @@ function _dokKirpmaSuruklemeIsle(e) {
   y = Math.min(1, Math.max(0, y));
   _dokBuyutecKonumlandir(e.clientX, e.clientY, x, y, rect);
 
-  if (_dokKirpmaSurukleme.indexOf('kose-') === 0) {
-    const kose = _dokKirpmaSurukleme.slice(5); // tl/tr/br/bl
-    const it = _dokResimListe[_dokResimEditorIndex];
-    if (!it) return;
-    if (!it.kose) it.kose = _dokVarsayilanKose();
-    it.kose[kose] = { x, y };
-    _dokEditorPoligonCiz(it.kose);
-    return;
-  }
-
-  const kutu = document.getElementById('dokEditorKirpma');
-  const sol = parseFloat(kutu.style.left) / 100;
-  const ust = parseFloat(kutu.style.top) / 100;
-  const gen = parseFloat(kutu.style.width) / 100;
-  const yuk = parseFloat(kutu.style.height) / 100;
-  const MIN = 0.08;
-
-  if (_dokKirpmaSurukleme === 'tl') {
-    const yeniSol = Math.min(x, sol + gen - MIN);
-    const yeniUst = Math.min(y, ust + yuk - MIN);
-    kutu.style.width  = ((sol + gen - yeniSol) * 100) + '%';
-    kutu.style.height = ((ust + yuk - yeniUst) * 100) + '%';
-    kutu.style.left = (yeniSol * 100) + '%';
-    kutu.style.top  = (yeniUst * 100) + '%';
-  } else if (_dokKirpmaSurukleme === 'tr') {
-    const yeniUst = Math.min(y, ust + yuk - MIN);
-    kutu.style.width  = (Math.max(MIN, x - sol) * 100) + '%';
-    kutu.style.height = ((ust + yuk - yeniUst) * 100) + '%';
-    kutu.style.top = (yeniUst * 100) + '%';
-  } else if (_dokKirpmaSurukleme === 'br') {
-    kutu.style.width  = (Math.max(MIN, x - sol) * 100) + '%';
-    kutu.style.height = (Math.max(MIN, y - ust) * 100) + '%';
-  } else if (_dokKirpmaSurukleme === 'bl') {
-    const yeniSol = Math.min(x, sol + gen - MIN);
-    kutu.style.width  = ((sol + gen - yeniSol) * 100) + '%';
-    kutu.style.left = (yeniSol * 100) + '%';
-    kutu.style.height = (Math.max(MIN, y - ust) * 100) + '%';
-  }
-  _dokEditorTutamaclariYerlestir();
+  const kose = _dokKirpmaSurukleme.slice(5); // 'kose-tl' -> 'tl'
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (!it) return;
+  if (!it.kose) it.kose = _dokVarsayilanKose();
+  it.kose[kose] = { x, y };
+  _dokEditorPoligonCiz(it.kose);
+  _dokEditorKenarVurgusuGuncelle(it.kose, kose);
 }
 
 function _dokKirpmaSuruklemeBitir() {
-  if (_dokKirpmaSurukleme && _dokKirpmaSurukleme.indexOf('kose-') !== 0) {
-    const it = _dokResimListe[_dokResimEditorIndex];
-    const kutu = document.getElementById('dokEditorKirpma');
-    if (it && kutu) {
-      it.kirpma = {
-        x: parseFloat(kutu.style.left) / 100,
-        y: parseFloat(kutu.style.top) / 100,
-        w: parseFloat(kutu.style.width) / 100,
-        h: parseFloat(kutu.style.height) / 100,
-      };
-    }
-  }
   _dokKirpmaSurukleme = null;
   _dokBuyutecKapat();
+  _dokEditorKenarVurgusuGizle();
 }
 
 /* ---------------- Büyüteçli köşe tutucu ----------------
@@ -730,13 +643,8 @@ function _dokBuyutecKapat() {
 function dokumanResimKirpmaSifirla() {
   const it = _dokResimListe[_dokResimEditorIndex];
   if (!it) return;
-  if (it.mod === 'perspektif') {
-    it.kose = _dokVarsayilanKose();
-    _dokEditorPoligonCiz(it.kose);
-  } else {
-    it.kirpma = null;
-    _dokEditorKirpmaKutusunuUygula(null);
-  }
+  it.kose = _dokVarsayilanKose();
+  _dokEditorPoligonCiz(it.kose);
 }
 
 /* ---------------- Filtre + Parlaklık/Kontrast seçimi
@@ -815,9 +723,7 @@ async function dokumanResimDondur() {
     const yeniUrl = canvas.toDataURL('image/jpeg', 0.92);
     if (it.url.indexOf('blob:') === 0) URL.revokeObjectURL(it.url);
     it.url = yeniUrl;
-    it.kirpma = null;
     it.kose = null;
-    it.mod = 'dikdortgen';
     _dokEditorResmiYukle(_dokResimEditorIndex);
   } catch (e) {
     toast('Döndürme hatası: ' + e.message);
@@ -896,9 +802,12 @@ async function dokumanResimlerdenPdfOlustur() {
    4) JPEG'e sıkıştırıp dataURL döndürür. */
 async function _dokResimIsle(item) {
   const img = await _dokImgYukle(item.url);
-  let canvas = (item.mod === 'perspektif' && item.kose)
-    ? _dokPerspektifCanvasUret(img, item.kose)
-    : _dokKirpCanvasUret(img, item.kirpma);
+  // Artık tek kırpma sistemi var: 4 bağımsız köşe, her zaman düz (90°)
+  // bir dikdörtgene perspektif dönüşümle düzeltilir. Köşe hiç
+  // dokunulmamışsa (varsayılan, neredeyse tam kare) sonuç zaten tüm
+  // görüntüye çok yakın olur — yani ayrıca "kırpma yok" durumu için özel
+  // bir kod yoluna gerek kalmadı.
+  let canvas = _dokPerspektifCanvasUret(img, item.kose || _dokVarsayilanKose());
   canvas = _dokBoyutSinirla(canvas, 1600);
 
   const ctx = canvas.getContext('2d');
