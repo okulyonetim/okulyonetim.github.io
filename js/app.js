@@ -2630,6 +2630,11 @@ function geriTusuIsle(){
   var ssLi = document.getElementById('ssListeOverlay');
   if(ssLi && typeof sinavSonuclariKapat==='function'){ sinavSonuclariKapat(); return 'handled'; }
 
+  var yokDe = document.getElementById('yokDevamsizOverlay');
+  if(yokDe && typeof yoklamaDevamsizlarKapat==='function'){ yoklamaDevamsizlarKapat(); return 'handled'; }
+  var yokOv = document.getElementById('yokOverlay');
+  if(yokOv && typeof yoklamaKapat==='function'){ yoklamaKapat(); return 'handled'; }
+
   var yplH = document.getElementById('yplHaftaOverlay');
   if(yplH && typeof yillikPlanHaftaKapat==='function'){ yillikPlanHaftaKapat(); return 'handled'; }
   var yplO = document.getElementById('yplOnizlemeOverlay');

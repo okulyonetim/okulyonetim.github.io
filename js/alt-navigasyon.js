@@ -95,6 +95,7 @@
       {anahtar:'g1_ogretmenler',ad:'Öğretmenler', ikon:'ogretmen', modul:'ogretmenler', aksiyon:git('ogretmenler')},
       {anahtar:'g1_ogrenciler',ad:'Öğrenciler', ikon:'ogrenci', modul:'ogrenciler', aksiyon:git('ogrenciler')},
       {anahtar:'g1_siniflar',ad:'Sınıflar', ikon:'sinif', modul:'siniflar', aksiyon:git('siniflar')},
+      {anahtar:'g1_yoklama',ad:'Öğrenci Yoklama', ikon:'liste', modul:'yoklama', aksiyon:function(){ if(typeof yoklamaAc==='function') yoklamaAc(); }},
       {anahtar:'g1_ogrListeOlusturucu',ad:'Öğrenci Listesi Oluşturucu', ikon:'liste', modul:null, aksiyon:function(){ sekmeAc('ogretmenListe'); if(typeof ogretmenListeSekmesiAc==='function') ogretmenListeSekmesiAc(); }},
       {anahtar:'g1_odevTakip',ad:'Ödev Takip Çizelgesi', ikon:'liste', modul:'odevTakip', aksiyon:git('odevTakip', function(){ if(typeof renderOncListesi==='function') renderOncListesi('odevTakip'); })},
       {anahtar:'g1_notCizelgesi',ad:'Not Çizelgesi', ikon:'liste', modul:'notCizelgesi', aksiyon:git('notCizelgesi', function(){ if(typeof renderOncListesi==='function') renderOncListesi('notCizelgesi'); })},
@@ -1151,6 +1152,8 @@
     if(document.getElementById('ssListeOverlay') && typeof sinavSonuclariKapat === 'function') sinavSonuclariKapat();
     if(document.getElementById('ssDetayOverlay') && typeof _ssDetayKapat === 'function') _ssDetayKapat(false);
     if(document.getElementById('ssOgrenciOverlay') && typeof _ssOgrenciSonucKapat === 'function') _ssOgrenciSonucKapat();
+    if(document.getElementById('yokDevamsizOverlay') && typeof yoklamaDevamsizlarKapat === 'function') yoklamaDevamsizlarKapat();
+    if(document.getElementById('yokOverlay') && typeof yoklamaKapat === 'function') yoklamaKapat();
     // DÜZELTME: bkz. js/app.js _pullToRefreshZorlaSifirla — bu sweep zaten
     // "her şeyi kapat" niyetinde, o yüzden burada sayaç güvenle sıfırlanabilir.
     if(typeof _pullToRefreshZorlaSifirla === 'function') _pullToRefreshZorlaSifirla();

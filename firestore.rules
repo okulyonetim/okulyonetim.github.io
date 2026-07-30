@@ -80,6 +80,13 @@ service cloud.firestore {
       allow write: if girisYapmis() && request.auth.uid == uid;
     }
 
+    // Öğrenci Yoklama: giriş yapmış herhangi bir kullanıcı (idare/öğretmen)
+    // okuyup yazabilir — Sedat'ın isteği: "idare veya öğretmenlerden
+    // herhangi biri girebilir", ayrıca kısıtlama yok.
+    match /oy_yoklama/{belgeId} {
+      allow read, write: if girisYapmis();
+    }
+
     // ========== SERVIS YERLEŞIM EDITÖRÜ KUALLARI ==========
     
     // Servis kayıtları: herkes okuyabilir, giriş yapmışlar düzenleyebilir
