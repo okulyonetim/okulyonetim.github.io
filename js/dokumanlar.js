@@ -347,9 +347,9 @@ function _dokEditorOlustur() {
       <div id="dokEditorBaslik" style="font-size:13px;font-weight:600;">Resim Düzenle</div>
       <button class="btn btn-ghost btn-sm" style="color:#fff;" onclick="dokumanResimDondur()">↻ Döndür</button>
     </div>
-    <div style="flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;">
+    <div style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
-        <img id="dokEditorImg" style="display:block;max-width:88vw;max-height:56vh;user-select:none;-webkit-user-drag:none;">
+        <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:44vh;user-select:none;-webkit-user-drag:none;">
         <svg id="dokEditorSvg" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;display:none;" viewBox="0 0 1 1" preserveAspectRatio="none">
           <polygon id="dokEditorPoligon" points="0.06,0.06 0.94,0.06 0.94,0.94 0.06,0.94" fill="rgba(255,152,0,.18)" stroke="#ff9800" stroke-width="0.006" vector-effect="non-scaling-stroke"></polygon>
         </svg>
@@ -700,25 +700,33 @@ function _dokFiltreCssOnizleme(filtre) {
 /* Döndürme fiziksel olarak uygulanır: mevcut çalışma görseli canvas'a
    90° çizilip yeni bir blob/URL üretilir, eski URL serbest bırakılır.
    Döndürünce kırpma (artık farklı bir kareye ait olacağı için) sıfırlanır. */
+/* Döndürme fiziksel olarak uygulanır: mevcut çalışma görseli canvas'a
+   90° çizilip yeni bir görsele dönüştürülür. NOT: eskiden canvas.toBlob()
+   kullanılıyordu — bazı Android WebView sürümlerinde bu API'nin sessizce
+   hiç geri çağrı yapmaması/başarısız olması mümkün, bu yüzden daha
+   evrensel desteklenen toDataURL()'e geçirildi ve hata olursa artık
+   sessizce yutulmuyor, kullanıcıya toast ile bildiriliyor. */
 async function dokumanResimDondur() {
   const it = _dokResimListe[_dokResimEditorIndex];
   if (!it) return;
-  const kaynak = new Image();
-  await new Promise((res, rej) => { kaynak.onload = res; kaynak.onerror = rej; kaynak.src = it.url; });
-  const canvas = document.createElement('canvas');
-  canvas.width = kaynak.height; canvas.height = kaynak.width;
-  const ctx = canvas.getContext('2d');
-  ctx.translate(canvas.width / 2, canvas.height / 2);
-  ctx.rotate(Math.PI / 2);
-  ctx.drawImage(kaynak, -kaynak.width / 2, -kaynak.height / 2);
-  const yeniBlob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.92));
-  URL.revokeObjectURL(it.url);
-  it.blob = yeniBlob;
-  it.url = URL.createObjectURL(yeniBlob);
-  it.kirpma = null;
-  it.kose = null;
-  it.mod = 'dikdortgen';
-  _dokEditorResmiYukle(_dokResimEditorIndex);
+  try {
+    const kaynak = await _dokImgYukle(it.url);
+    const canvas = document.createElement('canvas');
+    canvas.width = kaynak.height; canvas.height = kaynak.width;
+    const ctx = canvas.getContext('2d');
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(kaynak, -kaynak.width / 2, -kaynak.height / 2);
+    const yeniUrl = canvas.toDataURL('image/jpeg', 0.92);
+    if (it.url.indexOf('blob:') === 0) URL.revokeObjectURL(it.url);
+    it.url = yeniUrl;
+    it.kirpma = null;
+    it.kose = null;
+    it.mod = 'dikdortgen';
+    _dokEditorResmiYukle(_dokResimEditorIndex);
+  } catch (e) {
+    toast('Döndürme hatası: ' + e.message);
+  }
 }
 
 /* ---------------- PDF üretimi ---------------- */
