@@ -289,17 +289,112 @@ let _dokResimPdfBlob = null;
 let _dokResimEditorIndex = 0;
 let _dokKirpmaSurukleme = null; // 'tl' | 'br' | 'kose-tl' | 'kose-tr' | 'kose-br' | 'kose-bl' | null
 
-function dokumanResimlerSecildi(input) {
+async function dokumanResimlerSecildi(input) {
   const dosyalar = Array.from(input.files || []);
   _dokResimListe.forEach(it => URL.revokeObjectURL(it.url));
-  _dokResimListe = dosyalar.map(f => ({
-    blob: f, url: URL.createObjectURL(f),
-    kirpma: null, kose: null, mod: 'dikdortgen', filtre: 'orijinal',
-    parlaklik: 0, kontrast: 0,
-    ad: f.name
-  }));
+  _dokResimListe = [];
   _dokResimPdfBlob = null;
+  const bilgi = document.getElementById('dok_resim_bilgi');
+  if (bilgi) bilgi.textContent = 'Hazırlanıyor…';
   _dokResimPanelGuncelle();
+
+  for (const f of dosyalar) {
+    let url = URL.createObjectURL(f);
+    try {
+      // ÖNEMLİ DÜZELTME: telefon kamerası fotoğrafları genelde EXIF
+      // "Orientation" etiketiyle kaydedilir (piksel verisi ham/yan
+      // yatarken, "gösterirken şu kadar döndür" bilgisi ayrıca tutulur).
+      // Ekrandaki <img> önizlemesi bunu otomatik uyguluyor ama arka
+      // planda canvas ile işlerken (kırpma/perspektif/PDF üretimi) bu
+      // otomatik düzeltme HER ZAMAN garanti değil — WebView sürümüne
+      // göre farklı davranabiliyor, bu da "önizlemede yatay görünen
+      // belgenin PDF'te yamuk/dikey çıkması" sorununa yol açıyordu.
+      // Çözüm: EXIF yönünü kendimiz okuyup, seçim anında BİR KEZ fiziksel
+      // olarak düzeltiyoruz; ondan sonra hattaki hiçbir adımın EXIF'le
+      // uğraşmasına gerek kalmıyor (canvas çıktısında zaten EXIF yok).
+      const yon = await _dokExifYonunuOku(f);
+      if (yon && yon !== 1) {
+        const img = await _dokImgYukle(url);
+        const duzCanvas = _dokYonDuzeltilmisCanvasUret(img, yon);
+        URL.revokeObjectURL(url);
+        url = duzCanvas.toDataURL('image/jpeg', 0.92);
+      }
+    } catch (e) { /* EXIF okunamazsa orijinal görüntüyle devam edilir */ }
+
+    _dokResimListe.push({
+      blob: f, url,
+      kirpma: null, kose: null, mod: 'dikdortgen', filtre: 'orijinal',
+      parlaklik: 0, kontrast: 0,
+      ad: f.name
+    });
+  }
+  _dokResimPanelGuncelle();
+}
+
+/* JPEG dosyasının ilk ~128KB'lık kısmından (EXIF başlıkları hep dosya
+   başındadır) Orientation etiketini (0x0112) okur. Standart değerler:
+   1=normal, 3=180°, 6=90°CW gösterilmeli, 8=90°CCW gösterilmeli vb.
+   Ayrıştırılamazsa (JPEG değil, EXIF yok vb.) sessizce 1 döner. */
+function _dokExifYonunuOku(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const view = new DataView(e.target.result);
+        if (view.getUint16(0, false) !== 0xFFD8) { resolve(1); return; }
+        const uzunluk = view.byteLength;
+        let offset = 2;
+        while (offset < uzunluk - 1) {
+          const marker = view.getUint16(offset, false);
+          offset += 2;
+          if (marker === 0xFFE1) {
+            if (view.getUint32(offset + 2, false) !== 0x45786966) { resolve(1); return; } // "Exif"
+            const tiffOffset = offset + 8;
+            const buyukEndian = view.getUint16(tiffOffset, false) === 0x4D4D;
+            const ifdOffset = tiffOffset + view.getUint32(tiffOffset + 4, !buyukEndian);
+            const girisSayisi = view.getUint16(ifdOffset, !buyukEndian);
+            for (let i = 0; i < girisSayisi; i++) {
+              const girisOffset = ifdOffset + 2 + i * 12;
+              if (view.getUint16(girisOffset, !buyukEndian) === 0x0112) {
+                resolve(view.getUint16(girisOffset + 8, !buyukEndian));
+                return;
+              }
+            }
+            resolve(1); return;
+          } else if ((marker & 0xFF00) !== 0xFF00) {
+            break;
+          } else {
+            offset += view.getUint16(offset, false);
+          }
+        }
+      } catch (err) { /* ayrıştırma başarısız */ }
+      resolve(1);
+    };
+    reader.onerror = () => resolve(1);
+    reader.readAsArrayBuffer(file.slice(0, 131072));
+  });
+}
+
+/* EXIF Orientation değerine göre standart 8 durumluk düzeltme matrisi
+   (yaygın kullanılan bilinen dönüşüm tablosu). 5-8 arası durumlarda
+   genişlik/yükseklik yer değiştirir. */
+function _dokYonDuzeltilmisCanvasUret(img, yon) {
+  const w = img.width, h = img.height;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (yon >= 5 && yon <= 8) { canvas.width = h; canvas.height = w; } else { canvas.width = w; canvas.height = h; }
+  switch (yon) {
+    case 2: ctx.transform(-1, 0, 0, 1, w, 0); break;
+    case 3: ctx.transform(-1, 0, 0, -1, w, h); break;
+    case 4: ctx.transform(1, 0, 0, -1, 0, h); break;
+    case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;
+    case 6: ctx.transform(0, 1, -1, 0, h, 0); break;
+    case 7: ctx.transform(0, -1, -1, 0, h, w); break;
+    case 8: ctx.transform(0, -1, 1, 0, 0, w); break;
+    default: break; // 1: değişiklik yok
+  }
+  ctx.drawImage(img, 0, 0, w, h);
+  return canvas;
 }
 
 function _dokResimPanelGuncelle() {
@@ -343,9 +438,9 @@ function _dokEditorOlustur() {
   el.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#0b0b0f;display:none;flex-direction:column;';
   el.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#17171d;color:#fff;flex-shrink:0;">
-      <button class="btn btn-ghost btn-sm" style="color:#fff;" onclick="dokumanResimEditoruKapat()">✕ Kapat</button>
+      <button class="btn btn-ghost btn-sm" style="color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimEditoruKapat()">✕ Kapat</button>
       <div id="dokEditorBaslik" style="font-size:13px;font-weight:600;">Resim Düzenle</div>
-      <button class="btn btn-ghost btn-sm" style="color:#fff;" onclick="dokumanResimDondur()">↻ Döndür</button>
+      <button class="btn btn-ghost btn-sm" style="color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimDondur()">↻ Döndür</button>
     </div>
     <div style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
@@ -369,14 +464,14 @@ function _dokEditorOlustur() {
     </div>
     <div style="padding:10px 12px;background:#17171d;flex-shrink:0;">
       <div style="display:flex;gap:6px;margin-bottom:8px;">
-        <button id="dokEditorModBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;" onclick="dokumanResimModDegistir()">▭ Dikdörtgen Kırpma</button>
-        <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;" onclick="dokumanResimKirpmaSifirla()">↺ Sıfırla</button>
+        <button id="dokEditorModBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimModDegistir()">▭ Dikdörtgen Kırpma</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimKirpmaSifirla()">↺ Sıfırla</button>
       </div>
       <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
-        <button id="dokFiltreOrijinalBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('orijinal')">Orijinal</button>
-        <button id="dokFiltreBelgeBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('belge')">📄 Belge Modu</button>
-        <button id="dokFiltreGriBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('gri')">◑ Gri Tonlama</button>
-        <button id="dokFiltreBwBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('bw')">◼ S/B Metin</button>
+        <button id="dokFiltreOrijinalBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('orijinal')">Orijinal</button>
+        <button id="dokFiltreBelgeBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('belge')">📄 Belge Modu</button>
+        <button id="dokFiltreGriBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('gri')">◑ Gri Tonlama</button>
+        <button id="dokFiltreBwBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('bw')">◼ S/B Metin</button>
       </div>
       <div style="margin-bottom:6px;">
         <label style="font-size:11px;color:#ccc;display:flex;justify-content:space-between;">☀️ Parlaklık <span id="dokParlaklikDeger">0</span></label>
@@ -686,7 +781,7 @@ function _dokFiltrePillGuncelle(filtre) {
   const harita = { orijinal: 'dokFiltreOrijinalBtn', belge: 'dokFiltreBelgeBtn', gri: 'dokFiltreGriBtn', bw: 'dokFiltreBwBtn' };
   Object.entries(harita).forEach(([k, id]) => {
     const btn = document.getElementById(id);
-    if (btn) btn.style.background = (k === filtre) ? '#4caf50' : '';
+    if (btn) btn.style.background = (k === filtre) ? '#4caf50' : 'rgba(255,255,255,.15)';
   });
 }
 
@@ -741,17 +836,25 @@ async function dokumanResimlerdenPdfOlustur() {
 
   try {
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-    const A4_W = 210, A4_H = 297, KENAR = 8;
+    let pdf = null;
+    const KENAR = 8;
 
     for (let i = 0; i < _dokResimListe.length; i++) {
       if (olusturBtn) olusturBtn.textContent = `Oluşturuluyor… (${i + 1}/${_dokResimListe.length})`;
       const { dataUrl, w: gw, h: gh } = await _dokResimIsle(_dokResimListe[i]);
+      const yatay = gw > gh;
+      const A4_W = yatay ? 297 : 210, A4_H = yatay ? 210 : 297;
+
+      if (i === 0) {
+        pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: yatay ? 'l' : 'p' });
+      } else {
+        pdf.addPage('a4', yatay ? 'l' : 'p');
+      }
+
       const maxW = A4_W - KENAR * 2, maxH = A4_H - KENAR * 2;
       const oran = Math.min(maxW / gw, maxH / gh, 1);
       const w = gw * oran, h = gh * oran;
       const x = (A4_W - w) / 2, y = (A4_H - h) / 2;
-      if (i > 0) pdf.addPage();
       pdf.addImage(dataUrl, 'JPEG', x, y, w, h);
     }
 

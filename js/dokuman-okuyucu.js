@@ -27,6 +27,33 @@
     return (ad || '').split('.').pop().toLowerCase();
   }
 
+  /* Görüntülenen dosyayı doğrudan cihaza indirir. url uzak (Firebase
+     Storage) bir adres olabileceği için önce fetch ile indirilip
+     base64'e çevrilir, sonra mevcut ortak uygulamaDosyaKaydet()
+     köprüsü (js/app.js — SavePlugin/blob fallback) ile kaydedilir.
+     ad genelde uzantıyı zaten içerir (dokumanlar.js'den öyle geliyor). */
+  async function _dokOkuyucuIndir(url, ad, uzanti) {
+    if (typeof uygulamaDosyaKaydet !== 'function') {
+      if (typeof toast === 'function') toast('İndirme bu ortamda kullanılamıyor.');
+      return;
+    }
+    try {
+      const yanit = await fetch(url);
+      const blob = await yanit.blob();
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(String(reader.result).split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      const mimeTuru = blob.type || 'application/octet-stream';
+      const dosyaAdi = ad && ad.indexOf('.') !== -1 ? ad : `${ad || 'belge'}.${uzanti || 'dosya'}`;
+      await uygulamaDosyaKaydet(base64, dosyaAdi, mimeTuru, false);
+    } catch (e) {
+      if (typeof toast === 'function') toast('İndirme hatası: ' + e.message);
+    }
+  }
+
   let _state = null;
   let _pdfDoc = null;
   let _xlsxWb = null;
@@ -495,9 +522,10 @@
     ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#3a3a3a;display:flex;flex-direction:column;';
     ov.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:10px 12px;flex-wrap:wrap;">
-        <span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48vw;">${escapeHtml(ad || 'Belge')}</span>
+        <span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw;">${escapeHtml(ad || 'Belge')}</span>
         <div style="display:flex;align-items:center;gap:8px;">
           <span id="dokOkuyucuSayac" style="background:rgba(255,255,255,.2);border-radius:6px;padding:4px 10px;font-size:12.5px;cursor:pointer;">…</span>
+          <button id="dokOkuyucuIndir" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;padding:6px 10px;font-size:13px;">⬇</button>
           <button id="dokOkuyucuKapat" style="background:rgba(220,0,0,.4);border:none;color:#fff;border-radius:7px;padding:6px 12px;font-size:13px;font-weight:700;">✕</button>
         </div>
       </div>
@@ -521,6 +549,7 @@
       if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true);
       _state = null; _pdfDoc = null; _xlsxWb = null; _docxSayfalar = [];
     };
+    ov.querySelector('#dokOkuyucuIndir').onclick = () => _dokOkuyucuIndir(url, ad, uzanti);
     ov.querySelector('#dokOkuyucuOnceki').onclick = () => _sayfayaGit(ov, _state.sayfaIndex - 1);
     ov.querySelector('#dokOkuyucuSonraki').onclick = () => _sayfayaGit(ov, _state.sayfaIndex + 1);
     ov.querySelector('#dokOkuyucuThumbToggle').onclick = () => {
