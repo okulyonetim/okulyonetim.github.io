@@ -222,7 +222,7 @@ function dokumanYukleModalAc() {
             <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="dokumanResimPdfIndir()">⬇ İndir</button>
             <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="dokumanResimPdfPaylas()">📤 Paylaş</button>
           </div>
-          <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Resimleri seçtikten sonra "Kırp/Döndür/Sırala" ile düzenleyin — dikdörtgen kırpma, döndürme, sıralama, yamuk çekilmiş belgeler için perspektif düzeltme ve gölge/renk düzeltmesi için Belge Modu ya da Gri Tonlama filtreleri var. Sonra "PDF Oluştur"a basın; PDF hazır olunca Dökümanlar'a kaydedebilir ya da doğrudan İndir/Paylaş ile WhatsApp/Drive/e-postaya gönderebilirsiniz.</div>
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Resimleri seçtikten sonra "Kırp/Döndür/Sırala" ile düzenleyin — 4 köşeli dikdörtgen kırpma (büyüteçli), yamuk çekilmiş belgeler için perspektif düzeltme, döndürme, sıralama; Belge Modu/Gri Tonlama/Siyah-Beyaz Metin filtreleri ve Parlaklık/Kontrast ayarı var. Sonra "PDF Oluştur"a basın; PDF hazır olunca Dökümanlar'a kaydedebilir ya da doğrudan İndir/Paylaş ile WhatsApp/Drive/e-postaya gönderebilirsiniz.</div>
         </div>
         <div id="dok_panel_url" style="display:none;">
           <input id="dok_url" placeholder="https://drive.google.com/..." style="width:100%;">
@@ -295,6 +295,7 @@ function dokumanResimlerSecildi(input) {
   _dokResimListe = dosyalar.map(f => ({
     blob: f, url: URL.createObjectURL(f),
     kirpma: null, kose: null, mod: 'dikdortgen', filtre: 'orijinal',
+    parlaklik: 0, kontrast: 0,
     ad: f.name
   }));
   _dokResimPdfBlob = null;
@@ -354,11 +355,16 @@ function _dokEditorOlustur() {
         </svg>
         <div id="dokEditorKirpma" style="position:absolute;border:2px solid #4caf50;box-shadow:0 0 0 9999px rgba(0,0,0,.5);pointer-events:none;"></div>
         <div id="dokEditorTutTL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
+        <div id="dokEditorTutTR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
         <div id="dokEditorTutBR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
+        <div id="dokEditorTutBL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#4caf50;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
         <div id="dokEditorKoseTL" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
         <div id="dokEditorKoseTR" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
         <div id="dokEditorKoseBR" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
         <div id="dokEditorKoseBL" class="dok-tutamac" style="position:absolute;width:24px;height:24px;margin:-12px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;display:none;"></div>
+        <div id="dokEditorBuyutec" style="display:none;position:absolute;width:100px;height:100px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;background-repeat:no-repeat;z-index:30;">
+          <div style="position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;border:2px solid #ff1744;box-sizing:border-box;"></div>
+        </div>
       </div>
     </div>
     <div style="padding:10px 12px;background:#17171d;flex-shrink:0;">
@@ -366,20 +372,36 @@ function _dokEditorOlustur() {
         <button id="dokEditorModBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;" onclick="dokumanResimModDegistir()">▭ Dikdörtgen Kırpma</button>
         <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;" onclick="dokumanResimKirpmaSifirla()">↺ Sıfırla</button>
       </div>
-      <div style="display:flex;gap:6px;margin-bottom:8px;">
-        <button id="dokFiltreOrijinalBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;" onclick="dokumanResimFiltreSec('orijinal')">Orijinal</button>
-        <button id="dokFiltreBelgeBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;" onclick="dokumanResimFiltreSec('belge')">📄 Belge Modu</button>
-        <button id="dokFiltreGriBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;" onclick="dokumanResimFiltreSec('gri')">◑ Gri Tonlama</button>
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+        <button id="dokFiltreOrijinalBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('orijinal')">Orijinal</button>
+        <button id="dokFiltreBelgeBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('belge')">📄 Belge Modu</button>
+        <button id="dokFiltreGriBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('gri')">◑ Gri Tonlama</button>
+        <button id="dokFiltreBwBtn" class="btn btn-ghost btn-sm" style="flex:1;min-width:45%;color:#fff;" onclick="dokumanResimFiltreSec('bw')">◼ S/B Metin</button>
       </div>
-      <div style="font-size:10px;color:#999;margin-bottom:8px;">Perspektif modunda turuncu 4 köşeyi belgenin gerçek köşelerine sürükleyin (yamuksa bile) — çıkışta düz dikdörtgene dönüştürülür. Önizlemedeki filtre yaklaşıktır, gerçek sonuç "PDF Oluştur"da işlenir.</div>
+      <div style="margin-bottom:6px;">
+        <label style="font-size:11px;color:#ccc;display:flex;justify-content:space-between;">☀️ Parlaklık <span id="dokParlaklikDeger">0</span></label>
+        <input type="range" id="dokParlaklikSlider" min="-50" max="50" value="0" style="width:100%;" oninput="dokumanResimParlaklikDegisti(this.value)">
+      </div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:11px;color:#ccc;display:flex;justify-content:space-between;">◐ Kontrast <span id="dokKontrastDeger">0</span></label>
+        <input type="range" id="dokKontrastSlider" min="-50" max="50" value="0" style="width:100%;" oninput="dokumanResimKontrastDegisti(this.value)">
+      </div>
+      <div style="font-size:10px;color:#999;margin-bottom:8px;">Perspektif modunda turuncu 4 köşeyi belgenin gerçek köşelerine sürükleyin (yamuksa bile) — çıkışta düz dikdörtgene dönüştürülür. Bir köşeyi sürüklerken büyüteç parmağınızın üstünde beliriyor. Önizlemedeki filtre/parlaklık/kontrast yaklaşıktır, gerçek sonuç "PDF Oluştur"da işlenir.</div>
       <div id="dokEditorSerit" style="display:flex;gap:6px;overflow-x:auto;padding:6px 0;"></div>
     </div>
   `;
   document.body.appendChild(el);
 
-  const surukleBaslat = (tip) => (e) => { e.preventDefault(); _dokKirpmaSurukleme = tip; };
+  const surukleBaslat = (tip) => (e) => {
+    e.preventDefault();
+    _dokKirpmaSurukleme = tip;
+    const it = _dokResimListe[_dokResimEditorIndex];
+    if (it) _dokBuyutecAc(it.url);
+  };
   document.getElementById('dokEditorTutTL').addEventListener('pointerdown', surukleBaslat('tl'));
+  document.getElementById('dokEditorTutTR').addEventListener('pointerdown', surukleBaslat('tr'));
   document.getElementById('dokEditorTutBR').addEventListener('pointerdown', surukleBaslat('br'));
+  document.getElementById('dokEditorTutBL').addEventListener('pointerdown', surukleBaslat('bl'));
   ['TL', 'TR', 'BR', 'BL'].forEach(k => {
     document.getElementById('dokEditorKose' + k).addEventListener('pointerdown', surukleBaslat('kose-' + k.toLowerCase()));
   });
@@ -420,11 +442,19 @@ function _dokEditorResmiYukle(index) {
   if (index < 0 || index >= _dokResimListe.length) return;
   _dokResimEditorIndex = index;
   const it = _dokResimListe[index];
+  if (it.parlaklik === undefined) it.parlaklik = 0;
+  if (it.kontrast === undefined) it.kontrast = 0;
   const img = document.getElementById('dokEditorImg');
   img.onload = () => {
     _dokEditorModuUygula(it);
     _dokFiltrePillGuncelle(it.filtre);
-    img.style.filter = _dokFiltreCssOnizleme(it.filtre);
+    const parlakSlider = document.getElementById('dokParlaklikSlider');
+    const kontrastSlider = document.getElementById('dokKontrastSlider');
+    if (parlakSlider) parlakSlider.value = it.parlaklik;
+    if (kontrastSlider) kontrastSlider.value = it.kontrast;
+    document.getElementById('dokParlaklikDeger').textContent = it.parlaklik;
+    document.getElementById('dokKontrastDeger').textContent = it.kontrast;
+    _dokEditorFiltreOnizlemesiUygula(it);
   };
   img.src = it.url;
   document.getElementById('dokEditorBaslik').textContent = `${index + 1} / ${_dokResimListe.length}`;
@@ -442,7 +472,7 @@ function dokumanResimModDegistir() {
 
 function _dokEditorModuUygula(it) {
   const perspektifMi = it.mod === 'perspektif';
-  ['dokEditorKirpma', 'dokEditorTutTL', 'dokEditorTutBR'].forEach(id => {
+  ['dokEditorKirpma', 'dokEditorTutTL', 'dokEditorTutTR', 'dokEditorTutBR', 'dokEditorTutBL'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = perspektifMi ? 'none' : '';
   });
@@ -489,11 +519,15 @@ function _dokEditorKirpmaKutusunuUygula(kirpma) {
 function _dokEditorTutamaclariYerlestir() {
   const kutu = document.getElementById('dokEditorKirpma');
   const tl = document.getElementById('dokEditorTutTL');
+  const tr = document.getElementById('dokEditorTutTR');
   const br = document.getElementById('dokEditorTutBR');
-  if (!kutu || !tl || !br) return;
-  tl.style.left = kutu.style.left; tl.style.top = kutu.style.top;
-  br.style.left = `calc(${kutu.style.left} + ${kutu.style.width})`;
-  br.style.top  = `calc(${kutu.style.top} + ${kutu.style.height})`;
+  const bl = document.getElementById('dokEditorTutBL');
+  if (!kutu || !tl || !tr || !br || !bl) return;
+  const sol = kutu.style.left, ust = kutu.style.top, gen = kutu.style.width, yuk = kutu.style.height;
+  tl.style.left = sol; tl.style.top = ust;
+  tr.style.left = `calc(${sol} + ${gen})`; tr.style.top = ust;
+  br.style.left = `calc(${sol} + ${gen})`; br.style.top = `calc(${ust} + ${yuk})`;
+  bl.style.left = sol; bl.style.top = `calc(${ust} + ${yuk})`;
 }
 
 function _dokKirpmaSuruklemeIsle(e) {
@@ -505,6 +539,7 @@ function _dokKirpmaSuruklemeIsle(e) {
   let y = (e.clientY - rect.top) / rect.height;
   x = Math.min(1, Math.max(0, x));
   y = Math.min(1, Math.max(0, y));
+  _dokBuyutecKonumlandir(e.clientX, e.clientY, x, y, rect);
 
   if (_dokKirpmaSurukleme.indexOf('kose-') === 0) {
     const kose = _dokKirpmaSurukleme.slice(5); // tl/tr/br/bl
@@ -530,8 +565,18 @@ function _dokKirpmaSuruklemeIsle(e) {
     kutu.style.height = ((ust + yuk - yeniUst) * 100) + '%';
     kutu.style.left = (yeniSol * 100) + '%';
     kutu.style.top  = (yeniUst * 100) + '%';
+  } else if (_dokKirpmaSurukleme === 'tr') {
+    const yeniUst = Math.min(y, ust + yuk - MIN);
+    kutu.style.width  = (Math.max(MIN, x - sol) * 100) + '%';
+    kutu.style.height = ((ust + yuk - yeniUst) * 100) + '%';
+    kutu.style.top = (yeniUst * 100) + '%';
   } else if (_dokKirpmaSurukleme === 'br') {
     kutu.style.width  = (Math.max(MIN, x - sol) * 100) + '%';
+    kutu.style.height = (Math.max(MIN, y - ust) * 100) + '%';
+  } else if (_dokKirpmaSurukleme === 'bl') {
+    const yeniSol = Math.min(x, sol + gen - MIN);
+    kutu.style.width  = ((sol + gen - yeniSol) * 100) + '%';
+    kutu.style.left = (yeniSol * 100) + '%';
     kutu.style.height = (Math.max(MIN, y - ust) * 100) + '%';
   }
   _dokEditorTutamaclariYerlestir();
@@ -551,6 +596,40 @@ function _dokKirpmaSuruklemeBitir() {
     }
   }
   _dokKirpmaSurukleme = null;
+  _dokBuyutecKapat();
+}
+
+/* ---------------- Büyüteçli köşe tutucu ----------------
+   Bir köşe/tutamaç sürüklenirken parmağın kapattığı bölgeyi
+   göstermek için, resmin aynısını arka plan (background-image)
+   olarak kullanan yuvarlak bir büyüteç, dokunulan noktanın biraz
+   üstünde belirir. Ortadaki kırmızı nokta tam hedef pikseli işaret
+   eder. Performans için canvas yerine CSS background-position/size
+   kullanılıyor (her hareket olayında yeniden çizim yok). */
+function _dokBuyutecAc(url) {
+  const b = document.getElementById('dokEditorBuyutec');
+  if (!b) return;
+  b.style.backgroundImage = `url('${url}')`;
+  b.style.display = 'block';
+}
+
+function _dokBuyutecKonumlandir(clientX, clientY, xOran, yOran, wrapRect) {
+  const b = document.getElementById('dokEditorBuyutec');
+  if (!b || b.style.display === 'none') return;
+  const BOYUT = 100, ZOOM = 2.8;
+  b.style.backgroundSize = `${wrapRect.width * ZOOM}px ${wrapRect.height * ZOOM}px`;
+  b.style.backgroundPosition = `${-(xOran * wrapRect.width * ZOOM - BOYUT / 2)}px ${-(yOran * wrapRect.height * ZOOM - BOYUT / 2)}px`;
+  const localX = clientX - wrapRect.left;
+  const localY = clientY - wrapRect.top;
+  let top = localY - BOYUT - 26;
+  if (top < -wrapRect.top) top = localY + 26; // yukarıda yer yoksa aşağıda göster
+  b.style.left = (localX - BOYUT / 2) + 'px';
+  b.style.top = top + 'px';
+}
+
+function _dokBuyutecKapat() {
+  const b = document.getElementById('dokEditorBuyutec');
+  if (b) b.style.display = 'none';
 }
 
 function dokumanResimKirpmaSifirla() {
@@ -565,18 +644,46 @@ function dokumanResimKirpmaSifirla() {
   }
 }
 
-/* ---------------- Filtre seçimi (önizleme yaklaşık, gerçek işlem PDF üretiminde) ---------------- */
+/* ---------------- Filtre + Parlaklık/Kontrast seçimi
+   (önizleme CSS ile yaklaşıktır, gerçek işlem piksel düzeyinde
+   PDF üretiminde yapılır) ---------------- */
 function dokumanResimFiltreSec(filtre) {
   const it = _dokResimListe[_dokResimEditorIndex];
   if (!it) return;
   it.filtre = filtre;
   _dokFiltrePillGuncelle(filtre);
+  _dokEditorFiltreOnizlemesiUygula(it);
+}
+
+function dokumanResimParlaklikDegisti(deger) {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (!it) return;
+  it.parlaklik = parseInt(deger, 10);
+  const etiket = document.getElementById('dokParlaklikDeger');
+  if (etiket) etiket.textContent = deger;
+  _dokEditorFiltreOnizlemesiUygula(it);
+}
+
+function dokumanResimKontrastDegisti(deger) {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (!it) return;
+  it.kontrast = parseInt(deger, 10);
+  const etiket = document.getElementById('dokKontrastDeger');
+  if (etiket) etiket.textContent = deger;
+  _dokEditorFiltreOnizlemesiUygula(it);
+}
+
+function _dokEditorFiltreOnizlemesiUygula(it) {
   const img = document.getElementById('dokEditorImg');
-  if (img) img.style.filter = _dokFiltreCssOnizleme(filtre);
+  if (!img) return;
+  const taban = _dokFiltreCssOnizleme(it.filtre);
+  const parlaklik = `brightness(${1 + (it.parlaklik || 0) / 100})`;
+  const kontrast = `contrast(${1 + (it.kontrast || 0) / 100})`;
+  img.style.filter = [taban === 'none' ? '' : taban, parlaklik, kontrast].filter(Boolean).join(' ');
 }
 
 function _dokFiltrePillGuncelle(filtre) {
-  const harita = { orijinal: 'dokFiltreOrijinalBtn', belge: 'dokFiltreBelgeBtn', gri: 'dokFiltreGriBtn' };
+  const harita = { orijinal: 'dokFiltreOrijinalBtn', belge: 'dokFiltreBelgeBtn', gri: 'dokFiltreGriBtn', bw: 'dokFiltreBwBtn' };
   Object.entries(harita).forEach(([k, id]) => {
     const btn = document.getElementById(id);
     if (btn) btn.style.background = (k === filtre) ? '#4caf50' : '';
@@ -586,6 +693,7 @@ function _dokFiltrePillGuncelle(filtre) {
 function _dokFiltreCssOnizleme(filtre) {
   if (filtre === 'belge') return 'contrast(1.25) brightness(1.08) saturate(.15)';
   if (filtre === 'gri') return 'grayscale(1) contrast(1.15)';
+  if (filtre === 'bw') return 'grayscale(1) contrast(2.4) brightness(1.05)';
   return 'none';
 }
 
@@ -685,6 +793,9 @@ async function _dokResimIsle(item) {
   const ctx = canvas.getContext('2d');
   if (item.filtre === 'belge') _dokBelgeModuUygula(ctx, canvas.width, canvas.height);
   else if (item.filtre === 'gri') _dokGriTonlamaUygula(ctx, canvas.width, canvas.height);
+  else if (item.filtre === 'bw') _dokSiyahBeyazUygula(ctx, canvas.width, canvas.height);
+
+  if (item.parlaklik || item.kontrast) _dokParlaklikKontrastUygula(ctx, canvas.width, canvas.height, item.parlaklik || 0, item.kontrast || 0);
 
   return { dataUrl: canvas.toDataURL('image/jpeg', 0.85), w: canvas.width, h: canvas.height };
 }
@@ -830,11 +941,22 @@ function _dokGaussCoz(A, B) {
   return A.map((satir, i) => satir[n] / (satir[i] || 1e-9));
 }
 
-/* ---------------- Belge Modu / Gri Tonlama filtreleri ----------------
+/* ---------------- Belge Modu / Gri Tonlama / S-B Metin filtreleri ----------------
    Belge Modu: görüntü kendi ÇOK küçültülüp geri büyütülmüş (yumuşatılmış)
    kopyasına bölünerek aydınlatma/gölge normalize edilir (klasik "arka
-   planı düzleştirme" hilesi), ardından otomatik kontrast germe uygulanır.
-   Gri Tonlama: luminans dönüşümü + otomatik kontrast germe. */
+   planı düzleştirme" hilesi), ardından otomatik beyaz dengesi ve kontrast
+   germe uygulanır.
+   ÖNEMLİ DÜZELTME: arka plan bölmesi eskiden HER KANALI KENDİ yerel arka
+   plan değerine ayrı ayrı bölüyordu — küçültülmüş arka plan tahmini
+   pikselinde ufak bir renk gürültüsü olduğunda (ör. kağıdın bir köşesi
+   biraz sarıya/pembeye kaçtığında) bu, tüm görüntüde pembe/yeşil renk
+   kaymasına yol açıyordu. Artık TEK bir gri (luminans) arka plan değeri
+   kullanılıyor — böylece orijinal renk oranları korunuyor, sadece
+   gölge/aydınlık dengeleniyor; renk tonu kayması ayrıca beyaz dengesiyle
+   düzeltiliyor.
+   Gri Tonlama: luminans dönüşümü + otomatik kontrast germe.
+   S/B Metin: gri tonlama + Otsu eşiklemesiyle tam siyah-beyaz (ikili)
+   tarama görünümü — metin belgeleri için en yüksek okunabilirlik. */
 function _dokBelgeModuUygula(ctx, w, h) {
   const kucukW = Math.max(8, Math.round(w / 24)), kucukH = Math.max(8, Math.round(h / 24));
   const kucukCanvas = document.createElement('canvas');
@@ -849,13 +971,50 @@ function _dokBelgeModuUygula(ctx, w, h) {
   const veri = ctx.getImageData(0, 0, w, h);
   const p = veri.data;
   for (let i = 0; i < p.length; i += 4) {
-    for (let k = 0; k < 3; k++) {
-      const bg = Math.max(arkaplan[i + k], 1);
-      p[i + k] = Math.max(0, Math.min(255, (p[i + k] / bg) * 235));
-    }
+    const bgGri = Math.max((arkaplan[i] + arkaplan[i + 1] + arkaplan[i + 2]) / 3, 1);
+    const oran = 235 / bgGri;
+    p[i]     = Math.max(0, Math.min(255, p[i] * oran));
+    p[i + 1] = Math.max(0, Math.min(255, p[i + 1] * oran));
+    p[i + 2] = Math.max(0, Math.min(255, p[i + 2] * oran));
   }
   ctx.putImageData(veri, 0, 0);
+
+  _dokBeyazDengesi(ctx, w, h);
   _dokKontrastGer(ctx, w, h);
+}
+
+/* Gri-dünya varsayımına dayalı basit otomatik beyaz dengesi: en parlak
+   %8'lik piksellerin (muhtemelen kağıt/arka plan) ortalama R/G/B'sini
+   birbirine eşitleyerek kağıdın renk tonundaki (sarımsı/pembemsi) kaymayı
+   nötrler. Aşırı düzeltmeyi önlemek için katsayılar sınırlandırılır. */
+function _dokBeyazDengesi(ctx, w, h) {
+  const veri = ctx.getImageData(0, 0, w, h);
+  const p = veri.data;
+  const toplamPiksel = p.length / 4;
+  const parlakliklar = new Float32Array(toplamPiksel);
+  for (let i = 0, j = 0; i < p.length; i += 4, j++) parlakliklar[j] = (p[i] + p[i + 1] + p[i + 2]) / 3;
+  const sirali = Array.from(parlakliklar).sort((a, b) => a - b);
+  const esik = sirali[Math.floor(toplamPiksel * 0.92)] || 200;
+
+  let toplamR = 0, toplamG = 0, toplamB = 0, sayac = 0;
+  for (let i = 0, j = 0; i < p.length; i += 4, j++) {
+    if (parlakliklar[j] >= esik) { toplamR += p[i]; toplamG += p[i + 1]; toplamB += p[i + 2]; sayac++; }
+  }
+  if (sayac < 10) return; // yeterli "kağıt" pikseli bulunamadı, dokunma
+
+  const ortR = toplamR / sayac, ortG = toplamG / sayac, ortB = toplamB / sayac;
+  const hedefGri = (ortR + ortG + ortB) / 3;
+  const sinirla = (k) => Math.max(0.7, Math.min(1.4, k));
+  const kR = sinirla(hedefGri / Math.max(ortR, 1));
+  const kG = sinirla(hedefGri / Math.max(ortG, 1));
+  const kB = sinirla(hedefGri / Math.max(ortB, 1));
+
+  for (let i = 0; i < p.length; i += 4) {
+    p[i]     = Math.max(0, Math.min(255, p[i] * kR));
+    p[i + 1] = Math.max(0, Math.min(255, p[i + 1] * kG));
+    p[i + 2] = Math.max(0, Math.min(255, p[i + 2] * kB));
+  }
+  ctx.putImageData(veri, 0, 0);
 }
 
 function _dokGriTonlamaUygula(ctx, w, h) {
@@ -867,6 +1026,63 @@ function _dokGriTonlamaUygula(ctx, w, h) {
   }
   ctx.putImageData(veri, 0, 0);
   _dokKontrastGer(ctx, w, h);
+}
+
+/* Tam siyah-beyaz (ikili) tarama görünümü: gri tonlama + Otsu eşiklemesi
+   (görüntünün kendi histogramından en uygun eşik değerini otomatik bulan
+   klasik yöntem) — sabit bir eşik yerine her belgeye uyum sağlar. */
+function _dokSiyahBeyazUygula(ctx, w, h) {
+  const veri = ctx.getImageData(0, 0, w, h);
+  const p = veri.data;
+  for (let i = 0; i < p.length; i += 4) {
+    const gri = p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114;
+    p[i] = p[i + 1] = p[i + 2] = gri;
+  }
+  const esik = _dokOtsuEsigi(p);
+  for (let i = 0; i < p.length; i += 4) {
+    const v = p[i] > esik ? 255 : 0;
+    p[i] = p[i + 1] = p[i + 2] = v;
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+function _dokOtsuEsigi(p) {
+  const histogram = new Array(256).fill(0);
+  const toplamPiksel = p.length / 4;
+  for (let i = 0; i < p.length; i += 4) histogram[Math.round(p[i])]++;
+  let toplam = 0;
+  for (let t = 0; t < 256; t++) toplam += t * histogram[t];
+
+  let toplamArka = 0, agirlikArka = 0, maxVaryans = 0, esik = 127;
+  for (let t = 0; t < 256; t++) {
+    agirlikArka += histogram[t];
+    if (agirlikArka === 0) continue;
+    const agirlikOn = toplamPiksel - agirlikArka;
+    if (agirlikOn === 0) break;
+    toplamArka += t * histogram[t];
+    const ortalamaArka = toplamArka / agirlikArka;
+    const ortalamaOn = (toplam - toplamArka) / agirlikOn;
+    const araVaryans = agirlikArka * agirlikOn * Math.pow(ortalamaArka - ortalamaOn, 2);
+    if (araVaryans > maxVaryans) { maxVaryans = araVaryans; esik = t; }
+  }
+  return esik;
+}
+
+/* Elle Parlaklık/Kontrast ayarı — kaydırıcı değeri -50..50 aralığında,
+   parlaklık piksel ofsetine, kontrast ise 128 orta noktası etrafında
+   çarpana çevrilir. */
+function _dokParlaklikKontrastUygula(ctx, w, h, parlaklik, kontrast) {
+  const veri = ctx.getImageData(0, 0, w, h);
+  const p = veri.data;
+  const parlakOfset = parlaklik * 2.55;
+  const kontrastCarpani = 1 + (kontrast / 100);
+  for (let i = 0; i < p.length; i += 4) {
+    for (let k = 0; k < 3; k++) {
+      const v = (p[i + k] - 128) * kontrastCarpani + 128 + parlakOfset;
+      p[i + k] = Math.max(0, Math.min(255, v));
+    }
+  }
+  ctx.putImageData(veri, 0, 0);
 }
 
 function _dokKontrastGer(ctx, w, h) {
