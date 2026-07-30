@@ -669,6 +669,27 @@ function _pullToRefreshNativeGonder(enabled){
     }
   }catch(e){}
 }
+/* DÜZELTME (kök sebep — "sayfa yenileme bazen hiç çalışmıyor, uygulamayı
+   kapatıp açınca düzeliyor"): _pullToRefreshDerinlik sayacı ~30 ayrı
+   dosyada elle (false)/(true) çağrılarıyla dengede tutuluyor. Bir araç
+   kendi "✕ Kapat" düğmesi yerine DOĞRUDAN alt menüden başka bir yere
+   geçilerek terk edilirse (bkz. js/alt-navigasyon.js _ustPanelleriKapat —
+   o fonksiyonun bilmediği/listesinde olmayan overlay'ler için bu, o
+   aracın kendi (true) çağrısının hiç tetiklenmemesi demek), sayaç sıfıra
+   inmeden kalıcı olarak takılı kalıyor ve yenileme jesti uygulama tekrar
+   AÇILANA kadar (bellekteki değişken sıfırlanana kadar) hiç çalışmıyor.
+   AltNav navigasyonu (menüye dönme/başka bir yere geçme) zaten TÜM üst
+   panelleri kapatmayı hedeflediği için, bu noktada sayacı güvenle SIFIRA
+   zorlamak (tek tek her aracı ayrı ayrı bu listeye eklemek yerine) genel
+   ve kalıcı bir çözüm — bkz. çağrı noktası: _ustPanelleriKapat(). */
+function _pullToRefreshZorlaSifirla(){
+  _pullToRefreshDerinlik = 0;
+  if(_pullToRefreshBekleyenZamanlayici) clearTimeout(_pullToRefreshBekleyenZamanlayici);
+  _pullToRefreshBekleyenZamanlayici = setTimeout(()=>{
+    _pullToRefreshBekleyenZamanlayici = null;
+    _pullToRefreshNativeGonder(true);
+  }, 0);
+}
 
 function modalAc(title, bodyHtml, kaydetFn, silFn, kaydetBtnMetni){
   document.getElementById('modalTitle').textContent = title;

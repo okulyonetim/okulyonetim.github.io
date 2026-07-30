@@ -1151,6 +1151,9 @@
     if(document.getElementById('ssListeOverlay') && typeof sinavSonuclariKapat === 'function') sinavSonuclariKapat();
     if(document.getElementById('ssDetayOverlay') && typeof _ssDetayKapat === 'function') _ssDetayKapat(false);
     if(document.getElementById('ssOgrenciOverlay') && typeof _ssOgrenciSonucKapat === 'function') _ssOgrenciSonucKapat();
+    // DÜZELTME: bkz. js/app.js _pullToRefreshZorlaSifirla — bu sweep zaten
+    // "her şeyi kapat" niyetinde, o yüzden burada sayaç güvenle sıfırlanabilir.
+    if(typeof _pullToRefreshZorlaSifirla === 'function') _pullToRefreshZorlaSifirla();
   }
 
   const AltNav = {
