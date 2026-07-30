@@ -89,6 +89,59 @@ const IstatistikService = {
       .catch(e => console.error('[İstatistik] Depolama (uid ile) güncellenemedi:', e));
   },
 
+  /* ---------- YENİ: Depolama sayaçlarını gerçek dosyalardan YENİDEN
+     HESAPLA (bkz. Depolama kullanımı hep 0 görünme hatası) — düzeltmeden
+     ÖNCE yüklenen dosyalar hiç sayılmamıştı, sonradan silinince sayaç
+     eksiye düşüyordu. Bu fonksiyon oy_dokumanlar/oy_duyurular/oy_mesajlar/
+     oy_akademikTakvim'i baştan tarayıp her kullanıcının depolamaKullanimi
+     alanını GERÇEK toplamla (increment değil, doğrudan set) değiştirir.
+     Sadece admin panelinden, elle, tek seferlik çalıştırılması içindir. */
+  async depolamaYenidenHesapla(){
+    if(!db) return { hata: 'Firestore bağlantısı yok' };
+    const toplam = {}; // uid -> {mesaj,duyuru,dokuman,takvim}
+    function ekle(uid, kategori, bayt){
+      if(!uid || !bayt) return;
+      if(!toplam[uid]) toplam[uid] = { mesaj:0, duyuru:0, dokuman:0, takvim:0 };
+      toplam[uid][kategori] += bayt;
+    }
+
+    const [dokSnap, duySnap, mesSnap, takvimDoc, istSnap] = await Promise.all([
+      db.collection(COL.dokumanlar).get(),
+      db.collection(COL.duyurular).get(),
+      db.collection(COL.mesajlar).get(),
+      db.collection(COL.akademikTakvim).doc('aktif').get(),
+      db.collection(COL.kullaniciIstatistikleri).get(),
+    ]);
+
+    dokSnap.forEach(d => { const v = d.data(); ekle(v.olusturanUid, 'dokuman', v.dosyaBoyutu); });
+    duySnap.forEach(d => {
+      const v = d.data();
+      (v.resimler || []).forEach(r => ekle(v.olusturanUid, 'duyuru', r.boyut));
+    });
+    mesSnap.forEach(d => {
+      const v = d.data();
+      if(v.dosya && v.dosya.boyut) ekle(v.gonderenUid, 'mesaj', v.dosya.boyut);
+    });
+    // Akademik Takvim: tek/aktif bir görsel, belgede sahibinin uid'i
+    // tutulmuyor (sadece admin yükleyebiliyor) — bu yüzden ŞU AN işlemi
+    // çalıştıran admin'in hesabına sayılır (gerçek yazma anındaki davranışla
+    // aynı: her zaman o an giriş yapmış admin'e ekleniyordu).
+    if(takvimDoc.exists){
+      const v = takvimDoc.data();
+      const ben = this._kimlik();
+      if(v.dosyaBoyutu && ben && ben.uid) ekle(ben.uid, 'takvim', v.dosyaBoyutu);
+    }
+    // Hiç dosyası kalmayan ama eski (hatalı) bir depolamaKullanimi değeri
+    // olan kullanıcılar da sıfırlanmalı — sadece toplam'da GÖRÜNENLERİ
+    // değil, mevcut TÜM istatistik belgelerini kapsa.
+    istSnap.forEach(d => { if(!toplam[d.id]) toplam[d.id] = { mesaj:0, duyuru:0, dokuman:0, takvim:0 }; });
+
+    await Promise.all(Object.keys(toplam).map(uid =>
+      db.collection(COL.kullaniciIstatistikleri).doc(uid).set({ depolamaKullanimi: toplam[uid] }, { merge:true })
+    ));
+    return { kullaniciSayisi: Object.keys(toplam).length };
+  },
+
   notEklemeKaydet(){
     this._guncelle({ notEklemeSayisi: firebase.firestore.FieldValue.increment(1) });
   },

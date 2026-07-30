@@ -56,6 +56,28 @@ function istKullaniciMuafDegistir(uid, checkboxEl){
     .catch(err=>{ checkboxEl.checked = !yeniDeger; if(err.message!=='yetkisiz') toast('Hata: '+err.message); });
 }
 
+/* YENİ: Depolama sayaçlarını gerçek dosyalardan yeniden hesaplar (bkz.
+   IstatistikService.depolamaYenidenHesapla) — geçmişte (düzeltmeden önce)
+   sayılmamış yüklemelerden kalan hatalı/eksi değerleri temizler. */
+async function istDepolamaYenidenHesaplaTikla(){
+  if(typeof AKTIF_KULLANICI === 'undefined' || !AKTIF_KULLANICI || !AKTIF_KULLANICI.admin){
+    toast('Bu işlem sadece admin tarafından yapılabilir.');
+    return;
+  }
+  const onayMesaji = 'Tüm kullanıcıların depolama kullanımı, gerçek dosyalar taranarak yeniden hesaplanacak ve mevcut değerlerin üzerine yazılacak. Devam edilsin mi?';
+  const onay = typeof uygulamaOnayAl === 'function' ? await uygulamaOnayAl(onayMesaji) : confirm(onayMesaji);
+  if(!onay) return;
+  toast('Hesaplanıyor, bu biraz sürebilir…');
+  try{
+    const sonuc = await IstatistikService.depolamaYenidenHesapla();
+    toast(`Tamamlandı — ${sonuc.kullaniciSayisi} kullanıcının depolama verisi güncellendi.`);
+    renderIstatistikler();
+  }catch(e){
+    console.error('[Depolama Yeniden Hesapla] Hata:', e);
+    toast('Hata: ' + e.message);
+  }
+}
+
 async function renderIstatistikler(){
   if(typeof kullaniciYonetimiYetkisiVar === 'function' && !kullaniciYonetimiYetkisiVar()){
     toast('Bu sayfayı görüntüleme yetkiniz yok.');
