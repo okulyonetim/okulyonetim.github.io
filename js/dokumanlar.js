@@ -329,6 +329,7 @@ async function dokumanResimlerSecildi(input) {
     });
   }
   _dokResimPanelGuncelle();
+  if (_dokResimListe.length) dokumanResimEditoruAc();
 }
 
 /* JPEG dosyasının ilk ~128KB'lık kısmından (EXIF başlıkları hep dosya
@@ -460,6 +461,7 @@ function _dokEditorOlustur() {
     </div>
     <div style="padding:10px 12px;background:#17171d;flex-shrink:0;">
       <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimOtomatikAlgila()">🔍 Otomatik Algıla</button>
         <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimKirpmaSifirla()">↺ Köşeleri Sıfırla</button>
       </div>
       <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
@@ -532,7 +534,7 @@ function _dokEditorResmiYukle(index) {
   if (it.kontrast === undefined) it.kontrast = 0;
   const img = document.getElementById('dokEditorImg');
   img.onload = () => {
-    if (!it.kose) it.kose = _dokVarsayilanKose();
+    if (!it.kose) it.kose = _dokOtomatikKoseAlgila(img) || _dokVarsayilanKose();
     _dokEditorPoligonCiz(it.kose);
     _dokFiltrePillGuncelle(it.filtre);
     const parlakSlider = document.getElementById('dokParlaklikSlider');
@@ -550,6 +552,111 @@ function _dokEditorResmiYukle(index) {
 
 function _dokVarsayilanKose() {
   return { tl: { x: 0.03, y: 0.03 }, tr: { x: 0.97, y: 0.03 }, br: { x: 0.97, y: 0.97 }, bl: { x: 0.03, y: 0.97 } };
+}
+
+/* ---------------- Otomatik köşe algılama ----------------
+   Sayfadaki (genelde parlak/beyaz) kağıdı arka plandan (masa, zemin vb.)
+   ayırmaya çalışır: küçük bir kopya üzerinde griye çevirip Otsu eşiğiyle
+   "kağıt" (parlak) pikselleri ayırır, görüntüyü 4 çeyreğe böler ve her
+   çeyrekte köşeye en yakın kağıt pikselini arar (OMR modülündeki
+   sayfaKoseleriniAra() ile aynı "çeyrek blob arama" mantığı). Güvenilir
+   bir sonuç bulunamazsa (kontrast yetersiz, alan çok küçük vb.) null
+   döner — çağıran taraf varsayılan tam-kare köşelere düşer. */
+function _dokOtomatikKoseAlgila(img) {
+  try {
+    const HEDEF_GEN = 240;
+    const oran = HEDEF_GEN / img.width;
+    const kw = HEDEF_GEN, kh = Math.max(1, Math.round(img.height * oran));
+    const c = document.createElement('canvas');
+    c.width = kw; c.height = kh;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, kw, kh);
+    const veri = ctx.getImageData(0, 0, kw, kh);
+    const p = veri.data;
+    const gri = new Uint8ClampedArray(kw * kh);
+    for (let i = 0, j = 0; i < p.length; i += 4, j++) gri[j] = p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114;
+
+    const esik = _dokOtsuEsigiBasit(gri);
+    if (esik < 30 || esik > 235) return null; // kontrast yetersiz, güvenilmez
+
+    const kagitMi = (x, y) => gri[y * kw + x] > esik;
+    const yariGen = Math.ceil(kw / 2), yariYuk = Math.ceil(kh / 2);
+
+    function ceyrekAra(x0, x1, y0, y1, skor) {
+      let enIyi = null, enIyiSkor = -Infinity;
+      for (let y = y0; y < y1; y++) {
+        for (let x = x0; x < x1; x++) {
+          if (!kagitMi(x, y)) continue;
+          const s = skor(x, y);
+          if (s > enIyiSkor) { enIyiSkor = s; enIyi = { x, y }; }
+        }
+      }
+      return enIyi;
+    }
+
+    const tl = ceyrekAra(0, yariGen, 0, yariYuk, (x, y) => -(x + y));
+    const tr = ceyrekAra(yariGen, kw, 0, yariYuk, (x, y) => (x - y));
+    const br = ceyrekAra(yariGen, kw, yariYuk, kh, (x, y) => (x + y));
+    const bl = ceyrekAra(0, yariGen, yariYuk, kh, (x, y) => -(x - y));
+    if (!tl || !tr || !br || !bl) return null;
+
+    const kose = {
+      tl: { x: tl.x / kw, y: tl.y / kh },
+      tr: { x: tr.x / kw, y: tr.y / kh },
+      br: { x: br.x / kw, y: br.y / kh },
+      bl: { x: bl.x / kw, y: bl.y / kh },
+    };
+
+    // Dejenere/çok küçük sonuçları ele (yanlış pozitifleri filtrele)
+    const genislik = Math.max(kose.tr.x - kose.tl.x, kose.br.x - kose.bl.x);
+    const yukseklik = Math.max(kose.bl.y - kose.tl.y, kose.br.y - kose.tr.y);
+    if (genislik < 0.15 || yukseklik < 0.15) return null;
+
+    return kose;
+  } catch (e) {
+    return null;
+  }
+}
+
+function _dokOtsuEsigiBasit(griDizi) {
+  const histogram = new Array(256).fill(0);
+  for (let i = 0; i < griDizi.length; i++) histogram[griDizi[i]]++;
+  const toplamPiksel = griDizi.length;
+  let toplam = 0;
+  for (let t = 0; t < 256; t++) toplam += t * histogram[t];
+  let toplamArka = 0, agirlikArka = 0, maxVaryans = 0, esik = 127;
+  for (let t = 0; t < 256; t++) {
+    agirlikArka += histogram[t];
+    if (agirlikArka === 0) continue;
+    const agirlikOn = toplamPiksel - agirlikArka;
+    if (agirlikOn === 0) break;
+    toplamArka += t * histogram[t];
+    const ortalamaArka = toplamArka / agirlikArka;
+    const ortalamaOn = (toplam - toplamArka) / agirlikOn;
+    const araVaryans = agirlikArka * agirlikOn * Math.pow(ortalamaArka - ortalamaOn, 2);
+    if (araVaryans > maxVaryans) { maxVaryans = araVaryans; esik = t; }
+  }
+  return esik;
+}
+
+/* "🔍 Otomatik Algıla" butonu — kullanıcı isterse yeniden tetikleyebilir
+   (ör. döndürdükten sonra, ya da ilk sonuç yanlışsa). */
+async function dokumanResimOtomatikAlgila() {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (!it) return;
+  try {
+    const img = await _dokImgYukle(it.url);
+    const otomatik = _dokOtomatikKoseAlgila(img);
+    if (otomatik) {
+      it.kose = otomatik;
+      _dokEditorPoligonCiz(it.kose);
+      toast('Köşeler otomatik bulundu — gerekirse elle ince ayar yapabilirsiniz.');
+    } else {
+      toast('Köşeler otomatik bulunamadı (kontrast yetersiz) — elle ayarlayın.');
+    }
+  } catch (e) {
+    toast('Otomatik algılama hatası: ' + e.message);
+  }
 }
 
 function _dokEditorPoligonCiz(kose) {
@@ -1003,7 +1110,7 @@ function _dokBelgeModuUygula(ctx, w, h) {
   for (let i = 0; i < p.length; i += 4) {
     for (let k = 0; k < 3; k++) {
       const bg = Math.max(arkaplan[i + k], 1);
-      const oran = Math.max(MIN_ORAN, Math.min(MAX_ORAN, 235 / bg));
+      const oran = Math.max(MIN_ORAN, Math.min(MAX_ORAN, 250 / bg));
       p[i + k] = Math.max(0, Math.min(255, p[i + k] * oran));
     }
   }
@@ -1058,9 +1165,16 @@ function _dokGriTonlamaUygula(ctx, w, h) {
   _dokKontrastGer(ctx, w, h);
 }
 
-/* Tam siyah-beyaz (ikili) tarama görünümü: gri tonlama + Otsu eşiklemesi
-   (görüntünün kendi histogramından en uygun eşik değerini otomatik bulan
-   klasik yöntem) — sabit bir eşik yerine her belgeye uyum sağlar. */
+/* Tam siyah-beyaz (ikili) tarama görünümü.
+   ÖNEMLİ DÜZELTME: eskiden TÜM görüntüye tek (küresel) bir Otsu eşiği
+   uygulanıyordu — belgenin etrafında masa/arka plan gibi farklı
+   parlaklıkta alanlar kadraja girdiğinde (kırpma tam belgeye
+   oturmadığında) bu tek eşik yanlış seçiliyor ve büyük siyah leke/blok
+   artefaktları oluşuyordu. Artık YEREL (uyarlamalı) eşikleme kullanılıyor:
+   her piksel kendi civarının ortalama parlaklığına göre karar veriyor —
+   bu, Belge Modu'ndaki gölge/arka plan düzleştirmeyle aynı teknik
+   (küçültüp geri büyütülmüş yumuşak bir "yerel ortalama" haritası) ve
+   masa/arka plan gibi belge-dışı alanlardan çok daha az etkileniyor. */
 function _dokSiyahBeyazUygula(ctx, w, h) {
   const veri = ctx.getImageData(0, 0, w, h);
   const p = veri.data;
@@ -1068,34 +1182,28 @@ function _dokSiyahBeyazUygula(ctx, w, h) {
     const gri = p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114;
     p[i] = p[i + 1] = p[i + 2] = gri;
   }
-  const esik = _dokOtsuEsigi(p);
-  for (let i = 0; i < p.length; i += 4) {
-    const v = p[i] > esik ? 255 : 0;
-    p[i] = p[i + 1] = p[i + 2] = v;
-  }
   ctx.putImageData(veri, 0, 0);
-}
 
-function _dokOtsuEsigi(p) {
-  const histogram = new Array(256).fill(0);
-  const toplamPiksel = p.length / 4;
-  for (let i = 0; i < p.length; i += 4) histogram[Math.round(p[i])]++;
-  let toplam = 0;
-  for (let t = 0; t < 256; t++) toplam += t * histogram[t];
+  // Yerel ortalama parlaklık haritası (küçültüp geri büyüterek yumuşatma)
+  const kucukW = Math.max(10, Math.round(w / 20)), kucukH = Math.max(10, Math.round(h / 20));
+  const kucukCanvas = document.createElement('canvas');
+  kucukCanvas.width = kucukW; kucukCanvas.height = kucukH;
+  kucukCanvas.getContext('2d').drawImage(ctx.canvas, 0, 0, kucukW, kucukH);
+  const buyukCanvas = document.createElement('canvas');
+  buyukCanvas.width = w; buyukCanvas.height = h;
+  const buyukCtx = buyukCanvas.getContext('2d');
+  buyukCtx.drawImage(kucukCanvas, 0, 0, w, h);
+  const yerelOrtalama = buyukCtx.getImageData(0, 0, w, h).data;
 
-  let toplamArka = 0, agirlikArka = 0, maxVaryans = 0, esik = 127;
-  for (let t = 0; t < 256; t++) {
-    agirlikArka += histogram[t];
-    if (agirlikArka === 0) continue;
-    const agirlikOn = toplamPiksel - agirlikArka;
-    if (agirlikOn === 0) break;
-    toplamArka += t * histogram[t];
-    const ortalamaArka = toplamArka / agirlikArka;
-    const ortalamaOn = (toplam - toplamArka) / agirlikOn;
-    const araVaryans = agirlikArka * agirlikOn * Math.pow(ortalamaArka - ortalamaOn, 2);
-    if (araVaryans > maxVaryans) { maxVaryans = araVaryans; esik = t; }
+  const veri2 = ctx.getImageData(0, 0, w, h);
+  const p2 = veri2.data;
+  const OFSET = 18; // metin, yerel ortalamadan bu kadar koyu olmalı ki "yazı" sayılsın
+  for (let i = 0; i < p2.length; i += 4) {
+    const esik = yerelOrtalama[i] - OFSET;
+    const v = p2[i] > esik ? 255 : 0;
+    p2[i] = p2[i + 1] = p2[i + 2] = v;
   }
-  return esik;
+  ctx.putImageData(veri2, 0, 0);
 }
 
 /* Elle Parlaklık/Kontrast ayarı — kaydırıcı değeri -50..50 aralığında,
@@ -1115,15 +1223,20 @@ function _dokParlaklikKontrastUygula(ctx, w, h, parlaklik, kontrast) {
   ctx.putImageData(veri, 0, 0);
 }
 
+/* Kontrast/seviye germe. ÖNEMLİ: gerçek min/max yerine %1 ve %99
+   persentiller kullanılıyor — tek bir aykırı piksel (parlama/gürültü
+   gibi) tüm görüntüyü yanlış ölçeklemesin diye. Bu sayede kağıdın
+   GENELİ (sadece en parlak tek piksel değil) tam beyaza (255) ulaşıyor
+   — A4 kağıdı beyazına daha yakın bir sonuç. */
 function _dokKontrastGer(ctx, w, h) {
   const veri = ctx.getImageData(0, 0, w, h);
   const p = veri.data;
-  let min = 255, max = 0;
-  for (let i = 0; i < p.length; i += 4) {
-    const gri = (p[i] + p[i + 1] + p[i + 2]) / 3;
-    if (gri < min) min = gri;
-    if (gri > max) max = gri;
-  }
+  const toplamPiksel = p.length / 4;
+  const griler = new Float32Array(toplamPiksel);
+  for (let i = 0, j = 0; i < p.length; i += 4, j++) griler[j] = (p[i] + p[i + 1] + p[i + 2]) / 3;
+  const sirali = Array.from(griler).sort((a, b) => a - b);
+  const min = sirali[Math.floor(toplamPiksel * 0.01)] || 0;
+  const max = sirali[Math.floor(toplamPiksel * 0.99)] || 255;
   const aralik = Math.max(1, max - min);
   for (let i = 0; i < p.length; i += 4) {
     for (let k = 0; k < 3; k++) {
