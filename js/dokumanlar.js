@@ -205,12 +205,20 @@ function dokumanYukleModalAc() {
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;">
       <div style="display:flex;">
         <button id="dok_sekme_dosya" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid var(--accent,#4caf50);font-weight:600;" onclick="dokumanSekmeAc('dosya')">📎 Dosya Yükle</button>
+        <button id="dok_sekme_resim" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid transparent;" onclick="dokumanSekmeAc('resim')">🖼 Resimlerden PDF</button>
         <button id="dok_sekme_url" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid transparent;" onclick="dokumanSekmeAc('url')">🔗 URL Ekle</button>
       </div>
       <div style="padding:12px;">
         <div id="dok_panel_dosya">
           <input type="file" id="dok_dosya" style="width:100%;" onchange="dokumanDosyaSecildi(this)">
           <div id="dok_dosya_bilgi" style="font-size:12px;color:var(--ink-muted);margin-top:6px;"></div>
+        </div>
+        <div id="dok_panel_resim" style="display:none;">
+          <input type="file" id="dok_resimler" accept="image/*" multiple style="width:100%;" onchange="dokumanResimlerSecildi(this)">
+          <div id="dok_resim_bilgi" style="font-size:12px;color:var(--ink-muted);margin-top:6px;"></div>
+          <button id="dok_resim_olustur_btn" class="btn btn-primary btn-sm" style="width:100%;margin-top:8px;" disabled onclick="dokumanResimlerdenPdfOlustur()">🖨 PDF Oluştur</button>
+          <div id="dok_resim_onizle" style="display:none;font-size:12px;color:#2e7d32;margin-top:6px;"></div>
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Seçtiğiniz her resim ayrı bir sayfa olur (seçim sırasına göre). Önce "PDF Oluştur"a basın, sonra aşağıdan "Kaydet"e basın.</div>
         </div>
         <div id="dok_panel_url" style="display:none;">
           <input id="dok_url" placeholder="https://drive.google.com/..." style="width:100%;">
@@ -221,6 +229,9 @@ function dokumanYukleModalAc() {
     <div id="dok_yukleme_durumu" style="display:none;font-size:12px;color:var(--ink-muted);margin-top:8px;"></div>
   `;
 
+  _dokResimSecilenler = [];
+  _dokResimPdfBlob = null;
+
   modalAc('📁 Döküman Ekle', body, () => dokumanKaydet(), null);
   const kb = document.getElementById('modalKaydetBtn');
   if (kb) kb.textContent = '💾 Kaydet';
@@ -228,11 +239,105 @@ function dokumanYukleModalAc() {
 
 function dokumanSekmeAc(sekme) {
   document.getElementById('dok_panel_dosya').style.display = sekme === 'dosya' ? '' : 'none';
+  document.getElementById('dok_panel_resim').style.display = sekme === 'resim' ? '' : 'none';
   document.getElementById('dok_panel_url').style.display   = sekme === 'url'   ? '' : 'none';
-  document.getElementById('dok_sekme_dosya').style.borderBottom = sekme === 'dosya' ? '2px solid var(--accent,#4caf50)' : '2px solid transparent';
-  document.getElementById('dok_sekme_dosya').style.fontWeight   = sekme === 'dosya' ? '600' : '400';
-  document.getElementById('dok_sekme_url').style.borderBottom   = sekme === 'url'   ? '2px solid var(--accent,#4caf50)' : '2px solid transparent';
-  document.getElementById('dok_sekme_url').style.fontWeight     = sekme === 'url'   ? '600' : '400';
+  ['dosya', 'resim', 'url'].forEach(s => {
+    const btn = document.getElementById('dok_sekme_' + s);
+    if (!btn) return;
+    btn.style.borderBottom = s === sekme ? '2px solid var(--accent,#4caf50)' : '2px solid transparent';
+    btn.style.fontWeight   = s === sekme ? '600' : '400';
+  });
+}
+
+/* ================================================================
+   Resimlerden PDF Oluşturma
+   Seçilen resimler sırayla A4 sayfalara (canvas üzerinden JPEG'e
+   sıkıştırılarak) yerleştirilir ve tek bir PDF Blob'u üretilir.
+   Üretilen blob, Kaydet sırasında normal "dosya" akışına File
+   olarak enjekte edilir (DokumanlarService.dokumanEkle değişmeden
+   çalışır).
+   ================================================================ */
+let _dokResimSecilenler = [];
+let _dokResimPdfBlob = null;
+
+function dokumanResimlerSecildi(input) {
+  _dokResimSecilenler = Array.from(input.files || []);
+  _dokResimPdfBlob = null;
+  const bilgi = document.getElementById('dok_resim_bilgi');
+  const olusturBtn = document.getElementById('dok_resim_olustur_btn');
+  const onizle = document.getElementById('dok_resim_onizle');
+  if (bilgi) bilgi.textContent = _dokResimSecilenler.length ? `${_dokResimSecilenler.length} resim seçildi.` : '';
+  if (olusturBtn) olusturBtn.disabled = _dokResimSecilenler.length === 0;
+  if (onizle) onizle.style.display = 'none';
+}
+
+async function dokumanResimlerdenPdfOlustur() {
+  if (!_dokResimSecilenler.length) { toast('Önce resim seçin.'); return; }
+  if (typeof window.jspdf === 'undefined') { toast('PDF kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.'); return; }
+
+  const olusturBtn = document.getElementById('dok_resim_olustur_btn');
+  const onizle = document.getElementById('dok_resim_onizle');
+  if (olusturBtn) { olusturBtn.disabled = true; olusturBtn.textContent = 'Oluşturuluyor…'; }
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+    const A4_W = 210, A4_H = 297, KENAR = 8;
+
+    for (let i = 0; i < _dokResimSecilenler.length; i++) {
+      const { dataUrl, w: gw, h: gh } = await _dokResimSikistir(_dokResimSecilenler[i]);
+      const maxW = A4_W - KENAR * 2, maxH = A4_H - KENAR * 2;
+      const oran = Math.min(maxW / gw, maxH / gh, 1);
+      const w = gw * oran, h = gh * oran;
+      const x = (A4_W - w) / 2, y = (A4_H - h) / 2;
+      if (i > 0) pdf.addPage();
+      pdf.addImage(dataUrl, 'JPEG', x, y, w, h);
+    }
+
+    _dokResimPdfBlob = pdf.output('blob');
+
+    const adEl = document.getElementById('dok_ad');
+    if (adEl && !adEl.value.trim()) {
+      adEl.value = _dokResimSecilenler.length > 1
+        ? `${_dokResimSecilenler.length} Sayfalık Belge`
+        : _dokResimSecilenler[0].name.replace(/\.[^.]+$/, '');
+    }
+    if (onizle) {
+      onizle.style.display = '';
+      onizle.textContent = `✅ PDF hazır (${_dokResimSecilenler.length} sayfa, ${dosyaBoyutuFormat(_dokResimPdfBlob.size)}) — şimdi "Kaydet"e basın.`;
+    }
+    toast('PDF oluşturuldu, şimdi Kaydet\'e basabilirsiniz.');
+  } catch (e) {
+    toast('PDF oluşturma hatası: ' + e.message);
+  } finally {
+    if (olusturBtn) { olusturBtn.disabled = false; olusturBtn.textContent = '🖨 PDF Oluştur'; }
+  }
+}
+
+/* Resmi canvas'a çizip WebView belleğini korumak için max 1600px
+   kenara indirger, JPEG'e sıkıştırır (%82 kalite). */
+function _dokResimSikistir(dosya) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX_KENAR = 1600;
+      let w = img.width, h = img.height;
+      if (w > MAX_KENAR || h > MAX_KENAR) {
+        const oran = Math.min(MAX_KENAR / w, MAX_KENAR / h);
+        w = Math.round(w * oran); h = Math.round(h * oran);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(img.src);
+      resolve({ dataUrl: canvas.toDataURL('image/jpeg', 0.82), w, h });
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(dosya);
+  });
 }
 
 function dokumanDosyaSecildi(input) {
@@ -254,8 +359,15 @@ async function dokumanKaydet() {
   const urlPanel = document.getElementById('dok_panel_url');
   const urlGoster= urlPanel && urlPanel.style.display !== 'none';
   const hariciUrl= urlGoster ? (document.getElementById('dok_url')?.value.trim() || '') : '';
+  const resimPanel = document.getElementById('dok_panel_resim');
+  const resimGoster = resimPanel && resimPanel.style.display !== 'none';
   const dosyaEl  = document.getElementById('dok_dosya');
-  const dosya    = dosyaEl?.files[0];
+  let dosya      = dosyaEl?.files[0];
+
+  if (resimGoster) {
+    if (!_dokResimPdfBlob) { toast('Önce "PDF Oluştur" ile PDF üretin.'); return; }
+    dosya = new File([_dokResimPdfBlob], (ad || 'belge') + '.pdf', { type: 'application/pdf' });
+  }
 
   if (!ad) { toast('Döküman adı zorunludur.'); return; }
   if (!hariciUrl && !dosya) { toast('Dosya seçin veya URL girin.'); return; }
