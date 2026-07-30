@@ -197,10 +197,7 @@ function dokumanYukleModalAc() {
         <option value="herkes">🌐 Herkese Açık — tüm kullanıcılar görür</option>
         <option value="kisisel">🔒 Sadece Bana Özel</option>
       </select>
-    </div>` : `
-    <div style="font-size:12px;color:var(--ink-muted);background:var(--nm-bg);border-radius:8px;padding:8px 10px;margin-bottom:4px;">
-      🔒 Bu döküman sadece <strong>size</strong> ve <strong>yöneticiye</strong> görünür olacak.
-    </div>`}
+    </div>` : ''}
 
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;">
       <div style="display:flex;">
@@ -649,7 +646,15 @@ async function dokumanResimlerdenPdfOlustur() {
       adEl.value = _dokResimListe.length > 1
         ? `${_dokResimListe.length} Sayfalık Belge`
         : (_dokResimListe[0].ad || 'Belge').replace(/\.[^.]+$/, '');
+      // DÜZELTME: adEl.value'yu programatik atamak "input" olayını
+      // tetiklemiyor — modal'ın genel Kaydet-buton doğrulaması muhtemelen
+      // bu olayı dinleyip butonu aktive ediyor, otomatik doldurma bunu
+      // hiç tetiklemediği için Kaydet pasif kalıyordu. Olayı elle
+      // gönderip, garanti olsun diye butonu da doğrudan aktive ediyoruz.
+      adEl.dispatchEvent(new Event('input', { bubbles: true }));
     }
+    const kaydetBtn = document.getElementById('modalKaydetBtn');
+    if (kaydetBtn) kaydetBtn.disabled = false;
     if (onizle) {
       onizle.style.display = '';
       onizle.textContent = `✅ PDF hazır (${_dokResimListe.length} sayfa, ${dosyaBoyutuFormat(_dokResimPdfBlob.size)}).`;
