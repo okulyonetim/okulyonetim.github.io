@@ -467,10 +467,10 @@ function _dokEditorOlustur() {
     <div id="dokEditorGorselAlan" style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
         <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:60vh;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
-        <svg id="dokEditorSvg" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 1 1" preserveAspectRatio="none">
-          <polygon id="dokEditorPoligon" points="0.06,0.06 0.94,0.06 0.94,0.94 0.06,0.94" fill="none" stroke="#ff9800" stroke-width="0.008" vector-effect="non-scaling-stroke"></polygon>
-          <polyline id="dokEditorKenarVurgu" points="" fill="none" stroke="#4caf50" stroke-width="0.014" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="display:none;"></polyline>
-        </svg>
+        <div id="dokEditorKenarTLTR" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
+        <div id="dokEditorKenarTRBR" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
+        <div id="dokEditorKenarBRBL" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
+        <div id="dokEditorKenarBLTL" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
         <div id="dokEditorKoseTL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
         <div id="dokEditorKoseTR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
         <div id="dokEditorKoseBR" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
@@ -553,6 +553,12 @@ function _dokEditorGorselBoyutunuAyarla() {
       const w = Math.max(120, alan.clientWidth - guvenlikPayi);
       img.style.maxHeight = h + 'px';
       img.style.maxWidth = w + 'px';
+      // Görsel boyutu (dolayısıyla wrap'ın gerçek piksel boyutu) değiştiği
+      // için kenar çizgilerini bu yeni boyuta göre yeniden çiz.
+      requestAnimationFrame(() => {
+        const it = _dokResimListe[_dokResimEditorIndex];
+        if (it && it.kose) _dokEditorPoligonCiz(it.kose);
+      });
     });
   });
 }
@@ -691,6 +697,7 @@ function _dokEditorResmiYukle(index) {
   const img = document.getElementById('dokEditorImg');
   img.onload = () => {
     if (!it.kose) it.kose = _dokOtomatikKoseAlgila(img) || _dokVarsayilanKose();
+    _dokEditorGorselBoyutunuAyarla();
     _dokEditorPoligonCiz(it.kose);
     _dokFiltrePillGuncelle(it.filtre);
     const parlakSlider = document.getElementById('dokParlaklikSlider');
@@ -819,33 +826,65 @@ async function dokumanResimOtomatikAlgila() {
   }
 }
 
+/* Köşeleri birleştiren 4 kenarı, wrap'ın GERÇEK piksel boyutuna göre
+   (getBoundingClientRect) konumlandırılmış/döndürülmüş basit div'lerle
+   çizer. NOT: eskiden SVG <polygon> kullanılıyordu ama bazı Android
+   WebView sürümlerinde (özellikle vector-effect="non-scaling-stroke")
+   görünmez kalabildiği görüldü — bu yöntem her cihazda aynı şekilde
+   çalışan sade CSS transform'lara dayanıyor. */
 function _dokEditorPoligonCiz(kose) {
   const k = kose || _dokVarsayilanKose();
-  const poligon = document.getElementById('dokEditorPoligon');
-  if (poligon) poligon.setAttribute('points', `${k.tl.x},${k.tl.y} ${k.tr.x},${k.tr.y} ${k.br.x},${k.br.y} ${k.bl.x},${k.bl.y}`);
+  const wrap = document.getElementById('dokEditorWrap');
+  const wrapRect = wrap ? wrap.getBoundingClientRect() : { width: 0, height: 0 };
+  _dokKenarCiz('dokEditorKenarTLTR', k.tl, k.tr, wrapRect);
+  _dokKenarCiz('dokEditorKenarTRBR', k.tr, k.br, wrapRect);
+  _dokKenarCiz('dokEditorKenarBRBL', k.br, k.bl, wrapRect);
+  _dokKenarCiz('dokEditorKenarBLTL', k.bl, k.tl, wrapRect);
   ['tl', 'tr', 'br', 'bl'].forEach(c => {
     const el = document.getElementById('dokEditorKose' + c.toUpperCase());
     if (el) { el.style.left = (k[c].x * 100) + '%'; el.style.top = (k[c].y * 100) + '%'; }
   });
 }
 
+function _dokKenarCiz(divId, p1, p2, wrapRect) {
+  const el = document.getElementById(divId);
+  if (!el || !wrapRect.width || !wrapRect.height) return;
+  const x1 = p1.x * wrapRect.width, y1 = p1.y * wrapRect.height;
+  const x2 = p2.x * wrapRect.width, y2 = p2.y * wrapRect.height;
+  const dx = x2 - x1, dy = y2 - y1;
+  const uzunluk = Math.hypot(dx, dy);
+  const aci = Math.atan2(dy, dx) * 180 / Math.PI;
+  el.style.left = x1 + 'px';
+  el.style.top = (y1 - 2) + 'px'; // 4px kalınlığı ortalamak için
+  el.style.width = uzunluk + 'px';
+  el.style.transform = `rotate(${aci}deg)`;
+}
+
 /* Bir köşe sürüklenirken, o köşeye bağlı İKİ KENARI (önceki-bu köşe ve
-   bu köşe-sonraki köşe) ayrı bir çizgiyle vurgular — kullanıcı sadece
+   bu köşe-sonraki köşe) yeşile boyayarak vurgular — kullanıcı sadece
    izole bir nokta değil, hangi iki kenarı hareket ettirdiğini görsün diye. */
 const _DOK_KOSE_SIRA = ['tl', 'tr', 'br', 'bl'];
+const _DOK_KENAR_DIVLERI = ['dokEditorKenarTLTR', 'dokEditorKenarTRBR', 'dokEditorKenarBRBL', 'dokEditorKenarBLTL'];
+const _DOK_KENAR_ESLESME = { 'tl-tr': 'dokEditorKenarTLTR', 'tr-br': 'dokEditorKenarTRBR', 'br-bl': 'dokEditorKenarBRBL', 'bl-tl': 'dokEditorKenarBLTL' };
+
 function _dokEditorKenarVurgusuGuncelle(kose, aktifKoseAdi) {
-  const vurgu = document.getElementById('dokEditorKenarVurgu');
-  if (!vurgu || !aktifKoseAdi) return;
+  _DOK_KENAR_DIVLERI.forEach(id => { const el = document.getElementById(id); if (el) el.style.background = '#ff9800'; });
+  if (!aktifKoseAdi) return;
   const idx = _DOK_KOSE_SIRA.indexOf(aktifKoseAdi);
   const onceki = _DOK_KOSE_SIRA[(idx + 3) % 4];
   const sonraki = _DOK_KOSE_SIRA[(idx + 1) % 4];
-  vurgu.setAttribute('points', `${kose[onceki].x},${kose[onceki].y} ${kose[aktifKoseAdi].x},${kose[aktifKoseAdi].y} ${kose[sonraki].x},${kose[sonraki].y}`);
-  vurgu.style.display = 'block';
+  _dokKenarBoya(onceki, aktifKoseAdi);
+  _dokKenarBoya(aktifKoseAdi, sonraki);
+}
+
+function _dokKenarBoya(a, b) {
+  const id = _DOK_KENAR_ESLESME[`${a}-${b}`] || _DOK_KENAR_ESLESME[`${b}-${a}`];
+  const el = id && document.getElementById(id);
+  if (el) el.style.background = '#4caf50';
 }
 
 function _dokEditorKenarVurgusuGizle() {
-  const vurgu = document.getElementById('dokEditorKenarVurgu');
-  if (vurgu) vurgu.style.display = 'none';
+  _DOK_KENAR_DIVLERI.forEach(id => { const el = document.getElementById(id); if (el) el.style.background = '#ff9800'; });
 }
 
 function _dokKirpmaSuruklemeIsle(e) {
@@ -1260,7 +1299,7 @@ function _dokBelgeModuUygula(ctx, w, h) {
   // kaynaklanıyordu. Şimdi daha büyük/yumuşak bir gride dayandırılıyor VE
   // düzeltme oranı makul bir aralıkla sınırlandırılıyor — hem gerçek renk
   // kaymasını düzeltir hem de gürültüden kaynaklı lekelenmeyi önler.
-  const kucukW = Math.max(10, Math.round(w / 40)), kucukH = Math.max(10, Math.round(h / 40));
+  const kucukW = Math.max(8, Math.round(w / 60)), kucukH = Math.max(8, Math.round(h / 60));
   const kucukCanvas = document.createElement('canvas');
   kucukCanvas.width = kucukW; kucukCanvas.height = kucukH;
   kucukCanvas.getContext('2d').drawImage(ctx.canvas, 0, 0, kucukW, kucukH);
@@ -1272,7 +1311,7 @@ function _dokBelgeModuUygula(ctx, w, h) {
 
   const veri = ctx.getImageData(0, 0, w, h);
   const p = veri.data;
-  const MIN_ORAN = 0.55, MAX_ORAN = 1.9;
+  const MIN_ORAN = 0.65, MAX_ORAN = 1.6;
   for (let i = 0; i < p.length; i += 4) {
     for (let k = 0; k < 3; k++) {
       const bg = Math.max(arkaplan[i + k], 1);
