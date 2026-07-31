@@ -338,10 +338,12 @@ async function dokumanResimlerSecildi(input) {
       blob: f, url,
       kose: null, filtre: 'orijinal',
       parlaklik: 0, kontrast: 0,
+      detay: { golge: 0, sicaklik: 0, beyazlik: 0, metin: 0, netlik: 0, hareli: 0, gurultu: 0 },
       ad: f.name
     });
   }
   _dokResimPanelGuncelle();
+  _dokEditorGorunumModu = 'duzenle';
   if (_dokResimListe.length) dokumanResimEditoruAc();
 }
 
@@ -457,15 +459,12 @@ function _dokEditorOlustur() {
       <button class="btn btn-ghost btn-sm" style="color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimDondur()">↻ Döndür</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#101014;flex-shrink:0;">
-      <div id="dokCanliOnizlemeKutu" style="width:52px;height:52px;flex-shrink:0;border-radius:8px;border:2px solid #4caf50;overflow:hidden;background:#222;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="_dokCanliOnizlemeBuyut()">
-        <img id="dokCanliOnizlemeImg" style="width:100%;height:100%;object-fit:cover;display:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
-        <span id="dokCanliOnizlemeYukleniyor" style="font-size:9px;color:#888;text-align:center;">…</span>
-      </div>
-      <div style="flex:1;font-size:10px;color:#999;">Gerçek (işlenmiş) sonuç — dokununca büyütür</div>
-      <button id="dokEditorKaydetBtn" class="btn btn-primary btn-sm" style="flex:0 0 auto;" onclick="dokumanResimKaydetKisayolu()">💾 Kaydet</button>
+      <button id="dokGorunumBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimGorunumDegistir()">👁 Sonuç</button>
+      <button id="dokEditorKaydetBtn" class="btn btn-primary btn-sm" style="flex:1;" onclick="dokumanResimKaydetKisayolu()">💾 Kaydet</button>
     </div>
     <div id="dokEditorGorselAlan" style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
+        <div id="dokSonucIpucu" style="display:none;position:absolute;bottom:-30px;left:0;right:0;text-align:center;color:#aaa;font-size:10px;">👆 Basılı tutun: orijinal, bırakınca işlenmiş hal</div>
         <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:60vh;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
         <div id="dokEditorKenarTLTR" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
         <div id="dokEditorKenarTRBR" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
@@ -499,7 +498,27 @@ function _dokEditorOlustur() {
         <label style="font-size:11px;color:#ccc;display:flex;justify-content:space-between;">◐ Kontrast <span id="dokKontrastDeger">0</span></label>
         <input type="range" id="dokKontrastSlider" min="-50" max="50" value="0" style="width:100%;" oninput="dokumanResimKontrastDegisti(this.value)">
       </div>
-      <div style="font-size:10px;color:#999;margin-bottom:8px;">Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Önizlemedeki filtre/parlaklık/kontrast yaklaşıktır, gerçek sonuç işleme sırasında uygulanır.</div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:11px;color:#ccc;">🛠️ Detay Ayarlar</label>
+        <div style="display:flex;gap:4px;margin-top:4px;">
+          <button class="dok-detay-ikon" data-param="golge" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('golge')">🌑</button>
+          <button class="dok-detay-ikon" data-param="sicaklik" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('sicaklik')">🌡️</button>
+          <button class="dok-detay-ikon" data-param="beyazlik" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('beyazlik')">⚪</button>
+          <button class="dok-detay-ikon" data-param="metin" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('metin')">🔤</button>
+          <button class="dok-detay-ikon" data-param="netlik" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('netlik')">✨</button>
+          <button class="dok-detay-ikon" data-param="hareli" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('hareli')">🌀</button>
+          <button class="dok-detay-ikon" data-param="gurultu" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('gurultu')">🔇</button>
+        </div>
+        <div id="dokDetayPanel" style="display:none;margin-top:8px;background:rgba(255,255,255,.08);border-radius:8px;padding:10px;">
+          <label id="dokDetayEtiket" style="font-size:12px;color:#ccc;display:flex;justify-content:space-between;">Ayar <span id="dokDetayDeger">0</span></label>
+          <input type="range" id="dokDetaySlider" min="0" max="100" value="0" style="width:100%;" oninput="_dokDetayDegisti(this.value)">
+          <div style="display:flex;gap:6px;margin-top:8px;">
+            <button style="flex:1;background:#5c2323;color:#fff;border:none;border-radius:6px;padding:8px;font-size:14px;" onclick="dokumanResimDetayIptal()">✗ Vazgeç</button>
+            <button style="flex:1;background:#2e7d32;color:#fff;border:none;border-radius:6px;padding:8px;font-size:14px;" onclick="dokumanResimDetayOnayla()">✓ Tamam</button>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#999;margin-bottom:8px;">Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Üstteki "👁 Sonuç" ile gerçek işlenmiş hali her an görebilirsiniz (basılı tutunca orijinal döner). Önizlemedeki filtre/parlaklık/kontrast yaklaşıktır, gerçek sonuç işleme sırasında uygulanır.</div>
       <div id="dokEditorSerit" style="display:flex;gap:6px;overflow-x:auto;padding:6px 0;"></div>
     </div>
   `;
@@ -522,6 +541,25 @@ function _dokEditorOlustur() {
   });
   document.addEventListener('pointermove', _dokKirpmaSuruklemeIsle);
   document.addEventListener('pointerup', _dokKirpmaSuruklemeBitir);
+
+  // "Sonuç" görünümündeyken ana görseli basılı tutunca orijinali,
+  // bırakınca işlenmiş hali göster (aynı <img> üzerinde, ayrı bir
+  // pencere/lightbox olmadan).
+  const img = document.getElementById('dokEditorImg');
+  const eskiyiGoster = () => {
+    if (_dokEditorGorunumModu !== 'sonuc') return;
+    const it = _dokResimListe[_dokResimEditorIndex];
+    if (it) img.src = it.url;
+  };
+  const yeniyeDon = () => {
+    if (_dokEditorGorunumModu !== 'sonuc') return;
+    const it = _dokResimListe[_dokResimEditorIndex];
+    if (it && it.sonucCache) img.src = it.sonucCache;
+  };
+  img.addEventListener('pointerdown', eskiyiGoster);
+  img.addEventListener('pointerup', yeniyeDon);
+  img.addEventListener('pointerleave', yeniyeDon);
+  img.addEventListener('pointercancel', yeniyeDon);
 }
 
 function dokumanResimEditoruAc() {
@@ -575,81 +613,71 @@ function dokumanResimEditoruKapat() {
    gireceği hali (gerçek kırpma/perspektif/filtre/parlaklık/kontrast
    işlemesinden geçmiş, _dokResimIsle ile) gösterir. Basılı tutunca
    orijinal (işlenmemiş) hali, bırakınca işlenmiş hali görünür. */
-/* Küçük önizleme kutusuna (ve büyütülünce lightbox'a) dokununca son
-   hesaplanmış GERÇEK sonucu gösterir — yeniden işlemez, sadece son
-   otomatik güncellemenin sonucunu büyütür. */
-function _dokCanliOnizlemeBuyut() {
-  const img = document.getElementById('dokCanliOnizlemeImg');
+/* ---------------- Düzenle / Sonuç görünüm geçişi ----------------
+   Önceden gerçek sonuç ayrı küçük bir kutuda/lightbox'ta gösteriliyordu.
+   Artık AYNI ana görsel alanı iki modu paylaşıyor: 'duzenle' modunda
+   orijinal görsel + köşe tutamaçları, 'sonuc' modunda o an hesaplanmış
+   GERÇEK işlenmiş hal (basılı tutunca orijinal, bırakınca işlenmiş hal
+   döner — aynı ana görsel üzerinde). Köşe/kenar tutamaçları sadece
+   'duzenle' modunda görünür ve etkileşimlidir. */
+let _dokEditorGorunumModu = 'duzenle';
+
+function dokumanResimGorunumDegistir() {
+  _dokEditorGorunumModu = _dokEditorGorunumModu === 'duzenle' ? 'sonuc' : 'duzenle';
+  _dokEditorGorunumUygula();
+}
+
+function _dokEditorGorunumUygula() {
+  const sonucMu = _dokEditorGorunumModu === 'sonuc';
+  const img = document.getElementById('dokEditorImg');
   const it = _dokResimListe[_dokResimEditorIndex];
-  if (!img || !img.src || img.style.display === 'none') { toast('Önizleme henüz hazır değil, bir an bekleyin.'); return; }
-  _dokSonucOnizlemeAc(img.src, it ? it.url : img.src);
+  const btn = document.getElementById('dokGorunumBtn');
+  const ipucu = document.getElementById('dokSonucIpucu');
+  if (btn) btn.textContent = sonucMu ? '✏️ Düzenle' : '👁 Sonuç';
+  if (ipucu) ipucu.style.display = sonucMu ? 'block' : 'none';
+
+  [..._DOK_KENAR_DIVLERI, 'dokEditorKoseTL', 'dokEditorKoseTR', 'dokEditorKoseBR', 'dokEditorKoseBL'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = sonucMu ? 'none' : '';
+  });
+
+  if (!it) return;
+  if (sonucMu) {
+    if (it.sonucCache) img.src = it.sonucCache;
+    else _dokCanliOnizlemeYenile();
+  } else {
+    img.src = it.url;
+    img.style.filter = ''; // sonuç modundan dönünce CSS filtre önizlemesini yeniden uygula
+    _dokEditorFiltreOnizlemesiUygula(it);
+  }
 }
 
 let _dokCanliOnizlemeZamanlayici = null;
 let _dokCanliOnizlemeIslemeSirasi = 0;
 
-/* Kırpma/köşe/filtre/parlaklık/kontrast değiştikçe çağrılır — gerçek
-   işleme (özellikle perspektif düzeltme) piksel-piksel maliyetli olduğu
-   için HER hareket anında değil, kısa bir duraklamadan (debounce) sonra
-   tetiklenir; bu sırada küçük önizleme kutusu "…" gösterir. */
+/* Kırpma/köşe/filtre/parlaklık/kontrast/detay ayarları değiştikçe
+   çağrılır — gerçek işleme (özellikle perspektif düzeltme) piksel-piksel
+   maliyetli olduğu için HER hareket anında değil, kısa bir duraklamadan
+   (debounce) sonra tetiklenir. Sonuç, geçerli resmin sonucCache'ine
+   yazılır; o an "Sonuç" görünümündeysek ana görsel de anında güncellenir. */
 function _dokCanliOnizlemeYenile() {
-  const kutu = document.getElementById('dokCanliOnizlemeYukleniyor');
-  if (kutu) kutu.style.display = '';
   if (_dokCanliOnizlemeZamanlayici) clearTimeout(_dokCanliOnizlemeZamanlayici);
   _dokCanliOnizlemeZamanlayici = setTimeout(_dokCanliOnizlemeIsle, 450);
 }
 
 async function _dokCanliOnizlemeIsle() {
   const it = _dokResimListe[_dokResimEditorIndex];
-  const img = document.getElementById('dokCanliOnizlemeImg');
-  const yukleniyor = document.getElementById('dokCanliOnizlemeYukleniyor');
-  if (!it || !img) return;
+  if (!it) return;
   const buTur = ++_dokCanliOnizlemeIslemeSirasi;
   try {
     const { dataUrl } = await _dokResimIsle(it);
     if (buTur !== _dokCanliOnizlemeIslemeSirasi) return; // araya yeni bir değişiklik girdi, bu sonucu at
-    img.src = dataUrl;
-    img.style.display = 'block';
-    if (yukleniyor) yukleniyor.style.display = 'none';
-  } catch (e) {
-    if (yukleniyor) yukleniyor.textContent = '!';
-  }
-}
-
-function _dokSonucOnizlemeOlustur() {
-  if (document.getElementById('dokSonucOnizleme')) return;
-  const el = document.createElement('div');
-  el.id = 'dokSonucOnizleme';
-  el.style.cssText = 'position:fixed;inset:0;z-index:999999;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;';
-  el.innerHTML = `
-    <button style="position:absolute;top:14px;left:14px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 14px;font-size:13px;" onclick="_dokSonucOnizlemeKapat()">✕ Kapat</button>
-    <img id="dokSonucImg" style="max-width:92vw;max-height:76vh;user-select:none;-webkit-user-drag:none;touch-action:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
-    <div style="position:absolute;bottom:24px;left:0;right:0;text-align:center;color:#ccc;font-size:12px;">👆 Basılı tutun: orijinal halini gösterir, bırakınca işlenmiş hal döner</div>
-  `;
-  document.body.appendChild(el);
-  el.addEventListener('contextmenu', (e) => e.preventDefault());
-  const img = el.querySelector('#dokSonucImg');
-  const eskiyiGoster = (e) => { e.preventDefault(); if (img.dataset.orijinal) img.src = img.dataset.orijinal; };
-  const yeniyeDon = () => { if (img.dataset.islenmis) img.src = img.dataset.islenmis; };
-  img.addEventListener('pointerdown', eskiyiGoster);
-  img.addEventListener('pointerup', yeniyeDon);
-  img.addEventListener('pointerleave', yeniyeDon);
-  img.addEventListener('pointercancel', yeniyeDon);
-}
-
-function _dokSonucOnizlemeAc(islenmisUrl, orijinalUrl) {
-  _dokSonucOnizlemeOlustur();
-  const el = document.getElementById('dokSonucOnizleme');
-  const img = document.getElementById('dokSonucImg');
-  img.dataset.islenmis = islenmisUrl;
-  img.dataset.orijinal = orijinalUrl;
-  img.src = islenmisUrl;
-  el.style.display = 'flex';
-}
-
-function _dokSonucOnizlemeKapat() {
-  const el = document.getElementById('dokSonucOnizleme');
-  if (el) el.style.display = 'none';
+    it.sonucCache = dataUrl;
+    if (_dokEditorGorunumModu === 'sonuc' && _dokResimListe[_dokResimEditorIndex] === it) {
+      const img = document.getElementById('dokEditorImg');
+      if (img) img.src = dataUrl;
+    }
+  } catch (e) { /* sessizce geç — bir sonraki değişiklikte tekrar denenecek */ }
 }
 
 /* ---------------- Düzenleyicideki Kaydet kısayolu ----------------
@@ -706,9 +734,8 @@ function _dokEditorResmiYukle(index) {
     if (kontrastSlider) kontrastSlider.value = it.kontrast;
     document.getElementById('dokParlaklikDeger').textContent = it.parlaklik;
     document.getElementById('dokKontrastDeger').textContent = it.kontrast;
-    _dokEditorFiltreOnizlemesiUygula(it);
-    const onizlemeImg = document.getElementById('dokCanliOnizlemeImg');
-    if (onizlemeImg) onizlemeImg.style.display = 'none';
+    if (_dokEditorGorunumModu === 'sonuc') _dokEditorGorunumUygula();
+    else _dokEditorFiltreOnizlemesiUygula(it);
     _dokCanliOnizlemeYenile();
   };
   img.src = it.url;
@@ -988,6 +1015,72 @@ function dokumanResimKontrastDegisti(deger) {
   _dokCanliOnizlemeYenile();
 }
 
+/* ---------------- Detay Ayarlar (Gölge/Sıcaklık/Beyazlık/Metin/Netlik/Hareli/Gürültü) ----------------
+   Her ikon aynı tek kaydırıcı panelini açar; ✓ değeri kalıcı yapar,
+   ✗ paneli açmadan önceki değere geri döndürür. Değer her sürüklemede
+   canlı önizlemeyi (debounce'lu) tetikler. */
+const _DOK_DETAY_AYARLARI = {
+  golge:    { etiket: '🌑 Gölge Giderme',                min: 0,   max: 100 },
+  sicaklik: { etiket: '🌡️ Sıcaklık (Serin ↔ Sıcak)',     min: -50, max: 50  },
+  beyazlik: { etiket: '⚪ Beyazlık',                      min: 0,   max: 100 },
+  metin:    { etiket: '🔤 Metin Düzeltme',                min: 0,   max: 100 },
+  netlik:   { etiket: '✨ Netlik',                        min: 0,   max: 100 },
+  hareli:   { etiket: '🌀 Hareli (Moiré) Giderme',        min: 0,   max: 100 },
+  gurultu:  { etiket: '🔇 Gürültü Giderme',               min: 0,   max: 100 },
+};
+let _dokDetayAcikParam = null;
+let _dokDetayOncekiDeger = 0;
+
+function _dokDetayVarsayilan() {
+  return { golge: 0, sicaklik: 0, beyazlik: 0, metin: 0, netlik: 0, hareli: 0, gurultu: 0 };
+}
+
+function dokumanResimDetayAc(param) {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  const ayar = _DOK_DETAY_AYARLARI[param];
+  if (!it || !ayar) return;
+  if (!it.detay) it.detay = _dokDetayVarsayilan();
+  _dokDetayAcikParam = param;
+  _dokDetayOncekiDeger = it.detay[param] || 0;
+
+  document.getElementById('dokDetayEtiket').innerHTML = `${ayar.etiket} <span id="dokDetayDeger">${_dokDetayOncekiDeger}</span>`;
+  const slider = document.getElementById('dokDetaySlider');
+  slider.min = ayar.min; slider.max = ayar.max; slider.value = _dokDetayOncekiDeger;
+  document.getElementById('dokDetayPanel').style.display = 'block';
+
+  document.querySelectorAll('.dok-detay-ikon').forEach(btn => {
+    btn.style.background = btn.dataset.param === param ? '#4caf50' : 'rgba(255,255,255,.12)';
+  });
+}
+
+function _dokDetayDegisti(deger) {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (!it || !_dokDetayAcikParam) return;
+  if (!it.detay) it.detay = _dokDetayVarsayilan();
+  it.detay[_dokDetayAcikParam] = parseInt(deger, 10);
+  const etiketDeger = document.getElementById('dokDetayDeger');
+  if (etiketDeger) etiketDeger.textContent = deger;
+  _dokCanliOnizlemeYenile();
+}
+
+function dokumanResimDetayOnayla() {
+  document.getElementById('dokDetayPanel').style.display = 'none';
+  document.querySelectorAll('.dok-detay-ikon').forEach(btn => { btn.style.background = 'rgba(255,255,255,.12)'; });
+  _dokDetayAcikParam = null;
+}
+
+function dokumanResimDetayIptal() {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (it && _dokDetayAcikParam) {
+    if (!it.detay) it.detay = _dokDetayVarsayilan();
+    it.detay[_dokDetayAcikParam] = _dokDetayOncekiDeger;
+    _dokCanliOnizlemeYenile();
+  }
+  document.getElementById('dokDetayPanel').style.display = 'none';
+  document.querySelectorAll('.dok-detay-ikon').forEach(btn => { btn.style.background = 'rgba(255,255,255,.12)'; });
+  _dokDetayAcikParam = null;
+}
+
 function _dokEditorFiltreOnizlemesiUygula(it) {
   const img = document.getElementById('dokEditorImg');
   if (!img) return;
@@ -1036,6 +1129,7 @@ async function dokumanResimDondur() {
     if (it.url.indexOf('blob:') === 0) URL.revokeObjectURL(it.url);
     it.url = yeniUrl;
     it.kose = null;
+    it.sonucCache = null;
     _dokEditorResmiYukle(_dokResimEditorIndex);
   } catch (e) {
     toast('Döndürme hatası: ' + e.message);
@@ -1128,6 +1222,17 @@ async function _dokResimIsle(item) {
   else if (item.filtre === 'bw') _dokSiyahBeyazUygula(ctx, canvas.width, canvas.height);
 
   if (item.parlaklik || item.kontrast) _dokParlaklikKontrastUygula(ctx, canvas.width, canvas.height, item.parlaklik || 0, item.kontrast || 0);
+
+  const d = item.detay;
+  if (d) {
+    if (d.hareli)   _dokHareliGidermeUygula(ctx, canvas.width, canvas.height, d.hareli);
+    if (d.gurultu)  _dokGurultuGidermeUygula(ctx, canvas.width, canvas.height, d.gurultu);
+    if (d.golge)    _dokGolgeGidermeUygula(ctx, canvas.width, canvas.height, d.golge);
+    if (d.sicaklik) _dokSicaklikUygula(ctx, canvas.width, canvas.height, d.sicaklik);
+    if (d.beyazlik) _dokBeyazlikUygula(ctx, canvas.width, canvas.height, d.beyazlik);
+    if (d.metin)    _dokMetinDuzeltmeUygula(ctx, canvas.width, canvas.height, d.metin);
+    if (d.netlik)   _dokNetlikUygula(ctx, canvas.width, canvas.height, d.netlik);
+  }
 
   return { dataUrl: canvas.toDataURL('image/jpeg', 0.93), w: canvas.width, h: canvas.height };
 }
@@ -1423,6 +1528,156 @@ function _dokParlaklikKontrastUygula(ctx, w, h, parlaklik, kontrast) {
     for (let k = 0; k < 3; k++) {
       const v = (p[i + k] - 128) * kontrastCarpani + 128 + parlakOfset;
       p[i + k] = Math.max(0, Math.min(255, v));
+    }
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+/* ---------------- Detay Ayarlar — işleme fonksiyonları ---------------- */
+
+/* 3x3 kutu bulanıklaştırma — Hareli/Gürültü Giderme ve Netlik'in (unsharp
+   mask) ortak temeli. w*h*9 işlem gerektirir, bu yüzden sadece ilgili
+   kaydırıcı >0 iken çağrılır. */
+function _dokKutuBulanikVeri(veri, w, h) {
+  const src = veri.data;
+  const out = new Uint8ClampedArray(src.length);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let r = 0, g = 0, b = 0, c = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        const ny = y + dy; if (ny < 0 || ny >= h) continue;
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = x + dx; if (nx < 0 || nx >= w) continue;
+          const i = (ny * w + nx) * 4;
+          r += src[i]; g += src[i + 1]; b += src[i + 2]; c++;
+        }
+      }
+      const o = (y * w + x) * 4;
+      out[o] = r / c; out[o + 1] = g / c; out[o + 2] = b / c; out[o + 3] = 255;
+    }
+  }
+  return out;
+}
+
+/* Hareli (moiré) Giderme: ekran fotoğraflarında oluşan girişim desenini
+   azaltmak için orijinali bulanıklaştırılmış kopyasına doğru karıştırır. */
+function _dokHareliGidermeUygula(ctx, w, h, deger) {
+  const guc = deger / 100;
+  const veri = ctx.getImageData(0, 0, w, h);
+  const bulanik = _dokKutuBulanikVeri(veri, w, h);
+  const p = veri.data;
+  for (let i = 0; i < p.length; i += 4) {
+    for (let k = 0; k < 3; k++) p[i + k] = p[i + k] + (bulanik[i + k] - p[i + k]) * guc * 0.85;
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+/* Gürültü Giderme: aynı bulanıklaştırma temeline dayanır, sensör
+   gürültüsü/tane etkisini azaltmak için biraz daha hafif karıştırır. */
+function _dokGurultuGidermeUygula(ctx, w, h, deger) {
+  const guc = deger / 100;
+  const veri = ctx.getImageData(0, 0, w, h);
+  const bulanik = _dokKutuBulanikVeri(veri, w, h);
+  const p = veri.data;
+  for (let i = 0; i < p.length; i += 4) {
+    for (let k = 0; k < 3; k++) p[i + k] = p[i + k] + (bulanik[i + k] - p[i + k]) * guc * 0.6;
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+/* Netlik: unsharp mask — bulanık kopyayla farkı büyüterek kenarları
+   belirginleştirir (metin kenarlarını keskinleştirir). */
+function _dokNetlikUygula(ctx, w, h, deger) {
+  const guc = deger / 100;
+  const veri = ctx.getImageData(0, 0, w, h);
+  const bulanik = _dokKutuBulanikVeri(veri, w, h);
+  const p = veri.data;
+  const miktar = guc * 1.3;
+  for (let i = 0; i < p.length; i += 4) {
+    for (let k = 0; k < 3; k++) {
+      const fark = p[i + k] - bulanik[i + k];
+      p[i + k] = Math.max(0, Math.min(255, p[i + k] + fark * miktar));
+    }
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+/* Gölge Giderme (ayarlanabilir güç): Belge Modu'ndaki yerel arka plan
+   düzleştirmesiyle aynı teknik, ama orijinal-düzeltilmiş arası
+   kaydırıcıyla karıştırılıyor — herhangi bir filtre seçili olmasa bile
+   bağımsız olarak kullanılabilir. */
+function _dokGolgeGidermeUygula(ctx, w, h, deger) {
+  const guc = deger / 100;
+  const kucukW = Math.max(8, Math.round(w / 60)), kucukH = Math.max(8, Math.round(h / 60));
+  const kucukCanvas = document.createElement('canvas');
+  kucukCanvas.width = kucukW; kucukCanvas.height = kucukH;
+  kucukCanvas.getContext('2d').drawImage(ctx.canvas, 0, 0, kucukW, kucukH);
+  const buyukCanvas = document.createElement('canvas');
+  buyukCanvas.width = w; buyukCanvas.height = h;
+  buyukCanvas.getContext('2d').drawImage(kucukCanvas, 0, 0, w, h);
+  const arka = buyukCanvas.getContext('2d').getImageData(0, 0, w, h).data;
+  const veri = ctx.getImageData(0, 0, w, h);
+  const p = veri.data;
+  for (let i = 0; i < p.length; i += 4) {
+    for (let k = 0; k < 3; k++) {
+      const bg = Math.max(arka[i + k], 1);
+      const oran = Math.max(0.6, Math.min(1.7, 245 / bg));
+      const duzeltilmis = Math.max(0, Math.min(255, p[i + k] * oran));
+      p[i + k] = p[i + k] + (duzeltilmis - p[i + k]) * guc;
+    }
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+/* Sıcaklık: -50 (serin/mavimsi) .. +50 (sıcak/sarımsı-turuncu) — kırmızı
+   ve mavi kanalları zıt yönde kaydırır. */
+function _dokSicaklikUygula(ctx, w, h, deger) {
+  const veri = ctx.getImageData(0, 0, w, h);
+  const p = veri.data;
+  const kaydirma = deger * 1.3;
+  for (let i = 0; i < p.length; i += 4) {
+    p[i]     = Math.max(0, Math.min(255, p[i] + kaydirma));
+    p[i + 2] = Math.max(0, Math.min(255, p[i + 2] - kaydirma));
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+/* Beyazlık: parlak bölgeleri (kağıt/arka plan) koyu bölgeleri (yazı)
+   fazla etkilemeden beyaza yaklaştırır — Belge Modu dışında da manuel
+   olarak uygulanabilsin diye ayrı bir kaydırıcı. */
+function _dokBeyazlikUygula(ctx, w, h, deger) {
+  const veri = ctx.getImageData(0, 0, w, h);
+  const p = veri.data;
+  const guc = deger / 100;
+  for (let i = 0; i < p.length; i += 4) {
+    for (let k = 0; k < 3; k++) {
+      const v = p[i + k];
+      const artir = (v / 255) * guc * (255 - v) * 0.6;
+      p[i + k] = Math.max(0, Math.min(255, v + artir));
+    }
+  }
+  ctx.putImageData(veri, 0, 0);
+}
+
+/* Metin Düzeltme: yerel kontrast artırma (küçük bir "yerel ortalama"
+   haritasına göre her pikseli kendi civarından uzaklaştırır) — yazıyı
+   arka plandan daha net ayırır, hafif bir CLAHE benzeri etki. */
+function _dokMetinDuzeltmeUygula(ctx, w, h, deger) {
+  const guc = deger / 100;
+  const kucukW = Math.max(8, Math.round(w / 30)), kucukH = Math.max(8, Math.round(h / 30));
+  const kucukCanvas = document.createElement('canvas');
+  kucukCanvas.width = kucukW; kucukCanvas.height = kucukH;
+  kucukCanvas.getContext('2d').drawImage(ctx.canvas, 0, 0, kucukW, kucukH);
+  const buyukCanvas = document.createElement('canvas');
+  buyukCanvas.width = w; buyukCanvas.height = h;
+  buyukCanvas.getContext('2d').drawImage(kucukCanvas, 0, 0, w, h);
+  const yerelOrt = buyukCanvas.getContext('2d').getImageData(0, 0, w, h).data;
+  const veri = ctx.getImageData(0, 0, w, h);
+  const p = veri.data;
+  for (let i = 0; i < p.length; i += 4) {
+    for (let k = 0; k < 3; k++) {
+      const fark = p[i + k] - yerelOrt[i + k];
+      p[i + k] = Math.max(0, Math.min(255, p[i + k] + fark * guc * 1.4));
     }
   }
   ctx.putImageData(veri, 0, 0);
