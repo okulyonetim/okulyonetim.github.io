@@ -456,15 +456,19 @@ function _dokEditorOlustur() {
       <div id="dokEditorBaslik" style="font-size:13px;font-weight:600;">Resim Düzenle</div>
       <button class="btn btn-ghost btn-sm" style="color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimDondur()">↻ Döndür</button>
     </div>
-    <div style="display:flex;gap:6px;padding:8px 12px;background:#101014;flex-shrink:0;">
-      <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimSonucunuGor()">👁 Sonucu Gör</button>
-      <button id="dokEditorKaydetBtn" class="btn btn-primary btn-sm" style="flex:1;" onclick="dokumanResimKaydetKisayolu()">💾 Kaydet</button>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#101014;flex-shrink:0;">
+      <div id="dokCanliOnizlemeKutu" style="width:52px;height:52px;flex-shrink:0;border-radius:8px;border:2px solid #4caf50;overflow:hidden;background:#222;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="_dokCanliOnizlemeBuyut()">
+        <img id="dokCanliOnizlemeImg" style="width:100%;height:100%;object-fit:cover;display:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
+        <span id="dokCanliOnizlemeYukleniyor" style="font-size:9px;color:#888;text-align:center;">…</span>
+      </div>
+      <div style="flex:1;font-size:10px;color:#999;">Gerçek (işlenmiş) sonuç — dokununca büyütür</div>
+      <button id="dokEditorKaydetBtn" class="btn btn-primary btn-sm" style="flex:0 0 auto;" onclick="dokumanResimKaydetKisayolu()">💾 Kaydet</button>
     </div>
     <div id="dokEditorGorselAlan" style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
-        <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:60vh;user-select:none;-webkit-user-drag:none;">
+        <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:60vh;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
         <svg id="dokEditorSvg" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 1 1" preserveAspectRatio="none">
-          <polygon id="dokEditorPoligon" points="0.06,0.06 0.94,0.06 0.94,0.94 0.06,0.94" fill="rgba(255,152,0,.18)" stroke="#ff9800" stroke-width="0.006" vector-effect="non-scaling-stroke"></polygon>
+          <polygon id="dokEditorPoligon" points="0.06,0.06 0.94,0.06 0.94,0.94 0.06,0.94" fill="none" stroke="#ff9800" stroke-width="0.008" vector-effect="non-scaling-stroke"></polygon>
           <polyline id="dokEditorKenarVurgu" points="" fill="none" stroke="#4caf50" stroke-width="0.014" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="display:none;"></polyline>
         </svg>
         <div id="dokEditorKoseTL" class="dok-tutamac" style="position:absolute;width:26px;height:26px;margin:-13px;background:#ff9800;border-radius:50%;touch-action:none;border:2px solid #fff;"></div>
@@ -500,6 +504,12 @@ function _dokEditorOlustur() {
     </div>
   `;
   document.body.appendChild(el);
+
+  // Genel önlem: köşe tutamacını basılı tutarken parmak altındaki gerçek
+  // görsele (ana görsel, şerit küçük resimleri vb.) denk gelince Android'in
+  // yerleşik "resmi kaydet/kopyala/paylaş" uzun-basma menüsü açılabiliyordu.
+  // Editörün tamamında bunu engelliyoruz.
+  el.addEventListener('contextmenu', (e) => e.preventDefault());
 
   const surukleBaslat = (tip) => (e) => {
     e.preventDefault();
@@ -559,15 +569,44 @@ function dokumanResimEditoruKapat() {
    gireceği hali (gerçek kırpma/perspektif/filtre/parlaklık/kontrast
    işlemesinden geçmiş, _dokResimIsle ile) gösterir. Basılı tutunca
    orijinal (işlenmemiş) hali, bırakınca işlenmiş hali görünür. */
-async function dokumanResimSonucunuGor() {
+/* Küçük önizleme kutusuna (ve büyütülünce lightbox'a) dokununca son
+   hesaplanmış GERÇEK sonucu gösterir — yeniden işlemez, sadece son
+   otomatik güncellemenin sonucunu büyütür. */
+function _dokCanliOnizlemeBuyut() {
+  const img = document.getElementById('dokCanliOnizlemeImg');
   const it = _dokResimListe[_dokResimEditorIndex];
-  if (!it) { toast('Önce resim seçin.'); return; }
-  toast('Hazırlanıyor…');
+  if (!img || !img.src || img.style.display === 'none') { toast('Önizleme henüz hazır değil, bir an bekleyin.'); return; }
+  _dokSonucOnizlemeAc(img.src, it ? it.url : img.src);
+}
+
+let _dokCanliOnizlemeZamanlayici = null;
+let _dokCanliOnizlemeIslemeSirasi = 0;
+
+/* Kırpma/köşe/filtre/parlaklık/kontrast değiştikçe çağrılır — gerçek
+   işleme (özellikle perspektif düzeltme) piksel-piksel maliyetli olduğu
+   için HER hareket anında değil, kısa bir duraklamadan (debounce) sonra
+   tetiklenir; bu sırada küçük önizleme kutusu "…" gösterir. */
+function _dokCanliOnizlemeYenile() {
+  const kutu = document.getElementById('dokCanliOnizlemeYukleniyor');
+  if (kutu) kutu.style.display = '';
+  if (_dokCanliOnizlemeZamanlayici) clearTimeout(_dokCanliOnizlemeZamanlayici);
+  _dokCanliOnizlemeZamanlayici = setTimeout(_dokCanliOnizlemeIsle, 450);
+}
+
+async function _dokCanliOnizlemeIsle() {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  const img = document.getElementById('dokCanliOnizlemeImg');
+  const yukleniyor = document.getElementById('dokCanliOnizlemeYukleniyor');
+  if (!it || !img) return;
+  const buTur = ++_dokCanliOnizlemeIslemeSirasi;
   try {
     const { dataUrl } = await _dokResimIsle(it);
-    _dokSonucOnizlemeAc(dataUrl, it.url);
+    if (buTur !== _dokCanliOnizlemeIslemeSirasi) return; // araya yeni bir değişiklik girdi, bu sonucu at
+    img.src = dataUrl;
+    img.style.display = 'block';
+    if (yukleniyor) yukleniyor.style.display = 'none';
   } catch (e) {
-    toast('Önizleme hatası: ' + e.message);
+    if (yukleniyor) yukleniyor.textContent = '!';
   }
 }
 
@@ -578,10 +617,11 @@ function _dokSonucOnizlemeOlustur() {
   el.style.cssText = 'position:fixed;inset:0;z-index:999999;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;';
   el.innerHTML = `
     <button style="position:absolute;top:14px;left:14px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 14px;font-size:13px;" onclick="_dokSonucOnizlemeKapat()">✕ Kapat</button>
-    <img id="dokSonucImg" style="max-width:92vw;max-height:76vh;user-select:none;-webkit-user-drag:none;touch-action:none;">
+    <img id="dokSonucImg" style="max-width:92vw;max-height:76vh;user-select:none;-webkit-user-drag:none;touch-action:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
     <div style="position:absolute;bottom:24px;left:0;right:0;text-align:center;color:#ccc;font-size:12px;">👆 Basılı tutun: orijinal halini gösterir, bırakınca işlenmiş hal döner</div>
   `;
   document.body.appendChild(el);
+  el.addEventListener('contextmenu', (e) => e.preventDefault());
   const img = el.querySelector('#dokSonucImg');
   const eskiyiGoster = (e) => { e.preventDefault(); if (img.dataset.orijinal) img.src = img.dataset.orijinal; };
   const yeniyeDon = () => { if (img.dataset.islenmis) img.src = img.dataset.islenmis; };
@@ -632,7 +672,7 @@ function _dokEditorSeritCiz() {
   if (!serit) return;
   serit.innerHTML = _dokResimListe.map((it, i) => `
     <div style="flex-shrink:0;width:56px;text-align:center;">
-      <img src="${it.url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;border:2px solid ${i === _dokResimEditorIndex ? '#4caf50' : 'transparent'};cursor:pointer;" onclick="_dokEditorResmiYukle(${i})">
+      <img src="${it.url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;border:2px solid ${i === _dokResimEditorIndex ? '#4caf50' : 'transparent'};cursor:pointer;-webkit-touch-callout:none;" oncontextmenu="return false;" onclick="_dokEditorResmiYukle(${i})">
       <div style="display:flex;justify-content:center;gap:2px;margin-top:2px;">
         <button style="font-size:10px;padding:2px 4px;background:#333;color:#fff;border:none;border-radius:4px;" onclick="dokumanResimSiraDegistir(${i},-1)">▲</button>
         <button style="font-size:10px;padding:2px 4px;background:#333;color:#fff;border:none;border-radius:4px;" onclick="dokumanResimSiraDegistir(${i},1)">▼</button>
@@ -660,6 +700,9 @@ function _dokEditorResmiYukle(index) {
     document.getElementById('dokParlaklikDeger').textContent = it.parlaklik;
     document.getElementById('dokKontrastDeger').textContent = it.kontrast;
     _dokEditorFiltreOnizlemesiUygula(it);
+    const onizlemeImg = document.getElementById('dokCanliOnizlemeImg');
+    if (onizlemeImg) onizlemeImg.style.display = 'none';
+    _dokCanliOnizlemeYenile();
   };
   img.src = it.url;
   document.getElementById('dokEditorBaslik').textContent = `${index + 1} / ${_dokResimListe.length}`;
@@ -766,6 +809,7 @@ async function dokumanResimOtomatikAlgila() {
     if (otomatik) {
       it.kose = otomatik;
       _dokEditorPoligonCiz(it.kose);
+      _dokCanliOnizlemeYenile();
       toast('Köşeler otomatik bulundu — gerekirse elle ince ayar yapabilirsiniz.');
     } else {
       toast('Köşeler otomatik bulunamadı (kontrast yetersiz) — elle ayarlayın.');
@@ -825,9 +869,11 @@ function _dokKirpmaSuruklemeIsle(e) {
 }
 
 function _dokKirpmaSuruklemeBitir() {
+  const suruklemeVardi = !!_dokKirpmaSurukleme;
   _dokKirpmaSurukleme = null;
   _dokBuyutecKapat();
   _dokEditorKenarVurgusuGizle();
+  if (suruklemeVardi) _dokCanliOnizlemeYenile();
 }
 
 /* ---------------- Büyüteçli köşe tutucu ----------------
@@ -868,6 +914,7 @@ function dokumanResimKirpmaSifirla() {
   if (!it) return;
   it.kose = _dokVarsayilanKose();
   _dokEditorPoligonCiz(it.kose);
+  _dokCanliOnizlemeYenile();
 }
 
 /* ---------------- Filtre + Parlaklık/Kontrast seçimi
@@ -879,6 +926,7 @@ function dokumanResimFiltreSec(filtre) {
   it.filtre = filtre;
   _dokFiltrePillGuncelle(filtre);
   _dokEditorFiltreOnizlemesiUygula(it);
+  _dokCanliOnizlemeYenile();
 }
 
 function dokumanResimParlaklikDegisti(deger) {
@@ -888,6 +936,7 @@ function dokumanResimParlaklikDegisti(deger) {
   const etiket = document.getElementById('dokParlaklikDeger');
   if (etiket) etiket.textContent = deger;
   _dokEditorFiltreOnizlemesiUygula(it);
+  _dokCanliOnizlemeYenile();
 }
 
 function dokumanResimKontrastDegisti(deger) {
@@ -897,6 +946,7 @@ function dokumanResimKontrastDegisti(deger) {
   const etiket = document.getElementById('dokKontrastDeger');
   if (etiket) etiket.textContent = deger;
   _dokEditorFiltreOnizlemesiUygula(it);
+  _dokCanliOnizlemeYenile();
 }
 
 function _dokEditorFiltreOnizlemesiUygula(it) {
