@@ -153,18 +153,40 @@ function dokumanAc(id) {
   }
 }
 
-function dokumanIndir(id) {
+/* ÖNEMLİ DÜZELTME: <a download> özniteliği FARKLI KAYNAKTAN (Firebase
+   Storage gibi) gelen dosyalarda tarayıcı tarafından güvenlik nedeniyle
+   yok sayılıyor — bu yüzden "indirme" aslında sadece dosyayı yeni
+   sekmede AÇIYORDU (görüntüleme gibi davranıyordu), gerçekten indirmiyordu.
+   Çözüm: dosyayı fetch ile indirip base64'e çevirip, ortak
+   uygulamaDosyaKaydet() köprüsünü (js/app.js — native SavePlugin/blob
+   fallback, PDF görüntüleyicideki "İndir" ile aynı yöntem) kullanmak —
+   bu, kaynağın nereden geldiğinden bağımsız çalışır. */
+async function dokumanIndir(id) {
   const d = dokumanlarListesi.find(x => x.id === id);
   if (!d) return;
   const url = d.hariciUrl || d.dosyaUrl;
   if (!url) { toast('Bu dökümanın dosyası bulunamadı.'); return; }
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = d.dosyaAdi || d.ad || 'dosya';
-  a.target = '_blank';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  if (typeof uygulamaDosyaKaydet !== 'function') {
+    // Köprü kullanılamıyorsa (ör. saf web ortamı) eski yönteme düş
+    window.open(url, '_blank');
+    return;
+  }
+  try {
+    toast('İndiriliyor…');
+    const yanit = await fetch(url);
+    const blob = await yanit.blob();
+    const reader = new FileReader();
+    const base64 = await new Promise((resolve, reject) => {
+      reader.onloadend = () => resolve(String(reader.result).split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    const dosyaAdi = d.dosyaAdi || d.ad || 'dosya';
+    const mimeTuru = blob.type || 'application/octet-stream';
+    await uygulamaDosyaKaydet(base64, dosyaAdi, mimeTuru, false);
+  } catch (e) {
+    toast('İndirme hatası: ' + e.message);
+  }
 }
 
 
@@ -359,7 +381,6 @@ async function dokumanResimlerSecildi(input) {
     });
   }
   _dokResimPanelGuncelle();
-  _dokEditorGorunumModu = 'duzenle';
   if (_dokResimListe.length) dokumanResimEditoruAc();
 }
 
@@ -475,13 +496,11 @@ function _dokEditorOlustur() {
       <button class="btn btn-ghost btn-sm" style="color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimDondur()">↻ Döndür</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#101014;flex-shrink:0;">
-      <button id="dokGorunumBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimGorunumDegistir()">👁 Sonuç</button>
       <button id="dokEditorKaydetBtn" class="btn btn-primary btn-sm" style="flex:1;" onclick="dokumanResimKaydetKisayolu()">💾 Kaydet</button>
       <button style="flex-shrink:0;width:36px;height:36px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50%;color:#fff;font-size:15px;" onclick="_dokBilgiPopupAc()">ℹ️</button>
     </div>
     <div id="dokEditorGorselAlan" style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
-        <div id="dokSonucIpucu" style="display:none;position:absolute;bottom:-30px;left:0;right:0;text-align:center;color:#aaa;font-size:10px;">👆 Basılı tutun: orijinal, bırakınca işlenmiş hal</div>
         <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:60vh;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;" oncontextmenu="return false;">
         <div id="dokEditorKenarTLTR" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
         <div id="dokEditorKenarTRBR" class="dok-kenar" style="position:absolute;height:4px;background:#ff9800;transform-origin:0 50%;pointer-events:none;border-radius:2px;"></div>
@@ -502,33 +521,38 @@ function _dokEditorOlustur() {
         <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimKirpmaSifirla()">↺ Köşeleri Sıfırla</button>
       </div>
 
-      <!-- Ayar paneli — seçili ikonun HEMEN ÜSTÜNDE açılır (CamScanner tarzı) -->
-      <div id="dokDetayPanel" style="display:none;background:rgba(255,255,255,.08);border-radius:10px;padding:10px;margin-bottom:8px;">
-        <div style="font-size:12px;color:#ccc;text-align:center;margin-bottom:4px;" id="dokDetayEtiket">Ayar</div>
-        <div style="display:flex;align-items:center;gap:8px;">
+      <!-- Tek satır, kaydırmalı ikon çubuğu: filtreler + tüm ayarlar.
+           Ayar paneli bunun YERİNİ BÜYÜTMÜYOR — aynı alanın üzerine
+           mutlak konumla biniyor (position:relative sarmalayıcı sayesinde),
+           bu yüzden panel açılıp kapanınca üstteki görsel alanı ASLA
+           küçülüp büyümüyor. -->
+      <div style="position:relative;">
+        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;">
+          <button id="dokFiltreOrijinalBtn" class="dok-filtre-btn" title="Orijinal" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('orijinal')">🔘</button>
+          <button id="dokFiltreBelgeBtn" class="dok-filtre-btn" title="Belge Modu" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('belge')">📄</button>
+          <button id="dokFiltreGriBtn" class="dok-filtre-btn" title="Gri Tonlama" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('gri')">◐</button>
+          <button id="dokFiltreBwBtn" class="dok-filtre-btn" title="S/B Metin" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('bw')">◼</button>
+          <div style="flex-shrink:0;width:1px;background:rgba(255,255,255,.2);margin:4px 0;"></div>
+          <button class="dok-detay-ikon" data-param="parlaklik" title="Parlaklık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('parlaklik')">☀️</button>
+          <button class="dok-detay-ikon" data-param="kontrast" title="Kontrast" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('kontrast')">◑</button>
+          <button class="dok-detay-ikon" data-param="golge" title="Gölge Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('golge')">🌑</button>
+          <button class="dok-detay-ikon" data-param="sicaklik" title="Sıcaklık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('sicaklik')">🌡️</button>
+          <button class="dok-detay-ikon" data-param="beyazlik" title="Beyazlık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('beyazlik')">⚪</button>
+          <button class="dok-detay-ikon" data-param="metin" title="Metin Düzeltme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('metin')">🔤</button>
+          <button class="dok-detay-ikon" data-param="netlik" title="Netlik" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('netlik')">✨</button>
+          <button class="dok-detay-ikon" data-param="hareli" title="Hareli Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('hareli')">🌀</button>
+          <button class="dok-detay-ikon" data-param="gurultu" title="Gürültü Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('gurultu')">🔇</button>
+        </div>
+
+        <!-- Ayar paneli: display:none/flex ile aç-kapa, mutlak konumla
+             tam olarak yukarıdaki ikon çubuğunun kapladığı alana biniyor. -->
+        <div id="dokDetayPanel" style="display:none;position:absolute;inset:0;background:#17171d;border-radius:10px;align-items:center;gap:8px;padding:0 10px;z-index:5;">
           <button style="flex-shrink:0;width:34px;height:34px;background:#5c2323;color:#fff;border:none;border-radius:50%;font-size:15px;" onclick="dokumanResimDetayIptal()">✗</button>
-          <input type="range" id="dokDetaySlider" min="0" max="100" value="0" style="flex:1;" oninput="_dokDetayDegisti(this.value)">
+          <span id="dokDetayEtiket" style="flex-shrink:0;font-size:11px;color:#ccc;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis;">Ayar</span>
+          <input type="range" id="dokDetaySlider" min="0" max="100" value="0" style="flex:1;min-width:0;" oninput="_dokDetayDegisti(this.value)">
+          <span id="dokDetayDeger" style="flex-shrink:0;font-size:13px;color:#fff;width:30px;text-align:center;">0</span>
           <button style="flex-shrink:0;width:34px;height:34px;background:#2e7d32;color:#fff;border:none;border-radius:50%;font-size:15px;" onclick="dokumanResimDetayOnayla()">✓</button>
         </div>
-        <div style="text-align:center;font-size:11px;color:#999;margin-top:2px;" id="dokDetayDeger">0</div>
-      </div>
-
-      <!-- Tek satır, kaydırmalı ikon çubuğu: filtreler + tüm ayarlar -->
-      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;">
-        <button id="dokFiltreOrijinalBtn" class="dok-filtre-btn" title="Orijinal" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('orijinal')">🔘</button>
-        <button id="dokFiltreBelgeBtn" class="dok-filtre-btn" title="Belge Modu" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('belge')">📄</button>
-        <button id="dokFiltreGriBtn" class="dok-filtre-btn" title="Gri Tonlama" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('gri')">◐</button>
-        <button id="dokFiltreBwBtn" class="dok-filtre-btn" title="S/B Metin" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('bw')">◼</button>
-        <div style="flex-shrink:0;width:1px;background:rgba(255,255,255,.2);margin:4px 0;"></div>
-        <button class="dok-detay-ikon" data-param="parlaklik" title="Parlaklık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('parlaklik')">☀️</button>
-        <button class="dok-detay-ikon" data-param="kontrast" title="Kontrast" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('kontrast')">◑</button>
-        <button class="dok-detay-ikon" data-param="golge" title="Gölge Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('golge')">🌑</button>
-        <button class="dok-detay-ikon" data-param="sicaklik" title="Sıcaklık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('sicaklik')">🌡️</button>
-        <button class="dok-detay-ikon" data-param="beyazlik" title="Beyazlık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('beyazlik')">⚪</button>
-        <button class="dok-detay-ikon" data-param="metin" title="Metin Düzeltme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('metin')">🔤</button>
-        <button class="dok-detay-ikon" data-param="netlik" title="Netlik" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('netlik')">✨</button>
-        <button class="dok-detay-ikon" data-param="hareli" title="Hareli Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('hareli')">🌀</button>
-        <button class="dok-detay-ikon" data-param="gurultu" title="Gürültü Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('gurultu')">🔇</button>
       </div>
 
       <div id="dokEditorSerit" style="display:flex;gap:6px;overflow-x:auto;padding:6px 0;"></div>
@@ -537,7 +561,7 @@ function _dokEditorOlustur() {
     <!-- Bilgilendirme popup'ı -->
     <div id="dokBilgiPopup" style="display:none;position:fixed;inset:0;z-index:1000000;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:24px;" onclick="if(event.target===this) _dokBilgiPopupKapat()">
       <div style="background:#1c1c22;border-radius:12px;padding:18px;max-width:420px;color:#ddd;font-size:13px;line-height:1.5;">
-        Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Üstteki "👁 Sonuç" ile gerçek işlenmiş hali her an görebilirsiniz (basılı tutunca orijinal döner). Önizlemedeki filtre/ayar yaklaşıktır, gerçek sonuç işleme sırasında uygulanır.
+        Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Alttaki filtre/ayar ikonlarına dokunup kaydırınca ana görsel GERÇEK sonucu (yaklaşık değil) anında gösterir — görsele basılı tutarsanız kısaca orijinal hali, bırakınca yine işlenmiş hali görünür.
         <button style="display:block;margin:14px auto 0;background:#4caf50;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;" onclick="_dokBilgiPopupKapat()">Anladım</button>
       </div>
     </div>
@@ -562,19 +586,17 @@ function _dokEditorOlustur() {
   document.addEventListener('pointermove', _dokKirpmaSuruklemeIsle);
   document.addEventListener('pointerup', _dokKirpmaSuruklemeBitir);
 
-  // "Sonuç" görünümündeyken ana görseli basılı tutunca orijinali,
-  // bırakınca işlenmiş hali göster (aynı <img> üzerinde, ayrı bir
-  // pencere/lightbox olmadan).
+  // Ana görsel HER ZAMAN gerçek (canlı işlenmiş) sonucu gösterir; basılı
+  // tutunca kısaca orijinali, bırakınca tekrar işlenmiş hali gösterir —
+  // ayrı bir "Sonuç" sekmesine geçmeye gerek yok, aynı ekranda kalır.
   const img = document.getElementById('dokEditorImg');
   const eskiyiGoster = () => {
-    if (_dokEditorGorunumModu !== 'sonuc') return;
     const it = _dokResimListe[_dokResimEditorIndex];
     if (it) img.src = it.url;
   };
   const yeniyeDon = () => {
-    if (_dokEditorGorunumModu !== 'sonuc') return;
     const it = _dokResimListe[_dokResimEditorIndex];
-    if (it && it.sonucCache) img.src = it.sonucCache;
+    if (it && it.onizlemeCache) img.src = it.onizlemeCache;
   };
   img.addEventListener('pointerdown', eskiyiGoster);
   img.addEventListener('pointerup', yeniyeDon);
@@ -628,61 +650,26 @@ function dokumanResimEditoruKapat() {
   _dokResimListe.length && (document.getElementById('dok_resim_bilgi').textContent = `${_dokResimListe.length} resim seçildi (düzenlendi).`);
 }
 
-/* ---------------- Sonucu Gör (gerçek işlenmiş önizleme) ----------------
-   PDF oluşturmadan/indirmeden, o an seçili resmin TAM OLARAK PDF'e
-   gireceği hali (gerçek kırpma/perspektif/filtre/parlaklık/kontrast
-   işlemesinden geçmiş, _dokResimIsle ile) gösterir. Basılı tutunca
-   orijinal (işlenmemiş) hali, bırakınca işlenmiş hali görünür. */
-/* ---------------- Düzenle / Sonuç görünüm geçişi ----------------
-   Önceden gerçek sonuç ayrı küçük bir kutuda/lightbox'ta gösteriliyordu.
-   Artık AYNI ana görsel alanı iki modu paylaşıyor: 'duzenle' modunda
-   orijinal görsel + köşe tutamaçları, 'sonuc' modunda o an hesaplanmış
-   GERÇEK işlenmiş hal (basılı tutunca orijinal, bırakınca işlenmiş hal
-   döner — aynı ana görsel üzerinde). Köşe/kenar tutamaçları sadece
-   'duzenle' modunda görünür ve etkileşimlidir. */
-let _dokEditorGorunumModu = 'duzenle';
-
-function dokumanResimGorunumDegistir() {
-  _dokEditorGorunumModu = _dokEditorGorunumModu === 'duzenle' ? 'sonuc' : 'duzenle';
-  _dokEditorGorunumUygula();
-}
-
-function _dokEditorGorunumUygula() {
-  const sonucMu = _dokEditorGorunumModu === 'sonuc';
-  const img = document.getElementById('dokEditorImg');
-  const it = _dokResimListe[_dokResimEditorIndex];
-  const btn = document.getElementById('dokGorunumBtn');
-  const ipucu = document.getElementById('dokSonucIpucu');
-  if (btn) btn.textContent = sonucMu ? '✏️ Düzenle' : '👁 Sonuç';
-  if (ipucu) ipucu.style.display = sonucMu ? 'block' : 'none';
-
-  [..._DOK_KENAR_DIVLERI, 'dokEditorKoseTL', 'dokEditorKoseTR', 'dokEditorKoseBR', 'dokEditorKoseBL'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = sonucMu ? 'none' : '';
-  });
-
-  if (!it) return;
-  if (sonucMu) {
-    if (it.sonucCache) img.src = it.sonucCache;
-    else _dokCanliOnizlemeYenile();
-  } else {
-    img.src = it.url;
-    img.style.filter = ''; // sonuç modundan dönünce CSS filtre önizlemesini yeniden uygula
-    _dokEditorFiltreOnizlemesiUygula(it);
-  }
-}
-
+/* ---------------- Canlı gerçek önizleme (tek, birleşik görünüm) ----------------
+   ÖNEMLİ TASARIM DEĞİŞİKLİĞİ: eskiden ayrı bir "Sonuç" görünümüne
+   geçmek gerekiyordu (kullanıcı defalarca bunun rahatsız edici
+   olduğunu belirtti). Artık TEK görünüm var — köşe tutamaçları HER ZAMAN
+   görünür/etkileşimli, ve ana görsel HER ZAMAN kaydırıcı/filtre
+   değiştikçe GERÇEK (CSS yaklaşıklığı değil, gerçek piksel işlemesinden
+   geçmiş) sonucu gösterir. Bunu mümkün kılan anahtar fikir: canlı
+   önizleme SADECE renk/filtre boru hattını (kırpma/perspektif YOK)
+   orijinal görsele uygular — geometri değişmediği için köşe
+   tutamaçlarının konumu (yüzde bazlı) her zaman geçerli kalır. Kırpma/
+   perspektif sadece PDF üretiminde (_dokResimIsle) uygulanıyor. */
 let _dokCanliOnizlemeZamanlayici = null;
 let _dokCanliOnizlemeIslemeSirasi = 0;
 
-/* Kırpma/köşe/filtre/parlaklık/kontrast/detay ayarları değiştikçe
-   çağrılır — gerçek işleme (özellikle perspektif düzeltme) piksel-piksel
-   maliyetli olduğu için HER hareket anında değil, kısa bir duraklamadan
-   (debounce) sonra tetiklenir. Sonuç, geçerli resmin sonucCache'ine
-   yazılır; o an "Sonuç" görünümündeysek ana görsel de anında güncellenir. */
+/* Filtre/parlaklık/kontrast/detay ayarları değiştikçe çağrılır — HER
+   hareket anında değil, kısa bir duraklamadan (debounce) sonra
+   tetiklenir ki kaydırıcı sürüklerken telefon kasılmasın. */
 function _dokCanliOnizlemeYenile() {
   if (_dokCanliOnizlemeZamanlayici) clearTimeout(_dokCanliOnizlemeZamanlayici);
-  _dokCanliOnizlemeZamanlayici = setTimeout(_dokCanliOnizlemeIsle, 450);
+  _dokCanliOnizlemeZamanlayici = setTimeout(_dokCanliOnizlemeIsle, 300);
 }
 
 async function _dokCanliOnizlemeIsle() {
@@ -690,13 +677,12 @@ async function _dokCanliOnizlemeIsle() {
   if (!it) return;
   const buTur = ++_dokCanliOnizlemeIslemeSirasi;
   try {
-    const { dataUrl } = await _dokResimIsle(it);
+    const dataUrl = await _dokRenkIsle(it);
     if (buTur !== _dokCanliOnizlemeIslemeSirasi) return; // araya yeni bir değişiklik girdi, bu sonucu at
-    it.sonucCache = dataUrl;
-    if (_dokEditorGorunumModu === 'sonuc' && _dokResimListe[_dokResimEditorIndex] === it) {
-      const img = document.getElementById('dokEditorImg');
-      if (img) img.src = dataUrl;
-    }
+    if (_dokResimListe[_dokResimEditorIndex] !== it) return; // araya resim değişikliği girdi
+    it.onizlemeCache = dataUrl;
+    const img = document.getElementById('dokEditorImg');
+    if (img) img.src = dataUrl;
   } catch (e) { /* sessizce geç — bir sonraki değişiklikte tekrar denenecek */ }
 }
 
@@ -748,9 +734,14 @@ function _dokEditorResmiYukle(index) {
     _dokEditorGorselBoyutunuAyarla();
     _dokEditorPoligonCiz(it.kose);
     _dokFiltrePillGuncelle(it.filtre);
-    if (_dokEditorGorunumModu === 'sonuc') _dokEditorGorunumUygula();
-    else _dokEditorFiltreOnizlemesiUygula(it);
     _dokCanliOnizlemeYenile();
+    // ÖNEMLİ: bu handler'ı burada temizliyoruz. Canlı önizleme her
+    // güncellendiğinde de img.src değişiyor (aşağıda _dokCanliOnizlemeIsle)
+    // — eğer bu handler kalıcı olsaydı her önizleme güncellemesi köşe/boyut
+    // yeniden ölçmeyi VE yeni bir önizleme isteğini tetikleyip sonsuz bir
+    // döngüye girerdi. Bir sonraki gerçek resim değişiminde (rotate, sayfa
+    // değiştirme) _dokEditorResmiYukle zaten yeni bir handler atıyor.
+    img.onload = null;
   };
   img.src = it.url;
   document.getElementById('dokEditorBaslik').textContent = `${index + 1} / ${_dokResimListe.length}`;
@@ -997,15 +988,15 @@ function dokumanResimKirpmaSifirla() {
   _dokCanliOnizlemeYenile();
 }
 
-/* ---------------- Filtre + Parlaklık/Kontrast seçimi
-   (önizleme CSS ile yaklaşıktır, gerçek işlem piksel düzeyinde
-   PDF üretiminde yapılır) ---------------- */
+/* ---------------- Filtre + Parlaklık/Kontrast seçimi ----------------
+   Artık ana görsel her zaman GERÇEK (piksel işlemesinden geçmiş)
+   sonucu gösteriyor, bu yüzden ayrı bir CSS yaklaşık önizlemesine
+   gerek yok — sadece canlı önizlemeyi (debounce'lu) tetiklemek yeterli. */
 function dokumanResimFiltreSec(filtre) {
   const it = _dokResimListe[_dokResimEditorIndex];
   if (!it) return;
   it.filtre = filtre;
   _dokFiltrePillGuncelle(filtre);
-  _dokEditorFiltreOnizlemesiUygula(it);
   _dokCanliOnizlemeYenile();
 }
 
@@ -1059,14 +1050,11 @@ function dokumanResimDetayAc(param) {
   document.getElementById('dokDetayDeger').textContent = _dokDetayOncekiDeger;
   const slider = document.getElementById('dokDetaySlider');
   slider.min = ayar.min; slider.max = ayar.max; slider.value = _dokDetayOncekiDeger;
-  document.getElementById('dokDetayPanel').style.display = 'block';
+  document.getElementById('dokDetayPanel').style.display = 'flex';
 
   document.querySelectorAll('.dok-detay-ikon').forEach(btn => {
     btn.style.background = btn.dataset.param === param ? '#4caf50' : 'rgba(255,255,255,.12)';
   });
-  // Panel açılınca alt bölüm büyüdüğü için görsel alanını yeniden ölç —
-  // aksi halde görsel üstteki butonların üzerine taşabiliyordu.
-  _dokEditorGorselBoyutunuAyarla();
 }
 
 function _dokDetayDegisti(deger) {
@@ -1075,7 +1063,6 @@ function _dokDetayDegisti(deger) {
   _dokDetayDegerYaz(it, _dokDetayAcikParam, parseInt(deger, 10));
   const etiketDeger = document.getElementById('dokDetayDeger');
   if (etiketDeger) etiketDeger.textContent = deger;
-  if (_dokDetayAcikParam === 'parlaklik' || _dokDetayAcikParam === 'kontrast') _dokEditorFiltreOnizlemesiUygula(it);
   _dokCanliOnizlemeYenile();
 }
 
@@ -1083,20 +1070,17 @@ function dokumanResimDetayOnayla() {
   document.getElementById('dokDetayPanel').style.display = 'none';
   document.querySelectorAll('.dok-detay-ikon').forEach(btn => { btn.style.background = 'rgba(255,255,255,.12)'; });
   _dokDetayAcikParam = null;
-  _dokEditorGorselBoyutunuAyarla();
 }
 
 function dokumanResimDetayIptal() {
   const it = _dokResimListe[_dokResimEditorIndex];
   if (it && _dokDetayAcikParam) {
     _dokDetayDegerYaz(it, _dokDetayAcikParam, _dokDetayOncekiDeger);
-    if (_dokDetayAcikParam === 'parlaklik' || _dokDetayAcikParam === 'kontrast') _dokEditorFiltreOnizlemesiUygula(it);
     _dokCanliOnizlemeYenile();
   }
   document.getElementById('dokDetayPanel').style.display = 'none';
   document.querySelectorAll('.dok-detay-ikon').forEach(btn => { btn.style.background = 'rgba(255,255,255,.12)'; });
   _dokDetayAcikParam = null;
-  _dokEditorGorselBoyutunuAyarla();
 }
 
 function _dokBilgiPopupAc() {
@@ -1109,28 +1093,12 @@ function _dokBilgiPopupKapat() {
   if (el) el.style.display = 'none';
 }
 
-function _dokEditorFiltreOnizlemesiUygula(it) {
-  const img = document.getElementById('dokEditorImg');
-  if (!img) return;
-  const taban = _dokFiltreCssOnizleme(it.filtre);
-  const parlaklik = `brightness(${1 + (it.parlaklik || 0) / 100})`;
-  const kontrast = `contrast(${1 + (it.kontrast || 0) / 100})`;
-  img.style.filter = [taban === 'none' ? '' : taban, parlaklik, kontrast].filter(Boolean).join(' ');
-}
-
 function _dokFiltrePillGuncelle(filtre) {
   const harita = { orijinal: 'dokFiltreOrijinalBtn', belge: 'dokFiltreBelgeBtn', gri: 'dokFiltreGriBtn', bw: 'dokFiltreBwBtn' };
   Object.entries(harita).forEach(([k, id]) => {
     const btn = document.getElementById(id);
     if (btn) btn.style.background = (k === filtre) ? '#4caf50' : 'rgba(255,255,255,.12)';
   });
-}
-
-function _dokFiltreCssOnizleme(filtre) {
-  if (filtre === 'belge') return 'contrast(1.25) brightness(1.08) saturate(.15)';
-  if (filtre === 'gri') return 'grayscale(1) contrast(1.15)';
-  if (filtre === 'bw') return 'grayscale(1) contrast(2.4) brightness(1.05)';
-  return 'none';
 }
 
 /* Döndürme fiziksel olarak uygulanır: mevcut çalışma görseli canvas'a
@@ -1157,7 +1125,7 @@ async function dokumanResimDondur() {
     if (it.url.indexOf('blob:') === 0) URL.revokeObjectURL(it.url);
     it.url = yeniUrl;
     it.kose = null;
-    it.sonucCache = null;
+    it.onizlemeCache = null;
     _dokEditorResmiYukle(_dokResimEditorIndex);
   } catch (e) {
     toast('Döndürme hatası: ' + e.message);
@@ -1245,24 +1213,51 @@ async function _dokResimIsle(item) {
   canvas = _dokBoyutSinirla(canvas, 2000);
 
   const ctx = canvas.getContext('2d');
-  if (item.filtre === 'belge') _dokBelgeModuUygula(ctx, canvas.width, canvas.height);
-  else if (item.filtre === 'gri') _dokGriTonlamaUygula(ctx, canvas.width, canvas.height);
-  else if (item.filtre === 'bw') _dokSiyahBeyazUygula(ctx, canvas.width, canvas.height);
+  _dokRenkBoruHattiUygula(ctx, canvas.width, canvas.height, item);
 
-  if (item.parlaklik || item.kontrast) _dokParlaklikKontrastUygula(ctx, canvas.width, canvas.height, item.parlaklik || 0, item.kontrast || 0);
+  return { dataUrl: canvas.toDataURL('image/jpeg', 0.93), w: canvas.width, h: canvas.height };
+}
+
+/* Filtre/parlaklık-kontrast/detay ayarlarının tamamını uygulayan ortak
+   boru hattı — hem PDF üretiminde (_dokResimIsle, kırpma/perspektiften
+   SONRA) hem de canlı önizlemede (_dokRenkIsle, kırpma OLMADAN, orijinal
+   üzerinde) kullanılıyor; ikisi de aynı sonucu üretsin diye tek yerden
+   yönetiliyor. */
+function _dokRenkBoruHattiUygula(ctx, w, h, item) {
+  if (item.filtre === 'belge') _dokBelgeModuUygula(ctx, w, h);
+  else if (item.filtre === 'gri') _dokGriTonlamaUygula(ctx, w, h);
+  else if (item.filtre === 'bw') _dokSiyahBeyazUygula(ctx, w, h);
+
+  if (item.parlaklik || item.kontrast) _dokParlaklikKontrastUygula(ctx, w, h, item.parlaklik || 0, item.kontrast || 0);
 
   const d = item.detay;
   if (d) {
-    if (d.hareli)   _dokHareliGidermeUygula(ctx, canvas.width, canvas.height, d.hareli);
-    if (d.gurultu)  _dokGurultuGidermeUygula(ctx, canvas.width, canvas.height, d.gurultu);
-    if (d.golge)    _dokGolgeGidermeUygula(ctx, canvas.width, canvas.height, d.golge);
-    if (d.sicaklik) _dokSicaklikUygula(ctx, canvas.width, canvas.height, d.sicaklik);
-    if (d.beyazlik) _dokBeyazlikUygula(ctx, canvas.width, canvas.height, d.beyazlik);
-    if (d.metin)    _dokMetinDuzeltmeUygula(ctx, canvas.width, canvas.height, d.metin);
-    if (d.netlik)   _dokNetlikUygula(ctx, canvas.width, canvas.height, d.netlik);
+    if (d.hareli)   _dokHareliGidermeUygula(ctx, w, h, d.hareli);
+    if (d.gurultu)  _dokGurultuGidermeUygula(ctx, w, h, d.gurultu);
+    if (d.golge)    _dokGolgeGidermeUygula(ctx, w, h, d.golge);
+    if (d.sicaklik) _dokSicaklikUygula(ctx, w, h, d.sicaklik);
+    if (d.beyazlik) _dokBeyazlikUygula(ctx, w, h, d.beyazlik);
+    if (d.metin)    _dokMetinDuzeltmeUygula(ctx, w, h, d.metin);
+    if (d.netlik)   _dokNetlikUygula(ctx, w, h, d.netlik);
   }
+}
 
-  return { dataUrl: canvas.toDataURL('image/jpeg', 0.93), w: canvas.width, h: canvas.height };
+/* Canlı önizleme için HIZLI sürüm: kırpma/perspektif UYGULANMAZ (o
+   yüzden köşe tutamaçlarının konumu bozulmaz, aynı görsel üzerinde
+   kalınabilir) — sadece renk boru hattı, küçük bir çalışma boyutunda
+   (hız için) uygulanır. PDF üretiminde tam çözünürlükte + kırpmayla
+   birlikte _dokResimIsle kullanılıyor. */
+async function _dokRenkIsle(item) {
+  const img = await _dokImgYukle(item.url);
+  const HEDEF_KENAR = 1100;
+  const oran = Math.min(1, HEDEF_KENAR / Math.max(img.width, img.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(img.width * oran));
+  canvas.height = Math.max(1, Math.round(img.height * oran));
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  _dokRenkBoruHattiUygula(ctx, canvas.width, canvas.height, item);
+  return canvas.toDataURL('image/jpeg', 0.85);
 }
 
 function _dokImgYukle(src) {
