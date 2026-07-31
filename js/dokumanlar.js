@@ -1903,7 +1903,10 @@ async function dokumanPdfleriBirlestir() {
       const s = _dokPdfBirlestirListe[i];
       if (!kaynakDoclar[s.dosyaIndex]) {
         const buffer = _dokPdfBirlestirDosyalar[s.dosyaIndex].arrayBuffer;
-        kaynakDoclar[s.dosyaIndex] = await PDFDocument.load(buffer.slice(0));
+        // ignoreEncryption: bazı PDF'ler parola olmadan da "şifreli"
+        // sayılıyor (yalnızca izin kısıtlaması eklenmiş olsa bile) —
+        // bu seçenek olmadan pdf-lib böyle dosyaları reddediyordu.
+        kaynakDoclar[s.dosyaIndex] = await PDFDocument.load(buffer.slice(0), { ignoreEncryption: true });
       }
       const [kopyaSayfa] = await mergedDoc.copyPages(kaynakDoclar[s.dosyaIndex], [s.sayfaIndex]);
 
