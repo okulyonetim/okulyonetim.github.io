@@ -200,10 +200,11 @@ function dokumanYukleModalAc() {
     </div>` : ''}
 
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;">
-      <div style="display:flex;">
-        <button id="dok_sekme_dosya" class="btn btn-ghost" style="flex:1;min-width:0;border-radius:0;border-bottom:2px solid var(--accent,#4caf50);font-weight:600;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('dosya')">📎 Dosya Yükle</button>
-        <button id="dok_sekme_resim" class="btn btn-ghost" style="flex:1;min-width:0;border-radius:0;border-bottom:2px solid transparent;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('resim')">🖼 Resimlerden<br>PDF</button>
-        <button id="dok_sekme_url" class="btn btn-ghost" style="flex:1;min-width:0;border-radius:0;border-bottom:2px solid transparent;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('url')">🔗 URL Ekle</button>
+      <div style="display:flex;flex-wrap:wrap;">
+        <button id="dok_sekme_dosya" class="btn btn-ghost" style="flex:1 1 50%;min-width:0;border-radius:0;border-bottom:2px solid var(--accent,#4caf50);font-weight:600;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('dosya')">📎 Dosya Yükle</button>
+        <button id="dok_sekme_resim" class="btn btn-ghost" style="flex:1 1 50%;min-width:0;border-radius:0;border-bottom:2px solid transparent;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('resim')">🖼 Resimlerden PDF</button>
+        <button id="dok_sekme_birlestir" class="btn btn-ghost" style="flex:1 1 50%;min-width:0;border-radius:0;border-bottom:2px solid transparent;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('birlestir')">🔗 PDF Birleştir</button>
+        <button id="dok_sekme_url" class="btn btn-ghost" style="flex:1 1 50%;min-width:0;border-radius:0;border-bottom:2px solid transparent;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('url')">🔗 URL Ekle</button>
       </div>
       <div style="padding:12px;">
         <div id="dok_panel_dosya">
@@ -232,6 +233,18 @@ function dokumanYukleModalAc() {
           </div>
           <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Resimleri seçtikten sonra "Kırp/Döndür/Sırala" ile düzenleyin — 4 köşeyi (birbirinden bağımsız, büyüteçli) belgenin gerçek köşelerine sürükleyin, yamuksa bile otomatik düz dikdörtgene dönüştürülür; ayrıca döndürme, sıralama, Belge Modu/Gri Tonlama/Siyah-Beyaz Metin filtreleri ve Parlaklık/Kontrast ayarı var. Sonra "PDF Oluştur"a basın; PDF hazır olunca Dökümanlar'a kaydedebilir ya da doğrudan İndir/Paylaş ile WhatsApp/Drive/e-postaya gönderebilirsiniz.</div>
         </div>
+        <div id="dok_panel_birlestir" style="display:none;">
+          <input type="file" id="dok_birlestir_dosyalar" accept="application/pdf" multiple style="width:100%;" onchange="dokumanPdfBirlestirDosyalarSecildi(this)">
+          <div id="dok_birlestir_bilgi" style="font-size:12px;color:var(--ink-muted);margin-top:6px;"></div>
+          <div id="dok_birlestir_serit" style="display:flex;gap:6px;overflow-x:auto;padding:6px 0;margin-top:6px;"></div>
+          <button id="dok_birlestir_olustur_btn" class="btn btn-primary btn-sm" style="width:100%;margin-top:8px;" disabled onclick="dokumanPdfleriBirlestir()">🔗 Birleştir</button>
+          <div id="dok_birlestir_onizle" style="display:none;font-size:12px;color:#2e7d32;margin-top:6px;"></div>
+          <div id="dok_birlestir_disa_aktar" style="display:none;gap:6px;margin-top:6px;">
+            <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="dokumanResimPdfIndir()">⬇ İndir</button>
+            <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="dokumanResimPdfPaylas()">📤 Paylaş</button>
+          </div>
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Birden fazla PDF seçin — her PDF'in sayfaları küçük önizlemeler halinde listelenir. ▲▼ ile sayfa sırasını değiştirin, 🗑 ile istemediğiniz sayfayı çıkarın, farklı PDF'lerin sayfalarını iç içe karıştırabilirsiniz. Orijinal metin/kalite korunur (sayfalar resme çevrilmez), bu yüzden düzenleme (kırpma/filtre) burada yok. "Birleştir"e basınca tek bir PDF çıkar.</div>
+        </div>
         <div id="dok_panel_url" style="display:none;">
           <input id="dok_url" placeholder="https://drive.google.com/..." style="width:100%;">
           <div style="font-size:12px;color:var(--ink-muted);margin-top:4px;">Google Drive, Dropbox vb. paylaşım linki</div>
@@ -244,6 +257,8 @@ function dokumanYukleModalAc() {
   _dokResimListe.forEach(it => URL.revokeObjectURL(it.url));
   _dokResimListe = [];
   _dokResimPdfBlob = null;
+  _dokPdfBirlestirListe = [];
+  _dokPdfBirlestirDosyalar = [];
 
   modalAc('📁 Döküman Ekle', body, () => dokumanKaydet(), null);
   const kb = document.getElementById('modalKaydetBtn');
@@ -253,8 +268,9 @@ function dokumanYukleModalAc() {
 function dokumanSekmeAc(sekme) {
   document.getElementById('dok_panel_dosya').style.display = sekme === 'dosya' ? '' : 'none';
   document.getElementById('dok_panel_resim').style.display = sekme === 'resim' ? '' : 'none';
+  document.getElementById('dok_panel_birlestir').style.display = sekme === 'birlestir' ? '' : 'none';
   document.getElementById('dok_panel_url').style.display   = sekme === 'url'   ? '' : 'none';
-  ['dosya', 'resim', 'url'].forEach(s => {
+  ['dosya', 'resim', 'birlestir', 'url'].forEach(s => {
     const btn = document.getElementById('dok_sekme_' + s);
     if (!btn) return;
     btn.style.borderBottom = s === sekme ? '2px solid var(--accent,#4caf50)' : '2px solid transparent';
@@ -1733,6 +1749,147 @@ function _dokBlobToBase64(blob) {
   });
 }
 
+/* ================================================================
+   PDF Birleştirme (vektör/metin korunarak — pdf-lib)
+   Seçilen PDF'lerin sayfaları pdf.js ile küçük önizleme resimlerine
+   çevrilip sıralanabilir/silinebilir bir şeride dökülür — ama bu
+   önizlemeler SADECE arayüz için, gerçek birleştirme pdf-lib ile
+   yapılıyor (PDFDocument.copyPages), yani sonuç PDF'te orijinal
+   metin/vektör veri aynen korunuyor — resme çevrilmiyor. Bu yüzden
+   burada kırpma/filtre gibi bir düzenleme YOK (pdf-lib görsel içeriği
+   değiştirmez, sadece sayfaları kopyalar/sıralar).
+   Sonuç, "Resimlerden PDF" ile aynı _dokResimPdfBlob değişkenine
+   yazılıyor — Kaydet/İndir/Paylaş akışının tamamı (dokumanKaydet,
+   dokumanResimPdfIndir/Paylas) olduğu gibi yeniden kullanılıyor.
+   ================================================================ */
+let _dokPdfBirlestirDosyalar = []; // [{ dosya, arrayBuffer, ad, sayfaSayisi }]
+let _dokPdfBirlestirListe = [];    // [{ dosyaIndex, sayfaIndex, thumbUrl, etiket }]
+
+async function dokumanPdfBirlestirDosyalarSecildi(input) {
+  const dosyalar = Array.from(input.files || []);
+  if (!dosyalar.length) return;
+  if (typeof pdfjsLib === 'undefined') { toast('PDF önizleme kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.'); return; }
+
+  const bilgi = document.getElementById('dok_birlestir_bilgi');
+  if (bilgi) bilgi.textContent = 'Sayfalar yükleniyor…';
+  _dokResimPdfBlob = null;
+
+  for (const dosya of dosyalar) {
+    try {
+      const buffer = await dosya.arrayBuffer();
+      const dosyaIndex = _dokPdfBirlestirDosyalar.length;
+      _dokPdfBirlestirDosyalar.push({ dosya, arrayBuffer: buffer, ad: dosya.name, sayfaSayisi: 0 });
+
+      const pdfDoc = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
+      _dokPdfBirlestirDosyalar[dosyaIndex].sayfaSayisi = pdfDoc.numPages;
+
+      for (let s = 1; s <= pdfDoc.numPages; s++) {
+        if (bilgi) bilgi.textContent = `"${dosya.name}" — sayfa ${s}/${pdfDoc.numPages} önizleniyor…`;
+        const sayfa = await pdfDoc.getPage(s);
+        const taban = sayfa.getViewport({ scale: 1 });
+        const olcek = 130 / taban.width;
+        const viewport = sayfa.getViewport({ scale: olcek });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width; canvas.height = viewport.height;
+        await sayfa.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        _dokPdfBirlestirListe.push({
+          dosyaIndex, sayfaIndex: s - 1,
+          thumbUrl: canvas.toDataURL('image/jpeg', 0.7),
+          etiket: `${dosya.name} — s.${s}`,
+        });
+      }
+    } catch (e) {
+      toast(`"${dosya.name}" okunamadı: ${e.message}`);
+    }
+  }
+  input.value = ''; // aynı dosyaları tekrar seçebilmek için sıfırla
+
+  _dokPdfBirlestirSeritCiz();
+  if (bilgi) bilgi.textContent = `${_dokPdfBirlestirListe.length} sayfa (${_dokPdfBirlestirDosyalar.length} dosyadan) hazır — sıralayın/silin, sonra Birleştir'e basın.`;
+  const btn = document.getElementById('dok_birlestir_olustur_btn');
+  if (btn) btn.disabled = _dokPdfBirlestirListe.length === 0;
+}
+
+function _dokPdfBirlestirSeritCiz() {
+  const serit = document.getElementById('dok_birlestir_serit');
+  if (!serit) return;
+  serit.innerHTML = _dokPdfBirlestirListe.map((s, i) => `
+    <div style="flex-shrink:0;width:64px;text-align:center;">
+      <img src="${s.thumbUrl}" style="width:64px;height:84px;object-fit:contain;background:#fff;border-radius:4px;border:1px solid #444;-webkit-touch-callout:none;" oncontextmenu="return false;">
+      <div style="font-size:9px;color:var(--ink-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">s.${s.sayfaIndex + 1}</div>
+      <div style="display:flex;justify-content:center;gap:2px;margin-top:2px;">
+        <button style="font-size:10px;padding:2px 4px;background:#333;color:#fff;border:none;border-radius:4px;" onclick="dokumanPdfBirlestirSirala(${i},-1)">▲</button>
+        <button style="font-size:10px;padding:2px 4px;background:#333;color:#fff;border:none;border-radius:4px;" onclick="dokumanPdfBirlestirSirala(${i},1)">▼</button>
+        <button style="font-size:10px;padding:2px 4px;background:#5c2323;color:#fff;border:none;border-radius:4px;" onclick="dokumanPdfBirlestirSil(${i})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function dokumanPdfBirlestirSirala(index, yon) {
+  const yeni = index + yon;
+  if (yeni < 0 || yeni >= _dokPdfBirlestirListe.length) return;
+  const gecici = _dokPdfBirlestirListe[index];
+  _dokPdfBirlestirListe[index] = _dokPdfBirlestirListe[yeni];
+  _dokPdfBirlestirListe[yeni] = gecici;
+  _dokPdfBirlestirSeritCiz();
+}
+
+function dokumanPdfBirlestirSil(index) {
+  if (_dokPdfBirlestirListe.length <= 1) { toast('En az bir sayfa kalmalı.'); return; }
+  _dokPdfBirlestirListe.splice(index, 1);
+  _dokPdfBirlestirSeritCiz();
+  const btn = document.getElementById('dok_birlestir_olustur_btn');
+  if (btn) btn.disabled = _dokPdfBirlestirListe.length === 0;
+}
+
+async function dokumanPdfleriBirlestir() {
+  if (!_dokPdfBirlestirListe.length) { toast('Önce PDF seçin.'); return; }
+  if (typeof PDFLib === 'undefined') { toast('PDF birleştirme kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.'); return; }
+
+  const btn = document.getElementById('dok_birlestir_olustur_btn');
+  const onizle = document.getElementById('dok_birlestir_onizle');
+  const disaAktar = document.getElementById('dok_birlestir_disa_aktar');
+  if (btn) btn.disabled = true;
+
+  try {
+    const { PDFDocument } = PDFLib;
+    const mergedDoc = await PDFDocument.create();
+    const kaynakDoclar = {}; // aynı PDF'ten birden fazla sayfa varsa tekrar yüklemeyi önle
+
+    for (let i = 0; i < _dokPdfBirlestirListe.length; i++) {
+      if (btn) btn.textContent = `Birleştiriliyor… (${i + 1}/${_dokPdfBirlestirListe.length})`;
+      const s = _dokPdfBirlestirListe[i];
+      if (!kaynakDoclar[s.dosyaIndex]) {
+        const buffer = _dokPdfBirlestirDosyalar[s.dosyaIndex].arrayBuffer;
+        kaynakDoclar[s.dosyaIndex] = await PDFDocument.load(buffer.slice(0));
+      }
+      const [kopyaSayfa] = await mergedDoc.copyPages(kaynakDoclar[s.dosyaIndex], [s.sayfaIndex]);
+      mergedDoc.addPage(kopyaSayfa);
+    }
+
+    const bytes = await mergedDoc.save();
+    _dokResimPdfBlob = new Blob([bytes], { type: 'application/pdf' });
+
+    const adEl = document.getElementById('dok_ad');
+    if (adEl && !adEl.value.trim()) adEl.value = `${_dokPdfBirlestirListe.length} Sayfalık Birleşik Belge`;
+    if (adEl) adEl.dispatchEvent(new Event('input', { bubbles: true }));
+    const kaydetBtn = document.getElementById('modalKaydetBtn');
+    if (kaydetBtn) kaydetBtn.disabled = false;
+
+    if (onizle) {
+      onizle.style.display = '';
+      onizle.textContent = `✅ Birleşik PDF hazır (${_dokPdfBirlestirListe.length} sayfa, ${dosyaBoyutuFormat(_dokResimPdfBlob.size)}).`;
+    }
+    if (disaAktar) disaAktar.style.display = 'flex';
+    toast('PDF\'ler birleştirildi — Kaydet, İndir veya Paylaş\'ı kullanabilirsiniz.');
+  } catch (e) {
+    toast('Birleştirme hatası: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🔗 Birleştir'; }
+  }
+}
+
 function dokumanDosyaSecildi(input) {
   const dosya = input.files[0];
   const bilgi = document.getElementById('dok_dosya_bilgi');
@@ -1754,11 +1911,13 @@ async function dokumanKaydet() {
   const hariciUrl= urlGoster ? (document.getElementById('dok_url')?.value.trim() || '') : '';
   const resimPanel = document.getElementById('dok_panel_resim');
   const resimGoster = resimPanel && resimPanel.style.display !== 'none';
+  const birlestirPanel = document.getElementById('dok_panel_birlestir');
+  const birlestirGoster = birlestirPanel && birlestirPanel.style.display !== 'none';
   const dosyaEl  = document.getElementById('dok_dosya');
   let dosya      = dosyaEl?.files[0];
 
-  if (resimGoster) {
-    if (!_dokResimPdfBlob) { toast('Önce "PDF Oluştur" ile PDF üretin.'); return; }
+  if (resimGoster || birlestirGoster) {
+    if (!_dokResimPdfBlob) { toast(birlestirGoster ? 'Önce "Birleştir" ile PDF üretin.' : 'Önce "PDF Oluştur" ile PDF üretin.'); return; }
     dosya = new File([_dokResimPdfBlob], (ad || 'belge') + '.pdf', { type: 'application/pdf' });
   }
 
