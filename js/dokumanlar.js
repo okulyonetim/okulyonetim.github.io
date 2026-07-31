@@ -201,9 +201,9 @@ function dokumanYukleModalAc() {
 
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;">
       <div style="display:flex;">
-        <button id="dok_sekme_dosya" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid var(--accent,#4caf50);font-weight:600;" onclick="dokumanSekmeAc('dosya')">📎 Dosya Yükle</button>
-        <button id="dok_sekme_resim" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid transparent;" onclick="dokumanSekmeAc('resim')">🖼 Resimlerden PDF</button>
-        <button id="dok_sekme_url" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid transparent;" onclick="dokumanSekmeAc('url')">🔗 URL Ekle</button>
+        <button id="dok_sekme_dosya" class="btn btn-ghost" style="flex:1;min-width:0;border-radius:0;border-bottom:2px solid var(--accent,#4caf50);font-weight:600;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('dosya')">📎 Dosya Yükle</button>
+        <button id="dok_sekme_resim" class="btn btn-ghost" style="flex:1;min-width:0;border-radius:0;border-bottom:2px solid transparent;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('resim')">🖼 Resimlerden<br>PDF</button>
+        <button id="dok_sekme_url" class="btn btn-ghost" style="flex:1;min-width:0;border-radius:0;border-bottom:2px solid transparent;font-size:12px;padding:8px 4px;white-space:normal;line-height:1.2;" onclick="dokumanSekmeAc('url')">🔗 URL Ekle</button>
       </div>
       <div style="padding:12px;">
         <div id="dok_panel_dosya">
@@ -213,6 +213,14 @@ function dokumanYukleModalAc() {
         <div id="dok_panel_resim" style="display:none;">
           <input type="file" id="dok_resimler" accept="image/*" multiple style="width:100%;" onchange="dokumanResimlerSecildi(this)">
           <div id="dok_resim_bilgi" style="font-size:12px;color:var(--ink-muted);margin-top:6px;"></div>
+          <div style="margin-top:8px;">
+            <label style="font-size:12px;color:var(--ink-muted);">Sayfa Yönü</label>
+            <select id="dok_resim_sayfa_yonu" style="width:100%;" onchange="dokumanResimSayfaYonuDegisti(this.value)">
+              <option value="otomatik">🤖 Otomatik (her görsele göre)</option>
+              <option value="dikey">📄 Dikey</option>
+              <option value="yatay">📃 Yatay</option>
+            </select>
+          </div>
           <div style="display:flex;gap:6px;margin-top:8px;">
             <button id="dok_resim_duzenle_btn" class="btn btn-ghost btn-sm" style="flex:1;" disabled onclick="dokumanResimEditoruAc()">✏️ Kırp/Döndür/Sırala</button>
             <button id="dok_resim_olustur_btn" class="btn btn-primary btn-sm" style="flex:1;" disabled onclick="dokumanResimlerdenPdfOlustur()">🖨 PDF Oluştur</button>
@@ -285,6 +293,11 @@ function dokumanSekmeAc(sekme) {
    fallback, "yedekle" özelliğinde kullanılanla aynı) kullanır.
    ================================================================ */
 let _dokResimListe = [];   // [{ blob, url, kirpma, kose, mod, filtre, ad }]
+let _dokResimSayfaYonu = 'otomatik'; // 'otomatik' | 'dikey' | 'yatay'
+
+function dokumanResimSayfaYonuDegisti(deger) {
+  _dokResimSayfaYonu = deger;
+}
 let _dokResimPdfBlob = null;
 let _dokResimEditorIndex = 0;
 let _dokKirpmaSurukleme = null; // 'tl' | 'br' | 'kose-tl' | 'kose-tr' | 'kose-br' | 'kose-bl' | null
@@ -443,9 +456,13 @@ function _dokEditorOlustur() {
       <div id="dokEditorBaslik" style="font-size:13px;font-weight:600;">Resim Düzenle</div>
       <button class="btn btn-ghost btn-sm" style="color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimDondur()">↻ Döndür</button>
     </div>
-    <div style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
+    <div style="display:flex;gap:6px;padding:8px 12px;background:#101014;flex-shrink:0;">
+      <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimSonucunuGor()">👁 Sonucu Gör</button>
+      <button id="dokEditorKaydetBtn" class="btn btn-primary btn-sm" style="flex:1;" onclick="dokumanResimKaydetKisayolu()">💾 Kaydet</button>
+    </div>
+    <div id="dokEditorGorselAlan" style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
-        <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:44vh;user-select:none;-webkit-user-drag:none;">
+        <img id="dokEditorImg" style="display:block;max-width:80vw;max-height:60vh;user-select:none;-webkit-user-drag:none;">
         <svg id="dokEditorSvg" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 1 1" preserveAspectRatio="none">
           <polygon id="dokEditorPoligon" points="0.06,0.06 0.94,0.06 0.94,0.94 0.06,0.94" fill="rgba(255,152,0,.18)" stroke="#ff9800" stroke-width="0.006" vector-effect="non-scaling-stroke"></polygon>
           <polyline id="dokEditorKenarVurgu" points="" fill="none" stroke="#4caf50" stroke-width="0.014" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="display:none;"></polyline>
@@ -501,7 +518,33 @@ function dokumanResimEditoruAc() {
   if (!_dokResimListe.length) { toast('Önce resim seçin.'); return; }
   _dokEditorOlustur();
   document.getElementById('dokResimEditor').style.display = 'flex';
-  _dokEditorResmiYukle(0);
+  _dokEditorResmiYukle(_dokResimEditorIndex || 0);
+  _dokEditorGorselBoyutunuAyarla();
+}
+
+/* ÖNEMLİ DÜZELTME: görsel önceden sabit bir "vh" (ekran yüksekliği)
+   değerine göre boyutlanıyordu — ama alt paneldeki (filtre butonları,
+   kaydırıcılar, bilgi metni, şerit) içerik cihaza göre beklenenden fazla
+   yer kaplayınca, görsel gerçekte kalan boş alandan BÜYÜK kalıp alt
+   panelin üzerine taşıyordu; köşe tutamaçları da o bölgeye düşünce
+   alttaki butonlar dokunuşu yutuyor, tutamaç hareket ettirilemiyordu.
+   Çözüm: sabit vh yerine, alt panel tamamen render olduktan SONRA,
+   ortadaki görsel alanının GERÇEK (o cihazdaki) boş piksel yüksekliği
+   ölçülüp görsele üst sınır olarak veriliyor — hangi cihazda alt panel
+   ne kadar yer kaplarsa kaplasın taşma imkansız hale geliyor. */
+function _dokEditorGorselBoyutunuAyarla() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const alan = document.getElementById('dokEditorGorselAlan');
+      const img = document.getElementById('dokEditorImg');
+      if (!alan || !img) return;
+      const guvenlikPayi = 40; // köşe tutamaçlarının (13px taşma) rahat sığması için
+      const h = Math.max(120, alan.clientHeight - guvenlikPayi);
+      const w = Math.max(120, alan.clientWidth - guvenlikPayi);
+      img.style.maxHeight = h + 'px';
+      img.style.maxWidth = w + 'px';
+    });
+  });
 }
 
 function dokumanResimEditoruKapat() {
@@ -509,6 +552,79 @@ function dokumanResimEditoruKapat() {
   if (el) el.style.display = 'none';
   _dokResimPanelGuncelle();
   _dokResimListe.length && (document.getElementById('dok_resim_bilgi').textContent = `${_dokResimListe.length} resim seçildi (düzenlendi).`);
+}
+
+/* ---------------- Sonucu Gör (gerçek işlenmiş önizleme) ----------------
+   PDF oluşturmadan/indirmeden, o an seçili resmin TAM OLARAK PDF'e
+   gireceği hali (gerçek kırpma/perspektif/filtre/parlaklık/kontrast
+   işlemesinden geçmiş, _dokResimIsle ile) gösterir. Basılı tutunca
+   orijinal (işlenmemiş) hali, bırakınca işlenmiş hali görünür. */
+async function dokumanResimSonucunuGor() {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (!it) { toast('Önce resim seçin.'); return; }
+  toast('Hazırlanıyor…');
+  try {
+    const { dataUrl } = await _dokResimIsle(it);
+    _dokSonucOnizlemeAc(dataUrl, it.url);
+  } catch (e) {
+    toast('Önizleme hatası: ' + e.message);
+  }
+}
+
+function _dokSonucOnizlemeOlustur() {
+  if (document.getElementById('dokSonucOnizleme')) return;
+  const el = document.createElement('div');
+  el.id = 'dokSonucOnizleme';
+  el.style.cssText = 'position:fixed;inset:0;z-index:999999;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;';
+  el.innerHTML = `
+    <button style="position:absolute;top:14px;left:14px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 14px;font-size:13px;" onclick="_dokSonucOnizlemeKapat()">✕ Kapat</button>
+    <img id="dokSonucImg" style="max-width:92vw;max-height:76vh;user-select:none;-webkit-user-drag:none;touch-action:none;">
+    <div style="position:absolute;bottom:24px;left:0;right:0;text-align:center;color:#ccc;font-size:12px;">👆 Basılı tutun: orijinal halini gösterir, bırakınca işlenmiş hal döner</div>
+  `;
+  document.body.appendChild(el);
+  const img = el.querySelector('#dokSonucImg');
+  const eskiyiGoster = (e) => { e.preventDefault(); if (img.dataset.orijinal) img.src = img.dataset.orijinal; };
+  const yeniyeDon = () => { if (img.dataset.islenmis) img.src = img.dataset.islenmis; };
+  img.addEventListener('pointerdown', eskiyiGoster);
+  img.addEventListener('pointerup', yeniyeDon);
+  img.addEventListener('pointerleave', yeniyeDon);
+  img.addEventListener('pointercancel', yeniyeDon);
+}
+
+function _dokSonucOnizlemeAc(islenmisUrl, orijinalUrl) {
+  _dokSonucOnizlemeOlustur();
+  const el = document.getElementById('dokSonucOnizleme');
+  const img = document.getElementById('dokSonucImg');
+  img.dataset.islenmis = islenmisUrl;
+  img.dataset.orijinal = orijinalUrl;
+  img.src = islenmisUrl;
+  el.style.display = 'flex';
+}
+
+function _dokSonucOnizlemeKapat() {
+  const el = document.getElementById('dokSonucOnizleme');
+  if (el) el.style.display = 'none';
+}
+
+/* ---------------- Düzenleyicideki Kaydet kısayolu ----------------
+   PDF'i (mevcut tüm resimlerden, sırasıyla) oluşturur, düzenleyiciyi
+   kapatıp modaldeki normal Kaydet akışını (dokumanKaydet — isim/kategori/
+   açıklama/görünürlük alanlarını okuyup Dökümanlar'a yazan fonksiyon)
+   tetikler. Tek dokunuşla "düzenle → PDF üret → kaydet". */
+async function dokumanResimKaydetKisayolu() {
+  if (!_dokResimListe.length) { toast('Önce resim seçin.'); return; }
+  const btn = document.getElementById('dokEditorKaydetBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Kaydediliyor…'; }
+  try {
+    await dokumanResimlerdenPdfOlustur();
+    if (!_dokResimPdfBlob) throw new Error('PDF oluşturulamadı');
+    dokumanResimEditoruKapat();
+    await dokumanKaydet();
+  } catch (e) {
+    toast('Kaydetme hatası: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Kaydet'; }
+  }
 }
 
 function _dokEditorSeritCiz() {
@@ -855,7 +971,7 @@ async function dokumanResimlerdenPdfOlustur() {
     for (let i = 0; i < _dokResimListe.length; i++) {
       if (olusturBtn) olusturBtn.textContent = `Oluşturuluyor… (${i + 1}/${_dokResimListe.length})`;
       const { dataUrl, w: gw, h: gh } = await _dokResimIsle(_dokResimListe[i]);
-      const yatay = gw > gh;
+      const yatay = _dokResimSayfaYonu === 'yatay' ? true : _dokResimSayfaYonu === 'dikey' ? false : gw > gh;
       const A4_W = yatay ? 297 : 210, A4_H = yatay ? 210 : 297;
 
       if (i === 0) {
@@ -915,7 +1031,7 @@ async function _dokResimIsle(item) {
   // görüntüye çok yakın olur — yani ayrıca "kırpma yok" durumu için özel
   // bir kod yoluna gerek kalmadı.
   let canvas = _dokPerspektifCanvasUret(img, item.kose || _dokVarsayilanKose());
-  canvas = _dokBoyutSinirla(canvas, 1600);
+  canvas = _dokBoyutSinirla(canvas, 2000);
 
   const ctx = canvas.getContext('2d');
   if (item.filtre === 'belge') _dokBelgeModuUygula(ctx, canvas.width, canvas.height);
@@ -924,7 +1040,7 @@ async function _dokResimIsle(item) {
 
   if (item.parlaklik || item.kontrast) _dokParlaklikKontrastUygula(ctx, canvas.width, canvas.height, item.parlaklik || 0, item.kontrast || 0);
 
-  return { dataUrl: canvas.toDataURL('image/jpeg', 0.85), w: canvas.width, h: canvas.height };
+  return { dataUrl: canvas.toDataURL('image/jpeg', 0.93), w: canvas.width, h: canvas.height };
 }
 
 function _dokImgYukle(src) {
@@ -979,7 +1095,7 @@ function _dokPerspektifCanvasUret(img, kose) {
 
   let cikisW = Math.round(Math.max(genUst, genAlt));
   let cikisH = Math.round(Math.max(yukSol, yukSag));
-  const MAX_ISLEME = 1200; // piksel-piksel warp maliyeti için işleme sırasındaki sınır
+  const MAX_ISLEME = 1500; // piksel-piksel warp maliyeti için işleme sırasındaki sınır
   if (cikisW > MAX_ISLEME || cikisH > MAX_ISLEME) {
     const oran = Math.min(MAX_ISLEME / cikisW, MAX_ISLEME / cikisH);
     cikisW = Math.round(cikisW * oran); cikisH = Math.round(cikisH * oran);
