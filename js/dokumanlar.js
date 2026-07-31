@@ -516,6 +516,7 @@ function _dokEditorOlustur() {
       </div>
     </div>
     <div style="padding:10px 12px 6px;background:#17171d;flex-shrink:0;">
+      <button id="dokKirpBtn" class="btn btn-primary btn-sm" style="width:100%;margin-bottom:8px;" onclick="dokumanResimKirp()">✂️ Kırp</button>
       <div style="display:flex;gap:6px;margin-bottom:8px;">
         <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimOtomatikAlgila()">🔍 Otomatik Algıla</button>
         <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimKirpmaSifirla()">↺ Köşeleri Sıfırla</button>
@@ -561,7 +562,7 @@ function _dokEditorOlustur() {
     <!-- Bilgilendirme popup'ı -->
     <div id="dokBilgiPopup" style="display:none;position:fixed;inset:0;z-index:1000000;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:24px;" onclick="if(event.target===this) _dokBilgiPopupKapat()">
       <div style="background:#1c1c22;border-radius:12px;padding:18px;max-width:420px;color:#ddd;font-size:13px;line-height:1.5;">
-        Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Alttaki filtre/ayar ikonlarına dokunup kaydırınca ana görsel GERÇEK sonucu (yaklaşık değil) anında gösterir — görsele basılı tutarsanız kısaca orijinal hali, bırakınca yine işlenmiş hali görünür.
+        Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "✂️ Kırp"a basınca bu 4 köşe HEMEN düz (90°) bir dikdörtgene dönüştürülüp kalıcı hale gelir (Döndür gibi) — ondan sonraki filtre/ayarlar bu kırpılmış görsel üzerinde uygulanır. Alttaki filtre/ayar ikonlarına dokunup kaydırınca ana görsel GERÇEK sonucu (yaklaşık değil) anında gösterir — görsele basılı tutarsanız kısaca orijinal hali, bırakınca yine işlenmiş hali görünür.
         <button style="display:block;margin:14px auto 0;background:#4caf50;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;" onclick="_dokBilgiPopupKapat()">Anladım</button>
       </div>
     </div>
@@ -986,6 +987,39 @@ function dokumanResimKirpmaSifirla() {
   it.kose = _dokVarsayilanKose();
   _dokEditorPoligonCiz(it.kose);
   _dokCanliOnizlemeYenile();
+}
+
+/* ---------------- Kesin (onaylanan) Kırpma ----------------
+   Kullanıcı "önce kırpayım sonra düzenleyeyim" istedi — yani kırpma,
+   PDF üretimine kadar ertelenen bir ayar değil, Döndür gibi HEMEN
+   uygulanan/kalıcı bir adım olsun istiyor. Bu fonksiyon o an ayarlı
+   4 köşeyi kullanıp perspektif düzeltmeyi ŞİMDİ uygular, sonucu yeni
+   çalışma görseli yapar (it.url'i değiştirir — Döndür ile birebir aynı
+   desen) ve köşeleri sıfırlar (artık görsel zaten kırpılmış olduğu için
+   tam kare = "kırpma yok" anlamına gelir). Ondan sonraki tüm filtre/
+   parlaklık/detay ayarları bu kırpılmış görsel üzerinde, canlı önizlemede
+   dahil, uygulanır. */
+async function dokumanResimKirp() {
+  const it = _dokResimListe[_dokResimEditorIndex];
+  if (!it) return;
+  const btn = document.getElementById('dokKirpBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Kırpılıyor…'; }
+  try {
+    const img = await _dokImgYukle(it.url);
+    let canvas = _dokPerspektifCanvasUret(img, it.kose || _dokVarsayilanKose());
+    canvas = _dokBoyutSinirla(canvas, 2000);
+    const yeniUrl = canvas.toDataURL('image/jpeg', 0.95);
+    if (it.url.indexOf('blob:') === 0) URL.revokeObjectURL(it.url);
+    it.url = yeniUrl;
+    it.kose = null;
+    it.onizlemeCache = null;
+    _dokEditorResmiYukle(_dokResimEditorIndex);
+    toast('Kırpıldı — şimdi filtre/ayarları uygulayabilirsiniz.');
+  } catch (e) {
+    toast('Kırpma hatası: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '✂️ Kırp'; }
+  }
 }
 
 /* ---------------- Filtre + Parlaklık/Kontrast seçimi ----------------
@@ -1872,6 +1906,27 @@ async function dokumanPdfleriBirlestir() {
         kaynakDoclar[s.dosyaIndex] = await PDFDocument.load(buffer.slice(0));
       }
       const [kopyaSayfa] = await mergedDoc.copyPages(kaynakDoclar[s.dosyaIndex], [s.sayfaIndex]);
+
+      // DÜZELTME: pdf-lib'in copyPages'i bazı PDF'lerde (özellikle sayfa
+      // boyutu/döndürme bilgisi tek tek sayfalara değil, üst "Pages"
+      // öğesine yazılmış PDF'lerde — bu genelde resmi kurum/Word-PDF
+      // dönüştürücülerinin ürettiği dosyalarda görülüyor) bu "miras
+      // alınan" MediaBox/CropBox/Rotate bilgisini tam taşıyamıyor; sonuçta
+      // sayfa yanlış boyutta/döndürülmüş görünüp içerik kesik/kaymış gibi
+      // çıkıyor. Kaynak sayfadan bu değerleri (pdf-lib'in kendi
+      // getter'ları mirası doğru çözümlüyor) açıkça okuyup kopya sayfaya
+      // elle yazarak bunu garantiye alıyoruz.
+      try {
+        const kaynakSayfa = kaynakDoclar[s.dosyaIndex].getPage(s.sayfaIndex);
+        const mb = kaynakSayfa.getMediaBox();
+        kopyaSayfa.setMediaBox(mb.x, mb.y, mb.width, mb.height);
+        if (typeof kaynakSayfa.getCropBox === 'function' && typeof kopyaSayfa.setCropBox === 'function') {
+          const cb = kaynakSayfa.getCropBox();
+          kopyaSayfa.setCropBox(cb.x, cb.y, cb.width, cb.height);
+        }
+        kopyaSayfa.setRotation(kaynakSayfa.getRotation());
+      } catch (e) { /* kutu/döndürme bilgisi okunamazsa sessizce pdf-lib'in kendi kopyasıyla devam et */ }
+
       mergedDoc.addPage(kopyaSayfa);
     }
 
