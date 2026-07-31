@@ -66,7 +66,7 @@
     _state.panY = 0;
     if (_state.tur === 'pdf') _pdfSayfaRenderEt(ov, index);
     else if (_state.tur === 'xlsx') _xlsxSayfaRenderEt(ov, index);
-    else if (_state.tur === 'docx') _docxSayfaRenderEt(ov, index);
+    // 'docx' artık tek parça (sahte sayfalama yok), burada bir şey yapılmıyor.
     _thumbAktifIsaretle(ov);
   }
 
@@ -198,6 +198,17 @@
     return '#' + hex;
   }
 
+  /* #rrggbb rengin kabaca algısal parlaklığını (0=siyah, 1=beyaz) döndürür.
+     Kontrast güvenlik ağı için kullanılıyor (bkz. _sayfaninHtmlBul). */
+  function _yaklasikLuminans(hex) {
+    if (!hex) return null;
+    const h = hex.replace('#', '');
+    if (h.length !== 6) return null;
+    const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+    if ([r, g, b].some(isNaN)) return null;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  }
+
   function _kenarlikCss(kenar) {
     if (!kenar || !kenar.style) return '1px solid #ddd';
     const kalinlik = { thin: '1px', hair: '1px', medium: '2px', thick: '3px', double: '3px' }[kenar.style] || '1px';
@@ -244,9 +255,10 @@
         const yayilma = master[anahtar];
         const stiller = ['padding:4px 8px'];
 
+        let arkaplanRenk = null;
         if (hucre.fill && hucre.fill.type === 'pattern' && hucre.fill.pattern === 'solid' && hucre.fill.fgColor && hucre.fill.fgColor.argb) {
           const renk = _argbCss(hucre.fill.fgColor.argb);
-          if (renk && renk.toLowerCase() !== '#000000') stiller.push(`background-color:${renk}`);
+          if (renk && renk.toLowerCase() !== '#000000') { arkaplanRenk = renk; stiller.push(`background-color:${renk}`); }
         }
         if (hucre.font) {
           if (hucre.font.bold) stiller.push('font-weight:700');
@@ -254,8 +266,24 @@
           if (hucre.font.underline) stiller.push('text-decoration:underline');
           if (hucre.font.size) stiller.push(`font-size:${hucre.font.size}px`);
           if (hucre.font.color && hucre.font.color.argb) {
-            const renk = _argbCss(hucre.font.color.argb);
-            if (renk) stiller.push(`color:${renk}`);
+            let renk = _argbCss(hucre.font.color.argb);
+            if (renk) {
+              // KONTRAST GÜVENLİK AĞI: kaynak Excel'de bu yazı rengi
+              // muhtemelen belirli bir arka plan (ör. tema tabanlı koyu
+              // dolgu) için seçilmişti — biz o arka planı çizemiyorsak
+              // (tema rengi burada okunamıyor) açık renkli yazı beyaz
+              // zeminde neredeyse görünmez kalıyordu ("yazılar okunmuyor"
+              // şikayeti buradan geliyordu). Yazı rengiyle GERÇEKTE
+              // uygulanan zemin (varsa dolgu, yoksa beyaz sayfa) arasındaki
+              // kontrastı ölçüp yetersizse okunabilir koyu/açık bir
+              // varsayılana düşüyoruz.
+              const zemin = arkaplanRenk || '#ffffff';
+              const fontL = _yaklasikLuminans(renk), zeminL = _yaklasikLuminans(zemin);
+              if (fontL !== null && zeminL !== null && Math.abs(fontL - zeminL) < 0.35) {
+                renk = zeminL > 0.5 ? '#1a1a1a' : '#f2f2f2';
+              }
+              stiller.push(`color:${renk}`);
+            }
           }
         }
         const hiz = hucre.alignment;
@@ -298,11 +326,16 @@
     _sayacGuncelle(ov);
   }
 
-  /* ---- Word (mammoth.js + yaklaşık A4 yüksekliğine göre sayfalama) ---- */
-  // DÜZELTME: mammoth.js dönüşümü tabloları düz <table>/<tr>/<td> olarak
-  // verir, kenarlık (border) bilgisi taşımaz — bu yüzden Word'de görünen
-  // tablo kenarlıkları okuyucuda hiç görünmüyordu. Standart bir Word tablo
-  // görünümü (ince gri kenarlıklar) için burada sabit bir stil ekliyoruz.
+  /* ---- Word (mammoth.js) ----
+     DÜZELTME: Word dosyalarının gerçek sayfa sınırları (yazı tipi/yazıcı
+     ayarına göre değiştiği için) tarayıcıda bilinemez — eskiden içerik
+     yüksekliğe göre TAHMİNİ "sanal sayfalara" bölünüyordu, ama bu tahmin
+     sık sık yanlış çıkıyor, içerik yanlış yerden kesiliyor, tablolar
+     bozuk görünüyordu ("sayfaları tam algılamıyor" şikayeti buradan
+     geliyordu). Artık sahte sayfalama tamamen kaldırıldı — belge TEK
+     PARÇA, doğal uzunluğunda, kaydırmalı olarak gösteriliyor. Bu daha
+     az "sayfa çevirir gibi" ama HER ZAMAN doğru — hiçbir içerik yanlış
+     yerden kesilmiyor. */
   const DOCX_TABLO_STIL = `<style>
     #dokOkuyucuDocxSarici table { border-collapse: collapse; width: auto; max-width: 100%; margin: 6px 0; }
     #dokOkuyucuDocxSarici table, #dokOkuyucuDocxSarici th, #dokOkuyucuDocxSarici td { border: 1px solid #444; }
@@ -314,100 +347,32 @@
     try {
       const buf = await (await fetch(url)).arrayBuffer();
       const sonuc = await mammoth.convertToHtml({ arrayBuffer: buf });
-      _docxSayfalar = _htmlSayfalaraBol(sonuc.value);
       _state.tur = 'docx';
-      _state.toplamSayfa = _docxSayfalar.length;
+      _state.toplamSayfa = 1; // artık sahte sayfalama yok, tek parça kaydırmalı belge
       govde.style.overflow = 'auto';
       govde.style.touchAction = 'pan-x pan-y';
       govde.style.alignItems = 'flex-start';
       govde.style.justifyContent = 'flex-start';
-      govde.innerHTML = `${DOCX_TABLO_STIL}<div id="dokOkuyucuDocxSarici" style="background:#fff;width:max-content;min-width:210mm;min-height:250mm;padding:18mm;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;font-size:12pt;line-height:1.5;color:#111;flex-shrink:0;transform-origin:top left;"></div>`;
-      _docxSayfaRenderEt(ov, 0);
-      _thumbBarKur(ov);
+      govde.innerHTML = `${DOCX_TABLO_STIL}<div id="dokOkuyucuDocxSarici" style="background:#fff;width:max-content;min-width:210mm;padding:18mm;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;font-size:12pt;line-height:1.5;color:#111;flex-shrink:0;transform-origin:top left;">${sonuc.value}</div>`;
+      const sarici = ov.querySelector('#dokOkuyucuDocxSarici');
+      const dogalGenislik = sarici.scrollWidth || 1;
+      _state.tabanOlcek = Math.min(govde.clientWidth / dogalGenislik, 1);
+      sarici.style.transform = `scale(${_state.tabanOlcek})`;
+      _state.sayfaIndex = 0;
+      _sayacGuncelle(ov);
+      // Sahte sayfa yoksa sayfa gezinme arayüzünün (‹ › ve Sayfalar şeridi)
+      // bir anlamı kalmıyor — kafa karıştırmasın diye gizliyoruz.
+      const onceki = ov.querySelector('#dokOkuyucuOnceki');
+      const sonraki = ov.querySelector('#dokOkuyucuSonraki');
+      const thumbToggle = ov.querySelector('#dokOkuyucuThumbToggle');
+      const sayac = ov.querySelector('#dokOkuyucuSayac');
+      if (onceki) onceki.style.display = 'none';
+      if (sonraki) sonraki.style.display = 'none';
+      if (thumbToggle) thumbToggle.style.display = 'none';
+      if (sayac) sayac.style.display = 'none';
     } catch (e) {
       govde.innerHTML = `<div style="color:#fff;padding:20px;text-align:center;">Belge yüklenemedi: ${escapeHtml(e.message)}</div>`;
     }
-  }
-
-  // NOT: Word dosyalarının gerçek sayfa sınırları (yazı tipi/yazıcı ayarına
-  // göre değiştiği için) tarayıcıda tam olarak bilinemez. Burada içerik
-  // bloklarını ölçüp yaklaşık A4 yüksekliğine göre "sanal sayfalara"
-  // bölüyoruz — orijinal Word sayfa numaralarıyla birebir eşleşmeyebilir,
-  // ama sayfa çevirme deneyimini işlevsel şekilde sağlar.
-  //
-  // DÜZELTME: Belgenin tamamı tek bir büyük <table> ise (örn. formlar/kriter
-  // cetvelleri gibi belgeler), eskiden bu tablo TEK bir üst-seviye öğe olarak
-  // ölçüldüğü için bölünmüyor, tüm belge tek bir "sayfa" gibi gösteriliyordu.
-  // Artık sayfa yüksekliğini aşan bir tablo, kendi SATIRLARI (tr) üzerinden
-  // sayfalara bölünüyor (varsa <thead> her sayfada tekrarlanır).
-  function _htmlSayfalaraBol(html) {
-    const olcum = document.createElement('div');
-    olcum.style.cssText = 'position:absolute; left:-9999px; top:0; width:174mm; font-family:Segoe UI,Arial,sans-serif; font-size:12pt; line-height:1.5;';
-    document.body.appendChild(olcum);
-    olcum.innerHTML = html;
-
-    const SAYFA_YUKSEKLIK_PX = 950; // ~A4 içerik alanı yaklaşık değeri
-    const sayfalar = [];
-    let mevcut = '';
-    let yukseklik = 0;
-
-    function sayfayiBitir() {
-      if (mevcut) { sayfalar.push(mevcut); mevcut = ''; yukseklik = 0; }
-    }
-    function parcaEkle(parcaHtml, h) {
-      if (yukseklik + h > SAYFA_YUKSEKLIK_PX && mevcut) sayfayiBitir();
-      mevcut += parcaHtml;
-      yukseklik += h;
-    }
-    // Tek başına sayfa yüksekliğini aşan bir <table>'ı satır satır sayfalara böler.
-    function tabloEkle(tablo) {
-      const acilisEtiketi = tablo.outerHTML.slice(0, tablo.outerHTML.indexOf('>') + 1);
-      const baslik = tablo.tHead ? tablo.tHead.outerHTML : '';
-      const baslikYuksekligi = tablo.tHead ? (tablo.tHead.offsetHeight || 0) : 0;
-      const govdeSatirlari = Array.from(tablo.rows).filter(r => !tablo.tHead || r.parentElement !== tablo.tHead);
-
-      let altHtml = '';
-      let altYukseklik = baslikYuksekligi;
-      const altSayfaHtml = () => acilisEtiketi + baslik + altHtml + '</table>';
-
-      govdeSatirlari.forEach((satir) => {
-        const h = satir.offsetHeight || 20;
-        if (altYukseklik + h > SAYFA_YUKSEKLIK_PX && altHtml) {
-          parcaEkle(altSayfaHtml(), altYukseklik);
-          altHtml = '';
-          altYukseklik = baslikYuksekligi;
-        }
-        altHtml += satir.outerHTML;
-        altYukseklik += h;
-      });
-      if (altHtml) parcaEkle(altSayfaHtml(), altYukseklik);
-    }
-
-    Array.from(olcum.children).forEach((c) => {
-      const h = c.offsetHeight || 20;
-      if (c.tagName === 'TABLE' && h > SAYFA_YUKSEKLIK_PX) tabloEkle(c);
-      else parcaEkle(c.outerHTML, h);
-    });
-
-    sayfayiBitir();
-    document.body.removeChild(olcum);
-    return sayfalar.length ? sayfalar : [html];
-  }
-
-  function _docxSayfaRenderEt(ov, index) {
-    const sarici = ov.querySelector('#dokOkuyucuDocxSarici');
-    const govde = ov.querySelector('#dokOkuyucuGovde');
-    sarici.style.transform = 'none';
-    sarici.innerHTML = _docxSayfalar[index] || '';
-    const dogalGenislik = sarici.scrollWidth || 1;
-    // NOT: Sadece GENİŞLİĞE göre sığdırıyoruz — görselli/uzun sayfalarda
-    // tüm yüksekliği sığdırmaya çalışmak aşırı küçültmeye ("daralmış"
-    // görünüm) sebep oluyordu. Fazla yükseklik normal kaydırmayla görülür.
-    _state.tabanOlcek = Math.min(govde.clientWidth / dogalGenislik, 1);
-    sarici.style.transformOrigin = 'top left';
-    sarici.style.transform = `scale(${_state.tabanOlcek * _state.zoom})`;
-    _state.sayfaIndex = index;
-    _sayacGuncelle(ov);
   }
 
   /* ---- Küçük resim (thumbnail) şeridi ---- */
