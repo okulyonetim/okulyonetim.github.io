@@ -477,6 +477,7 @@ function _dokEditorOlustur() {
     <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#101014;flex-shrink:0;">
       <button id="dokGorunumBtn" class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimGorunumDegistir()">👁 Sonuç</button>
       <button id="dokEditorKaydetBtn" class="btn btn-primary btn-sm" style="flex:1;" onclick="dokumanResimKaydetKisayolu()">💾 Kaydet</button>
+      <button style="flex-shrink:0;width:36px;height:36px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50%;color:#fff;font-size:15px;" onclick="_dokBilgiPopupAc()">ℹ️</button>
     </div>
     <div id="dokEditorGorselAlan" style="flex:1;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;background:#000;min-height:0;padding:24px;box-sizing:border-box;">
       <div id="dokEditorWrap" style="position:relative;display:inline-block;line-height:0;touch-action:none;">
@@ -495,47 +496,50 @@ function _dokEditorOlustur() {
         </div>
       </div>
     </div>
-    <div style="padding:10px 12px;background:#17171d;flex-shrink:0;">
+    <div style="padding:10px 12px 6px;background:#17171d;flex-shrink:0;">
       <div style="display:flex;gap:6px;margin-bottom:8px;">
         <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimOtomatikAlgila()">🔍 Otomatik Algıla</button>
         <button class="btn btn-ghost btn-sm" style="flex:1;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimKirpmaSifirla()">↺ Köşeleri Sıfırla</button>
       </div>
-      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
-        <button id="dokFiltreOrijinalBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('orijinal')">Orijinal</button>
-        <button id="dokFiltreBelgeBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('belge')">📄 Belge Modu</button>
-        <button id="dokFiltreGriBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('gri')">◑ Gri Tonlama</button>
-        <button id="dokFiltreBwBtn" class="btn btn-ghost btn-sm dok-filtre-btn" style="flex:1;min-width:45%;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);" onclick="dokumanResimFiltreSec('bw')">◼ S/B Metin</button>
-      </div>
-      <div style="margin-bottom:6px;">
-        <label style="font-size:11px;color:#ccc;display:flex;justify-content:space-between;">☀️ Parlaklık <span id="dokParlaklikDeger">0</span></label>
-        <input type="range" id="dokParlaklikSlider" min="-50" max="50" value="0" style="width:100%;" oninput="dokumanResimParlaklikDegisti(this.value)">
-      </div>
-      <div style="margin-bottom:8px;">
-        <label style="font-size:11px;color:#ccc;display:flex;justify-content:space-between;">◐ Kontrast <span id="dokKontrastDeger">0</span></label>
-        <input type="range" id="dokKontrastSlider" min="-50" max="50" value="0" style="width:100%;" oninput="dokumanResimKontrastDegisti(this.value)">
-      </div>
-      <div style="margin-bottom:8px;">
-        <label style="font-size:11px;color:#ccc;">🛠️ Detay Ayarlar</label>
-        <div style="display:flex;gap:4px;margin-top:4px;">
-          <button class="dok-detay-ikon" data-param="golge" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('golge')">🌑</button>
-          <button class="dok-detay-ikon" data-param="sicaklik" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('sicaklik')">🌡️</button>
-          <button class="dok-detay-ikon" data-param="beyazlik" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('beyazlik')">⚪</button>
-          <button class="dok-detay-ikon" data-param="metin" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('metin')">🔤</button>
-          <button class="dok-detay-ikon" data-param="netlik" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('netlik')">✨</button>
-          <button class="dok-detay-ikon" data-param="hareli" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('hareli')">🌀</button>
-          <button class="dok-detay-ikon" data-param="gurultu" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 2px;color:#fff;font-size:16px;" onclick="dokumanResimDetayAc('gurultu')">🔇</button>
+
+      <!-- Ayar paneli — seçili ikonun HEMEN ÜSTÜNDE açılır (CamScanner tarzı) -->
+      <div id="dokDetayPanel" style="display:none;background:rgba(255,255,255,.08);border-radius:10px;padding:10px;margin-bottom:8px;">
+        <div style="font-size:12px;color:#ccc;text-align:center;margin-bottom:4px;" id="dokDetayEtiket">Ayar</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button style="flex-shrink:0;width:34px;height:34px;background:#5c2323;color:#fff;border:none;border-radius:50%;font-size:15px;" onclick="dokumanResimDetayIptal()">✗</button>
+          <input type="range" id="dokDetaySlider" min="0" max="100" value="0" style="flex:1;" oninput="_dokDetayDegisti(this.value)">
+          <button style="flex-shrink:0;width:34px;height:34px;background:#2e7d32;color:#fff;border:none;border-radius:50%;font-size:15px;" onclick="dokumanResimDetayOnayla()">✓</button>
         </div>
-        <div id="dokDetayPanel" style="display:none;margin-top:8px;background:rgba(255,255,255,.08);border-radius:8px;padding:10px;">
-          <label id="dokDetayEtiket" style="font-size:12px;color:#ccc;display:flex;justify-content:space-between;">Ayar <span id="dokDetayDeger">0</span></label>
-          <input type="range" id="dokDetaySlider" min="0" max="100" value="0" style="width:100%;" oninput="_dokDetayDegisti(this.value)">
-          <div style="display:flex;gap:6px;margin-top:8px;">
-            <button style="flex:1;background:#5c2323;color:#fff;border:none;border-radius:6px;padding:8px;font-size:14px;" onclick="dokumanResimDetayIptal()">✗ Vazgeç</button>
-            <button style="flex:1;background:#2e7d32;color:#fff;border:none;border-radius:6px;padding:8px;font-size:14px;" onclick="dokumanResimDetayOnayla()">✓ Tamam</button>
-          </div>
-        </div>
+        <div style="text-align:center;font-size:11px;color:#999;margin-top:2px;" id="dokDetayDeger">0</div>
       </div>
-      <div style="font-size:10px;color:#999;margin-bottom:8px;">Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Üstteki "👁 Sonuç" ile gerçek işlenmiş hali her an görebilirsiniz (basılı tutunca orijinal döner). Önizlemedeki filtre/parlaklık/kontrast yaklaşıktır, gerçek sonuç işleme sırasında uygulanır.</div>
+
+      <!-- Tek satır, kaydırmalı ikon çubuğu: filtreler + tüm ayarlar -->
+      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;">
+        <button id="dokFiltreOrijinalBtn" class="dok-filtre-btn" title="Orijinal" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('orijinal')">🔘</button>
+        <button id="dokFiltreBelgeBtn" class="dok-filtre-btn" title="Belge Modu" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('belge')">📄</button>
+        <button id="dokFiltreGriBtn" class="dok-filtre-btn" title="Gri Tonlama" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('gri')">◐</button>
+        <button id="dokFiltreBwBtn" class="dok-filtre-btn" title="S/B Metin" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimFiltreSec('bw')">◼</button>
+        <div style="flex-shrink:0;width:1px;background:rgba(255,255,255,.2);margin:4px 0;"></div>
+        <button class="dok-detay-ikon" data-param="parlaklik" title="Parlaklık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('parlaklik')">☀️</button>
+        <button class="dok-detay-ikon" data-param="kontrast" title="Kontrast" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('kontrast')">◑</button>
+        <button class="dok-detay-ikon" data-param="golge" title="Gölge Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('golge')">🌑</button>
+        <button class="dok-detay-ikon" data-param="sicaklik" title="Sıcaklık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('sicaklik')">🌡️</button>
+        <button class="dok-detay-ikon" data-param="beyazlik" title="Beyazlık" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('beyazlik')">⚪</button>
+        <button class="dok-detay-ikon" data-param="metin" title="Metin Düzeltme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('metin')">🔤</button>
+        <button class="dok-detay-ikon" data-param="netlik" title="Netlik" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('netlik')">✨</button>
+        <button class="dok-detay-ikon" data-param="hareli" title="Hareli Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('hareli')">🌀</button>
+        <button class="dok-detay-ikon" data-param="gurultu" title="Gürültü Giderme" style="flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:18px;" onclick="dokumanResimDetayAc('gurultu')">🔇</button>
+      </div>
+
       <div id="dokEditorSerit" style="display:flex;gap:6px;overflow-x:auto;padding:6px 0;"></div>
+    </div>
+
+    <!-- Bilgilendirme popup'ı -->
+    <div id="dokBilgiPopup" style="display:none;position:fixed;inset:0;z-index:1000000;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:24px;" onclick="if(event.target===this) _dokBilgiPopupKapat()">
+      <div style="background:#1c1c22;border-radius:12px;padding:18px;max-width:420px;color:#ddd;font-size:13px;line-height:1.5;">
+        Turuncu 4 köşe birbirinden tamamen bağımsız sürüklenir — her birini belgenin gerçek köşesine götürün (yamuksa bile). Bir köşeyi tutunca ona bağlı iki kenar yeşille vurgulanır ve büyüteç belirir. "PDF Oluştur"da bu 4 köşe otomatik olarak düz (90°) bir dikdörtgene dönüştürülür. Üstteki "👁 Sonuç" ile gerçek işlenmiş hali her an görebilirsiniz (basılı tutunca orijinal döner). Önizlemedeki filtre/ayar yaklaşıktır, gerçek sonuç işleme sırasında uygulanır.
+        <button style="display:block;margin:14px auto 0;background:#4caf50;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;" onclick="_dokBilgiPopupKapat()">Anladım</button>
+      </div>
     </div>
   `;
   document.body.appendChild(el);
@@ -744,12 +748,6 @@ function _dokEditorResmiYukle(index) {
     _dokEditorGorselBoyutunuAyarla();
     _dokEditorPoligonCiz(it.kose);
     _dokFiltrePillGuncelle(it.filtre);
-    const parlakSlider = document.getElementById('dokParlaklikSlider');
-    const kontrastSlider = document.getElementById('dokKontrastSlider');
-    if (parlakSlider) parlakSlider.value = it.parlaklik;
-    if (kontrastSlider) kontrastSlider.value = it.kontrast;
-    document.getElementById('dokParlaklikDeger').textContent = it.parlaklik;
-    document.getElementById('dokKontrastDeger').textContent = it.kontrast;
     if (_dokEditorGorunumModu === 'sonuc') _dokEditorGorunumUygula();
     else _dokEditorFiltreOnizlemesiUygula(it);
     _dokCanliOnizlemeYenile();
@@ -1011,39 +1009,26 @@ function dokumanResimFiltreSec(filtre) {
   _dokCanliOnizlemeYenile();
 }
 
-function dokumanResimParlaklikDegisti(deger) {
-  const it = _dokResimListe[_dokResimEditorIndex];
-  if (!it) return;
-  it.parlaklik = parseInt(deger, 10);
-  const etiket = document.getElementById('dokParlaklikDeger');
-  if (etiket) etiket.textContent = deger;
-  _dokEditorFiltreOnizlemesiUygula(it);
-  _dokCanliOnizlemeYenile();
-}
-
-function dokumanResimKontrastDegisti(deger) {
-  const it = _dokResimListe[_dokResimEditorIndex];
-  if (!it) return;
-  it.kontrast = parseInt(deger, 10);
-  const etiket = document.getElementById('dokKontrastDeger');
-  if (etiket) etiket.textContent = deger;
-  _dokEditorFiltreOnizlemesiUygula(it);
-  _dokCanliOnizlemeYenile();
-}
-
-/* ---------------- Detay Ayarlar (Gölge/Sıcaklık/Beyazlık/Metin/Netlik/Hareli/Gürültü) ----------------
-   Her ikon aynı tek kaydırıcı panelini açar; ✓ değeri kalıcı yapar,
-   ✗ paneli açmadan önceki değere geri döndürür. Değer her sürüklemede
-   canlı önizlemeyi (debounce'lu) tetikler. */
+/* ---------------- Detay Ayarlar (Parlaklık/Kontrast + Gölge/Sıcaklık/Beyazlık/Metin/Netlik/Hareli/Gürültü) ----------------
+   Tek satır ikon çubuğundaki HER ikon (filtre hariç) aynı kaydırıcı
+   panelini kendi ikonunun HEMEN ÜSTÜNDE açar (CamScanner tarzı); ✓ değeri
+   kalıcı yapar, ✗ paneli açmadan önceki değere geri döndürür. Değer her
+   sürüklemede canlı önizlemeyi (debounce'lu) tetikler.
+   Parlaklık/Kontrast, item üzerinde doğrudan (it.parlaklik/it.kontrast)
+   tutulur — geri kalanı it.detay{} altında. _dokDetayDegerAl/Yaz bu
+   ayrımı tek noktada yönetir. */
 const _DOK_DETAY_AYARLARI = {
-  golge:    { etiket: '🌑 Gölge Giderme',                min: 0,   max: 100 },
-  sicaklik: { etiket: '🌡️ Sıcaklık (Serin ↔ Sıcak)',     min: -50, max: 50  },
-  beyazlik: { etiket: '⚪ Beyazlık',                      min: 0,   max: 100 },
-  metin:    { etiket: '🔤 Metin Düzeltme',                min: 0,   max: 100 },
-  netlik:   { etiket: '✨ Netlik',                        min: 0,   max: 100 },
-  hareli:   { etiket: '🌀 Hareli (Moiré) Giderme',        min: 0,   max: 100 },
-  gurultu:  { etiket: '🔇 Gürültü Giderme',               min: 0,   max: 100 },
+  parlaklik: { etiket: '☀️ Parlaklık',                    min: -50, max: 50  },
+  kontrast:  { etiket: '◑ Kontrast',                      min: -50, max: 50  },
+  golge:     { etiket: '🌑 Gölge Giderme',                min: 0,   max: 100 },
+  sicaklik:  { etiket: '🌡️ Sıcaklık (Serin ↔ Sıcak)',     min: -50, max: 50  },
+  beyazlik:  { etiket: '⚪ Beyazlık',                      min: 0,   max: 100 },
+  metin:     { etiket: '🔤 Metin Düzeltme',                min: 0,   max: 100 },
+  netlik:    { etiket: '✨ Netlik',                        min: 0,   max: 100 },
+  hareli:    { etiket: '🌀 Hareli (Moiré) Giderme',        min: 0,   max: 100 },
+  gurultu:   { etiket: '🔇 Gürültü Giderme',               min: 0,   max: 100 },
 };
+const _DOK_DETAY_UST_SEVIYE = ['parlaklik', 'kontrast']; // it üzerinde doğrudan, it.detay altında değil
 let _dokDetayAcikParam = null;
 let _dokDetayOncekiDeger = 0;
 
@@ -1051,15 +1036,27 @@ function _dokDetayVarsayilan() {
   return { golge: 0, sicaklik: 0, beyazlik: 0, metin: 0, netlik: 0, hareli: 0, gurultu: 0 };
 }
 
+function _dokDetayDegerAl(it, param) {
+  if (_DOK_DETAY_UST_SEVIYE.includes(param)) return it[param] || 0;
+  if (!it.detay) it.detay = _dokDetayVarsayilan();
+  return it.detay[param] || 0;
+}
+
+function _dokDetayDegerYaz(it, param, deger) {
+  if (_DOK_DETAY_UST_SEVIYE.includes(param)) { it[param] = deger; return; }
+  if (!it.detay) it.detay = _dokDetayVarsayilan();
+  it.detay[param] = deger;
+}
+
 function dokumanResimDetayAc(param) {
   const it = _dokResimListe[_dokResimEditorIndex];
   const ayar = _DOK_DETAY_AYARLARI[param];
   if (!it || !ayar) return;
-  if (!it.detay) it.detay = _dokDetayVarsayilan();
   _dokDetayAcikParam = param;
-  _dokDetayOncekiDeger = it.detay[param] || 0;
+  _dokDetayOncekiDeger = _dokDetayDegerAl(it, param);
 
-  document.getElementById('dokDetayEtiket').innerHTML = `${ayar.etiket} <span id="dokDetayDeger">${_dokDetayOncekiDeger}</span>`;
+  document.getElementById('dokDetayEtiket').textContent = ayar.etiket;
+  document.getElementById('dokDetayDeger').textContent = _dokDetayOncekiDeger;
   const slider = document.getElementById('dokDetaySlider');
   slider.min = ayar.min; slider.max = ayar.max; slider.value = _dokDetayOncekiDeger;
   document.getElementById('dokDetayPanel').style.display = 'block';
@@ -1067,15 +1064,18 @@ function dokumanResimDetayAc(param) {
   document.querySelectorAll('.dok-detay-ikon').forEach(btn => {
     btn.style.background = btn.dataset.param === param ? '#4caf50' : 'rgba(255,255,255,.12)';
   });
+  // Panel açılınca alt bölüm büyüdüğü için görsel alanını yeniden ölç —
+  // aksi halde görsel üstteki butonların üzerine taşabiliyordu.
+  _dokEditorGorselBoyutunuAyarla();
 }
 
 function _dokDetayDegisti(deger) {
   const it = _dokResimListe[_dokResimEditorIndex];
   if (!it || !_dokDetayAcikParam) return;
-  if (!it.detay) it.detay = _dokDetayVarsayilan();
-  it.detay[_dokDetayAcikParam] = parseInt(deger, 10);
+  _dokDetayDegerYaz(it, _dokDetayAcikParam, parseInt(deger, 10));
   const etiketDeger = document.getElementById('dokDetayDeger');
   if (etiketDeger) etiketDeger.textContent = deger;
+  if (_dokDetayAcikParam === 'parlaklik' || _dokDetayAcikParam === 'kontrast') _dokEditorFiltreOnizlemesiUygula(it);
   _dokCanliOnizlemeYenile();
 }
 
@@ -1083,18 +1083,30 @@ function dokumanResimDetayOnayla() {
   document.getElementById('dokDetayPanel').style.display = 'none';
   document.querySelectorAll('.dok-detay-ikon').forEach(btn => { btn.style.background = 'rgba(255,255,255,.12)'; });
   _dokDetayAcikParam = null;
+  _dokEditorGorselBoyutunuAyarla();
 }
 
 function dokumanResimDetayIptal() {
   const it = _dokResimListe[_dokResimEditorIndex];
   if (it && _dokDetayAcikParam) {
-    if (!it.detay) it.detay = _dokDetayVarsayilan();
-    it.detay[_dokDetayAcikParam] = _dokDetayOncekiDeger;
+    _dokDetayDegerYaz(it, _dokDetayAcikParam, _dokDetayOncekiDeger);
+    if (_dokDetayAcikParam === 'parlaklik' || _dokDetayAcikParam === 'kontrast') _dokEditorFiltreOnizlemesiUygula(it);
     _dokCanliOnizlemeYenile();
   }
   document.getElementById('dokDetayPanel').style.display = 'none';
   document.querySelectorAll('.dok-detay-ikon').forEach(btn => { btn.style.background = 'rgba(255,255,255,.12)'; });
   _dokDetayAcikParam = null;
+  _dokEditorGorselBoyutunuAyarla();
+}
+
+function _dokBilgiPopupAc() {
+  const el = document.getElementById('dokBilgiPopup');
+  if (el) el.style.display = 'flex';
+}
+
+function _dokBilgiPopupKapat() {
+  const el = document.getElementById('dokBilgiPopup');
+  if (el) el.style.display = 'none';
 }
 
 function _dokEditorFiltreOnizlemesiUygula(it) {
@@ -1110,7 +1122,7 @@ function _dokFiltrePillGuncelle(filtre) {
   const harita = { orijinal: 'dokFiltreOrijinalBtn', belge: 'dokFiltreBelgeBtn', gri: 'dokFiltreGriBtn', bw: 'dokFiltreBwBtn' };
   Object.entries(harita).forEach(([k, id]) => {
     const btn = document.getElementById(id);
-    if (btn) btn.style.background = (k === filtre) ? '#4caf50' : 'rgba(255,255,255,.15)';
+    if (btn) btn.style.background = (k === filtre) ? '#4caf50' : 'rgba(255,255,255,.12)';
   });
 }
 
