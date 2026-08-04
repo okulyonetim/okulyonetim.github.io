@@ -955,6 +955,19 @@ window.LayoutEngine = {
   lgsSablonuOlustur,
   burslulukSablonuOlustur,
   formKoduHarfiGetir,
+  // Ağustos 2026 — Optik Form Editörü için dışa açıldı (bkz. optikSablonMotoru.js):
+  // editör, kendi PDF/OMR mantığını yazmak yerine bu KANITLANMIŞ, halihazırda
+  // hem pdfFormGenerator.js hem omrEngine.js tarafından güvenle kullanılan
+  // koordinat fonksiyonlarını doğrudan çağırır. Yeni bir hesaplama yolu değil,
+  // var olanın manuel parametrelerle sürülmesi.
+  STANDART_BALONCUK_CAP,
+  dersSutunuHesapla,
+  numaraAlaniHesapla,
+  kitapcikAlaniHesapla,
+  hizalamaIsaretleriEkle,
+  sayfaCercevesiHesapla,
+  genelIzgaraCercevesiHesapla,
+  standartHeaderOlustur,
 };
 
 if (typeof module !== 'undefined' && module.exports) {
