@@ -144,7 +144,7 @@
         .osEditor__arac button:active { background:#e8e8ea; }
         .osEditor__arac button.osEditor__tamEkranBtn { margin-left:auto; background:#0a7cff; color:#fff; border-color:#0a7cff; }
         .osEditor__govde { display:flex; flex-direction:column; flex:1; min-height:0; }
-        .osEditor__tuvalSarici { flex:1; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y; }
+        .osEditor__tuvalSarici { flex:1; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
         .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); }
         .osEditor__panel { background:#fafafa; border-bottom:1px solid #ddd; overflow-y:auto; max-height:38vh; padding:10px; font-size:13px; display:none; }
         .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
@@ -170,6 +170,7 @@
     const aracCubugu = kok.querySelector('.osEditor__arac');
     const svg = kok.querySelector('.osEditor__tuval');
     const panel = kok.querySelector('.osEditor__panel');
+    const tuvalSarici = kok.querySelector('.osEditor__tuvalSarici');
 
     // ---- Form adı (Sedat isteği: "Forma isim verme de olsun") ----
     const adSatiri = document.createElement('div');
@@ -342,15 +343,80 @@
       if (gecmis.length > 50) gecmis.shift(); // bellek için sınırlı geçmiş
     }
 
+    // ---- Yakınlaştırma (Sedat isteği: "parmakla yaklaştırma uzaklaştırma
+    // olsun") — WebView'larda tarayıcının kendi pinch-zoom'u genelde kapalı
+    // olduğu için burada JS ile kendi pinch-zoom'umuzu uyguluyoruz. Ayrıca
+    // güvenilir bir yedek olarak araç çubuğuna +/- düğmeleri de eklendi.
+    let zoomOlcek = 1;
+    const ZOOM_MIN = 0.4, ZOOM_MAX = 3;
+
     // ---- Tuval boyutu (viewBox = mm cinsinden sayfa + pay) ----
+    function temelGenislikPx() {
+      const w = sablon.sayfaBoyutu.width + 2 * MM_VIEWBOX_PAY;
+      const h = sablon.sayfaBoyutu.height + 2 * MM_VIEWBOX_PAY;
+      if (kok.classList.contains('osEditor--tamEkran')) {
+        // Tam ekranda: sayfanın TAMAMI (kaydırma gerekmeden) sığsın diye
+        // hem genişlik hem yükseklik sınırına göre ölçekleniyor.
+        const mevcutGenislik = tuvalSarici.clientWidth - 24; // padding payı
+        const mevcutYukseklik = tuvalSarici.clientHeight - 24;
+        const olcekGenislik = mevcutGenislik / w;
+        const olcekYukseklik = mevcutYukseklik / h;
+        return w * Math.min(olcekGenislik, olcekYukseklik);
+      }
+      return Math.min(window.innerWidth * 0.92, w * 3.2);
+    }
+
     function viewBoxAyarla() {
       const w = sablon.sayfaBoyutu.width + 2 * MM_VIEWBOX_PAY;
       const h = sablon.sayfaBoyutu.height + 2 * MM_VIEWBOX_PAY;
       svg.setAttribute('viewBox', `${-MM_VIEWBOX_PAY} ${-MM_VIEWBOX_PAY} ${w} ${h}`);
-      // Mobilde okunabilir bir genişlik — yükseklik oranı otomatik korunuyor (viewBox sayesinde)
-      svg.style.width = 'min(92vw, ' + (w * 3.2) + 'px)';
+      svg.style.width = (temelGenislikPx() * zoomOlcek) + 'px';
       svg.style.height = 'auto';
     }
+
+    function zoomUygula(yeniOlcek) {
+      zoomOlcek = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, yeniOlcek));
+      viewBoxAyarla();
+    }
+
+    aracDugmesiEkle('－', () => zoomUygula(zoomOlcek - 0.2));
+    aracDugmesiEkle('＋', () => zoomUygula(zoomOlcek + 0.2));
+
+    // İki parmakla pinch-zoom (best-effort — bkz. yukarıdaki not)
+    const aktifParmaklar = new Map();
+    let pinchBaslangicMesafe = 0;
+    let pinchBaslangicOlcek = 1;
+
+    function parmakMesafesi() {
+      const noktalar = Array.from(aktifParmaklar.values());
+      if (noktalar.length < 2) return 0;
+      const dx = noktalar[0].x - noktalar[1].x;
+      const dy = noktalar[0].y - noktalar[1].y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    tuvalSarici.addEventListener('pointerdown', (ev) => {
+      aktifParmaklar.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+      if (aktifParmaklar.size === 2) {
+        pinchBaslangicMesafe = parmakMesafesi();
+        pinchBaslangicOlcek = zoomOlcek;
+      }
+    });
+    tuvalSarici.addEventListener('pointermove', (ev) => {
+      if (!aktifParmaklar.has(ev.pointerId)) return;
+      aktifParmaklar.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+      if (aktifParmaklar.size === 2 && pinchBaslangicMesafe > 0) {
+        ev.preventDefault();
+        const yeniMesafe = parmakMesafesi();
+        zoomUygula(pinchBaslangicOlcek * (yeniMesafe / pinchBaslangicMesafe));
+      }
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach((olayAdi) => {
+      tuvalSarici.addEventListener(olayAdi, (ev) => {
+        aktifParmaklar.delete(ev.pointerId);
+        if (aktifParmaklar.size < 2) pinchBaslangicMesafe = 0;
+      });
+    });
 
     // Ekran (px) koordinatını SVG kullanıcı birimine (mm) çevirir — Pointer Events için gerekli.
     // ctmInverse verilirse (sürükleme sırasında) getScreenCTM() TEKRAR ÇAĞRILMAZ —
@@ -449,7 +515,7 @@
 
     svg.addEventListener('pointerdown', (ev) => {
       // Boş alana tıklandıysa seçimi kaldır
-      if (ev.target === svg) { seciliId = null; cizPanel(); cizSadeceTuval(); }
+      if (ev.target === svg || ev.target.classList.contains('osTuvalArkaplan')) { seciliId = null; cizPanel(); cizSadeceTuval(); }
     });
 
     // ---- Çizim ----
@@ -461,7 +527,7 @@
 
       // Sayfa sınırı
       svg.appendChild(svgOlustur('rect', {
-        x: 0, y: 0, width: sablon.sayfaBoyutu.width, height: sablon.sayfaBoyutu.height,
+        class: 'osTuvalArkaplan', x: 0, y: 0, width: sablon.sayfaBoyutu.width, height: sablon.sayfaBoyutu.height,
         fill: '#fff', stroke: '#999', 'stroke-width': 0.3,
       }));
 
@@ -554,20 +620,36 @@
           { class: 'osOge__cerceve', x: hesap.x - 1, y: hesap.y - 1, width: genislik + 2, height: hesap.height + 2 },
           secili ? CERCEVE_SECILI : CERCEVE_SOLUK
         )));
+        // Başlık ("NUMARA" / "K") — gerçek PDF'te pdfFormGenerator.js:
+        // numaraAlaniCiz/kitapcikAlaniCiz tarafından basılıyor, önizlemede de
+        // aynı konumda göster (Sedat geri bildirimi: "Başlığı yok").
+        const baslikText = svgOlustur('text', {
+          x: hesap.x + genislik / 2, y: hesap.y + hesap.baslikYukseklik * 0.85,
+          'font-size': 2.6, 'text-anchor': 'middle', fill: '#b3184a', 'font-weight': 'bold',
+        });
+        baslikText.textContent = og.tip === 'numaraAlani' ? 'NUMARA' : 'K';
+        g.appendChild(baslikText);
+
+        // Baloncuk içi rakam/harf etiketleri — gerçek PDF'te her baloncuğun
+        // içinde basılı duruyor (kucukBaloncukCiz), önizlemede de aynı
+        // (Sedat geri bildirimi: "baloncuklarda rakamlar/harfler yok").
+        function etiketliBaloncuk(cx, cy, r, etiket) {
+          g.appendChild(svgOlustur('circle', { cx, cy, r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25 }));
+          const t = svgOlustur('text', { x: cx, y: cy + r * 0.35, 'font-size': r * 0.9, 'text-anchor': 'middle', fill: '#b3184a' });
+          t.textContent = String(etiket);
+          g.appendChild(t);
+        }
+
         if (og.tip === 'numaraAlani') {
           // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026):
           // numaraAlaniHesapla 'sorular/sikler' DEĞİL, 'basamaklar[].bubbles[]'
           // döndürüyor — yanlış alan adı yüzünden baloncuklar hiç çizilmiyordu.
           (hesap.basamaklar || []).forEach((basamak) => {
-            (basamak.bubbles || []).forEach((b) => {
-              g.appendChild(svgOlustur('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25 }));
-            });
+            (basamak.bubbles || []).forEach((b) => etiketliBaloncuk(b.cx, b.cy, b.r, b.deger));
           });
         } else {
           // kitapcikAlaniHesapla 'secenekler' (düz dizi) döndürüyor.
-          (hesap.secenekler || []).forEach((sik) => {
-            g.appendChild(svgOlustur('circle', { cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25 }));
-          });
+          (hesap.secenekler || []).forEach((sik) => etiketliBaloncuk(sik.cx, sik.cy, sik.r, sik.harf));
         }
       } else if (og.tip === 'baslik' || og.tip === 'logo') {
         g.appendChild(svgOlustur('rect', Object.assign(
