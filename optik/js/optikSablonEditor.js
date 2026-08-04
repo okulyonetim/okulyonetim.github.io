@@ -125,18 +125,22 @@
         .osEditor__arac { display:flex; flex-wrap:wrap; gap:6px; padding:8px; background:#f3f3f5; border-bottom:1px solid #ddd; }
         .osEditor__arac button { min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; }
         .osEditor__arac button:active { background:#e8e8ea; }
-        .osEditor__govde { display:flex; flex:1; min-height:0; }
-        .osEditor__tuvalSarici { flex:1; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y; }
+        .osEditor__arac button.osEditor__tamEkranBtn { margin-left:auto; background:#0a7cff; color:#fff; border-color:#0a7cff; }
+        .osEditor__govde { display:flex; flex-direction:column; flex:1; min-height:0; }
+        .osEditor__tuvalSarici { flex:1; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y; }
         .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); touch-action:none; }
-        .osEditor__panel { width:260px; max-width:42vw; background:#fafafa; border-left:1px solid #ddd; overflow-y:auto; padding:10px; font-size:13px; }
-        .osEditor__panel h4 { margin:0 0 8px; font-size:13px; color:#555; }
-        .osEditor__alan { margin-bottom:8px; }
+        .osEditor__panel { background:#fafafa; border-bottom:1px solid #ddd; overflow-y:auto; max-height:38vh; padding:10px; font-size:13px; display:none; }
+        .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
+        .osEditor__panel h4 { margin:0 0 4px; font-size:13px; color:#555; width:100%; }
+        .osEditor__alan { margin-bottom:8px; width:140px; }
         .osEditor__alan label { display:block; font-size:11px; color:#777; margin-bottom:2px; }
         .osEditor__alan input, .osEditor__alan select { width:100%; box-sizing:border-box; min-height:36px; padding:4px 6px; border:1px solid #ccc; border-radius:6px; font-size:13px; }
-        .osEditor__silBtn { width:100%; min-height:40px; margin-top:10px; background:#fde8e8; border:1px solid #f0b8b8; color:#a33; border-radius:8px; }
+        .osEditor__silBtn { min-height:40px; padding:0 14px; margin-top:2px; background:#fde8e8; border:1px solid #f0b8b8; color:#a33; border-radius:8px; align-self:flex-end; }
         .osOge { cursor:grab; }
         .osOge--secili rect.osOge__cerceve { stroke:#0a7cff; stroke-width:0.6; }
         .osOge__tutamac { fill:#0a7cff; cursor:nwse-resize; touch-action:none; }
+        .osEditor--tamEkran .osEditor__panel { display:none !important; }
+        .osEditor--tamEkran .osEditor__arac > button:not(.osEditor__tamEkranBtn) { display:none; }
       </style>
       <div class="osEditor__arac"></div>
       <div class="osEditor__govde">
@@ -195,6 +199,15 @@
         await kaydetCallback(derinKopya(sablon));
       });
     }
+    const tamEkranBtn = document.createElement('button');
+    tamEkranBtn.className = 'osEditor__tamEkranBtn';
+    tamEkranBtn.textContent = '⛶ Tam Ekran';
+    tamEkranBtn.addEventListener('click', () => {
+      const tamEkranMi = kok.classList.toggle('osEditor--tamEkran');
+      tamEkranBtn.textContent = tamEkranMi ? '✕ Küçült' : '⛶ Tam Ekran';
+      requestAnimationFrame(viewBoxAyarla);
+    });
+    aracCubugu.appendChild(tamEkranBtn);
 
     function gecmiseKaydet() {
       gecmis.push(derinKopya(sablon));
@@ -223,55 +236,82 @@
     }
 
     // ---- Sürükleme durumu ----
-    let surukleme = null; // {ogeId, tip:'tasi'|'boyutlandir', baslangicX, baslangicY, ogeBaslangic}
+    let surukleme = null; // {ogeId, tip:'tasi'|'boyutlandir', baslangicMM, ogeBaslangic, gEl}
+    const GRID_MM = 1; // ızgaraya yapışma adımı — hizalamayı kolaylaştırır, çakışmayı azaltır
 
-    function pointerDownOge(ev, og) {
+    function grideYapistir(deger) { return Math.round(deger / GRID_MM) * GRID_MM; }
+
+    function pointerDownOge(ev, og, gEl) {
       ev.stopPropagation();
       seciliId = og.id;
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY);
-      surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og) };
+      surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0 };
       ev.target.setPointerCapture(ev.pointerId);
       gecmiseKaydet();
       cizPanel();
     }
 
-    function pointerDownTutamac(ev, og) {
+    function pointerDownTutamac(ev, og, gEl) {
       ev.stopPropagation();
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY);
-      surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og) };
+      surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl };
       ev.target.setPointerCapture(ev.pointerId);
       gecmiseKaydet();
     }
 
+    let cizmeZamanlandiMi = false;
+
     svg.addEventListener('pointermove', (ev) => {
       if (!surukleme) return;
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY);
-      const dx = nokta.x - surukleme.baslangicMM.x;
-      const dy = nokta.y - surukleme.baslangicMM.y;
-      const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
-      if (!og) return;
-      const baz = surukleme.ogeBaslangic;
+      const dx = grideYapistir(nokta.x - surukleme.baslangicMM.x);
+      const dy = grideYapistir(nokta.y - surukleme.baslangicMM.y);
 
       if (surukleme.tip === 'tasi') {
-        if (og.tip === 'cizgi') {
-          og.x1 = baz.x1 + dx; og.y1 = baz.y1 + dy;
-          og.x2 = baz.x2 + dx; og.y2 = baz.y2 + dy;
-        } else {
-          og.x = Math.max(0, baz.x + dx);
-          og.y = Math.max(0, baz.y + dy);
-        }
+        // PERFORMANS (Sedat geri bildirimi, Ağustos 2026): önceden her
+        // pointermove'da TÜM tuval (yüzlerce baloncuk dahil) yeniden
+        // hesaplanıp yeniden çiziliyordu — bu yüzden sürükleme çok
+        // takılıyordu. Artık sürükleme SIRASINDA sadece ucuz bir SVG
+        // transform (translate) uygulanıyor; gerçek koordinat/baloncuk
+        // yeniden hesaplaması SADECE parmak/mouse bırakıldığında bir kez
+        // yapılıyor (bkz. suruklemeBitir).
+        surukleme.dx = dx; surukleme.dy = dy;
+        if (surukleme.gEl) surukleme.gEl.setAttribute('transform', `translate(${dx},${dy})`);
       } else if (surukleme.tip === 'boyutlandir') {
-        if (og.tip === 'baloncukBlok') {
-          og.genislik = Math.max(15, baz.genislik + dx);
-        } else if (og.genislik != null) {
-          og.genislik = Math.max(8, baz.genislik + dx);
+        // Boyutlandırma zaten baloncuk sayısı kadar maliyetli değil
+        // (tek satır genişlik değişimi), ama yine de kare-başına bir kez
+        // çalışsın diye requestAnimationFrame ile sınırlıyoruz.
+        const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
+        if (!og) return;
+        const baz = surukleme.ogeBaslangic;
+        if (og.tip === 'baloncukBlok' || og.genislik != null) {
+          og.genislik = Math.max(og.tip === 'baloncukBlok' ? 15 : 8, baz.genislik + dx);
           if (og.yukseklik != null) og.yukseklik = Math.max(5, baz.yukseklik + dy);
         }
+        if (!cizmeZamanlandiMi) {
+          cizmeZamanlandiMi = true;
+          requestAnimationFrame(() => { cizmeZamanlandiMi = false; cizSadeceTuval(); });
+        }
       }
-      cizSadeceTuval();
     });
 
-    function suruklemeBitir() { surukleme = null; }
+    function suruklemeBitir() {
+      if (surukleme && surukleme.tip === 'tasi') {
+        const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
+        const baz = surukleme.ogeBaslangic;
+        if (og) {
+          if (og.tip === 'cizgi') {
+            og.x1 = grideYapistir(baz.x1 + surukleme.dx); og.y1 = grideYapistir(baz.y1 + surukleme.dy);
+            og.x2 = grideYapistir(baz.x2 + surukleme.dx); og.y2 = grideYapistir(baz.y2 + surukleme.dy);
+          } else {
+            og.x = Math.max(0, grideYapistir(baz.x + surukleme.dx));
+            og.y = Math.max(0, grideYapistir(baz.y + surukleme.dy));
+          }
+        }
+        cizSadeceTuval();
+      }
+      surukleme = null;
+    }
     svg.addEventListener('pointerup', suruklemeBitir);
     svg.addEventListener('pointercancel', suruklemeBitir);
 
@@ -297,7 +337,12 @@
     function ogeCiz(og) {
       const secili = og.id === seciliId;
       const g = svgOlustur('g', { class: 'osOge' + (secili ? ' osOge--secili' : '') });
-      g.addEventListener('pointerdown', (ev) => pointerDownOge(ev, og));
+      g.addEventListener('pointerdown', (ev) => pointerDownOge(ev, og, g));
+      // Her öğede HER ZAMAN görünen hafif bir çerçeve (Sedat geri bildirimi:
+      // "köşe tutucular görünsün ki çakışma olmasın") — sadece seçiliyken
+      // değil, tüm öğeler için, çakışmaları tuvalde görmek kolaylaşsın diye.
+      const CERCEVE_SOLUK = { stroke: '#9aa0a6', 'stroke-width': 0.25, 'stroke-dasharray': '1,0.6', fill: 'transparent' };
+      const CERCEVE_SECILI = { stroke: '#0a7cff', 'stroke-width': 0.5, fill: 'rgba(10,124,255,0.06)' };
 
       if (og.tip === 'baloncukBlok') {
         const sutunlar = baloncukBlokOnizlemeHesapla(og);
@@ -318,38 +363,37 @@
           t.textContent = sutun.dersAdi;
           g.appendChild(t);
         });
-        // Görünmez, geniş seçim/sürükleme çerçevesi (küçük baloncuklara tam isabet zorunluluğunu kaldırır)
-        const cerceve = svgOlustur('rect', {
-          class: 'osOge__cerceve', x: minX - 1, y: minY - 1, width: (maxX - minX) + 2, height: (maxY - minY) + 2,
-          fill: secili ? 'rgba(10,124,255,0.06)' : 'transparent', stroke: secili ? '#0a7cff' : 'transparent', 'stroke-width': 0.5,
-        });
+        const cerceve = svgOlustur('rect', Object.assign(
+          { class: 'osOge__cerceve', x: minX - 1, y: minY - 1, width: (maxX - minX) + 2, height: (maxY - minY) + 2 },
+          secili ? CERCEVE_SECILI : CERCEVE_SOLUK
+        ));
         g.insertBefore(cerceve, g.firstChild);
         if (secili) {
           const tutamac = svgOlustur('circle', { class: 'osOge__tutamac', cx: maxX, cy: maxY, r: 1.6 });
-          tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og));
+          tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og, g));
           g.appendChild(tutamac);
         }
       } else if (og.tip === 'kimlikAlani') {
-        g.appendChild(svgOlustur('rect', {
-          class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik,
-          fill: secili ? 'rgba(10,124,255,0.08)' : 'rgba(0,0,0,0.03)', stroke: '#b3184a', 'stroke-width': 0.3,
-        }));
+        g.appendChild(svgOlustur('rect', Object.assign(
+          { class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik },
+          secili ? CERCEVE_SECILI : Object.assign({}, CERCEVE_SOLUK, { stroke: '#b3184a' })
+        )));
         const t = svgOlustur('text', { x: og.x + 2, y: og.y + 5, 'font-size': 3 });
         t.textContent = og.baslik || 'Kimlik Alanı';
         g.appendChild(t);
         if (secili) {
           const tutamac = svgOlustur('circle', { class: 'osOge__tutamac', cx: og.x + og.genislik, cy: og.y + og.yukseklik, r: 1.6 });
-          tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og));
+          tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og, g));
           g.appendChild(tutamac);
         }
       } else if (og.tip === 'numaraAlani' || og.tip === 'kitapcikAlani') {
         const hesap = og.tip === 'numaraAlani'
           ? LE.numaraAlaniHesapla(og.x, og.y, og.basamakSayisi || 4, og.olcek || 1, og.yon || 'dikey')
           : LE.kitapcikAlaniHesapla(og.x, og.y, og.secenekSayisi || 4, og.olcek || 1);
-        g.appendChild(svgOlustur('rect', {
-          class: 'osOge__cerceve', x: hesap.x - 1, y: hesap.y - 1, width: hesap.width + 2, height: hesap.height + 2,
-          fill: secili ? 'rgba(10,124,255,0.06)' : 'transparent', stroke: secili ? '#0a7cff' : 'transparent', 'stroke-width': 0.4,
-        }));
+        g.appendChild(svgOlustur('rect', Object.assign(
+          { class: 'osOge__cerceve', x: hesap.x - 1, y: hesap.y - 1, width: hesap.width + 2, height: hesap.height + 2 },
+          secili ? CERCEVE_SECILI : CERCEVE_SOLUK
+        )));
         (hesap.sorular || []).forEach((soru) => {
           (soru.sikler || []).forEach((sik) => {
             g.appendChild(svgOlustur('circle', {
@@ -358,10 +402,10 @@
           });
         });
       } else if (og.tip === 'baslik' || og.tip === 'logo') {
-        g.appendChild(svgOlustur('rect', {
-          class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik,
-          fill: secili ? 'rgba(10,124,255,0.08)' : 'rgba(0,0,0,0.03)', stroke: '#888', 'stroke-width': 0.3, 'stroke-dasharray': og.tip === 'logo' ? '1,1' : 'none',
-        }));
+        g.appendChild(svgOlustur('rect', Object.assign(
+          { class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik, 'stroke-dasharray': og.tip === 'logo' ? '1,1' : (secili ? 'none' : '1,0.6') },
+          secili ? CERCEVE_SECILI : Object.assign({}, CERCEVE_SOLUK, { stroke: '#888' })
+        )));
         if (og.metin) {
           const t = svgOlustur('text', { x: og.x + og.genislik / 2, y: og.y + og.yukseklik / 2 + 1, 'font-size': 3.5, 'text-anchor': 'middle' });
           t.textContent = og.metin;
@@ -369,17 +413,18 @@
         }
         if (secili) {
           const tutamac = svgOlustur('circle', { class: 'osOge__tutamac', cx: og.x + og.genislik, cy: og.y + og.yukseklik, r: 1.6 });
-          tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og));
+          tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og, g));
           g.appendChild(tutamac);
         }
       } else if (og.tip === 'metin') {
         const t = svgOlustur('text', { x: og.x, y: og.y, 'font-size': (og.fontPt || 10) / 2.5 });
         t.textContent = og.metin || '';
         g.appendChild(t);
-        // Görünmez tıklama alanı (kısa metinler için de kolay seçim)
-        g.insertBefore(svgOlustur('rect', {
-          x: og.x - 1, y: og.y - 5, width: Math.max(20, (og.metin || '').length * 2), height: 6, fill: 'transparent',
-        }), g.firstChild);
+        // Görünmez/hafif çerçeveli tıklama alanı (kısa metinler için de kolay seçim)
+        g.insertBefore(svgOlustur('rect', Object.assign(
+          { x: og.x - 1, y: og.y - 5, width: Math.max(20, (og.metin || '').length * 2), height: 6 },
+          secili ? CERCEVE_SECILI : { fill: 'transparent', stroke: 'none' }
+        )), g.firstChild);
       } else if (og.tip === 'cizgi') {
         g.appendChild(svgOlustur('line', {
           x1: og.x1, y1: og.y1, x2: og.x2, y2: og.y2, stroke: secili ? '#0a7cff' : '#555', 'stroke-width': secili ? 0.6 : 0.3,
@@ -390,7 +435,7 @@
     }
 
     // ---- Özellik paneli ----
-    function alanEkle(og, etiket, alanAdi, tip, ekOzellik) {
+    function alanEkle(og, etiket, alanAdi, tip, ekOzellik, hedefKapsayici) {
       const div = document.createElement('div');
       div.className = 'osEditor__alan';
       const label = document.createElement('label');
@@ -413,17 +458,18 @@
         cizSadeceTuval();
       });
       div.appendChild(input);
-      panel.appendChild(div);
+      (hedefKapsayici || panel).appendChild(div);
     }
 
     function cizPanel() {
       panel.innerHTML = '';
       if (!seciliId) {
-        panel.innerHTML = '<h4>Bir öğe seç veya yukarıdan yeni öğe ekle.</h4>';
+        panel.classList.remove('osEditor__panel--gorunur');
         return;
       }
+      panel.classList.add('osEditor__panel--gorunur');
       const og = sablon.ogeler.find((o) => o.id === seciliId);
-      if (!og) { seciliId = null; panel.innerHTML = ''; return; }
+      if (!og) { seciliId = null; panel.classList.remove('osEditor__panel--gorunur'); return; }
 
       const baslik = document.createElement('h4');
       baslik.textContent = OGE_ETIKETLERI[og.tip] || og.tip;
