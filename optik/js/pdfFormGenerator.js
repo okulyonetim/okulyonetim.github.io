@@ -222,15 +222,28 @@ function formKoduAlaniCiz(doc, formKoduAlani, sinavTuru) {
 
 /** Ortak header'ı (Ad Soyad / Öğrenci No / Sınıf / Kitapçık Türü / Sınav Adı) çizer. */
 async function headerCiz(doc, form, ogrenci, sinavTuru) {
-  const b = form.baslikAlani;
-  cerceveCiz(doc, b.x, b.y, b.width, b.height, ANA_RENK, 0.5);
-  doc.setFont('Roboto', 'bold');
-  const baslikPt = Math.max(6, b.height * 1.05);
-  doc.setFontSize(baslikPt);
-  doc.setTextColor(...ANA_RENK);
-  doc.text(form.baslikMetni || 'CEVAP KAĞIDI', b.x + b.width / 2, baselineUst(b.y, b.height, baslikPt, b.height * 0.14), { align: 'center' });
+  // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026 —
+  // "Cannot read properties of undefined (reading 'x')"): baslikAlani ve
+  // adSoyadAlani/bilgiSatiri SADECE LGS/Bursluluk/Sabit-Özel şablonlarında
+  // (standartHeaderOlustur ile) var. Optik Form Editörü ile tasarlanmış
+  // özel şablonlarda kullanıcı kendi kimlik/başlık öğelerini SERBEST
+  // öğeler olarak yerleştiriyor (bkz. serbestOgeleriCiz) — bu yüzden bu
+  // alanlar o şablonlarda YOK ve koşulsuz okuma çöküyordu. Artık diğer
+  // alanlar (kitapcikAlani, numaraAlani, formKoduAlani) gibi hepsi
+  // var-mı-kontrollü.
+  if (form.baslikAlani) {
+    const b = form.baslikAlani;
+    cerceveCiz(doc, b.x, b.y, b.width, b.height, ANA_RENK, 0.5);
+    doc.setFont('Roboto', 'bold');
+    const baslikPt = Math.max(6, b.height * 1.05);
+    doc.setFontSize(baslikPt);
+    doc.setTextColor(...ANA_RENK);
+    doc.text(form.baslikMetni || 'CEVAP KAĞIDI', b.x + b.width / 2, baselineUst(b.y, b.height, baslikPt, b.height * 0.14), { align: 'center' });
+  }
 
-  etiketDegerKutusu(doc, form.adSoyadAlani, 'AD SOYAD', ogrenci.adSoyad || '');
+  if (form.adSoyadAlani) {
+    etiketDegerKutusu(doc, form.adSoyadAlani, 'AD SOYAD', ogrenci.adSoyad || '');
+  }
 
   if (form.bilgiSatiri) {
     etiketDegerKutusu(doc, form.bilgiSatiri.ogrenciNoAlani, 'ÖĞRENCİ NO', ogrenci.ogrenciNo || '');

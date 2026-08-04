@@ -88,7 +88,7 @@
           x: og.x + s * (og.genislik + sutunlarArasiBosluk),
           y: og.y + (kaymalar[s] || 0),
           width: og.genislik,
-          dersAdi: sutunSayisi > 1 ? `${og.dersAdi} ${s + 1}` : og.dersAdi,
+          dersAdi: og.dersAdi, // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
           soruSayisi: buSutundakiSoruSayisi,
           sikSayisi: og.sikSayisi,
           baloncukCap: og.baloncukCap,
@@ -139,12 +139,12 @@
     kok.innerHTML = `
       <style>
         .osEditor { display:flex; flex-direction:column; height:100%; font-family:inherit; }
-        .osEditor__arac { display:flex; flex-wrap:wrap; gap:6px; padding:8px; background:#f3f3f5; border-bottom:1px solid #ddd; }
+        .osEditor__arac { display:flex; flex-wrap:wrap; gap:6px; padding:8px; background:#f3f3f5; border-bottom:1px solid #ddd; max-height:34vh; overflow-y:auto; }
         .osEditor__arac button { min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; }
         .osEditor__arac button:active { background:#e8e8ea; }
         .osEditor__arac button.osEditor__tamEkranBtn { margin-left:auto; background:#0a7cff; color:#fff; border-color:#0a7cff; }
         .osEditor__govde { display:flex; flex-direction:column; flex:1; min-height:0; }
-        .osEditor__tuvalSarici { flex:1; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
+        .osEditor__tuvalSarici { flex:1; min-height:50vh; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
         .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); }
         .osEditor__panel { background:#fafafa; border-bottom:1px solid #ddd; overflow-y:auto; max-height:38vh; padding:10px; font-size:13px; display:none; }
         .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
@@ -772,8 +772,15 @@
       } else if (og.tip === 'numaraAlani') {
         alanEkle(og, 'Basamak Sayısı', 'basamakSayisi', 'number');
         alanEkle(og, 'Yön', 'yon', 'select', { opsiyonlar: ['dikey', 'yatay'] });
+        // YENİ (Sedat geri bildirimi: "baloncukları diğerleri gibi
+        // ayarlanmıyor aralıkları ve boyutları değişmiyor") — bu alan hiç
+        // yoktu. NOT: numaraAlaniHesapla boyut ve aralığı TEK bir "ölçek"
+        // çarpanıyla birlikte büyütüp küçültüyor (baloncukBlok'taki gibi
+        // ayrı ayrı değil) — bu, layoutEngine.js'in kendi tasarımı.
+        alanEkle(og, 'Ölçek (boyut + aralık)', 'olcek', 'number', { step: 0.1 });
       } else if (og.tip === 'kitapcikAlani') {
         alanEkle(og, 'Seçenek Sayısı', 'secenekSayisi', 'number');
+        alanEkle(og, 'Ölçek (boyut + aralık)', 'olcek', 'number', { step: 0.1 });
       } else if (og.tip === 'baslik' || og.tip === 'metin') {
         alanEkle(og, 'Metin', 'metin', 'text');
         if (og.tip === 'baslik') {

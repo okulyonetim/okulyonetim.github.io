@@ -132,7 +132,7 @@
         x: sutunX,
         y: sutunY,
         width: og.genislik,
-        dersAdi: sutunSayisi > 1 ? `${og.dersAdi} ${s + 1}` : og.dersAdi,
+        dersAdi: og.dersAdi, // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
         soruSayisi: buSutundakiSoruSayisi,
         sikSayisi: og.sikSayisi,
         baloncukCap: og.baloncukCap,
