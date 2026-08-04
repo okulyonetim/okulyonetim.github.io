@@ -125,7 +125,7 @@ window.OmrOkuyucu = (function () {
   let _sonHKatsayilari = null;
   let _sonKoyulukOzeti = null;
   let _sonNumaraTeshis = null;
-  let _sonRadyalProfil = null; // YENİ (teşhis): bkz. radyalKoyulukProfili
+  let _radyalProfilSatirlari = []; // YENİ (teşhis): bkz. radyalKoyulukProfili — her formuOku çağrısında sıfırlanır
 
   // ---------------------------------------------------------------------
   // 1) Genel yardımcılar: görüntü <-> ImageData
@@ -1886,7 +1886,7 @@ window.OmrOkuyucu = (function () {
       // her zaman seç. Eşik kontrolü (KARANLIK_ESIK) atlanır çünkü
       // dijital PDF'den üretilen formlarda baskı/tarama farkından dolayı
       // güven değerleri düşük kalabilir; ama yine de en koyu = işaretli.
-      const sonuc = _basamakEnKoyusu(cImageData, basamak.bubbles, ppmm);
+      const sonuc = _basamakEnKoyusu(cImageData, basamak.bubbles, ppmm, basamak.index);
       // YENİ (teşhis): her hane için en koyu 2 adayı ve aralarındaki farkı
       // kaydet — "hangi hane neden belirsiz kaldı" artık görünür.
       basamakTeshis.push(
@@ -1930,9 +1930,9 @@ window.OmrOkuyucu = (function () {
    * satıra kilitliyor, (b) çok daha dar bir pencere (aramaOrani=0.5)
    * kullanıyor. Aynı güvenli deseni burada da uyguluyoruz.
    */
-  let _profilKaydedildiMi = false; // YENİ (teşhis): her formuOku çağrısında bir kez sıfırlanır
+  // (bkz. dosya başındaki _radyalProfilSatirlari tanımı — burada yeniden bildirilmiyor)
 
-  function _basamakEnKoyusu(cImageData, bubbles, ppmm) {
+  function _basamakEnKoyusu(cImageData, bubbles, ppmm, haneIndex) {
     // YENİ: 0.04 -> 0.02 -> artık sabit değil, Ayarlar sheet'inden canlı
     // okunur (bkz. _numaraMinFarkGetir). Marjinal kontrastlı fotoğraflarda
     // (bkz. Koyuluk özeti) doğru basamak ile ikincisi arasındaki fark küçük
@@ -1971,16 +1971,17 @@ window.OmrOkuyucu = (function () {
     });
     sonuclar.sort(function(a, b) { return b.oran - a.oran; });
 
-    // YENİ (teşhis): SADECE bu okumadaki İLK basamak grubu için, en koyu
-    // adayın GERÇEK yarıçap-koyuluk profilini kaydet — "harf etkisi tam
-    // nerede bitiyor" sorusuna gerçek veriyle cevap vermek için.
-    if (!_profilKaydedildiMi && sonuclar.length) {
-      _profilKaydedildiMi = true;
+    // YENİ (teşhis): HER hane için, en koyu adayın GERÇEK yarıçap-koyuluk
+    // profilini kaydet — "harf etkisi tam nerede bitiyor, işaretli/işaretsiz
+    // arada nasıl farklılaşıyor" sorusuna tek bir taramada, tüm hanelerden
+    // gerçek veriyle cevap vermek için.
+    if (sonuclar.length) {
       const enKoyuAday = sonuclar[0];
-      _sonRadyalProfil =
-        'aday=' + enKoyuAday.deger + ' oran=' + enKoyuAday.oran.toFixed(3) +
-        ' | dilimler(0.0r->1.0r, 10 dilim): ' +
-        radyalKoyulukProfili(cImageData, enKoyuAday.cx, enKoyuAday.cy, enKoyuAday.r);
+      _radyalProfilSatirlari.push(
+        'hane' + haneIndex + ' aday=' + enKoyuAday.deger + ' oran=' + enKoyuAday.oran.toFixed(3) +
+        ' dilimler(0->1.0r,10): ' +
+        radyalKoyulukProfili(cImageData, enKoyuAday.cx, enKoyuAday.cy, enKoyuAday.r)
+      );
     }
 
     const birinci = sonuclar[0];
@@ -2273,8 +2274,7 @@ window.OmrOkuyucu = (function () {
   async function formuOku(kaynak, form, secenekler = {}) {
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = [];
-    _profilKaydedildiMi = false; // YENİ (teşhis): her okumada bir kez profil kaydet
-    _sonRadyalProfil = null;
+    _radyalProfilSatirlari = []; // YENİ (teşhis): her okumada sıfırlanır, her hane için bir satır
 
     // YENİ (kritik): cv.js henüz yüklenme sürecindeyse BEKLE, sessizce eski
     // yönteme kayma. Önceden burada bir bekleme yoktu — aynı fotoğraf,
@@ -2379,7 +2379,7 @@ window.OmrOkuyucu = (function () {
     }
     uyarilar.push('[KOD SÜRÜMÜ: v19-numaraTeshis]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
-    if (_sonRadyalProfil) { uyarilar.push('Radyal koyuluk profili: ' + _sonRadyalProfil); }
+    if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
     return {
       basarili: true,
@@ -2511,7 +2511,7 @@ window.OmrOkuyucu = (function () {
     }
     uyarilar.push("[KOD SÜRÜMÜ: v19-numaraTeshis]");
     if (_sonNumaraTeshis) { uyarilar.push("Numara teşhisi: " + _sonNumaraTeshis); }
-    if (_sonRadyalProfil) { uyarilar.push("Radyal koyuluk profili: " + _sonRadyalProfil); }
+    if (_radyalProfilSatirlari.length) { uyarilar.push("Radyal koyuluk profili:\n" + _radyalProfilSatirlari.join("\n")); }
 
     return {
       basarili: true,
@@ -2573,8 +2573,7 @@ window.OmrOkuyucu = (function () {
 
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = ['Köşeler elle seçildi (otomatik hizalama tespiti atlandı).'];
-    _profilKaydedildiMi = false; // YENİ (teşhis): her okumada bir kez profil kaydet
-    _sonRadyalProfil = null;
+    _radyalProfilSatirlari = []; // YENİ (teşhis): her okumada sıfırlanır, her hane için bir satır
 
 
     const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
