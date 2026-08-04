@@ -144,7 +144,7 @@
         .osEditor__arac button.osEditor__tamEkranBtn { margin-left:auto; background:#0a7cff; color:#fff; border-color:#0a7cff; }
         .osEditor__govde { display:flex; flex-direction:column; flex:1; min-height:0; }
         .osEditor__tuvalSarici { flex:1; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y; }
-        .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); touch-action:none; }
+        .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); }
         .osEditor__panel { background:#fafafa; border-bottom:1px solid #ddd; overflow-y:auto; max-height:38vh; padding:10px; font-size:13px; display:none; }
         .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
         .osEditor__panel h4 { margin:0 0 4px; font-size:13px; color:#555; width:100%; }
@@ -152,7 +152,7 @@
         .osEditor__alan label { display:block; font-size:11px; color:#777; margin-bottom:2px; }
         .osEditor__alan input, .osEditor__alan select { width:100%; box-sizing:border-box; min-height:36px; padding:4px 6px; border:1px solid #ccc; border-radius:6px; font-size:13px; }
         .osEditor__silBtn { min-height:40px; padding:0 14px; margin-top:2px; background:#fde8e8; border:1px solid #f0b8b8; color:#a33; border-radius:8px; align-self:flex-end; }
-        .osOge { cursor:grab; }
+        .osOge { cursor:grab; touch-action:none; }
         .osOge--secili rect.osOge__cerceve { stroke:#0a7cff; stroke-width:0.6; }
         .osOge__tutamac { fill:#0a7cff; cursor:nwse-resize; touch-action:none; }
         .osEditor--tamEkran .osEditor__panel { display:none !important; }
