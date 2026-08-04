@@ -1507,28 +1507,27 @@ window.OmrOkuyucu = (function () {
 
   function baloncukKaranlikOrani(cImageData, cx, cy, r) {
     const { width, height, data } = cImageData;
-    const x0 = Math.max(0, Math.floor(cx - r));
-    const x1 = Math.min(width - 1, Math.ceil(cx + r));
-    const y0 = Math.max(0, Math.floor(cy - r));
-    const y1 = Math.min(height - 1, Math.ceil(cy + r));
+
+    // KÖK NEDEN DÜZELTMESİ v2 (gerçek radyal koyuluk profili ölçümüyle
+    // doğrulandı — bkz. radyalKoyulukProfili teşhis çıktısı, Ağustos 2026):
+    // önceki deneme (icYaricap=0.72r, merkezden 0.42r'ye kadar KESEREK
+    // dışarıda halka örnekleme) YANLIŞ bölgeyi hedefliyordu. Gerçek ölçüm
+    // gösterdi ki: basılı harfin/rakamın mürekkebi TAM ORTADA değil,
+    // 0.4r-0.7r aralığında bir halka oluşturuyor (harfin kendi gövde/kavis
+    // şekli yüzünden) — tam da eski kodun örneklediği bölge. Buna karşılık
+    // baloncuğun EN MERKEZİ (0-0.35r) harften bağımsız olarak HER ZAMAN
+    // tertemiz kalıyor (ölçülen: işaretsiz baloncuklarda 0.01-0.05), çünkü
+    // hiçbir harf glifi tam merkeze mürekkep bırakmıyor — ama öğrenci
+    // baloncuğu doldurduğunda bu merkez de İSTİSNASIZ tam doygun oluyor
+    // (ölçülen: işaretli baloncuklarda 1.000). Yani en güvenilir ayırt
+    // edici sinyal EN KÜÇÜK merkez disktir, halka değil.
+    const icYaricap = r * 0.35;
+
+    const x0 = Math.max(0, Math.floor(cx - icYaricap));
+    const x1 = Math.min(width - 1, Math.ceil(cx + icYaricap));
+    const y0 = Math.max(0, Math.floor(cy - icYaricap));
+    const y1 = Math.min(height - 1, Math.ceil(cy + icYaricap));
     if (x1 <= x0 || y1 <= y0) return 0;
-
-    // baloncuğun kendi çizgi çemberini (kenar) dahil etmemek için biraz
-    // daha küçük bir yarıçapla örnekliyoruz — sadece iç dolgu ölçülsün.
-    const icYaricap = r * 0.72;
-
-    // KÖK NEDEN DÜZELTMESİ (bkz. pdfFormGenerator.js: baloncukCiz notu):
-    // baloncuğun TAM MERKEZİNDE basılı A/B/C/D harfi/rakamı var. Bundan
-    // sonra basılacak formlarda bu harf artık ANA_RENK (bordo) ile
-    // basılıyor ve renksizlikCarpani onu eliyor — ama HÂLİHAZIRDA basılmış
-    // kağıtlarda (bu düzeltmeden önce basılanlar) harf hâlâ fiziksel
-    // olarak siyaha yakın mürekkeple kağıtta duruyor, yazılım bunu
-    // değiştiremez. O yüzden merkezdeki küçük diski (harfin oturduğu alan)
-    // örneklemeden TAMAMEN çıkarıyoruz — sadece harfin ÇEVRESİNDEKİ halkayı
-    // ölçüyoruz. İşaretlenmiş bir baloncukta öğrenci mürekkebi/kalemi bu
-    // halkayı da kaplar (dolgu tüm daireyi kaplar), boş bir baloncukta bu
-    // halka bomboş kağıttır — harften bağımsız, temiz bir ayrım sağlar.
-    const merkezDiskYaricap = r * 0.42;
 
     let toplam = 0;
     let sayac = 0;
@@ -1536,8 +1535,7 @@ window.OmrOkuyucu = (function () {
       for (let x = x0; x <= x1; x++) {
         const dx = x - cx;
         const dy = y - cy;
-        const d2 = dx * dx + dy * dy;
-        if (d2 <= icYaricap * icYaricap && d2 >= merkezDiskYaricap * merkezDiskYaricap) {
+        if (dx * dx + dy * dy <= icYaricap * icYaricap) {
           toplam += isaretKoyulukPuani(data, (y * width + x) * 4);
           sayac++;
         }
