@@ -17,6 +17,7 @@
 <script src="js/opencv.js"></script>
 <script src="js/layoutEngine.js"></script>
 <script src="js/optikSablonMotoru.js"></script>
+<script src="js/optikSablonEditor.js"></script>
 <script src="js/omrEngine.js"></script>
 <script src="js/cevapAnahtari.js"></script>
 <script type="module">
@@ -147,6 +148,23 @@
   </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════
+     EKRAN — OPTİK FORM EDİTÖRÜ (Ağustos 2026)
+     Sedat'ın isteği: baloncuk bloklarını, kimlik/numara/kitapçık
+     alanlarını, başlık/metin/çizgiyi sürükle-bırakla serbest
+     yerleştirip tüm boşluk/sütun ayarlarını manuel yapabilme.
+     Gerçek çizim/mantık js/optikSablonEditor.js içinde.
+═══════════════════════════════════════════ -->
+<div id="ekranSablonEditor" class="ekran" style="display:flex; flex-direction:column;">
+  <header class="o-header o-header-renk">
+    <button class="o-geri-btn" id="btnSablonEditorGeri">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="o-baslik o-baslik-kucuk" style="color:#fff;">Form Tasarla</h1>
+  </header>
+  <div id="sablonEditorKonteyner" style="flex:1; min-height:0;"></div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      EKRAN 3 — SINAV DETAY
