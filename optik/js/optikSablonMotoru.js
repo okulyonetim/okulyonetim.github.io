@@ -139,6 +139,7 @@
         aralikCarpani: og.yatayAralikCarpani || 1.45,
         baslikYuksekligi: VARSAYILAN_BASLIK_YUKSEKLIGI,
       });
+      sutun.dersAdiHizalama = og.dersAdiHizalama || 'orta';
       dersSutunlari.push(sutun);
     }
     return { grupBaslik: og.dersAdi, dersSutunlari };

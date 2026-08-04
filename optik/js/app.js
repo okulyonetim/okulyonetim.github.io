@@ -69,6 +69,10 @@ const DB = {
     ozelSablonBul(id)            { return this.ozelSablonlariGetir().find(x => x.id === id) || null; },
     ozelSablonSil(id)            { this._yaz('oy_op_ozelSablonlar', this.ozelSablonlariGetir().filter(x => x.id !== id)); },
 
+    // Varsayılan optik form — "Yeni Sınav" ekranı açılışında otomatik seçili gelir.
+    varsayilanSablonIdGetir()    { return this._oku('oy_op_varsayilanSablonId', null); },
+    varsayilanSablonIdKaydet(id) { this._yaz('oy_op_varsayilanSablonId', id); },
+
     // LGS Puanı — MEB'in açıkladığı gerçek istatistikler (Türkiye ort./std sapma, MinTASP/MaxTASP)
     // Puan referans ayarları (Türkiye ortalaması/std sapma/TASP aralığı):
     // sınav TÜRÜNE göre GLOBAL saklanır (ör. 'lgs', 'bursluluk') — tek bir
@@ -131,9 +135,12 @@ function sablonEditoruAc(mevcutKayitId) {
         const mevcutKayit = mevcutKayitId ? DB.ozelSablonBul(mevcutKayitId) : null;
         window.OptikSablonEditor.baslat(konteyner, {
             baslangicSablonu: mevcutKayit ? mevcutKayit.sablon : null,
-            kaydet: async (sablon) => {
+            varsayilanMi: mevcutKayitId && DB.varsayilanSablonIdGetir() === mevcutKayitId,
+            kaydet: async (sablon, varsayilanYapilsinMi) => {
                 const id = mevcutKayitId || ('ozelTasarim_' + Date.now());
                 DB.ozelSablonKaydet({ id, ad: sablon.ad || 'Adsız Şablon', sablon });
+                if (varsayilanYapilsinMi) DB.varsayilanSablonIdKaydet(id);
+                else if (DB.varsayilanSablonIdGetir() === id) DB.varsayilanSablonIdKaydet(null);
                 ekranGit('yeniSinav');
                 if (_optikFormOnSecimCB) {
                     const form = sablonDerlemesiniGetir(id);
@@ -382,6 +389,25 @@ function yeniSinavAc() {
     if (ozelSoru) ozelSoru.value = '';
     const ozelYanlis = document.getElementById('ysYanlisEtkisi');
     if (ozelYanlis) ozelYanlis.value = '0';
+    // YENİ (Ağustos 2026): Sedat isteği — kaydedilmiş bir varsayılan optik
+    // form varsa, "Yeni Sınav" ekranı her açıldığında otomatik seçili gelsin
+    // (tekrar tekrar aynı formu seçmek zorunda kalmasın).
+    const varsayilanId = DB.varsayilanSablonIdGetir();
+    if (varsayilanId) {
+        try {
+            const form = sablonDerlemesiniGetir(varsayilanId);
+            const kayit = DB.ozelSablonBul(varsayilanId);
+            const ad = kayit ? kayit.ad : (sablonBul(varsayilanId) || {}).ad;
+            if (ad) {
+                _ysSablonSecilen = { id: varsayilanId, ad, soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi };
+                const metEl = document.getElementById('ysOptikFormAdi');
+                metEl.textContent = `${ad} (${form.soruSayisi} Soru)`;
+                metEl.style.color = 'var(--text)';
+            }
+        } catch (e) {
+            // Varsayılan olarak işaretlenen şablon silinmiş olabilir — sessizce yok say, kullanıcı elle seçer.
+        }
+    }
     _ogrenciSeciminiRender();
     _ogrenciSecimOzetiGuncelle();
     ekranGit('yeniSinav');

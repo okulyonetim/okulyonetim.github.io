@@ -307,6 +307,13 @@ function bolumlerCiz(doc, form) {
 
     for (const ders of dersler) {
       const colCenter = ders.x + ders.width / 2;
+      // YENİ (Sedat isteği, Ağustos 2026): ders adı hizalaması artık
+      // yapılandırılabilir (sol/orta/sağ) — Optik Form Editörü'nden
+      // ayarlanıyor. Belirtilmezse (LGS/Bursluluk gibi sabit şablonlarda
+      // olduğu gibi) eski davranış (orta) korunuyor.
+      const hizalama = ders.dersAdiHizalama || 'orta';
+      const metinX = hizalama === 'sol' ? ders.x + 1 : hizalama === 'sag' ? ders.x + ders.width - 1 : colCenter;
+      const metinAlign = hizalama === 'sol' ? 'left' : hizalama === 'sag' ? 'right' : 'center';
 
       cerceveCiz(doc, ders.x, ders.y, ders.width, ders.baslikYuksekligi, ANA_RENK, 0.3);
       doc.setFont('Roboto', 'bold');
@@ -317,7 +324,7 @@ function bolumlerCiz(doc, form) {
       const toplamH = satirlar.length * satirH;
       const ilkY = ders.y + (ders.baslikYuksekligi - toplamH) / 2 + satirH * 0.75;
       satirlar.forEach((satir, i) => {
-        doc.text(satir, colCenter, ilkY + i * satirH, { align: 'center' });
+        doc.text(satir, metinX, ilkY + i * satirH, { align: metinAlign });
       });
 
       for (const soru of ders.sorular) {
@@ -365,6 +372,54 @@ function izgaraCiz(doc, form) {
   doc.setLineWidth(0.25);
   doc.rect(form.bolge.x, form.bolge.y, form.bolge.width, form.bolge.height, 'S');
   doc.setLineDashPattern([], 0);
+}
+
+/**
+ * YENİ (Ağustos 2026): Optik Form Editörü ile eklenen "serbest öğeleri"
+ * (kimlik alanı, başlık, serbest metin, çizgi, logo) PDF'e basar. Önceden
+ * bu öğelerin SADECE koordinatı optikSablonMotoru.js üzerinden taşınıyordu,
+ * hiçbir şey kağıda basılmıyordu — Sedat'ın "Logo nasıl seçilecek" sorusu
+ * bu eksiği ortaya çıkardı. Sadece editörle tasarlanmış özel şablonlarda
+ * kullanılıyor (form.serbestOgeler); LGS/Bursluluk'ta bu alan hiç yok,
+ * onların davranışı BU FONKSİYONDAN etkilenmiyor.
+ */
+function serbestOgeleriCiz(doc, form) {
+  const ogeler = form.serbestOgeler;
+  if (!ogeler || !ogeler.length) return;
+
+  for (const og of ogeler) {
+    if (og.tip === 'kimlikAlani') {
+      cerceveCiz(doc, og.x, og.y, og.genislik, og.yukseklik, ANA_RENK, 0.35);
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(6);
+      doc.setTextColor(...ANA_RENK);
+      doc.text(og.baslik || '', og.x + 2, og.y + 4);
+    } else if (og.tip === 'baslik') {
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(Math.max(8, og.yukseklik * 1.6));
+      doc.setTextColor(...ANA_RENK);
+      doc.text(og.metin || '', og.x + og.genislik / 2, og.y + og.yukseklik / 2 + 2, { align: 'center' });
+    } else if (og.tip === 'metin') {
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(og.fontPt || 10);
+      doc.setTextColor(...KOYU_METIN);
+      doc.text(og.metin || '', og.x, og.y);
+    } else if (og.tip === 'cizgi') {
+      doc.setDrawColor(80, 80, 80);
+      doc.setLineWidth(0.3);
+      doc.line(og.x1, og.y1, og.x2, og.y2);
+    } else if (og.tip === 'logo') {
+      if (og.gorselData) {
+        try {
+          const format = /^data:image\/(png|jpeg|jpg)/i.exec(og.gorselData);
+          doc.addImage(og.gorselData, format ? format[1].toUpperCase() : 'PNG', og.x, og.y, og.genislik, og.yukseklik);
+        } catch (e) {
+          // Bozuk/desteklenmeyen görsel verisi — sayfayı çökertmek yerine sessizce atla,
+          // kullanıcı editörde logoyu tekrar yüklemeyi deneyebilir.
+        }
+      }
+    }
+  }
 }
 
 function hizalamaIsaretleriCiz(doc, form) {
@@ -427,6 +482,7 @@ async function formPdfOlustur(layout, ogrenci = {}) {
     } else if (form.izgara) {
       izgaraCiz(doc, form);
     }
+    serbestOgeleriCiz(doc, form);
   }
 
   return doc;
@@ -465,6 +521,7 @@ async function topluFormPdfOlustur(layout, ogrenciListesi) {
       } else if (form.izgara) {
         izgaraCiz(doc, form);
       }
+      serbestOgeleriCiz(doc, form);
     }
   }
 

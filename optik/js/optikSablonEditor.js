@@ -95,6 +95,7 @@
           aralikCarpani: og.yatayAralikCarpani || 1.45,
           baslikYuksekligi: 8,
         });
+        sutun.dersAdiHizalama = og.dersAdiHizalama || 'orta';
         sutunlar.push(sutun);
       } catch (e) {
         // Geçersiz kombinasyon (ör. genişlik çok dar) — önizlemede sessizce atla,
@@ -170,6 +171,18 @@
     const svg = kok.querySelector('.osEditor__tuval');
     const panel = kok.querySelector('.osEditor__panel');
 
+    // ---- Form adı (Sedat isteği: "Forma isim verme de olsun") ----
+    const adSatiri = document.createElement('div');
+    adSatiri.style.cssText = 'display:flex; align-items:center; gap:6px; width:100%; padding:0 0 4px;';
+    const adInput = document.createElement('input');
+    adInput.type = 'text';
+    adInput.placeholder = 'Form adı (ör. 8. Sınıf Deneme-3)';
+    adInput.value = sablon.ad || '';
+    adInput.style.cssText = 'flex:1; min-height:38px; border:1px solid #ccc; border-radius:6px; padding:4px 8px; font-size:14px;';
+    adInput.addEventListener('change', () => { sablon.ad = adInput.value || 'Adsız Şablon'; });
+    adSatiri.appendChild(adInput);
+    aracCubugu.appendChild(adSatiri);
+
     // ---- Araç çubuğu: öğe ekleme + geri al/ileri al + kaydet ----
     function aracDugmesiEkle(etiket, tikla) {
       const b = document.createElement('button');
@@ -204,15 +217,33 @@
       seciliId = null;
       ciz();
     });
+    let varsayilanYapilsinMi = false;
     if (kaydetCallback) {
+      const varsayilanLabel = document.createElement('label');
+      varsayilanLabel.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:12px; color:#555; padding:0 6px;';
+      const varsayilanCheckbox = document.createElement('input');
+      varsayilanCheckbox.type = 'checkbox';
+      varsayilanCheckbox.checked = !!secenekler.varsayilanMi;
+      varsayilanYapilsinMi = varsayilanCheckbox.checked;
+      varsayilanCheckbox.addEventListener('change', () => { varsayilanYapilsinMi = varsayilanCheckbox.checked; });
+      varsayilanLabel.appendChild(varsayilanCheckbox);
+      varsayilanLabel.appendChild(document.createTextNode('Varsayılan form yap'));
+      aracCubugu.appendChild(varsayilanLabel);
+
       aracDugmesiEkle('💾 Kaydet', async () => {
+        if (!adInput.value.trim()) {
+          alert('Kaydetmeden önce forma bir isim ver.');
+          adInput.focus();
+          return;
+        }
+        sablon.ad = adInput.value.trim();
         try {
           Motoru.sablonuDogrula(sablon);
         } catch (e) {
           alert('Kaydedilemedi: ' + e.message);
           return;
         }
-        await kaydetCallback(derinKopya(sablon));
+        await kaydetCallback(derinKopya(sablon), varsayilanYapilsinMi);
       });
     }
     const tamEkranBtn = document.createElement('button');
@@ -321,18 +352,22 @@
       svg.style.height = 'auto';
     }
 
-    // Ekran (px) koordinatını SVG kullanıcı birimine (mm) çevirir — Pointer Events için gerekli
-    function ekranNoktasindanMM(clientX, clientY) {
+    // Ekran (px) koordinatını SVG kullanıcı birimine (mm) çevirir — Pointer Events için gerekli.
+    // ctmInverse verilirse (sürükleme sırasında) getScreenCTM() TEKRAR ÇAĞRILMAZ —
+    // bu fonksiyon senkron layout hesaplaması zorluyor, her pointermove'da
+    // çağrılması Android'de asıl yavaşlığın sebebiydi (Sedat geri bildirimi,
+    // Ağustos 2026). Sürükleme başında BİR KEZ hesaplanıp önbelleğe alınıyor.
+    function ekranNoktasindanMM(clientX, clientY, ctmInverse) {
       const pt = svg.createSVGPoint();
       pt.x = clientX; pt.y = clientY;
-      const ctm = svg.getScreenCTM();
-      if (!ctm) return { x: 0, y: 0 };
-      const donusmus = pt.matrixTransform(ctm.inverse());
+      const ters = ctmInverse || (svg.getScreenCTM() && svg.getScreenCTM().inverse());
+      if (!ters) return { x: 0, y: 0 };
+      const donusmus = pt.matrixTransform(ters);
       return { x: donusmus.x, y: donusmus.y };
     }
 
     // ---- Sürükleme durumu ----
-    let surukleme = null; // {ogeId, tip:'tasi'|'boyutlandir', baslangicMM, ogeBaslangic, gEl}
+    let surukleme = null; // {ogeId, tip:'tasi'|'boyutlandir', baslangicMM, ogeBaslangic, gEl, ctmInverse}
     const GRID_MM = 1; // ızgaraya yapışma adımı — hizalamayı kolaylaştırır, çakışmayı azaltır
 
     function grideYapistir(deger) { return Math.round(deger / GRID_MM) * GRID_MM; }
@@ -340,8 +375,9 @@
     function pointerDownOge(ev, og, gEl) {
       ev.stopPropagation();
       seciliId = og.id;
-      const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY);
-      surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0 };
+      const ctmInverse = svg.getScreenCTM().inverse(); // sürüklemenin tamamı için TEK sefer
+      const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
+      surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0, ctmInverse };
       ev.target.setPointerCapture(ev.pointerId);
       gecmiseKaydet();
       cizPanel();
@@ -349,46 +385,46 @@
 
     function pointerDownTutamac(ev, og, gEl) {
       ev.stopPropagation();
-      const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY);
-      surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl };
+      const ctmInverse = svg.getScreenCTM().inverse();
+      const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
+      surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, ctmInverse };
       ev.target.setPointerCapture(ev.pointerId);
       gecmiseKaydet();
     }
 
-    let cizmeZamanlandiMi = false;
+    let hareketZamanlandiMi = false;
+    let sonHareketEvent = null;
 
     svg.addEventListener('pointermove', (ev) => {
       if (!surukleme) return;
-      const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY);
-      const dx = grideYapistir(nokta.x - surukleme.baslangicMM.x);
-      const dy = grideYapistir(nokta.y - surukleme.baslangicMM.y);
+      // Android'de pointermove olayları çok sık ateşlenebiliyor; işlemi
+      // ekran yenileme hızıyla (rAF) sınırlamak, her olayda çalışmaktan
+      // çok daha akıcı — sadece son olayın konumu kullanılıyor.
+      sonHareketEvent = ev;
+      if (hareketZamanlandiMi) return;
+      hareketZamanlandiMi = true;
+      requestAnimationFrame(() => {
+        hareketZamanlandiMi = false;
+        if (!surukleme || !sonHareketEvent) return;
+        const ev2 = sonHareketEvent;
+        const nokta = ekranNoktasindanMM(ev2.clientX, ev2.clientY, surukleme.ctmInverse);
+        const dx = grideYapistir(nokta.x - surukleme.baslangicMM.x);
+        const dy = grideYapistir(nokta.y - surukleme.baslangicMM.y);
 
-      if (surukleme.tip === 'tasi') {
-        // PERFORMANS (Sedat geri bildirimi, Ağustos 2026): önceden her
-        // pointermove'da TÜM tuval (yüzlerce baloncuk dahil) yeniden
-        // hesaplanıp yeniden çiziliyordu — bu yüzden sürükleme çok
-        // takılıyordu. Artık sürükleme SIRASINDA sadece ucuz bir SVG
-        // transform (translate) uygulanıyor; gerçek koordinat/baloncuk
-        // yeniden hesaplaması SADECE parmak/mouse bırakıldığında bir kez
-        // yapılıyor (bkz. suruklemeBitir).
-        surukleme.dx = dx; surukleme.dy = dy;
-        if (surukleme.gEl) surukleme.gEl.setAttribute('transform', `translate(${dx},${dy})`);
-      } else if (surukleme.tip === 'boyutlandir') {
-        // Boyutlandırma zaten baloncuk sayısı kadar maliyetli değil
-        // (tek satır genişlik değişimi), ama yine de kare-başına bir kez
-        // çalışsın diye requestAnimationFrame ile sınırlıyoruz.
-        const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
-        if (!og) return;
-        const baz = surukleme.ogeBaslangic;
-        if (og.tip === 'baloncukBlok' || og.genislik != null) {
-          og.genislik = Math.max(og.tip === 'baloncukBlok' ? 15 : 8, baz.genislik + dx);
-          if (og.yukseklik != null) og.yukseklik = Math.max(5, baz.yukseklik + dy);
+        if (surukleme.tip === 'tasi') {
+          surukleme.dx = dx; surukleme.dy = dy;
+          if (surukleme.gEl) surukleme.gEl.setAttribute('transform', `translate(${dx},${dy})`);
+        } else if (surukleme.tip === 'boyutlandir') {
+          const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
+          if (!og) return;
+          const baz = surukleme.ogeBaslangic;
+          if (og.tip === 'baloncukBlok' || og.genislik != null) {
+            og.genislik = Math.max(og.tip === 'baloncukBlok' ? 15 : 8, baz.genislik + dx);
+            if (og.yukseklik != null) og.yukseklik = Math.max(5, baz.yukseklik + dy);
+          }
+          cizSadeceTuval();
         }
-        if (!cizmeZamanlandiMi) {
-          cizmeZamanlandiMi = true;
-          requestAnimationFrame(() => { cizmeZamanlandiMi = false; cizSadeceTuval(); });
-        }
-      }
+      });
     });
 
     function suruklemeBitir() {
@@ -479,7 +515,9 @@
             });
           });
           const t = svgOlustur('text', {
-            x: sutun.x, y: sutun.y + 5, 'font-size': 3.2, fill: '#333',
+            x: sutun.dersAdiHizalama === 'sol' ? sutun.x + 1 : sutun.dersAdiHizalama === 'sag' ? sutun.x + sutun.width - 1 : sutun.x + sutun.width / 2,
+            y: sutun.y + 5, 'font-size': 3.2, fill: '#333',
+            'text-anchor': sutun.dersAdiHizalama === 'sol' ? 'start' : sutun.dersAdiHizalama === 'sag' ? 'end' : 'middle',
           });
           t.textContent = sutun.dersAdi;
           g.appendChild(t);
@@ -511,22 +549,40 @@
         const hesap = og.tip === 'numaraAlani'
           ? LE.numaraAlaniHesapla(og.x, og.y, og.basamakSayisi || 4, og.olcek || 1, og.yon || 'dikey')
           : LE.kitapcikAlaniHesapla(og.x, og.y, og.secenekSayisi || 4, og.olcek || 1);
+        const genislik = og.tip === 'numaraAlani' ? hesap.width : hesap.genislik;
         g.appendChild(svgOlustur('rect', Object.assign(
-          { class: 'osOge__cerceve', x: hesap.x - 1, y: hesap.y - 1, width: hesap.width + 2, height: hesap.height + 2 },
+          { class: 'osOge__cerceve', x: hesap.x - 1, y: hesap.y - 1, width: genislik + 2, height: hesap.height + 2 },
           secili ? CERCEVE_SECILI : CERCEVE_SOLUK
         )));
-        (hesap.sorular || []).forEach((soru) => {
-          (soru.sikler || []).forEach((sik) => {
-            g.appendChild(svgOlustur('circle', {
-              cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25,
-            }));
+        if (og.tip === 'numaraAlani') {
+          // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026):
+          // numaraAlaniHesapla 'sorular/sikler' DEĞİL, 'basamaklar[].bubbles[]'
+          // döndürüyor — yanlış alan adı yüzünden baloncuklar hiç çizilmiyordu.
+          (hesap.basamaklar || []).forEach((basamak) => {
+            (basamak.bubbles || []).forEach((b) => {
+              g.appendChild(svgOlustur('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25 }));
+            });
           });
-        });
+        } else {
+          // kitapcikAlaniHesapla 'secenekler' (düz dizi) döndürüyor.
+          (hesap.secenekler || []).forEach((sik) => {
+            g.appendChild(svgOlustur('circle', { cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25 }));
+          });
+        }
       } else if (og.tip === 'baslik' || og.tip === 'logo') {
         g.appendChild(svgOlustur('rect', Object.assign(
           { class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik, 'stroke-dasharray': og.tip === 'logo' ? '1,1' : (secili ? 'none' : '1,0.6') },
           secili ? CERCEVE_SECILI : Object.assign({}, CERCEVE_SOLUK, { stroke: '#888' })
         )));
+        if (og.tip === 'logo' && og.gorselData) {
+          g.appendChild(svgOlustur('image', {
+            href: og.gorselData, x: og.x, y: og.y, width: og.genislik, height: og.yukseklik, preserveAspectRatio: 'xMidYMid meet',
+          }));
+        } else if (og.tip === 'logo') {
+          const t = svgOlustur('text', { x: og.x + og.genislik / 2, y: og.y + og.yukseklik / 2 + 1, 'font-size': 2.6, 'text-anchor': 'middle', fill: '#999' });
+          t.textContent = '🖼 Logo Seç';
+          g.appendChild(t);
+        }
         if (og.metin) {
           const t = svgOlustur('text', { x: og.x + og.genislik / 2, y: og.y + og.yukseklik / 2 + 1, 'font-size': 3.5, 'text-anchor': 'middle' });
           t.textContent = og.metin;
@@ -598,6 +654,7 @@
 
       if (og.tip === 'baloncukBlok') {
         alanEkle(og, 'Ders Adı', 'dersAdi', 'text');
+        alanEkle(og, 'Ders Adı Hizalama', 'dersAdiHizalama', 'select', { opsiyonlar: ['orta', 'sol', 'sag'] });
         alanEkle(og, 'Soru Sayısı', 'soruSayisi', 'number');
         alanEkle(og, 'Şık Sayısı (2-6)', 'sikSayisi', 'number');
         alanEkle(og, 'Baloncuk Çapı (mm)', 'baloncukCap', 'number', { step: 0.05 });
@@ -646,6 +703,46 @@
       } else if (og.tip === 'logo') {
         alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
         alanEkle(og, 'Yükseklik (mm)', 'yukseklik', 'number');
+        // YENİ (Sedat isteği: "Logo nasıl seçilecek") — cihazdan görsel seç,
+        // base64 olarak şablonda saklanır, PDF'e pdfFormGenerator.js:
+        // serbestOgeleriCiz üzerinden basılır.
+        const gorselDiv = document.createElement('div');
+        gorselDiv.className = 'osEditor__alan';
+        const gorselLabel = document.createElement('label');
+        gorselLabel.textContent = 'Logo Görseli';
+        gorselDiv.appendChild(gorselLabel);
+        const gorselInput = document.createElement('input');
+        gorselInput.type = 'file';
+        gorselInput.accept = 'image/png,image/jpeg';
+        gorselInput.addEventListener('change', () => {
+          const dosya = gorselInput.files && gorselInput.files[0];
+          if (!dosya) return;
+          if (dosya.size > 2 * 1024 * 1024) {
+            alert('Görsel çok büyük (max 2MB) — daha küçük bir dosya seç.');
+            return;
+          }
+          const okuyucu = new FileReader();
+          okuyucu.onload = () => {
+            gecmiseKaydet();
+            og.gorselData = okuyucu.result;
+            cizSadeceTuval();
+          };
+          okuyucu.readAsDataURL(dosya);
+        });
+        gorselDiv.appendChild(gorselInput);
+        panel.appendChild(gorselDiv);
+        if (og.gorselData) {
+          const kaldirBtn = document.createElement('button');
+          kaldirBtn.textContent = '✕ Görseli Kaldır';
+          kaldirBtn.style.cssText = 'min-height:36px; border:1px solid #ccc; border-radius:6px; background:#fff; padding:0 10px; align-self:flex-end;';
+          kaldirBtn.addEventListener('click', () => {
+            gecmiseKaydet();
+            delete og.gorselData;
+            cizPanel();
+            cizSadeceTuval();
+          });
+          panel.appendChild(kaldirBtn);
+        }
       }
 
       alanEkle(og, 'X (mm)', 'x', 'number', { step: 0.5 });
