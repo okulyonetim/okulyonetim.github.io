@@ -115,20 +115,47 @@ let _optikFormOnSecimCB = null; // sheet açıkken hangi callback'e sonuç döne
  */
 function sablonEditoruAc(mevcutKayitId) {
     const konteyner = document.getElementById('sablonEditorKonteyner');
-    const mevcutKayit = mevcutKayitId ? DB.ozelSablonBul(mevcutKayitId) : null;
-    window.OptikSablonEditor.baslat(konteyner, {
-        baslangicSablonu: mevcutKayit ? mevcutKayit.sablon : null,
-        kaydet: async (sablon) => {
-            const id = mevcutKayitId || ('ozelTasarim_' + Date.now());
-            DB.ozelSablonKaydet({ id, ad: sablon.ad || 'Adsız Şablon', sablon });
-            ekranGit('yeniSinav');
-            if (_optikFormOnSecimCB) {
-                const form = sablonDerlemesiniGetir(id);
-                _optikFormOnSecimCB({ id, ad: sablon.ad || 'Adsız Şablon', soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
-            }
-        },
-    });
+    // YENİ (teşhis, Ağustos 2026): Sedat konsola erişemiyor (mobil), bu yüzden
+    // bir hata olursa sessizce boş ekran göstermek yerine hatayı DOĞRUDAN
+    // ekrana (kırmızı, okunur) yazıyoruz.
+    try {
+        if (!window.OptikSablonEditor) {
+            throw new Error('window.OptikSablonEditor tanımsız — optikSablonEditor.js hiç yüklenmemiş olabilir (script sırası veya önbellek).');
+        }
+        if (!window.OptikSablonMotoru) {
+            throw new Error('window.OptikSablonMotoru tanımsız — optikSablonMotoru.js hiç yüklenmemiş olabilir.');
+        }
+        if (!window.LayoutEngine) {
+            throw new Error('window.LayoutEngine tanımsız.');
+        }
+        const mevcutKayit = mevcutKayitId ? DB.ozelSablonBul(mevcutKayitId) : null;
+        window.OptikSablonEditor.baslat(konteyner, {
+            baslangicSablonu: mevcutKayit ? mevcutKayit.sablon : null,
+            kaydet: async (sablon) => {
+                const id = mevcutKayitId || ('ozelTasarim_' + Date.now());
+                DB.ozelSablonKaydet({ id, ad: sablon.ad || 'Adsız Şablon', sablon });
+                ekranGit('yeniSinav');
+                if (_optikFormOnSecimCB) {
+                    const form = sablonDerlemesiniGetir(id);
+                    _optikFormOnSecimCB({ id, ad: sablon.ad || 'Adsız Şablon', soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
+                }
+            },
+        });
+    } catch (e) {
+        konteyner.innerHTML = `<div style="padding:16px; color:#b00020; font-family:monospace; font-size:13px; white-space:pre-wrap; background:#fff;">HATA (bunu bana gönder):\n\n${e.message}\n\n${e.stack || ''}</div>`;
+        console.error('sablonEditoruAc hatası:', e);
+    }
     ekranGit('sablonEditor');
+    // YENİ (teşhis): .ekran/.aktif CSS'i display:flex'imi ezip yükseklik
+    // çökmesine yol açabilir ihtimaline karşı — konteynerin yüksekliğini
+    // CSS'e bağımlı kalmadan JS'ten zorla, viewport'a göre hesapla.
+    requestAnimationFrame(() => {
+        const ekran = document.getElementById('ekranSablonEditor');
+        const header = ekran ? ekran.querySelector('.o-header') : null;
+        const headerYuksekligi = header ? header.getBoundingClientRect().height : 56;
+        konteyner.style.height = (window.innerHeight - headerYuksekligi) + 'px';
+        konteyner.style.display = 'block';
+    });
 }
 
 /**
