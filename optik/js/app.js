@@ -55,6 +55,20 @@ const DB = {
     anahtariGetir(sid)      { return this._oku('oy_op_anahtar_' + sid, { dersler: [] }); },
     anahtarKaydet(sid, a)   { a.guncelleme = new Date().toISOString(); this._yaz('oy_op_anahtar_' + sid, a); },
 
+    // YENİ (Ağustos 2026): Optik Form Editörü ile tasarlanmış özel şablonlar.
+    // Her kayıt {id, ad, sablon} — sablon, optikSablonEditor.js'nin ürettiği
+    // ham şema (ogeler dizisi); PDF/OMR'a verilmeden önce
+    // OptikSablonMotoru.sablonuDerle ile derlenir (bkz. sablonDerlemesiniGetir).
+    ozelSablonlariGetir()        { return this._oku('oy_op_ozelSablonlar', []); },
+    ozelSablonKaydet(kayit)      {
+        const liste = this.ozelSablonlariGetir().filter(x => x.id !== kayit.id);
+        kayit.guncelleme = new Date().toISOString();
+        liste.unshift(kayit);
+        this._yaz('oy_op_ozelSablonlar', liste);
+    },
+    ozelSablonBul(id)            { return this.ozelSablonlariGetir().find(x => x.id === id) || null; },
+    ozelSablonSil(id)            { this._yaz('oy_op_ozelSablonlar', this.ozelSablonlariGetir().filter(x => x.id !== id)); },
+
     // LGS Puanı — MEB'in açıkladığı gerçek istatistikler (Türkiye ort./std sapma, MinTASP/MaxTASP)
     // Puan referans ayarları (Türkiye ortalaması/std sapma/TASP aralığı):
     // sınav TÜRÜNE göre GLOBAL saklanır (ör. 'lgs', 'bursluluk') — tek bir
@@ -74,6 +88,48 @@ const SABLONLAR = [
 ];
 
 function sablonBul(id) { return SABLONLAR.find(s => s.id === id) || null; }
+
+/**
+ * YENİ (Ağustos 2026): bir sınav türü kimliğinin (LGS/Bursluluk/Özel sabit
+ * VEYA Optik Form Editörü ile tasarlanmış özel bir şablon) gerçek, PDF/OMR
+ * tarafından tüketilebilir "form" nesnesini döndürür. Sabit türler için
+ * LayoutEngine.layoutHesapla, editörle tasarlanmış özel şablonlar için
+ * OptikSablonMotoru.sablonuDerle kullanılır — çağıran kod hangisi olduğunu
+ * bilmek zorunda kalmaz.
+ */
+function sablonDerlemesiniGetir(sablonId, ekOpsiyonlar) {
+    if (sablonId === 'lgs' || sablonId === 'bursluluk' || sablonId === 'ozel') {
+        return window.LayoutEngine.layoutHesapla({ sinavTuru: sablonId, ...ekOpsiyonlar });
+    }
+    const kayit = DB.ozelSablonBul(sablonId);
+    if (!kayit) throw new Error('Özel şablon bulunamadı: ' + sablonId);
+    return window.OptikSablonMotoru.sablonuDerle(kayit.sablon);
+}
+
+let _optikFormOnSecimCB = null; // sheet açıkken hangi callback'e sonuç döneceğimizi hatırlar
+
+/**
+ * Optik Form Editörü ekranını açar. mevcutKayitId verilirse o özel şablon
+ * düzenlenir (yeniden derlenip aynı id ile üzerine kaydedilir); verilmezse
+ * boş bir şablonla yeni bir tasarım başlatılır.
+ */
+function sablonEditoruAc(mevcutKayitId) {
+    const konteyner = document.getElementById('sablonEditorKonteyner');
+    const mevcutKayit = mevcutKayitId ? DB.ozelSablonBul(mevcutKayitId) : null;
+    window.OptikSablonEditor.baslat(konteyner, {
+        baslangicSablonu: mevcutKayit ? mevcutKayit.sablon : null,
+        kaydet: async (sablon) => {
+            const id = mevcutKayitId || ('ozelTasarim_' + Date.now());
+            DB.ozelSablonKaydet({ id, ad: sablon.ad || 'Adsız Şablon', sablon });
+            ekranGit('yeniSinav');
+            if (_optikFormOnSecimCB) {
+                const form = sablonDerlemesiniGetir(id);
+                _optikFormOnSecimCB({ id, ad: sablon.ad || 'Adsız Şablon', soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
+            }
+        },
+    });
+    ekranGit('sablonEditor');
+}
 
 /**
  * Bir sınav TÜRÜNE (ör. 'lgs', 'bursluluk') ait ders listesini, gerçek bir
@@ -159,6 +215,7 @@ const Ekranlar = {
     optikOlustur: document.getElementById('ekranOptikOlustur'),
     manuelKagit:  document.getElementById('ekranManuelKagit'),
     lgsPuan:      document.getElementById('ekranLgsPuan'),
+    sablonEditor: document.getElementById('ekranSablonEditor'),
 };
 
 function ekranGit(id) {
@@ -181,6 +238,7 @@ const _EKRAN_USTU = {
     optikOlustur: 'sinavDetay',
     manuelKagit: 'sinavDetay',
     lgsPuan: 'sinavDetay',
+    sablonEditor: 'yeniSinav',
 };
 
 function _aktifEkranId() {
@@ -1757,8 +1815,30 @@ function _layoutParamlariHazirla(sinav, secimler = {}) {
     return { sinavTuru: sinav?.optikFormId };
 }
 
-/** Sınav sabit bir MEB şablonu mu (LGS/Bursluluk) kullanıyor — bu durumda yön/sayfa düzeni SEÇİLEMEZ. */
+/**
+ * YENİ (Ağustos 2026): sınavın kullandığı forma ait GERÇEK layout nesnesini
+ * döndürür — LGS/Bursluluk/Sabit Özel için LayoutEngine.layoutHesapla,
+ * Optik Form Editörü ile tasarlanmış özel şablonlar (id 'ozelTasarim_...'
+ * ile başlar) için OptikSablonMotoru.sablonuDerle üzerinden. Önizleme ve
+ * gerçek PDF üretimi AYNI bu fonksiyonu kullanır, ikisi arasında sapma
+ * olmasın diye.
+ *
+ * KAPSAM SINIRI: editörle tasarlanmış özel şablonlar şu an için LGS/
+ * Bursluluk'taki gibi "sayfa başına birden fazla form" veya yatay yönlendirme
+ * paketlemesini DESTEKLEMİYOR — her zaman tek sayfa, dikey, tasarlandığı
+ * gibi basılır (yzYonSegment/yzDuzenSegment bu türde devre dışı bırakılmalı,
+ * bkz. _sinavSabitSablonMu).
+ */
+function _layoutGetir(sinav, secimler = {}) {
+    if (sinav?.optikFormId && sinav.optikFormId.startsWith('ozelTasarim_')) {
+        return sablonDerlemesiniGetir(sinav.optikFormId);
+    }
+    return window.LayoutEngine.layoutHesapla(_layoutParamlariHazirla(sinav, secimler));
+}
+
+/** Sınav sabit bir MEB şablonu mu (LGS/Bursluluk) YA DA editörle tasarlanmış özel bir şablon mu — bu durumlarda yön/sayfa düzeni SEÇİLEMEZ. */
 function _sinavSabitSablonMu(sinav) {
+    if (sinav?.optikFormId && sinav.optikFormId.startsWith('ozelTasarim_')) return true;
     return !!sinav?.optikFormId && sinav.optikFormId !== 'ozel';
 }
 
@@ -1903,7 +1983,7 @@ async function yzOnizleOlustur() {
     if (!sinav) return;
     durumEl.textContent = 'Önizleme hazırlanıyor...';
     try {
-        const layout = window.LayoutEngine.layoutHesapla(_layoutParamlariHazirla(sinav, _yzSecimleri));
+        const layout = _layoutGetir(sinav, _yzSecimleri);
         const { bosFormGorseliOlustur, ogrenciFormGorselleriOlustur } = await import('./canvasFormGenerator.js');
         let sayfalar, sayfaBilgi;
 
@@ -1956,7 +2036,7 @@ async function yzOnaylaVeIndir() {
     sheetKapat('sheetYazdirmaSecenekleri');
     durumEl.textContent = 'Oluşturuluyor...';
     try {
-        const layout = window.LayoutEngine.layoutHesapla(_layoutParamlariHazirla(sinav, _yzSecimleri));
+        const layout = _layoutGetir(sinav, _yzSecimleri);
         if (_yzMod === 'bos') {
             const { formPdfOlustur } = await import('./pdfFormGenerator.js');
             const doc = await _zamanAsimliBekle(formPdfOlustur(layout, {
@@ -1995,9 +2075,31 @@ function sheetOnay(baslik, metin, onayFn, onaylaEtiket) {
 }
 
 function optikFormSheetAc(onSecim) {
+    _optikFormOnSecimCB = onSecim;
     const liste = document.getElementById('optikFormSeciciListesi');
     if (liste) {
-        liste.innerHTML = SABLONLAR.map(s => `
+        const ozelSablonlar = DB.ozelSablonlariGetir();
+        const tasarlaSatiri = `
+            <button class="bs-liste-satir" data-tasarla="1">
+                <div class="bs-liste-ikon" style="background:#FCE4EC;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2185B" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                </div>
+                <div class="bs-liste-bilgi">
+                    <strong>🎨 Kendi Formunu Tasarla</strong>
+                    <small>Baloncukları, alanları serbestçe yerleştir</small>
+                </div>
+            </button>`;
+        const ozelSatirlari = ozelSablonlar.map(k => `
+            <button class="bs-liste-satir" data-ozel-id="${k.id}">
+                <div class="bs-liste-ikon" style="background:#F3E5F5;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="bs-liste-bilgi">
+                    <strong>${_h(k.ad)}</strong>
+                    <small>Kendi tasarladığın form — düzenlemek için uzun bas</small>
+                </div>
+            </button>`).join('');
+        liste.innerHTML = tasarlaSatiri + ozelSatirlari + SABLONLAR.map(s => `
             <button class="bs-liste-satir" data-id="${s.id}">
                 <div class="bs-liste-ikon" style="background:#E3F2FD;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E88E5" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -2007,12 +2109,27 @@ function optikFormSheetAc(onSecim) {
                     <small>${s.soruSayisi ? s.soruSayisi + ' Soru' : 'Soru sayısını kendin belirle'}</small>
                 </div>
             </button>`).join('');
-        liste.querySelectorAll('.bs-liste-satir').forEach(btn => {
+        liste.querySelectorAll('[data-id]').forEach(btn => {
             btn.addEventListener('click', () => {
                 sheetKapat('sheetOptikForm');
                 onSecim(SABLONLAR.find(s => s.id === btn.dataset.id));
             });
         });
+        liste.querySelectorAll('[data-ozel-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sheetKapat('sheetOptikForm');
+                const kayit = DB.ozelSablonBul(btn.dataset.ozelId);
+                const form = sablonDerlemesiniGetir(kayit.id);
+                onSecim({ id: kayit.id, ad: kayit.ad, soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
+            });
+        });
+        const tasarlaBtn = liste.querySelector('[data-tasarla]');
+        if (tasarlaBtn) {
+            tasarlaBtn.addEventListener('click', () => {
+                sheetKapat('sheetOptikForm');
+                sablonEditoruAc(null);
+            });
+        }
     }
     sheetAc('sheetOptikForm');
 }
@@ -2139,6 +2256,7 @@ function baslat() {
             if (ozelBlok) ozelBlok.hidden = sablon.id !== 'ozel';
         });
     });
+    document.getElementById('btnSablonEditorGeri').addEventListener('click', () => ekranGit('yeniSinav'));
 
     // ── Ekran 3: Sınav Detay ──
     document.getElementById('btnSinavDetayGeri').addEventListener('click', () => { _aktifSinavId = null; ekranGit('sinavlar'); sinavlariRender(); });
