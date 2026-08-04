@@ -1561,6 +1561,8 @@ let _canliKartZamanlayici = null;
 function kameraAc() {
     const ov = document.getElementById('kameraOverlay');
     if (!ov) return;
+    // Taramadan hemen önce köprüyü tazele (bkz. galeriSecimIsle'daki aynı not).
+    _optikAktifFormGuncelle();
     ov.hidden = false;
     const s = document.getElementById('start');
     if (s) s.click();
@@ -1647,16 +1649,38 @@ function _omrSonucuisle(raw) {
         if (!isNaN(parsed)) kimlik.ogrenciNo = String(parsed);
     }
 
-    // Ad soyad eslestir - ana uygulamadan ogrenci verisi varsa
+    // KÖK NEDEN DÜZELTMESİ (Sedat isteği, Ağustos 2026 — "hangi sınıf
+    // seçili ise o sınıftaki öğrencilerle eşleştirsin, değilse uyarı
+    // versin"): eşleştirme önceden TÜM okuldaki öğrenciler arasında
+    // yapılıyordu — aynı numara İlkokul'da ve Ortaokul'da (veya iki farklı
+    // sınıfta) farklı öğrencilere ait olabileceğinden yanlış öğrenciyle
+    // sessizce eşleşme riski vardı. Artık SADECE bu sınava atanmış
+    // (sinav.ogrenciIdleri) öğrenciler arasında aranıyor; atanmışlar
+    // arasında bulunamazsa (numara hiç yok VEYA başka bir öğrenciye ait
+    // ama bu sınava seçili değil) ad/sınıf otomatik doldurulmuyor, bunun
+    // yerine kağıda görünür bir uyarı ekleniyor.
+    const eslestimeUyarilari = [];
     if (kimlik.ogrenciNo) {
         try {
-            const ogrenciler = _manuelTumOgrenciler();
-            const eslesme = ogrenciler.find(o =>
+            const sinav = DB.sinaviBul(_aktifSinavId);
+            const atanmisIdler = sinav?.ogrenciIdleri || [];
+            const tumOgrenciler = _manuelTumOgrenciler();
+            const atanmisOgrenciler = tumOgrenciler.filter(o => atanmisIdler.includes(o.id));
+            const eslesme = atanmisOgrenciler.find(o =>
                 String(parseInt(o.ogrenciNo || '0', 10)) === kimlik.ogrenciNo
             );
             if (eslesme) {
                 kimlik.adSoyad = eslesme.adSoyad || kimlik.adSoyad || '';
                 kimlik.sinif   = eslesme.sinifAd || kimlik.sinif || '';
+            } else {
+                const baskaOgrencideVarMi = tumOgrenciler.some(o =>
+                    String(parseInt(o.ogrenciNo || '0', 10)) === kimlik.ogrenciNo
+                );
+                eslestimeUyarilari.push(
+                    baskaOgrencideVarMi
+                        ? `⚠ Numara ${kimlik.ogrenciNo}, bu sınava atanmış öğrenciler arasında yok — aynı numaralı BAŞKA bir öğrenci var ama bu sınava seçili değil (farklı sınıf/kademe olabilir). Ad/sınıf otomatik doldurulamadı, elle kontrol edin.`
+                        : `⚠ Numara ${kimlik.ogrenciNo} ile eşleşen hiçbir öğrenci bulunamadı. Ad/sınıf otomatik doldurulamadı, elle kontrol edin.`
+                );
             }
         } catch(e) {}
     }
@@ -1671,7 +1695,7 @@ function _omrSonucuisle(raw) {
         // artıkları, dışlanan köşe vb.) — önceden hiç yakalanmıyordu, sadece
         // browser console'a gidip kayboluyordu. Kağıt Detayı ekranında
         // gösterilecek (bkz. ogrDetayAc).
-        uyarilar:      Array.isArray(raw.uyarilar) ? raw.uyarilar : [],
+        uyarilar:      [...eslestimeUyarilari, ...(Array.isArray(raw.uyarilar) ? raw.uyarilar : [])],
         elleGirildi:   false,
         tarih:         new Date().toLocaleDateString('tr-TR'),
     };

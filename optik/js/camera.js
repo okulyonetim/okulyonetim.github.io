@@ -9,7 +9,7 @@ import { ayarlariGetir } from "./hassasiyetAyarlari.js";
 // hedefleri buluyor (sayfa çerçevesi vs. küçük hizalama kareleri), o
 // yüzden burada değiştirilen SADECE canlı gösterge/otomatik-tetikleme
 // döngüsü — okuma hassasiyeti bu değişiklikten etkilenmez.
-import { sayfaKoseleriniAraCV, cvHazirBekle, cvHazirMi } from "./sayfaTespitCV.js";
+import { sayfaKoseleriniAraCV, cvHazirBekle, cvHazirMi, oranlariHesapla } from "./sayfaTespitCV.js";
 
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
@@ -171,7 +171,15 @@ function _koseTespitCalistir() {
         }
 
         const hassasiyet = { yuzdelik: ayarlar.yuzdelik, minDoluluk: ayarlar.minDoluluk };
-        const koseler = sayfaKoseleriniAraCV(imageData, hassasiyet, _sonBulunanCerceveKoseleri);
+        // YENİ (Sedat isteği, Ağustos 2026: "Köşe yakalayıcılar her formda
+        // aktif çalışsın") — canlı önizleme (yeşil çerçeve) de artık aktif
+        // sınavın GERÇEK sayfa oranını kullanıyor; önceden hep A4 (LGS/
+        // Bursluluk) varsayıyordu, Optik Form Editörü ile A4-dışı boyutta
+        // tasarlanmış formlarda köşeyi bulsa bile "A4 oranına uymuyor"
+        // diye eleyip hiç göstermiyordu.
+        const aktifBolge = window.OptikAktifForm && window.OptikAktifForm.form && window.OptikAktifForm.form.bolge;
+        const beklenenOranlar = oranlariHesapla(aktifBolge && aktifBolge.width, aktifBolge && aktifBolge.height);
+        const koseler = sayfaKoseleriniAraCV(imageData, hassasiyet, _sonBulunanCerceveKoseleri, beklenenOranlar);
         // Başarılı tespitte takip noktasını güncelle (sonraki tur bu noktanın
         // etrafında dar ROI'de arasın); bulunamazsa ELDEKİ son bilinen noktayı
         // KORU — sayfaKoseleriniAraCV zaten ROI'de bulamazsa otomatik tam kare

@@ -2087,19 +2087,30 @@ window.OmrOkuyucu = (function () {
    * GERÇEK kareye inceltiliyor (aynı "tohum + inceltme" deseni).
    * cv.js yüklenmediyse/başarısız olursa eski yönteme sessizce düşülür.
    */
-  function sayfaKoseleriniAraHibrit(fotoImageData, hassasiyet) {
+  function sayfaKoseleriniAraHibrit(fotoImageData, hassasiyet, form) {
     if (typeof window.SayfaTespitCV === 'undefined' || !window.SayfaTespitCV.cvHazirMi()) {
       return sayfaKoseleriniAra(fotoImageData, hassasiyet);
     }
     try {
-      const cerceve = window.SayfaTespitCV.sayfaKoseleriniAraCV(fotoImageData, null, null);
+      // YENİ (Sedat isteği, Ağustos 2026: "Köşe yakalayıcılar her formda
+      // aktif çalışsın") — önceden bu fonksiyon her zaman A4 oranı/210mm
+      // genişlik varsayıyordu, Optik Form Editörü ile A4-dışı (A5/A6/A7/
+      // Özel Boyut) tasarlanmış formlarda köşe tespiti sessizce reddedip
+      // eski (daha zayıf) yönteme düşüyordu. Artık formun GERÇEK sayfa
+      // boyutunu (form.bolge) kullanıyor.
+      const sayfaGenislikMM = (form && form.bolge && form.bolge.width) || 210;
+      const sayfaYukseklikMM = (form && form.bolge && form.bolge.height) || 297;
+      const beklenenOranlar = window.SayfaTespitCV.oranlariHesapla(sayfaGenislikMM, sayfaYukseklikMM);
+
+      const cerceve = window.SayfaTespitCV.sayfaKoseleriniAraCV(fotoImageData, null, null, beklenenOranlar);
       if (!cerceve || !cerceve.solUst || !cerceve.sagUst || !cerceve.solAlt || !cerceve.sagAlt) {
         return sayfaKoseleriniAra(fotoImageData, hassasiyet);
       }
-      // Kaba ölçek: üst kenar uzunluğu ~ (210mm - 2*CERCEVE_PAY) kabul edilip
-      // px/mm kestiriliyor — sadece inceltme penceresini boyutlandırmak için.
+      // Kaba ölçek: üst kenar uzunluğu ~ (sayfa genişliği - 2*CERCEVE_PAY)
+      // kabul edilip px/mm kestiriliyor — sadece inceltme penceresini
+      // boyutlandırmak için. Önceden hep "210mm - 8mm" (A4) sabitti.
       const ustGenislikPx = Math.hypot(cerceve.sagUst.x - cerceve.solUst.x, cerceve.sagUst.y - cerceve.solUst.y);
-      const pxPerMmTahmini = ustGenislikPx / 202; // 210mm - 2*4mm çerçeve payı
+      const pxPerMmTahmini = ustGenislikPx / Math.max(20, sayfaGenislikMM - 8);
       const INCELTME_YARICAP = Math.max(25, 16 * pxPerMmTahmini); // ~16mm
 
       function inceltVeDon(nokta, disKoseX, disKoseY) {
@@ -2125,7 +2136,7 @@ window.OmrOkuyucu = (function () {
   }
 
   function formuOtomatikDuzlestir(fotoImageData, form, ppmm) {
-    const bulunanlar = sayfaKoseleriniAraHibrit(fotoImageData);
+    const bulunanlar = sayfaKoseleriniAraHibrit(fotoImageData, undefined, form);
     const konumEslesme = {
       'sol-ust': bulunanlar.solUst,
       'sag-ust': bulunanlar.sagUst,

@@ -65,7 +65,18 @@ export function cvHazirMi() {
 // diye window'a da asılıyor — nihai okuma artık canlı önizlemedeki AYNI
 // güvenilir tam-çerçeve kontur yöntemini kullanabiliyor (bkz. omrEngine.js:
 // formuOtomatikDuzlestir).
-window.SayfaTespitCV = { sayfaKoseleriniAraCV, cvHazirBekle, cvHazirMi };
+window.SayfaTespitCV = { sayfaKoseleriniAraCV, cvHazirBekle, cvHazirMi, oranlariHesapla };
+
+/**
+ * YENİ (Sedat isteği, Ağustos 2026): bir sayfanın mm cinsinden genişlik/
+ * yüksekliğinden, sayfaKoseleriniAraCV'nin beklediği [dikeyOran, yatayOran]
+ * çiftini üretir. width/height verilmezse (veya sıfırsa) A4'e düşer.
+ */
+export function oranlariHesapla(genislikMM, yukseklikMM) {
+  if (!genislikMM || !yukseklikMM) return [A4_ORANI_DIKEY, A4_ORANI_YATAY];
+  const dikey = genislikMM / yukseklikMM;
+  return [dikey, 1 / dikey];
+}
 
 /**
  * 4 noktayı (herhangi bir sırada gelebilir) solUst/sagUst/sagAlt/solAlt
@@ -88,14 +99,15 @@ function kenarUzunluk(p1, p2) {
   return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
 }
 
-/** Bulunan dörtgenin A4 en-boy oranına (dikey ya da yatay) yeterince yakın olup olmadığını kontrol eder. */
-function enBoyOraniUygunMu(koseler) {
+/** Bulunan dörtgenin BEKLENEN en-boy oranına (dikey ya da yatay) yeterince yakın olup olmadığını kontrol eder. */
+function enBoyOraniUygunMu(koseler, oranlar) {
   const ust = kenarUzunluk(koseler.solUst, koseler.sagUst);
   const sol = kenarUzunluk(koseler.solUst, koseler.solAlt);
   if (ust < 1 || sol < 1) return false;
   const oran = ust / sol;
-  const dikeyFark = Math.abs(oran - A4_ORANI_DIKEY) / A4_ORANI_DIKEY;
-  const yatayFark = Math.abs(oran - A4_ORANI_YATAY) / A4_ORANI_YATAY;
+  const [dikeyOran, yatayOran] = oranlar || [A4_ORANI_DIKEY, A4_ORANI_YATAY];
+  const dikeyFark = Math.abs(oran - dikeyOran) / dikeyOran;
+  const yatayFark = Math.abs(oran - yatayOran) / yatayOran;
   return dikeyFark < ORAN_TOLERANS || yatayFark < ORAN_TOLERANS;
 }
 
@@ -114,7 +126,7 @@ const _CANNY_ON_AYARLARI = [
   { alt: 10, ust: 40, epsilonlar: [0.02, 0.04, 0.06] },  // en toleranslı — son çare
 ];
 
-function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, epsilonlar) {
+function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, epsilonlar, oranlar) {
   const kenarlar = new cv.Mat();
   const dilateKernel = cv.Mat.ones(3, 3, cv.CV_8U);
   const konturlar = new cv.MatVector();
@@ -156,7 +168,7 @@ function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, e
               });
             }
             const sirali = noktalariSirala(ham);
-            if (enBoyOraniUygunMu(sirali)) {
+            if (enBoyOraniUygunMu(sirali, oranlar)) {
               enIyi = sirali;
               enIyiAlan = alan;
             }
@@ -193,7 +205,7 @@ function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, e
           y: center.y + dx * sinA + dy * cosA + roiOfsY,
         }));
         const sirali = noktalariSirala(ham);
-        if (enBoyOraniUygunMu(sirali)) enIyi = sirali;
+        if (enBoyOraniUygunMu(sirali, oranlar)) enIyi = sirali;
       }
     }
     if (enBuyukHamKontur) enBuyukHamKontur.delete();
@@ -218,9 +230,9 @@ function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, e
  * olanda durur (bkz. yukarıdaki not — kırışık kağıtlarda tek sabit eşik
  * yetersiz kalıyordu).
  */
-function _konturAra(gri, roiOfsX, roiOfsY, tamAlan) {
+function _konturAra(gri, roiOfsX, roiOfsY, tamAlan, oranlar) {
   for (const ayar of _CANNY_ON_AYARLARI) {
-    const sonuc = _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, ayar.alt, ayar.ust, ayar.epsilonlar);
+    const sonuc = _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, ayar.alt, ayar.ust, ayar.epsilonlar, oranlar);
     if (sonuc) return sonuc;
   }
   return null;
@@ -238,10 +250,18 @@ function _konturAra(gri, roiOfsX, roiOfsY, tamAlan) {
  *   önceki turda bulunan köşeler. Verilirse ÖNCE onun etrafında dar bir
  *   ROI'de aranır (çok daha hızlı, "anlık" hissi bu sayede oluşur);
  *   bulunamazsa otomatik olarak TAM KARE aramasına düşer.
+ * @param {[number,number]} [beklenenOranlar] - YENİ (Sedat isteği, Ağustos
+ *   2026: "Köşe yakalayıcılar her formda aktif çalışsın") — [dikeyOran,
+ *   yatayOran] olarak taranan sayfanın GERÇEK en-boy oranı. Verilmezse
+ *   A4'e (LGS/Bursluluk) düşülür — bu yüzden önceden Optik Form Editörü
+ *   ile A4-dışı (A5/A6/A7/Özel Boyut) tasarlanmış formlarda köşe tespiti
+ *   sessizce reddediyordu (dörtgen bulunuyordu ama "A4 oranına uymuyor"
+ *   diye elenip boş dönülüyordu). Her form kendi gerçek oranını göndermeli
+ *   (bkz. omrEngine.js: sayfaKoseleriniAraHibrit, camera.js: canlı önizleme).
  * @returns {{solUst,sagUst,solAlt,sagAlt}} bulunamadıysa boş obje {}
  *   (camera.js: _tumKoselerVarMi() bunu "yok" olarak yorumluyor)
  */
-export function sayfaKoseleriniAraCV(imageData, hassasiyet, sonBilinenKoseler) {
+export function sayfaKoseleriniAraCV(imageData, hassasiyet, sonBilinenKoseler, beklenenOranlar) {
   if (!_cvHazir) return {};
 
   const src = cv.matFromImageData(imageData);
@@ -277,14 +297,14 @@ export function sayfaKoseleriniAraCV(imageData, hassasiyet, sonBilinenKoseler) {
 
       if (x1 - x0 > 20 && y1 - y0 > 20) {
         const roi = gri.roi(new cv.Rect(x0, y0, x1 - x0, y1 - y0));
-        sonuc = _konturAra(roi, x0, y0, tamAlan);
+        sonuc = _konturAra(roi, x0, y0, tamAlan, beklenenOranlar);
         roi.delete();
       }
     }
 
     // ---- Takip başarısızsa (ya da hiç önceki köşe yoksa) TAM KARE araması ----
     if (!sonuc) {
-      sonuc = _konturAra(gri, 0, 0, tamAlan);
+      sonuc = _konturAra(gri, 0, 0, tamAlan, beklenenOranlar);
     }
   } finally {
     src.delete();
