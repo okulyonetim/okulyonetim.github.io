@@ -104,6 +104,22 @@
     return sutunlar;
   }
 
+  // Standart kağıt boyutları (mm) — Sedat'ın isteği: "bazı formlar A4 bazıları
+  // A5 bazıları A8 bile olabilir". A8 GERÇEKTEN çok küçük (bkz. UYARI aşağıda),
+  // yine de seçenek olarak bırakıldı — engellemek yerine kullanıcıyı bilgilendirmek
+  // tercih edildi.
+  const KAGIT_BOYUTLARI = {
+    A4: { width: 210, height: 297 },
+    A5: { width: 148, height: 210 },
+    A6: { width: 105, height: 148 },
+    A7: { width: 74, height: 105 },
+    A8: { width: 52, height: 74 },
+  };
+  // Köşe hizalama işaretleri için gereken minimum güvenli kenar boşluğu
+  // (layoutEngine.js: KOSE_GUVENLI_PAY) — küçük kağıtlarda kullanılabilir
+  // alanın ne kadar dar kaldığını kullanıcıya göstermek için.
+  const KOSE_GUVENLI_PAY_MM = 12;
+
   function OptikSablonEditor_baslat(container, secenekler) {
     secenekler = secenekler || {};
     let sablon = secenekler.baslangicSablonu
@@ -208,6 +224,86 @@
       requestAnimationFrame(viewBoxAyarla);
     });
     aracCubugu.appendChild(tamEkranBtn);
+
+    // ---- Kağıt boyutu seçici (Sedat isteği, Ağustos 2026) ----
+    const kagitSatiri = document.createElement('div');
+    kagitSatiri.style.cssText = 'display:flex; align-items:center; gap:6px; width:100%; padding:0 0 4px; font-size:12px; color:#555;';
+    kagitSatiri.innerHTML = '<span>Kağıt Boyutu:</span>';
+    const kagitSelect = document.createElement('select');
+    kagitSelect.style.cssText = 'min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px;';
+    Object.keys(KAGIT_BOYUTLARI).forEach((ad) => {
+      const o = document.createElement('option');
+      o.value = ad; o.textContent = `${ad} (${KAGIT_BOYUTLARI[ad].width}×${KAGIT_BOYUTLARI[ad].height}mm)`;
+      kagitSelect.appendChild(o);
+    });
+    const ozelOpt = document.createElement('option');
+    ozelOpt.value = 'ozel'; ozelOpt.textContent = 'Özel Boyut';
+    kagitSelect.appendChild(ozelOpt);
+
+    const ozelGenislikInput = document.createElement('input');
+    ozelGenislikInput.type = 'number'; ozelGenislikInput.min = 20; ozelGenislikInput.placeholder = 'Genişlik mm';
+    ozelGenislikInput.style.cssText = 'width:80px; min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; display:none;';
+    const ozelYukseklikInput = document.createElement('input');
+    ozelYukseklikInput.type = 'number'; ozelYukseklikInput.min = 20; ozelYukseklikInput.placeholder = 'Yükseklik mm';
+    ozelYukseklikInput.style.cssText = 'width:80px; min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; display:none;';
+
+    const kagitUyariEl = document.createElement('span');
+    kagitUyariEl.style.cssText = 'color:#a33; font-size:11px;';
+
+    function mevcutBoyutAdiBul() {
+      const eslesen = Object.keys(KAGIT_BOYUTLARI).find((ad) =>
+        KAGIT_BOYUTLARI[ad].width === sablon.sayfaBoyutu.width && KAGIT_BOYUTLARI[ad].height === sablon.sayfaBoyutu.height
+      );
+      return eslesen || 'ozel';
+    }
+
+    function kagitUyarisiniGuncelle() {
+      const kullanilabilirGenislik = sablon.sayfaBoyutu.width - 2 * KOSE_GUVENLI_PAY_MM;
+      const kullanilabilirYukseklik = sablon.sayfaBoyutu.height - 2 * KOSE_GUVENLI_PAY_MM;
+      if (kullanilabilirGenislik < 20 || kullanilabilirYukseklik < 20) {
+        kagitUyariEl.textContent = `⚠ Kullanılabilir alan sadece ~${Math.max(0, kullanilabilirGenislik).toFixed(0)}×${Math.max(0, kullanilabilirYukseklik).toFixed(0)}mm — çok az baloncuk sığar.`;
+      } else {
+        kagitUyariEl.textContent = '';
+      }
+    }
+
+    function sayfaBoyutunuUygula(genislik, yukseklik) {
+      gecmiseKaydet();
+      sablon.sayfaBoyutu = { width: genislik, height: yukseklik };
+      kagitUyarisiniGuncelle();
+      ciz();
+    }
+
+    kagitSelect.value = mevcutBoyutAdiBul();
+    ozelGenislikInput.style.display = kagitSelect.value === 'ozel' ? '' : 'none';
+    ozelYukseklikInput.style.display = kagitSelect.value === 'ozel' ? '' : 'none';
+    ozelGenislikInput.value = sablon.sayfaBoyutu.width;
+    ozelYukseklikInput.value = sablon.sayfaBoyutu.height;
+
+    kagitSelect.addEventListener('change', () => {
+      if (kagitSelect.value === 'ozel') {
+        ozelGenislikInput.style.display = '';
+        ozelYukseklikInput.style.display = '';
+        sayfaBoyutunuUygula(parseFloat(ozelGenislikInput.value) || 100, parseFloat(ozelYukseklikInput.value) || 150);
+      } else {
+        ozelGenislikInput.style.display = 'none';
+        ozelYukseklikInput.style.display = 'none';
+        const b = KAGIT_BOYUTLARI[kagitSelect.value];
+        sayfaBoyutunuUygula(b.width, b.height);
+      }
+    });
+    [ozelGenislikInput, ozelYukseklikInput].forEach((input) => {
+      input.addEventListener('change', () => {
+        sayfaBoyutunuUygula(parseFloat(ozelGenislikInput.value) || sablon.sayfaBoyutu.width, parseFloat(ozelYukseklikInput.value) || sablon.sayfaBoyutu.height);
+      });
+    });
+
+    kagitSatiri.appendChild(kagitSelect);
+    kagitSatiri.appendChild(ozelGenislikInput);
+    kagitSatiri.appendChild(ozelYukseklikInput);
+    kagitSatiri.appendChild(kagitUyariEl);
+    aracCubugu.appendChild(kagitSatiri);
+    kagitUyarisiniGuncelle();
 
     function gecmiseKaydet() {
       gecmis.push(derinKopya(sablon));
@@ -325,11 +421,36 @@
 
     function cizSadeceTuval() {
       svg.innerHTML = '';
+      const bolge = { x: 0, y: 0, width: sablon.sayfaBoyutu.width, height: sablon.sayfaBoyutu.height };
+
       // Sayfa sınırı
       svg.appendChild(svgOlustur('rect', {
         x: 0, y: 0, width: sablon.sayfaBoyutu.width, height: sablon.sayfaBoyutu.height,
         fill: '#fff', stroke: '#999', 'stroke-width': 0.3,
       }));
+
+      // YENİ (Sedat geri bildirimi, Ağustos 2026): gerçek çıktıda basılan
+      // köşe hizalama kareleri + çerçeve çizgisi (bkz. pdfFormGenerator.js:
+      // hizalamaIsaretleriCiz) — önceden editörde hiç ÇİZİLMİYORDU (sadece
+      // PDF'e basılıyordu), bu da bir öğeyi yanlışlıkla bu bölgeye
+      // yerleştirip fark etmemeyi kolaylaştırıyordu. Artık hem GÜVENSİZ
+      // bölge (köşe karelerinin oturduğu kenar payı) hafif kırmızı taranarak
+      // gösteriliyor, hem de kareler/çerçeve gerçek konumlarında çiziliyor.
+      const guvenliPay = KOSE_GUVENLI_PAY_MM;
+      if (sablon.sayfaBoyutu.width > 2 * guvenliPay && sablon.sayfaBoyutu.height > 2 * guvenliPay) {
+        svg.appendChild(svgOlustur('rect', {
+          x: 0, y: 0, width: sablon.sayfaBoyutu.width, height: sablon.sayfaBoyutu.height,
+          fill: 'none', stroke: 'rgba(200,0,0,0.35)', 'stroke-width': guvenliPay, 'stroke-dasharray': '2,1.5',
+        }));
+      }
+      const cerceve = LE.sayfaCercevesiHesapla(bolge);
+      svg.appendChild(svgOlustur('rect', {
+        x: cerceve.x, y: cerceve.y, width: cerceve.width, height: cerceve.height,
+        fill: 'none', stroke: '#000', 'stroke-width': 0.35,
+      }));
+      LE.hizalamaIsaretleriEkle(bolge).forEach((m) => {
+        svg.appendChild(svgOlustur('rect', { x: m.x, y: m.y, width: m.boyut, height: m.boyut, fill: '#000' }));
+      });
 
       sablon.ogeler.forEach((og) => ogeCiz(og));
     }
