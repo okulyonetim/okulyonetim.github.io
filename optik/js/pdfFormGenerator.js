@@ -151,7 +151,9 @@ function kucukBaloncukCiz(doc, cx, cy, r, etiket, dolu) {
   } else {
     doc.setDrawColor(...ANA_RENK);
     doc.circle(cx, cy, r, 'S');
-    doc.setTextColor(...KOYU_METIN);
+    // bkz. baloncukCiz üstündeki not: etiket rengi de ANA_RENK olmalı ki
+    // renksizlikCarpani onu öğrenci işaretinden ayırt edebilsin.
+    doc.setTextColor(...ANA_RENK);
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(Math.max(2.5, r * 1.9));
     doc.text(String(etiket), cx, cy + r * 0.35, { align: 'center' });
@@ -252,14 +254,36 @@ async function headerCiz(doc, form, ogrenci, sinavTuru) {
   }
 }
 
-/** Bir baloncuğu (daire + harf) çizer. */
+/**
+ * Bir baloncuğu (daire + harf) çizer.
+ *
+ * KÖK NEDEN DÜZELTMESİ (optik okuma "boş baloncukları dolu görüyor" hatası):
+ * Harf etiketi (A/B/C/D) önceden KOYU_METIN [33,33,33] ile, yani neredeyse
+ * SİYAH ve DÜŞÜK DOYGUNLUKLU basılıyordu. omrEngine.js:isaretKoyulukPuani
+ * tam olarak "koyu + düşük doygunluk = öğrenci işareti" mantığıyla çalışıyor
+ * — yani baloncuğun İÇİNDEKİ basılı harf, öğrencinin kalem izinden RENK
+ * ANALİZİYLE AYIRT EDİLEMİYORDU (baskının bordo/pembe çerçeve rengi zaten
+ * ayrı bir mekanizmayla eleniyordu, ama bu harf hiç elenmiyordu). Sonuç:
+ * her baloncuk, işaretlenmemiş olsa bile merkezinde "öğrenci izni gibi
+ * görünen" bir taban koyuluk taşıyordu — bu da hem cevap şıklarında yanlış
+ * "dolu" okumalara hem de numara hanelerinde ayırt edici farkın erimesine
+ * (BELİRSİZ) yol açıyordu.
+ *
+ * ÇÖZÜM: harfi de tıpkı çember çizgisi gibi ANA_RENK (bordo/pembe, yüksek
+ * doygunluk) ile bas — böylece mevcut renksizlikCarpani mekanizması harfi
+ * de çerçeve gibi otomatik eler, öğrencinin SİYAH/GRİ kalem izinden net
+ * ayrışır. NOT: bu düzeltme sadece BUNDAN SONRA üretilecek/basılacak
+ * formlar için geçerlidir — halihazırda basılmış kağıtlardaki harf zaten
+ * fiziksel olarak siyah, yazılım tarafında ayrıca ele alınması gerekir
+ * (bkz. omrEngine.js: baloncukKaranlikOrani yorum notu).
+ */
 function baloncukCiz(doc, sik) {
   doc.setDrawColor(...ANA_RENK);
   doc.setLineWidth(0.35);
   doc.circle(sik.cx, sik.cy, sik.r, 'S');
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(Math.max(3, sik.r * 2.2));
-  doc.setTextColor(...KOYU_METIN);
+  doc.setTextColor(...ANA_RENK);
   doc.text(sik.harf, sik.cx, sik.cy + sik.r * 0.35, { align: 'center' });
 }
 

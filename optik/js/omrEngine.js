@@ -399,11 +399,6 @@ window.OmrOkuyucu = (function () {
    * pencereye kısmen girse bile, kendi karemiz tahmine daha yakın olduğu
    * için doğru bileşen seçilir ve komşunun pikselleri hesaba katılmaz.
    */
-  // NOT: Bu fonksiyon artık hiçbir yerden çağrılmıyor — validasyonsuz
-  // "en yakın koyu leke" seçimi yanlış-kilitlenme riski taşıdığı için
-  // (bkz. formuOtomatikDuzlestir ve genelDuzeltmeHesapla'daki notlar)
-  // her iki çağrı noktası da enBuyukKareBlobuBul'a taşındı. Referans
-  // amaçlı ve olası geri dönüş ihtiyacı için siliniyor değil bırakıldı.
   function isaretMerkeziBulBlob(imageData, tahminX, tahminY, yarimPencereX, yarimPencereY) {
     const { width, height, data } = imageData;
     const x0 = Math.max(0, Math.floor(tahminX - yarimPencereX));
@@ -980,18 +975,8 @@ window.OmrOkuyucu = (function () {
       const aramaYariCapMM = Math.max(ARAMA_TABAN_MM, qrUzaklikMM * ARAMA_ORANI);
 
       const yarimPencerePx = aramaYariCapMM * pikselPerMM;
-      // DÜZELTME: isaretMerkeziBulBlob validasyonsuz "tahmine en yakın koyu
-      // leke"yi seçiyordu — kaba tahmin birkaç mm kaymışsa (kırışık kağıt,
-      // eğik açı) bu leke metin/dolu baloncuk/çizgi gölgesi olabiliyordu ve
-      // sessizce "köşe" kabul edilip homografiyi bozuyordu. Bunun yerine,
-      // aynı dosyada zaten var olan ve boyut/en-boy oranı/doluluk kontrolü
-      // yapan enBuyukKareBlobuBul kullanılıyor — uygun aday yoksa null
-      // döner (çağıran bunu doğru şekilde "işaret bulunamadı" sayıyor).
-      const hassasMerkez = enBuyukKareBlobuBul(
-        fotoImageData,
-        kabaTahmin.x - yarimPencerePx, kabaTahmin.y - yarimPencerePx,
-        kabaTahmin.x + yarimPencerePx, kabaTahmin.y + yarimPencerePx,
-        kabaTahmin.x, kabaTahmin.y
+      const hassasMerkez = isaretMerkeziBulBlob(
+        fotoImageData, kabaTahmin.x, kabaTahmin.y, yarimPencerePx, yarimPencerePx
       );
       if (hassasMerkez) {
         hassasKaynak.push({ x: cx, y: cy });
@@ -1353,48 +1338,6 @@ window.OmrOkuyucu = (function () {
     _sonHTestSonucu = hTestSonucu;
     _sonHKatsayilari = H.map(v => Number(v.toFixed(4)));
 
-    // PERFORMANS DÜZELTMESİ: bu fonksiyon önceden çıktının HER pikseli
-    // için elle JS döngüsünde matris çarpımı + bilinear örnekleme
-    // yapıyordu (A4'te ppmm'ye göre milyonlarca piksel, her biri ayrı
-    // fonksiyon çağrısı overhead'iyle) — zayıf telefonlarda "dakikalar"
-    // sürmesinin başlıca nedeni muhtemelen buydu. opencv.js zaten
-    // yüklü; cv.warpPerspective aynı işi derlenmiş/WASM tarafında yapar
-    // (tipik olarak onlarca kat hızlı). H'nin yönü zaten
-    // hedef(canonical)->kaynak(foto) olduğundan (bkz. noktayiDonustur),
-    // cv.WARP_INVERSE_MAP bayrağıyla OpenCV'nin bunu TERS ÇEVİRMEDEN
-    // aynı yönde kullanması sağlanıyor — yani çıktı, eski yöntemle
-    // piksel piksel örtüşür. cv.js yoksa ya da herhangi bir hata
-    // olursa, aşağıdaki eski JS yöntemine SESSİZCE düşülür.
-    if (typeof cv !== 'undefined' && cv.Mat) {
-      let src = null, Hmat = null, dst = null;
-      try {
-        src = cv.matFromImageData(fotoImageData);
-        Hmat = cv.matFromArray(3, 3, cv.CV_64FC1, H);
-        dst = new cv.Mat();
-        cv.warpPerspective(
-          src, dst, Hmat, new cv.Size(cGenislik, cYukseklik),
-          cv.INTER_LINEAR | cv.WARP_INVERSE_MAP, cv.BORDER_CONSTANT,
-          new cv.Scalar(255, 255, 255, 255)
-        );
-        const canvas = document.createElement('canvas');
-        canvas.width = cGenislik;
-        canvas.height = cYukseklik;
-        cv.imshow(canvas, dst);
-        const cImageData = canvas.getContext('2d').getImageData(0, 0, cGenislik, cYukseklik);
-        return { canvas, imageData: cImageData };
-      } catch (e) {
-        console.error('[OMR] cv.warpPerspective başarısız, eski JS yöntemine düşülüyor:', e);
-        // aşağıya (eski yönteme) devam edilir
-      } finally {
-        // WASM tarafında manuel bellek yönetimi — sızıntı/yavaşlama
-        // birikmesin diye HER Mat mutlaka serbest bırakılıyor.
-        if (src) src.delete();
-        if (Hmat) Hmat.delete();
-        if (dst) dst.delete();
-      }
-    }
-
-    // --- Eski yöntem (yedek): cv.js yoksa veya yukarıda hata olduysa ---
     const canvas = document.createElement('canvas');
     canvas.width = cGenislik;
     canvas.height = cYukseklik;
@@ -1496,15 +1439,8 @@ window.OmrOkuyucu = (function () {
     for (const ad of koseAdlari) {
       const koseMM = yerelNokta(form, gc.koseler[ad].x, gc.koseler[ad].y);
       const beklenenPx = { x: koseMM.x * ppmm, y: koseMM.y * ppmm };
-      // DÜZELTME: aynı gerekçeyle (bkz. formuOtomatikDuzlestir) burada da
-      // validasyonsuz isaretMerkeziBulBlob yerine enBuyukKareBlobuBul
-      // kullanılıyor — komşu ders sütununun metnine/köşesine yanlışlıkla
-      // kilitlenip bu yerel düzeltmeyi bozma riskini ortadan kaldırır.
-      const gercekPx = enBuyukKareBlobuBul(
-        cImageData,
-        beklenenPx.x - yarimPencerePx, beklenenPx.y - yarimPencerePx,
-        beklenenPx.x + yarimPencerePx, beklenenPx.y + yarimPencerePx,
-        beklenenPx.x, beklenenPx.y
+      const gercekPx = isaretMerkeziBulBlob(
+        cImageData, beklenenPx.x, beklenenPx.y, yarimPencerePx, yarimPencerePx
       );
       if (!gercekPx) return null;
       kaynakNoktalar.push(beklenenPx);
@@ -1580,13 +1516,27 @@ window.OmrOkuyucu = (function () {
     // daha küçük bir yarıçapla örnekliyoruz — sadece iç dolgu ölçülsün.
     const icYaricap = r * 0.72;
 
+    // KÖK NEDEN DÜZELTMESİ (bkz. pdfFormGenerator.js: baloncukCiz notu):
+    // baloncuğun TAM MERKEZİNDE basılı A/B/C/D harfi/rakamı var. Bundan
+    // sonra basılacak formlarda bu harf artık ANA_RENK (bordo) ile
+    // basılıyor ve renksizlikCarpani onu eliyor — ama HÂLİHAZIRDA basılmış
+    // kağıtlarda (bu düzeltmeden önce basılanlar) harf hâlâ fiziksel
+    // olarak siyaha yakın mürekkeple kağıtta duruyor, yazılım bunu
+    // değiştiremez. O yüzden merkezdeki küçük diski (harfin oturduğu alan)
+    // örneklemeden TAMAMEN çıkarıyoruz — sadece harfin ÇEVRESİNDEKİ halkayı
+    // ölçüyoruz. İşaretlenmiş bir baloncukta öğrenci mürekkebi/kalemi bu
+    // halkayı da kaplar (dolgu tüm daireyi kaplar), boş bir baloncukta bu
+    // halka bomboş kağıttır — harften bağımsız, temiz bir ayrım sağlar.
+    const merkezDiskYaricap = r * 0.42;
+
     let toplam = 0;
     let sayac = 0;
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {
         const dx = x - cx;
         const dy = y - cy;
-        if (dx * dx + dy * dy <= icYaricap * icYaricap) {
+        const d2 = dx * dx + dy * dy;
+        if (d2 <= icYaricap * icYaricap && d2 >= merkezDiskYaricap * merkezDiskYaricap) {
           toplam += isaretKoyulukPuani(data, (y * width + x) * 4);
           sayac++;
         }
