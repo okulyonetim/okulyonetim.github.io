@@ -125,6 +125,7 @@ window.OmrOkuyucu = (function () {
   let _sonHKatsayilari = null;
   let _sonKoyulukOzeti = null;
   let _sonNumaraTeshis = null;
+  let _sonRadyalProfil = null; // YENİ (teşhis): bkz. radyalKoyulukProfili
 
   // ---------------------------------------------------------------------
   // 1) Genel yardımcılar: görüntü <-> ImageData
@@ -1929,6 +1930,8 @@ window.OmrOkuyucu = (function () {
    * satıra kilitliyor, (b) çok daha dar bir pencere (aramaOrani=0.5)
    * kullanıyor. Aynı güvenli deseni burada da uyguluyoruz.
    */
+  let _profilKaydedildiMi = false; // YENİ (teşhis): her formuOku çağrısında bir kez sıfırlanır
+
   function _basamakEnKoyusu(cImageData, bubbles, ppmm) {
     // YENİ: 0.04 -> 0.02 -> artık sabit değil, Ayarlar sheet'inden canlı
     // okunur (bkz. _numaraMinFarkGetir). Marjinal kontrastlı fotoğraflarda
@@ -1964,9 +1967,22 @@ window.OmrOkuyucu = (function () {
       const py = sikler[i].py + dy;
       const pr = sikler[i].pr;
       const s = baloncukKaranlikOraniYerelArama(cImageData, px, py, pr, 0.5, 0.12);
-      return { deger: b.deger !== undefined ? b.deger : b.harf, oran: s.oran };
+      return { deger: b.deger !== undefined ? b.deger : b.harf, oran: s.oran, cx: px + s.dx, cy: py + s.dy, r: pr };
     });
     sonuclar.sort(function(a, b) { return b.oran - a.oran; });
+
+    // YENİ (teşhis): SADECE bu okumadaki İLK basamak grubu için, en koyu
+    // adayın GERÇEK yarıçap-koyuluk profilini kaydet — "harf etkisi tam
+    // nerede bitiyor" sorusuna gerçek veriyle cevap vermek için.
+    if (!_profilKaydedildiMi && sonuclar.length) {
+      _profilKaydedildiMi = true;
+      const enKoyuAday = sonuclar[0];
+      _sonRadyalProfil =
+        'aday=' + enKoyuAday.deger + ' oran=' + enKoyuAday.oran.toFixed(3) +
+        ' | dilimler(0.0r->1.0r, 10 dilim): ' +
+        radyalKoyulukProfili(cImageData, enKoyuAday.cx, enKoyuAday.cy, enKoyuAday.r);
+    }
+
     const birinci = sonuclar[0];
     const ikinci = sonuclar[1];
     // İkinci yoksa (tek baloncuk) veya fark yeterliyse seç
@@ -1976,7 +1992,47 @@ window.OmrOkuyucu = (function () {
     return { deger: birinci.deger, guven: birinci.oran, detay: sonuclar };
   }
 
-  /** Basit çapraz çarpım işareti — 3 noktanın döndüğü yönü (saat/saat-yönü-tersi) verir. */
+  /**
+   * YENİ (teşhis): bir baloncuğun merkezinden dış kenarına kadar, yarıçapın
+   * onda birlik dilimlerinde ORTALAMA isaretKoyulukPuani'nı ölçer (ince bir
+   * halka olarak, kümülatif değil — her dilim SADECE kendi bandını ölçer).
+   *
+   * NEDEN: baloncukKaranlikOrani'ndaki merkezDiskYaricap (0.42r) kesimi,
+   * basılı harfin VEKTÖR boyutuna göre tahmin edilmişti — ama gerçek
+   * fotoğrafta mürekkep yayılması + JPEG/kamera bulanıklığı harfin
+   * karanlığını bu tahminden daha geniş bir alana taşıyor olabilir. Kör
+   * kör bir üçüncü yarıçap tahmini yapmak yerine, GERÇEK profili ölçüp
+   * "harf etkisi tam olarak nerede bitiyor, temiz kağıt nerede başlıyor"
+   * sorusuna kesin cevap alıyoruz.
+   */
+  function radyalKoyulukProfili(cImageData, cx, cy, r) {
+    const { width, height, data } = cImageData;
+    const dilimSayisi = 10;
+    const sonuc = [];
+    for (let i = 0; i < dilimSayisi; i++) {
+      const icR = r * (i / dilimSayisi);
+      const disR = r * ((i + 1) / dilimSayisi);
+      const x0 = Math.max(0, Math.floor(cx - disR));
+      const x1 = Math.min(width - 1, Math.ceil(cx + disR));
+      const y0 = Math.max(0, Math.floor(cy - disR));
+      const y1 = Math.min(height - 1, Math.ceil(cy + disR));
+      let toplam = 0, sayac = 0;
+      for (let y = y0; y <= y1; y++) {
+        for (let x = x0; x <= x1; x++) {
+          const dx = x - cx, dy = y - cy;
+          const d2 = dx * dx + dy * dy;
+          if (d2 >= icR * icR && d2 <= disR * disR) {
+            toplam += isaretKoyulukPuani(data, (y * width + x) * 4);
+            sayac++;
+          }
+        }
+      }
+      sonuc.push((sayac > 0 ? toplam / sayac : 0).toFixed(3));
+    }
+    return sonuc.join(',');
+  }
+
+
   function carpiklikIsaretiOto(a, b, c) {
     const v1x = b.x - a.x, v1y = b.y - a.y;
     const v2x = c.x - b.x, v2y = c.y - b.y;
@@ -2217,6 +2273,8 @@ window.OmrOkuyucu = (function () {
   async function formuOku(kaynak, form, secenekler = {}) {
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = [];
+    _profilKaydedildiMi = false; // YENİ (teşhis): her okumada bir kez profil kaydet
+    _sonRadyalProfil = null;
 
     // YENİ (kritik): cv.js henüz yüklenme sürecindeyse BEKLE, sessizce eski
     // yönteme kayma. Önceden burada bir bekleme yoktu — aynı fotoğraf,
@@ -2321,6 +2379,7 @@ window.OmrOkuyucu = (function () {
     }
     uyarilar.push('[KOD SÜRÜMÜ: v19-numaraTeshis]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
+    if (_sonRadyalProfil) { uyarilar.push('Radyal koyuluk profili: ' + _sonRadyalProfil); }
 
     return {
       basarili: true,
@@ -2452,6 +2511,7 @@ window.OmrOkuyucu = (function () {
     }
     uyarilar.push("[KOD SÜRÜMÜ: v19-numaraTeshis]");
     if (_sonNumaraTeshis) { uyarilar.push("Numara teşhisi: " + _sonNumaraTeshis); }
+    if (_sonRadyalProfil) { uyarilar.push("Radyal koyuluk profili: " + _sonRadyalProfil); }
 
     return {
       basarili: true,
@@ -2513,6 +2573,9 @@ window.OmrOkuyucu = (function () {
 
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = ['Köşeler elle seçildi (otomatik hizalama tespiti atlandı).'];
+    _profilKaydedildiMi = false; // YENİ (teşhis): her okumada bir kez profil kaydet
+    _sonRadyalProfil = null;
+
 
     const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
 
