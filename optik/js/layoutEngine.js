@@ -142,9 +142,16 @@ function sayfayiBol(formsPerA4, sayfaBoyutu = A4) {
   return bolgeler;
 }
 
-// Baloncuk çapı SABİTTİR — güvenilir telefon kamerası okuması için asla küçültülmez.
-// Bunun yerine soru sayısı arttıkça blok sayısı (yan yana soru sütunu grubu) artırılır.
-const BALONCUK_CAP = 4.2; // mm
+// Baloncuk çapı SABİTTİR ve TÜM form tipleri (LGS, Bursluluk, Özel) arasında
+// AYNIDIR — Sedat'ın isteği (Ağustos 2026): "Tüm optik formlarda baloncuk
+// boyutu aynı olsun". Önceden LGS 2.75mm, Bursluluk 4.5mm, Özel 4.2mm gibi
+// üç ayrı sabit vardı. Birleştirme için LGS'nin değeri (2.75mm) seçildi —
+// çünkü LGS'nin 6 sütunlu (Sözel+Sayısal) dar düzeni SADECE bu boyutla
+// sayfaya sığıyor (bkz. lgsSablonuOlustur); daha büyük bir değer LGS'yi
+// kıracaktı. Bursluluk ve Özel formlarda daha fazla boş alan olduğu için
+// küçülme onlarda bir sığdırma sorunu yaratmaz.
+const STANDART_BALONCUK_CAP = 2.75; // mm — tüm form tiplerinde ortak
+const BALONCUK_CAP = STANDART_BALONCUK_CAP; // geriye dönük uyumluluk (özel form üretimi bunu kullanıyor)
 const IZIN_VERILEN_BLOK_SAYILARI = [1, 2, 4, 6];
 
 /**
@@ -693,7 +700,7 @@ function lgsSablonuOlustur() {
   // 1mm boşluk garanti ediliyor — bkz. sayfanın başındaki sabit tanımı.
   const KENAR_PAY = KOSE_GUVENLI_PAY;
   const HEADER_YUKSEKLIK = HEADER_TOPLAM_YUKSEKLIK;
-  const baloncukCap = 2.75; // 6 sütun + sol Kitapçık/Numara bloğu yan yana sığması için ayarlandı, güvenli pay bırakılarak
+  const baloncukCap = STANDART_BALONCUK_CAP; // Ağustos 2026: tüm form tiplerinde ortak (bkz. dosya başındaki not)
   const sutunGenisligi = 8 + 4 * (baloncukCap * 1.45); // soruNoGenisligi(8) + 4 şık
 
   const gruplar = [
@@ -782,7 +789,7 @@ function burslulukSablonuOlustur() {
   // çakışması burada da geçerliydi, aynı sabitle düzeltiliyor.
   const KENAR_PAY = KOSE_GUVENLI_PAY;
   const HEADER_YUKSEKLIK = HEADER_TOPLAM_YUKSEKLIK;
-  const baloncukCap = 4.5; // sadece 4 sütun oldugu icin daha rahat/buyuk baloncuk kullanabiliyoruz
+  const baloncukCap = STANDART_BALONCUK_CAP; // Ağustos 2026: önceden 4.5mm (4 sütun için daha rahat) idi, tüm form tiplerinde ortak olsun diye LGS'nin 2.75mm'sine eşitlendi
   const sutunGenisligi = 9 + 4 * (baloncukCap * 1.6); // soruNoGenisligi(9) + 4 şık
   const DERS_SAYISI = 4;
 
