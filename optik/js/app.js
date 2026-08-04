@@ -2245,12 +2245,41 @@ function optikFormSheetAc(onSecim) {
             });
         });
         liste.querySelectorAll('[data-ozel-id]').forEach(btn => {
+            let uzunBasmaTetiklendiMi = false;
             btn.addEventListener('click', () => {
+                if (uzunBasmaTetiklendiMi) { uzunBasmaTetiklendiMi = false; return; } // uzun basma zaten işlemi yaptı, tıklamayı yok say
                 sheetKapat('sheetOptikForm');
                 const kayit = DB.ozelSablonBul(btn.dataset.ozelId);
                 const form = sablonDerlemesiniGetir(kayit.id);
                 onSecim({ id: kayit.id, ad: kayit.ad, soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
             });
+            // YENİ (Sedat geri bildirimi, Ağustos 2026): satırda zaten
+            // "düzenlemek için uzun bas" yazıyordu ama hiç bağlanmamıştı —
+            // Pointer Events ile gerçek uzun-basma algılama (500ms, 10px'ten
+            // fazla parmak kayarsa iptal — kaydırmayla karışmasın).
+            let uzunBasmaZamanlayici = null;
+            let uzunBasmaBaslangic = null;
+            const UZUN_BASMA_MS = 500, UZUN_BASMA_TOLERANS_PX = 10;
+            btn.addEventListener('pointerdown', (ev) => {
+                uzunBasmaBaslangic = { x: ev.clientX, y: ev.clientY };
+                uzunBasmaZamanlayici = setTimeout(() => {
+                    uzunBasmaZamanlayici = null;
+                    uzunBasmaTetiklendiMi = true; // sonra gelecek click'i bastır
+                    if (navigator.vibrate) navigator.vibrate(15);
+                    sheetKapat('sheetOptikForm');
+                    sablonEditoruAc(btn.dataset.ozelId);
+                }, UZUN_BASMA_MS);
+            });
+            const uzunBasmaIptal = (ev) => {
+                if (uzunBasmaZamanlayici && ev && ev.type === 'pointermove' && uzunBasmaBaslangic) {
+                    const dx = ev.clientX - uzunBasmaBaslangic.x, dy = ev.clientY - uzunBasmaBaslangic.y;
+                    if (Math.hypot(dx, dy) < UZUN_BASMA_TOLERANS_PX) return; // küçük titreşim, iptal etme
+                }
+                if (uzunBasmaZamanlayici) { clearTimeout(uzunBasmaZamanlayici); uzunBasmaZamanlayici = null; }
+            };
+            btn.addEventListener('pointermove', uzunBasmaIptal);
+            btn.addEventListener('pointerup', uzunBasmaIptal);
+            btn.addEventListener('pointercancel', uzunBasmaIptal);
         });
         const tasarlaBtn = liste.querySelector('[data-tasarla]');
         if (tasarlaBtn) {

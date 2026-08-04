@@ -44,10 +44,10 @@
     kimlikAlani: () => ({ tip: 'kimlikAlani', x: 15, y: 15, genislik: 100, yukseklik: 14, baslik: 'AD SOYAD' }),
     numaraAlani: () => ({ tip: 'numaraAlani', x: 15, y: 40, basamakSayisi: 4, olcek: 1, yon: 'dikey' }),
     kitapcikAlani: () => ({ tip: 'kitapcikAlani', x: 15, y: 20, secenekSayisi: 4, olcek: 1 }),
-    baslik: () => ({ tip: 'baslik', x: 15, y: 5, genislik: 180, yukseklik: 8, metin: 'SINAV CEVAP KAĞIDI' }),
-    metin: () => ({ tip: 'metin', x: 15, y: 5, metin: 'Metin', fontPt: 10 }),
+    baslik: () => ({ tip: 'baslik', x: 15, y: 15, genislik: 180, yukseklik: 8, metin: 'SINAV CEVAP KAĞIDI' }),
+    metin: () => ({ tip: 'metin', x: 15, y: 15, metin: 'Metin', fontPt: 10 }),
     cizgi: () => ({ tip: 'cizgi', x1: 15, y1: 15, x2: 195, y2: 15 }),
-    logo: () => ({ tip: 'logo', x: 15, y: 5, genislik: 20, yukseklik: 20 }),
+    logo: () => ({ tip: 'logo', x: 15, y: 15, genislik: 20, yukseklik: 20 }),
   };
 
   const OGE_ETIKETLERI = {
@@ -459,6 +459,52 @@
       gecmiseKaydet();
     }
 
+    // ---- Güvensiz bölgeye (köşe işaretlerinin oturduğu kenar payı) öğe
+    // sürüklenmesini engelleme (Sedat isteği, Ağustos 2026: "öğe olmaması
+    // gereken alanlar kilitli kalsın ki oraya öğe gelmesin yanlış okumasın") ----
+    function ogeYaklasikBoyut(og) {
+      if (og.tip === 'baloncukBlok') {
+        const sutunSayisi = og.sutunSayisi || 1;
+        const sutunlarArasiBosluk = og.sutunlarArasiBosluk != null ? og.sutunlarArasiBosluk : 3;
+        const soruBasinaDusen = Math.ceil(og.soruSayisi / sutunSayisi);
+        const w = og.genislik * sutunSayisi + (sutunSayisi - 1) * sutunlarArasiBosluk;
+        const h = 8 + 3 + soruBasinaDusen * (og.baloncukCap * 2);
+        return { w, h };
+      }
+      if (og.tip === 'numaraAlani') {
+        const hesap = LE.numaraAlaniHesapla(0, 0, og.basamakSayisi || 4, og.olcek || 1, og.yon || 'dikey');
+        return { w: hesap.width, h: hesap.height };
+      }
+      if (og.tip === 'kitapcikAlani') {
+        const hesap = LE.kitapcikAlaniHesapla(0, 0, og.secenekSayisi || 4, og.olcek || 1);
+        return { w: hesap.genislik, h: hesap.height };
+      }
+      if (og.genislik != null && og.yukseklik != null) return { w: og.genislik, h: og.yukseklik };
+      return { w: 20, h: 6 }; // metin vb. — nominal küçük kutu
+    }
+
+    /** dx/dy'yi, öğe güvensiz kenar bölgesine (köşe işareti payı) girmeyecek şekilde kısıtlar. */
+    function guvenliDxDyKisitla(og, baz, dx, dy) {
+      const pay = KOSE_GUVENLI_PAY_MM;
+      const sayfaW = sablon.sayfaBoyutu.width, sayfaH = sablon.sayfaBoyutu.height;
+      if (og.tip === 'cizgi') {
+        const minX = Math.min(baz.x1, baz.x2), maxX = Math.max(baz.x1, baz.x2);
+        const minY = Math.min(baz.y1, baz.y2), maxY = Math.max(baz.y1, baz.y2);
+        const dxMin = pay - minX, dxMax = (sayfaW - pay) - maxX;
+        const dyMin = pay - minY, dyMax = (sayfaH - pay) - maxY;
+        return {
+          dx: Math.min(Math.max(dx, Math.min(dxMin, dxMax)), Math.max(dxMin, dxMax)),
+          dy: Math.min(Math.max(dy, Math.min(dyMin, dyMax)), Math.max(dyMin, dyMax)),
+        };
+      }
+      const { w, h } = ogeYaklasikBoyut(og);
+      const xMin = pay, xMax = Math.max(pay, sayfaW - pay - w);
+      const yMin = pay, yMax = Math.max(pay, sayfaH - pay - h);
+      const yeniX = Math.min(Math.max(baz.x + dx, xMin), xMax);
+      const yeniY = Math.min(Math.max(baz.y + dy, yMin), yMax);
+      return { dx: yeniX - baz.x, dy: yeniY - baz.y };
+    }
+
     let hareketZamanlandiMi = false;
     let sonHareketEvent = null;
 
@@ -475,10 +521,15 @@
         if (!surukleme || !sonHareketEvent) return;
         const ev2 = sonHareketEvent;
         const nokta = ekranNoktasindanMM(ev2.clientX, ev2.clientY, surukleme.ctmInverse);
-        const dx = grideYapistir(nokta.x - surukleme.baslangicMM.x);
-        const dy = grideYapistir(nokta.y - surukleme.baslangicMM.y);
+        let dx = grideYapistir(nokta.x - surukleme.baslangicMM.x);
+        let dy = grideYapistir(nokta.y - surukleme.baslangicMM.y);
 
         if (surukleme.tip === 'tasi') {
+          const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
+          if (og) {
+            const kisitli = guvenliDxDyKisitla(og, surukleme.ogeBaslangic, dx, dy);
+            dx = kisitli.dx; dy = kisitli.dy;
+          }
           surukleme.dx = dx; surukleme.dy = dy;
           if (surukleme.gEl) surukleme.gEl.setAttribute('transform', `translate(${dx},${dy})`);
         } else if (surukleme.tip === 'boyutlandir') {
