@@ -356,7 +356,7 @@ function metniSatirlaraBol(metin, genislikMm, fontPt, kalin = true) {
 function dersSutunuHesapla({
   x, y, width, dersAdi, soruSayisi, sikSayisi, baloncukCap,
   soruNoGenisligi = 8, aralikCarpani = 1.45, baslikYuksekligi,
-  baslikFontPt = 6.4, baslikAltBosluk = 3,
+  baslikFontPt = 6.4, baslikAltBosluk = 3, baslangicSoruNo = 1,
 }) {
   const dersAdiSatirlari = metniSatirlaraBol(dersAdi, width - 2, baslikFontPt, true);
   const satirAraligi = baloncukCap * 2.0;
@@ -374,7 +374,15 @@ function dersSutunuHesapla({
       });
     }
     sorular.push({
-      soruNo: q + 1,
+      // YENİ (Sedat sorusu üzerine, Ağustos 2026): baslangicSoruNo — tek bir
+      // ders Optik Form Editörü'nde birden fazla sütuna bölündüğünde
+      // (ör. 20 soru, 2 sütun), 2. sütunun soru numarası 11'den DEVAM
+      // etmeli, 1'den BAŞLAMAMALI. Aksi halde her iki sütun da 1,2,3...
+      // numaralanır ve OMR sonucunda ("ders","soruNo") aynı anahtara
+      // düştükleri için 2. sütun 1. sütunun cevaplarının ÜSTÜNE YAZAR —
+      // sessizce yanlış puanlamaya yol açar. bkz. optikSablonMotoru.js:
+      // baloncukBlokOlustur (her sütun için doğru başlangıcı hesaplıyor).
+      soruNo: baslangicSoruNo + q,
       // formIcinIzgaraHesapla'daki aynı düzeltme: sayı, soruNoGenisligi
       // sütununun ortasında değil, ilk baloncuğa yakın SAĞINDA — aradaki
       // görsel boşluğu azaltmak için (bkz. formIcinIzgaraHesapla notu).

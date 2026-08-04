@@ -193,7 +193,45 @@ function formDersleriniGetir(sinavId) {
     const sinav  = DB.sinaviBul(sinavId);
     const formId = sinav?.optikFormId || 'lgs';
     if (formId === 'ozel') return _ozelSinavDersleriGetir(sinav);
+    // KÖK NEDEN DÜZELTMESİ (Sedat sorusu üzerine, Ağustos 2026 — "hangi
+    // dersin nerede olduğunu nasıl okuyacak"): bu fonksiyon Optik Form
+    // Editörü ile tasarlanmış özel şablonları (id 'ozelTasarim_' ile
+    // başlar) HİÇ TANIMIYORDU — formId doğrudan _formTuruDersleriniGetir'e
+    // (sadece 'lgs'/'bursluluk' bilir) gidiyordu, cevap anahtarı ve
+    // puanlama YANLIŞ/BOŞ ders listesiyle çalışırdı. Artık editördeki
+    // GERÇEK baloncuk bloklarından (her biri = bir ders sütunu grubu)
+    // ders adı/soru sayısı/şık sayısı çıkarılıyor.
+    if (formId.startsWith('ozelTasarim_')) return _ozelTasarimDersleriGetir(formId);
     return _formTuruDersleriniGetir(formId);
+}
+
+/**
+ * Optik Form Editörü ile tasarlanmış bir şablonun GERÇEK (derlenmiş)
+ * baloncuk bloklarından ders listesini çıkarır — cevap anahtarı ekranı ve
+ * puanHesapla bunu kullanır. Bir ders birden fazla sütuna bölünmüşse
+ * (bkz. optikSablonMotoru.js: baloncukBlokOlustur) TEK bir ders olarak
+ * birleştirilir (toplam soru sayısıyla) — çünkü omrEngine sonucunda da
+ * hepsi aynı "ders" anahtarı altında birleşik geliyor (bkz.
+ * dersSutunuHesapla: baslangicSoruNo düzeltmesi).
+ */
+function _ozelTasarimDersleriGetir(formId) {
+    try {
+        const form = sablonDerlemesiniGetir(formId);
+        const dersler = [];
+        (form.formlar[0].bolumler || []).forEach((bolum) => {
+            (bolum.dersSutunlari || []).forEach((sutun) => {
+                const mevcut = dersler.find((d) => d.dersAdi === sutun.dersAdi);
+                const soruSayisi = sutun.sorular.length;
+                const sikSayisi = sutun.sorular[0]?.sikler.length || 4;
+                if (mevcut) mevcut.soruSayisi += soruSayisi;
+                else dersler.push({ dersAdi: sutun.dersAdi, soruSayisi, sikSayisi });
+            });
+        });
+        return dersler.length ? dersler : [{ dersAdi: 'Genel', soruSayisi: 20, sikSayisi: 4 }];
+    } catch (e) {
+        console.error('_ozelTasarimDersleriGetir: şablon derlenemedi', e);
+        return [{ dersAdi: 'Genel', soruSayisi: 20, sikSayisi: 4 }];
+    }
 }
 
 /** Özel sınavlar için ders listesi, sınavın KENDİ soru/şık sayısına göre üretilir (sabit şablon değil). */
@@ -228,18 +266,31 @@ let _aktifSinavId = null;
 let _aktifSonucId = null;
 
 /**
- * Aktif sınavın türünü/soru-şık sayısını diğer (modül olmayan) betiklere
- * (bkz. formOkuyucu.js testFormunuOlustur) açar — okuma sırasında hangi
- * form düzeninin (LGS/Bursluluk/Özel) bekleneceğini belirlemek için.
+ * KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat'ın "Bu formların okunması nasıl
+ * olacak" sorusu üzerine bulundu): gerçek okuma akışı (formOkuyucu.js:
+ * testFormunuOlustur) daha önce olmayan bir #sinavTuru DOM seçim kutusuna
+ * bakıyordu — yani HER ZAMAN sessizce LGS'ye düşüyordu, aktif sınav ne
+ * olursa olsun (Bursluluk, sabit-Özel, editörle tasarlanmış özel şablon
+ * dahil). NOT: window.OptikAktifSinavTuru adında BENZER bir köprü daha
+ * önce eklenmişti ama hiçbir yerden hiç ÇAĞRILMIYORDU — yarım kalmış bir
+ * düzeltme girişimiydi, kaldırılıp yerine bu tam çalışan köprü kondu.
+ *
+ * Bu fonksiyon window.OptikAktifForm'u aktif sınavın GERÇEK, önceden
+ * DERLENMİŞ form nesnesiyle (_layoutGetir ile — LGS/Bursluluk/Özel-sabit/
+ * editörle tasarlanmış özel şablon FARK ETMEKSİZİN aynı kod yolu) doldurur.
+ * _aktifSinavId her değiştiğinde çağrılmalı.
  */
-window.OptikAktifSinavTuru = function () {
+function _optikAktifFormGuncelle() {
     const sinav = DB.sinaviBul(_aktifSinavId);
-    if (!sinav) return { sinavTuru: 'lgs' };
-    if (sinav.optikFormId === 'ozel') {
-        return { sinavTuru: 'ozel', soruSayisi: sinav.soruSayisi || 20, sikSayisi: sinav.sikSayisi || 4 };
+    if (!sinav) { window.OptikAktifForm = null; return; }
+    try {
+        const layout = _layoutGetir(sinav);
+        window.OptikAktifForm = { form: layout.formlar[0], sinavTuru: sinav.optikFormId || 'lgs' };
+    } catch (e) {
+        console.error('_optikAktifFormGuncelle: form derlenemedi', e);
+        window.OptikAktifForm = null;
     }
-    return { sinavTuru: sinav.optikFormId || 'lgs' };
-};
+}
 
 const Ekranlar = {
     sinavlar:     document.getElementById('ekranSinavlar'),
@@ -533,6 +584,7 @@ function yeniSinavKaydet() {
 // ════════════════════════════════════════════════════════════════
 function sinavDetayAc(sinavId) {
     _aktifSinavId = sinavId;
+    _optikAktifFormGuncelle();
     const sinav = DB.sinaviBul(sinavId);
     if (!sinav) return;
     document.getElementById('sinavDetayBaslik').textContent = sinav.ad;
@@ -2193,6 +2245,9 @@ function optikFormSheetAc(onSecim) {
 function galeriSecimIsle(dosyalar) {
     if (!dosyalar?.length) return;
     sheetKapat('sheetKagitEkle');
+    // Taramadan hemen önce köprüyü tazele — sınav bilgisi (ör. seçilen
+    // form) son sinavDetayAc()'tan beri değişmiş olabilir.
+    _optikAktifFormGuncelle();
     // galeriSecici.js baglaGaleriSecici fonksiyonu kullanılıyor
     // Her dosya için omrEngine ile işle
     Array.from(dosyalar).forEach(async dosya => {
@@ -2312,7 +2367,7 @@ function baslat() {
     document.getElementById('btnSablonEditorGeri').addEventListener('click', () => ekranGit('yeniSinav'));
 
     // ── Ekran 3: Sınav Detay ──
-    document.getElementById('btnSinavDetayGeri').addEventListener('click', () => { _aktifSinavId = null; ekranGit('sinavlar'); sinavlariRender(); });
+    document.getElementById('btnSinavDetayGeri').addEventListener('click', () => { _aktifSinavId = null; window.OptikAktifForm = null; ekranGit('sinavlar'); sinavlariRender(); });
     document.getElementById('btnOptikOlustur').addEventListener('click', optikOlusturAc);
 
     // Sekmeler

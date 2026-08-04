@@ -90,6 +90,7 @@
           width: og.genislik,
           dersAdi: og.dersAdi, // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
           soruSayisi: buSutundakiSoruSayisi,
+          baslangicSoruNo: s * soruBasinaDusen + 1, // KÖK NEDEN DÜZELTMESİ: bkz. optikSablonMotoru.js/layoutEngine.js notu
           sikSayisi: og.sikSayisi,
           baloncukCap: og.baloncukCap,
           aralikCarpani: og.yatayAralikCarpani || 1.45,

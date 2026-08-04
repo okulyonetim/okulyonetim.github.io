@@ -76,9 +76,23 @@ function _baloncukNoktalariniOlcekle(ornekNoktalari, olcek) {
  * Sayfadaki "Sınav Türü" seçimine (ve varsa soru/şık sayısı girdilerine)
  * göre okunacak form şablonunu kurar. İlgili elemanlar bulunamazsa
  * (ör. eski bir index.html) LGS'ye düşer.
+ *
+ * KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat'ın "Bu formların okunması nasıl
+ * olacak" sorusu üzerine bulundu): #sinavTuru seçim kutusu index.html'de
+ * HİÇ VAR OLMAMIŞ — yani gerçek sınav akışında (galeriden/kameradan tarama)
+ * bu fonksiyon HER ZAMAN sessizce "lgs"ye düşüyordu; aktif sınav Bursluluk,
+ * sabit-Özel veya editörle tasarlanmış özel bir şablon olsa bile. app.js
+ * artık her taramadan önce window.OptikAktifForm köprüsünü aktif sınavın
+ * GERÇEK formuyla dolduruyor (bkz. app.js: _optikAktifFormGuncelle) — bu
+ * köprü varsa öncelikli kullanılır. Yoksa (bağımsız/eski test sayfası
+ * senaryosu) eski DOM tabanlı yol yedek olarak kalıyor.
  * @returns {{form: object, sinavTuru: string}}
  */
 function testFormunuOlustur() {
+
+    if (window.OptikAktifForm && window.OptikAktifForm.form) {
+        return window.OptikAktifForm;
+    }
 
     const sinavTuruSelect = document.getElementById("sinavTuru");
     const sinavTuru = sinavTuruSelect ? sinavTuruSelect.value : "lgs";
