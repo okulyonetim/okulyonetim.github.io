@@ -143,8 +143,8 @@
         .osEditor__arac button { min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; }
         .osEditor__arac button:active { background:#e8e8ea; }
         .osEditor__arac button.osEditor__tamEkranBtn { margin-left:auto; background:#0a7cff; color:#fff; border-color:#0a7cff; }
-        .osEditor__govde { display:flex; flex-direction:column; flex:1; min-height:0; }
-        .osEditor__tuvalSarici { flex:1; min-height:50vh; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
+        .osEditor__govde { display:flex; flex-direction:column; flex:1; min-height:0; overflow-y:auto; }
+        .osEditor__tuvalSarici { flex:1; min-height:35vh; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
         .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); }
         .osEditor__panel { background:#fafafa; border-bottom:1px solid #ddd; overflow-y:auto; max-height:38vh; padding:10px; font-size:13px; display:none; }
         .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
@@ -161,8 +161,8 @@
       </style>
       <div class="osEditor__arac"></div>
       <div class="osEditor__govde">
-        <div class="osEditor__tuvalSarici"><svg class="osEditor__tuval"></svg></div>
         <div class="osEditor__panel"></div>
+        <div class="osEditor__tuvalSarici"><svg class="osEditor__tuval"></svg></div>
       </div>
     `;
     container.appendChild(kok);
