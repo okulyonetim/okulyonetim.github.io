@@ -254,6 +254,7 @@
           <button type="button" class="tb-btn anahtar-kitapcik-btn" data-kitapcik="A" id="btnAnahKitapcikA">Kitapçık A</button>
           <button type="button" class="tb-btn anahtar-kitapcik-btn" data-kitapcik="B" id="btnAnahKitapcikB">Kitapçık B</button>
         </div>
+        <button type="button" class="tb-btn" id="btnKitapcikAtamalari" title="Öğrencilere Kitapçık Ata" style="width:auto;padding:0 12px;font-size:12px;">🎫 Öğrencilere Ata</button>
       </div>
       <div class="anahtar-toolbar">
         <select id="anahDersSecici" class="anahtar-ders-sec"></select>
@@ -348,6 +349,20 @@
         <div class="pill-satir">
           <input type="text" id="ogrDetayAdSoyad" class="pill-input">
           <button class="pill-sil" data-h="ogrDetayAdSoyad">×</button>
+        </div>
+      </div>
+      <!-- YENİ (Ağustos 2026, Sedat isteği): "cevapları manuel olarak
+           değiştirdiğimiz gibi kitapçık türünü de değiştirip sonucu
+           yeniden değerlendirme yapabileyim" — sadece A/B kitapçıklı
+           sınavlarda görünür (bkz. ogrDetayAc). -->
+      <div class="pill-wrap" id="ogrDetayKitapcikWrap" hidden>
+        <label class="pill-label">Kitapçık Türü</label>
+        <div class="pill-satir">
+          <select id="ogrDetayKitapcik" class="pill-input">
+            <option value="">Belirsiz</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
         </div>
       </div>
     </div>
@@ -677,6 +692,20 @@
     <div class="bs-tutac"></div>
     <h3 class="bs-baslik">Optik Form Seçin</h3>
     <div id="optikFormSeciciListesi" class="bs-liste"></div>
+  </div>
+</div>
+
+<!-- YENİ (Ağustos 2026, Sedat isteği): "Öğrencilerin kitapçık türü otomatik
+     ve manuel atama yapabilme imkanı olsun" -->
+<div id="sheetKitapcikAtama" class="bs-overlay" hidden>
+  <div class="bs-panel bs-panel-uzun">
+    <div class="bs-tutac"></div>
+    <h3 class="bs-baslik">Kitapçık Türü Ata</h3>
+    <div style="display:flex; gap:8px; padding:0 4px 10px;">
+      <button type="button" class="o-kaydet-btn" id="btnKitapcikOtomatikAta" style="flex:1;">🔀 Otomatik Ata (A/B Sırayla)</button>
+    </div>
+    <div id="kitapcikAtamaListesi" class="ogr-secim-alani" style="max-height:55vh;overflow-y:auto;"></div>
+    <button type="button" class="o-kaydet-btn" id="btnKitapcikAtamaKaydet" style="width:100%; margin-top:10px;">Kaydet</button>
   </div>
 </div>
 
