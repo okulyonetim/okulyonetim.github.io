@@ -290,6 +290,15 @@ input[type="date"]::-webkit-inner-spin-button { display: none; }
 }
 .tb-btn svg { width: 16px; height: 16px; } /* biraz küçültüldü, 4 buton daha rahat sığsın diye */
 .tb-btn-tehlike { color: var(--tehlike); }
+/* YENİ (Ağustos 2026): A/B kitapçık seçici — dikdörtgen, metin etiketli
+   tb-btn varyantı (kitapçık türü sayısı 2 olan sınavlarda görünür). */
+.anahtar-kitapcik-btn {
+    width: auto; height: 36px; padding: 0 14px; font-size: 13px; font-weight: 600;
+    flex: 1;
+}
+.anahtar-kitapcik-btn.aktif {
+    background: var(--vurgu, #0a7cff); color: #fff;
+}
 @media (max-width: 360px) {
     /* Çok dar ekranlarda ders adını tamamen gizleyip sadece butonlara yer aç */
     .anahtar-toolbar { gap: 4px; padding: 10px 8px 6px; }
