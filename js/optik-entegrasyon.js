@@ -106,6 +106,16 @@
         .filter(function(v){ return v.sinifId === sinifId; })
         .map(function(v){ return { id: v.id, adSoyad: v.ogrenciAdi || '', ogrenciNo: v.ogrenciNo || '' }; })
         .sort(function(a,b){ return a.adSoyad.localeCompare(b.adSoyad, 'tr'); });
+    },
+    /* YENİ (Ağustos 2026, Sedat isteği: Optik Form Editörü'nde "kimlik
+       bilgilerinde... okul adını da ekleyebilme olsun") — Okul Bilgileri
+       sayfasında girilen (js/app.js: okulBilgileriAyari) birleşik okul
+       adını optik iframe'ine açar. Kademeye özel (İlkokul/Ortaokul ayrı)
+       ad KASITLI OLARAK verilmiyor — optik tarafında hangi öğrencinin
+       hangi kademede olduğu bilgisi yok, yanlış/tutarsız bir ad basmaktansa
+       her zaman birleşik/genel adı basmak daha güvenli. */
+    okulAdiGetir() {
+      return (typeof okulBilgileriAyari !== 'undefined' && okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
     }
   };
 })();
