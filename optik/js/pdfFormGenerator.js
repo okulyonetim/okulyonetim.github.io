@@ -347,17 +347,25 @@ function bolumlerCiz(doc, form) {
       const metinX = hizalama === 'sol' ? ders.x + 1 : hizalama === 'sag' ? ders.x + ders.width - 1 : colCenter;
       const metinAlign = hizalama === 'sol' ? 'left' : hizalama === 'sag' ? 'right' : 'center';
 
-      cerceveCiz(doc, ders.x, ders.y, ders.width, ders.baslikYuksekligi, ANA_RENK, 0.3);
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(6.4);
-      doc.setTextColor(...KOYU_METIN);
-      const satirlar = ders.dersAdiSatirlari;
-      const satirH = 3.6;
-      const toplamH = satirlar.length * satirH;
-      const ilkY = ders.y + (ders.baslikYuksekligi - toplamH) / 2 + satirH * 0.75;
-      satirlar.forEach((satir, i) => {
-        doc.text(satir, metinX, ilkY + i * satirH, { align: metinAlign });
-      });
+      // YENİ (Sedat isteği, Ağustos 2026: "Ders adı zorunlu bile olmasın...
+      // kutucuğu çok yer kaplıyor") — ders adı boşsa (özellikle çoklu
+      // sütunlu tek-ders bloklarında her sütuna aynı adın tekrar tekrar
+      // basılmasını istemiyorsa) başlık kutusu/metni HİÇ basılmıyor,
+      // sorular doğrudan sütunun üstünden başlıyor. Grubun kendisi zaten
+      // yukarıdaki genel çerçeveyle (satır 338) çevrili duruyor.
+      if (ders.dersAdi && ders.baslikYuksekligi > 0) {
+        cerceveCiz(doc, ders.x, ders.y, ders.width, ders.baslikYuksekligi, ANA_RENK, 0.3);
+        doc.setFont('Roboto', 'bold');
+        doc.setFontSize(ders.baslikFontPt || 6.4);
+        doc.setTextColor(...KOYU_METIN);
+        const satirlar = ders.dersAdiSatirlari;
+        const satirH = (ders.baslikFontPt || 6.4) * 0.56;
+        const toplamH = satirlar.length * satirH;
+        const ilkY = ders.y + (ders.baslikYuksekligi - toplamH) / 2 + satirH * 0.75;
+        satirlar.forEach((satir, i) => {
+          doc.text(satir, metinX, ilkY + i * satirH, { align: metinAlign });
+        });
+      }
 
       for (const soru of ders.sorular) {
         doc.setFont('Roboto', 'normal');

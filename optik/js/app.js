@@ -633,7 +633,7 @@ function sablonlarEkraniniRender() {
             : `<button class="durum-badge badge-bekliyor durum-degistir-btn" data-id="${k.id}" title="Yayınla">📝 TASLAK</button>`;
         const soruSayisi = (k.sablon?.ogeler || []).filter(o => o.tip === 'baloncukBlok')
             .reduce((t, o) => t + (o.soruSayisi || 0), 0);
-        return `<div class="sinav-kart" data-id="${k.id}">
+        return `<div class="sinav-kart sablon-kart" data-id="${k.id}">
             <div class="sinav-kart-ikon" style="background:#F3E5F5;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
             </div>
@@ -641,11 +641,13 @@ function sablonlarEkraniniRender() {
                 <span class="sinav-kart-ad">${_h(k.ad)}</span>
                 <small class="sinav-kart-alt">${soruSayisi ? soruSayisi + ' soru · ' : ''}${_tarih(k.guncelleme)}</small>
             </div>
-            ${varsayilanBadge}
-            ${durumBadge}
             <button class="menu-btn" data-id="${k.id}" title="Sil">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
+            <div class="sablon-kart-rozetler">
+                ${varsayilanBadge}
+                ${durumBadge}
+            </div>
         </div>`;
     }).join('');
 

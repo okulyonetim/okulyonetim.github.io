@@ -79,6 +79,11 @@
     const sutunlarArasiBosluk = og.sutunlarArasiBosluk != null ? og.sutunlarArasiBosluk : 3;
     const kaymalar = og.sutunDikeyKaymalari || [];
     const soruBasinaDusen = Math.ceil(og.soruSayisi / sutunSayisi);
+    // YENİ (Sedat isteği, Ağustos 2026: "Ders adı zorunlu bile olmasın...
+    // kutucuğu çok yer kaplıyor") — bkz. optikSablonMotoru.js'deki AYNI mantık.
+    const baslikYuksekligi = og.dersAdi ? (og.baslikYuksekligi || 8) : 0;
+    const baslikFontPt = og.baslikFontPt || 6.4;
+    const baslikAltBosluk = og.dersAdi ? 3 : 1;
     const sutunlar = [];
     for (let s = 0; s < sutunSayisi; s++) {
       const buSutundakiSoruSayisi = Math.min(soruBasinaDusen, og.soruSayisi - s * soruBasinaDusen);
@@ -88,15 +93,18 @@
           x: og.x + s * (og.genislik + sutunlarArasiBosluk),
           y: og.y + (kaymalar[s] || 0),
           width: og.genislik,
-          dersAdi: og.dersAdi, // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
+          dersAdi: og.dersAdi || '', // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
           soruSayisi: buSutundakiSoruSayisi,
           baslangicSoruNo: s * soruBasinaDusen + 1, // KÖK NEDEN DÜZELTMESİ: bkz. optikSablonMotoru.js/layoutEngine.js notu
           sikSayisi: og.sikSayisi,
           baloncukCap: og.baloncukCap,
           aralikCarpani: og.yatayAralikCarpani || 1.45,
-          baslikYuksekligi: 8,
+          baslikYuksekligi,
+          baslikFontPt,
+          baslikAltBosluk,
         });
         sutun.dersAdiHizalama = og.dersAdiHizalama || 'orta';
+        sutun.baslikFontPt = baslikFontPt;
         sutunlar.push(sutun);
       } catch (e) {
         // Geçersiz kombinasyon (ör. genişlik çok dar) — önizlemede sessizce atla,
@@ -699,19 +707,25 @@
           // göremiyor, nereden büyütüp küçülteceğini bulamıyordu. Artık
           // gerçek PDF'teki AYNI konum/boyutta (sutun.x, sutun.y,
           // sutun.width, sutun.baslikYuksekligi) çiziliyor.
-          g.appendChild(svgOlustur('rect', {
-            x: sutun.x, y: sutun.y, width: sutun.width, height: sutun.baslikYuksekligi,
-            fill: 'none', stroke: '#b3184a', 'stroke-width': 0.3,
-          }));
+          //
+          // YENİ (Sedat isteği: "Ders adı zorunlu bile olmasın... çok yer
+          // kaplıyor") — ders adı boşsa (baslikYuksekligi 0) kutu/metin
+          // HİÇ çizilmiyor, tıpkı gerçek PDF'teki gibi.
+          if (sutun.dersAdi && sutun.baslikYuksekligi > 0) {
+            g.appendChild(svgOlustur('rect', {
+              x: sutun.x, y: sutun.y, width: sutun.width, height: sutun.baslikYuksekligi,
+              fill: 'none', stroke: '#b3184a', 'stroke-width': 0.3,
+            }));
+            const t = svgOlustur('text', {
+              x: sutun.dersAdiHizalama === 'sol' ? sutun.x + 1 : sutun.dersAdiHizalama === 'sag' ? sutun.x + sutun.width - 1 : sutun.x + sutun.width / 2,
+              y: sutun.y + sutun.baslikYuksekligi / 2 + (sutun.baslikFontPt || 6.4) / 8, 'font-size': (sutun.baslikFontPt || 6.4) / 2.2, fill: '#333',
+              'text-anchor': sutun.dersAdiHizalama === 'sol' ? 'start' : sutun.dersAdiHizalama === 'sag' ? 'end' : 'middle',
+            });
+            t.textContent = sutun.dersAdi;
+            g.appendChild(t);
+          }
           minX = Math.min(minX, sutun.x); maxX = Math.max(maxX, sutun.x + sutun.width);
           minY = Math.min(minY, sutun.y);
-          const t = svgOlustur('text', {
-            x: sutun.dersAdiHizalama === 'sol' ? sutun.x + 1 : sutun.dersAdiHizalama === 'sag' ? sutun.x + sutun.width - 1 : sutun.x + sutun.width / 2,
-            y: sutun.y + 5, 'font-size': 3.2, fill: '#333',
-            'text-anchor': sutun.dersAdiHizalama === 'sol' ? 'start' : sutun.dersAdiHizalama === 'sag' ? 'end' : 'middle',
-          });
-          t.textContent = sutun.dersAdi;
-          g.appendChild(t);
         });
         const cerceve = svgOlustur('rect', Object.assign(
           { class: 'osOge__cerceve', x: minX - 1, y: minY - 1, width: (maxX - minX) + 2, height: (maxY - minY) + 2 },
@@ -882,8 +896,13 @@
       panel.appendChild(baslik);
 
       if (og.tip === 'baloncukBlok') {
-        alanEkle(og, 'Ders Adı', 'dersAdi', 'text');
+        alanEkle(og, 'Ders Adı (boş = başlık kutusu basılmaz)', 'dersAdi', 'text');
         alanEkle(og, 'Ders Adı Hizalama', 'dersAdiHizalama', 'select', { opsiyonlar: ['orta', 'sol', 'sag'] });
+        // YENİ (Sedat isteği, Ağustos 2026: "kutucuğu çok yer kaplıyor...
+        // font ve diğer ayarları yapılabilsin") — ders adı doluyken bu
+        // ikisi anlamlı; boşken zaten hiç basılmıyor.
+        alanEkle(og, 'Başlık Yüksekliği (mm)', 'baslikYuksekligi', 'number', { step: 0.5 });
+        alanEkle(og, 'Başlık Font (pt)', 'baslikFontPt', 'number', { step: 0.2 });
         alanEkle(og, 'Soru Sayısı', 'soruSayisi', 'number');
         alanEkle(og, 'Şık Sayısı (2-6)', 'sikSayisi', 'number');
         alanEkle(og, 'Baloncuk Çapı (mm)', 'baloncukCap', 'number', { step: 0.05 });

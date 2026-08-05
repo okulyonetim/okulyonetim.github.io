@@ -89,7 +89,9 @@
         throw new Error(`Öğe "${og.id}": bilinmeyen tip "${og.tip}".`);
       }
       if (og.tip === 'baloncukBlok') {
-        if (!og.dersAdi) throw new Error(`Öğe "${og.id}" (baloncuk bloğu): ders adı boş olamaz.`);
+        // YENİ (Sedat isteği, Ağustos 2026: "Ders adı zorunlu bile olmasın")
+        // — artık boş bırakılabilir; boşsa başlık kutusu hiç basılmıyor
+        // (bkz. pdfFormGenerator.js: bolumlerCiz, optikSablonEditor.js önizleme).
         if (!(og.soruSayisi > 0)) throw new Error(`Öğe "${og.id}": soru sayısı 1'den büyük olmalı.`);
         if (!(og.sikSayisi >= 2 && og.sikSayisi <= 6)) {
           throw new Error(`Öğe "${og.id}": şık sayısı 2-6 arasında olmalı.`);
@@ -118,6 +120,15 @@
     const kaymalar = og.sutunDikeyKaymalari || [];
     const soruBasinaDusen = Math.ceil(og.soruSayisi / sutunSayisi);
 
+    // YENİ (Sedat isteği, Ağustos 2026: "Ders adı zorunlu bile olmasın...
+    // kutucuğu çok yer kaplıyor... font ve diğer ayarları yapılabilsin") —
+    // ders adı boşsa başlık kutusu YÜKSEKLİĞİ 0 kabul edilir (hiç
+    // basılmaz, sorular hemen sütunun üstünden başlar); doluysa kullanıcı
+    // yükseklik/font'u kendi belirleyebilir (varsayılanlar korunuyor).
+    const baslikYuksekligi = og.dersAdi ? (og.baslikYuksekligi || VARSAYILAN_BASLIK_YUKSEKLIGI) : 0;
+    const baslikFontPt = og.baslikFontPt || 6.4;
+    const baslikAltBosluk = og.dersAdi ? 3 : 1;
+
     const dersSutunlari = [];
     for (let s = 0; s < sutunSayisi; s++) {
       const sutunX = og.x + s * (og.genislik + sutunlarArasiBosluk);
@@ -132,15 +143,18 @@
         x: sutunX,
         y: sutunY,
         width: og.genislik,
-        dersAdi: og.dersAdi, // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
+        dersAdi: og.dersAdi || '', // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
         soruSayisi: buSutundakiSoruSayisi,
         baslangicSoruNo: s * soruBasinaDusen + 1, // KÖK NEDEN DÜZELTMESİ: 2. sütun 11'den devam etsin, 1'den başlamasın (bkz. layoutEngine.js notu)
         sikSayisi: og.sikSayisi,
         baloncukCap: og.baloncukCap,
         aralikCarpani: og.yatayAralikCarpani || 1.45,
-        baslikYuksekligi: VARSAYILAN_BASLIK_YUKSEKLIGI,
+        baslikYuksekligi,
+        baslikFontPt,
+        baslikAltBosluk,
       });
       sutun.dersAdiHizalama = og.dersAdiHizalama || 'orta';
+      sutun.baslikFontPt = baslikFontPt;
       dersSutunlari.push(sutun);
     }
     return { grupBaslik: og.dersAdi, dersSutunlari };
