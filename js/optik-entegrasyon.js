@@ -122,16 +122,37 @@
        giriş yapmış Firestore bağlantısını (üstteki `db`, js/firebase-init.js)
        burada köprülüyoruz, aynı siniflarGetir/ogrencilerGetir deseniyle. */
     sablonlariGetir() {
-      if (typeof db === 'undefined' || !db) return Promise.resolve([]);
+      if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil (db tanımsız)'));
       return db.collection('oy_optikSablonlari').get().then(function(snap) {
         return snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
-      }).catch(function(e) { console.error('OptikVeriKaynagi.sablonlariGetir hatası:', e); return []; });
+      });
+      // NOT (Sedat geri bildirimi, Ağustos 2026: "hem okuma hem yazma
+      // başarısız, 0/0" teşhisi): önceden burada bir .catch(...) vardı ve
+      // hatayı YUTUP sessizce [] döndürüyordu — bu, olası bir izin/kural
+      // hatasını görünmez kılıyordu (çağıran taraf boş bir dizi ile
+      // GERÇEK bir "0 şablon var" durumunu ayırt edemiyordu). Artık hata
+      // olduğu gibi yukarı fırlatılıyor, optik/js/app.js tarafındaki
+      // görünür alert bunu yakalayıp gösteriyor.
     },
     sablonKaydet(kayit) {
       if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil'));
       const veri = Object.assign({}, kayit);
       delete veri.id;
-      return db.collection('oy_optikSablonlari').doc(kayit.id).set(veri, { merge: true });
+      // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "hem
+      // okuma hem yazma başarısız, 0/0" — Firestore, bir nesnenin
+      // İÇİNDE (iç içe geçmiş, örn. sablon.ogeler[].bazıAlan) HERHANGİ
+      // bir yerde "undefined" değer varsa .set() çağrısının TAMAMINI
+      // REDDEDİYOR. Optik Form Editörü'nün ürettiği şablon nesnelerinde
+      // (opsiyonel alanlar: baslikYuksekligi, fontPt, gorselData, vb.)
+      // bu çok olası. JSON üzerinden geçirmek (JSON'da "undefined" diye
+      // bir şey yoktur) tüm bu alanları güvenle temizliyor.
+      let temizVeri;
+      try {
+        temizVeri = JSON.parse(JSON.stringify(veri));
+      } catch (e) {
+        return Promise.reject(new Error('Şablon verisi JSON\'a çevrilemedi: ' + e.message));
+      }
+      return db.collection('oy_optikSablonlari').doc(kayit.id).set(temizVeri, { merge: true });
     },
     sablonSil(id) {
       if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil'));
