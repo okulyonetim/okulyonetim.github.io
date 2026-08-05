@@ -123,7 +123,12 @@
        burada köprülüyoruz, aynı siniflarGetir/ogrencilerGetir deseniyle. */
     sablonlariGetir() {
       if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil (db tanımsız)'));
-      return db.collection('oy_optikSablonlari').get().then(function(snap) {
+      // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "Android
+      // sadece kendi yazdığı 1 şablonu okudu, diğer 4'ü değil") —
+      // .get() varsayılan olarak önce YEREL ÖNBELLEĞİ kullanabiliyor,
+      // özellikle ağ isteği o an tetiklenmemişse. source:'server' ile
+      // her zaman SUNUCUDAN taze veri çekilmesi zorlanıyor.
+      return db.collection('oy_optikSablonlari').get({ source: 'server' }).then(function(snap) {
         return snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
       });
       // NOT (Sedat geri bildirimi, Ağustos 2026: "hem okuma hem yazma
