@@ -435,6 +435,11 @@
     }
 
     tuvalSarici.addEventListener('pointerdown', (ev) => {
+      // YENİ (Sedat geri bildirimi: "Kaydırmada sayfa yenileniyor") — tuval
+      // alanında HERHANGİ bir dokunuş başladığında (öğe sürüklemekten
+      // bağımsız olarak, boş alanı kaydırırken de) sistem pull-to-refresh
+      // jestini bastır; bırakınca geri aç.
+      _pullToRefreshBastir(false);
       aktifParmaklar.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
       if (aktifParmaklar.size === 2) {
         pinchBaslangicMesafe = parmakMesafesi();
@@ -454,6 +459,7 @@
       tuvalSarici.addEventListener(olayAdi, (ev) => {
         aktifParmaklar.delete(ev.pointerId);
         if (aktifParmaklar.size < 2) pinchBaslangicMesafe = 0;
+        if (aktifParmaklar.size === 0) _pullToRefreshBastir(true);
       });
     });
 
@@ -581,8 +587,15 @@
         if (!surukleme || !sonHareketEvent) return;
         const ev2 = sonHareketEvent;
         const nokta = ekranNoktasindanMM(ev2.clientX, ev2.clientY, surukleme.ctmInverse);
-        let dx = grideYapistir(nokta.x - surukleme.baslangicMM.x);
-        let dy = grideYapistir(nokta.y - surukleme.baslangicMM.y);
+        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "öğeler
+        // tuvalde piksel piksel hareket ediyor") — önceden ızgaraya
+        // yapıştırma (1mm) SÜRÜKLEME SIRASINDA her karede uygulanıyordu,
+        // bu da hareketi "zıplayarak" hissettiriyordu. Artık sürüklerken
+        // TAMAMEN SERBEST/akıcı hareket ediyor; ızgaraya yapıştırma SADECE
+        // bırakıldığında (suruklemeBitir) uygulanıyor — görsel akıcılık +
+        // hizalama kolaylığı bir arada.
+        let dx = nokta.x - surukleme.baslangicMM.x;
+        let dy = nokta.y - surukleme.baslangicMM.y;
 
         if (surukleme.tip === 'tasi') {
           const og = surukleme.ogRef;
