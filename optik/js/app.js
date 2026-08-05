@@ -60,12 +60,18 @@ const DB = {
     anahtarKaydet(sid, a, kitapcikTuru)   { a.guncelleme = new Date().toISOString(); this._yaz('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), a); },
 
     // YENİ (Ağustos 2026): Optik Form Editörü ile tasarlanmış özel şablonlar.
-    // Her kayıt {id, ad, sablon} — sablon, optikSablonEditor.js'nin ürettiği
-    // ham şema (ogeler dizisi); PDF/OMR'a verilmeden önce
+    // Her kayıt {id, ad, sablon, durum} — sablon, optikSablonEditor.js'nin
+    // ürettiği ham şema (ogeler dizisi); PDF/OMR'a verilmeden önce
     // OptikSablonMotoru.sablonuDerle ile derlenir (bkz. sablonDerlemesiniGetir).
+    // durum: 'taslak' (sadece Şablonlarım'da görünür, sınav oluştururken
+    // SEÇİLEMEZ) | 'yayinda' (herkes "Yeni Sınav" akışında seçebilir) —
+    // Sedat isteği: "Kaydettiğim formları taslak veya herkes kullanabilir
+    // yapabilmek istiyorum."
     ozelSablonlariGetir()        { return this._oku('oy_op_ozelSablonlar', []); },
     ozelSablonKaydet(kayit)      {
+        const mevcut = this.ozelSablonlariGetir().find(x => x.id === kayit.id);
         const liste = this.ozelSablonlariGetir().filter(x => x.id !== kayit.id);
+        if (kayit.durum === undefined) kayit.durum = mevcut ? mevcut.durum : 'taslak';
         kayit.guncelleme = new Date().toISOString();
         liste.unshift(kayit);
         this._yaz('oy_op_ozelSablonlar', liste);
@@ -121,7 +127,18 @@ let _optikFormOnSecimCB = null; // sheet açıkken hangi callback'e sonuç döne
  * düzenlenir (yeniden derlenip aynı id ile üzerine kaydedilir); verilmezse
  * boş bir şablonla yeni bir tasarım başlatılır.
  */
-function sablonEditoruAc(mevcutKayitId) {
+let _sablonEditoruDonusEkrani = 'yeniSinav'; // YENİ: editör hangi ekrandan açıldıysa Kaydet/Geri oraya döner
+
+function sablonEditoruAc(mevcutKayitId, donusEkrani = 'yeniSinav') {
+    _sablonEditoruDonusEkrani = donusEkrani;
+    _EKRAN_USTU.sablonEditor = donusEkrani; // Android donanım geri tuşu da aynı ekrana dönsün
+    if (donusEkrani !== 'yeniSinav') {
+        // "Yeni Sınav" akışından AÇILMADIYSA (ör. Şablonlarım ekranından),
+        // önceki bir "Yeni Sınav" oturumundan kalmış olabilecek eski
+        // _optikFormOnSecimCB'nin burada YANLIŞLIKLA tetiklenip
+        // _ysSablonSecilen'i sessizce değiştirmesini önle.
+        _optikFormOnSecimCB = null;
+    }
     const konteyner = document.getElementById('sablonEditorKonteyner');
     // YENİ (teşhis, Ağustos 2026): Sedat konsola erişemiyor (mobil), bu yüzden
     // bir hata olursa sessizce boş ekran göstermek yerine hatayı DOĞRUDAN
@@ -145,7 +162,8 @@ function sablonEditoruAc(mevcutKayitId) {
                 DB.ozelSablonKaydet({ id, ad: sablon.ad || 'Adsız Şablon', sablon });
                 if (varsayilanYapilsinMi) DB.varsayilanSablonIdKaydet(id);
                 else if (DB.varsayilanSablonIdGetir() === id) DB.varsayilanSablonIdKaydet(null);
-                ekranGit('yeniSinav');
+                ekranGit(_sablonEditoruDonusEkrani);
+                if (_sablonEditoruDonusEkrani === 'sablonlar') sablonlarEkraniniRender();
                 if (_optikFormOnSecimCB) {
                     const form = sablonDerlemesiniGetir(id);
                     _optikFormOnSecimCB({ id, ad: sablon.ad || 'Adsız Şablon', soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
@@ -421,6 +439,7 @@ const Ekranlar = {
     manuelKagit:  document.getElementById('ekranManuelKagit'),
     lgsPuan:      document.getElementById('ekranLgsPuan'),
     sablonEditor: document.getElementById('ekranSablonEditor'),
+    sablonlar:    document.getElementById('ekranSablonlar'),
 };
 
 function ekranGit(id) {
@@ -444,6 +463,7 @@ const _EKRAN_USTU = {
     manuelKagit: 'sinavDetay',
     lgsPuan: 'sinavDetay',
     sablonEditor: 'yeniSinav',
+    sablonlar: 'sinavlar',
 };
 
 function _aktifEkranId() {
@@ -545,9 +565,78 @@ function sinavlariRender() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// EKRAN 2 — YENİ SINAV
+// ŞABLONLARIM (Ağustos 2026)
 // ════════════════════════════════════════════════════════════════
-let _ysSablonSecilen = null;
+function sablonlarEkraniAc() {
+    sablonlarEkraniniRender();
+    ekranGit('sablonlar');
+}
+
+function sablonlarEkraniniRender() {
+    const liste = DB.ozelSablonlariGetir();
+    const bosEl = document.getElementById('sablonlarBosAlan');
+    const listEl = document.getElementById('sablonlarListesi');
+    if (!listEl) return;
+    if (bosEl) bosEl.style.display = liste.length ? 'none' : 'flex';
+    const varsayilanId = DB.varsayilanSablonIdGetir();
+    listEl.innerHTML = liste.map(k => {
+        const varsayilanBadge = k.id === varsayilanId
+            ? `<span class="durum-badge badge-okundu">VARSAYILAN</span>` : '';
+        // YENİ (Ağustos 2026, Sedat isteği: "taslak veya herkes kullanabilir
+        // yapabilmek istiyorum") — durum rozeti + tıklanınca değiştiren düğme.
+        const yayinda = k.durum === 'yayinda';
+        const durumBadge = yayinda
+            ? `<button class="durum-badge badge-okundu durum-degistir-btn" data-id="${k.id}" title="Taslağa al">📢 YAYINDA</button>`
+            : `<button class="durum-badge badge-bekliyor durum-degistir-btn" data-id="${k.id}" title="Yayınla">📝 TASLAK</button>`;
+        const soruSayisi = (k.sablon?.ogeler || []).filter(o => o.tip === 'baloncukBlok')
+            .reduce((t, o) => t + (o.soruSayisi || 0), 0);
+        return `<div class="sinav-kart" data-id="${k.id}">
+            <div class="sinav-kart-ikon" style="background:#F3E5F5;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+            </div>
+            <div class="sinav-kart-bilgi">
+                <span class="sinav-kart-ad">${_h(k.ad)}</span>
+                <small class="sinav-kart-alt">${soruSayisi ? soruSayisi + ' soru · ' : ''}${_tarih(k.guncelleme)}</small>
+            </div>
+            ${varsayilanBadge}
+            ${durumBadge}
+            <button class="menu-btn" data-id="${k.id}" title="Sil">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>`;
+    }).join('');
+
+    listEl.querySelectorAll('.sinav-kart').forEach(kart => {
+        kart.addEventListener('click', e => {
+            if (e.target.closest('.menu-btn') || e.target.closest('.durum-degistir-btn')) return;
+            sablonEditoruAc(kart.dataset.id, 'sablonlar');
+        });
+    });
+    listEl.querySelectorAll('.durum-degistir-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const k = DB.ozelSablonBul(btn.dataset.id);
+            if (!k) return;
+            k.durum = k.durum === 'yayinda' ? 'taslak' : 'yayinda';
+            DB.ozelSablonKaydet(k);
+            sablonlarEkraniniRender();
+        });
+    });
+    listEl.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const k = DB.ozelSablonBul(btn.dataset.id);
+            if (!k) return;
+            sheetOnay(`"${k.ad}" şablonunu sil?`, `Bu şablonu kullanan bir sınav yoksa güvenle silinebilir. Bu işlem geri alınamaz.`, () => {
+                DB.ozelSablonSil(btn.dataset.id);
+                if (DB.varsayilanSablonIdGetir() === btn.dataset.id) DB.varsayilanSablonIdKaydet(null);
+                sablonlarEkraniniRender();
+            });
+        });
+    });
+}
+
+
 
 function yeniSinavAc() {
     _ysSablonSecilen = null;
@@ -2403,7 +2492,16 @@ function optikFormSheetAc(onSecim) {
     _optikFormOnSecimCB = onSecim;
     const liste = document.getElementById('optikFormSeciciListesi');
     if (liste) {
-        const ozelSablonlar = DB.ozelSablonlariGetir();
+        // KÖK DEĞİŞİKLİK (Ağustos 2026, Sedat isteği: "Eski lgs ve bursluluk
+        // formlarını da sil. Ben yeni formlar oluşturup kaydederim...
+        // sınav oluştururken form alanında hepsi ona göre listelensin.
+        // Dinamik bir liste olsun.") — sabit SABLONLAR (LGS/Bursluluk/Özel
+        // Sınav) artık burada HİÇ listelenmiyor; sadece "yayinda" durumundaki
+        // özel şablonlar gösteriliyor. NOT: SABLONLAR ve onu kullanan
+        // render/okuma kodu (_layoutGetir, formDersleriniGetir vb.) BİLEREK
+        // silinmedi — geçmişte LGS/Bursluluk ile oluşturulmuş sınavlar hâlâ
+        // bu koda ihtiyaç duyuyor, sadece YENİ seçim listesinden kaldırıldı.
+        const ozelSablonlar = DB.ozelSablonlariGetir().filter(k => k.durum === 'yayinda');
         const tasarlaSatiri = `
             <button class="bs-liste-satir" data-tasarla="1">
                 <div class="bs-liste-ikon" style="background:#FCE4EC;">
@@ -2414,6 +2512,9 @@ function optikFormSheetAc(onSecim) {
                     <small>Baloncukları, alanları serbestçe yerleştir</small>
                 </div>
             </button>`;
+        const bosUyari = !ozelSablonlar.length
+            ? `<p style="padding:10px 4px;font-size:12.5px;color:var(--text-faint);">Henüz yayınlanmış bir form yok — bir form tasarlayıp Şablonlarım'dan "Yayınla" diyebilirsin.</p>`
+            : '';
         const ozelSatirlari = ozelSablonlar.map(k => `
             <button class="bs-liste-satir" data-ozel-id="${k.id}">
                 <div class="bs-liste-ikon" style="background:#F3E5F5;">
@@ -2424,22 +2525,7 @@ function optikFormSheetAc(onSecim) {
                     <small>Kendi tasarladığın form — düzenlemek için uzun bas</small>
                 </div>
             </button>`).join('');
-        liste.innerHTML = tasarlaSatiri + ozelSatirlari + SABLONLAR.map(s => `
-            <button class="bs-liste-satir" data-id="${s.id}">
-                <div class="bs-liste-ikon" style="background:#E3F2FD;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E88E5" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <div class="bs-liste-bilgi">
-                    <strong>${_h(s.ad)}</strong>
-                    <small>${s.soruSayisi ? s.soruSayisi + ' Soru' : 'Soru sayısını kendin belirle'}</small>
-                </div>
-            </button>`).join('');
-        liste.querySelectorAll('[data-id]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                sheetKapat('sheetOptikForm');
-                onSecim(SABLONLAR.find(s => s.id === btn.dataset.id));
-            });
-        });
+        liste.innerHTML = tasarlaSatiri + ozelSatirlari + bosUyari;
         liste.querySelectorAll('[data-ozel-id]').forEach(btn => {
             let uzunBasmaTetiklendiMi = false;
             btn.addEventListener('click', () => {
@@ -2592,6 +2678,10 @@ function baslat() {
     // ── Ekran 1: Sınavlar ──
     sinavlariRender();
     document.getElementById('fabYeniSinav').addEventListener('click', yeniSinavAc);
+    // YENİ (Ağustos 2026, Sedat isteği): Şablonlarım ekranı.
+    document.getElementById('btnSablonlarAc')?.addEventListener('click', sablonlarEkraniAc);
+    document.getElementById('btnSablonlarGeri')?.addEventListener('click', () => ekranGit('sinavlar'));
+    document.getElementById('fabYeniSablon')?.addEventListener('click', () => sablonEditoruAc(null, 'sablonlar'));
 
     // ── Ekran 2: Yeni Sınav ──
     document.getElementById('btnYeniSinavKapat').addEventListener('click', () => ekranGit('sinavlar'));
@@ -2613,7 +2703,10 @@ function baslat() {
             if (ozelBlok) ozelBlok.hidden = sablon.id !== 'ozel';
         });
     });
-    document.getElementById('btnSablonEditorGeri').addEventListener('click', () => ekranGit('yeniSinav'));
+    document.getElementById('btnSablonEditorGeri').addEventListener('click', () => {
+        ekranGit(_sablonEditoruDonusEkrani);
+        if (_sablonEditoruDonusEkrani === 'sablonlar') sablonlarEkraniniRender();
+    });
 
     // ── Ekran 3: Sınav Detay ──
     document.getElementById('btnSinavDetayGeri').addEventListener('click', () => { _aktifSinavId = null; window.OptikAktifForm = null; ekranGit('sinavlar'); sinavlariRender(); });
