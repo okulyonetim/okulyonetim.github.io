@@ -213,6 +213,90 @@ function _sonucAnahtarTuru(sinavId, ogrenciKitapcikTuru) {
     return (ogrenciKitapcikTuru === 'A' || ogrenciKitapcikTuru === 'B') ? ogrenciKitapcikTuru : undefined;
 }
 
+/**
+ * KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat geri bildirimi: "Kitapçık
+ * olmasına rağmen tüm öğrencilerde boş çıktı") — form üretimi için
+ * kullanılan öğrenci listeleri kitapcikTuru'yu SABİT boş string ('')
+ * olarak atıyordu, sınav A/B kitapçıklı olsa bile. Artık, kitapçıklı bir
+ * sınavda, sinav.kitapcikAtamalari'nda (bkz. _kitapcikAtamaSheetAc) o
+ * öğrenci için bir atama varsa onu kullanır; yoksa boş bırakır (K
+ * baloncuğu öğrenci tarafından elle işaretlenmeli demektir).
+ */
+function _ogrenciKitapcikTuru(sinav, ogrenciId) {
+    if (sinav.kitapcikTuruSayisi !== 2) return '';
+    const tur = sinav.kitapcikAtamalari?.[ogrenciId];
+    return (tur === 'A' || tur === 'B') ? tur : '';
+}
+
+// YENİ (Ağustos 2026, Sedat isteği: "Öğrencilerin kitapçık türü otomatik ve
+// manuel atama yapabilme imkanı olsun") — atama sheet'i açıkken üzerinde
+// çalışılan TASLAK (Kaydet'e basılana kadar sinav.kitapcikAtamalari
+// DEĞİŞMEZ, sheet kapatılıp tekrar açılırsa kaydedilmemiş değişiklikler
+// kaybolur — bu kasıtlı, basit ve öngörülebilir bir davranış).
+let _kitapcikAtamaTaslak = {};
+
+function _kitapcikAtamaSheetAc() {
+    const sinav = DB.sinaviBul(_aktifSinavId);
+    if (!sinav) return;
+    const tumOgrenciler = _manuelTumOgrenciler();
+    const atanmisOgrenciler = tumOgrenciler
+        .filter(o => (sinav.ogrenciIdleri || []).includes(o.id))
+        .sort((a, b) => (a.sinifAd || '').localeCompare(b.sinifAd || '') || (a.adSoyad || '').localeCompare(b.adSoyad || ''));
+    if (!atanmisOgrenciler.length) { alert('Bu sınava henüz öğrenci eklenmemiş.'); return; }
+
+    _kitapcikAtamaTaslak = { ...(sinav.kitapcikAtamalari || {}) };
+    _kitapcikAtamaListesiCiz(atanmisOgrenciler);
+    sheetAc('sheetKitapcikAtama');
+}
+
+function _kitapcikAtamaListesiCiz(atanmisOgrenciler) {
+    const alan = document.getElementById('kitapcikAtamaListesi');
+    if (!alan) return;
+    alan.innerHTML = '';
+    atanmisOgrenciler.forEach(o => {
+        const satir = document.createElement('div');
+        satir.className = 'anahtar-satir';
+        const ad = document.createElement('span');
+        ad.textContent = `${o.adSoyad || '(isimsiz)'} ${o.sinifAd ? '· ' + o.sinifAd : ''}`;
+        ad.style.cssText = 'flex:1; font-size:13px;';
+        satir.appendChild(ad);
+
+        const grup = document.createElement('div');
+        grup.className = 'sik-grubu';
+        ['A', 'B'].forEach(harf => {
+            const btn = document.createElement('button');
+            btn.type = 'button'; btn.className = 'sik-daire'; btn.textContent = harf;
+            if (_kitapcikAtamaTaslak[o.id] === harf) btn.classList.add('anahtar-sec');
+            btn.addEventListener('click', () => {
+                _kitapcikAtamaTaslak[o.id] = _kitapcikAtamaTaslak[o.id] === harf ? undefined : harf;
+                _kitapcikAtamaListesiCiz(atanmisOgrenciler);
+            });
+            grup.appendChild(btn);
+        });
+        satir.appendChild(grup);
+        alan.appendChild(satir);
+    });
+}
+
+function _kitapcikOtomatikAta() {
+    const sinav = DB.sinaviBul(_aktifSinavId);
+    if (!sinav) return;
+    const tumOgrenciler = _manuelTumOgrenciler();
+    const atanmisOgrenciler = tumOgrenciler
+        .filter(o => (sinav.ogrenciIdleri || []).includes(o.id))
+        .sort((a, b) => (a.sinifAd || '').localeCompare(b.sinifAd || '') || (a.adSoyad || '').localeCompare(b.adSoyad || ''));
+    atanmisOgrenciler.forEach((o, i) => { _kitapcikAtamaTaslak[o.id] = i % 2 === 0 ? 'A' : 'B'; });
+    _kitapcikAtamaListesiCiz(atanmisOgrenciler);
+}
+
+function _kitapcikAtamaKaydet() {
+    const sinav = DB.sinaviBul(_aktifSinavId);
+    if (!sinav) return;
+    sinav.kitapcikAtamalari = { ..._kitapcikAtamaTaslak };
+    DB.sinavKaydet(sinav);
+    sheetKapat('sheetKitapcikAtama');
+}
+
 function formDersleriniGetir(sinavId) {
     const sinav  = DB.sinaviBul(sinavId);
     const formId = sinav?.optikFormId || 'lgs';
@@ -803,6 +887,13 @@ function ogrDetayAc(sonucId) {
     document.getElementById('ogrDetayAdSoyad').value = ogr.adSoyad || '';
     document.getElementById('ogrDetayNo').value      = ogr.ogrenciNo || '';
     document.getElementById('ogrDetaySinif').value   = ogr.sinif || '';
+    // YENİ (Ağustos 2026): kitapçık türü, sadece A/B kitapçıklı sınavlarda gösterilir.
+    const ktWrap = document.getElementById('ogrDetayKitapcikWrap');
+    if (ktWrap) {
+        const kitapcikli = _sinavKitapcikliMi(_aktifSinavId);
+        ktWrap.hidden = !kitapcikli;
+        if (kitapcikli) document.getElementById('ogrDetayKitapcik').value = (ogr.kitapcikTuru === 'A' || ogr.kitapcikTuru === 'B') ? ogr.kitapcikTuru : '';
+    }
 
     // Resim (doğru/yanlış baloncuk renklendirmeli)
     ogrDetayResimCiz(sonuc);
@@ -1118,12 +1209,22 @@ function ogrDetayIstatistikGuncelle(sonuc) {
 function ogrDetayKaydet() {
     const son = DB.sonuclariGetir(_aktifSinavId).find(s => s.id === _aktifSonucId);
     if (!son) return;
+    // YENİ (Ağustos 2026, Sedat isteği: "kitapçık türünü de değiştirip
+    // sonucu yeniden değerlendirme yapabileyim") — kitapçık türü
+    // değişirse doğru cevap anahtarı (A/B) da değişir, puan bu yeni
+    // anahtarla YENİDEN hesaplanmalı.
+    const ktEl = document.getElementById('ogrDetayKitapcik');
+    const yeniKitapcikTuru = (ktEl && !document.getElementById('ogrDetayKitapcikWrap')?.hidden) ? (ktEl.value || undefined) : son.ogrenci?.kitapcikTuru;
     son.ogrenci = {
         ...son.ogrenci,
         adSoyad: document.getElementById('ogrDetayAdSoyad').value,
         ogrenciNo: document.getElementById('ogrDetayNo').value,
         sinif: document.getElementById('ogrDetaySinif').value,
+        kitapcikTuru: yeniKitapcikTuru,
     };
+    const dersler = formDersleriniGetir(_aktifSinavId);
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, yeniKitapcikTuru));
+    son.puan = puanHesapla(son.cevaplar, anahtar, dersler, _sinavYanlisKatsayisi(_aktifSinavId));
     DB.sonucKaydet(_aktifSinavId, son);
     kagitlariRender();
     ekranGit('sinavDetay');
@@ -2072,7 +2173,7 @@ async function _yzOgrenciListesiGetir(sinav) {
     kaynak.siniflarGetir().forEach(s => {
         kaynak.ogrencilerGetir(s.id).forEach(o => {
             if (sinav.ogrenciIdleri.includes(o.id)) {
-                ogrList.push({ adSoyad: o.adSoyad, ogrenciNo: o.ogrenciNo, sinif: s.ad, sinavAdi: sinav.ad, kitapcikTuru: '', ogrenciId: o.id, sinavId: sinav.optikFormId });
+                ogrList.push({ adSoyad: o.adSoyad, ogrenciNo: o.ogrenciNo, sinif: s.ad, sinavAdi: sinav.ad, kitapcikTuru: _ogrenciKitapcikTuru(sinav, o.id), ogrenciId: o.id, sinavId: sinav.optikFormId });
             }
         });
     });
@@ -2611,6 +2712,11 @@ function baslat() {
     // o kitapçığın anahtarıyla yeniden çizer.
     document.getElementById('btnAnahKitapcikA')?.addEventListener('click', () => { _anahtarAktifKitapcik = 'A'; anahtarPaneliniRender(); });
     document.getElementById('btnAnahKitapcikB')?.addEventListener('click', () => { _anahtarAktifKitapcik = 'B'; anahtarPaneliniRender(); });
+    // YENİ (Ağustos 2026, Sedat isteği): "Öğrencilerin kitapçık türü otomatik
+    // ve manuel atama yapabilme imkanı olsun".
+    document.getElementById('btnKitapcikAtamalari')?.addEventListener('click', _kitapcikAtamaSheetAc);
+    document.getElementById('btnKitapcikOtomatikAta')?.addEventListener('click', _kitapcikOtomatikAta);
+    document.getElementById('btnKitapcikAtamaKaydet')?.addEventListener('click', _kitapcikAtamaKaydet);
     document.getElementById('btnAnahtarTemizle').addEventListener('click', () => {
         sheetOnay('Cevap anahtarı silinsin mi?', 'Bu işlem geri alınamaz.', () => {
             DB.anahtarKaydet(_aktifSinavId, { dersler: [] }, _anahtarAktifKitapcik);
