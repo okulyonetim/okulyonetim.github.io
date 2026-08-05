@@ -46,7 +46,7 @@ async function tekSayfaCiz(canvas, layout, sayfadakiFormOgrenciler, dpi) {
     // logo/kimlik/başlık/metin/çizgi gibi "serbest öğeleri" canvas
     // önizlemesinde/yazdırmasında asla çizilmiyordu (gerçek PDF'te
     // çiziliyordu ama ikisi ayrı kod yollarıydı).
-    serbestOgeleriCiz(doc, form);
+    serbestOgeleriCiz(doc, form, ogrenci);
   }
   return doc;
 }

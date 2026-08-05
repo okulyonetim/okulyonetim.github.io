@@ -52,8 +52,12 @@ const DB = {
     },
 
     // Cevap Anahtarı
-    anahtariGetir(sid)      { return this._oku('oy_op_anahtar_' + sid, { dersler: [] }); },
-    anahtarKaydet(sid, a)   { a.guncelleme = new Date().toISOString(); this._yaz('oy_op_anahtar_' + sid, a); },
+    // YENİ (Ağustos 2026, Sedat isteği): kitapcikTuru verilirse ('A'/'B')
+    // AYRI bir anahtar okur/yazar — tek kitapçıklı sınavlarda (kitapcikTuru
+    // verilmez) eski davranış (sabit oy_op_anahtar_{sid} anahtarı) AYNEN
+    // korunuyor, geriye dönük uyumlu.
+    anahtariGetir(sid, kitapcikTuru)      { return this._oku('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), { dersler: [] }); },
+    anahtarKaydet(sid, a, kitapcikTuru)   { a.guncelleme = new Date().toISOString(); this._yaz('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), a); },
 
     // YENİ (Ağustos 2026): Optik Form Editörü ile tasarlanmış özel şablonlar.
     // Her kayıt {id, ad, sablon} — sablon, optikSablonEditor.js'nin ürettiği
@@ -187,6 +191,26 @@ function _formTuruDersleriniGetir(sinavTuru) {
         }
     } catch (e) { console.warn('Ders listesi alınamadı', e); }
     return [{ dersAdi: 'Genel', soruSayisi: 20, sikSayisi: 4 }];
+}
+
+/** Sınav A/B (2) kitapçık türü kullanıyor mu — yoksa Tek Kitapçık mı. */
+function _sinavKitapcikliMi(sinavId) {
+    return DB.sinaviBul(sinavId)?.kitapcikTuruSayisi === 2;
+}
+
+/**
+ * Bir SONUCUN (öğrencinin kağıdının) doğru cevap anahtarını okumak için
+ * kullanılacak kitapçık türünü belirler — YENİ (Ağustos 2026, Sedat
+ * isteği: "cevap anahtarı bile farklı kitapçık türüne göre ikili
+ * girilmeli"). Sınav tek kitapçıklıysa undefined (eski/tek anahtar).
+ * Sınav A/B ise, o SPESİFİK kağıttan OKUNAN kitapcikTuru kullanılır —
+ * ekranda o an düzenlenmekte olan sekme DEĞİL (bir öğrencinin sonucunu
+ * göstermek/puanlamak her zaman O ÖĞRENCİNİN kağıdından okunan türe göre
+ * olmalı).
+ */
+function _sonucAnahtarTuru(sinavId, ogrenciKitapcikTuru) {
+    if (!_sinavKitapcikliMi(sinavId)) return undefined;
+    return (ogrenciKitapcikTuru === 'A' || ogrenciKitapcikTuru === 'B') ? ogrenciKitapcikTuru : undefined;
 }
 
 function formDersleriniGetir(sinavId) {
@@ -440,6 +464,8 @@ function yeniSinavAc() {
     if (ozelSoru) ozelSoru.value = '';
     const ozelYanlis = document.getElementById('ysYanlisEtkisi');
     if (ozelYanlis) ozelYanlis.value = '0';
+    const ktSayisi = document.getElementById('ysKitapcikTuruSayisi');
+    if (ktSayisi) ktSayisi.value = '1';
     // YENİ (Ağustos 2026): Sedat isteği — kaydedilmiş bir varsayılan optik
     // form varsa, "Yeni Sınav" ekranı her açıldığında otomatik seçili gelsin
     // (tekrar tekrar aynı formu seçmek zorunda kalmasın).
@@ -547,6 +573,7 @@ function yeniSinavKaydet() {
     // seçiciden okunuyor (varsayılan/seçili değer 0 — Etkisiz).
     const yEtki = parseInt(document.getElementById('ysYanlisEtkisi')?.value, 10);
     let yanlisKatsayisi = Number.isFinite(yEtki) && yEtki > 0 ? yEtki : null;
+    const kitapcikTuruSayisi = parseInt(document.getElementById('ysKitapcikTuruSayisi')?.value, 10) === 2 ? 2 : 1;
 
     if (_ysSablonSecilen.id === 'ozel') {
         soruSayisi = parseInt(document.getElementById('ysOzelSoruSayisi')?.value, 10) || 20;
@@ -571,6 +598,7 @@ function yeniSinavKaydet() {
         soruSayisi,
         sikSayisi,
         yanlisKatsayisi,
+        kitapcikTuruSayisi,
         ogrenciIdleri: _seciliOgrIdleri(),
         olusturma:    new Date().toISOString(),
     };
@@ -837,7 +865,7 @@ function ogrDetayResimCiz(sonuc) {
         return;
     }
 
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, sonuc.ogrenci?.kitapcikTuru));
     const dogruMapTum = {}; // "dersAdi|soruNo" -> doğru harf
     (anahtar.dersler || []).forEach(d => {
         (d.anahtarlar || []).forEach(a => { dogruMapTum[d.dersAdi + '|' + a.soruNo] = a.dogru; });
@@ -1003,7 +1031,7 @@ function ogrDetayIzgaraCiz(sonuc) {
     const ders    = _ogrDetayDersler[idx] || _ogrDetayDersler[0];
     const dersAdi = ders.dersAdi;
 
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, sonuc.ogrenci?.kitapcikTuru));
     const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi === dersAdi);
     const dogruMap = {};
     (dKaydi?.anahtarlar || []).forEach(a => { dogruMap[a.soruNo] = a.dogru; });
@@ -1063,7 +1091,7 @@ function ogrDetayIzgaraCiz(sonuc) {
                 if (!son.cevaplar[dersAdi]) son.cevaplar[dersAdi] = {};
                 const zaten = son.cevaplar[dersAdi][soruNo] === harf;
                 son.cevaplar[dersAdi][soruNo] = zaten ? null : harf;
-                son.puan = puanHesapla(son.cevaplar, DB.anahtariGetir(_aktifSinavId), _ogrDetayDersler, _sinavYanlisKatsayisi(_aktifSinavId));
+                son.puan = puanHesapla(son.cevaplar, DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, son.ogrenci?.kitapcikTuru)), _ogrDetayDersler, _sinavYanlisKatsayisi(_aktifSinavId));
                 DB.sonucKaydet(_aktifSinavId, son);
                 ogrDetayIzgaraCiz(son);
                 ogrDetayResimCiz(son);
@@ -1462,8 +1490,27 @@ function _lgsAyarPaneliniRender() {
 // ════════════════════════════════════════════════════════════════
 // ANAHTAR SEKMESİ
 // ════════════════════════════════════════════════════════════════
+// YENİ (Ağustos 2026): Cevap Anahtarı ekranında o an DÜZENLENMEKTE olan
+// kitapçık türü ('A'/'B') — sadece kitapcikTuruSayisi=2 olan sınavlarda
+// anlamlı, tek kitapçıklı sınavlarda hep undefined kalır.
+let _anahtarAktifKitapcik;
+
 function anahtarPaneliniRender() {
     if (!_aktifSinavId) return;
+    const kitapcikli = _sinavKitapcikliMi(_aktifSinavId);
+    const secici = document.getElementById('anahKitapcikSecici');
+    if (secici) secici.hidden = !kitapcikli;
+    if (kitapcikli && _anahtarAktifKitapcik !== 'A' && _anahtarAktifKitapcik !== 'B') {
+        _anahtarAktifKitapcik = 'A';
+    } else if (!kitapcikli) {
+        _anahtarAktifKitapcik = undefined;
+    }
+    const btnA = document.getElementById('btnAnahKitapcikA');
+    const btnB = document.getElementById('btnAnahKitapcikB');
+    if (btnA && btnB) {
+        btnA.classList.toggle('aktif', _anahtarAktifKitapcik === 'A');
+        btnB.classList.toggle('aktif', _anahtarAktifKitapcik === 'B');
+    }
     const dersler = formDersleriniGetir(_aktifSinavId);
     const dersSecici = document.getElementById('anahDersSecici');
     if (!dersSecici) return;
@@ -1484,7 +1531,7 @@ function anahtarIzgaraCiz() {
     const ders    = dersler[idx] || dersler[0];
     if (!ders) return;
 
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
     const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi === ders.dersAdi);
     const cevapMap = {};
     (dKaydi?.anahtarlar || []).forEach(a => { cevapMap[a.soruNo] = a.dogru; });
@@ -1530,21 +1577,40 @@ function anahtarIzgaraCiz() {
 }
 
 function _anahtarCevapKaydet(dersAdi, soruNo, dogru) {
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
     if (!anahtar.dersler) anahtar.dersler = [];
     let ders = anahtar.dersler.find(d => d.dersAdi === dersAdi);
     if (!ders) { ders = { dersAdi, anahtarlar: [] }; anahtar.dersler.push(ders); }
     ders.anahtarlar = ders.anahtarlar.filter(a => a.soruNo !== soruNo);
     if (dogru) ders.anahtarlar.push({ soruNo, dogru });
     ders.anahtarlar.sort((a, b) => a.soruNo - b.soruNo);
-    DB.anahtarKaydet(_aktifSinavId, anahtar);
+    DB.anahtarKaydet(_aktifSinavId, anahtar, _anahtarAktifKitapcik);
 }
 
 function _tumSonuclariYenidenHesapla() {
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    // KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat isteği: "cevap anahtarı
+    // bile farklı kitapçık türüne göre ikili girilmeli") — önceden TEK bir
+    // anahtar döngü DIŞINDA okunup TÜM öğrencilere uygulanıyordu; A/B
+    // sınavlarda bu, kitapçık türü B olan öğrencilerin A anahtarıyla (veya
+    // tersi) yanlış puanlanması demekti. Artık her öğrencinin KENDİ
+    // kağıdından okunan kitapçık türüne göre doğru anahtar seçiliyor
+    // (aynı türden anahtarlar tekrar tekrar okunmasın diye küçük bir
+    // önbellekle).
+    const kitapcikli = _sinavKitapcikliMi(_aktifSinavId);
+    const anahtarOnbellek = new Map(); // kitapcikTuru (veya 'tek') -> anahtar
+    function anahtariGetirOnbellekli(kitapcikTuru) {
+        const anahtarKey = kitapcikTuru || 'tek';
+        if (!anahtarOnbellek.has(anahtarKey)) {
+            anahtarOnbellek.set(anahtarKey, DB.anahtariGetir(_aktifSinavId, kitapcikTuru));
+        }
+        return anahtarOnbellek.get(anahtarKey);
+    }
     const dersler = formDersleriniGetir(_aktifSinavId);
     const yanlisKatsayisi = _sinavYanlisKatsayisi(_aktifSinavId);
     DB.sonuclariGetir(_aktifSinavId).forEach(sonuc => {
+        const anahtar = kitapcikli
+            ? anahtariGetirOnbellekli(_sonucAnahtarTuru(_aktifSinavId, sonuc.ogrenci?.kitapcikTuru))
+            : anahtariGetirOnbellekli(undefined);
         sonuc.puan = puanHesapla(sonuc.cevaplar, anahtar, dersler, yanlisKatsayisi);
         DB.sonucKaydet(_aktifSinavId, sonuc);
     });
@@ -1630,7 +1696,10 @@ window.addEventListener('omrOkumaTamamlandi', () => {
 function _omrSonucuisle(raw) {
     if (!raw || !_aktifSinavId) return;
     const dersler = formDersleriniGetir(_aktifSinavId);
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    // NOT: anahtar burada değil, aşağıda kimlik.kitapcikTuru netleştikten
+    // SONRA okunuyor (bkz. "YENİ: kitapçık türüne duyarlı anahtar" notu) —
+    // A/B sınavlarda hangi anahtarın kullanılacağı kağıttan okunan
+    // kitapçık harfine bağlı.
 
     // omrEngine dizi dondurur: [{ders, soruNo, isaretliSik}]
     // puanHesapla nesne bekler: {dersAdi: {soruNo: harf}}
@@ -1660,6 +1729,13 @@ function _omrSonucuisle(raw) {
     // ama bu sınava seçili değil) ad/sınıf otomatik doldurulmuyor, bunun
     // yerine kağıda görünür bir uyarı ekleniyor.
     const eslestimeUyarilari = [];
+    // YENİ (Ağustos 2026, Sedat isteği): A/B kitapçıklı bir sınavda kağıttan
+    // kitapçık türü okunamazsa (K baloncuğu boş/belirsiz), doğru cevap
+    // anahtarı belirlenemez — sessizce yanlış (ya da boş) anahtarla
+    // puanlamak yerine görünür bir uyarı veriyoruz.
+    if (_sinavKitapcikliMi(_aktifSinavId) && kimlik.kitapcikTuru !== 'A' && kimlik.kitapcikTuru !== 'B') {
+        eslestimeUyarilari.push('⚠ Bu sınav A/B kitapçık türü kullanıyor ama kağıttan kitapçık türü okunamadı — hangi anahtarın kullanılacağı belirsiz, puanlama yanlış olabilir. Kitapçık işaretini ve taramayı kontrol edin.');
+    }
     if (kimlik.ogrenciNo) {
         try {
             const sinav = DB.sinaviBul(_aktifSinavId);
@@ -1699,7 +1775,10 @@ function _omrSonucuisle(raw) {
         elleGirildi:   false,
         tarih:         new Date().toLocaleDateString('tr-TR'),
     };
-    sonuc.puan = puanHesapla(sonuc.cevaplar, anahtar, dersler, _sinavYanlisKatsayisi(_aktifSinavId));
+    // YENİ (Ağustos 2026): kitapçık türüne duyarlı anahtar — kağıttan
+    // OKUNAN kitapcikTuru'na göre A/B'den doğrusu seçiliyor (bkz.
+    // _sonucAnahtarTuru notu, dosya üstü).
+    sonuc.puan = puanHesapla(sonuc.cevaplar, DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, kimlik.kitapcikTuru)), dersler, _sinavYanlisKatsayisi(_aktifSinavId));
 
     // Aynı öğrencinin (öğrenci numarasıyla) bu sınav için daha önce
     // kaydedilmiş bir formu var mı? Varsa sessizce ikinci bir satır daha
@@ -1895,7 +1974,9 @@ function manuelIzgaraCiz() {
 }
 
 function _manuelIstatistikGuncelle() {
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    // YENİ (Ağustos 2026): manuel girişte de kitapçık türüne duyarlı anahtar.
+    const kt = document.getElementById('manuelKitapcik')?.value;
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, kt));
     const p = puanHesapla(_manuelCevaplar, anahtar, _manuelDersler, _sinavYanlisKatsayisi(_aktifSinavId));
     _s('manuelD', p.toplamD); _s('manuelY', p.toplamY); _s('manuelB', p.toplamB);
     _s('manuelN', p.toplamNet?.toFixed(2) ?? '0.0');
@@ -1904,14 +1985,15 @@ function _manuelIstatistikGuncelle() {
 
 function manuelKaydet() {
     const dersler = formDersleriniGetir(_aktifSinavId);
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    const kitapcikTuru = document.getElementById('manuelKitapcik').value;
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, kitapcikTuru));
     const sonuc = {
         id:          'sonuc_' + Date.now(),
         ogrenci: {
             adSoyad:   document.getElementById('manuelAdSoyad').value,
             ogrenciNo: document.getElementById('manuelNo').value,
             sinif:     document.getElementById('manuelSinif').value,
-            kitapcikTuru: document.getElementById('manuelKitapcik').value,
+            kitapcikTuru,
             ogrenciId: _manuelSeciliOgrenciId || '',
         },
         cevaplar:    _manuelCevaplar,
@@ -2334,7 +2416,7 @@ async function anahtarExcelYukle(dosya) {
         if (kaynak?.exceldenYukle) {
             await kaynak.exceldenYukle(dosya);
             const a = kaynak.getir?.();
-            if (a?.dersler?.length) { DB.anahtarKaydet(_aktifSinavId, a); anahtarIzgaraCiz(); _tumSonuclariYenidenHesapla(); return; }
+            if (a?.dersler?.length) { DB.anahtarKaydet(_aktifSinavId, a, _anahtarAktifKitapcik); anahtarIzgaraCiz(); _tumSonuclariYenidenHesapla(); return; }
         }
         // CSV fallback
         const metin = await dosya.text();
@@ -2355,7 +2437,7 @@ async function anahtarExcelYukle(dosya) {
             if (!ders) { ders = { dersAdi, anahtarlar: [] }; yeniAnahtar.dersler.push(ders); }
             ders.anahtarlar.push({ soruNo, dogru });
         });
-        DB.anahtarKaydet(_aktifSinavId, yeniAnahtar);
+        DB.anahtarKaydet(_aktifSinavId, yeniAnahtar, _anahtarAktifKitapcik);
         anahtarIzgaraCiz();
         _tumSonuclariYenidenHesapla();
         alert(`✅ ${yeniAnahtar.dersler.reduce((t, d) => t + d.anahtarlar.length, 0)} soru cevabı yüklendi.`);
@@ -2363,7 +2445,7 @@ async function anahtarExcelYukle(dosya) {
 }
 
 async function anahtarDisaAktar() {
-    const anahtar = DB.anahtariGetir(_aktifSinavId);
+    const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
     const derslerDolu = (anahtar.dersler || []).filter(d => d.anahtarlar?.length);
     if (!derslerDolu.length) { alert('Dışa aktarılacak cevap anahtarı yok.'); return; }
 
@@ -2525,9 +2607,13 @@ function baslat() {
         if (this.files[0]) anahtarExcelYukle(this.files[0]); this.value = '';
     });
     document.getElementById('btnAnahtarDisaAktar').addEventListener('click', anahtarDisaAktar);
+    // YENİ (Ağustos 2026): A/B kitapçık seçici — sekme değişince ekranı
+    // o kitapçığın anahtarıyla yeniden çizer.
+    document.getElementById('btnAnahKitapcikA')?.addEventListener('click', () => { _anahtarAktifKitapcik = 'A'; anahtarPaneliniRender(); });
+    document.getElementById('btnAnahKitapcikB')?.addEventListener('click', () => { _anahtarAktifKitapcik = 'B'; anahtarPaneliniRender(); });
     document.getElementById('btnAnahtarTemizle').addEventListener('click', () => {
         sheetOnay('Cevap anahtarı silinsin mi?', 'Bu işlem geri alınamaz.', () => {
-            DB.anahtarKaydet(_aktifSinavId, { dersler: [] });
+            DB.anahtarKaydet(_aktifSinavId, { dersler: [] }, _anahtarAktifKitapcik);
             anahtarIzgaraCiz(); _tumSonuclariYenidenHesapla();
         });
     });

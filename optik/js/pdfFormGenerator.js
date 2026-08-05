@@ -408,7 +408,7 @@ function izgaraCiz(doc, form) {
  * kullanılıyor (form.serbestOgeler); LGS/Bursluluk'ta bu alan hiç yok,
  * onların davranışı BU FONKSİYONDAN etkilenmiyor.
  */
-function serbestOgeleriCiz(doc, form) {
+function serbestOgeleriCiz(doc, form, ogrenci) {
   const ogeler = form.serbestOgeler;
   if (!ogeler || !ogeler.length) return;
 
@@ -419,11 +419,15 @@ function serbestOgeleriCiz(doc, form) {
     // yol açmıyor, sadece o tek öğe atlanıp devam ediliyor.
     try {
       if (og.tip === 'kimlikAlani') {
-        cerceveCiz(doc, og.x, og.y, og.genislik, og.yukseklik, ANA_RENK, 0.35);
-        doc.setFont('Roboto', 'bold');
-        doc.setFontSize(6);
-        doc.setTextColor(...ANA_RENK);
-        doc.text(og.baslik || '', og.x + 2, og.y + 4);
+        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi: "öğrenci ad soyadı
+        // boş geliyor") — önceden SADECE etiket ("AD SOYAD") basılıyordu,
+        // ogrenci parametresi bu fonksiyona hiç geçirilmiyordu. Artık
+        // LGS/Bursluluk'un kendi kimlik kutusuyla (etiketDegerKutusu)
+        // AYNI görsel biçimde öğrencinin gerçek adı da basılıyor —
+        // "Seçilen Öğrenciler İçin Oluştur" ile üretilen formlarda.
+        // "Boş Form" (ogrenci boş obje) durumunda sadece etiket görünür,
+        // bu doğru davranış (kağıda elle yazılacak demektir).
+        etiketDegerKutusu(doc, { x: og.x, y: og.y, width: og.genislik, height: og.yukseklik }, og.baslik || 'AD SOYAD', (ogrenci && ogrenci.adSoyad) || '');
       } else if (og.tip === 'baslik') {
         doc.setFont('Roboto', 'bold');
         doc.setFontSize(Math.max(8, og.yukseklik * 1.6));
@@ -565,7 +569,7 @@ async function formPdfOlustur(layout, ogrenci = {}) {
     } else if (form.izgara) {
       izgaraCiz(doc, form);
     }
-    serbestOgeleriCiz(doc, form);
+    serbestOgeleriCiz(doc, form, ogrenci);
   }
 
   return doc;
@@ -604,7 +608,7 @@ async function topluFormPdfOlustur(layout, ogrenciListesi) {
       } else if (form.izgara) {
         izgaraCiz(doc, form);
       }
-      serbestOgeleriCiz(doc, form);
+      serbestOgeleriCiz(doc, form, ogrenci);
     }
   }
 
