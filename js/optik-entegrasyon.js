@@ -114,8 +114,28 @@
        ad KASITLI OLARAK verilmiyor — optik tarafında hangi öğrencinin
        hangi kademede olduğu bilgisi yok, yanlış/tutarsız bir ad basmaktansa
        her zaman birleşik/genel adı basmak daha güvenli. */
-    okulAdiGetir() {
-      return (typeof okulBilgileriAyari !== 'undefined' && okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
+    /* YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar Firestore'a
+       kaydedilsin") — Optik Form Editörü şablonları artık oy_optikSablonlari
+       koleksiyonunda saklanıyor (cihazlar arası senkron/yedek için).
+       NOT: optik modülü kasıtlı olarak Firestore'a hiç dokunmuyor (bkz.
+       dosya başındaki izolasyon notu) — bu yüzden ana uygulamanın zaten
+       giriş yapmış Firestore bağlantısını (üstteki `db`, js/firebase-init.js)
+       burada köprülüyoruz, aynı siniflarGetir/ogrencilerGetir deseniyle. */
+    sablonlariGetir() {
+      if (typeof db === 'undefined' || !db) return Promise.resolve([]);
+      return db.collection('oy_optikSablonlari').get().then(function(snap) {
+        return snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+      }).catch(function(e) { console.error('OptikVeriKaynagi.sablonlariGetir hatası:', e); return []; });
+    },
+    sablonKaydet(kayit) {
+      if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil'));
+      const veri = Object.assign({}, kayit);
+      delete veri.id;
+      return db.collection('oy_optikSablonlari').doc(kayit.id).set(veri, { merge: true });
+    },
+    sablonSil(id) {
+      if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil'));
+      return db.collection('oy_optikSablonlari').doc(id).delete();
     }
   };
 })();
