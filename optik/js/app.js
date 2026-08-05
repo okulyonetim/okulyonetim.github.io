@@ -1058,15 +1058,15 @@ function ogrDetayAc(sonucId) {
     // Resim (doğru/yanlış baloncuk renklendirmeli)
     ogrDetayResimCiz(sonuc);
 
-    // GEÇİCİ TEŞHİS: bu kutu normalde kullanıcıya gösterilmiyordu (sadece
-    // iç teşhis amaçlıydı, sonuc.uyarilar verisi hep kaydediliyordu — sadece
-    // ekranda gizliydi). Optik okuma sorununu teşhis etmek için ŞİMDİLİK
-    // tekrar gösteriliyor; sorun bulununca bu blok eski haline
-    // (display:none + içerik boş) döndürülmeli.
+    // YENİ (Ağustos 2026, Sedat isteği: "Bu uyarıyı ya kaldır ya da bir
+    // bilgi iconuna ekle") — teşhis kutusu artık varsayılan GİZLİ; sadece
+    // btnOgrDetayUyariToggle ile açılıp kapanıyor. İçerik yine her zaman
+    // hazırlanıyor (sonuc.uyarilar hep kaydediliyor), sadece görünürlüğü
+    // kullanıcı kontrolünde.
     const uyariKutusu = document.getElementById('ogrDetayUyarilar');
     if (uyariKutusu) {
         uyariKutusu.textContent = (sonuc.uyarilar || []).join('\n') || '(uyarı yok)';
-        uyariKutusu.style.display = 'block';
+        uyariKutusu.style.display = 'none';
     }
 
 
@@ -2794,6 +2794,10 @@ function baslat() {
     // ── Ekran 4: Öğrenci Detay ──
     document.getElementById('btnOgrDetayGeri').addEventListener('click', () => { _aktifSonucId = null; ekranGit('sinavDetay'); });
     document.getElementById('btnOgrDetayKaydet').addEventListener('click', ogrDetayKaydet);
+    document.getElementById('btnOgrDetayUyariToggle')?.addEventListener('click', () => {
+        const kutu = document.getElementById('ogrDetayUyarilar');
+        if (kutu) kutu.style.display = kutu.style.display === 'none' ? 'block' : 'none';
+    });
     // Kağıt görüntüsüne dokununca tam ekran yakınlaştırılabilir görüntüleyici
     // aç — içerik dinamik olarak img/canvas olarak değiştiği için delege
     // (event delegation) kullanılıyor, o an ne varsa onun kaynağını alır.
