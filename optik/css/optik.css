@@ -94,6 +94,13 @@ input[type="date"]::-webkit-inner-spin-button { display: none; }
     border-radius: 20px; color: var(--text-dim); flex-shrink: 0;
 }
 .o-header-renk .o-geri-btn { color: rgba(255,255,255,.9); }
+/* YENİ (Ağustos 2026): Sınavlar başlığındaki "Şablonlarım" düğmesi — ikon + metin */
+.o-baslik-btn {
+    width: auto; height: 36px; display: flex; align-items: center; gap: 6px;
+    border: none; background: var(--bg-card); box-shadow: var(--nm-sm);
+    border-radius: 18px; padding: 0 14px; color: var(--text-dim); font-size: 13px; font-weight: 600;
+    margin-left: auto; flex-shrink: 0;
+}
 .o-header-saglar { display: flex; gap: 2px; }
 .o-kaydet-btn {
     border: none; background: rgba(255,255,255,.2);
