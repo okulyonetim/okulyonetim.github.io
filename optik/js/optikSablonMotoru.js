@@ -120,14 +120,23 @@
     const kaymalar = og.sutunDikeyKaymalari || [];
     const soruBasinaDusen = Math.ceil(og.soruSayisi / sutunSayisi);
 
-    // YENİ (Sedat isteği, Ağustos 2026: "Ders adı zorunlu bile olmasın...
-    // kutucuğu çok yer kaplıyor... font ve diğer ayarları yapılabilsin") —
-    // ders adı boşsa başlık kutusu YÜKSEKLİĞİ 0 kabul edilir (hiç
-    // basılmaz, sorular hemen sütunun üstünden başlar); doluysa kullanıcı
-    // yükseklik/font'u kendi belirleyebilir (varsayılanlar korunuyor).
-    const baslikYuksekligi = og.dersAdi ? (og.baslikYuksekligi || VARSAYILAN_BASLIK_YUKSEKLIGI) : 0;
+    // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026 — "resimdeki
+    // formu galeriden yükledim yanlış okudu", D:0 Y:0 B:20 çıkıyordu):
+    // omrEngine.js cevapları "ders" adını ANAHTAR olarak kullanarak
+    // gruplandırıyor (bkz. cevaplariCikar: ders=sutun.dersAdi) ve boş bir
+    // anahtarı ("") sessizce ATIYOR (_omrSonucuisle: if(!c.ders) return).
+    // "Ders adı zorunlu olmasın" özelliği eklenirken bu, ders adını görsel
+    // bir ETİKET sanıp boş bırakmaya izin vermişti — ama aynı alan aynı
+    // zamanda cevapların/anahtarın İÇ KİMLİĞİYDİ, boş bırakılınca TÜM
+    // cevaplar sessizce kayboluyordu. Artık ikisi AYRILDI: iç kimlik
+    // (dersAdiIcin) HİÇBİR ZAMAN boş olamaz (kullanıcı boş bırakırsa öğenin
+    // kendi id'sinden okunabilir bir isim üretilir); SADECE görsel
+    // basım (baslikYuksekligi) kullanıcının isteğine göre gizlenir.
+    const dersAdiIcin = og.dersAdi || ('Soru Bloğu #' + og.id.slice(-4));
+    const baslikGorunur = !!og.dersAdi && og.baslikGizle !== 'evet'; // alanEkle select'i string döndürür ('evet'/'hayir'), boolean değil
+    const baslikYuksekligi = baslikGorunur ? (og.baslikYuksekligi || VARSAYILAN_BASLIK_YUKSEKLIGI) : 0;
     const baslikFontPt = og.baslikFontPt || 6.4;
-    const baslikAltBosluk = og.dersAdi ? 3 : 1;
+    const baslikAltBosluk = baslikGorunur ? 3 : 1;
 
     const dersSutunlari = [];
     for (let s = 0; s < sutunSayisi; s++) {
@@ -143,7 +152,7 @@
         x: sutunX,
         y: sutunY,
         width: og.genislik,
-        dersAdi: og.dersAdi || '', // Sedat isteği (Ağustos 2026): çoklu sütunda başlığa numara EKLENMEZ, hepsi aynı ders adını gösterir
+        dersAdi: dersAdiIcin, // ASLA boş değil (bkz. yukarıdaki kök neden notu) — OMR gruplandırması buna dayanıyor
         soruSayisi: buSutundakiSoruSayisi,
         baslangicSoruNo: s * soruBasinaDusen + 1, // KÖK NEDEN DÜZELTMESİ: 2. sütun 11'den devam etsin, 1'den başlamasın (bkz. layoutEngine.js notu)
         sikSayisi: og.sikSayisi,
