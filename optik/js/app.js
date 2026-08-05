@@ -457,6 +457,13 @@ async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
             if (gorunurMu) alert('⚠ Köprü bulunamadı ya da güncel değil.\n\nkopru var mı: ' + !!kaynak + '\nsablonlariGetir var mı: ' + !!(kaynak && kaynak.sablonlariGetir) + '\n\nAna uygulamadaki js/optik-entegrasyon.js güncellemesini kontrol et.');
             return;
         }
+        // YENİ (teşhis, Ağustos 2026): iki platformun aynı Firebase
+        // projesine/hesabına bağlı olup olmadığını doğrudan göster.
+        let teshisMetni = '';
+        try {
+            const teshis = await kaynak.firestoreTeshis?.();
+            if (teshis) teshisMetni = `\n\n🔎 projectId: ${teshis.projectId}\n🔎 uid: ${teshis.uid}`;
+        } catch (e) {}
         const uzaktakiler = await kaynak.sablonlariGetir();
         if (!Array.isArray(uzaktakiler)) {
             if (gorunurMu) alert('⚠ Firestore\'dan beklenmeyen bir cevap geldi: ' + JSON.stringify(uzaktakiler));
@@ -492,7 +499,7 @@ async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
         }
 
         if (gorunurMu) {
-            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}\n\n⬆ Yukarı gönderilen: ${gonderilenSayisi}${gonderilemeyenSayisi ? ' (başarısız: ' + gonderilemeyenSayisi + ')' : ''}${ilkHata ? '\n\nİLK HATA: ' + ilkHata : ''}`);
+            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}\n\n⬆ Yukarı gönderilen: ${gonderilenSayisi}${gonderilemeyenSayisi ? ' (başarısız: ' + gonderilemeyenSayisi + ')' : ''}${ilkHata ? '\n\nİLK HATA: ' + ilkHata : ''}${teshisMetni}`);
         }
     } catch (e) {
         console.error('_sablonlariFirestoredenSenkronizeEt hatası:', e);
