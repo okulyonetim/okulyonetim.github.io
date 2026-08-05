@@ -638,6 +638,8 @@ function sablonlarEkraniniRender() {
 
 
 
+let _ysSablonSecilen = null;
+
 function yeniSinavAc() {
     // YENİ (teşhis, Ağustos 2026): "Yeni Sınav çalışmıyor" — konsola
     // erişilemiyor, bu yüzden bir hata olursa sessizce hiçbir şey
