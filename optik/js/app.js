@@ -56,7 +56,25 @@ const DB = {
     // AYRI bir anahtar okur/yazar — tek kitapçıklı sınavlarda (kitapcikTuru
     // verilmez) eski davranış (sabit oy_op_anahtar_{sid} anahtarı) AYNEN
     // korunuyor, geriye dönük uyumlu.
-    anahtariGetir(sid, kitapcikTuru)      { return this._oku('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), { dersler: [] }); },
+    anahtariGetir(sid, kitapcikTuru)      {
+        const anahtar = this._oku('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), { dersler: [] });
+        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "cevap
+        // anahtarını indirince cevaplar var ama uygulamada boş görünüyor")
+        // — daha önceki CSS hatası yüzünden (A/B sekmeleri her zaman
+        // görünüyordu) bazı Tek Kitapçıklı sınavlarda anahtar yanlışlıkla
+        // "_A" sonekli anahtara kaydedilmiş olabilir. Tek kitapçıklı bir
+        // sınavda (kitapcikTuru verilmemiş) ana anahtar BOŞSA ve "_A"
+        // sonekli bir anahtar DOLU ise, onu KURTAR: hem şimdi döndür hem
+        // de ana anahtara KOPYALA (bir daha bu kurtarmaya gerek kalmasın).
+        if (!kitapcikTuru && (!anahtar.dersler || !anahtar.dersler.length)) {
+            const yedekA = this._oku('oy_op_anahtar_' + sid + '_A', { dersler: [] });
+            if (yedekA.dersler && yedekA.dersler.length) {
+                this._yaz('oy_op_anahtar_' + sid, yedekA);
+                return yedekA;
+            }
+        }
+        return anahtar;
+    },
     anahtarKaydet(sid, a, kitapcikTuru)   { a.guncelleme = new Date().toISOString(); this._yaz('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), a); },
 
     // YENİ (Ağustos 2026): Optik Form Editörü ile tasarlanmış özel şablonlar.
@@ -1797,6 +1815,11 @@ function anahtarIzgaraCiz() {
 
     const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
     const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi === ders.dersAdi);
+    // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "hiçbiri
+    // görünmüyor" — dışa aktarımda veri var ama ızgara boş) — eşleşme
+    // bulunamazsa, TAM OLARAK neyin neyle karşılaştırıldığını konsola
+    // yazdır. Konsola erişemiyorsan, bu satırı geçici olarak
+    // console.warn yerine alert yapıp tekrar dener misin?
     const cevapMap = {};
     (dKaydi?.anahtarlar || []).forEach(a => { cevapMap[a.soruNo] = a.dogru; });
 
