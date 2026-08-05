@@ -145,6 +145,20 @@
       <small class="form-yardim">Net = Doğru − (Yanlış ÷ seçilen sayı).</small>
     </div>
 
+    <!-- YENİ (Ağustos 2026, Sedat isteği): "Kitapçık türü sınav oluştururken
+         hiç sorulmuyor. Tek kitapçık mı AB mi diye sorması... cevap anahtarı
+         bile farklı kitapçık türüne göre ikili girilmeli." -->
+    <div class="form-blok">
+      <label class="form-etiket">Kitapçık Türü</label>
+      <div class="form-pill">
+        <select id="ysKitapcikTuruSayisi" class="form-input">
+          <option value="1" selected>Tek Kitapçık</option>
+          <option value="2">A / B (2 Kitapçık)</option>
+        </select>
+      </div>
+      <small class="form-yardim">A/B seçilirse cevap anahtarı her iki kitapçık için AYRI AYRI girilir; puanlama, kağıttan okunan kitapçık harfine göre otomatik doğru anahtarı kullanır.</small>
+    </div>
+
   </div>
 </div>
 
@@ -232,6 +246,15 @@
 
     <!-- ANAHTAR -->
     <section class="sekme-panel" id="panelAnahtar">
+      <!-- YENİ (Ağustos 2026, Sedat isteği): "cevap anahtarı bile farklı
+           kitapçık türüne göre ikili girilmeli" — sadece kitapcikTuruSayisi=2
+           olan sınavlarda görünür, anahtarPaneliniRender() ile aç/kapa edilir. -->
+      <div id="anahKitapcikSecici" class="anahtar-toolbar" hidden>
+        <div class="form-pill" style="flex:1;">
+          <button type="button" class="tb-btn anahtar-kitapcik-btn" data-kitapcik="A" id="btnAnahKitapcikA">Kitapçık A</button>
+          <button type="button" class="tb-btn anahtar-kitapcik-btn" data-kitapcik="B" id="btnAnahKitapcikB">Kitapçık B</button>
+        </div>
+      </div>
       <div class="anahtar-toolbar">
         <select id="anahDersSecici" class="anahtar-ders-sec"></select>
         <div class="anahtar-butonlar">
