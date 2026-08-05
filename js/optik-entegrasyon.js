@@ -121,6 +121,22 @@
        dosya başındaki izolasyon notu) — bu yüzden ana uygulamanın zaten
        giriş yapmış Firestore bağlantısını (üstteki `db`, js/firebase-init.js)
        burada köprülüyoruz, aynı siniflarGetir/ogrencilerGetir deseniyle. */
+    /**
+     * YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "Android sadece 1
+     * şablon okuyor, Web 5 görüyor — tam önbellek temizliğinden sonra bile
+     * değişmiyor") — iki platformun GERÇEKTEN aynı Firebase projesine/
+     * hesabına bağlı olup olmadığını doğrudan gösterir. projectId farklıysa
+     * bu iki platform baştan beri farklı veritabanlarına yazıyor demektir.
+     */
+    firestoreTeshis() {
+      try {
+        const proj = (typeof firebase !== 'undefined' && firebase.app && firebase.app().options && firebase.app().options.projectId) || '(bilinmiyor)';
+        const uid = (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid) || '(giriş yok)';
+        return Promise.resolve({ projectId: proj, uid: uid, dbVarMi: typeof db !== 'undefined' && !!db });
+      } catch (e) {
+        return Promise.resolve({ hata: e.message });
+      }
+    },
     sablonlariGetir() {
       if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil (db tanımsız)'));
       // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "Android
