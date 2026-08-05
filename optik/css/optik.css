@@ -142,6 +142,12 @@ input[type="date"]::-webkit-inner-spin-button { display: none; }
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sinav-kart-alt { display: block; font-size: 12px; color: var(--text-faint); margin-top: 2px; }
+/* YENİ (Ağustos 2026, Sedat geri bildirimi: "şablon isimleri dar alanda
+   sıkıştı") — Şablonlarım kartları: isim tam genişlikte sarabiliyor,
+   rozetler ayrı bir alt satırda. */
+.sablon-kart { align-items: flex-start; flex-wrap: wrap; }
+.sablon-kart .sinav-kart-ad { white-space: normal; overflow: visible; text-overflow: clip; }
+.sablon-kart-rozetler { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; width: 100%; padding-left: 58px; box-sizing: border-box; }
 .durum-badge {
     padding: 4px 10px; border-radius: 20px;
     font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0;
