@@ -1761,6 +1761,9 @@ function anahtarPaneliniRender() {
     const kitapcikli = _sinavKitapcikliMi(_aktifSinavId);
     const secici = document.getElementById('anahKitapcikSecici');
     if (secici) secici.hidden = !kitapcikli;
+    // YENİ (Ağustos 2026): "Kitapçık Türü Değiştir" düğmesinin etiketi.
+    const kitapcikTuruEtiket = document.getElementById('kitapcikTuruEtiket');
+    if (kitapcikTuruEtiket) kitapcikTuruEtiket.textContent = kitapcikli ? 'A/B' : 'Tek';
     if (kitapcikli && _anahtarAktifKitapcik !== 'A' && _anahtarAktifKitapcik !== 'B') {
         _anahtarAktifKitapcik = 'A';
     } else if (!kitapcikli) {
@@ -2907,6 +2910,23 @@ function baslat() {
     // YENİ (Ağustos 2026, Sedat isteği): "Öğrencilerin kitapçık türü otomatik
     // ve manuel atama yapabilme imkanı olsun".
     document.getElementById('btnKitapcikAtamalari')?.addEventListener('click', _kitapcikAtamaSheetAc);
+    // YENİ (Ağustos 2026, Sedat geri bildirimi: "Kitapçık türü seçmedim"
+    // ama sınav kitapçıklı görünüyordu — sonradan düzeltebilme imkanı).
+    document.getElementById('btnKitapcikTuruDegistir')?.addEventListener('click', () => {
+        const sinav = DB.sinaviBul(_aktifSinavId);
+        if (!sinav) return;
+        const suAnKitapcikli = sinav.kitapcikTuruSayisi === 2;
+        const yeniDurum = suAnKitapcikli ? 'Tek Kitapçık' : 'A/B (2 Kitapçık)';
+        const uyari = suAnKitapcikli
+            ? 'Tek Kitapçığa geçersen, ayrı ayrı girilmiş A ve B anahtarları görünmez olur (silinmez, sadece kullanılmaz). Devam edilsin mi?'
+            : 'A/B (2 Kitapçık)\'a geçersen, mevcut tek anahtarın "A" anahtarı olarak devam eder, "B" için ayrıca anahtar girmen gerekir. Devam edilsin mi?';
+        sheetOnay(`Kitapçık Türü: ${yeniDurum} yap?`, uyari, () => {
+            sinav.kitapcikTuruSayisi = suAnKitapcikli ? 1 : 2;
+            DB.sinavKaydet(sinav);
+            _anahtarAktifKitapcik = undefined;
+            anahtarPaneliniRender();
+        });
+    });
     document.getElementById('btnKitapcikOtomatikAta')?.addEventListener('click', _kitapcikOtomatikAta);
     document.getElementById('btnKitapcikAtamaKaydet')?.addEventListener('click', _kitapcikAtamaKaydet);
     document.getElementById('btnAnahtarTemizle').addEventListener('click', () => {
