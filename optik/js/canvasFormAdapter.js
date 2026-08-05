@@ -127,11 +127,48 @@ function canvasDocOlustur(canvas, genislikMM, yukseklikMM, dpi = 200) {
       ctx.fillText(String(metin), px(x), px(y));
     },
 
+    // YENİ (Ağustos 2026): Optik Form Editörü'nün "serbest öğeler" desteği
+    // (çizgi, logo) için eklendi — önceden bu adaptörde hiç yoktu, bu
+    // yüzden pdfFormGenerator.js:serbestOgeleriCiz bunlara ulaşınca sessizce
+    // hata verip döngünün geri kalanını (logo, başlık vb.) hiç çizmiyordu
+    // (Sedat geri bildirimi: "Bazı öğeler form önizlemede görünmüyor").
+    line(x1, y1, x2, y2) {
+      cizgiUygula();
+      ctx.beginPath();
+      ctx.moveTo(px(x1), px(y1));
+      ctx.lineTo(px(x2), px(y2));
+      ctx.stroke();
+    },
+
+    addImage(gorselData, format, x, y, w, h) {
+      // Senkron API bekleniyor (pdfFormGenerator.js diğer çağrılar gibi
+      // await'siz çağırıyor) — Image yüklemesi asenkron olduğundan burada
+      // BEKLENEMEZ. Görsel önceden (Optik Form Editörü'nde seçilirken)
+      // zaten yüklenip önbelleğe alınmış olmalı (bkz. _gorselOnbellek).
+      const img = _gorselOnbellek.get(gorselData);
+      if (img && img.complete) {
+        ctx.drawImage(img, px(x), px(y), px(w), px(h));
+      } else if (!img) {
+        // İlk görülüşte: yükle ve önbelleğe al, bu çizimde henüz gösterilemez
+        // (senkron API) ama BİR SONRAKİ yeniden çizimde (editördeki her
+        // parametre değişikliği zaten yeniden çiziyor) görünür olur.
+        const yeni = new Image();
+        yeni.onload = () => { _gorselOnbellek.set(gorselData, yeni); };
+        yeni.src = gorselData;
+        _gorselOnbellek.set(gorselData, yeni);
+      }
+    },
+
     // Yardımcı: pdfFormGenerator.js kullanmaz ama önizleme/yazdırma kodu
     // sayfayı görsele çevirirken ihtiyaç duyar.
     _canvas: canvas,
   };
 }
+
+// YENİ: addImage() için görsel önbelleği — Image yüklemesi asenkron olduğu
+// için modül düzeyinde tutuluyor, aynı görsel (aynı base64 data URL)
+// birden fazla çizimde tekrar tekrar yüklenmesin diye.
+const _gorselOnbellek = new Map();
 
 window.canvasDocOlustur = canvasDocOlustur;
 export { canvasDocOlustur };

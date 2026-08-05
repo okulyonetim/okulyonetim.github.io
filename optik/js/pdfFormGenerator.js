@@ -87,6 +87,18 @@ function dikdortgenCiz(doc, x, y, w, h, renk) {
 }
 
 function cerceveCiz(doc, x, y, w, h, renk, kalinlik = 0.3) {
+  // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026 — "Invalid
+  // arguments passed to jsPDF.rect" ile PDF üretimi tamamen çöküyordu):
+  // Optik Form Editörü'nden gelen bir öğenin x/y/genislik/yükseklik
+  // alanlarından biri sayısal olmayan (undefined/NaN) ya da negatif
+  // genişlik/yükseklik taşıyorsa, jsPDF'in kendi rect() doğrulaması
+  // TÜM PDF üretimini durduruyordu. Artık geçersiz değerler sessizce
+  // (konsola uyarıyla) atlanıyor — o TEK öğe çizilmiyor, geri kalan form
+  // etkilenmiyor.
+  if (![x, y, w, h].every((v) => typeof v === 'number' && isFinite(v)) || w <= 0 || h <= 0) {
+    console.warn('cerceveCiz: geçersiz konum/boyut, atlanıyor:', { x, y, w, h });
+    return;
+  }
   doc.setDrawColor(...renk);
   doc.setLineWidth(kalinlik);
   doc.rect(x, y, w, h, 'S');
@@ -401,36 +413,39 @@ function serbestOgeleriCiz(doc, form) {
   if (!ogeler || !ogeler.length) return;
 
   for (const og of ogeler) {
-    if (og.tip === 'kimlikAlani') {
-      cerceveCiz(doc, og.x, og.y, og.genislik, og.yukseklik, ANA_RENK, 0.35);
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(6);
-      doc.setTextColor(...ANA_RENK);
-      doc.text(og.baslik || '', og.x + 2, og.y + 4);
-    } else if (og.tip === 'baslik') {
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(Math.max(8, og.yukseklik * 1.6));
-      doc.setTextColor(...ANA_RENK);
-      doc.text(og.metin || '', og.x + og.genislik / 2, og.y + og.yukseklik / 2 + 2, { align: 'center' });
-    } else if (og.tip === 'metin') {
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(og.fontPt || 10);
-      doc.setTextColor(...KOYU_METIN);
-      doc.text(og.metin || '', og.x, og.y);
-    } else if (og.tip === 'cizgi') {
-      doc.setDrawColor(80, 80, 80);
-      doc.setLineWidth(0.3);
-      doc.line(og.x1, og.y1, og.x2, og.y2);
-    } else if (og.tip === 'logo') {
-      if (og.gorselData) {
-        try {
-          const format = /^data:image\/(png|jpeg|jpg)/i.exec(og.gorselData);
-          doc.addImage(og.gorselData, format ? format[1].toUpperCase() : 'PNG', og.x, og.y, og.genislik, og.yukseklik);
-        } catch (e) {
-          // Bozuk/desteklenmeyen görsel verisi — sayfayı çökertmek yerine sessizce atla,
-          // kullanıcı editörde logoyu tekrar yüklemeyi deneyebilir.
-        }
+    // YENİ (Sedat geri bildirimi, Ağustos 2026): her öğe kendi try/catch'i
+    // içinde çiziliyor — bir öğedeki geçersiz veri (ör. resize sırasında
+    // oluşmuş bozuk bir sayı) artık formun GERİ KALANININ hiç çizilmemesine
+    // yol açmıyor, sadece o tek öğe atlanıp devam ediliyor.
+    try {
+      if (og.tip === 'kimlikAlani') {
+        cerceveCiz(doc, og.x, og.y, og.genislik, og.yukseklik, ANA_RENK, 0.35);
+        doc.setFont('Roboto', 'bold');
+        doc.setFontSize(6);
+        doc.setTextColor(...ANA_RENK);
+        doc.text(og.baslik || '', og.x + 2, og.y + 4);
+      } else if (og.tip === 'baslik') {
+        doc.setFont('Roboto', 'bold');
+        doc.setFontSize(Math.max(8, og.yukseklik * 1.6));
+        doc.setTextColor(...ANA_RENK);
+        doc.text(og.metin || '', og.x + og.genislik / 2, og.y + og.yukseklik / 2 + 2, { align: 'center' });
+      } else if (og.tip === 'metin') {
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(og.fontPt || 10);
+        doc.setTextColor(...KOYU_METIN);
+        doc.text(og.metin || '', og.x, og.y);
+      } else if (og.tip === 'cizgi') {
+        doc.setDrawColor(80, 80, 80);
+        doc.setLineWidth(0.3);
+        doc.line(og.x1, og.y1, og.x2, og.y2);
+      } else if (og.tip === 'logo' && og.gorselData) {
+        const format = /^data:image\/(png|jpeg|jpg)/i.exec(og.gorselData);
+        doc.addImage(og.gorselData, format ? format[1].toUpperCase() : 'PNG', og.x, og.y, og.genislik, og.yukseklik);
       }
+    } catch (e) {
+      // Bozuk/desteklenmeyen öğe verisi — sayfayı çökertmek yerine sessizce
+      // atla (konsola uyarıyla), kullanıcı editörde o öğeyi kontrol edebilir.
+      console.warn('serbestOgeleriCiz: bir öğe çizilemedi, atlanıyor:', og.tip, og.id, e.message);
     }
   }
 }

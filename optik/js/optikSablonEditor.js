@@ -439,12 +439,33 @@
 
     function grideYapistir(deger) { return Math.round(deger / GRID_MM) * GRID_MM; }
 
+    // ---- Ana uygulamanın "aşağı çekince yenile" (pull-to-refresh) jestini
+    // sürükleme sırasında bastır (Sedat geri bildirimi: "sayfa yenileniyor")
+    // — optik modülü ayrı bir iframe'de çalıştığı için ana uygulamanın
+    // _pullToRefreshAyarla'sına doğrudan erişemiyoruz, window.parent
+    // üzerinden köprü kuruyoruz (bkz. app.js: _uygulamaHtmlYazdirCagir'daki
+    // aynı desen). Ana uygulama bu fonksiyonu bulamazsa (bağımsız/eski
+    // sayfa senaryosu) sessizce yok sayılır.
+    function _pullToRefreshBastir(acikMi) {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent._pullToRefreshAyarla === 'function') {
+          window.parent._pullToRefreshAyarla(acikMi);
+        }
+      } catch (e) { /* çapraz pencere erişimi engellenmiş olabilir — sorun değil */ }
+    }
+
     function pointerDownOge(ev, og, gEl) {
       ev.stopPropagation();
       seciliId = og.id;
+      _pullToRefreshBastir(false);
       const ctmInverse = svg.getScreenCTM().inverse(); // sürüklemenin tamamı için TEK sefer
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
-      surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0, ctmInverse };
+      // PERFORMANS: og referansı burada BİR KEZ önbelleğe alınıyor —
+      // önceden pointermove'daki her karede sablon.ogeler.find(...) ile
+      // yeniden aranıyordu (Sedat geri bildirimi: "çok yavaş hareket
+      // ediyor öğeler" — CTM önbelleklemesinden sonra kalan tek gereksiz
+      // iş buydu, küçük ama gereksiz).
+      surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0, ctmInverse, ogRef: og };
       ev.target.setPointerCapture(ev.pointerId);
       gecmiseKaydet();
       cizPanel();
@@ -452,9 +473,10 @@
 
     function pointerDownTutamac(ev, og, gEl) {
       ev.stopPropagation();
+      _pullToRefreshBastir(false);
       const ctmInverse = svg.getScreenCTM().inverse();
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
-      surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, ctmInverse };
+      surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, ctmInverse, ogRef: og };
       ev.target.setPointerCapture(ev.pointerId);
       gecmiseKaydet();
     }
@@ -525,7 +547,7 @@
         let dy = grideYapistir(nokta.y - surukleme.baslangicMM.y);
 
         if (surukleme.tip === 'tasi') {
-          const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
+          const og = surukleme.ogRef;
           if (og) {
             const kisitli = guvenliDxDyKisitla(og, surukleme.ogeBaslangic, dx, dy);
             dx = kisitli.dx; dy = kisitli.dy;
@@ -533,7 +555,7 @@
           surukleme.dx = dx; surukleme.dy = dy;
           if (surukleme.gEl) surukleme.gEl.setAttribute('transform', `translate(${dx},${dy})`);
         } else if (surukleme.tip === 'boyutlandir') {
-          const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
+          const og = surukleme.ogRef;
           if (!og) return;
           const baz = surukleme.ogeBaslangic;
           if (og.tip === 'baloncukBlok' || og.genislik != null) {
@@ -546,8 +568,10 @@
     });
 
     function suruklemeBitir() {
-      if (surukleme && surukleme.tip === 'tasi') {
-        const og = sablon.ogeler.find((o) => o.id === surukleme.ogeId);
+      if (!surukleme) return;
+      _pullToRefreshBastir(true);
+      if (surukleme.tip === 'tasi') {
+        const og = surukleme.ogRef;
         const baz = surukleme.ogeBaslangic;
         if (og) {
           if (og.tip === 'cizgi') {
@@ -737,8 +761,17 @@
           secili ? CERCEVE_SECILI : { fill: 'transparent', stroke: 'none' }
         )), g.firstChild);
       } else if (og.tip === 'cizgi') {
+        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi: "Çizgi öğesini hiç
+        // taşıyamıyorum") — görünen çizgi sadece 0.3-0.6mm kalınlığında,
+        // SVG'de sadece TAM o ince çizginin üstüne dokunuş isabet sayılıyor.
+        // Görünmez ama geniş (4mm) bir isabet-alanı çizgisi ekleniyor.
+        g.appendChild(svgOlustur('line', {
+          x1: og.x1, y1: og.y1, x2: og.x2, y2: og.y2,
+          stroke: 'transparent', 'stroke-width': 4, 'pointer-events': 'stroke',
+        }));
         g.appendChild(svgOlustur('line', {
           x1: og.x1, y1: og.y1, x2: og.x2, y2: og.y2, stroke: secili ? '#0a7cff' : '#555', 'stroke-width': secili ? 0.6 : 0.3,
+          'pointer-events': 'none',
         }));
       }
 
