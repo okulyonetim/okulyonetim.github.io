@@ -100,7 +100,21 @@ const DB = {
         // yazma başarısız olursa sessizce yerelde kalır — bir sonraki
         // _sablonlariFirestoredenSenkronizeEt() çağrısında tekrar denenir
         // (bkz. o fonksiyondaki "yereldeki daha yeni kayıtları geri yaz" notu).
-        try { veriKaynagi()?.sablonKaydet?.(kayit)?.catch?.(e => console.error('Şablon Firestore\'a kaydedilemedi:', e)); } catch (e) {}
+        try {
+            const kopru = veriKaynagi();
+            if (!kopru) {
+                console.warn('Şablon Firestore\'a kaydedilemedi: köprü (window.parent.OptikVeriKaynagi) bulunamadı — iframe dışında mı çalışıyor?');
+            } else if (!kopru.sablonKaydet) {
+                // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "web'de
+                // oluşturduğum şablonlar Android'de görünmüyor") — köprü VAR
+                // ama eski (js/optik-entegrasyon.js güncellenmemiş) olabilir.
+                alert('⚠ Şablon Firestore\'a kaydedilemedi: ana uygulamanın köprüsü (js/optik-entegrasyon.js) güncel değil — sablonKaydet fonksiyonu yok. Ana uygulama güncellemesini tekrar kontrol et.');
+            } else {
+                kopru.sablonKaydet(kayit)
+                    .then(() => console.log('✅ Şablon Firestore\'a kaydedildi:', kayit.id))
+                    .catch(e => alert('⚠ Şablon Firestore\'a kaydedilemedi: ' + e.message));
+            }
+        } catch (e) {}
     },
     ozelSablonBul(id)            { return this.ozelSablonlariGetir().find(x => x.id === id) || null; },
     ozelSablonSil(id)            {
@@ -436,13 +450,20 @@ function _okulAdiGetir() {
  * köprü yoksa veya hata olursa sessizce hiçbir şey yapmaz, uygulama
  * normal (sadece yerel) çalışmaya devam eder.
  */
-async function _sablonlariFirestoredenSenkronizeEt() {
+async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
     try {
         const kaynak = veriKaynagi();
-        if (!kaynak?.sablonlariGetir) return;
+        if (!kaynak?.sablonlariGetir) {
+            if (gorunurMu) alert('⚠ Köprü bulunamadı ya da güncel değil.\n\nkopru var mı: ' + !!kaynak + '\nsablonlariGetir var mı: ' + !!(kaynak && kaynak.sablonlariGetir) + '\n\nAna uygulamadaki js/optik-entegrasyon.js güncellemesini kontrol et.');
+            return;
+        }
         const uzaktakiler = await kaynak.sablonlariGetir();
-        if (!Array.isArray(uzaktakiler)) return;
+        if (!Array.isArray(uzaktakiler)) {
+            if (gorunurMu) alert('⚠ Firestore\'dan beklenmeyen bir cevap geldi: ' + JSON.stringify(uzaktakiler));
+            return;
+        }
         const yerelListe = DB.ozelSablonlariGetir();
+        const oncekiSayi = yerelListe.length;
         const birlesikMap = new Map(yerelListe.map(k => [k.id, k]));
         uzaktakiler.forEach(uzak => {
             const yerel = birlesikMap.get(uzak.id);
@@ -451,10 +472,13 @@ async function _sablonlariFirestoredenSenkronizeEt() {
             }
         });
         DB._yaz('oy_op_ozelSablonlar', Array.from(birlesikMap.values()));
-        // O an görünen ekran şablon listesiyse tazele.
         if (_aktifEkranId() === 'sablonlar') sablonlarEkraniniRender();
+        if (gorunurMu) {
+            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}`);
+        }
     } catch (e) {
         console.error('_sablonlariFirestoredenSenkronizeEt hatası:', e);
+        if (gorunurMu) alert('⚠ Senkronizasyon hatası: ' + e.message);
     }
 }
 
@@ -2780,6 +2804,7 @@ function baslat() {
     document.getElementById('btnSablonlarAc')?.addEventListener('click', sablonlarEkraniAc);
     document.getElementById('btnSablonlarGeri')?.addEventListener('click', () => ekranGit('sinavlar'));
     document.getElementById('fabYeniSablon')?.addEventListener('click', () => sablonEditoruAc(null, 'sablonlar'));
+    document.getElementById('btnSablonlarSenkron')?.addEventListener('click', () => _sablonlariFirestoredenSenkronizeEt(true));
     // YENİ: açılışta Firestore'daki şablonları arka planda yerelle birleştir.
     _sablonlariFirestoredenSenkronizeEt();
 
