@@ -283,6 +283,15 @@ input[type="date"]::-webkit-inner-spin-button { display: none; }
     display: flex; align-items: center; gap: 8px;
     padding: 12px 16px 8px; flex-shrink: 0; border-bottom: 1px solid var(--border);
 }
+/* KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "Zaten sınav
+   oluştururken kitapçık yok seçiliydi" ama A/B sekmeleri yine de
+   görünüyordu) — yukarıdaki display:flex kuralı, tarayıcının HTML
+   `hidden` özelliğine verdiği varsayılan display:none davranışını
+   EZİYORDU (yazar CSS'i her zaman UA'nın hidden davranışını geçersiz
+   kılar). JS tarafı secici.hidden=true'yu doğru ayarlasa bile element
+   GÖRÜNMEYE devam ediyordu — sınavın gerçek kitapçık ayarından TAMAMEN
+   BAĞIMSIZ olarak. */
+.anahtar-toolbar[hidden] { display: none; }
 .anahtar-ders-sec {
     flex: 1; min-width: 0; /* YENİ: bu olmadan uzun ders adları kutunun küçülmesini
        engelleyip butonları ekran dışına itiyordu (flex child'lar varsayılan
