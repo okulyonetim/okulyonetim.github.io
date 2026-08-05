@@ -260,7 +260,7 @@
 
     // ---- Kağıt boyutu seçici (Sedat isteği, Ağustos 2026) ----
     const kagitSatiri = document.createElement('div');
-    kagitSatiri.style.cssText = 'display:flex; align-items:center; gap:6px; width:100%; padding:0 0 4px; font-size:12px; color:#555;';
+    kagitSatiri.style.cssText = 'display:flex; align-items:center; gap:6px; width:100%; padding:0 0 4px; font-size:12px; color:#555; flex-wrap:wrap;';
     kagitSatiri.innerHTML = '<span>Kağıt Boyutu:</span>';
     const kagitSelect = document.createElement('select');
     kagitSelect.style.cssText = 'min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px;';
@@ -273,6 +273,17 @@
     ozelOpt.value = 'ozel'; ozelOpt.textContent = 'Özel Boyut';
     kagitSelect.appendChild(ozelOpt);
 
+    // YENİ (Sedat isteği): Yatay/Dikey yön seçici — KAGIT_BOYUTLARI hep
+    // DİKEY (portre, width<height) olarak tanımlı; yön sadece width/height'i
+    // yer değiştiriyor, ayrı bir veri modeli gerekmiyor.
+    const yonSelect = document.createElement('select');
+    yonSelect.style.cssText = 'min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px;';
+    ['dikey', 'yatay'].forEach((y) => {
+      const o = document.createElement('option');
+      o.value = y; o.textContent = y === 'dikey' ? '↕ Dikey' : '↔ Yatay';
+      yonSelect.appendChild(o);
+    });
+
     const ozelGenislikInput = document.createElement('input');
     ozelGenislikInput.type = 'number'; ozelGenislikInput.min = 20; ozelGenislikInput.placeholder = 'Genişlik mm';
     ozelGenislikInput.style.cssText = 'width:80px; min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; display:none;';
@@ -283,10 +294,16 @@
     const kagitUyariEl = document.createElement('span');
     kagitUyariEl.style.cssText = 'color:#a33; font-size:11px;';
 
+    function mevcutYon() {
+      return sablon.sayfaBoyutu.width > sablon.sayfaBoyutu.height ? 'yatay' : 'dikey';
+    }
+
     function mevcutBoyutAdiBul() {
-      const eslesen = Object.keys(KAGIT_BOYUTLARI).find((ad) =>
-        KAGIT_BOYUTLARI[ad].width === sablon.sayfaBoyutu.width && KAGIT_BOYUTLARI[ad].height === sablon.sayfaBoyutu.height
-      );
+      const w = sablon.sayfaBoyutu.width, h = sablon.sayfaBoyutu.height;
+      const eslesen = Object.keys(KAGIT_BOYUTLARI).find((ad) => {
+        const b = KAGIT_BOYUTLARI[ad];
+        return (b.width === w && b.height === h) || (b.width === h && b.height === w);
+      });
       return eslesen || 'ozel';
     }
 
@@ -308,12 +325,14 @@
     }
 
     kagitSelect.value = mevcutBoyutAdiBul();
+    yonSelect.value = mevcutYon();
     ozelGenislikInput.style.display = kagitSelect.value === 'ozel' ? '' : 'none';
     ozelYukseklikInput.style.display = kagitSelect.value === 'ozel' ? '' : 'none';
     ozelGenislikInput.value = sablon.sayfaBoyutu.width;
     ozelYukseklikInput.value = sablon.sayfaBoyutu.height;
 
     kagitSelect.addEventListener('change', () => {
+      const yon = yonSelect.value;
       if (kagitSelect.value === 'ozel') {
         ozelGenislikInput.style.display = '';
         ozelYukseklikInput.style.display = '';
@@ -322,16 +341,24 @@
         ozelGenislikInput.style.display = 'none';
         ozelYukseklikInput.style.display = 'none';
         const b = KAGIT_BOYUTLARI[kagitSelect.value];
-        sayfaBoyutunuUygula(b.width, b.height);
+        sayfaBoyutunuUygula(yon === 'yatay' ? b.height : b.width, yon === 'yatay' ? b.width : b.height);
       }
+    });
+    yonSelect.addEventListener('change', () => {
+      // Mevcut genişlik/yüksekliği (standart VEYA özel fark etmeksizin) yer değiştir.
+      sayfaBoyutunuUygula(sablon.sayfaBoyutu.height, sablon.sayfaBoyutu.width);
+      ozelGenislikInput.value = sablon.sayfaBoyutu.width;
+      ozelYukseklikInput.value = sablon.sayfaBoyutu.height;
     });
     [ozelGenislikInput, ozelYukseklikInput].forEach((input) => {
       input.addEventListener('change', () => {
         sayfaBoyutunuUygula(parseFloat(ozelGenislikInput.value) || sablon.sayfaBoyutu.width, parseFloat(ozelYukseklikInput.value) || sablon.sayfaBoyutu.height);
+        yonSelect.value = mevcutYon();
       });
     });
 
     kagitSatiri.appendChild(kagitSelect);
+    kagitSatiri.appendChild(yonSelect);
     kagitSatiri.appendChild(ozelGenislikInput);
     kagitSatiri.appendChild(ozelYukseklikInput);
     kagitSatiri.appendChild(kagitUyariEl);
