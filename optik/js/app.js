@@ -484,15 +484,15 @@ async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
         // Artık yerelde olup Firestore'da OLMAYAN her şablon burada
         // otomatik yukarı gönderiliyor — iki yönlü, kendi kendini
         // onaran bir senkron.
-        const gonderilecekler = yerelListe.filter(y => !uzakIdler.has(y.id));
-        let gonderilenSayisi = 0, gonderilemeyenSayisi = 0;
+        let gonderilecekler = yerelListe.filter(y => !uzakIdler.has(y.id));
+        let gonderilenSayisi = 0, gonderilemeyenSayisi = 0, ilkHata = null;
         for (const y of gonderilecekler) {
             try { await kaynak.sablonKaydet(y); gonderilenSayisi++; }
-            catch (e) { gonderilemeyenSayisi++; console.error('Şablon yukarı gönderilemedi:', y.id, e); }
+            catch (e) { gonderilemeyenSayisi++; if (!ilkHata) ilkHata = e.message; console.error('Şablon yukarı gönderilemedi:', y.id, e); }
         }
 
         if (gorunurMu) {
-            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}\n\n⬆ Yukarı gönderilen (yerelde olup Firestore'da olmayan): ${gonderilenSayisi}${gonderilemeyenSayisi ? ' (başarısız: ' + gonderilemeyenSayisi + ')' : ''}`);
+            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}\n\n⬆ Yukarı gönderilen: ${gonderilenSayisi}${gonderilemeyenSayisi ? ' (başarısız: ' + gonderilemeyenSayisi + ')' : ''}${ilkHata ? '\n\nİLK HATA: ' + ilkHata : ''}`);
         }
     } catch (e) {
         console.error('_sablonlariFirestoredenSenkronizeEt hatası:', e);
