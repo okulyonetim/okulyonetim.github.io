@@ -465,6 +465,7 @@ async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
         const yerelListe = DB.ozelSablonlariGetir();
         const oncekiSayi = yerelListe.length;
         const birlesikMap = new Map(yerelListe.map(k => [k.id, k]));
+        const uzakIdler = new Set(uzaktakiler.map(u => u.id));
         uzaktakiler.forEach(uzak => {
             const yerel = birlesikMap.get(uzak.id);
             if (!yerel || !yerel.guncelleme || (uzak.guncelleme && uzak.guncelleme > yerel.guncelleme)) {
@@ -473,8 +474,25 @@ async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
         });
         DB._yaz('oy_op_ozelSablonlar', Array.from(birlesikMap.values()));
         if (_aktifEkranId() === 'sablonlar') sablonlarEkraniniRender();
+
+        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "çok
+        // olan web az olan android") — senkron önceden SADECE İNDİRME
+        // yönündeydi. Firestore senkronu eklenmeden ÖNCE oluşturulmuş
+        // yerel şablonlar (kayıt anında Firestore'a hiç GÖNDERİLMEMİŞTİ —
+        // sadece ozelSablonKaydet çağrıldığında gönderiliyor, geçmişe
+        // dönük göndermiyor) bu yüzden diğer cihazda hiç görünmüyordu.
+        // Artık yerelde olup Firestore'da OLMAYAN her şablon burada
+        // otomatik yukarı gönderiliyor — iki yönlü, kendi kendini
+        // onaran bir senkron.
+        const gonderilecekler = yerelListe.filter(y => !uzakIdler.has(y.id));
+        let gonderilenSayisi = 0, gonderilemeyenSayisi = 0;
+        for (const y of gonderilecekler) {
+            try { await kaynak.sablonKaydet(y); gonderilenSayisi++; }
+            catch (e) { gonderilemeyenSayisi++; console.error('Şablon yukarı gönderilemedi:', y.id, e); }
+        }
+
         if (gorunurMu) {
-            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}`);
+            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}\n\n⬆ Yukarı gönderilen (yerelde olup Firestore'da olmayan): ${gonderilenSayisi}${gonderilemeyenSayisi ? ' (başarısız: ' + gonderilemeyenSayisi + ')' : ''}`);
         }
     } catch (e) {
         console.error('_sablonlariFirestoredenSenkronizeEt hatası:', e);
