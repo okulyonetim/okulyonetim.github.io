@@ -497,8 +497,63 @@ function genelIzgaraCercevesiCiz(doc, form) {
  *
  * @returns {Promise<jsPDF>} doc nesnesi — .save('dosya.pdf') veya .output('blob') ile kullanılır
  */
+/**
+ * jsPDF örneğini oluşturur ve çizim metodlarını (text/rect/line/circle)
+ * SAVUNMACI hale getirir — Optik Form Editörü'nden gelen bir öğenin
+ * konum/boyut alanlarından biri sayısal olmayan (undefined/NaN) ise,
+ * jsPDF'in kendi iç doğrulaması TÜM PDF üretimini durduruyordu (Sedat
+ * geri bildirimi, Ağustos 2026: önce "Invalid arguments passed to
+ * jsPDF.rect", cerceveCiz düzeltilince aynı sınıftan "...jsPDF.text").
+ * cerceveCiz gibi tek tek her çağrı noktasını yamamak yerine, TÜM
+ * jsPDF çizim çağrılarını burada TEK noktadan koruyoruz: geçersiz
+ * argümanlı bir çağrı sessizce (konsola uyarıyla) atlanır, üretim
+ * durmaz.
+ */
+function jsPDFGuvenliOlustur(secenekler) {
+  const doc = new jsPDF(secenekler);
+  const saySayi = (v) => typeof v === 'number' && isFinite(v);
+
+  const orijinalText = doc.text.bind(doc);
+  doc.text = (metin, x, y, opts) => {
+    if (!saySayi(x) || !saySayi(y)) {
+      console.warn('jsPDF.text: geçersiz konum, atlanıyor:', { metin, x, y });
+      return doc;
+    }
+    return orijinalText(metin, x, y, opts);
+  };
+
+  const orijinalRect = doc.rect.bind(doc);
+  doc.rect = (x, y, w, h, stil) => {
+    if (!saySayi(x) || !saySayi(y) || !saySayi(w) || !saySayi(h) || w <= 0 || h <= 0) {
+      console.warn('jsPDF.rect: geçersiz konum/boyut, atlanıyor:', { x, y, w, h });
+      return doc;
+    }
+    return orijinalRect(x, y, w, h, stil);
+  };
+
+  const orijinalLine = doc.line.bind(doc);
+  doc.line = (x1, y1, x2, y2) => {
+    if (![x1, y1, x2, y2].every(saySayi)) {
+      console.warn('jsPDF.line: geçersiz koordinat, atlanıyor:', { x1, y1, x2, y2 });
+      return doc;
+    }
+    return orijinalLine(x1, y1, x2, y2);
+  };
+
+  const orijinalCircle = doc.circle.bind(doc);
+  doc.circle = (x, y, r, stil) => {
+    if (!saySayi(x) || !saySayi(y) || !saySayi(r) || r <= 0) {
+      console.warn('jsPDF.circle: geçersiz konum/yarıçap, atlanıyor:', { x, y, r });
+      return doc;
+    }
+    return orijinalCircle(x, y, r, stil);
+  };
+
+  return doc;
+}
+
 async function formPdfOlustur(layout, ogrenci = {}) {
-  const doc = new jsPDF({ unit: 'mm', format: [layout.sayfaBoyutu.width, layout.sayfaBoyutu.height] });
+  const doc = jsPDFGuvenliOlustur({ unit: 'mm', format: [layout.sayfaBoyutu.width, layout.sayfaBoyutu.height] });
   fontlariKaydet(doc);
 
   for (const form of layout.formlar) {
@@ -527,7 +582,7 @@ async function formPdfOlustur(layout, ogrenci = {}) {
  * her öğrenci kendi ayrı sayfasını alır, eski davranışla birebir aynıdır.
  */
 async function topluFormPdfOlustur(layout, ogrenciListesi) {
-  const doc = new jsPDF({ unit: 'mm', format: [layout.sayfaBoyutu.width, layout.sayfaBoyutu.height] });
+  const doc = jsPDFGuvenliOlustur({ unit: 'mm', format: [layout.sayfaBoyutu.width, layout.sayfaBoyutu.height] });
   fontlariKaydet(doc);
 
   const slotSayisi = layout.formlar.length; // bir A4'e sığan mini-form (=öğrenci) sayısı
@@ -572,4 +627,5 @@ export {
   bolumlerCiz,
   izgaraCiz,
   fontlariKaydet,
+  serbestOgeleriCiz,
 };

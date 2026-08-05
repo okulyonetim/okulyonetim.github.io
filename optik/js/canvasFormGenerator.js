@@ -16,10 +16,23 @@
 // canvasFormAdapter.js'in ürettiği nesne veriliyor, böylece PDF çıktısı ile
 // önizleme/yazdırma çıktısı birbirinden asla sapmaz.
 
-import { hizalamaIsaretleriCiz, headerCiz, bolumlerCiz, izgaraCiz } from './pdfFormGenerator.js';
-import { canvasDocOlustur } from './canvasFormAdapter.js';
+import { hizalamaIsaretleriCiz, headerCiz, bolumlerCiz, izgaraCiz, serbestOgeleriCiz } from './pdfFormGenerator.js';
+import { canvasDocOlustur, gorselleriOnceYukle } from './canvasFormAdapter.js';
 
 async function tekSayfaCiz(canvas, layout, sayfadakiFormOgrenciler, dpi) {
+  // YENİ (Sedat geri bildirimi, Ağustos 2026: "Bazı öğeler form önizlemede
+  // görünmüyor"): logo görselleri asenkron yükleniyor ama bu fonksiyon
+  // TEK SEFERLİK senkron bir çizim yapıyor — resim yüklenene kadar bekleyen
+  // bir "bir sonraki çizim" YOK. Bu yüzden önce TÜM logo görsellerini
+  // (varsa) yükleyip önbelleğe alıyoruz, ÇİZİMDEN ÖNCE.
+  const gorselUrller = [];
+  for (const { form } of sayfadakiFormOgrenciler) {
+    (form.serbestOgeler || []).forEach((og) => {
+      if (og.tip === 'logo' && og.gorselData) gorselUrller.push(og.gorselData);
+    });
+  }
+  if (gorselUrller.length) await gorselleriOnceYukle(gorselUrller);
+
   const doc = canvasDocOlustur(canvas, layout.sayfaBoyutu.width, layout.sayfaBoyutu.height, dpi);
   for (const { form, ogrenci } of sayfadakiFormOgrenciler) {
     hizalamaIsaretleriCiz(doc, form);
@@ -29,6 +42,11 @@ async function tekSayfaCiz(canvas, layout, sayfadakiFormOgrenciler, dpi) {
     } else if (form.izgara) {
       izgaraCiz(doc, form);
     }
+    // KÖK NEDEN DÜZELTMESİ: bu çağrı hiç yoktu — Optik Form Editörü'nün
+    // logo/kimlik/başlık/metin/çizgi gibi "serbest öğeleri" canvas
+    // önizlemesinde/yazdırmasında asla çizilmiyordu (gerçek PDF'te
+    // çiziliyordu ama ikisi ayrı kod yollarıydı).
+    serbestOgeleriCiz(doc, form);
   }
   return doc;
 }

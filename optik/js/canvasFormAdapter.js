@@ -170,5 +170,26 @@ function canvasDocOlustur(canvas, genislikMM, yukseklikMM, dpi = 200) {
 // birden fazla çizimde tekrar tekrar yüklenmesin diye.
 const _gorselOnbellek = new Map();
 
+/**
+ * Verilen data URL'lerin TAMAMINI önceden yükleyip _gorselOnbellek'e
+ * doldurur — canvas çizimi TEK SEFERLİK SENKRON olduğu için, addImage()
+ * çağrıldığı anda görsel zaten hazır olmalı (bkz. canvasFormGenerator.js:
+ * tekSayfaCiz, Sedat geri bildirimi: "Bazı öğeler form önizlemede
+ * görünmüyor" — logo tam da bu yüzden hiç çizilmiyordu).
+ * @returns {Promise<void>}
+ */
+function gorselleriOnceYukle(dataUrller) {
+  const benzersiz = [...new Set(dataUrller)].filter((u) => {
+    const mevcut = _gorselOnbellek.get(u);
+    return !mevcut || !mevcut.complete;
+  });
+  return Promise.all(benzersiz.map((url) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => { _gorselOnbellek.set(url, img); resolve(); };
+    img.onerror = () => { resolve(); }; // bozuk görsel — sessizce atla, addImage zaten null kontrolüyle korunuyor
+    img.src = url;
+  }))).then(() => {});
+}
+
 window.canvasDocOlustur = canvasDocOlustur;
-export { canvasDocOlustur };
+export { canvasDocOlustur, gorselleriOnceYukle };
