@@ -514,6 +514,21 @@ function genelIzgaraCercevesiCiz(doc, form) {
  * durmaz.
  */
 function jsPDFGuvenliOlustur(secenekler) {
+  // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026 — "A5 yatay
+  // hazırladığım form önizlemedeki gibi inmiyor"): jsPDF'e özel bir
+  // [genişlik, yükseklik] dizisi `format` olarak verilince, `orientation`
+  // AÇIKÇA belirtilmezse jsPDF'in kendisi varsayılan 'portrait' davranışına
+  // göre boyutları YENİDEN YORUMLUYOR/DÜZELTİYOR — yani genişlik>yükseklik
+  // (yatay/A5 yatay gibi) bir sayfa göndersen bile sessizce dikeye
+  // çeviriyordu. Önizleme (canvas tabanlı, bu sorunu YAŞAMIYOR çünkü
+  // canvas.width/height'i doğrudan kendimiz ayarlıyoruz) ile gerçek PDF
+  // arasındaki fark tam olarak buydu. Çözüm: orientation'ı HER ZAMAN
+  // açıkça (genişlik/yükseklik karşılaştırmasından) belirtiyoruz, jsPDF'in
+  // örtük varsayımına hiç güvenmiyoruz.
+  const format = secenekler && secenekler.format;
+  if (Array.isArray(format) && !secenekler.orientation) {
+    secenekler = { ...secenekler, orientation: format[0] > format[1] ? 'l' : 'p' };
+  }
   const doc = new jsPDF(secenekler);
   const saySayi = (v) => typeof v === 'number' && isFinite(v);
 
