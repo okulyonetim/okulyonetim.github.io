@@ -114,6 +114,9 @@
        ad KASITLI OLARAK verilmiyor — optik tarafında hangi öğrencinin
        hangi kademede olduğu bilgisi yok, yanlış/tutarsız bir ad basmaktansa
        her zaman birleşik/genel adı basmak daha güvenli. */
+    okulAdiGetir() {
+      return (typeof okulBilgileriAyari !== 'undefined' && okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
+    },
     /* YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar Firestore'a
        kaydedilsin") — Optik Form Editörü şablonları artık oy_optikSablonlari
        koleksiyonunda saklanıyor (cihazlar arası senkron/yedek için).
