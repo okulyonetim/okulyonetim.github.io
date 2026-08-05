@@ -205,11 +205,36 @@
       return b;
     }
 
+    // YENİ (Sedat isteği, Ağustos 2026: "Yeni eklenen öğe boş alana eklense
+    // daha kolay taşınır") — yeni öğe her zaman AYNI sabit konumda
+    // doğmuyor artık; mevcut öğelerle çakışmayan bir yer aranıyor,
+    // bulunamazsa kademeli (basamak basamak) kaydırılıyor.
+    function bosAlanBul(yeniOg) {
+      if (yeniOg.tip === 'cizgi') return; // çizginin kendi konum mantığı ayrı, basitlik için dokunulmuyor
+      const boyut = ogeYaklasikBoyut(yeniOg);
+      const adim = 12; // mm
+      const pay = KOSE_GUVENLI_PAY_MM;
+      const cakisiyorMu = (x, y) => sablon.ogeler.some((mevcut) => {
+        if (mevcut.tip === 'cizgi') return false;
+        const mBoyut = ogeYaklasikBoyut(mevcut);
+        return !(x + boyut.w < mevcut.x || mevcut.x + mBoyut.w < x || y + boyut.h < mevcut.y || mevcut.y + mBoyut.h < y);
+      });
+      let x = yeniOg.x, y = yeniOg.y;
+      for (let i = 0; i < 60; i++) {
+        const sayfaDisinda = x + boyut.w > sablon.sayfaBoyutu.width - pay || y + boyut.h > sablon.sayfaBoyutu.height - pay;
+        if (!sayfaDisinda && !cakisiyorMu(x, y)) { yeniOg.x = x; yeniOg.y = y; return; }
+        x += adim;
+        if (x + boyut.w > sablon.sayfaBoyutu.width - pay) { x = pay; y += adim; }
+        if (y + boyut.h > sablon.sayfaBoyutu.height - pay) { y = pay; } // sayfa dolduysa baştan sar
+      }
+    }
+
     Object.keys(OGE_VARSAYILANLARI).forEach((tip) => {
       aracDugmesiEkle('+ ' + OGE_ETIKETLERI[tip], () => {
         gecmiseKaydet();
         const og = OGE_VARSAYILANLARI[tip]();
         og.id = yeniId();
+        bosAlanBul(og);
         sablon.ogeler.push(og);
         seciliId = og.id;
         ciz();
@@ -542,7 +567,7 @@
         return { w: hesap.width, h: hesap.height };
       }
       if (og.tip === 'kitapcikAlani') {
-        const hesap = LE.kitapcikAlaniHesapla(0, 0, og.secenekSayisi || 4, og.olcek || 1);
+        const hesap = LE.kitapcikAlaniHesapla(0, 0, og.secenekSayisi || 4, og.olcek || 1, og.yon || 'dikey');
         return { w: hesap.genislik, h: hesap.height };
       }
       if (og.genislik != null && og.yukseklik != null) return { w: og.genislik, h: og.yukseklik };
@@ -768,7 +793,7 @@
         etiketT.textContent = og.baslik || 'Etiket';
         g.appendChild(etiketT);
         const ornekDeger = { adSoyad: 'ÖRNEK ÖĞRENCİ', sinif: '8-A', okulAdi: 'Okul Adı', sinavAdi: 'Sınav Adı' }[og.alan] || '';
-        const degerT = svgOlustur('text', { x: hizaX, y: og.y + og.yukseklik * 0.8, 'font-size': (og.fontPt ? og.fontPt / 2.6 : 3.5), fill: '#333', 'text-anchor': ankor });
+        const degerT = svgOlustur('text', { x: hizaX, y: og.y + og.yukseklik * 0.8, 'font-size': (og.fontPt ? og.fontPt / 2.6 : 3.5), fill: '#333', 'text-anchor': ankor, 'font-weight': og.kalin === 'evet' ? 'bold' : 'normal' });
         degerT.textContent = ornekDeger;
         g.appendChild(degerT);
         if (secili) {
@@ -779,7 +804,7 @@
       } else if (og.tip === 'numaraAlani' || og.tip === 'kitapcikAlani') {
         const hesap = og.tip === 'numaraAlani'
           ? LE.numaraAlaniHesapla(og.x, og.y, og.basamakSayisi || 4, og.olcek || 1, og.yon || 'dikey')
-          : LE.kitapcikAlaniHesapla(og.x, og.y, og.secenekSayisi || 4, og.olcek || 1);
+          : LE.kitapcikAlaniHesapla(og.x, og.y, og.secenekSayisi || 4, og.olcek || 1, og.yon || 'dikey');
         const genislik = og.tip === 'numaraAlani' ? hesap.width : hesap.genislik;
         g.appendChild(svgOlustur('rect', Object.assign(
           { class: 'osOge__cerceve', x: hesap.x - 1, y: hesap.y - 1, width: genislik + 2, height: hesap.height + 2 },
@@ -787,12 +812,13 @@
         )));
         // Başlık ("NUMARA" / "K") — gerçek PDF'te pdfFormGenerator.js:
         // numaraAlaniCiz/kitapcikAlaniCiz tarafından basılıyor, önizlemede de
-        // aynı konumda göster (Sedat geri bildirimi: "Başlığı yok").
+        // aynı konumda göster. YENİ (Sedat isteği: "başlık metni manuel
+        // düzenlenebilsin") — özel metin varsa onu göster.
         const baslikText = svgOlustur('text', {
           x: hesap.x + genislik / 2, y: hesap.y + hesap.baslikYukseklik * 0.85,
           'font-size': 2.6, 'text-anchor': 'middle', fill: '#b3184a', 'font-weight': 'bold',
         });
-        baslikText.textContent = og.tip === 'numaraAlani' ? 'NUMARA' : 'K';
+        baslikText.textContent = og.baslikMetni || (og.tip === 'numaraAlani' ? 'NUMARA' : 'K');
         g.appendChild(baslikText);
 
         // Baloncuk içi rakam/harf etiketleri — gerçek PDF'te her baloncuğun
@@ -844,7 +870,7 @@
           g.appendChild(tutamac);
         }
       } else if (og.tip === 'metin') {
-        const t = svgOlustur('text', { x: og.x, y: og.y, 'font-size': (og.fontPt || 10) / 2.5 });
+        const t = svgOlustur('text', { x: og.x, y: og.y, 'font-size': (og.fontPt || 10) / 2.5, 'font-weight': og.kalin === 'evet' ? 'bold' : 'normal' });
         t.textContent = og.metin || '';
         g.appendChild(t);
         // Görünmez/hafif çerçeveli tıklama alanı (kısa metinler için de kolay seçim)
@@ -880,6 +906,7 @@
       const input = document.createElement(tip === 'select' ? 'select' : 'input');
       if (tip !== 'select') input.type = tip;
       if (ekOzellik && ekOzellik.step) input.step = ekOzellik.step;
+      if (ekOzellik && ekOzellik.yerTutucu && tip !== 'select') input.placeholder = ekOzellik.yerTutucu;
       if (ekOzellik && ekOzellik.opsiyonlar) {
         ekOzellik.opsiyonlar.forEach((op) => {
           const o = document.createElement('option');
@@ -955,9 +982,11 @@
         alanEkle(og, 'Başlık Metni', 'baslik', 'text');
         alanEkle(og, 'Hizalama', 'hizalama', 'select', { opsiyonlar: ['sol', 'orta', 'sag'] });
         alanEkle(og, 'Değer Font (pt)', 'fontPt', 'number');
+        alanEkle(og, 'Değer Kalın', 'kalin', 'select', { opsiyonlar: ['hayir', 'evet'] });
         alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
         alanEkle(og, 'Yükseklik (mm)', 'yukseklik', 'number');
       } else if (og.tip === 'numaraAlani') {
+        alanEkle(og, 'Başlık Metni', 'baslikMetni', 'text', { yerTutucu: 'NUMARA' });
         alanEkle(og, 'Basamak Sayısı', 'basamakSayisi', 'number');
         alanEkle(og, 'Yön', 'yon', 'select', { opsiyonlar: ['dikey', 'yatay'] });
         // YENİ (Sedat geri bildirimi: "baloncukları diğerleri gibi
@@ -967,11 +996,18 @@
         // ayrı ayrı değil) — bu, layoutEngine.js'in kendi tasarımı.
         alanEkle(og, 'Ölçek (boyut + aralık)', 'olcek', 'number', { step: 0.1 });
       } else if (og.tip === 'kitapcikAlani') {
+        alanEkle(og, 'Başlık Metni', 'baslikMetni', 'text', { yerTutucu: 'K' });
         alanEkle(og, 'Seçenek Sayısı', 'secenekSayisi', 'number');
+        // YENİ (Sedat isteği, Ağustos 2026: "kitapçık türü başlığı da...
+        // dikey yatay yapışabilsin") — numara alanındaki AYNI seçenek.
+        alanEkle(og, 'Yön', 'yon', 'select', { opsiyonlar: ['dikey', 'yatay'] });
         alanEkle(og, 'Ölçek (boyut + aralık)', 'olcek', 'number', { step: 0.1 });
       } else if (og.tip === 'baslik' || og.tip === 'metin') {
         alanEkle(og, 'Metin', 'metin', 'text');
         alanEkle(og, 'Font (pt)', 'fontPt', 'number');
+        if (og.tip === 'metin') {
+          alanEkle(og, 'Kalın', 'kalin', 'select', { opsiyonlar: ['hayir', 'evet'] });
+        }
         if (og.tip === 'baslik') {
           alanEkle(og, 'Hizalama', 'hizalama', 'select', { opsiyonlar: ['sol', 'orta', 'sag'] });
           alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
@@ -1020,10 +1056,53 @@
           });
           panel.appendChild(kaldirBtn);
         }
+      } else if (og.tip === 'cizgi') {
+        // YENİ (Sedat isteği, Ağustos 2026: "Çizgi sadece yatay ekleniyor,
+        // dikey de yapışabilsin") — Yön (Yatay/Dikey) hızlı seçici +
+        // Uzunluk alanı; x1/y1 (başlangıç noktası) sabit tutulup x2/y2
+        // buna göre yeniden hesaplanıyor.
+        const uzunlukHesapla = () => Math.max(5, Math.hypot(og.x2 - og.x1, og.y2 - og.y1) || 20);
+        const yatayMi = Math.abs(og.y2 - og.y1) <= Math.abs(og.x2 - og.x1);
+
+        const yonDiv = document.createElement('div');
+        yonDiv.className = 'osEditor__alan';
+        const yonLabel = document.createElement('label'); yonLabel.textContent = 'Yön';
+        yonDiv.appendChild(yonLabel);
+        const yonSelect = document.createElement('select');
+        [['yatay', 'Yatay'], ['dikey', 'Dikey']].forEach(([v, t]) => {
+          const o = document.createElement('option'); o.value = v; o.textContent = t; yonSelect.appendChild(o);
+        });
+        yonSelect.value = yatayMi ? 'yatay' : 'dikey';
+        yonDiv.appendChild(yonSelect);
+        panel.appendChild(yonDiv);
+
+        const uzunlukDiv = document.createElement('div');
+        uzunlukDiv.className = 'osEditor__alan';
+        const uzunlukLabel = document.createElement('label'); uzunlukLabel.textContent = 'Uzunluk (mm)';
+        uzunlukDiv.appendChild(uzunlukLabel);
+        const uzunlukInput = document.createElement('input');
+        uzunlukInput.type = 'number'; uzunlukInput.step = 1; uzunlukInput.value = uzunlukHesapla().toFixed(0);
+        uzunlukDiv.appendChild(uzunlukInput);
+        panel.appendChild(uzunlukDiv);
+
+        function cizgiYenidenHesapla() {
+          gecmiseKaydet();
+          const uzunluk = Math.max(1, parseFloat(uzunlukInput.value) || uzunlukHesapla());
+          if (yonSelect.value === 'yatay') { og.x2 = og.x1 + uzunluk; og.y2 = og.y1; }
+          else { og.x2 = og.x1; og.y2 = og.y1 + uzunluk; }
+          cizSadeceTuval();
+        }
+        yonSelect.addEventListener('change', cizgiYenidenHesapla);
+        uzunlukInput.addEventListener('change', cizgiYenidenHesapla);
+
+        alanEkle(og, 'Başlangıç X (mm)', 'x1', 'number', { step: 0.5 });
+        alanEkle(og, 'Başlangıç Y (mm)', 'y1', 'number', { step: 0.5 });
       }
 
-      alanEkle(og, 'X (mm)', 'x', 'number', { step: 0.5 });
-      alanEkle(og, 'Y (mm)', 'y', 'number', { step: 0.5 });
+      if (og.tip !== 'cizgi') {
+        alanEkle(og, 'X (mm)', 'x', 'number', { step: 0.5 });
+        alanEkle(og, 'Y (mm)', 'y', 'number', { step: 0.5 });
+      }
 
       const silBtn = document.createElement('button');
       silBtn.className = 'osEditor__silBtn';

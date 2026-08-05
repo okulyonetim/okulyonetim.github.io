@@ -196,10 +196,14 @@
         numaraAlani = LE.numaraAlaniHesapla(
           og.x, og.y, og.basamakSayisi || 4, og.olcek || 1, og.yon || 'dikey'
         );
+        // YENİ (Sedat isteği, Ağustos 2026: "öğrenci no başlık metni manuel
+        // düzenlenebilsin") — bkz. pdfFormGenerator.js: numaraAlaniCiz notu.
+        numaraAlani.baslik = og.baslikMetni || 'NUMARA';
       } else if (og.tip === 'kitapcikAlani') {
         kitapcikAlani = LE.kitapcikAlaniHesapla(
-          og.x, og.y, og.secenekSayisi || 4, og.olcek || 1
+          og.x, og.y, og.secenekSayisi || 4, og.olcek || 1, og.yon || 'dikey'
         );
+        kitapcikAlani.baslik = og.baslikMetni || 'K';
       } else {
         // kimlikAlani / baslik / metin / cizgi / logo — koordinatları
         // olduğu gibi taşınır, pdfFormGenerator.js'nin yeni bir "serbest

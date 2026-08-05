@@ -116,11 +116,21 @@ function cerceveCiz(doc, x, y, w, h, renk, kalinlik = 0.3) {
  * basılsın istendiği için (bkz. etiketDegerKutusu) kullanılıyor.
  */
 function buyukHarfTR(metin) {
-  return String(metin == null ? '' : metin).toLocaleUpperCase('tr-TR');
+  // KÖK NEDEN (Sedat geri bildirimi, Ağustos 2026 — "Ğ" harfi PDF'te
+  // kayboluyordu, ör. "YAĞMUR" -> "YA MUR"): fontun kendisinde Ğ/ğ glifi
+  // eksiksiz mevcut (fontTools ile doğrulandı) — sorun muhtemelen kaynak
+  // metnin Unicode NORMALİZE edilmemiş olması: bazı klavyeler/kaynaklar
+  // "ğ" harfini TEK bir karakter (U+011F) yerine "g" + AYRI birleşen aksan
+  // işareti (U+0306) olarak iki ayrı kod noktasıyla üretebiliyor — bu
+  // "ayrıştırılmış" biçim büyük harfe çevrilirken doğru birleşmiyor ve
+  // aksan işareti görünmez kalıyor. .normalize('NFC') bunu (varsa) tek,
+  // önceden birleşik karaktere geri döndürüyor — font zaten bunu biliyor.
+  const normalize = String(metin == null ? '' : metin).normalize('NFC');
+  return normalize.toLocaleUpperCase('tr-TR');
 }
 
 function etiketDegerKutusu(doc, box, etiket, deger, opts = {}) {
-  const { etiketOran = 0.542, degerOran = 0.833, minEtiketPt = 3.2, minDegerPt = 4.5, hizalama = 'sol', degerPtSabit } = opts;
+  const { etiketOran = 0.542, degerOran = 0.833, minEtiketPt = 3.2, minDegerPt = 4.5, hizalama = 'sol', degerPtSabit, degerKalin = false } = opts;
   const etiketPt = Math.max(minEtiketPt, box.height * etiketOran);
   const degerPt = degerPtSabit || Math.max(minDegerPt, box.height * degerOran);
 
@@ -136,9 +146,9 @@ function etiketDegerKutusu(doc, box, etiket, deger, opts = {}) {
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(etiketPt);
   doc.setTextColor(...ANA_RENK);
-  doc.text(etiket, hizaX, baselineUst(box.y, box.height, etiketPt, box.height * 0.62), { align: ankor });
+  doc.text(String(etiket).normalize('NFC'), hizaX, baselineUst(box.y, box.height, etiketPt, box.height * 0.62), { align: ankor });
 
-  doc.setFont('Roboto', 'normal');
+  doc.setFont('Roboto', degerKalin ? 'bold' : 'normal');
   doc.setFontSize(degerPt);
   doc.setTextColor(...KOYU_METIN);
   doc.text(buyukHarfTR(deger), hizaX, baselineUst(box.y, box.height, degerPt, box.height * 0.14), { align: ankor });
@@ -189,7 +199,10 @@ function kitapcikAlaniCiz(doc, kitapcikAlani, kitapcikTuru) {
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(6.5);
   doc.setTextColor(...ANA_RENK);
-  doc.text('K', kitapcikAlani.x + kitapcikAlani.genislik / 2, kitapcikAlani.y + kitapcikAlani.baslikYukseklik * 0.85, { align: 'center' });
+  // YENİ (Sedat isteği, Ağustos 2026: "kitapçık türü başlığı da manuel
+  // düzenlenebilsin") — Optik Form Editörü'nden özel bir başlık geldiyse
+  // onu kullanır, yoksa eski davranış (sabit "K") korunur.
+  doc.text((kitapcikAlani.baslik || 'K').normalize('NFC'), kitapcikAlani.x + kitapcikAlani.genislik / 2, kitapcikAlani.y + kitapcikAlani.baslikYukseklik * 0.85, { align: 'center' });
   for (const secenek of kitapcikAlani.secenekler) {
     const dolu = kitapcikTuru && String(kitapcikTuru).toUpperCase() === secenek.harf;
     kucukBaloncukCiz(doc, secenek.cx, secenek.cy, secenek.r, secenek.harf, dolu);
@@ -208,7 +221,9 @@ function numaraAlaniCiz(doc, numaraAlani, ogrenciNo) {
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(6.5);
   doc.setTextColor(...ANA_RENK);
-  doc.text('NUMARA', numaraAlani.x + numaraAlani.width / 2, numaraAlani.y + numaraAlani.baslikYukseklik * 0.85, { align: 'center' });
+  // YENİ (Sedat isteği, Ağustos 2026: "öğrenci no başlık metni manuel
+  // düzenlenebilsin") — bkz. kitapcikAlaniCiz'deki aynı not.
+  doc.text((numaraAlani.baslik || 'NUMARA').normalize('NFC'), numaraAlani.x + numaraAlani.width / 2, numaraAlani.y + numaraAlani.baslikYukseklik * 0.85, { align: 'center' });
 
   numaraAlani.basamaklar.forEach((basamak, i) => {
     const hedefRakam = basamaklar[i] !== ' ' ? basamaklar[i] : null;
@@ -458,7 +473,7 @@ function serbestOgeleriCiz(doc, form, ogrenci) {
         etiketDegerKutusu(
           doc, { x: og.x, y: og.y, width: og.genislik, height: og.yukseklik },
           og.baslik || 'AD SOYAD', alanDegeri,
-          { hizalama: og.hizalama || 'sol', degerPtSabit: og.fontPt || null }
+          { hizalama: og.hizalama || 'sol', degerPtSabit: og.fontPt || null, degerKalin: og.kalin === 'evet' }
         );
       } else if (og.tip === 'baslik') {
         doc.setFont('Roboto', 'bold');
@@ -467,12 +482,14 @@ function serbestOgeleriCiz(doc, form, ogrenci) {
         const hizalama = og.hizalama || 'orta';
         const hizaX = hizalama === 'sol' ? og.x + 1 : hizalama === 'sag' ? og.x + og.genislik - 1 : og.x + og.genislik / 2;
         const ankor = hizalama === 'sol' ? 'left' : hizalama === 'sag' ? 'right' : 'center';
-        doc.text(og.metin || '', hizaX, og.y + og.yukseklik / 2 + 2, { align: ankor });
+        doc.text((og.metin || '').normalize('NFC'), hizaX, og.y + og.yukseklik / 2 + 2, { align: ankor });
       } else if (og.tip === 'metin') {
-        doc.setFont('Roboto', 'normal');
+        // YENİ (Sedat isteği, Ağustos 2026: "metinsel öğelere font kalınlığı
+        // özelliği ekle") — varsayılan normal, og.kalin==='evet' ise kalın.
+        doc.setFont('Roboto', og.kalin === 'evet' ? 'bold' : 'normal');
         doc.setFontSize(og.fontPt || 10);
         doc.setTextColor(...KOYU_METIN);
-        doc.text(og.metin || '', og.x, og.y);
+        doc.text((og.metin || '').normalize('NFC'), og.x, og.y);
       } else if (og.tip === 'cizgi') {
         doc.setDrawColor(80, 80, 80);
         doc.setLineWidth(0.3);

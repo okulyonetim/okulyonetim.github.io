@@ -358,7 +358,8 @@ function dersSutunuHesapla({
   soruNoGenisligi = 8, aralikCarpani = 1.45, baslikYuksekligi,
   baslikFontPt = 6.4, baslikAltBosluk = 3, baslangicSoruNo = 1,
 }) {
-  const dersAdiSatirlari = metniSatirlaraBol(dersAdi, width - 2, baslikFontPt, true);
+  // Aynı Unicode normalizasyon önlemi (bkz. pdfFormGenerator.js: buyukHarfTR notu).
+  const dersAdiSatirlari = metniSatirlaraBol((dersAdi || '').normalize('NFC'), width - 2, baslikFontPt, true);
   const satirAraligi = baloncukCap * 2.0;
   const sorular = [];
 
@@ -549,27 +550,51 @@ function cokluBolumYerlestir({ x, y, gruplar, sikSayisi, baloncukCap, sutunGenis
  * alt alta dizilmiş daireler. testplus.top örnek formlarındaki "K"
  * sütununun karşılığı.
  */
-function kitapcikAlaniHesapla(x, y, secenekSayisi = 4, olcek = 1) {
-  const hucreYukseklik = 6 * olcek;
+/**
+ * @param {'dikey'|'yatay'} yon - YENİ (Sedat isteği, Ağustos 2026:
+ *   "kitapçık türü başlığı da... dikey yatay yapışabilsin"). 'dikey'
+ *   (varsayılan, eski davranış): seçenekler alt alta. 'yatay': seçenekler
+ *   yan yana tek satırda (numaraAlaniHesapla'daki AYNI mantık).
+ */
+function kitapcikAlaniHesapla(x, y, secenekSayisi = 4, olcek = 1, yon = 'dikey') {
+  const hucreBoyut = 6 * olcek;
   const baslikYukseklik = 5 * olcek;
   const baloncukYaricap = 2 * olcek;
-  const genislik = baloncukYaricap * 2 + 2 * olcek;
+  const genislikDikey = baloncukYaricap * 2 + 2 * olcek;
 
   const secenekler = [];
+  if (yon === 'yatay') {
+    for (let i = 0; i < secenekSayisi; i++) {
+      secenekler.push({
+        harf: String.fromCharCode(65 + i),
+        cx: x + i * hucreBoyut + hucreBoyut / 2,
+        cy: y + baslikYukseklik + hucreBoyut / 2,
+        r: baloncukYaricap,
+      });
+    }
+    return {
+      x, y,
+      genislik: secenekSayisi * hucreBoyut,
+      baslikYukseklik,
+      height: baslikYukseklik + hucreBoyut,
+      secenekler,
+    };
+  }
+
   for (let i = 0; i < secenekSayisi; i++) {
     secenekler.push({
       harf: String.fromCharCode(65 + i),
-      cx: x + genislik / 2,
-      cy: y + baslikYukseklik + i * hucreYukseklik + hucreYukseklik / 2,
+      cx: x + genislikDikey / 2,
+      cy: y + baslikYukseklik + i * hucreBoyut + hucreBoyut / 2,
       r: baloncukYaricap,
     });
   }
 
   return {
     x, y,
-    genislik,
+    genislik: genislikDikey,
     baslikYukseklik,
-    height: baslikYukseklik + secenekSayisi * hucreYukseklik,
+    height: baslikYukseklik + secenekSayisi * hucreBoyut,
     secenekler,
   };
 }
