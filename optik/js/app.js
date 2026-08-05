@@ -75,9 +75,20 @@ const DB = {
         kayit.guncelleme = new Date().toISOString();
         liste.unshift(kayit);
         this._yaz('oy_op_ozelSablonlar', liste);
+        // YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar
+        // Firestore'a kaydedilsin") — yerel kayıt HER ZAMAN senkron ve
+        // anında olur (arayüz beklemez); Firestore'a yazma arka planda,
+        // best-effort denenir. Köprü yoksa (bağımsız test sayfası) veya
+        // yazma başarısız olursa sessizce yerelde kalır — bir sonraki
+        // _sablonlariFirestoredenSenkronizeEt() çağrısında tekrar denenir
+        // (bkz. o fonksiyondaki "yereldeki daha yeni kayıtları geri yaz" notu).
+        try { veriKaynagi()?.sablonKaydet?.(kayit)?.catch?.(e => console.error('Şablon Firestore\'a kaydedilemedi:', e)); } catch (e) {}
     },
     ozelSablonBul(id)            { return this.ozelSablonlariGetir().find(x => x.id === id) || null; },
-    ozelSablonSil(id)            { this._yaz('oy_op_ozelSablonlar', this.ozelSablonlariGetir().filter(x => x.id !== id)); },
+    ozelSablonSil(id)            {
+        this._yaz('oy_op_ozelSablonlar', this.ozelSablonlariGetir().filter(x => x.id !== id));
+        try { veriKaynagi()?.sablonSil?.(id)?.catch?.(e => console.error('Şablon Firestore\'dan silinemedi:', e)); } catch (e) {}
+    },
 
     // Varsayılan optik form — "Yeni Sınav" ekranı açılışında otomatik seçili gelir.
     varsayilanSablonIdGetir()    { return this._oku('oy_op_varsayilanSablonId', null); },
@@ -395,6 +406,38 @@ function veriKaynagi() {
  */
 function _okulAdiGetir() {
     try { return veriKaynagi()?.okulAdiGetir?.() || ''; } catch { return ''; }
+}
+
+/**
+ * YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar Firestore'a
+ * kaydedilsin") — uygulama açılışında Firestore'daki şablonları çekip
+ * yerel depoyla BİRLEŞTİRİR (id bazında, guncelleme zaman damgası daha
+ * yeni olan kazanır) — böylece başka bir cihazda yapılmış değişiklikler
+ * de görünür hale gelir, ama bu cihazda henüz Firestore'a hiç ulaşmamış
+ * (ör. ağ yoktu) taze bir yerel değişiklik de KAYBOLMAZ. Best-effort:
+ * köprü yoksa veya hata olursa sessizce hiçbir şey yapmaz, uygulama
+ * normal (sadece yerel) çalışmaya devam eder.
+ */
+async function _sablonlariFirestoredenSenkronizeEt() {
+    try {
+        const kaynak = veriKaynagi();
+        if (!kaynak?.sablonlariGetir) return;
+        const uzaktakiler = await kaynak.sablonlariGetir();
+        if (!Array.isArray(uzaktakiler)) return;
+        const yerelListe = DB.ozelSablonlariGetir();
+        const birlesikMap = new Map(yerelListe.map(k => [k.id, k]));
+        uzaktakiler.forEach(uzak => {
+            const yerel = birlesikMap.get(uzak.id);
+            if (!yerel || !yerel.guncelleme || (uzak.guncelleme && uzak.guncelleme > yerel.guncelleme)) {
+                birlesikMap.set(uzak.id, uzak);
+            }
+        });
+        DB._yaz('oy_op_ozelSablonlar', Array.from(birlesikMap.values()));
+        // O an görünen ekran şablon listesiyse tazele.
+        if (_aktifEkranId() === 'sablonlar') sablonlarEkraniniRender();
+    } catch (e) {
+        console.error('_sablonlariFirestoredenSenkronizeEt hatası:', e);
+    }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2696,6 +2739,8 @@ function baslat() {
     document.getElementById('btnSablonlarAc')?.addEventListener('click', sablonlarEkraniAc);
     document.getElementById('btnSablonlarGeri')?.addEventListener('click', () => ekranGit('sinavlar'));
     document.getElementById('fabYeniSablon')?.addEventListener('click', () => sablonEditoruAc(null, 'sablonlar'));
+    // YENİ: açılışta Firestore'daki şablonları arka planda yerelle birleştir.
+    _sablonlariFirestoredenSenkronizeEt();
 
     // ── Ekran 2: Yeni Sınav ──
     document.getElementById('btnYeniSinavKapat').addEventListener('click', () => ekranGit('sinavlar'));
