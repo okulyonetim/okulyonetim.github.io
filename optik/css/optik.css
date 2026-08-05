@@ -141,6 +141,8 @@ input[type="date"]::-webkit-inner-spin-button { display: none; }
 }
 .badge-bekliyor { background: #FFF3E0; color: #E65100; }
 .badge-okundu   { background: #E8F5E9; color: #2E7D32; }
+/* YENİ (Ağustos 2026): rozet görünümlü ama tıklanabilir durum düğmesi (Şablonlarım: Taslak/Yayında değiştirme) */
+.durum-degistir-btn { border: none; cursor: pointer; font-family: inherit; }
 .menu-btn {
     width: 32px; height: 32px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
