@@ -367,6 +367,18 @@ function veriKaynagi() {
     return null;
 }
 
+/**
+ * YENİ (Ağustos 2026, Sedat isteği: "kimlik bilgilerinde... okul adını da
+ * ekleyebilme olsun") — okul adını ana uygulamanın OptikVeriKaynagi
+ * köprüsünden almaya çalışır. NOT: bu köprü şu an (Ağustos 2026 itibarıyla)
+ * okulAdiGetir() metodunu SAĞLAMIYOR OLABİLİR — ana uygulama tarafında
+ * ayrıca eklenmesi gerekebilir; o zamana kadar bu güvenli bir şekilde boş
+ * döner (form kırılmaz, sadece okul adı alanı boş basılır).
+ */
+function _okulAdiGetir() {
+    try { return veriKaynagi()?.okulAdiGetir?.() || ''; } catch { return ''; }
+}
+
 // ════════════════════════════════════════════════════════════════
 // NAVİGASYON
 // ════════════════════════════════════════════════════════════════
@@ -2169,11 +2181,12 @@ async function _pdfKaydet(doc, dosyaAdi) {
 async function _yzOgrenciListesiGetir(sinav) {
     const kaynak = veriKaynagi();
     if (!kaynak) return null;
+    const okulAdi = _okulAdiGetir();
     const ogrList = [];
     kaynak.siniflarGetir().forEach(s => {
         kaynak.ogrencilerGetir(s.id).forEach(o => {
             if (sinav.ogrenciIdleri.includes(o.id)) {
-                ogrList.push({ adSoyad: o.adSoyad, ogrenciNo: o.ogrenciNo, sinif: s.ad, sinavAdi: sinav.ad, kitapcikTuru: _ogrenciKitapcikTuru(sinav, o.id), ogrenciId: o.id, sinavId: sinav.optikFormId });
+                ogrList.push({ adSoyad: o.adSoyad, ogrenciNo: o.ogrenciNo, sinif: s.ad, sinavAdi: sinav.ad, okulAdi, kitapcikTuru: _ogrenciKitapcikTuru(sinav, o.id), ogrenciId: o.id, sinavId: sinav.optikFormId });
             }
         });
     });
@@ -2302,7 +2315,7 @@ async function yzOnizleOlustur() {
         if (_yzMod === 'bos') {
             const gorsel = await bosFormGorseliOlustur(layout, {
                 adSoyad: 'ÖRNEK ÖĞRENCİ', ogrenciNo: '1', sinif: '—',
-                sinavAdi: sinav.ad, kitapcikTuru: '', ogrenciId: '', sinavId: sinav.optikFormId
+                sinavAdi: sinav.ad, okulAdi: _okulAdiGetir() || 'Okul Adı', kitapcikTuru: '', ogrenciId: '', sinavId: sinav.optikFormId
             });
             sayfalar = [gorsel];
             sayfaBilgi = '1 sayfa (boş form) — önizleme';
@@ -2353,7 +2366,7 @@ async function yzOnaylaVeIndir() {
             const { formPdfOlustur } = await import('./pdfFormGenerator.js');
             const doc = await _zamanAsimliBekle(formPdfOlustur(layout, {
                 adSoyad: '', ogrenciNo: '', sinif: '',
-                sinavAdi: sinav.ad, kitapcikTuru: '', ogrenciId: '', sinavId: sinav.optikFormId
+                sinavAdi: sinav.ad, okulAdi: _okulAdiGetir(), kitapcikTuru: '', ogrenciId: '', sinavId: sinav.optikFormId
             }), 30000, 'PDF oluşturma');
             await _zamanAsimliBekle(_pdfKaydet(doc, sinav.ad.replace(/\s+/g, '_') + '_bos.pdf'), 20000, 'Dosya kaydetme');
             durumEl.textContent = '✅ PDF indirildi.';

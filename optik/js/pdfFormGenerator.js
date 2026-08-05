@@ -120,21 +120,28 @@ function buyukHarfTR(metin) {
 }
 
 function etiketDegerKutusu(doc, box, etiket, deger, opts = {}) {
-  const { etiketOran = 0.542, degerOran = 0.833, minEtiketPt = 3.2, minDegerPt = 4.5 } = opts;
+  const { etiketOran = 0.542, degerOran = 0.833, minEtiketPt = 3.2, minDegerPt = 4.5, hizalama = 'sol', degerPtSabit } = opts;
   const etiketPt = Math.max(minEtiketPt, box.height * etiketOran);
-  const degerPt = Math.max(minDegerPt, box.height * degerOran);
+  const degerPt = degerPtSabit || Math.max(minDegerPt, box.height * degerOran);
 
   cerceveCiz(doc, box.x, box.y, box.width, box.height, ANA_RENK, 0.35);
+
+  // YENİ (Sedat isteği, Ağustos 2026: "font büyüklüğü ve hizalama
+  // seçenekleri de olsun") — hizalama artık sol/orta/sağ olabilir;
+  // varsayılan 'sol' ile ÖNCEKİ davranış (LGS/Bursluluk'un AD SOYAD
+  // kutusu dahil) birebir korunuyor.
+  const hizaX = hizalama === 'sag' ? box.x + box.width * 0.97 : hizalama === 'orta' ? box.x + box.width / 2 : box.x + box.width * 0.03;
+  const ankor = hizalama === 'sag' ? 'right' : hizalama === 'orta' ? 'center' : 'left';
 
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(etiketPt);
   doc.setTextColor(...ANA_RENK);
-  doc.text(etiket, box.x + box.width * 0.03, baselineUst(box.y, box.height, etiketPt, box.height * 0.62));
+  doc.text(etiket, hizaX, baselineUst(box.y, box.height, etiketPt, box.height * 0.62), { align: ankor });
 
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(degerPt);
   doc.setTextColor(...KOYU_METIN);
-  doc.text(buyukHarfTR(deger), box.x + box.width * 0.03, baselineUst(box.y, box.height, degerPt, box.height * 0.14));
+  doc.text(buyukHarfTR(deger), hizaX, baselineUst(box.y, box.height, degerPt, box.height * 0.14), { align: ankor });
 }
 
 /** Kitapçık Türü rozetini (dolgu renkli, dikkat çekici) çizer. */
@@ -427,12 +434,32 @@ function serbestOgeleriCiz(doc, form, ogrenci) {
         // "Seçilen Öğrenciler İçin Oluştur" ile üretilen formlarda.
         // "Boş Form" (ogrenci boş obje) durumunda sadece etiket görünür,
         // bu doğru davranış (kağıda elle yazılacak demektir).
-        etiketDegerKutusu(doc, { x: og.x, y: og.y, width: og.genislik, height: og.yukseklik }, og.baslik || 'AD SOYAD', (ogrenci && ogrenci.adSoyad) || '');
+        //
+        // YENİ (Sedat isteği, Ağustos 2026: "sınıfını okul adını da
+        // ekleyebilme... font büyüklüğü ve hizalama") — hangi bilgi
+        // basılacağı artık og.alan ile seçiliyor (adSoyad/sinif/okulAdi/
+        // sinavAdi); okulAdi, app.js'in _yzOgrenciListesiGetir/'bos' mod
+        // öğrenci nesnelerine eklediği ogrenci.okulAdi alanından geliyor
+        // (ana uygulamanın OptikVeriKaynagi köprüsü destekliyorsa).
+        const alanDegeri = {
+          adSoyad: (ogrenci && ogrenci.adSoyad) || '',
+          sinif: (ogrenci && ogrenci.sinif) || '',
+          okulAdi: (ogrenci && ogrenci.okulAdi) || '',
+          sinavAdi: (ogrenci && ogrenci.sinavAdi) || '',
+        }[og.alan || 'adSoyad'] || '';
+        etiketDegerKutusu(
+          doc, { x: og.x, y: og.y, width: og.genislik, height: og.yukseklik },
+          og.baslik || 'AD SOYAD', alanDegeri,
+          { hizalama: og.hizalama || 'sol', degerPtSabit: og.fontPt || null }
+        );
       } else if (og.tip === 'baslik') {
         doc.setFont('Roboto', 'bold');
-        doc.setFontSize(Math.max(8, og.yukseklik * 1.6));
+        doc.setFontSize(og.fontPt || Math.max(8, og.yukseklik * 1.6));
         doc.setTextColor(...ANA_RENK);
-        doc.text(og.metin || '', og.x + og.genislik / 2, og.y + og.yukseklik / 2 + 2, { align: 'center' });
+        const hizalama = og.hizalama || 'orta';
+        const hizaX = hizalama === 'sol' ? og.x + 1 : hizalama === 'sag' ? og.x + og.genislik - 1 : og.x + og.genislik / 2;
+        const ankor = hizalama === 'sol' ? 'left' : hizalama === 'sag' ? 'right' : 'center';
+        doc.text(og.metin || '', hizaX, og.y + og.yukseklik / 2 + 2, { align: ankor });
       } else if (og.tip === 'metin') {
         doc.setFont('Roboto', 'normal');
         doc.setFontSize(og.fontPt || 10);

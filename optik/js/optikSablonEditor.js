@@ -41,7 +41,7 @@
       baloncukCap: LE.STANDART_BALONCUK_CAP, yatayAralikCarpani: 1.45,
       genislik: 30, sutunSayisi: 1, sutunlarArasiBosluk: 3, sutunDikeyKaymalari: [0],
     }),
-    kimlikAlani: () => ({ tip: 'kimlikAlani', x: 15, y: 15, genislik: 100, yukseklik: 14, baslik: 'AD SOYAD' }),
+    kimlikAlani: () => ({ tip: 'kimlikAlani', x: 15, y: 15, genislik: 100, yukseklik: 14, baslik: 'AD SOYAD', alan: 'adSoyad' }),
     numaraAlani: () => ({ tip: 'numaraAlani', x: 15, y: 40, basamakSayisi: 4, olcek: 1, yon: 'dikey' }),
     kitapcikAlani: () => ({ tip: 'kitapcikAlani', x: 15, y: 20, secenekSayisi: 4, olcek: 1 }),
     baslik: () => ({ tip: 'baslik', x: 15, y: 15, genislik: 180, yukseklik: 8, metin: 'SINAV CEVAP KAĞIDI' }),
@@ -675,6 +675,13 @@
         let minX = og.x, minY = og.y, maxX = og.x, maxY = og.y;
         sutunlar.forEach((sutun) => {
           sutun.sorular.forEach((soru) => {
+            // YENİ (Sedat isteği, Ağustos 2026: "Soru numaraları da editörde
+            // görünsün") — gerçek PDF'teki AYNI konumda (soru.etiketX/Y).
+            const numT = svgOlustur('text', {
+              x: soru.etiketX, y: soru.etiketY, 'font-size': 2.6, fill: '#666', 'text-anchor': 'middle',
+            });
+            numT.textContent = String(soru.soruNo);
+            g.appendChild(numT);
             soru.sikler.forEach((sik) => {
               g.appendChild(svgOlustur('circle', {
                 cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25,
@@ -683,6 +690,21 @@
               minY = Math.min(minY, sik.cy - sik.r); maxY = Math.max(maxY, sik.cy + sik.r);
             });
           });
+          // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "ders
+          // isimlerinin olduğu kutucuklar birbiri üstüne çakışıyor... bu
+          // kutucuklar form oluşturmada görünmüyor") — gerçek PDF'te
+          // (pdfFormGenerator.js: bolumlerCiz) her ders sütununun başlığı
+          // GERÇEK bir çerçeve kutusu içinde basılıyordu, ama editör
+          // önizlemesi bu kutuyu hiç çizmiyordu — kullanıcı çakışmayı
+          // göremiyor, nereden büyütüp küçülteceğini bulamıyordu. Artık
+          // gerçek PDF'teki AYNI konum/boyutta (sutun.x, sutun.y,
+          // sutun.width, sutun.baslikYuksekligi) çiziliyor.
+          g.appendChild(svgOlustur('rect', {
+            x: sutun.x, y: sutun.y, width: sutun.width, height: sutun.baslikYuksekligi,
+            fill: 'none', stroke: '#b3184a', 'stroke-width': 0.3,
+          }));
+          minX = Math.min(minX, sutun.x); maxX = Math.max(maxX, sutun.x + sutun.width);
+          minY = Math.min(minY, sutun.y);
           const t = svgOlustur('text', {
             x: sutun.dersAdiHizalama === 'sol' ? sutun.x + 1 : sutun.dersAdiHizalama === 'sag' ? sutun.x + sutun.width - 1 : sutun.x + sutun.width / 2,
             y: sutun.y + 5, 'font-size': 3.2, fill: '#333',
@@ -702,13 +724,23 @@
           g.appendChild(tutamac);
         }
       } else if (og.tip === 'kimlikAlani') {
+        // YENİ (Sedat isteği, Ağustos 2026: "sınıfını okul adını da
+        // ekleyebilme... font büyüklüğü ve hizalama") — artık gerçek
+        // PDF'teki gibi etiket+örnek değer birlikte, seçilen hizalamaya göre.
+        const hizalama = og.hizalama || 'sol';
+        const hizaX = hizalama === 'sag' ? og.x + og.genislik - 2 : hizalama === 'orta' ? og.x + og.genislik / 2 : og.x + 2;
+        const ankor = hizalama === 'sag' ? 'end' : hizalama === 'orta' ? 'middle' : 'start';
         g.appendChild(svgOlustur('rect', Object.assign(
           { class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik },
           secili ? CERCEVE_SECILI : Object.assign({}, CERCEVE_SOLUK, { stroke: '#b3184a' })
         )));
-        const t = svgOlustur('text', { x: og.x + 2, y: og.y + 5, 'font-size': 3 });
-        t.textContent = og.baslik || 'Kimlik Alanı';
-        g.appendChild(t);
+        const etiketT = svgOlustur('text', { x: hizaX, y: og.y + og.yukseklik * 0.4, 'font-size': 2.2, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': ankor });
+        etiketT.textContent = og.baslik || 'Etiket';
+        g.appendChild(etiketT);
+        const ornekDeger = { adSoyad: 'ÖRNEK ÖĞRENCİ', sinif: '8-A', okulAdi: 'Okul Adı', sinavAdi: 'Sınav Adı' }[og.alan] || '';
+        const degerT = svgOlustur('text', { x: hizaX, y: og.y + og.yukseklik * 0.8, 'font-size': (og.fontPt ? og.fontPt / 2.6 : 3.5), fill: '#333', 'text-anchor': ankor });
+        degerT.textContent = ornekDeger;
+        g.appendChild(degerT);
         if (secili) {
           const tutamac = svgOlustur('circle', { class: 'osOge__tutamac', cx: og.x + og.genislik, cy: og.y + og.yukseklik, r: 1.6 });
           tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og, g));
@@ -769,7 +801,10 @@
           g.appendChild(t);
         }
         if (og.metin) {
-          const t = svgOlustur('text', { x: og.x + og.genislik / 2, y: og.y + og.yukseklik / 2 + 1, 'font-size': 3.5, 'text-anchor': 'middle' });
+          const hizalama = og.hizalama || 'orta';
+          const hizaX = hizalama === 'sol' ? og.x + 1 : hizalama === 'sag' ? og.x + og.genislik - 1 : og.x + og.genislik / 2;
+          const ankor = hizalama === 'sol' ? 'start' : hizalama === 'sag' ? 'end' : 'middle';
+          const t = svgOlustur('text', { x: hizaX, y: og.y + og.yukseklik / 2 + 1, 'font-size': og.fontPt ? og.fontPt / 2.6 : 3.5, 'text-anchor': ankor });
           t.textContent = og.metin;
           g.appendChild(t);
         }
@@ -878,7 +913,10 @@
           panel.appendChild(div);
         }
       } else if (og.tip === 'kimlikAlani') {
+        alanEkle(og, 'Veri Kaynağı', 'alan', 'select', { opsiyonlar: ['adSoyad', 'sinif', 'okulAdi', 'sinavAdi'] });
         alanEkle(og, 'Başlık Metni', 'baslik', 'text');
+        alanEkle(og, 'Hizalama', 'hizalama', 'select', { opsiyonlar: ['sol', 'orta', 'sag'] });
+        alanEkle(og, 'Değer Font (pt)', 'fontPt', 'number');
         alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
         alanEkle(og, 'Yükseklik (mm)', 'yukseklik', 'number');
       } else if (og.tip === 'numaraAlani') {
@@ -895,11 +933,11 @@
         alanEkle(og, 'Ölçek (boyut + aralık)', 'olcek', 'number', { step: 0.1 });
       } else if (og.tip === 'baslik' || og.tip === 'metin') {
         alanEkle(og, 'Metin', 'metin', 'text');
+        alanEkle(og, 'Font (pt)', 'fontPt', 'number');
         if (og.tip === 'baslik') {
+          alanEkle(og, 'Hizalama', 'hizalama', 'select', { opsiyonlar: ['sol', 'orta', 'sag'] });
           alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
           alanEkle(og, 'Yükseklik (mm)', 'yukseklik', 'number');
-        } else {
-          alanEkle(og, 'Font (pt)', 'fontPt', 'number');
         }
       } else if (og.tip === 'logo') {
         alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
