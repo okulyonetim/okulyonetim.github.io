@@ -2675,7 +2675,20 @@ async function anahtarExcelYukle(dosya) {
         if (kaynak?.exceldenYukle) {
             await kaynak.exceldenYukle(dosya);
             const a = kaynak.getir?.();
-            if (a?.dersler?.length) { DB.anahtarKaydet(_aktifSinavId, a, _anahtarAktifKitapcik); anahtarIzgaraCiz(); _tumSonuclariYenidenHesapla(); return; }
+            if (a?.dersler?.length) {
+                DB.anahtarKaydet(_aktifSinavId, a, _anahtarAktifKitapcik);
+                anahtarIzgaraCiz();
+                _tumSonuclariYenidenHesapla();
+                alert(`✅ ${a.dersler.reduce((t, d) => t + d.anahtarlar.length, 0)} soru cevabı yüklendi (${a.dersler.length} ders).`);
+                return;
+            }
+            // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "kitapçık
+            // türünden sonra bozuldu") — exceldenYukle SESSİZCE başarısız
+            // olup boş/eksik bir sonuç döndürebiliyordu, kullanıcı hiçbir
+            // şey görmeden CSV yedeğine (gerçek .xlsx için işe yaramaz)
+            // düşülüyordu. Artık bu durum GÖRÜNÜR bir uyarıyla bildiriliyor.
+            alert('Excel okundu ama içinden geçerli bir ders/cevap bulunamadı.\n\nDönen veri: ' + JSON.stringify(a));
+            return;
         }
         // CSV fallback
         const metin = await dosya.text();
@@ -2875,8 +2888,16 @@ function baslat() {
 
     // ── Anahtar araçlar ──
     document.getElementById('anahDersSecici').addEventListener('change', anahtarIzgaraCiz);
-    document.getElementById('anahtarExcelInput').addEventListener('change', function () {
-        if (this.files[0]) anahtarExcelYukle(this.files[0]); this.value = '';
+    document.getElementById('anahtarExcelInput').addEventListener('change', async function () {
+        const dosya = this.files[0];
+        this.value = '';
+        if (!dosya) return;
+        try {
+            await anahtarExcelYukle(dosya);
+        } catch (e) {
+            alert('HATA (bunu bana gönder):\n\n' + e.message + '\n\n' + (e.stack || ''));
+            console.error('anahtarExcelYukle hatası:', e);
+        }
     });
     document.getElementById('btnAnahtarDisaAktar').addEventListener('click', anahtarDisaAktar);
     // YENİ (Ağustos 2026): A/B kitapçık seçici — sekme değişince ekranı
