@@ -639,6 +639,18 @@ function sablonlarEkraniniRender() {
 
 
 function yeniSinavAc() {
+    // YENİ (teşhis, Ağustos 2026): "Yeni Sınav çalışmıyor" — konsola
+    // erişilemiyor, bu yüzden bir hata olursa sessizce hiçbir şey
+    // olmamış gibi durmak yerine DOĞRUDAN görünür bir uyarı gösteriyoruz.
+    try {
+        _yeniSinavAcIcKisim();
+    } catch (e) {
+        alert('HATA (bunu bana gönder):\n\n' + e.message + '\n\n' + (e.stack || ''));
+        console.error('yeniSinavAc hatası:', e);
+    }
+}
+
+function _yeniSinavAcIcKisim() {
     _ysSablonSecilen = null;
     document.getElementById('ysSinavAd').value = '';
     document.getElementById('ysOptikFormAdi').textContent = 'Form seçin...';
