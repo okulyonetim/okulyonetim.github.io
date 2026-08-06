@@ -145,7 +145,24 @@
       </button>
     </div>
 
-
+    <!-- 4. Özel Sınav Ayarları (soru/şık sayısı) — yalnızca "Özel Sınav" seçilince
+         görünür, çünkü LGS/Bursluluk'ta bu sayılar resmî şablonla SABİTTİR.
+         Soru sayısı artık SERBEST METİN DEĞİL, önceden test edilmiş sabit
+         seçeneklerden biri — böylece düzen her zaman sağlam/kompakt kalır
+         (eskiden herhangi bir sayı girilebiliyordu, bu da bazı sayılarda
+         başlık/köşe ile çakışan bozuk sayfalara yol açabiliyordu). -->
+    <div class="form-blok" id="ysOzelAyarBlok" hidden>
+      <label class="form-etiket">Özel Sınav Ayarları</label>
+      <div class="form-pill">
+        <span class="form-ikon">🔢</span>
+        <select id="ysOzelSoruSayisi" class="form-input">
+          <option value="15">15 Soru</option>
+          <option value="20" selected>20 Soru</option>
+          <option value="25">25 Soru</option>
+          <option value="30">30 Soru</option>
+          <option value="40">40 Soru</option>
+        </select>
+      </div>
       <div class="form-pill" style="margin-top:8px;">
         <span class="form-ikon">🔤</span>
         <select id="ysOzelSikSayisi" class="form-input">
@@ -780,7 +797,23 @@
     <div class="bs-tutac"></div>
     <h3 class="bs-baslik">Yazdırma Seçenekleri</h3>
 
+    <div class="yz-bolum">
+      <span class="yz-etiket">Yön</span>
+      <div class="yz-segment" id="yzYonSegment">
+        <button type="button" class="yz-segment-btn yz-aktif" data-yon="dikey">Dikey</button>
+        <button type="button" class="yz-segment-btn" data-yon="yatay">Yatay</button>
+      </div>
+    </div>
 
+    <div class="yz-bolum">
+      <span class="yz-etiket">Sayfa Düzeni</span>
+      <div class="yz-segment yz-segment-5" id="yzDuzenSegment">
+        <button type="button" class="yz-segment-btn yz-aktif" data-duzen="otomatik">Otomatik</button>
+        <button type="button" class="yz-segment-btn" data-duzen="1">Tek Form</button>
+        <button type="button" class="yz-segment-btn" data-duzen="2">2'li</button>
+        <button type="button" class="yz-segment-btn" data-duzen="4">4'lü</button>
+        <button type="button" class="yz-segment-btn" data-duzen="6">6'lı</button>
+      </div>
       <small class="yz-not" id="yzSabitSablonNotu" hidden>Bu sınav türü (LGS/Bursluluk) sabit tam sayfa şablon kullanır; yön ve sayfa düzeni değiştirilemez.</small>
       <small class="yz-not" id="yzCokluBilgiNotu">2'li/4'lü/6'lı düzende her form farklı bir öğrenciye ait olur (aynı öğrenci tekrarlanmaz) — kağıt kesilip öğrencilere dağıtılabilir.</small>
     </div>
