@@ -722,6 +722,29 @@
     svg.addEventListener('pointerup', suruklemeBitir);
     svg.addEventListener('pointercancel', suruklemeBitir);
 
+    // KÖK NEDEN DÜZELTMESİ — ASIL KATMAN (Sedat geri bildirimi: "her
+    // kaydırmada en fazla 10 değişiyor") — Android WebView tarayıcı jest
+    // kararını (pan/scroll mu, özel sürükleme mi?) touchstart katmanında,
+    // pointer event'lerden ÖNCE veriyor.
+    //
+    // Bu yüzden:
+    //   • ev.preventDefault() in pointerdown  → GEÇ KALIYOR
+    //   • tuvalSarici.style.touchAction='none' → GEÇ KALIYOR
+    //   (her ikisi de pointer event döngüsünde çalışıyor, jest kararı
+    //    o noktada zaten verilmiş oluyor — tarayıcı ~10 mm sonra
+    //    pointercancel göndererek sürüklemeyi bitiriyor)
+    //
+    // Çözüm: touchstart dinleyicisine { passive: false } ile preventDefault()
+    // — bu DOĞRUDAN touch event katmanında, jest kararı verilmeden iptal eder.
+    // Sadece .osOge ve .osOge__tutamac üzerine dokunulduğunda tetikleniyor;
+    // boş alana dokunma (tuval kaydırma) etkilenmiyor.
+    svg.addEventListener('touchstart', (ev) => {
+      const hedef = ev.target;
+      if (hedef && hedef.closest && hedef.closest('.osOge, .osOge__tutamac')) {
+        ev.preventDefault();
+      }
+    }, { passive: false });
+
     svg.addEventListener('pointerdown', (ev) => {
       // Boş alana tıklandıysa seçimi kaldır
       if (ev.target === svg || ev.target.classList.contains('osTuvalArkaplan')) { seciliId = null; cizPanel(); cizSadeceTuval(); }
