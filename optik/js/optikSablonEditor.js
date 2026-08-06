@@ -150,17 +150,45 @@
     kok.className = 'osEditor';
     kok.innerHTML = `
       <style>
-        .osEditor { display:flex; flex-direction:column; height:100%; font-family:inherit; }
-        .osEditor__arac { display:flex; flex-wrap:wrap; gap:6px; padding:8px; background:#f3f3f5; border-bottom:1px solid #ddd; max-height:34vh; overflow-y:auto; }
-        .osEditor__arac button { min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; }
-        .osEditor__arac button:active { background:#e8e8ea; }
-        .osEditor__arac button.osEditor__tamEkranBtn { margin-left:auto; background:#0a7cff; color:#fff; border-color:#0a7cff; }
-        .osEditor__govde { display:flex; flex-direction:column; flex:1; min-height:0; overflow-y:auto; }
-        .osEditor__tuvalSarici { flex:1; min-height:35vh; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
+        /* YENİDEN TASARIM (Sedat geri bildirimi, Ağustos 2026: "3 sabit
+           kutucuk (araçlar/panel/tuval) her biri kendi içinde kayıyor,
+           işi zorlaştırıyor; tuval tam sayfa olsa, öğe ayarları farklı
+           bir yerde/şekilde açılsa") — eski tasarımda araç çubuğu ve öğe
+           ayarları paneli SABİT yükseklikli, tuvalin üstünde yer kaplayan
+           iki ayrı kutucuktu (34vh + 38vh) ve tuvale sadece kalan dar bir
+           alan kalıyordu. Yeni tasarımda:
+           1) Üst bar TEK SATIR, taşarsa kendi içinde YATAY kayıyor —
+              öğe ekleme ve kağıt boyutu ayrı açılır kutulara (popover)
+              taşındı, dikey yer kaplamıyor.
+           2) Tuval (osEditor__tuvalSarici) kalan TÜM dikey alanı dolduruyor
+              — artık pratikte tam sayfa.
+           3) Öğe ayarları paneli artık akışta sabit bir kutucuk DEĞİL,
+              tuvalin ÜZERİNE alttan açılan bir "bottom sheet" — öğe
+              seçilince kayarak açılıyor, ✕ Kapat'a basılınca veya boş
+              alana dokununca kayarak kapanıyor, tuval boyutunu ETKİLEMİYOR.
+        */
+        .osEditor { display:flex; flex-direction:column; height:100%; font-family:inherit; position:relative; overflow:hidden; }
+        .osEditor__topbar { display:flex; align-items:center; gap:6px; padding:6px 8px; background:#f3f3f5; border-bottom:1px solid #ddd; overflow-x:auto; -webkit-overflow-scrolling:touch; flex:0 0 auto; }
+        .osEditor__topbar button { flex:0 0 auto; min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; white-space:nowrap; }
+        .osEditor__topbar button:active { background:#e8e8ea; }
+        .osEditor__adInput { flex:1 1 120px; min-width:90px; min-height:40px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; padding:4px 8px; font-size:14px; }
+        .osEditor__kaydetBtn { background:#0a7cff; color:#fff; border-color:#0a7cff; }
+        .osEditor__varsayilanLabel { display:flex; align-items:center; gap:4px; font-size:12px; color:#555; padding:0 4px; flex:0 0 auto; white-space:nowrap; }
+        .osEditor__popoverSarici { position:relative; flex:0 0 auto; }
+        .osEditor__popover { position:absolute; top:100%; left:0; margin-top:4px; background:#fff; border:1px solid #ccc; border-radius:10px; box-shadow:0 4px 18px rgba(0,0,0,.28); padding:8px; z-index:40; display:none; width:max-content; max-width:min(320px, calc(100vw - 24px)); }
+        .osEditor__popover--acik { display:block; }
+        .osEditor__popover--oge { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+        .osEditor__popover--oge button { min-height:40px; text-align:left; }
+        .osEditor__popover--sayfa { display:flex; flex-direction:column; gap:6px; }
+        .osEditor__popover--sayfa select, .osEditor__popover--sayfa input { min-height:36px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; box-sizing:border-box; width:100%; }
+        .osEditor__tuvalSarici { flex:1; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
         .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); }
-        .osEditor__panel { background:#fafafa; border-bottom:1px solid #ddd; overflow-y:auto; max-height:38vh; padding:10px; font-size:13px; display:none; }
-        .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
-        .osEditor__panel h4 { margin:0 0 4px; font-size:13px; color:#555; width:100%; }
+        /* Öğe ayarları — alttan açılan sabit-olmayan sayfa (bottom sheet) */
+        .osEditor__panel { position:absolute; left:0; right:0; bottom:0; background:#fafafa; border-top:1px solid #ddd; border-radius:14px 14px 0 0; box-shadow:0 -6px 20px rgba(0,0,0,.25); overflow-y:auto; max-height:60vh; padding:10px; font-size:13px; transform:translateY(105%); transition:transform .22s ease; z-index:30; }
+        .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; transform:translateY(0); }
+        .osEditor__panelBaslikSatiri { display:flex; align-items:center; justify-content:space-between; width:100%; margin-bottom:2px; }
+        .osEditor__panelBaslikSatiri h4 { margin:0; font-size:14px; color:#333; }
+        .osEditor__panelKapatBtn { min-height:34px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; }
         .osEditor__alan { margin-bottom:8px; width:140px; }
         .osEditor__alan label { display:block; font-size:11px; color:#777; margin-bottom:2px; }
         .osEditor__alan input, .osEditor__alan select { width:100%; box-sizing:border-box; min-height:36px; padding:4px 6px; border:1px solid #ccc; border-radius:6px; font-size:13px; }
@@ -175,64 +203,88 @@
         .osOge--suruklemede .osOge__cerceve { stroke-width:0.6; stroke:#0a7cff; fill:rgba(10,124,255,0.10); }
         .osOge--secili rect.osOge__cerceve { stroke:#0a7cff; stroke-width:0.6; }
         .osOge__tutamac { fill:#0a7cff; cursor:nwse-resize; touch-action:none; }
-        .osEditor--tamEkran .osEditor__panel { display:none !important; }
-        .osEditor--tamEkran .osEditor__arac > button:not(.osEditor__tamEkranBtn) { display:none; }
+        /* Tam Ekran: üst bar tamamen gizlenir (öğe ayarları paneli artık
+           tuvalin üzerine bindiği için tam ekranda da AÇILABİLİR —
+           eskiden tam ekranda panel hiç açılamıyordu, ayar yapmak için
+           tam ekrandan çıkmak gerekiyordu). */
+        .osEditor--tamEkran .osEditor__topbar { display:none; }
+        .osEditor__tamEkranCikisBtn { position:absolute; top:8px; right:8px; z-index:35; display:none; min-height:38px; padding:0 14px; background:#0a7cff; color:#fff; border:none; border-radius:20px; font-size:13px; box-shadow:0 2px 10px rgba(0,0,0,.3); }
+        .osEditor--tamEkran .osEditor__tamEkranCikisBtn { display:block; }
       </style>
-      <div class="osEditor__arac"></div>
-      <div class="osEditor__govde">
-        <div class="osEditor__panel"></div>
-        <div class="osEditor__tuvalSarici"><svg class="osEditor__tuval"></svg></div>
+      <div class="osEditor__topbar">
+        <input type="text" class="osEditor__adInput" placeholder="Form adı (ör. 8. Sınıf Deneme-3)">
+        <div class="osEditor__popoverSarici">
+          <button class="osEditor__ekleBtn" type="button">+ Ekle ▾</button>
+          <div class="osEditor__popover osEditor__popover--oge"></div>
+        </div>
+        <button class="osEditor__geriAlBtn" type="button">↶ Geri Al</button>
+        <button class="osEditor__ileriAlBtn" type="button">↷ İleri Al</button>
+        <button class="osEditor__zoomAzaltBtn" type="button">－</button>
+        <button class="osEditor__zoomArtirBtn" type="button">＋</button>
+        <div class="osEditor__popoverSarici">
+          <button class="osEditor__sayfaBtn" type="button">⚙ Sayfa</button>
+          <div class="osEditor__popover osEditor__popover--sayfa"></div>
+        </div>
+        <label class="osEditor__varsayilanLabel" style="display:none;">
+          <input type="checkbox" class="osEditor__varsayilanCheckbox"> Varsayılan yap
+        </label>
+        <button class="osEditor__kaydetBtn" type="button" style="display:none;">💾 Kaydet</button>
+        <button class="osEditor__tamEkranBtn" type="button">⛶ Tam Ekran</button>
       </div>
+      <button class="osEditor__tamEkranCikisBtn" type="button">✕ Küçült</button>
+      <div class="osEditor__tuvalSarici"><svg class="osEditor__tuval"></svg></div>
+      <div class="osEditor__panel"></div>
     `;
     container.appendChild(kok);
 
-    const aracCubugu = kok.querySelector('.osEditor__arac');
+    const topbar = kok.querySelector('.osEditor__topbar');
     const svg = kok.querySelector('.osEditor__tuval');
     const panel = kok.querySelector('.osEditor__panel');
-    // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "yenileme
-    // tetikleniyor öğeyi aşağı çekince") — burada ve tuvalSarici/öğe
-    // sürüklemede eklenmiş olan panel-başına aç/kapa çağrıları KALDIRILDI.
-    // Native tarafın kendi yorumunu (PullToRefreshPlugin.java) okuyunca
-    // anlaşıldı: Optik aracının TAMAMI zaten OptikSistemi.ac()/kapat()
-    // (js/optik-entegrasyon.js) ile TEK bir aç/kapa çağrısıyla, araç açık
-    // olduğu SÜRECE kapatılıyor — burada tekrar tekrar aç/kapa çağırmanın
-    // hiçbir faydası yoktu, üstelik native köprüye giden her ekstra
-    // çağrı gecikmeli/asenkron olduğundan (setTimeout+Capacitor köprüsü),
-    // bir sürükleme biter bitmez gönderilen "geri aç" çağrısı native
-    // tarafa geç ulaşıp aracın GERÇEKTEN hâlâ açıkken yenilemeyi YANLIŞLIKLA
-    // tekrar etkinleştirebiliyordu — bir sonraki sürüklemede jest gerçekten
-    // tetikleniyordu. Artık buna hiç dokunulmuyor, tek kapatma yeterli.
     const tuvalSarici = kok.querySelector('.osEditor__tuvalSarici');
-    // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026 — devam eden
-    // "her mm duruyor" sorunu): tuvalSarici'nin touch-action'ını sürükleme
-    // sırasında 'none' yapmak tek başına yetmiyordu, çünkü onu saran
-    // .osEditor__govde de kendi overflow-y:auto'suyla ayrı bir kaydırılabilir
-    // ata olarak devrede — WebView jest tanıma sistemi bazen tuvalSarici
-    // yerine govde'yi kaydırma sahibi seçip pan-y'yi serbest bırakıyor,
-    // birkaç piksel sonra pointercancel ile sürüklemeyi kesiyor. İç içe
-    // kaydırma zincirindeki HER halkanın kilitlenmesi gerekiyor.
-    const govde = kok.querySelector('.osEditor__govde');
+    // NOT: eski tasarımda tuvalSarici'yi saran ayrı bir kaydırılabilir
+    // .osEditor__govde kutusu vardı (öğe ayarları paneli onunla aynı akışta,
+    // üstünde sıralıydı) — bu, iç içe iki kaydırma konteyneri anlamına
+    // geliyordu ve WebView'da sürükleme sırasında touch-action kilidinin
+    // ikisine de uygulanması gerekiyordu (bkz. eski sürüm notu). Panel artık
+    // akışta değil, tuvalin ÜZERİNE mutlak konumlanan bir bottom sheet
+    // olduğundan govde'ye hiç gerek kalmadı — tuvalSarici TEK kaydırma
+    // konteyneri, kilit de sadece ona uygulanıyor.
+    const ekleBtn = kok.querySelector('.osEditor__ekleBtn');
+    const eklePopover = kok.querySelector('.osEditor__popover--oge');
+    const sayfaBtn = kok.querySelector('.osEditor__sayfaBtn');
+    const sayfaPopover = kok.querySelector('.osEditor__popover--sayfa');
+    const geriAlBtnEl = kok.querySelector('.osEditor__geriAlBtn');
+    const ileriAlBtnEl = kok.querySelector('.osEditor__ileriAlBtn');
+    const zoomAzaltBtnEl = kok.querySelector('.osEditor__zoomAzaltBtn');
+    const zoomArtirBtnEl = kok.querySelector('.osEditor__zoomArtirBtn');
+    const kaydetBtnEl = kok.querySelector('.osEditor__kaydetBtn');
+    const varsayilanLabelEl = kok.querySelector('.osEditor__varsayilanLabel');
+    const varsayilanCheckboxEl = kok.querySelector('.osEditor__varsayilanCheckbox');
+    const tamEkranBtn = kok.querySelector('.osEditor__tamEkranBtn');
+    const tamEkranCikisBtn = kok.querySelector('.osEditor__tamEkranCikisBtn');
+    const adInput = kok.querySelector('.osEditor__adInput');
+
+    // ---- Açılır kutular (popover): aynı anda sadece biri açık olsun,
+    // dışına dokununca kapansın ----
+    function digerPopovariKapat(haric) {
+      kok.querySelectorAll('.osEditor__popover--acik').forEach((p) => { if (p !== haric) p.classList.remove('osEditor__popover--acik'); });
+    }
+    function popoverAcKapa(pop) {
+      const acikMi = pop.classList.contains('osEditor__popover--acik');
+      digerPopovariKapat(pop);
+      pop.classList.toggle('osEditor__popover--acik', !acikMi);
+    }
+    ekleBtn.addEventListener('click', (ev) => { ev.stopPropagation(); popoverAcKapa(eklePopover); });
+    sayfaBtn.addEventListener('click', (ev) => { ev.stopPropagation(); popoverAcKapa(sayfaPopover); });
+    document.addEventListener('click', (ev) => {
+      if (!kok.isConnected) return;
+      if (ev.target.closest && ev.target.closest('.osEditor__popoverSarici')) return;
+      digerPopovariKapat(null);
+    });
 
     // ---- Form adı (Sedat isteği: "Forma isim verme de olsun") ----
-    const adSatiri = document.createElement('div');
-    adSatiri.style.cssText = 'display:flex; align-items:center; gap:6px; width:100%; padding:0 0 4px;';
-    const adInput = document.createElement('input');
-    adInput.type = 'text';
-    adInput.placeholder = 'Form adı (ör. 8. Sınıf Deneme-3)';
     adInput.value = sablon.ad || '';
-    adInput.style.cssText = 'flex:1; min-height:38px; border:1px solid #ccc; border-radius:6px; padding:4px 8px; font-size:14px;';
     adInput.addEventListener('change', () => { sablon.ad = adInput.value || 'Adsız Şablon'; });
-    adSatiri.appendChild(adInput);
-    aracCubugu.appendChild(adSatiri);
-
-    // ---- Araç çubuğu: öğe ekleme + geri al/ileri al + kaydet ----
-    function aracDugmesiEkle(etiket, tikla) {
-      const b = document.createElement('button');
-      b.textContent = etiket;
-      b.addEventListener('click', tikla);
-      aracCubugu.appendChild(b);
-      return b;
-    }
 
     // YENİ (Sedat isteği, Ağustos 2026: "Yeni eklenen öğe boş alana eklense
     // daha kolay taşınır") — yeni öğe her zaman AYNI sabit konumda
@@ -259,25 +311,30 @@
     }
 
     Object.keys(OGE_VARSAYILANLARI).forEach((tip) => {
-      aracDugmesiEkle('+ ' + OGE_ETIKETLERI[tip], () => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = '+ ' + OGE_ETIKETLERI[tip];
+      b.addEventListener('click', () => {
         gecmiseKaydet();
         const og = OGE_VARSAYILANLARI[tip]();
         og.id = yeniId();
         bosAlanBul(og);
         sablon.ogeler.push(og);
         seciliId = og.id;
+        eklePopover.classList.remove('osEditor__popover--acik'); // ekleyince açılır kutu kapansın
         ciz();
       });
+      eklePopover.appendChild(b);
     });
 
-    const geriAlBtn = aracDugmesiEkle('↶ Geri Al', () => {
+    geriAlBtnEl.addEventListener('click', () => {
       if (!gecmis.length) return;
       ileri.push(derinKopya(sablon));
       sablon = gecmis.pop();
       seciliId = null;
       ciz();
     });
-    const ileriAlBtn = aracDugmesiEkle('↷ İleri Al', () => {
+    ileriAlBtnEl.addEventListener('click', () => {
       if (!ileri.length) return;
       gecmis.push(derinKopya(sablon));
       sablon = ileri.pop();
@@ -286,18 +343,13 @@
     });
     let varsayilanYapilsinMi = false;
     if (kaydetCallback) {
-      const varsayilanLabel = document.createElement('label');
-      varsayilanLabel.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:12px; color:#555; padding:0 6px;';
-      const varsayilanCheckbox = document.createElement('input');
-      varsayilanCheckbox.type = 'checkbox';
-      varsayilanCheckbox.checked = !!secenekler.varsayilanMi;
-      varsayilanYapilsinMi = varsayilanCheckbox.checked;
-      varsayilanCheckbox.addEventListener('change', () => { varsayilanYapilsinMi = varsayilanCheckbox.checked; });
-      varsayilanLabel.appendChild(varsayilanCheckbox);
-      varsayilanLabel.appendChild(document.createTextNode('Varsayılan form yap'));
-      aracCubugu.appendChild(varsayilanLabel);
+      varsayilanLabelEl.style.display = '';
+      varsayilanCheckboxEl.checked = !!secenekler.varsayilanMi;
+      varsayilanYapilsinMi = varsayilanCheckboxEl.checked;
+      varsayilanCheckboxEl.addEventListener('change', () => { varsayilanYapilsinMi = varsayilanCheckboxEl.checked; });
 
-      aracDugmesiEkle('💾 Kaydet', async () => {
+      kaydetBtnEl.style.display = '';
+      kaydetBtnEl.addEventListener('click', async () => {
         if (!adInput.value.trim()) {
           alert('Kaydetmeden önce forma bir isim ver.');
           adInput.focus();
@@ -313,22 +365,24 @@
         await kaydetCallback(derinKopya(sablon), varsayilanYapilsinMi);
       });
     }
-    const tamEkranBtn = document.createElement('button');
-    tamEkranBtn.className = 'osEditor__tamEkranBtn';
-    tamEkranBtn.textContent = '⛶ Tam Ekran';
+    // Tam Ekran: topbar tamamen gizlenip (bkz. CSS) yerine köşede tek bir
+    // "Küçült" düğmesi çıkıyor — giriş/çıkış artık İKİ AYRI düğme (topbar'daki
+    // ve köşedeki), tek düğmenin metnini değiştirip toggle etmeye gerek yok.
     tamEkranBtn.addEventListener('click', () => {
-      const tamEkranMi = kok.classList.toggle('osEditor--tamEkran');
-      tamEkranBtn.textContent = tamEkranMi ? '✕ Küçült' : '⛶ Tam Ekran';
+      kok.classList.add('osEditor--tamEkran');
+      digerPopovariKapat(null);
       requestAnimationFrame(viewBoxAyarla);
     });
-    aracCubugu.appendChild(tamEkranBtn);
+    tamEkranCikisBtn.addEventListener('click', () => {
+      kok.classList.remove('osEditor--tamEkran');
+      requestAnimationFrame(viewBoxAyarla);
+    });
 
-    // ---- Kağıt boyutu seçici (Sedat isteği, Ağustos 2026) ----
-    const kagitSatiri = document.createElement('div');
-    kagitSatiri.style.cssText = 'display:flex; align-items:center; gap:6px; width:100%; padding:0 0 4px; font-size:12px; color:#555; flex-wrap:wrap;';
-    kagitSatiri.innerHTML = '<span>Kağıt Boyutu:</span>';
+    // ---- Kağıt boyutu seçici (Sedat isteği, Ağustos 2026) — artık "⚙ Sayfa"
+    // açılır kutusunun içinde, üst barda kalıcı yer kaplamıyor ----
+    const kagitSatiri = sayfaPopover;
+    kagitSatiri.innerHTML = '<div style="font-size:12px; color:#555; margin-bottom:2px;">Kağıt Boyutu</div>';
     const kagitSelect = document.createElement('select');
-    kagitSelect.style.cssText = 'min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px;';
     Object.keys(KAGIT_BOYUTLARI).forEach((ad) => {
       const o = document.createElement('option');
       o.value = ad; o.textContent = `${ad} (${KAGIT_BOYUTLARI[ad].width}×${KAGIT_BOYUTLARI[ad].height}mm)`;
@@ -342,7 +396,6 @@
     // DİKEY (portre, width<height) olarak tanımlı; yön sadece width/height'i
     // yer değiştiriyor, ayrı bir veri modeli gerekmiyor.
     const yonSelect = document.createElement('select');
-    yonSelect.style.cssText = 'min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px;';
     ['dikey', 'yatay'].forEach((y) => {
       const o = document.createElement('option');
       o.value = y; o.textContent = y === 'dikey' ? '↕ Dikey' : '↔ Yatay';
@@ -351,10 +404,10 @@
 
     const ozelGenislikInput = document.createElement('input');
     ozelGenislikInput.type = 'number'; ozelGenislikInput.min = 20; ozelGenislikInput.placeholder = 'Genişlik mm';
-    ozelGenislikInput.style.cssText = 'width:80px; min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; display:none;';
+    ozelGenislikInput.style.display = 'none';
     const ozelYukseklikInput = document.createElement('input');
     ozelYukseklikInput.type = 'number'; ozelYukseklikInput.min = 20; ozelYukseklikInput.placeholder = 'Yükseklik mm';
-    ozelYukseklikInput.style.cssText = 'width:80px; min-height:34px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; display:none;';
+    ozelYukseklikInput.style.display = 'none';
 
     const kagitUyariEl = document.createElement('span');
     kagitUyariEl.style.cssText = 'color:#a33; font-size:11px;';
@@ -427,7 +480,6 @@
     kagitSatiri.appendChild(ozelGenislikInput);
     kagitSatiri.appendChild(ozelYukseklikInput);
     kagitSatiri.appendChild(kagitUyariEl);
-    aracCubugu.appendChild(kagitSatiri);
     kagitUyarisiniGuncelle();
 
     function gecmiseKaydet() {
@@ -472,8 +524,8 @@
       viewBoxAyarla();
     }
 
-    aracDugmesiEkle('－', () => zoomUygula(zoomOlcek - 0.2));
-    aracDugmesiEkle('＋', () => zoomUygula(zoomOlcek + 0.2));
+    zoomAzaltBtnEl.addEventListener('click', () => zoomUygula(zoomOlcek - 0.2));
+    zoomArtirBtnEl.addEventListener('click', () => zoomUygula(zoomOlcek + 0.2));
 
     // İki parmakla pinch-zoom (best-effort — bkz. yukarıdaki not)
     const aktifParmaklar = new Map();
@@ -584,7 +636,6 @@
       // 'none' yaparak tarayıcının jest kararını vermeden önce doğru
       // touch-action'ı görmesi sağlanıyor; suruklemeBitir'de geri alınıyor.
       tuvalSarici.style.touchAction = 'none';
-      if (govde) govde.style.touchAction = 'none'; // bkz. yukarıdaki govde tanımı — iç içe kaydırma zinciri notu
       gEl.classList.add('osOge--suruklemede'); // PERFORMANS: ağır içerik (daireler/metin) sürükleme boyunca gizli
       // NOT: gecmiseKaydet() BURADAN KALDIRILDI — suruklemeBitir'e taşındı.
       // Gerekçe: her dokunuşta (taşıma olmasa bile) tüm sablonun derin
@@ -601,7 +652,6 @@
       surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, ctmInverse, ogRef: og };
       svg.setPointerCapture(ev.pointerId);
       tuvalSarici.style.touchAction = 'none'; // bkz. pointerDownOge'daki kök neden notu
-      if (govde) govde.style.touchAction = 'none'; // bkz. pointerDownOge'daki govde notu
       // boyutlandir için gecmiseKaydet burada kalıyor: pointermove og.genislik/yukseklik'i
       // DOĞRUDAN güncelliyor, dolayısıyla suruklemeBitir'de çağırırsak post-state
       // kaydedilir ve geri al çalışmaz. Taşıma (tasi) içinse pointermove yalnızca
@@ -705,7 +755,6 @@
       // her zaman (taşıma, boyutlandırma, iptal) geri al; böylece bir
       // sonraki sürükleme öncesi kapsayıcı normal pan davranışına döner.
       tuvalSarici.style.touchAction = '';
-      if (govde) govde.style.touchAction = ''; // bkz. pointerDownOge'daki govde notu
       if (surukleme.tip === 'tasi') {
         const og = surukleme.ogRef;
         const baz = surukleme.ogeBaslangic;
@@ -1026,9 +1075,26 @@
       const og = sablon.ogeler.find((o) => o.id === seciliId);
       if (!og) { seciliId = null; panel.classList.remove('osEditor__panel--gorunur'); return; }
 
+      // Alttan açılan sayfanın başlık satırı: öğe adı + Kapat düğmesi.
+      // Kapat, boş tuval alanına dokunmakla AYNI işi yapar (seçim kalkar,
+      // panel kayarak kapanır) — ama panel geniş açıldığında tuvale
+      // dokunmadan da kapatabilmek için ayrıca burada duruyor.
+      const baslikSatiri = document.createElement('div');
+      baslikSatiri.className = 'osEditor__panelBaslikSatiri';
       const baslik = document.createElement('h4');
       baslik.textContent = OGE_ETIKETLERI[og.tip] || og.tip;
-      panel.appendChild(baslik);
+      const kapatBtn = document.createElement('button');
+      kapatBtn.type = 'button';
+      kapatBtn.className = 'osEditor__panelKapatBtn';
+      kapatBtn.textContent = '✕ Kapat';
+      kapatBtn.addEventListener('click', () => {
+        seciliId = null;
+        cizPanel();
+        cizSadeceTuval();
+      });
+      baslikSatiri.appendChild(baslik);
+      baslikSatiri.appendChild(kapatBtn);
+      panel.appendChild(baslikSatiri);
 
       if (og.tip === 'baloncukBlok') {
         alanEkle(og, 'Ders Adı (cevap anahtarında kullanılır, boş bırakılabilir)', 'dersAdi', 'text');
