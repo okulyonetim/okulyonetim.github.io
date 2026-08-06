@@ -150,16 +150,9 @@
       return db.collection('oy_optikSablonlari').get({ source: 'server' }).then(function(snap) {
         return snap.docs.map(function(d) {
           var kayit = Object.assign({ id: d.id }, d.data());
-          // KOK NEDEN DUZELTMESI #2 -- sablonKaydet'te string'e donusturulen
-          // sutunDikeyKaymalari alanini geri diziye parse et.
-          if (kayit.sablon && Array.isArray(kayit.sablon.ogeler)) {
-            kayit.sablon.ogeler = kayit.sablon.ogeler.map(function(og) {
-              if (!og || typeof og !== 'object') return og;
-              if (typeof og.sutunDikeyKaymalari === 'string') {
-                try { og.sutunDikeyKaymalari = JSON.parse(og.sutunDikeyKaymalari); } catch(e) {}
-              }
-              return og;
-            });
+          // sablon JSON string olarak kaydedildiyse geri parse et
+          if (kayit.sablon && typeof kayit.sablon === 'string') {
+            try { kayit.sablon = JSON.parse(kayit.sablon); } catch(e) {}
           }
           return kayit;
         });
@@ -197,16 +190,12 @@
       } catch (e) {
         return Promise.reject(new Error('Şablon verisi JSON\'a çevrilemedi: ' + e.message));
       }
-      // Array-in-array serialize: sutunDikeyKaymalari dizi -> JSON string
-      if (temizVeri.sablon && Array.isArray(temizVeri.sablon.ogeler)) {
-        temizVeri.sablon.ogeler = temizVeri.sablon.ogeler.map(function(og) {
-          if (!og || typeof og !== 'object') return og;
-          var kopyaOg = Object.assign({}, og);
-          if (Array.isArray(kopyaOg.sutunDikeyKaymalari)) {
-            kopyaOg.sutunDikeyKaymalari = JSON.stringify(kopyaOg.sutunDikeyKaymalari);
-          }
-          return kopyaOg;
-        });
+      // KOK NEDEN #2: Firestore nested array yasagi.
+      // Cozum: ogeler[] icindeki TUM array alanlarini JSON string'e don.
+      // Ayrica sablon nesnesini ogeler dizisi olmayan duz bir stringe donustur --
+      // bu en garantili yol: sablon'un TAMAMINI JSON string olarak kaydet.
+      if (temizVeri.sablon && typeof temizVeri.sablon === 'object') {
+        temizVeri.sablon = JSON.stringify(temizVeri.sablon);
       }
       return db.collection('oy_optikSablonlari').doc(kayit.id).set(temizVeri, { merge: true });
     },
