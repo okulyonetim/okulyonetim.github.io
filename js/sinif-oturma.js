@@ -1009,7 +1009,18 @@ const SinifOturma = (function(){
     ov.innerHTML = _iskeletHtml();
     document.body.appendChild(ov);
     document.body.classList.add('modal-open');
-    if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
+    // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "alt
+    // navigasyon açıkken yenileme yapmıyor... kilitlenip kalıyor") —
+    // buradaki _pullToRefreshAyarla(false) çağrısı, kapat()'taki YORUMDA
+    // açıklanan niyetle (bu editör HER ZAMAN zaten açık bir sınıf detay
+    // panelinin İÇİNDEN açılıyor, o panel jesti zaten kendisi kapatıp
+    // kendisi tekrar açacak, sinif-oturma'nın buna DOKUNMAMASI gerekiyor)
+    // ÇELİŞİYORDU: kapat() bilerek (true) çağırmıyordu ama ac() burada
+    // GERÇEKTEN (false) çağırıyordu — her açılışta sayaç kalıcı olarak
+    // +1 kalıyor, alttaki panel kapansa bile bu fazlalık asla silinmiyor,
+    // uygulama yeniden başlatılana kadar TÜM navigasyon boyunca yenileme
+    // jesti kilitli kalıyordu. Yorumun asıl niyetine uyacak şekilde bu
+    // satır kaldırıldı — artık ikisi de (ac/kapat) sayaca hiç dokunmuyor.
 
     tuval = ov.querySelector('#soTuval');
     ov.querySelector('#soBaslik').textContent = _soBaslikMetni();
