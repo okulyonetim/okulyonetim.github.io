@@ -188,7 +188,7 @@
         .osEditor__tuvalSarici { flex:1 1 0; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
         .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); }
         /* Öğe ayarları — alttan açılan sabit-olmayan sayfa (bottom sheet) */
-        .osEditor__panel { position:fixed; left:0; right:0; bottom:0; background:#fafafa; border-top:1px solid #ddd; border-radius:14px 14px 0 0; box-shadow:0 -6px 20px rgba(0,0,0,.25); overflow-y:auto; max-height:60vh; padding:10px; font-size:13px; transform:translateY(105%); transition:transform .22s ease; z-index:30; }
+        .osEditor__panel { position:fixed; left:0; right:0; bottom:0; background:#fafafa; border-top:1px solid #ddd; border-radius:14px 14px 0 0; box-shadow:0 -6px 20px rgba(0,0,0,.25); overflow-y:auto; max-height:40vh; padding:10px; font-size:13px; transform:translateY(105%); transition:transform .22s ease; z-index:30; }
         .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; transform:translateY(0); }
         .osEditor__panelBaslikSatiri { display:flex; align-items:center; justify-content:space-between; width:100%; margin-bottom:2px; }
         .osEditor__panelBaslikSatiri h4 { margin:0; font-size:14px; color:#333; }
@@ -653,7 +653,10 @@
       // Gerekçe: her dokunuşta (taşıma olmasa bile) tüm sablonun derin
       // kopyasını geri al yığınına itmek gereksizdi; artık yalnızca öğe
       // gerçekten hareket ettiğinde kaydediliyor.
-      requestAnimationFrame(cizPanel);
+      // NOT: cizPanel() BURADAN KALDIRILDI — panel artık sadece hareketsiz
+      // tap (sürükleme olmayan dokunuş) sonrasında açılıyor; suruklemeBitir'de
+      // !hareketEtti kontrolüyle tetikleniyor. Böylece sürükleme başlarken
+      // panel açılıp alanı kapatmıyor.
     }
 
     function pointerDownTutamac(ev, og, gEl) {
@@ -775,6 +778,8 @@
           // gecmiseKaydet BURAYA TAŞINDI (pointerDownOge'dan): yalnızca
           // öğe gerçekten hareket ettiğinde geri al yığınına ekleniyor.
           if (hareketEtti) gecmiseKaydet();
+          // Panel açma: sadece hareketsiz tap ise aç (sürükleme ise kapalı kalsın)
+          if (!hareketEtti) requestAnimationFrame(cizPanel);
           // YENİ (Sedat isteği, Ağustos 2026: "Izgara işini iptal et") —
           // artık bırakıldığında da ızgaraya yapıştırma YOK, öğe tam
           // bırakıldığı noktada kalıyor.
@@ -1079,7 +1084,7 @@
 
     function cizPanel() {
       panel.innerHTML = '';
-      if (!seciliId) {
+      if (!seciliId || kok.classList.contains('osEditor--tamEkran')) {
         panel.classList.remove('osEditor__panel--gorunur');
         return;
       }
