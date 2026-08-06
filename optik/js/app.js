@@ -769,10 +769,7 @@ function _yeniSinavAcIcKisim() {
     document.getElementById('ysSinavAd').value = '';
     document.getElementById('ysOptikFormAdi').textContent = 'Form seçin...';
     document.getElementById('ysOptikFormAdi').style.color = 'var(--text-faint)';
-    const ozelBlok = document.getElementById('ysOzelAyarBlok');
-    if (ozelBlok) ozelBlok.hidden = true;
-    const ozelSoru = document.getElementById('ysOzelSoruSayisi');
-    if (ozelSoru) ozelSoru.value = '';
+
     const ozelYanlis = document.getElementById('ysYanlisEtkisi');
     if (ozelYanlis) ozelYanlis.value = '0';
     const ktSayisi = document.getElementById('ysKitapcikTuruSayisi');
@@ -886,20 +883,8 @@ function yeniSinavKaydet() {
     let yanlisKatsayisi = Number.isFinite(yEtki) && yEtki > 0 ? yEtki : null;
     const kitapcikTuruSayisi = parseInt(document.getElementById('ysKitapcikTuruSayisi')?.value, 10) === 2 ? 2 : 1;
 
-    if (_ysSablonSecilen.id === 'ozel') {
-        soruSayisi = parseInt(document.getElementById('ysOzelSoruSayisi')?.value, 10) || 20;
-        sikSayisi = parseInt(document.getElementById('ysOzelSikSayisi')?.value, 10) || 4;
-
-        // Soru sayısı artık sabit, önceden test edilmiş seçeneklerden geliyor
-        // (bkz. index.html ysOzelSoruSayisi) — bu kontrol yalnızca bir
-        // güvenlik ağı, normal koşulda hiç tetiklenmemesi beklenir.
-        try {
-            window.LayoutEngine?.sayfaDuzeniOner(soruSayisi, sikSayisi);
-        } catch (e) {
-            alert(`${soruSayisi} soru / ${sikSayisi} şık bu düzende desteklenmiyor. Farklı bir şık sayısı deneyin.`);
-            return;
-        }
-    }
+    if (!soruSayisi) soruSayisi = 20;
+    if (!sikSayisi) sikSayisi = 4;
 
     const sinav = {
         id:           'sinav_' + Date.now(),
@@ -2418,7 +2403,7 @@ async function _yzOgrenciListesiGetir(sinav) {
 
 // ── Yazdırma Seçenekleri sheet (yön / sayfa düzeni / önizleme) ──
 let _yzMod = null; // 'bos' | 'ogrenciler'
-let _yzSecimleri = { yon: 'dikey', sayfaDuzeni: 'otomatik' };
+const _yzSecimleri = { yon: 'dikey', sayfaDuzeni: 'otomatik' };
 
 function yazdirmaSecenekleriAc(mod) {
     const sinav = DB.sinaviBul(_aktifSinavId);
@@ -2426,20 +2411,7 @@ function yazdirmaSecenekleriAc(mod) {
     if (mod === 'ogrenciler' && !sinav.ogrenciIdleri?.length) { alert('Bu sınava öğrenci eklenmemiş.'); return; }
 
     _yzMod = mod;
-    _yzSecimleri = { yon: 'dikey', sayfaDuzeni: 'otomatik' };
-
     document.getElementById('yzOnizlemeDurum').textContent = '';
-
-    const sabitMi = _sinavSabitSablonMu(sinav);
-    document.getElementById('yzSabitSablonNotu').hidden = !sabitMi;
-    document.getElementById('yzCokluBilgiNotu').hidden = sabitMi || mod !== 'ogrenciler';
-
-    ['yzYonSegment', 'yzDuzenSegment'].forEach(id => {
-        document.getElementById(id).querySelectorAll('button').forEach(b => { b.disabled = sabitMi; });
-    });
-    document.getElementById('yzYonSegment').querySelectorAll('button').forEach(b => b.classList.toggle('yz-aktif', b.dataset.yon === 'dikey'));
-    document.getElementById('yzDuzenSegment').querySelectorAll('button').forEach(b => b.classList.toggle('yz-aktif', b.dataset.duzen === 'otomatik'));
-
     sheetAc('sheetYazdirmaSecenekleri');
 }
 
@@ -2849,8 +2821,7 @@ function baslat() {
             const metEl = document.getElementById('ysOptikFormAdi');
             metEl.textContent = sablon.soruSayisi ? `${sablon.ad} (${sablon.soruSayisi} Soru)` : sablon.ad;
             metEl.style.color = 'var(--text)';
-            const ozelBlok = document.getElementById('ysOzelAyarBlok');
-            if (ozelBlok) ozelBlok.hidden = sablon.id !== 'ozel';
+
         });
     });
     document.getElementById('btnSablonEditorGeri').addEventListener('click', () => {
@@ -2924,8 +2895,7 @@ function baslat() {
     document.getElementById('btnOgrencilerIcinForm').addEventListener('click', () => yazdirmaSecenekleriAc('ogrenciler'));
     document.getElementById('btnYzOnizle').addEventListener('click', yzOnizleOlustur);
     document.getElementById('btnYzOnayla').addEventListener('click', yzOnaylaVeIndir);
-    _yzSegmentBagla('yzYonSegment', 'yon', 'yon');
-    _yzSegmentBagla('yzDuzenSegment', 'duzen', 'sayfaDuzeni');
+
 
     // ── Ekran 6: Manuel Kağıt ──
     document.getElementById('btnManuelKapat').addEventListener('click', () => ekranGit('sinavDetay'));

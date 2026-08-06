@@ -382,28 +382,21 @@ function bolumlerCiz(doc, form) {
 
     cerceveCiz(doc, bolum.x, dersler[0].y, bolum.genislik, grupAltY - dersler[0].y + 2, ANA_RENK, 0.4);
 
-    // YENİ (Sedat isteği, Ağustos 2026): başlık artık her sütun için ayrı
-    // ayrı değil, tüm sütunların üzerinde tek bir ortak başlık kutusu.
-    // Optik Form Editörü'nden gelen bolum.baslikX/Y/toplamGenislik/baslikYuksekligi
-    // alanları kullanılıyor. Sabit LGS/Bursluluk şablonları için bu alanlar
-    // yoktur (bolumlerCiz'de dersler[0].x/y bazlı fallback çalışır).
-    if (bolum.baslik) {
-      const bX = bolum.baslikX != null ? bolum.baslikX : dersler[0].x;
-      const bY = bolum.baslikY != null ? bolum.baslikY : dersler[0].y - (bolum.baslikYuksekligi || 8);
-      const bW = bolum.toplamGenislik != null ? bolum.toplamGenislik : dersler.reduce((acc, d) => acc + d.width, 0);
-      const bH = bolum.baslikYuksekligi || 8;
-      const bFontPt = bolum.baslikFontPt || 7;
-      cerceveCiz(doc, bX, bY, bW, bH, ANA_RENK, 0.35);
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(bFontPt);
-      doc.setTextColor(...ANA_RENK);
-      doc.text(bolum.baslik.normalize('NFC'), bX + bW / 2, bY + bH / 2 + bFontPt * 0.18, { align: 'center' });
+    {
+      const BFPT = dersler[0].baslikFontPt || 6.4;
+      if (bolum.baslikX != null && bolum.baslikYuksekligi > 0) {
+        const bX=bolum.baslikX,bY=bolum.baslikY,bW=bolum.toplamGenislik,bH=bolum.baslikYuksekligi,bFontPt=bolum.baslikFontPt||BFPT;
+        cerceveCiz(doc,bX,bY,bW,bH,ANA_RENK,0.35);
+        doc.setFont('Roboto','bold');doc.setFontSize(bFontPt);doc.setTextColor(...ANA_RENK);
+        doc.text((bolum.baslik||dersler[0].dersAdi||'').normalize('NFC'),bX+bW/2,bY+bH/2+bFontPt*0.18,{align:'center'});
+      } else {
+        const gr=[];
+        for(const d of dersler){const s=gr[gr.length-1];if(s&&s.n===d.dersAdi){s.sx=d.x;s.sw=d.width;}else gr.push({n:d.dersAdi,ix:d.x,sx:d.x,sw:d.width,y:d.y,bh:d.baslikYuksekligi});}
+        for(const g of gr){if(!g.n||!(g.bh>0))continue;const bW=(g.sx+g.sw)-g.ix;cerceveCiz(doc,g.ix,g.y,bW,g.bh,ACIK_RENK,1);doc.setFont('Roboto','bold');doc.setFontSize(BFPT);doc.setTextColor(...ANA_RENK);doc.text(g.n.normalize('NFC'),g.ix+bW/2,g.y+g.bh/2+BFPT*0.18,{align:'center'});}
+      }
     }
 
     for (const ders of dersler) {
-      // Bireysel sütun başlığı artık basılmıyor — ortak başlık yukarıda
-      // tüm sütunları kapsayacak şekilde tek seferde çizildi.
-
       for (const soru of ders.sorular) {
         doc.setFont('Roboto', 'normal');
         doc.setFontSize(6.5);
