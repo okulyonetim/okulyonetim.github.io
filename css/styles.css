@@ -3677,7 +3677,7 @@ body.nav-open::after{ display:none !important; }
 .an-liste-katman{ transform:translateX(100%); transition:transform .28s cubic-bezier(.32,.9,.4,1), visibility 0s linear .28s; }
 .an-liste-katman.acik{ transform:translateX(0); transition:transform .28s cubic-bezier(.32,.9,.4,1), visibility 0s; }
 
-.an-profil-katman{ transform:translateX(-100%); transition:transform .3s cubic-bezier(.32,.9,.4,1), visibility 0s linear .3s; overflow-y:auto; }
+.an-profil-katman{ transform:translateX(-100%); transition:transform .3s cubic-bezier(.32,.9,.4,1), visibility 0s linear .3s; overflow-y:auto; overscroll-behavior-y: contain; }
 .an-profil-katman.acik{ transform:translateX(0); transition:transform .3s cubic-bezier(.32,.9,.4,1), visibility 0s; }
 
 .an-panel-baslik, .an-liste-baslik{
@@ -3698,6 +3698,15 @@ body.nav-open::after{ display:none !important; }
 .an-kart-grid{
   flex:1; overflow-y:auto; padding:16px; padding-bottom:calc(var(--bottom-nav-h, 64px) + 20px + env(safe-area-inset-bottom, 0px));
   display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start;
+  /* KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "menü
+     yerinde ama sayfa aşağı kaymaya devam ediyor") — içerik en alta
+     ulaştığında, tarayıcı varsayılan olarak fazla kaydırma hareketini
+     ÜST KAYDIRILABİLİR ATA'YA (bu durumda gizli/arkadaki asıl sayfaya)
+     "zincirliyor" (scroll chaining). overscroll-behavior bunu keser —
+     bu panel en alta/en üste ulaşınca kaydırma burada durur, arkaya
+     hiç sızmaz.
+  */
+  overscroll-behavior-y: contain;
 }
 .an-grup-kart{
   aspect-ratio:1/0.85; border-radius:18px; border:none; cursor:pointer;
@@ -3739,7 +3748,7 @@ body.nav-open::after{ display:none !important; }
 }
 .rs-onizleme{ width:40px; height:40px; border-radius:10px; border:2px solid var(--border); flex-shrink:0; }
 
-.an-liste-govde{ flex:1; overflow-y:auto; padding:14px; padding-bottom:calc(var(--bottom-nav-h, 64px) + 20px + env(safe-area-inset-bottom, 0px)); display:flex; flex-direction:column; gap:8px; }
+.an-liste-govde{ flex:1; overflow-y:auto; padding:14px; padding-bottom:calc(var(--bottom-nav-h, 64px) + 20px + env(safe-area-inset-bottom, 0px)); display:flex; flex-direction:column; gap:8px; overscroll-behavior-y: contain; }
 .an-liste-ogesi{
   background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:12px 14px;
   display:flex; align-items:center; gap:12px; font-size:13.5px; font-weight:600; color:var(--ink);
