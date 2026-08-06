@@ -1173,9 +1173,24 @@
       if (_ekran === 'ana') {
         _pullToRefreshAyarla(true);
       } else if (_ekran === 'grid') {
-        _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(document.getElementById('anKartGrid'));
+        // KOK NEDEN (Sedat geri bildirimi: "alt nav acikken asagi cekmece yenilenmiyor"):
+        // anKartGrid scrollable olmayabilir (icerik az, sayfa dolmuyor) —
+        // scroll eventi hic tetiklenmez, PTR hic enable edilmez.
+        // Cozum: once deneme yap, container scroll etmiyorsa (scrollHeight <= clientHeight)
+        // direkt enable et.
+        var gridEl = document.getElementById('anKartGrid');
+        if (gridEl && gridEl.scrollHeight > gridEl.clientHeight) {
+          _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(gridEl);
+        } else {
+          if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true);
+        }
       } else if (_ekran === 'liste') {
-        _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(document.getElementById('anListeGovde'));
+        var listeEl = document.getElementById('anListeGovde');
+        if (listeEl && listeEl.scrollHeight > listeEl.clientHeight) {
+          _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(listeEl);
+        } else {
+          if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true);
+        }
       } else if (_ekran === 'profil') {
         _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(profil);
       }

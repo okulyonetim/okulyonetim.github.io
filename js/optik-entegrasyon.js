@@ -150,7 +150,6 @@
       return db.collection('oy_optikSablonlari').get({ source: 'server' }).then(function(snap) {
         return snap.docs.map(function(d) {
           var kayit = Object.assign({ id: d.id }, d.data());
-          // sablon JSON string olarak kaydedildiyse (nested array sorunu cozumu) geri parse et
           if (kayit.sablon && typeof kayit.sablon === 'string') {
             try { kayit.sablon = JSON.parse(kayit.sablon); } catch(e) {}
           }
@@ -183,25 +182,20 @@
       } catch (e) {
         return Promise.reject(new Error('Şablon verisi JSON\'a çevrilemedi: ' + e.message));
       }
-      // KOK NEDEN DUZELTMESI (Sedat geri bildirimi 06.08.2026):
-      // Sorun 1 — "invalid nested entity": Firestore array-icinde-array reddediyor
-      //   (ogeler[] icinde sutunDikeyKaymalari[] gibi diziler).
-      // Sorun 2 — "longer than 1048487 bytes": logo gorselData base64 ~1MB siniri asiyor.
-      // Cozum: gorselData'yi Firestore'a GONDERME (gorsel zaten localStorage/IndexedDB'de
-      //   kalir, editorde gorulmeye devam eder); sablon objesinin TAMAMINI JSON string
-      //   olarak kaydet — bu tek hamlede her iki sorunu da cozer.
+      // gorselData (logo base64) Firestore 1MB sinirini asabilir — kaldir
+      // sablon objesini JSON string yap => nested array sorunu tamamen cozer
       if (temizVeri.sablon && typeof temizVeri.sablon === 'object') {
-        // gorselData'yi temizle (buyuk base64 — Firestore 1MB siniri)
         if (Array.isArray(temizVeri.sablon.ogeler)) {
           temizVeri.sablon.ogeler = temizVeri.sablon.ogeler.map(function(og) {
             if (!og || og.tip !== 'logo' || !og.gorselData) return og;
-            var kopyaOg = Object.assign({}, og);
-            delete kopyaOg.gorselData; // Firestore'a gitmiyor; lokal kalir
-            return kopyaOg;
+            var kp = Object.assign({}, og); delete kp.gorselData; return kp;
           });
         }
-        // Tum sablon nesnesini JSON string'e cevir (nested array sorunu tamamen ortadan kalkar)
         temizVeri.sablon = JSON.stringify(temizVeri.sablon);
+      }
+      var jsonStr = JSON.stringify(temizVeri);
+      if (jsonStr.length > 900000) {
+        return Promise.reject(new Error('Sablon cok buyuk (' + Math.round(jsonStr.length/1024) + ' KB). Logo gorselini kucultun veya kaldirun.'));
       }
       return db.collection('oy_optikSablonlari').doc(kayit.id).set(temizVeri, { merge: true });
     },
