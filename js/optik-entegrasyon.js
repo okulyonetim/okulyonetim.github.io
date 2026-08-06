@@ -148,7 +148,21 @@
       // özellikle ağ isteği o an tetiklenmemişse. source:'server' ile
       // her zaman SUNUCUDAN taze veri çekilmesi zorlanıyor.
       return db.collection('oy_optikSablonlari').get({ source: 'server' }).then(function(snap) {
-        return snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+        return snap.docs.map(function(d) {
+          var kayit = Object.assign({ id: d.id }, d.data());
+          // KOK NEDEN DUZELTMESI #2 -- sablonKaydet'te string'e donusturulen
+          // sutunDikeyKaymalari alanini geri diziye parse et.
+          if (kayit.sablon && Array.isArray(kayit.sablon.ogeler)) {
+            kayit.sablon.ogeler = kayit.sablon.ogeler.map(function(og) {
+              if (!og || typeof og !== 'object') return og;
+              if (typeof og.sutunDikeyKaymalari === 'string') {
+                try { og.sutunDikeyKaymalari = JSON.parse(og.sutunDikeyKaymalari); } catch(e) {}
+              }
+              return og;
+            });
+          }
+          return kayit;
+        });
       });
       // NOT (Sedat geri bildirimi, Ağustos 2026: "hem okuma hem yazma
       // başarısız, 0/0" teşhisi): önceden burada bir .catch(...) vardı ve
@@ -162,6 +176,13 @@
       if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil'));
       const veri = Object.assign({}, kayit);
       delete veri.id;
+      // KOK NEDEN DUZELTMESI #2 (Sedat geri bildirimi, Agustos 2026:
+      // "Property sablon contains an invalid nested entity") -- Firestore
+      // array-icinde-array'i (nested array) TAMAMEN REDDEDIYOR. Sablonda
+      // ogeler[] icindeki her baloncukBlok'un sutunDikeyKaymalari alani
+      // bir dizi -- bu, ogeler dizisinin icinde baska bir dizi oluyor.
+      // Cozum: bu tur alanlari Firestore'a yazmadan once JSON string'e
+      // donustur; okurken sablonlariGetir icinde geri parse et.
       // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "hem
       // okuma hem yazma başarısız, 0/0" — Firestore, bir nesnenin
       // İÇİNDE (iç içe geçmiş, örn. sablon.ogeler[].bazıAlan) HERHANGİ
@@ -175,6 +196,17 @@
         temizVeri = JSON.parse(JSON.stringify(veri));
       } catch (e) {
         return Promise.reject(new Error('Şablon verisi JSON\'a çevrilemedi: ' + e.message));
+      }
+      // Array-in-array serialize: sutunDikeyKaymalari dizi -> JSON string
+      if (temizVeri.sablon && Array.isArray(temizVeri.sablon.ogeler)) {
+        temizVeri.sablon.ogeler = temizVeri.sablon.ogeler.map(function(og) {
+          if (!og || typeof og !== 'object') return og;
+          var kopyaOg = Object.assign({}, og);
+          if (Array.isArray(kopyaOg.sutunDikeyKaymalari)) {
+            kopyaOg.sutunDikeyKaymalari = JSON.stringify(kopyaOg.sutunDikeyKaymalari);
+          }
+          return kopyaOg;
+        });
       }
       return db.collection('oy_optikSablonlari').doc(kayit.id).set(temizVeri, { merge: true });
     },
