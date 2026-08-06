@@ -167,7 +167,7 @@
               seçilince kayarak açılıyor, ✕ Kapat'a basılınca veya boş
               alana dokununca kayarak kapanıyor, tuval boyutunu ETKİLEMİYOR.
         */
-        .osEditor { display:flex; flex-direction:column; height:100%; font-family:inherit; position:relative; overflow:hidden; }
+        .osEditor { display:flex; flex-direction:column; height:100%; font-family:inherit; position:relative; overflow:clip; /* overflow:clip = absolute children taşmaz ama sadece içerik kesilir, menü satırları flex akışında olduğu için bundan etkilenmez */ }
         .osEditor__topbar { display:flex; align-items:center; gap:6px; padding:6px 8px; background:#f3f3f5; border-bottom:1px solid #ddd; overflow-x:auto; -webkit-overflow-scrolling:touch; flex:0 0 auto; }
         .osEditor__topbar button { flex:0 0 auto; min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; white-space:nowrap; }
         .osEditor__topbar button:active { background:#e8e8ea; }
@@ -175,16 +175,20 @@
         .osEditor__kaydetBtn { background:#0a7cff; color:#fff; border-color:#0a7cff; }
         .osEditor__varsayilanLabel { display:flex; align-items:center; gap:4px; font-size:12px; color:#555; padding:0 4px; flex:0 0 auto; white-space:nowrap; }
         .osEditor__popoverSarici { position:relative; flex:0 0 auto; }
-        .osEditor__popover { position:absolute; top:100%; left:0; margin-top:4px; background:#fff; border:1px solid #ccc; border-radius:10px; box-shadow:0 4px 18px rgba(0,0,0,.28); padding:8px; z-index:40; display:none; width:max-content; max-width:min(320px, calc(100vw - 24px)); }
+        /* Menü satırı: topbar'ın ALTINDA akış içinde — açılınca tuval aşağı kayar */
+        .osEditor__menuSatiri { display:none; flex-wrap:wrap; gap:6px; padding:6px 8px 8px; background:#f3f3f5; border-bottom:1px solid #ddd; flex:0 0 auto; }
+        .osEditor__menuSatiri--acik { display:flex; }
+        .osEditor__menuSatiri button { min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; white-space:nowrap; }
+        .osEditor__menuSatiri button:active { background:#e8e8ea; }
+        .osEditor__menuSatiri select, .osEditor__menuSatiri input[type=number] { min-height:36px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; box-sizing:border-box; font-size:13px; }
+        /* Eski mutlak-konumlu popover (artık kullanılmıyor, geriye uyumluluk için boş bırakıldı) */
+        .osEditor__popover { display:none; }
         .osEditor__popover--acik { display:block; }
-        .osEditor__popover--oge { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-        .osEditor__popover--oge button { min-height:40px; text-align:left; }
-        .osEditor__popover--sayfa { display:flex; flex-direction:column; gap:6px; }
-        .osEditor__popover--sayfa select, .osEditor__popover--sayfa input { min-height:36px; border:1px solid #ccc; border-radius:6px; padding:2px 6px; box-sizing:border-box; width:100%; }
-        .osEditor__tuvalSarici { flex:1; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
+        /* eski popover--oge / popover--sayfa stilleri menuSatiri'ye taşındı */
+        .osEditor__tuvalSarici { flex:1 1 0; min-height:0; overflow:auto; background:#7a7a85; display:flex; align-items:flex-start; justify-content:center; padding:12px; touch-action: pan-x pan-y pinch-zoom; }
         .osEditor__tuval { background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); }
         /* Öğe ayarları — alttan açılan sabit-olmayan sayfa (bottom sheet) */
-        .osEditor__panel { position:absolute; left:0; right:0; bottom:0; background:#fafafa; border-top:1px solid #ddd; border-radius:14px 14px 0 0; box-shadow:0 -6px 20px rgba(0,0,0,.25); overflow-y:auto; max-height:60vh; padding:10px; font-size:13px; transform:translateY(105%); transition:transform .22s ease; z-index:30; }
+        .osEditor__panel { position:fixed; left:0; right:0; bottom:0; background:#fafafa; border-top:1px solid #ddd; border-radius:14px 14px 0 0; box-shadow:0 -6px 20px rgba(0,0,0,.25); overflow-y:auto; max-height:60vh; padding:10px; font-size:13px; transform:translateY(105%); transition:transform .22s ease; z-index:30; }
         .osEditor__panel--gorunur { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; transform:translateY(0); }
         .osEditor__panelBaslikSatiri { display:flex; align-items:center; justify-content:space-between; width:100%; margin-bottom:2px; }
         .osEditor__panelBaslikSatiri h4 { margin:0; font-size:14px; color:#333; }
@@ -208,7 +212,8 @@
            eskiden tam ekranda panel hiç açılamıyordu, ayar yapmak için
            tam ekrandan çıkmak gerekiyordu). */
         .osEditor--tamEkran .osEditor__topbar { display:none; }
-        .osEditor__tamEkranCikisBtn { position:absolute; top:8px; right:8px; z-index:35; display:none; min-height:38px; padding:0 14px; background:#0a7cff; color:#fff; border:none; border-radius:20px; font-size:13px; box-shadow:0 2px 10px rgba(0,0,0,.3); }
+        .osEditor--tamEkran .osEditor__menuSatiri { display:none !important; }
+        .osEditor__tamEkranCikisBtn { position:fixed; top:8px; right:8px; z-index:35; display:none; min-height:38px; padding:0 14px; background:#0a7cff; color:#fff; border:none; border-radius:20px; font-size:13px; box-shadow:0 2px 10px rgba(0,0,0,.3); }
         .osEditor--tamEkran .osEditor__tamEkranCikisBtn { display:block; }
       </style>
       <div class="osEditor__topbar">
@@ -231,6 +236,9 @@
         <button class="osEditor__kaydetBtn" type="button" style="display:none;">💾 Kaydet</button>
         <button class="osEditor__tamEkranBtn" type="button">⛶ Tam Ekran</button>
       </div>
+      <!-- Menü satırları: topbar'ın altında akış içinde — açılınca tuval aşağı kayar -->
+      <div class="osEditor__menuSatiri osEditor__menuSatiri--oge"></div>
+      <div class="osEditor__menuSatiri osEditor__menuSatiri--sayfa"></div>
       <button class="osEditor__tamEkranCikisBtn" type="button">✕ Küçült</button>
       <div class="osEditor__tuvalSarici"><svg class="osEditor__tuval"></svg></div>
       <div class="osEditor__panel"></div>
@@ -250,9 +258,9 @@
     // olduğundan govde'ye hiç gerek kalmadı — tuvalSarici TEK kaydırma
     // konteyneri, kilit de sadece ona uygulanıyor.
     const ekleBtn = kok.querySelector('.osEditor__ekleBtn');
-    const eklePopover = kok.querySelector('.osEditor__popover--oge');
+    const eklePopover = kok.querySelector('.osEditor__menuSatiri--oge');   // artık akış içinde
     const sayfaBtn = kok.querySelector('.osEditor__sayfaBtn');
-    const sayfaPopover = kok.querySelector('.osEditor__popover--sayfa');
+    const sayfaPopover = kok.querySelector('.osEditor__menuSatiri--sayfa'); // artık akış içinde
     const geriAlBtnEl = kok.querySelector('.osEditor__geriAlBtn');
     const ileriAlBtnEl = kok.querySelector('.osEditor__ileriAlBtn');
     const zoomAzaltBtnEl = kok.querySelector('.osEditor__zoomAzaltBtn');
@@ -266,21 +274,25 @@
 
     // ---- Açılır kutular (popover): aynı anda sadece biri açık olsun,
     // dışına dokununca kapansın ----
-    function digerPopovariKapat(haric) {
-      kok.querySelectorAll('.osEditor__popover--acik').forEach((p) => { if (p !== haric) p.classList.remove('osEditor__popover--acik'); });
+    // ---- Menü satırları (akış içinde — açılınca tuval aşağı kayar) ----
+    function menuKapat(haric) {
+      [eklePopover, sayfaPopover].forEach((m) => { if (m !== haric) m.classList.remove('osEditor__menuSatiri--acik'); });
     }
-    function popoverAcKapa(pop) {
-      const acikMi = pop.classList.contains('osEditor__popover--acik');
-      digerPopovariKapat(pop);
-      pop.classList.toggle('osEditor__popover--acik', !acikMi);
+    function menuAcKapa(menu) {
+      const acikMi = menu.classList.contains('osEditor__menuSatiri--acik');
+      menuKapat(menu);
+      menu.classList.toggle('osEditor__menuSatiri--acik', !acikMi);
     }
-    ekleBtn.addEventListener('click', (ev) => { ev.stopPropagation(); popoverAcKapa(eklePopover); });
-    sayfaBtn.addEventListener('click', (ev) => { ev.stopPropagation(); popoverAcKapa(sayfaPopover); });
+    ekleBtn.addEventListener('click', (ev) => { ev.stopPropagation(); menuAcKapa(eklePopover); });
+    sayfaBtn.addEventListener('click', (ev) => { ev.stopPropagation(); menuAcKapa(sayfaPopover); });
     document.addEventListener('click', (ev) => {
       if (!kok.isConnected) return;
-      if (ev.target.closest && ev.target.closest('.osEditor__popoverSarici')) return;
-      digerPopovariKapat(null);
+      // Topbar'a veya menü satırına tıklanırsa kapatma
+      if (ev.target.closest && (ev.target.closest('.osEditor__topbar') || ev.target.closest('.osEditor__menuSatiri'))) return;
+      menuKapat(null);
     });
+    // Eski adlarla uyumluluk (eklePopover.classList.remove... çağrıları için)
+    function digerPopovariKapat(haric) { menuKapat(haric); }
 
     // ---- Form adı (Sedat isteği: "Forma isim verme de olsun") ----
     adInput.value = sablon.ad || '';
@@ -321,7 +333,7 @@
         bosAlanBul(og);
         sablon.ogeler.push(og);
         seciliId = og.id;
-        eklePopover.classList.remove('osEditor__popover--acik'); // ekleyince açılır kutu kapansın
+        eklePopover.classList.remove('osEditor__menuSatiri--acik'); // ekleyince menü kapansın
         ciz();
       });
       eklePopover.appendChild(b);
