@@ -189,19 +189,19 @@
     const aracCubugu = kok.querySelector('.osEditor__arac');
     const svg = kok.querySelector('.osEditor__tuval');
     const panel = kok.querySelector('.osEditor__panel');
-    // YENİ (Sedat geri bildirimi, Ağustos 2026: "parametre ayar ekranında
-    // da aşağı kaydırma sorunu... yenilemeyi tetikliyor") — panel de
-    // tuval gibi kaydırılabilir bir alan; içinde dokunuş varken sistem
-    // pull-to-refresh'ini bastır. KÖK NEDEN DÜZELTMESİ: aynı tuvalSarici
-    // notu — geri açma çağrısı window seviyesinde, tek seferlik ve
-    // GARANTİLİ (parmak panel dışına çıksa bile tetiklenir).
-    panel.addEventListener('pointerdown', () => {
-      _pullToRefreshBastir(false);
-      let acildiMi = false;
-      const geriAc = () => { if (!acildiMi) { acildiMi = true; _pullToRefreshBastir(true); } };
-      window.addEventListener('pointerup', geriAc, { once: true });
-      window.addEventListener('pointercancel', geriAc, { once: true });
-    });
+    // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "yenileme
+    // tetikleniyor öğeyi aşağı çekince") — burada ve tuvalSarici/öğe
+    // sürüklemede eklenmiş olan panel-başına aç/kapa çağrıları KALDIRILDI.
+    // Native tarafın kendi yorumunu (PullToRefreshPlugin.java) okuyunca
+    // anlaşıldı: Optik aracının TAMAMI zaten OptikSistemi.ac()/kapat()
+    // (js/optik-entegrasyon.js) ile TEK bir aç/kapa çağrısıyla, araç açık
+    // olduğu SÜRECE kapatılıyor — burada tekrar tekrar aç/kapa çağırmanın
+    // hiçbir faydası yoktu, üstelik native köprüye giden her ekstra
+    // çağrı gecikmeli/asenkron olduğundan (setTimeout+Capacitor köprüsü),
+    // bir sürükleme biter bitmez gönderilen "geri aç" çağrısı native
+    // tarafa geç ulaşıp aracın GERÇEKTEN hâlâ açıkken yenilemeyi YANLIŞLIKLA
+    // tekrar etkinleştirebiliyordu — bir sonraki sürüklemede jest gerçekten
+    // tetikleniyordu. Artık buna hiç dokunulmuyor, tek kapatma yeterli.
     const tuvalSarici = kok.querySelector('.osEditor__tuvalSarici');
 
     // ---- Form adı (Sedat isteği: "Forma isim verme de olsun") ----
@@ -480,23 +480,11 @@
     }
 
     tuvalSarici.addEventListener('pointerdown', (ev) => {
-      // YENİ (Sedat geri bildirimi: "Kaydırmada sayfa yenileniyor" +
-      // "Android'de yenileme kilitleniyor") — tuval alanında dokunuş
-      // başladığında pull-to-refresh'i bastır. KÖK NEDEN DÜZELTMESİ: bu
-      // alanda touch-action:pan-x pan-y AKTİF (doğal kaydırma isteniyor),
-      // bu yüzden setPointerCapture KULLANILAMAZ (native kaydırmayı
-      // bozabilir) — bunun yerine parmak tuvalSarici SINIRLARININ DIŞINA
-      // çıkıp kalksa bile MUTLAKA tetiklenmesi için "geri aç" çağrısı
-      // pencere (window) seviyesinde, TEK SEFERLİK dinleyicilerle
-      // garanti ediliyor. Önceki hali (sadece tuvalSarici'nin kendi
-      // pointerup/leave'i) parmak dışarıda kalkarsa hiç tetiklenmiyordu —
-      // bu da ana uygulamanın paylaşılan sayacını kalıcı olarak kilitli
-      // bırakıyordu.
-      _pullToRefreshBastir(false);
-      let acildiMi = false;
-      const geriAc = () => { if (!acildiMi) { acildiMi = true; _pullToRefreshBastir(true); } };
-      window.addEventListener('pointerup', geriAc, { once: true });
-      window.addEventListener('pointercancel', geriAc, { once: true });
+      // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "yenileme
+      // tetikleniyor") — bkz. dosya başındaki AÇIKLAMA notu: burada tekrar
+      // tekrar aç/kapa çağırmak GEREKSİZDİ (araç zaten OptikSistemi.ac()
+      // ile TEK seferde kapatılıyor) ve native köprüye giden ekstra
+      // çağrılar gecikmeli ulaşınca jesti YANLIŞLIKLA tekrar açabiliyordu.
       aktifParmaklar.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
       if (aktifParmaklar.size === 2) {
         pinchBaslangicMesafe = parmakMesafesi();
@@ -558,10 +546,16 @@
       } catch (e) { /* çapraz pencere erişimi engellenmiş olabilir — sorun değil */ }
     }
 
+    // NOT (Sedat geri bildirimi, Ağustos 2026): _pullToRefreshBastir buradan
+    // ve pointerDownOge/pointerDownTutamac/suruklemeBitir'den KALDIRILDI —
+    // bkz. yukarıdaki (osEditor__panel tanımının hemen üstündeki) geniş
+    // açıklama notu: araç zaten OptikSistemi.ac()/kapat() ile tek seferde
+    // kapatılıyor, tekrar tekrar açıp kapamak gecikme yüzünden yenilemeyi
+    // yanlışlıkla tekrar açabiliyordu.
+
     function pointerDownOge(ev, og, gEl) {
       ev.stopPropagation();
       seciliId = og.id;
-      _pullToRefreshBastir(false);
       const ctmInverse = svg.getScreenCTM().inverse(); // sürüklemenin tamamı için TEK sefer
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
       // PERFORMANS: og referansı burada BİR KEZ önbelleğe alınıyor —
@@ -570,7 +564,15 @@
       // ediyor öğeler" — CTM önbelleklemesinden sonra kalan tek gereksiz
       // iş buydu, küçük ama gereksiz).
       surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0, ctmInverse, ogRef: og };
-      ev.target.setPointerCapture(ev.pointerId);
+      // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "öğe her
+      // mm duruyor, tekrar tutup çekmem lazım") — önceden setPointerCapture
+      // dokunulan SPESİFİK alt öğeye (ör. bir daire) uygulanıyordu. Ama
+      // hemen altındaki satır o alt öğeleri (daireler/metin) GİZLİYOR
+      // (performans için) — tutmayı elinde tutan öğe gizlenince tarayıcı
+      // "yakalamayı" kaybedip sürüklemeyi arada bir durduruyordu. Artık
+      // HİÇBİR ZAMAN gizlenmeyen/yeniden oluşturulmayan sabit kök öğede
+      // (svg) tutuluyor — tüm sürükleme boyunca güvenli.
+      svg.setPointerCapture(ev.pointerId);
       gEl.classList.add('osOge--suruklemede'); // PERFORMANS: ağır içerik (daireler/metin) sürükleme boyunca gizli
       gecmiseKaydet();
       cizPanel();
@@ -578,11 +580,10 @@
 
     function pointerDownTutamac(ev, og, gEl) {
       ev.stopPropagation();
-      _pullToRefreshBastir(false);
       const ctmInverse = svg.getScreenCTM().inverse();
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
       surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, ctmInverse, ogRef: og };
-      ev.target.setPointerCapture(ev.pointerId);
+      svg.setPointerCapture(ev.pointerId); // bkz. pointerDownOge'daki AYNI kök neden notu
       gecmiseKaydet();
     }
 
@@ -681,7 +682,6 @@
 
     function suruklemeBitir() {
       if (!surukleme) return;
-      _pullToRefreshBastir(true);
       if (surukleme.tip === 'tasi') {
         const og = surukleme.ogRef;
         const baz = surukleme.ogeBaslangic;
