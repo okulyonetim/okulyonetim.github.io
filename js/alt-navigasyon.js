@@ -1107,6 +1107,34 @@
   let _donusEkrani = null; // {ekran, grupIndex} — menüden bir hedefe geçildiğinde
                             // geri tuşuyla dönülecek nokta (tek kullanımlık hafıza)
 
+  // YENİ (Sedat isteği, Ağustos 2026: "Alt menü açıkken de yenileme
+  // bekliyorum") — önceden menü (grid/liste/profil) açıkken yenileme
+  // TAMAMEN kapatılıyordu (native katman sadece dış WebView scrollY'sini
+  // biliyor, iç panelin kaydırma durumundan haberi yok — karışma riski).
+  // Artık standart pull-to-refresh davranışı: panel İÇERİĞİ tam üstteyse
+  // (scrollTop=0) jest AÇIK, kullanıcı içeriği aşağı kaydırdığı anda
+  // (artık en üstte değilken) jest KAPANIYOR — ikisi arada kalmıyor.
+  // _pullToRefreshAyarla bir DERİNLİK SAYACI kullandığından (her false'a
+  // karşılık TAM OLARAK bir true gerekiyor), burada durum DEĞİŞTİĞİNDE
+  // (önceki duruma göre) çağrılıyor — her scroll olayında değil.
+  let _pullToRefreshMenuTemizle = null;
+  function _pullToRefreshKaydirmayaGoreAyarla(el) {
+    if (!el || typeof _pullToRefreshAyarla !== 'function') return null;
+    let enUsttMi = el.scrollTop <= 0;
+    if (!enUsttMi) _pullToRefreshAyarla(false);
+    const guncelle = () => {
+      const yeni = el.scrollTop <= 0;
+      if (yeni === enUsttMi) return; // durum değişmedi, tekrar çağırıp sayacı bozma
+      enUsttMi = yeni;
+      _pullToRefreshAyarla(yeni);
+    };
+    el.addEventListener('scroll', guncelle, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', guncelle);
+      if (!enUsttMi) _pullToRefreshAyarla(true); // ekrandan ayrılırken "kapalı" kaldıysa dengele
+    };
+  }
+
   function ekranUygula(){
     const grid = document.getElementById('anGridKatman');
     const liste = document.getElementById('anListeKatman');
@@ -1121,11 +1149,18 @@
       listeIcerigiDoldur(GRUPLAR[_acikGrupIndex], _acikGrupIndex);
     }
     if(_ekran === 'profil') profilDoldur();
-    // Menü katmanlarından biri açıkken "aşağı çekince yenile" jesti kapatılır —
-    // aksi halde grid/liste/profil panelini yukarıdan aşağı kaydırmaya çalışırken
-    // native sayfa yenileme jesti araya giriyordu (bkz. js/app.js _pullToRefreshAyarla).
-    if(typeof _pullToRefreshAyarla === 'function'){
-      _pullToRefreshAyarla(_ekran === 'ana');
+
+    if (_pullToRefreshMenuTemizle) { _pullToRefreshMenuTemizle(); _pullToRefreshMenuTemizle = null; }
+    if (typeof _pullToRefreshAyarla === 'function') {
+      if (_ekran === 'ana') {
+        _pullToRefreshAyarla(true);
+      } else if (_ekran === 'grid') {
+        _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(document.getElementById('anKartGrid'));
+      } else if (_ekran === 'liste') {
+        _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(document.getElementById('anListeGovde'));
+      } else if (_ekran === 'profil') {
+        _pullToRefreshMenuTemizle = _pullToRefreshKaydirmayaGoreAyarla(profil);
+      }
     }
   }
 
