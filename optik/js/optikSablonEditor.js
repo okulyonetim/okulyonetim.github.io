@@ -172,7 +172,7 @@
         .osEditor__topbar button { flex:0 0 auto; min-height:40px; padding:0 12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:13px; white-space:nowrap; }
         .osEditor__topbar button:active { background:#e8e8ea; }
         .osEditor__adInput { flex:1 1 120px; min-width:90px; min-height:40px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; padding:4px 8px; font-size:14px; }
-        .osEditor__kaydetBtn { background:#0a7cff; color:#fff; border-color:#0a7cff; }
+        .osEditor__kaydetBtn, .osEditor__topbar .osEditor__kaydetBtn { background:#0a7cff !important; color:#fff !important; border-color:#0a7cff !important; }
         .osEditor__varsayilanLabel { display:flex; align-items:center; gap:4px; font-size:12px; color:#555; padding:0 4px; flex:0 0 auto; white-space:nowrap; }
         .osEditor__popoverSarici { position:relative; flex:0 0 auto; }
         /* Menü satırı: topbar'ın ALTINDA akış içinde — açılınca tuval aşağı kayar */
@@ -233,7 +233,7 @@
         <label class="osEditor__varsayilanLabel" style="display:none;">
           <input type="checkbox" class="osEditor__varsayilanCheckbox"> Varsayılan yap
         </label>
-        <button class="osEditor__kaydetBtn" type="button" style="display:none;">Kaydet</button>
+        <button class="osEditor__kaydetBtn" type="button" style="display:none;">💾 Kaydet</button>
         <button class="osEditor__tamEkranBtn" type="button">⛶ Tam Ekran</button>
       </div>
       <!-- Menü satırları: topbar'ın altında akış içinde — açılınca tuval aşağı kayar -->
@@ -374,7 +374,18 @@
           alert('Kaydedilemedi: ' + e.message);
           return;
         }
-        await kaydetCallback(derinKopya(sablon), varsayilanYapilsinMi);
+        kaydetBtnEl.disabled = true;
+        const eskiMetin = kaydetBtnEl.textContent;
+        kaydetBtnEl.textContent = 'Kaydediliyor...';
+        try {
+          await kaydetCallback(derinKopya(sablon), varsayilanYapilsinMi);
+          kaydetBtnEl.textContent = '✓ Kaydedildi';
+          setTimeout(() => { kaydetBtnEl.textContent = eskiMetin; kaydetBtnEl.disabled = false; }, 2000);
+        } catch (hata) {
+          alert('Kaydetme hatası: ' + hata.message);
+          kaydetBtnEl.textContent = eskiMetin;
+          kaydetBtnEl.disabled = false;
+        }
       });
     }
     // Tam Ekran: topbar tamamen gizlenip (bkz. CSS) yerine köşede tek bir
