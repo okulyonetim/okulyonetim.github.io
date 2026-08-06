@@ -1,3174 +1,3565 @@
-// js/app.js — Optik Okuma Ana Modülü
+/* ====================================================================
+   ANA UYGULAMA MANTIĞI
+   ==================================================================== */
 
-import { baglaGaleriSecici } from './galeriSecici.js';
-import { ayarlariGetir, ayarlariKaydet, ayarlariSifirla, VARSAYILAN as HASSASIYET_VARSAYILAN } from './hassasiyetAyarlari.js';
+const GUNLER = ['Pazartesi','Salı','Çarşamba','Perşembe','Cuma'];
+const GUNADI = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const AYLAR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
-// YENİ: sayfaTespitCV.js'i (ve dolayısıyla OpenCV.js'i) burada, uygulama
-// açılır açılmaz erkenden yüklemeye başlıyoruz (fire-and-forget) — önceden
-// SADECE kamera ekranı açıldığında (camera.js dinamik import'u üzerinden)
-// yükleniyordu. Galeriden içe aktarma akışı kamerayı hiç açmadığı için,
-// omrEngine.js:sayfaKoseleriniAraHibrit galeri okumalarında window.SayfaTespitCV'i
-// hiç bulamayıp sessizce eski (daha az güvenilir) köşe bulma yöntemine
-// düşüyordu. Burada erkenden tetiklemek, kamera açılana/gerekene kadar
-// arka planda hazır olmasını sağlar.
-import('./sayfaTespitCV.js').then((mod) => mod.cvHazirBekle()).catch(() => {});
+/* Tatil Modu ekranındaki geri sayım/durum metni. Kullanıcı artık ayrı bir
+   "not" alanı doldurmuyor — girilen açılış tarihinden otomatik üretiliyor,
+   böylece aynı bilgi iki farklı yerde (metin + tarih) elle tekrar
+   girilmiyor. Tarih yoksa, eski kurulumlardan kalma elle yazılmış bir not
+   varsa ona düşer. */
+function tatilModuNotuOlustur(ayar) {
+  if (!ayar) return '';
+  if (ayar.okulAcilisTarihi) {
+    const d = new Date(ayar.okulAcilisTarihi + 'T00:00:00');
+    if (!isNaN(d)) return `Okullar ${d.getDate()} ${AYLAR[d.getMonth()]} ${d.getFullYear()} tarihinde açılıyor`;
+  }
+  return ayar.tatilModuNotu || '';
+}
+const ONCELIKLER = ['Düşük','Orta','Yüksek'];
+const EVRAK_TURLERI = ['Gelen Evrak','Giden Evrak','İç Yazışma','Tutanak','Diğer'];
+const EVRAK_DURUMLARI = ['Beklemede','İşlemde','Tamamlandı','Arşivlendi'];
 
-// ════════════════════════════════════════════════════════════════
-// VERİ KATMANI (localStorage)
-// ════════════════════════════════════════════════════════════════
-const DB = {
-    _oku(k, def) { try { return JSON.parse(localStorage.getItem(k) || 'null') ?? def; } catch { return def; } },
-    _yaz(k, v)   { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
+let ogretmenler=[], dersProgrami=[], hatirlaticilar=[], gorevler=[], evrakTakibi=[], notlar=[];
+let dersListesi=[];
+let bransListesi=[];
+let seciliSinif = '';
+let hatirlaticiFiltre = 'tumu';
+let evrakFiltre = 'tumu';
+let baglantilarKuruldu = false;
 
-    // Sınavlar
-    sinavlariGetir()        { return this._oku('oy_op_sinavlar', []); },
-    sinavKaydet(s)          {
-        const liste = this.sinavlariGetir().filter(x => x.id !== s.id);
-        s.guncelleme = new Date().toISOString();
-        liste.unshift(s);
-        this._yaz('oy_op_sinavlar', liste);
-    },
-    sinaviSil(id)           {
-        this._yaz('oy_op_sinavlar', this.sinavlariGetir().filter(s => s.id !== id));
-        localStorage.removeItem('oy_op_sonuc_' + id);
-        localStorage.removeItem('oy_op_anahtar_' + id);
-    },
-    sinaviBul(id)           { return this.sinavlariGetir().find(s => s.id === id) || null; },
-
-    // Sonuçlar (taranmış kağıtlar)
-    sonuclariGetir(sid)     { return this._oku('oy_op_sonuc_' + sid, []); },
-    sonucKaydet(sid, sonuc) {
-        const liste = this.sonuclariGetir(sid).filter(s => s.id !== sonuc.id);
-        sonuc.tarih = sonuc.tarih || new Date().toLocaleDateString('tr-TR');
-        liste.push(sonuc);
-        if (!this._yaz('oy_op_sonuc_' + sid, liste)) {
-            // Sıkıştır
-            const kucuk = liste.map(s => ({ ...s, kagitGoruntusu: null }));
-            this._yaz('oy_op_sonuc_' + sid, kucuk);
-        }
-    },
-    sonucSil(sid, sonucId)  {
-        this._yaz('oy_op_sonuc_' + sid, this.sonuclariGetir(sid).filter(s => s.id !== sonucId));
-    },
-
-    // Cevap Anahtarı
-    // YENİ (Ağustos 2026, Sedat isteği): kitapcikTuru verilirse ('A'/'B')
-    // AYRI bir anahtar okur/yazar — tek kitapçıklı sınavlarda (kitapcikTuru
-    // verilmez) eski davranış (sabit oy_op_anahtar_{sid} anahtarı) AYNEN
-    // korunuyor, geriye dönük uyumlu.
-    anahtariGetir(sid, kitapcikTuru)      {
-        const anahtar = this._oku('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), { dersler: [] });
-        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "cevap
-        // anahtarını indirince cevaplar var ama uygulamada boş görünüyor")
-        // — daha önceki CSS hatası yüzünden (A/B sekmeleri her zaman
-        // görünüyordu) bazı Tek Kitapçıklı sınavlarda anahtar yanlışlıkla
-        // "_A" sonekli anahtara kaydedilmiş olabilir. Tek kitapçıklı bir
-        // sınavda (kitapcikTuru verilmemiş) ana anahtar BOŞSA ve "_A"
-        // sonekli bir anahtar DOLU ise, onu KURTAR: hem şimdi döndür hem
-        // de ana anahtara KOPYALA (bir daha bu kurtarmaya gerek kalmasın).
-        if (!kitapcikTuru && (!anahtar.dersler || !anahtar.dersler.length)) {
-            const yedekA = this._oku('oy_op_anahtar_' + sid + '_A', { dersler: [] });
-            if (yedekA.dersler && yedekA.dersler.length) {
-                this._yaz('oy_op_anahtar_' + sid, yedekA);
-                return yedekA;
-            }
-        }
-        return anahtar;
-    },
-    anahtarKaydet(sid, a, kitapcikTuru)   { a.guncelleme = new Date().toISOString(); this._yaz('oy_op_anahtar_' + sid + (kitapcikTuru ? '_' + kitapcikTuru : ''), a); },
-
-    // YENİ (Ağustos 2026): Optik Form Editörü ile tasarlanmış özel şablonlar.
-    // Her kayıt {id, ad, sablon, durum} — sablon, optikSablonEditor.js'nin
-    // ürettiği ham şema (ogeler dizisi); PDF/OMR'a verilmeden önce
-    // OptikSablonMotoru.sablonuDerle ile derlenir (bkz. sablonDerlemesiniGetir).
-    // durum: 'taslak' (sadece Şablonlarım'da görünür, sınav oluştururken
-    // SEÇİLEMEZ) | 'yayinda' (herkes "Yeni Sınav" akışında seçebilir) —
-    // Sedat isteği: "Kaydettiğim formları taslak veya herkes kullanabilir
-    // yapabilmek istiyorum."
-    ozelSablonlariGetir()        { return this._oku('oy_op_ozelSablonlar', []); },
-    ozelSablonKaydet(kayit)      {
-        const mevcut = this.ozelSablonlariGetir().find(x => x.id === kayit.id);
-        const liste = this.ozelSablonlariGetir().filter(x => x.id !== kayit.id);
-        if (kayit.durum === undefined) kayit.durum = mevcut ? mevcut.durum : 'taslak';
-        kayit.guncelleme = new Date().toISOString();
-        liste.unshift(kayit);
-        this._yaz('oy_op_ozelSablonlar', liste);
-        // YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar
-        // Firestore'a kaydedilsin") — yerel kayıt HER ZAMAN senkron ve
-        // anında olur (arayüz beklemez); Firestore'a yazma arka planda,
-        // best-effort denenir. Köprü yoksa (bağımsız test sayfası) veya
-        // yazma başarısız olursa sessizce yerelde kalır — bir sonraki
-        // _sablonlariFirestoredenSenkronizeEt() çağrısında tekrar denenir
-        // (bkz. o fonksiyondaki "yereldeki daha yeni kayıtları geri yaz" notu).
-        try {
-            const kopru = veriKaynagi();
-            if (!kopru) {
-                console.warn('Şablon Firestore\'a kaydedilemedi: köprü (window.parent.OptikVeriKaynagi) bulunamadı — iframe dışında mı çalışıyor?');
-            } else if (!kopru.sablonKaydet) {
-                // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "web'de
-                // oluşturduğum şablonlar Android'de görünmüyor") — köprü VAR
-                // ama eski (js/optik-entegrasyon.js güncellenmemiş) olabilir.
-                alert('⚠ Şablon Firestore\'a kaydedilemedi: ana uygulamanın köprüsü (js/optik-entegrasyon.js) güncel değil — sablonKaydet fonksiyonu yok. Ana uygulama güncellemesini tekrar kontrol et.');
-            } else {
-                kopru.sablonKaydet(kayit)
-                    .then(() => console.log('✅ Şablon Firestore\'a kaydedildi:', kayit.id))
-                    .catch(e => alert('⚠ Şablon Firestore\'a kaydedilemedi: ' + e.message));
-            }
-        } catch (e) {}
-    },
-    ozelSablonBul(id)            { return this.ozelSablonlariGetir().find(x => x.id === id) || null; },
-    ozelSablonSil(id)            {
-        this._yaz('oy_op_ozelSablonlar', this.ozelSablonlariGetir().filter(x => x.id !== id));
-        try { veriKaynagi()?.sablonSil?.(id)?.catch?.(e => console.error('Şablon Firestore\'dan silinemedi:', e)); } catch (e) {}
-    },
-
-    // Varsayılan optik form — "Yeni Sınav" ekranı açılışında otomatik seçili gelir.
-    varsayilanSablonIdGetir()    { return this._oku('oy_op_varsayilanSablonId', null); },
-    varsayilanSablonIdKaydet(id) { this._yaz('oy_op_varsayilanSablonId', id); },
-
-    // LGS Puanı — MEB'in açıkladığı gerçek istatistikler (Türkiye ort./std sapma, MinTASP/MaxTASP)
-    // Puan referans ayarları (Türkiye ortalaması/std sapma/TASP aralığı):
-    // sınav TÜRÜNE göre GLOBAL saklanır (ör. 'lgs', 'bursluluk') — tek bir
-    // sınava değil, o türdeki TÜM sınavlara uygulanır. Böylece her yeni
-    // deneme için aynı referans verisini tekrar tekrar girmeye gerek kalmaz.
-    puanReferansGetir(sinavTuru)       { return this._oku('oy_op_puanref_' + sinavTuru, { dersIstatistik: {}, minTasp: null, maxTasp: null }); },
-    puanReferansKaydet(sinavTuru, a)   { this._yaz('oy_op_puanref_' + sinavTuru, a); },
-};
-
-// ════════════════════════════════════════════════════════════════
-// OPTİK FORM ŞABLONLARI
-// ════════════════════════════════════════════════════════════════
-const SABLONLAR = [
-    { id: 'lgs',       ad: 'LGS',              soruSayisi: 90, sikSayisi: 4 },
-    { id: 'bursluluk', ad: 'Bursluluk Sınavı', soruSayisi: 80, sikSayisi: 4 },
-    { id: 'ozel',      ad: 'Özel Sınav',       soruSayisi: null, sikSayisi: 4 },
-];
-
-function sablonBul(id) { return SABLONLAR.find(s => s.id === id) || null; }
-
-/**
- * YENİ (Ağustos 2026): bir sınav türü kimliğinin (LGS/Bursluluk/Özel sabit
- * VEYA Optik Form Editörü ile tasarlanmış özel bir şablon) gerçek, PDF/OMR
- * tarafından tüketilebilir "form" nesnesini döndürür. Sabit türler için
- * LayoutEngine.layoutHesapla, editörle tasarlanmış özel şablonlar için
- * OptikSablonMotoru.sablonuDerle kullanılır — çağıran kod hangisi olduğunu
- * bilmek zorunda kalmaz.
- */
-function sablonDerlemesiniGetir(sablonId, ekOpsiyonlar) {
-    if (sablonId === 'lgs' || sablonId === 'bursluluk' || sablonId === 'ozel') {
-        return window.LayoutEngine.layoutHesapla({ sinavTuru: sablonId, ...ekOpsiyonlar });
-    }
-    const kayit = DB.ozelSablonBul(sablonId);
-    if (!kayit) throw new Error('Özel şablon bulunamadı: ' + sablonId);
-    return window.OptikSablonMotoru.sablonuDerle(kayit.sablon);
+/* ---------- yardımcılar ---------- */
+/* ============== VERİ SEKMESİ (merkezi Excel içe aktarma) ============== */
+function renderVeriSekmesi(){
+  const sinifSel = document.getElementById('veriSinifSecimi');
+  if(sinifSel){
+    const onceki = sinifSel.value;
+    sinifSel.innerHTML = '<option value="">Sınıf seçiniz…</option>' + siniflar
+      .sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr'))
+      .map(s=>`<option value="${s.id}">${escapeHtml(s.ad)}</option>`).join('');
+    if(onceki) sinifSel.value = onceki;
+  }
+  const servisSel = document.getElementById('veriServisSecimi');
+  if(servisSel){
+    const onceki = servisSel.value;
+    servisSel.innerHTML = '<option value="">Servis seçiniz…</option>' + servisler
+      .sort((a,b)=>(a.guzergah||'').localeCompare(b.guzergah||'','tr'))
+      .map(s=>`<option value="${s.id}" data-ad="${escapeHtml(s.guzergah||'')}">${escapeHtml(s.guzergah||'—')}</option>`).join('');
+    if(onceki) servisSel.value = onceki;
+  }
+}
+function veriOgrenciExcelYukle(input){
+  const sinifId = document.getElementById('veriSinifSecimi').value;
+  if(!sinifId){ toast('Önce sınıf seçin.'); input.value=''; return; }
+  if(input.files[0]) ogrenciVeliExceliIceAktar(input.files[0], sinifId);
+  input.value='';
+}
+function veriServisOgrenciExcelYukle(input){
+  const sel = document.getElementById('veriServisSecimi');
+  const servisId = sel.value;
+  if(!servisId){ toast('Önce servis seçin.'); input.value=''; return; }
+  const servisAdi = sel.selectedOptions[0]?.dataset.ad || '';
+  if(input.files[0]) servisOgrenciExceliIceAktar(input.files[0], servisId, servisAdi);
+  input.value='';
 }
 
-let _optikFormOnSecimCB = null; // sheet açıkken hangi callback'e sonuç döneceğimizi hatırlar
+function escapeHtml(str){
+  if(str===null||str===undefined) return '';
+  return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+/* Bir sınıf adından ("7-A", "10/B", "Anasınıfı" vb.) sayısal seviyeyi çıkarır.
+   Sayı bulunamazsa çok büyük bir değer döndürerek sona atar. */
+function sinifSeviyesiCikar(sinifAdi){
+  if(!sinifAdi) return 999;
+  const m = String(sinifAdi).match(/\d+/);
+  return m ? parseInt(m[0], 10) : 999;
+}
+/* Öğrenci/veli kayıtlarını önce sınıf seviyesine (1->8), sonra şube/isim alfabetik sırasına göre
+   sıralar. v.sinifId üzerinden siniflar dizisinde ada erişilir; sinifAdiAlani parametresi farklı
+   alan adı kullanan kayıtlar için override sağlar (ör. servis-oturma.js içindeki koltuk verisi). */
+function ogrencileriSinifSiralaSirala(liste, opts){
+  opts = opts || {};
+  const sinifIdAlani = opts.sinifIdAlani || 'sinifId';
+  const sinifAdiAlani = opts.sinifAdiAlani || null;
+  const adAlani = opts.adAlani || 'ogrenciAdi';
+  return [...liste].sort((a,b)=>{
+    const sinifAdA = sinifAdiAlani ? (a[sinifAdiAlani]||'') : ((typeof siniflar!=='undefined' && siniflar.find(s=>s.id===a[sinifIdAlani]))?.ad || '');
+    const sinifAdB = sinifAdiAlani ? (b[sinifAdiAlani]||'') : ((typeof siniflar!=='undefined' && siniflar.find(s=>s.id===b[sinifIdAlani]))?.ad || '');
+    const seviyeA = sinifSeviyesiCikar(sinifAdA);
+    const seviyeB = sinifSeviyesiCikar(sinifAdB);
+    if (seviyeA !== seviyeB) return seviyeA - seviyeB;
+    const subeCmp = sinifAdA.localeCompare(sinifAdB, 'tr');
+    if (subeCmp !== 0) return subeCmp;
+    return (a[adAlani]||'').localeCompare(b[adAlani]||'', 'tr');
+  });
+}
+/* Bir telefon numarasını, varsa velinin yakınlık derecesiyle ("Anne: 0532...") birlikte biçimlendirir. */
+function telefonEtiketle(v, telefon){
+  if(!telefon) return '';
+  return v && v.yakinlik ? `${escapeHtml(v.yakinlik)}: ${escapeHtml(telefon)}` : escapeHtml(telefon);
+}
 
-/**
- * Optik Form Editörü ekranını açar. mevcutKayitId verilirse o özel şablon
- * düzenlenir (yeniden derlenip aynı id ile üzerine kaydedilir); verilmezse
- * boş bir şablonla yeni bir tasarım başlatılır.
- */
-let _sablonEditoruDonusEkrani = 'yeniSinav'; // YENİ: editör hangi ekrandan açıldıysa Kaydet/Geri oraya döner
+/* ---------- DERS LİSTESİ ---------- */
+const DERS_SELECT_YENI = '__yeni_ders_ekle__';
+const BRANS_SELECT_YENI = '__yeni_brans_ekle__';
 
-function sablonEditoruAc(mevcutKayitId, donusEkrani = 'yeniSinav') {
-    _sablonEditoruDonusEkrani = donusEkrani;
-    _EKRAN_USTU.sablonEditor = donusEkrani; // Android donanım geri tuşu da aynı ekrana dönsün
-    if (donusEkrani !== 'yeniSinav') {
-        // "Yeni Sınav" akışından AÇILMADIYSA (ör. Şablonlarım ekranından),
-        // önceki bir "Yeni Sınav" oturumundan kalmış olabilecek eski
-        // _optikFormOnSecimCB'nin burada YANLIŞLIKLA tetiklenip
-        // _ysSablonSecilen'i sessizce değiştirmesini önle.
-        _optikFormOnSecimCB = null;
-    }
-    const konteyner = document.getElementById('sablonEditorKonteyner');
-    // YENİ (teşhis, Ağustos 2026): Sedat konsola erişemiyor (mobil), bu yüzden
-    // bir hata olursa sessizce boş ekran göstermek yerine hatayı DOĞRUDAN
-    // ekrana (kırmızı, okunur) yazıyoruz.
-    try {
-        if (!window.OptikSablonEditor) {
-            throw new Error('window.OptikSablonEditor tanımsız — optikSablonEditor.js hiç yüklenmemiş olabilir (script sırası veya önbellek).');
-        }
-        if (!window.OptikSablonMotoru) {
-            throw new Error('window.OptikSablonMotoru tanımsız — optikSablonMotoru.js hiç yüklenmemiş olabilir.');
-        }
-        if (!window.LayoutEngine) {
-            throw new Error('window.LayoutEngine tanımsız.');
-        }
-        const mevcutKayit = mevcutKayitId ? DB.ozelSablonBul(mevcutKayitId) : null;
-        window.OptikSablonEditor.baslat(konteyner, {
-            baslangicSablonu: mevcutKayit ? mevcutKayit.sablon : null,
-            varsayilanMi: mevcutKayitId && DB.varsayilanSablonIdGetir() === mevcutKayitId,
-            kaydet: async (sablon, varsayilanYapilsinMi) => {
-                const id = mevcutKayitId || ('ozelTasarim_' + Date.now());
-                DB.ozelSablonKaydet({ id, ad: sablon.ad || 'Adsız Şablon', sablon });
-                if (varsayilanYapilsinMi) DB.varsayilanSablonIdKaydet(id);
-                else if (DB.varsayilanSablonIdGetir() === id) DB.varsayilanSablonIdKaydet(null);
-                ekranGit(_sablonEditoruDonusEkrani);
-                if (_sablonEditoruDonusEkrani === 'sablonlar') sablonlarEkraniniRender();
-                if (_optikFormOnSecimCB) {
-                    const form = sablonDerlemesiniGetir(id);
-                    _optikFormOnSecimCB({ id, ad: sablon.ad || 'Adsız Şablon', soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
-                }
-            },
-        });
-    } catch (e) {
-        konteyner.innerHTML = `<div style="padding:16px; color:#b00020; font-family:monospace; font-size:13px; white-space:pre-wrap; background:#fff;">HATA (bunu bana gönder):\n\n${e.message}\n\n${e.stack || ''}</div>`;
-        console.error('sablonEditoruAc hatası:', e);
-    }
-    ekranGit('sablonEditor');
-    // YENİ (teşhis): .ekran/.aktif CSS'i display:flex'imi ezip yükseklik
-    // çökmesine yol açabilir ihtimaline karşı — konteynerin yüksekliğini
-    // CSS'e bağımlı kalmadan JS'ten zorla, viewport'a göre hesapla.
-    requestAnimationFrame(() => {
-        const ekran = document.getElementById('ekranSablonEditor');
-        const header = ekran ? ekran.querySelector('.o-header') : null;
-        const headerYuksekligi = header ? header.getBoundingClientRect().height : 56;
-        konteyner.style.height = (window.innerHeight - headerYuksekligi) + 'px';
-        konteyner.style.display = 'block';
+
+  // Haftalık ders saati grid HTML (ders ekle/düzenle modalında kullanılır)
+  function _haftalikSaatGridHtml(mevcutSaatler) {
+    const s = mevcutSaatler || {};
+    const gruplar = [
+      { baslik: 'İlkokul', seviyeler: [1,2,3,4] },
+      { baslik: 'Ortaokul', seviyeler: [5,6,7,8] }
+    ];
+    return gruplar.map(g => `
+      <div style="margin-bottom:6px;">
+        <div style="font-size:10px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">${g.baslik}</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+          ${g.seviyeler.map(sv => `
+            <div style="text-align:center;">
+              <div style="font-size:10px;color:var(--ink-muted);margin-bottom:2px;">${sv}. Sınıf</div>
+              <input type="number" id="dl_saat_${sv}" min="0" max="10" value="${s[sv]||''}"
+                placeholder="—"
+                style="width:100%;text-align:center;padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px;">
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
+  }
+
+  function _haftalikSaatOku() {
+    const saatler = {};
+    [1,2,3,4,5,6,7,8].forEach(sv => {
+      const val = parseInt(document.getElementById('dl_saat_' + sv)?.value || '');
+      if (!isNaN(val) && val > 0) saatler[sv] = val;
     });
+    return Object.keys(saatler).length ? saatler : null;
+  }
+function dersListesiEkle(){
+  const body = `
+    <div class="form-group"><label>Ders Adı</label>
+      <input id="dl_ad" placeholder="örn: Matematik" style="width:100%;" autofocus></div>
+    <div class="form-group"><label>Kısaltma <span style="font-weight:400;color:var(--ink-muted);font-size:12px;">(çarşaf raporda kullanılır)</span></label>
+      <input id="dl_kisaltma" placeholder="örn: MAT" maxlength="5" style="width:100%;text-transform:uppercase;"
+        oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="form-group">
+      <label>Haftalık Ders Saati <span style="font-weight:400;color:var(--ink-muted);font-size:12px;">(sınıf seviyesine göre)</span></label>
+      ${_haftalikSaatGridHtml()}
+    </div>
+    <div style="font-size:11px;color:var(--ink-muted);margin-top:4px;">Kısaltma girilmezse ders adının ilk 3 harfi kullanılır. Saat girilmezse norm hesabı yapılmaz.</div>
+  `;
+  modalAc('📚 Ders Ekle', body, () => {
+    const ad = document.getElementById('dl_ad').value.trim();
+    const kisaltma = document.getElementById('dl_kisaltma').value.trim().toUpperCase();
+    if (!ad) { toast('Ders adı zorunludur.'); return; }
+    if (dersListesi.some(d=>(d.ad||'').toLocaleLowerCase('tr')===ad.toLocaleLowerCase('tr'))) { toast('Bu ders zaten listede.'); return; }
+    const veri = { ad };
+    if (kisaltma) veri.kisaltma = kisaltma;
+    const saatler = _haftalikSaatOku();
+    if (saatler) veri.haftalikSaatler = saatler;
+    if(!duzenleyebilir('sistemAyarlari')){ toast('Bu işlem için yetkiniz yok.'); return; }
+    db.collection(COL.dersListesi).add(veri)
+      .then(()=>{ toast('Ders eklendi.'); modalKapat(); })
+      .catch(err=>toast('Hata: '+err.message));
+  }, null);
 }
-
-/**
- * Bir sınav TÜRÜNE (ör. 'lgs', 'bursluluk') ait ders listesini, gerçek bir
- * sınav kaydına ihtiyaç duymadan doğrudan LayoutEngine şablonundan çıkarır.
- * LGS/Bursluluk ders listesi türe göre SABİTTİR (özelleştirilemez), bu
- * yüzden global puan referans ayarları ekranı gibi belirli bir sınava bağlı
- * olmayan yerlerde de kullanılabilir.
- */
-function _formTuruDersleriniGetir(sinavTuru) {
-    try {
-        const layout = window.LayoutEngine.layoutHesapla({ sinavTuru });
-        const form   = layout.formlar[0];
-        if (form.bolumler) {
-            const dersler = [];
-            form.bolumler.forEach(b => b.dersSutunlari.forEach(d => {
-                dersler.push({ dersAdi: d.dersAdi, soruSayisi: d.sorular.length, sikSayisi: d.sorular[0]?.sikler.length || 4 });
-            }));
-            return dersler;
-        } else if (form.izgara) {
-            return [{ dersAdi: 'Genel', soruSayisi: form.izgara.sorular.length, sikSayisi: form.izgara.sorular[0]?.sikler.length || 4 }];
-        }
-    } catch (e) { console.warn('Ders listesi alınamadı', e); }
-    return [{ dersAdi: 'Genel', soruSayisi: 20, sikSayisi: 4 }];
+function dersListesiSil(id){
+  if(!duzenleyebilir('sistemAyarlari')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  if(!confirm('Bu dersi listeden silmek istiyor musunuz? (Daha önce seçilmiş kayıtlar etkilenmez.)')) return;
+  db.collection(COL.dersListesi).doc(id).delete().catch(err=>toast('Hata: '+err.message));
 }
-
-/** Sınav A/B (2) kitapçık türü kullanıyor mu — yoksa Tek Kitapçık mı. */
-function _sinavKitapcikliMi(sinavId) {
-    return DB.sinaviBul(sinavId)?.kitapcikTuruSayisi === 2;
+function dersKisaltmaDuzenle(id, ad, mevcutKisaltma){
+  const kayit = dersListesi.find(d => d.id === id);
+  const mevcutSaatler = kayit?.haftalikSaatler || {};
+  const body = `
+    <div class="form-group"><label>Ders Adı</label>
+      <input id="dk_ad" value="${escapeHtml(ad)}" style="width:100%;"></div>
+    <div class="form-group"><label>Kısaltma</label>
+      <input id="dk_kisaltma" value="${escapeHtml(mevcutKisaltma)}" placeholder="örn: MAT" maxlength="5"
+        style="width:100%;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="form-group">
+      <label>Haftalık Ders Saati <span style="font-weight:400;color:var(--ink-muted);font-size:12px;">(sınıf seviyesine göre)</span></label>
+      ${_haftalikSaatGridHtml(mevcutSaatler)}
+    </div>
+  `;
+  modalAc(`✏️ Düzenle — ${escapeHtml(ad)}`, body, () => {
+    const yeniAd = document.getElementById('dk_ad').value.trim();
+    const kisaltma = document.getElementById('dk_kisaltma').value.trim().toUpperCase();
+    if (!yeniAd) { toast('Ders adı boş olamaz.'); return; }
+    const veri = { ad: yeniAd };
+    if (kisaltma) veri.kisaltma = kisaltma; else veri.kisaltma = '';
+    const saatler = _haftalikSaatOku();
+    veri.haftalikSaatler = saatler || {};
+    if(!duzenleyebilir('sistemAyarlari')){ toast('Bu işlem için yetkiniz yok.'); return; }
+    db.collection(COL.dersListesi).doc(id).update(veri)
+      .then(()=>{ toast('Güncellendi.'); modalKapat(); })
+      .catch(err=>toast('Hata: '+err.message));
+  }, null);
 }
-
-/**
- * Bir SONUCUN (öğrencinin kağıdının) doğru cevap anahtarını okumak için
- * kullanılacak kitapçık türünü belirler — YENİ (Ağustos 2026, Sedat
- * isteği: "cevap anahtarı bile farklı kitapçık türüne göre ikili
- * girilmeli"). Sınav tek kitapçıklıysa undefined (eski/tek anahtar).
- * Sınav A/B ise, o SPESİFİK kağıttan OKUNAN kitapcikTuru kullanılır —
- * ekranda o an düzenlenmekte olan sekme DEĞİL (bir öğrencinin sonucunu
- * göstermek/puanlamak her zaman O ÖĞRENCİNİN kağıdından okunan türe göre
- * olmalı).
- */
-function _sonucAnahtarTuru(sinavId, ogrenciKitapcikTuru) {
-    if (!_sinavKitapcikliMi(sinavId)) return undefined;
-    return (ogrenciKitapcikTuru === 'A' || ogrenciKitapcikTuru === 'B') ? ogrenciKitapcikTuru : undefined;
-}
-
-/**
- * KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat geri bildirimi: "Kitapçık
- * olmasına rağmen tüm öğrencilerde boş çıktı") — form üretimi için
- * kullanılan öğrenci listeleri kitapcikTuru'yu SABİT boş string ('')
- * olarak atıyordu, sınav A/B kitapçıklı olsa bile. Artık, kitapçıklı bir
- * sınavda, sinav.kitapcikAtamalari'nda (bkz. _kitapcikAtamaSheetAc) o
- * öğrenci için bir atama varsa onu kullanır; yoksa boş bırakır (K
- * baloncuğu öğrenci tarafından elle işaretlenmeli demektir).
- */
-function _ogrenciKitapcikTuru(sinav, ogrenciId) {
-    if (sinav.kitapcikTuruSayisi !== 2) return '';
-    const tur = sinav.kitapcikAtamalari?.[ogrenciId];
-    return (tur === 'A' || tur === 'B') ? tur : '';
-}
-
-// YENİ (Ağustos 2026, Sedat isteği: "Öğrencilerin kitapçık türü otomatik ve
-// manuel atama yapabilme imkanı olsun") — atama sheet'i açıkken üzerinde
-// çalışılan TASLAK (Kaydet'e basılana kadar sinav.kitapcikAtamalari
-// DEĞİŞMEZ, sheet kapatılıp tekrar açılırsa kaydedilmemiş değişiklikler
-// kaybolur — bu kasıtlı, basit ve öngörülebilir bir davranış).
-let _kitapcikAtamaTaslak = {};
-
-function _kitapcikAtamaSheetAc() {
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    if (!sinav) return;
-    const tumOgrenciler = _manuelTumOgrenciler();
-    const atanmisOgrenciler = tumOgrenciler
-        .filter(o => (sinav.ogrenciIdleri || []).includes(o.id))
-        .sort((a, b) => (a.sinifAd || '').localeCompare(b.sinifAd || '') || (a.adSoyad || '').localeCompare(b.adSoyad || ''));
-    if (!atanmisOgrenciler.length) { alert('Bu sınava henüz öğrenci eklenmemiş.'); return; }
-
-    _kitapcikAtamaTaslak = { ...(sinav.kitapcikAtamalari || {}) };
-    _kitapcikAtamaListesiCiz(atanmisOgrenciler);
-    sheetAc('sheetKitapcikAtama');
-}
-
-function _kitapcikAtamaListesiCiz(atanmisOgrenciler) {
-    const alan = document.getElementById('kitapcikAtamaListesi');
-    if (!alan) return;
-    alan.innerHTML = '';
-    atanmisOgrenciler.forEach(o => {
-        const satir = document.createElement('div');
-        satir.className = 'anahtar-satir';
-        const ad = document.createElement('span');
-        ad.textContent = `${o.adSoyad || '(isimsiz)'} ${o.sinifAd ? '· ' + o.sinifAd : ''}`;
-        ad.style.cssText = 'flex:1; font-size:13px;';
-        satir.appendChild(ad);
-
-        const grup = document.createElement('div');
-        grup.className = 'sik-grubu';
-        ['A', 'B'].forEach(harf => {
-            const btn = document.createElement('button');
-            btn.type = 'button'; btn.className = 'sik-daire'; btn.textContent = harf;
-            if (_kitapcikAtamaTaslak[o.id] === harf) btn.classList.add('anahtar-sec');
-            btn.addEventListener('click', () => {
-                _kitapcikAtamaTaslak[o.id] = _kitapcikAtamaTaslak[o.id] === harf ? undefined : harf;
-                _kitapcikAtamaListesiCiz(atanmisOgrenciler);
-            });
-            grup.appendChild(btn);
-        });
-        satir.appendChild(grup);
-        alan.appendChild(satir);
-    });
-}
-
-function _kitapcikOtomatikAta() {
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    if (!sinav) return;
-    const tumOgrenciler = _manuelTumOgrenciler();
-    const atanmisOgrenciler = tumOgrenciler
-        .filter(o => (sinav.ogrenciIdleri || []).includes(o.id))
-        .sort((a, b) => (a.sinifAd || '').localeCompare(b.sinifAd || '') || (a.adSoyad || '').localeCompare(b.adSoyad || ''));
-    atanmisOgrenciler.forEach((o, i) => { _kitapcikAtamaTaslak[o.id] = i % 2 === 0 ? 'A' : 'B'; });
-    _kitapcikAtamaListesiCiz(atanmisOgrenciler);
-}
-
-function _kitapcikAtamaKaydet() {
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    if (!sinav) return;
-    sinav.kitapcikAtamalari = { ..._kitapcikAtamaTaslak };
-    DB.sinavKaydet(sinav);
-    sheetKapat('sheetKitapcikAtama');
-}
-
-function formDersleriniGetir(sinavId) {
-    const sinav  = DB.sinaviBul(sinavId);
-    const formId = sinav?.optikFormId || 'lgs';
-    if (formId === 'ozel') return _ozelSinavDersleriGetir(sinav);
-    // KÖK NEDEN DÜZELTMESİ (Sedat sorusu üzerine, Ağustos 2026 — "hangi
-    // dersin nerede olduğunu nasıl okuyacak"): bu fonksiyon Optik Form
-    // Editörü ile tasarlanmış özel şablonları (id 'ozelTasarim_' ile
-    // başlar) HİÇ TANIMIYORDU — formId doğrudan _formTuruDersleriniGetir'e
-    // (sadece 'lgs'/'bursluluk' bilir) gidiyordu, cevap anahtarı ve
-    // puanlama YANLIŞ/BOŞ ders listesiyle çalışırdı. Artık editördeki
-    // GERÇEK baloncuk bloklarından (her biri = bir ders sütunu grubu)
-    // ders adı/soru sayısı/şık sayısı çıkarılıyor.
-    if (formId.startsWith('ozelTasarim_')) return _ozelTasarimDersleriGetir(formId);
-    return _formTuruDersleriniGetir(formId);
-}
-
-/**
- * Optik Form Editörü ile tasarlanmış bir şablonun GERÇEK (derlenmiş)
- * baloncuk bloklarından ders listesini çıkarır — cevap anahtarı ekranı ve
- * puanHesapla bunu kullanır. Bir ders birden fazla sütuna bölünmüşse
- * (bkz. optikSablonMotoru.js: baloncukBlokOlustur) TEK bir ders olarak
- * birleştirilir (toplam soru sayısıyla) — çünkü omrEngine sonucunda da
- * hepsi aynı "ders" anahtarı altında birleşik geliyor (bkz.
- * dersSutunuHesapla: baslangicSoruNo düzeltmesi).
- */
-function _ozelTasarimDersleriGetir(formId) {
-    try {
-        const form = sablonDerlemesiniGetir(formId);
-        const dersler = [];
-        (form.formlar[0].bolumler || []).forEach((bolum) => {
-            (bolum.dersSutunlari || []).forEach((sutun) => {
-                const mevcut = dersler.find((d) => d.dersAdi === sutun.dersAdi);
-                const soruSayisi = sutun.sorular.length;
-                const sikSayisi = sutun.sorular[0]?.sikler.length || 4;
-                if (mevcut) mevcut.soruSayisi += soruSayisi;
-                else dersler.push({ dersAdi: sutun.dersAdi, soruSayisi, sikSayisi });
-            });
-        });
-        return dersler.length ? dersler : [{ dersAdi: 'Genel', soruSayisi: 20, sikSayisi: 4 }];
-    } catch (e) {
-        console.error('_ozelTasarimDersleriGetir: şablon derlenemedi', e);
-        return [{ dersAdi: 'Genel', soruSayisi: 20, sikSayisi: 4 }];
-    }
-}
-
-/** Özel sınavlar için ders listesi, sınavın KENDİ soru/şık sayısına göre üretilir (sabit şablon değil). */
-function _ozelSinavDersleriGetir(sinav) {
-    try {
-        const layout = window.LayoutEngine.layoutHesapla({
-            sinavTuru: 'ozel',
-            soruSayisi: sinav?.soruSayisi || 20,
-            sikSayisi: sinav?.sikSayisi || 4,
-            sayfaDuzeni: 'otomatik',
-        });
-        const form = layout.formlar[0];
-        if (form.izgara) {
-            return [{ dersAdi: 'Genel', soruSayisi: form.izgara.sorular.length, sikSayisi: form.izgara.sorular[0]?.sikler.length || 4 }];
-        }
-    } catch (e) { console.warn('Özel sınav ders listesi alınamadı', e); }
-    return [{ dersAdi: 'Genel', soruSayisi: sinav?.soruSayisi || 20, sikSayisi: sinav?.sikSayisi || 4 }];
-}
-
-// ════════════════════════════════════════════════════════════════
-// ANA UYGULAMA VERİ KAYNAĞI (ana okul uygulamasından)
-// ════════════════════════════════════════════════════════════════
-function veriKaynagi() {
-    try { if (window.parent !== window && window.parent.OptikVeriKaynagi) return window.parent.OptikVeriKaynagi; } catch {}
-    return null;
-}
-
-/**
- * YENİ (Ağustos 2026, Sedat isteği: "kimlik bilgilerinde... okul adını da
- * ekleyebilme olsun") — okul adını ana uygulamanın OptikVeriKaynagi
- * köprüsünden almaya çalışır. NOT: bu köprü şu an (Ağustos 2026 itibarıyla)
- * okulAdiGetir() metodunu SAĞLAMIYOR OLABİLİR — ana uygulama tarafında
- * ayrıca eklenmesi gerekebilir; o zamana kadar bu güvenli bir şekilde boş
- * döner (form kırılmaz, sadece okul adı alanı boş basılır).
- */
-function _okulAdiGetir() {
-    try { return veriKaynagi()?.okulAdiGetir?.() || ''; } catch { return ''; }
-}
-
-/**
- * YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar Firestore'a
- * kaydedilsin") — uygulama açılışında Firestore'daki şablonları çekip
- * yerel depoyla BİRLEŞTİRİR (id bazında, guncelleme zaman damgası daha
- * yeni olan kazanır) — böylece başka bir cihazda yapılmış değişiklikler
- * de görünür hale gelir, ama bu cihazda henüz Firestore'a hiç ulaşmamış
- * (ör. ağ yoktu) taze bir yerel değişiklik de KAYBOLMAZ. Best-effort:
- * köprü yoksa veya hata olursa sessizce hiçbir şey yapmaz, uygulama
- * normal (sadece yerel) çalışmaya devam eder.
- */
-async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
-    try {
-        const kaynak = veriKaynagi();
-        if (!kaynak?.sablonlariGetir) {
-            if (gorunurMu) alert('⚠ Köprü bulunamadı ya da güncel değil.\n\nkopru var mı: ' + !!kaynak + '\nsablonlariGetir var mı: ' + !!(kaynak && kaynak.sablonlariGetir) + '\n\nAna uygulamadaki js/optik-entegrasyon.js güncellemesini kontrol et.');
-            return;
-        }
-        // YENİ (teşhis, Ağustos 2026): iki platformun aynı Firebase
-        // projesine/hesabına bağlı olup olmadığını doğrudan göster.
-        let teshisMetni = '';
-        try {
-            const teshis = await kaynak.firestoreTeshis?.();
-            if (teshis) teshisMetni = `\n\n🔎 projectId: ${teshis.projectId}\n🔎 uid: ${teshis.uid}`;
-        } catch (e) {}
-        const uzaktakiler = await kaynak.sablonlariGetir();
-        if (!Array.isArray(uzaktakiler)) {
-            if (gorunurMu) alert('⚠ Firestore\'dan beklenmeyen bir cevap geldi: ' + JSON.stringify(uzaktakiler));
-            return;
-        }
-        const yerelListe = DB.ozelSablonlariGetir();
-        const oncekiSayi = yerelListe.length;
-        const birlesikMap = new Map(yerelListe.map(k => [k.id, k]));
-        const uzakIdler = new Set(uzaktakiler.map(u => u.id));
-        uzaktakiler.forEach(uzak => {
-            const yerel = birlesikMap.get(uzak.id);
-            if (!yerel || !yerel.guncelleme || (uzak.guncelleme && uzak.guncelleme > yerel.guncelleme)) {
-                birlesikMap.set(uzak.id, uzak);
-            }
-        });
-        DB._yaz('oy_op_ozelSablonlar', Array.from(birlesikMap.values()));
-        if (_aktifEkranId() === 'sablonlar') sablonlarEkraniniRender();
-
-        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "çok
-        // olan web az olan android") — senkron önceden SADECE İNDİRME
-        // yönündeydi. Firestore senkronu eklenmeden ÖNCE oluşturulmuş
-        // yerel şablonlar (kayıt anında Firestore'a hiç GÖNDERİLMEMİŞTİ —
-        // sadece ozelSablonKaydet çağrıldığında gönderiliyor, geçmişe
-        // dönük göndermiyor) bu yüzden diğer cihazda hiç görünmüyordu.
-        // Artık yerelde olup Firestore'da OLMAYAN her şablon burada
-        // otomatik yukarı gönderiliyor — iki yönlü, kendi kendini
-        // onaran bir senkron.
-        let gonderilecekler = yerelListe.filter(y => !uzakIdler.has(y.id));
-        let gonderilenSayisi = 0, gonderilemeyenSayisi = 0, ilkHata = null;
-        for (const y of gonderilecekler) {
-            try { await kaynak.sablonKaydet(y); gonderilenSayisi++; }
-            catch (e) { gonderilemeyenSayisi++; if (!ilkHata) ilkHata = e.message; console.error('Şablon yukarı gönderilemedi:', y.id, e); }
-        }
-
-        if (gorunurMu) {
-            alert(`✅ Firestore'dan ${uzaktakiler.length} şablon okundu.\nYerelde önceden: ${oncekiSayi}\nBirleştirme sonrası toplam: ${birlesikMap.size}\n\n⬆ Yukarı gönderilen: ${gonderilenSayisi}${gonderilemeyenSayisi ? ' (başarısız: ' + gonderilemeyenSayisi + ')' : ''}${ilkHata ? '\n\nİLK HATA: ' + ilkHata : ''}${teshisMetni}`);
-        }
-    } catch (e) {
-        console.error('_sablonlariFirestoredenSenkronizeEt hatası:', e);
-        if (gorunurMu) alert('⚠ Senkronizasyon hatası: ' + e.message);
-    }
-}
-
-// ════════════════════════════════════════════════════════════════
-// NAVİGASYON
-// ════════════════════════════════════════════════════════════════
-let _aktifSinavId = null;
-let _aktifSonucId = null;
-
-/**
- * KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat'ın "Bu formların okunması nasıl
- * olacak" sorusu üzerine bulundu): gerçek okuma akışı (formOkuyucu.js:
- * testFormunuOlustur) daha önce olmayan bir #sinavTuru DOM seçim kutusuna
- * bakıyordu — yani HER ZAMAN sessizce LGS'ye düşüyordu, aktif sınav ne
- * olursa olsun (Bursluluk, sabit-Özel, editörle tasarlanmış özel şablon
- * dahil). NOT: window.OptikAktifSinavTuru adında BENZER bir köprü daha
- * önce eklenmişti ama hiçbir yerden hiç ÇAĞRILMIYORDU — yarım kalmış bir
- * düzeltme girişimiydi, kaldırılıp yerine bu tam çalışan köprü kondu.
- *
- * Bu fonksiyon window.OptikAktifForm'u aktif sınavın GERÇEK, önceden
- * DERLENMİŞ form nesnesiyle (_layoutGetir ile — LGS/Bursluluk/Özel-sabit/
- * editörle tasarlanmış özel şablon FARK ETMEKSİZİN aynı kod yolu) doldurur.
- * _aktifSinavId her değiştiğinde çağrılmalı.
- */
-function _optikAktifFormGuncelle() {
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    if (!sinav) { window.OptikAktifForm = null; return; }
-    try {
-        const layout = _layoutGetir(sinav);
-        window.OptikAktifForm = { form: layout.formlar[0], sinavTuru: sinav.optikFormId || 'lgs' };
-    } catch (e) {
-        console.error('_optikAktifFormGuncelle: form derlenemedi', e);
-        window.OptikAktifForm = null;
-    }
-}
-
-const Ekranlar = {
-    sinavlar:     document.getElementById('ekranSinavlar'),
-    yeniSinav:    document.getElementById('ekranYeniSinav'),
-    sinavDetay:   document.getElementById('ekranSinavDetay'),
-    ogrDetay:     document.getElementById('ekranOgrDetay'),
-    optikOlustur: document.getElementById('ekranOptikOlustur'),
-    manuelKagit:  document.getElementById('ekranManuelKagit'),
-    lgsPuan:      document.getElementById('ekranLgsPuan'),
-    sablonEditor: document.getElementById('ekranSablonEditor'),
-    sablonlar:    document.getElementById('ekranSablonlar'),
-};
-
-function ekranGit(id) {
-    Object.values(Ekranlar).forEach(e => e?.classList.remove('aktif'));
-    Ekranlar[id]?.classList.add('aktif');
-}
-
-// ════════════════════════════════════════════════════════════════
-// GERİ TUŞU KÖPRÜSÜ (ana uygulamadan çağrılır — bkz. js/app.js
-// geriTusuIsle, js/optik-entegrasyon.js). Telefonun donanım geri
-// tuşuna basılınca Optik aracının TAMAMINI kapatmak yerine, önce
-// kendi iç durumunu (köşe seçimi/ayarlar/sheet/kamera/alt ekran)
-// bir kademe geri alır; hiçbir iç durum kalmadığında false döner
-// ve üst uygulama tüm aracı kapatır.
-// ════════════════════════════════════════════════════════════════
-const _EKRAN_USTU = {
-    yeniSinav: 'sinavlar',
-    sinavDetay: 'sinavlar',
-    ogrDetay: 'sinavDetay',
-    optikOlustur: 'sinavDetay',
-    manuelKagit: 'sinavDetay',
-    lgsPuan: 'sinavDetay',
-    sablonEditor: 'yeniSinav',
-    sablonlar: 'sinavlar',
-};
-
-function _aktifEkranId() {
-    for (const id in Ekranlar) {
-        if (Ekranlar[id]?.classList.contains('aktif')) return id;
-    }
-    return null;
-}
-
-window.optikGeriTusuIsle = function () {
-    // 1) Köşe seçim ekranı (manuel köşe düzeltme) açıksa onu kapat.
-    const koseAlani = document.getElementById('koseSecimAlani');
-    if (koseAlani && koseAlani.style.display !== 'none') {
-        const iptalBtn = document.getElementById('koseIptal');
-        if (iptalBtn) iptalBtn.click(); else koseAlani.style.display = 'none';
-        return true;
-    }
-
-    // 2) Kamera ayarlar sheet'i açıksa kapat.
-    const ayarSheet = document.getElementById('kameraAyarSheet');
-    if (ayarSheet && !ayarSheet.hidden) { ayarSheet.hidden = true; return true; }
-
-    // 3) Canlı tarama sonuç kartı gösteriliyorsa kapat.
-    const kart = document.getElementById('canliSonucKart');
-    if (kart && !kart.hidden) { kart.hidden = true; return true; }
-
-    // 4) Herhangi bir bottom-sheet (Kağıt Ekle, Form Seç, Onay) açıksa kapat.
-    const acikSheet = document.querySelector('.bs-overlay:not([hidden])');
-    if (acikSheet) { acikSheet.hidden = true; return true; }
-
-    // 5) Kamera ekranı açıksa (tarama modundaysa) kamerayı kapat — bir
-    //    önceki ekrana (genelde sınav detayı) döner.
-    const kameraOv = document.getElementById('kameraOverlay');
-    if (kameraOv && !kameraOv.hidden) {
-        if (typeof kameraKapat === 'function') kameraKapat();
-        return true;
-    }
-
-    // 6) Kök olmayan bir ekrandaysa bir üst ekrana dön.
-    const aktif = _aktifEkranId();
-    if (aktif && aktif !== 'sinavlar' && _EKRAN_USTU[aktif]) {
-        ekranGit(_EKRAN_USTU[aktif]);
-        return true;
-    }
-
-    // 7) Kökteyiz (sınav listesi, hiçbir şey açık değil) — üst uygulama
-    //    tüm Optik aracını kapatsın.
-    return false;
-};
-
-// ════════════════════════════════════════════════════════════════
-// EKRAN 1 — SINAVLAR LİSTESİ
-// ════════════════════════════════════════════════════════════════
-function sinavlariRender() {
-    const liste = DB.sinavlariGetir();
-    const bosEl = document.getElementById('sinavBosAlan');
-    const listEl = document.getElementById('sinavListesi');
-    if (!listEl) return;
-    bosEl.style.display = liste.length ? 'none' : 'flex';
-    listEl.innerHTML = liste.map(s => {
-        const sonuclar = DB.sonuclariGetir(s.id);
-        const okunduSayisi = sonuclar.length;
-        const badge = okunduSayisi > 0
-            ? `<span class="durum-badge badge-okundu">OKUNDU (${okunduSayisi})</span>`
-            : `<span class="durum-badge badge-bekliyor">BEKLİYOR</span>`;
-        const ikonRenk = okunduSayisi > 0 ? '#E8F5E9' : '#FFF3E0';
-        const ikonRenkS = okunduSayisi > 0 ? '#2E7D32' : '#E65100';
-        return `<div class="sinav-kart" data-id="${s.id}">
-            <div class="sinav-kart-ikon" style="background:${ikonRenk};">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${ikonRenkS}" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            </div>
-            <div class="sinav-kart-bilgi">
-                <span class="sinav-kart-ad">${_h(s.ad)}</span>
-                <small class="sinav-kart-alt">${s.optikFormAd || ''} · ${_tarih(s.olusturma)}</small>
-            </div>
-            ${badge}
-            <button class="menu-btn" data-id="${s.id}">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>
-            </button>
-        </div>`;
-    }).join('');
-
-    listEl.querySelectorAll('.sinav-kart').forEach(kart => {
-        kart.addEventListener('click', e => {
-            if (e.target.closest('.menu-btn')) return;
-            sinavDetayAc(kart.dataset.id);
-        });
-    });
-    listEl.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const s = DB.sinaviBul(btn.dataset.id);
-            if (!s) return;
-            sheetOnay(`"${s.ad}" sınavını sil?`, `Bu işlem geri alınamaz.`, () => {
-                DB.sinaviSil(btn.dataset.id);
-                sinavlariRender();
-            });
-        });
-    });
-}
-
-// ════════════════════════════════════════════════════════════════
-// ŞABLONLARIM (Ağustos 2026)
-// ════════════════════════════════════════════════════════════════
-function sablonlarEkraniAc() {
-    sablonlarEkraniniRender();
-    ekranGit('sablonlar');
-}
-
-function sablonlarEkraniniRender() {
-    const liste = DB.ozelSablonlariGetir();
-    const bosEl = document.getElementById('sablonlarBosAlan');
-    const listEl = document.getElementById('sablonlarListesi');
-    if (!listEl) return;
-    if (bosEl) bosEl.style.display = liste.length ? 'none' : 'flex';
-    const varsayilanId = DB.varsayilanSablonIdGetir();
-    listEl.innerHTML = liste.map(k => {
-        const varsayilanBadge = k.id === varsayilanId
-            ? `<span class="durum-badge badge-okundu">VARSAYILAN</span>` : '';
-        // YENİ (Ağustos 2026, Sedat isteği: "taslak veya herkes kullanabilir
-        // yapabilmek istiyorum") — durum rozeti + tıklanınca değiştiren düğme.
-        const yayinda = k.durum === 'yayinda';
-        const durumBadge = yayinda
-            ? `<button class="durum-badge badge-okundu durum-degistir-btn" data-id="${k.id}" title="Taslağa al">📢 YAYINDA</button>`
-            : `<button class="durum-badge badge-bekliyor durum-degistir-btn" data-id="${k.id}" title="Yayınla">📝 TASLAK</button>`;
-        const soruSayisi = (k.sablon?.ogeler || []).filter(o => o.tip === 'baloncukBlok')
-            .reduce((t, o) => t + (o.soruSayisi || 0), 0);
-        return `<div class="sinav-kart sablon-kart" data-id="${k.id}">
-            <div class="sinav-kart-ikon" style="background:#F3E5F5;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
-            </div>
-            <div class="sinav-kart-bilgi">
-                <span class="sinav-kart-ad">${_h(k.ad)}</span>
-                <small class="sinav-kart-alt">${soruSayisi ? soruSayisi + ' soru · ' : ''}${_tarih(k.guncelleme)}</small>
-            </div>
-            <button class="menu-btn" data-id="${k.id}" title="Sil">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-            <div class="sablon-kart-rozetler">
-                ${varsayilanBadge}
-                ${durumBadge}
-            </div>
-        </div>`;
-    }).join('');
-
-    listEl.querySelectorAll('.sinav-kart').forEach(kart => {
-        kart.addEventListener('click', e => {
-            if (e.target.closest('.menu-btn') || e.target.closest('.durum-degistir-btn')) return;
-            sablonEditoruAc(kart.dataset.id, 'sablonlar');
-        });
-    });
-    listEl.querySelectorAll('.durum-degistir-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const k = DB.ozelSablonBul(btn.dataset.id);
-            if (!k) return;
-            k.durum = k.durum === 'yayinda' ? 'taslak' : 'yayinda';
-            DB.ozelSablonKaydet(k);
-            sablonlarEkraniniRender();
-        });
-    });
-    listEl.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const k = DB.ozelSablonBul(btn.dataset.id);
-            if (!k) return;
-            sheetOnay(`"${k.ad}" şablonunu sil?`, `Bu şablonu kullanan bir sınav yoksa güvenle silinebilir. Bu işlem geri alınamaz.`, () => {
-                DB.ozelSablonSil(btn.dataset.id);
-                if (DB.varsayilanSablonIdGetir() === btn.dataset.id) DB.varsayilanSablonIdKaydet(null);
-                sablonlarEkraniniRender();
-            });
-        });
-    });
-}
-
-
-
-let _ysSablonSecilen = null;
-
-function yeniSinavAc() {
-    // YENİ (teşhis, Ağustos 2026): "Yeni Sınav çalışmıyor" — konsola
-    // erişilemiyor, bu yüzden bir hata olursa sessizce hiçbir şey
-    // olmamış gibi durmak yerine DOĞRUDAN görünür bir uyarı gösteriyoruz.
-    try {
-        _yeniSinavAcIcKisim();
-    } catch (e) {
-        alert('HATA (bunu bana gönder):\n\n' + e.message + '\n\n' + (e.stack || ''));
-        console.error('yeniSinavAc hatası:', e);
-    }
-}
-
-function _yeniSinavAcIcKisim() {
-    _ysSablonSecilen = null;
-    document.getElementById('ysSinavAd').value = '';
-    document.getElementById('ysOptikFormAdi').textContent = 'Form seçin...';
-    document.getElementById('ysOptikFormAdi').style.color = 'var(--text-faint)';
-
-    const ozelYanlis = document.getElementById('ysYanlisEtkisi');
-    if (ozelYanlis) ozelYanlis.value = '0';
-    const ktSayisi = document.getElementById('ysKitapcikTuruSayisi');
-    if (ktSayisi) ktSayisi.value = '1';
-    // YENİ (Ağustos 2026): Sedat isteği — kaydedilmiş bir varsayılan optik
-    // form varsa, "Yeni Sınav" ekranı her açıldığında otomatik seçili gelsin
-    // (tekrar tekrar aynı formu seçmek zorunda kalmasın).
-    const varsayilanId = DB.varsayilanSablonIdGetir();
-    if (varsayilanId) {
-        try {
-            const form = sablonDerlemesiniGetir(varsayilanId);
-            const kayit = DB.ozelSablonBul(varsayilanId);
-            const ad = kayit ? kayit.ad : (sablonBul(varsayilanId) || {}).ad;
-            if (ad) {
-                _ysSablonSecilen = { id: varsayilanId, ad, soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi };
-                const metEl = document.getElementById('ysOptikFormAdi');
-                metEl.textContent = `${ad} (${form.soruSayisi} Soru)`;
-                metEl.style.color = 'var(--text)';
-            }
-        } catch (e) {
-            // Varsayılan olarak işaretlenen şablon silinmiş olabilir — sessizce yok say, kullanıcı elle seçer.
-        }
-    }
-    _ogrenciSeciminiRender();
-    _ogrenciSecimOzetiGuncelle();
-    ekranGit('yeniSinav');
-}
-
-function _ogrenciSeciminiRender() {
-    const kap = document.getElementById('ysOgrenciSecimAlani');
-    if (!kap) return;
-    const kaynak = veriKaynagi();
-    if (!kaynak) {
-        kap.innerHTML = '<p class="ogr-secim-bilgi">Uygulama içinden açıldığında öğrenci seçimi aktif olur.</p>';
-        return;
-    }
-    const siniflar = kaynak.siniflarGetir();
-    kap.innerHTML = siniflar.map(s => {
-        const ogrenciler = kaynak.ogrencilerGetir(s.id);
-        return `<div class="sinif-grup">
-            <div class="sinif-baslik" data-sinif="${s.id}">
-                <input type="checkbox" class="sinif-cb" data-sinif="${s.id}" id="sinifCb_${s.id}">
-                <label for="sinifCb_${s.id}" style="flex:1;cursor:pointer;">
-                    <strong>${_h(s.ad)}</strong>
-                </label>
-                <small>${ogrenciler.length} öğrenci</small>
-                <svg width="16" height="16" class="sinif-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-            <div class="ogr-secim-listesi-kap" id="ogrListeKap_${s.id}">
-                ${ogrenciler.map(o => `
-                    <div class="ogr-secim-satir">
-                        <input type="checkbox" class="sinif-cb ogr-cb" id="ogrCb_${o.id}" data-sinif="${s.id}" data-ogr="${o.id}" style="accent-color:var(--accent);">
-                        <label for="ogrCb_${o.id}" style="flex:1;cursor:pointer;">${_h(o.adSoyad)}</label>
-                        <small>${o.ogrenciNo || ''}</small>
-                    </div>`).join('')}
-            </div>
-        </div>`;
-    }).join('');
-
-    // Sınıf toggle
-    kap.querySelectorAll('.sinif-baslik').forEach(baslik => {
-        baslik.addEventListener('click', e => {
-            if (e.target.classList.contains('sinif-cb') || e.target.tagName === 'LABEL') return;
-            const sinifId = baslik.dataset.sinif;
-            const listKap = document.getElementById('ogrListeKap_' + sinifId);
-            listKap?.classList.toggle('acik');
-        });
-    });
-    // Sınıf checkbox → tüm öğrencileri seç
-    kap.querySelectorAll('.sinif-cb[data-sinif]').forEach(cb => {
-        if (cb.dataset.ogr) return;
-        cb.addEventListener('change', () => {
-            const sinifId = cb.dataset.sinif;
-            kap.querySelectorAll(`.ogr-cb[data-sinif="${sinifId}"]`).forEach(oCb => oCb.checked = cb.checked);
-        });
-    });
-}
-
-function _seciliOgrIdleri() {
-    const kap = document.getElementById('ysOgrenciSecimAlani');
-    return [...kap.querySelectorAll('.ogr-cb:checked')].map(cb => cb.dataset.ogr);
-}
-
-/** "Öğrenciler" özet düğmesinin metnini seçili öğrenci/sınıf sayısına göre günceller. */
-function _ogrenciSecimOzetiGuncelle() {
-    const ozelEl = document.getElementById('ysOgrenciSecOzet');
-    if (!ozelEl) return;
-    const kap = document.getElementById('ysOgrenciSecimAlani');
-    const seciliCb = kap ? [...kap.querySelectorAll('.ogr-cb:checked')] : [];
-    if (!seciliCb.length) {
-        ozelEl.textContent = 'Öğrenci seçin...';
-        ozelEl.style.color = 'var(--text-faint)';
-        return;
-    }
-    const siniflar = new Set(seciliCb.map(cb => cb.dataset.sinif));
-    ozelEl.textContent = `${seciliCb.length} öğrenci` + (siniflar.size > 1 ? ` (${siniflar.size} sınıf)` : '');
-    ozelEl.style.color = 'var(--text)';
-}
-
-function yeniSinavKaydet() {
-    const ad = document.getElementById('ysSinavAd').value.trim();
-    if (!ad) { alert('Sınav adı gerekli!'); return; }
-    if (!_ysSablonSecilen) { alert('Optik form seçin!'); return; }
-
-    let soruSayisi = _ysSablonSecilen.soruSayisi;
-    let sikSayisi  = _ysSablonSecilen.sikSayisi;
-
-    // Yanlış cevap etkisi sınav türünden BAĞIMSIZ, her zaman ekrandaki
-    // seçiciden okunuyor (varsayılan/seçili değer 0 — Etkisiz).
-    const yEtki = parseInt(document.getElementById('ysYanlisEtkisi')?.value, 10);
-    let yanlisKatsayisi = Number.isFinite(yEtki) && yEtki > 0 ? yEtki : null;
-    const kitapcikTuruSayisi = parseInt(document.getElementById('ysKitapcikTuruSayisi')?.value, 10) === 2 ? 2 : 1;
-
-    if (!soruSayisi) soruSayisi = 20;
-    if (!sikSayisi) sikSayisi = 4;
-
-    const sinav = {
-        id:           'sinav_' + Date.now(),
-        ad,
-        optikFormId:  _ysSablonSecilen.id,
-        optikFormAd:  _ysSablonSecilen.ad,
-        soruSayisi,
-        sikSayisi,
-        yanlisKatsayisi,
-        kitapcikTuruSayisi,
-        ogrenciIdleri: _seciliOgrIdleri(),
-        olusturma:    new Date().toISOString(),
-    };
-    DB.sinavKaydet(sinav);
-    sinavlariRender();
-    sinavDetayAc(sinav.id);
-}
-
-// ════════════════════════════════════════════════════════════════
-// EKRAN 3 — SINAV DETAY
-// ════════════════════════════════════════════════════════════════
-function sinavDetayAc(sinavId) {
-    _aktifSinavId = sinavId;
-    _optikAktifFormGuncelle();
-    const sinav = DB.sinaviBul(sinavId);
-    if (!sinav) return;
-    document.getElementById('sinavDetayBaslik').textContent = sinav.ad;
-    // form adını kamera başlığına yaz
-    const kFAdi = document.getElementById('kameraFormAdi');
-    if (kFAdi) kFAdi.textContent = sinav.optikFormAd || sinav.optikFormId;
-    const kmAdi = document.getElementById('kmFormAdi');
-    if (kmAdi) kmAdi.textContent = sinav.optikFormAd || sinav.optikFormId;
-    // Sınav türü hidden input (eski engine uyumluluğu)
-    let stEl = document.getElementById('sinavTuru');
-    if (!stEl) { stEl = document.createElement('input'); stEl.type='hidden'; stEl.id='sinavTuru'; document.body.appendChild(stEl); }
-    stEl.value = sinav.optikFormId || 'lgs';
-    let ssEl = document.getElementById('soruSayisi');
-    if (!ssEl) { ssEl = document.createElement('input'); ssEl.type='hidden'; ssEl.id='soruSayisi'; document.body.appendChild(ssEl); }
-    ssEl.value = sinav.soruSayisi || 90;
-    _s('raporLgsEtiket', sinav.optikFormId === 'bursluluk' ? 'İOKBS (Bursluluk) Puanı' : 'LGS Puanı');
-
-    sekmeAktiflestir('kagitlar');
-    kagitlariRender();
-    anahtarPaneliniRender();
-    ekranGit('sinavDetay');
-}
-
-// Sekme sistemi
-let _aktifSekme = 'kagitlar';
-function sekmeAktiflestir(sekme) {
-    _aktifSekme = sekme;
-    document.querySelectorAll('#sekmeBar .sekme').forEach(b =>
-        b.classList.toggle('aktif', b.dataset.sekme === sekme)
-    );
-    document.querySelectorAll('.sekme-panel').forEach(p =>
-        p.classList.toggle('aktif', p.id === 'panel' + sekme.charAt(0).toUpperCase() + sekme.slice(1))
-    );
-    // FAB görünürlüğü
-    const fabKume = document.getElementById('kagitFabKume');
-    if (fabKume) fabKume.style.display = sekme === 'kagitlar' ? 'flex' : 'none';
-}
-
-// ════════════════════════════════════════════════════════════════
-// KAĞITLAR SEKMESİ
-// ════════════════════════════════════════════════════════════════
-let _kagitFiltreSinif = '';
-
-function kagitlariRender() {
-    if (!_aktifSinavId) return;
-    const sonuclar = DB.sonuclariGetir(_aktifSinavId);
-    const bosEl    = document.getElementById('kagitBosAlan');
-    const listEl   = document.getElementById('kagitListesi');
-    const sinav    = DB.sinaviBul(_aktifSinavId);
-    if (!listEl) return;
-
-    // Sınıf filtre chip'leri
-    const siniflar = [...new Set(sonuclar.map(r => r.ogrenci?.sinif).filter(Boolean))].sort();
-    const chipKap  = document.getElementById('kagitSinifFiltre');
-    if (chipKap) {
-        chipKap.innerHTML = `<button class="chip ${_kagitFiltreSinif===''?'aktif':''}" data-sinif="">Tümü ${sonuclar.length}</button>` +
-            siniflar.map(s => `<button class="chip ${_kagitFiltreSinif===s?'aktif':''}" data-sinif="${_h(s)}">${_h(s)} ${sonuclar.filter(r=>r.ogrenci?.sinif===s).length}</button>`).join('');
-        chipKap.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
-            _kagitFiltreSinif = c.dataset.sinif;
-            kagitlariRender();
-        }));
-    }
-
-    // Arama
-    const aramaEl = document.getElementById('kagitArama');
-    if (aramaEl && !aramaEl._bound) {
-        aramaEl._bound = true;
-        aramaEl.addEventListener('input', kagitlariRender);
-    }
-    const aramaMetni = aramaEl?.value.trim().toLocaleLowerCase('tr') || '';
-
-    let liste = sonuclar;
-    if (_kagitFiltreSinif) liste = liste.filter(r => r.ogrenci?.sinif === _kagitFiltreSinif);
-    if (aramaMetni) liste = liste.filter(r =>
-        (r.ogrenci?.adSoyad || '').toLocaleLowerCase('tr').includes(aramaMetni) ||
-        (r.ogrenci?.ogrenciNo || '').includes(aramaMetni) ||
-        (r.ogrenci?.sinif || '').toLocaleLowerCase('tr').includes(aramaMetni)
-    );
-
-    bosEl.style.display = sonuclar.length === 0 ? 'flex' : 'none';
-    if (sonuclar.length === 0) { listEl.innerHTML = ''; return; }
-
-    const RENKLER = ['#1565C0','#2E7D32','#E65100','#6A1B9A','#00695C','#C62828'];
-    const formAd  = sinav?.optikFormAd || 'Puan';
-    const sinavTuru = sinav?.optikFormId; // 'lgs' | 'bursluluk' | 'ozel' | ...
-
-    // Puanı sınav türüne göre hesapla: LGS'de sabit formül, Bursluluk'ta
-    // resmî İOKBS (TASP) yöntemi — ikisi dışındaki (ör. "özel", az sorulu
-    // bir test) formlarda hiçbir puan formülü GEÇERLİ DEĞİL, bu yüzden
-    // puan gösterilmez (yalnızca D/Y/B/N görünür).
-    const puanMap = {}; // sonucId -> puan (number) | undefined
-    const puanYontemMap = {}; // sonucId -> 'resmi' | 'tek-ogrenci-tahmini' (yalnızca bursluluk)
-    if (sinavTuru === 'lgs') {
-        sonuclar.forEach(r => {
-            const sonuc = window.LgsPuanHesapla?.sabitFormulPuanHesapla(r.puan?.dersDetay || []);
-            if (sonuc) puanMap[r.id] = sonuc.puan;
-        });
-    } else if (sinavTuru === 'bursluluk') {
-        const dersler = formDersleriniGetir(_aktifSinavId);
-        const harici = _lgsHariciVeriyiHazirla('bursluluk');
-        const rapor = window.LgsPuanHesapla?.sinavRaporuHesapla(sonuclar, dersler, harici, 'bursluluk');
-        (rapor?.ogrenciler || []).forEach(o => { puanMap[o.sonucId] = o.msp; puanYontemMap[o.sonucId] = o.mspYontemi; });
-    }
-
-    // Puana göre büyükten küçüğe sırala (puanı olmayanlar — ör. özel form
-    // ya da henüz hesaplanamamış kayıtlar — listenin sonuna düşer).
-    liste = liste.slice().sort((a, b) => {
-        const pa = puanMap[a.id], pb = puanMap[b.id];
-        if (pa == null && pb == null) return 0;
-        if (pa == null) return 1;
-        if (pb == null) return -1;
-        return pb - pa;
-    });
-
-    listEl.innerHTML = liste.map((r, i) => {
-        const ogr   = r.ogrenci || {};
-        const ad    = ogr.adSoyad || '(isimsiz)';
-        const harf1 = ad[0]?.toUpperCase() || '?';
-        const harf2 = ad.split(' ')[1]?.[0]?.toUpperCase() || '';
-        const renk  = RENKLER[i % RENKLER.length];
-        const p     = r.puan || {};
-
-        const puan = puanMap[r.id];
-        const tahminiMi = puanYontemMap[r.id] === 'tek-ogrenci-tahmini';
-        const puanBadgeHtml = puan != null
-            ? (() => {
-                const puanSinif = puan >= 350 ? 'puan-yuksek' : puan >= 250 ? 'puan-orta' : 'puan-dusuk';
-                return `<span class="puan-badge ${puanSinif}" ${tahminiMi ? 'title="Standardizasyon tanımsız (tek öğrenci) — net oranına dayalı yaklaşık puan, resmi MEB puanı değildir."' : ''}>
-                    <span class="puan-badge-sayi">${puan.toFixed(1)}${tahminiMi ? ' *' : ''}</span>
-                    <span class="puan-badge-ad">${_h(formAd)}${tahminiMi ? ' (tahmini)' : ''}</span>
-                </span>`;
-            })()
-            : '';
-
-        // D/Y/B/N — net, puanHesapla() tarafından sınavın kendi yanlış cevap
-        // katsayısıyla (bkz. _sinavYanlisKatsayisi) zaten hesaplanmış hâliyle.
-        const d = p.toplamD || 0, y = p.toplamY || 0, b = p.toplamB || 0;
-        const net = (p.toplamNet != null ? p.toplamNet : (d - y / 3)).toFixed(2);
-
-        return `<div class="kagit-kart" data-id="${r.id}">
-            <div class="kagit-avatar" style="background:${renk};">${harf1}${harf2}</div>
-            <div class="kagit-bilgi">
-                <span class="kagit-ad">${_h(ad)}</span>
-                <small class="kagit-alt">${_h(ogr.sinif||'')} · ${_h(ogr.ogrenciNo||'—')}</small>
-                <div class="kagit-dvb">
-                    <span class="kagit-dvb-d">D:${d}</span>
-                    <span class="kagit-dvb-y">Y:${y}</span>
-                    <span class="kagit-dvb-b">B:${b}</span>
-                    <span class="kagit-dvb-n">N:${net}</span>
-                </div>
-            </div>
-            ${puanBadgeHtml}
-            <button class="menu-btn" data-id="${r.id}">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>
-            </button>
-        </div>`;
-    }).join('');
-
-    listEl.querySelectorAll('.kagit-kart').forEach(kart => {
-        kart.addEventListener('click', e => {
-            if (e.target.closest('.menu-btn')) return;
-            ogrDetayAc(kart.dataset.id);
-        });
-    });
-    listEl.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const r = DB.sonuclariGetir(_aktifSinavId).find(x => x.id === btn.dataset.id);
-            sheetOnay(`"${r?.ogrenci?.adSoyad || 'Bu kayıt'}" silinsin mi?`, 'Bu işlem geri alınamaz.', () => {
-                DB.sonucSil(_aktifSinavId, btn.dataset.id);
-                kagitlariRender();
-            });
-        });
-    });
-}
-
-// ════════════════════════════════════════════════════════════════
-// ÖĞRENCİ / KAĞIT DETAY
-// ════════════════════════════════════════════════════════════════
-let _ogrDetayDersler = [];
-
-function ogrDetayAc(sonucId) {
-    _aktifSonucId = sonucId;
-    const sonuc = DB.sonuclariGetir(_aktifSinavId).find(s => s.id === sonucId);
-    if (!sonuc) return;
-
-    const ogr = sonuc.ogrenci || {};
-    document.getElementById('ogrDetayAd').textContent     = ogr.adSoyad || 'Kağıt Detayı';
-    document.getElementById('ogrDetayAdSoyad').value = ogr.adSoyad || '';
-    document.getElementById('ogrDetayNo').value      = ogr.ogrenciNo || '';
-    document.getElementById('ogrDetaySinif').value   = ogr.sinif || '';
-    // YENİ (Ağustos 2026): kitapçık türü, sadece A/B kitapçıklı sınavlarda gösterilir.
-    const ktWrap = document.getElementById('ogrDetayKitapcikWrap');
-    if (ktWrap) {
-        const kitapcikli = _sinavKitapcikliMi(_aktifSinavId);
-        ktWrap.hidden = !kitapcikli;
-        if (kitapcikli) document.getElementById('ogrDetayKitapcik').value = (ogr.kitapcikTuru === 'A' || ogr.kitapcikTuru === 'B') ? ogr.kitapcikTuru : '';
-    }
-
-    // Resim (doğru/yanlış baloncuk renklendirmeli)
-    ogrDetayResimCiz(sonuc);
-
-    // YENİ (Ağustos 2026, Sedat isteği: "Bu uyarıyı ya kaldır ya da bir
-    // bilgi iconuna ekle") — teşhis kutusu artık varsayılan GİZLİ; sadece
-    // btnOgrDetayUyariToggle ile açılıp kapanıyor. İçerik yine her zaman
-    // hazırlanıyor (sonuc.uyarilar hep kaydediliyor), sadece görünürlüğü
-    // kullanıcı kontrolünde.
-    const uyariKutusu = document.getElementById('ogrDetayUyarilar');
-    if (uyariKutusu) {
-        uyariKutusu.textContent = (sonuc.uyarilar || []).join('\n') || '(uyarı yok)';
-        uyariKutusu.style.display = 'none';
-    }
-
-
-    // Ders listesi
-    _ogrDetayDersler = formDersleriniGetir(_aktifSinavId);
-    const dersSecici = document.getElementById('ogrDetayDers');
-    dersSecici.innerHTML = _ogrDetayDersler.map((d, i) => `<option value="${i}">${d.dersAdi}</option>`).join('');
-    dersSecici.selectedIndex = 0;
-    ogrDetayIzgaraCiz(sonuc);
-    ogrDetayIstatistikGuncelle(sonuc);
-
-    // İçerik/Resim sekme sıfırla
-    document.querySelectorAll('.ir-sekme').forEach(b => b.classList.toggle('aktif', b.dataset.ir === 'icerik'));
-    document.getElementById('irIcerik').classList.add('aktif');
-    document.getElementById('irResim').classList.remove('aktif');
-
-    ekranGit('ogrDetay');
-}
-
-/**
- * "Resim" sekmesinde taranan kağıt görüntüsünün ÜZERİNE, öğrencinin
- * işaretlediği/doğru cevabın hangi baloncuk olduğunu gösteren yarı
- * saydam renkli daireler çizer:
- *   - Yeşil: işaretlenen şık doğru
- *   - Kırmızı: işaretlenen şık yanlış
- *   - Sarı: yanlış (veya boş) cevaplı sorularda doğru şıkkın kendisi
- * "İçerik" sekmesindeki renklendirmeyle aynı mantığı kullanır.
- *
- * Baloncuk piksel koordinatları (sonuc.baloncukNoktalari) sadece bu
- * güncellemeden SONRA taranan kağıtlarda mevcuttur — eski kayıtlarda
- * yoksa düz görüntü gösterilir.
- * @param {object} sonuc
- */
-function ogrDetayResimCiz(sonuc) {
-    const resimAl = document.getElementById('ogrDetayResimAlani');
-    if (!resimAl) return;
-
-    if (!sonuc.kagitGoruntusu) {
-        resimAl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-faint);">Görüntü yok</div>';
-        return;
-    }
-
-    if (!sonuc.baloncukNoktalari || !sonuc.baloncukNoktalari.length) {
-        // Bu güncellemeden ÖNCE taranmış eski bir kayıt — baloncuk
-        // koordinatı yok, düz görüntü göster.
-        resimAl.innerHTML = `<img src="${sonuc.kagitGoruntusu}" alt="Taranan kağıt">`;
-        return;
-    }
-
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, sonuc.ogrenci?.kitapcikTuru));
-    const dogruMapTum = {}; // "dersAdi|soruNo" -> doğru harf
-    (anahtar.dersler || []).forEach(d => {
-        (d.anahtarlar || []).forEach(a => { dogruMapTum[d.dersAdi + '|' + a.soruNo] = a.dogru; });
-    });
-
-    const cevaplar = sonuc.cevaplar || {};
-    const kagitGoruntusu = sonuc.kagitGoruntusu;
-    const baloncukNoktalari = sonuc.baloncukNoktalari;
-
-    const img = new Image();
-    img.onload = () => {
-        // Ekran arada başka bir öğrenciye geçmiş olabilir — geç gelen
-        // yükleme eski görüntüyü üzerine çizmesin.
-        if (sonuc.id !== _aktifSonucId) return;
-
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-
-        baloncukNoktalari.forEach(soru => {
-            const dogruHarf = dogruMapTum[soru.ders + '|' + soru.soruNo];
-            if (!dogruHarf) return; // bu soru için cevap anahtarı girilmemiş
-            const isaretli = (cevaplar[soru.ders] || {})[soru.soruNo] || null;
-
-            soru.sikler.forEach(sik => {
-                let renk = null;
-                if (isaretli && sik.harf === isaretli) {
-                    renk = (isaretli === dogruHarf) ? 'rgba(76,175,80,0.55)' : 'rgba(244,67,54,0.55)';
-                } else if (sik.harf === dogruHarf && isaretli !== dogruHarf) {
-                    renk = 'rgba(255,193,7,0.6)'; // doğru cevap işareti (sarı)
-                }
-                if (!renk) return;
-                ctx.beginPath();
-                ctx.arc(sik.x, sik.y, sik.r, 0, Math.PI * 2);
-                ctx.fillStyle = renk;
-                ctx.fill();
-            });
-        });
-
-        resimAl.innerHTML = '';
-        resimAl.appendChild(canvas);
-    };
-    img.onerror = () => {
-        resimAl.innerHTML = `<img src="${kagitGoruntusu}" alt="Taranan kağıt">`;
-    };
-    img.src = kagitGoruntusu;
-}
-
-/**
- * "Resim" sekmesindeki kağıt görüntüsüne (öğrenci detayında dokununca)
- * tam ekran, iki parmakla yakınlaştırılabilir/kaydırılabilir bir
- * görüntüleyici açar — js/duyurular.js'deki duyuruLightboxAcById ile
- * AYNI pinch-zoom/pan deseni (tek görsel, ok/sayaç yok).
- * @param {string} kaynakUrl - img.src ya da canvas.toDataURL() çıktısı
- */
-function ogrDetayResimBuyutAc(kaynakUrl) {
-    if (!kaynakUrl) return;
-    const eski = document.getElementById('ogrResimBuyutOverlay');
-    if (eski) eski.remove();
-
-    const ov = document.createElement('div');
-    ov.id = 'ogrResimBuyutOverlay';
-    ov.style.cssText = 'position:fixed;inset:0;z-index:999998;background:rgba(0,0,0,.92);display:flex;flex-direction:column;';
-    ov.innerHTML = `
-      <div style="display:flex;justify-content:flex-end;padding:10px;">
-        <button id="orbKapat" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:20px;width:36px;height:36px;font-size:18px;cursor:pointer;">✕</button>
-      </div>
-      <div id="orbGovde" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;touch-action:none;">
-        <img id="orbResim" src="${kaynakUrl}" style="max-width:92%;max-height:92%;object-fit:contain;border-radius:6px;transform-origin:center center;">
-      </div>
-      <div style="text-align:center;color:rgba(255,255,255,.6);padding:10px;font-size:12px;">İki parmakla yakınlaştırın</div>
-    `;
-    document.body.appendChild(ov);
-
-    ov.querySelector('#orbKapat').onclick = () => ov.remove();
-
-    let zoom = 1, panX = 0, panY = 0;
-    const resimEl = ov.querySelector('#orbResim');
-    function transformUygula() {
-        resimEl.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
-    }
-
-    let baslangicX = null, baslangicY = null;
-    let surukleniyor = false, panBaslX = 0, panBaslY = 0;
-    let pinchBaslangic = 0, zoomBaslangic = 1;
-    const govdeEl = ov.querySelector('#orbGovde');
-    // DÜZELTME: pinch bitip iki parmak art arda kalkınca (her biri kendi
-    // touchend'ini "changedTouches.length===1" ile tetikler) bu YANLIŞLIKLA
-    // çift-dokunuş sanılıp zoom sıfırlanıyordu (yakınlaştırıp bırakınca eski
-    // haline dönme hatası). Artık çift-dokunuş SADECE tüm temas süresince
-    // tek parmak kalmış VE neredeyse hiç hareket etmemiş gerçek bir
-    // dokunuşta değerlendiriliyor.
-    let dokunmaBirDegdi = false, dokunmaBasX = 0, dokunmaBasY = 0, coklu = false;
-    let sonDokunma = 0;
-
-    function mesafe(t1, t2) {
-        const dx = t1.clientX - t2.clientX, dy = t1.clientY - t2.clientY;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    govdeEl.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 2) {
-            coklu = true;
-            pinchBaslangic = mesafe(e.touches[0], e.touches[1]);
-            zoomBaslangic = zoom;
-            surukleniyor = false;
-        } else if (e.touches.length === 1) {
-            coklu = false;
-            dokunmaBirDegdi = true;
-            dokunmaBasX = e.touches[0].clientX; dokunmaBasY = e.touches[0].clientY;
-            if (zoom > 1.02) {
-                surukleniyor = true;
-                baslangicX = e.touches[0].clientX;
-                baslangicY = e.touches[0].clientY;
-                panBaslX = panX; panBaslY = panY;
-            }
-        }
-    }, { passive: true });
-
-    govdeEl.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2) {
-            const m = mesafe(e.touches[0], e.touches[1]);
-            // Pinch bittiğinde otomatik sıfırlama YOK — kullanıcı elini
-            // çekene kadar yakınlaşmış halde kalır.
-            zoom = Math.min(4, Math.max(1, zoomBaslangic * (m / pinchBaslangic)));
-            transformUygula();
-        } else if (e.touches.length === 1) {
-            if (Math.abs(e.touches[0].clientX-dokunmaBasX) > 10 || Math.abs(e.touches[0].clientY-dokunmaBasY) > 10) dokunmaBirDegdi = false;
-            if (surukleniyor) {
-                panX = panBaslX + (e.touches[0].clientX - baslangicX);
-                panY = panBaslY + (e.touches[0].clientY - baslangicY);
-                transformUygula();
-            }
-        }
-    }, { passive: true });
-
-    govdeEl.addEventListener('touchend', (e) => {
-        surukleniyor = false;
-        if (e.touches.length > 0) return; // hâlâ parmak varsa (pinch'ten tek parmağa geçiş), değerlendirme sonraya
-        if (dokunmaBirDegdi && !coklu) {
-            const simdi = Date.now();
-            if (simdi - sonDokunma < 300) {
-                zoom = zoom > 1.02 ? 1 : 2.2;
-                panX = 0; panY = 0;
-                transformUygula();
-                sonDokunma = 0;
-            } else {
-                sonDokunma = simdi;
-            }
-        }
-        coklu = false;
-    });
-}
-
-function ogrDetayIzgaraCiz(sonuc) {
-    const dersSecici = document.getElementById('ogrDetayDers');
-    const alan       = document.getElementById('ogrDetaySorular');
-    if (!alan || !dersSecici || !_ogrDetayDersler.length) return;
-
-    const idx     = parseInt(dersSecici.value || '0', 10);
-    const ders    = _ogrDetayDersler[idx] || _ogrDetayDersler[0];
-    const dersAdi = ders.dersAdi;
-
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, sonuc.ogrenci?.kitapcikTuru));
-    const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi.trim().toLowerCase() === dersAdi.trim().toLowerCase());
-    const dogruMap = {};
-    (dKaydi?.anahtarlar || []).forEach(a => { dogruMap[a.soruNo] = a.dogru; });
-
-    const cevaplar     = sonuc.cevaplar || {};
-    const dersCevaplar = cevaplar[dersAdi] || {};
-
-    const harfler = [];
-    for (let i = 0; i < ders.sikSayisi; i++) harfler.push(String.fromCharCode(65 + i));
-
-    // DVB özeti
-    let d = 0, y = 0, b = 0;
-    for (let n = 1; n <= ders.soruSayisi; n++) {
-        const isr = dersCevaplar[n] || null;
-        const dg  = dogruMap[n] || null;
-        if (!isr) b++; else if (dg && isr === dg) d++; else y++;
-    }
-    const dvbEl = document.getElementById('ogrDetayDersDvb');
-    if (dvbEl) dvbEl.innerHTML =
-        `<span style="color:#4CAF50;">D:${d}</span>
-         <span style="color:#F44336;">Y:${y}</span>
-         <span>B:${b}</span>`;
-
-    alan.innerHTML = '';
-    for (let soruNo = 1; soruNo <= ders.soruSayisi; soruNo++) {
-        const isaretli = dersCevaplar[soruNo] || null;
-        const dogru    = dogruMap[soruNo] || null;
-        const anahtarVar = !!dogru;
-
-        const satir = document.createElement('div');
-        satir.className = 'ogr-soru-satiri';
-
-        const no = document.createElement('span');
-        no.className = 'soru-no';
-        if (anahtarVar && !isaretli)      no.style.color = 'var(--text-faint)';
-        else if (anahtarVar && isaretli === dogru) no.style.color = '#4CAF50';
-        else if (anahtarVar && isaretli !== dogru) no.style.color = '#F44336';
-        no.textContent = soruNo + ')';
-        satir.appendChild(no);
-
-        const grup = document.createElement('div');
-        grup.className = 'sik-grubu';
-        harfler.forEach(harf => {
-            const btn = document.createElement('button');
-            btn.type = 'button'; btn.className = 'sik-daire'; btn.textContent = harf;
-            if (anahtarVar) {
-                if (isaretli === harf && dogru === harf) btn.classList.add('ogr-dogru');
-                else if (isaretli === harf && dogru !== harf) btn.classList.add('ogr-yanlis');
-                else if (dogru === harf) btn.classList.add('dogru-border');
-            } else {
-                if (isaretli === harf) btn.classList.add('manuel-sec');
-            }
-            btn.addEventListener('click', () => {
-                const son = DB.sonuclariGetir(_aktifSinavId).find(s => s.id === _aktifSonucId);
-                if (!son) return;
-                if (!son.cevaplar) son.cevaplar = {};
-                if (!son.cevaplar[dersAdi]) son.cevaplar[dersAdi] = {};
-                const zaten = son.cevaplar[dersAdi][soruNo] === harf;
-                son.cevaplar[dersAdi][soruNo] = zaten ? null : harf;
-                son.puan = puanHesapla(son.cevaplar, DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, son.ogrenci?.kitapcikTuru)), _ogrDetayDersler, _sinavYanlisKatsayisi(_aktifSinavId));
-                DB.sonucKaydet(_aktifSinavId, son);
-                ogrDetayIzgaraCiz(son);
-                ogrDetayResimCiz(son);
-                ogrDetayIstatistikGuncelle(son);
-            });
-            grup.appendChild(btn);
-        });
-        satir.appendChild(grup);
-        alan.appendChild(satir);
-    }
-}
-
-function ogrDetayIstatistikGuncelle(sonuc) {
-    const p = sonuc.puan || {};
-    _s('ogrDetayNet',  p.toplamNet?.toFixed(2) ?? '0.0');
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    _s('ogrDetayFormPuan', `${sinav?.optikFormAd || 'Net'}: ${p.toplamNet?.toFixed(1) ?? '—'}`);
-    _s('ogrAltD', p.toplamD ?? 0);
-    _s('ogrAltY', p.toplamY ?? 0);
-    _s('ogrAltB', p.toplamB ?? 0);
-    _s('ogrAltN', p.toplamNet?.toFixed(2) ?? '0.0');
-}
-
-function ogrDetayKaydet() {
-    const son = DB.sonuclariGetir(_aktifSinavId).find(s => s.id === _aktifSonucId);
-    if (!son) return;
-    // YENİ (Ağustos 2026, Sedat isteği: "kitapçık türünü de değiştirip
-    // sonucu yeniden değerlendirme yapabileyim") — kitapçık türü
-    // değişirse doğru cevap anahtarı (A/B) da değişir, puan bu yeni
-    // anahtarla YENİDEN hesaplanmalı.
-    const ktEl = document.getElementById('ogrDetayKitapcik');
-    const yeniKitapcikTuru = (ktEl && !document.getElementById('ogrDetayKitapcikWrap')?.hidden) ? (ktEl.value || undefined) : son.ogrenci?.kitapcikTuru;
-    son.ogrenci = {
-        ...son.ogrenci,
-        adSoyad: document.getElementById('ogrDetayAdSoyad').value,
-        ogrenciNo: document.getElementById('ogrDetayNo').value,
-        sinif: document.getElementById('ogrDetaySinif').value,
-        kitapcikTuru: yeniKitapcikTuru,
-    };
-    const dersler = formDersleriniGetir(_aktifSinavId);
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, yeniKitapcikTuru));
-    son.puan = puanHesapla(son.cevaplar, anahtar, dersler, _sinavYanlisKatsayisi(_aktifSinavId));
-    DB.sonucKaydet(_aktifSinavId, son);
-    kagitlariRender();
-    ekranGit('sinavDetay');
-}
-
-// ── Öğrenci detay: numara girilince ad soyad / sınıfı otomatik doldur ──
-function _ogrDetayNoIleAra() {
-    const no = document.getElementById('ogrDetayNo').value.trim();
-    if (!no) return;
-    const bulunan = _manuelTumOgrenciler().find(o => String(o.ogrenciNo || '').trim() === no);
-    if (!bulunan) return;
-    document.getElementById('ogrDetayAdSoyad').value = bulunan.adSoyad || '';
-    document.getElementById('ogrDetaySinif').value   = bulunan.sinifAd || '';
-    document.getElementById('ogrDetayAd').textContent = bulunan.adSoyad || 'Kağıt Detayı';
-}
-
-// ════════════════════════════════════════════════════════════════
-// PUAN HESAPLAMA
-// ════════════════════════════════════════════════════════════════
-/**
- * @param {number|null} yanlisKatsayisi - kaç yanlış 1 doğruyu götürür (varsayılan 3 —
- *        LGS/Bursluluk resmî kuralı). null/0 verilirse yanlış hiç puan kaybettirmez.
- *        DÜZELTME: burada eskiden sabit y/4 kullanılıyordu, bu LGS/Bursluluk'ın resmî
- *        y/3 kuralıyla ÇELİŞİYORDU (kart rozetindeki net ile öğrenci detayındaki net
- *        farklı çıkıyordu) — artık tek doğru kaynak burası, varsayılan 3'e düzeltildi.
- */
-function puanHesapla(cevaplar, anahtar, dersler, yanlisKatsayisi = 3) {
-    const cezaHesapla = (y) => (yanlisKatsayisi ? y / yanlisKatsayisi : 0);
-    let topD = 0, topY = 0, topB = 0;
-    const dersDetay = [];
-    dersler.forEach(ders => {
-        const dersAdi  = ders.dersAdi;
-        const dKaydi   = (anahtar.dersler || []).find(d => d.dersAdi.trim().toLowerCase() === dersAdi.trim().toLowerCase());
-        const dogruMap = {};
-        (dKaydi?.anahtarlar || []).forEach(a => { dogruMap[a.soruNo] = a.dogru; });
-        const dersCevaplar = (cevaplar || {})[dersAdi] || {};
-        let d = 0, y = 0, b = 0;
-        for (let n = 1; n <= ders.soruSayisi; n++) {
-            const isr = dersCevaplar[n] || null;
-            const dg  = dogruMap[n] || null;
-            if (!isr) b++; else if (dg && isr === dg) d++; else y++;
-        }
-        const net = d - cezaHesapla(y);
-        topD += d; topY += y; topB += b;
-        dersDetay.push({ dersAdi, d, y, b, net: parseFloat(net.toFixed(2)) });
-    });
-    const toplamNet = topD - cezaHesapla(topY);
-    return { toplamD: topD, toplamY: topY, toplamB: topB, toplamNet: parseFloat(toplamNet.toFixed(2)), dersDetay };
-}
-
-/** Bir sınav kaydından, o sınavda kullanılacak yanlış cevap katsayısını okur (kayıtta yoksa 3 — LGS/Bursluluk resmî kuralı varsayılan olarak kullanılır). */
-function _sinavYanlisKatsayisi(sinavId) {
-    const sinav = DB.sinaviBul(sinavId);
-    if (!sinav) return 3;
-    return sinav.yanlisKatsayisi ?? 3;
-}
-
-// ════════════════════════════════════════════════════════════════
-// LGS PUANI RAPORU (bkz. js/lgsPuanHesapla.js)
-// ════════════════════════════════════════════════════════════════
-
-/**
- * DB'de saklanan (sınav türüne göre GLOBAL) puan referans ayarını
- * (bazı alanları boş/null olabilir) LgsPuanHesapla'nın beklediği "harici"
- * formatına çevirir — yalnızca dolu (geçerli sayı) alanlar dahil edilir,
- * böylece eksik olanlar tahmini hesaplanmaya devam eder.
- * @param {string} sinavTuru - 'lgs' | 'bursluluk'
- */
-function _lgsHariciVeriyiHazirla(sinavTuru) {
-    const ayar = DB.puanReferansGetir(sinavTuru);
-    const dersIstatistik = {};
-    Object.keys(ayar.dersIstatistik || {}).forEach(dersAdi => {
-        const d = ayar.dersIstatistik[dersAdi] || {};
-        const ort = parseFloat(d.ortalama), std = parseFloat(d.stdSapma);
-        if (Number.isFinite(ort) && Number.isFinite(std)) dersIstatistik[dersAdi] = { ortalama: ort, stdSapma: std };
-    });
-    const harici = { dersIstatistik };
-    const minT = parseFloat(ayar.minTasp), maxT = parseFloat(ayar.maxTasp);
-    if (Number.isFinite(minT)) harici.minTasp = minT;
-    if (Number.isFinite(maxT)) harici.maxTasp = maxT;
-    return harici;
-}
-
-function lgsPuanRaporunuAcVeGoster() {
-    const sinav      = DB.sinaviBul(_aktifSinavId);
-    const sinavTuru  = sinav?.optikFormId === 'bursluluk' ? 'bursluluk' : 'lgs';
-    const dersler    = formDersleriniGetir(_aktifSinavId);
-    const sonuclar   = DB.sonuclariGetir(_aktifSinavId);
-
-    const bosEl      = document.getElementById('lgsBosAlan');
-    const listEl     = document.getElementById('lgsOgrenciListesi');
-    const kaynakEl   = document.getElementById('lgsKaynakEtiketi');
-    const ayarBtn    = document.getElementById('btnLgsAyarToggle');
-    if (!listEl) return;
-
-    _s('lgsPuanBaslik', sinavTuru === 'bursluluk' ? 'İOKBS (Bursluluk) Puanı' : 'LGS Puanı');
-
-    if (sinavTuru === 'bursluluk') {
-
-        // ── Bursluluk (İOKBS): resmî yöntem, ortalama/std sapma/MinTASP/
-        // MaxTASP normalde sınava giren öğrencilerin kendi verisinden
-        // hesaplanır (bkz. ODSGM İOKBS Kılavuzu). Ama bu, sınıfta TEK
-        // öğrenci varsa (ya da tüm öğrenciler eşit TASP aldıysa) standardizasyon
-        // matematiksel olarak tanımsız kalır — o yüzden LGS'deki gibi
-        // "Referans Verilerini Gir" paneli burada da açık: kullanıcı geçmiş
-        // yıllardan bilinen (ya da tahmini) ortalama/std sapma/TASP aralığı
-        // girerse, TEK öğrencinin netiyle bile bir puan hesaplanabilir —
-        // dışarıdaki "sadece netlerimi giriyorum puanım çıkıyor" hesaplama
-        // araçlarının yaptığı da tam olarak bu (geçmiş yıl istatistiklerine
-        // dayalı simülasyon).
-        if (ayarBtn) ayarBtn.style.display = '';
-
-        const harici = _lgsHariciVeriyiHazirla('bursluluk');
-        const rapor = window.LgsPuanHesapla?.sinavRaporuHesapla(sonuclar, dersler, harici, 'bursluluk');
-        if (!rapor) return;
-
-        _s('lgsOzetSayi', rapor.gecerliSayisi);
-        _s('lgsOzetOrtalama', rapor.sinavOrtalamaMsp != null ? rapor.sinavOrtalamaMsp.toFixed(1) : '—');
-        _s('lgsOzetOrtalamaEtiket', 'Sınav Ortalaması (İOKBS Puanı)');
-
-        if (kaynakEl) {
-            kaynakEl.textContent = rapor.standardizeEdilemedi
-                ? 'Resmi İOKBS standardizasyonu tanımsız kaldı: en az 2 farklı öğrenci sonucu (birbirinden farklı TASP) gerekiyor — şu an tek öğrenci var ya da tüm öğrenciler eşit TASP aldı. Bu yüzden aşağıdaki puan(lar) resmi yöntemle DEĞİL, doğrudan net/soru oranına dayalı yaklaşık bir formülle hesaplandı (gerçek İOKBS puanı değildir). "MEB Verilerini Gir" panelinden geçmiş yıl ortalama/standart sapma/TASP aralığı girerseniz resmi yönteme göre daha güvenilir bir sonuç alınabilir.'
-                : (rapor.tamamiGercek
-                    ? 'Girilen referans verileriyle (geçmiş yıl/tahmini ortalama-standart sapma-TASP aralığı) hesaplandı — resmî sonuçtan farklı olabilir.'
-                    : 'İOKBS resmî yöntemiyle hesaplandı: Ham Puan = Doğru − Yanlış/3; ortalama, standart sapma ve TASP aralığı bu sınava giren öğrencilerin kendi verisinden alınır (bkz. ODSGM İOKBS Kılavuzu). Daha güvenilir bir tahmin için "MEB Verilerini Gir" panelinden geçmiş yıl değerlerini girebilirsiniz.');
-            kaynakEl.className = 'lgs-kaynak-etiketi';
-        }
-
-        if (!rapor.gecerliSayisi) {
-            bosEl.style.display = 'flex';
-            listEl.innerHTML = '';
-            ekranGit('lgsPuan');
-            return;
-        }
-        bosEl.style.display = 'none';
-
-        listEl.innerHTML = rapor.ogrenciler.map((o, i) => {
-            const ogr = o.ogrenci || {};
-            const detaySatirlari = o.dersPuanlari.map(d => `
-            <span>${_h(d.dersAdi)}</span>
-            <span>${d.net.toFixed(2)}</span>
-            <span>SP ${d.standartPuan.toFixed(1)}</span>
-            <span>×${d.katsayi} = ${d.agirlikliPuan.toFixed(1)}</span>
-        `).join('');
-            return `
-        <div class="lgs-ogr-satir" data-idx="${i}">
-            <div class="lgs-ogr-ust">
-                <span class="lgs-ogr-sira">${i + 1}</span>
-                <div class="lgs-ogr-ad">
-                    <strong>${_h(ogr.adSoyad || 'İsimsiz')}</strong>
-                    <small>${_h(ogr.sinif || '')}${ogr.sinif && ogr.ogrenciNo ? ' · ' : ''}${_h(ogr.ogrenciNo || '')}</small>
-                </div>
-                <span class="lgs-ogr-msp"${o.mspYontemi === 'tek-ogrenci-tahmini' ? ' title="Net/soru oranına dayalı yaklaşık puan — resmi İOKBS puanı değildir."' : ''}>${o.msp != null ? o.msp.toFixed(1) : '—'}${o.mspYontemi === 'tek-ogrenci-tahmini' ? ' *' : ''}</span>
-            </div>
-            <div class="lgs-ogr-detay">
-                <span class="lgs-detay-baslik">Ders</span>
-                <span class="lgs-detay-baslik">Net (HP)</span>
-                <span class="lgs-detay-baslik">Standart</span>
-                <span class="lgs-detay-baslik">Ağırlıklı</span>
-                ${detaySatirlari}
-            </div>
-        </div>`;
-        }).join('');
-
-        listEl.querySelectorAll('.lgs-ogr-satir').forEach(satir => {
-            satir.addEventListener('click', () => {
-                satir.querySelector('.lgs-ogr-detay')?.classList.toggle('acik');
-            });
-        });
-
-        ekranGit('lgsPuan');
-        return;
-    }
-
-    // ── LGS: sabit katsayılı tahmini puan formülü (ana puan) + resmî
-    // yöntemin (Türkiye ortalaması girilirse gerçek, girilmezse bu
-    // sınavdan tahmini) MSP'si ikincil bilgi olarak gösterilir.
-    if (ayarBtn) ayarBtn.style.display = '';
-
-    const harici      = _lgsHariciVeriyiHazirla('lgs');
-    const rapor       = window.LgsPuanHesapla?.sinavRaporuHesapla(sonuclar, dersler, harici, 'lgs');
-    const sabitListe  = window.LgsPuanHesapla?.sinavRaporuSabitFormulHesapla(sonuclar) || [];
-    if (!rapor) return;
-
-    // Sabit formül puanına göre öğrenci -> puan eşlemesi (sonucId ile)
-    const sabitPuanMap = {};
-    sabitListe.forEach(s => { sabitPuanMap[s.sonucId] = s; });
-
-    const sabitOrtalama = sabitListe.length
-        ? sabitListe.reduce((a, s) => a + s.puan, 0) / sabitListe.length
-        : 0;
-
-    _s('lgsOzetSayi', rapor.gecerliSayisi);
-    _s('lgsOzetOrtalama', sabitListe.length ? sabitOrtalama.toFixed(1) : '—');
-    _s('lgsOzetOrtalamaEtiket', 'Sınav Ortalaması (Tahmini Puan)');
-
-    if (kaynakEl) {
-        kaynakEl.textContent = 'Sabit katsayılı tahmini puan formülü kullanıldı (Türkiye ortalaması gerektirmez — deneme sınavı için uygundur).';
-        kaynakEl.className = 'lgs-kaynak-etiketi karma';
-    }
-
-    if (!rapor.gecerliSayisi) {
-        bosEl.style.display = 'flex';
-        listEl.innerHTML = '';
-        ekranGit('lgsPuan');
-        return;
-    }
-    bosEl.style.display = 'none';
-
-    const istatistikMap = {};
-    rapor.dersIstatistik.forEach(i => { istatistikMap[i.dersAdi] = i; });
-
-    // Sıralama: sabit formül puanına göre büyükten küçüğe (bu artık ana puan)
-    const siraliOgrenciler = rapor.ogrenciler.slice().sort((a, b) => {
-        const pa = sabitPuanMap[a.sonucId]?.puan ?? -Infinity;
-        const pb = sabitPuanMap[b.sonucId]?.puan ?? -Infinity;
-        return pb - pa;
-    });
-
-    listEl.innerHTML = siraliOgrenciler.map((o, i) => {
-        const ogr = o.ogrenci || {};
-        const sabit = sabitPuanMap[o.sonucId];
-        const detaySatirlari = o.dersPuanlari.map(d => {
-            const kaynak = istatistikMap[d.dersAdi]?.kaynak || 'tahmini';
-            const sabitDers = sabit?.dersNetleri.find(x => x.dersAdi === d.dersAdi);
-            return `
-            <span>${_h(d.dersAdi)}</span>
-            <span>${d.net.toFixed(2)}</span>
-            <span>×${sabitDers?.katsayi ?? '—'} = ${sabitDers ? sabitDers.katki.toFixed(1) : '—'}</span>
-            <span>SP ${d.standartPuan.toFixed(1)} <span class="lgs-ders-rozet ${kaynak}">${kaynak === 'gercek' ? 'MEB' : 'tahmini'}</span></span>
-        `;
-        }).join('');
-        return `
-        <div class="lgs-ogr-satir" data-idx="${i}">
-            <div class="lgs-ogr-ust">
-                <span class="lgs-ogr-sira">${i + 1}</span>
-                <div class="lgs-ogr-ad">
-                    <strong>${_h(ogr.adSoyad || 'İsimsiz')}</strong>
-                    <small>${_h(ogr.sinif || '')}${ogr.sinif && ogr.ogrenciNo ? ' · ' : ''}${_h(ogr.ogrenciNo || '')}</small>
-                </div>
-                <div class="lgs-ogr-puanlar">
-                    <span class="lgs-ogr-sabit">${sabit ? sabit.puan.toFixed(1) : '—'}</span>
-                    <span class="lgs-ogr-msp2">İst. MSP: ${o.msp != null ? o.msp.toFixed(1) : '—'}</span>
-                </div>
-            </div>
-            <div class="lgs-ogr-detay">
-                <span class="lgs-detay-baslik">Ders</span>
-                <span class="lgs-detay-baslik">Net</span>
-                <span class="lgs-detay-baslik">Sabit Katkı</span>
-                <span class="lgs-detay-baslik">İst. Standart</span>
-                ${detaySatirlari}
-            </div>
-        </div>`;
-    }).join('');
-
-    listEl.querySelectorAll('.lgs-ogr-satir').forEach(satir => {
-        satir.addEventListener('click', () => {
-            satir.querySelector('.lgs-ogr-detay')?.classList.toggle('acik');
-        });
-    });
-
-    ekranGit('lgsPuan');
-}
-
-/**
- * "MEB Verilerini Gir / Düzenle" panelini, sınavın dersleri ve DB'de kayıtlı
- * (varsa) değerlerle doldurarak render eder.
- */
-/**
- * Bir sınav türü için ders satırları + genel (MinTASP/MaxTASP) satırının
- * HTML'ini üretir — hem rapor ekranındaki panelde hem de global
- * hem rapor ekranındaki inline panelde (bkz. _lgsAyarPaneliniRender) ORTAK
- * kullanılır, tek bir yerden değiştirilebilsin diye.
- */
-function _puanReferansIcerikHtml(sinavTuru) {
-    const dersler = _formTuruDersleriniGetir(sinavTuru);
-    const ayar = DB.puanReferansGetir(sinavTuru);
-    const ortEtiket = sinavTuru === 'bursluluk' ? 'Referans Ortalama (geçmiş yıl/tahmini)' : 'Türkiye Ortalaması';
-
-    const dersSatirlari = dersler.map(d => {
-        const kayitli = (ayar.dersIstatistik || {})[d.dersAdi] || {};
-        return `
-        <div class="lgs-ayar-ders-satir">
-            <span class="lgs-ayar-ders-baslik">${_h(d.dersAdi)} <small style="color:var(--text-faint);font-weight:400;">(katsayı ${window.LgsPuanHesapla?.dersKatsayisi(d.dersAdi, sinavTuru) ?? '?'})</small></span>
-            <div class="lgs-ayar-inputlar">
-                <label>${_h(ortEtiket)}
-                    <input type="number" step="0.01" class="lgs-ayar-ort" data-ders="${_h(d.dersAdi)}" value="${kayitli.ortalama ?? ''}" placeholder="tahmini">
-                </label>
-                <label>Standart Sapma
-                    <input type="number" step="0.01" class="lgs-ayar-std" data-ders="${_h(d.dersAdi)}" value="${kayitli.stdSapma ?? ''}" placeholder="tahmini">
-                </label>
-            </div>
-        </div>`;
-    }).join('');
-
+function renderDersListesiYonetim(){
+  const hedef = document.getElementById('dersListesiYonetim');
+  if(!hedef) return;
+  hedef.innerHTML = dersListesi.length ? dersListesi.map(d => {
+    const saatOzet = d.haftalikSaatler
+      ? Object.entries(d.haftalikSaatler)
+          .sort((a,b) => +a[0] - +b[0])
+          .map(([sv, st]) => `${sv}.sınıf:${st}s`)
+          .join(' ')
+      : '';
     return `
-        ${dersSatirlari}
-        <div class="lgs-ayar-genel-satir">
-            <label>MinTASP
-                <input type="number" step="0.01" class="lgs-ayar-mintasp" value="${ayar.minTasp ?? ''}" placeholder="tahmini">
-            </label>
-            <label>MaxTASP
-                <input type="number" step="0.01" class="lgs-ayar-maxtasp" value="${ayar.maxTasp ?? ''}" placeholder="tahmini">
-            </label>
-        </div>`;
+    <div class="detay-row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <span style="flex:1;min-width:0;">
+        📚 ${escapeHtml(d.ad)}
+        ${d.kisaltma ? `<span style="font-size:11px;background:var(--accent-muted,#e0f2f2);color:var(--accent,#0A6E6E);border-radius:4px;padding:1px 5px;font-weight:600;margin-left:4px;">${escapeHtml(d.kisaltma)}</span>` : ''}
+        ${saatOzet ? `<div style="font-size:10px;color:var(--ink-muted);margin-top:2px;">⏱ ${escapeHtml(saatOzet)}</div>` : ''}
+      </span>
+      <div style="display:flex;gap:4px;flex-shrink:0;">
+        <button class="btn btn-ghost btn-sm" onclick="dersKisaltmaDuzenle('${d.id}','${escapeHtml(d.ad)}','${escapeHtml(d.kisaltma||'')}')" title="Düzenle">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="dersListesiSil('${d.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('') : '<p class="empty-state">Henüz ders eklenmedi.</p>';
 }
+/* Aynı ders adının (büyük/küçük harf duyarsız) birden fazla kez listede
+   bulunması — genelde aynı Excel dosyasının, dersListesi henüz yüklenmeden
+   (bkz. baglantilariKur düzeltmesi) art arda içe aktarılmasından kaynaklanır.
+   Bu fonksiyon her grup için: en çok haftalikSaatler verisine sahip kaydı
+   "asıl" seçer, diğerlerinin kısaltma/saatlerini onun üzerine birleştirir,
+   fazla kayıtları siler. Silmeden önce kullanıcıya özet gösterip onay ister. */
+function dersListesiYinelenenleriTemizle(){
+  if(!duzenleyebilir('sistemAyarlari')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  const gruplar = {};
+  dersListesi.forEach(d=>{
+    const anahtar = (d.ad||'').toLocaleLowerCase('tr').trim();
+    if(!anahtar) return;
+    (gruplar[anahtar] = gruplar[anahtar] || []).push(d);
+  });
+  const yinelenenGruplar = Object.values(gruplar).filter(g=>g.length>1);
+  if(!yinelenenGruplar.length){ toast('Yinelenen ders kaydı bulunamadı.'); return; }
 
-/** Bir konteynerdeki (panel/sheet bölümü) inputlardan okuyup sinavTuru'ne göre GLOBAL kaydeder. */
-function _puanReferansKaydet(konteyner, sinavTuru) {
-    const dersIstatistik = {};
-    konteyner.querySelectorAll('.lgs-ayar-ort').forEach(input => {
-        const dersAdi = input.dataset.ders;
-        const stdInput = konteyner.querySelector(`.lgs-ayar-std[data-ders="${CSS.escape(dersAdi)}"]`);
-        const ort = input.value.trim(), std = stdInput?.value.trim();
-        if (ort !== '' && std !== '') dersIstatistik[dersAdi] = { ortalama: parseFloat(ort), stdSapma: parseFloat(std) };
-    });
-    const minTaspVal = konteyner.querySelector('.lgs-ayar-mintasp')?.value.trim();
-    const maxTaspVal = konteyner.querySelector('.lgs-ayar-maxtasp')?.value.trim();
-    DB.puanReferansKaydet(sinavTuru, {
-        dersIstatistik,
-        minTasp: minTaspVal !== '' ? parseFloat(minTaspVal) : null,
-        maxTasp: maxTaspVal !== '' ? parseFloat(maxTaspVal) : null,
-    });
-}
+  const ozet = yinelenenGruplar.map(g=>`• ${g[0].ad} (${g.length} kayıt)`).join('\n');
+  const toplamSilinecek = yinelenenGruplar.reduce((t,g)=>t+g.length-1, 0);
+  if(!confirm(`Şu dersler birden fazla kez listede:\n\n${ozet}\n\nHer grupta bir kayıt tutulup diğerleri (${toplamSilinecek} kayıt) silinecek, kısaltma/haftalık saatler tutulan kayda birleştirilecek. Devam edilsin mi?`)) return;
 
-/** Bir kaydet butonuna kısa süreliğine "✓ Kaydedildi" yazdırıp eski hâline döndürür. */
-function _kaydetButonuOnayGoster(btn, eskiMetin) {
-    if (!btn) return;
-    btn.textContent = '✓ Kaydedildi';
-    setTimeout(() => { btn.textContent = eskiMetin; }, 1400);
-}
-
-/* Not: eskiden buradaki puanReferansSheetAc() fonksiyonu Sınavlar
-   ekranındaki ⋮ menüsünden açılan global "Puan Referans Ayarları"
-   sheet'ini yönetiyordu — o ayar artık ana uygulamanın admin'e özel
-   Ayarlar sekmesinde (bkz. js/optik-ayarlari.js), sheet ve ⋮ menü
-   butonu index.html'den kaldırıldı, bu yüzden fonksiyon da kaldırıldı. */
-
-function _lgsAyarPaneliniRender() {
-    const panel = document.getElementById('lgsAyarPanel');
-    if (!panel || !_aktifSinavId) return;
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    const sinavTuru = sinav?.optikFormId === 'bursluluk' ? 'bursluluk' : 'lgs';
-
-    panel.innerHTML = `
-        ${_puanReferansIcerikHtml(sinavTuru)}
-        <button type="button" class="lgs-ayar-kaydet-btn" id="btnLgsAyarKaydet">Kaydet ve Yeniden Hesapla</button>
-        <button type="button" class="lgs-ayar-temizle-btn" id="btnLgsAyarTemizle">Tüm girilen değerleri temizle (tahminiye dön)</button>
-        <small class="lgs-ayar-not">Bu değerler ${sinavTuru === 'bursluluk' ? 'Bursluluk' : 'LGS'} türündeki TÜM sınavlarda kullanılır (Ayarlar ⋮ menüsünden de düzenlenebilir).</small>
-    `;
-
-    document.getElementById('btnLgsAyarKaydet').addEventListener('click', () => {
-        _puanReferansKaydet(panel, sinavTuru);
-        lgsPuanRaporunuAcVeGoster();
-    });
-    document.getElementById('btnLgsAyarTemizle').addEventListener('click', () => {
-        DB.puanReferansKaydet(sinavTuru, { dersIstatistik: {}, minTasp: null, maxTasp: null });
-        _lgsAyarPaneliniRender();
-        lgsPuanRaporunuAcVeGoster();
-    });
-}
-
-// ════════════════════════════════════════════════════════════════
-// ANAHTAR SEKMESİ
-// ════════════════════════════════════════════════════════════════
-// YENİ (Ağustos 2026): Cevap Anahtarı ekranında o an DÜZENLENMEKTE olan
-// kitapçık türü ('A'/'B') — sadece kitapcikTuruSayisi=2 olan sınavlarda
-// anlamlı, tek kitapçıklı sınavlarda hep undefined kalır.
-let _anahtarAktifKitapcik;
-
-function anahtarPaneliniRender() {
-    if (!_aktifSinavId) return;
-    const kitapcikli = _sinavKitapcikliMi(_aktifSinavId);
-    const secici = document.getElementById('anahKitapcikSecici');
-    if (secici) secici.hidden = !kitapcikli;
-    // YENİ (Ağustos 2026): "Kitapçık Türü Değiştir" düğmesinin etiketi.
-    const kitapcikTuruEtiket = document.getElementById('kitapcikTuruEtiket');
-    if (kitapcikTuruEtiket) kitapcikTuruEtiket.textContent = kitapcikli ? 'A/B' : 'Tek';
-    if (kitapcikli && _anahtarAktifKitapcik !== 'A' && _anahtarAktifKitapcik !== 'B') {
-        _anahtarAktifKitapcik = 'A';
-    } else if (!kitapcikli) {
-        _anahtarAktifKitapcik = undefined;
-    }
-    const btnA = document.getElementById('btnAnahKitapcikA');
-    const btnB = document.getElementById('btnAnahKitapcikB');
-    if (btnA && btnB) {
-        btnA.classList.toggle('aktif', _anahtarAktifKitapcik === 'A');
-        btnB.classList.toggle('aktif', _anahtarAktifKitapcik === 'B');
-    }
-    const dersler = formDersleriniGetir(_aktifSinavId);
-    const dersSecici = document.getElementById('anahDersSecici');
-    if (!dersSecici) return;
-    dersSecici.innerHTML = dersler.map((d, i) =>
-        `<option value="${i}">${d.dersAdi} (${d.soruSayisi} soru)</option>`
-    ).join('');
-    dersSecici.selectedIndex = 0;
-    anahtarIzgaraCiz();
-}
-
-function anahtarIzgaraCiz() {
-    if (!_aktifSinavId) return;
-    const dersSecici = document.getElementById('anahDersSecici');
-    const alan       = document.getElementById('anahSoruListesi');
-    if (!dersSecici || !alan) return;
-    const dersler = formDersleriniGetir(_aktifSinavId);
-    const idx     = parseInt(dersSecici.value || '0', 10);
-    const ders    = dersler[idx] || dersler[0];
-    if (!ders) return;
-
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
-    const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi.trim().toLowerCase() === ders.dersAdi.trim().toLowerCase());
-    // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "hiçbiri
-    // görünmüyor" — dışa aktarımda veri var ama ızgara boş) — eşleşme
-    // bulunamazsa, TAM OLARAK neyin neyle karşılaştırıldığını konsola
-    // yazdır. Konsola erişemiyorsan, bu satırı geçici olarak
-    // console.warn yerine alert yapıp tekrar dener misin?
-    const cevapMap = {};
-    (dKaydi?.anahtarlar || []).forEach(a => { cevapMap[a.soruNo] = a.dogru; });
-
-    const harfler = [];
-    for (let i = 0; i < ders.sikSayisi; i++) harfler.push(String.fromCharCode(65 + i));
-
-    alan.innerHTML = '';
-    for (let soruNo = 1; soruNo <= ders.soruSayisi; soruNo++) {
-        const secili = cevapMap[soruNo] || null;
-        const satir = document.createElement('div');
-        satir.className = 'anahtar-satir';
-
-        const no = document.createElement('span');
-        no.className = 'soru-no'; no.textContent = soruNo + ')'; satir.appendChild(no);
-
-        const grup = document.createElement('div');
-        grup.className = 'sik-grubu';
-        harfler.forEach(harf => {
-            const btn = document.createElement('button');
-            btn.type = 'button'; btn.className = 'sik-daire'; btn.textContent = harf;
-            if (secili === harf) btn.classList.add('anahtar-sec');
-            btn.addEventListener('click', () => {
-                const zaten = btn.classList.contains('anahtar-sec');
-                grup.querySelectorAll('.sik-daire').forEach(b => b.classList.remove('anahtar-sec'));
-                const yeniCevap = zaten ? null : harf;
-                if (!zaten) btn.classList.add('anahtar-sec');
-                _anahtarCevapKaydet(ders.dersAdi, soruNo, yeniCevap);
-                // Sonuçları yeniden hesapla
-                _tumSonuclariYenidenHesapla();
-            });
-            grup.appendChild(btn);
+  (async ()=>{
+    let birlesenGrup = 0, silinen = 0;
+    try{
+      for(const grup of yinelenenGruplar){
+        // En çok seviye bilgisi olan (en "dolu") kaydı asıl kayıt seç.
+        const asil = [...grup].sort((a,b)=>
+          Object.keys(b.haftalikSaatler||{}).length - Object.keys(a.haftalikSaatler||{}).length
+        )[0];
+        let birlesikSaatler = { ...(asil.haftalikSaatler||{}) };
+        let kisaltma = asil.kisaltma || '';
+        grup.forEach(d=>{
+          if(d.id===asil.id) return;
+          if(!kisaltma && d.kisaltma) kisaltma = d.kisaltma;
+          birlesikSaatler = { ...(d.haftalikSaatler||{}), ...birlesikSaatler }; // asıl kayıttaki değerler öncelikli
         });
-        satir.appendChild(grup);
-
-        const silBtn = document.createElement('button');
-        silBtn.className = 'menu-btn'; silBtn.type = 'button';
-        silBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-        silBtn.addEventListener('click', () => { _anahtarCevapKaydet(ders.dersAdi, soruNo, null); anahtarIzgaraCiz(); _tumSonuclariYenidenHesapla(); });
-        satir.appendChild(silBtn);
-        alan.appendChild(satir);
-    }
-}
-
-function _anahtarCevapKaydet(dersAdi, soruNo, dogru) {
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
-    if (!anahtar.dersler) anahtar.dersler = [];
-    let ders = anahtar.dersler.find(d => d.dersAdi === dersAdi);
-    if (!ders) { ders = { dersAdi, anahtarlar: [] }; anahtar.dersler.push(ders); }
-    ders.anahtarlar = ders.anahtarlar.filter(a => a.soruNo !== soruNo);
-    if (dogru) ders.anahtarlar.push({ soruNo, dogru });
-    ders.anahtarlar.sort((a, b) => a.soruNo - b.soruNo);
-    DB.anahtarKaydet(_aktifSinavId, anahtar, _anahtarAktifKitapcik);
-}
-
-function _tumSonuclariYenidenHesapla() {
-    // KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat isteği: "cevap anahtarı
-    // bile farklı kitapçık türüne göre ikili girilmeli") — önceden TEK bir
-    // anahtar döngü DIŞINDA okunup TÜM öğrencilere uygulanıyordu; A/B
-    // sınavlarda bu, kitapçık türü B olan öğrencilerin A anahtarıyla (veya
-    // tersi) yanlış puanlanması demekti. Artık her öğrencinin KENDİ
-    // kağıdından okunan kitapçık türüne göre doğru anahtar seçiliyor
-    // (aynı türden anahtarlar tekrar tekrar okunmasın diye küçük bir
-    // önbellekle).
-    const kitapcikli = _sinavKitapcikliMi(_aktifSinavId);
-    const anahtarOnbellek = new Map(); // kitapcikTuru (veya 'tek') -> anahtar
-    function anahtariGetirOnbellekli(kitapcikTuru) {
-        const anahtarKey = kitapcikTuru || 'tek';
-        if (!anahtarOnbellek.has(anahtarKey)) {
-            anahtarOnbellek.set(anahtarKey, DB.anahtariGetir(_aktifSinavId, kitapcikTuru));
+        const guncelVeri = {};
+        if(kisaltma !== (asil.kisaltma||'')) guncelVeri.kisaltma = kisaltma;
+        if(JSON.stringify(birlesikSaatler) !== JSON.stringify(asil.haftalikSaatler||{})) guncelVeri.haftalikSaatler = birlesikSaatler;
+        if(Object.keys(guncelVeri).length) await db.collection(COL.dersListesi).doc(asil.id).update(guncelVeri);
+        for(const d of grup){
+          if(d.id===asil.id) continue;
+          await db.collection(COL.dersListesi).doc(d.id).delete();
+          silinen++;
         }
-        return anahtarOnbellek.get(anahtarKey);
-    }
-    const dersler = formDersleriniGetir(_aktifSinavId);
-    const yanlisKatsayisi = _sinavYanlisKatsayisi(_aktifSinavId);
-    DB.sonuclariGetir(_aktifSinavId).forEach(sonuc => {
-        const anahtar = kitapcikli
-            ? anahtariGetirOnbellekli(_sonucAnahtarTuru(_aktifSinavId, sonuc.ogrenci?.kitapcikTuru))
-            : anahtariGetirOnbellekli(undefined);
-        sonuc.puan = puanHesapla(sonuc.cevaplar, anahtar, dersler, yanlisKatsayisi);
-        DB.sonucKaydet(_aktifSinavId, sonuc);
-    });
-    if (_aktifSekme === 'kagitlar') kagitlariRender();
+        birlesenGrup++;
+      }
+      toast(`${birlesenGrup} ders grubu birleştirildi, ${silinen} yinelenen kayıt silindi.`);
+    }catch(err){ toast('Hata: '+err.message); }
+  })();
+}
+function dersSelectHtml(id, seciliDeger){
+  const secili = seciliDeger || '';
+  const varMi = !secili || dersListesi.some(d=>d.ad===secili);
+  return `<select id="${id}" onchange="dersSelectDegisti('${id}')">
+    <option value="">Seçiniz</option>
+    ${dersListesi.map(d=>`<option value="${escapeHtml(d.ad)}" ${d.ad===secili?'selected':''}>${escapeHtml(d.ad)}</option>`).join('')}
+    ${!varMi && secili ? `<option value="${escapeHtml(secili)}" selected>${escapeHtml(secili)} (listede yok)</option>` : ''}
+    <option value="${DERS_SELECT_YENI}">➕ Yeni Ders Ekle…</option>
+  </select>`;
+}
+function dersSelectDegisti(id){
+  const el = document.getElementById(id);
+  if(!el || el.value !== DERS_SELECT_YENI) return;
+  const ad = prompt('Yeni ders adı:');
+  if(!ad || !ad.trim()){ el.value=''; return; }
+  const temizAd = ad.trim();
+  db.collection(COL.dersListesi).add({ ad: temizAd }).then(()=>{
+    el.outerHTML = dersSelectHtml(id, temizAd);
+  }).catch(err=>toast('Hata: '+err.message));
 }
 
-// ════════════════════════════════════════════════════════════════
-// KAMERA
-// ════════════════════════════════════════════════════════════════
-let _seviyeAktif = false;
-let _canliModAktif = false;   // canlı tarama modu açık mı (camera.js ile senkron tutulur)
-let _canliKartZamanlayici = null;
-
-function kameraAc() {
-    const ov = document.getElementById('kameraOverlay');
-    if (!ov) return;
-    // Taramadan hemen önce köprüyü tazele (bkz. galeriSecimIsle'daki aynı not).
-    _optikAktifFormGuncelle();
-    ov.hidden = false;
-    const s = document.getElementById('start');
-    if (s) s.click();
-    _seviyeBaslat();
-    document.getElementById('kameraFormAdi').textContent = DB.sinaviBul(_aktifSinavId)?.optikFormAd || 'LGS';
+/* ---------- BRANŞ LİSTESİ ---------- */
+function bransListesiEkle(){
+  const ad = prompt('Yeni branş adı (örn: Sınıf Öğretmenliği):');
+  if(!ad || !ad.trim()) return;
+  if(bransListesi.some(d=>(d.ad||'').toLocaleLowerCase('tr')===ad.trim().toLocaleLowerCase('tr'))){ toast('Bu branş zaten listede.'); return; }
+  if(!duzenleyebilir('sistemAyarlari')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  db.collection(COL.bransListesi).add({ ad: ad.trim() })
+    .then(()=>toast('Branş eklendi.')).catch(err=>toast('Hata: '+err.message));
 }
-
-function kameraKapat() {
-    const ov = document.getElementById('kameraOverlay');
-    if (!ov) return;
-    const st = document.getElementById('stop');
-    if (st) st.click();
-    ov.hidden = true;
-    _seviyeKaldir();
-    _canliModAktif = false;
-    if (_canliKartZamanlayici) { clearTimeout(_canliKartZamanlayici); _canliKartZamanlayici = null; }
-    const kart = document.getElementById('canliSonucKart');
-    if (kart) kart.hidden = true;
-    const ayarSheet = document.getElementById('kameraAyarSheet');
-    if (ayarSheet) ayarSheet.hidden = true;
+function bransListesiSil(id){
+  if(!duzenleyebilir('sistemAyarlari')){ toast('Bu işlem için yetkiniz yok.'); return; }
+  if(!confirm('Bu branşı listeden silmek istiyor musunuz? (Daha önce seçilmiş kayıtlar etkilenmez.)')) return;
+  db.collection(COL.bransListesi).doc(id).delete().catch(err=>toast('Hata: '+err.message));
 }
-
-function _seviyeGuncelle(e) {
-    const halka = document.getElementById('seviyeHalka');
-    const nokta = document.getElementById('seviyeNokta');
-    const mesaj = document.getElementById('seviyeMesaj');
-    if (!halka || !nokta) return;
-    const beta  = Math.max(-90, Math.min(90,  e.beta  || 0));
-    const gamma = Math.max(-45, Math.min(45,  e.gamma || 0));
-    const x = (gamma / 45) * 20, y = (beta / 90) * 20;
-    const duz = Math.abs(beta) < 10 && Math.abs(gamma) < 10;
-    nokta.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-    halka.className = 'seviye-halka ' + (duz ? 'duz' : 'egik');
-    nokta.className = 'seviye-nokta ' + (duz ? 'duz' : 'egik');
-    if (mesaj) mesaj.textContent = duz ? '✓ Düz' : 'Düzleştirin';
+function renderBransListesiYonetim(){
+  const hedef = document.getElementById('bransListesiYonetim');
+  if(!hedef) return;
+  hedef.innerHTML = bransListesi.length ? bransListesi.map(d=>`
+    <div class="detay-row" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>🎓 ${escapeHtml(d.ad)}</span>
+      <button class="btn btn-ghost btn-sm" onclick="bransListesiSil('${d.id}')">🗑️</button>
+    </div>`).join('') : '<p class="empty-state">Henüz branş eklenmedi.</p>';
 }
-function _seviyeBaslat() {
-    if (_seviyeAktif) return;
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission().then(r => {
-            if (r === 'granted') { window.addEventListener('deviceorientation', _seviyeGuncelle); _seviyeAktif = true; }
-        }).catch(() => {});
-    } else {
-        window.addEventListener('deviceorientation', _seviyeGuncelle);
-        _seviyeAktif = true;
-    }
+function bransSelectHtml(id, seciliDeger){
+  const secili = seciliDeger || '';
+  const varMi = !secili || bransListesi.some(d=>d.ad===secili);
+  return `<select id="${id}" onchange="bransSelectDegisti('${id}')">
+    <option value="">Seçiniz</option>
+    ${bransListesi.map(d=>`<option value="${escapeHtml(d.ad)}" ${d.ad===secili?'selected':''}>${escapeHtml(d.ad)}</option>`).join('')}
+    ${!varMi && secili ? `<option value="${escapeHtml(secili)}" selected>${escapeHtml(secili)} (listede yok)</option>` : ''}
+    <option value="${BRANS_SELECT_YENI}">➕ Yeni Branş Ekle…</option>
+  </select>`;
 }
-function _seviyeKaldir() {
-    if (!_seviyeAktif) return;
-    window.removeEventListener('deviceorientation', _seviyeGuncelle);
-    _seviyeAktif = false;
+function bransSelectDegisti(id){
+  const el = document.getElementById(id);
+  if(!el || el.value !== BRANS_SELECT_YENI) return;
+  const ad = prompt('Yeni branş adı:');
+  if(!ad || !ad.trim()){ el.value=''; return; }
+  const temizAd = ad.trim();
+  db.collection(COL.bransListesi).add({ ad: temizAd }).then(()=>{
+    el.outerHTML = bransSelectHtml(id, temizAd);
+  }).catch(err=>toast('Hata: '+err.message));
 }
-
-// OMR sonucu gelince
-window.addEventListener('omrSonucHazir', e => {
-    _omrSonucuisle(e.detail);
-});
-window.addEventListener('omrOkumaTamamlandi', () => {
-    // Canlı tarama modunda kamerayı KAPATMA — döngü otomatik olarak
-    // sıradaki kağıt için devam eder (bkz. camera.js _canliOtomatikOku).
-    if (_canliModAktif) return;
-    kameraKapat();
-});
-
-function _omrSonucuisle(raw) {
-    if (!raw || !_aktifSinavId) return;
-    const dersler = formDersleriniGetir(_aktifSinavId);
-    // NOT: anahtar burada değil, aşağıda kimlik.kitapcikTuru netleştikten
-    // SONRA okunuyor (bkz. "YENİ: kitapçık türüne duyarlı anahtar" notu) —
-    // A/B sınavlarda hangi anahtarın kullanılacağı kağıttan okunan
-    // kitapçık harfine bağlı.
-
-    // omrEngine dizi dondurur: [{ders, soruNo, isaretliSik}]
-    // puanHesapla nesne bekler: {dersAdi: {soruNo: harf}}
-    const cevaplarDizi = Array.isArray(raw.cevaplar) ? raw.cevaplar : [];
-    const cevaplarNesne = {};
-    cevaplarDizi.forEach(c => {
-        if (!c.ders) return;
-        if (!cevaplarNesne[c.ders]) cevaplarNesne[c.ders] = {};
-        if (c.isaretliSik) cevaplarNesne[c.ders][c.soruNo] = c.isaretliSik;
-    });
-
-    // Numara: "0103" -> "103" (leading zero kaldir)
-    const kimlik = Object.assign({}, raw.ogrenciKimlik || {});
-    if (kimlik.ogrenciNo) {
-        const parsed = parseInt(kimlik.ogrenciNo, 10);
-        if (!isNaN(parsed)) kimlik.ogrenciNo = String(parsed);
-    }
-
-    // KÖK NEDEN DÜZELTMESİ (Sedat isteği, Ağustos 2026 — "hangi sınıf
-    // seçili ise o sınıftaki öğrencilerle eşleştirsin, değilse uyarı
-    // versin"): eşleştirme önceden TÜM okuldaki öğrenciler arasında
-    // yapılıyordu — aynı numara İlkokul'da ve Ortaokul'da (veya iki farklı
-    // sınıfta) farklı öğrencilere ait olabileceğinden yanlış öğrenciyle
-    // sessizce eşleşme riski vardı. Artık SADECE bu sınava atanmış
-    // (sinav.ogrenciIdleri) öğrenciler arasında aranıyor; atanmışlar
-    // arasında bulunamazsa (numara hiç yok VEYA başka bir öğrenciye ait
-    // ama bu sınava seçili değil) ad/sınıf otomatik doldurulmuyor, bunun
-    // yerine kağıda görünür bir uyarı ekleniyor.
-    const eslestimeUyarilari = [];
-    // YENİ (Ağustos 2026, Sedat isteği): A/B kitapçıklı bir sınavda kağıttan
-    // kitapçık türü okunamazsa (K baloncuğu boş/belirsiz), doğru cevap
-    // anahtarı belirlenemez — sessizce yanlış (ya da boş) anahtarla
-    // puanlamak yerine görünür bir uyarı veriyoruz.
-    if (_sinavKitapcikliMi(_aktifSinavId) && kimlik.kitapcikTuru !== 'A' && kimlik.kitapcikTuru !== 'B') {
-        eslestimeUyarilari.push('⚠ Bu sınav A/B kitapçık türü kullanıyor ama kağıttan kitapçık türü okunamadı — hangi anahtarın kullanılacağı belirsiz, puanlama yanlış olabilir. Kitapçık işaretini ve taramayı kontrol edin.');
-    }
-    if (kimlik.ogrenciNo) {
-        try {
-            const sinav = DB.sinaviBul(_aktifSinavId);
-            const atanmisIdler = sinav?.ogrenciIdleri || [];
-            const tumOgrenciler = _manuelTumOgrenciler();
-            const atanmisOgrenciler = tumOgrenciler.filter(o => atanmisIdler.includes(o.id));
-            const eslesme = atanmisOgrenciler.find(o =>
-                String(parseInt(o.ogrenciNo || '0', 10)) === kimlik.ogrenciNo
-            );
-            if (eslesme) {
-                kimlik.adSoyad = eslesme.adSoyad || kimlik.adSoyad || '';
-                kimlik.sinif   = eslesme.sinifAd || kimlik.sinif || '';
-            } else {
-                const baskaOgrencideVarMi = tumOgrenciler.some(o =>
-                    String(parseInt(o.ogrenciNo || '0', 10)) === kimlik.ogrenciNo
-                );
-                eslestimeUyarilari.push(
-                    baskaOgrencideVarMi
-                        ? `⚠ Numara ${kimlik.ogrenciNo}, bu sınava atanmış öğrenciler arasında yok — aynı numaralı BAŞKA bir öğrenci var ama bu sınava seçili değil (farklı sınıf/kademe olabilir). Ad/sınıf otomatik doldurulamadı, elle kontrol edin.`
-                        : `⚠ Numara ${kimlik.ogrenciNo} ile eşleşen hiçbir öğrenci bulunamadı. Ad/sınıf otomatik doldurulamadı, elle kontrol edin.`
-                );
-            }
-        } catch(e) {}
-    }
-
-    const sonuc = {
-        id:            'sonuc_' + Date.now(),
-        ogrenci:       kimlik,
-        cevaplar:      cevaplarNesne,
-        kagitGoruntusu:raw.kagitGoruntusu || null,
-        baloncukNoktalari: raw.baloncukNoktalari || null,
-        // YENİ: omrEngine.js'in ürettiği teşhis uyarıları (köşe tutarlılık
-        // artıkları, dışlanan köşe vb.) — önceden hiç yakalanmıyordu, sadece
-        // browser console'a gidip kayboluyordu. Kağıt Detayı ekranında
-        // gösterilecek (bkz. ogrDetayAc).
-        uyarilar:      [...eslestimeUyarilari, ...(Array.isArray(raw.uyarilar) ? raw.uyarilar : [])],
-        elleGirildi:   false,
-        tarih:         new Date().toLocaleDateString('tr-TR'),
-    };
-    // YENİ (Ağustos 2026): kitapçık türüne duyarlı anahtar — kağıttan
-    // OKUNAN kitapcikTuru'na göre A/B'den doğrusu seçiliyor (bkz.
-    // _sonucAnahtarTuru notu, dosya üstü).
-    sonuc.puan = puanHesapla(sonuc.cevaplar, DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, kimlik.kitapcikTuru)), dersler, _sinavYanlisKatsayisi(_aktifSinavId));
-
-    // Aynı öğrencinin (öğrenci numarasıyla) bu sınav için daha önce
-    // kaydedilmiş bir formu var mı? Varsa sessizce ikinci bir satır daha
-    // eklemek yerine kullanıcıya SOR — "Kağıtlar" listesinde aynı
-    // öğrenci için iki kayıt birden görünmesin (bkz. kullanıcı geri
-    // bildirimi: aynı formu tekrar okutunca yeni kayıt oluşuyordu).
-    const noStr = (kimlik.ogrenciNo || '').toString().trim();
-    const mevcut = noStr
-        ? DB.sonuclariGetir(_aktifSinavId).find(s => (s.ogrenci?.ogrenciNo || '').toString().trim() === noStr)
-        : null;
-
-    if (mevcut) {
-        sheetOnay(
-            `${mevcut.ogrenci?.adSoyad || 'Bu öğrencinin'} zaten kayıtlı bir optik formu var`,
-            'Bu numaraya (' + noStr + ') ait bir kayıt zaten mevcut. Yeni taramayla önceki kayıt güncellensin mi? Vazgeçerseniz bu tarama kaydedilmez, önceki kayıt aynen kalır.',
-            () => {
-                sonuc.id = mevcut.id; // aynı id ile kaydet = DB.sonucKaydet üzerine yazar
-                DB.sonucKaydet(_aktifSinavId, sonuc);
-                kagitlariRender();
-                if (_canliModAktif) _canliKartGoster(sonuc);
-            },
-            'Güncelle'
-        );
-        return;
-    }
-
-    DB.sonucKaydet(_aktifSinavId, sonuc);
-    kagitlariRender();
-    if (_canliModAktif) _canliKartGoster(sonuc);
+function todayISO(){ const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function formatTarih(iso){ if(!iso) return ''; const p = iso.split('-'); return p.length===3 ? `${p[2]}.${p[1]}.${p[0]}` : iso; }
+/* DÜZELTME: Tam bir ISO zaman damgasını (UTC, ör. new Date().toISOString()
+   ile üretilmiş "2026-07-03T14:30:00.000Z") TARAYICI YEREL saatine göre
+   "DD.MM.YYYY" ve "HH:MM" olarak ayırır. Ham .slice(0,10)/.slice(11,16)
+   kullanmak UTC'yi olduğu gibi gösterir — Türkiye'de (UTC+3) bu her zaman
+   3 saat geriden gösterir ve gece yarısına yakın saatlerde YANLIŞ GÜNÜ
+   bile gösterebilir. formatTarih() sadece SAF tarih (saatsiz, ör.
+   "2026-07-03") değerleri için kullanılmalı; tam zaman damgaları için
+   bu fonksiyon kullanılmalı. */
+function isoYereleCevir(iso){
+  if(!iso) return { tarih:'', saat:'' };
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return { tarih:'', saat:'' };
+  const tarih = `${pad2(d.getDate())}.${pad2(d.getMonth()+1)}.${d.getFullYear()}`;
+  const saat = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  return { tarih, saat };
 }
-
-/** Canlı tarama modunda: otomatik kaydedilen sonucu birkaç saniye gösteren kart. */
-function _canliKartGoster(sonuc) {
-    const kart = document.getElementById('canliSonucKart');
-    if (!kart) return;
-    const o = sonuc.ogrenci || {};
-    _s('kskAd', o.adSoyad || '—');
-    _s('kskNumara', o.ogrenciNo || '—');
-    _s('kskSinif', o.sinif || '—');
-    const p = sonuc.puan || {};
-    const toplamSoru = (p.toplamD || 0) + (p.toplamY || 0) + (p.toplamB || 0);
-    const yuzde = toplamSoru ? ((p.toplamD || 0) / toplamSoru * 100) : null;
-    _s('kskPuan', yuzde != null ? yuzde.toFixed(1) : '—');
-    _s('kskNet', p.toplamNet != null ? p.toplamNet.toFixed(2) : '—');
-    kart.dataset.sonucId = sonuc.id;
-    kart.hidden = false;
-
-    if (_canliKartZamanlayici) clearTimeout(_canliKartZamanlayici);
-    _canliKartZamanlayici = setTimeout(() => { kart.hidden = true; }, 3500);
-}
-
-// ════════════════════════════════════════════════════════════════
-// MANUEL KAĞIT GİRİŞİ
-// ════════════════════════════════════════════════════════════════
-let _manuelCevaplar = {};
-let _manuelDersler  = [];
-let _manuelSeciliOgrenciId = null;
-
-function manuelKagitAc() {
-    _manuelCevaplar = {};
-    _manuelDersler  = formDersleriniGetir(_aktifSinavId);
-    _manuelSeciliOgrenciId = null;
-
-    document.getElementById('manuelAdSoyad').value = '';
-    document.getElementById('manuelNo').value = '';
-    document.getElementById('manuelSinif').value = '';
-    document.getElementById('manuelKitapcik').value = '';
-
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    document.getElementById('manuelFormAdi').textContent = sinav?.optikFormAd || '—';
-    document.getElementById('manuelNet').textContent = '0.0';
-
-    const dersEl = document.getElementById('manuelDers');
-    dersEl.innerHTML = _manuelDersler.map((d, i) => `<option value="${i}">${d.dersAdi}</option>`).join('');
-    dersEl.selectedIndex = 0;
-
-    // Sınıftan seç butonu — sadece ana uygulama içinden açıldığında (öğrenci verisi varsa) göster
-    const siniftanSecWrap = document.getElementById('manuelSiniftanSecWrap');
-    const sinifListesiKap = document.getElementById('manuelSinifListesi');
-    if (siniftanSecWrap) siniftanSecWrap.style.display = veriKaynagi() ? 'block' : 'none';
-    if (sinifListesiKap) { sinifListesiKap.style.display = 'none'; sinifListesiKap.innerHTML = ''; }
-
-    manuelIzgaraCiz();
-    _manuelIstatistikGuncelle();
-    ekranGit('manuelKagit');
-}
-
-// ── Öğrenci no ile otomatik bulma ──
-function _manuelTumOgrenciler() {
-    const kaynak = veriKaynagi();
-    if (!kaynak) return [];
-    try {
-        const siniflar = kaynak.siniflarGetir() || [];
-        const tum = [];
-        siniflar.forEach(s => {
-            (kaynak.ogrencilerGetir(s.id) || []).forEach(o => tum.push({ ...o, sinifAd: s.ad }));
-        });
-        return tum;
-    } catch { return []; }
-}
-
-function _manuelOgrenciSecimiUygula(o) {
-    document.getElementById('manuelNo').value = o.ogrenciNo || '';
-    document.getElementById('manuelAdSoyad').value = o.adSoyad || '';
-    document.getElementById('manuelSinif').value = o.sinifAd || '';
-    _manuelSeciliOgrenciId = o.id || null;
-    const sinifListesiKap = document.getElementById('manuelSinifListesi');
-    if (sinifListesiKap) sinifListesiKap.style.display = 'none';
-}
-
-function _manuelNoIleAra() {
-    const no = document.getElementById('manuelNo').value.trim();
-    if (!no) return;
-    const bulunan = _manuelTumOgrenciler().find(o => String(o.ogrenciNo || '').trim() === no);
-    if (bulunan) _manuelOgrenciSecimiUygula(bulunan);
-}
-
-// ── Sınıf seç → öğrenci listesi ──
-function _manuelSinifListesiRender() {
-    const kap = document.getElementById('manuelSinifListesi');
-    const kaynak = veriKaynagi();
-    if (!kap || !kaynak) return;
-    const siniflar = kaynak.siniflarGetir() || [];
-    if (!siniflar.length) { kap.innerHTML = '<p class="ogr-secim-bilgi">Sınıf bulunamadı.</p>'; return; }
-    kap.innerHTML = siniflar.map(s => {
-        const ogrenciler = kaynak.ogrencilerGetir(s.id) || [];
-        return `<div class="sinif-grup">
-            <div class="sinif-baslik" data-sinif="${s.id}">
-                <span style="flex:1;"><strong>${_h(s.ad)}</strong></span>
-                <small>${ogrenciler.length} öğrenci</small>
-                <svg width="16" height="16" class="sinif-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-            <div class="ogr-secim-listesi-kap" id="manuelOgrListeKap_${s.id}">
-                ${ogrenciler.map(o => `
-                    <div class="ogr-secim-satir manuel-ogr-satir" data-ogr="${o.id}">
-                        <label style="flex:1;">${_h(o.adSoyad)}</label>
-                        <small>${o.ogrenciNo || ''}</small>
-                    </div>`).join('')}
-            </div>
-        </div>`;
-    }).join('');
-
-    kap.querySelectorAll('.sinif-baslik').forEach(baslik => {
-        baslik.addEventListener('click', () => {
-            document.getElementById('manuelOgrListeKap_' + baslik.dataset.sinif)?.classList.toggle('acik');
-        });
-    });
-    kap.querySelectorAll('.manuel-ogr-satir').forEach(satir => {
-        satir.addEventListener('click', () => {
-            const o = _manuelTumOgrenciler().find(x => x.id === satir.dataset.ogr);
-            if (o) { _manuelOgrenciSecimiUygula(o); _manuelIstatistikGuncelle(); }
-        });
-    });
-}
-
-function _manuelSiniftanSecToggle() {
-    const kap = document.getElementById('manuelSinifListesi');
-    if (!kap) return;
-    const acilacak = kap.style.display === 'none';
-    if (acilacak && !kap.innerHTML) _manuelSinifListesiRender();
-    kap.style.display = acilacak ? 'block' : 'none';
-}
-
-function manuelIzgaraCiz() {
-    const dersEl = document.getElementById('manuelDers');
-    const alan   = document.getElementById('manuelSorular');
-    if (!alan || !dersEl || !_manuelDersler.length) return;
-    const idx     = parseInt(dersEl.value || '0', 10);
-    const ders    = _manuelDersler[idx] || _manuelDersler[0];
-    const dersAdi = ders.dersAdi;
-    if (!_manuelCevaplar[dersAdi]) _manuelCevaplar[dersAdi] = {};
-    const secimler = _manuelCevaplar[dersAdi];
-    const harfler  = []; for (let i = 0; i < ders.sikSayisi; i++) harfler.push(String.fromCharCode(65 + i));
-
-    alan.innerHTML = '';
-    for (let soruNo = 1; soruNo <= ders.soruSayisi; soruNo++) {
-        const secili = secimler[soruNo] || null;
-        const satir = document.createElement('div'); satir.className = 'ogr-soru-satiri';
-        const no = document.createElement('span'); no.className = 'soru-no'; no.textContent = soruNo + ')'; satir.appendChild(no);
-        const grup = document.createElement('div'); grup.className = 'sik-grubu';
-        harfler.forEach(harf => {
-            const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sik-daire'; btn.textContent = harf;
-            if (secili === harf) btn.classList.add('manuel-sec');
-            btn.addEventListener('click', () => {
-                const zaten = secimler[soruNo] === harf;
-                secimler[soruNo] = zaten ? null : harf;
-                manuelIzgaraCiz(); _manuelIstatistikGuncelle();
-            });
-            grup.appendChild(btn);
-        });
-        satir.appendChild(grup); alan.appendChild(satir);
-    }
-}
-
-function _manuelIstatistikGuncelle() {
-    // YENİ (Ağustos 2026): manuel girişte de kitapçık türüne duyarlı anahtar.
-    const kt = document.getElementById('manuelKitapcik')?.value;
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, kt));
-    const p = puanHesapla(_manuelCevaplar, anahtar, _manuelDersler, _sinavYanlisKatsayisi(_aktifSinavId));
-    _s('manuelD', p.toplamD); _s('manuelY', p.toplamY); _s('manuelB', p.toplamB);
-    _s('manuelN', p.toplamNet?.toFixed(2) ?? '0.0');
-    _s('manuelNet', p.toplamNet?.toFixed(2) ?? '0.0');
-}
-
-function manuelKaydet() {
-    const dersler = formDersleriniGetir(_aktifSinavId);
-    const kitapcikTuru = document.getElementById('manuelKitapcik').value;
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, kitapcikTuru));
-    const sonuc = {
-        id:          'sonuc_' + Date.now(),
-        ogrenci: {
-            adSoyad:   document.getElementById('manuelAdSoyad').value,
-            ogrenciNo: document.getElementById('manuelNo').value,
-            sinif:     document.getElementById('manuelSinif').value,
-            kitapcikTuru,
-            ogrenciId: _manuelSeciliOgrenciId || '',
-        },
-        cevaplar:    _manuelCevaplar,
-        kagitGoruntusu: null,
-        elleGirildi: true,
-        tarih:       new Date().toLocaleDateString('tr-TR'),
-    };
-    sonuc.puan = puanHesapla(sonuc.cevaplar, anahtar, dersler, _sinavYanlisKatsayisi(_aktifSinavId));
-    DB.sonucKaydet(_aktifSinavId, sonuc);
-    kagitlariRender();
-    ekranGit('sinavDetay');
-}
-
-// ════════════════════════════════════════════════════════════════
-// OPTİK FORM OLUŞTUR
-// ════════════════════════════════════════════════════════════════
-async function optikOlusturAc() {
-    document.getElementById('optikOlusturDurum').textContent = '';
-    ekranGit('optikOlustur');
-}
-
-/** layoutHesapla() için doğru parametreleri üretir — Özel sınavlarda kendi soru/şık sayısını, seçilen yön/sayfa düzenini de ekler. */
-function _layoutParamlariHazirla(sinav, secimler = {}) {
-    const yon = secimler.yon || 'dikey';
-    const sayfaDuzeni = secimler.sayfaDuzeni || 'otomatik';
-    if (sinav?.optikFormId === 'ozel') {
-        return { sinavTuru: 'ozel', soruSayisi: sinav.soruSayisi || 20, sikSayisi: sinav.sikSayisi || 4, sayfaDuzeni, yon };
-    }
-    // LGS/Bursluluk gibi sabit şablonlar her zaman dikey tam sayfadır; yön/düzen seçimi burada anlamsız.
-    return { sinavTuru: sinav?.optikFormId };
-}
-
-/**
- * YENİ (Ağustos 2026): sınavın kullandığı forma ait GERÇEK layout nesnesini
- * döndürür — LGS/Bursluluk/Sabit Özel için LayoutEngine.layoutHesapla,
- * Optik Form Editörü ile tasarlanmış özel şablonlar (id 'ozelTasarim_...'
- * ile başlar) için OptikSablonMotoru.sablonuDerle üzerinden. Önizleme ve
- * gerçek PDF üretimi AYNI bu fonksiyonu kullanır, ikisi arasında sapma
- * olmasın diye.
- *
- * KAPSAM SINIRI: editörle tasarlanmış özel şablonlar şu an için LGS/
- * Bursluluk'taki gibi "sayfa başına birden fazla form" veya yatay yönlendirme
- * paketlemesini DESTEKLEMİYOR — her zaman tek sayfa, dikey, tasarlandığı
- * gibi basılır (yzYonSegment/yzDuzenSegment bu türde devre dışı bırakılmalı,
- * bkz. _sinavSabitSablonMu).
- */
-function _layoutGetir(sinav, secimler = {}) {
-    if (sinav?.optikFormId && sinav.optikFormId.startsWith('ozelTasarim_')) {
-        return sablonDerlemesiniGetir(sinav.optikFormId);
-    }
-    return window.LayoutEngine.layoutHesapla(_layoutParamlariHazirla(sinav, secimler));
-}
-
-/** Sınav sabit bir MEB şablonu mu (LGS/Bursluluk) YA DA editörle tasarlanmış özel bir şablon mu — bu durumlarda yön/sayfa düzeni SEÇİLEMEZ. */
-function _sinavSabitSablonMu(sinav) {
-    if (sinav?.optikFormId && sinav.optikFormId.startsWith('ozelTasarim_')) return true;
-    return !!sinav?.optikFormId && sinav.optikFormId !== 'ozel';
-}
-
-async function _pdfKaydet(doc, dosyaAdi) {
-    if (window.DisaAktar && typeof window.DisaAktar.dosyaKaydet === 'function') {
-        return window.DisaAktar.dosyaKaydet(
-            doc.output('datauristring').split(',')[1],
-            dosyaAdi,
-            'application/pdf',
-            () => doc.save(dosyaAdi)
-        );
-    }
-    doc.save(dosyaAdi);
-}
-
-async function _yzOgrenciListesiGetir(sinav) {
-    const kaynak = veriKaynagi();
-    if (!kaynak) return null;
-    const okulAdi = _okulAdiGetir();
-    const ogrList = [];
-    kaynak.siniflarGetir().forEach(s => {
-        kaynak.ogrencilerGetir(s.id).forEach(o => {
-            if (sinav.ogrenciIdleri.includes(o.id)) {
-                ogrList.push({ adSoyad: o.adSoyad, ogrenciNo: o.ogrenciNo, sinif: s.ad, sinavAdi: sinav.ad, okulAdi, kitapcikTuru: _ogrenciKitapcikTuru(sinav, o.id), ogrenciId: o.id, sinavId: sinav.optikFormId });
-            }
-        });
-    });
-    return ogrList;
-}
-
-// ── Yazdırma Seçenekleri sheet (yön / sayfa düzeni / önizleme) ──
-let _yzMod = null; // 'bos' | 'ogrenciler'
-const _yzSecimleri = { yon: 'dikey', sayfaDuzeni: 'otomatik' };
-
-function yazdirmaSecenekleriAc(mod) {
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    if (!sinav) return;
-    if (mod === 'ogrenciler' && !sinav.ogrenciIdleri?.length) { alert('Bu sınava öğrenci eklenmemiş.'); return; }
-
-    _yzMod = mod;
-    document.getElementById('yzOnizlemeDurum').textContent = '';
-    sheetAc('sheetYazdirmaSecenekleri');
-}
-
-function _yzSegmentBagla(containerId, datasetAdi, secimAnahtari) {
-    document.getElementById(containerId).querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (btn.disabled) return;
-            document.getElementById(containerId).querySelectorAll('button').forEach(b => b.classList.remove('yz-aktif'));
-            btn.classList.add('yz-aktif');
-            let deger = btn.dataset[datasetAdi];
-            // "1"/"2"/"4"/"6" gibi salt sayısal değerleri (data-duzen) Number'a çevir —
-            // layoutEngine.js'teki switch(formsPerA4){case 4: ...} sıkı (===) tip
-            // karşılaştırması yapıyor, string "4" sayısal 4'e EŞİT SAYILMAZ.
-            // 'otomatik' / 'dikey' / 'yatay' gibi metin değerler olduğu gibi kalır.
-            if (/^\d+$/.test(deger)) deger = Number(deger);
-            _yzSecimleri[secimAnahtari] = deger;
-            // seçenek değişti — önizleme artık ayrı bir pencerede olduğu için burada gizlenecek bir şey yok
-        });
-    });
+function bugunMetni(){ const d=new Date(); return `${d.getDate()} ${AYLAR[d.getMonth()]} ${d.getFullYear()}, ${GUNADI[d.getDay()]}`; }
+function oncelikRengi(o){ if(o==='Yüksek') return 'brick'; if(o==='Orta') return 'amber'; return 'sage'; }
+function evrakRengi(durum){ if(durum==='Tamamlandı') return 'sage'; if(durum==='İşlemde') return 'amber'; if(durum==='Arşivlendi') return 'gray'; return 'blue'; }
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>el.classList.remove('show'), 3000);
 }
 
 /* ====================================================================
-   OPTİK FORM ÖNİZLEME/YAZDIRMA PENCERESİ
-   Android'in çıplak WebView bileşeninde <iframe src="blob:...">  ile PDF
-   göstermek ÇALIŞMIYOR (PDF görüntüleyici eklentisi yok) — WebView bunu
-   render edemeyip bir indirme/"Aç" akışına düşüyor, önizleme boş kalıyor.
+   ORTAK YAZDIRMA YARDIMCISI
+   Android'in çıplak WebView bileşeni window.print() JS API'sini
+   desteklemiyor (bu yalnızca Chrome tarayıcı uygulamasında var) — bu
+   yüzden APK içindeki yazdırma butonları sessizce başarısız oluyordu.
 
-   Çözüm: formu jsPDF ile değil canvasFormGenerator.js ile (AYNI çizim
-   fonksiyonlarını kullanarak, bkz. pdfFormGenerator.js export notu) bir
-   <canvas>'a çizip PNG'ye çeviriyoruz, sonra bu görselleri uygulamanın
-   geri kalanında zaten kullanılan "HTML + Yazdır/PDF İndir + Kapat" kalıbına
-   (bkz. js/app.js uygulamaHtmlYazdir) sarıp açıyoruz. Bu hem önizlemeyi
-   gerçekten görünür kılıyor hem de Android'de gerçek sistem yazdırma
-   diyaloğunu (PrintPlugin → PrintManager, "PDF olarak kaydet" dahil)
-   devreye sokuyor.
+   Native (Capacitor/Android) ortamda: PrintPlugin (bkz. android/.../PrintPlugin.java)
+   üzerinden gerçek Android sistem yazdırma/önizleme diyaloğunu açar —
+   bu diyalog kendi geri/iptal tuşuna ve "PDF olarak kaydet" seçeneğine
+   sahiptir.
+
+   Web/PWA ortamda (native plugin yoksa): Blob URL ile yeni bir pencere
+   açar, kullanıcı "Yazdır" butonuna basınca gerçek bir kullanıcı
+   etkileşimiyle window.print() tetiklenir (otomatik/timer ile tetiklenen
+   print() çağrıları bazı tarayıcılarda engellenebiliyor).
    ==================================================================== */
-/**
- * optik modülü, isim çakışmalarını önlemek için ana uygulamadan KASITLI
- * OLARAK ayrı bir iframe'de çalışır (bkz. js/optik-entegrasyon.js) — bu
- * yüzden ana uygulamanın uygulamaHtmlYazdir() yardımcı fonksiyonu bu
- * sayfanın kendi `window`'unda değil, `window.parent`'ta bulunur. Optik
- * bir gün bağımsız (iframe olmadan) açılırsa diye basit bir yedek de var.
- */
-function _uygulamaHtmlYazdirCagir(rawHtml, isAdi, yon) {
-    try {
-        if (window.parent && window.parent !== window && typeof window.parent.uygulamaHtmlYazdir === 'function') {
-            window.parent.uygulamaHtmlYazdir(rawHtml, isAdi, yon);
-            return;
-        }
-    } catch (e) { /* çapraz pencere erişimi engellenmiş olabilir — aşağıdaki yedeğe düş */ }
-    try {
-        const blob = new Blob([rawHtml], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const win = window.open(url, '_blank');
-        if (!win) throw new Error('popup_blocked');
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
-    } catch (e2) {
-        alert('Önizleme penceresi açılamadı: ' + (e2 && e2.message));
+function uygulamaHtmlYazdir(rawHtml, isAdi, yon){
+  isAdi = isAdi || 'Koruk_Okul_Belge';
+  yon = yon === 'yatay' ? 'yatay' : 'dikey';
+
+  const nativeVarMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() &&
+    window.Capacitor.Plugins && window.Capacitor.Plugins.PrintPlugin);
+
+  if(nativeVarMi){
+    try{
+      window.Capacitor.Plugins.PrintPlugin.yazdir({ html: rawHtml, isAdi, yon });
+      return;
+    }catch(e){ console.warn('Native yazdırma başarısız, tarayıcı yöntemine dönülüyor:', e.message); }
+  }
+
+  const stilMatch   = rawHtml.match(/<style>([\s\S]*?)<\/style>/);
+  const govdeMatch  = rawHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/);
+  const baslikMatch = rawHtml.match(/<title>([\s\S]*?)<\/title>/);
+  const stil  = stilMatch  ? stilMatch[1]  : '';
+  const govde = govdeMatch ? govdeMatch[1] : rawHtml;
+  const baslik = baslikMatch ? baslikMatch[1] : isAdi;
+
+  const tamHtml = '<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><title>' + baslik + '</title><style>' +
+    stil +
+    '\n .kk-yazdir-toolbar{ display:flex; gap:8px; padding:10px 14px; background:#f3f2ff; align-items:center; }' +
+    '\n .kk-yazdir-toolbar button{ padding:7px 16px; border:none; border-radius:6px; font-size:13px; font-weight:700; cursor:pointer; }' +
+    '\n .kk-btn-yazdir{ background:#0A6E6E; color:#fff; }' +
+    '\n .kk-btn-kapat{ background:#e5e7eb; color:#374151; }' +
+    '\n @media print{ .kk-yazdir-toolbar{ display:none !important; } }' +
+    '</style></head><body>' +
+    '<div class="kk-yazdir-toolbar"><button class="kk-btn-yazdir" onclick="window.print()">🖨️ Yazdır / PDF İndir</button><button class="kk-btn-kapat" onclick="window.close()">✕ Kapat</button></div>' +
+    govde +
+    '</body></html>';
+
+  try{
+    const blob = new Blob([tamHtml], { type:'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank');
+    if(!win) throw new Error('popup_blocked');
+    setTimeout(()=>URL.revokeObjectURL(url), 60000);
+  }catch(e2){
+    toast('Yazdırma penceresi açılamadı: ' + (e2 && e2.message));
+  }
+}
+window.uygulamaHtmlYazdir = uygulamaHtmlYazdir;
+
+/* ---------- DÜZELTME: "Bu uygulamayı kim kullanıyor?" sorma özelliği KALDIRILDI ----------
+   Artık herkes kendi Google hesabıyla giriş yapıyor, kimlik Kullanıcı
+   Yönetimi'nden kurulan hesap-öğretmen bağlantısıyla (bkz. js/auth.js
+   AKTIF_KULLANICI.bagliOgretmenId) otomatik çözülüyor — elle seçim yok. */
+function _ilkAcilistaKullaniciSor(){}
+
+/* ====================================================================
+   ORTAK DOSYA KAYDETME/İNDİRME YARDIMCISI
+   Android'in çıplak WebView bileşeni tarayıcıların standart blob indirme
+   davranışını (<a download>) desteklemiyor — bu yüzden şablon (xlsx) ve
+   yedek (json) indirme butonları APK içinde sessizce çalışmıyordu.
+
+   Native (Capacitor/Android) ortamda: SavePlugin üzerinden dosyayı
+   doğrudan cihazın "İndirilenler" klasörüne yazar.
+   Web/PWA ortamda (native plugin yoksa): klasik blob + <a download> yöntemi.
+   ==================================================================== */
+function uygulamaDosyaKaydet(base64Veri, dosyaAdi, mimeTuru, paylas){
+  const nativeVarMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() &&
+    window.Capacitor.Plugins && window.Capacitor.Plugins.SavePlugin);
+
+  if(nativeVarMi){
+    return window.Capacitor.Plugins.SavePlugin.kaydet({ base64: base64Veri, dosyaAdi, mimeTuru, paylas: !!paylas })
+      .then(()=> { if(!paylas) toast(`"${dosyaAdi}" İndirilenler klasörüne kaydedildi.`); })
+      .catch(e=> { toast('Dosya kaydedilemedi: ' + (e && e.message)); throw e; });
+  }
+
+  return new Promise((resolve, reject) => {
+    try{
+      const ikiliVeri = atob(base64Veri);
+      const baytlar = new Uint8Array(ikiliVeri.length);
+      for(let i=0; i<ikiliVeri.length; i++) baytlar[i] = ikiliVeri.charCodeAt(i);
+      const blob = new Blob([baytlar], { type: mimeTuru });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = dosyaAdi;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      resolve();
+    }catch(e){
+      toast('Dosya indirilemedi: ' + e.message);
+      reject(e);
     }
+  });
+}
+window.uygulamaDosyaKaydet = uygulamaDosyaKaydet;
+
+/* ====================================================================
+   OPTİK MODÜLÜ İÇİN postMessage TABANLI DOSYA KAYDETME KÖPRÜSÜ
+   Optik ayrı bir iframe'de izole çalışıyor (bkz. js/optik-entegrasyon.js).
+   İlk denemede optik doğrudan `window.parent.Capacitor.Plugins.SavePlugin
+   .kaydet(...)` çağırıyordu — bu, GERÇEK CİHAZDA hiçbir zaman ne çözülüyor
+   ne reddediliyor, sessizce sonsuza dek asılı kalıyordu (izin diyaloğu bile
+   çıkmadan). Cross-frame'den bir metodu "koparıp" çağırmak yerine, standart
+   ve güvenilir postMessage protokolüne geçildi: optik bir istek mesajı
+   gönderir, BURADA (üst pencerenin KENDİ context'inde, ki native köprüye
+   erişimin zaten çalıştığı yer) gerçek kaydetme yapılır ve sonuç mesajla
+   iframe'e geri bildirilir. */
+window.addEventListener('message', function (event) {
+  const veri = event.data;
+  if (!veri || veri.__optikDosyaKaydetIstek !== true) return;
+  const { id, base64, dosyaAdi, mimeTuru } = veri;
+  Promise.resolve()
+    .then(() => uygulamaDosyaKaydet(base64, dosyaAdi, mimeTuru))
+    .then(() => {
+      if (event.source) event.source.postMessage({ __optikDosyaKaydetYanit: true, id, basarili: true }, '*');
+    })
+    .catch(err => {
+      if (event.source) event.source.postMessage({ __optikDosyaKaydetYanit: true, id, basarili: false, hata: (err && err.message) || String(err) }, '*');
+    });
+});
+
+/* ====================================================================
+   OKULA BAŞLAMA YAŞI HESAPLAMA
+   5/1/1961 tarihli ve 222 sayılı İlköğretim ve Eğitim Kanunu (madde 3) ve
+   Millî Eğitim Bakanlığı Okul Öncesi Eğitim ve İlköğretim Kurumları
+   Yönetmeliği (madde 4, 11) hükümlerine göre. "Ay sayısı", seçilen eğitim
+   yılının EYLÜL AYI SONU itibarıyla hesaplanır (resmi kural budur).
+   ==================================================================== */
+function okulaBaslamaYasiHesaplaModalAc(){
+  const buYil = new Date().getFullYear();
+  let yilSecenekleri = '';
+  for(let y = buYil - 1; y <= buYil + 4; y++){
+    yilSecenekleri += `<option value="${y}"${y===buYil?' selected':''}>${y} - ${y+1} Eğitim Yılı</option>`;
+  }
+
+  const body = `
+    <div class="form-group"><label>Çocuğun Doğum Tarihi</label><input type="date" id="f_obyDogum"></div>
+    <div class="form-group"><label>Eğitim Yılı</label><select id="f_obyYil">${yilSecenekleri}</select></div>
+    <div id="obySonuc" style="margin-top:16px;"></div>
+    <p class="page-sub" style="margin-top:14px;">Kaynak: 222 sayılı İlköğretim ve Eğitim Kanunu md.3, MEB Okul Öncesi Eğitim ve İlköğretim Kurumları Yönetmeliği md.4/11. Ay sayısı, seçilen eğitim yılının eylül ayı sonu itibarıyla hesaplanır.</p>
+  `;
+  modalAc('🎂 Okula Başlama Yaşı Hesapla', body, _okulaBaslamaYasiHesapla, null, 'Hesapla');
 }
 
-function _optikOnizlePenceresiAc(sayfalar, baslik, sayfaBilgi) {
-    const yatayMi = sayfalar[0] && sayfalar[0].genislikMM > sayfalar[0].yukseklikMM;
-    const sayfaHtml = sayfalar.map((s, i) =>
-        `<img class="oy-sayfa" src="${s.dataUrl}" style="width:${s.genislikMM}mm;height:${s.yukseklikMM}mm;" alt="Sayfa ${i + 1}">`
-    ).join('\n');
+function _okulaBaslamaYasiHesapla(){
+  const dogumEl = document.getElementById('f_obyDogum');
+  const yilEl = document.getElementById('f_obyYil');
+  const sonucEl = document.getElementById('obySonuc');
+  if(!dogumEl.value){ toast('Doğum tarihi girin.'); return; }
 
-    const rawHtml = `<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><title>${_h(baslik)}</title><style>
-      body{margin:0;background:#e5e7eb;font-family:Manrope,Arial,sans-serif;}
-      .oy-bilgi{padding:10px 14px;font-size:12.5px;color:#374151;background:#f3f2ff;text-align:center;}
-      .oy-sayfa{display:block;margin:14px auto;box-shadow:0 2px 10px rgba(0,0,0,.25);background:#fff;}
-      @media print{
-        body{background:#fff;}
-        .oy-bilgi{display:none;}
-        .oy-sayfa{margin:0;box-shadow:none;page-break-after:always;}
+  const dogum = new Date(dogumEl.value + 'T00:00:00');
+  const egitimYili = parseInt(yilEl.value, 10);
+  // "Eylül ayı sonu" = o eğitim yılının 30 Eylül'ü (ay hesaplamasında referans nokta)
+  const referans = new Date(egitimYili, 8, 30); // ay index 8 = Eylül
+
+  let ay = (referans.getFullYear() - dogum.getFullYear()) * 12 + (referans.getMonth() - dogum.getMonth());
+  if(referans.getDate() < dogum.getDate()) ay--; // gün henüz dolmadıysa bir ay eksilt
+  if(ay < 0) ay = 0;
+
+  let durumlar = [];
+  if(ay >= 69){
+    let ekNot = '';
+    if(ay <= 71){
+      ekNot = ` Ancak <strong>velinin yazılı talebi ile kayıt bir yıl ertelenebilir veya çocuk okul öncesi eğitime yönlendirilebilir</strong> (Yönetmelik md.11/6-b, sadece 69-71 ay arası için geçerli bir haktır).`;
+    }
+    durumlar.push({ ikon:'✅', renk:'sage', metin:`<strong>İlkokul 1. sınıfa kaydı zorunludur.</strong> (${egitimYili} Eylül sonu itibarıyla ${ay} aylık — 69 ay ve üzeri.)${ekNot}` });
+  } else if(ay >= 66){
+    durumlar.push({ ikon:'📝', renk:'amber', metin:`<strong>İlkokul 1. sınıfa velinin yazılı isteğiyle kaydedilebilir.</strong> (${ay} aylık — 66-68 ay arası, zorunlu değil, isteğe bağlı.) Veli istemezse okul öncesi eğitime yönlendirilebilir veya kaydı bir yıl ertelenebilir.` });
+  } else {
+    // İlkokula henüz uygun değil — ne kadar eksik olduğunu ve hangi eğitim
+    // yılında (69 ay dolarak) zorunlu kayıt hakkı doğacağını da göster.
+    const eksikAy = 66 - ay; // en erken (isteğe bağlı 66 ay) hakkı için eksik ay
+    let zorunluYil = egitimYili;
+    while(true){
+      const rEylul = new Date(zorunluYil, 8, 30);
+      let ayOYil = (rEylul.getFullYear() - dogum.getFullYear()) * 12 + (rEylul.getMonth() - dogum.getMonth());
+      if(rEylul.getDate() < dogum.getDate()) ayOYil--;
+      if(ayOYil >= 69) break;
+      zorunluYil++;
+      if(zorunluYil > egitimYili + 10) break; // sonsuz döngü koruması
+    }
+    durumlar.push({
+      ikon:'❌', renk:'brick',
+      metin:`<strong>${egitimYili} eğitim yılında ilkokul 1. sınıfa kayıt olamaz.</strong> ${ay} aylık — 66 ay şartını (isteğe bağlı kayıt için) doldurmasına ${eksikAy} ay var. `
+        + `Zorunlu kayıt hakkı (69 ay) için <strong>${zorunluYil} - ${zorunluYil+1} eğitim yılı</strong>nı beklemesi gerekiyor`
+        + (zorunluYil > egitimYili ? `; isteğe bağlı (veli talebiyle) kayıt hakkı ise bir yıl öncesinde, <strong>${zorunluYil-1} - ${zorunluYil} eğitim yılı</strong>nda doğar.` : '.')
+    });
+  }
+
+  if(ay >= 57 && ay <= 68){
+    durumlar.push({ ikon:'✅', renk:'sage', metin:`<strong>Ana sınıfına kaydedilebilir.</strong> (${ay} aylık — 57-68 ay standart aralığı.)` });
+  } else if(ay >= 45 && ay <= 56){
+    durumlar.push({ ikon:'📝', renk:'amber', metin:`<strong>Ana sınıfına şartlı kaydedilebilir.</strong> (${ay} aylık — 45-56 ay arası. Okulun kayıt alanında ikamet eden ve bir sonraki yıl ilkokula başlayacak çocukların kaydı yapıldıktan sonra, fiziki imkân varsa kaydedilir.)` });
+  }
+
+  if(ay >= 36 && ay <= 68){
+    durumlar.push({ ikon:'✅', renk:'sage', metin:`<strong>Anaokuluna kaydedilebilir.</strong> (${ay} aylık — 36-68 ay aralığı.)` });
+  }
+
+  if(ay < 36){
+    durumlar.push({ ikon:'⏳', renk:'gray', metin:`Henüz okul öncesi eğitim yaşında değil (${ay} aylık, en erken 36 ay gerekir).` });
+  }
+  if(ay > 71){
+    durumlar.push({ ikon:'⚠️', renk:'brick', metin:`Not: 71 ayı geçmiş — normal şartlarda ilkokula başlamış olması beklenir, kayıt/nakil durumu okul idaresince ayrıca değerlendirilmelidir.` });
+  }
+
+  sonucEl.innerHTML = `
+    <div class="card" style="background:var(--bg-app-soft);margin:0;">
+      <div style="font-weight:700;margin-bottom:10px;">📅 ${egitimYili} Eylül sonu itibarıyla: <span style="color:var(--brand);">${ay} aylık</span></div>
+      ${durumlar.map(d=>`<div class="evrak-row" style="border:none;padding:8px 0;"><span class="badge badge-${d.renk}" style="flex-shrink:0;">${d.ikon}</span><div style="flex:1;padding-left:8px;font-size:13.5px;line-height:1.5;">${d.metin}</div></div>`).join('')}
+    </div>
+  `;
+}
+function ogretmenSecenekleri(seciliId){
+  return '<option value="">Seçiniz</option>' + ogretmenler.map(o=>
+    `<option value="${o.id}" ${o.id===seciliId?'selected':''}>${escapeHtml(o.ad+' '+o.soyad)}</option>`
+  ).join('');
+}
+function ogretmenAdi(id){ const o = ogretmenler.find(x=>x.id===id); return o ? `${o.ad} ${o.soyad}` : '—'; }
+function kaydet(koleksiyon, id, veri){
+  if(!db){ toast('Firebase bağlantısı yok.'); return; }
+  // not: "kişisel kayıt" (sahipUid) damgalama kuralı artık bu genel fonksiyonda
+  // değil — notlar için NotlarService, hatırlatıcı/görev için TakvimService
+  // içinde modüle özel olarak uygulanıyor (bkz. Pragmatik-Mimari-Tasarimi.md §5).
+  // Bu fonksiyon artık sadece henüz repository/service katmanına taşınmamış
+  // eski/az kullanılan koleksiyonlar için bir geçiş yardımcısıdır.
+  const ref = db.collection(koleksiyon);
+  const islem = id ? ref.doc(id).update(veri) : ref.add({...veri, eklenmeTarihi: new Date().toISOString()});
+  islem.then(()=>toast('Kaydedildi.')).catch(err=>toast('Hata: '+err.message));
+}
+
+/* Kişisel (sahipUid'li) kayıt görünürlük filtresi: damgasız kayıtlar
+   (okul geneli) herkese; damgalılar sahibine ve adminlere görünür. */
+/* Kişisel (sahipUid'li) kayıt görünürlük filtresi (notlar, hatırlatıcılar,
+   görevler için ortak): Süper admin HER ZAMAN her kaydı görür. Admin
+   olmayan bir kullanıcı ise SADECE KENDİ eklediği kayıtları görür —
+   başka birinin (veya sahipsiz/eski) kaydı ona hiç gösterilmez. */
+function kisiselKayitGorunurMu(k){
+  if(typeof AKTIF_KULLANICI === 'undefined' || !AKTIF_KULLANICI) return true;
+  if(AKTIF_KULLANICI.admin === true) return true;
+  if(!k || !k.sahipUid) return false; // sahipsiz/eski kayıt — artık sadece admin görür
+  return k.sahipUid === AKTIF_KULLANICI.uid;
+}
+function hataGoster(err){ console.error(err); toast('Veri hatası: '+err.message); }
+
+/* ---------- modal ---------- */
+/* Native (APK) ortamda modal/detay paneli açıkken "aşağı çekince yenile"
+   jestini geçici olarak kapatır — aksi halde modal içindeki bir listeyi
+   aşağı kaydırmaya çalışırken bazen sayfa yenileme jesti araya giriyordu
+   (bkz. android/.../PullToRefreshPlugin.java). Web sürümünde etkisizdir.
+
+   DÜZELTME (kök sebep): Bir tam ekran panel (ör. Kontrol Listesi detayı)
+   açıkken, ÜSTÜNE genel modalAc() ile bir alt form (ör. "Madde Ekle")
+   açılıp kapatıldığında, modalKapat() KOŞULSUZ olarak yenileme jestini
+   tekrar AÇIYORDU — halbuki alttaki panel hâlâ açık ve jestin hâlâ kapalı
+   kalması gerekiyordu. Sonuç: alt form kapatıldıktan sonra üstteki listede
+   aşağı kaydırmaya çalışınca sayfa yenileniyordu. Artık bir "derinlik"
+   sayacı tutuluyor — sadece en dıştaki (son) "aç" çağrısı gerçekten native
+   tarafı tekrar etkinleştirir; iç içe kapatma/açma çağrıları dengeli
+   olduğu sürece bir üst panelin durumu asla erken bozulmaz. */
+let _pullToRefreshDerinlik = 0;
+let _pullToRefreshBekleyenZamanlayici = null;
+function _pullToRefreshAyarla(enabled){
+  if(enabled){
+    _pullToRefreshDerinlik = Math.max(0, _pullToRefreshDerinlik - 1);
+  } else {
+    _pullToRefreshDerinlik++;
+  }
+  // DÜZELTME (kök sebep #2): Bir ekrandan diğerine geçerken (ör. Kontrol
+  // Listesi liste→detay: _klListeyeGit() önce kontrolListeleriKapat()'ı
+  // sonra _klDetayAc()'yı ÇAĞIRIR) derinlik 1→0→1 gibi anlık bir gidip
+  // gelme yaşıyordu. Native köprü çağrısı asenkron olduğu için, bu iki
+  // mesaj (aç, sonra hemen kapat) native tarafa AYRI AYRI ulaşabiliyor —
+  // tam o anda kullanıcının parmağı ekrandaysa, aradaki kısacık "açık"
+  // anını yakalayıp yenileme jestini tetikleyebiliyordu. Çözüm: native'e
+  // gönderimi bir sonraki mikro-görev turuna ERTELE — aynı senkron akış
+  // içinde art arda gelen aç/kapa çağrıları böylece native'e HİÇ gitmez,
+  // sadece son (gerçek) durum gönderilir.
+  if(_pullToRefreshBekleyenZamanlayici) clearTimeout(_pullToRefreshBekleyenZamanlayici);
+  _pullToRefreshBekleyenZamanlayici = setTimeout(()=>{
+    _pullToRefreshBekleyenZamanlayici = null;
+    _pullToRefreshNativeGonder(_pullToRefreshDerinlik === 0);
+  }, 0);
+}
+function _pullToRefreshNativeGonder(enabled){
+  try{
+    if(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()
+       && window.Capacitor.Plugins && window.Capacitor.Plugins.PullToRefreshPlugin){
+      window.Capacitor.Plugins.PullToRefreshPlugin.setEnabled({ enabled });
+    }
+  }catch(e){}
+}
+/* DÜZELTME (kök sebep — "sayfa yenileme bazen hiç çalışmıyor, uygulamayı
+   kapatıp açınca düzeliyor"): _pullToRefreshDerinlik sayacı ~30 ayrı
+   dosyada elle (false)/(true) çağrılarıyla dengede tutuluyor. Bir araç
+   kendi "✕ Kapat" düğmesi yerine DOĞRUDAN alt menüden başka bir yere
+   geçilerek terk edilirse (bkz. js/alt-navigasyon.js _ustPanelleriKapat —
+   o fonksiyonun bilmediği/listesinde olmayan overlay'ler için bu, o
+   aracın kendi (true) çağrısının hiç tetiklenmemesi demek), sayaç sıfıra
+   inmeden kalıcı olarak takılı kalıyor ve yenileme jesti uygulama tekrar
+   AÇILANA kadar (bellekteki değişken sıfırlanana kadar) hiç çalışmıyor.
+   AltNav navigasyonu (menüye dönme/başka bir yere geçme) zaten TÜM üst
+   panelleri kapatmayı hedeflediği için, bu noktada sayacı güvenle SIFIRA
+   zorlamak (tek tek her aracı ayrı ayrı bu listeye eklemek yerine) genel
+   ve kalıcı bir çözüm — bkz. çağrı noktası: _ustPanelleriKapat(). */
+function _pullToRefreshZorlaSifirla(){
+  _pullToRefreshDerinlik = 0;
+  if(_pullToRefreshBekleyenZamanlayici) clearTimeout(_pullToRefreshBekleyenZamanlayici);
+  _pullToRefreshBekleyenZamanlayici = setTimeout(()=>{
+    _pullToRefreshBekleyenZamanlayici = null;
+    _pullToRefreshNativeGonder(true);
+  }, 0);
+}
+
+function modalAc(title, bodyHtml, kaydetFn, silFn, kaydetBtnMetni){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = bodyHtml;
+  const silBtn = document.getElementById('modalSilBtn');
+  if(silFn){ silBtn.style.display='inline-flex'; silBtn.onclick = silFn; }
+  else { silBtn.style.display='none'; silBtn.onclick=null; }
+  const kaydetBtn = document.getElementById('modalKaydetBtn');
+  kaydetBtn.style.display = 'inline-flex';
+  kaydetBtn.textContent = kaydetBtnMetni || 'Kaydet';
+  kaydetBtn.onclick = kaydetFn ? () => {
+    try { kaydetFn(); }
+    catch(e) { console.error('Kaydet hatası:', e); toast('Hata: ' + e.message); }
+  } : null;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.classList.add('modal-open');
+  _pullToRefreshAyarla(false);
+}
+/* Menüden (AltNav) açılan bir araç/kayıt kapatıldığında, eğer o araç
+   menü listesinden açılmışsa (bkz. js/alt-navigasyon.js _donusEkrani),
+   kullanıcıyı ana sayfaya değil o menü listesine geri döndürür. Menü
+   dışından açılmışsa (örn. personel detay panelindeki bir buton) hiçbir
+   şey yapmaz — AltNav.geriTusu() zaten bu durumda false döner. Her
+   modal/overlay kapatma noktası (modalKapat, detayPanelKapat, Puantaj/
+   Dilekçe/Optik gibi araçların kendi "✕ Kapat" butonları) bunu çağırır. */
+function _menuyeGeriDon(){
+  if(typeof AltNav !== 'undefined' && typeof AltNav.geriTusu === 'function') AltNav.geriTusu();
+}
+
+function modalKapat(){
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.classList.remove('modal-open');
+  _pullToRefreshAyarla(true);
+}
+
+/* ============== ÖĞRETMENLER ============== */
+/* YENİ: İki okul (Koruk İlkokulu / Koruk Ortaokulu) tek panelden yönetiliyor.
+   Bir kişinin (öğretmen VEYA personel) "kadrosu" (resmi olarak bağlı olduğu
+   okul, TEK okul) ile "fiilen çalıştığı okul" (görevlendirme/gerçek görev
+   yeri) farklı olabilir. Bazı kişiler HER İKİ okulda birden fiilen görev
+   yapabildiği için fiili görev yeri artık bir DİZİ (gorevYeriKademeleri) —
+   tek bir string değil. Bu yardımcılar hem js/app.js (öğretmenler) hem de
+   js/personel.js (hizmetli/memur vb.) tarafından ortak kullanılır. */
+const KADEME_SECENEKLERI = [
+  { key:'',         ad:'— Belirtilmedi —' },
+  { key:'ilkokul',  ad:'İlkokul' },
+  { key:'ortaokul', ad:'Ortaokul' }
+];
+function kademeEtiket(k){ return k==='ilkokul' ? 'İlkokul' : (k==='ortaokul' ? 'Ortaokul' : '—'); }
+/* Fiili görev yeri listesi boşsa kadrosu esas alınır (görevlendirme yoksa
+   ikisi aynıdır). Eski tekil 'gorevYeriKademesi' alanı da (önceki sürümden
+   kalan kayıtlar için) geriye dönük uyumlulukla okunur. */
+function kademeFiiliListesi(kisi){
+  if(!kisi) return [];
+  if(Array.isArray(kisi.gorevYeriKademeleri) && kisi.gorevYeriKademeleri.length) return kisi.gorevYeriKademeleri.slice();
+  if(kisi.gorevYeriKademesi) return [kisi.gorevYeriKademesi]; // eski tekil alan
+  if(kisi.kadroKademesi) return [kisi.kadroKademesi];
+  return [];
+}
+function kademeHucresi(kisi){
+  const fiili = kademeFiiliListesi(kisi);
+  const kadro = (kisi && kisi.kadroKademesi) || '';
+  const fiiliMetin = fiili.length ? fiili.map(kademeEtiket).join(' + ') : '—';
+  // Görevlendirme rozeti: fiili liste kadrosundan farklıysa (ör. kadrosu
+  // İlkokul ama fiilen Ortaokul'da da/sadece çalışıyorsa) gösterilir.
+  const farkli = kadro && fiili.length && !(fiili.length===1 && fiili[0]===kadro);
+  return `${fiiliMetin}${farkli ? ` <span class="badge badge-amber" title="Kadrosu: ${kademeEtiket(kadro)}">Görevlendirme</span>` : ''}`;
+}
+/* Bir belge/başlıkta hangi okul adının kullanılacağını belirler: kişi
+   sadece tek bir okulda çalışıyorsa o okulun adı, hem belirtilmemişse hem
+   de her iki okulda birden çalışıyorsa (ayrım yapılamıyorsa) birleşik okul
+   adına düşülür. Puantaj/İmza Sirküsü/İzin/Dilekçe gibi çıktılarda kullanılır. */
+function kisiyeGoreOkulAdi(kisi){
+  const kademeler = kademeFiiliListesi(kisi);
+  if(kademeler.length === 1) return okulAdiKademeye(kademeler[0]);
+  return (okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
+}
+/* YENİ: Öğretmen VE Personel modallarının ortak kullandığı "Kadrosu" +
+   "Fiilen Çalıştığı Okul" (çoklu seçim) form parçası. prefix ile aynı sayfada
+   çakışmayacak benzersiz element id'leri üretilir (öğretmen: 'f', personel: 'fp'). */
+function kademeAlanlariHtml(kisi, prefix){
+  const fiiliSet = new Set(kademeFiiliListesi(kisi));
+  return `
+    <div class="form-group"><label>Kadrosu</label><select id="${prefix}_kadroKademesi">
+      ${KADEME_SECENEKLERI.map(k=>`<option value="${k.key}" ${kisi&&(kisi.kadroKademesi||'')===k.key?'selected':''}>${k.ad}</option>`).join('')}
+    </select></div>
+    <div class="form-group"><label>Fiilen Çalıştığı Okul</label>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;padding:8px 0 2px;">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" id="${prefix}_gorevIlkokul" ${fiiliSet.has('ilkokul')?'checked':''}> İlkokul</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" id="${prefix}_gorevOrtaokul" ${fiiliSet.has('ortaokul')?'checked':''}> Ortaokul</label>
+      </div>
+      <div style="font-size:11.5px;color:var(--ink-muted,#8a8f98);">Boş bırakılırsa kadrosuyla aynı kabul edilir. İkisi de işaretlenirse kişi her iki okulda birden çalışıyor sayılır.</div>
+    </div>
+  `;
+}
+function kademeAlanlariniOku(prefix){
+  const gorevYeriKademeleri = [];
+  if(document.getElementById(`${prefix}_gorevIlkokul`) && document.getElementById(`${prefix}_gorevIlkokul`).checked) gorevYeriKademeleri.push('ilkokul');
+  if(document.getElementById(`${prefix}_gorevOrtaokul`) && document.getElementById(`${prefix}_gorevOrtaokul`).checked) gorevYeriKademeleri.push('ortaokul');
+  const kadroEl = document.getElementById(`${prefix}_kadroKademesi`);
+  return { kadroKademesi: kadroEl ? kadroEl.value : '', gorevYeriKademeleri };
+}
+
+let _ogretmenKademeFiltre = '';
+function ogretmenKademeFiltreSec(k){
+  _ogretmenKademeFiltre = k;
+  document.querySelectorAll('#tab-ogretmenler .filtre-btn').forEach(b=>b.classList.toggle('active', b.dataset.f===k));
+  renderOgretmenler();
+}
+
+function renderOgretmenler(){
+  const aramaEl = document.getElementById('ogretmenArama');
+  const arama = (aramaEl ? aramaEl.value : '').toLocaleLowerCase('tr');
+  let liste = ogretmenler.filter(o => !arama || (o.ad+' '+o.soyad+' '+(o.brans||'')+' '+(o.unvan||'')).toLocaleLowerCase('tr').includes(arama));
+  if(_ogretmenKademeFiltre) liste = liste.filter(o=>kademeFiiliListesi(o).includes(_ogretmenKademeFiltre));
+  liste.sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
+  document.getElementById('ogretmenlerTablo').innerHTML = liste.length ? liste.map(o=>`
+    <tr class="row-clickable" onclick="ogretmenDetayAc('${o.id}')">
+      <td>${escapeHtml(o.ad+' '+o.soyad)}${typeof ogretmenIzinRozeti==='function' ? ogretmenIzinRozeti(o.id) : ''}</td>
+      <td>${escapeHtml(o.unvan||'Öğretmen')}${o.kariyerBasamagi && o.kariyerBasamagi!=='Öğretmen' ? ` <span class="status-badge status-${kariyerBasamagiRengi(o.kariyerBasamagi)}">${escapeHtml(o.kariyerBasamagi)}</span>` : ''}</td>
+      <td>${escapeHtml(o.brans||'—')}</td>
+      <td>${kademeHucresi(o)}</td>
+      <td>${escapeHtml(o.telefon||'—')}</td>
+      <td>${escapeHtml(o.eposta||'—')}</td>
+      <td>${escapeHtml(o.sorumluSinif||'—')}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); ogretmenModalAc('${o.id}')">Düzenle</button></td>
+    </tr>`).join('') : `<tr><td colspan="8" class="empty-state">Henüz öğretmen eklenmedi.</td></tr>`;
+}
+const OGRETMEN_UNVANLARI = ['Öğretmen','Müdür','Müdür Yardımcısı','Rehber Öğretmen','İdari Personel'];
+const OGRETMEN_KARIYER_BASAMAKLARI = ['Öğretmen','Uzman Öğretmen','Başöğretmen'];
+function kariyerBasamagiRengi(k){ if(k==='Başöğretmen') return 'aktif'; if(k==='Uzman Öğretmen') return 'bekleme'; return ''; }
+/* Müdür Yardımcıları ayrı bir koleksiyon DEĞİL — öğretmenler listesinden
+   unvan==='Müdür Yardımcısı' filtresiyle hesaplanır (bkz. firebase-init.js COL.okulBilgileri yorumu). */
+function muduYardimcilari(){
+  return ogretmenler.filter(o=>(o.unvan||'').trim()==='Müdür Yardımcısı').sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
+}
+function ogretmenModalAc(id, varsayilanUnvan){
+  const o = id ? ogretmenler.find(x=>x.id===id) : null;
+  const body = `
+    <div class="form-group"><label>Ad</label><input id="f_ad" value="${o?escapeHtml(o.ad):''}"></div>
+    <div class="form-group"><label>Soyad</label><input id="f_soyad" value="${o?escapeHtml(o.soyad):''}"></div>
+    <div class="form-group"><label>Ünvan</label>
+      <select id="f_unvan">
+        ${OGRETMEN_UNVANLARI.map(u=>`<option value="${u}" ${(o&&o.unvan===u)||(varsayilanUnvan&&varsayilanUnvan===u)?'selected':''}>${u}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group"><label>Kariyer Basamağı</label>
+      <select id="f_kariyerBasamagi">${OGRETMEN_KARIYER_BASAMAKLARI.map(k=>`<option value="${k}" ${o&&o.kariyerBasamagi===k?'selected':''}>${k}</option>`).join('')}</select>
+    </div>
+    <div class="form-group"><label>Branş</label>${bransSelectHtml('f_brans', o?o.brans||'':'')}</div>
+    ${kademeAlanlariHtml(o, 'f')}
+    <div class="form-row">
+      <div class="form-group"><label>Derece</label><select id="f_derece"><option value="">—</option>${[1,2,3,4,5,6,7,8,9].map(n=>`<option value="${n}" ${o&&o.derece===n?'selected':''}>${n}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Kademe</label><select id="f_kademe"><option value="">—</option>${[1,2,3,4].map(n=>`<option value="${n}" ${o&&o.kademe===n?'selected':''}>${n}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-group"><label>TC Kimlik No</label><input id="f_tcNo" value="${o?escapeHtml(o.tcNo||''): ''}" placeholder="12345678900" maxlength="11" inputmode="numeric"></div>
+    <div class="form-group"><label>Telefon</label><input id="f_telefon" value="${o?escapeHtml(o.telefon||''):''}"></div>
+    <div class="form-group"><label>E-posta</label><input id="f_eposta" value="${o?escapeHtml(o.eposta||''):''}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Cinsiyet</label><select id="f_cinsiyet">
+        <option value="" ${o&&o.cinsiyet?'':'selected'}>Belirtilmedi</option>
+        <option value="kadin" ${o&&o.cinsiyet==='kadin'?'selected':''}>Kadın</option>
+        <option value="erkek" ${o&&o.cinsiyet==='erkek'?'selected':''}>Erkek</option>
+      </select></div>
+      <div class="form-group"><label>Rehberlik Sınıfı</label><select id="f_sorumluSinif"><option value="">— Seçiniz —</option>${(typeof siniflar!=="undefined"?[...siniflar].sort((a,b)=>a.ad.localeCompare(b.ad,"tr")):[]).map(s=>`<option value="${escapeHtml(s.ad)}" ${o&&o.sorumluSinif===s.ad?"selected":""}>${escapeHtml(s.ad)}</option>`).join("")}</select></div>
+    </div>
+    <div class="form-group"><label>Notlar</label><textarea id="f_notlar" rows="2">${o?escapeHtml(o.notlar||''):''}</textarea></div>
+  `;
+  modalAc(o?'Öğretmen Düzenle':'Öğretmen Ekle', body, ()=>{
+    const ad = document.getElementById('f_ad').value.trim();
+    const soyad = document.getElementById('f_soyad').value.trim();
+    if(!ad || !soyad){ toast('Ad ve soyad zorunludur.'); return; }
+    const dereceVal = document.getElementById('f_derece').value;
+    const kademeVal = document.getElementById('f_kademe').value;
+    const _kademeAlanlari = kademeAlanlariniOku('f');
+    kaydet(COL.ogretmenler, o?o.id:null, {
+      ad, soyad,
+      unvan: document.getElementById('f_unvan').value.trim(),
+      kariyerBasamagi: document.getElementById('f_kariyerBasamagi').value,
+      brans: document.getElementById('f_brans').value.trim(),
+      kadroKademesi: _kademeAlanlari.kadroKademesi,
+      gorevYeriKademeleri: _kademeAlanlari.gorevYeriKademeleri,
+      derece: dereceVal ? parseInt(dereceVal) : null,
+      kademe: kademeVal ? parseInt(kademeVal) : null,
+      tcNo: document.getElementById('f_tcNo').value.trim(),
+      telefon: document.getElementById('f_telefon').value.trim(),
+      eposta: document.getElementById('f_eposta').value.trim(),
+      cinsiyet: document.getElementById('f_cinsiyet').value,
+      sorumluSinif: document.getElementById('f_sorumluSinif').value.trim(),
+      notlar: document.getElementById('f_notlar').value.trim(),
+    });
+    modalKapat();
+  }, o ? ()=>{ if(confirm('Bu öğretmeni silmek istediğinize emin misiniz?')){ db.collection(COL.ogretmenler).doc(o.id).delete(); modalKapat(); } } : null);
+}
+
+/* ============== OKUL BİLGİLERİ ============== */
+let okulBilgileriAyari = null;
+
+/* YENİ: İki okul (Koruk İlkokulu 1-4 / Koruk Ortaokulu 5-8) tek panelden
+   yönetiliyor. Bir sınıfın hangi okula ait olduğu, mevcut 'seviye' alanından
+   (1-8) türetilir — ayrı bir alan eklemeye gerek yok. Bazı başlıklarda/
+   yazdırmalarda sadece İlkokul, bazılarında sadece Ortaokul adı kullanılması
+   gerektiğinde bu yardımcılar üzerinden okulBilgileriAyari.ilkokulAdi /
+   ortaokulAdi'na erişilir (Okul Bilgileri sayfasında girilir); ikisi de
+   boşsa genel okulAdi'na düşülür. */
+function okulAdiKademeye(kademe){
+  const genel = (okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
+  if(!okulBilgileriAyari) return genel;
+  if(kademe === 'ilkokul') return okulBilgileriAyari.ilkokulAdi || genel;
+  if(kademe === 'ortaokul') return okulBilgileriAyari.ortaokulAdi || genel;
+  return genel;
+}
+
+/* YENİ: Sosyal medya / web linkleri artık sabit 3 alan değil, serbest bir
+   liste (sosyalLinkler dizisi). sosyalLinklerTaslak, Okul Bilgileri sayfası
+   açıkken düzenlenen geçici (henüz kaydedilmemiş) kopyadır. */
+let sosyalLinklerTaslak = [];
+const SOSYAL_IKON_SECENEKLERI = [
+  { key:'globe',     ad:'🔗 Web Sitesi' },
+  { key:'instagram', ad:'📷 Instagram' },
+  { key:'x',         ad:'✖️ X (Twitter)' },
+  { key:'facebook',  ad:'📘 Facebook' },
+  { key:'youtube',   ad:'▶️ YouTube' },
+  { key:'whatsapp',  ad:'💬 WhatsApp' },
+  { key:'email',     ad:'✉️ E-posta' }
+];
+/* YENİ: Gerçek marka renklerinde sosyal medya simgeleri. Instagram için
+   marka gradyanı (<linearGradient>) kullanılır; aynı gradyan id'si sayfada
+   birden çok kez basılsa bile (hero + form önizlemesi) tüm kopyalar aynı
+   tanıma sahip olduğundan görsel olarak sorun oluşturmaz. */
+const SOSYAL_IKON_SVG = {
+  globe:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><linearGradient id="webBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#22D3EE"/><stop offset="100%" stop-color="#0EA5A4"/></linearGradient></defs><circle cx="12" cy="12" r="11" fill="url(#webBrandGrad)"/><g fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.4"/><line x1="4.6" y1="12" x2="19.4" y2="12"/><path d="M12 4.6a10.8 10.8 0 0 1 2.8 7.4 10.8 10.8 0 0 1-2.8 7.4 10.8 10.8 0 0 1-2.8-7.4A10.8 10.8 0 0 1 12 4.6z"/></g></svg>',
+  instagram:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><linearGradient id="igBrandGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FEDA75"/><stop offset="28%" stop-color="#FA7E1E"/><stop offset="55%" stop-color="#D62976"/><stop offset="80%" stop-color="#962FBF"/><stop offset="100%" stop-color="#4F5BD5"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5.5" ry="5.5" fill="url(#igBrandGrad)"/><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.6" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="12" cy="12" r="3.4" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="17.3" cy="6.7" r="1.15" fill="#fff"/></svg>',
+  x:'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+  facebook:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94z"/></svg>',
+  youtube:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c2 .6 9.4.6 9.4.6s7.4 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6z"/></svg>',
+  whatsapp:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#25D366"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.2.2-.3.2-.5.1-.2-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.5-1.8-.2-.2 0-.4.1-.5l.4-.4c.1-.1.2-.2.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>',
+  email:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EA4335" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>'
+};
+function sosyalIkonAdi(key){ return (SOSYAL_IKON_SECENEKLERI.find(o=>o.key===key)||{}).ad || '🔗 Web Sitesi'; }
+function renderMuduYardimcilariListesi(){
+  const hedef = document.getElementById('muduYardimcilariListesi');
+  if(!hedef) return;
+  const liste = muduYardimcilari();
+  hedef.innerHTML = liste.length ? `<ul class="mudur-yardimcilari-liste">${liste.map(o=>`
+    <li class="mudur-yardimcisi-item">
+      <div class="mudur-yardimcisi-info">
+        <div class="mudur-yardimcisi-ad">${escapeHtml(o.ad+' '+o.soyad)}</div>
+        <div class="mudur-yardimcisi-telefon">${escapeHtml(o.telefon||'Telefon kayıtlı değil')}</div>
+      </div>
+      <div class="mudur-yardimcisi-actions">
+        <button class="btn btn-ghost btn-sm" onclick="ogretmenModalAc('${o.id}')">Düzenle</button>
+        <button class="btn btn-ghost btn-sm" onclick="muduYardimcisiListedenCikar('${o.id}')">Çıkar</button>
+      </div>
+    </li>`).join('')}</ul>` : '<p class="empty-state">Henüz Müdür Yardımcısı eklenmedi.</p>';
+}
+function muduYardimcisiEkle(){ ogretmenModalAc(null, 'Müdür Yardımcısı'); }
+function muduYardimcisiListedenCikar(id){
+  if(!confirm('Bu kişiyi Müdür Yardımcıları listesinden çıkarmak istiyor musunuz? (Öğretmen kaydı silinmez, sadece ünvanı "Öğretmen" olarak güncellenir.)')) return;
+  db.collection(COL.ogretmenler).doc(id).update({unvan:'Öğretmen'}).then(()=>toast('Listeden çıkarıldı.')).catch(err=>toast('Hata: '+err.message));
+}
+
+/* --- Sosyal medya / web linkleri: serbest liste editörü --- */
+function sosyalLinkSatiriHtml(link, index){
+  const ikon = link.ikon || 'globe';
+  return `
+    <div class="sosyal-link-satir" data-index="${index}">
+      <span class="sosyal-link-ikon-onizleme" id="sl_onizleme_${index}">${SOSYAL_IKON_SVG[ikon] || SOSYAL_IKON_SVG.globe}</span>
+      <select id="sl_ikon_${index}" class="sosyal-link-ikon-sec" onchange="sosyalLinkIkonOnizlemeGuncelle(${index})">
+        ${SOSYAL_IKON_SECENEKLERI.map(o=>`<option value="${o.key}" ${ikon===o.key?'selected':''}>${o.ad}</option>`).join('')}
+      </select>
+      <input type="text" id="sl_etiket_${index}" placeholder="Etiket (örn: İlkokul Web Sitesi)" value="${escapeHtml(link.etiket||'')}">
+      <input type="url" id="sl_url_${index}" placeholder="https://..." value="${escapeHtml(link.url||'')}">
+      <button type="button" class="btn btn-ghost btn-sm sosyal-link-sil-btn" onclick="sosyalLinkSatiriSil(${index})" title="Sil">🗑️</button>
+    </div>`;
+}
+/* YENİ: İkon seçici değiştiğinde, satırdaki gerçek renkli önizlemeyi günceller. */
+function sosyalLinkIkonOnizlemeGuncelle(index){
+  const sec = document.getElementById(`sl_ikon_${index}`);
+  const onizleme = document.getElementById(`sl_onizleme_${index}`);
+  if(sec && onizleme) onizleme.innerHTML = SOSYAL_IKON_SVG[sec.value] || SOSYAL_IKON_SVG.globe;
+}
+function renderSosyalLinklerFormu(){
+  const kutu = document.getElementById('sosyalLinklerListesi');
+  if(!kutu) return;
+  kutu.innerHTML = sosyalLinklerTaslak.length
+    ? sosyalLinklerTaslak.map((l,i)=>sosyalLinkSatiriHtml(l,i)).join('')
+    : '<p class="empty-state">Henüz link eklenmedi.</p>';
+}
+function sosyalLinkEkle(){
+  sosyalLinklerTaslak.push({ etiket:'', ikon:'globe', url:'' });
+  renderSosyalLinklerFormu();
+  // Yeni eklenen satırın etiket alanına odaklan.
+  const yeniIndex = sosyalLinklerTaslak.length - 1;
+  const etiketEl = document.getElementById(`sl_etiket_${yeniIndex}`);
+  if(etiketEl) etiketEl.focus();
+}
+function sosyalLinkSatiriSil(index){
+  sosyalLinklerTaslak.splice(index, 1);
+  renderSosyalLinklerFormu();
+}
+/* Eski sürümde instagram/x/web sabit alanları vardı; okulBilgileriAyari'nde
+   sosyalLinkler dizisi yoksa ama eski alanlar varsa, onlardan otomatik
+   bir liste üretir (geriye dönük uyumluluk). */
+function sosyalLinklerVeriyeCevir(veri){
+  if(!veri) return [];
+  if(Array.isArray(veri.sosyalLinkler)) return veri.sosyalLinkler.map(l=>({...l}));
+  const eskiListe = [];
+  if(veri.instagram) eskiListe.push({ etiket:'Instagram', ikon:'instagram', url:veri.instagram });
+  if(veri.x) eskiListe.push({ etiket:'X (Twitter)', ikon:'x', url:veri.x });
+  if(veri.web) eskiListe.push({ etiket:'Web Sitesi', ikon:'globe', url:veri.web });
+  return eskiListe;
+}
+
+function renderOkulBilgileriSayfasi(){
+  try {
+    const adEl = document.getElementById('f_okulAdi');
+    const mudurEl = document.getElementById('f_okulMudur');
+    const ilEl = document.getElementById('f_okulIl');
+    const ilceEl = document.getElementById('f_okulIlce');
+    const mebEl = document.getElementById('f_okulMeb');
+    const ilkokulAdEl = document.getElementById('f_okulIlkokulAdi');
+    const ilkokulKodEl = document.getElementById('f_okulIlkokulKurumKodu');
+    const ortaokulAdEl = document.getElementById('f_okulOrtaokulAdi');
+    const ortaokulKodEl = document.getElementById('f_okulOrtaokulKurumKodu');
+    if(adEl) adEl.value = (okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
+    if(mudurEl) mudurEl.innerHTML = ogretmenSecenekleri(okulBilgileriAyari ? okulBilgileriAyari.mudurId : '');
+    if(ilEl) ilEl.value = (okulBilgileriAyari && okulBilgileriAyari.il) || '';
+    if(ilceEl) ilceEl.value = (okulBilgileriAyari && okulBilgileriAyari.ilce) || '';
+    if(mebEl) mebEl.value = (okulBilgileriAyari && okulBilgileriAyari.mebMudurlugu) || '';
+    if(ilkokulAdEl) ilkokulAdEl.value = (okulBilgileriAyari && okulBilgileriAyari.ilkokulAdi) || '';
+    if(ilkokulKodEl) ilkokulKodEl.value = (okulBilgileriAyari && okulBilgileriAyari.ilkokulKurumKodu) || '';
+    if(ortaokulAdEl) ortaokulAdEl.value = (okulBilgileriAyari && okulBilgileriAyari.ortaokulAdi) || '';
+    if(ortaokulKodEl) ortaokulKodEl.value = (okulBilgileriAyari && okulBilgileriAyari.ortaokulKurumKodu) || '';
+    sosyalLinklerTaslak = sosyalLinklerVeriyeCevir(okulBilgileriAyari);
+    renderSosyalLinklerFormu();
+    if(typeof renderMuduYardimcilariListesi === 'function') renderMuduYardimcilariListesi();
+    // DÜZELTME: Bu fonksiyon Firestore onSnapshot ile SIK SIK yeniden
+    // çağrılıyor ve "Çıkar" gibi butonları innerHTML ile SIFIRDAN
+    // yeniden oluşturuyor — salt-okuma (yetkisiz) kullanıcılar için
+    // bu butonlar sadece sekme İLK açıldığında gizleniyordu, sonraki
+    // her veri yenilemesinde tekrar tıklanabilir hale geliyordu. Her
+    // render sonrası kısıtlamayı yeniden uyguluyoruz.
+    if(typeof saltOkumaUygula === 'function') saltOkumaUygula('okulBilgileri');
+  } catch(e) { console.warn('renderOkulBilgileriSayfasi hata:', e); }
+}
+function okulBilgileriKaydet(){
+  const okulAdi = document.getElementById('f_okulAdi').value.trim();
+  const mudurId = document.getElementById('f_okulMudur').value;
+  const il = (document.getElementById('f_okulIl')?.value || '').trim().toLocaleUpperCase('tr');
+  const ilce = (document.getElementById('f_okulIlce')?.value || '').trim().toLocaleUpperCase('tr');
+  const mebMudurlugu = (document.getElementById('f_okulMeb')?.value || '').trim();
+  const ilkokulAdi = (document.getElementById('f_okulIlkokulAdi')?.value || '').trim();
+  const ilkokulKurumKodu = (document.getElementById('f_okulIlkokulKurumKodu')?.value || '').trim();
+  const ortaokulAdi = (document.getElementById('f_okulOrtaokulAdi')?.value || '').trim();
+  const ortaokulKurumKodu = (document.getElementById('f_okulOrtaokulKurumKodu')?.value || '').trim();
+
+  // Sosyal medya / web linklerini DOM'daki satırlardan topla. Boş URL'li
+  // satırlar (kullanıcı satırı ekleyip doldurmadıysa) sessizce atlanır.
+  const sosyalLinkler = [];
+  for(let i=0; i<sosyalLinklerTaslak.length; i++){
+    const url = (document.getElementById(`sl_url_${i}`)?.value || '').trim();
+    if(!url) continue;
+    const ikon = document.getElementById(`sl_ikon_${i}`)?.value || 'globe';
+    const etiket = (document.getElementById(`sl_etiket_${i}`)?.value || '').trim() || sosyalIkonAdi(ikon).replace(/^\S+\s/, '');
+    if(!/^https?:\/\/.+/i.test(url)){
+      toast(`"${etiket}" linki http:// veya https:// ile başlamalı.`);
+      return;
+    }
+    sosyalLinkler.push({ id: sosyalLinklerTaslak[i].id || `sl_${Date.now()}_${i}`, etiket, ikon, url });
+  }
+
+  db.collection(COL.okulBilgileri).doc('ayarlar').set({
+    okulAdi, mudurId, il, ilce, mebMudurlugu,
+    ilkokulAdi, ilkokulKurumKodu, ortaokulAdi, ortaokulKurumKodu,
+    sosyalLinkler
+  })
+    .then(()=>toast('Okul bilgileri kaydedildi.'))
+    .catch(err=>toast('Hata: '+err.message));
+}
+
+/* YENİ: Ana sayfa hero kartında sosyal medya / web linklerini ikon+etiket
+   olarak gösterir. Link sayısı ne olursa olsun, kutunun genişliğine göre
+   aralarında eşit boşluk bırakılır (bkz. css .dash-hero-sosyal). */
+function renderSosyalMedyaIkonlari(){
+  const kutu = document.getElementById('heroSosyalMedya');
+  if(!kutu) return;
+  const linkler = sosyalLinklerVeriyeCevir(okulBilgileriAyari).filter(l=>l.url);
+
+  if(!linkler.length){ kutu.style.display='none'; kutu.innerHTML=''; return; }
+
+  kutu.innerHTML = linkler.map(l=>`
+    <a href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer" class="hero-sosyal-link" title="${escapeHtml(l.etiket||'')}">
+      <span class="hero-sosyal-ikon">${SOSYAL_IKON_SVG[l.ikon] || SOSYAL_IKON_SVG.globe}</span>
+      <span class="hero-sosyal-etiket">${escapeHtml(l.etiket||'')}</span>
+    </a>`).join('');
+  kutu.style.display = 'flex';
+}
+
+/* ============== DERS PROGRAMI ============== */
+function dersSiniflari(){ return sinifAdlari(); }
+function sinifDegisti(v){ seciliSinif = v; renderDersGrid(); }
+function yeniSinifEkleDers(){
+  // Sınıf tanımları artık Sınıflar modülünden yönetiliyor.
+  sinifModalAc();
+}
+function renderDersGrid(){
+  const sel = document.getElementById('dersSinifSecimi');
+  const siniflar = dersSiniflari();
+  if(!seciliSinif && siniflar.length) seciliSinif = siniflar[0];
+  sel.innerHTML = siniflar.length ? siniflar.map(s=>`<option ${s===seciliSinif?'selected':''}>${escapeHtml(s)}</option>`).join('') : '<option>Sınıf eklenmedi</option>';
+  const bugun = GUNADI[new Date().getDay()];
+  let html = '<thead><tr><th>Saat</th>' + GUNLER.map(g=>`<th class="${g===bugun?'bugun-kolon':''}">${g}</th>`).join('') + '</tr></thead><tbody>';
+  for(let saat=1; saat<=7; saat++){
+    const bilgi = dersSaatiBilgisi(saat);
+    const saatEtiket = bilgi ? `${saat}. <span class="sch-saat-zaman">${bilgi.baslangic}–${bilgi.bitis}</span>` : `${saat}.`;
+    html += `<tr><td class="sch-saat">${saatEtiket}</td>`;
+    for(const gun of GUNLER){
+      const giris = dersProgrami.find(d=>d.sinif===seciliSinif && d.gun===gun && d.saat===saat);
+      if(giris){
+        html += `<td class="sch-cell sch-filled" onclick="dersModalAcById('${gun}',${saat},'${giris.id}')"><div class="sch-ders">${escapeHtml(giris.ders)}</div><div class="sch-ogretmen">${escapeHtml(ogretmenAdi(giris.ogretmenId))}</div></td>`;
+      } else {
+        html += `<td class="sch-cell sch-empty" onclick="dersModalAcById('${gun}',${saat},'')">+</td>`;
       }
-    </style></head><body>
-    <div class="oy-bilgi">${_h(sayfaBilgi)}</div>
-    ${sayfaHtml}
-    </body></html>`;
-
-    _uygulamaHtmlYazdirCagir(rawHtml, baslik.replace(/\s+/g, '_'), yatayMi ? 'yatay' : 'dikey');
-}
-
-/** Önizleme: gerçek indirmeyi tetiklemeden, seçilen yön/düzenle NASIL görüneceğini bir yazdırma penceresinde gösterir. */
-async function yzOnizleOlustur() {
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    const durumEl = document.getElementById('yzOnizlemeDurum');
-    if (!sinav) return;
-    durumEl.textContent = 'Önizleme hazırlanıyor...';
-    try {
-        const layout = _layoutGetir(sinav, _yzSecimleri);
-        const { bosFormGorseliOlustur, ogrenciFormGorselleriOlustur } = await import('./canvasFormGenerator.js');
-        let sayfalar, sayfaBilgi;
-
-        if (_yzMod === 'bos') {
-            const gorsel = await bosFormGorseliOlustur(layout, {
-                adSoyad: 'ÖRNEK ÖĞRENCİ', ogrenciNo: '1', sinif: '—',
-                sinavAdi: sinav.ad, okulAdi: _okulAdiGetir() || 'Okul Adı', kitapcikTuru: '', ogrenciId: '', sinavId: sinav.optikFormId
-            });
-            sayfalar = [gorsel];
-            sayfaBilgi = '1 sayfa (boş form) — önizleme';
-        } else {
-            const ogrList = await _yzOgrenciListesiGetir(sinav);
-            if (!ogrList || !ogrList.length) { alert('Öğrenci bilgisi bulunamadı.'); durumEl.textContent = ''; return; }
-            // Hızlı olması için önizlemede sadece ilk sayfayı dolduracak kadar öğrenci kullanılır;
-            // gerçek "Oluştur ve İndir"de TÜM öğrenciler işlenir.
-            const slotSayisi = layout.formlar.length;
-            const ornekListe = ogrList.slice(0, slotSayisi);
-            sayfalar = await ogrenciFormGorselleriOlustur(layout, ornekListe);
-            const toplamSayfa = Math.ceil(ogrList.length / slotSayisi);
-            sayfaBilgi = slotSayisi > 1
-                ? `Örnek sayfa (${ornekListe.length}/${slotSayisi} form dolu, her form ayrı öğrenci) — toplam ${ogrList.length} öğrenci için ${toplamSayfa} sayfa üretilecek`
-                : `Örnek sayfa — toplam ${ogrList.length} öğrenci için ${ogrList.length} sayfa üretilecek`;
-        }
-
-        durumEl.textContent = '';
-        _optikOnizlePenceresiAc(sayfalar, 'Optik Form Önizleme', sayfaBilgi);
-    } catch (e) { durumEl.textContent = '❌ Hata: ' + e.message; }
-}
-
-/** Seçilen yön/sayfa düzeniyle GERÇEK PDF'i üretir ve indirir. */
-/** Bir promise'i sınırlı sürede bekler; süre dolarsa HANGİ adımda takıldığını
- *  belirten net bir hatayla reddeder — böylece "Oluşturuluyor..." ekranda
- *  süresiz asılı kalamaz (bkz. kullanıcı bildirimi: dakikalarca takılı kalma). */
-function _zamanAsimliBekle(promise, ms, asamaAdi) {
-    return new Promise((resolve, reject) => {
-        const zamanlayici = setTimeout(() => {
-            reject(new Error(`${asamaAdi} ${Math.round(ms / 1000)} saniyede tamamlanmadı (zaman aşımı) — cihaz/depolama izni onayı beklemiş olabilir.`));
-        }, ms);
-        promise.then(
-            (deger) => { clearTimeout(zamanlayici); resolve(deger); },
-            (hata) => { clearTimeout(zamanlayici); reject(hata); }
-        );
-    });
-}
-
-async function yzOnaylaVeIndir() {
-    const sinav = DB.sinaviBul(_aktifSinavId);
-    const durumEl = document.getElementById('optikOlusturDurum');
-    if (!sinav) return;
-    sheetKapat('sheetYazdirmaSecenekleri');
-    durumEl.textContent = 'Oluşturuluyor...';
-    try {
-        const layout = _layoutGetir(sinav, _yzSecimleri);
-        if (_yzMod === 'bos') {
-            const { formPdfOlustur } = await import('./pdfFormGenerator.js');
-            const doc = await _zamanAsimliBekle(formPdfOlustur(layout, {
-                adSoyad: '', ogrenciNo: '', sinif: '',
-                sinavAdi: sinav.ad, okulAdi: _okulAdiGetir(), kitapcikTuru: '', ogrenciId: '', sinavId: sinav.optikFormId
-            }), 30000, 'PDF oluşturma');
-            await _zamanAsimliBekle(_pdfKaydet(doc, sinav.ad.replace(/\s+/g, '_') + '_bos.pdf'), 20000, 'Dosya kaydetme');
-            durumEl.textContent = '✅ PDF indirildi.';
-        } else {
-            const ogrList = await _yzOgrenciListesiGetir(sinav);
-            if (!ogrList) { alert('Uygulama içinden açılması gerekiyor.'); durumEl.textContent = ''; return; }
-            if (!ogrList.length) { alert('Öğrenci bilgisi bulunamadı.'); durumEl.textContent = ''; return; }
-            durumEl.textContent = `Oluşturuluyor... (${ogrList.length} öğrenci)`;
-            const { topluFormPdfOlustur } = await import('./pdfFormGenerator.js');
-            const doc = await _zamanAsimliBekle(topluFormPdfOlustur(layout, ogrList), 60000, 'PDF oluşturma');
-            durumEl.textContent = `Kaydediliyor... (${ogrList.length} öğrenci)`;
-            await _zamanAsimliBekle(_pdfKaydet(doc, sinav.ad.replace(/\s+/g, '_') + '_ogrenciler.pdf'), 20000, 'Dosya kaydetme');
-            durumEl.textContent = `✅ ${ogrList.length} öğrenci için PDF indirildi.`;
-        }
-    } catch (e) { durumEl.textContent = '❌ Hata: ' + e.message; }
-}
-
-// ════════════════════════════════════════════════════════════════
-// BOTTOM SHEETS
-// ════════════════════════════════════════════════════════════════
-function sheetAc(id)   { const el = document.getElementById(id); if (el) el.hidden = false; }
-function sheetKapat(id){ const el = document.getElementById(id); if (el) el.hidden = true; }
-
-function sheetOnay(baslik, metin, onayFn, onaylaEtiket) {
-    _s('sheetOnayBaslik', baslik);
-    _s('sheetOnayMetin', metin);
-    const onaylaBtn = document.getElementById('sheetOnayOnayla');
-    if (onaylaBtn) onaylaBtn.textContent = onaylaEtiket || 'Sil';
-    document.getElementById('sheetOnayOnayla').onclick = () => { sheetKapat('sheetOnay'); onayFn(); };
-    sheetAc('sheetOnay');
-}
-
-function optikFormSheetAc(onSecim) {
-    _optikFormOnSecimCB = onSecim;
-    const liste = document.getElementById('optikFormSeciciListesi');
-    if (liste) {
-        // KÖK DEĞİŞİKLİK (Ağustos 2026, Sedat isteği: "Eski lgs ve bursluluk
-        // formlarını da sil. Ben yeni formlar oluşturup kaydederim...
-        // sınav oluştururken form alanında hepsi ona göre listelensin.
-        // Dinamik bir liste olsun.") — sabit SABLONLAR (LGS/Bursluluk/Özel
-        // Sınav) artık burada HİÇ listelenmiyor; sadece "yayinda" durumundaki
-        // özel şablonlar gösteriliyor. NOT: SABLONLAR ve onu kullanan
-        // render/okuma kodu (_layoutGetir, formDersleriniGetir vb.) BİLEREK
-        // silinmedi — geçmişte LGS/Bursluluk ile oluşturulmuş sınavlar hâlâ
-        // bu koda ihtiyaç duyuyor, sadece YENİ seçim listesinden kaldırıldı.
-        const ozelSablonlar = DB.ozelSablonlariGetir().filter(k => k.durum === 'yayinda');
-        const tasarlaSatiri = `
-            <button class="bs-liste-satir" data-tasarla="1">
-                <div class="bs-liste-ikon" style="background:#FCE4EC;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2185B" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-                </div>
-                <div class="bs-liste-bilgi">
-                    <strong>🎨 Kendi Formunu Tasarla</strong>
-                    <small>Baloncukları, alanları serbestçe yerleştir</small>
-                </div>
-            </button>`;
-        const bosUyari = !ozelSablonlar.length
-            ? `<p style="padding:10px 4px;font-size:12.5px;color:var(--text-faint);">Henüz yayınlanmış bir form yok — bir form tasarlayıp Şablonlarım'dan "Yayınla" diyebilirsin.</p>`
-            : '';
-        const ozelSatirlari = ozelSablonlar.map(k => `
-            <button class="bs-liste-satir" data-ozel-id="${k.id}">
-                <div class="bs-liste-ikon" style="background:#F3E5F5;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <div class="bs-liste-bilgi">
-                    <strong>${_h(k.ad)}</strong>
-                    <small>Kendi tasarladığın form — düzenlemek için uzun bas</small>
-                </div>
-            </button>`).join('');
-        liste.innerHTML = tasarlaSatiri + ozelSatirlari + bosUyari;
-        liste.querySelectorAll('[data-ozel-id]').forEach(btn => {
-            let uzunBasmaTetiklendiMi = false;
-            btn.addEventListener('click', () => {
-                if (uzunBasmaTetiklendiMi) { uzunBasmaTetiklendiMi = false; return; } // uzun basma zaten işlemi yaptı, tıklamayı yok say
-                sheetKapat('sheetOptikForm');
-                const kayit = DB.ozelSablonBul(btn.dataset.ozelId);
-                const form = sablonDerlemesiniGetir(kayit.id);
-                onSecim({ id: kayit.id, ad: kayit.ad, soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
-            });
-            // YENİ (Sedat geri bildirimi, Ağustos 2026): satırda zaten
-            // "düzenlemek için uzun bas" yazıyordu ama hiç bağlanmamıştı —
-            // Pointer Events ile gerçek uzun-basma algılama (500ms, 10px'ten
-            // fazla parmak kayarsa iptal — kaydırmayla karışmasın).
-            let uzunBasmaZamanlayici = null;
-            let uzunBasmaBaslangic = null;
-            const UZUN_BASMA_MS = 500, UZUN_BASMA_TOLERANS_PX = 10;
-            btn.addEventListener('pointerdown', (ev) => {
-                uzunBasmaBaslangic = { x: ev.clientX, y: ev.clientY };
-                uzunBasmaZamanlayici = setTimeout(() => {
-                    uzunBasmaZamanlayici = null;
-                    uzunBasmaTetiklendiMi = true; // sonra gelecek click'i bastır
-                    if (navigator.vibrate) navigator.vibrate(15);
-                    sheetKapat('sheetOptikForm');
-                    sablonEditoruAc(btn.dataset.ozelId);
-                }, UZUN_BASMA_MS);
-            });
-            const uzunBasmaIptal = (ev) => {
-                if (uzunBasmaZamanlayici && ev && ev.type === 'pointermove' && uzunBasmaBaslangic) {
-                    const dx = ev.clientX - uzunBasmaBaslangic.x, dy = ev.clientY - uzunBasmaBaslangic.y;
-                    if (Math.hypot(dx, dy) < UZUN_BASMA_TOLERANS_PX) return; // küçük titreşim, iptal etme
-                }
-                if (uzunBasmaZamanlayici) { clearTimeout(uzunBasmaZamanlayici); uzunBasmaZamanlayici = null; }
-            };
-            btn.addEventListener('pointermove', uzunBasmaIptal);
-            btn.addEventListener('pointerup', uzunBasmaIptal);
-            btn.addEventListener('pointercancel', uzunBasmaIptal);
-        });
-        const tasarlaBtn = liste.querySelector('[data-tasarla]');
-        if (tasarlaBtn) {
-            tasarlaBtn.addEventListener('click', () => {
-                sheetKapat('sheetOptikForm');
-                sablonEditoruAc(null);
-            });
-        }
     }
-    sheetAc('sheetOptikForm');
+    html += '</tr>';
+    const ara = sonrakiSegmentBilgisi(saat);
+    if(ara && ara.fark>0){
+      const araEtiket = ara.sonrakiTip==='ogle' ? `Öğle Arası (${ara.fark} dk)` : `Teneffüs (${ara.fark} dk)`;
+      html += `<tr class="sch-ara-row"><td colspan="${GUNLER.length+1}">${araEtiket}</td></tr>`;
+    }
+  }
+  html += '</tbody>';
+  document.getElementById('dersGridTablo').innerHTML = html;
 }
-
-// ════════════════════════════════════════════════════════════════
-// GALERİ
-// ════════════════════════════════════════════════════════════════
-function galeriSecimIsle(dosyalar) {
-    if (!dosyalar?.length) return;
-    sheetKapat('sheetKagitEkle');
-    // Taramadan hemen önce köprüyü tazele — sınav bilgisi (ör. seçilen
-    // form) son sinavDetayAc()'tan beri değişmiş olabilir.
-    _optikAktifFormGuncelle();
-    // galeriSecici.js baglaGaleriSecici fonksiyonu kullanılıyor
-    // Her dosya için omrEngine ile işle
-    Array.from(dosyalar).forEach(async dosya => {
-        const reader = new FileReader();
-        reader.onload = async e => {
-            const img = new Image();
-            img.onload = async () => {
-                const cvs = document.getElementById('canvas');
-                cvs.width = img.width; cvs.height = img.height;
-                cvs.getContext('2d').drawImage(img, 0, 0);
-                try {
-                    // galeriSecici.js flow'u kullaniliyor - bu satir kaldirildi
-                    // formOkuyucu.js ile işle
-                    const { formuOkuVeGoster } = await import('./formOkuyucu.js');
-                    await formuOkuVeGoster('canvas', 'resultCanvas', 'statusText', 'hataKutusu');
-                } catch(err) { console.error('Galeri okuma hatası', err); }
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(dosya);
+function dersModalAcById(gun, saat, id){
+  const mevcut = id ? dersProgrami.find(d=>d.id===id) : null;
+  dersModalAc(gun, saat, mevcut);
+}
+function dersModalAc(gun, saat, mevcut){
+  const body = `
+    <div class="form-group"><label>Sınıf</label><input id="f_sinif" value="${escapeHtml(mevcut?mevcut.sinif:(seciliSinif||''))}" placeholder="örn: 5-A"></div>
+    <div class="form-group"><label>Gün</label><select id="f_gun">${GUNLER.map(g=>`<option ${g===gun?'selected':''}>${g}</option>`).join('')}</select></div>
+    <div class="form-group"><label>Ders Saati</label><select id="f_saat">${[1,2,3,4,5,6,7].map(s=>`<option ${s===saat?'selected':''}>${s}</option>`).join('')}</select></div>
+    <div class="form-group"><label>Ders</label>${dersSelectHtml('f_ders', mevcut?mevcut.ders:'')}</div>
+    <div class="form-group"><label>Öğretmen</label><select id="f_ogretmen">${ogretmenSecenekleri(mevcut?mevcut.ogretmenId:'')}</select></div>
+  `;
+  modalAc(mevcut?'Ders Düzenle':'Ders Ekle', body, ()=>{
+    const sinif = document.getElementById('f_sinif').value.trim();
+    const ders = document.getElementById('f_ders').value.trim();
+    if(!sinif || !ders){ toast('Sınıf ve ders alanı zorunludur.'); return; }
+    const yeniGun = document.getElementById('f_gun').value;
+    const yeniSaat = parseInt(document.getElementById('f_saat').value);
+    const yeniOgretmenId = document.getElementById('f_ogretmen').value;
+    // DÜZELTME: Aynı öğretmen aynı gün+saatte başka bir sınıfa da atanabiliyordu
+    // (çakışma kontrolü hiç yoktu). Kaydetmeden önce, bu öğretmenin aynı
+    // gün+saatte BAŞKA bir sınıfta zaten dersi olup olmadığını kontrol et.
+    if(yeniOgretmenId){
+      const cakisan = dersProgrami.find(d=>
+        d.ogretmenId === yeniOgretmenId && d.gun === yeniGun && d.saat === yeniSaat &&
+        d.sinif !== sinif && (!mevcut || d.id !== mevcut.id)
+      );
+      if(cakisan){
+        toast(`Çakışma: ${ogretmenAdi(yeniOgretmenId)}, ${yeniGun} günü ${yeniSaat}. derste zaten ${cakisan.sinif} sınıfına giriyor.`);
+        return;
+      }
+    }
+    kaydet(COL.dersProgrami, mevcut?mevcut.id:null, {
+      sinif, gun: yeniGun, saat: yeniSaat, ders, ogretmenId: yeniOgretmenId
     });
+    seciliSinif = sinif;
+    modalKapat();
+  }, mevcut ? ()=>{ if(confirm('Bu ders kaydını silmek istiyor musunuz?')){ db.collection(COL.dersProgrami).doc(mevcut.id).delete(); modalKapat(); } } : null);
 }
 
-// ════════════════════════════════════════════════════════════════
-// ANAHTAR EXCEL İÇE/DIŞA AKTAR
-// ════════════════════════════════════════════════════════════════
-async function anahtarExcelYukle(dosya) {
-    try {
-        // Önce eski CevapAnahtari modülünü dene
-        const kaynak = window.CevapAnahtari;
-        if (kaynak?.exceldenYukle) {
-            await kaynak.exceldenYukle(dosya);
-            const a = kaynak.getir?.();
-            if (a?.dersler?.length) {
-                // Ders adı normalleştirme: Excel'deki ad formdan gelen adla
-                // büyük/küçük harf veya boşluk farkı varsa, form adını kullan.
-                const formDersler = formDersleriniGetir(_aktifSinavId);
-                a.dersler.forEach(d => {
-                    const eslesme = formDersler.find(f => f.dersAdi.trim().toLowerCase() === d.dersAdi.trim().toLowerCase());
-                    if (eslesme && eslesme.dersAdi !== d.dersAdi) d.dersAdi = eslesme.dersAdi;
-                });
-                DB.anahtarKaydet(_aktifSinavId, a, _anahtarAktifKitapcik);
-                anahtarIzgaraCiz();
-                _tumSonuclariYenidenHesapla();
-                alert(`✅ ${a.dersler.reduce((t, d) => t + d.anahtarlar.length, 0)} soru cevabı yüklendi (${a.dersler.length} ders).`);
-                return;
-            }
-            // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "kitapçık
-            // türünden sonra bozuldu") — exceldenYukle SESSİZCE başarısız
-            // olup boş/eksik bir sonuç döndürebiliyordu, kullanıcı hiçbir
-            // şey görmeden CSV yedeğine (gerçek .xlsx için işe yaramaz)
-            // düşülüyordu. Artık bu durum GÖRÜNÜR bir uyarıyla bildiriliyor.
-            alert('Excel okundu ama içinden geçerli bir ders/cevap bulunamadı.\n\nDönen veri: ' + JSON.stringify(a));
-            return;
-        }
-        // CSV fallback
-        const metin = await dosya.text();
-        const satirlar = metin.split('\n').filter(s => s.trim());
-        const baslikSatir = satirlar[0].toLowerCase();
-        const dersIdx  = baslikSatir.split(',').findIndex(h => h.includes('ders'));
-        const soruIdx  = baslikSatir.split(',').findIndex(h => h.includes('soru') || h.includes('no'));
-        const cevapIdx = baslikSatir.split(',').findIndex(h => h.includes('cevap') || h.includes('doğru') || h.includes('dogru'));
-        if (dersIdx < 0 || soruIdx < 0 || cevapIdx < 0) { alert('CSV formatı tanınmadı. Beklenen sütunlar: Ders, Soru No, Doğru Cevap'); return; }
-        const yeniAnahtar = { dersler: [] };
-        satirlar.slice(1).forEach(satir => {
-            const huc = satir.split(',');
-            const dersAdi = (huc[dersIdx] || '').trim();
-            const soruNo  = parseInt((huc[soruIdx] || '').trim(), 10);
-            const dogru   = (huc[cevapIdx] || '').trim().toUpperCase();
-            if (!dersAdi || !soruNo || !dogru) return;
-            let ders = yeniAnahtar.dersler.find(d => d.dersAdi === dersAdi);
-            if (!ders) { ders = { dersAdi, anahtarlar: [] }; yeniAnahtar.dersler.push(ders); }
-            ders.anahtarlar.push({ soruNo, dogru });
-        });
-        DB.anahtarKaydet(_aktifSinavId, yeniAnahtar, _anahtarAktifKitapcik);
-        anahtarIzgaraCiz();
-        _tumSonuclariYenidenHesapla();
-        alert(`✅ ${yeniAnahtar.dersler.reduce((t, d) => t + d.anahtarlar.length, 0)} soru cevabı yüklendi.`);
-    } catch (e) { alert('İçe aktarma hatası: ' + e.message); }
+/* Nöbet Programı: bkz. js/nobet.js (tarih bazlı aylık modül) */
+
+/* ============== HATIRLATICILAR ============== */
+function renderHatirlaticilar(){
+  const hedef = document.getElementById('hatirlaticiListesi');
+  if(!hedef) return; // Hatırlatıcılar sekmesi Takvim moduluyle değiştirildi — eski konteyner artık yok
+  let liste = [...hatirlaticilar];
+  if(hatirlaticiFiltre==='bekleyen') liste = liste.filter(h=>!h.tamamlandi);
+  if(hatirlaticiFiltre==='tamamlanan') liste = liste.filter(h=>h.tamamlandi);
+  liste.sort((a,b)=>(a.tarih+(a.saat||'')).localeCompare(b.tarih+(b.saat||'')));
+  const bugun = todayISO();
+  document.getElementById('hatirlaticiListesi').innerHTML = liste.length ? liste.map(h=>{
+    const gecikmis = !h.tamamlandi && h.tarih < bugun;
+    return `<div class="reminder-row ${h.tamamlandi?'done':''} ${gecikmis?'overdue':''}">
+      <input type="checkbox" style="width:auto;" ${h.tamamlandi?'checked':''} onchange="hatirlaticiTamamlandiToggle('${h.id}', this.checked)">
+      <div class="reminder-body">
+        <div class="reminder-title">${escapeHtml(h.baslik)}</div>
+        <div class="reminder-meta">${formatTarih(h.tarih)}${h.saat?' · '+h.saat:''}${h.kategori?' · '+escapeHtml(h.kategori):''}${h.aciklama?' · '+escapeHtml(h.aciklama):''}</div>
+      </div>
+      <span class="badge badge-${oncelikRengi(h.oncelik)}">${escapeHtml(h.oncelik||'Orta')}</span>
+      <button class="btn btn-ghost btn-sm" onclick="hatirlaticiModalAc('${h.id}')">Düzenle</button>
+    </div>`;
+  }).join('') : '<p class="empty-state">Hatırlatıcı bulunamadı.</p>';
+}
+function hatirlaticiTamamlandiToggle(id, deger){ TakvimService.hatirlaticiTamamlandiGuncelle(id, deger).catch(err=>{ if(err.message!=='yetkisiz') toast('Hata: '+err.message); }); }
+function hatirlaticiModalAc(id){
+  const h = id ? hatirlaticilar.find(x=>x.id===id) : null;
+  const body = `
+    <div class="form-group"><label>Başlık</label><input id="f_baslik" value="${h?escapeHtml(h.baslik):''}"></div>
+    <div class="form-group"><label>Tarih</label><input type="date" id="f_tarih" value="${h?h.tarih:todayISO()}"></div>
+    <div class="form-group"><label>Saat (opsiyonel)</label><input type="time" id="f_saat" value="${h&&h.saat?h.saat:''}"></div>
+    <div class="form-group"><label>Öncelik</label><select id="f_oncelik">${ONCELIKLER.map(o=>`<option ${o===(h?h.oncelik:'Orta')?'selected':''}>${o}</option>`).join('')}</select></div>
+    <div class="form-group"><label>Açıklama</label><textarea id="f_aciklama" rows="2">${h?escapeHtml(h.aciklama||''):''}</textarea></div>
+    ${h?'<p style="font-size:11.8px;color:var(--ink-muted);">Tarih/saat değiştirirseniz push bildirimi tekrar gönderim için sıfırlanır.</p>':''}
+  `;
+  modalAc(h?'Hatırlatıcı Düzenle':'Hatırlatıcı Ekle', body, ()=>{
+    const baslik = document.getElementById('f_baslik').value.trim();
+    const tarih = document.getElementById('f_tarih').value;
+    if(!baslik || !tarih){ toast('Başlık ve tarih zorunludur.'); return; }
+    const saat = document.getElementById('f_saat').value;
+    const tarihSaatDegisti = h && (h.tarih !== tarih || (h.saat||'') !== saat);
+    TakvimService.hatirlaticiKaydet(h?h.id:null, {
+      baslik, tarih, saat,
+      oncelik: document.getElementById('f_oncelik').value,
+      aciklama: document.getElementById('f_aciklama').value.trim(),
+      tamamlandi: h ? !!h.tamamlandi : false,
+      bildirimGonderildi: h ? (tarihSaatDegisti ? false : !!h.bildirimGonderildi) : false
+    }).then(()=>toast('Kaydedildi.')).catch(err=>{ if(err.message!=='yetkisiz') toast('Hata: '+err.message); });
+    modalKapat();
+  }, h ? ()=>{ if(confirm('Bu hatırlatıcıyı silmek istiyor musunuz?')){ TakvimService.hatirlaticiSil(h.id).catch(err=>{ if(err.message!=='yetkisiz') toast('Hata: '+err.message); }); modalKapat(); } } : null);
 }
 
-async function anahtarDisaAktar() {
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
-    const derslerDolu = (anahtar.dersler || []).filter(d => d.anahtarlar?.length);
-    if (!derslerDolu.length) { alert('Dışa aktarılacak cevap anahtarı yok.'); return; }
+/* YENİ: Görev/Evrak gibi kayıtlarda birden fazla öğretmene BİRDEN atama
+   yapılabilmesi için ortak çoklu seçim bileşeni. İlkokul/Ortaokul hızlı
+   seçim butonları, kademeFiiliListesi() (fiili görev yeri) kullanır —
+   "bu görevi tüm ilkokul öğretmenlerine ata" gibi toplu atamalar içindir. */
+function sorumluOgretmenSeciciHtml(seciliIdler, inputId){
+  const sec = Array.isArray(seciliIdler) ? seciliIdler : (seciliIdler ? [seciliIdler] : []);
+  const liste = (typeof ogretmenler!=='undefined'?ogretmenler:[]).slice().sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
+  return `
+    <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
+      <button type="button" class="btn btn-ghost btn-sm" onclick="_sorumluKademeHizliSec('${inputId}','ilkokul')">🧒 Tüm İlkokul</button>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="_sorumluKademeHizliSec('${inputId}','ortaokul')">🎓 Tüm Ortaokul</button>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="_sorumluKademeHizliSec('${inputId}',null)">✕ Temizle</button>
+    </div>
+    <div class="ogr-checkbox-liste" id="${inputId}">${liste.map(o=>`<label class="ogr-cb-row"><input type="checkbox" value="${o.id}" ${sec.includes(o.id)?'checked':''}><span>${escapeHtml(o.ad+' '+o.soyad)}</span></label>`).join('')}</div>
+    <p style="font-size:11px;color:var(--ink-muted);margin-top:4px;">Hiç kimse seçilmezse bu genel bir kayıt olur (hatırlatma sistemine dahil edilmez).</p>`;
+}
+function _sorumluKademeHizliSec(inputId, kademe){
+  document.querySelectorAll(`#${inputId} input[type=checkbox]`).forEach(cb=>{
+    if(kademe===null){ cb.checked=false; return; }
+    const o = (typeof ogretmenler!=='undefined'?ogretmenler:[]).find(x=>x.id===cb.value);
+    if(o && typeof kademeFiiliListesi==='function' && kademeFiiliListesi(o).includes(kademe)) cb.checked = true;
+  });
+}
+function _sorumluOgretmenSecili(inputId){
+  return Array.from(document.querySelectorAll(`#${inputId} input[type=checkbox]:checked`)).map(el=>el.value);
+}
 
-    // SheetJS ile xlsx oluştur
-    if (!window.XLSX) {
-        await new Promise((res, rej) => {
-            const s = document.createElement('script');
-            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-            s.onload = res; s.onerror = rej;
-            document.head.appendChild(s);
-        });
+/* ============== GÖREVLER ============== */
+function renderGorevler(){
+  const kolonlar = { yapilacak: document.getElementById('kolonYapilacak'), yapiliyor: document.getElementById('kolonYapiliyor'), tamamlandi: document.getElementById('kolonTamamlandi') };
+  if(!kolonlar.yapilacak || !kolonlar.yapiliyor || !kolonlar.tamamlandi) return; // Görevler sekmesi Takvim moduluyle değiştirildi — eski kolonlar artık yok
+  Object.values(kolonlar).forEach(k=>k.innerHTML='');
+  const sayac = { yapilacak:0, yapiliyor:0, tamamlandi:0 };
+  const bugun = todayISO();
+  gorevler.forEach(g=>{
+    sayac[g.durum] = (sayac[g.durum]||0) + 1;
+    const gecikmis = g.durum!=='tamamlandi' && g.sonTarih && g.sonTarih < bugun;
+    const div = document.createElement('div');
+    div.className = 'task-card';
+    div.innerHTML = `
+      <div class="task-title">${escapeHtml(g.baslik)}</div>
+      ${g.aciklama?`<div class="task-desc">${escapeHtml(g.aciklama)}</div>`:''}
+      <div class="task-meta">
+        <span class="badge badge-${oncelikRengi(g.oncelik)}">${escapeHtml(g.oncelik||'Orta')}</span>
+        ${g.sonTarih?`<span class="task-due ${gecikmis?'overdue':''}">${formatTarih(g.sonTarih)}</span>`:''}
+        ${(g.sorumluOgretmenIdler&&g.sorumluOgretmenIdler.length) ? `<span class="badge badge-blue">${_ogretmenAdlari(g.sorumluOgretmenIdler)}</span>` : ''}
+      </div>
+      <div class="task-actions"><button class="btn btn-ghost btn-sm" onclick="gorevModalAc('${g.id}')">Düzenle</button></div>
+    `;
+    (kolonlar[g.durum]||kolonlar.yapilacak).appendChild(div);
+  });
+  document.getElementById('sayacYapilacak').textContent = sayac.yapilacak||0;
+  document.getElementById('sayacYapiliyor').textContent = sayac.yapiliyor||0;
+  document.getElementById('sayacTamamlandi').textContent = sayac.tamamlandi||0;
+}
+function gorevModalAc(id){
+  const g = id ? gorevler.find(x=>x.id===id) : null;
+  const durumlar = [['yapilacak','Yapılacak'],['yapiliyor','Yapılıyor'],['tamamlandi','Tamamlandı']];
+  const body = `
+    <div class="form-group"><label>Başlık</label><input id="f_baslik" value="${g?escapeHtml(g.baslik):''}"></div>
+    <div class="form-group"><label>Açıklama</label><textarea id="f_aciklama" rows="2">${g?escapeHtml(g.aciklama||''):''}</textarea></div>
+    <div class="form-group"><label>Son Tarih (opsiyonel)</label><input type="date" id="f_sonTarih" value="${g&&g.sonTarih?g.sonTarih:''}"></div>
+    <div class="form-group"><label>Sorumlu Öğretmen(ler) (opsiyonel — hatırlatma sistemine dahil edilir)</label>
+      ${sorumluOgretmenSeciciHtml(g?g.sorumluOgretmenIdler||[]:[], 'f_gorevSorumlu')}
+    </div>
+    <div class="form-group"><label>Öncelik</label><select id="f_oncelik">${ONCELIKLER.map(o=>`<option ${o===(g?g.oncelik:'Orta')?'selected':''}>${o}</option>`).join('')}</select></div>
+    <div class="form-group"><label>Durum</label><select id="f_durum">${durumlar.map(([v,l])=>`<option value="${v}" ${v===(g?g.durum:'yapilacak')?'selected':''}>${l}</option>`).join('')}</select></div>
+  `;
+  modalAc(g?'Görev Düzenle':'Görev Ekle', body, ()=>{
+    const baslik = document.getElementById('f_baslik').value.trim();
+    if(!baslik){ toast('Başlık zorunludur.'); return; }
+    const sonTarih = document.getElementById('f_sonTarih').value;
+    const sonTarihDegisti = g && (g.sonTarih||'') !== sonTarih;
+    TakvimService.gorevKaydet(g?g.id:null, {
+      baslik, aciklama: document.getElementById('f_aciklama').value.trim(),
+      sonTarih, oncelik: document.getElementById('f_oncelik').value,
+      durum: document.getElementById('f_durum').value,
+      sorumluOgretmenIdler: _sorumluOgretmenSecili('f_gorevSorumlu'),
+      bildirimGonderildi: g ? (sonTarihDegisti ? false : !!g.bildirimGonderildi) : false
+    }).then(()=>toast('Kaydedildi.')).catch(err=>{ if(err.message!=='yetkisiz') toast('Hata: '+err.message); });
+    modalKapat();
+  }, g ? ()=>{ if(confirm('Bu görevi silmek istiyor musunuz?')){ TakvimService.gorevSil(g.id).catch(err=>{ if(err.message!=='yetkisiz') toast('Hata: '+err.message); }); modalKapat(); } } : null);
+}
+
+/* ============== EVRAK TAKİBİ ============== */
+function evrakFiltreSec(f){
+  evrakFiltre = f;
+  document.querySelectorAll('#tab-evrak .filtre-btn').forEach(b=>b.classList.toggle('active', b.dataset.f===f));
+  renderEvrakTakibi();
+}
+function renderEvrakTakibi(){
+  let liste = [...evrakTakibi];
+  if(evrakFiltre!=='tumu') liste = liste.filter(e=>e.durum===evrakFiltre);
+  liste.sort((a,b)=> (b.tarih||'').localeCompare(a.tarih||''));
+  document.getElementById('evrakListesi').innerHTML = liste.length ? liste.map(e=>`
+    <div class="evrak-row">
+      <div class="evrak-body">
+        <div class="evrak-title">${escapeHtml(e.evrakAdi)} <span class="badge badge-gray">${escapeHtml(e.tur||'Diğer')}</span>${(e.sorumluOgretmenIdler&&e.sorumluOgretmenIdler.length)?` <span class="badge badge-blue">${_ogretmenAdlari(e.sorumluOgretmenIdler)}</span>`:''}</div>
+        <div class="evrak-meta">${formatTarih(e.tarih)}${e.aciklama?' · '+escapeHtml(e.aciklama):''}${e.dosyaLinki?` · <a href="${escapeHtml(e.dosyaLinki)}" target="_blank" rel="noopener">Dosyayı Aç ↗</a>`:''}</div>
+      </div>
+      <span class="badge badge-${evrakRengi(e.durum)}">${escapeHtml(e.durum)}</span>
+      <button class="btn btn-ghost btn-sm" onclick="evrakModalAc('${e.id}')">Düzenle</button>
+    </div>
+  `).join('') : '<p class="empty-state">Evrak kaydı bulunamadı.</p>';
+}
+function evrakModalAc(id){
+  const e = id ? evrakTakibi.find(x=>x.id===id) : null;
+  const body = `
+    <div class="form-group"><label>Evrak Adı</label><input id="f_evrakAdi" value="${e?escapeHtml(e.evrakAdi):''}" placeholder="örn: Veli Dilekçesi - 5A"></div>
+    <div class="form-group"><label>Tür</label><select id="f_tur">${EVRAK_TURLERI.map(t=>`<option ${t===(e?e.tur:'Diğer')?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div class="form-group"><label>Tarih</label><input type="date" id="f_tarih" value="${e?e.tarih:todayISO()}"></div>
+    <div class="form-group"><label>Durum</label><select id="f_durum">${EVRAK_DURUMLARI.map(d=>`<option ${d===(e?e.durum:'Beklemede')?'selected':''}>${d}</option>`).join('')}</select></div>
+    <div class="form-group"><label>Sorumlu Öğretmen(ler) (opsiyonel — hatırlatma sistemine dahil edilir)</label>
+      ${sorumluOgretmenSeciciHtml(e?e.sorumluOgretmenIdler||[]:[], 'f_evrakSorumlu')}
+    </div>
+    <div class="form-group"><label>Dosya Linki (opsiyonel — Drive/OneDrive vb.)</label><input id="f_dosyaLinki" value="${e?escapeHtml(e.dosyaLinki||''):''}" placeholder="https://..."></div>
+    <div class="form-group"><label>Açıklama</label><textarea id="f_aciklama" rows="2">${e?escapeHtml(e.aciklama||''):''}</textarea></div>
+  `;
+  modalAc(e?'Evrak Düzenle':'Evrak Ekle', body, ()=>{
+    const evrakAdi = document.getElementById('f_evrakAdi').value.trim();
+    if(!evrakAdi){ toast('Evrak adı zorunludur.'); return; }
+    kaydet(COL.evrak, e?e.id:null, {
+      evrakAdi, tur: document.getElementById('f_tur').value,
+      tarih: document.getElementById('f_tarih').value,
+      durum: document.getElementById('f_durum').value,
+      sorumluOgretmenIdler: _sorumluOgretmenSecili('f_evrakSorumlu'),
+      dosyaLinki: document.getElementById('f_dosyaLinki').value.trim(),
+      aciklama: document.getElementById('f_aciklama').value.trim()
+    });
+    modalKapat();
+  }, e ? ()=>{ if(confirm('Bu evrak kaydını silmek istiyor musunuz?')){ db.collection(COL.evrak).doc(e.id).delete(); modalKapat(); } } : null);
+}
+
+/* ============== NOTLAR — notlar.js dosyasına taşındı ============== */
+
+/* ============== GENEL BAKIŞ (DASHBOARD) ============== */
+function renderDashboard(){
+  document.getElementById('panelTarih').textContent = bugunMetni();
+  // YENİ: saate göre dinamik karşılama (id bulunamazsa .dash-hero-hi class'ına da bakar)
+  const heroSelamlaEl = document.getElementById('heroSelamla') || document.querySelector('.dash-hero-hi');
+  if(heroSelamlaEl){
+    const saat = new Date().getHours();
+    const selam = saat < 6 ? 'İyi geceler' : saat < 11 ? 'Günaydın' : saat < 18 ? 'Tünaydın' : saat < 22 ? 'İyi akşamlar' : 'İyi geceler';
+    // DÜZELTME: isim/hitap çözümlemesi artık TEK bir yerden (js/ui.js > _hesapKimligi())
+    // yapılıyor — burada AYRI ve hatalı (cinsiyeti hiç kontrol etmeyen, her zaman
+    // "Bey" ekleyen) bir kopya vardı. İki farklı kod aynı elemanı güncelleyip
+    // birbirini eziyor, "önce doğru sonra yanlış" titremesine sebep oluyordu.
+    const kimlik = (typeof _hesapKimligi === 'function') ? _hesapKimligi() : {ad:''};
+    const kullaniciAdi = kimlik.ad ? (kimlik.ad.split(' ')[0] + (kimlik.hitap ? ' ' + kimlik.hitap : '')) : '';
+    heroSelamlaEl.textContent = kullaniciAdi ? `${selam}, ${kullaniciAdi} 👋` : `${selam} 👋`;
+  }
+  const bugunGun = GUNADI[new Date().getDay()];
+  const toplamOgrenci = siniflar.reduce((t,s)=>t+(parseInt(s.ogrenciSayisi)||0),0);
+  // YENİ: İki okul (İlkokul 1-4 / Ortaokul 5-8) tek panelden yönetildiği için
+  // İstatistikler'de Öğrenciler ve Personel kartları ortadan ikiye bölünüp
+  // her yarıda ilgili okulun kız/erkek/toplam sayısı gösteriliyor. Sınıfın
+  // kademesi 'seviye' alanından türetilir; kız/erkek de sınıfın kendi
+  // kizSayisi/erkekSayisi alanlarından (ogrenciSayisi ile aynı kaynak,
+  // tutarlı kalsın diye veliler listesi yerine bu kullanıldı).
+  const _ilkokulSiniflari = siniflar.filter(s=>parseInt(s.seviye)>=1 && parseInt(s.seviye)<=4);
+  const _ortaokulSiniflari = siniflar.filter(s=>parseInt(s.seviye)>=5 && parseInt(s.seviye)<=8);
+  const ilkokulOgrenciSayisi = _ilkokulSiniflari.reduce((t,s)=>t+(parseInt(s.ogrenciSayisi)||0),0);
+  const ortaokulOgrenciSayisi = _ortaokulSiniflari.reduce((t,s)=>t+(parseInt(s.ogrenciSayisi)||0),0);
+  const ilkokulOgrenciKiz = _ilkokulSiniflari.reduce((t,s)=>t+(parseInt(s.kizSayisi)||0),0);
+  const ilkokulOgrenciErkek = _ilkokulSiniflari.reduce((t,s)=>t+(parseInt(s.erkekSayisi)||0),0);
+  const ortaokulOgrenciKiz = _ortaokulSiniflari.reduce((t,s)=>t+(parseInt(s.kizSayisi)||0),0);
+  const ortaokulOgrenciErkek = _ortaokulSiniflari.reduce((t,s)=>t+(parseInt(s.erkekSayisi)||0),0);
+  // DÜZELTME: İstatistikler'deki Personel kartı sayıları artık kişinin FİİLEN
+  // çalıştığı yere göre değil, KADROSUNUN olduğu okula göre hesaplanıyor
+  // (Sedat'ın isteği — görevlendirmeyle geçici olarak diğer okulda çalışan
+  // biri, istatistiklerde yine kendi kadrosunun bağlı olduğu okulda sayılsın).
+  // Öğretmenler listesindeki filtre/rozet fiili görev yerini göstermeye devam
+  // ediyor; sadece bu sayım kadroya göre.
+  const _ilkokulOgretmenler = ogretmenler.filter(o=>(o.kadroKademesi||'')==='ilkokul');
+  const _ortaokulOgretmenler = ogretmenler.filter(o=>(o.kadroKademesi||'')==='ortaokul');
+  const ilkokulOgretmenSayisi = _ilkokulOgretmenler.length;
+  const ortaokulOgretmenSayisi = _ortaokulOgretmenler.length;
+  const ilkokulOgretmenKadin = _ilkokulOgretmenler.filter(o=>o.cinsiyet==='kadin').length;
+  const ilkokulOgretmenErkek = _ilkokulOgretmenler.filter(o=>o.cinsiyet==='erkek').length;
+  const ortaokulOgretmenKadin = _ortaokulOgretmenler.filter(o=>o.cinsiyet==='kadin').length;
+  const ortaokulOgretmenErkek = _ortaokulOgretmenler.filter(o=>o.cinsiyet==='erkek').length;
+  const kadinOgretmen = ogretmenler.filter(o=>o.cinsiyet==='kadin').length;
+  const erkekOgretmen = ogretmenler.filter(o=>o.cinsiyet==='erkek').length;
+  const kadinPersonel = ogretmenler.filter(o=>o.cinsiyet==='kadin'||o.cinsiyet==='Kadın').length
+    + ((typeof personelListesi!=='undefined') ? personelListesi.filter(p=>p.cinsiyet==='kadin'||p.cinsiyet==='Kadın').length : 0);
+  const erkekPersonel = ogretmenler.filter(o=>o.cinsiyet==='erkek'||o.cinsiyet==='Erkek').length
+    + ((typeof personelListesi!=='undefined') ? personelListesi.filter(p=>p.cinsiyet==='erkek'||p.cinsiyet==='Erkek').length : 0);
+  const kizOgrenci = (typeof veliler!=='undefined') ? veliler.filter(v=>['Kız','K','kiz','kız'].includes(v.cinsiyet)).length : 0;
+  const erkekOgrenci = (typeof veliler!=='undefined') ? veliler.filter(v=>['Erkek','E','erkek'].includes(v.cinsiyet)).length : 0;
+  const servisSayisi = (typeof servisler !== 'undefined' && Array.isArray(servisler)) ? servisler.length : 0;
+  const acikEvrakSayisi = evrakTakibi.filter(e=>e.durum!=='Tamamlandı' && e.durum!=='Arşivlendi').length;
+
+  const _statBenOgretmen = (typeof bagliOgretmenimGetir === 'function') ? bagliOgretmenimGetir() : null;
+  const _statBenUid = (typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI) ? AKTIF_KULLANICI.uid : null;
+  const _statTanimlari = {
+    // YENİ: Personel kartı artık ortadan ikiye bölünüyor — solda İlkokul,
+    // sağda Ortaokul, her yarıda kız/erkek/toplam. Ayrı kart YOK.
+    personel: gorebilir('ogretmenler') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('ogretmenler')">
+      <div class="stat-card-ico-lg stat-card-ico-blue">👨‍🏫</div>
+      <div class="stat-card-num">${ogretmenler.length}</div>
+      <div class="stat-card-label">Personel</div>
+      <div class="stat-card-split">
+        <div class="stat-card-split-yari">
+          <div class="stat-card-split-baslik">İlkokul</div>
+          <div class="stat-card-split-sayi">${ilkokulOgretmenSayisi}</div>
+          <div class="stat-card-split-cinsiyet">🚺${ilkokulOgretmenKadin} 🚹${ilkokulOgretmenErkek}</div>
+        </div>
+        <div class="stat-card-split-ayrac"></div>
+        <div class="stat-card-split-yari">
+          <div class="stat-card-split-baslik">Ortaokul</div>
+          <div class="stat-card-split-sayi">${ortaokulOgretmenSayisi}</div>
+          <div class="stat-card-split-cinsiyet">🚺${ortaokulOgretmenKadin} 🚹${ortaokulOgretmenErkek}</div>
+        </div>
+      </div>
+      <div class="stat-card-footer">
+        <span class="stat-card-cinsiyet">${kadinPersonel||erkekPersonel ? `🚺${kadinPersonel} 🚹${erkekPersonel}` : ''}</span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    // YENİ: Öğrenciler kartı da aynı şekilde bölünüyor.
+    ogrenciler: gorebilir('ogrenciler') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('ogrenciler')">
+      <div class="stat-card-ico-lg stat-card-ico-green">🧑‍🎓</div>
+      <div class="stat-card-num">${toplamOgrenci}</div>
+      <div class="stat-card-label">Öğrenciler</div>
+      <div class="stat-card-split">
+        <div class="stat-card-split-yari">
+          <div class="stat-card-split-baslik">İlkokul</div>
+          <div class="stat-card-split-sayi">${ilkokulOgrenciSayisi}</div>
+          <div class="stat-card-split-cinsiyet">🚺${ilkokulOgrenciKiz} 🚹${ilkokulOgrenciErkek}</div>
+        </div>
+        <div class="stat-card-split-ayrac"></div>
+        <div class="stat-card-split-yari">
+          <div class="stat-card-split-baslik">Ortaokul</div>
+          <div class="stat-card-split-sayi">${ortaokulOgrenciSayisi}</div>
+          <div class="stat-card-split-cinsiyet">🚺${ortaokulOgrenciKiz} 🚹${ortaokulOgrenciErkek}</div>
+        </div>
+      </div>
+      <div class="stat-card-footer">
+        <span class="stat-card-cinsiyet">${kizOgrenci||erkekOgrenci ? `🚺${kizOgrenci} 🚹${erkekOgrenci}` : ''}</span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    servis: gorebilir('tasima') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('tasima')">
+      <div class="stat-card-ico-lg stat-card-ico-purple">🚌</div>
+      <div class="stat-card-num">${servisSayisi}</div>
+      <div class="stat-card-label">Servis Sayısı</div>
+      <div class="stat-card-footer">
+        <span></span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    evrak: gorebilir('evrak') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('evrak')">
+      <div class="stat-card-ico-lg stat-card-ico-amber">📄</div>
+      <div class="stat-card-num">${acikEvrakSayisi}</div>
+      <div class="stat-card-label">Bekleyen Evrak</div>
+      <div class="stat-card-footer">
+        <span></span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    // YENİ: Sınıf Sayısı — önceden Hızlı Bakış rozetlerindeydi, buraya
+    // (İstatistik şeridi) taşındı.
+    sinif: gorebilir('siniflar') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('siniflar')">
+      <div class="stat-card-ico-lg stat-card-ico-rose">🏫</div>
+      <div class="stat-card-num">${siniflar.length}</div>
+      <div class="stat-card-label">Sınıf Sayısı</div>
+      <div class="stat-card-footer">
+        <span></span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    // YENİ: Öğretmen hesaplarında admin-only kartlar (Personel/Öğrenciler/
+    // Servis) boş kaldığı için eklendi — bunlar herkese bağlı öğretmen
+    // kaydı olan (ya da ilgili modülü görebilen) kullanıcıya görünür.
+    sinavlarim: (_statBenOgretmen && gorebilir('sinavIslemleri') && typeof sinavlar!=='undefined') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('yaziliSinavlar')">
+      <div class="stat-card-ico-lg stat-card-ico-blue">📝</div>
+      <div class="stat-card-num">${sinavlar.filter(s=>s.ogretmenId===_statBenOgretmen.id && s.tarih>=todayISO()).length}</div>
+      <div class="stat-card-label">Yaklaşan Sınavlarım</div>
+      <div class="stat-card-footer">
+        <span></span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    okunmamisMesaj: (gorebilir('mesajlasma') && typeof MesajlasmaService!=='undefined' && typeof konusmalar!=='undefined') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('mesajlasma')">
+      <div class="stat-card-ico-lg stat-card-ico-green">💬</div>
+      <div class="stat-card-num">${MesajlasmaService.toplamOkunmayan(konusmalar)}</div>
+      <div class="stat-card-label">Okunmamış Mesaj</div>
+      <div class="stat-card-footer">
+        <span></span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    okunmamisDuyuru: (gorebilir('duyurular') && typeof duyurular!=='undefined') ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('duyurular')">
+      <div class="stat-card-ico-lg stat-card-ico-amber">📢</div>
+      <div class="stat-card-num">${duyurular.filter(d=>!(d.okuyanlar && d.okuyanlar[_statBenUid])).length}</div>
+      <div class="stat-card-label">Okunmamış Duyuru</div>
+      <div class="stat-card-footer">
+        <span></span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+    bugunkuDersim: (_statBenOgretmen && gorebilir('dersProgrami')) ? `
+    <div class="stat-card stat-card-clickable" onclick="sekmeAc('dersNobetProgramim')">
+      <div class="stat-card-ico-lg stat-card-ico-purple">📚</div>
+      <div class="stat-card-num">${dersProgrami.filter(d=>d.ogretmenId===_statBenOgretmen.id && d.gun===GUNADI[new Date().getDay()]).length}</div>
+      <div class="stat-card-label">Bugünkü Ders Sayım</div>
+      <div class="stat-card-footer">
+        <span></span>
+        <span class="stat-card-tumu-bottom">Tümü ›</span>
+      </div>
+    </div>` : '',
+  };
+  const _statSirasi = (typeof _altTercihOku === 'function') ? _altTercihOku('istatistikSeridi') : Object.keys(_statTanimlari);
+  document.getElementById('dashStats').innerHTML = _statSirasi.map(id => _statTanimlari[id] || '').join('');
+  /* ---- Hızlı Bakış: Kadın/Erkek (Öğretmen) kaldırıldı — üstteki "Personel"
+     kartında zaten aynı 🚺/🚹 dağılımı gösteriliyordu, tekrar oluyordu.
+     Yerine "Bugünkü Ders" sayısı kondu. ---- */
+  const bugunkuDersSayisi = dersProgrami.filter(d=>d.gun===bugunGun).length;
+  // YENİ: Öğretmene özel — hesabına bağlı bir öğretmen kaydı varsa,
+  // yaklaşan (bugün dahil, bugünden ileri) kendi sınav sayısını gösterir.
+  const _hbBenOgretmen = (typeof bagliOgretmenimGetir === 'function') ? bagliOgretmenimGetir() : null;
+  // Öğretmen: kendi sınav sayısı (tümü, sadece yaklaşanlar değil).
+  // Admin/idari (bağlı öğretmen kaydı yok): tüm sınavların toplam sayısı.
+  const _hbTumSinavlar = (typeof sinavlar!=='undefined' ? sinavlar : []);
+  const _hbSinavSayisi = _hbBenOgretmen
+    ? _hbTumSinavlar.filter(s=>s.ogretmenId===_hbBenOgretmen.id).length
+    : _hbTumSinavlar.length;
+  const _hbSinavEtiket = _hbBenOgretmen ? 'Sınavlarım' : 'Sınavlar';
+  const hizliBakisEl = document.getElementById('dashHizliBakis');
+  if(hizliBakisEl){
+    // YENİ: Açık Görev Sayısı — kataloğa önceden eklenmişti ama hiç
+    // uygulanmamıştı; Sınıf rozeti İstatistik şeridine taşındığı için
+    // burada onun yerini alan gerçek bir kart olarak devreye alındı.
+    const _hbAcikGorevSayisi = (typeof gorevler !== 'undefined' ? gorevler : []).filter(g=>g.durum!=='tamamlandi').length;
+    const _hbTanimlari = {
+      acikGorev: gorebilir('takvim') ? `<div class="hb-chip" onclick="sekmeAc('takvim')"><span class="hb-ico">📌</span><div class="hb-num">${_hbAcikGorevSayisi}</div><div class="hb-label">Açık Görev</div></div>` : '',
+      bugunkuDers: gorebilir('dersProgrami') ? `<div class="hb-chip" onclick="sekmeAc('dersProgrami')"><span class="hb-ico">📚</span><div class="hb-num">${bugunkuDersSayisi}</div><div class="hb-label">Bugünkü Ders</div></div>` : '',
+      hatirlatici: gorebilir('takvim') ? `<div class="hb-chip" onclick="sekmeAc('takvim')"><span class="hb-ico">⏰</span><div class="hb-num">${hatirlaticilar.filter(h=>!h.tamamlandi).length}</div><div class="hb-label">Hatırlatıcı</div></div>` : '',
+      // Herkese açık: admin tüm sınav sayısını, öğretmen kendi eklediği/kendine ait
+      // sınav sayısını görür. Tıklayınca (yetkisine göre) tüm sınavları görebilir.
+      sinavlarim: gorebilir('sinavIslemleri') ? `<div class="hb-chip" onclick="sekmeAc('yaziliSinavlar')"><span class="hb-ico">📝</span><div class="hb-num">${_hbSinavSayisi}</div><div class="hb-label">${_hbSinavEtiket}</div></div>` : '',
+    };
+    const _hbSirasi = (typeof _altTercihOku === 'function') ? _altTercihOku('hizliBakis') : Object.keys(_hbTanimlari);
+    hizliBakisEl.innerHTML = _hbSirasi.map(id => _hbTanimlari[id] || '').join('');
+  }
+  /* ---- YENİ: Üst bar bildirim zili rozeti (bekleyen hatırlatıcı + okunmamış duyuru sayısı) ---- */
+  if(typeof topbarBildirimRozetiGuncelle === 'function') topbarBildirimRozetiGuncelle();
+
+  const buGunDersler = dersProgrami.filter(d=>d.gun===bugunGun).sort((a,b)=>a.saat-b.saat);
+  document.getElementById('dashBugunDersler').innerHTML = (dersSaatleriAyarlari && dersSaatleriAyarlari.tatilModu) ? '<p class="empty-state">🏖️ Tatil modu aktif.</p>' : !GUNLER.includes(bugunGun) ? '<p class="empty-state">Bugün hafta sonu.</p>' :
+    (buGunDersler.length ? buGunDersler.map(d=>`<div class="dash-row"><span class="badge badge-blue">${d.saat}.</span> ${escapeHtml(d.sinif)} — ${escapeHtml(d.ders)} <span style="color:var(--ink-muted)">(${escapeHtml(ogretmenAdi(d.ogretmenId))})</span></div>`).join('') : '<p class="empty-state">Bugün için ders programı girilmemiş.</p>');
+
+  /* "Bugün Nöbetçi Öğretmenler" kartı artık js/nobet.js > renderNobetBugunVeHafta() tarafından dolduruluyor. */
+
+  const yaklasan = hatirlaticilar.filter(h=>!h.tamamlandi).sort((a,b)=>(a.tarih+(a.saat||'')).localeCompare(b.tarih+(b.saat||''))).slice(0,5);
+  document.getElementById('dashHatirlaticilar').innerHTML = yaklasan.length ? yaklasan.map(h=>`<div class="dash-row">${formatTarih(h.tarih)} — ${escapeHtml(h.baslik)}</div>`).join('') : '<p class="empty-state">Bekleyen hatırlatıcı yok.</p>';
+
+  const dashGorevlerEl = document.getElementById('dashGorevler');
+  if(dashGorevlerEl) dashGorevlerEl.innerHTML = `
+    <div class="dash-row">Yapılacak: <strong>${gorevler.filter(g=>g.durum==='yapilacak').length}</strong></div>
+    <div class="dash-row">Yapılıyor: <strong>${gorevler.filter(g=>g.durum==='yapiliyor').length}</strong></div>
+    <div class="dash-row">Tamamlandı: <strong>${gorevler.filter(g=>g.durum==='tamamlandi').length}</strong></div>
+  `;
+
+  /* ---- Son Notlar ---- */
+  if(typeof renderDashboardNotlar === 'function') renderDashboardNotlar();
+
+  /* ---- Zil sayacı + şu anki ders saatindeki sınıflar ---- */
+  renderZilSayaci(bugunGun);
+  if(typeof renderYaklasanEtkinlikler === 'function') renderYaklasanEtkinlikler();
+
+  /* ---- Takvim widget'ları ---- */
+  if(typeof renderDashHatirlaticilar  === 'function') renderDashHatirlaticilar();
+  if(typeof renderDashAjanda         === 'function') renderDashAjanda();
+  if(typeof renderDashMiniTakvim      === 'function') renderDashMiniTakvim();
+  if(typeof renderDashYillikGorunum   === 'function') renderDashYillikGorunum();
+
+  tatilModuKartlariniUygula();
+  if(typeof renderHizliIslemler === 'function') renderHizliIslemler();
+  if(typeof renderOgretmenOzelKartlar === 'function') renderOgretmenOzelKartlar();
+  if(typeof dashboardYetkiUygula === 'function') dashboardYetkiUygula();
+  if(typeof _dashboardYeniWidgetleriDoldur === 'function') _dashboardYeniWidgetleriDoldur();
+  if(typeof dashboardOzellestirmeUygula === 'function') dashboardOzellestirmeUygula();
+}
+
+function tatilModuKartlariniUygula(){
+  // YENİ: Ders saatleri verisi Firestore'dan henüz gelmediyse (dersSaatleriYuklendi===false),
+  // kart görünürlüğüne KARAR VERME — aksi halde "tatil modu kapalı" sanıp asıl tatil
+  // modundayken kartları yanlışlıkla bir an için gösterebiliriz. Veri gelince bu fonksiyon
+  // zaten tekrar çağrılıyor (bkz. dersSaatleriBaglantisiKur).
+  if(typeof dersSaatleriYuklendi !== 'undefined' && !dersSaatleriYuklendi) return;
+  const tatil = !!(dersSaatleriAyarlari && dersSaatleriAyarlari.tatilModu);
+  document.querySelectorAll('.tatil-gizle').forEach(el=>{
+    if(tatil){
+      // setAttribute ile !important inline style — cssText ve setProperty'den daha güvenilir
+      el.setAttribute('style', 'display:none!important;visibility:hidden!important;');
+    } else {
+      el.removeAttribute('style');
+    }
+  });
+  // body class ile CSS tarafını da tetikle
+  document.body.classList.toggle('tatil-aktif', tatil);
+}
+
+/* Zil widget'ına tıklanınca: şu an bir dersin varsa (dersProgrami'ndan
+   tespit edilen kendi dersin) o dersin sınıfının seviyesine ve ders adına
+   uyan bir Yıllık Plan tanımı varsa doğrudan o planın haftalık kartını
+   (bugünün haftasına gitmiş halde) açar. Ders yoksa (teneffüs/öğle/tatil/
+   boşta) kişisel "Ders Programım" ekranına yönlendirir. */
+let _dashSuankiDersim = null; // renderZilSayaci tarafından her yenilemede güncellenir
+function zilTiklandi(){
+  if(_dashSuankiDersim){
+    const sinifKaydi = (typeof siniflar!=='undefined' ? siniflar : []).find(s=>s.ad===_dashSuankiDersim.sinif);
+    const seviye = sinifKaydi ? parseInt(sinifKaydi.seviye, 10) : null;
+    const tanim = (typeof yillikPlanTanimlari!=='undefined' ? yillikPlanTanimlari : [])
+      .find(t=>t.dersAdi===_dashSuankiDersim.ders && t.seviye===seviye);
+    if(tanim){
+      sekmeAc('yillikPlan');
+      setTimeout(()=>{ if(typeof yillikPlanHaftaAc==='function') yillikPlanHaftaAc(tanim.id); }, 150);
+      return;
+    }
+    toast(`"${_dashSuankiDersim.ders}" (${_dashSuankiDersim.sinif}) için tanımlı bir yıllık plan bulunamadı.`);
+    sekmeAc('yillikPlan');
+    return;
+  }
+  sekmeAc('dersNobetProgramim');
+}
+function renderZilSayaci(bugunGun){
+  const zilEl = document.getElementById('zilWidget');
+  const suankiEl = document.getElementById('dashSuankiDers');
+  if(!zilEl) return;
+  // YENİ: durum bazlı renklendirme (ders=yeşil, teneffüs/öğle=turuncu, bitti=gri, başlamadı=mavi, tatil=mor)
+  // YENİ: hero kartına saate göre sahne (gün doğumu/öğle/gün batımı/gece) uygula
+  const heroEl = document.querySelector('.dash-hero');
+  if(heroEl){
+    const saat2 = new Date().getHours();
+    const sahne = (saat2>=5 && saat2<8) ? 'sahne-gundogumu'
+      : (saat2>=8 && saat2<17) ? 'sahne-ogle'
+      : (saat2>=17 && saat2<20) ? 'sahne-gunbatimi'
+      : 'sahne-gece';
+    heroEl.classList.remove('sahne-gundogumu','sahne-ogle','sahne-gunbatimi','sahne-gece');
+    heroEl.classList.add(sahne);
+  }
+
+  function zilDurumSinifAyarla(durumAdi){
+    zilEl.classList.remove('durum-ders','durum-teneffus','durum-ogle','durum-bitti','durum-baslamadi','durum-tatil');
+    if(durumAdi) zilEl.classList.add('durum-'+durumAdi);
+  }
+
+  // YENİ: Veri Firestore'dan henüz gelmediyse (sayfa yeni açıldı / yenilendi),
+  // "tatil modu kapalı + varsayılan ders programı" varsayıp yanlış bir zil durumu
+  // göstermek yerine kısa bir yükleniyor durumu gösteriyoruz. Gerçek veri gelir
+  // gelmez (genelde <1sn) dersSaatleriBaglantisiKur bu fonksiyonu zaten tekrar çağırıyor.
+  if(typeof dersSaatleriYuklendi !== 'undefined' && !dersSaatleriYuklendi){
+    zilDurumSinifAyarla(null);
+    zilEl.classList.add('zil-yukleniyor');
+    zilEl.innerHTML = `<div class="zil-durum zil-yukleniyor-metin">Yükleniyor…</div>`;
+    if(suankiEl) suankiEl.innerHTML = '';
+    return;
+  }
+  zilEl.classList.remove('zil-yukleniyor');
+  // Kart görünürlüğü tatilModuKartlariniUygula() tarafından yönetilir
+  const ayar = dersSaatleriAyarlari;
+  if(ayar && ayar.tatilModu){
+    // Tatil modu: gizlenecek kartlar
+    // Kart gizleme tatilModuKartlariniUygula() tarafından yapılır
+    // Okul açılış sayacı
+    const acilisTarihi = ayar.okulAcilisTarihi;
+    const tatilNotu = tatilModuNotuOlustur(ayar);
+    let sayacHTML = '';
+    if(acilisTarihi){
+      const acilis = new Date(acilisTarihi + 'T00:00:00');
+      const bugun = new Date(); bugun.setHours(0,0,0,0);
+      const fark = Math.ceil((acilis - bugun) / (1000*60*60*24));
+      if(fark > 0){
+        sayacHTML = `<div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><div class="zil-etiket">🏖️ Tatil Modu — Okul kapalı</div><div class="zil-alt">${escapeHtml(tatilNotu||'Okulun açılmasına kalan süre')}</div></div>
+          <div class="zil-sayac">${fark} <span>gün</span></div>
+        </div>`;
+      } else if(fark === 0){
+        sayacHTML = `<div class="zil-durum">🎉 Bugün okul açılıyor!</div>`;
+      } else {
+        sayacHTML = `<div class="zil-durum">🏖️ Tatil Modu Aktif${tatilNotu?'<div style="margin-top:6px;font-size:13px;color:var(--ink-muted);font-weight:400;">'+escapeHtml(tatilNotu)+'</div>':''}</div>`;
+      }
+    } else {
+      sayacHTML = `<div class="zil-durum">🏖️ Tatil Modu Aktif${tatilNotu?'<div style="margin-top:6px;font-size:13px;color:var(--ink-muted);font-weight:400;">'+escapeHtml(tatilNotu)+'</div>':''}</div>`;
+    }
+    zilDurumSinifAyarla('tatil');
+    zilEl.innerHTML = sayacHTML;
+    return;
+  }
+  if(!GUNLER.includes(bugunGun)){
+    zilDurumSinifAyarla('bitti');
+    zilEl.innerHTML = `<div class="zil-durum">🌤️ Bugün hafta sonu — okul saatleri geçerli değil.</div>`;
+    if(suankiEl) suankiEl.innerHTML = '<p class="empty-state">Bugün hafta sonu.</p>';
+    return;
+  }
+  const durum = suankiDersDurumu();
+  if(durum.durum==='yok'){
+    zilDurumSinifAyarla(null);
+    zilEl.innerHTML = `<div class="zil-durum">Ders saatleri henüz Ayarlar sayfasından girilmedi.</div>`;
+    if(suankiEl) suankiEl.innerHTML = '<p class="empty-state">Ders saatleri girilmeden gösterilemiyor.</p>';
+    return;
+  }
+  const etiketler = { ders:`📖 Şu an ${durum.etiket}`, teneffus:'☕ Teneffüste / derse hazırlanılıyor', ogle:'🍽️ Öğle arasında', bitti:'🏁 Ders saatleri sona erdi', baslamadi:'🔔 Okul henüz başlamadı' };
+  const durumPilleri = { ders:'Devam ediyor', teneffus:'Teneffüs', ogle:'Öğle Arası', baslamadi:'Henüz başlamadı', bitti:'Sona erdi' };
+  zilDurumSinifAyarla(durum.durum==='ogle' ? 'teneffus' : durum.durum);
+  // YENİ: Hesabına bağlı bir öğretmen kaydı olan kullanıcı için, şu anki ders
+  // saatinde KENDİ dersi varsa "5/A sınıfına Din Kültürü dersin var" gibi
+  // kişiye özel bilgiyi zil etiketine ekler.
+  let kendiDersEtiketi = '';
+  _dashSuankiDersim = null;
+  if(durum.durum==='ders'){
+    const ben = (typeof bagliOgretmenimGetir === 'function') ? bagliOgretmenimGetir() : null;
+    if(ben){
+      const kendiDersi = dersProgrami.find(d=>d.ogretmenId===ben.id && d.gun===bugunGun && d.saat===durum.saat);
+      if(kendiDersi){
+        kendiDersEtiketi = ` — <strong>${escapeHtml(kendiDersi.sinif)}</strong> sınıfına <strong>${escapeHtml(kendiDersi.ders)}</strong> dersin var`;
+        _dashSuankiDersim = kendiDersi;
+      }
+    }
+  }
+  if(durum.durum==='bitti'){
+    zilEl.innerHTML = `<div class="zil-durum">🏁 Bugünün ders saatleri sona erdi.</div>`;
+  } else {
+    const altMetin = durum.durum==='ders' ? `Bitimine kalan süre`
+      : durum.durum==='ogle' ? 'Öğle arası bitimine kalan süre'
+      : durum.durum==='baslamadi' ? 'Okulun başlamasına kalan süre'
+      : `${durum.etiket} başlamasına kalan süre`;
+    // YENİ: ilerleme yüzdesi (progBaslangic/progToplamDk varsa hesaplanır, yoksa bar gösterilmez)
+    let barHTML = '';
+    let saatAraligiHTML = '';
+    if(durum.progToplamDk>0){
+      const gecenDk = durum.progToplamDk - durum.kalanDk;
+      const yuzde = Math.max(0, Math.min(100, Math.round((gecenDk/durum.progToplamDk)*100)));
+      barHTML = `<div class="zil-progress"><div class="zil-progress-fill" style="width:${yuzde}%"></div></div>`;
+      // YENİ: başlangıç-bitiş saat aralığı (mockup'taki "10:10 - 10:55" satırı)
+      const dkSaatStr = dk => { const h=Math.floor(dk/60)%24, m=dk%60; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); };
+      saatAraligiHTML = `<div class="zil-saat-araligi">${dkSaatStr(durum.progBaslangic)} - ${dkSaatStr(durum.progBaslangic+durum.progToplamDk)}</div>`;
+    }
+    zilEl.innerHTML = `
+      <div class="zil-sol">
+        <div class="zil-ikon-daire">🔔</div>
+        <div>
+          <div class="zil-baslik-kucuk">Zil Durumu</div>
+          <div class="zil-etiket">${durum.etiket || etiketler[durum.durum]}${kendiDersEtiketi}</div>
+          <span class="zil-pill">${durumPilleri[durum.durum]||''}</span>
+        </div>
+      </div>
+      <div class="zil-sag">
+        <div class="zil-baslik-kucuk zil-baslik-sag">${altMetin}</div>
+        <div class="zil-sayac">${durum.kalanDk} <span>dk</span></div>
+        ${barHTML}
+        ${saatAraligiHTML}
+      </div>
+    `;
+  }
+  if(suankiEl){
+    if(durum.durum==='ders'){
+      const buSaatDersler = dersProgrami.filter(d=>d.gun===bugunGun && d.saat===durum.saat);
+      suankiEl.innerHTML = buSaatDersler.length ? buSaatDersler.map(d=>`<div class="dash-row">${escapeHtml(d.sinif)} — ${escapeHtml(d.ders)} <span style="color:var(--ink-muted)">(${escapeHtml(ogretmenAdi(d.ogretmenId))})</span></div>`).join('') : '<p class="empty-state">Bu saat için ders programı girilmemiş.</p>';
+    } else if(durum.durum==='ogle'){
+      suankiEl.innerHTML = '<p class="empty-state">Şu an öğle arası.</p>';
+    } else if(durum.durum==='baslamadi'){
+      suankiEl.innerHTML = `<p class="empty-state">Okul henüz başlamadı — ilk ders: ${escapeHtml(durum.etiket)}.</p>`;
+    } else {
+      suankiEl.innerHTML = `<p class="empty-state">Şu an teneffüs — sıradaki: ${escapeHtml(durum.etiket)}.</p>`;
+    }
+  }
+}
+
+/* ============== DERS VE NÖBET PROGRAMIM (öğretmene özel sayfa) ==============
+   Alt menüdeki "Programım" butonuyla açılır. Haftalık ders programını (gün gün)
+   ve yaklaşan nöbet atamalarını (bugünden itibaren) tek sayfada gösterir. */
+function renderDersNobetProgramim(){
+  const el = document.getElementById('dnpIcerik');
+  if(!el) return;
+  const ben = (typeof bagliOgretmenimGetir === 'function') ? bagliOgretmenimGetir() : null;
+  if(!ben){
+    el.innerHTML = '<p class="empty-state">Hesabınıza bağlı bir öğretmen kaydı yok — bu sayfa sadece öğretmen hesapları içindir.</p>';
+    return;
+  }
+
+  // YENİ: Dashboard'daki "Bugünkü Derslerim / Bu Haftaki Nöbetim" kartlarıyla
+  // tutarlı olsun diye, bu tam sayfa görünümü de tatil modunda aynı mesajı
+  // gösterir — geçen dönemden kalma kayıtlar yaz tatilinde yanıltıcı görünmesin.
+  if(typeof dersSaatleriYuklendi !== 'undefined' && !dersSaatleriYuklendi){
+    el.innerHTML = '<p class="empty-state">Yükleniyor…</p>';
+    return;
+  }
+  if(dersSaatleriAyarlari && dersSaatleriAyarlari.tatilModu){
+    el.innerHTML = '<div class="card"><p class="empty-state">🏖️ Tatil modu aktif — ders ve nöbet programı okul açılınca güncellenecek.</p></div>';
+    return;
+  }
+
+  const bugunGun = GUNADI[new Date().getDay()];
+  const bugunISO = todayISO();
+
+  // ---- Haftalık Ders Programı (gün gün) ----
+  let dersHtml = '';
+  GUNLER.forEach(gun=>{
+    const gununDersleri = dersProgrami.filter(d=>d.ogretmenId===ben.id && d.gun===gun).sort((a,b)=>a.saat-b.saat);
+    dersHtml += `<div class="card" style="margin-bottom:12px;">
+      <h4 style="margin:0 0 8px;">${gun===bugunGun ? '📌 ' : ''}${escapeHtml(gun)}${gun===bugunGun ? ' <span class="badge badge-sage">Bugün</span>' : ''}</h4>
+      ${gununDersleri.length
+        ? gununDersleri.map(d=>`<div class="dash-row"><span class="badge badge-blue">${d.saat}.</span> ${escapeHtml(d.sinif)} — ${escapeHtml(d.ders)}</div>`).join('')
+        : '<p class="empty-state">Bu gün dersiniz yok.</p>'}
+    </div>`;
+  });
+
+  // ---- Yaklaşan Nöbetlerim (bugünden itibaren, en fazla 14 kayıt) ----
+  const nobetlerim = (typeof nobetAtamalari!=='undefined' ? nobetAtamalari : [])
+    .filter(a=>a.ogretmenId===ben.id && a.tarih>=bugunISO)
+    .sort((a,b)=>a.tarih.localeCompare(b.tarih))
+    .slice(0,14);
+  const nobetHtml = nobetlerim.length
+    ? nobetlerim.map(a=>{
+        const yer = (typeof nobetYerleri!=='undefined' ? nobetYerleri.find(y=>y.id===a.yerId) : null);
+        const ikon = typeof nobetYeriIkon==='function' ? nobetYeriIkon(yer?yer.ad:'') : '📍';
+        return `<div class="dash-row">${a.tarih===bugunISO?'📌 <strong>Bugün</strong> — ':formatTarih(a.tarih)+' — '}${ikon} ${escapeHtml(yer?yer.ad:'?')}</div>`;
+      }).join('')
+    : '<p class="empty-state">Yaklaşan bir nöbet atamanız yok.</p>';
+
+  el.innerHTML = `
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="margin:0 0 10px;">🛡️ Yaklaşan Nöbetlerim</h3>
+      ${nobetHtml}
+    </div>
+    <h3 style="margin:0 0 12px;">📚 Haftalık Ders Programım</h3>
+    ${dersHtml}
+  `;
+}
+
+/* Üst bar bildirim zili rozeti — hem renderDashboard()'dan hem duyuru
+   verisi güncellendiğinde (bkz. js/duyurular.js) çağrılır. */
+function topbarBildirimRozetiGuncelle(){
+  const bellBadgeEl = document.getElementById('topbarBellBadge');
+  if(!bellBadgeEl) return;
+  const bekleyenHatirlatici = (typeof hatirlaticilar!=='undefined' ? hatirlaticilar : []).filter(h=>!h.tamamlandi).length;
+  const okunmamisDuyuru = (typeof duyurular!=='undefined' && typeof DuyurularService!=='undefined')
+    ? duyurular.filter(d=>!DuyurularService.benOkudumMu(d)).length : 0;
+  const bekleyenSayi = bekleyenHatirlatici + okunmamisDuyuru;
+  bellBadgeEl.textContent = bekleyenSayi;
+  bellBadgeEl.style.display = bekleyenSayi>0 ? 'flex' : 'none';
+}
+
+/* ---------- Bildirim zili — küçük açılır liste (artık sekmeye gitmiyor) ---------- */
+function bildirimZiliAcKapat(e){
+  if(e) e.stopPropagation();
+  const panel = document.getElementById('bildirimZiliPaneli');
+  if(!panel) return;
+  const acikMi = panel.style.display !== 'none';
+  if(acikMi){ panel.style.display = 'none'; return; }
+  bildirimZiliDoldur();
+  panel.style.display = 'block';
+  setTimeout(()=>document.addEventListener('click', _bildirimZiliDisTikla, { once:true }), 0);
+}
+function _bildirimZiliDisTikla(e){
+  const panel = document.getElementById('bildirimZiliPaneli');
+  if(panel && !panel.contains(e.target)) panel.style.display = 'none';
+}
+function bildirimZiliKapat(){
+  const panel = document.getElementById('bildirimZiliPaneli');
+  if(panel) panel.style.display = 'none';
+}
+function bildirimZiliDoldur(){
+  const panel = document.getElementById('bildirimZiliPaneli');
+  if(!panel) return;
+
+  const bekleyenHatirlatici = (typeof hatirlaticilar!=='undefined' ? hatirlaticilar : [])
+    .filter(h=>!h.tamamlandi)
+    .sort((a,b)=>(a.tarih||'').localeCompare(b.tarih||''))
+    .slice(0,8);
+  const okunmamisDuyuru = (typeof duyurular!=='undefined' && typeof DuyurularService!=='undefined')
+    ? duyurular.filter(d=>!DuyurularService.benOkudumMu(d)).slice(0,8) : [];
+
+  const satirStil = 'padding:9px 12px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12.5px;';
+  const satirlar = [];
+
+  bekleyenHatirlatici.forEach(h=>{
+    satirlar.push(`<div style="${satirStil}" onclick="bildirimZiliKapat();sekmeAc('takvim');">
+      <div style="font-weight:600;">⏰ ${escapeHtml(h.baslik||'Hatırlatıcı')}</div>
+      <div style="color:var(--ink-muted);font-size:11.5px;margin-top:2px;">${formatTarih(h.tarih)}${h.saat?' · '+h.saat:''}</div>
+    </div>`);
+  });
+  okunmamisDuyuru.forEach(d=>{
+    satirlar.push(`<div style="${satirStil}" onclick="bildirimZiliKapat();sekmeAc('duyurular');">
+      <div style="font-weight:600;">📢 ${escapeHtml(d.baslik||'Duyuru')}</div>
+    </div>`);
+  });
+
+  panel.innerHTML = satirlar.length
+    ? satirlar.join('')
+    : `<div style="padding:20px 14px;text-align:center;color:var(--ink-muted);font-size:12.5px;">Bekleyen bildirim yok 🎉</div>`;
+}
+
+/* Hızlı İşlemler kartı artık kullanıcı seçimine göre üretiliyor (bkz.
+   js/dashboard-ozellestirme.js DASHBOARD_ALT_KATALOG.hizliIslemler). */
+function renderHizliIslemler(){
+  const el = document.getElementById('hizliIslemlerGrid');
+  if(!el) return;
+  const tanimlari = {
+    personel:       { modul:'personel',    onclick:"sekmeAc('personel');",              ikon:'👥', ikonClass:'qa-personel', label:'Personel' },
+    // YENİ: Sınıflar — Sınıf rozeti Hızlı Bakış'tan İstatistik şeridine
+    // taşındığı için, sınıflara hızlı erişim burada kısayol olarak eklendi.
+    siniflar:       { modul:'siniflar',    onclick:"sekmeAc('siniflar');",              ikon:'🏫', ikonClass:'qa-rose',     label:'Sınıflar' },
+    nobet:          { modul:'nobet',       onclick:"sekmeAc('nobet');",                 ikon:'🛡️', ikonClass:'qa-nobet',    label:'Nöbet' },
+    servis:         { modul:'tasima',      onclick:"sekmeAc('tasima');",                ikon:'🚌', ikonClass:'qa-evrak',    label:'Servis' },
+    evrak:          { modul:'evrak',       onclick:"sekmeAc('evrak'); evrakModalAc();", ikon:'📄', ikonClass:'qa-gorev',    label:'Evrak' },
+    raporlar:       { modul:'maarifRapor',  onclick:"sekmeAc('maarifRapor');",            ikon:'📊', ikonClass:'qa-rapor',    label:'Raporlar' },
+    takvim:         { modul:'takvim',      onclick:"sekmeAc('takvim');",                ikon:'📅', ikonClass:'qa-takvim',   label:'Takvim' },
+    notlar:         { modul:'notlar',      onclick:"notlarModalAc();",                  ikon:'📝', ikonClass:'qa-not',      label:'Notlar' },
+    cizelgeler:     { modul:'sosyalKulupler', onclick:"sekmeAc('sosyalKulupler');",      ikon:'⋯',  ikonClass:'qa-daha',     label:'Çizelgeler' },
+    mesajlar:       { modul:'mesajlasma',  onclick:"sekmeAc('mesajlasma');",            ikon:'💬', ikonClass:'qa-gorev',    label:'Mesajlar' },
+    duyurular:      { modul:'duyurular',   onclick:"sekmeAc('duyurular');",             ikon:'📢', ikonClass:'qa-rapor',    label:'Duyurular' },
+    sinavIslemleri: { modul:'sinavIslemleri', onclick:"sekmeAc('yaziliSinavlar');",      ikon:'📝', ikonClass:'qa-not',      label:'Sınavlar' },
+  };
+  const sira = (typeof _altTercihOku === 'function') ? _altTercihOku('hizliIslemler') : Object.keys(tanimlari).slice(0,8);
+  el.innerHTML = sira.map(id=>{
+    const t = tanimlari[id];
+    if(!t) return '';
+    return `<div class="qa-item" data-yetki-modul="${t.modul}" onclick="${t.onclick}"><div class="qa-icon ${t.ikonClass}">${t.ikon}</div><div class="qa-label">${t.label}</div></div>`;
+  }).join('');
+}
+
+/* ============== ÖĞRETMENE ÖZEL ANASAYFA KARTLARI ==============
+   Hesabına bağlı bir öğretmen kaydı olan HERKESTE (admin dahil, eğer
+   bağlıysa) gösterilir: bugünkü dersleri + bu haftaki nöbeti. Bağlı kayıt
+   yoksa (ör. sadece idari bir admin hesabıysa) bölüm tamamen gizlenir. */
+function renderOgretmenOzelKartlar(){
+  const kutu = document.getElementById('ogretmenOzelKartlar');
+  if(!kutu) return;
+  const ben = (typeof bagliOgretmenimGetir === 'function') ? bagliOgretmenimGetir() : null;
+  if(!ben){ kutu.style.display = 'none'; return; }
+  kutu.style.display = '';
+
+  const dersEl = document.getElementById('ogretmenBugunDersleri');
+  const nobetEl = document.getElementById('ogretmenHaftaNobeti');
+  const nobetKarti = document.getElementById('ogretmenNobetKarti');
+
+  // YENİ: Zil sayacındaki gecikme düzeltmesiyle aynı mantık — ders saatleri
+  // verisi Firestore'dan henüz gelmediyse (dersSaatleriYuklendi===false),
+  // "tatil modu kapalı" varsayıp yanlış bir an için ders/nöbet listesi
+  // göstermek yerine nötr bir yükleniyor durumu gösteriyoruz.
+  if(typeof dersSaatleriYuklendi !== 'undefined' && !dersSaatleriYuklendi){
+    if(dersEl) dersEl.innerHTML = '<p class="empty-state">Yükleniyor…</p>';
+    if(nobetEl) nobetEl.innerHTML = '<p class="empty-state">Yükleniyor…</p>';
+    return;
+  }
+
+  // YENİ: Tatil modu aktifken, sitedeki diğer akademik kartlarla (Şu Anki
+  // Ders, Bugünün Ders Programı, Bu Haftanın Nöbetçileri) TUTARLI şekilde
+  // "bugünkü derslerim / bu haftaki nöbetim" de tatil mesajına dönüşür —
+  // aksi halde yaz tatilinde bile geçen dönemden kalma ders/nöbet kayıtları
+  // yanlışlıkla "bugün deriniz var" gibi görünebilirdi.
+  const tatilAktif = !!(dersSaatleriAyarlari && dersSaatleriAyarlari.tatilModu);
+  if(tatilAktif){
+    if(dersEl) dersEl.innerHTML = '<p class="empty-state">🏖️ Tatil modu aktif.</p>';
+    if(nobetEl) nobetEl.innerHTML = '<p class="empty-state">🏖️ Tatil modu aktif.</p>';
+    if(nobetKarti) nobetKarti.classList.remove('ogretmen-bugun-nobetci');
+    return;
+  }
+
+  const bugunGun = GUNADI[new Date().getDay()];
+  const bugunISO = todayISO();
+
+  if(typeof renderOgretmenYillikPlanlarimKarti === 'function') renderOgretmenYillikPlanlarimKarti();
+
+  // ---- Bugünkü Derslerim ----
+  if(dersEl){
+    if(!GUNLER.includes(bugunGun)){
+      dersEl.innerHTML = '<p class="empty-state">Bugün hafta sonu — dersiniz yok.</p>';
+    } else {
+      const bugunDersleri = dersProgrami.filter(d=>d.ogretmenId===ben.id && d.gun===bugunGun).sort((a,b)=>a.saat-b.saat);
+      dersEl.innerHTML = bugunDersleri.length
+        ? bugunDersleri.map(d=>`<div class="dash-row"><span class="badge badge-blue">${d.saat}.</span> ${escapeHtml(d.sinif)} — ${escapeHtml(d.ders)}</div>`).join('')
+        : '<p class="empty-state">Bugün ders programınızda kaydınız yok.</p>';
+    }
+  }
+
+  // ---- Bu Haftaki Nöbetim ----
+  if(nobetEl && typeof nobetHaftaAraligi === 'function'){
+    const gunler = nobetHaftaAraligi(bugunISO);
+    let buguntNobetciMi = false;
+    const satirlar = gunler.map(iso=>{
+      const ozet = (typeof nobetGununOzeti === 'function') ? nobetGununOzeti(iso) : {atamalar:[], tatil:false};
+      const benimAtamalarim = (ozet.atamalar||[]).filter(a=>a.ogretmenId===ben.id);
+      if(!benimAtamalarim.length) return '';
+      if(iso===bugunISO) buguntNobetciMi = true;
+      const gunAdiKisa = GUNADI[new Date(iso+'T00:00:00').getDay()];
+      const yerleriYaz = benimAtamalarim.map(a=>{
+        const yer = (typeof nobetYerleri!=='undefined' ? nobetYerleri.find(y=>y.id===a.yerId) : null);
+        return (typeof nobetYeriIkon==='function'?nobetYeriIkon(yer?yer.ad:''):'📍') + ' ' + escapeHtml(yer?yer.ad:'?');
+      }).join(', ');
+      return `<div class="dash-row"${iso===bugunISO?' style="font-weight:700;"':''}>${iso===bugunISO?'📌 <strong>Bugün</strong> — ':gunAdiKisa+' — '}${yerleriYaz}</div>`;
+    }).filter(Boolean).join('');
+    nobetEl.innerHTML = satirlar || '<p class="empty-state">Bu hafta nöbet atamanız yok.</p>';
+    if(nobetKarti) nobetKarti.classList.toggle('ogretmen-bugun-nobetci', buguntNobetciMi);
+  }
+}
+
+
+async function yedekVerisiOlustur(){
+  let mevzuat;
+  try{ mevzuat = typeof mevzuatTumVeriyiOku === 'function' ? await mevzuatTumVeriyiOku() : undefined; }
+  catch(e){ console.warn('Mevzuat verisi yedeğe eklenemedi:', e.message); }
+
+  // YENİ: Optik Okuma modülü (sınav tanımları, taranan kağıt sonuçları,
+  // cevap anahtarları, puan referansları) Firestore'da DEĞİL, localStorage'da
+  // tutuluyor (bkz. optik/js/app.js: DB._oku/_yaz, anahtar önekleri 'oy_op_').
+  // Aynı origin altında (sadece farklı bir yol) çalıştığı için bu sayfadan
+  // doğrudan erişilebiliyor — ayrı bir iframe mesajlaşmasına gerek yok.
+  // Önek eşleşmesiyle TÜM oy_op_ anahtarlarını (bugün var olanlar + ileride
+  // eklenecek yeni anahtar türleri) otomatik yakalıyoruz, tek tek isim
+  // saymak yerine — böylece optik/js/app.js'e yeni bir veri türü eklendiğinde
+  // burada unutulmaz.
+  const optikVerileri = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const anahtar = localStorage.key(i);
+      if (anahtar && anahtar.startsWith('oy_op_')) {
+        try { optikVerileri[anahtar] = JSON.parse(localStorage.getItem(anahtar)); }
+        catch (e) { console.warn('Optik veri okunamadı, atlandı:', anahtar, e.message); }
+      }
+    }
+  } catch (e) {
+    console.warn('Optik okuma verileri yedeğe eklenemedi:', e.message);
+  }
+
+  return {
+    tarih: new Date().toISOString(), ogretmenler, dersProgrami, hatirlaticilar, gorevler, evrakTakibi, notlar,
+    nobetYerleri, nobetAtamalari, nobetciAmirleri, resmiTatiller, periyodikIsler,
+    dersSaatleriAyarlari: dersSaatleriAyarlari || undefined,
+    siniflar, veliler, servisler,
+    dersListesi: typeof dersListesi !== 'undefined' ? dersListesi : [],
+    bransListesi: typeof bransListesi !== 'undefined' ? bransListesi : [],
+    okulBilgileri: okulBilgileriAyari || undefined,
+    periyodikSablon: periyodikSablonu || undefined,
+    sosyalKulupler: cizelgeVerileri.sosyalKulupler, sok: cizelgeVerileri.sok, zumre: cizelgeVerileri.zumre,
+    bepPlani: cizelgeVerileri.bepPlani, rehberlik: cizelgeVerileri.rehberlik, maarifRapor: cizelgeVerileri.maarifRapor,
+    belirliGunler: typeof belirliGunlerListesi !== 'undefined' ? belirliGunlerListesi : [],
+    digerEvrak: typeof digerEvrakListesi !== 'undefined' ? digerEvrakListesi : [],
+    sinavlar, denemeSinavlari,
+    odevTakip: typeof odevTakipListesi !== 'undefined' ? odevTakipListesi : [],
+    notCizelgesi: typeof notCizelgesiListesi !== 'undefined' ? notCizelgesiListesi : [],
+    personel: typeof personelListesi !== 'undefined' ? personelListesi : [],
+    mevzuat: mevzuat || undefined,
+    optikVerileri
+  };
+}
+async function tumVerileriYedekle(){
+  const yedek = await yedekVerisiOlustur();
+  const jsonMetin = JSON.stringify(yedek, null, 2);
+  // UTF-8 güvenli base64 (Türkçe karakterler için btoa tek başına yetmez)
+  const base64Json = btoa(unescape(encodeURIComponent(jsonMetin)));
+  // paylas=true: native ortamda kaydettikten hemen sonra Android'in "Paylaş"
+  // menüsünü açar — kullanıcı dosyayı doğrudan Drive/WhatsApp/e-posta gibi
+  // istediği yere gönderebilir (ayrı bir Google girişi gerekmeden).
+  uygulamaDosyaKaydet(base64Json, `okul-yedek-${todayISO()}.json`, 'application/json', true).catch(()=>{});
+}
+/* ---------- Native confirm() yerine kullanılan özel onay modalı ----------
+   Bazı Android WebView'lerde native confirm(), kullanıcı dokunuşundan
+   birkaç saniye sonra (örn. uzun bir async işlem sonrası) sessizce
+   engelleniyor — dialog hiç görünmeden false dönüyor, kullanıcı hiçbir
+   şey olmamış gibi hissediyor. Bu, tamamen kendi DOM'umuzda render
+   edildiği için o kısıtlamaya tabi değil. */
+/* ---------- Kalıcı ilerleme göstergesi (uzun işlemler için) ---------- */
+function ilerlemeGoster(mesaj){
+  const overlay = document.getElementById('ilerlemeOverlay');
+  if(!overlay) return;
+  document.getElementById('ilerlemeSpinner').style.display = '';
+  document.getElementById('ilerlemeIkon').style.display = 'none';
+  document.getElementById('ilerlemeKapatBtn').style.display = 'none';
+  document.getElementById('ilerlemeMetin').textContent = mesaj;
+  overlay.style.display = 'flex';
+}
+function ilerlemeGuncelle(mesaj){
+  const el = document.getElementById('ilerlemeMetin');
+  if(el) el.textContent = mesaj;
+}
+function ilerlemeTamamlandi(mesaj){
+  document.getElementById('ilerlemeSpinner').style.display = 'none';
+  const ikon = document.getElementById('ilerlemeIkon');
+  ikon.textContent = '✅'; ikon.style.display = '';
+  document.getElementById('ilerlemeMetin').textContent = mesaj;
+  document.getElementById('ilerlemeKapatBtn').style.display = '';
+}
+function ilerlemeHataGoster(mesaj){
+  document.getElementById('ilerlemeSpinner').style.display = 'none';
+  const ikon = document.getElementById('ilerlemeIkon');
+  ikon.textContent = '⚠️'; ikon.style.display = '';
+  document.getElementById('ilerlemeMetin').textContent = mesaj;
+  document.getElementById('ilerlemeKapatBtn').style.display = '';
+}
+function ilerlemeGizle(){
+  const overlay = document.getElementById('ilerlemeOverlay');
+  if(overlay) overlay.style.display = 'none';
+}
+
+function uygulamaOnayAl(mesaj){
+  return new Promise(resolve=>{
+    const modal = document.getElementById('ozelOnayModal');
+    const mesajEl = document.getElementById('ozelOnayMesaj');
+    if(!modal || !mesajEl){ resolve(confirm(mesaj)); return; } // beklenmedik durumda son çare
+    mesajEl.textContent = mesaj;
+    modal.style.display = 'flex';
+    window._ozelOnaySonucVer = (sonuc)=>{
+      modal.style.display = 'none';
+      window._ozelOnaySonucVer = null;
+      resolve(sonuc);
+    };
+  });
+}
+
+function _dosyaMetniOku(dosya){
+  // Bazı Android WebView sürümlerinde / bazı dosya kaynaklarında (SAF ile
+  // seçilen content:// URI'ler gibi) tek bir okuma yöntemi HİÇ HATA
+  // VERMEDEN sonsuza kadar takılı kalabiliyor (örn. arrayBuffer() hiç
+  // cevap dönmüyor). Bu yüzden her yönteme bir zaman aşımı (5sn) konuyor —
+  // süre dolarsa o yöntem "başarısız" sayılıp bir sonraki denenir.
+  const ZAMAN_ASIMI_MS = 5000;
+
+  function zamanAsimliCalistir(sozVerFn, adi){
+    return new Promise((resolve, reject)=>{
+      let bitti = false;
+      const zamanlayici = setTimeout(()=>{
+        if(bitti) return;
+        bitti = true;
+        reject(new Error(adi + ': zaman aşımına uğradı (' + (ZAMAN_ASIMI_MS/1000) + 'sn içinde cevap vermedi)'));
+      }, ZAMAN_ASIMI_MS);
+
+      sozVerFn().then(sonuc=>{
+        if(bitti) return;
+        bitti = true; clearTimeout(zamanlayici); resolve(sonuc);
+      }).catch(hata=>{
+        if(bitti) return;
+        bitti = true; clearTimeout(zamanlayici);
+        reject(new Error(adi + ': ' + (hata && hata.message ? hata.message : hata)));
+      });
+    });
+  }
+
+  const fileReaderSozVer = ()=> new Promise((resolve, reject)=>{
+    const okuyucu = new FileReader();
+    okuyucu.onload = ()=> resolve(okuyucu.result);
+    okuyucu.onerror = ()=> reject(okuyucu.error || new Error('bilinmeyen hata'));
+    okuyucu.readAsText(dosya, 'utf-8');
+  });
+
+  const arrayBufferSozVer = ()=> dosya.arrayBuffer().then(buf => new TextDecoder('utf-8').decode(buf));
+
+  const textSozVer = ()=> {
+    if(typeof dosya.text !== 'function') return Promise.reject(new Error('bu tarayıcıda desteklenmiyor'));
+    return dosya.text();
+  };
+
+  const yontemler = [
+    ['FileReader', fileReaderSozVer],
+    ['arrayBuffer', arrayBufferSozVer],
+    ['File.text()', textSozVer]
+  ];
+
+  return (async ()=>{
+    const hatalar = [];
+    for(const [adi, fn] of yontemler){
+      try{
+        return await zamanAsimliCalistir(fn, adi);
+      }catch(e){
+        hatalar.push(e.message);
+      }
+    }
+    throw new Error('Dosya hiçbir yöntemle okunamadı — ' + hatalar.join(' | '));
+  })();
+}
+
+async function yedektenGeriYukle(file){
+  if(!file){ console.warn('yedektenGeriYukle: dosya seçilmedi.'); return; }
+  ilerlemeGoster('Yedek dosyası okunuyor…');
+  try{
+    const metin = await _dosyaMetniOku(file);
+    const data = JSON.parse(metin);
+    ilerlemeGizle();
+    const onaylandi = await uygulamaOnayAl("Yedekteki kayıtlar mevcut verilerinizin üzerine yazılacak (aynı ID'ye sahip olanlar güncellenecek, yeni olanlar eklenecek). Notlar için: yedekten SONRA düzenlenmiş bir not varsa, o not korunur ve üzerine yazılmaz. Devam edilsin mi?");
+    if(!onaylandi) return;
+    ilerlemeGoster('Geri yükleniyor… (0 kayıt)');
+    const eslemeler = [
+      [data.ogretmenler, COL.ogretmenler],[data.dersProgrami, COL.dersProgrami],
+      [data.siniflar, COL.siniflar],[data.veliler, COL.veliler],
+      [data.nobetYerleri, COL.nobetYerleri],[data.nobetAtamalari, COL.nobetAtamalari],
+      [data.nobetciAmirleri, COL.nobetciAmirleri],[data.resmiTatiller, COL.resmiTatiller],
+      [data.hatirlaticilar, COL.hatirlaticilar],[data.gorevler, COL.gorevler],
+      [data.evrakTakibi, COL.evrak],[data.notlar, COL.notlar],
+      [data.sosyalKulupler, COL.sosyalKulupler],[data.sok, COL.sok],[data.zumre, COL.zumre],
+      [data.bepPlani, COL.bepPlani],[data.rehberlik, COL.rehberlik],[data.maarifRapor, COL.maarifRapor],
+      [data.belirliGunler, COL.belirliGunler],[data.digerEvrak, COL.digerEvrak],
+      [data.periyodikIsler, COL.periyodikIsler],[data.servisler, COL.servisler],
+      [data.sinavlar, COL.sinavlar],[data.denemeSinavlari, COL.denemeSinavlari],
+      [data.odevTakip, COL.odevTakip],[data.notCizelgesi, COL.notCizelgesi],
+      [data.dersListesi, COL.dersListesi],[data.bransListesi, COL.bransListesi],
+      [data.personel, COL.personel]
+    ];
+
+    // DÜZELTME (KRİTİK): Eskiden restore, aynı ID'li bir kaydı HER ZAMAN
+    // yedekteki içerikle eziyordu — bu, örneğin bir notu düzenledikten
+    // SONRA eski bir yedek geri yüklendiğinde, o düzenlemenin sessizce
+    // kaybolmasına sebep oluyordu (kullanıcı bunu fark etmeden). Artık
+    // "zaman damgalı" koleksiyonlar (şu an: notlar) için, mevcut kaydın
+    // guncellenmeTarihi'si yedektekinden daha yeniyse o kayıt ATLANIR —
+    // yedek asla daha yeni bir düzenlemenin üzerine yazamaz.
+    const ZAMAN_DAMGALI_KOLEKSIYONLAR = new Set([COL.notlar]);
+    const mevcutZamanDamgalari = {};
+    for(const kol of ZAMAN_DAMGALI_KOLEKSIYONLAR){
+      const snap = await db.collection(kol).get();
+      const harita = {};
+      snap.docs.forEach(d => {
+        const v = d.data();
+        harita[d.id] = v.guncellenmeTarihi || v.eklenmeTarihi || null;
+      });
+      mevcutZamanDamgalari[kol] = harita;
     }
 
-    const satirlar = [['Ders', 'Soru No', 'Doğru Cevap']];
-    derslerDolu.forEach(d => d.anahtarlar.forEach(a => {
-        satirlar.push([d.dersAdi, a.soruNo, a.dogru]);
-    }));
+    // Tek tek (await ... await ...) yazmak yerine Firestore BATCH kullan —
+    // hem çok daha hızlı (tek ağ gidiş-gelişinde yüzlerce yazma) hem de
+    // "hiçbir şey olmuyor" hissi vermeden ilerleme bildirimi eklenebiliyor.
+    // Firestore tek batch'te en fazla 500 işlem kabul eder, güvenli pay
+    // için 400'de bir commit ediyoruz.
+    let toplamKayit = 0;
+    let atlananKayit = 0;
+    let batch = db.batch();
+    let batchIcindeki = 0;
 
-    const ws = XLSX.utils.aoa_to_sheet(satirlar);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Cevap Anahtarı');
-    const dosyaAdi = (DB.sinaviBul(_aktifSinavId)?.ad || 'anahtar') + '_cevap_anahtari.xlsx';
-    XLSX.writeFile(wb, dosyaAdi);
-}
+    async function batchıCommitEt(){
+      if(batchIcindeki === 0) return;
+      await batch.commit();
+      batch = db.batch();
+      batchIcindeki = 0;
+    }
 
-// ════════════════════════════════════════════════════════════════
-// BAŞLAT — TÜM OLAY DİNLEYİCİLERİ
-// ════════════════════════════════════════════════════════════════
-function baslat() {
-    // ── Ekran 1: Sınavlar ──
-    sinavlariRender();
-    document.getElementById('fabYeniSinav').addEventListener('click', yeniSinavAc);
-    // YENİ (Ağustos 2026, Sedat isteği): Şablonlarım ekranı.
-    document.getElementById('btnSablonlarAc')?.addEventListener('click', sablonlarEkraniAc);
-    document.getElementById('btnSablonlarGeri')?.addEventListener('click', () => ekranGit('sinavlar'));
-    document.getElementById('fabYeniSablon')?.addEventListener('click', () => sablonEditoruAc(null, 'sablonlar'));
-    document.getElementById('btnSablonlarSenkron')?.addEventListener('click', () => _sablonlariFirestoredenSenkronizeEt(true));
-    // YENİ: açılışta Firestore'daki şablonları arka planda yerelle birleştir.
-    _sablonlariFirestoredenSenkronizeEt();
-
-    // ── Ekran 2: Yeni Sınav ──
-    document.getElementById('btnYeniSinavKapat').addEventListener('click', () => ekranGit('sinavlar'));
-    document.getElementById('btnYeniSinavKaydet').addEventListener('click', yeniSinavKaydet);
-    document.getElementById('ysOgrenciSecBtn').addEventListener('click', () => {
-        sheetAc('sheetOgrenciSecimi');
-    });
-    document.getElementById('btnOgrenciSecTamam').addEventListener('click', () => {
-        sheetKapat('sheetOgrenciSecimi');
-        _ogrenciSecimOzetiGuncelle();
-    });
-    document.getElementById('ysOptikFormSec').addEventListener('click', () => {
-        optikFormSheetAc(sablon => {
-            _ysSablonSecilen = sablon;
-            const metEl = document.getElementById('ysOptikFormAdi');
-            metEl.textContent = sablon.soruSayisi ? `${sablon.ad} (${sablon.soruSayisi} Soru)` : sablon.ad;
-            metEl.style.color = 'var(--text)';
-
-        });
-    });
-    document.getElementById('btnSablonEditorGeri').addEventListener('click', () => {
-        ekranGit(_sablonEditoruDonusEkrani);
-        if (_sablonEditoruDonusEkrani === 'sablonlar') sablonlarEkraniniRender();
-    });
-
-    // ── Ekran 3: Sınav Detay ──
-    document.getElementById('btnSinavDetayGeri').addEventListener('click', () => { _aktifSinavId = null; window.OptikAktifForm = null; ekranGit('sinavlar'); sinavlariRender(); });
-    document.getElementById('btnOptikOlustur').addEventListener('click', optikOlusturAc);
-
-    // Sekmeler
-    document.querySelectorAll('#sekmeBar .sekme').forEach(btn =>
-        btn.addEventListener('click', () => {
-            sekmeAktiflestir(btn.dataset.sekme);
-            if (btn.dataset.sekme === 'anahtar') anahtarIzgaraCiz();
-        })
-    );
-
-    // Kağıtlar FABları
-    document.getElementById('fabKamera').addEventListener('click', kameraAc);
-    document.getElementById('fabKagitEkle').addEventListener('click', () => sheetAc('sheetKagitEkle'));
-    document.getElementById('btnPuanYenidenHesapla')?.addEventListener('click', function () {
-        this.classList.remove('donuyor');
-        void this.offsetWidth; // animasyonu sıfırla, tekrar tetikleyebilmek için
-        this.classList.add('donuyor');
-        _tumSonuclariYenidenHesapla();
-    });
-
-    // ── Ekran 4: Öğrenci Detay ──
-    document.getElementById('btnOgrDetayGeri').addEventListener('click', () => { _aktifSonucId = null; ekranGit('sinavDetay'); });
-    document.getElementById('btnOgrDetayKaydet').addEventListener('click', ogrDetayKaydet);
-    document.getElementById('btnOgrDetayUyariToggle')?.addEventListener('click', () => {
-        const kutu = document.getElementById('ogrDetayUyarilar');
-        if (kutu) kutu.style.display = kutu.style.display === 'none' ? 'block' : 'none';
-    });
-    // Kağıt görüntüsüne dokununca tam ekran yakınlaştırılabilir görüntüleyici
-    // aç — içerik dinamik olarak img/canvas olarak değiştiği için delege
-    // (event delegation) kullanılıyor, o an ne varsa onun kaynağını alır.
-    document.getElementById('ogrDetayResimAlani').addEventListener('click', (e) => {
-        const img = e.currentTarget.querySelector('img');
-        const canvas = e.currentTarget.querySelector('canvas');
-        const kaynak = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
-        if (kaynak) ogrDetayResimBuyutAc(kaynak);
-    });
-    document.getElementById('ogrDetayNo').addEventListener('change', _ogrDetayNoIleAra);
-    document.getElementById('ogrDetayNo').addEventListener('blur', _ogrDetayNoIleAra);
-    document.getElementById('ogrDetayDers').addEventListener('change', () => {
-        const son = DB.sonuclariGetir(_aktifSinavId).find(s => s.id === _aktifSonucId);
-        if (son) ogrDetayIzgaraCiz(son);
-    });
-    document.querySelectorAll('.ir-sekme').forEach(btn =>
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.ir-sekme').forEach(b => b.classList.toggle('aktif', b === btn));
-            document.getElementById('irIcerik').classList.toggle('aktif', btn.dataset.ir === 'icerik');
-            document.getElementById('irResim').classList.toggle('aktif', btn.dataset.ir === 'resim');
-        })
-    );
-    // Pill sil butonları (öğrenci detay + manuel)
-    document.querySelectorAll('.pill-sil').forEach(btn =>
-        btn.addEventListener('click', () => {
-            const el = document.getElementById(btn.dataset.h);
-            if (el) el.value = '';
-            if (['manuelNo', 'manuelAdSoyad', 'manuelSinif'].includes(btn.dataset.h)) _manuelSeciliOgrenciId = null;
-        })
-    );
-
-    // ── Ekran 5: Optik Oluştur ──
-    document.getElementById('btnOptikOlusturGeri').addEventListener('click', () => ekranGit('sinavDetay'));
-    document.getElementById('btnBosForm').addEventListener('click', () => yazdirmaSecenekleriAc('bos'));
-    document.getElementById('btnOgrencilerIcinForm').addEventListener('click', () => yazdirmaSecenekleriAc('ogrenciler'));
-    document.getElementById('btnYzOnizle').addEventListener('click', yzOnizleOlustur);
-    document.getElementById('btnYzOnayla').addEventListener('click', yzOnaylaVeIndir);
-
-
-    // ── Ekran 6: Manuel Kağıt ──
-    document.getElementById('btnManuelKapat').addEventListener('click', () => ekranGit('sinavDetay'));
-    document.getElementById('btnLgsPuanGeri').addEventListener('click', () => ekranGit('sinavDetay'));
-    document.getElementById('btnLgsAyarToggle').addEventListener('click', () => {
-        const panel = document.getElementById('lgsAyarPanel');
-        if (!panel) return;
-        const acilacak = panel.style.display === 'none';
-        if (acilacak) _lgsAyarPaneliniRender();
-        panel.style.display = acilacak ? 'flex' : 'none';
-    });
-    document.getElementById('btnManuelKaydet').addEventListener('click', manuelKaydet);
-    document.getElementById('manuelDers').addEventListener('change', manuelIzgaraCiz);
-    document.getElementById('btnManuelSiniftanSec').addEventListener('click', _manuelSiniftanSecToggle);
-    document.getElementById('manuelNo').addEventListener('change', _manuelNoIleAra);
-    document.getElementById('manuelNo').addEventListener('blur', _manuelNoIleAra);
-    // Elle sınıf/ad değiştirilirse artık listeden gelen eşleşme geçersiz sayılır
-    document.getElementById('manuelAdSoyad').addEventListener('input', () => { _manuelSeciliOgrenciId = null; });
-
-    // ── Kamera ──
-    document.getElementById('kameraKapatBtn').addEventListener('click', kameraKapat);
-    // galeriInput -> baglaGaleriSecici asagida bagliyor
-
-    // ── Bottom sheets ──
-    document.getElementById('sheetKagitEkle').addEventListener('click', e => { if (e.target === e.currentTarget) sheetKapat('sheetKagitEkle'); });
-    document.getElementById('sheetOptikForm').addEventListener('click', e => { if (e.target === e.currentTarget) sheetKapat('sheetOptikForm'); });
-    document.getElementById('sheetOnay').addEventListener('click', e => { if (e.target === e.currentTarget) sheetKapat('sheetOnay'); });
-    document.getElementById('sheetOnayIptal').addEventListener('click', () => sheetKapat('sheetOnay'));
-    document.getElementById('bsGaleri').addEventListener('click', () => {
-        sheetKapat('sheetKagitEkle');
-        const inp = document.getElementById('galeriInputSheet');
-        if (inp) inp.click();
-    });
-    // galeriInputSheet -> baglaGaleriSecici asagida bagliyor
-    document.getElementById('bsManuel').addEventListener('click', () => { sheetKapat('sheetKagitEkle'); manuelKagitAc(); });
-
-    // ── Anahtar araçlar ──
-    document.getElementById('anahDersSecici').addEventListener('change', anahtarIzgaraCiz);
-    document.getElementById('anahtarExcelInput').addEventListener('change', async function () {
-        const dosya = this.files[0];
-        this.value = '';
-        if (!dosya) return;
-        try {
-            await anahtarExcelYukle(dosya);
-        } catch (e) {
-            alert('HATA (bunu bana gönder):\n\n' + e.message + '\n\n' + (e.stack || ''));
-            console.error('anahtarExcelYukle hatası:', e);
+    for(const [liste, koleksiyon] of eslemeler){
+      if(!Array.isArray(liste)) continue;
+      for(const oge of liste){
+        const {id, ...veri} = oge;
+        if(id && ZAMAN_DAMGALI_KOLEKSIYONLAR.has(koleksiyon)){
+          const mevcutZaman = mevcutZamanDamgalari[koleksiyon]?.[id];
+          const yedekZaman = veri.guncellenmeTarihi || veri.eklenmeTarihi || null;
+          if(mevcutZaman && yedekZaman && mevcutZaman > yedekZaman){
+            atlananKayit++;
+            continue; // mevcut kayıt yedekten daha yeni düzenlenmiş — koru
+          }
         }
-    });
-    document.getElementById('btnAnahtarDisaAktar').addEventListener('click', anahtarDisaAktar);
-    // YENİ (Ağustos 2026): A/B kitapçık seçici — sekme değişince ekranı
-    // o kitapçığın anahtarıyla yeniden çizer.
-    document.getElementById('btnAnahKitapcikA')?.addEventListener('click', () => { _anahtarAktifKitapcik = 'A'; anahtarPaneliniRender(); });
-    document.getElementById('btnAnahKitapcikB')?.addEventListener('click', () => { _anahtarAktifKitapcik = 'B'; anahtarPaneliniRender(); });
-    // YENİ (Ağustos 2026, Sedat isteği): "Öğrencilerin kitapçık türü otomatik
-    // ve manuel atama yapabilme imkanı olsun".
-    document.getElementById('btnKitapcikAtamalari')?.addEventListener('click', _kitapcikAtamaSheetAc);
-    // YENİ (Ağustos 2026, Sedat geri bildirimi: "Kitapçık türü seçmedim"
-    // ama sınav kitapçıklı görünüyordu — sonradan düzeltebilme imkanı).
-    document.getElementById('btnKitapcikTuruDegistir')?.addEventListener('click', () => {
-        const sinav = DB.sinaviBul(_aktifSinavId);
-        if (!sinav) return;
-        const suAnKitapcikli = sinav.kitapcikTuruSayisi === 2;
-        const yeniDurum = suAnKitapcikli ? 'Tek Kitapçık' : 'A/B (2 Kitapçık)';
-        const uyari = suAnKitapcikli
-            ? 'Tek Kitapçığa geçersen, ayrı ayrı girilmiş A ve B anahtarları görünmez olur (silinmez, sadece kullanılmaz). Devam edilsin mi?'
-            : 'A/B (2 Kitapçık)\'a geçersen, mevcut tek anahtarın "A" anahtarı olarak devam eder, "B" için ayrıca anahtar girmen gerekir. Devam edilsin mi?';
-        sheetOnay(`Kitapçık Türü: ${yeniDurum} yap?`, uyari, () => {
-            sinav.kitapcikTuruSayisi = suAnKitapcikli ? 1 : 2;
-            DB.sinavKaydet(sinav);
-            _anahtarAktifKitapcik = undefined;
-            anahtarPaneliniRender();
-        });
-    });
-    document.getElementById('btnKitapcikOtomatikAta')?.addEventListener('click', _kitapcikOtomatikAta);
-    document.getElementById('btnKitapcikAtamaKaydet')?.addEventListener('click', _kitapcikAtamaKaydet);
-    document.getElementById('btnAnahtarTemizle').addEventListener('click', () => {
-        sheetOnay('Cevap anahtarı silinsin mi?', 'Bu işlem geri alınamaz.', () => {
-            DB.anahtarKaydet(_aktifSinavId, { dersler: [] }, _anahtarAktifKitapcik);
-            anahtarIzgaraCiz(); _tumSonuclariYenidenHesapla();
-        });
-    });
-    document.getElementById('btnMiniAnahtar').addEventListener('click', async () => {
-        if (!_aktifSinavId) return;
-        const dersler = formDersleriniGetir(_aktifSinavId);
-        const anahtar = DB.anahtariGetir(_aktifSinavId);
-        const sinavAdi = DB.sinaviBul(_aktifSinavId)?.ad;
-        const { DisaAktar } = await import('./disaAktar.js').catch(() => ({ DisaAktar: window.DisaAktar }));
-        (DisaAktar || window.DisaAktar)?.miniAnahtarPdfIndir?.(dersler, anahtar, sinavAdi);
-    });
-
-    // Raporlar
-    document.querySelectorAll('.rapor-satir').forEach(btn =>
-        btn.addEventListener('click', async () => {
-            const r = btn.dataset.rapor;
-            if (r === 'excel') {
-                const sonuclar = DB.sonuclariGetir(_aktifSinavId);
-                const { DisaAktar } = await import('./disaAktar.js').catch(() => ({ DisaAktar: window.DisaAktar }));
-                (DisaAktar || window.DisaAktar)?.excelIndir?.(sonuclar, { sinavAdi: DB.sinaviBul(_aktifSinavId)?.ad });
-            } else if (r === 'lgs') {
-                lgsPuanRaporunuAcVeGoster();
-            } else { alert(`"${btn.querySelector('span').textContent}" raporu yakında eklenecek.`); }
-        })
-    );
-
-    // galeriSecici.js bağla - hem kamera overlay hem bottom sheet
-    baglaGaleriSecici('galeriInput', 'canvas');
-    baglaGaleriSecici('galeriInputSheet', 'canvas');
-
-    // Kamera start/stop butonları
-    import('./camera.js').then(mod => {
-        const startBtn = document.getElementById('start');
-        const stopBtn  = document.getElementById('stop');
-        const captureBtn = document.getElementById('capture');
-        const statusEl = document.getElementById('statusText');
-        if (startBtn) startBtn.addEventListener('click', async () => {
-            try {
-                statusEl.textContent = 'Kamera açılıyor...';
-                await (mod.startCamera?.() || window.startCamera?.());
-                statusEl.textContent = 'Hazır';
-                // Kamera açılınca varsayılan olarak canlı tarama modu AÇIK
-                // başlasın (kullanıcı isterse Ayarlar'dan kapatabilir).
-                const canliSwBaslangic = document.getElementById('canliModSwitch');
-                if (canliSwBaslangic && !canliSwBaslangic.checked) {
-                    canliSwBaslangic.checked = true;
-                    canliSwBaslangic.dispatchEvent(new Event('change'));
-                }
-                // Torch butonunu sadece cihaz destekliyorsa göster.
-                const torchBtn = document.getElementById('kameraTorchBtn');
-                if (torchBtn) {
-                    setTimeout(() => {
-                        torchBtn.hidden = !mod.torchDesteginiKontrolEt?.();
-                    }, 300); // stream track'i hazır olsun diye küçük gecikme
-                }
-            } catch (e) { statusEl.textContent = 'Kamera açılamadı'; }
-        });
-        if (stopBtn) stopBtn.addEventListener('click', () => {
-            try { mod.stopCamera?.() || window.stopCamera?.(); } catch {}
-            _canliModAktif = false;
-            const sw = document.getElementById('canliModSwitch');
-            if (sw) sw.checked = false;
-        });
-        if (captureBtn) captureBtn.addEventListener('click', async () => {
-            try { statusEl.textContent = 'İşleniyor...'; await (mod.capturePhoto?.() || window.capturePhoto?.()); } catch (e) { statusEl.textContent = 'Fotoğraf alınamadı'; }
-        });
-
-        // ── Canlı tarama modu aç/kapat ──
-        const canliSw = document.getElementById('canliModSwitch');
-        if (canliSw) canliSw.addEventListener('change', () => {
-            if (canliSw.checked) {
-                _canliModAktif = true;
-                mod.canliTaramaBaslat?.(
-                    () => { /* sonuç zaten omrSonucHazir olayıyla _omrSonucuisle'a gidiyor */ },
-                    (durum) => { if (statusEl) statusEl.textContent = durum === 'okunuyor' ? 'Okunuyor...' : (durum === 'hizalandi' ? 'Hizalandı, sabit tutun...' : 'Kağıt aranıyor...'); }
-                );
-                captureBtn.style.opacity = '0.45'; // manuel tuş hâlâ çalışır ama vurgu canlı modda
-            } else {
-                _canliModAktif = false;
-                mod.canliTaramaDurdur?.();
-                captureBtn.style.opacity = '1';
-                if (statusEl) statusEl.textContent = 'Hazır';
+        const ref = id ? db.collection(koleksiyon).doc(id) : db.collection(koleksiyon).doc();
+        batch.set(ref, veri, { merge: true });
+        batchIcindeki++;
+        toplamKayit++;
+        if(batchIcindeki >= 400){
+          await batchıCommitEt();
+          ilerlemeGuncelle(`Geri yükleniyor… (${toplamKayit} kayıt)`);
+        }
+      }
+    }
+    await batchıCommitEt();
+    ilerlemeGuncelle('Ek ayarlar geri yükleniyor…');
+    if(data.dersSaatleriAyarlari){
+      await db.collection(COL.dersSaatleri).doc('ayarlar').set(data.dersSaatleriAyarlari);
+    }
+    if(data.okulBilgileri){
+      await db.collection(COL.okulBilgileri).doc('ayarlar').set(data.okulBilgileri);
+    }
+    if(data.periyodikSablon){
+      await db.collection(COL.periyodikSablon).doc('sablon').set({ gorevler: data.periyodikSablon });
+    }
+    if(data.mevzuat && typeof mevzuatYedektenYukle === 'function'){
+      ilerlemeGuncelle('Mevzuat verileri geri yükleniyor…');
+      try{ await mevzuatYedektenYukle(data.mevzuat); }
+      catch(e){ console.warn('Mevzuat geri yüklenemedi:', e.message); }
+    }
+    // YENİ: Optik Okuma verilerini (sınavlar, taranan kağıt sonuçları,
+    // cevap anahtarları, puan referansları) localStorage'a geri yükle.
+    // Firestore'daki gibi 'id' alanına göre BİRLEŞTİRME yapıyoruz (yedekteki
+    // kayıt varsa üzerine yazar, sadece YEREL'de olan bir kayıt yedekte
+    // yoksa SİLİNMEZ) — 'oy_op_sonuc_*' ve 'oy_op_sinavlar' gibi anahtarlar
+    // id'li kayıt DİZİLERİ tutuyor; 'oy_op_anahtar_*'/'oy_op_puanref_*' gibi
+    // tekil ayar nesneleri ise doğrudan (alan bazlı birleştirilerek) yazılır.
+    let optikKayitSayisi = 0;
+    if(data.optikVerileri && typeof data.optikVerileri === 'object'){
+      ilerlemeGuncelle('Optik okuma verileri geri yükleniyor…');
+      for(const [anahtar, yedekDeger] of Object.entries(data.optikVerileri)){
+        if(yedekDeger === undefined) continue;
+        try{
+          if(Array.isArray(yedekDeger)){
+            let mevcutDizi = [];
+            try{ mevcutDizi = JSON.parse(localStorage.getItem(anahtar) || '[]'); }catch(e){ mevcutDizi = []; }
+            if(!Array.isArray(mevcutDizi)) mevcutDizi = [];
+            const birlesikHarita = new Map(mevcutDizi.map(o => [o && o.id, o]));
+            for(const oge of yedekDeger){
+              if(oge && oge.id !== undefined){ birlesikHarita.set(oge.id, oge); optikKayitSayisi++; }
             }
-        });
-
-        // ── Ayarlar sheet aç/kapat ──
-        const menuBtn = document.getElementById('kameraMenuBtn');
-        const ayarSheet = document.getElementById('kameraAyarSheet');
-        const ayarKapat = document.getElementById('kameraAyarKapat');
-        if (menuBtn && ayarSheet) menuBtn.addEventListener('click', () => {
-            const a = ayarlariGetir();
-            const hy = document.getElementById('hsYuzdelik');
-            const hd = document.getElementById('hsDoluluk');
-            const hh = document.getElementById('hsHiz');
-            const hk = document.getElementById('hsKoyuluk');
-            const ha = document.getElementById('hsAyirtEdici');
-            const hn = document.getElementById('hsNumaraFark');
-            if (hy) hy.value = Math.round(a.yuzdelik * 100);
-            if (hd) hd.value = Math.round(a.minDoluluk * 100);
-            if (hh) hh.value = a.tespitAraligiMs;
-            if (hk) hk.value = Math.round(a.koyulukEsik * 100);
-            if (ha) ha.value = Math.round(a.ayirtEdiciFark * 100);
-            if (hn) hn.value = Math.round(a.numaraMinFark * 100);
-            if (canliSw) canliSw.checked = _canliModAktif;
-            ayarSheet.hidden = false;
-        });
-        if (ayarKapat) ayarKapat.addEventListener('click', () => { ayarSheet.hidden = true; });
-
-        const _ayarUygula = () => {
-            const hy = document.getElementById('hsYuzdelik');
-            const hd = document.getElementById('hsDoluluk');
-            const hh = document.getElementById('hsHiz');
-            const hk = document.getElementById('hsKoyuluk');
-            const ha = document.getElementById('hsAyirtEdici');
-            const hn = document.getElementById('hsNumaraFark');
-            ayarlariKaydet({
-                yuzdelik: hy ? Number(hy.value) / 100 : undefined,
-                minDoluluk: hd ? Number(hd.value) / 100 : undefined,
-                tespitAraligiMs: hh ? Number(hh.value) : undefined,
-                koyulukEsik: hk ? Number(hk.value) / 100 : undefined,
-                ayirtEdiciFark: ha ? Number(ha.value) / 100 : undefined,
-                numaraMinFark: hn ? Number(hn.value) / 100 : undefined,
-            });
-        };
-        ['hsYuzdelik', 'hsDoluluk', 'hsHiz', 'hsKoyuluk', 'hsAyirtEdici', 'hsNumaraFark'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener('change', _ayarUygula);
-        });
-        const hsSifirla = document.getElementById('hsSifirla');
-        if (hsSifirla) hsSifirla.addEventListener('click', () => {
-            ayarlariSifirla();
-            const a = HASSASIYET_VARSAYILAN;
-            const hy = document.getElementById('hsYuzdelik');
-            const hd = document.getElementById('hsDoluluk');
-            const hh = document.getElementById('hsHiz');
-            const hk = document.getElementById('hsKoyuluk');
-            const ha = document.getElementById('hsAyirtEdici');
-            const hn = document.getElementById('hsNumaraFark');
-            if (hy) hy.value = Math.round(a.yuzdelik * 100);
-            if (hd) hd.value = Math.round(a.minDoluluk * 100);
-            if (hh) hh.value = a.tespitAraligiMs;
-            if (hk) hk.value = Math.round(a.koyulukEsik * 100);
-            if (ha) ha.value = Math.round(a.ayirtEdiciFark * 100);
-            if (hn) hn.value = Math.round(a.numaraMinFark * 100);
-        });
-
-        // ── Kamera flaşı (torch) ──
-        const torchBtn = document.getElementById('kameraTorchBtn');
-        if (torchBtn) torchBtn.addEventListener('click', async () => {
-            const yeniDurum = !mod.torchDurumu?.();
-            const basarili = await mod.torchAyarla?.(yeniDurum);
-            if (basarili) torchBtn.style.color = yeniDurum ? '#FFD54A' : '#fff';
-        });
-
-        // ── Canlı sonuç kartı: Sil / Düzenle ──
-        const kskSil = document.getElementById('kskSil');
-        const kskDuzenle = document.getElementById('kskDuzenle');
-        const kart = document.getElementById('canliSonucKart');
-        if (kskSil) kskSil.addEventListener('click', () => {
-            const id = kart?.dataset.sonucId;
-            if (id && _aktifSinavId) { DB.sonucSil(_aktifSinavId, id); kagitlariRender(); }
-            if (kart) kart.hidden = true;
-        });
-        if (kskDuzenle) kskDuzenle.addEventListener('click', () => {
-            if (kart) kart.hidden = true;
-            mod.stopCamera?.();
-            kameraKapat();
-            ekranGit('sinavDetay');
-        });
-    }).catch(() => {
-        // camera.js global fonksiyonlardan kullan
-        const startBtn = document.getElementById('start');
-        const stopBtn  = document.getElementById('stop');
-        const captureBtn = document.getElementById('capture');
-        if (startBtn) startBtn.addEventListener('click', () => { try { window.startCamera?.(); } catch {} });
-        if (stopBtn) stopBtn.addEventListener('click', () => { try { window.stopCamera?.(); } catch {} });
-        if (captureBtn) captureBtn.addEventListener('click', () => { try { window.capturePhoto?.(); } catch {} });
-    });
+            localStorage.setItem(anahtar, JSON.stringify(Array.from(birlesikHarita.values())));
+          } else if(yedekDeger && typeof yedekDeger === 'object'){
+            let mevcutNesne = {};
+            try{ mevcutNesne = JSON.parse(localStorage.getItem(anahtar) || '{}'); }catch(e){ mevcutNesne = {}; }
+            if(!mevcutNesne || typeof mevcutNesne !== 'object') mevcutNesne = {};
+            localStorage.setItem(anahtar, JSON.stringify({ ...mevcutNesne, ...yedekDeger }));
+            optikKayitSayisi++;
+          } else {
+            localStorage.setItem(anahtar, JSON.stringify(yedekDeger));
+            optikKayitSayisi++;
+          }
+        }catch(e){
+          console.warn('Optik veri geri yüklenemedi, atlandı:', anahtar, e.message);
+        }
+      }
+      toplamKayit += optikKayitSayisi;
+    }
+    const yedekDosyaEl = document.getElementById('yedekDosya');
+    if(yedekDosyaEl) yedekDosyaEl.value = '';
+    ilerlemeTamamlandi(`Geri yükleme tamamlandı — ${toplamKayit} kayıt işlendi.${atlananKayit > 0 ? ` (${atlananKayit} kayıt, yedekten sonra düzenlendiği için korundu ve ATLANDI.)` : ''}`);
+  }catch(err){
+    console.error('yedektenGeriYukle hatası:', err);
+    ilerlemeHataGoster('Geri yükleme hatası: '+err.message);
+  }
 }
 
-// ════════════════════════════════════════════════════════════════
-// YARDIMCILAR
-// ════════════════════════════════════════════════════════════════
-function _s(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
-function _h(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-function _tarih(iso) { if (!iso) return ''; try { return new Date(iso).toLocaleDateString('tr-TR'); } catch { return ''; } }
+/* ============== FIRESTORE BAĞLANTILARI ============== */
+/* ============================================================
+   TEMBEL (LAZY) MODÜL YÜKLEME
+   ------------------------------------------------------------
+   Eskiden baglantilariKur() TÜM modüllerin Firestore onSnapshot
+   dinleyicisini uygulama açılır açılmaz kuruyordu. Dashboard'da
+   kartı olmayan / sadece kendi sekmesinde kullanılan modüller
+   için bu gereksizdi: kullanıcı o sekmeyi hiç açmasa bile veri
+   çekiliyordu.
 
-// Başlat
-if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', baslat);
-else baslat();
+   Aşağıdaki modüller SADECE ilgili sekme ilk kez açıldığında
+   başlatılır (_TEMBEL_BASLATILANLAR seti sayesinde bir daha
+   tekrar başlatılmaz — sekmeye her dönüşte yeniden abone olmaz).
+
+   DÜZELTME (bkz. kullanıcı bildirimi): Aşağıdaki anahtarların bir kısmı
+   gerçek data-tab / AltNav sekme id'leriyle EŞLEŞMİYORDU (örn. 'sinav'
+   yerine gerçek id'ler 'yaziliSinavlar'/'denemeSinavlari'; 'anketler'
+   yerine 'anket'; 'periyodik' yerine 'periyodikIsler'; 'cizelgeler' diye
+   bir sekme hiç yok — Çizelgeler grubundaki 8 alt sekmenin HER BİRİ ayrı
+   id taşıyor). Sonuç: o modüllerin Firestore dinleyicisi HİÇBİR ZAMAN
+   başlamıyordu — kayıt "Kaydedildi" diyip başarıyla yazılıyordu ama
+   ekrandaki liste hiç güncellenmiyordu (veri gerçekte Firestore'da var,
+   sadece istemci onu dinlemiyordu). Bu yüzden anahtarlar artık index.html
+   içindeki GERÇEK data-tab değerleriyle birebir eşleşiyor; birden çok
+   sekmenin aynı bağlantı fonksiyonunu paylaştığı yerlerde anahtar
+   tekrarlanıyor.
+   ============================================================ */
+const TEMBEL_MODUL_TABLOSU = {
+  // Çizelgeler grubu — DÜZELTME: sok/zumre/bepPlani/rehberlik/maarifRapor/
+  // belirliGunler/digerEvrak eskiden burada, sadece "Çizelgeler" sekmesi
+  // ilk açıldığında yükleniyordu. Ama yeni Hatırlatma Sistemi (bkz.
+  // js/hatirlatmalar.js) uygulama açılışında bu verilere ihtiyaç duyuyor —
+  // Çizelgeler sekmesi hiç açılmamış olsa bile çalışmalı. sosyalKulupler'de
+  // daha önce yapılan aynı düzeltme deseniyle, cizelgelerBaglantilariKur()
+  // artık baglantilariKur() içinde koşulsuz başlatılıyor; burada tekrar
+  // çağrılırsa aynı dinleyiciler İKİNCİ KEZ kurulur (çift render/gereksiz
+  // okuma) — bu yüzden tembel tablodan tamamen çıkarıldı.
+  odevTakip:      () => { if(typeof odevNotCizelgeleriBaglantilariKur === 'function') odevNotCizelgeleriBaglantilariKur(); },
+  notCizelgesi:   () => { if(typeof odevNotCizelgeleriBaglantilariKur === 'function') odevNotCizelgeleriBaglantilariKur(); },
+  anket:          () => { if(typeof anketlerBaglantisiKur === 'function') anketlerBaglantisiKur(); },
+  periyodikIsler: () => { periyodikBaglantilariKur(); },
+  // Taşıma sekmesi açılınca hem servis listesi hem de servis oturma
+  // (yerleşim editörü) verisi birlikte hazır olsun diye ikisi de burada.
+  tasima:         () => { tasimaBaglantilariKur(); if(typeof servisOturmaBaglantisiKur === 'function') servisOturmaBaglantisiKur(); },
+  // "Sınav İşlemleri" iki ayrı sekmeye bölündü (bkz. kullanici-yonetimi.js
+  // MODUL_ALIAS) — DÜZELTME: eskiden ikisi de burada, sekme ilk açıldığında
+  // tembel başlıyordu. Artık Hatırlatma Sistemi (yaklaşan sınav hatırlatması)
+  // sınav verisine sekme hiç açılmadan da ihtiyaç duyduğu için
+  // sinavBaglantilariKur() baglantilariKur() içinde koşulsuz çağrılıyor.
+  // yillikPlan: artık burada değil — koşulsuz olarak baglantilariKur() içinde başlatılıyor (bkz. yukarıdaki not).
+  dokumanlar:     () => { if(typeof dokumanlarBaglantisiKur === 'function') dokumanlarBaglantisiKur(); },
+  devamsizlikCizelgesi: () => { if(typeof devamsizlikBaglantilariKur === 'function') devamsizlikBaglantilariKur(); },
+  ayarlar: () => {
+    // dersListesi/bransListesi dinleyicileri artık burada değil — yukarıdaki
+    // DÜZELTME notuna bkz. — koşulsuz olarak baglantilariKur() içinde başlıyor.
+    if(typeof renderOptikAyarlari === 'function') renderOptikAyarlari();
+    renderOzelMenuYonetim();
+    if(typeof renderNavDuzeniYonetim === 'function') renderNavDuzeniYonetim();
+  },
+};
+const _TEMBEL_BASLATILANLAR = new Set();
+function _tembelModulBaslat(tab){
+  if(!TEMBEL_MODUL_TABLOSU[tab] || _TEMBEL_BASLATILANLAR.has(tab)) return;
+  _TEMBEL_BASLATILANLAR.add(tab);
+  TEMBEL_MODUL_TABLOSU[tab]();
+}
+
+function baglantilariKur(){
+  if(baglantilarKuruldu) return;
+  baglantilarKuruldu = true;
+  db.collection(COL.ogretmenler).onSnapshot(s=>{ ogretmenler = s.docs.map(d=>({id:d.id,...d.data()})); renderOgretmenler(); renderDersGrid(); renderDashboard(); renderOkulBilgileriSayfasi(); if(typeof aktifKullaniciyiGuncelle==='function') aktifKullaniciyiGuncelle(); if(typeof globalAramaYap==='function') globalAramaYap(); onbellekKaydet(); _ilkAcilistaKullaniciSor(); if(typeof renderBugunIzinliOgretmenler==='function') renderBugunIzinliOgretmenler(); if(typeof sidebarHesapGuncelle==='function' && typeof auth!=='undefined' && auth && auth.currentUser) sidebarHesapGuncelle(auth.currentUser); }, hataGoster);
+  db.collection(COL.dersProgrami).onSnapshot(s=>{ dersProgrami = s.docs.map(d=>({id:d.id,...d.data()})); renderDersGrid(); renderDashboard(); if(detaySinifId){ const sn=siniflar.find(x=>x.id===detaySinifId); if(sn) sinifDetayDersRender(sn); } if(typeof widgetGuncelle==='function') setTimeout(widgetGuncelle,500); if(typeof dersZiliWidgetGuncelle==='function') setTimeout(dersZiliWidgetGuncelle,500); }, hataGoster);
+  // DÜZELTME: dersListesi/bransListesi eskiden yalnızca Ayarlar sekmesi ilk
+  // açıldığında (tembel modül) yükleniyordu. Ama Ders Programı (ders ekle
+  // açılır listesi), Sınav İşlemleri, Kriter Dağıtım, Raporlama ve Öğretmen
+  // Detay (norm hesabı) da bu listeye ihtiyaç duyuyor — Ayarlar sekmesi hiç
+  // açılmadan da çalışmalı. Aynı gerekçeyle personelIzin/sosyalKulupler/
+  // yillikPlan için yapıldığı gibi burada koşulsuz başlatılıyor.
+  db.collection(COL.dersListesi).onSnapshot(s=>{
+    dersListesi = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr'));
+    renderDersListesiYonetim();
+  }, hataGoster);
+  db.collection(COL.bransListesi).onSnapshot(s=>{
+    bransListesi = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr'));
+    renderBransListesiYonetim();
+  }, hataGoster);
+  sinifBaglantilariKur();
+  nobetBaglantilariKur();
+  if(typeof takvimBaglantilariKur === 'function') takvimBaglantilariKur();
+  // DÜZELTME: evrak (Evrak Takibi) eskiden sadece o sekme ilk açıldığında
+  // tembel yükleniyordu. Hatırlatma Sistemi bu veriye sekme hiç açılmadan
+  // da ihtiyaç duyduğu için koşulsuz başlatılıyor.
+  db.collection(COL.evrak).onSnapshot(s=>{ evrakTakibi = s.docs.map(d=>({id:d.id,...d.data()})); renderEvrakTakibi(); renderDashboard(); if(typeof globalAramaYap==='function') globalAramaYap(); onbellekKaydet(); }, hataGoster);
+  if(typeof dersSaatleriBaglantisiKur === 'function') dersSaatleriBaglantisiKur(); // dashboard zil sayacı buna bağlı, tembel kalamaz
+  if(typeof depolamaSinirlariBaglantisiKur === 'function') depolamaSinirlariBaglantisiKur();
+  if(typeof hatirlatmaAyarlariBaglantisiniKur === 'function') hatirlatmaAyarlariBaglantisiniKur();
+  if(typeof notlarBaglantilariKur === 'function') notlarBaglantilariKur();
+  if(typeof mesajlasmaBaglantilariKur === 'function') mesajlasmaBaglantilariKur(); // anlık bildirim gerektiği için hep açık
+
+  if(typeof duyurularBaglantilariKur === 'function') duyurularBaglantilariKur();
+  if(typeof ogretmenIzinBaglantilariKur === 'function') ogretmenIzinBaglantilariKur();
+  if(typeof haberlerBaglantilariKur === 'function') haberlerBaglantilariKur();
+  db.collection(COL.okulBilgileri).doc('ayarlar').onSnapshot(doc=>{
+    okulBilgileriAyari = doc.exists ? doc.data() : null;
+    renderOkulBilgileriSayfasi();
+    renderSosyalMedyaIkonlari();
+    if(typeof widgetGuncelle==='function') setTimeout(widgetGuncelle,500);
+  }, hataGoster);
+  if(typeof personelBaglantilariKur === 'function') personelBaglantilariKur();
+  // DÜZELTME: personelIzinler (İzin/Rapor kayıtları) ayrı bir sekme DEĞİL —
+  // personel detay panelinin içinde gösteriliyor. Bu yüzden eskiden tembel
+  // tabloya 'personelIzin' anahtarıyla eklenmişti ama böyle bir sekme hiç
+  // açılmadığı için dinleyici asla başlamıyordu: kayıt Firestore'a başarıyla
+  // yazılıyor ("Kaydedildi" doğruydu) ama liste hiç güncellenmiyordu. Artık
+  // personel verisiyle birlikte, uygulama açılışında koşulsuz başlatılıyor.
+  if(typeof personelIzinBaglantilariKur === 'function') personelIzinBaglantilariKur();
+  // DÜZELTME: sosyalKulupler eskiden Çizelgeler grubuyla birlikte tembel
+  // yükleniyordu — ama artık öğrenci formundaki "Sosyal Kulüp" seçimi,
+  // arama sayfası kulüp filtresi ve kulüp bazlı raporlama da bu veriye
+  // ihtiyaç duyuyor; Çizelgeler sekmesi hiç açılmadan da çalışmalı. Bu
+  // yüzden personelIzin ile aynı gerekçeyle burada koşulsuz başlatılıyor.
+  if(typeof sosyalKuluplerBaglantisiniKur === 'function') sosyalKuluplerBaglantisiniKur();
+  // DÜZELTME: sok/zumre/bepPlani/rehberlik/maarifRapor/belirliGunler/
+  // digerEvrak de aynı gerekçeyle (bkz. TEMBEL_MODUL_TABLOSU'ndaki not)
+  // artık koşulsuz — yeni Hatırlatma Sistemi bu verilere Çizelgeler
+  // sekmesi hiç açılmadan da ihtiyaç duyuyor.
+  if(typeof cizelgelerBaglantilariKur === 'function') cizelgelerBaglantilariKur();
+  if(typeof sinavBaglantilariKur === 'function') sinavBaglantilariKur();
+  // DÜZELTME: yillikPlan de aynı gerekçeyle koşulsuz — anasayfadaki zil
+  // widget'ı (zilTiklandi()) tıklanınca hangi yıllık planın açılacağını
+  // bulmak için yillikPlanTanimlari'na ihtiyaç duyuyor, Yıllık Plan
+  // sekmesi hiç açılmamış olsa bile bu veri hazır olmalı.
+  if(typeof yillikPlanBaglantilariniKur === 'function') yillikPlanBaglantilariniKur();
+  // Aynı gerekçe: Akademik Takvim artık kendi menü öğesinden doğrudan
+  // açılıyor, Dökümanlar sekmesi hiç açılmamış olabilir — dinleyici
+  // koşulsuz başlamalı yoksa yükleme başarılı olsa bile ekran hiç
+  // güncellenmez (gözlemlenen hata).
+  if(typeof akademikTakvimBaglantisiKur === 'function') akademikTakvimBaglantisiKur();
+  if(typeof kontrolListeleriBaglantisiniKur === 'function') kontrolListeleriBaglantisiniKur();
+  if(typeof sinavSonuclariBaglantisiniKur === 'function') sinavSonuclariBaglantisiniKur();
+
+  // YENİ: Hatırlatma Sistemi — tüm kaynaklar (görevler, evrak, nöbet,
+  // çizelgeler, kontrol listeleri, sınavlar) yukarıda koşulsuz başlatıldığı
+  // için birkaç saniye içinde ilk verilerini alır. Pop-up'ı, veriler
+  // oturması için kısa bir gecikmeyle tetikliyoruz (bkz. js/hatirlatmalar.js).
+  if(typeof hatirlatmalariKontrolEtVeGoster === 'function') setTimeout(hatirlatmalariKontrolEtVeGoster, 4000);
+
+  // Aşağıdakiler artık burada DEĞİL — ilgili sekme ilk açıldığında
+  // sekmeAc() içinden _tembelModulBaslat() ile tetiklenir:
+  // anket, periyodikIsler, tasima, dokumanlar, evrak, ayarlar(ders/branş listesi)
+  // (Çizelgeler grubu ve sınavlar artık koşulsuz — bkz. yukarısı.)
+}
+
+/* ============== UYGULAMA BAŞLATMA / GEZİNME ============== */
+/* ---------- Sekme geçmişi (Android donanım geri tuşu için) ---------- */
+let _sekmeGecmisi = ['panel'];
+let _geriGidiliyor = false;
+
+function bottomNavAktifYap(el){
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+function sekmeAc(tab){
+  _tembelModulBaslat(tab); // sekme ilk kez açılıyorsa ilgili modülün Firestore dinleyicisini şimdi başlat
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id==='tab-'+tab));
+  document.querySelectorAll('.bn-item[data-tab]').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // YENİ: açık hava durumu detay panelini kapat
+  var wp = document.getElementById('havaDurumuDetayPanel');
+  if(wp) wp.remove();
+  document.body.classList.remove('modal-open');
+  // Arama sekmesi açılınca sonuçları güncelle — veriler henüz yüklenmemiş
+  // olabilir, bu yüzden onSnapshot dinleyicileri de globalAramaYap()'ı
+  // ayrıca tetikliyor; burada da tazelemek ilk açılışı garantiye alır.
+  if(tab === 'arama' && typeof globalAramaYap === 'function') globalAramaYap();
+  if(tab === 'dersNobetProgramim' && typeof renderDersNobetProgramim === 'function') renderDersNobetProgramim();
+  if(tab === 'yillikPlan' && typeof renderYillikPlanAnaSayfa === 'function') renderYillikPlanAnaSayfa();
+  if(tab === 'harita') setTimeout(()=>{
+    if(typeof haritaBaslat === 'function') haritaBaslat();
+    if(typeof renderHaritaServisler === 'function') renderHaritaServisler();
+  }, 50);
+  if(typeof saltOkumaUygula === 'function') saltOkumaUygula(tab);
+
+  // Geçmiş yığını: geri tuşuyla gelinen bir geçiş değilse ve aynı sekme
+  // tekrar açılmıyorsa geçmişe ekle (Android donanım geri tuşu için).
+  if(!_geriGidiliyor && _sekmeGecmisi[_sekmeGecmisi.length-1] !== tab){
+    _sekmeGecmisi.push(tab);
+    if(_sekmeGecmisi.length > 40) _sekmeGecmisi.shift();
+  }
+  _geriGidiliyor = false;
+  _topbarGeriBtnGuncelle();
+}
+
+/* YENİ: iOS Safari'de (native Android'in aksine) donanım/gesture geri tuşu
+   köprüsü yok — kullanıcının uygulama içinde geri gidecek görünür bir yolu
+   hiç olmuyordu. Aynı geriTusuIsle() mantığını çağıran görünür bir topbar
+   butonu eklendi (bkz. index.html #topbarGeriBtn); bu fonksiyon o butonu
+   sadece gerçekten "geri gidilecek bir şey" varken gösterir.
+   NOT: her overlay/modal türünü (onlarca farklı ID) tek tek izlemek yerine,
+   uygulama genelinde zaten HER modal/detay panelinin açılışında eklenen
+   ortak `document.body.classList.contains('modal-open')` işaretine
+   bakılıyor — bu, tüm modülleri değiştirmeden aynı sinyali tek noktadan
+   okumayı sağlıyor.
+   NATİF ANDROID'DE HİÇ GÖSTERİLMEZ: orada zaten MainActivity.java >
+   onBackPressed() donanım/jest geri tuşunu geriTusuIsle()'a bağlıyor —
+   bu buton sadece tarayıcı bağlamlarında (iOS Safari, Android Chrome,
+   masaüstü vb.) gerekli, native APK'da gereksiz bir tekrar olurdu. */
+function _topbarGeriBtnGuncelle(){
+  const btn = document.getElementById('topbarGeriBtn');
+  if(!btn) return;
+  const nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(nativeMi){ btn.style.display = 'none'; return; }
+  const gosterilsin = document.body.classList.contains('modal-open') || (_sekmeGecmisi.length > 1);
+  btn.style.display = gosterilsin ? 'flex' : 'none';
+}
+(function(){
+  // body üzerindeki class değişikliklerini (modal-open eklenip/kaldırılmasını)
+  // izleyip her değişimde geri butonunu güncel tutar — tek tek her modal
+  // açma/kapama fonksiyonuna dokunmaya gerek bırakmaz.
+  const _gozlemci = new MutationObserver(_topbarGeriBtnGuncelle);
+  document.addEventListener('DOMContentLoaded', function(){
+    _gozlemci.observe(document.body, { attributes:true, attributeFilter:['class'] });
+    _topbarGeriBtnGuncelle();
+  });
+})();
+
+/* Android MainActivity.onBackPressed() tarafından çağrılır.
+   Dönüş değerleri: 'handled' (bir şey kapatıldı/geri gidildi, native hiçbir
+   şey yapmasın) veya 'exit' (uygulamanın en üst seviyesindeyiz, native
+   çift-basışla-çık mantığını uygulasın). */
+function geriTusuIsle(){
+  // Optik Okuma tam ekran iframe overlay'i her şeyin ÜSTÜNDE açılıyor
+  // (z-index 99999) — bu yüzden ilk kontrol edilmesi gereken o. Önce
+  // iframe'in kendi iç durumunu (kamera/köşe seçimi/ayarlar/sheet/alt
+  // ekran) bir kademe geri almasını dene (bkz. optik/js/app.js
+  // optikGeriTusuIsle) — sadece iframe "kökteyim, geri alacak bir şey
+  // yok" derse (false döner) tüm Optik aracını kapat.
+  if(typeof OptikSistemi !== 'undefined' && OptikSistemi.acikMi && OptikSistemi.acikMi()){
+    try {
+      var of = document.getElementById('optikFrame');
+      var ofWin = of && of.contentWindow;
+      if(ofWin && typeof ofWin.optikGeriTusuIsle === 'function' && ofWin.optikGeriTusuIsle()){
+        return 'handled'; // iframe kendi içinde bir adım geri gitti
+      }
+    } catch(e) { /* beklenmeyen durum — güvenli şekilde tüm aracı kapat */ }
+    OptikSistemi.kapat();
+    return 'handled';
+  }
+
+  // Not: modalOverlay/detayOverlay, AltNav panelinin (Menü/Profilim)
+  // ÜSTÜNDE açılabiliyor (örn. Profilim'de "Ders Programım" gibi bir
+  // modal açıkken Profilim panelinin kendisi hâlâ altında açık kalır).
+  // Bu yüzden bunlar AltNav.geriTusu()'dan ÖNCE kontrol edilmeli —
+  // aksi halde geri tuşu, üstteki modal yerine altındaki paneli kapatır.
+  var mo = document.getElementById('modalOverlay');
+  if(mo && mo.classList.contains('active')){ modalKapat(); return 'handled'; }
+
+  var deo = document.getElementById('detayOverlay');
+  if(deo && deo.classList.contains('active')){ detayPanelKapat(); return 'handled'; }
+
+  // DÜZELTME: Kontrol Listesi detay ekranı kendi özel (#modalOverlay/
+  // #detayOverlay DIŞINDA) tam ekran katmanını kullanıyor — geri tuşu
+  // sistemi bunu hiç bilmiyordu, bu yüzden geri tuşuna basınca ekran
+  // kapanmıyor VE _pullToRefreshAyarla derinlik sayacı hiç azalmadan
+  // (sızarak) kalıyordu.
+  var klo = document.getElementById('klDetayOverlay');
+  if(klo && typeof _klDetayKapat==='function'){ _klDetayKapat(); return 'handled'; }
+
+  // DÜZELTME (aynı desen, aynı turda bulundu): aşağıdaki araçların da
+  // kendi özel tam ekran katmanları var ve hiçbiri geri tuşu sistemine
+  // kayıtlı değildi — aynı şekilde ekran kapanmıyor ve derinlik sayacı
+  // sızıyordu. En içteki/en son açılmış olması muhtemel olandan
+  // başlanarak kontrol ediliyor.
+  var ssOg = document.getElementById('ssOgrenciOverlay');
+  if(ssOg && typeof _ssOgrenciSonucKapat==='function'){ _ssOgrenciSonucKapat(); return 'handled'; }
+  var ssDe = document.getElementById('ssDetayOverlay');
+  if(ssDe && typeof _ssDetayKapat==='function'){ _ssDetayKapat(); return 'handled'; }
+  var ssLi = document.getElementById('ssListeOverlay');
+  if(ssLi && typeof sinavSonuclariKapat==='function'){ sinavSonuclariKapat(); return 'handled'; }
+
+  var yokDe = document.getElementById('yokDevamsizOverlay');
+  if(yokDe && typeof yoklamaDevamsizlarKapat==='function'){ yoklamaDevamsizlarKapat(); return 'handled'; }
+  var yokOv = document.getElementById('yokOverlay');
+  if(yokOv && typeof yoklamaKapat==='function'){ yoklamaKapat(); return 'handled'; }
+
+  var yplH = document.getElementById('yplHaftaOverlay');
+  if(yplH && typeof yillikPlanHaftaKapat==='function'){ yillikPlanHaftaKapat(); return 'handled'; }
+  var yplO = document.getElementById('yplOnizlemeOverlay');
+  if(yplO && typeof yillikPlanOnizlemeKapat==='function'){ yillikPlanOnizlemeKapat(); return 'handled'; }
+
+  var atk = document.getElementById('akademikTakvimOverlay');
+  if(atk && typeof akademikTakvimKapat==='function'){ akademikTakvimKapat(); return 'handled'; }
+
+  // dokOkuyucuOverlay/kdOverlay/pdOverlay'in kendi adlandırılmış bir
+  // Kapat fonksiyonu yok — kapatma mantığı doğrudan kapat butonunun
+  // onclick'ine bağlı; o düğmeyi tıklatmak aynı temizliği yapar.
+  var dko = document.getElementById('dokOkuyucuOverlay');
+  if(dko){ var dkoBtn = document.getElementById('dokOkuyucuKapat'); if(dkoBtn) dkoBtn.click(); else dko.remove(); return 'handled'; }
+  var kdo = document.getElementById('kdOverlay');
+  if(kdo){ var kdBtn = document.getElementById('kdKapatBtn'); if(kdBtn) kdBtn.click(); else kdo.remove(); return 'handled'; }
+  var pdo = document.getElementById('pdOverlay');
+  if(pdo){ var pdBtn = document.getElementById('pdKapatBtn'); if(pdBtn) pdBtn.click(); else pdo.remove(); return 'handled'; }
+  var dlb = document.getElementById('duyuruLightbox');
+  if(dlb){ var dlbBtn = document.getElementById('dlbKapat'); if(dlbBtn) dlbBtn.click(); else dlb.remove(); return 'handled'; }
+
+  // Aynı denetim sırasında bulunan diğerleri — hiçbirinin adlandırılmış
+  // bir Kapat fonksiyonu yok, kapat butonunu tıklatmak aynı temizliği yapar.
+  var rpo = document.getElementById('raporOverlay'); // birçok modülün ortak yazdırma önizlemesi
+  if(rpo){ var rpBtn = document.getElementById('raporCloseBtn'); if(rpBtn) rpBtn.click(); else rpo.remove(); return 'handled'; }
+  var dlko = document.getElementById('dlkOverlay'); // Dilekçe Sistemi
+  if(dlko){ var dlkBtn = document.getElementById('dlkCloseBtn'); if(dlkBtn) dlkBtn.click(); else dlko.remove(); return 'handled'; }
+  var mdfo = document.getElementById('mdfOverlay'); // Maaş Değişiklik Bildirim Formu
+  if(mdfo){ var mdfBtn = document.getElementById('mdfCloseBtn'); if(mdfBtn) mdfBtn.click(); else mdfo.remove(); return 'handled'; }
+  var tso = document.getElementById('tsOverlay'); // Tebliğ-Tebellüğ
+  if(tso){ var tsBtn = document.getElementById('tsCloseBtn'); if(tsBtn) tsBtn.click(); else tso.remove(); return 'handled'; }
+  var sso = document.getElementById('sinifOturmaOverlay'); // Sınıf Oturma Düzeni (en dıştaki katman)
+  var ssSec = document.getElementById('soSecimOverlay'); // ...içindeki eleman seçim alt-paneli (varsa önce o kapanır)
+  if(ssSec){ var ssSecBtn = document.getElementById('soSecimKapat'); if(ssSecBtn) ssSecBtn.click(); else ssSec.remove(); return 'handled'; }
+  if(sso){ var ssoBtn = document.getElementById('btnSoKapat'); if(ssoBtn) ssoBtn.click(); else sso.remove(); return 'handled'; }
+
+  // Hatırlatma pop-up'ı (bkz. js/hatirlatmalar.js) — "Tamam" ile aynı davranış.
+  var htp = document.getElementById('hatirlatmaPopupOverlay');
+  if(htp && typeof hatirlatmaPopupKapat==='function'){ hatirlatmaPopupKapat(); return 'handled'; }
+
+  // YENİ GEZİNME SİSTEMİ: Menü ızgarası/alt liste/Profilim açıksa kapat —
+  // bkz. js/alt-navigasyon.js > AltNav.geriTusu()
+  if(typeof AltNav !== 'undefined' && typeof AltNav.geriTusu === 'function' && AltNav.geriTusu()) return 'handled';
+
+  var hp = document.getElementById('havaDurumuDetayPanel');
+  if(hp){ if(typeof havaDurumuDetayKapat === 'function') havaDurumuDetayKapat(); else hp.remove(); return 'handled'; }
+
+  var hem = document.getElementById('hizliEkleModal');
+  if(hem && hem.style.display && hem.style.display !== 'none'){
+    if(typeof hizliEkleModalKapat === 'function') hizliEkleModalKapat(); else hem.style.display = 'none';
+    return 'handled';
+  }
+
+  if(document.body.classList.contains('nav-open')){ menuKapat(); return 'handled'; }
+
+  if(_sekmeGecmisi.length > 1){
+    _sekmeGecmisi.pop();
+    var onceki = _sekmeGecmisi[_sekmeGecmisi.length-1];
+    _geriGidiliyor = true;
+    sekmeAc(onceki);
+    return 'handled';
+  }
+
+  return 'exit';
+}
+window.geriTusuIsle = geriTusuIsle;
+
+/* ---------- Web/PWA: donanım/tarayıcı geri tuşu köprüsü ----------
+   DÜZELTME: geriTusuIsle() ve _sekmeGecmisi mekanizması sadece NATİF
+   (Capacitor/APK) ortamda çalışıyordu — orada android/.../MainActivity.java
+   > onBackPressed() bu fonksiyonu JS köprüsüyle çağırıyor. Web sürümünde
+   (Chrome'da PWA/sekme) bu köprünün karşılığı hiç yoktu, bu yüzden geri
+   tuşu/hareketi doğrudan sekmeyi/uygulamayı kapatıyordu. Burada aynı
+   "önce içeride geri git, en üstteyse çift basışla çık" mantığını
+   tarayıcının history.pushState/popstate API'siyle taklit ediyoruz.
+
+   DÜZELTME 2: Başlangıçta arka arkaya 25 kez pushState çağırmak
+   (kullanıcı hareketi OLMADAN, tek seferde patlama şeklinde) Chrome'un
+   "history manipulation" kötüye kullanım önleme mekanizmasını
+   tetikleyebiliyor — tarayıcı bu türden "yapay" kayıtları geri tuşunda
+   SESSİZCE ATLAYABİLİYOR, yani tuzağımız hiç işe yaramadan by-pass
+   ediliyor. Doğru/standart desen: HER ZAMAN sadece TEK bir tampon
+   kaydı tutmak, ve onu SADECE gerçek bir kullanıcı geri hareketine
+   (popstate'e) karşılık olarak yeniden doldurmak — bu, gerçek bir
+   kullanıcı eylemine bağlı olduğu için kötüye kullanım sayılmıyor. */
+(function(){
+  const nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(nativeMi) return; // native ortamda MainActivity.java zaten hallediyor
+
+  let _webGeriSonCikisZamani = 0;
+  const _buferPushEt = () => { try{ history.pushState({oyGeriBuferi:true}, '', location.href); }catch(e){} };
+
+  _buferPushEt(); // TEK başlangıç tamponu — birden fazla art arda push YAPMA (bkz. yukarıdaki not)
+
+  let _sonPopstateZamani = 0;
+  window.addEventListener('popstate', function(){
+    // Android'in "geri kaydırma" (predictive back gesture) hareketi bazı
+    // cihaz/sürümlerde TEK bir hareket için birden fazla popstate
+    // tetikleyebiliyor — çok yakın ardışık olayları (150ms altı) TEK
+    // basış say, sadece tamponu tazele.
+    const simdiPop = Date.now();
+    if(simdiPop - _sonPopstateZamani < 150){ _buferPushEt(); return; }
+    _sonPopstateZamani = simdiPop;
+
+    const sonuc = (typeof geriTusuIsle === 'function') ? geriTusuIsle() : 'exit';
+    if(sonuc === 'handled'){ _buferPushEt(); return; }
+
+    if(simdiPop - _webGeriSonCikisZamani < 2000){
+      return; // ikinci basış — tamponu yeniden kurmuyoruz, tarayıcı gerçekten geri gitsin/sekme kapansın
+    }
+    _webGeriSonCikisZamani = simdiPop;
+    if(typeof toast === 'function') toast('Çıkmak için tekrar geri tuşuna basın');
+    _buferPushEt();
+  });
+})();
+
+function haritaSekmesiAc(){
+  sekmeAc('harita'); // haritaBaslat + renderHaritaServisler sekmeAc içinden tetiklenir
+}
+function uygulamaBaslat(){
+  // DÜZELTME: #bugunMetni elementi sidebar yeniden tasarımıyla kaldırıldı
+  // (logo+okul adı yerine profil kartı kondu) — element artık DOM'da yok,
+  // bu yüzden null kontrolü eklendi (aksi halde hata fırlatıp
+  // baglantilariKur()'un hiç çalışmamasına sebep olurdu).
+  const _bgm = document.getElementById('bugunMetni');
+  if(_bgm) _bgm.textContent = bugunMetni();
+  baglantilariKur();
+  // YENİ GEZİNME SİSTEMİ: DOMContentLoaded anında AKTIF_KULLANICI/rol
+  // henüz yüklenmemiş olabileceğinden (Firebase auth asenkron), menü
+  // ızgarası burada — gerçek yetkiler netleştikten sonra — yeniden
+  // filtrelenip çiziliyor (bkz. js/alt-navigasyon.js).
+  if(typeof AltNav !== 'undefined' && typeof AltNav.yenile === 'function') AltNav.yenile();
+  // Capacitor'ın initialize olmasını bekle, sonra push durumunu kontrol et
+  setTimeout(()=>{
+    pushDurumGuncelle();
+    pushOnMessageDinleyiciKur();
+  }, 1000);
+  setInterval(()=>{ renderZilSayaci(GUNADI[new Date().getDay()]); }, 30000);
+  setTimeout(guncellemeKontrolEt, 3000);
+}
+
+/* ====================================================================
+   YENİ: Uygulama İçi Otomatik Güncelleme (SADECE native/APK ortamında)
+   ----------------------------------------------------------------
+   Bu APK, Google Play üzerinden değil doğrudan dosya olarak dağıtıldığı
+   için Play Store'un otomatik güncelleme sistemi yok. Bunun yerine:
+   1) Bu APK'nın KENDİ İÇİNE gömülü sürüm numarası (version.json, build
+      sırasında yazılır — bkz. .github/workflows/build-apk.yml) okunur.
+   2) GitHub'daki EN SON Release'in sürüm numarasıyla karşılaştırılır
+      (bu her zaman canlı/güncel bilgi verir, APK'nın kendisi eski olsa
+      bile bu kontrol kodu her çalıştığında GitHub'a soruyor).
+   3) Daha yeni bir sürüm varsa, kullanıcıya sorup onaylarsa APK'yı arka
+      planda indirip (bkz. android/.../UpdatePlugin.java) kurulum
+      ekranını otomatik açar — kullanıcı sadece son "Yükle" onayını verir.
+   ==================================================================== */
+const GUNCELLEME_REPO = 'sedonet23/okul';
+
+async function guncellemeKontrolEt(elle){
+  const nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(!nativeMi){
+    if(elle) toast('Bu kontrol sadece Android uygulamasında (APK) çalışır — web sürümü tarayıcıda kendiliğinden güncellenir.');
+    return;
+  }
+
+  if(elle) toast('Güncellemeler kontrol ediliyor…');
+
+  try{
+    const yerelRes = await fetch('version.json');
+    const yerel = await yerelRes.json();
+
+    // Ayarlar ekranındaki "Kurulu sürüm" yazısını güncelle (varsa)
+    const surumEl = document.getElementById('oyKuruluSurumMetni');
+    if(surumEl) surumEl.textContent = `Kurulu sürüm: v${yerel.kod}`;
+
+    const sonRes = await fetch(`https://api.github.com/repos/${GUNCELLEME_REPO}/releases/latest`);
+    if(!sonRes.ok){
+      if(elle) toast('Güncelleme kontrol edilemedi (GitHub\'a ulaşılamadı).');
+      return;
+    }
+    const son = await sonRes.json();
+    const sonKod = parseInt(String(son.tag_name || '').replace(/[^0-9]/g,''), 10);
+
+    if(!sonKod || sonKod <= yerel.kod){
+      if(elle) toast(`Uygulama güncel (v${yerel.kod}).`);
+      return;
+    }
+
+    const apkAsset = (son.assets || []).find(a => (a.name||'').endsWith('.apk'));
+    if(!apkAsset){
+      if(elle) toast(`Yeni sürüm bulundu (v${sonKod}) ama kurulum dosyası henüz yayınlanmamış.`);
+      return;
+    }
+
+    if(!confirm(`Yeni bir sürüm mevcut (v${sonKod}). Şimdi indirip kurmak ister misiniz?`)) return;
+
+    toast('Güncelleme indiriliyor, birazdan kurulum ekranı açılacak…');
+    await window.Capacitor.Plugins.UpdatePlugin.indirVeKur({ url: apkAsset.browser_download_url });
+  }catch(e){
+    console.warn('Güncelleme kontrolü başarısız:', e);
+    if(elle) toast('Güncelleme kontrol edilemedi: ' + e.message);
+  }
+}
+
+/* ================================================================
+   YEREL ÖNBELLEK (localStorage) — Firestore verileri cihazda saklanır,
+   uygulama açılır açılmaz (Firestore bağlantısı/IndexedDB beklenmeden)
+   en son bilinen veriyle anında dolu gelir. Firestore zaten IndexedDB
+   ile offline önbellek tutuyor (bkz. firebase-init.js enablePersistence)
+   ama bu ek katman DOMContentLoaded anında SENKRON çalıştığı için ilk
+   ekran, Firestore'un kendi önbelleğini açmasını bile beklemeden dolu
+   gelir — özellikle yavaş/kararsız bağlantılarda (ör. arama sekmesi)
+   fark yaratır.
+   ================================================================ */
+const _ONBELLEK_ANAHTARI = 'oyVeriOnbellek_v1';
+
+function onbellekYukle(){
+  try{
+    const ham = localStorage.getItem(_ONBELLEK_ANAHTARI);
+    if(!ham) return;
+    const v = JSON.parse(ham);
+    if(Array.isArray(v.ogretmenler)) ogretmenler = v.ogretmenler;
+    if(Array.isArray(v.veliler)) veliler = v.veliler;
+    if(Array.isArray(v.siniflar)) siniflar = v.siniflar;
+    if(Array.isArray(v.servisler)) servisler = v.servisler;
+    if(Array.isArray(v.personelListesi)) personelListesi = v.personelListesi;
+    if(Array.isArray(v.evrakTakibi)) evrakTakibi = v.evrakTakibi;
+    if(Array.isArray(v.notlar)) notlar = v.notlar;
+
+    // Önbellekten gelen veriyle ekranı hemen çiz — Firestore bağlanınca
+    // ilgili onSnapshot dinleyicileri zaten en güncel veriyle üzerine yazacak.
+    if(typeof renderOgretmenler==='function') renderOgretmenler();
+    if(typeof renderSiniflar==='function') renderSiniflar();
+    if(typeof renderOgrenciler==='function') renderOgrenciler();
+    if(typeof renderServisler==='function') renderServisler();
+    if(typeof renderPersonelListesi==='function') renderPersonelListesi();
+    if(typeof renderEvrakTakibi==='function') renderEvrakTakibi();
+    if(typeof renderNotlar==='function') renderNotlar();
+    if(typeof renderDashboard==='function') renderDashboard();
+    if(typeof globalAramaYap==='function') globalAramaYap();
+  }catch(e){ console.warn('Yerel önbellek okunamadı:', e); }
+}
+
+let _onbellekYaziZamanlayici = null;
+function onbellekKaydet(){
+  // Art arda gelen snapshot güncellemelerinde tek tek yazmamak için
+  // kısa bir gecikmeyle (debounce) topluca kaydeder.
+  clearTimeout(_onbellekYaziZamanlayici);
+  _onbellekYaziZamanlayici = setTimeout(()=>{
+    try{
+      localStorage.setItem(_ONBELLEK_ANAHTARI, JSON.stringify({
+        ogretmenler, veliler, siniflar, servisler,
+        personelListesi, evrakTakibi, notlar
+      }));
+    }catch(e){ console.warn('Yerel önbellek yazılamadı:', e); }
+  }, 400);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Firestore/ağ beklenmeden, cihazda daha önce kaydedilmiş son veriyle
+  // ekranı anında doldur (bkz. yukarıdaki YEREL ÖNBELLEK bölümü).
+  onbellekYukle();
+
+  document.querySelectorAll('.nav-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=> sekmeAc(btn.dataset.tab));
+  });
+  document.getElementById('modalOverlay')?.addEventListener('click', e=>{ if(e.target.id==='modalOverlay') modalKapat(); });
+  document.getElementById('detayOverlay')?.addEventListener('click', e=>{ if(e.target.id==='detayOverlay') detayPanelKapat(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ modalKapat(); detayPanelKapat(); } });
+  document.getElementById('bildirimAcBtn')?.addEventListener('click', bildirimleriAc);
+
+  // Widget "Not Ekle" butonundan gelen deep-link
+  // MainActivity, page="notlar" extra'sını JS'e iletir.
+  // NOT: sekmeAc() parametresi HTML'deki data-tab değeriyle eşleşmeli.
+  //      index.html'de Not sekmesinin data-tab değeri neyse onu kullan.
+  window.addEventListener('widgetSayfaAc', (e) => {
+    const page = e.detail?.page;
+    if (page && typeof sekmeAc === 'function') {
+      sekmeAc(page); // page = 'notlar' — index.html'deki data-tab ile eşleş
+    }
+  });
+
+  // Push bildirimine dokununca doğru sekmeye git (bkz. OkulFirebaseMessagingService.java
+  // + MainActivity.java — 'kategori' verisini 'bildirimAcildi' olayı olarak iletir).
+  // NOT: 'genel' kategorisi kasıtlı olarak eşlenmiyor — hangi sekmeye gideceği
+  // belirsiz genel/bilinmeyen bir bildirim için hiçbir yere yönlendirme yapmıyoruz,
+  // sadece uygulama ana sayfada açılıyor.
+  const BILDIRIM_KATEGORI_SEKME = {
+    takvim:   'takvim',      // hatırlatıcı / görev / periyodik iş
+    mesaj:    'mesajlasma',
+    haberler: 'haberler',
+    nobet:    'nobet',
+    belge:    'evrak',
+    sinav:    'yaziliSinavlar',
+    dersProgrami: 'dersProgrami', // Ders Zili Geri Sayım widget'ına dokununca
+  };
+  window.addEventListener('bildirimAcildi', (e) => {
+    const kategori = e.detail?.kategori;
+    const hedefSekme = BILDIRIM_KATEGORI_SEKME[kategori];
+    if (hedefSekme && typeof sekmeAc === 'function') sekmeAc(hedefSekme);
+  });
+
+  // Web push (tarayıcı) tarafı — service-worker.js notificationclick sırasında
+  // ya postMessage gönderir (uygulama zaten açıksa) ya da ?bildirimKategori=
+  // parametresiyle yeni bir sekme açar (uygulama kapalıysa).
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data?.type === 'BILDIRIM_ACILDI' && e.data.kategori) {
+        window.dispatchEvent(new CustomEvent('bildirimAcildi', { detail: { kategori: e.data.kategori } }));
+      }
+    });
+  }
+  const _bildirimKategoriParam = new URLSearchParams(location.search).get('bildirimKategori');
+  if (_bildirimKategoriParam) {
+    history.replaceState(null, '', location.pathname); // URL'i temizle
+    setTimeout(() => window.dispatchEvent(new CustomEvent('bildirimAcildi', { detail: { kategori: _bildirimKategoriParam } })), 800);
+  }
+
+  try{
+    if(firebaseyiBaslat()){
+      authDinleyiciKur();
+    }
+  }catch(err){
+    console.error('Başlatma hatası:', err);
+    const app = document.getElementById('app');
+    if(app) app.classList.add('ready','show');
+  }
+});
+
+function telefonTemizle(t){ return String(t||'').replace(/[^0-9+]/g,''); }
+function telefonAra(telefon){ const no=telefonTemizle(telefon); if(no) window.location.href=`tel:${no}`; }
+function whatsappGonder(telefon, mesaj){ let no=telefonTemizle(telefon); if(no.startsWith("0")) no="90"+no.substring(1); window.open(`https://wa.me/${no}?text=${encodeURIComponent(mesaj||"")}`,"_blank"); }
+
+/* ================================================================
+   EXCEL ŞABLON İNDİRME
+   SheetJS ile tarayıcıda şablon oluşturup indirir — sunucu gerektirmez.
+   ================================================================ */
+
+const SABLON_TANIMLARI = {
+  ogretmenler: {
+    baslik: 'ÖĞRETMEN LİSTESİ — İçe Aktarma Şablonu',
+    not: '* işaretli alanlar zorunludur.',
+    kolonlar: [
+      {ad:'Ad', gen:15, zon:true}, {ad:'Soyad', gen:15, zon:true},
+      {ad:'Ünvan', gen:20}, {ad:'Branş', gen:20},
+      {ad:'Derece', gen:8}, {ad:'Kademe', gen:8},
+      {ad:'Telefon', gen:14}, {ad:'E-Posta', gen:22},
+      {ad:'Sorumlu Sınıf', gen:14}, {ad:'Not', gen:20}
+    ],
+    ornek: ['Fatma','Şenocak','Öğretmen','Türkçe','5','3','0532...','fatma@mail.com','5-A','']
+  },
+  siniflar: {
+    baslik: 'SINIF LİSTESİ — İçe Aktarma Şablonu',
+    not: 'Sınıf Öğretmeni: uygulamada kayıtlı Ad Soyad formatında yazın.',
+    kolonlar: [
+      {ad:'Sınıf Adı', gen:12, zon:true}, {ad:'Seviye', gen:10},
+      {ad:'Şube', gen:8}, {ad:'Derslik', gen:10}, {ad:'Sınıf Öğretmeni', gen:22}
+    ],
+    ornek: ['5-A','5','A','D-12','Fatma Şenocak']
+  },
+  ogrenciler: {
+    baslik: 'ÖĞRENCİ / VELİ LİSTESİ — İçe Aktarma Şablonu',
+    not: 'Servis: uygulamada kayıtlı servis adını yazın.',
+    kolonlar: [
+      {ad:'Öğrenci Adı', gen:20, zon:true}, {ad:'Öğrenci No', gen:12},
+      {ad:'Cinsiyet', gen:10}, {ad:'Sınıf', gen:10},
+      {ad:'Veli Adı', gen:18}, {ad:'Yakınlık', gen:12},
+      {ad:'Telefon 1', gen:14}, {ad:'Telefon 2', gen:14}, {ad:'Telefon 3', gen:14},
+      {ad:'Adres', gen:25}, {ad:'Servis', gen:18}, {ad:'Notlar', gen:20}
+    ],
+    ornek: ['Ali Yılmaz','1001','Erkek','5-A','Mehmet Yılmaz','Baba','0532...','','','Merkez Mah.','1. Servis','']
+  },
+  dersler: {
+    baslik: 'DERS LİSTESİ — İçe Aktarma Şablonu',
+    not: 'Kısaltma: çarşaf raporda kullanılır (MAT, TÜR...). 1-8 sütunları: o sınıf seviyesindeki haftalık ders saati — okutulmuyorsa boş/"-" bırakın. Norm hesabı bu saatleri kullanır.',
+    kolonlar: [
+      {ad:'Ders Adı', gen:22, zon:true}, {ad:'Kısaltma', gen:10},
+      {ad:'1', gen:6}, {ad:'2', gen:6}, {ad:'3', gen:6}, {ad:'4', gen:6},
+      {ad:'5', gen:6}, {ad:'6', gen:6}, {ad:'7', gen:6}, {ad:'8', gen:6},
+      {ad:'Not', gen:25}
+    ],
+    ornek: ['Matematik','MAT','5','5','5','5','5','5','5','5','']
+  },
+  branslar: {
+    baslik: 'BRANŞ LİSTESİ — İçe Aktarma Şablonu',
+    not: 'Öğretmen kayıtlarında branş alanında açılır listede görünür.',
+    kolonlar: [{ad:'Branş Adı', gen:30, zon:true}, {ad:'Not', gen:25}],
+    ornek: ['Sınıf Öğretmenliği','']
+  },
+  dersProgrami: {
+    baslik: 'DERS PROGRAMI — İçe Aktarma Şablonu',
+    not: 'Saat: 1-7 arası sayı. Gün: Pazartesi/Salı/Çarşamba/Perşembe/Cuma.',
+    kolonlar: [
+      {ad:'Sınıf', gen:10, zon:true}, {ad:'Gün', gen:12, zon:true},
+      {ad:'Saat', gen:8, zon:true}, {ad:'Ders', gen:20, zon:true},
+      {ad:'Öğretmen', gen:22}
+    ],
+    ornek: ['5-A','Pazartesi','1','Matematik','Ünal Balık']
+  },
+  nobetProgrami: {
+    baslik: 'NÖBET PROGRAMI — İçe Aktarma Şablonu',
+    not: 'Tatil için "Resmi Tatil", hafta sonu için "Haftasonu" yazın.',
+    kolonlar: [
+      {ad:'Tarih', gen:14, zon:true}, {ad:'Gün', gen:12, zon:true},
+      {ad:'Okul Binası', gen:20}, {ad:'Bahçe', gen:20},
+      {ad:'Koridor', gen:20}, {ad:'Nöbetçi Amir', gen:22}
+    ],
+    ornek: ['01.09.2026','Salı','Fatma Şenocak','Ünal Balık','','Sedat Karagöz']
+  },
+  servisOgrencileri: {
+    baslik: 'SERVİS ÖĞRENCİ LİSTESİ — İçe Aktarma Şablonu',
+    not: 'Tek servis için kullanılır. Uygulamada önce servisi seçin.',
+    kolonlar: [
+      {ad:'Öğrenci Adı', gen:22, zon:true}, {ad:'Öğrenci No', gen:12},
+      {ad:'Sınıf', gen:10}, {ad:'Not', gen:25}
+    ],
+    ornek: ['Ali Yılmaz','1001','5-A','']
+  },
+  yaziliSinavlar: {
+    baslik: 'YAZILI SINAV TAKVİMİ — İçe Aktarma Şablonu',
+    not: 'Birden fazla sınıf için virgülle ayırın: "5-A, 6-A". Tür: Yazılı/Sınav/Proje.',
+    kolonlar: [
+      {ad:'Sınıf(lar)', gen:16, zon:true}, {ad:'Ders', gen:20, zon:true},
+      {ad:'Tarih', gen:12, zon:true}, {ad:'Dönem', gen:12},
+      {ad:'Yazılı Sırası', gen:14}, {ad:'Tür', gen:10},
+      {ad:'Kaçıncı Ders', gen:12}, {ad:'Senaryo No', gen:12},
+      {ad:'Yayınevi', gen:14}, {ad:'Notlar', gen:20}
+    ],
+    ornek: ['5-A, 6-A','Matematik','15.10.2026','1. Dönem','1. Yazılı','Yazılı','3','2','MEB','']
+  }
+};
+
+function sablonIndir(tip) {
+  const t = SABLON_TANIMLARI[tip];
+  if (!t) return;
+
+  const wb = XLSX.utils.book_new();
+  const ws = {};
+  const BASLIK_BG = 'FF0A6E6E', ZORUNLU_BG = 'FFFFF3E0', NOT_BG = 'FFE6F4F4', ORNEK_BG = 'FFF0F8F8';
+
+  // Satır 1: Ana başlık
+  ws['A1'] = { v: t.baslik, t: 's' };
+  const mergeEnd = XLSX.utils.encode_col(t.kolonlar.length - 1) + '1';
+
+  // Satır 2: Not
+  ws['A2'] = { v: '⚠ ' + t.not + ' (* zorunlu alan)', t: 's' };
+
+  // Satır 3: Kolon başlıkları
+  t.kolonlar.forEach((k, i) => {
+    const hucre = XLSX.utils.encode_cell({r: 2, c: i});
+    ws[hucre] = { v: k.ad + (k.zon ? ' *' : ''), t: 's' };
+  });
+
+  // Satır 4: Örnek veri
+  t.ornek.forEach((v, i) => {
+    const hucre = XLSX.utils.encode_cell({r: 3, c: i});
+    ws[hucre] = { v: v, t: 's' };
+  });
+
+  // Boş veri satırları (5-104)
+  ws['!ref'] = `A1:${XLSX.utils.encode_col(t.kolonlar.length - 1)}104`;
+
+  // Sütun genişlikleri
+  ws['!cols'] = t.kolonlar.map(k => ({ wch: k.gen || 15 }));
+
+  // Merge: başlık ve not satırı
+  ws['!merges'] = [
+    { s:{r:0,c:0}, e:{r:0,c:t.kolonlar.length-1} },
+    { s:{r:1,c:0}, e:{r:1,c:t.kolonlar.length-1} }
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, t.baslik.slice(0, 31));
+  const base64Xlsx = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+  uygulamaDosyaKaydet(base64Xlsx, `${tip}_sablonu.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').catch(()=>{});
+}
+
+function tumSablonlariIndir() {
+  Object.keys(SABLON_TANIMLARI).forEach((tip, i) => {
+    setTimeout(() => sablonIndir(tip), i * 300);
+  });
+}
+
+/* ====================================================================
+   DÜZELTME: Modal/detay paneli açıkken arka sayfanın kayması
+   ----------------------------------------------------------------
+   body.modal-open{overflow:hidden} tek başına yetersiz kalıyordu —
+   bazı mobil tarayıcı/WebView sürümlerinde, üstteki panel içinde
+   kaydırınca ALTINDAKİ sayfa da kayıyordu (scroll-through). Daha
+   güvenilir yöntem: modal açıkken body'yi position:fixed yapıp mevcut
+   kaydırma konumunu "top" ile sabitlemek, kapanınca eski konuma dönmek.
+
+   Bunu HER modal aç/kapa fonksiyonuna (modalAc, detayPanelKapat,
+   hizliEkleModalAc, vb. — çok sayıda ayrı yer var) tek tek eklemek
+   yerine, 'modal-open' class'ının eklenip çıkarılmasını MERKEZİ olarak
+   izleyen bir MutationObserver kullanılıyor — hangi fonksiyon class'ı
+   değiştirirse değiştirsin otomatik devreye girer, hiçbir mevcut
+   fonksiyona dokunmaya gerek kalmaz. ==================================================================== */
+(function(){
+  let _kilitliKaydirmaY = 0;
+  const gövde = document.body;
+  const gozlemci = new MutationObserver(()=>{
+    const kilitliOlmali = gövde.classList.contains('modal-open');
+    const suAnKilitli = gövde.style.position === 'fixed';
+    if(kilitliOlmali && !suAnKilitli){
+      _kilitliKaydirmaY = window.scrollY || window.pageYOffset || 0;
+      gövde.style.position = 'fixed';
+      gövde.style.top = (-_kilitliKaydirmaY) + 'px';
+      gövde.style.left = '0';
+      gövde.style.right = '0';
+    } else if(!kilitliOlmali && suAnKilitli){
+      gövde.style.position = '';
+      gövde.style.top = '';
+      gövde.style.left = '';
+      gövde.style.right = '';
+      window.scrollTo(0, _kilitliKaydirmaY);
+    }
+  });
+  gozlemci.observe(gövde, { attributes:true, attributeFilter:['class'] });
+})();
+
+/* ====================================================================
+   ÖZEL MENÜ GRUPLARI YÖNETİMİ
+   Admin, Ayarlar ekranından yeni menü grupları oluşturur.
+   Gruplar Firestore'da (oy_ozelMenu) saklanır; alt-navigasyon.js
+   bunları okuyarak menüye ekler.
+   ==================================================================== */
+
+let _ozelMenuGruplar = []; // Firestore'dan yüklenen gruplar
+
+function renderOzelMenuYonetim(){
+  // Sadece admin görür
+  const adminMi = typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI && AKTIF_KULLANICI.admin === true;
+  const yetkiVar = adminMi || (typeof duzenleyebilir === 'function' && duzenleyebilir('ozelMenu'));
+  const bolum = document.getElementById('ozelMenuYonetimBolumu');
+  if(!bolum) return;
+  bolum.style.display = yetkiVar ? '' : 'none';
+  if(!yetkiVar) return;
+
+  db.collection(COL.ozelMenu).orderBy('sira').get().then(snap => {
+    _ozelMenuGruplar = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    _ozelMenuListesiRender();
+  }).catch(() => { _ozelMenuListesiRender(); });
+}
+
+function _ozelMenuListesiRender(){
+  const kap = document.getElementById('ozelMenuGrupListesi');
+  if(!kap) return;
+  if(!_ozelMenuGruplar.length){
+    kap.innerHTML = '<p class="empty-state">Henüz özel grup yok. Aşağıdan ekleyin.</p>';
+    return;
+  }
+  const rolMap = {};
+  if(typeof ROLLER_CACHE !== 'undefined') ROLLER_CACHE.forEach(r => { rolMap[r.id] = r.ad; });
+  kap.innerHTML = '';
+  _ozelMenuGruplar.forEach(g => {
+    const rolAdlari = (g.gorunurRoller||[]).map(id => rolMap[id] || id).join(', ');
+    const kart = document.createElement('div');
+    kart.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--bg-card);';
+
+    // Başlık satırı
+    const baslik = document.createElement('div');
+    baslik.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px;';
+    const renkNokta = document.createElement('span');
+    renkNokta.style.cssText = 'width:14px;height:14px;border-radius:50%;background:' + escapeHtml(g.renk||'#607D8B') + ';flex-shrink:0;display:inline-block;';
+    const adText = document.createElement('strong');
+    adText.style.cssText = 'flex:1;font-size:14px;';
+    adText.textContent = g.ad || '—';
+    const duzenleBtn = document.createElement('button');
+    duzenleBtn.className = 'btn btn-ghost btn-sm';
+    duzenleBtn.textContent = '✏️';
+    duzenleBtn.onclick = (function(id){ return function(){ ozelMenuGrupDuzenle(id); }; })(g.id);
+    const silBtn = document.createElement('button');
+    silBtn.className = 'btn btn-ghost btn-sm';
+    silBtn.style.color = 'var(--red-danger)';
+    silBtn.textContent = '🗑';
+    silBtn.onclick = (function(id){ return function(){ ozelMenuGrupSil(id); }; })(g.id);
+    baslik.appendChild(renkNokta);
+    baslik.appendChild(adText);
+    baslik.appendChild(duzenleBtn);
+    baslik.appendChild(silBtn);
+    kart.appendChild(baslik);
+
+    // Öğeler
+    const ogelerDiv = document.createElement('div');
+    ogelerDiv.style.cssText = 'font-size:12px;color:var(--ink-muted);padding-left:24px;';
+    if((g.ogeler||[]).length){
+      (g.ogeler||[]).forEach(o => {
+        const chip = document.createElement('span');
+        chip.style.cssText = 'display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;background:var(--nm-bg-dark);border-radius:6px;';
+        chip.textContent = o.ad;
+        ogelerDiv.appendChild(chip);
+      });
+    } else {
+      ogelerDiv.textContent = 'Öğe yok';
+    }
+    kart.appendChild(ogelerDiv);
+
+    // Roller
+    const rolDiv = document.createElement('div');
+    rolDiv.style.cssText = 'font-size:11px;color:var(--ink-muted);margin-top:4px;padding-left:24px;';
+    rolDiv.textContent = rolAdlari ? 'Roller: ' + rolAdlari : 'Tüm roller görür';
+    kart.appendChild(rolDiv);
+
+    kap.appendChild(kart);
+  });
+}
+
+function ozelMenuGrupEkle(){
+  _ozelMenuGrupModalAc(null);
+}
+
+function ozelMenuGrupDuzenle(id){
+  const g = _ozelMenuGruplar.find(x => x.id === id);
+  if(!g) return;
+  _ozelMenuGrupModalAc(g);
+}
+
+/* Uygulamadaki tüm mevcut sekmeleri (data-tab) toplar; Ayarlar'da
+   "Sekme adı" alanını elle yazmak yerine açılır listeden seçmek için
+   kullanılır. Kaynak: DOM'daki .nav-tab[data-tab] butonları (nt-label
+   metniyle birlikte), index.html'de statik olarak tanımlı sekmelerin
+   tamamını kapsar. */
+function _mevcutSekmeleriTopla(){
+  const gorulen = new Set();
+  const liste = [];
+  document.querySelectorAll('.nav-tab[data-tab]').forEach(btn => {
+    const tab = btn.getAttribute('data-tab');
+    if(!tab || gorulen.has(tab)) return;
+    gorulen.add(tab);
+    const etiketEl = btn.querySelector('.nt-label');
+    const label = etiketEl ? etiketEl.textContent.trim() : tab;
+    liste.push({ tab, label });
+  });
+  liste.sort((a,b) => a.label.localeCompare(b.label, 'tr'));
+  return liste;
+}
+
+/* "Sekme adı" alanı için select + (gerektiğinde) elle-yazma input'undan
+   oluşan bir kapsayıcı üretir. sekmeAd verilirse ve mevcut sekmeler
+   arasında yoksa (örn. henüz eklenmemiş özel bir sekme) otomatik olarak
+   "Diğer (elle yaz)" seçilir ve değer metin kutusuna yazılır. */
+function _sekmeSeciciOlustur(sekmeAd){
+  const sekmeler = _mevcutSekmeleriTopla();
+  const sarmalayici = document.createElement('div');
+  sarmalayici.className = 'om-oge-sekme-wrap';
+
+  const sel = document.createElement('select');
+  sel.className = 'om-oge-sekme om-oge-sekme-select';
+  sel.style.width = '100%';
+  sel.appendChild(new Option('Sekme seçin...', ''));
+  sekmeler.forEach(s => sel.appendChild(new Option(`${s.label} (${s.tab})`, s.tab)));
+  sel.appendChild(new Option('Diğer (elle yaz)', '__custom__'));
+
+  const custom = document.createElement('input');
+  custom.placeholder = 'Sekme adı (örn: yemekhane)';
+  custom.style.cssText = 'width:100%;margin-top:6px;display:none;';
+  custom.className = 'om-oge-sekme-custom';
+
+  sel.onchange = () => { custom.style.display = sel.value === '__custom__' ? '' : 'none'; };
+
+  if(sekmeAd){
+    const eslesen = sekmeler.find(s => s.tab === sekmeAd);
+    if(eslesen){
+      sel.value = sekmeAd;
+    } else {
+      sel.value = '__custom__';
+      custom.style.display = '';
+      custom.value = sekmeAd;
+    }
+  }
+
+  sarmalayici.appendChild(sel);
+  sarmalayici.appendChild(custom);
+  return sarmalayici;
+}
+
+/* Bir öğe satırındaki sekme seçici kapsayıcısından nihai sekme değerini
+   okur (select'ten ya da "Diğer" seçiliyse elle yazılan metinden). */
+function _omSekmeDegeriAl(satir){
+  const sel = satir.querySelector('.om-oge-sekme-select');
+  if(!sel) return '';
+  if(sel.value === '__custom__'){
+    const custom = satir.querySelector('.om-oge-sekme-custom');
+    return custom ? custom.value.trim() : '';
+  }
+  return sel.value.trim();
+}
+
+function _ozelMenuOgeEkle(){
+  const liste = document.getElementById('omOgelerListesi');
+  if(!liste) return;
+  const satir = document.createElement('div');
+  satir.style.cssText = 'border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:4px;';
+  satir.setAttribute('data-oge-idx', Date.now());
+  const ust = document.createElement('div');
+  ust.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px;';
+  const inpAd = document.createElement('input');
+  inpAd.placeholder = 'Öğe adı';
+  inpAd.style.flex = '1';
+  inpAd.className = 'om-oge-ad';
+  const silBtn = document.createElement('button');
+  silBtn.type = 'button';
+  silBtn.className = 'btn btn-ghost btn-sm';
+  silBtn.style.cssText = 'color:var(--red-danger);flex-shrink:0;padding:4px 8px;';
+  silBtn.textContent = '✕';
+  silBtn.onclick = () => satir.remove();
+  ust.appendChild(inpAd);
+  ust.appendChild(silBtn);
+  const sekmeSecici = _sekmeSeciciOlustur('');
+  satir.appendChild(ust);
+  satir.appendChild(sekmeSecici);
+  liste.appendChild(satir);
+}
+
+function _ozelMenuGrupModalAc(g){
+  const govdeEl = document.createElement('div');
+
+  // Mevcut grup seçici — yeni grup oluşturmak yerine zaten var olan bir
+  // özel grubu seçip öğeleriyle birlikte doğrudan burada düzenlemeyi
+  // sağlar (aşağı inip kalem ikonuna basmaya gerek kalmadan).
+  if(_ozelMenuGruplar.length){
+    const seciciGrup = document.createElement('div');
+    seciciGrup.className = 'form-group';
+    const seciciLabel = document.createElement('label');
+    seciciLabel.textContent = 'Grup';
+    const sec = document.createElement('select');
+    sec.id = 'omGrupSecici';
+    sec.style.width = '100%';
+    sec.appendChild(new Option('➕ Yeni Grup Oluştur', ''));
+    _ozelMenuGruplar.forEach(mg => sec.appendChild(new Option(mg.ad || '—', mg.id)));
+    sec.value = g ? g.id : '';
+    sec.onchange = () => {
+      if(sec.value){
+        const secilen = _ozelMenuGruplar.find(x => x.id === sec.value);
+        _ozelMenuGrupModalAc(secilen || null);
+      } else {
+        _ozelMenuGrupModalAc(null);
+      }
+    };
+    seciciGrup.appendChild(seciciLabel);
+    seciciGrup.appendChild(sec);
+    govdeEl.appendChild(seciciGrup);
+  }
+
+  // Grup adı
+  const adGrup = document.createElement('div');
+  adGrup.className = 'form-group';
+  const adLabel = document.createElement('label');
+  adLabel.textContent = 'Grup Adı';
+  const inpAd = document.createElement('input');
+  inpAd.id = 'omGrupAd';
+  inpAd.placeholder = 'örn: Yemekhane';
+  inpAd.value = g ? (g.ad||'') : '';
+  inpAd.style.width = '100%';
+  adGrup.appendChild(adLabel);
+  adGrup.appendChild(inpAd);
+  govdeEl.appendChild(adGrup);
+
+  // Renk
+  const renkGrup = document.createElement('div');
+  renkGrup.className = 'form-group';
+  const renkLabel = document.createElement('label');
+  renkLabel.textContent = 'Renk (hex)';
+  const renkSatir = document.createElement('div');
+  renkSatir.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  const inpRenk = document.createElement('input');
+  inpRenk.id = 'omGrupRenk';
+  inpRenk.type = 'text';
+  inpRenk.placeholder = '#607D8B';
+  inpRenk.value = g ? (g.renk||'#607D8B') : '#607D8B';
+  inpRenk.style.flex = '1';
+  const onizleme = document.createElement('span');
+  onizleme.id = 'omRenkOnizleme';
+  onizleme.style.cssText = 'width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:' + (g ? (g.renk||'#607D8B') : '#607D8B') + ';flex-shrink:0;';
+  inpRenk.oninput = () => { onizleme.style.background = inpRenk.value; };
+  renkSatir.appendChild(inpRenk);
+  renkSatir.appendChild(onizleme);
+  renkGrup.appendChild(renkLabel);
+  renkGrup.appendChild(renkSatir);
+  govdeEl.appendChild(renkGrup);
+
+  // Roller
+  const rolGrup = document.createElement('div');
+  rolGrup.className = 'form-group';
+  rolGrup.innerHTML = '<label>Görünür Roller <span style="font-weight:400;color:var(--ink-muted);font-size:12px;">(hiç seçilmezse herkes görür)</span></label>';
+  const rolKap = document.createElement('div');
+  rolKap.id = 'omRolSecim';
+  rolKap.style.cssText = 'max-height:130px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;';
+  if(typeof ROLLER_CACHE !== 'undefined' && ROLLER_CACHE.length){
+    ROLLER_CACHE.forEach(r => {
+      const lbl = document.createElement('label');
+      lbl.style.cssText = 'display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px;cursor:pointer;';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = r.id;
+      cb.checked = !!(g && (g.gorunurRoller||[]).includes(r.id));
+      lbl.appendChild(cb);
+      lbl.appendChild(document.createTextNode(' ' + r.ad));
+      rolKap.appendChild(lbl);
+    });
+  } else {
+    rolKap.innerHTML = '<p style="font-size:12px;color:var(--ink-muted);">Rol bulunamadı.</p>';
+  }
+  rolGrup.appendChild(rolKap);
+  govdeEl.appendChild(rolGrup);
+
+  // Öğeler
+  const ogeGrup = document.createElement('div');
+  ogeGrup.className = 'form-group';
+  const ogeLabel = document.createElement('label');
+  ogeLabel.textContent = 'Menü Öğeleri';
+  const ogeListe = document.createElement('div');
+  ogeListe.id = 'omOgelerListesi';
+  ogeListe.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-bottom:8px;';
+  (g ? (g.ogeler||[]) : []).forEach((o, i) => {
+    const satir = document.createElement('div');
+    satir.style.cssText = 'border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:4px;';
+    satir.setAttribute('data-oge-idx', i);
+    const ust = document.createElement('div');
+    ust.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px;';
+    const inpA = document.createElement('input');
+    inpA.placeholder = 'Öğe adı';
+    inpA.value = o.ad||'';
+    inpA.style.flex = '1';
+    inpA.className = 'om-oge-ad';
+    const silBtn = document.createElement('button');
+    silBtn.type = 'button';
+    silBtn.className = 'btn btn-ghost btn-sm';
+    silBtn.style.cssText = 'color:var(--red-danger);flex-shrink:0;padding:4px 8px;';
+    silBtn.textContent = '✕';
+    silBtn.onclick = () => satir.remove();
+    ust.appendChild(inpA);
+    ust.appendChild(silBtn);
+    const sekmeSecici = _sekmeSeciciOlustur(o.sekmeAd||'');
+    satir.appendChild(ust);
+    satir.appendChild(sekmeSecici);
+    ogeListe.appendChild(satir);
+  });
+  const ogeEkleBtn = document.createElement('button');
+  ogeEkleBtn.type = 'button';
+  ogeEkleBtn.className = 'btn btn-ghost btn-sm';
+  ogeEkleBtn.textContent = '+ Öğe Ekle';
+  ogeEkleBtn.onclick = _ozelMenuOgeEkle;
+  ogeGrup.appendChild(ogeLabel);
+  ogeGrup.appendChild(ogeListe);
+  ogeGrup.appendChild(ogeEkleBtn);
+  govdeEl.appendChild(ogeGrup);
+
+  // modalAc innerHTML bekliyor — DOM elementi yerleştir
+  const modalBody = document.getElementById('modalBody');
+  document.getElementById('modalTitle').textContent = g ? '✏️ Grubu Düzenle' : '➕ Yeni Menü Grubu';
+  modalBody.innerHTML = '';
+  modalBody.appendChild(govdeEl);
+  const silBtn = document.getElementById('modalSilBtn');
+  silBtn.style.display = 'none'; silBtn.onclick = null;
+  const kaydetBtn = document.getElementById('modalKaydetBtn');
+  kaydetBtn.style.display = 'inline-flex';
+  kaydetBtn.textContent = 'Kaydet';
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.classList.add('modal-open');
+  if(typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
+  kaydetBtn.onclick = () => {
+    try { _ozelMenuGrupKaydet(g); }
+    catch(e){ console.error(e); toast('Hata: ' + e.message); }
+  };
+}
+
+function _ozelMenuGrupKaydet(g){
+    const ad = document.getElementById('omGrupAd').value.trim();
+    const renk = document.getElementById('omGrupRenk').value.trim() || '#607D8B';
+    if(!ad){ toast('Grup adı zorunludur.'); return; }
+
+    const gorunurRoller = [...document.querySelectorAll('#omRolSecim input[type=checkbox]:checked')].map(cb => cb.value);
+
+    // DÜZELTME: Eskiden ad-VEYA-sekmeAd eksik olan satırlar hiçbir uyarı
+    // vermeden sessizce atlanıyordu — bu yüzden bir öğeye ad yazılıp sekme
+    // seçilmesi unutulduğunda grup "başarıyla" kaydediliyor ama 0 öğeyle
+    // kalıyordu (ve 0 öğeli özel gruplar navigasyondan TAMAMEN eleniyor,
+    // bkz. js/alt-navigasyon.js _ozelGruplariYukle). Artık YARIM dolu bir
+    // satır varsa kaydetme durdurulup kullanıcı uyarılıyor.
+    const satirlar = [...document.querySelectorAll('#omOgelerListesi [data-oge-idx]')];
+    const ogeler = [];
+    const eksikSatirlar = [];
+    satirlar.forEach((div, i) => {
+      const adVal = (div.querySelector('.om-oge-ad').value || '').trim();
+      const sekmeVal = _omSekmeDegeriAl(div);
+      if(!adVal && !sekmeVal) return; // hiç dokunulmamış boş satır — yok say
+      if(!adVal || !sekmeVal){ eksikSatirlar.push(i + 1); return; }
+      ogeler.push({ ad: adVal, sekmeAd: sekmeVal });
+    });
+    if(eksikSatirlar.length){
+      toast('Öğe ' + eksikSatirlar.join(', ') + ' eksik: hem ad hem sekme seçili olmalı. Düzeltip tekrar kaydedin.');
+      return;
+    }
+    if(ogeler.length === 0){
+      toast('Uyarı: Bu grubun hiç öğesi yok — menüde GÖRÜNMEYECEK. En az bir öğe ekleyin.');
+      return;
+    }
+
+    const veri = {
+      ad, renk, gorunurRoller, ogeler,
+      sira: g ? (g.sira || 99) : (_ozelMenuGruplar.length + 1),
+    };
+
+    const islem = g
+      ? db.collection(COL.ozelMenu).doc(g.id).set(veri)
+      : db.collection(COL.ozelMenu).add(veri);
+
+    islem.then(() => {
+      toast(g ? 'Grup güncellendi.' : 'Grup eklendi.');
+      modalKapat();
+      renderOzelMenuYonetim();
+      setTimeout(() => {
+        if(typeof window._ozelGruplariYukle === 'function') window._ozelGruplariYukle();
+        setTimeout(() => { if(typeof renderNavDuzeniYonetim === 'function') renderNavDuzeniYonetim(); }, 350);
+      }, 300);
+    }).catch(err => toast('Hata: ' + err.message));
+}
+
+function ozelMenuGrupSil(id){
+  if(!confirm('Bu grubu silmek istediğinize emin misiniz?')) return;
+  db.collection(COL.ozelMenu).doc(id).delete().then(() => {
+    toast('Grup silindi.');
+    renderOzelMenuYonetim();
+    setTimeout(() => {
+      if(typeof window._ozelGruplariYukle === 'function') window._ozelGruplariYukle();
+      setTimeout(() => { if(typeof renderNavDuzeniYonetim === 'function') renderNavDuzeniYonetim(); }, 350);
+    }, 300);
+  }).catch(err => toast('Hata: ' + err.message));
+}
