@@ -1118,20 +1118,38 @@
   // karşılık TAM OLARAK bir true gerekiyor), burada durum DEĞİŞTİĞİNDE
   // (önceki duruma göre) çağrılıyor — her scroll olayında değil.
   let _pullToRefreshMenuTemizle = null;
+  // YENİ (Sedat isteği, Ağustos 2026: "yenileme ile sayfada aşağı inmeyi
+  // ayırt etmenin bir yolu yok mu") — Capacitor eklenti köprüsü (async,
+  // gecikmeli) YANINDA, Android'de varsa SENKRON/gecikmesiz native köprü
+  // de (bkz. MainActivity.innerScrollBildir) çağrılıyor — jest başlama
+  // kararını veren native taraf artık iç panelin kayma durumunu neredeyse
+  // anında biliyor, Capacitor'ın asenkron mesaj kuyruğunu beklemiyor.
+  function _pullToRefreshNativeyeSenkronBildir(kaydirilmisMi) {
+    try {
+      if (window.AndroidPullToRefreshKopru && typeof window.AndroidPullToRefreshKopru.innerScrollBildir === 'function') {
+        window.AndroidPullToRefreshKopru.innerScrollBildir(kaydirilmisMi);
+      }
+    } catch (e) { /* iOS/web'de bu köprü hiç yok — sorun değil */ }
+  }
   function _pullToRefreshKaydirmayaGoreAyarla(el) {
-    if (!el || typeof _pullToRefreshAyarla !== 'function') return null;
+    if (!el) return null;
     let enUsttMi = el.scrollTop <= 0;
-    if (!enUsttMi) _pullToRefreshAyarla(false);
+    if (!enUsttMi) {
+      _pullToRefreshNativeyeSenkronBildir(true);
+      if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
+    }
     const guncelle = () => {
       const yeni = el.scrollTop <= 0;
       if (yeni === enUsttMi) return; // durum değişmedi, tekrar çağırıp sayacı bozma
       enUsttMi = yeni;
-      _pullToRefreshAyarla(yeni);
+      _pullToRefreshNativeyeSenkronBildir(!yeni);
+      if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(yeni);
     };
     el.addEventListener('scroll', guncelle, { passive: true });
     return () => {
       el.removeEventListener('scroll', guncelle);
-      if (!enUsttMi) _pullToRefreshAyarla(true); // ekrandan ayrılırken "kapalı" kaldıysa dengele
+      _pullToRefreshNativeyeSenkronBildir(false); // ekrandan ayrılırken güvenli varsayılana dön
+      if (!enUsttMi && typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true); // ekrandan ayrılırken "kapalı" kaldıysa dengele
     };
   }
 
