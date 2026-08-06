@@ -150,7 +150,7 @@
       return db.collection('oy_optikSablonlari').get({ source: 'server' }).then(function(snap) {
         return snap.docs.map(function(d) {
           var kayit = Object.assign({ id: d.id }, d.data());
-          // sablon JSON string olarak kaydedildiyse geri parse et
+          // sablon JSON string olarak kaydedildiyse (nested array sorunu cozumu) geri parse et
           if (kayit.sablon && typeof kayit.sablon === 'string') {
             try { kayit.sablon = JSON.parse(kayit.sablon); } catch(e) {}
           }
@@ -169,13 +169,6 @@
       if (typeof db === 'undefined' || !db) return Promise.reject(new Error('Firestore hazır değil'));
       const veri = Object.assign({}, kayit);
       delete veri.id;
-      // KOK NEDEN DUZELTMESI #2 (Sedat geri bildirimi, Agustos 2026:
-      // "Property sablon contains an invalid nested entity") -- Firestore
-      // array-icinde-array'i (nested array) TAMAMEN REDDEDIYOR. Sablonda
-      // ogeler[] icindeki her baloncukBlok'un sutunDikeyKaymalari alani
-      // bir dizi -- bu, ogeler dizisinin icinde baska bir dizi oluyor.
-      // Cozum: bu tur alanlari Firestore'a yazmadan once JSON string'e
-      // donustur; okurken sablonlariGetir icinde geri parse et.
       // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "hem
       // okuma hem yazma başarısız, 0/0" — Firestore, bir nesnenin
       // İÇİNDE (iç içe geçmiş, örn. sablon.ogeler[].bazıAlan) HERHANGİ
@@ -190,11 +183,24 @@
       } catch (e) {
         return Promise.reject(new Error('Şablon verisi JSON\'a çevrilemedi: ' + e.message));
       }
-      // KOK NEDEN #2: Firestore nested array yasagi.
-      // Cozum: ogeler[] icindeki TUM array alanlarini JSON string'e don.
-      // Ayrica sablon nesnesini ogeler dizisi olmayan duz bir stringe donustur --
-      // bu en garantili yol: sablon'un TAMAMINI JSON string olarak kaydet.
+      // KOK NEDEN DUZELTMESI (Sedat geri bildirimi 06.08.2026):
+      // Sorun 1 — "invalid nested entity": Firestore array-icinde-array reddediyor
+      //   (ogeler[] icinde sutunDikeyKaymalari[] gibi diziler).
+      // Sorun 2 — "longer than 1048487 bytes": logo gorselData base64 ~1MB siniri asiyor.
+      // Cozum: gorselData'yi Firestore'a GONDERME (gorsel zaten localStorage/IndexedDB'de
+      //   kalir, editorde gorulmeye devam eder); sablon objesinin TAMAMINI JSON string
+      //   olarak kaydet — bu tek hamlede her iki sorunu da cozer.
       if (temizVeri.sablon && typeof temizVeri.sablon === 'object') {
+        // gorselData'yi temizle (buyuk base64 — Firestore 1MB siniri)
+        if (Array.isArray(temizVeri.sablon.ogeler)) {
+          temizVeri.sablon.ogeler = temizVeri.sablon.ogeler.map(function(og) {
+            if (!og || og.tip !== 'logo' || !og.gorselData) return og;
+            var kopyaOg = Object.assign({}, og);
+            delete kopyaOg.gorselData; // Firestore'a gitmiyor; lokal kalir
+            return kopyaOg;
+          });
+        }
+        // Tum sablon nesnesini JSON string'e cevir (nested array sorunu tamamen ortadan kalkar)
         temizVeri.sablon = JSON.stringify(temizVeri.sablon);
       }
       return db.collection('oy_optikSablonlari').doc(kayit.id).set(temizVeri, { merge: true });
