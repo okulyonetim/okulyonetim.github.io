@@ -233,7 +233,7 @@
         <label class="osEditor__varsayilanLabel" style="display:none;">
           <input type="checkbox" class="osEditor__varsayilanCheckbox"> Varsayılan yap
         </label>
-        <button class="osEditor__kaydetBtn" type="button" style="display:none;">💾 Kaydet</button>
+        <button class="osEditor__kaydetBtn" type="button" style="display:none;">Kaydet</button>
         <button class="osEditor__tamEkranBtn" type="button">⛶ Tam Ekran</button>
       </div>
       <!-- Menü satırları: topbar'ın altında akış içinde — açılınca tuval aşağı kayar -->
