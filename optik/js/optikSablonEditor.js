@@ -555,6 +555,7 @@
 
     function pointerDownOge(ev, og, gEl) {
       ev.stopPropagation();
+      ev.preventDefault(); // KÖK NEDEN DÜZELTMESİ: rakip tarayıcı jestlerinin (kaydırma vb.) touch-action CSS'ine rağmen araya girmesini kesin olarak engeller
       seciliId = og.id;
       const ctmInverse = svg.getScreenCTM().inverse(); // sürüklemenin tamamı için TEK sefer
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
@@ -564,22 +565,21 @@
       // ediyor öğeler" — CTM önbelleklemesinden sonra kalan tek gereksiz
       // iş buydu, küçük ama gereksiz).
       surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0, ctmInverse, ogRef: og };
-      // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "öğe her
-      // mm duruyor, tekrar tutup çekmem lazım") — önceden setPointerCapture
-      // dokunulan SPESİFİK alt öğeye (ör. bir daire) uygulanıyordu. Ama
-      // hemen altındaki satır o alt öğeleri (daireler/metin) GİZLİYOR
-      // (performans için) — tutmayı elinde tutan öğe gizlenince tarayıcı
-      // "yakalamayı" kaybedip sürüklemeyi arada bir durduruyordu. Artık
-      // HİÇBİR ZAMAN gizlenmeyen/yeniden oluşturulmayan sabit kök öğede
-      // (svg) tutuluyor — tüm sürükleme boyunca güvenli.
       svg.setPointerCapture(ev.pointerId);
       gEl.classList.add('osOge--suruklemede'); // PERFORMANS: ağır içerik (daireler/metin) sürükleme boyunca gizli
       gecmiseKaydet();
-      cizPanel();
+      // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi: "her mm duruyor, tekrar
+      // tutup çekmem lazım") — cizPanel() ÖNCEDEN dokunuşun TAM ANINDA,
+      // senkron çalışıyordu; panelin DOM'unu o an yeniden inşa etmek,
+      // Android WebView'da henüz oturmamış olan dokunuş/yakalama durumunu
+      // bozup jesti iptal ettiriyor olabilirdi. Artık bir sonraki kareye
+      // ERTELENİYOR — dokunuş/yakalama önce tam oturuyor.
+      requestAnimationFrame(cizPanel);
     }
 
     function pointerDownTutamac(ev, og, gEl) {
       ev.stopPropagation();
+      ev.preventDefault();
       const ctmInverse = svg.getScreenCTM().inverse();
       const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, ctmInverse);
       surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, ctmInverse, ogRef: og };
@@ -638,6 +638,7 @@
 
     svg.addEventListener('pointermove', (ev) => {
       if (!surukleme) return;
+      ev.preventDefault(); // bkz. pointerDownOge'daki kök neden notu — rakip jestleri kesin engelle
       // Android'de pointermove olayları çok sık ateşlenebiliyor; işlemi
       // ekran yenileme hızıyla (rAF) sınırlamak, her olayda çalışmaktan
       // çok daha akıcı — sadece son olayın konumu kullanılıyor.
@@ -686,12 +687,15 @@
         const og = surukleme.ogRef;
         const baz = surukleme.ogeBaslangic;
         if (og) {
+          // YENİ (Sedat isteği, Ağustos 2026: "Izgara işini iptal et") —
+          // artık bırakıldığında da ızgaraya yapıştırma YOK, öğe tam
+          // bırakıldığı noktada kalıyor.
           if (og.tip === 'cizgi') {
-            og.x1 = grideYapistir(baz.x1 + surukleme.dx); og.y1 = grideYapistir(baz.y1 + surukleme.dy);
-            og.x2 = grideYapistir(baz.x2 + surukleme.dx); og.y2 = grideYapistir(baz.y2 + surukleme.dy);
+            og.x1 = baz.x1 + surukleme.dx; og.y1 = baz.y1 + surukleme.dy;
+            og.x2 = baz.x2 + surukleme.dx; og.y2 = baz.y2 + surukleme.dy;
           } else {
-            og.x = Math.max(0, grideYapistir(baz.x + surukleme.dx));
-            og.y = Math.max(0, grideYapistir(baz.y + surukleme.dy));
+            og.x = Math.max(0, baz.x + surukleme.dx);
+            og.y = Math.max(0, baz.y + surukleme.dy);
           }
         }
         cizSadeceTuval();
