@@ -166,6 +166,13 @@
         .osEditor__alan input, .osEditor__alan select { width:100%; box-sizing:border-box; min-height:36px; padding:4px 6px; border:1px solid #ccc; border-radius:6px; font-size:13px; }
         .osEditor__silBtn { min-height:40px; padding:0 14px; margin-top:2px; background:#fde8e8; border:1px solid #f0b8b8; color:#a33; border-radius:8px; align-self:flex-end; }
         .osOge { cursor:grab; touch-action:none; }
+        /* YENİ (Sedat geri bildirimi, Ağustos 2026: "hâlâ takıla takıla
+           sürükleniyor") — sürüklerken çok-daireli baloncuk blokları gibi
+           ağır öğelerin TÜM içeriğini her karede yeniden boyamak yerine,
+           sadece hafif bir çerçeve gösteriyoruz; asıl içerik sürükleme
+           bitince tek seferde yeniden çiziliyor. */
+        .osOge--suruklemede circle, .osOge--suruklemede > text { display:none; }
+        .osOge--suruklemede .osOge__cerceve { stroke-width:0.6; stroke:#0a7cff; fill:rgba(10,124,255,0.10); }
         .osOge--secili rect.osOge__cerceve { stroke:#0a7cff; stroke-width:0.6; }
         .osOge__tutamac { fill:#0a7cff; cursor:nwse-resize; touch-action:none; }
         .osEditor--tamEkran .osEditor__panel { display:none !important; }
@@ -182,6 +189,19 @@
     const aracCubugu = kok.querySelector('.osEditor__arac');
     const svg = kok.querySelector('.osEditor__tuval');
     const panel = kok.querySelector('.osEditor__panel');
+    // YENİ (Sedat geri bildirimi, Ağustos 2026: "parametre ayar ekranında
+    // da aşağı kaydırma sorunu... yenilemeyi tetikliyor") — panel de
+    // tuval gibi kaydırılabilir bir alan; içinde dokunuş varken sistem
+    // pull-to-refresh'ini bastır. KÖK NEDEN DÜZELTMESİ: aynı tuvalSarici
+    // notu — geri açma çağrısı window seviyesinde, tek seferlik ve
+    // GARANTİLİ (parmak panel dışına çıksa bile tetiklenir).
+    panel.addEventListener('pointerdown', () => {
+      _pullToRefreshBastir(false);
+      let acildiMi = false;
+      const geriAc = () => { if (!acildiMi) { acildiMi = true; _pullToRefreshBastir(true); } };
+      window.addEventListener('pointerup', geriAc, { once: true });
+      window.addEventListener('pointercancel', geriAc, { once: true });
+    });
     const tuvalSarici = kok.querySelector('.osEditor__tuvalSarici');
 
     // ---- Form adı (Sedat isteği: "Forma isim verme de olsun") ----
@@ -460,11 +480,23 @@
     }
 
     tuvalSarici.addEventListener('pointerdown', (ev) => {
-      // YENİ (Sedat geri bildirimi: "Kaydırmada sayfa yenileniyor") — tuval
-      // alanında HERHANGİ bir dokunuş başladığında (öğe sürüklemekten
-      // bağımsız olarak, boş alanı kaydırırken de) sistem pull-to-refresh
-      // jestini bastır; bırakınca geri aç.
+      // YENİ (Sedat geri bildirimi: "Kaydırmada sayfa yenileniyor" +
+      // "Android'de yenileme kilitleniyor") — tuval alanında dokunuş
+      // başladığında pull-to-refresh'i bastır. KÖK NEDEN DÜZELTMESİ: bu
+      // alanda touch-action:pan-x pan-y AKTİF (doğal kaydırma isteniyor),
+      // bu yüzden setPointerCapture KULLANILAMAZ (native kaydırmayı
+      // bozabilir) — bunun yerine parmak tuvalSarici SINIRLARININ DIŞINA
+      // çıkıp kalksa bile MUTLAKA tetiklenmesi için "geri aç" çağrısı
+      // pencere (window) seviyesinde, TEK SEFERLİK dinleyicilerle
+      // garanti ediliyor. Önceki hali (sadece tuvalSarici'nin kendi
+      // pointerup/leave'i) parmak dışarıda kalkarsa hiç tetiklenmiyordu —
+      // bu da ana uygulamanın paylaşılan sayacını kalıcı olarak kilitli
+      // bırakıyordu.
       _pullToRefreshBastir(false);
+      let acildiMi = false;
+      const geriAc = () => { if (!acildiMi) { acildiMi = true; _pullToRefreshBastir(true); } };
+      window.addEventListener('pointerup', geriAc, { once: true });
+      window.addEventListener('pointercancel', geriAc, { once: true });
       aktifParmaklar.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
       if (aktifParmaklar.size === 2) {
         pinchBaslangicMesafe = parmakMesafesi();
@@ -484,7 +516,10 @@
       tuvalSarici.addEventListener(olayAdi, (ev) => {
         aktifParmaklar.delete(ev.pointerId);
         if (aktifParmaklar.size < 2) pinchBaslangicMesafe = 0;
-        if (aktifParmaklar.size === 0) _pullToRefreshBastir(true);
+        // NOT: pull-to-refresh'i tekrar açma çağrısı artık YUKARIDA
+        // (pointerdown içindeki window seviyeli tek seferlik dinleyiciler)
+        // yapılıyor — burada TEKRAR çağrılırsa sayaç ÇİFT azalır
+        // (over-correct), bu yüzden buradan kaldırıldı.
       });
     });
 
@@ -536,6 +571,7 @@
       // iş buydu, küçük ama gereksiz).
       surukleme = { ogeId: og.id, tip: 'tasi', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, dx: 0, dy: 0, ctmInverse, ogRef: og };
       ev.target.setPointerCapture(ev.pointerId);
+      gEl.classList.add('osOge--suruklemede'); // PERFORMANS: ağır içerik (daireler/metin) sürükleme boyunca gizli
       gecmiseKaydet();
       cizPanel();
     }
