@@ -203,6 +203,15 @@
     // tekrar etkinleştirebiliyordu — bir sonraki sürüklemede jest gerçekten
     // tetikleniyordu. Artık buna hiç dokunulmuyor, tek kapatma yeterli.
     const tuvalSarici = kok.querySelector('.osEditor__tuvalSarici');
+    // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026 — devam eden
+    // "her mm duruyor" sorunu): tuvalSarici'nin touch-action'ını sürükleme
+    // sırasında 'none' yapmak tek başına yetmiyordu, çünkü onu saran
+    // .osEditor__govde de kendi overflow-y:auto'suyla ayrı bir kaydırılabilir
+    // ata olarak devrede — WebView jest tanıma sistemi bazen tuvalSarici
+    // yerine govde'yi kaydırma sahibi seçip pan-y'yi serbest bırakıyor,
+    // birkaç piksel sonra pointercancel ile sürüklemeyi kesiyor. İç içe
+    // kaydırma zincirindeki HER halkanın kilitlenmesi gerekiyor.
+    const govde = kok.querySelector('.osEditor__govde');
 
     // ---- Form adı (Sedat isteği: "Forma isim verme de olsun") ----
     const adSatiri = document.createElement('div');
@@ -575,6 +584,7 @@
       // 'none' yaparak tarayıcının jest kararını vermeden önce doğru
       // touch-action'ı görmesi sağlanıyor; suruklemeBitir'de geri alınıyor.
       tuvalSarici.style.touchAction = 'none';
+      if (govde) govde.style.touchAction = 'none'; // bkz. yukarıdaki govde tanımı — iç içe kaydırma zinciri notu
       gEl.classList.add('osOge--suruklemede'); // PERFORMANS: ağır içerik (daireler/metin) sürükleme boyunca gizli
       // NOT: gecmiseKaydet() BURADAN KALDIRILDI — suruklemeBitir'e taşındı.
       // Gerekçe: her dokunuşta (taşıma olmasa bile) tüm sablonun derin
@@ -591,6 +601,7 @@
       surukleme = { ogeId: og.id, tip: 'boyutlandir', baslangicMM: nokta, ogeBaslangic: derinKopya(og), gEl, ctmInverse, ogRef: og };
       svg.setPointerCapture(ev.pointerId);
       tuvalSarici.style.touchAction = 'none'; // bkz. pointerDownOge'daki kök neden notu
+      if (govde) govde.style.touchAction = 'none'; // bkz. pointerDownOge'daki govde notu
       // boyutlandir için gecmiseKaydet burada kalıyor: pointermove og.genislik/yukseklik'i
       // DOĞRUDAN güncelliyor, dolayısıyla suruklemeBitir'de çağırırsak post-state
       // kaydedilir ve geri al çalışmaz. Taşıma (tasi) içinse pointermove yalnızca
@@ -694,6 +705,7 @@
       // her zaman (taşıma, boyutlandırma, iptal) geri al; böylece bir
       // sonraki sürükleme öncesi kapsayıcı normal pan davranışına döner.
       tuvalSarici.style.touchAction = '';
+      if (govde) govde.style.touchAction = ''; // bkz. pointerDownOge'daki govde notu
       if (surukleme.tip === 'tasi') {
         const og = surukleme.ogRef;
         const baz = surukleme.ogeBaslangic;
