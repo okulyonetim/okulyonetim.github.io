@@ -633,52 +633,47 @@
       return { dx: yeniX - baz.x, dy: yeniY - baz.y };
     }
 
-    let hareketZamanlandiMi = false;
-    let sonHareketEvent = null;
-
+    // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "her mm
+    // duruyor, tekrar tutup çekmem lazım" — birden fazla hedefli düzeltme
+    // denendi, sonuç değişmedi) — requestAnimationFrame ile olay biriktirme
+    // (kare başına en son konumu kullanma) bu WebView'da dokunma/pointer
+    // olay döngüsüyle güvenilir etkileşmiyor olabilir; rAF'ın kendisi
+    // şüpheli hale geldi. Daha temel bir yaklaşıma geçildi: HER pointermove
+    // olayında DOĞRUDAN/senkron güncelleme — kare biriktirme YOK. Önceki
+    // optimizasyonlar (og önbelleklenmesi, ağır içeriğin sürüklerken
+    // gizlenmesi) kare başına maliyeti zaten düşürdüğünden, senkron
+    // güncelleme de akıcı olmalı; asıl kazanç, rAF'ın kendisinin yarattığı
+    // (varsa) olay-işleme etkileşim sorununu tamamen ortadan kaldırması.
     svg.addEventListener('pointermove', (ev) => {
       if (!surukleme) return;
       ev.preventDefault(); // bkz. pointerDownOge'daki kök neden notu — rakip jestleri kesin engelle
-      // Android'de pointermove olayları çok sık ateşlenebiliyor; işlemi
-      // ekran yenileme hızıyla (rAF) sınırlamak, her olayda çalışmaktan
-      // çok daha akıcı — sadece son olayın konumu kullanılıyor.
-      sonHareketEvent = ev;
-      if (hareketZamanlandiMi) return;
-      hareketZamanlandiMi = true;
-      requestAnimationFrame(() => {
-        hareketZamanlandiMi = false;
-        if (!surukleme || !sonHareketEvent) return;
-        const ev2 = sonHareketEvent;
-        const nokta = ekranNoktasindanMM(ev2.clientX, ev2.clientY, surukleme.ctmInverse);
-        // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "öğeler
-        // tuvalde piksel piksel hareket ediyor") — önceden ızgaraya
-        // yapıştırma (1mm) SÜRÜKLEME SIRASINDA her karede uygulanıyordu,
-        // bu da hareketi "zıplayarak" hissettiriyordu. Artık sürüklerken
-        // TAMAMEN SERBEST/akıcı hareket ediyor; ızgaraya yapıştırma SADECE
-        // bırakıldığında (suruklemeBitir) uygulanıyor — görsel akıcılık +
-        // hizalama kolaylığı bir arada.
-        let dx = nokta.x - surukleme.baslangicMM.x;
-        let dy = nokta.y - surukleme.baslangicMM.y;
+      const nokta = ekranNoktasindanMM(ev.clientX, ev.clientY, surukleme.ctmInverse);
+      // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "öğeler
+      // tuvalde piksel piksel hareket ediyor") — önceden ızgaraya
+      // yapıştırma (1mm) SÜRÜKLEME SIRASINDA her karede uygulanıyordu,
+      // bu da hareketi "zıplayarak" hissettiriyordu. Artık sürüklerken
+      // TAMAMEN SERBEST/akıcı hareket ediyor.
+      let dx = nokta.x - surukleme.baslangicMM.x;
+      let dy = nokta.y - surukleme.baslangicMM.y;
 
-        if (surukleme.tip === 'tasi') {
-          const og = surukleme.ogRef;
-          if (og) {
-            const kisitli = guvenliDxDyKisitla(og, surukleme.ogeBaslangic, dx, dy);
-            dx = kisitli.dx; dy = kisitli.dy;
-          }
-          surukleme.dx = dx; surukleme.dy = dy;
-          if (surukleme.gEl) surukleme.gEl.setAttribute('transform', `translate(${dx},${dy})`);
-        } else if (surukleme.tip === 'boyutlandir') {
-          const og = surukleme.ogRef;
-          if (!og) return;
-          const baz = surukleme.ogeBaslangic;
-          if (og.tip === 'baloncukBlok' || og.genislik != null) {
-            og.genislik = Math.max(og.tip === 'baloncukBlok' ? 15 : 8, baz.genislik + dx);
-            if (og.yukseklik != null) og.yukseklik = Math.max(5, baz.yukseklik + dy);
-          }
-          cizSadeceTuval();
+      if (surukleme.tip === 'tasi') {
+        const og = surukleme.ogRef;
+        if (og) {
+          const kisitli = guvenliDxDyKisitla(og, surukleme.ogeBaslangic, dx, dy);
+          dx = kisitli.dx; dy = kisitli.dy;
         }
-      });
+        surukleme.dx = dx; surukleme.dy = dy;
+        if (surukleme.gEl) surukleme.gEl.setAttribute('transform', `translate(${dx},${dy})`);
+      } else if (surukleme.tip === 'boyutlandir') {
+        const og = surukleme.ogRef;
+        if (!og) return;
+        const baz = surukleme.ogeBaslangic;
+        if (og.tip === 'baloncukBlok' || og.genislik != null) {
+          og.genislik = Math.max(og.tip === 'baloncukBlok' ? 15 : 8, baz.genislik + dx);
+          if (og.yukseklik != null) og.yukseklik = Math.max(5, baz.yukseklik + dy);
+        }
+        cizSadeceTuval();
+      }
     });
 
     function suruklemeBitir() {
