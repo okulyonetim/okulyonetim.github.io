@@ -648,6 +648,14 @@ function numaraAlaniHesapla(x, y, basamakSayisi = 4, olcek = 1, yon = 'dikey') {
     };
   }
 
+  // YENİ (Sedat isteği, Ağustos 2026): başlık ile baloncuklar arasında
+  // elle yazılacak kutucuklar için ek pay — kutucuk yüksekliği hücre
+  // genişliğiyle orantılı (kareye yakın). Baloncukların y koordinatı
+  // buna göre aşağı kaydırılıyor; OMR okuyucu etkilenmiyor çünkü
+  // koordinatlar formun kendisinden (hesaplamadan) geliyor.
+  const kutucukPay = Math.round(hucreGenislik * 0.9 * 10) / 10; // ≈ 5.4mm olcek=1'de
+  const balonBasY = y + baslikYukseklik + kutucukPay;
+
   for (let d = 0; d < basamakSayisi; d++) {
     const digitX = x + d * hucreGenislik + hucreGenislik / 2;
     const bubbles = [];
@@ -655,7 +663,7 @@ function numaraAlaniHesapla(x, y, basamakSayisi = 4, olcek = 1, yon = 'dikey') {
       bubbles.push({
         deger: v,
         cx: digitX,
-        cy: y + baslikYukseklik + v * hucreYukseklik + hucreYukseklik / 2,
+        cy: balonBasY + v * hucreYukseklik + hucreYukseklik / 2,
         r: baloncukYaricap,
       });
     }
@@ -668,8 +676,9 @@ function numaraAlaniHesapla(x, y, basamakSayisi = 4, olcek = 1, yon = 'dikey') {
     hucreGenislik,
     hucreYukseklik,
     baslikYukseklik,
+    kutucukPay, // elle yazı kutucuğu için ayrılan yükseklik (pdfFormGenerator.js kullanır)
     width: basamakSayisi * hucreGenislik,
-    height: baslikYukseklik + 10 * hucreYukseklik,
+    height: baslikYukseklik + kutucukPay + 10 * hucreYukseklik,
     basamaklar,
   };
 }

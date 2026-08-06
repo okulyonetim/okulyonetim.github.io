@@ -130,28 +130,45 @@ function buyukHarfTR(metin) {
 }
 
 function etiketDegerKutusu(doc, box, etiket, deger, opts = {}) {
-  const { etiketOran = 0.542, degerOran = 0.833, minEtiketPt = 3.2, minDegerPt = 4.5, hizalama = 'sol', degerPtSabit, degerKalin = false } = opts;
-  const etiketPt = Math.max(minEtiketPt, box.height * etiketOran);
-  const degerPt = degerPtSabit || Math.max(minDegerPt, box.height * degerOran);
+  const { minEtiketPt = 3.2, minDegerPt = 4.5, hizalama = 'sol', degerPtSabit, degerKalin = false } = opts;
 
   cerceveCiz(doc, box.x, box.y, box.width, box.height, ANA_RENK, 0.35);
 
-  // YENİ (Sedat isteği, Ağustos 2026: "font büyüklüğü ve hizalama
-  // seçenekleri de olsun") — hizalama artık sol/orta/sağ olabilir;
-  // varsayılan 'sol' ile ÖNCEKİ davranış (LGS/Bursluluk'un AD SOYAD
-  // kutusu dahil) birebir korunuyor.
-  const hizaX = hizalama === 'sag' ? box.x + box.width * 0.97 : hizalama === 'orta' ? box.x + box.width / 2 : box.x + box.width * 0.03;
-  const ankor = hizalama === 'sag' ? 'right' : hizalama === 'orta' ? 'center' : 'left';
+  // YENİ (Sedat isteği, Ağustos 2026): etiket ve içerik metni yan yana
+  // tek satırda — önceden alt alta (üst %62 etiket, alt değer) basılıyordu,
+  // küçük kutularda değer kesiliyordu ve kalabalık görünüyordu.
+  // Etiket kutu genişliğinin sol tarafında kalın/kırmızı, değer ise
+  // hemen yanından devam eder. Hizalama 'sol' için etiket soldan başlar;
+  // 'sag' ve 'orta' için kutunun tamamı kullanılır (etiket+değer birlikte).
+  const satırOrtaY = box.y + box.height / 2;
+  const etiketPt = Math.max(minEtiketPt, box.height * 0.42);
+  const degerPt = degerPtSabit || Math.max(minDegerPt, box.height * 0.52);
+  // Metin baseline — jsPDF text y parametresi baseline konumudur.
+  const baseY = satırOrtaY + degerPt * 0.18; // hafif aşağı hizala (cap height için)
 
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(etiketPt);
-  doc.setTextColor(...ANA_RENK);
-  doc.text(String(etiket).normalize('NFC'), hizaX, baselineUst(box.y, box.height, etiketPt, box.height * 0.62), { align: ankor });
+  if (hizalama === 'sol') {
+    // Etiket (kalın, kırmızı) soldan; değer hemen ardından
+    const etiketMetni = String(etiket).normalize('NFC') + ': ';
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(etiketPt);
+    doc.setTextColor(...ANA_RENK);
+    const etiketGenislik = doc.getTextWidth(etiketMetni);
+    doc.text(etiketMetni, box.x + 1.5, baseY);
 
-  doc.setFont('Roboto', degerKalin ? 'bold' : 'normal');
-  doc.setFontSize(degerPt);
-  doc.setTextColor(...KOYU_METIN);
-  doc.text(buyukHarfTR(deger), hizaX, baselineUst(box.y, box.height, degerPt, box.height * 0.14), { align: ankor });
+    doc.setFont('Roboto', degerKalin ? 'bold' : 'normal');
+    doc.setFontSize(degerPt);
+    doc.setTextColor(...KOYU_METIN);
+    doc.text(buyukHarfTR(deger), box.x + 1.5 + etiketGenislik, baseY);
+  } else {
+    // Orta/sağ hizalama — tüm metin (etiket+değer) birleşik olarak hizalanır
+    const hizaX = hizalama === 'sag' ? box.x + box.width - 1.5 : box.x + box.width / 2;
+    const ankor = hizalama === 'sag' ? 'right' : 'center';
+    const tamMetin = String(etiket).normalize('NFC') + (deger ? ': ' + buyukHarfTR(deger) : '');
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(etiketPt);
+    doc.setTextColor(...ANA_RENK);
+    doc.text(tamMetin, hizaX, baseY, { align: ankor });
+  }
 }
 
 /** Kitapçık Türü rozetini (dolgu renkli, dikkat çekici) çizer. */
@@ -224,6 +241,19 @@ function numaraAlaniCiz(doc, numaraAlani, ogrenciNo) {
   // YENİ (Sedat isteği, Ağustos 2026: "öğrenci no başlık metni manuel
   // düzenlenebilsin") — bkz. kitapcikAlaniCiz'deki aynı not.
   doc.text((numaraAlani.baslik || 'NUMARA').normalize('NFC'), numaraAlani.x + numaraAlani.width / 2, numaraAlani.y + numaraAlani.baslikYukseklik * 0.85, { align: 'center' });
+
+  // YENİ (Sedat isteği, Ağustos 2026): her basamak sütununun ÜSTÜNE elle
+  // yazılacak küçük boş kutucuk — her basamak için bir kutu, öğrenci
+  // baloncukların hangi rakama karşılık geldiğini elle de not edebilsin.
+  // kutucukPay layoutEngine.js:numaraAlaniHesapla tarafından hesaplanıyor.
+  const kutucukYukseklik = numaraAlani.kutucukPay || numaraAlani.hucreGenislik * 0.9;
+  const kutucukY = numaraAlani.y + numaraAlani.baslikYukseklik; // başlığın hemen altı
+  doc.setDrawColor(...ANA_RENK);
+  doc.setLineWidth(0.3);
+  numaraAlani.basamaklar.forEach((basamak) => {
+    const kutucukX = basamak.x - numaraAlani.hucreGenislik / 2;
+    doc.rect(kutucukX, kutucukY, numaraAlani.hucreGenislik, kutucukYukseklik);
+  });
 
   numaraAlani.basamaklar.forEach((basamak, i) => {
     const hedefRakam = basamaklar[i] !== ' ' ? basamaklar[i] : null;
@@ -352,35 +382,27 @@ function bolumlerCiz(doc, form) {
 
     cerceveCiz(doc, bolum.x, dersler[0].y, bolum.genislik, grupAltY - dersler[0].y + 2, ANA_RENK, 0.4);
 
-    for (const ders of dersler) {
-      const colCenter = ders.x + ders.width / 2;
-      // YENİ (Sedat isteği, Ağustos 2026): ders adı hizalaması artık
-      // yapılandırılabilir (sol/orta/sağ) — Optik Form Editörü'nden
-      // ayarlanıyor. Belirtilmezse (LGS/Bursluluk gibi sabit şablonlarda
-      // olduğu gibi) eski davranış (orta) korunuyor.
-      const hizalama = ders.dersAdiHizalama || 'orta';
-      const metinX = hizalama === 'sol' ? ders.x + 1 : hizalama === 'sag' ? ders.x + ders.width - 1 : colCenter;
-      const metinAlign = hizalama === 'sol' ? 'left' : hizalama === 'sag' ? 'right' : 'center';
+    // YENİ (Sedat isteği, Ağustos 2026): başlık artık her sütun için ayrı
+    // ayrı değil, tüm sütunların üzerinde tek bir ortak başlık kutusu.
+    // Optik Form Editörü'nden gelen bolum.baslikX/Y/toplamGenislik/baslikYuksekligi
+    // alanları kullanılıyor. Sabit LGS/Bursluluk şablonları için bu alanlar
+    // yoktur (bolumlerCiz'de dersler[0].x/y bazlı fallback çalışır).
+    if (bolum.baslik) {
+      const bX = bolum.baslikX != null ? bolum.baslikX : dersler[0].x;
+      const bY = bolum.baslikY != null ? bolum.baslikY : dersler[0].y - (bolum.baslikYuksekligi || 8);
+      const bW = bolum.toplamGenislik != null ? bolum.toplamGenislik : dersler.reduce((acc, d) => acc + d.width, 0);
+      const bH = bolum.baslikYuksekligi || 8;
+      const bFontPt = bolum.baslikFontPt || 7;
+      cerceveCiz(doc, bX, bY, bW, bH, ANA_RENK, 0.35);
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(bFontPt);
+      doc.setTextColor(...ANA_RENK);
+      doc.text(bolum.baslik.normalize('NFC'), bX + bW / 2, bY + bH / 2 + bFontPt * 0.18, { align: 'center' });
+    }
 
-      // YENİ (Sedat isteği, Ağustos 2026: "Ders adı zorunlu bile olmasın...
-      // kutucuğu çok yer kaplıyor") — ders adı boşsa (özellikle çoklu
-      // sütunlu tek-ders bloklarında her sütuna aynı adın tekrar tekrar
-      // basılmasını istemiyorsa) başlık kutusu/metni HİÇ basılmıyor,
-      // sorular doğrudan sütunun üstünden başlıyor. Grubun kendisi zaten
-      // yukarıdaki genel çerçeveyle (satır 338) çevrili duruyor.
-      if (ders.dersAdi && ders.baslikYuksekligi > 0) {
-        cerceveCiz(doc, ders.x, ders.y, ders.width, ders.baslikYuksekligi, ANA_RENK, 0.3);
-        doc.setFont('Roboto', 'bold');
-        doc.setFontSize(ders.baslikFontPt || 6.4);
-        doc.setTextColor(...KOYU_METIN);
-        const satirlar = ders.dersAdiSatirlari;
-        const satirH = (ders.baslikFontPt || 6.4) * 0.56;
-        const toplamH = satirlar.length * satirH;
-        const ilkY = ders.y + (ders.baslikYuksekligi - toplamH) / 2 + satirH * 0.75;
-        satirlar.forEach((satir, i) => {
-          doc.text(satir, metinX, ilkY + i * satirH, { align: metinAlign });
-        });
-      }
+    for (const ders of dersler) {
+      // Bireysel sütun başlığı artık basılmıyor — ortak başlık yukarıda
+      // tüm sütunları kapsayacak şekilde tek seferde çizildi.
 
       for (const soru of ders.sorular) {
         doc.setFont('Roboto', 'normal');

@@ -166,7 +166,11 @@
       sutun.baslikFontPt = baslikFontPt;
       dersSutunlari.push(sutun);
     }
-    return { grupBaslik: og.dersAdi, dersSutunlari };
+    // YENİ (Sedat isteği, Ağustos 2026): başlık her sütun için ayrı ayrı
+    // değil, tüm sütunların üzerinde tek bir ortak başlık olsun.
+    // Toplam genişliği hesapla: N sütun × sütun genişliği + (N-1) × ara boşluk.
+    const toplamGenislik = sutunSayisi * og.genislik + (sutunSayisi - 1) * sutunlarArasiBosluk;
+    return { grupBaslik: og.dersAdi, dersSutunlari, toplamGenislik, baslikX: og.x, baslikY: og.y, baslikFontPt, baslikYuksekligi: baslikGorunur ? (og.baslikYuksekligi || VARSAYILAN_BASLIK_YUKSEKLIGI) : 0 };
   }
 
   /**
@@ -189,7 +193,7 @@
     sablon.ogeler.forEach((og) => {
       if (og.tip === 'baloncukBlok') {
         const bolum = baloncukBlokOlustur(og);
-        bolumler.push({ baslik: bolum.grupBaslik, dersSutunlari: bolum.dersSutunlari });
+        bolumler.push({ baslik: bolum.grupBaslik, dersSutunlari: bolum.dersSutunlari, toplamGenislik: bolum.toplamGenislik, baslikX: bolum.baslikX, baslikY: bolum.baslikY, baslikFontPt: bolum.baslikFontPt, baslikYuksekligi: bolum.baslikYuksekligi });
         bolum.dersSutunlari.forEach((s) => { toplamSoruSayisi += s.sorular.length; });
         if (ortakSikSayisi === null) ortakSikSayisi = og.sikSayisi;
       } else if (og.tip === 'numaraAlani') {

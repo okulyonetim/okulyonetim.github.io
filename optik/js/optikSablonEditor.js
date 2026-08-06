@@ -921,22 +921,33 @@
           // YENİ (Sedat isteği: "Ders adı zorunlu bile olmasın... çok yer
           // kaplıyor") — ders adı boşsa (baslikYuksekligi 0) kutu/metin
           // HİÇ çizilmiyor, tıpkı gerçek PDF'teki gibi.
-          if (sutun.baslikYuksekligi > 0) {
-            g.appendChild(svgOlustur('rect', {
-              x: sutun.x, y: sutun.y, width: sutun.width, height: sutun.baslikYuksekligi,
-              fill: 'none', stroke: '#b3184a', 'stroke-width': 0.3,
-            }));
-            const t = svgOlustur('text', {
-              x: sutun.dersAdiHizalama === 'sol' ? sutun.x + 1 : sutun.dersAdiHizalama === 'sag' ? sutun.x + sutun.width - 1 : sutun.x + sutun.width / 2,
-              y: sutun.y + sutun.baslikYuksekligi / 2 + (sutun.baslikFontPt || 6.4) / 8, 'font-size': (sutun.baslikFontPt || 6.4) / 2.2, fill: '#333',
-              'text-anchor': sutun.dersAdiHizalama === 'sol' ? 'start' : sutun.dersAdiHizalama === 'sag' ? 'end' : 'middle',
-            });
-            t.textContent = sutun.dersAdi;
-            g.appendChild(t);
-          }
+          // Bireysel sütun başlığı artık çizilmiyor;
+          // ortak başlık aşağıda tüm sütunlar hesaplandıktan sonra tek seferde çiziliyor.
           minX = Math.min(minX, sutun.x); maxX = Math.max(maxX, sutun.x + sutun.width);
           minY = Math.min(minY, sutun.y);
         });
+
+        // YENİ (Sedat isteği, Ağustos 2026): tüm sütunlar üzerinde tek ortak başlık
+        const baslikGorunur = !!og.dersAdi && og.baslikGizle !== 'evet';
+        const baslikH = baslikGorunur ? (og.baslikYuksekligi || 8) : 0;
+        const sutunSayisiOni = og.sutunSayisi || 1;
+        const sutunlarArasiBoslukOni = og.sutunlarArasiBosluk != null ? og.sutunlarArasiBosluk : 3;
+        const toplamGenislikOni = sutunSayisiOni * og.genislik + (sutunSayisiOni - 1) * sutunlarArasiBoslukOni;
+        if (baslikGorunur && og.dersAdi) {
+          const bFontPt = og.baslikFontPt || 6.4;
+          g.appendChild(svgOlustur('rect', {
+            x: og.x, y: og.y, width: toplamGenislikOni, height: baslikH,
+            fill: 'none', stroke: '#b3184a', 'stroke-width': 0.35,
+          }));
+          const bT = svgOlustur('text', {
+            x: og.x + toplamGenislikOni / 2, y: og.y + baslikH / 2 + bFontPt / 8,
+            'font-size': bFontPt / 2.2, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': 'middle',
+          });
+          bT.textContent = og.dersAdi;
+          g.appendChild(bT);
+          minY = Math.min(minY, og.y);
+        }
+
         const cerceve = svgOlustur('rect', Object.assign(
           { class: 'osOge__cerceve', x: minX - 1, y: minY - 1, width: (maxX - minX) + 2, height: (maxY - minY) + 2 },
           secili ? CERCEVE_SECILI : CERCEVE_SOLUK
@@ -958,13 +969,27 @@
           { class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik },
           secili ? CERCEVE_SECILI : Object.assign({}, CERCEVE_SOLUK, { stroke: '#b3184a' })
         )));
-        const etiketT = svgOlustur('text', { x: hizaX, y: og.y + og.yukseklik * 0.4, 'font-size': 2.2, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': ankor });
-        etiketT.textContent = og.baslik || 'Etiket';
-        g.appendChild(etiketT);
+        // YENİ (Sedat isteği, Ağustos 2026): etiket ve içerik yan yana tek satır
+        // — PDF'teki etiketDegerKutusu davranışıyla birebir eşleşiyor.
+        const ortaY = og.y + og.yukseklik / 2 + 0.8;
         const ornekDeger = { adSoyad: 'ÖRNEK ÖĞRENCİ', sinif: '8-A', okulAdi: 'Okul Adı', sinavAdi: 'Sınav Adı' }[og.alan] || '';
-        const degerT = svgOlustur('text', { x: hizaX, y: og.y + og.yukseklik * 0.8, 'font-size': (og.fontPt ? og.fontPt / 2.6 : 3.5), fill: '#333', 'text-anchor': ankor, 'font-weight': og.kalin === 'evet' ? 'bold' : 'normal' });
-        degerT.textContent = ornekDeger;
-        g.appendChild(degerT);
+        if (hizalama === 'sol') {
+          // Etiket soldan, değer hemen yanında
+          const etiketT = svgOlustur('text', { x: og.x + 1.5, y: ortaY, 'font-size': 2.2, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': 'start' });
+          etiketT.textContent = (og.baslik || 'Etiket') + ': ';
+          g.appendChild(etiketT);
+          // Tahmini etiket genişliği (SVG'de getComputedTextLength kullanılamaz, yaklaşık)
+          const etiketTahminiGenislik = ((og.baslik || 'Etiket').length + 2) * 1.3;
+          const degerT = svgOlustur('text', { x: og.x + 1.5 + etiketTahminiGenislik, y: ortaY, 'font-size': (og.fontPt ? og.fontPt / 2.6 : 3.5), fill: '#333', 'text-anchor': 'start', 'font-weight': og.kalin === 'evet' ? 'bold' : 'normal' });
+          degerT.textContent = ornekDeger;
+          g.appendChild(degerT);
+        } else {
+          // Orta/sağ hizalamada birleşik metin
+          const tamMetin = (og.baslik || 'Etiket') + (ornekDeger ? ': ' + ornekDeger : '');
+          const birlesikT = svgOlustur('text', { x: hizaX, y: ortaY, 'font-size': 2.5, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': ankor });
+          birlesikT.textContent = tamMetin;
+          g.appendChild(birlesikT);
+        }
         if (secili) {
           const tutamac = svgOlustur('circle', { class: 'osOge__tutamac', cx: og.x + og.genislik, cy: og.y + og.yukseklik, r: 1.6 });
           tutamac.addEventListener('pointerdown', (ev) => pointerDownTutamac(ev, og, g));
@@ -1004,6 +1029,16 @@
           // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026):
           // numaraAlaniHesapla 'sorular/sikler' DEĞİL, 'basamaklar[].bubbles[]'
           // döndürüyor — yanlış alan adı yüzünden baloncuklar hiç çizilmiyordu.
+          // YENİ (Sedat isteği, Ağustos 2026): her basamağın üstüne elle yazı kutusu
+          const kutucukH = hesap.kutucukPay || hesap.hucreGenislik * 0.9;
+          const kutucukY = hesap.y + hesap.baslikYukseklik;
+          (hesap.basamaklar || []).forEach((basamak) => {
+            const kutucukX = basamak.x - hesap.hucreGenislik / 2;
+            g.appendChild(svgOlustur('rect', {
+              x: kutucukX, y: kutucukY, width: hesap.hucreGenislik, height: kutucukH,
+              fill: 'white', stroke: '#b3184a', 'stroke-width': 0.3,
+            }));
+          });
           (hesap.basamaklar || []).forEach((basamak) => {
             (basamak.bubbles || []).forEach((b) => etiketliBaloncuk(b.cx, b.cy, b.r, b.deger));
           });
