@@ -1335,7 +1335,7 @@ function ogrDetayIzgaraCiz(sonuc) {
     const dersAdi = ders.dersAdi;
 
     const anahtar = DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, sonuc.ogrenci?.kitapcikTuru));
-    const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi === dersAdi);
+    const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi.trim().toLowerCase() === dersAdi.trim().toLowerCase());
     const dogruMap = {};
     (dKaydi?.anahtarlar || []).forEach(a => { dogruMap[a.soruNo] = a.dogru; });
 
@@ -1469,7 +1469,7 @@ function puanHesapla(cevaplar, anahtar, dersler, yanlisKatsayisi = 3) {
     const dersDetay = [];
     dersler.forEach(ders => {
         const dersAdi  = ders.dersAdi;
-        const dKaydi   = (anahtar.dersler || []).find(d => d.dersAdi === dersAdi);
+        const dKaydi   = (anahtar.dersler || []).find(d => d.dersAdi.trim().toLowerCase() === dersAdi.trim().toLowerCase());
         const dogruMap = {};
         (dKaydi?.anahtarlar || []).forEach(a => { dogruMap[a.soruNo] = a.dogru; });
         const dersCevaplar = (cevaplar || {})[dersAdi] || {};
@@ -1848,7 +1848,7 @@ function anahtarIzgaraCiz() {
     if (!ders) return;
 
     const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
-    const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi === ders.dersAdi);
+    const dKaydi  = (anahtar.dersler || []).find(d => d.dersAdi.trim().toLowerCase() === ders.dersAdi.trim().toLowerCase());
     // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "hiçbiri
     // görünmüyor" — dışa aktarımda veri var ama ızgara boş) — eşleşme
     // bulunamazsa, TAM OLARAK neyin neyle karşılaştırıldığını konsola
@@ -2723,6 +2723,13 @@ async function anahtarExcelYukle(dosya) {
             await kaynak.exceldenYukle(dosya);
             const a = kaynak.getir?.();
             if (a?.dersler?.length) {
+                // Ders adı normalleştirme: Excel'deki ad formdan gelen adla
+                // büyük/küçük harf veya boşluk farkı varsa, form adını kullan.
+                const formDersler = formDersleriniGetir(_aktifSinavId);
+                a.dersler.forEach(d => {
+                    const eslesme = formDersler.find(f => f.dersAdi.trim().toLowerCase() === d.dersAdi.trim().toLowerCase());
+                    if (eslesme && eslesme.dersAdi !== d.dersAdi) d.dersAdi = eslesme.dersAdi;
+                });
                 DB.anahtarKaydet(_aktifSinavId, a, _anahtarAktifKitapcik);
                 anahtarIzgaraCiz();
                 _tumSonuclariYenidenHesapla();
