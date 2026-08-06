@@ -125,8 +125,26 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     }
 
     private boolean canChildScrollUp() {
-        return webView != null && webView.getScrollY() > 0;
+        // KÖK NEDEN DÜZELTMESİ (Sedat isteği, Ağustos 2026: "yenileme ile
+        // sayfada aşağı inmeyi ayırt etmenin bir yolu yok mu") — WebView'in
+        // KENDİ scrollY'si, position:fixed bir menü panelinin (örn.
+        // alt-navigasyon ızgara/liste/profil ekranları) İÇ kaydırmasından
+        // habersiz kalıyordu (panel kaysa bile WebView'ın scrollY'si 0'da
+        // sabit kalıyor). JS tarafı bunu Capacitor eklenti köprüsüyle
+        // (asenkron, gecikmeli) bildirmeye çalışıyordu ama parmak hareketi
+        // bu gecikmeyi bazen yakalıyordu. Artık innerContentKaydirilmis
+        // SENKRON bir native köprüyle (bkz. MainActivity.innerScrollBildir)
+        // GECİKMESİZ güncelleniyor — Capacitor'ın asenkron mesaj kuyruğuna
+        // hiç girmiyor.
+        return (webView != null && webView.getScrollY() > 0) || innerContentKaydirilmis;
     }
+
+    /** bkz. yukarıdaki canChildScrollUp() notu. volatile: JS köprü çağrısı
+        farklı bir iş parçacığından gelebiliyor, UI iş parçacığına post
+        etmek gecikme eklerdi (tam önlemeye çalıştığımız şey) — basit bir
+        volatile alan, düşük gecikmeli ve iş parçacığı güvenli. */
+    private volatile boolean innerContentKaydirilmis = false;
+    public void setInnerContentKaydirilmis(boolean v) { innerContentKaydirilmis = v; }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {

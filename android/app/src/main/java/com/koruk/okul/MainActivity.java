@@ -3,6 +3,7 @@ package com.koruk.okul;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 // (androidx SwipeRefreshLayout artık kullanılmıyor — bkz. LogoSwipeRefreshLayout)
 import com.getcapacitor.BridgeActivity;
@@ -96,6 +97,21 @@ public class MainActivity extends BridgeActivity {
         if (swipeRefresh != null) swipeRefresh.setPullEnabled(enabled);
     }
 
+    /* YENİ (Sedat isteği, Ağustos 2026: "yenileme ile sayfada aşağı inmeyi
+       ayırt etmenin bir yolu yok mu") — js/alt-navigasyon.js gibi dosyaların
+       İÇ kaydırılabilir panellerin (position:fixed menü ekranları vb.)
+       GERÇEK kaydırma durumunu Capacitor eklenti köprüsünün asenkron
+       gecikmesi OLMADAN, doğrudan/senkron bildirmesi için. addJavascriptInterface
+       ile WebView'e "AndroidPullToRefreshKopru" adıyla açılıyor (bkz. setupPullToRefresh).
+       Bu metod WebView'in KENDİ arka plan iş parçacığından çağrılabilir —
+       bilerek UI iş parçacığına post ETMİYORUZ (bu da gecikme eklerdi),
+       LogoSwipeRefreshLayout.innerContentKaydirilmis zaten volatile ve
+       iş parçacığı güvenli. */
+    @JavascriptInterface
+    public void innerScrollBildir(boolean icerikKaydirilmisMi) {
+        if (swipeRefresh != null) swipeRefresh.setInnerContentKaydirilmis(icerikKaydirilmisMi);
+    }
+
     // YENİ: sabit bir bekleme süresi (800ms, 3sn, ne olursa olsun) tahmin
     // yürütmekten vazgeçildi — gerçek yükleme süresi değişken (Firebase
     // bağlantısı + ilk veri gelmesi bazen çok kısa bazen birkaç saniye
@@ -133,6 +149,9 @@ public class MainActivity extends BridgeActivity {
         // (Android'in genel View kaydırma sistemi WebView'in iç durumuyla
         // her zaman senkron olmuyor).
         swipeRefresh = new LogoSwipeRefreshLayout(this, webView);
+        // YENİ: bkz. innerScrollBildir() notu — JS'in "AndroidPullToRefreshKopru"
+        // adıyla erişebileceği senkron köprü.
+        webView.addJavascriptInterface(this, "AndroidPullToRefreshKopru");
 
         android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
