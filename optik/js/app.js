@@ -3229,13 +3229,18 @@ function baslat() {
         if (!_aktifSinavId) return;
         const sinav = DB.sinaviBul(_aktifSinavId);
         const dersler = formDersleriniGetir(_aktifSinavId);
-        // 2 kitapçıklı sınavda seçili kitapçığın (A veya B) anahtarını al;
-        // tek kitapçıklı sınavda kitapçık parametresi yok.
-        const kitapcikTuru = sinav?.kitapcikTuruSayisi === 2 ? (_anahtarAktifKitapcik || 'A') : undefined;
-        const anahtar = DB.anahtariGetir(_aktifSinavId, kitapcikTuru);
-        const sinavAdi = sinav?.ad + (kitapcikTuru ? ` (${kitapcikTuru})` : '');
         const { DisaAktar } = await import('./disaAktar.js').catch(() => ({ DisaAktar: window.DisaAktar }));
-        (DisaAktar || window.DisaAktar)?.miniAnahtarPdfIndir?.(dersler, anahtar, sinavAdi);
+        const da = DisaAktar || window.DisaAktar;
+        if (sinav?.kitapcikTuruSayisi === 2) {
+            // 2 kitapçıklı: A ve B anahtarlarını al, sayfanın yarısı A yarısı B
+            const anahtarA = DB.anahtariGetir(_aktifSinavId, 'A');
+            const anahtarB = DB.anahtariGetir(_aktifSinavId, 'B');
+            da?.miniAnahtarPdfIndir?.(dersler, anahtarA, sinav.ad, 12, anahtarB);
+        } else {
+            // Tek kitapçık
+            const anahtar = DB.anahtariGetir(_aktifSinavId, undefined);
+            da?.miniAnahtarPdfIndir?.(dersler, anahtar, sinav?.ad);
+        }
     });
 
     // Raporlar

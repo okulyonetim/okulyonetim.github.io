@@ -487,35 +487,34 @@ window.DisaAktar = (function () {
 
     /**
      * @param {Array<{dersAdi,soruSayisi,sikSayisi}>} dersler - formDersleriniGetir() çıktısı
-     * @param {{dersler: Array<{dersAdi, anahtarlar:[{soruNo,dogru}]}>}} anahtar - DB.anahtariGetir() çıktısı
+     * @param {{dersler: Array<{dersAdi, anahtarlar:[{soruNo,dogru}]}>}} anahtarA - A kitapçığı (veya tek kitapçık)
      * @param {string} sinavAdi
      * @param {number} [kopyaSayisi=12] - sayfa başına kopya sayısı (varsayılan 12 = 3×4).
-     *   Desteklenen ızgaralar: 2(1×2), 4(2×2), 6(2×3), 8(2×4), 12(3×4), 15(3×5).
-     *   Font boyutu HER SINAV TÜRÜ İÇİN (LGS'nin 6 dersi de dahil) içerik gerçekten
-     *   hücreye sığana kadar otomatik küçültülür — sabit bir tahmine güvenilmez.
+     * @param {{dersler: Array<{dersAdi, anahtarlar:[{soruNo,dogru}]}>}} [anahtarB] - B kitapçığı (varsa sayfa yarıya bölünür)
      */
-    async function miniAnahtarPdfIndir(dersler, anahtar, sinavAdi, kopyaSayisi = 12) {
+    async function miniAnahtarPdfIndir(dersler, anahtarA, sinavAdi, kopyaSayisi = 12, anahtarB = null) {
 
         const toplamSoru = (dersler || []).reduce((t, d) => t + (d.soruSayisi || 0), 0);
         if (!toplamSoru) { alert('Bu sınav için ders/soru tanımı bulunamadı.'); return; }
 
-        const anahtarMap = {}; // dersAdi -> {soruNo: dogru}
-        (anahtar?.dersler || []).forEach(d => {
-            anahtarMap[d.dersAdi] = {};
-            (d.anahtarlar || []).forEach(a => { anahtarMap[d.dersAdi][a.soruNo] = a.dogru; });
-        });
-        const doluSoruSayisi = Object.values(anahtarMap).reduce((t, m) => t + Object.keys(m).length, 0);
-        if (!doluSoruSayisi) { alert('Cevap anahtarı boş — önce en az bir soruyu işaretleyin.'); return; }
+        // anahtarA map'i
+        const _anahtarMap = (anahtar) => {
+            const map = {};
+            (anahtar?.dersler || []).forEach(d => {
+                map[d.dersAdi] = {};
+                (d.anahtarlar || []).forEach(a => { map[d.dersAdi][a.soruNo] = a.dogru; });
+            });
+            return map;
+        };
+        const mapA = _anahtarMap(anahtarA);
+        const mapB = anahtarB ? _anahtarMap(anahtarB) : null;
+
+        const doluA = Object.values(mapA).reduce((t, m) => t + Object.keys(m).length, 0);
+        if (!doluA && !mapB) { alert('Cevap anahtarı boş — önce en az bir soruyu işaretleyin.'); return; }
 
         if (!window.jspdf && !window.jsPDF) { await _jspdfYukle(); }
         const { jsPDF } = window.jspdf || window;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        // YENİ: jsPDF'in yerleşik "helvetica" fontu Türkçe İ/ı/ğ/Ğ/Ş/ş
-        // karakterlerini desteklemiyor (WinAnsi kodlaması) — "İnkılap" gibi
-        // kelimeler "0nk1lap" çıkıyordu. pdfFormGenerator.js'te aynı sorun
-        // için zaten gömülmüş olan Roboto TTF'i burada da kullanıyoruz.
-        // (Cevap ızgarasındaki "1:A 2:B..." kısmı Türkçe karakter İÇERMEDİĞİ
-        // için orada hizalama amacıyla courier kalabilir.)
         try {
             const { fontlariKaydet } = await import('./pdfFormGenerator.js');
             fontlariKaydet(doc);
@@ -529,27 +528,39 @@ window.DisaAktar = (function () {
         const hucreW = (pageW - disMargin * 2) / kolon;
         const hucreH = (pageH - disMargin * 2) / satirSayisi;
 
-        // YENİ: font boyutu artık "soru sayısına göre kaba tahmin" değil,
-        // içerik gerçekten hücreye sığana kadar 7pt'den başlayıp adım adım
-        // küçültülerek bulunuyor (7 → 4.2pt, 0.2pt adımlarla). Böylece LGS
-        // gibi çok-dersli sınavlar dar hücrelerde (3+ sütun) bile taşıp
-        // ders eksik göstermez — okunaklılığın izin verdiği en büyük fontla basılır.
-        const ustBosluk = 6 + 4 + 4.5; // başlık + "CEVAP ANAHTARI" için
-        let fontPt = 4.2; // bulunamazsa en okunaklı taban budur
-        for (let i = 0; i <= 14; i++) { // 7.0, 6.8, ..., 4.2 (tam 14 adım — float birikim hatasından kaçınmak için tam sayı sayaçla)
+        // Font boyutunu her iki anahtarı kapsayacak şekilde hesapla
+        const referansMap = doluA > 0 ? mapA : (mapB || mapA);
+        let fontPt = 4.2;
+        for (let i = 0; i <= 14; i++) {
             const deneme = 7 - i * 0.2;
             const satirYuksekligiDeneme = deneme * 0.42;
-            const gerekli = _miniKopyaYuksekligiHesapla(dersler, anahtarMap, hucreW, deneme, satirYuksekligiDeneme);
-            if (gerekli <= hucreH - 8) { fontPt = deneme; break; } // -8: kesme çizgisi + alt pay
-            fontPt = deneme; // hiçbiri sığmazsa en küçük (son denenen = 4.2) ile devam edilir
+            const gerekli = _miniKopyaYuksekligiHesapla(dersler, referansMap, hucreW, deneme, satirYuksekligiDeneme);
+            if (gerekli <= hucreH - 8) { fontPt = deneme; break; }
+            fontPt = deneme;
         }
         const satirYuksekligi = fontPt * 0.42;
 
-        for (let k = 0; k < kolon * satirSayisi; k++) {
-            const col = k % kolon, row = Math.floor(k / kolon);
-            const x0 = disMargin + col * hucreW;
-            const y0 = disMargin + row * hucreH;
-            _miniKopyaCiz(doc, dersler, anahtarMap, sinavAdi, x0, y0, hucreW, hucreH, fontPt, satirYuksekligi);
+        const toplamHucre = kolon * satirSayisi;
+
+        if (mapB) {
+            // Kitapçıklı mod: ilk yarı A, ikinci yarı B
+            const yariHucre = Math.floor(toplamHucre / 2);
+            for (let k = 0; k < toplamHucre; k++) {
+                const col = k % kolon, row = Math.floor(k / kolon);
+                const x0 = disMargin + col * hucreW;
+                const y0 = disMargin + row * hucreH;
+                const kitapcik = k < yariHucre ? 'A' : 'B';
+                const map = k < yariHucre ? mapA : mapB;
+                _miniKopyaCiz(doc, dersler, map, sinavAdi + ' (' + kitapcik + ')', x0, y0, hucreW, hucreH, fontPt, satirYuksekligi);
+            }
+        } else {
+            // Tek kitapçık: tüm hücreler aynı
+            for (let k = 0; k < toplamHucre; k++) {
+                const col = k % kolon, row = Math.floor(k / kolon);
+                const x0 = disMargin + col * hucreW;
+                const y0 = disMargin + row * hucreH;
+                _miniKopyaCiz(doc, dersler, mapA, sinavAdi, x0, y0, hucreW, hucreH, fontPt, satirYuksekligi);
+            }
         }
 
         const dosyaAdi = `mini_cevap_anahtari_${_tarihDamgasi()}.pdf`;
