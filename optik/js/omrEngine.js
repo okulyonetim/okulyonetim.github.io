@@ -266,6 +266,136 @@ window.OmrOkuyucu = (function () {
   }
 
   // ---------------------------------------------------------------------
+  // 1.5) Adaptif eşikleme (Test Plus yaklaşımı)
+  //
+  // kontrastNormalizeEt'ten SONRA çağrılır. OpenCV.js (window.cv) varsa
+  // cv.adaptiveThreshold kullanır — her bölge için ayrı eşik hesaplar,
+  // ışık farklılıklarını/parlamayı otomatik telafi eder. cv yoksa
+  // basit Otsu eşiklemesine düşer. Sonuç: binary (0/255) ImageData.
+  //
+  // Bu fonksiyon canonical canvas ImageData'yı YERİNDE değiştirir.
+  // baloncukKaranlikOrani yerine baloncukDoluluğuBinary kullanılır.
+  // ---------------------------------------------------------------------
+
+  // Adaptif eşiklenmiş binary ImageData — her formuOku çağrısında
+  // üretilip baloncuk okuma adımında kullanılır, sonra temizlenir.
+  let _binaryImageData = null;
+
+  /**
+   * Canonical canvas ImageData'dan adaptif eşikli binary görüntü üretir.
+   * window.cv (OpenCV.js) varsa adaptiveThreshold, yoksa basit Otsu kullanır.
+   * Sonuç _binaryImageData'ya yazılır.
+   */
+  function adaptifEsikle(cImageData) {
+    const { width, height, data } = cImageData;
+
+    // Önce gri tonlama
+    const gri = new Uint8Array(width * height);
+    for (let i = 0; i < width * height; i++) {
+      const idx = i * 4;
+      gri[i] = Math.round(0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
+    }
+
+    const binary = new Uint8Array(width * height);
+
+    if (typeof cv !== 'undefined' && cv.Mat) {
+      // OpenCV.js yolu — adaptiveThreshold
+      let src, dst;
+      try {
+        src = cv.matFromArray(height, width, cv.CV_8UC1, gri);
+        dst = new cv.Mat();
+        // ADAPTIVE_THRESH_GAUSSIAN_C: her piksel için ağırlıklı Gauss
+        // komşuluğu kullanır. blockSize=31 (baloncuk çapının ~2-3 katı px),
+        // C=5 (yerel ortalamadan çıkarılacak sabit — baskı rengini bastırır).
+        cv.adaptiveThreshold(
+          src, dst,
+          255,
+          cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+          cv.THRESH_BINARY_INV,
+          31,
+          5
+        );
+        const dstData = dst.data;
+        for (let i = 0; i < dstData.length; i++) binary[i] = dstData[i];
+      } catch (e) {
+        // cv hata verirse Otsu'ya düş
+        _otsuEsikle(gri, binary, width, height);
+      } finally {
+        if (src) src.delete();
+        if (dst) dst.delete();
+      }
+    } else {
+      // OpenCV.js yoksa basit Otsu
+      _otsuEsikle(gri, binary, width, height);
+    }
+
+    // Binary sonucu ImageData formatına çevir
+    _binaryImageData = new ImageData(width, height);
+    const bd = _binaryImageData.data;
+    for (let i = 0; i < width * height; i++) {
+      const v = binary[i]; // 255 = işaretli piksel, 0 = boş
+      bd[i * 4] = v;
+      bd[i * 4 + 1] = v;
+      bd[i * 4 + 2] = v;
+      bd[i * 4 + 3] = 255;
+    }
+  }
+
+  /** Basit Otsu eşikleme (cv yoksa fallback). */
+  function _otsuEsikle(gri, binary, width, height) {
+    // Histogram
+    const hist = new Uint32Array(256);
+    for (let i = 0; i < gri.length; i++) hist[gri[i]]++;
+    const n = width * height;
+    let sum = 0;
+    for (let t = 0; t < 256; t++) sum += t * hist[t];
+    let sumB = 0, wB = 0, maxVar = 0, esik = 128;
+    for (let t = 0; t < 256; t++) {
+      wB += hist[t];
+      if (!wB) continue;
+      const wF = n - wB;
+      if (!wF) break;
+      sumB += t * hist[t];
+      const mB = sumB / wB;
+      const mF = (sum - sumB) / wF;
+      const diff = mB - mF;
+      const varBetween = wB * wF * diff * diff;
+      if (varBetween > maxVar) { maxVar = varBetween; esik = t; }
+    }
+    // THRESH_BINARY_INV: koyu piksel (< esik) = 255 (işaretli)
+    for (let i = 0; i < gri.length; i++) {
+      binary[i] = gri[i] < esik ? 255 : 0;
+    }
+  }
+
+  /**
+   * Binary ImageData'da bir daire alanındaki işaretli (255) piksel sayısını
+   * toplam piksel sayısına böler → 0-1 arası doluluk oranı.
+   * Test Plus'ın countNonZero yaklaşımının karşılığı.
+   */
+  function baloncukDolulukBinary(cx, cy, r) {
+    if (!_binaryImageData) return 0;
+    const { width, height, data } = _binaryImageData;
+    const x0 = Math.max(0, Math.floor(cx - r));
+    const x1 = Math.min(width - 1, Math.ceil(cx + r));
+    const y0 = Math.max(0, Math.floor(cy - r));
+    const y1 = Math.min(height - 1, Math.ceil(cy + r));
+    if (x1 <= x0 || y1 <= y0) return 0;
+    let isaretli = 0, toplam = 0;
+    const r2 = r * r;
+    for (let y = y0; y <= y1; y++) {
+      for (let x = x0; x <= x1; x++) {
+        const dx = x - cx, dy = y - cy;
+        if (dx * dx + dy * dy <= r2) {
+          toplam++;
+          if (data[(y * width + x) * 4] > 127) isaretli++;
+        }
+      }
+    }
+    return toplam > 0 ? isaretli / toplam : 0;
+  }
+
+  // ---------------------------------------------------------------------
   // 2) QR kod okuma
   // ---------------------------------------------------------------------
 
@@ -1582,9 +1712,15 @@ window.OmrOkuyucu = (function () {
     let enIyiDx = 0;
     let enIyiDy = 0;
 
+    // Binary görüntü varsa (adaptifEsikle çağrıldıysa) countNonZero yöntemi
+    // kullan — Test Plus yaklaşımı, renk/ışık bağımsız.
+    const binaryKullan = !!_binaryImageData;
+
     for (let dy = -aramaMesafesi; dy <= aramaMesafesi; dy += adim) {
       for (let dx = -aramaMesafesi; dx <= aramaMesafesi; dx += adim) {
-        const oran = baloncukKaranlikOrani(cImageData, cx + dx, cy + dy, r);
+        const oran = binaryKullan
+          ? baloncukDolulukBinary(cx + dx, cy + dy, r)
+          : baloncukKaranlikOrani(cImageData, cx + dx, cy + dy, r);
         if (oran > enIyiOran) {
           enIyiOran = oran;
           enIyiDx = dx;
@@ -2284,6 +2420,7 @@ window.OmrOkuyucu = (function () {
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = [];
     _radyalProfilSatirlari = []; // YENİ (teşhis): her okumada sıfırlanır, her hane için bir satır
+    _binaryImageData = null; // önceki okumadan kalan binary temizle
 
     // YENİ (kritik): cv.js henüz yüklenme sürecindeyse BEKLE, sessizce eski
     // yönteme kayma. Önceden burada bir bekleme yoktu — aynı fotoğraf,
@@ -2482,6 +2619,7 @@ window.OmrOkuyucu = (function () {
     // gerçekte doldurulmuş olsa bile "boş" (guven < KARANLIK_ESIK) okunuyordu.
     kontrastNormalizeEt(cImageData);
     duzCanvas.getContext('2d').putImageData(cImageData, 0, 0); // debug önizlemesini de güncelle
+    adaptifEsikle(cImageData); // binary görüntü üret (baloncuk doluluk ölçümü için)
 
     // TÜM ders sütunlarını saran genel ızgara çerçevesi için TEK bir yerel
     // hizalama düzeltmesi bul (bkz. bölüm 7.5). Global 4-köşe homografi tek
@@ -2518,7 +2656,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push("Koyuluk özeti: " + _sonKoyulukOzeti);
     }
-    uyarilar.push("[KOD SÜRÜMÜ: v19-numaraTeshis]");
+    uyarilar.push("[KOD SÜRÜMÜ: v20-adaptifEsik]");
     if (_sonNumaraTeshis) { uyarilar.push("Numara teşhisi: " + _sonNumaraTeshis); }
     if (_radyalProfilSatirlari.length) { uyarilar.push("Radyal koyuluk profili:\n" + _radyalProfilSatirlari.join("\n")); }
 
@@ -2555,14 +2693,19 @@ window.OmrOkuyucu = (function () {
    */
   function homografiElleKoselerdenHesapla(form, koseler, ppmm) {
 
-    const hizalamaMM = hizalamaMerkezleriMM(form);
-    const bulKonum = (ad) => hizalamaMM.find((h) => h.konum === ad).nokta;
+    // Kullanıcı/CV'nin verdiği köşeler SAYFA DIŞ KÖŞELERİ (CV çerçeve
+    // tespiti) veya hizalama kareleri olabilir. Her iki durumda da en
+    // güvenilir referans sayfanın kendi 4 köşesidir (bolge 0,0 tabanlı).
+    // Canonical canvas'ta (0,0) = sayfanın sol-üst köşesi olduğundan,
+    // kaynak olarak tam köşeleri (0,0), (genislik,0) vb. kullanıyoruz.
+    const w = form.bolge.width * ppmm;
+    const h = form.bolge.height * ppmm;
 
     const kaynak = [
-      { x: bulKonum('sol-ust').x * ppmm, y: bulKonum('sol-ust').y * ppmm },
-      { x: bulKonum('sag-ust').x * ppmm, y: bulKonum('sag-ust').y * ppmm },
-      { x: bulKonum('sag-alt').x * ppmm, y: bulKonum('sag-alt').y * ppmm },
-      { x: bulKonum('sol-alt').x * ppmm, y: bulKonum('sol-alt').y * ppmm },
+      { x: 0, y: 0 },   // sol-üst
+      { x: w, y: 0 },   // sağ-üst
+      { x: w, y: h },   // sağ-alt
+      { x: 0, y: h },   // sol-alt
     ];
 
     const hedef = [koseler.solUst, koseler.sagUst, koseler.sagAlt, koseler.solAlt];
@@ -2583,7 +2726,7 @@ window.OmrOkuyucu = (function () {
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = ['Köşeler elle seçildi (otomatik hizalama tespiti atlandı).'];
     _radyalProfilSatirlari = []; // YENİ (teşhis): her okumada sıfırlanır, her hane için bir satır
-
+    _binaryImageData = null; // önceki okumadan kalan binary temizle
 
     const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
 
@@ -2596,6 +2739,7 @@ window.OmrOkuyucu = (function () {
 
     kontrastNormalizeEt(cImageData);
     duzCanvas.getContext('2d').putImageData(cImageData, 0, 0);
+    adaptifEsikle(cImageData); // binary görüntü üret (baloncuk doluluk ölçümü için)
 
     // Kimlik artık QR'den değil, Kitapçık+Numara baloncuk bloğundan okunuyor
     // (bkz. layoutEngine.js: kitapcikAlaniHesapla / numaraAlaniHesapla).
