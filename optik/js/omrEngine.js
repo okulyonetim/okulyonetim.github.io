@@ -2492,6 +2492,7 @@ window.OmrOkuyucu = (function () {
 
     kontrastNormalizeEt(cImageData);
     duzCanvas.getContext('2d').putImageData(cImageData, 0, 0);
+    adaptifEsikle(cImageData); // binary görüntü üret (baloncuk doluluk ölçümü için)
 
     // Kimlik: QR yerine Kitapçık+Numara baloncuklarından (elle-köşeli modla aynı yöntem).
     let ogrenciKimlik = null;
@@ -2523,7 +2524,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v19-numaraTeshis]');
+    uyarilar.push('[KOD SÜRÜMÜ: v20-adaptifEsik]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
@@ -2543,137 +2544,6 @@ window.OmrOkuyucu = (function () {
     };
   }
 
-  async function _formuOkuEski_KULLANILMIYOR(kaynak, form, secenekler = {}) {
-    const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
-    const uyarilar = [];
-
-    const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
-
-    let qrSonuc;
-    try {
-      qrSonuc = qrKoduBulVeDogrula(fotoImageData);
-    } catch (e) {
-      return {
-        basarili: false,
-        ogrenciKimlik: null,
-        cevaplar: [],
-        uyarilar: [e.message],
-        hataAyiklama: null,
-      };
-    }
-
-    const ogrenciKimlik = payloadAyristir(qrSonuc.metin);
-
-    const { H, hizalamaBulunduMu, guvenilmezBulunduMu, bulunamayanIsaretler, disariBirakilanIsaretler, hizalamaKanonikNoktalari, hamBulunanKanonikNoktalari, koseArtiklariMM } =
-      formuDuzlestir(fotoImageData, form, ppmm);
-
-    // Kalibrasyon/teşhis için: 4 köşe de bulunduğunda her birinin
-    // leave-one-out artığını (mm) her zaman göster — bir köşe hiç
-    // dışlanmasa bile. Böylece "iyi" bir okumada bu değerlerin normalde
-    // ne aralıkta çıktığını görüp TUTARLILIK_ESIK_MM'yi ileride gerçek
-    // verilerle ince ayar yapabiliriz.
-    if (koseArtiklariMM && koseArtiklariMM.length) {
-      uyarilar.push(
-        'Köşe tutarlılık artıkları: ' +
-        koseArtiklariMM.map((k) => k.konum + '=' + (Number.isFinite(k.artikMM) ? k.artikMM.toFixed(1) + 'mm' : '∞')).join(', ')
-      );
-    }
-
-    if (guvenilmezBulunduMu) {
-      uyarilar.push(
-        'Köşe hizalama işaretleri bulundu ama sonuçları tutarsız/güvenilmez ' +
-        'çıktı (muhtemelen bir köşe yanlış bir noktaya kilitlendi), bu yüzden ' +
-        'göz ardı edilip daha kaba (yalnızca QR tabanlı) bir homografi ' +
-        'kullanıldı. Bu, QR\'den uzak sorularda doğruluğu düşürebilir.'
-      );
-    } else if (disariBirakilanIsaretler && disariBirakilanIsaretler.length) {
-      uyarilar.push(
-        'Sayfanın 4 köşesi de bulundu ama biri (' + disariBirakilanIsaretler[0] + ') ' +
-        'diğer 3 köşeyle tutarsız çıktığı için dışlanıp kalan 3 köşeden AFİN bir ' +
-        'düzeltme kullanıldı — genelde yeterli ama tam homografi kadar hassas ' +
-        'olmayabilir. Fotoğrafta o köşenin net/gölgesiz olduğundan emin olun.'
-      );
-    } else if (bulunamayanIsaretler.length === 1) {
-      uyarilar.push(
-        'Sayfanın 4 köşesinden biri bulunamadı (' + bulunamayanIsaretler[0] + '). ' +
-        'Diğer 3 köşeden AFİN (döndürme/ölçek, perspektifsiz) bir düzeltme ' +
-        'kullanıldı — genelde yeterli ama tam homografi kadar hassas olmayabilir.'
-      );
-    } else if (!hizalamaBulunduMu) {
-      uyarilar.push(
-        'Sayfanın 4 köşesindeki hizalama işaretlerinden bazıları bulunamadı ' +
-        '(' + bulunamayanIsaretler.join(', ') + '). Daha kaba (yalnızca QR ' +
-        'tabanlı) bir homografiye geri düşüldü — bu, QR\'den uzak sorularda ' +
-        'doğruluğu düşürebilir. Fotoğrafın 4 köşesinin de net/kırpılmadan ' +
-        'çekildiğinden emin olun.'
-      );
-    }
-
-    const { canvas: duzCanvas, imageData: cImageData } = duzCanvasUret(fotoImageData, H, form, ppmm);
-    if (_sonHTestSonucu) {
-      uyarilar.push('H köşe testi: ' + _sonHTestSonucu);
-    }
-
-    // Fotoğrafın kendi ışık koşuluna göre siyah/beyaz noktalarını kalibre et
-    // (bkz. kontrastNormalizeEt açıklaması) — bu adım olmadan çoğu baloncuk
-    // gerçekte doldurulmuş olsa bile "boş" (guven < KARANLIK_ESIK) okunuyordu.
-    kontrastNormalizeEt(cImageData);
-    duzCanvas.getContext('2d').putImageData(cImageData, 0, 0); // debug önizlemesini de güncelle
-    adaptifEsikle(cImageData); // binary görüntü üret (baloncuk doluluk ölçümü için)
-
-    // TÜM ders sütunlarını saran genel ızgara çerçevesi için TEK bir yerel
-    // hizalama düzeltmesi bul (bkz. bölüm 7.5). Global 4-köşe homografi tek
-    // başına yeterli olmadığında (kağıdın bölgeye göre değişen eğriliği/
-    // bombeleşmesi), bu, ızgaranın tamamı için satır kaymasını düzeltir.
-    //
-    // VARSAYILAN OLARAK ATLANIR (bkz. formuOkuElleKoseli'deki aynı not):
-    // bu adımın aradığı ızgara-çerçevesi köşe kareleri, sayfanın kendi
-    // hizalama işaretlerine (özellikle sağ tarafta) çok yakın çizildiği
-    // için otomatik tespiti karıştırabiliyor — ve zaten sayfa-köşesi
-    // homografisi TEK BAŞINA yeterli hassasiyeti sağlıyor. Yeni üretilen
-    // formlarda (pdfFormGenerator.js'den genelIzgaraCercevesiCiz çağrısı
-    // kaldırıldıysa) bu kareler artık basılmıyor olacak; secenekler.
-    // genelDuzeltmeKullan: true ile eski formlar için tekrar açılabilir.
-    let genelDuzeltme = null;
-
-    if (secenekler.genelDuzeltmeKullan) {
-      genelDuzeltme = genelDuzeltmeHesapla(cImageData, form, ppmm);
-      if (!genelDuzeltme) {
-        uyarilar.push(
-          'Izgaranın (tüm ders sütunlarını saran çerçevenin) hizalama işaretleri ' +
-          'bulunamadı, sayfa-geneli düzeltme kullanıldı.'
-        );
-      }
-    }
-
-    const cevaplarSonuc = cevaplariCikar(cImageData, form, ppmm, genelDuzeltme);
-    const cevaplar = cevaplarSonuc.cevaplar;
-
-    const belirsizSayisi = cevaplar.filter((c) => c.uyari).length;
-    if (belirsizSayisi > 0) {
-      uyarilar.push(belirsizSayisi + ' soruda belirsiz/boş/çoklu işaret tespit edildi.');
-    }
-    if (_sonKoyulukOzeti) {
-      uyarilar.push("Koyuluk özeti: " + _sonKoyulukOzeti);
-    }
-    uyarilar.push("[KOD SÜRÜMÜ: v20-adaptifEsik]");
-    if (_sonNumaraTeshis) { uyarilar.push("Numara teşhisi: " + _sonNumaraTeshis); }
-    if (_radyalProfilSatirlari.length) { uyarilar.push("Radyal koyuluk profili:\n" + _radyalProfilSatirlari.join("\n")); }
-
-    return {
-      basarili: true,
-      ogrenciKimlik,
-      cevaplar,
-      uyarilar,
-      hataAyiklama: {
-        duzeltilmisCanvas: duzCanvas,
-        hizalamaNoktalari: hizalamaKanonikNoktalari,
-        hamHizalamaNoktalari: hamBulunanKanonikNoktalari,
-        ornekNoktalari: cevaplarSonuc.ornekNoktalari,
-        genelDuzeltme,
-      },
-    };
-  }
 
   // ---------------------------------------------------------------------
   // 9) ELLE KÖŞE SEÇİMİ (otomatik QR/hizalama tespiti başarısız olduğunda
