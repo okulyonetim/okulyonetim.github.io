@@ -42,6 +42,7 @@ const MODUL_LISTESI = [
   {grup:'Genel', modul:'denemeSonuclari', ad:'Deneme Sonuçları'},
   {grup:'Genel', modul:'testSonuclari', ad:'Test Sonuçları'},
   {grup:'Genel', modul:'optikOkuma', ad:'Optik Okuma (OMR)'},
+  {grup:'Genel', modul:'optikFormOlusturma', ad:'Optik Form Oluşturma (Şablon Tasarımı)'},
   {grup:'Genel', modul:'dokumanlar', ad:'Dökümanlar'},
   {grup:'Genel', modul:'haberler', ad:'Haberler'},
   {grup:'Genel', modul:'duyurular', ad:'Duyuru Panosu'},

@@ -117,6 +117,30 @@
     okulAdiGetir() {
       return (typeof okulBilgileriAyari !== 'undefined' && okulBilgileriAyari && okulBilgileriAyari.okulAdi) || 'KORUK İLK - ORTAOKULU';
     },
+    /* YENİ (Ağustos 2026, Sedat isteği: "form oluşturma yetkisi rollerde
+       ayarlanabilmeli, şu an sadece admin oluştursun") — js/kullanici-
+       yonetimi.js'teki rol/yetki sistemine ('optikFormOlusturma' modülü)
+       senkron bir köprü. Süper admin (AKTIF_KULLANICI.admin===true) her
+       zaman true döner (duzenleyebilir() zaten bunu içeriyor); diğer
+       kullanıcılar için rolüne bu yetki açıkça 'duzenle' olarak
+       atanmadıysa false döner. */
+    formOlusturmaYetkisiVar() {
+      return typeof duzenleyebilir === 'function' && duzenleyebilir('optikFormOlusturma');
+    },
+    /* YENİ (Ağustos 2026, Sedat isteği: "yetki verilirse oluşturduğu form
+       sadece kendisinde ve adminde görünsün") — optik modülü kendi
+       tasarladığı şablonlara SAHİP bilgisini yazabilsin diye, aktif
+       kullanıcının kimliğini döner. uid Firebase Auth kimliğidir (aynı
+       hesap farklı cihazlarda aynı uid'i taşır); admin bilgisi görünürlük/
+       düzenleme yetkisi kontrolünde kullanılır. */
+    aktifKullaniciBilgisiGetir() {
+      if (typeof AKTIF_KULLANICI === 'undefined' || !AKTIF_KULLANICI) return null;
+      return {
+        uid: AKTIF_KULLANICI.uid || AKTIF_KULLANICI.id || null,
+        ad: AKTIF_KULLANICI.ad || AKTIF_KULLANICI.kullaniciAdi || AKTIF_KULLANICI.email || 'Bilinmeyen',
+        admin: AKTIF_KULLANICI.admin === true
+      };
+    },
     /* YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar Firestore'a
        kaydedilsin") — Optik Form Editörü şablonları artık oy_optikSablonlari
        koleksiyonunda saklanıyor (cihazlar arası senkron/yedek için).
