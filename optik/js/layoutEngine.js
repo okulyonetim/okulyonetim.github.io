@@ -22,7 +22,7 @@ const A4 = { width: 210, height: 297 };
 // mesafede) kalıyor, kare ise çizginin İÇİNDE (ondan daha uzakta, sayfanın iç
 // tarafında) duruyor. Böylece hiçbir tarama sütunu/satırı ikisini aynı anda
 // görmüyor.
-const HIZALAMA_MARKER_BOYUT = 4; // mm, dolu kare boyutu
+const HIZALAMA_MARKER_BOYUT = 3; // mm, dolu kare boyutu (eski: 4mm)
 
 // Çerçeve çizgisinin sayfa/bölge kenarından mesafesi — bu, yazdırılabilir
 // alan güvenli payı olarak SABİT kalmalı (çoğu yazıcı/fotokopi kenara çok
@@ -32,11 +32,11 @@ const CERCEVE_PAY = 4; // mm
 // Çerçeve çizgisi ile kare arasında bırakılan boşluk — ikisinin flood-fill/
 // tarama sırasında ASLA birbirine değmemesi/karışmaması için. Kare, bu kadar
 // çerçevenin İÇİNDE (sayfanın iç tarafına doğru) duruyor.
-const KARE_CERCEVE_BOSLUK = 3; // mm
+const KARE_CERCEVE_BOSLUK = 2; // mm (eski: 3mm)
 
 // Köşe karesinin sayfa/bölge kenarından mesafesi — artık çerçeveden sonra,
 // ondan bağımsız.
-const HIZALAMA_PAY = CERCEVE_PAY + KARE_CERCEVE_BOSLUK; // = 7mm
+const HIZALAMA_PAY = CERCEVE_PAY + KARE_CERCEVE_BOSLUK; // = 6mm
 
 // Köşe karesinin (HIZALAMA_PAY..HIZALAMA_PAY+HIZALAMA_MARKER_BOYUT aralığı)
 // içeriğe (başlık kutusu) DEĞMEMESİ için gereken minimum kenar payı.
@@ -46,7 +46,7 @@ const HIZALAMA_PAY = CERCEVE_PAY + KARE_CERCEVE_BOSLUK; // = 7mm
 // için başlık kutusu ile köşe karesi/çerçeve çizgisi görsel olarak iç içe
 // giriyordu (gözlemlenen hata). Artık HER İKİ header üretici de bu ortak,
 // güvenli payı kullanıyor.
-const KOSE_GUVENLI_PAY = HIZALAMA_PAY + HIZALAMA_MARKER_BOYUT + 1; // = 12mm
+const KOSE_GUVENLI_PAY = HIZALAMA_PAY + HIZALAMA_MARKER_BOYUT; // = 9mm (eski: 12mm)
 
 /**
  * Her mini-form için 4 köşe hizalama işareti (fiducial marker) koordinatı.

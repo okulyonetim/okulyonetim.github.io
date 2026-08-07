@@ -131,7 +131,7 @@
   // Köşe hizalama işaretleri için gereken minimum güvenli kenar boşluğu
   // (layoutEngine.js: KOSE_GUVENLI_PAY) — küçük kağıtlarda kullanılabilir
   // alanın ne kadar dar kaldığını kullanıcıya göstermek için.
-  const KOSE_GUVENLI_PAY_MM = 12;
+  const KOSE_GUVENLI_PAY_MM = 9; // layoutEngine.js ile senkron (eski: 12mm)
 
   function OptikSablonEditor_baslat(container, secenekler) {
     secenekler = secenekler || {};
@@ -861,9 +861,17 @@
       // gösteriliyor, hem de kareler/çerçeve gerçek konumlarında çiziliyor.
       const guvenliPay = KOSE_GUVENLI_PAY_MM;
       if (sablon.sayfaBoyutu.width > 2 * guvenliPay && sablon.sayfaBoyutu.height > 2 * guvenliPay) {
+        // GÜVENSİZ bölge: sayfa kenarından guvenliPay mm içerideki sınır.
+        // Eski tasarım: guvenliPay mm (12mm) kalınlığında kırmızı stroke
+        // görsel olarak içerik alanını çok dar gösteriyordu.
+        // Yeni tasarım: yalnızca ince kesik kırmızı çizgi — gerçek sınırı
+        // net gösterir ama içerik alanı açık ve geniş görünür.
+        // Yalnızca ince kesik çizgi — içerik sınırını gösterir, kenar bandını doldurmaz.
         svg.appendChild(svgOlustur('rect', {
-          x: 0, y: 0, width: sablon.sayfaBoyutu.width, height: sablon.sayfaBoyutu.height,
-          fill: 'none', stroke: 'rgba(200,0,0,0.35)', 'stroke-width': guvenliPay, 'stroke-dasharray': '2,1.5',
+          x: guvenliPay, y: guvenliPay,
+          width: sablon.sayfaBoyutu.width - 2 * guvenliPay,
+          height: sablon.sayfaBoyutu.height - 2 * guvenliPay,
+          fill: 'none', stroke: 'rgba(200,0,0,0.55)', 'stroke-width': 0.45, 'stroke-dasharray': '3,2',
         }));
       }
       const cerceve = LE.sayfaCercevesiHesapla(bolge);
