@@ -46,9 +46,9 @@
     <!-- YENİ (Ağustos 2026, Sedat isteği): "Yeni sınav eklemeden değil de
          şablonlar sayfası olsa ordan şablonları okuşturup düzenlesek" —
          özel formları Yeni Sınav akışına girmeden yönetme girişi. -->
-    <button class="o-baslik-btn" id="btnSablonlarAc" title="Şablonlarım">
+    <button class="o-baslik-btn" id="btnSablonlarAc" title="Optik Formlar">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-      Şablonlarım
+      Optik Formlar
     </button>
   </header>
   <div class="o-icerik" id="sinavListesiKap">
@@ -76,7 +76,7 @@
     <button class="o-geri-btn" id="btnSablonlarGeri">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <h1 class="o-baslik" style="color:#fff;">Şablonlarım</h1>
+    <h1 class="o-baslik" style="color:#fff;">Optik Formlar</h1>
     <!-- YENİ (Ağustos 2026, Sedat geri bildirimi: "web'de oluşturduğum
          şablonlar Android'de görünmüyor") — Firestore senkronunu ELLE
          tetikleyip SONUCUNU GÖRÜNÜR şekilde bildiren düğme. -->
@@ -88,7 +88,7 @@
     <div class="bos-alan" id="sablonlarBosAlan" hidden>
       <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
       <p>Henüz özel bir form tasarlamadınız</p>
-      <small>+ ile başlayın</small>
+      <small id="sablonlarBosAltMetin">+ ile başlayın</small>
     </div>
     <div id="sablonlarListesi" class="kart-listesi"></div>
   </div>
@@ -145,35 +145,12 @@
       </button>
     </div>
 
-    <!-- 4. Özel Sınav Ayarları (soru/şık sayısı) — yalnızca "Özel Sınav" seçilince
-         görünür, çünkü LGS/Bursluluk'ta bu sayılar resmî şablonla SABİTTİR.
-         Soru sayısı artık SERBEST METİN DEĞİL, önceden test edilmiş sabit
-         seçeneklerden biri — böylece düzen her zaman sağlam/kompakt kalır
-         (eskiden herhangi bir sayı girilebiliyordu, bu da bazı sayılarda
-         başlık/köşe ile çakışan bozuk sayfalara yol açabiliyordu). -->
-    <div class="form-blok" id="ysOzelAyarBlok" hidden>
-      <label class="form-etiket">Özel Sınav Ayarları</label>
-      <div class="form-pill">
-        <span class="form-ikon">🔢</span>
-        <select id="ysOzelSoruSayisi" class="form-input">
-          <option value="15">15 Soru</option>
-          <option value="20" selected>20 Soru</option>
-          <option value="25">25 Soru</option>
-          <option value="30">30 Soru</option>
-          <option value="40">40 Soru</option>
-        </select>
-      </div>
-      <div class="form-pill" style="margin-top:8px;">
-        <span class="form-ikon">🔤</span>
-        <select id="ysOzelSikSayisi" class="form-input">
-          <option value="4" selected>4 şık (A-D)</option>
-          <option value="5">5 şık (A-E)</option>
-          <option value="3">3 şık (A-C)</option>
-          <option value="2">2 şık (A-B, Doğru/Yanlış)</option>
-        </select>
-      </div>
-      <small class="form-yardim">Sayfa düzeninin bozulmaması için soru sayısı sabit seçeneklerden seçiliyor.</small>
-    </div>
+    <!-- Not (Ağustos 2026, Sedat isteği: "özel sınav ayarlarını kaldır") —
+         eskiden burada ayrı bir soru/şık sayısı seçimi vardı; hem hiçbir JS
+         koduna bağlı değildi (ysOzelSoruSayisi/ysOzelSikSayisi hiçbir yerde
+         okunmuyordu) hem de seçilen forma göre soru/şık sayısı zaten
+         otomatik geliyor (bkz. _ysSablonSecilen.soruSayisi/sikSayisi) —
+         bu yüzden tamamen kaldırıldı. -->
 
     <!-- 5. Yanlış Cevap Etkisi — sınav türünden BAĞIMSIZ, her sınav ekleme
          akışında görünür. Varsayılan Etkisiz'dir; LGS/Bursluluk resmî kuralı
