@@ -17,6 +17,7 @@
 import { formuOkuVeGoster, formuOkuElleKoseliVeGoster, formuOkuToplu } from "./formOkuyucu.js";
 import { showStatus } from "./utils.js";
 import { koseSeciciElemanlariniAl, koseSecimAkisi, KOSE_SECIM_IPTAL } from "./koseSecici.js";
+import { cvHazirBekle } from "./sayfaTespitCV.js";
 
 /**
  * Seçilen dosyayı bir <img> nesnesine (yüklenmiş halde) çevirir.
@@ -132,6 +133,9 @@ export function baglaGaleriSecici(inputId, canvasId) {
         }
 
         try {
+
+            // OpenCV.js henüz hazır değilse bekle — adaptifEsikle için gerekli
+            await cvHazirBekle();
 
             if (dosyalar.length > 1) {
 
