@@ -2487,8 +2487,7 @@ function _layoutParamlariHazirla(sinav, secimler = {}) {
  * KAPSAM SINIRI: editörle tasarlanmış özel şablonlar şu an için LGS/
  * Bursluluk'taki gibi "sayfa başına birden fazla form" veya yatay yönlendirme
  * paketlemesini DESTEKLEMİYOR — her zaman tek sayfa, dikey, tasarlandığı
- * gibi basılır (yzYonSegment/yzDuzenSegment bu türde devre dışı bırakılmalı,
- * bkz. _sinavSabitSablonMu).
+ * gibi basılır (bkz. _sinavSabitSablonMu).
  */
 function _layoutGetir(sinav, secimler = {}) {
     if (sinav?.optikFormId && sinav.optikFormId.startsWith('ozelTasarim_')) {
@@ -2530,9 +2529,15 @@ async function _yzOgrenciListesiGetir(sinav) {
     return ogrList;
 }
 
-// ── Yazdırma Seçenekleri sheet (yön / sayfa düzeni / önizleme) ──
+// ── Optik Form önizleme/indirme sheet ──
+// KÖK DEĞİŞİKLİK (Ağustos 2026, Sedat isteği: "Optik önizleme indirme
+// modalındaki yazdırma seçenekleri gereksiz artık. Kaldır onları.") —
+// yön (dikey/yatay) ve sayfa düzeni (tek form/2'li/4'lü/6'lı) artık
+// kullanıcıya sorulmuyor; _layoutGetir çağrıları parametresiz yapılır ve
+// _layoutParamlariHazirla içindeki 'dikey'/'otomatik' varsayılanları
+// kullanılır (otomatik seçim zaten soru sayısına göre en kağıt tasarruflu
+// düzeni buluyordu — bkz. layoutEngine.js sayfaDuzeniOner).
 let _yzMod = null; // 'bos' | 'ogrenciler'
-const _yzSecimleri = { yon: 'dikey', sayfaDuzeni: 'otomatik' };
 
 function yazdirmaSecenekleriAc(mod) {
     const sinav = DB.sinaviBul(_aktifSinavId);
@@ -2542,24 +2547,6 @@ function yazdirmaSecenekleriAc(mod) {
     _yzMod = mod;
     document.getElementById('yzOnizlemeDurum').textContent = '';
     sheetAc('sheetYazdirmaSecenekleri');
-}
-
-function _yzSegmentBagla(containerId, datasetAdi, secimAnahtari) {
-    document.getElementById(containerId).querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (btn.disabled) return;
-            document.getElementById(containerId).querySelectorAll('button').forEach(b => b.classList.remove('yz-aktif'));
-            btn.classList.add('yz-aktif');
-            let deger = btn.dataset[datasetAdi];
-            // "1"/"2"/"4"/"6" gibi salt sayısal değerleri (data-duzen) Number'a çevir —
-            // layoutEngine.js'teki switch(formsPerA4){case 4: ...} sıkı (===) tip
-            // karşılaştırması yapıyor, string "4" sayısal 4'e EŞİT SAYILMAZ.
-            // 'otomatik' / 'dikey' / 'yatay' gibi metin değerler olduğu gibi kalır.
-            if (/^\d+$/.test(deger)) deger = Number(deger);
-            _yzSecimleri[secimAnahtari] = deger;
-            // seçenek değişti — önizleme artık ayrı bir pencerede olduğu için burada gizlenecek bir şey yok
-        });
-    });
 }
 
 /* ====================================================================
@@ -2654,7 +2641,7 @@ async function yzOnizleOlustur() {
     if (!sinav) return;
     durumEl.textContent = 'Önizleme hazırlanıyor...';
     try {
-        const layout = _layoutGetir(sinav, _yzSecimleri);
+        const layout = _layoutGetir(sinav);
         const { bosFormGorseliOlustur, ogrenciFormGorselleriOlustur } = await import('./canvasFormGenerator.js');
         let sayfalar, sayfaBilgi;
 
@@ -2707,7 +2694,7 @@ async function yzOnaylaVeIndir() {
     sheetKapat('sheetYazdirmaSecenekleri');
     durumEl.textContent = 'Oluşturuluyor...';
     try {
-        const layout = _layoutGetir(sinav, _yzSecimleri);
+        const layout = _layoutGetir(sinav);
         if (_yzMod === 'bos') {
             const { formPdfOlustur } = await import('./pdfFormGenerator.js');
             const doc = await _zamanAsimliBekle(formPdfOlustur(layout, {

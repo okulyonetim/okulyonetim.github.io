@@ -60,14 +60,33 @@ const KOYU_METIN = [33, 33, 33];
 const ACIK_RENK = [252, 228, 236];   // açık pembe — ders başlığı zemin rengi
 const ZEBRA_ACIK = [253, 245, 248];  // çok açık pembe — etiket/değer kutularının zemin rengi
 
-let fontlarYuklendiMi = false;
+/**
+ * KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat bildirimi: "PDF'te İ, ı, Ş, Ğ,
+ * Ç, Ö, Ü gibi Türkçe karakterler '0' vb. bozuk basılıyor"):
+ *
+ * Önceden burada modül seviyesinde TEK SEFERLİK bir `fontlarYuklendiMi`
+ * bayrağı vardı. Ama jsPDF'te addFont/addFileToVFS bir FONTU DEĞİL, o
+ * FONTU O ANKİ jsPDF DOKÜMAN ÖRNEĞİNE (doc) kaydeder — kayıt global/kalıcı
+ * değildir. Bu modül sayfa boyunca tek bir kez yüklenip aynı `doc` tekrar
+ * kullanılıyormuş gibi davranıyordu; oysa her PDF üretiminde (bkz.
+ * formPdfOlustur/topluFormPdfOlustur) `new jsPDF(...)` ile TAMAMEN YENİ bir
+ * doküman örneği oluşturuluyor. Sonuç: bir oturumda İKİNCİ (ve sonraki)
+ * PDF'lerde bayrak zaten true olduğu için Roboto o yeni `doc`'a hiç
+ * kaydedilmiyor, doc.setFont('Roboto', ...) sessizce jsPDF'in dahili
+ * çekirdek fontuna (Helvetica/WinAnsi, yalnızca Latin-1 kapsar) düşüyordu.
+ * WinAnsi kapsamı dışındaki Türkçe karakterler (özellikle İ = U+0130) bu
+ * çekirdek fontun kod-noktası indirgemesiyle YANLIŞ bir ASCII karaktere
+ * (İ -> '0') dönüşüyordu — "KİTAPÇIK" -> "K0TAPÇIK" gibi.
+ *
+ * DÜZELTME: fontu HER `doc` için ayrı ayrı (ve HER ZAMAN) kaydet — global
+ * bayrak kaldırıldı. addFont/addFileToVFS çağrıları ucuzdur (PDF başına
+ * yalnızca bir kez tetiklenir), bu yüzden performans kaygısı yoktur.
+ */
 function fontlariKaydet(doc) {
-  if (fontlarYuklendiMi) return;
   doc.addFileToVFS('Roboto-Regular.ttf', ROBOTO_REGULAR_BASE64);
   doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
   doc.addFileToVFS('Roboto-Bold.ttf', ROBOTO_BOLD_BASE64);
   doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
-  fontlarYuklendiMi = true;
 }
 
 /** Cap-height yaklaşık hesaplaması (mm), baseline konumlandırma için. */
@@ -79,6 +98,24 @@ function capYuksekligi(fontPt) {
 function baselineUst(yUst, yukseklik, fontPt, altPay = null) {
   if (altPay !== null) return yUst + yukseklik - altPay;
   return yUst + (yukseklik + capYuksekligi(fontPt)) / 2;
+}
+
+/**
+ * KÖK NEDEN DÜZELTMESİ (Sedat bildirimi: "formda ders başlıkları taşıyor" —
+ * bkz. ekran görüntüsü, "İNKILAP TARİHİ" gibi uzun ders adları sütun
+ * genişliğini aşıp bir sonraki sütuna taşıyordu): ders başlığı metni artık
+ * SABİT bir punto ile değil, kutuya SIĞDIRILARAK çiziliyor — metin kutudan
+ * genişse punto, okunabilir bir alt sınıra kadar kademeli olarak küçültülür.
+ * `doc.setFont` daha önceden çağrılmış olmalı (genişlik ölçümü o fonta göre
+ * yapılır).
+ */
+function metinPuntosuSigdir(doc, metin, maxGenislikMM, baslangicPt, minPt = 4) {
+  let pt = baslangicPt;
+  while (pt > minPt && doc.getTextWidth(metin) * (pt / doc.getFontSize()) > maxGenislikMM) {
+    // doc.getTextWidth mevcut ayarlı font boyutuna göre ölçer; oranla tahmini küçültüyoruz.
+    pt -= 0.25;
+  }
+  return Math.max(pt, minPt);
 }
 
 function dikdortgenCiz(doc, x, y, w, h, renk) {
@@ -386,13 +423,25 @@ function bolumlerCiz(doc, form) {
       const BFPT = dersler[0].baslikFontPt || 6.4;
       if (bolum.baslikX != null && bolum.baslikYuksekligi > 0) {
         const bX=bolum.baslikX,bY=bolum.baslikY,bW=bolum.toplamGenislik,bH=bolum.baslikYuksekligi,bFontPt=bolum.baslikFontPt||BFPT;
+        const metin=(bolum.baslik||dersler[0].dersAdi||'').normalize('NFC');
         cerceveCiz(doc,bX,bY,bW,bH,ANA_RENK,0.35);
         doc.setFont('Roboto','bold');doc.setFontSize(bFontPt);doc.setTextColor(...ANA_RENK);
-        doc.text((bolum.baslik||dersler[0].dersAdi||'').normalize('NFC'),bX+bW/2,bY+bH/2+bFontPt*0.18,{align:'center'});
+        const sigdirilmisPt=metinPuntosuSigdir(doc,metin,bW*0.92,bFontPt);
+        doc.setFontSize(sigdirilmisPt);
+        doc.text(metin,bX+bW/2,bY+bH/2+sigdirilmisPt*0.18,{align:'center'});
       } else {
         const gr=[];
         for(const d of dersler){const s=gr[gr.length-1];if(s&&s.n===d.dersAdi){s.sx=d.x;s.sw=d.width;}else gr.push({n:d.dersAdi,ix:d.x,sx:d.x,sw:d.width,y:d.y,bh:d.baslikYuksekligi});}
-        for(const g of gr){if(!g.n||!(g.bh>0))continue;const bW=(g.sx+g.sw)-g.ix;cerceveCiz(doc,g.ix,g.y,bW,g.bh,ACIK_RENK,1);doc.setFont('Roboto','bold');doc.setFontSize(BFPT);doc.setTextColor(...ANA_RENK);doc.text(g.n.normalize('NFC'),g.ix+bW/2,g.y+g.bh/2+BFPT*0.18,{align:'center'});}
+        for(const g of gr){
+          if(!g.n||!(g.bh>0))continue;
+          const bW=(g.sx+g.sw)-g.ix;
+          const metin=g.n.normalize('NFC');
+          cerceveCiz(doc,g.ix,g.y,bW,g.bh,ACIK_RENK,1);
+          doc.setFont('Roboto','bold');doc.setFontSize(BFPT);doc.setTextColor(...ANA_RENK);
+          const sigdirilmisPt=metinPuntosuSigdir(doc,metin,bW*0.92,BFPT);
+          doc.setFontSize(sigdirilmisPt);
+          doc.text(metin,g.ix+bW/2,g.y+g.bh/2+sigdirilmisPt*0.18,{align:'center'});
+        }
       }
     }
 
