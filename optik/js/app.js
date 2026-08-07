@@ -2936,9 +2936,9 @@ async function anahtarExcelYukle(dosya) {
 }
 
 async function anahtarDisaAktar() {
-    const anahtar = DB.anahtariGetir(_aktifSinavId, _anahtarAktifKitapcik);
-    const derslerDolu = (anahtar.dersler || []).filter(d => d.anahtarlar?.length);
-    if (!derslerDolu.length) { alert('Dışa aktarılacak cevap anahtarı yok.'); return; }
+    const sinav = DB.sinaviBul(_aktifSinavId);
+    const dersler = formDersleriniGetir(_aktifSinavId);
+    const kitapcikli = sinav?.kitapcikTuruSayisi === 2;
 
     // SheetJS ile xlsx oluştur
     if (!window.XLSX) {
@@ -2950,16 +2950,63 @@ async function anahtarDisaAktar() {
         });
     }
 
-    const satirlar = [['Ders', 'Soru No', 'Doğru Cevap']];
-    derslerDolu.forEach(d => d.anahtarlar.forEach(a => {
-        satirlar.push([d.dersAdi, a.soruNo, a.dogru]);
-    }));
+    // Sütun düzeni:
+    //   Tek kitapçık  → Ders | Soru No | Doğru Cevap
+    //   2 kitapçık    → Ders | Soru No | Kitapçık A | Kitapçık B
+    const satirlar = kitapcikli
+        ? [['Ders', 'Soru No', 'Kitapçık A', 'Kitapçık B']]
+        : [['Ders', 'Soru No', 'Doğru Cevap']];
+
+    if (kitapcikli) {
+        const anahtarA = DB.anahtariGetir(_aktifSinavId, 'A');
+        const anahtarB = DB.anahtariGetir(_aktifSinavId, 'B');
+        for (const ders of dersler) {
+            const dersA = (anahtarA?.dersler || []).find(d => d.dersAdi === ders.dersAdi);
+            const dersB = (anahtarB?.dersler || []).find(d => d.dersAdi === ders.dersAdi);
+            for (let s = 1; s <= ders.soruSayisi; s++) {
+                const cevapA = (dersA?.anahtarlar || []).find(a => a.soruNo === s)?.dogru || '';
+                const cevapB = (dersB?.anahtarlar || []).find(a => a.soruNo === s)?.dogru || '';
+                satirlar.push([ders.dersAdi, s, cevapA, cevapB]);
+            }
+        }
+    } else {
+        const anahtar = DB.anahtariGetir(_aktifSinavId, undefined);
+        for (const ders of dersler) {
+            const anahtarDers = (anahtar?.dersler || []).find(d => d.dersAdi === ders.dersAdi);
+            for (let s = 1; s <= ders.soruSayisi; s++) {
+                const cevap = (anahtarDers?.anahtarlar || []).find(a => a.soruNo === s)?.dogru || '';
+                satirlar.push([ders.dersAdi, s, cevap]);
+            }
+        }
+    }
 
     const ws = XLSX.utils.aoa_to_sheet(satirlar);
+    ws['!cols'] = kitapcikli
+        ? [{ wch: 28 }, { wch: 10 }, { wch: 12 }, { wch: 12 }]
+        : [{ wch: 28 }, { wch: 10 }, { wch: 12 }];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Cevap Anahtarı');
-    const dosyaAdi = (DB.sinaviBul(_aktifSinavId)?.ad || 'anahtar') + '_cevap_anahtari.xlsx';
-    XLSX.writeFile(wb, dosyaAdi);
+
+    const dosyaAdi = (sinav?.ad || 'anahtar') + '_cevap_anahtari.xlsx';
+
+    // Android (postMessage köprüsü) + tarayıcı fallback
+    try {
+        const { DisaAktar } = await import('./disaAktar.js').catch(() => ({ DisaAktar: window.DisaAktar }));
+        const da = DisaAktar || window.DisaAktar;
+        if (da?.dosyaKaydet) {
+            await da.dosyaKaydet(
+                XLSX.write(wb, { bookType: 'xlsx', type: 'base64' }),
+                dosyaAdi,
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                () => XLSX.writeFile(wb, dosyaAdi)
+            );
+        } else {
+            XLSX.writeFile(wb, dosyaAdi);
+        }
+    } catch (e) {
+        console.error('[anahtarDisaAktar] Excel kaydedilemedi:', e);
+        alert('Excel kaydedilemedi: ' + e.message);
+    }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3158,9 +3205,13 @@ function baslat() {
     });
     document.getElementById('btnMiniAnahtar').addEventListener('click', async () => {
         if (!_aktifSinavId) return;
+        const sinav = DB.sinaviBul(_aktifSinavId);
         const dersler = formDersleriniGetir(_aktifSinavId);
-        const anahtar = DB.anahtariGetir(_aktifSinavId);
-        const sinavAdi = DB.sinaviBul(_aktifSinavId)?.ad;
+        // 2 kitapçıklı sınavda seçili kitapçığın (A veya B) anahtarını al;
+        // tek kitapçıklı sınavda kitapçık parametresi yok.
+        const kitapcikTuru = sinav?.kitapcikTuruSayisi === 2 ? (_anahtarAktifKitapcik || 'A') : undefined;
+        const anahtar = DB.anahtariGetir(_aktifSinavId, kitapcikTuru);
+        const sinavAdi = sinav?.ad + (kitapcikTuru ? ` (${kitapcikTuru})` : '');
         const { DisaAktar } = await import('./disaAktar.js').catch(() => ({ DisaAktar: window.DisaAktar }));
         (DisaAktar || window.DisaAktar)?.miniAnahtarPdfIndir?.(dersler, anahtar, sinavAdi);
     });
