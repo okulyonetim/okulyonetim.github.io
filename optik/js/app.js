@@ -90,29 +90,47 @@ const DB = {
         const mevcut = this.ozelSablonlariGetir().find(x => x.id === kayit.id);
         const liste = this.ozelSablonlariGetir().filter(x => x.id !== kayit.id);
         if (kayit.durum === undefined) kayit.durum = mevcut ? mevcut.durum : 'taslak';
+        // YENİ (Ağustos 2026, Sedat isteği: "yetki verilirse oluşturduğu
+        // form sadece kendisinde ve adminde görünsün") — sahiplik SADECE
+        // İLK oluşturuluşta damgalanır (mevcut kayıtta zaten varsa hep
+        // korunur, sonraki düzenlemelerde değişmez).
+        if (mevcut && mevcut.sahipUid) {
+            kayit.sahipUid = mevcut.sahipUid;
+            kayit.sahipAd = mevcut.sahipAd;
+        } else if (!mevcut) {
+            const ben = _aktifKullanici();
+            if (ben?.uid) { kayit.sahipUid = ben.uid; kayit.sahipAd = ben.ad; }
+        }
         kayit.guncelleme = new Date().toISOString();
         liste.unshift(kayit);
         this._yaz('oy_op_ozelSablonlar', liste);
-        // YENİ (Ağustos 2026, Sedat isteği: "Oluşturduğum formlar
-        // Firestore'a kaydedilsin") — yerel kayıt HER ZAMAN senkron ve
-        // anında olur (arayüz beklemez); Firestore'a yazma arka planda,
-        // best-effort denenir. Köprü yoksa (bağımsız test sayfası) veya
-        // yazma başarısız olursa sessizce yerelde kalır — bir sonraki
-        // _sablonlariFirestoredenSenkronizeEt() çağrısında tekrar denenir
-        // (bkz. o fonksiyondaki "yereldeki daha yeni kayıtları geri yaz" notu).
+        // KÖK DEĞİŞİKLİK (Ağustos 2026, Sedat isteği: "Admin formu yayınla
+        // dediği zaman Firestore'a kaydedilsin, yoksa her kullanıcının formu
+        // local depoda olsun") — eskiden HER kayıt (taslak dahil) anında
+        // Firestore'a yazılıyordu; artık SADECE 'yayinda' durumundaki
+        // kayıtlar Firestore'a yazılır. Bir kayıt yayından TASLAĞA
+        // alınırsa (mevcut.durum==='yayinda' idi, yenisi değil), Firestore'
+        // daki kopyası da silinir — böylece Firestore'da hep sadece o an
+        // yayında olanlar durur (Yeni Sınav akışındaki "herkese görünür"
+        // listesiyle bire bir tutarlı kalır).
         try {
             const kopru = veriKaynagi();
             if (!kopru) {
-                console.warn('Şablon Firestore\'a kaydedilemedi: köprü (window.parent.OptikVeriKaynagi) bulunamadı — iframe dışında mı çalışıyor?');
-            } else if (!kopru.sablonKaydet) {
-                // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "web'de
-                // oluşturduğum şablonlar Android'de görünmüyor") — köprü VAR
-                // ama eski (js/optik-entegrasyon.js güncellenmemiş) olabilir.
-                alert('⚠ Şablon Firestore\'a kaydedilemedi: ana uygulamanın köprüsü (js/optik-entegrasyon.js) güncel değil — sablonKaydet fonksiyonu yok. Ana uygulama güncellemesini tekrar kontrol et.');
-            } else {
-                kopru.sablonKaydet(kayit)
-                    .then(() => console.log('✅ Şablon Firestore\'a kaydedildi:', kayit.id))
-                    .catch(e => alert('⚠ Şablon Firestore\'a kaydedilemedi: ' + e.message));
+                console.warn('Şablon Firestore ile senkronize edilemedi: köprü (window.parent.OptikVeriKaynagi) bulunamadı — iframe dışında mı çalışıyor?');
+            } else if (kayit.durum === 'yayinda') {
+                if (!kopru.sablonKaydet) {
+                    // YENİ (teşhis, Ağustos 2026, Sedat geri bildirimi: "web'de
+                    // oluşturduğum şablonlar Android'de görünmüyor") — köprü VAR
+                    // ama eski (js/optik-entegrasyon.js güncellenmemiş) olabilir.
+                    alert('⚠ Şablon Firestore\'a kaydedilemedi: ana uygulamanın köprüsü (js/optik-entegrasyon.js) güncel değil — sablonKaydet fonksiyonu yok. Ana uygulama güncellemesini tekrar kontrol et.');
+                } else {
+                    kopru.sablonKaydet(kayit)
+                        .then(() => console.log('✅ Şablon yayınlandı, Firestore\'a kaydedildi:', kayit.id))
+                        .catch(e => alert('⚠ Şablon Firestore\'a kaydedilemedi: ' + e.message));
+                }
+            } else if (mevcut && mevcut.durum === 'yayinda' && kopru.sablonSil) {
+                // Yayından taslağa alındı — Firestore'daki kopyayı geri çek.
+                kopru.sablonSil(kayit.id).catch(e => console.error('Şablon Firestore\'dan geri çekilemedi:', e));
             }
         } catch (e) {}
     },
@@ -173,6 +191,17 @@ let _optikFormOnSecimCB = null; // sheet açıkken hangi callback'e sonuç döne
 let _sablonEditoruDonusEkrani = 'yeniSinav'; // YENİ: editör hangi ekrandan açıldıysa Kaydet/Geri oraya döner
 
 function sablonEditoruAc(mevcutKayitId, donusEkrani = 'yeniSinav') {
+    // GÜVENLİK (Ağustos 2026, Sedat isteği: "Form düzenleme admin için
+    // olsun" / sahibi kendi formunu düzenleyebilsin) — UI'daki tüm giriş
+    // noktaları (fab, kart tıklama, uzun basma, "Kendi Formunu Tasarla")
+    // zaten yetkisiz kullanıcıya gösterilmiyor; bu, o kontrolleri atlatacak
+    // bir çağrı olursa (ör. konsoldan) diye SON KONTROL katmanıdır.
+    if (mevcutKayitId) {
+        const _k = DB.ozelSablonBul(mevcutKayitId);
+        if (_k && !_sablonDuzenleyebilirMi(_k)) { alert('Bu formu düzenleme yetkiniz yok.'); return; }
+    } else if (!_formOlusturmaYetkisiVarMi()) {
+        alert('Form oluşturma yetkiniz yok.'); return;
+    }
     _sablonEditoruDonusEkrani = donusEkrani;
     _EKRAN_USTU.sablonEditor = donusEkrani; // Android donanım geri tuşu da aynı ekrana dönsün
     if (donusEkrani !== 'yeniSinav') {
@@ -428,6 +457,54 @@ function veriKaynagi() {
     return null;
 }
 
+/* ════════════════════════════════════════════════════════════════
+   YETKİ / SAHİPLİK (Ağustos 2026, Sedat isteği: "Optik form oluşturma
+   işlemi için yetki verme işi rollerde ayarlanabilmeli")
+   Ana uygulamanın rol/yetki sistemine ('optikFormOlusturma' modülü) ve
+   aktif kullanıcı kimliğine köprü üzerinden erişir. Köprü yoksa (ör.
+   bağımsız test sayfası, iframe dışında açılış) GÜVENLİ TARAFTA kal:
+   oluşturma yetkisi YOK, admin DEĞİL — böylece köprü koparsa yanlışlıkla
+   herkese form oluşturma/düzenleme açılmaz.
+   ════════════════════════════════════════════════════════════════ */
+function _formOlusturmaYetkisiVarMi() {
+    try { return !!veriKaynagi()?.formOlusturmaYetkisiVar?.(); } catch { return false; }
+}
+function _aktifKullanici() {
+    try { return veriKaynagi()?.aktifKullaniciBilgisiGetir?.() || null; } catch { return null; }
+}
+function _benAdminMiyim() {
+    return !!_aktifKullanici()?.admin;
+}
+function _benimUidim() {
+    return _aktifKullanici()?.uid || null;
+}
+// Bir şablonun görünür olup olmadığı: yayında olan HERKESE görünür;
+// taslak olan sadece SAHİBİNE veya ADMİN'E görünür (Sedat isteği:
+// "yetki verilirse oluşturduğu form sadece kendisinde ve adminde görünsün").
+// sahipUid hiç yoksa (eski kayıtlar / admin'in eski tasarımları) geriye
+// dönük uyumluluk için herkese görünür sayılır.
+function _sablonGorunurMu(k) {
+    if (!k) return false;
+    if (k.durum === 'yayinda') return true;
+    if (!k.sahipUid) return true;
+    if (_benAdminMiyim()) return true;
+    return k.sahipUid === _benimUidim();
+}
+// Düzenleme/silme yetkisi: admin HER şablonu düzenleyebilir; sahibi
+// olmayanlar SADECE KENDİ tasarladıkları taslağı düzenleyebilir.
+// sahipUid yoksa (eski kayıt) admin dışında kimse düzenleyemez — sahiplik
+// belirsizken herkese açmak yerine güvenli tarafta kalınıyor.
+function _sablonDuzenleyebilirMi(k) {
+    if (!k) return false;
+    if (_benAdminMiyim()) return true;
+    return !!k.sahipUid && k.sahipUid === _benimUidim();
+}
+// Yayınla/Taslağa al: SADECE admin (Sedat isteği: "Admin formu yayınlayınca
+// herkes görsün" — yayın kararı admin'e ait).
+function _sablonYayinYetkisiVarMi() {
+    return _benAdminMiyim();
+}
+
 /**
  * YENİ (Ağustos 2026, Sedat isteği: "kimlik bilgilerinde... okul adını da
  * ekleyebilme olsun") — okul adını ana uygulamanın OptikVeriKaynagi
@@ -491,7 +568,13 @@ async function _sablonlariFirestoredenSenkronizeEt(gorunurMu) {
         // Artık yerelde olup Firestore'da OLMAYAN her şablon burada
         // otomatik yukarı gönderiliyor — iki yönlü, kendi kendini
         // onaran bir senkron.
-        let gonderilecekler = yerelListe.filter(y => !uzakIdler.has(y.id));
+        // GÜNCELLEME (Ağustos 2026, Sedat isteği: "Admin formu yayınla
+        // dediği zaman Firestore'a kaydedilsin, yoksa her kullanıcının
+        // formu local depoda olsun") — SADECE 'yayinda' durumundaki
+        // kayıtlar yukarı gönderilir; taslaklar (kimin oluşturduğuna
+        // bakılmaksızın) kasıtlı olarak cihazda kalır, bu kendi kendini
+        // onaran senkrona dahil edilmez.
+        let gonderilecekler = yerelListe.filter(y => !uzakIdler.has(y.id) && y.durum === 'yayinda');
         let gonderilenSayisi = 0, gonderilemeyenSayisi = 0, ilkHata = null;
         for (const y of gonderilecekler) {
             try { await kaynak.sablonKaydet(y); gonderilenSayisi++; }
@@ -680,37 +763,70 @@ function sinavlariRender() {
 function sablonlarEkraniAc() {
     sablonlarEkraniniRender();
     ekranGit('sablonlar');
+    // YENİ (Ağustos 2026, Sedat isteği: "Yeni şablon butonu adminde
+    // görünür olsun") — "Yeni Şablon" fab'ı sadece oluşturma yetkisi olana
+    // (admin veya rolüne 'optikFormOlusturma' verilmiş kullanıcıya) görünür.
+    const fab = document.getElementById('fabYeniSablon');
+    if (fab) fab.style.display = _formOlusturmaYetkisiVarMi() ? '' : 'none';
 }
 
 function sablonlarEkraniniRender() {
-    const liste = DB.ozelSablonlariGetir();
+    // YENİ (Ağustos 2026, Sedat isteği: "yetki verilirse oluşturduğu form
+    // sadece kendisinde ve adminde görünsün") — taslaklar sahibine/admin'e
+    // filtrelenir; yayında olanlar zaten herkese görünür.
+    const liste = DB.ozelSablonlariGetir().filter(_sablonGorunurMu);
     const bosEl = document.getElementById('sablonlarBosAlan');
+    const bosMetinEl = bosEl?.querySelector('p');
+    const bosAltMetinEl = document.getElementById('sablonlarBosAltMetin');
     const listEl = document.getElementById('sablonlarListesi');
     if (!listEl) return;
     if (bosEl) bosEl.style.display = liste.length ? 'none' : 'flex';
+    const _yetkiVar = _formOlusturmaYetkisiVarMi();
+    if (bosMetinEl) bosMetinEl.textContent = _yetkiVar
+        ? 'Henüz özel bir form tasarlamadınız'
+        : 'Henüz yayınlanan bir form yok';
+    if (bosAltMetinEl) bosAltMetinEl.textContent = _yetkiVar ? '+ ile başlayın' : '';
     const varsayilanId = DB.varsayilanSablonIdGetir();
     listEl.innerHTML = liste.map(k => {
         const varsayilanBadge = k.id === varsayilanId
             ? `<span class="durum-badge badge-okundu">VARSAYILAN</span>` : '';
         // YENİ (Ağustos 2026, Sedat isteği: "taslak veya herkes kullanabilir
-        // yapabilmek istiyorum") — durum rozeti + tıklanınca değiştiren düğme.
+        // yapabilmek istiyorum") — durum rozeti; değiştirme düğmesi SADECE
+        // admin'e (Sedat isteği: "Admin formu yayınlayınca herkes görsün" —
+        // yayın kararı admin'e ait) tıklanabilir gösterilir, diğerlerine
+        // salt bilgi rozeti olarak görünür.
         const yayinda = k.durum === 'yayinda';
+        const yayinYetkisiVar = _sablonYayinYetkisiVarMi();
         const durumBadge = yayinda
-            ? `<button class="durum-badge badge-okundu durum-degistir-btn" data-id="${k.id}" title="Taslağa al">📢 YAYINDA</button>`
-            : `<button class="durum-badge badge-bekliyor durum-degistir-btn" data-id="${k.id}" title="Yayınla">📝 TASLAK</button>`;
+            ? (yayinYetkisiVar
+                ? `<button class="durum-badge badge-okundu durum-degistir-btn" data-id="${k.id}" title="Taslağa al">📢 YAYINDA</button>`
+                : `<span class="durum-badge badge-okundu">📢 YAYINDA</span>`)
+            : (yayinYetkisiVar
+                ? `<button class="durum-badge badge-bekliyor durum-degistir-btn" data-id="${k.id}" title="Yayınla">📝 TASLAK</button>`
+                : `<span class="durum-badge badge-bekliyor">📝 TASLAK</span>`);
         const soruSayisi = (k.sablon?.ogeler || []).filter(o => o.tip === 'baloncukBlok')
             .reduce((t, o) => t + (o.soruSayisi || 0), 0);
-        return `<div class="sinav-kart sablon-kart" data-id="${k.id}">
+        // YENİ: sahibi bende değilse (admin başka birinin taslağını
+        // görüyorsa) kimin tasarladığı bilgisi gösterilir.
+        const sahipEtiketi = (k.sahipUid && k.sahipUid !== _benimUidim() && k.sahipAd)
+            ? ` · ${_h(k.sahipAd)}` : '';
+        // YENİ (Ağustos 2026, Sedat isteği: "Form düzenleme admin için
+        // olsun" + sahibi kendi taslağını düzenleyebilsin) — düzenleme/silme
+        // yetkisi olmayana silme düğmesi gösterilmez.
+        const duzenlenebilir = _sablonDuzenleyebilirMi(k);
+        const silBtn = duzenlenebilir
+            ? `<button class="menu-btn" data-id="${k.id}" title="Sil">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>` : '';
+        return `<div class="sinav-kart sablon-kart" data-id="${k.id}" data-duzenlenebilir="${duzenlenebilir ? '1' : '0'}">
             <div class="sinav-kart-ikon" style="background:#F3E5F5;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
             </div>
             <div class="sinav-kart-bilgi">
                 <span class="sinav-kart-ad">${_h(k.ad)}</span>
-                <small class="sinav-kart-alt">${soruSayisi ? soruSayisi + ' soru · ' : ''}${_tarih(k.guncelleme)}</small>
+                <small class="sinav-kart-alt">${soruSayisi ? soruSayisi + ' soru · ' : ''}${_tarih(k.guncelleme)}${sahipEtiketi}</small>
             </div>
-            <button class="menu-btn" data-id="${k.id}" title="Sil">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            ${silBtn}
             <div class="sablon-kart-rozetler">
                 ${varsayilanBadge}
                 ${durumBadge}
@@ -721,12 +837,16 @@ function sablonlarEkraniniRender() {
     listEl.querySelectorAll('.sinav-kart').forEach(kart => {
         kart.addEventListener('click', e => {
             if (e.target.closest('.menu-btn') || e.target.closest('.durum-degistir-btn')) return;
+            // YENİ: düzenleme yetkisi olmayan (admin/sahip olmayan)
+            // kullanıcı bir karta tıklarsa editör AÇILMAZ.
+            if (kart.dataset.duzenlenebilir !== '1') return;
             sablonEditoruAc(kart.dataset.id, 'sablonlar');
         });
     });
     listEl.querySelectorAll('.durum-degistir-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (!_sablonYayinYetkisiVarMi()) return; // ek güvenlik: buton zaten admin dışına render edilmiyor
             const k = DB.ozelSablonBul(btn.dataset.id);
             if (!k) return;
             k.durum = k.durum === 'yayinda' ? 'taslak' : 'yayinda';
@@ -738,7 +858,7 @@ function sablonlarEkraniniRender() {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const k = DB.ozelSablonBul(btn.dataset.id);
-            if (!k) return;
+            if (!k || !_sablonDuzenleyebilirMi(k)) return; // ek güvenlik
             sheetOnay(`"${k.ad}" şablonunu sil?`, `Bu şablonu kullanan bir sınav yoksa güvenle silinebilir. Bu işlem geri alınamaz.`, () => {
                 DB.ozelSablonSil(btn.dataset.id);
                 if (DB.varsayilanSablonIdGetir() === btn.dataset.id) DB.varsayilanSablonIdKaydet(null);
@@ -2608,7 +2728,12 @@ function optikFormSheetAc(onSecim) {
         // silinmedi — geçmişte LGS/Bursluluk ile oluşturulmuş sınavlar hâlâ
         // bu koda ihtiyaç duyuyor, sadece YENİ seçim listesinden kaldırıldı.
         const ozelSablonlar = DB.ozelSablonlariGetir().filter(k => k.durum === 'yayinda');
-        const tasarlaSatiri = `
+        // YENİ (Ağustos 2026, Sedat isteği: "form seçiminde kendi formunu
+        // tasarla menüsü role bağlı olsun") — bu satır sadece oluşturma
+        // yetkisi olana (admin veya rolüne 'optikFormOlusturma' verilmiş
+        // kullanıcıya) gösterilir.
+        const tasarlamaYetkisiVar = _formOlusturmaYetkisiVarMi();
+        const tasarlaSatiri = tasarlamaYetkisiVar ? `
             <button class="bs-liste-satir" data-tasarla="1">
                 <div class="bs-liste-ikon" style="background:#FCE4EC;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2185B" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
@@ -2617,20 +2742,27 @@ function optikFormSheetAc(onSecim) {
                     <strong>🎨 Kendi Formunu Tasarla</strong>
                     <small>Baloncukları, alanları serbestçe yerleştir</small>
                 </div>
-            </button>`;
+            </button>` : '';
         const bosUyari = !ozelSablonlar.length
-            ? `<p style="padding:10px 4px;font-size:12.5px;color:var(--text-faint);">Henüz yayınlanmış bir form yok — bir form tasarlayıp Şablonlarım'dan "Yayınla" diyebilirsin.</p>`
+            ? `<p style="padding:10px 4px;font-size:12.5px;color:var(--text-faint);">Henüz yayınlanmış bir form yok${tasarlamaYetkisiVar ? ' — bir form tasarlayıp Şablonlarım\'dan "Yayınla" diyebilirsin.' : '.'}</p>`
             : '';
-        const ozelSatirlari = ozelSablonlar.map(k => `
-            <button class="bs-liste-satir" data-ozel-id="${k.id}">
+        const ozelSatirlari = ozelSablonlar.map(k => {
+            // YENİ (Ağustos 2026, Sedat isteği: "Form düzenleme admin için
+            // olsun" + sahibi kendi formunu düzenleyebilsin) — uzun basma
+            // ile düzenleme sadece admin'e veya o formun sahibine açık;
+            // diğerlerine ipucu metni de gösterilmez.
+            const duzenlenebilir = _sablonDuzenleyebilirMi(k);
+            return `
+            <button class="bs-liste-satir" data-ozel-id="${k.id}" data-duzenlenebilir="${duzenlenebilir ? '1' : '0'}">
                 <div class="bs-liste-ikon" style="background:#F3E5F5;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 </div>
                 <div class="bs-liste-bilgi">
                     <strong>${_h(k.ad)}</strong>
-                    <small>Kendi tasarladığın form — düzenlemek için uzun bas</small>
+                    ${duzenlenebilir ? `<small>Kendi tasarladığın form — düzenlemek için uzun bas</small>` : ''}
                 </div>
-            </button>`).join('');
+            </button>`;
+        }).join('');
         liste.innerHTML = tasarlaSatiri + ozelSatirlari + bosUyari;
         liste.querySelectorAll('[data-ozel-id]').forEach(btn => {
             let uzunBasmaTetiklendiMi = false;
@@ -2641,6 +2773,7 @@ function optikFormSheetAc(onSecim) {
                 const form = sablonDerlemesiniGetir(kayit.id);
                 onSecim({ id: kayit.id, ad: kayit.ad, soruSayisi: form.soruSayisi, sikSayisi: form.sikSayisi });
             });
+            if (btn.dataset.duzenlenebilir !== '1') return; // düzenleme yetkisi yoksa uzun-basma bağlanmaz
             // YENİ (Sedat geri bildirimi, Ağustos 2026): satırda zaten
             // "düzenlemek için uzun bas" yazıyordu ama hiç bağlanmamıştı —
             // Pointer Events ile gerçek uzun-basma algılama (500ms, 10px'ten
@@ -2672,6 +2805,7 @@ function optikFormSheetAc(onSecim) {
         const tasarlaBtn = liste.querySelector('[data-tasarla]');
         if (tasarlaBtn) {
             tasarlaBtn.addEventListener('click', () => {
+                if (!_formOlusturmaYetkisiVarMi()) return; // ek güvenlik
                 sheetKapat('sheetOptikForm');
                 sablonEditoruAc(null);
             });
@@ -2807,7 +2941,10 @@ function baslat() {
     // YENİ (Ağustos 2026, Sedat isteği): Şablonlarım ekranı.
     document.getElementById('btnSablonlarAc')?.addEventListener('click', sablonlarEkraniAc);
     document.getElementById('btnSablonlarGeri')?.addEventListener('click', () => ekranGit('sinavlar'));
-    document.getElementById('fabYeniSablon')?.addEventListener('click', () => sablonEditoruAc(null, 'sablonlar'));
+    document.getElementById('fabYeniSablon')?.addEventListener('click', () => {
+        if (!_formOlusturmaYetkisiVarMi()) return; // ek güvenlik: buton zaten yetkisize gizleniyor
+        sablonEditoruAc(null, 'sablonlar');
+    });
     document.getElementById('btnSablonlarSenkron')?.addEventListener('click', () => _sablonlariFirestoredenSenkronizeEt(true));
     // YENİ: açılışta Firestore'daki şablonları arka planda yerelle birleştir.
     _sablonlariFirestoredenSenkronizeEt();
