@@ -768,6 +768,13 @@ function sablonlarEkraniAc() {
     // (admin veya rolüne 'optikFormOlusturma' verilmiş kullanıcıya) görünür.
     const fab = document.getElementById('fabYeniSablon');
     if (fab) fab.style.display = _formOlusturmaYetkisiVarMi() ? '' : 'none';
+    // YENİ (Ağustos 2026, Sedat isteği: "Optik formlar sayfasındaki yenile
+    // butonu da admine özel olsun") — Firestore'dan manuel senkron sadece
+    // taslakların da yönetildiği admin için anlamlı; diğer kullanıcılar
+    // zaten sadece yayındaki (Firestore'a yazılan) formları görüyor, onlar
+    // için bu buton bir işlev sağlamıyor.
+    const senkronBtn = document.getElementById('btnSablonlarSenkron');
+    if (senkronBtn) senkronBtn.style.display = _benAdminMiyim() ? '' : 'none';
 }
 
 function sablonlarEkraniniRender() {
@@ -824,7 +831,7 @@ function sablonlarEkraniniRender() {
             </div>
             <div class="sinav-kart-bilgi">
                 <span class="sinav-kart-ad">${_h(k.ad)}</span>
-                <small class="sinav-kart-alt">${soruSayisi ? soruSayisi + ' soru · ' : ''}${_tarih(k.guncelleme)}${sahipEtiketi}</small>
+                <small class="sinav-kart-alt">${soruSayisi ? soruSayisi + ' soru · ' : ''}${_tarih(k.guncelleme)}${sahipEtiketi}${duzenlenebilir ? '' : ' · 👁 önizlemek için dokun'}</small>
             </div>
             ${silBtn}
             <div class="sablon-kart-rozetler">
@@ -837,9 +844,11 @@ function sablonlarEkraniniRender() {
     listEl.querySelectorAll('.sinav-kart').forEach(kart => {
         kart.addEventListener('click', e => {
             if (e.target.closest('.menu-btn') || e.target.closest('.durum-degistir-btn')) return;
-            // YENİ: düzenleme yetkisi olmayan (admin/sahip olmayan)
-            // kullanıcı bir karta tıklarsa editör AÇILMAZ.
-            if (kart.dataset.duzenlenebilir !== '1') return;
+            // YENİ (Ağustos 2026, Sedat isteği: "diğer kullanıcılar basınca
+            // formun önizlemesini görmeleri mümkün mü") — düzenleme yetkisi
+            // olmayan (admin/sahip olmayan) kullanıcı bir karta tıklarsa
+            // editör yerine salt-okunur bir ÖNİZLEME açılır.
+            if (kart.dataset.duzenlenebilir !== '1') { sablonOnizleGoster(kart.dataset.id); return; }
             sablonEditoruAc(kart.dataset.id, 'sablonlar');
         });
     });
@@ -2616,6 +2625,28 @@ function _optikOnizlePenceresiAc(sayfalar, baslik, sayfaBilgi) {
     _uygulamaHtmlYazdirCagir(rawHtml, baslik.replace(/\s+/g, '_'), yatayMi ? 'yatay' : 'dikey');
 }
 
+/**
+ * YENİ (Ağustos 2026, Sedat isteği: "diğer kullanıcılar basınca formun
+ * önizlemesini görmeleri mümkün mü") — herhangi bir sınava bağlı olmadan,
+ * doğrudan "Optik Formlar" listesindeki bir şablonu boş form olarak
+ * önizler. Aynı canvas tabanlı, Android WebView'da da çalışan pencereyi
+ * (bkz. yukarıdaki _optikOnizlePenceresiAc notu) kullanır — yzOnizleOlustur
+ * ile aynı altyapı, ama bir sınava değil doğrudan şablon id'sine bağlı.
+ */
+async function sablonOnizleGoster(kayitId) {
+    const kayit = DB.ozelSablonBul(kayitId);
+    if (!kayit) return;
+    try {
+        const layout = sablonDerlemesiniGetir(kayitId);
+        const { bosFormGorseliOlustur } = await import('./canvasFormGenerator.js');
+        const gorsel = await bosFormGorseliOlustur(layout, {
+            adSoyad: 'ÖRNEK ÖĞRENCİ', ogrenciNo: '1', sinif: '—',
+            sinavAdi: kayit.ad, okulAdi: _okulAdiGetir() || 'Okul Adı', kitapcikTuru: '', ogrenciId: '', sinavId: kayitId
+        });
+        _optikOnizlePenceresiAc([gorsel], 'Form Önizleme: ' + kayit.ad, '1 sayfa (boş form) — önizleme');
+    } catch (e) { alert('❌ Önizleme oluşturulamadı: ' + e.message); }
+}
+
 /** Önizleme: gerçek indirmeyi tetiklemeden, seçilen yön/düzenle NASIL görüneceğini bir yazdırma penceresinde gösterir. */
 async function yzOnizleOlustur() {
     const sinav = DB.sinaviBul(_aktifSinavId);
@@ -2945,7 +2976,10 @@ function baslat() {
         if (!_formOlusturmaYetkisiVarMi()) return; // ek güvenlik: buton zaten yetkisize gizleniyor
         sablonEditoruAc(null, 'sablonlar');
     });
-    document.getElementById('btnSablonlarSenkron')?.addEventListener('click', () => _sablonlariFirestoredenSenkronizeEt(true));
+    document.getElementById('btnSablonlarSenkron')?.addEventListener('click', () => {
+        if (!_benAdminMiyim()) return; // ek güvenlik: buton zaten yetkisize gizleniyor
+        _sablonlariFirestoredenSenkronizeEt(true);
+    });
     // YENİ: açılışta Firestore'daki şablonları arka planda yerelle birleştir.
     _sablonlariFirestoredenSenkronizeEt();
 
