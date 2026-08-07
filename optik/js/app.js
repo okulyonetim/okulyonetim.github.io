@@ -2887,6 +2887,28 @@ async function anahtarExcelYukle(dosya) {
         if (kaynak?.exceldenYukle) {
             await kaynak.exceldenYukle(dosya);
             const a = kaynak.getir?.();
+
+            // Kitapçık A/B formatı: { __kitapcikli: true, A: {...}, B: {...} }
+            if (a?.__kitapcikli) {
+                const formDersler = formDersleriniGetir(_aktifSinavId);
+                const _normalIsimleriDuz = (anahtar) => {
+                    (anahtar.dersler || []).forEach(d => {
+                        const eslesme = formDersler.find(f => f.dersAdi.trim().toLowerCase() === d.dersAdi.trim().toLowerCase());
+                        if (eslesme && eslesme.dersAdi !== d.dersAdi) d.dersAdi = eslesme.dersAdi;
+                    });
+                };
+                _normalIsimleriDuz(a.A);
+                _normalIsimleriDuz(a.B);
+                DB.anahtarKaydet(_aktifSinavId, a.A, 'A');
+                DB.anahtarKaydet(_aktifSinavId, a.B, 'B');
+                anahtarIzgaraCiz();
+                _tumSonuclariYenidenHesapla();
+                const topA = a.A.dersler.reduce((t, d) => t + d.anahtarlar.length, 0);
+                const topB = a.B.dersler.reduce((t, d) => t + d.anahtarlar.length, 0);
+                alert(`✅ Kitapçık A: ${topA} cevap, Kitapçık B: ${topB} cevap yüklendi.`);
+                return;
+            }
+
             if (a?.dersler?.length) {
                 // Ders adı normalleştirme: Excel'deki ad formdan gelen adla
                 // büyük/küçük harf veya boşluk farkı varsa, form adını kullan.

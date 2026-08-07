@@ -98,7 +98,14 @@ window.CevapAnahtari = (function () {
                     const baslik = satirlar[0].map(h => String(h).trim().toLowerCase());
                     const anahtarNesnesi = _satirlariIsle(baslik, satirlar.slice(1));
 
-                    kaydet(anahtarNesnesi);
+                    // Kitapçıklı format ise localStorage'a kaydetme —
+                    // app.js A ve B'yi ayrı ayrı DB.anahtarKaydet ile kaydeder.
+                    // getir() çağrısında bu nesneyi döndürebilmek için geçici sakla.
+                    if (anahtarNesnesi.__kitapcikli) {
+                        localStorage.setItem(DEPO_ANAHTARI, JSON.stringify(anahtarNesnesi));
+                    } else {
+                        kaydet(anahtarNesnesi);
+                    }
                     resolve(anahtarNesnesi);
 
                 } catch (err) {
@@ -115,13 +122,49 @@ window.CevapAnahtari = (function () {
     function _satirlariIsle(baslik, veriSatirlari) {
 
         // Sütun indekslerini bul (esnek eşleştirme)
-        const colDers = _sutunBul(baslik, ["ders", "bölüm", "bolum", "subject"]);
-        const colSoru = _sutunBul(baslik, ["soru", "no", "soru no", "question", "num"]);
+        const colDers  = _sutunBul(baslik, ["ders", "bölüm", "bolum", "subject"]);
+        const colSoru  = _sutunBul(baslik, ["soru", "no", "soru no", "question", "num"]);
+        // Kitapçık A/B formatı mı?
+        const colA     = _sutunBul(baslik, ["kitapçık a", "kitapcik a", "a kitapçık", "a kitapcik"]);
+        const colB     = _sutunBul(baslik, ["kitapçık b", "kitapcik b", "b kitapçık", "b kitapcik"]);
+        // Tek cevap sütunu
         const colCevap = _sutunBul(baslik, ["cevap", "doğru", "dogru", "answer", "key"]);
 
-        if (colSoru === -1 || colCevap === -1) {
+        if (colSoru === -1) {
             throw new Error(
-                'Excel başlıklarında "Soru" ve "Cevap" sütunları bulunamadı.\n' +
+                'Excel başlıklarında "Soru No" sütunu bulunamadı.\n' +
+                'Mevcut başlıklar: ' + baslik.join(', ')
+            );
+        }
+
+        // ── Kitapçık A/B formatı ──────────────────────────────────
+        if (colA !== -1 && colB !== -1) {
+            const mapA = {}, mapB = {};
+            for (const satir of veriSatirlari) {
+                const soruNo = parseInt(String(satir[colSoru]).trim(), 10);
+                if (!soruNo) continue;
+                let dersAdi = colDers >= 0 ? String(satir[colDers]).trim() : "Genel";
+                if (!dersAdi) dersAdi = "Genel";
+                const cevapA = String(satir[colA] || "").trim().toUpperCase();
+                const cevapB = String(satir[colB] || "").trim().toUpperCase();
+                if (cevapA) { if (!mapA[dersAdi]) mapA[dersAdi] = []; mapA[dersAdi].push({ soruNo, dogru: cevapA }); }
+                if (cevapB) { if (!mapB[dersAdi]) mapB[dersAdi] = []; mapB[dersAdi].push({ soruNo, dogru: cevapB }); }
+            }
+            const _anahtarOlustur = (map) => ({
+                dersler: Object.entries(map).map(([dersAdi, anahtarlar]) => ({
+                    dersAdi, anahtarlar: anahtarlar.sort((a, b) => a.soruNo - b.soruNo)
+                })),
+                sikSayisi: 4,
+                yuklenmeTarihi: new Date().toISOString()
+            });
+            // Kitapçıklı sonucu özel bayrakla döndür — app.js ayrı kaydeder
+            return { __kitapcikli: true, A: _anahtarOlustur(mapA), B: _anahtarOlustur(mapB) };
+        }
+
+        // ── Tek cevap sütunu formatı ──────────────────────────────
+        if (colCevap === -1) {
+            throw new Error(
+                'Excel başlıklarında "Cevap" sütunu bulunamadı.\n' +
                 'Mevcut başlıklar: ' + baslik.join(', ')
             );
         }
@@ -129,15 +172,11 @@ window.CevapAnahtari = (function () {
         const dersBazliMap = {}; // dersAdi → [{soruNo, dogru}]
 
         for (const satir of veriSatirlari) {
-
             const soruNo = parseInt(String(satir[colSoru]).trim(), 10);
             const dogru = String(satir[colCevap]).trim().toUpperCase();
-
             if (!soruNo || !dogru) continue;
-
             let dersAdi = colDers >= 0 ? String(satir[colDers]).trim() : "Genel";
             if (!dersAdi) dersAdi = "Genel";
-
             if (!dersBazliMap[dersAdi]) dersBazliMap[dersAdi] = [];
             dersBazliMap[dersAdi].push({ soruNo, dogru });
         }
