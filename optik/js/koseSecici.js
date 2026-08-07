@@ -344,10 +344,7 @@ export function koseleriSectir(kaynak, genislik, yukseklik, secimCanvas, talimat
             yenidenCiz();
         };
 
-        talimatEl.textContent =
-            "Yeşil noktaları sürükleyip sayfanın 4 köşesindeki dolu kare " +
-            "işaretlerin TAM MERKEZİNE (ortasına) yerleştir, sonra " +
-            "\"Tamam\"a dokun.";
+
 
         yenidenCiz();
 
