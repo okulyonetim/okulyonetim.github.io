@@ -38,7 +38,7 @@
     baloncukBlok: () => ({
       tip: 'baloncukBlok', x: 20, y: 20,
       dersAdi: 'Yeni Ders', soruSayisi: 10, sikSayisi: 4,
-      baloncukCap: LE.STANDART_BALONCUK_CAP, yatayAralikCarpani: 1.3, dikeyAralikCarpani: 1.3,
+      baloncukCap: LE.STANDART_BALONCUK_CAP, yatayAralikCarpani: 1.23, dikeyAralikCarpani: 1.26,
       genislik: 30, sutunSayisi: 1, sutunlarArasiBosluk: 3, sutunDikeyKaymalari: [0],
     }),
     kimlikAlani: () => ({ tip: 'kimlikAlani', x: 15, y: 15, genislik: 100, yukseklik: 14, baslik: 'AD SOYAD', alan: 'adSoyad' }),
@@ -88,7 +88,7 @@
     // Sütun genişliği: otomatik hesapla (Test Plus gibi içeriğe göre)
     // soruNoGenisligi + sikSayisi × baloncukCap × aralikCarpani
     const cap = og.baloncukCap || LE.STANDART_BALONCUK_CAP;
-    const yatay = og.yatayAralikCarpani || 1.3;
+    const yatay = og.yatayAralikCarpani || 1.23;
     const sikSayisi = og.sikSayisi || 4;
     const maxNo = soruBasinaDusen >= 10 ? 99 : 9;
     const soruNoGen = maxNo >= 10 ? 5.5 : 4.0;
@@ -111,7 +111,7 @@
           sikSayisi: og.sikSayisi,
           baloncukCap: cap,
           aralikCarpani: yatay,
-          dikeyAralikCarpani: og.dikeyAralikCarpani || 1.3,
+          dikeyAralikCarpani: og.dikeyAralikCarpani || 1.26,
           baslikYuksekligi,
           baslikFontPt,
           baslikAltBosluk,
@@ -704,8 +704,8 @@
         const sutunlarArasiBosluk = og.sutunlarArasiBosluk != null ? og.sutunlarArasiBosluk : 3;
         const soruBasinaDusen = Math.ceil(og.soruSayisi / sutunSayisi);
         const cap = og.baloncukCap || LE.STANDART_BALONCUK_CAP;
-        const yatay = og.yatayAralikCarpani || 1.3;
-        const dikey = og.dikeyAralikCarpani || 1.3;
+        const yatay = og.yatayAralikCarpani || 1.23;
+        const dikey = og.dikeyAralikCarpani || 1.26;
         const sikSayisi = og.sikSayisi || 4;
         const maxNo = soruBasinaDusen >= 10 ? 99 : 9;
         const soruNoGen = maxNo >= 10 ? 5.5 : 4.0;

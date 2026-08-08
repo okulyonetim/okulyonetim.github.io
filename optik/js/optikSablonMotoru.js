@@ -133,14 +133,23 @@
     // kendi id'sinden okunabilir bir isim üretilir); SADECE görsel
     // basım (baslikYuksekligi) kullanıcının isteğine göre gizlenir.
     const dersAdiIcin = og.dersAdi || ('Soru Bloğu #' + og.id.slice(-4));
-    const baslikGorunur = !!og.dersAdi && og.baslikGizle !== 'evet'; // alanEkle select'i string döndürür ('evet'/'hayir'), boolean değil
+    const baslikGorunur = !!og.dersAdi && og.baslikGizle !== 'evet';
     const baslikYuksekligi = baslikGorunur ? (og.baslikYuksekligi || VARSAYILAN_BASLIK_YUKSEKLIGI) : 0;
     const baslikFontPt = og.baslikFontPt || 6.4;
     const baslikAltBosluk = baslikGorunur ? 3 : 1;
 
+    // Sütun genişliği: otomatik hesapla (editörle aynı mantık)
+    const cap = og.baloncukCap || LE.STANDART_BALONCUK_CAP;
+    const yatay = og.yatayAralikCarpani || 1.3;
+    const soruBasinaDusenM = Math.ceil(og.soruSayisi / sutunSayisi);
+    const maxNoM = soruBasinaDusenM >= 10 ? 99 : 9;
+    const soruNoGenM = maxNoM >= 10 ? 5.5 : 4.0;
+    const otomatikGenislik = soruNoGenM + og.sikSayisi * cap * yatay;
+    const sutunGenislik = og.genislikSabit ? (og.genislik || otomatikGenislik) : otomatikGenislik;
+
     const dersSutunlari = [];
     for (let s = 0; s < sutunSayisi; s++) {
-      const sutunX = og.x + s * (og.genislik + sutunlarArasiBosluk);
+      const sutunX = og.x + s * (sutunGenislik + sutunlarArasiBosluk);
       const sutunY = og.y + (kaymalar[s] || 0);
       const buSutundakiSoruSayisi = Math.min(
         soruBasinaDusen,
@@ -151,14 +160,14 @@
       const sutun = LE.dersSutunuHesapla({
         x: sutunX,
         y: sutunY,
-        width: og.genislik,
+        width: sutunGenislik,
         dersAdi: dersAdiIcin, // ASLA boş değil (bkz. yukarıdaki kök neden notu) — OMR gruplandırması buna dayanıyor
         soruSayisi: buSutundakiSoruSayisi,
         baslangicSoruNo: s * soruBasinaDusen + 1, // KÖK NEDEN DÜZELTMESİ: 2. sütun 11'den devam etsin, 1'den başlamasın (bkz. layoutEngine.js notu)
         sikSayisi: og.sikSayisi,
         baloncukCap: og.baloncukCap,
-        aralikCarpani: og.yatayAralikCarpani || 1.45,
-        dikeyAralikCarpani: og.dikeyAralikCarpani || 2.0,
+        aralikCarpani: og.yatayAralikCarpani || 1.23,
+        dikeyAralikCarpani: og.dikeyAralikCarpani || 1.26,
         baslikYuksekligi,
         baslikFontPt,
         baslikAltBosluk,

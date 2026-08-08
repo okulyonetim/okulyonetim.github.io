@@ -153,10 +153,10 @@ function sayfayiBol(formsPerA4, sayfaBoyutu = A4) {
 // sayfaya sığıyor (bkz. lgsSablonuOlustur); daha büyük bir değer LGS'yi
 // kıracaktı. Bursluluk ve Özel formlarda daha fazla boş alan olduğu için
 // küçülme onlarda bir sığdırma sorunu yaratmaz.
-const STANDART_BALONCUK_CAP = 5.5; // mm — Test Plus ölçümü (~5.7mm)
+const STANDART_BALONCUK_CAP = 5.0; // mm — 6 sütun A4'e sığacak şekilde (5.5mm fazla geliyordu)
 const STANDART_YATAY_ARALIK_CARPANI = 1.23; // Test Plus ölçümü
-const STANDART_DIKEY_ARALIK_CARPANI = 1.26; // Test Plus ölçümü (7.2/5.7)
-const STANDART_SORU_NO_GENISLIGI = 3.0;     // mm — Test Plus'ta çok küçük
+const STANDART_DIKEY_ARALIK_CARPANI = 1.26; // Test Plus ölçümü
+const STANDART_SORU_NO_GENISLIGI = 3.0;     // mm
 const BALONCUK_CAP = STANDART_BALONCUK_CAP; // geriye dönük uyumluluk (özel form üretimi bunu kullanıyor)
 const IZIN_VERILEN_BLOK_SAYILARI = [1, 2, 4, 6];
 
@@ -1034,8 +1034,10 @@ window.LayoutEngine = {
   standartHeaderOlustur,
   // Okuma güvenliği için minimum boşluk değerleri (omrEngine.js arama penceresi: ±1.3r)
   // Editör bu değerlerin altına izin vermez.
-  minYatayAralikCarpani: () => 1.3 * 2, // merkez-merkez / baloncukCap >= 2.6
-  minDikeyAralikCarpani: () => 1.3 * 2, // merkez-merkez / baloncukCap >= 2.6
+  // Minimum çarpan: merkez-merkez mesafesi >= cap * 1.3 olmalı
+  // yani aralikCarpani >= 1.3 (çarpan zaten cap ile çarpıldığı için)
+  minYatayAralikCarpani: () => 1.3,
+  minDikeyAralikCarpani: () => 1.3,
 };
 
 if (typeof module !== 'undefined' && module.exports) {
