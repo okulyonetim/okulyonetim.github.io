@@ -153,7 +153,7 @@ function sayfayiBol(formsPerA4, sayfaBoyutu = A4) {
 // sayfaya sığıyor (bkz. lgsSablonuOlustur); daha büyük bir değer LGS'yi
 // kıracaktı. Bursluluk ve Özel formlarda daha fazla boş alan olduğu için
 // küçülme onlarda bir sığdırma sorunu yaratmaz.
-const STANDART_BALONCUK_CAP = 4.0; // mm — Test Plus benzeri, daha büyük ve kolay okunan baloncuk
+const STANDART_BALONCUK_CAP = 5.5; // mm — Test Plus ölçümüne göre (~5.7mm), satır aralığı ×1.3 = 7.15mm
 const BALONCUK_CAP = STANDART_BALONCUK_CAP; // geriye dönük uyumluluk (özel form üretimi bunu kullanıyor)
 const IZIN_VERILEN_BLOK_SAYILARI = [1, 2, 4, 6];
 
@@ -358,10 +358,16 @@ function metniSatirlaraBol(metin, genislikMm, fontPt, kalin = true) {
  */
 function dersSutunuHesapla({
   x, y, width, dersAdi, soruSayisi, sikSayisi, baloncukCap,
-  soruNoGenisligi = 8, aralikCarpani = 1.45, dikeyAralikCarpani = 2.0,
+  soruNoGenisligi, aralikCarpani = 1.3, dikeyAralikCarpani = 1.3,
   baslikYuksekligi,
   baslikFontPt = 6.4, baslikAltBosluk = 3, baslangicSoruNo = 1,
 }) {
+  // soruNoGenisligi: verilmezse soruSayısına göre dinamik hesapla
+  // (2 haneli sayılar için daha geniş, 1 haneli için daha dar)
+  if (!soruNoGenisligi) {
+    const maxNo = baslangicSoruNo + soruSayisi - 1;
+    soruNoGenisligi = maxNo >= 10 ? 5.5 : 4.0;
+  }
   // Aynı Unicode normalizasyon önlemi (bkz. pdfFormGenerator.js: buyukHarfTR notu).
   const dersAdiSatirlari = metniSatirlaraBol((dersAdi || '').normalize('NFC'), width - 2, baslikFontPt, true);
   const satirAraligi = baloncukCap * dikeyAralikCarpani;
