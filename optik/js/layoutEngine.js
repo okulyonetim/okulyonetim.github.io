@@ -1023,6 +1023,8 @@ window.LayoutEngine = {
   // koordinat fonksiyonlarını doğrudan çağırır. Yeni bir hesaplama yolu değil,
   // var olanın manuel parametrelerle sürülmesi.
   STANDART_BALONCUK_CAP,
+  HIZALAMA_PAY,
+  HIZALAMA_MARKER_BOYUT,
   dersSutunuHesapla,
   numaraAlaniHesapla,
   kitapcikAlaniHesapla,

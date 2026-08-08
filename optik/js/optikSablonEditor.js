@@ -703,8 +703,18 @@
         const sutunSayisi = og.sutunSayisi || 1;
         const sutunlarArasiBosluk = og.sutunlarArasiBosluk != null ? og.sutunlarArasiBosluk : 3;
         const soruBasinaDusen = Math.ceil(og.soruSayisi / sutunSayisi);
-        const w = og.genislik * sutunSayisi + (sutunSayisi - 1) * sutunlarArasiBosluk;
-        const h = 8 + 3 + soruBasinaDusen * (og.baloncukCap * 2);
+        const cap = og.baloncukCap || LE.STANDART_BALONCUK_CAP;
+        const yatay = og.yatayAralikCarpani || 1.3;
+        const dikey = og.dikeyAralikCarpani || 1.3;
+        const sikSayisi = og.sikSayisi || 4;
+        const maxNo = soruBasinaDusen >= 10 ? 99 : 9;
+        const soruNoGen = maxNo >= 10 ? 5.5 : 4.0;
+        // Otomatik sütun genişliği (editörle ve motorla aynı formül)
+        const sutunGenislik = og.genislikSabit ? (og.genislik || (soruNoGen + sikSayisi * cap * yatay)) : (soruNoGen + sikSayisi * cap * yatay);
+        const w = sutunGenislik * sutunSayisi + (sutunSayisi - 1) * sutunlarArasiBosluk;
+        // Doğru yükseklik: başlık + boşluk + satır sayısı × satır aralığı
+        const baslikH = (og.dersAdi && og.baslikGizle !== 'evet') ? (og.baslikYuksekligi || 8) : 0;
+        const h = baslikH + 3 + soruBasinaDusen * (cap * dikey);
         return { w, h };
       }
       if (og.tip === 'numaraAlani') {
@@ -721,7 +731,10 @@
 
     /** dx/dy'yi, öğe güvensiz kenar bölgesine (köşe işareti payı) girmeyecek şekilde kısıtlar. */
     function guvenliDxDyKisitla(og, baz, dx, dy) {
-      const pay = KOSE_GUVENLI_PAY_MM;
+      // Köşe kareleri: HIZALAMA_PAY (6mm) + HIZALAMA_MARKER_BOYUT (7.7mm) = 13.7mm
+      // Öğe bu alana giremez.
+      const koseKarePay = (LE.HIZALAMA_PAY || 6) + (LE.HIZALAMA_MARKER_BOYUT || 7.7);
+      const pay = koseKarePay;
       const sayfaW = sablon.sayfaBoyutu.width, sayfaH = sablon.sayfaBoyutu.height;
       if (og.tip === 'cizgi') {
         const minX = Math.min(baz.x1, baz.x2), maxX = Math.max(baz.x1, baz.x2);
