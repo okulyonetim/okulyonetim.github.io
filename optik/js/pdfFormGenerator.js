@@ -54,11 +54,11 @@ const ROBOTO_BOLD_BASE64 = "AAEAAAASAQAABAAgR0RFRrRCsIIAAh3kAAACYkdQT1P5bkuGAAIg
  * (Türkçe/Latin Extended-A glifleri dahil, tam set) ile değiştirildi.
  */
 // Renk paleti (RGB üçlüleri — doc.setFillColor(...RENK) gibi spread edilerek kullanılıyor).
-const ANA_RENK = [194, 24, 91];      // koyu pembe/bordo — başlık şeridi, çerçeveler, vurgu metinleri
+const ANA_RENK = [0, 0, 0];          // siyah — başlık şeridi, çerçeveler, vurgu metinleri
 const BEYAZ = [255, 255, 255];
 const KOYU_METIN = [33, 33, 33];
-const ACIK_RENK = [252, 228, 236];   // açık pembe — ders başlığı zemin rengi
-const ZEBRA_ACIK = [253, 245, 248];  // çok açık pembe — etiket/değer kutularının zemin rengi
+const ACIK_RENK = [220, 220, 220];   // açık gri — ders başlığı zemin rengi
+const ZEBRA_ACIK = [240, 240, 240];  // çok açık gri — etiket/değer kutularının zemin rengi
 
 /**
  * KÖK NEDEN DÜZELTMESİ (Ağustos 2026, Sedat bildirimi: "PDF'te İ, ı, Ş, Ğ,

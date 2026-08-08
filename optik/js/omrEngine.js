@@ -289,7 +289,7 @@ window.OmrOkuyucu = (function () {
   function adaptifEsikle(cImageData) {
     const { width, height, data } = cImageData;
 
-    // Önce gri tonlama
+    // Düz gri tonlama — form siyah beyaz basıldığı için renk filtresi gereksiz.
     const gri = new Uint8Array(width * height);
     for (let i = 0; i < width * height; i++) {
       const idx = i * 4;
@@ -299,14 +299,10 @@ window.OmrOkuyucu = (function () {
     const binary = new Uint8Array(width * height);
 
     if (typeof cv !== 'undefined' && cv.Mat) {
-      // OpenCV.js yolu — adaptiveThreshold
       let src, dst;
       try {
         src = cv.matFromArray(height, width, cv.CV_8UC1, gri);
         dst = new cv.Mat();
-        // ADAPTIVE_THRESH_GAUSSIAN_C: her piksel için ağırlıklı Gauss
-        // komşuluğu kullanır. blockSize=31 (baloncuk çapının ~2-3 katı px),
-        // C=5 (yerel ortalamadan çıkarılacak sabit — baskı rengini bastırır).
         cv.adaptiveThreshold(
           src, dst,
           255,
@@ -318,22 +314,19 @@ window.OmrOkuyucu = (function () {
         const dstData = dst.data;
         for (let i = 0; i < dstData.length; i++) binary[i] = dstData[i];
       } catch (e) {
-        // cv hata verirse Otsu'ya düş
         _otsuEsikle(gri, binary, width, height);
       } finally {
         if (src) src.delete();
         if (dst) dst.delete();
       }
     } else {
-      // OpenCV.js yoksa basit Otsu
       _otsuEsikle(gri, binary, width, height);
     }
 
-    // Binary sonucu ImageData formatına çevir
     _binaryImageData = new ImageData(width, height);
     const bd = _binaryImageData.data;
     for (let i = 0; i < width * height; i++) {
-      const v = binary[i]; // 255 = işaretli piksel, 0 = boş
+      const v = binary[i];
       bd[i * 4] = v;
       bd[i * 4 + 1] = v;
       bd[i * 4 + 2] = v;
@@ -2223,6 +2216,39 @@ window.OmrOkuyucu = (function () {
    * GERÇEK kareye inceltiliyor (aynı "tohum + inceltme" deseni).
    * cv.js yüklenmediyse/başarısız olursa eski yönteme sessizce düşülür.
    */
+  /**
+   * Sol-orta ve sağ-orta hizalama karelerini arar.
+   * 4 köşe bulunmuşsa onlardan interpolasyon yaparak arama penceresi konumlandırır.
+   */
+  function _ortaKareleriAra(fotoImageData, form, cerceve) {
+    const sonuc = { solOrta: null, sagOrta: null };
+    if (!cerceve.solUst || !cerceve.solAlt || !cerceve.sagUst || !cerceve.sagAlt) return sonuc;
+
+    const PENCERE = 30; // px (analiz çözünürlüğünde)
+
+    // Sol orta: solUst ile solAlt arasının ortası
+    const solOrtaX = (cerceve.solUst.x + cerceve.solAlt.x) / 2;
+    const solOrtaY = (cerceve.solUst.y + cerceve.solAlt.y) / 2;
+    sonuc.solOrta = enBuyukKareBlobuBul(
+      fotoImageData,
+      solOrtaX - PENCERE, solOrtaY - PENCERE,
+      solOrtaX + PENCERE, solOrtaY + PENCERE,
+      solOrtaX, solOrtaY
+    );
+
+    // Sağ orta: sagUst ile sagAlt arasının ortası
+    const sagOrtaX = (cerceve.sagUst.x + cerceve.sagAlt.x) / 2;
+    const sagOrtaY = (cerceve.sagUst.y + cerceve.sagAlt.y) / 2;
+    sonuc.sagOrta = enBuyukKareBlobuBul(
+      fotoImageData,
+      sagOrtaX - PENCERE, sagOrtaY - PENCERE,
+      sagOrtaX + PENCERE, sagOrtaY + PENCERE,
+      sagOrtaX, sagOrtaY
+    );
+
+    return sonuc;
+  }
+
   function sayfaKoseleriniAraHibrit(fotoImageData, hassasiyet, form) {
     if (typeof window.SayfaTespitCV === 'undefined' || !window.SayfaTespitCV.cvHazirMi()) {
       return sayfaKoseleriniAra(fotoImageData, hassasiyet);
@@ -2273,11 +2299,17 @@ window.OmrOkuyucu = (function () {
 
   function formuOtomatikDuzlestir(fotoImageData, form, ppmm) {
     const bulunanlar = sayfaKoseleriniAraHibrit(fotoImageData, undefined, form);
+
+    // Orta kareleri de ara (varsa — yeni formlarda sol-orta/sag-orta mevcut)
+    const ortaKareler = _ortaKareleriAra(fotoImageData, form, bulunanlar);
+
     const konumEslesme = {
       'sol-ust': bulunanlar.solUst,
       'sag-ust': bulunanlar.sagUst,
       'sol-alt': bulunanlar.solAlt,
       'sag-alt': bulunanlar.sagAlt,
+      'sol-orta': ortaKareler.solOrta,
+      'sag-orta': ortaKareler.sagOrta,
     };
 
     const hizalamaMM = hizalamaMerkezleriMM(form);
@@ -2297,7 +2329,7 @@ window.OmrOkuyucu = (function () {
       }
     }
 
-    const dortKoseDeBulundu = hassasKaynak.length === 4;
+    const dortKoseDeBulundu = hassasKaynak.length >= 4;
     const ucKoseBulundu = hassasKaynak.length === 3;
 
     // Foto ölçeği (piksel/mm): sol-ust/sag-ust arası bulunan mesafeden
@@ -2524,7 +2556,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v20-adaptifEsik]');
+    uyarilar.push('[KOD SÜRÜMÜ: v23-siyahBeyaz6Nokta]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 

@@ -55,11 +55,14 @@ const KOSE_GUVENLI_PAY = HIZALAMA_PAY + HIZALAMA_MARKER_BOYUT; // = 9mm (eski: 1
 function hizalamaIsaretleriEkle(bolge) {
   const MARKER_BOYUT = HIZALAMA_MARKER_BOYUT;
   const PAY = HIZALAMA_PAY;
+  const ortaY = bolge.y + (bolge.height - MARKER_BOYUT) / 2;
   return [
     { x: bolge.x + PAY, y: bolge.y + PAY, boyut: MARKER_BOYUT, konum: 'sol-ust' },
     { x: bolge.x + bolge.width - PAY - MARKER_BOYUT, y: bolge.y + PAY, boyut: MARKER_BOYUT, konum: 'sag-ust' },
     { x: bolge.x + PAY, y: bolge.y + bolge.height - PAY - MARKER_BOYUT, boyut: MARKER_BOYUT, konum: 'sol-alt' },
     { x: bolge.x + bolge.width - PAY - MARKER_BOYUT, y: bolge.y + bolge.height - PAY - MARKER_BOYUT, boyut: MARKER_BOYUT, konum: 'sag-alt' },
+    { x: bolge.x + PAY, y: ortaY, boyut: MARKER_BOYUT, konum: 'sol-orta' },
+    { x: bolge.x + bolge.width - PAY - MARKER_BOYUT, y: ortaY, boyut: MARKER_BOYUT, konum: 'sag-orta' },
   ];
 }
 
@@ -150,7 +153,7 @@ function sayfayiBol(formsPerA4, sayfaBoyutu = A4) {
 // sayfaya sığıyor (bkz. lgsSablonuOlustur); daha büyük bir değer LGS'yi
 // kıracaktı. Bursluluk ve Özel formlarda daha fazla boş alan olduğu için
 // küçülme onlarda bir sığdırma sorunu yaratmaz.
-const STANDART_BALONCUK_CAP = 2.75; // mm — tüm form tiplerinde ortak
+const STANDART_BALONCUK_CAP = 4.0; // mm — Test Plus benzeri, daha büyük ve kolay okunan baloncuk
 const BALONCUK_CAP = STANDART_BALONCUK_CAP; // geriye dönük uyumluluk (özel form üretimi bunu kullanıyor)
 const IZIN_VERILEN_BLOK_SAYILARI = [1, 2, 4, 6];
 

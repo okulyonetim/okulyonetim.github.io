@@ -330,15 +330,29 @@ async function _canliOtomatikOku() {
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        const sonuc = await formuOkuVeGoster(canvas);
+        // CV'nin analiz çözünürlüğünde (480px) bulduğu köşeleri
+        // gerçek video çözünürlüğüne ölçekle.
+        const cvKoseler = _sonBulunanCerceveKoseleri;
+        let sonuc;
+        if (cvKoseler && cvKoseler.solUst && cvKoseler.sagUst && cvKoseler.solAlt && cvKoseler.sagAlt) {
+            const ol = video.videoWidth / KOSE_TESPIT_ANALIZ_GENISLIK;
+            const gercekKoseler = {
+                solUst: { x: cvKoseler.solUst.x * ol, y: cvKoseler.solUst.y * ol },
+                sagUst: { x: cvKoseler.sagUst.x * ol, y: cvKoseler.sagUst.y * ol },
+                solAlt: { x: cvKoseler.solAlt.x * ol, y: cvKoseler.solAlt.y * ol },
+                sagAlt: { x: cvKoseler.sagAlt.x * ol, y: cvKoseler.sagAlt.y * ol },
+            };
+            sonuc = await formuOkuElleKoseliVeGoster(canvas, gercekKoseler);
+        } else {
+            console.warn("Canlı okuma: CV köşesi bulunamadı, bu kare atlandı.");
+            sonuc = null;
+        }
 
         if (typeof _onSonucCallback === "function") _onSonucCallback(sonuc);
 
     } catch (err) {
         console.error("Canlı otomatik okuma hatası:", err);
     } finally {
-        // Kısa bir "soğuma" süresi — sonuç kartının bir an ekranda kalması
-        // ve aynı kağıdın hemen art arda tekrar tetiklenmemesi için.
         setTimeout(() => { _canliIsleniyor = false; }, 900);
     }
 }
@@ -461,27 +475,47 @@ export async function capturePhoto() {
         canvas.height
     );
 
-    const koseElemanlari = koseSeciciElemanlariniAl();
+    // Köşe seçim UI'si kaldırıldı — CV'nin son tespit ettiği köşeleri kullan.
+    // Köşe yoksa anlık bir CV taraması dene.
+    let cvKoseler = _sonBulunanCerceveKoseleri;
 
-    if (!koseElemanlari) {
-        // Köşe seçim UI'sı yoksa (ör. eski index.html), eski otomatik yola düş.
-        return formuOkuVeGoster(canvas);
+    if (!cvKoseler || !cvKoseler.solUst) {
+        // Son bilinen köşe yok — anlık tespit dene
+        if (cvHazirMi()) {
+            const aGenislik = KOSE_TESPIT_ANALIZ_GENISLIK;
+            const aYukseklik = Math.round(video.videoHeight * (aGenislik / video.videoWidth));
+            _koseTespitAnalizCanvas.width = aGenislik;
+            _koseTespitAnalizCanvas.height = aYukseklik;
+            const actx = _koseTespitAnalizCanvas.getContext("2d", { willReadFrequently: true });
+            actx.drawImage(canvas, 0, 0, aGenislik, aYukseklik);
+            try {
+                const imageData = actx.getImageData(0, 0, aGenislik, aYukseklik);
+                const ayarlar = ayarlariGetir();
+                const hassasiyet = { yuzdelik: ayarlar.yuzdelik, minDoluluk: ayarlar.minDoluluk };
+                const aktifBolge = window.OptikAktifForm && window.OptikAktifForm.form && window.OptikAktifForm.form.bolge;
+                const beklenenOranlar = oranlariHesapla(aktifBolge && aktifBolge.width, aktifBolge && aktifBolge.height);
+                cvKoseler = sayfaKoseleriniAraCV(imageData, hassasiyet, null, beklenenOranlar);
+            } catch (e) {
+                cvKoseler = null;
+            }
+        }
     }
 
-    const koseler = await koseSecimAkisi(canvas, canvas.width, canvas.height, koseElemanlari);
-
-    if (koseler === KOSE_SECIM_IPTAL) {
-        // Kullanıcı "✕" (Vazgeç, farklı resim seç) dedi — bu fotoğrafı HİÇ
-        // okumaya çalışma. Kamera zaten açık/akıyor durumda kalır, kullanıcı
-        // doğrudan tekrar çekim yapabilir.
-        return null;
+    if (cvKoseler && cvKoseler.solUst && cvKoseler.sagUst && cvKoseler.solAlt && cvKoseler.sagAlt) {
+        const ol = canvas.width / KOSE_TESPIT_ANALIZ_GENISLIK;
+        const gercekKoseler = {
+            solUst: { x: cvKoseler.solUst.x * ol, y: cvKoseler.solUst.y * ol },
+            sagUst: { x: cvKoseler.sagUst.x * ol, y: cvKoseler.sagUst.y * ol },
+            solAlt: { x: cvKoseler.solAlt.x * ol, y: cvKoseler.solAlt.y * ol },
+            sagAlt: { x: cvKoseler.sagAlt.x * ol, y: cvKoseler.sagAlt.y * ol },
+        };
+        return formuOkuElleKoseliVeGoster(canvas, gercekKoseler);
     }
 
-    if (koseler) {
-        return formuOkuElleKoseliVeGoster(canvas, koseler);
-    }
-
-    return formuOkuVeGoster(canvas);
+    // CV köşe bulunamadı — kullanıcıya bildir
+    const { showStatus } = await import("./utils.js");
+    showStatus("Form köşeleri tespit edilemedi. Kağıdı daha iyi aydınlatın veya çerçeveyi tam görüntüye alın.");
+    return null;
 }
 
 /**
