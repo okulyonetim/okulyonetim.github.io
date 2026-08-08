@@ -82,6 +82,17 @@ async function koseleriBul(canvas) {
 // Kullanıcı "Otomatik Devam Et"/"Vazgeç" derse null döner → çağıran taraf
 // cvKoseler'e (varsa) düşer. "✕ İptal" derse KOSE_SECIM_IPTAL döner →
 // o dosya atlanır.
+//
+// DÜZELTME (Ağustos 2026): koseSecimAlani (#koseSecimAlani) DOM'da
+// #kameraOverlay'in İÇİNDE yaşıyor (index.html), ve #kameraOverlay
+// başlangıçta hidden. koseSecimAlani.style.display='block' yapılsa bile
+// ebeveyni hâlâ hidden olduğu için hiçbir şey GÖRÜNMÜYORDU — Sedat'ın
+// bildirdiği "galeriden hiçbir şey olmuyor, kameraya geçince (kameraAc()
+// #kameraOverlay'i hidden=false yapınca) orada duruyor" davranışı tam
+// buydu. Galeri akışı kamerayı hiç açmadığı için (app.js:kameraAc()'e
+// erişimi yok, o modül-dışı script kapsamında) burada SADECE gereken
+// overlay doğrudan görünür kılınıyor — video/seviye göstergesi gibi
+// kamera-özel yan işler tetiklenmiyor, galeri akışında onlara gerek yok.
 async function koseleriElleOnaylat(canvas) {
     const elemanlar = koseSeciciElemanlariniAl();
     if (!elemanlar) {
@@ -89,7 +100,17 @@ async function koseleriElleOnaylat(canvas) {
         // eskisi gibi davran — yukarıda çağıran taraf CV sonucunu kullanır.
         return null;
     }
-    return await koseSecimAkisi(canvas, canvas.width, canvas.height, elemanlar);
+    const kameraOv = document.getElementById('kameraOverlay');
+    const oncekiHidden = kameraOv ? kameraOv.hidden : null;
+    if (kameraOv) kameraOv.hidden = false;
+    try {
+        return await koseSecimAkisi(canvas, canvas.width, canvas.height, elemanlar);
+    } finally {
+        // Kamera zaten açıksa (nadir ama mümkün: kullanıcı kamera
+        // ekranındayken galeri ikonuna bastıysa) onun durumunu bozma —
+        // sadece BİZİM açtığımız durumda (önceden hidden idiyse) geri kapat.
+        if (kameraOv && oncekiHidden === true) kameraOv.hidden = true;
+    }
 }
 
 // Birden fazla input aynı anda okuma başlatmasın

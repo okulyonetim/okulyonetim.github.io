@@ -141,6 +141,7 @@ window.OmrOkuyucu = (function () {
   let _sonHKatsayilari = null;
   let _sonKoyulukOzeti = null;
   let _sonNumaraTeshis = null;
+  let _sonKitapcikTeshis = null; // YENİ (teşhis): kitapçık/form kodu okumasında hangi seçeneğin neden seçildiği/belirsiz kaldığı — numaraTeshis ile aynı desen
   let _radyalProfilSatirlari = []; // YENİ (teşhis): bkz. radyalKoyulukProfili — her formuOku çağrısında sıfırlanır
 
   // ---------------------------------------------------------------------
@@ -1973,7 +1974,7 @@ window.OmrOkuyucu = (function () {
    * (aramaOrani) ve belirsizlik marjı, ana cevap okumasından daha gevşek
    * tutuluyor.
    */
-  function baloncukGrubundanEnKoyuyuSec(cImageData, bubbles, ppmm) {
+  function baloncukGrubundanEnKoyuyuSec(cImageData, bubbles, ppmm, etiket) {
     const KARANLIK_ESIK = _koyulukEsikGetir(); // her okumada canlı okunur (Ayarlar sheet)
     const sikler = bubbles.map((b) => ({ px: b.cx * ppmm, py: b.cy * ppmm, pr: b.r * ppmm }));
 
@@ -2010,13 +2011,21 @@ window.OmrOkuyucu = (function () {
     const birinci = sonuclar[0];
     const ikinci = sonuclar[1];
     const belirsiz = !birinci || birinci.oran < KARANLIK_ESIK || (ikinci && (birinci.oran - ikinci.oran) < 0.08);
+    if (etiket) {
+      // YENİ (teşhis): numaraTeshis ile aynı desen — top-3 aday + oranları,
+      // hangi eşiğe takıldığı (KARANLIK_ESIK mi, fark mı) görünür olsun.
+      const top3 = sonuclar.slice(0, 3).map((s) => s.deger + '=' + s.oran.toFixed(3)).join(',');
+      const sonucStr = etiket + ':[' + top3 + ']->' + (belirsiz ? 'BELİRSİZ' : birinci.deger) +
+        ' (esik=' + KARANLIK_ESIK.toFixed(2) + (ikinci ? ', fark=' + (birinci ? (birinci.oran - ikinci.oran).toFixed(3) : '-') : '') + ')';
+      _sonKitapcikTeshis = (_sonKitapcikTeshis ? _sonKitapcikTeshis + ' | ' : '') + sonucStr;
+    }
     return { deger: belirsiz ? null : birinci.deger, guven: birinci ? birinci.oran : 0, belirsiz };
   }
 
   /** Kitapçık Türü baloncuk bloğunu okur (A/B/C/D...). Alan tanımlı değilse null döner. */
   function kitapcikOku(cImageData, kitapcikAlani, ppmm) {
     if (!kitapcikAlani || !kitapcikAlani.secenekler) return null;
-    return baloncukGrubundanEnKoyuyuSec(cImageData, kitapcikAlani.secenekler, ppmm).deger;
+    return baloncukGrubundanEnKoyuyuSec(cImageData, kitapcikAlani.secenekler, ppmm, 'kitapcik').deger;
   }
 
   /**
@@ -2029,7 +2038,7 @@ window.OmrOkuyucu = (function () {
    */
   function formKoduOku(cImageData, formKoduAlani, ppmm) {
     if (!formKoduAlani || !formKoduAlani.secenekler) return null;
-    return baloncukGrubundanEnKoyuyuSec(cImageData, formKoduAlani.secenekler, ppmm).deger;
+    return baloncukGrubundanEnKoyuyuSec(cImageData, formKoduAlani.secenekler, ppmm, 'formKodu').deger;
   }
 
   /**
@@ -2495,6 +2504,7 @@ window.OmrOkuyucu = (function () {
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = [];
     _radyalProfilSatirlari = []; // YENİ (teşhis): her okumada sıfırlanır, her hane için bir satır
+    _sonKitapcikTeshis = null; // YENİ (teşhis): her okumada sıfırlanır
     _binaryImageData = null; // önceki okumadan kalan binary temizle
 
     // YENİ (kritik): cv.js henüz yüklenme sürecindeyse BEKLE, sessizce eski
@@ -2606,6 +2616,7 @@ window.OmrOkuyucu = (function () {
     }
     uyarilar.push('[KOD SÜRÜMÜ: v25-dinamikOlcek]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
+    if (_sonKitapcikTeshis) { uyarilar.push('Kitapçık/Form Kodu teşhisi: ' + _sonKitapcikTeshis); }
     if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
     return {
@@ -2676,6 +2687,7 @@ window.OmrOkuyucu = (function () {
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = ['Köşeler elle seçildi (otomatik hizalama tespiti atlandı).'];
     _radyalProfilSatirlari = [];
+    _sonKitapcikTeshis = null;
     _binaryImageData = null;
 
     const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
@@ -2726,6 +2738,7 @@ window.OmrOkuyucu = (function () {
     // ("hane0:[...] -> BELİRSİZ" gibi) İçerik sekmesinde HİÇ görünmüyordu,
     // sorunu araştırmayı zorlaştırıyordu.
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
+    if (_sonKitapcikTeshis) { uyarilar.push('Kitapçık/Form Kodu teşhisi: ' + _sonKitapcikTeshis); }
     if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
     // NOT: Elle seçilen 4 sayfa-köşesi zaten hassas bir homografi
