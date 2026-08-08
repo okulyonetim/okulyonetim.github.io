@@ -68,6 +68,9 @@ async function koseleriBul(canvas) {
     return null;
 }
 
+// Birden fazla input aynı anda okuma başlatmasın
+let _galeriIsleniyor = false;
+
 export function baglaGaleriSecici(inputId, canvasId) {
     const input = document.getElementById(inputId);
     const canvas = document.getElementById(canvasId);
@@ -76,6 +79,8 @@ export function baglaGaleriSecici(inputId, canvasId) {
     input.addEventListener("change", async () => {
         const dosyalar = input.files;
         if (!dosyalar || !dosyalar.length) return;
+        if (_galeriIsleniyor) { input.value = ""; return; } // çift tetiklenmeyi önle
+        _galeriIsleniyor = true;
         try {
             await cvHazirBekle();
             if (dosyalar.length > 1) {
@@ -94,6 +99,7 @@ export function baglaGaleriSecici(inputId, canvasId) {
             showStatus("Fotoğraf okunamadı: " + err.message);
         } finally {
             input.value = "";
+            _galeriIsleniyor = false;
         }
     });
 }
