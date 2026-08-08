@@ -119,6 +119,22 @@ window.OmrOkuyucu = (function () {
     return 0.02;
   }
 
+  // YENİ (Ağustos 2026, gerçek kağıt teşhisiyle bulundu — bkz.
+  // hassasiyetAyarlari.js:numaraKoyulukEsik açıklaması): _basamakEnKoyusu
+  // önceden SADECE numaraMinFark (fark eşiği) kontrol ediyordu, mutlak
+  // sinyal seviyesine hiç bakmıyordu. Boş bir hanede en yüksek adaylar
+  // birbirine yakın ama HEPSİ zayıf (gürültü) olabiliyordu — düşük bir
+  // fark eşiği bu gürültüden bile "kesin" bir rakam üretebiliyordu.
+  function _numaraKoyulukEsikGetir() {
+    try {
+      if (window.HassasiyetAyarlari && typeof window.HassasiyetAyarlari.ayarlariGetir === 'function') {
+        const a = window.HassasiyetAyarlari.ayarlariGetir();
+        if (typeof a.numaraKoyulukEsik === 'number' && !isNaN(a.numaraKoyulukEsik)) return a.numaraKoyulukEsik;
+      }
+    } catch (e) { /* ayarlar okunamazsa varsayılana düş */ }
+    return 0.45;
+  }
+
   // YENİ (teşhis): duzCanvasUret'in H matrisi testinin sonucu — formuOku
   // tarafından uyarılara eklenir.
   let _sonHTestSonucu = null;
@@ -2133,6 +2149,15 @@ window.OmrOkuyucu = (function () {
     const ikinci = sonuclar[1];
     // İkinci yoksa (tek baloncuk) veya fark yeterliyse seç
     if (!birinci) return { deger: null, guven: 0, detay: sonuclar };
+    // YENİ: mutlak sinyal eşiği — cevap okumadaki KARANLIK_ESIK mantığının
+    // numara karşılığı. Birinci adayın oranı bu eşiğin altındaysa hane
+    // BOŞ sayılır, farka hiç bakılmaz (fark ne kadar büyük olursa olsun,
+    // 0.28 vs 0.05 gibi bir fark da "kesin" değildir — sadece gürültünün
+    // en yüksek ucudur, gerçek öğrenci işareti değildir).
+    const NUMARA_KOYULUK_ESIK = _numaraKoyulukEsikGetir();
+    if (birinci.oran < NUMARA_KOYULUK_ESIK) {
+      return { deger: null, guven: birinci.oran, detay: sonuclar };
+    }
     const fark = ikinci ? (birinci.oran - ikinci.oran) : 1;
     if (fark < MIN_FARK) return { deger: null, guven: birinci.oran, detay: sonuclar };
     return { deger: birinci.deger, guven: birinci.oran, detay: sonuclar };

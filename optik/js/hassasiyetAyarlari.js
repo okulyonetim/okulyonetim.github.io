@@ -22,6 +22,19 @@ export const VARSAYILAN = {
     numaraMinFark: 0.02,   // öğrenci numarası hanelerinde aynı mantık (omrEngine.js:
                            // MIN_FARK) — çok düşük tutulursa aday hanelerin birbirine
                            // çok yakın koyulukta olduğu (belirsiz) durumları ayırt edemez
+    numaraKoyulukEsik: 0.45, // YENİ (Ağustos 2026, gerçek kağıt teşhisiyle bulundu):
+                           // koyulukEsik'in numara alanı karşılığı — cevap okumada
+                           // (KARANLIK_ESIK) var ama numara okuma (_basamakEnKoyusu)
+                           // önceden SADECE numaraMinFark (fark eşiği) kontrol ediyordu,
+                           // mutlak sinyal seviyesine hiç bakmıyordu. Gözlemlenen: boş
+                           // bir hanede en yüksek 3 aday birbirine çok yakın (~0.25-0.28)
+                           // ama HEPSİ zayıf gürültü seviyesindeyken, numaraMinFark=0.02
+                           // gibi düşük bir fark eşiği bu gürültüden bile "kesin" bir
+                           // rakam üretiyordu (0.277 vs 0.254 farkı 0.02'yi geçiyor diye
+                           // "9" gibi hatalı bir rakam seçiliyordu). Artık birinci adayın
+                           // oranı bu eşiğin altındaysa (fark ne olursa olsun) hane boş
+                           // sayılır. Gerçek işaretli bir hanede oran tipik olarak 0.7+
+                           // çıkıyor, bu yüzden 0.45 güvenli bir ayraç.
 };
 
 export function ayarlariGetir() {
