@@ -615,13 +615,14 @@ function _optikAktifFormGuncelle() {
     const sinav = DB.sinaviBul(_aktifSinavId);
     if (!sinav) { window.OptikAktifForm = null; return; }
     try {
-        // TEŞHİS
         const sablonlar = DB.ozelSablonlariGetir();
-        console.error('[TESHIS] aktifSinavId=' + _aktifSinavId + ' optikFormId=' + sinav.optikFormId + ' sablonSayisi=' + sablonlar.length + ' sablonIdleri=' + sablonlar.map(s=>s.id).join(','));
+        // TEŞHİS: uyarı kutusuna yaz
+        const teshis = 'optikFormId=' + sinav.optikFormId + ' | sablonSayisi=' + sablonlar.length + ' | idler=' + sablonlar.map(s=>s.id).join(',');
+        window._optikTeshis = teshis;
         const layout = _layoutGetir(sinav);
         window.OptikAktifForm = { form: layout.formlar[0], sinavTuru: sinav.optikFormId || 'lgs' };
     } catch (e) {
-        console.error('[TESHIS] _optikAktifFormGuncelle HATA:', e.message);
+        window._optikTeshis = 'HATA: ' + e.message;
         window.OptikAktifForm = null;
     }
 }

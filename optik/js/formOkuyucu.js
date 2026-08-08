@@ -293,6 +293,7 @@ export async function formuOkuElleKoseliVeGoster(sourceCanvas, koseler) {
         if (el) { el.style.display = 'block'; el.textContent = (el.textContent ? el.textContent + '\n' : '') + msg; }
     };
     dbg('OptikAktifForm: ' + (window.OptikAktifForm ? 'VAR (sinavTuru=' + window.OptikAktifForm.sinavTuru + ')' : 'YOK/NULL'));
+    dbg('Teshis: ' + (window._optikTeshis || 'henüz çalışmadı'));
     dbg('sinavTuruEl: ' + (document.getElementById('sinavTuru')?.value || 'yok'));
 
     const { form, sinavTuru } = testFormunuOlustur();
