@@ -453,6 +453,17 @@ function bolumlerCiz(doc, form) {
         doc.text(String(soru.soruNo), soru.etiketX, soru.etiketY, { align: 'center' });
         for (const sik of soru.sikler) baloncukCiz(doc, sik);
       }
+      // Test Plus gibi satırlar arası kesikli çizgi
+      if (ders.kesikliCizgiler && ders.kesikliCizgiler.length) {
+        doc.setDrawColor(180, 180, 180);
+        doc.setLineWidth(0.15);
+        doc.setLineDashPattern([0.8, 0.8], 0);
+        for (const cizgi of ders.kesikliCizgiler) {
+          doc.line(cizgi.x1, cizgi.y, cizgi.x2, cizgi.y);
+        }
+        doc.setLineDashPattern([], 0);
+        doc.setDrawColor(0, 0, 0);
+      }
     }
   }
 
@@ -581,7 +592,7 @@ function hizalamaIsaretleriCiz(doc, form) {
   if (form.sayfaCercevesi) {
     const c = form.sayfaCercevesi;
     doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(1.5); // KALIN çerçeve — kenarCizgisiIleKoseBul için güvenilir referans
+    doc.setLineWidth(1.0); // Test Plus ölçümü: ~0.94mm → 1mm
     doc.rect(c.x, c.y, c.width, c.height, 'S');
   }
 }

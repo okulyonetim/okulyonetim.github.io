@@ -22,7 +22,7 @@ const A4 = { width: 210, height: 297 };
 // mesafede) kalıyor, kare ise çizginin İÇİNDE (ondan daha uzakta, sayfanın iç
 // tarafında) duruyor. Böylece hiçbir tarama sütunu/satırı ikisini aynı anda
 // görmüyor.
-const HIZALAMA_MARKER_BOYUT = 5; // mm, dolu kare boyutu (eski: 3mm → Test Plus benzeri büyük kare)
+const HIZALAMA_MARKER_BOYUT = 7.7; // mm — Test Plus ölçümü (7.72mm × 7.68mm)
 
 // Çerçeve çizgisinin sayfa/bölge kenarından mesafesi — bu, yazdırılabilir
 // alan güvenli payı olarak SABİT kalmalı (çoğu yazıcı/fotokopi kenara çok
@@ -153,7 +153,10 @@ function sayfayiBol(formsPerA4, sayfaBoyutu = A4) {
 // sayfaya sığıyor (bkz. lgsSablonuOlustur); daha büyük bir değer LGS'yi
 // kıracaktı. Bursluluk ve Özel formlarda daha fazla boş alan olduğu için
 // küçülme onlarda bir sığdırma sorunu yaratmaz.
-const STANDART_BALONCUK_CAP = 5.5; // mm — Test Plus ölçümüne göre (~5.7mm), satır aralığı ×1.3 = 7.15mm
+const STANDART_BALONCUK_CAP = 5.5; // mm — Test Plus ölçümü (~5.7mm)
+const STANDART_YATAY_ARALIK_CARPANI = 1.23; // Test Plus ölçümü
+const STANDART_DIKEY_ARALIK_CARPANI = 1.26; // Test Plus ölçümü (7.2/5.7)
+const STANDART_SORU_NO_GENISLIGI = 3.0;     // mm — Test Plus'ta çok küçük
 const BALONCUK_CAP = STANDART_BALONCUK_CAP; // geriye dönük uyumluluk (özel form üretimi bunu kullanıyor)
 const IZIN_VERILEN_BLOK_SAYILARI = [1, 2, 4, 6];
 
@@ -412,6 +415,13 @@ function dersSutunuHesapla({
     toplamYukseklik: baslikYuksekligi + baslikAltBosluk + soruSayisi * satirAraligi,
     sorular,
     yerelCerceve: sutunCerceveHesapla({ x, width, sorular, baloncukCap }),
+    // Satırlar arası kesikli çizgi — Test Plus gibi her satırın altında
+    // ince kesik çizgi (tam sütun genişliğinde, y = satır alt kenarı)
+    kesikliCizgiler: sorular.slice(0, -1).map((soru) => ({
+      x1: x,
+      x2: x + width,
+      y: soru.sikler[0].cy + baloncukCap / 2 + (satirAraligi - baloncukCap) / 2,
+    })),
   };
 }
 

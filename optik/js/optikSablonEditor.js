@@ -38,7 +38,7 @@
     baloncukBlok: () => ({
       tip: 'baloncukBlok', x: 20, y: 20,
       dersAdi: 'Yeni Ders', soruSayisi: 10, sikSayisi: 4,
-      baloncukCap: LE.STANDART_BALONCUK_CAP, yatayAralikCarpani: 1.45, dikeyAralikCarpani: 2.0,
+      baloncukCap: LE.STANDART_BALONCUK_CAP, yatayAralikCarpani: 1.3, dikeyAralikCarpani: 1.3,
       genislik: 30, sutunSayisi: 1, sutunlarArasiBosluk: 3, sutunDikeyKaymalari: [0],
     }),
     kimlikAlani: () => ({ tip: 'kimlikAlani', x: 15, y: 15, genislik: 100, yukseklik: 14, baslik: 'AD SOYAD', alan: 'adSoyad' }),
@@ -79,30 +79,39 @@
     const sutunlarArasiBosluk = og.sutunlarArasiBosluk != null ? og.sutunlarArasiBosluk : 3;
     const kaymalar = og.sutunDikeyKaymalari || [];
     const soruBasinaDusen = Math.ceil(og.soruSayisi / sutunSayisi);
-    // KÖK NEDEN DÜZELTMESİ (bkz. optikSablonMotoru.js: baloncukBlokOlustur'daki
-    // AYNI not) — iç kimlik (OMR/cevap anahtarı gruplandırması) ASLA boş
-    // olmamalı, görsel gizleme SADECE basılıp basılmayacağını etkiler.
     const dersAdiIcin = og.dersAdi || ('Soru Bloğu #' + og.id.slice(-4));
-    const baslikGorunur = !!og.dersAdi && og.baslikGizle !== 'evet'; // alanEkle select'i string döndürür ('evet'/'hayir'), boolean değil
+    const baslikGorunur = !!og.dersAdi && og.baslikGizle !== 'evet';
     const baslikYuksekligi = baslikGorunur ? (og.baslikYuksekligi || 8) : 0;
     const baslikFontPt = og.baslikFontPt || 6.4;
     const baslikAltBosluk = baslikGorunur ? 3 : 1;
+
+    // Sütun genişliği: otomatik hesapla (Test Plus gibi içeriğe göre)
+    // soruNoGenisligi + sikSayisi × baloncukCap × aralikCarpani
+    const cap = og.baloncukCap || LE.STANDART_BALONCUK_CAP;
+    const yatay = og.yatayAralikCarpani || 1.3;
+    const sikSayisi = og.sikSayisi || 4;
+    const maxNo = soruBasinaDusen >= 10 ? 99 : 9;
+    const soruNoGen = maxNo >= 10 ? 5.5 : 4.0;
+    const otomatikGenislik = soruNoGen + sikSayisi * cap * yatay;
+    // Kullanıcı "genislikSabit: true" seçmediyse otomatik kullan
+    const sutunGenislik = og.genislikSabit ? (og.genislik || otomatikGenislik) : otomatikGenislik;
+
     const sutunlar = [];
     for (let s = 0; s < sutunSayisi; s++) {
       const buSutundakiSoruSayisi = Math.min(soruBasinaDusen, og.soruSayisi - s * soruBasinaDusen);
       if (buSutundakiSoruSayisi <= 0) continue;
       try {
         const sutun = LE.dersSutunuHesapla({
-          x: og.x + s * (og.genislik + sutunlarArasiBosluk),
+          x: og.x + s * (sutunGenislik + sutunlarArasiBosluk),
           y: og.y + (kaymalar[s] || 0),
-          width: og.genislik,
-          dersAdi: dersAdiIcin, // ASLA boş değil — bkz. yukarıdaki kök neden notu
+          width: sutunGenislik,
+          dersAdi: dersAdiIcin,
           soruSayisi: buSutundakiSoruSayisi,
-          baslangicSoruNo: s * soruBasinaDusen + 1, // KÖK NEDEN DÜZELTMESİ: bkz. optikSablonMotoru.js/layoutEngine.js notu
+          baslangicSoruNo: s * soruBasinaDusen + 1,
           sikSayisi: og.sikSayisi,
-          baloncukCap: og.baloncukCap,
-          aralikCarpani: og.yatayAralikCarpani || 1.45,
-          dikeyAralikCarpani: og.dikeyAralikCarpani || 2.0,
+          baloncukCap: cap,
+          aralikCarpani: yatay,
+          dikeyAralikCarpani: og.dikeyAralikCarpani || 1.3,
           baslikYuksekligi,
           baslikFontPt,
           baslikAltBosluk,
@@ -111,8 +120,7 @@
         sutun.baslikFontPt = baslikFontPt;
         sutunlar.push(sutun);
       } catch (e) {
-        // Geçersiz kombinasyon (ör. genişlik çok dar) — önizlemede sessizce atla,
-        // kaydetmeden önce sablonuDogrula zaten kullanıcıyı uyaracak.
+        // Geçersiz kombinasyon — önizlemede sessizce atla
       }
     }
     return sutunlar;
@@ -878,7 +886,7 @@
       const cerceve = LE.sayfaCercevesiHesapla(bolge);
       svg.appendChild(svgOlustur('rect', {
         x: cerceve.x, y: cerceve.y, width: cerceve.width, height: cerceve.height,
-        fill: 'none', stroke: '#000', 'stroke-width': 1.5,
+        fill: 'none', stroke: '#000', 'stroke-width': 1.0,
       }));
       LE.hizalamaIsaretleriEkle(bolge).forEach((m) => {
         svg.appendChild(svgOlustur('rect', { x: m.x, y: m.y, width: m.boyut, height: m.boyut, fill: '#000' }));
@@ -917,6 +925,15 @@
               minY = Math.min(minY, sik.cy - sik.r); maxY = Math.max(maxY, sik.cy + sik.r);
             });
           });
+          // Kesikli çizgiler — Test Plus gibi satırlar arası
+          if (sutun.kesikliCizgiler) {
+            for (const cizgi of sutun.kesikliCizgiler) {
+              g.appendChild(svgOlustur('line', {
+                x1: cizgi.x1, y1: cizgi.y, x2: cizgi.x2, y2: cizgi.y,
+                stroke: '#aaa', 'stroke-width': 0.15, 'stroke-dasharray': '0.8,0.8',
+              }));
+            }
+          }
           // KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "ders
           // isimlerinin olduğu kutucuklar birbiri üstüne çakışıyor... bu
           // kutucuklar form oluşturmada görünmüyor") — gerçek PDF'te
@@ -1194,7 +1211,10 @@
         const minDikey = LE.minDikeyAralikCarpani ? LE.minDikeyAralikCarpani() : 2.6;
         alanEkle(og, `Yatay Boşluk Çarpanı (min: ${minYatay.toFixed(1)})`, 'yatayAralikCarpani', 'number', { step: 0.05, min: minYatay });
         alanEkle(og, `Dikey Boşluk Çarpanı (min: ${minDikey.toFixed(1)})`, 'dikeyAralikCarpani', 'number', { step: 0.05, min: minDikey });
-        alanEkle(og, 'Sütun Genişliği (mm)', 'genislik', 'number');
+        alanEkle(og, 'Genişlik Modu', 'genislikSabit', 'select', { opsiyonlar: ['otomatik', 'sabit'] });
+        if (og.genislikSabit === 'sabit') {
+          alanEkle(og, 'Sabit Genişlik (mm)', 'genislik', 'number', { step: 0.5 });
+        }
         alanEkle(og, 'Sütun Sayısı', 'sutunSayisi', 'number');
         alanEkle(og, 'Sütunlar Arası Boşluk (mm)', 'sutunlarArasiBosluk', 'number');
         // Her sütun için ayrı dikey kayma alanı — "sütunların dikey yerleşimi manuel" isteği
