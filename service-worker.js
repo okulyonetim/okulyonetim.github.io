@@ -5,7 +5,7 @@
    · Strateji: statik dosyalar "Cache First", dış kaynaklar "Network First"
    ==================================================================== */
 
-const CACHE_ADI = 'oy-cache-v380';
+const CACHE_ADI = 'oy-cache-v381';
 
 /* ---- Önbelleğe alınacak tüm uygulama dosyaları ---- */
 const ONBELLEGE_ALINACAKLAR = [
@@ -17,6 +17,23 @@ const ONBELLEGE_ALINACAKLAR = [
   './css/tasima-takip.css',
   './css/servis-denetim.css',
   './css/dilekce.css',
+   /*Optik modülü */
+'./optik/index.html',
+'./optik/js/app.js',
+'./optik/js/camera.js',
+'./optik/js/canvasFormAdapter.js',
+'./optik/js/canvasFormGenerator.js',
+'./optik/js/formOkuyucu.js',
+'./optik/js/galeriSecici.js',
+'./optik/js/layoutEngine.js',
+'./optik/js/omrEngine.js',
+'./optik/js/optikSablonEditor.js',
+'./optik/js/optikSablonMotoru.js',
+'./optik/js/pdfFormGenerator.js',
+'./optik/js/sayfaTespitCV.js',
+'./optik/js/formOkuyucu.js',
+'./optik/js/hassasiyetAyarlari.js',
+'./optik/js/koseSecici.js', 
   /* JS — çekirdek */
   './js/firebase-init.js',
   './js/auth.js',
