@@ -2473,6 +2473,11 @@ window.OmrOkuyucu = (function () {
     const { H, bulunamayanIsaretler, disariBirakilanIsaretler, hizalamaKanonikNoktalari, hamBulunanKanonikNoktalari, koseArtiklariMM, secilenYontem, bulunanPikselNoktalari, pikselPerMM } =
       formuOtomatikDuzlestir(fotoImageData, form, ppmm);
 
+    // Gerçek ölçek: köşelerden hesaplanan pikselPerMM'yi kullan.
+    // Böylece A4 formu A5'e küçültülmüş baskıda da, büyütülmüş baskıda da
+    // koordinatlar otomatik doğru ölçeklenir — sabit VARSAYILAN_PPMM değil.
+    const gercekPpmm = (pikselPerMM && pikselPerMM > 0) ? pikselPerMM : ppmm;
+
     if (!H) {
       return {
         basarili: false,
@@ -2522,17 +2527,17 @@ window.OmrOkuyucu = (function () {
       );
     }
 
-    const { canvas: duzCanvas, imageData: cImageData } = duzCanvasUret(fotoImageData, H, form, ppmm);
+    const { canvas: duzCanvas, imageData: cImageData } = duzCanvasUret(fotoImageData, H, form, gercekPpmm);
 
     kontrastNormalizeEt(cImageData);
     duzCanvas.getContext('2d').putImageData(cImageData, 0, 0);
-    adaptifEsikle(cImageData); // binary görüntü üret (baloncuk doluluk ölçümü için)
+    adaptifEsikle(cImageData);
 
     // Kimlik: QR yerine Kitapçık+Numara baloncuklarından (elle-köşeli modla aynı yöntem).
     let ogrenciKimlik = null;
-    const numaraSonuc = numaraOku(cImageData, form.numaraAlani, ppmm);
-    const kitapcikSonuc = kitapcikOku(cImageData, form.kitapcikAlani, ppmm);
-    const formKodu = formKoduOku(cImageData, form.formKoduAlani, ppmm);
+    const numaraSonuc = numaraOku(cImageData, form.numaraAlani, gercekPpmm);
+    const kitapcikSonuc = kitapcikOku(cImageData, form.kitapcikAlani, gercekPpmm);
+    const formKodu = formKoduOku(cImageData, form.formKoduAlani, gercekPpmm);
     if (numaraSonuc) {
       ogrenciKimlik = { ogrenciNo: numaraSonuc.numara, kitapcikTuru: kitapcikSonuc };
       if (!numaraSonuc.tamOkunduMu) {
@@ -2542,13 +2547,13 @@ window.OmrOkuyucu = (function () {
 
     let genelDuzeltme = null;
     if (secenekler.genelDuzeltmeKullan) {
-      genelDuzeltme = genelDuzeltmeHesapla(cImageData, form, ppmm);
+      genelDuzeltme = genelDuzeltmeHesapla(cImageData, form, gercekPpmm);
       if (!genelDuzeltme) {
         uyarilar.push('Izgaranın hizalama işaretleri bulunamadı, sayfa-geneli düzeltme kullanılamadı.');
       }
     }
 
-    const cevaplarSonuc = cevaplariCikar(cImageData, form, ppmm, genelDuzeltme);
+    const cevaplarSonuc = cevaplariCikar(cImageData, form, gercekPpmm, genelDuzeltme);
     const cevaplar = cevaplarSonuc.cevaplar;
 
     const belirsizSayisi = cevaplar.filter((c) => c.uyari).length;
@@ -2558,7 +2563,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v24-testPlus]');
+    uyarilar.push('[KOD SÜRÜMÜ: v25-dinamikOlcek]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
@@ -2629,28 +2634,43 @@ window.OmrOkuyucu = (function () {
 
     const ppmm = secenekler.ppmm || VARSAYILAN_PPMM;
     const uyarilar = ['Köşeler elle seçildi (otomatik hizalama tespiti atlandı).'];
-    _radyalProfilSatirlari = []; // YENİ (teşhis): her okumada sıfırlanır, her hane için bir satır
-    _binaryImageData = null; // önceki okumadan kalan binary temizle
+    _radyalProfilSatirlari = [];
+    _binaryImageData = null;
 
     const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
 
-    const H = homografiElleKoselerdenHesapla(form, koseler, ppmm);
+    // Gerçek ölçek: köşe pikselleri arası mesafeden hesapla (boyuttan bağımsız)
+    let gercekPpmm = ppmm;
+    if (koseler && koseler.solUst && koseler.sagUst) {
+      const fotoGenislikPx = Math.hypot(
+        koseler.sagUst.x - koseler.solUst.x,
+        koseler.sagUst.y - koseler.solUst.y
+      );
+      const fotoYukseklikPx = Math.hypot(
+        koseler.solAlt.x - koseler.solUst.x,
+        koseler.solAlt.y - koseler.solUst.y
+      );
+      // İki yönün ortalamasını al
+      const olcekX = fotoGenislikPx / form.bolge.width;
+      const olcekY = fotoYukseklikPx / form.bolge.height;
+      gercekPpmm = (olcekX + olcekY) / 2;
+    }
 
-    const { canvas: duzCanvas, imageData: cImageData } = duzCanvasUret(fotoImageData, H, form, ppmm);
+    const H = homografiElleKoselerdenHesapla(form, koseler, gercekPpmm);
+
+    const { canvas: duzCanvas, imageData: cImageData } = duzCanvasUret(fotoImageData, H, form, gercekPpmm);
     if (_sonHTestSonucu) {
       uyarilar.push('H köşe testi: ' + _sonHTestSonucu);
     }
 
     kontrastNormalizeEt(cImageData);
     duzCanvas.getContext('2d').putImageData(cImageData, 0, 0);
-    adaptifEsikle(cImageData); // binary görüntü üret (baloncuk doluluk ölçümü için)
+    adaptifEsikle(cImageData);
 
-    // Kimlik artık QR'den değil, Kitapçık+Numara baloncuk bloğundan okunuyor
-    // (bkz. layoutEngine.js: kitapcikAlaniHesapla / numaraAlaniHesapla).
     let ogrenciKimlik = null;
-    const numaraSonuc = numaraOku(cImageData, form.numaraAlani, ppmm);
-    const kitapcikSonuc = kitapcikOku(cImageData, form.kitapcikAlani, ppmm);
-    const formKodu = formKoduOku(cImageData, form.formKoduAlani, ppmm);
+    const numaraSonuc = numaraOku(cImageData, form.numaraAlani, gercekPpmm);
+    const kitapcikSonuc = kitapcikOku(cImageData, form.kitapcikAlani, gercekPpmm);
+    const formKodu = formKoduOku(cImageData, form.formKoduAlani, gercekPpmm);
     if (numaraSonuc) {
       ogrenciKimlik = { ogrenciNo: numaraSonuc.numara, kitapcikTuru: kitapcikSonuc };
       if (!numaraSonuc.tamOkunduMu) {
@@ -2670,7 +2690,7 @@ window.OmrOkuyucu = (function () {
     let genelDuzeltme = null;
 
     if (secenekler.genelDuzeltmeKullan) {
-      genelDuzeltme = genelDuzeltmeHesapla(cImageData, form, ppmm);
+      genelDuzeltme = genelDuzeltmeHesapla(cImageData, form, gercekPpmm);
       if (!genelDuzeltme) {
         uyarilar.push(
           'Izgaranın (tüm ders sütunlarını saran çerçevenin) hizalama işaretleri ' +
@@ -2684,7 +2704,7 @@ window.OmrOkuyucu = (function () {
       );
     }
 
-    const cevaplarSonuc = cevaplariCikar(cImageData, form, ppmm, genelDuzeltme);
+    const cevaplarSonuc = cevaplariCikar(cImageData, form, gercekPpmm, genelDuzeltme);
     const cevaplar = cevaplarSonuc.cevaplar;
 
     const belirsizSayisi = cevaplar.filter((c) => c.uyari).length;
