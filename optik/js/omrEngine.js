@@ -1739,24 +1739,40 @@ window.OmrOkuyucu = (function () {
    * satırların GERÇEK dikey konumunu kilitlemek için homografiden çok
    * daha güvenilir bir referans, çünkü basılı şablonun kendisine dayanır.
    */
+  /**
+   * DÜZELTME (kök neden — "köşeler doğru seçilse bile satırlar hâlâ yanlış
+   * okunuyor" hatası, Ağustos 2026): bu fonksiyon önceden SADECE baloncuğun
+   * dış çizgi bandını (0.78r-1.05r halka) örnekliyordu. Ama basılan çember
+   * çok ince (0.2mm) ve soluk (açık gri [160,160,160] — bkz.
+   * pdfFormGenerator.js:BALONCUK_KALINLIK/BALONCUK_RENK), bu da fotoğraf
+   * çözünürlüğü/ışığa göre bu ince bandın gürültüye karışıp satır-kilitleme
+   * adımının YANLIŞ satıra kilitlenmesine yol açıyordu — kilitlenince o
+   * satırdaki TÜM şıklar birden kayıyor (gözlemlenen: elle seçilen köşeler
+   * doğru olsa bile okuma hâlâ bozuk).
+   *
+   * ÇÖZÜM: dış çizgiye değil, baloncuğun NEREDEYSE TAMAMINA (0-0.9r —
+   * çember + harf + varsa öğrenci işareti dahil) bakılıyor. Boş bir
+   * baloncuk bile (gri çember + harf glifi yüzünden) etrafındaki boş beyaz
+   * kağıttan HER ZAMAN belirgin biçimde daha koyudur — bu, "burada bir
+   * baloncuk sırası var" sorusuna, ince tek bir çizgi bandından çok daha
+   * gürültüye dayanıklı cevap verir.
+   */
   function baloncukCemberSinyali(cImageData, cx, cy, r) {
     const { width, height, data } = cImageData;
-    const disYaricap = r * 1.05;
+    const disYaricap = r * 0.9;
     const x0 = Math.max(0, Math.floor(cx - disYaricap));
     const x1 = Math.min(width - 1, Math.ceil(cx + disYaricap));
     const y0 = Math.max(0, Math.floor(cy - disYaricap));
     const y1 = Math.min(height - 1, Math.ceil(cy + disYaricap));
     if (x1 <= x0 || y1 <= y0) return 0;
 
-    const icYaricap = r * 0.78; // halka: iç dolgu hariç, sadece dış çizgi bandı
     let toplam = 0;
     let sayac = 0;
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {
         const dx = x - cx;
         const dy = y - cy;
-        const d2 = dx * dx + dy * dy;
-        if (d2 >= icYaricap * icYaricap && d2 <= disYaricap * disYaricap) {
+        if (dx * dx + dy * dy <= disYaricap * disYaricap) {
           toplam += isaretKoyulukPuani(data, (y * width + x) * 4);
           sayac++;
         }
@@ -2679,6 +2695,13 @@ window.OmrOkuyucu = (function () {
     } else {
       uyarilar.push('Bu formda Numara baloncuk alanı tanımlı değil, öğrenci kimliği okunamadı.');
     }
+    // DÜZELTME: formuOku() bu satırı zaten ekliyordu (bkz. yukarıdaki
+    // fonksiyon), ama formuOkuElleKoseli() bunu hiç eklemiyordu — elle
+    // köşe modunda (Sedat'ın kullandığı yol) hane bazlı teşhis
+    // ("hane0:[...] -> BELİRSİZ" gibi) İçerik sekmesinde HİÇ görünmüyordu,
+    // sorunu araştırmayı zorlaştırıyordu.
+    if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
+    if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
     // NOT: Elle seçilen 4 sayfa-köşesi zaten hassas bir homografi
     // sağlıyor. Otomatik ızgara-içi ikinci düzeltme adımı (genelDuzeltmeHesapla)
