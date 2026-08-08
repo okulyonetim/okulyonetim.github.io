@@ -1,8 +1,11 @@
-// js/galeriSecici.js — köşe seçim UI kaldırıldı, CV ile otomatik tespit
+// js/galeriSecici.js — CV önce otomatik köşe dener; bulamazsa veya
+// kullanıcı isterse gerçek dokunmatik köşe seçim ekranı (koseSecici.js)
+// açılır. Önceki sürümde bu ekran hiç çağrılmıyordu (bkz. DEGISIKLIKLER.md).
 
 import { formuOkuElleKoseliVeGoster, formuOkuToplu } from "./formOkuyucu.js";
 import { showStatus } from "./utils.js";
 import { cvHazirBekle, sayfaKoseleriniAraCV } from "./sayfaTespitCV.js";
+import { koseSeciciElemanlariniAl, koseSecimAkisi, KOSE_SECIM_IPTAL } from "./koseSecici.js";
 
 function dosyayiResmeCevir(dosya) {
     return new Promise((resolve, reject) => {
@@ -45,73 +48,46 @@ async function topluIceAktar(dosyalar, canvas) {
     window.dispatchEvent(new CustomEvent("omrOkumaTamamlandi", { detail: { toplu: true, basarili, toplam } }));
 }
 
-// KABA (hızlı) geçiş için analiz genişliği. Bu çözünürlükte bulunan köşe
-// piksel konumlarındaki HER 1 pikseli hata, tam çözünürlüğe geri
-// ölçeklenince onlarca piksele katlanıyor (ör. 4000px genişlikte bir fotoda
-// ~6.25x) — sayfanın sağına/alt satırlarına doğru büyüyen okuma kaymasının
-// asıl kaynağı buydu. İNCELTME (refine) geçişi bunu düzeltir.
-const ANALIZ_GENISLIK_KABA = 640;
-// İNCELTME geçişi için analiz genişliği: kaba geçişte bulunan köşelerin
-// etrafında (sayfaKoseleriniAraCV'nin takip/ROI modunu kullanarak) çok daha
-// yüksek çözünürlükte tekrar arama yapar. Tam orijinal çözünürlük yerine
-// sabit bir üst sınır kullanılıyor ki çok yüksek çözünürlüklü telefon
-// fotoğraflarında (ör. 4000px+) tek seferlik Canny/kontur maliyeti makul
-// kalsın; yine de 640'a göre ~2.5x daha hassas köşe konumu verir.
-const ANALIZ_GENISLIK_INCE = 1600;
-
-async function _koseleriAraTekGecis(canvas, analizGenislik, sonBilinenKoselerTamCanvas) {
+async function koseleriBul(canvas) {
+    const ANALIZ_GENISLIK = 640;
     const kucuk = document.createElement('canvas');
-    const ol = Math.min(1, analizGenislik / canvas.width);
+    const ol = Math.min(1, ANALIZ_GENISLIK / canvas.width);
     kucuk.width = Math.round(canvas.width * ol);
     kucuk.height = Math.round(canvas.height * ol);
     kucuk.getContext('2d').drawImage(canvas, 0, 0, kucuk.width, kucuk.height);
     const kImageData = kucuk.getContext('2d').getImageData(0, 0, kucuk.width, kucuk.height);
-
-    // Önceki (daha kaba) geçişten bulunan köşeler varsa, bu analiz
-    // çözünürlüğüne ölçekleyip takip-modu ROI'sini tetiklemek için ver —
-    // bu, aramayı sayfanın olması gereken bölgesine kilitleyip gerçek
-    // köşeye daha isabetli kilitlenmesini sağlar.
-    let sonBilinenKoseler = null;
-    if (sonBilinenKoselerTamCanvas) {
-        const g = kucuk.width / canvas.width;
-        sonBilinenKoseler = {
-            solUst: { x: sonBilinenKoselerTamCanvas.solUst.x * g, y: sonBilinenKoselerTamCanvas.solUst.y * g },
-            sagUst: { x: sonBilinenKoselerTamCanvas.sagUst.x * g, y: sonBilinenKoselerTamCanvas.sagUst.y * g },
-            solAlt: { x: sonBilinenKoselerTamCanvas.solAlt.x * g, y: sonBilinenKoselerTamCanvas.solAlt.y * g },
-            sagAlt: { x: sonBilinenKoselerTamCanvas.sagAlt.x * g, y: sonBilinenKoselerTamCanvas.sagAlt.y * g },
-        };
+    try {
+        const bulunan = sayfaKoseleriniAraCV(kImageData);
+        if (bulunan?.solUst && bulunan?.sagUst && bulunan?.solAlt && bulunan?.sagAlt) {
+            const gOl = canvas.width / kucuk.width;
+            return {
+                solUst: { x: bulunan.solUst.x * gOl, y: bulunan.solUst.y * gOl },
+                sagUst: { x: bulunan.sagUst.x * gOl, y: bulunan.sagUst.y * gOl },
+                solAlt: { x: bulunan.solAlt.x * gOl, y: bulunan.solAlt.y * gOl },
+                sagAlt: { x: bulunan.sagAlt.x * gOl, y: bulunan.sagAlt.y * gOl },
+            };
+        }
+    } catch (e) {
+        console.error("Galeri: CV köşe tespiti hata verdi:", e);
     }
-
-    const bulunan = sayfaKoseleriniAraCV(kImageData, undefined, sonBilinenKoseler);
-    if (bulunan?.solUst && bulunan?.sagUst && bulunan?.solAlt && bulunan?.sagAlt) {
-        const gOl = canvas.width / kucuk.width;
-        return {
-            solUst: { x: bulunan.solUst.x * gOl, y: bulunan.solUst.y * gOl },
-            sagUst: { x: bulunan.sagUst.x * gOl, y: bulunan.sagUst.y * gOl },
-            solAlt: { x: bulunan.solAlt.x * gOl, y: bulunan.solAlt.y * gOl },
-            sagAlt: { x: bulunan.sagAlt.x * gOl, y: bulunan.sagAlt.y * gOl },
-        };
-    }
-    return null;
+    return null; // Bulunamadı — çağıran taraf elle seçime düşer.
 }
 
-async function koseleriBul(canvas) {
-    try {
-        const kaba = await _koseleriAraTekGecis(canvas, ANALIZ_GENISLIK_KABA, null);
-        if (!kaba) return null;
-
-        // İNCELTME geçişi: kaba sonucu daha yüksek çözünürlükte doğrula/düzelt.
-        // Bu geçiş herhangi bir sebeple başarısız olursa (ör. WASM hatası),
-        // en azından kaba sonuca sessizce geri dönülür — okumanın tamamen
-        // durmasındansa daha kaba ama var olan bir tahmin tercih edilir.
-        try {
-            const ince = await _koseleriAraTekGecis(canvas, ANALIZ_GENISLIK_INCE, kaba);
-            if (ince) return ince;
-        } catch (e) { /* ince geçiş başarısız — kaba sonuca düş */ }
-
-        return kaba;
-    } catch (e) {}
-    return null;
+// Kullanıcının elle köşe düzeltebileceği ekranı açar. koseSecici.js kendi
+// varsayılan tutamaç konumlarıyla başlar (CV sonucunu başlangıç noktası
+// olarak almıyor — bu yüzden cvKoseler burada sadece "CV zaten bir şey
+// buldu mu" bilgisini taşımak için var, ekrana aktarılmıyor).
+// Kullanıcı "Otomatik Devam Et"/"Vazgeç" derse null döner → çağıran taraf
+// cvKoseler'e (varsa) düşer. "✕ İptal" derse KOSE_SECIM_IPTAL döner →
+// o dosya atlanır.
+async function koseleriElleOnaylat(canvas) {
+    const elemanlar = koseSeciciElemanlariniAl();
+    if (!elemanlar) {
+        // Elle seçim ekranı sayfada yoksa (index.html'e eklenmemiş),
+        // eskisi gibi davran — yukarıda çağıran taraf CV sonucunu kullanır.
+        return null;
+    }
+    return await koseSecimAkisi(canvas, canvas.width, canvas.height, elemanlar);
 }
 
 // Birden fazla input aynı anda okuma başlatmasın
@@ -137,7 +113,26 @@ export function baglaGaleriSecici(inputId, canvasId) {
                 canvas.width = img.naturalWidth;
                 canvas.height = img.naturalHeight;
                 canvas.getContext("2d").drawImage(img, 0, 0);
-                const koseler = await koseleriBul(canvas);
+
+                let koseler = await koseleriBul(canvas);
+
+                if (!koseler) {
+                    // CV köşeleri bulamadı: eskiden burada koseler=null ile
+                    // devam edilip homografiElleKoselerdenHesapla içinde
+                    // null.solUst hatası alınıyordu. Artık kullanıcı elle
+                    // seçime yönlendiriliyor.
+                    showStatus("Köşeler otomatik bulunamadı, elle seçin...");
+                    koseler = await koseleriElleOnaylat(canvas);
+                    if (koseler === KOSE_SECIM_IPTAL) {
+                        showStatus("Vazgeçildi.");
+                        return;
+                    }
+                    if (!koseler) {
+                        showStatus("Köşe seçilmedi, form okunamadı.");
+                        return;
+                    }
+                }
+
                 await formuOkuElleKoseliVeGoster(canvas, koseler);
             }
         } catch (err) {
