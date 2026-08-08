@@ -94,24 +94,30 @@ function testFormunuOlustur() {
         return window.OptikAktifForm;
     }
 
-    const sinavTuruSelect = document.getElementById("sinavTuru");
-    const sinavTuru = sinavTuruSelect ? sinavTuruSelect.value : "lgs";
+    // OptikAktifForm null ise — sınav seçili değil veya form derlenemedi
+    // Eski LGS'ye sessizce düşmek yerine açık hata ver
+    const sinavTuruEl = document.getElementById('sinavTuru');
+    const sinavTuru = sinavTuruEl ? sinavTuruEl.value : null;
 
-    let secenekler = { sinavTuru };
-
-    if (sinavTuru === "ozel") {
-
-        const soruSayisiInput = document.getElementById("soruSayisi");
-        const sikSayisiInput = document.getElementById("sikSayisi");
-
-        secenekler.soruSayisi = soruSayisiInput ? parseInt(soruSayisiInput.value, 10) || 20 : 20;
-        secenekler.sikSayisi = sikSayisiInput ? parseInt(sikSayisiInput.value, 10) || 4 : 4;
-
+    if (!sinavTuru || sinavTuru === 'lgs' || sinavTuru === 'bursluluk') {
+        // Standart şablon — LayoutEngine ile derle
+        const secenekler = { sinavTuru: sinavTuru || 'lgs' };
+        if (sinavTuru === 'ozel') {
+            const soruSayisiInput = document.getElementById('soruSayisi');
+            const sikSayisiInput = document.getElementById('sikSayisi');
+            secenekler.soruSayisi = soruSayisiInput ? parseInt(soruSayisiInput.value, 10) || 20 : 20;
+            secenekler.sikSayisi = sikSayisiInput ? parseInt(sikSayisiInput.value, 10) || 4 : 4;
+        }
+        const layout = window.LayoutEngine.layoutHesapla(secenekler);
+        return { form: layout.formlar[0], sinavTuru: sinavTuru || 'lgs' };
     }
 
-    const layout = window.LayoutEngine.layoutHesapla(secenekler);
-
-    return { form: layout.formlar[0], sinavTuru };
+    // Özel tasarım şablonu ama OptikAktifForm set edilmemiş — hata
+    throw new Error(
+        'Optik form yüklenemedi (window.OptikAktifForm boş). ' +
+        'Sınav detayına gidip tekrar taramayı deneyin. ' +
+        'SinavTuru: ' + sinavTuru
+    );
 }
 
 /**
@@ -280,6 +286,14 @@ export async function formuOkuElleKoseliVeGoster(sourceCanvas, koseler) {
     }
 
     showStatus("Form (elle seçilen köşelerle) okunuyor...");
+
+    // TEŞHİS: OptikAktifForm durumunu uyarı kutusuna yaz
+    const dbg = (msg) => {
+        const el = document.getElementById('sonucKutusu') || document.getElementById('statusText');
+        if (el) { el.style.display = 'block'; el.textContent = (el.textContent ? el.textContent + '\n' : '') + msg; }
+    };
+    dbg('OptikAktifForm: ' + (window.OptikAktifForm ? 'VAR (sinavTuru=' + window.OptikAktifForm.sinavTuru + ')' : 'YOK/NULL'));
+    dbg('sinavTuruEl: ' + (document.getElementById('sinavTuru')?.value || 'yok'));
 
     const { form, sinavTuru } = testFormunuOlustur();
 
