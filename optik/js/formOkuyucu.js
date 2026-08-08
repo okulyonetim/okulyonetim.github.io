@@ -90,14 +90,21 @@ function _baloncukNoktalariniOlcekle(ornekNoktalari, olcek) {
  */
 function testFormunuOlustur() {
 
+    const dbg2 = (msg) => {
+        const el = document.getElementById('sonucKutusu');
+        if (el) { el.style.display = 'block'; el.textContent = (el.textContent || '') + '\n' + msg; }
+    };
+
     if (window.OptikAktifForm && window.OptikAktifForm.form) {
+        dbg2('✓ OptikAktifForm VAR: ' + window.OptikAktifForm.sinavTuru);
         return window.OptikAktifForm;
     }
 
-    // OptikAktifForm null ise — sınav seçili değil veya form derlenemedi
-    // Eski LGS'ye sessizce düşmek yerine açık hata ver
+    dbg2('✗ OptikAktifForm YOK. _optikTeshis: ' + (window._optikTeshis || 'yok'));
+
     const sinavTuruEl = document.getElementById('sinavTuru');
     const sinavTuru = sinavTuruEl ? sinavTuruEl.value : null;
+    dbg2('sinavTuru: ' + sinavTuru);
 
     if (!sinavTuru || sinavTuru === 'lgs' || sinavTuru === 'bursluluk') {
         // Standart şablon — LayoutEngine ile derle
