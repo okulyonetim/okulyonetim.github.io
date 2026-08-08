@@ -581,7 +581,7 @@ function hizalamaIsaretleriCiz(doc, form) {
   if (form.sayfaCercevesi) {
     const c = form.sayfaCercevesi;
     doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.35);
+    doc.setLineWidth(1.5); // KALIN çerçeve — kenarCizgisiIleKoseBul için güvenilir referans
     doc.rect(c.x, c.y, c.width, c.height, 'S');
   }
 }

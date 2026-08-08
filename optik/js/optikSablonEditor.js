@@ -877,7 +877,7 @@
       const cerceve = LE.sayfaCercevesiHesapla(bolge);
       svg.appendChild(svgOlustur('rect', {
         x: cerceve.x, y: cerceve.y, width: cerceve.width, height: cerceve.height,
-        fill: 'none', stroke: '#000', 'stroke-width': 0.35,
+        fill: 'none', stroke: '#000', 'stroke-width': 1.5,
       }));
       LE.hizalamaIsaretleriEkle(bolge).forEach((m) => {
         svg.appendChild(svgOlustur('rect', { x: m.x, y: m.y, width: m.boyut, height: m.boyut, fill: '#000' }));
@@ -910,7 +910,7 @@
             g.appendChild(numT);
             soru.sikler.forEach((sik) => {
               g.appendChild(svgOlustur('circle', {
-                cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25,
+                cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#000000', 'stroke-width': 0.25,
               }));
               minX = Math.min(minX, sik.cx - sik.r); maxX = Math.max(maxX, sik.cx + sik.r);
               minY = Math.min(minY, sik.cy - sik.r); maxY = Math.max(maxY, sik.cy + sik.r);
@@ -945,11 +945,11 @@
           const bFontPt = og.baslikFontPt || 6.4;
           g.appendChild(svgOlustur('rect', {
             x: og.x, y: og.y, width: toplamGenislikOni, height: baslikH,
-            fill: 'none', stroke: '#b3184a', 'stroke-width': 0.35,
+            fill: 'none', stroke: '#000000', 'stroke-width': 0.35,
           }));
           const bT = svgOlustur('text', {
             x: og.x + toplamGenislikOni / 2, y: og.y + baslikH / 2 + bFontPt / 8,
-            'font-size': bFontPt / 2.2, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': 'middle',
+            'font-size': bFontPt / 2.2, fill: '#000000', 'font-weight': 'bold', 'text-anchor': 'middle',
           });
           bT.textContent = og.dersAdi;
           g.appendChild(bT);
@@ -975,7 +975,7 @@
         const ankor = hizalama === 'sag' ? 'end' : hizalama === 'orta' ? 'middle' : 'start';
         g.appendChild(svgOlustur('rect', Object.assign(
           { class: 'osOge__cerceve', x: og.x, y: og.y, width: og.genislik, height: og.yukseklik },
-          secili ? CERCEVE_SECILI : Object.assign({}, CERCEVE_SOLUK, { stroke: '#b3184a' })
+          secili ? CERCEVE_SECILI : Object.assign({}, CERCEVE_SOLUK, { stroke: '#000000' })
         )));
         // YENİ (Sedat isteği, Ağustos 2026): etiket ve içerik yan yana tek satır
         // — PDF'teki etiketDegerKutusu davranışıyla birebir eşleşiyor.
@@ -983,7 +983,7 @@
         const ornekDeger = { adSoyad: 'ÖRNEK ÖĞRENCİ', sinif: '8-A', okulAdi: 'Okul Adı', sinavAdi: 'Sınav Adı' }[og.alan] || '';
         if (hizalama === 'sol') {
           // Etiket soldan, değer hemen yanında
-          const etiketT = svgOlustur('text', { x: og.x + 1.5, y: ortaY, 'font-size': 2.2, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': 'start' });
+          const etiketT = svgOlustur('text', { x: og.x + 1.5, y: ortaY, 'font-size': 2.2, fill: '#000000', 'font-weight': 'bold', 'text-anchor': 'start' });
           etiketT.textContent = (og.baslik || 'Etiket') + ': ';
           g.appendChild(etiketT);
           // Tahmini etiket genişliği (SVG'de getComputedTextLength kullanılamaz, yaklaşık)
@@ -994,7 +994,7 @@
         } else {
           // Orta/sağ hizalamada birleşik metin
           const tamMetin = (og.baslik || 'Etiket') + (ornekDeger ? ': ' + ornekDeger : '');
-          const birlesikT = svgOlustur('text', { x: hizaX, y: ortaY, 'font-size': 2.5, fill: '#b3184a', 'font-weight': 'bold', 'text-anchor': ankor });
+          const birlesikT = svgOlustur('text', { x: hizaX, y: ortaY, 'font-size': 2.5, fill: '#000000', 'font-weight': 'bold', 'text-anchor': ankor });
           birlesikT.textContent = tamMetin;
           g.appendChild(birlesikT);
         }
@@ -1018,7 +1018,7 @@
         // düzenlenebilsin") — özel metin varsa onu göster.
         const baslikText = svgOlustur('text', {
           x: hesap.x + genislik / 2, y: hesap.y + hesap.baslikYukseklik * 0.85,
-          'font-size': 2.6, 'text-anchor': 'middle', fill: '#b3184a', 'font-weight': 'bold',
+          'font-size': 2.6, 'text-anchor': 'middle', fill: '#000000', 'font-weight': 'bold',
         });
         baslikText.textContent = og.baslikMetni || (og.tip === 'numaraAlani' ? 'NUMARA' : 'K');
         g.appendChild(baslikText);
@@ -1027,8 +1027,8 @@
         // içinde basılı duruyor (kucukBaloncukCiz), önizlemede de aynı
         // (Sedat geri bildirimi: "baloncuklarda rakamlar/harfler yok").
         function etiketliBaloncuk(cx, cy, r, etiket) {
-          g.appendChild(svgOlustur('circle', { cx, cy, r, fill: 'none', stroke: '#b3184a', 'stroke-width': 0.25 }));
-          const t = svgOlustur('text', { x: cx, y: cy + r * 0.35, 'font-size': r * 0.9, 'text-anchor': 'middle', fill: '#b3184a' });
+          g.appendChild(svgOlustur('circle', { cx, cy, r, fill: 'none', stroke: '#000000', 'stroke-width': 0.25 }));
+          const t = svgOlustur('text', { x: cx, y: cy + r * 0.35, 'font-size': r * 0.9, 'text-anchor': 'middle', fill: '#000000' });
           t.textContent = String(etiket);
           g.appendChild(t);
         }
@@ -1044,7 +1044,7 @@
             const kutucukX = basamak.x - hesap.hucreGenislik / 2;
             g.appendChild(svgOlustur('rect', {
               x: kutucukX, y: kutucukY, width: hesap.hucreGenislik, height: kutucukH,
-              fill: 'white', stroke: '#b3184a', 'stroke-width': 0.3,
+              fill: 'white', stroke: '#000000', 'stroke-width': 0.3,
             }));
           });
           (hesap.basamaklar || []).forEach((basamak) => {
