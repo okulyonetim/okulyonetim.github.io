@@ -1,11 +1,13 @@
-// js/galeriSecici.js — CV önce otomatik köşe dener; bulamazsa veya
-// kullanıcı isterse gerçek dokunmatik köşe seçim ekranı (koseSecici.js)
-// açılır. Önceki sürümde bu ekran hiç çağrılmıyordu (bkz. DEGISIKLIKLER.md).
+// js/galeriSecici.js [GALERI SÜRÜM: v2-teshis] — CV önce otomatik köşe
+// dener; kullanıcı isterse gerçek dokunmatik köşe seçim ekranı
+// (koseSecici.js) açılır.
 
 import { formuOkuElleKoseliVeGoster, formuOkuToplu } from "./formOkuyucu.js";
 import { showStatus } from "./utils.js";
 import { cvHazirBekle, sayfaKoseleriniAraCV } from "./sayfaTespitCV.js";
 import { koseSeciciElemanlariniAl, koseSecimAkisi, KOSE_SECIM_IPTAL } from "./koseSecici.js";
+
+console.log('[GALERI SÜRÜM: v2-teshis] galeriSecici.js yüklendi.');
 
 function dosyayiResmeCevir(dosya) {
     return new Promise((resolve, reject) => {
@@ -114,23 +116,29 @@ export function baglaGaleriSecici(inputId, canvasId) {
                 canvas.height = img.naturalHeight;
                 canvas.getContext("2d").drawImage(img, 0, 0);
 
-                let koseler = await koseleriBul(canvas);
+                const cvKoseler = await koseleriBul(canvas);
+                console.log('[GALERI v2] CV köşe sonucu:', cvKoseler ? JSON.stringify(cvKoseler) : 'BULUNAMADI (null)');
 
+                // ÖNCEKİ HATA: CV bir sonuç döndürdüğünde (yanlış olsa
+                // bile) `if (!koseler)` hiç girmiyordu, elle seçim ekranı
+                // BİR KEZ BİLE açılmıyordu — CV'nin ufak köşe kayması
+                // doğrudan numara/kitapçık/cevap okumasına sızıyordu.
+                // Artık CV sonucu ne olursa olsun (bulundu/bulunamadı)
+                // kullanıcı köşeleri HER ZAMAN görüp gerekirse düzeltiyor.
+                showStatus(cvKoseler ? "Köşeleri kontrol edin..." : "Köşeler otomatik bulunamadı, elle seçin...");
+                let koseler = await koseleriElleOnaylat(canvas);
+
+                if (koseler === KOSE_SECIM_IPTAL) {
+                    showStatus("Vazgeçildi.");
+                    return;
+                }
                 if (!koseler) {
-                    // CV köşeleri bulamadı: eskiden burada koseler=null ile
-                    // devam edilip homografiElleKoselerdenHesapla içinde
-                    // null.solUst hatası alınıyordu. Artık kullanıcı elle
-                    // seçime yönlendiriliyor.
-                    showStatus("Köşeler otomatik bulunamadı, elle seçin...");
-                    koseler = await koseleriElleOnaylat(canvas);
-                    if (koseler === KOSE_SECIM_IPTAL) {
-                        showStatus("Vazgeçildi.");
-                        return;
-                    }
-                    if (!koseler) {
+                    // "🤖 Otomatik Dene" butonuna basıldı → CV sonucuna güven.
+                    if (!cvKoseler) {
                         showStatus("Köşe seçilmedi, form okunamadı.");
                         return;
                     }
+                    koseler = cvKoseler;
                 }
 
                 await formuOkuElleKoseliVeGoster(canvas, koseler);
