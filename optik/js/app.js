@@ -615,10 +615,13 @@ function _optikAktifFormGuncelle() {
     const sinav = DB.sinaviBul(_aktifSinavId);
     if (!sinav) { window.OptikAktifForm = null; return; }
     try {
+        // TEŞHİS
+        const sablonlar = DB.ozelSablonlariGetir();
+        console.error('[TESHIS] aktifSinavId=' + _aktifSinavId + ' optikFormId=' + sinav.optikFormId + ' sablonSayisi=' + sablonlar.length + ' sablonIdleri=' + sablonlar.map(s=>s.id).join(','));
         const layout = _layoutGetir(sinav);
         window.OptikAktifForm = { form: layout.formlar[0], sinavTuru: sinav.optikFormId || 'lgs' };
     } catch (e) {
-        console.error('_optikAktifFormGuncelle: form derlenemedi', e);
+        console.error('[TESHIS] _optikAktifFormGuncelle HATA:', e.message);
         window.OptikAktifForm = null;
     }
 }
