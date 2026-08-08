@@ -22,7 +22,7 @@ const A4 = { width: 210, height: 297 };
 // mesafede) kalıyor, kare ise çizginin İÇİNDE (ondan daha uzakta, sayfanın iç
 // tarafında) duruyor. Böylece hiçbir tarama sütunu/satırı ikisini aynı anda
 // görmüyor.
-const HIZALAMA_MARKER_BOYUT = 7.7; // mm — Test Plus ölçümü (7.72mm × 7.68mm)
+const HIZALAMA_MARKER_BOYUT = 6.0; // mm — 6 sütun A4'e sığacak şekilde ayarlandı (7.7mm fazla geliyordu)
 
 // Çerçeve çizgisinin sayfa/bölge kenarından mesafesi — bu, yazdırılabilir
 // alan güvenli payı olarak SABİT kalmalı (çoğu yazıcı/fotokopi kenara çok

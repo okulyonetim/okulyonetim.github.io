@@ -94,7 +94,7 @@
     const soruNoGen = maxNo >= 10 ? 5.5 : 4.0;
     const otomatikGenislik = soruNoGen + sikSayisi * cap * yatay;
     // Kullanıcı "genislikSabit: true" seçmediyse otomatik kullan
-    const sutunGenislik = og.genislikSabit ? (og.genislik || otomatikGenislik) : otomatikGenislik;
+    const sutunGenislik = og.genislikSabit === 'sabit' ? (og.genislik || otomatikGenislik) : otomatikGenislik;
 
     const sutunlar = [];
     for (let s = 0; s < sutunSayisi; s++) {
@@ -731,9 +731,8 @@
 
     /** dx/dy'yi, öğe güvensiz kenar bölgesine (köşe işareti payı) girmeyecek şekilde kısıtlar. */
     function guvenliDxDyKisitla(og, baz, dx, dy) {
-      // Köşe kareleri: HIZALAMA_PAY (6mm) + HIZALAMA_MARKER_BOYUT (7.7mm) = 13.7mm
-      // Öğe bu alana giremez.
-      const koseKarePay = (LE.HIZALAMA_PAY || 6) + (LE.HIZALAMA_MARKER_BOYUT || 7.7);
+      // Köşe kareleri: HIZALAMA_PAY (6mm) + HIZALAMA_MARKER_BOYUT (6mm) = 12mm
+      const koseKarePay = (LE.HIZALAMA_PAY || 6) + (LE.HIZALAMA_MARKER_BOYUT || 6);
       const pay = koseKarePay;
       const sayfaW = sablon.sayfaBoyutu.width, sayfaH = sablon.sayfaBoyutu.height;
       if (og.tip === 'cizgi') {
