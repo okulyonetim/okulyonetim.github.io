@@ -303,13 +303,15 @@ window.OmrOkuyucu = (function () {
       try {
         src = cv.matFromArray(height, width, cv.CV_8UC1, gri);
         dst = new cv.Mat();
+        // blockSize: baloncuk çapının ~3 katı (5.5mm × 8px/mm ≈ 44px → 131px)
+        // Tek sayı olmalı. C=8: yerel ortalamadan çıkarılacak sabit.
         cv.adaptiveThreshold(
           src, dst,
           255,
           cv.ADAPTIVE_THRESH_GAUSSIAN_C,
           cv.THRESH_BINARY_INV,
-          31,
-          5
+          131,
+          8
         );
         const dstData = dst.data;
         for (let i = 0; i < dstData.length; i++) binary[i] = dstData[i];
@@ -2556,7 +2558,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v23-siyahBeyaz6Nokta]');
+    uyarilar.push('[KOD SÜRÜMÜ: v24-testPlus]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
