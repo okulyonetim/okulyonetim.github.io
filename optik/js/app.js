@@ -2856,10 +2856,29 @@ function galeriSecimIsle(dosyalar) {
                 cvs.width = img.width; cvs.height = img.height;
                 cvs.getContext('2d').drawImage(img, 0, 0);
                 try {
-                    // galeriSecici.js flow'u kullaniliyor - bu satir kaldirildi
-                    // formOkuyucu.js ile işle
-                    const { formuOkuVeGoster } = await import('./formOkuyucu.js');
-                    await formuOkuVeGoster('canvas', 'resultCanvas', 'statusText', 'hataKutusu');
+                    const { formuOkuElleKoseliVeGoster } = await import('./formOkuyucu.js');
+                    // köşeleri CV ile otomatik bul
+                    const { sayfaKoseleriniAraCV } = await import('./sayfaTespitCV.js');
+                    const kucukCanvas = document.createElement('canvas');
+                    const olcek = Math.min(1, 640 / cvs.width);
+                    kucukCanvas.width = Math.round(cvs.width * olcek);
+                    kucukCanvas.height = Math.round(cvs.height * olcek);
+                    kucukCanvas.getContext('2d').drawImage(cvs, 0, 0, kucukCanvas.width, kucukCanvas.height);
+                    const kImageData = kucukCanvas.getContext('2d').getImageData(0, 0, kucukCanvas.width, kucukCanvas.height);
+                    let koseler = null;
+                    try {
+                        koseler = sayfaKoseleriniAraCV(kImageData);
+                        if (koseler?.solUst) {
+                            const ol = cvs.width / kucukCanvas.width;
+                            koseler = {
+                                solUst: { x: koseler.solUst.x * ol, y: koseler.solUst.y * ol },
+                                sagUst: { x: koseler.sagUst.x * ol, y: koseler.sagUst.y * ol },
+                                solAlt: { x: koseler.solAlt.x * ol, y: koseler.solAlt.y * ol },
+                                sagAlt: { x: koseler.sagAlt.x * ol, y: koseler.sagAlt.y * ol },
+                            };
+                        }
+                    } catch(e) { koseler = null; }
+                    await formuOkuElleKoseliVeGoster(cvs, koseler);
                 } catch(err) { console.error('Galeri okuma hatası', err); }
             };
             img.src = e.target.result;
