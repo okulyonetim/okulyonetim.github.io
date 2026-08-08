@@ -167,42 +167,42 @@ function buyukHarfTR(metin) {
 }
 
 function etiketDegerKutusu(doc, box, etiket, deger, opts = {}) {
-  const { minEtiketPt = 3.2, minDegerPt = 4.5, hizalama = 'sol', degerPtSabit, degerKalin = false } = opts;
+  const { minEtiketPt = 3.2, minDegerPt = 4.5, hizalama = 'sol', degerPtSabit, degerKalin = false,
+          etiketFontPt, etiketKalin = true } = opts;
 
   cerceveCiz(doc, box.x, box.y, box.width, box.height, ANA_RENK, 0.35);
 
-  // YENİ (Sedat isteği, Ağustos 2026): etiket ve içerik metni yan yana
-  // tek satırda — önceden alt alta (üst %62 etiket, alt değer) basılıyordu,
-  // küçük kutularda değer kesiliyordu ve kalabalık görünüyordu.
-  // Etiket kutu genişliğinin sol tarafında kalın/kırmızı, değer ise
-  // hemen yanından devam eder. Hizalama 'sol' için etiket soldan başlar;
-  // 'sag' ve 'orta' için kutunun tamamı kullanılır (etiket+değer birlikte).
   const satırOrtaY = box.y + box.height / 2;
-  const etiketPt = Math.max(minEtiketPt, box.height * 0.42);
+  const hesaplananEtiketPt = etiketFontPt || Math.max(minEtiketPt, box.height * 0.42);
   const degerPt = degerPtSabit || Math.max(minDegerPt, box.height * 0.52);
-  // Metin baseline — jsPDF text y parametresi baseline konumudur.
-  const baseY = satırOrtaY + degerPt * 0.18; // hafif aşağı hizala (cap height için)
+  const baseY = satırOrtaY + degerPt * 0.18;
+
+  // Etiket boşsa sadece değeri bas
+  const etiketVar = !!etiket;
 
   if (hizalama === 'sol') {
-    // Etiket (kalın, kırmızı) soldan; değer hemen ardından
-    const etiketMetni = String(etiket).normalize('NFC') + ': ';
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(etiketPt);
-    doc.setTextColor(...ANA_RENK);
-    const etiketGenislik = doc.getTextWidth(etiketMetni);
-    doc.text(etiketMetni, box.x + 1.5, baseY);
-
+    let degerX = box.x + 1.5;
+    if (etiketVar) {
+      const etiketMetni = String(etiket).normalize('NFC') + ': ';
+      doc.setFont('Roboto', etiketKalin ? 'bold' : 'normal');
+      doc.setFontSize(hesaplananEtiketPt);
+      doc.setTextColor(...ANA_RENK);
+      const etiketGenislik = doc.getTextWidth(etiketMetni);
+      doc.text(etiketMetni, box.x + 1.5, baseY);
+      degerX = box.x + 1.5 + etiketGenislik;
+    }
     doc.setFont('Roboto', degerKalin ? 'bold' : 'normal');
     doc.setFontSize(degerPt);
     doc.setTextColor(...KOYU_METIN);
-    doc.text(buyukHarfTR(deger), box.x + 1.5 + etiketGenislik, baseY);
+    doc.text(buyukHarfTR(deger), degerX, baseY);
   } else {
-    // Orta/sağ hizalama — tüm metin (etiket+değer) birleşik olarak hizalanır
     const hizaX = hizalama === 'sag' ? box.x + box.width - 1.5 : box.x + box.width / 2;
     const ankor = hizalama === 'sag' ? 'right' : 'center';
-    const tamMetin = String(etiket).normalize('NFC') + (deger ? ': ' + buyukHarfTR(deger) : '');
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(etiketPt);
+    const tamMetin = etiketVar
+      ? (String(etiket).normalize('NFC') + (deger ? ': ' + buyukHarfTR(deger) : ''))
+      : buyukHarfTR(deger);
+    doc.setFont('Roboto', etiketKalin ? 'bold' : 'normal');
+    doc.setFontSize(hesaplananEtiketPt);
     doc.setTextColor(...ANA_RENK);
     doc.text(tamMetin, hizaX, baseY, { align: ankor });
   }
@@ -223,20 +223,15 @@ function kitapcikTuruRozeti(doc, box, deger) {
  * Dolu ise: siyah zemin, rakam basılmaz (OMR okuyucunun güveni artar).
  * Boş ise: kırmızı/bordo kenarlık + küçük rakam etiketi. */
 function kucukBaloncukCiz(doc, cx, cy, r, etiket, dolu) {
-  doc.setLineWidth(0.3);
+  doc.setLineWidth(BALONCUK_KALINLIK);
   if (dolu) {
-    // Tamamen siyah dolu — OMR için maksimum kontrast
     doc.setFillColor(0, 0, 0);
     doc.setDrawColor(0, 0, 0);
     doc.circle(cx, cy, r, 'FD');
-    // Rakam basılmıyor: siyah zemin üstünde zaten okunamaz,
-    // OMR motoru da sadece koyuluğa bakıyor.
   } else {
-    doc.setDrawColor(...ANA_RENK);
+    doc.setDrawColor(...BALONCUK_RENK);
     doc.circle(cx, cy, r, 'S');
-    // bkz. baloncukCiz üstündeki not: etiket rengi de ANA_RENK olmalı ki
-    // renksizlikCarpani onu öğrenci işaretinden ayırt edebilsin.
-    doc.setTextColor(...ANA_RENK);
+    doc.setTextColor(...BALONCUK_RENK);
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(Math.max(2.5, r * 1.9));
     doc.text(String(etiket), cx, cy + r * 0.35, { align: 'center' });
@@ -392,16 +387,18 @@ async function headerCiz(doc, form, ogrenci, sinavTuru) {
  * (bkz. omrEngine.js: baloncukKaranlikOrani yorum notu).
  */
 function baloncukCiz(doc, sik) {
-  doc.setDrawColor(...ANA_RENK);
-  doc.setLineWidth(0.35);
+  doc.setDrawColor(...BALONCUK_RENK);
+  doc.setLineWidth(BALONCUK_KALINLIK);
   doc.circle(sik.cx, sik.cy, sik.r, 'S');
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(Math.max(3, sik.r * 2.2));
-  doc.setTextColor(...ANA_RENK);
+  doc.setTextColor(...BALONCUK_RENK);
   doc.text(sik.harf, sik.cx, sik.cy + sik.r * 0.35, { align: 'center' });
 }
 
-/** LGS/bursluluk gibi "bölüm > ders sütunu" yapısındaki formları çizer. */
+// Baloncuk çizgi rengi: açık gri (Test Plus benzeri — koyu siyahtan daha az baskı, okumayı kolaylaştırır)
+const BALONCUK_RENK = [160, 160, 160]; // açık gri
+const BALONCUK_KALINLIK = 0.2; // mm — ince çizgi
 function bolumlerCiz(doc, form) {
   for (const bolum of form.bolumler) {
     const dersler = bolum.dersSutunlari;
@@ -547,11 +544,17 @@ function serbestOgeleriCiz(doc, form, ogrenci) {
         }[og.alan || 'adSoyad'] || '';
         etiketDegerKutusu(
           doc, { x: og.x, y: og.y, width: og.genislik, height: og.yukseklik },
-          og.baslik || 'AD SOYAD', alanDegeri,
-          { hizalama: og.hizalama || 'sol', degerPtSabit: og.fontPt || null, degerKalin: og.kalin === 'evet' }
+          og.baslik || null, alanDegeri,
+          {
+            hizalama: og.hizalama || 'sol',
+            degerPtSabit: og.fontPt || null,
+            degerKalin: og.kalin === 'evet',
+            etiketFontPt: og.etiketFontPt || null,
+            etiketKalin: og.etiketKalin !== 'hayir',
+          }
         );
       } else if (og.tip === 'baslik') {
-        doc.setFont('Roboto', 'bold');
+        doc.setFont('Roboto', og.kalin === 'hayir' ? 'normal' : 'bold'); // varsayılan kalın
         doc.setFontSize(og.fontPt || Math.max(8, og.yukseklik * 1.6));
         doc.setTextColor(...ANA_RENK);
         const hizalama = og.hizalama || 'orta';

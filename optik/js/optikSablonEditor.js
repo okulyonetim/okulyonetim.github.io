@@ -931,7 +931,7 @@
             g.appendChild(numT);
             soru.sikler.forEach((sik) => {
               g.appendChild(svgOlustur('circle', {
-                cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#000000', 'stroke-width': 0.25,
+                cx: sik.cx, cy: sik.cy, r: sik.r, fill: 'none', stroke: '#aaa', 'stroke-width': 0.2,
               }));
               minX = Math.min(minX, sik.cx - sik.r); maxX = Math.max(maxX, sik.cx + sik.r);
               minY = Math.min(minY, sik.cy - sik.r); maxY = Math.max(maxY, sik.cy + sik.r);
@@ -1011,20 +1011,25 @@
         // — PDF'teki etiketDegerKutusu davranışıyla birebir eşleşiyor.
         const ortaY = og.y + og.yukseklik / 2 + 0.8;
         const ornekDeger = { adSoyad: 'ÖRNEK ÖĞRENCİ', sinif: '8-A', okulAdi: 'Okul Adı', sinavAdi: 'Sınav Adı' }[og.alan] || '';
+        const etiketFontPt = og.etiketFontPt || 4.8; // varsayılan daha büyük
+        const etiketKalin = og.etiketKalin !== 'hayir' ? 'bold' : 'normal';
+        const etiketFontSvg = etiketFontPt / 2.6;
         if (hizalama === 'sol') {
-          // Etiket soldan, değer hemen yanında
-          const etiketT = svgOlustur('text', { x: og.x + 1.5, y: ortaY, 'font-size': 2.2, fill: '#000000', 'font-weight': 'bold', 'text-anchor': 'start' });
-          etiketT.textContent = (og.baslik || 'Etiket') + ': ';
-          g.appendChild(etiketT);
+          // Etiket soldan, değer hemen yanında — etiket boşsa sadece değer
+          if (og.baslik) {
+            const etiketT = svgOlustur('text', { x: og.x + 1.5, y: ortaY, 'font-size': etiketFontSvg, fill: '#000000', 'font-weight': etiketKalin, 'text-anchor': 'start' });
+            etiketT.textContent = og.baslik + ': ';
+            g.appendChild(etiketT);
+          }
           // Tahmini etiket genişliği (SVG'de getComputedTextLength kullanılamaz, yaklaşık)
-          const etiketTahminiGenislik = ((og.baslik || 'Etiket').length + 2) * 1.3;
+          const etiketTahminiGenislik = og.baslik ? ((og.baslik.length + 2) * etiketFontSvg * 0.55) : 0;
           const degerT = svgOlustur('text', { x: og.x + 1.5 + etiketTahminiGenislik, y: ortaY, 'font-size': (og.fontPt ? og.fontPt / 2.6 : 3.5), fill: '#333', 'text-anchor': 'start', 'font-weight': og.kalin === 'evet' ? 'bold' : 'normal' });
           degerT.textContent = ornekDeger;
           g.appendChild(degerT);
         } else {
           // Orta/sağ hizalamada birleşik metin
-          const tamMetin = (og.baslik || 'Etiket') + (ornekDeger ? ': ' + ornekDeger : '');
-          const birlesikT = svgOlustur('text', { x: hizaX, y: ortaY, 'font-size': 2.5, fill: '#000000', 'font-weight': 'bold', 'text-anchor': ankor });
+          const tamMetin = og.baslik ? (og.baslik + (ornekDeger ? ': ' + ornekDeger : '')) : ornekDeger;
+          const birlesikT = svgOlustur('text', { x: hizaX, y: ortaY, 'font-size': etiketFontSvg, fill: '#000000', 'font-weight': etiketKalin, 'text-anchor': ankor });
           birlesikT.textContent = tamMetin;
           g.appendChild(birlesikT);
         }
@@ -1252,8 +1257,10 @@
         }
       } else if (og.tip === 'kimlikAlani') {
         alanEkle(og, 'Veri Kaynağı', 'alan', 'select', { opsiyonlar: ['adSoyad', 'sinif', 'okulAdi', 'sinavAdi'] });
-        alanEkle(og, 'Başlık Metni', 'baslik', 'text');
+        alanEkle(og, 'Başlık Metni (boş bırakılırsa etiket gizlenir)', 'baslik', 'text');
         alanEkle(og, 'Hizalama', 'hizalama', 'select', { opsiyonlar: ['sol', 'orta', 'sag'] });
+        alanEkle(og, 'Etiket Font (pt)', 'etiketFontPt', 'number', { step: 0.5 });
+        alanEkle(og, 'Etiket Kalın', 'etiketKalin', 'select', { opsiyonlar: ['evet', 'hayir'] });
         alanEkle(og, 'Değer Font (pt)', 'fontPt', 'number');
         alanEkle(og, 'Değer Kalın', 'kalin', 'select', { opsiyonlar: ['hayir', 'evet'] });
         alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
@@ -1278,9 +1285,7 @@
       } else if (og.tip === 'baslik' || og.tip === 'metin') {
         alanEkle(og, 'Metin', 'metin', 'text');
         alanEkle(og, 'Font (pt)', 'fontPt', 'number');
-        if (og.tip === 'metin') {
-          alanEkle(og, 'Kalın', 'kalin', 'select', { opsiyonlar: ['hayir', 'evet'] });
-        }
+        alanEkle(og, 'Kalın', 'kalin', 'select', { opsiyonlar: ['evet', 'hayir'] });
         if (og.tip === 'baslik') {
           alanEkle(og, 'Hizalama', 'hizalama', 'select', { opsiyonlar: ['sol', 'orta', 'sag'] });
           alanEkle(og, 'Genişlik (mm)', 'genislik', 'number');
