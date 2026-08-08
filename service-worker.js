@@ -5,7 +5,7 @@
    · Strateji: statik dosyalar "Cache First", dış kaynaklar "Network First"
    ==================================================================== */
 
-const CACHE_ADI = 'oy-cache-v381';
+const CACHE_ADI = 'oy-cache-v382';
 
 /* ---- Önbelleğe alınacak tüm uygulama dosyaları ---- */
 const ONBELLEGE_ALINACAKLAR = [
@@ -197,7 +197,22 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* 2. CDN'den gelen harici kütüphaneler (xlsx, fonts) → Network First, cache fallback */
+  /* 1b. Optik modülü dosyaları → Network First (her zaman güncel versiyon gelsin)
+         Cache First ile bir güncelleme geride kalıyordu — optik sık değiştiği için
+         her zaman ağdan dene, sadece ağ yoksa cache'ten ver. */
+  if (url.includes('/optik/')) {
+    event.respondWith(
+      fetch(event.request.url, { cache: 'reload' })
+        .then((yanit) => {
+          if (yanit && yanit.status === 200) {
+            caches.open(CACHE_ADI).then(c => c.put(event.request, yanit.clone()));
+          }
+          return yanit;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
   if (
     url.includes('cdnjs.cloudflare.com') ||
     url.includes('fonts.googleapis.com') ||
@@ -285,4 +300,4 @@ self.addEventListener('notificationclick', (event) => {
       return clients.openWindow(hedefUrl);
     })
   );
-});
+}); 
