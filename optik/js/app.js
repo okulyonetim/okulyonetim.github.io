@@ -2495,7 +2495,24 @@ function _layoutParamlariHazirla(sinav, secimler = {}) {
  */
 function _layoutGetir(sinav, secimler = {}) {
     if (sinav?.optikFormId && sinav.optikFormId.startsWith('ozelTasarim_')) {
-        return sablonDerlemesiniGetir(sinav.optikFormId);
+        // Önce LocalStorage'dan dene
+        let kayit = DB.ozelSablonBul(sinav.optikFormId);
+        if (!kayit) {
+            // LocalStorage'da yok — Firestore senkronu henüz tamamlanmamış olabilir.
+            // Arka planda senkronu başlat (bir sonraki okumada çalışır)
+            try {
+                _sablonlariFirestoredenSenkronizeEt(false).then(() => {
+                    window.OptikAktifForm = null; // bir sonraki okumada yeniden derlenir
+                    _optikAktifFormGuncelle();
+                }).catch(() => {});
+            } catch(e) {}
+            throw new Error(
+                'Şablon henüz yüklenmedi (' + sinav.optikFormId + '). ' +
+                'Firestore senkronizasyonu arka planda başlatıldı — ' +
+                'birkaç saniye bekleyip tekrar deneyin.'
+            );
+        }
+        return window.OptikSablonMotoru.sablonuDerle(kayit.sablon);
     }
     return window.LayoutEngine.layoutHesapla(_layoutParamlariHazirla(sinav, secimler));
 }
@@ -3060,7 +3077,11 @@ function baslat() {
         _sablonlariFirestoredenSenkronizeEt(true);
     });
     // YENİ: açılışta Firestore'daki şablonları arka planda yerelle birleştir.
-    _sablonlariFirestoredenSenkronizeEt();
+    // Senkron bittikten sonra OptikAktifForm'u güncelle — şablon henüz
+    // LocalStorage'da yoksa bu çağrı onu yükler.
+    _sablonlariFirestoredenSenkronizeEt().then(() => {
+        _optikAktifFormGuncelle();
+    }).catch(() => {});
 
     // ── Ekran 2: Yeni Sınav ──
     document.getElementById('btnYeniSinavKapat').addEventListener('click', () => ekranGit('sinavlar'));
