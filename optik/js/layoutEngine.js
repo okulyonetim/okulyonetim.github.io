@@ -358,12 +358,13 @@ function metniSatirlaraBol(metin, genislikMm, fontPt, kalin = true) {
  */
 function dersSutunuHesapla({
   x, y, width, dersAdi, soruSayisi, sikSayisi, baloncukCap,
-  soruNoGenisligi = 8, aralikCarpani = 1.45, baslikYuksekligi,
+  soruNoGenisligi = 8, aralikCarpani = 1.45, dikeyAralikCarpani = 2.0,
+  baslikYuksekligi,
   baslikFontPt = 6.4, baslikAltBosluk = 3, baslangicSoruNo = 1,
 }) {
   // Aynı Unicode normalizasyon önlemi (bkz. pdfFormGenerator.js: buyukHarfTR notu).
   const dersAdiSatirlari = metniSatirlaraBol((dersAdi || '').normalize('NFC'), width - 2, baslikFontPt, true);
-  const satirAraligi = baloncukCap * 2.0;
+  const satirAraligi = baloncukCap * dikeyAralikCarpani;
   const sorular = [];
 
   for (let q = 0; q < soruSayisi; q++) {
@@ -1013,6 +1014,10 @@ window.LayoutEngine = {
   sayfaCercevesiHesapla,
   genelIzgaraCercevesiHesapla,
   standartHeaderOlustur,
+  // Okuma güvenliği için minimum boşluk değerleri (omrEngine.js arama penceresi: ±1.3r)
+  // Editör bu değerlerin altına izin vermez.
+  minYatayAralikCarpani: () => 1.3 * 2, // merkez-merkez / baloncukCap >= 2.6
+  minDikeyAralikCarpani: () => 1.3 * 2, // merkez-merkez / baloncukCap >= 2.6
 };
 
 if (typeof module !== 'undefined' && module.exports) {

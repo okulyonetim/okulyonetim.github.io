@@ -158,6 +158,7 @@
         sikSayisi: og.sikSayisi,
         baloncukCap: og.baloncukCap,
         aralikCarpani: og.yatayAralikCarpani || 1.45,
+        dikeyAralikCarpani: og.dikeyAralikCarpani || 2.0,
         baslikYuksekligi,
         baslikFontPt,
         baslikAltBosluk,

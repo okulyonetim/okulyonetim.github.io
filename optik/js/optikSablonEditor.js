@@ -38,7 +38,7 @@
     baloncukBlok: () => ({
       tip: 'baloncukBlok', x: 20, y: 20,
       dersAdi: 'Yeni Ders', soruSayisi: 10, sikSayisi: 4,
-      baloncukCap: LE.STANDART_BALONCUK_CAP, yatayAralikCarpani: 1.45,
+      baloncukCap: LE.STANDART_BALONCUK_CAP, yatayAralikCarpani: 1.45, dikeyAralikCarpani: 2.0,
       genislik: 30, sutunSayisi: 1, sutunlarArasiBosluk: 3, sutunDikeyKaymalari: [0],
     }),
     kimlikAlani: () => ({ tip: 'kimlikAlani', x: 15, y: 15, genislik: 100, yukseklik: 14, baslik: 'AD SOYAD', alan: 'adSoyad' }),
@@ -102,6 +102,7 @@
           sikSayisi: og.sikSayisi,
           baloncukCap: og.baloncukCap,
           aralikCarpani: og.yatayAralikCarpani || 1.45,
+          dikeyAralikCarpani: og.dikeyAralikCarpani || 2.0,
           baslikYuksekligi,
           baslikFontPt,
           baslikAltBosluk,
@@ -1118,6 +1119,7 @@
       const input = document.createElement(tip === 'select' ? 'select' : 'input');
       if (tip !== 'select') input.type = tip;
       if (ekOzellik && ekOzellik.step) input.step = ekOzellik.step;
+      if (ekOzellik && ekOzellik.min != null) input.min = ekOzellik.min;
       if (ekOzellik && ekOzellik.yerTutucu && tip !== 'select') input.placeholder = ekOzellik.yerTutucu;
       if (ekOzellik && ekOzellik.opsiyonlar) {
         ekOzellik.opsiyonlar.forEach((op) => {
@@ -1129,7 +1131,13 @@
       input.value = og[alanAdi] != null ? og[alanAdi] : '';
       input.addEventListener('change', () => {
         gecmiseKaydet();
-        og[alanAdi] = tip === 'number' ? parseFloat(input.value) || 0 : input.value;
+        let deger = tip === 'number' ? parseFloat(input.value) || 0 : input.value;
+        // Minimum değer kontrolü
+        if (tip === 'number' && ekOzellik && ekOzellik.min != null && deger < ekOzellik.min) {
+          deger = ekOzellik.min;
+          input.value = deger;
+        }
+        og[alanAdi] = deger;
         cizSadeceTuval();
       });
       div.appendChild(input);
@@ -1181,7 +1189,11 @@
         alanEkle(og, 'Soru Sayısı', 'soruSayisi', 'number');
         alanEkle(og, 'Şık Sayısı (2-6)', 'sikSayisi', 'number');
         alanEkle(og, 'Baloncuk Çapı (mm)', 'baloncukCap', 'number', { step: 0.05 });
-        alanEkle(og, 'Baloncuklar Arası Yatay Boşluk Çarpanı', 'yatayAralikCarpani', 'number', { step: 0.05 });
+        // Minimum boşluk değerleri omrEngine.js arama penceresinden (±1.3r) gelir
+        const minYatay = LE.minYatayAralikCarpani ? LE.minYatayAralikCarpani() : 2.6;
+        const minDikey = LE.minDikeyAralikCarpani ? LE.minDikeyAralikCarpani() : 2.6;
+        alanEkle(og, `Yatay Boşluk Çarpanı (min: ${minYatay.toFixed(1)})`, 'yatayAralikCarpani', 'number', { step: 0.05, min: minYatay });
+        alanEkle(og, `Dikey Boşluk Çarpanı (min: ${minDikey.toFixed(1)})`, 'dikeyAralikCarpani', 'number', { step: 0.05, min: minDikey });
         alanEkle(og, 'Sütun Genişliği (mm)', 'genislik', 'number');
         alanEkle(og, 'Sütun Sayısı', 'sutunSayisi', 'number');
         alanEkle(og, 'Sütunlar Arası Boşluk (mm)', 'sutunlarArasiBosluk', 'number');
