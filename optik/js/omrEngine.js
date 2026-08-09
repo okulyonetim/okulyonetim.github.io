@@ -142,6 +142,7 @@ window.OmrOkuyucu = (function () {
   let _sonKoyulukOzeti = null;
   let _sonNumaraTeshis = null;
   let _sonKitapcikTeshis = null; // YENİ (teşhis): kitapçık/form kodu okumasında hangi seçeneğin neden seçildiği/belirsiz kaldığı — numaraTeshis ile aynı desen
+  let _cevapTeshisSatirlari = []; // YENİ (teşhis): ilk birkaç belirsiz/boş cevap sorusunun top-3 şık adayı — numaraTeshis ile aynı desen, cevaplariCikar her çağrıldığında sıfırlanır
   let _radyalProfilSatirlari = []; // YENİ (teşhis): bkz. radyalKoyulukProfili — her formuOku çağrısında sıfırlanır
 
   // ---------------------------------------------------------------------
@@ -1858,6 +1859,7 @@ window.OmrOkuyucu = (function () {
     const sorular = tumSorulariTopla(form);
     const cevaplar = [];
     const ornekNoktalari = []; // debug/görselleştirme: her şıkkın tam örnekleme noktası
+    _cevapTeshisSatirlari = []; // YENİ (teşhis): her çağrıda sıfırlanır
 
     // Her ders sütunu için en büyük soruNo'yu önceden hesapla — satır-içi
     // dikey arama, bir sütunun SON sorusunda çerçevenin alt kenarına doğru
@@ -1927,6 +1929,18 @@ window.OmrOkuyucu = (function () {
         guven: Number(enKoyu.oran.toFixed(3)),
         uyari,
       });
+
+      // YENİ (teşhis): _sonNumaraTeshis/_sonKitapcikTeshis ile AYNI desen —
+      // ilk birkaç BELİRSİZ/BOŞ sorunun top-3 şık adayını ve oranlarını
+      // kaydet. Tüm 70-100 soruyu tek tek yazmak ekranı doldurur; ilk 5
+      // örnek, kök sebebi (mutlak sinyal mi zayıf, yoksa iki şık mı çok
+      // yakın) anlamak için yeterli.
+      if (uyari && _cevapTeshisSatirlari.length < 5) {
+        const top3 = yerelSikler.slice(0, 3).map((s) => s.harf + '=' + s.oran.toFixed(3)).join(',');
+        _cevapTeshisSatirlari.push(
+          soru.ders + ' #' + soru.soruNo + ':[' + top3 + ']->' + uyari.toUpperCase()
+        );
+      }
 
       ornekNoktalari.push({
         ders: soru.ders,
@@ -2617,6 +2631,7 @@ window.OmrOkuyucu = (function () {
     uyarilar.push('[KOD SÜRÜMÜ: v25-dinamikOlcek]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_sonKitapcikTeshis) { uyarilar.push('Kitapçık/Form Kodu teşhisi: ' + _sonKitapcikTeshis); }
+    if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ilk ' + _cevapTeshisSatirlari.length + ' örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
     if (_radyalProfilSatirlari.length) { uyarilar.push('Radyal koyuluk profili:\n' + _radyalProfilSatirlari.join('\n')); }
 
     return {
@@ -2772,6 +2787,11 @@ window.OmrOkuyucu = (function () {
     if (belirsizSayisi > 0) {
       uyarilar.push(belirsizSayisi + ' soruda belirsiz/boş/çoklu işaret tespit edildi.');
     }
+    // DÜZELTME: formuOku() bu satırları zaten ekliyordu, formuOkuElleKoseli()
+    // hiç eklemiyordu — numara/kitapçık teşhisiyle aynı eksiklik, cevap
+    // tarafında da tekrarlanmıştı.
+    if (_sonKoyulukOzeti) { uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti); }
+    if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ilk ' + _cevapTeshisSatirlari.length + ' örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
 
     return {
       basarili: true,
