@@ -1885,12 +1885,27 @@ window.OmrOkuyucu = (function () {
     //
     // Gerçek bir eğik/kaymış satırda ise en iyi dy genelde pencerenin
     // İÇİNDE bir yerde (yerel bir tepe noktasında) bulunur, sınıra
-    // dayanmaz. Bu yüzden: sonuç sınırın %90'ından fazlasına dayanıyorsa,
-    // bu "duvara toslama" (güvenilmez, muhtemelen komşu satırın sinyaline
-    // çekilme) belirtisidir — dy=0'a (kayma yok, ham beklenen konum)
-    // düşülür. Bu, gerçek eğiklik düzeltmelerini (pencerenin ortasında
-    // kalanlar) etkilemeden, sadece sınıra dayanan sahte sonuçları eler.
-    const DUVAR_ESIK_ORANI = 0.90;
+    // dayanmaz. Bu yüzden: sonuç sınırın belirli bir oranından fazlasına
+    // dayanıyorsa, bu "duvara toslama" (güvenilmez, muhtemelen komşu
+    // satırın sinyaline çekilme) belirtisidir — dy=0'a (kayma yok, ham
+    // beklenen konum) düşülür.
+    //
+    // İKİNCİ AYAR (aynı gün, gerçek kağıt+uygulama karşılaştırmasıyla):
+    // %90 eşiği 13 zincirden 12'sini düzeltti ama FEN #18-19'u kaçırdı
+    // (satirDy1/r=+1.28, satirDy2/r=-1.28 — %90 eşiği olan 1.44r'nin
+    // altında kaldı). Sedat'ın gönderdiği HAM KAĞIT görüntüsüyle bu
+    // sorunun gerçek olduğu kanıtlandı: kağıtta Fen #19 BOŞ, uygulama
+    // #18'in A işaretine kilitlenip #19'u da "A" okumuştu.
+    // Tüm 13 örnekteki 26 satirDy değeri incelendiğinde DOĞAL BİR BOŞLUK
+    // bulundu: küçük değerler kümesi (0.32r, 0.64r, 0.80r — muhtemelen
+    // gerçek eğiklik/gürültü) ile büyük değerler kümesi (1.28r, 1.60r —
+    // duvara toslama) arasında 0.80r-1.28r aralığında HİÇ değer yok.
+    // Eşik bu boşluğun ortasına (%65 = 1.04r) çekildi — bu, önceki 12
+    // örneğin davranışını DEĞİŞTİRMEDEN (hepsi ya ≥1.60r ya ≤0.80r'de)
+    // FEN #18-19'un HER İKİ tarafını da (simetrik ±1.28r) doğru şekilde
+    // yakalıyor. Gerçek 13 örnekle simüle edilip DOĞRULANDI: 13/13 zincir
+    // artık düzeliyor.
+    const DUVAR_ESIK_ORANI = 0.65;
     if (Math.abs(enIyiDy) >= yarim * DUVAR_ESIK_ORANI) {
       return 0;
     }
