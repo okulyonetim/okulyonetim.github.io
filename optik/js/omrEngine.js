@@ -152,6 +152,7 @@ window.OmrOkuyucu = (function () {
   let _cevapTeshisSatirlari = []; // YENİ (teşhis): her ders için en fazla 2 örnek belirsiz/boş cevap sorusunun top-3 şık adayı
   let _cevapTeshisSayaci = {}; // YENİ (teşhis): _cevapTeshisSatirlari'nın ders başına kotasını (2) sayar
   let _sonIsaretliSik = {}; // YENİ (teşhis): her ders için en son işaretli bulunan {soruNo, harf, guven} — ardışık aynı-şık tespiti için
+  let _sonYerelAramaHamOran = null; // YENİ (teşhis): baloncukKaranlikOraniYerelArama'nın en son çağrısında, eğer bulunan dx/dy "duvara toslama" şüphesi taşıyorsa (bkz. fonksiyon içi not), (dx=0,dy=0) noktasındaki ham oran — Fen #18-19 gibi durumları ayırt etmek için
   let _ardisikAyniSikSatirlari = []; // YENİ (teşhis): ardışık iki sorunun aynı şıkka kilitlendiği durumlar (satır-kilitleme komşu satıra kayması belirtisi)
   let _radyalProfilSatirlari = []; // YENİ (teşhis): bkz. radyalKoyulukProfili — her formuOku çağrısında sıfırlanır
 
@@ -1752,6 +1753,29 @@ window.OmrOkuyucu = (function () {
       }
     }
 
+    // TEŞHİS (Ağustos 2026 — Fen #18-19 ile kanıtlandı): satirIcinDikeyKaymaBul'da
+    // bulunan "duvara toslama" (bkz. o fonksiyondaki DUVAR_ESIK_ORANI
+    // açıklaması), İKİNCİ kademe aramada da AYNI ŞEKİLDE oluyor gibi
+    // görünüyor — Fen #19 için yerelDy tam olarak -0.50 (aramaMesafesi ile
+    // birebir aynı) çıktı. AMA burada satirIcinDikeyKaymaBul'daki gibi kör
+    // bir eşik uygulamak RİSKLİ: Fen #18 (GERÇEKTEN dolu, ham kağıtla
+    // doğrulanmış) de yerelDy=0.46 ile benzer bir değer verdi — aynı eşik
+    // ikisini de reddedip #18'i de yanlışlıkla etkileyebilir. Bu ikinci
+    // kademe (tek bir baloncuk, dar 0.5r pencere) ile birinci kademenin
+    // (4r'lik satır aralığı) ölçeği farklı; aynı eşiği doğrudan taşımak
+    // güvenli değil. Bu yüzden burada OTOMATİK düzeltme YAPILMIYOR — sadece
+    // ham (dx=0,dy=0) oranı hesaplanıp _sonYerelAramaHamOran'a kaydediliyor,
+    // teşhiste görünür olsun diye. Gerçek veri (#18'in ham oranı #19'unkinden
+    // belirgin yüksekse ayrım mümkün demektir) görülünce doğru eşik/yöntem
+    // kararlaştırılacak.
+    if (Math.abs(enIyiDy) >= aramaMesafesi * 0.65 || Math.abs(enIyiDx) >= aramaMesafesi * 0.65) {
+      _sonYerelAramaHamOran = binaryKullan
+        ? baloncukDolulukBinary(cx, cy, r)
+        : baloncukKaranlikOrani(cImageData, cx, cy, r);
+    } else {
+      _sonYerelAramaHamOran = null;
+    }
+
     return { oran: enIyiOran, dx: enIyiDx, dy: enIyiDy };
   }
 
@@ -1988,6 +2012,7 @@ window.OmrOkuyucu = (function () {
           py: py2 + sonuc.dy,
           pr: s.pr,
           yerelDy: sonuc.dy, // YENİ (teşhis): ADIM 3'ün EK kayması (satirDy'ye ilaveten), /pr oranlanabilir
+          hamOran: _sonYerelAramaHamOran, // YENİ (teşhis): duvara-toslama şüphesi varsa (dx=0,dy=0) noktasındaki ham oran, yoksa null
         };
       });
 
@@ -2056,16 +2081,19 @@ window.OmrOkuyucu = (function () {
       // gerçek bir kirlilik/gölge/homografi hatası var demektir.
       if (isaretliSik && _sonIsaretliSik[soru.ders] && _sonIsaretliSik[soru.ders].harf === isaretliSik &&
           _sonIsaretliSik[soru.ders].soruNo === soru.soruNo - 1) {
+        const oncekiHam = _sonIsaretliSik[soru.ders].hamOran;
         _ardisikAyniSikSatirlari.push(
           soru.ders + ' #' + (soru.soruNo - 1) + ' ve #' + soru.soruNo + ' İKİSİ DE "' + isaretliSik +
           '" (guven: ' + _sonIsaretliSik[soru.ders].guven.toFixed(3) + ', ' + enKoyu.oran.toFixed(3) +
           ') (satirDy/r: ' + (_sonIsaretliSik[soru.ders].satirDy / _sonIsaretliSik[soru.ders].pr).toFixed(2) +
           ', ' + (satirDy / beklenenSikler[0].pr).toFixed(2) +
           ') (yerelDy/r: ' + (_sonIsaretliSik[soru.ders].yerelDy / _sonIsaretliSik[soru.ders].pr).toFixed(2) +
-          ', ' + (enKoyu.yerelDy / enKoyu.pr).toFixed(2) + ')'
+          ', ' + (enKoyu.yerelDy / enKoyu.pr).toFixed(2) +
+          ') (hamOran: ' + (oncekiHam !== null && oncekiHam !== undefined ? oncekiHam.toFixed(3) : '-') +
+          ', ' + (enKoyu.hamOran !== null ? enKoyu.hamOran.toFixed(3) : '-') + ')'
         );
       }
-      if (isaretliSik) { _sonIsaretliSik[soru.ders] = { soruNo: soru.soruNo, harf: isaretliSik, guven: enKoyu.oran, satirDy, pr: beklenenSikler[0].pr, yerelDy: enKoyu.yerelDy }; }
+      if (isaretliSik) { _sonIsaretliSik[soru.ders] = { soruNo: soru.soruNo, harf: isaretliSik, guven: enKoyu.oran, satirDy, pr: beklenenSikler[0].pr, yerelDy: enKoyu.yerelDy, hamOran: enKoyu.hamOran }; }
 
       ornekNoktalari.push({
         ders: soru.ders,
