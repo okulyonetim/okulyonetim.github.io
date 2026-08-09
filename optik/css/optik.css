@@ -107,6 +107,21 @@ input[type="date"]::-webkit-inner-spin-button { display: none; }
     color: #fff; font-size: 14px; font-weight: 700;
     padding: 7px 14px; border-radius: 20px; flex-shrink: 0;
 }
+/* YENİ (Ağustos 2026, Sedat geri bildirimi — 3 kez bildirildi: "Kaydet
+   butonu, öğrencilere otomatik ata butonu yazıları belli olmuyor"):
+   .o-kaydet-btn beyaz yazı + yarı saydam BEYAZ arka plan kullanıyor —
+   bu, koyu renkli header (.o-header-renk) üzerinde doğru çalışır, ama
+   #sheetKitapcikAtama gibi AÇIK/BEYAZ bottom-sheet panelleri içinde
+   kullanılınca beyaz-üstü-beyaza yakın kalıp neredeyse görünmez oluyordu.
+   Önceki tur yanlışlıkla .sik-daire (A/B şık düğmeleri) düzeltilmişti —
+   Sedat'ın bahsettiği asıl buton bu değildi, bu ayrı ve doğru düzeltme.
+   Genel .o-kaydet-btn'e (header'daki 4 doğru kullanımı bozmamak için)
+   dokunulmadı; sadece açık panel içindeki 2 kullanıma (Otomatik Ata,
+   bu panelin Kaydet'i) bu ek sınıf HTML'de eklendi. */
+.o-kaydet-btn-panel {
+    background: var(--accent-2); color: #fff;
+    box-shadow: 0 2px 8px rgba(30,128,128,.35);
+}
 
 /* ═══════════════════════════════════════════════════════════════
    İÇERİK ALANI
