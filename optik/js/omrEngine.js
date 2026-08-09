@@ -69,15 +69,22 @@ window.OmrOkuyucu = (function () {
 
   // Bir baloncuğun "işaretli" sayılması için gereken minimum karanlık oranı
   // (0 = tamamen beyaz/renkli baskı, 1 = tamamen siyah/gri işaret).
-  // NOT: isaretKoyulukPuani artık şablonun kendi pembe/bordo baskı rengini
-  // büyük ölçüde eleyip sadece renksiz (siyah/gri) piksellere puan verdiği
-  // için taban gürültü düştü; bu eşik buna göre biraz düşürüldü.
   //
   // ARTIK SABİT DEĞİL: Ayarlar sheet'indeki "Cevap Koyuluk Eşiği"
   // kaydırıcısından (hassasiyetAyarlari.js: koyulukEsik) CANLI okunur —
   // her tarama denemesinde güncel değeri alır, kod değiştirmeden/yeniden
   // derlemeden kamera ekranından ayarlanabilir. window.HassasiyetAyarlari
-  // herhangi bir sebeple yüklenmemişse eski sabit değere (0.28) düşer.
+  // herhangi bir sebeple yüklenmemişse aşağıdaki yedek değere düşer.
+  //
+  // NOT (Ağustos 2026): yedek değer 0.28'den 0.40'a yükseltildi —
+  // hassasiyetAyarlari.js:koyulukEsik ile aynı gerekçe (gerçek teşhis
+  // verisi, bu formun taban gürültüsü 0.28-0.35 arası çıkıyordu).
+  // ÖNEMLİ RİSK: hassasiyetAyarlari.js localStorage'da kalıcı saklıyor —
+  // Sedat DAHA ÖNCE Ayarlar ekranından bu kaydırıcıyı elle 0.28'e
+  // ayarlayıp kaydettiyse, buradaki/oradaki varsayılan değişikliği
+  // localStorage'daki eski değeri EZMEZ, görünmez kalır. Sorun devam
+  // ederse önce Ayarlar ekranındaki "Cevap Koyuluk Eşiği" kaydırıcısının
+  // gerçek değerine bakılmalı.
   function _koyulukEsikGetir() {
     try {
       if (window.HassasiyetAyarlari && typeof window.HassasiyetAyarlari.ayarlariGetir === 'function') {
@@ -85,7 +92,7 @@ window.OmrOkuyucu = (function () {
         if (typeof a.koyulukEsik === 'number' && !isNaN(a.koyulukEsik)) return a.koyulukEsik;
       }
     } catch (e) { /* ayarlar okunamazsa varsayılana düş */ }
-    return 0.28;
+    return 0.40;
   }
 
   // En koyu şık ile ikinci en koyu şık arasında olması gereken minimum fark.
@@ -1840,7 +1847,20 @@ window.OmrOkuyucu = (function () {
     // artık çoğu durumda bulunamıyor/atlanıyor, bu adımın TEK BAŞINA satırı
     // doğru yere kilitlemesi gerekiyor, eskisi gibi "zaten yaklaşık doğru"
     // varsayımına güvenemiyor).
-    const yarim = satirAraligiPx * 0.47;
+    // YENİ (Ağustos 2026 — İKİNCİ AYAR): önceki tur aramaOrani'ni 1.3'ten
+    // 0.5'e düşürmüştü (cevaplariCikar çağrısı, bkz. dosya sonu notları),
+    // bu komşu satıra kilitlenmeyi AZALTTI ama TAMAMEN ORTADAN KALDIRMADI —
+    // Sedat'ın gerçek teşhis verisi (İNKILAP #2-3-4, #6-7-8 zincirleri hâlâ
+    // aynı şıkka kilitleniyordu, sadece komşunun guven değeri düştü: 0.909→
+    // 0.518, 0.979→0.689) bunu kanıtladı. Matematiksel sebep: 0.47*4r=1.88r
+    // (bu satır-kilitleme) + 0.5r (yerel arama) = 2.38r toplam kayma, komşu
+    // satıra kalan mesafe 4r-2.38r=1.62r HÂLÂ disk çapı toplamından (0.9r+
+    // 0.9r=1.8r) küçüktü — az bir örtüşme payı (0.18r) kalıyordu.
+    // 0.47->0.40 ile toplam kayma 2.10r'e, kalan mesafe 1.90r'e çıkıyor —
+    // artık disk çapını (1.8r) aşıyor, örtüşme matematiksel olarak imkansız.
+    // Satırın hâlâ kendi yarısının %40'ı (1.6r) kadar eğiklik/perspektif
+    // hatası telafi edebilmesi, gerçek kağıt taramalarında yeterli bir pay.
+    const yarim = satirAraligiPx * 0.40;
     const adim = Math.max(1, satirAraligiPx * 0.04);
     const dyBaslangic = ilkSoruMu ? 0 : -yarim;
     const dyBitis = sonSoruMu ? 0 : yarim;

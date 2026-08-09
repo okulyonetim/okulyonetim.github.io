@@ -11,10 +11,18 @@ export const VARSAYILAN = {
     yuzdelik: 0.30,        // eşik: bölgenin en koyu %kaçı (0.10-0.50 arası mantıklı)
     minDoluluk: 0.45,      // minimum doluluk oranı (0.20-0.70)
     tespitAraligiMs: 350,  // canlı köşe tespiti döngü aralığı (200-800ms)
-    koyulukEsik: 0.28,     // cevap baloncuğu "işaretli" sayılması için min koyuluk oranı
+    koyulukEsik: 0.40,     // cevap baloncuğu "işaretli" sayılması için min koyuluk oranı
                            // (omrEngine.js: KARANLIK_ESIK — 0.10-0.50 arası mantıklı;
                            // düşürmek daha soluk işaretleri de yakalar ama yanlış
                            // pozitif riskini artırır)
+                           // YENİ (Ağustos 2026, gerçek "Cevap teşhisi" verisiyle
+                           // bulundu — bkz. numaraKoyulukEsik'in aynı kalıptaki
+                           // bulgusu): 0.28 varsayılanı bu formun taban gürültüsünü
+                           // (boş baloncuklarda ölçülen 0.28-0.35 arası, D şıkkının
+                           // sistematik olarak en yüksek çıkması) yakalayamıyordu —
+                           // gerçek işaretli sorularda (guven 0.5-1.0) bu değerler
+                           // çok daha yüksek. 0.40, gürültü tavanı (0.35) ile gerçek
+                           // işaret tabanı (0.5) arasında güvenli bir ayraç.
     ayirtEdiciFark: 0.10, // en koyu şıkla ikinci en koyu şık arasında gereken min fark
                            // (omrEngine.js: AYIRT_EDICI_FARK) — bunun altındaysa
                            // "çoklu/belirsiz işaret" sayılır. Düşürmek daha az soruyu
