@@ -1987,6 +1987,7 @@ window.OmrOkuyucu = (function () {
           px: s.px + sonuc.dx, // debug görselleştirmesi gerçek (kaymış) noktayı göstersin
           py: py2 + sonuc.dy,
           pr: s.pr,
+          yerelDy: sonuc.dy, // YENİ (teşhis): ADIM 3'ün EK kayması (satirDy'ye ilaveten), /pr oranlanabilir
         };
       });
 
@@ -2045,16 +2046,26 @@ window.OmrOkuyucu = (function () {
       // yüksekse, sorun satır-kilitlemede DEĞİL — soru kendi gerçek
       // konumunda başka bir nedenden (baskı lekesi, homografi hatası,
       // farklı bir mekanizma) güçlü sinyal veriyor demektir.
+      // GENİŞLETME 2 (Ağustos 2026 — satirDy=0.00 olmasına rağmen guven
+      // hâlâ yüksek çıkan durum gözlemlendi): artık ADIM 3'ün EKLEDİĞİ
+      // ek kayma da (yerelDy/pr) yazılıyor. satirDy=0 ama yerelDy büyükse,
+      // sorun satirIcinDikeyKaymaBul'da DEĞİL — baloncukKaranlikOraniYerelArama
+      // (ADIM 3, aramaOrani=0.5) kendi küçük penceresinde komşuya kayıyor
+      // demektir. yerelDy de küçükse (ikisi de küçük ama guven yüksek),
+      // sorun kaymada hiç DEĞİL — sorunun kendi fiziksel bölgesinde
+      // gerçek bir kirlilik/gölge/homografi hatası var demektir.
       if (isaretliSik && _sonIsaretliSik[soru.ders] && _sonIsaretliSik[soru.ders].harf === isaretliSik &&
           _sonIsaretliSik[soru.ders].soruNo === soru.soruNo - 1) {
         _ardisikAyniSikSatirlari.push(
           soru.ders + ' #' + (soru.soruNo - 1) + ' ve #' + soru.soruNo + ' İKİSİ DE "' + isaretliSik +
           '" (guven: ' + _sonIsaretliSik[soru.ders].guven.toFixed(3) + ', ' + enKoyu.oran.toFixed(3) +
           ') (satirDy/r: ' + (_sonIsaretliSik[soru.ders].satirDy / _sonIsaretliSik[soru.ders].pr).toFixed(2) +
-          ', ' + (satirDy / beklenenSikler[0].pr).toFixed(2) + ')'
+          ', ' + (satirDy / beklenenSikler[0].pr).toFixed(2) +
+          ') (yerelDy/r: ' + (_sonIsaretliSik[soru.ders].yerelDy / _sonIsaretliSik[soru.ders].pr).toFixed(2) +
+          ', ' + (enKoyu.yerelDy / enKoyu.pr).toFixed(2) + ')'
         );
       }
-      if (isaretliSik) { _sonIsaretliSik[soru.ders] = { soruNo: soru.soruNo, harf: isaretliSik, guven: enKoyu.oran, satirDy, pr: beklenenSikler[0].pr }; }
+      if (isaretliSik) { _sonIsaretliSik[soru.ders] = { soruNo: soru.soruNo, harf: isaretliSik, guven: enKoyu.oran, satirDy, pr: beklenenSikler[0].pr, yerelDy: enKoyu.yerelDy }; }
 
       ornekNoktalari.push({
         ders: soru.ders,
