@@ -2047,13 +2047,27 @@ window.OmrOkuyucu = (function () {
       // doldurunca (örn. TÜRKÇE #3-7) diğer derslerden (İNKILAP gibi) HİÇ
       // örnek görünmüyordu. Artık DERS BAŞINA ayrı kota (en fazla 2) var,
       // böylece her ders en az bir örnekle temsil ediliyor.
+      // YENİ (Ağustos 2026 — Sedat'ın bildirdiği "Türkçe #20 ve Fen #19
+      // gerçekten işaretliydi ama boş/coklu okundu, komşu satırlar
+      // tamamen boştu" — ham kağıtla KANITLANDI): bu iki soru DERS SONU
+      // (son soru / sona yakın) sorularıydı, ders başına ilk-2 kotası
+      // onları hiç yakalamamıştı çünkü #1-3 gibi erken sorular kotayı
+      // dolduruyordu. Kota 3'e çıkarıldı VE ders sonundaki soru
+      // (soru.soruNo === sonSoruNo[soru.ders]) kotadan bağımsız HER ZAMAN
+      // dahil ediliyor — bu örüntü tekrarlıyorsa (hizalama karesine yakın
+      // satırlarda sahte sinyal ihtimali) kesin veriyle görünür olsun.
       if (uyari) {
+        const dersSonSoru = sonSoruNo[soru.ders] || soru.soruNo;
+        const sonaYakinMi = (dersSonSoru - soru.soruNo) <= 1; // son soru VEYA sondan bir önceki
         _cevapTeshisSayaci[soru.ders] = (_cevapTeshisSayaci[soru.ders] || 0);
-        if (_cevapTeshisSayaci[soru.ders] < 2) {
+        if (_cevapTeshisSayaci[soru.ders] < 3 || sonaYakinMi) {
           _cevapTeshisSayaci[soru.ders]++;
           const top3 = yerelSikler.slice(0, 3).map((s) => s.harf + '=' + s.oran.toFixed(3)).join(',');
+          const enKoyuPr = enKoyu.pr || beklenenSikler[0].pr;
           _cevapTeshisSatirlari.push(
-            soru.ders + ' #' + soru.soruNo + ':[' + top3 + ']->' + uyari.toUpperCase()
+            soru.ders + ' #' + soru.soruNo + ':[' + top3 + ']->' + uyari.toUpperCase() +
+            ' (satirDy/r:' + (satirDy / enKoyuPr).toFixed(2) +
+            ', enKoyuYerelDy/r:' + ((enKoyu.yerelDy || 0) / enKoyuPr).toFixed(2) + ')'
           );
         }
       }
