@@ -1479,6 +1479,15 @@ function ogrDetayIzgaraCiz(sonuc) {
     for (let i = 0; i < ders.sikSayisi; i++) harfler.push(String.fromCharCode(65 + i));
 
     // DVB özeti
+    // DÜZELTME (Ağustos 2026, Sedat geri bildirimi: "İnkılap hepsini boş
+    // okumuş" — aslında #1 ve #5 DOĞRU okunmuştu, ham kağıtla doğrulandı.
+    // Gerçek sorun: bu derse HENÜZ cevap anahtarı girilmemişti (dKaydi
+    // yok), bu yüzden aşağıdaki döngü işaretli her soruyu — doğru olsa
+    // bile — Y'ye (yanlış) sayıyordu, VE şık düğmeleri dolu yeşil/kırmızı
+    // yerine sadece ince teal ÇERÇEVE (.manuel-sec) alıyordu. Sedat dolu
+    // bir daire beklediği için bunu "okunmadı" sandı. Şimdi anahtar yoksa
+    // Y yerine "İşaretli" etiketi gösteriliyor, karışıklığı önlemek için.
+    const anahtarGirilmis = !!dKaydi;
     let d = 0, y = 0, b = 0;
     for (let n = 1; n <= ders.soruSayisi; n++) {
         const isr = dersCevaplar[n] || null;
@@ -1486,23 +1495,47 @@ function ogrDetayIzgaraCiz(sonuc) {
         if (!isr) b++; else if (dg && isr === dg) d++; else y++;
     }
     const dvbEl = document.getElementById('ogrDetayDersDvb');
-    if (dvbEl) dvbEl.innerHTML =
-        `<span style="color:#4CAF50;">D:${d}</span>
-         <span style="color:#F44336;">Y:${y}</span>
-         <span>B:${b}</span>`;
+    if (dvbEl) {
+        if (anahtarGirilmis) {
+            dvbEl.innerHTML =
+                `<span style="color:#4CAF50;">D:${d}</span>
+                 <span style="color:#F44336;">Y:${y}</span>
+                 <span>B:${b}</span>`;
+        } else {
+            // Anahtar yok: D/Y anlamsız (hepsi Y'ye düşer) — bunun yerine
+            // "kaç soru işaretli" gösteriliyor, yanlış izlenim vermesin.
+            dvbEl.innerHTML =
+                `<span style="color:var(--accent);">İşaretli:${y}</span>
+                 <span>Boş:${b}</span>
+                 <span style="color:var(--text-faint); font-size:11px;">(anahtar girilmedi)</span>`;
+        }
+    }
+
+    // YENİ (Ağustos 2026, Sedat isteği: "çift cevap işaretli ise sarı ya
+    // da mavi yapsın"): omrEngine bize HANGİ belirli şıkların çakıştığını
+    // söylemiyor, sadece "bu soruda birden fazla şık işaretliydi" (uyari:
+    // 'coklu') bilgisini veriyor. Bu yüzden belirli bir şıkkı yanlışlıkla
+    // öne çıkarmak yerine (yanıltıcı olur) SORU SATIRININ TAMAMI (numara +
+    // tüm şık grubu) SARI ile vurgulanıp kullanıcı kağıdı elle kontrol
+    // etmeye yönlendiriliyor.
+    const cevaplarUyarilari = sonuc.cevaplarUyarilari || {};
+    const dersUyarilari = cevaplarUyarilari[dersAdi] || {};
 
     alan.innerHTML = '';
     for (let soruNo = 1; soruNo <= ders.soruSayisi; soruNo++) {
         const isaretli = dersCevaplar[soruNo] || null;
         const dogru    = dogruMap[soruNo] || null;
         const anahtarVar = !!dogru;
+        const cokluIsaretli = dersUyarilari[soruNo] === 'coklu';
 
         const satir = document.createElement('div');
         satir.className = 'ogr-soru-satiri';
+        if (cokluIsaretli) satir.classList.add('ogr-soru-coklu');
 
         const no = document.createElement('span');
         no.className = 'soru-no';
-        if (anahtarVar && !isaretli)      no.style.color = 'var(--text-faint)';
+        if (cokluIsaretli) no.style.color = '#B8860B';
+        else if (anahtarVar && !isaretli)      no.style.color = 'var(--text-faint)';
         else if (anahtarVar && isaretli === dogru) no.style.color = '#4CAF50';
         else if (anahtarVar && isaretli !== dogru) no.style.color = '#F44336';
         no.textContent = soruNo + ')';
@@ -1513,7 +1546,10 @@ function ogrDetayIzgaraCiz(sonuc) {
         harfler.forEach(harf => {
             const btn = document.createElement('button');
             btn.type = 'button'; btn.className = 'sik-daire'; btn.textContent = harf;
-            if (anahtarVar) {
+            if (cokluIsaretli) {
+                btn.classList.add('ogr-coklu');
+                if (dogru === harf) btn.classList.add('dogru-border');
+            } else if (anahtarVar) {
                 if (isaretli === harf && dogru === harf) btn.classList.add('ogr-dogru');
                 else if (isaretli === harf && dogru !== harf) btn.classList.add('ogr-yanlis');
                 else if (dogru === harf) btn.classList.add('dogru-border');
@@ -1527,6 +1563,12 @@ function ogrDetayIzgaraCiz(sonuc) {
                 if (!son.cevaplar[dersAdi]) son.cevaplar[dersAdi] = {};
                 const zaten = son.cevaplar[dersAdi][soruNo] === harf;
                 son.cevaplar[dersAdi][soruNo] = zaten ? null : harf;
+                // Kullanıcı elle bir şık seçip düzeltince, o soru artık
+                // "çoklu/belirsiz" değil — kayıtlı uyarıyı temizle ki
+                // sarı vurgu bir daha görünmesin.
+                if (son.cevaplarUyarilari && son.cevaplarUyarilari[dersAdi]) {
+                    delete son.cevaplarUyarilari[dersAdi][soruNo];
+                }
                 son.puan = puanHesapla(son.cevaplar, DB.anahtariGetir(_aktifSinavId, _sonucAnahtarTuru(_aktifSinavId, son.ogrenci?.kitapcikTuru)), _ogrDetayDersler, _sinavYanlisKatsayisi(_aktifSinavId));
                 DB.sonucKaydet(_aktifSinavId, son);
                 ogrDetayIzgaraCiz(son);
@@ -2155,14 +2197,28 @@ function _omrSonucuisle(raw) {
     // A/B sınavlarda hangi anahtarın kullanılacağı kağıttan okunan
     // kitapçık harfine bağlı.
 
-    // omrEngine dizi dondurur: [{ders, soruNo, isaretliSik}]
+    // omrEngine dizi dondurur: [{ders, soruNo, isaretliSik, uyari}]
     // puanHesapla nesne bekler: {dersAdi: {soruNo: harf}}
+    // YENİ (Ağustos 2026, Sedat isteği: "çift cevap işaretli ise sarı ya
+    // da mavi yapsın"): omrEngine'in uyari alanı ('coklu' = birden fazla
+    // şık işaretli, 'bos' = hiçbiri, null = tek şık net) önceden HİÇ
+    // yakalanmıyordu, sadece isaretliSik alınıyordu — 'coklu' durumunda
+    // isaretliSik zaten null geldiği için görüntüleme tarafı bunu sıradan
+    // bir BOŞ soru ile ayırt edemiyordu. Artık cevaplarUyarilari adında
+    // PARALEL bir yapı (aynı {ders:{soruNo:...}} şekli) bu bilgiyi ayrıca
+    // taşıyor — cevaplarNesne'nin kendi şeması (DB'de zaten kayıtlı
+    // eski sonuçlarla uyumluluk için) DEĞİŞTİRİLMEDİ.
     const cevaplarDizi = Array.isArray(raw.cevaplar) ? raw.cevaplar : [];
     const cevaplarNesne = {};
+    const cevaplarUyarilari = {};
     cevaplarDizi.forEach(c => {
         if (!c.ders) return;
         if (!cevaplarNesne[c.ders]) cevaplarNesne[c.ders] = {};
         if (c.isaretliSik) cevaplarNesne[c.ders][c.soruNo] = c.isaretliSik;
+        if (c.uyari === 'coklu') {
+            if (!cevaplarUyarilari[c.ders]) cevaplarUyarilari[c.ders] = {};
+            cevaplarUyarilari[c.ders][c.soruNo] = 'coklu';
+        }
     });
 
     // Numara: "0103" -> "103" (leading zero kaldir)
@@ -2219,6 +2275,7 @@ function _omrSonucuisle(raw) {
         id:            'sonuc_' + Date.now(),
         ogrenci:       kimlik,
         cevaplar:      cevaplarNesne,
+        cevaplarUyarilari: cevaplarUyarilari, // YENİ: {ders:{soruNo:'coklu'}} — birden fazla şık işaretli sorular
         kagitGoruntusu:raw.kagitGoruntusu || null,
         baloncukNoktalari: raw.baloncukNoktalari || null,
         // YENİ: omrEngine.js'in ürettiği teşhis uyarıları (köşe tutarlılık
