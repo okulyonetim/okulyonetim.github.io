@@ -364,7 +364,16 @@ input[type="date"]::-webkit-inner-spin-button { display: none; }
 .sik-daire.ogr-dogru    { background: #4CAF50 !important; color: #fff !important; }
 .sik-daire.ogr-yanlis   { background: #F44336 !important; color: #fff !important; }
 .sik-daire.dogru-border { border: 2.5px solid #4CAF50 !important; color: #4CAF50; }
-.sik-daire.manuel-sec   { border: 2.5px solid var(--accent); color: var(--accent); }
+.sik-daire.manuel-sec   { border: 2.5px solid var(--accent); background: var(--accent-soft); color: var(--accent-2); font-weight: 800; }
+/* YENİ (Ağustos 2026, Sedat isteği: "çift cevap işaretli ise sarı ya da
+   mavi yapsın"): omrEngine HANGİ belirli şıkların çakıştığını vermiyor,
+   sadece sorunun kendisinin çoklu-işaretli olduğunu — bu yüzden dört şık
+   da (cevap anahtarındaki doğru şık .dogru-border ile ayrıca işaretlense
+   bile) aynı nötr sarı dolguyu paylaşıyor; hiçbiri "bu işaretliydi" gibi
+   yanıltıcı bir vurgu almıyor. dogru-border ile birlikte kullanıldığında
+   (!important olmadığı için) çerçeve öncelikli görünür, dolgu korunur. */
+.sik-daire.ogr-coklu    { background: #FFF3CD; color: #7a5c00; }
+.ogr-soru-coklu { background: rgba(255,193,7,.06); border-radius: 10px; }
 .sik-grubu { display: flex; gap: 6px; }
 .soru-no { min-width: 32px; font-size: 15px; font-weight: 600; color: var(--text-dim); }
 
