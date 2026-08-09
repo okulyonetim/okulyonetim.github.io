@@ -1998,14 +1998,26 @@ window.OmrOkuyucu = (function () {
       // hem üstü hem altı aynı şıkla okunuyor" belirtisini otomatik tespit
       // et — satirIcinDikeyKaymaBul'un komşu satırın güçlü sinyaline
       // yanlışlıkla kilitlenip kilitlenmediğini doğrudan gösterir.
+      //
+      // GENİŞLETME (Ağustos 2026 — yarim/aramaOrani düzeltmeleri kaymayı
+      // beklenen kadar azaltmadı, çelişkili sonuç): artık satirDy'nin
+      // KENDİSİNİ de (px ve /pr oranı olarak) yazıyoruz. Eğer gerçekten
+      // komşu satıra kilitlenme varsa, iki ardışık sorunun satirDy'si
+      // BİRBİRİNE YAKIN ve satır aralığına (satirAraligiPx) yakın büyüklükte
+      // olmalı. Eğer satirDy KÜÇÜKSE (örn. <0.5r) ama guven yine de
+      // yüksekse, sorun satır-kilitlemede DEĞİL — soru kendi gerçek
+      // konumunda başka bir nedenden (baskı lekesi, homografi hatası,
+      // farklı bir mekanizma) güçlü sinyal veriyor demektir.
       if (isaretliSik && _sonIsaretliSik[soru.ders] && _sonIsaretliSik[soru.ders].harf === isaretliSik &&
           _sonIsaretliSik[soru.ders].soruNo === soru.soruNo - 1) {
         _ardisikAyniSikSatirlari.push(
           soru.ders + ' #' + (soru.soruNo - 1) + ' ve #' + soru.soruNo + ' İKİSİ DE "' + isaretliSik +
-          '" (guven: ' + _sonIsaretliSik[soru.ders].guven.toFixed(3) + ', ' + enKoyu.oran.toFixed(3) + ')'
+          '" (guven: ' + _sonIsaretliSik[soru.ders].guven.toFixed(3) + ', ' + enKoyu.oran.toFixed(3) +
+          ') (satirDy/r: ' + (_sonIsaretliSik[soru.ders].satirDy / _sonIsaretliSik[soru.ders].pr).toFixed(2) +
+          ', ' + (satirDy / beklenenSikler[0].pr).toFixed(2) + ')'
         );
       }
-      if (isaretliSik) { _sonIsaretliSik[soru.ders] = { soruNo: soru.soruNo, harf: isaretliSik, guven: enKoyu.oran }; }
+      if (isaretliSik) { _sonIsaretliSik[soru.ders] = { soruNo: soru.soruNo, harf: isaretliSik, guven: enKoyu.oran, satirDy, pr: beklenenSikler[0].pr }; }
 
       ornekNoktalari.push({
         ders: soru.ders,
