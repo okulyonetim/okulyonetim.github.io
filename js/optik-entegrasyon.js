@@ -56,6 +56,27 @@
         document.getElementById('optikFrame').src = 'optik/index.html';
         _iframeYuklendi = true;
       }
+      // DÜZELTME (Ağustos 2026, Sedat geri bildirimi: "koyu ve açık mod
+      // uygulanmıyor optikte"): iframe kendi ayrı DOM ağacına sahip —
+      // optik/index.html içindeki tema okuması SADECE sayfa ilk
+      // yüklendiğinde çalışıyor (localStorage'dan bir kez okunuyor).
+      // Kullanıcı optik ekranını AÇIKKEN ya da daha önce açıp DOM'da
+      // kalmışken ana uygulamada tema değiştirirse (js/ui.js:temaUygula,
+      // sadece document.documentElement'i günceller), iframe bundan hiç
+      // haberdar olmuyordu — ilk yüklendiği andaki temada sonsuza dek
+      // sabit kalıyordu. Artık her ac() çağrısında (iframe yeni yüklense
+      // de DOM'da kalmış olsa da) güncel data-theme doğrudan iframe'in
+      // kendi <html> köküne yazılıyor.
+      try {
+        const optikBelge = document.getElementById('optikFrame').contentDocument;
+        if (optikBelge && optikBelge.documentElement) {
+          if (document.documentElement.getAttribute('data-theme') === 'dark') {
+            optikBelge.documentElement.setAttribute('data-theme', 'dark');
+          } else {
+            optikBelge.documentElement.removeAttribute('data-theme');
+          }
+        }
+      } catch (e) { /* iframe henüz yüklenmemiş/erişilemiyor olabilir — sorun değil, ilk yüklemede kendi localStorage okuması devreye girer */ }
       ov.style.display = 'flex';
       document.body.classList.add('modal-open');
       if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
