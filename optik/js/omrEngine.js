@@ -1753,25 +1753,26 @@ window.OmrOkuyucu = (function () {
       }
     }
 
-    // TEŞHİS (Ağustos 2026 — Fen #18-19 ile kanıtlandı): satirIcinDikeyKaymaBul'da
-    // bulunan "duvara toslama" (bkz. o fonksiyondaki DUVAR_ESIK_ORANI
-    // açıklaması), İKİNCİ kademe aramada da AYNI ŞEKİLDE oluyor gibi
-    // görünüyor — Fen #19 için yerelDy tam olarak -0.50 (aramaMesafesi ile
-    // birebir aynı) çıktı. AMA burada satirIcinDikeyKaymaBul'daki gibi kör
-    // bir eşik uygulamak RİSKLİ: Fen #18 (GERÇEKTEN dolu, ham kağıtla
-    // doğrulanmış) de yerelDy=0.46 ile benzer bir değer verdi — aynı eşik
-    // ikisini de reddedip #18'i de yanlışlıkla etkileyebilir. Bu ikinci
-    // kademe (tek bir baloncuk, dar 0.5r pencere) ile birinci kademenin
-    // (4r'lik satır aralığı) ölçeği farklı; aynı eşiği doğrudan taşımak
-    // güvenli değil. Bu yüzden burada OTOMATİK düzeltme YAPILMIYOR — sadece
-    // ham (dx=0,dy=0) oranı hesaplanıp _sonYerelAramaHamOran'a kaydediliyor,
-    // teşhiste görünür olsun diye. Gerçek veri (#18'in ham oranı #19'unkinden
-    // belirgin yüksekse ayrım mümkün demektir) görülünce doğru eşik/yöntem
-    // kararlaştırılacak.
+    // KÖK SEBEP DÜZELTMESİ (Ağustos 2026 — Matematik #19 ile KESİNLEŞTİ):
+    // TUR 12-13'te bu düzeltme riskli bulunup ERTELENMİŞTİ çünkü gerçek
+    // işaretli bir soru (Fen #18) da benzer yerelDy değeri veriyordu, aynı
+    // eşik ikisini de etkileyebilirdi. O turda EKLENEN hamOran ölçümü
+    // (kaydırmasız, dx=dy=0 noktasındaki GERÇEK oran) artık bu ayrımı
+    // GÜVENLE yapmayı sağlıyor: Matematik #19 guven=0.496 (B'ye kilitli)
+    // AMA hamOran=0.250 (KARANLIK_ESIK'in altında, yani #19 KENDİ
+    // konumunda gerçekten zayıf/boş) — kanıtlanmış sahte pozitif.
+    // KURAL: en iyi sonuç duvara dayanmışsa (|dx| veya |dy| >= %65) VE
+    // kaydırmasız ham oran mutlak eşiğin altındaysa, bu GÜVENLE "duvara
+    // toslama" sayılır ve (dx=0,dy=0) ham ölçüme dönülür — gerçek işaretli
+    // sorular (hamOran zaten yüksek olduğu için) bu kuraldan ETKİLENMEZ.
     if (Math.abs(enIyiDy) >= aramaMesafesi * 0.65 || Math.abs(enIyiDx) >= aramaMesafesi * 0.65) {
-      _sonYerelAramaHamOran = binaryKullan
+      const hamOran = binaryKullan
         ? baloncukDolulukBinary(cx, cy, r)
         : baloncukKaranlikOrani(cImageData, cx, cy, r);
+      _sonYerelAramaHamOran = hamOran;
+      if (hamOran < _koyulukEsikGetir()) {
+        return { oran: hamOran, dx: 0, dy: 0 };
+      }
     } else {
       _sonYerelAramaHamOran = null;
     }
