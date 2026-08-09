@@ -2012,6 +2012,9 @@ window.OmrOkuyucu = (function () {
           py: py2 + sonuc.dy,
           pr: s.pr,
           yerelDy: sonuc.dy, // YENİ (teşhis): ADIM 3'ün EK kayması (satirDy'ye ilaveten), /pr oranlanabilir
+          yerelDx: sonuc.dx, // YENİ (Ağustos 2026, Sedat'ın gönderdiği görselle kanıtlandı: Fen #19'da sahte
+                              // sinyal D'nin kendi konumunda değil, C-D ARASINDA görünüyordu — bu YATAY (dx)
+                              // kaymayı işaret ediyor, önceki turlarda sadece dy (dikey) ölçülüyordu
           hamOran: _sonYerelAramaHamOran, // YENİ (teşhis): duvara-toslama şüphesi varsa (dx=0,dy=0) noktasındaki ham oran, yoksa null
         };
       });
@@ -2062,12 +2065,19 @@ window.OmrOkuyucu = (function () {
         _cevapTeshisSayaci[soru.ders] = (_cevapTeshisSayaci[soru.ders] || 0);
         if (_cevapTeshisSayaci[soru.ders] < 3 || sonaYakinMi) {
           _cevapTeshisSayaci[soru.ders]++;
-          const top3 = yerelSikler.slice(0, 3).map((s) => s.harf + '=' + s.oran.toFixed(3)).join(',');
           const enKoyuPr = enKoyu.pr || beklenenSikler[0].pr;
+          // YENİ (Ağustos 2026, Sedat'ın gönderdiği GÖRSELLE kanıtlandı):
+          // Fen #19'da sahte ikinci sinyal (D) kendi konumunda değil,
+          // C-D ARASINDA görünüyordu — bu YATAY (dx) kaymayı işaret
+          // ediyordu, önceki turda sadece dy ölçülüyordu. Artık top-3
+          // adayın HER BİRİNİN kendi (dx/r, dy/r) çifti gösteriliyor.
+          const top3 = yerelSikler.slice(0, 3).map((s) =>
+            s.harf + '=' + s.oran.toFixed(3) + '(dx' + ((s.yerelDx || 0) / enKoyuPr).toFixed(2) +
+            ',dy' + ((s.yerelDy || 0) / enKoyuPr).toFixed(2) + ')'
+          ).join(',');
           _cevapTeshisSatirlari.push(
             soru.ders + ' #' + soru.soruNo + ':[' + top3 + ']->' + uyari.toUpperCase() +
-            ' (satirDy/r:' + (satirDy / enKoyuPr).toFixed(2) +
-            ', enKoyuYerelDy/r:' + ((enKoyu.yerelDy || 0) / enKoyuPr).toFixed(2) + ')'
+            ' (satirDy/r:' + (satirDy / enKoyuPr).toFixed(2) + ')'
           );
         }
       }
