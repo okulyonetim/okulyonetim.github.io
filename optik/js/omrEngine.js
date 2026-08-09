@@ -1872,6 +1872,28 @@ window.OmrOkuyucu = (function () {
       for (const s of sikler) skor += baloncukCemberSinyali(cImageData, s.px, s.py + dy, s.pr);
       if (skor > enIyiSkor) { enIyiSkor = skor; enIyiDy = dy; }
     }
+
+    // KÖK SEBEP DÜZELTMESİ (Ağustos 2026 — gerçek satirDy teşhis verisiyle
+    // kanıtlandı): boş bir satırda (öğrenci hiçbir şey işaretlememişse)
+    // baloncukCemberSinyali skoru dy arttıkça MONOTON ARTIYOR — çünkü her
+    // adımda komşu satırdaki GERÇEK işarete biraz daha yaklaşılıyor. Bu
+    // yüzden "en iyi" skor neredeyse her zaman arama penceresinin TAM
+    // UCUNDA (±yarim sınırında) bulunuyordu — 13 gerçek örnekten 10'unda
+    // |enIyiDy| tam olarak yarim'e eşitti. yarim'i küçültmek (0.47→0.40)
+    // bu davranışı DEĞİŞTİRMEDİ, sadece "duvarı" biraz yaklaştırdı — arama
+    // yine yeni duvara toslamaya devam etti.
+    //
+    // Gerçek bir eğik/kaymış satırda ise en iyi dy genelde pencerenin
+    // İÇİNDE bir yerde (yerel bir tepe noktasında) bulunur, sınıra
+    // dayanmaz. Bu yüzden: sonuç sınırın %90'ından fazlasına dayanıyorsa,
+    // bu "duvara toslama" (güvenilmez, muhtemelen komşu satırın sinyaline
+    // çekilme) belirtisidir — dy=0'a (kayma yok, ham beklenen konum)
+    // düşülür. Bu, gerçek eğiklik düzeltmelerini (pencerenin ortasında
+    // kalanlar) etkilemeden, sadece sınıra dayanan sahte sonuçları eler.
+    const DUVAR_ESIK_ORANI = 0.90;
+    if (Math.abs(enIyiDy) >= yarim * DUVAR_ESIK_ORANI) {
+      return 0;
+    }
     return enIyiDy;
   }
 
