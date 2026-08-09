@@ -1901,9 +1901,29 @@ window.OmrOkuyucu = (function () {
       // ADIM 3: Satır-kilitli konum etrafında, HER şık için ayrı ayrı küçük
       // ölçekli ince ayar (baloncukKaranlikOraniYerelArama) yapıp gerçek
       // dolgu oranını ölç.
+      //
+      // KÖK SEBEP DÜZELTMESİ (Ağustos 2026 — Sedat'ın bildirdiği "gerçekte
+      // işaretli bir sorunun hem üstü hem altı aynı şıkla okunuyor"
+      // belirtisi, "⚠ Ardışık aynı şık tespiti" teşhisiyle kanıtlandı):
+      // bu çağrı önceden aramaOrani parametresi VERMİYORDU, bu da
+      // fonksiyonun varsayılanı olan 1.3'ü kullanmasına yol açıyordu.
+      // satirIcinDikeyKaymaBul zaten satırı ±1.88r'ye kadar kaydırabiliyor
+      // (yarim=0.47*4r); bunun üstüne HER ŞIK için ayrıca ±1.3r'lik bir
+      // ikinci arama eklenince toplam olası kayma ±3.18r'e çıkıyordu —
+      // satırlar arası mesafe olan 4r'nin neredeyse tamamı. Sonuç: boş bir
+      // satırın (kendi zayıf/rastgele sinyaliyle) arama merkezi, komşu
+      // satırdaki GERÇEK ve güçlü bir işaretin tam üstüne düşebiliyor,
+      // o satır komşusunun cevabını "çalıyordu" (gözlemlenen: 3+ ardışık
+      // sorunun hepsi aynı güçlü guven değeriyle aynı şıkka kilitleniyordu).
+      // numaraOku ve kitapcikOku bu ikinci aramayı ZATEN 0.5 ile
+      // çağırıyordu (satır ~2046, ~2178) — cevap okuma bu tutarlılığı
+      // kaçırmıştı. 0.5 ile toplam max kayma 1.88r+0.5r=2.38r, komşu
+      // satıra kalan mesafe 1.62r > disk çapı değil ama en azından arama
+      // MERKEZİ artık komşu satırın merkezine hiçbir zaman ulaşamıyor
+      // (0.5r < 4r-1.88r=2.12r), örtüşme riski disk kenarına indi.
       const yerelSikler = beklenenSikler.map((s) => {
         const py2 = s.py + satirDy;
-        const sonuc = baloncukKaranlikOraniYerelArama(cImageData, s.px, py2, s.pr);
+        const sonuc = baloncukKaranlikOraniYerelArama(cImageData, s.px, py2, s.pr, 0.5, 0.12);
         return {
           harf: s.harf,
           oran: sonuc.oran,
