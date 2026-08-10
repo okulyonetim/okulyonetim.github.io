@@ -1954,6 +1954,63 @@ window.OmrOkuyucu = (function () {
   }
 
 
+  /**
+   * Bir ders sütununun TÜM satırlarını kapsayan BİR KESİT alıp, yatay
+   * tarama yaparak basılı çember sinyali toplamını en üst düzeye çıkaran
+   * dx ofsetini döndürür.
+   *
+   * NEDEN GEREKLİ: Elle köşe modunda (formuOkuElleKoseli) global homografi
+   * sağ tarafa doğru kümülatif perspektif hatası biriktirebilir. Sonuç:
+   * son sütunlarda (Yabancı Dil, Matematik, Fen Bilimleri gibi) baloncuk
+   * koordinatları gerçek konumdan ~1 şık kadar yatay kayabiliyor — mevcut
+   * ±0.5r yerel arama bunu yakalamaya yetmiyor.
+   *
+   * YÖNTEMİN GÜVENLİĞİ: Yatay şık aralığı ~3.5r-4r. Bu fonksiyon en fazla
+   * ±1.5r arar — komşu şıka taşma matematiksel olarak imkansız. Sütunun
+   * TÜM sorularından SADECE BİR TEMSİLCİ SATIR (ortadaki soru) kullanılır:
+   * basılı çember sinyali öğrenci işaretinden BAĞIMSIZ olduğundan, tek bir
+   * satırın 4 çemberinin toplamı bile dx tepesini güvenle bulur.
+   *
+   * @param {ImageData} cImageData - kanonik canvas
+   * @param {Array} sutunSorular   - [{sikler:[{px,py,pr},...]},...] bir sütundaki tüm sorular
+   * @param {number} sikAralikPx   - iki komşu şık arasındaki mesafe (px) — güvenli arama sınırı için
+   * @returns {number} enIyiDx — piksel cinsinden yatay offset (0 = kayma yok)
+   */
+  function sutunIcinYatayOffsetBul(cImageData, sutunSorular, sikAralikPx) {
+    if (!sutunSorular || sutunSorular.length === 0) return 0;
+
+    // Ortadaki satırı temsil noktası olarak al (uç satırlar çerçeveye yakın olabilir)
+    const ortaSoru = sutunSorular[Math.floor(sutunSorular.length / 2)];
+    const sikler = ortaSoru.sikler; // [{px, py, pr}, ...]
+    if (!sikler || sikler.length === 0) return 0;
+
+    // Güvenli arama: şık aralığının %40'ı — komşu şıka taşmaz
+    // (şık aralığı ~3.5r, %40 = 1.4r — komşuya kalan mesafe >2r)
+    const maxDx = sikAralikPx * 0.40;
+    const adim = Math.max(1, sikler[0].pr * 0.10);
+
+    let enIyiDx = 0;
+    let enIyiSkor = -Infinity;
+
+    for (let dx = -maxDx; dx <= maxDx; dx += adim) {
+      let skor = 0;
+      for (const s of sikler) {
+        skor += baloncukCemberSinyali(cImageData, s.px + dx, s.py, s.pr);
+      }
+      if (skor > enIyiSkor) {
+        enIyiSkor = skor;
+        enIyiDx = dx;
+      }
+    }
+
+    // Duvara-toslama koruması (satirIcinDikeyKaymaBul ile aynı mantık):
+    // eğer en iyi dx pencerenin %65'inden büyükse, muhtemelen komşu sütunun
+    // güçlü sinyaline çekiliyoruz — 0'a dön (kayma yok).
+    if (Math.abs(enIyiDx) >= maxDx * 0.65) return 0;
+
+    return enIyiDx;
+  }
+
   function cevaplariCikar(cImageData, form, ppmm, genelDuzeltme) {
     const KARANLIK_ESIK = _koyulukEsikGetir(); // her okumada canlı okunur (Ayarlar sheet)
     const AYIRT_EDICI_FARK = _ayirtEdiciFarkGetir(); // her okumada canlı okunur (Ayarlar sheet)
@@ -1976,17 +2033,59 @@ window.OmrOkuyucu = (function () {
       }
     }
 
+    // SÜTUN BAZLI YATAY OFFSET (sutunIcinYatayOffsetBul):
+    // Elle köşe modunda sağ sütunlarda perspektif hatası yatay kaymaya yol
+    // açabilir (gözlemlenen: "B işaretliyse C okuyor" — tam 1 şık sağa kayma).
+    // Her ders sütunu için bir kez hesaplanır, tüm satırlara uygulanır.
+    // Ders adı → dxOffset (px) eşlemesi.
+    const dersSutunDxOffset = {};
+    // Sütun başına tüm soruları grupla (yerel koordinata çevrilmiş şıklarla)
+    if (form.bolumler) {
+      for (const bolum of form.bolumler) {
+        for (const ders of bolum.dersSutunlari) {
+          // Her sorunun şıklarını kanonik piksel konumuna çevir
+          const sutunSorular = ders.sorular.map((soru) => ({
+            sikler: soru.sikler.map((s) => {
+              const yerel = yerelNokta(form, s.cx, s.cy);
+              const ham = { x: yerel.x * ppmm, y: yerel.y * ppmm };
+              const { x: px, y: py } = yerelDuzeltmeUygula(genelDuzeltme, ham.x, ham.y);
+              return { px, py, pr: s.r * ppmm };
+            }),
+          }));
+          // Şık aralığını ilk sorunun ilk iki şıkkından tahmin et
+          let sikAralikPx = 0;
+          if (sutunSorular.length > 0 && sutunSorular[0].sikler.length >= 2) {
+            sikAralikPx = Math.abs(sutunSorular[0].sikler[1].px - sutunSorular[0].sikler[0].px);
+          }
+          if (sikAralikPx < 1) sikAralikPx = sutunSorular[0]?.sikler[0]?.pr * 3.5 || 0;
+          const dxOffset = sutunIcinYatayOffsetBul(cImageData, sutunSorular, sikAralikPx);
+          dersSutunDxOffset[ders.dersAdi] = dxOffset;
+        }
+      }
+    }
+
+    // Teşhis: sütun dx offsetlerini uyarılara ekle (formuOkuElleKoseli tarafından okunur)
+    const _sutunDxTeshis = Object.entries(dersSutunDxOffset)
+      .map(([ders, dx]) => ders + ':' + (dx >= 0 ? '+' : '') + dx.toFixed(1) + 'px')
+      .join(', ');
+    if (_sutunDxTeshis) {
+      // _cevapTeshisSatirlari'na başlık olarak ekle — uyarılar bloğunda görünür
+      _cevapTeshisSatirlari.unshift('Sütun yatay offset: ' + _sutunDxTeshis);
+    }
+
     for (const soru of sorular) {
       const duzeltme = genelDuzeltme;
 
       // ADIM 1: Her şıkkın homografiyle beklenen (henüz kaydırılmamış)
       // kanonik konumunu hesapla.
+      // Sütun bazlı yatay offset (perspektif hatası düzeltmesi) eklenir.
+      const sutunDxOffset = dersSutunDxOffset[soru.ders] || 0;
       const beklenenSikler = soru.sikler.map((s) => {
         const yerel = yerelNokta(form, s.cx, s.cy);
         const ham = { x: yerel.x * ppmm, y: yerel.y * ppmm };
         const { x: px, y: py } = yerelDuzeltmeUygula(duzeltme, ham.x, ham.y);
         const pr = s.r * ppmm;
-        return { harf: s.harf, px, py, pr };
+        return { harf: s.harf, px: px + sutunDxOffset, py, pr };
       });
 
       // ADIM 2: SATIRIN TAMAMINI (4 şıkkı birlikte, basılı çember sinyaline
