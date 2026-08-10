@@ -1442,6 +1442,7 @@
       <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
         <button class="btn btn-ghost btn-sm filtre-btn active" data-ky-sekme="roller" onclick="kullaniciYonetimiAltSekmeSec('roller')">🗂️ Roller</button>
         <button class="btn btn-ghost btn-sm filtre-btn" data-ky-sekme="kullanicilar" onclick="kullaniciYonetimiAltSekmeSec('kullanicilar')">👥 Kullanıcılar</button>
+        <button class="btn btn-ghost btn-sm filtre-btn" data-ky-sekme="konumlar" onclick="kullaniciYonetimiAltSekmeSec('konumlar')">📍 Giriş Konumları</button>
       </div>
 
       <!-- Roller bölümü -->
@@ -1456,6 +1457,8 @@
         <button class="btn btn-amber" style="margin-bottom:14px;" onclick="yeniKullaniciModalAc()">➕ Yeni Kullanıcı Oluştur</button>
         <div id="kullaniciYonetimListesi"></div>
       </div>
+      <!-- Giriş Konumları bölümü -->
+      <div id="ky-bolum-konumlar" style="display:none;"></div>
     </section>
 
     <!-- YENİ: Kullanıcı İstatistikleri (v11.0) — bkz. js/istatistikler.js -->
@@ -1626,6 +1629,7 @@
 <script src="js/kullanici-yonetimi.js"></script>
 <script src="js/core/repositories/kullanici-yonetimi.repository.js"></script>
 <script src="js/core/services/kullanici-yonetimi.service.js"></script>
+<script src="js/core/services/konum-giris.service.js"></script>
 <script src="js/core/repositories/nobet.repository.js"></script>
 <script src="js/core/services/nobet.service.js"></script>
 <script src="js/core/repositories/siniflar.repository.js"></script>
