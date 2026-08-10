@@ -871,6 +871,16 @@ function konumFiltreUygula(deger){
   _konumTabloRender(filtreli);
 }
 
+function konumKaydiSil(id){
+  if(!confirm('Bu giriş kaydı silinsin mi?')) return;
+  db.collection('oy_girisKonumlari').doc(id).delete()
+    .then(() => {
+      _konumTumKayitlar = _konumTumKayitlar.filter(k => k.id !== id);
+      konumFiltreUygula(_konumFiltre);
+    })
+    .catch(err => alert('Silinemedi: ' + err.message));
+}
+
 function _konumTabloRender(kayitlar){
   const el = document.getElementById('konumTablo');
   if(!el) return;
@@ -890,6 +900,7 @@ function _konumTabloRender(kayitlar){
       <td>${zaman}</td>
       <td>${latLng}</td>
       <td style="text-align:center;">${platIkon}</td>
+      <td style="text-align:center;"><button class="btn btn-ghost btn-sm" style="color:#e74c3c;padding:2px 8px;" onclick="konumKaydiSil('${k.id}')">🗑️</button></td>
     </tr>`;
   }).join('');
   el.innerHTML = `
@@ -900,6 +911,7 @@ function _konumTabloRender(kayitlar){
           <th style="text-align:left;padding:6px 8px;">Tarih / Saat</th>
           <th style="text-align:left;padding:6px 8px;">Koordinat</th>
           <th style="text-align:center;padding:6px 8px;">Platform</th>
+          <th style="text-align:center;padding:6px 8px;">Sil</th>
         </tr></thead>
         <tbody>${satirlar}</tbody>
       </table>
