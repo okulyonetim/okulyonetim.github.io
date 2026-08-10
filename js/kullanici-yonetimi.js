@@ -237,8 +237,11 @@ function kullaniciYonetimiAltSekmeSec(sekme){
   document.querySelectorAll('[data-ky-sekme]').forEach(b=>b.classList.toggle('active', b.dataset.kySekme===sekme));
   const rBolum = document.getElementById('ky-bolum-roller');
   const kBolum = document.getElementById('ky-bolum-kullanicilar');
+  const konBolum = document.getElementById('ky-bolum-konumlar');
   if(rBolum) rBolum.style.display = sekme === 'roller' ? '' : 'none';
   if(kBolum) kBolum.style.display = sekme === 'kullanicilar' ? '' : 'none';
+  if(konBolum) konBolum.style.display = sekme === 'konumlar' ? '' : 'none';
+  if(sekme === 'konumlar') girisKonumlariYukle();
 }
 
 /* ---------- Roller ---------- */
@@ -752,4 +755,153 @@ function detayPanelYetkiUygula(ogretmenId){
       duzBtn.style.display='none';
     }
   }
+}
+
+/* ============================================================
+   GİRİŞ KONUMLARI SEKMESİ
+   ============================================================ */
+
+let _konumHarita = null;
+let _konumMarkerlar = [];
+let _konumFiltre = '';
+let _konumTumKayitlar = [];
+
+// Renk paleti — kullanıcı başına sabit renk
+const _KONUM_RENKLER = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e'];
+const _konumRenkHarita = {};
+function _kullaniciRengi(uid){
+  if(!_konumRenkHarita[uid]){
+    const idx = Object.keys(_konumRenkHarita).length % _KONUM_RENKLER.length;
+    _konumRenkHarita[uid] = _KONUM_RENKLER[idx];
+  }
+  return _konumRenkHarita[uid];
+}
+
+function girisKonumlariYukle(){
+  if(!db) return;
+  const konBolum = document.getElementById('ky-bolum-konumlar');
+  if(!konBolum) return;
+
+  konBolum.innerHTML = `
+    <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <input id="konumFiltre" type="text" placeholder="Kullanıcı adına göre filtrele…"
+        style="flex:1;min-width:180px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);"
+        oninput="konumFiltreUygula(this.value)">
+      <button class="btn btn-ghost btn-sm" onclick="girisKonumlariYukle()">🔄 Yenile</button>
+    </div>
+    <div id="konumHaritaKap" style="height:360px;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:14px;">
+      <div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--ink-muted);">Yükleniyor…</div>
+    </div>
+    <div id="konumTablo"></div>`;
+
+  db.collection('oy_girisKonumlari')
+    .orderBy('timestamp', 'desc')
+    .limit(100)
+    .get()
+    .then(snap => {
+      _konumTumKayitlar = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      _konumHaritaOlustur();
+      konumFiltreUygula(_konumFiltre);
+    })
+    .catch(err => {
+      const kap = document.getElementById('konumHaritaKap');
+      if(kap) kap.innerHTML = `<p style="padding:16px;color:var(--ink-muted);">Veriler alınamadı: ${err.message}</p>`;
+    });
+}
+
+function _konumHaritaOlustur(){
+  const kap = document.getElementById('konumHaritaKap');
+  if(!kap) return;
+  kap.innerHTML = '<div id="konumHaritaDiv" style="height:100%;"></div>';
+
+  if(_konumHarita){ _konumHarita.remove(); _konumHarita = null; }
+
+  _konumHarita = L.map('konumHaritaDiv', { zoomControl: true });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 18
+  }).addTo(_konumHarita);
+
+  _konumMarkerlarEkle(_konumTumKayitlar);
+}
+
+function _konumMarkerlarEkle(kayitlar){
+  if(!_konumHarita) return;
+  _konumMarkerlar.forEach(m => m.remove());
+  _konumMarkerlar = [];
+
+  const gecerli = kayitlar.filter(k => k.lat && k.lng);
+  if(!gecerli.length) return;
+
+  const bounds = [];
+  gecerli.forEach(k => {
+    const renk = _kullaniciRengi(k.uid);
+    const ikon = L.divIcon({
+      className: '',
+      html: `<div style="width:14px;height:14px;border-radius:50%;background:${renk};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
+    });
+    const zaman = k.timestamp && k.timestamp.toDate
+      ? k.timestamp.toDate().toLocaleString('tr-TR')
+      : '—';
+    const marker = L.marker([k.lat, k.lng], { icon: ikon })
+      .bindPopup(`<b>${k.displayName || k.email || k.uid}</b><br>${zaman}<br><small>${k.platform || ''}</small>`)
+      .addTo(_konumHarita);
+    _konumMarkerlar.push(marker);
+    bounds.push([k.lat, k.lng]);
+  });
+
+  if(bounds.length === 1){
+    _konumHarita.setView(bounds[0], 13);
+  } else if(bounds.length > 1){
+    _konumHarita.fitBounds(bounds, { padding: [30, 30] });
+  }
+}
+
+function konumFiltreUygula(deger){
+  _konumFiltre = (deger || '').toLowerCase().trim();
+  const filtreli = _konumFiltre
+    ? _konumTumKayitlar.filter(k =>
+        (k.displayName || '').toLowerCase().includes(_konumFiltre) ||
+        (k.email || '').toLowerCase().includes(_konumFiltre))
+    : _konumTumKayitlar;
+
+  _konumMarkerlarEkle(filtreli);
+  _konumTabloRender(filtreli);
+}
+
+function _konumTabloRender(kayitlar){
+  const el = document.getElementById('konumTablo');
+  if(!el) return;
+  if(!kayitlar.length){
+    el.innerHTML = '<p class="empty-state">Kayıt bulunamadı.</p>';
+    return;
+  }
+  const satirlar = kayitlar.map(k => {
+    const renk = _kullaniciRengi(k.uid);
+    const zaman = k.timestamp && k.timestamp.toDate
+      ? k.timestamp.toDate().toLocaleString('tr-TR')
+      : '—';
+    const latLng = (k.lat && k.lng) ? `${k.lat.toFixed(4)}, ${k.lng.toFixed(4)}` : 'Bilinmiyor';
+    const platIkon = k.platform === 'android' ? '📱' : '🌐';
+    return `<tr>
+      <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${renk};margin-right:6px;"></span>${k.displayName || k.email || k.uid}</td>
+      <td>${zaman}</td>
+      <td>${latLng}</td>
+      <td style="text-align:center;">${platIkon}</td>
+    </tr>`;
+  }).join('');
+  el.innerHTML = `
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="border-bottom:2px solid var(--border);">
+          <th style="text-align:left;padding:6px 8px;">Kullanıcı</th>
+          <th style="text-align:left;padding:6px 8px;">Tarih / Saat</th>
+          <th style="text-align:left;padding:6px 8px;">Koordinat</th>
+          <th style="text-align:center;padding:6px 8px;">Platform</th>
+        </tr></thead>
+        <tbody>${satirlar}</tbody>
+      </table>
+    </div>`;
 }

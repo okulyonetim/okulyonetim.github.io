@@ -275,6 +275,7 @@ function authDinleyiciKur(){
       const app = document.getElementById('app');
       if(app) app.classList.add('ready','show');
       if(typeof IstatistikService !== 'undefined') IstatistikService.girisKaydet();
+      if(typeof KonumGirisService !== 'undefined') KonumGirisService.kaydet();
       if(typeof uygulamaBaslat === 'function') uygulamaBaslat();
 
       // DÜZELTME: alt-navigasyon.js'deki özel grup/nav-düzeni yüklemesi

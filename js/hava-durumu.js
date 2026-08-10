@@ -322,6 +322,8 @@
       .then(function(veri){
         if(!veri || !veri.current || !veri.daily) throw new Error('Beklenmeyen yanıt biçimi');
         _sonLat = lat; _sonLon = lon; _sonVeri = veri;
+        // Giriş konum servisi bu değeri okur (tekrar izin istemeden)
+        window.sonKonum = { lat: lat, lng: lon };
         // Ana ekran widget'ı (widget-bridge.js) bu modülün içine giremediği için
         // son hava durumu verisini window üzerinden dışa açıyoruz.
         window.sonHavaVerisi = {
