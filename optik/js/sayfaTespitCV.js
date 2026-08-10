@@ -99,6 +99,120 @@ function kenarUzunluk(p1, p2) {
   return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
 }
 
+/**
+ * Ham kontur noktalarını, approxPolyDP'nin bulduğu 4 köşeye göre 4 gruba
+ * böler. Her grup o kenara ait kontur noktalarını içerir.
+ * Kontur: cv.Mat (rows × 1 × 2 i32). Koseler: [p0,p1,p2,p3] (indeks sırası).
+ */
+function _konturKenarlariAyir(kontur, koselIndeksler) {
+  const n = kontur.rows;
+  const gruplar = [[], [], [], []];
+  for (let i = 0; i < n; i++) {
+    // her piksel hangi köşeye en yakın? → o kenarın grubuna girer
+    let enYakin = 0, enYakinUzaklik = Infinity;
+    const px = kontur.data32S[i * 2], py = kontur.data32S[i * 2 + 1];
+    for (let k = 0; k < 4; k++) {
+      const ki = koselIndeksler[k];
+      const kx = kontur.data32S[ki * 2], ky = kontur.data32S[ki * 2 + 1];
+      const d = (px - kx) ** 2 + (py - ky) ** 2;
+      if (d < enYakinUzaklik) { enYakinUzaklik = d; enYakin = k; }
+    }
+    gruplar[enYakin].push({ x: px, y: py });
+  }
+  return gruplar;
+}
+
+/**
+ * Bir nokta grubuna en küçük kareler doğrusu (ax + by + c = 0) uydurur.
+ * Neredeyse dikey çizgiler için x=f(y), diğerleri için y=f(x) kullanılır.
+ * Döner: { a, b, c } — doğru denklemi ax + by + c = 0.
+ */
+function _dogruUydur(noktalar) {
+  if (noktalar.length < 2) return null;
+  const n = noktalar.length;
+  let sx = 0, sy = 0, sxx = 0, sxy = 0, syy = 0;
+  for (const { x, y } of noktalar) {
+    sx += x; sy += y; sxx += x * x; sxy += x * y; syy += y * y;
+  }
+  const mx = sx / n, my = sy / n;
+  // Kovaryans matrisi öz vektörü (PCA ile en iyi doğru yönü)
+  const cxx = sxx / n - mx * mx;
+  const cxy = sxy / n - mx * my;
+  const cyy = syy / n - my * my;
+  // Normal vektör: kovaryans matrisinin KÜÇÜK öz değerine ait öz vektör
+  // θ = atan2(2cxy, cxx-cyy)/2 ile doğru yönünü bul, normal ⊥ buna
+  const theta = 0.5 * Math.atan2(2 * cxy, cxx - cyy);
+  const a = -Math.sin(theta); // doğru yönü (cos θ, sin θ) → normal (-sin θ, cos θ)
+  const b = Math.cos(theta);
+  const c = -(a * mx + b * my);
+  return { a, b, c };
+}
+
+/**
+ * İki doğrunun (a1x+b1y+c1=0) ve (a2x+b2y+c2=0) kesişim noktasını döner.
+ * Paralel doğrular için null döner.
+ */
+function _dogruKesisimi(d1, d2) {
+  const det = d1.a * d2.b - d2.a * d1.b;
+  if (Math.abs(det) < 1e-10) return null;
+  return {
+    x: (d1.b * d2.c - d2.b * d1.c) / (-det),  // Cramer
+    y: (d2.a * d1.c - d1.a * d2.c) / (-det),
+  };
+}
+
+/**
+ * approxPolyDP'nin verdiği ham 4 köşeyi, konturun tüm piksellerine doğru
+ * fit ederek rafine eder. Başarısızsa orijinal köşeleri döner.
+ *
+ * kontur    : cv.Mat (ham kontur, CHAIN_APPROX_NONE ile yakalanmış olmalı —
+ *             ama SIMPLE ile de çalışır, sadece daha az nokta olur)
+ * yaklasik4 : approxPolyDP çıkışı cv.Mat (4 satır)
+ * roiOfsX/Y : tam görüntü koordinatına geri taşıma ofsetleri
+ */
+function _koseRafine(kontur, yaklasik4, roiOfsX, roiOfsY) {
+  // approxPolyDP çıkışındaki 4 satır → kontur üzerindeki indekslerini bul
+  const koselIndeksler = [];
+  for (let k = 0; k < 4; k++) {
+    const tx = yaklasik4.data32S[k * 2], ty = yaklasik4.data32S[k * 2 + 1];
+    let enYakin = 0, enYakinD = Infinity;
+    for (let i = 0; i < kontur.rows; i++) {
+      const d = (kontur.data32S[i * 2] - tx) ** 2 + (kontur.data32S[i * 2 + 1] - ty) ** 2;
+      if (d < enYakinD) { enYakinD = d; enYakin = i; }
+    }
+    koselIndeksler.push(enYakin);
+  }
+
+  const gruplar = _konturKenarlariAyir(kontur, koselIndeksler);
+
+  // Her kenar grubuna doğru uydur (yeterli nokta yoksa rafine iptal)
+  const dogrular = gruplar.map(_dogruUydur);
+  if (dogrular.some((d, i) => d === null || gruplar[i].length < 4)) {
+    // yeterli nokta yok — orijinal köşeleri kullan
+    const ham = [];
+    for (let k = 0; k < 4; k++) {
+      ham.push({ x: yaklasik4.data32S[k * 2] + roiOfsX, y: yaklasik4.data32S[k * 2 + 1] + roiOfsY });
+    }
+    return noktalariSirala(ham);
+  }
+
+  // Komşu iki kenarın kesişimi → rafine köşe
+  // Kenar sırası: grup 0(köşe0→köşe1), 1(köşe1→köşe2), 2(köşe2→köşe3), 3(köşe3→köşe0)
+  const rafineHam = [];
+  for (let k = 0; k < 4; k++) {
+    const d1 = dogrular[k];
+    const d2 = dogrular[(k + 1) % 4];
+    const kesisim = d1 && d2 ? _dogruKesisimi(d1, d2) : null;
+    if (kesisim) {
+      rafineHam.push({ x: kesisim.x + roiOfsX, y: kesisim.y + roiOfsY });
+    } else {
+      // bu çift paralel (nadir) — orijinal köşeye geri dön
+      rafineHam.push({ x: yaklasik4.data32S[k * 2] + roiOfsX, y: yaklasik4.data32S[k * 2 + 1] + roiOfsY });
+    }
+  }
+  return noktalariSirala(rafineHam);
+}
+
 /** Bulunan dörtgenin BEKLENEN en-boy oranına (dikey ya da yatay) yeterince yakın olup olmadığını kontrol eder. */
 function enBoyOraniUygunMu(koseler, oranlar) {
   const ust = kenarUzunluk(koseler.solUst, koseler.sagUst);
@@ -140,7 +254,10 @@ function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, e
   try {
     cv.Canny(gri, kenarlar, cannyAlt, cannyUst);
     cv.dilate(kenarlar, kenarlar, dilateKernel, new cv.Point(-1, -1), 2);
-    cv.findContours(kenarlar, konturlar, hiyerarsi, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
+    // CHAIN_APPROX_NONE: kontur boyunca TÜM pikselleri sakla (SIMPLE yalnızca
+    // köşeleri tutar). Daha fazla bellek/işlem ama _koseRafine'nin doğru fit
+    // için yeterli nokta bulabilmesi buna bağlı.
+    cv.findContours(kenarlar, konturlar, hiyerarsi, cv.RETR_LIST, cv.CHAIN_APPROX_NONE);
 
     for (let i = 0; i < konturlar.size(); i++) {
       const kontur = konturlar.get(i);
@@ -160,14 +277,12 @@ function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, e
           const alan = cv.contourArea(yaklasik);
           const alanOrani = alan / tamAlan;
           if (alanOrani >= MIN_ALAN_ORANI && alanOrani <= MAX_ALAN_ORANI && alan > enIyiAlan) {
-            const ham = [];
-            for (let k = 0; k < 4; k++) {
-              ham.push({
-                x: yaklasik.data32S[k * 2] + roiOfsX,
-                y: yaklasik.data32S[k * 2 + 1] + roiOfsY,
-              });
-            }
-            const sirali = noktalariSirala(ham);
+            // YENİ: approxPolyDP'nin tek-piksel köşeleri yerine her kenar
+            // boyunca doğru fit edip komşu doğruların kesişimini kullan.
+            // Kamera titremesinde / farklı çekimlerde köşe konumu çok daha
+            // stabil kalıyor (tek pikselin gürültüsü değil, kenarın ortalama
+            // yönü belirliyor).
+            const sirali = _koseRafine(kontur, yaklasik, roiOfsX, roiOfsY);
             if (enBoyOraniUygunMu(sirali, oranlar)) {
               enIyi = sirali;
               enIyiAlan = alan;
