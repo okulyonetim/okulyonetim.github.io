@@ -30,6 +30,7 @@ async function topluIceAktar(dosyalar, canvas) {
             const img = await dosyayiResmeCevir(dosya);
             canvas.width = img.naturalWidth;
             canvas.height = img.naturalHeight;
+            canvas.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
             canvas.getContext("2d").drawImage(img, 0, 0);
             const sonuc = await formuOkuToplu(canvas);
             if (sonuc && sonuc.basarili) basarili++;
@@ -51,7 +52,7 @@ async function topluIceAktar(dosyalar, canvas) {
 }
 
 async function koseleriBul(canvas) {
-    const ANALIZ_GENISLIK = 640;
+    const ANALIZ_GENISLIK = 1280; // camera.js'deki KOSE_TESPIT_ANALIZ_GENISLIK ile aynı gerekçe: düşük çözünürlükte 1px köşe hatası büyütme sonrası çok daha fazla piksele karşılık geliyor.
     const kucuk = document.createElement('canvas');
     const ol = Math.min(1, ANALIZ_GENISLIK / canvas.width);
     kucuk.width = Math.round(canvas.width * ol);
@@ -135,6 +136,11 @@ export function baglaGaleriSecici(inputId, canvasId) {
                 const img = await dosyayiResmeCevir(dosyalar[0]);
                 canvas.width = img.naturalWidth;
                 canvas.height = img.naturalHeight;
+                // Bkz. koseSecici.js'deki aynı düzeltme: canvas'ın CSS
+                // kutusu kameranın sabit oranına göre ayarlanmış olabilir;
+                // galeriden gelen fotoğraf farklı oranda olursa görüntü
+                // gerilip bozuk görünür. Gerçek orana sabitliyoruz.
+                canvas.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
                 canvas.getContext("2d").drawImage(img, 0, 0);
 
                 const cvKoseler = await koseleriBul(canvas);

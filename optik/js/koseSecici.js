@@ -120,6 +120,18 @@ export function koseleriSectir(kaynak, genislik, yukseklik, secimCanvas, talimat
 
         secimCanvas.width = genislik;
         secimCanvas.height = yukseklik;
+        // DÜZELTME (Ağustos 2026): CSS tarafında bu canvas'a muhtemelen
+        // kamera akışının (video object-fit:cover) tipik dikey en-boy
+        // oranına göre sabit bir yükseklik/oran veriliyor. Kameradan gelen
+        // kare her zaman o oranda olduğu için sorun çıkmıyordu, ama
+        // galeriden seçilen bir fotoğraf FARKLI bir en-boy oranında
+        // olabiliyor — canvas'ın piksel içeriği (genislik×yukseklik) CSS
+        // kutusunun oranına UYMAYINCA tarayıcı görüntüyü kutuya sığdırmak
+        // için dikeyde (veya yatayda) GERİYOR, görüntü bozuk/esnetilmiş
+        // görünüyor. style.aspectRatio'yu her seferinde gerçek kaynağın
+        // oranına eşitleyerek CSS kutusunun her zaman doğru oranda
+        // olmasını garanti ediyoruz.
+        secimCanvas.style.aspectRatio = `${genislik} / ${yukseklik}`;
 
         // Alt buton çubuğu (Tamam/Sıfırla/Otomatik Dene) tamamBtn'in ebeveyni;
         // canvas'ın gösterildiği gerçek boyuta göre ne kadar alanı kapladığını

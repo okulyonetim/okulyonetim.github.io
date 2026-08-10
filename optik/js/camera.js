@@ -39,7 +39,7 @@ const _koseTespitAnalizCanvas = document.createElement("canvas");
 let _koseTespitTimer = null;
 let _koseTespitCalisiyor = false; // örtüşen (üst üste binen) çalıştırmaları engelle
 
-const KOSE_TESPIT_ANALIZ_GENISLIK = 480; // YENİ: 360'ta ince (0.35mm) çerçeve çizgisi neredeyse yok oluyordu (~0.6px) — CV kontur tespiti için 480'e çıkarıldı (~0.8px, hâlâ ince ama Canny+dilate ile yakalanabilir düzeyde). Kalıcı çözüm form tarafında çizgiyi kalınlaştırmak (bkz. pdfFormGenerator.js notu).
+const KOSE_TESPIT_ANALIZ_GENISLIK = 1280; // GÜNCELLEME (Ağustos 2026): 480'de köşe konturunun uç noktaları 1px oynadığında gerçek video çözünürlüğüne (ol ≈ 6-8x) büyütülünce 6-8px hataya, sağ kenarda birikerek 20-25px hataya dönüşüyordu — baloncuk yarıçapı mertebesinde olup 1 şık kaymaya yol açabiliyordu. 1280'e çıkarmak ölçek katsayısını (~2-3x) düşürerek aynı 1px belirsizliğin gerçek görüntüdeki karşılığını 2-3px'e indiriyor. Canlı modda 350ms'de bir çalıştığı için ek maliyet tolere edilebilir.
 
 // Bir önceki turda CV ile bulunan çerçeve köşeleri — sayfaKoseleriniAraCV'ye
 // TAKİP (tracking) ipucu olarak geçiriliyor; her turda sıfırdan tam kare
