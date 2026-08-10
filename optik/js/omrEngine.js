@@ -1826,6 +1826,45 @@ window.OmrOkuyucu = (function () {
    * baloncuk sırası var" sorusuna, ince tek bir çizgi bandından çok daha
    * gürültüye dayanıklı cevap verir.
    */
+  /**
+   * Bir baloncuğun dış-çember bandındaki ortalama KARANLIĞI — ama
+   * `isaretKoyulukPuani` yerine düz grilik kullanır (renk cezası YOK).
+   *
+   * NEDEN: `baloncukCemberSinyali` ve `isaretKoyulukPuani`, renkli mürekkeple
+   * basılı çemberleri (sarı/kırmızı baskı) doygunluk cezasıyla bastırıyor —
+   * bu cevap okumada doğru ama burada (basılı çemberin KENDİ konumunu bulmak
+   * için) yanlış: rengi ne olursa olsun basılı çember etrafındaki pikseller
+   * çevre kağıttan belirgin biçimde daha koyu. Renk cezası olmadan bu kontrast
+   * çok daha güçlü çıkar ve `sutunIcinYatayOffsetBul`'un zirveyi doğru bulma
+   * şansı artar.
+   *
+   * Sadece `sutunIcinYatayOffsetBul` tarafından kullanılır.
+   */
+  function _baloncukHamGriCemberSinyali(cImageData, cx, cy, r) {
+    const { width, height, data } = cImageData;
+    // Sadece dış halka: 0.65r – 1.05r arası (basılı çember çizgisi burada)
+    const icR2 = (r * 0.65) * (r * 0.65);
+    const disR2 = (r * 1.05) * (r * 1.05);
+    const x0 = Math.max(0, Math.floor(cx - r * 1.05));
+    const x1 = Math.min(width - 1, Math.ceil(cx + r * 1.05));
+    const y0 = Math.max(0, Math.floor(cy - r * 1.05));
+    const y1 = Math.min(height - 1, Math.ceil(cy + r * 1.05));
+    if (x1 <= x0 || y1 <= y0) return 0;
+    let toplam = 0, sayac = 0;
+    for (let y = y0; y <= y1; y++) {
+      for (let x = x0; x <= x1; x++) {
+        const dx = x - cx, dy = y - cy;
+        const d2 = dx * dx + dy * dy;
+        if (d2 >= icR2 && d2 <= disR2) {
+          // Düz grilik — renk körü, hem sarı/kırmızı hem siyah basılı çemberi eşit görür
+          toplam += 1 - grilikDegeri(data, (y * width + x) * 4) / 255;
+          sayac++;
+        }
+      }
+    }
+    return sayac > 0 ? toplam / sayac : 0;
+  }
+
   function baloncukCemberSinyali(cImageData, cx, cy, r) {
     const { width, height, data } = cImageData;
     const disYaricap = r * 0.9;
@@ -1979,23 +2018,35 @@ window.OmrOkuyucu = (function () {
   function sutunIcinYatayOffsetBul(cImageData, sutunSorular, sikAralikPx) {
     if (!sutunSorular || sutunSorular.length === 0) return 0;
 
-    // Ortadaki satırı temsil noktası olarak al (uç satırlar çerçeveye yakın olabilir)
-    const ortaSoru = sutunSorular[Math.floor(sutunSorular.length / 2)];
-    const sikler = ortaSoru.sikler; // [{px, py, pr}, ...]
-    if (!sikler || sikler.length === 0) return 0;
+    // İlk şık bloğunun pr değerini al (adım hesabı için)
+    const ilkSikler = sutunSorular[0].sikler;
+    if (!ilkSikler || ilkSikler.length === 0) return 0;
 
     // Güvenli arama: şık aralığının %40'ı — komşu şıka taşmaz
     // (şık aralığı ~3.5r, %40 = 1.4r — komşuya kalan mesafe >2r)
     const maxDx = sikAralikPx * 0.40;
-    const adim = Math.max(1, sikler[0].pr * 0.10);
+    const adim = Math.max(1, ilkSikler[0].pr * 0.10);
 
     let enIyiDx = 0;
     let enIyiSkor = -Infinity;
 
+    // TÜM SATIRLARIN TOPLAMINI KULLAN (önceki sürüm sadece ortadaki satıra
+    // bakıyordu — o satır boşsa sinyal zayıf kalıp yön tespit edilemiyordu).
+    // Basılı çember sinyali öğrenci işaretinden bağımsız olduğundan N satırın
+    // toplamı N kat daha güçlü ve gürültüye karşı N kat daha dayanıklı.
+    // Uç satırlar (ilk ve son) çerçeveye yakın olabilir — bunları atla.
+    const baslangic = Math.min(1, sutunSorular.length - 1);
+    const bitis = Math.max(baslangic, sutunSorular.length - 1);
+    const kullanilanSorular = sutunSorular.slice(baslangic, bitis);
+    // Eğer sadece 1-2 soru varsa hepsini kullan
+    const taramaSorular = kullanilanSorular.length > 0 ? kullanilanSorular : sutunSorular;
+
     for (let dx = -maxDx; dx <= maxDx; dx += adim) {
       let skor = 0;
-      for (const s of sikler) {
-        skor += baloncukCemberSinyali(cImageData, s.px + dx, s.py, s.pr);
+      for (const soru of taramaSorular) {
+        for (const s of soru.sikler) {
+          skor += _baloncukHamGriCemberSinyali(cImageData, s.px + dx, s.py, s.pr);
+        }
       }
       if (skor > enIyiSkor) {
         enIyiSkor = skor;
@@ -2003,10 +2054,11 @@ window.OmrOkuyucu = (function () {
       }
     }
 
-    // Duvara-toslama koruması (satirIcinDikeyKaymaBul ile aynı mantık):
-    // eğer en iyi dx pencerenin %65'inden büyükse, muhtemelen komşu sütunun
-    // güçlü sinyaline çekiliyoruz — 0'a dön (kayma yok).
-    if (Math.abs(enIyiDx) >= maxDx * 0.65) return 0;
+    // Duvara-toslama koruması: eğer en iyi dx pencerenin %85'inden büyükse
+    // (komşu sütunun sinyaline çekilme belirtisi) — 0'a dön.
+    // %85 seçildi (önceki %65 yerine): arama sınırı zaten %40×şık_aralığı
+    // ile güvende; buradaki kontrol sadece çok uç durumlar için ek güvenlik.
+    if (Math.abs(enIyiDx) >= maxDx * 0.85) return 0;
 
     return enIyiDx;
   }
