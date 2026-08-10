@@ -1470,9 +1470,25 @@ window.OmrOkuyucu = (function () {
   }
 
   /** Kanonik (mm*ppmm) uzayda düzleştirilmiş bir canvas üretir. */
+  // KÖK NEDEN SAĞLAMLAŞTIRMASI (Çözüm Planı, Ağustos 2026): canonical tuval
+  // boyutu (form.bolge.width/height × ppmm) DOĞRUSAL büyüyor; formuOtomatikDuzlestir
+  // artık daha isabetli bir gercekPpmm kestiriyor ve bu bazen (yüksek
+  // çözünürlüklü/yakından çekilmiş fotoğraflarda) 15-20px/mm gibi yüksek
+  // çıkabiliyor — A4 bir form için bu, onlarca milyon pikselli bir tuval
+  // demek, aşağıdaki piksel-piksel homografi örneklemesi (iç içe for) o
+  // durumda saniyelerce sürüyor. Baloncuk okumak için birkaç px/mm zaten
+  // yeterli olduğundan, toplam piksel sayısına bir üst sınır konuyor —
+  // aşılırsa ppmm orantılı küçültülüyor (en/boy oranı KORUNUR).
+  const MAKS_TUVAL_PIKSEL = 6_000_000; // ~A4'te ~10px/mm karşılığı
+
   function duzCanvasUret(fotoImageData, H, form, ppmm) {
-    const cGenislik = Math.max(1, Math.round(form.bolge.width * ppmm));
-    const cYukseklik = Math.max(1, Math.round(form.bolge.height * ppmm));
+    let kullanilanPpmm = ppmm;
+    const tahminiPiksel = form.bolge.width * ppmm * form.bolge.height * ppmm;
+    if (tahminiPiksel > MAKS_TUVAL_PIKSEL) {
+      kullanilanPpmm = ppmm * Math.sqrt(MAKS_TUVAL_PIKSEL / tahminiPiksel);
+    }
+    const cGenislik = Math.max(1, Math.round(form.bolge.width * kullanilanPpmm));
+    const cYukseklik = Math.max(1, Math.round(form.bolge.height * kullanilanPpmm));
 
     // YENİ (teşhis): H'nin kanonik tuvalin 4 köşesini GERÇEKTEN doğru
     // fotoğraf konumuna gönderip göndermediğini doğrudan test ediyoruz.
@@ -1520,7 +1536,7 @@ window.OmrOkuyucu = (function () {
     }
 
     ctx.putImageData(cImageData, 0, 0);
-    return { canvas, imageData: cImageData };
+    return { canvas, imageData: cImageData, ppmmKullanilan: kullanilanPpmm };
   }
 
   // ---------------------------------------------------------------------
@@ -2186,7 +2202,14 @@ window.OmrOkuyucu = (function () {
       const yler = sikler.map((s) => s.py).sort((a, b) => a - b);
       const araliklar = [];
       for (let i = 1; i < yler.length; i++) araliklar.push(yler[i] - yler[i - 1]);
-      const ortAralik = araliklar.reduce((a, b) => a + b, 0) / araliklar.length;
+      // KÖK NEDEN SAĞLAMLAŞTIRMASI (Çözüm Planı, Ağustos 2026): ortAralik
+      // önceden aritmetik ortalamaydı — tek bir aykırı aralık referans
+      // mesafeyi kaydırabiliyordu. Medyan, tek bir aykırıya karşı çok daha
+      // dayanıklı (bkz. numaraOku/_basamakEnKoyusu'ndaki AYNI düzeltme).
+      araliklar.sort((a, b) => a - b);
+      const ortAralik = araliklar.length % 2 === 1
+        ? araliklar[(araliklar.length - 1) / 2]
+        : (araliklar[araliklar.length / 2 - 1] + araliklar[araliklar.length / 2]) / 2;
       if (ortAralik > 0) {
         dy = satirIcinDikeyKaymaBul(cImageData, sikler, ortAralik, false, false);
       }
@@ -2314,7 +2337,17 @@ window.OmrOkuyucu = (function () {
       const yler = sikler.map((s) => s.py).sort((a, b) => a - b);
       const araliklar = [];
       for (let i = 1; i < yler.length; i++) araliklar.push(yler[i] - yler[i - 1]);
-      const ortAralik = araliklar.reduce((a, b) => a + b, 0) / araliklar.length;
+      // KÖK NEDEN SAĞLAMLAŞTIRMASI (Çözüm Planı, Ağustos 2026): ortAralik
+      // önceden ARİTMETİK ORTALAMA idi — 0-9 arası 10 baloncuğun 9
+      // aralığından TEK biri (ör. baskı/tarama gürültüsünden kaynaklı bir
+      // sapma) diğer 8'ine göre belirgin farklı çıksa bile ortalamayı çekip
+      // satirIcinDikeyKaymaBul'un kilitlendiği referans mesafeyi
+      // kaydırabiliyordu. MEDYAN, tek bir aykırı aralığa karşı çok daha
+      // dayanıklı.
+      araliklar.sort((a, b) => a - b);
+      const ortAralik = araliklar.length % 2 === 1
+        ? araliklar[(araliklar.length - 1) / 2]
+        : (araliklar[araliklar.length / 2 - 1] + araliklar[araliklar.length / 2]) / 2;
       if (ortAralik > 0) {
         dy = satirIcinDikeyKaymaBul(cImageData, sikler, ortAralik, false, false);
       }
@@ -2464,11 +2497,19 @@ window.OmrOkuyucu = (function () {
    * Sol-orta ve sağ-orta hizalama karelerini arar.
    * 4 köşe bulunmuşsa onlardan interpolasyon yaparak arama penceresi konumlandırır.
    */
-  function _ortaKareleriAra(fotoImageData, form, cerceve) {
+  function _ortaKareleriAra(fotoImageData, form, cerceve, pxPerMmTahmini) {
     const sonuc = { solOrta: null, sagOrta: null };
     if (!cerceve.solUst || !cerceve.solAlt || !cerceve.sagUst || !cerceve.sagAlt) return sonuc;
 
-    const PENCERE = 30; // px (analiz çözünürlüğünde)
+    // KÖK NEDEN SAĞLAMLAŞTIRMASI (Çözüm Planı, Ağustos 2026): PENCERE sabit
+    // 30px'ti — düşük çözünürlüklü bir fotoğrafta bu çok BÜYÜK kalıp yanlış
+    // bir blob'u yakalayabiliyor, yüksek çözünürlüklü (ör. 12MP) bir
+    // fotoğrafta ise çok KÜÇÜK kalıp orta kare bu pencerenin dışına taşarsa
+    // hiç bulunamıyordu. sayfaKoseleriniAraHibrit'teki INCELTME_YARICAP ile
+    // AYNI mantıkla (~16mm karşılığı), çağıranın ilettiği kaba px/mm
+    // tahminine göre hesaplanıyor.
+    const oranli = pxPerMmTahmini && pxPerMmTahmini > 0 ? pxPerMmTahmini : 4;
+    const PENCERE = Math.max(20, 16 * oranli); // px (analiz çözünürlüğünde)
 
     // Sol orta: solUst ile solAlt arasının ortası
     const solOrtaX = (cerceve.solUst.x + cerceve.solAlt.x) / 2;
@@ -2544,8 +2585,18 @@ window.OmrOkuyucu = (function () {
   function formuOtomatikDuzlestir(fotoImageData, form, ppmm) {
     const bulunanlar = sayfaKoseleriniAraHibrit(fotoImageData, undefined, form);
 
+    // KÖK NEDEN SAĞLAMLAŞTIRMASI (Çözüm Planı, Ağustos 2026): sayfaKoseleriniAraHibrit
+    // içindeki INCELTME_YARICAP zaten fotoğraf çözünürlüğünden bağımsız
+    // (mm-bazlı) hale getirilmişti, ama _ortaKareleriAra'nın arama penceresi
+    // sabit 30px olarak kalmıştı — aynı kaba px/mm tahminini burada da
+    // (bulunan sol-üst/sağ-üst köşe mesafesinden) çıkarıp ona iletiyoruz.
+    const sayfaGenislikMM = (form && form.bolge && form.bolge.width) || 210;
+    const pxPerMmTahminiOrta = (bulunanlar.solUst && bulunanlar.sagUst)
+      ? Math.hypot(bulunanlar.sagUst.x - bulunanlar.solUst.x, bulunanlar.sagUst.y - bulunanlar.solUst.y) / Math.max(20, sayfaGenislikMM - 8)
+      : ppmm;
+
     // Orta kareleri de ara (varsa — yeni formlarda sol-orta/sag-orta mevcut)
-    const ortaKareler = _ortaKareleriAra(fotoImageData, form, bulunanlar);
+    const ortaKareler = _ortaKareleriAra(fotoImageData, form, bulunanlar, pxPerMmTahminiOrta);
 
     const konumEslesme = {
       'sol-ust': bulunanlar.solUst,
@@ -2576,14 +2627,33 @@ window.OmrOkuyucu = (function () {
     const dortKoseDeBulundu = hassasKaynak.length >= 4;
     const ucKoseBulundu = hassasKaynak.length === 3;
 
-    // Foto ölçeği (piksel/mm): sol-ust/sag-ust arası bulunan mesafeden
-    // kestiriliyor — kabaH olmadığı için bu, tutarlılık artıklarını mm'ye
-    // çevirmek için gereken tek referans.
+    // Foto ölçeği (piksel/mm): bulunan işaretler arası mesafeden kestiriliyor
+    // — kabaH olmadığı için bu, tutarlılık artıklarını mm'ye çevirmek için
+    // gereken tek referans.
+    // KÖK NEDEN SAĞLAMLAŞTIRMASI (Çözüm Planı, Ağustos 2026): önceden ölçek
+    // SADECE bulunan ilk İKİ işaretin (hassasKaynak[0]/[1]) arasındaki
+    // mesafeden kestiriliyordu. Bu ikisi hangi konumlarda bulunduysa (ör.
+    // sadece sol-üst + sol-alt gibi kısa/dar bir taban) o çiftin piksel
+    // gürültüsü DOĞRUDAN ölçeğe yansıyordu — 3, 4 hatta 6 işaret bulunmuş
+    // olsa bile geri kalanlar hiç kullanılmıyordu. Artık bulunan TÜM işaret
+    // çiftleri (2+ işaret varsa) kullanılıyor: her çiftin piksel ve mm
+    // mesafesi toplanıp oranı alınıyor — bu, uzun taban çiftlerine doğal
+    // olarak daha fazla ağırlık verir (kısa/gürültülü çiftler payı azdır),
+    // basit ortalamadan daha kararlıdır.
     let pikselPerMM = ppmm; // güvenli varsayılan (bulunamazsa)
     if (hassasKaynak.length >= 2) {
-      const kaynakMesafeMM = Math.hypot(hassasKaynak[1].x - hassasKaynak[0].x, hassasKaynak[1].y - hassasKaynak[0].y) / ppmm;
-      const hedefMesafePx = Math.hypot(hassasHedef[1].x - hassasHedef[0].x, hassasHedef[1].y - hassasHedef[0].y);
-      if (kaynakMesafeMM > 1) pikselPerMM = hedefMesafePx / kaynakMesafeMM;
+      let toplamKaynakMM = 0;
+      let toplamHedefPx = 0;
+      for (let i = 0; i < hassasKaynak.length; i++) {
+        for (let j = i + 1; j < hassasKaynak.length; j++) {
+          const kaynakMesafeMM = Math.hypot(hassasKaynak[j].x - hassasKaynak[i].x, hassasKaynak[j].y - hassasKaynak[i].y) / ppmm;
+          if (kaynakMesafeMM <= 1) continue; // çok yakın çiftler gürültüye açık, atla
+          const hedefMesafePx = Math.hypot(hassasHedef[j].x - hassasHedef[i].x, hassasHedef[j].y - hassasHedef[i].y);
+          toplamKaynakMM += kaynakMesafeMM;
+          toplamHedefPx += hedefMesafePx;
+        }
+      }
+      if (toplamKaynakMM > 0) pikselPerMM = toplamHedefPx / toplamKaynakMM;
     }
 
     const disariBirakilanIsaretler = [];
@@ -2719,7 +2789,7 @@ window.OmrOkuyucu = (function () {
     // Gerçek ölçek: köşelerden hesaplanan pikselPerMM'yi kullan.
     // Böylece A4 formu A5'e küçültülmüş baskıda da, büyütülmüş baskıda da
     // koordinatlar otomatik doğru ölçeklenir — sabit VARSAYILAN_PPMM değil.
-    const gercekPpmm = (pikselPerMM && pikselPerMM > 0) ? pikselPerMM : ppmm;
+    let gercekPpmm = (pikselPerMM && pikselPerMM > 0) ? pikselPerMM : ppmm;
 
     if (!H) {
       return {
@@ -2770,7 +2840,14 @@ window.OmrOkuyucu = (function () {
       );
     }
 
-    const { canvas: duzCanvas, imageData: cImageData } = duzCanvasUret(fotoImageData, H, form, gercekPpmm);
+    const { canvas: duzCanvas, imageData: cImageData, ppmmKullanilan } = duzCanvasUret(fotoImageData, H, form, gercekPpmm);
+    if (ppmmKullanilan !== gercekPpmm) {
+      // Performans sınırı devreye girdi (tuval küçültüldü) — sonraki TÜM
+      // piksel<->mm dönüşümlerinin (numaraOku, cevaplariCikar, ...) tuvalle
+      // tutarlı kalması için gercekPpmm'i de aynı değere eşitliyoruz.
+      uyarilar.push('Fotoğraf çözünürlüğü performans için sınırlandı (≈' + gercekPpmm.toFixed(1) + ' → ' + ppmmKullanilan.toFixed(1) + ' px/mm).');
+      gercekPpmm = ppmmKullanilan;
+    }
 
     kontrastNormalizeEt(cImageData);
     duzCanvas.getContext('2d').putImageData(cImageData, 0, 0);
@@ -2905,7 +2982,13 @@ window.OmrOkuyucu = (function () {
 
     const H = homografiElleKoselerdenHesapla(form, koseler, gercekPpmm);
 
-    const { canvas: duzCanvas, imageData: cImageData } = duzCanvasUret(fotoImageData, H, form, gercekPpmm);
+    const { canvas: duzCanvas, imageData: cImageData, ppmmKullanilan } = duzCanvasUret(fotoImageData, H, form, gercekPpmm);
+    if (ppmmKullanilan !== gercekPpmm) {
+      // bkz. otomatik köşe yolundaki aynı not — tuval sınırlandıysa
+      // sonraki piksel<->mm dönüşümleri de aynı değerle tutarlı olsun.
+      uyarilar.push('Fotoğraf çözünürlüğü performans için sınırlandı (≈' + gercekPpmm.toFixed(1) + ' → ' + ppmmKullanilan.toFixed(1) + ' px/mm).');
+      gercekPpmm = ppmmKullanilan;
+    }
     if (_sonHTestSonucu) {
       uyarilar.push('H köşe testi: ' + _sonHTestSonucu);
     }
