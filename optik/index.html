@@ -8,13 +8,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/optik.css">
 <!-- jsQR kaldırıldı (Ağustos 2026): QR kod okuma terk edildi, hizalama işaretleri doğrudan bulunuyor -->
-<!-- OpenCV.js (WASM) — sayfaTespitCV.js'in kullandığı global `cv` nesnesini
-     yükler. BU DOSYA ARŞİVE DAHİL DEĞİL (~8MB) — js/opencv.js yoluna SİZİN
-     eklemeniz gerekiyor (bkz. https://docs.opencv.org/4.x/d5/d10/tutorial_js_root.html
-     "opencv.js" WASM build). Diğer <script> etiketleriyle aynı sırada,
-     camera.js'ten (dinamik import ile app.js üzerinden yükleniyor) önce
-     bulunması yeterli — cvHazirBekle() zaten hazır olana kadar bekliyor. -->
-<script src="js/opencv.js"></script>
+<!-- OpenCV.js (10.9MB WASM) Ağustos 2026'da TAMAMEN KALDIRILDI — Sedat'ın
+     "çok yavaş, neredeyse hiç okumuyor" şikayeti üzerine: kullanılan ~12
+     görüntü işleme fonksiyonu (Canny, findContours, threshold, dilate/
+     erode, adaptiveThreshold, vb.) js/cvSaf.js'te saf JavaScript olarak
+     yeniden yazıldı. Artık WASM indirme/derleme beklemesi YOK, sayfa
+     anında kullanılabilir hale geliyor.
+     js/sayfaTespitCV.js (cvSaf.js'i sarmalayan, window.SayfaTespitCV ve
+     window.CvSaf'ı dışa açan modül) burada erken ve garantili yükleniyor
+     — omrEngine.js (klasik <script>, aşağıda) çalışma zamanında
+     window.CvSaf'a ihtiyaç duyduğunda (adaptifEsikle) hazır olsun diye. -->
+<script type="module">
+    import './js/sayfaTespitCV.js';
+</script>
 <script src="js/layoutEngine.js"></script>
 <script src="js/optikSablonMotoru.js"></script>
 <script src="js/optikSablonEditor.js"></script>
