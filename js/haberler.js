@@ -213,13 +213,34 @@ function haberKategoriTercihleriOku(){
   }catch(e){ return null; }
 }
 
+function _haberBildirimSaatOku(){
+  try{
+    const ham = localStorage.getItem('haberBildirimSaatAraligi');
+    return ham ? JSON.parse(ham) : { baslangic: '07:00', bitis: '20:00' };
+  }catch(e){ return { baslangic: '07:00', bitis: '20:00' }; }
+}
+
 function renderKategoriTercihleri(){
   const hedef = document.getElementById('haberKategoriTercihleriKutu');
   if(!hedef) return;
   const kategoriler = haberKategoriListesiHesapla();
   const secili = haberKategoriTercihleriOku();
   const hepsiSecili = !secili; // tercih yoksa hepsi işaretli görünsün
-  hedef.innerHTML = kategoriler.map(k=>`
+  const saatAralik = _haberBildirimSaatOku();
+  hedef.innerHTML = `
+    <div style="margin-bottom:14px;padding:12px;border-radius:10px;background:var(--nm-bg);border:1px solid var(--border);">
+      <div style="font-weight:700;font-size:13px;margin-bottom:8px;">🕐 Bildirim Saatleri</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <label style="font-size:12.5px;color:var(--ink-muted);">Başlangıç</label>
+        <input type="time" id="hbSaatBaslangic" value="${escapeHtml(saatAralik.baslangic)}"
+               style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--ink);">
+        <label style="font-size:12.5px;color:var(--ink-muted);">Bitiş</label>
+        <input type="time" id="hbSaatBitis" value="${escapeHtml(saatAralik.bitis)}"
+               style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--ink);">
+      </div>
+      <div style="font-size:11.5px;color:var(--ink-muted);margin-top:6px;">Bu saat aralığı dışında RSS bildirimleri gönderilmez.</div>
+    </div>
+  ` + kategoriler.map(k=>`
     <label class="ogr-cb-row">
       <input type="checkbox" class="hb-kategori-cb" value="${escapeHtml(k)}" ${hepsiSecili || (secili && secili.includes(k)) ? 'checked' : ''}>
       <span>${escapeHtml(k)}</span>
@@ -230,14 +251,33 @@ function renderKategoriTercihleri(){
 async function haberKategoriTercihleriKaydet(){
   const secili = [...document.querySelectorAll('#tab-haberler .hb-kategori-cb:checked')].map(cb=>cb.value);
   localStorage.setItem('haberKategoriTercihleri', JSON.stringify(secili));
-  const token = typeof cihazTokenGetir === 'function' ? cihazTokenGetir() : null;
-  if(token && db){
-    try{
-      await HaberlerService.cihazKategoriTercihiKaydet(token, secili);
-      toast('Bildirim tercihleri kaydedildi.');
-    }catch(e){ toast('Hata: ' + e.message); }
+
+  // Saat aralığını kaydet
+  const baslangicEl = document.getElementById('hbSaatBaslangic');
+  const bitisEl = document.getElementById('hbSaatBitis');
+  if(baslangicEl && bitisEl){
+    const saatAralik = { baslangic: baslangicEl.value || '07:00', bitis: bitisEl.value || '20:00' };
+    localStorage.setItem('haberBildirimSaatAraligi', JSON.stringify(saatAralik));
+    // Firestore'a da yaz (cihaz bazında)
+    const token = typeof cihazTokenGetir === 'function' ? cihazTokenGetir() : null;
+    if(token && db){
+      try{
+        await HaberlerService.cihazKategoriTercihiKaydet(token, secili, saatAralik);
+        toast('Bildirim tercihleri kaydedildi.');
+      }catch(e){ toast('Hata: ' + e.message); }
+    } else {
+      toast('Tercih cihazda kaydedildi. Bildirimleri açtığınızda otomatik senkronize edilecek.');
+    }
   } else {
-    toast('Tercih cihazda kaydedildi. Bildirimleri açtığınızda otomatik senkronize edilecek.');
+    const token = typeof cihazTokenGetir === 'function' ? cihazTokenGetir() : null;
+    if(token && db){
+      try{
+        await HaberlerService.cihazKategoriTercihiKaydet(token, secili);
+        toast('Bildirim tercihleri kaydedildi.');
+      }catch(e){ toast('Hata: ' + e.message); }
+    } else {
+      toast('Tercih cihazda kaydedildi. Bildirimleri açtığınızda otomatik senkronize edilecek.');
+    }
   }
 }
 

@@ -360,6 +360,8 @@ function _htMaddeyeGit(index, maddeler){
 
 async function hatirlatmalariKontrolEtVeGoster(){
   if(_hatirlatmaGosterildi || _htErtelemeAktifMi()) return;
+  // Okul tatildeyse hatırlatıcı penceresi gösterilmez
+  if(typeof dersSaatleriAyarlari !== 'undefined' && dersSaatleriAyarlari && dersSaatleriAyarlari.tatilModu) return;
   let maddeler;
   try{ maddeler = await hatirlatmalariTopla(); }
   catch(e){ console.warn('Hatırlatmalar toplanamadı:', e); return; }

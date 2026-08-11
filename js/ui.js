@@ -24,7 +24,69 @@ function temaUygula(tema){
 }
 function temaDegistir(){
   const guncelTema = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  // Manuel değişiklik: otomatik modun o oturum için override edildiğini işaretle
+  sessionStorage.setItem('temaManuelOverride', '1');
   temaUygula(guncelTema);
+}
+
+/* -------- OTOMATİK TEMA: güneş doğuşu/batışına göre --------
+   Konum localStorage'da saklanır (her açılışta izin istemez).
+   Konum izni yoksa fallback: 20:00 koyu → 07:00 açık.
+   Manuel toggle oturumu boyunca override eder (sessionStorage). */
+
+function _gunesTemaHesapla(enlem, boylam){
+  // Solar noon, sunrise, sunset — Duffett-Smith algoritması (basitleştirilmiş)
+  const simdi = new Date();
+  const gununSaniyesi = (simdi.getUTCHours() * 3600 + simdi.getUTCMinutes() * 60 + simdi.getUTCSeconds());
+  const gunYili = Math.floor((simdi - new Date(simdi.getFullYear(), 0, 0)) / 86400000);
+  const B = (360 / 365) * (gunYili - 81) * Math.PI / 180;
+  const EoT = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B); // dakika
+  const offsetDk = boylam * 4 + EoT; // dakika
+  const LSTM = Math.round(boylam / 15) * 15;
+  const enlamRad = enlem * Math.PI / 180;
+  const deklinasyon = -23.45 * Math.cos((360 / 365) * (gunYili + 10) * Math.PI / 180) * Math.PI / 180;
+  const saatAcisi = Math.acos(-Math.tan(enlamRad) * Math.tan(deklinasyon)) * 180 / Math.PI;
+  const gununUzunlugu = 2 * saatAcisi / 15 * 60; // dakika
+  const ogleVakti = 720 - offsetDk; // lokal dakika (0:00'dan)
+  const dogus = ogleVakti - gununUzunlugu / 2;
+  const batis = ogleVakti + gununUzunlugu / 2;
+  const simdiDk = simdi.getHours() * 60 + simdi.getMinutes();
+  return (simdiDk >= dogus && simdiDk < batis) ? 'light' : 'dark';
+}
+
+function _otomatikTemayiUygula(){
+  if(sessionStorage.getItem('temaManuelOverride')) return; // manual override aktif
+  const konumHam = localStorage.getItem('oyKonum');
+  if(konumHam){
+    try{
+      const { lat, lon } = JSON.parse(konumHam);
+      temaUygula(_gunesTemaHesapla(lat, lon));
+      return;
+    }catch(e){}
+  }
+  // Fallback: 20:00 koyu → 07:00 açık
+  const saat = new Date().getHours();
+  temaUygula((saat >= 20 || saat < 7) ? 'dark' : 'light');
+}
+
+let _otomatikTemaInterval = null;
+
+function otomatikTemaBaslat(){
+  // Eğer kullanıcı daha önce manuel ayar yapmışsa onu koru
+  const kayitli = localStorage.getItem('oyTema');
+  if(kayitli){ temaUygula(kayitli); } else { _otomatikTemayiUygula(); }
+
+  // Konum al (önce cache, yoksa geolocation)
+  if(!localStorage.getItem('oyKonum') && navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos => {
+      localStorage.setItem('oyKonum', JSON.stringify({ lat: pos.coords.latitude, lon: pos.coords.longitude }));
+      _otomatikTemayiUygula();
+    }, () => { /* izin verilmedi — fallback devam eder */ }, { timeout: 5000 });
+  }
+
+  // Her dakika kontrol et
+  clearInterval(_otomatikTemaInterval);
+  _otomatikTemaInterval = setInterval(_otomatikTemayiUygula, 60000);
 }
 
 /* ---------- YENİ: Tema paketi (vurgu rengi) seçimi ----------
@@ -108,7 +170,7 @@ function uygulamadanCik(){
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  temaUygula(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  otomatikTemaBaslat();
   renkPaketiBaslat();
   gorunumBaslat();
 
