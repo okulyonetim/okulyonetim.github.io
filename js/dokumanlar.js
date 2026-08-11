@@ -145,7 +145,17 @@ function dokumanAc(id) {
   if (!d) return;
   const url = d.hariciUrl || d.dosyaUrl;
   if (!url) { toast('Bu dökümanın dosyası bulunamadı.'); return; }
-  const ad = d.dosyaAdi || d.hariciUrl || '';
+  // dosyaAdi yoksa veya uzantısız ise URL'den türet (Firebase Storage URL'leri
+  // ?token=... içerdiğinden DokumanOkuyucu._uzanti() bunları da sıyırır)
+  let ad = d.dosyaAdi || '';
+  if (!ad || ad.indexOf('.') === -1) {
+    try {
+      const temizUrl = url.split('?')[0].split('#')[0];
+      const parca = decodeURIComponent(temizUrl.split('/').pop() || '');
+      if (parca && parca.indexOf('.') !== -1) ad = parca;
+    } catch (e) {}
+  }
+  if (!ad) ad = d.hariciUrl || url;
   if (typeof window.DokumanOkuyucu !== 'undefined' && window.DokumanOkuyucu.destekliMi(ad)) {
     window.DokumanOkuyucu.ac(url, ad);
   } else {

@@ -24,7 +24,18 @@
   const DESTEKLENEN_UZANTILAR = ['pdf', 'xlsx', 'xls', 'docx'];
 
   function _uzanti(ad) {
-    return (ad || '').split('.').pop().toLowerCase();
+    if (!ad) return '';
+    // URL ise: query parametrelerini (?token=...) ve fragment'ı at,
+    // sonra path'in son parçasını al, encode edilmişse decode et
+    try {
+      const temiz = ad.split('?')[0].split('#')[0];
+      const parcalar = temiz.split('/');
+      const dosyaAdi = decodeURIComponent(parcalar[parcalar.length - 1] || '');
+      const uzanti = dosyaAdi.split('.').pop();
+      return (uzanti && uzanti.length <= 5) ? uzanti.toLowerCase() : '';
+    } catch (e) {
+      return (ad || '').split('.').pop().toLowerCase();
+    }
   }
 
   /* Görüntülenen dosyayı doğrudan cihaza indirir. url uzak (Firebase
