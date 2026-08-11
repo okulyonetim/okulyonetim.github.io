@@ -2036,9 +2036,55 @@ window.OmrOkuyucu = (function () {
   }
 
   function cevaplariCikar(cImageData, form, ppmm, genelDuzeltme) {
-    const KARANLIK_ESIK = _koyulukEsikGetir(); // her okumada canlı okunur (Ayarlar sheet)
+    const _sabitEsik = _koyulukEsikGetir(); // Ayarlar sheet'inden gelen kullanıcı tercihi
     const AYIRT_EDICI_FARK = _ayirtEdiciFarkGetir(); // her okumada canlı okunur (Ayarlar sheet)
     const sorular = tumSorulariTopla(form);
+
+    // ── ADAPTİF EŞİK ──────────────────────────────────────────────────────
+    // Sorun: küçük baskıda (ör. A4'e 2 form) baloncuklar küçülür, mürekkep
+    // yoğunluğu piksel başına düşer → tüm koyuluk değerleri sabit eşiğin
+    // altında kalır → gerçekte işaretli balonlar BOS okunur.
+    //
+    // Çözüm: ön geçişte her sorunun EN KOYU şığını hızlıca örnekle.
+    // Bu değerlerin medyanı o kağıdın "tipik işaretli balon" sinyalini
+    // yansıtır. Adaptif eşik = medyan × 0.70 — işaretlilerin alt %30'unu
+    // BOS saymak yerine, işaretsizlerden ayırt etmek için kullanılır.
+    //
+    // Güvenlik: adaptif eşik asla kullanıcının sabit eşiğinin ÜSTÜNE
+    // çıkmaz (sabit eşik bir üst sınır gibi davranır), asla 0.20'nin
+    // altına düşmez (tamamen beyaz kağıtta gürültüyü bastır).
+    // Sonuç: hem normal hem küçük baskıda doğru çalışır.
+    let KARANLIK_ESIK = _sabitEsik; // varsayılan — ön geçiş başarısız olursa bu kullanılır
+    try {
+      const onGecisOranlar = [];
+      for (const soru of sorular) {
+        const beklenenSikler = soru.sikler.map((s) => {
+          const yerel = yerelNokta(form, s.cx, s.cy);
+          const ham = { x: yerel.x * ppmm, y: yerel.y * ppmm };
+          const { x: px, y: py } = yerelDuzeltmeUygula(genelDuzeltme, ham.x, ham.y);
+          return { px, py, pr: s.r * ppmm };
+        });
+        // Sadece en koyu şıkkı örnekle — hız için aramaOrani dar (0.3)
+        let enKoyuOran = 0;
+        for (const s of beklenenSikler) {
+          const o = baloncukKaranlikOraniYerelArama(cImageData, s.px, s.py, s.pr, 0.3, 0.0, 0.0).oran;
+          if (o > enKoyuOran) enKoyuOran = o;
+        }
+        onGecisOranlar.push(enKoyuOran);
+      }
+      // Medyan: sıralı dizinin ortası — aykırı değerlerden etkilenmez
+      onGecisOranlar.sort((a, b) => a - b);
+      const medyan = onGecisOranlar.length % 2 === 1
+        ? onGecisOranlar[(onGecisOranlar.length - 1) / 2]
+        : (onGecisOranlar[onGecisOranlar.length / 2 - 1] + onGecisOranlar[onGecisOranlar.length / 2]) / 2;
+      const adaptifEsik = medyan * 0.70;
+      // Adaptif eşik: [0.20, _sabitEsik] aralığında tut
+      KARANLIK_ESIK = Math.max(0.20, Math.min(_sabitEsik, adaptifEsik));
+    } catch (e) {
+      // Ön geçiş hata verirse sabit eşiğe dön — asıl okuma etkilenmesin
+      KARANLIK_ESIK = _sabitEsik;
+    }
+    // ──────────────────────────────────────────────────────────────────────
     const cevaplar = [];
     const ornekNoktalari = []; // debug/görselleştirme: her şıkkın tam örnekleme noktası
     _cevapTeshisSatirlari = []; // YENİ (teşhis): her çağrıda sıfırlanır
@@ -2233,7 +2279,9 @@ window.OmrOkuyucu = (function () {
     const enYuksekOran = Math.max(...tumOranlar);
     const ortalamaOran = tumOranlar.reduce((a, b) => a + b, 0) / (tumOranlar.length || 1);
     _sonKoyulukOzeti = 'guven aralığı: min=' + enDusukOran.toFixed(3) + ' maks=' + enYuksekOran.toFixed(3) +
-      ' ort=' + ortalamaOran.toFixed(3) + ' (eşik=' + KARANLIK_ESIK.toFixed(2) + ')';
+      ' ort=' + ortalamaOran.toFixed(3) +
+      ' (eşik=' + KARANLIK_ESIK.toFixed(2) +
+      (KARANLIK_ESIK < _sabitEsik ? ' [adaptif, sabit=' + _sabitEsik.toFixed(2) + ']' : '') + ')';
 
     return { cevaplar, ornekNoktalari };
   }
@@ -2263,7 +2311,21 @@ window.OmrOkuyucu = (function () {
    * tutuluyor.
    */
   function baloncukGrubundanEnKoyuyuSec(cImageData, bubbles, ppmm, etiket) {
-    const KARANLIK_ESIK = _koyulukEsikGetir(); // her okumada canlı okunur (Ayarlar sheet)
+    // Adaptif eşik — cevaplariCikar ile aynı mantık:
+    // numara/kitapçık balonları da küçük baskıda düşük koyuluk verir.
+    const _sabitEsikGrup = _koyulukEsikGetir();
+    let KARANLIK_ESIK = _sabitEsikGrup;
+    try {
+      const onGecis = bubbles.map((b) => {
+        const s = baloncukKaranlikOraniYerelArama(cImageData, b.cx * ppmm, b.cy * ppmm, b.r * ppmm, 0.3, 0.0, 0.0);
+        return s.oran;
+      });
+      onGecis.sort((a, b) => a - b);
+      const med = onGecis.length % 2 === 1
+        ? onGecis[(onGecis.length - 1) / 2]
+        : (onGecis[onGecis.length / 2 - 1] + onGecis[onGecis.length / 2]) / 2;
+      KARANLIK_ESIK = Math.max(0.20, Math.min(_sabitEsikGrup, med * 0.70));
+    } catch (e) { KARANLIK_ESIK = _sabitEsikGrup; }
     const sikler = bubbles.map((b) => ({ px: b.cx * ppmm, py: b.cy * ppmm, pr: b.r * ppmm }));
 
     // YEREL DİKEY KAYMA KİLİDİ (bkz. satirIcinDikeyKaymaBul'un başındaki
