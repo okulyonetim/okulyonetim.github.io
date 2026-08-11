@@ -330,9 +330,15 @@ async function _canliOtomatikOku() {
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // CV'nin analiz çözünürlüğünde (480px) bulduğu köşeleri
-        // gerçek video çözünürlüğüne ölçekle.
-        const cvKoseler = _sonBulunanCerceveKoseleri;
+        // Okuma anında EMA (yumuşatılmış) köşeleri tercih et — ham CV köşeleri
+        // her kare 1-3px oynayabilir; EMA bunların ağırlıklı ortalaması olduğu
+        // için daha kararlı homografi → daha doğru sütun/satır hizalaması.
+        // EMA yoksa (henüz birikmemişse) ham köşeye düş.
+        const cvKoseler = (_gosterilenKoseler &&
+            _gosterilenKoseler.solUst && _gosterilenKoseler.sagUst &&
+            _gosterilenKoseler.solAlt && _gosterilenKoseler.sagAlt)
+            ? _gosterilenKoseler
+            : _sonBulunanCerceveKoseleri;
         let sonuc;
         if (cvKoseler && cvKoseler.solUst && cvKoseler.sagUst && cvKoseler.solAlt && cvKoseler.sagAlt) {
             const ol = video.videoWidth / KOSE_TESPIT_ANALIZ_GENISLIK;
