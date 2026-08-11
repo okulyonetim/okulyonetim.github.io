@@ -18,8 +18,13 @@ const PushRepository = {
   cihazKaydet(token, veri){
     return db.collection(COL.cihazlar).doc(encodeURIComponent(token)).set(veri);
   },
-  /* Bildirim kategori tercihini mevcut belgeyle birleştirerek günceller. */
-  kategorileriGuncelle(token, kategoriler){
-    return db.collection(COL.cihazlar).doc(encodeURIComponent(token)).set({ kategoriler }, { merge: true });
+  /* Bildirim kategori tercihini ve saat aralığını mevcut belgeyle birleştirerek günceller. */
+  kategorileriGuncelle(token, kategoriler, saatAralik){
+    const veri = { kategoriler };
+    if(saatAralik && saatAralik.baslangic && saatAralik.bitis){
+      veri.bildirimSaatBaslangic = saatAralik.baslangic;
+      veri.bildirimSaatBitis = saatAralik.bitis;
+    }
+    return db.collection(COL.cihazlar).doc(encodeURIComponent(token)).set(veri, { merge: true });
   }
 };
