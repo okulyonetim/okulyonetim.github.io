@@ -185,38 +185,48 @@ export function adaptiveThresholdGaussian(gri, blockSize, C, tersine = true) {
 // ─────────────────────────────────────────────────────────────────────────
 
 /**
- * Kare yapısal eleman ile genişletme (dilate). AYRILABİLİR (separable)
- * implementasyon: kare kernel'in dilate'i, önce X ekseninde sonra Y
- * ekseninde 1-boyutlu dilate'e eşdeğerdir — O(w*h*k²) yerine O(w*h*k).
- * Binary (0/255) görüntüde en yaygın kullanım.
+ * Kare yapısal eleman ile genişletme (dilate). AYRILABİLİR + KAYAN PENCERE
+ * SAYAÇLI implementasyon: her piksel için kernel'i baştan taramak yerine,
+ * pencere kaydıkça sadece giren/çıkan pikselin etkisini sayaca ekle/çıkar
+ * — O(w*h*k) yerine O(w*h) (kernel boyutundan bağımsız amortized sabit
+ * zaman). Kare kernel'in dilate'i, X ekseninde sonra Y ekseninde 1-boyutlu
+ * dilate'e eşdeğerdir.
  */
 export function dilate(bin, kernelBoyutu = 3, tekrar = 1) {
   let { width, height, data } = bin;
   const yari = Math.floor(kernelBoyutu / 2);
   for (let t = 0; t < tekrar; t++) {
-    // 1) Yatay geçiş: her satırda kayan pencere maksimumu
+    // 1) Yatay geçiş: kayan pencere sayacı (pencerede kaç tane 255 var)
     const yatay = new Uint8Array(width * height);
     for (let y = 0; y < height; y++) {
       const ofs = y * width;
+      let sayac = 0;
+      // İlk pencereyi kur: [0, yari]
+      for (let sx = 0; sx <= Math.min(yari, width - 1); sx++) {
+        if (data[ofs + sx] > 0) sayac++;
+      }
       for (let x = 0; x < width; x++) {
-        let maks = 0;
-        const x0 = Math.max(0, x - yari), x1 = Math.min(width - 1, x + yari);
-        for (let sx = x0; sx <= x1; sx++) {
-          if (data[ofs + sx] > 0) { maks = 255; break; }
-        }
-        yatay[ofs + x] = maks;
+        yatay[ofs + x] = sayac > 0 ? 255 : 0;
+        // Pencereyi bir sağa kaydır: sağdan gireni ekle, soldan çıkanı çıkar
+        const girenX = x + yari + 1;
+        const cikanX = x - yari;
+        if (girenX < width && data[ofs + girenX] > 0) sayac++;
+        if (cikanX >= 0 && data[ofs + cikanX] > 0) sayac--;
       }
     }
-    // 2) Dikey geçiş: yatay sonucun sütunlarında kayan pencere maksimumu
+    // 2) Dikey geçiş: aynı kayan pencere sayacı, sütun bazında
     const cikti = new Uint8Array(width * height);
     for (let x = 0; x < width; x++) {
+      let sayac = 0;
+      for (let sy = 0; sy <= Math.min(yari, height - 1); sy++) {
+        if (yatay[sy * width + x] > 0) sayac++;
+      }
       for (let y = 0; y < height; y++) {
-        let maks = 0;
-        const y0 = Math.max(0, y - yari), y1 = Math.min(height - 1, y + yari);
-        for (let sy = y0; sy <= y1; sy++) {
-          if (yatay[sy * width + x] > 0) { maks = 255; break; }
-        }
-        cikti[y * width + x] = maks;
+        cikti[y * width + x] = sayac > 0 ? 255 : 0;
+        const girenY = y + yari + 1;
+        const cikanY = y - yari;
+        if (girenY < height && yatay[girenY * width + x] > 0) sayac++;
+        if (cikanY >= 0 && yatay[cikanY * width + x] > 0) sayac--;
       }
     }
     data = cikti;
@@ -224,7 +234,12 @@ export function dilate(bin, kernelBoyutu = 3, tekrar = 1) {
   return { width, height, data };
 }
 
-/** Aşındırma (erode) — dilate'in tersi (minimum alma), aynı ayrılabilir yaklaşım. */
+/**
+ * Aşındırma (erode) — dilate'in tersi (pencerede TÜMÜ 255 mi), aynı kayan
+ * pencere sayacı tekniği. Kenara yakın pikseller (kernel görüntü dışına
+ * taşarsa) BORDER_CONSTANT=0 varsayımıyla otomatik 0 olur (dışarısı 0
+ * sayılır, dolayısıyla "hepsi 255" koşulu kenar boyunca sağlanamaz).
+ */
 export function erode(bin, kernelBoyutu = 3, tekrar = 1) {
   let { width, height, data } = bin;
   const yari = Math.floor(kernelBoyutu / 2);
@@ -232,28 +247,32 @@ export function erode(bin, kernelBoyutu = 3, tekrar = 1) {
     const yatay = new Uint8Array(width * height);
     for (let y = 0; y < height; y++) {
       const ofs = y * width;
+      let sifirSayisi = 0; // pencerede kaç tane 0 (veya sınır dışı) var
+      for (let sx = -yari; sx <= yari; sx++) {
+        if (sx < 0 || sx >= width || data[ofs + sx] === 0) sifirSayisi++;
+      }
       for (let x = 0; x < width; x++) {
-        let min = 255;
-        const x0 = Math.max(0, x - yari), x1 = Math.min(width - 1, x + yari);
-        // Kenara yakın piksellerde kernel görüntü dışına taşarsa (border
-        // constant=0 varsayımıyla) min otomatik 0 olur.
-        if (x - yari < 0 || x + yari >= width) { yatay[ofs + x] = 0; continue; }
-        for (let sx = x0; sx <= x1; sx++) {
-          if (data[ofs + sx] === 0) { min = 0; break; }
-        }
-        yatay[ofs + x] = min;
+        yatay[ofs + x] = sifirSayisi === 0 ? 255 : 0;
+        const girenX = x + yari + 1;
+        const cikanX = x - yari;
+        // giren piksel: sınır dışıysa veya 0 ise sıfır sayısını artır
+        if (girenX >= width || data[ofs + girenX] === 0) sifirSayisi++;
+        // çıkan piksel: sınır dışıysa veya 0 idiyse sıfır sayısını azalt
+        if (cikanX < 0 || data[ofs + cikanX] === 0) sifirSayisi--;
       }
     }
     const cikti = new Uint8Array(width * height);
     for (let x = 0; x < width; x++) {
+      let sifirSayisi = 0;
+      for (let sy = -yari; sy <= yari; sy++) {
+        if (sy < 0 || sy >= height || yatay[sy * width + x] === 0) sifirSayisi++;
+      }
       for (let y = 0; y < height; y++) {
-        let min = 255;
-        if (y - yari < 0 || y + yari >= height) { cikti[y * width + x] = 0; continue; }
-        const y0 = y - yari, y1 = y + yari;
-        for (let sy = y0; sy <= y1; sy++) {
-          if (yatay[sy * width + x] === 0) { min = 0; break; }
-        }
-        cikti[y * width + x] = min;
+        cikti[y * width + x] = sifirSayisi === 0 ? 255 : 0;
+        const girenY = y + yari + 1;
+        const cikanY = y - yari;
+        if (girenY >= height || yatay[girenY * width + x] === 0) sifirSayisi++;
+        if (cikanY < 0 || yatay[cikanY * width + x] === 0) sifirSayisi--;
       }
     }
     data = cikti;

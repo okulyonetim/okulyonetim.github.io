@@ -39,7 +39,26 @@ const _koseTespitAnalizCanvas = document.createElement("canvas");
 let _koseTespitTimer = null;
 let _koseTespitCalisiyor = false; // örtüşen (üst üste binen) çalıştırmaları engelle
 
-const KOSE_TESPIT_ANALIZ_GENISLIK = 1280; // GÜNCELLEME (Ağustos 2026): 480'de köşe konturunun uç noktaları 1px oynadığında gerçek video çözünürlüğüne (ol ≈ 6-8x) büyütülünce 6-8px hataya, sağ kenarda birikerek 20-25px hataya dönüşüyordu — baloncuk yarıçapı mertebesinde olup 1 şık kaymaya yol açabiliyordu. 1280'e çıkarmak ölçek katsayısını (~2-3x) düşürerek aynı 1px belirsizliğin gerçek görüntüdeki karşılığını 2-3px'e indiriyor. Canlı modda 350ms'de bir çalıştığı için ek maliyet tolere edilebilir.
+const KOSE_TESPIT_ANALIZ_GENISLIK = 640; // AĞUSTOS 2026 GÜNCELLEME: OpenCV.js (WASM, 10.9MB) tamamen kaldırılıp
+                                          // saf JS motoruna (cvSaf.js) geçildi — 1280'deki eski varsayım
+                                          // ("350ms'de bir çalıştığı için tolere edilebilir") artık geçersizdi,
+                                          // saf JS 1280px'de telefon üzerinde tahminen 500ms-1sn+ sürüyordu (180ms'lik
+                                          // döngü aralığından çok daha uzun) — canlı gösterge donuk kalıyor, 3
+                                          // ardışık stabil tur hiç yakalanamıyor, otomatik okuma tetiklenmiyordu.
+                                          // 640'ta ölçülen süre (sunucu ortamı) ~32ms, telefon üzerinde tahminen
+                                          // 65-160ms — 180ms'lik aralığa rahatça sığıyor.
+                                          // 480'deki eski hassasiyet endişesi (aşağıdaki eski yorum) BU köşelerin
+                                          // doğrudan okumada kullanıldığı bir mimariye aitti — artık capturePhoto'da
+                                          // hesaplanan cvKoseler hiçbir yerde formuOkuVeGoster'a geçirilmiyor (ölü
+                                          // değişken); gerçek OMR okuması omrEngine.js'in KENDİ fiducial/homografi
+                                          // tespitinden geçiyor (bkz. formuOku). Bu köşeler SADECE canlı önizleme
+                                          // göstergesi + "otomatik oku" tetikleme kararı için kullanılıyor, okuma
+                                          // doğruluğunu etkilemiyor — bu yüzden 640 (480'den de temkinli) güvenli.
+                                          // ESKİ NOT (GÜNCELLİĞİNİ YİTİRDİ, OpenCV.js dönemine aitti): "480'de köşe
+                                          // konturunun uç noktaları 1px oynadığında gerçek video çözünürlüğüne
+                                          // (ol ≈ 6-8x) büyütülünce 6-8px hataya, sağ kenarda birikerek 20-25px
+                                          // hataya dönüşüyordu — baloncuk yarıçapı mertebesinde olup 1 şık kaymaya
+                                          // yol açabiliyordu."
 
 // Bir önceki turda CV ile bulunan çerçeve köşeleri — sayfaKoseleriniAraCV'ye
 // TAKİP (tracking) ipucu olarak geçiriliyor; her turda sıfırdan tam kare
@@ -102,7 +121,12 @@ function _koseTespitTemizle() {
 
 function _koseTespitBaslat() {
     _koseTespitDurdur();
-    const aralik = Math.min((ayarlariGetir().tespitAraligiMs) || 350, 180); // max 180ms — canlı geri bildirim
+    const aralik = Math.min((ayarlariGetir().tespitAraligiMs) || 350, 220); // max 220ms — 640px analiz genişliğiyle
+                                                                              // (bkz. KOSE_TESPIT_ANALIZ_GENISLIK notu) telefon üzerinde tahmini
+                                                                              // 65-160ms sürüyor; 220ms üst sınır, yavaş cihazlarda bile bir
+                                                                              // önceki turun bitmesi için yeterli pay bırakıyor (eskiden 180ms'ti
+                                                                              // — OpenCV.js WASM için ayarlanmıştı, saf JS geçişiyle hafifçe
+                                                                              // gevşetildi; asıl hız kazanımı çözünürlük düşüşünden geliyor).
     _koseTespitTimer = setInterval(_koseTespitCalistir, aralik);
 }
 
@@ -473,35 +497,14 @@ export async function capturePhoto() {
         canvas.height
     );
 
-    // Köşe seçim UI'si kaldırıldı — CV'nin son tespit ettiği köşeleri kullan.
-    // Köşe yoksa anlık bir CV taraması dene.
-    let cvKoseler = _sonBulunanCerceveKoseleri;
-
-    if (!cvKoseler || !cvKoseler.solUst) {
-        // Son bilinen köşe yok — anlık tespit dene
-        if (cvHazirMi()) {
-            const aGenislik = KOSE_TESPIT_ANALIZ_GENISLIK;
-            const aYukseklik = Math.round(video.videoHeight * (aGenislik / video.videoWidth));
-            _koseTespitAnalizCanvas.width = aGenislik;
-            _koseTespitAnalizCanvas.height = aYukseklik;
-            const actx = _koseTespitAnalizCanvas.getContext("2d", { willReadFrequently: true });
-            actx.drawImage(canvas, 0, 0, aGenislik, aYukseklik);
-            try {
-                const imageData = actx.getImageData(0, 0, aGenislik, aYukseklik);
-                const ayarlar = ayarlariGetir();
-                const hassasiyet = { yuzdelik: ayarlar.yuzdelik, minDoluluk: ayarlar.minDoluluk };
-                const aktifBolge = window.OptikAktifForm && window.OptikAktifForm.form && window.OptikAktifForm.form.bolge;
-                const beklenenOranlar = oranlariHesapla(aktifBolge && aktifBolge.width, aktifBolge && aktifBolge.height);
-                cvKoseler = sayfaKoseleriniAraCV(imageData, hassasiyet, null, beklenenOranlar);
-            } catch (e) {
-                cvKoseler = null;
-            }
-        }
-    }
-
     // formuOkuVeGoster yolunu kullan — omrEngine kendi fiducial tespitini yapacak.
-    // CV köşesi başarılıysa sayfaTespitCV zaten takip noktasını güncel tutuyor;
-    // OMR motoru içindeki sayfaKoseleriniAraHibrit() de CV'den destek alıyor.
+    // AĞUSTOS 2026: burada eskiden ayrıca bir "anlık CV taraması" (cvKoseler)
+    // hesaplanıyordu ama sonucu formuOkuVeGoster'a hiç geçirilmiyordu — ölü
+    // kod olduğu fark edilip kaldırıldı (her çekimde gereksiz bir tam köşe
+    // taraması, saf-JS motorunda WASM'dan daha maliyetli olduğu için özellikle
+    // gereksizdi). Canlı önizlemedeki takip noktası (_sonBulunanCerceveKoseleri)
+    // sayfaTespitCV içinde zaten güncel tutuluyor; OMR motoru içindeki
+    // sayfaKoseleriniAraHibrit() de ayrıca CV'den destek alıyor.
     return formuOkuVeGoster(canvas);
 }
 
