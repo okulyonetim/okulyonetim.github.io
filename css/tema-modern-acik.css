@@ -100,29 +100,52 @@ html[data-skin="modern"] .btn{
   background: var(--nm-bg-light);
   border: 1px solid var(--border);
   box-shadow: var(--nm-sm);
+  color: var(--ink-soft);
 }
-html[data-skin="modern"] .btn:hover{ background: var(--nm-bg-dark); }
+html[data-skin="modern"] .btn:hover{ background: var(--nm-bg-dark); color: var(--ink-soft); }
 html[data-skin="modern"] .btn:active{ box-shadow: var(--nm-in) !important; }
 
 html[data-skin="modern"] .btn-primary{
   border: none;
   box-shadow: 0 10px 24px -8px rgba(37,99,235,.45);
+  color: #fff;
 }
-html[data-skin="modern"] .btn-primary:hover{ box-shadow: 0 14px 30px -8px rgba(37,99,235,.55); }
+html[data-skin="modern"] .btn-primary:hover{ box-shadow: 0 14px 30px -8px rgba(37,99,235,.55); color: #fff; }
 html[data-skin="modern"] .btn-primary:active{ box-shadow: inset 0 2px 6px rgba(0,0,0,.18) !important; }
 
 html[data-skin="modern"] .btn-amber{
   border: none;
   box-shadow: 0 10px 24px -8px rgba(217,119,6,.35);
+  color: #fff;
 }
-html[data-skin="modern"] .btn-amber:hover{ box-shadow: 0 14px 30px -8px rgba(217,119,6,.45); }
+html[data-skin="modern"] .btn-amber:hover{ box-shadow: 0 14px 30px -8px rgba(217,119,6,.45); color: #fff; }
 
 html[data-skin="modern"] .btn-ghost{
   background: var(--nm-bg-light);
   border: 1px solid var(--border);
   box-shadow: none;
+  color: var(--ink-soft);
 }
-html[data-skin="modern"] .btn-ghost:hover{ background: var(--nm-bg-dark); box-shadow: none; }
+html[data-skin="modern"] .btn-ghost:hover{ background: var(--nm-bg-dark); box-shadow: none; color: var(--ink); }
+
+/* DUZELTME: Koyu mod + Modern Acik kombinasyonunda buton yazilari gorünmuyordu.
+   .btn icin color acikca belirtilmediginde tarayici varsayilani (siyah) devreye
+   giriyordu — koyu arka plan uzerinde siyah yazi = görünmez. */
+[data-theme="dark"][data-skin="modern"] .btn{
+  color: var(--ink-soft);
+}
+[data-theme="dark"][data-skin="modern"] .btn:hover{
+  color: var(--ink);
+}
+[data-theme="dark"][data-skin="modern"] .btn-ghost{
+  color: var(--ink-soft);
+}
+[data-theme="dark"][data-skin="modern"] .btn-ghost:hover{
+  color: var(--ink);
+}
+[data-theme="dark"][data-skin="modern"] .btn-danger{
+  color: var(--red-danger);
+}
 
 /* DÜZELTME: Mesajlaşma/detay panel başlığındaki (.detay-head) renkli
    arka plan üzerinde duran butonlar — yukarıdaki genel .btn-ghost kuralı
