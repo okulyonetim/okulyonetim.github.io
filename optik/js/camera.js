@@ -9,7 +9,12 @@ import { ayarlariGetir } from "./hassasiyetAyarlari.js";
 // hedefleri buluyor (sayfa çerçevesi vs. küçük hizalama kareleri), o
 // yüzden burada değiştirilen SADECE canlı gösterge/otomatik-tetikleme
 // döngüsü — okuma hassasiyeti bu değişiklikten etkilenmez.
-import { sayfaKoseleriniAraCV, cvHazirBekle, cvHazirMi, oranlariHesapla } from "./sayfaTespitCV.js";
+import { sayfaKoseleriniAraCV, cvHazirBekle, oranlariHesapla } from "./sayfaTespitCV.js";
+// AĞUSTOS 2026 — sabit-kutucuk (ZipGrade tarzı) hizalama tespiti için:
+// kutucukDoluMu bağımsız, hafif bir istatistik yardımcısı (kontur arama
+// zincirine hiç girmiyor) — sayfaTespitCV.js'nin köşe-ARAMA mantığından
+// AYRI, doğrudan cvSaf.js'ten import ediliyor.
+import { kutucukDoluMu } from "./cvSaf.js";
 
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
@@ -60,57 +65,74 @@ const KOSE_TESPIT_ANALIZ_GENISLIK = 640; // AĞUSTOS 2026 GÜNCELLEME: OpenCV.js
                                           // hataya dönüşüyordu — baloncuk yarıçapı mertebesinde olup 1 şık kaymaya
                                           // yol açabiliyordu."
 
-// Bir önceki turda CV ile bulunan çerçeve köşeleri — sayfaKoseleriniAraCV'ye
-// TAKİP (tracking) ipucu olarak geçiriliyor; her turda sıfırdan tam kare
-// aramak yerine bu noktanın etrafında dar bir ROI'de arar (çok daha hızlı).
-// Yeni bir başarılı tespitte güncellenir, kamera durdurulduğunda sıfırlanır.
-let _sonBulunanCerceveKoseleri = null;
-
-// YENİ: canlı önizlemede ÇİZİLEN köşe noktaları — ham (her turda değişebilen,
-// gürültülü) tespiti DEĞİL, üstel hareketli ortalamayla (EMA) YUMUŞATILMIŞ
-// halini kullanır. SORUN: sayfaKoseleriniAraCV her 350ms'de sıfırdan/dar bir
-// ROI'de yeniden Canny+findContours çalıştırıyor; ışık/titreme/en ufak kamera
-// sarsıntısı konturun bulunan 4 köşesini birkaç piksel oynatabiliyor — bu,
-// ekranda "köşe yakalayıcıların sürekli farklı yerde gezinmesi" olarak
-// gözlemleniyor. _sonBulunanCerceveKoseleri (takip ROI ipucu) ve stabilite/
-// otomatik-tetikleme mantığı YİNE HAM tespiti kullanmaya devam ediyor (bunlar
-// zaten kendi toleranslarına sahip) — sadece GÖRSEL gösterge yumuşatılıyor.
-let _gosterilenKoseler = null;
-const KOSE_YUMUSATMA_ALFA = 0.35; // 0=hiç güncelleme (donuk), 1=yumuşatmasız (eski davranış)
-
-/** Ham tespiti, önceki gösterilen konum ile karıştırıp (EMA) yumuşatılmış köşeleri döndürür. */
-function _koseleriYumusat(hamKoseler) {
-    const anahtarlar = ["solUst", "sagUst", "solAlt", "sagAlt"];
-    if (!_tumKoselerVarMi(hamKoseler)) {
-        // Bu turda köşe bulunamadıysa: gösterilen köşeleri aniden "kırmızıya"
-        // düşürmek yerine bir önceki yumuşatılmış konumu bir süre koru —
-        // kısa süreli tek-kare kayıplarında gösterge titremesin.
-        return _gosterilenKoseler;
-    }
-    if (!_gosterilenKoseler) {
-        _gosterilenKoseler = {};
-        anahtarlar.forEach(k => { _gosterilenKoseler[k] = { x: hamKoseler[k].x, y: hamKoseler[k].y }; });
-        return _gosterilenKoseler;
-    }
-    anahtarlar.forEach(k => {
-        _gosterilenKoseler[k] = {
-            x: _gosterilenKoseler[k].x + (hamKoseler[k].x - _gosterilenKoseler[k].x) * KOSE_YUMUSATMA_ALFA,
-            y: _gosterilenKoseler[k].y + (hamKoseler[k].y - _gosterilenKoseler[k].y) * KOSE_YUMUSATMA_ALFA,
-        };
-    });
-    return _gosterilenKoseler;
-}
-
 // ---- Canlı tarama modu durumu ----
 let _canliModAktif = false;
 let _canliIsleniyor = false;       // tam okuma o an çalışıyor mu (döngü bu sürece dokunmaz)
-let _sonIslenenImza = null;        // son işlenen kağıdın köşe "imzası" — aynı kağıdı tekrar tetiklememek için
-let _stabilGecmis = [];            // son birkaç tespit turunun köşe konumları (stabilite kontrolü için)
-const STABIL_GEREKEN_TUR = 3;      // bu kadar ardışık turda ~aynı konumda bulunursa "stabil" say
-const STABIL_TOLERANS_PX = 6;      // analiz çözünürlüğünde izin verilen konum sapması
+let _sonIslenenImza = null;        // "dolu" | null — aynı kağıdı (kutucuklardan hiç çıkmadan) tekrar tetiklememek için
+let _stabilGecmis = [];            // son birkaç tespit turunun "4 kutucuk da dolu mu" sonucu (ani titremeyi tetik saymamak için)
+const STABIL_GEREKEN_TUR = 3;      // bu kadar ardışık turda "tümü dolu" sürerse tetikle
 
 let _onSonucCallback = null;       // app.js tarafından set edilir: canlı modda her okuma sonrası çağrılır
 let _onDurumCallback = null;       // app.js tarafından set edilir: "aranıyor/hizalandı/okunuyor" durumu için
+
+/**
+ * AĞUSTOS 2026 — MİMARİ DEĞİŞİKLİK (Sedat isteği: ZipGrade/ticari OMR
+ * uygulamaları tarzı SABİT KÖŞE KUTUCUKLARI): önceden BEKLENEN sabit
+ * %8/%92 varsayılan konumlardı (form oranından bağımsız). Artık aktif
+ * formun GERÇEK sayfa oranı (window.OptikAktifForm.form.bolge, mm) VE
+ * hizalama işaretlerinin (fiducial) o form üzerindeki KESİN konumu
+ * (window.LayoutEngine.hizalamaIsaretleriEkle — pdfFormGenerator.js'in
+ * bastığı YERLE BİREBİR AYNI fonksiyon) kullanılarak hesaplanıyor.
+ * Böylece kullanıcı kağıdı bu kutucuklara oturttuğunda, kutucuklar
+ * TAM OLARAK kağıt üzerindeki gerçek hizalama karelerinin üstüne denk
+ * geliyor — rastgele bir sayfa kenarı yaklaşımı değil.
+ *
+ * Döner: { solUst, sagUst, solAlt, sagAlt } — her biri {xOran, yOran}
+ * (0-1 arası, video native çözünürlüğüne göre normalize).
+ * Form/LayoutEngine erişilemezse (nadir) eski sabit %8/%92 döner.
+ */
+function _beklenenKoseOranlariHesapla() {
+  const VARSAYILAN = {
+    solUst: { xOran: 0.08, yOran: 0.07 },
+    sagUst: { xOran: 0.92, yOran: 0.07 },
+    solAlt: { xOran: 0.08, yOran: 0.93 },
+    sagAlt: { xOran: 0.92, yOran: 0.93 },
+  };
+
+  const form = window.OptikAktifForm && window.OptikAktifForm.form;
+  const bolge = form && form.bolge;
+  if (!bolge || !bolge.width || !bolge.height || typeof window.LayoutEngine === 'undefined') {
+    return VARSAYILAN;
+  }
+
+  try {
+    const isaretler = window.LayoutEngine.hizalamaIsaretleriEkle(bolge);
+    const bul = (konum) => isaretler.find((i) => i.konum === konum);
+    const solUstI = bul('sol-ust'), sagUstI = bul('sag-ust'), solAltI = bul('sol-alt'), sagAltI = bul('sag-alt');
+    if (!solUstI || !sagUstI || !solAltI || !sagAltI) return VARSAYILAN;
+
+    // İşaretin MERKEZİNİ al (x+boyut/2), sonra bolge.width/height'e göre
+    // 0-1 normalize et. Kamera görüntüsü PORTRE (dikey) sabit tutuluyor
+    // varsayımıyla: form dikeyse (height>width) doğrudan; form yataysa
+    // kullanıcının kağıdı yatay tutması beklenir, oranlar yine bolge'nin
+    // KENDİ genişlik/yükseklik eksenine göre hesaplanır (kamera hangi
+    // yönde tutulursa tutulsun aynı formül çalışır — video her zaman
+    // kendi native width/height'ine göre normalize ediliyor).
+    const merkezOranHesapla = (isaret) => ({
+      xOran: (isaret.x + isaret.boyut / 2 - bolge.x) / bolge.width,
+      yOran: (isaret.y + isaret.boyut / 2 - bolge.y) / bolge.height,
+    });
+
+    return {
+      solUst: merkezOranHesapla(solUstI),
+      sagUst: merkezOranHesapla(sagUstI),
+      solAlt: merkezOranHesapla(solAltI),
+      sagAlt: merkezOranHesapla(sagAltI),
+    };
+  } catch (e) {
+    return VARSAYILAN;
+  }
+}
 
 function _koseTespitTemizle() {
     const overlay = document.getElementById("koseTespitOverlay");
@@ -136,39 +158,13 @@ function _koseTespitDurdur() {
         _koseTespitTimer = null;
     }
     _koseTespitTemizle();
-    _sonBulunanCerceveKoseleri = null; // eski oturumun takip noktası yeni oturuma sızmasın
-    _gosterilenKoseler = null; // yumuşatma durumu da sıfırlansın — yeni oturum eski konumdan başlamasın
-}
-
-/** İki köşe kümesinin (analiz çözünürlüğünde) birbirine yeterince yakın olup olmadığını kontrol eder. */
-function _koselerYakinMi(a, b) {
-    if (!a || !b) return false;
-    const anahtarlar = ["solUst", "sagUst", "solAlt", "sagAlt"];
-    for (const k of anahtarlar) {
-        if (!a[k] || !b[k]) return false;
-        const dx = a[k].x - b[k].x, dy = a[k].y - b[k].y;
-        if (Math.sqrt(dx * dx + dy * dy) > STABIL_TOLERANS_PX) return false;
-    }
-    return true;
-}
-
-/** 4 köşenin hepsi bulunmuş mu? */
-function _tumKoselerVarMi(koseler) {
-    return !!(koseler && koseler.solUst && koseler.sagUst && koseler.solAlt && koseler.sagAlt);
-}
-
-/** Basit bir "imza" — aynı fiziksel kağıdın kamerada durmaya devam edip etmediğini anlamak için. */
-function _imzaUret(koseler) {
-    if (!_tumKoselerVarMi(koseler)) return null;
-    const r = (n) => Math.round(n / 4) * 4; // 4px'e yuvarla — küçük titreşimleri yut
-    return ["solUst", "sagUst", "solAlt", "sagAlt"].map(k => `${r(koseler[k].x)},${r(koseler[k].y)}`).join("|");
+    _sonIslenenImza = null; // eski oturumun "dolu" durumu yeni oturuma sızmasın
 }
 
 function _koseTespitCalistir() {
 
     if (_koseTespitCalisiyor || _canliIsleniyor) return; // önceki tur / tam okuma hâlâ sürüyor, atla
     if (!video.videoWidth || !video.videoHeight) return;
-    if (!cvHazirMi()) return; // OpenCV.js WASM henüz yüklenmediyse bu turu atla
 
     const overlay = document.getElementById("koseTespitOverlay");
     if (!overlay) return;
@@ -176,8 +172,22 @@ function _koseTespitCalistir() {
     _koseTespitCalisiyor = true;
 
     try {
+        // AĞUSTOS 2026 — MİMARİ DEĞİŞİKLİK: sayfaKoseleriniAraCV (tüm kareyi
+        // Canny+findContours ile TARAYIP kağıdı ARAYAN ağır algoritma) BU
+        // DÖNGÜDEN TAMAMEN KALDIRILDI. Yerine: aktif formun (window.
+        // OptikAktifForm) gerçek hizalama-işareti konumlarına göre 4 SABİT
+        // kutucuk hesaplanıyor (_beklenenKoseOranlariHesapla — form
+        // bolge'sinden window.LayoutEngine.hizalamaIsaretleriEkle ile TAM
+        // aynı yerler), her kutucukta SADECE "yeterince koyu piksel var mı"
+        // kontrol ediliyor (kutucukDoluMu — cvSaf.js, O(kutucuk alanı),
+        // kontur arama YOK). Kullanıcı kağıdı bu 4 sabit kutucuğa oturtur —
+        // ZipGrade/TestPlus/CamScanner'ın kullandığı yaklaşımın aynısı.
+        // Performans kazancı ~16x+ (piksel sayısı bazında; kontur arama
+        // hiç çalışmadığı için gerçek kazanç muhtemelen daha büyük).
 
-        const ayarlar = ayarlariGetir();
+        // Analiz için küçük bir canvas'a çiz (kutucukDoluMu görüntü
+        // boyutundan bağımsız çalışır ama küçük görüntüde getImageData
+        // daha ucuz).
         const aOlcek = KOSE_TESPIT_ANALIZ_GENISLIK / video.videoWidth;
         const aGenislik = KOSE_TESPIT_ANALIZ_GENISLIK;
         const aYukseklik = Math.round(video.videoHeight * aOlcek);
@@ -194,28 +204,9 @@ function _koseTespitCalistir() {
             return; // (nadir) canvas okuma hatası — bu turu sessizce atla
         }
 
-        const hassasiyet = { yuzdelik: ayarlar.yuzdelik, minDoluluk: ayarlar.minDoluluk };
-        // YENİ (Sedat isteği, Ağustos 2026: "Köşe yakalayıcılar her formda
-        // aktif çalışsın") — canlı önizleme (yeşil çerçeve) de artık aktif
-        // sınavın GERÇEK sayfa oranını kullanıyor; önceden hep A4 (LGS/
-        // Bursluluk) varsayıyordu, Optik Form Editörü ile A4-dışı boyutta
-        // tasarlanmış formlarda köşeyi bulsa bile "A4 oranına uymuyor"
-        // diye eleyip hiç göstermiyordu.
-        const aktifBolge = window.OptikAktifForm && window.OptikAktifForm.form && window.OptikAktifForm.form.bolge;
-        const beklenenOranlar = oranlariHesapla(aktifBolge && aktifBolge.width, aktifBolge && aktifBolge.height);
-        const koseler = sayfaKoseleriniAraCV(imageData, hassasiyet, _sonBulunanCerceveKoseleri, beklenenOranlar);
-        // Başarılı tespitte takip noktasını güncelle (sonraki tur bu noktanın
-        // etrafında dar ROI'de arasın); bulunamazsa ELDEKİ son bilinen noktayı
-        // KORU — sayfaKoseleriniAraCV zaten ROI'de bulamazsa otomatik tam kare
-        // aramasına düşüyor, burada erken sıfırlamak sadece gereksiz tam-kare
-        // aramasını hızlandırmaz, tam tersine bir sonraki turun da takipsiz
-        // (daha yavaş) başlamasına yol açar.
-        if (_tumKoselerVarMi(koseler)) {
-            _sonBulunanCerceveKoseleri = koseler;
-        }
-
-        // Analiz çözünürlüğünden GERÇEK (native) video çözünürlüğüne geri ölçekle
-        const geriOlcek = video.videoWidth / aGenislik;
+        // Beklenen köşe konumları (0-1 oran, video native eksenine göre) —
+        // form aktifse GERÇEK hizalama işareti konumları, yoksa varsayılan.
+        const beklenenOranlar = _beklenenKoseOranlariHesapla();
 
         // <video> object-fit:cover kullanıyor — native çözünürlükten CSS
         // (ekranda görünen) boyuta, ORTADAN KIRPILARAK ölçekleniyor. Tespit
@@ -236,97 +227,108 @@ function _koseTespitCalistir() {
         octx.clearRect(0, 0, dispW, dispH);
 
         const YARICAP = Math.max(16, dispW * 0.032);
+        // Kutucuk kontrol bölgesi: köşe yarıçapının biraz daha küçüğü kadar
+        // bir kare — analiz çözünürlüğünde (aGenislik/aYukseklik piksel).
+        const KUTUCUK_YARICAP_ANALIZ = Math.max(10, aGenislik * 0.045);
 
-        const BEKLENEN = {
-            solUst: { x: dispW * 0.08, y: dispH * 0.07 },
-            sagUst: { x: dispW * 0.92, y: dispH * 0.07 },
-            solAlt: { x: dispW * 0.08, y: dispH * 0.93 },
-            sagAlt: { x: dispW * 0.92, y: dispH * 0.93 },
-        };
+        const durumlar = {}; // konum -> { dolu, ekranX, ekranY }
 
-        // Ham tespiti (bulunduMu için) SAKLA, ama çizim için yumuşatılmış
-        // konumu kullan — bkz. _koseleriYumusat notu yukarıda.
-        const yumusakKoseler = _koseleriYumusat(koseler) || {};
+        Object.keys(beklenenOranlar).forEach((konum) => {
+            const oran = beklenenOranlar[konum];
+            // Video NATIVE koordinatında beklenen merkez:
+            const nativeX = oran.xOran * video.videoWidth;
+            const nativeY = oran.yOran * video.videoHeight;
+            // Analiz çözünürlüğündeki karşılığı (kutucukDoluMu bu görüntüde çalışıyor):
+            const analizX = nativeX * aOlcek;
+            const analizY = nativeY * aOlcek;
 
-        const ekranNoktalari = {};
+            const sonuc = kutucukDoluMu(
+                imageData,
+                analizX - KUTUCUK_YARICAP_ANALIZ, analizY - KUTUCUK_YARICAP_ANALIZ,
+                analizX + KUTUCUK_YARICAP_ANALIZ, analizY + KUTUCUK_YARICAP_ANALIZ
+            );
 
-        Object.keys(BEKLENEN).forEach((konum) => {
+            // Ekran (CSS) koordinatına çevir — object-fit:cover dönüşümü.
+            // Kenar payı: form köşe işareti tam kağıt kenarına yakın
+            // olduğu için (ve video/ekran en-boy oranları birebir
+            // örtüşmeyebildiği için) hesaplanan nokta ekranın hemen
+            // dışına düşebilir — sadece GÖSTERGENİN çizimi için (kontrol
+            // mantığı analiz-çözünürlüğü koordinatını zaten yukarıda
+            // kullandı, buradan etkilenmiyor) YARICAP kadar payla ekrana
+            // sıkıştırıyoruz, kullanıcı köşeyi her zaman görebilsin.
+            const ekranX = Math.min(dispW - YARICAP, Math.max(YARICAP, (nativeX - ofsX) * kapsamaOlcek));
+            const ekranY = Math.min(dispH - YARICAP, Math.max(YARICAP, (nativeY - ofsY) * kapsamaOlcek));
 
-            const bulunduMu = !!koseler[konum]; // ham tespit: bu turda GERÇEKTEN bulundu mu (renk için)
-            const nokta = yumusakKoseler[konum] || koseler[konum]; // konum için: yumuşatılmış varsa o, yoksa ham
-            let cx, cy;
+            durumlar[konum] = { dolu: sonuc.dolu, ekranX, ekranY };
 
-            if (nokta) {
-                const fx = nokta.x * geriOlcek;
-                const fy = nokta.y * geriOlcek;
-                cx = (fx - ofsX) * kapsamaOlcek;
-                cy = (fy - ofsY) * kapsamaOlcek;
-            } else {
-                cx = BEKLENEN[konum].x;
-                cy = BEKLENEN[konum].y;
-            }
-
-            ekranNoktalari[konum] = { x: cx, y: cy, bulunduMu };
-
-            const renk = bulunduMu ? "#2ecc71" : "#e74c3c";
+            const renk = sonuc.dolu ? "#2ecc71" : "#e74c3c";
 
             octx.beginPath();
-            octx.arc(cx, cy, YARICAP, 0, Math.PI * 2);
+            octx.arc(ekranX, ekranY, YARICAP, 0, Math.PI * 2);
             octx.strokeStyle = renk;
             octx.lineWidth = 3;
             octx.stroke();
 
             octx.beginPath();
-            octx.moveTo(cx - YARICAP * 0.5, cy);
-            octx.lineTo(cx + YARICAP * 0.5, cy);
-            octx.moveTo(cx, cy - YARICAP * 0.5);
-            octx.lineTo(cx, cy + YARICAP * 0.5);
+            octx.moveTo(ekranX - YARICAP * 0.5, ekranY);
+            octx.lineTo(ekranX + YARICAP * 0.5, ekranY);
+            octx.moveTo(ekranX, ekranY - YARICAP * 0.5);
+            octx.lineTo(ekranX, ekranY + YARICAP * 0.5);
             octx.strokeStyle = renk;
             octx.lineWidth = 2;
             octx.stroke();
-
         });
 
-        // 4 köşeyi birbirine bağlayan dörtgen — bulunan komşu köşeler
-        // arasında YEŞİL düz, en az biri eksikse KIRMIZI kesikli çizgi
-        // (kullanıcı sayfanın genel hizasını/eğikliğini anlık görsün diye).
+        // 4 köşeyi birbirine bağlayan dörtgen — TÜM köşeler doluysa YEŞİL
+        // düz, değilse KIRMIZI kesikli çizgi (kutucuklar SABİT olduğu için
+        // çerçeve her zaman aynı yerde, sadece renk/stil değişiyor).
         const sira = [["solUst", "sagUst"], ["sagUst", "sagAlt"], ["sagAlt", "solAlt"], ["solAlt", "solUst"]];
         for (const [a, b] of sira) {
-            const p1 = ekranNoktalari[a], p2 = ekranNoktalari[b];
-            const ikisiDeVar = p1.bulunduMu && p2.bulunduMu;
+            const p1 = durumlar[a], p2 = durumlar[b];
+            const ikisiDeDolu = p1.dolu && p2.dolu;
             octx.beginPath();
-            octx.setLineDash(ikisiDeVar ? [] : [6, 5]);
-            octx.moveTo(p1.x, p1.y);
-            octx.lineTo(p2.x, p2.y);
-            octx.strokeStyle = ikisiDeVar ? "rgba(46,204,113,.85)" : "rgba(231,76,60,.55)";
+            octx.setLineDash(ikisiDeDolu ? [] : [6, 5]);
+            octx.moveTo(p1.ekranX, p1.ekranY);
+            octx.lineTo(p2.ekranX, p2.ekranY);
+            octx.strokeStyle = ikisiDeDolu ? "rgba(46,204,113,.85)" : "rgba(231,76,60,.55)";
             octx.lineWidth = 2;
             octx.stroke();
             octx.setLineDash([]);
         }
 
-        // ---- Canlı tarama modu: stabilite kontrolü + otomatik tetikleme ----
+        // ---- Canlı tarama modu: 4 kutucuk da dolu mu + kısa stabilite ----
+        // Kutucuklar SABİT olduğu için "köşe konumu titriyor mu" kontrolüne
+        // artık gerek yok — sadece "tümü dolu" durumunun birkaç ardışık
+        // turda sürüp sürmediğine bakılıyor (kullanıcının kağıdı gerçekten
+        // yerleştirdiğinden emin olmak için, anlık bir titremeyi tetik
+        // saymamak amacıyla).
         if (_canliModAktif) {
-            const tumuVar = _tumKoselerVarMi(koseler);
+            const tumuDolu = Object.keys(durumlar).every((k) => durumlar[k].dolu);
 
-            _stabilGecmis.push(tumuVar ? koseler : null);
+            _stabilGecmis.push(tumuDolu);
             if (_stabilGecmis.length > STABIL_GEREKEN_TUR) _stabilGecmis.shift();
 
             if (typeof _onDurumCallback === "function") {
-                _onDurumCallback(tumuVar ? "hizalandi" : "araniyor");
+                _onDurumCallback(tumuDolu ? "hizalandi" : "araniyor");
             }
 
-            if (_stabilGecmis.length === STABIL_GEREKEN_TUR && _stabilGecmis.every(k => k)) {
-                const ilkTur = _stabilGecmis[0];
-                const stabilMi = _stabilGecmis.every(k => _koselerYakinMi(k, ilkTur));
-
-                if (stabilMi) {
-                    const imza = _imzaUret(ilkTur);
-                    if (imza && imza !== _sonIslenenImza) {
-                        _sonIslenenImza = imza;
-                        _stabilGecmis = [];
-                        _canliOtomatikOku();
-                    }
+            if (_stabilGecmis.length === STABIL_GEREKEN_TUR && _stabilGecmis.every((v) => v === true)) {
+                // Aynı kağıdı (kamera hareket etmeden) tekrar tekrar
+                // tetiklememek için basit bir imza: 4 kutucuğun ekran
+                // konumu zaten SABİT, o yüzden imza yerine son okumadan bu
+                // yana geçen süreyi/durumu _sonIslenenImza ile takip etmeye
+                // devam ediyoruz — "tümü dolu" durumu SÜREKLİ true kaldığı
+                // sürece (kağıt kameradan hiç çıkmadıysa) tekrar tetiklenmesin.
+                const imza = "dolu";
+                if (imza !== _sonIslenenImza) {
+                    _sonIslenenImza = imza;
+                    _stabilGecmis = [];
+                    _canliOtomatikOku();
                 }
+            } else if (!tumuDolu) {
+                // Kağıt kutucuklardan çıktı/değişti — bir sonraki "tümü
+                // dolu" anı yeni bir tetikleme sayılsın.
+                _sonIslenenImza = null;
             }
         }
 
@@ -354,14 +356,11 @@ async function _canliOtomatikOku() {
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Okuma anında EMA (yumuşatılmış) köşeleri tercih et — ham CV köşeleri
-        // her kare 1-3px oynayabilir; EMA bunların ağırlıklı ortalaması olduğu
-        // için daha kararlı homografi → daha doğru sütun/satır hizalaması.
-        // EMA yoksa (henüz birikmemişse) ham köşeye düş.
-        // Canlı modda: formuOkuVeGoster yolunu kullan → omrEngine kendi
-        // fiducial tespitini yapar. Bu, CV çerçeve köşelerinden oluşan
-        // ~9mm sapma sorununu çözer (bkz. OMR-SORUN-RAPORU.md Sorun 4).
-        // CV köşeleri artık sadece köşe GÖSTERGESİ içindir, okuma için değil.
+        // formuOkuVeGoster yolunu kullan → omrEngine kendi fiducial
+        // tespitini yapar. Canlı önizlemedeki sabit-kutucuk tespiti (bkz.
+        // yukarıdaki "SABİT KÖŞE KUTUCUKLARI" mimari notu) SADECE
+        // gösterge+tetikleme kararı için — okumanın kendisi CV'den
+        // bağımsız, omrEngine'in kendi fiducial/homografi tespitinden geçiyor.
         let sonuc;
         try {
             sonuc = await formuOkuVeGoster(canvas);
@@ -502,9 +501,10 @@ export async function capturePhoto() {
     // hesaplanıyordu ama sonucu formuOkuVeGoster'a hiç geçirilmiyordu — ölü
     // kod olduğu fark edilip kaldırıldı (her çekimde gereksiz bir tam köşe
     // taraması, saf-JS motorunda WASM'dan daha maliyetli olduğu için özellikle
-    // gereksizdi). Canlı önizlemedeki takip noktası (_sonBulunanCerceveKoseleri)
-    // sayfaTespitCV içinde zaten güncel tutuluyor; OMR motoru içindeki
-    // sayfaKoseleriniAraHibrit() de ayrıca CV'den destek alıyor.
+    // gereksizdi). Canlı önizlemedeki sabit-kutucuk tespiti (bkz. yukarıdaki
+    // "SABİT KÖŞE KUTUCUKLARI" mimari notu) SADECE gösterge+tetikleme
+    // için — OMR motoru içindeki sayfaKoseleriniAraHibrit() kendi
+    // fiducial/homografi tespitini bağımsız yapıyor.
     return formuOkuVeGoster(canvas);
 }
 

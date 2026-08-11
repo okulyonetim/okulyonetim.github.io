@@ -649,3 +649,56 @@ function convexHull(points) {
   ust.pop();
   return alt.concat(ust);
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// Sabit-kutucuk (ZipGrade tarzı) hizalama tespiti — Ağustos 2026
+// ─────────────────────────────────────────────────────────────────────────
+
+/**
+ * Bir bölgenin (RGBA ImageData'nın alt-dikdörtgeni) "yeterince koyu piksel"
+ * içerip içermediğini kontrol eder — sabit köşe kutucuğu tasarımında,
+ * kullanıcının kağıdı kutucuğa DOĞRU OTURTUP OTURTMADIĞINI anlamak için
+ * kullanılır. findContours/canny gibi ağır bir kontur arama zincirine HİÇ
+ * gerek yok — sadece bölgenin ortalama parlaklığına ve koyu piksel oranına
+ * bakan, O(bölge alanı) basit bir tarama.
+ *
+ * imageData: TAM (RGBA) görüntü — bölge bunun bir alt-dikdörtgeni.
+ * x0,y0,x1,y1: bölge sınırları (piksel, imageData'nın kendi koordinat
+ * sisteminde — çağıran taraf video/analiz çözünürlüğüne göre hesaplamalı).
+ * koyuEsik: bu parlaklığın (0-255) altındaki pikseller "koyu" sayılır.
+ * minKoyuOran: bölgedeki piksellerin en az bu oranı koyu olmalı ki
+ * "dolu/hizalanmış" kabul edilsin.
+ *
+ * Döner: { dolu: boolean, koyuOran: number, ortalamaParlaklik: number }
+ */
+export function kutucukDoluMu(imageData, x0, y0, x1, y1, koyuEsik = 110, minKoyuOran = 0.12) {
+  const { width, height, data } = imageData;
+  x0 = Math.max(0, Math.floor(x0));
+  y0 = Math.max(0, Math.floor(y0));
+  x1 = Math.min(width, Math.ceil(x1));
+  y1 = Math.min(height, Math.ceil(y1));
+  if (x1 <= x0 || y1 <= y0) return { dolu: false, koyuOran: 0, ortalamaParlaklik: 255 };
+
+  let toplamParlaklik = 0, koyuSayisi = 0, ornekSayisi = 0;
+  // Performans: bölge büyükse örnekleme adımı kullan (her pikseli taramaya
+  // gerek yok, kutucuklar zaten küçük — ama yine de üst sınır koyalım).
+  const bolgeGenislik = x1 - x0, bolgeYukseklik = y1 - y0;
+  const adimX = Math.max(1, Math.floor(bolgeGenislik / 80));
+  const adimY = Math.max(1, Math.floor(bolgeYukseklik / 80));
+
+  for (let y = y0; y < y1; y += adimY) {
+    const satirOfs = y * width;
+    for (let x = x0; x < x1; x += adimX) {
+      const idx = (satirOfs + x) * 4;
+      const gri = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+      toplamParlaklik += gri;
+      if (gri < koyuEsik) koyuSayisi++;
+      ornekSayisi++;
+    }
+  }
+
+  if (ornekSayisi === 0) return { dolu: false, koyuOran: 0, ortalamaParlaklik: 255 };
+  const koyuOran = koyuSayisi / ornekSayisi;
+  const ortalamaParlaklik = toplamParlaklik / ornekSayisi;
+  return { dolu: koyuOran >= minKoyuOran, koyuOran, ortalamaParlaklik };
+}
