@@ -3386,6 +3386,21 @@ function baslat() {
             try { statusEl.textContent = 'İşleniyor...'; await (mod.capturePhoto?.() || window.capturePhoto?.()); } catch (e) { statusEl.textContent = 'Fotoğraf alınamadı'; }
         });
 
+        // ── Dondur ve Köşe Seç ──
+        // Hem kamera açıkken hem galeri fotoğrafı yüklüyken çalışır.
+        // camera.js döngüyü durdurur → köşe seçim UI → okuma → döngü yeniden başlar.
+        const dondurKoseBtn = document.getElementById('dondurKoseBtn');
+        if (dondurKoseBtn) dondurKoseBtn.addEventListener('click', async () => {
+            try {
+                statusEl.textContent = 'Köşe seçiliyor...';
+                const sonuc = await mod.dondurVeKoseAc?.();
+                if (sonuc === null || sonuc === undefined) statusEl.textContent = 'Hazır';
+            } catch (e) {
+                console.error('Dondur/köşe seç hatası:', e);
+                statusEl.textContent = 'Hata oluştu';
+            }
+        });
+
         // ── Canlı tarama modu aç/kapat ──
         const canliSw = document.getElementById('canliModSwitch');
         if (canliSw) canliSw.addEventListener('change', () => {

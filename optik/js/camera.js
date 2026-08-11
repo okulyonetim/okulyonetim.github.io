@@ -525,6 +525,101 @@ export async function capturePhoto() {
 }
 
 /**
+ * Kamera döngüsünü dondurur, o anki kareyi yakalar ve köşe seçim UI'ını açar.
+ * Kullanıcı "Tamam" derse elle seçilen köşelerle okuma yapar.
+ * İptal/vazgeç durumunda döngü yeniden başlar (kamera kapanmaz).
+ *
+ * Hem kamera açıkken hem galeri modunda (video yoksa canvas'taki mevcut
+ * görüntüyü kullanır) çalışır — app.js her iki durumda da bu fonksiyonu
+ * çağırabilir.
+ */
+export async function dondurVeKoseAc() {
+    // 1. Tespit döngüsünü durdur — video akışı devam eder, sadece periyodik
+    //    tespit timer'ı ve overlay çizimi durur.
+    _koseTespitDurdur();
+
+    // 2. Kare yakala: kamera açıksa video'dan, değilse canvas'taki mevcut
+    //    görüntüyü kullan (galeri modunda canvas zaten dolu).
+    if (video.videoWidth && video.videoHeight) {
+        canvas.width  = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
+    // canvas.width === 0 ise (ne video ne galeri) yapacak bir şey yok.
+    if (!canvas.width || !canvas.height) {
+        _koseTespitBaslat(); // döngüyü geri aç
+        return null;
+    }
+
+    // 3. Köşe seçim akışını aç (koseSecici.js — galeri akışındaki ile aynı).
+    const { koseSeciciElemanlariniAl, koseSecimAkisi, KOSE_SECIM_IPTAL } =
+        await import('./koseSecici.js');
+    const elemanlar = koseSeciciElemanlariniAl();
+    if (!elemanlar) {
+        // Köşe seçim UI'ı DOM'da yok — döngüyü geri aç, çık.
+        _koseTespitBaslat();
+        return null;
+    }
+
+    // koseSecimAlani #kameraOverlay içinde: kameraOverlay'i açık tut.
+    const kameraOv = document.getElementById('kameraOverlay');
+    if (kameraOv) kameraOv.hidden = false;
+
+    let sonuc = null;
+    try {
+        // CV ile otomatik köşe bul — başlangıç tutamaç konumu için.
+        let cvKoseler = null;
+        try {
+            const { sayfaKoseleriniAraCV, oranlariHesapla } = await import('./sayfaTespitCV.js');
+            const analiz = document.createElement('canvas');
+            const ANALIZ_W = 1280;
+            const ol = Math.min(1, ANALIZ_W / canvas.width);
+            analiz.width  = Math.round(canvas.width  * ol);
+            analiz.height = Math.round(canvas.height * ol);
+            analiz.getContext('2d').drawImage(canvas, 0, 0, analiz.width, analiz.height);
+            const idata = analiz.getContext('2d').getImageData(0, 0, analiz.width, analiz.height);
+            const aktifBolge = window.OptikAktifForm?.form?.bolge;
+            const oranlar = oranlariHesapla(aktifBolge?.width, aktifBolge?.height);
+            const b = sayfaKoseleriniAraCV(idata, null, null, oranlar);
+            if (b?.solUst && b?.sagUst && b?.solAlt && b?.sagAlt) {
+                const gOl = canvas.width / analiz.width;
+                cvKoseler = {
+                    solUst: { x: b.solUst.x * gOl, y: b.solUst.y * gOl },
+                    sagUst: { x: b.sagUst.x * gOl, y: b.sagUst.y * gOl },
+                    solAlt: { x: b.solAlt.x * gOl, y: b.solAlt.y * gOl },
+                    sagAlt: { x: b.sagAlt.x * gOl, y: b.sagAlt.y * gOl },
+                };
+            }
+        } catch (e) { /* CV başarısız — elle seçim devam eder */ }
+
+        const { showStatus } = await import('./utils.js');
+        showStatus(cvKoseler ? 'Köşeleri kontrol edin...' : 'Köşeler bulunamadı, elle seçin...');
+
+        let koseler = await koseSecimAkisi(canvas, canvas.width, canvas.height, elemanlar);
+
+        if (koseler === KOSE_SECIM_IPTAL) {
+            showStatus('Vazgeçildi.');
+            return null;
+        }
+        if (!koseler) {
+            // "🤖 Otomatik Dene" → CV sonucuna güven
+            if (!cvKoseler) {
+                showStatus('Köşe seçilmedi, form okunamadı.');
+                return null;
+            }
+            koseler = cvKoseler;
+        }
+
+        const { formuOkuElleKoseliVeGoster } = await import('./formOkuyucu.js');
+        sonuc = await formuOkuElleKoseliVeGoster(canvas, koseler);
+    } finally {
+        // 4. Her durumda (başarı, hata, iptal) tespit döngüsünü yeniden başlat.
+        _koseTespitBaslat();
+    }
+    return sonuc;
+}
+
+/**
  * Kamerayı durdur
  */
 export function stopCamera() {

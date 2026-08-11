@@ -29,7 +29,9 @@
 
 const A4_ORANI_DIKEY = 210 / 297;   // ~0.707 (LGS vb. dikey A4)
 const A4_ORANI_YATAY = 297 / 210;   // ~1.414 (yatay çekilirse)
-const ORAN_TOLERANS = 0.18;         // en-boy oranında bu kadar sapmaya izin ver (kağıt hafif eğik tutulabilir)
+const ORAN_TOLERANS = 0.28;         // en-boy oranında bu kadar sapmaya izin ver — 0.18'den artırıldı:
+                                    // perspektif altında (kağıt 10-15° eğik) 4-kenar ortalaması da
+                                    // beklenen orandan sapabiliyor, dar tolerans trapezi reddediyordu.
 
 const MIN_ALAN_ORANI = 0.12;        // çerçeve, analiz karesinin en az %12'sini kaplamalı (küçükse -> yanlış kontur)
 const MAX_ALAN_ORANI = 0.97;        // %97'den büyükse muhtemelen kare kenarı/masa, sayfa değil
@@ -213,12 +215,30 @@ function _koseRafine(kontur, yaklasik4, roiOfsX, roiOfsY) {
   return noktalariSirala(rafineHam);
 }
 
-/** Bulunan dörtgenin BEKLENEN en-boy oranına (dikey ya da yatay) yeterince yakın olup olmadığını kontrol eder. */
+/**
+ * Bulunan dörtgenin BEKLENEN en-boy oranına yeterince yakın olup olmadığını
+ * kontrol eder.
+ *
+ * ESKİ YÖNTEM hatası: sadece üst kenar / sol kenar oranına bakılıyordu.
+ * Kağıt 10-15° eğik tutulunca (perspektif trapezi) üst kenar kısalır, sol
+ * kenar da değişir → oran beklentiden sapıyor → ORAN_TOLERANS aşılıyor →
+ * trapez reddedilip köşeler hiç güncellenmiyor.
+ *
+ * YENİ YÖNTEM: 4 kenarın iki ortalamasını kullan —
+ *   genislik  = (üst + alt) / 2
+ *   yukseklik = (sol + sag) / 2
+ * Bu formül perspektif trapezinde gerçek kağıt oranına çok daha yakın çıkar
+ * çünkü kısalan üst kenar, uzayan alt kenarla dengelenir.
+ */
 function enBoyOraniUygunMu(koseler, oranlar) {
-  const ust = kenarUzunluk(koseler.solUst, koseler.sagUst);
-  const sol = kenarUzunluk(koseler.solUst, koseler.solAlt);
-  if (ust < 1 || sol < 1) return false;
-  const oran = ust / sol;
+  const ust  = kenarUzunluk(koseler.solUst, koseler.sagUst);
+  const alt  = kenarUzunluk(koseler.solAlt, koseler.sagAlt);
+  const sol  = kenarUzunluk(koseler.solUst, koseler.solAlt);
+  const sag  = kenarUzunluk(koseler.sagUst, koseler.sagAlt);
+  const genislik  = (ust + alt) / 2;
+  const yukseklik = (sol + sag) / 2;
+  if (genislik < 1 || yukseklik < 1) return false;
+  const oran = genislik / yukseklik;
   const [dikeyOran, yatayOran] = oranlar || [A4_ORANI_DIKEY, A4_ORANI_YATAY];
   const dikeyFark = Math.abs(oran - dikeyOran) / dikeyOran;
   const yatayFark = Math.abs(oran - yatayOran) / yatayOran;
