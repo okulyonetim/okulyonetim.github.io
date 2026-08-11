@@ -2225,6 +2225,55 @@ window.OmrOkuyucu = (function () {
     return sonuc;
   }
 
+  // AĞUSTOS 2026 — PERFORMANS KÖK SEBEP DÜZELTMESİ: sayfaKoseleriniAraCV
+  // (saf-JS motoru, cvSaf.js) TAM ÇÖZÜNÜRLÜKTE (fotoImageData, kamera
+  // native boyutu — 1920x1080 tipik, bazı telefonlarda 4K) çağrıldığında
+  // sunucu ortamında bile ~650-1750ms, telefon üzerinde tahminen 1.3-8.7
+  // SANİYE sürüyordu. camera.js'deki canlı önizleme göstergesi TUR
+  // 22'de 640px'e düşürülmüştü ama BU fonksiyon (asıl OMR okuması
+  // sırasında çağrılan köşe tespiti) o değişiklikten ETKİLENMEMİŞTİ —
+  // "kağıdı düz tutup uzun süre bekliyorum" şikayetinin gerçek kaynağı
+  // burasıydı. Çözüm: kaba köşe taramasını KÜÇÜLTÜLMÜŞ bir görüntüde
+  // yap, sonucu tam çözünürlüğe geri ölçekle — enBuyukKareBlobuBul
+  // (inceltme adımı) zaten tam çözünürlükte, köşe civarında dar bir
+  // pencerede çalışıyor, o hassasiyeti kaybetmiyoruz.
+  const KOSE_ARAMA_ANALIZ_GENISLIK = 640; // camera.js:KOSE_TESPIT_ANALIZ_GENISLIK ile aynı değer — tutarlılık için
+
+  /**
+   * fotoImageData'yı KOSE_ARAMA_ANALIZ_GENISLIK genişliğine küçültür.
+   * Zaten bu genişlikten küçükse (nadiren, düşük çözünürlüklü galeri
+   * fotoğrafı olabilir) hiç küçültme yapmadan olduğu gibi döner.
+   * Döner: { imageData, olcek } — olcek: küçük→büyük dönüşüm çarpanı
+   * (küçük görüntüdeki bir koordinatı tam çözünürlüğe çevirmek için
+   * BÖLÜNMEZ, ÇARPILIR: buyukX = kucukX * olcek).
+   */
+  function _kucukAnalizGoruntusuUret(fotoImageData) {
+    const { width, height } = fotoImageData;
+    if (width <= KOSE_ARAMA_ANALIZ_GENISLIK) {
+      return { imageData: fotoImageData, olcek: 1 };
+    }
+    const olcekKucult = KOSE_ARAMA_ANALIZ_GENISLIK / width;
+    const kGenislik = KOSE_ARAMA_ANALIZ_GENISLIK;
+    const kYukseklik = Math.round(height * olcekKucult);
+
+    // fotoImageData'yı geçici bir canvas'a çiz, sonra küçük boyutta
+    // tekrar bir canvas'a çizip ImageData'sını al (ImageData'dan
+    // doğrudan küçültme yapan bir API yok, canvas üzerinden gitmek
+    // gerekiyor — putImageData + drawImage).
+    const kaynakCanvas = document.createElement('canvas');
+    kaynakCanvas.width = width;
+    kaynakCanvas.height = height;
+    kaynakCanvas.getContext('2d').putImageData(fotoImageData, 0, 0);
+
+    const kucukCanvas = document.createElement('canvas');
+    kucukCanvas.width = kGenislik;
+    kucukCanvas.height = kYukseklik;
+    const kctx = kucukCanvas.getContext('2d', { willReadFrequently: true });
+    kctx.drawImage(kaynakCanvas, 0, 0, kGenislik, kYukseklik);
+
+    return { imageData: kctx.getImageData(0, 0, kGenislik, kYukseklik), olcek: width / kGenislik };
+  }
+
   function sayfaKoseleriniAraHibrit(fotoImageData, hassasiyet, form) {
     if (typeof window.SayfaTespitCV === 'undefined' || !window.SayfaTespitCV.cvHazirMi()) {
       return sayfaKoseleriniAra(fotoImageData, hassasiyet);
@@ -2240,10 +2289,23 @@ window.OmrOkuyucu = (function () {
       const sayfaYukseklikMM = (form && form.bolge && form.bolge.height) || 297;
       const beklenenOranlar = window.SayfaTespitCV.oranlariHesapla(sayfaGenislikMM, sayfaYukseklikMM);
 
-      const cerceve = window.SayfaTespitCV.sayfaKoseleriniAraCV(fotoImageData, null, null, beklenenOranlar);
-      if (!cerceve || !cerceve.solUst || !cerceve.sagUst || !cerceve.solAlt || !cerceve.sagAlt) {
+      // Kaba tarama KÜÇÜLTÜLMÜŞ görüntüde (bkz. yukarıdaki performans notu)
+      const { imageData: kucukImageData, olcek } = _kucukAnalizGoruntusuUret(fotoImageData);
+      const kucukCerceve = window.SayfaTespitCV.sayfaKoseleriniAraCV(kucukImageData, null, null, beklenenOranlar);
+      if (!kucukCerceve || !kucukCerceve.solUst || !kucukCerceve.sagUst || !kucukCerceve.solAlt || !kucukCerceve.sagAlt) {
         return sayfaKoseleriniAra(fotoImageData, hassasiyet);
       }
+      // Küçük görüntüdeki köşe koordinatlarını TAM ÇÖZÜNÜRLÜĞE geri ölçekle
+      // — enBuyukKareBlobuBul (aşağıdaki inceltme adımı) tam çözünürlükteki
+      // fotoImageData üzerinde çalışıyor, koordinatların da o uzayda olması
+      // gerekiyor.
+      const olcekle = (p) => ({ x: p.x * olcek, y: p.y * olcek });
+      const cerceve = {
+        solUst: olcekle(kucukCerceve.solUst),
+        sagUst: olcekle(kucukCerceve.sagUst),
+        solAlt: olcekle(kucukCerceve.solAlt),
+        sagAlt: olcekle(kucukCerceve.sagAlt),
+      };
       // Kaba ölçek: üst kenar uzunluğu ~ (sayfa genişliği - 2*CERCEVE_PAY)
       // kabul edilip px/mm kestiriliyor — sadece inceltme penceresini
       // boyutlandırmak için. Önceden hep "210mm - 8mm" (A4) sabitti.
