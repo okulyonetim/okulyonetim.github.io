@@ -275,10 +275,12 @@ window.OmrOkuyucu = (function () {
   // ---------------------------------------------------------------------
   // 1.5) Adaptif eşikleme (Test Plus yaklaşımı)
   //
-  // kontrastNormalizeEt'ten SONRA çağrılır. OpenCV.js (window.cv) varsa
-  // cv.adaptiveThreshold kullanır — her bölge için ayrı eşik hesaplar,
-  // ışık farklılıklarını/parlamayı otomatik telafi eder. cv yoksa
-  // basit Otsu eşiklemesine düşer. Sonuç: binary (0/255) ImageData.
+  // kontrastNormalizeEt'ten SONRA çağrılır. Saf-JS motoru (window.CvSaf,
+  // Ağustos 2026'da OpenCV.js'in 10.9MB WASM'ının yerine geçti — bkz.
+  // cvSaf.js) her bölge için ayrı eşik hesaplar, ışık farklılıklarını/
+  // parlamayı otomatik telafi eder. window.CvSaf henüz yüklenmemişse
+  // (nadir — module script henüz çözümlenmemiş olabilir) basit Otsu
+  // eşiklemesine düşer. Sonuç: binary (0/255) ImageData.
   //
   // Bu fonksiyon canonical canvas ImageData'yı YERİNDE değiştirir.
   // baloncukKaranlikOrani yerine baloncukDoluluğuBinary kullanılır.
@@ -290,8 +292,8 @@ window.OmrOkuyucu = (function () {
 
   /**
    * Canonical canvas ImageData'dan adaptif eşikli binary görüntü üretir.
-   * window.cv (OpenCV.js) varsa adaptiveThreshold, yoksa basit Otsu kullanır.
-   * Sonuç _binaryImageData'ya yazılır.
+   * window.CvSaf (saf-JS motoru) varsa adaptiveThresholdGaussian, yoksa
+   * basit Otsu kullanır. Sonuç _binaryImageData'ya yazılır.
    */
   function adaptifEsikle(cImageData) {
     const { width, height, data } = cImageData;
@@ -303,32 +305,26 @@ window.OmrOkuyucu = (function () {
       gri[i] = Math.round(0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
     }
 
-    const binary = new Uint8Array(width * height);
+    let binary;
 
-    if (typeof cv !== 'undefined' && cv.Mat) {
-      let src, dst;
+    if (typeof window !== 'undefined' && window.CvSaf) {
       try {
-        src = cv.matFromArray(height, width, cv.CV_8UC1, gri);
-        dst = new cv.Mat();
         // blockSize: baloncuk çapının ~3 katı (5.5mm × 8px/mm ≈ 44px → 131px)
         // Tek sayı olmalı. C=8: yerel ortalamadan çıkarılacak sabit.
-        cv.adaptiveThreshold(
-          src, dst,
-          255,
-          cv.ADAPTIVE_THRESH_GAUSSIAN_C,
-          cv.THRESH_BINARY_INV,
+        // tersine=true: THRESH_BINARY_INV eşdeğeri (koyu piksel = işaretli).
+        const sonucGri = window.CvSaf.adaptiveThresholdGaussian(
+          { width, height, data: gri },
           131,
-          8
+          8,
+          true
         );
-        const dstData = dst.data;
-        for (let i = 0; i < dstData.length; i++) binary[i] = dstData[i];
+        binary = sonucGri.data;
       } catch (e) {
+        binary = new Uint8Array(width * height);
         _otsuEsikle(gri, binary, width, height);
-      } finally {
-        if (src) src.delete();
-        if (dst) dst.delete();
       }
     } else {
+      binary = new Uint8Array(width * height);
       _otsuEsikle(gri, binary, width, height);
     }
 
@@ -2183,7 +2179,10 @@ window.OmrOkuyucu = (function () {
    * merkezi DEĞİL — aradaki ~7mm için bkz. sayfaKoseleriniAra) — bu yüzden
    * her köşe, etrafında küçük bir pencerede enBuyukKareBlobuBul ile
    * GERÇEK kareye inceltiliyor (aynı "tohum + inceltme" deseni).
-   * cv.js yüklenmediyse/başarısız olursa eski yönteme sessizce düşülür.
+   * Saf-JS motoru (window.CvSaf/sayfaTespitCV.js, Ağustos 2026'da
+   * OpenCV.js'in yerine geçti) henüz hazır değilse eski yönteme sessizce
+   * düşülür — ama artık senkron olduğu için bu pratikte hemen hiç
+   * gerçekleşmez (bkz. sayfaTespitCV.js:cvHazirBekle).
    */
   /**
    * Sol-orta ve sağ-orta hizalama karelerini arar.
@@ -2461,14 +2460,14 @@ window.OmrOkuyucu = (function () {
     _sonKitapcikTeshis = null; // YENİ (teşhis): her okumada sıfırlanır
     _binaryImageData = null; // önceki okumadan kalan binary temizle
 
-    // YENİ (kritik): cv.js henüz yüklenme sürecindeyse BEKLE, sessizce eski
-    // yönteme kayma. Önceden burada bir bekleme yoktu — aynı fotoğraf,
-    // uygulama yeni açıldığında (cv henüz hazır değil, eski yöntem) ve
-    // birkaç dakika sonra (cv hazır, yeni CV yöntemi) FARKLI sonuçlar
-    // veriyordu, çünkü hangi yöntemin çalıştığı saf ŞANSA/zamanlamaya
-    // bağlıydı. Burada beklemek, her okumanın AYNI (ve en güvenilir)
-    // yöntemi kullanmasını garanti eder — tutarlılık, hız kaybından
-    // (birkaç saniye, sadece cv henüz yüklenmediyse) daha değerli.
+    // Saf-JS motoru (window.CvSaf/sayfaTespitCV.js) SENKRON — WASM
+    // indirme/derleme beklemesi YOK (Ağustos 2026'da OpenCV.js'in
+    // 10.9MB'lık dosyası kaldırıldı, bkz. cvSaf.js). Bu await artık
+    // pratikte anında (<1ms) resolve oluyor — TUR 9'daki "her okuma AYNI
+    // yöntemi kullansın, tutarlılık hız kaybından değerlidir" kararı
+    // hâlâ geçerli, sadece artık hız kaybı da YOK. Kod bilinçli olarak
+    // değiştirilmedi — mekanizma (sayfaTespitCV.js:cvHazirBekle) altta
+    // değişti, çağıran kod aynı kaldı.
     if (typeof window.SayfaTespitCV !== 'undefined') {
       await window.SayfaTespitCV.cvHazirBekle();
     }
