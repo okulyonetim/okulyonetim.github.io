@@ -23,68 +23,6 @@
 
   const DESTEKLENEN_UZANTILAR = ['pdf', 'xlsx', 'xls', 'docx'];
 
-  /* Google Docs/Drive/Sheets/Slides paylaşım linklerini tanır ve
-     Google Docs Viewer'da açılabilecek preview URL'sine dönüştürür.
-     Desteklenen formatlar:
-       https://docs.google.com/document/d/FILE_ID/...
-       https://docs.google.com/spreadsheets/d/FILE_ID/...
-       https://docs.google.com/presentation/d/FILE_ID/...
-       https://drive.google.com/file/d/FILE_ID/...
-       https://drive.google.com/open?id=FILE_ID
-  */
-  function _googleDocsPreviewUrl(url) {
-    if (!url || typeof url !== 'string') return null;
-    try {
-      // docs.google.com/document|spreadsheets|presentation/d/ID → /preview
-      const docsMatch = url.match(/^https:\/\/docs\.google\.com\/(document|spreadsheets|presentation)\/d\/([^/]+)/);
-      if (docsMatch) {
-        return `https://docs.google.com/${docsMatch[1]}/d/${docsMatch[2]}/preview`;
-      }
-      // drive.google.com/file/d/ID → Docs Viewer embed
-      const driveFileMatch = url.match(/^https:\/\/drive\.google\.com\/file\/d\/([^/]+)/);
-      if (driveFileMatch) {
-        return `https://drive.google.com/file/d/${driveFileMatch[1]}/preview`;
-      }
-      // drive.google.com/open?id=ID veya /uc?id=ID
-      const driveOpenMatch = url.match(/[?&]id=([^&]+)/);
-      if (driveOpenMatch && url.includes('drive.google.com')) {
-        return `https://drive.google.com/file/d/${driveOpenMatch[1]}/preview`;
-      }
-    } catch (e) {}
-    return null;
-  }
-
-  function _googleDocsIframeAc(previewUrl, ad) {
-    const eski = document.getElementById('dokOkuyucuOverlay');
-    if (eski) eski.remove();
-
-    const ov = document.createElement('div');
-    ov.id = 'dokOkuyucuOverlay';
-    ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#3a3a3a;display:flex;flex-direction:column;';
-    ov.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:10px 12px;">
-        <span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55vw;">🔗 ${escapeHtml(ad || 'Google Belge')}</span>
-        <button id="dokGoogleKapat" style="background:rgba(220,0,0,.4);border:none;color:#fff;border-radius:7px;padding:6px 12px;font-size:13px;font-weight:700;">✕</button>
-      </div>
-      <iframe
-        id="dokGoogleIframe"
-        src="${previewUrl}"
-        style="flex:1 1 auto;border:none;width:100%;background:#525659;"
-        allow="autoplay"
-        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-      ></iframe>
-    `;
-    document.body.appendChild(ov);
-    document.body.classList.add('dlk-overlay-acik');
-    if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
-
-    ov.querySelector('#dokGoogleKapat').onclick = () => {
-      ov.remove();
-      document.body.classList.remove('dlk-overlay-acik');
-      if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true);
-    };
-  }
-
   function _uzanti(ad) {
     if (!ad) return '';
     // URL ise: query parametrelerini (?token=...) ve fragment'ı at,
@@ -611,21 +549,35 @@
     return ov;
   }
 
+  /* Google Docs/Drive/Sheets/Slides paylaşım linklerini tanır.
+     Desteklenen formatlar:
+       https://docs.google.com/document|spreadsheets|presentation/d/ID/...
+       https://drive.google.com/file/d/ID/...
+       https://drive.google.com/open?id=ID
+       https://drive.google.com/uc?id=ID  */
+  function _googleDocsMu(url) {
+    if (!url || typeof url !== 'string') return false;
+    return /^https:\/\/(docs|drive)\.google\.com\//.test(url);
+  }
+
   // --- Public API ---
   window.DokumanOkuyucu = {
     destekliMi(adVeyaUzanti) {
-      // Google Docs/Drive URL'leri de "destekleniyor" sayılır (iframe ile açılır)
-      if (adVeyaUzanti && _googleDocsPreviewUrl(adVeyaUzanti)) return true;
+      // Google Docs/Drive URL'leri de destekleniyor sayılır
+      if (_googleDocsMu(adVeyaUzanti)) return true;
       return DESTEKLENEN_UZANTILAR.includes(_uzanti(adVeyaUzanti));
     },
     googleDocsMu(url) {
-      return !!_googleDocsPreviewUrl(url);
+      return _googleDocsMu(url);
     },
     ac(url, ad) {
-      // Önce Google Docs/Drive URL kontrolü
-      const previewUrl = _googleDocsPreviewUrl(url);
-      if (previewUrl) {
-        _googleDocsIframeAc(previewUrl, ad);
+      // Google Docs/Drive linkleri → sistem tarayıcısında aç.
+      // Capacitor WebView iframe'de Google oturumu tutmadığından
+      // her açılışta "Giriş yap" ekranı çıkıyordu. _system ile
+      // kullanıcının Chrome/Safari'si açılır — orada oturum açık
+      // olduğu için sorunsuz görünür.
+      if (_googleDocsMu(url)) {
+        window.open(url, '_system');
         return;
       }
       const uzanti = _uzanti(ad);
