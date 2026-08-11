@@ -36,7 +36,7 @@ const HaberlerService = {
   },
   /* Yetki kontrolsüz — her kullanıcı kendi cihazının bildirim tercihini ayarlayabilir.
      COL.cihazlar'ın TEK Firestore erişim noktası PushRepository'dir (bkz. push.repository.js). */
-  cihazKategoriTercihiKaydet(token, kategoriler){
-    return PushRepository.kategorileriGuncelle(token, kategoriler);
+  cihazKategoriTercihiKaydet(token, kategoriler, saatAralik){
+    return PushRepository.kategorileriGuncelle(token, kategoriler, saatAralik);
   }
 };
