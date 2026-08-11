@@ -10,7 +10,7 @@ const ANAHTAR = 'optikHassasiyetAyarlari';
 export const VARSAYILAN = {
     yuzdelik: 0.30,        // eşik: bölgenin en koyu %kaçı (0.10-0.50 arası mantıklı)
     minDoluluk: 0.45,      // minimum doluluk oranı (0.20-0.70)
-    tespitAraligiMs: 350,  // canlı köşe tespiti döngü aralığı (200-800ms)
+    tespitAraligiMs: 250,  // canlı köşe tespiti döngü aralığı (150-800ms) — camera.js max 180ms ile kısıtlı
     koyulukEsik: 0.40,     // cevap baloncuğu "işaretli" sayılması için min koyuluk oranı
                            // (omrEngine.js: KARANLIK_ESIK — 0.10-0.50 arası mantıklı;
                            // düşürmek daha soluk işaretleri de yakalar ama yanlış

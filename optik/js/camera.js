@@ -102,7 +102,7 @@ function _koseTespitTemizle() {
 
 function _koseTespitBaslat() {
     _koseTespitDurdur();
-    const aralik = (ayarlariGetir().tespitAraligiMs) || 350;
+    const aralik = Math.min((ayarlariGetir().tespitAraligiMs) || 350, 180); // max 180ms — canlı geri bildirim
     _koseTespitTimer = setInterval(_koseTespitCalistir, aralik);
 }
 
@@ -334,23 +334,15 @@ async function _canliOtomatikOku() {
         // her kare 1-3px oynayabilir; EMA bunların ağırlıklı ortalaması olduğu
         // için daha kararlı homografi → daha doğru sütun/satır hizalaması.
         // EMA yoksa (henüz birikmemişse) ham köşeye düş.
-        const cvKoseler = (_gosterilenKoseler &&
-            _gosterilenKoseler.solUst && _gosterilenKoseler.sagUst &&
-            _gosterilenKoseler.solAlt && _gosterilenKoseler.sagAlt)
-            ? _gosterilenKoseler
-            : _sonBulunanCerceveKoseleri;
+        // Canlı modda: formuOkuVeGoster yolunu kullan → omrEngine kendi
+        // fiducial tespitini yapar. Bu, CV çerçeve köşelerinden oluşan
+        // ~9mm sapma sorununu çözer (bkz. OMR-SORUN-RAPORU.md Sorun 4).
+        // CV köşeleri artık sadece köşe GÖSTERGESİ içindir, okuma için değil.
         let sonuc;
-        if (cvKoseler && cvKoseler.solUst && cvKoseler.sagUst && cvKoseler.solAlt && cvKoseler.sagAlt) {
-            const ol = video.videoWidth / KOSE_TESPIT_ANALIZ_GENISLIK;
-            const gercekKoseler = {
-                solUst: { x: cvKoseler.solUst.x * ol, y: cvKoseler.solUst.y * ol },
-                sagUst: { x: cvKoseler.sagUst.x * ol, y: cvKoseler.sagUst.y * ol },
-                solAlt: { x: cvKoseler.solAlt.x * ol, y: cvKoseler.solAlt.y * ol },
-                sagAlt: { x: cvKoseler.sagAlt.x * ol, y: cvKoseler.sagAlt.y * ol },
-            };
-            sonuc = await formuOkuElleKoseliVeGoster(canvas, gercekKoseler);
-        } else {
-            console.warn("Canlı okuma: CV köşesi bulunamadı, bu kare atlandı.");
+        try {
+            sonuc = await formuOkuVeGoster(canvas);
+        } catch (err) {
+            console.warn("Canlı okuma: formuOkuVeGoster başarısız, atlandı:", err.message);
             sonuc = null;
         }
 
@@ -507,21 +499,10 @@ export async function capturePhoto() {
         }
     }
 
-    if (cvKoseler && cvKoseler.solUst && cvKoseler.sagUst && cvKoseler.solAlt && cvKoseler.sagAlt) {
-        const ol = canvas.width / KOSE_TESPIT_ANALIZ_GENISLIK;
-        const gercekKoseler = {
-            solUst: { x: cvKoseler.solUst.x * ol, y: cvKoseler.solUst.y * ol },
-            sagUst: { x: cvKoseler.sagUst.x * ol, y: cvKoseler.sagUst.y * ol },
-            solAlt: { x: cvKoseler.solAlt.x * ol, y: cvKoseler.solAlt.y * ol },
-            sagAlt: { x: cvKoseler.sagAlt.x * ol, y: cvKoseler.sagAlt.y * ol },
-        };
-        return formuOkuElleKoseliVeGoster(canvas, gercekKoseler);
-    }
-
-    // CV köşe bulunamadı — kullanıcıya bildir
-    const { showStatus } = await import("./utils.js");
-    showStatus("Form köşeleri tespit edilemedi. Kağıdı daha iyi aydınlatın veya çerçeveyi tam görüntüye alın.");
-    return null;
+    // formuOkuVeGoster yolunu kullan — omrEngine kendi fiducial tespitini yapacak.
+    // CV köşesi başarılıysa sayfaTespitCV zaten takip noktasını güncel tutuyor;
+    // OMR motoru içindeki sayfaKoseleriniAraHibrit() de CV'den destek alıyor.
+    return formuOkuVeGoster(canvas);
 }
 
 /**

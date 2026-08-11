@@ -170,12 +170,6 @@ export async function formuOkuVeGoster(sourceCanvas) {
 
     dbg('▶ formuOkuVeGoster başladı. Canvas: ' + (sourceCanvas ? sourceCanvas.width + 'x' + sourceCanvas.height : 'YOK'));
 
-    if (typeof window.jsQR === "undefined") {
-        dbg('❌ jsQR yüklenemedi');
-        showStatus("jsQR yüklenemedi.");
-        return null;
-    }
-
     if (typeof window.LayoutEngine === "undefined" || typeof window.OmrOkuyucu === "undefined") {
         dbg('❌ LayoutEngine=' + !!window.LayoutEngine + ' OmrOkuyucu=' + !!window.OmrOkuyucu);
         showStatus("OMR motoru yüklenemedi (layoutEngine.js / omrEngine.js).");
@@ -238,10 +232,6 @@ export async function formuOkuVeGoster(sourceCanvas) {
  * @returns {Promise<object>} OmrOkuyucu.formuOku() sonucu ({basarili, uyarilar, ...})
  */
 export async function formuOkuToplu(sourceCanvas) {
-
-    if (typeof window.jsQR === "undefined") {
-        return { basarili: false, uyarilar: ["jsQR yüklenemedi."] };
-    }
 
     if (typeof window.LayoutEngine === "undefined" || typeof window.OmrOkuyucu === "undefined") {
         return { basarili: false, uyarilar: ["OMR motoru yüklenemedi."] };

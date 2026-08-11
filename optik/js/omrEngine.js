@@ -1,60 +1,38 @@
 /**
- * omrOkuyucu.js
+ * omrEngine.js
  * --------------
  * Kamerayla çekilen optik form fotoğrafını okur.
  *
  * AKIŞ (tek fotoğraf -> analiz -> sonuç):
- *   1) Fotoğraftan jsQR ile QR kodu bulunur (öğrenci/sınav kimliği).
- *   2) QR'nin 4 köşesi (bilinen mm konumlarıyla eşleştirilerek) KABA bir
- *      homografi üretir. Bu kaba homografi, sayfanın 4 köşesindeki
- *      hizalama işaretlerinin (fiducial marker) fotoğrafta YAKLAŞIK nerede
- *      olması gerektiğini tahmin etmek için kullanılır.
- *   3) Her hizalama işaretinin tahmini konumu etrafında küçük bir pencerede
- *      "karanlık piksel ağırlık merkezi" hesaplanarak işaretin HASSAS
- *      pikseli bulunur.
- *   4) Bu 4 hassas köşeden (sayfanın kendisi kadar geniş açıklıkta olduğu
- *      için çok daha güvenilir) TAM bir homografi çıkarılır. Matematik:
- *      klasik 4-nokta DLT (Direct Linear Transform) — OpenCV'siz, saf JS,
- *      8x8 lineer sistemi Gauss eleme ile çözüyoruz.
- *   5) Bu homografi kullanılarak form, sabit bir "canonical" çözünürlükte
- *      (mm başına piksel) düzleştirilmiş bir canvas'a ters-eşleme
- *      (inverse warping + bilinear örnekleme) ile çizilir.
- *   6) Düzleştirilmiş canvas'ta artık her koordinat mm * PPMM formülüyle
- *      doğrudan hesaplanabildiği için, layoutEngine.js'in ürettiği baloncuk
- *      merkezlerini (mm) doğrudan piksele çevirip her baloncuğun karanlık
- *      oranını ölçüyoruz ve en koyu (ve yeterince ayırt edici) şıkkı
- *      işaretli kabul ediyoruz.
+ *   1) Fotoğraftan sayfaTespitCV.js (OpenCV.js Canny+findContours) ile
+ *      sayfanın 4 köşe çerçevesi bulunur.
+ *   2) Her köşe bölgesinde `enBuyukKareBlobuBul` ile hizalama karesinin
+ *      (fiducial marker, 6×6mm) hassas piksel merkezi bulunur.
+ *   3) 4 hassas köşe noktasından TAM homografi (8-DOF DLT) kurulur.
+ *      QR koda ihtiyaç yok — doğrudan fiducial tabanlı.
+ *   4) Homografi ile form, canonical (mm×ppmm) canvas'a ters-eşleme +
+ *      bilinear örneklemeyle düzleştirilir.
+ *   5) Düzleştirilmiş canvas'ta baloncuk merkezleri (mm → piksel) örneklenir,
+ *      en koyu (ve yeterince ayırt edici) şık işaretli sayılır.
  *
- * BAĞIMLILIK: jsQR (global `jsQR` fonksiyonu). Örn:
- *   (jsQR inline gömülü)
+ * BAĞIMLILIK: OpenCV.js (global `cv`) — sayfaTespitCV.js üzerinden.
+ *   jsQR artık kullanılmıyor, index.html'den de kaldırıldı.
  *
- * GİRDİ: bir <img>/<video>/<canvas> kaynağı (çekilen fotoğraf) +
- *        layoutEngine.js'in layoutHesapla() çıktısındaki TEK bir mini-form
- *        (örn. layout.formlar[0]). Bu form nesnesi; qrAlani, hizalamaIsaretleri,
- *        ve (izgara veya bolumler) soru koordinatlarının hepsini mm cinsinden,
- *        A4 sayfasına göre GLOBAL konumda içerir.
- *
- * NOT: Fiziksel olarak KESİLMİŞ tek bir mini-formun fotoğrafı okunacağı
- *      varsayılır — yani form.bolge'nin sol-üst köşesi, fotoğraftaki
- *      kağıt parçasının kendi (0,0) noktasıdır. Bu yüzden tüm global mm
- *      koordinatları form.bolge.x / form.bolge.y çıkarılarak yerelleştirilir.
+ * GİRDİ: bir <img>/<video>/<canvas> kaynağı + layoutEngine.js'in
+ *        layoutHesapla() çıktısındaki form nesnesi.
  *
  * ÇIKTI (formuOku'nun döndürdüğü Promise):
  *   {
  *     basarili: boolean,
- *     ogrenciKimlik: object|null,   // QR payload (JSON.parse edilmiş)
+ *     ogrenciKimlik: object|null,   // numara + kitapçık baloncuklarından
  *     cevaplar: [{ ders, soruNo, isaretliSik, guven, uyari }],
- *     uyarilar: string[],           // genel uyarılar (QR bulunamadı, vs.)
- *     hataAyiklama: {               // debug/görselleştirme için
+ *     uyarilar: string[],
+ *     hataAyiklama: {
  *       duzeltilmisCanvas: HTMLCanvasElement,
- *       hizalamaNoktalari: {x,y}[4]
+ *       hizalamaNoktalari: {x,y}[],
+ *       ornekNoktalari: array
  *     }
  *   }
- *
- * KULLANIM:
- *   const layout = layoutHesapla({ sinavTuru: 'ozel', soruSayisi: 20, sikSayisi: 4 });
- *   const form = layout.formlar[0];
- *   const sonuc = await OmrOkuyucu.formuOku(fotografImgElementi, form);
  */
 
 window.OmrOkuyucu = (function () {
@@ -419,40 +397,7 @@ window.OmrOkuyucu = (function () {
     return toplam > 0 ? isaretli / toplam : 0;
   }
 
-  // ---------------------------------------------------------------------
-  // 2) QR kod okuma
-  // ---------------------------------------------------------------------
-
-  function qrKoduBul(imageData) {
-    if (typeof jsQR !== 'function') {
-      throw new Error(
-        'jsQR bulunamadı. omrOkuyucu.js\'ten önce jsQR kütüphanesini yükleyin ' +
-        '(ör. jsQR inline gömülü).'
-      );
-    }
-    const kod = jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: 'attemptBoth',
-    });
-    if (!kod) return null;
-    return {
-      metin: kod.data,
-      koseler: {
-        solUst: kod.location.topLeftCorner,
-        sagUst: kod.location.topRightCorner,
-        solAlt: kod.location.bottomLeftCorner,
-        sagAlt: kod.location.bottomRightCorner,
-      },
-    };
-  }
-
-  function payloadAyristir(metin) {
-    try {
-      return JSON.parse(metin);
-    } catch (e) {
-      // QR'de düz metin/öğrenci no da olabilir; JSON değilse ham metni sakla.
-      return { ham: metin };
-    }
-  }
+  // NOT: QR kod okuma kaldırıldı — artık hizalama işaretleri doğrudan bulunuyor.
 
   // ---------------------------------------------------------------------
   // 3) Homografi: 4 nokta DLT (OpenCV'siz, saf JS)
@@ -911,8 +856,24 @@ window.OmrOkuyucu = (function () {
    */
   function sayfaSiniriniKestir(imageData) {
     const { width, height, data } = imageData;
-    const PARLAKLIK_ESIK = 140; // bu ve üzeri "sayfa/beyaz" sayılır
-    const ARDISIK_GEREKEN = Math.max(8, Math.round(Math.min(width, height) * 0.02)); // gürültüyle karışmasın diye art arda bu kadar parlak piksel gerekir
+    // ADAPTİF EŞİK (Sorun 2 düzeltmesi): sabit 140 yerine histogram'dan
+    // %60'ıncı yüzdelik dilim. Beyaz zemin üzerinde beyaz kağıt gibi
+    // düşük kontrastlı sahnelerde sabit 140 hem zemini hem kağıdı
+    // "parlak" sayıp sınır tespitini bozuyordu. Adaptif eşik,
+    // sahnenin kendi parlaklık dağılımına göre kalibre olur.
+    const histogram = new Uint32Array(256);
+    const toplamPiksel = width * height;
+    for (let i = 0; i < data.length; i += 4) {
+      histogram[Math.round(grilikDegeri(data, i))]++;
+    }
+    let kumu = 0;
+    const hedef60 = Math.round(toplamPiksel * 0.60);
+    let PARLAKLIK_ESIK = 140;
+    for (let v = 0; v < 256; v++) {
+      kumu += histogram[v];
+      if (kumu >= hedef60) { PARLAKLIK_ESIK = Math.max(110, Math.min(200, v)); break; }
+    }
+    const ARDISIK_GEREKEN = Math.max(8, Math.round(Math.min(width, height) * 0.02));
 
     function parlakMi(x, y) {
       return grilikDegeri(data, (y * width + x) * 4) >= PARLAKLIK_ESIK;
@@ -1003,16 +964,6 @@ window.OmrOkuyucu = (function () {
     return { x: globalX - form.bolge.x, y: globalY - form.bolge.y };
   }
 
-  function qrKoseleriMM(form) {
-    const { x, y, boyut } = form.qrAlani;
-    return {
-      solUst: yerelNokta(form, x, y),
-      sagUst: yerelNokta(form, x + boyut, y),
-      solAlt: yerelNokta(form, x, y + boyut),
-      sagAlt: yerelNokta(form, x + boyut, y + boyut),
-    };
-  }
-
   function hizalamaMerkezleriMM(form) {
     return form.hizalamaIsaretleri.map((m) => ({
       konum: m.konum,
@@ -1030,398 +981,6 @@ window.OmrOkuyucu = (function () {
    * homografiyi (mmCanonical -> fotoPiksel) de içerir; böylece hata
    * ayıklarken/görselleştirirken tekrar kullanılabilir.
    */
-  function formuDuzlestir(fotoImageData, form, ppmm) {
-    // AŞAMA 1: QR kodunun 4 köşesiyle KABA bir homografi kur.
-    // Bu tek başına nihai homografi olarak kullanılmamalı — QR sayfanın
-    // sadece küçük bir bölgesinde (örn. sağ-üst ~28mm kutu) olduğu için,
-    // buradan hesaplanan dönüşüm sayfanın uzak bölgelerine (örn. sol
-    // taraftaki Türkçe/İnkılap sütunları) ekstrapole edildiğinde KENDİ
-    // İÇİNDEKİ küçük bir piksel hatası bile ciddi kaymaya yol açıyordu.
-    // (Bu, "QR'ye yakın sorular bazen doğru, uzak sorular hep boş" olarak
-    // gözlemlenen hatanın asıl kaynağıydı.)
-    const qrMM = qrKoseleriMM(form);
-    const qrKoseler = qrKoduBulVeDogrula(fotoImageData);
-
-    const qrKaynak = [
-      { x: qrMM.solUst.x * ppmm, y: qrMM.solUst.y * ppmm },
-      { x: qrMM.sagUst.x * ppmm, y: qrMM.sagUst.y * ppmm },
-      { x: qrMM.solAlt.x * ppmm, y: qrMM.solAlt.y * ppmm },
-      { x: qrMM.sagAlt.x * ppmm, y: qrMM.sagAlt.y * ppmm },
-    ];
-    const qrHedef = [
-      qrKoseler.koseler.solUst,
-      qrKoseler.koseler.sagUst,
-      qrKoseler.koseler.solAlt,
-      qrKoseler.koseler.sagAlt,
-    ];
-
-    const kabaH = homografiHesapla(qrKaynak, qrHedef);
-
-    // AŞAMA 2: form.hizalamaIsaretleri — sayfanın DÖRT KÖŞESİNE yayılmış
-    // fiducial kareler — kaba homografiyle fotoğrafta tahmini konumlarına
-    // projekte edilir, sonra HASSAS piksel merkezleri bulunur. Sayfanın
-    // tamamına yayılan bu 4 nokta, homografiyi QR'nin küçük kutusundan çok
-    // daha güvenilir biçimde belirler.
-    //
-    // ÖNEMLİ (düzeltilen hata): pencere eskiden fotoğrafın kısa kenarının
-    // SABİT bir ORANI kadardı (ARAMA_PENCERE_ORANI=0.20). Bu, yakından/
-    // yüksek çözünürlükte çekilmiş fotoğraflarda onlarca mm'ye tekabül
-    // edebiliyordu — ve "sağ-üst" köşe işareti QR koduna (~14mm mesafede)
-    // sadece bu kadar yakın olduğu için, pencere QR'nin bir kısmını da
-    // içine alıp AĞIRLIK MERKEZİNİ QR'YE DOĞRU ÇEKİYORDU. Bu tek köşedeki
-    // kayma, homografiye YAYILAN bir döndürme/eğiklik (sayfanın tamamen
-    // çarpık görünmesi) olarak ortaya çıkıyordu — kağıdın eğriliğiyle
-    // ilgisi yoktu, saf bir köşe-karışması hatasıydı.
-    //
-    // ÇÖZÜM: (a) pencere artık fotoğrafın gerçek ÖLÇEĞİNE göre (kabaH'den
-    // yerel olarak kestirilen mm/piksel oranıyla) SABİT bir mm yarıçapı
-    // olarak hesaplanıyor — fotoğrafın çözünürlüğünden/yakınlığından
-    // bağımsız; (b) arama, ders sütunu köşelerinde kullandığımız BLOB
-    // (bağlı bileşen) tabanlı yönteme geçti — pencere yine de komşu bir
-    // şekle (QR gibi) taşsa bile, TAHMİNE EN YAKIN bağlı bileşeni seçtiği
-    // için karışmıyor.
-    // NOT (v2 ince ayar): sağ-üst köşe artık doğru bulunuyor ama alt iki
-    // köşe (sol-alt, sağ-alt) bazen bulunamıyordu. Sebep: kaba homografi
-    // SADECE QR'ye (sağ-üst bölge) dayanıyor; alt köşeler QR'den ~290mm
-    // uzakta olduğu için ekstrapolasyon hatası orada çok daha büyük
-    // olabiliyor — 8mm'lik pencere bu köşeler için yetersiz kalıyordu.
-    // Pencere büyütüldü (20mm); bu, sağ-üst köşede QR ile karışma riskini
-    // yeniden getirmiyor çünkü blob yöntemi TAHMİNE EN YAKINI seçiyor ve o
-    // köşedeki tahmin zaten (QR'ye yakın olduğu için) düşük hatalı.
-    // NOT (v3): Sabit 20mm bile bazı köşelerde (özellikle sol-alt, QR'den
-    // ~290mm uzakta) hâlâ yetersiz kalabiliyor — ekstrapolasyon hatası
-    // mesafeyle BÜYÜR, sabit bir pencere bunu her zaman yakalayamaz. Bu
-    // yüzden pencere artık QR merkezinden UZAKLIKLA ORANTILI hesaplanıyor
-    // (yakın köşelerde dar/hassas, uzak köşelerde geniş/toleranslı kalsın
-    // diye 15mm taban + uzaklığın %12'si).
-    const ARAMA_TABAN_MM = 15;
-    const ARAMA_ORANI = 0.12;
-
-    /** kabaH'nin (cx,cy) civarındaki YEREL piksel/mm ölçeğini kestirir. */
-    function yerelOlcekKestir(H, cx, cy, ppmm) {
-      const deltaMM = 5;
-      const p0 = noktayiDonustur(H, cx, cy);
-      const p1 = noktayiDonustur(H, cx + deltaMM * ppmm, cy);
-      const dx = p1.x - p0.x;
-      const dy = p1.y - p0.y;
-      return Math.sqrt(dx * dx + dy * dy) / deltaMM; // fotoğraf pikseli / mm
-    }
-
-    const qrMerkezMM = {
-      x: (qrMM.solUst.x + qrMM.sagUst.x + qrMM.solAlt.x + qrMM.sagAlt.x) / 4,
-      y: (qrMM.solUst.y + qrMM.sagUst.y + qrMM.solAlt.y + qrMM.sagAlt.y) / 4,
-    };
-
-    const hizalamaMM = hizalamaMerkezleriMM(form);
-    const hassasKaynak = [];
-    const hassasHedef = [];
-    const bulunamayanIsaretler = [];
-
-    for (const isaret of hizalamaMM) {
-      const cx = isaret.nokta.x * ppmm;
-      const cy = isaret.nokta.y * ppmm;
-      const kabaTahmin = noktayiDonustur(kabaH, cx, cy);
-      const pikselPerMM = yerelOlcekKestir(kabaH, cx, cy, ppmm);
-
-      const qrUzaklikMM = Math.sqrt(
-        Math.pow(isaret.nokta.x - qrMerkezMM.x, 2) +
-        Math.pow(isaret.nokta.y - qrMerkezMM.y, 2)
-      );
-      const aramaYariCapMM = Math.max(ARAMA_TABAN_MM, qrUzaklikMM * ARAMA_ORANI);
-
-      const yarimPencerePx = aramaYariCapMM * pikselPerMM;
-      const hassasMerkez = isaretMerkeziBulBlob(
-        fotoImageData, kabaTahmin.x, kabaTahmin.y, yarimPencerePx, yarimPencerePx
-      );
-      if (hassasMerkez) {
-        hassasKaynak.push({ x: cx, y: cy });
-        hassasHedef.push(hassasMerkez);
-      } else {
-        bulunamayanIsaretler.push(isaret.konum);
-      }
-    }
-
-    // Sayfanın 4 köşesi de bulunabildiyse bunları kullan (asıl amaçlanan,
-    // sağlam yöntem, tam perspektif/homografi). TAM 3 köşe bulunduysa
-    // (4'ten biri bulunamadıysa) o 3 iyi noktayı çöpe atıp doğrudan kaba
-    // QR-homografisine düşmek yerine, o 3 noktadan bir AFİN dönüşüm
-    // (döndürme+ölçek+kayma, perspektif olmadan) kuruyoruz — kağıt zaten
-    // yaklaşık düz olduğu için bu, sadece QR'ye dayanan kaba homografiden
-    // çok daha isabetlidir. Sadece 2 veya daha az köşe bulunduysa (çok
-    // güvenilir bir dönüşüm kurulamaz) kaba homografiye düşülür.
-    const dortKoseDeBulundu = hassasKaynak.length === 4;
-    const ucKoseBulundu = hassasKaynak.length === 3;
-
-    // KENDİ-İÇİ TUTARLILIK KONTROLÜ (v6 — v5'teki AŞIRI-HASSASLIK hatası
-    // düzeltildi): v5, her köşeyi "diğer 3'ten AFİN kurup tahmin et" ile
-    // test ediyordu. SORUN: afin dönüşüm perspektifi MODELLEMEZ (sadece
-    // döndürme+ölçek+kayma); elde tutulan bir telefonla çekilmiş GERÇEK bir
-    // fotoğrafta normal/beklenen perspektif bile (kağıt tam karşıdan değil
-    // hafif açıyla çekildiğinde) bu afin-tahmininde onlarca mm'lik bir
-    // "artık" üretebiliyordu — DOĞRU bulunmuş 4. köşeyi bile "tutarsız"
-    // sayıp gereksiz yere dışlıyor, sonra afin (perspektifsiz) bir
-    // düzeltmeye düşülüyordu. Bir önceki taramada "sol-alt tutarsız" diye
-    // dışlandığı halde sonuç yine bozuk çıkmasının sebebi buydu: dışlanan
-    // köşe muhtemelen DOĞRUYDU, ama afin fallback'in kendisi gerçek
-    // perspektifi karşılayamadığı için sağ tarafta hâlâ çarpıklık vardı.
-    //
-    // ÇÖZÜM: Önce PERSPEKTİFTEN BAĞIMSIZ, saf GEOMETRİK bir sağlık kontrolü
-    // yapılıyor: bulunan 4 köşe fotoğrafta KONVEKS (dışbükey) bir dörtgen mi
-    // oluşturuyor, ve iç açılar mantıklı sınırlar içinde mi (çok sivri/
-    // dejenere değil mi)? Bu kontrol, kağıdın GERÇEKTEN ne kadar
-    // perspektifle çekildiğinden bağımsızdır. Sağlıklıysa TAM homografi (4
-    // nokta, gerçek perspektifi doğru modelleyen 8-serbestlik-dereceli
-    // dönüşüm) doğrudan kullanılıyor — afin'e hiç düşülmüyor. Sadece bu
-    // geometrik kontrol BAŞARISIZ olursa (gerçekten dejenere/çapraz bir
-    // dörtgen — bir köşenin yanlış blob'a kilitlendiğinin güçlü işareti)
-    // v5'teki afin leave-one-out testine düşülüp kötü köşe dışlanıyor.
-    function carpiklikIsareti(a, b, c) {
-      const v1x = b.x - a.x, v1y = b.y - a.y;
-      const v2x = c.x - b.x, v2y = c.y - b.y;
-      return v1x * v2y - v1y * v2x;
-    }
-
-    function icAciDerece(a, b, c) {
-      const ux = a.x - b.x, uy = a.y - b.y;
-      const vx = c.x - b.x, vy = c.y - b.y;
-      const uLen = Math.sqrt(ux * ux + uy * uy) || 1e-9;
-      const vLen = Math.sqrt(vx * vx + vy * vy) || 1e-9;
-      const cosAci = Math.max(-1, Math.min(1, (ux * vx + uy * vy) / (uLen * vLen)));
-      return Math.acos(cosAci) * (180 / Math.PI);
-    }
-
-    // hassasHedef sırası [sol-ust, sağ-ust, sol-alt, sağ-alt] (bkz.
-    // hizalamaIsaretleriEkle); ÇEVRE sırasına çevriliyor: sol-ust -> sağ-ust
-    // -> sağ-alt -> sol-alt (indeksler: 0,1,3,2).
-    function konveksVeSaglikliMi(dortNokta) {
-      const cevre = [dortNokta[0], dortNokta[1], dortNokta[3], dortNokta[2]];
-      const n = cevre.length;
-      const isaretler = [];
-      const acilar = [];
-      for (let i = 0; i < n; i++) {
-        const a = cevre[(i + n - 1) % n];
-        const b = cevre[i];
-        const c = cevre[(i + 1) % n];
-        isaretler.push(Math.sign(carpiklikIsareti(a, b, c)));
-        acilar.push(icAciDerece(a, b, c));
-      }
-      const konveks = isaretler.every((s) => s === isaretler[0]) && isaretler[0] !== 0;
-      const acilarSaglikli = acilar.every((a) => a > 20 && a < 160);
-      return konveks && acilarSaglikli;
-    }
-
-    const disariBirakilanIsaretler = [];
-    let artiklarMM = [];
-    let H;
-
-    if (dortKoseDeBulundu) {
-      // v7 (v6'daki KAÇIRILAN-DOĞRULAMA hatası düzeltildi): v6, dörtgen
-      // KONVEKS ve açıları sağlıklıysa leave-one-out testini hiç
-      // ÇALIŞTIRMADAN doğrudan 4 noktalık tam homografiye güveniyordu.
-      // SORUN: 4 nokta tam olarak 8 serbestlik derecesini karşıladığı için
-      // homografiHesapla bu 4 noktaya SIFIR artıkla (residual) mükemmel
-      // uyar — yani "4 nokta birbiriyle ne kadar tutarlı" sorusuna hiç
-      // cevap vermez. Bir köşe (örn. sağ-alt) yanlış bir blob'a
-      // kilitlense bile, kalan 3 doğru köşeyle birlikte GENELDE yine
-      // konveks ve "makul açılı" bir dörtgen oluşturur (dejenere/çapraz
-      // olmaz) — bu yüzden konvekslik kontrolü tek başına bu hatayı
-      // YAKALAYAMIYORDU. Sonraki QR-holdout kontrolü de bunu kurtarmıyordu
-      // çünkü o SADECE QR'ye yakın bölgedeki hatayı ölçüyor; QR'den uzak
-      // (örn. sağ-alt) bir köşenin hatası QR bölgesinde küçük kalabiliyor.
-      // Sonuç: sayfanın QR'ye yakın kısmı düzgün, uzak kısmı (özellikle
-      // sağ/alt) çarpık çıkan tam bu hata.
-      //
-      // ÇÖZÜM: leave-one-out artık dörtgenin şekline BAKMAKSIZIN HER ZAMAN
-      // çalıştırılıyor. Her köşe için "diğer 3'ten afin kurup bu köşeyi
-      // tahmin et" yapılıp gerçek konumuyla farkı (mm) ölçülüyor. En kötü
-      // artık küçükse (4 köşe birbiriyle gerçekten tutarlı) tam homografi
-      // kullanılıyor; büyükse (bir köşe diğerleriyle uyuşmuyor) o köşe
-      // dışlanıp kalan 3'ten AFİN düzeltmeye düşülüyor — konvekslik testi
-      // artık sadece "hiçbir üçlü alt küme bile mantıklı değil" durumunu
-      // (tümüyle dejenere dörtgen) ayıklamak için ikincil bir kontrol.
-      artiklarMM = hassasKaynak.map((_, i) => {
-        const kalanKaynak = hassasKaynak.filter((_, j) => j !== i);
-        const kalanHedef = hassasHedef.filter((_, j) => j !== i);
-        // NOT: gaussEleme, NEREDEYSE DOĞRUSAL (collinear) bir 3-nokta alt
-        // kümesinde KASITLI OLARAK hata fırlatır (bkz. "Homografi sistemi
-        // tekil" — dejenere nokta konfigürasyonuna karşı bir koruma).
-        // Leave-one-out burada 4 farklı 3'lü alt küme deniyor; bunlardan
-        // biri gerçek fotoğrafta (lens/perspektif çarpıtmasıyla) neredeyse
-        // doğrusal çıkabilir. Bu durumda try/catch olmadan hata TÜM
-        // okumayı çökertiyordu — kullanıcı bunu "okumuyor, anasayfaya
-        // atıyor" olarak görüyordu. Şimdi böyle bir alt küme, sadece
-        // "sonsuz kötü" (bu köşe adayı olamaz) sayılıp atlanıyor.
-        try {
-          const Hsub = afinHesapla(kalanKaynak, kalanHedef);
-          const tahmin = noktayiDonustur(Hsub, hassasKaynak[i].x, hassasKaynak[i].y);
-          const dx = tahmin.x - hassasHedef[i].x;
-          const dy = tahmin.y - hassasHedef[i].y;
-          const pxFark = Math.sqrt(dx * dx + dy * dy);
-          const pikselPerMM = yerelOlcekKestir(kabaH, hassasKaynak[i].x, hassasKaynak[i].y, ppmm);
-          return pxFark / pikselPerMM;
-        } catch (e) {
-          return Infinity;
-        }
-      });
-
-      // GERÇEK ÇÖKME HATASI (düzeltildi): artiklarMM.indexOf(Math.max(...))
-      // kullanılıyordu. Eğer 3 nokta neredeyse doğrusal (collinear) çıkarsa
-      // afinHesapla/gaussEleme NaN üretebiliyor — ve Math.max bir NaN
-      // içeren dizide HER ZAMAN NaN döner, .indexOf(NaN) ise (NaN !== NaN
-      // olduğu için) HER ZAMAN -1 döner. Sonuçta hizalamaMM[-1].konum
-      // "Cannot read properties of undefined" hatasıyla TÜM okumayı
-      // çökertiyordu (kullanıcı bunu "okumuyor, anasayfaya atıyor" olarak
-      // gördü). Elle, NaN'i "en kötü" sayan güvenli bir arama ile
-      // düzeltildi; hiçbir geçerli (sonlu) artık yoksa köşe seçimine hiç
-      // güvenilmeyip doğrudan kaba homografiye düşülüyor.
-      let enKotuIndex = -1;
-      let enKotuDeger = -Infinity;
-      for (let i = 0; i < artiklarMM.length; i++) {
-        const deger = Number.isFinite(artiklarMM[i]) ? artiklarMM[i] : Infinity;
-        if (deger > enKotuDeger) {
-          enKotuDeger = deger;
-          enKotuIndex = i;
-        }
-      }
-
-      // Fiducial kareler yüksek hassasiyetle basılıyor; 4 köşe GERÇEKTEN
-      // tutarlıysa leave-one-out artığı normalde 1-2mm'nin altında kalır.
-      // Bu eşiğin üstü, bir köşenin yanlış bir şekle kilitlendiğinin işareti.
-      // v8 (v7'deki AŞIRI-SIKI-EŞİK hatası düzeltildi): v7, bu artığı 4mm
-      // gibi sıkı bir eşikle "köşe yanlış" sayıyordu. SORUN: bu artık
-      // AFİN bir modelin (perspektifsiz) 3 noktadan 4.'yü ne kadar iyi
-      // tahmin ettiğini ölçüyor — ama gerçek bir telefon fotoğrafında
-      // sayfa neredeyse HİÇBİR ZAMAN kameraya tam paralel değildir, yani
-      // GERÇEK bir perspektif vardır. Afin bu perspektifi MODELLEYEMEZ,
-      // bu yüzden 4 köşe de doğru bulunmuş olsa bile (LGS sayfası ~300mm
-      // uzun kenara sahip, tipik elde-tutuş açılarında) bu artık kolayca
-      // 5-15mm'ye çıkabilir — bu HATA DEĞİL, sadece afin modelin doğal
-      // sınırı. v7 bunu "köşe yanlış" sanıp iyi bir köşeyi dışlayıp yerine
-      // perspektifi hiç düzeltemeyen bir afin dönüşümle değiştiriyordu ki
-      // bu da GÖRÜNEN SONUCU DAHA DA KÖTÜLEŞTİRİYORDU (tam da ekran
-      // görüntüsünde gördüğümüz). Eşik, gerçek fotoğraf perspektifini
-      // "tutarsızlık" sanmayacak kadar gevşetildi; artık sadece bir köşenin
-      // GERÇEKTEN yanlış bir şekle kilitlendiği (onlarca mm'lik hata)
-      // durumları yakalıyor.
-      const TUTARLILIK_ESIK_MM = 18;
-
-      // Kalibrasyon için: bu 4 artığı konsola yaz. Gerçek fotoğraflarda
-      // "iyi" bir okumada bu değerlerin ne kadar çıktığını görüp eşiği
-      // ileride gerekirse ince ayar yapabilmek amacıyla.
-      console.log(
-        'Köşe tutarlılık artıkları (mm):',
-        hizalamaMM.map((h, i) => h.konum + '=' + (Number.isFinite(artiklarMM[i]) ? artiklarMM[i].toFixed(1) : 'sonsuz')).join(', ')
-      );
-
-      if (
-        enKotuIndex !== -1 &&
-        Number.isFinite(enKotuDeger) &&
-        enKotuDeger <= TUTARLILIK_ESIK_MM &&
-        konveksVeSaglikliMi(hassasHedef)
-      ) {
-        try {
-          H = homografiHesapla(hassasKaynak, hassasHedef);
-        } catch (e) {
-          H = kabaH; // son çare: kaba QR homografisi hiçbir zaman fırlatmaz
-        }
-      } else if (enKotuIndex === -1 || !Number.isFinite(enKotuDeger)) {
-        // Hiçbir kombinasyon geçerli/sonlu bir sonuç vermedi (dörtgen
-        // gerçekten dejenere) — güvenli tarafta kal, kaba homografiye düş.
-        H = kabaH;
-      } else {
-        const kalanKaynak = hassasKaynak.filter((_, j) => j !== enKotuIndex);
-        const kalanHedef = hassasHedef.filter((_, j) => j !== enKotuIndex);
-        H = afinHesapla(kalanKaynak, kalanHedef);
-        disariBirakilanIsaretler.push(hizalamaMM[enKotuIndex].konum);
-      }
-    } else if (ucKoseBulundu) {
-      try {
-        H = afinHesapla(hassasKaynak, hassasHedef);
-      } catch (e) {
-        H = kabaH;
-      }
-    } else {
-      H = kabaH;
-    }
-
-
-    // GÜVENLİK KONTROLÜ (v4 — v3'teki TERS MANTIK hatası düzeltildi):
-    // v3, hassas H'yi KABA (sadece QR'ye dayanan) homografiyle sayfanın
-    // UZAK köşelerinde karşılaştırıp farkı >30mm ise hassas H'yi reddediyordu.
-    // SORUN: kabaH zaten yalnızca ~28mm'lik küçük bir QR kutusundan
-    // hesaplanıyor; bu dosyanın başındaki notlarda da açıklandığı gibi,
-    // QR'den ~300mm uzaktaki noktalara ekstrapole edildiğinde kabaH'nin
-    // KENDİSİ büyük ölçüde yanlış olabiliyor. Yani v3, "doğru ama
-    // beklenmedik" bir sonucu (hassas H, kabaH'den UZAKTA farklı — ki tam
-    // da bunun İÇİN hassas köşeler eklendi) sistematik olarak GÜVENİLMEZ
-    // sayıp siliyordu; en çok ihtiyaç duyulan durumda (kabaH'nin gerçekten
-    // saptığı büyük/eğri sayfalarda) hassas sonucu iptal edip tekrar
-    // kabaH'ye dönüyordu. Ekran görüntülerinde köşelerin gözle doğru
-    // bulunduğu ama yine de "güvenilmez" sayılıp reddedildiği durumların
-    // sebebi buydu.
-    //
-    // ÇÖZÜM: hassas H'yi kabaH ile DEĞİL, QR'nin GERÇEKTEN ölçülen piksel
-    // köşeleriyle (qrHedef — jsQR'nin bulduğu, ekstrapolasyon içermeyen
-    // doğrudan piksel konumları) karşılaştırıyoruz. Bu noktalar hassas H'yi
-    // KURMAK için KULLANILMADI (H sadece 4 uzak hizalama işaretinden
-    // kuruldu) — yani bu bağımsız bir "holdout" doğrulama noktası kümesi.
-    // QR küçük bir alanda olduğu için buradaki hata ekstrapole olmaz;
-    // hassas H, QR'nin mm konumunu QR'nin GERÇEKTEN bulunduğu piksele
-    // yakın öngörmüyorsa, bu hassas H'nin (örn. bir köşenin yanlış blob'a
-    // kilitlenmesi yüzünden) gerçekten hatalı olduğu anlamına gelir —
-    // kabaH'nin uzak noktalarda kendisinin de sapmış olması bu durumda
-    // sorun değildir, çünkü QR bölgesi kabaH için de hassas H için de
-    // "yakın/hatasız" bir bölgedir.
-    const QR_HOLDOUT_ESIK_MM = 10; // QR küçük bir alan; sıkı tolerans yeterli
-    let uyumsuzlukMM = 0;
-    if (H !== kabaH) {
-      for (let i = 0; i < qrKaynak.length; i++) {
-        const kaynak = qrKaynak[i];
-        const hedefGercek = qrHedef[i];
-        const tahmin = noktayiDonustur(H, kaynak.x, kaynak.y);
-        const dx = tahmin.x - hedefGercek.x;
-        const dy = tahmin.y - hedefGercek.y;
-        const pxFark = Math.sqrt(dx * dx + dy * dy);
-        const pikselPerMM = yerelOlcekKestir(kabaH, kaynak.x, kaynak.y, ppmm);
-        const mmFark = pxFark / pikselPerMM;
-        if (mmFark > uyumsuzlukMM) uyumsuzlukMM = mmFark;
-      }
-    }
-
-    const guvenilmezBulunduMu = uyumsuzlukMM > QR_HOLDOUT_ESIK_MM;
-    if (guvenilmezBulunduMu) {
-      H = kabaH; // hassas köşeler QR ile bile tutarsız — gerçekten güvenilmez
-    }
-
-    const koseBulunduMu = (dortKoseDeBulundu || ucKoseBulundu) && !guvenilmezBulunduMu;
-
-    return {
-      H,
-      hizalamaBulunduMu: koseBulunduMu,
-      guvenilmezBulunduMu,
-      bulunamayanIsaretler,
-      // 4 köşe de bulunmuştu ama biri diğer 3'le tutarsız çıktığı için
-      // (leave-one-out testi) dışlanıp kalan 3'ten afin kuruldu.
-      disariBirakilanIsaretler,
-      hizalamaNoktalari: koseBulunduMu ? hassasHedef : qrHedef,
-      // Debug/görselleştirme için: bu noktaların DÜZLEŞTİRİLMİŞ (canonical,
-      // perspektifsiz) canvas'taki karşılıkları — hizalamaNoktalari'nin
-      // aksine, bunlar orijinal fotoğraf değil dewarp edilmiş görüntü
-      // üzerine çizilmek için doğru koordinat sistemindedir.
-      hizalamaKanonikNoktalari: koseBulunduMu ? hassasKaynak : qrKaynak,
-      // HAM bulunan noktalar (güvenilmez sayılıp REDDEDİLMİŞ olsa bile) —
-      // "bulundu ama reddedildi" durumunda asıl neyin yanlış bulunduğunu
-      // gözle teşhis edebilmek için. hassasKaynak boşsa (hiç köşe
-      // bulunamadıysa) null.
-      hamBulunanKanonikNoktalari: hassasKaynak.length ? hassasKaynak : null,
-      // Kalibrasyon/teşhis için: her köşenin leave-one-out artığı (mm).
-      // dortKoseDeBulundu değilse boş dizi.
-      koseArtiklariMM: dortKoseDeBulundu
-        ? hizalamaMM.map((h, i) => ({ konum: h.konum, artikMM: artiklarMM[i] }))
-        : [],
-    };
-  }
-
   /**
    * 3 nokta çiftinden AFİN dönüşüm (döndürme+ölçek+kayma, perspektif YOK)
    * kurar ve homografiHesapla ile AYNI 3x3 matris formatında döndürür
@@ -1436,15 +995,6 @@ window.OmrOkuyucu = (function () {
     const [a, b, c] = gaussEleme(A, bx);
     const [d, e, f] = gaussEleme(A.map((r) => [...r]), by);
     return [a, b, c, d, e, f, 0, 0, 1];
-  }
-
-  /** İç kullanım: fotoğrafta QR ara, bulunamazsa açıklayıcı hata fırlat. */
-  function qrKoduBulVeDogrula(imageData) {
-    const sonuc = qrKoduBul(imageData);
-    if (!sonuc) {
-      throw new Error('Fotoğrafta QR kod bulunamadı. Işık/odak/açı kontrol edilip tekrar deneyin.');
-    }
-    return sonuc;
   }
 
   function bilinearOrnekle(imageData, x, y) {
@@ -1717,7 +1267,7 @@ window.OmrOkuyucu = (function () {
   /**
    * baloncukKaranlikOrani'nin, KÜÇÜK YEREL KAYMALARA karşı toleranslı sürümü.
    *
-   * SORUN: Sayfa geneli tek bir homografi (bkz. formuDuzlestir), kağıt
+   * SORUN: Sayfa geneli tek bir homografi (bkz. formuOtomatikDuzlestir), kağıt
    * MATEMATİKSEL OLARAK tam düz (planar) olduğu varsayımıyla çalışır. Elde
    * tutularak fotoğraflanan gerçek kağıt genelde hafifçe kavislidir/bombelidir
    * (özellikle kenarlarda) — bu, global homografi ile düzeltilemeyen, sayfa
@@ -2617,7 +2167,7 @@ window.OmrOkuyucu = (function () {
    * QR'ye TAMAMEN ihtiyaç duymadan, sayfanın 4 köşe hizalama karesini
    * doğrudan fotoğrafta arayıp (sayfaKoseleriniAra) bir homografi/afin
    * dönüşüm kurar. Doğrulama mantığı (leave-one-out tutarlılık + konvekslik)
-   * QR'li eski formuDuzlestir'deki v8 mantığıyla AYNI — sadece kabaH
+   * formuOtomatikDuzlestir ile AYNI — sadece kabaH'sız (QR kaldırıldı),
    * bootstrap'i yerine doğrudan bulunan köşeler arasındaki mesafeden
    * fotoğraf ölçeği (piksel/mm) kestiriliyor.
    */

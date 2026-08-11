@@ -272,7 +272,39 @@ function _konturAraTekAyar(gri, roiOfsX, roiOfsY, tamAlan, cannyAlt, cannyUst, e
   let enBuyukHamAlan = -1;
 
   try {
+    // ── ZEMIN BAĞIMSIZ MASKE ─────────────────────────────────────────
+    // En parlak %40 pikseli "kağıt bölgesi" olarak maskele.
+    // Adaptif eşik: histogramdan %60'ıncı yüzdelik dilim değeri bulunur,
+    // bu değerin üstündeki pikseller kağıt sayılır. Zemin rengi (beyaz/
+    // koyu/renkli) fark etmez — kağıt her zaman sahnenin en parlak
+    // unsurudur (özellikle standart A4 sınav kağıtları için).
+    const maskeMat = new cv.Mat();
+    (function() {
+      const histogram = new Uint32Array(256);
+      const gData = gri.data; // Uint8Array
+      const toplamPiksel = gData.length;
+      for (let i = 0; i < toplamPiksel; i++) histogram[gData[i]]++;
+      // %60'ıncı yüzdelik: aşağıdan toplamın %60'ı geçince o bin
+      const hedef = Math.round(toplamPiksel * 0.60);
+      let kumu = 0, esik = 200;
+      for (let v = 0; v < 256; v++) {
+        kumu += histogram[v];
+        if (kumu >= hedef) { esik = Math.max(100, v); break; }
+      }
+      // Eşik üstü = kağıt (255), altı = zemin (0)
+      cv.threshold(gri, maskeMat, esik, 255, cv.THRESH_BINARY);
+      // Küçük delikleri kapat (dilate→erode = morfolojik kapama)
+      const closeKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(15, 15));
+      cv.dilate(maskeMat, maskeMat, closeKernel);
+      cv.erode(maskeMat, maskeMat, closeKernel);
+      closeKernel.delete();
+    })();
+    // ─────────────────────────────────────────────────────────────────
+
     cv.Canny(gri, kenarlar, cannyAlt, cannyUst);
+    // Maske uygula: zemin bölgesindeki Canny kenarlarını sıfırla
+    cv.bitwise_and(kenarlar, maskeMat, kenarlar);
+    maskeMat.delete();
     cv.dilate(kenarlar, kenarlar, dilateKernel, new cv.Point(-1, -1), 2);
     // CHAIN_APPROX_NONE: kontur boyunca TÜM pikselleri sakla (SIMPLE yalnızca
     // köşeleri tutar). Daha fazla bellek/işlem ama _koseRafine'nin doğru fit
