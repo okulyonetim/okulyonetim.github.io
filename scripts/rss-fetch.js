@@ -277,10 +277,38 @@ async function main(){
   await bildirimGonder(db, yeniHaberler);
 }
 
+/* ---------- saat aralığı kontrolü ---------- */
+function _cihazSaatAraligindaMi(cihaz){
+  const baslangic = cihaz.bildirimSaatBaslangic;
+  const bitis    = cihaz.bildirimSaatBitis;
+  if(!baslangic || !bitis) return true; // tercih yoksa her zaman gönder
+  // Türkiye saati: UTC+3
+  const simdi = new Date();
+  const trSaat = simdi.getUTCHours() + 3;
+  const trDk   = simdi.getUTCMinutes();
+  const simdiDk = (trSaat % 24) * 60 + trDk;
+  const [bH, bM] = baslangic.split(':').map(Number);
+  const [eH, eM] = bitis.split(':').map(Number);
+  const baslamaDk = bH * 60 + bM;
+  const bitisDk   = eH * 60 + eM;
+  if(baslamaDk <= bitisDk){
+    return simdiDk >= baslamaDk && simdiDk < bitisDk;
+  } else {
+    // gece yarısını geçen aralık (örn. 22:00–06:00)
+    return simdiDk >= baslamaDk || simdiDk < bitisDk;
+  }
+}
+
 /* ---------- kategori bazlı FCM bildirimi ---------- */
 async function bildirimGonder(db, yeniHaberler){
   const cSnap = await db.collection('oy_cihazTokenleri').get();
-  const cihazlar = cSnap.docs.map(d => ({ id: d.id, token: d.data().token, kategoriler: d.data().kategoriler }));
+  const cihazlar = cSnap.docs.map(d => ({
+    id: d.id,
+    token: d.data().token,
+    kategoriler: d.data().kategoriler,
+    bildirimSaatBaslangic: d.data().bildirimSaatBaslangic,
+    bildirimSaatBitis: d.data().bildirimSaatBitis
+  }));
   if(cihazlar.length === 0){ console.log('Kayıtlı cihaz yok, bildirim atlanıyor.'); return; }
 
   // Spam'i önlemek için kategori bazında tek özet bildirim gönderilir
@@ -294,9 +322,12 @@ async function bildirimGonder(db, yeniHaberler){
 
   for(const kat of Object.keys(kategoriGruplari)){
     const haberler = kategoriGruplari[kat];
-    // Tercih boş/yoksa (opt-out) TÜM kategorilerden bildirim alır
+    // Tercih boş/yoksa (opt-out) TÜM kategorilerden bildirim alır;
+    // ayrıca cihazın belirlediği saat aralığında olunmalıdır
     const hedefTokenler = cihazlar
-      .filter(c => c.token && (!Array.isArray(c.kategoriler) || c.kategoriler.length === 0 || c.kategoriler.includes(kat)))
+      .filter(c => c.token
+        && (!Array.isArray(c.kategoriler) || c.kategoriler.length === 0 || c.kategoriler.includes(kat))
+        && _cihazSaatAraligindaMi(c))
       .map(c => c.token);
 
     if(hedefTokenler.length === 0) continue;
