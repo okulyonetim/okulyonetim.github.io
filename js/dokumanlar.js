@@ -145,6 +145,16 @@ function dokumanAc(id) {
   if (!d) return;
   const url = d.hariciUrl || d.dosyaUrl;
   if (!url) { toast('Bu dökümanın dosyası bulunamadı.'); return; }
+
+  // Google Docs/Drive URL'si mi? → iframe okuyucusuna doğrudan yönlendir
+  // (uzantı tespiti yapılmaz; DokumanOkuyucu.ac() içinde zaten kontrol var)
+  if (typeof window.DokumanOkuyucu !== 'undefined' && window.DokumanOkuyucu.googleDocsMu(url)) {
+    const gorunumAdi = d.ad || d.dosyaAdi || 'Google Belge';
+    window.DokumanOkuyucu.ac(url, gorunumAdi);
+    return;
+  }
+
+  // Normal dosya (Firebase Storage veya başka harici URL)
   // dosyaAdi yoksa veya uzantısız ise URL'den türet (Firebase Storage URL'leri
   // ?token=... içerdiğinden DokumanOkuyucu._uzanti() bunları da sıyırır)
   let ad = d.dosyaAdi || '';
@@ -155,7 +165,7 @@ function dokumanAc(id) {
       if (parca && parca.indexOf('.') !== -1) ad = parca;
     } catch (e) {}
   }
-  if (!ad) ad = d.hariciUrl || url;
+  if (!ad) ad = d.ad || url;
   if (typeof window.DokumanOkuyucu !== 'undefined' && window.DokumanOkuyucu.destekliMi(ad)) {
     window.DokumanOkuyucu.ac(url, ad);
   } else {
@@ -1917,7 +1927,13 @@ async function dokumanKaydet() {
 
     if (hariciUrl) {
       metaTaban.hariciUrl = hariciUrl;
-      metaTaban.dosyaAdi  = hariciUrl.split('/').pop().split('?')[0] || 'dosya';
+      // Google Docs/Drive URL'lerinde path'in son parçası anlamsız olur (örn. "view", "edit").
+      // Böyle durumlarda belge adını (d.ad) kullan; yoksa genel bir etiket koy.
+      const urlSonParca = decodeURIComponent(hariciUrl.split('?')[0].split('#')[0].split('/').pop() || '');
+      const anlamsizParcalar = ['view', 'edit', 'preview', 'pub', 'export', 'open', ''];
+      metaTaban.dosyaAdi = anlamsizParcalar.includes(urlSonParca.toLowerCase())
+        ? (ad || 'belge')
+        : urlSonParca;
       await DokumanlarService.dokumanEkle(metaTaban, null, null);
     } else {
       if (durumEl) { durumEl.style.display = ''; durumEl.textContent = `Yükleniyor… %0`; }
