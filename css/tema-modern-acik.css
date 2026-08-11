@@ -169,13 +169,41 @@ html[data-skin="modern"] input[type=password], html[data-skin="modern"] input[ty
 html[data-skin="modern"] input[type=time], html[data-skin="modern"] input[type=number],
 html[data-skin="modern"] input[type=file], html[data-skin="modern"] select, html[data-skin="modern"] textarea{
   background: var(--nm-bg-dark);
+  color: var(--ink);
   box-shadow: none;
   border: 1px solid transparent;
 }
+html[data-skin="modern"] input::placeholder,
+html[data-skin="modern"] textarea::placeholder{
+  color: var(--ink-muted);
+  opacity: 1;
+}
 html[data-skin="modern"] input:focus, html[data-skin="modern"] select:focus, html[data-skin="modern"] textarea:focus{
   background: var(--nm-bg-light);
+  color: var(--ink);
   border-color: var(--brand);
   box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+/* DÜZELTME: Koyu mod + Modern Açık kombinasyonunda input/select/textarea
+   içindeki yazılar görünmüyordu. --nm-bg-dark koyu (#20302F) olduğundan
+   tarayıcı varsayılanı (siyah) metin üstüne koyu arka plan = görünmez.
+   --ink koyu modda açık renge (#F1F8F8) tanımlı, bunu açıkça vermek gerek. */
+[data-theme="dark"][data-skin="modern"] input[type=text],
+[data-theme="dark"][data-skin="modern"] input[type=email],
+[data-theme="dark"][data-skin="modern"] input[type=password],
+[data-theme="dark"][data-skin="modern"] input[type=date],
+[data-theme="dark"][data-skin="modern"] input[type=time],
+[data-theme="dark"][data-skin="modern"] input[type=number],
+[data-theme="dark"][data-skin="modern"] input[type=file],
+[data-theme="dark"][data-skin="modern"] select,
+[data-theme="dark"][data-skin="modern"] textarea{
+  color: var(--ink);
+}
+[data-theme="dark"][data-skin="modern"] input::placeholder,
+[data-theme="dark"][data-skin="modern"] textarea::placeholder{
+  color: var(--ink-muted);
+  opacity: 1;
 }
 
 /* ---------- Tablolar ---------- */
