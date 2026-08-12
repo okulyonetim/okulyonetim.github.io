@@ -3811,3 +3811,82 @@ body.nav-open::after{ display:none !important; }
   display:flex; align-items:center; justify-content:center; gap:6px;
   font-family:inherit; font-size:12.5px; font-weight:700; color:#E5484D; cursor:pointer;
 }
+
+/* ============================================================
+   DENEME SINAVI SAYACI — .deneme-sayac
+   ============================================================ */
+.deneme-sayac{
+  margin: 8px 0 2px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+
+/* Henüz başlamadı */
+.deneme-sayac--bekle{
+  background: rgba(217,119,6,0.10);
+  color: var(--amber-dark, #92400E);
+  border: 1px solid rgba(217,119,6,0.20);
+}
+[data-theme="dark"] .deneme-sayac--bekle{
+  background: rgba(251,191,36,0.12);
+  color: #FCD34D;
+  border-color: rgba(251,191,36,0.22);
+}
+
+/* Oturum aktif */
+.deneme-sayac--aktif{
+  background: rgba(220,38,38,0.08);
+  color: var(--ink);
+  border: 1px solid rgba(220,38,38,0.20);
+}
+[data-theme="dark"] .deneme-sayac--aktif{
+  background: rgba(220,38,38,0.14);
+  color: #FCA5A5;
+  border-color: rgba(220,38,38,0.28);
+}
+.deneme-sayac--aktif .deneme-sayac-sure{
+  font-variant-numeric: tabular-nums;
+  color: #DC2626;
+  font-weight: 700;
+}
+[data-theme="dark"] .deneme-sayac--aktif .deneme-sayac-sure{ color: #F87171; }
+.deneme-sayac--aktif .deneme-sayac-bitis{
+  font-weight: 400;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+/* Nabız animasyonu */
+.deneme-sayac-nabiz{ animation: dn-nabiz 1.2s ease-in-out infinite; display:inline-block; }
+@keyframes dn-nabiz{ 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+/* Ara */
+.deneme-sayac--ara{
+  background: rgba(37,99,235,0.07);
+  color: var(--ink-soft);
+  border: 1px solid rgba(37,99,235,0.15);
+}
+[data-theme="dark"] .deneme-sayac--ara{
+  background: rgba(96,165,250,0.10);
+  color: #93C5FD;
+  border-color: rgba(96,165,250,0.20);
+}
+
+/* Tamamlandı */
+.deneme-sayac--tamam{
+  background: rgba(22,163,74,0.08);
+  color: var(--brand-dark, #15803D);
+  border: 1px solid rgba(22,163,74,0.18);
+}
+[data-theme="dark"] .deneme-sayac--tamam{
+  background: rgba(34,197,94,0.10);
+  color: #86EFAC;
+  border-color: rgba(34,197,94,0.20);
+}
