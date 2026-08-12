@@ -102,6 +102,20 @@ function _beklenenKoseOranlariHesapla() {
   const form = window.OptikAktifForm && window.OptikAktifForm.form;
   const bolge = form && form.bolge;
   if (!bolge || !bolge.width || !bolge.height || typeof window.LayoutEngine === 'undefined') {
+    // TEŞHİS (Ağustos 2026 — Sedat'ın "kutucuklar formu tanımıyor, rastgele
+    // yerleşiyor" gözlemini doğrulamak/çürütmek için eklendi): hangi
+    // koşulun VARSAYILAN'a düşürdüğünü kaydet. window.OptikAktifForm
+    // null ise en olası sebep: sinavDetayAc senkron _optikAktifFormGuncelle
+    // çağırdığında editör-şablonu (ozelTasarim_...) henüz LocalStorage'a
+    // Firestore'dan inmemiş olması (bkz. app.js:_layoutGetir — bu durumda
+    // hata fırlatıp catch'te window.OptikAktifForm=null yapıyor).
+    window._kutucukTeshis = 'VARSAYILAN (%8/%92) kullanılıyor — sebep: ' +
+      (!window.OptikAktifForm ? 'window.OptikAktifForm null (form/şablon henüz yüklenmedi)'
+        : !form ? 'window.OptikAktifForm.form yok'
+        : !bolge ? 'form.bolge yok'
+        : (!bolge.width || !bolge.height) ? 'bolge.width/height eksik'
+        : 'window.LayoutEngine yüklenmedi') +
+      ' | window._optikTeshis: ' + (window._optikTeshis || '(henüz set edilmedi)');
     return VARSAYILAN;
   }
 
@@ -109,7 +123,10 @@ function _beklenenKoseOranlariHesapla() {
     const isaretler = window.LayoutEngine.hizalamaIsaretleriEkle(bolge);
     const bul = (konum) => isaretler.find((i) => i.konum === konum);
     const solUstI = bul('sol-ust'), sagUstI = bul('sag-ust'), solAltI = bul('sol-alt'), sagAltI = bul('sag-alt');
-    if (!solUstI || !sagUstI || !solAltI || !sagAltI) return VARSAYILAN;
+    if (!solUstI || !sagUstI || !solAltI || !sagAltI) {
+      window._kutucukTeshis = 'VARSAYILAN kullanılıyor — sebep: hizalamaIsaretleriEkle 4 köşenin birini döndürmedi';
+      return VARSAYILAN;
+    }
 
     // İşaretin MERKEZİNİ al (x+boyut/2), sonra bolge.width/height'e göre
     // 0-1 normalize et. Kamera görüntüsü PORTRE (dikey) sabit tutuluyor
@@ -123,6 +140,8 @@ function _beklenenKoseOranlariHesapla() {
       yOran: (isaret.y + isaret.boyut / 2 - bolge.y) / bolge.height,
     });
 
+    window._kutucukTeshis = 'GERÇEK FORM kullanılıyor — bolge=' + bolge.width + 'x' + bolge.height + 'mm';
+
     return {
       solUst: merkezOranHesapla(solUstI),
       sagUst: merkezOranHesapla(sagUstI),
@@ -130,6 +149,7 @@ function _beklenenKoseOranlariHesapla() {
       sagAlt: merkezOranHesapla(sagAltI),
     };
   } catch (e) {
+    window._kutucukTeshis = 'VARSAYILAN kullanılıyor — sebep: hesaplama sırasında hata: ' + e.message;
     return VARSAYILAN;
   }
 }
@@ -207,6 +227,10 @@ function _koseTespitCalistir() {
         // Beklenen köşe konumları (0-1 oran, video native eksenine göre) —
         // form aktifse GERÇEK hizalama işareti konumları, yoksa varsayılan.
         const beklenenOranlar = _beklenenKoseOranlariHesapla();
+
+        // GEÇİCİ TEŞHİS (Ağustos 2026) — bkz. index.html:kmKutucukTeshis notu.
+        const teshisEl = document.getElementById('kmKutucukTeshis');
+        if (teshisEl) teshisEl.textContent = window._kutucukTeshis || '(teşhis henüz yok)';
 
         // <video> object-fit:cover kullanıyor — native çözünürlükten CSS
         // (ekranda görünen) boyuta, ORTADAN KIRPILARAK ölçekleniyor. Tespit
