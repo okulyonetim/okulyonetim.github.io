@@ -31,5 +31,18 @@ const SinavlarRepository = {
   },
   denemeEkle(veri){ return db.collection(COL.denemeSinavlari).add({ ...veri, eklenmeTarihi: new Date().toISOString() }); },
   denemeGuncelle(id, veri){ return db.collection(COL.denemeSinavlari).doc(id).update(veri); },
-  denemeSil(id){ return db.collection(COL.denemeSinavlari).doc(id).delete(); }
+  denemeSil(id){ return db.collection(COL.denemeSinavlari).doc(id).delete(); },
+
+  /* Sayaç durumu — tek alan güncelleme (diğer alanları bozmaz) */
+  denemeSayacBaslat(id, uid){
+    return db.collection(COL.denemeSinavlari).doc(id).update({
+      sayacDurumu: { aktif: true, baslatanUid: uid || '', baslatmaTarihi: new Date().toISOString() }
+    });
+  },
+  denemeSayacDurdur(id){
+    return db.collection(COL.denemeSinavlari).doc(id).update({
+      'sayacDurumu.aktif': false,
+      'sayacDurumu.durdurulmaTarihi': new Date().toISOString()
+    });
+  }
 };
