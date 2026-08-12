@@ -253,6 +253,15 @@
         <div class="dash-hero-sosyal" id="heroSosyalMedya" style="display:none;"></div>
       </div>
 
+      <!-- YENİ: Aktif Deneme Sınavı Sayacı — sadece BUGÜN, sayacı başlatılmış
+           bir deneme sınavı varken görünür. İçeriği/görünürlüğü tamamen
+           js/sinavlar.js > _anaSayfaSayacKartiGuncelle() yönetiyor (bkz. o
+           dosya — Firestore denemeSinavlari dinleyicisi ve saniyelik
+           interval ile güncelleniyor). Hero'nun hemen altında, en öncelikli
+           yerde: zamana duyarlı/canlı bir durum olduğu için listenin
+           ortasında kaybolmamalı. -->
+      <div class="card dash-card-clickable" id="dashSayacKarti" onclick="dashSayacKartiTikla()" style="display:none;"></div>
+
       <!-- Bugün İzinli/Raporlu Öğretmenler -->
       <div class="card" id="bugunIzinliKart" data-kart-id="bugunIzinli" data-yetki-modul="ogretmenler" style="display:none;">
         <h3 class="dash-h3-row">🏥 Bugün İzinli Öğretmenler</h3>
