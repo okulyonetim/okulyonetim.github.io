@@ -26,6 +26,8 @@ function sinavAltSekmeSec(s){
   document.querySelectorAll('#tab-sinavIslemleri .filtre-btn').forEach(b=>b.classList.toggle('active', b.dataset.s===s));
   document.getElementById('sinavYaziliBolum').style.display = s==='yazili' ? '' : 'none';
   document.getElementById('sinavDenemeBolum').style.display = s==='deneme' ? '' : 'none';
+  if(s !== 'deneme') _denemeSayacDurdur();
+  else _denemeSayacBaslat();
 }
 
 /* ============== YAZILI SINAVLAR ============== */
@@ -160,7 +162,138 @@ function denemeSureHesapla(baslama, bitis){
   return dakikayiMetneCevir(dk);
 }
 
+/* ============================================================
+   DENEME SINAVI SAYACI
+   Her deneme kartına "aktif oturum sayacı" gösterir.
+   Mantık:
+     • Bugün değilse  → sayaç yok
+     • Henüz başlamadı → "XX dk sonra başlıyor (HH:MM)"
+     • Oturum devam ediyor → "🔴 Sözel oturumu devam ediyor — X dk Y sn kaldı  |  Bitiş: HH:MM"
+     • Ara süresinde → "⏸ Ara — Sayısal HH:MM'de başlıyor  |  X dk kaldı"
+     • Tamamlandı → "✅ Tamamlandı"
+   setInterval ile her saniye güncellenir; sekme değişince temizlenir.
+   ============================================================ */
+let _denemeSayacInterval = null;
+
+function _denemeSayacDurdur(){
+  if(_denemeSayacInterval){ clearInterval(_denemeSayacInterval); _denemeSayacInterval = null; }
+}
+
+/* HH:MM string'ini bugünün Date objesine çevirir */
+function _bugunSaat(hhmm){
+  if(!hhmm) return null;
+  const [h,m] = hhmm.split(':').map(Number);
+  if(isNaN(h)||isNaN(m)) return null;
+  const d = new Date();
+  d.setHours(h,m,0,0);
+  return d;
+}
+
+/* Bir deneme kaydı için o anki sayaç metnini üretir.
+   Dönüş: { html, aktif }  — aktif=true ise interval gerekli */
+function _denemeSayacHtml(d){
+  const bugun = new Date().toISOString().slice(0,10);
+  if(d.tarih !== bugun) return { html:'', aktif:false };
+
+  const simdi = Date.now();
+
+  /* Segmentleri belirle */
+  let segmentler = [];
+  if(d.oturumTuru === 'İki Oturum'){
+    if(d.sozelBaslama && d.sozelBitis)
+      segmentler.push({ ad:'Sözel', ikon:'📝', bas:_bugunSaat(d.sozelBaslama), bit:_bugunSaat(d.sozelBitis) });
+    if(d.sayisalBaslama && d.sayisalBitis)
+      segmentler.push({ ad:'Sayısal', ikon:'🔢', bas:_bugunSaat(d.sayisalBaslama), bit:_bugunSaat(d.sayisalBitis) });
+  } else {
+    if(d.baslamaSaati && d.bitisSaati)
+      segmentler.push({ ad:'Sınav', ikon:'⏱️', bas:_bugunSaat(d.baslamaSaati), bit:_bugunSaat(d.bitisSaati) });
+  }
+  if(!segmentler.length || !segmentler[0].bas) return { html:'', aktif:false };
+
+  const ilkBas = segmentler[0].bas.getTime();
+  const sonBit = segmentler[segmentler.length-1].bit.getTime();
+
+  /* Tamamlandı */
+  if(simdi >= sonBit){
+    return { html:`<div class="deneme-sayac deneme-sayac--tamam">✅ Sınav tamamlandı</div>`, aktif:false };
+  }
+
+  /* Henüz başlamadı */
+  if(simdi < ilkBas){
+    const kalanSn = Math.ceil((ilkBas - simdi) / 1000);
+    const kalanDk = Math.floor(kalanSn / 60), kalanSn2 = kalanSn % 60;
+    const kalanMetin = kalanDk > 0 ? `${kalanDk} dk ${kalanSn2} sn` : `${kalanSn2} sn`;
+    return {
+      html:`<div class="deneme-sayac deneme-sayac--bekle">🕐 ${kalanMetin} sonra başlıyor &nbsp;·&nbsp; ${segmentler[0].bas.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})}</div>`,
+      aktif: true
+    };
+  }
+
+  /* Aktif segment bul */
+  for(let i=0;i<segmentler.length;i++){
+    const seg = segmentler[i];
+    const bas = seg.bas.getTime(), bit = seg.bit.getTime();
+    if(simdi >= bas && simdi < bit){
+      const kalanSn = Math.ceil((bit - simdi) / 1000);
+      const kalanDk = Math.floor(kalanSn / 60), kalanSn2 = kalanSn % 60;
+      const kalanMetin = kalanDk > 0 ? `${kalanDk} dk ${kalanSn2} sn` : `${kalanSn2} sn`;
+      const bitisStr = seg.bit.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+      return {
+        html:`<div class="deneme-sayac deneme-sayac--aktif">
+          <span class="deneme-sayac-nabiz">🔴</span>
+          <strong>${seg.ikon} ${seg.ad} oturumu devam ediyor</strong>
+          &nbsp;—&nbsp; <span class="deneme-sayac-sure">${kalanMetin} kaldı</span>
+          &nbsp;<span class="deneme-sayac-bitis">Bitiş: ${bitisStr}</span>
+        </div>`,
+        aktif: true
+      };
+    }
+    /* Ara süre (bu segment bitti, sonraki başlamadı) */
+    if(i < segmentler.length-1){
+      const sonrakiBas = segmentler[i+1].bas.getTime();
+      if(simdi >= bit && simdi < sonrakiBas){
+        const kalanSn = Math.ceil((sonrakiBas - simdi) / 1000);
+        const kalanDk = Math.floor(kalanSn / 60), kalanSn2 = kalanSn % 60;
+        const kalanMetin = kalanDk > 0 ? `${kalanDk} dk ${kalanSn2} sn` : `${kalanSn2} sn`;
+        const sonrakiStr = segmentler[i+1].bas.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+        return {
+          html:`<div class="deneme-sayac deneme-sayac--ara">
+            ⏸ Ara &nbsp;·&nbsp; <strong>${segmentler[i+1].ad}</strong> ${sonrakiStr}'de başlıyor &nbsp;·&nbsp; ${kalanMetin} kaldı
+          </div>`,
+          aktif: true
+        };
+      }
+    }
+  }
+  return { html:'', aktif:false };
+}
+
+/* Her saniye DOM'daki sayaç elementlerini günceller (innerHTML yok, sadece text/style) */
+function _denemeSayacTik(){
+  const bugun = new Date().toISOString().slice(0,10);
+  let hepsiBitti = true;
+  denemeSinavlari.forEach(d => {
+    if(d.tarih !== bugun) return;
+    const el = document.getElementById('denemeSayac_' + d.id);
+    if(!el) return;
+    const {html, aktif} = _denemeSayacHtml(d);
+    el.innerHTML = html;
+    if(aktif) hepsiBitti = false;
+  });
+  if(hepsiBitti) _denemeSayacDurdur();
+}
+
+function _denemeSayacBaslat(){
+  _denemeSayacDurdur();
+  const bugun = new Date().toISOString().slice(0,10);
+  const bugunVarMi = denemeSinavlari.some(d => d.tarih === bugun);
+  if(!bugunVarMi) return;
+  _denemeSayacInterval = setInterval(_denemeSayacTik, 1000);
+  _denemeSayacTik(); // anında ilk çizim
+}
+
 function renderDenemeSinavlari(){
+  _denemeSayacDurdur();
   const hedef = document.getElementById('denemeSinavlariListesi');
   if(!hedef) return;
   const liste = [...denemeSinavlari].sort((a,b)=>(a.tarih||'').localeCompare(b.tarih||''));
@@ -168,6 +301,7 @@ function renderDenemeSinavlari(){
     <div class="evrak-row">
       <div class="evrak-body">
         <div class="evrak-title">${escapeHtml(d.ad||'Deneme Sınavı')} <span class="badge badge-blue">${escapeHtml(d.oturumTuru||'Tek Oturum')}</span></div>
+        <div id="denemeSayac_${d.id}"></div>
         <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);">
             <span style="font-size:16px;">📅</span>
@@ -205,6 +339,7 @@ function renderDenemeSinavlari(){
       <button class="btn btn-ghost btn-sm" onclick="denemeModalAc('${d.id}')">Düzenle</button>
     </div>
   `).join('') : '<div class="empty-state">Henüz deneme sınavı eklenmedi. "+ Deneme Sınavı Ekle" ile başlayın.</div>';
+  _denemeSayacBaslat();
 }
 
 function denemeOturumAlanlariniGoster(oturum){
