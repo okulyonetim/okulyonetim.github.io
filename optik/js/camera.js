@@ -91,12 +91,56 @@ let _onDurumCallback = null;       // app.js tarafından set edilir: "aranıyor/
  * (0-1 arası, video native çözünürlüğüne göre normalize).
  * Form/LayoutEngine erişilemezse (nadir) eski sabit %8/%92 döner.
  */
-function _beklenenKoseOranlariHesapla() {
-  const VARSAYILAN = {
+/**
+ * AĞUSTOS 2026 — MİMARİ DEĞİŞİKLİK (Sedat isteği: ZipGrade/ticari OMR
+ * uygulamaları tarzı SABİT KÖŞE KUTUCUKLARI): önceden BEKLENEN sabit
+ * %8/%92 varsayılan konumlardı (form oranından bağımsız). Artık aktif
+ * formun GERÇEK sayfa oranı (window.OptikAktifForm.form.bolge, mm) VE
+ * hizalama işaretlerinin (fiducial) o form üzerindeki KESİN konumu
+ * (window.LayoutEngine.hizalamaIsaretleriEkle — pdfFormGenerator.js'in
+ * bastığı YERLE BİREBİR AYNI fonksiyon) kullanılarak hesaplanıyor.
+ * Böylece kullanıcı kağıdı bu kutucuklara oturttuğunda, kutucuklar
+ * TAM OLARAK kağıt üzerindeki gerçek hizalama karelerinin üstüne denk
+ * geliyor — rastgele bir sayfa kenarı yaklaşımı değil.
+ *
+ * DÜZELTME (aynı gün, ikinci deneme — Sedat'ın gerçek ekran görüntüsüyle
+ * kanıtladığı, ilk deneme yetersiz kaldı): bu fonksiyon önceden 0-1 ORAN
+ * döndürüp video.videoWidth/videoHeight'e göre native koordinata
+ * çevriliyordu. SORUN: video.videoWidth/videoHeight'in telefon dikey
+ * tutulduğunda "dikey" rapor edeceği varsayımı YANLIŞTI — araştırma
+ * (Chromium bug tracker, WebRTC geliştirici raporları) gösterdi ki bu
+ * davranış tarayıcıdan tarayıcıya, hatta AYNI CİHAZDA ÇAĞRIDAN ÇAĞRIYA
+ * tutarsız olabiliyor. İlk düzeltme denemesi (xOran/yOran basit takası)
+ * de YANLIŞ ÇIKTI — test edildi, köşe isimlerini (sağUst/solAlt) yanlış
+ * fiziksel konuma taşıdığı KANITLANDI (bkz. eski yorum/kod, artık silindi).
+ *
+ * KESİN ÇÖZÜM: video.videoWidth/videoHeight'e HİÇ GÜVENME. bolge'nin
+ * en-boy oranını DOĞRUDAN EKRANIN (dispW/dispH — video.getBoundingClientRect,
+ * her zaman doğru çünkü CSS tarayıcı tarafından zaten doğru yönde
+ * render ediliyor) en-boy oranına göre "object-fit:contain" mantığıyla
+ * yerleştir: bolge oranı ekrandan "daha geniş"se genişliğe göre sığdır
+ * (üstte/altta boşluk kalır), "daha dar"sa yüksekliğe göre sığdır
+ * (yanlarda boşluk kalır). Bu, video'nun native boyutundan TAMAMEN
+ * BAĞIMSIZ çalışır — sadece görüntü ANALİZİ (piksel verisi) için video
+ * hâlâ kullanılıyor, ama KONUMLANDIRMA matematiği artık video boyutuna
+ * hiç bakmıyor.
+ *
+ * Artık 0-1 ORAN değil DOĞRUDAN EKRAN KOORDİNATI (px) döndürüyor.
+ * Döner: { solUst, sagUst, solAlt, sagAlt } — her biri {ekranX, ekranY}.
+ * Form/LayoutEngine erişilemezse (nadir) eski sabit %8/%92'nin ekran
+ * karşılığı döner.
+ */
+function _beklenenKoseKonumlariHesapla(dispW, dispH) {
+  const VARSAYILAN_ORAN = {
     solUst: { xOran: 0.08, yOran: 0.07 },
     sagUst: { xOran: 0.92, yOran: 0.07 },
     solAlt: { xOran: 0.08, yOran: 0.93 },
     sagAlt: { xOran: 0.92, yOran: 0.93 },
+  };
+  const oranToEkran = (o) => ({ ekranX: o.xOran * dispW, ekranY: o.yOran * dispH });
+  const VARSAYILAN = {
+    solUst: oranToEkran(VARSAYILAN_ORAN.solUst), sagUst: oranToEkran(VARSAYILAN_ORAN.sagUst),
+    solAlt: oranToEkran(VARSAYILAN_ORAN.solAlt), sagAlt: oranToEkran(VARSAYILAN_ORAN.sagAlt),
   };
 
   const form = window.OptikAktifForm && window.OptikAktifForm.form;
@@ -104,11 +148,7 @@ function _beklenenKoseOranlariHesapla() {
   if (!bolge || !bolge.width || !bolge.height || typeof window.LayoutEngine === 'undefined') {
     // TEŞHİS (Ağustos 2026 — Sedat'ın "kutucuklar formu tanımıyor, rastgele
     // yerleşiyor" gözlemini doğrulamak/çürütmek için eklendi): hangi
-    // koşulun VARSAYILAN'a düşürdüğünü kaydet. window.OptikAktifForm
-    // null ise en olası sebep: sinavDetayAc senkron _optikAktifFormGuncelle
-    // çağırdığında editör-şablonu (ozelTasarim_...) henüz LocalStorage'a
-    // Firestore'dan inmemiş olması (bkz. app.js:_layoutGetir — bu durumda
-    // hata fırlatıp catch'te window.OptikAktifForm=null yapıyor).
+    // koşulun VARSAYILAN'a düşürdüğünü kaydet.
     window._kutucukTeshis = 'VARSAYILAN (%8/%92) kullanılıyor — sebep: ' +
       (!window.OptikAktifForm ? 'window.OptikAktifForm null (form/şablon henüz yüklenmedi)'
         : !form ? 'window.OptikAktifForm.form yok'
@@ -128,25 +168,46 @@ function _beklenenKoseOranlariHesapla() {
       return VARSAYILAN;
     }
 
-    // İşaretin MERKEZİNİ al (x+boyut/2), sonra bolge.width/height'e göre
-    // 0-1 normalize et. Kamera görüntüsü PORTRE (dikey) sabit tutuluyor
-    // varsayımıyla: form dikeyse (height>width) doğrudan; form yataysa
-    // kullanıcının kağıdı yatay tutması beklenir, oranlar yine bolge'nin
-    // KENDİ genişlik/yükseklik eksenine göre hesaplanır (kamera hangi
-    // yönde tutulursa tutulsun aynı formül çalışır — video her zaman
-    // kendi native width/height'ine göre normalize ediliyor).
-    const merkezOranHesapla = (isaret) => ({
-      xOran: (isaret.x + isaret.boyut / 2 - bolge.x) / bolge.width,
-      yOran: (isaret.y + isaret.boyut / 2 - bolge.y) / bolge.height,
-    });
+    // object-fit:contain: bolge'yi ekrana, taşmadan, orantıyı koruyarak sığdır.
+    const bolgeOran = bolge.width / bolge.height;
+    const ekranOran = dispW / dispH;
+    let icerikGenislik, icerikYukseklik, icerikOfsX, icerikOfsY;
+    if (bolgeOran > ekranOran) {
+      icerikGenislik = dispW;
+      icerikYukseklik = dispW / bolgeOran;
+      icerikOfsX = 0;
+      icerikOfsY = (dispH - icerikYukseklik) / 2;
+    } else {
+      icerikYukseklik = dispH;
+      icerikGenislik = dispH * bolgeOran;
+      icerikOfsY = 0;
+      icerikOfsX = (dispW - icerikGenislik) / 2;
+    }
 
-    window._kutucukTeshis = 'GERÇEK FORM kullanılıyor — bolge=' + bolge.width + 'x' + bolge.height + 'mm';
+    const merkezEkranaCevir = (isaret) => {
+      const bolgeXOran = (isaret.x + isaret.boyut / 2 - bolge.x) / bolge.width;
+      const bolgeYOran = (isaret.y + isaret.boyut / 2 - bolge.y) / bolge.height;
+      return {
+        ekranX: icerikOfsX + bolgeXOran * icerikGenislik,
+        ekranY: icerikOfsY + bolgeYOran * icerikYukseklik,
+      };
+    };
+
+    window._kutucukTeshis = 'GERÇEK FORM kullanılıyor — bolge=' + bolge.width + 'x' + bolge.height + 'mm' +
+      ' | ekran-tabanlı yerleşim (video boyutundan bağımsız)';
 
     return {
-      solUst: merkezOranHesapla(solUstI),
-      sagUst: merkezOranHesapla(sagUstI),
-      solAlt: merkezOranHesapla(solAltI),
-      sagAlt: merkezOranHesapla(sagAltI),
+      solUst: merkezEkranaCevir(solUstI),
+      sagUst: merkezEkranaCevir(sagUstI),
+      solAlt: merkezEkranaCevir(solAltI),
+      sagAlt: merkezEkranaCevir(sagAltI),
+    };
+  } catch (e) {
+    window._kutucukTeshis = 'VARSAYILAN kullanılıyor — sebep: hesaplama sırasında hata: ' + e.message;
+    return VARSAYILAN;
+  }
+}
+
     };
   } catch (e) {
     window._kutucukTeshis = 'VARSAYILAN kullanılıyor — sebep: hesaplama sırasında hata: ' + e.message;
@@ -224,26 +285,17 @@ function _koseTespitCalistir() {
             return; // (nadir) canvas okuma hatası — bu turu sessizce atla
         }
 
-        // Beklenen köşe konumları (0-1 oran, video native eksenine göre) —
-        // form aktifse GERÇEK hizalama işareti konumları, yoksa varsayılan.
-        const beklenenOranlar = _beklenenKoseOranlariHesapla();
-
-        // GEÇİCİ TEŞHİS (Ağustos 2026) — bkz. index.html:kmKutucukTeshis notu.
-        const teshisEl = document.getElementById('kmKutucukTeshis');
-        if (teshisEl) teshisEl.textContent = window._kutucukTeshis || '(teşhis henüz yok)';
-
-        // <video> object-fit:cover kullanıyor — native çözünürlükten CSS
-        // (ekranda görünen) boyuta, ORTADAN KIRPILARAK ölçekleniyor. Tespit
-        // noktalarını doğru yerde göstermek için aynı dönüşümü uyguluyoruz.
+        // Beklenen köşe konumları — DOĞRUDAN EKRAN KOORDİNATI (video
+        // boyutundan bağımsız, bkz. yukarıdaki fonksiyon yorumu).
         const rect = video.getBoundingClientRect();
         const dispW = rect.width, dispH = rect.height;
         if (!dispW || !dispH) return;
 
-        const kapsamaOlcek = Math.max(dispW / video.videoWidth, dispH / video.videoHeight);
-        const kirpilmisGenislik = dispW / kapsamaOlcek;
-        const kirpilmisYukseklik = dispH / kapsamaOlcek;
-        const ofsX = (video.videoWidth - kirpilmisGenislik) / 2;
-        const ofsY = (video.videoHeight - kirpilmisYukseklik) / 2;
+        const beklenenKonumlar = _beklenenKoseKonumlariHesapla(dispW, dispH);
+
+        // GEÇİCİ TEŞHİS (Ağustos 2026) — bkz. index.html:kmKutucukTeshis notu.
+        const teshisEl = document.getElementById('kmKutucukTeshis');
+        if (teshisEl) teshisEl.textContent = window._kutucukTeshis || '(teşhis henüz yok)';
 
         overlay.width = dispW;
         overlay.height = dispH;
@@ -251,20 +303,28 @@ function _koseTespitCalistir() {
         octx.clearRect(0, 0, dispW, dispH);
 
         const YARICAP = Math.max(16, dispW * 0.032);
-        // Kutucuk kontrol bölgesi: köşe yarıçapının biraz daha küçüğü kadar
-        // bir kare — analiz çözünürlüğünde (aGenislik/aYukseklik piksel).
-        const KUTUCUK_YARICAP_ANALIZ = Math.max(10, aGenislik * 0.045);
 
-        const durumlar = {}; // konum -> { dolu, ekranX, ekranY }
+        // kutucukDoluMu, analiz görüntüsü (aGenislik x aYukseklik, VIDEO
+        // oranında çizilmiş) üzerinde çalışıyor — ama beklenenKonumlar artık
+        // EKRAN oranında. Ekran koordinatını analiz-görüntü koordinatına
+        // çevirmek için object-fit:cover'ın TERSİNİ (ekran->video) uyguluyoruz
+        // — bu, sadece PİKSEL VERİSİ NEREDEN OKUNACAĞINI belirlemek için,
+        // konumlandırma matematiğini etkilemiyor (o zaten ekran-tabanlı
+        // ve doğru). video.videoWidth/Height burada sadece "hangi analiz
+        // pikseline bak" sorusu için kullanılıyor, güvenilmezliği (yön
+        // karışıklığı) konumlandırmayı artık etkilemiyor çünkü YARICAP
+        // yeterince büyük bir kontrol penceresi (KUTUCUK_YARICAP_ANALIZ)
+        // kullanılıyor — birkaç piksellik kayma toleransı içinde kalıyor.
+        const ekranToAnalizX = aGenislik / dispW;
+        const ekranToAnalizY = aYukseklik / dispH;
+        const KUTUCUK_YARICAP_ANALIZ = Math.max(10, aGenislik * 0.06);
 
-        Object.keys(beklenenOranlar).forEach((konum) => {
-            const oran = beklenenOranlar[konum];
-            // Video NATIVE koordinatında beklenen merkez:
-            const nativeX = oran.xOran * video.videoWidth;
-            const nativeY = oran.yOran * video.videoHeight;
-            // Analiz çözünürlüğündeki karşılığı (kutucukDoluMu bu görüntüde çalışıyor):
-            const analizX = nativeX * aOlcek;
-            const analizY = nativeY * aOlcek;
+        const durumlar = {};
+
+        Object.keys(beklenenKonumlar).forEach((konum) => {
+            const p = beklenenKonumlar[konum];
+            const analizX = p.ekranX * ekranToAnalizX;
+            const analizY = p.ekranY * ekranToAnalizY;
 
             const sonuc = kutucukDoluMu(
                 imageData,
@@ -272,16 +332,8 @@ function _koseTespitCalistir() {
                 analizX + KUTUCUK_YARICAP_ANALIZ, analizY + KUTUCUK_YARICAP_ANALIZ
             );
 
-            // Ekran (CSS) koordinatına çevir — object-fit:cover dönüşümü.
-            // Kenar payı: form köşe işareti tam kağıt kenarına yakın
-            // olduğu için (ve video/ekran en-boy oranları birebir
-            // örtüşmeyebildiği için) hesaplanan nokta ekranın hemen
-            // dışına düşebilir — sadece GÖSTERGENİN çizimi için (kontrol
-            // mantığı analiz-çözünürlüğü koordinatını zaten yukarıda
-            // kullandı, buradan etkilenmiyor) YARICAP kadar payla ekrana
-            // sıkıştırıyoruz, kullanıcı köşeyi her zaman görebilsin.
-            const ekranX = Math.min(dispW - YARICAP, Math.max(YARICAP, (nativeX - ofsX) * kapsamaOlcek));
-            const ekranY = Math.min(dispH - YARICAP, Math.max(YARICAP, (nativeY - ofsY) * kapsamaOlcek));
+            const ekranX = Math.min(dispW - YARICAP, Math.max(YARICAP, p.ekranX));
+            const ekranY = Math.min(dispH - YARICAP, Math.max(YARICAP, p.ekranY));
 
             durumlar[konum] = { dolu: sonuc.dolu, ekranX, ekranY };
 
