@@ -56,7 +56,8 @@ const COL = {
   // --- YENİ: Sınav İşlemleri modülü ---
   sinavlar:'oy_sinavlar',               // {sinif, ders, ogretmenId, tarih, saat, tur:'Yazılı'|'Sınav Yolu', notlar}
   denemeSinavlari:'oy_denemeSinavlari', // {ad, tarih, oturumTuru:'Tek Oturum'|'İki Oturum', baslamaSaati, bitisSaati, sure,
-                                         //  sayisalBaslama, sayisalBitis, sozelBaslama, sozelBitis, notlar}
+                                         //  sayisalBaslama, sayisalBitis, sozelBaslama, sozelBitis, notlar,
+                                         //  sayacDurumu:{aktif:bool, baslatanUid, baslatmaTarihi, durdurulmaTarihi}}
   // --- YENİ: Okul Bilgileri (v4.0) ---
   okulBilgileri:'oy_okulBilgileri',      // tek doküman (id:'ayarlar'): {okulAdi, mudurId}
   dersListesi:'oy_dersListesi',          // {ad} — Ders Programı + Sınav İşlemleri'nde ortak seçim listesi

@@ -26,8 +26,6 @@ function sinavAltSekmeSec(s){
   document.querySelectorAll('#tab-sinavIslemleri .filtre-btn').forEach(b=>b.classList.toggle('active', b.dataset.s===s));
   document.getElementById('sinavYaziliBolum').style.display = s==='yazili' ? '' : 'none';
   document.getElementById('sinavDenemeBolum').style.display = s==='deneme' ? '' : 'none';
-  if(s !== 'deneme') _denemeSayacDurdur();
-  else _denemeSayacBaslat();
 }
 
 /* ============== YAZILI SINAVLAR ============== */
@@ -162,146 +160,23 @@ function denemeSureHesapla(baslama, bitis){
   return dakikayiMetneCevir(dk);
 }
 
-/* ============================================================
-   DENEME SINAVI SAYACI
-   Her deneme kartına "aktif oturum sayacı" gösterir.
-   Mantık:
-     • Bugün değilse  → sayaç yok
-     • Henüz başlamadı → "XX dk sonra başlıyor (HH:MM)"
-     • Oturum devam ediyor → "🔴 Sözel oturumu devam ediyor — X dk Y sn kaldı  |  Bitiş: HH:MM"
-     • Ara süresinde → "⏸ Ara — Sayısal HH:MM'de başlıyor  |  X dk kaldı"
-     • Tamamlandı → "✅ Tamamlandı"
-   setInterval ile her saniye güncellenir; sekme değişince temizlenir.
-   ============================================================ */
-let _denemeSayacInterval = null;
-
-function _denemeSayacDurdur(){
-  if(_denemeSayacInterval){ clearInterval(_denemeSayacInterval); _denemeSayacInterval = null; }
-}
-
-/* HH:MM string'ini bugünün Date objesine çevirir */
-function _bugunSaat(hhmm){
-  if(!hhmm) return null;
-  const [h,m] = hhmm.split(':').map(Number);
-  if(isNaN(h)||isNaN(m)) return null;
-  const d = new Date();
-  d.setHours(h,m,0,0);
-  return d;
-}
-
-/* Bir deneme kaydı için o anki sayaç metnini üretir.
-   Dönüş: { html, aktif }  — aktif=true ise interval gerekli */
-function _denemeSayacHtml(d){
-  const bugun = new Date().toISOString().slice(0,10);
-  if(d.tarih !== bugun) return { html:'', aktif:false };
-
-  const simdi = Date.now();
-
-  /* Segmentleri belirle */
-  let segmentler = [];
-  if(d.oturumTuru === 'İki Oturum'){
-    if(d.sozelBaslama && d.sozelBitis)
-      segmentler.push({ ad:'Sözel', ikon:'📝', bas:_bugunSaat(d.sozelBaslama), bit:_bugunSaat(d.sozelBitis) });
-    if(d.sayisalBaslama && d.sayisalBitis)
-      segmentler.push({ ad:'Sayısal', ikon:'🔢', bas:_bugunSaat(d.sayisalBaslama), bit:_bugunSaat(d.sayisalBitis) });
-  } else {
-    if(d.baslamaSaati && d.bitisSaati)
-      segmentler.push({ ad:'Sınav', ikon:'⏱️', bas:_bugunSaat(d.baslamaSaati), bit:_bugunSaat(d.bitisSaati) });
-  }
-  if(!segmentler.length || !segmentler[0].bas) return { html:'', aktif:false };
-
-  const ilkBas = segmentler[0].bas.getTime();
-  const sonBit = segmentler[segmentler.length-1].bit.getTime();
-
-  /* Tamamlandı */
-  if(simdi >= sonBit){
-    return { html:`<div class="deneme-sayac deneme-sayac--tamam">✅ Sınav tamamlandı</div>`, aktif:false };
-  }
-
-  /* Henüz başlamadı */
-  if(simdi < ilkBas){
-    const kalanSn = Math.ceil((ilkBas - simdi) / 1000);
-    const kalanDk = Math.floor(kalanSn / 60), kalanSn2 = kalanSn % 60;
-    const kalanMetin = kalanDk > 0 ? `${kalanDk} dk ${kalanSn2} sn` : `${kalanSn2} sn`;
-    return {
-      html:`<div class="deneme-sayac deneme-sayac--bekle">🕐 ${kalanMetin} sonra başlıyor &nbsp;·&nbsp; ${segmentler[0].bas.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})}</div>`,
-      aktif: true
-    };
-  }
-
-  /* Aktif segment bul */
-  for(let i=0;i<segmentler.length;i++){
-    const seg = segmentler[i];
-    const bas = seg.bas.getTime(), bit = seg.bit.getTime();
-    if(simdi >= bas && simdi < bit){
-      const kalanSn = Math.ceil((bit - simdi) / 1000);
-      const kalanDk = Math.floor(kalanSn / 60), kalanSn2 = kalanSn % 60;
-      const kalanMetin = kalanDk > 0 ? `${kalanDk} dk ${kalanSn2} sn` : `${kalanSn2} sn`;
-      const bitisStr = seg.bit.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-      return {
-        html:`<div class="deneme-sayac deneme-sayac--aktif">
-          <span class="deneme-sayac-nabiz">🔴</span>
-          <strong>${seg.ikon} ${seg.ad} oturumu devam ediyor</strong>
-          &nbsp;—&nbsp; <span class="deneme-sayac-sure">${kalanMetin} kaldı</span>
-          &nbsp;<span class="deneme-sayac-bitis">Bitiş: ${bitisStr}</span>
-        </div>`,
-        aktif: true
-      };
-    }
-    /* Ara süre (bu segment bitti, sonraki başlamadı) */
-    if(i < segmentler.length-1){
-      const sonrakiBas = segmentler[i+1].bas.getTime();
-      if(simdi >= bit && simdi < sonrakiBas){
-        const kalanSn = Math.ceil((sonrakiBas - simdi) / 1000);
-        const kalanDk = Math.floor(kalanSn / 60), kalanSn2 = kalanSn % 60;
-        const kalanMetin = kalanDk > 0 ? `${kalanDk} dk ${kalanSn2} sn` : `${kalanSn2} sn`;
-        const sonrakiStr = segmentler[i+1].bas.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-        return {
-          html:`<div class="deneme-sayac deneme-sayac--ara">
-            ⏸ Ara &nbsp;·&nbsp; <strong>${segmentler[i+1].ad}</strong> ${sonrakiStr}'de başlıyor &nbsp;·&nbsp; ${kalanMetin} kaldı
-          </div>`,
-          aktif: true
-        };
-      }
-    }
-  }
-  return { html:'', aktif:false };
-}
-
-/* Her saniye DOM'daki sayaç elementlerini günceller (innerHTML yok, sadece text/style) */
-function _denemeSayacTik(){
-  const bugun = new Date().toISOString().slice(0,10);
-  let hepsiBitti = true;
-  denemeSinavlari.forEach(d => {
-    if(d.tarih !== bugun) return;
-    const el = document.getElementById('denemeSayac_' + d.id);
-    if(!el) return;
-    const {html, aktif} = _denemeSayacHtml(d);
-    el.innerHTML = html;
-    if(aktif) hepsiBitti = false;
-  });
-  if(hepsiBitti) _denemeSayacDurdur();
-}
-
-function _denemeSayacBaslat(){
-  _denemeSayacDurdur();
-  const bugun = new Date().toISOString().slice(0,10);
-  const bugunVarMi = denemeSinavlari.some(d => d.tarih === bugun);
-  if(!bugunVarMi) return;
-  _denemeSayacInterval = setInterval(_denemeSayacTik, 1000);
-  _denemeSayacTik(); // anında ilk çizim
-}
-
 function renderDenemeSinavlari(){
-  _denemeSayacDurdur();
   const hedef = document.getElementById('denemeSinavlariListesi');
   if(!hedef) return;
+  const bugun = new Date().toISOString().slice(0,10);
   const liste = [...denemeSinavlari].sort((a,b)=>(a.tarih||'').localeCompare(b.tarih||''));
-  hedef.innerHTML = liste.length ? liste.map(d=>`
-    <div class="evrak-row">
+  hedef.innerHTML = liste.length ? liste.map(d=>{
+    const bugunMu = d.tarih === bugun;
+    const sayacAktif = bugunMu && d.sayacDurumu?.aktif;
+    return `
+    <div class="evrak-row dn-kart${bugunMu?' dn-kart--bugun':''}${sayacAktif?' dn-kart--aktif':''}"
+         onclick="denemeSayacAc('${d.id}')" style="cursor:pointer;">
       <div class="evrak-body">
-        <div class="evrak-title">${escapeHtml(d.ad||'Deneme Sınavı')} <span class="badge badge-blue">${escapeHtml(d.oturumTuru||'Tek Oturum')}</span></div>
-        <div id="denemeSayac_${d.id}"></div>
+        <div class="evrak-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          ${escapeHtml(d.ad||'Deneme Sınavı')}
+          <span class="badge badge-blue">${escapeHtml(d.oturumTuru||'Tek Oturum')}</span>
+          ${sayacAktif ? '<span class="badge dn-canli-badge"><span class="dn-nabiz-nokta"></span>CANLI</span>' : bugunMu ? '<span class="badge dn-bugun-badge">BUGÜN</span>' : ''}
+        </div>
         <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);">
             <span style="font-size:16px;">📅</span>
@@ -336,10 +211,9 @@ function renderDenemeSinavlari(){
           </div>`:''}
         </div>
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="denemeModalAc('${d.id}')">Düzenle</button>
-    </div>
-  `).join('') : '<div class="empty-state">Henüz deneme sınavı eklenmedi. "+ Deneme Sınavı Ekle" ile başlayın.</div>';
-  _denemeSayacBaslat();
+      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();denemeModalAc('${d.id}')">Düzenle</button>
+    </div>`;
+  }).join('') : '<div class="empty-state">Henüz deneme sınavı eklenmedi. "+ Deneme Sınavı Ekle" ile başlayın.</div>';
 }
 
 function denemeOturumAlanlariniGoster(oturum){
@@ -468,6 +342,10 @@ function sinavBaglantilariKur(){
   SinavlarRepository.denemeSinavlariniDinle(v=>{
     denemeSinavlari = v;
     renderDenemeSinavlari();
+    // Overlay açıksa Firestore'dan gelen değişikliği (sayacDurumu, saat değişikliği)
+    // anında yansıt — setInterval bunu saniyede yapar ama sayaç başlatma/durdurma
+    // gibi durum değişikliklerinde buton ve badge'in hemen güncellenmesi gerekir.
+    if(_sayacOvId) _sayacOvGuncelle();
   });
 }
 
@@ -653,3 +531,352 @@ function sinavRaporYazdir() {
     toast('Rapor penceresi açılamadı.');
   }
 }
+
+/* ================================================================
+   DENEME SINAVI TAM EKRAN SAYACI
+   denemeSayacAc(id) → tam ekran overlay açar
+   Firestore onSnapshot'tan gelen denemeSinavlari dizisi değişince
+   _denemeSayacOvGuncelle() ile canlı güncellenir.
+
+   Sayaç durumu Firestore'da sayacDurumu:{aktif,baslatanUid,baslatmaTarihi}
+   alanında tutulur. Admin "Başlat" → herkeste canlı sayaç görünür.
+   ================================================================ */
+
+let _sayacOvId   = null; // açık olan overlay'in dinlediği deneme id'si
+let _sayacOvInt  = null; // setInterval handle
+let _sayacOvSvg  = null; // canvas SVG element ref (arc güncelleme için)
+
+function _sayacOvTemizle(){
+  if(_sayacOvInt){ clearInterval(_sayacOvInt); _sayacOvInt = null; }
+  _sayacOvId = null; _sayacOvSvg = null;
+}
+
+/* HH:MM → o günün ms cinsinden timestamp */
+function _hmmMs(hhmm){
+  if(!hhmm) return null;
+  const [h,m] = hhmm.split(':').map(Number);
+  if(isNaN(h)||isNaN(m)) return null;
+  const d = new Date(); d.setHours(h,m,0,0); return d.getTime();
+}
+
+/* Saniyeleri SS:DD:SN formatına */
+function _snFormat(sn){
+  sn = Math.max(0, Math.floor(sn));
+  const s = Math.floor(sn/3600), d = Math.floor((sn%3600)/60), n = sn%60;
+  return `${String(s).padStart(2,'0')}:${String(d).padStart(2,'0')}:${String(n).padStart(2,'0')}`;
+}
+
+/* SVG arc path — toplam süre içinde kalan oranından yay çizer */
+function _arcPath(oran){
+  const r = 90, cx = 110, cy = 110;
+  const aci = oran * 2 * Math.PI;
+  const x = cx + r * Math.sin(aci);
+  const y = cy - r * Math.cos(aci);
+  const buyukArc = oran > 0.5 ? 1 : 0;
+  if(oran <= 0) return '';
+  if(oran >= 1) return `M ${cx} ${cy-r} A ${r} ${r} 0 1 1 ${cx-0.001} ${cy-r}`;
+  return `M ${cx} ${cy-r} A ${r} ${r} 0 0 1 ${x} ${y}`;
+}
+
+/* Verilen deneme kaydının şu anki oturum durumunu hesaplar.
+   Dönüş: { durum, segAd, segIkon, kalanSn, toplamSn, bitisStr, toplamKalanSn, sonBitisStr,
+             oturumTakvimi:[{ad,bas,bit,sureDk,durum:'aktif'|'bitti'|'sirada'}] } */
+function _sayacDurum(d){
+  const simdi = Date.now();
+
+  /* segment listesi oluştur */
+  let segList = [];
+  if(d.oturumTuru === 'İki Oturum'){
+    if(d.sozelBaslama  && d.sozelBitis)   segList.push({ad:'Sözel Oturum',   ikon:'📝', bas:_hmmMs(d.sozelBaslama),   bit:_hmmMs(d.sozelBitis),   sureDk:Number(d.sozelSuresiDk)||0});
+    if(d.sayisalBaslama && d.sayisalBitis) segList.push({ad:'Sayısal Oturum', ikon:'🔢', bas:_hmmMs(d.sayisalBaslama), bit:_hmmMs(d.sayisalBitis), sureDk:Number(d.sayisalSuresiDk)||0});
+  } else {
+    if(d.baslamaSaati && d.bitisSaati) segList.push({ad:'Sınav', ikon:'⏱️', bas:_hmmMs(d.baslamaSaati), bit:_hmmMs(d.bitisSaati), sureDk: Math.round(((_hmmMs(d.bitisSaati)||0)-(_hmmMs(d.baslamaSaati)||0))/60000)});
+  }
+
+  if(!segList.length || !segList[0].bas) return null;
+
+  const ilkBas  = segList[0].bas;
+  const sonBit  = segList[segList.length-1].bit;
+  const toplamSure = (sonBit - ilkBas) / 1000; // saniye
+  const toplamKalan = Math.max(0, (sonBit - simdi) / 1000);
+
+  // oturum takvimi durumları
+  const takvim = segList.map((s,i) => {
+    let durum = 'sirada';
+    if(simdi >= s.bas && simdi < s.bit) durum = 'aktif';
+    else if(simdi >= s.bit) durum = 'bitti';
+    // ara mı?
+    let araMi = false;
+    if(i < segList.length-1 && simdi >= s.bit && simdi < segList[i+1].bas) araMi = true;
+    return { ad: s.ad, ikon: s.ikon, bas: d.oturumTuru==='İki Oturum' ? (i===0?d.sozelBaslama:d.sayisalBaslama) : d.baslamaSaati,
+             bit: d.oturumTuru==='İki Oturum' ? (i===0?d.sozelBitis:d.sayisalBitis) : d.bitisSaati,
+             sureDk: s.sureDk, durum, araMi };
+  });
+
+  // tamamlandı
+  if(simdi >= sonBit) return { durum:'tamam', takvim, toplamSure, toplamKalan:0,
+    toplam: { bas: d.oturumTuru==='İki Oturum'?d.sozelBaslama:d.baslamaSaati, bit: d.oturumTuru==='İki Oturum'?d.sayisalBitis:d.bitisSaati } };
+
+  // henüz başlamadı
+  if(simdi < ilkBas) return { durum:'bekle', kalanSn:(ilkBas-simdi)/1000, ilkBasStr: d.oturumTuru==='İki Oturum'?d.sozelBaslama:d.baslamaSaati,
+    takvim, toplamSure, toplamKalan,
+    toplam: { bas: d.oturumTuru==='İki Oturum'?d.sozelBaslama:d.baslamaSaati, bit: d.oturumTuru==='İki Oturum'?d.sayisalBitis:d.bitisSaati } };
+
+  // aktif segment ara
+  for(let i=0;i<segList.length;i++){
+    const s = segList[i];
+    if(simdi >= s.bas && simdi < s.bit){
+      const kalanSn = (s.bit - simdi)/1000;
+      const toplamSegSn = (s.bit - s.bas)/1000;
+      const oran = kalanSn / toplamSegSn;
+      return { durum:'aktif', segAd: s.ad, segIkon: s.ikon,
+        kalanSn, toplamSn: toplamSegSn, oran,
+        bitisStr: takvim[i].bit,
+        toplamKalan, toplamSure,
+        takvim,
+        toplam: { bas: d.oturumTuru==='İki Oturum'?d.sozelBaslama:d.baslamaSaati, bit: d.oturumTuru==='İki Oturum'?d.sayisalBitis:d.bitisSaati },
+        sureDk: s.sureDk
+      };
+    }
+    // ara süre
+    if(i < segList.length-1){
+      const snBas = segList[i+1].bas;
+      if(simdi >= s.bit && simdi < snBas){
+        const kalanSn = (snBas - simdi)/1000;
+        return { durum:'ara', sonrakiAd: segList[i+1].ad, sonrakiBasStr: takvim[i+1].bas,
+          kalanSn, toplamKalan, toplamSure, takvim,
+          toplam: { bas: d.oturumTuru==='İki Oturum'?d.sozelBaslama:d.baslamaSaati, bit: d.oturumTuru==='İki Oturum'?d.sayisalBitis:d.bitisSaati }
+        };
+      }
+    }
+  }
+  return null;
+}
+
+/* Overlay içindeki dinamik alanları günceller (tam HTML yeniden yazılmaz) */
+function _sayacOvGuncelle(){
+  const d = denemeSinavlari.find(x=>x.id===_sayacOvId);
+  if(!d) return;
+  const ds = _sayacDurum(d);
+  const sayacAktif = d.sayacDurumu?.aktif;
+
+  /* Başlat/Durdur buton görünümü (admin için) */
+  const isAdmin = typeof AKTIF_KULLANICI!=='undefined' && AKTIF_KULLANICI?.admin;
+  const btnEl = document.getElementById('dnSayacBtnBaslat');
+  if(btnEl){
+    if(!sayacAktif){
+      btnEl.textContent = '▶ Başlat';
+      btnEl.className = 'dn-sayac-btn dn-sayac-btn--basla';
+      btnEl.onclick = () => _sayacBaslat(d.id);
+    } else {
+      btnEl.textContent = '⏹ Durdur';
+      btnEl.className = 'dn-sayac-btn dn-sayac-btn--durdur';
+      btnEl.onclick = () => _sayacDurdur(d.id);
+    }
+    btnEl.style.display = isAdmin ? '' : 'none';
+  }
+
+  /* Durum başlığı */
+  const durumEl = document.getElementById('dnSayacDurumBadge');
+  if(durumEl){
+    if(!sayacAktif && !ds){
+      durumEl.innerHTML = '<span class="dn-ov-badge dn-ov-badge--bekle">Henüz başlatılmadı</span>';
+    } else if(!ds || ds.durum==='bekle'){
+      durumEl.innerHTML = '<span class="dn-ov-badge dn-ov-badge--bekle">Sınav devam ediyor</span>';
+    } else if(ds.durum==='aktif'||ds.durum==='ara'){
+      durumEl.innerHTML = '<span class="dn-ov-badge dn-ov-badge--canli"><span class="dn-nabiz-nokta"></span>Sınav devam ediyor</span>';
+    } else if(ds.durum==='tamam'){
+      durumEl.innerHTML = '<span class="dn-ov-badge dn-ov-badge--tamam">✓ Tamamlandı</span>';
+    }
+  }
+
+  /* Ana sayaç alanı */
+  const anaEl = document.getElementById('dnSayacAna');
+  if(!anaEl) return;
+
+  if(!sayacAktif){
+    anaEl.innerHTML = `<div class="dn-ov-bekleme">
+      <div class="dn-ov-bekleme-ikon">⏳</div>
+      <div class="dn-ov-bekleme-yazi">Sayaç henüz başlatılmadı</div>
+      ${isAdmin ? '<div class="dn-ov-bekleme-alt">Başlatmak için yukarıdaki "Başlat" butonuna basın</div>' : '<div class="dn-ov-bekleme-alt">Yönetici sayacı başlatmayı bekleyin</div>'}
+    </div>`;
+    return;
+  }
+
+  if(!ds){
+    anaEl.innerHTML = `<div class="dn-ov-bekleme"><div class="dn-ov-bekleme-ikon">⚙️</div><div class="dn-ov-bekleme-yazi">Saat bilgisi eksik</div></div>`;
+    return;
+  }
+
+  if(ds.durum === 'tamam'){
+    anaEl.innerHTML = `<div class="dn-ov-tamam">
+      <div style="font-size:56px;margin-bottom:12px;">✅</div>
+      <div style="font-size:22px;font-weight:800;">Sınav Tamamlandı</div>
+    </div>`;
+    if(_sayacOvInt){ clearInterval(_sayacOvInt); _sayacOvInt = null; }
+    return;
+  }
+
+  if(ds.durum === 'bekle'){
+    const dk = Math.floor(ds.kalanSn/60), sn = Math.floor(ds.kalanSn%60);
+    anaEl.innerHTML = `<div class="dn-ov-bekleme">
+      <div class="dn-ov-bekleme-ikon">🕐</div>
+      <div class="dn-ov-bekleme-yazi">${dk} dk ${sn} sn sonra başlıyor</div>
+      <div class="dn-ov-bekleme-alt">Başlangıç: ${ds.ilkBasStr}</div>
+    </div>`;
+    return;
+  }
+
+  if(ds.durum === 'ara'){
+    const dk = Math.floor(ds.kalanSn/60), sn = Math.floor(ds.kalanSn%60);
+    anaEl.innerHTML = `<div class="dn-ov-ara">
+      <div class="dn-ov-ara-ikon">⏸</div>
+      <div class="dn-ov-ara-baslik">ARA</div>
+      <div class="dn-ov-ara-alt"><strong>${ds.sonrakiAd}</strong> ${ds.sonrakiBasStr}'de başlıyor</div>
+      <div class="dn-ov-ara-sure">${dk} dk ${sn} sn kaldı</div>
+    </div>`;
+    return;
+  }
+
+  /* durum === 'aktif' */
+  const oran = ds.oran || 0;
+  const arcD = _arcPath(oran);
+  anaEl.innerHTML = `
+    <div class="dn-ov-aktif">
+      <div class="dn-ov-oturum-adi"><span style="font-size:20px;">${ds.segIkon}</span> ${ds.segAd.toUpperCase()}</div>
+      <div class="dn-ov-arc-wrap">
+        <svg viewBox="0 0 220 220" class="dn-ov-arc-svg">
+          <circle cx="110" cy="110" r="90" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>
+          <path d="${arcD}" fill="none" stroke="url(#dnGrad)" stroke-width="12" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="dnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#818CF8"/>
+              <stop offset="100%" stop-color="#A78BFA"/>
+            </linearGradient>
+          </defs>
+          <text x="110" y="94" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600" letter-spacing="2">KALAN SÜRE</text>
+          <text x="110" y="128" text-anchor="middle" fill="white" font-size="26" font-weight="800" font-family="monospace" letter-spacing="2">${_snFormat(ds.kalanSn)}</text>
+          <text x="54" y="148" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9" font-weight="600">SAAT</text>
+          <text x="110" y="148" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9" font-weight="600">DAKİKA</text>
+          <text x="166" y="148" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9" font-weight="600">SANİYE</text>
+        </svg>
+      </div>
+      <div class="dn-ov-info-grid">
+        <div class="dn-ov-info-kart">
+          <div class="dn-ov-info-ikon">🕐</div>
+          <div class="dn-ov-info-etiket">BİTİŞ SAATİ</div>
+          <div class="dn-ov-info-deger">${ds.bitisStr}</div>
+        </div>
+        <div class="dn-ov-info-kart">
+          <div class="dn-ov-info-ikon">📅</div>
+          <div class="dn-ov-info-etiket">BUGÜN</div>
+          <div class="dn-ov-info-deger">${new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'})}</div>
+        </div>
+        ${d.sinflar ? `<div class="dn-ov-info-kart">
+          <div class="dn-ov-info-ikon">👥</div>
+          <div class="dn-ov-info-etiket">SINIFLAR</div>
+          <div class="dn-ov-info-deger">${escapeHtml(d.sinflar)}</div>
+        </div>` : ''}
+      </div>
+    </div>`;
+}
+
+/* Firestore güncellemesi gelince overlay açıksa canlı güncelle */
+function _sayacOvFirestoreGuncelle(){
+  if(!_sayacOvId) return;
+  _sayacOvGuncelle();
+}
+
+function _sayacBaslat(id){
+  SinavlarService.denemeSayacBaslat(id)
+    .catch(e=>{ if(e.message!=='yetkisiz') toast('Hata: '+e.message); });
+}
+function _sayacDurdur(id){
+  if(!confirm('Sayacı durdurmak istiyor musunuz?')) return;
+  SinavlarService.denemeSayacDurdur(id)
+    .catch(e=>{ if(e.message!=='yetkisiz') toast('Hata: '+e.message); });
+}
+
+function _sayacOvOturumTakvimiHtml(d){
+  const ds = _sayacDurum(d);
+  if(!ds || !ds.takvim) return '';
+
+  const toplamSure = (() => {
+    const bas = d.oturumTuru==='İki Oturum' ? _hmmMs(d.sozelBaslama) : _hmmMs(d.baslamaSaati);
+    const bit = d.oturumTuru==='İki Oturum' ? _hmmMs(d.sayisalBitis) : _hmmMs(d.bitisSaati);
+    if(!bas||!bit) return '';
+    return dakikayiMetneCevir(Math.round((bit-bas)/60000));
+  })();
+  const basStr = d.oturumTuru==='İki Oturum' ? (d.sozelBaslama||'—') : (d.baslamaSaati||'—');
+  const bitStr = d.oturumTuru==='İki Oturum' ? (d.sayisalBitis||'—') : (d.bitisSaati||'—');
+
+  return `
+    <div class="dn-ov-panel">
+      <div class="dn-ov-panel-baslik">OTURUM TAKVİMİ</div>
+      ${ds.takvim.map((t,i)=>`
+        <div class="dn-ov-takvim-satir dn-ov-takvim-satir--${t.durum}">
+          <div class="dn-ov-takvim-no">${i+1}</div>
+          <div class="dn-ov-takvim-icerik">
+            <div class="dn-ov-takvim-ad">${t.ad}</div>
+            <div class="dn-ov-takvim-saat">${t.bas||'—'}–${t.bit||'—'} (${dakikayiMetneCevir(t.sureDk)})</div>
+          </div>
+          <div class="dn-ov-takvim-badge">${t.durum==='aktif'?'AKTİF':t.durum==='bitti'?'BİTTİ':'SIRADA'}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="dn-ov-panel dn-ov-panel--takip">
+      <div class="dn-ov-panel-baslik">SINAVI TAKİP ET</div>
+      <div class="dn-ov-takip-satir">
+        <div class="dn-ov-takip-kart"><div class="dn-ov-takip-ikon">📋</div><div class="dn-ov-takip-etiket">Toplam Süre</div><div class="dn-ov-takip-deger">${toplamSure}</div></div>
+        <div class="dn-ov-takip-kart"><div class="dn-ov-takip-ikon" style="color:#22C55E;">▶</div><div class="dn-ov-takip-etiket">Başlangıç</div><div class="dn-ov-takip-deger">${basStr}</div></div>
+        <div class="dn-ov-takip-kart"><div class="dn-ov-takip-ikon" style="color:#EAB308;">🏁</div><div class="dn-ov-takip-etiket">Bitiş</div><div class="dn-ov-takip-deger">${bitStr}</div></div>
+      </div>
+    </div>`;
+}
+
+function denemeSayacAc(id){
+  const d = denemeSinavlari.find(x=>x.id===id);
+  if(!d) return;
+
+  const eski = document.getElementById('denemeSayacOv');
+  if(eski) eski.remove();
+  _sayacOvTemizle();
+  _sayacOvId = id;
+
+  const isAdmin = typeof AKTIF_KULLANICI!=='undefined' && AKTIF_KULLANICI?.admin;
+
+  const ov = document.createElement('div');
+  ov.id = 'denemeSayacOv';
+  ov.className = 'dn-ov';
+  ov.innerHTML = `
+    <div class="dn-ov-ust">
+      <button class="dn-ov-geri" onclick="denemeSayacKapat()">←</button>
+      <div class="dn-ov-baslik-grup">
+        <div class="dn-ov-baslik">${escapeHtml(d.ad||'Deneme Sınavı')}</div>
+        <div id="dnSayacDurumBadge"></div>
+      </div>
+      ${isAdmin ? `<button id="dnSayacBtnBaslat" class="dn-sayac-btn dn-sayac-btn--basla" style="display:none;">▶ Başlat</button>` : '<div></div>'}
+    </div>
+    <div class="dn-ov-govde">
+      <div id="dnSayacAna" class="dn-ov-ana"></div>
+      <div id="dnSayacTakvim">${_sayacOvOturumTakvimiHtml(d)}</div>
+    </div>`;
+
+  document.body.appendChild(ov);
+  document.body.classList.add('dn-ov-acik');
+  if(typeof _pullToRefreshAyarla==='function') _pullToRefreshAyarla(false);
+
+  _sayacOvGuncelle();
+  _sayacOvInt = setInterval(_sayacOvGuncelle, 1000);
+}
+
+function denemeSayacKapat(){
+  _sayacOvTemizle();
+  const ov = document.getElementById('denemeSayacOv');
+  if(ov) ov.remove();
+  document.body.classList.remove('dn-ov-acik');
+  if(typeof _pullToRefreshAyarla==='function') _pullToRefreshAyarla(true);
+}
+
+/* Firestore onSnapshot denemeSinavlari güncellenince overlay da güncellenir —
+   sinavBaglantilariKur içindeki callback'e _sayacOvGuncelle() çağrısı eklendi. */
