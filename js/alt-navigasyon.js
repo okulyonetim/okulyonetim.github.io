@@ -1222,6 +1222,10 @@
     if(document.getElementById('ssOgrenciOverlay') && typeof _ssOgrenciSonucKapat === 'function') _ssOgrenciSonucKapat();
     if(document.getElementById('yokDevamsizOverlay') && typeof yoklamaDevamsizlarKapat === 'function') yoklamaDevamsizlarKapat();
     if(document.getElementById('yokOverlay') && typeof yoklamaKapat === 'function') yoklamaKapat();
+    // DÜZELTME: Deneme Sınavı sayaç overlay'i (bkz. js/sinavlar.js) de aynı
+    // sebepten eklendi — alt navigasyondan (Ana Sayfa/Arama/Profilim/Menü)
+    // bir yere geçilince açık kalırsa yeni ekran onun altında render olurdu.
+    if(document.getElementById('denemeSayacOv') && typeof denemeSayacKapat === 'function') denemeSayacKapat();
     // DÜZELTME: bkz. js/app.js _pullToRefreshZorlaSifirla — bu sweep zaten
     // "her şeyi kapat" niyetinde, o yüzden burada sayaç güvenle sıfırlanabilir.
     if(typeof _pullToRefreshZorlaSifirla === 'function') _pullToRefreshZorlaSifirla();

@@ -211,7 +211,7 @@ function renderDenemeSinavlari(){
           </div>`:''}
         </div>
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();denemeModalAc('${d.id}')">Düzenle</button>
+      ${SinavlarService.denemeDuzenlenebilirMi(d) ? `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();denemeModalAc('${d.id}')">Düzenle</button>` : ''}
     </div>`;
   }).join('') : '<div class="empty-state">Henüz deneme sınavı eklenmedi. "+ Deneme Sınavı Ekle" ile başlayın.</div>';
 }
@@ -326,10 +326,16 @@ function denemeModalAc(id){
         sozelBaslama:'', sozelSuresiDk:'', sozelBitis:'', araSureDk:'', sayisalBaslama:'', sayisalSuresiDk:'', sayisalBitis:''
       };
     }
-    SinavlarService.denemeKaydet(d?d.id:null, veri)
-      .then(()=>toast('Kaydedildi.')).catch(err=>{ if(err.message!=='yetkisiz') toast('Hata: '+err.message); });
+    SinavlarService.denemeKaydet(d?d.id:null, d, veri)
+      .then(()=>toast('Kaydedildi.')).catch(err=>{
+        if(err.message==='sahip-degil'){ toast('Bu deneme sınavı kaydını yalnızca ekleyen kişi düzenleyebilir.'); return; }
+        if(err.message!=='yetkisiz') toast('Hata: '+err.message);
+      });
     modalKapat();
-  }, d ? ()=>{ if(confirm('Bu deneme sınavı kaydını silmek istiyor musunuz?')){ SinavlarService.denemeSil(d.id).catch(err=>{ if(err.message!=='yetkisiz') toast('Hata: '+err.message); }); modalKapat(); } } : null);
+  }, (d && SinavlarService.denemeDuzenlenebilirMi(d)) ? ()=>{ if(confirm('Bu deneme sınavı kaydını silmek istiyor musunuz?')){ SinavlarService.denemeSil(d.id, d).catch(err=>{
+      if(err.message==='sahip-degil'){ toast('Bu deneme sınavı kaydını yalnızca ekleyen kişi silebilir.'); return; }
+      if(err.message!=='yetkisiz') toast('Hata: '+err.message);
+    }); modalKapat(); } } : null);
 }
 
 /* ---------- FIRESTORE BAĞLANTISI (app.js baglantilariKur içinden çağrılır) ----------
@@ -346,7 +352,9 @@ function sinavBaglantilariKur(){
     // anında yansıt — setInterval bunu saniyede yapar ama sayaç başlatma/durdurma
     // gibi durum değişikliklerinde buton ve badge'in hemen güncellenmesi gerekir.
     if(_sayacOvId) _sayacOvGuncelle();
+    _anaSayfaSayacKartiGuncelle();
   });
+  if(!_anaSayfaSayacInt) _anaSayfaSayacInt = setInterval(_anaSayfaSayacKartiGuncelle, 1000);
 }
 
 /* ================================================================
@@ -546,6 +554,9 @@ let _sayacOvId   = null; // açık olan overlay'in dinlediği deneme id'si
 let _sayacOvInt  = null; // setInterval handle
 let _sayacOvSvg  = null; // canvas SVG element ref (arc güncelleme için)
 
+let _anaSayfaSayacInt   = null; // anasayfa mini kart — setInterval handle
+let _dashSayacAktifId   = null; // anasayfa mini kartta gösterilen deneme id'si — dashSayacKartiTikla() bunu okuyup sayaç overlay'ini açar
+
 function _sayacOvTemizle(){
   if(_sayacOvInt){ clearInterval(_sayacOvInt); _sayacOvInt = null; }
   _sayacOvId = null; _sayacOvSvg = null;
@@ -569,13 +580,13 @@ function _snFormat(sn){
 /* SVG arc path — toplam süre içinde kalan oranından yay çizer */
 function _arcPath(oran){
   const r = 90, cx = 110, cy = 110;
+  if(oran <= 0) return '';
+  if(oran >= 1) return `M ${cx} ${cy-r} A ${r} ${r} 0 1 1 ${cx-0.001} ${cy-r}`;
   const aci = oran * 2 * Math.PI;
   const x = cx + r * Math.sin(aci);
   const y = cy - r * Math.cos(aci);
   const buyukArc = oran > 0.5 ? 1 : 0;
-  if(oran <= 0) return '';
-  if(oran >= 1) return `M ${cx} ${cy-r} A ${r} ${r} 0 1 1 ${cx-0.001} ${cy-r}`;
-  return `M ${cx} ${cy-r} A ${r} ${r} 0 0 1 ${x} ${y}`;
+  return `M ${cx} ${cy-r} A ${r} ${r} 0 ${buyukArc} 1 ${x} ${y}`;
 }
 
 /* Verilen deneme kaydının şu anki oturum durumunu hesaplar.
@@ -660,8 +671,8 @@ function _sayacOvGuncelle(){
   const ds = _sayacDurum(d);
   const sayacAktif = d.sayacDurumu?.aktif;
 
-  /* Başlat/Durdur buton görünümü (admin için) */
-  const isAdmin = typeof AKTIF_KULLANICI!=='undefined' && AKTIF_KULLANICI?.admin;
+  /* Başlat/Durdur buton görünümü (admin veya kaydın sahibi için) */
+  const sayacYetkisiVar = _sayacKontrolYetkisiVarMi(d);
   const btnEl = document.getElementById('dnSayacBtnBaslat');
   if(btnEl){
     if(!sayacAktif){
@@ -673,7 +684,7 @@ function _sayacOvGuncelle(){
       btnEl.className = 'dn-sayac-btn dn-sayac-btn--durdur';
       btnEl.onclick = () => _sayacDurdur(d.id);
     }
-    btnEl.style.display = isAdmin ? '' : 'none';
+    btnEl.style.display = sayacYetkisiVar ? '' : 'none';
   }
 
   /* Durum başlığı */
@@ -698,7 +709,7 @@ function _sayacOvGuncelle(){
     anaEl.innerHTML = `<div class="dn-ov-bekleme">
       <div class="dn-ov-bekleme-ikon">⏳</div>
       <div class="dn-ov-bekleme-yazi">Sayaç henüz başlatılmadı</div>
-      ${isAdmin ? '<div class="dn-ov-bekleme-alt">Başlatmak için yukarıdaki "Başlat" butonuna basın</div>' : '<div class="dn-ov-bekleme-alt">Yönetici sayacı başlatmayı bekleyin</div>'}
+      ${sayacYetkisiVar ? '<div class="dn-ov-bekleme-alt">Başlatmak için yukarıdaki "Başlat" butonuna basın</div>' : '<div class="dn-ov-bekleme-alt">Yönetici veya sınavı ekleyen kişi sayacı başlatmayı bekleyin</div>'}
     </div>`;
     return;
   }
@@ -787,13 +798,23 @@ function _sayacOvFirestoreGuncelle(){
   _sayacOvGuncelle();
 }
 
+/* Sayaç Başlat/Durdur butonunu görebilir mi: admin her zaman, admin değilse
+   sadece kendi oluşturduğu (sahipUid'i kendisi olan) deneme sınavı için. */
+function _sayacKontrolYetkisiVarMi(d){
+  const isAdmin = typeof AKTIF_KULLANICI!=='undefined' && AKTIF_KULLANICI?.admin;
+  if(isAdmin) return true;
+  return !!(typeof AKTIF_KULLANICI!=='undefined' && AKTIF_KULLANICI && d && d.sahipUid === AKTIF_KULLANICI.uid);
+}
+
 function _sayacBaslat(id){
-  SinavlarService.denemeSayacBaslat(id)
+  const d = denemeSinavlari.find(x=>x.id===id);
+  SinavlarService.denemeSayacBaslat(id, d)
     .catch(e=>{ if(e.message!=='yetkisiz') toast('Hata: '+e.message); });
 }
 function _sayacDurdur(id){
   if(!confirm('Sayacı durdurmak istiyor musunuz?')) return;
-  SinavlarService.denemeSayacDurdur(id)
+  const d = denemeSinavlari.find(x=>x.id===id);
+  SinavlarService.denemeSayacDurdur(id, d)
     .catch(e=>{ if(e.message!=='yetkisiz') toast('Hata: '+e.message); });
 }
 
@@ -843,7 +864,7 @@ function denemeSayacAc(id){
   _sayacOvTemizle();
   _sayacOvId = id;
 
-  const isAdmin = typeof AKTIF_KULLANICI!=='undefined' && AKTIF_KULLANICI?.admin;
+  const sayacYetkisiVar = _sayacKontrolYetkisiVarMi(d);
 
   const ov = document.createElement('div');
   ov.id = 'denemeSayacOv';
@@ -855,7 +876,7 @@ function denemeSayacAc(id){
         <div class="dn-ov-baslik">${escapeHtml(d.ad||'Deneme Sınavı')}</div>
         <div id="dnSayacDurumBadge"></div>
       </div>
-      ${isAdmin ? `<button id="dnSayacBtnBaslat" class="dn-sayac-btn dn-sayac-btn--basla" style="display:none;">▶ Başlat</button>` : '<div></div>'}
+      ${sayacYetkisiVar ? `<button id="dnSayacBtnBaslat" class="dn-sayac-btn dn-sayac-btn--basla" style="display:none;">▶ Başlat</button>` : '<div></div>'}
     </div>
     <div class="dn-ov-govde">
       <div id="dnSayacAna" class="dn-ov-ana"></div>
@@ -878,5 +899,104 @@ function denemeSayacKapat(){
   if(typeof _pullToRefreshAyarla==='function') _pullToRefreshAyarla(true);
 }
 
+/* Android donanım geri tuşu entegrasyonu: sayaç overlay'i açıkken geri tuşuna
+   basılınca önceki sayfaya (sınav listesine) dönsün. Overlay açıksa kapatır ve
+   true döner; açık değilse false döner. js/app.js > geriTusuIsle() ve
+   js/alt-navigasyon.js > _ustPanelleriKapat() içine kaydedildi. */
+function denemeSayacGeriTusu(){
+  if(!_sayacOvId) return false;
+  denemeSayacKapat();
+  return true;
+}
+
 /* Firestore onSnapshot denemeSinavlari güncellenince overlay da güncellenir —
    sinavBaglantilariKur içindeki callback'e _sayacOvGuncelle() çağrısı eklendi. */
+
+/* ================================================================
+   ANASAYFA MİNİ SAYAÇ KARTI (#dashSayacKarti, bkz. index.html)
+   Sayacı BAŞLATILMIŞ (sayacDurumu.aktif===true) bir deneme sınavı varsa
+   kompakt bir kart gösterir — küçük ilerleme halkası + kalan süre +
+   oturum adı. Tıklanınca tam ekran sayaç overlay'ini açar. Hiçbir aktif
+   sayaç yoksa kart tamamen gizlenir.
+   sinavBaglantilariKur() içinden (Firestore güncellemesi) ve saniyelik
+   bir interval'dan (kalan süre aksın diye) çağrılır — sayaç overlay'i
+   kapalıyken de çalışır.
+   ================================================================ */
+/* index.html'deki #dashSayacKarti onclick'i bunu çağırır. */
+function dashSayacKartiTikla(){
+  if(_dashSayacAktifId) denemeSayacAc(_dashSayacAktifId);
+}
+
+function _anaSayfaSayacKartiGuncelle(){
+  const kart = document.getElementById('dashSayacKarti');
+  if(!kart) return;
+
+  // Sayacı başlatılmış deneme(ler) — birden fazlaysa en yakın zamanda
+  // biteni öne al (sonBit'i en küçük olan).
+  const adaylar = (typeof denemeSinavlari!=='undefined' ? denemeSinavlari : [])
+    .filter(d => d.sayacDurumu?.aktif)
+    .map(d => ({ d, ds: _sayacDurum(d) }))
+    .filter(x => x.ds && (x.ds.durum==='aktif' || x.ds.durum==='ara' || x.ds.durum==='bekle'));
+
+  if(!adaylar.length){
+    kart.style.display = 'none';
+    kart.innerHTML = '';
+    _dashSayacAktifId = null;
+    return;
+  }
+
+  adaylar.sort((a,b) => (a.ds.toplamKalan ?? a.ds.kalanSn) - (b.ds.toplamKalan ?? b.ds.kalanSn));
+  const { d, ds } = adaylar[0];
+  _dashSayacAktifId = d.id;
+  kart.style.display = '';
+
+  if(ds.durum === 'bekle'){
+    kart.innerHTML = `
+      <div class="dash-sayac-mini">
+        <div class="dash-sayac-mini-ikon">🕐</div>
+        <div class="dash-sayac-mini-metin">
+          <div class="dash-sayac-mini-baslik">${escapeHtml(d.ad||'Deneme Sınavı')}</div>
+          <div class="dash-sayac-mini-alt">${Math.floor(ds.kalanSn/60)} dk sonra başlıyor</div>
+        </div>
+        <span class="dash-tumu-link">İzle ›</span>
+      </div>`;
+    return;
+  }
+
+  if(ds.durum === 'ara'){
+    kart.innerHTML = `
+      <div class="dash-sayac-mini">
+        <div class="dash-sayac-mini-ikon">⏸</div>
+        <div class="dash-sayac-mini-metin">
+          <div class="dash-sayac-mini-baslik">${escapeHtml(d.ad||'Deneme Sınavı')} <span class="badge dn-canli-badge"><span class="dn-nabiz-nokta"></span>ARA</span></div>
+          <div class="dash-sayac-mini-alt"><strong>${escapeHtml(ds.sonrakiAd)}</strong> ${_snFormat(ds.kalanSn)} sonra</div>
+        </div>
+        <span class="dash-tumu-link">İzle ›</span>
+      </div>`;
+    return;
+  }
+
+  /* durum === 'aktif' */
+  const oran = ds.oran || 0;
+  const arcD = _arcPath(oran);
+  kart.innerHTML = `
+    <div class="dash-sayac-mini">
+      <div class="dash-sayac-mini-arc">
+        <svg viewBox="0 0 220 220">
+          <circle cx="110" cy="110" r="90" fill="none" stroke="var(--border)" stroke-width="16"/>
+          <path d="${arcD}" fill="none" stroke="url(#dashSayacGrad)" stroke-width="16" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="dashSayacGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#818CF8"/>
+              <stop offset="100%" stop-color="#A78BFA"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="dash-sayac-mini-metin">
+        <div class="dash-sayac-mini-baslik">${escapeHtml(d.ad||'Deneme Sınavı')} <span class="badge dn-canli-badge"><span class="dn-nabiz-nokta"></span>CANLI</span></div>
+        <div class="dash-sayac-mini-alt">${ds.segIkon} ${escapeHtml(ds.segAd)} · <strong class="dash-sayac-mini-sure">${_snFormat(ds.kalanSn)}</strong> kaldı</div>
+      </div>
+      <span class="dash-tumu-link">İzle ›</span>
+    </div>`;
+}

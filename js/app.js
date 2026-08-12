@@ -2643,6 +2643,13 @@ function geriTusuIsle(){
   var atk = document.getElementById('akademikTakvimOverlay');
   if(atk && typeof akademikTakvimKapat==='function'){ akademikTakvimKapat(); return 'handled'; }
 
+  // DÜZELTME: Deneme Sınavı sayaç tam ekran overlay'i (bkz. js/sinavlar.js
+  // denemeSayacAc/denemeSayacKapat) da kendi özel katmanını kullanıyor ve
+  // geri tuşu sistemine kayıtlı değildi — aynı desen (özel katman +
+  // _pullToRefreshAyarla ama geri tuşu kaydı yok).
+  var dso = document.getElementById('denemeSayacOv');
+  if(dso && typeof denemeSayacGeriTusu==='function' && denemeSayacGeriTusu()){ return 'handled'; }
+
   // dokOkuyucuOverlay/kdOverlay/pdOverlay'in kendi adlandırılmış bir
   // Kapat fonksiyonu yok — kapatma mantığı doğrudan kapat butonunun
   // onclick'ine bağlı; o düğmeyi tıklatmak aynı temizliği yapar.
