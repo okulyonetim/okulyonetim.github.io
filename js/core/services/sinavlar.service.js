@@ -60,5 +60,23 @@ const SinavlarService = {
   denemeSil(id){
     if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
     return SinavlarRepository.denemeSil(id);
+  },
+
+  /* Sayaç başlat/durdur — sadece admin yapabilir */
+  _adminKontrol(){
+    if(typeof AKTIF_KULLANICI === 'undefined' || !AKTIF_KULLANICI || !AKTIF_KULLANICI.admin){
+      toast('Bu işlem için yönetici yetkisi gereklidir.');
+      return false;
+    }
+    return true;
+  },
+  denemeSayacBaslat(id){
+    if(!this._adminKontrol()) return Promise.reject(new Error('yetkisiz'));
+    const uid = AKTIF_KULLANICI?.uid || '';
+    return SinavlarRepository.denemeSayacBaslat(id, uid);
+  },
+  denemeSayacDurdur(id){
+    if(!this._adminKontrol()) return Promise.reject(new Error('yetkisiz'));
+    return SinavlarRepository.denemeSayacDurdur(id);
   }
 };
