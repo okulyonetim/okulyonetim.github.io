@@ -3837,9 +3837,13 @@ body.nav-open::after{ display:none !important; }
 /* Body lock */
 body.dn-ov-acik{ overflow:hidden; }
 
-/* Overlay kapsayıcı */
+/* Overlay kapsayıcı — alt navigasyon (.bottom-nav, z-index:9700) her zaman
+   görünür/tıklanabilir kalsın diye: altta o kadar boşluk bırakılıyor
+   (bottom, inset yerine) ve z-index altnav'ın altında tutuluyor. */
 .dn-ov{
-  position: fixed; inset: 0; z-index: 99990;
+  position: fixed; top: 0; left: 0; right: 0;
+  bottom: calc(var(--bottom-nav-h, 64px) + env(safe-area-inset-bottom, 0px));
+  z-index: 6500;
   background: #0E1525;
   display: flex; flex-direction: column;
   font-family: inherit;
@@ -3887,7 +3891,7 @@ body.dn-ov-acik{ overflow:hidden; }
 .dn-sayac-btn--durdur{ background: #EF4444; color: white; }
 
 /* Gövde */
-.dn-ov-govde{ flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px 14px 24px; }
+.dn-ov-govde{ flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px 14px 28px; }
 
 /* Ana sayaç alanı */
 .dn-ov-ana{ min-height: 300px; display: flex; align-items: center; justify-content: center; }
@@ -3974,3 +3978,23 @@ body.dn-ov-acik{ overflow:hidden; }
 .dn-ov-takip-ikon{ font-size: 18px; }
 .dn-ov-takip-etiket{ font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 600; text-align: center; }
 .dn-ov-takip-deger{ font-size: 13px; font-weight: 800; color: white; text-align: center; }
+
+/* ================================================================
+   ANASAYFA MİNİ SAYAÇ KARTI (#dashSayacKarti)
+   Kartın kabuğu (.card, display:none/'') zaten index.html'de; bu kurallar
+   sadece js/sinavlar.js > _anaSayfaSayacKartiGuncelle()'nin bastığı iç
+   içeriği (.dash-sayac-mini) biçimlendirir. Diğer anasayfa kartlarıyla
+   (--dm-ink, --dm-accent vb.) aynı açık/koyu tema token'larını kullanır.
+   ================================================================ */
+.dash-sayac-mini{ display: flex; align-items: center; gap: 12px; }
+.dash-sayac-mini-arc{ width: 44px; height: 44px; flex-shrink: 0; }
+.dash-sayac-mini-arc svg{ width: 100%; height: 100%; }
+.dash-sayac-mini-ikon{ width: 44px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.dash-sayac-mini-metin{ flex: 1; min-width: 0; }
+.dash-sayac-mini-baslik{
+  font-size: 13.5px; font-weight: 700; color: var(--dm-ink, var(--ink));
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dash-sayac-mini-alt{ font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+.dash-sayac-mini-sure{ font-family: monospace; letter-spacing: .5px; color: var(--dm-ink, var(--ink)); }
