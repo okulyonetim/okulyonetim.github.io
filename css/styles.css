@@ -3812,81 +3812,165 @@ body.nav-open::after{ display:none !important; }
   font-family:inherit; font-size:12.5px; font-weight:700; color:#E5484D; cursor:pointer;
 }
 
-/* ============================================================
-   DENEME SINAVI SAYACI — .deneme-sayac
-   ============================================================ */
-.deneme-sayac{
-  margin: 8px 0 2px;
-  padding: 9px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  line-height: 1.4;
+/* ================================================================
+   DENEME SINAVI TAM EKRAN SAYAÇ OVERLAY
+   ================================================================ */
+
+/* Kart badge'leri */
+.dn-bugun-badge{ background:rgba(234,179,8,0.18); color:#CA8A04; font-weight:700; font-size:10px; }
+[data-theme="dark"] .dn-bugun-badge{ background:rgba(234,179,8,0.20); color:#FDE047; }
+.dn-canli-badge{ background:rgba(239,68,68,0.15); color:#DC2626; font-weight:700; font-size:10px;
+  display:inline-flex; align-items:center; gap:4px; }
+[data-theme="dark"] .dn-canli-badge{ background:rgba(239,68,68,0.20); color:#F87171; }
+
+/* Nabız noktası */
+.dn-nabiz-nokta{
+  width:7px; height:7px; border-radius:50%; background:currentColor; flex-shrink:0;
+  animation: dn-nabiz 1.1s ease-in-out infinite;
+}
+@keyframes dn-nabiz{ 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.2;transform:scale(0.6)} }
+
+/* Kart - bugün vurgulama */
+.dn-kart--bugun{ border-left:3px solid #CA8A04 !important; }
+.dn-kart--aktif{ border-left:3px solid #DC2626 !important; }
+
+/* Body lock */
+body.dn-ov-acik{ overflow:hidden; }
+
+/* Overlay kapsayıcı */
+.dn-ov{
+  position: fixed; inset: 0; z-index: 99990;
+  background: #0E1525;
+  display: flex; flex-direction: column;
+  font-family: inherit;
+  overflow-y: auto;
 }
 
-/* Henüz başlamadı */
-.deneme-sayac--bekle{
-  background: rgba(217,119,6,0.10);
-  color: var(--amber-dark, #92400E);
-  border: 1px solid rgba(217,119,6,0.20);
+/* Üst bar */
+.dn-ov-ust{
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px 10px;
+  background: linear-gradient(135deg, #1a2340 0%, #0E1525 100%);
+  position: sticky; top: 0; z-index: 2;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
 }
-[data-theme="dark"] .deneme-sayac--bekle{
-  background: rgba(251,191,36,0.12);
-  color: #FCD34D;
-  border-color: rgba(251,191,36,0.22);
+.dn-ov-geri{
+  background: rgba(255,255,255,0.08); border: none; color: white;
+  width: 38px; height: 38px; border-radius: 10px; font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
+.dn-ov-baslik-grup{ flex: 1; min-width: 0; }
+.dn-ov-baslik{ font-size: 15px; font-weight: 800; color: white;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Oturum aktif */
-.deneme-sayac--aktif{
-  background: rgba(220,38,38,0.08);
-  color: var(--ink);
-  border: 1px solid rgba(220,38,38,0.20);
+/* Durum badge'leri */
+.dn-ov-badge{
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; padding: 2px 8px;
+  border-radius: 20px; margin-top: 3px;
 }
-[data-theme="dark"] .deneme-sayac--aktif{
-  background: rgba(220,38,38,0.14);
-  color: #FCA5A5;
-  border-color: rgba(220,38,38,0.28);
-}
-.deneme-sayac--aktif .deneme-sayac-sure{
-  font-variant-numeric: tabular-nums;
-  color: #DC2626;
-  font-weight: 700;
-}
-[data-theme="dark"] .deneme-sayac--aktif .deneme-sayac-sure{ color: #F87171; }
-.deneme-sayac--aktif .deneme-sayac-bitis{
-  font-weight: 400;
-  color: var(--ink-muted);
-  font-size: 12px;
-}
+.dn-ov-badge--bekle{ background: rgba(234,179,8,0.18); color: #FDE047; }
+.dn-ov-badge--canli{ background: rgba(239,68,68,0.20); color: #F87171; }
+.dn-ov-badge--tamam{ background: rgba(34,197,94,0.15); color: #86EFAC; }
 
-/* Nabız animasyonu */
-.deneme-sayac-nabiz{ animation: dn-nabiz 1.2s ease-in-out infinite; display:inline-block; }
-@keyframes dn-nabiz{ 0%,100%{opacity:1} 50%{opacity:0.25} }
+/* Başlat/Durdur buton */
+.dn-sayac-btn{
+  border: none; cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 700; padding: 8px 14px;
+  border-radius: 10px; white-space: nowrap; flex-shrink: 0;
+  transition: opacity .15s;
+}
+.dn-sayac-btn:active{ opacity: .75; }
+.dn-sayac-btn--basla{ background: #22C55E; color: #052e16; }
+.dn-sayac-btn--durdur{ background: #EF4444; color: white; }
+
+/* Gövde */
+.dn-ov-govde{ flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px 14px 24px; }
+
+/* Ana sayaç alanı */
+.dn-ov-ana{ min-height: 300px; display: flex; align-items: center; justify-content: center; }
+
+/* Bekleme */
+.dn-ov-bekleme, .dn-ov-tamam, .dn-ov-ara{
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 10px; padding: 32px 16px; text-align: center;
+}
+.dn-ov-bekleme-ikon{ font-size: 52px; }
+.dn-ov-bekleme-yazi{ font-size: 18px; font-weight: 700; color: white; }
+.dn-ov-bekleme-alt{ font-size: 13px; color: rgba(255,255,255,0.5); }
 
 /* Ara */
-.deneme-sayac--ara{
-  background: rgba(37,99,235,0.07);
-  color: var(--ink-soft);
-  border: 1px solid rgba(37,99,235,0.15);
-}
-[data-theme="dark"] .deneme-sayac--ara{
-  background: rgba(96,165,250,0.10);
-  color: #93C5FD;
-  border-color: rgba(96,165,250,0.20);
-}
+.dn-ov-ara-ikon{ font-size: 52px; }
+.dn-ov-ara-baslik{ font-size: 28px; font-weight: 800; color: #93C5FD; letter-spacing: 3px; }
+.dn-ov-ara-alt{ font-size: 14px; color: rgba(255,255,255,0.6); }
+.dn-ov-ara-sure{ font-size: 20px; font-weight: 700; color: white; margin-top: 4px; }
 
-/* Tamamlandı */
-.deneme-sayac--tamam{
-  background: rgba(22,163,74,0.08);
-  color: var(--brand-dark, #15803D);
-  border: 1px solid rgba(22,163,74,0.18);
+/* Aktif sayaç */
+.dn-ov-aktif{ display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+.dn-ov-oturum-adi{
+  font-size: 14px; font-weight: 700; color: #A78BFA;
+  letter-spacing: 2px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
 }
-[data-theme="dark"] .deneme-sayac--tamam{
-  background: rgba(34,197,94,0.10);
-  color: #86EFAC;
-  border-color: rgba(34,197,94,0.20);
+.dn-ov-arc-wrap{ width: min(260px, 80vw); }
+.dn-ov-arc-svg{ width: 100%; height: auto; }
+
+/* Info grid (bitiş saati, bugün, sınıflar) */
+.dn-ov-info-grid{
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px; width: 100%;
 }
+.dn-ov-info-kart{
+  background: rgba(255,255,255,0.06); border-radius: 12px;
+  padding: 10px 10px 10px; display: flex; flex-direction: column;
+  align-items: center; gap: 3px; text-align: center;
+}
+.dn-ov-info-ikon{ font-size: 20px; }
+.dn-ov-info-etiket{ font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 1px; }
+.dn-ov-info-deger{ font-size: 14px; font-weight: 800; color: white; }
+
+/* Panel (oturum takvimi) */
+.dn-ov-panel{
+  background: rgba(255,255,255,0.05); border-radius: 14px;
+  padding: 14px; display: flex; flex-direction: column; gap: 10px;
+}
+.dn-ov-panel--takip{ }
+.dn-ov-panel-baslik{ font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4);
+  letter-spacing: 1.5px; text-transform: uppercase; }
+
+.dn-ov-takvim-satir{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 10px; border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+}
+.dn-ov-takvim-satir--aktif{ background: rgba(129,140,248,0.15); }
+.dn-ov-takvim-satir--bitti{ opacity: .55; }
+.dn-ov-takvim-no{
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+  background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.7);
+}
+.dn-ov-takvim-satir--aktif .dn-ov-takvim-no{ background: #818CF8; color: white; }
+.dn-ov-takvim-icerik{ flex: 1; }
+.dn-ov-takvim-ad{ font-size: 13px; font-weight: 700; color: white; }
+.dn-ov-takvim-saat{ font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+.dn-ov-takvim-badge{
+  font-size: 9px; font-weight: 800; letter-spacing: 1px;
+  padding: 3px 7px; border-radius: 6px;
+}
+.dn-ov-takvim-satir--aktif .dn-ov-takvim-badge{ background: #818CF8; color: white; }
+.dn-ov-takvim-satir--bitti .dn-ov-takvim-badge{ background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.4); }
+.dn-ov-takvim-satir--sirada .dn-ov-takvim-badge{ background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.35); }
+
+/* Takip et satırı */
+.dn-ov-takip-satir{ display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.dn-ov-takip-kart{
+  background: rgba(255,255,255,0.05); border-radius: 10px;
+  padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.dn-ov-takip-ikon{ font-size: 18px; }
+.dn-ov-takip-etiket{ font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 600; text-align: center; }
+.dn-ov-takip-deger{ font-size: 13px; font-weight: 800; color: white; text-align: center; }
