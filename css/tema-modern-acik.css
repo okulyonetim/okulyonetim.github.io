@@ -96,56 +96,45 @@ html[data-skin="modern"] .page-title::before{
 }
 
 /* ---------- Butonlar ---------- */
+/* KÖK NEDEN DÜZELTMESİ: Klasik temada .btn / .btn-ghost / .btn-danger metin
+   rengi, o temanın koyu/neumorphic zeminine göre açık (beyaza yakın) renkte
+   tanımlı. Modern Açık paketi zemini beyaza çevirince bu açık metin beyaz
+   buton üzerinde görünmez oluyordu ("Bildirimleri Aç", yenile ikonu, dişli
+   ikonu, form gönder butonu vb.). .detay-head .btn-ghost kuralı (renkli
+   başlık şeridi üzerindeki butonlar) zaten aşağıda ayrıca ele alınıyor ve
+   daha yüksek özgüllüğe sahip olduğu için bu genel kuraldan etkilenmez. */
+html[data-skin="modern"] .btn,
+html[data-skin="modern"] .btn-ghost,
+html[data-skin="modern"] .btn-danger{
+  color: var(--ink);
+}
 html[data-skin="modern"] .btn{
   background: var(--nm-bg-light);
   border: 1px solid var(--border);
   box-shadow: var(--nm-sm);
-  color: var(--ink-soft);
 }
-html[data-skin="modern"] .btn:hover{ background: var(--nm-bg-dark); color: var(--ink-soft); }
+html[data-skin="modern"] .btn:hover{ background: var(--nm-bg-dark); }
 html[data-skin="modern"] .btn:active{ box-shadow: var(--nm-in) !important; }
 
 html[data-skin="modern"] .btn-primary{
   border: none;
   box-shadow: 0 10px 24px -8px rgba(37,99,235,.45);
-  color: #fff;
 }
-html[data-skin="modern"] .btn-primary:hover{ box-shadow: 0 14px 30px -8px rgba(37,99,235,.55); color: #fff; }
+html[data-skin="modern"] .btn-primary:hover{ box-shadow: 0 14px 30px -8px rgba(37,99,235,.55); }
 html[data-skin="modern"] .btn-primary:active{ box-shadow: inset 0 2px 6px rgba(0,0,0,.18) !important; }
 
 html[data-skin="modern"] .btn-amber{
   border: none;
   box-shadow: 0 10px 24px -8px rgba(217,119,6,.35);
-  color: #fff;
 }
-html[data-skin="modern"] .btn-amber:hover{ box-shadow: 0 14px 30px -8px rgba(217,119,6,.45); color: #fff; }
+html[data-skin="modern"] .btn-amber:hover{ box-shadow: 0 14px 30px -8px rgba(217,119,6,.45); }
 
 html[data-skin="modern"] .btn-ghost{
   background: var(--nm-bg-light);
   border: 1px solid var(--border);
   box-shadow: none;
-  color: var(--ink-soft);
 }
-html[data-skin="modern"] .btn-ghost:hover{ background: var(--nm-bg-dark); box-shadow: none; color: var(--ink); }
-
-/* DUZELTME: Koyu mod + Modern Acik kombinasyonunda buton yazilari gorünmuyordu.
-   .btn icin color acikca belirtilmediginde tarayici varsayilani (siyah) devreye
-   giriyordu — koyu arka plan uzerinde siyah yazi = görünmez. */
-[data-theme="dark"][data-skin="modern"] .btn{
-  color: var(--ink-soft);
-}
-[data-theme="dark"][data-skin="modern"] .btn:hover{
-  color: var(--ink);
-}
-[data-theme="dark"][data-skin="modern"] .btn-ghost{
-  color: var(--ink-soft);
-}
-[data-theme="dark"][data-skin="modern"] .btn-ghost:hover{
-  color: var(--ink);
-}
-[data-theme="dark"][data-skin="modern"] .btn-danger{
-  color: var(--red-danger);
-}
+html[data-skin="modern"] .btn-ghost:hover{ background: var(--nm-bg-dark); box-shadow: none; }
 
 /* DÜZELTME: Mesajlaşma/detay panel başlığındaki (.detay-head) renkli
    arka plan üzerinde duran butonlar — yukarıdaki genel .btn-ghost kuralı
@@ -169,44 +158,25 @@ html[data-skin="modern"] input[type=password], html[data-skin="modern"] input[ty
 html[data-skin="modern"] input[type=time], html[data-skin="modern"] input[type=number],
 html[data-skin="modern"] input[type=file], html[data-skin="modern"] select, html[data-skin="modern"] textarea{
   background: var(--nm-bg-dark);
-  color: var(--ink);
   box-shadow: none;
   border: 1px solid transparent;
 }
-html[data-skin="modern"] input::placeholder,
-html[data-skin="modern"] textarea::placeholder{
-  color: var(--ink-muted);
-  opacity: 1;
-}
 html[data-skin="modern"] input:focus, html[data-skin="modern"] select:focus, html[data-skin="modern"] textarea:focus{
   background: var(--nm-bg-light);
-  color: var(--ink);
   border-color: var(--brand);
   box-shadow: 0 0 0 3px var(--brand-light);
 }
 
-/* DÜZELTME: Koyu mod + Modern Açık kombinasyonunda input/select/textarea
-   içindeki yazılar görünmüyordu. --nm-bg-dark koyu (#20302F) olduğundan
-   tarayıcı varsayılanı (siyah) metin üstüne koyu arka plan = görünmez.
-   --ink koyu modda açık renge (#F1F8F8) tanımlı, bunu açıkça vermek gerek. */
-[data-theme="dark"][data-skin="modern"] input[type=text],
-[data-theme="dark"][data-skin="modern"] input[type=email],
-[data-theme="dark"][data-skin="modern"] input[type=password],
-[data-theme="dark"][data-skin="modern"] input[type=date],
-[data-theme="dark"][data-skin="modern"] input[type=time],
-[data-theme="dark"][data-skin="modern"] input[type=number],
-[data-theme="dark"][data-skin="modern"] input[type=file],
-[data-theme="dark"][data-skin="modern"] select,
-[data-theme="dark"][data-skin="modern"] textarea{
+/* ---------- Tablolar ---------- */
+/* KÖK NEDEN DÜZELTMESİ (butonlarla aynı kalıp): thead arka planı burada
+   koyu Klasik zemininden Modern'in açık griye-mavisine çevriliyor, ama
+   metin rengine dokunulmuyordu. Eğer base styles.css thead metnini
+   Klasik'in koyu zeminine göre açık renkte sabitlemişse, aynı görünmezlik
+   sorunu tablo başlıklarında da ortaya çıkabilir — önceden engelliyoruz. */
+html[data-skin="modern"] .maarif-tablo thead tr,
+html[data-skin="modern"] .maarif-tablo thead th{
   color: var(--ink);
 }
-[data-theme="dark"][data-skin="modern"] input::placeholder,
-[data-theme="dark"][data-skin="modern"] textarea::placeholder{
-  color: var(--ink-muted);
-  opacity: 1;
-}
-
-/* ---------- Tablolar ---------- */
 html[data-skin="modern"] .table tbody tr:hover,
 html[data-skin="modern"] .maarif-tablo tbody tr:nth-child(even){
   background: var(--nm-bg-dark);
