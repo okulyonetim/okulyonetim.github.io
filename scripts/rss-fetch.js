@@ -23,8 +23,17 @@ function xmlDecode(s){
   if(!s) return '';
   return s
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    // YENİ (kök sebep): WordPress başlıklarında akıllı tırnak/kesme işareti
+    // gibi karakterler &#8220; &#8221; &#8217; &#160; şeklinde SAYISAL HTML
+    // varlığı olarak geliyor. Eskiden sadece &amp;/&lt;/&gt;/&quot;/&#39;
+    // sabit listesi çözülüyordu, bu yüzden başlıklar "DANIŞTAY&#8217;DAN"
+    // gibi ham haliyle ekrana düşüyordu. Artık TÜM sayısal varlıklar
+    // (&#123; decimal ve &#x7B; hex) genel olarak çözülüyor.
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
     .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-    .replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'")
+    .replace(/&quot;/g,'"').replace(/&apos;/g,"'")
+    .replace(/&nbsp;/g,' ')
     .trim();
 }
 
