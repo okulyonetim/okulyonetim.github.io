@@ -44,9 +44,9 @@ html[data-skin="modern"]{
   --ink-on-dark:      #F8FAFC;
   --ink-on-dark-muted:#CBD5E1;
 
-  /* Kenarlık — ince ve soft */
-  --border:      #EEF1F6;
-  --border-soft: #F1F4F9;
+  /* Kenarlık — Modern Açık'ta beyaz zemin üzerinde görünür olmalı */
+  --border:      #D1D9E6;
+  --border-soft: #E2E8F0;
 
   /* Squircle radius ölçeği */
   --radius-xs: 10px;
@@ -85,7 +85,7 @@ html[data-skin="modern"] body{
 html[data-skin="modern"] .card{
   background: var(--nm-bg-light);
   box-shadow: var(--nm-out);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
 }
 html[data-skin="modern"] .card:hover{ box-shadow: var(--nm-lg); }
 
@@ -110,7 +110,7 @@ html[data-skin="modern"] .btn-danger{
 }
 html[data-skin="modern"] .btn{
   background: var(--nm-bg-light);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   box-shadow: var(--nm-sm);
 }
 html[data-skin="modern"] .btn:hover{ background: var(--nm-bg-dark); }
@@ -131,7 +131,7 @@ html[data-skin="modern"] .btn-amber:hover{ box-shadow: 0 14px 30px -8px rgba(217
 
 html[data-skin="modern"] .btn-ghost{
   background: var(--nm-bg-light);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   box-shadow: none;
 }
 html[data-skin="modern"] .btn-ghost:hover{ background: var(--nm-bg-dark); box-shadow: none; }
@@ -148,8 +148,11 @@ html[data-skin="modern"] .detay-head .btn-ghost:hover{ background: rgba(255,255,
 
 html[data-skin="modern"] .btn-danger{
   background: var(--nm-bg-light);
-  border: 1px solid var(--border);
+  border: 1.5px solid rgba(220,38,38,0.30);
   box-shadow: none;
+}
+html[data-skin="modern"] .btn-danger:hover{
+  border-color: rgba(220,38,38,0.55);
 }
 
 /* ---------- Form elemanları ---------- */
@@ -159,7 +162,7 @@ html[data-skin="modern"] input[type=time], html[data-skin="modern"] input[type=n
 html[data-skin="modern"] input[type=file], html[data-skin="modern"] select, html[data-skin="modern"] textarea{
   background: var(--nm-bg-dark);
   box-shadow: none;
-  border: 1px solid transparent;
+  border: 1.5px solid var(--border);
 }
 html[data-skin="modern"] input:focus, html[data-skin="modern"] select:focus, html[data-skin="modern"] textarea:focus{
   background: var(--nm-bg-light);
