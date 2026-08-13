@@ -30,6 +30,15 @@ function xmlDecode(s){
 
 function stripTags(s){ return xmlDecode(s).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim(); }
 
+/* YENİ: Bazı WP tabanlı kaynaklar (ör. Eğitimge) her description'ın sonuna
+   "... yazısı ilk önce <Site Adı> üzerinde ortaya çıktı." şeklinde sabit bir
+   eklenti imzası ekliyor. Kısa özetli haberlerde bu cümle 400 karakterlik
+   kesme sınırına takılmadan özete karışabiliyor — temizliyoruz. Site adı
+   kaynaktan kaynağa değiştiği için genel bir kalıp kullanıyoruz. */
+function eklentiImzasiniTemizle(metin){
+  return metin.replace(/\s*yazısı ilk önce .*? üzerinde ortaya çıktı\.?\s*$/i, '').trim();
+}
+
 /* YENİ: RSS öğesinden manşet görselini çıkarır. Sırayla dener:
    1) <enclosure url="..." type="image/..."> (RSS 2.0 standardı)
    2) <media:content url="..."> / <media:thumbnail url="..."> (bazı beslemeler)
@@ -87,7 +96,7 @@ function parseFeedItems(xml){
       link: linkTemiz,
       guid,
       tarih: tarihiIsoYap(tarihHam),
-      ozet: stripTags(ozetHam).slice(0, 400),
+      ozet: eklentiImzasiniTemizle(stripTags(ozetHam)).slice(0, 400),
       resimUrl: gorselAl(blok)
     });
   }
@@ -277,38 +286,10 @@ async function main(){
   await bildirimGonder(db, yeniHaberler);
 }
 
-/* ---------- saat aralığı kontrolü ---------- */
-function _cihazSaatAraligindaMi(cihaz){
-  const baslangic = cihaz.bildirimSaatBaslangic;
-  const bitis    = cihaz.bildirimSaatBitis;
-  if(!baslangic || !bitis) return true; // tercih yoksa her zaman gönder
-  // Türkiye saati: UTC+3
-  const simdi = new Date();
-  const trSaat = simdi.getUTCHours() + 3;
-  const trDk   = simdi.getUTCMinutes();
-  const simdiDk = (trSaat % 24) * 60 + trDk;
-  const [bH, bM] = baslangic.split(':').map(Number);
-  const [eH, eM] = bitis.split(':').map(Number);
-  const baslamaDk = bH * 60 + bM;
-  const bitisDk   = eH * 60 + eM;
-  if(baslamaDk <= bitisDk){
-    return simdiDk >= baslamaDk && simdiDk < bitisDk;
-  } else {
-    // gece yarısını geçen aralık (örn. 22:00–06:00)
-    return simdiDk >= baslamaDk || simdiDk < bitisDk;
-  }
-}
-
 /* ---------- kategori bazlı FCM bildirimi ---------- */
 async function bildirimGonder(db, yeniHaberler){
   const cSnap = await db.collection('oy_cihazTokenleri').get();
-  const cihazlar = cSnap.docs.map(d => ({
-    id: d.id,
-    token: d.data().token,
-    kategoriler: d.data().kategoriler,
-    bildirimSaatBaslangic: d.data().bildirimSaatBaslangic,
-    bildirimSaatBitis: d.data().bildirimSaatBitis
-  }));
+  const cihazlar = cSnap.docs.map(d => ({ id: d.id, token: d.data().token, kategoriler: d.data().kategoriler }));
   if(cihazlar.length === 0){ console.log('Kayıtlı cihaz yok, bildirim atlanıyor.'); return; }
 
   // Spam'i önlemek için kategori bazında tek özet bildirim gönderilir
@@ -322,12 +303,9 @@ async function bildirimGonder(db, yeniHaberler){
 
   for(const kat of Object.keys(kategoriGruplari)){
     const haberler = kategoriGruplari[kat];
-    // Tercih boş/yoksa (opt-out) TÜM kategorilerden bildirim alır;
-    // ayrıca cihazın belirlediği saat aralığında olunmalıdır
+    // Tercih boş/yoksa (opt-out) TÜM kategorilerden bildirim alır
     const hedefTokenler = cihazlar
-      .filter(c => c.token
-        && (!Array.isArray(c.kategoriler) || c.kategoriler.length === 0 || c.kategoriler.includes(kat))
-        && _cihazSaatAraligindaMi(c))
+      .filter(c => c.token && (!Array.isArray(c.kategoriler) || c.kategoriler.length === 0 || c.kategoriler.includes(kat)))
       .map(c => c.token);
 
     if(hedefTokenler.length === 0) continue;
