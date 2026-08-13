@@ -106,21 +106,23 @@ html[data-skin="modern"] .page-title::before{
       ama Klasik'te --border çok soluktu; burada güçlendirildi.
    4) Form alanlarında transparent border vardı; görünür yapıldı. */
 
-/* Tüm .btn'lere metin rengi garantisi */
-html[data-skin="modern"] .btn,
+/* Tüm .btn'lere metin rengi garantisi — primary/amber dışında
+   (onların metni zaten #fff, aşağıda ayrıca belirtildi) */
+html[data-skin="modern"] .btn:not(.btn-primary):not(.btn-amber),
 html[data-skin="modern"] .btn-ghost,
 html[data-skin="modern"] .btn-danger{
   color: var(--ink);
 }
 
-/* Genel .btn — beyaz zemin, görünür kenarlık */
-html[data-skin="modern"] .btn{
+/* Genel .btn — beyaz zemin, görünür kenarlık (primary/amber hariç, onların
+   gradient background'u bu kuralın üzerine yazılmamalı) */
+html[data-skin="modern"] .btn:not(.btn-primary):not(.btn-amber){
   background: var(--nm-bg-light);
   border: 1.5px solid var(--border);
   box-shadow: none;
 }
-html[data-skin="modern"] .btn:hover{ background: var(--nm-bg-dark); }
-html[data-skin="modern"] .btn:active{ box-shadow: var(--nm-in) !important; transform: scale(.98); }
+html[data-skin="modern"] .btn:not(.btn-primary):not(.btn-amber):hover{ background: var(--nm-bg-dark); }
+html[data-skin="modern"] .btn:not(.btn-primary):not(.btn-amber):active{ box-shadow: var(--nm-in) !important; transform: scale(.98); }
 
 /* Primary — renkli dolu buton; box-shadow:none !important'ı ezerken
    kenarlık da ekleniyor ki şekli belli olsun */
