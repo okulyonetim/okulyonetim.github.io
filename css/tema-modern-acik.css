@@ -79,6 +79,12 @@ html[data-skin="modern"]{
 /* ---------- Genel yüzey / gövde ---------- */
 html[data-skin="modern"] body{
   background: var(--nm-bg);
+  color: var(--ink);
+}
+
+/* button elementleri body'den color kalıtımı almaz — açıkça belirt */
+html[data-skin="modern"] button{
+  color: var(--ink);
 }
 
 /* ---------- Kartlar: neumorphic kabartma yerine düz + soft gölge ---------- */
@@ -206,12 +212,19 @@ html[data-skin="modern"] input[type=date],
 html[data-skin="modern"] input[type=time],
 html[data-skin="modern"] input[type=number],
 html[data-skin="modern"] input[type=file],
+html[data-skin="modern"] input:not([type]),
 html[data-skin="modern"] select,
 html[data-skin="modern"] textarea{
   background: var(--nm-bg-dark);
   box-shadow: none;
   border: 1.5px solid var(--border);
   color: var(--ink);
+}
+/* Placeholder rengi */
+html[data-skin="modern"] input::placeholder,
+html[data-skin="modern"] textarea::placeholder{
+  color: var(--ink-muted);
+  opacity: 1;
 }
 html[data-skin="modern"] input:focus,
 html[data-skin="modern"] select:focus,
