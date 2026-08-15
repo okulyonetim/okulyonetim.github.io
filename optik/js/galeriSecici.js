@@ -185,7 +185,11 @@ export function baglaGaleriSecici(inputId, canvasId) {
                     koseler = cvKoseler;
                 }
 
-                await formuOkuElleKoseliVeGoster(canvas, koseler);
+                const elleKoseliSonuc = await formuOkuElleKoseliVeGoster(canvas, koseler);
+                if (!elleKoseliSonuc || !elleKoseliSonuc.basarili) {
+                    const ilkUyari = elleKoseliSonuc?.uyarilar?.[0] || 'Bilinmeyen hata';
+                    showStatus('Okuma başarısız: ' + ilkUyari.substring(0, 80));
+                }
             }
         } catch (err) {
             console.error("Galeriden okuma hatası:", err);
