@@ -3351,6 +3351,9 @@ function baslat() {
 
     // Kamera start/stop butonları
     import('./camera.js').then(mod => {
+        // TEŞHİS: camera.js yüklendi
+        const _dbg = document.getElementById('kmKutucukTeshis');
+        if (_dbg) { _dbg.textContent = 'camera.js yüklendi'; _dbg.hidden = false; setTimeout(() => { if (_dbg.textContent === 'camera.js yüklendi') _dbg.hidden = true; }, 3000); }
         const startBtn = document.getElementById('start');
         const stopBtn  = document.getElementById('stop');
         const captureBtn = document.getElementById('capture');
@@ -3503,8 +3506,14 @@ function baslat() {
             kameraKapat();
             ekranGit('sinavDetay');
         });
-    }).catch(() => {
-        // camera.js global fonksiyonlardan kullan
+    }).catch((camErr) => {
+        // TEŞHİS: camera.js yüklenemedi — sebebi ekranda göster
+        const _dbgErr = document.getElementById('kmKutucukTeshis');
+        if (_dbgErr) {
+            _dbgErr.textContent = 'camera.js yüklenemedi: ' + (camErr && camErr.message ? camErr.message : String(camErr));
+            _dbgErr.hidden = false;
+        }
+        // fallback: window.* global API
         const startBtn = document.getElementById('start');
         const stopBtn  = document.getElementById('stop');
         const captureBtn = document.getElementById('capture');
