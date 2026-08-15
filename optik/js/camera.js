@@ -530,32 +530,56 @@ export async function startCamera() {
             audio: false
         });
 
+        // Adım 1: Stream alındı, teşhis göster
+        const _teshisGoster = (msg) => {
+            const el = document.getElementById('kmKutucukTeshis');
+            if (el) { el.textContent = msg; el.hidden = false; }
+        };
+        _teshisGoster('Stream alındı, video bağlanıyor...');
+
         video.srcObject = stream;
 
-        // Android WebView sorunu: video.play() resolve olsa bile videoWidth/
-        // videoHeight 0 kalabiliyor — stream track'i henüz hazır olmayabilir.
-        // loadedmetadata eventi videoWidth/Height'in kesin olarak set edildiğini
-        // garantiler. 3 saniye timeout: akış hiç gelmezse sonsuz bekleme olmaz.
+        // Doğru sıra (Android WebView uyumlu):
+        // 1. srcObject set et
+        // 2. play() çağır — bu loadedmetadata'yı tetikler
+        // 3. loadedmetadata'yı bekle — videoWidth/videoHeight bu noktada hazır
+        // NOT: play()'i loadedmetadata'dan ÖNCE çağırmak zorunlu, yoksa
+        // bazı Android WebView sürümlerinde loadedmetadata hiç tetiklenmez.
+        _teshisGoster('play() çağrılıyor...');
+        await video.play();
+        _teshisGoster('play() tamamlandı, metadata bekleniyor...');
+
         await new Promise((resolve) => {
             if (video.videoWidth && video.videoHeight) {
-                resolve(); // zaten hazır (nadir ama mümkün)
+                resolve(); // zaten hazır
                 return;
             }
             const onMeta = () => { video.removeEventListener('loadedmetadata', onMeta); resolve(); };
             video.addEventListener('loadedmetadata', onMeta);
-            setTimeout(resolve, 3000); // 3sn sonra yine de devam et
+            setTimeout(resolve, 3000); // 3sn timeout — akış gelmezse takılma
         });
 
-        await video.play().catch(() => {}); // play() loadedmetadata'dan önce de çağrılmış olabilir
-
+        _teshisGoster('Hazır: ' + video.videoWidth + 'x' + video.videoHeight);
         console.log("Kamera başlatıldı. videoWidth=" + video.videoWidth + " videoHeight=" + video.videoHeight);
+
+        // Ekranda video görünmeden önce bir frame bekle
+        await new Promise((r) => requestAnimationFrame(r));
 
         await cvHazirBekle();
         _koseTespitBaslat();
+        // Başarıyla başladı — teşhis mesajını gizle
+        const _tEl = document.getElementById('kmKutucukTeshis');
+        if (_tEl) _tEl.hidden = true;
 
     } catch (err) {
         console.error("Kamera açılamadı:", err);
-        alert("Kameraya erişilemedi.");
+        // Hata mesajını ekranda göster — console erişimi olmadan teşhis için
+        const teshis = document.getElementById('kmKutucukTeshis');
+        if (teshis) {
+            teshis.textContent = 'Kamera hatası: ' + (err && err.message ? err.message : String(err));
+            teshis.hidden = false;
+        }
+        alert("Kameraya erişilemedi: " + (err && err.message ? err.message : err));
     }
 }
 
