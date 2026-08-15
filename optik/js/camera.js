@@ -70,7 +70,7 @@ let _canliModAktif = false;
 let _canliIsleniyor = false;       // tam okuma o an çalışıyor mu (döngü bu sürece dokunmaz)
 let _sonIslenenImza = null;        // "dolu" | null — aynı kağıdı (kutucuklardan hiç çıkmadan) tekrar tetiklememek için
 let _stabilGecmis = [];            // son birkaç tespit turunun "4 kutucuk da dolu mu" sonucu (ani titremeyi tetik saymamak için)
-const STABIL_GEREKEN_TUR = 3;      // bu kadar ardışık turda "tümü dolu" sürerse tetikle
+const STABIL_GEREKEN_TUR = 2;      // bu kadar ardışık turda "tümü dolu" sürerse tetikle
 
 let _onSonucCallback = null;       // app.js tarafından set edilir: canlı modda her okuma sonrası çağrılır
 let _onDurumCallback = null;       // app.js tarafından set edilir: "aranıyor/hizalandı/okunuyor" durumu için
@@ -440,6 +440,13 @@ async function _canliOtomatikOku() {
         } catch (err) {
             console.warn("Canlı okuma: formuOkuVeGoster başarısız, atlandı:", err.message);
             sonuc = null;
+        }
+
+        // Okuma başarısız olduysa (köşe bulunamadı vb.) kullanıcıya göster
+        if (sonuc && !sonuc.basarili && sonuc.uyarilar && sonuc.uyarilar.length) {
+            if (typeof _onDurumCallback === "function") {
+                _onDurumCallback('hata: ' + sonuc.uyarilar[0].substring(0, 60));
+            }
         }
 
         if (typeof _onSonucCallback === "function") _onSonucCallback(sonuc);

@@ -160,11 +160,28 @@ export function baglaGaleriSecici(inputId, canvasId) {
                     return;
                 }
                 if (!koseler) {
-                    // "🤖 Otomatik Dene" butonuna basıldı → CV sonucuna güven.
-                    if (!cvKoseler) {
-                        showStatus("Köşe seçilmedi, form okunamadı.");
+                    // "🤖 Otomatik Dene" butonuna basıldı.
+                    // Önce omrEngine'in kendi otomatik köşe tespitini dene
+                    // (formuOkuVeGoster → sayfaKoseleriniAraHibrit) — bu
+                    // sayfaTespitCV.js'den daha güvenilir çünkü hizalama
+                    // karelerini de kullanıyor.
+                    showStatus("Otomatik okuma deneniyor...");
+                    let otomatikSonuc = null;
+                    try {
+                        otomatikSonuc = await formuOkuVeGoster(canvas);
+                    } catch (e) { otomatikSonuc = null; }
+
+                    if (otomatikSonuc && otomatikSonuc.basarili) {
+                        // Başarılı — bitti, elle köşe seçime gerek yok
                         return;
                     }
+
+                    // Otomatik başarısız — CV köşelerine dön (varsa)
+                    if (!cvKoseler) {
+                        showStatus("Köşeler otomatik bulunamadı. Galeriden tekrar seçin ve köşeleri elle işaretleyin.");
+                        return;
+                    }
+                    showStatus("Otomatik başarısız, CV köşeleri kullanılıyor...");
                     koseler = cvKoseler;
                 }
 

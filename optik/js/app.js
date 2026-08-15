@@ -3411,7 +3411,13 @@ function baslat() {
                 _canliModAktif = true;
                 mod.canliTaramaBaslat?.(
                     () => { /* sonuç zaten omrSonucHazir olayıyla _omrSonucuisle'a gidiyor */ },
-                    (durum) => { if (statusEl) statusEl.textContent = durum === 'okunuyor' ? 'Okunuyor...' : (durum === 'hizalandi' ? 'Hizalandı, sabit tutun...' : 'Kağıt aranıyor...'); }
+                    (durum) => {
+                        if (!statusEl) return;
+                        if (durum === 'okunuyor') statusEl.textContent = 'Okunuyor...';
+                        else if (durum === 'hizalandi') statusEl.textContent = 'Hizalandı, sabit tutun...';
+                        else if (durum && durum.startsWith('hata:')) statusEl.textContent = '⚠ ' + durum.substring(5);
+                        else statusEl.textContent = 'Kağıt aranıyor...';
+                    }
                 );
                 captureBtn.style.opacity = '0.45'; // manuel tuş hâlâ çalışır ama vurgu canlı modda
             } else {
