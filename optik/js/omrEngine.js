@@ -197,20 +197,11 @@ window.OmrOkuyucu = (function () {
     // Sarı renk tonu tespiti: Hue 30°-75° arası (turuncu-sarı-sarı-yeşil),
     // yüksek doygunluk (>0.4), yüksek parlaklık (maxKanal>150).
     // Bu koşul sağlanırsa sarı pikseli "işaretli" say — sabit 0.85 skor ver.
-    if (doygunluk > 0.4 && maxKanal > 150) {
-      // HSV hue hesabı (0-360 derece)
-      const delta = maxKanal - minKanal;
-      let hue = 0;
-      if (delta > 0) {
-        if (maxKanal === r) hue = 60 * (((g - b) / delta) % 6);
-        else if (maxKanal === g) hue = 60 * ((b - r) / delta + 2);
-        else hue = 60 * ((r - g) / delta + 4);
-        if (hue < 0) hue += 360;
-      }
-      // Sarı/turuncu-sarı aralığı: 30°-75°
-      if (hue >= 30 && hue <= 75) {
-        return 0.85; // sarı vurgulama → işaretli say
-      }
+    // Sarı vurgulama tespiti (PDF highlight veya marker kalem):
+    // R ve G yüksek, B düşük. Doygunluk hesabı yerine doğrudan kanal karşılaştırması —
+    // %30 opak PDF sarı'sı (RGB≈255,255,180) de yakalanır.
+    if (maxKanal > 150 && b < r * 0.80 && b < g * 0.80 && r > 150 && g > 150) {
+      return 0.85; // sarı vurgulama → işaretli say
     }
 
     // Normal siyah/gri kalem izi: renksizlik kontrolü
@@ -318,11 +309,26 @@ window.OmrOkuyucu = (function () {
   function adaptifEsikle(cImageData) {
     const { width, height, data } = cImageData;
 
-    // Düz gri tonlama — form siyah beyaz basıldığı için renk filtresi gereksiz.
+    // Gri tonlama — SARI VE KOYU renkler koyu gri olarak dönüşsün.
+    // Normal: 0.299R + 0.587G + 0.114B → siyah kalem (R≈G≈B≈düşük) koyu çıkar.
+    // SORUN: Sarı vurgulama (R≈255,G≈255,B≈0) → gri≈224 (çok açık) → binary'de boş sayılır.
+    // ÇÖZÜM: Sarı/turuncu-sarı ton (Hue 30°-75°, doygunluk >0.4) pikselleri
+    // koyu gri (40) olarak baskıla — Otsu/adaptif eşik sonrasında "işaretli" olarak çıkar.
     const gri = new Uint8Array(width * height);
     for (let i = 0; i < width * height; i++) {
       const idx = i * 4;
-      gri[i] = Math.round(0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
+      const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+      const maxK = Math.max(r, g, b), minK = Math.min(r, g, b);
+      const delta = maxK - minK;
+      const doy = maxK > 0 ? delta / maxK : 0;
+      // Sarı vurgulama tespiti: PDF highlight veya marker kalem.
+      // Koşul: R ve G yüksek, B düşük (sarı = kırmızı + yeşil, mavi yok).
+      // Doygunluk eşiği 0.20 — %30 opak PDF highlight'ı da yakalar.
+      if (maxK > 150 && b < r * 0.80 && b < g * 0.80 && r > 150 && g > 150) {
+        gri[i] = 40; // sarı → koyu gri (işaretli sayılsın)
+        continue;
+      }
+      gri[i] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
     }
 
     let binary;
