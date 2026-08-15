@@ -189,12 +189,32 @@ window.OmrOkuyucu = (function () {
     const minKanal = Math.min(r, g, b);
     const doygunluk = maxKanal > 0 ? (maxKanal - minKanal) / maxKanal : 0;
 
-    // YENİ: çarpan 2.5 -> 1.2 yumuşatıldı. Gerçek fotoğraflarda (JPEG
-    // sıkıştırma, beyaz dengesi, ışık) siyah kalem izi bile hiçbir zaman
-    // %0 doygunlukta çıkmıyor — 2.5'lik agresif ceza, gözlemlenen "her
-    // soru tekdüze düşük guven (0.07-0.14), gerçek işaretli baloncuk bile
-    // ayırt edilemiyor" sorununun kaynağı olabilir: hafif renk sapması
-    // olan gerçek işaretleri de baskının pembesiyle birlikte eziyordu.
+    // SARI VURGULAMA DESTEĞİ (Ağustos 2026):
+    // Dijital PDF'te sarı highlight (PDF vurgulama aracı) ile işaretlenmiş
+    // baloncuklar: sarı piksel yüksek doygunlukta (≈1.0) olduğu için
+    // renksizlikCarpani → 0 oluyor ve skor sıfırlanıyordu — boş baloncuktan
+    // ayırt edilemiyordu.
+    // Sarı renk tonu tespiti: Hue 30°-75° arası (turuncu-sarı-sarı-yeşil),
+    // yüksek doygunluk (>0.4), yüksek parlaklık (maxKanal>150).
+    // Bu koşul sağlanırsa sarı pikseli "işaretli" say — sabit 0.85 skor ver.
+    if (doygunluk > 0.4 && maxKanal > 150) {
+      // HSV hue hesabı (0-360 derece)
+      const delta = maxKanal - minKanal;
+      let hue = 0;
+      if (delta > 0) {
+        if (maxKanal === r) hue = 60 * (((g - b) / delta) % 6);
+        else if (maxKanal === g) hue = 60 * ((b - r) / delta + 2);
+        else hue = 60 * ((r - g) / delta + 4);
+        if (hue < 0) hue += 360;
+      }
+      // Sarı/turuncu-sarı aralığı: 30°-75°
+      if (hue >= 30 && hue <= 75) {
+        return 0.85; // sarı vurgulama → işaretli say
+      }
+    }
+
+    // Normal siyah/gri kalem izi: renksizlik kontrolü
+    // Pembe/bordo baskı rengini bastırmak için doygunluk cezası.
     const renksizlikCarpani = Math.max(0, 1 - doygunluk * 1.2);
 
     return koyuluk * renksizlikCarpani;
@@ -2640,16 +2660,15 @@ window.OmrOkuyucu = (function () {
       }
       const parlakOrani = parlakSayisi / ornekSayisi;
       const koyuOrani = koyuSayisi / ornekSayisi;
-      // Eşikler: Test Plus'ın isParlamaVar() mantığı referans alınarak belirlendi.
-      // >%35 aşırı parlak piksel → yoğun yansıma/flaş; >%60 aşırı koyu → loş ışık.
+      // >%35 aşırı parlak piksel → uyarı; >%65 → okuma anlamsız, reddet
       if (parlakOrani > 0.35) {
         uyarilar.push('goruntuCokParlak: Görüntünün %' + Math.round(parlakOrani * 100) +
-          '\'i aşırı parlak (muhtemelen flaş/cam yansıması). Okuma hatalı olabilir — ' +
-          'farklı açıdan veya ışık kaynağı olmadan tekrar deneyin.');
+          '\'i aşırı parlak (flaş/yansıma veya dijital ekran görüntüsü). ' +
+          'Sarı vurgulama ile işaretlendiyse okuma devam edecek; gerçek kağıtsa ' +
+          'daha az ışıklı ortamda tekrar deneyin.');
       } else if (koyuOrani > 0.60) {
         uyarilar.push('goruntuCokKoyu: Görüntünün %' + Math.round(koyuOrani * 100) +
-          '\'i çok koyu (loş ışık/gölge). Okuma hatalı olabilir — ' +
-          'daha aydınlık bir ortamda tekrar deneyin.');
+          '\'i çok koyu. Daha aydınlık ortamda tekrar deneyin.');
       }
     } catch (_parlamaHata) {
       // Histogram kontrolü asla ana okumayı bozmasın — hata fırlatırsa sessizce devam et
@@ -2878,10 +2897,12 @@ window.OmrOkuyucu = (function () {
       const koyuOrani = koyuSayisi / ornekSayisi;
       if (parlakOrani > 0.35) {
         uyarilar.push('goruntuCokParlak: Görüntünün %' + Math.round(parlakOrani * 100) +
-          '\'i aşırı parlak. Okuma hatalı olabilir.');
+          '\'i aşırı parlak (flaş/yansıma veya dijital ekran görüntüsü). ' +
+          'Sarı vurgulama ile işaretlendiyse okuma devam edecek; gerçek kağıtsa ' +
+          'daha az ışıklı ortamda tekrar deneyin.');
       } else if (koyuOrani > 0.60) {
         uyarilar.push('goruntuCokKoyu: Görüntünün %' + Math.round(koyuOrani * 100) +
-          '\'i çok koyu. Okuma hatalı olabilir.');
+          '\'i çok koyu. Daha aydınlık ortamda tekrar deneyin.');
       }
     } catch (_parlamaHata) { /* sessiz */ }
 
