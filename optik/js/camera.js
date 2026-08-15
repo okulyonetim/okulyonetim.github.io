@@ -293,9 +293,13 @@ function _koseTespitCalistir() {
 
         const beklenenKonumlar = _beklenenKoseKonumlariHesapla(dispW, dispH);
 
-        // GEÇİCİ TEŞHİS (Ağustos 2026) — bkz. index.html:kmKutucukTeshis notu.
+        // TEŞHİS — sadece içerik varsa göster
         const teshisEl = document.getElementById('kmKutucukTeshis');
-        if (teshisEl) teshisEl.textContent = window._kutucukTeshis || '(teşhis henüz yok)';
+        if (teshisEl) {
+            const teshisMesaj = window._kutucukTeshis || '';
+            teshisEl.textContent = teshisMesaj;
+            teshisEl.hidden = !teshisMesaj;
+        }
 
         overlay.width = dispW;
         overlay.height = dispH;
@@ -528,14 +532,24 @@ export async function startCamera() {
 
         video.srcObject = stream;
 
-        await video.play();
+        // Android WebView sorunu: video.play() resolve olsa bile videoWidth/
+        // videoHeight 0 kalabiliyor — stream track'i henüz hazır olmayabilir.
+        // loadedmetadata eventi videoWidth/Height'in kesin olarak set edildiğini
+        // garantiler. 3 saniye timeout: akış hiç gelmezse sonsuz bekleme olmaz.
+        await new Promise((resolve) => {
+            if (video.videoWidth && video.videoHeight) {
+                resolve(); // zaten hazır (nadir ama mümkün)
+                return;
+            }
+            const onMeta = () => { video.removeEventListener('loadedmetadata', onMeta); resolve(); };
+            video.addEventListener('loadedmetadata', onMeta);
+            setTimeout(resolve, 3000); // 3sn sonra yine de devam et
+        });
 
-        console.log("Kamera başlatıldı.");
+        await video.play().catch(() => {}); // play() loadedmetadata'dan önce de çağrılmış olabilir
 
-        // OpenCV.js WASM modülü henüz yüklenmediyse (uygulama yeni açıldıysa
-        // birkaç yüz ms sürebilir) burada bekleniyor — kamera görüntüsü zaten
-        // akmaya başladı, kullanıcı bekleme farkını hissetmez, sadece köşe
-        // göstergesi cv hazır olana kadar bir an gecikmeli başlar.
+        console.log("Kamera başlatıldı. videoWidth=" + video.videoWidth + " videoHeight=" + video.videoHeight);
+
         await cvHazirBekle();
         _koseTespitBaslat();
 
