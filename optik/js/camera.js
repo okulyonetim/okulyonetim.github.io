@@ -208,13 +208,6 @@ function _beklenenKoseKonumlariHesapla(dispW, dispH) {
   }
 }
 
-    };
-  } catch (e) {
-    window._kutucukTeshis = 'VARSAYILAN kullanılıyor — sebep: hesaplama sırasında hata: ' + e.message;
-    return VARSAYILAN;
-  }
-}
-
 function _koseTespitTemizle() {
     const overlay = document.getElementById("koseTespitOverlay");
     if (!overlay) return;
