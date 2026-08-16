@@ -258,27 +258,71 @@ window.OmrOkuyucu = (function () {
       }
     }
 
-    // Dejenere durum (tamamen düz renk vb.) - normalize etmeye değmez.
     if (beyazNokta - siyahNokta < 10) return;
 
-    // YENİ: doğrusal gerdirmeden SONRA hafif bir gama düzeltmesi (<1)
-    // uygulanıyor — orta tonları (gerçek işaretli baloncukların genelde
-    // düştüğü, tam siyah olmayan gri aralık) daha da karartır, siyah-beyaz
-    // benzeri bir kontrast artışı sağlar. Kullanıcı gözlemi: en koyu bulunan
-    // işaret bile eşiğe (0.28) çok yakın ama altında kalıyordu (0.246) —
-    // bu, doğrusal gerdirmenin tek başına yetersiz kaldığının kanıtı.
-    // NOT: 1.8 denendi — cevaplariCikar'daki mutlak eşiği (KARANLIK_ESIK)
-    // geçmeye yardımcı oldu ama numaraOku'nun KULLANDIĞI göreli fark
-    // (MIN_FARK) koyu tonlar arasında sıkıştığı için basamak okumasını
-    // bozdu (aynı fotoğrafta numara önce doğru okunurken 1.8 ile
-    // okunamaz oldu). 1.35'e düşürüldü — daha ölçülü, ikisini de gözetir.
-    const GAMA = 1.35;
-    const aralik = beyazNokta - siyahNokta;
+    // PDF / ekran görüntüsü tespiti:
+    // %60'tan fazla piksel çok parlak (>230) → PDF veya ekran görüntüsü.
+    // Bu durumda kontrast germe agresifleştirilir:
+    //   • Alt yüzdelik dilim %10'a çıkar → koyu gri pikseller siyah sayılır
+    //   • Gama 1.35 → 2.2 → orta tonlar çok daha koyu basılır
+    //   • Beyaz nokta alt sınırı 200'e zorlanır → beyaz arka plan tam beyaza çekilir
+    // Bu sayede PDF'te ince çember (boş) ile dolu daire (işaretli) arasındaki
+    // kontrast, gerçek kağıt fotoğrafına yakın bir seviyeye getirilir.
+    let kullanilanGama = 1.35;
+    let kullanilanSiyahNokta = siyahNokta;
+    let kullanilanBeyazNokta = beyazNokta;
+
+    let cokParlakSayisi = 0;
+    for (let v = 230; v <= 255; v++) cokParlakSayisi += histogram[v];
+    const parlakOrani = cokParlakSayisi / toplamPiksel;
+
+    if (parlakOrani > 0.60) {
+      // Parlak mod (flaş/ekran): beyaz arka plan baskın
+      kullanilanGama = 2.2;
+      kullanilanBeyazNokta = Math.min(beyazNokta, 230);
+      let k5 = 0;
+      for (let v = 0; v < 256; v++) {
+        k5 += histogram[v];
+        if (k5 / toplamPiksel >= 0.05) { kullanilanSiyahNokta = v; break; }
+      }
+    } else {
+      // GRİ ARKA PLAN MODU (PDF ekran görüntüsü, gri zemin):
+      // Görüntünün >%60'ı 120-200 gri aralığında → düşük kontrast.
+      // Test Plus analizi: setIsaretlemeler() ham piksel oranı kullanıyor,
+      // binary eşik öncesi median-tabanlı normalize uyguluyor.
+      // Çözüm: beyazNokta = median (arka plan tam beyaza dönsün),
+      //         gama = 3.0 (orta tonlar siyaha basılsın).
+      let ortaGriSayisi = 0;
+      for (let v = 120; v <= 200; v++) ortaGriSayisi += histogram[v];
+      const ortaGriOrani = ortaGriSayisi / toplamPiksel;
+
+      if (ortaGriOrani > 0.60) {
+        // Median hesapla (arka plan rengi)
+        let kumulatifMedian = 0;
+        let medianDeger = 128;
+        for (let v = 0; v < 256; v++) {
+          kumulatifMedian += histogram[v];
+          if (kumulatifMedian / toplamPiksel >= 0.50) { medianDeger = v; break; }
+        }
+        // Beyaz nokta = median → arka plan tam beyaz olsun
+        kullanilanBeyazNokta = medianDeger;
+        // Siyah nokta = %1 yüzdelik → en koyu pikseller siyah
+        let k1 = 0;
+        for (let v = 0; v < 256; v++) {
+          k1 += histogram[v];
+          if (k1 / toplamPiksel >= 0.01) { kullanilanSiyahNokta = v; break; }
+        }
+        // Agresif gama: orta tonları siyaha bas
+        kullanilanGama = 3.0;
+      }
+    }
+
+    const aralik = Math.max(1, kullanilanBeyazNokta - kullanilanSiyahNokta);
     for (let i = 0; i < data.length; i += 4) {
       for (let kanal = 0; kanal < 3; kanal++) {
         const v = data[i + kanal];
-        const gerilmis = Math.max(0, Math.min(255, ((v - siyahNokta) / aralik) * 255));
-        data[i + kanal] = Math.round(255 * Math.pow(gerilmis / 255, GAMA));
+        const gerilmis = Math.max(0, Math.min(255, ((v - kullanilanSiyahNokta) / aralik) * 255));
+        data[i + kanal] = Math.round(255 * Math.pow(gerilmis / 255, kullanilanGama));
       }
     }
   }
@@ -2807,7 +2851,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v28-sari-highlight]');
+    uyarilar.push('[KOD SÜRÜMÜ: v29-gri-arka-plan]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_sonKitapcikTeshis) { uyarilar.push('Kitapçık/Form Kodu teşhisi: ' + _sonKitapcikTeshis); }
     if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ders başına en fazla 2 örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
@@ -3026,7 +3070,7 @@ window.OmrOkuyucu = (function () {
     // hiç eklemiyordu — numara/kitapçık teşhisiyle aynı eksiklik, cevap
     // tarafında da tekrarlanmıştı.
     if (_sonKoyulukOzeti) { uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti); }
-    uyarilar.push('[KOD SÜRÜMÜ: v28-sari-highlight]');
+    uyarilar.push('[KOD SÜRÜMÜ: v29-gri-arka-plan]');
     if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ders başına en fazla 2 örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
     if (_ardisikAyniSikSatirlari.length) { uyarilar.push('⚠ Ardışık aynı şık tespiti:\n' + _ardisikAyniSikSatirlari.join('\n')); }
 
