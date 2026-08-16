@@ -7,51 +7,37 @@
 <script>try{if(localStorage.getItem('oyTema')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/optik.css">
-<!-- jsQR kaldırıldı (Ağustos 2026): QR kod okuma terk edildi, hizalama işaretleri doğrudan bulunuyor -->
-<!-- OpenCV.js (10.9MB WASM) Ağustos 2026'da TAMAMEN KALDIRILDI — Sedat'ın
-     "çok yavaş, neredeyse hiç okumuyor" şikayeti üzerine: kullanılan ~12
-     görüntü işleme fonksiyonu (Canny, findContours, threshold, dilate/
-     erode, adaptiveThreshold, vb.) js/cvSaf.js'te saf JavaScript olarak
-     yeniden yazıldı. Artık WASM indirme/derleme beklemesi YOK, sayfa
-     anında kullanılabilir hale geliyor.
-     js/sayfaTespitCV.js (cvSaf.js'i sarmalayan, window.SayfaTespitCV ve
-     window.CvSaf'ı dışa açan modül) burada erken ve garantili yükleniyor
-     — omrEngine.js (klasik <script>, aşağıda) çalışma zamanında
-     window.CvSaf'a ihtiyaç duyduğunda (adaptifEsikle) hazır olsun diye. -->
-<script type="module">
-    import './js/sayfaTespitCV.js';
-</script>
+
+<!-- Saf-JS görüntü işleme (OpenCV.js kaldırıldı) -->
+<script type="module">import './js/sayfaTespitCV.js';</script>
+
+<!-- Çekirdek kütüphaneler -->
 <script src="js/layoutEngine.js?v=1"></script>
 <script src="js/optikSablonMotoru.js?v=1"></script>
 <script src="js/optikSablonEditor.js?v=1"></script>
-<script src="js/omrEngine.js?v=29"></script>
+<script src="js/omrEngine2.js?v=1"></script>
+<script>window.OmrOkuyucu = OmrOkuyucu2;</script>
 <script src="js/cevapAnahtari.js?v=1"></script>
-<script type="module">
-    import { baglaGaleriSecici } from './js/galeriSecici.js';
-    window.baglaGaleriSecici = baglaGaleriSecici;
-</script>
 <script src="js/lgsPuanHesapla.js?v=1"></script>
 <script src="js/disaAktar.js?v=1"></script>
+
+<!-- Galeri seçici (ES module) -->
+<script type="module">
+  import { baglaGaleriSecici } from './js/galeriSecici.js';
+  window.baglaGaleriSecici = baglaGaleriSecici;
+</script>
+
+<!-- Dış kütüphaneler -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- KÖK NEDEN DÜZELTMESİ (Sedat geri bildirimi, Ağustos 2026: "Daha önce
-     sorunsuz yüklediğim cevap anahtarı yüklenmiyor") — cevapAnahtari.js'in
-     exceldenYukle() fonksiyonu XLSX (SheetJS) kütüphanesine ihtiyaç
-     duyuyor ama bu kütüphane hiç yüklenmiyordu (eski bir yedekte de aynı
-     eksiklik doğrulandı — muhtemelen hep böyleydi). Eklendi. -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     EKRAN 1 — SINAVLAR LİSTESİ
-═══════════════════════════════════════════ -->
+<!-- ═══════════════════════════════ EKRAN: SINAVLAR ═══════════════════════════════ -->
 <div id="ekranSinavlar" class="ekran aktif">
   <header class="o-header">
     <h1 class="o-baslik">Sınavlar</h1>
-    <!-- YENİ (Ağustos 2026, Sedat isteği): "Yeni sınav eklemeden değil de
-         şablonlar sayfası olsa ordan şablonları okuşturup düzenlesek" —
-         özel formları Yeni Sınav akışına girmeden yönetme girişi. -->
     <button class="o-baslik-btn" id="btnSablonlarAc" title="Optik Formlar">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
       Optik Formlar
@@ -71,21 +57,13 @@
   </button>
 </div>
 
-
-<!-- ═══════════════════════════════════════════
-     EKRAN — ŞABLONLARIM (Ağustos 2026)
-     Sedat isteği: özel formları Yeni Sınav akışına girmeden görüntüleme/
-     düzenleme.
-═══════════════════════════════════════════ -->
+<!-- ═══════════════════════════════ EKRAN: ŞABLONLARIM ═══════════════════════════════ -->
 <div id="ekranSablonlar" class="ekran">
   <header class="o-header o-header-renk">
     <button class="o-geri-btn" id="btnSablonlarGeri">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <h1 class="o-baslik" style="color:#fff;">Optik Formlar</h1>
-    <!-- YENİ (Ağustos 2026, Sedat geri bildirimi: "web'de oluşturduğum
-         şablonlar Android'de görünmüyor") — Firestore senkronunu ELLE
-         tetikleyip SONUCUNU GÖRÜNÜR şekilde bildiren düğme. -->
     <button class="o-geri-btn" id="btnSablonlarSenkron" title="Firestore'dan Yenile" style="margin-left:auto;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
     </button>
@@ -104,9 +82,7 @@
   </button>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     EKRAN 2 — YENİ SINAV
-═══════════════════════════════════════════ -->
+<!-- ═══════════════════════════════ EKRAN: YENİ SINAV ═══════════════════════════════ -->
 <div id="ekranYeniSinav" class="ekran">
   <header class="o-header o-header-renk">
     <button class="o-geri-btn" id="btnYeniSinavKapat">
@@ -117,7 +93,6 @@
   </header>
   <div class="o-icerik o-form-icerik">
 
-    <!-- 1. Sınav Adı -->
     <div class="form-blok">
       <label class="form-etiket">Sınav Adı *</label>
       <div class="form-pill">
@@ -126,12 +101,6 @@
       </div>
     </div>
 
-    <!-- 2. Öğrenci Seçimi — eskiden TÜM sınıflar (her biri kendi satırıyla)
-         doğrudan burada, forma gömülü halde listeleniyordu; çok sınıflı
-         okullarda bu tek başına ekranın çoğunu kaplıyor, hatta bazı
-         cihazlarda içerik sabit üst başlığın ARKASINA taşıyordu. Artık
-         tek satırlık bir özet düğmesi var; liste kendi kaydırılabilir
-         alt sayfasında (bkz. sheetOgrenciSecimi) açılıyor. -->
     <div class="form-blok">
       <label class="form-etiket">Öğrenciler</label>
       <button type="button" class="form-secici-btn" id="ysOgrenciSecBtn">
@@ -141,7 +110,6 @@
       </button>
     </div>
 
-    <!-- 3. Optik Form -->
     <div class="form-blok">
       <label class="form-etiket">Optik Form *</label>
       <button class="form-secici-btn" id="ysOptikFormSec">
@@ -151,36 +119,416 @@
       </button>
     </div>
 
-    <!-- Not (Ağustos 2026, Sedat isteği: "özel sınav ayarlarını kaldır") —
-         eskiden burada ayrı bir soru/şık sayısı seçimi vardı; hem hiçbir JS
-         koduna bağlı değildi (ysOzelSoruSayisi/ysOzelSikSayisi hiçbir yerde
-         okunmuyordu) hem de seçilen forma göre soru/şık sayısı zaten
-         otomatik geliyor (bkz. _ysSablonSecilen.soruSayisi/sikSayisi) —
-         bu yüzden tamamen kaldırıldı. -->
-
-    <!-- 5. Yanlış Cevap Etkisi — sınav türünden BAĞIMSIZ, her sınav ekleme
-         akışında görünür. Varsayılan Etkisiz'dir; LGS/Bursluluk resmî kuralı
-         (3 yanlış 1 doğruyu götürür) isteniyorsa buradan seçilebilir. -->
     <div class="form-blok">
       <label class="form-etiket">Yanlış Cevap Etkisi</label>
       <div class="form-pill">
         <select id="ysYanlisEtkisi" class="form-input">
-          <option value="0" selected>Etkisiz (yanlış, puan kaybettirmez)</option>
-          <option value="3">3 yanlış 1 doğruyu götürür (LGS/Bursluluk usulü)</option>
-          <option value="4">4 yanlış 1 doğruyu götürür</option>
+          <option value="0" selected>Etkisiz</option>
+          <option value="3">3 yanlış = 1 doğru (LGS/Bursluluk)</option>
+          <option value="4">4 yanlış = 1 doğru</option>
         </select>
       </div>
-      <small class="form-yardim">Net = Doğru − (Yanlış ÷ seçilen sayı).</small>
+      <small class="form-yardim">Net = Doğru − (Yanlış ÷ seçilen sayı)</small>
     </div>
 
-    <!-- YENİ (Ağustos 2026, Sedat isteği): "Kitapçık türü sınav oluştururken
-         hiç sorulmuyor. Tek kitapçık mı AB mi diye sorması... cevap anahtarı
-         bile farklı kitapçık türüne göre ikili girilmeli." -->
     <div class="form-blok">
       <label class="form-etiket">Kitapçık Türü</label>
       <div class="form-pill">
         <select id="ysKitapcikTuruSayisi" class="form-input">
           <option value="1" selected>Tek Kitapçık</option>
+          <option value="2">A / B (2 Kitapçık)</option>
+        </select>
+      </div>
+      <small class="form-yardim">A/B seçilirse cevap anahtarı her kitapçık için ayrı girilir.</small>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ EKRAN: FORM EDİTÖRÜ ═══════════════════════════════ -->
+<div id="ekranSablonEditor" class="ekran">
+  <header class="o-header o-header-renk">
+    <button class="o-geri-btn" id="btnSablonEditorGeri">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="o-baslik o-baslik-kucuk" style="color:#fff;">Form Tasarla</h1>
+  </header>
+  <div id="sablonEditorKonteyner"></div>
+</div>
+
+<!-- ═══════════════════════════════ EKRAN: SINAV DETAY ═══════════════════════════════ -->
+<div id="ekranSinavDetay" class="ekran">
+  <header class="o-header o-header-renk">
+    <button class="o-geri-btn" id="btnSinavDetayGeri">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="o-baslik o-baslik-kucuk" id="sinavDetayBaslik" style="color:#fff;">Sınav</h1>
+    <button class="o-kaydet-btn" id="btnOptikOlustur">Optik Oluştur</button>
+  </header>
+
+  <nav class="sekme-bar" id="sekmeBar">
+    <button class="sekme aktif" data-sekme="kagitlar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Kağıtlar
+    </button>
+    <button class="sekme" data-sekme="anahtar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      Anahtar
+    </button>
+    <button class="sekme" data-sekme="raporlar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Raporlar
+    </button>
+  </nav>
+
+  <div class="sekme-icerik">
+
+    <!-- Kağıtlar -->
+    <section class="sekme-panel aktif" id="panelKagitlar">
+      <div class="kl-arama" style="display:flex;align-items:center;gap:8px;">
+        <div class="arama-kutu" style="flex:1;">
+          <svg class="arama-ikon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="arama-input" id="kagitArama" placeholder="Öğrenci, numara veya sınıf...">
+        </div>
+        <button type="button" class="kl-yenile-btn" id="btnPuanYenidenHesapla" title="Puanları Yeniden Hesapla">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+      <div class="kl-filtreler chip-scroll" id="kagitSinifFiltre"></div>
+      <div id="kagitListesi" class="kart-listesi"></div>
+      <div class="bos-alan" id="kagitBosAlan">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <p>Henüz tarama yapılmadı</p>
+        <small>📷 veya + ile kağıt ekleyin</small>
+      </div>
+      <div id="omrDurum" class="omr-durum" style="display:none;">
+        <span id="statusText">İşleniyor...</span>
+        <canvas id="resultCanvas" style="display:none;"></canvas>
+        <div id="hataKutusu" style="display:none;color:var(--tehlike);padding:8px;font-size:12px;"></div>
+      </div>
+      <div class="fab-kume" id="kagitFabKume">
+        <button class="fab fab-kamera" id="fabKamera" title="Kağıt Tara">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+        <button class="fab fab-ekle" id="fabKagitEkle" title="Galeri / Manuel">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Cevap Anahtarı -->
+    <section class="sekme-panel" id="panelAnahtar">
+      <div id="anahKitapcikSecici" class="anahtar-toolbar" hidden>
+        <div class="form-pill" style="flex:1;">
+          <button type="button" class="tb-btn anahtar-kitapcik-btn" data-kitapcik="A" id="btnAnahKitapcikA">Kitapçık A</button>
+          <button type="button" class="tb-btn anahtar-kitapcik-btn" data-kitapcik="B" id="btnAnahKitapcikB">Kitapçık B</button>
+        </div>
+        <button type="button" class="tb-btn" id="btnKitapcikAtamalari" style="width:auto;padding:0 12px;font-size:12px;">🎫 Öğrencilere Ata</button>
+      </div>
+      <div class="anahtar-toolbar" id="anahToolbar">
+        <button type="button" class="tb-btn" id="btnAnahExcelYukle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Excel'den Yükle
+          <input type="file" id="anahExcelInput" accept=".xlsx,.xls" hidden>
+        </button>
+        <button type="button" class="tb-btn" id="btnAnahExcelIndir">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Şablon İndir
+        </button>
+        <button type="button" class="tb-btn" id="btnAnahTemizle">Temizle</button>
+      </div>
+      <div id="anahDersSecici" class="chip-scroll"></div>
+      <div id="anahSorular" class="anahtar-izgara"></div>
+      <button type="button" class="o-kaydet-btn o-kaydet-btn-panel" id="btnAnahKaydet">Kaydet</button>
+    </section>
+
+    <!-- Raporlar -->
+    <section class="sekme-panel" id="panelRaporlar">
+      <div id="raporListesi" class="kart-listesi"></div>
+      <div class="bos-alan" id="raporBosAlan">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <p>Henüz rapor oluşturulmadı</p>
+        <small>Cevap anahtarı girin ve kağıtları okutun</small>
+      </div>
+      <div class="fab-kume" id="raporFabKume">
+        <button class="fab fab-etiket" id="fabLgsRapor">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          LGS Puanı
+        </button>
+        <button class="fab fab-ekle" id="fabDisaAktar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ EKRAN: KAĞIT DETAY ═══════════════════════════════ -->
+<div id="ekranKagitDetay" class="ekran">
+  <header class="o-header o-header-renk">
+    <button class="o-geri-btn" id="btnKagitDetayGeri">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="o-baslik o-baslik-kucuk" id="kagitDetayBaslik" style="color:#fff;">Kağıt</h1>
+    <button class="o-geri-btn" id="btnKagitDetaySil" style="margin-left:auto;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </button>
+  </header>
+  <div class="o-icerik" id="kagitDetayIcerik"></div>
+</div>
+
+<!-- ═══════════════════════════════ EKRAN: MANUEL GİRİŞ ═══════════════════════════════ -->
+<div id="ekranManuel" class="ekran">
+  <header class="o-header o-header-renk">
+    <button class="o-geri-btn" id="btnManuelGeri">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="o-baslik" style="color:#fff;">Manuel Giriş</h1>
+    <button class="o-kaydet-btn" id="btnManuelKaydet">Kaydet</button>
+  </header>
+  <div class="o-icerik o-form-icerik">
+    <div class="form-blok">
+      <label class="form-etiket">Öğrenci</label>
+      <button type="button" class="form-secici-btn" id="manuelOgrenciSecBtn">
+        <span class="form-ikon">👤</span>
+        <span id="manuelOgrenciSecOzet" class="form-secici-metin">Öğrenci seçin...</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="manuelSorular" class="ogr-soru-izgarasi"></div>
+  <div class="ogr-alt-bar">
+    <span><span class="renk-d">D</span>: <strong id="manuelD">0</strong></span>
+    <span><span class="renk-y">Y</span>: <strong id="manuelY">0</strong></span>
+    <span>B: <strong id="manuelB">0</strong></span>
+    <span><span class="renk-n">N</span>: <strong id="manuelN">0.0</strong></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ EKRAN: LGS PUAN RAPORU ═══════════════════════════════ -->
+<div id="ekranLgsPuan" class="ekran">
+  <header class="o-header o-header-renk">
+    <button class="o-geri-btn" id="btnLgsPuanGeri">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="o-baslik" style="color:#fff;" id="lgsPuanBaslik">LGS Puanı</h1>
+  </header>
+  <div class="o-icerik" style="padding:16px;">
+    <div class="lgs-bilgi-notu" id="lgsBilgiNotu">
+      Net = Doğru − Yanlış/3 kuralıyla hesaplanır. Standart puan ortalama ve standart sapma kullanılarak bulunur.
+      <strong>MEB'in gerçek değerlerini aşağıdan girebilirsin</strong> — girilmeyen değerler bu sınavın kendi verisinden tahmini hesaplanır.
+    </div>
+    <button type="button" class="lgs-ayar-btn" id="btnLgsAyarToggle">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+      MEB Verilerini Gir / Düzenle
+    </button>
+    <div id="lgsAyarPanel" class="lgs-ayar-panel" style="display:none;"></div>
+    <div class="lgs-ozet-kart">
+      <div>
+        <small id="lgsOzetOrtalamaEtiket">Sınav Ortalaması (Tahmini Puan)</small>
+        <strong id="lgsOzetOrtalama">—</strong>
+      </div>
+      <div>
+        <small>Değerlendirilen Öğrenci</small>
+        <strong id="lgsOzetSayi">0</strong>
+      </div>
+    </div>
+    <div id="lgsKaynakEtiketi" class="lgs-kaynak-etiketi"></div>
+    <div id="lgsBosAlan" class="bos-alan" style="display:none;">
+      <p>Henüz puanlanmış sonuç yok.</p>
+    </div>
+    <div id="lgsOgrenciListesi" class="lgs-ogrenci-listesi"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ KAMERA OVERLAY ═══════════════════════════════ -->
+<div id="kameraOverlay" class="overlay" hidden>
+  <div class="km-ust-bar">
+    <button class="o-geri-btn" id="kameraKapatBtn" style="color:#fff;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span class="kamera-baslik" id="kameraFormAdi">LGS</span>
+    <div style="display:flex;gap:4px;">
+      <button class="kamera-ikon-btn" id="kameraTorchBtn" title="Flaş" hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+      </button>
+      <button class="kamera-ikon-btn" id="kameraMenuBtn" title="Tarama Ayarları">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <video id="video" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;pointer-events:none;background:#000;"></video>
+  <canvas id="canvas" hidden></canvas>
+  <canvas id="koseTespitOverlay" style="position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;"></canvas>
+
+  <!-- Canlı tarama sonuç kartı -->
+  <div id="canliSonucKart" class="km-sonuc-kart" hidden>
+    <div class="ksk-satir"><span>Ad</span><b id="kskAd">—</b></div>
+    <div class="ksk-satir"><span>Numara</span><b id="kskNumara">—</b></div>
+    <div class="ksk-satir"><span>Sınıf</span><b id="kskSinif">—</b></div>
+    <div class="ksk-satir"><span>Puan</span><b id="kskPuan">—</b></div>
+    <div class="ksk-satir"><span>Net</span><b id="kskNet">—</b></div>
+    <div class="ksk-btnlar">
+      <button id="kskSil" class="ksk-btn ksk-btn-sil">Sil</button>
+      <button id="kskDuzenle" class="ksk-btn ksk-btn-duzenle">Düzenle</button>
+    </div>
+  </div>
+
+  <!-- Tarama ayarları sheet -->
+  <div id="kameraAyarSheet" class="km-ayar-sheet" hidden>
+    <div class="km-ayar-baslik">Tarama Ayarları<button id="kameraAyarKapat" class="ksk-btn">✕</button></div>
+    <label class="km-ayar-satir">
+      <span>Canlı Tarama Modu</span>
+      <input type="checkbox" id="canliModSwitch">
+    </label>
+    <p class="km-ayar-aciklama">Açıkken her kağıt otomatik okunup kaydedilir.</p>
+    <hr class="km-ayar-ayrac">
+    <label class="km-ayar-satir"><span>Köşe Hassasiyeti</span><input type="range" id="hsYuzdelik" min="10" max="50" step="1"></label>
+    <label class="km-ayar-satir"><span>Minimum Doluluk</span><input type="range" id="hsDoluluk" min="20" max="70" step="1"></label>
+    <label class="km-ayar-satir"><span>Analiz Hızı</span><input type="range" id="hsHiz" min="200" max="800" step="50"></label>
+    <hr class="km-ayar-ayrac">
+    <label class="km-ayar-satir"><span>Cevap Koyuluk Eşiği</span><input type="range" id="hsKoyuluk" min="10" max="50" step="1"></label>
+    <p class="km-ayar-aciklama">Baloncuğun "işaretli" sayılması için gereken koyuluk. Soluk işaretler için düşürün.</p>
+    <label class="km-ayar-satir"><span>Ayırt Edicilik Farkı</span><input type="range" id="hsAyirtEdici" min="2" max="25" step="1"></label>
+    <p class="km-ayar-aciklama">En koyu ile ikinci şık arasındaki minimum fark. "Belirsiz/çoklu" çok çıkıyorsa düşürün.</p>
+    <label class="km-ayar-satir"><span>Numara Ayırt Edicilik</span><input type="range" id="hsNumaraFark" min="1" max="10" step="1"></label>
+    <p class="km-ayar-aciklama">Öğrenci numarası haneleri için aynı mantık.</p>
+    <button id="hsSifirla" class="ksk-btn" style="width:100%;margin-top:8px;">Varsayılana Sıfırla</button>
+  </div>
+
+  <!-- Seviye göstergesi -->
+  <div id="seviyeGosterge" class="seviye-gosterge">
+    <div id="seviyeHalka" class="seviye-halka">
+      <div id="seviyeNokta" class="seviye-nokta"></div>
+      <div class="seviye-merkez"></div>
+    </div>
+    <span id="seviyeMesaj" class="seviye-mesaj">Düzleştirin</span>
+  </div>
+
+  <!-- Köşe seçim modu -->
+  <div id="koseSecimAlani" style="display:none;position:absolute;inset:0;z-index:8;touch-action:none;overscroll-behavior:none;flex-direction:column;align-items:center;justify-content:center;background:#000;">
+    <button id="koseIptal" style="position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;z-index:13;width:40px;height:40px;border-radius:20px;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;">✕</button>
+    <p id="koseTalimat" style="position:absolute;top:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;white-space:nowrap;z-index:12;"></p>
+    <canvas id="koseSecimCanvas" style="display:block;width:100%;height:auto;max-height:calc(100% - 100px);object-fit:contain;touch-action:none;flex-shrink:1;"></canvas>
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:12;display:flex;gap:8px;padding:16px 16px calc(28px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,rgba(0,0,0,.6),transparent);">
+      <button id="koseTamam" class="kose-btn kose-tamam">✅ Tamam</button>
+      <button id="koseSifirla" class="kose-btn">↺ Sıfırla</button>
+      <button id="koseVazgec" class="kose-btn">🤖 Otomatik Dene</button>
+    </div>
+  </div>
+
+  <!-- İpucu bandı -->
+  <div class="km-ipucu" id="kmIpucu">
+    <span style="color:rgba(255,255,255,.8);font-size:12px;font-weight:600;">Kağıtlar</span>
+    <div class="km-ipucu-bant">Kağıdı 4 Köşedeki Kutucuklara Oturtun</div>
+    <span style="color:rgba(255,255,255,.8);font-size:12px;font-weight:600;" id="kmFormAdi">LGS</span>
+  </div>
+
+  <!-- Alt bar -->
+  <div class="km-alt-bar">
+    <label class="km-aksiyon-btn" for="galeriInput">
+      <div class="km-aksiyon-ikon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+      <span>Galeri</span>
+      <input type="file" id="galeriInput" accept="image/*" multiple hidden>
+    </label>
+    <button id="capture" class="km-shutter"><span class="km-shutter-ic"></span></button>
+    <button id="dondurKoseBtn" class="km-aksiyon-btn" title="Dondur ve Köşe Seç">
+      <div class="km-aksiyon-ikon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 3 10.5 3 21 14 14 21 3 10.5"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <span>Köşe Seç</span>
+    </button>
+  </div>
+
+  <button id="start" hidden></button>
+  <button id="stop" hidden></button>
+</div>
+
+<!-- ═══════════════════════════════ BOTTOM SHEETS ═══════════════════════════════ -->
+
+<div id="sheetKagitEkle" class="bs-overlay" hidden>
+  <div class="bs-panel">
+    <div class="bs-tutac"></div>
+    <h3 class="bs-baslik">Kağıt Ekle</h3>
+    <div class="bs-grid-2">
+      <button class="bs-btn" id="bsGaleri">
+        <div class="bs-ikon" style="background:#E1BEE7;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8E24AA" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <span>Galeri</span>
+        <input type="file" id="galeriInputSheet" accept="image/*" multiple hidden>
+      </button>
+      <button class="bs-btn" id="bsManuel">
+        <div class="bs-ikon" style="background:#B2EBF2;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00838F" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <span>Manuel</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="sheetOptikForm" class="bs-overlay" hidden>
+  <div class="bs-panel">
+    <div class="bs-tutac"></div>
+    <h3 class="bs-baslik">Optik Form Seçin</h3>
+    <div id="optikFormSeciciListesi" class="bs-liste"></div>
+  </div>
+</div>
+
+<div id="sheetKitapcikAtama" class="bs-overlay" hidden>
+  <div class="bs-panel bs-panel-uzun">
+    <div class="bs-tutac"></div>
+    <h3 class="bs-baslik">Kitapçık Türü Ata</h3>
+    <div style="display:flex;gap:8px;padding:0 4px 10px;">
+      <button type="button" class="o-kaydet-btn o-kaydet-btn-panel" id="btnKitapcikOtomatikAta" style="flex:1;">🔀 Otomatik Ata (A/B Sırayla)</button>
+    </div>
+    <div id="kitapcikAtamaListesi" class="ogr-secim-alani" style="max-height:55vh;overflow-y:auto;"></div>
+    <button type="button" class="o-kaydet-btn o-kaydet-btn-panel" id="btnKitapcikAtamaKaydet" style="width:100%;margin-top:10px;">Kaydet</button>
+  </div>
+</div>
+
+<div id="sheetOgrenciSecimi" class="bs-overlay" hidden>
+  <div class="bs-panel bs-panel-uzun">
+    <div class="bs-tutac"></div>
+    <h3 class="bs-baslik">Öğrenci Seç</h3>
+    <div id="ysOgrenciSecimAlani" class="ogr-secim-alani" style="max-height:60vh;overflow-y:auto;">
+      <p class="ogr-secim-bilgi">Uygulama içinden açıldığında sınıf listesi burada görünür.</p>
+    </div>
+    <button type="button" class="lgs-ayar-kaydet-btn" id="btnOgrenciSecTamam" style="margin:14px 0 0;">Tamam</button>
+  </div>
+</div>
+
+<div id="sheetOnay" class="bs-overlay" hidden>
+  <div class="bs-panel">
+    <div class="bs-tutac"></div>
+    <h3 class="bs-baslik" id="sheetOnayBaslik">Emin misiniz?</h3>
+    <p class="bs-metin" id="sheetOnayMetin"></p>
+    <div class="bs-grid-2">
+      <button class="bs-btn-iptal" id="sheetOnayIptal">Vazgeç</button>
+      <button class="bs-btn-tehlike" id="sheetOnayOnayla">Sil</button>
+    </div>
+  </div>
+</div>
+
+<div id="sheetYazdirmaSecenekleri" class="bs-overlay" hidden>
+  <div class="bs-panel bs-panel-uzun">
+    <div class="bs-tutac"></div>
+    <h3 class="bs-baslik">Optik Form</h3>
+    <small class="yz-not">Sayfa düzeni soru sayısına göre otomatik seçilir (tek / 2'li / 4'lü / 6'lı) — kağıt kesilip öğrencilere dağıtılabilir.</small>
+    <div id="yzOnizlemeDurum" class="durum-mesaj"></div>
+    <div class="bs-grid-2" style="margin-top:14px;">
+      <button type="button" class="bs-btn-iptal" id="btnYzOnizle">👁️ Önizle</button>
+      <button type="button" class="lgs-ayar-kaydet-btn" id="btnYzOnayla" style="margin:0;">✅ Oluştur ve İndir</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+           </html>value="1" selected>Tek Kitapçık</option>
           <option value="2">A / B (2 Kitapçık)</option>
         </select>
       </div>
