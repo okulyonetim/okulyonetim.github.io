@@ -124,14 +124,12 @@ export function koseleriSectir(kaynak, genislik, yukseklik, secimCanvas, talimat
         // ekrana sığacak şekilde ölçeklenir, oran korunur, taşma olmaz.
         // CSS width:100% sabit, height:auto + aspect-ratio ile oran CSS kutusuna yansır.
         // inset:0 veya height:100% KULLANMA — yatay fotoğraflarda canvas dikey uzar.
-        secimCanvas.style.position = 'absolute';
-        secimCanvas.style.left = '0';
-        secimCanvas.style.top = '0';
+        // Canvas flex item — position static, aspect-ratio ile oran korunur
+        secimCanvas.style.position = 'static';
         secimCanvas.style.width = '100%';
         secimCanvas.style.height = 'auto';
-        secimCanvas.style.maxHeight = '100%';
         secimCanvas.style.aspectRatio = `${genislik} / ${yukseklik}`;
-        secimCanvas.style.transform = 'none';
+        secimCanvas.style.maxHeight = 'calc(100dvh - 120px)'; // buton çubuğu için pay
 
         // Alt buton çubuğu (Tamam/Sıfırla/Otomatik Dene) tamamBtn'in ebeveyni;
         // canvas'ın gösterildiği gerçek boyuta göre ne kadar alanı kapladığını
@@ -447,7 +445,7 @@ export async function koseSecimAkisi(kaynak, genislik, yukseklik, elemanlar) {
         el.style.pointerEvents = "none";
     });
 
-    koseAlani.style.display = "block";
+    koseAlani.style.display = "flex";
 
     let vazgecildi = false;
     let iptalEdildi = false;
