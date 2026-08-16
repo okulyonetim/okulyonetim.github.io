@@ -25,8 +25,14 @@
  *   {
  *     basarili: boolean,
  *     ogrenciKimlik: object|null,   // numara + kitapçık baloncuklarından
- *     cevaplar: [{ ders, soruNo, isaretliSik, guven, uyari }],
- *     uyarilar: string[],
+ *     cevaplar: [{
+ *       ders, soruNo, isaretliSik,
+ *       isaretlemeSeviyesi,  // 'tamamenIsaretli'|'normalIsaretli'|'yarimIsaretli'|'azIsaretli'|'cokAzIsaretli'
+ *       guven,
+ *       uyari                // null | 'bos' | 'coklu' | 'dusukDolulukOraniCiftIsaretli'
+ *     }],
+ *     birdenFazlaSecenekIsaretleme: [{ ders, soruNo, adaylar:[{harf,oran}] }],
+ *     uyarilar: string[],    // 'goruntuCokParlak'/'goruntuCokKoyu'/'yetersizPiksel' dahil
  *     hataAyiklama: {
  *       duzeltilmisCanvas: HTMLCanvasElement,
  *       hizalamaNoktalari: {x,y}[],
@@ -134,6 +140,18 @@ window.OmrOkuyucu = (function () {
   let _ardisikAyniSikSatirlari = []; // YENİ (teşhis): ardışık iki sorunun aynı şıkka kilitlendiği durumlar (satır-kilitleme komşu satıra kayması belirtisi)
   let _radyalProfilSatirlari = []; // YENİ (teşhis): bkz. radyalKoyulukProfili — her formuOku çağrısında sıfırlanır
 
+  // Yetersiz piksel guard (bkz. baloncukDolulukBinary açıklaması).
+  // Her formuOku/formuOkuElleKoseli çağrısında sıfırlanır; birden fazla
+  // baloncuk ROI'si kağıt/koordinat dışına taşarsa buraya eklenir ve
+  // uyarilar listesine yansıtılır — C++ tarafının "not enough pixels"
+  // exception'ının JS karşılığı.
+  let _yetersizPikselUyarilari = [];
+
+  // Okuma öncesi görüntü kalitesi uyarıları (parlama / çok koyu).
+  // isParlamaVarKontrol() tarafından doldurulan string[] — her
+  // formuOku/formuOkuElleKoseli çağrısında sıfırlanır.
+  let _goruntKaliteUyarilari = [];
+
   // ---------------------------------------------------------------------
   // 1) Genel yardımcılar: görüntü <-> ImageData
   // ---------------------------------------------------------------------
@@ -189,23 +207,12 @@ window.OmrOkuyucu = (function () {
     const minKanal = Math.min(r, g, b);
     const doygunluk = maxKanal > 0 ? (maxKanal - minKanal) / maxKanal : 0;
 
-    // SARI VURGULAMA DESTEĞİ (Ağustos 2026):
-    // Dijital PDF'te sarı highlight (PDF vurgulama aracı) ile işaretlenmiş
-    // baloncuklar: sarı piksel yüksek doygunlukta (≈1.0) olduğu için
-    // renksizlikCarpani → 0 oluyor ve skor sıfırlanıyordu — boş baloncuktan
-    // ayırt edilemiyordu.
-    // Sarı renk tonu tespiti: Hue 30°-75° arası (turuncu-sarı-sarı-yeşil),
-    // yüksek doygunluk (>0.4), yüksek parlaklık (maxKanal>150).
-    // Bu koşul sağlanırsa sarı pikseli "işaretli" say — sabit 0.85 skor ver.
-    // Sarı vurgulama tespiti (PDF highlight veya marker kalem):
-    // R ve G yüksek, B düşük. Doygunluk hesabı yerine doğrudan kanal karşılaştırması —
-    // %30 opak PDF sarı'sı (RGB≈255,255,180) de yakalanır.
-    if (maxKanal > 150 && b < r * 0.80 && b < g * 0.80 && r > 150 && g > 150) {
-      return 0.85; // sarı vurgulama → işaretli say
-    }
-
-    // Normal siyah/gri kalem izi: renksizlik kontrolü
-    // Pembe/bordo baskı rengini bastırmak için doygunluk cezası.
+    // YENİ: çarpan 2.5 -> 1.2 yumuşatıldı. Gerçek fotoğraflarda (JPEG
+    // sıkıştırma, beyaz dengesi, ışık) siyah kalem izi bile hiçbir zaman
+    // %0 doygunlukta çıkmıyor — 2.5'lik agresif ceza, gözlemlenen "her
+    // soru tekdüze düşük guven (0.07-0.14), gerçek işaretli baloncuk bile
+    // ayırt edilemiyor" sorununun kaynağı olabilir: hafif renk sapması
+    // olan gerçek işaretleri de baskının pembesiyle birlikte eziyordu.
     const renksizlikCarpani = Math.max(0, 1 - doygunluk * 1.2);
 
     return koyuluk * renksizlikCarpani;
@@ -258,72 +265,99 @@ window.OmrOkuyucu = (function () {
       }
     }
 
+    // Dejenere durum (tamamen düz renk vb.) - normalize etmeye değmez.
     if (beyazNokta - siyahNokta < 10) return;
 
-    // PDF / ekran görüntüsü tespiti:
-    // %60'tan fazla piksel çok parlak (>230) → PDF veya ekran görüntüsü.
-    // Bu durumda kontrast germe agresifleştirilir:
-    //   • Alt yüzdelik dilim %10'a çıkar → koyu gri pikseller siyah sayılır
-    //   • Gama 1.35 → 2.2 → orta tonlar çok daha koyu basılır
-    //   • Beyaz nokta alt sınırı 200'e zorlanır → beyaz arka plan tam beyaza çekilir
-    // Bu sayede PDF'te ince çember (boş) ile dolu daire (işaretli) arasındaki
-    // kontrast, gerçek kağıt fotoğrafına yakın bir seviyeye getirilir.
-    let kullanilanGama = 1.35;
-    let kullanilanSiyahNokta = siyahNokta;
-    let kullanilanBeyazNokta = beyazNokta;
-
-    let cokParlakSayisi = 0;
-    for (let v = 230; v <= 255; v++) cokParlakSayisi += histogram[v];
-    const parlakOrani = cokParlakSayisi / toplamPiksel;
-
-    if (parlakOrani > 0.60) {
-      // Parlak mod (flaş/ekran): beyaz arka plan baskın
-      kullanilanGama = 2.2;
-      kullanilanBeyazNokta = Math.min(beyazNokta, 230);
-      let k5 = 0;
-      for (let v = 0; v < 256; v++) {
-        k5 += histogram[v];
-        if (k5 / toplamPiksel >= 0.05) { kullanilanSiyahNokta = v; break; }
-      }
-    } else {
-      // GRİ ARKA PLAN MODU (PDF ekran görüntüsü, gri zemin):
-      // Görüntünün >%60'ı 120-200 gri aralığında → düşük kontrast.
-      // Test Plus analizi: setIsaretlemeler() ham piksel oranı kullanıyor,
-      // binary eşik öncesi median-tabanlı normalize uyguluyor.
-      // Çözüm: beyazNokta = median (arka plan tam beyaza dönsün),
-      //         gama = 3.0 (orta tonlar siyaha basılsın).
-      let ortaGriSayisi = 0;
-      for (let v = 120; v <= 200; v++) ortaGriSayisi += histogram[v];
-      const ortaGriOrani = ortaGriSayisi / toplamPiksel;
-
-      if (ortaGriOrani > 0.60) {
-        // Median hesapla (arka plan rengi)
-        let kumulatifMedian = 0;
-        let medianDeger = 128;
-        for (let v = 0; v < 256; v++) {
-          kumulatifMedian += histogram[v];
-          if (kumulatifMedian / toplamPiksel >= 0.50) { medianDeger = v; break; }
-        }
-        // Beyaz nokta = median → arka plan tam beyaz olsun
-        kullanilanBeyazNokta = medianDeger;
-        // Siyah nokta = %1 yüzdelik → en koyu pikseller siyah
-        let k1 = 0;
-        for (let v = 0; v < 256; v++) {
-          k1 += histogram[v];
-          if (k1 / toplamPiksel >= 0.01) { kullanilanSiyahNokta = v; break; }
-        }
-        // Agresif gama: orta tonları siyaha bas
-        kullanilanGama = 3.0;
-      }
-    }
-
-    const aralik = Math.max(1, kullanilanBeyazNokta - kullanilanSiyahNokta);
+    // YENİ: doğrusal gerdirmeden SONRA hafif bir gama düzeltmesi (<1)
+    // uygulanıyor — orta tonları (gerçek işaretli baloncukların genelde
+    // düştüğü, tam siyah olmayan gri aralık) daha da karartır, siyah-beyaz
+    // benzeri bir kontrast artışı sağlar. Kullanıcı gözlemi: en koyu bulunan
+    // işaret bile eşiğe (0.28) çok yakın ama altında kalıyordu (0.246) —
+    // bu, doğrusal gerdirmenin tek başına yetersiz kaldığının kanıtı.
+    // NOT: 1.8 denendi — cevaplariCikar'daki mutlak eşiği (KARANLIK_ESIK)
+    // geçmeye yardımcı oldu ama numaraOku'nun KULLANDIĞI göreli fark
+    // (MIN_FARK) koyu tonlar arasında sıkıştığı için basamak okumasını
+    // bozdu (aynı fotoğrafta numara önce doğru okunurken 1.8 ile
+    // okunamaz oldu). 1.35'e düşürüldü — daha ölçülü, ikisini de gözetir.
+    const GAMA = 1.35;
+    const aralik = beyazNokta - siyahNokta;
     for (let i = 0; i < data.length; i += 4) {
       for (let kanal = 0; kanal < 3; kanal++) {
         const v = data[i + kanal];
-        const gerilmis = Math.max(0, Math.min(255, ((v - kullanilanSiyahNokta) / aralik) * 255));
-        data[i + kanal] = Math.round(255 * Math.pow(gerilmis / 255, kullanilanGama));
+        const gerilmis = Math.max(0, Math.min(255, ((v - siyahNokta) / aralik) * 255));
+        data[i + kanal] = Math.round(255 * Math.pow(gerilmis / 255, GAMA));
       }
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // 1.4) Görüntü kalite ön-kontrolü: parlama / çok koyu
+  //
+  // C++ tarafındaki isParlamaVar()'ın JS karşılığı. Kanonik canvas
+  // üretilmeden ÖNCE ham fotoğraf üzerinde çalışır; sonuç
+  // _goruntKaliteUyarilari listesine yansıtılır.
+  // Her formuOku/formuOkuElleKoseli çağrısında sıfırlanır.
+  // ---------------------------------------------------------------------
+
+  /**
+   * Ham fotoğraf ImageData'sında parlama (çok açık) veya çok koyu alan
+   * oranlarını histogramdan kontrol eder. Aynı tek geçişte her ikisini de
+   * saptar, goruntuCokParlak / goruntuCokKoyu şeklinde uyarı üretir.
+   *
+   * Eşikler:
+   *   - PARLAK_ESIK (>=235/255): gerçek lens/kağıt parlamasının başlangıcı.
+   *     Oranı PARLAK_MAX_ORAN (>%18) aşarsa parlama var sayılır.
+   *   - KOYU_ESIK  (<=25/255):  neredeyse siyah piksel (aşırı düşük ışık).
+   *     Oranı KOYU_MAX_ORAN   (>%35) aşarsa görüntü çok koyu sayılır.
+   *
+   * Her iki uyarı da AYNI geçişte üretilir — ikisi aynı anda tetiklenebilir
+   * (ör. çok kontrastlı bir ışık/gölge durumu).
+   *
+   * @param {ImageData} imageData - ham fotoğraf (düzleştirilmeden önce)
+   */
+  function isParlamaVarKontrol(imageData) {
+    // C++ liboptikokuyucu.so değerleriyle hizalandı (bkz. isParlamaVar pseudo-code):
+    //   PARLAK_ESIK = 220 (C++: threshold(blur, mask, 220, 255, THRESH_BINARY))
+    //   PARLAK_MAX_ORAN = 0.05 (C++: countNonZero/total > 0.05)
+    // C++ GaussianBlur(5,5) uyguladıktan SONRA eşikliyor; biz blurlamıyoruz,
+    // bu yüzden eşiği biraz yukarı (228) ve toleransı biraz gevşet (0.08)
+    // alıyoruz — etkin sonuç yaklaşık aynı.
+    const PARLAK_ESIK     = 228;  // C++'ın 220'si + blur etkisi telafisi
+    const PARLAK_MAX_ORAN = 0.08; // C++'ın %5'i, blur farkı hesaba katıldı
+    const KOYU_ESIK       = 30;   // neredeyse siyah piksel
+    const KOYU_MAX_ORAN   = 0.40; // görüntünün %40'ı bu kadar koyu → çok karanlık
+
+    const { data, width, height } = imageData;
+    const toplamPiksel = width * height;
+    if (toplamPiksel === 0) return;
+
+    let parlakSayisi = 0;
+    let koyuSayisi   = 0;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const gri = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      if (gri >= PARLAK_ESIK) parlakSayisi++;
+      if (gri <= KOYU_ESIK)   koyuSayisi++;
+    }
+
+    const parlakOran = parlakSayisi / toplamPiksel;
+    const koyuOran   = koyuSayisi   / toplamPiksel;
+
+    if (parlakOran > PARLAK_MAX_ORAN) {
+      _goruntKaliteUyarilari.push(
+        'goruntuCokParlak — parlak piksel oranı: ' + (parlakOran * 100).toFixed(1) +
+        '% (eşik: ' + (PARLAK_MAX_ORAN * 100).toFixed(0) + '%). ' +
+        'Kağıdı doğrudan ışık kaynağına doğru tutmaktan kaçının veya ' +
+        'flaşı kapatın.'
+      );
+    }
+
+    if (koyuOran > KOYU_MAX_ORAN) {
+      _goruntKaliteUyarilari.push(
+        'goruntuCokKoyu — koyu piksel oranı: ' + (koyuOran * 100).toFixed(1) +
+        '% (eşik: ' + (KOYU_MAX_ORAN * 100).toFixed(0) + '%). ' +
+        'Fotoğraf çok karanlık ortamda veya düşük pozlamada çekilmiş olabilir.'
+      );
     }
   }
 
@@ -353,26 +387,11 @@ window.OmrOkuyucu = (function () {
   function adaptifEsikle(cImageData) {
     const { width, height, data } = cImageData;
 
-    // Gri tonlama — SARI VE KOYU renkler koyu gri olarak dönüşsün.
-    // Normal: 0.299R + 0.587G + 0.114B → siyah kalem (R≈G≈B≈düşük) koyu çıkar.
-    // SORUN: Sarı vurgulama (R≈255,G≈255,B≈0) → gri≈224 (çok açık) → binary'de boş sayılır.
-    // ÇÖZÜM: Sarı/turuncu-sarı ton (Hue 30°-75°, doygunluk >0.4) pikselleri
-    // koyu gri (40) olarak baskıla — Otsu/adaptif eşik sonrasında "işaretli" olarak çıkar.
+    // Düz gri tonlama — form siyah beyaz basıldığı için renk filtresi gereksiz.
     const gri = new Uint8Array(width * height);
     for (let i = 0; i < width * height; i++) {
       const idx = i * 4;
-      const r = data[idx], g = data[idx + 1], b = data[idx + 2];
-      const maxK = Math.max(r, g, b), minK = Math.min(r, g, b);
-      const delta = maxK - minK;
-      const doy = maxK > 0 ? delta / maxK : 0;
-      // Sarı vurgulama tespiti: PDF highlight veya marker kalem.
-      // Koşul: R ve G yüksek, B düşük (sarı = kırmızı + yeşil, mavi yok).
-      // Doygunluk eşiği 0.20 — %30 opak PDF highlight'ı da yakalar.
-      if (maxK > 150 && b < r * 0.80 && b < g * 0.80 && r > 150 && g > 150) {
-        gri[i] = 40; // sarı → koyu gri (işaretli sayılsın)
-        continue;
-      }
-      gri[i] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+      gri[i] = Math.round(0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
     }
 
     let binary;
@@ -440,15 +459,33 @@ window.OmrOkuyucu = (function () {
    * Binary ImageData'da bir daire alanındaki işaretli (255) piksel sayısını
    * toplam piksel sayısına böler → 0-1 arası doluluk oranı.
    * Test Plus'ın countNonZero yaklaşımının karşılığı.
+   *
+   * YENİ — YETERSİZ PİKSEL GUARD (C++ "not enough pixels" exception karşılığı):
+   * Kırpılan ROI (bubble bölgesi), koordinat kayması yüzünden kısmen veya
+   * tamamen kağıt dışına taşarsa `toplam` beklenen değerin çok altına düşer.
+   * Bu durumu sessizce 0 döndürerek yutmak yerine _yetersizPikselUyarilari
+   * listesine bir kayıt eklenip uyarı olarak yayımlanan açık bir hata
+   * objesi üretiliyor. Eşik: beklenen daire alanının (π*r²) en az %20'si
+   * görünür olmalı — bu oran ölçeğe göre otomatik kalibre olur, sabit bir
+   * piksel sayısı yerine yarıçapa göre hesaplanır.
+   *
+   * @param {number} cx - baloncuk merkezi X (kanonik canvas pikseli)
+   * @param {number} cy - baloncuk merkezi Y
+   * @param {number} r  - baloncuk yarıçapı (piksel)
+   * @param {string|null} [bubbleId] - teşhis etiketi (ders+soruNo+harf)
    */
-  function baloncukDolulukBinary(cx, cy, r) {
+  function baloncukDolulukBinary(cx, cy, r, bubbleId) {
     if (!_binaryImageData) return 0;
     const { width, height, data } = _binaryImageData;
     const x0 = Math.max(0, Math.floor(cx - r));
     const x1 = Math.min(width - 1, Math.ceil(cx + r));
     const y0 = Math.max(0, Math.floor(cy - r));
     const y1 = Math.min(height - 1, Math.ceil(cy + r));
-    if (x1 <= x0 || y1 <= y0) return 0;
+    if (x1 <= x0 || y1 <= y0) {
+      // ROI tamamen sınır dışı — kesin yetersiz piksel
+      _yetersizPikselUyarilari.push({ tur: 'yetersizPiksel', bubbleId: bubbleId || '?', toplam: 0, beklenen: Math.round(Math.PI * r * r) });
+      return 0;
+    }
     let isaretli = 0, toplam = 0;
     const r2 = r * r;
     for (let y = y0; y <= y1; y++) {
@@ -460,6 +497,19 @@ window.OmrOkuyucu = (function () {
         }
       }
     }
+
+    // Görünür piksel sayısı beklenen daire alanının %20'sinden azsa uyar.
+    const beklenenPiksel = Math.PI * r * r;
+    const MIN_GORUNUM_ORANI = 0.20;
+    if (toplam < beklenenPiksel * MIN_GORUNUM_ORANI) {
+      _yetersizPikselUyarilari.push({
+        tur: 'yetersizPiksel',
+        bubbleId: bubbleId || '?',
+        toplam,
+        beklenen: Math.round(beklenenPiksel),
+      });
+    }
+
     return toplam > 0 ? isaretli / toplam : 0;
   }
 
@@ -474,34 +524,15 @@ window.OmrOkuyucu = (function () {
    * matrisini (h33 = 1 olacak şekilde, 9 elemanlı düz dizi) döndürür.
    * Her ikisi de [{x,y}, {x,y}, {x,y}, {x,y}] formatında TAM 4 nokta olmalı.
    */
-  /**
-   * N nokta çiftinden perspektif homografi hesaplar (N ≥ 4).
-   *
-   * N = 4: Tam çözüm (Gauss eleme). Orijinal davranış — her nokta eşitliği
-   *         tam olarak sağlanır, artık sıfırdır.
-   *
-   * N > 4: Aşırı belirlenmiş sistem — en küçük kareler (DLT, Direct Linear
-   *         Transform). Orta karelerin (sol-orta / sag-orta) perspektife
-   *         dahil edilmesi burada gerçekleşir. 2N×8 boyutlu A matrisi ve 2N
-   *         boyutlu b vektörü kurulur; normal denklemler (AᵀA)h = Aᵀb ile
-   *         çözülür — bu, standart OpenCV findHomography() DLT adımıdır.
-   *
-   * Neden orta kareler fark yaratır: 4 köşeli saf homografi, kağıt tam düz
-   * değilse (elde tutarak çekimde orta kısım biraz öne/arkaya eğilir) sayfa
-   * ortasında sistematik hata verir. 6 nokta kullanmak bu eğilmeyi
-   * modellemeye yardımcı olur — özellikle kağıt kıvrımlarında sağ-kolon
-   * kayması azalır (bkz. Test Plus "ortaSembolleriHizalanmadi" analizi).
-   */
   function homografiHesapla(kaynakNoktalar, hedefNoktalar) {
-    const n = kaynakNoktalar.length;
-    if (n < 4 || hedefNoktalar.length !== n) {
-      throw new Error('homografiHesapla en az 4 nokta çifti bekler (eşit sayıda).');
+    if (kaynakNoktalar.length !== 4 || hedefNoktalar.length !== 4) {
+      throw new Error('homografiHesapla tam olarak 4 nokta çifti bekler.');
     }
 
-    // Her nokta çifti 2 denklem üretir: 2N × 8 matris
+    // 8x9 genişletilmiş matris (8 bilinmeyen: h11..h32, h33=1 sabit)
     const A = [];
     const b = [];
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < 4; i++) {
       const { x: xs, y: ys } = kaynakNoktalar[i];
       const { x: xd, y: yd } = hedefNoktalar[i];
       A.push([xs, ys, 1, 0, 0, 0, -xd * xs, -xd * ys]);
@@ -510,27 +541,7 @@ window.OmrOkuyucu = (function () {
       b.push(yd);
     }
 
-    let h;
-    if (n === 4) {
-      // Tam belirlenmiş: doğrudan Gauss eleme (hızlı, artık sıfır)
-      h = gaussEleme(A, b);
-    } else {
-      // Aşırı belirlenmiş: normal denklemler (AᵀA)h = Aᵀb
-      // 8×8 normal matris ve 8 boyutlu sağ taraf
-      const cols = 8;
-      const AtA = Array.from({ length: cols }, () => new Array(cols).fill(0));
-      const Atb = new Array(cols).fill(0);
-      for (let row = 0; row < A.length; row++) {
-        for (let c = 0; c < cols; c++) {
-          Atb[c] += A[row][c] * b[row];
-          for (let d = 0; d < cols; d++) {
-            AtA[c][d] += A[row][c] * A[row][d];
-          }
-        }
-      }
-      h = gaussEleme(AtA, Atb);
-    }
-
+    const h = gaussEleme(A, b);
     return [h[0], h[1], h[2], h[3], h[4], h[5], h[6], h[7], 1];
   }
 
@@ -1352,22 +1363,7 @@ window.OmrOkuyucu = (function () {
     const x1 = Math.min(width - 1, Math.ceil(cx + icYaricap));
     const y0 = Math.max(0, Math.floor(cy - icYaricap));
     const y1 = Math.min(height - 1, Math.ceil(cy + icYaricap));
-
-    // YETERSİZ PİKSEL GUARD (Ağustos 2026 — Test Plus C++ analizinden):
-    // Koordinat kayması durumunda ROI canvas'ın dışına taşarsa (x1<=x0 veya
-    // y1<=y0), eski kod sessizce 0 döndürüyordu — "sağ kolon yanlış okunuyor"
-    // sorununda bu boş baloncuk gibi görünüyordu. Benzer şekilde, geçerli
-    // bir ROI olsa bile içine düşen GERÇEK piksel sayısı çok azsa (merkez
-    // diski için ~7 piksel alt eşik, r*0.35 yarıçaplı bir diskten beklenen
-    // minimum), bu "koordinat sınırda" işaretidir.
-    // ÇÖZÜM: Sessiz 0 yerine negatif sentinel (-1) döndür. Bu değer:
-    //   • baloncukKaranlikOraniYerelArama: enIyiOran karşılaştırmasında
-    //     negatif kazanamaz → sağlıklı bir konum seçilir (sorun yüzeye çıkar)
-    //   • cevaplariCikar'daki yetersizPiksel kontrolü: isaret edilip uyarı üretir
-    // Minimum piksel eşiği: r*0.35 yarıçaplı diskten teorik beklenti π*(0.35r)²
-    // piksel; pratik minimum olarak 5 piksel (r≥4px olan her çözünürlükte güvenli).
-    const MIN_PIKSEL = 5;
-    if (x1 <= x0 || y1 <= y0) return -1; // ROI tamamen dışarıda
+    if (x1 <= x0 || y1 <= y0) return 0;
 
     let toplam = 0;
     let sayac = 0;
@@ -1381,8 +1377,7 @@ window.OmrOkuyucu = (function () {
         }
       }
     }
-    if (sayac < MIN_PIKSEL) return -1; // Yetersiz piksel — koordinat sınırda
-    return toplam / sayac;
+    return sayac > 0 ? toplam / sayac : 0;
   }
 
   /**
@@ -1706,6 +1701,33 @@ window.OmrOkuyucu = (function () {
     return 0;
   }
 
+  // ---------------------------------------------------------------------
+  // 8.5) Kademeli işaretleme seviyesi (Test Plus enum karşılığı)
+  //
+  // Test Plus'taki tamamenIsaretli/normalIsaretli/yarimIsaretli/azIsaretli/
+  // cokAzIsaretli enum'unun JS karşılığı. Doluluk oranı, KARANLIK_ESIK'e
+  // göreli 5 bandda sınıflandırılır — böylece KARANLIK_ESIK kullanıcı
+  // tarafından değiştirilse bile seviyeler tutarlı kalır.
+  //
+  // dusukDolulukOraniCiftIsaretliUyari: en koyu şık 'yarimIsaretli' ya da
+  // altında VE birden fazla şık eşiği geçiyorsa özel uyarı tetiklenir —
+  // "hafifçe iki yere işaret etmiş mi?" durumunu yakalamak için.
+  // ---------------------------------------------------------------------
+
+  /**
+   * Doluluk oranını (0-1) kademeli işaretleme seviyesine çevirir.
+   * @param {number} oran      - baloncuk doluluk oranı
+   * @param {number} karanlikEsik - aktif KARANLIK_ESIK
+   * @returns {string} seviye adı
+   */
+  function _isaretlemeSeviyesiHesapla(oran, karanlikEsik) {
+    if (oran >= karanlikEsik * 2.0) return 'tamamenIsaretli';
+    if (oran >= karanlikEsik * 1.4) return 'normalIsaretli';
+    if (oran >= karanlikEsik * 1.0) return 'yarimIsaretli';
+    if (oran >= karanlikEsik * 0.5) return 'azIsaretli';
+    return 'cokAzIsaretli';
+  }
+
   function cevaplariCikar(cImageData, form, ppmm, genelDuzeltme) {
     const _sabitEsik = _koyulukEsikGetir(); // Ayarlar sheet'inden gelen kullanıcı tercihi
     const AYIRT_EDICI_FARK = _ayirtEdiciFarkGetir(); // her okumada canlı okunur (Ayarlar sheet)
@@ -1758,6 +1780,7 @@ window.OmrOkuyucu = (function () {
     // ──────────────────────────────────────────────────────────────────────
     const cevaplar = [];
     const ornekNoktalari = []; // debug/görselleştirme: her şıkkın tam örnekleme noktası
+    const birdenFazlaSecenekIsaretleme = []; // {ders, soruNo, adaylar[]} — çoklu işaret listesi
     _cevapTeshisSatirlari = []; // YENİ (teşhis): her çağrıda sıfırlanır
     _cevapTeshisSayaci = {};
     _sonIsaretliSik = {};
@@ -1833,6 +1856,34 @@ window.OmrOkuyucu = (function () {
         };
       });
 
+      // ── SATIR NORMALİZASYONU (C++ _normalizeYardimci karşılığı) ────────────
+      // C++ setIsaretlemeler: 1. geçişte satırın maksimum doluluk değerini
+      // toplar, 2. geçişte her bubble'ı bu maksimuma böler. Aynı sorunun
+      // şıkları arasındaki GÖREL fark korunurken yerel ışık/kontrast
+      // farklılığı (gölgede kalan satır, küçük baskı vb.) otomatik telafi
+      // edilir.
+      //
+      // UYGULAMA: yerelSikler sıralanmadan önce, satırdaki maksimum orana
+      // bölerek her şıka 0-1 arası bir "normalOran" atanır. Bu değer
+      // teşhis bilgisine (`top3` çıktısına) eklenir; asıl karar için
+      // aşağıdaki `olcekliEsik` kullanılır.
+      const satirMaks = Math.max(...yerelSikler.map((s) => s.oran));
+      const satirNormBolen = satirMaks > 0.01 ? satirMaks : 1;
+      yerelSikler.forEach((s) => { s.normalOran = s.oran / satirNormBolen; });
+
+      // ── BUBBLE BOYUT ÖLÇEKLEMESİ (C++ _thresholdKarar/localScale) ──────────
+      // C++ kodu: efektifEsik = disThreshold * sqrt(bubbleArea / REFERANS_ALAN)
+      // Küçük baskıda (ppmm düşük veya fiziksel bubble küçük) bubble alanı
+      // REFERANS_ALAN'ın altına düşer; efektif eşik otomatik düşer.
+      // REFERANS_ALAN: VARSAYILAN_PPMM=8'de 2.75mm yarıçaplı baloncuk → ~1521 px²
+      // localScale sınırlandırılır [0.25, 2.0]: aşırı küçük/büyük ölçeklere
+      // karşı eşik 2× altına/üstüne çıkmasın (sqrt(0.25)=0.5, sqrt(2.0)≈1.41).
+      const REFERANS_ALAN_PX = Math.PI * (2.75 * VARSAYILAN_PPMM) ** 2; // ≈1521
+      const bubbleAlani = Math.PI * beklenenSikler[0].pr ** 2;
+      const localScale = Math.max(0.25, Math.min(2.0, bubbleAlani / REFERANS_ALAN_PX));
+      // Ölçekli eşik: küçük bubble → eşik düşer, büyük bubble → eşik yükselir.
+      const olcekliEsik = KARANLIK_ESIK * Math.sqrt(localScale);
+
       yerelSikler.sort((a, b) => b.oran - a.oran);
       const enKoyu = yerelSikler[0];
       const ikinciKoyu = yerelSikler[1] || { oran: 0 };
@@ -1840,55 +1891,46 @@ window.OmrOkuyucu = (function () {
       let isaretliSik = null;
       let uyari = null;
 
-      // YETERSİZ PİKSEL GUARD (Ağustos 2026):
-      // baloncukKaranlikOrani -1 sentinel döndürdüyse koordinat sınır dışında.
-      // "bos" yerine ayrı bir uyarı türü üret — UI tarafı ikisini ayırt edebilir.
-      const tumSiklerYetersiz = yerelSikler.every((s) => s.oran < 0);
-      if (tumSiklerYetersiz) {
-        uyari = 'yetersizPiksel'; // ROI canvas dışına taştı — koordinat hatası
-      } else if (enKoyu.oran < KARANLIK_ESIK) {
-        uyari = 'bos'; // hiçbir şık yeterince koyu değil
+      // Kademeli seviye — cevap kararından bağımsız olarak her zaman hesaplanır.
+      // Ölçekli eşik ile hesaplanır: küçük baskıda büyük bir oran da aslında
+      // "normal" işaret sayılır; büyük bubble'da daha yüksek orana ihtiyaç var.
+      const isaretlemeSeviyesi = _isaretlemeSeviyesiHesapla(enKoyu.oran, olcekliEsik);
+
+      if (enKoyu.oran < olcekliEsik) {
+        uyari = 'bos'; // hiçbir şık yeterince koyu değil (ölçekli eşiğe göre)
       } else if (enKoyu.oran - ikinciKoyu.oran < AYIRT_EDICI_FARK) {
         uyari = 'coklu'; // iki (veya daha fazla) şık birbirine çok yakın koyulukta
+
+        // Çoklu işaretleme listesine ekle — sadece 'coklu' dalında.
+        // Her iki önde gelen adayı da raporla (kağıtta iki şık arasında
+        // karar verilmesine yardımcı olsun).
+        const cokluAdaylar = yerelSikler
+          .filter((s) => s.oran >= KARANLIK_ESIK)
+          .map((s) => ({ harf: s.harf, oran: Number(s.oran.toFixed(3)) }));
+        birdenFazlaSecenekIsaretleme.push({
+          ders: soru.ders,
+          soruNo: soru.soruNo,
+          adaylar: cokluAdaylar,
+        });
+
+        // dusukDolulukOraniCiftIsaretliUyari: en koyu şık eşiği yeni geçiyor
+        // (yarimIsaretli) ve aynı zamanda birden fazla şık eşiği aşıyorsa —
+        // öğrencinin hafifçe iki şıkka dokunmuş olabileceğine işaret eder.
+        if ((isaretlemeSeviyesi === 'yarimIsaretli' || isaretlemeSeviyesi === 'azIsaretli') &&
+            cokluAdaylar.length >= 2) {
+          uyari = 'dusukDolulukOraniCiftIsaretli';
+        }
       } else {
         isaretliSik = enKoyu.harf;
-      }
-
-      // KADEMELİ İŞARETLEME SEVİYESİ (Ağustos 2026 — Test Plus APK analizinden):
-      // Binary (dolu/boş) karar yerine, doluluk oranına göre 5 seviyeli sınıflandırma.
-      // Bu, "düşük doluluk + çift işaret" (dusukDolulukOraniCiftIsaretliUyari) mantığını
-      // mümkün kılar: öğrenci işaretini tam silip üzerine başkasını işaretlemişse
-      // her iki şık da düşük oran verir ama biri diğerinden biraz daha koyu olur.
-      // Seviyeler KARANLIK_ESIK'e göre normalize edilmiştir (adaptif eşikle uyumlu).
-      let isaretlemeSeviyesi = 'isaretlenmemis';
-      if (enKoyu.oran >= 0) { // sentinel değil
-        const oranKatı = KARANLIK_ESIK > 0 ? enKoyu.oran / KARANLIK_ESIK : 0;
-        if (enKoyu.oran >= KARANLIK_ESIK * 1.8)      isaretlemeSeviyesi = 'tamamenIsaretli';
-        else if (enKoyu.oran >= KARANLIK_ESIK * 1.2) isaretlemeSeviyesi = 'normalIsaretli';
-        else if (enKoyu.oran >= KARANLIK_ESIK)        isaretlemeSeviyesi = 'yarimIsaretli';
-        else if (enKoyu.oran >= KARANLIK_ESIK * 0.6)  isaretlemeSeviyesi = 'azIsaretli';
-        else if (enKoyu.oran >= 0)                    isaretlemeSeviyesi = 'cokAzIsaretli';
-      }
-
-      // DÜŞÜK DOLULUK + ÇİFT İŞARET UYARISI (dusukDolulukOraniCiftIsaretliUyari):
-      // İki şık da "düşük" koyulukta (azIsaretli veya yarimIsaretli seviyesinde) ve
-      // aralarındaki fark da az (coklu sınırına yakın) ise şüpheli durum.
-      // Muhtemelen öğrenci bir şıkkı silip diğerini işaretlemiş ama her ikisi de belirsiz.
-      let dusukDolulukCiftIsaret = false;
-      if (isaretliSik && ikinciKoyu.oran >= 0 &&
-          (isaretlemeSeviyesi === 'yarimIsaretli' || isaretlemeSeviyesi === 'azIsaretli') &&
-          ikinciKoyu.oran >= KARANLIK_ESIK * 0.5) {
-        dusukDolulukCiftIsaret = true;
       }
 
       cevaplar.push({
         ders: soru.ders,
         soruNo: soru.soruNo,
         isaretliSik,
-        guven: Number(Math.max(0, enKoyu.oran).toFixed(3)),
+        isaretlemeSeviyesi, // YENİ: tamamenIsaretli/normalIsaretli/yarimIsaretli/azIsaretli/cokAzIsaretli
+        guven: Number(enKoyu.oran.toFixed(3)),
         uyari,
-        isaretlemeSeviyesi,
-        dusukDolulukCiftIsaret,
       });
 
       // YENİ (teşhis): _sonNumaraTeshis/_sonKitapcikTeshis ile AYNI desen —
@@ -1921,7 +1963,9 @@ window.OmrOkuyucu = (function () {
           // ediyordu, önceki turda sadece dy ölçülüyordu. Artık top-3
           // adayın HER BİRİNİN kendi (dx/r, dy/r) çifti gösteriliyor.
           const top3 = yerelSikler.slice(0, 3).map((s) =>
-            s.harf + '=' + s.oran.toFixed(3) + '(dx' + ((s.yerelDx || 0) / enKoyuPr).toFixed(2) +
+            s.harf + '=' + s.oran.toFixed(3) +
+            '(n' + (s.normalOran !== undefined ? s.normalOran.toFixed(2) : '?') + ')' +
+            '(dx' + ((s.yerelDx || 0) / enKoyuPr).toFixed(2) +
             ',dy' + ((s.yerelDy || 0) / enKoyuPr).toFixed(2) + ')'
           ).join(',');
           _cevapTeshisSatirlari.push(
@@ -1984,12 +2028,24 @@ window.OmrOkuyucu = (function () {
     const enDusukOran = Math.min(...tumOranlar);
     const enYuksekOran = Math.max(...tumOranlar);
     const ortalamaOran = tumOranlar.reduce((a, b) => a + b, 0) / (tumOranlar.length || 1);
+    // Ölçekli eşik: son sorununun değerini kullan (temsili; soru başına farklı)
+    const sonOlcekliEsik = (() => {
+      try {
+        const sonSoru = sorular[sorular.length - 1];
+        if (!sonSoru) return KARANLIK_ESIK;
+        const pr0 = sonSoru.sikler[0].r * ppmm;
+        const ba = Math.PI * pr0 ** 2;
+        const ls = Math.max(0.25, Math.min(2.0, ba / (Math.PI * (2.75 * VARSAYILAN_PPMM) ** 2)));
+        return KARANLIK_ESIK * Math.sqrt(ls);
+      } catch (e) { return KARANLIK_ESIK; }
+    })();
     _sonKoyulukOzeti = 'guven aralığı: min=' + enDusukOran.toFixed(3) + ' maks=' + enYuksekOran.toFixed(3) +
       ' ort=' + ortalamaOran.toFixed(3) +
       ' (eşik=' + KARANLIK_ESIK.toFixed(2) +
-      (KARANLIK_ESIK < _sabitEsik ? ' [adaptif, sabit=' + _sabitEsik.toFixed(2) + ']' : '') + ')';
+      (KARANLIK_ESIK < _sabitEsik ? ' [adaptif, sabit=' + _sabitEsik.toFixed(2) + ']' : '') +
+      ', ölçekli≈' + sonOlcekliEsik.toFixed(2) + ')';
 
-    return { cevaplar, ornekNoktalari };
+    return { cevaplar, ornekNoktalari, birdenFazlaSecenekIsaretleme };
   }
 
   // ---------------------------------------------------------------------
@@ -2537,57 +2593,59 @@ window.OmrOkuyucu = (function () {
       }
     }
 
-    // ── 6 NOKTA DESTEĞİ (Ağustos 2026 — Test Plus ortaSemboller analizi) ──
-    //
-    // Form 6 hizalama işareti tanımlıyor: 4 köşe + sol-orta + sağ-orta.
-    // Önceki kod "dortKoseDeBulundu = length >= 4" diyordu ama homografiHesapla
-    // tam 4 nokta istiyordu → 5/6 nokta gelince exception → catch → H = null.
-    // Orta kareler piksel/mm ölçeğinde kullanılıyor ama perspektif düzeltmeye
-    // HİÇ dahil edilmiyordu — en büyük kazanım kaçırılıyordu.
-    //
-    // Artık homografiHesapla N≥4 DLT destekliyor. Strateji:
-    //   • 4 köşe: konvekslik + leave-one-out kontrolü → homografi veya afin
-    //   • 5-6 nokta: önce 4 köşeyle sağlık kontrolü, sonra TÜM noktalarla DLT
-    //   • 3 köşe: afin (değişmedi)
-    //
-    // Konvekslik kontrolü SADECE 4 köşeye uygulanır — orta noktalar dörtgen
-    // dışına düşer, mevcut konveksVeSaglikliMiOto onları desteklemiyor.
+    const dortKoseDeBulundu = hassasKaynak.length >= 4;
+    const ucKoseBulundu = hassasKaynak.length === 3;
 
-    const KOSE_KONUMLAR = ['sol-ust', 'sag-ust', 'sol-alt', 'sag-alt'];
-    const ORTA_KONUMLAR = ['sol-orta', 'sag-orta'];
-    const koseIndexler = bulunanKonumlar
-      .map((k, i) => KOSE_KONUMLAR.includes(k) ? i : -1)
-      .filter((i) => i >= 0);
-    const ortaIndexler = bulunanKonumlar
-      .map((k, i) => ORTA_KONUMLAR.includes(k) ? i : -1)
-      .filter((i) => i >= 0);
+    // Foto ölçeği (piksel/mm): bulunan işaretler arası mesafeden kestiriliyor
+    // — kabaH olmadığı için bu, tutarlılık artıklarını mm'ye çevirmek için
+    // gereken tek referans.
+    // KÖK NEDEN SAĞLAMLAŞTIRMASI (Çözüm Planı, Ağustos 2026): önceden ölçek
+    // SADECE bulunan ilk İKİ işaretin (hassasKaynak[0]/[1]) arasındaki
+    // mesafeden kestiriliyordu. Bu ikisi hangi konumlarda bulunduysa (ör.
+    // sadece sol-üst + sol-alt gibi kısa/dar bir taban) o çiftin piksel
+    // gürültüsü DOĞRUDAN ölçeğe yansıyordu — 3, 4 hatta 6 işaret bulunmuş
+    // olsa bile geri kalanlar hiç kullanılmıyordu. Artık bulunan TÜM işaret
+    // çiftleri (2+ işaret varsa) kullanılıyor: her çiftin piksel ve mm
+    // mesafesi toplanıp oranı alınıyor — bu, uzun taban çiftlerine doğal
+    // olarak daha fazla ağırlık verir (kısa/gürültülü çiftler payı azdır),
+    // basit ortalamadan daha kararlıdır.
+    let pikselPerMM = ppmm; // güvenli varsayılan (bulunamazsa)
+    if (hassasKaynak.length >= 2) {
+      let toplamKaynakMM = 0;
+      let toplamHedefPx = 0;
+      for (let i = 0; i < hassasKaynak.length; i++) {
+        for (let j = i + 1; j < hassasKaynak.length; j++) {
+          const kaynakMesafeMM = Math.hypot(hassasKaynak[j].x - hassasKaynak[i].x, hassasKaynak[j].y - hassasKaynak[i].y) / ppmm;
+          if (kaynakMesafeMM <= 1) continue; // çok yakın çiftler gürültüye açık, atla
+          const hedefMesafePx = Math.hypot(hassasHedef[j].x - hassasHedef[i].x, hassasHedef[j].y - hassasHedef[i].y);
+          toplamKaynakMM += kaynakMesafeMM;
+          toplamHedefPx += hedefMesafePx;
+        }
+      }
+      if (toplamKaynakMM > 0) pikselPerMM = toplamHedefPx / toplamKaynakMM;
+    }
 
-    const koseKaynak = koseIndexler.map((i) => hassasKaynak[i]);
-    const koseHedef  = koseIndexler.map((i) => hassasHedef[i]);
-
-    const dortKoseDeBulundu = koseKaynak.length >= 4;
-    const ucKoseBulundu = koseKaynak.length === 3;
+    const disariBirakilanIsaretler = [];
+    let artiklarMM = [];
+    let H = null;
+    let secilenYontem = null; // YENİ (teşhis): hangi dönüşüm yöntemi seçildi
 
     if (dortKoseDeBulundu) {
-      // Leave-one-out artık: SADECE 4 köşe üzerinden. Orta kareleri bu
-      // aşamaya sokmak mantıklı değil — köşe hata tespiti için afin fit
-      // yapılıyor, orta noktalar fite dahil olunca kendi artıkları küçülür,
-      // hatalı köşeleri maskeleyebilir.
-      artiklarMM = koseKaynak.map((_, i) => {
-        const kalanKaynak = koseKaynak.filter((_, j) => j !== i);
-        const kalanHedef  = koseHedef.filter((_, j) => j !== i);
+      artiklarMM = hassasKaynak.map((_, i) => {
+        const kalanKaynak = hassasKaynak.filter((_, j) => j !== i);
+        const kalanHedef = hassasHedef.filter((_, j) => j !== i);
         try {
           const Hsub = afinHesapla(kalanKaynak, kalanHedef);
-          const tahmin = noktayiDonustur(Hsub, koseKaynak[i].x, koseKaynak[i].y);
-          const dx = tahmin.x - koseHedef[i].x;
-          const dy = tahmin.y - koseHedef[i].y;
+          const tahmin = noktayiDonustur(Hsub, hassasKaynak[i].x, hassasKaynak[i].y);
+          const dx = tahmin.x - hassasHedef[i].x;
+          const dy = tahmin.y - hassasHedef[i].y;
           return Math.sqrt(dx * dx + dy * dy) / pikselPerMM;
         } catch (e) {
           return Infinity;
         }
       });
 
-      let enKotuIndex = -1;    // köşeler içindeki index (0-3)
+      let enKotuIndex = -1;
       let enKotuDeger = -Infinity;
       let ikinciKotuDeger = -Infinity;
       for (let i = 0; i < artiklarMM.length; i++) {
@@ -2601,52 +2659,55 @@ window.OmrOkuyucu = (function () {
         }
       }
 
-      // Belirgin tek kötü köşe tespiti (v9 mantığı — değişmedi)
+      // NOT (v9 — v8'deki MUTLAK EŞİK hatası düzeltildi): v8, tek bir sabit
+      // mm eşiği (20mm) kullanıyordu. SORUN: gerçekten güçlü ama SİMETRİK
+      // bir perspektifte (kağıt fotoğrafa belirgin açıyla tutulmuş) 4
+      // köşenin de leave-one-out artığı BİRBİRİNE ÇOK YAKIN (hatta neredeyse
+      // eşit, ör. hepsi ~76mm) çıkabiliyor — bu tek bir köşenin YANLIŞ
+      // bulunduğu anlamına gelmez, tam tersine AFİN modelin gerçek
+      // perspektifi hiç karşılayamadığının kanıtıdır. v8 böyle durumda
+      // "en kötü" köşeyi (aralarında anlamlı fark olmasa bile) dışlayıp
+      // afin'e düşüyordu — ki afin perspektifi modelleyemediği için sonuç
+      // AYNI DERECEDE (hatta daha) çarpık çıkıyordu (gözlemlenen: 76mm'lik
+      // "tutarsızlık" sonrası hâlâ çok yamuk görüntü).
+      //
+      // ÇÖZÜM: mutlak eşik yerine, en kötü köşenin İKİNCİ en kötüden ne
+      // kadar AYRIŞTIĞINA (göreli aykırı değer) bakılıyor. Sadece tek bir
+      // köşe gerçekten belirgin şekilde kötüyse (diğerlerinden hem oransal
+      // hem mutlak olarak çok daha büyük) o köşe hatalı sayılıp dışlanıyor.
+      // Aksi halde (4 köşe de birbirine yakın artık veriyor — perspektif
+      // yüksek olsa bile) tam 4-nokta homografiye güveniliyor, çünkü o,
+      // AFİN'in aksine gerçek perspektifi doğru modelleyen tek yöntem.
       const belirginTekKotuKose =
         enKotuIndex !== -1 && Number.isFinite(enKotuDeger) && Number.isFinite(ikinciKotuDeger) &&
         enKotuDeger > ikinciKotuDeger * 1.8 && (enKotuDeger - ikinciKotuDeger) > 8;
 
-      // Konvekslik/sağlık kontrolü SADECE 4 köşeyle (orta noktalar hariç)
-      const saglikliMi = konveksVeSaglikliMiOto(koseHedef);
+      // YENİ (teşhis): hangi dalın seçildiğini ve sağlık kontrolünün ne
+      // döndürdüğünü açıkça kaydediyoruz — daha önce bu bilgi hiçbir yerde
+      // görünmüyordu, "tam homografi mi afin mi kullanıldı" kör bir kutuydu.
+      const saglikliMi = konveksVeSaglikliMiOto(hassasHedef);
 
       if (belirginTekKotuKose) {
-        // Hatalı köşeyi çıkar, kalan noktaların hepsini (orta kareler dahil)
-        // afin'e ver. afinHesapla en küçük kareler — N nokta destekler.
-        const hataliGlobalIndex = koseIndexler[enKotuIndex];
-        const kalanKaynak = hassasKaynak.filter((_, j) => j !== hataliGlobalIndex);
-        const kalanHedef  = hassasHedef.filter((_, j) => j !== hataliGlobalIndex);
+        const kalanKaynak = hassasKaynak.filter((_, j) => j !== enKotuIndex);
+        const kalanHedef = hassasHedef.filter((_, j) => j !== enKotuIndex);
         try { H = afinHesapla(kalanKaynak, kalanHedef); } catch (e) { H = null; }
-        disariBirakilanIsaretler.push(bulunanKonumlar[hataliGlobalIndex]);
-        secilenYontem = 'afin (belirgin tek kötü köşe dışlandı: ' +
-          bulunanKonumlar[hataliGlobalIndex] + ')' +
-          (ortaIndexler.length ? ' + ' + ortaIndexler.length + ' orta nokta' : '');
+        disariBirakilanIsaretler.push(bulunanKonumlar[enKotuIndex]);
+        secilenYontem = 'afin (belirgin tek kötü köşe dışlandı: ' + bulunanKonumlar[enKotuIndex] + ')';
       } else if (saglikliMi) {
-        // ASIL YENİLİK: Tüm bulunan noktalarla DLT homografi.
-        // N = 4 → tam çözüm; N = 5 veya 6 → en küçük kareler (orta kareler dahil).
-        // Bu, kağıt kıvrımı/bombesi nedeniyle oluşan sayfa-ortası perspektif
-        // hatasını (Test Plus "ortaSembolleriHizalanmadi" senaryosu) doğrudan
-        // düzeltir — 4 köşeli homografinin modelleyemediği yerel sapma azalır.
         try { H = homografiHesapla(hassasKaynak, hassasHedef); } catch (e) { H = null; }
-        secilenYontem = hassasKaynak.length > 4
-          ? 'DLT homografi ' + hassasKaynak.length + ' nokta (4 köşe + ' +
-            ortaIndexler.length + ' orta — kağıt kıvrım düzeltmesi aktif)'
-          : 'tam homografi (4 köşe sağlıklı)';
+        secilenYontem = 'tam homografi (4 köşe sağlıklı)';
       } else if (enKotuIndex !== -1 && Number.isFinite(enKotuDeger)) {
-        // Dörtgen sağlıksız — en kötü köşeyi dışla, kalanlarla afin (orta dahil).
-        const hataliGlobalIndex = koseIndexler[enKotuIndex];
-        const kalanKaynak = hassasKaynak.filter((_, j) => j !== hataliGlobalIndex);
-        const kalanHedef  = hassasHedef.filter((_, j) => j !== hataliGlobalIndex);
+        // Dörtgen dejenere görünüyor ama tek bir belirgin kötü köşe de yok
+        // — yine de en kötüyü dışlayıp afin dene, hiç okumamaktan iyidir.
+        const kalanKaynak = hassasKaynak.filter((_, j) => j !== enKotuIndex);
+        const kalanHedef = hassasHedef.filter((_, j) => j !== enKotuIndex);
         try { H = afinHesapla(kalanKaynak, kalanHedef); } catch (e) { H = null; }
-        disariBirakilanIsaretler.push(bulunanKonumlar[hataliGlobalIndex]);
-        secilenYontem = 'afin (dörtgen sağlıksız, en kötü köşe [' +
-          bulunanKonumlar[hataliGlobalIndex] + '] dışlandı)' +
-          (ortaIndexler.length ? ' + ' + ortaIndexler.length + ' orta nokta' : '');
+        disariBirakilanIsaretler.push(bulunanKonumlar[enKotuIndex]);
+        secilenYontem = 'afin (dörtgen sağlıksız/konveks değil, en kötü köşe [' + bulunanKonumlar[enKotuIndex] + '] dışlandı)';
       }
     } else if (ucKoseBulundu) {
-      // 3 köşe + varsa orta kareler → afin
       try { H = afinHesapla(hassasKaynak, hassasHedef); } catch (e) { H = null; }
-      secilenYontem = 'afin (' + hassasKaynak.length + ' nokta: 3 köşe' +
-        (ortaIndexler.length ? ' + ' + ortaIndexler.length + ' orta' : '') + ')';
+      secilenYontem = 'afin (sadece 3 köşe bulundu)';
     }
 
     const koseBulunduMu = !!H;
@@ -2659,7 +2720,7 @@ window.OmrOkuyucu = (function () {
       hizalamaKanonikNoktalari: koseBulunduMu ? hassasHedef : null,
       hamBulunanKanonikNoktalari: hassasKaynak.length ? hassasKaynak : null,
       koseArtiklariMM: dortKoseDeBulundu
-        ? koseIndexler.map((gi, li) => ({ konum: bulunanKonumlar[gi], artikMM: artiklarMM[li] }))
+        ? bulunanKonumlar.map((konum, i) => ({ konum, artikMM: artiklarMM[i] }))
         : [],
       // YENİ (teşhis alanları):
       secilenYontem,
@@ -2676,6 +2737,8 @@ window.OmrOkuyucu = (function () {
     _radyalProfilSatirlari = []; // YENİ (teşhis): her okumada sıfırlanır, her hane için bir satır
     _sonKitapcikTeshis = null; // YENİ (teşhis): her okumada sıfırlanır
     _binaryImageData = null; // önceki okumadan kalan binary temizle
+    _yetersizPikselUyarilari = []; // YENİ: "not enough pixels" guard — her okumada sıfırla
+    _goruntKaliteUyarilari = [];   // YENİ: parlama/çok koyu uyarıları — her okumada sıfırla
 
     // Saf-JS motoru (window.CvSaf/sayfaTespitCV.js) SENKRON — WASM
     // indirme/derleme beklemesi YOK (Ağustos 2026'da OpenCV.js'in
@@ -2691,38 +2754,9 @@ window.OmrOkuyucu = (function () {
 
     const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
 
-    // PARLAMA / KARANLIK ÖN TESTİ (Ağustos 2026 — Test Plus isParlamaVar() analizi):
-    // Perspektif düzeltmesine girmeden önce ham fotoğrafın histogram dağılımına bak.
-    // Çok parlak (yoğun ışık/flaş yansıması) veya çok koyu (loş ışık/karanlık) görüntüler
-    // optik okumayı ciddi biçimde bozar. Erken uyarı üretmek, kullanıcının çekimi tekrar
-    // yapmasına olanak tanır. Uyarı sadece bilgilendirme amaçlıdır — okuma DEVAM EDER,
-    // çünkü kontrast normalizasyonu (kontrastNormalizeEt) hafif vakalar için yeterlidir.
-    try {
-      const { width: fW, height: fH, data: fD } = fotoImageData;
-      const ORNEKLEME_ADIMI = 4; // hız için her 4. pikseli kontrol et
-      const ornekSayisi = Math.ceil((fW * fH) / ORNEKLEME_ADIMI);
-      let parlakSayisi = 0; // >240 gri (aşırı parlak piksel)
-      let koyuSayisi = 0;   // <30 gri (aşırı koyu piksel)
-      for (let i = 0; i < fD.length; i += 4 * ORNEKLEME_ADIMI) {
-        const gri = Math.round(0.299 * fD[i] + 0.587 * fD[i + 1] + 0.114 * fD[i + 2]);
-        if (gri > 240) parlakSayisi++;
-        else if (gri < 30) koyuSayisi++;
-      }
-      const parlakOrani = parlakSayisi / ornekSayisi;
-      const koyuOrani = koyuSayisi / ornekSayisi;
-      // >%35 aşırı parlak piksel → uyarı; >%65 → okuma anlamsız, reddet
-      if (parlakOrani > 0.35) {
-        uyarilar.push('goruntuCokParlak: Görüntünün %' + Math.round(parlakOrani * 100) +
-          '\'i aşırı parlak (flaş/yansıma veya dijital ekran görüntüsü). ' +
-          'Sarı vurgulama ile işaretlendiyse okuma devam edecek; gerçek kağıtsa ' +
-          'daha az ışıklı ortamda tekrar deneyin.');
-      } else if (koyuOrani > 0.60) {
-        uyarilar.push('goruntuCokKoyu: Görüntünün %' + Math.round(koyuOrani * 100) +
-          '\'i çok koyu. Daha aydınlık ortamda tekrar deneyin.');
-      }
-    } catch (_parlamaHata) {
-      // Histogram kontrolü asla ana okumayı bozmasın — hata fırlatırsa sessizce devam et
-    }
+    // Parlama / çok koyu ön kontrolü — kağıt düzleştirilmeden önce
+    // ham fotoğraf üzerinde çalışır (bkz. isParlamaVarKontrol).
+    isParlamaVarKontrol(fotoImageData);
 
     const { H, bulunamayanIsaretler, disariBirakilanIsaretler, hizalamaKanonikNoktalari, hamBulunanKanonikNoktalari, koseArtiklariMM, secilenYontem, bulunanPikselNoktalari, pikselPerMM } =
       formuOtomatikDuzlestir(fotoImageData, form, ppmm);
@@ -2816,42 +2850,40 @@ window.OmrOkuyucu = (function () {
 
     const cevaplarSonuc = cevaplariCikar(cImageData, form, gercekPpmm, genelDuzeltme);
     const cevaplar = cevaplarSonuc.cevaplar;
+    const birdenFazlaSecenekIsaretleme = cevaplarSonuc.birdenFazlaSecenekIsaretleme;
+
+    // Görüntü kalite uyarıları (parlama / çok koyu) — önce ekle, okuma
+    // uyarılarından önce kullanıcı görüntü sorununu fark etsin.
+    for (const kUyari of _goruntKaliteUyarilari) uyarilar.unshift(kUyari);
 
     const belirsizSayisi = cevaplar.filter((c) => c.uyari).length;
-    const cokluSayisi = cevaplar.filter((c) => c.uyari === 'coklu').length;
-    const yetersizPikselSayisi = cevaplar.filter((c) => c.uyari === 'yetersizPiksel').length;
-    const dusukDolulukCiftSayisi = cevaplar.filter((c) => c.dusukDolulukCiftIsaret).length;
     if (belirsizSayisi > 0) {
       uyarilar.push(belirsizSayisi + ' soruda belirsiz/boş/çoklu işaret tespit edildi.');
     }
-    // BİRDEN FAZLA SEÇENEK uyarısı — global uyarı listesine de yaz (birdenFazlaSecenekIsaretleme)
-    if (cokluSayisi > 0) {
-      const cokluSorular = cevaplar
-        .filter((c) => c.uyari === 'coklu')
-        .map((c) => (c.ders ? c.ders + '#' : '') + c.soruNo)
-        .join(', ');
-      uyarilar.push('birdenFazlaSecenekIsaretleme: ' + cokluSayisi + ' soruda birden fazla seçenek işaretlenmiş görünüyor (' + cokluSorular + '). Bu sorular boş sayıldı.');
+    if (birdenFazlaSecenekIsaretleme.length > 0) {
+      uyarilar.push(
+        'birdenFazlaSecenekIsaretleme — ' + birdenFazlaSecenekIsaretleme.length +
+        ' soruda birden fazla şık işaretli görünüyor: ' +
+        birdenFazlaSecenekIsaretleme.map((b) =>
+          (b.ders ? b.ders + ' ' : '') + '#' + b.soruNo +
+          ' [' + b.adaylar.map((a) => a.harf + '=' + a.oran).join(',') + ']'
+        ).join(', ')
+      );
     }
-    // YETERSİZ PİKSEL uyarısı — koordinat taşması işareti
-    if (yetersizPikselSayisi > 0) {
-      const ypSorular = cevaplar
-        .filter((c) => c.uyari === 'yetersizPiksel')
-        .map((c) => (c.ders ? c.ders + '#' : '') + c.soruNo)
-        .join(', ');
-      uyarilar.push('yetersizPiksel: ' + yetersizPikselSayisi + ' soru için baloncuk bölgesi canvas dışına taştı (' + ypSorular + '). Hizalama hatası olabilir.');
-    }
-    // DÜŞÜK DOLULUK + ÇİFT İŞARET uyarısı
-    if (dusukDolulukCiftSayisi > 0) {
-      const ddSorular = cevaplar
-        .filter((c) => c.dusukDolulukCiftIsaret)
-        .map((c) => (c.ders ? c.ders + '#' : '') + c.soruNo)
-        .join(', ');
-      uyarilar.push('dusukDolulukOraniCiftIsaretliUyari: ' + dusukDolulukCiftSayisi + ' soruda düşük doluluk + ikinci adayın yakın oran vermesi (' + ddSorular + '). Silme/düzeltme yapılmış olabilir.');
+    if (_yetersizPikselUyarilari.length > 0) {
+      // Benzersiz bubble-id'leri küçük bir özetle raporla — koordinat
+      // kayması olan sütunları hızla tespit etmek için.
+      const idler = [...new Set(_yetersizPikselUyarilari.map((u) => u.bubbleId))];
+      uyarilar.push(
+        'yetersizPiksel — ' + _yetersizPikselUyarilari.length +
+        ' baloncuk ROI\'si yeterli piksel içermiyor (koordinat kayması?): ' +
+        idler.slice(0, 10).join(', ') + (idler.length > 10 ? '…' : '')
+      );
     }
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v29-gri-arka-plan]');
+    uyarilar.push('[KOD SÜRÜMÜ: v25-dinamikOlcek]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_sonKitapcikTeshis) { uyarilar.push('Kitapçık/Form Kodu teşhisi: ' + _sonKitapcikTeshis); }
     if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ders başına en fazla 2 örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
@@ -2863,6 +2895,7 @@ window.OmrOkuyucu = (function () {
       ogrenciKimlik,
       formKodu,
       cevaplar,
+      birdenFazlaSecenekIsaretleme, // YENİ: çoklu işaret ayrıntı listesi
       uyarilar,
       hataAyiklama: {
         duzeltilmisCanvas: duzCanvas,
@@ -2928,33 +2961,13 @@ window.OmrOkuyucu = (function () {
     _radyalProfilSatirlari = [];
     _sonKitapcikTeshis = null;
     _binaryImageData = null;
+    _yetersizPikselUyarilari = []; // YENİ: her okumada sıfırla
+    _goruntKaliteUyarilari = [];   // YENİ: her okumada sıfırla
 
     const { imageData: fotoImageData } = kaynaktanImageDataAl(kaynak);
 
-    // PARLAMA / KARANLIK ÖN TESTİ (elle-köşeli modda da aynı kontrol — bkz. formuOku)
-    try {
-      const { width: fW, height: fH, data: fD } = fotoImageData;
-      const ORNEKLEME_ADIMI = 4;
-      const ornekSayisi = Math.ceil((fW * fH) / ORNEKLEME_ADIMI);
-      let parlakSayisi = 0;
-      let koyuSayisi = 0;
-      for (let i = 0; i < fD.length; i += 4 * ORNEKLEME_ADIMI) {
-        const gri = Math.round(0.299 * fD[i] + 0.587 * fD[i + 1] + 0.114 * fD[i + 2]);
-        if (gri > 240) parlakSayisi++;
-        else if (gri < 30) koyuSayisi++;
-      }
-      const parlakOrani = parlakSayisi / ornekSayisi;
-      const koyuOrani = koyuSayisi / ornekSayisi;
-      if (parlakOrani > 0.35) {
-        uyarilar.push('goruntuCokParlak: Görüntünün %' + Math.round(parlakOrani * 100) +
-          '\'i aşırı parlak (flaş/yansıma veya dijital ekran görüntüsü). ' +
-          'Sarı vurgulama ile işaretlendiyse okuma devam edecek; gerçek kağıtsa ' +
-          'daha az ışıklı ortamda tekrar deneyin.');
-      } else if (koyuOrani > 0.60) {
-        uyarilar.push('goruntuCokKoyu: Görüntünün %' + Math.round(koyuOrani * 100) +
-          '\'i çok koyu. Daha aydınlık ortamda tekrar deneyin.');
-      }
-    } catch (_parlamaHata) { /* sessiz */ }
+    // Parlama / çok koyu ön kontrolü — düzleştirmeden önce ham fotoğraf
+    isParlamaVarKontrol(fotoImageData);
 
     // Gerçek ölçek: köşe pikselleri arası mesafeden hesapla (boyuttan bağımsız)
     let gercekPpmm = ppmm;
@@ -3037,40 +3050,37 @@ window.OmrOkuyucu = (function () {
 
     const cevaplarSonuc = cevaplariCikar(cImageData, form, gercekPpmm, genelDuzeltme);
     const cevaplar = cevaplarSonuc.cevaplar;
+    const birdenFazlaSecenekIsaretleme = cevaplarSonuc.birdenFazlaSecenekIsaretleme;
+
+    // Görüntü kalite uyarıları önce (parlama / çok koyu)
+    for (const kUyari of _goruntKaliteUyarilari) uyarilar.unshift(kUyari);
 
     const belirsizSayisi = cevaplar.filter((c) => c.uyari).length;
-    const cokluSayisi = cevaplar.filter((c) => c.uyari === 'coklu').length;
-    const yetersizPikselSayisi = cevaplar.filter((c) => c.uyari === 'yetersizPiksel').length;
-    const dusukDolulukCiftSayisi = cevaplar.filter((c) => c.dusukDolulukCiftIsaret).length;
     if (belirsizSayisi > 0) {
       uyarilar.push(belirsizSayisi + ' soruda belirsiz/boş/çoklu işaret tespit edildi.');
     }
-    if (cokluSayisi > 0) {
-      const cokluSorular = cevaplar
-        .filter((c) => c.uyari === 'coklu')
-        .map((c) => (c.ders ? c.ders + '#' : '') + c.soruNo)
-        .join(', ');
-      uyarilar.push('birdenFazlaSecenekIsaretleme: ' + cokluSayisi + ' soruda birden fazla seçenek işaretlenmiş görünüyor (' + cokluSorular + '). Bu sorular boş sayıldı.');
+    if (birdenFazlaSecenekIsaretleme.length > 0) {
+      uyarilar.push(
+        'birdenFazlaSecenekIsaretleme — ' + birdenFazlaSecenekIsaretleme.length +
+        ' soruda birden fazla şık işaretli görünüyor: ' +
+        birdenFazlaSecenekIsaretleme.map((b) =>
+          (b.ders ? b.ders + ' ' : '') + '#' + b.soruNo +
+          ' [' + b.adaylar.map((a) => a.harf + '=' + a.oran).join(',') + ']'
+        ).join(', ')
+      );
     }
-    if (yetersizPikselSayisi > 0) {
-      const ypSorular = cevaplar
-        .filter((c) => c.uyari === 'yetersizPiksel')
-        .map((c) => (c.ders ? c.ders + '#' : '') + c.soruNo)
-        .join(', ');
-      uyarilar.push('yetersizPiksel: ' + yetersizPikselSayisi + ' soru için baloncuk bölgesi canvas dışına taştı (' + ypSorular + '). Hizalama hatası olabilir.');
-    }
-    if (dusukDolulukCiftSayisi > 0) {
-      const ddSorular = cevaplar
-        .filter((c) => c.dusukDolulukCiftIsaret)
-        .map((c) => (c.ders ? c.ders + '#' : '') + c.soruNo)
-        .join(', ');
-      uyarilar.push('dusukDolulukOraniCiftIsaretliUyari: ' + dusukDolulukCiftSayisi + ' soruda düşük doluluk + ikinci aday (' + ddSorular + ').');
+    if (_yetersizPikselUyarilari.length > 0) {
+      const idler = [...new Set(_yetersizPikselUyarilari.map((u) => u.bubbleId))];
+      uyarilar.push(
+        'yetersizPiksel — ' + _yetersizPikselUyarilari.length +
+        ' baloncuk ROI\'si yeterli piksel içermiyor: ' +
+        idler.slice(0, 10).join(', ') + (idler.length > 10 ? '…' : '')
+      );
     }
     // DÜZELTME: formuOku() bu satırları zaten ekliyordu, formuOkuElleKoseli()
     // hiç eklemiyordu — numara/kitapçık teşhisiyle aynı eksiklik, cevap
     // tarafında da tekrarlanmıştı.
     if (_sonKoyulukOzeti) { uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti); }
-    uyarilar.push('[KOD SÜRÜMÜ: v29-gri-arka-plan]');
     if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ders başına en fazla 2 örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
     if (_ardisikAyniSikSatirlari.length) { uyarilar.push('⚠ Ardışık aynı şık tespiti:\n' + _ardisikAyniSikSatirlari.join('\n')); }
 
@@ -3079,6 +3089,7 @@ window.OmrOkuyucu = (function () {
       ogrenciKimlik,
       formKodu,
       cevaplar,
+      birdenFazlaSecenekIsaretleme, // YENİ
       uyarilar,
       hataAyiklama: {
         duzeltilmisCanvas: duzCanvas,
