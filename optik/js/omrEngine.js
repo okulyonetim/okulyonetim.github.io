@@ -2807,7 +2807,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v27-6nokta-DLT]');
+    uyarilar.push('[KOD SÜRÜMÜ: v28-sari-highlight]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_sonKitapcikTeshis) { uyarilar.push('Kitapçık/Form Kodu teşhisi: ' + _sonKitapcikTeshis); }
     if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ders başına en fazla 2 örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
@@ -3026,6 +3026,7 @@ window.OmrOkuyucu = (function () {
     // hiç eklemiyordu — numara/kitapçık teşhisiyle aynı eksiklik, cevap
     // tarafında da tekrarlanmıştı.
     if (_sonKoyulukOzeti) { uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti); }
+    uyarilar.push('[KOD SÜRÜMÜ: v28-sari-highlight]');
     if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ders başına en fazla 2 örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
     if (_ardisikAyniSikSatirlari.length) { uyarilar.push('⚠ Ardışık aynı şık tespiti:\n' + _ardisikAyniSikSatirlari.join('\n')); }
 

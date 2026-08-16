@@ -120,15 +120,18 @@ export function koseleriSectir(kaynak, genislik, yukseklik, secimCanvas, talimat
 
         secimCanvas.width = genislik;
         secimCanvas.height = yukseklik;
-        // Galeriden gelen fotoğraf kamera oranından farklı olabilir.
-        // aspect-ratio ile canvas CSS kutusu doğru orana sabitlenir,
-        // height:100% yerine max-height:100% (bkz. index.html) ile
-        // container taşmadan içe sığar. Ek olarak: canvas'ı container
-        // içinde dikey/yatay ortala — inset:0 + auto margin ile.
-        // aspect-ratio: CSS'teki top/left/transform konumlandırması ile
-        // birlikte çalışır — canvas piksel oranını CSS kutusuna yansıtır,
-        // height:auto+max-height:100% ile taşmaz.
+        // object-fit:contain mantığı: canvas piksel boyutu (genislik x yukseklik)
+        // ekrana sığacak şekilde ölçeklenir, oran korunur, taşma olmaz.
+        // CSS width:100% sabit, height:auto + aspect-ratio ile oran CSS kutusuna yansır.
+        // inset:0 veya height:100% KULLANMA — yatay fotoğraflarda canvas dikey uzar.
+        secimCanvas.style.position = 'absolute';
+        secimCanvas.style.left = '0';
+        secimCanvas.style.top = '0';
+        secimCanvas.style.width = '100%';
+        secimCanvas.style.height = 'auto';
+        secimCanvas.style.maxHeight = '100%';
         secimCanvas.style.aspectRatio = `${genislik} / ${yukseklik}`;
+        secimCanvas.style.transform = 'none';
 
         // Alt buton çubuğu (Tamam/Sıfırla/Otomatik Dene) tamamBtn'in ebeveyni;
         // canvas'ın gösterildiği gerçek boyuta göre ne kadar alanı kapladığını
@@ -205,13 +208,16 @@ export function koseleriSectir(kaynak, genislik, yukseklik, secimCanvas, talimat
             const capCanvas = GORUNEN_CAP_CSS * olcekX;
             const kaynakYariCap = capCanvas / (2 * BUYUTME);
 
-            // Büyüteç parmağın üstünü kapatmasın diye touch noktasının
-            // biraz yukarısına (üstte yer yoksa altına) çizilir.
-            const KAYDIRMA_CSS = 90;
+            // Büyteç: parmağın üstüne çiz (üstte yer yoksa altına).
+            // KAYDIRMA büyütülmüş: 90→160 CSS piksel — parmak büyteç içinde kalmasın.
+            const KAYDIRMA_CSS = 160;
             let merkezY = nokta.y - KAYDIRMA_CSS * olcekY;
+            // Üstte yer yok → altına çiz ama parmağı kapatmasın diye ekstra pay
             if (merkezY - capCanvas / 2 < 0) {
                 merkezY = nokta.y + KAYDIRMA_CSS * olcekY;
             }
+            // Hâlâ canvas dışına taşıyorsa sıkıştır
+            merkezY = Math.max(capCanvas / 2, Math.min(secimCanvas.height - capCanvas / 2, merkezY));
 
             let merkezX = Math.max(capCanvas / 2, Math.min(secimCanvas.width - capCanvas / 2, nokta.x));
 
