@@ -1,3 +1,16 @@
+# Optik Okuma Modülü — v36-galeriSessizHataDuzeltme
+**Tarih:** Ağustos 2026
+
+## v36 — Galeriden okuma sessiz kalma hatası
+- `formuOkuVeGoster()` artık UI dönüşü yerine ham OMR sonuç nesnesini döndürür.
+- Galeri akışı `basarili`, `uyarilar`, `kontrolGerekli` alanlarını gerçekten görebilir.
+- Başarısız otomatik okuma görünür hata/uyarı kutusunda nedenini gösterir.
+- Otomatik okuma başarısızsa önce sayfa köşeleri CV ile bulunur ve otomatik yeniden deneme yapılır.
+- Bu da başarısızsa elle köşe seçimine geçilir.
+- Hiçbir aşamada sessiz `return` bırakılmadı; kullanıcıya sonuç veya hata gösterilir.
+- Galeri CV köşe tespiti aktif formun en-boy oranını kullanır.
+- Cache: `app.js?v=36`, `omrEngine.js?v=36`.
+
 # Optik Okuma Modülü — v35-hareketliOtomatikKose
 **Tarih:** Ağustos 2026
 

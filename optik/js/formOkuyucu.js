@@ -365,7 +365,10 @@ export async function formuOkuVeGoster(sourceCanvas, okumaOpsiyonlari = {}) {
     // penceresini otomatik kapatmak isteyen UI kodu bunu dinleyebilir).
     window.dispatchEvent(new CustomEvent("omrOkumaTamamlandi", { detail: sonuc }));
 
-    return gosterSonuc;
+    // v36: Çağıran kodun (özellikle galeri akışının) gerçek OMR durumunu
+    // değerlendirebilmesi için UI yardımcı dönüşü yerine HAM sonuc nesnesini
+    // döndür. sonucuGoster() yalnızca ekrana yansıtma işidir.
+    return sonuc;
 }
 
 /**
@@ -478,7 +481,7 @@ export async function formuOkuElleKoseliVeGoster(sourceCanvas, koseler, okumaOps
 
     window.dispatchEvent(new CustomEvent("omrOkumaTamamlandi", { detail: sonuc }));
 
-    return gosterSonuc;
+    return sonuc;
 }
 
 /**

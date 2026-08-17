@@ -7,7 +7,26 @@ import { showStatus } from "./utils.js";
 import { cvHazirBekle, sayfaKoseleriniAraCV } from "./sayfaTespitCV.js";
 import { koseSeciciElemanlariniAl, koseSecimAkisi, KOSE_SECIM_IPTAL } from "./koseSecici.js";
 
-console.log('[GALERI SÜRÜM: v2-teshis] galeriSecici.js yüklendi.');
+
+console.log('[GALERI SÜRÜM: v36-gorunur-hata] galeriSecici.js yüklendi.');
+
+function galeriMesajGoster(mesaj, tur = "bilgi") {
+    showStatus(mesaj);
+    const kutu = document.getElementById("sonucKutusu");
+    if (kutu) {
+        kutu.style.display = "block";
+        kutu.hidden = false;
+        kutu.textContent = mesaj;
+        kutu.dataset.galeriDurum = tur;
+        // Inline renk yalnız görünürlük garantisi için; mevcut CSS temel görünümü korur.
+        kutu.style.border = tur === "hata" ? "2px solid #dc3545"
+                          : tur === "uyari" ? "2px solid #f59e0b"
+                          : "2px solid #3b82f6";
+        kutu.style.padding = "12px";
+        kutu.style.borderRadius = "8px";
+        kutu.style.whiteSpace = "pre-wrap";
+    }
+}
 
 function dosyayiResmeCevir(dosya) {
     return new Promise((resolve, reject) => {
@@ -60,7 +79,16 @@ async function koseleriBul(canvas) {
     kucuk.getContext('2d').drawImage(canvas, 0, 0, kucuk.width, kucuk.height);
     const kImageData = kucuk.getContext('2d').getImageData(0, 0, kucuk.width, kucuk.height);
     try {
-        const bulunan = sayfaKoseleriniAraCV(kImageData);
+        const aktifForm = window.OptikAktifForm && window.OptikAktifForm.form;
+        const bolge = aktifForm && aktifForm.bolge;
+        let oranlar;
+        try {
+            if (bolge && bolge.width && bolge.height) {
+                const o = bolge.width / bolge.height;
+                oranlar = [o, 1 / o];
+            }
+        } catch (_) {}
+        const bulunan = sayfaKoseleriniAraCV(kImageData, oranlar);
         if (bulunan?.solUst && bulunan?.sagUst && bulunan?.solAlt && bulunan?.sagAlt) {
             const gOl = canvas.width / kucuk.width;
             return {
@@ -132,7 +160,7 @@ export function baglaGaleriSecici(inputId, canvasId) {
             if (dosyalar.length > 1) {
                 await topluIceAktar(dosyalar, canvas);
             } else {
-                showStatus("Fotoğraf yükleniyor...");
+                galeriMesajGoster("Fotoğraf yükleniyor...");
                 const img = await dosyayiResmeCevir(dosyalar[0]);
                 canvas.width = img.naturalWidth;
                 canvas.height = img.naturalHeight;
@@ -144,7 +172,7 @@ export function baglaGaleriSecici(inputId, canvasId) {
                 // homografi → baloncuk okuma) kamera akışıyla AYNI kodu kullanır.
                 // Galeri fotoğrafları genellikle kameraya göre daha yüksek çözünürlüklü
                 // ve daha sakin (blur yok) olduğundan otomatik tespiti daha iyi çalışır.
-                showStatus("Otomatik okunuyor...");
+                galeriMesajGoster("Otomatik okunuyor...");
                 let otomatikSonuc = null;
                 try {
                     otomatikSonuc = await formuOkuVeGoster(canvas, { galeri: true });
@@ -153,39 +181,78 @@ export function baglaGaleriSecici(inputId, canvasId) {
                 }
 
                 if (otomatikSonuc && otomatikSonuc.basarili) {
-                    // Başarılı — kullanıcı müdahalesi gerekmez.
                     console.log("[GALERI] Otomatik okuma başarılı.");
+                    if (otomatikSonuc.kontrolGerekli) {
+                        galeriMesajGoster(
+                            "Form okundu ancak kalite kontrolü gerekli.\n" +
+                            ((otomatikSonuc.uyarilar || []).join("\n") || "Sonucu kontrol edin."),
+                            "uyari"
+                        );
+                    } else {
+                        galeriMesajGoster("Form başarıyla okundu.", "bilgi");
+                    }
                     return;
                 }
 
-                // ── ADIM 2: ELLE KÖŞE SEÇİMİ (fallback) ─────────────────────────────
+                const otomatikNeden = otomatikSonuc && Array.isArray(otomatikSonuc.uyarilar)
+                    ? otomatikSonuc.uyarilar.filter(Boolean).join("\n")
+                    : "Otomatik okuma formu doğrulayamadı.";
+                galeriMesajGoster(
+                    "Otomatik okuma başarısız. Köşeler otomatik aranıyor…\n" + otomatikNeden,
+                    "uyari"
+                );
+
+                // ── ADIM 2: OTOMATİK KÖŞE + ELLE KÖŞE FALLBACK ─────────────────────
                 // Otomatik köşe tespiti başarısız olduysa veya formu doğrulayamadıysa
                 // kullanıcıdan köşeleri elle onaylaması istenir.
                 console.log("[GALERI] Otomatik okuma başarısız, elle seçim açılıyor...");
                 const cvKoseler = await koseleriBul(canvas);
                 console.log("[GALERI] CV köşe sonucu:", cvKoseler ? JSON.stringify(cvKoseler) : "BULUNAMADI");
 
-                showStatus(cvKoseler ? "Köşeleri kontrol edin..." : "Köşeler bulunamadı, elle seçin...");
-                let koseler = await koseleriElleOnaylat(canvas);
+                if (cvKoseler) {
+                    galeriMesajGoster("Sayfa köşeleri bulundu. Bu köşelerle yeniden okunuyor…");
+                    const cvSonuc = await formuOkuElleKoseliVeGoster(canvas, cvKoseler, { galeri: true });
+                    if (cvSonuc && cvSonuc.basarili) {
+                        galeriMesajGoster(
+                            cvSonuc.kontrolGerekli
+                                ? "Form okundu ancak kalite kontrolü gerekli."
+                                : "Form otomatik köşelerle başarıyla okundu.",
+                            cvSonuc.kontrolGerekli ? "uyari" : "bilgi"
+                        );
+                        return;
+                    }
 
+                    const cvNeden = cvSonuc?.uyarilar?.filter(Boolean).join("\n") || "Köşe düzeltmeli okuma da başarısız oldu.";
+                    galeriMesajGoster("Otomatik köşe ile okuma başarısız. Elle köşe seçebilirsiniz.\n" + cvNeden, "hata");
+                } else {
+                    galeriMesajGoster("Sayfa köşeleri otomatik bulunamadı. Lütfen dört köşeyi elle seçin.", "hata");
+                }
+
+                let koseler = await koseleriElleOnaylat(canvas);
                 if (koseler === KOSE_SECIM_IPTAL) {
-                    showStatus("Vazgeçildi.");
+                    galeriMesajGoster("Galeri okuması iptal edildi.", "uyari");
                     return;
                 }
                 if (!koseler) {
-                    // "🤖 Otomatik Dene" butonuna basıldı → CV sonucuna güven.
                     if (!cvKoseler) {
-                        showStatus("Köşe seçilmedi, form okunamadı.");
+                        galeriMesajGoster("Köşe seçilmedi; form okunamadı.", "hata");
                         return;
                     }
                     koseler = cvKoseler;
                 }
 
-                await formuOkuElleKoseliVeGoster(canvas, koseler, { galeri: true });
+                const elleSonuc = await formuOkuElleKoseliVeGoster(canvas, koseler, { galeri: true });
+                if (!elleSonuc || !elleSonuc.basarili) {
+                    galeriMesajGoster(
+                        "Form okunamadı.\n" +
+                        (elleSonuc?.uyarilar?.filter(Boolean).join("\n") || "Bilinmeyen okuma hatası."),
+                        "hata"
+                    );
+                }
             }
         } catch (err) {
             console.error("Galeriden okuma hatası:", err);
-            showStatus("Fotoğraf okunamadı: " + err.message);
+            galeriMesajGoster("Fotoğraf okunamadı: " + err.message, "hata");
         } finally {
             input.value = "";
             _galeriIsleniyor = false;
