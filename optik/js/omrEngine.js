@@ -1148,6 +1148,7 @@ window.OmrOkuyucu = (function () {
   const MAKS_TUVAL_PIKSEL = 6_000_000; // ~A4'te ~10px/mm karşılığı
 
   function duzCanvasUret(fotoImageData, H, form, ppmm) {
+    const _perfBas = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     let kullanilanPpmm = ppmm;
     const tahminiPiksel = form.bolge.width * ppmm * form.bolge.height * ppmm;
     if (tahminiPiksel > MAKS_TUVAL_PIKSEL) {
@@ -1181,28 +1182,65 @@ window.OmrOkuyucu = (function () {
     const ctx = canvas.getContext('2d');
     const cImageData = ctx.createImageData(cGenislik, cYukseklik);
 
+    // v33 PERFORMANS: Önceki sürüm her pikselde noktayiDonustur() çağırıyor
+    // ve bilinearOrnekle() her seferinde yeni [r,g,b,a] dizisi oluşturuyordu.
+    // A4 canonical tuvalde milyonlarca piksel olduğu için bu, JS GC ve
+    // fonksiyon çağrısı maliyetini büyütüyordu. Aynı homografi matematiği
+    // satır bazında artımlı hesaplanıyor ve renk doğrudan hedef buffer'a
+    // yazılıyor; sonuç matematiksel olarak aynı, geçici nesne üretimi yok.
+    const [h0,h1,h2,h3,h4,h5,h6,h7,h8] = H;
+    const srcW = fotoImageData.width;
+    const srcH = fotoImageData.height;
+    const src = fotoImageData.data;
+    const dst = cImageData.data;
+
     for (let cy = 0; cy < cYukseklik; cy++) {
-      for (let cx = 0; cx < cGenislik; cx++) {
-        const foto = noktayiDonustur(H, cx, cy);
-        const renk = bilinearOrnekle(fotoImageData, foto.x, foto.y);
-        const hedefIndex = (cy * cGenislik + cx) * 4;
-        if (renk) {
-          cImageData.data[hedefIndex] = renk[0];
-          cImageData.data[hedefIndex + 1] = renk[1];
-          cImageData.data[hedefIndex + 2] = renk[2];
-          cImageData.data[hedefIndex + 3] = 255;
+      let nx = h1 * cy + h2;
+      let ny = h4 * cy + h5;
+      let dd = h7 * cy + h8;
+      let hedefIndex = cy * cGenislik * 4;
+
+      for (let cx = 0; cx < cGenislik; cx++, hedefIndex += 4) {
+        if (Math.abs(dd) > 1e-12) {
+          const fx = nx / dd;
+          const fy = ny / dd;
+
+          if (fx >= 0 && fy >= 0 && fx < srcW - 1 && fy < srcH - 1) {
+            const x0 = fx | 0;
+            const y0 = fy | 0;
+            const dx = fx - x0;
+            const dy = fy - y0;
+
+            const i00 = (y0 * srcW + x0) * 4;
+            const i10 = i00 + 4;
+            const i01 = i00 + srcW * 4;
+            const i11 = i01 + 4;
+
+            const w00 = (1 - dx) * (1 - dy);
+            const w10 = dx * (1 - dy);
+            const w01 = (1 - dx) * dy;
+            const w11 = dx * dy;
+
+            dst[hedefIndex]     = src[i00]     * w00 + src[i10]     * w10 + src[i01]     * w01 + src[i11]     * w11;
+            dst[hedefIndex + 1] = src[i00 + 1] * w00 + src[i10 + 1] * w10 + src[i01 + 1] * w01 + src[i11 + 1] * w11;
+            dst[hedefIndex + 2] = src[i00 + 2] * w00 + src[i10 + 2] * w10 + src[i01 + 2] * w01 + src[i11 + 2] * w11;
+            dst[hedefIndex + 3] = 255;
+          } else {
+            dst[hedefIndex] = dst[hedefIndex + 1] = dst[hedefIndex + 2] = dst[hedefIndex + 3] = 255;
+          }
         } else {
-          // fotoğraf sınırları dışına düşen alan: beyaz doldur
-          cImageData.data[hedefIndex] = 255;
-          cImageData.data[hedefIndex + 1] = 255;
-          cImageData.data[hedefIndex + 2] = 255;
-          cImageData.data[hedefIndex + 3] = 255;
+          dst[hedefIndex] = dst[hedefIndex + 1] = dst[hedefIndex + 2] = dst[hedefIndex + 3] = 255;
         }
+
+        nx += h0;
+        ny += h3;
+        dd += h6;
       }
     }
 
     ctx.putImageData(cImageData, 0, 0);
-    return { canvas, imageData: cImageData, ppmmKullanilan: kullanilanPpmm };
+    const _perfBit = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    return { canvas, imageData: cImageData, ppmmKullanilan: kullanilanPpmm, warpMs: Math.round(_perfBit - _perfBas) };
   }
 
   // ---------------------------------------------------------------------
@@ -1417,7 +1455,7 @@ window.OmrOkuyucu = (function () {
     // aramaOrani'nden bağımsız olarak yatay toleransı artırmak amacıyla eklendi.
     const aramaMesafesiY = r * aramaOrani;
     const aramaMesafesiX = r * (aramaOraniX !== null ? aramaOraniX : aramaOrani);
-    const adim = Math.max(1, r * adimOrani);
+    const inceAdim = Math.max(1, r * adimOrani);
 
     let enIyiOran = -1;
     let enIyiDx = 0;
@@ -1426,12 +1464,37 @@ window.OmrOkuyucu = (function () {
     // Binary görüntü varsa (adaptifEsikle çağrıldıysa) countNonZero yöntemi
     // kullan — Test Plus yaklaşımı, renk/ışık bağımsız.
     const binaryKullan = !!_binaryImageData;
+    const olc = (dx, dy) => binaryKullan
+      ? baloncukDolulukBinary(cx + dx, cy + dy, r)
+      : baloncukKaranlikOrani(cImageData, cx + dx, cy + dy, r);
 
-    for (let dy = -aramaMesafesiY; dy <= aramaMesafesiY; dy += adim) {
-      for (let dx = -aramaMesafesiX; dx <= aramaMesafesiX; dx += adim) {
-        const oran = binaryKullan
-          ? baloncukDolulukBinary(cx + dx, cy + dy, r)
-          : baloncukKaranlikOrani(cImageData, cx + dx, cy + dy, r);
+    // v33 PERFORMANS — kaba→ince arama.
+    // Eski yöntem ±1.3r pencereyi ~0.12r adımla baştan sona tarıyor ve
+    // tek baloncukta yaklaşık 400–550 pahalı ROI ölçümü yapabiliyordu.
+    // Önce 0.30r kaba ızgarada tepe bulunuyor; sonra yalnızca tepenin
+    // çevresi eski ince hassasiyetle taranıyor. Nihai koordinat çözünürlüğü
+    // değişmiyor, ölçüm sayısı tipik olarak 3–4 kat azalıyor.
+    const kabaAdim = Math.max(inceAdim * 2, r * 0.30);
+
+    for (let dy = -aramaMesafesiY; dy <= aramaMesafesiY + 0.001; dy += kabaAdim) {
+      for (let dx = -aramaMesafesiX; dx <= aramaMesafesiX + 0.001; dx += kabaAdim) {
+        const oran = olc(dx, dy);
+        if (oran > enIyiOran) {
+          enIyiOran = oran;
+          enIyiDx = dx;
+          enIyiDy = dy;
+        }
+      }
+    }
+
+    const inceY0 = Math.max(-aramaMesafesiY, enIyiDy - kabaAdim);
+    const inceY1 = Math.min(aramaMesafesiY, enIyiDy + kabaAdim);
+    const inceX0 = Math.max(-aramaMesafesiX, enIyiDx - kabaAdim);
+    const inceX1 = Math.min(aramaMesafesiX, enIyiDx + kabaAdim);
+
+    for (let dy = inceY0; dy <= inceY1 + 0.001; dy += inceAdim) {
+      for (let dx = inceX0; dx <= inceX1 + 0.001; dx += inceAdim) {
+        const oran = olc(dx, dy);
         if (oran > enIyiOran) {
           enIyiOran = oran;
           enIyiDx = dx;

@@ -1,3 +1,62 @@
+# Optik Okuma Modülü — v33-performans
+**Tarih:** Ağustos 2026
+
+## v33 — Performans Optimizasyonu
+- Canonical homografi warp döngüsü allocation-free ve satır bazlı artımlı projektif hesaplamaya geçirildi.
+- Her pikselde `noktayiDonustur()` + geçici renk dizisi üretme kaldırıldı.
+- Baloncuk yerel araması kaba→ince (coarse-to-fine) hale getirildi.
+- Nihai ince çözünürlük korunurken tipik ROI ölçüm sayısı yaklaşık 3–4 kat azaltıldı.
+- `duzCanvasUret()` dönüşüne teşhis amaçlı `warpMs` süresi eklendi.
+- Okuma/kalite eşikleri ve v30–v32 karar mantığı değiştirilmedi.
+- Cache sürümü `omrEngine.js?v=33`.
+
+# Optik Okuma Modülü — v32-formKaliteMotoru
+**Tarih:** Ağustos 2026
+
+## v32 — Form Kalite Karar Motoru
+- Hizalama, birleşik bubble güveni, öğrenci no güveni, düşük güvenli soru oranı,
+  çoklu işaret ve görüntü uyarıları tek 0–100 kalite skorunda birleştirildi.
+- 85–100: Güvenli → otomatik kayıt.
+- 65–84: Kontrol → sonuç gösterilir, otomatik kayıt yapılmaz.
+- 0–64: Yeniden Tara → sonuç başarısız sayılır ve kayıt yapılmaz.
+- Hizalama < %65 veya düşük güvenli soru oranı > %25 ise sert yeniden-tarama kapısı.
+- Öğrenci numarası belirsizse yanlış öğrenciye otomatik bağlama engellenir.
+- `formKalite`, `otomatikKaydet`, `kontrolGerekli` alanları eklenir.
+- Sonuç durum mesajında kalite puanı gösterilir.
+- Cache sürümü `omrEngine.js?v=32`.
+
+---
+
+# Optik Okuma Modülü — v31-birlesikBubbleGuven
+**Tarih:** Ağustos 2026
+
+## v31 — Birleşik Bubble Güven Skoru
+- Native `liboptikokuyucu.so` analizindeki iki-geçişli satır normalizasyonu karar mekanizmasına bağlandı.
+- Her soru için dört sinyal birleştiriliyor: mutlak koyuluk, en iyi/ikinci farkı, göreli satır ayrışması ve yerel kontrast.
+- Yeni `birlesikGuven` (0..1), `guvenBilesenleri` ve `kontrolOnerilir` alanları eklendi.
+- Eski `guven` alanı geriye dönük uyumluluk için korunuyor ve mutlak doluluk oranını göstermeye devam ediyor.
+- Birleşik güven < 0.38 ise tek eşik geçti diye cevap kesinleştirilmiyor; `dusukGuven` olarak belirsiz bırakılıyor.
+- `bubbleKalite` özeti: ortalama birleşik güven + kontrol önerilen soru sayısı.
+- Sonuç ekranında artık mutlak doluluk ve birleşik güven birlikte gösteriliyor.
+- Cache-busting sürümü `omrEngine.js?v=31`.
+
+---
+
+# Optik Okuma Modülü — v30-6noktaGeometri
+**Tarih:** Ağustos 2026
+
+## 6 Nokta Geometrik Doğrulama
+- 4 köşe markerından tam projektif homografi kuruluyor.
+- Sol-orta ve sağ-orta markerlar homografiyi kurmak için değil, bağımsız doğrulama kanıtı olarak kullanılıyor.
+- Orta markerların beklenen projektif konuma artığı ve kenar doğrusuna sapması mm cinsinden ölçülüyor.
+- `hizalamaGuveni` (0..1), `hizalamaDurumu` (`guvenli`/`kontrol`/`red`) ve ayrıntılı geometri teşhisi üretiliyor.
+- `<0.65` güven: cevap okumaya geçmeden reddedilir. `0.65–0.85`: okunur fakat otomatik kaydedilmez. `>=0.85`: güvenli kabul edilir.
+- Kritik hata düzeltmesi: `homografiHesapla()` tam 4 nokta beklediği halde eski akış 6 marker bulunduğunda 6 noktayı gönderebiliyordu. Artık H yalnızca 4 köşeden kuruluyor; 5. ve 6. marker doğrulama içindir.
+- `formOkuyucu.js` orta güvenli sonuçları `omrSonucHazir` olayıyla otomatik kaydetmiyor.
+- `optik/index.html` cache sürümü `omrEngine.js?v=30` olarak güncellendi.
+
+---
+
 # Optik Okuma Modülü — v23-siyahBeyaz6Nokta
 **Tarih:** Ağustos 2026
 
