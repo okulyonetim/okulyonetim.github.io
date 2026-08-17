@@ -88,7 +88,7 @@ function _baloncukNoktalariniOlcekle(ornekNoktalari, olcek) {
  * senaryosu) eski DOM tabanlı yol yedek olarak kalıyor.
  * @returns {{form: object, sinavTuru: string}}
  */
-function testFormunuOlustur() {
+function testFormunuOlustur(sourceCanvas = null, okumaOpsiyonlari = {}) {
 
     const dbg2 = (msg) => {
         const el = document.getElementById('sonucKutusu');
@@ -97,6 +97,20 @@ function testFormunuOlustur() {
 
     if (window.OptikAktifForm && window.OptikAktifForm.form) {
         dbg2('✓ OptikAktifForm VAR: ' + window.OptikAktifForm.sinavTuru);
+
+        // v34: Galeriden eski yatay LGS cevap kağıdı içe aktarıldığında
+        // aktif yeni/dikey LGS şablonuyla zorla okumaya çalışma. Görüntü
+        // oranı yataysa eski yatay koordinat modelini yalnız bu okuma için seç.
+        const oran = sourceCanvas && sourceCanvas.height ? sourceCanvas.width / sourceCanvas.height : 0;
+        if (okumaOpsiyonlari.galeri === true &&
+            window.OptikAktifForm.sinavTuru === 'lgs' &&
+            oran > 1.18 &&
+            window.LayoutEngine &&
+            typeof window.LayoutEngine.lgsYatayEskiSablonuOlustur === 'function') {
+            const eski = window.LayoutEngine.lgsYatayEskiSablonuOlustur();
+            dbg2('↔ Galeri yatay LGS algılandı; eski yatay LGS şablonu kullanılıyor. oran=' + oran.toFixed(3));
+            return { form: eski.formlar[0], sinavTuru: 'lgs', eskiYatayLgs: true };
+        }
         return window.OptikAktifForm;
     }
 
@@ -289,7 +303,7 @@ function formKaliteKapisiUygula(sonuc) {
 }
 
 
-export async function formuOkuVeGoster(sourceCanvas) {
+export async function formuOkuVeGoster(sourceCanvas, okumaOpsiyonlari = {}) {
 
     // DEBUG — ekranda göster
     function dbg(msg) {
@@ -307,7 +321,7 @@ export async function formuOkuVeGoster(sourceCanvas) {
 
     showStatus("Form okunuyor...");
 
-    const { form, sinavTuru } = testFormunuOlustur();
+    const { form, sinavTuru } = testFormunuOlustur(sourceCanvas, okumaOpsiyonlari);
     dbg('sinavTuru=' + sinavTuru);
 
     let sonuc;
@@ -367,13 +381,13 @@ export async function formuOkuVeGoster(sourceCanvas) {
  * @param {HTMLCanvasElement} sourceCanvas
  * @returns {Promise<object>} OmrOkuyucu.formuOku() sonucu ({basarili, uyarilar, ...})
  */
-export async function formuOkuToplu(sourceCanvas) {
+export async function formuOkuToplu(sourceCanvas, okumaOpsiyonlari = {}) {
 
     if (typeof window.LayoutEngine === "undefined" || typeof window.OmrOkuyucu === "undefined") {
         return { basarili: false, uyarilar: ["OMR motoru yüklenemedi."] };
     }
 
-    const { form, sinavTuru } = testFormunuOlustur();
+    const { form, sinavTuru } = testFormunuOlustur(sourceCanvas, okumaOpsiyonlari);
 
     let sonuc;
 
@@ -415,7 +429,7 @@ export async function formuOkuToplu(sourceCanvas) {
  * @param {HTMLCanvasElement} sourceCanvas
  * @param {{solUst,sagUst,solAlt,sagAlt}} koseler - canvas piksel koordinatları
  */
-export async function formuOkuElleKoseliVeGoster(sourceCanvas, koseler) {
+export async function formuOkuElleKoseliVeGoster(sourceCanvas, koseler, okumaOpsiyonlari = {}) {
 
     if (typeof window.LayoutEngine === "undefined" || typeof window.OmrOkuyucu === "undefined") {
         showStatus("OMR motoru yüklenemedi (layoutEngine.js / omrEngine.js).");
@@ -433,7 +447,7 @@ export async function formuOkuElleKoseliVeGoster(sourceCanvas, koseler) {
     dbg('Teshis: ' + (window._optikTeshis || 'henüz çalışmadı'));
     dbg('sinavTuruEl: ' + (document.getElementById('sinavTuru')?.value || 'yok'));
 
-    const { form, sinavTuru } = testFormunuOlustur();
+    const { form, sinavTuru } = testFormunuOlustur(sourceCanvas, okumaOpsiyonlari);
 
     let sonuc;
 

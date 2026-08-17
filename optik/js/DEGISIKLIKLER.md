@@ -1,3 +1,14 @@
+# Optik Okuma Modülü — v34-yatayLgsGaleriUyumluluk
+**Tarih:** Ağustos 2026
+
+## v34 — Galeriden eski yatay LGS formu
+- Galeride yatay A4 LGS görüntüsü otomatik algılanır.
+- Yeni/dikey LGS şablonu değiştirilmeden eski yatay LGS için ayrı koordinat modeli eklendi.
+- 6 nirengi karesi, 90 soru, 3 haneli öğrenci no ve A/B kitapçık alanı desteklenir.
+- Tekli, toplu ve elle-köşeli galeri okumaları aynı yatay şablon seçimini kullanır.
+- Kamera akışı etkilenmez; uyumluluk yalnız `galeri:true` okumalarında devrededir.
+- Cache: `omrEngine.js?v=34`, `app.js?v=34`.
+
 # Optik Okuma Modülü — v33-performans
 **Tarih:** Ağustos 2026
 

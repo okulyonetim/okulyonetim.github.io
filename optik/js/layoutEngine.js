@@ -840,6 +840,129 @@ function lgsSablonuOlustur() {
   };
 }
 
+
+/**
+ * v34 — ESKİ/YATAY LGS FORMU (galeri geriye dönük uyumluluk)
+ *
+ * Ağustos 2026 öncesinde kullanılan yatay A4 LGS formunun koordinat modeli.
+ * Bu formda 6 ders sütunu yatay sayfaya yayılır; öğrenci numarası ve
+ * kitapçık alanı orta-alt bölgede bulunur. Yeni LGS şablonunu DEĞİŞTİRMEZ.
+ * Sadece galeriden yatay bir LGS görseli geldiğinde formOkuyucu.js tarafından
+ * seçilir.
+ */
+function lgsYatayEskiSablonuOlustur() {
+  const sayfa = { width: 297, height: 210 };
+
+  // Referans görsel 1536×1096 px idi. Koordinatlar sayfa mm uzayına
+  // normalize edilmiştir; perspektif/homografi sonrasında aynı noktalar
+  // gerçek fotoğraflarda da çalışır.
+  const pxX = (x) => x * sayfa.width / 1536;
+  const pxY = (y) => y * sayfa.height / 1096;
+  const r = 3.15;
+
+  function ders(ad, xs, soruSayisi) {
+    const sorular = [];
+    const y0 = 172;
+    const dy = 43.45;
+    for (let q = 0; q < soruSayisi; q++) {
+      const y = pxY(y0 + q * dy);
+      sorular.push({
+        soruNo: q + 1,
+        etiketX: pxX(xs[0] - 25),
+        etiketY: y + 1,
+        sikler: xs.map((x, i) => ({
+          harf: String.fromCharCode(65 + i),
+          cx: pxX(x),
+          cy: y,
+          r
+        }))
+      });
+    }
+    return {
+      dersAdi: ad,
+      dersAdiSatirlari: [ad],
+      x: pxX(xs[0] - 35),
+      y: pxY(95),
+      width: pxX(xs[xs.length - 1] - xs[0] + 75),
+      baslikYuksekligi: 7,
+      satirAraligi: pxY(dy),
+      toplamYukseklik: pxY((soruSayisi - 1) * dy + 85),
+      sorular
+    };
+  }
+
+  const dersSutunlari = [
+    ders('Türkçe', [149,191,233,275], 20),
+    ders('İnkılap Tarihi ve Atatürkçülük', [374,416,458,500], 10),
+    ders('Din Kültürü ve Ahlak Bilgisi', [601,643,685,727], 10),
+    ders('İngilizce', [826,868,910,952], 10),
+    ders('Matematik', [1048,1090,1132,1174], 20),
+    ders('Fen Bilimleri', [1270,1312,1354,1396], 20),
+  ];
+
+  const numaraXs = [370,405,440];
+  const numaraYs = [723,752,782,811,839,868,898,927,956,985];
+  const numaraAlani = {
+    x: pxX(345), y: pxY(665),
+    basamakSayisi: 3,
+    width: pxX(120),
+    height: pxY(340),
+    basamaklar: numaraXs.map((x, d) => ({
+      index: d,
+      x: pxX(x),
+      bubbles: numaraYs.map((y, v) => ({
+        deger: v, cx: pxX(x), cy: pxY(y), r: 2.55
+      }))
+    }))
+  };
+
+  const kitapcikAlani = {
+    x: pxX(505), y: pxY(930),
+    genislik: pxX(95),
+    height: pxY(70),
+    secenekler: [
+      { harf:'A', cx:pxX(529), cy:pxY(977), r:2.65 },
+      { harf:'B', cx:pxX(572), cy:pxY(977), r:2.65 },
+    ]
+  };
+
+  // Referans formdaki 6 siyah nirengi karesinin gerçek merkezleri.
+  const markerBoyut = 8.2;
+  const markerMerkezleri = [
+    ['sol-ust', 61, 75], ['sag-ust', 1475, 75],
+    ['sol-orta', 61, 536], ['sag-orta', 1475, 536],
+    ['sol-alt', 61, 1018], ['sag-alt', 1475, 1018],
+  ];
+  const hizalamaIsaretleri = markerMerkezleri.map(([konum,x,y]) => ({
+    konum,
+    x: pxX(x) - markerBoyut/2,
+    y: pxY(y) - markerBoyut/2,
+    boyut: markerBoyut
+  }));
+
+  return {
+    versiyon: 1,
+    sinavTuru: 'lgs',
+    eskiYatayLgs: true,
+    soruSayisi: 90,
+    sikSayisi: 4,
+    sayfaDuzeni: 1,
+    sayfaBoyutu: sayfa,
+    formlar: [{
+      formIndex: 0,
+      bolge: { x:0, y:0, width:sayfa.width, height:sayfa.height },
+      hizalamaIsaretleri,
+      sayfaCercevesi: { x:5, y:7, width:287, height:196 },
+      kitapcikAlani,
+      numaraAlani,
+      formKoduAlani: null,
+      bolumler: [{ baslik:'LGS', dersSutunlari }],
+      genelIzgaraCercevesi: null,
+    }]
+  };
+}
+
+
 SABIT_SABLONLAR.lgs = lgsSablonuOlustur();
 
 /**
@@ -1015,6 +1138,7 @@ window.LayoutEngine = {
   layoutHesapla,
   sayfaDuzeniOner,
   lgsSablonuOlustur,
+  lgsYatayEskiSablonuOlustur,
   burslulukSablonuOlustur,
   formKoduHarfiGetir,
   // Ağustos 2026 — Optik Form Editörü için dışa açıldı (bkz. optikSablonMotoru.js):

@@ -32,7 +32,7 @@ async function topluIceAktar(dosyalar, canvas) {
             canvas.height = img.naturalHeight;
             canvas.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
             canvas.getContext("2d").drawImage(img, 0, 0);
-            const sonuc = await formuOkuToplu(canvas);
+            const sonuc = await formuOkuToplu(canvas, { galeri: true });
             if (sonuc && sonuc.basarili) basarili++;
             else basarisizlar.push(dosya.name || `#${i + 1}`);
         } catch (err) {
@@ -147,7 +147,7 @@ export function baglaGaleriSecici(inputId, canvasId) {
                 showStatus("Otomatik okunuyor...");
                 let otomatikSonuc = null;
                 try {
-                    otomatikSonuc = await formuOkuVeGoster(canvas);
+                    otomatikSonuc = await formuOkuVeGoster(canvas, { galeri: true });
                 } catch (err) {
                     console.warn("[GALERI] Otomatik okuma hata verdi, elle seçime düşülüyor:", err);
                 }
@@ -181,7 +181,7 @@ export function baglaGaleriSecici(inputId, canvasId) {
                     koseler = cvKoseler;
                 }
 
-                await formuOkuElleKoseliVeGoster(canvas, koseler);
+                await formuOkuElleKoseliVeGoster(canvas, koseler, { galeri: true });
             }
         } catch (err) {
             console.error("Galeriden okuma hatası:", err);
