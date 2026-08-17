@@ -160,6 +160,135 @@ function formKoduDogrula(sonuc, sinavTuru) {
  * @param {HTMLCanvasElement} sourceCanvas
  * @returns {Promise<object>} OmrOkuyucu.formuOku() sonucu
  */
+
+/**
+ * v32 — FORM KALİTE KARAR MOTORU
+ * Geometri + bubble + öğrenci no + görüntü uyarılarını tek 0..100 skorda birleştirir.
+ * Bu katman OMR motorunun ham cevabını değiştirmez; yalnızca otomatik kayıt kararını verir.
+ */
+function formKalitesiniHesapla(sonuc) {
+    const clamp01 = (v) => Math.max(0, Math.min(1, Number.isFinite(Number(v)) ? Number(v) : 0));
+    const cevaplar = Array.isArray(sonuc?.cevaplar) ? sonuc.cevaplar : [];
+    const uyarilar = Array.isArray(sonuc?.uyarilar) ? sonuc.uyarilar : [];
+
+    const hizalama = clamp01(
+        typeof sonuc?.hizalamaGuveni === 'number'
+            ? sonuc.hizalamaGuveni
+            : (typeof sonuc?.hataAyiklama?.hizalamaGuveni === 'number'
+                ? sonuc.hataAyiklama.hizalamaGuveni : 0.70)
+    );
+
+    const bubbleGuvenleri = cevaplar
+        .map(c => typeof c?.birlesikGuven === 'number'
+            ? clamp01(c.birlesikGuven)
+            : (typeof c?.guven === 'number' ? clamp01(c.guven) : null))
+        .filter(v => v !== null);
+    const bubbleOrt = bubbleGuvenleri.length
+        ? bubbleGuvenleri.reduce((a, b) => a + b, 0) / bubbleGuvenleri.length
+        : 0.65;
+
+    const dusukGuvenli = cevaplar.filter(c =>
+        c?.kontrolOnerilir === true ||
+        c?.uyari === 'dusukGuven' ||
+        (typeof c?.birlesikGuven === 'number' && c.birlesikGuven < 0.55)
+    ).length;
+    const coklu = cevaplar.filter(c =>
+        c?.uyari === 'coklu' || c?.uyari === 'dusukDolulukOraniCiftIsaretli'
+    ).length;
+
+    const dusukOran = cevaplar.length ? dusukGuvenli / cevaplar.length : 0;
+    const cokluOran = cevaplar.length ? coklu / cevaplar.length : 0;
+
+    // Öğrenci numarası güveni: belirsiz hane teşhisi ve ham numara birlikte değerlendirilir.
+    let ogrenciNoGuveni = 0.75;
+    const ogrNo = String(sonuc?.ogrenciKimlik?.ogrenciNo || '');
+    if (!ogrNo) ogrenciNoGuveni = 0.55; // numara alanı yok/okunmadı — tek başına formu reddetme
+    if (/[\?Xx_]/.test(ogrNo)) ogrenciNoGuveni = 0.25;
+    const numaraTeshis = uyarilar.find(u => String(u).startsWith('Numara teşhisi:'));
+    if (numaraTeshis) {
+        const belirsizSay = (String(numaraTeshis).match(/BELİRSİZ|BELIRSIZ/gi) || []).length;
+        if (belirsizSay > 0) ogrenciNoGuveni = Math.min(ogrenciNoGuveni, Math.max(0.20, 0.65 - belirsizSay * 0.15));
+    }
+    ogrenciNoGuveni = clamp01(ogrenciNoGuveni);
+
+    const goruntuUyarilari = uyarilar.filter(u =>
+        /goruntuCokParlak|goruntuCokKoyu|yetersizPiksel|bulan|kontrast|parlama/i.test(String(u))
+    );
+    const goruntuSkoru = clamp01(1 - Math.min(0.35, goruntuUyarilari.length * 0.08));
+
+    let skor =
+        hizalama * 0.30 +
+        bubbleOrt * 0.35 +
+        ogrenciNoGuveni * 0.15 +
+        clamp01(1 - dusukOran * 2.0) * 0.10 +
+        clamp01(1 - cokluOran * 3.0) * 0.05 +
+        goruntuSkoru * 0.05;
+
+    skor = clamp01(skor);
+    let yuzde = Math.round(skor * 100);
+    let karar = yuzde >= 85 ? 'guvenli' : (yuzde >= 65 ? 'kontrol' : 'yenidenTara');
+
+    // Sert güvenlik kapıları: kötü geometri ya da yaygın belirsizlik otomatik kaydı engeller.
+    if (hizalama < 0.65 || dusukOran > 0.25) karar = 'yenidenTara';
+    else if (dusukOran > 0.12 && karar === 'guvenli') karar = 'kontrol';
+
+    // Numara okunmuş görünüyor ama güven düşükse yanlış öğrenciye otomatik bağlamayı engelle.
+    if (ogrNo && ogrenciNoGuveni < 0.45 && karar === 'guvenli') karar = 'kontrol';
+
+    const nedenler = [];
+    if (hizalama < 0.85) nedenler.push('Hizalama güveni düşük');
+    if (bubbleOrt < 0.70) nedenler.push('Cevap baloncuklarının ortalama güveni düşük');
+    if (ogrNo && ogrenciNoGuveni < 0.70) nedenler.push('Öğrenci numarası güveni düşük');
+    if (dusukGuvenli) nedenler.push(`${dusukGuvenli} soru kontrol gerektiriyor`);
+    if (coklu) nedenler.push(`${coklu} soruda çoklu/çift işaret şüphesi`);
+    if (goruntuUyarilari.length) nedenler.push(`${goruntuUyarilari.length} görüntü kalite uyarısı`);
+
+    return {
+        skor: yuzde,
+        karar,
+        otomatikKaydet: karar === 'guvenli',
+        kontrolGerekli: karar === 'kontrol',
+        yenidenTara: karar === 'yenidenTara',
+        bilesenler: {
+            hizalamaGuveni: Math.round(hizalama * 100),
+            bubbleGuveni: Math.round(bubbleOrt * 100),
+            ogrenciNoGuveni: Math.round(ogrenciNoGuveni * 100),
+            dusukGuvenliSoruOrani: Math.round(dusukOran * 100),
+            cokluIsaretOrani: Math.round(cokluOran * 100),
+            goruntuKalitesi: Math.round(goruntuSkoru * 100),
+        },
+        nedenler,
+    };
+}
+
+function formKaliteKapisiUygula(sonuc) {
+    if (!sonuc || !sonuc.basarili) return sonuc;
+    const kalite = formKalitesiniHesapla(sonuc);
+    sonuc.formKalite = kalite;
+    sonuc.otomatikKaydet = kalite.otomatikKaydet;
+
+    if (kalite.karar === 'yenidenTara') {
+        sonuc.basarili = false;
+        sonuc.kontrolGerekli = true;
+        sonuc.uyarilar = [
+            `Form kalite skoru ${kalite.skor}/100 — yeniden tarama gerekli.`,
+            ...kalite.nedenler,
+            ...(sonuc.uyarilar || []),
+        ];
+    } else if (kalite.karar === 'kontrol') {
+        sonuc.kontrolGerekli = true;
+        sonuc.uyarilar = [
+            `Form kalite skoru ${kalite.skor}/100 — kullanıcı kontrolü gerekli.`,
+            ...kalite.nedenler,
+            ...(sonuc.uyarilar || []),
+        ];
+    } else {
+        sonuc.kontrolGerekli = false;
+    }
+    return sonuc;
+}
+
+
 export async function formuOkuVeGoster(sourceCanvas) {
 
     // DEBUG — ekranda göster
@@ -188,6 +317,7 @@ export async function formuOkuVeGoster(sourceCanvas) {
         dbg('formuOku: basarili=' + sonuc?.basarili + ' uyari=' + (sonuc?.uyarilar?.[0] || '-'));
         console.log('[OMR] sonuc: basarili=', sonuc?.basarili, 'uyarilar=', sonuc?.uyarilar);
         formKoduDogrula(sonuc, sinavTuru);
+        formKaliteKapisiUygula(sonuc);
     } catch (err) {
         dbg('❌ formuOku HATA: ' + err.message);
         console.error("formuOku hatası:", err);
@@ -206,9 +336,15 @@ export async function formuOkuVeGoster(sourceCanvas) {
         return null;
     }
 
-    // Toplu tarama oturumu için sonucu yayınla
-    if (sonuc && sonuc.basarili) {
+    // Toplu tarama oturumu için sonucu yalnızca 6-nokta geometrisi
+    // yeterince güvenliyse yayınla. Orta güvenli sonuç ekranda gösterilir
+    // ama otomatik kaydedilmez; kullanıcı yeniden tarayabilir/kontrol edebilir.
+    if (sonuc && sonuc.basarili && !sonuc.kontrolGerekli) {
         window.dispatchEvent(new CustomEvent("omrSonucHazir", { detail: sonuc }));
+    } else if (sonuc && sonuc.basarili && sonuc.kontrolGerekli) {
+        showStatus('Okuma tamamlandı ancak kalite kontrolü gerekli (' +
+            (sonuc.formKalite?.skor ?? Math.round((sonuc.hizalamaGuveni || 0) * 100)) +
+            '/100). Sonuç otomatik kaydedilmedi.');
     }
 
     // Başarılı/başarısız fark etmeksizin: okuma süreci bitti (ör. kamera
@@ -244,12 +380,13 @@ export async function formuOkuToplu(sourceCanvas) {
     try {
         sonuc = await window.OmrOkuyucu.formuOku(sourceCanvas, form, { genelDuzeltmeKullan: false });
         formKoduDogrula(sonuc, sinavTuru);
+        formKaliteKapisiUygula(sonuc);
     } catch (err) {
         console.error("formuOku (toplu) hatası:", err);
         return { basarili: false, uyarilar: ["Hata: " + err.message] };
     }
 
-    if (sonuc && sonuc.basarili) {
+    if (sonuc && sonuc.basarili && !sonuc.kontrolGerekli) {
         // Kalıcı kayıt için düzeltilmiş kağıt görüntüsünü de ekle (bkz.
         // sonucuGoster()'daki aynı işlem — burada resultCanvas'a çizim
         // yapılmadığı için doğrudan duzeltilmisCanvas'tan üretiliyor).
@@ -262,6 +399,9 @@ export async function formuOkuToplu(sourceCanvas) {
             );
         }
         window.dispatchEvent(new CustomEvent("omrSonucHazir", { detail: sonuc }));
+    } else if (sonuc && sonuc.basarili && sonuc.kontrolGerekli) {
+        console.warn('[OMR] Toplu taramada kontrol gerektiren form otomatik kaydedilmedi:',
+            (sonuc.formKalite?.skor ?? Math.round((sonuc.hizalamaGuveni || 0) * 100)) + '/100');
     }
 
     return sonuc;
@@ -300,6 +440,7 @@ export async function formuOkuElleKoseliVeGoster(sourceCanvas, koseler) {
     try {
         sonuc = await window.OmrOkuyucu.formuOkuElleKoseli(sourceCanvas, form, koseler, { genelDuzeltmeKullan: false });
         formKoduDogrula(sonuc, sinavTuru);
+        formKaliteKapisiUygula(sonuc);
     } catch (err) {
         console.error("formuOkuElleKoseli hatası:", err);
         showStatus("Okuma sırasında hata oluştu: " + err.message);
@@ -445,8 +586,15 @@ function sonucuGoster(sonuc) {
 
     const isaretliSayisi = sonuc.cevaplar.filter((c) => c.isaretliSik).length;
 
+    const kaliteEtiketi = sonuc.formKalite
+        ? ` | Kalite: ${sonuc.formKalite.skor}/100 (${
+            sonuc.formKalite.karar === 'guvenli' ? 'Güvenli' :
+            sonuc.formKalite.karar === 'kontrol' ? 'Kontrol' : 'Yeniden Tara'
+          })`
+        : "";
+
     showStatus(
-        `Okuma tamamlandı: ${sonuc.cevaplar.length} soru, ${isaretliSayisi} işaretli` +
+        `Okuma tamamlandı: ${sonuc.cevaplar.length} soru, ${isaretliSayisi} işaretli${kaliteEtiketi}` +
         (sonuc.uyarilar.length ? ` (${sonuc.uyarilar.length} uyarı)` : "")
     );
 
@@ -458,13 +606,20 @@ function sonucuGoster(sonuc) {
     if (sonucKutusu) {
 
         const baslikSatirlari = sonuc.uyarilar.map((u) => "⚠ " + u);
+        if (sonuc.bubbleKalite) {
+            baslikSatirlari.push(
+                `Bubble kalite: ort. birleşik güven ${Number(sonuc.bubbleKalite.ortalamaBirlesikGuven || 0).toFixed(2)} · ` +
+                `kontrol önerilen ${sonuc.bubbleKalite.dusukGuvenliSayisi || 0}/${sonuc.bubbleKalite.toplamSoru || sonuc.cevaplar.length}`
+            );
+        }
 
         const satirlar = sonuc.cevaplar.map((c) => {
             const ders = c.ders ? c.ders + " " : "";
             const isaretli = c.isaretliSik || "—";
             const uyari = c.uyari ? ` (${c.uyari})` : "";
             const guven = typeof c.guven === "number" ? c.guven.toFixed(2) : c.guven;
-            return `${ders}Soru ${c.soruNo}: ${isaretli}${uyari}  [güven: ${guven}]`;
+            const birlesik = typeof c.birlesikGuven === "number" ? c.birlesikGuven.toFixed(2) : "—";
+            return `${ders}Soru ${c.soruNo}: ${isaretli}${uyari}  [doluluk: ${guven} | birleşik: ${birlesik}]`;
         });
 
         sonucKutusu.textContent = [...baslikSatirlari, "", ...satirlar].join("\n");

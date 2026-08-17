@@ -1728,6 +1728,76 @@ window.OmrOkuyucu = (function () {
     return 'cokAzIsaretli';
   }
 
+  // ---------------------------------------------------------------------
+  // v31 — Birleşik bubble güven skoru
+  // Native liboptikokuyucu.so analizindeki iki-geçişli satır normalizasyonu
+  // yaklaşımını, mevcut mutlak koyuluk + en iyi/ikinci aday farkı mantığıyla
+  // birleştirir. Tek bir threshold'a bağımlı kalmamak için dört bağımsız
+  // sinyal kullanılır:
+  //   1) mutlak koyuluk / aktif eşik oranı
+  //   2) en iyi - ikinci en iyi mutlak fark
+  //   3) satır-içi göreli ayrışma (1 - ikinci/enIyi)
+  //   4) baloncuk merkezi ile çevresindeki kağıt arasındaki yerel kontrast
+  // Sonuç 0..1 arasındadır. Eski `guven` alanı geriye dönük uyumluluk için
+  // korunur; yeni karar/kalite katmanı `birlesikGuven` değerini kullanır.
+  // ---------------------------------------------------------------------
+
+  function _clamp01(v) { return Math.max(0, Math.min(1, Number.isFinite(v) ? v : 0)); }
+
+  function baloncukYerelKontrastPuani(cImageData, cx, cy, r) {
+    const { width, height, data } = cImageData;
+    if (!width || !height || !(r > 0)) return 0;
+
+    // İç sinyal: öğrencinin işaretinin en temiz olduğu merkez disk.
+    const ic = baloncukKaranlikOrani(cImageData, cx, cy, r);
+
+    // Dış referans: basılı baloncuk çemberinin DIŞINDA, komşu baloncuğa
+    // taşmayacak 1.15r–1.55r halkası. Böylece bölgesel gölge/kağıt koyuluğu
+    // ölçülür; yalnızca mutlak parlaklığa bağımlı kalınmaz.
+    const r0 = r * 1.15;
+    const r1 = r * 1.55;
+    const x0 = Math.max(0, Math.floor(cx - r1));
+    const x1 = Math.min(width - 1, Math.ceil(cx + r1));
+    const y0 = Math.max(0, Math.floor(cy - r1));
+    const y1 = Math.min(height - 1, Math.ceil(cy + r1));
+    let toplam = 0, adet = 0;
+    const r0k = r0 * r0, r1k = r1 * r1;
+    for (let y = y0; y <= y1; y++) {
+      for (let x = x0; x <= x1; x++) {
+        const dx = x - cx, dy = y - cy, d2 = dx * dx + dy * dy;
+        if (d2 >= r0k && d2 <= r1k) {
+          toplam += isaretKoyulukPuani(data, (y * width + x) * 4);
+          adet++;
+        }
+      }
+    }
+    const cevre = adet ? toplam / adet : 0;
+    return _clamp01((ic - cevre) / 0.45);
+  }
+
+  function _bubbleBirlesikGuvenHesapla(enKoyu, ikinciKoyu, olcekliEsik, ayirtEdiciFark, yerelKontrast) {
+    const en = Math.max(0, enKoyu && enKoyu.oran || 0);
+    const ikinci = Math.max(0, ikinciKoyu && ikinciKoyu.oran || 0);
+    const esik = Math.max(0.05, olcekliEsik || 0.05);
+    const fark = Math.max(0, en - ikinci);
+
+    // Eşiğin %65'i civarı sıfıra yakın, ~1.5× eşikte tam puan.
+    const mutlakPuan = _clamp01(((en / esik) - 0.65) / 0.85);
+    // Kullanıcı ayırt-edici fark eşiğinin 2 katında tam puan.
+    const farkPuan = _clamp01(fark / Math.max(0.12, ayirtEdiciFark * 2));
+    // Native satır-normalizasyon fikrinin karar karşılığı: ikinci adayın
+    // en iyi adaya göre ne kadar geride kaldığı. %35 göreli ayrım tam puan.
+    const goreliAyrim = en > 0.01 ? _clamp01((1 - (ikinci / en)) / 0.35) : 0;
+    const kontrastPuan = _clamp01(yerelKontrast);
+
+    const toplam = mutlakPuan * 0.40 + farkPuan * 0.25 + goreliAyrim * 0.20 + kontrastPuan * 0.15;
+    return {
+      toplam: _clamp01(toplam),
+      mutlakPuan, farkPuan, goreliAyrim, kontrastPuan,
+      fark, normalizeIkinci: en > 0.01 ? _clamp01(ikinci / en) : 1,
+    };
+  }
+
   function cevaplariCikar(cImageData, form, ppmm, genelDuzeltme) {
     const _sabitEsik = _koyulukEsikGetir(); // Ayarlar sheet'inden gelen kullanıcı tercihi
     const AYIRT_EDICI_FARK = _ayirtEdiciFarkGetir(); // her okumada canlı okunur (Ayarlar sheet)
@@ -1896,6 +1966,13 @@ window.OmrOkuyucu = (function () {
       // "normal" işaret sayılır; büyük bubble'da daha yüksek orana ihtiyaç var.
       const isaretlemeSeviyesi = _isaretlemeSeviyesiHesapla(enKoyu.oran, olcekliEsik);
 
+      // v31: seçilen gerçek piksel merkezinde yerel kontrast + birleşik güven.
+      const yerelKontrast = baloncukYerelKontrastPuani(cImageData, enKoyu.px, enKoyu.py, enKoyu.pr);
+      const guvenBilesenleri = _bubbleBirlesikGuvenHesapla(
+        enKoyu, ikinciKoyu, olcekliEsik, AYIRT_EDICI_FARK, yerelKontrast
+      );
+      const birlesikGuven = guvenBilesenleri.toplam;
+
       if (enKoyu.oran < olcekliEsik) {
         uyari = 'bos'; // hiçbir şık yeterince koyu değil (ölçekli eşiğe göre)
       } else if (enKoyu.oran - ikinciKoyu.oran < AYIRT_EDICI_FARK) {
@@ -1922,6 +1999,14 @@ window.OmrOkuyucu = (function () {
         }
       } else {
         isaretliSik = enKoyu.harf;
+        // Çok zayıf birleşik kanıt varsa, tek bir mutlak koyuluk eşiğini
+        // geçti diye cevabı kesinleştirme. Bu sınır kasıtlı olarak düşük
+        // tutuldu: soluk ama gerçek işaretleri kaybetmeden belirgin sahte
+        // pozitifleri 'dusukGuven' olarak kontrol kuyruğuna gönderir.
+        if (birlesikGuven < 0.38) {
+          isaretliSik = null;
+          uyari = 'dusukGuven';
+        }
       }
 
       cevaplar.push({
@@ -1929,7 +2014,15 @@ window.OmrOkuyucu = (function () {
         soruNo: soru.soruNo,
         isaretliSik,
         isaretlemeSeviyesi, // YENİ: tamamenIsaretli/normalIsaretli/yarimIsaretli/azIsaretli/cokAzIsaretli
-        guven: Number(enKoyu.oran.toFixed(3)),
+        guven: Number(enKoyu.oran.toFixed(3)), // eski mutlak doluluk alanı
+        birlesikGuven: Number(birlesikGuven.toFixed(3)),
+        guvenBilesenleri: {
+          mutlak: Number(guvenBilesenleri.mutlakPuan.toFixed(3)),
+          fark: Number(guvenBilesenleri.farkPuan.toFixed(3)),
+          goreliAyrim: Number(guvenBilesenleri.goreliAyrim.toFixed(3)),
+          yerelKontrast: Number(guvenBilesenleri.kontrastPuan.toFixed(3)),
+        },
+        kontrolOnerilir: birlesikGuven < 0.55,
         uyari,
       });
 
@@ -2039,13 +2132,25 @@ window.OmrOkuyucu = (function () {
         return KARANLIK_ESIK * Math.sqrt(ls);
       } catch (e) { return KARANLIK_ESIK; }
     })();
+    const birlesikGuvenler = cevaplar.map((c) => c.birlesikGuven).filter(Number.isFinite);
+    const ortBirlesik = birlesikGuvenler.length
+      ? birlesikGuvenler.reduce((a, b) => a + b, 0) / birlesikGuvenler.length : 0;
+    const dusukGuvenliSayisi = cevaplar.filter((c) => c.kontrolOnerilir).length;
     _sonKoyulukOzeti = 'guven aralığı: min=' + enDusukOran.toFixed(3) + ' maks=' + enYuksekOran.toFixed(3) +
       ' ort=' + ortalamaOran.toFixed(3) +
       ' (eşik=' + KARANLIK_ESIK.toFixed(2) +
       (KARANLIK_ESIK < _sabitEsik ? ' [adaptif, sabit=' + _sabitEsik.toFixed(2) + ']' : '') +
-      ', ölçekli≈' + sonOlcekliEsik.toFixed(2) + ')';
+      ', ölçekli≈' + sonOlcekliEsik.toFixed(2) + ')' +
+      ' | birleşik ort=' + ortBirlesik.toFixed(3) + ', kontrol<0.55=' + dusukGuvenliSayisi;
 
-    return { cevaplar, ornekNoktalari, birdenFazlaSecenekIsaretleme };
+    return {
+      cevaplar, ornekNoktalari, birdenFazlaSecenekIsaretleme,
+      bubbleKalite: {
+        ortalamaBirlesikGuven: Number(ortBirlesik.toFixed(3)),
+        dusukGuvenliSayisi,
+        toplamSoru: cevaplar.length,
+      },
+    };
   }
 
   // ---------------------------------------------------------------------
@@ -2551,6 +2656,142 @@ window.OmrOkuyucu = (function () {
     }
   }
 
+  // ---------------------------------------------------------------------
+  // 8.8) 6-NOKTA GEOMETRİK DOĞRULAMA (Ağustos 2026)
+  // ---------------------------------------------------------------------
+  // Native liboptikokuyucu.so analizindeki "nirengi -> geometrik doğrulama
+  // -> perspektif" ayrımını web OMR motoruna taşıyan güvenlik katmanı.
+  //
+  // Temel fikir: 4 köşe işaretinden TAM projektif homografi kurulur; sol-orta
+  // ve sağ-orta işaretlerin fotoğrafta olması GEREKEN konum bu homografiyle
+  // tahmin edilir. Gerçekte bulunan orta işaret tahminden ne kadar sapıyorsa
+  // geometri o kadar güvensizdir. Projektif dönüşüm doğruları koruduğu için
+  // ayrıca orta işaretin kendi kenar doğrusundan dik uzaklığı da ölçülür.
+  // Böylece "yanlış blob bulundu ama 4 köşe var" durumu cevap okumaya geçmeden
+  // yakalanır.
+  const HIZALAMA_GUVEN_ESIK_YUKSEK = 0.85;
+  const HIZALAMA_GUVEN_ESIK_RED = 0.65;
+
+  function _sinirla01(v) { return Math.max(0, Math.min(1, v)); }
+
+  function _noktaninDogruyaUzakligiPx(p, a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const payda = Math.hypot(dx, dy);
+    if (payda < 1e-9) return Infinity;
+    return Math.abs(dx * (a.y - p.y) - (a.x - p.x) * dy) / payda;
+  }
+
+  function _alMap(liste, anahtar) {
+    const m = {};
+    for (const x of liste || []) m[x[anahtar]] = x;
+    return m;
+  }
+
+  /**
+   * @returns {{guven:number,durum:string,detay:object,homografi4:array|null}}
+   */
+  function altiNoktaGeometrisiniDogrula(hizalamaMM, konumEslesme, ppmm, pikselPerMM) {
+    const beklenenMap = _alMap(hizalamaMM, 'konum');
+    const gozlenen = konumEslesme || {};
+    const tumAdlar = ['sol-ust','sag-ust','sol-alt','sag-alt','sol-orta','sag-orta'];
+    const koseAdlari = ['sol-ust','sag-ust','sag-alt','sol-alt'];
+    const bulunanAdlar = tumAdlar.filter(ad => !!gozlenen[ad]);
+    const eksikAdlar = tumAdlar.filter(ad => !gozlenen[ad]);
+    const dortKoseTam = koseAdlari.every(ad => !!gozlenen[ad] && !!beklenenMap[ad]);
+
+    const detay = {
+      bulunan: bulunanAdlar.length,
+      toplam: tumAdlar.length,
+      bulunanAdlar,
+      eksikAdlar,
+      dortKoseTam,
+      ortaArtiklariMM: [],
+      kenarSapmalariMM: [],
+      ortalamaOrtaArtikMM: null,
+      maksimumOrtaArtikMM: null,
+      konveks: false,
+      puanlar: {},
+    };
+
+    if (!dortKoseTam) {
+      // 4 temel köşe olmadan 6-nokta doğrulaması projektif olarak yapılamaz.
+      // Affine fallback eski formlar/manuel kurtarma için motor içinde kalır,
+      // fakat otomatik güven skoru bunu güvenli kabul etmez.
+      const markerPuani = bulunanAdlar.length / 6;
+      const guven = _sinirla01(markerPuani * 0.35);
+      detay.puanlar = { marker: markerPuani, geometri: 0, konveks: 0 };
+      return { guven, durum: 'red', detay, homografi4: null };
+    }
+
+    // Homografi kaynağı: form üzerindeki gerçek marker merkezleri (canonical px).
+    const kaynak4 = koseAdlari.map(ad => ({
+      x: beklenenMap[ad].nokta.x * ppmm,
+      y: beklenenMap[ad].nokta.y * ppmm,
+    }));
+    const hedef4 = koseAdlari.map(ad => gozlenen[ad]);
+
+    let H4 = null;
+    try { H4 = homografiHesapla(kaynak4, hedef4); } catch (e) { H4 = null; }
+    detay.konveks = konveksVeSaglikliMiOto([
+      gozlenen['sol-ust'], gozlenen['sag-ust'], gozlenen['sol-alt'], gozlenen['sag-alt']
+    ]);
+    if (!H4 || !detay.konveks) {
+      const markerPuani = bulunanAdlar.length / 6;
+      const guven = _sinirla01(markerPuani * 0.35 + (detay.konveks ? 0.15 : 0));
+      detay.puanlar = { marker: markerPuani, geometri: 0, konveks: detay.konveks ? 1 : 0 };
+      return { guven, durum: 'red', detay, homografi4: H4 };
+    }
+
+    const olcek = (pikselPerMM && pikselPerMM > 0) ? pikselPerMM : ppmm;
+    const ortaTanimlari = [
+      { ad:'sol-orta', ust:'sol-ust', alt:'sol-alt' },
+      { ad:'sag-orta', ust:'sag-ust', alt:'sag-alt' },
+    ];
+    for (const t of ortaTanimlari) {
+      if (!gozlenen[t.ad] || !beklenenMap[t.ad]) continue;
+      const kanonik = beklenenMap[t.ad].nokta;
+      const tahmin = noktayiDonustur(H4, kanonik.x * ppmm, kanonik.y * ppmm);
+      const gercek = gozlenen[t.ad];
+      const artikMM = Math.hypot(tahmin.x - gercek.x, tahmin.y - gercek.y) / olcek;
+      const kenarMM = _noktaninDogruyaUzakligiPx(gercek, gozlenen[t.ust], gozlenen[t.alt]) / olcek;
+      detay.ortaArtiklariMM.push({ konum:t.ad, artikMM, tahmin, gercek });
+      detay.kenarSapmalariMM.push({ konum:t.ad, sapmaMM:kenarMM });
+    }
+
+    if (detay.ortaArtiklariMM.length) {
+      const vals = detay.ortaArtiklariMM.map(x => x.artikMM);
+      detay.ortalamaOrtaArtikMM = vals.reduce((a,b)=>a+b,0) / vals.length;
+      detay.maksimumOrtaArtikMM = Math.max(...vals);
+    }
+
+    // Puanlama:
+    // - 4 köşe var ama orta işaretlerin ikisi de yoksa marker puanı 4/6 ve
+    //   toplam güven bilinçli olarak RED sınırının altında kalır.
+    // - Orta residual 0-2mm çok iyi, 4mm civarı kontrol, 8mm+ güvensizdir.
+    const markerPuani = bulunanAdlar.length / 6;
+    let geometriPuani = 0;
+    if (detay.ortaArtiklariMM.length) {
+      const ort = detay.ortalamaOrtaArtikMM || 0;
+      const maks = detay.maksimumOrtaArtikMM || 0;
+      const residualPuan = _sinirla01(1 - ort / 8);
+      const maxPuan = _sinirla01(1 - Math.max(0, maks - 2) / 10);
+      const kenarOrt = detay.kenarSapmalariMM.length
+        ? detay.kenarSapmalariMM.reduce((a,x)=>a+x.sapmaMM,0) / detay.kenarSapmalariMM.length : 99;
+      const kenarPuan = _sinirla01(1 - kenarOrt / 5);
+      geometriPuani = residualPuan * 0.60 + maxPuan * 0.20 + kenarPuan * 0.20;
+      // Sadece tek orta marker doğrulandıysa geometrinin kanıt gücünü düşür.
+      if (detay.ortaArtiklariMM.length === 1) geometriPuani *= 0.82;
+    }
+
+    const konveksPuani = detay.konveks ? 1 : 0;
+    const guven = _sinirla01(markerPuani * 0.30 + geometriPuani * 0.55 + konveksPuani * 0.15);
+    const durum = guven >= HIZALAMA_GUVEN_ESIK_YUKSEK ? 'guvenli'
+      : guven >= HIZALAMA_GUVEN_ESIK_RED ? 'kontrol'
+      : 'red';
+    detay.puanlar = { marker: markerPuani, geometri: geometriPuani, konveks: konveksPuani };
+    return { guven, durum, detay, homografi4: H4 };
+  }
+
   function formuOtomatikDuzlestir(fotoImageData, form, ppmm) {
     const bulunanlar = sayfaKoseleriniAraHibrit(fotoImageData, undefined, form);
 
@@ -2625,89 +2866,38 @@ window.OmrOkuyucu = (function () {
       if (toplamKaynakMM > 0) pikselPerMM = toplamHedefPx / toplamKaynakMM;
     }
 
+    // 6-nokta doğrulaması H seçilmeden ÖNCE yapılır. Özellikle önemli:
+    // homografiHesapla() TAM 4 nokta beklediği için eski kod 6 marker'ın
+    // tamamını hassasKaynak/hassasHedef dizileriyle ona gönderdiğinde hata
+    // alabiliyordu. Artık tam homografi HER ZAMAN 4 köşe markerından kurulur;
+    // iki orta marker ise bağımsız doğrulama kanıtı olarak kullanılır.
+    const geometri6 = altiNoktaGeometrisiniDogrula(hizalamaMM, konumEslesme, ppmm, pikselPerMM);
+
     const disariBirakilanIsaretler = [];
     let artiklarMM = [];
     let H = null;
     let secilenYontem = null; // YENİ (teşhis): hangi dönüşüm yöntemi seçildi
 
-    if (dortKoseDeBulundu) {
-      artiklarMM = hassasKaynak.map((_, i) => {
-        const kalanKaynak = hassasKaynak.filter((_, j) => j !== i);
-        const kalanHedef = hassasHedef.filter((_, j) => j !== i);
-        try {
-          const Hsub = afinHesapla(kalanKaynak, kalanHedef);
-          const tahmin = noktayiDonustur(Hsub, hassasKaynak[i].x, hassasKaynak[i].y);
-          const dx = tahmin.x - hassasHedef[i].x;
-          const dy = tahmin.y - hassasHedef[i].y;
-          return Math.sqrt(dx * dx + dy * dy) / pikselPerMM;
-        } catch (e) {
-          return Infinity;
-        }
-      });
+    // Dönüşüm seçimi: 4 köşe varsa gerçek perspektifi modelleyen TAM
+    // homografi kullanılır. 5./6. markerlar H'yi kurmak için değil, H'nin
+    // doğru olduğunu doğrulamak için ayrılmıştır (native OMR nirengi deseni).
+    const koseSirasi = ['sol-ust','sag-ust','sag-alt','sol-alt'];
+    const koseKaynak = [];
+    const koseHedef = [];
+    for (const ad of koseSirasi) {
+      const idx = bulunanKonumlar.indexOf(ad);
+      if (idx >= 0) { koseKaynak.push(hassasKaynak[idx]); koseHedef.push(hassasHedef[idx]); }
+    }
 
-      let enKotuIndex = -1;
-      let enKotuDeger = -Infinity;
-      let ikinciKotuDeger = -Infinity;
-      for (let i = 0; i < artiklarMM.length; i++) {
-        const deger = Number.isFinite(artiklarMM[i]) ? artiklarMM[i] : Infinity;
-        if (deger > enKotuDeger) {
-          ikinciKotuDeger = enKotuDeger;
-          enKotuDeger = deger;
-          enKotuIndex = i;
-        } else if (deger > ikinciKotuDeger) {
-          ikinciKotuDeger = deger;
-        }
-      }
-
-      // NOT (v9 — v8'deki MUTLAK EŞİK hatası düzeltildi): v8, tek bir sabit
-      // mm eşiği (20mm) kullanıyordu. SORUN: gerçekten güçlü ama SİMETRİK
-      // bir perspektifte (kağıt fotoğrafa belirgin açıyla tutulmuş) 4
-      // köşenin de leave-one-out artığı BİRBİRİNE ÇOK YAKIN (hatta neredeyse
-      // eşit, ör. hepsi ~76mm) çıkabiliyor — bu tek bir köşenin YANLIŞ
-      // bulunduğu anlamına gelmez, tam tersine AFİN modelin gerçek
-      // perspektifi hiç karşılayamadığının kanıtıdır. v8 böyle durumda
-      // "en kötü" köşeyi (aralarında anlamlı fark olmasa bile) dışlayıp
-      // afin'e düşüyordu — ki afin perspektifi modelleyemediği için sonuç
-      // AYNI DERECEDE (hatta daha) çarpık çıkıyordu (gözlemlenen: 76mm'lik
-      // "tutarsızlık" sonrası hâlâ çok yamuk görüntü).
-      //
-      // ÇÖZÜM: mutlak eşik yerine, en kötü köşenin İKİNCİ en kötüden ne
-      // kadar AYRIŞTIĞINA (göreli aykırı değer) bakılıyor. Sadece tek bir
-      // köşe gerçekten belirgin şekilde kötüyse (diğerlerinden hem oransal
-      // hem mutlak olarak çok daha büyük) o köşe hatalı sayılıp dışlanıyor.
-      // Aksi halde (4 köşe de birbirine yakın artık veriyor — perspektif
-      // yüksek olsa bile) tam 4-nokta homografiye güveniliyor, çünkü o,
-      // AFİN'in aksine gerçek perspektifi doğru modelleyen tek yöntem.
-      const belirginTekKotuKose =
-        enKotuIndex !== -1 && Number.isFinite(enKotuDeger) && Number.isFinite(ikinciKotuDeger) &&
-        enKotuDeger > ikinciKotuDeger * 1.8 && (enKotuDeger - ikinciKotuDeger) > 8;
-
-      // YENİ (teşhis): hangi dalın seçildiğini ve sağlık kontrolünün ne
-      // döndürdüğünü açıkça kaydediyoruz — daha önce bu bilgi hiçbir yerde
-      // görünmüyordu, "tam homografi mi afin mi kullanıldı" kör bir kutuydu.
-      const saglikliMi = konveksVeSaglikliMiOto(hassasHedef);
-
-      if (belirginTekKotuKose) {
-        const kalanKaynak = hassasKaynak.filter((_, j) => j !== enKotuIndex);
-        const kalanHedef = hassasHedef.filter((_, j) => j !== enKotuIndex);
-        try { H = afinHesapla(kalanKaynak, kalanHedef); } catch (e) { H = null; }
-        disariBirakilanIsaretler.push(bulunanKonumlar[enKotuIndex]);
-        secilenYontem = 'afin (belirgin tek kötü köşe dışlandı: ' + bulunanKonumlar[enKotuIndex] + ')';
-      } else if (saglikliMi) {
-        try { H = homografiHesapla(hassasKaynak, hassasHedef); } catch (e) { H = null; }
-        secilenYontem = 'tam homografi (4 köşe sağlıklı)';
-      } else if (enKotuIndex !== -1 && Number.isFinite(enKotuDeger)) {
-        // Dörtgen dejenere görünüyor ama tek bir belirgin kötü köşe de yok
-        // — yine de en kötüyü dışlayıp afin dene, hiç okumamaktan iyidir.
-        const kalanKaynak = hassasKaynak.filter((_, j) => j !== enKotuIndex);
-        const kalanHedef = hassasHedef.filter((_, j) => j !== enKotuIndex);
-        try { H = afinHesapla(kalanKaynak, kalanHedef); } catch (e) { H = null; }
-        disariBirakilanIsaretler.push(bulunanKonumlar[enKotuIndex]);
-        secilenYontem = 'afin (dörtgen sağlıksız/konveks değil, en kötü köşe [' + bulunanKonumlar[enKotuIndex] + '] dışlandı)';
-      }
-    } else if (ucKoseBulundu) {
-      try { H = afinHesapla(hassasKaynak, hassasHedef); } catch (e) { H = null; }
-      secilenYontem = 'afin (sadece 3 köşe bulundu)';
+    if (koseKaynak.length === 4 && geometri6.detay.konveks) {
+      H = geometri6.homografi4;
+      secilenYontem = 'tam homografi (4 köşe) + 6-nokta geometrik doğrulama';
+      // Teşhis için 4 köşenin homografi residualı teorik olarak ~0'dır;
+      // orta marker residualları daha anlamlıdır ve geometri6'da tutulur.
+      artiklarMM = koseSirasi.map(() => 0);
+    } else if (koseKaynak.length === 3) {
+      try { H = afinHesapla(koseKaynak, koseHedef); } catch (e) { H = null; }
+      secilenYontem = 'afin (yalnızca 3 temel köşe bulundu; 6-nokta güvenlik kontrolünü geçemez)';
     }
 
     const koseBulunduMu = !!H;
@@ -2719,8 +2909,8 @@ window.OmrOkuyucu = (function () {
       disariBirakilanIsaretler,
       hizalamaKanonikNoktalari: koseBulunduMu ? hassasHedef : null,
       hamBulunanKanonikNoktalari: hassasKaynak.length ? hassasKaynak : null,
-      koseArtiklariMM: dortKoseDeBulundu
-        ? bulunanKonumlar.map((konum, i) => ({ konum, artikMM: artiklarMM[i] }))
+      koseArtiklariMM: H
+        ? ['sol-ust','sag-ust','sag-alt','sol-alt'].map((konum, i) => ({ konum, artikMM: artiklarMM[i] ?? 0 }))
         : [],
       // YENİ (teşhis alanları):
       secilenYontem,
@@ -2728,6 +2918,9 @@ window.OmrOkuyucu = (function () {
         ? bulunanKonumlar.map((konum, i) => konum + '=(' + hassasHedef[i].x.toFixed(0) + ',' + hassasHedef[i].y.toFixed(0) + ')').join(', ')
         : null,
       pikselPerMM,
+      hizalamaGuveni: geometri6.guven,
+      hizalamaDurumu: geometri6.durum,
+      hizalamaGeometriDetayi: geometri6.detay,
     };
   }
 
@@ -2758,7 +2951,7 @@ window.OmrOkuyucu = (function () {
     // ham fotoğraf üzerinde çalışır (bkz. isParlamaVarKontrol).
     isParlamaVarKontrol(fotoImageData);
 
-    const { H, bulunamayanIsaretler, disariBirakilanIsaretler, hizalamaKanonikNoktalari, hamBulunanKanonikNoktalari, koseArtiklariMM, secilenYontem, bulunanPikselNoktalari, pikselPerMM } =
+    const { H, bulunamayanIsaretler, disariBirakilanIsaretler, hizalamaKanonikNoktalari, hamBulunanKanonikNoktalari, koseArtiklariMM, secilenYontem, bulunanPikselNoktalari, pikselPerMM, hizalamaGuveni, hizalamaDurumu, hizalamaGeometriDetayi } =
       formuOtomatikDuzlestir(fotoImageData, form, ppmm);
 
     // Gerçek ölçek: köşelerden hesaplanan pikselPerMM'yi kullan.
@@ -2780,6 +2973,36 @@ window.OmrOkuyucu = (function () {
         ],
         hataAyiklama: null,
       };
+    }
+
+    // 6-nokta kalite kapısı: geometri RED ise cevaplara hiç bakma.
+    // Bu, yanlış hizalanmış bir kâğıdın "başarılı" diye kaydedilmesini
+    // engeller. 0.65-0.85 arası okumaya izin verilir ama kontrolGerekli=true
+    // olarak işaretlenir; üst katman otomatik kaydetmez.
+    if (typeof hizalamaGuveni === 'number' && hizalamaGuveni < HIZALAMA_GUVEN_ESIK_RED) {
+      const d = hizalamaGeometriDetayi || {};
+      return {
+        basarili: false,
+        kontrolGerekli: false,
+        hizalamaGuveni,
+        hizalamaDurumu: 'red',
+        ogrenciKimlik: null,
+        cevaplar: [],
+        uyarilar: [
+          'Hizalama geometrisi güvenli değil (' + Math.round(hizalamaGuveni * 100) + '/100). ' +
+          '6 referans noktasından ' + (d.bulunan || 0) + '/6 bulundu' +
+          (d.eksikAdlar && d.eksikAdlar.length ? '; eksik: ' + d.eksikAdlar.join(', ') : '') + '. ' +
+          'Kağıdı düzleştirip tüm hizalama kareleri görünür olacak şekilde tekrar tarayın.'
+        ],
+        hataAyiklama: { hizalamaGeometriDetayi: d },
+      };
+    }
+
+    const kontrolGerekli = typeof hizalamaGuveni === 'number' && hizalamaGuveni < HIZALAMA_GUVEN_ESIK_YUKSEK;
+    if (kontrolGerekli) {
+      uyarilar.push('Hizalama güveni orta seviyede: ' + Math.round(hizalamaGuveni * 100) + '/100 — sonuç otomatik kaydedilmeyecek, kullanıcı kontrolü gerekli.');
+    } else if (typeof hizalamaGuveni === 'number') {
+      uyarilar.push('Hizalama güveni: ' + Math.round(hizalamaGuveni * 100) + '/100 (6-nokta geometrisi doğrulandı).');
     }
 
     if (koseArtiklariMM && koseArtiklariMM.length) {
@@ -2883,7 +3106,7 @@ window.OmrOkuyucu = (function () {
     if (_sonKoyulukOzeti) {
       uyarilar.push('Koyuluk özeti: ' + _sonKoyulukOzeti);
     }
-    uyarilar.push('[KOD SÜRÜMÜ: v25-dinamikOlcek]');
+    uyarilar.push('[KOD SÜRÜMÜ: v32-formKaliteMotoru]');
     if (_sonNumaraTeshis) { uyarilar.push('Numara teşhisi: ' + _sonNumaraTeshis); }
     if (_sonKitapcikTeshis) { uyarilar.push('Kitapçık/Form Kodu teşhisi: ' + _sonKitapcikTeshis); }
     if (_cevapTeshisSatirlari.length) { uyarilar.push('Cevap teşhisi (ders başına en fazla 2 örnek):\n' + _cevapTeshisSatirlari.join('\n')); }
@@ -2892,9 +3115,13 @@ window.OmrOkuyucu = (function () {
 
     return {
       basarili: true,
+      kontrolGerekli,
+      hizalamaGuveni,
+      hizalamaDurumu,
       ogrenciKimlik,
       formKodu,
       cevaplar,
+      bubbleKalite: cevaplarSonuc.bubbleKalite,
       birdenFazlaSecenekIsaretleme, // YENİ: çoklu işaret ayrıntı listesi
       uyarilar,
       hataAyiklama: {
@@ -2903,6 +3130,7 @@ window.OmrOkuyucu = (function () {
         hamHizalamaNoktalari: hamBulunanKanonikNoktalari,
         ornekNoktalari: cevaplarSonuc.ornekNoktalari,
         genelDuzeltme,
+        hizalamaGeometriDetayi,
       },
     };
   }
