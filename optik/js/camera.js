@@ -70,7 +70,11 @@ let _canliModAktif = false;
 let _canliIsleniyor = false;       // tam okuma o an çalışıyor mu (döngü bu sürece dokunmaz)
 let _sonIslenenImza = null;        // "dolu" | null — aynı kağıdı (kutucuklardan hiç çıkmadan) tekrar tetiklememek için
 let _stabilGecmis = [];            // son birkaç tespit turunun "4 kutucuk da dolu mu" sonucu (ani titremeyi tetik saymamak için)
-const STABIL_GEREKEN_TUR = 2;      // bu kadar ardışık turda "tümü dolu" sürerse tetikle
+const STABIL_GEREKEN_TUR = 3;      // hareketli köşelerde kısa süreli kararlılık gerekir
+const KOSE_YUMUSATMA = 0.38;        // yeni tespitin ağırlığı; düşük = daha akıcı/az titreme
+const KOSE_STABIL_ESIK_PX = 14;     // ardışık karelerde köşe ortalama hareketi bunun altındaysa stabil
+let _hareketliKoseler = null;       // ekranda çizilen yumuşatılmış gerçek sayfa köşeleri
+let _oncekiHareketliKoseler = null;
 
 let _onSonucCallback = null;       // app.js tarafından set edilir: canlı modda her okuma sonrası çağrılır
 let _onDurumCallback = null;       // app.js tarafından set edilir: "aranıyor/hizalandı/okunuyor" durumu için
@@ -209,6 +213,9 @@ function _beklenenKoseKonumlariHesapla(dispW, dispH) {
 }
 
 function _koseTespitTemizle() {
+    _hareketliKoseler = null;
+    _oncekiHareketliKoseler = null;
+    _stabilGecmis = [];
     const overlay = document.getElementById("koseTespitOverlay");
     if (!overlay) return;
     const octx = overlay.getContext("2d");
@@ -235,9 +242,99 @@ function _koseTespitDurdur() {
     _sonIslenenImza = null; // eski oturumun "dolu" durumu yeni oturuma sızmasın
 }
 
-function _koseTespitCalistir() {
 
-    if (_koseTespitCalisiyor || _canliIsleniyor) return; // önceki tur / tam okuma hâlâ sürüyor, atla
+/**
+ * v35 — Analiz görüntüsündeki gerçek sayfa köşelerini video elementinin
+ * görünen koordinatlarına çevirir. Kamera önizlemesi object-fit:cover ise
+ * kırpılan yan/üst alanları hesaba katar.
+ */
+function _analizKosesiniEkranaCevir(p, analizW, analizH, dispW, dispH) {
+    const videoOran = analizW / analizH;
+    const ekranOran = dispW / dispH;
+
+    let gosterW, gosterH, ofsX, ofsY;
+    if (videoOran > ekranOran) {
+        // cover: yüksekliğe oturur, sağ/sol kırpılır
+        gosterH = dispH;
+        gosterW = dispH * videoOran;
+        ofsX = (dispW - gosterW) / 2;
+        ofsY = 0;
+    } else {
+        // cover: genişliğe oturur, üst/alt kırpılır
+        gosterW = dispW;
+        gosterH = dispW / videoOran;
+        ofsX = 0;
+        ofsY = (dispH - gosterH) / 2;
+    }
+
+    return {
+        ekranX: ofsX + (p.x / analizW) * gosterW,
+        ekranY: ofsY + (p.y / analizH) * gosterH,
+    };
+}
+
+function _koseleriYumusat(yeni) {
+    if (!_hareketliKoseler) {
+        _hareketliKoseler = JSON.parse(JSON.stringify(yeni));
+        return _hareketliKoseler;
+    }
+    for (const k of ["solUst","sagUst","sagAlt","solAlt"]) {
+        _hareketliKoseler[k].ekranX =
+            _hareketliKoseler[k].ekranX * (1 - KOSE_YUMUSATMA) + yeni[k].ekranX * KOSE_YUMUSATMA;
+        _hareketliKoseler[k].ekranY =
+            _hareketliKoseler[k].ekranY * (1 - KOSE_YUMUSATMA) + yeni[k].ekranY * KOSE_YUMUSATMA;
+    }
+    return _hareketliKoseler;
+}
+
+function _koseHareketOrtalamasi(a, b) {
+    if (!a || !b) return Infinity;
+    let toplam = 0;
+    for (const k of ["solUst","sagUst","sagAlt","solAlt"]) {
+        const dx = a[k].ekranX - b[k].ekranX;
+        const dy = a[k].ekranY - b[k].ekranY;
+        toplam += Math.hypot(dx, dy);
+    }
+    return toplam / 4;
+}
+
+function _hareketliKoseCiz(octx, koseler, dispW) {
+    const r = Math.max(8, dispW * 0.018);
+    const sira = ["solUst","sagUst","sagAlt","solAlt"];
+
+    // gerçek sayfa dörtgeni
+    octx.beginPath();
+    octx.moveTo(koseler.solUst.ekranX, koseler.solUst.ekranY);
+    for (let i=1;i<sira.length;i++) {
+        const p=koseler[sira[i]];
+        octx.lineTo(p.ekranX,p.ekranY);
+    }
+    octx.closePath();
+    octx.strokeStyle = "rgba(46,204,113,.96)";
+    octx.lineWidth = 3;
+    octx.setLineDash([]);
+    octx.stroke();
+
+    // hareketli köşe tutamaçları
+    for (const k of sira) {
+        const p=koseler[k];
+        octx.beginPath();
+        octx.arc(p.ekranX,p.ekranY,r,0,Math.PI*2);
+        octx.fillStyle="rgba(46,204,113,.18)";
+        octx.fill();
+        octx.strokeStyle="#2ecc71";
+        octx.lineWidth=3;
+        octx.stroke();
+
+        octx.beginPath();
+        octx.arc(p.ekranX,p.ekranY,2.6,0,Math.PI*2);
+        octx.fillStyle="#ffffff";
+        octx.fill();
+    }
+}
+
+function _koseTespitCalistir() {
+    if (_koseTespitCalisiyor || _canliIsleniyor) return;
     if (!video.videoWidth || !video.videoHeight) return;
 
     const overlay = document.getElementById("koseTespitOverlay");
@@ -246,25 +343,12 @@ function _koseTespitCalistir() {
     _koseTespitCalisiyor = true;
 
     try {
-        // AĞUSTOS 2026 — MİMARİ DEĞİŞİKLİK: sayfaKoseleriniAraCV (tüm kareyi
-        // Canny+findContours ile TARAYIP kağıdı ARAYAN ağır algoritma) BU
-        // DÖNGÜDEN TAMAMEN KALDIRILDI. Yerine: aktif formun (window.
-        // OptikAktifForm) gerçek hizalama-işareti konumlarına göre 4 SABİT
-        // kutucuk hesaplanıyor (_beklenenKoseOranlariHesapla — form
-        // bolge'sinden window.LayoutEngine.hizalamaIsaretleriEkle ile TAM
-        // aynı yerler), her kutucukta SADECE "yeterince koyu piksel var mı"
-        // kontrol ediliyor (kutucukDoluMu — cvSaf.js, O(kutucuk alanı),
-        // kontur arama YOK). Kullanıcı kağıdı bu 4 sabit kutucuğa oturtur —
-        // ZipGrade/TestPlus/CamScanner'ın kullandığı yaklaşımın aynısı.
-        // Performans kazancı ~16x+ (piksel sayısı bazında; kontur arama
-        // hiç çalışmadığı için gerçek kazanç muhtemelen daha büyük).
-
-        // Analiz için küçük bir canvas'a çiz (kutucukDoluMu görüntü
-        // boyutundan bağımsız çalışır ama küçük görüntüde getImageData
-        // daha ucuz).
+        // v35: SABİT kutucuklar kaldırıldı. Her turda görüntünün tamamında
+        // gerçek kağıt dış dörtgeni aranır ve bulunan köşeler ekranda kağıtla
+        // birlikte hareket eder.
         const aOlcek = KOSE_TESPIT_ANALIZ_GENISLIK / video.videoWidth;
         const aGenislik = KOSE_TESPIT_ANALIZ_GENISLIK;
-        const aYukseklik = Math.round(video.videoHeight * aOlcek);
+        const aYukseklik = Math.max(1, Math.round(video.videoHeight * aOlcek));
 
         _koseTespitAnalizCanvas.width = aGenislik;
         _koseTespitAnalizCanvas.height = aYukseklik;
@@ -275,142 +359,103 @@ function _koseTespitCalistir() {
         try {
             imageData = actx.getImageData(0, 0, aGenislik, aYukseklik);
         } catch (err) {
-            return; // (nadir) canvas okuma hatası — bu turu sessizce atla
+            return;
         }
 
-        // Beklenen köşe konumları — DOĞRUDAN EKRAN KOORDİNATI (video
-        // boyutundan bağımsız, bkz. yukarıdaki fonksiyon yorumu).
         const rect = video.getBoundingClientRect();
         const dispW = rect.width, dispH = rect.height;
         if (!dispW || !dispH) return;
 
-        const beklenenKonumlar = _beklenenKoseKonumlariHesapla(dispW, dispH);
-
-        // TEŞHİS — sadece içerik varsa göster
-        const teshisEl = document.getElementById('kmKutucukTeshis');
-        if (teshisEl) {
-            const teshisMesaj = window._kutucukTeshis || '';
-            teshisEl.textContent = teshisMesaj;
-            teshisEl.hidden = !teshisMesaj;
-        }
-
-        overlay.width = dispW;
-        overlay.height = dispH;
+        overlay.width = Math.round(dispW);
+        overlay.height = Math.round(dispH);
         const octx = overlay.getContext("2d");
-        octx.clearRect(0, 0, dispW, dispH);
+        octx.clearRect(0, 0, overlay.width, overlay.height);
 
-        const YARICAP = Math.max(16, dispW * 0.032);
+        // Aktif formun en-boy oranını sayfa tespitine ver; böylece duvar,
+        // dolap, kapı gibi büyük dörtgenlerin kağıt sanılma olasılığı azalır.
+        const aktifForm = window.OptikAktifForm && window.OptikAktifForm.form;
+        const bolge = aktifForm && aktifForm.bolge;
+        const oranlar = oranlariHesapla(
+            bolge && bolge.width ? bolge.width : null,
+            bolge && bolge.height ? bolge.height : null
+        );
 
-        // kutucukDoluMu, analiz görüntüsü (aGenislik x aYukseklik, VIDEO
-        // oranında çizilmiş) üzerinde çalışıyor — ama beklenenKonumlar artık
-        // EKRAN oranında. Ekran koordinatını analiz-görüntü koordinatına
-        // çevirmek için object-fit:cover'ın TERSİNİ (ekran->video) uyguluyoruz
-        // — bu, sadece PİKSEL VERİSİ NEREDEN OKUNACAĞINI belirlemek için,
-        // konumlandırma matematiğini etkilemiyor (o zaten ekran-tabanlı
-        // ve doğru). video.videoWidth/Height burada sadece "hangi analiz
-        // pikseline bak" sorusu için kullanılıyor, güvenilmezliği (yön
-        // karışıklığı) konumlandırmayı artık etkilemiyor çünkü YARICAP
-        // yeterince büyük bir kontrol penceresi (KUTUCUK_YARICAP_ANALIZ)
-        // kullanılıyor — birkaç piksellik kayma toleransı içinde kalıyor.
-        const ekranToAnalizX = aGenislik / dispW;
-        const ekranToAnalizY = aYukseklik / dispH;
-        const KUTUCUK_YARICAP_ANALIZ = Math.max(10, aGenislik * 0.06);
+        const bulunan = sayfaKoseleriniAraCV(imageData, oranlar);
 
-        const durumlar = {};
+        const tam =
+            bulunan && bulunan.solUst && bulunan.sagUst &&
+            bulunan.solAlt && bulunan.sagAlt;
 
-        Object.keys(beklenenKonumlar).forEach((konum) => {
-            const p = beklenenKonumlar[konum];
-            const analizX = p.ekranX * ekranToAnalizX;
-            const analizY = p.ekranY * ekranToAnalizY;
+        if (!tam) {
+            _stabilGecmis = [];
+            _oncekiHareketliKoseler = null;
+            _hareketliKoseler = null;
+            if (typeof _onDurumCallback === "function") _onDurumCallback("araniyor");
 
-            const sonuc = kutucukDoluMu(
-                imageData,
-                analizX - KUTUCUK_YARICAP_ANALIZ, analizY - KUTUCUK_YARICAP_ANALIZ,
-                analizX + KUTUCUK_YARICAP_ANALIZ, analizY + KUTUCUK_YARICAP_ANALIZ
-            );
-
-            const ekranX = Math.min(dispW - YARICAP, Math.max(YARICAP, p.ekranX));
-            const ekranY = Math.min(dispH - YARICAP, Math.max(YARICAP, p.ekranY));
-
-            durumlar[konum] = { dolu: sonuc.dolu, ekranX, ekranY };
-
-            const renk = sonuc.dolu ? "#2ecc71" : "#e74c3c";
-
-            octx.beginPath();
-            octx.arc(ekranX, ekranY, YARICAP, 0, Math.PI * 2);
-            octx.strokeStyle = renk;
-            octx.lineWidth = 3;
-            octx.stroke();
-
-            octx.beginPath();
-            octx.moveTo(ekranX - YARICAP * 0.5, ekranY);
-            octx.lineTo(ekranX + YARICAP * 0.5, ekranY);
-            octx.moveTo(ekranX, ekranY - YARICAP * 0.5);
-            octx.lineTo(ekranX, ekranY + YARICAP * 0.5);
-            octx.strokeStyle = renk;
-            octx.lineWidth = 2;
-            octx.stroke();
-        });
-
-        // 4 köşeyi birbirine bağlayan dörtgen — TÜM köşeler doluysa YEŞİL
-        // düz, değilse KIRMIZI kesikli çizgi (kutucuklar SABİT olduğu için
-        // çerçeve her zaman aynı yerde, sadece renk/stil değişiyor).
-        const sira = [["solUst", "sagUst"], ["sagUst", "sagAlt"], ["sagAlt", "solAlt"], ["solAlt", "solUst"]];
-        for (const [a, b] of sira) {
-            const p1 = durumlar[a], p2 = durumlar[b];
-            const ikisiDeDolu = p1.dolu && p2.dolu;
-            octx.beginPath();
-            octx.setLineDash(ikisiDeDolu ? [] : [6, 5]);
-            octx.moveTo(p1.ekranX, p1.ekranY);
-            octx.lineTo(p2.ekranX, p2.ekranY);
-            octx.strokeStyle = ikisiDeDolu ? "rgba(46,204,113,.85)" : "rgba(231,76,60,.55)";
-            octx.lineWidth = 2;
-            octx.stroke();
-            octx.setLineDash([]);
+            const teshisEl = document.getElementById("kmKutucukTeshis");
+            if (teshisEl) {
+                teshisEl.textContent = "Kağıt aranıyor — dört kenarın tamamı kamerada görünsün.";
+                teshisEl.hidden = false;
+            }
+            return;
         }
 
-        // ---- Canlı tarama modu: 4 kutucuk da dolu mu + kısa stabilite ----
-        // Kutucuklar SABİT olduğu için "köşe konumu titriyor mu" kontrolüne
-        // artık gerek yok — sadece "tümü dolu" durumunun birkaç ardışık
-        // turda sürüp sürmediğine bakılıyor (kullanıcının kağıdı gerçekten
-        // yerleştirdiğinden emin olmak için, anlık bir titremeyi tetik
-        // saymamak amacıyla).
-        if (_canliModAktif) {
-            const tumuDolu = Object.keys(durumlar).every((k) => durumlar[k].dolu);
+        const ekranKoseleriHam = {
+            solUst: _analizKosesiniEkranaCevir(bulunan.solUst, aGenislik, aYukseklik, dispW, dispH),
+            sagUst: _analizKosesiniEkranaCevir(bulunan.sagUst, aGenislik, aYukseklik, dispW, dispH),
+            sagAlt: _analizKosesiniEkranaCevir(bulunan.sagAlt, aGenislik, aYukseklik, dispW, dispH),
+            solAlt: _analizKosesiniEkranaCevir(bulunan.solAlt, aGenislik, aYukseklik, dispW, dispH),
+        };
 
-            _stabilGecmis.push(tumuDolu);
-            if (_stabilGecmis.length > STABIL_GEREKEN_TUR) _stabilGecmis.shift();
+        const koseler = _koseleriYumusat(ekranKoseleriHam);
+        _hareketliKoseCiz(octx, koseler, dispW);
 
-            if (typeof _onDurumCallback === "function") {
-                _onDurumCallback(tumuDolu ? "hizalandi" : "araniyor");
-            }
+        const hareket = _koseHareketOrtalamasi(koseler, _oncekiHareketliKoseler);
+        const stabil = hareket < KOSE_STABIL_ESIK_PX;
 
-            if (_stabilGecmis.length === STABIL_GEREKEN_TUR && _stabilGecmis.every((v) => v === true)) {
-                // Aynı kağıdı (kamera hareket etmeden) tekrar tekrar
-                // tetiklememek için basit bir imza: 4 kutucuğun ekran
-                // konumu zaten SABİT, o yüzden imza yerine son okumadan bu
-                // yana geçen süreyi/durumu _sonIslenenImza ile takip etmeye
-                // devam ediyoruz — "tümü dolu" durumu SÜREKLİ true kaldığı
-                // sürece (kağıt kameradan hiç çıkmadıysa) tekrar tetiklenmesin.
-                const imza = "dolu";
-                if (imza !== _sonIslenenImza) {
-                    _sonIslenenImza = imza;
-                    _stabilGecmis = [];
-                    _canliOtomatikOku();
-                }
-            } else if (!tumuDolu) {
-                // Kağıt kutucuklardan çıktı/değişti — bir sonraki "tümü
-                // dolu" anı yeni bir tetikleme sayılsın.
-                _sonIslenenImza = null;
+        _oncekiHareketliKoseler = JSON.parse(JSON.stringify(koseler));
+        _stabilGecmis.push(stabil);
+        if (_stabilGecmis.length > STABIL_GEREKEN_TUR) _stabilGecmis.shift();
+
+        const kararlı =
+            _stabilGecmis.length === STABIL_GEREKEN_TUR &&
+            _stabilGecmis.every(Boolean);
+
+        const teshisEl = document.getElementById("kmKutucukTeshis");
+        if (teshisEl) {
+            teshisEl.textContent = kararlı
+                ? "Kağıt bulundu ve hizalama kararlı."
+                : "Kağıt bulundu — köşeler takip ediliyor…";
+            teshisEl.hidden = false;
+        }
+
+        if (typeof _onDurumCallback === "function") {
+            _onDurumCallback(kararlı ? "hizalandi" : "araniyor");
+        }
+
+        // Canlı modda köşeler birkaç ardışık karede kararlıysa otomatik oku.
+        if (_canliModAktif && kararlı) {
+            const q = (v) => Math.round(v / 12);
+            const imza = [
+                q(koseler.solUst.ekranX), q(koseler.solUst.ekranY),
+                q(koseler.sagUst.ekranX), q(koseler.sagUst.ekranY),
+                q(koseler.sagAlt.ekranX), q(koseler.sagAlt.ekranY),
+                q(koseler.solAlt.ekranX), q(koseler.solAlt.ekranY)
+            ].join(":");
+
+            if (imza !== _sonIslenenImza) {
+                _sonIslenenImza = imza;
+                _stabilGecmis = [];
+                _canliOtomatikOku();
             }
         }
 
     } catch (err) {
-        console.error("Canlı köşe tespiti hatası (görmezden gelindi):", err);
+        console.error("Canlı otomatik köşe tespiti hatası:", err);
+        _stabilGecmis = [];
     } finally {
         _koseTespitCalisiyor = false;
     }
-
 }
 
 /**

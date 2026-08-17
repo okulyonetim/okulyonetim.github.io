@@ -1,3 +1,18 @@
+# Optik Okuma Modülü — v35-hareketliOtomatikKose
+**Tarih:** Ağustos 2026
+
+## v35 — Canlı otomatik hareketli köşe bulucu
+- Kamera ekranındaki 4 sabit yeşil hedef/kutucuk kaldırıldı.
+- Her analiz karesinde `sayfaKoseleriniAraCV()` tüm görüntüde gerçek kağıt dış dörtgenini arar.
+- Bulunan köşeler video üzerindeki gerçek konumlarına dönüştürülür ve kağıt hareket ettikçe birlikte hareket eder.
+- EMA tabanlı yumuşatma ile köşe işaretlerinin titremesi azaltıldı.
+- Ortalama köşe hareketi 14 px altında 3 ardışık tur kalırsa hizalama kararlı kabul edilir.
+- Canlı tarama modunda kararlı gerçek dörtgen bulunduğunda otomatik okuma tetiklenir.
+- Manuel `Köşe Seç` yedek akış olarak korunur.
+- Aktif formun en-boy oranı sayfa tespitine verilir; kapı/dolap gibi yanlış büyük dörtgenlerin kabul edilme olasılığı azaltılır.
+- Sabit `_beklenenKoseKonumlariHesapla`/`kutucukDoluMu` mantığı canlı tespit kararından çıkarıldı.
+- Cache: `app.js?v=35`, `omrEngine.js?v=35`.
+
 # Optik Okuma Modülü — v34-yatayLgsGaleriUyumluluk
 **Tarih:** Ağustos 2026
 
