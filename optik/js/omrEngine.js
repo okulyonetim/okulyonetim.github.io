@@ -2658,6 +2658,51 @@ window.OmrOkuyucu = (function () {
     return { imageData: kctx.getImageData(0, 0, kGenislik, kYukseklik), olcek: width / kGenislik };
   }
 
+
+  /**
+   * v37 — Galeri/fotoğraf için doğrudan nirengi karesi arama.
+   *
+   * Dış sayfa çerçevesi ince, kırpılmış veya JPEG ölçeklemesi yüzünden
+   * kontur motorunda kaybolabilir. Buna karşılık formun dört köşesindeki
+   * dolu siyah kareler çok güçlü sinyaldir. Geniş köşe bölgelerinde,
+   * beklenen köşe konumuna en yakın kompakt siyah kareyi bulur.
+   */
+  function _dogrudanNirengiKoseleriAra(fotoImageData, hassasiyet) {
+    const w = fotoImageData.width, h = fotoImageData.height;
+    if (!w || !h) return {};
+
+    const tanimlar = {
+      solUst: { x0:0,      y0:0,      x1:w*0.30, y1:h*0.30, tx:w*0.045, ty:h*0.065 },
+      sagUst: { x0:w*0.70, y0:0,      x1:w,      y1:h*0.30, tx:w*0.955, ty:h*0.065 },
+      solAlt: { x0:0,      y0:h*0.70, x1:w*0.30, y1:h,      tx:w*0.045, ty:h*0.935 },
+      sagAlt: { x0:w*0.70, y0:h*0.70, x1:w,      y1:h,      tx:w*0.955, ty:h*0.935 },
+    };
+
+    const sonuc = {};
+    for (const [ad,t] of Object.entries(tanimlar)) {
+      try {
+        sonuc[ad] = enBuyukKareBlobuBul(
+          fotoImageData,
+          t.x0, t.y0, t.x1, t.y1,
+          t.tx, t.ty,
+          hassasiyet
+        );
+      } catch (_) {
+        sonuc[ad] = null;
+      }
+    }
+
+    const adet = Object.values(sonuc).filter(Boolean).length;
+    if (adet < 4) return {};
+
+    // Yanlış dört blob birleşimini reddet.
+    if (!konveksVeSaglikliMiOto([
+      sonuc.solUst, sonuc.sagUst, sonuc.solAlt, sonuc.sagAlt
+    ])) return {};
+
+    return sonuc;
+  }
+
   function sayfaKoseleriniAraHibrit(fotoImageData, hassasiyet, form) {
     if (typeof window.SayfaTespitCV === 'undefined' || !window.SayfaTespitCV.cvHazirMi()) {
       return sayfaKoseleriniAra(fotoImageData, hassasiyet);
@@ -2677,6 +2722,13 @@ window.OmrOkuyucu = (function () {
       const { imageData: kucukImageData, olcek } = _kucukAnalizGoruntusuUret(fotoImageData);
       const kucukCerceve = window.SayfaTespitCV.sayfaKoseleriniAraCV(kucukImageData, null, null, beklenenOranlar);
       if (!kucukCerceve || !kucukCerceve.solUst || !kucukCerceve.sagUst || !kucukCerceve.solAlt || !kucukCerceve.sagAlt) {
+        // v37: dış çerçeve bulunamadığında önce doğrudan siyah nirengi
+        // karelerini ara. Özellikle galeriden alınan yatay LGS görsellerinde
+        // ince dış çerçeve kaybolsa bile köşe kareleri güçlü biçimde kalır.
+        const nirengi = _dogrudanNirengiKoseleriAra(fotoImageData, hassasiyet);
+        if (nirengi.solUst && nirengi.sagUst && nirengi.solAlt && nirengi.sagAlt) {
+          return nirengi;
+        }
         return sayfaKoseleriniAra(fotoImageData, hassasiyet);
       }
       // Küçük görüntüdeki köşe koordinatlarını TAM ÇÖZÜNÜRLÜĞE geri ölçekle
@@ -2714,7 +2766,9 @@ window.OmrOkuyucu = (function () {
         sagAlt: inceltVeDon(cerceve.sagAlt, cerceve.sagAlt.x, cerceve.sagAlt.y),
       };
     } catch (e) {
-      console.error('[OMR] CV köşe tespiti hata verdi, eski yönteme düşülüyor:', e);
+      console.error('[OMR] CV köşe tespiti hata verdi:', e);
+      const nirengi = _dogrudanNirengiKoseleriAra(fotoImageData, hassasiyet);
+      if (nirengi.solUst && nirengi.sagUst && nirengi.solAlt && nirengi.sagAlt) return nirengi;
       return sayfaKoseleriniAra(fotoImageData, hassasiyet);
     }
   }

@@ -1,3 +1,15 @@
+# Optik Okuma Modülü — v37-dogrudanNirengiGaleri
+**Tarih:** Ağustos 2026
+
+## v37 — Galeri için doğrudan siyah nirengi tespiti
+- Paylaşılan yatay LGS görseliyle teşhiste `sayfaKoseleriniAraCV()` dış sayfa dörtgenini bulamadı.
+- CV dış çerçeve başarısızsa artık dört köşedeki dolu siyah nirengi kareleri doğrudan aranır.
+- 4 kare bulunduğunda perspektif/homografi bu gerçek marker merkezlerinden kurulur.
+- Eski köşe arama yöntemi üçüncü fallback olarak korunur.
+- `sayfaKoseleriniAraCV` çağrılarındaki parametre sırası düzeltildi; form oranı artık gerçekten `beklenenOranlar` parametresine gidiyor.
+- Galeri intent bilgisi OMR motoruna iletilir.
+- Cache v37.
+
 # Optik Okuma Modülü — v36-galeriSessizHataDuzeltme
 **Tarih:** Ağustos 2026
 

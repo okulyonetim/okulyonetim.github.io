@@ -380,7 +380,7 @@ function _koseTespitCalistir() {
             bolge && bolge.height ? bolge.height : null
         );
 
-        const bulunan = sayfaKoseleriniAraCV(imageData, oranlar);
+        const bulunan = sayfaKoseleriniAraCV(imageData, null, null, oranlar);
 
         const tam =
             bulunan && bulunan.solUst && bulunan.sagUst &&

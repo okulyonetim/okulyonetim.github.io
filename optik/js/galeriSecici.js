@@ -88,7 +88,7 @@ async function koseleriBul(canvas) {
                 oranlar = [o, 1 / o];
             }
         } catch (_) {}
-        const bulunan = sayfaKoseleriniAraCV(kImageData, oranlar);
+        const bulunan = sayfaKoseleriniAraCV(kImageData, null, null, oranlar);
         if (bulunan?.solUst && bulunan?.sagUst && bulunan?.solAlt && bulunan?.sagAlt) {
             const gOl = canvas.width / kucuk.width;
             return {

@@ -327,7 +327,7 @@ export async function formuOkuVeGoster(sourceCanvas, okumaOpsiyonlari = {}) {
     let sonuc;
 
     try {
-        sonuc = await window.OmrOkuyucu.formuOku(sourceCanvas, form, { genelDuzeltmeKullan: false });
+        sonuc = await window.OmrOkuyucu.formuOku(sourceCanvas, form, { genelDuzeltmeKullan: false, galeri: okumaOpsiyonlari.galeri === true });
         dbg('formuOku: basarili=' + sonuc?.basarili + ' uyari=' + (sonuc?.uyarilar?.[0] || '-'));
         console.log('[OMR] sonuc: basarili=', sonuc?.basarili, 'uyarilar=', sonuc?.uyarilar);
         formKoduDogrula(sonuc, sinavTuru);
@@ -395,7 +395,7 @@ export async function formuOkuToplu(sourceCanvas, okumaOpsiyonlari = {}) {
     let sonuc;
 
     try {
-        sonuc = await window.OmrOkuyucu.formuOku(sourceCanvas, form, { genelDuzeltmeKullan: false });
+        sonuc = await window.OmrOkuyucu.formuOku(sourceCanvas, form, { genelDuzeltmeKullan: false, galeri: okumaOpsiyonlari.galeri === true });
         formKoduDogrula(sonuc, sinavTuru);
         formKaliteKapisiUygula(sonuc);
     } catch (err) {
