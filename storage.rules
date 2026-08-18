@@ -8,13 +8,11 @@ service firebase.storage {
 
     function adminMi() {
       return girisYapmis()
-        && firestore.exists(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid))
         && firestore.get(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid)).data.admin == true;
     }
 
     function konusmaKatilimcisiMi(konusmaId) {
       return girisYapmis()
-        && firestore.exists(/databases/(default)/documents/oy_konusmalar/$(konusmaId))
         && request.auth.uid in firestore.get(/databases/(default)/documents/oy_konusmalar/$(konusmaId)).data.katilimciUidler;
     }
 
@@ -25,9 +23,9 @@ service firebase.storage {
     }
 
     // Mesaj dosyaları yalnız ilgili konuşmanın katılımcıları (ve admin)
-    // tarafından okunabilir/yazılabilir. Silmede request.resource null olduğu
-    // için tür/boyut kontrolü yalnız yükleme/güncellemede uygulanır.
-    match /mesajDosyalari/{konusmaId}/{dosyaAdi} {
+    // tarafından okunabilir/yazılabilir. Kullanıcı + konuşma belgesi olmak
+    // üzere tek kural değerlendirmesinde en fazla iki Firestore belgesi okunur.
+    match /mesajDosyalari/{konusmaId}/{dosyaYolu=**} {
       allow read: if adminMi() || konusmaKatilimcisiMi(konusmaId);
       allow write: if (adminMi() || konusmaKatilimcisiMi(konusmaId))
         && (request.resource == null || mesajDosyasiTuruGecerliMi());
