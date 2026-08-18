@@ -8,6 +8,10 @@ for (const ext of ['pdf','docx','doc','xlsx','xls','csv','txt','ppt','pptx']) {
 }
 
 assert(src.includes('docx.renderAsync'), 'DOCX için docx-preview kullanılmalı.');
+assert(src.includes('wordSigdir'), 'Word görüntüleyicide tam sayfaya sığdırma bulunmalı.');
+assert(src.includes('dv3wordZoomLabel'), 'Word görüntüleyicide zoom göstergesi bulunmalı.');
+assert(src.includes('wordZoomUygula'), 'Word görüntüleyicide yakınlaştırma/uzaklaştırma bulunmalı.');
+assert(src.includes('align-items:flex-start!important'), 'Geniş Word sayfasının sol kenarı kesilmemeli.');
 assert(src.includes('ignoreLastRenderedPageBreak:false'), 'DOCX sayfa kırımları korunmaya çalışılmalı.');
 assert(src.includes("XLSX.read(buf,{type:'array'"), 'XLS için SheetJS uyumluluk yolu bulunmalı.');
 assert(src.includes('new ExcelJS.Workbook()'), 'XLSX için ExcelJS yolu bulunmalı.');
