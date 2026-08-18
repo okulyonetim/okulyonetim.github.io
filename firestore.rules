@@ -109,7 +109,11 @@ service cloud.firestore {
         || koleksiyon == 'oy_personel'
         || koleksiyon == 'oy_personelIzinler'
         || koleksiyon == 'oy_ogretmenler'
-        || koleksiyon == 'oy_ogretmenIzinleri';
+        || koleksiyon == 'oy_ogretmenIzinleri'
+        || koleksiyon == 'oy_evrakTakibi'
+        || koleksiyon == 'oy_dersProgrami'
+        || koleksiyon == 'oy_denemeSonuclari'
+        || koleksiyon == 'oy_testSonuclari';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -245,6 +249,16 @@ service cloud.firestore {
     match /oy_digerEvrak/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('digerEvrak');
+    }
+
+    match /oy_evrakTakibi/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('evrak');
+    }
+
+    match /oy_dersProgrami/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('dersProgrami') || moduluDuzenleyebilir('veri');
     }
 
     match /oy_notlar/{id} {
@@ -402,7 +416,14 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    match /oy_denemeSonuclari/{id} { allow read, write: if girisYapmis(); }
-    match /oy_testSonuclari/{id} { allow read, write: if girisYapmis(); }
+    match /oy_denemeSonuclari/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluGorebilir('denemeSonuclari');
+    }
+
+    match /oy_testSonuclari/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluGorebilir('testSonuclari');
+    }
   }
 }
