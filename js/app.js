@@ -3257,23 +3257,23 @@ function ozelMenuGrupDuzenle(id){
   _ozelMenuGrupModalAc(g);
 }
 
-/* Uygulamadaki tüm mevcut sekmeleri (data-tab) toplar; Ayarlar'da
-   "Sekme adı" alanını elle yazmak yerine açılır listeden seçmek için
-   kullanılır. Kaynak: DOM'daki .nav-tab[data-tab] butonları (nt-label
-   metniyle birlikte), index.html'de statik olarak tanımlı sekmelerin
-   tamamını kapsar. */
+/* Uygulamadaki navigasyona eklenebilir tüm özellikleri toplar.
+   Merkezi OzellikKatalogu varsa hem DOM data-tab sekmeleri hem de
+   fonksiyon/overlay tabanlı AltNav özellikleri aynı listeden gelir.
+   Katalog henüz yüklenmemişse eski DOM taraması güvenli fallback'tir. */
 function _mevcutSekmeleriTopla(){
+  if(window.OzellikKatalogu && typeof window.OzellikKatalogu.liste === 'function'){
+    return window.OzellikKatalogu.liste().map(x => ({ tab:x.deger, label:x.ad, tip:x.tip, kaynak:x.kaynak }));
+  }
   const gorulen = new Set();
   const liste = [];
   document.querySelectorAll('.nav-tab[data-tab]').forEach(btn => {
     const tab = btn.getAttribute('data-tab');
     if(!tab || gorulen.has(tab)) return;
     gorulen.add(tab);
-    const etiketEl = btn.querySelector('.nt-label');
-    const label = etiketEl ? etiketEl.textContent.trim() : tab;
-    liste.push({ tab, label });
+    const etiket = btn.querySelector('.nt-label');
+    liste.push({ tab, label:(etiket ? etiket.textContent : btn.textContent || tab).trim(), tip:'sekme', kaynak:'dom' });
   });
-  liste.sort((a,b) => a.label.localeCompare(b.label, 'tr'));
   return liste;
 }
 
