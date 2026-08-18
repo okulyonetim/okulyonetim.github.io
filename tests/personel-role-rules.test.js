@@ -1,3 +1,4 @@
+// CI tetikleme notu: Personel güvenlik kuralları emulator zincirinde doğrulanır.
 const fs = require('fs');
 const {
   initializeTestEnvironment,
