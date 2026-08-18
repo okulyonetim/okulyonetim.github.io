@@ -44,4 +44,13 @@ assert(src.includes('Math.max(0.15,Math.min(1,uygunW/dogalW))'), 'Geniş Word sa
 assert(src.includes("wrap.scrollTo({left:0,top:0"), 'Sığdır sonrası yalnız Word viewportu başa dönmeli.');
 assert(src.includes('id=\"dv3wordPageInfo\"'), 'Word sayfa sayacı bulunmalı.');
 
+
+assert(src.includes('pdfZoomUygula'), 'PDF görüntüleyicide yakınlaştırma/uzaklaştırma bulunmalı.');
+assert(src.includes('pdfSigdir'), 'PDF görüntüleyicide Sığdır bulunmalı.');
+assert(src.includes('id="dv3pdfPageInfo"'), 'PDF sayfa sayacı bulunmalı.');
+assert(src.includes('.dv3pdfviewport{flex:1 1 auto;min-height:0;overflow:auto'), 'PDF kaydırma yalnız belge viewportunda olmalı.');
+assert(src.includes('st.style.transform=`scale(${pdfZoom})`'), 'PDF zoom yalnız belge sahnesine uygulanmalı.');
+assert(src.includes('cMapUrl:'), 'PDF Türkçe karakter/CMap desteği korunmalı.');
+assert(src.includes('standardFontDataUrl:'), 'PDF standard font desteği korunmalı.');
+
 console.log('Belge görüntüleyici smoke testleri başarılı.');
