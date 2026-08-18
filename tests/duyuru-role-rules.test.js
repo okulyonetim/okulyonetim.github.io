@@ -7,7 +7,10 @@ const {
 const { doc, setDoc, getDoc, updateDoc, deleteDoc } = require('firebase/firestore');
 const { ref, uploadBytes, getBytes, deleteObject } = require('firebase/storage');
 
-const PROJECT_ID = 'demo-okul-rules-duyuru';
+// Storage Rules içindeki firestore.get() çağrıları, emulators:exec ile açılan
+// ortak demo proje üzerinde çalışır. Bu nedenle diğer Rules testleriyle aynı
+// proje kimliği kullanılmalıdır.
+const PROJECT_ID = 'demo-okul-rules';
 
 async function main(){
   const firestoreRules=fs.readFileSync('firestore.rules','utf8');
@@ -41,7 +44,6 @@ async function main(){
     await assertSucceeds(setDoc(doc(editorDb,'oy_duyurular','d-editor'),{baslik:'Yeni',okuyanlar:{}}));
     await assertFails(setDoc(doc(viewerDb,'oy_duyurular','d-viewer'),{baslik:'Yetkisiz',okuyanlar:{}}));
 
-    // Görüntüleyici yalnız kendi okuyanlar alanını güncelleyebilir.
     await assertSucceeds(updateDoc(doc(viewerDb,'oy_duyurular','d1'),{
       'okuyanlar.viewerUid':{ad:'Viewer',tarih:'2026-08-18'}
     }));
