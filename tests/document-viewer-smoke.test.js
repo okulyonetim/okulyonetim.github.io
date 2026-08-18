@@ -20,7 +20,7 @@ assert(src.includes('cMapUrl:'), 'PDF CMap desteği bulunmalı.');
 assert(src.includes('standardFontDataUrl:'), 'PDF standard font veri yolu bulunmalı.');
 assert(src.includes('useSystemFonts:true'), 'PDF sistem fontları etkin olmalı.');
 assert(!src.includes('view.officeapps.live.com'), 'Firebase Storage belgeleri Office iframe görüntüleyicisine gönderilmemeli.');
-assert(src.includes('Dosya otomatik olarak indirilmedi'), 'Desteklenmeyen dosya otomatik indirmeye düşmemeli.');
+assert(src.includes('Otomatik indirme yapılmadı.'), 'Desteklenmeyen dosya otomatik indirmeye düşmemeli.');
 assert(!src.includes("window.open(url, '_blank')"), 'Belge açma doğrudan _blank ile indirme/yeni sekmeye düşmemeli.');
 
 console.log('Belge görüntüleyici smoke testleri başarılı.');
