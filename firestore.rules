@@ -99,6 +99,7 @@ service cloud.firestore {
         || koleksiyon == 'oy_yoklama'
         || koleksiyon == 'oy_personel'
         || koleksiyon == 'oy_personelIzinler'
+        || koleksiyon == 'oy_ogretmenler'
         || koleksiyon == 'oy_ogretmenIzinleri';
     }
 
@@ -171,6 +172,14 @@ service cloud.firestore {
     match /oy_personelIzinler/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('personel');
+    }
+
+    match /oy_ogretmenler/{id} {
+      allow read: if girisYapmis();
+      allow create: if moduluDuzenleyebilir('ogretmenler')
+        || (moduluDuzenleyebilir('nobet')
+          && request.resource.data.keys().hasOnly(['ad','soyad','unvan','brans','telefon','eposta','sorumluSinif','eklenmeTarihi']));
+      allow update, delete: if moduluDuzenleyebilir('ogretmenler');
     }
 
     match /oy_ogretmenIzinleri/{id} {
