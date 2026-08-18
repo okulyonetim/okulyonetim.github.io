@@ -81,6 +81,14 @@ service cloud.firestore {
         || koleksiyon == 'oy_hatirlaticilar'
         || koleksiyon == 'oy_gorevler'
         || koleksiyon == 'oy_haritaFavoriler'
+        || koleksiyon == 'oy_sosyalKulupler'
+        || koleksiyon == 'oy_belirliGunler'
+        || koleksiyon == 'oy_zumre'
+        || koleksiyon == 'oy_sok'
+        || koleksiyon == 'oy_bepPlani'
+        || koleksiyon == 'oy_rehberlik'
+        || koleksiyon == 'oy_maarifRapor'
+        || koleksiyon == 'oy_digerEvrak'
         || koleksiyon == 'oy_konusmalar'
         || koleksiyon == 'oy_mesajlar'
         || koleksiyon == 'oy_dokumanlar'
@@ -197,6 +205,46 @@ service cloud.firestore {
         && request.resource.data.olusturanUid == request.auth.uid);
       allow delete: if adminMi() || (moduluDuzenleyebilir('harita')
         && resource.data.olusturanUid == request.auth.uid);
+    }
+
+    match /oy_sosyalKulupler/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('sosyalKulupler');
+    }
+
+    match /oy_belirliGunler/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('belirliGunler');
+    }
+
+    match /oy_zumre/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('zumre');
+    }
+
+    match /oy_sok/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('sok');
+    }
+
+    match /oy_bepPlani/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('bepPlani');
+    }
+
+    match /oy_rehberlik/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('rehberlik');
+    }
+
+    match /oy_maarifRapor/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('maarifRapor');
+    }
+
+    match /oy_digerEvrak/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('digerEvrak');
     }
 
     match /oy_notlar/{id} {
