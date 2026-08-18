@@ -11,13 +11,26 @@
    (Aylık Takvim/Ajanda görünümü) hem de js/app.js'teki genel "Hızlı Ekle"
    butonundan açılan modallar tarafından kullanılıyor — TEK erişim noktası
    burası, her iki UI de bu repository'yi çağırır.
+
+   Kişisel veri güvenliği: normal kullanıcı Firestore'dan yalnız kendi
+   sahipUid kayıtlarını sorgular. Admin tüm kayıtları (eski/sahipsiz dahil)
+   görmeye devam eder. Böylece Firestore Rules sahiplik kuralıyla sorgu
+   davranışı birebir uyumludur.
    ================================================================ */
 
 const TakvimRepository = {
 
+  _kisiselSorgu(koleksiyon){
+    let ref = db.collection(koleksiyon);
+    if(typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI && AKTIF_KULLANICI.admin !== true){
+      ref = ref.where('sahipUid', '==', AKTIF_KULLANICI.uid);
+    }
+    return ref;
+  },
+
   /* ---------- Hatırlatıcılar (Etkinlikler) ---------- */
   hatirlaticilariDinle(callback, hataCb){
-    return db.collection(COL.hatirlaticilar).onSnapshot(
+    return this._kisiselSorgu(COL.hatirlaticilar).onSnapshot(
       s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
       hataCb || hataGoster
     );
@@ -28,7 +41,7 @@ const TakvimRepository = {
 
   /* ---------- Görevler ---------- */
   gorevleriDinle(callback, hataCb){
-    return db.collection(COL.gorevler).onSnapshot(
+    return this._kisiselSorgu(COL.gorevler).onSnapshot(
       s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
       hataCb || hataGoster
     );
