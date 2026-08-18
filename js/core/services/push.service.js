@@ -12,5 +12,8 @@
 
 const PushService = {
   cihazKaydet(token, veri){ return PushRepository.cihazKaydet(token, veri); },
-  kategorileriGuncelle(token, kategoriler){ return PushRepository.kategorileriGuncelle(token, kategoriler); }
+  kategorileriGuncelle(token, kategoriler, saatAralik){
+    const uid = (typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI) ? AKTIF_KULLANICI.uid : null;
+    return PushRepository.kategorileriGuncelle(token, kategoriler, saatAralik, uid);
+  }
 };
