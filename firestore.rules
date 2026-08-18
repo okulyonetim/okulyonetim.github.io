@@ -68,6 +68,7 @@ service cloud.firestore {
         || koleksiyon == 'oy_roller'
         || koleksiyon == 'oy_navDuzeni'
         || koleksiyon == 'oy_kullaniciIstatistikleri'
+        || koleksiyon == 'oy_kullaniciTercihleri'
         || koleksiyon == 'oy_cihazTokenleri'
         || koleksiyon == 'oy_optikSablonlari'
         || koleksiyon == 'oy_yillikPlanBasliklari'
@@ -155,6 +156,10 @@ service cloud.firestore {
     match /oy_kullaniciIstatistikleri/{uid} {
       allow read: if adminMi() || (girisYapmis() && request.auth.uid == uid);
       allow write: if girisYapmis() && request.auth.uid == uid;
+    }
+
+    match /oy_kullaniciTercihleri/{uid} {
+      allow read, create, update, delete: if adminMi() || (girisYapmis() && request.auth.uid == uid);
     }
 
     match /oy_cihazTokenleri/{id} {
