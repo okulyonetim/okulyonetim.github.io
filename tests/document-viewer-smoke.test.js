@@ -13,7 +13,7 @@ assert(src.includes('dv3wordZoomLabel'), 'Word görüntüleyicide zoom gösterge
 assert(src.includes('wordZoomUygula'), 'Word görüntüleyicide yakınlaştırma/uzaklaştırma bulunmalı.');
 assert(src.includes("st.style.transform=`scale(${wordZoom})`"), 'Word zoom yalnız belge sahnesine transform ile uygulanmalı.');
 assert(!src.includes('st.style.zoom=wordZoom'), 'Word zoom CSS zoom kullanmamalı; üst uygulama katmanını büyütmemeli.');
-assert(src.includes('uygunW/sayfaW'), 'Word Sığdır hesabı belge yüksekliğine göre tüm dokümanı küçültmemeli; genişliğe göre çalışmalı.');
+assert(src.includes('uygunW/dogalW'), 'Word Sığdır hesabı gerçek belge genişliğine göre çalışmalı.');
 assert(src.includes('section.docx{margin:0 0 18px 0!important'), 'Word sayfaları arasında görünür sayfa ayrımı bulunmalı.');
 assert(src.includes('align-items:flex-start!important'), 'Geniş Word sayfasının sol kenarı kesilmemeli.');
 assert(src.includes('overflow:auto'), 'Zoom sonrası yatay/dikey kaydırma korunmalı.');
@@ -31,5 +31,11 @@ assert(src.includes('useSystemFonts:true'), 'PDF sistem fontları etkin olmalı.
 assert(!src.includes('view.officeapps.live.com'), 'Firebase Storage belgeleri Office iframe görüntüleyicisine gönderilmemeli.');
 assert(src.includes('Otomatik indirme yapılmadı.'), 'Desteklenmeyen dosya otomatik indirmeye düşmemeli.');
 assert(!src.includes("window.open(url, '_blank')"), 'Belge açma doğrudan _blank ile indirme/yeni sekmeye düşmemeli.');
+assert(src.includes('id="dv3wordScene"'), 'Word için ölçülü belge sahnesi bulunmalı.');
+assert(src.includes("scene.style.width=Math.ceil(dogalW*wordZoom)+'px'"), 'Word scroll genişliği gerçek zoomlu belge genişliğine eşitlenmeli.');
+assert(src.includes("scene.style.height=Math.ceil(dogalH*wordZoom)+'px'"), 'Word scroll yüksekliği gerçek zoomlu belge yüksekliğine eşitlenmeli.');
+assert(src.includes("wrap.style.width='100%'"), 'Word viewport sonsuz yatay genişliğe dönüşmemeli.');
+assert(src.includes('color:#fff!important'), 'Koyu temada belge adı yüksek kontrastlı olmalı.');
+assert(src.includes("A.body.classList.add('dv3wordbody')"), 'Word alanı siyah boşluk yerine belge zemini kullanmalı.');
 
 console.log('Belge görüntüleyici smoke testleri başarılı.');
