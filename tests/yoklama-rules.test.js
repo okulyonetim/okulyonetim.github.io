@@ -45,6 +45,7 @@ async function main(){
       'kayitlar.o2':'gec',girenUid:'teacher2',girenAdi:'Öğretmen 2',guncellenmeTarihi:'2026-08-18T10:05:00Z'
     }));
 
+    // Teacher1, kendisi dışında üçüncü bir kullanıcıyı girenUid olarak yazamaz.
     await assertFails(updateDoc(ref1,{girenUid:'hiddenUid'}));
     await assertFails(updateDoc(ref1,{tarih:'2026-08-19'}));
     await assertFails(updateDoc(ref1,{'mesajGonderildi.o1':true}));
