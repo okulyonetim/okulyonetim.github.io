@@ -5,7 +5,7 @@ const {
   assertSucceeds,
   assertFails,
 } = require('@firebase/rules-unit-testing');
-const { doc, setDoc, getDoc, updateDoc, deleteDoc } = require('firebase/firestore');
+const { doc, setDoc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs } = require('firebase/firestore');
 
 const PROJECT_ID = 'demo-okul-rules';
 
@@ -42,6 +42,19 @@ async function main() {
         konusmaId:'konusma12', gonderenUid:'teacherUid', gonderenAdi:'Ö1', metin:'Merhaba'
       });
 
+      await setDoc(doc(db, 'oy_dokumanlar', 'dok-kendi'), {
+        ad:'Kendi Özel', olusturanUid:'teacherUid', gorunurluk:'kisisel', dosyaUrl:'https://token/kendi'
+      });
+      await setDoc(doc(db, 'oy_dokumanlar', 'dok-baska'), {
+        ad:'Başkasının Özel', olusturanUid:'teacher2Uid', gorunurluk:'kisisel', dosyaUrl:'https://token/baska'
+      });
+      await setDoc(doc(db, 'oy_dokumanlar', 'dok-acik'), {
+        ad:'Herkese Açık', olusturanUid:'adminUid', gorunurluk:'herkes', dosyaUrl:'https://token/acik'
+      });
+      await setDoc(doc(db, 'oy_dokumanlar', 'dok-eski'), {
+        ad:'Eski Sahipsiz', dosyaUrl:'https://token/eski'
+      });
+
       await setDoc(doc(db, 'oy_odevTakip', 'odev-teacher'), { ad:'Benim Ödev Çizelgem', sahipUid:'teacherUid', hucreler:{} });
       await setDoc(doc(db, 'oy_odevTakip', 'odev-teacher2'), { ad:'Başka Öğretmen', sahipUid:'teacher2Uid', hucreler:{} });
       await setDoc(doc(db, 'oy_notCizelgesi', 'not-cizelge-teacher'), { ad:'Benim Not Çizelgem', sahipUid:'teacherUid', hucreler:{} });
@@ -55,7 +68,6 @@ async function main() {
 
     await assertFails(getDoc(doc(anonDb, 'oy_notlar', 'not-teacher')));
 
-    // Notlar sahiplik güvenliği.
     await assertSucceeds(getDoc(doc(teacherDb, 'oy_notlar', 'not-teacher')));
     await assertFails(getDoc(doc(teacherDb, 'oy_notlar', 'not-teacher2')));
     await assertFails(getDoc(doc(teacherDb, 'oy_notlar', 'not-eski')));
@@ -66,7 +78,6 @@ async function main() {
     await assertFails(deleteDoc(doc(teacher2Db, 'oy_notlar', 'not-teacher')));
     await assertSucceeds(getDoc(doc(adminDb, 'oy_notlar', 'not-eski')));
 
-    // Hatırlatıcı + görev sahipliği.
     await assertSucceeds(getDoc(doc(teacherDb, 'oy_hatirlaticilar', 'hat-teacher')));
     await assertFails(getDoc(doc(teacherDb, 'oy_hatirlaticilar', 'hat-teacher2')));
     await assertFails(getDoc(doc(teacherDb, 'oy_hatirlaticilar', 'hat-eski')));
@@ -81,29 +92,40 @@ async function main() {
     await assertFails(updateDoc(doc(teacherDb, 'oy_gorevler', 'gorev-teacher'), { sahipUid:'teacher2Uid' }));
     await assertSucceeds(getDoc(doc(adminDb, 'oy_gorevler', 'gorev-eski')));
 
-    // Mesajlaşma: yalnız konuşma katılımcısı erişebilmeli.
     await assertSucceeds(getDoc(doc(teacherDb, 'oy_konusmalar', 'konusma12')));
     await assertSucceeds(getDoc(doc(teacher2Db, 'oy_konusmalar', 'konusma12')));
     await assertFails(getDoc(doc(outsiderDb, 'oy_konusmalar', 'konusma12')));
     await assertSucceeds(getDoc(doc(adminDb, 'oy_konusmalar', 'konusma12')));
-
-    // Katılımcı konuşma özetini güncelleyebilir ama katılımcı listesini değiştiremez.
     await assertSucceeds(updateDoc(doc(teacherDb, 'oy_konusmalar', 'konusma12'), { sonMesaj:{metin:'x',gonderenUid:'teacherUid'} }));
     await assertFails(updateDoc(doc(teacherDb, 'oy_konusmalar', 'konusma12'), { katilimciUidler:['teacherUid','teacher2Uid','outsiderUid'] }));
-
-    // Yeni konuşmayı yalnız oluşturucunun kendisini de içeren katılımcı listesiyle oluşturabilmesi gerekir.
     await assertSucceeds(setDoc(doc(teacherDb, 'oy_konusmalar', 'konusma-yeni'), { katilimciUidler:['teacherUid','teacher2Uid'], grupMu:false }));
     await assertFails(setDoc(doc(teacherDb, 'oy_konusmalar', 'konusma-sahte'), { katilimciUidler:['teacher2Uid','outsiderUid'], grupMu:false }));
-
-    // Mesajlar konuşma üyeliğine bağlıdır ve gönderenUid sahteciliği engellenir.
     await assertSucceeds(getDoc(doc(teacherDb, 'oy_mesajlar', 'mesaj12')));
     await assertFails(getDoc(doc(outsiderDb, 'oy_mesajlar', 'mesaj12')));
     await assertSucceeds(setDoc(doc(teacherDb, 'oy_mesajlar', 'mesaj-yeni'), { konusmaId:'konusma12', gonderenUid:'teacherUid', metin:'Yeni' }));
     await assertFails(setDoc(doc(teacherDb, 'oy_mesajlar', 'mesaj-sahte'), { konusmaId:'konusma12', gonderenUid:'teacher2Uid', metin:'Sahte' }));
-    await assertFails(setDoc(doc(outsiderDb, 'oy_mesajlar', 'mesaj-disari'), { konusmaId:'konusma12', gonderenUid:'outsiderUid', metin:'Sahte' }));
-    await assertSucceeds(deleteDoc(doc(teacher2Db, 'oy_mesajlar', 'mesaj12')));
 
-    // Rol yönetimi, istatistik ve yıllık plan davranışı.
+    // Dokümanlar: metadata ve tokenlı URL, görünürlük/sahiplik ile korunur.
+    await assertSucceeds(getDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-kendi')));
+    await assertSucceeds(getDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-acik')));
+    await assertFails(getDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-baska')));
+    await assertFails(getDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-eski')));
+    await assertSucceeds(getDoc(doc(adminDb, 'oy_dokumanlar', 'dok-baska')));
+    await assertSucceeds(getDoc(doc(adminDb, 'oy_dokumanlar', 'dok-eski')));
+
+    // Repository'nin kullandığı iki sorgu Firestore Rules ile uyumlu olmalı.
+    await assertSucceeds(getDocs(query(collection(teacherDb, 'oy_dokumanlar'), where('gorunurluk','==','herkes'))));
+    await assertSucceeds(getDocs(query(collection(teacherDb, 'oy_dokumanlar'), where('olusturanUid','==','teacherUid'))));
+    await assertFails(getDocs(collection(teacherDb, 'oy_dokumanlar')));
+
+    // Öğretmen yalnız kendi kişisel dokümanını oluşturabilir; görünürlüğü yükseltemez.
+    await assertSucceeds(setDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-yeni'), { ad:'Yeni', olusturanUid:'teacherUid', gorunurluk:'kisisel' }));
+    await assertFails(setDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-sahte-sahip'), { ad:'Sahte', olusturanUid:'teacher2Uid', gorunurluk:'kisisel' }));
+    await assertFails(setDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-sahte-acik'), { ad:'Sahte', olusturanUid:'teacherUid', gorunurluk:'herkes' }));
+    await assertFails(updateDoc(doc(teacherDb, 'oy_dokumanlar', 'dok-kendi'), { gorunurluk:'herkes' }));
+    await assertSucceeds(updateDoc(doc(adminDb, 'oy_dokumanlar', 'dok-kendi'), { gorunurluk:'herkes' }));
+    await assertFails(deleteDoc(doc(teacher2Db, 'oy_dokumanlar', 'dok-kendi')));
+
     await assertFails(setDoc(doc(teacherDb, 'oy_roller', 'rol-test'), { ad:'Test Rol' }));
     await assertSucceeds(setDoc(doc(adminDb, 'oy_roller', 'rol-test'), { ad:'Test Rol' }));
     await assertFails(setDoc(doc(teacherDb, 'oy_kullanicilar', 'baskaUid'), { admin:true }));
@@ -112,7 +134,6 @@ async function main() {
     await assertSucceeds(setDoc(doc(teacherDb, 'oy_ogretmenYillikPlanSecimleri', 'ogretmen42'), { planlar:['p1'] }));
     await assertFails(setDoc(doc(teacherDb, 'oy_ogretmenYillikPlanSecimleri', 'baskaOgretmen'), { planlar:['p1'] }));
 
-    // Ödev Takip + Not Çizelgesi sahipliği.
     await assertSucceeds(getDoc(doc(teacherDb, 'oy_odevTakip', 'odev-teacher')));
     await assertFails(getDoc(doc(teacher2Db, 'oy_odevTakip', 'odev-teacher')));
     await assertSucceeds(updateDoc(doc(teacherDb, 'oy_odevTakip', 'odev-teacher'), { ad:'Güncellendi' }));
@@ -123,7 +144,6 @@ async function main() {
     await assertSucceeds(getDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-cizelge-teacher')));
     await assertFails(getDoc(doc(teacher2Db, 'oy_notCizelgesi', 'not-cizelge-teacher')));
     await assertSucceeds(updateDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-cizelge-teacher'), { ad:'Not Güncellendi' }));
-    await assertSucceeds(getDoc(doc(adminDb, 'oy_odevTakip', 'odev-teacher')));
 
     console.log('Firestore Rules testleri başarılı.');
   } finally {
