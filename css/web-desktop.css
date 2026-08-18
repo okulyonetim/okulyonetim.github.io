@@ -1,0 +1,313 @@
+/* ================================================================
+   WEB / TABLET RESPONSIVE KATMANI v1
+   - Telefon/Android mobil görünümüne dokunmaz.
+   - 768px+ tablet ve 1024px+ masaüstü tarayıcılar için düzen iyileştirir.
+   ================================================================ */
+
+/* Ortak güvenlik: geniş içerikler kendi alanlarında kaydırılır, sayfayı bozmaz. */
+@media (min-width: 768px) {
+  html, body { min-width: 0; }
+  .app, .content, .tab-panel, .card { min-width: 0; }
+
+  main.content {
+    width: 100%;
+    max-width: none;
+    padding-left: clamp(18px, 2.3vw, 34px);
+    padding-right: clamp(18px, 2.3vw, 34px);
+  }
+
+  .page-header {
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* Formlar ve filtre satırları geniş ekranda gereksiz dar kalmasın. */
+  .form-row,
+  .filters,
+  .filter-row,
+  .toolbar,
+  .actions-row {
+    max-width: 100%;
+  }
+
+  /* Tablo taşmaları tüm sayfayı yatay kaydırmak yerine kendi kutusunda kalsın. */
+  .table-wrap,
+  .table-responsive,
+  .tablo-wrap,
+  .tablo-kapsayici,
+  .card:has(> table),
+  .card:has(> .table) {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table,
+  .table {
+    max-width: 100%;
+  }
+
+  /* Modallar tablet/masaüstünde ekranı daha iyi kullanır. */
+  .modal-overlay,
+  .modal-backdrop {
+    padding: 24px;
+  }
+
+  .modal {
+    width: min(880px, calc(100vw - 48px));
+    max-width: calc(100vw - 48px);
+    max-height: calc(100dvh - 48px);
+  }
+
+  .modal-body,
+  .modal-content {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Alt navigasyonun açtığı kart katmanları tablette tek sütun mobil görünümünde kalmasın. */
+  .an-kart-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+  }
+
+  .an-grid-katman,
+  .an-liste-katman,
+  .an-profil-katman {
+    max-width: min(900px, calc(100vw - 40px));
+  }
+
+  /* Belge/rapor gibi geniş içeriklerde üst kapsayıcı masaüstü genişliğini bozmasın. */
+  .dv3body,
+  .dv3wordviewport,
+  .dv3pdfviewport,
+  .dv3excelviewport {
+    max-width: 100%;
+  }
+}
+
+/* TABLET: sidebar ve içerik arasında dengeli alan. */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  main.content {
+    padding-top: 20px;
+    padding-bottom: 92px;
+  }
+
+  .card {
+    padding: 18px 20px;
+  }
+
+  .topbar-title {
+    max-width: 42vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .an-kart-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* MASAÜSTÜ WEB */
+@media (min-width: 1024px) {
+  body {
+    min-height: 100vh;
+  }
+
+  .app {
+    width: 100%;
+    min-height: 100vh;
+    align-items: stretch;
+  }
+
+  /* Masaüstünde ana navigasyon sidebar'dır. Mobil alt bar alan işgal etmez. */
+  .bottom-nav {
+    display: none !important;
+  }
+
+  /* Sidebar ekranda sabit bir uygulama sütunu gibi davranır. */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    max-height: 100vh;
+    flex: 0 0 var(--sidebar-w);
+    overflow: hidden;
+  }
+
+  .sidebar .nav {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  /* Sağ uygulama alanı geniş ekranı gerçek anlamda kullanır. */
+  .app > div[style*="flex:1"] {
+    min-width: 0;
+    width: calc(100% - var(--sidebar-w));
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    width: 100%;
+  }
+
+  #topbarHamburger {
+    display: none !important;
+  }
+
+  main.content {
+    width: 100%;
+    padding-top: 26px;
+    padding-bottom: 38px;
+    padding-left: clamp(26px, 2.6vw, 46px);
+    padding-right: clamp(26px, 2.6vw, 46px);
+  }
+
+  /* İçeriği 13-14" dizüstünde gereksiz dev, geniş monitörde aşırı yayvan olmaktan korur. */
+  main.content > .tab-panel {
+    width: 100%;
+    max-width: 1680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .page-header {
+    margin-bottom: 22px;
+  }
+
+  .page-title {
+    font-size: clamp(20px, 1.35vw, 27px);
+  }
+
+  /* Dashboard ve yaygın grid yapıları: mobil tek/iki sütun yerine adaptif çok sütun. */
+  .dashboard-grid,
+  .stats-grid,
+  .stat-grid,
+  .cards-grid,
+  .card-grid,
+  .quick-grid,
+  .quick-actions,
+  .menu-grid,
+  .an-kart-grid {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: clamp(16px, 1.4vw, 24px);
+  }
+
+  .card {
+    padding: clamp(19px, 1.5vw, 25px);
+  }
+
+  /* Yönetim ekranlarındaki ana + yan kart desenleri geniş ekranda dengeli olsun. */
+  .two-col,
+  .two-column,
+  .grid-2,
+  .split-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .three-col,
+  .grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  /* Filtre/form alanlarında kontroller masaüstünde bütün satırı gereksiz kaplamasın. */
+  .form-row {
+    gap: 16px;
+  }
+
+  .form-row > .form-group,
+  .filters > .form-group,
+  .filter-row > .form-group {
+    min-width: 180px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  input[type="time"],
+  input[type="number"],
+  select,
+  textarea {
+    max-width: 100%;
+  }
+
+  /* Masaüstü modal: ortalı, okunabilir ve büyük rapor/formlarda daha geniş. */
+  .modal {
+    width: min(960px, calc(100vw - 96px));
+    max-width: calc(100vw - 96px);
+    max-height: calc(100vh - 72px);
+  }
+
+  .modal.modal-lg,
+  .modal.large,
+  .modal-wide {
+    width: min(1280px, calc(100vw - 96px));
+  }
+
+  /* Detay çekmeceleri mobildeki tam ekran hissi yerine masaüstü paneli gibi görünür. */
+  .detay-panel {
+    width: min(560px, 44vw);
+    max-width: 560px;
+  }
+
+  /* Alt navigasyon menü katmanı masaüstünde dialog/panel gibi merkezlenir. */
+  .an-grid-katman,
+  .an-liste-katman,
+  .an-profil-katman {
+    left: 50% !important;
+    right: auto !important;
+    bottom: 28px !important;
+    width: min(960px, calc(100vw - var(--sidebar-w) - 80px));
+    max-width: 960px;
+    max-height: min(78vh, 780px);
+    transform: translateX(-50%);
+    border-radius: 24px;
+  }
+
+  .an-liste-govde {
+    max-height: calc(78vh - 72px);
+    overflow-y: auto;
+  }
+
+  .an-kart-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Geniş tablolar webde okunabilir yükseklik ve kontrollü yatay scroll kullanır. */
+  .table-wrap,
+  .table-responsive,
+  .tablo-wrap,
+  .tablo-kapsayici {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Login/onay kutuları büyük ekranda aşırı genişlemesin. */
+  .config-box {
+    width: min(520px, calc(100vw - 64px));
+    max-width: 520px;
+  }
+}
+
+/* Geniş masaüstü: dashboard biraz daha ferah. */
+@media (min-width: 1440px) {
+  .an-kart-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  main.content {
+    padding-left: clamp(36px, 3vw, 64px);
+    padding-right: clamp(36px, 3vw, 64px);
+  }
+}

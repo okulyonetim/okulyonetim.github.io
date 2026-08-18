@@ -5,6 +5,8 @@ on:
     paths:
       - 'index.html'
       - 'service-worker.js'
+      - 'css/web-desktop.css'
+      - 'css/tasima-takip.css'
       - 'js/ozellik-katalogu.js'
       - 'js/push.js'
       - 'js/dokuman-okuyucu.js'
@@ -41,6 +43,7 @@ on:
       - 'tests/global-zoom-smoke.test.js'
       - 'tests/navigation-customization-smoke.test.js'
       - 'tests/feature-catalog-smoke.test.js'
+      - 'tests/web-responsive-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -80,6 +83,9 @@ jobs:
           node --check js/proje-degerlendirme.js
           node --check optik/js/app.js
           node --check optik/js/disaAktar.js
+
+      - name: Web responsive regresyon testi
+        run: node tests/web-responsive-smoke.test.js
 
       - name: Merkezi özellik kataloğu regresyon testi
         run: node tests/feature-catalog-smoke.test.js
