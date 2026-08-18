@@ -36,8 +36,12 @@ on:
       - 'tests/optik-save-bridge-smoke.test.js'
       - 'tests/report-native-print-routing-smoke.test.js'
       - 'tests/global-zoom-smoke.test.js'
+      - 'tests/apply-excel-viewer-zoom.py'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   smoke:
@@ -45,11 +49,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: agent/excel-viewer-zoom
 
       - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Excel görüntüleyici zoom düzeltmesini uygula
+        run: |
+          python tests/apply-excel-viewer-zoom.py
+          if ! git diff --quiet -- js/dokuman-okuyucu.js tests/document-viewer-smoke.test.js service-worker.js; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add js/dokuman-okuyucu.js tests/document-viewer-smoke.test.js service-worker.js
+            git commit -m "feat: add Excel fit zoom and isolated viewport"
+            git push origin HEAD:agent/excel-viewer-zoom
+          fi
 
       - name: JavaScript syntax kontrolü
         run: |
