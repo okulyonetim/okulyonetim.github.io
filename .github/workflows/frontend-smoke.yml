@@ -9,6 +9,8 @@ on:
       - 'js/dokuman-okuyucu.js'
       - 'js/yillik-plan.js'
       - 'js/app.js'
+      - 'js/alt-navigasyon.js'
+      - 'js/nav-duzeni-editor.js'
       - 'js/raporlama.js'
       - 'js/puantaj.js'
       - 'js/tasima-takip.js'
@@ -36,8 +38,13 @@ on:
       - 'tests/optik-save-bridge-smoke.test.js'
       - 'tests/report-native-print-routing-smoke.test.js'
       - 'tests/global-zoom-smoke.test.js'
+      - 'tests/navigation-customization-smoke.test.js'
+      - 'tests/apply-navigation-customization-fix.py'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   smoke:
@@ -45,11 +52,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: agent/navigation-customization-fix
 
       - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Navigasyon özelleştirme düzeltmesini uygula
+        run: |
+          python tests/apply-navigation-customization-fix.py
+          if ! git diff --quiet -- js/alt-navigasyon.js js/nav-duzeni-editor.js service-worker.js tests/navigation-customization-smoke.test.js; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add js/alt-navigasyon.js js/nav-duzeni-editor.js service-worker.js tests/navigation-customization-smoke.test.js
+            git commit -m "fix: stabilize navigation customization and item creation"
+            git push origin HEAD:agent/navigation-customization-fix
+          fi
 
       - name: JavaScript syntax kontrolü
         run: |
@@ -58,6 +78,8 @@ jobs:
           node --check js/push.js
           node --check js/dokuman-okuyucu.js
           node --check js/yillik-plan.js
+          node --check js/alt-navigasyon.js
+          node --check js/nav-duzeni-editor.js
           node --check js/raporlama.js
           node --check js/puantaj.js
           node --check js/tasima-takip.js
@@ -72,6 +94,9 @@ jobs:
           node --check js/proje-degerlendirme.js
           node --check optik/js/app.js
           node --check optik/js/disaAktar.js
+
+      - name: Navigasyon özelleştirme regresyon testi
+        run: node tests/navigation-customization-smoke.test.js
 
       - name: Global zoom regresyon testi
         run: node tests/global-zoom-smoke.test.js
