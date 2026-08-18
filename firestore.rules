@@ -68,7 +68,9 @@ service cloud.firestore {
         || koleksiyon == 'oy_konusmalar'
         || koleksiyon == 'oy_mesajlar'
         || koleksiyon == 'oy_dokumanlar'
-        || koleksiyon == 'oy_duyurular';
+        || koleksiyon == 'oy_duyurular'
+        || koleksiyon == 'oy_haberler'
+        || koleksiyon == 'oy_haberKaynaklari';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -149,9 +151,6 @@ service cloud.firestore {
       allow delete: if adminMi() || (girisYapmis() && resource.data.olusturanUid == request.auth.uid);
     }
 
-    // Duyuru içeriğini sadece mevcut rolünde 'duzenle' yetkisi bulunan kullanıcı
-    // değiştirebilir. Her girişli kullanıcı okuyabilir ve yalnız kendi
-    // okuyanlar.{uid} alanını güncelleyebilir.
     match /oy_duyurular/{id} {
       allow read: if girisYapmis();
       allow create, delete: if moduluDuzenleyebilir('duyurular');
@@ -160,6 +159,18 @@ service cloud.firestore {
         && request.auth.uid in request.resource.data.okuyanlar
         && (!('okuyanlar' in resource.data)
           || request.resource.data.okuyanlar.diff(resource.data.okuyanlar).affectedKeys().hasOnly([request.auth.uid])));
+    }
+
+    // Haber ve RSS kaynaklarını herkes okuyabilir; ekleme/düzenleme/silme
+    // mevcut rol sistemindeki haberler=duzenle yetkisine bağlıdır.
+    match /oy_haberler/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('haberler');
+    }
+
+    match /oy_haberKaynaklari/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('haberler');
     }
 
     match /oy_odevTakip/{id} {
