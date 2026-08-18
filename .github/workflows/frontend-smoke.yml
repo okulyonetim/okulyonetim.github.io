@@ -37,40 +37,17 @@ on:
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   smoke:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: agent/word-scroll-dark-title-fix
 
       - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Belge görüntüleyici cache sürümünü yükselt
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('service-worker.js')
-          s=p.read_text(encoding='utf-8')
-          if "oy-cache-v433" in s:
-              s=s.replace("oy-cache-v433","oy-cache-v434",1)
-              p.write_text(s,encoding='utf-8')
-          PY
-          if ! git diff --quiet -- service-worker.js; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add service-worker.js
-            git commit -m "chore: refresh document viewer cache"
-            git push origin HEAD:agent/word-scroll-dark-title-fix
-          fi
 
       - name: JavaScript syntax kontrolü
         run: |
