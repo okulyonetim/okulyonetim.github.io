@@ -54,9 +54,23 @@ jobs:
       - name: JavaScript syntax kontrolü
         run: |
           node --check service-worker.js
+          node --check js/app.js
           node --check js/push.js
           node --check js/dokuman-okuyucu.js
           node --check js/yillik-plan.js
+          node --check js/raporlama.js
+          node --check js/puantaj.js
+          node --check js/tasima-takip.js
+          node --check js/dilekce.js
+          node --check js/sinavlar.js
+          node --check js/sinif-oturma.js
+          node --check js/kontrol-listeleri.js
+          node --check js/ogretmen-liste-olusturucu.js
+          node --check js/teblig-tebellug.js
+          node --check js/cizelgeler.js
+          node --check js/kriter-dagitim.js
+          node --check js/proje-degerlendirme.js
+          node --check optik/js/app.js
           node --check optik/js/disaAktar.js
 
       - name: Global zoom regresyon testi
