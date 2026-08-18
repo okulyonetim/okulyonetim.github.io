@@ -226,7 +226,9 @@ self.addEventListener('fetch', (event) => {
         .catch(() => null);
 
       if (onbellek) {
-        event.waitUntil(agIstegi.then(() => undefined));
+        /* FetchEvent.waitUntil yalnız dispatch sırasında güvenlidir;
+           cache-hit ağ yenilemesi burada bilinçli fire-and-forget çalışır. */
+        agIstegi.catch(() => {});
         return onbellek;
       }
 
