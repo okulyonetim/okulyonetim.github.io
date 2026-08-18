@@ -5,7 +5,7 @@ const {
   assertFails,
 } = require('@firebase/rules-unit-testing');
 const { doc, setDoc } = require('firebase/firestore');
-const { ref, uploadBytes, getBytes, deleteObject } = require('firebase/storage');
+const { ref, uploadBytes, getBytes, deleteObject, updateMetadata } = require('firebase/storage');
 
 const PROJECT_ID = 'demo-okul-rules';
 
@@ -38,18 +38,61 @@ async function main(){
     const anonStorage = testEnv.unauthenticatedContext().storage();
 
     const pdfData = new Uint8Array([37,80,68,70,45,49,46,52]);
+
+    // Mesaj dosyaları mevcut katılımcı güvenliğini korur.
     await assertSucceeds(uploadBytes(ref(teacherStorage, 'mesajDosyalari/k1/test.pdf'), pdfData, { contentType:'application/pdf' }));
     await assertSucceeds(getBytes(ref(teacher2Storage, 'mesajDosyalari/k1/test.pdf')));
     await assertFails(getBytes(ref(outsiderStorage, 'mesajDosyalari/k1/test.pdf')));
     await assertSucceeds(getBytes(ref(adminStorage, 'mesajDosyalari/k1/test.pdf')));
     await assertFails(getBytes(ref(anonStorage, 'mesajDosyalari/k1/test.pdf')));
-
     await assertFails(uploadBytes(ref(outsiderStorage, 'mesajDosyalari/k1/sahte.pdf'), pdfData, { contentType:'application/pdf' }));
     await assertFails(uploadBytes(ref(teacherStorage, 'mesajDosyalari/k1/sahte.exe'), new Uint8Array([1,2,3]), { contentType:'application/octet-stream' }));
 
+    // Yeni doküman yolu: sahibi kendi kişisel dosyasını yükleyebilir.
+    const privateRef = ref(teacherStorage, 'dokumanlar/teacherUid/ozel.pdf');
+    await assertSucceeds(uploadBytes(privateRef, pdfData, {
+      contentType:'application/pdf',
+      customMetadata:{ olusturanUid:'teacherUid', gorunurluk:'kisisel' }
+    }));
+    await assertSucceeds(getBytes(privateRef));
+    await assertFails(getBytes(ref(teacher2Storage, 'dokumanlar/teacherUid/ozel.pdf')));
+    await assertSucceeds(getBytes(ref(adminStorage, 'dokumanlar/teacherUid/ozel.pdf')));
+    await assertFails(getBytes(ref(anonStorage, 'dokumanlar/teacherUid/ozel.pdf')));
+
+    // Normal kullanıcı başkasının yoluna yükleyemez ve kendi dosyasını
+    // doğrudan 'herkes' yapamaz.
+    await assertFails(uploadBytes(ref(teacherStorage, 'dokumanlar/teacher2Uid/sahte.pdf'), pdfData, {
+      contentType:'application/pdf', customMetadata:{ olusturanUid:'teacher2Uid', gorunurluk:'kisisel' }
+    }));
+    await assertFails(uploadBytes(ref(teacherStorage, 'dokumanlar/teacherUid/acik-sahte.pdf'), pdfData, {
+      contentType:'application/pdf', customMetadata:{ olusturanUid:'teacherUid', gorunurluk:'herkes' }
+    }));
+    await assertFails(updateMetadata(privateRef, { customMetadata:{ olusturanUid:'teacherUid', gorunurluk:'herkes' } }));
+
+    // Admin herkese açık dosya yükleyebilir; tüm girişli kullanıcılar okuyabilir.
+    const publicRefAdmin = ref(adminStorage, 'dokumanlar/adminUid/acik.pdf');
+    await assertSucceeds(uploadBytes(publicRefAdmin, pdfData, {
+      contentType:'application/pdf', customMetadata:{ olusturanUid:'adminUid', gorunurluk:'herkes' }
+    }));
+    await assertSucceeds(getBytes(ref(teacherStorage, 'dokumanlar/adminUid/acik.pdf')));
+    await assertSucceeds(getBytes(ref(outsiderStorage, 'dokumanlar/adminUid/acik.pdf')));
+
+    // Admin özel bir dosyanın Storage görünürlüğünü değiştirebilir.
+    await assertSucceeds(updateMetadata(ref(adminStorage, 'dokumanlar/teacherUid/ozel.pdf'), {
+      customMetadata:{ olusturanUid:'teacherUid', gorunurluk:'herkes' }
+    }));
+    await assertSucceeds(getBytes(ref(teacher2Storage, 'dokumanlar/teacherUid/ozel.pdf')));
+
+    // Legacy tek-segment yolu mevcut dosyaları kırmamak için çalışmaya devam eder.
+    await assertSucceeds(uploadBytes(ref(teacherStorage, 'dokumanlar/legacy.pdf'), pdfData, { contentType:'application/pdf' }));
+    await assertSucceeds(getBytes(ref(teacher2Storage, 'dokumanlar/legacy.pdf')));
+
+    // Diğer Storage modüllerinin mevcut davranışı korunur.
     await assertSucceeds(uploadBytes(ref(teacherStorage, 'duyurular/test.png'), new Uint8Array([1,2,3]), { contentType:'image/png' }));
     await assertFails(uploadBytes(ref(anonStorage, 'duyurular/anon.png'), new Uint8Array([1,2,3]), { contentType:'image/png' }));
+
     await assertSucceeds(deleteObject(ref(teacherStorage, 'mesajDosyalari/k1/test.pdf')));
+    await assertSucceeds(deleteObject(ref(adminStorage, 'dokumanlar/teacherUid/ozel.pdf')));
 
     console.log('Storage Rules testleri başarılı.');
   } finally {
