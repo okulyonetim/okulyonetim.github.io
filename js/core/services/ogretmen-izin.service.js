@@ -51,7 +51,8 @@ const OgretmenIzinService = {
         oncelik: 'Orta',
         aciklama: `${veri.tur} kaydı ${formatTarih(veri.bitis)} tarihinde sona eriyor.`,
         tamamlandi: false,
-        bildirimGonderildi: false
+        bildirimGonderildi: false,
+        sahipUid: AKTIF_KULLANICI.uid
       });
       hatirlaticiId = hRef.id;
     }
