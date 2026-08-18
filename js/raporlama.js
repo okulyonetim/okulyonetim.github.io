@@ -109,10 +109,14 @@ function _raporPenceresiniAc(htmlIcerik, baslik, secenekler) {
     .nobet-sik ol li { margin-bottom:1px; }
     .nobet-sik p { font-size:8.5px; margin-top:3px; }
 
-    #icerik-sarici { transform-origin: top center; transition: transform 0.15s ease; }
+    .rapor-viewport { overflow:auto; max-width:100%; min-height:0; overscroll-behavior:contain; }
+    #rapor-scene { position:relative; margin:0; }
+    #icerik-sarici { transform-origin: top left; transition: transform 0.15s ease; }
 
     @media print {
       .rapor-toolbar { display:none !important; }
+      .rapor-viewport { overflow:visible !important; }
+      #rapor-scene { width:auto !important; height:auto !important; }
       #icerik-sarici { transform: none !important; }
       table { page-break-inside:auto; }
       tr { page-break-inside:avoid; }
@@ -130,22 +134,45 @@ function _raporPenceresiniAc(htmlIcerik, baslik, secenekler) {
       <button onclick="zoomAyarla(-10)" title="Küçült">−</button>
       <span class="zoom-label" id="zoomLabel">100%</span>
       <button onclick="zoomAyarla(+10)" title="Büyüt">+</button>
-      <button onclick="zoomSifirla()" title="Sıfırla" style="font-size:12px;color:#6b7280;">↺</button>
+      <button onclick="zoomSigdir()" title="Genişliğe sığdır" style="font-size:11px;color:#374151;">Sığdır</button>
+      <button onclick="zoomSifirla()" title="%100" style="font-size:12px;color:#6b7280;">100%</button>
     </div>
   </div>
   <script>
-    var _zoom = 80;
+    var _zoom = 100;
     function zoomUygula() {
       var el = document.getElementById('icerik-sarici');
-      if (el) el.style.transform = 'scale(' + (_zoom/100) + ')';
+      var scene = document.getElementById('rapor-scene');
+      if (!el || !scene) return;
+      var w = Math.max(1, Number(el.dataset.naturalWidth) || el.scrollWidth || el.offsetWidth || 1);
+      var h = Math.max(1, Number(el.dataset.naturalHeight) || el.scrollHeight || el.offsetHeight || 1);
+      el.dataset.naturalWidth = String(w);
+      el.dataset.naturalHeight = String(h);
+      var scale = _zoom / 100;
+      el.style.transform = 'scale(' + scale + ')';
+      scene.style.width = Math.ceil(w * scale) + 'px';
+      scene.style.height = Math.ceil(h * scale) + 'px';
       document.getElementById('zoomLabel').textContent = _zoom + '%';
     }
     function zoomAyarla(delta) {
-      _zoom = Math.min(200, Math.max(30, _zoom + delta));
+      _zoom = Math.min(200, Math.max(20, _zoom + delta));
       zoomUygula();
     }
-    function zoomSifirla() { _zoom = 80; zoomUygula(); }
-    zoomUygula(); // İlk açılışta da uygulansın (öncesinde sadece +/-/sıfırla tıklanınca çalışıyordu)
+    function zoomSifirla() { _zoom = 100; zoomUygula(); }
+    function zoomSigdir() {
+      var vp = document.getElementById('rapor-viewport');
+      var el = document.getElementById('icerik-sarici');
+      if (!vp || !el) return;
+      el.style.transform = 'none';
+      var w = Math.max(1, el.scrollWidth || el.offsetWidth || 1);
+      var h = Math.max(1, el.scrollHeight || el.offsetHeight || 1);
+      el.dataset.naturalWidth = String(w);
+      el.dataset.naturalHeight = String(h);
+      _zoom = Math.max(20, Math.min(100, Math.floor(((vp.clientWidth - 8) / w) * 100)));
+      zoomUygula();
+      vp.scrollTo({ left:0, top:0, behavior:'auto' });
+    }
+    requestAnimationFrame(function(){ requestAnimationFrame(zoomSigdir); });
     function raporPaylas() {
       window.print();
       setTimeout(function() {
@@ -154,7 +181,7 @@ function _raporPenceresiniAc(htmlIcerik, baslik, secenekler) {
       }, 2000);
     }
   <\/script>
-  <div id="icerik-sarici">
+  <div class="rapor-viewport" id="rapor-viewport"><div id="rapor-scene"><div id="icerik-sarici">
   <div class="rapor-header${ortaliBaslik ? ' rapor-header-ortali' : ''}">
     ${logoHtml}
     <div class="rapor-header-text">
@@ -166,7 +193,7 @@ function _raporPenceresiniAc(htmlIcerik, baslik, secenekler) {
     </div>
   </div>
   ${htmlIcerik}
-  </div>
+  </div></div></div>
 </body>
 </html>`;
 
