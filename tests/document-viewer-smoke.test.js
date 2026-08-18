@@ -53,4 +53,12 @@ assert(src.includes('st.style.transform=`scale(${pdfZoom})`'), 'PDF zoom yalnız
 assert(src.includes('cMapUrl:'), 'PDF Türkçe karakter/CMap desteği korunmalı.');
 assert(src.includes('standardFontDataUrl:'), 'PDF standard font desteği korunmalı.');
 
+
+assert(src.includes('excelZoomUygula'), 'Excel görüntüleyicide yakınlaştırma/uzaklaştırma bulunmalı.');
+assert(src.includes('excelSigdir'), 'Excel görüntüleyicide Sığdır bulunmalı.');
+assert(src.includes('id="dv3excelZoomLabel"'), 'Excel zoom yüzdesi gösterilmeli.');
+assert(src.includes('.dv3sheetviewport{flex:1 1 auto;min-height:0;overflow:auto'), 'Excel kaydırma yalnız tablo viewportunda olmalı.');
+assert(src.includes('st.style.transform=`scale(${excelZoom})`'), 'Excel zoom yalnız çalışma sayfasına uygulanmalı.');
+assert(src.includes('const uygun=Math.max(1,wrap.clientWidth-20)'), 'Excel Sığdır gerçek viewport genişliğini kullanmalı.');
+
 console.log('Belge görüntüleyici smoke testleri başarılı.');
