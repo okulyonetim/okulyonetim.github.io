@@ -73,7 +73,9 @@ service cloud.firestore {
         || koleksiyon == 'oy_haberKaynaklari'
         || koleksiyon == 'oy_dersSaatleri'
         || koleksiyon == 'oy_dersListesi'
-        || koleksiyon == 'oy_bransListesi';
+        || koleksiyon == 'oy_bransListesi'
+        || koleksiyon == 'oy_depolamaAyarlari'
+        || koleksiyon == 'oy_hatirlatmaAyarlari';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -189,6 +191,18 @@ service cloud.firestore {
     match /oy_bransListesi/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
+    }
+
+    // Bu iki merkezi ayar istemcide de yalnız admin tarafından değiştiriliyor.
+    // Okuma tüm giriş yapan kullanıcılarda mevcut davranışı korur.
+    match /oy_depolamaAyarlari/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if adminMi();
+    }
+
+    match /oy_hatirlatmaAyarlari/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if adminMi();
     }
 
     match /oy_odevTakip/{id} {
