@@ -45,4 +45,8 @@ assert(src.includes('const uygunW=Math.max(1,wrap.clientWidth-20)'), 'Word Sığ
 assert(src.includes('Math.max(0.15,Math.min(1,uygunW/dogalW))'), 'Geniş Word sayfaları %35 alt sınırı nedeniyle sağdan kesilmemeli.');
 assert(src.includes("wrap.scrollTo({left:0,top:0"), 'Sığdır sonrası yalnız Word viewportu başa dönmeli.');
 
+
+assert(src.includes('gap:22px!important'), 'Word sayfa aralığı görünür olmalı.');
+assert(src.includes('id=\"dv3wordPageInfo\"'), 'Word sayfa sayacı bulunmalı.');
+
 console.log('Belge görüntüleyici smoke testleri başarılı.');
