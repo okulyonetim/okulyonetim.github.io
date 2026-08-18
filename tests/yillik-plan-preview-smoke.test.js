@@ -1,8 +1,13 @@
 const fs = require('fs');
 const assert = require('assert');
 const src = fs.readFileSync('js/yillik-plan.js', 'utf8');
-assert(src.includes('const kapsayiciGenislik = kaydirma.clientWidth || document.documentElement.clientWidth || window.innerWidth || 360;'), 'Sıfır genişlikte viewport fallback bulunmalı.');
-assert(src.includes('Math.max(240, kapsayiciGenislik - 40)'), 'Önizleme genişliği pozitif alt sınıra sahip olmalı.');
-assert(src.includes('Math.max(0.2, Math.min(1, mevcutGenislik / YPL_A4_YATAY_PX))'), 'Zoom sıfır/negatif olmamalı.');
-assert(!src.includes('const mevcutGenislik = kaydirma.clientWidth - 40;'), 'Eski negatif zoom hesabı geri gelmemeli.');
+assert(src.includes('YPL_A4_DIKEY_PX = 794'), 'A4 dikey genişliği bulunmalı.');
+assert(src.includes('id="yplRaporBaslik"'), 'Önizleme tuvalinde rapor başlığı görünmeli.');
+assert(src.includes('_yplOnizlemeBaslikHtml(tanim)'), 'Dosya/rapor başlığı önizlemede üretilmeli.');
+assert(src.includes('id="yplYonYatay"') && src.includes('id="yplYonDikey"'), 'Yatay ve dikey görünüm kontrolleri bulunmalı.');
+assert(src.includes("tuval.style.transform = `scale(${olcek})`"), 'Zoom yalnız plan tuvaline transform ile uygulanmalı.');
+assert(!src.includes('tuval.style.zoom = _yplTabanZoom * _yplManuelZoom'), 'Eski CSS zoom geri gelmemeli.');
+assert(src.includes('mevcutGenislik / _yplSayfaGenisligi()'), 'Sığdır seçili yönün genişliğine göre hesaplanmalı.');
+assert(src.includes('yillikPlaniYazdir(planId, genislik, _yplMevcutFontPx, _yplSayfaYonu)'), 'Yazdırma seçili sayfa yönünü kullanmalı.');
+assert(src.includes('id="yplZoomYuzde"'), 'Zoom yüzdesi görünmeli.');
 console.log('Yıllık plan önizleme smoke testleri başarılı.');
