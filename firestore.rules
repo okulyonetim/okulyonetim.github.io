@@ -176,7 +176,10 @@ service cloud.firestore {
 
     match /oy_ogretmenler/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('ogretmenler');
+      allow create: if moduluDuzenleyebilir('ogretmenler')
+        || (moduluDuzenleyebilir('nobet')
+          && request.resource.data.keys().hasOnly(['ad','soyad','unvan','brans','telefon','eposta','sorumluSinif','eklenmeTarihi']));
+      allow update, delete: if moduluDuzenleyebilir('ogretmenler');
     }
 
     match /oy_ogretmenIzinleri/{id} {
