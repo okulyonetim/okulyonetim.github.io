@@ -5,11 +5,13 @@ on:
     paths:
       - 'service-worker.js'
       - 'js/push.js'
+      - 'js/dokuman-okuyucu.js'
       - 'firebase-messaging-sw.js'
       - '.github/workflows/build-apk.yml'
       - 'android/app/src/main/java/com/koruk/okul/MainActivity.java'
       - 'tests/pwa-push-smoke.test.js'
       - 'tests/android-deeplink-smoke.test.js'
+      - 'tests/document-viewer-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -29,9 +31,13 @@ jobs:
         run: |
           node --check service-worker.js
           node --check js/push.js
+          node --check js/dokuman-okuyucu.js
 
       - name: PWA / push regresyon testi
         run: node tests/pwa-push-smoke.test.js
 
       - name: Android deep-link regresyon testi
         run: node tests/android-deeplink-smoke.test.js
+
+      - name: Belge görüntüleyici regresyon testi
+        run: node tests/document-viewer-smoke.test.js

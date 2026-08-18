@@ -1,592 +1,326 @@
-/* =============================================
-   js/dokuman-okuyucu.js
-   UYGULAMA İÇİ DÖKÜMAN OKUYUCU
-   PDF (pdf.js), Excel (SheetJS — sayfa=sekme) ve
-   Word (mammoth.js — yükseklik bazlı yapay sayfalama)
-   dosyalarını tam ekran, sayfa çevirici + sayfa seçici +
-   pinch-zoom ile uygulama içinde gösterir.
-
-   DÜZELTME: dokumanlar.js'deki dokumanAc() eskiden
-   window.open(url,'_blank') kullanıyordu — Android'de
-   harici tarayıcı seçiciyi tetikliyordu ve hiçbir sayfa
-   kontrolü yoktu. Artık desteklenen türler için bu okuyucu
-   devreye giriyor; desteklenmeyen türlerde eski davranış korunur.
-   ============================================= */
-
-(function() {
+/* ====================================================================
+   UYGULAMA İÇİ BELGE GÖRÜNTÜLEYİCİ v2
+   PDF   : PDF.js ile uygulama içinde sürekli sayfa görünümü
+   DOCX  : docx-preview ile Word sayfa geometrisine yakın görünüm
+   XLSX  : ExcelJS ile çalışma sayfası/biçim/ölçü görünümü
+   XLS   : SheetJS ile eski Excel uyumluluk görünümü
+   DOC   : Eski Word ikili formatı için çevrimiçi Office/Google iframe görünümü
+   CSV/TXT/RESİM : yerel uygulama içi görünüm
+   Diğer Office/OpenDocument türleri: kontrollü çevrimiçi uyumluluk görünümü
+   ==================================================================== */
+(function () {
   'use strict';
 
-  if (typeof pdfjsLib !== 'undefined') {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const YEREL = new Set(['pdf','docx','xlsx','xls','csv','txt','png','jpg','jpeg','webp','gif','bmp','svg']);
+  const CEVRIMICI = new Set(['doc','ppt','pptx','rtf','odt','ods']);
+  const DESTEKLENEN = new Set([...YEREL, ...CEVRIMICI]);
+  const DOCX_PREVIEW_URL = 'https://cdn.jsdelivr.net/npm/docx-preview@0.3.6/dist/docx-preview.min.js';
+  const JSZIP_URL = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+
+  let aktif = null;
+  let pdfBelge = null;
+  let excelWb = null;
+  let eskiExcelWb = null;
+  let govdeOncekiOverflow = '';
+
+  function esc(v) {
+    if (typeof escapeHtml === 'function') return escapeHtml(v == null ? '' : String(v));
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  const DESTEKLENEN_UZANTILAR = ['pdf', 'xlsx', 'xls', 'docx'];
-
-  function _uzanti(ad) {
+  function uzanti(ad) {
     if (!ad) return '';
-    // URL ise: query parametrelerini (?token=...) ve fragment'ı at,
-    // sonra path'in son parçasını al, encode edilmişse decode et
     try {
-      const temiz = ad.split('?')[0].split('#')[0];
-      const parcalar = temiz.split('/');
-      const dosyaAdi = decodeURIComponent(parcalar[parcalar.length - 1] || '');
-      const uzanti = dosyaAdi.split('.').pop();
-      return (uzanti && uzanti.length <= 5) ? uzanti.toLowerCase() : '';
-    } catch (e) {
-      return (ad || '').split('.').pop().toLowerCase();
+      const temiz = String(ad).split('?')[0].split('#')[0];
+      const son = decodeURIComponent(temiz.split('/').pop() || '');
+      const i = son.lastIndexOf('.');
+      return i >= 0 ? son.slice(i + 1).toLowerCase() : '';
+    } catch (_) {
+      const s = String(ad); const i = s.lastIndexOf('.');
+      return i >= 0 ? s.slice(i + 1).toLowerCase() : '';
     }
   }
 
-  /* Görüntülenen dosyayı doğrudan cihaza indirir. url uzak (Firebase
-     Storage) bir adres olabileceği için önce fetch ile indirilip
-     base64'e çevrilir, sonra mevcut ortak uygulamaDosyaKaydet()
-     köprüsü (js/app.js — SavePlugin/blob fallback) ile kaydedilir.
-     ad genelde uzantıyı zaten içerir (dokumanlar.js'den öyle geliyor). */
-  async function _dokOkuyucuIndir(url, ad, uzanti) {
-    if (typeof uygulamaDosyaKaydet !== 'function') {
-      if (typeof toast === 'function') toast('İndirme bu ortamda kullanılamıyor.');
-      return;
-    }
+  function dosyaAdiBul(ad, url) {
+    if (ad && uzanti(ad)) return ad;
     try {
-      const yanit = await fetch(url);
-      const blob = await yanit.blob();
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(String(reader.result).split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-      const mimeTuru = blob.type || 'application/octet-stream';
-      const dosyaAdi = ad && ad.indexOf('.') !== -1 ? ad : `${ad || 'belge'}.${uzanti || 'dosya'}`;
-      await uygulamaDosyaKaydet(base64, dosyaAdi, mimeTuru, false);
-    } catch (e) {
-      if (typeof toast === 'function') toast('İndirme hatası: ' + e.message);
-    }
+      const temiz = String(url || '').split('?')[0].split('#')[0];
+      const son = decodeURIComponent(temiz.split('/').pop() || '');
+      return son || ad || 'Belge';
+    } catch (_) { return ad || 'Belge'; }
   }
 
-  let _state = null;
-  let _pdfDoc = null;
-  let _xlsxWb = null;
-  let _docxSayfalar = [];
-
-  function _sayfayaGit(ov, index) {
-    if (!_state || index < 0 || index >= _state.toplamSayfa) return;
-    _state.zoom = 1;
-    _state.panX = 0;
-    _state.panY = 0;
-    if (_state.tur === 'pdf') _pdfSayfaRenderEt(ov, index);
-    else if (_state.tur === 'xlsx') _xlsxSayfaRenderEt(ov, index);
-    // 'docx' artık tek parça (sahte sayfalama yok), burada bir şey yapılmıyor.
-    _thumbAktifIsaretle(ov);
-  }
-
-  function _sayacGuncelle(ov) {
-    const el = ov.querySelector('#dokOkuyucuSayac');
-    if (el) el.textContent = `${_state.sayfaIndex + 1} / ${_state.toplamSayfa}`;
-  }
-
-  /* ---- PDF ---- */
-  async function _pdfYukle(ov, url) {
-    const govde = ov.querySelector('#dokOkuyucuGovde');
-    try {
-      // NOT: Bazı belgelerde (örn. resmi kurum Word→PDF dönüşümleri) metin
-      // bulanık/kalın çıkabiliyor — bu, o belgenin kendi gömülü fontuna özgü
-      // bir pdf.js sınırlaması. "disableFontFace:true" denendi ama bu
-      // belgenin fontuyla TERSİNE etki yaptı (harfler tamamen kayboldu),
-      // geri alındı. Şu an için bilinen güvenli bir çözüm yok — kesin çözüm
-      // gerekirse belgeyi kaynağında (Word/başka bir araçla) yeniden PDF'e
-      // dönüştürmek gerekebilir.
-      _pdfDoc = await pdfjsLib.getDocument(url).promise;
-      _state.tur = 'pdf';
-      _state.toplamSayfa = _pdfDoc.numPages;
-      govde.style.overflow = 'hidden';
-      govde.style.touchAction = 'none';
-      govde.innerHTML = `<canvas id="dokOkuyucuCanvas" style="background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.5);"></canvas>`;
-      await _pdfSayfaRenderEt(ov, 0);
-      _thumbBarKur(ov);
-    } catch (e) {
-      govde.innerHTML = `<div style="color:#fff;padding:20px;text-align:center;">Belge yüklenemedi: ${escapeHtml(e.message)}</div>`;
-    }
-  }
-
-  async function _pdfSayfaRenderEt(ov, index, carpanOverride) {
-    const page = await _pdfDoc.getPage(index + 1);
-    const canvas = ov.querySelector('#dokOkuyucuCanvas');
-    const govde = ov.querySelector('#dokOkuyucuGovde');
-    const maxGenislik = govde.clientWidth - 20;
-    const maxYukseklik = govde.clientHeight - 20;
-    const taban = page.getViewport({ scale: 1 });
-    const sigmaOlcek = Math.min(maxGenislik / taban.width, maxYukseklik / taban.height);
-    // DÜZELTME (kalite): Eskiden sabit "2x fazla" render ediliyordu ve ekranın
-    // gerçek piksel yoğunluğu (devicePixelRatio) hiç hesaba katılmıyordu — bu
-    // yüzden yüksek yoğunluklu (retina benzeri) telefon ekranlarında normal
-    // görünümde bile bulanık çıkıyordu, 4x zoom'da ise iyice pikselleşiyordu.
-    // Artık: (a) devicePixelRatio'ya göre daha yüksek çözünürlükte render
-    // ediyoruz, (b) kullanıcı daha da yakınlaştırdıkça (bkz. _pdfKaliteyiGuncelle)
-    // sayfayı canlı olarak DAHA YÜKSEK çözünürlükte yeniden render ediyoruz.
-    // Cihazı zorlamamak için toplam canvas genişliğine bir üst sınır koyuyoruz.
-    const dpr = window.devicePixelRatio || 1;
-    const MAKS_CANVAS_GENISLIK = 4096;
-    const istenenCarpan = carpanOverride || Math.max(3, dpr * 2.5);
-    const carpan = Math.min(istenenCarpan, MAKS_CANVAS_GENISLIK / (taban.width * sigmaOlcek || 1));
-    const viewport = page.getViewport({ scale: sigmaOlcek * carpan });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    canvas.style.width = (taban.width * sigmaOlcek) + 'px';
-    canvas.style.height = (taban.height * sigmaOlcek) + 'px';
-    canvas.style.transform = 'scale(1)';
-    canvas.style.transformOrigin = 'center center';
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-    _state.sayfaIndex = index;
-    _state.pdfRenderCarpani = carpan;
-    _sayacGuncelle(ov);
-    _zoomUygula(ov); // Yeniden render sırasında sıfırlanan transform'u güncel zoom/pan'e göre tekrar uygula.
-  }
-
-  /* Kullanıcı pinch-zoom ile mevcut render çözünürlüğünün ötesine geçtiğinde
-     (yaklaşık %85'ini aştığında) sayfayı daha yüksek çözünürlükte yeniden
-     render eder — sürekli tetiklenmesin diye kısa bir gecikmeyle (debounce). */
-  let _pdfKaliteZamanlayici = null;
-  function _pdfKaliteyiGuncelle(ov) {
-    if (_state.tur !== 'pdf') return;
-    if (_state.zoom <= (_state.pdfRenderCarpani || 3) * 0.85) return;
-    clearTimeout(_pdfKaliteZamanlayici);
-    _pdfKaliteZamanlayici = setTimeout(() => {
-      const dpr = window.devicePixelRatio || 1;
-      const hedefCarpan = _state.zoom * dpr;
-      _pdfSayfaRenderEt(ov, _state.sayfaIndex, hedefCarpan);
-    }, 220);
-  }
-
-  function _pdfThumbLazyKur(ov, bar) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(async (entry) => {
-        if (!entry.isIntersecting) return;
-        const chip = entry.target;
-        if (chip.dataset.render === '1') return;
-        chip.dataset.render = '1';
-        const idx = parseInt(chip.dataset.index, 10);
-        const page = await _pdfDoc.getPage(idx + 1);
-        const viewport = page.getViewport({ scale: 0.18 });
-        const c = document.createElement('canvas');
-        c.width = viewport.width; c.height = viewport.height;
-        await page.render({ canvasContext: c.getContext('2d'), viewport }).promise;
-        chip.innerHTML = '';
-        chip.appendChild(c);
-        io.unobserve(chip);
-      });
-    }, { root: bar, threshold: 0.1 });
-    Array.from(bar.children).forEach(c => io.observe(c));
-  }
-
-  /* ---- Excel (sayfa = sekme) — ExcelJS: hücre rengi/yazı tipi/hizalama/
-     birleştirilmiş hücreleri okuyabiliyor (SheetJS'in ücretsiz sürümü okuyamıyordu) ---- */
-  async function _xlsxYukle(ov, url) {
-    const govde = ov.querySelector('#dokOkuyucuGovde');
-    try {
-      const buf = await (await fetch(url)).arrayBuffer();
-      _xlsxWb = new ExcelJS.Workbook();
-      await _xlsxWb.xlsx.load(buf);
-      _state.tur = 'xlsx';
-      _state.toplamSayfa = _xlsxWb.worksheets.length;
-      govde.style.overflow = 'auto';
-      govde.style.touchAction = 'pan-x pan-y';
-      govde.style.alignItems = 'flex-start';
-      govde.style.justifyContent = 'flex-start';
-      govde.innerHTML = `<div id="dokOkuyucuXlsxSarici" style="background:#fff;padding:14px;transform-origin:top left;flex-shrink:0;box-sizing:border-box;"></div>`;
-      _xlsxSayfaRenderEt(ov, 0);
-      _thumbBarKur(ov);
-    } catch (e) {
-      govde.innerHTML = `<div style="color:#fff;padding:20px;text-align:center;">Belge yüklenemedi: ${escapeHtml(e.message)}</div>`;
-    }
-  }
-
-  // ARGB ("FFRRGGBB") -> CSS hex rengi
-  function _argbCss(argb) {
-    if (!argb || argb.length < 6) return null;
-    const hex = argb.length === 8 ? argb.slice(2) : argb;
-    return '#' + hex;
-  }
-
-  /* #rrggbb rengin kabaca algısal parlaklığını (0=siyah, 1=beyaz) döndürür.
-     Kontrast güvenlik ağı için kullanılıyor (bkz. _sayfaninHtmlBul). */
-  function _yaklasikLuminans(hex) {
-    if (!hex) return null;
-    const h = hex.replace('#', '');
-    if (h.length !== 6) return null;
-    const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
-    if ([r, g, b].some(isNaN)) return null;
-    return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  }
-
-  function _kenarlikCss(kenar) {
-    if (!kenar || !kenar.style) return '1px solid #ddd';
-    const kalinlik = { thin: '1px', hair: '1px', medium: '2px', thick: '3px', double: '3px' }[kenar.style] || '1px';
-    const renk = (kenar.color && kenar.color.argb) ? _argbCss(kenar.color.argb) : '#999';
-    return `${kalinlik} solid ${renk}`;
-  }
-
-  function _hucreMetni(hucre) {
-    const v = hucre.value;
-    if (v === null || v === undefined) return '';
-    if (v instanceof Date) return escapeHtml(v.toLocaleDateString('tr-TR'));
-    if (typeof v === 'object') {
-      if (v.richText) return v.richText.map(p => escapeHtml(p.text || '')).join('');
-      if (v.result !== undefined && v.result !== null) return escapeHtml(String(v.result)); // formül sonucu
-      if (v.text) return escapeHtml(String(v.text));
-      return escapeHtml(String(v));
-    }
-    return escapeHtml(String(v));
-  }
-
-  function _sayfaninHtmlBul(ws) {
-    // Birleştirilmiş hücreleri haritala: master hücreye rowspan/colspan,
-    // diğer hücreleri (aynı birleşimin geri kalanı) atla.
-    const master = {};
-    const gizli = new Set();
-    (ws.model.merges || []).forEach(aralik => {
-      const [bas, son] = aralik.split(':');
-      const b = ws.getCell(bas), s = ws.getCell(son);
-      master[`${b.row}-${b.col}`] = { rowspan: s.row - b.row + 1, colspan: s.col - b.col + 1 };
-      for (let r = b.row; r <= s.row; r++) for (let c = b.col; c <= s.col; c++) {
-        if (r === b.row && c === b.col) continue;
-        gizli.add(`${r}-${c}`);
-      }
+  function scriptYukle(src, globalKontrol) {
+    if (globalKontrol && globalKontrol()) return Promise.resolve();
+    const varOlan = Array.from(document.scripts).find(s => s.src === src);
+    if (varOlan) return new Promise((resolve, reject) => {
+      if (globalKontrol && globalKontrol()) return resolve();
+      varOlan.addEventListener('load', resolve, { once: true });
+      varOlan.addEventListener('error', reject, { once: true });
     });
-
-    let html = '<table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:13px;">';
-    for (let r = 1; r <= ws.rowCount; r++) {
-      const row = ws.getRow(r);
-      html += '<tr>';
-      for (let c = 1; c <= ws.columnCount; c++) {
-        const anahtar = `${r}-${c}`;
-        if (gizli.has(anahtar)) continue;
-        const hucre = row.getCell(c);
-        const yayilma = master[anahtar];
-        const stiller = ['padding:4px 8px'];
-
-        let arkaplanRenk = null;
-        if (hucre.fill && hucre.fill.type === 'pattern' && hucre.fill.pattern === 'solid' && hucre.fill.fgColor && hucre.fill.fgColor.argb) {
-          const renk = _argbCss(hucre.fill.fgColor.argb);
-          if (renk && renk.toLowerCase() !== '#000000') { arkaplanRenk = renk; stiller.push(`background-color:${renk}`); }
-        }
-        if (hucre.font) {
-          if (hucre.font.bold) stiller.push('font-weight:700');
-          if (hucre.font.italic) stiller.push('font-style:italic');
-          if (hucre.font.underline) stiller.push('text-decoration:underline');
-          if (hucre.font.size) stiller.push(`font-size:${hucre.font.size}px`);
-          if (hucre.font.color && hucre.font.color.argb) {
-            let renk = _argbCss(hucre.font.color.argb);
-            if (renk) {
-              // KONTRAST GÜVENLİK AĞI: kaynak Excel'de bu yazı rengi
-              // muhtemelen belirli bir arka plan (ör. tema tabanlı koyu
-              // dolgu) için seçilmişti — biz o arka planı çizemiyorsak
-              // (tema rengi burada okunamıyor) açık renkli yazı beyaz
-              // zeminde neredeyse görünmez kalıyordu ("yazılar okunmuyor"
-              // şikayeti buradan geliyordu). Yazı rengiyle GERÇEKTE
-              // uygulanan zemin (varsa dolgu, yoksa beyaz sayfa) arasındaki
-              // kontrastı ölçüp yetersizse okunabilir koyu/açık bir
-              // varsayılana düşüyoruz.
-              const zemin = arkaplanRenk || '#ffffff';
-              const fontL = _yaklasikLuminans(renk), zeminL = _yaklasikLuminans(zemin);
-              if (fontL !== null && zeminL !== null && Math.abs(fontL - zeminL) < 0.35) {
-                renk = zeminL > 0.5 ? '#1a1a1a' : '#f2f2f2';
-              }
-              stiller.push(`color:${renk}`);
-            }
-          }
-        }
-        const hiz = hucre.alignment;
-        stiller.push(`text-align:${(hiz && hiz.horizontal) || 'left'}`);
-        stiller.push(`vertical-align:${(hiz && hiz.vertical === 'middle') ? 'middle' : 'top'}`);
-        stiller.push(hiz && hiz.wrapText ? 'white-space:normal' : 'white-space:nowrap');
-
-        const kb = hucre.border || {};
-        stiller.push(`border-top:${_kenarlikCss(kb.top)}`);
-        stiller.push(`border-left:${_kenarlikCss(kb.left)}`);
-        stiller.push(`border-bottom:${_kenarlikCss(kb.bottom)}`);
-        stiller.push(`border-right:${_kenarlikCss(kb.right)}`);
-
-        const ozellikler = yayilma
-          ? `${yayilma.rowspan > 1 ? `rowspan="${yayilma.rowspan}"` : ''} ${yayilma.colspan > 1 ? `colspan="${yayilma.colspan}"` : ''}`
-          : '';
-        html += `<td ${ozellikler} style="${stiller.join(';')}">${_hucreMetni(hucre)}</td>`;
-      }
-      html += '</tr>';
-    }
-    return html + '</table>';
-  }
-
-  function _xlsxSayfaRenderEt(ov, index) {
-    const ws = _xlsxWb.worksheets[index];
-    const sarici = ov.querySelector('#dokOkuyucuXlsxSarici');
-    const govde = ov.querySelector('#dokOkuyucuGovde');
-    sarici.style.transform = 'none';
-    sarici.innerHTML = `<h4 style="margin-bottom:8px;font-family:Arial,sans-serif;color:#111;white-space:nowrap;">${escapeHtml(ws.name)}</h4>${_sayfaninHtmlBul(ws)}`;
-    // Doğal boyutuna göre ekrana tam sığacak ölçeği hesapla (PDF'teki gibi) —
-    // zoom bundan itibaren bir ÇARPAN: zoom=1 -> tam sığdırılmış, zoom=4 -> 4x yakın.
-    const dogalGenislik = sarici.scrollWidth || 1;
-    // NOT: Sadece GENİŞLİĞE göre sığdırıyoruz (yükseklik değil) — aksi halde
-    // uzun bir sayfa tüm sayfayı sığdırmak için aşırı küçülüyor ("daralmış"
-    // görünüm). Yükseklik fazlası zaten normal şekilde kaydırılıyor.
-    _state.tabanOlcek = Math.min(govde.clientWidth / dogalGenislik, 1);
-    sarici.style.transformOrigin = 'top left';
-    sarici.style.transform = `scale(${_state.tabanOlcek * _state.zoom})`;
-    _state.sayfaIndex = index;
-    _sayacGuncelle(ov);
-  }
-
-  /* ---- Word (mammoth.js) ----
-     DÜZELTME: Word dosyalarının gerçek sayfa sınırları (yazı tipi/yazıcı
-     ayarına göre değiştiği için) tarayıcıda bilinemez — eskiden içerik
-     yüksekliğe göre TAHMİNİ "sanal sayfalara" bölünüyordu, ama bu tahmin
-     sık sık yanlış çıkıyor, içerik yanlış yerden kesiliyor, tablolar
-     bozuk görünüyordu ("sayfaları tam algılamıyor" şikayeti buradan
-     geliyordu). Artık sahte sayfalama tamamen kaldırıldı — belge TEK
-     PARÇA, doğal uzunluğunda, kaydırmalı olarak gösteriliyor. Bu daha
-     az "sayfa çevirir gibi" ama HER ZAMAN doğru — hiçbir içerik yanlış
-     yerden kesilmiyor. */
-  const DOCX_TABLO_STIL = `<style>
-    #dokOkuyucuDocxSarici table { border-collapse: collapse; width: auto; max-width: 100%; margin: 6px 0; }
-    #dokOkuyucuDocxSarici table, #dokOkuyucuDocxSarici th, #dokOkuyucuDocxSarici td { border: 1px solid #444; }
-    #dokOkuyucuDocxSarici th, #dokOkuyucuDocxSarici td { padding: 4px 8px; vertical-align: top; }
-  </style>`;
-
-  async function _docxYukle(ov, url) {
-    const govde = ov.querySelector('#dokOkuyucuGovde');
-    try {
-      const buf = await (await fetch(url)).arrayBuffer();
-      const sonuc = await mammoth.convertToHtml({ arrayBuffer: buf });
-      _state.tur = 'docx';
-      _state.toplamSayfa = 1; // artık sahte sayfalama yok, tek parça kaydırmalı belge
-      govde.style.overflow = 'auto';
-      govde.style.touchAction = 'pan-x pan-y';
-      govde.style.alignItems = 'flex-start';
-      govde.style.justifyContent = 'flex-start';
-      govde.innerHTML = `${DOCX_TABLO_STIL}<div id="dokOkuyucuDocxSarici" style="background:#fff;width:max-content;min-width:210mm;padding:18mm;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;font-size:12pt;line-height:1.5;color:#111;flex-shrink:0;transform-origin:top left;">${sonuc.value}</div>`;
-      const sarici = ov.querySelector('#dokOkuyucuDocxSarici');
-      const dogalGenislik = sarici.scrollWidth || 1;
-      _state.tabanOlcek = Math.min(govde.clientWidth / dogalGenislik, 1);
-      sarici.style.transform = `scale(${_state.tabanOlcek})`;
-      _state.sayfaIndex = 0;
-      _sayacGuncelle(ov);
-      // Sahte sayfa yoksa sayfa gezinme arayüzünün (‹ › ve Sayfalar şeridi)
-      // bir anlamı kalmıyor — kafa karıştırmasın diye gizliyoruz.
-      const onceki = ov.querySelector('#dokOkuyucuOnceki');
-      const sonraki = ov.querySelector('#dokOkuyucuSonraki');
-      const thumbToggle = ov.querySelector('#dokOkuyucuThumbToggle');
-      const sayac = ov.querySelector('#dokOkuyucuSayac');
-      if (onceki) onceki.style.display = 'none';
-      if (sonraki) sonraki.style.display = 'none';
-      if (thumbToggle) thumbToggle.style.display = 'none';
-      if (sayac) sayac.style.display = 'none';
-    } catch (e) {
-      govde.innerHTML = `<div style="color:#fff;padding:20px;text-align:center;">Belge yüklenemedi: ${escapeHtml(e.message)}</div>`;
-    }
-  }
-
-  /* ---- Küçük resim (thumbnail) şeridi ---- */
-  function _thumbBarKur(ov) {
-    const bar = ov.querySelector('#dokOkuyucuThumbBar');
-    bar.innerHTML = '';
-    for (let i = 0; i < _state.toplamSayfa; i++) {
-      const chip = document.createElement('div');
-      chip.dataset.index = i;
-      chip.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:50px;height:64px;margin-right:6px;border:2px solid transparent;border-radius:6px;background:#fff;color:#333;font-size:11px;cursor:pointer;overflow:hidden;vertical-align:top;';
-      if (_state.tur === 'xlsx') {
-        chip.textContent = _xlsxWb.worksheets[i].name;
-        chip.style.padding = '4px';
-        chip.style.whiteSpace = 'normal';
-        chip.style.textAlign = 'center';
-        chip.style.lineHeight = '1.2';
-      } else {
-        chip.textContent = i + 1;
-      }
-      chip.onclick = () => _sayfayaGit(ov, i);
-      bar.appendChild(chip);
-    }
-    if (_state.tur === 'pdf') _pdfThumbLazyKur(ov, bar);
-    _thumbAktifIsaretle(ov);
-  }
-
-  function _thumbAktifIsaretle(ov) {
-    const bar = ov.querySelector('#dokOkuyucuThumbBar');
-    if (!bar) return;
-    Array.from(bar.children).forEach((c, i) => {
-      c.style.borderColor = (i === _state.sayfaIndex) ? '#2e7d32' : 'transparent';
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src; s.async = true;
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('Görüntüleme bileşeni yüklenemedi. İnternet bağlantısını kontrol edin.'));
+      document.head.appendChild(s);
     });
   }
 
-  /* ---- Dokunma jestleri: swipe (sayfa çevirme) + pinch (zoom) ---- */
-  function _mesafe(t1, t2) {
-    const dx = t1.clientX - t2.clientX, dy = t1.clientY - t2.clientY;
-    return Math.sqrt(dx * dx + dy * dy);
+  async function docxMotorunuHazirla() {
+    await scriptYukle(JSZIP_URL, () => typeof JSZip !== 'undefined');
+    await scriptYukle(DOCX_PREVIEW_URL, () => typeof docx !== 'undefined' && typeof docx.renderAsync === 'function');
   }
 
-  function _zoomUygula(ov) {
-    const canvas = ov.querySelector('#dokOkuyucuCanvas');
-    if (canvas) {
-      canvas.style.transform = `translate(${_state.panX || 0}px, ${_state.panY || 0}px) scale(${_state.zoom})`;
-      return;
-    }
-    const hedef = ov.querySelector('#dokOkuyucuXlsxSarici') || ov.querySelector('#dokOkuyucuDocxSarici');
-    if (hedef) hedef.style.transform = `scale(${(_state.tabanOlcek || 1) * _state.zoom})`;
+  function yukleniyor(metin) {
+    if (!aktif) return;
+    aktif.body.innerHTML = `<div class="dv2-status"><div class="dv2-spinner"></div><div>${esc(metin || 'Belge hazırlanıyor…')}</div></div>`;
   }
 
-  function _jestleriBagla(ov) {
-    const govde = ov.querySelector('#dokOkuyucuGovde');
-    let baslangicMesafe = 0, baslangicZoom = 1;
-    let swipeBaslangicX = null;
-    let surukleniyor = false, surukleBaslangicX = 0, surukleBaslangicY = 0, panBaslangicX = 0, panBaslangicY = 0;
-
-    govde.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 2) {
-        baslangicMesafe = _mesafe(e.touches[0], e.touches[1]);
-        baslangicZoom = _state.zoom;
-        swipeBaslangicX = null;
-        surukleniyor = false;
-      } else if (e.touches.length === 1) {
-        if (_state.tur === 'pdf' && _state.zoom > 1.02) {
-          // Yakınlaştırılmış PDF'te tek parmak = gezinme (pan), sayfa çevirme değil.
-          surukleniyor = true;
-          surukleBaslangicX = e.touches[0].clientX;
-          surukleBaslangicY = e.touches[0].clientY;
-          panBaslangicX = _state.panX || 0;
-          panBaslangicY = _state.panY || 0;
-        } else {
-          swipeBaslangicX = e.touches[0].clientX;
-        }
-      }
-    }, { passive: true });
-
-    govde.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 2) {
-        const mesafe = _mesafe(e.touches[0], e.touches[1]);
-        _state.zoom = Math.min(10, Math.max(1, baslangicZoom * (mesafe / baslangicMesafe)));
-        if (_state.zoom <= 1.02) { _state.panX = 0; _state.panY = 0; }
-        _zoomUygula(ov);
-        _pdfKaliteyiGuncelle(ov);
-      } else if (e.touches.length === 1 && surukleniyor) {
-        _state.panX = panBaslangicX + (e.touches[0].clientX - surukleBaslangicX);
-        _state.panY = panBaslangicY + (e.touches[0].clientY - surukleBaslangicY);
-        _zoomUygula(ov);
-      }
-    }, { passive: true });
-
-    govde.addEventListener('touchend', (e) => {
-      if (!surukleniyor && _state.tur === 'pdf' && swipeBaslangicX !== null && _state.zoom <= 1.02 && e.changedTouches.length === 1) {
-        const fark = e.changedTouches[0].clientX - swipeBaslangicX;
-        if (Math.abs(fark) > 60) {
-          if (fark < 0) _sayfayaGit(ov, _state.sayfaIndex + 1);
-          else _sayfayaGit(ov, _state.sayfaIndex - 1);
-        }
-      }
-      _pdfKaliteyiGuncelle(ov);
-      swipeBaslangicX = null;
-      surukleniyor = false;
-    });
+  function hata(mesaj, detay) {
+    if (!aktif) return;
+    aktif.body.innerHTML = `<div class="dv2-error"><div class="dv2-error-icon">⚠️</div><h3>Belge görüntülenemedi</h3><p>${esc(mesaj || 'Bilinmeyen hata')}</p>${detay ? `<small>${esc(detay)}</small>` : ''}<div class="dv2-error-actions"><button class="dv2-btn" id="dv2HataIndir">⬇ İndir</button><button class="dv2-btn" id="dv2HataSistem">↗ Sistemle Aç</button></div></div>`;
+    const i = aktif.body.querySelector('#dv2HataIndir'); if (i) i.onclick = indir;
+    const s = aktif.body.querySelector('#dv2HataSistem'); if (s) s.onclick = sistemleAc;
   }
 
-  /* ---- Overlay iskeleti ---- */
-  function _overlayAc(url, ad, uzanti) {
-    const eski = document.getElementById('dokOkuyucuOverlay');
-    if (eski) eski.remove();
-
-    const ov = document.createElement('div');
-    ov.id = 'dokOkuyucuOverlay';
-    ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#3a3a3a;display:flex;flex-direction:column;';
-    ov.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:10px 12px;flex-wrap:wrap;">
-        <span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw;">${escapeHtml(ad || 'Belge')}</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span id="dokOkuyucuSayac" style="background:rgba(255,255,255,.2);border-radius:6px;padding:4px 10px;font-size:12.5px;cursor:pointer;">…</span>
-          <button id="dokOkuyucuIndir" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;padding:6px 10px;font-size:13px;">⬇</button>
-          <button id="dokOkuyucuKapat" style="background:rgba(220,0,0,.4);border:none;color:#fff;border-radius:7px;padding:6px 12px;font-size:13px;font-weight:700;">✕</button>
-        </div>
-      </div>
-      <div id="dokOkuyucuGovde" style="flex:1 1 auto;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#525659;">
-        <div style="color:#fff;font-size:13px;">Yükleniyor…</div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:8px;background:#2b2b2b;">
-        <button id="dokOkuyucuOnceki" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:20px;width:40px;height:40px;font-size:18px;">‹</button>
-        <button id="dokOkuyucuThumbToggle" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12.5px;">▦ Sayfalar</button>
-        <button id="dokOkuyucuSonraki" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:20px;width:40px;height:40px;font-size:18px;">›</button>
-      </div>
-      <div id="dokOkuyucuThumbBar" style="display:none;overflow-x:auto;white-space:nowrap;background:#1e1e1e;padding:8px;"></div>
+  function stilKur() {
+    if (document.getElementById('dv2-style')) return;
+    const st = document.createElement('style'); st.id = 'dv2-style';
+    st.textContent = `
+      .dv2{position:fixed;inset:0;z-index:1000000;background:#1c2026;color:#fff;display:flex;flex-direction:column;font-family:Inter,Arial,sans-serif}
+      .dv2-head{min-height:56px;padding:max(8px,env(safe-area-inset-top)) 10px 8px;display:flex;align-items:center;gap:8px;background:#11151a;border-bottom:1px solid #30363d;box-sizing:border-box}
+      .dv2-title{flex:1;min-width:0}.dv2-title strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}.dv2-title small{color:#aeb6c1;font-size:11px}
+      .dv2-btn{border:1px solid #404852;background:#252b33;color:#fff;border-radius:8px;padding:8px 10px;cursor:pointer;font-weight:600;white-space:nowrap}.dv2-btn:hover{background:#303843}.dv2-btn.primary{background:#0a6e6e;border-color:#0a6e6e}
+      .dv2-body{position:relative;flex:1;min-height:0;overflow:auto;background:#333941;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+      .dv2-status,.dv2-error{min-height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:12px;padding:24px;box-sizing:border-box}.dv2-error p{max-width:620px;color:#d7dce2}.dv2-error small{color:#aeb6c1;max-width:700px}.dv2-error-icon{font-size:34px}.dv2-error-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+      .dv2-spinner{width:32px;height:32px;border:3px solid #65707d;border-top-color:#fff;border-radius:50%;animation:dv2spin .8s linear infinite}@keyframes dv2spin{to{transform:rotate(360deg)}}
+      .dv2-pdf{display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px;box-sizing:border-box}.dv2-page{background:#fff;box-shadow:0 3px 16px #0008;max-width:100%;height:auto}
+      .dv2-word-area{min-width:100%;padding:18px;box-sizing:border-box;display:flex;justify-content:center;align-items:flex-start}.dv2-word-area .docx-wrapper{background:#d8dadd!important;padding:18px!important}.dv2-word-area section.docx{box-shadow:0 3px 14px #0005!important;margin-bottom:18px!important}
+      .dv2-excel{min-width:100%;padding:12px;box-sizing:border-box}.dv2-sheetbar{position:sticky;top:0;z-index:4;display:flex;gap:5px;overflow-x:auto;padding:7px;background:#20262d;border-bottom:1px solid #3a424c}.dv2-sheetbar button{border:1px solid #47515d;background:#2b323a;color:#fff;border-radius:7px;padding:7px 10px;white-space:nowrap}.dv2-sheetbar button.active{background:#0a6e6e;border-color:#0a6e6e}.dv2-sheetwrap{overflow:auto;background:#fff;color:#111;max-width:100%;min-height:150px}.dv2-sheet{border-collapse:collapse;table-layout:fixed;font-family:Arial,sans-serif}.dv2-sheet td{box-sizing:border-box;overflow:hidden}.dv2-sheet img{max-width:100%}
+      .dv2-text{background:#fff;color:#111;white-space:pre-wrap;word-break:break-word;margin:16px;padding:18px;border-radius:4px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;line-height:1.5}
+      .dv2-image-area{min-height:100%;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}.dv2-image-area img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;transition:transform .08s linear}
+      .dv2-frame{border:0;width:100%;height:100%;background:#fff}.dv2-info{padding:8px 12px;background:#28313a;color:#dbe2e8;font-size:12px;border-bottom:1px solid #404a54;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+      @media(max-width:640px){.dv2-head{gap:5px}.dv2-btn{padding:8px;font-size:12px}.dv2-hide-mobile{display:none}.dv2-word-area{padding:6px}.dv2-word-area .docx-wrapper{padding:6px!important}.dv2-excel{padding:0}}
     `;
-    document.body.appendChild(ov);
-    document.body.classList.add('dlk-overlay-acik');
+    document.head.appendChild(st);
+  }
+
+  function overlayAc(url, ad, ext) {
+    kapat(); stilKur();
+    govdeOncekiOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
 
-    ov.querySelector('#dokOkuyucuKapat').onclick = () => {
-      ov.remove();
-      document.body.classList.remove('dlk-overlay-acik');
-      if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true);
-      _state = null; _pdfDoc = null; _xlsxWb = null; _docxSayfalar = [];
-    };
-    ov.querySelector('#dokOkuyucuIndir').onclick = () => _dokOkuyucuIndir(url, ad, uzanti);
-    ov.querySelector('#dokOkuyucuOnceki').onclick = () => _sayfayaGit(ov, _state.sayfaIndex - 1);
-    ov.querySelector('#dokOkuyucuSonraki').onclick = () => _sayfayaGit(ov, _state.sayfaIndex + 1);
-    ov.querySelector('#dokOkuyucuThumbToggle').onclick = () => {
-      const bar = ov.querySelector('#dokOkuyucuThumbBar');
-      bar.style.display = (bar.style.display === 'none') ? 'flex' : 'none';
-    };
-    ov.querySelector('#dokOkuyucuSayac').onclick = () => {
-      const girilen = prompt(`Sayfa numarası (1-${_state.toplamSayfa}):`, _state.sayfaIndex + 1);
-      if (girilen === null) return;
-      const n = parseInt(girilen, 10);
-      if (!isNaN(n)) _sayfayaGit(ov, n - 1);
-    };
-
-    _state = { url, ad, uzanti, sayfaIndex: 0, toplamSayfa: 0, zoom: 1, panX: 0, panY: 0, tabanOlcek: 1, tur: null };
-    _jestleriBagla(ov);
-
-    if (uzanti === 'pdf') _pdfYukle(ov, url);
-    else if (uzanti === 'xlsx' || uzanti === 'xls') _xlsxYukle(ov, url);
-    else if (uzanti === 'docx') _docxYukle(ov, url);
-
+    const ov = document.createElement('div'); ov.className = 'dv2'; ov.id = 'dokumanOkuyucuV2';
+    ov.innerHTML = `<div class="dv2-head"><button class="dv2-btn" id="dv2Kapat">✕</button><div class="dv2-title"><strong>${esc(ad)}</strong><small id="dv2Tur">${esc(ext.toUpperCase() || 'BELGE')}</small></div><button class="dv2-btn dv2-hide-mobile" id="dv2Eksi">−</button><button class="dv2-btn dv2-hide-mobile" id="dv2Sifir">100%</button><button class="dv2-btn dv2-hide-mobile" id="dv2Arti">＋</button><button class="dv2-btn primary" id="dv2Indir">⬇ <span class="dv2-hide-mobile">İndir</span></button></div><div class="dv2-body" id="dv2Body"></div>`;
+    document.body.appendChild(ov);
+    aktif = { ov, body: ov.querySelector('#dv2Body'), url, ad, ext, zoom:1, zoomHedef:null };
+    ov.querySelector('#dv2Kapat').onclick = kapat;
+    ov.querySelector('#dv2Indir').onclick = indir;
+    ov.querySelector('#dv2Eksi').onclick = () => zoomDegistir(-0.15);
+    ov.querySelector('#dv2Arti').onclick = () => zoomDegistir(0.15);
+    ov.querySelector('#dv2Sifir').onclick = () => zoomAyarla(1);
+    document.addEventListener('keydown', escKapat);
     return ov;
   }
 
-  /* Google Docs/Drive/Sheets/Slides paylaşım linklerini tanır.
-     Desteklenen formatlar:
-       https://docs.google.com/document|spreadsheets|presentation/d/ID/...
-       https://drive.google.com/file/d/ID/...
-       https://drive.google.com/open?id=ID
-       https://drive.google.com/uc?id=ID  */
-  function _googleDocsMu(url) {
-    if (!url || typeof url !== 'string') return false;
-    return /^https:\/\/(docs|drive)\.google\.com\//.test(url);
+  function escKapat(e){ if(e.key === 'Escape') kapat(); }
+
+  function kapat() {
+    const ov = document.getElementById('dokumanOkuyucuV2'); if (ov) ov.remove();
+    document.removeEventListener('keydown', escKapat);
+    if (aktif) {
+      if (aktif.blobUrl) try { URL.revokeObjectURL(aktif.blobUrl); } catch (_) {}
+    }
+    aktif = null; pdfBelge = null; excelWb = null; eskiExcelWb = null;
+    document.body.style.overflow = govdeOncekiOverflow;
+    if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true);
   }
 
-  // --- Public API ---
-  window.DokumanOkuyucu = {
-    destekliMi(adVeyaUzanti) {
-      // Google Docs/Drive URL'leri de destekleniyor sayılır
-      if (_googleDocsMu(adVeyaUzanti)) return true;
-      return DESTEKLENEN_UZANTILAR.includes(_uzanti(adVeyaUzanti));
-    },
-    googleDocsMu(url) {
-      return _googleDocsMu(url);
-    },
-    ac(url, ad) {
-      // Google Docs/Drive linkleri → sistem tarayıcısında aç.
-      // Capacitor WebView iframe'de Google oturumu tutmadığından
-      // her açılışta "Giriş yap" ekranı çıkıyordu. _system ile
-      // kullanıcının Chrome/Safari'si açılır — orada oturum açık
-      // olduğu için sorunsuz görünür.
-      if (_googleDocsMu(url)) {
-        window.open(url, '_system');
-        return;
-      }
-      const uzanti = _uzanti(ad);
-      if (!DESTEKLENEN_UZANTILAR.includes(uzanti)) {
-        window.open(url, '_blank');
-        return;
-      }
-      _overlayAc(url, ad, uzanti);
+  function zoomAyarla(z) {
+    if (!aktif) return;
+    aktif.zoom = Math.max(0.5, Math.min(3, z));
+    const btn = aktif.ov.querySelector('#dv2Sifir'); if (btn) btn.textContent = Math.round(aktif.zoom * 100) + '%';
+    const hedef = aktif.zoomHedef;
+    if (hedef) {
+      hedef.style.transformOrigin = hedef.classList.contains('dv2-image-target') ? 'center center' : 'top left';
+      hedef.style.transform = `scale(${aktif.zoom})`;
+      if (!hedef.classList.contains('dv2-image-target')) hedef.style.marginBottom = `${Math.max(0,(aktif.zoom-1)*hedef.scrollHeight)}px`;
     }
-  };
+  }
+  function zoomDegistir(d){ if(aktif) zoomAyarla(aktif.zoom + d); }
 
+  async function fetchKontrollu(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`Dosya alınamadı (${r.status})`);
+    return r;
+  }
+
+  async function indir() {
+    if (!aktif) return;
+    try {
+      if (typeof uygulamaDosyaKaydet === 'function') {
+        const r = await fetchKontrollu(aktif.url); const blob = await r.blob();
+        const base64 = await new Promise((resolve,reject)=>{ const fr=new FileReader(); fr.onloadend=()=>resolve(String(fr.result).split(',')[1]); fr.onerror=reject; fr.readAsDataURL(blob); });
+        await uygulamaDosyaKaydet(base64, aktif.ad || `belge.${aktif.ext}`, blob.type || 'application/octet-stream', false);
+      } else {
+        const a=document.createElement('a'); a.href=aktif.url; a.download=aktif.ad||'belge'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove();
+      }
+    } catch(e) { if(typeof toast==='function') toast('İndirme hatası: '+e.message); }
+  }
+
+  function sistemleAc(){ if(aktif) window.open(aktif.url, '_system'); }
+
+  async function pdfAc() {
+    if (typeof pdfjsLib === 'undefined') return hata('PDF görüntüleme bileşeni bulunamadı.');
+    yukleniyor('PDF hazırlanıyor…');
+    try {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      pdfBelge = await pdfjsLib.getDocument(aktif.url).promise;
+      aktif.body.innerHTML = '<div class="dv2-pdf" id="dv2Pdf"></div>';
+      const alan = aktif.body.querySelector('#dv2Pdf'); aktif.zoomHedef = alan;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      for (let i=1;i<=pdfBelge.numPages;i++) {
+        const page=await pdfBelge.getPage(i); const base=page.getViewport({scale:1});
+        const cssW=Math.min(Math.max(280, aktif.body.clientWidth-36), base.width*1.35);
+        const cssScale=cssW/base.width; const viewport=page.getViewport({scale:cssScale*dpr});
+        const c=document.createElement('canvas'); c.className='dv2-page'; c.width=Math.round(viewport.width); c.height=Math.round(viewport.height); c.style.width=Math.round(base.width*cssScale)+'px'; c.style.height=Math.round(base.height*cssScale)+'px'; c.dataset.page=i;
+        alan.appendChild(c); await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport}).promise;
+      }
+    } catch(e){ hata('PDF açılamadı.', e.message); }
+  }
+
+  function argbCss(argb, fallback) {
+    if (!argb) return fallback || null;
+    let x=String(argb).replace('#',''); if(x.length===8)x=x.slice(2); return x.length===6?'#'+x:(fallback||null);
+  }
+  function borderCss(b){ if(!b||!b.style)return '1px solid #d6d9dc'; const w={hair:'1px',thin:'1px',medium:'2px',thick:'3px',double:'3px'}[b.style]||'1px'; return `${w} solid ${argbCss(b.color&&b.color.argb,'#999')}`; }
+  function excelDeger(cell){
+    const v=cell.value; if(v==null)return '';
+    if(v instanceof Date)return esc(v.toLocaleDateString('tr-TR'));
+    if(typeof v==='object'){ if(v.richText)return v.richText.map(x=>esc(x.text||'')).join(''); if(v.result!=null)return esc(v.result); if(v.text!=null)return esc(v.text); if(v.hyperlink)return esc(v.text||v.hyperlink); }
+    return esc(v);
+  }
+
+  function xlsxTablo(ws) {
+    const merges={}; const skip=new Set();
+    (ws.model.merges||[]).forEach(r=>{ const [a,b]=r.split(':'); const ca=ws.getCell(a), cb=ws.getCell(b); merges[`${ca.row}:${ca.col}`]={rs:cb.row-ca.row+1,cs:cb.col-ca.col+1}; for(let rr=ca.row;rr<=cb.row;rr++)for(let cc=ca.col;cc<=cb.col;cc++)if(rr!==ca.row||cc!==ca.col)skip.add(`${rr}:${cc}`); });
+    const table=document.createElement('table'); table.className='dv2-sheet';
+    const colgroup=document.createElement('colgroup');
+    for(let c=1;c<=Math.max(1,ws.columnCount);c++){ const col=document.createElement('col'); const w=ws.getColumn(c).width; col.style.width=Math.max(36,Math.min(420,(w||10)*7.3))+'px'; colgroup.appendChild(col); }
+    table.appendChild(colgroup);
+    const tb=document.createElement('tbody');
+    for(let r=1;r<=ws.rowCount;r++){
+      const row=ws.getRow(r); if(row.hidden)continue; const tr=document.createElement('tr'); if(row.height)tr.style.height=(row.height*1.333)+'px';
+      for(let c=1;c<=ws.columnCount;c++){
+        if(ws.getColumn(c).hidden)continue; const key=`${r}:${c}`; if(skip.has(key))continue; const cell=row.getCell(c); const td=document.createElement('td'); const m=merges[key]; if(m){if(m.rs>1)td.rowSpan=m.rs;if(m.cs>1)td.colSpan=m.cs;}
+        const f=cell.font||{}, a=cell.alignment||{}, fill=cell.fill||{}, bd=cell.border||{};
+        td.style.padding='4px 6px'; td.style.verticalAlign=a.vertical==='middle'?'middle':(a.vertical||'top'); td.style.textAlign=a.horizontal||'left'; td.style.whiteSpace=a.wrapText?'normal':'nowrap';
+        if(f.bold)td.style.fontWeight='700'; if(f.italic)td.style.fontStyle='italic'; if(f.underline)td.style.textDecoration='underline'; if(f.size)td.style.fontSize=f.size+'px'; if(f.name)td.style.fontFamily=`${f.name},Arial,sans-serif`; const fc=argbCss(f.color&&f.color.argb); if(fc)td.style.color=fc;
+        if(fill.type==='pattern'&&fill.pattern==='solid'){const bg=argbCss(fill.fgColor&&fill.fgColor.argb);if(bg)td.style.backgroundColor=bg;}
+        td.style.borderTop=borderCss(bd.top);td.style.borderRight=borderCss(bd.right);td.style.borderBottom=borderCss(bd.bottom);td.style.borderLeft=borderCss(bd.left);
+        td.innerHTML=excelDeger(cell); tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+    table.appendChild(tb); return table;
+  }
+
+  function excelKabuk(sheetNames, renderFn) {
+    aktif.body.innerHTML='<div class="dv2-sheetbar" id="dv2SheetBar"></div><div class="dv2-excel"><div class="dv2-sheetwrap" id="dv2SheetWrap"></div></div>';
+    const bar=aktif.body.querySelector('#dv2SheetBar');
+    sheetNames.forEach((n,i)=>{const b=document.createElement('button');b.textContent=n;b.onclick=()=>{bar.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderFn(i);};bar.appendChild(b);});
+    if(bar.firstChild){bar.firstChild.classList.add('active');renderFn(0);}
+  }
+
+  async function xlsxAc() {
+    if(typeof ExcelJS==='undefined') return hata('ExcelJS bileşeni bulunamadı.');
+    yukleniyor('Excel çalışma kitabı hazırlanıyor…');
+    try{
+      const buf=await (await fetchKontrollu(aktif.url)).arrayBuffer(); excelWb=new ExcelJS.Workbook(); await excelWb.xlsx.load(buf);
+      excelKabuk(excelWb.worksheets.map(w=>w.name),(idx)=>{ const wrap=aktif.body.querySelector('#dv2SheetWrap'); wrap.innerHTML=''; const t=xlsxTablo(excelWb.worksheets[idx]); wrap.appendChild(t); aktif.zoomHedef=t; zoomAyarla(1); });
+    }catch(e){ hata('Excel dosyası açılamadı.',e.message); }
+  }
+
+  async function xlsAc() {
+    if(typeof XLSX==='undefined') return hata('Eski Excel görüntüleme bileşeni bulunamadı.');
+    yukleniyor('Eski Excel (.xls) hazırlanıyor…');
+    try{
+      const buf=await (await fetchKontrollu(aktif.url)).arrayBuffer(); eskiExcelWb=XLSX.read(buf,{type:'array',cellStyles:true,cellDates:true});
+      excelKabuk(eskiExcelWb.SheetNames,(idx)=>{ const wrap=aktif.body.querySelector('#dv2SheetWrap'); const ws=eskiExcelWb.Sheets[eskiExcelWb.SheetNames[idx]]; wrap.innerHTML=XLSX.utils.sheet_to_html(ws,{editable:false,id:'dv2LegacyXls'}); const table=wrap.querySelector('table'); if(table){table.className='dv2-sheet'; table.querySelectorAll('td,th').forEach(td=>{td.style.border='1px solid #d6d9dc';td.style.padding='4px 6px';td.style.whiteSpace='nowrap';}); aktif.zoomHedef=table;zoomAyarla(1);} });
+    }catch(e){ hata('Eski Excel (.xls) açılamadı.',e.message); }
+  }
+
+  async function csvAc(){
+    if(typeof XLSX==='undefined') return metinAc();
+    yukleniyor('CSV hazırlanıyor…');
+    try{const text=await (await fetchKontrollu(aktif.url)).text(); eskiExcelWb=XLSX.read(text,{type:'string'}); excelKabuk(eskiExcelWb.SheetNames,(idx)=>{const wrap=aktif.body.querySelector('#dv2SheetWrap');wrap.innerHTML=XLSX.utils.sheet_to_html(eskiExcelWb.Sheets[eskiExcelWb.SheetNames[idx]]);const table=wrap.querySelector('table');if(table){table.className='dv2-sheet';table.querySelectorAll('td,th').forEach(td=>{td.style.border='1px solid #ddd';td.style.padding='5px 8px';});aktif.zoomHedef=table;}});}catch(e){hata('CSV açılamadı.',e.message);}
+  }
+
+  async function docxAc() {
+    yukleniyor('Word belgesi hazırlanıyor…');
+    try{
+      await docxMotorunuHazirla(); const buf=await (await fetchKontrollu(aktif.url)).arrayBuffer();
+      aktif.body.innerHTML='<div class="dv2-word-area"><div id="dv2Word"></div></div>'; const cont=aktif.body.querySelector('#dv2Word');
+      await docx.renderAsync(buf,cont,null,{inWrapper:true,breakPages:true,ignoreWidth:false,ignoreHeight:false,ignoreFonts:false,renderHeaders:true,renderFooters:true,renderFootnotes:true,renderEndnotes:true,ignoreLastRenderedPageBreak:false,useBase64URL:true,renderChanges:true,renderComments:false,renderAltChunks:true});
+      aktif.zoomHedef=cont; zoomAyarla(1);
+    }catch(e){
+      // İnternet yoksa veya docx-preview yüklenemezse içerik kaybolmasın diye Mammoth ikinci seçenek.
+      if(typeof mammoth!=='undefined'){
+        try{const buf=await (await fetchKontrollu(aktif.url)).arrayBuffer();const res=await mammoth.convertToHtml({arrayBuffer:buf});aktif.body.innerHTML=`<div class="dv2-info">⚠ Word sayfa motoru kullanılamadı; içerik uyumluluk görünümünde gösteriliyor.</div><div class="dv2-word-area"><div id="dv2WordFallback" style="background:#fff;color:#111;min-width:min(210mm,100%);max-width:210mm;padding:18mm;box-sizing:border-box">${res.value}</div></div>`;aktif.zoomHedef=aktif.body.querySelector('#dv2WordFallback');return;}catch(_){}
+      }
+      hata('Word (.docx) görüntülenemedi.',e.message);
+    }
+  }
+
+  async function metinAc(){
+    yukleniyor('Metin okunuyor…');
+    try{const text=await (await fetchKontrollu(aktif.url)).text();aktif.body.innerHTML=`<pre class="dv2-text">${esc(text)}</pre>`;aktif.zoomHedef=aktif.body.querySelector('.dv2-text');}catch(e){hata('Metin dosyası açılamadı.',e.message);}
+  }
+
+  function resimAc(){ aktif.body.innerHTML=`<div class="dv2-image-area"><img class="dv2-image-target" src="${esc(aktif.url)}" alt="${esc(aktif.ad)}"></div>`;aktif.zoomHedef=aktif.body.querySelector('.dv2-image-target'); }
+
+  function officeViewerUrl(url, tur){
+    if(tur==='google')return `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
+    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+  }
+
+  function cevrimiciAc(ext) {
+    const docEski=ext==='doc';
+    aktif.body.innerHTML=`<div class="dv2-info"><span>${docEski?'Eski Word (.doc)':'Bu dosya türü'} tarayıcıda yerel olarak birebir işlenemediği için çevrimiçi belge motoruyla görüntüleniyor.</span><button class="dv2-btn" id="dv2Office">Microsoft</button><button class="dv2-btn" id="dv2Google">Google</button><button class="dv2-btn" id="dv2System">Sistemle Aç</button></div><iframe class="dv2-frame" id="dv2Frame" referrerpolicy="no-referrer"></iframe>`;
+    const frame=aktif.body.querySelector('#dv2Frame');
+    const ac=(t)=>{frame.src=officeViewerUrl(aktif.url,t);};
+    aktif.body.querySelector('#dv2Office').onclick=()=>ac('office');aktif.body.querySelector('#dv2Google').onclick=()=>ac('google');aktif.body.querySelector('#dv2System').onclick=sistemleAc;ac('office');
+  }
+
+  function bilinmeyenAc(){
+    aktif.body.innerHTML=`<div class="dv2-error"><div class="dv2-error-icon">📄</div><h3>Bu dosya türü için yerleşik önizleme yok</h3><p>Dosya otomatik olarak indirilmedi. İsterseniz sistem uygulamasıyla açabilir veya açıkça indirebilirsiniz.</p><div class="dv2-error-actions"><button class="dv2-btn" id="dv2UnknownSystem">↗ Sistemle Aç</button><button class="dv2-btn primary" id="dv2UnknownDownload">⬇ İndir</button></div></div>`;
+    aktif.body.querySelector('#dv2UnknownSystem').onclick=sistemleAc;aktif.body.querySelector('#dv2UnknownDownload').onclick=indir;
+  }
+
+  function googleDocsMu(url){return typeof url==='string' && /^https:\/\/(docs|drive)\.google\.com\//i.test(url);}
+  function googleLinkAc(url,ad){ overlayAc(url,ad,'google'); aktif.body.innerHTML=`<div class="dv2-info">Google belgesi uygulama içinde açılıyor. Oturum gerektirirse “Sistemle Aç” seçeneğini kullanabilirsiniz.<button class="dv2-btn" id="dv2GoogleSystem">↗ Sistemle Aç</button></div><iframe class="dv2-frame" src="${esc(url)}"></iframe>`;aktif.body.querySelector('#dv2GoogleSystem').onclick=sistemleAc; }
+
+  async function ac(url, ad) {
+    if(!url)return;
+    const isim=dosyaAdiBul(ad,url);
+    if(googleDocsMu(url)){googleLinkAc(url,isim||'Google Belge');return;}
+    const ext=uzanti(isim)||uzanti(url); overlayAc(url,isim,ext);
+    if(ext==='pdf')return pdfAc();
+    if(ext==='docx')return docxAc();
+    if(ext==='xlsx')return xlsxAc();
+    if(ext==='xls')return xlsAc();
+    if(ext==='csv')return csvAc();
+    if(ext==='txt')return metinAc();
+    if(['png','jpg','jpeg','webp','gif','bmp','svg'].includes(ext))return resimAc();
+    if(CEVRIMICI.has(ext))return cevrimiciAc(ext);
+    return bilinmeyenAc();
+  }
+
+  window.DokumanOkuyucu={
+    destekliMi(adVeyaUrl){return googleDocsMu(adVeyaUrl)||DESTEKLENEN.has(uzanti(adVeyaUrl));},
+    googleDocsMu,
+    ac
+  };
 })();
