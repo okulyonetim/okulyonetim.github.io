@@ -2,17 +2,40 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    function girisYapmis() {
-      return request.auth != null;
+    function girisYapmis() { return request.auth != null; }
+
+    function kullaniciBelgesiVarMi() {
+      return girisYapmis()
+        && firestore.exists(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid));
+    }
+
+    function kullaniciBelgesi() {
+      return firestore.get(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid));
     }
 
     function adminMi() {
-      return girisYapmis()
-        && firestore.get(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid)).data.admin == true;
+      return kullaniciBelgesiVarMi()
+        && 'admin' in kullaniciBelgesi().data
+        && kullaniciBelgesi().data.admin == true;
+    }
+
+    function rolBelgemVarMi() {
+      return kullaniciBelgesiVarMi()
+        && 'rolId' in kullaniciBelgesi().data
+        && kullaniciBelgesi().data.rolId != null
+        && firestore.exists(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId));
+    }
+
+    function moduluDuzenleyebilir(modul) {
+      return adminMi() || (rolBelgemVarMi()
+        && 'yetkiler' in firestore.get(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data
+        && modul in firestore.get(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
+        && firestore.get(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] == 'duzenle');
     }
 
     function konusmaKatilimcisiMi(konusmaId) {
       return girisYapmis()
+        && firestore.exists(/databases/(default)/documents/oy_konusmalar/$(konusmaId))
         && request.auth.uid in firestore.get(/databases/(default)/documents/oy_konusmalar/$(konusmaId)).data.katilimciUidler;
     }
 
@@ -28,45 +51,34 @@ service firebase.storage {
         && (request.resource == null || mesajDosyasiTuruGecerliMi());
     }
 
-    // Yeni doküman yolu: dokumanlar/{sahipUid}/{dosya...}
-    // Kişisel dosya yalnız sahibi+admin; herkese açık dosya tüm girişli
-    // kullanıcılar tarafından okunabilir. Normal kullanıcı görünürlüğü
-    // Storage metadata üzerinden sonradan yükseltemez.
     match /dokumanlar/{sahipUid}/{dosyaYolu=**} {
-      allow read: if girisYapmis() && (
-        adminMi()
-        || request.auth.uid == sahipUid
-        || resource.metadata.gorunurluk == 'herkes'
-      );
-
+      allow read: if girisYapmis() && (adminMi() || request.auth.uid == sahipUid || resource.metadata.gorunurluk == 'herkes');
       allow create: if girisYapmis()
         && request.resource.metadata.olusturanUid == sahipUid
-        && (
-          (request.auth.uid == sahipUid && request.resource.metadata.gorunurluk == 'kisisel')
-          || (adminMi() && request.resource.metadata.gorunurluk in ['kisisel','herkes'])
-        );
-
-      allow update: if adminMi() || (
-        girisYapmis()
+        && ((request.auth.uid == sahipUid && request.resource.metadata.gorunurluk == 'kisisel')
+          || (adminMi() && request.resource.metadata.gorunurluk in ['kisisel','herkes']));
+      allow update: if adminMi() || (girisYapmis()
         && request.auth.uid == sahipUid
         && resource.metadata.olusturanUid == sahipUid
         && request.resource.metadata.olusturanUid == sahipUid
-        && request.resource.metadata.gorunurluk == resource.metadata.gorunurluk
-      );
-
+        && request.resource.metadata.gorunurluk == resource.metadata.gorunurluk);
       allow delete: if adminMi() || (girisYapmis() && request.auth.uid == sahipUid);
     }
 
-    // Eski sürümlerdeki dokumanlar/{dosya} yolu geriye dönük uyumluluk için
-    // korunur. Yeni kod bu yola artık dosya yüklemez.
     match /dokumanlar/{legacyDosya} {
       allow read, write: if girisYapmis();
+    }
+
+    match /duyurular/{dosyaYolu=**} {
+      allow read: if girisYapmis();
+      allow write: if moduluDuzenleyebilir('duyurular');
     }
 
     match /{ustYol}/{kalan=**} {
       allow read, write: if girisYapmis()
         && ustYol != 'mesajDosyalari'
-        && ustYol != 'dokumanlar';
+        && ustYol != 'dokumanlar'
+        && ustYol != 'duyurular';
     }
   }
 }

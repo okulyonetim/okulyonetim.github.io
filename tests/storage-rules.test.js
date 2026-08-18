@@ -87,12 +87,16 @@ async function main(){
     await assertSucceeds(uploadBytes(ref(teacherStorage, 'dokumanlar/legacy.pdf'), pdfData, { contentType:'application/pdf' }));
     await assertSucceeds(getBytes(ref(teacher2Storage, 'dokumanlar/legacy.pdf')));
 
-    // Diğer Storage modüllerinin mevcut davranışı korunur.
-    await assertSucceeds(uploadBytes(ref(teacherStorage, 'duyurular/test.png'), new Uint8Array([1,2,3]), { contentType:'image/png' }));
+    // Duyuru görsellerinde artık rol güvenliği var: admin/yetkili yazar,
+    // sıradan girişli kullanıcı yalnız okur, anonim erişemez.
+    await assertSucceeds(uploadBytes(ref(adminStorage, 'duyurular/test.png'), new Uint8Array([1,2,3]), { contentType:'image/png' }));
+    await assertSucceeds(getBytes(ref(teacherStorage, 'duyurular/test.png')));
+    await assertFails(uploadBytes(ref(teacherStorage, 'duyurular/yetkisiz.png'), new Uint8Array([1,2,3]), { contentType:'image/png' }));
     await assertFails(uploadBytes(ref(anonStorage, 'duyurular/anon.png'), new Uint8Array([1,2,3]), { contentType:'image/png' }));
 
     await assertSucceeds(deleteObject(ref(teacherStorage, 'mesajDosyalari/k1/test.pdf')));
     await assertSucceeds(deleteObject(ref(adminStorage, 'dokumanlar/teacherUid/ozel.pdf')));
+    await assertSucceeds(deleteObject(ref(adminStorage, 'duyurular/test.png')));
 
     console.log('Storage Rules testleri başarılı.');
   } finally {
