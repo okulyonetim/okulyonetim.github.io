@@ -95,6 +95,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_sinifOturma'
         || koleksiyon == 'oy_okulBilgileri'
         || koleksiyon == 'oy_devamsizlikCizelgesi'
+        || koleksiyon == 'oy_ogrenciler'
+        || koleksiyon == 'oy_dilekceler'
         || koleksiyon == 'oy_sosyalKulupler'
         || koleksiyon == 'oy_belirliGunler'
         || koleksiyon == 'oy_zumre'
@@ -188,7 +190,7 @@ service cloud.firestore {
 
     match /oy_ogrenciler/{ogrenciId} {
       allow read: if girisYapmis();
-      allow create, update, delete: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('ogrenciler') || moduluDuzenleyebilir('siniflar');
     }
 
     match /oy_siniflar/{id} {
@@ -221,6 +223,11 @@ service cloud.firestore {
     }
 
     match /oy_devamsizlikCizelgesi/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('personel');
+    }
+
+    match /oy_dilekceler/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('personel');
     }
