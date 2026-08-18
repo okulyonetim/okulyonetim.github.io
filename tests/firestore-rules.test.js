@@ -30,13 +30,22 @@ async function main() {
       await setDoc(doc(db, 'oy_kullanicilar', 'teacher2Uid'), {
         uid: 'teacher2Uid', admin: false, aktif: true, rolId: 'ogretmen', bagliOgretmenId: 'ogretmen43'
       });
+      await setDoc(doc(db, 'oy_notlar', 'not-teacher'), {
+        baslik: 'Benim Notum', sahipUid: 'teacherUid'
+      });
+      await setDoc(doc(db, 'oy_notlar', 'not-teacher2'), {
+        baslik: 'Başka Öğretmen', sahipUid: 'teacher2Uid'
+      });
+      await setDoc(doc(db, 'oy_notlar', 'not-eski'), {
+        baslik: 'Eski Sahipsiz Not'
+      });
       await setDoc(doc(db, 'oy_odevTakip', 'odev-teacher'), {
         ad: 'Benim Ödev Çizelgem', sahipUid: 'teacherUid', hucreler: {}
       });
       await setDoc(doc(db, 'oy_odevTakip', 'odev-teacher2'), {
         ad: 'Başka Öğretmen', sahipUid: 'teacher2Uid', hucreler: {}
       });
-      await setDoc(doc(db, 'oy_notCizelgesi', 'not-teacher'), {
+      await setDoc(doc(db, 'oy_notCizelgesi', 'not-cizelge-teacher'), {
         ad: 'Benim Not Çizelgem', sahipUid: 'teacherUid', hucreler: {}
       });
     });
@@ -47,10 +56,21 @@ async function main() {
     const anonDb = testEnv.unauthenticatedContext().firestore();
 
     // Girişsiz erişim kapalı kalmalı.
-    await assertFails(getDoc(doc(anonDb, 'oy_notlar', 'n1')));
+    await assertFails(getDoc(doc(anonDb, 'oy_notlar', 'not-teacher')));
 
-    // Mevcut genel modül davranışı korunmalı: giriş yapmış kullanıcı normal koleksiyona yazabilmeli.
-    await assertSucceeds(setDoc(doc(teacherDb, 'oy_notlar', 'n1'), { metin: 'test' }));
+    // Notlar: normal kullanıcı yalnız kendi kaydını yönetebilir.
+    await assertSucceeds(getDoc(doc(teacherDb, 'oy_notlar', 'not-teacher')));
+    await assertFails(getDoc(doc(teacherDb, 'oy_notlar', 'not-teacher2')));
+    await assertFails(getDoc(doc(teacherDb, 'oy_notlar', 'not-eski')));
+    await assertSucceeds(setDoc(doc(teacherDb, 'oy_notlar', 'not-yeni'), { baslik: 'Yeni', sahipUid: 'teacherUid' }));
+    await assertFails(setDoc(doc(teacherDb, 'oy_notlar', 'not-sahte'), { baslik: 'Sahte', sahipUid: 'teacher2Uid' }));
+    await assertSucceeds(updateDoc(doc(teacherDb, 'oy_notlar', 'not-teacher'), { baslik: 'Güncellendi' }));
+    await assertFails(updateDoc(doc(teacherDb, 'oy_notlar', 'not-teacher'), { sahipUid: 'teacher2Uid' }));
+    await assertFails(deleteDoc(doc(teacher2Db, 'oy_notlar', 'not-teacher')));
+
+    // Admin tüm notları, eski sahipsiz kayıtlar dahil, görmeye devam eder.
+    await assertSucceeds(getDoc(doc(adminDb, 'oy_notlar', 'not-teacher2')));
+    await assertSucceeds(getDoc(doc(adminDb, 'oy_notlar', 'not-eski')));
 
     // Rol yönetimi: normal kullanıcı yazamaz, admin yazabilir.
     await assertFails(setDoc(doc(teacherDb, 'oy_roller', 'rol-test'), { ad: 'Test Rol' }));
@@ -79,9 +99,9 @@ async function main() {
     await assertFails(updateDoc(doc(teacherDb, 'oy_odevTakip', 'odev-teacher'), { sahipUid: 'teacher2Uid' }));
 
     // Not Çizelgesi aynı sahiplik modelini kullanır.
-    await assertSucceeds(getDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-teacher')));
-    await assertFails(getDoc(doc(teacher2Db, 'oy_notCizelgesi', 'not-teacher')));
-    await assertSucceeds(updateDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-teacher'), { ad: 'Not Güncellendi' }));
+    await assertSucceeds(getDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-cizelge-teacher')));
+    await assertFails(getDoc(doc(teacher2Db, 'oy_notCizelgesi', 'not-cizelge-teacher')));
+    await assertSucceeds(updateDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-cizelge-teacher'), { ad: 'Not Güncellendi' }));
 
     // Admin mevcut tasarımdaki gibi tüm kişisel çizelgeleri yönetebilir.
     await assertSucceeds(getDoc(doc(adminDb, 'oy_odevTakip', 'odev-teacher')));

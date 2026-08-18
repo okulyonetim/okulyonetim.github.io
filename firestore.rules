@@ -45,7 +45,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_kontrolListeleri'
         || koleksiyon == 'oy_kontrolListeTamamlama'
         || koleksiyon == 'oy_odevTakip'
-        || koleksiyon == 'oy_notCizelgesi';
+        || koleksiyon == 'oy_notCizelgesi'
+        || koleksiyon == 'oy_notlar';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -86,10 +87,18 @@ service cloud.firestore {
       allow create, update, delete: if girisYapmis();
     }
 
+    // Notlar kişisel kayıtlardır. Eski/sahipsiz notlar yalnız admin tarafından
+    // görülebilir; normal kullanıcı yalnız kendi sahipUid kaydını yönetebilir.
+    match /oy_notlar/{id} {
+      allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis()
+        && resource.data.sahipUid == request.auth.uid
+        && request.resource.data.sahipUid == request.auth.uid);
+      allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+    }
+
     // Ödev Takip + Not Çizelgesi kişisel kayıtlardır.
-    // Admin tüm kayıtları yönetebilir; normal kullanıcı yalnız kendi sahipUid kaydını
-    // okuyabilir, oluşturabilir, değiştirebilir ve silebilir. Update sırasında sahipUid
-    // başka bir kullanıcıya devredilemez.
     match /oy_odevTakip/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
