@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import org.json.JSONObject;
 // (androidx SwipeRefreshLayout artık kullanılmıyor — bkz. LogoSwipeRefreshLayout)
 import com.getcapacitor.BridgeActivity;
 import com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin;
@@ -13,6 +14,13 @@ public class MainActivity extends BridgeActivity {
 
     private LogoSwipeRefreshLayout swipeRefresh;
     private long sonGeriTusuZamani = 0;
+
+    /* Widget / bildirim hedefleri artık sabit 300/800 ms gecikmeyle JS'e
+       fırlatılmıyor. JS auth + sekme sistemi gerçekten hazır olana kadar
+       native tarafta tutuluyor; markAppReady() geldiğinde güvenle gönderiliyor. */
+    private volatile boolean appHazir = false;
+    private String bekleyenPage = null;
+    private String bekleyenKategori = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,7 @@ public class MainActivity extends BridgeActivity {
        dokunuşun WebView'e (ve dolayısıyla JS'e) ulaşmasını sağlıyoruz. */
     private void kenarJestiniAyir() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
-        final android.webkit.WebView webView = getBridge() != null ? getBridge().getWebView() : null;
+        final WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView == null) return;
 
         Runnable uygula = () -> {
@@ -71,7 +79,7 @@ public class MainActivity extends BridgeActivity {
        basılırsa uygulama kapanır. */
     @Override
     public void onBackPressed() {
-        android.webkit.WebView webView = getBridge() != null ? getBridge().getWebView() : null;
+        WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView == null) { super.onBackPressed(); return; }
 
         webView.evaluateJavascript(
@@ -97,40 +105,27 @@ public class MainActivity extends BridgeActivity {
         if (swipeRefresh != null) swipeRefresh.setPullEnabled(enabled);
     }
 
-    /* YENİ (Sedat isteği, Ağustos 2026: "yenileme ile sayfada aşağı inmeyi
-       ayırt etmenin bir yolu yok mu") — js/alt-navigasyon.js gibi dosyaların
-       İÇ kaydırılabilir panellerin (position:fixed menü ekranları vb.)
-       GERÇEK kaydırma durumunu Capacitor eklenti köprüsünün asenkron
-       gecikmesi OLMADAN, doğrudan/senkron bildirmesi için. addJavascriptInterface
-       ile WebView'e "AndroidPullToRefreshKopru" adıyla açılıyor (bkz. setupPullToRefresh).
-       Bu metod WebView'in KENDİ arka plan iş parçacığından çağrılabilir —
-       bilerek UI iş parçacığına post ETMİYORUZ (bu da gecikme eklerdi),
-       LogoSwipeRefreshLayout.innerContentKaydirilmis zaten volatile ve
-       iş parçacığı güvenli. */
+    /* İç kaydırılabilir panellerin gerçek kaydırma durumunu native tarafa
+       senkron olarak bildirir. */
     @JavascriptInterface
     public void innerScrollBildir(boolean icerikKaydirilmisMi) {
         if (swipeRefresh != null) swipeRefresh.setInnerContentKaydirilmis(icerikKaydirilmisMi);
     }
 
-    // YENİ: sabit bir bekleme süresi (800ms, 3sn, ne olursa olsun) tahmin
-    // yürütmekten vazgeçildi — gerçek yükleme süresi değişken (Firebase
-    // bağlantısı + ilk veri gelmesi bazen çok kısa bazen birkaç saniye
-    // sürebiliyor). Artık JS tarafı (auth.js: uygulamaBaslat() sonrası,
-    // PullToRefreshPlugin.appHazir() üzerinden) GERÇEKTEN hazır olduğunda
-    // haber veriyor — bkz. markAppReady(). Bu sinyal hiç gelmezse (hata/js
-    // kırılırsa) sonsuza kadar dönmesin diye FALLBACK_TIMEOUT_MS'lik bir
-    // güvenlik sınırı var.
     private static final long FALLBACK_TIMEOUT_MS = 8000;
     private final android.os.Handler _readyHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private Runnable _fallbackRunnable;
 
-    /* JS'in (auth.js) "uygulama gerçekten hazır" sinyali — bkz. PullToRefreshPlugin.appHazir(). */
+    /* JS'in (auth.js → PullToRefreshPlugin.appHazir()) gerçek hazır sinyali.
+       Aynı sinyal artık bekleyen widget/bildirim deep-linklerini de açar. */
     public void markAppReady() {
+        appHazir = true;
         if (_fallbackRunnable != null) {
             _readyHandler.removeCallbacks(_fallbackRunnable);
             _fallbackRunnable = null;
         }
         if (swipeRefresh != null) swipeRefresh.setRefreshing(false);
+        bekleyenHedefleriGonder();
     }
 
     private void setupPullToRefresh() {
@@ -139,18 +134,9 @@ public class MainActivity extends BridgeActivity {
         if (parent == null) return;
 
         int index = parent.indexOfChild(webView);
-        parent.removeView(webView); // ÖNEMLİ: yeni konteynerin constructor'ı webView'i kendine
-                                     // ekliyor (addView) — önce eski parent'tan çıkarılmalı,
-                                     // aksi halde "child already has a parent" hatası oluşur.
+        parent.removeView(webView);
 
-        // ÖNEMLİ: LogoSwipeRefreshLayout, WebView'in GERÇEK scrollY
-        // değerini doğrudan okuyarak "en üstteyim" kararını verir — bkz.
-        // LogoSwipeRefreshLayout.canChildScrollUp() içindeki gerekçe
-        // (Android'in genel View kaydırma sistemi WebView'in iç durumuyla
-        // her zaman senkron olmuyor).
         swipeRefresh = new LogoSwipeRefreshLayout(this, webView);
-        // YENİ: bkz. innerScrollBildir() notu — JS'in "AndroidPullToRefreshKopru"
-        // adıyla erişebileceği senkron köprü.
         webView.addJavascriptInterface(this, "AndroidPullToRefreshKopru");
 
         android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
@@ -161,14 +147,9 @@ public class MainActivity extends BridgeActivity {
         parent.addView(swipeRefresh, index);
 
         swipeRefresh.setOnRefreshListener(() -> {
+            /* Yenilenen sayfanın önceki hazır durumunu miras almaması gerekir. */
+            appHazir = false;
             webView.reload();
-            // NOT: eskiden reload() çağrıldıktan HEMEN bir satır sonra
-            // setRefreshing(false) çağrılıyordu — sayfa gerçekten
-            // yüklenmeyi BEKLEMEDEN gösterge anında kapanıyordu. Sonra
-            // sabit bir bekleme (800ms/3sn) denendi, o da gerçek yükleme
-            // süresiyle uyuşmuyordu (video analizinde ~4sn'lik bir "takılı
-            // kalma" gözlendi). Artık aşağıdaki fallback + markAppReady()
-            // ikilisiyle yönetiliyor.
             if (_fallbackRunnable != null) _readyHandler.removeCallbacks(_fallbackRunnable);
             _fallbackRunnable = () -> { if (swipeRefresh != null) swipeRefresh.setRefreshing(false); };
             _readyHandler.postDelayed(_fallbackRunnable, FALLBACK_TIMEOUT_MS);
@@ -178,46 +159,51 @@ public class MainActivity extends BridgeActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        String kategori = intent.getStringExtra("kategori");
-        if (kategori != null) {
-            getBridge().getWebView().evaluateJavascript(
-                "window.dispatchEvent(new CustomEvent('bildirimAcildi', " +
-                "{ detail: { kategori: '" + kategori + "' } }));",
-                null
-            );
-        }
+        setIntent(intent);
         handleIntent(intent);
     }
 
-    private void handleIntent(Intent intent) {
+    private synchronized void handleIntent(Intent intent) {
         if (intent == null) return;
-        String page = intent.getStringExtra("page");
-        if (page != null) {
-            getBridge().getWebView().postDelayed(() ->
-                getBridge().getWebView().evaluateJavascript(
-                    "window.dispatchEvent(new CustomEvent('widgetSayfaAc', " +
-                    "{ detail: { page: '" + page + "' } }));",
-                    null
-                ), 300
-            );
-        }
 
-        // DÜZELTME: Bu extra daha önce sadece onNewIntent() (uygulama zaten
-        // açıkken bildirime dokunma) içinde okunuyordu. Uygulama KAPALIYKEN
-        // bir bildirime dokunulursa onCreate() çağrılır (onNewIntent değil),
-        // ve bu durumda kategori hiç JS'e iletilmiyordu — bildirim uygulamayı
-        // açıyor ama ilgili sekmeye hiç gitmiyordu. Soğuk başlatmada JS'in
-        // (auth + sekme sistemi) hazır olması için widget'taki gibi bir
-        // gecikme kullanılıyor.
+        String page = intent.getStringExtra("page");
+        if (page != null && !page.trim().isEmpty()) bekleyenPage = page;
+
         String kategori = intent.getStringExtra("kategori");
-        if (kategori != null) {
-            getBridge().getWebView().postDelayed(() ->
-                getBridge().getWebView().evaluateJavascript(
-                    "window.dispatchEvent(new CustomEvent('bildirimAcildi', " +
-                    "{ detail: { kategori: '" + kategori + "' } }));",
+        if (kategori != null && !kategori.trim().isEmpty()) bekleyenKategori = kategori;
+
+        if (appHazir) bekleyenHedefleriGonder();
+    }
+
+    private synchronized void bekleyenHedefleriGonder() {
+        if (!appHazir || getBridge() == null || getBridge().getWebView() == null) return;
+
+        final String page = bekleyenPage;
+        final String kategori = bekleyenKategori;
+        bekleyenPage = null;
+        bekleyenKategori = null;
+
+        if (page == null && kategori == null) return;
+
+        runOnUiThread(() -> {
+            WebView webView = getBridge() != null ? getBridge().getWebView() : null;
+            if (webView == null) return;
+
+            if (page != null) {
+                String jsPage = JSONObject.quote(page);
+                webView.evaluateJavascript(
+                    "window.dispatchEvent(new CustomEvent('widgetSayfaAc',{detail:{page:" + jsPage + "}}));",
                     null
-                ), 800
-            );
-        }
+                );
+            }
+
+            if (kategori != null) {
+                String jsKategori = JSONObject.quote(kategori);
+                webView.evaluateJavascript(
+                    "window.dispatchEvent(new CustomEvent('bildirimAcildi',{detail:{kategori:" + jsKategori + "}}));",
+                    null
+                );
+            }
+        });
     }
 }
