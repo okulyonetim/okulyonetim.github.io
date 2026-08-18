@@ -94,6 +94,7 @@ service cloud.firestore {
         || koleksiyon == 'oy_servisOturma'
         || koleksiyon == 'oy_sinifOturma'
         || koleksiyon == 'oy_okulBilgileri'
+        || koleksiyon == 'oy_devamsizlikCizelgesi'
         || koleksiyon == 'oy_sosyalKulupler'
         || koleksiyon == 'oy_belirliGunler'
         || koleksiyon == 'oy_zumre'
@@ -215,6 +216,11 @@ service cloud.firestore {
     }
 
     match /oy_personelIzinler/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('personel');
+    }
+
+    match /oy_devamsizlikCizelgesi/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('personel');
     }
