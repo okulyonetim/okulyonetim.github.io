@@ -32,6 +32,16 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(PullToRefreshPlugin.class);
         registerPlugin(UpdatePlugin.class);
         super.onCreate(savedInstanceState);
+
+        // Uygulama genelinde WebView pinch/double-tap zoomunu kapat.
+        // Belge/Yıllık Plan gibi ekranların kendi CSS transform zoomları bundan etkilenmez.
+        WebView anaWebView = getBridge() != null ? getBridge().getWebView() : null;
+        if (anaWebView != null) {
+            anaWebView.getSettings().setSupportZoom(false);
+            anaWebView.getSettings().setBuiltInZoomControls(false);
+            anaWebView.getSettings().setDisplayZoomControls(false);
+        }
+
         handleIntent(getIntent());
         setupPullToRefresh();
         kenarJestiniAyir();

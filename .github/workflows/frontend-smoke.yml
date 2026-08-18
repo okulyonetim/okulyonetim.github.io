@@ -3,6 +3,7 @@ name: Frontend Smoke Tests
 on:
   pull_request:
     paths:
+      - 'index.html'
       - 'service-worker.js'
       - 'js/push.js'
       - 'js/dokuman-okuyucu.js'
@@ -34,6 +35,7 @@ on:
       - 'tests/yillik-plan-preview-smoke.test.js'
       - 'tests/optik-save-bridge-smoke.test.js'
       - 'tests/report-native-print-routing-smoke.test.js'
+      - 'tests/global-zoom-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -56,6 +58,9 @@ jobs:
           node --check js/dokuman-okuyucu.js
           node --check js/yillik-plan.js
           node --check optik/js/disaAktar.js
+
+      - name: Global zoom regresyon testi
+        run: node tests/global-zoom-smoke.test.js
 
       - name: PWA / push regresyon testi
         run: node tests/pwa-push-smoke.test.js
