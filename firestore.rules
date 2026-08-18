@@ -11,9 +11,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function girisYapmis() {
-      return request.auth != null;
-    }
+    function girisYapmis() { return request.auth != null; }
 
     function kendiBelgemVarMi() {
       return girisYapmis()
@@ -55,7 +53,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_hatirlaticilar'
         || koleksiyon == 'oy_gorevler'
         || koleksiyon == 'oy_konusmalar'
-        || koleksiyon == 'oy_mesajlar';
+        || koleksiyon == 'oy_mesajlar'
+        || koleksiyon == 'oy_dokumanlar';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -123,9 +122,6 @@ service cloud.firestore {
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
-    // Konuşmaları yalnız katılımcılar (ve admin) görebilir. Normal katılımcı
-    // mevcut konuşmanın katılımcı listesini değiştiremez; böylece doğrudan
-    // Firestore isteğiyle yetkisiz kullanıcı eklenmesi engellenir.
     match /oy_konusmalar/{id} {
       allow read: if adminMi() || (girisYapmis() && request.auth.uid in resource.data.katilimciUidler);
       allow create: if adminMi() || (girisYapmis() && request.auth.uid in request.resource.data.katilimciUidler);
@@ -135,9 +131,6 @@ service cloud.firestore {
       allow delete: if adminMi() || (girisYapmis() && request.auth.uid in resource.data.katilimciUidler);
     }
 
-    // Mesajlar yalnız konuşma katılımcılarına açıktır. Yeni mesajda gönderenUid
-    // giriş yapan kullanıcı olmak zorundadır. Konuşma silme akışında bir katılımcı
-    // konuşmanın tüm mesajlarını toplu silebildiği için delete katılımcıya açıktır.
     match /oy_mesajlar/{id} {
       allow read: if adminMi() || konusmaKatilimcisiMi(resource.data.konusmaId);
       allow create: if adminMi() || (girisYapmis()
@@ -145,6 +138,19 @@ service cloud.firestore {
         && konusmaKatilimcisiMi(request.resource.data.konusmaId));
       allow update: if false;
       allow delete: if adminMi() || konusmaKatilimcisiMi(resource.data.konusmaId);
+    }
+
+    // Doküman metadata'sı: normal kullanıcı yalnız açık kayıtları ve kendi
+    // kayıtlarını görür. Öğretmen yalnız kendine ait kişisel kayıt oluşturur;
+    // görünürlüğü sonradan değiştirmek sadece admine aittir.
+    match /oy_dokumanlar/{id} {
+      allow read: if adminMi() || (girisYapmis()
+        && (resource.data.gorunurluk == 'herkes' || resource.data.olusturanUid == request.auth.uid));
+      allow create: if adminMi() || (girisYapmis()
+        && request.resource.data.olusturanUid == request.auth.uid
+        && request.resource.data.gorunurluk == 'kisisel');
+      allow update: if adminMi();
+      allow delete: if adminMi() || (girisYapmis() && resource.data.olusturanUid == request.auth.uid);
     }
 
     match /oy_odevTakip/{id} {
