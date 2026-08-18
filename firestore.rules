@@ -75,7 +75,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_dersListesi'
         || koleksiyon == 'oy_bransListesi'
         || koleksiyon == 'oy_depolamaAyarlari'
-        || koleksiyon == 'oy_hatirlatmaAyarlari';
+        || koleksiyon == 'oy_hatirlatmaAyarlari'
+        || koleksiyon == 'oy_ozelMenu';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -181,8 +182,6 @@ service cloud.firestore {
       allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
     }
 
-    // Ders ve branş seçim listeleri okul genelinde okunabilir; değiştirme
-    // mevcut Sistem Ayarları modülündeki Düzenle yetkisine bağlıdır.
     match /oy_dersListesi/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
@@ -193,8 +192,6 @@ service cloud.firestore {
       allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
     }
 
-    // Bu iki merkezi ayar istemcide de yalnız admin tarafından değiştiriliyor.
-    // Okuma tüm giriş yapan kullanıcılarda mevcut davranışı korur.
     match /oy_depolamaAyarlari/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if adminMi();
@@ -203,6 +200,12 @@ service cloud.firestore {
     match /oy_hatirlatmaAyarlari/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if adminMi();
+    }
+
+    // Özel menü grupları mevcut rol sistemindeki ozelMenu=duzenle yetkisine bağlıdır.
+    match /oy_ozelMenu/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('ozelMenu');
     }
 
     match /oy_odevTakip/{id} {
