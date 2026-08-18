@@ -178,7 +178,21 @@
   // Firestore'dan yüklenen admin navigasyon düzeni (oy_navDuzeni/ayarlar) —
   // bkz. _navDuzeniYukle(). Hiç kaydedilmemişse {} (tüm gruplar/öğeler
   // dosyadaki varsayılan sırada/görünür kalır).
-  let _navDuzeniVerisi = {};
+  const _NAV_DUZENI_CACHE_ANAHTARI = 'oyNavDuzeniCacheV1';
+  function _navDuzeniCacheOku(){
+    try{
+      const ham = localStorage.getItem(_NAV_DUZENI_CACHE_ANAHTARI);
+      const veri = ham ? JSON.parse(ham) : {};
+      return veri && typeof veri === 'object' ? veri : {};
+    }catch(_){ return {}; }
+  }
+  function _navDuzeniCacheKaydet(veri){
+    try{ localStorage.setItem(_NAV_DUZENI_CACHE_ANAHTARI, JSON.stringify(veri || {})); }catch(_){}
+  }
+  // İlk çizim Firestore'u beklemez. Son bilinen resmi navigasyon düzeni
+  // doğrudan cihaz cache'inden alınır; böylece eski katalog rengi bir an
+  // görünüp sonra yeni renge dönmez.
+  let _navDuzeniVerisi = _navDuzeniCacheOku();
 
   /* ---- Katalog + özel gruplar + admin navigasyon düzenini BİRLEŞTİRİR.
      dahilGizliler=false  → herkese gösterilecek nihai liste (gizli grup/
@@ -329,6 +343,12 @@
     _gruplariYenidenOlustur();
     if(typeof AltNav !== 'undefined' && AltNav._kuruldu) AltNav.yenile();
   }
+  function _navDuzeniYerelUygula(veri, cachele){
+    try{ _navDuzeniVerisi = JSON.parse(JSON.stringify(veri || {})); }
+    catch(_){ _navDuzeniVerisi = veri || {}; }
+    if(cachele !== false) _navDuzeniCacheKaydet(_navDuzeniVerisi);
+    _yenidenInsaVeYenile();
+  }
 
   /* ---- Firestore'dan özel menü gruplarını yükle ----
      Admin, Ayarlar ekranından oy_ozelMenu koleksiyonuna grup ekler.
@@ -391,8 +411,7 @@
   function _navDuzeniYukle(){
     if(typeof db === 'undefined' || typeof COL === 'undefined' || !COL.navDuzeni) return;
     db.collection(COL.navDuzeni).doc('ayarlar').get().then(doc => {
-      _navDuzeniVerisi = doc.exists ? (doc.data() || {}) : {};
-      _yenidenInsaVeYenile();
+      _navDuzeniYerelUygula(doc.exists ? (doc.data() || {}) : {});
     }).catch(e => {
       // DÜZELTME: bkz. _ozelGruplariYukle() üstündeki aynı not — sessiz
       // yutma + tekrar deneme yokluğu, admin düzeninin (yeni grup/öğe,
@@ -407,6 +426,7 @@
   // editörü çağırabilsin
   window._ozelGruplariYukle = _ozelGruplariYukle;
   window._navDuzeniYukle = _navDuzeniYukle;
+  window._navDuzeniYerelUygula = _navDuzeniYerelUygula;
   window._navDuzeniVerisiGetir = () => _navDuzeniVerisi;
   window._navDuzeniKatalogGetir = () => GRUPLAR_KATALOG;
   window._ozelGruplarVerisiGetir = () => _ozelGruplarVerisi;
@@ -450,6 +470,14 @@
   const _MENU_TERCIH_ANAHTARI = 'anMenuKartTercihleriV2';
   const _GRUPLAR_VARSAYILAN = {};
   GRUPLAR_KATALOG.forEach(g => { _GRUPLAR_VARSAYILAN[g.anahtar] = { renk: g.renk, ad: g.ad }; });
+  function _menuResmiVarsayilanGetir(anahtar){
+    // Kişisel tercih uygulanmadan, admin Navigasyon Düzeni override'ı
+    // uygulanmış resmi kart değerini döndür. "Varsayılana Döndür" artık
+    // yıllar önceki katalog rengine değil, yöneticinin güncel rengine döner.
+    const resmi = _navDuzeniInsaEt(true).find(g => g.anahtar === anahtar);
+    if(resmi) return { ad: resmi.ad, renk: resmi.renk };
+    return _GRUPLAR_VARSAYILAN[anahtar] || null;
+  }
 
   function _menuTercihleriGetir(){
     try{
@@ -567,7 +595,7 @@
 
   function _menuKartDuzenle(i){
     const g = GRUPLAR[i];
-    const varsayilan = _GRUPLAR_VARSAYILAN[g.anahtar] || { ad: g.ad, renk: g.renk }; // özel gruplar için fallback
+    const varsayilan = _menuResmiVarsayilanGetir(g.anahtar) || { ad: g.ad, renk: g.renk }; // özel gruplar için fallback
     const ozelGrupMu = g._ozelId !== undefined;
     const body = `
       <div class="form-group"><label>Menü Adı</label><input id="anKartAdAlani" value="${escapeHtml(g.ad)}"></div>
@@ -636,7 +664,7 @@
     }
 
     // Yerleşik gruplar → localStorage'a kaydet
-    const varsayilan = _GRUPLAR_VARSAYILAN[g.anahtar] || { ad: g.ad, renk: g.renk };
+    const varsayilan = _menuResmiVarsayilanGetir(g.anahtar) || { ad: g.ad, renk: g.renk };
     const tercihler = _menuTercihleriGetir();
     const ozelAd = yeniAd !== varsayilan.ad ? yeniAd : undefined;
     const ozelRenk = (yeniRenk.toLowerCase() !== varsayilan.renk.toLowerCase()) ? yeniRenk : undefined;
