@@ -48,6 +48,15 @@ service cloud.firestore {
       return kendiBelgemVarMi() ? kullaniciBelgesi().data.bagliOgretmenId : null;
     }
 
+    function kulupDanismaniMi(kulupId) {
+      return girisYapmis()
+        && kulupId != null
+        && kulupId != ''
+        && kendiOgretmenIdsi() != null
+        && exists(/databases/$(database)/documents/oy_sosyalKulupler/$(kulupId))
+        && kendiOgretmenIdsi() in get(/databases/$(database)/documents/oy_sosyalKulupler/$(kulupId)).data.ogretmenIdler;
+    }
+
     function konusmaKatilimcisiMi(konusmaId) {
       return girisYapmis()
         && exists(/databases/$(database)/documents/oy_konusmalar/$(konusmaId))
@@ -85,6 +94,7 @@ service cloud.firestore {
         || koleksiyon == 'oy_ozelMenu'
         || koleksiyon == 'oy_anketler'
         || koleksiyon == 'oy_siniflar'
+        || koleksiyon == 'oy_veliler'
         || koleksiyon == 'oy_servisler'
         || koleksiyon == 'oy_yoklama'
         || koleksiyon == 'oy_personel'
@@ -115,9 +125,6 @@ service cloud.firestore {
       allow write: if girisYapmis() && request.auth.uid == uid;
     }
 
-    // Yoklamayı modülü görebilen herkes girebilir; mevcut UI davranışı budur.
-    // Normal kullanıcı yalnız yoklama alanlarını değiştirir. Veliye mesaj gönderildi
-    // işareti (mesajGonderildi) ve belge silme admin ile sınırlıdır.
     match /oy_yoklama/{belgeId} {
       allow read: if girisYapmis();
       allow create: if moduluGorebilir('yoklama')
@@ -144,6 +151,15 @@ service cloud.firestore {
     match /oy_siniflar/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('siniflar');
+    }
+
+    match /oy_veliler/{id} {
+      allow read: if girisYapmis();
+      allow create, delete: if moduluDuzenleyebilir('siniflar') || moduluDuzenleyebilir('ogrenciler');
+      allow update: if moduluDuzenleyebilir('siniflar') || moduluDuzenleyebilir('ogrenciler')
+        || (girisYapmis()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kulupId', 'kulupAdi'])
+          && (kulupDanismaniMi(resource.data.kulupId) || kulupDanismaniMi(request.resource.data.kulupId)));
     }
 
     match /oy_personel/{id} {
