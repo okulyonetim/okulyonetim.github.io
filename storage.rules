@@ -1,0 +1,43 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function girisYapmis() {
+      return request.auth != null;
+    }
+
+    function adminMi() {
+      return girisYapmis()
+        && firestore.exists(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid)).data.admin == true;
+    }
+
+    function konusmaKatilimcisiMi(konusmaId) {
+      return girisYapmis()
+        && firestore.exists(/databases/(default)/documents/oy_konusmalar/$(konusmaId))
+        && request.auth.uid in firestore.get(/databases/(default)/documents/oy_konusmalar/$(konusmaId)).data.katilimciUidler;
+    }
+
+    function mesajDosyasiTuruGecerliMi() {
+      return request.resource != null
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType.matches('application/pdf|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.ms-excel|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|image/jpeg|image/png|image/gif|image/webp');
+    }
+
+    // Mesaj dosyaları yalnız ilgili konuşmanın katılımcıları (ve admin)
+    // tarafından okunabilir/yazılabilir. Silmede request.resource null olduğu
+    // için tür/boyut kontrolü yalnız yükleme/güncellemede uygulanır.
+    match /mesajDosyalari/{konusmaId}/{dosyaAdi} {
+      allow read: if adminMi() || konusmaKatilimcisiMi(konusmaId);
+      allow write: if (adminMi() || konusmaKatilimcisiMi(konusmaId))
+        && (request.resource == null || mesajDosyasiTuruGecerliMi());
+    }
+
+    // Mevcut diğer Storage modüllerinin davranışını koru. Bu aşamada yalnız
+    // mesaj ekleri sıkılaştırılıyor; doküman/duyuru/akademik takvim yolları
+    // giriş yapan kullanıcılar için çalışmaya devam eder.
+    match /{ustYol}/{kalan=**} {
+      allow read, write: if girisYapmis() && ustYol != 'mesajDosyalari';
+    }
+  }
+}
