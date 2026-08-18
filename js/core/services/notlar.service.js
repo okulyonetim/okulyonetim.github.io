@@ -9,9 +9,59 @@
      kaydet() fonksiyonunda gizliydi, artık burada açık ve modüle özel.
    - Görünürlük filtresini (kisiselKayitGorunurMu — app.js'te tanımlı,
      hatirlaticilar/gorevler ile paylaşılıyor) uygular.
+   - Zengin metin HTML'ini hem okuma hem yazma sırasında sanitize eder.
    - db değişkenine DOĞRUDAN dokunmaz — sadece NotlarRepository çağırır.
    (bkz. Pragmatik-Mimari-Tasarimi.md §2, §5)
    ================================================================ */
+
+function _notlarHtmlGuvenliYap(html){
+  if(typeof html !== 'string' || !html) return '';
+  if(typeof document === 'undefined') return html.replace(/<[^>]*>/g, '');
+
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+
+  const yasakEtiketler = new Set([
+    'SCRIPT','STYLE','IFRAME','OBJECT','EMBED','LINK','META','BASE','FORM',
+    'INPUT','BUTTON','TEXTAREA','SELECT','OPTION','SVG','MATH','VIDEO','AUDIO'
+  ]);
+
+  Array.from(tpl.content.querySelectorAll('*')).forEach(el => {
+    if(yasakEtiketler.has(el.tagName)){
+      el.remove();
+      return;
+    }
+
+    Array.from(el.attributes).forEach(attr => {
+      const ad = attr.name.toLowerCase();
+      const deger = String(attr.value || '').trim();
+
+      if(ad.startsWith('on') || ad === 'srcdoc'){
+        el.removeAttribute(attr.name);
+        return;
+      }
+
+      if((ad === 'href' || ad === 'src' || ad === 'xlink:href') &&
+         /^(?:javascript|vbscript|data):/i.test(deger)){
+        el.removeAttribute(attr.name);
+        return;
+      }
+
+      // Not editörü metin biçimlendirmesi için style kullanabiliyor; yalnız
+      // URL/işlev üretebilen CSS kalıplarını temizle.
+      if(ad === 'style' && /(url\s*\(|expression\s*\(|@import|javascript:)/i.test(deger)){
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+
+  return tpl.innerHTML;
+}
+
+function _notlarKaydiGuvenliYap(kayit){
+  if(!kayit || typeof kayit !== 'object' || typeof kayit.icerik !== 'string') return kayit;
+  return { ...kayit, icerik: _notlarHtmlGuvenliYap(kayit.icerik) };
+}
 
 const NotlarService = {
 
@@ -21,15 +71,22 @@ const NotlarService = {
   },
 
   /* Ham listeyi görünürlük kuralına göre filtreler (kişisel notlar yalnız
-     sahibine ve adminlere görünür — bkz. js/app.js kisiselKayitGorunurMu). */
+     sahibine ve adminlere görünür — bkz. js/app.js kisiselKayitGorunurMu).
+     Mevcut eski kayıtlardaki olası zararlı HTML de UI'ya ulaşmadan temizlenir. */
   gorunurListele(hamListe){
-    return (typeof kisiselKayitGorunurMu === 'function')
+    const liste = (typeof kisiselKayitGorunurMu === 'function')
       ? hamListe.filter(kisiselKayitGorunurMu)
       : hamListe;
+    return liste.map(_notlarKaydiGuvenliYap);
   },
 
   notKaydet(mevcutId, veri){
     if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
+
+    if(veri && typeof veri.icerik === 'string'){
+      veri = { ...veri, icerik: _notlarHtmlGuvenliYap(veri.icerik) };
+    }
+
     // DÜZELTME: Artık admin de dahil HERKESİN yeni notu sahipUid ile damgalanır
     // — "kimse kimsenin notunu göremesin" kuralı (öğretmenler birbirinden gizli,
     // admin her şeyi görür) için her kaydın bir sahibi olması gerekiyor;
