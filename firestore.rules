@@ -81,6 +81,11 @@ service cloud.firestore {
         || koleksiyon == 'oy_hatirlaticilar'
         || koleksiyon == 'oy_gorevler'
         || koleksiyon == 'oy_haritaFavoriler'
+        || koleksiyon == 'oy_nobetYerleri'
+        || koleksiyon == 'oy_nobetAtamalari'
+        || koleksiyon == 'oy_nobetciAmirleri'
+        || koleksiyon == 'oy_resmiTatiller'
+        || koleksiyon == 'oy_nobetRotasyon'
         || koleksiyon == 'oy_sosyalKulupler'
         || koleksiyon == 'oy_belirliGunler'
         || koleksiyon == 'oy_zumre'
@@ -209,6 +214,36 @@ service cloud.firestore {
         && request.resource.data.olusturanUid == request.auth.uid);
       allow delete: if adminMi() || (moduluDuzenleyebilir('harita')
         && resource.data.olusturanUid == request.auth.uid);
+    }
+
+    match /oy_nobetYerleri/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('nobet');
+    }
+
+    match /oy_nobetAtamalari/{id} {
+      allow read: if girisYapmis();
+      allow create, delete: if moduluDuzenleyebilir('nobet');
+      allow update: if moduluDuzenleyebilir('nobet') || (girisYapmis()
+        && kendiOgretmenIdsi() != null
+        && kendiOgretmenIdsi() == resource.data.ogretmenId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['defterDolduruldu'])
+        && request.resource.data.defterDolduruldu is bool);
+    }
+
+    match /oy_nobetciAmirleri/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('nobet');
+    }
+
+    match /oy_resmiTatiller/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('nobet');
+    }
+
+    match /oy_nobetRotasyon/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('nobet');
     }
 
     match /oy_sosyalKulupler/{id} {
