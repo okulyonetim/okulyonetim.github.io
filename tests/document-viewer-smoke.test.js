@@ -38,4 +38,11 @@ assert(src.includes("wrap.style.width='100%'"), 'Word viewport sonsuz yatay geni
 assert(src.includes('color:#fff!important'), 'Koyu temada belge adı yüksek kontrastlı olmalı.');
 assert(src.includes("A.body.classList.add('dv3wordbody')"), 'Word alanı siyah boşluk yerine belge zemini kullanmalı.');
 
+
+assert(src.includes('.dv3body.dv3wordbody{background:#cfd3d7;overflow:hidden;display:flex'), 'Word zoom tüm görüntüleyici gövdesini yatay büyütmemeli.');
+assert(src.includes('.dv3wordviewport{flex:1 1 auto;min-height:0;padding:10px;overflow:auto'), 'Word yatay/dikey kaydırma yalnız belge viewportunda olmalı.');
+assert(src.includes('const uygunW=Math.max(1,wrap.clientWidth-20)'), 'Word Sığdır gerçek belge viewport genişliğini kullanmalı.');
+assert(src.includes('Math.max(0.15,Math.min(1,uygunW/dogalW))'), 'Geniş Word sayfaları %35 alt sınırı nedeniyle sağdan kesilmemeli.');
+assert(src.includes("wrap.scrollTo({left:0,top:0"), 'Sığdır sonrası yalnız Word viewportu başa dönmeli.');
+
 console.log('Belge görüntüleyici smoke testleri başarılı.');
