@@ -5,8 +5,7 @@
 // GÜNCELLEME: Uygulama kullanıcı adı/şifre ile giriş yaptırıyor (bkz. js/auth.js).
 // Bu dosyada mevcut kullanıcı/rol davranışı KORUNUR. Güvenlik açısından kritik
 // koleksiyonlar genel authenticated-user kuralından çıkarılır ve aşağıdaki özel
-// kurallarıyla korunur. Böylece UI'daki mevcut rol yapısı değiştirilmeden,
-// "sadece admin" / "sadece kendi kaydı" kuralları gerçekten uygulanır.
+// kurallarıyla korunur.
 
 rules_version = '2';
 service cloud.firestore {
@@ -32,6 +31,12 @@ service cloud.firestore {
         : null;
     }
 
+    function konusmaKatilimcisiMi(konusmaId) {
+      return girisYapmis()
+        && exists(/databases/$(database)/documents/oy_konusmalar/$(konusmaId))
+        && request.auth.uid in get(/databases/$(database)/documents/oy_konusmalar/$(konusmaId)).data.katilimciUidler;
+    }
+
     function ozelKuralliKoleksiyonMu(koleksiyon) {
       return koleksiyon == 'oy_kullanicilar'
         || koleksiyon == 'oy_roller'
@@ -48,7 +53,9 @@ service cloud.firestore {
         || koleksiyon == 'oy_notCizelgesi'
         || koleksiyon == 'oy_notlar'
         || koleksiyon == 'oy_hatirlaticilar'
-        || koleksiyon == 'oy_gorevler';
+        || koleksiyon == 'oy_gorevler'
+        || koleksiyon == 'oy_konusmalar'
+        || koleksiyon == 'oy_mesajlar';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -89,8 +96,6 @@ service cloud.firestore {
       allow create, update, delete: if girisYapmis();
     }
 
-    // Notlar kişisel kayıtlardır. Eski/sahipsiz notlar yalnız admin tarafından
-    // görülebilir; normal kullanıcı yalnız kendi sahipUid kaydını yönetebilir.
     match /oy_notlar/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
@@ -100,8 +105,6 @@ service cloud.firestore {
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
-    // Hatırlatıcılar ve görevler kişisel kayıtlardır. Eski/sahipsiz kayıtları
-    // yalnız admin görür; normal kullanıcı sadece kendi sahipUid kaydını yönetir.
     match /oy_hatirlaticilar/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
@@ -120,7 +123,30 @@ service cloud.firestore {
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
-    // Ödev Takip + Not Çizelgesi kişisel kayıtlardır.
+    // Konuşmaları yalnız katılımcılar (ve admin) görebilir. Normal katılımcı
+    // mevcut konuşmanın katılımcı listesini değiştiremez; böylece doğrudan
+    // Firestore isteğiyle yetkisiz kullanıcı eklenmesi engellenir.
+    match /oy_konusmalar/{id} {
+      allow read: if adminMi() || (girisYapmis() && request.auth.uid in resource.data.katilimciUidler);
+      allow create: if adminMi() || (girisYapmis() && request.auth.uid in request.resource.data.katilimciUidler);
+      allow update: if adminMi() || (girisYapmis()
+        && request.auth.uid in resource.data.katilimciUidler
+        && request.resource.data.katilimciUidler == resource.data.katilimciUidler);
+      allow delete: if adminMi() || (girisYapmis() && request.auth.uid in resource.data.katilimciUidler);
+    }
+
+    // Mesajlar yalnız konuşma katılımcılarına açıktır. Yeni mesajda gönderenUid
+    // giriş yapan kullanıcı olmak zorundadır. Konuşma silme akışında bir katılımcı
+    // konuşmanın tüm mesajlarını toplu silebildiği için delete katılımcıya açıktır.
+    match /oy_mesajlar/{id} {
+      allow read: if adminMi() || konusmaKatilimcisiMi(resource.data.konusmaId);
+      allow create: if adminMi() || (girisYapmis()
+        && request.resource.data.gonderenUid == request.auth.uid
+        && konusmaKatilimcisiMi(request.resource.data.konusmaId));
+      allow update: if false;
+      allow delete: if adminMi() || konusmaKatilimcisiMi(resource.data.konusmaId);
+    }
+
     match /oy_odevTakip/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
