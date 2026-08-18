@@ -44,7 +44,6 @@ assert(src.includes('Math.max(0.15,Math.min(1,uygunW/dogalW))'), 'Geniş Word sa
 assert(src.includes("wrap.scrollTo({left:0,top:0"), 'Sığdır sonrası yalnız Word viewportu başa dönmeli.');
 assert(src.includes('id=\"dv3wordPageInfo\"'), 'Word sayfa sayacı bulunmalı.');
 
-
 assert(src.includes('pdfZoomUygula'), 'PDF görüntüleyicide yakınlaştırma/uzaklaştırma bulunmalı.');
 assert(src.includes('pdfSigdir'), 'PDF görüntüleyicide Sığdır bulunmalı.');
 assert(src.includes('id="dv3pdfPageInfo"'), 'PDF sayfa sayacı bulunmalı.');
@@ -52,7 +51,10 @@ assert(src.includes('.dv3pdfviewport{flex:1 1 auto;min-height:0;overflow:auto'),
 assert(src.includes('st.style.transform=`scale(${pdfZoom})`'), 'PDF zoom yalnız belge sahnesine uygulanmalı.');
 assert(src.includes('cMapUrl:'), 'PDF Türkçe karakter/CMap desteği korunmalı.');
 assert(src.includes('standardFontDataUrl:'), 'PDF standard font desteği korunmalı.');
-
+assert(src.includes('wrap.clientHeight-20'), 'PDF Sığdır yalnız genişliği değil görüntüleme yüksekliğini de hesaba katmalı.');
+assert(src.includes('dataset.maxPageHeight'), 'PDF tam sayfa sığdırma için en yüksek sayfa ölçüsü tutulmalı.');
+assert(src.includes('uygunH/pageH'), 'PDF Sığdır tam sayfa ölçeğini yükseklikten de hesaplamalı.');
+assert(src.includes('gap:18px'), 'Çok sayfalı PDF sayfaları arasında görünür ayrım bulunmalı.');
 
 assert(src.includes('excelZoomUygula'), 'Excel görüntüleyicide yakınlaştırma/uzaklaştırma bulunmalı.');
 assert(src.includes('excelSigdir'), 'Excel görüntüleyicide Sığdır bulunmalı.');
@@ -60,7 +62,13 @@ assert(src.includes('id="dv3excelZoomLabel"'), 'Excel zoom yüzdesi gösterilmel
 assert(src.includes('.dv3sheetviewport{flex:1 1 auto;min-height:0;overflow:auto'), 'Excel kaydırma yalnız tablo viewportunda olmalı.');
 assert(src.includes('st.style.transform=`scale(${excelZoom})`'), 'Excel zoom yalnız çalışma sayfasına uygulanmalı.');
 assert(src.includes('const uygun=Math.max(1,wrap.clientWidth-20)'), 'Excel Sığdır gerçek viewport genişliğini kullanmalı.');
-
+assert(src.includes('excelKolonPx'), 'Excel sütun genişlikleri dosya ölçülerinden piksele çevrilmeli.');
+assert(src.includes('excelSatirPx'), 'Excel satır yükseklikleri dosya ölçülerinden piksele çevrilmeli.');
+assert(src.includes('excelJsHtml'), 'XLSX ExcelJS görünümü sütun/satır ölçülerini koruyan özel HTML üretmeli.');
+assert(src.includes("sheet['!cols']"), 'XLS/SheetJS sütun ölçüleri görüntüleyiciye aktarılmalı.');
+assert(src.includes("sheet['!rows']"), 'XLS/SheetJS satır ölçüleri görüntüleyiciye aktarılmalı.');
+assert(src.includes('cellStyles:true'), 'SheetJS boyut/stil metadatasını okuyacak şekilde açılmalı.');
+assert(src.includes("classList.toggle('active',n===i)"), 'Aktif Excel çalışma sayfası sekmesi görünür biçimde işaretlenmeli.');
 
 assert(src.includes('function pullToRefreshAyarla(enabled)'), 'Belge görüntüleyici native pull-to-refresh kontrolüne sahip olmalı.');
 assert(src.includes("p.setEnabled({enabled:!!enabled})"), 'PullToRefreshPlugin setEnabled kullanılmalı.');
