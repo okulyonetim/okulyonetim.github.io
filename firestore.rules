@@ -125,7 +125,7 @@ service cloud.firestore {
         && request.resource.data.sinifId == resource.data.sinifId
         && request.resource.data.tarih == resource.data.tarih
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sinifId','tarih','kayitlar','girenUid','girenAdi','guncellenmeTarihi'])
-        && (!('girenUid' in request.resource.data) || request.resource.data.girenUid == request.auth.uid));
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['girenUid']) || request.resource.data.girenUid == request.auth.uid));
       allow delete: if adminMi();
     }
 
