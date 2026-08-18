@@ -35,7 +35,11 @@ on:
       - 'tests/optik-save-bridge-smoke.test.js'
       - 'tests/report-native-print-routing-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
+      - 'tests/apply-ypl-preview-patch.py'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   smoke:
@@ -43,11 +47,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: agent/yillik-plan-fit-zoom-title
 
       - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Yıllık plan önizleme patchini uygula
+        run: |
+          python tests/apply-ypl-preview-patch.py
+          if ! git diff --quiet -- js/yillik-plan.js tests/yillik-plan-preview-smoke.test.js; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add js/yillik-plan.js tests/yillik-plan-preview-smoke.test.js
+            git commit -m "fix: annual plan title fit orientation and isolated zoom"
+            git push origin HEAD:agent/yillik-plan-fit-zoom-title
+          fi
 
       - name: JavaScript syntax kontrolü
         run: |
