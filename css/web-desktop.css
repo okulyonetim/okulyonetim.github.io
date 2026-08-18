@@ -311,3 +311,77 @@
     padding-right: clamp(36px, 3vw, 64px);
   }
 }
+
+/* ================================================================
+   WEB RESPONSIVE v2 — BREAKPOINT ÇAKIŞMASI / APP SHELL SAĞLAMLAŞTIRMA
+   Ana styles.css 1100px ve altında mobil sidebar kuralları uyguluyor.
+   Masaüstü katmanı 1024px'de başladığı için 1024–1100px aralığında
+   off-canvas transform ve !important genişlik masaüstüyle çakışabiliyordu.
+   Bu bölüm masaüstü app-shell davranışını kesinleştirir.
+   ================================================================ */
+@media (min-width: 1024px) {
+  /* Inline style metnine bağlı kırılgan seçici yerine yapısal app-shell seçicisi. */
+  #app > .sidebar + div {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    max-width: 100%;
+  }
+
+  /* 1024–1100px çakışmasında mobil off-canvas kurallarını kesin olarak iptal et. */
+  #app > .sidebar {
+    position: sticky;
+    left: auto;
+    transform: none !important;
+    width: var(--sidebar-w) !important;
+    min-width: var(--sidebar-w);
+    flex: 0 0 var(--sidebar-w);
+    box-shadow: none;
+  }
+
+  #app > .sidebar .nav {
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+
+  /* Tablet görünümünden masaüstüne yeniden boyutlandırmada kalan nav-open perdesini kaldır. */
+  body.nav-open::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  body.nav-open #app > .sidebar {
+    transform: none !important;
+  }
+
+  /* Daraltılmış masaüstü menüsü: v1'de flex-basis 240px kaldığı için
+     72px genişlik ile içerik alanı arasında görünmez boşluk oluşabiliyordu. */
+  body.nav-collapsed #app > .sidebar {
+    width: var(--sidebar-w-collapsed) !important;
+    min-width: var(--sidebar-w-collapsed);
+    flex-basis: var(--sidebar-w-collapsed);
+  }
+
+  /* styles.css'in <=1100px mobil geri-açma kurallarını masaüstünde tersine çevir. */
+  body.nav-collapsed #app > .sidebar .brand-title,
+  body.nav-collapsed #app > .sidebar .brand-sub,
+  body.nav-collapsed #app > .sidebar .nt-label,
+  body.nav-collapsed #app > .sidebar .nav-separator,
+  body.nav-collapsed #app > .sidebar .theme-toggle .tt-label {
+    display: none;
+  }
+
+  body.nav-collapsed #app > .sidebar .nav-tab {
+    justify-content: center;
+    padding: 9px;
+  }
+
+  body.nav-collapsed #app > .sidebar .brand {
+    justify-content: center;
+  }
+
+  /* Eski inline-style seçicisinin width hesabını etkisizleştir; flex app-shell yönetsin. */
+  .app > div[style*="flex:1"] {
+    width: auto;
+  }
+}
