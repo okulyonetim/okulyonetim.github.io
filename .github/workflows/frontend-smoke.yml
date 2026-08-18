@@ -7,6 +7,10 @@ on:
       - 'js/push.js'
       - 'js/dokuman-okuyucu.js'
       - 'js/yillik-plan.js'
+      - 'js/app.js'
+      - 'optik/index.html'
+      - 'optik/js/app.js'
+      - 'optik/js/disaAktar.js'
       - 'firebase-messaging-sw.js'
       - '.github/workflows/build-apk.yml'
       - 'android/app/src/main/java/com/koruk/okul/MainActivity.java'
@@ -16,6 +20,7 @@ on:
       - 'tests/document-viewer-smoke.test.js'
       - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/yillik-plan-preview-smoke.test.js'
+      - 'tests/optik-save-bridge-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -37,6 +42,7 @@ jobs:
           node --check js/push.js
           node --check js/dokuman-okuyucu.js
           node --check js/yillik-plan.js
+          node --check optik/js/disaAktar.js
 
       - name: PWA / push regresyon testi
         run: node tests/pwa-push-smoke.test.js
@@ -52,3 +58,6 @@ jobs:
 
       - name: Yıllık plan önizleme regresyon testi
         run: node tests/yillik-plan-preview-smoke.test.js
+
+      - name: Optik PDF kayıt köprüsü regresyon testi
+        run: node tests/optik-save-bridge-smoke.test.js
