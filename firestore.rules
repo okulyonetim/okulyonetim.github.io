@@ -80,6 +80,7 @@ service cloud.firestore {
         || koleksiyon == 'oy_notlar'
         || koleksiyon == 'oy_hatirlaticilar'
         || koleksiyon == 'oy_gorevler'
+        || koleksiyon == 'oy_haritaFavoriler'
         || koleksiyon == 'oy_konusmalar'
         || koleksiyon == 'oy_mesajlar'
         || koleksiyon == 'oy_dokumanlar'
@@ -185,6 +186,17 @@ service cloud.firestore {
     match /oy_ogretmenIzinleri/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('ogretmenler');
+    }
+
+    match /oy_haritaFavoriler/{id} {
+      allow read: if adminMi() || (girisYapmis() && resource.data.olusturanUid == request.auth.uid);
+      allow create: if moduluDuzenleyebilir('harita')
+        && request.resource.data.olusturanUid == request.auth.uid;
+      allow update: if adminMi() || (moduluDuzenleyebilir('harita')
+        && resource.data.olusturanUid == request.auth.uid
+        && request.resource.data.olusturanUid == request.auth.uid);
+      allow delete: if adminMi() || (moduluDuzenleyebilir('harita')
+        && resource.data.olusturanUid == request.auth.uid);
     }
 
     match /oy_notlar/{id} {
