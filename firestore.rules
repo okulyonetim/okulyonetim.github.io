@@ -71,7 +71,9 @@ service cloud.firestore {
         || koleksiyon == 'oy_duyurular'
         || koleksiyon == 'oy_haberler'
         || koleksiyon == 'oy_haberKaynaklari'
-        || koleksiyon == 'oy_dersSaatleri';
+        || koleksiyon == 'oy_dersSaatleri'
+        || koleksiyon == 'oy_dersListesi'
+        || koleksiyon == 'oy_bransListesi';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -172,9 +174,19 @@ service cloud.firestore {
       allow create, update, delete: if moduluDuzenleyebilir('haberler');
     }
 
-    // Ders saatleri/zil ayarlarını herkes okuyabilir; okul çapındaki bu ayarı
-    // yalnız mevcut rolünde sistemAyarlari=duzenle yetkisi olan kullanıcı veya admin değiştirebilir.
     match /oy_dersSaatleri/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
+    }
+
+    // Ders ve branş seçim listeleri okul genelinde okunabilir; değiştirme
+    // mevcut Sistem Ayarları modülündeki Düzenle yetkisine bağlıdır.
+    match /oy_dersListesi/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
+    }
+
+    match /oy_bransListesi/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
     }
