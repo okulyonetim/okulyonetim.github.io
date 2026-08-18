@@ -32,4 +32,12 @@ assert(!src.includes('view.officeapps.live.com'), 'Firebase Storage belgeleri Of
 assert(src.includes('Otomatik indirme yapılmadı.'), 'Desteklenmeyen dosya otomatik indirmeye düşmemeli.');
 assert(!src.includes("window.open(url, '_blank')"), 'Belge açma doğrudan _blank ile indirme/yeni sekmeye düşmemeli.');
 
+
+assert(src.includes('id="dv3wordScene"'), 'Word için ölçülü belge sahnesi bulunmalı.');
+assert(src.includes("scene.style.width=Math.ceil(dogalW*wordZoom)+'px'"), 'Word scroll genişliği gerçek zoomlu belge genişliğine eşitlenmeli.');
+assert(src.includes("scene.style.height=Math.ceil(dogalH*wordZoom)+'px'"), 'Word scroll yüksekliği gerçek zoomlu belge yüksekliğine eşitlenmeli.');
+assert(src.includes("wrap.style.width='100%'"), 'Word viewport sonsuz yatay genişliğe dönüşmemeli.');
+assert(src.includes('color:#fff!important'), 'Koyu temada belge adı yüksek kontrastlı olmalı.');
+assert(src.includes('A.body.classList.add('dv3wordbody')'), 'Word alanı siyah boşluk yerine belge zemini kullanmalı.');
+
 console.log('Belge görüntüleyici smoke testleri başarılı.');
