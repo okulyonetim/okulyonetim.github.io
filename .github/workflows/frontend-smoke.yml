@@ -44,6 +44,7 @@ on:
       - 'tests/navigation-customization-smoke.test.js'
       - 'tests/feature-catalog-smoke.test.js'
       - 'tests/web-responsive-smoke.test.js'
+      - 'tests/service-worker-precache-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -98,6 +99,9 @@ jobs:
 
       - name: PWA / push regresyon testi
         run: node tests/pwa-push-smoke.test.js
+
+      - name: Service Worker precache performans testi
+        run: node tests/service-worker-precache-smoke.test.js
 
       - name: Android deep-link regresyon testi
         run: node tests/android-deeplink-smoke.test.js
