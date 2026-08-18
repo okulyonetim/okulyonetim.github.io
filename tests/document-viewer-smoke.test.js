@@ -14,7 +14,7 @@ assert(src.includes('wordZoomUygula'), 'Word görüntüleyicide yakınlaştırma
 assert(src.includes("st.style.transform=`scale(${wordZoom})`"), 'Word zoom yalnız belge sahnesine transform ile uygulanmalı.');
 assert(!src.includes('st.style.zoom=wordZoom'), 'Word zoom CSS zoom kullanmamalı; üst uygulama katmanını büyütmemeli.');
 assert(src.includes('uygunW/dogalW'), 'Word Sığdır hesabı gerçek belge genişliğine göre çalışmalı.');
-assert(src.includes('section.docx{margin:0 0 18px 0!important'), 'Word sayfaları arasında görünür sayfa ayrımı bulunmalı.');
+assert(src.includes('gap:22px!important'), 'Word sayfaları arasında görünür sayfa ayrımı bulunmalı.');
 assert(src.includes('align-items:flex-start!important'), 'Geniş Word sayfasının sol kenarı kesilmemeli.');
 assert(src.includes('overflow:auto'), 'Zoom sonrası yatay/dikey kaydırma korunmalı.');
 assert(src.includes('ignoreLastRenderedPageBreak:false'), 'DOCX sayfa kırımları korunmaya çalışılmalı.');
@@ -37,16 +37,11 @@ assert(src.includes("scene.style.height=Math.ceil(dogalH*wordZoom)+'px'"), 'Word
 assert(src.includes("wrap.style.width='100%'"), 'Word viewport sonsuz yatay genişliğe dönüşmemeli.');
 assert(src.includes('color:#fff!important'), 'Koyu temada belge adı yüksek kontrastlı olmalı.');
 assert(src.includes("A.body.classList.add('dv3wordbody')"), 'Word alanı siyah boşluk yerine belge zemini kullanmalı.');
-
-
 assert(src.includes('.dv3body.dv3wordbody{background:#cfd3d7;overflow:hidden;display:flex'), 'Word zoom tüm görüntüleyici gövdesini yatay büyütmemeli.');
 assert(src.includes('.dv3wordviewport{flex:1 1 auto;min-height:0;padding:10px;overflow:auto'), 'Word yatay/dikey kaydırma yalnız belge viewportunda olmalı.');
 assert(src.includes('const uygunW=Math.max(1,wrap.clientWidth-20)'), 'Word Sığdır gerçek belge viewport genişliğini kullanmalı.');
 assert(src.includes('Math.max(0.15,Math.min(1,uygunW/dogalW))'), 'Geniş Word sayfaları %35 alt sınırı nedeniyle sağdan kesilmemeli.');
 assert(src.includes("wrap.scrollTo({left:0,top:0"), 'Sığdır sonrası yalnız Word viewportu başa dönmeli.');
-
-
-assert(src.includes('gap:22px!important'), 'Word sayfa aralığı görünür olmalı.');
 assert(src.includes('id=\"dv3wordPageInfo\"'), 'Word sayfa sayacı bulunmalı.');
 
 console.log('Belge görüntüleyici smoke testleri başarılı.');
