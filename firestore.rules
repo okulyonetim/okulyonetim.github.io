@@ -88,6 +88,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_nobetRotasyon'
         || koleksiyon == 'oy_periyodikIsler'
         || koleksiyon == 'oy_periyodikSablon'
+        || koleksiyon == 'oy_sinavlar'
+        || koleksiyon == 'oy_denemeSinavlari'
         || koleksiyon == 'oy_sosyalKulupler'
         || koleksiyon == 'oy_belirliGunler'
         || koleksiyon == 'oy_zumre'
@@ -256,6 +258,34 @@ service cloud.firestore {
     match /oy_periyodikSablon/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('periyodikIsler');
+    }
+
+    match /oy_sinavlar/{id} {
+      allow read: if girisYapmis();
+      allow create: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
+        && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
+        && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
+          || !('sahipUid' in resource.data))
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid']));
+      allow delete: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
+        && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
+          || !('sahipUid' in resource.data)));
+    }
+
+    match /oy_denemeSinavlari/{id} {
+      allow read: if girisYapmis();
+      allow create: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
+        && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
+        && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
+          || !('sahipUid' in resource.data))
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid'])
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['sayacDurumu'])
+          || ('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)));
+      allow delete: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
+        && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
+          || !('sahipUid' in resource.data)));
     }
 
     match /oy_sosyalKulupler/{id} {
