@@ -26,17 +26,12 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid)).data.admin == true;
     }
 
-    // Çağıranın kendi öğretmen kaydının ID'si.
     function kendiOgretmenIdsi() {
       return kendiBelgemVarMi()
         ? get(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid)).data.bagliOgretmenId
         : null;
     }
 
-    // Özel güvenlik kuralı bulunan koleksiyonlar genel authenticated-user
-    // izninden MUTLAKA hariç tutulur. Firestore allow kurallarını OR mantığıyla
-    // değerlendirdiğinden, bunları hariç tutmadan aşağıdaki admin/kendi-kaydı
-    // kısıtları etkisiz kalır.
     function ozelKuralliKoleksiyonMu(koleksiyon) {
       return koleksiyon == 'oy_kullanicilar'
         || koleksiyon == 'oy_roller'
@@ -48,59 +43,71 @@ service cloud.firestore {
         || koleksiyon == 'oy_yillikPlanNotlari'
         || koleksiyon == 'oy_akademikTakvim'
         || koleksiyon == 'oy_kontrolListeleri'
-        || koleksiyon == 'oy_kontrolListeTamamlama';
+        || koleksiyon == 'oy_kontrolListeTamamlama'
+        || koleksiyon == 'oy_odevTakip'
+        || koleksiyon == 'oy_notCizelgesi';
     }
 
-    // ========== VARSAYILAN KURAL ==========
-    // Mevcut uygulama davranışı korunur: özel güvenlik kuralı olmayan tüm
-    // üst-seviye koleksiyonlarda giriş yapmış kullanıcıların mevcut okuma/yazma
-    // davranışı aynen devam eder. Rol sistemi ve modül yetkileri değiştirilmez.
     match /{koleksiyon}/{belgeId} {
       allow read, write: if girisYapmis() && !ozelKuralliKoleksiyonMu(koleksiyon);
     }
 
-    // ========== KULLANICI KAYITLARI ==========
     match /oy_kullanicilar/{uid} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
 
-    // ========== ROLLER ==========
     match /oy_roller/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
 
-    // ========== NAVİGASYON DÜZENİ ==========
     match /oy_navDuzeni/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
 
-    // ========== KULLANICI İSTATİSTİKLERİ ==========
     match /oy_kullaniciIstatistikleri/{uid} {
       allow read: if adminMi() || (girisYapmis() && request.auth.uid == uid);
       allow write: if girisYapmis() && request.auth.uid == uid;
     }
 
-    // Öğrenci Yoklama: mevcut davranış korunur.
     match /oy_yoklama/{belgeId} {
       allow read, write: if girisYapmis();
     }
 
-    // Servis kayıtları: mevcut davranış korunur.
     match /oy_servisler/{servisId} {
       allow read: if girisYapmis();
       allow create, update, delete: if girisYapmis();
     }
 
-    // Öğrenci kayıtları: mevcut davranış korunur.
     match /oy_ogrenciler/{ogrenciId} {
       allow read: if girisYapmis();
       allow create, update, delete: if girisYapmis();
     }
 
-    // ========== YILLIK PLAN ==========
+    // Ödev Takip + Not Çizelgesi kişisel kayıtlardır.
+    // Admin tüm kayıtları yönetebilir; normal kullanıcı yalnız kendi sahipUid kaydını
+    // okuyabilir, oluşturabilir, değiştirebilir ve silebilir. Update sırasında sahipUid
+    // başka bir kullanıcıya devredilemez.
+    match /oy_odevTakip/{id} {
+      allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis()
+        && resource.data.sahipUid == request.auth.uid
+        && request.resource.data.sahipUid == request.auth.uid);
+      allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+    }
+
+    match /oy_notCizelgesi/{id} {
+      allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis()
+        && resource.data.sahipUid == request.auth.uid
+        && request.resource.data.sahipUid == request.auth.uid);
+      allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+    }
+
     match /oy_yillikPlanBasliklari/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
@@ -126,13 +133,11 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Akademik takvim posteri: herkes görebilir, sadece admin değiştirebilir.
     match /oy_akademikTakvim/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
 
-    // Kontrol Listeleri: içerik sadece admin; herkes okur.
     match /oy_kontrolListeleri/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
@@ -144,7 +149,6 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Deneme/Test Sonuçları: mevcut karar gereği tüm giriş yapmış kullanıcılar.
     match /oy_denemeSonuclari/{id} {
       allow read, write: if girisYapmis();
     }
