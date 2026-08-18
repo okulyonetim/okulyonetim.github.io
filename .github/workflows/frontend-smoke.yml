@@ -36,12 +36,8 @@ on:
       - 'tests/optik-save-bridge-smoke.test.js'
       - 'tests/report-native-print-routing-smoke.test.js'
       - 'tests/global-zoom-smoke.test.js'
-      - 'tests/apply-global-zoom-lock.py'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   smoke:
@@ -49,24 +45,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: agent/global-zoom-lock
 
       - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Global zoom kilidini uygula
-        run: |
-          python tests/apply-global-zoom-lock.py
-          if ! git diff --quiet -- index.html android/app/src/main/java/com/koruk/okul/MainActivity.java; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add index.html android/app/src/main/java/com/koruk/okul/MainActivity.java
-            git commit -m "fix: disable global app zoom while preserving document zoom"
-            git push origin HEAD:agent/global-zoom-lock
-          fi
 
       - name: JavaScript syntax kontrolü
         run: |
