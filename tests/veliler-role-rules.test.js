@@ -44,9 +44,10 @@ async function main(){
     await assertSucceeds(updateDoc(doc(counselor,'oy_veliler','v2'),{kulupId:'k1',kulupAdi:'Bilim Kulübü'}));
     await assertSucceeds(updateDoc(doc(counselor,'oy_veliler','v1'),{kulupId:'',kulupAdi:''}));
 
-    // Danışman öğrenci/veli bilgilerinin diğer alanlarına dokunamaz ve başka kulübe atama yapamaz.
+    // Mevcut servis davranışı: öğrenci danışmanın kendi kulübündeyse yalnız kulüp alanlarında değişiklik yapılabilir.
+    // Ancak kulüpsüz bir öğrenciyi danışmanı olmadığı başka bir kulübe atayamaz.
     await assertFails(updateDoc(doc(counselor,'oy_veliler','v1'),{telefon1:'09999999999'}));
-    await assertFails(updateDoc(doc(counselor,'oy_veliler','v2'),{kulupId:'k2',kulupAdi:'Spor Kulübü'}));
+    await assertFails(updateDoc(doc(counselor,'oy_veliler','v1'),{kulupId:'k2',kulupAdi:'Spor Kulübü'}));
     await assertFails(updateDoc(doc(other,'oy_veliler','v2'),{kulupId:'k1',kulupAdi:'Bilim Kulübü'}));
     await assertFails(deleteDoc(doc(counselor,'oy_veliler','v1')));
 
