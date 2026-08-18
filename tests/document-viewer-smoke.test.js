@@ -61,4 +61,12 @@ assert(src.includes('.dv3sheetviewport{flex:1 1 auto;min-height:0;overflow:auto'
 assert(src.includes('st.style.transform=`scale(${excelZoom})`'), 'Excel zoom yalnız çalışma sayfasına uygulanmalı.');
 assert(src.includes('const uygun=Math.max(1,wrap.clientWidth-20)'), 'Excel Sığdır gerçek viewport genişliğini kullanmalı.');
 
+
+assert(src.includes('function pullToRefreshAyarla(enabled)'), 'Belge görüntüleyici native pull-to-refresh kontrolüne sahip olmalı.');
+assert(src.includes("p.setEnabled({enabled:!!enabled})"), 'PullToRefreshPlugin setEnabled kullanılmalı.');
+assert(src.includes("govde.addEventListener('touchstart',kapat"), 'Belge gövdesine dokununca pull-to-refresh kapanmalı.');
+assert(src.includes("govde.addEventListener('touchend',ac"), 'Belge dokunması bitince pull-to-refresh geri açılmalı.');
+assert(src.includes("ust.addEventListener('touchstart',ac"), 'Üst başlık alanında pull-to-refresh açık kalmalı.');
+assert(src.includes('function close(){pullToRefreshAyarla(true);'), 'Belge kapanınca pull-to-refresh mutlaka geri açılmalı.');
+
 console.log('Belge görüntüleyici smoke testleri başarılı.');
