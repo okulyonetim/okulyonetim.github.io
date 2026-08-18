@@ -1,0 +1,32 @@
+name: Frontend Smoke Tests
+
+on:
+  pull_request:
+    paths:
+      - 'service-worker.js'
+      - 'js/push.js'
+      - 'firebase-messaging-sw.js'
+      - '.github/workflows/build-apk.yml'
+      - 'tests/pwa-push-smoke.test.js'
+      - '.github/workflows/frontend-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: JavaScript syntax kontrolü
+        run: |
+          node --check service-worker.js
+          node --check js/push.js
+
+      - name: PWA / push regresyon testi
+        run: node tests/pwa-push-smoke.test.js
