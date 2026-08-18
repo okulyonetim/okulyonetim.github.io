@@ -19,13 +19,13 @@ jobs:
       - name: Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Test bağımlılıklarını kur
         run: npm install --no-save firebase @firebase/rules-unit-testing firebase-tools
