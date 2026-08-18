@@ -18,9 +18,11 @@ const PushRepository = {
   cihazKaydet(token, veri){
     return db.collection(COL.cihazlar).doc(encodeURIComponent(token)).set(veri);
   },
-  /* Bildirim kategori tercihini ve saat aralığını mevcut belgeyle birleştirerek günceller. */
-  kategorileriGuncelle(token, kategoriler, saatAralik){
+  /* Bildirim kategori tercihini ve saat aralığını mevcut belgeyle birleştirerek günceller.
+     UID de merge edilir; belge silinmişse sessiz senkron yeni kaydı sahipsiz bırakmaz. */
+  kategorileriGuncelle(token, kategoriler, saatAralik, uid){
     const veri = { kategoriler };
+    if(uid) veri.uid = uid;
     if(saatAralik && saatAralik.baslangic && saatAralik.bitis){
       veri.bildirimSaatBaslangic = saatAralik.baslangic;
       veri.bildirimSaatBitis = saatAralik.bitis;
