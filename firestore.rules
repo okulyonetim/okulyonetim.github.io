@@ -70,7 +70,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_dokumanlar'
         || koleksiyon == 'oy_duyurular'
         || koleksiyon == 'oy_haberler'
-        || koleksiyon == 'oy_haberKaynaklari';
+        || koleksiyon == 'oy_haberKaynaklari'
+        || koleksiyon == 'oy_dersSaatleri';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -161,8 +162,6 @@ service cloud.firestore {
           || request.resource.data.okuyanlar.diff(resource.data.okuyanlar).affectedKeys().hasOnly([request.auth.uid])));
     }
 
-    // Haber ve RSS kaynaklarını herkes okuyabilir; ekleme/düzenleme/silme
-    // mevcut rol sistemindeki haberler=duzenle yetkisine bağlıdır.
     match /oy_haberler/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('haberler');
@@ -171,6 +170,13 @@ service cloud.firestore {
     match /oy_haberKaynaklari/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('haberler');
+    }
+
+    // Ders saatleri/zil ayarlarını herkes okuyabilir; okul çapındaki bu ayarı
+    // yalnız mevcut rolünde sistemAyarlari=duzenle yetkisi olan kullanıcı veya admin değiştirebilir.
+    match /oy_dersSaatleri/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('sistemAyarlari');
     }
 
     match /oy_odevTakip/{id} {
