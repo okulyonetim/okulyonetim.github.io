@@ -49,12 +49,20 @@ function _ndKaydet(nd, basariMesaji){
     toast('Firestore bağlantısı bulunamadı.');
     return;
   }
+  const onceki = _ndVerisiOku();
   nd.guncellemeTarihi = new Date().toISOString();
+  // Optimistic UI: yeni öğe/renk/sıra önce anında gerçek menüye uygulanır.
+  // Firestore gecikmesi yüzünden "ekledim ama görünmedi" hissi oluşmaz.
+  if(typeof window._navDuzeniYerelUygula === 'function') window._navDuzeniYerelUygula(nd);
+  _ndListesiCiz();
   db.collection(COL.navDuzeni).doc('ayarlar').set(nd).then(() => {
     if(typeof window._navDuzeniYukle === 'function') window._navDuzeniYukle();
-    _ndListesiCiz();
     if(basariMesaji) toast(basariMesaji);
-  }).catch(e => toast('Kaydetme hatası: ' + e.message));
+  }).catch(e => {
+    if(typeof window._navDuzeniYerelUygula === 'function') window._navDuzeniYerelUygula(onceki);
+    _ndListesiCiz();
+    toast('Kaydetme hatası: ' + e.message);
+  });
 }
 
 function _ndTumListeyiGetir(){
@@ -329,12 +337,41 @@ function _ndOgeTasi(anahtar, hedefGrupAnahtari, hedefBolum, kaynakGrupAnahtari, 
    Firestore yazma + global yeniden-yükleme mantığını kullanır. */
 function _ndKaydetSessiz(nd, sonrasi){
   if(typeof db === 'undefined' || typeof COL === 'undefined' || !COL.navDuzeni) return;
+  const onceki = _ndVerisiOku();
   nd.guncellemeTarihi = new Date().toISOString();
+  if(typeof window._navDuzeniYerelUygula === 'function') window._navDuzeniYerelUygula(nd);
+  _ndListesiCiz();
+  if(sonrasi) sonrasi();
   db.collection(COL.navDuzeni).doc('ayarlar').set(nd).then(() => {
     if(typeof window._navDuzeniYukle === 'function') window._navDuzeniYukle();
-    if(sonrasi) setTimeout(sonrasi, 250); // _navDuzeniYukle Firestore'dan tekrar okuduğu için kısa gecikme
+  }).catch(e => {
+    if(typeof window._navDuzeniYerelUygula === 'function') window._navDuzeniYerelUygula(onceki);
     _ndListesiCiz();
-  }).catch(e => toast('Kaydetme hatası: ' + e.message));
+    toast('Kaydetme hatası: ' + e.message);
+  });
+}
+
+function _ndSekmeSeciciOlustur(sekmeAd){
+  if(typeof _sekmeSeciciOlustur === 'function') return _sekmeSeciciOlustur(sekmeAd || '');
+  const sel = document.createElement('select');
+  sel.className = 'nd-yeni-oge-sekme-fallback';
+  sel.style.width = '100%';
+  const gorulen = new Set();
+  document.querySelectorAll('[data-tab]').forEach(el => {
+    const deger = (el.getAttribute('data-tab') || '').trim();
+    if(!deger || gorulen.has(deger)) return;
+    gorulen.add(deger);
+    const yazi = (el.textContent || deger).replace(/\s+/g,' ').trim();
+    sel.appendChild(new Option(yazi || deger, deger));
+  });
+  if(sekmeAd && !gorulen.has(sekmeAd)) sel.appendChild(new Option(sekmeAd, sekmeAd));
+  if(sekmeAd) sel.value = sekmeAd;
+  return sel;
+}
+function _ndSekmeDegeriAl(kok){
+  if(typeof _omSekmeDegeriAl === 'function') return _omSekmeDegeriAl(kok);
+  const sel = kok && kok.querySelector ? kok.querySelector('select') : null;
+  return sel ? (sel.value || '').trim() : '';
 }
 
 /* ---- Yeni öğe ekleme ----
@@ -348,7 +385,7 @@ function _ndYeniOgeModalAc(g){
     toast('Bu özel gruba öğe eklemek için "Öğeler" bölümünü kullanın.');
     return;
   }
-  const sekmeSecici = (typeof _sekmeSeciciOlustur === 'function') ? _sekmeSeciciOlustur('') : null;
+  const sekmeSecici = _ndSekmeSeciciOlustur('');
   const altAd = g.altGrup ? g.altGrup.ad : 'Alt Bölüm (yeni oluşturulacak)';
   const html = `
     <div class="form-group">
@@ -369,9 +406,7 @@ function _ndYeniOgeModalAc(g){
   `;
   modalAc('Yeni Öğe Ekle — ' + g.ad, html, () => {
     const ad = document.getElementById('ndYeniOgeAd').value.trim();
-    const sekmeAd = (typeof _omSekmeDegeriAl === 'function')
-      ? _omSekmeDegeriAl(document.getElementById('ndYeniOgeSekmeYer'))
-      : '';
+    const sekmeAd = _ndSekmeDegeriAl(document.getElementById('ndYeniOgeSekmeYer'));
     const altGrupMu = document.getElementById('ndYeniOgeBolum').value === 'alt';
     if(!ad){ toast('Öğe adı gerekli.'); return; }
     if(!sekmeAd){ toast('Bir sekme seçin.'); return; }
@@ -381,10 +416,8 @@ function _ndYeniOgeModalAc(g){
     _ndKaydet(nd, 'Öğe eklendi.');
     modalKapat();
   }, null, 'Ekle');
-  if(sekmeSecici){
-    const yer = document.getElementById('ndYeniOgeSekmeYer');
-    if(yer) yer.appendChild(sekmeSecici);
-  }
+  const yer = document.getElementById('ndYeniOgeSekmeYer');
+  if(yer && sekmeSecici) yer.appendChild(sekmeSecici);
 }
 
 /* ---- "Öğeleri Yönet" modalını kapatınca ana listeyi (toplam öğe
