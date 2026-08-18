@@ -20,8 +20,19 @@ const sorunlar = [];
 for (const yol of dosyalar) {
   const src = fs.readFileSync(yol, 'utf8');
   if (!src.includes('window.print()')) continue;
-  if (!src.includes('uygulamaHtmlYazdir')) {
-    sorunlar.push(`${yol}: window.print() var fakat uygulamaHtmlYazdir native köprüsü bulunamadı`);
+
+  // Güvenli kabul edilen üç yol:
+  // 1) Doğrudan native HTML yazdırma köprüsü.
+  // 2) Ortak _raporPenceresiniAc() yordamı; native ortamda içeride
+  //    uygulamaHtmlYazdir -> PrintPlugin yoluna geçer.
+  // 3) Yazdırma motorunu tamamen atlayıp PDF üretip uygulamaDosyaKaydet
+  //    ile native dosya kaydetme yoluna giden modüller (örn. sınıf oturma).
+  const guvenli = src.includes('uygulamaHtmlYazdir') ||
+    src.includes('_raporPenceresiniAc') ||
+    src.includes('uygulamaDosyaKaydet');
+
+  if (!guvenli) {
+    sorunlar.push(`${yol}: window.print() var fakat güvenli native yazdırma/kaydetme yönlendirmesi bulunamadı`);
   }
 }
 
@@ -31,5 +42,11 @@ const raporlama = fs.readFileSync('js/raporlama.js', 'utf8');
 assert(raporlama.includes("window.Capacitor.Plugins && window.Capacitor.Plugins.PrintPlugin"), 'Genel raporlama native PrintPlugin varlığını doğrulamalı.');
 assert(raporlama.includes("if(nativeVarMi && typeof uygulamaHtmlYazdir === 'function')"), 'Genel raporlama native ortamda popup yerine uygulamaHtmlYazdir kullanmalı.');
 assert(raporlama.includes('uygulamaHtmlYazdir(tamHtml, dosyaAdi, yon);'), 'Rapor HTML’i yön bilgisiyle native yazdırmaya aktarılmalı.');
+
+const sinavlar = fs.readFileSync('js/sinavlar.js', 'utf8');
+assert(sinavlar.includes('_raporPenceresiniAc'), 'Sınav raporları ortak rapor penceresi/native PrintPlugin hattını kullanmalı.');
+
+const sinifOturma = fs.readFileSync('js/sinif-oturma.js', 'utf8');
+assert(sinifOturma.includes('uygulamaDosyaKaydet'), 'Sınıf oturma PDF çıktısı Android’de native dosya kaydetme köprüsünü kullanmalı.');
 
 console.log('Rapor native yazdırma yönlendirme smoke testleri başarılı.');
