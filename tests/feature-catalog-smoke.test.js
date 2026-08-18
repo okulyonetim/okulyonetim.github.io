@@ -38,8 +38,15 @@ assert(nav.includes('function _ozellikKatalogunuSenkronla()'), 'AltNav built-in 
 assert(nav.includes("id:o.anahtar"), 'Yeni GRUPLAR_KATALOG öğeleri anahtarlarıyla otomatik kaydolmalı.');
 assert(nav.includes('window.OzellikKatalogu.ac(eo.sekmeAd)'), 'Kaydedilen ek öğeler merkezi yürütücüyle açılmalı.');
 assert(editor.includes('window.OzellikKatalogu.liste().forEach'), 'Navigasyon editörü fallback seçicisi merkezi kataloğu kullanmalı.');
-assert(index.includes('<script src="js/ozellik-katalogu.js"></script>'), 'Katalog uygulama scriptlerinden önce yüklenmeli.');
-assert(index.indexOf('js/ozellik-katalogu.js') < index.indexOf('js/app.js'), 'Katalog app.js öncesinde yüklenmeli.');
+
+const featureTag = '<script src="js/ozellik-katalogu.js"></script>';
+const appTag = '<script src="js/app.js"></script>';
+const featurePos = index.indexOf(featureTag);
+const appPos = index.indexOf(appTag);
+assert(featurePos >= 0, 'Merkezi katalog script etiketi index.html içinde bulunmalı.');
+assert(appPos >= 0, 'app.js script etiketi index.html içinde bulunmalı.');
+assert(featurePos < appPos, 'Katalog gerçek script sıralamasında app.js öncesinde yüklenmeli.');
+
 assert(sw.includes("'./js/ozellik-katalogu.js'"), 'Katalog offline precache listesinde olmalı.');
 assert(sw.includes("oy-cache-v438"), 'Cache sürümü v438 olmalı.');
 console.log('Merkezi özellik kataloğu smoke testleri başarılı.');
