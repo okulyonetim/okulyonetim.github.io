@@ -46,7 +46,9 @@ service cloud.firestore {
         || koleksiyon == 'oy_kontrolListeTamamlama'
         || koleksiyon == 'oy_odevTakip'
         || koleksiyon == 'oy_notCizelgesi'
-        || koleksiyon == 'oy_notlar';
+        || koleksiyon == 'oy_notlar'
+        || koleksiyon == 'oy_hatirlaticilar'
+        || koleksiyon == 'oy_gorevler';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -90,6 +92,26 @@ service cloud.firestore {
     // Notlar kişisel kayıtlardır. Eski/sahipsiz notlar yalnız admin tarafından
     // görülebilir; normal kullanıcı yalnız kendi sahipUid kaydını yönetebilir.
     match /oy_notlar/{id} {
+      allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis()
+        && resource.data.sahipUid == request.auth.uid
+        && request.resource.data.sahipUid == request.auth.uid);
+      allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+    }
+
+    // Hatırlatıcılar ve görevler kişisel kayıtlardır. Eski/sahipsiz kayıtları
+    // yalnız admin görür; normal kullanıcı sadece kendi sahipUid kaydını yönetir.
+    match /oy_hatirlaticilar/{id} {
+      allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis()
+        && resource.data.sahipUid == request.auth.uid
+        && request.resource.data.sahipUid == request.auth.uid);
+      allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+    }
+
+    match /oy_gorevler/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
       allow update: if adminMi() || (girisYapmis()
