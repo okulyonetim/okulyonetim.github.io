@@ -17,7 +17,8 @@ assert(optikApp.includes('topluFormPdfOlustur'), 'Toplu öğrenci form PDF üret
 
 // iframe içindeki optik uygulama native plugine doğrudan erişmek yerine parent'a mesaj göndermeli.
 assert(disaAktar.includes('__optikDosyaKaydetIstek'), 'Optik iframe kayıt isteği için postMessage protokolü bulunmalı.');
-assert(disaAktar.includes('window.parent.postMessage'), 'Optik iframe kayıt isteğini parent pencereye göndermeli.');
+assert(disaAktar.includes('const ustPencere = (window.parent && window.parent !== window) ? window.parent : null;'), 'Üst pencere iframe bağlamında güvenli biçimde doğrulanmalı.');
+assert(disaAktar.includes('ustPencere.postMessage'), 'Optik iframe kayıt isteğini doğrulanmış üst pencereye göndermeli.');
 assert(disaAktar.includes('__optikDosyaKaydetYanit'), 'Optik kayıt yanıt protokolü bulunmalı.');
 assert(disaAktar.includes('setTimeout'), 'Kayıt isteği sonsuza kadar beklememeli; timeout bulunmalı.');
 
