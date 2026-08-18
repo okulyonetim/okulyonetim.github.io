@@ -84,7 +84,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_hatirlatmaAyarlari'
         || koleksiyon == 'oy_ozelMenu'
         || koleksiyon == 'oy_anketler'
-        || koleksiyon == 'oy_siniflar';
+        || koleksiyon == 'oy_siniflar'
+        || koleksiyon == 'oy_servisler';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -115,7 +116,7 @@ service cloud.firestore {
 
     match /oy_servisler/{servisId} {
       allow read: if girisYapmis();
-      allow create, update, delete: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('tasima');
     }
 
     match /oy_ogrenciler/{ogrenciId} {
