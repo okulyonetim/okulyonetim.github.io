@@ -98,7 +98,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_servisler'
         || koleksiyon == 'oy_yoklama'
         || koleksiyon == 'oy_personel'
-        || koleksiyon == 'oy_personelIzinler';
+        || koleksiyon == 'oy_personelIzinler'
+        || koleksiyon == 'oy_ogretmenIzinleri';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -170,6 +171,11 @@ service cloud.firestore {
     match /oy_personelIzinler/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('personel');
+    }
+
+    match /oy_ogretmenIzinleri/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('ogretmenler');
     }
 
     match /oy_notlar/{id} {
