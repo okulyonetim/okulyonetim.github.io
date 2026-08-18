@@ -18,15 +18,28 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid));
     }
 
+    function kullaniciBelgesi() {
+      return get(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid));
+    }
+
     function adminMi() {
-      return girisYapmis() && kendiBelgemVarMi()
-        && get(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid)).data.admin == true;
+      return girisYapmis() && kendiBelgemVarMi() && kullaniciBelgesi().data.admin == true;
+    }
+
+    function rolBelgemVarMi() {
+      return kendiBelgemVarMi()
+        && kullaniciBelgesi().data.rolId != null
+        && exists(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId));
+    }
+
+    function moduluDuzenleyebilir(modul) {
+      return adminMi() || (rolBelgemVarMi()
+        && modul in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
+        && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] == 'duzenle');
     }
 
     function kendiOgretmenIdsi() {
-      return kendiBelgemVarMi()
-        ? get(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid)).data.bagliOgretmenId
-        : null;
+      return kendiBelgemVarMi() ? kullaniciBelgesi().data.bagliOgretmenId : null;
     }
 
     function konusmaKatilimcisiMi(konusmaId) {
@@ -54,7 +67,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_gorevler'
         || koleksiyon == 'oy_konusmalar'
         || koleksiyon == 'oy_mesajlar'
-        || koleksiyon == 'oy_dokumanlar';
+        || koleksiyon == 'oy_dokumanlar'
+        || koleksiyon == 'oy_duyurular';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -81,9 +95,7 @@ service cloud.firestore {
       allow write: if girisYapmis() && request.auth.uid == uid;
     }
 
-    match /oy_yoklama/{belgeId} {
-      allow read, write: if girisYapmis();
-    }
+    match /oy_yoklama/{belgeId} { allow read, write: if girisYapmis(); }
 
     match /oy_servisler/{servisId} {
       allow read: if girisYapmis();
@@ -98,76 +110,69 @@ service cloud.firestore {
     match /oy_notlar/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
-      allow update: if adminMi() || (girisYapmis()
-        && resource.data.sahipUid == request.auth.uid
-        && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid && request.resource.data.sahipUid == request.auth.uid);
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
     match /oy_hatirlaticilar/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
-      allow update: if adminMi() || (girisYapmis()
-        && resource.data.sahipUid == request.auth.uid
-        && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid && request.resource.data.sahipUid == request.auth.uid);
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
     match /oy_gorevler/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
-      allow update: if adminMi() || (girisYapmis()
-        && resource.data.sahipUid == request.auth.uid
-        && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid && request.resource.data.sahipUid == request.auth.uid);
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
     match /oy_konusmalar/{id} {
       allow read: if adminMi() || (girisYapmis() && request.auth.uid in resource.data.katilimciUidler);
       allow create: if adminMi() || (girisYapmis() && request.auth.uid in request.resource.data.katilimciUidler);
-      allow update: if adminMi() || (girisYapmis()
-        && request.auth.uid in resource.data.katilimciUidler
-        && request.resource.data.katilimciUidler == resource.data.katilimciUidler);
+      allow update: if adminMi() || (girisYapmis() && request.auth.uid in resource.data.katilimciUidler && request.resource.data.katilimciUidler == resource.data.katilimciUidler);
       allow delete: if adminMi() || (girisYapmis() && request.auth.uid in resource.data.katilimciUidler);
     }
 
     match /oy_mesajlar/{id} {
       allow read: if adminMi() || konusmaKatilimcisiMi(resource.data.konusmaId);
-      allow create: if adminMi() || (girisYapmis()
-        && request.resource.data.gonderenUid == request.auth.uid
-        && konusmaKatilimcisiMi(request.resource.data.konusmaId));
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.gonderenUid == request.auth.uid && konusmaKatilimcisiMi(request.resource.data.konusmaId));
       allow update: if false;
       allow delete: if adminMi() || konusmaKatilimcisiMi(resource.data.konusmaId);
     }
 
-    // Doküman metadata'sı: normal kullanıcı yalnız açık kayıtları ve kendi
-    // kayıtlarını görür. Öğretmen yalnız kendine ait kişisel kayıt oluşturur;
-    // görünürlüğü sonradan değiştirmek sadece admine aittir.
     match /oy_dokumanlar/{id} {
-      allow read: if adminMi() || (girisYapmis()
-        && (resource.data.gorunurluk == 'herkes' || resource.data.olusturanUid == request.auth.uid));
-      allow create: if adminMi() || (girisYapmis()
-        && request.resource.data.olusturanUid == request.auth.uid
-        && request.resource.data.gorunurluk == 'kisisel');
+      allow read: if adminMi() || (girisYapmis() && (resource.data.gorunurluk == 'herkes' || resource.data.olusturanUid == request.auth.uid));
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.olusturanUid == request.auth.uid && request.resource.data.gorunurluk == 'kisisel');
       allow update: if adminMi();
       allow delete: if adminMi() || (girisYapmis() && resource.data.olusturanUid == request.auth.uid);
+    }
+
+    // Duyuru içeriğini sadece mevcut rolünde 'duzenle' yetkisi bulunan kullanıcı
+    // değiştirebilir. Her girişli kullanıcı okuyabilir ve yalnız kendi
+    // okuyanlar.{uid} alanını güncelleyebilir.
+    match /oy_duyurular/{id} {
+      allow read: if girisYapmis();
+      allow create, delete: if moduluDuzenleyebilir('duyurular');
+      allow update: if moduluDuzenleyebilir('duyurular') || (girisYapmis()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['okuyanlar'])
+        && request.auth.uid in request.resource.data.okuyanlar
+        && (!('okuyanlar' in resource.data)
+          || request.resource.data.okuyanlar.diff(resource.data.okuyanlar).affectedKeys().hasOnly([request.auth.uid])));
     }
 
     match /oy_odevTakip/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
-      allow update: if adminMi() || (girisYapmis()
-        && resource.data.sahipUid == request.auth.uid
-        && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid && request.resource.data.sahipUid == request.auth.uid);
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
     match /oy_notCizelgesi/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
-      allow update: if adminMi() || (girisYapmis()
-        && resource.data.sahipUid == request.auth.uid
-        && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid && request.resource.data.sahipUid == request.auth.uid);
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
@@ -179,9 +184,7 @@ service cloud.firestore {
     match /oy_yillikPlanTanimlari/{id} {
       allow read: if girisYapmis();
       allow create, delete: if adminMi();
-      allow update: if adminMi()
-        || (girisYapmis() && request.resource.data.diff(resource.data).affectedKeys()
-              .hasOnly(['sutunGenislikleri', 'fontBoyutuPx', 'imzaTarihi', 'satirlar', 'okulAdiManuel']));
+      allow update: if adminMi() || (girisYapmis() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sutunGenislikleri', 'fontBoyutuPx', 'imzaTarihi', 'satirlar', 'okulAdiManuel']));
     }
 
     match /oy_ogretmenYillikPlanSecimleri/{ogretmenId} {
@@ -212,11 +215,7 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    match /oy_denemeSonuclari/{id} {
-      allow read, write: if girisYapmis();
-    }
-    match /oy_testSonuclari/{id} {
-      allow read, write: if girisYapmis();
-    }
+    match /oy_denemeSonuclari/{id} { allow read, write: if girisYapmis(); }
+    match /oy_testSonuclari/{id} { allow read, write: if girisYapmis(); }
   }
 }
