@@ -86,6 +86,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_nobetciAmirleri'
         || koleksiyon == 'oy_resmiTatiller'
         || koleksiyon == 'oy_nobetRotasyon'
+        || koleksiyon == 'oy_periyodikIsler'
+        || koleksiyon == 'oy_periyodikSablon'
         || koleksiyon == 'oy_sosyalKulupler'
         || koleksiyon == 'oy_belirliGunler'
         || koleksiyon == 'oy_zumre'
@@ -244,6 +246,16 @@ service cloud.firestore {
     match /oy_nobetRotasyon/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('nobet');
+    }
+
+    match /oy_periyodikIsler/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('periyodikIsler');
+    }
+
+    match /oy_periyodikSablon/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('periyodikIsler');
     }
 
     match /oy_sosyalKulupler/{id} {
