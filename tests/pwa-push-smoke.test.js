@@ -6,9 +6,10 @@ const push = fs.readFileSync('js/push.js', 'utf8');
 const apkWorkflow = fs.readFileSync('.github/workflows/build-apk.yml', 'utf8');
 
 assert(!fs.existsSync('firebase-messaging-sw.js'), 'Eski ikinci service worker dosyası geri gelmemeli.');
-assert(sw.includes("messaging.onBackgroundMessage"), 'Web push ana service worker içinde işlenmeli.');
+assert(sw.includes('messaging.onBackgroundMessage'), 'Web push ana service worker içinde işlenmeli.');
 assert(sw.includes("event.request.mode === 'navigate'"), 'index.html fallback yalnız navigation isteklerinde kullanılmalı.');
-assert(sw.includes("status: 503"), 'Cache ve ağ yoksa asset istekleri 503 dönmeli.');
+assert(sw.includes('status: 503'), 'Cache ve ağ yoksa asset istekleri 503 dönmeli.');
+assert(!sw.includes('event.waitUntil(agIstegi'), 'Cache-hit ağ yenilemesi geç FetchEvent.waitUntil çağrısı kullanmamalı.');
 
 assert(push.includes("register('./service-worker.js')"), 'Push tokenı ana service worker kaydıyla alınmalı.');
 assert(!push.includes("register('/okul/firebase-messaging-sw.js')"), 'İkinci service worker kaydı kullanılmamalı.');
