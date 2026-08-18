@@ -17,6 +17,14 @@ function isNative(){
 let _cihazTokenGlobal = null;
 function cihazTokenGetir(){ return _cihazTokenGlobal; }
 
+/* Web push ve PWA cache aynı service worker kaydını kullanır.
+   Ayrı firebase-messaging-sw.js kaydı aynı scope'ta ana PWA worker'ını
+   değiştirebildiği için artık kullanılmıyor. */
+async function _anaServiceWorkerKaydiGetir(){
+  if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
+  return navigator.serviceWorker.register('./service-worker.js');
+}
+
 /* Lokalde saklanan kategori tercihlerini token kaydıyla birlikte Firestore'a yaz */
 async function _cihazKategoriTercihleriSenkronla(token){
   if(!token || !db) return;
@@ -32,7 +40,7 @@ async function _webPushTokenSessizceAl(){
   try{
     if(isNative() || !messaging) return;
     if(!('Notification' in window) || Notification.permission !== 'granted') return;
-    const kayit = await navigator.serviceWorker.register('/okul/firebase-messaging-sw.js');
+    const kayit = await _anaServiceWorkerKaydiGetir();
     const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: kayit });
     if(token){ _cihazTokenGlobal = token; await _cihazKategoriTercihleriSenkronla(token); }
   }catch(e){ console.warn('Sessiz token alma başarısız:', e.message); }
@@ -40,15 +48,13 @@ async function _webPushTokenSessizceAl(){
 document.addEventListener('DOMContentLoaded', ()=> setTimeout(_webPushTokenSessizceAl, 1500));
 
 async function _getNativePush(){
-  // Yöntem 1: window.Capacitor.Plugins
   if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications){
     return window.Capacitor.Plugins.PushNotifications;
   }
-  // Yöntem 2: global Capacitor
   if(typeof Capacitor !== 'undefined' && Capacitor.Plugins && Capacitor.Plugins.PushNotifications){
     return Capacitor.Plugins.PushNotifications;
   }
-  throw new Error('PushNotifications plugin bulunamadi');
+  throw new Error('PushNotifications plugin bulunamadı');
 }
 
 function pushDurumGuncelle(){
@@ -63,16 +69,18 @@ function pushDurumGuncelle(){
   }
 
   if(!('Notification' in window)){
-    metin.textContent = 'Bu tarayici bildirimleri desteklemiyor.';
+    metin.textContent = 'Bu tarayıcı bildirimleri desteklemiyor.';
     return;
   }
   if(Notification.permission === 'granted'){
     if(dot) dot.classList.add('on');
-    metin.textContent = 'Bildirimler acik.';
+    metin.textContent = 'Bildirimler açık.';
   } else if(Notification.permission === 'denied'){
+    if(dot) dot.classList.remove('on');
     metin.textContent = 'Bildirimler engellendi.';
   } else {
-    metin.textContent = 'Bildirimler henuz acilmadi.';
+    if(dot) dot.classList.remove('on');
+    metin.textContent = 'Bildirimler henüz açılmadı.';
   }
 }
 
@@ -82,12 +90,13 @@ async function _nativePushDurumKontrol(dot, metin){
     const perm = await PushNotifications.checkPermissions();
     if(perm.receive === 'granted'){
       if(dot) dot.classList.add('on');
-      metin.textContent = 'Bildirimler acik.';
+      metin.textContent = 'Bildirimler açık.';
     } else {
-      metin.textContent = 'Bildirimler henuz acilmadi.';
+      if(dot) dot.classList.remove('on');
+      metin.textContent = 'Bildirimler henüz açılmadı.';
     }
   } catch(e){
-    metin.textContent = 'Bildirim durumu alinامadı.';
+    metin.textContent = 'Bildirim durumu alınamadı.';
     console.warn('Push durum:', e.message);
   }
 }
@@ -101,24 +110,61 @@ async function bildirimleriAc(){
   try{
     const izin = await Notification.requestPermission();
     if(izin !== 'granted'){ toast('Bildirim izni verilmedi.'); pushDurumGuncelle(); return; }
-    const kayit = await navigator.serviceWorker.register('/okul/firebase-messaging-sw.js');
+    const kayit = await _anaServiceWorkerKaydiGetir();
     const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: kayit });
-    if(!token){ toast('Token alinamadi.'); return; }
+    if(!token){ toast('Token alınamadı.'); return; }
     _cihazTokenGlobal = token;
     await PushService.cihazKaydet(token, {
       token, eklenmeTarihi: new Date().toISOString(), tarayici: navigator.userAgent,
       uid: (typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI) ? AKTIF_KULLANICI.uid : null
     });
     await _cihazKategoriTercihleriSenkronla(token);
-    toast('Bildirimler acildi.');
+    toast('Bildirimler açıldı.');
     pushDurumGuncelle();
   }catch(err){
     toast('Hata: '+err.message);
   }
 }
 
+let _nativePushDinleyicileriKuruldu = false;
+
+async function _nativePushDinleyicileriniKur(PushNotifications){
+  if(_nativePushDinleyicileriKuruldu) return;
+
+  try{
+    await PushNotifications.addListener('registration', async (tokenObj) => {
+      const token = tokenObj.value;
+      try {
+        _cihazTokenGlobal = token;
+        await PushService.cihazKaydet(token, {
+          token, eklenmeTarihi: new Date().toISOString(), tarayici: 'Android-Native',
+          uid: (typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI) ? AKTIF_KULLANICI.uid : null
+        });
+        await _cihazKategoriTercihleriSenkronla(token);
+        toast('Bildirimler açıldı, cihaz kaydedildi.');
+        pushDurumGuncelle();
+      } catch(e){
+        toast('Token kaydedilemedi: ' + e.message);
+      }
+    });
+
+    await PushNotifications.addListener('registrationError', (err) => {
+      toast('Kayıt hatası: ' + JSON.stringify(err));
+    });
+
+    await PushNotifications.addListener('pushNotificationReceived', (notification) => {
+      toast((notification.title||'Bildirim') + ': ' + (notification.body||''));
+    });
+
+    _nativePushDinleyicileriKuruldu = true;
+  }catch(e){
+    _nativePushDinleyicileriKuruldu = false;
+    throw e;
+  }
+}
+
 async function _nativeBildirimleriAc(){
-  try {
+  try{
     const PushNotifications = await _getNativePush();
 
     let perm = await PushNotifications.checkPermissions();
@@ -130,43 +176,21 @@ async function _nativeBildirimleriAc(){
       return;
     }
 
-    PushNotifications.addListener('registration', async (tokenObj) => {
-      const token = tokenObj.value;
-      try {
-        _cihazTokenGlobal = token;
-        await PushService.cihazKaydet(token, {
-          token, eklenmeTarihi: new Date().toISOString(), tarayici: 'Android-Native',
-          uid: (typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI) ? AKTIF_KULLANICI.uid : null
-        });
-        await _cihazKategoriTercihleriSenkronla(token);
-        toast('Bildirimler acildi, cihaz kaydedildi.');
-        pushDurumGuncelle();
-      } catch(e){
-        toast('Token kaydedilemedi: ' + e.message);
-      }
-    });
-
-    PushNotifications.addListener('registrationError', (err) => {
-      toast('Kayit hatasi: ' + JSON.stringify(err));
-    });
-
-    PushNotifications.addListener('pushNotificationReceived', (notification) => {
-      toast((notification.title||'Bildirim') + ': ' + (notification.body||''));
-    });
-
+    await _nativePushDinleyicileriniKur(PushNotifications);
     await PushNotifications.register();
-
   } catch(e){
-    console.error('Native bildirim hatasi:', e);
-    toast('Native bildirim hatasi: ' + e.message);
+    console.error('Native bildirim hatası:', e);
+    toast('Native bildirim hatası: ' + e.message);
   }
 }
 
+let _webOnMessageDinleyicisiKuruldu = false;
 function pushOnMessageDinleyiciKur(){
-  if(isNative()) return;
-  if(!messaging) return;
+  if(isNative() || !messaging || _webOnMessageDinleyicisiKuruldu) return;
+  _webOnMessageDinleyicisiKuruldu = true;
   messaging.onMessage(payload=>{
-    const b = payload.notification||{};
-    toast((b.title||'Bildirim') + ': ' + (b.body||''));
+    const b = payload.notification || {};
+    const d = payload.data || {};
+    toast((b.title || d.baslik || 'Bildirim') + ': ' + (b.body || d.icerik || ''));
   });
 }
