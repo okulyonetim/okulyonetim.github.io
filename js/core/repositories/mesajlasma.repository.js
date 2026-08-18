@@ -14,12 +14,39 @@
    servis/UI katmanında istemci tarafında yapılır.
    ================================================================ */
 
+/* Profil fotoğrafı URL'leri UI'da <img src="..."> içinde kullanılıyor.
+   Firestore verisine doğrudan güvenmek yerine yalnız HTTP(S) URL'lerini
+   geçiriyoruz. Tırnak/HTML karakteri içeren veya farklı şema kullanan
+   değerler boşaltılır; UI mevcut baş-harf avatarına düşer. */
+function _mesajlasmaGuvenliProfilUrl(url){
+  if(typeof url !== 'string') return '';
+  const deger = url.trim();
+  if(!deger || /[\s"'<>]/.test(deger)) return '';
+  try {
+    const parsed = new URL(deger, window.location.href);
+    return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? deger : '';
+  } catch (_) {
+    return '';
+  }
+}
+
+function _mesajlasmaKonusmaVerisiniGuvenliYap(veri){
+  if(!veri || typeof veri !== 'object') return veri;
+  const fotolar = veri.katilimciFotolari;
+  if(!fotolar || typeof fotolar !== 'object') return veri;
+  const guvenliFotolar = {};
+  Object.entries(fotolar).forEach(([uid, url]) => {
+    guvenliFotolar[uid] = _mesajlasmaGuvenliProfilUrl(url);
+  });
+  return { ...veri, katilimciFotolari: guvenliFotolar };
+}
+
 const MesajlasmaRepository = {
 
   /* ---------- Konuşmalar ---------- */
   konusmalariDinle(uid, callback, hataCb){
     return db.collection(COL.konusmalar).where('katilimciUidler', 'array-contains', uid).onSnapshot(
-      s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
+      s => callback(s.docs.map(d => ({ id: d.id, ..._mesajlasmaKonusmaVerisiniGuvenliYap(d.data()) }))),
       hataCb || hataGoster
     );
   },
