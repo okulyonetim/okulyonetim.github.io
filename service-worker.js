@@ -5,7 +5,7 @@
    · Web push ve PWA cache TEK service worker üzerinden çalışır
    ==================================================================== */
 
-const CACHE_ADI = 'oy-cache-v437';
+const CACHE_ADI = 'oy-cache-v438';
 
 /* Firebase Messaging artık ayrı firebase-messaging-sw.js yerine bu worker'da.
    Böylece aynı /okul/ scope'u için iki service worker birbiriyle yarışmaz. */
@@ -50,6 +50,7 @@ const ONBELLEGE_ALINACAKLAR = [
   './js/firebase-init.js',
   './js/auth.js',
   './js/kullanici-yonetimi.js',
+  './js/ozellik-katalogu.js',
   './js/app.js',
   './js/ui.js',
   './js/push.js',

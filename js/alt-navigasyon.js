@@ -246,7 +246,7 @@
     ekOgeler.forEach((eo, idx) => {
       itemPool.push({
         anahtar: eo.anahtar,
-        oge: { anahtar: eo.anahtar, ad: eo.ad, ikon:'pano', modul:null, aksiyon: function(){ sekmeAc(eo.sekmeAd); } },
+        oge: { anahtar: eo.anahtar, ad: eo.ad, ikon:'pano', modul:null, aksiyon: function(){ if(window.OzellikKatalogu && window.OzellikKatalogu.ac(eo.sekmeAd)) return; sekmeAc(eo.sekmeAd); } },
         asilGrup: eo.grup,
         asilBolum: eo.altGrupMu ? 'alt' : 'ana',
         asilSira: 10000 + idx, // varsayılan olarak grubun sonuna eklenir
@@ -339,6 +339,29 @@
   // GRUPLAR boş kalmasın diye sadece katalogla bir kez inşa edilir.
   _gruplariYenidenOlustur();
 
+  // Merkezi özellik kataloğu: GRUPLAR_KATALOG'a eklenen her yeni özellik
+  // Navigasyon Düzeni > Yeni Öğe Ekle listesine otomatik düşer. Böylece
+  // sekmeAc kullanmayan overlay/fonksiyon özellikleri de unutulmaz.
+  function _ozellikKatalogunuSenkronla(){
+    if(!window.OzellikKatalogu || typeof window.OzellikKatalogu.kaydet !== 'function') return;
+    GRUPLAR_KATALOG.forEach(g => {
+      const tum = (g.ogeler || []).concat(g.altGrup ? (g.altGrup.ogeler || []) : []);
+      tum.forEach(o => {
+        if(!o || !o.anahtar || typeof o.aksiyon !== 'function') return;
+        window.OzellikKatalogu.kaydet({
+          id:o.anahtar,
+          ad:o.ad,
+          tip:'aksiyon',
+          modul:o.modul || null,
+          ikon:o.ikon || null,
+          ac:o.aksiyon
+        });
+      });
+    });
+  }
+  _ozellikKatalogunuSenkronla();
+  window._ozellikKatalogunuSenkronla = _ozellikKatalogunuSenkronla;
+
   function _yenidenInsaVeYenile(){
     _gruplariYenidenOlustur();
     if(typeof AltNav !== 'undefined' && AltNav._kuruldu) AltNav.yenile();
@@ -379,7 +402,7 @@
           ad: o.ad,
           ikon: 'pano',
           modul: null,
-          aksiyon: function(){ sekmeAc(o.sekmeAd); },
+          aksiyon: function(){ if(window.OzellikKatalogu && window.OzellikKatalogu.ac(o.sekmeAd)) return; sekmeAc(o.sekmeAd); },
         }));
         if(ogeler.length === 0) return;
 

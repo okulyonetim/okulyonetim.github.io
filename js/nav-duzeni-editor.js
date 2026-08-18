@@ -356,15 +356,24 @@ function _ndSekmeSeciciOlustur(sekmeAd){
   const sel = document.createElement('select');
   sel.className = 'nd-yeni-oge-sekme-fallback';
   sel.style.width = '100%';
-  const gorulen = new Set();
-  document.querySelectorAll('[data-tab]').forEach(el => {
-    const deger = (el.getAttribute('data-tab') || '').trim();
-    if(!deger || gorulen.has(deger)) return;
-    gorulen.add(deger);
-    const yazi = (el.textContent || deger).replace(/\s+/g,' ').trim();
-    sel.appendChild(new Option(yazi || deger, deger));
-  });
-  if(sekmeAd && !gorulen.has(sekmeAd)) sel.appendChild(new Option(sekmeAd, sekmeAd));
+  sel.appendChild(new Option('Özellik seçin...', ''));
+
+  if(window.OzellikKatalogu && typeof window.OzellikKatalogu.liste === 'function'){
+    window.OzellikKatalogu.liste().forEach(x => {
+      const ek = x.kaynak === 'katalog' ? ' — özellik' : '';
+      sel.appendChild(new Option((x.ad || x.deger) + ek, x.deger));
+    });
+  } else {
+    const gorulen = new Set();
+    document.querySelectorAll('[data-tab]').forEach(el => {
+      const deger = (el.getAttribute('data-tab') || '').trim();
+      if(!deger || gorulen.has(deger)) return;
+      gorulen.add(deger);
+      const yazi = (el.textContent || deger).replace(/\s+/g,' ').trim();
+      sel.appendChild(new Option(yazi || deger, deger));
+    });
+  }
+  if(sekmeAd && !Array.from(sel.options).some(o => o.value === sekmeAd)) sel.appendChild(new Option(sekmeAd, sekmeAd));
   if(sekmeAd) sel.value = sekmeAd;
   return sel;
 }
