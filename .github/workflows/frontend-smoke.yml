@@ -9,9 +9,11 @@ on:
       - 'firebase-messaging-sw.js'
       - '.github/workflows/build-apk.yml'
       - 'android/app/src/main/java/com/koruk/okul/MainActivity.java'
+      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
       - 'tests/pwa-push-smoke.test.js'
       - 'tests/android-deeplink-smoke.test.js'
       - 'tests/document-viewer-smoke.test.js'
+      - 'tests/android-print-plugin-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -41,3 +43,6 @@ jobs:
 
       - name: Belge görüntüleyici regresyon testi
         run: node tests/document-viewer-smoke.test.js
+
+      - name: Android yazdırma regresyon testi
+        run: node tests/android-print-plugin-smoke.test.js
