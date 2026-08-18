@@ -7,7 +7,9 @@ on:
       - 'js/push.js'
       - 'firebase-messaging-sw.js'
       - '.github/workflows/build-apk.yml'
+      - 'android/app/src/main/java/com/koruk/okul/MainActivity.java'
       - 'tests/pwa-push-smoke.test.js'
+      - 'tests/android-deeplink-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -30,3 +32,6 @@ jobs:
 
       - name: PWA / push regresyon testi
         run: node tests/pwa-push-smoke.test.js
+
+      - name: Android deep-link regresyon testi
+        run: node tests/android-deeplink-smoke.test.js
