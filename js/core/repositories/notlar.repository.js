@@ -7,16 +7,31 @@
    hiçbir DOM işlemi burada yapılmaz (bkz. Pragmatik-Mimari-Tasarimi.md §2).
    Üstündeki katman: js/core/services/notlar.service.js
 
-   Not: "Kişisel kayıt" görünürlük filtresi (kisiselKayitGorunurMu) ve
-   sahipUid damgalama kuralı js/app.js'te tanımlıdır çünkü aynı kural
-   hatirlaticilar/gorevler koleksiyonları için de kullanılıyor (bu
-   koleksiyonların henüz kendi modül dosyaları yok — bkz. Pragmatik-
-   Mimari-Tasarimi.md notu). NotlarService bu paylaşılan fonksiyonu çağırır.
+   Kişisel görünürlük artık sorgu seviyesinde de uygulanır:
+   - admin tüm notları dinler,
+   - normal kullanıcı yalnız kendi sahipUid değerine sahip notları dinler.
+   Böylece istemci filtresiyle aynı davranış korunurken başka kullanıcıların
+   notları gereksiz yere indirilmez ve Firestore sahiplik kurallarıyla uyum sağlanır.
    ================================================================ */
 
 const NotlarRepository = {
   notlariDinle(callback, hataCb){
-    return db.collection(COL.notlar).onSnapshot(
+    let ref = db.collection(COL.notlar);
+    const aktifKullanici = (typeof AKTIF_KULLANICI !== 'undefined') ? AKTIF_KULLANICI : null;
+    const adminMi = !!(aktifKullanici && aktifKullanici.admin === true);
+
+    // Normal kullanıcı yalnız kendi kayıtlarını sorgular. Giriş/bootstrap anında
+    // aktif kullanıcı henüz yoksa boş sonuç döndürmek yerine dinleyici kurmayız;
+    // notlarBaglantilariKur() auth sonrasında çağrıldığı için normal akış değişmez.
+    if(!adminMi){
+      if(!aktifKullanici || !aktifKullanici.uid){
+        callback([]);
+        return () => {};
+      }
+      ref = ref.where('sahipUid', '==', aktifKullanici.uid);
+    }
+
+    return ref.onSnapshot(
       s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
       hataCb || hataGoster
     );
