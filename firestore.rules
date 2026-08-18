@@ -71,6 +71,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_kullaniciTercihleri'
         || koleksiyon == 'oy_cihazTokenleri'
         || koleksiyon == 'oy_optikSablonlari'
+        || koleksiyon == 'oy_ogretmenListeSablon'
+        || koleksiyon == 'oy_ogretmenListeKayit'
         || koleksiyon == 'oy_yillikPlanBasliklari'
         || koleksiyon == 'oy_yillikPlanTanimlari'
         || koleksiyon == 'oy_ogretmenYillikPlanSecimleri'
@@ -182,6 +184,24 @@ service cloud.firestore {
         && request.resource.data.durum == 'yayinda');
       allow delete: if adminMi() || (moduluDuzenleyebilir('optikFormOlusturma')
         && resource.data.sahipUid == request.auth.uid);
+    }
+
+    match /oy_ogretmenListeSablon/{id} {
+      allow read: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null && resource.data.ogretmenId == kendiOgretmenIdsi());
+      allow create: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null && request.resource.data.ogretmenId == kendiOgretmenIdsi());
+      allow update: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null
+        && resource.data.ogretmenId == kendiOgretmenIdsi()
+        && request.resource.data.ogretmenId == kendiOgretmenIdsi());
+      allow delete: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null && resource.data.ogretmenId == kendiOgretmenIdsi());
+    }
+
+    match /oy_ogretmenListeKayit/{id} {
+      allow read: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null && resource.data.ogretmenId == kendiOgretmenIdsi());
+      allow create: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null && request.resource.data.ogretmenId == kendiOgretmenIdsi());
+      allow update: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null
+        && resource.data.ogretmenId == kendiOgretmenIdsi()
+        && request.resource.data.ogretmenId == kendiOgretmenIdsi());
+      allow delete: if adminMi() || (girisYapmis() && kendiOgretmenIdsi() != null && resource.data.ogretmenId == kendiOgretmenIdsi());
     }
 
     match /oy_yoklama/{belgeId} {
