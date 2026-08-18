@@ -92,6 +92,7 @@ service cloud.firestore {
         || koleksiyon == 'oy_denemeSinavlari'
         || koleksiyon == 'oy_servisOturma'
         || koleksiyon == 'oy_sinifOturma'
+        || koleksiyon == 'oy_okulBilgileri'
         || koleksiyon == 'oy_sosyalKulupler'
         || koleksiyon == 'oy_belirliGunler'
         || koleksiyon == 'oy_zumre'
@@ -410,6 +411,11 @@ service cloud.firestore {
     match /oy_haberKaynaklari/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('haberler');
+    }
+
+    match /oy_okulBilgileri/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('okulBilgileri');
     }
 
     match /oy_dersSaatleri/{id} {
