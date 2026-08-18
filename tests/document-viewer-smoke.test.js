@@ -8,10 +8,15 @@ for (const ext of ['pdf','docx','doc','xlsx','xls','csv','txt','ppt','pptx']) {
 }
 
 assert(src.includes('docx.renderAsync'), 'DOCX için docx-preview kullanılmalı.');
-assert(src.includes('wordSigdir'), 'Word görüntüleyicide tam sayfaya sığdırma bulunmalı.');
+assert(src.includes('wordSigdir'), 'Word görüntüleyicide sayfaya sığdırma bulunmalı.');
 assert(src.includes('dv3wordZoomLabel'), 'Word görüntüleyicide zoom göstergesi bulunmalı.');
 assert(src.includes('wordZoomUygula'), 'Word görüntüleyicide yakınlaştırma/uzaklaştırma bulunmalı.');
+assert(src.includes("st.style.transform=`scale(${wordZoom})`"), 'Word zoom yalnız belge sahnesine transform ile uygulanmalı.');
+assert(!src.includes('st.style.zoom=wordZoom'), 'Word zoom CSS zoom kullanmamalı; üst uygulama katmanını büyütmemeli.');
+assert(src.includes('uygunW/sayfaW'), 'Word Sığdır hesabı belge yüksekliğine göre tüm dokümanı küçültmemeli; genişliğe göre çalışmalı.');
+assert(src.includes('section.docx{margin:0 0 18px 0!important'), 'Word sayfaları arasında görünür sayfa ayrımı bulunmalı.');
 assert(src.includes('align-items:flex-start!important'), 'Geniş Word sayfasının sol kenarı kesilmemeli.');
+assert(src.includes('overflow:auto'), 'Zoom sonrası yatay/dikey kaydırma korunmalı.');
 assert(src.includes('ignoreLastRenderedPageBreak:false'), 'DOCX sayfa kırımları korunmaya çalışılmalı.');
 assert(src.includes("XLSX.read(buf,{type:'array'"), 'XLS için SheetJS uyumluluk yolu bulunmalı.');
 assert(src.includes('new ExcelJS.Workbook()'), 'XLSX için ExcelJS yolu bulunmalı.');
