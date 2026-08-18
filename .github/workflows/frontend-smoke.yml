@@ -36,12 +36,8 @@ on:
       - 'tests/optik-save-bridge-smoke.test.js'
       - 'tests/report-native-print-routing-smoke.test.js'
       - 'tests/global-zoom-smoke.test.js'
-      - 'tests/apply-report-preview-viewport.py'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   smoke:
@@ -49,24 +45,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: agent/report-preview-viewport
 
       - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Rapor önizleme viewport düzeltmesini uygula
-        run: |
-          python tests/apply-report-preview-viewport.py
-          if ! git diff --quiet -- js/raporlama.js tests/report-native-print-routing-smoke.test.js; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add js/raporlama.js tests/report-native-print-routing-smoke.test.js
-            git commit -m "fix: isolate report preview zoom inside viewport"
-            git push origin HEAD:agent/report-preview-viewport
-          fi
 
       - name: JavaScript syntax kontrolü
         run: |
@@ -75,7 +58,6 @@ jobs:
           node --check js/dokuman-okuyucu.js
           node --check js/yillik-plan.js
           node --check optik/js/disaAktar.js
-          node --check js/raporlama.js
 
       - name: Global zoom regresyon testi
         run: node tests/global-zoom-smoke.test.js
