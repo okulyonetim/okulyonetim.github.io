@@ -85,7 +85,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_ozelMenu'
         || koleksiyon == 'oy_anketler'
         || koleksiyon == 'oy_siniflar'
-        || koleksiyon == 'oy_servisler';
+        || koleksiyon == 'oy_servisler'
+        || koleksiyon == 'oy_yoklama';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -112,7 +113,21 @@ service cloud.firestore {
       allow write: if girisYapmis() && request.auth.uid == uid;
     }
 
-    match /oy_yoklama/{belgeId} { allow read, write: if girisYapmis(); }
+    // Yoklamayı modülü görebilen herkes girebilir; mevcut UI davranışı budur.
+    // Normal kullanıcı yalnız yoklama alanlarını değiştirir. Veliye mesaj gönderildi
+    // işareti (mesajGonderildi) ve belge silme admin ile sınırlıdır.
+    match /oy_yoklama/{belgeId} {
+      allow read: if girisYapmis();
+      allow create: if moduluGorebilir('yoklama')
+        && belgeId == request.resource.data.sinifId + '_' + request.resource.data.tarih
+        && request.resource.data.keys().hasOnly(['sinifId', 'tarih']);
+      allow update: if adminMi() || (moduluGorebilir('yoklama')
+        && request.resource.data.sinifId == resource.data.sinifId
+        && request.resource.data.tarih == resource.data.tarih
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sinifId','tarih','kayitlar','girenUid','girenAdi','guncellenmeTarihi'])
+        && (!('girenUid' in request.resource.data) || request.resource.data.girenUid == request.auth.uid));
+      allow delete: if adminMi();
+    }
 
     match /oy_servisler/{servisId} {
       allow read: if girisYapmis();
