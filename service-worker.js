@@ -1,47 +1,58 @@
 /* ====================================================================
-   Okul Yönetim Paneli — Service Worker  v5
-   · Uygulama kabuğu (app shell) tam önbelleklenir → internet olmadan açılır
-   · Firestore verisi: firebase-init.js'deki enablePersistence() → IndexedDB
-   · Strateji: statik dosyalar "Cache First", dış kaynaklar "Network First"
+   Okul Yönetim Paneli — Service Worker v6
+   · Uygulama kabuğu çevrimdışı açılır
+   · Firestore verisi IndexedDB persistence ile yönetilir
+   · Web push ve PWA cache TEK service worker üzerinden çalışır
    ==================================================================== */
 
-const CACHE_ADI = 'oy-cache-v431';
+const CACHE_ADI = 'oy-cache-v432';
 
-/* ---- Önbelleğe alınacak tüm uygulama dosyaları ---- */
+/* Firebase Messaging artık ayrı firebase-messaging-sw.js yerine bu worker'da.
+   Böylece aynı /okul/ scope'u için iki service worker birbiriyle yarışmaz. */
+importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: "AIzaSyCxLLlLCA0Deu7dcQchUWeY5cR5ur5FSkc",
+  authDomain: "okul-6e302.firebaseapp.com",
+  projectId: "okul-6e302",
+  storageBucket: "okul-6e302.firebasestorage.app",
+  messagingSenderId: "738103486583",
+  appId: "1:738103486583:web:da91129b1a08f2463efe72"
+});
+
+const messaging = firebase.messaging();
+
+/* ---- Önbelleğe alınacak uygulama dosyaları ---- */
 const ONBELLEGE_ALINACAKLAR = [
   './',
   './index.html',
   './manifest.json',
-  /* CSS */
   './css/styles.css',
   './css/tasima-takip.css',
   './css/servis-denetim.css',
   './css/dilekce.css',
-   /*Optik modülü */
-'./optik/index.html',
-'./optik/js/app.js',
-'./optik/js/camera.js',
-'./optik/js/canvasFormAdapter.js',
-'./optik/js/canvasFormGenerator.js',
-'./optik/js/formOkuyucu.js',
-'./optik/js/galeriSecici.js',
-'./optik/js/layoutEngine.js',
-'./optik/js/omrEngine.js',
-'./optik/js/optikSablonEditor.js',
-'./optik/js/optikSablonMotoru.js',
-'./optik/js/pdfFormGenerator.js',
-'./optik/js/sayfaTespitCV.js',
-'./optik/js/formOkuyucu.js',
-'./optik/js/hassasiyetAyarlari.js',
-'./optik/js/koseSecici.js', 
-  /* JS — çekirdek */
+  './optik/index.html',
+  './optik/js/app.js',
+  './optik/js/camera.js',
+  './optik/js/canvasFormAdapter.js',
+  './optik/js/canvasFormGenerator.js',
+  './optik/js/formOkuyucu.js',
+  './optik/js/galeriSecici.js',
+  './optik/js/layoutEngine.js',
+  './optik/js/omrEngine.js',
+  './optik/js/optikSablonEditor.js',
+  './optik/js/optikSablonMotoru.js',
+  './optik/js/pdfFormGenerator.js',
+  './optik/js/sayfaTespitCV.js',
+  './optik/js/hassasiyetAyarlari.js',
+  './optik/js/koseSecici.js',
   './js/firebase-init.js',
   './js/auth.js',
   './js/kullanici-yonetimi.js',
   './js/app.js',
   './js/ui.js',
   './js/push.js',
-  /* JS — core (repository / service katmanı) */
   './js/core/utils.js',
   './js/core/store.js',
   './js/core/event-bus.js',
@@ -88,7 +99,6 @@ const ONBELLEGE_ALINACAKLAR = [
   './js/core/services/duyurular.service.js',
   './js/core/repositories/anket.repository.js',
   './js/core/services/anket.service.js',
-  /* JS — modüller */
   './js/cizelgeler.js',
   './js/odev-not-cizelgeleri.js',
   './js/mesajlasma.js',
@@ -128,78 +138,51 @@ const ONBELLEGE_ALINACAKLAR = [
   './js/ogrenciler-arama.js',
   './js/widget-bridge.js',
   './js/alt-navigasyon.js',
-  /* Varlıklar */
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/icon-180.png',
-  /* Firebase SDK — internet olmadan da uygulama açılabilsin diye ÖNCEDEN önbelleklenir
-     (bkz. fetch stratejisi: artık gstatic.com burada hariç tutulmuyor) */
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js',
-  /* Harita kütüphanesi (Leaflet) */
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-  /* Excel / PDF / Word işleme kütüphaneleri */
   'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js'
 ];
 
-/* ---- INSTALL: tüm dosyaları önbellekle ---- */
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_ADI).then((cache) => {
-      // Her dosyayı tek tek dene; biri başarısız olursa diğerleri yine önbelleklenir
-      return Promise.allSettled(
-        ONBELLEGE_ALINACAKLAR.map(url =>
-          cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err))
-        )
-      );
-    })
+    caches.open(CACHE_ADI).then((cache) => Promise.allSettled(
+      ONBELLEGE_ALINACAKLAR.map(url =>
+        cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err))
+      )
+    ))
   );
   self.skipWaiting();
 });
 
-/* ---- ACTIVATE: eski önbellekleri temizle ---- */
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((isimler) =>
-      Promise.all(
-        isimler
-          .filter((i) => i !== CACHE_ADI)
-          .map((i) => caches.delete(i))
-      )
-    )
+    caches.keys().then((isimler) => Promise.all(
+      isimler.filter((i) => i !== CACHE_ADI).map((i) => caches.delete(i))
+    ))
   );
   self.clients.claim();
 });
 
-/* ---- FETCH stratejisi ---- */
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const url = event.request.url;
 
-  /* 1. Firestore/Auth/FCM CANLI API trafiği → her zaman ağdan, SW karışmaz
-        (Firestore kendi offline katmanını IndexedDB üzerinden yönetir).
-        DİKKAT: Bu sadece *.googleapis.com ve accounts.google.com'u kapsar.
-        Firebase SDK'nın kendisi (www.gstatic.com/firebasejs/...) STATİK bir
-        dosyadır ve buraya dahil EDİLMEZ — aksi halde internet yokken SDK
-        hiç yüklenemez ve uygulama Firestore'a gelmeden çöker (bkz. kural 3). */
-  if (
-    url.includes('googleapis.com') ||
-    url.includes('accounts.google.com')
-  ) {
+  if (url.includes('googleapis.com') || url.includes('accounts.google.com')) {
     return;
   }
 
-  /* 1b. Optik modülü dosyaları → Network First (her zaman güncel versiyon gelsin)
-         Cache First ile bir güncelleme geride kalıyordu — optik sık değiştiği için
-         her zaman ağdan dene, sadece ağ yoksa cache'ten ver. */
   if (url.includes('/optik/')) {
     event.respondWith(
       fetch(event.request.url, { cache: 'reload' })
@@ -213,6 +196,7 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
+
   if (
     url.includes('cdnjs.cloudflare.com') ||
     url.includes('fonts.googleapis.com') ||
@@ -221,8 +205,9 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(event.request.url, { cache: 'reload' })
         .then((yanit) => {
-          const kopya = yanit.clone();
-          caches.open(CACHE_ADI).then(c => c.put(event.request, kopya));
+          if (yanit && yanit.status === 200) {
+            caches.open(CACHE_ADI).then(c => c.put(event.request, yanit.clone()));
+          }
           return yanit;
         })
         .catch(() => caches.match(event.request))
@@ -230,74 +215,74 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* 3. Uygulama dosyaları → Cache First (offline'da anında açılır)
-        Arka planda ağdan kontrol et, fark varsa cache güncelle (stale-while-revalidate)
-
-        ÖNEMLİ DÜZELTME: Düz `fetch(event.request)` tarayıcının KENDİ HTTP
-        önbelleğini atlamıyordu — GitHub Pages'in Cache-Control başlığı
-        yüzünden bu "ağdan kontrol" isteği sık sık ağa hiç gitmeden eski
-        HTTP cache kaydını geri döndürüyor, yani güncelleme denemesi
-        sonsuza kadar aynı eski dosyayı cache'e tekrar yazıyordu.
-        {cache:'reload'} tarayıcı HTTP cache'ini de bilinçli atlar. */
   event.respondWith(
     caches.open(CACHE_ADI).then(async (cache) => {
       const onbellek = await cache.match(event.request);
       const agIstegi = fetch(event.request.url, { cache: 'reload' })
         .then((yanit) => {
-          if (yanit && yanit.status === 200) {
-            cache.put(event.request, yanit.clone());
-          }
+          if (yanit && yanit.status === 200) cache.put(event.request, yanit.clone());
           return yanit;
         })
         .catch(() => null);
 
-      /* Önbellekte varsa hemen dön, arka planda güncelle */
       if (onbellek) {
-        agIstegi; // fire-and-forget
+        event.waitUntil(agIstegi.then(() => undefined));
         return onbellek;
       }
 
-      /* Önbellekte yoksa ağdan getir */
       const agYanit = await agIstegi;
       if (agYanit) return agYanit;
 
-      /* Her ikisi de başarısızsa offline sayfası döndür */
-      return cache.match('./index.html');
+      /* Yalnız sayfa gezinmelerinde uygulama kabuğuna düş.
+         JS/CSS/font isteğine HTML döndürmek MIME/syntax hatasına yol açar. */
+      if (event.request.mode === 'navigate') {
+        const kabuk = await cache.match('./index.html');
+        if (kabuk) return kabuk;
+      }
+
+      return new Response('Çevrimdışı ve kaynak önbellekte bulunamadı.', {
+        status: 503,
+        statusText: 'Offline',
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+      });
     })
   );
 });
 
-/* ---- Push bildirimleri (mevcut haliyle korundu) ---- */
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
-  let veri;
-  try { veri = event.data.json(); }
-  catch (e) { veri = { title: 'Koruk Okul Paneli', body: event.data.text() }; }
-  event.waitUntil(
-    self.registration.showNotification(veri.title || 'Koruk Okul Paneli', {
-      body:    veri.body    || '',
-      icon:    veri.icon    || './assets/icon-192.png',
-      badge:   veri.badge   || './assets/icon-192.png',
-      data:    veri.data    || {},
-      tag:     veri.tag     || 'okul-panel',
-      renotify: true,
-    })
-  );
+/* Firebase web push: notification ve data-only mesajları tek yerde ele al. */
+messaging.onBackgroundMessage((payload) => {
+  const data = payload.data || {};
+  const notification = payload.notification || {};
+  const baslik = notification.title || data.baslik || 'Koruk Okul Paneli';
+  const govde = notification.body || data.icerik || data.body || '';
+  const kategori = data.kategori || null;
+
+  return self.registration.showNotification(baslik, {
+    body: govde,
+    icon: data.icon || './assets/icon-192.png',
+    badge: data.badge || './assets/icon-192.png',
+    data: { ...data, kategori },
+    tag: data.tag || (kategori ? `okul-${kategori}` : 'okul-panel'),
+    renotify: true
+  });
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const kategori = event.notification.data && event.notification.data.kategori;
   const hedefUrl = kategori ? `./index.html?bildirimKategori=${encodeURIComponent(kategori)}` : './index.html';
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
       for (const client of list) {
         if (client.url.includes('index.html') || client.url.endsWith('/')) {
-          if (kategori && 'postMessage' in client) client.postMessage({ type: 'BILDIRIM_ACILDI', kategori });
+          if (kategori && 'postMessage' in client) {
+            client.postMessage({ type: 'BILDIRIM_ACILDI', kategori });
+          }
           return client.focus();
         }
       }
       return clients.openWindow(hedefUrl);
     })
   );
-}); 
+});
