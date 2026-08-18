@@ -15,16 +15,16 @@
    ================================================================ */
 
 /* Profil fotoğrafı URL'leri UI'da <img src="..."> içinde kullanılıyor.
-   Firestore verisine doğrudan güvenmek yerine yalnız HTTP(S) URL'lerini
-   geçiriyoruz. Tırnak/HTML karakteri içeren veya farklı şema kullanan
-   değerler boşaltılır; UI mevcut baş-harf avatarına düşer. */
+   Firestore verisine doğrudan güvenmek yerine yalnız MUTLAK HTTP(S)
+   URL'lerini geçiriyoruz. Göreli URL'ler kabul edilmez; tırnak/HTML
+   karakteri içeren veya farklı şema kullanan değerler boşaltılır. */
 function _mesajlasmaGuvenliProfilUrl(url){
   if(typeof url !== 'string') return '';
   const deger = url.trim();
-  if(!deger || /[\s"'<>]/.test(deger)) return '';
+  if(!deger || !/^https?:\/\//i.test(deger) || /[\s"'<>]/.test(deger)) return '';
   try {
-    const parsed = new URL(deger, window.location.href);
-    return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? deger : '';
+    const parsed = new URL(deger);
+    return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? parsed.href : '';
   } catch (_) {
     return '';
   }
@@ -75,9 +75,6 @@ const MesajlasmaRepository = {
   async mesajlariTopluSil(konusmaId){
     const snap = await db.collection(COL.mesajlar).where('konusmaId', '==', konusmaId).get();
     if(snap.empty) return { kullaniciBazliBayt: {} };
-    // NOT: bir konuşmadaki dosyalar BİRDEN FAZLA farklı gönderene ait
-    // olabilir — depolama sayacından doğru kişiden düşülebilsin diye
-    // gönderen uid'sine göre gruplanıyor (bkz. mesajlasma.service.js).
     const kullaniciBazliBayt = {};
     await Promise.all(snap.docs.map(d=>{
       const veri = d.data();
