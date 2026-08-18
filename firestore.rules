@@ -90,6 +90,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_periyodikSablon'
         || koleksiyon == 'oy_sinavlar'
         || koleksiyon == 'oy_denemeSinavlari'
+        || koleksiyon == 'oy_servisOturma'
+        || koleksiyon == 'oy_sinifOturma'
         || koleksiyon == 'oy_sosyalKulupler'
         || koleksiyon == 'oy_belirliGunler'
         || koleksiyon == 'oy_zumre'
@@ -167,12 +169,22 @@ service cloud.firestore {
       allow create, update, delete: if moduluDuzenleyebilir('tasima');
     }
 
+    match /oy_servisOturma/{servisId} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('tasima');
+    }
+
     match /oy_ogrenciler/{ogrenciId} {
       allow read: if girisYapmis();
       allow create, update, delete: if girisYapmis();
     }
 
     match /oy_siniflar/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('siniflar');
+    }
+
+    match /oy_sinifOturma/{sinifId} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('siniflar');
     }
