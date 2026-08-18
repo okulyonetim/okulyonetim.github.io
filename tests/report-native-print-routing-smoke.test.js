@@ -49,4 +49,11 @@ assert(sinavlar.includes('_raporPenceresiniAc'), 'Sınav raporları ortak rapor 
 const sinifOturma = fs.readFileSync('js/sinif-oturma.js', 'utf8');
 assert(sinifOturma.includes('uygulamaDosyaKaydet'), 'Sınıf oturma PDF çıktısı Android’de native dosya kaydetme köprüsünü kullanmalı.');
 
+
+assert(raporlama.includes('id="rapor-viewport"'), 'Web/PWA rapor önizlemesi ayrı viewport kullanmalı.');
+assert(raporlama.includes('function zoomSigdir()'), 'Rapor önizlemesinde genişliğe sığdır bulunmalı.');
+assert(raporlama.includes("scene.style.width = Math.ceil(w * scale) + 'px'"), 'Rapor zoom sahnesinin fiziksel genişliği ölçekle eşleşmeli.');
+assert(raporlama.includes("#icerik-sarici { transform-origin: top left"), 'Rapor zoom yalnız içerik alanında uygulanmalı.');
+assert(raporlama.includes('.rapor-viewport { overflow:visible !important; }'), 'Yazdırmada önizleme viewport kısıtı kaldırılmalı.');
+
 console.log('Rapor native yazdırma yönlendirme smoke testleri başarılı.');
