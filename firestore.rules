@@ -38,6 +38,12 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] == 'duzenle');
     }
 
+    function moduluGorebilir(modul) {
+      return adminMi() || (rolBelgemVarMi()
+        && modul in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
+        && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] in ['goruntule', 'duzenle']);
+    }
+
     function kendiOgretmenIdsi() {
       return kendiBelgemVarMi() ? kullaniciBelgesi().data.bagliOgretmenId : null;
     }
@@ -76,7 +82,8 @@ service cloud.firestore {
         || koleksiyon == 'oy_bransListesi'
         || koleksiyon == 'oy_depolamaAyarlari'
         || koleksiyon == 'oy_hatirlatmaAyarlari'
-        || koleksiyon == 'oy_ozelMenu';
+        || koleksiyon == 'oy_ozelMenu'
+        || koleksiyon == 'oy_anketler';
     }
 
     match /{koleksiyon}/{belgeId} {
@@ -202,10 +209,21 @@ service cloud.firestore {
       allow create, update, delete: if adminMi();
     }
 
-    // Özel menü grupları mevcut rol sistemindeki ozelMenu=duzenle yetkisine bağlıdır.
     match /oy_ozelMenu/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluDuzenleyebilir('ozelMenu');
+    }
+
+    // Anket oluşturma/kapatma/silme istemci davranışında admin-only.
+    // Normal kullanıcı sadece görebildiği ankette kendi oylar.{uid} alanını değiştirebilir.
+    match /oy_anketler/{id} {
+      allow read: if moduluGorebilir('anket');
+      allow create, delete: if adminMi();
+      allow update: if adminMi() || (moduluGorebilir('anket')
+        && resource.data.aktif == true
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['oylar'])
+        && request.auth.uid in request.resource.data.oylar
+        && request.resource.data.oylar.diff(resource.data.oylar).affectedKeys().hasOnly([request.auth.uid]));
     }
 
     match /oy_odevTakip/{id} {
