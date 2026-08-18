@@ -28,8 +28,45 @@ service firebase.storage {
         && (request.resource == null || mesajDosyasiTuruGecerliMi());
     }
 
+    // Yeni doküman yolu: dokumanlar/{sahipUid}/{dosya...}
+    // Kişisel dosya yalnız sahibi+admin; herkese açık dosya tüm girişli
+    // kullanıcılar tarafından okunabilir. Normal kullanıcı görünürlüğü
+    // Storage metadata üzerinden sonradan yükseltemez.
+    match /dokumanlar/{sahipUid}/{dosyaYolu=**} {
+      allow read: if girisYapmis() && (
+        adminMi()
+        || request.auth.uid == sahipUid
+        || resource.metadata.gorunurluk == 'herkes'
+      );
+
+      allow create: if girisYapmis()
+        && request.resource.metadata.olusturanUid == sahipUid
+        && (
+          (request.auth.uid == sahipUid && request.resource.metadata.gorunurluk == 'kisisel')
+          || (adminMi() && request.resource.metadata.gorunurluk in ['kisisel','herkes'])
+        );
+
+      allow update: if adminMi() || (
+        girisYapmis()
+        && request.auth.uid == sahipUid
+        && resource.metadata.olusturanUid == sahipUid
+        && request.resource.metadata.olusturanUid == sahipUid
+        && request.resource.metadata.gorunurluk == resource.metadata.gorunurluk
+      );
+
+      allow delete: if adminMi() || (girisYapmis() && request.auth.uid == sahipUid);
+    }
+
+    // Eski sürümlerdeki dokumanlar/{dosya} yolu geriye dönük uyumluluk için
+    // korunur. Yeni kod bu yola artık dosya yüklemez.
+    match /dokumanlar/{legacyDosya} {
+      allow read, write: if girisYapmis();
+    }
+
     match /{ustYol}/{kalan=**} {
-      allow read, write: if girisYapmis() && ustYol != 'mesajDosyalari';
+      allow read, write: if girisYapmis()
+        && ustYol != 'mesajDosyalari'
+        && ustYol != 'dokumanlar';
     }
   }
 }
