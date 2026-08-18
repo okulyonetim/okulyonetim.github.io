@@ -8,6 +8,18 @@ on:
       - 'js/dokuman-okuyucu.js'
       - 'js/yillik-plan.js'
       - 'js/app.js'
+      - 'js/raporlama.js'
+      - 'js/puantaj.js'
+      - 'js/tasima-takip.js'
+      - 'js/dilekce.js'
+      - 'js/sinavlar.js'
+      - 'js/sinif-oturma.js'
+      - 'js/kontrol-listeleri.js'
+      - 'js/ogretmen-liste-olusturucu.js'
+      - 'js/teblig-tebellug.js'
+      - 'js/cizelgeler.js'
+      - 'js/kriter-dagitim.js'
+      - 'js/proje-degerlendirme.js'
       - 'optik/index.html'
       - 'optik/js/app.js'
       - 'optik/js/disaAktar.js'
@@ -21,6 +33,7 @@ on:
       - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/yillik-plan-preview-smoke.test.js'
       - 'tests/optik-save-bridge-smoke.test.js'
+      - 'tests/report-native-print-routing-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -61,3 +74,6 @@ jobs:
 
       - name: Optik PDF kayıt köprüsü regresyon testi
         run: node tests/optik-save-bridge-smoke.test.js
+
+      - name: Rapor native yazdırma yönlendirme regresyon testi
+        run: node tests/report-native-print-routing-smoke.test.js
