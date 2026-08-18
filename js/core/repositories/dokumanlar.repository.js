@@ -1,46 +1,82 @@
 /* ================================================================
    js/core/repositories/dokumanlar.repository.js
    DÖKÜMANLAR MODÜLÜ — TEK FIRESTORE + STORAGE ERİŞİM NOKTASI
-
-   Bu dosyada SADECE db.collection() / storage.ref() / onSnapshot() /
-   add() / delete() çağrıları bulunur. Hiçbir iş kuralı, hiçbir yetki
-   kontrolü, hiçbir DOM işlemi burada yapılmaz (bkz. Pragmatik-Mimari-
-   Tasarimi.md §2). Üstündeki katman: js/core/services/dokumanlar.service.js
-
-   DÜZELTME (v2): Dosya içeriği artık Firebase Storage'da tutuluyor —
-   eskiden IndexedDB (cihaz hafızası) kullanılıyordu, bu da dosyaların
-   sadece yükleyen kişinin cihazında kalmasına ve paylaşılamamasına
-   sebep oluyordu.
    ================================================================ */
 
+function _dokumanTarihDegeri(d){
+  const t = d && d.yuklenmeTarihi;
+  if(!t) return 0;
+  if(typeof t.toMillis === 'function') return t.toMillis();
+  if(typeof t.seconds === 'number') return t.seconds * 1000;
+  const ms = new Date(t).getTime();
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+function _dokumanGuvenliDosyaAdi(ad){
+  const temiz = String(ad || 'dosya')
+    .replace(/[\\/\u0000-\u001f\u007f]+/g, '_')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return (temiz || 'dosya').slice(0, 180);
+}
+
 const DokumanlarRepository = {
+  /* Admin tüm kayıtları dinler. Normal kullanıcıda Firestore Rules ile
+     uyumlu iki sorgu birleştirilir: herkese açık kayıtlar + kendi kayıtları.
+     Böylece özel dokümanların metadata/dosyaUrl alanları başka kullanıcıya
+     hiç indirilmez. */
   dokumanlariDinle(callback, hataCb){
-    return db.collection(COL.dokumanlar).orderBy('yuklenmeTarihi', 'desc').onSnapshot(
-      snap => callback(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
-      hataCb || hataGoster
+    const hata = hataCb || hataGoster;
+    const ben = (typeof AKTIF_KULLANICI !== 'undefined') ? AKTIF_KULLANICI : null;
+    if(!ben || ben.admin === true){
+      return db.collection(COL.dokumanlar).orderBy('yuklenmeTarihi', 'desc').onSnapshot(
+        snap => callback(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+        hata
+      );
+    }
+
+    const uid = ben.uid;
+    if(!uid){ hata(new Error('Aktif kullanıcı kimliği bulunamadı.')); return ()=>{}; }
+    let acik = [];
+    let benim = [];
+    const birlestir = ()=>{
+      const map = new Map();
+      [...acik, ...benim].forEach(d => map.set(d.id, d));
+      callback([...map.values()].sort((a,b)=>_dokumanTarihDegeri(b)-_dokumanTarihDegeri(a)));
+    };
+    const u1 = db.collection(COL.dokumanlar).where('gorunurluk','==','herkes').onSnapshot(
+      s=>{ acik=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); }, hata
     );
+    const u2 = db.collection(COL.dokumanlar).where('olusturanUid','==',uid).onSnapshot(
+      s=>{ benim=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); }, hata
+    );
+    return ()=>{ try{u1();}catch(_){} try{u2();}catch(_){} };
   },
-  /* Not: meta zaten kendi zaman damgasını (serverTimestamp) taşıyor —
-     diğer repository'lerdeki otomatik eklenmeTarihi damgası burada
-     bilinçli olarak uygulanmıyor. */
+
+  dokumanGetir(id){ return db.collection(COL.dokumanlar).doc(id).get(); },
   dokumanEkle(meta){ return db.collection(COL.dokumanlar).add(meta); },
   dokumanSil(id){ return db.collection(COL.dokumanlar).doc(id).delete(); },
   dokumanGuncelle(id, veri){ return db.collection(COL.dokumanlar).doc(id).update(veri); },
 
-  /* ---------- Dosya (Firebase Storage) ----------
-     Yol: dokumanlar/{zamanDamgasi}_{dosyaAdi}
-     DÜZELTME (v2): Daha önce dosya içeriği IndexedDB'de (cihaz hafızası)
-     tutuluyordu — bu, dosyayı yükleyen kişi DIŞINDA kimsenin dosyayı
-     göremediği anlamına geliyordu (paylaşılan bir arşiv için elverişsizdi).
-     Artık Firebase Storage kullanılıyor, herkes her cihazdan erişebilir. */
-  dosyaYukle(dosya, ilerlemeCb){
+  /* Yeni güvenli yol: dokumanlar/{olusturanUid}/{dosya}.
+     Görünürlük ve sahiplik ayrıca Storage custom metadata içinde tutulur. */
+  dosyaYukle(dosya, sahipUid, gorunurluk, ilerlemeCb){
     return new Promise((resolve, reject)=>{
-      const yol = `dokumanlar/${Date.now()}_${dosya.name}`;
+      if(!sahipUid){ reject(new Error('Dosya sahibi bulunamadı.')); return; }
+      const dosyaAdi = _dokumanGuvenliDosyaAdi(dosya && dosya.name);
+      const yol = `dokumanlar/${sahipUid}/${Date.now()}_${dosyaAdi}`;
       const ref = storage.ref().child(yol);
-      const gorev = ref.put(dosya);
+      const metadata = {
+        contentType: (dosya && dosya.type) || 'application/octet-stream',
+        customMetadata: {
+          olusturanUid: String(sahipUid),
+          gorunurluk: gorunurluk === 'herkes' ? 'herkes' : 'kisisel'
+        }
+      };
+      const gorev = ref.put(dosya, metadata);
       gorev.on('state_changed',
-        (snap)=>{ if(ilerlemeCb) ilerlemeCb(Math.round((snap.bytesTransferred/snap.totalBytes)*100)); },
-        (err)=> reject(err),
+        snap=>{ if(ilerlemeCb) ilerlemeCb(Math.round((snap.bytesTransferred/snap.totalBytes)*100)); },
+        reject,
         async ()=>{
           try{
             const url = await gorev.snapshot.ref.getDownloadURL();
@@ -50,5 +86,17 @@ const DokumanlarRepository = {
       );
     });
   },
+
+  /* Sadece yeni güvenli yol biçiminde custom metadata güncellenebilir.
+     Eski dokumanlar/{dosya} kayıtları geriye dönük uyumlulukta bırakılır. */
+  async dosyaGorunurlukGuncelle(storagePath, gorunurluk){
+    if(!storagePath || !/^dokumanlar\/[^/]+\/.+/.test(storagePath)) return false;
+    const ref = storage.ref().child(storagePath);
+    const mevcut = await ref.getMetadata();
+    const customMetadata = { ...(mevcut.customMetadata || {}), gorunurluk: gorunurluk === 'herkes' ? 'herkes' : 'kisisel' };
+    await ref.updateMetadata({ customMetadata });
+    return true;
+  },
+
   dosyaSil(storagePath){ return storage.ref().child(storagePath).delete(); }
 };
