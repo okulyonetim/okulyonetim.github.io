@@ -532,8 +532,12 @@ function _yplZoomUygula(){
 function _yplEkraniSigdir(){
   const kaydirma = document.getElementById('yplTuvalKaydirma');
   if (!kaydirma) return;
-  const mevcutGenislik = kaydirma.clientWidth - 40;
-  _yplTabanZoom = Math.min(1, mevcutGenislik / YPL_A4_YATAY_PX);
+  // Overlay ilk DOM'a eklendiği anda bazı Android WebView sürümlerinde
+  // clientWidth kısa süreliğine 0 dönebiliyor. Eski hesap negatif zoom
+  // üretebildiği için tablo oluşturulsa bile görünmez kalabiliyordu.
+  const kapsayiciGenislik = kaydirma.clientWidth || document.documentElement.clientWidth || window.innerWidth || 360;
+  const mevcutGenislik = Math.max(240, kapsayiciGenislik - 40);
+  _yplTabanZoom = Math.max(0.2, Math.min(1, mevcutGenislik / YPL_A4_YATAY_PX));
   _yplManuelZoom = 1;
   _yplZoomUygula();
 }

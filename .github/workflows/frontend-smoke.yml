@@ -6,6 +6,7 @@ on:
       - 'service-worker.js'
       - 'js/push.js'
       - 'js/dokuman-okuyucu.js'
+      - 'js/yillik-plan.js'
       - 'firebase-messaging-sw.js'
       - '.github/workflows/build-apk.yml'
       - 'android/app/src/main/java/com/koruk/okul/MainActivity.java'
@@ -14,6 +15,7 @@ on:
       - 'tests/android-deeplink-smoke.test.js'
       - 'tests/document-viewer-smoke.test.js'
       - 'tests/android-print-plugin-smoke.test.js'
+      - 'tests/yillik-plan-preview-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -34,6 +36,7 @@ jobs:
           node --check service-worker.js
           node --check js/push.js
           node --check js/dokuman-okuyucu.js
+          node --check js/yillik-plan.js
 
       - name: PWA / push regresyon testi
         run: node tests/pwa-push-smoke.test.js
@@ -46,3 +49,6 @@ jobs:
 
       - name: Android yazdırma regresyon testi
         run: node tests/android-print-plugin-smoke.test.js
+
+      - name: Yıllık plan önizleme regresyon testi
+        run: node tests/yillik-plan-preview-smoke.test.js
