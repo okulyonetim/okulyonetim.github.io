@@ -19,47 +19,7 @@ on:
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  yillik_plan_patch:
-    if: github.event_name == 'pull_request' && github.head_ref == 'agent/yillik-plan-preview-fix'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Branch checkout
-        uses: actions/checkout@v4
-        with:
-          ref: agent/yillik-plan-preview-fix
-          fetch-depth: 0
-
-      - name: Negatif zoom düzeltmesini uygula ve test ekle
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          p = Path('js/yillik-plan.js')
-          s = p.read_text(encoding='utf-8')
-          old = """  const mevcutGenislik = kaydirma.clientWidth - 40;\n  _yplTabanZoom = Math.min(1, mevcutGenislik / YPL_A4_YATAY_PX);\n"""
-          new = """  // Overlay ilk DOM'a eklendiği anda bazı Android WebView sürümlerinde\n  // clientWidth kısa süreliğine 0 dönebiliyor. Eski hesap negatif zoom\n  // üretebildiği için tablo oluşturulsa bile görünmez kalabiliyordu.\n  const kapsayiciGenislik = kaydirma.clientWidth || document.documentElement.clientWidth || window.innerWidth || 360;\n  const mevcutGenislik = Math.max(240, kapsayiciGenislik - 40);\n  _yplTabanZoom = Math.max(0.2, Math.min(1, mevcutGenislik / YPL_A4_YATAY_PX));\n"""
-          if old in s:
-              p.write_text(s.replace(old, new, 1), encoding='utf-8')
-          elif new not in s:
-              raise SystemExit('Beklenen yıllık plan zoom kodu bulunamadı.')
-
-          Path('tests/yillik-plan-preview-smoke.test.js').write_text("""const fs = require('fs');\nconst assert = require('assert');\nconst src = fs.readFileSync('js/yillik-plan.js', 'utf8');\nassert(src.includes('const kapsayiciGenislik = kaydirma.clientWidth || document.documentElement.clientWidth || window.innerWidth || 360;'), 'Sıfır genişlikte viewport fallback bulunmalı.');\nassert(src.includes('Math.max(240, kapsayiciGenislik - 40)'), 'Önizleme genişliği pozitif alt sınıra sahip olmalı.');\nassert(src.includes('Math.max(0.2, Math.min(1, mevcutGenislik / YPL_A4_YATAY_PX))'), 'Zoom sıfır/negatif olmamalı.');\nassert(!src.includes('const mevcutGenislik = kaydirma.clientWidth - 40;'), 'Eski negatif zoom hesabı geri gelmemeli.');\nconsole.log('Yıllık plan önizleme smoke testleri başarılı.');\n""", encoding='utf-8')
-          PY
-          node --check js/yillik-plan.js
-          node tests/yillik-plan-preview-smoke.test.js
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/yillik-plan.js tests/yillik-plan-preview-smoke.test.js
-          if ! git diff --cached --quiet; then
-            git commit -m "Yıllık plan önizlemesinde negatif zoomu engelle [skip ci]"
-            git push origin HEAD:agent/yillik-plan-preview-fix
-          fi
-
   smoke:
     runs-on: ubuntu-latest
     steps:
@@ -89,3 +49,6 @@ jobs:
 
       - name: Android yazdırma regresyon testi
         run: node tests/android-print-plugin-smoke.test.js
+
+      - name: Yıllık plan önizleme regresyon testi
+        run: node tests/yillik-plan-preview-smoke.test.js
