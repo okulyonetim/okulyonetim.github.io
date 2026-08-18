@@ -2,20 +2,11 @@
 // sekmesine yapıştırıp "Yayınla" (Publish) demeniz gerekir — bu dosya
 // otomatik olarak Firebase'e yüklenmez.
 //
-// GÜNCELLEME: Uygulama artık kullanıcı adı/şifre ile giriş yaptırıyor
-// (bkz. js/auth.js), bu yüzden kurallar da buna göre sıkılaştırıldı:
-// - Giriş yapmamış hiç kimse HİÇBİR VERİYİ okuyup yazamaz.
-// - oy_kullanicilar ve oy_roller (hesap/yetki tanımları): sadece admin yazabilir.
-// - oy_kullaniciIstatistikleri: herkes SADECE KENDİ istatistik belgesini
-//   yazabilir (increment için gerekli), okuma sadece admin'e açık.
-//
-// ============================================================================
-// SERVIS YERLEŞIM EDITÖRÜ - Ek Kurallar
-// ============================================================================
-//
-// Servis yerleşim verisi okuma-yazma:
-// - oy_servisler: Herkes okur, giriş yapmışlar düzenler
-// - oy_ogrenciler: Herkes okur (öğrenci ataması için)
+// GÜNCELLEME: Uygulama kullanıcı adı/şifre ile giriş yaptırıyor (bkz. js/auth.js).
+// Bu dosyada mevcut kullanıcı/rol davranışı KORUNUR. Güvenlik açısından kritik
+// koleksiyonlar genel authenticated-user kuralından çıkarılır ve aşağıdaki özel
+// kurallarıyla korunur. Böylece UI'daki mevcut rol yapısı değiştirilmeden,
+// "sadece admin" / "sadece kendi kaydı" kuralları gerçekten uygulanır.
 
 rules_version = '2';
 service cloud.firestore {
@@ -24,113 +15,111 @@ service cloud.firestore {
     function girisYapmis() {
       return request.auth != null;
     }
-    
+
     function kendiBelgemVarMi() {
-      return exists(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid));
+      return girisYapmis()
+        && exists(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid));
     }
-    
+
     function adminMi() {
       return girisYapmis() && kendiBelgemVarMi()
         && get(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid)).data.admin == true;
     }
 
-    // Çağıranın KENDİ öğretmen kaydının ID'si (oy_kullanicilar/{uid}.bagliOgretmenId) —
-    // yıllık plan seçim/not belgeleri Auth UID'i değil bu ID'yi kullanıyor.
+    // Çağıranın kendi öğretmen kaydının ID'si.
     function kendiOgretmenIdsi() {
       return kendiBelgemVarMi()
         ? get(/databases/$(database)/documents/oy_kullanicilar/$(request.auth.uid)).data.bagliOgretmenId
         : null;
     }
 
-    // ========== VARSAYILAN KURAL ==========
-    // Varsayılan: sadece giriş yapmış (ve uygulamada hesabı olan) kullanıcılar
-    // okuyup yazabilir.
-    match /{document=**} {
-      allow read, write: if girisYapmis();
+    // Özel güvenlik kuralı bulunan koleksiyonlar genel authenticated-user
+    // izninden MUTLAKA hariç tutulur. Firestore allow kurallarını OR mantığıyla
+    // değerlendirdiğinden, bunları hariç tutmadan aşağıdaki admin/kendi-kaydı
+    // kısıtları etkisiz kalır.
+    function ozelKuralliKoleksiyonMu(koleksiyon) {
+      return koleksiyon == 'oy_kullanicilar'
+        || koleksiyon == 'oy_roller'
+        || koleksiyon == 'oy_navDuzeni'
+        || koleksiyon == 'oy_kullaniciIstatistikleri'
+        || koleksiyon == 'oy_yillikPlanBasliklari'
+        || koleksiyon == 'oy_yillikPlanTanimlari'
+        || koleksiyon == 'oy_ogretmenYillikPlanSecimleri'
+        || koleksiyon == 'oy_yillikPlanNotlari'
+        || koleksiyon == 'oy_akademikTakvim'
+        || koleksiyon == 'oy_kontrolListeleri'
+        || koleksiyon == 'oy_kontrolListeTamamlama';
     }
 
-    // ========== KULLANıCı KAYITLARI ==========
-    // Hesap kayıtları: herkes okuyabilir (giriş kontrolü/isim gösterimi için
-    // gerekli) ama SADECE admin oluşturabilir/düzenleyebilir/silebilir.
+    // ========== VARSAYILAN KURAL ==========
+    // Mevcut uygulama davranışı korunur: özel güvenlik kuralı olmayan tüm
+    // üst-seviye koleksiyonlarda giriş yapmış kullanıcıların mevcut okuma/yazma
+    // davranışı aynen devam eder. Rol sistemi ve modül yetkileri değiştirilmez.
+    match /{koleksiyon}/{belgeId} {
+      allow read, write: if girisYapmis() && !ozelKuralliKoleksiyonMu(koleksiyon);
+    }
+
+    // ========== KULLANICI KAYITLARI ==========
     match /oy_kullanicilar/{uid} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
 
     // ========== ROLLER ==========
-    // Roller (yetki tanımları): sadece admin değiştirebilir.
     match /oy_roller/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
 
     // ========== NAVİGASYON DÜZENİ ==========
-    // Grup/öğe sırası, gizleme, ad/renk override: herkes okur (menüyü
-    // render etmek için gerekli), sadece admin değiştirebilir.
     match /oy_navDuzeni/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
 
-    // ========== KULLANıCı İSTATİSTİKLERİ ==========
-    // Kullanıcı istatistikleri: herkes SADECE KENDİ belgesini yazabilir
-    // (başkasının sayaçlarını değiştiremez), okuma sadece admin'e açık.
+    // ========== KULLANICI İSTATİSTİKLERİ ==========
     match /oy_kullaniciIstatistikleri/{uid} {
       allow read: if adminMi() || (girisYapmis() && request.auth.uid == uid);
       allow write: if girisYapmis() && request.auth.uid == uid;
     }
 
-    // Öğrenci Yoklama: giriş yapmış herhangi bir kullanıcı (idare/öğretmen)
-    // okuyup yazabilir — Sedat'ın isteği: "idare veya öğretmenlerden
-    // herhangi biri girebilir", ayrıca kısıtlama yok.
+    // Öğrenci Yoklama: mevcut davranış korunur.
     match /oy_yoklama/{belgeId} {
       allow read, write: if girisYapmis();
     }
 
-    // ========== SERVIS YERLEŞIM EDITÖRÜ KUALLARI ==========
-    
-    // Servis kayıtları: herkes okuyabilir, giriş yapmışlar düzenleyebilir
+    // Servis kayıtları: mevcut davranış korunur.
     match /oy_servisler/{servisId} {
       allow read: if girisYapmis();
       allow create, update, delete: if girisYapmis();
     }
 
-    // Öğrenci kayıtları: herkes okuyabilir (öğrenci ataması için)
+    // Öğrenci kayıtları: mevcut davranış korunur.
     match /oy_ogrenciler/{ogrenciId} {
       allow read: if girisYapmis();
       allow create, update, delete: if girisYapmis();
     }
 
     // ========== YILLIK PLAN ==========
-    // Başlık havuzu + plan tanımları (içerik): herkes okur, sadece admin yazar.
     match /oy_yillikPlanBasliklari/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
+
     match /oy_yillikPlanTanimlari/{id} {
       allow read: if girisYapmis();
       allow create, delete: if adminMi();
-      // İçerik (dersAdi/seviye/sutunlar/satirlar/egitimOgretimYili) sadece
-      // admin değiştirebilir — ama sütun genişliği/yazı boyutu/imza tarihi
-      // birer YAZDIRMA TERCİHİDİR, plan içeriğini değiştirmez, bu yüzden
-      // Görüntüle yetkili herkes bu ÜÇ alanı güncelleyebilsin diye ayrıca
-      // serbest bırakıldı (bkz. yillik-plan.service.js → goruntuAyarlariniKaydet).
       allow update: if adminMi()
         || (girisYapmis() && request.resource.data.diff(resource.data).affectedKeys()
               .hasOnly(['sutunGenislikleri', 'fontBoyutuPx', 'imzaTarihi', 'satirlar', 'okulAdiManuel']));
     }
-    // Öğretmenin "hangi planı takip ediyorum" seçimi: belge ID = kendi
-    // ÖĞRETMEN kaydı ID'si (bkz. kendiOgretmenIdsi()) — Auth UID değil.
-    // Herkes okuyabilir (başkasının seçimini görmek zararsız), ama SADECE
-    // kendi belgesini oluşturabilir/güncelleyebilir — silme kapalı (seçim
-    // listesi boşaltılarak güncellenir, belge silinmez).
+
     match /oy_ogretmenYillikPlanSecimleri/{ogretmenId} {
       allow read: if girisYapmis();
       allow create, update: if girisYapmis() && kendiOgretmenIdsi() == ogretmenId;
       allow delete: if false;
     }
-    // Haftalık kişisel notlar: belge ID = `${ogretmenId}_${planId}` — SADECE
-    // kendi öğretmen ID'siyle başlayan belgeyi oluşturabilir/güncelleyebilir.
+
     match /oy_yillikPlanNotlari/{docId} {
       allow read: if girisYapmis();
       allow create, update: if girisYapmis() && kendiOgretmenIdsi() == docId.split('_')[0];
@@ -143,22 +132,19 @@ service cloud.firestore {
       allow write: if adminMi();
     }
 
-    // Kontrol Listeleri: içerik (ad/madde) sadece admin; herkes okur.
+    // Kontrol Listeleri: içerik sadece admin; herkes okur.
     match /oy_kontrolListeleri/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
     }
-    // Öğretmenin kendi tamamlama işaretlemesi — belge ID = `${ogretmenId}_${listeId}`.
-    // Admin özet için herkesin kaydını okuyabilmeli (read: girisYapmis),
-    // ama SADECE kendi öğretmen ID'siyle başlayan belgeyi yazabilir.
+
     match /oy_kontrolListeTamamlama/{docId} {
       allow read: if girisYapmis();
       allow create, update: if girisYapmis() && kendiOgretmenIdsi() == docId.split('_')[0];
       allow delete: if false;
     }
 
-    // Deneme/Test Sonuçları: "tüm öğretmenler girebilsin" kararı gereği
-    // herkese açık — modülü rolden gizlemek admin'in elinde.
+    // Deneme/Test Sonuçları: mevcut karar gereği tüm giriş yapmış kullanıcılar.
     match /oy_denemeSonuclari/{id} {
       allow read, write: if girisYapmis();
     }
