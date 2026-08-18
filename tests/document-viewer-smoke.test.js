@@ -12,8 +12,14 @@ assert(src.includes('ignoreLastRenderedPageBreak:false'), 'DOCX sayfa kırımlar
 assert(src.includes("XLSX.read(buf,{type:'array'"), 'XLS için SheetJS uyumluluk yolu bulunmalı.');
 assert(src.includes('new ExcelJS.Workbook()'), 'XLSX için ExcelJS yolu bulunmalı.');
 assert(src.includes('pdfjsLib.getDocument'), 'PDF uygulama içinde PDF.js ile açılmalı.');
-assert(src.includes('view.officeapps.live.com'), 'Eski DOC/Office türleri için Office çevrimiçi görüntüleyici fallback bulunmalı.');
-assert(src.includes('docs.google.com/gview'), 'Alternatif Google görüntüleyici fallback bulunmalı.');
+assert(src.includes("if(e==='doc')return docAc()"), 'DOC uzantısı içerik tespit yoluna gitmeli.');
+assert(src.includes("if(zipMi(buf))return renderDocx(buf)"), 'Yanlış/çift uzantılı DOCX dosyası içerikten tespit edilmeli.');
+assert(src.includes("if(e==='xls')return xlsAc()"), 'XLS uzantısı içerik tespit yoluna gitmeli.');
+assert(src.includes("if(zipMi(buf))return xlsxAc(buf)"), 'Yanlış/çift uzantılı XLSX dosyası içerikten tespit edilmeli.');
+assert(src.includes('cMapUrl:'), 'PDF CMap desteği bulunmalı.');
+assert(src.includes('standardFontDataUrl:'), 'PDF standard font veri yolu bulunmalı.');
+assert(src.includes('useSystemFonts:true'), 'PDF sistem fontları etkin olmalı.');
+assert(!src.includes('view.officeapps.live.com'), 'Firebase Storage belgeleri Office iframe görüntüleyicisine gönderilmemeli.');
 assert(src.includes('Dosya otomatik olarak indirilmedi'), 'Desteklenmeyen dosya otomatik indirmeye düşmemeli.');
 assert(!src.includes("window.open(url, '_blank')"), 'Belge açma doğrudan _blank ile indirme/yeni sekmeye düşmemeli.');
 
