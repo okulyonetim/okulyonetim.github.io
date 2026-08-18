@@ -1,11 +1,13 @@
-name: Firestore Rules Tests
+name: Firebase Rules Tests
 
 on:
   pull_request:
     paths:
       - 'firestore.rules'
+      - 'storage.rules'
       - 'firebase.json'
       - 'tests/firestore-rules.test.js'
+      - 'tests/storage-rules.test.js'
       - '.github/workflows/firestore-rules.yml'
   workflow_dispatch:
 
@@ -30,5 +32,5 @@ jobs:
       - name: Test bağımlılıklarını kur
         run: npm install --no-save firebase @firebase/rules-unit-testing firebase-tools
 
-      - name: Firestore kurallarını emülatörde test et
-        run: npx firebase emulators:exec --only firestore --project demo-okul-rules "node tests/firestore-rules.test.js"
+      - name: Firestore ve Storage kurallarını emülatörde test et
+        run: npx firebase emulators:exec --only firestore,storage --project demo-okul-rules "node tests/firestore-rules.test.js && node tests/storage-rules.test.js"
