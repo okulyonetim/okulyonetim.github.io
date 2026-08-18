@@ -4,28 +4,38 @@ service firebase.storage {
 
     function girisYapmis() { return request.auth != null; }
 
+    function kullaniciBelgesiVarMi() {
+      return girisYapmis()
+        && firestore.exists(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid));
+    }
+
     function kullaniciBelgesi() {
       return firestore.get(/databases/(default)/documents/oy_kullanicilar/$(request.auth.uid));
     }
 
     function adminMi() {
-      return girisYapmis() && kullaniciBelgesi().data.admin == true;
+      return kullaniciBelgesiVarMi()
+        && 'admin' in kullaniciBelgesi().data
+        && kullaniciBelgesi().data.admin == true;
     }
 
     function rolBelgemVarMi() {
-      return girisYapmis()
+      return kullaniciBelgesiVarMi()
+        && 'rolId' in kullaniciBelgesi().data
         && kullaniciBelgesi().data.rolId != null
         && firestore.exists(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId));
     }
 
     function moduluDuzenleyebilir(modul) {
       return adminMi() || (rolBelgemVarMi()
+        && 'yetkiler' in firestore.get(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data
         && modul in firestore.get(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
         && firestore.get(/databases/(default)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] == 'duzenle');
     }
 
     function konusmaKatilimcisiMi(konusmaId) {
       return girisYapmis()
+        && firestore.exists(/databases/(default)/documents/oy_konusmalar/$(konusmaId))
         && request.auth.uid in firestore.get(/databases/(default)/documents/oy_konusmalar/$(konusmaId)).data.katilimciUidler;
     }
 
@@ -59,8 +69,6 @@ service firebase.storage {
       allow read, write: if girisYapmis();
     }
 
-    // Duyuru görselleri herkesçe okunabilir; yazma/silme yalnız mevcut
-    // rolünde Duyurular=duzenle olan kullanıcı veya admin içindir.
     match /duyurular/{dosyaYolu=**} {
       allow read: if girisYapmis();
       allow write: if moduluDuzenleyebilir('duyurular');
