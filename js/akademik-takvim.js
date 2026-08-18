@@ -8,13 +8,6 @@
 let _akademikTakvimVeri = null; // {gorselUrl, storagePath, guncellenmeTarihi, yukleyenAdi} | null
 const AKADEMIK_TAKVIM_ONBELLEK_ANAHTARI = 'akademikTakvimOnbellek';
 
-/* Görseli tarayıcının kendi localStorage'ına base64 olarak kaydeder —
-   bir sonraki açılışta AĞ BEKLEMEDEN anında gösterilebilsin diye. Sadece
-   storagePath değiştiğinde (admin yeni görsel yüklediğinde) yeniden
-   indirip önbelleği güncelliyoruz; aynı görsel için tekrar tekrar
-   indirmiyoruz. Depolama kotası dolarsa (büyük görsel + zaten dolu
-   localStorage) sessizce vazgeçiyor — önbellek olmasa da uygulama normal
-   (ağdan) çalışmaya devam eder. */
 function _akademikTakvimOnbellekOku(){
   try {
     const ham = localStorage.getItem(AKADEMIK_TAKVIM_ONBELLEK_ANAHTARI);
@@ -37,13 +30,12 @@ function _akademikTakvimGorseliOnbellekleAl(veri){
       okuyucu.readAsDataURL(blob);
     }))
     .then(dataUri => _akademikTakvimOnbellegeYaz(veri.storagePath, dataUri))
-    .catch(() => { /* önbellekleme başarısız olsa da görsel zaten ağdan gösteriliyor */ });
+    .catch(() => {});
 }
 
 function akademikTakvimBaglantisiKur(){
   AkademikTakvimService.dinle(v => {
     _akademikTakvimVeri = v;
-    // Ekran açıksa (kullanıcı içindeyken admin başka cihazdan değiştirdiyse) tazele
     if (document.getElementById('akademikTakvimOverlay')) _akademikTakvimIcerigiCiz();
   });
 }
@@ -86,18 +78,13 @@ function _akademikTakvimIcerigiCiz(){
   }
   const onbellek = _akademikTakvimOnbellekOku();
   const kaynak = (onbellek && onbellek.storagePath === _akademikTakvimVeri.storagePath)
-    ? onbellek.dataUri  // önbellekte var — AĞ BEKLENMEDEN anında gösterilir
-    : _akademikTakvimVeri.gorselUrl; // önbellekte yok/eski — ağdan göster + arka planda önbellekle
+    ? onbellek.dataUri
+    : _akademikTakvimVeri.gorselUrl;
   if (kaynak === _akademikTakvimVeri.gorselUrl) _akademikTakvimGorseliOnbellekleAl(_akademikTakvimVeri);
-  // object-fit:contain + max-width/height:100% → sığdırılmış (fit-to-screen)
-  // başlangıç görünümü; pinch-zoom/pan bundan sonra devreye giriyor.
   el.innerHTML = `<img id="akademikTakvimGorsel" src="${kaynak}" alt="Akademik Takvim" style="max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;will-change:transform;">`;
   _akademikTakvimJestBagla();
 }
 
-/* İki parmakla yakınlaştırma + tek parmakla kaydırma (pan) — bkz.
-   js/dokuman-okuyucu.js aynı jest deseninin sadeleştirilmiş hali (tek
-   görsel için sayfa-çevirme mantığı yok, sadece zoom+pan). */
 function _akademikTakvimJestBagla(){
   const govde = document.getElementById('akademikTakvimIcerik');
   const img = document.getElementById('akademikTakvimGorsel');
@@ -106,11 +93,6 @@ function _akademikTakvimJestBagla(){
   let baslangicMesafe = 0, baslangicZoom = 1;
   let surukleniyor = false, surukleBasX = 0, surukleBasY = 0, panBasX = 0, panBasY = 0;
   let sonTapZamani = 0;
-  // DÜZELTME: eskiden pinch bitip iki parmak art arda kalkınca (her biri
-  // kendi touchend'ini tetikler) bu YANLIŞLIKLA "çift dokunuş" sanılıp
-  // zoom sıfırlanıyordu. Artık bir dokunuşun ÇİFT-DOKUNUŞ ADAYI sayılması
-  // için: TÜM temas süresince tek parmak kalmış olmalı (hiç 2 parmağa
-  // çıkmamış) VE parmak neredeyse hiç hareket etmemiş olmalı.
   let dokunmaBirDegdi = false, dokunmaBasX = 0, dokunmaBasY = 0, coklu = false;
 
   function uygula(){ img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`; }
@@ -135,9 +117,6 @@ function _akademikTakvimJestBagla(){
   }, { passive:true });
   govde.addEventListener('touchmove', (e) => {
     if (e.touches.length === 2){
-      // Zoom SINIRLI AŞAĞI 1'de duruyor — pinch bittiğinde otomatik
-      // sıfırlama YOK, kullanıcı elini çekene kadar (ya da tekrar
-      // uzaklaştırana kadar) yakınlaşmış halde KALIR.
       zoom = Math.min(6, Math.max(1, baslangicZoom * (mesafe(e.touches[0], e.touches[1]) / baslangicMesafe)));
       uygula();
     } else if (e.touches.length === 1){
@@ -151,14 +130,12 @@ function _akademikTakvimJestBagla(){
   }, { passive:true });
   govde.addEventListener('touchend', (e) => {
     surukleniyor = false;
-    if (e.touches.length > 0) return; // hâlâ parmak varsa (pinch'ten tek parmağa geçiş) tap değerlendirme
-    // Çift dokunuşla hızlı zoom aç/kapa — SADECE gerçek, tek-parmaklı,
-    // neredeyse hareketsiz bir dokunuşta değerlendirilir.
+    if (e.touches.length > 0) return;
     if (dokunmaBirDegdi && !coklu){
       const simdi = Date.now();
       if (simdi - sonTapZamani < 300){
         zoom = zoom > 1.02 ? 1 : 2.2; panX = 0; panY = 0; uygula();
-        sonTapZamani = 0; // üçüncü dokunuşun tekrar tetiklenmesini önle
+        sonTapZamani = 0;
       } else {
         sonTapZamani = simdi;
       }
@@ -185,3 +162,14 @@ async function akademikTakvimDosyaSecildi(dosya){
     _akademikTakvimIcerigiCiz();
   }
 }
+
+/* Dökümanlar ekranının ağır PDF araçları ayrı dosyada tutulur ve
+   dokumanlar.js'den sonra yüklenir. Böylece ana modül bozulmadan düzeltilebilir. */
+(function dokumanPdfAraclariniYukle(){
+  if (document.querySelector('script[data-dokuman-pdf-tools]')) return;
+  const s = document.createElement('script');
+  s.src = 'js/dokuman-pdf-tools.js';
+  s.async = false;
+  s.dataset.dokumanPdfTools = '1';
+  document.head.appendChild(s);
+})();
