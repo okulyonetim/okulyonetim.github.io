@@ -2,7 +2,7 @@ const fs = require('fs');
 const assert = require('assert');
 const sw = fs.readFileSync('service-worker.js', 'utf8');
 
-assert(sw.includes("const CACHE_ADI = 'oy-cache-v439'"), 'Service Worker cache sürümü güncellenmeli.');
+assert(sw.includes("const CACHE_ADI = 'oy-cache-v441'"), 'Service Worker cache sürümü güncellenmeli.');
 assert(sw.includes("'./index.html'"), 'Ana uygulama kabuğu precache içinde kalmalı.');
 assert(sw.includes("'./css/styles.css'"), 'Temel stil precache içinde kalmalı.');
 assert(sw.includes("'./js/app.js'"), 'Ana uygulama betiği precache içinde kalmalı.');
