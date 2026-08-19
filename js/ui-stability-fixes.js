@@ -8,6 +8,7 @@ function scriptYukle(src,key){
 scriptYukle('js/theme-contrast-fixes.js','theme-contrast');
 scriptYukle('js/excel-visual-fidelity.js','excel-visual-fidelity');
 scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');
+scriptYukle('js/excel-turkish-date-fix.js','excel-turkish-date');
 scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
 
 let sarildi=false,deneme=0;
