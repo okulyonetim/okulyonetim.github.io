@@ -12,10 +12,13 @@ on:
       - 'js/dokuman-okuyucu.js'
       - 'js/dokuman-pdf-tools.js'
       - 'js/pdf-export-libs.js'
+      - 'js/map-libs.js'
       - 'js/native-report-preview.js'
       - 'js/akademik-takvim.js'
       - 'js/yillik-plan.js'
       - 'js/sinav-sonuclari.js'
+      - 'js/harita.js'
+      - 'js/kullanici-yonetimi.js'
       - 'js/app.js'
       - 'js/alt-navigasyon.js'
       - 'js/nav-duzeni-editor.js'
@@ -45,6 +48,7 @@ on:
       - 'tests/lazy-document-libs-smoke.test.js'
       - 'tests/lazy-chart-smoke.test.js'
       - 'tests/lazy-pdf-export-smoke.test.js'
+      - 'tests/lazy-leaflet-smoke.test.js'
       - 'tests/native-report-preview-smoke.test.js'
       - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/yillik-plan-preview-smoke.test.js'
@@ -79,10 +83,13 @@ jobs:
           node --check js/dokuman-okuyucu.js
           node --check js/dokuman-pdf-tools.js
           node --check js/pdf-export-libs.js
+          node --check js/map-libs.js
           node --check js/native-report-preview.js
           node --check js/akademik-takvim.js
           node --check js/yillik-plan.js
           node --check js/sinav-sonuclari.js
+          node --check js/harita.js
+          node --check js/kullanici-yonetimi.js
           node --check js/alt-navigasyon.js
           node --check js/nav-duzeni-editor.js
           node --check js/raporlama.js
@@ -135,6 +142,9 @@ jobs:
 
       - name: PDF dışa aktarma lazy-load regresyon testi
         run: node tests/lazy-pdf-export-smoke.test.js
+
+      - name: Leaflet lazy-load regresyon testi
+        run: node tests/lazy-leaflet-smoke.test.js
 
       - name: Native rapor önizleme regresyon testi
         run: node tests/native-report-preview-smoke.test.js
