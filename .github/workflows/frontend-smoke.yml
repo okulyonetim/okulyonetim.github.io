@@ -24,6 +24,7 @@ on:
       - 'js/dashboard-mobile-v4.js'
       - 'js/dashboard-mobile-v4-polish.js'
       - 'js/dashboard-mobile-v4-hotfix.js'
+      - 'js/dashboard-mobile-state-v3.js'
       - 'js/dashboard-card-count-fix.js'
       - 'js/role-ui-hardening.js'
       - 'js/dashboard-today-cleanup.js'
@@ -77,6 +78,7 @@ on:
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/excel-visual-fidelity-v3-smoke.test.js'
       - 'tests/dashboard-mobile-v4-smoke.test.js'
+      - 'tests/dashboard-mobile-state-v3-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -107,6 +109,7 @@ jobs:
           node --check js/dashboard-mobile-v4.js
           node --check js/dashboard-mobile-v4-polish.js
           node --check js/dashboard-mobile-v4-hotfix.js
+          node --check js/dashboard-mobile-state-v3.js
           node --check js/dashboard-card-count-fix.js
           node --check js/role-ui-hardening.js
           node --check js/dashboard-today-cleanup.js
@@ -139,6 +142,8 @@ jobs:
         run: node tests/web-sidebar-v2-smoke.test.js
       - name: Ana sayfa v4 regresyon testi
         run: node tests/dashboard-mobile-v4-smoke.test.js
+      - name: Mobil dashboard durum v3 regresyon testi
+        run: node tests/dashboard-mobile-state-v3-smoke.test.js
       - name: Merkezi özellik kataloğu regresyon testi
         run: node tests/feature-catalog-smoke.test.js
       - name: Navigasyon özelleştirme regresyon testi
