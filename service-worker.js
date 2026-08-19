@@ -1,7 +1,7 @@
 /* ====================================================================
    Okul Yönetim Paneli — Service Worker v7
    ==================================================================== */
-const CACHE_ADI = 'oy-cache-v445';
+const CACHE_ADI = 'oy-cache-v446';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -20,7 +20,7 @@ const ONBELLEGE_ALINACAKLAR = [
   './','./index.html','./manifest.json','./css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js',
   './js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/ui-stability-fixes.js',
-  './js/dashboard-mobile-v4.js','./js/dashboard-mobile-v4-polish.js','./js/dashboard-card-count-fix.js','./js/dashboard-mobile-v4-hotfix.js','./js/role-ui-hardening.js',
+  './js/dashboard-mobile-v4.js','./js/dashboard-mobile-v4-polish.js','./js/dashboard-card-count-fix.js','./js/dashboard-mobile-v4-hotfix.js','./js/role-ui-hardening.js','./js/dashboard-today-cleanup.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
