@@ -185,3 +185,13 @@
   s.dataset.navAccordion = '1';
   document.head.appendChild(s);
 })();
+
+/* Genel UI kararlılık ve açık/koyu tema kontrast güvenlik katmanı. */
+(function uiKararlilikYukle(){
+  if (document.querySelector('script[data-ui-stability]')) return;
+  const s = document.createElement('script');
+  s.src = 'js/ui-stability-fixes.js';
+  s.async = false;
+  s.dataset.uiStability = '1';
+  document.head.appendChild(s);
+})();
