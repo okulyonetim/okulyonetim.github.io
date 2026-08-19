@@ -7,6 +7,7 @@ function scriptYukle(src,key){
 }
 scriptYukle('js/theme-contrast-fixes.js','theme-contrast');
 scriptYukle('js/excel-visual-fidelity.js','excel-visual-fidelity');
+scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');
 
 let sarildi=false,deneme=0;
 function kur(){
