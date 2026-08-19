@@ -39,5 +39,5 @@ assert(navScroll.includes("overflow-y:scroll !important"), 'Akordeon açıldığ
 assert(navScroll.includes("touch-action:pan-y !important"), 'Mobil navigasyon gövdesinde parmakla dikey kaydırma açık olmalı.');
 assert(navScroll.includes('scrollBy'), 'Akordeon açılınca açılan içerik görünür konumda tutulmalı.');
 assert(nativePreview.includes("s.src = 'js/nav-accordion.js'"), 'Akordeon motoru uygulama başlangıcında yüklenmeli.');
-assert(sw.includes("oy-cache-v439"), 'Navigasyon ve özellik kataloğu için cache sürümü v439 olmalı.');
+assert(sw.includes("oy-cache-v441"), 'Navigasyon ve özellik kataloğu için cache sürümü v441 olmalı.');
 console.log('Navigasyon özelleştirme ve tam ekran akordeon smoke testleri başarılı.');
