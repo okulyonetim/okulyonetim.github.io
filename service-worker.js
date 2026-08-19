@@ -23,18 +23,100 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 const ONBELLEGE_ALINACAKLAR = [
-  './','./index.html','./manifest.json','./css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css','./js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js','./js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/ui-stability-fixes.js','./js/dashboard-mobile-v4.js','./assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './css/styles.css',
+  './css/tasima-takip.css',
+  './css/servis-denetim.css',
+  './css/dilekce.css',
+  './js/firebase-init.js',
+  './js/auth.js',
+  './js/ozellik-katalogu.js',
+  './js/app.js',
+  './js/ui.js',
+  './js/push.js',
+  './js/core/utils.js',
+  './js/core/store.js',
+  './js/core/event-bus.js',
+  './js/alt-navigasyon.js',
+  './js/ui-stability-fixes.js',
+  './js/dashboard-mobile-v4.js',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
+  './assets/icon-180.png'
 ];
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_ADI).then(cache=>Promise.allSettled(ONBELLEGE_ALINACAKLAR.map(url=>cache.add(url).catch(err=>console.warn('[SW] Önbelleklenemedi:',url,err)))));self.skipWaiting();});
-self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(isimler=>Promise.all(isimler.filter(i=>i!==CACHE_ADI).map(i=>caches.delete(i)))));self.clients.claim();});
-self.addEventListener('fetch',event=>{
- if(event.request.method!=='GET')return;const url=event.request.url;
- if(url.includes('firestore.googleapis.com')||url.includes('identitytoolkit.googleapis.com')||url.includes('securetoken.googleapis.com')||url.includes('firebaseinstallations.googleapis.com')||url.includes('fcmregistrations.googleapis.com'))return;
- event.respondWith(fetch(event.request).then(response=>{if(response&&response.status===200&&response.type!=='opaque'){const copy=response.clone();caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});}return response;}).catch(()=>caches.match(event.request).then(cached=>cached||caches.match('./index.html'))));
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_ADI).then(cache =>
+      Promise.allSettled(
+        ONBELLEGE_ALINACAKLAR.map(url =>
+          cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err))
+        )
+      )
+    )
+  );
+  self.skipWaiting();
 });
 
-self.addEventListener('push',event=>{
- if(event.data)return;
- event.waitUntil(self.registration.showNotification('Koruk İlk-Ortaokulu',{body:'Yeni bir bildiriminiz var.',icon:'./assets/icon-192.png',badge:'./assets/icon-192.png',data:{url:'./'}}));
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(isimler =>
+      Promise.all(isimler.filter(i => i !== CACHE_ADI).map(i => caches.delete(i)))
+    )
+  );
+  self.clients.claim();
 });
-self.addEventListener('notificationclick',event=>{event.notification.close();const hedef=(event.notification.data&&event.notification.data.url)||'./';event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(windows=>{for(const w of windows){if('focus'in w){w.navigate(hedef);return w.focus();}}return clients.openWindow?clients.openWindow(hedef):null;}));});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = event.request.url;
+  if (
+    url.includes('firestore.googleapis.com') ||
+    url.includes('identitytoolkit.googleapis.com') ||
+    url.includes('securetoken.googleapis.com') ||
+    url.includes('firebaseinstallations.googleapis.com') ||
+    url.includes('fcmregistrations.googleapis.com')
+  ) return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        if (response && response.status === 200 && response.type !== 'opaque') {
+          const copy = response.clone();
+          caches.open(CACHE_ADI).then(cache => cache.put(event.request, copy)).catch(() => {});
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+  );
+});
+
+self.addEventListener('push', event => {
+  if (event.data) return;
+  event.waitUntil(
+    self.registration.showNotification('Koruk İlk-Ortaokulu', {
+      body: 'Yeni bir bildiriminiz var.',
+      icon: './assets/icon-192.png',
+      badge: './assets/icon-192.png',
+      data: { url: './' }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const hedef = (event.notification.data && event.notification.data.url) || './';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windows => {
+      for (const w of windows) {
+        if ('focus' in w) {
+          w.navigate(hedef);
+          return w.focus();
+        }
+      }
+      return clients.openWindow ? clients.openWindow(hedef) : null;
+    })
+  );
+});
