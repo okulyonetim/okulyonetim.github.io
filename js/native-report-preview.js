@@ -175,3 +175,13 @@
 
   kur();
 })();
+
+/* Navigasyon Düzeni: çoklu akordeon alt menü motoru. */
+(function navAkordeonYukle(){
+  if (document.querySelector('script[data-nav-accordion]')) return;
+  const s = document.createElement('script');
+  s.src = 'js/nav-accordion.js';
+  s.async = false;
+  s.dataset.navAccordion = '1';
+  document.head.appendChild(s);
+})();
