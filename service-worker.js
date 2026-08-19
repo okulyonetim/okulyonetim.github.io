@@ -6,9 +6,8 @@
    · Web push ve PWA cache TEK service worker üzerinden çalışır
    ==================================================================== */
 
-const CACHE_ADI = 'oy-cache-v440';
+const CACHE_ADI = 'oy-cache-v441';
 
-/* Firebase Messaging artık ayrı firebase-messaging-sw.js yerine bu worker'da. */
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 
@@ -24,7 +23,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 const ONBELLEGE_ALINACAKLAR = [
-  './','./index.html','./manifest.json','./css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css','./js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js','./js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
+  './','./index.html','./manifest.json','./css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css','./js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js','./js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/ui-stability-fixes.js','./js/dashboard-mobile-v4.js','./assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_ADI).then(cache=>Promise.allSettled(ONBELLEGE_ALINACAKLAR.map(url=>cache.add(url).catch(err=>console.warn('[SW] Önbelleklenemedi:',url,err)))));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(isimler=>Promise.all(isimler.filter(i=>i!==CACHE_ADI).map(i=>caches.delete(i)))));self.clients.claim();});
