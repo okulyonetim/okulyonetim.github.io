@@ -1,66 +1,97 @@
-/* Koruk Asistan — akordeon navigasyon dikey kaydırma düzeltmesi v2 */
+/* Koruk Asistan — akordeon navigasyon tam ekran + scroll düzeltmesi v3 */
 (function(){
 'use strict';
 function cssKur(){
-  if(document.getElementById('an-scroll-fix-v2')) return;
+  if(document.getElementById('an-scroll-fix-v3')) return;
   const s=document.createElement('style');
-  s.id='an-scroll-fix-v2';
+  s.id='an-scroll-fix-v3';
   s.textContent=`
+    /* Mobilde açılan tüm alt navigasyon katmanları gerçek tam ekran olsun. */
+    .an-grid-katman,
+    .an-liste-katman,
+    .an-profil-katman{
+      position:fixed !important;
+      inset:0 !important;
+      width:100vw !important;
+      height:100dvh !important;
+      max-width:none !important;
+      max-height:none !important;
+      border-radius:0 !important;
+      z-index:9800 !important; /* bottom-nav 9700'ün üstü */
+      min-height:0 !important;
+    }
     .an-liste-katman{
       display:flex !important;
       flex-direction:column !important;
       overflow:hidden !important;
-      min-height:0 !important;
-      max-height:none !important;
-      height:calc(100dvh - 86px) !important;
     }
     .an-liste-katman .an-liste-baslik,
     .an-liste-katman .an-liste-head{
       flex:0 0 auto !important;
+      position:relative !important;
+      z-index:2 !important;
     }
     #anListeGovde,.an-liste-govde{
-      flex:1 1 auto !important;
+      flex:1 1 0 !important;
       min-height:0 !important;
-      height:auto !important;
+      height:0 !important;
       max-height:none !important;
-      overflow-y:auto !important;
+      overflow-y:scroll !important;
       overflow-x:hidden !important;
       -webkit-overflow-scrolling:touch !important;
       overscroll-behavior-y:contain !important;
       touch-action:pan-y !important;
       scrollbar-gutter:stable;
-      padding-bottom:max(28px,env(safe-area-inset-bottom)) !important;
+      padding-bottom:max(32px,env(safe-area-inset-bottom)) !important;
+    }
+    /* Katman açıldığında alttaki ana navigasyon görünmesin/tıklanmasın. */
+    body.an-tam-ekran-nav-acik .bottom-nav{
+      visibility:hidden !important;
+      opacity:0 !important;
+      pointer-events:none !important;
     }
     @media (min-width:1024px){
-      .an-liste-katman{
+      .an-grid-katman,
+      .an-liste-katman,
+      .an-profil-katman{
+        width:min(960px,calc(100vw - var(--sidebar-w) - 80px)) !important;
         height:min(78vh,780px) !important;
+        max-width:960px !important;
         max-height:min(78vh,780px) !important;
+        inset:auto auto 28px 50% !important;
+        transform:translateX(-50%) !important;
+        border-radius:24px !important;
       }
+      .an-grid-katman:not(.acik){ transform:translate(-50%,100vh) !important; }
+      .an-liste-katman:not(.acik){ transform:translateX(calc(-50% + 100vw)) !important; }
+      .an-profil-katman:not(.acik){ transform:translateX(calc(-50% - 100vw)) !important; }
+      body.an-tam-ekran-nav-acik .bottom-nav{ visibility:visible !important; opacity:1 !important; }
     }
   `;
   document.head.appendChild(s);
 }
+function durumGuncelle(){
+  cssKur();
+  const katmanlar=[...document.querySelectorAll('.an-grid-katman,.an-liste-katman,.an-profil-katman')];
+  const acik=katmanlar.some(k=>k.classList.contains('acik'));
+  document.body.classList.toggle('an-tam-ekran-nav-acik',acik && window.innerWidth<1024);
+}
 function uygula(){
   cssKur();
   const gov=document.getElementById('anListeGovde')||document.querySelector('.an-liste-govde');
-  if(!gov)return false;
-  const kat=gov.closest('.an-liste-katman')||gov.parentElement;
-  if(kat){
-    kat.style.display='flex';
-    kat.style.flexDirection='column';
-    kat.style.minHeight='0';
-    kat.style.overflow='hidden';
+  if(gov){
+    gov.style.flex='1 1 0';
+    gov.style.minHeight='0';
+    gov.style.height='0';
+    gov.style.maxHeight='none';
+    gov.style.overflowY='scroll';
+    gov.style.overflowX='hidden';
+    gov.style.webkitOverflowScrolling='touch';
+    gov.style.overscrollBehaviorY='contain';
+    gov.style.touchAction='pan-y';
   }
-  gov.style.flex='1 1 auto';
-  gov.style.minHeight='0';
-  gov.style.height='auto';
-  gov.style.maxHeight='none';
-  gov.style.overflowY='auto';
-  gov.style.overflowX='hidden';
-  gov.style.webkitOverflowScrolling='touch';
-  gov.style.overscrollBehaviorY='contain';
-  gov.style.touchAction='pan-y';
-  return true;
+  durumGuncelle();
+  return !!gov;
 }
 function acilanBasligiGoster(e){
   const b=e.target&&e.target.closest?e.target.closest('.an-akordeon-baslik'):null;
@@ -72,13 +103,13 @@ function acilanBasligiGoster(e){
     const panel=b.nextElementSibling;
     const hedef=panel&&panel.getBoundingClientRect().height?panel:b;
     const hr=hedef.getBoundingClientRect(),gr=gov.getBoundingClientRect();
-    if(hr.bottom>gr.bottom-12)gov.scrollBy({top:Math.min(hr.bottom-gr.bottom+36,Math.max(80,gov.clientHeight*.65)),behavior:'smooth'});
-    else if(b.getBoundingClientRect().top<gr.top+8)gov.scrollBy({top:b.getBoundingClientRect().top-gr.top-12,behavior:'smooth'});
-  },140);
+    if(hr.bottom>gr.bottom-12) gov.scrollBy({top:hr.bottom-gr.bottom+40,behavior:'smooth'});
+    else if(b.getBoundingClientRect().top<gr.top+8) gov.scrollBy({top:b.getBoundingClientRect().top-gr.top-12,behavior:'smooth'});
+  },160);
 }
 let deneme=0;const t=setInterval(()=>{if(uygula()||++deneme>120)clearInterval(t);},100);
 document.addEventListener('DOMContentLoaded',()=>setTimeout(uygula,0));
 document.addEventListener('click',acilanBasligiGoster,true);
 window.addEventListener('resize',uygula,{passive:true});
-new MutationObserver(()=>uygula()).observe(document.documentElement,{childList:true,subtree:true});
+new MutationObserver(()=>uygula()).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
 })();
