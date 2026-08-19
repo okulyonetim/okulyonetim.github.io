@@ -2,6 +2,8 @@ const fs = require('fs');
 const assert = require('assert');
 
 const src = fs.readFileSync('js/dokuman-okuyucu.js', 'utf8');
+const rich = fs.readFileSync('js/xlsm-viewer-support.js', 'utf8');
+const nav = fs.readFileSync('js/nav-accordion.js', 'utf8');
 
 for (const ext of ['pdf','docx','doc','xlsx','xls','csv','txt','ppt','pptx']) assert(src.includes(`'${ext}'`), `${ext} görüntüleyici kapsamından çıkmamalı.`);
 assert(src.includes('docx.renderAsync'), 'DOCX için docx-preview kullanılmalı.');
@@ -30,19 +32,29 @@ assert(src.includes('merkezY=(wrap.scrollTop+wrap.clientHeight/2)'), 'PDF aktif 
 assert(src.includes("page.dataset.page=String(i)"), 'PDF sayfaları numaralandırılmalı.');
 assert(src.includes('gap:18px'), 'PDF sayfaları arasında görünür ayrım bulunmalı.');
 
-assert(src.includes('excelZoomUygula'), 'Excel zoom bulunmalı.');
-assert(src.includes('excelSigdir'), 'Excel genişliğe sığdırma bulunmalı.');
-assert(src.includes('id="dv3excelZoomLabel"'), 'Excel zoom yüzdesi gösterilmeli.');
-assert(src.includes('.dv3sheetviewport{flex:1 1 auto;min-height:0;overflow:auto;width:100%'), 'Excel scroll yalnız tablo viewportunda olmalı.');
-assert(src.includes('st.style.transform=`scale(${excelZoom})`'), 'Excel zoom yalnız çalışma sayfasına uygulanmalı.');
-assert(src.includes('excelJsSayfaHtml'), 'XLSX metadata tabanlı özel HTML üretimi bulunmalı.');
-assert(src.includes('ws.getColumn(c).width'), 'Excel sütun genişlikleri workbook metadata değerlerinden okunmalı.');
-assert(src.includes('row.height'), 'Excel satır yüksekliği workbook metadata değerinden okunmalı.');
-assert(src.includes("classList.toggle('active',j===i)"), 'Aktif çalışma sayfası sekmesi görsel olarak işaretlenmeli.');
-assert(src.includes("cellStyles:true"), 'SheetJS XLS/XLSX stil metadata yolu açık olmalı.');
-assert(src.includes('wrap.scrollLeft=Math.max(0,nx*excelZoom-wrap.clientWidth/2)'), 'Excel zoom görünür merkez odağını korumalı.');
+assert(src.includes('excelZoomUygula'), 'Eski Excel zoom fallback yolu korunmalı.');
+assert(src.includes('excelSigdir'), 'Eski Excel genişliğe sığdırma fallback yolu korunmalı.');
+assert(src.includes("cellStyles:true"), 'SheetJS XLS stil metadata yolu açık olmalı.');
+
+assert(nav.includes("s.src='js/xlsm-viewer-support.js'"), 'Zengin Excel/XLSM katmanı uygulama başlangıcında yüklenmeli.');
+assert(rich.includes("['xlsx','xlsm']"), 'XLSX ve XLSM zengin Excel görüntüleyiciye yönlendirilmeli.');
+assert(rich.includes("tur==='xlsm'?'XLSM · Makrolar çalıştırılmaz'"), 'XLSM makrolarının çalıştırılmadığı kullanıcıya açıkça belirtilmeli.');
+assert(rich.includes('new ExcelJS.Workbook()'), 'Zengin Excel görüntüleyici ExcelJS kullanmalı.');
+assert(rich.includes('(ws.model&&ws.model.merges)||[]'), 'Birleştirilmiş hücreler workbook metadata üzerinden korunmalı.');
+assert(rich.includes('rowspan'), 'Dikey birleşik hücreler rowspan ile korunmalı.');
+assert(rich.includes('colspan'), 'Yatay birleşik hücreler colspan ile korunmalı.');
+assert(rich.includes('fillCss(c.fill)'), 'Hücre dolgu rengi HTML/CSS çıktısına taşınmalı.');
+assert(rich.includes('fontCss(c.font)'), 'Yazı tipi/kalınlık/renk HTML/CSS çıktısına taşınmalı.');
+assert(rich.includes('alignCss(c.alignment)'), 'Hücre hizalama ve wrap ayarları korunmalı.');
+assert(rich.includes('borderCss(c.border)'), 'Excel kenarlıkları korunmalı.');
+assert(rich.includes('ws.getColumn(c)'), 'Sütun genişlikleri Excel metadata değerlerinden alınmalı.');
+assert(rich.includes('row.height'), 'Satır yüksekliği Excel metadata değerinden alınmalı.');
+assert(rich.includes('Array.isArray(v.richText)'), 'Zengin metin parçaları ayrı font stilleriyle gösterilmeli.');
+assert(rich.includes('position:sticky'), 'Satır/sütun başlıkları kaydırmada sabit kalmalı.');
+assert(rich.includes('Genişliğe sığdır'), 'Zengin Excel görüntüleyicide genişliğe sığdır bulunmalı.');
+assert(rich.includes('zoomla(zoom-.15)'), 'Zengin Excel görüntüleyicide bağımsız zoom bulunmalı.');
 
 assert(src.includes('function pullToRefreshAyarla(enabled)'), 'Native pull-to-refresh kontrolü korunmalı.');
 assert(src.includes("p.setEnabled({enabled:!!enabled})"), 'PullToRefreshPlugin setEnabled kullanılmalı.');
 
-console.log('Belge görüntüleyici PDF/Excel smoke testleri başarılı.');
+console.log('Belge görüntüleyici PDF/Excel/XLSM biçimlendirme smoke testleri başarılı.');
