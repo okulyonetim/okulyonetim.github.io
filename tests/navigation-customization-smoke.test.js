@@ -30,11 +30,14 @@ assert(accordion.includes('nd-altmenu-sec'), 'Öğeler Navigasyon Düzeninden be
 assert(accordion.includes('menuTasi'), 'Alt menüler kendi aralarında sıralanabilmeli.');
 assert(accordion.includes("sekmeAd:'@ozellik:pdf_resimden'"), 'Resimden PDF PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
 assert(accordion.includes("sekmeAd:'@ozellik:pdf_birlestir'"), 'PDF Birleştir PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
-assert(navScroll.includes("height:calc(100dvh - 86px)"), 'Mobil akordeon paneli gerçek viewport yüksekliğine sahip olmalı.');
-assert(navScroll.includes("flex:1 1 auto !important"), 'Navigasyon gövdesi kalan yüksekliği doldurmalı.');
-assert(navScroll.includes("overflow-y:auto !important"), 'Akordeon açıldığında navigasyon gövdesi dikey kaydırılabilir olmalı.');
+assert(navScroll.includes("height:100dvh !important"), 'Mobil navigasyon katmanı tüm viewport yüksekliğini kaplamalı.');
+assert(navScroll.includes("z-index:9800 !important"), 'Navigasyon katmanı bottom-nav üzerinde kalmalı.');
+assert(navScroll.includes("body.an-tam-ekran-nav-acik .bottom-nav"), 'Alt katman açıkken bottom-nav gizlenmeli.');
+assert(navScroll.includes("flex:1 1 0 !important"), 'Navigasyon gövdesi kalan yüksekliği doldurmalı.');
+assert(navScroll.includes("height:0 !important"), 'Flex scroll viewport gerçek sınırlı yüksekliğe zorlanmalı.');
+assert(navScroll.includes("overflow-y:scroll !important"), 'Akordeon açıldığında navigasyon gövdesi kesin dikey kaydırılabilir olmalı.');
 assert(navScroll.includes("touch-action:pan-y !important"), 'Mobil navigasyon gövdesinde parmakla dikey kaydırma açık olmalı.');
 assert(navScroll.includes('scrollBy'), 'Akordeon açılınca açılan içerik görünür konumda tutulmalı.');
 assert(nativePreview.includes("s.src = 'js/nav-accordion.js'"), 'Akordeon motoru uygulama başlangıcında yüklenmeli.');
 assert(sw.includes("oy-cache-v439"), 'Navigasyon ve özellik kataloğu için cache sürümü v439 olmalı.');
-console.log('Navigasyon özelleştirme ve akordeon alt menü smoke testleri başarılı.');
+console.log('Navigasyon özelleştirme ve tam ekran akordeon smoke testleri başarılı.');
