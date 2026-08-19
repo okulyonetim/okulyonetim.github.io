@@ -1,8 +1,8 @@
 const fs = require('fs');
 const assert = require('assert');
 const sw = fs.readFileSync('service-worker.js', 'utf8');
-assert(sw.includes("const CACHE_ADI = 'oy-cache-v446'"), 'Service Worker cache sürümü v446 olmalı.');
-for (const f of ['./index.html','./css/styles.css','./js/app.js','./js/ui-stability-fixes.js','./js/dashboard-mobile-v4.js','./js/dashboard-mobile-v4-polish.js','./js/dashboard-card-count-fix.js','./js/dashboard-mobile-v4-hotfix.js','./js/role-ui-hardening.js','./js/dashboard-today-cleanup.js']) assert(sw.includes(`'${f}'`), `${f} precache içinde kalmalı.`);
+assert(sw.includes("const CACHE_ADI = 'oy-cache-v447'"), 'Service Worker cache sürümü v447 olmalı.');
+for (const f of ['./index.html','./css/styles.css','./css/dashboard-v2.css','./css/web-shell-fix.css','./css/mobil-dashboard.css','./js/app.js','./js/ui-stability-fixes.js','./js/dashboard-v2-init.js','./js/dashboard-mobile-v4.js','./js/dashboard-mobile-v4-polish.js','./js/dashboard-card-count-fix.js','./js/dashboard-mobile-v4-hotfix.js','./js/role-ui-hardening.js','./js/dashboard-today-cleanup.js']) assert(sw.includes(`'${f}'`), `${f} precache içinde kalmalı.`);
 const liste=sw.slice(sw.indexOf('const ONBELLEGE_ALINACAKLAR'),sw.indexOf("self.addEventListener('install'"));
 for(const agir of ['./optik/index.html','./optik/js/app.js','xlsx.full.min.js','exceljs.min.js','pdf.min.js','mammoth.browser.min.js','leaflet.js'])assert(!liste.includes(agir),`${agir} ilk kurulum precache listesinden çıkarılmalı.`);
 assert(sw.includes('fetch(event.request)'),'Ağ yüklemesi devam etmeli.');

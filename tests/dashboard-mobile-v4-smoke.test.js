@@ -8,6 +8,7 @@ const role=fs.readFileSync('js/role-ui-hardening.js','utf8');
 const cleanup=fs.readFileSync('js/dashboard-today-cleanup.js','utf8');
 const docsRepo=fs.readFileSync('js/core/repositories/dokumanlar.repository.js','utf8');
 const loader=fs.readFileSync('js/ui-stability-fixes.js','utf8');
+const webInit=fs.readFileSync('js/dashboard-v2-init.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 assert(v4.includes("p.classList.remove('dmv2','dmv3')"));assert(v4.includes("p.classList.add('db4')"));assert(v4.includes('db4-weather')&&v4.includes('heroHavaSatir'));assert(v4.includes('db4-bell')&&v4.includes('zilWidget'));assert(polish.includes('dashboardV41Duzenle')&&polish.includes('INFO_CARDS'));
 assert(hotfix.includes("PREF_COL='oy_kullaniciTercihleri'"));assert(hotfix.includes("DEFAULT_INFO=['personel','ogrenci','sinif','servis','hatirlatici','not']"));
@@ -19,5 +20,9 @@ assert(cleanup.includes("grid.style.gridTemplateColumns='repeat(2,minmax(0,1fr))
 assert(docsRepo.includes("where('gorunurluk','==','herkes')"),'Normal kullanıcı herkese açık dökümanları sorgulamalı');
 assert(docsRepo.includes('auth.currentUser')&&docsRepo.includes('auth.onAuthStateChanged'),'Döküman dinleyicisi profil/auth yükleme yarışına dayanıklı olmalı');
 assert(!docsRepo.includes('if(!ben || ben.admin === true)'),'Profil hazır değilken kullanıcı admin varsayılmamalı');
-assert(loader.includes('role-ui-hardening.js'));assert(loader.includes('dashboard-today-cleanup.js'));assert(sw.includes("'./js/role-ui-hardening.js'"));assert(sw.includes("'./js/dashboard-today-cleanup.js'"));assert(sw.includes('oy-cache-v446'));assert(v4.includes('@media(prefers-reduced-motion:reduce)'));
+assert(loader.includes("matchMedia('(max-width: 1023px)')"),'Mobil dashboard yükleyicisi ekran genişliğiyle sınırlandırılmalı');
+assert(loader.indexOf("if(mobilDashboard)")<loader.indexOf("dashboard-mobile-v4.js"),'Mobil v4 yalnız mobil koşulunda yüklenmeli');
+assert(webInit.includes("matchMedia('(min-width: 1024px)')"),'Web dashboard yalnız masaüstünde çalışmalı');
+assert(webInit.includes('mobilWebStilleriniKaldir'),'Mobilde web CSS katmanları devre dışı bırakılmalı');
+assert(loader.includes('role-ui-hardening.js'));assert(sw.includes("'./js/role-ui-hardening.js'"));assert(sw.includes('oy-cache-v447'));assert(v4.includes('@media(prefers-reduced-motion:reduce)'));
 console.log('dashboard-mobile-v4-smoke: OK');
