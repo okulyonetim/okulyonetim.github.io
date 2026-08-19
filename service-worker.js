@@ -66,14 +66,14 @@ self.addEventListener('fetch', event => {
       if (cached) return cached;
       const shell = await caches.match('./index.html');
       if (shell) return shell;
-      return new Response('Çevrimdışı', { status:503, headers:{'Content-Type':'text/plain; charset=utf-8'} });
+      return new Response('Çevrimdışı', { status: 503, headers:{'Content-Type':'text/plain; charset=utf-8'} });
     }));
     return;
   }
   event.respondWith(net.catch(async () => {
     const cached = await caches.match(event.request);
     if (cached) return cached;
-    return new Response('Kaynak çevrimdışı kullanılamıyor.', { status:503, headers:{'Content-Type':'text/plain; charset=utf-8'} });
+    return new Response('Kaynak çevrimdışı kullanılamıyor.', { status: 503, headers:{'Content-Type':'text/plain; charset=utf-8'} });
   }));
 });
 
