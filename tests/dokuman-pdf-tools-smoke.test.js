@@ -21,4 +21,23 @@ assert(tools.includes("replace(/[\\u0000-\\u001f<>:\"/\\\\|?*]+/g, '-')"), 'Dosy
 assert(!tools.includes('.normalize('), 'Dosya adı temizliği Türkçe karakterleri ASCII dönüşümüne zorlamamalı.');
 assert(tools.includes('şifreli PDF birleştirilemez'), 'Şifreli PDF için anlaşılır hata bulunmalı.');
 
+// PDF araçları artık Dökümanlar modalında normal sekmeler olarak görünmemeli;
+// bağımsız menü/özellik hedeflerinden açılmalı.
+assert(tools.includes('window.pdfIslemleriAc'), 'PDF İşlemleri alt menü açıcı bulunmalı.');
+assert(tools.includes('window.pdfResimdenAc'), 'Resimden PDF bağımsız açıcı bulunmalı.');
+assert(tools.includes('window.pdfBirlestirAc'), 'PDF Birleştir bağımsız açıcı bulunmalı.');
+assert(tools.includes("goster('dok_sekme_resim',false)"), 'Normal Döküman Ekle akışında Resimden PDF sekmesi gizlenmeli.');
+assert(tools.includes("goster('dok_sekme_birlestir',false)"), 'Normal Döküman Ekle akışında PDF Birleştir sekmesi gizlenmeli.');
+
+// Navigasyon Düzeni > Yeni Öğe Ekle listesinde iki PDF aracı ve öğrenci
+// devamsızlığı bağımsız özellikler olarak bulunmalı.
+assert(tools.includes("id:'pdf_resimden'"), 'Resimden PDF merkezi özellik kataloğunda bağımsız hedef olmalı.');
+assert(tools.includes("id:'pdf_birlestir'"), 'PDF Birleştir merkezi özellik kataloğunda bağımsız hedef olmalı.');
+assert(tools.includes("id:'ogrenci_devamsizlik'"), 'Öğrenci Devamsızlığı merkezi özellik kataloğunda bağımsız hedef olmalı.');
+assert(tools.includes("ad:'Öğrenci Devamsızlığı'"), 'Öğrenci Devamsızlığı Türkçe adı korunmalı.');
+assert(tools.includes("grup:'g7'"), 'PDF İşlemleri varsayılan olarak Döküman & Evraklar grubunda olmalı.');
+assert(tools.includes("grup:'g1'"), 'Öğrenci Devamsızlığı varsayılan olarak Öğretmen & Öğrenciler grubunda olmalı.');
+assert(tools.includes("sekmeAd:'@ozellik:pdf_islemleri'"), 'PDF İşlemleri menüsü merkezi özellik hedefini kullanmalı.');
+assert(tools.includes("sekmeAd:'@ozellik:ogrenci_devamsizlik'"), 'Öğrenci Devamsızlığı bağımsız özellik hedefini kullanmalı.');
+
 console.log('Döküman PDF araçları smoke testleri başarılı.');
