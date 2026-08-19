@@ -11,7 +11,9 @@ const WEB_MQ=window.matchMedia('(min-width: 1024px)');
 const $=(s,r=document)=>r.querySelector(s);
 const el=id=>document.getElementById(id);
 
-/* Mobilde yeni web CSS katmanları mevcut v4 dashboard ile çakışmasın. */
+/* Breakpoint değişirse iki ayrı motor aynı oturumda karışmasın: temiz reload. */
+if(typeof WEB_MQ.addEventListener==='function')WEB_MQ.addEventListener('change',()=>location.reload());
+
 function mobilWebStilleriniKaldir(){
   ['css/dashboard-v2.css','css/web-shell-fix.css','css/mobil-dashboard.css'].forEach(path=>{
     const link=Array.from(document.querySelectorAll('link[rel="stylesheet"]')).find(x=>(x.getAttribute('href')||'').includes(path));
@@ -26,7 +28,6 @@ if(!WEB_MQ.matches){
 
 document.documentElement.classList.add('web-shell-v2');
 document.body.classList.add('web-shell-v2');
-/* mobil-dashboard.css masaüstünde zaten media-query dışı; yine de açıkça devre dışı bırak. */
 const mobilCss=Array.from(document.querySelectorAll('link[rel="stylesheet"]')).find(x=>(x.getAttribute('href')||'').includes('css/mobil-dashboard.css'));
 if(mobilCss)mobilCss.disabled=true;
 
@@ -49,7 +50,16 @@ function temaToggleKur(){
   const topbar=$('.topbar');if(!topbar)return;
   const btn=document.createElement('button');btn.id='wsThemeToggle';btn.type='button';btn.className='topbar-bell ws-theme-toggle';btn.title='Açık / koyu tema';btn.setAttribute('aria-label',btn.title);
   const ikon=()=>document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';btn.textContent=ikon();
-  btn.addEventListener('click',()=>{const ana=el('temaDugmesi');if(ana)ana.click();else{const dark=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.toggleAttribute('data-theme',!dark);};setTimeout(()=>btn.textContent=ikon(),30);});
+  btn.addEventListener('click',()=>{
+    const ana=el('temaDugmesi');
+    if(ana)ana.click();
+    else{
+      const dark=document.documentElement.getAttribute('data-theme')==='dark';
+      if(dark)document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme','dark');
+      try{localStorage.setItem('oyTema',dark?'light':'dark');}catch(_){ }
+    }
+    setTimeout(()=>btn.textContent=ikon(),30);
+  });
   const bell=topbar.querySelector('.topbar-bell');if(bell&&bell.parentNode)bell.parentNode.insertBefore(btn,bell);else topbar.appendChild(btn);
 }
 
@@ -58,8 +68,7 @@ function dashboardSar(){
   const panel=el('tab-panel');if(!panel||panel.classList.contains('db4'))return;
   panel.classList.add('dash-modern');
   if(panel.querySelector(':scope > .dash-inner'))return;
-  const children=Array.from(panel.children);
-  if(!children.length)return;
+  const children=Array.from(panel.children);if(!children.length)return;
   const inner=document.createElement('div');inner.className='dash-inner';
   const main=document.createElement('div');main.className='dash-col-main';
   const side=document.createElement('div');side.className='dash-col-side';
@@ -83,7 +92,7 @@ function sidebarProfilGuncelle(){
   if(typeof AKTIF_KULLANICI==='undefined'||!AKTIF_KULLANICI)return;
   const bagli=(typeof bagliOgretmenimGetir==='function')?bagliOgretmenimGetir():null;
   const ad=bagli?.adSoyad||bagli?.ad||AKTIF_KULLANICI.adSoyad||AKTIF_KULLANICI.kullaniciAdi||'Kullanıcı';
-  const rol=AKTIF_KULLANICI.admin?'Süper Admin':((typeof AKTIF_ROL!=='undefined'&&AKTIF_ROL?.ad)|| (bagli?'Öğretmen':'Kullanıcı'));
+  const rol=AKTIF_KULLANICI.admin?'Süper Admin':((typeof AKTIF_ROL!=='undefined'&&AKTIF_ROL?.ad)||(bagli?'Öğretmen':'Kullanıcı'));
   if(el('wsHesapAd'))el('wsHesapAd').textContent=ad;if(el('wsHesapRol'))el('wsHesapRol').textContent=rol;if(el('wsHesapAvatar'))el('wsHesapAvatar').textContent=AKTIF_KULLANICI.admin?'🛡️':(bagli?'👨‍🏫':'👤');
 }
 
@@ -94,10 +103,7 @@ function aktifSekmeGuncelle(){
 }
 
 function webDuzeniniUygula(){dashboardSar();rolHeroUygula();sidebarProfilGuncelle();aktifSekmeGuncelle();}
-
 function boot(){navCollapsedBaslangic();sidebarToggleKur();temaToggleKur();webDuzeniniUygula();setTimeout(webDuzeniniUygula,250);setTimeout(webDuzeniniUygula,900);}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-
 document.addEventListener('click',e=>{if(e.target.closest('.nav-tab'))requestAnimationFrame(aktifSekmeGuncelle);});
-window.addEventListener('resize',()=>{if(!WEB_MQ.matches)location.reload();},{passive:true});
 })();
