@@ -30,9 +30,11 @@ assert(accordion.includes('nd-altmenu-sec'), 'Öğeler Navigasyon Düzeninden be
 assert(accordion.includes('menuTasi'), 'Alt menüler kendi aralarında sıralanabilmeli.');
 assert(accordion.includes("sekmeAd:'@ozellik:pdf_resimden'"), 'Resimden PDF PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
 assert(accordion.includes("sekmeAd:'@ozellik:pdf_birlestir'"), 'PDF Birleştir PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
-assert(navScroll.includes("overflowY='auto'"), 'Akordeon açıldığında navigasyon gövdesi dikey kaydırılabilir olmalı.');
-assert(navScroll.includes("touchAction='pan-y'"), 'Mobil navigasyon gövdesinde parmakla dikey kaydırma açık olmalı.');
-assert(navScroll.includes('scrollBy'), 'Akordeon açılınca başlık görünür konumda tutulmalı.');
+assert(navScroll.includes("height:calc(100dvh - 86px)"), 'Mobil akordeon paneli gerçek viewport yüksekliğine sahip olmalı.');
+assert(navScroll.includes("flex:1 1 auto !important"), 'Navigasyon gövdesi kalan yüksekliği doldurmalı.');
+assert(navScroll.includes("overflow-y:auto !important"), 'Akordeon açıldığında navigasyon gövdesi dikey kaydırılabilir olmalı.');
+assert(navScroll.includes("touch-action:pan-y !important"), 'Mobil navigasyon gövdesinde parmakla dikey kaydırma açık olmalı.');
+assert(navScroll.includes('scrollBy'), 'Akordeon açılınca açılan içerik görünür konumda tutulmalı.');
 assert(nativePreview.includes("s.src = 'js/nav-accordion.js'"), 'Akordeon motoru uygulama başlangıcında yüklenmeli.');
 assert(sw.includes("oy-cache-v439"), 'Navigasyon ve özellik kataloğu için cache sürümü v439 olmalı.');
 console.log('Navigasyon özelleştirme ve akordeon alt menü smoke testleri başarılı.');
