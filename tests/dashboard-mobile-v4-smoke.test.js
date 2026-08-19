@@ -1,0 +1,15 @@
+const fs=require('fs');const assert=require('assert');
+const s=fs.readFileSync('js/dashboard-mobile-v4.js','utf8');const loader=fs.readFileSync('js/ui-stability-fixes.js','utf8');
+assert(s.includes("panel.classList.remove('dmv2','dmv3')"),'Eski dashboard katmanları temizlenmiyor');
+assert(s.includes('[data-theme="dark"] #tab-panel.dmv4'),'Koyu tema yüzeyi eksik');
+assert(s.includes('--d4-bg:#f5f8fb'),'Açık tema yüzeyi eksik');
+assert(s.includes("section('Okul Bağlantıları'"),'Sosyal/okul bağlantıları kartı eksik');
+assert(s.includes("section('Okul Özeti'"),'Kompakt okul özeti eksik');
+assert(s.includes("section('Yaklaşanlar'"),'Yaklaşanlar bölümü eksik');
+assert(s.includes('PDF İşlemleri'),'PDF hızlı işlemi eksik');
+assert(!s.includes('<span>Bekleyen Evrak</span>'),'Bugün bölümünde problemli Bekleyen Evrak geri gelmemeli');
+assert(s.includes("['bekleyenEvrak','hizliBakis'"),'Eski bekleyen evrak kartı gizlenmiyor');
+assert(loader.includes("dashboard-mobile-v4.js"),'v4 dashboard yüklenmiyor');
+assert(!loader.includes("dashboard-mobile-v3.js"),'v3 dashboard aynı anda yüklenmemeli');
+assert(!loader.includes("dashboard-daily-center.js"),'eski daily center aynı anda yüklenmemeli');
+console.log('dashboard-mobile-v4 OK');
