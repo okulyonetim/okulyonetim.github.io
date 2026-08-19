@@ -1323,9 +1323,23 @@ function yillikPlanOrnekVerileriIceAktar(){
    Başlık" havuzundan seçim yapılır ya da yeni başlık oluşturulur.
    ================================================================ */
 let _yplIceAktarSatirlar = null; // [[hücre, hücre, ...], ...] — ayrıştırılan ham tablo (0. satır: başlıklar)
+let _yplMammothYukleme = null;
+function _yplMammothYukle(){
+  if (typeof mammoth !== 'undefined') return Promise.resolve();
+  if (_yplMammothYukleme) return _yplMammothYukleme;
+  _yplMammothYukleme = new Promise((resolve,reject)=>{
+    const mevcut = Array.from(document.scripts).find(s=>/mammoth(?:\.browser)?(?:\.min)?\.js/i.test(s.src||''));
+    if (mevcut){ mevcut.addEventListener('load',resolve,{once:true}); mevcut.addEventListener('error',reject,{once:true}); return; }
+    const sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+    sc.onload=resolve; sc.onerror=()=>reject(new Error('Word okuma kütüphanesi yüklenemedi.'));
+    document.head.appendChild(sc);
+  }).catch(e=>{ _yplMammothYukleme=null; throw e; });
+  return _yplMammothYukleme;
+}
 
-function yillikPlanWordIceAktarAc(){
-  if (typeof mammoth === 'undefined'){ toast('Word okuma kütüphanesi yüklenemedi.'); return; }
+async function yillikPlanWordIceAktarAc(){
+  try { await _yplMammothYukle(); } catch(e) { toast(e.message || 'Word okuma kütüphanesi yüklenemedi.'); return; }
   _yplIceAktarSatirlar = null;
   const body = `
     <div class="form-row">

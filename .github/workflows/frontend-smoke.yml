@@ -40,6 +40,7 @@ on:
       - 'tests/android-deeplink-smoke.test.js'
       - 'tests/document-viewer-smoke.test.js'
       - 'tests/dokuman-pdf-tools-smoke.test.js'
+      - 'tests/lazy-document-libs-smoke.test.js'
       - 'tests/native-report-preview-smoke.test.js'
       - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/yillik-plan-preview-smoke.test.js'
@@ -119,6 +120,9 @@ jobs:
 
       - name: Döküman PDF araçları regresyon testi
         run: node tests/dokuman-pdf-tools-smoke.test.js
+
+      - name: Lazy belge kütüphaneleri regresyon testi
+        run: node tests/lazy-document-libs-smoke.test.js
 
       - name: Native rapor önizleme regresyon testi
         run: node tests/native-report-preview-smoke.test.js
