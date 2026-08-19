@@ -6,7 +6,7 @@
    · Web push ve PWA cache TEK service worker üzerinden çalışır
    ==================================================================== */
 
-const CACHE_ADI = 'oy-cache-v442';
+const CACHE_ADI = 'oy-cache-v443';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -43,6 +43,8 @@ const ONBELLEGE_ALINACAKLAR = [
   './js/ui-stability-fixes.js',
   './js/dashboard-mobile-v4.js',
   './js/dashboard-mobile-v4-polish.js',
+  './js/dashboard-card-count-fix.js',
+  './js/dashboard-mobile-v4-hotfix.js',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/icon-180.png'
