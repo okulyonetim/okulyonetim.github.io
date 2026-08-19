@@ -95,12 +95,13 @@ function kur(){
  const w=document.createElement('div');w.className='db4-weather';w.onclick=()=>{try{havaDurumuDetayAc()}catch(_){}};w.append(weather);
  const b=document.createElement('div');b.className='db4-bell';b.onclick=()=>{try{zilTiklandi()}catch(_){}};b.append(bell);live.append(w,b);hero.append(greetWrap,live);shell.append(hero);
 
- const quick=bolum('Hızlı İşlemler','db4Tum()');const q=document.createElement('div');q.className='db4-quick';q.innerHTML=`
- <button onclick="db4Tab('evrak')"><span class="ico">📄</span><span>Evrak Takibi</span></button>
- <button onclick="db4Tab('dokumanlar')"><span class="ico">📁</span><span>Dökümanlar</span></button>
- <button onclick="db4Tab('ogrenciler')"><span class="ico">👥</span><span>Öğrenciler</span></button>
- <button onclick="db4Tab('nobet')"><span class="ico">🛡️</span><span>Nöbetler</span></button>
- <button onclick="db4Tab('takvim')"><span class="ico">📅</span><span>Takvim</span></button>`;quick.append(q);shell.append(quick);
+ const quick=bolum('Hızlı İşlemler','db4Tum()');
+ // Düzenle butonu ekle
+ const qHead=quick.querySelector('.db4-section-head');
+ if(qHead){const dBtn=document.createElement('button');dBtn.type='button';dBtn.className='db4-more-btn';dBtn.style='margin-left:6px;color:var(--d-accent);';dBtn.textContent='✏️ Düzenle';dBtn.onclick=function(){if(typeof _hiDuzenleAc==='function')_hiDuzenleAc();};qHead.appendChild(dBtn);}
+ const q=document.createElement('div');q.className='db4-quick';q.id='hizliIslemlerGrid';quick.append(q);shell.append(quick);
+ // renderHizliIslemler varsa hemen çağır
+ setTimeout(function(){if(typeof renderHizliIslemler==='function')renderHizliIslemler();},50);
 
  const today=bolum('Bugün','');const tg=document.createElement('div');tg.className='db4-today';tg.innerHTML=`
  <button style="--tile:#2b8cff" onclick="db4Tab('nobet')"><div class="n"><span class="ti">🛡️</span><span id="db4Nobet">0</span></div><div class="l">Bugünkü Nöbet</div></button>
