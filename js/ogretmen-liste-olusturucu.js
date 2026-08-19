@@ -844,7 +844,10 @@ async function olPdfAktar() {
   const sutunlar = olTumSutunlariGetir();
   const ogrenciler = _olSatirlar;
   if (!sutunlar.length) { toast('En az bir sütun seçin.'); return; }
-  if (typeof window.jspdf === 'undefined') { toast('PDF kütüphanesi yüklenemedi.'); return; }
+  try {
+    if (!window.PdfExportLibs) throw new Error('PDF yükleyicisi bulunamadı.');
+    await window.PdfExportLibs.hazir({autoTable:true});
+  } catch(e) { toast('PDF kütüphanesi yüklenemedi: '+e.message); return; }
 
   const bs = olBaslikBilgisiGetir();
   const logo = await olLogoDataUriGetir();

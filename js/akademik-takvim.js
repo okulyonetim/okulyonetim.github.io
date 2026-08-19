@@ -163,6 +163,16 @@ async function akademikTakvimDosyaSecildi(dosya){
   }
 }
 
+/* PDF üretiminde kullanılan jsPDF/autoTable/html2canvas ortak lazy loader. */
+(function pdfExportKutuphaneleriniYukle(){
+  if (document.querySelector('script[data-pdf-export-libs]')) return;
+  const s = document.createElement('script');
+  s.src = 'js/pdf-export-libs.js';
+  s.async = false;
+  s.dataset.pdfExportLibs = '1';
+  document.head.appendChild(s);
+})();
+
 /* Dökümanlar ekranının ağır PDF araçları ayrı dosyada tutulur ve
    dokumanlar.js'den sonra yüklenir. Böylece ana modül bozulmadan düzeltilebilir. */
 (function dokumanPdfAraclariniYukle(){

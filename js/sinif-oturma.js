@@ -682,6 +682,10 @@ const SinifOturma = (function(){
   // aynı desen) kaydediliyor. Tarayıcının yazdırma/önizleme motoruna hiç
   // uğramadığı için önceki tutarsızlıklara bağımlı değil.
   async function yazdir(){
+    try {
+      if (!window.PdfExportLibs) throw new Error('PDF yükleyicisi bulunamadı.');
+      await window.PdfExportLibs.hazir({html2canvas:true});
+    } catch(e) { toast('PDF bileşenleri yüklenemedi: '+e.message); return; }
     const btn = ov.querySelector('#btnSoYazdir');
     const eskiMetin = btn.textContent;
     btn.disabled = true; btn.textContent = '⏳ PDF Oluşturuluyor…';
