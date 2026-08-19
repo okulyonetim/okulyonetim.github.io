@@ -43,3 +43,13 @@ function editorSar(){if(edSar||typeof _ndVerisiOku!=='function'||typeof _ndOgele
 function kur(){if(!navSar&&typeof _navDuzeniYerelUygula==='function'){const f=_navDuzeniYerelUygula;window._navDuzeniYerelUygula=(v,c)=>f(hazir(v),c);navSar=true;window._navDuzeniYerelUygula(typeof _navDuzeniVerisiGetir==='function'?_navDuzeniVerisiGetir():{},false);}editorSar();obsKur();return navSar&&edSar;}
 let n=0,t=setInterval(()=>{if(kur()||++n>100)clearInterval(t);},100);document.addEventListener('DOMContentLoaded',()=>setTimeout(kur,0));window.NavAkordeon={kur,varsayilanlariUygula:hazir};
 })();
+
+/* XLSM görüntüleme desteğini mevcut DokumanOkuyucu hazır olduktan sonra yükle. */
+(function xlsmDesteginiYukle(){
+  if(document.querySelector('script[data-xlsm-viewer]'))return;
+  const s=document.createElement('script');
+  s.src='js/xlsm-viewer-support.js';
+  s.async=false;
+  s.dataset.xlsmViewer='1';
+  document.head.appendChild(s);
+})();
