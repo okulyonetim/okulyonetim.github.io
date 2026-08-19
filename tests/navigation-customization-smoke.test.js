@@ -2,6 +2,8 @@ const fs = require('fs');
 const assert = require('assert');
 const nav = fs.readFileSync('js/alt-navigasyon.js','utf8');
 const editor = fs.readFileSync('js/nav-duzeni-editor.js','utf8');
+const accordion = fs.readFileSync('js/nav-accordion.js','utf8');
+const nativePreview = fs.readFileSync('js/native-report-preview.js','utf8');
 const sw = fs.readFileSync('service-worker.js','utf8');
 
 assert(nav.includes("oyNavDuzeniCacheV1"), 'Navigasyon düzeni ilk çizim için local cache kullanmalı.');
@@ -13,5 +15,15 @@ assert(editor.includes("window._navDuzeniYerelUygula(onceki)"), 'Firestore hatas
 assert(editor.includes('function _ndSekmeSeciciOlustur'), 'Yeni öğe ekleme ana app sekme seçicisi yokken fallback sağlamalı.');
 assert(editor.includes("document.querySelectorAll('[data-tab]')"), 'Fallback sekme listesi mevcut uygulama sekmelerinden üretilmeli.');
 assert(editor.includes('const sekmeAd = _ndSekmeDegeriAl'), 'Yeni öğe fallback seçicisinden değer okuyabilmeli.');
+assert(accordion.includes("ad:'PDF İşlemleri'"), 'PDF İşlemleri gerçek alt menü olarak tanımlanmalı.');
+assert(accordion.includes("ad:'Raporlar'"), 'Raporlar akordeon alt menüsü korunmalı.');
+assert(accordion.includes('altMenuler'), 'Navigasyon düzeni birden fazla alt menüyü saklayabilmeli.');
+assert(accordion.includes('aria-expanded'), 'Alt menü başlığı erişilebilir akordeon durumu taşımalı.');
+assert(accordion.includes('ndAltMenuEkle'), 'Navigasyon Düzeni ekranında Alt Menü Ekle kontrolü bulunmalı.');
+assert(accordion.includes('altMenuDuzenle'), 'Alt menü adı düzenlenebilmeli.');
+assert(accordion.includes('altMenuSil'), 'Alt menü silinebilmeli.');
+assert(accordion.includes("sekmeAd:'@ozellik:pdf_resimden'"), 'Resimden PDF PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
+assert(accordion.includes("sekmeAd:'@ozellik:pdf_birlestir'"), 'PDF Birleştir PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
+assert(nativePreview.includes("s.src = 'js/nav-accordion.js'"), 'Akordeon motoru uygulama başlangıcında yüklenmeli.');
 assert(sw.includes("oy-cache-v439"), 'Navigasyon ve özellik kataloğu için cache sürümü v439 olmalı.');
-console.log('Navigasyon özelleştirme smoke testleri başarılı.');
+console.log('Navigasyon özelleştirme ve akordeon alt menü smoke testleri başarılı.');
