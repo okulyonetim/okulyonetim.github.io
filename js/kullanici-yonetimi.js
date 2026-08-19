@@ -798,9 +798,9 @@ function girisKonumlariYukle(){
     .orderBy('timestamp', 'desc')
     .limit(100)
     .get()
-    .then(snap => {
+    .then(async snap => {
       _konumTumKayitlar = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      _konumHaritaOlustur();
+      await _konumHaritaOlustur();
       konumFiltreUygula(_konumFiltre);
     })
     .catch(err => {
@@ -809,7 +809,15 @@ function girisKonumlariYukle(){
     });
 }
 
-function _konumHaritaOlustur(){
+async function _konumHaritaOlustur(){
+  try {
+    if (!window.MapLibs) throw new Error('Harita yükleyicisi bulunamadı.');
+    await window.MapLibs.hazir();
+  } catch(e) {
+    const kapHata=document.getElementById('konumHaritaKap');
+    if(kapHata) kapHata.innerHTML='<p style="padding:16px;color:var(--ink-muted);">Harita yüklenemedi: '+e.message+'</p>';
+    return;
+  }
   const kap = document.getElementById('konumHaritaKap');
   if(!kap) return;
   kap.innerHTML = '<div id="konumHaritaDiv" style="height:100%;"></div>';

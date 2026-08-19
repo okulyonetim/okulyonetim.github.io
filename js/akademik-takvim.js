@@ -163,6 +163,16 @@ async function akademikTakvimDosyaSecildi(dosya){
   }
 }
 
+/* Harita modüllerinde kullanılan Leaflet ortak lazy loader. */
+(function haritaKutuphaneleriniYukle(){
+  if (document.querySelector('script[data-map-libs]')) return;
+  const s = document.createElement('script');
+  s.src = 'js/map-libs.js';
+  s.async = false;
+  s.dataset.mapLibs = '1';
+  document.head.appendChild(s);
+})();
+
 /* PDF üretiminde kullanılan jsPDF/autoTable/html2canvas ortak lazy loader. */
 (function pdfExportKutuphaneleriniYukle(){
   if (document.querySelector('script[data-pdf-export-libs]')) return;

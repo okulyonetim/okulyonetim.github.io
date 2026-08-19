@@ -16,11 +16,17 @@ let haritaBaslatildi  = false;
 /* ================================================================
    Başlatma
    ================================================================ */
-function haritaBaslat() {
+async function haritaBaslat() {
   if (haritaBaslatildi) {
     haritaOrnek && haritaOrnek.invalidateSize();
     return;
   }
+
+  try {
+    if (!window.MapLibs) throw new Error('Harita yükleyicisi bulunamadı.');
+    await window.MapLibs.hazir();
+  } catch(e) { toast('Harita bileşeni yüklenemedi: '+e.message); return; }
+  if (haritaBaslatildi) { haritaOrnek && haritaOrnek.invalidateSize(); return; }
 
   // Türkiye merkezi
   haritaOrnek = L.map('haritaKonteyner', { zoomControl: true }).setView([39.0, 35.0], 6);
