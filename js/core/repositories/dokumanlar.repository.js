@@ -23,20 +23,29 @@ function _dokumanGuvenliDosyaAdi(ad){
 const DokumanlarRepository = {
   /* Admin tüm kayıtları dinler. Normal kullanıcıda Firestore Rules ile
      uyumlu iki sorgu birleştirilir: herkese açık kayıtlar + kendi kayıtları.
-     Böylece özel dokümanların metadata/dosyaUrl alanları başka kullanıcıya
-     hiç indirilmez. */
+     ÖNEMLİ: AKTIF_KULLANICI henüz yüklenmediyse kullanıcıyı admin varsayma.
+     Firebase Auth UID'si hazırsa güvenli normal-kullanıcı sorgularını başlat.
+     Böylece uygulama ilk açılışındaki rol yükleme yarışı herkese açık
+     dökümanları görünmez hale getirmez. */
   dokumanlariDinle(callback, hataCb){
     const hata = hataCb || hataGoster;
     const ben = (typeof AKTIF_KULLANICI !== 'undefined') ? AKTIF_KULLANICI : null;
-    if(!ben || ben.admin === true){
+    const adminMi = !!(ben && ben.admin === true);
+
+    if(adminMi){
       return db.collection(COL.dokumanlar).orderBy('yuklenmeTarihi', 'desc').onSnapshot(
         snap => callback(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
         hata
       );
     }
 
-    const uid = ben.uid;
-    if(!uid){ hata(new Error('Aktif kullanıcı kimliği bulunamadı.')); return ()=>{}; }
+    const authUid = (typeof auth !== 'undefined' && auth && auth.currentUser) ? auth.currentUser.uid : null;
+    const uid = (ben && ben.uid) || authUid;
+    if(!uid){
+      hata(new Error('Aktif kullanıcı kimliği henüz hazır değil.'));
+      return ()=>{};
+    }
+
     let acik = [];
     let benim = [];
     const birlestir = ()=>{
@@ -44,11 +53,14 @@ const DokumanlarRepository = {
       [...acik, ...benim].forEach(d => map.set(d.id, d));
       callback([...map.values()].sort((a,b)=>_dokumanTarihDegeri(b)-_dokumanTarihDegeri(a)));
     };
+
     const u1 = db.collection(COL.dokumanlar).where('gorunurluk','==','herkes').onSnapshot(
-      s=>{ acik=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); }, hata
+      s=>{ acik=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); },
+      hata
     );
     const u2 = db.collection(COL.dokumanlar).where('olusturanUid','==',uid).onSnapshot(
-      s=>{ benim=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); }, hata
+      s=>{ benim=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); },
+      hata
     );
     return ()=>{ try{u1();}catch(_){} try{u2();}catch(_){} };
   },
