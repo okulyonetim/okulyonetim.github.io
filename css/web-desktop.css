@@ -22,7 +22,6 @@
     align-items: center;
   }
 
-  /* Formlar ve filtre satırları geniş ekranda gereksiz dar kalmasın. */
   .form-row,
   .filters,
   .filter-row,
@@ -31,7 +30,6 @@
     max-width: 100%;
   }
 
-  /* Tablo taşmaları tüm sayfayı yatay kaydırmak yerine kendi kutusunda kalsın. */
   .table-wrap,
   .table-responsive,
   .tablo-wrap,
@@ -45,15 +43,10 @@
   }
 
   table,
-  .table {
-    max-width: 100%;
-  }
+  .table { max-width: 100%; }
 
-  /* Modallar tablet/masaüstünde ekranı daha iyi kullanır. */
   .modal-overlay,
-  .modal-backdrop {
-    padding: 24px;
-  }
+  .modal-backdrop { padding: 24px; }
 
   .modal {
     width: min(880px, calc(100vw - 48px));
@@ -67,7 +60,6 @@
     overflow-x: auto;
   }
 
-  /* Alt navigasyonun açtığı kart katmanları tablette tek sütun mobil görünümünde kalmasın. */
   .an-kart-grid {
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 14px;
@@ -79,25 +71,19 @@
     max-width: min(900px, calc(100vw - 40px));
   }
 
-  /* Belge/rapor gibi geniş içeriklerde üst kapsayıcı masaüstü genişliğini bozmasın. */
   .dv3body,
   .dv3wordviewport,
   .dv3pdfviewport,
-  .dv3excelviewport {
-    max-width: 100%;
-  }
+  .dv3excelviewport { max-width: 100%; }
 }
 
-/* TABLET: sidebar ve içerik arasında dengeli alan. */
 @media (min-width: 768px) and (max-width: 1023.98px) {
   main.content {
     padding-top: 20px;
     padding-bottom: 92px;
   }
 
-  .card {
-    padding: 18px 20px;
-  }
+  .card { padding: 18px 20px; }
 
   .topbar-title {
     max-width: 42vw;
@@ -106,16 +92,11 @@
     white-space: nowrap;
   }
 
-  .an-kart-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .an-kart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* MASAÜSTÜ WEB */
 @media (min-width: 1024px) {
-  body {
-    min-height: 100vh;
-  }
+  body { min-height: 100vh; }
 
   .app {
     width: 100%;
@@ -123,12 +104,8 @@
     align-items: stretch;
   }
 
-  /* Masaüstünde ana navigasyon sidebar'dır. Mobil alt bar alan işgal etmez. */
-  .bottom-nav {
-    display: none !important;
-  }
+  .bottom-nav { display: none !important; }
 
-  /* Sidebar ekranda sabit bir uygulama sütunu gibi davranır. */
   .sidebar {
     position: sticky;
     top: 0;
@@ -145,7 +122,6 @@
     scrollbar-width: thin;
   }
 
-  /* Sağ uygulama alanı geniş ekranı gerçek anlamda kullanır. */
   .app > div[style*="flex:1"] {
     min-width: 0;
     width: calc(100% - var(--sidebar-w));
@@ -158,9 +134,7 @@
     width: 100%;
   }
 
-  #topbarHamburger {
-    display: none !important;
-  }
+  #topbarHamburger { display: none !important; }
 
   main.content {
     width: 100%;
@@ -170,7 +144,6 @@
     padding-right: clamp(26px, 2.6vw, 46px);
   }
 
-  /* İçeriği 13-14" dizüstünde gereksiz dev, geniş monitörde aşırı yayvan olmaktan korur. */
   main.content > .tab-panel {
     width: 100%;
     max-width: 1680px;
@@ -178,15 +151,9 @@
     margin-right: auto;
   }
 
-  .page-header {
-    margin-bottom: 22px;
-  }
+  .page-header { margin-bottom: 22px; }
+  .page-title { font-size: clamp(20px, 1.35vw, 27px); }
 
-  .page-title {
-    font-size: clamp(20px, 1.35vw, 27px);
-  }
-
-  /* Dashboard ve yaygın grid yapıları: mobil tek/iki sütun yerine adaptif çok sütun. */
   .dashboard-grid,
   .stats-grid,
   .stat-grid,
@@ -200,11 +167,8 @@
     gap: clamp(16px, 1.4vw, 24px);
   }
 
-  .card {
-    padding: clamp(19px, 1.5vw, 25px);
-  }
+  .card { padding: clamp(19px, 1.5vw, 25px); }
 
-  /* Yönetim ekranlarındaki ana + yan kart desenleri geniş ekranda dengeli olsun. */
   .two-col,
   .two-column,
   .grid-2,
@@ -219,16 +183,11 @@
     gap: 20px;
   }
 
-  /* Filtre/form alanlarında kontroller masaüstünde bütün satırı gereksiz kaplamasın. */
-  .form-row {
-    gap: 16px;
-  }
+  .form-row { gap: 16px; }
 
   .form-row > .form-group,
   .filters > .form-group,
-  .filter-row > .form-group {
-    min-width: 180px;
-  }
+  .filter-row > .form-group { min-width: 180px; }
 
   input[type="text"],
   input[type="email"],
@@ -237,11 +196,8 @@
   input[type="time"],
   input[type="number"],
   select,
-  textarea {
-    max-width: 100%;
-  }
+  textarea { max-width: 100%; }
 
-  /* Masaüstü modal: ortalı, okunabilir ve büyük rapor/formlarda daha geniş. */
   .modal {
     width: min(960px, calc(100vw - 96px));
     max-width: calc(100vw - 96px);
@@ -250,17 +206,13 @@
 
   .modal.modal-lg,
   .modal.large,
-  .modal-wide {
-    width: min(1280px, calc(100vw - 96px));
-  }
+  .modal-wide { width: min(1280px, calc(100vw - 96px)); }
 
-  /* Detay çekmeceleri mobildeki tam ekran hissi yerine masaüstü paneli gibi görünür. */
   .detay-panel {
     width: min(560px, 44vw);
     max-width: 560px;
   }
 
-  /* Alt navigasyon menü katmanı masaüstünde dialog/panel gibi merkezlenir. */
   .an-grid-katman,
   .an-liste-katman,
   .an-profil-katman {
@@ -279,11 +231,8 @@
     overflow-y: auto;
   }
 
-  .an-kart-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+  .an-kart-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-  /* Geniş tablolar webde okunabilir yükseklik ve kontrollü yatay scroll kullanır. */
   .table-wrap,
   .table-responsive,
   .tablo-wrap,
@@ -293,18 +242,14 @@
     overflow-x: auto;
   }
 
-  /* Login/onay kutuları büyük ekranda aşırı genişlemesin. */
   .config-box {
     width: min(520px, calc(100vw - 64px));
     max-width: 520px;
   }
 }
 
-/* Geniş masaüstü: dashboard biraz daha ferah. */
 @media (min-width: 1440px) {
-  .an-kart-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+  .an-kart-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
   main.content {
     padding-left: clamp(36px, 3vw, 64px);
@@ -314,13 +259,8 @@
 
 /* ================================================================
    WEB RESPONSIVE v2 — BREAKPOINT ÇAKIŞMASI / APP SHELL SAĞLAMLAŞTIRMA
-   Ana styles.css 1100px ve altında mobil sidebar kuralları uyguluyor.
-   Masaüstü katmanı 1024px'de başladığı için 1024–1100px aralığında
-   off-canvas transform ve !important genişlik masaüstüyle çakışabiliyordu.
-   Bu bölüm masaüstü app-shell davranışını kesinleştirir.
    ================================================================ */
 @media (min-width: 1024px) {
-  /* Inline style metnine bağlı kırılgan seçici yerine yapısal app-shell seçicisi. */
   #app > .sidebar + div {
     flex: 1 1 auto;
     min-width: 0;
@@ -328,7 +268,6 @@
     max-width: 100%;
   }
 
-  /* 1024–1100px çakışmasında mobil off-canvas kurallarını kesin olarak iptal et. */
   #app > .sidebar {
     position: sticky;
     left: auto;
@@ -344,44 +283,126 @@
     flex: 1 1 auto;
   }
 
-  /* Tablet görünümünden masaüstüne yeniden boyutlandırmada kalan nav-open perdesini kaldır. */
   body.nav-open::after {
     display: none !important;
     content: none !important;
   }
 
-  body.nav-open #app > .sidebar {
-    transform: none !important;
-  }
+  body.nav-open #app > .sidebar { transform: none !important; }
 
-  /* Daraltılmış masaüstü menüsü: v1'de flex-basis 240px kaldığı için
-     72px genişlik ile içerik alanı arasında görünmez boşluk oluşabiliyordu. */
   body.nav-collapsed #app > .sidebar {
     width: var(--sidebar-w-collapsed) !important;
     min-width: var(--sidebar-w-collapsed);
     flex-basis: var(--sidebar-w-collapsed);
   }
 
-  /* styles.css'in <=1100px mobil geri-açma kurallarını masaüstünde tersine çevir. */
   body.nav-collapsed #app > .sidebar .brand-title,
   body.nav-collapsed #app > .sidebar .brand-sub,
   body.nav-collapsed #app > .sidebar .nt-label,
   body.nav-collapsed #app > .sidebar .nav-separator,
-  body.nav-collapsed #app > .sidebar .theme-toggle .tt-label {
-    display: none;
-  }
+  body.nav-collapsed #app > .sidebar .theme-toggle .tt-label { display: none; }
 
   body.nav-collapsed #app > .sidebar .nav-tab {
     justify-content: center;
     padding: 9px;
   }
 
-  body.nav-collapsed #app > .sidebar .brand {
-    justify-content: center;
+  body.nav-collapsed #app > .sidebar .brand { justify-content: center; }
+  .app > div[style*="flex:1"] { width: auto; }
+}
+
+/* ================================================================
+   WEB RESPONSIVE v3 — YÖNETİM EKRANLARI / NAVİGASYON DÜZENİ
+   Mobil DOM yapısını değiştirmeden masaüstünde daha yoğun ve verimli kullanım.
+   ================================================================ */
+@media (min-width: 1200px) {
+  /* Ayarlar ve yönetim ekranlarında kartlar tek uzun sütuna mahkûm kalmasın. */
+  #ayarlar .settings-grid,
+  #ayarlar .ayarlar-grid,
+  #kullaniciYonetimi .settings-grid,
+  #kullaniciYonetimi .yonetim-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
   }
 
-  /* Eski inline-style seçicisinin width hesabını etkisizleştir; flex app-shell yönetsin. */
-  .app > div[style*="flex:1"] {
-    width: auto;
+  /* Navigasyon Düzeni: grup kartlarını geniş ekranda iki sütun göster. */
+  #navDuzeniGrupListesi {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
   }
+
+  #navDuzeniGrupListesi > * {
+    min-width: 0;
+    margin-bottom: 0 !important;
+  }
+
+  /* Ayarlar içindeki geniş yönetim bloklarının tüm satırı kullanabilmesini sağla. */
+  #navDuzeniYonetimBolumu,
+  #ozelMenuYonetimBolumu {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  /* Toolbar/filtreler: masaüstünde yatay akış; daralan elemanlar alt satıra geçebilir. */
+  .toolbar,
+  .filters,
+  .filter-row,
+  .actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+  }
+
+  .toolbar > input,
+  .toolbar > select,
+  .filters > input,
+  .filters > select,
+  .filter-row > input,
+  .filter-row > select {
+    width: auto;
+    min-width: 180px;
+    flex: 0 1 280px;
+  }
+
+  /* Öğeleri Yönet gibi içerik yoğun modallarda çalışma alanını büyüt. */
+  .modal:has(#ndOgeAnaListe),
+  .modal:has(#ndOgeAltListe),
+  .modal:has(#navDuzeniGrupListesi) {
+    width: min(1180px, calc(100vw - 96px));
+  }
+
+  #ndOgeAnaListe,
+  #ndOgeAltListe {
+    max-height: 42vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 4px;
+  }
+
+  /* Uzun veri tabloları dikeyde de ekranı ele geçirmesin. */
+  .table-wrap.web-scroll-y,
+  .table-responsive.web-scroll-y,
+  .tablo-wrap.web-scroll-y,
+  .tablo-kapsayici.web-scroll-y {
+    max-height: 68vh;
+    overflow: auto;
+  }
+}
+
+@media (min-width: 1600px) {
+  /* Büyük monitörde ana içerik biraz daha geniş, ama okunabilir sınırda. */
+  main.content > .tab-panel { max-width: 1780px; }
+
+  #navDuzeniGrupListesi {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .modal.modal-lg,
+  .modal.large,
+  .modal-wide { width: min(1400px, calc(100vw - 120px)); }
 }

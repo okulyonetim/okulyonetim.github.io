@@ -23,4 +23,13 @@ assert(css.includes('body.nav-open::after') && css.includes('content: none !impo
 assert(css.includes('body.nav-collapsed #app > .sidebar') && css.includes('flex-basis: var(--sidebar-w-collapsed)'), 'Daraltılmış sidebar flex-basis değeri de 72px olmalı.');
 assert(css.includes('body.nav-collapsed #app > .sidebar .nt-label'), '1024–1100px aralığında daraltılmış sidebar etiketleri gizli kalmalı.');
 
+// v3: geniş web yönetim ekranları ve navigasyon düzeni gerçek masaüstü alanını kullanmalı.
+assert(css.includes('@media (min-width: 1200px)'), 'v3 yönetim ekranı breakpointi bulunmalı.');
+assert(css.includes('#navDuzeniGrupListesi') && css.includes('repeat(2, minmax(0, 1fr))'), 'Navigasyon Düzeni geniş ekranda en az iki sütunlu olmalı.');
+assert(css.includes('#navDuzeniYonetimBolumu') && css.includes('grid-column: 1 / -1'), 'Navigasyon Düzeni yönetim bloğu gerektiğinde tam satır kullanmalı.');
+assert(css.includes('.modal:has(#ndOgeAnaListe)'), 'Navigasyon öğe yönetimi modalı masaüstünde genişletilmeli.');
+assert(css.includes('#ndOgeAnaListe') && css.includes('max-height: 42vh'), 'Navigasyon öğe listesi kendi alanında dikey kaydırılmalı.');
+assert(css.includes('@media (min-width: 1600px)') && css.includes('max-width: 1780px'), 'Büyük monitörler için ayrı içerik genişliği standardı bulunmalı.');
+assert(css.includes('repeat(3, minmax(0, 1fr))'), 'Çok geniş ekranda navigasyon grup kartları üç sütuna çıkabilmeli.');
+
 console.log('Web responsive smoke testleri başarılı.');
