@@ -23,10 +23,9 @@ function _dokumanGuvenliDosyaAdi(ad){
 const DokumanlarRepository = {
   /* Admin tüm kayıtları dinler. Normal kullanıcıda Firestore Rules ile
      uyumlu iki sorgu birleştirilir: herkese açık kayıtlar + kendi kayıtları.
-     ÖNEMLİ: AKTIF_KULLANICI henüz yüklenmediyse kullanıcıyı admin varsayma.
-     Firebase Auth UID'si hazırsa güvenli normal-kullanıcı sorgularını başlat.
-     Böylece uygulama ilk açılışındaki rol yükleme yarışı herkese açık
-     dökümanları görünmez hale getirmez. */
+     AKTIF_KULLANICI henüz yüklenmediyse kullanıcı admin varsayılmaz; Auth UID
+     kullanılır. Auth da henüz hazır değilse yalnız kimlik hazır olana kadar
+     beklenir ve ardından gerçek dinleyici kurulur. */
   dokumanlariDinle(callback, hataCb){
     const hata = hataCb || hataGoster;
     const ben = (typeof AKTIF_KULLANICI !== 'undefined') ? AKTIF_KULLANICI : null;
@@ -42,7 +41,22 @@ const DokumanlarRepository = {
     const authUid = (typeof auth !== 'undefined' && auth && auth.currentUser) ? auth.currentUser.uid : null;
     const uid = (ben && ben.uid) || authUid;
     if(!uid){
-      hata(new Error('Aktif kullanıcı kimliği henüz hazır değil.'));
+      if(typeof auth !== 'undefined' && auth && typeof auth.onAuthStateChanged === 'function'){
+        let iptal = false;
+        let asilIptal = ()=>{};
+        const authIptal = auth.onAuthStateChanged(u=>{
+          if(iptal || !u) return;
+          try{ authIptal(); }catch(_){}
+          if(iptal) return;
+          asilIptal = this.dokumanlariDinle(callback, hataCb) || (()=>{});
+        });
+        return ()=>{
+          iptal = true;
+          try{ authIptal(); }catch(_){}
+          try{ asilIptal(); }catch(_){}
+        };
+      }
+      hata(new Error('Aktif kullanıcı kimliği hazır değil.'));
       return ()=>{};
     }
 
