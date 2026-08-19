@@ -15,6 +15,7 @@ on:
       - 'js/map-libs.js'
       - 'js/native-report-preview.js'
       - 'js/ui-stability-fixes.js'
+      - 'js/dashboard-mobile-v4.js'
       - 'js/excel-visual-fidelity.js'
       - 'js/excel-visual-fidelity-v3.js'
       - 'js/akademik-takvim.js'
@@ -63,6 +64,7 @@ on:
       - 'tests/web-responsive-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/excel-visual-fidelity-v3-smoke.test.js'
+      - 'tests/dashboard-mobile-v4-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -90,6 +92,7 @@ jobs:
           node --check js/map-libs.js
           node --check js/native-report-preview.js
           node --check js/ui-stability-fixes.js
+          node --check js/dashboard-mobile-v4.js
           node --check js/excel-visual-fidelity.js
           node --check js/excel-visual-fidelity-v3.js
           node --check js/akademik-takvim.js
@@ -170,3 +173,6 @@ jobs:
 
       - name: Excel görsel sadakat v3 regresyon testi
         run: node tests/excel-visual-fidelity-v3-smoke.test.js
+
+      - name: Ana sayfa v4 regresyon testi
+        run: node tests/dashboard-mobile-v4-smoke.test.js
