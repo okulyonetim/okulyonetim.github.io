@@ -19,6 +19,7 @@ on:
       - 'js/dashboard-mobile-v4-polish.js'
       - 'js/dashboard-mobile-v4-hotfix.js'
       - 'js/dashboard-card-count-fix.js'
+      - 'js/role-ui-hardening.js'
       - 'js/excel-visual-fidelity.js'
       - 'js/excel-visual-fidelity-v3.js'
       - 'js/akademik-takvim.js'
@@ -97,6 +98,7 @@ jobs:
           node --check js/dashboard-mobile-v4-polish.js
           node --check js/dashboard-mobile-v4-hotfix.js
           node --check js/dashboard-card-count-fix.js
+          node --check js/role-ui-hardening.js
           node --check js/excel-visual-fidelity.js
           node --check js/excel-visual-fidelity-v3.js
           node --check js/akademik-takvim.js
