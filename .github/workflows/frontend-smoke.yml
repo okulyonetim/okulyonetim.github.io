@@ -11,6 +11,7 @@ on:
       - 'js/push.js'
       - 'js/dokuman-okuyucu.js'
       - 'js/dokuman-pdf-tools.js'
+      - 'js/pdf-export-libs.js'
       - 'js/native-report-preview.js'
       - 'js/akademik-takvim.js'
       - 'js/yillik-plan.js'
@@ -43,6 +44,7 @@ on:
       - 'tests/dokuman-pdf-tools-smoke.test.js'
       - 'tests/lazy-document-libs-smoke.test.js'
       - 'tests/lazy-chart-smoke.test.js'
+      - 'tests/lazy-pdf-export-smoke.test.js'
       - 'tests/native-report-preview-smoke.test.js'
       - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/yillik-plan-preview-smoke.test.js'
@@ -76,6 +78,7 @@ jobs:
           node --check js/push.js
           node --check js/dokuman-okuyucu.js
           node --check js/dokuman-pdf-tools.js
+          node --check js/pdf-export-libs.js
           node --check js/native-report-preview.js
           node --check js/akademik-takvim.js
           node --check js/yillik-plan.js
@@ -129,6 +132,9 @@ jobs:
 
       - name: Chart lazy-load regresyon testi
         run: node tests/lazy-chart-smoke.test.js
+
+      - name: PDF dışa aktarma lazy-load regresyon testi
+        run: node tests/lazy-pdf-export-smoke.test.js
 
       - name: Native rapor önizleme regresyon testi
         run: node tests/native-report-preview-smoke.test.js
