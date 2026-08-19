@@ -23,20 +23,43 @@ function _dokumanGuvenliDosyaAdi(ad){
 const DokumanlarRepository = {
   /* Admin tüm kayıtları dinler. Normal kullanıcıda Firestore Rules ile
      uyumlu iki sorgu birleştirilir: herkese açık kayıtlar + kendi kayıtları.
-     Böylece özel dokümanların metadata/dosyaUrl alanları başka kullanıcıya
-     hiç indirilmez. */
+     AKTIF_KULLANICI henüz yüklenmediyse kullanıcı admin varsayılmaz; Auth UID
+     kullanılır. Auth da henüz hazır değilse yalnız kimlik hazır olana kadar
+     beklenir ve ardından gerçek dinleyici kurulur. */
   dokumanlariDinle(callback, hataCb){
     const hata = hataCb || hataGoster;
     const ben = (typeof AKTIF_KULLANICI !== 'undefined') ? AKTIF_KULLANICI : null;
-    if(!ben || ben.admin === true){
+    const adminMi = !!(ben && ben.admin === true);
+
+    if(adminMi){
       return db.collection(COL.dokumanlar).orderBy('yuklenmeTarihi', 'desc').onSnapshot(
         snap => callback(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
         hata
       );
     }
 
-    const uid = ben.uid;
-    if(!uid){ hata(new Error('Aktif kullanıcı kimliği bulunamadı.')); return ()=>{}; }
+    const authUid = (typeof auth !== 'undefined' && auth && auth.currentUser) ? auth.currentUser.uid : null;
+    const uid = (ben && ben.uid) || authUid;
+    if(!uid){
+      if(typeof auth !== 'undefined' && auth && typeof auth.onAuthStateChanged === 'function'){
+        let iptal = false;
+        let asilIptal = ()=>{};
+        const authIptal = auth.onAuthStateChanged(u=>{
+          if(iptal || !u) return;
+          try{ authIptal(); }catch(_){}
+          if(iptal) return;
+          asilIptal = this.dokumanlariDinle(callback, hataCb) || (()=>{});
+        });
+        return ()=>{
+          iptal = true;
+          try{ authIptal(); }catch(_){}
+          try{ asilIptal(); }catch(_){}
+        };
+      }
+      hata(new Error('Aktif kullanıcı kimliği hazır değil.'));
+      return ()=>{};
+    }
+
     let acik = [];
     let benim = [];
     const birlestir = ()=>{
@@ -44,11 +67,14 @@ const DokumanlarRepository = {
       [...acik, ...benim].forEach(d => map.set(d.id, d));
       callback([...map.values()].sort((a,b)=>_dokumanTarihDegeri(b)-_dokumanTarihDegeri(a)));
     };
+
     const u1 = db.collection(COL.dokumanlar).where('gorunurluk','==','herkes').onSnapshot(
-      s=>{ acik=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); }, hata
+      s=>{ acik=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); },
+      hata
     );
     const u2 = db.collection(COL.dokumanlar).where('olusturanUid','==',uid).onSnapshot(
-      s=>{ benim=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); }, hata
+      s=>{ benim=s.docs.map(d=>({id:d.id,...d.data()})); birlestir(); },
+      hata
     );
     return ()=>{ try{u1();}catch(_){} try{u2();}catch(_){} };
   },
