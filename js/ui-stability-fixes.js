@@ -10,6 +10,7 @@ scriptYukle('js/excel-visual-fidelity.js','excel-visual-fidelity');
 scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');
 scriptYukle('js/excel-turkish-date-fix.js','excel-turkish-date');
 scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
+scriptYukle('js/dashboard-daily-center.js','dashboard-daily-center');
 
 let sarildi=false,deneme=0;
 function kur(){
