@@ -1,6 +1,8 @@
-/* Koruk Asistan — Döküman PDF araçları v2
+/* Koruk Asistan — Döküman PDF araçları v3
  * dokumanlar.js'den sonra yüklenir. Resimden PDF ve PDF birleştirme
  * akışlarını Android/Web için güvenli, bellek kontrollü ve önizlemeli hale getirir.
+ * v3: PDF araçları Dökümanlar modalından ayrıldı; Döküman & Evraklar altında
+ * PDF İşlemleri menüsüne ve Navigasyon Düzeni kataloğuna bağımsız hedefler eklendi.
  */
 (function(){
 'use strict';
@@ -195,11 +197,54 @@ if(typeof _dokResimPdfDisaAktar==='function'){
   };
 }
 
+/* ------------------------------------------------------------------
+   BAĞIMSIZ PDF ARAÇ MENÜSÜ
+   ------------------------------------------------------------------ */
+function _pdfAraciModalAc(mod){
+  window._dokPdfIslemModu = mod;
+  if(typeof dokumanYukleModalAc==='function') dokumanYukleModalAc();
+  else if(typeof toast==='function') toast('PDF aracı yüklenemedi.');
+}
+window.pdfResimdenAc = function(){ _pdfAraciModalAc('resim'); };
+window.pdfBirlestirAc = function(){ _pdfAraciModalAc('birlestir'); };
+window.pdfIslemleriAc = function(){
+  const html = `
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="modalKapat();pdfResimdenAc()">🖼 Resimden PDF Oluştur</button>
+      <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="modalKapat();pdfBirlestirAc()">🔗 PDF Birleştir</button>
+    </div>`;
+  if(typeof modalAc==='function'){
+    modalAc('📄 PDF İşlemleri', html, null, null);
+    const b=document.getElementById('modalKaydetBtn');
+    if(b) b.style.display='none';
+  }
+};
+
+/* Döküman Ekle modalını değiştirmeden sarmala:
+   - normal Dökümanlar akışında Resimden PDF/PDF Birleştir sekmeleri görünmez,
+   - bağımsız PDF menüsünden açıldığında yalnız istenen araç görünür. */
 if(typeof dokumanYukleModalAc==='function'){
   const eskiModal=dokumanYukleModalAc;
   window.dokumanYukleModalAc=function(){
+    const pdfModu=window._dokPdfIslemModu || '';
+    window._dokPdfIslemModu='';
     const r=eskiModal.apply(this,arguments);
     setTimeout(()=>{
+      const goster=(id,acik)=>{const el=document.getElementById(id);if(el)el.style.display=acik?'':'none';};
+      if(pdfModu==='resim' || pdfModu==='birlestir'){
+        goster('dok_sekme_dosya',false);
+        goster('dok_sekme_url',false);
+        goster('dok_sekme_resim',pdfModu==='resim');
+        goster('dok_sekme_birlestir',pdfModu==='birlestir');
+        if(typeof dokumanSekmeAc==='function') dokumanSekmeAc(pdfModu);
+      }else{
+        goster('dok_sekme_resim',false);
+        goster('dok_sekme_birlestir',false);
+        goster('dok_panel_resim',false);
+        goster('dok_panel_birlestir',false);
+        if(typeof dokumanSekmeAc==='function') dokumanSekmeAc('dosya');
+      }
+
       const panel=document.getElementById('dok_panel_birlestir');
       if(panel){
         const aciklama=panel.querySelector('div[style*="font-size:11px"]');
@@ -208,6 +253,83 @@ if(typeof dokumanYukleModalAc==='function'){
     },0);
     return r;
   };
+}
+
+/* ------------------------------------------------------------------
+   NAVİGASYON ENTEGRASYONU
+   PDF araçları ve Öğrenci Devamsızlığı, merkezi özellik kataloğunda
+   bağımsız hedeflerdir. PDF İşlemleri ile Öğrenci Devamsızlığı ise
+   varsayılan menüye ekOgeler üzerinden enjekte edilir; mevcut taşıma,
+   gizleme ve sıralama ayarları bu anahtarlar için aynen çalışır.
+   ------------------------------------------------------------------ */
+const PDF_NAV_MENU_KEY='sistem_pdf_islemleri';
+const OGR_DEV_MENU_KEY='sistem_ogrenci_devamsizlik';
+
+function _pdfNavVarsayilanlariniEkle(veri){
+  let nd;
+  try{ nd=JSON.parse(JSON.stringify(veri||{})); }catch(_){ nd=Object.assign({},veri||{}); }
+  nd.ekOgeler=Array.isArray(nd.ekOgeler)?nd.ekOgeler:[];
+  if(!nd.ekOgeler.some(x=>x&&x.anahtar===PDF_NAV_MENU_KEY)){
+    nd.ekOgeler.push({
+      anahtar:PDF_NAV_MENU_KEY,
+      ad:'PDF İşlemleri',
+      sekmeAd:'@ozellik:pdf_islemleri',
+      grup:'g7',
+      altGrupMu:false
+    });
+  }
+  if(!nd.ekOgeler.some(x=>x&&x.anahtar===OGR_DEV_MENU_KEY)){
+    nd.ekOgeler.push({
+      anahtar:OGR_DEV_MENU_KEY,
+      ad:'Öğrenci Devamsızlığı',
+      sekmeAd:'@ozellik:ogrenci_devamsizlik',
+      grup:'g1',
+      altGrupMu:false
+    });
+  }
+  return nd;
+}
+
+let _pdfNavSarmalandi=false;
+function _pdfNavigasyonunuKur(){
+  if(window.OzellikKatalogu && typeof window.OzellikKatalogu.kaydet==='function'){
+    window.OzellikKatalogu.kaydet({
+      id:'pdf_islemleri', ad:'PDF İşlemleri', tip:'aksiyon', modul:'dokumanlar', ikon:'dosya',
+      ac:()=>window.pdfIslemleriAc()
+    });
+    window.OzellikKatalogu.kaydet({
+      id:'pdf_resimden', ad:'Resimden PDF Oluştur', tip:'aksiyon', modul:'dokumanlar', ikon:'dosya',
+      ac:()=>window.pdfResimdenAc()
+    });
+    window.OzellikKatalogu.kaydet({
+      id:'pdf_birlestir', ad:'PDF Birleştir', tip:'aksiyon', modul:'dokumanlar', ikon:'dosya',
+      ac:()=>window.pdfBirlestirAc()
+    });
+    window.OzellikKatalogu.kaydet({
+      id:'ogrenci_devamsizlik', ad:'Öğrenci Devamsızlığı', tip:'aksiyon', modul:'yoklama', ikon:'takvim',
+      ac:()=>{ if(typeof yoklamaAc==='function') yoklamaAc(); }
+    });
+  }
+
+  if(!_pdfNavSarmalandi && typeof window._navDuzeniYerelUygula==='function'){
+    const eskiUygula=window._navDuzeniYerelUygula;
+    window._navDuzeniYerelUygula=function(veri,cachele){
+      return eskiUygula(_pdfNavVarsayilanlariniEkle(veri),cachele);
+    };
+    _pdfNavSarmalandi=true;
+    const mevcut=typeof window._navDuzeniVerisiGetir==='function' ? window._navDuzeniVerisiGetir() : {};
+    window._navDuzeniYerelUygula(mevcut,false);
+  }
+
+  return !!(window.OzellikKatalogu && _pdfNavSarmalandi);
+}
+
+if(!_pdfNavigasyonunuKur()){
+  let deneme=0;
+  const t=setInterval(()=>{
+    deneme++;
+    if(_pdfNavigasyonunuKur() || deneme>80) clearInterval(t);
+  },250);
 }
 
 window.addEventListener('beforeunload',_dokBlobUrlTemizle,{once:true});
