@@ -1923,32 +1923,121 @@ function bildirimZiliDoldur(){
 
 /* Hızlı İşlemler kartı artık kullanıcı seçimine göre üretiliyor (bkz.
    js/dashboard-ozellestirme.js DASHBOARD_ALT_KATALOG.hizliIslemler). */
+/* ================================================================
+   HIZLI İŞLEMLER — tek kaynak, yetki filtreli, tercih saklı
+   Diğer sistemler (role-ui-hardening, state-v3, v4) bu fonksiyonu
+   override etmeye çalışıyor; biz son tanımlayarak kazanıyoruz.
+   ================================================================ */
+const _HI_LS = 'oyHizliIslemlerV5';
+const _HI_TANIMLAR = {
+  personel:       { modul:'personel',       onclick:"sekmeAc('personel')",          ikon:'👥', label:'Personel' },
+  siniflar:       { modul:'siniflar',       onclick:"sekmeAc('siniflar')",          ikon:'🏫', label:'Sınıflar' },
+  nobet:          { modul:'nobet',          onclick:"sekmeAc('nobet')",             ikon:'🛡️', label:'Nöbet' },
+  servis:         { modul:'tasima',         onclick:"sekmeAc('tasima')",            ikon:'🚌', label:'Servis' },
+  evrak:          { modul:'evrak',          onclick:"sekmeAc('evrak')",             ikon:'📄', label:'Evrak' },
+  raporlar:       { modul:'maarifRapor',    onclick:"sekmeAc('maarifRapor')",       ikon:'📊', label:'Raporlar' },
+  takvim:         { modul:'takvim',         onclick:"sekmeAc('takvim')",            ikon:'📅', label:'Takvim' },
+  notlar:         { modul:'notlar',         onclick:"notlarModalAc()",              ikon:'📝', label:'Notlar' },
+  mesajlar:       { modul:'mesajlasma',     onclick:"sekmeAc('mesajlasma')",        ikon:'💬', label:'Mesajlar' },
+  duyurular:      { modul:'duyurular',      onclick:"sekmeAc('duyurular')",         ikon:'📢', label:'Duyurular' },
+  sinavIslemleri: { modul:'sinavIslemleri', onclick:"sekmeAc('yaziliSinavlar')",    ikon:'📝', label:'Sınavlar' },
+  dokumanlar:     { modul:'dokumanlar',     onclick:"sekmeAc('dokumanlar')",        ikon:'📁', label:'Dökümanlar' },
+  ogrenciler:     { modul:'ogrenciler',     onclick:"sekmeAc('ogrenciler')",        ikon:'🧑‍🎓', label:'Öğrenciler' },
+  arama:          { modul:null,             onclick:"sekmeAc('arama')",             ikon:'🔎', label:'Arama' },
+  programim:      { modul:null,             onclick:"sekmeAc('dersNobetProgramim')",ikon:'🗓️', label:'Programım' },
+};
+
+function _hiYetkili(){
+  return Object.entries(_HI_TANIMLAR)
+    .filter(([,t])=>!t.modul||(typeof gorebilir==='function'?gorebilir(t.modul):true))
+    .map(([id])=>id);
+}
+function _hiLsOku(){
+  try{const v=JSON.parse(localStorage.getItem(_HI_LS)||'null');return Array.isArray(v)?v:null}catch(_){return null}
+}
+function _hiLsYaz(ids){try{localStorage.setItem(_HI_LS,JSON.stringify(ids))}catch(_){}}
+function _hiNormalize(ids){
+  const yetkili=new Set(_hiYetkili());
+  const temiz=(Array.isArray(ids)?ids:[]).filter(id=>yetkili.has(id));
+  if(temiz.length) return temiz;
+  // hiç yoksa yetkili ilk 4'ü getir
+  return _hiYetkili().slice(0,4);
+}
+
 function renderHizliIslemler(){
   const el = document.getElementById('hizliIslemlerGrid');
   if(!el) return;
-  const tanimlari = {
-    personel:       { modul:'personel',    onclick:"sekmeAc('personel');",              ikon:'👥', ikonClass:'qa-personel', label:'Personel' },
-    // YENİ: Sınıflar — Sınıf rozeti Hızlı Bakış'tan İstatistik şeridine
-    // taşındığı için, sınıflara hızlı erişim burada kısayol olarak eklendi.
-    siniflar:       { modul:'siniflar',    onclick:"sekmeAc('siniflar');",              ikon:'🏫', ikonClass:'qa-rose',     label:'Sınıflar' },
-    nobet:          { modul:'nobet',       onclick:"sekmeAc('nobet');",                 ikon:'🛡️', ikonClass:'qa-nobet',    label:'Nöbet' },
-    servis:         { modul:'tasima',      onclick:"sekmeAc('tasima');",                ikon:'🚌', ikonClass:'qa-evrak',    label:'Servis' },
-    evrak:          { modul:'evrak',       onclick:"sekmeAc('evrak'); evrakModalAc();", ikon:'📄', ikonClass:'qa-gorev',    label:'Evrak' },
-    raporlar:       { modul:'maarifRapor',  onclick:"sekmeAc('maarifRapor');",            ikon:'📊', ikonClass:'qa-rapor',    label:'Raporlar' },
-    takvim:         { modul:'takvim',      onclick:"sekmeAc('takvim');",                ikon:'📅', ikonClass:'qa-takvim',   label:'Takvim' },
-    notlar:         { modul:'notlar',      onclick:"notlarModalAc();",                  ikon:'📝', ikonClass:'qa-not',      label:'Notlar' },
-    cizelgeler:     { modul:'sosyalKulupler', onclick:"sekmeAc('sosyalKulupler');",      ikon:'⋯',  ikonClass:'qa-daha',     label:'Çizelgeler' },
-    mesajlar:       { modul:'mesajlasma',  onclick:"sekmeAc('mesajlasma');",            ikon:'💬', ikonClass:'qa-gorev',    label:'Mesajlar' },
-    duyurular:      { modul:'duyurular',   onclick:"sekmeAc('duyurular');",             ikon:'📢', ikonClass:'qa-rapor',    label:'Duyurular' },
-    sinavIslemleri: { modul:'sinavIslemleri', onclick:"sekmeAc('yaziliSinavlar');",      ikon:'📝', ikonClass:'qa-not',      label:'Sınavlar' },
-  };
-  const sira = (typeof _altTercihOku === 'function') ? _altTercihOku('hizliIslemler') : Object.keys(tanimlari).slice(0,8);
-  el.innerHTML = sira.map(id=>{
-    const t = tanimlari[id];
+  // Kayıtlı tercihi oku; yoksa yetkili ilk 4
+  const tercih = _hiNormalize(_hiLsOku());
+  el.innerHTML = tercih.map(id=>{
+    const t = _HI_TANIMLAR[id];
     if(!t) return '';
-    return `<div class="qa-item" data-yetki-modul="${t.modul}" onclick="${t.onclick}"><div class="qa-icon ${t.ikonClass}">${t.ikon}</div><div class="qa-label">${t.label}</div></div>`;
+    return `<div class="qa-item" onclick="${t.onclick}"><div class="qa-icon">${t.ikon}</div><div class="qa-label">${t.label}</div></div>`;
   }).join('');
+  // Düzenle butonunu başlığa ekle (zaten index.html'de var, güncelle)
+  _hiDuzenleButonuKur();
 }
+
+function _hiDuzenleButonuKur(){
+  const kart = document.querySelector('[data-kart-id="hizliIslemler"]');
+  if(!kart) return;
+  // index.html'deki buton zaten var; onclick'i güncelleyelim
+  const btn = kart.querySelector('button');
+  if(btn) btn.onclick = function(e){ e.stopPropagation(); _hiDuzenleAc(); };
+}
+
+function _hiDuzenleAc(){
+  const yetkili = _hiYetkili();
+  const secili  = _hiNormalize(_hiLsOku());
+  // Basit modal — mevcut modalAc sistemini kullan
+  const f = typeof modalAc === 'function' ? modalAc : null;
+  if(!f) return;
+  const body = `
+    <p style="font-size:12px;color:var(--ink-muted);margin-bottom:12px">En fazla 8 kart seçebilirsiniz.</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${yetkili.map(id=>{
+        const t=_HI_TANIMLAR[id];if(!t)return'';
+        return `<label style="display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:13px;padding:12px 14px;cursor:pointer">
+          <input type="checkbox" value="${id}" ${secili.includes(id)?'checked':''} style="width:18px;height:18px;flex-shrink:0">
+          <span style="font-size:20px">${t.ikon}</span>
+          <span style="font-weight:600">${t.label}</span>
+        </label>`;
+      }).join('')}
+    </div>`;
+  f('⚡ Hızlı İşlemleri Düzenle', body, async ()=>{
+    const ids = Array.from(document.querySelectorAll('#modalBody input:checked')).map(x=>x.value);
+    if(!ids.length){ if(typeof toast==='function') toast('En az bir kart seçin.'); return; }
+    if(ids.length>8){ if(typeof toast==='function') toast('En fazla 8 kart seçebilirsiniz.'); return; }
+    const q = _hiNormalize(ids);
+    _hiLsYaz(q);
+    // Firebase'e de kaydet
+    try{
+      const db=typeof window.db!=='undefined'?window.db:null;
+      const uid=typeof auth!=='undefined'?auth?.currentUser?.uid:null;
+      if(db&&uid) await db.collection('oy_kullaniciTercihleri').doc(uid).set({oyHizliIslemlerV5:q,oyHizliIslemlerV5Guncelleme:new Date().toISOString()},{merge:true});
+    }catch(_){}
+    if(typeof modalKapat==='function') modalKapat();
+    if(typeof toast==='function') toast('Hızlı işlemler kaydedildi.');
+    renderHizliIslemler();
+  }, null, '💾 Kaydet');
+}
+
+// Firebase'den tercih yükle (auth hazır olunca)
+(function(){
+  function _hiFirebaseYukle(){
+    try{
+      const db=typeof window.db!=='undefined'?window.db:null;
+      const uid=typeof auth!=='undefined'?auth?.currentUser?.uid:null;
+      if(!db||!uid) return;
+      db.collection('oy_kullaniciTercihleri').doc(uid).get().then(snap=>{
+        if(!snap.exists) return;
+        const v=snap.data()?.oyHizliIslemlerV5;
+        if(Array.isArray(v)&&v.length){ _hiLsYaz(v); renderHizliIslemler(); }
+      }).catch(()=>{});
+    }catch(_){}
+  }
+  [600,1500,3000].forEach(ms=>setTimeout(_hiFirebaseYukle,ms));
+})();
 
 /* ============== ÖĞRETMENE ÖZEL ANASAYFA KARTLARI ==============
    Hesabına bağlı bir öğretmen kaydı olan HERKESTE (admin dahil, eğer
