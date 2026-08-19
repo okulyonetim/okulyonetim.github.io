@@ -1,10 +1,18 @@
 /* Koruk Asistan — Dashboard bilgi kartı gerçek veri + detay köprüsü */
 (function(){
 'use strict';
+let servisRemoteCount=null;
+let servisDinleyici=null;
+let servisDinleyiciUid='';
+function getGlobal(name){
+  try{return eval(name);}catch(_){}
+  try{return window[name];}catch(_){}
+  return null;
+}
 function arr(names){
   for(const n of names){
-    try{const v=eval(n);if(Array.isArray(v))return v;}catch(_){}
-    try{const v=window[n];if(Array.isArray(v))return v;}catch(_){}
+    const v=getGlobal(n);
+    if(Array.isArray(v))return v;
   }
   return [];
 }
@@ -12,6 +20,31 @@ function done(x){const s=String(x?.durum||x?.status||'').toLocaleLowerCase('tr-T
 function countActive(names){return arr(names).filter(x=>!done(x)).length;}
 function sum(xs,key){return xs.reduce((t,x)=>t+(parseInt(x?.[key])||0),0);}
 function normSex(v){return String(v||'').toLocaleLowerCase('tr-TR').replace(/ı/g,'i');}
+function servisLocalCount(){
+  const s=arr(['servisler']);
+  if(s.length)return s.length;
+  const rows=document.querySelectorAll('#servislerListesi .evrak-row');
+  if(rows.length)return rows.length;
+  return 0;
+}
+function servisDinleyiciKur(){
+  const auth=getGlobal('auth'),db=getGlobal('db');
+  const uid=auth?.currentUser?.uid||'';
+  if(!uid||!db)return;
+  if(servisDinleyici&&servisDinleyiciUid===uid)return;
+  if(typeof servisDinleyici==='function'){try{servisDinleyici();}catch(_){}}
+  servisDinleyici=null;servisDinleyiciUid=uid;
+  try{
+    const col=getGlobal('COL')?.servisler||'oy_servisler';
+    servisDinleyici=db.collection(col).onSnapshot(snap=>{
+      servisRemoteCount=snap.size;
+      refresh();
+    },err=>{
+      console.warn('Dashboard servis sayacı dinleyicisi:',err);
+      servisDinleyici=null;
+    });
+  }catch(e){console.warn('Dashboard servis sayacı başlatılamadı:',e);servisDinleyici=null;}
+}
 function valueFor(label){
   const l=String(label||'').trim();
   if(l==='Personel') return arr(['ogretmenler']).length + arr(['personelListesi']).length;
@@ -21,7 +54,10 @@ function valueFor(label){
     return sum(arr(['siniflar']),'ogrenciSayisi');
   }
   if(l==='Sınıflar') return arr(['siniflar']).length;
-  if(l==='Servisler') return arr(['servisler']).length;
+  if(l==='Servisler'){
+    const local=servisLocalCount();
+    return local>0?local:(Number.isFinite(servisRemoteCount)?servisRemoteCount:0);
+  }
   if(l==='Dökümanlar') return arr(['dokumanlar','dokumanListesi','dokumanlarCache']).length;
   if(l==='Hatırlatıcı') return countActive(['hatirlaticilar']);
   if(l==='Açık Görev') return countActive(['gorevler']);
@@ -54,18 +90,25 @@ function ogrenciDetay(){
   const orta=ss.filter(s=>{const n=parseInt(s?.seviye);return n>=5&&n<=8});
   return {ilk:{t:sum(ilk,'ogrenciSayisi'),k:sum(ilk,'kizSayisi'),e:sum(ilk,'erkekSayisi')},orta:{t:sum(orta,'ogrenciSayisi'),k:sum(orta,'kizSayisi'),e:sum(orta,'erkekSayisi')}};
 }
-function detayHtml(d){return `<div class="dbx-break"><div><b>İlkokul</b><strong>${d.ilk.t}</strong><small>♀ ${d.ilk.k} · ♂ ${d.ilk.e}</small></div><i></i><div><b>Ortaokul</b><strong>${d.orta.t}</strong><small>♀ ${d.orta.k} · ♂ ${d.orta.e}</small></div></div>`;}
+function detayHtml(d){
+  const sex=x=>`<span class="dbx-sex dbx-female"><span class="dbx-sex-symbol">♀</span><span>${x.k}</span></span><span class="dbx-sex dbx-male"><span class="dbx-sex-symbol">♂</span><span>${x.e}</span></span>`;
+  return `<div class="dbx-break"><div><b>İlkokul</b><strong>${d.ilk.t}</strong><small>${sex(d.ilk)}</small></div><i></i><div><b>Ortaokul</b><strong>${d.orta.t}</strong><small>${sex(d.orta)}</small></div></div>`;
+}
 function style(){if(document.getElementById('dbx-break-style'))return;const s=document.createElement('style');s.id='dbx-break-style';s.textContent=`
-#db41InfoGrid .db41-info.dbx-rich{grid-column:span 2;padding:11px 12px!important;min-height:122px!important;display:grid;grid-template-columns:56px 1fr;grid-template-rows:auto auto;column-gap:10px;text-align:left!important;align-items:center}
-#db41InfoGrid .db41-info.dbx-rich>.i{grid-row:1/3;font-size:31px!important;text-align:center}
-#db41InfoGrid .db41-info.dbx-rich>.v{font-size:25px!important;margin:0!important;line-height:1!important}
-#db41InfoGrid .db41-info.dbx-rich>.a{font-size:11px!important;margin:4px 0 0!important;color:var(--d-muted)!important}
-#db41InfoGrid .dbx-break{grid-column:1/3;display:grid;grid-template-columns:1fr 1px 1fr;gap:9px;margin-top:8px;padding-top:8px;border-top:1px solid var(--d-line);text-align:center}
-#db41InfoGrid .dbx-break>i{background:var(--d-line);width:1px}
-#db41InfoGrid .dbx-break b{display:block;font-size:10px;color:var(--d-muted);margin-bottom:2px}
-#db41InfoGrid .dbx-break strong{display:block;font-size:17px;color:var(--d-text);line-height:1.15}
-#db41InfoGrid .dbx-break small{display:block;font-size:10px;color:var(--d-muted);margin-top:2px;white-space:nowrap}
-@media(min-width:700px){#db41InfoGrid .db41-info.dbx-rich{grid-column:span 2}}
+#db41InfoGrid .db41-info.dbx-rich{grid-column:span 1!important;padding:12px 10px!important;min-height:184px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;text-align:center!important}
+#db41InfoGrid .db41-info.dbx-rich>.i{font-size:31px!important;text-align:center!important;line-height:1.1!important}
+#db41InfoGrid .db41-info.dbx-rich>.v{font-size:29px!important;margin:5px 0 0!important;line-height:1!important;text-align:center!important}
+#db41InfoGrid .db41-info.dbx-rich>.a{font-size:12px!important;margin:5px 0 0!important;color:var(--d-muted)!important;text-align:center!important}
+#db41InfoGrid .dbx-break{width:100%!important;display:grid!important;grid-template-columns:1fr 1px 1fr!important;gap:7px!important;margin-top:11px!important;padding-top:9px!important;border-top:1px solid var(--d-line)!important;text-align:center!important}
+#db41InfoGrid .dbx-break>i{background:var(--d-line)!important;width:1px!important}
+#db41InfoGrid .dbx-break b{display:block!important;font-size:10.5px!important;color:var(--d-muted)!important;margin-bottom:3px!important}
+#db41InfoGrid .dbx-break strong{display:block!important;font-size:18px!important;color:var(--d-text)!important;line-height:1.15!important}
+#db41InfoGrid .dbx-break small{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;font-size:10.5px!important;margin-top:5px!important;white-space:nowrap!important}
+#db41InfoGrid .dbx-sex{display:inline-flex!important;align-items:center!important;gap:2px!important;font-weight:800!important;color:var(--d-muted)!important}
+#db41InfoGrid .dbx-sex-symbol{font-size:14px!important;font-weight:900!important;line-height:1!important}
+#db41InfoGrid .dbx-female .dbx-sex-symbol{color:#e14f9a!important}#db41InfoGrid .dbx-male .dbx-sex-symbol{color:#3187e8!important}
+[data-theme="dark"] #db41InfoGrid .dbx-female .dbx-sex-symbol{color:#ff83c0!important}[data-theme="dark"] #db41InfoGrid .dbx-male .dbx-sex-symbol{color:#78b8ff!important}
+@media(max-width:560px){#db41InfoGrid .db41-info.dbx-rich{grid-column:span 1!important;min-height:184px!important}}
 `;document.head.appendChild(s);}
 function removeDuplicateSchoolLinks(){
   const dup=document.getElementById('db41SocialCard');
@@ -81,17 +124,17 @@ function enrich(card,label){
   if(!d){card.insertAdjacentHTML('beforeend',html);}else if(d.outerHTML!==html)d.outerHTML=html;
 }
 function refresh(){
-  style();removeDuplicateSchoolLinks();
+  style();removeDuplicateSchoolLinks();servisDinleyiciKur();
   document.querySelectorAll('#db41InfoGrid .db41-info').forEach(card=>{
     const label=card.querySelector('.a')?.textContent?.trim();const out=card.querySelector('.v');if(!label||!out)return;
     let v=valueFor(label);
-    if((v===0||v==null)&&['Personel','Öğrenciler','Servisler','Sınıflar'].includes(label)){const f=legacyFallback(label);if(f!=null)v=f;}
+    if((v===0||v==null)&&['Personel','Öğrenciler','Sınıflar'].includes(label)){const f=legacyFallback(label);if(f!=null)v=f;}
     if(v!=null&&out.textContent!==String(v))out.textContent=String(v);
     enrich(card,label);
   });
 }
 window.dashboardBilgiKartlariYenile=refresh;
-let tries=0;const timer=setInterval(()=>{refresh();if(++tries>90)clearInterval(timer);},500);
+let tries=0;const timer=setInterval(()=>{refresh();if(++tries>180)clearInterval(timer);},500);
 document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,300));
 let raf=0;new MutationObserver(()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(refresh)}).observe(document.documentElement,{childList:true,subtree:true});
 })();
