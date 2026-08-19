@@ -404,6 +404,20 @@ async function _ssExcelIceAktar(tur, sinavId, file){
    ekranından "📊 Sınav Sonuçları" ile açılır.
    ================================================================ */
 let _ssOgrenciGrafik = null; // Chart.js örneği — yeniden çizerken eskisini yok etmek için
+let _ssChartYukleme = null;
+function _ssChartYukle(){
+  if (typeof Chart !== 'undefined') return Promise.resolve();
+  if (_ssChartYukleme) return _ssChartYukleme;
+  _ssChartYukleme = new Promise((resolve,reject)=>{
+    const mevcut=Array.from(document.scripts).find(x=>/chart(?:\.umd)?(?:\.min)?\.js/i.test(x.src||''));
+    if(mevcut){ mevcut.addEventListener('load',resolve,{once:true}); mevcut.addEventListener('error',reject,{once:true}); return; }
+    const sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js';
+    sc.onload=resolve; sc.onerror=()=>reject(new Error('Grafik kütüphanesi yüklenemedi.'));
+    document.head.appendChild(sc);
+  }).catch(e=>{ _ssChartYukleme=null; throw e; });
+  return _ssChartYukleme;
+}
 
 function ogrenciSinavSonuclariGoster(ogrenciId){
   const ogrenci = (typeof veliler!=='undefined' ? veliler : []).find(v=>v.id===ogrenciId);
@@ -460,9 +474,10 @@ function _ssOgrenciBirListeCiz(elId, baslik, ikon, liste, ogrenciId){
       </div>`).join('') : `<p class="empty-state">Henüz ${baslik.toLocaleLowerCase('tr')} kaydı yok.</p>`
   );
 }
-function _ssOgrenciSonuclariCiz(ogrenciId){
+async function _ssOgrenciSonuclariCiz(ogrenciId){
   _ssOgrenciBirListeCiz('ssOgrenciDenemeListesi', 'Deneme Sonuçları', '📊', denemeSinavListesi, ogrenciId);
   _ssOgrenciBirListeCiz('ssOgrenciTestListesi', 'Test Sonuçları', '📝', testSinavListesi, ogrenciId);
+  try { await _ssChartYukle(); } catch(e) { console.warn('[Sınav Sonuçları] Chart.js yüklenemedi:', e); }
 
   // ---- Trend grafiği: toplam net, tarihe göre, deneme ve test ayrı çizgi ----
   const canvas = document.getElementById('ssOgrenciGrafikCanvas');
