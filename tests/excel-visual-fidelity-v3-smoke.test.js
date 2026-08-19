@@ -1,0 +1,16 @@
+const fs=require('fs');const assert=require('assert');
+const s=fs.readFileSync('js/excel-visual-fidelity-v3.js','utf8');
+const loader=fs.readFileSync('js/ui-stability-fixes.js','utf8');
+assert(loader.includes("excel-visual-fidelity-v3.js"),'v3 Excel motoru yüklenmeli');
+assert(s.includes('pageSetup.printArea'),'Baskı alanı desteklenmeli');
+assert(s.includes('ws.getImages'),'Gömülü resimler okunmalı');
+assert(s.includes('wb.getImage'),'Workbook resimleri alınmalı');
+assert(s.includes('conditionalFormattings'),'Koşullu biçimlendirme metadata’sı okunmalı');
+assert(s.includes("rule.type==='cellIs'"),'cellIs koşullu biçimlendirme desteklenmeli');
+assert(s.includes("rule.type==='containsText'"),'containsText koşullu biçimlendirme desteklenmeli');
+assert(s.includes('sc.w!=null'),'Dosyadaki biçimlenmiş hücre metni kullanılmalı');
+assert(s.includes('Intl.DateTimeFormat'),'Tarih fallback’i yerel kısa tarih olmalı');
+assert(s.includes('pinchInit'),'Mobil pinch zoom korunmalı');
+assert(s.includes('ev3-tabs'),'Sekmeler zoom alanından ayrı kalmalı');
+assert(s.includes("orientation==='landscape'"),'Sayfa yönü görünüm metadata’sında kullanılmalı');
+console.log('Excel görsel sadakat v3 smoke testleri başarılı.');
