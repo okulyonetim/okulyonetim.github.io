@@ -48,5 +48,5 @@ assert(appPos >= 0, 'app.js script etiketi index.html içinde bulunmalı.');
 assert(featurePos < appPos, 'Katalog gerçek script sıralamasında app.js öncesinde yüklenmeli.');
 
 assert(sw.includes("'./js/ozellik-katalogu.js'"), 'Katalog offline precache listesinde olmalı.');
-assert(sw.includes("oy-cache-v439"), 'Cache sürümü v439 olmalı.');
+assert(sw.includes("oy-cache-v441"), 'Cache sürümü v441 olmalı.');
 console.log('Merkezi özellik kataloğu smoke testleri başarılı.');

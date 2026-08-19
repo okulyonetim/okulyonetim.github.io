@@ -1,0 +1,24 @@
+const fs=require('fs');
+const assert=require('assert');
+const v4=fs.readFileSync('js/dashboard-mobile-v4.js','utf8');
+const loader=fs.readFileSync('js/ui-stability-fixes.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+
+assert(v4.includes("p.classList.remove('dmv2','dmv3')"),'Eski dashboard sınıfları temizlenmeli');
+assert(v4.includes("p.classList.add('db4')"),'Dashboard v4 sınıfı uygulanmalı');
+assert(v4.includes('[data-theme="dark"] #tab-panel.db4'),'Koyu tema için ayrı tokenlar olmalı');
+assert(v4.includes('--d-bg:#f4f7fb') && v4.includes('--d-bg:#06192b'),'Açık/koyu yüzey renkleri ayrı tanımlanmalı');
+assert(v4.includes('db4-weather') && v4.includes('heroHavaSatir'),'Dinamik hava widgetı v4 içinde bulunmalı');
+assert(v4.includes('db4-bell') && v4.includes('zilWidget'),'Canlı zil/ders widgetı v4 içinde bulunmalı');
+assert(v4.includes('db4-social') && v4.includes('heroSosyalMedya'),'Sosyal medya/okul bağlantıları v4 içinde bulunmalı');
+assert(v4.includes('Evrak Takibi') && v4.includes('Dökümanlar') && v4.includes('Öğrenciler') && v4.includes('Nöbetler') && v4.includes('Takvim'),'Beş ana hızlı işlem bulunmalı');
+assert(v4.includes("Q('[data-kart-id=\"bekleyenEvrak\"]',p)?.remove()"),'Boş Bekleyen Evrak dashboard kartı kaldırılmalı');
+assert(!v4.includes('<div class="l">Bekleyen Evrak</div>'),'Bugün özetinde Bekleyen Evrak bulunmamalı');
+assert(v4.includes('İzinli Personel'),'Bekleyen Evrak yerine çalışan günlük bilgi bulunmalı');
+assert(loader.includes("dashboard-mobile-v4.js"),'Ana yükleyici v4 dashboardu çağırmalı');
+assert(!loader.includes("dashboard-mobile-v3.js") && !loader.includes("dashboard-mobile-v2.js") && !loader.includes("dashboard-daily-center.js"),'Eski dashboard motorları yüklenmemeli');
+assert(sw.includes("'./js/dashboard-mobile-v4.js'"),'Dashboard v4 çevrimdışı önbelleğe alınmalı');
+assert(sw.includes("oy-cache-v441"),'Service Worker cache sürümü yenilenmiş olmalı');
+assert(v4.includes('@media(max-width:380px)') && v4.includes('@media(min-width:900px)'),'Mobil dar ekran ve masaüstü responsive kuralları bulunmalı');
+assert(v4.includes('@media(prefers-reduced-motion:reduce)'),'Hareket azaltma erişilebilirliği korunmalı');
+console.log('dashboard-mobile-v4-smoke: OK');
