@@ -78,7 +78,10 @@ async function _dokGorselPdfIcinSinirla(islenmis, maxUzunKenar){
 
 window.dokumanResimlerdenPdfOlustur = async function dokumanResimlerdenPdfOlusturV2(){
   if (!_dokResimListe.length) { toast('Önce resim seçin.'); return; }
-  if (!window.jspdf || !window.jspdf.jsPDF) { toast('PDF kütüphanesi yüklenemedi.'); return; }
+  try {
+    if (!window.PdfExportLibs) throw new Error('PDF yükleyicisi bulunamadı.');
+    await window.PdfExportLibs.hazir();
+  } catch(e) { toast('PDF kütüphanesi yüklenemedi: '+e.message); return; }
 
   const olusturBtn = document.getElementById('dok_resim_olustur_btn');
   const onizle = document.getElementById('dok_resim_onizle');
