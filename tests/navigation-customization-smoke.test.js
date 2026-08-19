@@ -38,5 +38,5 @@ assert(navScroll.includes("overflow-y:scroll !important"));
 assert(navScroll.includes("touch-action:pan-y !important"));
 assert(navScroll.includes('scrollBy'));
 assert(nativePreview.includes("s.src = 'js/nav-accordion.js'"));
-assert(sw.includes("oy-cache-v443"), 'Navigasyon ve özellik kataloğu güncel cache sürümünü kullanmalı.');
+assert(sw.includes("oy-cache-v444"), 'Navigasyon ve özellik kataloğu güncel cache sürümünü kullanmalı.');
 console.log('Navigasyon özelleştirme ve tam ekran akordeon smoke testleri başarılı.');
