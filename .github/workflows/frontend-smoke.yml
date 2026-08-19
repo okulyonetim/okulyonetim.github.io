@@ -9,6 +9,7 @@ on:
       - 'css/dashboard-v2.css'
       - 'css/web-shell-fix.css'
       - 'css/mobil-dashboard.css'
+      - 'css/web-sidebar-v2.css'
       - 'css/tasima-takip.css'
       - 'js/ozellik-katalogu.js'
       - 'js/push.js'
@@ -19,6 +20,7 @@ on:
       - 'js/native-report-preview.js'
       - 'js/ui-stability-fixes.js'
       - 'js/dashboard-v2-init.js'
+      - 'js/web-sidebar-v2.js'
       - 'js/dashboard-mobile-v4.js'
       - 'js/dashboard-mobile-v4-polish.js'
       - 'js/dashboard-mobile-v4-hotfix.js'
@@ -71,6 +73,7 @@ on:
       - 'tests/navigation-customization-smoke.test.js'
       - 'tests/feature-catalog-smoke.test.js'
       - 'tests/web-responsive-smoke.test.js'
+      - 'tests/web-sidebar-v2-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/excel-visual-fidelity-v3-smoke.test.js'
       - 'tests/dashboard-mobile-v4-smoke.test.js'
@@ -100,6 +103,7 @@ jobs:
           node --check js/native-report-preview.js
           node --check js/ui-stability-fixes.js
           node --check js/dashboard-v2-init.js
+          node --check js/web-sidebar-v2.js
           node --check js/dashboard-mobile-v4.js
           node --check js/dashboard-mobile-v4-polish.js
           node --check js/dashboard-mobile-v4-hotfix.js
@@ -131,6 +135,8 @@ jobs:
           node --check optik/js/disaAktar.js
       - name: Web responsive regresyon testi
         run: node tests/web-responsive-smoke.test.js
+      - name: Web sidebar v2 regresyon testi
+        run: node tests/web-sidebar-v2-smoke.test.js
       - name: Ana sayfa v4 regresyon testi
         run: node tests/dashboard-mobile-v4-smoke.test.js
       - name: Merkezi özellik kataloğu regresyon testi
