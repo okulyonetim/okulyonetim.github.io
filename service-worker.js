@@ -28,16 +28,33 @@ const ONBELLEGE_ALINACAKLAR = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_ADI).then(cache => Promise.allSettled(ONBELLEGE_ALINACAKLAR.map(url => cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err)))));
+  event.waitUntil(
+    caches.open(CACHE_ADI).then(cache =>
+      Promise.allSettled(
+        ONBELLEGE_ALINACAKLAR.map(url =>
+          cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err))
+        )
+      )
+    )
+  );
   self.skipWaiting();
 });
+
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(names => Promise.all(names.filter(n => n !== CACHE_ADI).map(n => caches.delete(n)))));
+  event.waitUntil(
+    caches.keys().then(names =>
+      Promise.all(names.filter(n => n !== CACHE_ADI).map(n => caches.delete(n)))
+    )
+  );
   self.clients.claim();
 });
+
 function apiIstegiMi(url) {
-  return url.includes('firestore.googleapis.com') || url.includes('identitytoolkit.googleapis.com') || url.includes('securetoken.googleapis.com') || url.includes('firebaseinstallations.googleapis.com') || url.includes('fcmregistrations.googleapis.com');
+  return url.includes('firestore.googleapis.com') || url.includes('identitytoolkit.googleapis.com') ||
+    url.includes('securetoken.googleapis.com') || url.includes('firebaseinstallations.googleapis.com') ||
+    url.includes('fcmregistrations.googleapis.com');
 }
+
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   if (apiIstegiMi(event.request.url)) return;
@@ -50,30 +67,51 @@ self.addEventListener('fetch', event => {
   });
   if (event.request.mode === 'navigate') {
     event.respondWith(net.catch(async () => {
-      const cached = await caches.match(event.request); if (cached) return cached;
-      const shell = await caches.match('./index.html'); if (shell) return shell;
+      const cached = await caches.match(event.request);
+      if (cached) return cached;
+      const shell = await caches.match('./index.html');
+      if (shell) return shell;
       return new Response('Çevrimdışı', { status: 503, headers:{'Content-Type':'text/plain; charset=utf-8'} });
     }));
     return;
   }
   event.respondWith(net.catch(async () => {
-    const cached = await caches.match(event.request); if (cached) return cached;
+    const cached = await caches.match(event.request);
+    if (cached) return cached;
     return new Response('Kaynak çevrimdışı kullanılamıyor.', { status: 503, headers:{'Content-Type':'text/plain; charset=utf-8'} });
   }));
 });
+
 messaging.onBackgroundMessage(payload => {
   const n = payload?.notification || {}, data = payload?.data || {};
-  return self.registration.showNotification(n.title || 'Koruk İlk-Ortaokulu', {body:n.body || data.body || 'Yeni bir bildiriminiz var.', icon:n.icon || './assets/icon-192.png', badge:'./assets/icon-192.png', data:{url:data.url || data.link || './'}});
+  return self.registration.showNotification(n.title || 'Koruk İlk-Ortaokulu', {
+    body:n.body || data.body || 'Yeni bir bildiriminiz var.',
+    icon:n.icon || './assets/icon-192.png',
+    badge:'./assets/icon-192.png',
+    data:{url:data.url || data.link || './'}
+  });
 });
+
 self.addEventListener('push', event => {
   if (event.data) return;
-  event.waitUntil(self.registration.showNotification('Koruk İlk-Ortaokulu', {body:'Yeni bir bildiriminiz var.', icon:'./assets/icon-192.png', badge:'./assets/icon-192.png', data:{url:'./'}}));
+  event.waitUntil(self.registration.showNotification('Koruk İlk-Ortaokulu', {
+    body:'Yeni bir bildiriminiz var.',
+    icon:'./assets/icon-192.png',
+    badge:'./assets/icon-192.png',
+    data:{url:'./'}
+  }));
 });
+
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   const target = event.notification.data?.url || './';
   event.waitUntil(clients.matchAll({type:'window', includeUncontrolled:true}).then(windows => {
-    for (const w of windows) { if ('focus' in w) { if ('navigate' in w) w.navigate(target); return w.focus(); } }
+    for (const w of windows) {
+      if ('focus' in w) {
+        if ('navigate' in w) w.navigate(target);
+        return w.focus();
+      }
+    }
     return clients.openWindow ? clients.openWindow(target) : null;
   }));
 });
