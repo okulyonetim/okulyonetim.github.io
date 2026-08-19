@@ -4,9 +4,11 @@ const { execFileSync } = require('child_process');
 const nav = fs.readFileSync('js/alt-navigasyon.js','utf8');
 const editor = fs.readFileSync('js/nav-duzeni-editor.js','utf8');
 const accordion = fs.readFileSync('js/nav-accordion.js','utf8');
+const navScroll = fs.readFileSync('js/nav-scroll-fix.js','utf8');
 const nativePreview = fs.readFileSync('js/native-report-preview.js','utf8');
 const sw = fs.readFileSync('service-worker.js','utf8');
 execFileSync(process.execPath, ['--check','js/nav-accordion.js']);
+execFileSync(process.execPath, ['--check','js/nav-scroll-fix.js']);
 
 assert(nav.includes("oyNavDuzeniCacheV1"), 'Navigasyon düzeni ilk çizim için local cache kullanmalı.');
 assert(nav.includes('let _navDuzeniVerisi = _navDuzeniCacheOku();'), 'İlk GRUPLAR inşası cached resmi düzenle başlamalı.');
@@ -28,6 +30,9 @@ assert(accordion.includes('nd-altmenu-sec'), 'Öğeler Navigasyon Düzeninden be
 assert(accordion.includes('menuTasi'), 'Alt menüler kendi aralarında sıralanabilmeli.');
 assert(accordion.includes("sekmeAd:'@ozellik:pdf_resimden'"), 'Resimden PDF PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
 assert(accordion.includes("sekmeAd:'@ozellik:pdf_birlestir'"), 'PDF Birleştir PDF İşlemleri alt menüsüne bağımsız hedef olarak eklenmeli.');
+assert(navScroll.includes("overflowY='auto'"), 'Akordeon açıldığında navigasyon gövdesi dikey kaydırılabilir olmalı.');
+assert(navScroll.includes("touchAction='pan-y'"), 'Mobil navigasyon gövdesinde parmakla dikey kaydırma açık olmalı.');
+assert(navScroll.includes('scrollBy'), 'Akordeon açılınca başlık görünür konumda tutulmalı.');
 assert(nativePreview.includes("s.src = 'js/nav-accordion.js'"), 'Akordeon motoru uygulama başlangıcında yüklenmeli.');
 assert(sw.includes("oy-cache-v439"), 'Navigasyon ve özellik kataloğu için cache sürümü v439 olmalı.');
 console.log('Navigasyon özelleştirme ve akordeon alt menü smoke testleri başarılı.');
