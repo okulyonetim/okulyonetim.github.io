@@ -17,6 +17,7 @@ on:
       - 'js/ui-stability-fixes.js'
       - 'js/dashboard-mobile-v4.js'
       - 'js/dashboard-mobile-v4-polish.js'
+      - 'js/dashboard-card-count-fix.js'
       - 'js/excel-visual-fidelity.js'
       - 'js/excel-visual-fidelity-v3.js'
       - 'js/akademik-takvim.js'
@@ -93,6 +94,7 @@ jobs:
           node --check js/ui-stability-fixes.js
           node --check js/dashboard-mobile-v4.js
           node --check js/dashboard-mobile-v4-polish.js
+          node --check js/dashboard-card-count-fix.js
           node --check js/excel-visual-fidelity.js
           node --check js/excel-visual-fidelity-v3.js
           node --check js/akademik-takvim.js
