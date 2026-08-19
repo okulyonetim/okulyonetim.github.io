@@ -11,6 +11,7 @@ on:
       - 'js/push.js'
       - 'js/dokuman-okuyucu.js'
       - 'js/dokuman-pdf-tools.js'
+      - 'js/native-report-preview.js'
       - 'js/akademik-takvim.js'
       - 'js/yillik-plan.js'
       - 'js/app.js'
@@ -39,6 +40,7 @@ on:
       - 'tests/android-deeplink-smoke.test.js'
       - 'tests/document-viewer-smoke.test.js'
       - 'tests/dokuman-pdf-tools-smoke.test.js'
+      - 'tests/native-report-preview-smoke.test.js'
       - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/yillik-plan-preview-smoke.test.js'
       - 'tests/optik-save-bridge-smoke.test.js'
@@ -71,6 +73,7 @@ jobs:
           node --check js/push.js
           node --check js/dokuman-okuyucu.js
           node --check js/dokuman-pdf-tools.js
+          node --check js/native-report-preview.js
           node --check js/akademik-takvim.js
           node --check js/yillik-plan.js
           node --check js/alt-navigasyon.js
@@ -116,6 +119,9 @@ jobs:
 
       - name: Döküman PDF araçları regresyon testi
         run: node tests/dokuman-pdf-tools-smoke.test.js
+
+      - name: Native rapor önizleme regresyon testi
+        run: node tests/native-report-preview-smoke.test.js
 
       - name: Android yazdırma regresyon testi
         run: node tests/android-print-plugin-smoke.test.js
