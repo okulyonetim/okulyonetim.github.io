@@ -264,9 +264,9 @@ function dokumanYukleModalAc() {
               <option value="yatay">📃 Yatay</option>
             </select>
           </div>
-          <div style="display:flex;gap:6px;margin-top:8px;">
-            <button id="dok_resim_duzenle_btn" class="btn btn-ghost btn-sm" style="flex:1;" disabled onclick="dokumanResimEditoruAc()">✏️ Kırp/Döndür/Sırala</button>
-            <button id="dok_resim_olustur_btn" class="btn btn-primary btn-sm" style="flex:1;" disabled onclick="dokumanResimlerdenPdfOlustur()">🖨 PDF Oluştur</button>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+            <button id="dok_resim_duzenle_btn" class="btn btn-ghost btn-sm" style="flex:1;min-width:0;white-space:nowrap;" disabled onclick="dokumanResimEditoruAc()">✏️ Düzenle</button>
+            <button id="dok_resim_olustur_btn" class="btn btn-primary btn-sm" style="flex:1;min-width:0;white-space:nowrap;" disabled onclick="dokumanResimlerdenPdfOlustur()">🖨 PDF Oluştur</button>
           </div>
           <div id="dok_resim_onizle" style="display:none;font-size:12px;color:#2e7d32;margin-top:6px;"></div>
           <div id="dok_resim_disa_aktar" style="display:none;gap:6px;margin-top:6px;">
@@ -1826,7 +1826,23 @@ function _dokBlobToBase64(blob) {
 async function dokumanPdfBirlestirDosyalarSecildi(input) {
   const dosyalar = Array.from(input.files || []);
   if (!dosyalar.length) return;
-  if (typeof pdfjsLib === 'undefined') { toast('PDF kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.'); return; }
+  // pdfjsLib yoksa dinamik yükle
+  if (typeof pdfjsLib === 'undefined') {
+    if(bilgi) bilgi.textContent = 'PDF kütüphanesi yükleniyor…';
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload=()=>{
+        if(window.pdfjsLib){
+          pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+        res();
+      };
+      s.onerror=()=>rej(new Error('pdfjs yüklenemedi'));
+      document.head.appendChild(s);
+    }).catch(e=>{toast('PDF kütüphanesi yüklenemedi: '+e.message);});
+    if (typeof pdfjsLib === 'undefined') return;
+  }
 
   const bilgi = document.getElementById('dok_birlestir_bilgi');
   if (bilgi) bilgi.textContent = 'Sayfalar resme çevriliyor…';
@@ -1837,7 +1853,15 @@ async function dokumanPdfBirlestirDosyalarSecildi(input) {
   for (const dosya of dosyalar) {
     try {
       const buffer = await dosya.arrayBuffer();
-      const pdfDoc = await pdfjsLib.getDocument({ data: buffer }).promise;
+      // Basit PDF header kontrolü
+      const header = new Uint8Array(buffer.slice(0,5));
+      const headerStr = String.fromCharCode(...header);
+      if(!headerStr.startsWith('%PDF')){
+        if(bilgi) bilgi.textContent = `"${dosya.name}" geçerli bir PDF değil, atlanıyor…`;
+        toast(`"${dosya.name}" PDF formatında değil veya bozuk — atlandı.`);
+        continue;
+      }
+      const pdfDoc = await pdfjsLib.getDocument({ data: buffer, stopAtErrors: false }).promise;
 
       for (let s = 1; s <= pdfDoc.numPages; s++) {
         if (bilgi) bilgi.textContent = `"${dosya.name}" — sayfa ${s}/${pdfDoc.numPages} işleniyor…`;
@@ -1915,7 +1939,7 @@ async function dokumanKaydet() {
 
   const kaydetBtn = document.getElementById('modalKaydetBtn');
   const durumEl = document.getElementById('dok_yukleme_durumu');
-  if (kaydetBtn) { kaydetBtn.disabled = true; kaydetBtn.textContent = 'Kaydediliyor...'; }
+  if (kaydetBtn) { kaydetBtn.disabled = true; kaydetBtn.textContent = 'Kaydediliyor...'; kaydetBtn.style.opacity='0.7'; }
 
   try {
     const metaTaban = {
