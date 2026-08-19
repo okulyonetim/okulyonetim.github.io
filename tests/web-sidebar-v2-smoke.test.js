@@ -13,6 +13,10 @@ assert(js.includes('ws2-flyout'),'Dar sidebar için flyout alt menü bulunmalı.
 assert(js.includes("nav-collapsed"),'Daraltılmış sidebar modu bulunmalı.');
 assert(js.includes('Navigasyonu düzenle')&&js.includes("sekmeAc==='function')sekmeAc('ayarlar')"),'Admin navigasyon düzenleyicisine erişebilmeli.');
 assert(js.includes('_navDuzeniYerelUygula'),'Kişisel özelleştirme mobil/web menüyü birlikte yenilemeli.');
+assert(js.includes('function legacyExtras(baseGroups)'),'Alt navigasyon kataloğunda olmayan web menüleri için fallback bulunmalı.');
+assert(js.includes(".ws2-legacy-source .nav-tab[data-tab]"),'Fallback mevcut legacy web sekmelerini taramalı.');
+assert(js.includes("ad:'Diğer Menüler'")&&js.includes("anahtar:'ws2_diger'"),'Eksik web ekranları Diğer Menüler grubunda gösterilmeli.');
+assert(js.includes("if(typeof sekmeAc==='function')sekmeAc(target)"),'Fallback menü öğeleri gerçek sekmeyi açmalı.');
 assert(!js.includes('setInterval('),'Web sidebar sürekli polling kullanmamalı.');
 assert(css.includes('position:fixed !important')&&css.includes('height:100dvh !important'),'Sidebar viewporta sabitlenmeli.');
 assert(css.includes('--ws2-w-collapsed:78px'),'Dar mod genişliği tanımlı olmalı.');
