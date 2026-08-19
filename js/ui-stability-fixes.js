@@ -6,6 +6,7 @@ function scriptYukle(src,key){
   const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute('data-'+key,'1');document.head.appendChild(s);
 }
 scriptYukle('js/theme-contrast-fixes.js','theme-contrast');
+scriptYukle('js/excel-visual-fidelity.js','excel-visual-fidelity');
 
 let sarildi=false,deneme=0;
 function kur(){
