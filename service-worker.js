@@ -12,7 +12,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyCxLLlLCA0Deu7dcQchUWeY5cR5ur5FSkc",
+  apiKey: "AIzaSyCxLLlLCA0Deu7dcQch5e1c4R5ur5FSkc",
   authDomain: "okul-6e302.firebaseapp.com",
   projectId: "okul-6e302",
   storageBucket: "okul-6e302.firebasestorage.app",
@@ -69,28 +69,58 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  const url = event.request.url;
-  if (
-    url.includes('firestore.googleapis.com') ||
+function apiIstegiMi(url) {
+  return url.includes('firestore.googleapis.com') ||
     url.includes('identitytoolkit.googleapis.com') ||
     url.includes('securetoken.googleapis.com') ||
     url.includes('firebaseinstallations.googleapis.com') ||
-    url.includes('fcmregistrations.googleapis.com')
-  ) return;
+    url.includes('fcmregistrations.googleapis.com');
+}
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = event.request.url;
+  if (apiIstegiMi(url)) return;
+
+  const agIstegi = fetch(event.request).then(response => {
+    if (response && response.status === 200 && response.type !== 'opaque') {
+      const copy = response.clone();
+      caches.open(CACHE_ADI).then(cache => cache.put(event.request, copy)).catch(() => {});
+    }
+    return response;
+  });
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      agIstegi.catch(async () => {
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        const shell = await caches.match('./index.html');
+        if (shell) return shell;
+        return new Response('Çevrimdışı', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      })
+    );
+    return;
+  }
 
   event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        if (response && response.status === 200 && response.type !== 'opaque') {
-          const copy = response.clone();
-          caches.open(CACHE_ADI).then(cache => cache.put(event.request, copy)).catch(() => {});
-        }
-        return response;
-      })
-      .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+    agIstegi.catch(async () => {
+      const cached = await caches.match(event.request);
+      if (cached) return cached;
+      return new Response('Kaynak çevrimdışı kullanılamıyor.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+    })
   );
+});
+
+messaging.onBackgroundMessage(payload => {
+  const n = payload && payload.notification ? payload.notification : {};
+  const data = payload && payload.data ? payload.data : {};
+  return self.registration.showNotification(n.title || 'Koruk İlk-Ortaokulu', {
+    body: n.body || data.body || 'Yeni bir bildiriminiz var.',
+    icon: n.icon || './assets/icon-192.png',
+    badge: './assets/icon-192.png',
+    data: { url: data.url || data.link || './' }
+  });
 });
 
 self.addEventListener('push', event => {
@@ -112,7 +142,7 @@ self.addEventListener('notificationclick', event => {
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windows => {
       for (const w of windows) {
         if ('focus' in w) {
-          w.navigate(hedef);
+          if ('navigate' in w) w.navigate(hedef);
           return w.focus();
         }
       }
