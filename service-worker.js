@@ -6,7 +6,7 @@
    · Web push ve PWA cache TEK service worker üzerinden çalışır
    ==================================================================== */
 
-const CACHE_ADI = 'oy-cache-v440';
+const CACHE_ADI = 'oy-cache-v441';
 
 /* Firebase Messaging artık ayrı firebase-messaging-sw.js yerine bu worker'da. */
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
