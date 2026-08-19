@@ -6,6 +6,6 @@ for (const f of ['./index.html','./css/styles.css','./js/app.js','./js/ui-stabil
 const liste=sw.slice(sw.indexOf('const ONBELLEGE_ALINACAKLAR'),sw.indexOf("self.addEventListener('install'"));
 for(const agir of ['./optik/index.html','./optik/js/app.js','xlsx.full.min.js','exceljs.min.js','pdf.min.js','mammoth.browser.min.js','leaflet.js'])assert(!liste.includes(agir),`${agir} ilk kurulum precache listesinden çıkarılmalı.`);
 assert(sw.includes('fetch(event.request)'),'Ağ yüklemesi devam etmeli.');
-assert(sw.includes('cache.put(event.request,copy)'),'Başarılı GET kaynakları runtime-cache edilmeli.');
+assert(/cache\.put\(event\.request\s*,\s*copy\)/.test(sw),'Başarılı GET kaynakları runtime-cache edilmeli.');
 assert(sw.includes('caches.match(event.request)'),'Çevrimdışı cache fallback kullanılmalı.');
 console.log('Service Worker precache performans smoke testleri başarılı.');
