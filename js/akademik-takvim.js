@@ -173,3 +173,13 @@ async function akademikTakvimDosyaSecildi(dosya){
   s.dataset.dokumanPdfTools = '1';
   document.head.appendChild(s);
 })();
+
+/* Android raporlarında ortak Önizleme -> Yazdır/PDF Kaydet standardı. */
+(function nativeRaporOnizlemeyiYukle(){
+  if (document.querySelector('script[data-native-report-preview]')) return;
+  const s = document.createElement('script');
+  s.src = 'js/native-report-preview.js';
+  s.async = false;
+  s.dataset.nativeReportPreview = '1';
+  document.head.appendChild(s);
+})();
