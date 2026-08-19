@@ -36,5 +36,5 @@ const appTag = '<script src="js/app.js"></script>';
 const featurePos = index.indexOf(featureTag), appPos = index.indexOf(appTag);
 assert(featurePos >= 0 && appPos >= 0 && featurePos < appPos, 'Katalog app.js öncesinde yüklenmeli.');
 assert(sw.includes("'./js/ozellik-katalogu.js'"), 'Katalog offline precache listesinde olmalı.');
-assert(sw.includes("oy-cache-v443"), 'Cache sürümü v443 olmalı.');
+assert(sw.includes("oy-cache-v444"), 'Cache sürümü v444 olmalı.');
 console.log('Merkezi özellik kataloğu smoke testleri başarılı.');
