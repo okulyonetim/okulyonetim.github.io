@@ -14,6 +14,9 @@ on:
       - 'js/pdf-export-libs.js'
       - 'js/map-libs.js'
       - 'js/native-report-preview.js'
+      - 'js/ui-stability-fixes.js'
+      - 'js/excel-visual-fidelity.js'
+      - 'js/excel-visual-fidelity-v3.js'
       - 'js/akademik-takvim.js'
       - 'js/yillik-plan.js'
       - 'js/sinav-sonuclari.js'
@@ -59,6 +62,7 @@ on:
       - 'tests/feature-catalog-smoke.test.js'
       - 'tests/web-responsive-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
+      - 'tests/excel-visual-fidelity-v3-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -85,6 +89,9 @@ jobs:
           node --check js/pdf-export-libs.js
           node --check js/map-libs.js
           node --check js/native-report-preview.js
+          node --check js/ui-stability-fixes.js
+          node --check js/excel-visual-fidelity.js
+          node --check js/excel-visual-fidelity-v3.js
           node --check js/akademik-takvim.js
           node --check js/yillik-plan.js
           node --check js/sinav-sonuclari.js
@@ -160,3 +167,6 @@ jobs:
 
       - name: Rapor native yazdırma yönlendirme regresyon testi
         run: node tests/report-native-print-routing-smoke.test.js
+
+      - name: Excel görsel sadakat v3 regresyon testi
+        run: node tests/excel-visual-fidelity-v3-smoke.test.js
