@@ -1934,7 +1934,7 @@ const _HI_TANIMLAR = {
   siniflar:       { modul:'siniflar',       onclick:"sekmeAc('siniflar')",          ikon:'🏫', label:'Sınıflar' },
   nobet:          { modul:'nobet',          onclick:"sekmeAc('nobet')",             ikon:'🛡️', label:'Nöbet' },
   servis:         { modul:'tasima',         onclick:"sekmeAc('tasima')",            ikon:'🚌', label:'Servis' },
-  evrak:          { modul:'evrak',          onclick:"sekmeAc('evrak')",             ikon:'📄', label:'Evrak' },
+  evrak:          { modul:'evrak',          onclick:"sekmeAc('evrak');setTimeout(function(){if(typeof renderKisiselEvrak==='function'&&typeof adminMi==='function'&&!adminMi())renderKisiselEvrak();},200)",             ikon:'📄', label:'Evrak' },
   raporlar:       { modul:'maarifRapor',    onclick:"sekmeAc('maarifRapor')",       ikon:'📊', label:'Raporlar' },
   takvim:         { modul:'takvim',         onclick:"sekmeAc('takvim')",            ikon:'📅', label:'Takvim' },
   notlar:         { modul:'notlar',         onclick:"notlarModalAc()",              ikon:'📝', label:'Notlar' },
@@ -1967,23 +1967,27 @@ function _hiNormalize(ids){
 function renderHizliIslemler(){
   const el = document.getElementById('hizliIslemlerGrid');
   if(!el) return;
-  // Kayıtlı tercihi oku; yoksa yetkili ilk 4
   const tercih = _hiNormalize(_hiLsOku());
   el.innerHTML = tercih.map(id=>{
     const t = _HI_TANIMLAR[id];
     if(!t) return '';
     return `<div class="qa-item" onclick="${t.onclick}"><div class="qa-icon">${t.ikon}</div><div class="qa-label">${t.label}</div></div>`;
   }).join('');
-  // Düzenle butonunu başlığa ekle (zaten index.html'de var, güncelle)
-  _hiDuzenleButonuKur();
+  _hiBaslikKur();
 }
 
-function _hiDuzenleButonuKur(){
+function _hiBaslikKur(){
   const kart = document.querySelector('[data-kart-id="hizliIslemler"]');
   if(!kart) return;
-  // index.html'deki buton zaten var; onclick'i güncelleyelim
-  const btn = kart.querySelector('button');
-  if(btn) btn.onclick = function(e){ e.stopPropagation(); _hiDuzenleAc(); };
+  const h3 = kart.querySelector('h3');
+  if(!h3) return;
+  // Başlığı tamamen yeniden oluştur — Düzenle + Tümü butonlarıyla
+  h3.style.cssText = 'display:flex;align-items:center;justify-content:space-between;';
+  h3.innerHTML = `<span>⚡ Hızlı İşlemler</span>
+    <span style="display:flex;align-items:center;gap:8px;">
+      <button class="btn btn-ghost btn-sm" style="font-size:12px;padding:4px 8px;" onclick="event.stopPropagation();_hiDuzenleAc()" title="Düzenle">✏️ Düzenle</button>
+      <button class="btn btn-ghost btn-sm" style="font-size:12px;padding:4px 8px;color:var(--accent);" onclick="event.stopPropagation();if(typeof AltNav!=='undefined')AltNav.menuAc();else sekmeAc('panel')" title="Tümü">Tümü ›</button>
+    </span>`;
 }
 
 function _hiDuzenleAc(){
