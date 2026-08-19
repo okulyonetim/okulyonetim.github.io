@@ -9,7 +9,7 @@ window.__webSidebarV2=true;
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 const PREF_KEY='anMenuKartTercihleriV2';
 const OPEN_KEY='wsSidebarOpenGroupsV2';
 const ACTIVE_KEY='wsSidebarActiveV2';
@@ -33,15 +33,47 @@ function prefs(){try{return JSON.parse(localStorage.getItem(PREF_KEY)||'{}')||{}
 function openSet(){try{return new Set(JSON.parse(localStorage.getItem(OPEN_KEY)||'[]'));}catch(_){return new Set();}}
 function saveOpen(set){try{localStorage.setItem(OPEN_KEY,JSON.stringify(Array.from(set)));}catch(_){}}
 function canSee(o){return !o?false:(!o.modul||typeof gorebilir!=='function'||gorebilir(o.modul));}
+function normLabel(v){return String(v||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR');}
+function legacyExtras(baseGroups){
+  const represented=new Set();
+  baseGroups.forEach(g=>{
+    (g.ogeler||[]).forEach(o=>represented.add(normLabel(o.ad)));
+    (g.altGrup?.ogeler||[]).forEach(o=>represented.add(normLabel(o.ad)));
+  });
+  represented.add(normLabel('Ana Sayfa'));represented.add(normLabel('Arama'));represented.add(normLabel('Profilim'));
+  const extra=[];const seenTabs=new Set();
+  $$('.ws2-legacy-source .nav-tab[data-tab]').forEach(tab=>{
+    const target=(tab.getAttribute('data-tab')||'').trim();
+    if(!target||target==='panel'||target==='arama'||seenTabs.has(target))return;
+    if(tab.hidden||tab.getAttribute('aria-hidden')==='true'||tab.style.display==='none'||tab.classList.contains('hidden'))return;
+    const modul=tab.getAttribute('data-modul')||tab.dataset.modul||null;
+    if(modul&&typeof gorebilir==='function'&&!gorebilir(modul))return;
+    const label=(tab.querySelector('.nt-label')?.textContent||tab.getAttribute('aria-label')||tab.textContent||target).replace(/\s+/g,' ').trim();
+    if(!label||represented.has(normLabel(label)))return;
+    seenTabs.add(target);represented.add(normLabel(label));
+    extra.push({
+      anahtar:'legacy_'+target,
+      ad:label,
+      ikon:null,
+      modul,
+      _legacyTab:target,
+      aksiyon:function(){if(typeof sekmeAc==='function')sekmeAc(target);}
+    });
+  });
+  if(!extra.length)return null;
+  return {anahtar:'ws2_diger',ad:'Diğer Menüler',renk:'#64748B',ikon:ICON.settings,ogeler:extra,altGrup:null,_officialAd:'Diğer Menüler',_officialRenk:'#64748B',_fallback:true};
+}
 function groups(){
   const raw=typeof window._navDuzeniTumGruplarGetir==='function'?window._navDuzeniTumGruplarGetir():[];
   const p=prefs();
-  return raw.filter(g=>g&&!g._gizliMi).map(g=>{
+  const list=raw.filter(g=>g&&!g._gizliMi).map(g=>{
     const pref=p[g.anahtar]||{};
     const main=(g.ogeler||[]).filter(o=>o&&!o._gizliMi&&canSee(o));
     const alt=g.altGrup?Object.assign({},g.altGrup,{ogeler:(g.altGrup.ogeler||[]).filter(o=>o&&!o._gizliMi&&canSee(o))}):null;
     return Object.assign({},g,{ad:pref.ad||g.ad,renk:pref.renk||g.renk,ogeler:main,altGrup:alt,_officialAd:g.ad,_officialRenk:g.renk});
   }).filter(g=>g.ogeler.length+(g.altGrup?.ogeler?.length||0)>0);
+  const fallback=legacyExtras(list);if(fallback)list.push(fallback);
+  return list;
 }
 function legacyHazirla(sidebar){
   let legacy=$('.ws2-legacy-source',sidebar);if(legacy)return legacy;
@@ -76,6 +108,7 @@ function appendItems(container,g){
   if(g.altGrup&&g.altGrup.ogeler.length){const l=document.createElement('div');l.className='ws2-alt-label';l.textContent=g.altGrup.ad||'Diğer';container.appendChild(l);g.altGrup.ogeler.forEach(o=>container.appendChild(itemBtn(o,g)));}
 }
 function editGroup(g){
+  if(g._fallback)return;
   if(typeof modalAc!=='function')return;
   const body=`<div class="form-group"><label>Menü adı</label><input id="ws2EditName" value="${esc(g.ad)}" style="width:100%"></div><div class="form-group"><label>Renk</label><div style="display:flex;gap:10px;align-items:center"><input type="color" id="ws2EditColor" value="${esc(g.renk||'#0f9f9a')}"><input id="ws2EditHex" value="${esc(g.renk||'#0f9f9a')}" style="flex:1"></div></div><button type="button" class="btn btn-ghost btn-sm" id="ws2ResetGroup" style="width:100%;margin-top:8px">Varsayılana dön</button>`;
   modalAc('Menü Grubunu Özelleştir',body,()=>{
@@ -93,7 +126,7 @@ function groupBlock(g){
   const btn=document.createElement('button');btn.type='button';btn.className='ws2-group-btn';btn.title=g.ad;btn.style.setProperty('--group-color',g.renk||'#0f9f9a');
   const total=g.ogeler.length+(g.altGrup?.ogeler?.length||0);btn.innerHTML=`<span class="ws2-group-icon">${svg(g.ikon||ICON.settings,18)}</span><span class="ws2-group-label">${esc(g.ad)}</span><span class="ws2-count">${total}</span><span class="ws2-chevron">${svg(ICON.chevron,13)}</span>`;
   btn.addEventListener('click',()=>{if(document.body.classList.contains('nav-collapsed'))return openFlyout(g,btn);const s=openSet();if(block.classList.toggle('is-open'))s.add(g.anahtar);else s.delete(g.anahtar);saveOpen(s);});
-  const eb=document.createElement('button');eb.type='button';eb.className='ws2-group-edit';eb.title='Bu grubu özelleştir';eb.innerHTML=svg(ICON.edit,14);eb.addEventListener('click',e=>{e.stopPropagation();editGroup(g);});
+  const eb=document.createElement('button');eb.type='button';eb.className='ws2-group-edit';eb.title='Bu grubu özelleştir';eb.innerHTML=svg(ICON.edit,14);if(g._fallback)eb.hidden=true;else eb.addEventListener('click',e=>{e.stopPropagation();editGroup(g);});
   head.append(btn,eb);block.appendChild(head);
   const sub=document.createElement('div');sub.className='ws2-sub';const inner=document.createElement('div');inner.className='ws2-sub-inner';const list=document.createElement('div');list.className='ws2-sub-list';list.style.setProperty('--group-color',g.renk||'#0f9f9a');appendItems(list,g);inner.appendChild(list);sub.appendChild(inner);block.appendChild(sub);return block;
 }
