@@ -34,6 +34,7 @@ const DOKUMAN_KATEGORILER = [
 function dokumanlarBaglantisiKur() {
   DokumanlarRepository.dokumanlariDinle(v => {
     dokumanlarListesi = DokumanlarService.gorunurListele(v);
+    window.dokumanlarListesi = dokumanlarListesi; // bilgi kartı sayacı için
     renderDokumanlar();
     renderDokumanKategoriFiltre();
   });
