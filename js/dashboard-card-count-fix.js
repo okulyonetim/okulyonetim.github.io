@@ -38,5 +38,13 @@ function refresh(){style();socialContrast();const grid=$('#db41InfoGrid');if(!gr
 function observeGrid(grid){if(gridObserver||!grid)return;let raf=0;gridObserver=new MutationObserver(()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(refresh)});gridObserver.observe(grid,{childList:true})}
 function servisDinleyiciKur(){const db=g('db'),auth=g('auth'),uid=auth?.currentUser?.uid||'';if(!db||!uid||uid===servisUid&&servisUnsub)return;if(servisUnsub)try{servisUnsub()}catch(_){}servisUid=uid;try{const col=g('COL')?.servisler||'oy_servisler';servisUnsub=db.collection(col).onSnapshot(s=>{servisRemoteCount=s.size;refresh()},e=>console.warn('Servis sayacı:',e))}catch(e){console.warn(e)}}
 window.dashboardBilgiKartlariYenile=()=>{servisDinleyiciKur();refresh()};
+// Döküman sayacını periyodik güncelle (Firebase async gecikmesi için)
+(function _dokSayacIzle(){
+  let _son = -1;
+  setInterval(()=>{
+    const v = (window.dokumanlarHamListesi||window.dokumanlarListesi||[]).length;
+    if(v !== _son){ _son = v; refresh(); }
+  }, 2000);
+})();
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{servisDinleyiciKur();refresh()},450));window.addEventListener('load',()=>setTimeout(refresh,600));
 })();

@@ -79,7 +79,7 @@ function kartKaynaklariniTemizle(p){
   const aj=Q('[data-kart-id="ajanda"]',p);if(aj)aj.classList.add('db4-hidden-source');
 }
 
-function bugunGuncelle(){const c=sayilar();const set=(id,v)=>{const e=Q(id);if(e)e.textContent=String(v)};set('#db4Nobet',c.nob);set('#db4Gorev',c.grv);set('#db4Hat',c.hat);set('#db4Izin',c.izin)}
+function bugunGuncelle(){if(typeof db4BugunRender==='function')db4BugunRender();}
 
 function kur(){
  cssKur(); const p=Q('#tab-panel'); if(!p)return false;
@@ -112,11 +112,14 @@ function kur(){
  // renderHizliIslemler varsa hemen çağır
  setTimeout(function(){if(typeof renderHizliIslemler==='function')renderHizliIslemler();},50);
 
- const today=bolum('Bugün','');const tg=document.createElement('div');tg.className='db4-today';tg.innerHTML=`
- <button style="--tile:#2b8cff" onclick="db4Tab('nobet')"><div class="n"><span class="ti">🛡️</span><span id="db4Nobet">0</span></div><div class="l">Bugünkü Nöbet</div></button>
- <button style="--tile:#ff9d22" onclick="db4Tab('gorevler')"><div class="n"><span class="ti">📋</span><span id="db4Gorev">0</span></div><div class="l">Açık Görev</div></button>
- <button style="--tile:#9c62ef" onclick="db4Tab('takvim')"><div class="n"><span class="ti">📅</span><span id="db4Hat">0</span></div><div class="l">Hatırlatıcı</div></button>
- <button style="--tile:#15bfae" onclick="db4Tab('ogretmenler')"><div class="n"><span class="ti">🏥</span><span id="db4Izin">0</span></div><div class="l">İzinli Personel</div></button>`;today.append(tg);shell.append(today);
+ const today=bolum('Bugün','');
+ const tg=document.createElement('div');tg.className='db4-bugun-karti';tg.id='db4BugunKarti';
+ tg.innerHTML='<div class="db4-bugun-yukleniyor">Yükleniyor…</div>';
+ today.append(tg);shell.append(today);
+ // İlk render
+ setTimeout(db4BugunRender, 200);
+ // Periyodik güncelleme
+ setInterval(db4BugunRender, 30000);
 
  const up=bolum('Yaklaşanlar',"db4Tab('takvim')");const uc=document.createElement('div');uc.className='db4-upcoming-card';const ajanda=Q('#dashAjanda',p)||Q('#dashHatirlaticilar',p);if(ajanda)uc.append(ajanda);up.append(uc);shell.append(up);
 
@@ -131,6 +134,107 @@ function kur(){
 
 let deneme=0;const t=setInterval(()=>{if(kur()||++deneme>300)clearInterval(t)},150);
 document.addEventListener('DOMContentLoaded',()=>setTimeout(kur,0));
+
+window.db4BugunRender = function db4BugunRender(){
+  const karti = document.getElementById('db4BugunKarti');
+  if(!karti) return;
+  const b = bugunKey();
+  const satirlar = [];
+
+  // 1. Bugünün nöbetçileri
+  const nobetler = arr('nobetAtamalari').filter(x=>tarihKey(x.tarih)===b);
+  const nobetYerleriArr = arr('nobetYerleri');
+  const amirler = arr('nobetciAmirleri');
+  if(nobetler.length){
+    const nobetHTML = nobetler.map(a=>{
+      const yer = nobetYerleriArr.find(y=>y.id===a.yerId);
+      const yerAd = yer ? yer.ad : '?';
+      const yerIkon = yerAd.includes('BAHÇE')||yerAd.includes('bahçe') ? '🌳' :
+                      yerAd.includes('BİNA')||yerAd.includes('bina') ? '📍' : '📌';
+      return `<span class="db4b-nobet-satir">${yerIkon} ${yerAd}: <strong>${a.ogretmenAdSoyad||''}</strong></span>`;
+    }).join('');
+    const amir = amirler.find(a=>{
+      const ak = tarihKey(a.tarih);
+      return ak===b || (!ak && a.gecerliHafta);
+    });
+    const amirHTML = amir ? `<span class="db4b-nobet-satir">👮 Nöbetçi Amir: <strong>${amir.ad||amir.ogretmenAdSoyad||''}</strong></span>` : '';
+    satirlar.push(`<div class="db4b-grup" onclick="db4Tab('nobet')">
+      <div class="db4b-baslik">🛡️ Günün Nöbetçileri</div>
+      <div class="db4b-icerik">${nobetHTML}${amirHTML}</div>
+    </div>`);
+  }
+
+  // 2. İzinli öğretmen
+  const izinliler = (arr('izinler').length?arr('izinler'):arr('ogretmenIzinleri'))
+    .filter(x=>{ const a=tarihKey(x.tarih||x.baslangic||x.baslangicTarihi),z=tarihKey(x.bitis||x.bitisTarihi);
+      return a===b||z===b||(a&&z&&a<=b&&z>=b); });
+  if(izinliler.length){
+    const izinHTML = izinliler.map(x=>`<span class="db4b-nobet-satir">👤 ${x.ogretmenAdSoyad||x.ad||''} — ${x.tur||x.izinTipi||'İzinli'}</span>`).join('');
+    satirlar.push(`<div class="db4b-grup" onclick="db4Tab('ogretmenler')">
+      <div class="db4b-baslik">🏥 İzinli Öğretmen${izinliler.length>1?'ler':''}</div>
+      <div class="db4b-icerik">${izinHTML}</div>
+    </div>`);
+  }
+
+  // 3. Belirli gün ve haftalar
+  try{
+    const tatilListesi = arr('belirliGunler').filter(bg=>{
+      if(!bg.tarih && !bg.baslangic) return false;
+      const a = tarihKey(bg.tarih||bg.baslangic), z = tarihKey(bg.bitis||bg.tarih);
+      return a===b||(a&&z&&a<=b&&z>=b);
+    });
+    if(tatilListesi.length){
+      const tatilHTML = tatilListesi.map(x=>`<span class="db4b-nobet-satir">📅 ${x.ad||x.baslik||''}</span>`).join('');
+      satirlar.push(`<div class="db4b-grup">
+        <div class="db4b-baslik">🗓️ Belirli Gün ve Haftalar</div>
+        <div class="db4b-icerik">${tatilHTML}</div>
+      </div>`);
+    }
+  }catch(_){}
+
+  // 4. Bugünkü etkinlik ve hatırlatıcı
+  const bugunHat = arr('hatirlaticilar').filter(x=>{
+    const t=tarihKey(x.tarih||x.baslangicTarihi||x.sonTarih);
+    return !tamam(x)&&(t===b);
+  });
+  const bugunGrv = arr('gorevler').filter(x=>{ const t=tarihKey(x.sonTarih||x.tarih); return !tamam(x)&&t===b; });
+  const etkinlikler = [...bugunHat, ...bugunGrv];
+  if(etkinlikler.length){
+    const etHTML = etkinlikler.map(x=>`<span class="db4b-nobet-satir">⏰ ${x.baslik||x.ad||x.metin||''} ${x.saat||x.baslangicSaati?'— '+(x.saat||x.baslangicSaati):''}</span>`).join('');
+    satirlar.push(`<div class="db4b-grup" onclick="db4Tab('takvim')">
+      <div class="db4b-baslik">📌 Bugünkü Etkinlik / Hatırlatıcı</div>
+      <div class="db4b-icerik">${etHTML}</div>
+    </div>`);
+  }
+
+  // 5. Açık görev sayısı (sayı olarak göster)
+  const acikGorev = arr('gorevler').filter(x=>!tamam(x)).length;
+  const acikHat = arr('hatirlaticilar').filter(x=>!tamam(x)).length;
+
+  if(!satirlar.length){
+    karti.innerHTML = `<div class="db4b-bos">Bugün için özel kayıt yok.</div>
+      <div class="db4b-sayaclar">
+        <button onclick="db4Tab('takvim')" class="db4b-sayac"><span class="ti">📅</span><strong id="db4Hat">${acikHat}</strong><small>Hatırlatıcı</small></button>
+        <button onclick="db4Tab('gorevler')" class="db4b-sayac"><span class="ti">📋</span><strong id="db4Gorev">${acikGorev}</strong><small>Açık Görev</small></button>
+        <button onclick="db4Tab('ogretmenler')" class="db4b-sayac"><span class="ti">🏥</span><strong id="db4Izin">0</strong><small>İzinli</small></button>
+      </div>`;
+  } else {
+    karti.innerHTML = satirlar.join('') +
+      `<div class="db4b-sayaclar">
+        <button onclick="db4Tab('takvim')" class="db4b-sayac"><span class="ti">📅</span><strong id="db4Hat">${acikHat}</strong><small>Hatırlatıcı</small></button>
+        <button onclick="db4Tab('gorevler')" class="db4b-sayac"><span class="ti">📋</span><strong id="db4Gorev">${acikGorev}</strong><small>Açık Görev</small></button>
+        <button onclick="db4Tab('ogretmenler')" class="db4b-sayac"><span class="ti">🏥</span><strong id="db4Izin">0</strong><small>İzinli</small></button>
+      </div>`;
+  }
+
+  // izin sayısını güncelle
+  const izinSay = (arr('izinler').length?arr('izinler'):arr('ogretmenIzinleri'))
+    .filter(x=>{ const a=tarihKey(x.tarih||x.baslangic||x.baslangicTarihi),z=tarihKey(x.bitis||x.bitisTarihi);
+      return a===b||z===b||(a&&z&&a<=b&&z>=b); }).length;
+  const izinEl = document.getElementById('db4Izin');
+  if(izinEl) izinEl.textContent = String(izinSay);
+};
+
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)bugunGuncelle()});setInterval(bugunGuncelle,60000);
 new MutationObserver(()=>{const p=Q('#tab-panel');if(p&&!Q('.db4-shell',p))setTimeout(kur,0)}).observe(document.documentElement,{childList:true,subtree:true});
 })();

@@ -699,12 +699,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
 function takvimBaglantilariKur(){
   TakvimRepository.hatirlaticilariDinle(v=>{
     hatirlaticilar = TakvimService.gorunurListele(v);
+    window.hatirlaticilar = hatirlaticilar;
     if(typeof renderHatirlaticilar==='function') renderHatirlaticilar();
     renderDashboard();
+    if(typeof bugunGuncelle==='function') setTimeout(bugunGuncelle, 100);
   });
   TakvimRepository.gorevleriDinle(v=>{
     gorevler = TakvimService.gorunurListele(v);
+    window.gorevler = gorevler;
     if(typeof renderGorevler==='function') renderGorevler();
     renderDashboard();
+    if(typeof bugunGuncelle==='function') setTimeout(bugunGuncelle, 100);
   });
 }
