@@ -211,21 +211,20 @@ window.db4BugunRender = function db4BugunRender(){
   }
 
   // 5. Açık görev sayısı (sayı olarak göster)
-  const acikGorev = arr('gorevler').filter(x=>!tamam(x)).length;
   const acikHat = arr('hatirlaticilar').filter(x=>!tamam(x)).length;
 
   if(!satirlar.length){
     karti.innerHTML = `<div class="db4b-bos">Bugün için özel kayıt yok.</div>
       <div class="db4b-sayaclar">
         <button onclick="db4Tab('takvim')" class="db4b-sayac"><span class="ti">📅</span><strong id="db4Hat">${acikHat}</strong><small>Hatırlatıcı</small></button>
-        <button onclick="db4Tab('gorevler')" class="db4b-sayac"><span class="ti">📋</span><strong id="db4Gorev">${acikGorev}</strong><small>Açık Görev</small></button>
+
         <button onclick="db4Tab('ogretmenler')" class="db4b-sayac"><span class="ti">🏥</span><strong id="db4Izin">0</strong><small>İzinli</small></button>
       </div>`;
   } else {
     karti.innerHTML = satirlar.join('') +
       `<div class="db4b-sayaclar">
         <button onclick="db4Tab('takvim')" class="db4b-sayac"><span class="ti">📅</span><strong id="db4Hat">${acikHat}</strong><small>Hatırlatıcı</small></button>
-        <button onclick="db4Tab('gorevler')" class="db4b-sayac"><span class="ti">📋</span><strong id="db4Gorev">${acikGorev}</strong><small>Açık Görev</small></button>
+
         <button onclick="db4Tab('ogretmenler')" class="db4b-sayac"><span class="ti">🏥</span><strong id="db4Izin">0</strong><small>İzinli</small></button>
       </div>`;
   }
