@@ -4041,3 +4041,55 @@ body.dn-ov-acik{ overflow:hidden; }
 .an-liste-govde > * {
   flex-shrink: 0;
 }
+
+/* ── db4 Bugün Kartı ── */
+.db4-bugun-karti{
+  background:var(--d-surface,var(--bg-card));
+  border:1px solid var(--d-line,var(--border));
+  border-radius:20px;
+  overflow:hidden;
+}
+.db4b-grup{
+  padding:12px 14px;
+  border-bottom:1px solid var(--d-line,var(--border));
+  cursor:pointer;
+}
+.db4b-grup:last-of-type{ border-bottom:none; }
+.db4b-grup:active{ background:var(--d-soft,rgba(24,200,200,.06)); }
+.db4b-baslik{
+  font-size:12.5px; font-weight:700;
+  color:var(--d-accent,var(--accent));
+  margin-bottom:6px;
+}
+.db4b-icerik{
+  display:flex; flex-direction:column; gap:4px;
+}
+.db4b-nobet-satir{
+  font-size:13.5px; color:var(--d-text,var(--ink));
+  display:block; line-height:1.4;
+}
+.db4b-nobet-satir strong{ font-weight:700; }
+.db4b-bos{
+  padding:12px 14px;
+  font-size:13px; color:var(--d-muted,var(--ink-muted));
+  border-bottom:1px solid var(--d-line,var(--border));
+}
+.db4b-sayaclar{
+  display:flex; border-top:1px solid var(--d-line,var(--border));
+}
+.db4b-sayac{
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  gap:3px; padding:10px 4px;
+  background:transparent; border:none; border-right:1px solid var(--d-line,var(--border));
+  cursor:pointer; color:var(--d-text,var(--ink));
+  font-family:inherit;
+}
+.db4b-sayac:last-child{ border-right:none; }
+.db4b-sayac:active{ background:var(--d-soft,rgba(24,200,200,.06)); }
+.db4b-sayac .ti{ font-size:18px; }
+.db4b-sayac strong{ font-size:20px; font-weight:800; color:var(--d-text,var(--ink)); }
+.db4b-sayac small{ font-size:10px; font-weight:600; color:var(--d-muted,var(--ink-muted)); }
+.db4-bugun-yukleniyor{
+  padding:16px; text-align:center;
+  font-size:13px; color:var(--d-muted,var(--ink-muted));
+}
