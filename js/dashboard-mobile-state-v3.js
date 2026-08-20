@@ -12,6 +12,7 @@ const INFO_FIELD='dashboardMobilBilgiKartlariV3', QUICK_FIELD='dashboardMobilHiz
 const INFO_LS='oyDashboardMobilBilgiKartlariV3', QUICK_LS='oyDashboardMobilHizliIslemlerV3';
 const OLD_INFO_LS='oyDashboardV4KartDuzeni_v2', OLD_QUICK_LS='oyDashboardHizliIslemlerV2';
 let state={uid:'',info:null,quick:null,ready:false},loadPromise=null;
+let nativeRemountLoaded=false,nativeRenderWrapped=false;
 function gv(n){try{return window[n]!==undefined?window[n]:eval(n)}catch(_){return null}}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function gorebilir(m){if(!m)return true;try{const f=gv('gorebilir');return typeof f==='function'?!!f(m):true}catch(_){return true}}
@@ -20,6 +21,7 @@ function db(){return gv('db')}
 function userReady(){return !!(authUid()&&gv('AKTIF_KULLANICI'))}
 function tab(tab){try{const f=gv('sekmeAc');if(typeof f==='function')f(tab);else $(`[data-tab="${tab}"]`)?.click()}catch(_){}}
 function toast(s){try{gv('toast')?.(s)}catch(_){}}
+function nativePlatform(){try{return !!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform())}catch(_){return false}}
 const INFO=[
  {id:'personel',ad:'Personel',ico:'👨‍🏫',mod:'ogretmenler',tab:'ogretmenler'},
  {id:'ogrenci',ad:'Öğrenciler',ico:'🎓',mod:'ogrenciler',tab:'ogrenciler'},
@@ -85,8 +87,25 @@ function openInfoEditor(){window.__dbStateInfoTemp=[...(state.ready?state.info:n
 window.dashboardV41Duzenle=openInfoEditor;window.dashboardOzellestirModalAc=openInfoEditor;
 function openQuickEditor(){const av=allowed(QUICK),cur=normalizeQuick(state.ready?state.quick:migrateQuick());const f=gv('modalAc');if(typeof f!=='function')return;const body=`<div style="font-size:12px;color:var(--ink-muted);margin-bottom:12px">En fazla 4 kart seçebilirsiniz.</div><div class="db-state-quick-list">${av.map(x=>`<label><input type="checkbox" value="${x.id}" ${cur.includes(x.id)?'checked':''}><span style="font-size:22px">${x.ico}</span><span>${esc(x.ad)}</span></label>`).join('')}</div>`;f('⚡ Hızlı İşlemleri Düzenle',body,async()=>{const ids=$$('#modalBody input:checked').map(x=>x.value);if(!ids.length)return toast('En az bir kart seçin.');if(ids.length>4)return toast('En fazla 4 kart seçebilirsiniz.');const av=new Set(allowed(QUICK).map(x=>x.id));const q=ids.filter(id=>av.has(id)).slice(0,4);if(!q.length)return toast('En az bir kart seçin.');state.quick=q;lsSet(QUICK_LS,q);lsSet(OLD_QUICK_LS,q);await saveFields({[QUICK_FIELD]:q,dashboardHizliIslemler:q});gv('modalKapat')?.();renderQuick();toast('Hızlı işlemler kalıcı olarak kaydedildi.')},null,'💾 Kaydet')}
 function removeOldDuplicateCards(){const panel=$('#tab-panel.db4');if(!panel)return;$$('[data-kart-id="bekleyenEvrak"]',panel).forEach(x=>x.remove());const oldSchoolLinks=$$('#db41SocialCard',panel);oldSchoolLinks.forEach(x=>x.remove())}
-function applyAll(){css();removeOldDuplicateCards();fixSocial();renderInfo();renderQuick();const infoBtn=$('#db41InfoCard .db41-edit');if(infoBtn)infoBtn.onclick=openInfoEditor}
-function boot(){css();const a=gv('auth');if(a?.onAuthStateChanged)a.onAuthStateChanged(()=>setTimeout(()=>loadState(true),80));[200,650,1400,2800].forEach(ms=>setTimeout(()=>{if(userReady())loadState(ms>1000);else applyAll()},ms))}
-document.addEventListener('DOMContentLoaded',boot,{once:true});window.addEventListener('load',()=>setTimeout(()=>{loadState(true);applyAll()},250));document.addEventListener('click',e=>{if(e.target.closest('[data-tab],.nav-tab,.bn-item,.bottom-nav'))setTimeout(applyAll,90)},true);document.addEventListener('visibilitychange',()=>{if(!document.hidden){applyAll();if(userReady()&&state.uid!==authUid())loadState(true)}});
-window.DashboardMobilStateV3={yenile:()=>loadState(true),uygula:applyAll,bilgiDuzenle:openInfoEditor,hizliDuzenle:openQuickEditor};
+function nativeHeroRemount(){
+ if(!nativePlatform())return;
+ const panel=$('#tab-panel');if(!panel||$('.db4-shell',panel))return;
+ if(!$('#heroSelamla')||!$('#panelTarih'))return;
+ if(!nativeRemountLoaded){
+  nativeRemountLoaded=true;
+  const s=document.createElement('script');s.src='js/dashboard-mobile-v4.js?native-remount=1';s.dataset.nativeDashboardRemount='1';
+  s.onload=()=>setTimeout(applyAll,90);document.head.appendChild(s);return;
+ }
+ const marker=document.createComment('dashboard-native-remount');panel.appendChild(marker);requestAnimationFrame(()=>marker.remove());
+}
+function wrapNativeRenderDashboard(){
+ if(!nativePlatform()||nativeRenderWrapped)return;
+ const old=gv('renderDashboard');if(typeof old!=='function')return;
+ nativeRenderWrapped=true;
+ window.renderDashboard=function(){const r=old.apply(this,arguments);[40,180,650].forEach(ms=>setTimeout(nativeHeroRemount,ms));return r};
+}
+function applyAll(){css();nativeHeroRemount();removeOldDuplicateCards();fixSocial();renderInfo();renderQuick();const infoBtn=$('#db41InfoCard .db41-edit');if(infoBtn)infoBtn.onclick=openInfoEditor}
+function boot(){css();wrapNativeRenderDashboard();[80,350,900].forEach(ms=>setTimeout(nativeHeroRemount,ms));const a=gv('auth');if(a?.onAuthStateChanged)a.onAuthStateChanged(()=>setTimeout(()=>{wrapNativeRenderDashboard();nativeHeroRemount();loadState(true)},80));[200,650,1400,2800].forEach(ms=>setTimeout(()=>{wrapNativeRenderDashboard();nativeHeroRemount();if(userReady())loadState(ms>1000);else applyAll()},ms))}
+document.addEventListener('DOMContentLoaded',boot,{once:true});window.addEventListener('load',()=>setTimeout(()=>{wrapNativeRenderDashboard();nativeHeroRemount();loadState(true);applyAll()},250));document.addEventListener('click',e=>{if(e.target.closest('[data-tab],.nav-tab,.bn-item,.bottom-nav'))setTimeout(()=>{nativeHeroRemount();applyAll()},90)},true);document.addEventListener('visibilitychange',()=>{if(!document.hidden){nativeHeroRemount();applyAll();if(userReady()&&state.uid!==authUid())loadState(true)}});
+window.DashboardMobilStateV3={yenile:()=>loadState(true),uygula:applyAll,bilgiDuzenle:openInfoEditor,hizliDuzenle:openQuickEditor,nativeHeroYenile:nativeHeroRemount};
 })();
