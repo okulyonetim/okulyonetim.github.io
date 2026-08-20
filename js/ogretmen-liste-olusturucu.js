@@ -755,7 +755,50 @@ async function olExcelAktar() {
   const sutunlar = olTumSutunlariGetir();
   const ogrenciler = _olSatirlar;
   if (!sutunlar.length) { toast('En az bir sütun seçin.'); return; }
-  if (typeof ExcelJS === 'undefined') { toast('Excel kütüphanesi yüklenemedi.'); return; }
+  // ExcelJS yoksa dinamik yükle
+  if (typeof ExcelJS === 'undefined') {
+    toast('Excel kütüphanesi yükleniyor…');
+    // Birden fazla CDN dene
+    const excelJsCdnler = [
+      'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js',
+      'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js',
+      'https://unpkg.com/exceljs@4.4.0/dist/exceljs.min.js',
+    ];
+    for (const cdn of excelJsCdnler) {
+      if (typeof ExcelJS !== 'undefined') break;
+      try {
+        await new Promise((res, rej) => {
+          const s = document.createElement('script');
+          s.src = cdn;
+          s.onload = res;
+          s.onerror = rej;
+          document.head.appendChild(s);
+        });
+        let deneme = 0;
+        while (typeof ExcelJS === 'undefined' && deneme++ < 40) {
+          await new Promise(r => setTimeout(r, 100));
+        }
+      } catch(e) { console.warn('CDN başarısız:', cdn); }
+    }
+    if (typeof ExcelJS === 'undefined') {
+      // Son çare: XLSX (SheetJS) ile ham veri yaz
+      if (typeof XLSX !== 'undefined') {
+        try {
+          const wb2 = XLSX.utils.book_new();
+          const sutunlar2 = olTumSutunlariGetir();
+          const basliklar = sutunlar2.map(s => s.baslik || s.id || '');
+          const satirVerisi = _olSatirlar.map(ogr => sutunlar2.map(s => ogr[s.veriAnahtari] || ogr[s.id] || ''));
+          const ws2 = XLSX.utils.aoa_to_sheet([basliklar, ...satirVerisi]);
+          XLSX.utils.book_append_sheet(wb2, ws2, 'Liste');
+          XLSX.writeFile(wb2, `${_olSeciliSinif||'Liste'}.xlsx`);
+          toast('Excel indirildi (basit format).');
+        } catch(e2) { toast('Excel oluşturulamadı: ' + e2.message); }
+      } else {
+        toast('Excel kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.');
+      }
+      return;
+    }
+  }
 
   const bs = olBaslikBilgisiGetir();
   const sutunSayisi = sutunlar.length;
