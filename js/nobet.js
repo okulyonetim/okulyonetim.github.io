@@ -299,7 +299,10 @@ function renderNobetBugunVeHafta(){
             const yer = nobetYerleri.find(y=>y.id===a.yerId);
             return `<div>${nobetYeriIkon(yer?yer.ad:'')} ${escapeHtml(yer?yer.ad:'?')}: <strong>👤 ${escapeHtml(a.ogretmenAdSoyad)}</strong></div>`;
           }).join('') : '<span style="color:var(--ink-muted);">📭 Atama yok</span>');
-      return `<div class="dash-row" style="align-items:flex-start;"><strong style="min-width:90px;display:inline-block;">${gunAdiKisa} ${formatTarih(iso)}</strong><div style="flex:1;">${icerik}</div></div>`;
+      return `<div class="nobet-hafta-gun">
+        <div class="nobet-hafta-baslik">${gunAdiKisa} <span>${formatTarih(iso)}</span></div>
+        <div class="nobet-hafta-icerik">${icerik}</div>
+      </div>`;
     }).join('');
   }
 }

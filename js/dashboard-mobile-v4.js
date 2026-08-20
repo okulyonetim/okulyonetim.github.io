@@ -104,7 +104,7 @@ function kur(){
  const b=document.createElement('div');b.className='db4-bell';b.onclick=()=>{try{zilTiklandi()}catch(_){}};
  if(bell)b.append(bell);live.append(w,b);hero.append(greetWrap,live);shell.append(hero);
 
- const quick=bolum('Hızlı İşlemler','db4Tum()');
+ const quick=bolum('Hızlı İşlemler','');
  // Düzenle butonu ekle
  const qHead=quick.querySelector('.db4-section-head');
  if(qHead){const dBtn=document.createElement('button');dBtn.type='button';dBtn.className='db4-more-btn';dBtn.style='margin-left:6px;color:var(--d-accent);';dBtn.textContent='✏️ Düzenle';dBtn.onclick=function(){if(typeof _hiDuzenleAc==='function')_hiDuzenleAc();};qHead.appendChild(dBtn);}
