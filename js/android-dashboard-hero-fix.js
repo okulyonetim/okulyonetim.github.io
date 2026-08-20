@@ -1,9 +1,15 @@
-/* Koruk Asistan — Android dashboard hero kalıcılık düzeltmesi */
+/* Koruk Asistan — Mobil dashboard hero kalıcılık düzeltmesi */
 (function(){
 'use strict';
 if(window.__androidDashboardHeroFix)return;
-function native(){try{return !!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform())}catch(_){return false}}
-if(!native()||!window.matchMedia('(max-width: 1023px)').matches)return;
+/*
+ * ÖNEMLİ: Burada artık Capacitor.isNativePlatform() kontrolü YOK.
+ * Android WebView'de Capacitor köprüsü bu dosya çalıştığı anda henüz hazır
+ * olmayabiliyor. Eski kod bu durumda return edip bir daha hiç başlamıyordu.
+ * Bu güvence yalnızca mobil genişlikte ve yalnız db4 hero eksikse devreye girer;
+ * dolayısıyla PWA/mobil web için de güvenlidir.
+ */
+if(!window.matchMedia('(max-width: 1023px)').matches)return;
 window.__androidDashboardHeroFix=true;
 const $=(s,r=document)=>r.querySelector(s);
 function gv(n){try{return window[n]!==undefined?window[n]:eval(n)}catch(_){return null}}
@@ -21,7 +27,7 @@ function css(){if($('#android-hero-fix-css'))return;const s=document.createEleme
 [data-theme="dark"] #androidHeroRecovery.fallback{background:#0c2338;color:#f7f9fc;border-color:#1e3c56}
 [data-theme="dark"] #androidHeroRecovery.fallback .ahr-live>div{background:#102940;border-color:#1e3c56}
 `;document.head.appendChild(s)}
-function havaDoldur(el){if(!el)return;const v=window.sonHavaVerisi;if(v){let b={e:'🌤️',t:'Hava Durumu'};try{const f=gv('havaKoduOku');if(typeof f==='function')b=f(v.kod)||b}catch(_){}const k=(()=>{try{return localStorage.getItem('oyHavaKonum')||''}catch(_){return''}})();el.innerHTML=`<span style="font-size:28px;margin-right:10px">${b.e}</span><div style="min-width:0"><div style="font-size:20px;font-weight:850">${Math.round(v.sicaklik)}°C <span style="font-size:14px;font-weight:600">${b.t}</span></div><div style="font-size:11px;opacity:.72;margin-top:3px">${k?'📍 '+k:''}</div></div>`;el.style.display='flex';return true}return false}
+function havaDoldur(el){if(!el)return false;const v=window.sonHavaVerisi;if(v){let b={e:'🌤️',t:'Hava Durumu'};try{const f=gv('havaKoduOku');if(typeof f==='function')b=f(v.kod)||b}catch(_){}const k=(()=>{try{return localStorage.getItem('oyHavaKonum')||''}catch(_){return''}})();el.innerHTML=`<span style="font-size:28px;margin-right:10px">${b.e}</span><div style="min-width:0"><div style="font-size:20px;font-weight:850">${Math.round(v.sicaklik)}°C <span style="font-size:14px;font-weight:600">${b.t}</span></div><div style="font-size:11px;opacity:.72;margin-top:3px">${k?'📍 '+k:''}</div></div>`;el.style.display='flex';return true}return false}
 function kaynaklariOlustur(){const p=$('#tab-panel');if(!p)return null;if($('.db4-shell',p))return null;let host=$('#androidHeroRecovery');if(!host){host=document.createElement('section');host.id='androidHeroRecovery';host.innerHTML='<div class="ahr-greet"><div class="dash-hero-hi" id="heroSelamla"></div><div class="page-sub" id="panelTarih"></div></div><div class="ahr-live"><div class="ahr-weather"><div class="dash-hero-hava-satir" id="heroHavaSatir"></div></div><div class="ahr-bell"><div class="dash-hero-bell" id="zilWidget"></div></div></div><div id="heroSosyalMedya" style="display:none"></div>';p.prepend(host)}
  const g=$('#heroSelamla'),d=$('#panelTarih');if(g)g.textContent=`${selamlama()}, ${kullaniciAdi()} Bey 👋`;if(d)d.textContent=tarihMetni();
  const weather=$('#heroHavaSatir');if(!havaDoldur(weather)){const f=gv('konumIsteVeBaslat');if(typeof f==='function'&&!window.__androidHeroWeatherRetry){window.__androidHeroWeatherRetry=true;setTimeout(()=>{try{f()}catch(_){}},120)}}
@@ -29,9 +35,20 @@ function kaynaklariOlustur(){const p=$('#tab-panel');if(!p)return null;if($('.db
  const rs=gv('renderSosyalMedyaIkonlari');if(typeof rs==='function'){try{rs()}catch(_){}}
  return host}
 function remount(){css();if($('.db4-shell')){$('#androidHeroRecovery')?.remove();return true}const host=kaynaklariOlustur();if(!host)return !!$('.db4-shell');const api=window.DashboardMobilStateV3;if(api&&typeof api.nativeHeroYenile==='function'){try{api.nativeHeroYenile()}catch(_){}}
+ /* dashboard-mobile-v4.js zaten yüklenmiş olabilir ama state API hazır olmayabilir.
+    Bu durumda script etiketini yeniden eklemek yerine mevcut v4 gözlemcisinin
+    kaynakları görmesini bekliyoruz; fallback de kullanıcıya boş ekran bırakmaz. */
  return false}
-function guvence(){if(remount())return;setTimeout(()=>{if(!$('.db4-shell')){$('#androidHeroRecovery')?.classList.add('fallback');const rz=gv('renderZilSayaci');if(typeof rz==='function'){try{rz()}catch(_){}}havaDoldur($('#heroHavaSatir'))}},900)}
-[0,80,240,700,1500,3000].forEach(ms=>setTimeout(guvence,ms));
-document.addEventListener('DOMContentLoaded',guvence,{once:true});window.addEventListener('load',()=>setTimeout(guvence,120));document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(guvence,80)});document.addEventListener('click',e=>{if(e.target.closest('[data-tab],.nav-tab,.bottom-nav,.bn-item'))setTimeout(guvence,120)},true);
+function guvence(){if(remount())return;setTimeout(()=>{if(!$('.db4-shell')){$('#androidHeroRecovery')?.classList.add('fallback');const rz=gv('renderZilSayaci');if(typeof rz==='function'){try{rz()}catch(_){}}havaDoldur($('#heroHavaSatir'))}},700)}
+/* İlk yükleme + Firebase/auth/dashboard yeniden render dalgalarını kapsar. */
+[0,60,180,450,900,1800,3500,6000].forEach(ms=>setTimeout(guvence,ms));
+document.addEventListener('DOMContentLoaded',guvence,{once:true});
+window.addEventListener('load',()=>setTimeout(guvence,80));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(guvence,80)});
+document.addEventListener('click',e=>{if(e.target.closest('[data-tab],.nav-tab,.bottom-nav,.bn-item'))setTimeout(guvence,120)},true);
+/* Ana panel yeniden çizilirse hero kaybını yakala; yalnız tab-panel çocuklarını izler. */
+const mo=new MutationObserver(()=>{const p=$('#tab-panel');if(p&&!$('.db4-shell',p)&&!$('#androidHeroRecovery',p))setTimeout(guvence,0)});
+function observerBaslat(){const p=$('#tab-panel');if(p)mo.observe(p,{childList:true});else setTimeout(observerBaslat,200)}
+observerBaslat();
 window.AndroidDashboardHeroFix={yenile:guvence};
 })();
