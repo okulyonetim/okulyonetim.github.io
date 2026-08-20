@@ -84,7 +84,7 @@ function bugunGuncelle(){const c=sayilar();const set=(id,v)=>{const e=Q(id);if(e
 function kur(){
  cssKur(); const p=Q('#tab-panel'); if(!p)return false;
  const greeting=Q('#heroSelamla',p),date=Q('#panelTarih',p),weather=Q('#heroHavaSatir',p),bell=Q('#zilWidget',p),social=Q('#heroSosyalMedya',p),stats=Q('#dashStats',p);
- if(!greeting||!date||!weather||!bell)return false;
+ if(!greeting||!date)return false;
  p.classList.remove('dmv2','dmv3');p.classList.add('db4');Q('#dashboard-daily-center-css')?.remove();Q('#dmv2-css')?.remove();Q('#dashboard-mobile-v3-css')?.remove();
  if(Q('.db4-shell',p)){bugunGuncelle();return true}
  kartKaynaklariniTemizle(p);
@@ -92,8 +92,11 @@ function kur(){
  const hero=document.createElement('section');hero.className='db4-hero';
  const greetWrap=document.createElement('div');greetWrap.className='db4-greeting';greetWrap.append(greeting,date);
  const live=document.createElement('div');live.className='db4-live';
- const w=document.createElement('div');w.className='db4-weather';w.onclick=()=>{try{havaDurumuDetayAc()}catch(_){}};w.append(weather);
- const b=document.createElement('div');b.className='db4-bell';b.onclick=()=>{try{zilTiklandi()}catch(_){}};b.append(bell);live.append(w,b);hero.append(greetWrap,live);shell.append(hero);
+ // weather: display:none olabilir, yine de ekle; hava yüklenince görünür olur
+ const w=document.createElement('div');w.className='db4-weather';w.onclick=()=>{try{havaDurumuDetayAc()}catch(_){}};
+ if(weather)w.append(weather);
+ const b=document.createElement('div');b.className='db4-bell';b.onclick=()=>{try{zilTiklandi()}catch(_){}};
+ if(bell)b.append(bell);live.append(w,b);hero.append(greetWrap,live);shell.append(hero);
 
  const quick=bolum('Hızlı İşlemler','db4Tum()');
  // Düzenle butonu ekle
