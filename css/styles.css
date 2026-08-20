@@ -3998,3 +3998,46 @@ body.dn-ov-acik{ overflow:hidden; }
 }
 .dash-sayac-mini-alt{ font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
 .dash-sayac-mini-sure{ font-family: monospace; letter-spacing: .5px; color: var(--dm-ink, var(--ink)); }
+
+/* ── Haftanın Nöbetçileri — yeniden düzen ── */
+.nobet-hafta-gun {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nobet-hafta-gun:last-child { border-bottom: none; }
+.nobet-hafta-baslik {
+  font-size: 12px; font-weight: 700;
+  color: var(--ink-muted); text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.nobet-hafta-baslik span { font-weight: 600; color: var(--accent); }
+.nobet-hafta-icerik {
+  display: flex; flex-direction: column; gap: 4px;
+  padding-left: 8px; border-left: 3px solid var(--accent);
+}
+.nobet-hafta-icerik > div {
+  font-size: 13.5px; color: var(--ink);
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+}
+
+/* ── Alt nav akordiyon scroll düzeltmesi ── */
+.an-liste-katman {
+  overflow: hidden;
+}
+.an-liste-govde {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+.an-alt-grup-listesi {
+  overflow: visible;
+}
+/* Akordiyon açıkken govde'nin scroll'una izin ver */
+.an-liste-govde > * {
+  flex-shrink: 0;
+}
