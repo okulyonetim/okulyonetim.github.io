@@ -116,7 +116,7 @@ function kur(){
 
  const ss=document.createElement('section');ss.className='db4-summary-social';
  const school=document.createElement('div');school.className='db4-mini-card db4-school';school.innerHTML='<div class="db4-mini-head"><strong>Okul Özeti</strong><span>Detaylar ›</span></div>';if(stats)school.append(stats);ss.append(school);
- const soc=document.createElement('div');soc.className='db4-mini-card db4-social';soc.innerHTML='<div class="db4-mini-head"><strong>Sosyal & Bağlantılar</strong><span>Tümü ›</span></div>';if(social)soc.append(social);else soc.insertAdjacentHTML('beforeend','<div style="font-size:12px;color:var(--d-muted)">Bağlantılar yükleniyor…</div>');ss.append(soc);shell.append(ss);
+ const soc=document.createElement('div');soc.className='db4-mini-card db4-social';soc.innerHTML='<div class="db4-mini-head"><strong>Sosyal & Bağlantılar</strong></div>';if(social)soc.append(social);else soc.insertAdjacentHTML('beforeend','<div style="font-size:12px;color:var(--d-muted)">Bağlantılar yükleniyor…</div>');ss.append(soc);shell.append(ss);
 
  const secondary=document.createElement('section');secondary.className='db4-secondary';const kullanilan=new Set(['hizliIslemler','hizliBakis','istatistikSeridi','ajanda','bekleyenEvrak']);
  QA(':scope>[data-kart-id]',p).forEach(el=>{if(!kullanilan.has(el.dataset.kartId))secondary.append(el)});if(secondary.children.length)shell.append(secondary);
