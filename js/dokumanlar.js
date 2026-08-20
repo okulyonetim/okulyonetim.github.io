@@ -35,6 +35,11 @@ function dokumanlarBaglantisiKur() {
   DokumanlarRepository.dokumanlariDinle(v => {
     dokumanlarListesi = DokumanlarService.gorunurListele(v);
     window.dokumanlarListesi = dokumanlarListesi; // bilgi kartı sayacı için
+    window.dokumanlarHamListesi = v || []; // ham liste — sayaç için
+    // Bilgi kartı sayacını güncelle
+    if (typeof window.dashboardBilgiKartlariYenile === 'function') {
+      setTimeout(window.dashboardBilgiKartlariYenile, 50);
+    }
     renderDokumanlar();
     renderDokumanKategoriFiltre();
   });

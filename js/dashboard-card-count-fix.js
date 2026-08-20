@@ -14,7 +14,7 @@ function valueFor(label){
  if(label==='Öğrenciler'){const o=arr(['ogrenciler']);if(o.length)return o.length;return sum(arr(['siniflar']),'ogrenciSayisi')}
  if(label==='Sınıflar')return arr(['siniflar']).length;
  if(label==='Servisler'){const local=arr(['servisler']).length;return local||servisRemoteCount||0}
- if(label==='Dökümanlar')return arr(['dokumanlarListesi','dokumanlar','dokumanListesi','dokumanlarCache']).length;
+ if(label==='Dökümanlar'){const ham=window.dokumanlarHamListesi;if(Array.isArray(ham)&&ham.length)return ham.length;return arr(['dokumanlarListesi','dokumanlar','dokumanListesi','dokumanlarCache']).length;}
  if(label==='Hatırlatıcı')return arr(['hatirlaticilar']).filter(x=>!done(x)).length;
  if(label==='Notlar')return arr(['notlar']).length;
  if(label==='Sınavlar')return arr(['sinavlar','yaziliSinavlar']).length;
