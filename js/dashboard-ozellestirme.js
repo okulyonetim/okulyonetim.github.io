@@ -26,7 +26,6 @@ const DASHBOARD_KART_KATALOGU = [
   { id:'haberKarusel',       ad:'📰 Son Haberler (karusel)' },
   { id:'okulSitesiKart',     ad:'🏫 Okul Sitemizden (görselli, yatay kayan)' },
   { id:'hizliIslemler',      ad:'⚡ Hızlı İşlemler' },
-  { id:'gununNobetcileri',   ad:'🛡️ Günün Nöbetçileri' },
   { id:'ogretmenOzel',       ad:'📚 Bugünkü Derslerim / Bu Haftaki Nöbetim' },
   { id:'sinavlarim',         ad:'📝 Sınavlarım' },
   { id:'mesajlarim',         ad:'💬 Mesajlarım' },

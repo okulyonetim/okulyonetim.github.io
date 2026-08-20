@@ -1560,9 +1560,8 @@ function renderDashboard(){
     // YENİ: Açık Görev Sayısı — kataloğa önceden eklenmişti ama hiç
     // uygulanmamıştı; Sınıf rozeti İstatistik şeridine taşındığı için
     // burada onun yerini alan gerçek bir kart olarak devreye alındı.
-    const _hbAcikGorevSayisi = (typeof gorevler !== 'undefined' ? gorevler : []).filter(g=>g.durum!=='tamamlandi').length;
     const _hbTanimlari = {
-      acikGorev: gorebilir('takvim') ? `<div class="hb-chip" onclick="sekmeAc('takvim')"><span class="hb-ico">📌</span><div class="hb-num">${_hbAcikGorevSayisi}</div><div class="hb-label">Açık Görev</div></div>` : '',
+      acikGorev: '',
       bugunkuDers: gorebilir('dersProgrami') ? `<div class="hb-chip" onclick="sekmeAc('dersProgrami')"><span class="hb-ico">📚</span><div class="hb-num">${bugunkuDersSayisi}</div><div class="hb-label">Bugünkü Ders</div></div>` : '',
       hatirlatici: gorebilir('takvim') ? `<div class="hb-chip" onclick="sekmeAc('takvim')"><span class="hb-ico">⏰</span><div class="hb-num">${hatirlaticilar.filter(h=>!h.tamamlandi).length}</div><div class="hb-label">Hatırlatıcı</div></div>` : '',
       // Herkese açık: admin tüm sınav sayısını, öğretmen kendi eklediği/kendine ait

@@ -284,7 +284,7 @@ function renderNobetBugunVeHafta(){
       }).join('') + (ozet.amir?`<div class="dash-row">👮 Nöbetçi Amir — <strong>${escapeHtml(ozet.amir.ad)}</strong></div>`:'')
       : '<p class="empty-state">📭 Bugün için nöbet ataması yok.</p>');
 
-  ['dashBugunNobet','nobetBugunKutu'].forEach(elId=>{
+  ['nobetBugunKutu'].forEach(elId=>{
     const el = document.getElementById(elId); if(el) el.innerHTML = bugunHTML;
   });
 
