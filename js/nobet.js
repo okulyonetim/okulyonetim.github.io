@@ -30,10 +30,26 @@ function nobetTarihISO(y,m,d){ return NobetService.tarihISO(y,m,d); }
    kutucuğunu işaretler/kaldırır (bkz. NobetService.defterDolduToggle). */
 function nobetDefterToggle(atamaId, deger, checkboxEl){
   const atama = nobetAtamalari.find(x=>x.id===atamaId);
-  if(!atama) return;
+  if(!atama){ toast('Atama bulunamadı.'); return; }
+  // Öğretmen kimlik kontrolü — eşleşmiyorsa güvenli hata
+  const ben = (typeof bagliOgretmenimGetir === 'function') ? bagliOgretmenimGetir() : null;
+  const adminMi = typeof AKTIF_KULLANICI !== 'undefined' && AKTIF_KULLANICI && AKTIF_KULLANICI.admin;
+  if(!adminMi && (!ben || atama.ogretmenId !== ben.id)){
+    toast('Bu nöbet defteri size ait değil.');
+    if(checkboxEl) checkboxEl.checked = !deger;
+    return;
+  }
   NobetService.defterDolduToggle(atama, deger)
-    .then(()=> toast(deger ? 'Nöbet defteri işaretlendi.' : 'İşaret kaldırıldı.'))
-    .catch(err=>{ if(checkboxEl) checkboxEl.checked = !deger; if(err.message!=='sahip-degil') toast('Hata oluştu.'); });
+    .then(()=>{
+      // Local state güncelle (yeniden render gerekmeden)
+      atama.defterDolduruldu = deger;
+      toast(deger ? '✅ Nöbet defteri işaretlendi.' : 'İşaret kaldırıldı.');
+    })
+    .catch(err=>{
+      if(checkboxEl) checkboxEl.checked = !deger;
+      const mesaj = err.message === 'sahip-degil' ? 'Bu nöbet size ait değil.' : ('Hata: ' + (err.message||'bilinmiyor'));
+      toast(mesaj);
+    });
 }
 function nobetHaftasonuMu(y,m,d){ return NobetService.haftasonuMu(y,m,d); }
 function nobetTatilMi(iso){ return NobetService.tatilMi(resmiTatiller, iso); }
@@ -258,9 +274,10 @@ function renderNobetBugunVeHafta(){
     : (ozet.atamalar.length ? ozet.atamalar.map(a=>{
         const yer = nobetYerleri.find(y=>y.id===a.yerId);
         const kendiAtamamMi = ben && a.ogretmenId === ben.id;
-        return `<div class="dash-row">${nobetYeriIkon(yer?yer.ad:'')} ${escapeHtml(yer?yer.ad:'?')} — <strong>👤 ${escapeHtml(a.ogretmenAdSoyad)}</strong>
-          ${kendiAtamamMi ? `<label style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:400;cursor:pointer;">
-            <input type="checkbox" ${a.defterDolduruldu?'checked':''} onchange="nobetDefterToggle('${a.id}', this.checked, this)">
+        return `<div class="dash-row" style="flex-wrap:wrap;gap:4px;">
+          <span>${nobetYeriIkon(yer?yer.ad:'')} ${escapeHtml(yer?yer.ad:'?')} — <strong>👤 ${escapeHtml(a.ogretmenAdSoyad)}</strong></span>
+          ${kendiAtamamMi ? `<label style="width:100%;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;cursor:pointer;padding:6px 8px;background:var(--soft-bg,rgba(24,200,200,.06));border:1px solid var(--border,rgba(24,200,200,.18));border-radius:10px;margin-top:4px;">
+            <input type="checkbox" ${a.defterDolduruldu?'checked':''} onchange="nobetDefterToggle('${a.id}', this.checked, this)" style="width:16px;height:16px;accent-color:#18C8C8;flex-shrink:0;">
             📔 Defteri doldurdum
           </label>` : ''}
         </div>`;
