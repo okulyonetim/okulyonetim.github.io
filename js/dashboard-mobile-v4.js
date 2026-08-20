@@ -83,16 +83,22 @@ function bugunGuncelle(){const c=sayilar();const set=(id,v)=>{const e=Q(id);if(e
 
 function kur(){
  cssKur(); const p=Q('#tab-panel'); if(!p)return false;
- const greeting=Q('#heroSelamla',p),date=Q('#panelTarih',p),weather=Q('#heroHavaSatir',p),bell=Q('#zilWidget',p),social=Q('#heroSosyalMedya',p),stats=Q('#dashStats',p);
+ // Elementleri document genelinde ara (Android'de p scope bazen erken)
+ const greeting=document.getElementById('heroSelamla');
+ const date=document.getElementById('panelTarih');
  if(!greeting||!date)return false;
+ const weather=document.getElementById('heroHavaSatir');
+ const bell=document.getElementById('zilWidget');
+ const social=document.getElementById('heroSosyalMedya');
+ const stats=Q('#dashStats',p);
  p.classList.remove('dmv2','dmv3');p.classList.add('db4');Q('#dashboard-daily-center-css')?.remove();Q('#dmv2-css')?.remove();Q('#dashboard-mobile-v3-css')?.remove();
+ // Zaten kurulmuşsa sadece güncelle
  if(Q('.db4-shell',p)){bugunGuncelle();return true}
  kartKaynaklariniTemizle(p);
  const shell=document.createElement('div');shell.className='db4-shell';
  const hero=document.createElement('section');hero.className='db4-hero';
  const greetWrap=document.createElement('div');greetWrap.className='db4-greeting';greetWrap.append(greeting,date);
  const live=document.createElement('div');live.className='db4-live';
- // weather: display:none olabilir, yine de ekle; hava yüklenince görünür olur
  const w=document.createElement('div');w.className='db4-weather';w.onclick=()=>{try{havaDurumuDetayAc()}catch(_){}};
  if(weather)w.append(weather);
  const b=document.createElement('div');b.className='db4-bell';b.onclick=()=>{try{zilTiklandi()}catch(_){}};
@@ -123,7 +129,7 @@ function kur(){
  const oldHero=Q('.dash-hero',p);if(oldHero)oldHero.remove();p.prepend(shell);bugunGuncelle();return true;
 }
 
-let deneme=0;const t=setInterval(()=>{if(kur()||++deneme>160)clearInterval(t)},100);
+let deneme=0;const t=setInterval(()=>{if(kur()||++deneme>300)clearInterval(t)},150);
 document.addEventListener('DOMContentLoaded',()=>setTimeout(kur,0));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)bugunGuncelle()});setInterval(bugunGuncelle,60000);
 new MutationObserver(()=>{const p=Q('#tab-panel');if(p&&!Q('.db4-shell',p))setTimeout(kur,0)}).observe(document.documentElement,{childList:true,subtree:true});
