@@ -281,7 +281,7 @@ function renderNobetBugunVeHafta(){
             📔 Defteri doldurdum
           </label>` : ''}
         </div>`;
-      }).join('') + (ozet.amir?`<div class="dash-row">👮 Nöbetçi Amir — <strong>${escapeHtml(ozet.amir.ad)}</strong>${(()=>{ const ogr=ogretmenler.find(o=>o.id===ozet.amir.ogretmenId); const tel=ogr?ogr.telefon:ozet.amir.telefon; return tel?' (📞 '+escapeHtml(tel)+')':''; })()}</div>`:'')
+      }).join('') + (ozet.amir?`<div class="dash-row">👮 Nöbetçi Amir — <strong>${escapeHtml(ozet.amir.ad)}</strong></div>`:'')
       : '<p class="empty-state">📭 Bugün için nöbet ataması yok.</p>');
 
   ['dashBugunNobet','nobetBugunKutu'].forEach(elId=>{
