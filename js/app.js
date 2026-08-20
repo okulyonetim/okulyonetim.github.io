@@ -3562,3 +3562,4 @@ function ozelMenuGrupSil(id){
     }, 300);
   }).catch(err => toast('Hata: ' + err.message));
 }
+
