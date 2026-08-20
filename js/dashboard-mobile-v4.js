@@ -103,6 +103,9 @@ function kur(){
  if(weather)w.append(weather);
  const b=document.createElement('div');b.className='db4-bell';b.onclick=()=>{try{zilTiklandi()}catch(_){}};
  if(bell)b.append(bell);live.append(w,b);hero.append(greetWrap,live);shell.append(hero);
+ // Deneme sınavı sayaç kartı — hero'nun hemen altında
+ const sayacKarti=document.getElementById('dashSayacKarti');
+ if(sayacKarti)shell.append(sayacKarti);
 
  const quick=bolum('Hızlı İşlemler','');
  // Düzenle butonu ekle
@@ -128,7 +131,7 @@ function kur(){
  const soc=document.createElement('div');soc.className='db4-mini-card db4-social';soc.innerHTML='<div class="db4-mini-head"><strong>Sosyal & Bağlantılar</strong></div>';if(social)soc.append(social);else soc.insertAdjacentHTML('beforeend','<div style="font-size:12px;color:var(--d-muted)">Bağlantılar yükleniyor…</div>');ss.append(soc);shell.append(ss);
 
  const secondary=document.createElement('section');secondary.className='db4-secondary';const kullanilan=new Set(['hizliIslemler','hizliBakis','istatistikSeridi','ajanda','bekleyenEvrak']);
- QA(':scope>[data-kart-id]',p).forEach(el=>{if(!kullanilan.has(el.dataset.kartId))secondary.append(el)});if(secondary.children.length)shell.append(secondary);
+ QA(':scope>[data-kart-id]',p).forEach(el=>{if(!kullanilan.has(el.dataset.kartId)&&el.id!=='dashSayacKarti')secondary.append(el)});if(secondary.children.length)shell.append(secondary);
  const oldHero=Q('.dash-hero',p);if(oldHero)oldHero.remove();p.prepend(shell);bugunGuncelle();return true;
 }
 

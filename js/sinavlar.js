@@ -949,6 +949,11 @@ function _anaSayfaSayacKartiGuncelle(){
   const { d, ds } = adaylar[0];
   _dashSayacAktifId = d.id;
   kart.style.display = '';
+  // db4-shell içinde hero'nun hemen altında olsun
+  const shell = document.querySelector('.db4-shell');
+  if(shell && shell.children[0] && kart.parentElement !== shell){
+    shell.insertBefore(kart, shell.children[1] || shell.firstChild);
+  }
 
   if(ds.durum === 'bekle'){
     kart.innerHTML = `
