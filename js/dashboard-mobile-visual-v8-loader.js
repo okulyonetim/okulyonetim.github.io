@@ -1,1 +1,0 @@
-(function(){const s=document.createElement('script');s.src='js/dashboard-mobile-visual-v8.js?v=8342495';s.async=false;document.head.appendChild(s)})();
