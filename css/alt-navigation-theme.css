@@ -1,0 +1,142 @@
+/* Koruk Asistan — Alt Navigasyon / Menü görsel tema v1
+   Yalnızca görünüm katmanıdır. Navigasyon davranışına müdahale etmez. */
+:root{
+  --an-bg:#f6f7fb;
+  --an-surface:#ffffff;
+  --an-surface-soft:#f8f9fc;
+  --an-text:#1f2937;
+  --an-muted:#6b7280;
+  --an-line:rgba(55,65,81,.16);
+  --an-line-strong:rgba(55,65,81,.24);
+  --an-shadow:0 12px 34px rgba(31,41,55,.10);
+  --an-shadow-soft:0 7px 20px rgba(31,41,55,.075);
+  --an-accent:#7c5ce7;
+  --an-accent-soft:#f0ebff;
+  --an-blue:#2e7bd8;
+  --an-blue-soft:#eaf3ff;
+  --an-green:#1a9a72;
+  --an-green-soft:#e9f8f1;
+  --an-orange:#dc7b16;
+  --an-orange-soft:#fff2df;
+  --an-rose:#d65378;
+  --an-rose-soft:#fff0f4;
+  --an-cyan:#168ba0;
+  --an-cyan-soft:#e9f8fb;
+}
+[data-theme="dark"]{
+  --an-bg:#101720;
+  --an-surface:#17212d;
+  --an-surface-soft:#1b2633;
+  --an-text:#edf2f7;
+  --an-muted:#9eabb9;
+  --an-line:rgba(203,213,225,.17);
+  --an-line-strong:rgba(203,213,225,.27);
+  --an-shadow:0 14px 36px rgba(0,0,0,.32);
+  --an-shadow-soft:0 8px 22px rgba(0,0,0,.24);
+  --an-accent:#c3adff;
+  --an-accent-soft:#2b2147;
+  --an-blue:#8dc3ff;
+  --an-blue-soft:#172f4b;
+  --an-green:#70dcb5;
+  --an-green-soft:#153a2e;
+  --an-orange:#ffc57d;
+  --an-orange-soft:#3c2c18;
+  --an-rose:#ff9ab3;
+  --an-rose-soft:#422431;
+  --an-cyan:#7dd6e4;
+  --an-cyan-soft:#153841;
+}
+
+/* ALT BAR */
+.bottom-nav{
+  background:color-mix(in srgb,var(--an-surface) 94%,transparent)!important;
+  border-top:1px solid var(--an-line)!important;
+  box-shadow:0 -8px 28px rgba(31,41,55,.08)!important;
+  backdrop-filter:blur(18px) saturate(1.15);
+  -webkit-backdrop-filter:blur(18px) saturate(1.15);
+  color:var(--an-text)!important;
+}
+[data-theme="dark"] .bottom-nav{box-shadow:0 -10px 28px rgba(0,0,0,.28)!important}
+.bottom-nav button,.bottom-nav a{
+  color:var(--an-muted)!important;
+  border-radius:15px!important;
+  transition:background .18s ease,color .18s ease,transform .14s ease!important;
+}
+.bottom-nav button:active,.bottom-nav a:active{transform:scale(.95)}
+.bottom-nav button.active,.bottom-nav a.active,
+.bottom-nav .active,.bottom-nav [aria-current="page"]{
+  color:var(--an-accent)!important;
+  background:var(--an-accent-soft)!important;
+}
+.bottom-nav svg{stroke-width:1.9!important}
+#bnMenuBtn{color:var(--an-accent)!important}
+#bnMenuBtn.active,#bnMenuBtn[aria-expanded="true"]{background:var(--an-accent-soft)!important}
+
+/* AÇILAN KATMANLAR — geometriyi değiştirme */
+.an-grid-katman,.an-liste-katman,.an-profil-katman{
+  background:var(--an-bg)!important;
+  color:var(--an-text)!important;
+}
+.an-grid-katman::before,.an-liste-katman::before,.an-profil-katman::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 16% 4%,rgba(124,92,231,.08),transparent 28%),radial-gradient(circle at 90% 18%,rgba(26,154,114,.055),transparent 25%);
+}
+
+/* Menü içindeki başlık/yüzeyler */
+.an-grid-katman [class*="baslik"],.an-grid-katman [class*="head"],
+.an-liste-katman [class*="baslik"],.an-liste-katman [class*="head"],
+.an-profil-katman [class*="baslik"],.an-profil-katman [class*="head"]{
+  color:var(--an-text)!important;
+}
+.an-grid-katman [class*="alt"],.an-liste-katman [class*="alt"],.an-profil-katman [class*="alt"],
+.an-grid-katman small,.an-liste-katman small,.an-profil-katman small{
+  color:var(--an-muted)!important;
+}
+
+/* 1. katman kartları */
+.an-grid-katman [class*="kart"],
+.an-grid-katman [class*="grup"]{
+  background:var(--an-surface)!important;
+  color:var(--an-text)!important;
+  border:1px solid var(--an-line)!important;
+  box-shadow:var(--an-shadow-soft)!important;
+  border-radius:20px!important;
+}
+.an-grid-katman [class*="kart"]:active,.an-grid-katman [class*="grup"]:active{transform:scale(.98)}
+
+/* İkon kutularını ana sayfa renk diline yaklaştır */
+.an-grid-katman [class*="kart"]:nth-child(6n+1) svg,.an-grid-katman [class*="grup"]:nth-child(6n+1) svg{color:var(--an-accent)!important}
+.an-grid-katman [class*="kart"]:nth-child(6n+2) svg,.an-grid-katman [class*="grup"]:nth-child(6n+2) svg{color:var(--an-blue)!important}
+.an-grid-katman [class*="kart"]:nth-child(6n+3) svg,.an-grid-katman [class*="grup"]:nth-child(6n+3) svg{color:var(--an-green)!important}
+.an-grid-katman [class*="kart"]:nth-child(6n+4) svg,.an-grid-katman [class*="grup"]:nth-child(6n+4) svg{color:var(--an-orange)!important}
+.an-grid-katman [class*="kart"]:nth-child(6n+5) svg,.an-grid-katman [class*="grup"]:nth-child(6n+5) svg{color:var(--an-rose)!important}
+.an-grid-katman [class*="kart"]:nth-child(6n) svg,.an-grid-katman [class*="grup"]:nth-child(6n) svg{color:var(--an-cyan)!important}
+
+/* 2. katman liste / akordeon */
+.an-liste-katman .an-liste-govde,#anListeGovde{padding-left:12px!important;padding-right:12px!important}
+.an-liste-katman .an-akordeon-baslik,
+.an-liste-katman [class*="oge"],
+.an-liste-katman [class*="item"]{
+  background:var(--an-surface)!important;
+  color:var(--an-text)!important;
+  border:1px solid var(--an-line)!important;
+  border-radius:16px!important;
+  box-shadow:0 5px 15px rgba(31,41,55,.055)!important;
+}
+[data-theme="dark"] .an-liste-katman .an-akordeon-baslik,
+[data-theme="dark"] .an-liste-katman [class*="oge"],
+[data-theme="dark"] .an-liste-katman [class*="item"]{box-shadow:0 6px 16px rgba(0,0,0,.18)!important}
+.an-liste-katman .an-akordeon-baslik[aria-expanded="true"]{border-color:var(--an-line-strong)!important;background:var(--an-accent-soft)!important;color:var(--an-accent)!important}
+
+/* Profil */
+.an-profil-katman [class*="kart"],.an-profil-katman [class*="profil"]{
+  border-color:var(--an-line)!important;
+}
+.an-profil-katman button,.an-profil-katman a{
+  border-color:var(--an-line)!important;
+}
+
+@media (max-width:1023px){
+  .bottom-nav{padding-bottom:max(5px,env(safe-area-inset-bottom))!important}
+  .an-grid-katman,.an-liste-katman,.an-profil-katman{padding-bottom:calc(82px + env(safe-area-inset-bottom))!important}
+}
