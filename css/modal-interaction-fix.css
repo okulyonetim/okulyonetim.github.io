@@ -1,24 +1,19 @@
 /* Koruk Asistan — global modal interaction fix v2
    =========================================================
-   SORUN ANALİZİ:
-   1. styles.css satır 2228: body.modal-open { touch-action: none; }
-      → Body'ye touch-action:none uygulandığında BÜTÜN dokunma olayları
-        (buton tıklamaları dahil) bloke oluyor. Overlay ve modal içindeki
-        elementler de bu kuraldan kalıtım yoluyla etkileniyor.
-   2. app.js MutationObserver body'yi position:fixed yapıyor.
-      position:fixed + touch-action:none kombinasyonu Android WebView'de
-      modal içi tüm etkileşimi donduruyor.
-   3. bottom-nav z-index:9700 (styles.css 3663) = modal-overlay z-index:9700 (856)
-      → Aynı seviye; bottom-nav modal ÜSTÜNE çıkıp tıklamaları yutabiliyor.
+   KÖK SEBEP:
+   styles.css → body.modal-open { touch-action: none; }
+   Bu kural body + tüm alt elementlerin dokunma olaylarını (tap/click dahil)
+   bloke eder. Modal içindeki Vazgeç/Kaydet/Sil butonları çalışmaz.
+   position:fixed (MutationObserver) ile birleşince Android WebView tamamen donuyor.
    ========================================================= */
 
-/* ── 1. Body kilidini sadece overflow/position ile yap, touch-action'a dokunma ── */
+/* 1. touch-action:none'ı iptal et — sadece overflow kilitle */
 body.modal-open {
   overflow: hidden !important;
-  touch-action: auto !important;   /* styles.css'deki none'ı iptal et */
+  touch-action: auto !important;
 }
 
-/* ── 2. Modal ve overlay içinde dokunma serbestçe çalışsın ── */
+/* 2. Modal ve tüm içeriği serbestçe tıklanabilir olsun */
 body.modal-open .modal-overlay,
 body.modal-open .modal-overlay *,
 body.modal-open .detay-overlay,
@@ -33,28 +28,14 @@ body.modal-open #ilerlemeOverlay * {
   pointer-events: auto !important;
 }
 
-/* ── 3. Modal overlay z-index'ini bottom-nav'ın ÜSTÜNE taşı ── */
-/*    bottom-nav: 9700 → modal-overlay en az 9750+ olmalı         */
+/* 3. Modal overlay z-index → bottom-nav (9700) ÜSTÜNE çıkar */
 .modal-overlay.active,
 .modal-overlay.show {
   z-index: 9750 !important;
 }
 
-/* ── 4. Bottom-nav modal arkasında kalacak şekilde ayarla ── */
-/*    (modal açıkken alt nav görünmez zaten, bu z-index çakışmasını çözer) */
+/* 4. Modal açıkken bottom-nav arkada kalsın */
 body.modal-open .bottom-nav {
   z-index: 7000 !important;
-  pointer-events: none !important;  /* modal açıkken alt nav'a tıklama engeli */
-}
-
-/* ── 5. detay-overlay da tutarlı olsun ── */
-.detay-overlay {
-  z-index: 9650 !important;
-}
-
-/* ── 6. Özel onay ve ilerleme modal'ları zaten inline z-index 9900/9500 ──
-   Bunlara dokunmaya gerek yok; sadece pointer-events güvencesi ekliyoruz */
-#ozelOnayModal,
-#ilerlemeOverlay {
-  pointer-events: auto;
+  pointer-events: none !important;
 }
