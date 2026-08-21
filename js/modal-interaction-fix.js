@@ -1,51 +1,71 @@
-/* Koruk Asistan — global modal interaction fix v1 */
+/* Koruk Asistan — global modal interaction fix v2 */
 (function(){
 'use strict';
-if(window.__MODAL_INTERACTION_FIX__) return;
-window.__MODAL_INTERACTION_FIX__=true;
+if(window.__MODAL_INTERACTION_FIX_V2__) return;
+window.__MODAL_INTERACTION_FIX_V2__=true;
 
-function gorunur(el){
+function acikMi(el){
   if(!el) return false;
-  const cs=getComputedStyle(el);
-  return el.classList.contains('show')||el.classList.contains('active')||(cs.display!=='none'&&cs.visibility!=='hidden');
+  return el.classList.contains('show') || el.classList.contains('active') || el.classList.contains('acik');
 }
 
-function kilitTemizle(){
+function zorlaKilitTemizle(){
   const ana=document.getElementById('modalOverlay');
   const detay=document.getElementById('detayOverlay');
-  if(!gorunur(ana)&&!gorunur(detay)) document.body.classList.remove('modal-open');
+  if(!acikMi(ana) && !acikMi(detay)){
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+    if(ana && !acikMi(ana)){
+      ana.style.removeProperty('display');
+      ana.style.removeProperty('pointer-events');
+    }
+  }
 }
 
 function modalGuvenliKapat(){
   const ana=document.getElementById('modalOverlay');
-  if(gorunur(ana)){
+  if(acikMi(ana)){
     try{
       if(typeof window.modalKapat==='function') window.modalKapat();
-      else { ana.classList.remove('show','active'); ana.style.display='none'; }
-    }catch(_){ ana.classList.remove('show','active'); ana.style.display='none'; }
+      else ana.classList.remove('show','active','acik');
+    }catch(_){ ana.classList.remove('show','active','acik'); }
   }
   const detay=document.getElementById('detayOverlay');
-  if(gorunur(detay)){
+  if(acikMi(detay)){
     try{
       if(typeof window.detayPanelKapat==='function') window.detayPanelKapat();
-      else { detay.classList.remove('show','active'); detay.style.display='none'; }
-    }catch(_){ detay.classList.remove('show','active'); detay.style.display='none'; }
+      else detay.classList.remove('show','active','acik');
+    }catch(_){ detay.classList.remove('show','active','acik'); }
   }
-  setTimeout(kilitTemizle,0);
+  requestAnimationFrame(zorlaKilitTemizle);
+  setTimeout(zorlaKilitTemizle,40);
+  setTimeout(zorlaKilitTemizle,180);
 }
 
+/* Alt navigasyona geçerken açık modal/panel resmi kapanış akışından geçirilir. */
 document.addEventListener('click',function(e){
-  if(!e.target.closest?.('.bottom-nav')) return;
-  modalGuvenliKapat();
+  if(e.target.closest?.('.bottom-nav')) modalGuvenliKapat();
 },true);
 
-const gozlemci=new MutationObserver(()=>setTimeout(kilitTemizle,0));
+/* Ortak modaldaki Vazgeç/Kapat düğmeleri sonrasında gövde kilidinin kesin temizlenmesi. */
+document.addEventListener('click',function(e){
+  const btn=e.target.closest?.('#modalOverlay button');
+  if(!btn) return;
+  const txt=(btn.textContent||'').trim().toLocaleLowerCase('tr');
+  const onclick=btn.getAttribute('onclick')||'';
+  if(txt.includes('vazgeç') || txt.includes('kapat') || onclick.includes('modalKapat')){
+    setTimeout(zorlaKilitTemizle,0);
+    setTimeout(zorlaKilitTemizle,80);
+  }
+},false);
+
+const gozlemci=new MutationObserver(()=>requestAnimationFrame(zorlaKilitTemizle));
 function baslat(){
   const ana=document.getElementById('modalOverlay');
   const detay=document.getElementById('detayOverlay');
   if(ana) gozlemci.observe(ana,{attributes:true,attributeFilter:['class','style']});
   if(detay) gozlemci.observe(detay,{attributes:true,attributeFilter:['class','style']});
-  kilitTemizle();
+  zorlaKilitTemizle();
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',baslat,{once:true}); else baslat();
 })();
