@@ -53,5 +53,5 @@ if(document.readyState==='loading'){
 } else {
   bodyTemizle();
 }
-document.addEventListener('click', function(){ setTimeout(bodyTemizle, 30); }, true);
+document.addEventListener('click', function(){ setTimeout(bodyTemizle, 30); }, false);
 })();

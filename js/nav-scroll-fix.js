@@ -111,7 +111,7 @@ function acilanBasligiGoster(e){
 }
 let deneme=0;const t=setInterval(()=>{if(uygula()||++deneme>120)clearInterval(t);},100);
 document.addEventListener('DOMContentLoaded',()=>setTimeout(uygula,0));
-document.addEventListener('click',acilanBasligiGoster,true);
+document.addEventListener('click',acilanBasligiGoster,false);
 window.addEventListener('resize',uygula,{passive:true});
 new MutationObserver(()=>uygula()).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
 })();

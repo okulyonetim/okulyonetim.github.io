@@ -59,7 +59,19 @@ function dashboardClean(){ $$('.db4 .db4-today button').forEach(b=>{/Açık Gör
 function css(){if($('#rh-hardening-css'))return;const s=document.createElement('style');s.id='rh-hardening-css';s.textContent=`.rh-admin-evrak-source{display:none!important}.rh-personal-docs{padding:2px 0 96px}.rh-personal-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px}.rh-personal-head h2{margin:0;color:var(--ink);font-size:22px}.rh-personal-head p{margin:5px 0 0;color:var(--ink-muted);font-size:12px}.rh-personal-head button{border:0;background:none;color:var(--accent,#087f7b);font-weight:800}.rh-reminder-list{display:flex;flex-direction:column;gap:9px}.rh-reminder{width:100%;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:10px;text-align:left;border:1px solid var(--border);background:var(--surface,#fff);border-radius:16px;padding:13px;color:var(--ink)}.rh-rem-body{display:flex;flex-direction:column;gap:3px}.rh-rem-body small{color:var(--ink-muted)}.rh-rem-date{font-size:10.5px;font-weight:800;padding:5px 8px;border-radius:999px;background:#e6f5f3;color:#087f7b}.rh-rem-date.late{background:#fdeaea;color:#b52e2e}.rh-empty{padding:28px 14px;text-align:center;color:var(--ink-muted);border:1px dashed var(--border);border-radius:16px}.rh-overlay{position:fixed;inset:0;z-index:12000;background:rgba(3,12,20,.56);display:flex;align-items:flex-end;justify-content:center}.rh-sheet{width:min(560px,100%);max-height:82dvh;overflow:auto;background:var(--surface,#fff);color:var(--ink);border-radius:22px 22px 0 0;padding:18px}.rh-sheet-head{display:flex;justify-content:space-between;align-items:center}.rh-sheet-head button{border:0;background:none;color:var(--ink);font-size:20px}.rh-quick-list{display:flex;flex-direction:column;gap:8px;margin:14px 0}.rh-quick-list label{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:14px;padding:12px 14px;cursor:pointer}.rh-quick-list input{width:18px;height:18px;flex-shrink:0}.rh-qicon{font-size:22px}.rh-save{width:100%}[data-theme="dark"] .rh-sheet,[data-theme="dark"] .rh-reminder{background:#0d2438}@media(max-width:560px){.rh-reminder{grid-template-columns:32px minmax(0,1fr)}.rh-rem-date{grid-column:2;justify-self:start}}`;document.head.appendChild(s)}
 function apply(){css();if(!user())return;applySettingsRole();dashboardClean();initQuick(false);const r=evrakRoot();if(r&&!adminMi()&&(r.classList.contains('active')||r.style.display!=='none'))renderKisiselEvrak();}
 window.rolArayuzunuYenile=apply;
-document.addEventListener('click',e=>{const t=e.target.closest('[data-tab],.nav-tab,.bn-item');if(t)setTimeout(()=>{applySettingsRole();dashboardClean();renderQuick();const r=evrakRoot();if(r&&!adminMi()&&(r.classList.contains('active')||r.style.display!=='none'))renderKisiselEvrak()},80)},true);
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-tab],.nav-tab,.bn-item');
+  if(!t) return; // Modal butonu vb. — işlem yapma
+  // capture=true kaldırıldı, bubble fazına taşındı — modal tıklamalarını etkilemesin
+  setTimeout(()=>{
+    applySettingsRole();
+    dashboardClean();
+    renderQuick();
+    const r=evrakRoot();
+    if(r&&!adminMi()&&(r.classList.contains('active')||r.style.display!=='none'))
+      renderKisiselEvrak();
+  },80);
+},false); // capture:true → false yapıldı
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{apply();setTimeout(()=>initQuick(true),900)},250));
 window.addEventListener('load',()=>setTimeout(apply,500));
 })();
