@@ -1,0 +1,163 @@
+/* Koruk Asistan — Personel İşleri tema uyarlaması v1 */
+#tab-personel{
+  --ps-accent:#7c3aed;
+  --ps-accent-soft:rgba(124,58,237,.10);
+  --ps-border:color-mix(in srgb,var(--border) 78%,transparent);
+}
+#tab-personel .section-head,
+#tab-personel .toolbar,
+#tab-personel .filters{
+  border-color:var(--ps-border)!important;
+}
+#tab-personel #personelArama{
+  min-height:44px;
+  border-radius:14px!important;
+  border:1px solid var(--ps-border)!important;
+  background:var(--bg-card)!important;
+  color:var(--ink)!important;
+  box-shadow:0 5px 18px rgba(15,23,42,.04);
+}
+#tab-personel #personelArama:focus{
+  outline:none;
+  border-color:var(--ps-accent)!important;
+  box-shadow:0 0 0 3px var(--ps-accent-soft)!important;
+}
+#tab-personel .evrak-row{
+  margin-bottom:10px;
+  padding:14px 14px!important;
+  border:1px solid var(--ps-border)!important;
+  border-radius:16px!important;
+  background:var(--bg-card)!important;
+  box-shadow:0 7px 22px rgba(15,23,42,.045);
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+#tab-personel .evrak-row:active{transform:scale(.992)}
+#tab-personel .evrak-title{color:var(--ink)!important;font-weight:750;line-height:1.35}
+#tab-personel .evrak-meta{color:var(--ink-muted)!important;margin-top:5px;line-height:1.45}
+#tab-personel .badge-blue{
+  background:var(--ps-accent-soft)!important;
+  color:var(--ps-accent)!important;
+  border:1px solid color-mix(in srgb,var(--ps-accent) 24%,transparent)!important;
+}
+#tab-personel .btn,
+#tab-personel button{
+  min-height:40px;
+  border-radius:12px;
+}
+#tab-personel .btn-primary{
+  background:linear-gradient(135deg,#7c3aed,#8b5cf6)!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px rgba(124,58,237,.20);
+}
+#tab-personel .btn-ghost{
+  background:color-mix(in srgb,var(--bg-card) 88%,var(--ps-accent-soft))!important;
+  border:1px solid var(--ps-border)!important;
+  color:var(--ink)!important;
+}
+
+/* Personel detay paneli */
+#detayOverlay.ap-personel-detay .detay-panel{
+  background:var(--bg-card)!important;
+}
+#detayOverlay.ap-personel-detay .detay-head{
+  border-bottom:1px solid var(--ps-border, var(--border))!important;
+  background:color-mix(in srgb,var(--bg-card) 94%,rgba(124,58,237,.06))!important;
+}
+#detayOverlay.ap-personel-detay .detay-card{
+  border:1px solid var(--ps-border, var(--border))!important;
+  border-radius:16px!important;
+  background:var(--bg-card)!important;
+  box-shadow:0 7px 20px rgba(15,23,42,.04);
+}
+#detayOverlay.ap-personel-detay .detay-row{color:var(--ink)!important}
+#detayOverlay.ap-personel-detay .detay-row-muted{color:var(--ink-muted)!important}
+#detayOverlay.ap-personel-detay .btn-takip-cizelge,
+#detayOverlay.ap-personel-detay .btn{
+  min-height:40px;
+  border-radius:12px!important;
+}
+#detayOverlay.ap-personel-detay .btn-takip-cizelge{
+  border:1px solid color-mix(in srgb,#7c3aed 24%,var(--border))!important;
+  background:rgba(124,58,237,.09)!important;
+  color:#6d28d9!important;
+}
+
+/* Personel ekle/düzenle ve bağlı izin modalı */
+#modalOverlay.ap-personel-modal .modal{
+  border:1px solid color-mix(in srgb,#7c3aed 16%,var(--border))!important;
+  background:var(--bg-card)!important;
+  box-shadow:0 24px 70px rgba(15,23,42,.22)!important;
+}
+#modalOverlay.ap-personel-modal #modalTitle{color:var(--ink)!important}
+#modalOverlay.ap-personel-modal .form-group label{color:var(--ink)!important;font-weight:650}
+#modalOverlay.ap-personel-modal input,
+#modalOverlay.ap-personel-modal select,
+#modalOverlay.ap-personel-modal textarea{
+  min-height:44px;
+  border-radius:12px!important;
+  border:1px solid var(--border)!important;
+  background:var(--bg-card)!important;
+  color:var(--ink)!important;
+}
+#modalOverlay.ap-personel-modal textarea{min-height:76px}
+#modalOverlay.ap-personel-modal input:focus,
+#modalOverlay.ap-personel-modal select:focus,
+#modalOverlay.ap-personel-modal textarea:focus{
+  outline:none!important;
+  border-color:#7c3aed!important;
+  box-shadow:0 0 0 3px rgba(124,58,237,.10)!important;
+}
+#modalOverlay.ap-personel-modal .modal-actions{
+  background:var(--bg-card)!important;
+  border-top:1px solid var(--border)!important;
+}
+#modalOverlay.ap-personel-modal .modal-actions .btn{min-height:42px;border-radius:12px!important}
+
+@media (max-width:1023px){
+  #tab-personel{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  #tab-personel .evrak-row{align-items:center;gap:10px}
+  #tab-personel .evrak-body{min-width:0}
+  #tab-personel .evrak-title{font-size:14px}
+  #tab-personel .evrak-meta{font-size:12.5px;overflow-wrap:anywhere}
+  #tab-personel .evrak-row>.btn{flex:0 0 auto;white-space:nowrap;padding-inline:12px!important}
+
+  #detayOverlay.ap-personel-detay,
+  #modalOverlay.ap-personel-modal{
+    bottom:calc(64px + env(safe-area-inset-bottom))!important;
+    height:auto!important;
+  }
+  #detayOverlay.ap-personel-detay .detay-panel{
+    max-height:calc(100dvh - 64px - env(safe-area-inset-bottom))!important;
+    padding-bottom:14px!important;
+  }
+  #modalOverlay.ap-personel-modal .modal{
+    max-height:calc(100dvh - 76px - env(safe-area-inset-bottom))!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  #modalOverlay.ap-personel-modal #modalBody{
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+    padding-bottom:14px;
+  }
+  #modalOverlay.ap-personel-modal .modal-actions{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:3;
+    flex:0 0 auto;
+    padding-bottom:max(10px,env(safe-area-inset-bottom))!important;
+  }
+}
+
+[data-theme="dark"] #tab-personel,
+.dark #tab-personel{
+  --ps-accent:#c4b5fd;
+  --ps-accent-soft:rgba(167,139,250,.14);
+}
+[data-theme="dark"] #detayOverlay.ap-personel-detay .btn-takip-cizelge,
+.dark #detayOverlay.ap-personel-detay .btn-takip-cizelge{
+  color:#ddd6fe!important;
+  background:rgba(167,139,250,.12)!important;
+}
