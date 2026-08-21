@@ -1,0 +1,22 @@
+/* Koruk Asistan — ana sayfa karşılama arka plan nötrleştirme v1 */
+#tab-panel.kh-home .kh-hero{
+  background:
+    radial-gradient(circle at 88% 15%,rgba(255,255,255,.96) 0 6%,transparent 31%),
+    linear-gradient(125deg,#f3f1f8 0%,#f1effb 45%,#f8f4ef 100%)!important;
+  border-color:rgba(101,69,199,.12)!important;
+  box-shadow:0 14px 34px rgba(73,68,100,.11)!important;
+}
+#tab-panel.kh-home .kh-hero:before{
+  background:linear-gradient(135deg,rgba(126,106,196,.18),rgba(174,156,229,.16))!important;
+}
+#tab-panel.kh-home .kh-hero:after{
+  background:linear-gradient(135deg,rgba(232,182,124,.15),rgba(150,127,211,.15))!important;
+}
+[data-theme="dark"] #tab-panel.kh-home .kh-hero{
+  background:
+    radial-gradient(circle at 88% 15%,rgba(178,156,244,.10) 0 7%,transparent 31%),
+    linear-gradient(125deg,#162332 0%,#29243d 50%,#1a2632 100%)!important;
+}
+[data-theme="dark"] #tab-panel.kh-home .kh-hero:before{
+  background:linear-gradient(135deg,rgba(131,104,207,.18),rgba(176,151,241,.17))!important;
+}
