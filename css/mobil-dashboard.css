@@ -622,3 +622,329 @@
     background: linear-gradient(90deg, #3A2A1A 0%, var(--dm-card) 60%);
   }
 }
+
+/* ================================================================
+   YENİ ANASAYFA — EK STİLLER
+   Dosya: css/mobil-dashboard.css (ek bölüm)
+   Kapsam: ≤1023px (mobil) + genel (bazı stiller her ekranda)
+   ================================================================ */
+
+/* ================================================================
+   A) HAFTANıN NÖBETÇİLERİ — yatay kaydırmalı gün sütunları
+   ================================================================ */
+@media (max-width: 1023px) {
+
+  /* Kart başlığı altındaki icerik alanı */
+  .dash-nobet-hafta-icerik {
+    /* JS (nobet.js) nobetHaftaKutu'ya yazıyor.
+       Mobilde tablo yerine yatay scroll şerit bekliyoruz.
+       Mevcut tablo çıktısını yatay scrollable kap içine al. */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    margin: 0 -4px;
+  }
+  .dash-nobet-hafta-icerik::-webkit-scrollbar { display: none; }
+
+  /* Eğer JS tablo üretiyorsa — tablo scroll içinde kayar */
+  .dash-nobet-hafta-icerik table {
+    border-collapse: collapse;
+    min-width: 100%;
+    font-size: 12px;
+  }
+  .dash-nobet-hafta-icerik th,
+  .dash-nobet-hafta-icerik td {
+    padding: 7px 10px;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--dm-row-bd, rgba(255,255,255,0.06));
+    color: var(--dm-ink, #e4f4f4);
+    text-align: left;
+    vertical-align: middle;
+  }
+  .dash-nobet-hafta-icerik th {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--dm-ink-muted, #5a8080);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    background: transparent;
+  }
+  /* Bugün sütununu vurgula */
+  .dash-nobet-hafta-icerik .bugun-kolon,
+  .dash-nobet-hafta-icerik td.nobet-bugun {
+    color: var(--dm-accent, #18c8c8) !important;
+    font-weight: 700;
+  }
+
+  /* ── Eğer nobet.js dash-satir class'lı div'ler üretiyorsa ── */
+  .dash-nobet-hafta-icerik .dash-row {
+    border-bottom: 1px solid var(--dm-row-bd, rgba(255,255,255,0.05));
+    padding: 9px 2px;
+    font-size: 12.5px;
+    color: var(--dm-ink-sub, #8fbfbf);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dash-nobet-hafta-icerik .dash-row:last-child { border-bottom: none; }
+
+  /* ================================================================
+     B) DUYURULAR — okundu/okunmadı rozetli liste
+     (duyuruPanosuIcerik — js/duyurular.js doldurur)
+  ================================================================ */
+
+  #duyuruPanosuKart .dash-row {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    flex-wrap: wrap;
+  }
+  /* Okunmadı noktası (eğer duyurular.js üretiyorsa) */
+  #duyuruPanosuKart .duyuru-okunmadi-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--dm-accent, #18c8c8);
+    flex-shrink: 0; margin-top: 4px;
+    box-shadow: 0 0 6px rgba(24,200,200,0.4);
+  }
+  #duyuruPanosuKart .duyuru-baslik {
+    font-size: 13px; font-weight: 600;
+    color: var(--dm-ink, #e4f4f4);
+    line-height: 1.4; flex: 1;
+  }
+  #duyuruPanosuKart .duyuru-tarih {
+    font-size: 10px; color: var(--dm-ink-muted, #5a8080);
+    width: 100%; padding-left: 18px;
+    margin-top: -4px;
+  }
+  /* Etiket (kaynak) rozeti */
+  #duyuruPanosuKart .duyuru-kaynak {
+    font-size: 9px; font-weight: 700; letter-spacing: .4px;
+    background: var(--dm-accent-wash, rgba(24,200,200,.12));
+    color: var(--dm-accent, #18c8c8);
+    padding: 2px 7px; border-radius: 6px;
+    display: inline-block; margin-bottom: 4px;
+  }
+
+  /* ================================================================
+     C) ÖĞRETMEN ÖZEL: bugünkü dersler + yıllık plan
+        dash-cols artık tek sütun (mobil), stiller korunuyor
+  ================================================================ */
+
+  /* Yıllık plan satırları renk çubuğu */
+  #ogretmenYillikPlanlarim .dash-row {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--dm-row-bd, rgba(255,255,255,0.05));
+    gap: 10px; align-items: flex-start;
+  }
+  #ogretmenYillikPlanlarim .plan-renk-bar {
+    width: 3px; height: 38px; border-radius: 3px;
+    background: var(--dm-accent, #18c8c8);
+    flex-shrink: 0; margin-top: 2px;
+  }
+  #ogretmenYillikPlanlarim .plan-ders-adi {
+    font-size: 13px; font-weight: 700;
+    color: var(--dm-ink, #e4f4f4);
+  }
+  #ogretmenYillikPlanlarim .plan-hafta-konu {
+    font-size: 11px; color: var(--dm-ink-sub, #8fbfbf);
+    margin-top: 2px; line-height: 1.3;
+  }
+  #ogretmenYillikPlanlarim .plan-sinif-rozet {
+    font-size: 10px; font-weight: 700;
+    background: rgba(255,255,255,0.06);
+    color: var(--dm-ink-muted, #5a8080);
+    padding: 3px 8px; border-radius: 7px;
+    margin-left: auto; flex-shrink: 0; align-self: center;
+  }
+
+  /* Yazılı sınav kartı — yatay kaydırmalı chip'ler */
+  #dashSinavlarim {
+    display: flex; gap: 10px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; padding: 2px 0 6px;
+  }
+  #dashSinavlarim::-webkit-scrollbar { display: none; }
+  #dashSinavlarim .sinav-chip {
+    flex-shrink: 0; min-width: 130px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 12px 12px 10px;
+  }
+  #dashSinavlarim .sinav-chip-sinif {
+    font-size: 9px; font-weight: 700;
+    background: var(--dm-accent-wash, rgba(24,200,200,.12));
+    color: var(--dm-accent, #18c8c8);
+    padding: 2px 7px; border-radius: 6px;
+    display: inline-block; margin-bottom: 6px;
+  }
+  #dashSinavlarim .sinav-chip-ders {
+    font-size: 13px; font-weight: 700;
+    color: var(--dm-ink, #e4f4f4); margin-bottom: 4px;
+  }
+  #dashSinavlarim .sinav-chip-tarih {
+    font-size: 10px; color: var(--dm-ink-muted, #5a8080);
+  }
+  #dashSinavlarim .sinav-chip-gun {
+    font-size: 9px; font-weight: 700;
+    color: var(--dm-red, #f87171);
+    float: right; margin-top: -28px;
+  }
+
+  /* ================================================================
+     D) NOT DEFTERİ — yatay kaydırmalı not kartları
+  ================================================================ */
+
+  #dashNotlar {
+    display: flex; gap: 10px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; padding: 2px 0 6px;
+  }
+  #dashNotlar::-webkit-scrollbar { display: none; }
+  /* Mevcut note-card class'larını koru, sadece layout ayarla */
+  #dashNotlar .note-card,
+  #dashNotlar .not-karti {
+    flex-shrink: 0; min-width: 150px; max-width: 180px;
+  }
+
+  /* ================================================================
+     E) OKUL BAĞLANTILARI — 4'lü ikon grid
+  ================================================================ */
+
+  .dash-link-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 4px 0;
+  }
+  @media (max-width: 360px) {
+    .dash-link-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .dash-link-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 6px; text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .15s;
+  }
+  .dash-link-item:active { transform: scale(.92); }
+
+  .dash-link-ikon {
+    width: 52px; height: 52px; border-radius: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.09);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  /* SVG ikon boyutu */
+  .dash-link-ikon svg { width: 28px; height: 28px; }
+
+  .dash-link-etiket {
+    font-size: 9.5px; font-weight: 600;
+    color: var(--dm-ink-muted, #5a8080);
+    text-align: center; line-height: 1.2;
+    max-width: 56px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* Açık tema uyumu */
+  [data-theme="light"] .dash-link-ikon,
+  :root:not([data-theme="dark"]) .dash-okul-baglanti-kart .dash-link-ikon {
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.07);
+  }
+  [data-theme="light"] .dash-link-etiket,
+  :root:not([data-theme="dark"]) .dash-okul-baglanti-kart .dash-link-etiket {
+    color: #64748b;
+  }
+
+  /* ================================================================
+     F) İSTATİSTİKLER — bölüm başlığı (section label)
+  ================================================================ */
+
+  .dash-section-label {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 4px 2px 8px;
+  }
+  .dash-section-label > span {
+    font-size: 11px; font-weight: 700;
+    color: var(--dm-ink-muted, #5a8080);
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+
+} /* end @media (max-width: 1023px) */
+
+/* ================================================================
+   G) AÇIK TEMA (data-theme yok veya "light") — kontrast düzeltme
+   Mobil dashboard'da açık temada metin renkleri yeterince koyu
+   olsun.
+================================================================ */
+:root:not([data-theme="dark"]) #tab-panel.dash-modern,
+[data-theme="light"] #tab-panel.dash-modern {
+  /* İstatistik kartı */
+  --dm-ink:     #0F172A;
+  --dm-ink-sub: #475569;
+  --dm-ink-muted: #94A3B8;
+  --dm-row-bd:  #EEF1F7;
+  --dm-card:    #FFFFFF;
+  --dm-card-bd: #E2E8F4;
+  --dm-soft-bg: #F5F8FE;
+  --dm-accent:  #0EA5A5;
+  --dm-accent-wash: #EDFAFA;
+}
+
+/* Açık temada haftanın nöbetçileri metin kontrast */
+:root:not([data-theme="dark"]) .dash-nobet-hafta-icerik th,
+[data-theme="light"] .dash-nobet-hafta-icerik th {
+  color: #94A3B8;
+}
+:root:not([data-theme="dark"]) .dash-nobet-hafta-icerik td,
+[data-theme="light"] .dash-nobet-hafta-icerik td {
+  color: #1E293B;
+}
+:root:not([data-theme="dark"]) .dash-nobet-hafta-icerik .bugun-kolon,
+[data-theme="light"] .dash-nobet-hafta-icerik .bugun-kolon {
+  color: #0EA5A5 !important;
+}
+
+/* Açık temada bağlantı ikonu arka planı */
+:root:not([data-theme="dark"]) .dash-link-ikon,
+[data-theme="light"] .dash-link-ikon {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.08);
+}
+:root:not([data-theme="dark"]) .dash-link-etiket,
+[data-theme="light"] .dash-link-etiket {
+  color: #64748B;
+}
+
+/* ================================================================
+   H) WEB (≥1024px) EK STİLLER — yeni kartlar için
+================================================================ */
+@media (min-width: 1024px) {
+
+  /* Haftalık nöbet web'de tablo — mevcut çıktıya dokunmuyoruz,
+     sadece kart başlığını hizala */
+  .dash-nobet-hafta-kart > h3 { margin-bottom: 14px; }
+
+  /* Okul bağlantıları web'de 6 sütuna kadar çıkabilir */
+  .dash-link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px;
+  }
+  .dash-link-ikon { width: 56px; height: 56px; border-radius: 16px; }
+  .dash-link-ikon svg { width: 30px; height: 30px; }
+  .dash-link-etiket { font-size: 10px; max-width: 72px; }
+
+  /* Section label web'de de çalışsın */
+  .dash-section-label {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 4px 2px 10px;
+  }
+  .dash-section-label > span {
+    font-size: 12px; font-weight: 700;
+    color: var(--dm2-ink-muted, #94A3B8);
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+}
