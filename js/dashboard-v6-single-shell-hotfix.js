@@ -2,6 +2,8 @@
  * Mobil ana sayfada v6 dışındaki eski dashboard katmanlarını görünmez yapar.
  * Hava ve zil widgetlarını v6 kabuğunda sabitler.
  * Selamlamada cinsiyet/hitap varsayımı yapmaz; yalnızca gerçek adı kullanır.
+ * Hava durumu ve zil sayacını mobilde alt alta gösterir.
+ * Açık/koyu tema kontrastını güçlendirir.
  * Alt navigasyon ve üst uygulama çubuğuna dokunmaz.
  */
 (function(){
@@ -62,7 +64,28 @@ function css(){
 #tab-panel.db6-v6-only>.db6-legacy-hidden{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important}
 #tab-panel.db6-v6-only>.db6-shell{display:flex!important;width:100%!important}
 #tab-panel.db6-v6-only{overflow-x:hidden!important}
-.db6-v6-only .db6-weather:empty,.db6-v6-only .db6-clock:empty{min-height:92px}
+.db6-v6-only .db6-topgrid{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+.db6-v6-only .db6-weather,.db6-v6-only .db6-clock{width:100%!important;min-height:96px!important;border-radius:18px!important;overflow:hidden!important}
+.db6-v6-only .db6-weather:empty,.db6-v6-only .db6-clock:empty{min-height:96px}
+.db6-v6-only .db6-weather #heroHavaSatir,.db6-v6-only .db6-clock #zilWidget{width:100%!important;min-height:96px!important;padding:12px 14px!important;border-radius:18px!important;background:transparent!important;box-shadow:none!important}
+/* Açık tema */
+:root:not([data-theme="dark"]) #tab-panel.db6-v6-only .db6-top{background:linear-gradient(135deg,#3b2585,#6b45d8)!important;color:#fff!important}
+:root:not([data-theme="dark"]) #tab-panel.db6-v6-only .db6-weather,
+:root:not([data-theme="dark"]) #tab-panel.db6-v6-only .db6-clock{background:rgba(255,255,255,.14)!important;border:1px solid rgba(255,255,255,.24)!important}
+:root:not([data-theme="dark"]) #tab-panel.db6-v6-only .db6-weather *,
+:root:not([data-theme="dark"]) #tab-panel.db6-v6-only .db6-clock *{color:#fff!important;text-shadow:none!important}
+/* Koyu tema */
+[data-theme="dark"] #tab-panel.db6-v6-only .db6-top{background:linear-gradient(135deg,#17102f,#2b1e56)!important;color:#f8fafc!important}
+[data-theme="dark"] #tab-panel.db6-v6-only .db6-weather,
+[data-theme="dark"] #tab-panel.db6-v6-only .db6-clock{background:#13263a!important;border:1px solid #31506a!important}
+[data-theme="dark"] #tab-panel.db6-v6-only .db6-weather *,
+[data-theme="dark"] #tab-panel.db6-v6-only .db6-clock *{color:#f8fafc!important;text-shadow:none!important}
+[data-theme="dark"] #tab-panel.db6-v6-only .db6-weather small,
+[data-theme="dark"] #tab-panel.db6-v6-only .db6-clock small{color:#cbd5e1!important}
+/* Tema attribute body/html dışında tutuluyorsa yedek kontrast */
+body.dark #tab-panel.db6-v6-only .db6-top{background:linear-gradient(135deg,#17102f,#2b1e56)!important;color:#f8fafc!important}
+body.dark #tab-panel.db6-v6-only .db6-weather,body.dark #tab-panel.db6-v6-only .db6-clock{background:#13263a!important;border-color:#31506a!important}
+body.dark #tab-panel.db6-v6-only .db6-weather *,body.dark #tab-panel.db6-v6-only .db6-clock *{color:#f8fafc!important}
 `;
   document.head.appendChild(s);
 }
