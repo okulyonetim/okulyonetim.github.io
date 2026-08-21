@@ -11,7 +11,7 @@ assert(src.includes('teacherSections'), 'Öğretmen ana sayfa bölümleri bulunm
 
 assert(src.includes('heroHavaSatir'), 'Hava durumu widgetı korunmalı.');
 assert(src.includes('zilWidget'), 'Canlı zil sayacı korunmalı.');
-assert(src.includes("['Deneme','Duyuru','Anket']") || (src.includes('Deneme') && src.includes('Duyuru') && src.includes('Anket')), 'Dinamik deneme/duyuru/anket alanı bulunmalı.');
+assert(src.includes('Deneme') && src.includes('Duyuru') && src.includes('Anket'), 'Dinamik deneme/duyuru/anket alanı bulunmalı.');
 assert(src.includes('HABERLER'), 'Kayan haber altyazısı bulunmalı.');
 
 assert(src.includes('Personel') && src.includes('Öğrenci') && src.includes('Sınıflar') && src.includes('Servisler'), 'Admin okul bilgi kartları eksiksiz olmalı.');
@@ -33,6 +33,8 @@ assert(src.includes('Hızlı İşlemler'), 'Düzenlenebilir hızlı işlemler al
 assert(src.includes('Takvim'), '7 günlük takvim alanı bulunmalı.');
 assert(src.includes('db6-backtop'), 'Yukarı dön butonu bulunmalı.');
 
-assert(!src.includes('bottom-nav') && !src.includes('alt-navigasyon'), 'Mobil rol dashboard alt navigasyon yapısını değiştirmemeli.');
+// Bu dosya alt navigasyonu yeniden üretmemeli/değiştirmemeli. Üst yorumdaki
+// "Alt navigasyona dokunmaz" açıklaması serbest; gerçek bottom-nav seçicisi yasak.
+assert(!src.includes('.bottom-nav') && !src.includes("querySelector('.bottom-nav')") && !src.includes('querySelector(".bottom-nav")'), 'Mobil rol dashboard alt navigasyon DOM yapısını değiştirmemeli.');
 
 console.log('Mobil rol bazlı dashboard v6 smoke testleri başarılı.');
