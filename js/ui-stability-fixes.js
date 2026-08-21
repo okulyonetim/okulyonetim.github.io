@@ -15,7 +15,7 @@ scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
 try{localStorage.removeItem('oyGorunum')}catch(_){}
 document.documentElement.removeAttribute('data-skin');
 
-/* MOBİL ANA SAYFA — TEK CSS + TEK JS */
+/* MOBİL ANA SAYFA — tek ana renderer + kendi bileşenleri */
 const mobil=window.matchMedia('(max-width:1023px)').matches;
 let basladi=false;
 function kullaniciHazir(){
@@ -33,8 +33,10 @@ function kullaniciHazir(){
 function anaSayfaBaslat(){
   if(!mobil||basladi||!kullaniciHazir())return false;
   basladi=true;
-  stilYukle('css/dashboard-home.css?v=1','dashboard-home');
-  scriptYukle('js/dashboard-home.js?v=1','dashboard-home');
+  stilYukle('css/dashboard-home.css?v=2','dashboard-home');
+  stilYukle('css/dashboard-home-colors.css?v=1','dashboard-home-colors');
+  scriptYukle('js/dashboard-home.js?v=2','dashboard-home');
+  scriptYukle('js/dashboard-duyuru.js?v=1','dashboard-duyuru');
   return true;
 }
 if(mobil){
