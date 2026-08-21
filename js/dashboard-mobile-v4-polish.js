@@ -1,210 +1,48 @@
-/* Koruk Asistan — Ana Sayfa v4.1 Mobil İnce Ayar + Kart Havuzu
- * v4 üstüne güvenli iyileştirme katmanı:
- * - açık/koyu tema kontrastı
- * - kompakt hava/zil/hero
- * - sosyal medya/okul bağlantılarını görünür bölüme taşıma
- * - eski karmaşık istatistik kartlarını sade kart havuzuyla değiştirme
- * - rol/yetki uyumlu kart ekle/çıkar/sırala
+/* Koruk Asistan — Mobil Rol Bazlı Ana Sayfa v6 İnce Ayar
+ * Ana sayfa kartlarını gizle/sırala, rol bazlı 4 hızlı işlem sunar,
+ * öğretmenin teslim evraklarını salt okunur gösterir ve 7 günlük takvimi ajandaya bağlar.
+ * Alt navigasyona dokunmaz.
  */
 (function(){
 'use strict';
-
-const $=(s,r=document)=>r.querySelector(s);
-const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const PREF_KEY='oyDashboardV4KartDuzeni_v2';
-
-function globalArray(names){
-  for(const n of names){
-    try{
-      const v=window[n];
-      if(Array.isArray(v)) return v;
-    }catch(_){}
-  }
-  return [];
-}
-function count(names){return globalArray(names).length;}
-function tamam(x){
-  const s=String(x?.durum||x?.status||'').toLocaleLowerCase('tr-TR');
-  return x?.tamamlandi===true||x?.tamam===true||['tamamlandı','tamamlandi','kapalı','kapali','arşivlendi','arsivlendi'].includes(s);
-}
-function activeCount(names){return globalArray(names).filter(x=>!tamam(x)).length;}
-function allowed(modul){
-  if(!modul) return true;
-  try{if(typeof window.gorebilir==='function') return !!window.gorebilir(modul);}catch(_){}
-  const node=document.querySelector(`[data-yetki-modul="${modul}"]`);
-  if(!node) return true;
-  if(node.classList.contains('yetki-gizli')) return false;
-  return true;
-}
-function go(tab){try{if(typeof window.sekmeAc==='function')window.sekmeAc(tab);else document.querySelector(`[data-tab="${tab}"]`)?.click();}catch(_){}}
-window.db41Go=go;
-
-const INFO_CARDS=[
-  {id:'personel',ad:'Personel',icon:'👨‍🏫',modul:'ogretmenler',tab:'ogretmenler',value:()=>count(['ogretmenler'])},
-  {id:'ogrenci',ad:'Öğrenciler',icon:'🎓',modul:'ogrenciler',tab:'ogrenciler',value:()=>count(['ogrenciler'])},
-  {id:'sinif',ad:'Sınıflar',icon:'🏫',modul:'siniflar',tab:'siniflar',value:()=>count(['siniflar'])},
-  {id:'servis',ad:'Servisler',icon:'🚌',modul:'servisler',tab:'servisler',value:()=>count(['servisler'])},
-  {id:'dokuman',ad:'Dökümanlar',icon:'📁',modul:'dokumanlar',tab:'dokumanlar',value:()=>count(['dokumanlar','dokumanListesi','dokumanlarCache'])},
-  {id:'gorev',ad:'Açık Görev',icon:'📋',modul:'gorevler',tab:'gorevler',value:()=>activeCount(['gorevler'])},
-  {id:'hatirlatici',ad:'Hatırlatıcı',icon:'⏰',modul:'hatirlaticilar',tab:'hatirlaticilar',value:()=>activeCount(['hatirlaticilar'])},
-  {id:'not',ad:'Notlar',icon:'📝',modul:'notlar',tab:'notlar',value:()=>count(['notlar'])},
-  {id:'sinav',ad:'Sınavlar',icon:'🧪',modul:'sinavIslemleri',tab:'yaziliSinavlar',value:()=>count(['sinavlar','yaziliSinavlar'])},
-  {id:'duyuru',ad:'Duyurular',icon:'📢',modul:'duyurular',tab:'duyurular',value:()=>count(['duyurular'])},
-  {id:'mesaj',ad:'Mesajlar',icon:'💬',modul:'mesajlasma',tab:'mesajlasma',value:()=>count(['mesajlar','mesajlarim'])},
-  {id:'nobet',ad:'Nöbetler',icon:'🛡️',modul:'nobet',tab:'nobet',value:()=>count(['nobetAtamalari'])}
-];
-
-function css(){
-  if($('#dashboard-v41-polish-css'))return;
-  const s=document.createElement('style');
-  s.id='dashboard-v41-polish-css';
-  s.textContent=`
-#tab-panel.db4.db41{
- --d-bg:#f3f6fa;--d-surface:#ffffff;--d-surface2:#f7f9fc;--d-text:#0b1f33;--d-muted:#53657a;
- --d-line:#d7e0e9;--d-accent:#087f7b;--d-accent2:#056b68;--d-soft:#e8f6f5;
-}
-[data-theme="dark"] #tab-panel.db4.db41{
- --d-bg:#061827;--d-surface:#0d2438;--d-surface2:#112b42;--d-text:#f6f9fc;--d-muted:#b6c4d2;
- --d-line:#27455d;--d-accent:#2bd3ca;--d-accent2:#62e8e1;--d-soft:#103942;
-}
-#tab-panel.db4.db41{background:var(--d-bg)!important;color:var(--d-text)!important}
-.db41 .db4-shell{gap:14px!important}
-.db41 .db4-hero{padding:17px!important;border-radius:22px!important;background:var(--d-surface)!important;border-color:var(--d-line)!important}
-.db41 .db4-greeting{padding-right:44px!important}.db41 .db4-greeting .dash-hero-hi{font-size:clamp(26px,7vw,34px)!important;color:var(--d-text)!important}.db41 .db4-greeting #panelTarih{font-size:13px!important;color:var(--d-muted)!important}
-.db41 .db4-live{gap:9px!important;margin-top:14px!important}
-.db41 .db4-weather,.db41 .db4-bell{background:var(--d-surface2)!important;border-color:var(--d-line)!important;border-radius:17px!important;box-shadow:none!important}
-.db41 .db4-weather #heroHavaSatir,.db41 .db4-bell #zilWidget{min-height:0!important;height:auto!important;padding:12px 13px!important;color:var(--d-text)!important;background:transparent!important}
-.db41 .db4-weather #heroHavaSatir *,.db41 .db4-bell #zilWidget *{color:var(--d-text)!important;text-shadow:none!important}
-.db41 .db4-weather #heroHavaSatir .hava-konum,.db41 .db4-weather #heroHavaSatir small,.db41 .db4-bell #zilWidget small{color:var(--d-muted)!important}
-.db41 .db4-bell #zilWidget>*,.db41 .db4-weather #heroHavaSatir>*{min-height:0!important;height:auto!important;max-height:none!important}
-.db41 .db4-section-head h2,.db41 .db41-title{color:var(--d-text)!important}.db41 .db4-more-btn,.db41 .db41-link{color:var(--d-accent)!important}
-.db41 .db4-quick{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}.db41 .db4-quick button{min-height:82px!important;padding:9px 4px!important;border-radius:16px!important;background:var(--d-surface)!important;border-color:var(--d-line)!important;color:var(--d-text)!important;box-shadow:none!important}.db41 .db4-quick .ico{font-size:24px!important}
-.db41 .db4-today{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.db41 .db4-today button{min-height:78px!important;padding:12px!important;background:var(--d-surface)!important;color:var(--d-text)!important;border-color:var(--d-line)!important;box-shadow:none!important}.db41 .db4-today .l{color:var(--d-muted)!important;font-size:11px!important}.db41 .db4-today .n{font-size:25px!important}
-.db41 .db4-upcoming-card{min-height:0!important;padding:10px 12px!important;background:var(--d-surface)!important;border-color:var(--d-line)!important;box-shadow:none!important}.db41 .db4-upcoming-card .empty-state{min-height:72px!important;padding:24px 8px!important;color:var(--d-muted)!important}
-.db41 .db4-school{display:none!important}
-.db41 .db41-cardzone{display:flex;flex-direction:column;gap:12px}
-.db41 .db41-card{background:var(--d-surface)!important;border:1px solid var(--d-line)!important;border-radius:19px!important;padding:14px!important;color:var(--d-text)!important;box-shadow:none!important;min-width:0}
-.db41 .db41-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.db41 .db41-head h2{font-size:18px;line-height:1.2;margin:0;color:var(--d-text)!important}.db41 .db41-edit{border:1px solid var(--d-line);background:var(--d-surface2);color:var(--d-accent);border-radius:12px;padding:7px 10px;font-weight:750;font-size:12px}
-.db41 .db41-info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.db41 .db41-info{min-width:0;border:1px solid var(--d-line);background:var(--d-surface2);border-radius:16px;padding:12px 8px;text-align:center;color:var(--d-text);cursor:pointer}.db41 .db41-info .i{font-size:25px;line-height:1.1}.db41 .db41-info .v{font-size:24px;font-weight:850;margin-top:7px;line-height:1;color:var(--d-text)}.db41 .db41-info .a{font-size:10.5px;font-weight:700;margin-top:7px;color:var(--d-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.db41 .db41-social #heroSosyalMedya{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;margin:0!important;padding:0!important}.db41 .db41-social #heroSosyalMedya>*{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;min-height:72px!important;margin:0!important;padding:7px 3px!important;border:1px solid var(--d-line)!important;background:var(--d-surface2)!important;border-radius:15px!important;color:var(--d-text)!important;opacity:1!important;visibility:visible!important}.db41 .db41-social #heroSosyalMedya img{width:31px!important;height:31px!important;object-fit:contain}.db41 .db41-social #heroSosyalMedya span,.db41 .db41-social #heroSosyalMedya div{color:var(--d-text)!important;font-size:10px!important}
-.db41 .db41-social-empty{padding:8px 2px;color:var(--d-muted);font-size:12px}
-.db41 .db4-secondary{grid-template-columns:1fr!important;gap:10px!important}.db41 .db4-secondary>.card,.db41 .db4-secondary>[data-kart-id]{padding:13px!important;border-radius:17px!important;background:var(--d-surface)!important;border-color:var(--d-line)!important;color:var(--d-text)!important;box-shadow:none!important}.db41 .db4-secondary *{text-shadow:none!important}.db41 .db4-secondary h3,.db41 .db4-secondary strong{color:var(--d-text)!important}.db41 .db4-secondary .muted,.db41 .db4-secondary small,.db41 .db4-secondary .empty-state{color:var(--d-muted)!important}
-.db41 [data-kart-id="bekleyenEvrak"]{display:none!important}
-@media(max-width:560px){
- #tab-panel.db4.db41{padding:7px 11px 92px!important}.db41 .db4-shell{gap:13px!important}.db41 .db4-hero{padding:15px 12px!important}.db41 .db4-live{grid-template-columns:1fr!important}.db41 .db4-weather #heroHavaSatir{min-height:76px!important}.db41 .db4-bell #zilWidget{min-height:84px!important}.db41 .db41-info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.db41 .db41-info{min-height:88px}.db41 .db41-social #heroSosyalMedya{grid-template-columns:repeat(4,minmax(0,1fr))!important}.db41 .db41-card{padding:12px!important}.db41 .db41-head h2{font-size:17px}}
-@media(min-width:900px){.db41 .db4-live{grid-template-columns:.95fr 1.05fr!important}.db41 .db41-info-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
-`;
-  document.head.appendChild(s);
-}
-
-function readPref(){
-  try{
-    const x=JSON.parse(localStorage.getItem(PREF_KEY)||'null');
-    if(x&&Array.isArray(x.info)) return x;
-  }catch(_){}
-  return null;
-}
-function defaultInfo(){return INFO_CARDS.filter(x=>allowed(x.modul)).slice(0,8).map(x=>x.id);}
-function writePref(info){try{localStorage.setItem(PREF_KEY,JSON.stringify({info}));}catch(_){}}
-function selectedInfo(){
-  const p=readPref();
-  const valid=new Set(INFO_CARDS.filter(x=>allowed(x.modul)).map(x=>x.id));
-  const src=p?p.info:defaultInfo();
-  return src.filter(id=>valid.has(id));
-}
-
-function infoCardHtml(def){
-  let v=0;try{v=def.value();}catch(_){}
-  return `<button type="button" class="db41-info" onclick="db41Go('${def.tab}')"><div class="i">${def.icon}</div><div class="v">${Number.isFinite(Number(v))?Number(v):0}</div><div class="a">${def.ad}</div></button>`;
-}
-function renderInfo(){
-  const grid=$('#db41InfoGrid');if(!grid)return;
-  const ids=selectedInfo();
-  grid.innerHTML=ids.map(id=>INFO_CARDS.find(x=>x.id===id)).filter(Boolean).map(infoCardHtml).join('');
-  if(!grid.innerHTML)grid.innerHTML='<div class="db41-social-empty">Gösterilecek bilgi kartı seçilmedi.</div>';
-}
-
-function socialMount(shell){
-  let src=$('#heroSosyalMedya');
-  try{if(typeof window.renderSosyalMedyaIkonlari==='function')window.renderSosyalMedyaIkonlari();}catch(_){}
-  src=$('#heroSosyalMedya');
-  let card=$('#db41SocialCard');
-  if(!card){
-    card=document.createElement('section');card.id='db41SocialCard';card.className='db41-card db41-social';
-    card.innerHTML='<div class="db41-head"><h2>Okul Bağlantıları</h2></div><div id="db41SocialHost"></div>';
-    const zone=$('#db41CardZone',shell)||shell;zone.appendChild(card);
-  }
-  const host=$('#db41SocialHost',card);
-  if(src&&src!==host&&src.children.length){host.innerHTML='';host.appendChild(src);src.style.display='grid';}
-  if(!host.children.length&&!$('#db41SocialEmpty',host)){
-    const e=document.createElement('div');e.id='db41SocialEmpty';e.className='db41-social-empty';e.textContent='Sosyal medya ve okul sitesi bağlantıları okul bilgilerinden yüklenecek.';host.appendChild(e);
-  }
-}
-
-function mountInfo(shell){
-  if($('#db41InfoCard',shell))return;
-  const zone=$('#db41CardZone',shell)||shell;
-  const card=document.createElement('section');card.id='db41InfoCard';card.className='db41-card';
-  card.innerHTML='<div class="db41-head"><h2>Bilgi Kartlarım</h2><button type="button" class="db41-edit" onclick="dashboardV41Duzenle()">✏️ Düzenle</button></div><div class="db41-info-grid" id="db41InfoGrid"></div>';
-  zone.appendChild(card);renderInfo();
-}
-
-function setupCardZone(shell){
-  if($('#db41CardZone',shell))return;
-  const zone=document.createElement('div');zone.id='db41CardZone';zone.className='db41-cardzone';
-  const secondary=$('.db4-secondary',shell);
-  if(secondary)shell.insertBefore(zone,secondary);else shell.appendChild(zone);
-}
-
-function cleanOldStats(panel){
-  const school=$('.db4-school',panel);if(school)school.style.display='none';
-  const raw=$('[data-kart-id="istatistikSeridi"]',panel);if(raw)raw.classList.add('db4-hidden-source');
-  $$('[data-kart-id="bekleyenEvrak"]',panel).forEach(x=>x.remove());
-}
-
-window.dashboardV41Duzenle=function(){
-  const available=INFO_CARDS.filter(x=>allowed(x.modul));
-  window._db41Temp=selectedInfo().slice();
-  const draw=()=>{
-    const body=document.getElementById('modalBody');if(!body)return;
-    const sel=window._db41Temp||[];
-    const chosen=sel.map((id,i)=>{
-      const d=available.find(x=>x.id===id);if(!d)return'';
-      return `<div style="display:flex;align-items:center;gap:7px;padding:9px 10px;margin-bottom:7px;border:1px solid var(--border);border-radius:12px;background:var(--nm-bg);"><span style="font-size:20px">${d.icon}</span><span style="flex:1;font-weight:650">${d.ad}</span><button class="btn btn-ghost btn-sm" ${i===0?'disabled':''} onclick="db41Move('${id}',-1)">⬆</button><button class="btn btn-ghost btn-sm" ${i===sel.length-1?'disabled':''} onclick="db41Move('${id}',1)">⬇</button><button class="btn btn-ghost btn-sm" onclick="db41Remove('${id}')">✕</button></div>`;
-    }).join('')||'<div class="empty-state">Seçili bilgi kartı yok.</div>';
-    const rest=available.filter(x=>!sel.includes(x.id)).map(d=>`<button type="button" class="btn btn-ghost" style="display:flex;width:100%;justify-content:flex-start;gap:8px;margin-bottom:6px" onclick="db41Add('${d.id}')"><span>${d.icon}</span><span>+ ${d.ad}</span></button>`).join('')||'<div class="empty-state">Eklenebilir başka kart yok.</div>';
-    body.innerHTML=`<div style="font-size:12px;color:var(--ink-muted);margin-bottom:10px">Rolünüzün izin verdiği bilgi kartlarını seçebilir ve sıralayabilirsiniz.</div><div style="font-weight:800;margin-bottom:7px">Gösterilen Kartlar</div><div style="max-height:280px;overflow:auto">${chosen}</div><div style="font-weight:800;margin:14px 0 7px">Eklenebilir Kartlar</div><div style="max-height:190px;overflow:auto">${rest}</div>`;
-  };
-  window._db41Draw=draw;
-  if(typeof window.modalAc==='function'){
-    window.modalAc('🏠 Ana Sayfa Bilgi Kartları','<div class="empty-state">Yükleniyor…</div>',()=>{writePref(window._db41Temp||[]);if(typeof window.modalKapat==='function')window.modalKapat();renderInfo();if(typeof window.toast==='function')window.toast('Ana sayfa kartları güncellendi.');},null,'💾 Kaydet');
-    draw();
-  }
-};
-window.db41Move=(id,dir)=>{const a=window._db41Temp||[];const i=a.indexOf(id),j=i+dir;if(i<0||j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];window._db41Draw?.();};
-window.db41Remove=id=>{window._db41Temp=(window._db41Temp||[]).filter(x=>x!==id);window._db41Draw?.();};
-window.db41Add=id=>{const a=window._db41Temp||[];if(!a.includes(id))a.push(id);window._db41Temp=a;window._db41Draw?.();};
-
-function overrideMainEditor(){
-  window.dashboardOzellestirModalAc=window.dashboardV41Duzenle;
-}
-
-function apply(){
-  css();
-  const panel=$('#tab-panel.db4');if(!panel)return false;
-  const shell=$('.db4-shell',panel);if(!shell)return false;
-  panel.classList.add('db41');
-  cleanOldStats(panel);
-  setupCardZone(shell);
-  mountInfo(shell);
-  socialMount(shell);
-  overrideMainEditor();
-  renderInfo();
-  return true;
-}
-
-let tries=0;const t=setInterval(()=>{if(apply()||++tries>180)clearInterval(t);},100);
-document.addEventListener('DOMContentLoaded',()=>setTimeout(apply,0));
-const mo=new MutationObserver(()=>{const p=$('#tab-panel.db4');if(p&&(!p.classList.contains('db41')||!$('#db41InfoCard',p)))setTimeout(apply,0);});
-mo.observe(document.documentElement,{childList:true,subtree:true});
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const LAYOUT_KEY='oyDashboardV6Layout', QUICK_KEY='oyDashboardV6Quick';
+let observer=null, applying=false, observerTimer=0;
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function gv(n){try{return window[n]!==undefined?window[n]:eval(n)}catch(_){return null}}
+function arr(n){const v=gv(n);return Array.isArray(v)?v:[]}
+function user(){return gv('AKTIF_KULLANICI')||null} function adminMi(){return !!user()?.admin}
+function teacher(){try{const f=gv('bagliOgretmenimGetir');return typeof f==='function'?f():null}catch(_){return null}}
+function openTab(tab){try{const f=gv('sekmeAc');if(typeof f==='function')return f(tab);$(`[data-tab="${tab}"]`)?.click()}catch(_){}}
+function toast(s){try{const f=gv('toast');if(typeof f==='function')f(s)}catch(_){}}
+function read(k,d){try{const v=JSON.parse(localStorage.getItem(k)||'null');return v??d}catch(_){return d}}
+function write(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}
+function dkey(v){if(!v)return'';try{const d=v?.toDate?v.toDate():new Date(v);if(Number.isNaN(d.getTime()))return'';return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}catch(_){return''}}
+function sameUser(x){const t=teacher(),u=user(),tid=t?.id,uid=u?.uid||u?.id;return !x?.ogretmenId&&!x?.kullaniciId&&!x?.uid||x.ogretmenId===tid||x.kullaniciId===uid||x.uid===uid}
+const KEYS={'Okul Özeti':'okulOzeti','Okul Bağlantıları':'okulBaglantilari',"Bugünün Nöbetçileri":'bugunNobet','Bugün İzinli':'izinli','Yaklaşan Etkinlik ve Görevler':'yaklasan','Şu Anki Dersler':'anlikDers','Haftanın Nöbet Programı':'haftalikNobet','Yaklaşan Yazılı Sınavlar':'yazililar','Ders Programım':'programim','Notlarım':'notlar','Hızlı İşlemler':'hizli','Takvim':'takvim','Şu Anki Dersim':'dersim','Sonraki Dersim':'dersim','Bugünkü Derslerim':'bugunDersler','Bugünkü Nöbetim':'nobetim','Sınavlarım':'sinavlarim','Teslim Edilecek Evraklar':'teslimEvrak'};
+const FIXED=new Set(['dersim']);
+function title(sec){return $('.db6-title h2',sec)?.textContent?.trim()||''}
+function key(sec){if(sec.dataset.db6Key)return sec.dataset.db6Key;const t=title(sec),k=KEYS[t]||('sec_'+t.toLocaleLowerCase('tr').replace(/[^a-z0-9çğıöşü]+/g,'_').replace(/^_|_$/g,''));sec.dataset.db6Key=k;return k}
+function sections(shell=$('.db6-shell')){return shell?$$(':scope > .db6-section',shell).filter(s=>!s.classList.contains('db6-dynamic')):[]}
+function layoutPref(shell){const all=sections(shell).map(key),valid=new Set(all),raw=read(LAYOUT_KEY,null);if(!raw||!Array.isArray(raw.order))return{order:all,hidden:[]};const order=raw.order.filter(x=>valid.has(x));all.forEach(x=>{if(!order.includes(x))order.push(x)});return{order,hidden:Array.isArray(raw.hidden)?raw.hidden.filter(x=>valid.has(x)&&!FIXED.has(x)):[]}}
+function layoutApply(){const shell=$('.db6-shell');if(!shell||applying)return;const pref=layoutPref(shell),map=new Map(sections(shell).map(s=>[key(s),s])),target=pref.order.filter(k=>map.has(k)),current=sections(shell).map(key);applying=true;try{if(current.join('|')!==target.join('|')){const anchor=$('.db6-preserved',shell)||null;target.forEach(k=>{const s=map.get(k);if(anchor)shell.insertBefore(s,anchor);else shell.appendChild(s)})}map.forEach((s,k)=>s.style.display=pref.hidden.includes(k)?'none':'')}finally{applying=false}}
+function overlay(name,body,save){const ov=document.createElement('div');ov.className='db6x-overlay';ov.innerHTML=`<div class="db6x-sheet"><div class="db6x-head"><strong>${esc(name)}</strong><button data-close type="button">✕</button></div><div>${body}</div><button class="db6x-save" type="button">Kaydet</button></div>`;document.body.appendChild(ov);$('[data-close]',ov).onclick=()=>ov.remove();ov.onclick=e=>{if(e.target===ov)ov.remove()};$('.db6x-save',ov).onclick=()=>save(ov);return ov}
+function layoutEditor(){const shell=$('.db6-shell');if(!shell)return;const p=layoutPref(shell),map=new Map(sections(shell).map(s=>[key(s),s])),rows=p.order.map((k,i)=>{const s=map.get(k);if(!s)return'';const f=FIXED.has(k);return`<div class="db6x-layout-row" data-key="${esc(k)}"><label><input type="checkbox" ${p.hidden.includes(k)?'':'checked'} ${f?'disabled':''}><span>${esc(title(s))}</span></label><div><button data-up type="button" ${i===0?'disabled':''}>↑</button><button data-down type="button" ${i===p.order.length-1?'disabled':''}>↓</button></div></div>`}).join('');const ov=overlay('Ana Sayfayı Düzenle',`<p class="db6x-help">Kartları göster/gizle ve sıralayın. Üst alan, zil ve alt navigasyon sabittir.</p><div id="db6xRows">${rows}</div>`,o=>{const a=$$('.db6x-layout-row',o);write(LAYOUT_KEY,{order:a.map(x=>x.dataset.key),hidden:a.filter(x=>!$('input',x).checked&&!FIXED.has(x.dataset.key)).map(x=>x.dataset.key)});o.remove();layoutApply();toast('Ana sayfa düzeni kaydedildi.')});function bind(){const h=$('#db6xRows',ov),rs=$$('.db6x-layout-row',h);rs.forEach((r,i)=>{const u=$('[data-up]',r),d=$('[data-down]',r);u.disabled=i===0;d.disabled=i===rs.length-1;u.onclick=()=>{const p=r.previousElementSibling;if(p){h.insertBefore(r,p);bind()}};d.onclick=()=>{const n=r.nextElementSibling;if(n){h.insertBefore(n,r);bind()}}})}bind()}
+window.db6DashboardDuzenle=layoutEditor;
+const QT=[{id:'sinav',icon:'📝',ad:'Sınav Ekle',run:()=>{openTab('sinavIslemleri');setTimeout(()=>{try{gv('sinavModalAc')?.()}catch(_){}},120)}},{id:'not',icon:'🗒️',ad:'Not Ekle',run:()=>openTab('notlar')},{id:'mesaj',icon:'💬',ad:'Mesaj Gönder',run:()=>openTab('mesajlasma')},{id:'program',icon:'📚',ad:'Derslerim',run:()=>openTab('dersProgrami')},{id:'takvim',icon:'📅',ad:'Takvim',run:()=>openTab('takvim')},{id:'nobet',icon:'🛡️',ad:'Nöbetler',run:()=>openTab('nobet')},{id:'evrak',icon:'📄',ad:'Evraklar',run:()=>openTab('evrak')},{id:'yillik',icon:'🎯',ad:'Yıllık Plan',run:()=>openTab('yillikPlan')},{id:'ogrenci',icon:'👥',ad:'Öğrenciler',run:()=>openTab('ogrenciler')}];
+const QA=[{id:'duyuru',icon:'📢',ad:'Duyuru Ekle',run:()=>openTab('duyurular')},{id:'gorev',icon:'✅',ad:'Görev Ekle',run:()=>openTab('gorevler')},{id:'not',icon:'🗒️',ad:'Not Ekle',run:()=>openTab('notlar')},{id:'sinav',icon:'📝',ad:'Sınav Ekle',run:()=>{openTab('sinavIslemleri');setTimeout(()=>{try{gv('sinavModalAc')?.()}catch(_){}},120)}},{id:'personel',icon:'👨‍🏫',ad:'Personel',run:()=>openTab('ogretmenler')},{id:'ogrenci',icon:'👥',ad:'Öğrenciler',run:()=>openTab('ogrenciler')},{id:'nobet',icon:'🛡️',ad:'Nöbet',run:()=>openTab('nobet')},{id:'servis',icon:'🚌',ad:'Servis',run:()=>openTab('servisler')},{id:'takvim',icon:'📅',ad:'Takvim',run:()=>openTab('takvim')},{id:'mesaj',icon:'💬',ad:'Mesaj',run:()=>openTab('mesajlasma')}];
+function pool(){return adminMi()?QA:QT} function defaults(){return adminMi()?['duyuru','gorev','not','sinav']:['sinav','not','mesaj','program']}
+function quickRead(){const p=pool(),valid=new Set(p.map(x=>x.id)),raw=read(QUICK_KEY,null),role=adminMi()?'admin':'teacher',src=raw?.role===role&&Array.isArray(raw.ids)?raw.ids:defaults(),out=src.filter((x,i,a)=>valid.has(x)&&a.indexOf(x)===i).slice(0,4);for(const d of defaults())if(out.length<4&&!out.includes(d)&&valid.has(d))out.push(d);return out}
+function quickRender(){const grid=$('.db6-shell .db6-quick');if(!grid)return;const map=new Map(pool().map(x=>[x.id,x])),use=quickRead().map(x=>map.get(x)).filter(Boolean),sig=use.map(x=>x.id).join('|');if(grid.dataset.db6Sig===sig&&grid.children.length===use.length)return;grid.dataset.db6Sig=sig;grid.innerHTML='';use.forEach(x=>{const b=document.createElement('button');b.type='button';b.dataset.db6Quick=x.id;b.innerHTML=`<i>${x.icon}</i>${esc(x.ad)}`;b.onclick=x.run;grid.appendChild(b)})}
+function quickEditor(){const chosen=quickRead(),body=pool().map(x=>`<label class="db6x-qrow"><input type="checkbox" value="${x.id}" ${chosen.includes(x.id)?'checked':''}><span>${x.icon}</span><b>${esc(x.ad)}</b></label>`).join('');overlay('Hızlı İşlemleri Düzenle',`<p class="db6x-help">En fazla 4 işlem seçin.</p><div class="db6x-quick-list">${body}</div>`,o=>{const ids=$$('input:checked',o).map(x=>x.value);if(!ids.length)return toast('En az bir işlem seçin.');if(ids.length>4)return toast('En fazla 4 işlem seçebilirsiniz.');write(QUICK_KEY,{role:adminMi()?'admin':'teacher',ids});o.remove();quickRender();toast('Hızlı işlemler kaydedildi.')})}
+window.dashboardDuzenle=quickEditor;window.db6HizliIslemDuzenle=quickEditor;
+async function ensureTeacherDeliveries(){if(adminMi()||!teacher())return;const shell=$('.db6-shell');if(!shell||sections(shell).some(s=>title(s)==='Teslim Edilecek Evraklar'))return;let r=[];try{const f=gv('hatirlatmalariTopla');if(typeof f==='function')r=await f()}catch(e){console.warn(e)}r=(r||[]).filter(x=>!/^(gorev|gorevler|nobet|yaziliSinav|sinav)$/i.test(String(x?.kaynak||''))).slice(0,6);if(!r.length)return;const sec=document.createElement('section');sec.className='db6-section';sec.dataset.db6Key='teslimEvrak';sec.innerHTML=`<div class="db6-title"><h2>Teslim Edilecek Evraklar</h2><button class="db6-link" type="button">Tümü ›</button></div><div class="db6-card db6-list">${r.map((x,i)=>{const g=Number(x.gunFarki),due=Number.isFinite(g)?g<0?`${Math.abs(g)} gün gecikti`:g===0?'Bugün':`${g} gün kaldı`:'';return`<button class="db6-row db6x-delivery" type="button" data-i="${i}"><div><strong>${esc(x.baslik||'Evrak')}</strong><small>${esc(x.altBaslik||due)}</small></div><span class="db6-chip">${esc(x.teslimDurumu||x.durum||'Teslim Edilmedi')}</span></button>`}).join('')}</div>`;$('.db6-link',sec).onclick=()=>openTab('evrak');$$('.db6x-delivery',sec).forEach((b,i)=>b.onclick=()=>typeof r[i]?.git==='function'?r[i].git():openTab('evrak'));const n=sections(shell).find(s=>key(s)==='notlar'),anchor=$('.db6-preserved',shell);if(n)shell.insertBefore(sec,n);else if(anchor)shell.insertBefore(sec,anchor);else shell.appendChild(sec);layoutApply()}
+function calendarItems(k){const out=[],tid=teacher()?.id;arr('sinavlar').filter(x=>dkey(x.tarih)===k&&(adminMi()||!tid||x.ogretmenId===tid)).forEach(x=>out.push({icon:'📝',title:`${x.siniflar||x.sinif||''} ${x.ders||'Sınav'}`.trim(),sub:[x.donem,x.yaziliSirasi].filter(Boolean).join(' ')||x.tur||'Yazılı',tab:'sinavIslemleri'}));arr('gorevler').filter(x=>dkey(x.sonTarih||x.tarih)===k&&(adminMi()||sameUser(x))).forEach(x=>out.push({icon:'✅',title:x.baslik||x.ad||'Görev',sub:x.saat||'',tab:'gorevler'}));arr('hatirlaticilar').filter(x=>dkey(x.tarih||x.sonTarih||x.baslangicTarihi)===k&&(adminMi()||sameUser(x))).forEach(x=>out.push({icon:'⏰',title:x.baslik||x.ad||x.metin||'Hatırlatıcı',sub:x.saat||x.baslangicSaati||'',tab:'takvim'}));return out.slice(0,8)}
+function calendarRender(k,card){let host=$('.db6x-agenda',card);if(!host){host=document.createElement('div');host.className='db6x-agenda';card.appendChild(host)}const items=calendarItems(k);const d=new Date(k+'T12:00:00'),label=Number.isNaN(d.getTime())?'':new Intl.DateTimeFormat('tr-TR',{weekday:'long',day:'numeric',month:'long'}).format(d);host.innerHTML=`<div class="db6x-agenda-head">${esc(label)}</div>${items.length?items.map((x,i)=>`<button type="button" data-i="${i}" class="db6x-agenda-row"><span>${x.icon}</span><span><strong>${esc(x.title)}</strong>${x.sub?`<small>${esc(x.sub)}</small>`:''}</span><b>›</b></button>`).join(''):'<div class="db6x-agenda-empty">Bu gün için kayıt bulunmuyor.</div>'}`;$$('.db6x-agenda-row',host).forEach((b,i)=>b.onclick=()=>openTab(items[i].tab))}
+function enhanceCalendar(){const strip=$('.db6-shell .db6-calendar-strip');if(!strip||strip.dataset.db6Agenda==='1')return;strip.dataset.db6Agenda='1';const card=strip.closest('.db6-card'),days=$$('.db6-day',strip),now=new Date();days.forEach((el,i)=>{const d=new Date(now);d.setHours(12,0,0,0);d.setDate(now.getDate()+i-3);const k=dkey(d),cnt=calendarItems(k).length;el.dataset.date=k;el.classList.add('db6x-day');if(cnt){const dot=document.createElement('span');dot.className='db6x-dot';dot.textContent=cnt>1?String(Math.min(cnt,9)):'';el.appendChild(dot)}el.onclick=()=>{$$('.db6x-day',strip).forEach(x=>x.classList.remove('selected'));el.classList.add('selected');calendarRender(k,card)}});const today=days[3]||days[0];if(today){today.classList.add('selected');calendarRender(today.dataset.date,card)}}
+function injectEdit(){const h=$('.db6-top .db6-headrow');if(!h||$('#db6LayoutBtn',h))return;const b=document.createElement('button');b.id='db6LayoutBtn';b.className='db6x-layout-btn';b.type='button';b.title='Ana sayfayı düzenle';b.textContent='⚙️';b.onclick=layoutEditor;const bell=$('.db6-bell',h);if(bell)h.insertBefore(b,bell);else h.appendChild(b)}
+function css(){if($('#db6x-css'))return;const s=document.createElement('style');s.id='db6x-css';s.textContent=`.db6x-layout-btn{margin-left:auto;margin-right:6px;width:38px;height:38px;border:1px solid rgba(255,255,255,.18);border-radius:13px;background:rgba(255,255,255,.12);color:#fff;font-size:17px}.db6x-overlay{position:fixed;inset:0;z-index:15000;background:rgba(5,13,24,.58);display:flex;align-items:flex-end;justify-content:center}.db6x-sheet{width:min(560px,100%);max-height:86dvh;overflow:auto;background:var(--surface,#fff);color:var(--ink,#14213d);border-radius:24px 24px 0 0;padding:17px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(0,0,0,.18)}.db6x-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:18px}.db6x-head button{border:0;background:transparent;color:inherit;font-size:20px}.db6x-help{font-size:12px;color:var(--ink-muted,#758198);line-height:1.45;margin:8px 0 13px}.db6x-layout-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border,#e5e9f1)}.db6x-layout-row label{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700}.db6x-layout-row input,.db6x-qrow input{width:19px;height:19px;accent-color:var(--brand,#5b36c9)}.db6x-layout-row button{width:34px;height:32px;border:1px solid var(--border,#e5e9f1);border-radius:9px;background:var(--nm-bg,#f7f8fb);color:inherit}.db6x-layout-row button+button{margin-left:4px}.db6x-save{width:100%;margin-top:14px;border:0;border-radius:14px;background:var(--brand,#5b36c9);color:#fff;font-weight:800;padding:13px}.db6x-quick-list{display:flex;flex-direction:column;gap:7px}.db6x-qrow{display:grid;grid-template-columns:24px 30px minmax(0,1fr);align-items:center;gap:8px;border:1px solid var(--border,#e5e9f1);border-radius:13px;padding:10px 12px}.db6x-delivery{width:100%;border:0;background:transparent;color:inherit;text-align:left}.db6x-day{position:relative;cursor:pointer}.db6x-day.selected:not(.today){background:color-mix(in srgb,var(--brand,#5b36c9) 10%,transparent);color:var(--brand,#5b36c9)}.db6x-dot{position:absolute;right:3px;top:3px;min-width:7px;height:7px;border-radius:7px;background:#ef4444;color:#fff;font-size:7px;line-height:10px;text-align:center;padding:0 2px}.db6x-agenda{border-top:1px solid var(--line,#e5e9f1);padding:9px 10px 4px}.db6x-agenda-head{font-size:11px;font-weight:850;color:var(--muted,#758198);padding:0 2px 6px}.db6x-agenda-row{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr) 16px;align-items:center;gap:7px;border:0;border-top:1px solid var(--line,#e5e9f1);background:transparent;color:var(--text,#14213d);text-align:left;padding:9px 2px}.db6x-agenda-row strong{display:block;font-size:11.5px}.db6x-agenda-row small{display:block;color:var(--muted,#758198);font-size:10px;margin-top:2px}.db6x-agenda-empty{padding:13px 2px;color:var(--muted,#758198);font-size:11px}[data-theme="dark"] .db6x-sheet{background:#0d2135;color:#f6f8fc}`;document.head.appendChild(s)}
+function stabilize(){injectEdit();quickRender();layoutApply();enhanceCalendar();clearTimeout(observerTimer);observerTimer=setTimeout(()=>ensureTeacherDeliveries(),120)}
+function boot(){const shell=$('.db6-shell');if(!shell)return false;css();sections(shell).forEach(key);stabilize();if(!observer){observer=new MutationObserver(()=>{if(!applying){clearTimeout(observerTimer);observerTimer=setTimeout(stabilize,60)}});observer.observe(shell,{childList:true,subtree:false})}return true}
+let tries=0,t=setInterval(()=>{if(boot()||++tries>180)clearInterval(t)},180);document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,0));window.addEventListener('load',()=>setTimeout(boot,250));
 })();

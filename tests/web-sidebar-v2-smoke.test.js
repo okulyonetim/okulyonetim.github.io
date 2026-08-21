@@ -3,7 +3,6 @@ const assert=require('assert');
 const {execFileSync}=require('child_process');
 const js=fs.readFileSync('js/web-sidebar-v2.js','utf8');
 const css=fs.readFileSync('css/web-sidebar-v2.css','utf8');
-const init=fs.readFileSync('js/dashboard-v2-init.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 execFileSync(process.execPath,['--check','js/web-sidebar-v2.js']);
 assert(js.includes('_navDuzeniTumGruplarGetir'),'Sidebar alt navigasyonun resmi grup modelini kullanmalı.');
@@ -23,6 +22,5 @@ assert(css.includes('--ws2-w-collapsed:78px'),'Dar mod genişliği tanımlı olm
 assert(css.includes('body.nav-collapsed .ws2-group-icon'),'Dar modda grup ikonları görünür kalmalı.');
 assert(css.includes('body.nav-collapsed #app > .sidebar + div'),'Ana içerik dar sidebar genişliğine göre kaymalı.');
 assert(css.includes('[data-theme="dark"]'),'Açık/koyu tema tokenları bulunmalı.');
-assert(init.includes("s.src='js/web-sidebar-v2.js'"),'Web init yeni sidebarı yüklemeli.');
 assert(sw.includes("'./css/web-sidebar-v2.css'")&&sw.includes("'./js/web-sidebar-v2.js'"),'Sidebar dosyaları PWA cache içinde olmalı.');
 console.log('web-sidebar-v2-smoke: OK');

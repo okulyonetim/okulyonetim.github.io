@@ -9,7 +9,7 @@ scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');
 scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
 
 /* Dashboard motorları artık aynı anda çalışmaz.
-   <=1023px: mevcut mobil v4
+   <=1023px: mevcut mobil v4/v6 rol dashboard
    >=1024px: yeni web v2 katmanı */
 const mobilDashboard=window.matchMedia('(max-width: 1023px)').matches;
 if(mobilDashboard){
@@ -22,9 +22,10 @@ if(mobilDashboard){
 
 /* Rol/yetki sertleştirme tüm platformlarda çalışır. */
 scriptYukle('js/role-ui-hardening.js','role-ui-hardening');
-/* Mobil dashboard tercihleri en son tek merkezden uygulanır. */
+/* Mobil dashboard tercihleri ve kalite katmanları en son uygulanır. */
 if(mobilDashboard){
   scriptYukle('js/dashboard-mobile-state-v3.js','dashboard-mobile-state-v3');
+  scriptYukle('js/dashboard-mobile-v6-quality.js','dashboard-mobile-v6-quality');
   /* Android WebView dashboard DOM'u yeniden çizdiğinde hero kaynaklarını
      yeniden üretir; normal web/PWA'da kendi kendine devre dışı kalır. */
   scriptYukle('js/android-dashboard-hero-fix.js','android-dashboard-hero-fix');
