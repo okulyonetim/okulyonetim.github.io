@@ -44,7 +44,21 @@ function bodyTemizle(){
   }
   b.style.removeProperty('touch-action');
   b.style.removeProperty('overflow');
-  try{ if(typeof _pullToRefreshZorlaSifirla==='function') _pullToRefreshZorlaSifirla(); }catch(_){}
+  /* DÜZELTME (kök sebep — "herhangi bir modal açıkken bir butona basılınca
+     uygulama tamamen donuyor"): burada _pullToRefreshZorlaSifirla() ÇAĞRILMAMALI.
+     Bu fonksiyon HER tıklamadan 30ms sonra (modal hâlâ açık olsa bile) native
+     pull-to-refresh'i koşulsuz TEKRAR ETKİNLEŞTİRİYORDU — js/app.js'teki
+     _pullToRefreshDerinlik sayacının (modalAc/modalKapat ile dengelenen) üzerine
+     binerek onu geçersiz kılıyordu. Sonuç: modal içinde bir butona basıldıktan
+     hemen sonra parmakta ufak bir aşağı hareket olursa (çok sık rastlanan bir
+     durum), native taraf bunu "aşağı çek" jesti sanıp yakalıyor ve
+     MainActivity.java:setOnRefreshListener → webView.reload() tetikleniyordu —
+     yani TÜM JS durumu silinip sayfa sıfırdan yükleniyordu (kullanıcıya "tam
+     donma" olarak görünüyor). Bu zorla sıfırlama zaten doğru yerde,
+     js/alt-navigasyon.js:_ustPanelleriKapat() içinde yapılıyor (bkz. o
+     fonksiyonun sonundaki _pullToRefreshZorlaSifirla() çağrısı) — o nokta
+     gerçekten "tüm üst panelleri kapat" niyetinde olduğu için güvenli; burada
+     (her tıklamada, modal açık/kapalı ayrımı yapmadan) DEĞİL. */
 }
 
 /* ── Sayfa yüklenince ve her tıklamadan sonra temizle ── */
