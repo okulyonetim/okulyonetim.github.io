@@ -1,7 +1,7 @@
 /* ====================================================================
    Okul Yönetim Paneli — Service Worker v7
    ==================================================================== */
-const CACHE_ADI = 'oy-cache-v461';
+const CACHE_ADI = 'oy-cache-v462';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -28,15 +28,7 @@ const ONBELLEGE_ALINACAKLAR = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_ADI).then(cache =>
-      Promise.allSettled(
-        ONBELLEGE_ALINACAKLAR.map(url =>
-          cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err))
-        )
-      )
-    )
-  );
+  event.waitUntil(caches.open(CACHE_ADI).then(cache => Promise.allSettled(ONBELLEGE_ALINACAKLAR.map(url => cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err)))));
   self.skipWaiting();
 });
 self.addEventListener('activate', event => {
@@ -44,9 +36,7 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 function apiIstegiMi(url) {
-  return url.includes('firestore.googleapis.com') || url.includes('identitytoolkit.googleapis.com') ||
-    url.includes('securetoken.googleapis.com') || url.includes('firebaseinstallations.googleapis.com') ||
-    url.includes('fcmregistrations.googleapis.com');
+  return url.includes('firestore.googleapis.com') || url.includes('identitytoolkit.googleapis.com') || url.includes('securetoken.googleapis.com') || url.includes('firebaseinstallations.googleapis.com') || url.includes('fcmregistrations.googleapis.com');
 }
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
