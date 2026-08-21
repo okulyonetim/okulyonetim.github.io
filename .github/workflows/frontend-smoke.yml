@@ -79,6 +79,7 @@ on:
       - 'tests/excel-visual-fidelity-v3-smoke.test.js'
       - 'tests/dashboard-mobile-v4-smoke.test.js'
       - 'tests/dashboard-mobile-state-v3-smoke.test.js'
+      - 'tests/mobile-role-dashboard-v6-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -136,6 +137,8 @@ jobs:
           node --check js/proje-degerlendirme.js
           node --check optik/js/app.js
           node --check optik/js/disaAktar.js
+      - name: Mobil rol bazlı dashboard v6 regresyon testi
+        run: node tests/mobile-role-dashboard-v6-smoke.test.js
       - name: Web responsive regresyon testi
         run: node tests/web-responsive-smoke.test.js
       - name: Web sidebar v2 regresyon testi
