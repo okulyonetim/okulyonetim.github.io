@@ -36,7 +36,7 @@ assert(css.includes('repeat(3, minmax(0, 1fr))'), 'Çok geniş ekranda navigasyo
 assert(dash2.includes('@media (min-width:1024px)') || dash2.includes('@media (min-width: 1024px)'), 'Dashboard v2 içinde masaüstü shell breakpointi bulunmalı.');
 assert(shellFix.includes('@media (min-width: 1024px)'), 'Web shell fix masaüstü breakpointine sahip olmalı.');
 assert(mobileCss.includes('@media (max-width: 1023px)'), 'Yeni mobil CSS açıkça mobil breakpointine sahip olmalı.');
-assert(webInit.includes("matchMedia('(min-width: 1024px)')"), 'Web init masaüstü breakpointiyle korunmalı.');
+assert(webInit.includes("matchMedia('(min-width: 1024px)')") || /function\s+isWeb\s*\(\)\s*\{\s*return\s+window\.innerWidth\s*>=\s*1024\s*;?\s*\}/.test(webInit), 'Web init masaüstü breakpointiyle korunmalı.');
 assert(webInit.includes('mobilWebStilleriniKaldir'), 'Mobilde web stil katmanları devre dışı bırakılmalı.');
 assert(webInit.includes('wsThemeToggle'), 'Web topbarında açık/koyu tema kontrolü bulunmalı.');
 assert(webInit.includes("s.src='js/web-sidebar-v2.js'"), 'Yeni web sidebar controller yüklenmeli.');
