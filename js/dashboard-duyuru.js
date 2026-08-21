@@ -1,0 +1,100 @@
+/* Koruk Asistan — mobil ana sayfa duyuru bileseni
+ * Duyurular modülündeki mevcut okundu-takip altyapisini kullanir.
+ * Yeni veri modeli olusturmaz; DuyurularService + duyuruDetayAc ile calisir.
+ */
+(function(){
+'use strict';
+if(!window.matchMedia('(max-width:1023px)').matches)return;
+if(window.__KH_DUYURU_COMPONENT__)return;
+window.__KH_DUYURU_COMPONENT__=true;
+
+const $=(s,r=document)=>r.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function aktifDuyuru(){
+  try{
+    if(typeof duyurular==='undefined'||!Array.isArray(duyurular))return null;
+    return duyurular
+      .filter(d=>d&&!d.arsivlendi&&d.aktif!==false&&!d.pasif)
+      .sort((a,b)=>String(b.tarih||'').localeCompare(String(a.tarih||'')))[0]||null;
+  }catch(_){return null}
+}
+function tarihMetni(v){
+  if(!v)return'';
+  try{
+    if(typeof isoYereleCevir==='function'){
+      const x=isoYereleCevir(v);return [x.tarih,x.saat].filter(Boolean).join(' · ');
+    }
+    return new Date(v).toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  }catch(_){return''}
+}
+function okudumMu(d){try{return typeof DuyurularService!=='undefined'&&DuyurularService.benOkudumMu(d)}catch(_){return false}}
+function adminMi(){try{return !!(typeof AKTIF_KULLANICI!=='undefined'&&AKTIF_KULLANICI?.admin)}catch(_){return false}}
+function detayAc(id){try{if(typeof duyuruDetayAc==='function')return duyuruDetayAc(id)}catch(_){}try{if(typeof sekmeAc==='function')sekmeAc('duyurular')}catch(_){}}
+
+function kartHtml(d){
+  const okundu=okudumMu(d),okuyan=Object.keys(d.okuyanlar||{}).length;
+  const icerik=String(d.icerik||d.aciklama||'').trim();
+  const kisa=icerik.length>180?icerik.slice(0,180).trim()+'…':icerik;
+  return `<article class="kh-announcement ${okundu?'is-read':'is-unread'}" data-duyuru-id="${esc(d.id)}">
+    <div class="kh-announcement-accent"></div>
+    <div class="kh-announcement-head">
+      <div class="kh-announcement-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3Z"/><path d="M11.6 16.5 13 21H7l-1.2-6"/></svg>
+      </div>
+      <div class="kh-announcement-title-wrap">
+        <div class="kh-announcement-kicker">DUYURU</div>
+        <h3>${esc(d.baslik||d.ad||'Duyuru')}</h3>
+        <div class="kh-announcement-meta">${esc(d.olusturanAdi||'Yönetim')}${d.tarih?' · '+esc(tarihMetni(d.tarih)):''}</div>
+      </div>
+      <span class="kh-announcement-status ${okundu?'read':'new'}">${okundu?'✓ OKUNDU':'YENİ'}</span>
+    </div>
+    ${kisa?`<button type="button" class="kh-announcement-body" data-action="detail">${esc(kisa)}</button>`:''}
+    <div class="kh-announcement-footer">
+      <label class="kh-read-check ${okundu?'checked':''}">
+        <input type="checkbox" data-action="read" ${okundu?'checked disabled':''}>
+        <span class="kh-read-box">✓</span>
+        <span>${okundu?'Okundu olarak işaretlendi':'Okudum'}</span>
+      </label>
+      ${adminMi()?`<button type="button" class="kh-read-count" data-action="readers"><span>👁</span><b>${okuyan}</b> kişi okudu <span class="arrow">›</span></button>`:''}
+    </div>
+  </article>`;
+}
+
+function yerlestir(){
+  const root=$('#tab-panel.kh-home .kh-shell');if(!root)return false;
+  const d=aktifDuyuru();if(!d)return false;
+  const dyn=$('.kh-dynamic',root);if(!dyn)return false;
+  let generic=null;
+  Array.from(dyn.children).some(el=>{if((el.textContent||'').toLocaleUpperCase('tr').includes('DUYURU')){generic=el;return true}return false});
+  let kart=$('.kh-announcement',dyn);
+  const imza=`${d.id}|${Object.keys(d.okuyanlar||{}).length}|${okudumMu(d)?1:0}|${d.baslik||''}|${d.icerik||''}`;
+  if(kart&&kart.dataset.signature===imza){if(generic&&generic!==kart)generic.remove();return true}
+  const wrap=document.createElement('div');wrap.innerHTML=kartHtml(d);const yeni=wrap.firstElementChild;yeni.dataset.signature=imza;
+  if(kart)kart.replaceWith(yeni);else if(generic)generic.replaceWith(yeni);else dyn.prepend(yeni);
+  if(generic&&generic.isConnected&&generic!==yeni)generic.remove();
+
+  const read=$('[data-action="read"]',yeni);
+  if(read&&!read.disabled)read.addEventListener('change',async e=>{
+    if(!e.target.checked)return;
+    e.target.disabled=true;
+    try{
+      if(typeof DuyurularService==='undefined')throw new Error('Duyuru servisi hazır değil');
+      await DuyurularService.okunduIsaretle(d.id);
+      yeni.classList.remove('is-unread');yeni.classList.add('is-read');
+      const lab=$('.kh-read-check',yeni);if(lab){lab.classList.add('checked');lab.querySelector('span:last-child').textContent='Okundu olarak işaretlendi'}
+      const st=$('.kh-announcement-status',yeni);if(st){st.className='kh-announcement-status read';st.textContent='✓ OKUNDU'}
+      setTimeout(yerlestir,250);
+    }catch(err){e.target.checked=false;e.target.disabled=false;try{toast('Okundu bilgisi kaydedilemedi: '+err.message)}catch(_){}}
+  });
+  $('[data-action="detail"]',yeni)?.addEventListener('click',()=>detayAc(d.id));
+  $('[data-action="readers"]',yeni)?.addEventListener('click',()=>detayAc(d.id));
+  return true;
+}
+
+let bekle=false;
+const mo=new MutationObserver(()=>{if(bekle)return;bekle=true;requestAnimationFrame(()=>{bekle=false;yerlestir()})});
+function baslat(){const p=$('#tab-panel');if(p){mo.observe(p,{childList:true,subtree:true});yerlestir();return true}return false}
+let n=0,t=setInterval(()=>{if(baslat()||++n>100)clearInterval(t)},100);
+document.addEventListener('DOMContentLoaded',()=>setTimeout(baslat,0));
+window.addEventListener('focus',()=>setTimeout(yerlestir,80));
+})();
