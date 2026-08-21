@@ -1,7 +1,7 @@
 /* ====================================================================
    Okul Yönetim Paneli — Service Worker v7
    ==================================================================== */
-const CACHE_ADI = 'oy-cache-v469';
+const CACHE_ADI = 'oy-cache-v470';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -22,8 +22,7 @@ const ONBELLEGE_ALINACAKLAR = [
   './css/dashboard-v2.css','./css/web-shell-fix.css','./css/mobil-dashboard.css','./css/web-sidebar-v2.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js',
   './js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/ui-stability-fixes.js',
-  './js/dashboard-v2-init.js','./js/web-sidebar-v2.js',
-  './js/dashboard-mobile-v4.js','./js/dashboard-mobile-v4-polish.js','./js/dashboard-mobile-v6-quality.js','./js/dashboard-mobile-data-sync-v1.js','./js/dashboard-mobile-visual-v7.js','./js/dashboard-mobile-visual-v8.js','./js/dashboard-card-count-fix.js','./js/dashboard-mobile-v4-hotfix.js','./js/dashboard-mobile-state-v3.js','./js/android-dashboard-hero-fix.js','./js/role-ui-hardening.js','./js/dashboard-today-cleanup.js',
+  './js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/dashboard-mobile-clean.js','./js/role-ui-hardening.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
