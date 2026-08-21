@@ -1,7 +1,7 @@
 /* ====================================================================
    Okul Yönetim Paneli — Service Worker v7
    ==================================================================== */
-const CACHE_ADI = 'oy-cache-v476';
+const CACHE_ADI = 'oy-cache-v477';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -22,7 +22,7 @@ const ONBELLEGE_ALINACAKLAR = [
   './css/web-shell-fix.css','./css/web-sidebar-v2.css','./css/dashboard-yeni.css','./css/dashboard-home.css','./css/dashboard-home-colors.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js',
   './js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/ui-stability-fixes.js',
-  './js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/dashboard-home.js','./js/dashboard-duyuru.js','./js/role-ui-hardening.js',
+  './js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/dashboard-home.js','./js/dashboard-duyuru.js','./js/dashboard-home-shared.js','./js/role-ui-hardening.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
