@@ -37,6 +37,7 @@ function mobilDashboardBaslat(){
   scriptYukle('js/android-dashboard-hero-fix.js','android-dashboard-hero-fix');
   scriptYukle('js/dashboard-mobile-data-sync-v1.js','dashboard-mobile-data-sync-v1');
   scriptYukle('js/dashboard-mobile-visual-v7.js','dashboard-mobile-visual-v7');
+  scriptYukle('js/dashboard-mobile-visual-v8.js?v=8342495','dashboard-mobile-visual-v8');
   return true;
 }
 if(mobilDashboard){
