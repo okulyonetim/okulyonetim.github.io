@@ -9,8 +9,8 @@ scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');
 scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
 
 /* Dashboard motorları artık aynı anda çalışmaz.
-   <=1023px: mevcut mobil v4/v6 rol dashboard
-   >=1024px: yeni web v2 katmanı */
+   <=1023px: mobil rol dashboard
+   >=1024px: web v2 */
 const mobilDashboard=window.matchMedia('(max-width: 1023px)').matches;
 if(mobilDashboard){
   scriptYukle('js/dashboard-mobile-v4.js','dashboard-mobile-v4');
@@ -29,9 +29,9 @@ if(mobilDashboard){
   /* Android WebView dashboard DOM'u yeniden çizdiğinde hero kaynaklarını
      yeniden üretir; normal web/PWA'da kendi kendine devre dışı kalır. */
   scriptYukle('js/android-dashboard-hero-fix.js','android-dashboard-hero-fix');
-  /* En son tek v6 kabuğunu görünür bırak: eski dashboard'un tekrar
-     render edilmesi halinde dahi kullanıcı çift ana sayfa görmez. */
-  scriptYukle('js/dashboard-v6-single-shell-hotfix.js','dashboard-v6-single-shell-hotfix');
+  /* NOT: dashboard-v6-single-shell-hotfix geçici olarak devre dışıdır.
+     Bazı Android WebView yenilemelerinde #tab-panel içeriğini görünmez bırakarak
+     siyah ekran oluşturduğu için yeniden tasarlanana kadar yüklenmez. */
 }
 
 let sarildi=false,deneme=0;
