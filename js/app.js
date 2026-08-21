@@ -1087,6 +1087,21 @@ function renderSosyalMedyaIkonlari(){
       <span class="hero-sosyal-etiket">${escapeHtml(l.etiket||'')}</span>
     </a>`).join('');
   kutu.style.display = 'flex';
+  // Aynı veriden Okul Bağlantıları kartını da doldur
+  _renderOkulBaglantiKarti(linkler);
+}
+
+function _renderOkulBaglantiKarti(linkler){
+  const kart = document.getElementById('okulBaglantiKart');
+  const icerik = document.getElementById('okulBaglantiIcerik');
+  if(!kart || !icerik) return;
+  if(!linkler || !linkler.length){ kart.style.display='none'; return; }
+  icerik.innerHTML = linkler.map(l=>`
+    <a href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer" class="dash-link-item" title="${escapeHtml(l.etiket||'')}">
+      <span class="dash-link-ikon">${SOSYAL_IKON_SVG[l.ikon] || SOSYAL_IKON_SVG.globe}</span>
+      <span class="dash-link-etiket">${escapeHtml(l.etiket||'')}</span>
+    </a>`).join('');
+  kart.style.display = '';
 }
 
 /* ============== DERS PROGRAMI ============== */
