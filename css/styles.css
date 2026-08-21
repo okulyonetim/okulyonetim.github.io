@@ -853,7 +853,7 @@ table.cizelge td.cz-rowlabel .cz-extra{ display:block; max-width:100%; overflow:
 /* =========================================================
    MODAL
    ========================================================= */
-.modal-overlay{ display:none; position:fixed; inset:0; background: rgba(4,14,14,0.65); backdrop-filter:blur(2px); z-index:9700; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay{ display:none; position:fixed; inset:0; background: rgba(4,14,14,0.65); z-index:9700; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.show, .modal-overlay.active{ display:flex; animation: fadeIn .15s ease; }
 .modal{
   background: var(--nm-bg);

@@ -1,52 +1,36 @@
-/* Koruk Asistan — modal interaction fix v4
-   =========================================================
-   KÖK SEBEP (kesin tespit):
-   app.js MutationObserver → body.style.position='fixed'
-   Android WebView'de body position:fixed yapılınca tüm child
-   elementlerin touch/click event'ları bloke oluyor.
-   MutationObserver app.js'den kaldırıldı (IIFE boş bırakıldı).
-   styles.css body.modal-open touch-action:none → auto yapıldı.
-   ========================================================= */
-
-/* 1. Scroll kilidi — sadece overflow + overscroll ile, position:fixed YOK */
+/* Koruk Asistan — modal-interaction-fix v5
+   body.modal-open class artık hiç eklenmediği için bu kural
+   çalışmaz — güvenlik için bırakıldı. Asıl scroll-through önlemi
+   .modal kendi içinde overscroll-behavior ile sağlanıyor. */
 body.modal-open {
   overflow: hidden !important;
-  overscroll-behavior: none !important;
-  touch-action: auto !important;   /* styles.css'deki none'ı garanti ile iptal */
-}
-
-/* 2. Modal ve içeriği — tüm dokunma olayları serbest */
-.modal-overlay.active,
-.modal-overlay.show,
-.modal-overlay.acik {
-  display: flex !important;
-  pointer-events: auto !important;
   touch-action: auto !important;
-  z-index: 9750 !important;        /* bottom-nav (9700) üstüne çık */
+  overscroll-behavior: none !important;
 }
 
-/* 3. Kapalı overlay'ler tıklamayı yutmasın */
-.modal-overlay:not(.active):not(.show):not(.acik) {
-  pointer-events: none !important;
+/* Modal kutusu — scroll-through'u KENDİSİNDE önle, body'ye dokunma */
+.modal {
+  overscroll-behavior: contain;
+  overflow-y: auto;
 }
+
+/* Overlay'ler kapalıyken tıklamayı yutmasın */
+.modal-overlay:not(.active):not(.show):not(.acik),
 .detay-overlay:not(.active):not(.show):not(.acik) {
   pointer-events: none !important;
+  display: none !important;
 }
 
-/* 4. Modal içindeki her element serbestçe tıklanabilir */
+/* Açık overlay — z-index bottom-nav üstüne */
+.modal-overlay.active,
+.modal-overlay.show {
+  z-index: 9750 !important;
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
 .modal-overlay.active *,
 .modal-overlay.show * {
-  touch-action: auto !important;
   pointer-events: auto !important;
-}
-
-/* 5. Bottom-nav modal arkasında kalsın */
-body.modal-open .bottom-nav {
-  pointer-events: none !important;
-  z-index: 7000 !important;
-}
-
-/* 6. detay-overlay z-index tutarlı */
-.detay-overlay.active {
-  z-index: 9650 !important;
+  touch-action: auto !important;
 }
