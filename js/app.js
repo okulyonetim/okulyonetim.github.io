@@ -3247,27 +3247,14 @@ function tumSablonlariIndir() {
    izleyen bir MutationObserver kullanılıyor — hangi fonksiyon class'ı
    değiştirirse değiştirsin otomatik devreye girer, hiçbir mevcut
    fonksiyona dokunmaya gerek kalmaz. ==================================================================== */
+/* DÜZELTME v4: body'yi position:fixed yapmak Android WebView'de tüm child
+   elementlerin touch/click olaylarını bozuyordu (modal içi butonlar çalışmıyor).
+   overscroll-behavior:none CSS ile scroll-through sorununu daha güvenli çözüyoruz.
+   MutationObserver tamamen kaldırıldı — overflow ve overscroll CSS'de yönetiliyor. */
 (function(){
-  let _kilitliKaydirmaY = 0;
-  const gövde = document.body;
-  const gozlemci = new MutationObserver(()=>{
-    const kilitliOlmali = gövde.classList.contains('modal-open');
-    const suAnKilitli = gövde.style.position === 'fixed';
-    if(kilitliOlmali && !suAnKilitli){
-      _kilitliKaydirmaY = window.scrollY || window.pageYOffset || 0;
-      gövde.style.position = 'fixed';
-      gövde.style.top = (-_kilitliKaydirmaY) + 'px';
-      gövde.style.left = '0';
-      gövde.style.right = '0';
-    } else if(!kilitliOlmali && suAnKilitli){
-      gövde.style.position = '';
-      gövde.style.top = '';
-      gövde.style.left = '';
-      gövde.style.right = '';
-      window.scrollTo(0, _kilitliKaydirmaY);
-    }
-  });
-  gozlemci.observe(gövde, { attributes:true, attributeFilter:['class'] });
+  // ESKİ: body position:fixed scroll-lock → KALDIRILDI (Android WebView dokunma hatası)
+  // YENİ: CSS'de body.modal-open { overflow:hidden; overscroll-behavior:none; } yeterli
+  // Bu IIFE kasıtlı boş bırakıldı — eski kodu tamamen iptal etmek için.
 })();
 
 /* ====================================================================
