@@ -20,8 +20,8 @@
     document.head.appendChild(l);
   }
 
-  /* Alt navigasyonun davranışını değiştirmeden ortak görsel tema uygulanır. */
-  stilYukle('css/alt-navigation-theme.css?v=3','data-alt-nav-theme');
+  /* Alt navigasyon + mobil header ortak görsel tema. */
+  stilYukle('css/alt-navigation-theme.css?v=4','data-alt-nav-theme');
 
   /* Bu dosya index.html tarafindan dogrudan yuklenir. Navigasyon cekirdegi
      ilk sirada, dashboard/stabilite zinciri ise hemen ardindan baslatilir. */
