@@ -1,41 +1,34 @@
-/* Koruk Asistan — global modal interaction fix v2
-   =========================================================
-   KÖK SEBEP:
-   styles.css → body.modal-open { touch-action: none; }
-   Bu kural body + tüm alt elementlerin dokunma olaylarını (tap/click dahil)
-   bloke eder. Modal içindeki Vazgeç/Kaydet/Sil butonları çalışmaz.
-   position:fixed (MutationObserver) ile birleşince Android WebView tamamen donuyor.
-   ========================================================= */
-
-/* 1. touch-action:none'ı iptal et — sadece overflow kilitle */
-body.modal-open {
-  overflow: hidden !important;
-  touch-action: auto !important;
+/* Koruk Asistan — global modal interaction fix v3
+   Android/WebView'de modal açıkken dokunmayı tamamen kesen eski
+   touch-action:none kuralını nötralize eder. Gizli overlay'lerin uygulama
+   üstünde görünmez tıklama katmanı oluşturmasına izin vermez. */
+body.modal-open{
+  overflow:hidden!important;
+  touch-action:auto!important;
 }
 
-/* 2. Modal ve tüm içeriği serbestçe tıklanabilir olsun */
-body.modal-open .modal-overlay,
-body.modal-open .modal-overlay *,
-body.modal-open .detay-overlay,
-body.modal-open .detay-overlay *,
-body.modal-open .detay-panel,
-body.modal-open .detay-panel *,
-body.modal-open #ozelOnayModal,
-body.modal-open #ozelOnayModal *,
-body.modal-open #ilerlemeOverlay,
-body.modal-open #ilerlemeOverlay * {
-  touch-action: auto !important;
-  pointer-events: auto !important;
-}
-
-/* 3. Modal overlay z-index → bottom-nav (9700) ÜSTÜNE çıkar */
+.modal-overlay.show,
 .modal-overlay.active,
-.modal-overlay.show {
-  z-index: 9750 !important;
+.modal-overlay.acik,
+.detay-overlay.show,
+.detay-overlay.active,
+.detay-overlay.acik{
+  pointer-events:auto!important;
+  touch-action:auto!important;
 }
 
-/* 4. Modal açıkken bottom-nav arkada kalsın */
-body.modal-open .bottom-nav {
-  z-index: 7000 !important;
-  pointer-events: none !important;
+.modal-overlay:not(.show):not(.active):not(.acik),
+.detay-overlay:not(.show):not(.active):not(.acik){
+  pointer-events:none!important;
+}
+
+.modal-overlay.show,
+.modal-overlay.active,
+.detay-overlay.show,
+.detay-overlay.active{
+  z-index:9750!important;
+}
+
+body.modal-open .bottom-nav{
+  z-index:7000!important;
 }
