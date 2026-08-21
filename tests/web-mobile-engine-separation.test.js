@@ -1,14 +1,19 @@
 const fs=require('fs');
 const assert=require('assert');
 const loader=fs.readFileSync('js/ui-stability-fixes.js','utf8');
+const home=fs.readFileSync('js/dashboard-home.js','utf8');
 const web=fs.readFileSync('js/dashboard-v2-init.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
-assert(loader.includes("matchMedia('(max-width: 1023px)')"));
-assert(loader.includes('if(mobilDashboard)'));
-assert(web.includes("matchMedia('(min-width: 1024px)')"));
-assert(web.includes('mobilWebStilleriniKaldir'));
-assert(web.includes('wsThemeToggle'));
-assert(sw.includes("'./js/dashboard-v2-init.js'"));
-assert(sw.includes("'./css/dashboard-v2.css'"));
-assert(sw.includes("'./css/web-shell-fix.css'"));
+
+assert(loader.includes("matchMedia('(max-width:1023px)')"));
+assert(loader.includes('if(mobil)'));
+assert(loader.includes('dashboard-home.js'));
+assert(loader.includes('dashboard-home.css'));
+assert(home.includes("matchMedia('(max-width:1023px)')"));
+assert(home.includes('claimDashboardRenderer'));
+assert(web.includes('function isWeb()'));
+assert(sw.includes("'./js/dashboard-home.js'"));
+assert(sw.includes("'./css/dashboard-home.css'"));
+assert(!sw.includes("'./css/dashboard-v2.css'"));
+assert(!sw.includes("'./css/mobil-dashboard.css'"));
 console.log('Web/mobil motor ayrımı testi başarılı.');
