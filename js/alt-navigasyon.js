@@ -21,7 +21,7 @@
   }
 
   /* Alt navigasyonun davranışını değiştirmeden ortak görsel tema uygulanır. */
-  stilYukle('css/alt-navigation-theme.css?v=1','data-alt-nav-theme');
+  stilYukle('css/alt-navigation-theme.css?v=2','data-alt-nav-theme');
 
   /* Bu dosya index.html tarafindan dogrudan yuklenir. Navigasyon cekirdegi
      ilk sirada, dashboard/stabilite zinciri ise hemen ardindan baslatilir. */
