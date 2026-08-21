@@ -1,4 +1,4 @@
-/* Koruk Asistan — Alt Navigasyon / Menü görsel tema v4
+/* Koruk Asistan — Alt Navigasyon / Menü görsel tema v5
    Navigasyon davranışına müdahale etmez; mobil header + alt navigasyon + menü görünümünü
    ana sayfanın temiz açık/koyu tema diliyle eşler. Kartların kişisel renkleri korunur. */
 :root{
@@ -19,62 +19,23 @@
   --an-orange:#ffc57d;--an-orange-soft:#3c2c18;--an-rose:#ff9ab3;--an-rose-soft:#422431;
   --an-cyan:#7dd6e4;--an-cyan-soft:#153841;
 }
-
-/* MOBİL HEADER — ana sayfa ile aynı yüzey, ince sınır, zarif butonlar */
 @media (max-width:1023px){
-  .topbar{
-    height:58px!important;
-    padding:0 12px!important;
-    gap:8px!important;
-    background:color-mix(in srgb,var(--an-surface) 96%,transparent)!important;
-    border-bottom:1px solid var(--an-line)!important;
-    box-shadow:0 5px 18px rgba(31,41,55,.07)!important;
-    backdrop-filter:blur(18px) saturate(1.08)!important;
-    -webkit-backdrop-filter:blur(18px) saturate(1.08)!important;
-  }
+  .topbar{height:58px!important;padding:0 12px!important;gap:8px!important;background:color-mix(in srgb,var(--an-surface) 96%,transparent)!important;border-bottom:1px solid var(--an-line)!important;box-shadow:0 5px 18px rgba(31,41,55,.07)!important;backdrop-filter:blur(18px) saturate(1.08)!important;-webkit-backdrop-filter:blur(18px) saturate(1.08)!important}
   [data-theme="dark"] .topbar{box-shadow:0 7px 22px rgba(0,0,0,.25)!important}
   .topbar-brand{display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important;flex:1!important}
-  .topbar-logo{
-    width:34px!important;height:34px!important;min-width:34px!important;
-    border-radius:11px!important;object-fit:cover!important;
-    border:1px solid var(--an-line)!important;
-    box-shadow:0 4px 12px rgba(31,41,55,.10)!important;
-  }
-  .topbar-title{
-    min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
-    font-family:Manrope,Inter,system-ui,sans-serif!important;font-size:13.5px!important;font-weight:850!important;
-    letter-spacing:-.015em!important;color:var(--an-text)!important;
-  }
-  .topbar .hamburger-btn,.topbar-bell,.topbar-avatar{
-    width:36px!important;height:36px!important;min-width:36px!important;border-radius:12px!important;
-    background:var(--an-surface-soft)!important;color:var(--an-text)!important;
-    border:1px solid var(--an-line)!important;box-shadow:none!important;
-    display:flex!important;align-items:center!important;justify-content:center!important;
-    transition:transform .14s ease,background .18s ease,border-color .18s ease!important;
-  }
+  .topbar-logo{width:34px!important;height:34px!important;min-width:34px!important;border-radius:11px!important;object-fit:cover!important;border:1px solid var(--an-line)!important;box-shadow:0 4px 12px rgba(31,41,55,.10)!important}
+  .topbar-title{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-family:Manrope,Inter,system-ui,sans-serif!important;font-size:13.5px!important;font-weight:850!important;letter-spacing:-.015em!important;color:var(--an-text)!important}
+  .topbar .hamburger-btn,.topbar-bell,.topbar-avatar{width:36px!important;height:36px!important;min-width:36px!important;border-radius:12px!important;background:var(--an-surface-soft)!important;color:var(--an-text)!important;border:1px solid var(--an-line)!important;box-shadow:none!important;display:flex!important;align-items:center!important;justify-content:center!important;transition:transform .14s ease,background .18s ease,border-color .18s ease!important}
   .topbar .hamburger-btn:active,.topbar-bell:active,.topbar-avatar:active{transform:scale(.94)!important;background:var(--an-accent-soft)!important}
   .topbar .hamburger-btn span{width:17px!important;height:2px!important;background:var(--an-text)!important}
   #temaDugmesiTopbar{font-size:16px!important;color:var(--an-accent)!important;background:var(--an-accent-soft)!important;border-color:color-mix(in srgb,var(--an-accent) 18%,var(--an-line))!important}
-  .topbar-avatar{
-    color:#fff!important;background:linear-gradient(145deg,#7455c5,#6545c7)!important;
-    border-color:rgba(101,69,199,.25)!important;box-shadow:0 5px 13px rgba(101,69,199,.18)!important;
-  }
+  .topbar-avatar{color:#fff!important;background:linear-gradient(145deg,#7455c5,#6545c7)!important;border-color:rgba(101,69,199,.25)!important;box-shadow:0 5px 13px rgba(101,69,199,.18)!important}
   [data-theme="dark"] .topbar-avatar{background:linear-gradient(145deg,#7455c5,#9b83df)!important;color:#fff!important}
   #topbarGeriBtn{color:var(--an-accent)!important;background:var(--an-accent-soft)!important}
   .topbar-bell-badge{box-shadow:0 0 0 2px var(--an-surface)!important}
-  #bildirimZiliPaneli{
-    background:var(--an-surface)!important;color:var(--an-text)!important;
-    border:1px solid var(--an-line)!important;border-radius:18px!important;
-    box-shadow:var(--an-shadow)!important;
-  }
+  #bildirimZiliPaneli{background:var(--an-surface)!important;color:var(--an-text)!important;border:1px solid var(--an-line)!important;border-radius:18px!important;box-shadow:var(--an-shadow)!important}
 }
-
-/* ALT BAR */
-.bottom-nav{
-  background:color-mix(in srgb,var(--an-surface) 96%,transparent)!important;
-  border-top:1px solid var(--an-line)!important;box-shadow:0 -8px 24px rgba(31,41,55,.09)!important;
-  backdrop-filter:blur(18px) saturate(1.12);-webkit-backdrop-filter:blur(18px) saturate(1.12);color:var(--an-text)!important;
-}
+.bottom-nav{background:color-mix(in srgb,var(--an-surface) 96%,transparent)!important;border-top:1px solid var(--an-line)!important;box-shadow:0 -8px 24px rgba(31,41,55,.09)!important;backdrop-filter:blur(18px) saturate(1.12);-webkit-backdrop-filter:blur(18px) saturate(1.12);color:var(--an-text)!important}
 [data-theme="dark"] .bottom-nav{box-shadow:0 -10px 28px rgba(0,0,0,.30)!important}
 .bottom-nav button,.bottom-nav a{color:var(--an-muted)!important;border:1px solid transparent!important;border-radius:16px!important;background:transparent!important;transition:background .18s ease,color .18s ease,transform .14s ease,border-color .18s ease!important}
 .bottom-nav button:active,.bottom-nav a:active{transform:scale(.95)}
@@ -82,27 +43,21 @@
 .bottom-nav svg{stroke-width:1.95!important}
 #bnMenuBtn{color:var(--an-accent)!important}
 #bnMenuBtn.active,#bnMenuBtn[aria-expanded="true"]{background:var(--an-accent-soft)!important;border-color:color-mix(in srgb,var(--an-accent) 22%,transparent)!important}
-
-/* AÇILAN KATMANLAR */
 .an-grid-katman,.an-liste-katman,.an-profil-katman{background:var(--an-bg)!important;color:var(--an-text)!important}
 .an-grid-katman::before,.an-liste-katman::before,.an-profil-katman::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 14% 3%,rgba(101,69,199,.055),transparent 27%),radial-gradient(circle at 90% 16%,rgba(26,154,114,.038),transparent 24%)}
 .an-panel-baslik,.an-liste-baslik{position:relative;z-index:1;color:var(--an-text)!important}
 .an-panel-baslik h2,.an-liste-baslik h2{color:inherit!important;font-weight:800!important}
 .an-kapat-btn,.an-geri-btn{background:var(--an-surface)!important;color:var(--an-text)!important;border:1px solid var(--an-line)!important;box-shadow:var(--an-shadow-soft)!important}
-
-/* Ana menü kartları */
-.an-kart-grid{position:relative;z-index:1;row-gap:18px!important;column-gap:12px!important;padding-top:6px!important;padding-bottom:28px!important;align-content:start!important}
-.an-grup-kart{color:#fff!important;border:1px solid rgba(255,255,255,.30)!important;box-shadow:0 9px 22px rgba(31,41,55,.16)!important;border-radius:20px!important;overflow:hidden;isolation:isolate;text-shadow:0 1px 2px rgba(0,0,0,.18);transition:transform .14s ease,box-shadow .18s ease,filter .18s ease!important;margin:0!important}
+.an-kart-grid{position:relative;z-index:1;row-gap:26px!important;column-gap:12px!important;padding-top:10px!important;padding-bottom:36px!important;align-content:start!important;grid-auto-rows:minmax(150px,auto)!important}
+.an-grup-kart{aspect-ratio:auto!important;min-height:150px!important;height:auto!important;color:#fff!important;border:1px solid rgba(255,255,255,.30)!important;box-shadow:0 9px 22px rgba(31,41,55,.16)!important;border-radius:20px!important;overflow:hidden;isolation:isolate;text-shadow:0 1px 2px rgba(0,0,0,.18);transition:transform .14s ease,box-shadow .18s ease,filter .18s ease!important;margin:0!important;padding:14px 10px!important}
 .an-grup-kart::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(0,0,0,.08))}
 .an-grup-kart:active{transform:scale(.98);filter:saturate(1.06)}
-.an-grup-kart>span:last-child{font-weight:800!important;color:#fff!important}
+.an-grup-kart>span:last-child{font-weight:800!important;color:#fff!important;line-height:1.25!important}
 .an-grup-kart .an-ikon-cember{background:rgba(255,255,255,.20)!important;border:1px solid rgba(255,255,255,.30)!important;box-shadow:0 5px 14px rgba(0,0,0,.12)!important;color:#fff!important}
 .an-grup-kart .an-rozet{background:rgba(17,24,39,.30)!important;color:#fff!important;border:1px solid rgba(255,255,255,.28)!important;backdrop-filter:blur(5px)}
 .an-grup-kart .an-kart-duzenle-btn{background:rgba(17,24,39,.28)!important;color:#fff!important;border:1px solid rgba(255,255,255,.28)!important;box-shadow:none!important;backdrop-filter:blur(5px)}
 .an-grup-kart .an-kart-duzenle-btn:active{background:rgba(17,24,39,.42)!important}
 html:not([data-theme="dark"]) .an-grup-kart{box-shadow:0 10px 24px rgba(31,41,55,.18),0 0 0 1px rgba(31,41,55,.05)!important}
-
-/* Alt menü */
 .an-liste-govde,#anListeGovde{position:relative;z-index:1;padding-left:12px!important;padding-right:12px!important;padding-bottom:30px!important}
 .an-liste-ogesi{background:var(--an-surface)!important;color:var(--an-text)!important;border:1px solid var(--an-line)!important;border-radius:16px!important;box-shadow:0 5px 15px rgba(31,41,55,.065)!important;font-weight:700!important;margin-bottom:10px!important}
 .an-liste-ogesi+.an-liste-ogesi{margin-top:0!important}
@@ -110,13 +65,12 @@ html:not([data-theme="dark"]) .an-grup-kart{box-shadow:0 10px 24px rgba(31,41,55
 .an-liste-ogesi .an-oge-ok{color:var(--an-muted)!important}
 .an-alt-grup-baslik{color:var(--an-text)!important;font-weight:800!important;opacity:.82;margin-top:18px!important;margin-bottom:10px!important}
 [data-theme="dark"] .an-liste-ogesi{box-shadow:0 6px 16px rgba(0,0,0,.20)!important}
-
 .an-profil-govde,.an-profil-grup{position:relative;z-index:1}
 .an-profil-satir,.an-cikis-btn{background:var(--an-surface)!important;color:var(--an-text)!important;border:1px solid var(--an-line)!important;border-radius:15px!important;box-shadow:var(--an-shadow-soft)!important}
 .an-profil-grup-baslik{color:var(--an-muted)!important;font-weight:800!important}
-
 @media (max-width:1023px){
   .bottom-nav{padding-bottom:max(5px,env(safe-area-inset-bottom))!important}
   .an-grid-katman,.an-liste-katman,.an-profil-katman{padding-bottom:calc(82px + env(safe-area-inset-bottom))!important}
-  .an-kart-grid{row-gap:20px!important}
+  .an-kart-grid{row-gap:28px!important;grid-auto-rows:minmax(154px,auto)!important}
+  .an-grup-kart{min-height:154px!important}
 }
