@@ -1369,7 +1369,9 @@ function evrakModalAc(id){
 
 /* ============== GENEL BAKIŞ (DASHBOARD) ============== */
 function renderDashboard(){
-  document.getElementById('panelTarih').textContent = bugunMetni();
+  const _panelTarih = document.getElementById('panelTarih');
+  if(!_panelTarih) return; /* Dashboard DOM'da değil — sessizce çık */
+  _panelTarih.textContent = bugunMetni();
   // Android için: elementler dolunca kur()'u tetikle
   setTimeout(function(){if(typeof kur==='function'&&!document.querySelector('.db4-shell'))kur();},80);
   // YENİ: saate göre dinamik karşılama (id bulunamazsa .dash-hero-hi class'ına da bakar)
