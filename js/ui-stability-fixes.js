@@ -9,6 +9,12 @@ scriptYukle('js/excel-turkish-date-fix.js','excel-turkish-date');
 scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');
 scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
 
+/* MOBİL ANA SAYFA — TEK KAYNAK
+ * Eski dashboard-mobile-v4 / polish / hotfix / data-sync / visual-v7/v8 /
+ * android-hero katmanları artık burada YÜKLENMEZ. Hepsi aynı DOM'a müdahale
+ * ettiği için ilk doğru görüntünün saniyeler sonra bozulmasına yol açıyordu.
+ * Yeni clean dashboard mevcut veri dizilerini okur; alt navigasyona dokunmaz.
+ */
 const mobilDashboard=window.matchMedia('(max-width: 1023px)').matches;
 let mobilBasladi=false;
 function mobilDashboardHazirMi(){
@@ -27,17 +33,7 @@ function mobilDashboardHazirMi(){
 function mobilDashboardBaslat(){
   if(!mobilDashboard||mobilBasladi||!mobilDashboardHazirMi())return false;
   mobilBasladi=true;
-  scriptYukle('js/dashboard-mobile-v4.js','dashboard-mobile-v4');
-  scriptYukle('js/dashboard-mobile-v4-polish.js','dashboard-mobile-v4-polish');
-  scriptYukle('js/dashboard-card-count-fix.js','dashboard-card-count-fix');
-  scriptYukle('js/dashboard-mobile-v4-hotfix.js','dashboard-mobile-v4-hotfix');
-  scriptYukle('js/dashboard-today-cleanup.js','dashboard-today-cleanup');
-  scriptYukle('js/dashboard-mobile-state-v3.js','dashboard-mobile-state-v3');
-  scriptYukle('js/dashboard-mobile-v6-quality.js','dashboard-mobile-v6-quality');
-  scriptYukle('js/android-dashboard-hero-fix.js','android-dashboard-hero-fix');
-  scriptYukle('js/dashboard-mobile-data-sync-v1.js','dashboard-mobile-data-sync-v1');
-  scriptYukle('js/dashboard-mobile-visual-v7.js','dashboard-mobile-visual-v7');
-  scriptYukle('js/dashboard-mobile-visual-v8.js?v=8342495','dashboard-mobile-visual-v8');
+  scriptYukle('js/dashboard-mobile-clean.js?v=1','dashboard-mobile-clean');
   return true;
 }
 if(mobilDashboard){
