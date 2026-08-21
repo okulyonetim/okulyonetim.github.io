@@ -39,7 +39,13 @@ function ogretmenDetayAc(id){
 
   document.getElementById('detayBaslik').textContent = adSoyad;
   document.getElementById('detayAltBaslik').innerHTML = `${escapeHtml([o.unvan||'Öğretmen', o.brans].filter(Boolean).join(' · '))}${typeof ogretmenIzinRozeti==='function' ? ogretmenIzinRozeti(id) : ''}`;
-  document.getElementById('detayDuzenleBtn').onclick = ()=>{ detayPanelKapat(); ogretmenModalAc(id); };
+  const _duzenleBtn = document.getElementById('detayDuzenleBtn');
+  if(typeof duzenleyebilir === 'function' && !duzenleyebilir('ogretmenler')){
+    _duzenleBtn.style.display = 'none';
+  } else {
+    _duzenleBtn.style.display = '';
+    _duzenleBtn.onclick = ()=>{ detayPanelKapat(); ogretmenModalAc(id); };
+  }
   // DÜZELTME: Rapor, İzin/Rapor ve Belge Durumu gibi hassas bilgileri de
   // içerdiği için (bkz. ogretmenRaporOlustur) — bu buton artık sadece
   // kendi profilinde veya 'ogretmenHassasBilgi' yetkisi olan kullanıcıda

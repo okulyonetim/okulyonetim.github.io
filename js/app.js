@@ -815,7 +815,7 @@ function renderOgretmenler(){
       <td>${escapeHtml(o.telefon||'—')}</td>
       <td>${escapeHtml(o.eposta||'—')}</td>
       <td>${escapeHtml(o.sorumluSinif||'—')}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); ogretmenModalAc('${o.id}')">Düzenle</button></td>
+      <td>${duzenleyebilir('ogretmenler') ? `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); ogretmenModalAc('${o.id}')">Düzenle</button>` : ''}</td>
     </tr>`).join('') : `<tr><td colspan="8" class="empty-state">Henüz öğretmen eklenmedi.</td></tr>`;
 }
 const OGRETMEN_UNVANLARI = ['Öğretmen','Müdür','Müdür Yardımcısı','Rehber Öğretmen','İdari Personel'];
@@ -827,6 +827,7 @@ function muduYardimcilari(){
   return ogretmenler.filter(o=>(o.unvan||'').trim()==='Müdür Yardımcısı').sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
 }
 function ogretmenModalAc(id, varsayilanUnvan){
+  if(!duzenleyebilir('ogretmenler')){ toast('Bu işlem için yetkiniz yok.'); return; }
   const o = id ? ogretmenler.find(x=>x.id===id) : null;
   const body = `
     <div class="form-group"><label>Ad</label><input id="f_ad" value="${o?escapeHtml(o.ad):''}"></div>
