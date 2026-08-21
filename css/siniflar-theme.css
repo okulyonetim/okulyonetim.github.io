@@ -1,0 +1,152 @@
+/* Koruk Asistan — Sınıflar sayfası buton / modal / detay tema v1 */
+
+/* Sayfa içindeki TÜM butonlar */
+#tab-siniflar .btn{
+  min-height:38px!important;
+  padding:8px 13px!important;
+  border-radius:12px!important;
+  border:1px solid var(--ap-line)!important;
+  box-shadow:none!important;
+  font-family:Manrope,Inter,system-ui,sans-serif!important;
+  font-size:11.5px!important;
+  font-weight:850!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+}
+#tab-siniflar .btn-ghost{background:var(--ap-card)!important;color:var(--ap-text)!important}
+#tab-siniflar .btn-ghost:hover{background:var(--ap-soft)!important;border-color:color-mix(in srgb,var(--ap-accent) 22%,var(--ap-line))!important}
+#tab-siniflar .btn-amber,#tab-siniflar .btn-primary{
+  background:linear-gradient(145deg,#7455c5,#6545c7)!important;
+  color:#fff!important;border-color:rgba(101,69,199,.25)!important;
+  box-shadow:0 6px 15px rgba(101,69,199,.16)!important;
+}
+#tab-siniflar .table tbody td:last-child .btn{
+  width:auto!important;min-width:76px!important;height:36px!important;padding:0 12px!important;
+}
+
+/* Sınıf ekle/düzenle ortak modalı */
+#modalOverlay.ap-sinif-modal{
+  background:rgba(9,19,29,.58)!important;
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+}
+#modalOverlay.ap-sinif-modal .modal{
+  width:min(560px,calc(100vw - 24px))!important;
+  max-height:min(88vh,780px)!important;overflow-y:auto!important;
+  background:var(--ap-card)!important;color:var(--ap-text)!important;
+  border:1px solid var(--ap-line)!important;border-radius:24px!important;
+  box-shadow:0 24px 70px rgba(9,19,29,.24)!important;padding:0!important;
+}
+#modalOverlay.ap-sinif-modal #modalTitle{
+  position:sticky;top:0;z-index:3;margin:0!important;padding:18px 20px 15px!important;
+  background:color-mix(in srgb,var(--ap-card) 96%,transparent)!important;
+  border-bottom:1px solid var(--ap-line)!important;color:var(--ap-text)!important;
+  font-size:18px!important;font-weight:900!important;letter-spacing:-.02em!important;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+#modalOverlay.ap-sinif-modal #modalBody{padding:18px 20px 8px!important}
+#modalOverlay.ap-sinif-modal .form-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important}
+#modalOverlay.ap-sinif-modal .form-group{margin-bottom:14px!important;min-width:0!important}
+#modalOverlay.ap-sinif-modal label{
+  display:block!important;margin-bottom:6px!important;color:var(--ap-muted)!important;
+  font-size:10.5px!important;font-weight:850!important;letter-spacing:.025em!important;
+}
+#modalOverlay.ap-sinif-modal input,
+#modalOverlay.ap-sinif-modal select,
+#modalOverlay.ap-sinif-modal textarea{
+  width:100%!important;min-height:44px!important;box-sizing:border-box!important;
+  background:var(--ap-soft)!important;color:var(--ap-text)!important;
+  border:1px solid var(--ap-line)!important;border-radius:13px!important;
+  box-shadow:none!important;padding:10px 12px!important;font-size:13px!important;
+}
+#modalOverlay.ap-sinif-modal textarea{min-height:88px!important;resize:vertical!important}
+#modalOverlay.ap-sinif-modal input:focus,
+#modalOverlay.ap-sinif-modal select:focus,
+#modalOverlay.ap-sinif-modal textarea:focus{
+  outline:none!important;border-color:color-mix(in srgb,var(--ap-accent) 55%,var(--ap-line))!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ap-accent) 10%,transparent)!important;
+}
+#modalOverlay.ap-sinif-modal .modal-actions{
+  position:sticky;bottom:0;z-index:3;display:flex!important;gap:8px!important;align-items:center!important;
+  padding:13px 20px calc(13px + env(safe-area-inset-bottom,0px))!important;margin:0!important;
+  background:color-mix(in srgb,var(--ap-card) 96%,transparent)!important;
+  border-top:1px solid var(--ap-line)!important;backdrop-filter:blur(14px);
+}
+#modalOverlay.ap-sinif-modal .modal-actions .btn{
+  min-height:40px!important;border-radius:12px!important;box-shadow:none!important;
+  font-size:12px!important;font-weight:850!important;padding:9px 15px!important;white-space:nowrap!important;
+}
+#modalOverlay.ap-sinif-modal .modal-actions .btn-ghost{background:var(--ap-soft)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important}
+#modalOverlay.ap-sinif-modal .modal-actions .btn-primary{background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border:1px solid rgba(101,69,199,.24)!important;box-shadow:0 6px 15px rgba(101,69,199,.18)!important}
+#modalOverlay.ap-sinif-modal .modal-actions .btn-danger{background:#fff0f2!important;color:#c63d4d!important;border:1px solid #f1cbd1!important}
+[data-theme="dark"] #modalOverlay.ap-sinif-modal .modal-actions .btn-danger{background:#402028!important;color:#ff8996!important;border-color:#6a3440!important}
+
+/* Sınıf detay paneli */
+#detayOverlay.ap-sinif-detay{background:rgba(9,19,29,.52)!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#detayOverlay.ap-sinif-detay .detay-panel{
+  background:var(--ap-bg)!important;color:var(--ap-text)!important;border-color:var(--ap-line)!important;
+}
+#detayOverlay.ap-sinif-detay .detay-head{
+  background:color-mix(in srgb,var(--ap-card) 97%,transparent)!important;
+  border-bottom:1px solid var(--ap-line)!important;box-shadow:0 5px 18px rgba(24,35,55,.05)!important;
+}
+#detayOverlay.ap-sinif-detay .detay-baslik{color:var(--ap-text)!important;font-weight:900!important;letter-spacing:-.02em!important}
+#detayOverlay.ap-sinif-detay .detay-alt{color:var(--ap-muted)!important}
+#detayOverlay.ap-sinif-detay .detay-head-actions .btn,
+#detayOverlay.ap-sinif-detay .detay-card-actions .btn,
+#detayOverlay.ap-sinif-detay .detay-row .btn{
+  min-height:36px!important;padding:7px 11px!important;border-radius:11px!important;
+  background:var(--ap-card)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important;
+  box-shadow:none!important;font-size:10.5px!important;font-weight:850!important;white-space:nowrap!important;
+}
+#detayOverlay.ap-sinif-detay .detay-card-actions .btn-amber{
+  background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border-color:rgba(101,69,199,.25)!important;
+}
+#detayOverlay.ap-sinif-detay .detay-tabs{
+  background:var(--ap-card)!important;border-bottom:1px solid var(--ap-line)!important;padding:8px!important;gap:6px!important;
+}
+#detayOverlay.ap-sinif-detay .detay-tab-btn{
+  border:1px solid transparent!important;border-radius:11px!important;background:transparent!important;color:var(--ap-muted)!important;
+  padding:8px 11px!important;font-size:11px!important;font-weight:850!important;
+}
+#detayOverlay.ap-sinif-detay .detay-tab-btn.active{
+  background:var(--ap-accent-soft)!important;color:var(--ap-accent)!important;border-color:color-mix(in srgb,var(--ap-accent) 20%,var(--ap-line))!important;
+}
+#detayOverlay.ap-sinif-detay .detay-card{
+  background:var(--ap-card)!important;border:1px solid var(--ap-line)!important;border-radius:18px!important;
+  box-shadow:var(--ap-shadow)!important;margin-bottom:12px!important;overflow:hidden!important;
+}
+#detayOverlay.ap-sinif-detay .detay-card h4{color:var(--ap-text)!important}
+#detayOverlay.ap-sinif-detay .detay-row{border-color:var(--ap-line)!important;color:var(--ap-text)!important}
+#detayOverlay.ap-sinif-detay .detay-row-muted{color:var(--ap-muted)!important}
+
+@media(max-width:1023px){
+  #tab-siniflar .page-header-actions .btn{min-height:42px!important;font-size:10.5px!important;padding:8px 7px!important;white-space:normal!important;line-height:1.2!important}
+  #tab-siniflar .table tbody td:last-child{min-width:78px!important}
+  #tab-siniflar .table tbody td:last-child .btn{width:auto!important;min-width:78px!important;height:36px!important;padding:0 10px!important;font-size:10.5px!important}
+
+  #modalOverlay.ap-sinif-modal{align-items:flex-end!important;padding:0!important}
+  #modalOverlay.ap-sinif-modal .modal{width:100%!important;max-height:91dvh!important;border-radius:24px 24px 0 0!important;border-bottom:0!important}
+  #modalOverlay.ap-sinif-modal #modalTitle{padding:17px 16px 14px!important}
+  #modalOverlay.ap-sinif-modal #modalBody{padding:16px 16px 7px!important}
+  #modalOverlay.ap-sinif-modal .form-row{grid-template-columns:1fr 1fr!important;gap:9px!important}
+  #modalOverlay.ap-sinif-modal .modal-actions{padding-left:16px!important;padding-right:16px!important;flex-wrap:wrap!important}
+  #modalOverlay.ap-sinif-modal .modal-actions .btn{flex:1 1 auto!important}
+  #modalOverlay.ap-sinif-modal .modal-actions #modalSilBtn{flex:0 0 auto!important;margin-right:auto!important}
+
+  #detayOverlay.ap-sinif-detay .detay-panel{width:100%!important;max-width:none!important}
+  #detayOverlay.ap-sinif-detay .detay-head{padding:12px!important}
+  #detayOverlay.ap-sinif-detay .detay-head-actions{gap:5px!important;flex-wrap:wrap!important;justify-content:flex-end!important}
+  #detayOverlay.ap-sinif-detay .detay-head-actions .btn{min-height:34px!important;padding:6px 9px!important;font-size:9.5px!important}
+  #detayOverlay.ap-sinif-detay .detay-card-header{align-items:flex-start!important;gap:10px!important;flex-direction:column!important}
+  #detayOverlay.ap-sinif-detay .detay-card-actions{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;gap:7px!important}
+  #detayOverlay.ap-sinif-detay .detay-card-actions .btn{width:100%!important;min-height:38px!important;white-space:normal!important;text-align:center!important;line-height:1.15!important}
+}
+
+@media(max-width:390px){
+  #modalOverlay.ap-sinif-modal .form-row{grid-template-columns:1fr!important}
+  #detayOverlay.ap-sinif-detay .detay-card-actions{grid-template-columns:1fr!important}
+}
