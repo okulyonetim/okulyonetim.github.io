@@ -1,10 +1,44 @@
 const fs = require('fs');
 const assert = require('assert');
 const sw = fs.readFileSync('service-worker.js', 'utf8');
+
 assert(/const CACHE_ADI = 'oy-cache-v\d+'/.test(sw), 'Service Worker sürümlü cache anahtarı kullanmalı.');
-for (const f of ['./index.html','./css/styles.css','./css/dashboard-v2.css','./css/web-shell-fix.css','./css/mobil-dashboard.css','./css/web-sidebar-v2.css','./js/app.js','./js/ui-stability-fixes.js','./js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/dashboard-mobile-v4.js','./js/dashboard-mobile-v4-polish.js','./js/dashboard-card-count-fix.js','./js/dashboard-mobile-v4-hotfix.js','./js/dashboard-mobile-state-v3.js','./js/role-ui-hardening.js','./js/dashboard-today-cleanup.js']) assert(sw.includes(`'${f}'`), `${f} precache içinde kalmalı.`);
+
+for (const f of [
+  './index.html',
+  './css/styles.css',
+  './css/web-shell-fix.css',
+  './css/web-sidebar-v2.css',
+  './css/dashboard-yeni.css',
+  './css/dashboard-home.css',
+  './js/app.js',
+  './js/ui-stability-fixes.js',
+  './js/dashboard-home.js',
+  './js/dashboard-v2-init.js',
+  './js/web-sidebar-v2.js',
+  './js/role-ui-hardening.js'
+]) {
+  assert(sw.includes(`'${f}'`), `${f} precache içinde kalmalı.`);
+}
+
+for (const eski of [
+  './css/dashboard-v2.css',
+  './css/mobil-dashboard.css',
+  './js/dashboard-mobile-v4.js',
+  './js/dashboard-mobile-v4-polish.js',
+  './js/dashboard-mobile-v4-hotfix.js',
+  './js/dashboard-mobile-state-v3.js',
+  './js/dashboard-mobile-clean.js',
+  './js/dashboard-card-count-fix.js',
+  './js/dashboard-today-cleanup.js'
+]) {
+  assert(!sw.includes(`'${eski}'`), `${eski} artık precache içinde olmamalı.`);
+}
+
 const liste=sw.slice(sw.indexOf('const ONBELLEGE_ALINACAKLAR'),sw.indexOf("self.addEventListener('install'"));
-for(const agir of ['./optik/index.html','./optik/js/app.js','xlsx.full.min.js','exceljs.min.js','pdf.min.js','mammoth.browser.min.js','leaflet.js'])assert(!liste.includes(agir),`${agir} ilk kurulum precache listesinden çıkarılmalı.`);
+for(const agir of ['./optik/index.html','./optik/js/app.js','xlsx.full.min.js','exceljs.min.js','pdf.min.js','mammoth.browser.min.js','leaflet.js']) {
+  assert(!liste.includes(agir),`${agir} ilk kurulum precache listesinden çıkarılmalı.`);
+}
 assert(sw.includes('fetch(event.request)'),'Ağ yüklemesi devam etmeli.');
 assert(/cache\.put\(event\.request\s*,\s*copy\)/.test(sw),'Başarılı GET kaynakları runtime-cache edilmeli.');
 assert(sw.includes('caches.match(event.request)'),'Çevrimdışı cache fallback kullanılmalı.');
