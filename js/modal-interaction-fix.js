@@ -1,115 +1,70 @@
-/* Koruk Asistan — global modal interaction fix v3 */
+/* Koruk Asistan — global modal interaction fix v4
+   Amaç: modal aç/kapat sonrası Android/WebView dokunma kilitlerini
+   temizlemek; mevcut modal fonksiyonlarını yeniden sarmalamadan çalışmak. */
 (function(){
 'use strict';
-if(window.__MODAL_INTERACTION_FIX_V3__) return;
-window.__MODAL_INTERACTION_FIX_V3__=true;
+if(window.__MODAL_INTERACTION_FIX_V4__) return;
+window.__MODAL_INTERACTION_FIX_V4__=true;
 
-function acikMi(el){
+function gorunur(el){
   if(!el) return false;
-  return el.classList.contains('show') || el.classList.contains('active') || el.classList.contains('acik');
+  if(el.classList.contains('show') || el.classList.contains('active') || el.classList.contains('acik')) return true;
+  const cs=getComputedStyle(el);
+  return cs.display!=='none' && cs.visibility!=='hidden' && cs.pointerEvents!=='none';
 }
-function servisOturmaModalMi(){
-  return !!document.getElementById('modalOverlay')?.querySelector('#soServisId,.so-modal-wrap');
+function herhangiModalAcik(){
+  return [
+    document.getElementById('modalOverlay'),
+    document.getElementById('detayOverlay'),
+    document.getElementById('ozelOnayModal'),
+    document.getElementById('ilerlemeOverlay')
+  ].some(gorunur);
 }
-function servisYerelDurumTemizle(){
-  try{ if(typeof _soSurukleTemizle==='function') _soSurukleTemizle(); }catch(_){}
-  try{ if(typeof _soDuzenlemeAcik!=='undefined') _soDuzenlemeAcik=false; }catch(_){}
-  try{ if(typeof _soEditBuffer!=='undefined') _soEditBuffer=[]; }catch(_){}
-  try{ if(typeof _soUndoYigini!=='undefined') _soUndoYigini=[]; }catch(_){}
-  try{ if(typeof _soRedoYigini!=='undefined') _soRedoYigini=[]; }catch(_){}
-  try{ if(typeof _soSurukleDurumu!=='undefined') _soSurukleDurumu=null; }catch(_){}
-}
-function kilitleriTamTemizle(){
+function kilitTemizle(){
+  if(herhangiModalAcik()) return;
+  const b=document.body, h=document.documentElement;
+  ['modal-open','no-scroll','overflow-hidden'].forEach(c=>{b.classList.remove(c);h.classList.remove(c);});
+  ['overflow','position','top','left','right','width','touch-action','pointer-events'].forEach(p=>b.style.removeProperty(p));
+  ['overflow','touch-action','pointer-events'].forEach(p=>h.style.removeProperty(p));
   const ana=document.getElementById('modalOverlay');
   const detay=document.getElementById('detayOverlay');
-  if(!acikMi(ana) && !acikMi(detay)){
-    document.body.classList.remove('modal-open','no-scroll','overflow-hidden');
-    document.documentElement.classList.remove('modal-open','no-scroll','overflow-hidden');
-    document.body.style.removeProperty('overflow');
-    document.body.style.removeProperty('position');
-    document.body.style.removeProperty('touch-action');
-    document.documentElement.style.removeProperty('overflow');
-    document.documentElement.style.removeProperty('touch-action');
-    if(ana){
-      ana.style.removeProperty('display');
-      ana.style.removeProperty('pointer-events');
-      ana.style.removeProperty('touch-action');
+  [ana,detay].forEach(el=>{
+    if(!el) return;
+    if(!el.classList.contains('show')&&!el.classList.contains('active')&&!el.classList.contains('acik')){
+      el.style.removeProperty('pointer-events');
+      el.style.removeProperty('touch-action');
     }
-  }
+  });
+  try{
+    if(typeof _pullToRefreshAyarla==='function') _pullToRefreshAyarla(true);
+  }catch(_){}
 }
-function servisModalZorlaKapat(){
-  const ana=document.getElementById('modalOverlay');
-  servisYerelDurumTemizle();
-  try{ if(typeof window.modalKapat==='function') window.modalKapat(); }catch(_){}
-  if(ana){
-    ana.classList.remove('show','active','acik');
-    ana.style.display='none';
-    ana.style.pointerEvents='none';
-  }
-  requestAnimationFrame(kilitleriTamTemizle);
-  setTimeout(kilitleriTamTemizle,0);
-  setTimeout(kilitleriTamTemizle,60);
-  setTimeout(()=>{
-    if(ana && !acikMi(ana)){
-      ana.style.removeProperty('display');
-      ana.style.removeProperty('pointer-events');
-    }
-    kilitleriTamTemizle();
-  },180);
-}
-function modalGuvenliKapat(){
-  if(servisOturmaModalMi()){ servisModalZorlaKapat(); return; }
-  const ana=document.getElementById('modalOverlay');
-  if(acikMi(ana)){
-    try{ if(typeof window.modalKapat==='function') window.modalKapat(); else ana.classList.remove('show','active','acik'); }
-    catch(_){ ana.classList.remove('show','active','acik'); }
-  }
-  const detay=document.getElementById('detayOverlay');
-  if(acikMi(detay)){
-    try{ if(typeof window.detayPanelKapat==='function') window.detayPanelKapat(); else detay.classList.remove('show','active','acik'); }
-    catch(_){ detay.classList.remove('show','active','acik'); }
-  }
-  requestAnimationFrame(kilitleriTamTemizle);
-  setTimeout(kilitleriTamTemizle,40);
-  setTimeout(kilitleriTamTemizle,180);
+function kapanisSonrasi(){
+  requestAnimationFrame(()=>requestAnimationFrame(kilitTemizle));
+  setTimeout(kilitTemizle,120);
 }
 
-/* Alt navigasyona geçerken açık modal/panel resmi kapanış akışından geçirilir. */
+/* Kapat/Vazgeç butonlarında mevcut handler'a müdahale etme; yalnızca
+   handler bittikten sonra kalan global kilitleri temizle. */
 document.addEventListener('click',function(e){
-  if(e.target.closest?.('.bottom-nav')) modalGuvenliKapat();
-},true);
-
-/* Servis oturma modalındaki Vazgeç'i capture aşamasında tek kapanış yoluna al.
-   Böylece ortak modal handler + sürükle/touch handler zinciri aynı tıklamada yarışmaz. */
-document.addEventListener('click',function(e){
-  const btn=e.target.closest?.('#modalOverlay button');
-  if(!btn || !servisOturmaModalMi()) return;
+  const btn=e.target.closest?.('button,[role="button"]');
+  if(!btn) return;
   const txt=(btn.textContent||'').trim().toLocaleLowerCase('tr');
-  if(!txt.includes('vazgeç') && !txt.includes('kapat')) return;
-  e.preventDefault();
-  e.stopImmediatePropagation();
-  servisModalZorlaKapat();
-},true);
-
-/* Diğer ortak modallarda kapanış sonrası kilitleri doğrula. */
-document.addEventListener('click',function(e){
-  const btn=e.target.closest?.('#modalOverlay button');
-  if(!btn || servisOturmaModalMi()) return;
-  const txt=(btn.textContent||'').trim().toLocaleLowerCase('tr');
-  const onclick=btn.getAttribute('onclick')||'';
-  if(txt.includes('vazgeç') || txt.includes('kapat') || onclick.includes('modalKapat')){
-    setTimeout(kilitleriTamTemizle,0);
-    setTimeout(kilitleriTamTemizle,80);
-  }
+  const onclick=btn.getAttribute?.('onclick')||'';
+  if(txt.includes('vazgeç')||txt.includes('kapat')||onclick.includes('modalKapat')||onclick.includes('detayPanelKapat')) kapanisSonrasi();
 },false);
 
-const gozlemci=new MutationObserver(()=>requestAnimationFrame(kilitleriTamTemizle));
-function baslat(){
-  const ana=document.getElementById('modalOverlay');
-  const detay=document.getElementById('detayOverlay');
-  if(ana) gozlemci.observe(ana,{attributes:true,attributeFilter:['class','style']});
-  if(detay) gozlemci.observe(detay,{attributes:true,attributeFilter:['class','style']});
-  kilitleriTamTemizle();
-}
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',baslat,{once:true}); else baslat();
+/* Alt navigasyona geçişte görünmez overlay kalıntısı varsa temizle. */
+document.addEventListener('click',function(e){
+  if(e.target.closest?.('.bottom-nav')) kapanisSonrasi();
+},false);
+
+/* Escape ile kapanan masaüstü modalları için. */
+document.addEventListener('keyup',function(e){ if(e.key==='Escape') kapanisSonrasi(); },false);
+
+/* Sayfa tekrar öne geldiğinde eski WebView state'i kalmışsa düzelt. */
+document.addEventListener('visibilitychange',function(){ if(!document.hidden) setTimeout(kilitTemizle,0); });
+window.addEventListener('pageshow',()=>setTimeout(kilitTemizle,0));
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(kilitTemizle,0),{once:true});
+else setTimeout(kilitTemizle,0);
 })();
