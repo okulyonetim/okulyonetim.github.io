@@ -1,7 +1,5 @@
-/* Koruk Asistan — uygulama sayfaları ortak tema v2
-   Aşama 1: Öğretmenler
-   Aşama 2: Sınıflar
-   İşlevsel JS/DOM yapısını değiştirmez. */
+/* Koruk Asistan — uygulama sayfaları ortak tema v3
+   Öğretmenler + Sınıflar. İşlevsel JS/DOM yapısını değiştirmez. */
 
 :root{
   --ap-bg:#f5f6f8;--ap-card:#fff;--ap-soft:#f8f9fc;--ap-text:#111827;--ap-muted:#667085;
@@ -16,58 +14,89 @@
   --ap-shadow:0 10px 28px rgba(0,0,0,.24);
 }
 
-/* ORTAK SAYFA BAŞLIĞI/KART/BUTON */
-#tab-ogretmenler,#tab-siniflar{color:var(--ap-text)}
-#tab-ogretmenler .page-header,#tab-siniflar .page-header{margin-bottom:14px}
-#tab-ogretmenler .page-title,#tab-siniflar .page-title{
-  padding-left:0!important;font-family:Manrope,Inter,system-ui,sans-serif;
-  font-size:22px;font-weight:900;letter-spacing:-.025em;color:var(--ap-text)
-}
-#tab-ogretmenler .page-title::before,#tab-siniflar .page-title::before{display:none!important}
-#tab-ogretmenler .page-sub,#tab-siniflar .page-sub{padding-left:0!important;margin-top:3px;color:var(--ap-muted);font-size:12px;font-weight:650}
-#tab-ogretmenler .card,#tab-siniflar .card{background:var(--ap-card)!important;border:1px solid var(--ap-line)!important;border-radius:22px!important;box-shadow:var(--ap-shadow)!important;padding:14px!important}
-#tab-ogretmenler .page-header-actions .btn,#tab-siniflar .page-header-actions .btn{box-shadow:none!important;border:1px solid var(--ap-line)!important;border-radius:13px!important;min-height:38px!important;font-weight:800!important}
-#tab-ogretmenler .page-header-actions .btn-ghost,#tab-siniflar .page-header-actions .btn-ghost{background:var(--ap-card)!important;color:var(--ap-text)!important}
-#tab-ogretmenler .page-header-actions .btn-amber,#tab-siniflar .page-header-actions .btn-amber{background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border-color:rgba(101,69,199,.25)!important;box-shadow:0 6px 15px rgba(101,69,199,.18)!important}
-
 /* ================================================================
    ÖĞRETMENLER
    ================================================================ */
+#tab-ogretmenler{color:var(--ap-text)}
+#tab-ogretmenler .page-header{margin-bottom:14px}
+#tab-ogretmenler .page-title{padding-left:0!important;font-family:Manrope,Inter,system-ui,sans-serif;font-size:22px;font-weight:900;letter-spacing:-.025em;color:var(--ap-text)}
+#tab-ogretmenler .page-title::before{display:none!important}
+#tab-ogretmenler .page-sub{padding-left:0!important;margin-top:3px;color:var(--ap-muted);font-size:12px;font-weight:650}
+#tab-ogretmenler .card{background:var(--ap-card)!important;border:1px solid var(--ap-line)!important;border-radius:22px!important;box-shadow:var(--ap-shadow)!important;padding:14px!important}
 #tab-ogretmenler #ogretmenArama{width:100%!important;max-width:none!important;height:44px!important;margin-bottom:12px!important;border:1px solid var(--ap-line)!important;border-radius:14px!important;background:var(--ap-soft)!important;color:var(--ap-text)!important;box-shadow:none!important;padding:0 14px!important;font-size:13px!important}
 #tab-ogretmenler #ogretmenArama:focus{border-color:color-mix(in srgb,var(--ap-accent) 55%,var(--ap-line))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ap-accent) 10%,transparent)!important}
 #tab-ogretmenler .filtre-btn{background:var(--ap-soft)!important;color:var(--ap-muted)!important;border:1px solid var(--ap-line)!important;box-shadow:none!important;border-radius:999px!important;padding:7px 13px!important;font-size:11px!important;font-weight:800!important}
 #tab-ogretmenler .filtre-btn.active{background:var(--ap-accent-soft)!important;color:var(--ap-accent)!important;border-color:color-mix(in srgb,var(--ap-accent) 24%,var(--ap-line))!important}
+#tab-ogretmenler .page-header-actions .btn{box-shadow:none!important;border:1px solid var(--ap-line)!important;border-radius:13px!important;min-height:38px!important;font-weight:800!important}
+#tab-ogretmenler .page-header-actions .btn-ghost{background:var(--ap-card)!important;color:var(--ap-text)!important}
+#tab-ogretmenler .page-header-actions .btn-amber{background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border-color:rgba(101,69,199,.25)!important;box-shadow:0 6px 15px rgba(101,69,199,.18)!important}
+#tab-ogretmenler .table{width:100%;border-collapse:separate!important;border-spacing:0!important;color:var(--ap-text);background:var(--ap-card)}
+#tab-ogretmenler .table thead th{background:var(--ap-soft)!important;color:var(--ap-muted)!important;border-bottom:1px solid var(--ap-line)!important;padding:10px 9px!important;font-size:10px!important;font-weight:900!important;letter-spacing:.035em;text-transform:uppercase}
+#tab-ogretmenler .table tbody td{border-bottom:1px solid var(--ap-line)!important;padding:11px 9px!important;color:var(--ap-text)!important;font-size:12px!important;vertical-align:middle!important}
+#tab-ogretmenler .table tbody tr:last-child td{border-bottom:0!important}
+#tab-ogretmenler .table tbody tr:hover{background:color-mix(in srgb,var(--ap-accent-soft) 45%,transparent)!important}
+#tab-ogretmenler .table tbody .btn{box-shadow:none!important;border:1px solid var(--ap-line)!important;background:var(--ap-soft)!important;border-radius:10px!important;padding:6px 10px!important;min-width:max-content!important}
+
+/* Öğretmen ekle/düzenle modalı — sadece bu akışta .ap-ogretmen-modal eklenir */
+#modalOverlay.ap-ogretmen-modal{background:rgba(9,19,29,.58)!important;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+#modalOverlay.ap-ogretmen-modal .modal{width:min(560px,calc(100vw - 24px))!important;max-height:min(86vh,760px)!important;overflow-y:auto!important;background:var(--ap-card)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important;border-radius:24px!important;box-shadow:0 24px 70px rgba(9,19,29,.24)!important;padding:0!important}
+#modalOverlay.ap-ogretmen-modal #modalTitle{position:sticky;top:0;z-index:2;margin:0!important;padding:18px 20px 15px!important;background:color-mix(in srgb,var(--ap-card) 96%,transparent)!important;border-bottom:1px solid var(--ap-line)!important;color:var(--ap-text)!important;font-size:18px!important;font-weight:900!important;letter-spacing:-.02em!important;backdrop-filter:blur(14px)}
+#modalOverlay.ap-ogretmen-modal #modalBody{padding:18px 20px 8px!important}
+#modalOverlay.ap-ogretmen-modal .form-group{margin-bottom:14px!important}
+#modalOverlay.ap-ogretmen-modal label{display:block!important;margin-bottom:6px!important;color:var(--ap-muted)!important;font-size:10.5px!important;font-weight:850!important;letter-spacing:.025em!important}
+#modalOverlay.ap-ogretmen-modal input,
+#modalOverlay.ap-ogretmen-modal select,
+#modalOverlay.ap-ogretmen-modal textarea{width:100%!important;min-height:44px!important;background:var(--ap-soft)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important;border-radius:13px!important;box-shadow:none!important;padding:10px 12px!important;font-size:13px!important}
+#modalOverlay.ap-ogretmen-modal textarea{min-height:92px!important;resize:vertical!important}
+#modalOverlay.ap-ogretmen-modal input:focus,
+#modalOverlay.ap-ogretmen-modal select:focus,
+#modalOverlay.ap-ogretmen-modal textarea:focus{outline:none!important;border-color:color-mix(in srgb,var(--ap-accent) 55%,var(--ap-line))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ap-accent) 10%,transparent)!important}
+#modalOverlay.ap-ogretmen-modal .modal-actions{position:sticky;bottom:0;z-index:2;display:flex!important;gap:8px!important;align-items:center!important;padding:13px 20px calc(13px + env(safe-area-inset-bottom,0px))!important;margin:0!important;background:color-mix(in srgb,var(--ap-card) 96%,transparent)!important;border-top:1px solid var(--ap-line)!important;backdrop-filter:blur(14px)}
+#modalOverlay.ap-ogretmen-modal .modal-actions .btn{min-height:40px!important;border-radius:12px!important;box-shadow:none!important;font-size:12px!important;font-weight:850!important;padding:9px 15px!important}
+#modalOverlay.ap-ogretmen-modal .modal-actions .btn-ghost{background:var(--ap-soft)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important}
+#modalOverlay.ap-ogretmen-modal .modal-actions .btn-primary{background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border:1px solid rgba(101,69,199,.24)!important;box-shadow:0 6px 15px rgba(101,69,199,.18)!important}
+#modalOverlay.ap-ogretmen-modal .modal-actions .btn-danger{background:#fff0f2!important;color:#c63d4d!important;border:1px solid #f1cbd1!important}
+[data-theme="dark"] #modalOverlay.ap-ogretmen-modal .modal-actions .btn-danger{background:#402028!important;color:#ff8996!important;border-color:#6a3440!important}
 
 /* ================================================================
    SINIFLAR
    ================================================================ */
+#tab-siniflar{color:var(--ap-text)}
+#tab-siniflar .page-header{margin-bottom:14px}
+#tab-siniflar .page-title{padding-left:0!important;font-family:Manrope,Inter,system-ui,sans-serif;font-size:22px;font-weight:900;letter-spacing:-.025em;color:var(--ap-text)}
+#tab-siniflar .page-title::before{display:none!important}
+#tab-siniflar .page-sub{padding-left:0!important;margin-top:3px;color:var(--ap-muted);font-size:12px;font-weight:650}
+#tab-siniflar .card{background:var(--ap-card)!important;border:1px solid var(--ap-line)!important;border-radius:22px!important;box-shadow:var(--ap-shadow)!important;padding:14px!important}
 #tab-siniflar #sinifArama{width:100%!important;max-width:none!important;height:44px!important;margin-bottom:12px!important;border:1px solid var(--ap-line)!important;border-radius:14px!important;background:var(--ap-soft)!important;color:var(--ap-text)!important;box-shadow:none!important;padding:0 14px!important;font-size:13px!important}
 #tab-siniflar #sinifArama:focus{border-color:color-mix(in srgb,var(--ap-accent) 55%,var(--ap-line))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ap-accent) 10%,transparent)!important}
-
-/* Ortak tablo */
-#tab-ogretmenler .table,#tab-siniflar .table{width:100%;border-collapse:separate!important;border-spacing:0!important;color:var(--ap-text);background:var(--ap-card)}
-#tab-ogretmenler .table thead th,#tab-siniflar .table thead th{background:var(--ap-soft)!important;color:var(--ap-muted)!important;border-bottom:1px solid var(--ap-line)!important;padding:10px 9px!important;font-size:10px!important;font-weight:900!important;letter-spacing:.035em;text-transform:uppercase}
-#tab-ogretmenler .table tbody td,#tab-siniflar .table tbody td{border-bottom:1px solid var(--ap-line)!important;padding:11px 9px!important;color:var(--ap-text)!important;font-size:12px!important;vertical-align:middle!important}
-#tab-ogretmenler .table tbody tr:last-child td,#tab-siniflar .table tbody tr:last-child td{border-bottom:0!important}
-#tab-ogretmenler .table tbody tr:hover,#tab-siniflar .table tbody tr:hover{background:color-mix(in srgb,var(--ap-accent-soft) 45%,transparent)!important}
-#tab-ogretmenler .table tbody .btn,#tab-siniflar .table tbody .btn{box-shadow:none!important;border:1px solid var(--ap-line)!important;background:var(--ap-soft)!important;border-radius:10px!important;padding:6px 9px!important}
+#tab-siniflar .page-header-actions .btn{box-shadow:none!important;border:1px solid var(--ap-line)!important;border-radius:13px!important;min-height:38px!important;font-weight:800!important}
+#tab-siniflar .page-header-actions .btn-ghost{background:var(--ap-card)!important;color:var(--ap-text)!important}
+#tab-siniflar .page-header-actions .btn-amber{background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border-color:rgba(101,69,199,.25)!important;box-shadow:0 6px 15px rgba(101,69,199,.18)!important}
+#tab-siniflar .table{width:100%;border-collapse:separate!important;border-spacing:0!important;color:var(--ap-text);background:var(--ap-card)}
+#tab-siniflar .table thead th{background:var(--ap-soft)!important;color:var(--ap-muted)!important;border-bottom:1px solid var(--ap-line)!important;padding:10px 9px!important;font-size:10px!important;font-weight:900!important;letter-spacing:.035em;text-transform:uppercase}
+#tab-siniflar .table tbody td{border-bottom:1px solid var(--ap-line)!important;padding:11px 9px!important;color:var(--ap-text)!important;font-size:12px!important;vertical-align:middle!important}
+#tab-siniflar .table tbody tr:last-child td{border-bottom:0!important}
+#tab-siniflar .table tbody tr:hover{background:color-mix(in srgb,var(--ap-accent-soft) 45%,transparent)!important}
+#tab-siniflar .table tbody .btn{box-shadow:none!important;border:1px solid var(--ap-line)!important;background:var(--ap-soft)!important;border-radius:10px!important;padding:6px 9px!important}
 
 @media(max-width:1023px){
   #tab-ogretmenler,#tab-siniflar{margin:0!important;padding:14px 12px calc(96px + env(safe-area-inset-bottom,0px))!important;background:var(--ap-bg)!important;min-height:100vh}
   #tab-ogretmenler .page-header,#tab-siniflar .page-header{display:flex!important;align-items:flex-start!important;gap:12px!important;margin:0 0 14px!important}
   #tab-ogretmenler .page-title,#tab-siniflar .page-title{font-size:21px!important}
   #tab-ogretmenler .page-header-actions,#tab-siniflar .page-header-actions{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  #tab-siniflar .page-header-actions{grid-template-columns:1fr 1fr!important}
   #tab-ogretmenler .page-header-actions .btn,#tab-siniflar .page-header-actions .btn{width:100%!important;margin:0!important;font-size:11px!important;padding:8px 9px!important}
   #tab-ogretmenler .card,#tab-siniflar .card{padding:12px!important;border-radius:20px!important}
 
-  /* ÖĞRETMENLER mobil kart */
-  #tab-ogretmenler .card>div[style*="overflow-x:auto"]{overflow:visible!important}
-  #tab-ogretmenler .table,#tab-ogretmenler .table tbody{display:block!important;width:100%!important}
-  #tab-ogretmenler .table thead{display:none!important}
-  #tab-ogretmenler .table tbody{display:flex!important;flex-direction:column!important;gap:10px!important}
-  #tab-ogretmenler .table tbody tr{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:5px 10px!important;position:relative!important;padding:13px 12px!important;border:1px solid var(--ap-line)!important;border-radius:17px!important;background:var(--ap-card)!important;box-shadow:0 5px 16px rgba(24,35,55,.055)!important}
-  [data-theme="dark"] #tab-ogretmenler .table tbody tr{box-shadow:0 7px 18px rgba(0,0,0,.18)!important}
-  #tab-ogretmenler .table tbody td{display:block!important;padding:0!important;border:0!important;min-width:0!important;font-size:11px!important;color:var(--ap-muted)!important}
+  #tab-ogretmenler .card>div[style*="overflow-x:auto"],#tab-siniflar .card>div[style*="overflow-x:auto"]{overflow:visible!important}
+  #tab-ogretmenler .table,#tab-ogretmenler .table tbody,#tab-siniflar .table,#tab-siniflar .table tbody{display:block!important;width:100%!important}
+  #tab-ogretmenler .table thead,#tab-siniflar .table thead{display:none!important}
+  #tab-ogretmenler .table tbody,#tab-siniflar .table tbody{display:flex!important;flex-direction:column!important;gap:10px!important}
+  #tab-ogretmenler .table tbody tr,#tab-siniflar .table tbody tr{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:5px 10px!important;position:relative!important;padding:13px 12px!important;border:1px solid var(--ap-line)!important;border-radius:17px!important;background:var(--ap-card)!important;box-shadow:0 5px 16px rgba(24,35,55,.055)!important}
+  [data-theme="dark"] #tab-ogretmenler .table tbody tr,[data-theme="dark"] #tab-siniflar .table tbody tr{box-shadow:0 7px 18px rgba(0,0,0,.18)!important}
+  #tab-ogretmenler .table tbody td,#tab-siniflar .table tbody td{display:block!important;padding:0!important;border:0!important;min-width:0!important;font-size:11px!important;color:var(--ap-muted)!important}
+
+  /* Öğretmen kartı */
   #tab-ogretmenler .table tbody td:nth-child(1){grid-column:1!important;grid-row:1!important;color:var(--ap-text)!important;font-size:14px!important;font-weight:900!important;line-height:1.3!important}
   #tab-ogretmenler .table tbody td:nth-child(2){grid-column:1!important;grid-row:2!important;font-weight:750!important}
   #tab-ogretmenler .table tbody td:nth-child(3){grid-column:1!important;grid-row:3!important;display:inline-flex!important;width:max-content!important;max-width:100%!important;padding:4px 8px!important;border-radius:999px!important;background:var(--ap-accent-soft)!important;color:var(--ap-accent)!important;font-weight:850!important;font-size:10px!important}
@@ -79,31 +108,32 @@
   #tab-ogretmenler .table tbody td:nth-child(6)::before{content:'✉ ';color:var(--ap-blue)}
   #tab-ogretmenler .table tbody td:nth-child(7){grid-column:1!important;grid-row:7!important}
   #tab-ogretmenler .table tbody td:nth-child(7)::before{content:'Sınıf: ';font-weight:850;color:var(--ap-text)}
-  #tab-ogretmenler .table tbody td:nth-child(8){grid-column:2!important;grid-row:1 / span 7!important;align-self:start!important;display:flex!important;flex-direction:column!important;gap:6px!important}
-  #tab-ogretmenler .table tbody td:nth-child(8) .btn,#tab-ogretmenler .table tbody td:nth-child(8) button{width:34px!important;min-width:34px!important;height:34px!important;padding:0!important;border-radius:11px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+  #tab-ogretmenler .table tbody td:nth-child(8){grid-column:2!important;grid-row:1 / span 7!important;align-self:start!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:6px!important;min-width:76px!important}
+  #tab-ogretmenler .table tbody td:nth-child(8) .btn,#tab-ogretmenler .table tbody td:nth-child(8) button{width:auto!important;min-width:76px!important;height:34px!important;padding:0 10px!important;border-radius:11px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;font-size:10.5px!important;font-weight:850!important}
 
-  /* SINIFLAR mobil kart */
-  #tab-siniflar .card>div[style*="overflow-x:auto"]{overflow:visible!important}
-  #tab-siniflar .table,#tab-siniflar .table tbody{display:block!important;width:100%!important}
-  #tab-siniflar .table thead{display:none!important}
-  #tab-siniflar .table tbody{display:flex!important;flex-direction:column!important;gap:10px!important}
-  #tab-siniflar .table tbody tr{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:6px 10px!important;padding:13px 12px!important;border:1px solid var(--ap-line)!important;border-radius:17px!important;background:var(--ap-card)!important;box-shadow:0 5px 16px rgba(24,35,55,.055)!important}
-  [data-theme="dark"] #tab-siniflar .table tbody tr{box-shadow:0 7px 18px rgba(0,0,0,.18)!important}
-  #tab-siniflar .table tbody td{display:block!important;padding:0!important;border:0!important;min-width:0!important;color:var(--ap-muted)!important;font-size:11px!important}
-  #tab-siniflar .table tbody td:nth-child(1){grid-column:1!important;grid-row:1!important;color:var(--ap-text)!important;font-size:16px!important;font-weight:900!important}
+  /* Sınıf kartı */
+  #tab-siniflar .table tbody td:nth-child(1){grid-column:1!important;grid-row:1!important;color:var(--ap-text)!important;font-size:15px!important;font-weight:900!important;line-height:1.3!important}
   #tab-siniflar .table tbody td:nth-child(2){grid-column:1!important;grid-row:2!important;display:inline-flex!important;width:max-content!important;padding:4px 8px!important;border-radius:999px!important;background:var(--ap-accent-soft)!important;color:var(--ap-accent)!important;font-size:10px!important;font-weight:850!important}
-  #tab-siniflar .table tbody td:nth-child(3){grid-column:1!important;grid-row:3!important;margin-top:2px!important}
+  #tab-siniflar .table tbody td:nth-child(3){grid-column:1!important;grid-row:3!important;margin-top:3px!important}
   #tab-siniflar .table tbody td:nth-child(3)::before{content:'👩‍🏫 ';}
-  #tab-siniflar .table tbody td:nth-child(4){grid-column:1!important;grid-row:4!important;font-weight:850!important;color:var(--ap-text)!important}
+  #tab-siniflar .table tbody td:nth-child(4){grid-column:1!important;grid-row:4!important;color:var(--ap-text)!important;font-weight:850!important}
   #tab-siniflar .table tbody td:nth-child(4)::before{content:'Öğrenci: ';color:var(--ap-muted);font-weight:700}
   #tab-siniflar .table tbody td:nth-child(5){grid-column:1!important;grid-row:5!important;color:#d65378!important;font-weight:800!important}
-  #tab-siniflar .table tbody td:nth-child(5)::before{content:'Kız: ';color:var(--ap-muted);font-weight:700}
+  #tab-siniflar .table tbody td:nth-child(5)::before{content:'♀ Kız: ';}
   #tab-siniflar .table tbody td:nth-child(6){grid-column:1!important;grid-row:6!important;color:var(--ap-blue)!important;font-weight:800!important}
-  #tab-siniflar .table tbody td:nth-child(6)::before{content:'Erkek: ';color:var(--ap-muted);font-weight:700}
+  #tab-siniflar .table tbody td:nth-child(6)::before{content:'♂ Erkek: ';}
   #tab-siniflar .table tbody td:nth-child(7){grid-column:1!important;grid-row:7!important}
-  #tab-siniflar .table tbody td:nth-child(7)::before{content:'Derslik: ';font-weight:850;color:var(--ap-text)}
+  #tab-siniflar .table tbody td:nth-child(7)::before{content:'🚪 Derslik: ';}
   #tab-siniflar .table tbody td:nth-child(8){grid-column:2!important;grid-row:1 / span 7!important;align-self:start!important;display:flex!important;flex-direction:column!important;gap:6px!important}
   #tab-siniflar .table tbody td:nth-child(8) .btn,#tab-siniflar .table tbody td:nth-child(8) button{width:34px!important;min-width:34px!important;height:34px!important;padding:0!important;border-radius:11px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+
+  #modalOverlay.ap-ogretmen-modal{align-items:flex-end!important;padding:0!important}
+  #modalOverlay.ap-ogretmen-modal .modal{width:100%!important;max-height:90dvh!important;border-radius:24px 24px 0 0!important;border-bottom:0!important;padding-bottom:env(safe-area-inset-bottom,0px)!important}
+  #modalOverlay.ap-ogretmen-modal #modalTitle{padding:17px 16px 14px!important}
+  #modalOverlay.ap-ogretmen-modal #modalBody{padding:16px 16px 7px!important}
+  #modalOverlay.ap-ogretmen-modal .modal-actions{padding-left:16px!important;padding-right:16px!important;flex-wrap:wrap!important}
+  #modalOverlay.ap-ogretmen-modal .modal-actions .btn{flex:1 1 auto!important}
+  #modalOverlay.ap-ogretmen-modal .modal-actions #modalSilBtn{flex:0 0 auto!important;margin-right:auto!important}
 }
 
 @media(max-width:380px){
