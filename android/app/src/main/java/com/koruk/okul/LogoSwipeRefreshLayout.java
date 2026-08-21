@@ -106,6 +106,13 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
             dragging = false;
             springBackTo(0);
         }
+        // Modal kapanınca (enabled=true) iç kaydırma durumunu sıfırla.
+        // Modal içinde liste kaydırılmışsa innerContentKaydirilmis=true
+        // kalıyor ve sonraki tüm dokunuşları yutuyordu.
+        if (enabled) {
+            innerContentKaydirilmis = false;
+            dragging = false;
+        }
     }
 
     public void setRefreshing(boolean refreshing) {
