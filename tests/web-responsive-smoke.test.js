@@ -3,9 +3,8 @@ const assert = require('assert');
 
 const css = fs.readFileSync('css/web-desktop.css', 'utf8');
 const bridge = fs.readFileSync('css/tasima-takip.css', 'utf8');
-const dash2 = fs.readFileSync('css/dashboard-v2.css','utf8');
 const shellFix = fs.readFileSync('css/web-shell-fix.css','utf8');
-const mobileCss = fs.readFileSync('css/mobil-dashboard.css','utf8');
+const homeCss = fs.readFileSync('css/dashboard-home.css','utf8');
 const webInit = fs.readFileSync('js/dashboard-v2-init.js','utf8');
 const webSidebar = fs.readFileSync('js/web-sidebar-v2.js','utf8');
 
@@ -33,13 +32,13 @@ assert(css.includes('#ndOgeAnaListe') && css.includes('max-height: 42vh'), 'Navi
 assert(css.includes('@media (min-width: 1600px)') && css.includes('max-width: 1780px'), 'Büyük monitörler için ayrı içerik genişliği standardı bulunmalı.');
 assert(css.includes('repeat(3, minmax(0, 1fr))'), 'Çok geniş ekranda navigasyon grup kartları üç sütuna çıkabilmeli.');
 
-assert(dash2.includes('@media (min-width:1024px)') || dash2.includes('@media (min-width: 1024px)'), 'Dashboard v2 içinde masaüstü shell breakpointi bulunmalı.');
 assert(shellFix.includes('@media (min-width: 1024px)'), 'Web shell fix masaüstü breakpointine sahip olmalı.');
-assert(mobileCss.includes('@media (max-width: 1023px)'), 'Yeni mobil CSS açıkça mobil breakpointine sahip olmalı.');
-assert(webInit.includes("matchMedia('(min-width: 1024px)')") || /function\s+isWeb\s*\(\)\s*\{\s*return\s+window\.innerWidth\s*>=\s*1024\s*;?\s*\}/.test(webInit), 'Web init masaüstü breakpointiyle korunmalı.');
+assert(homeCss.includes('#tab-panel.kh-home'), 'Yeni mobil ana sayfa CSS scopeu bulunmalı.');
+assert(homeCss.includes('[data-theme="dark"] #tab-panel.kh-home'), 'Yeni mobil ana sayfa koyu tema kontrastı bulunmalı.');
+assert(webInit.includes("matchMedia('(min-width:1024px)')"), 'Web init yalnız masaüstünde çalışmalı.');
 assert(webInit.includes('wsSidebarToggle'), 'Web init sidebar daraltma kontrolünü kurmalı.');
 assert(webInit.includes('nav-collapsed'), 'Web init daraltılmış sidebar durumunu yönetmeli.');
-assert(webInit.includes('_topbarSekmeAdiGuncelle'), 'Web init aktif sekme adını topbarda güncellemeli.');
+assert(webInit.includes('activeTitleUpdate'), 'Web init aktif sekme adını topbarda güncellemeli.');
 assert(webSidebar.includes("id=\"ws2Collapse\"") || webSidebar.includes("id='ws2Collapse'"), 'Web sidebar v2 daraltma kontrolü bulunmalı.');
 assert(webSidebar.includes('nav-collapsed'), 'Web sidebar v2 daraltılmış görünümü yönetmeli.');
 
