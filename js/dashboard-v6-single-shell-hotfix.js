@@ -1,11 +1,15 @@
 /* Koruk Asistan — v6 tek ana sayfa acil düzeltme
  * Mobil ana sayfada v6 dışındaki eski dashboard katmanlarını görünmez yapar.
  * Hava ve zil widgetlarını v6 kabuğunda sabitler.
+ * Selamlamada cinsiyet/hitap varsayımı yapmaz; yalnızca gerçek adı kullanır.
  * Alt navigasyon ve üst uygulama çubuğuna dokunmaz.
  */
 (function(){
 'use strict';
 const $=(s,r=document)=>r.querySelector(s);
+function temizAd(v){
+  return String(v||'').replace(/\s+(Bey|Hanım|Beyefendi|Hanımefendi)\s*$/i,'').trim();
+}
 function kullaniciAdi(){
   try{
     const u=window.AKTIF_KULLANICI||null;
@@ -14,8 +18,8 @@ function kullaniciAdi(){
       t&&[t.ad,t.soyad].filter(Boolean).join(' '),
       u?.adSoyad,u?.adiSoyadi,u?.isimSoyisim,u?.displayName,
       [u?.ad,u?.soyad].filter(Boolean).join(' '),u?.kullaniciAdi
-    ].find(x=>String(x||'').trim());
-    return String(aday||'').trim();
+    ].map(temizAd).find(x=>x);
+    return temizAd(aday);
   }catch(_){return''}
 }
 function widgetleriSabitle(shell){
@@ -25,6 +29,15 @@ function widgetleriSabitle(shell){
   const bell=$('#zilWidget');
   const bellHost=$('.db6-clock',shell);
   if(bell&&bellHost&&bell.parentElement!==bellHost) bellHost.appendChild(bell);
+}
+function selamlamayiDuzelt(shell){
+  const ad=kullaniciAdi();
+  const h=$('.db6-greet h1',shell);
+  if(!h)return;
+  const saat=new Date().getHours();
+  const selam=saat<11?'Günaydın':saat<18?'Merhaba':'İyi akşamlar';
+  if(ad) h.textContent=`${selam}, ${ad} 👋`;
+  else h.textContent=`${selam} 👋`;
 }
 function uygula(){
   if(window.matchMedia&&window.matchMedia('(min-width: 1024px)').matches)return false;
@@ -38,13 +51,7 @@ function uygula(){
     el.classList.add('db6-legacy-hidden');
     el.setAttribute('aria-hidden','true');
   });
-  const ad=kullaniciAdi();
-  const h=$('.db6-greet h1',shell);
-  if(ad&&h&&/Kullanıcı/i.test(h.textContent||'')){
-    const saat=new Date().getHours();
-    const selam=saat<11?'Günaydın':saat<18?'Merhaba':'İyi akşamlar';
-    h.textContent=`${selam}, ${ad} 👋`;
-  }
+  selamlamayiDuzelt(shell);
   return true;
 }
 function css(){
