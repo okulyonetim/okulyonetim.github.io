@@ -22,6 +22,7 @@ assert(v4.includes('Haftanın Nöbet Programı')&&v4.includes('Yaklaşan Yazıl�
 assert(v4.includes('Bugünkü Derslerim')&&v4.includes('yillikPlanHaftaAc'),'Öğretmen ders-yıllık plan bağlantısı bulunmalı');
 assert(v4.includes('Nöbet defterini doldurdum'),'Öğretmen nöbet defteri kontrolü bulunmalı');
 assert(v4.includes('Hızlı İşlemler')&&v4.includes('Takvim'),'Öğretmen hızlı işlemler ve takvim alanı bulunmalı');
+assert(v4.includes('grid-template-columns:repeat(4,1fr)'),'Hızlı işlemler mobilde dört eşit karta sahip olmalı');
 assert(v4.includes('@media(prefers-reduced-motion:reduce)'),'Hareket azaltma tercihi desteklenmeli');
 
 assert(polish.includes('dashboardV41Duzenle')&&polish.includes('INFO_CARDS'));
@@ -37,7 +38,6 @@ assert(role.includes("ADMIN_ONLY_SETTINGS=['Optik Puan Referans Ayarları','Hat�
 assert(role.includes("READONLY_SETTINGS=['Ders Saatleri','Ders Listesi','Branş Listesi']"));
 assert(role.includes('Teslim Etmem Gerekenler')&&role.includes('hatirlatmalariTopla'));
 assert(role.includes("QUICK_PREF='dashboardHizliIslemler'")&&role.includes('Hızlı İşlemleri Düzenle'));
-assert(role.includes('normalizeQuick')&&role.includes('out.length<4'),'Hızlı işlemler dört karta tamamlanmalı');
 assert(!role.includes('setInterval('),'Rol UI global interval kullanmamalı');
 assert(!role.includes('new MutationObserver'),'Rol UI global DOM observer kullanmamalı');
 assert(!hotfix.includes('setInterval('),'Dashboard tercih katmanı polling yapmamalı');
