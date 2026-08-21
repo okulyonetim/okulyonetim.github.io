@@ -1,0 +1,48 @@
+/* Koruk Asistan — global checkbox/radio standardı v1 */
+:root{--cb-accent:#6545c7;--cb-line:#cfd6df;--cb-bg:#fff;--cb-focus:rgba(101,69,199,.16)}
+[data-theme="dark"]{--cb-accent:#b29cf4;--cb-line:#3a5266;--cb-bg:#111f2d;--cb-focus:rgba(178,156,244,.18)}
+
+input[type="checkbox"],input[type="radio"]{
+  box-sizing:border-box!important;
+  width:17px!important;
+  height:17px!important;
+  min-width:17px!important;
+  min-height:17px!important;
+  max-width:17px!important;
+  max-height:17px!important;
+  margin:0!important;
+  padding:0!important;
+  flex:0 0 17px!important;
+  vertical-align:middle!important;
+  accent-color:var(--cb-accent)!important;
+  border-radius:4px;
+  box-shadow:none!important;
+}
+input[type="radio"]{border-radius:50%!important}
+input[type="checkbox"]:focus-visible,input[type="radio"]:focus-visible{outline:2px solid var(--cb-focus)!important;outline-offset:2px!important}
+
+/* Checkbox/radio içeren etiketler */
+label:has(> input[type="checkbox"]),label:has(> input[type="radio"]),
+label:has(input[type="checkbox"]),label:has(input[type="radio"]){
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  line-height:1.35!important;
+}
+
+/* Liste halinde çoklu seçimler */
+.checkbox-list,.checkbox-grid,.multi-check,.sorumlu-secici,.sorumlu-ogretmen-listesi{
+  gap:8px!important;
+}
+.checkbox-list label,.checkbox-grid label,.multi-check label,.sorumlu-secici label,.sorumlu-ogretmen-listesi label{
+  min-height:34px!important;
+  padding:7px 9px!important;
+  border-radius:10px!important;
+}
+
+/* Genel input kurallarının checkbox/radio'yu büyütmesini engelle */
+.modal input[type="checkbox"],.modal input[type="radio"],
+.detay-panel input[type="checkbox"],.detay-panel input[type="radio"],
+.tab-panel input[type="checkbox"],.tab-panel input[type="radio"]{
+  width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;padding:0!important;
+}
