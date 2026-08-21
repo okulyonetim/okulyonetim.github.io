@@ -326,7 +326,13 @@ async function hatirlatmalariTopla(){
     ..._htBelirliGunTaramalari(ben.id, gunSayisi),
     ..._htSinavTaramalari(ben.id, gunSayisi),
   ];
-  const asenkron = (typeof KontrolListeleriService!=='undefined') ? await _htKontrolListesiTaramalari(ben.id, gunSayisi) : [];
+  // 3 saniyelik timeout: Firestore/network gecikmesi hatırlatma taramasını bloke etmesin
+  const asenkron = await (typeof KontrolListeleriService!=='undefined'
+    ? Promise.race([
+        _htKontrolListesiTaramalari(ben.id, gunSayisi),
+        new Promise(res => setTimeout(() => res([]), 3000))
+      ])
+    : Promise.resolve([]));
   const hepsi = [...senkron, ...asenkron];
   hepsi.sort((a,b)=>a.gunFarki-b.gunFarki); // en geciken/en yakın en üstte
   return hepsi;
