@@ -2225,7 +2225,7 @@ body.tatil-aktif .tatil-gizle {
 .ni-harita   { background: rgba(72,187,120,0.18); }
 
 /* Modal açıkken sayfa kaymasını engelle */
-body.modal-open { overflow: hidden; touch-action: none; }
+body.modal-open { overflow: hidden; overscroll-behavior: none; touch-action: auto; }
 
 /* ===== AI Asistan ===== */
 .asistan-msg{display:flex;}

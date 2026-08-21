@@ -1,34 +1,52 @@
-/* Koruk Asistan — global modal interaction fix v3
-   Android/WebView'de modal açıkken dokunmayı tamamen kesen eski
-   touch-action:none kuralını nötralize eder. Gizli overlay'lerin uygulama
-   üstünde görünmez tıklama katmanı oluşturmasına izin vermez. */
-body.modal-open{
-  overflow:hidden!important;
-  touch-action:auto!important;
+/* Koruk Asistan — modal interaction fix v4
+   =========================================================
+   KÖK SEBEP (kesin tespit):
+   app.js MutationObserver → body.style.position='fixed'
+   Android WebView'de body position:fixed yapılınca tüm child
+   elementlerin touch/click event'ları bloke oluyor.
+   MutationObserver app.js'den kaldırıldı (IIFE boş bırakıldı).
+   styles.css body.modal-open touch-action:none → auto yapıldı.
+   ========================================================= */
+
+/* 1. Scroll kilidi — sadece overflow + overscroll ile, position:fixed YOK */
+body.modal-open {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: auto !important;   /* styles.css'deki none'ı garanti ile iptal */
 }
 
-.modal-overlay.show,
+/* 2. Modal ve içeriği — tüm dokunma olayları serbest */
 .modal-overlay.active,
-.modal-overlay.acik,
-.detay-overlay.show,
-.detay-overlay.active,
-.detay-overlay.acik{
-  pointer-events:auto!important;
-  touch-action:auto!important;
-}
-
-.modal-overlay:not(.show):not(.active):not(.acik),
-.detay-overlay:not(.show):not(.active):not(.acik){
-  pointer-events:none!important;
-}
-
 .modal-overlay.show,
-.modal-overlay.active,
-.detay-overlay.show,
-.detay-overlay.active{
-  z-index:9750!important;
+.modal-overlay.acik {
+  display: flex !important;
+  pointer-events: auto !important;
+  touch-action: auto !important;
+  z-index: 9750 !important;        /* bottom-nav (9700) üstüne çık */
 }
 
-body.modal-open .bottom-nav{
-  z-index:7000!important;
+/* 3. Kapalı overlay'ler tıklamayı yutmasın */
+.modal-overlay:not(.active):not(.show):not(.acik) {
+  pointer-events: none !important;
+}
+.detay-overlay:not(.active):not(.show):not(.acik) {
+  pointer-events: none !important;
+}
+
+/* 4. Modal içindeki her element serbestçe tıklanabilir */
+.modal-overlay.active *,
+.modal-overlay.show * {
+  touch-action: auto !important;
+  pointer-events: auto !important;
+}
+
+/* 5. Bottom-nav modal arkasında kalsın */
+body.modal-open .bottom-nav {
+  pointer-events: none !important;
+  z-index: 7000 !important;
+}
+
+/* 6. detay-overlay z-index tutarlı */
+.detay-overlay.active {
+  z-index: 9650 !important;
 }
