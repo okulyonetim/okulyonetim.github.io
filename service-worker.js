@@ -1,7 +1,7 @@
 /* ====================================================================
    Okul Yönetim Paneli — Service Worker v7
    ==================================================================== */
-const CACHE_ADI = 'oy-cache-v472';
+const CACHE_ADI = 'oy-cache-v473';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -19,10 +19,10 @@ const messaging = firebase.messaging();
 const ONBELLEGE_ALINACAKLAR = [
   './','./index.html','./manifest.json',
   './css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css',
-  './css/web-shell-fix.css','./css/web-sidebar-v2.css','./css/dashboard-yeni.css','./css/dashboard-home.css',
+  './css/web-shell-fix.css','./css/web-sidebar-v2.css','./css/dashboard-yeni.css','./css/dashboard-home.css','./css/dashboard-home-colors.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js',
   './js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/ui-stability-fixes.js',
-  './js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/dashboard-home.js','./js/role-ui-hardening.js',
+  './js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/dashboard-home.js','./js/dashboard-duyuru.js','./js/role-ui-hardening.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
