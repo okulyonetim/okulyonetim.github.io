@@ -2,6 +2,7 @@
  * 1) Ortak bolumlerde tekrar olusumunu engeller ve mevcut kopyalari temizler.
  * 2) Hizli Islemler'i kullanici bazli ozellestirilebilir yapar.
  * 3) Akilli Takvim'i ders programindan ayirir; yalnizca onemli kayitlari gosterir.
+ * 4) Okul Özeti Öğrenci kartını Öğrenciler sekmesine yönlendirir.
  */
 (function(){
 'use strict';
@@ -98,11 +99,21 @@ function importantCalendarSignature(){
   ['sinavlar','gorevler','hatirlaticilar','duyurular'].forEach(n=>arr(n).forEach(x=>parts.push([n,x.id||'',x.tarih||x.sinavTarihi||x.sonTarih||'',x.saat||'',x.durum||'',x.aktif,x.arsivlendi,x.baslik||x.ad||''].join(':'))));
   return parts.join('|');
 }
+function fixSchoolSummaryStudentLink(){
+  $$('.kh-stats .kh-stat').forEach(card=>{
+    const label=$('.kh-stat-label',card)?.textContent?.trim();
+    if(label==='Öğrenci'){
+      card.dataset.tab='ogrenciler';
+      card.onclick=()=>openTab('ogrenciler');
+    }
+  });
+}
 function apply(){
   const shell=$('.kh-shell');if(!shell)return;
   normalizeSharedTitles();['Hızlı İşlemler','Takvim',"Bugünün Nöbetçileri",'Haftanın Nöbet Programı'].forEach(dedupe);
   renderQuick(findSections('Hızlı İşlemler')[0]);
   renderImportantCalendar(findSections('Takvim')[0]);
+  fixSchoolSummaryStudentLink();
 }
 let busy=false;const obs=new MutationObserver(()=>{if(busy)return;busy=true;requestAnimationFrame(()=>{try{apply()}finally{busy=false}})});obs.observe(document.documentElement,{subtree:true,childList:true});
 setInterval(apply,900);window.addEventListener('load',()=>setTimeout(apply,250));document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(apply,80)});
