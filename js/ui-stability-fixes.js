@@ -5,6 +5,7 @@ function scriptYukle(src,key){if(document.querySelector('script[data-'+key+']'))
 function stilYukle(href,key){if(document.querySelector('link[data-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.setAttribute('data-'+key,'1');document.head.appendChild(l)}
 function gv(n){try{return eval(`typeof ${n}!=='undefined'?${n}:null`)}catch(_){return null}}
 scriptYukle('js/theme-contrast-fixes.js','theme-contrast');scriptYukle('js/excel-visual-fidelity.js','excel-visual-fidelity');scriptYukle('js/excel-turkish-date-fix.js','excel-turkish-date');scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
+stilYukle('css/app-pages-theme.css?v=1','app-pages-theme');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
 const mobil=window.matchMedia('(max-width:1023px)').matches;let basladi=false;
 function kullaniciHazir(){const u=gv('AKTIF_KULLANICI');if(!u)return false;if(u.bagliOgretmenId){try{if(typeof bagliOgretmenimGetir==='function'&&bagliOgretmenimGetir())return true;const og=gv('ogretmenler');return Array.isArray(og)&&og.some(x=>x&&x.id===u.bagliOgretmenId)}catch(_){return false}}return true}
