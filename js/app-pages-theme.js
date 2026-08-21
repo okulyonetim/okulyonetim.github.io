@@ -1,32 +1,32 @@
 /* Koruk Asistan — sayfa teması yardımcıları */
 (function(){
 'use strict';
-if(window.__APP_PAGES_THEME_JS__) return;
-window.__APP_PAGES_THEME_JS__=true;
+if(window.__APP_PAGES_THEME_JS_V2__) return;
+window.__APP_PAGES_THEME_JS_V2__=true;
 
 function modalSinifEkle(cls){
   const ov=document.getElementById('modalOverlay');
   if(!ov) return;
-  ov.classList.remove('ap-ogretmen-modal','ap-sinif-modal','ap-ogrenci-modal','ap-tasima-modal','ap-personel-modal');
-  if(cls) ov.classList.add(cls);
+  const siniflar=['ap-ogretmen-modal','ap-sinif-modal','ap-ogrenci-modal','ap-tasima-modal','ap-personel-modal'];
+  siniflar.forEach(c=>{ if(ov.classList.contains(c)) ov.classList.remove(c); });
+  if(cls && !ov.classList.contains(cls)) ov.classList.add(cls);
 }
 function ogretmenModalIsaretle(){ modalSinifEkle('ap-ogretmen-modal'); }
 function sinifModalIsaretle(){ modalSinifEkle('ap-sinif-modal'); }
 function ogrenciModalIsaretle(){ modalSinifEkle('ap-ogrenci-modal'); }
 function tasimaModalIsaretle(){ modalSinifEkle('ap-tasima-modal'); }
 function personelModalIsaretle(){ modalSinifEkle('ap-personel-modal'); }
-function modalTemaTemizle(){ modalSinifEkle(''); }
 
 function detaySinifEkle(cls){
   const ov=document.getElementById('detayOverlay');
   if(!ov) return;
-  ov.classList.remove('ap-sinif-detay','ap-tasima-detay','ap-personel-detay');
-  if(cls) ov.classList.add(cls);
+  const siniflar=['ap-sinif-detay','ap-tasima-detay','ap-personel-detay'];
+  siniflar.forEach(c=>{ if(ov.classList.contains(c)) ov.classList.remove(c); });
+  if(cls && !ov.classList.contains(cls)) ov.classList.add(cls);
 }
 function sinifDetayIsaretle(){ detaySinifEkle('ap-sinif-detay'); }
 function tasimaDetayIsaretle(){ detaySinifEkle('ap-tasima-detay'); }
 function personelDetayIsaretle(){ detaySinifEkle('ap-personel-detay'); }
-function detayTemaTemizle(){ detaySinifEkle(''); }
 
 document.addEventListener('click',function(e){
   const btn=e.target.closest?.('button,[role="button"],tr.row-clickable,[onclick]');
@@ -75,23 +75,5 @@ document.addEventListener('click',function(e){
   }
 },true);
 
-const baslat=function(){
-  const ov=document.getElementById('modalOverlay');
-  if(ov){
-    const mo=new MutationObserver(function(){
-      const gorunur=ov.classList.contains('show')||ov.classList.contains('active')||getComputedStyle(ov).display!=='none';
-      if(!gorunur) modalTemaTemizle();
-    });
-    mo.observe(ov,{attributes:true,attributeFilter:['class','style']});
-  }
-  const det=document.getElementById('detayOverlay');
-  if(det){
-    const mo2=new MutationObserver(function(){
-      const gorunur=det.classList.contains('active')||det.classList.contains('show')||getComputedStyle(det).display!=='none';
-      if(!gorunur) detayTemaTemizle();
-    });
-    mo2.observe(det,{attributes:true,attributeFilter:['class','style']});
-  }
-};
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',baslat,{once:true}); else baslat();
+/* Observer kullanılmıyor. Tema sınıfları yalnız gerçek tıklama akışında eklenir. */
 })();
