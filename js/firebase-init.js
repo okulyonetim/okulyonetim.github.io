@@ -159,6 +159,8 @@ function firebaseyiBaslat(){
   try{
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
+    // Bağlantı kesilince Firestore WebChannel JS thread'ini bloke etmesin
+    db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
     auth = firebase.auth();
     storage = firebase.storage();
     firebaseHazir = true;
