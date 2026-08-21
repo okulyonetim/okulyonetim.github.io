@@ -231,7 +231,7 @@
     <section id="tab-panel" class="tab-panel active dash-modern">
       <div class="page-header"><div><div class="page-title">🏠 Genel Bakış</div></div></div>
 
-      <!-- 1. HERO KARTI: Karşılama + tarih + zil sayacı + hava özeti (birleşik, tıklanınca detay açılır) -->
+      <!-- HERO: Karşılama + tarih + zil + hava -->
       <div class="card dash-hero">
         <div class="dash-hero-top">
           <div class="dash-hero-greet">
@@ -239,60 +239,47 @@
             <div class="page-sub" id="panelTarih"></div>
           </div>
         </div>
-        <!-- Zil + Hava: renderZilSayaci hero-bell'i, topbarRenderEt ise hero-hava-satir'ı dolduruyor. Tıklayınca hava detay sayfası açılıyor. -->
         <div class="dash-hero-bell" id="zilWidget" onclick="zilTiklandi()" style="cursor:pointer;"></div>
         <div class="dash-hero-hava-satir" id="heroHavaSatir" onclick="havaDurumuDetayAc()" style="display:none; cursor:pointer;"></div>
-        <!-- YENİ: Okulun Instagram / X / Web linkleri — sadece dolu olanlar
-             gösterilir (bkz. js/app.js renderSosyalMedyaIkonlari). -->
         <div class="dash-hero-sosyal" id="heroSosyalMedya" style="display:none;"></div>
       </div>
 
-      <!-- YENİ: Aktif Deneme Sınavı Sayacı — sadece BUGÜN, sayacı başlatılmış
-           bir deneme sınavı varken görünür. İçeriği/görünürlüğü tamamen
-           js/sinavlar.js > _anaSayfaSayacKartiGuncelle() yönetiyor (bkz. o
-           dosya — Firestore denemeSinavlari dinleyicisi ve saniyelik
-           interval ile güncelleniyor). Hero'nun hemen altında, en öncelikli
-           yerde: zamana duyarlı/canlı bir durum olduğu için listenin
-           ortasında kaybolmamalı. -->
+      <!-- Aktif Deneme Sınavı Sayacı -->
       <div class="card dash-card-clickable" id="dashSayacKarti" onclick="dashSayacKartiTikla()" style="display:none;"></div>
 
-      <!-- Bugün İzinli/Raporlu Öğretmenler -->
+      <!-- Bugün İzinli Öğretmenler -->
       <div class="card" id="bugunIzinliKart" data-kart-id="bugunIzinli" data-yetki-modul="ogretmenler" style="display:none;">
         <h3 class="dash-h3-row">🏥 Bugün İzinli Öğretmenler</h3>
         <div id="bugunIzinliListesi"></div>
       </div>
 
-      <!-- Haberler kayan bandı -->
+      <!-- Haber ticker -->
       <div class="haber-ticker" id="haberTicker" data-kart-id="haberTicker" data-yetki-modul="haberler" style="display:none;"></div>
 
-      <!-- YENİ: Duyuru Panosu — Haberler modülünden BAĞIMSIZ, kendi yetkisi
-           ve okundu-takip sistemi olan ayrı modül (bkz. js/duyurular.js). -->
-      <div class="card" id="duyuruPanosuKart" data-kart-id="duyuruPanosu" data-yetki-modul="duyurular" style="display:none;">
-        <h3 class="dash-h3-row">📢 Duyuru Panosu <span class="dash-tumu-link" onclick="sekmeAc('duyurular')">Tümü ›</span></h3>
-        <div id="duyuruPanosuIcerik"></div>
-      </div>
-
-      <!-- Hava durumu hero kartında gösterildiğinden buradaki kart gizlendi -->
+      <!-- Hava durumu wrap (gizli — hero'da gösteriliyor) -->
       <div id="havaDurumuKartWrap" style="display:none!important;">
         <div id="havaDurumuKart"><div id="havaDurumuYukleniyor"></div></div>
       </div>
 
-      <!-- 3. İstatistik kartları (Personel / Öğrenci / Servis / Bekleyen Evrak) — dashStats id'si ile JS'ten geliyor, her kart kendi gorebilir() kontrolüyle üretiliyor -->
-      <div data-kart-id="istatistikSeridi">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin:0 2px 6px;">
-          <span style="font-size:12px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.4px;">İstatistikler</span>
-          <button class="btn btn-ghost btn-sm" onclick="dashboardAltDuzenModalAc('istatistikSeridi')" title="Düzenle">✏️</button>
-        </div>
-        <div class="dash-stat-strip" id="dashStats"></div>
+      <!-- ══════════════════════════════════════════
+           1. HAFTANıN NÖBETÇİLERİ
+           (nobetHaftaKutu — js/nobet.js doldurur)
+      ══════════════════════════════════════════ -->
+      <div class="card dash-card-clickable dash-nobet-hafta-kart" data-kart-id="haftaninNobetcileri" data-yetki-modul="nobet" onclick="sekmeAc('nobet')">
+        <h3 class="dash-h3-row">🛡️ Haftanın Nöbetçileri <span class="dash-tumu-link" onclick="event.stopPropagation();sekmeAc('nobet')">Tümü ›</span></h3>
+        <div id="nobetHaftaKutu" class="dash-nobet-hafta-icerik"></div>
       </div>
 
-      <!-- YENİ: Hızlı Bakış — ikincil özet rozetleri (Sınıf, Kadın/Erkek, Açık Görev, Hatırlatıcı) — chip'ler kendi gorebilir() kontrolüyle üretiliyor -->
-      <div class="card dash-hizlibakis-card" data-kart-id="hizliBakis">
-        <h3 style="display:flex;align-items:center;justify-content:space-between;">👁️ Hızlı Bakış <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); dashboardAltDuzenModalAc('hizliBakis')" title="Düzenle">✏️</button></h3>
-        <div class="dash-hizlibakis" id="dashHizliBakis"></div>
+      <!-- ══════════════════════════════════════════
+           2. DUYURULAR
+           (duyuruPanosuIcerik — js/duyurular.js doldurur)
+      ══════════════════════════════════════════ -->
+      <div class="card" id="duyuruPanosuKart" data-kart-id="duyuruPanosu" data-yetki-modul="duyurular" style="display:none;">
+        <h3 class="dash-h3-row">📢 Duyurular <span class="dash-tumu-link" onclick="sekmeAc('duyurular')">Tümü ›</span></h3>
+        <div id="duyuruPanosuIcerik"></div>
       </div>
 
-      <!-- Haberler karuseli — son 5 haber, otomatik kayan kart -->
+      <!-- Son haberler (karusel) -->
       <div class="card dash-card-clickable" id="haberKaruselKart" data-kart-id="haberKarusel" data-yetki-modul="haberler" style="display:none;">
         <h3 class="dash-h3-row">📰 Son Haberler <span class="dash-tumu-link" onclick="event.stopPropagation(); sekmeAc('haberler')">Tümü ›</span></h3>
         <div class="karusel-viewport">
@@ -301,23 +288,16 @@
         <div class="karusel-noktalar" id="haberKaruselNoktalar"></div>
       </div>
 
-      <!-- YENİ: Okul sitemizden (korukortaokulu.meb.k12.tr) Haber+Duyuru RSS'i,
-           görselli, yatay kaydırmalı şerit — genel Haberler karuselinden AYRI. -->
+      <!-- Okul sitesi RSS şeridi -->
       <div class="card" id="okulSitesiKart" data-kart-id="okulSitesiKart" data-yetki-modul="haberler" style="display:none;">
         <h3 class="dash-h3-row">🏫 Okul Sitemizden <span class="dash-tumu-link" onclick="sekmeAc('haberler')">Tümü ›</span></h3>
         <div id="okulSitesiSerit" style="display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:4px;margin-top:6px;"></div>
       </div>
 
-      <!-- 4. Hızlı İşlemler — 2x4 grid, M3 tarzı renkli ikon rozetleri, gerçek sekmelere bağlı -->
-      <div class="card" data-kart-id="hizliIslemler">
-        <h3 style="display:flex;align-items:center;justify-content:space-between;">⚡ Hızlı İşlemler <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); dashboardAltDuzenModalAc('hizliIslemler')" title="Düzenle">✏️</button></h3>
-        <div class="qa-grid" id="hizliIslemlerGrid"></div>
-      </div>
-
-      <!-- 5. Günün Nöbetçileri — Bugün kartına taşındı, burada gösterilmiyor -->
-
-      <!-- YENİ: Öğretmene özel — sadece hesabına bağlı bir öğretmen kaydı olan
-           kullanıcıya gösterilir (bkz. js/app.js renderOgretmenOzelKartlar). -->
+      <!-- ══════════════════════════════════════════
+           3. ÖĞRETMENE ÖZEL: Bugünkü Dersler +
+              Yıllık Planlar (dash-cols bloğu)
+      ══════════════════════════════════════════ -->
       <div class="dash-cols" id="ogretmenOzelKartlar" data-kart-id="ogretmenOzel" style="display:none;">
         <div class="card dash-card-clickable" data-yetki-modul="dersProgrami" onclick="sekmeAc('dersNobetProgramim')">
           <h3 class="dash-h3-row">📚 Bugünkü Derslerim <span class="dash-tumu-link">Tümü ›</span></h3>
@@ -333,52 +313,92 @@
         </div>
       </div>
 
-      <!-- YENİ (widget): Sınavlarım -->
+      <!-- Bugünün tam ders programı (tatil-gizle) -->
+      <div class="card dash-card-clickable tatil-gizle" data-kart-id="bugununProgrami" data-yetki-modul="dersProgrami" onclick="sekmeAc('dersProgrami')"><h3>🗓️ Bugünün Ders Programı</h3><div id="dashBugunDersler"></div></div>
+
+      <!-- ══════════════════════════════════════════
+           4. YAZILI SINAVLARIM
+      ══════════════════════════════════════════ -->
       <div class="card dash-card-clickable" data-kart-id="sinavlarim" data-yetki-modul="sinavIslemleri" onclick="sekmeAc('yaziliSinavlar')" style="display:none;">
-        <h3 class="dash-h3-row">📝 Sınavlarım <span class="dash-tumu-link">Tümü ›</span></h3>
+        <h3 class="dash-h3-row">📝 Yazılı Sınavlarım <span class="dash-tumu-link">Tümü ›</span></h3>
         <div id="dashSinavlarim"></div>
       </div>
 
-      <!-- YENİ (widget): Okunmamış Mesajlarım -->
+      <!-- ══════════════════════════════════════════
+           5. NOT DEFTERİM
+      ══════════════════════════════════════════ -->
+      <div class="card dash-card-clickable" data-kart-id="notDefteri" data-yetki-modul="notlar" onclick="sekmeAc('notlar')">
+        <h3 style="display:flex;align-items:center;justify-content:space-between;">📝 Notlarım <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); notlarModalAc()" style="margin-left:auto;">➕ Yeni Not</button></h3>
+        <div id="dashNotlar"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           6. OKUL BAĞLANTILARI (sosyal + site linkleri)
+           heroSosyalMedya hero'da gösterildiğinden burada
+           ayrı bir kart olarak tekrar gösteriyoruz — ama
+           hero'daki ile aynı renderSosyalMedyaIkonlari()
+           verisinden beslenemez; bu yüzden statik wrapper
+           olarak bırakıyoruz, JS ile dolduracağız.
+      ══════════════════════════════════════════ -->
+      <div class="card dash-okul-baglanti-kart" id="okulBaglantiKart" data-kart-id="okulBaglantilari" style="display:none;">
+        <h3>🔗 Okul Bağlantıları</h3>
+        <div id="okulBaglantiIcerik" class="dash-link-grid"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           7. OKUL İSTATİSTİKLERİ
+      ══════════════════════════════════════════ -->
+      <div data-kart-id="istatistikSeridi">
+        <div class="dash-section-label">
+          <span>İstatistikler</span>
+          <button class="btn btn-ghost btn-sm" onclick="dashboardAltDuzenModalAc('istatistikSeridi')" title="Düzenle">✏️</button>
+        </div>
+        <div class="dash-stat-strip" id="dashStats"></div>
+      </div>
+
+      <!-- Hızlı Bakış rozetleri -->
+      <div class="card dash-hizlibakis-card" data-kart-id="hizliBakis">
+        <h3 style="display:flex;align-items:center;justify-content:space-between;">👁️ Hızlı Bakış <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); dashboardAltDuzenModalAc('hizliBakis')" title="Düzenle">✏️</button></h3>
+        <div class="dash-hizlibakis" id="dashHizliBakis"></div>
+      </div>
+
+      <!-- Mesajlarım -->
       <div class="card dash-card-clickable" data-kart-id="mesajlarim" data-yetki-modul="mesajlasma" onclick="sekmeAc('mesajlasma')" style="display:none;">
         <h3 class="dash-h3-row">💬 Mesajlarım <span class="dash-tumu-link">Tümü ›</span></h3>
         <div id="dashMesajlarim"></div>
       </div>
 
-      <!-- YENİ (widget): Son Eklenen Dökümanlar -->
+      <!-- Son Dökümanlar -->
       <div class="card dash-card-clickable" data-kart-id="sonDokumanlar" data-yetki-modul="dokumanlar" onclick="sekmeAc('dokumanlar')" style="display:none;">
         <h3 class="dash-h3-row">📁 Son Eklenen Dökümanlar <span class="dash-tumu-link">Tümü ›</span></h3>
         <div id="dashSonDokumanlar"></div>
       </div>
 
-      <!-- YENİ (widget): Bekleyen Evrak Listesi -->
+      <!-- Bekleyen Evrak -->
       <div class="card dash-card-clickable" data-kart-id="bekleyenEvrak" data-yetki-modul="evrak" onclick="sekmeAc('evrak')" style="display:none;">
         <h3 class="dash-h3-row">📄 Bekleyen Evrak <span class="dash-tumu-link">Tümü ›</span></h3>
         <div id="dashBekleyenEvrak"></div>
       </div>
 
+      <!-- Şu anki ders (tatil-gizle) -->
       <div class="card dash-card-clickable tatil-gizle" data-kart-id="suankiDers" data-yetki-modul="dersProgrami" onclick="sekmeAc('dersProgrami')"><h3>📚 Şu Anki Ders Saatinde</h3><div id="dashSuankiDers"></div></div>
-      <div class="card dash-card-clickable tatil-gizle" data-kart-id="bugununProgrami" data-yetki-modul="dersProgrami" onclick="sekmeAc('dersProgrami')"><h3>🗓️ Bugünün Ders Programı</h3><div id="dashBugunDersler"></div></div>
 
-      <div class="card dash-card-clickable tatil-gizle" data-kart-id="haftaninNobetcileri" data-yetki-modul="nobet" onclick="sekmeAc('nobet')"><h3>👮 Bu Haftanın Nöbetçileri</h3><div id="nobetHaftaKutu"></div></div>
+      <!-- Yaklaşan Etkinlikler -->
       <div class="card dash-card-clickable" data-kart-id="etkinlikGorev" data-yetki-modul="takvim" onclick="sekmeAc('takvim')"><h3 class="dash-h3-row">⏰ Yaklaşan Etkinlikler &amp; Görevler <span class="dash-tumu-link">Tümü ›</span></h3><div id="dashHatirlaticilar"></div></div>
 
+      <!-- Belirli Günler -->
       <div class="card dash-card-clickable" data-kart-id="belirliGunler" data-yetki-modul="belirliGunler" onclick="sekmeAc('belirliGunler')"><h3>🎉 Yaklaşan Belirli Gün Ve Haftalar</h3><div id="dashYaklasanEtkinlikler"></div></div>
+
+      <!-- Mini Takvim -->
       <div class="card dash-card-clickable" data-kart-id="miniTakvim" data-yetki-modul="takvim" onclick="sekmeAc('takvim')">
         <h3>📅 Bu Ay</h3>
         <div id="dashMiniTakvim"></div>
       </div>
 
-      <!-- YENİ: Ajanda anasayfada — yaklaşan etkinlikler, görevler ve hatırlatıcılar -->
+      <!-- Ajanda -->
       <div class="card dash-card-clickable" data-kart-id="ajanda" data-yetki-modul="takvim" onclick="sekmeAc('takvim')">
         <h3 class="dash-h3-row">🗓️ Ajanda <span class="dash-tumu-link">Tümü ›</span></h3>
         <div id="dashAjanda"></div>
-      </div>
-
-      <!-- Not Alma -->
-      <div class="card dash-card-clickable" data-kart-id="notDefteri" data-yetki-modul="notlar" onclick="sekmeAc('notlar')">
-        <h3 style="display:flex;align-items:center;justify-content:space-between;">📝 Not Defteri <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); notlarModalAc()" style="margin-left:auto;">➕ Yeni Not</button></h3>
-        <div id="dashNotlar"></div>
       </div>
     </section>
 
