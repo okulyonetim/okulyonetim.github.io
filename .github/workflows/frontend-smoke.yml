@@ -5,10 +5,9 @@ on:
     paths:
       - 'index.html'
       - 'service-worker.js'
-      - 'css/web-desktop.css'
-      - 'css/dashboard-v2.css'
+      - 'css/dashboard-home.css'
+      - 'css/dashboard-yeni.css'
       - 'css/web-shell-fix.css'
-      - 'css/mobil-dashboard.css'
       - 'css/web-sidebar-v2.css'
       - 'css/tasima-takip.css'
       - 'js/ozellik-katalogu.js'
@@ -19,16 +18,10 @@ on:
       - 'js/map-libs.js'
       - 'js/native-report-preview.js'
       - 'js/ui-stability-fixes.js'
+      - 'js/dashboard-home.js'
       - 'js/dashboard-v2-init.js'
       - 'js/web-sidebar-v2.js'
-      - 'js/dashboard-mobile-v4.js'
-      - 'js/dashboard-mobile-v4-polish.js'
-      - 'js/dashboard-mobile-v6-quality.js'
-      - 'js/dashboard-mobile-v4-hotfix.js'
-      - 'js/dashboard-mobile-state-v3.js'
-      - 'js/dashboard-card-count-fix.js'
       - 'js/role-ui-hardening.js'
-      - 'js/dashboard-today-cleanup.js'
       - 'js/excel-visual-fidelity.js'
       - 'js/excel-visual-fidelity-v3.js'
       - 'js/akademik-takvim.js'
@@ -58,6 +51,7 @@ on:
       - '.github/workflows/build-apk.yml'
       - 'android/app/src/main/java/com/koruk/okul/MainActivity.java'
       - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
+      - 'tests/dashboard-home-smoke.test.js'
       - 'tests/pwa-push-smoke.test.js'
       - 'tests/android-deeplink-smoke.test.js'
       - 'tests/document-viewer-smoke.test.js'
@@ -78,9 +72,6 @@ on:
       - 'tests/web-sidebar-v2-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/excel-visual-fidelity-v3-smoke.test.js'
-      - 'tests/dashboard-mobile-v4-smoke.test.js'
-      - 'tests/dashboard-mobile-state-v3-smoke.test.js'
-      - 'tests/mobile-role-dashboard-v6-smoke.test.js'
       - '.github/workflows/frontend-smoke.yml'
   workflow_dispatch:
 
@@ -106,16 +97,10 @@ jobs:
           node --check js/map-libs.js
           node --check js/native-report-preview.js
           node --check js/ui-stability-fixes.js
+          node --check js/dashboard-home.js
           node --check js/dashboard-v2-init.js
           node --check js/web-sidebar-v2.js
-          node --check js/dashboard-mobile-v4.js
-          node --check js/dashboard-mobile-v4-polish.js
-          node --check js/dashboard-mobile-v6-quality.js
-          node --check js/dashboard-mobile-v4-hotfix.js
-          node --check js/dashboard-mobile-state-v3.js
-          node --check js/dashboard-card-count-fix.js
           node --check js/role-ui-hardening.js
-          node --check js/dashboard-today-cleanup.js
           node --check js/excel-visual-fidelity.js
           node --check js/excel-visual-fidelity-v3.js
           node --check js/akademik-takvim.js
@@ -139,16 +124,12 @@ jobs:
           node --check js/proje-degerlendirme.js
           node --check optik/js/app.js
           node --check optik/js/disaAktar.js
-      - name: Mobil rol bazlı dashboard v6 regresyon testi
-        run: node tests/mobile-role-dashboard-v6-smoke.test.js
+      - name: Temiz mobil ana sayfa testi
+        run: node tests/dashboard-home-smoke.test.js
       - name: Web responsive regresyon testi
         run: node tests/web-responsive-smoke.test.js
       - name: Web sidebar v2 regresyon testi
         run: node tests/web-sidebar-v2-smoke.test.js
-      - name: Ana sayfa v4 regresyon testi
-        run: node tests/dashboard-mobile-v4-smoke.test.js
-      - name: Mobil dashboard durum v3 regresyon testi
-        run: node tests/dashboard-mobile-state-v3-smoke.test.js
       - name: Merkezi özellik kataloğu regresyon testi
         run: node tests/feature-catalog-smoke.test.js
       - name: Navigasyon özelleştirme regresyon testi
