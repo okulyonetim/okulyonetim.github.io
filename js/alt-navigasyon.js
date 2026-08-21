@@ -11,6 +11,17 @@
     s.addEventListener('load',function(){ s.dataset.loaded='1'; if(sonra) sonra(); },{once:true});
     document.head.appendChild(s);
   }
+  function stilYukle(href,attr){
+    if(document.querySelector('link['+attr+']')) return;
+    var l=document.createElement('link');
+    l.rel='stylesheet';
+    l.href=href;
+    l.setAttribute(attr,'1');
+    document.head.appendChild(l);
+  }
+
+  /* Alt navigasyonun davranışını değiştirmeden ortak görsel tema uygulanır. */
+  stilYukle('css/alt-navigation-theme.css?v=1','data-alt-nav-theme');
 
   /* Bu dosya index.html tarafindan dogrudan yuklenir. Navigasyon cekirdegi
      ilk sirada, dashboard/stabilite zinciri ise hemen ardindan baslatilir. */
