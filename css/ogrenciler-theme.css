@@ -1,0 +1,52 @@
+/* Koruk Asistan — Öğrenciler sayfası tema v1 */
+#tab-ogrenciler{color:var(--ap-text);background:var(--ap-bg)!important}
+#tab-ogrenciler .page-title{padding-left:0!important;font-family:Manrope,Inter,system-ui,sans-serif;font-size:22px;font-weight:900;letter-spacing:-.025em;color:var(--ap-text)}
+#tab-ogrenciler .page-title::before{display:none!important}
+#tab-ogrenciler .page-sub,#tab-ogrenciler #ogrencilerOzet{color:var(--ap-muted)!important}
+#tab-ogrenciler .card{background:var(--ap-card)!important;border:1px solid var(--ap-line)!important;border-radius:20px!important;box-shadow:var(--ap-shadow)!important}
+#tab-ogrenciler input,#tab-ogrenciler select{min-height:44px!important;background:var(--ap-soft)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important;border-radius:13px!important;box-shadow:none!important;padding:9px 12px!important}
+#tab-ogrenciler input:focus,#tab-ogrenciler select:focus{outline:none!important;border-color:color-mix(in srgb,var(--ap-accent) 55%,var(--ap-line))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ap-accent) 10%,transparent)!important}
+#tab-ogrenciler .btn{min-height:38px!important;padding:8px 13px!important;border-radius:12px!important;border:1px solid var(--ap-line)!important;box-shadow:none!important;font-weight:850!important;white-space:nowrap!important}
+#tab-ogrenciler .btn-ghost{background:var(--ap-card)!important;color:var(--ap-text)!important}
+#tab-ogrenciler .btn-amber,#tab-ogrenciler .btn-primary{background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border-color:rgba(101,69,199,.25)!important}
+#tab-ogrenciler #ogrencilerListe>.card{padding:0!important;overflow:hidden!important;margin-bottom:12px!important}
+#tab-ogrenciler #ogrencilerListe>.card>h3{margin:0!important;padding:12px 13px!important;background:var(--ap-soft)!important;border-bottom:1px solid var(--ap-line)!important;color:var(--ap-text)!important;font-size:13px!important;font-weight:900!important}
+#tab-ogrenciler #ogrencilerListe .detay-row{padding:12px 13px!important;border-bottom:1px solid var(--ap-line)!important;color:var(--ap-text)!important;background:var(--ap-card)!important}
+#tab-ogrenciler #ogrencilerListe .detay-row:last-child{border-bottom:0!important}
+#tab-ogrenciler #ogrencilerListe .detay-row strong{font-size:13px!important;color:var(--ap-text)!important}
+#tab-ogrenciler #ogrencilerListe .detay-row-muted{color:var(--ap-muted)!important}
+
+/* Öğrenci ekle/düzenle/görüntüle modalı */
+#modalOverlay.ap-ogrenci-modal{background:rgba(9,19,29,.58)!important;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+#modalOverlay.ap-ogrenci-modal .modal{width:min(580px,calc(100vw - 24px))!important;max-height:min(88vh,800px)!important;overflow-y:auto!important;background:var(--ap-card)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important;border-radius:24px!important;box-shadow:0 24px 70px rgba(9,19,29,.24)!important;padding:0!important}
+#modalOverlay.ap-ogrenci-modal #modalTitle{position:sticky;top:0;z-index:3;margin:0!important;padding:18px 20px 15px!important;background:color-mix(in srgb,var(--ap-card) 96%,transparent)!important;border-bottom:1px solid var(--ap-line)!important;color:var(--ap-text)!important;font-size:18px!important;font-weight:900!important;backdrop-filter:blur(14px)}
+#modalOverlay.ap-ogrenci-modal #modalBody{padding:18px 20px 8px!important}
+#modalOverlay.ap-ogrenci-modal .form-group{margin-bottom:14px!important}
+#modalOverlay.ap-ogrenci-modal label{display:block!important;margin-bottom:6px!important;color:var(--ap-muted)!important;font-size:10.5px!important;font-weight:850!important}
+#modalOverlay.ap-ogrenci-modal input,#modalOverlay.ap-ogrenci-modal select,#modalOverlay.ap-ogrenci-modal textarea{width:100%!important;min-height:44px!important;box-sizing:border-box!important;background:var(--ap-soft)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important;border-radius:13px!important;box-shadow:none!important;padding:10px 12px!important}
+#modalOverlay.ap-ogrenci-modal textarea{min-height:88px!important}
+#modalOverlay.ap-ogrenci-modal .modal-actions{position:sticky;bottom:0;z-index:4;display:flex!important;gap:8px!important;align-items:center!important;padding:13px 20px!important;margin:0!important;background:color-mix(in srgb,var(--ap-card) 97%,transparent)!important;border-top:1px solid var(--ap-line)!important;backdrop-filter:blur(14px)}
+#modalOverlay.ap-ogrenci-modal .modal-actions .btn{min-height:40px!important;border-radius:12px!important;font-size:12px!important;font-weight:850!important;padding:9px 15px!important}
+#modalOverlay.ap-ogrenci-modal .modal-actions .btn-primary{background:linear-gradient(145deg,#7455c5,#6545c7)!important;color:#fff!important;border:1px solid rgba(101,69,199,.24)!important}
+#modalOverlay.ap-ogrenci-modal .modal-actions .btn-ghost{background:var(--ap-soft)!important;color:var(--ap-text)!important;border:1px solid var(--ap-line)!important}
+#modalOverlay.ap-ogrenci-modal .modal-actions .btn-danger{background:#fff0f2!important;color:#c63d4d!important;border:1px solid #f1cbd1!important}
+[data-theme="dark"] #modalOverlay.ap-ogrenci-modal .modal-actions .btn-danger{background:#402028!important;color:#ff8996!important;border-color:#6a3440!important}
+
+@media(max-width:1023px){
+  #tab-ogrenciler{margin:0!important;padding:14px 12px calc(96px + env(safe-area-inset-bottom,0px))!important;min-height:100vh}
+  #tab-ogrenciler .page-header{display:flex!important;align-items:flex-start!important;gap:10px!important;margin-bottom:14px!important}
+  #tab-ogrenciler .page-header-actions{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  #tab-ogrenciler .page-header-actions .btn{width:100%!important;margin:0!important;min-height:42px!important;font-size:10.5px!important;white-space:normal!important}
+  #tab-ogrenciler .card{padding:12px!important}
+  #tab-ogrenciler #ogrencilerListe>.card{padding:0!important}
+  #tab-ogrenciler .detay-row{min-height:62px!important}
+
+  /* Alt navigasyon güvenliği: modal kartı ve işlem satırı barın üstünde biter. */
+  #modalOverlay.ap-ogrenci-modal{align-items:flex-end!important;padding:0 0 calc(64px + env(safe-area-inset-bottom,0px))!important}
+  #modalOverlay.ap-ogrenci-modal .modal{width:100%!important;max-height:calc(100dvh - 64px - env(safe-area-inset-bottom,0px))!important;border-radius:24px 24px 0 0!important;border-bottom:0!important}
+  #modalOverlay.ap-ogrenci-modal #modalBody{padding:16px 16px 14px!important}
+  #modalOverlay.ap-ogrenci-modal .modal-actions{bottom:0!important;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))!important;flex-wrap:wrap!important}
+  #modalOverlay.ap-ogrenci-modal .modal-actions .btn{flex:1 1 auto!important}
+  #modalOverlay.ap-ogrenci-modal .modal-actions #modalSilBtn{flex:0 0 auto!important;margin-right:auto!important}
+}
+@media(max-width:380px){#tab-ogrenciler .page-header-actions{grid-template-columns:1fr!important}}
