@@ -1,0 +1,394 @@
+/* Koruk Asistan — Taşıma + Servis Oturma Planı tema katmanı v1
+   Yalnızca görünüm. Veri, modal açma/kapatma ve servis oturma işlevlerine dokunmaz. */
+
+:root{
+  --to-bg:#f5f6f8;
+  --to-surface:#ffffff;
+  --to-surface-soft:#f8fafc;
+  --to-text:#111827;
+  --to-muted:#667085;
+  --to-line:#e4e8ef;
+  --to-line-strong:#d5dbe5;
+  --to-accent:#6545c7;
+  --to-accent-soft:#f1edff;
+  --to-green:#158a66;
+  --to-green-soft:#e9f7f1;
+  --to-amber:#c87410;
+  --to-amber-soft:#fff4e3;
+  --to-blue:#2f74c8;
+  --to-blue-soft:#edf5ff;
+  --to-rose:#c94f73;
+  --to-rose-soft:#fff0f4;
+  --to-shadow:0 10px 28px rgba(31,41,55,.08);
+}
+[data-theme="dark"]{
+  --to-bg:#09131d;
+  --to-surface:#111f2d;
+  --to-surface-soft:#172838;
+  --to-text:#f7f9fc;
+  --to-muted:#b4c0cc;
+  --to-line:#294053;
+  --to-line-strong:#35516a;
+  --to-accent:#b29cf4;
+  --to-accent-soft:#241d3b;
+  --to-green:#70dcb5;
+  --to-green-soft:#153a2e;
+  --to-amber:#ffc57d;
+  --to-amber-soft:#3c2c18;
+  --to-blue:#8dc3ff;
+  --to-blue-soft:#172f4b;
+  --to-rose:#ff9ab3;
+  --to-rose-soft:#422431;
+  --to-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+
+/* ===================== TAŞIMA ANA SAYFASI ===================== */
+#tab-tasima{
+  color:var(--to-text);
+}
+#tab-tasima .page-header{
+  gap:12px;
+  align-items:flex-start;
+  margin-bottom:16px;
+}
+#tab-tasima .page-title{
+  color:var(--to-text);
+  font-weight:850;
+  letter-spacing:-.02em;
+}
+#tab-tasima .page-sub{color:var(--to-muted)}
+#tab-tasima .page-header-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+#tab-tasima .page-header-actions .btn,
+#tab-tasima > div > .filtre-btn,
+#tab-tasima [data-tasima-sekme],
+#tab-tasima [data-f]{
+  min-height:40px;
+  border-radius:13px!important;
+  border:1px solid var(--to-line)!important;
+  background:var(--to-surface)!important;
+  color:var(--to-text)!important;
+  box-shadow:none!important;
+  font-weight:750!important;
+}
+#tab-tasima .page-header-actions .btn-amber{
+  background:var(--to-accent)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 7px 16px color-mix(in srgb,var(--to-accent) 22%,transparent)!important;
+}
+#tab-tasima [data-tasima-sekme].active,
+#tab-tasima [data-f].active{
+  background:var(--to-accent-soft)!important;
+  color:var(--to-accent)!important;
+  border-color:color-mix(in srgb,var(--to-accent) 30%,var(--to-line))!important;
+}
+
+#tasima-bolum-servisler>.card,
+#tasima-bolum-oturma>.card{
+  background:var(--to-surface)!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:20px!important;
+  box-shadow:var(--to-shadow)!important;
+  padding:14px!important;
+}
+#tasima-bolum-oturma>.card>p{color:var(--to-muted)!important}
+
+#servislerListesi,
+#oturmaServislerListesi{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+#servislerListesi .evrak-row,
+#oturmaServislerListesi .evrak-row{
+  margin:0!important;
+  padding:14px!important;
+  border-radius:16px!important;
+  border:1px solid var(--to-line)!important;
+  background:var(--to-surface-soft)!important;
+  box-shadow:none!important;
+  min-height:76px;
+  gap:10px;
+  transition:transform .14s ease,border-color .16s ease,background .16s ease;
+}
+#servislerListesi .evrak-row:active,
+#oturmaServislerListesi .evrak-row:active{
+  transform:scale(.992);
+  border-color:color-mix(in srgb,var(--to-accent) 28%,var(--to-line))!important;
+}
+#servislerListesi .evrak-title,
+#oturmaServislerListesi .evrak-title{
+  color:var(--to-text)!important;
+  font-weight:850!important;
+  line-height:1.35;
+}
+#servislerListesi .evrak-meta,
+#oturmaServislerListesi .evrak-meta{
+  color:var(--to-muted)!important;
+  line-height:1.55!important;
+  margin-top:4px;
+}
+#servislerListesi .evrak-row>.btn,
+#oturmaServislerListesi .evrak-row>.btn{
+  flex:0 0 auto;
+  min-width:78px;
+  min-height:38px;
+  padding:8px 12px!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:12px!important;
+  background:var(--to-surface)!important;
+  color:var(--to-accent)!important;
+  font-weight:800!important;
+  white-space:nowrap;
+}
+
+/* ===================== SERVİS DETAY PANELİ ===================== */
+#detayOverlay .detay-panel:has(.btn-takip-cizelge),
+#detayOverlay .detay-panel:has([onclick*="servisOgrenciEkleModalAc"]),
+#detayOverlay .detay-panel:has([onclick*="TasimaTakipAc"]){
+  background:var(--to-bg)!important;
+  color:var(--to-text)!important;
+}
+#detayOverlay .detay-panel:has([onclick*="servisOgrenciEkleModalAc"]) .detay-head,
+#detayOverlay .detay-panel:has([onclick*="TasimaTakipAc"]) .detay-head{
+  background:var(--to-surface)!important;
+  border-bottom:1px solid var(--to-line)!important;
+}
+#detayOverlay .detay-panel:has([onclick*="servisOgrenciEkleModalAc"]) .detay-card,
+#detayOverlay .detay-panel:has([onclick*="TasimaTakipAc"]) .detay-card{
+  background:var(--to-surface)!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:18px!important;
+  box-shadow:var(--to-shadow)!important;
+  padding:14px!important;
+}
+#detayOverlay .detay-panel:has([onclick*="servisOgrenciEkleModalAc"]) .detay-row,
+#detayOverlay .detay-panel:has([onclick*="TasimaTakipAc"]) .detay-row{
+  border-color:var(--to-line)!important;
+  color:var(--to-text)!important;
+}
+#detayOverlay .detay-panel:has([onclick*="servisOgrenciEkleModalAc"]) .btn,
+#detayOverlay .detay-panel:has([onclick*="TasimaTakipAc"]) .btn,
+#detayOverlay .detay-panel:has([onclick*="TasimaTakipAc"]) .btn-takip-cizelge,
+#detayOverlay .detay-panel:has([onclick*="TasimaTakipAc"]) .btn-denetim-formu{
+  min-height:38px;
+  border-radius:12px!important;
+}
+
+/* ===================== TAŞIMA MODALLARI ===================== */
+/* Bu seçiciler var olan alan ID'lerini kullanır; JS bootstrap/observer eklenmez. */
+#modalOverlay:has(#f_svAd),
+#modalOverlay:has(#sv_sinifSec),
+#modalOverlay:has(#sv_excelDosya),
+#modalOverlay:has(#sv_lb_baslik),
+#modalOverlay:has(.so-modal-wrap){
+  background:rgba(10,18,28,.46)!important;
+}
+#modalOverlay:has(#f_svAd) .modal,
+#modalOverlay:has(#sv_sinifSec) .modal,
+#modalOverlay:has(#sv_excelDosya) .modal,
+#modalOverlay:has(#sv_lb_baslik) .modal,
+#modalOverlay:has(.so-modal-wrap) .modal{
+  background:var(--to-surface)!important;
+  color:var(--to-text)!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:22px!important;
+  box-shadow:0 22px 60px rgba(15,23,42,.22)!important;
+}
+#modalOverlay:has(#f_svAd) #modalTitle,
+#modalOverlay:has(#sv_sinifSec) #modalTitle,
+#modalOverlay:has(#sv_excelDosya) #modalTitle,
+#modalOverlay:has(#sv_lb_baslik) #modalTitle,
+#modalOverlay:has(.so-modal-wrap) #modalTitle{
+  color:var(--to-text)!important;
+  font-weight:850!important;
+  letter-spacing:-.015em;
+}
+#modalOverlay:has(#f_svAd) input,
+#modalOverlay:has(#f_svAd) select,
+#modalOverlay:has(#f_svAd) textarea,
+#modalOverlay:has(#sv_sinifSec) input,
+#modalOverlay:has(#sv_sinifSec) select,
+#modalOverlay:has(#sv_excelDosya) input,
+#modalOverlay:has(#sv_lb_baslik) input,
+#modalOverlay:has(.so-modal-wrap) input,
+#modalOverlay:has(.so-modal-wrap) select,
+#modalOverlay:has(.so-modal-wrap) textarea{
+  background:var(--to-surface-soft)!important;
+  color:var(--to-text)!important;
+  border:1px solid var(--to-line-strong)!important;
+  border-radius:12px!important;
+  min-height:42px;
+  box-shadow:none!important;
+}
+#modalOverlay:has(#f_svAd) input:focus,
+#modalOverlay:has(#f_svAd) select:focus,
+#modalOverlay:has(#f_svAd) textarea:focus,
+#modalOverlay:has(.so-modal-wrap) input:focus,
+#modalOverlay:has(.so-modal-wrap) select:focus,
+#modalOverlay:has(.so-modal-wrap) textarea:focus{
+  outline:none!important;
+  border-color:var(--to-accent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--to-accent) 13%,transparent)!important;
+}
+#modalOverlay:has(#f_svAd) .modal-actions,
+#modalOverlay:has(#sv_sinifSec) .modal-actions,
+#modalOverlay:has(#sv_excelDosya) .modal-actions,
+#modalOverlay:has(#sv_lb_baslik) .modal-actions,
+#modalOverlay:has(.so-modal-wrap) .modal-actions{
+  background:var(--to-surface)!important;
+  border-top:1px solid var(--to-line)!important;
+}
+#modalOverlay:has(#f_svAd) .modal-actions .btn,
+#modalOverlay:has(#sv_sinifSec) .modal-actions .btn,
+#modalOverlay:has(#sv_excelDosya) .modal-actions .btn,
+#modalOverlay:has(#sv_lb_baslik) .modal-actions .btn,
+#modalOverlay:has(.so-modal-wrap) .modal-actions .btn{
+  min-height:42px;
+  border-radius:12px!important;
+  padding:9px 14px!important;
+  font-weight:800!important;
+}
+#modalOverlay:has(#f_svAd) #modalKaydetBtn,
+#modalOverlay:has(#sv_sinifSec) #modalKaydetBtn,
+#modalOverlay:has(#sv_excelDosya) #modalKaydetBtn,
+#modalOverlay:has(#sv_lb_baslik) #modalKaydetBtn,
+#modalOverlay:has(.so-modal-wrap) #modalKaydetBtn{
+  background:var(--to-accent)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+}
+
+/* ===================== OTURMA PLANI MODALI ===================== */
+.so-modal-wrap{color:var(--to-text)}
+.so-sablon-grup,
+.so-alt-panel,
+#soDuzenleToolbar{
+  background:var(--to-surface-soft)!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:16px!important;
+}
+.so-sablon-label{color:var(--to-muted)!important;font-weight:800!important}
+.so-sablon-btnler{gap:8px!important}
+.so-sablon-btn{
+  background:var(--to-surface)!important;
+  color:var(--to-text)!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+  min-height:78px;
+}
+.so-sablon-btn small{color:var(--to-muted)!important}
+.so-sablon-btn.so-sablon-aktif{
+  background:var(--to-accent-soft)!important;
+  border-color:color-mix(in srgb,var(--to-accent) 42%,var(--to-line))!important;
+  color:var(--to-accent)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--to-accent) 10%,transparent)!important;
+}
+.so-duzenle-satir .btn,
+.so-alt-butonlar .btn,
+#soDuzenleToolbar .btn{
+  min-height:38px;
+  border-radius:12px!important;
+  border:1px solid var(--to-line)!important;
+  background:var(--to-surface)!important;
+  color:var(--to-text)!important;
+}
+.so-arac-wrap{
+  background:linear-gradient(180deg,var(--to-surface-soft),var(--to-surface))!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:20px!important;
+  padding:14px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+}
+#soAracSemasi{margin-inline:auto}
+.sye-legend-kart{
+  background:var(--to-surface)!important;
+  border:1px solid var(--to-line)!important;
+  border-radius:13px!important;
+}
+.sye-legend-satir{color:var(--to-muted)!important}
+.sye-koltuk{
+  border-radius:11px!important;
+  transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease!important;
+}
+.sye-koltuk:active{transform:scale(.96)}
+.sye-bos{background:var(--to-surface)!important;border-color:var(--to-line-strong)!important}
+.sye-dolu{background:var(--to-blue-soft)!important;border-color:color-mix(in srgb,var(--to-blue) 55%,var(--to-line))!important}
+.sye-rezerve{background:var(--to-amber-soft)!important;border-color:color-mix(in srgb,var(--to-amber) 55%,var(--to-line))!important}
+.sye-kilitli{filter:saturate(.75);opacity:.78}
+.sye-badge{background:var(--to-accent)!important;color:#fff!important}
+.sye-avatar{background:var(--to-blue)!important;color:#fff!important}
+.sye-k-ad{color:var(--to-text)!important}
+.so-koltuk-panel{
+  background:var(--to-surface)!important;
+  color:var(--to-text)!important;
+  border:1px solid var(--to-line)!important;
+  box-shadow:0 18px 54px rgba(15,23,42,.28)!important;
+}
+.so-koltuk-panel input,
+.so-koltuk-panel select,
+.so-koltuk-panel textarea{
+  background:var(--to-surface-soft)!important;
+  color:var(--to-text)!important;
+  border:1px solid var(--to-line-strong)!important;
+  border-radius:11px!important;
+}
+
+/* ===================== MOBİL / ALT NAV GÜVENLİĞİ ===================== */
+@media (max-width:1023px){
+  #tab-tasima{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  #tab-tasima .page-header{display:flex!important;flex-direction:column!important}
+  #tab-tasima .page-header-actions{width:100%;justify-content:stretch}
+  #tab-tasima .page-header-actions .btn{flex:1 1 145px}
+  #tasima-bolum-servisler>.card,
+  #tasima-bolum-oturma>.card{padding:10px!important;border-radius:18px!important}
+  #servislerListesi .evrak-row,
+  #oturmaServislerListesi .evrak-row{align-items:flex-start!important;padding:13px!important}
+  #servislerListesi .evrak-row>.btn,
+  #oturmaServislerListesi .evrak-row>.btn{min-width:76px!important}
+
+  /* Sadece taşıma/oturma modalları; mevcut modal aç/kapat mantığına dokunmaz. */
+  #modalOverlay:has(#f_svAd),
+  #modalOverlay:has(#sv_sinifSec),
+  #modalOverlay:has(#sv_excelDosya),
+  #modalOverlay:has(#sv_lb_baslik),
+  #modalOverlay:has(.so-modal-wrap){
+    align-items:flex-end!important;
+    padding:0 0 calc(64px + env(safe-area-inset-bottom))!important;
+  }
+  #modalOverlay:has(#f_svAd) .modal,
+  #modalOverlay:has(#sv_sinifSec) .modal,
+  #modalOverlay:has(#sv_excelDosya) .modal,
+  #modalOverlay:has(#sv_lb_baslik) .modal,
+  #modalOverlay:has(.so-modal-wrap) .modal{
+    width:100%!important;
+    max-width:none!important;
+    max-height:calc(100dvh - 76px - env(safe-area-inset-bottom))!important;
+    border-radius:22px 22px 0 0!important;
+    overflow:auto!important;
+    overscroll-behavior:contain;
+  }
+  #modalOverlay:has(.so-modal-wrap) .modal{max-height:calc(100dvh - 70px - env(safe-area-inset-bottom))!important}
+  #modalOverlay:has(#f_svAd) .modal-actions,
+  #modalOverlay:has(#sv_sinifSec) .modal-actions,
+  #modalOverlay:has(#sv_excelDosya) .modal-actions,
+  #modalOverlay:has(#sv_lb_baslik) .modal-actions,
+  #modalOverlay:has(.so-modal-wrap) .modal-actions{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:3!important;
+    padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+  }
+  #modalOverlay:has(.so-modal-wrap) #modalBody{overflow:visible!important}
+  .so-sablon-btnler{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .so-alt-panel{gap:10px!important;align-items:stretch!important}
+  .so-alt-butonlar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .so-arac-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  .so-koltuk-panel-overlay{padding-bottom:calc(64px + env(safe-area-inset-bottom))!important}
+}
