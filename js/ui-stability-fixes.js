@@ -29,6 +29,9 @@ if(mobilDashboard){
   /* Android WebView dashboard DOM'u yeniden çizdiğinde hero kaynaklarını
      yeniden üretir; normal web/PWA'da kendi kendine devre dışı kalır. */
   scriptYukle('js/android-dashboard-hero-fix.js','android-dashboard-hero-fix');
+  /* En son tek v6 kabuğunu görünür bırak: eski dashboard'un tekrar
+     render edilmesi halinde dahi kullanıcı çift ana sayfa görmez. */
+  scriptYukle('js/dashboard-v6-single-shell-hotfix.js','dashboard-v6-single-shell-hotfix');
 }
 
 let sarildi=false,deneme=0;
