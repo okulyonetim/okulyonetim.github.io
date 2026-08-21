@@ -1,6 +1,6 @@
-/* Koruk Asistan — global modal interaction fix v1
-   Modal açıkken gövde kaydırması kilitli kalır; ancak touch-action:none
-   alt navigasyon ve modal içi etkileşimleri bloke etmez. */
+/* Koruk Asistan — global modal interaction fix v2
+   Mobilde modal/detay katmanlari alt navigasyon alanina girmez.
+   Alt navigasyon her zaman gorunur ve tiklanabilir kalir. */
 body.modal-open{
   overflow:hidden!important;
   touch-action:auto!important;
@@ -10,11 +10,33 @@ body.modal-open .bottom-nav{
   touch-action:manipulation!important;
   visibility:visible!important;
   opacity:1!important;
-  z-index:9900!important;
+  z-index:2147483000!important;
 }
 body.modal-open .modal-overlay,
 body.modal-open .modal,
 body.modal-open .detay-overlay,
 body.modal-open .detay-panel{
+  touch-action:manipulation!important;
+}
+body.modal-open .modal,
+body.modal-open .detay-panel{
   touch-action:pan-y!important;
+}
+@media(max-width:1023px){
+  body.modal-open .modal-overlay,
+  body.modal-open .detay-overlay{
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    bottom:calc(var(--bottom-nav-h,64px) + env(safe-area-inset-bottom,0px))!important;
+    height:auto!important;
+    max-height:calc(100dvh - var(--bottom-nav-h,64px) - env(safe-area-inset-bottom,0px))!important;
+  }
+  body.modal-open .modal{
+    max-height:calc(100dvh - var(--bottom-nav-h,64px) - env(safe-area-inset-bottom,0px) - 8px)!important;
+  }
+  body.modal-open .detay-panel{
+    height:100%!important;
+    max-height:100%!important;
+  }
 }
