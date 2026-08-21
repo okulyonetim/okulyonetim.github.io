@@ -4,7 +4,7 @@ const assert = require('assert');
 const src = fs.readFileSync('js/dashboard-mobile-v4.js', 'utf8');
 
 assert(src.includes('Mobil Rol Bazlı Ana Sayfa v6'), 'Mobil rol bazlı dashboard v6 imzası bulunmalı.');
-assert(src.includes('window.innerWidth>=1024'), 'Yeni dashboard yalnızca 1024px altındaki mobil/tablet görünümde çalışmalı.');
+assert(src.includes("matchMedia('(min-width: 1024px)')") || src.includes('matchMedia("(min-width: 1024px)")'), 'Yeni dashboard yalnızca 1024px altındaki mobil/tablet görünümde çalışmalı.');
 assert(src.includes('function isAdmin()'), 'Admin ve öğretmen ayrımı bulunmalı.');
 assert(src.includes('adminSections'), 'Admin ana sayfa bölümleri bulunmalı.');
 assert(src.includes('teacherSections'), 'Öğretmen ana sayfa bölümleri bulunmalı.');
@@ -22,7 +22,7 @@ assert(src.includes('nobetciAmir') || src.includes('Nöbetçi Amir'), 'Nöbetçi
 assert(src.includes('Yaklaşan Yazılı Sınavlar'), 'Admin yaklaşan yazılı sınavları bulunmalı.');
 assert(src.includes('Şu Anki Dersler'), 'Admin anlık ders görünümü bulunmalı.');
 
-assert(src.includes('Dersim ve Bu Haftanın Kazanımları') || src.includes('Öğrenme Çıktıları'), 'Öğretmen haftalık kazanım/öğrenme çıktısı alanı bulunmalı.');
+assert(src.includes('Dersim ve Bu Haftanın Kazanımları') || src.includes('Öğrenme Çıktıları') || src.includes('ÖĞRENME ÇIKTILARI'), 'Öğretmen haftalık kazanım/öğrenme çıktısı alanı bulunmalı.');
 assert(src.includes('yillikPlanHaftaAc'), 'Bugünkü derslerden yıllık planın güncel haftasına geçiş bulunmalı.');
 assert(src.includes('Bugünkü Derslerim'), 'Öğretmen günlük ders listesi bulunmalı.');
 assert(src.includes('Nöbet defterini doldurdum'), 'Öğretmen nöbet defteri kontrol kutusu bulunmalı.');
