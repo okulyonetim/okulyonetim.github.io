@@ -1,6 +1,16 @@
 name: Frontend Smoke Tests
 
 on:
+  push:
+    branches: ['main']
+    paths:
+      - 'service-worker.js'
+      - 'css/dashboard-home.css'
+      - 'js/ui-stability-fixes.js'
+      - 'js/dashboard-home.js'
+      - 'tests/dashboard-home-smoke.test.js'
+      - 'tests/service-worker-precache-smoke.test.js'
+      - '.github/workflows/frontend-smoke.yml'
   pull_request:
     paths:
       - 'index.html'
