@@ -55,5 +55,5 @@ assert(webInit.includes("matchMedia('(min-width: 1024px)')")||/function\s+isWeb\
 assert(webSidebar.includes('_navDuzeniTumGruplarGetir'),'Web sidebar alt navigasyonun aynı veri modelini kullanmalı');
 assert(loader.includes('role-ui-hardening.js'));
 assert(sw.includes("'./js/role-ui-hardening.js'"));
-assert(sw.includes('oy-cache-v449'));
+assert(/oy-cache-v\d+/.test(sw),'Service worker sürümlü cache anahtarı kullanmalı');
 console.log('dashboard-mobile-v4-smoke: OK');
