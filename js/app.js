@@ -640,6 +640,10 @@ function hataGoster(err){ console.error(err); toast('Veri hatası: '+err.message
 let _pullToRefreshDerinlik = 0;
 let _pullToRefreshBekleyenZamanlayici = null;
 function _pullToRefreshAyarla(enabled){
+  /* Tarayıcıda (Capacitor olmadan) bu fonksiyon hiçbir şey yapmamalı —
+     yoksa setTimeout zinciri event loop'u bloke ederek sayfayı donduruyordu. */
+  var _nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(!_nativeMi) return;
   if(enabled){
     _pullToRefreshDerinlik = Math.max(0, _pullToRefreshDerinlik - 1);
   } else {
@@ -660,13 +664,24 @@ function _pullToRefreshAyarla(enabled){
     _pullToRefreshBekleyenZamanlayici = null;
     _pullToRefreshNativeGonder(_pullToRefreshDerinlik === 0);
   }, 0);
+  /* DÜZELTME: setTimeout bloke olursa bile native'e doğrudan gönder */
+  _pullToRefreshNativeGonder(_pullToRefreshDerinlik === 0);
 }
 function _pullToRefreshNativeGonder(enabled){
+  /* DÜZELTME: Capacitor köprüsü tarayıcıda çağrıldığında event loop'u
+     bloke ediyordu. Sadece gerçek native ortamda çağır. */
   try{
-    if(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()
-       && window.Capacitor.Plugins && window.Capacitor.Plugins.PullToRefreshPlugin){
-      window.Capacitor.Plugins.PullToRefreshPlugin.setEnabled({ enabled });
-    }
+    if(!window.Capacitor) return;
+    if(!window.Capacitor.isNativePlatform) return;
+    if(!window.Capacitor.isNativePlatform()) return;
+    if(!window.Capacitor.Plugins) return;
+    if(!window.Capacitor.Plugins.PullToRefreshPlugin) return;
+    /* Promise olarak çağır — cevabı bekleme */
+    Promise.resolve().then(function(){
+      try{
+        window.Capacitor.Plugins.PullToRefreshPlugin.setEnabled({ enabled });
+      }catch(e){}
+    });
   }catch(e){}
 }
 /* DÜZELTME (kök sebep — "sayfa yenileme bazen hiç çalışmıyor, uygulamayı
@@ -683,6 +698,8 @@ function _pullToRefreshNativeGonder(enabled){
    zorlamak (tek tek her aracı ayrı ayrı bu listeye eklemek yerine) genel
    ve kalıcı bir çözüm — bkz. çağrı noktası: _ustPanelleriKapat(). */
 function _pullToRefreshZorlaSifirla(){
+  var _nativeMi = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(!_nativeMi) return;
   _pullToRefreshDerinlik = 0;
   if(_pullToRefreshBekleyenZamanlayici) clearTimeout(_pullToRefreshBekleyenZamanlayici);
   _pullToRefreshBekleyenZamanlayici = setTimeout(()=>{
