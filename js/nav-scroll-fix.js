@@ -1,28 +1,23 @@
-/* Koruk Asistan — akordeon navigasyon tam ekran + scroll düzeltmesi v4 */
+/* Koruk Asistan — akordeon navigasyon tam ekran + scroll düzeltmesi v5 */
 (function(){
 'use strict';
 function cssKur(){
-  if(document.getElementById('an-scroll-fix-v4')) return;
+  if(document.getElementById('an-scroll-fix-v5')) return;
   const s=document.createElement('style');
-  s.id='an-scroll-fix-v4';
+  s.id='an-scroll-fix-v5';
   s.textContent=`
-    /* Mobilde açılan navigasyon katmanları alt navigasyonun ÜSTÜNDE biter.
-       Alt navigasyon her zaman görünür ve tıklanabilir kalır. */
+    /* Mobil menü geometrisi eski çalışan tam ekran yapıda kalır. */
     .an-grid-katman,
     .an-liste-katman,
     .an-profil-katman{
       position:fixed !important;
-      top:0 !important;
-      right:0 !important;
-      bottom:calc(72px + env(safe-area-inset-bottom, 0px)) !important;
-      left:0 !important;
-      inset:auto !important;
+      inset:0 !important;
       width:100vw !important;
-      height:auto !important;
+      height:100dvh !important;
       max-width:none !important;
       max-height:none !important;
       border-radius:0 !important;
-      z-index:9600 !important; /* bottom-nav 9700'ün altında */
+      z-index:9800 !important;
       min-height:0 !important;
     }
     .an-liste-katman{
@@ -47,15 +42,15 @@ function cssKur(){
       overscroll-behavior-y:contain !important;
       touch-action:pan-y !important;
       scrollbar-gutter:stable;
-      padding-bottom:24px !important;
+      padding-bottom:max(96px,calc(72px + env(safe-area-inset-bottom,0px))) !important;
     }
-    /* Menü açıkken de ana alt navigasyon görünür/tıklanabilir kalmalı. */
+    /* Alt navigasyon menü açıkken de görünür ve tıklanabilir kalsın. */
     body.an-tam-ekran-nav-acik .bottom-nav,
     .bottom-nav{
       visibility:visible !important;
       opacity:1 !important;
       pointer-events:auto !important;
-      z-index:9700 !important;
+      z-index:9900 !important;
     }
     @media (min-width:1024px){
       .an-grid-katman,
@@ -73,7 +68,6 @@ function cssKur(){
       .an-grid-katman:not(.acik){ transform:translate(-50%,100vh) !important; }
       .an-liste-katman:not(.acik){ transform:translateX(calc(-50% + 100vw)) !important; }
       .an-profil-katman:not(.acik){ transform:translateX(calc(-50% - 100vw)) !important; }
-      body.an-tam-ekran-nav-acik .bottom-nav{ visibility:visible !important; opacity:1 !important; pointer-events:auto !important; }
     }
   `;
   document.head.appendChild(s);
