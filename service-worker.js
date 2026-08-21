@@ -27,7 +27,15 @@ const ONBELLEGE_ALINACAKLAR = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_ADI).then(cache => Promise.allSettled(ONBELLEGE_ALINACAKLAR.map(url => cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err)))));
+  event.waitUntil(
+    caches.open(CACHE_ADI).then(cache =>
+      Promise.allSettled(
+        ONBELLEGE_ALINACAKLAR.map(url =>
+          cache.add(url).catch(err => console.warn('[SW] Önbelleklenemedi:', url, err))
+        )
+      )
+    )
+  );
   self.skipWaiting();
 });
 self.addEventListener('activate', event => {
