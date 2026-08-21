@@ -22,7 +22,11 @@ const KontrolListeleriRepository = {
 
   /* ---- Öğretmenin kendi tamamlama durumu ---- */
   tamamlamaGetir(ogretmenId, listeId){
-    return db.collection(COL.kontrolListeTamamlama).doc(`${ogretmenId}_${listeId}`).get();
+    // cache-first: önce yerel cache'e bak, sunucuya gitme (ağ/permission sorunu olduğunda
+    // bu get() 10 saniye askıda kalarak tüm hatırlatma/kapanma akışını bloke ediyordu)
+    return db.collection(COL.kontrolListeTamamlama).doc(`${ogretmenId}_${listeId}`)
+      .get({ source: 'cache' })
+      .catch(() => db.collection(COL.kontrolListeTamamlama).doc(`${ogretmenId}_${listeId}`).get());
   },
   tamamlamaKaydet(ogretmenId, listeId, tamamlananMaddeIdler){
     return db.collection(COL.kontrolListeTamamlama).doc(`${ogretmenId}_${listeId}`)
