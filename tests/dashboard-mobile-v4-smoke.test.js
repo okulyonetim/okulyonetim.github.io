@@ -27,7 +27,8 @@ assert(v4.includes('@media(prefers-reduced-motion:reduce)'),'Hareket azaltma ter
 
 assert(polish.includes('oyDashboardV6Layout')&&polish.includes('Ana Sayfayı Düzenle'),'v6 ana sayfa kart sıralama/gizleme tercihi bulunmalı');
 assert(polish.includes('oyDashboardV6Quick')&&polish.includes('Hızlı İşlemleri Düzenle'),'v6 hızlı işlemler kişiselleştirilebilmeli');
-assert(polish.includes('QUICK_TEACHER')&&polish.includes('QUICK_ADMIN'),'Hızlı işlemler role göre ayrılmalı');
+assert(polish.includes('const QT=')&&polish.includes('const QA='),'Hızlı işlemler öğretmen ve admin için ayrı havuzlara sahip olmalı');
+assert(polish.includes("adminMi()?QA:QT"),'Aktif role göre doğru hızlı işlem havuzu seçilmeli');
 assert(polish.includes('hatirlatmalariTopla')&&polish.includes('Teslim Edilecek Evraklar'),'Öğretmen teslim evrakları ana sayfaya salt okunur taşınmalı');
 assert(!polish.includes('.bottom-nav'),'v6 polish alt navigasyon DOM yapısına müdahale etmemeli');
 assert(hotfix.includes("PREF_COL='oy_kullaniciTercihleri'"));
