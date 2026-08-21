@@ -27,7 +27,9 @@
      ilk sirada, dashboard/stabilite zinciri ise hemen ardindan baslatilir. */
   yukle('js/alt-navigasyon-core.js','data-alt-nav-core',function(){
     yukle('js/alt-navigation-list-theme.js?v=1','data-alt-nav-list-theme',function(){
-      yukle('js/ui-stability-fixes.js','data-ui-stability');
+      yukle('js/alt-navigation-settings-fix.js?v=1','data-alt-nav-settings-fix',function(){
+        yukle('js/ui-stability-fixes.js','data-ui-stability');
+      });
     });
   });
 })();
