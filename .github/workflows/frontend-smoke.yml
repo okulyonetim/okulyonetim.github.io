@@ -23,6 +23,7 @@ on:
       - 'js/web-sidebar-v2.js'
       - 'js/dashboard-mobile-v4.js'
       - 'js/dashboard-mobile-v4-polish.js'
+      - 'js/dashboard-mobile-v6-quality.js'
       - 'js/dashboard-mobile-v4-hotfix.js'
       - 'js/dashboard-mobile-state-v3.js'
       - 'js/dashboard-card-count-fix.js'
@@ -109,6 +110,7 @@ jobs:
           node --check js/web-sidebar-v2.js
           node --check js/dashboard-mobile-v4.js
           node --check js/dashboard-mobile-v4-polish.js
+          node --check js/dashboard-mobile-v6-quality.js
           node --check js/dashboard-mobile-v4-hotfix.js
           node --check js/dashboard-mobile-state-v3.js
           node --check js/dashboard-card-count-fix.js
