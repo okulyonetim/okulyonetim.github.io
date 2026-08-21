@@ -36,6 +36,7 @@ function mobilDashboardBaslat(){
   scriptYukle('js/dashboard-mobile-v6-quality.js','dashboard-mobile-v6-quality');
   scriptYukle('js/android-dashboard-hero-fix.js','android-dashboard-hero-fix');
   scriptYukle('js/dashboard-mobile-data-sync-v1.js','dashboard-mobile-data-sync-v1');
+  scriptYukle('js/dashboard-mobile-visual-v7.js','dashboard-mobile-visual-v7');
   return true;
 }
 if(mobilDashboard){
@@ -45,7 +46,6 @@ if(mobilDashboard){
   window.addEventListener('load',()=>setTimeout(mobilDashboardBaslat,100));
 }
 
-/* Rol/yetki sertleştirme tüm platformlarda çalışır. */
 scriptYukle('js/role-ui-hardening.js','role-ui-hardening');
 
 let sarildi=false,deneme=0;
