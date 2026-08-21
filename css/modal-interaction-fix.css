@@ -1,0 +1,20 @@
+/* Koruk Asistan — global modal interaction fix v1
+   Modal açıkken gövde kaydırması kilitli kalır; ancak touch-action:none
+   alt navigasyon ve modal içi etkileşimleri bloke etmez. */
+body.modal-open{
+  overflow:hidden!important;
+  touch-action:auto!important;
+}
+body.modal-open .bottom-nav{
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:9900!important;
+}
+body.modal-open .modal-overlay,
+body.modal-open .modal,
+body.modal-open .detay-overlay,
+body.modal-open .detay-panel{
+  touch-action:pan-y!important;
+}
