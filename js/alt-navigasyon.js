@@ -38,9 +38,8 @@
       yukle('js/ogretmenler-modern.js?v=2','data-ogretmenler-modern');
       yukle('js/ogretmen-detay-modern.js?v=3','data-ogretmen-detay-modern');
       yukle('js/ayarlar-modern.js?v=2','data-ayarlar-modern');
-      yukle('js/yazili-sinavlar-modern.js?v=4','data-yazili-sinavlar-modern',function(){
-        yukle('js/yazili-sinav-live-sync.js?v=1','data-yazili-sinav-live-sync');
-      });
+      yukle('js/yazili-sinavlar-modern.js?v=4','data-yazili-sinavlar-modern');
+      yukle('js/yazili-sinav-live-sync.js?v=1','data-yazili-sinav-live-sync');
       /* Android rapor akışı: gerçek A4 önizleme -> native PrintPlugin */
       yukle('js/native-report-preview.js?v=2','data-native-report-preview',function(){
         yukle('js/yazili-rapor-modern.js?v=1','data-yazili-rapor-modern');
@@ -48,7 +47,7 @@
       yukle('js/deneme-sayac-tarih-fix.js?v=2','data-deneme-sayac-tarih-fix',function(){
         yukle('js/deneme-sayac-runtime-v2.js?v=2','data-deneme-sayac-runtime-v2',function(){
           yukle('js/deneme-sinavlari-modern.js?v=3','data-deneme-sinavlari-modern',function(){
-            yukle('js/deneme-sayac-modern-v4.js?v=2','data-deneme-sayac-modern-v4');
+            yukle('js/deneme-sayac-modern-v4.js?v=3','data-deneme-sayac-modern-v4');
           });
         });
       });
