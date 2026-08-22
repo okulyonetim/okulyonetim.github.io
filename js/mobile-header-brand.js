@@ -1,6 +1,6 @@
 /* ====================================================================
    KORUK ASİSTAN — MOBİL ÜST BAR KURUMSAL BAŞLIK
-   Hamburger yerine okul logosu, okul adı + canlı sıcaklık ve çıkış onayı.
+   Tek okul logosu, büyük harf okul adı + canlı sıcaklık ve çıkış onayı.
    ==================================================================== */
 (function(){
 'use strict';
@@ -17,10 +17,16 @@ function stilKur(){
   s.textContent = `
     @media(max-width:1023px){
       .koruk-topbar #topbarHamburger{display:none!important}
-      .koruk-mobile-school-logo{
-        width:42px;height:42px;min-width:42px;display:block;object-fit:cover;
-        padding:2px;border:1px solid color-mix(in srgb,var(--khdr-green) 25%,var(--khdr-line));
-        border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(20,90,70,.10)
+      .koruk-topbar .topbar-brand{display:none!important}
+      .koruk-mobile-school-logo{display:none!important}
+      .koruk-topbar #korukTopbarSchoolLogo{
+        width:42px!important;height:42px!important;min-width:42px!important;
+        display:grid!important;place-items:center!important;margin:0 3px 0 0!important;
+        padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important
+      }
+      .koruk-topbar #korukTopbarSchoolLogo img{
+        width:40px!important;height:40px!important;display:block!important;object-fit:contain!important;
+        border-radius:50%!important;background:#fff!important;box-shadow:0 2px 8px rgba(20,90,70,.12)!important
       }
       .koruk-topbar-page{
         display:flex!important;flex-direction:column!important;justify-content:center!important;
@@ -28,7 +34,7 @@ function stilKur(){
       }
       .koruk-topbar-page>strong{
         font-size:13.5px!important;line-height:1.15!important;font-weight:850!important;
-        color:var(--khdr-text)!important;letter-spacing:-.025em!important
+        color:var(--khdr-text)!important;letter-spacing:-.025em!important;text-transform:uppercase!important
       }
       .koruk-school-meta{
         display:flex!important;align-items:center!important;gap:7px!important;
@@ -44,9 +50,19 @@ function stilKur(){
         color:var(--khdr-green)!important;font:850 9.5px/1 Manrope,Inter,sans-serif!important
       }
       .koruk-school-meta #topbarHava span{display:inline!important;margin:0!important;font:inherit!important;color:inherit!important}
+      .koruk-topbar #topbarAvatar{
+        width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
+        padding:0!important;border:0!important;border-radius:10px!important;background:transparent!important;
+        box-shadow:none!important;overflow:hidden!important
+      }
+      .koruk-topbar #topbarAvatar img{
+        width:38px!important;height:38px!important;display:block!important;object-fit:cover!important;
+        border-radius:10px!important;background:transparent!important
+      }
     }
     @media(max-width:390px){
-      .koruk-mobile-school-logo{width:39px;height:39px;min-width:39px}
+      .koruk-topbar #korukTopbarSchoolLogo{width:39px!important;height:39px!important;min-width:39px!important}
+      .koruk-topbar #korukTopbarSchoolLogo img{width:37px!important;height:37px!important}
       .koruk-topbar-page>strong{font-size:12.6px!important}
       .koruk-school-meta{gap:5px;font-size:8.2px}
       .koruk-school-meta #topbarHava{font-size:9px!important}
@@ -60,14 +76,8 @@ function anaSayfaMi(){
   return !!p && p.id === 'tab-panel';
 }
 
-function logoKur(top,page){
-  if($('.koruk-mobile-school-logo',top)) return;
-  const img = document.createElement('img');
-  img.className = 'koruk-mobile-school-logo';
-  img.src = 'assets/icon-192.png';
-  img.alt = 'Koruk İlk-Ortaokulu logosu';
-  img.setAttribute('aria-label','Koruk İlk-Ortaokulu');
-  if(page) top.insertBefore(img,page); else top.prepend(img);
+function eskiFazlaLogoTemizle(top){
+  top.querySelectorAll('.koruk-mobile-school-logo').forEach(el=>el.remove());
 }
 
 function metaKur(page){
@@ -92,15 +102,15 @@ function baslikKur(){
   const top = $('.topbar');
   if(!top) return false;
   top.classList.add('koruk-topbar');
+  eskiFazlaLogoTemizle(top);
   const page = $('.koruk-topbar-page',top);
   if(!page) return false;
 
-  logoKur(top,page);
   metaKur(page);
 
   const baslik = $('#korukTopbarPage',page);
-  if(baslik && anaSayfaMi() && baslik.textContent !== 'Koruk İlk-Ortaokulu'){
-    baslik.textContent = 'Koruk İlk-Ortaokulu';
+  if(baslik && anaSayfaMi() && baslik.textContent !== 'KORUK İLK-ORTAOKULU'){
+    baslik.textContent = 'KORUK İLK-ORTAOKULU';
   }
   return true;
 }
