@@ -21,7 +21,7 @@
   }
 
   /* Alt navigasyon + mobil header ortak görsel tema. */
-  stilYukle('css/alt-navigation-theme.css?v=5','data-alt-nav-theme');
+  stilYukle('css/alt-navigation-theme.css?v=6','data-alt-nav-theme');
 
   /* Bu dosya index.html tarafindan dogrudan yuklenir. Navigasyon cekirdegi
      ilk sirada, dashboard/stabilite zinciri ise hemen ardindan baslatilir. */
