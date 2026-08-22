@@ -1,7 +1,7 @@
 /* ====================================================================
-   Koruk Asistan — Nöbet Raporu Düzeni v2
-   Dikey/yatay A4 seçimi, Android PrintPlugin uyumu ve sayfayı alta kadar
-   dinamik dolduran nöbet tablosu.
+   Koruk Asistan — Nöbet Raporu Düzeni v3
+   Dikey/yatay A4 seçimi, Android PrintPlugin uyumu, sayfayı alta kadar
+   dinamik dolduran nöbet tablosu ve resmi tatil etiketleri.
    ==================================================================== */
 (function(){
 'use strict';
@@ -10,6 +10,11 @@ const YON_KEY='korukNobetRaporYon';
 let seciliYon='dikey';
 try{seciliYon=localStorage.getItem(YON_KEY)==='yatay'?'yatay':'dikey';}catch(_){ }
 window.__nobetRaporYon=seciliYon;
+
+function htmlEscape(v){
+  return String(v==null?'':v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function regexEscape(v){return String(v).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
 
 function yonKontrolEkle(){
   const body=document.getElementById('modalBody');
@@ -50,9 +55,46 @@ function nobetHtmlMi(html){
   return s.includes('ÖĞRETMEN NÖBET ÇİZELGESİ')&&s.includes('NÖBETÇİ ÖĞRETMENİN GÖREVLERİ');
 }
 
+function tatilSatirlariniEtiketle(html){
+  let s=String(html||'');
+  try{
+    if(typeof nobetTatilMi!=='function'||typeof nobetGoruntulenenYil==='undefined'||typeof nobetGoruntulenenAy==='undefined')return s;
+    const yil=nobetGoruntulenenYil, ay=nobetGoruntulenenAy;
+    const gunSayisi=new Date(yil,ay+1,0).getDate();
+    const baslikThSayisi=(s.match(/<th\b/gi)||[]).length;
+    const colspan=Math.max(1,baslikThSayisi-1);
+    const ayAdiTR=(typeof AYLAR!=='undefined'&&AYLAR[ay])?AYLAR[ay]:new Date(yil,ay,1).toLocaleDateString('tr-TR',{month:'long'});
+
+    for(let d=1;d<=gunSayisi;d++){
+      const iso=(typeof nobetTarihISO==='function')?nobetTarihISO(yil,ay,d):`${yil}-${String(ay+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const tatil=nobetTatilMi(iso);
+      if(!tatil)continue;
+
+      const dt=new Date(yil,ay,d);
+      const gunAdi=(typeof GUNADI!=='undefined'&&GUNADI[dt.getDay()])?GUNADI[dt.getDay()]:dt.toLocaleDateString('tr-TR',{weekday:'long'});
+      const tarihMetin=`${d} ${ayAdiTR} ${yil} ${gunAdi}`;
+      let aciklama=(tatil&&typeof tatil==='object')?(tatil.aciklama||tatil.ad||tatil.adi||'RESMİ TATİL'):'RESMİ TATİL';
+      aciklama=String(aciklama).trim()||'RESMİ TATİL';
+
+      const gunAy=`${d} ${ayAdiTR}`;
+      const gunAyBuyuk=gunAy.toLocaleUpperCase('tr');
+      let etiket=aciklama.toLocaleUpperCase('tr');
+      if(!etiket.includes(gunAyBuyuk))etiket=`${gunAyBuyuk} ${etiket}`;
+
+      // Tatil hafta sonuna denk gelse bile tatil satırı önceliklidir. Eski
+      // çıktı hafta sonunu önce işlediği için 30 Ağustos gibi tatillerin adı
+      // kaybolabiliyordu; burada ilgili gün satırını tatil satırına çeviriyoruz.
+      const re=new RegExp(`<tr>\\s*<td[^>]*>${regexEscape(tarihMetin)}<\\/td>[\\s\\S]*?<\\/tr>`,'i');
+      const yeniSatir=`<tr class="nobet-resmi-tatil"><td class="nobet-tatil-tarih">${htmlEscape(tarihMetin)}</td><td class="nobet-tatil-adi" colspan="${colspan}">${htmlEscape(etiket)}</td></tr>`;
+      s=s.replace(re,yeniSatir);
+    }
+  }catch(e){console.warn('[Nöbet Raporu] Tatil satırı düzenlenemedi:',e);}
+  return s;
+}
+
 function nobetHtmlDuzenle(html,yon){
   const yatay=yon==='yatay';
-  let s=String(html||'');
+  let s=tatilSatirlariniEtiketle(html);
 
   // Nöbet içeriğinin eski sabit portrait @page tanımını kaldır.
   s=s.replace(/@page\s*\{[^}]*\}/gi,'');
@@ -84,8 +126,6 @@ function nobetHtmlDuzenle(html,yon){
       width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;
       margin:0!important;flex:1 1 auto!important;height:100%!important;min-height:0!important;
     }
-    /* Tarayıcı tabloya verilen esnek yüksekliği satırlara dağıtır. Böylece
-       gün sayısı azaldıkça satırlar büyür, çokaldıkça sıkışır. */
     .nobet-main-table tbody{height:100%!important;}
     .nobet-main-table tbody tr{height:auto!important;}
 
@@ -93,6 +133,11 @@ function nobetHtmlDuzenle(html,yon){
     .nobet-main-table thead th:not(:first-child),.nobet-main-table tbody td:not(:first-child){text-align:center!important;}
     .nobet-main-table thead th:first-child,.nobet-main-table tbody td:first-child{width:${yatay?'15%':'22%'}!important;}
     .nobet-main-table thead th:not(:first-child){width:auto!important;}
+
+    /* Resmî tatiller hafta sonuna denk gelse dahi kendi adıyla görünür. */
+    .nobet-main-table .nobet-resmi-tatil td{background:#FFF5D8!important;border-color:#E6D18A!important;}
+    .nobet-main-table .nobet-resmi-tatil .nobet-tatil-tarih{text-align:left!important;color:#5D4A08!important;font-weight:750!important;}
+    .nobet-main-table .nobet-resmi-tatil .nobet-tatil-adi{text-align:center!important;color:#8A6500!important;font-weight:850!important;letter-spacing:.015em!important;}
 
     .nobet-a4-fit>div:first-child{border-bottom-color:#145A46!important;margin-bottom:${yatay?'2.5pt':'4pt'}!important;padding-bottom:${yatay?'2pt':'3pt'}!important;}
     .nobet-a4-fit>div:first-child div{color:#145A46!important;}
