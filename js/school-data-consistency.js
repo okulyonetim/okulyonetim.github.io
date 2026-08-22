@@ -1,5 +1,5 @@
 /* ====================================================================
-   Koruk Asistan — Okul Veri Tutarlılığı v2
+   Koruk Asistan — Okul Veri Tutarlılığı v3
    - Sınıf öğretmenliği için tek kaynak: siniflar[].sinifOgretmeniId
    - Öğrenci sayaçları için tek kaynak: varsa veliler/öğrenci kayıtları
    - Eski ogretmen.sorumluSinif ve sınıf sayaçları yalnız geriye uyumluluk
@@ -78,12 +78,17 @@ window.korukOgretmeninSiniflari=ogretmeninSiniflari;
 window.korukVeriTutarliliginiUygula=turetilenVerileriUygula;
 
 let renderTazeleniyor=false;
+function ogretmenBasliginiDuzelt(){
+  const tbody=document.getElementById('ogretmenlerTablo');
+  const ths=tbody?.closest('table')?.querySelectorAll('thead th');
+  if(ths&&ths.length>=7) ths[6].textContent='Sınıf Öğretmenliği';
+}
 function ogretmenTablosunuTazele(){
   if(renderTazeleniyor) return;
   const fn=window.renderOgretmenler;
   if(typeof fn!=='function'||!document.getElementById('ogretmenlerTablo')) return;
   renderTazeleniyor=true;
-  try{ fn(); }catch(_){}finally{ renderTazeleniyor=false; }
+  try{ fn(); ogretmenBasliginiDuzelt(); }catch(_){}finally{ renderTazeleniyor=false; }
 }
 function sinifTablosunuTazele(){
   if(renderTazeleniyor) return;
@@ -91,6 +96,11 @@ function sinifTablosunuTazele(){
   if(typeof fn!=='function'||!document.getElementById('siniflarTablo')) return;
   renderTazeleniyor=true;
   try{ fn(); }catch(_){}finally{ renderTazeleniyor=false; }
+}
+function dashboardTazele(){
+  const fn=window.renderDashboard;
+  if(typeof fn!=='function') return;
+  try{ fn(); }catch(_){ }
 }
 
 function fonksiyonSar(ad,once,sonra){
@@ -154,19 +164,24 @@ function sinifModaliniDuzelt(id){
 
 let dashboardYenileniyor=false;
 window.addEventListener('koruk:data-consistency',()=>{
-  if(dashboardYenileniyor) return;
-  const ozet=document.querySelector('#tab-panel.kh-home .kh-teacher-school-summary');
-  if(!ozet) return;
-  dashboardYenileniyor=true;
-  ozet.remove();
-  setTimeout(()=>{ dashboardYenileniyor=false; },80);
+  requestAnimationFrame(()=>{
+    ogretmenBasliginiDuzelt();
+    dashboardTazele();
+    if(dashboardYenileniyor) return;
+    const ozet=document.querySelector('#tab-panel.kh-home .kh-teacher-school-summary');
+    if(!ozet) return;
+    dashboardYenileniyor=true;
+    ozet.remove();
+    setTimeout(()=>{ dashboardYenileniyor=false; },80);
+  });
 });
 
 function kur(){
   let tamam=0;
   tamam += fonksiyonSar('renderSiniflar',turetilenVerileriUygula,()=>requestAnimationFrame(ogretmenTablosunuTazele))?1:0;
-  tamam += fonksiyonSar('renderOgretmenler',turetilenVerileriUygula,null)?1:0;
-  tamam += fonksiyonSar('renderOgrenciler',turetilenVerileriUygula,()=>requestAnimationFrame(()=>{sinifTablosunuTazele();ogretmenTablosunuTazele();}))?1:0;
+  tamam += fonksiyonSar('renderOgretmenler',turetilenVerileriUygula,()=>requestAnimationFrame(ogretmenBasliginiDuzelt))?1:0;
+  tamam += fonksiyonSar('renderDashboard',turetilenVerileriUygula,null)?1:0;
+  tamam += fonksiyonSar('renderOgrenciler',turetilenVerileriUygula,()=>requestAnimationFrame(()=>{sinifTablosunuTazele();ogretmenTablosunuTazele();dashboardTazele();}))?1:0;
   tamam += fonksiyonSar('ogretmenModalAc',turetilenVerileriUygula,function(id){ogretmenModaliniDuzelt(id);})?1:0;
   tamam += fonksiyonSar('sinifModalAc',turetilenVerileriUygula,function(id){sinifModaliniDuzelt(id);})?1:0;
   return tamam;
@@ -182,5 +197,6 @@ const timer=setInterval(()=>{
   turetilenVerileriUygula();
   sinifTablosunuTazele();
   ogretmenTablosunuTazele();
+  dashboardTazele();
 },ms));
 })();
