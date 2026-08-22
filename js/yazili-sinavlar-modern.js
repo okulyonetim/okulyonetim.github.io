@@ -1,4 +1,4 @@
-/* Koruk Asistan — Yazılı Sınavlar Modern v1 */
+/* Koruk Asistan — Yazılı Sınavlar Modern v2 */
 (function(){
   'use strict';
 
@@ -39,6 +39,74 @@
     if(toolbar && toolbar.querySelector('button')) toolbar.classList.add('ys-toolbar');
   }
 
+  function alanTonu(metin){
+    metin=String(metin||'').toLocaleLowerCase('tr');
+    if(metin.includes('sınıf')) return 'violet';
+    if(metin.includes('dönem')||metin.includes('yazılı sırası')) return 'blue';
+    if(metin.includes('ders')||metin.includes('öğretmen')) return 'teal';
+    if(metin.includes('tarih')) return 'cyan';
+    if(metin.includes('senaryo')||metin.includes('yayınevi')) return 'amber';
+    if(metin.includes('not')) return 'violet';
+    return 'blue';
+  }
+
+  function sinavModalTasarimla(){
+    const ders=document.getElementById('f_snDers');
+    const donem=document.getElementById('f_snDonem');
+    if(!ders || !donem) return false;
+
+    const overlay=document.getElementById('modalOverlay') || ders.closest('.modal-overlay');
+    const modal=ders.closest('.modal') || (overlay && overlay.querySelector('.modal'));
+    if(overlay) overlay.classList.add('ys-exam-overlay');
+    if(modal) modal.classList.add('ys-exam-modal');
+
+    const body=document.getElementById('modalBody') || (modal && modal.querySelector('.modal-body')) || ders.closest('.modal-content') || ders.parentElement;
+    if(!body) return true;
+    body.classList.add('ys-exam-modal-body');
+
+    if(!body.querySelector('.ys-modal-intro')){
+      const intro=document.createElement('div');
+      intro.className='ys-modal-intro';
+      const baslik=(document.getElementById('modalTitle')?.textContent || modal?.querySelector('.modal-title')?.textContent || '').toLocaleLowerCase('tr');
+      const duzenleme=baslik.includes('düzenle');
+      intro.innerHTML='<div class="ys-modal-intro-icon">✓</div><div><strong>'+(duzenleme?'Sınav kaydını güncelle':'Yeni yazılı sınav oluştur')+'</strong><span>Sınıf, ders, tarih ve sınav ayrıntılarını düzenli biçimde tamamlayın.</span></div>';
+      body.insertBefore(intro,body.firstChild);
+    }
+
+    body.querySelectorAll('.form-group').forEach(function(grup){
+      grup.classList.add('ys-form-group');
+      const label=grup.querySelector(':scope > label') || grup.querySelector('label');
+      const metin=label ? label.textContent.trim() : '';
+      grup.dataset.ysTone=alanTonu(metin);
+      if(label){
+        label.classList.add('ys-field-label');
+        const ops=label.querySelector('span');
+        if(ops && ops.textContent.toLocaleLowerCase('tr').includes('isteğe bağlı')) ops.classList.add('ys-optional');
+      }
+    });
+    body.querySelectorAll('.form-row').forEach(function(row){ row.classList.add('ys-form-row'); });
+
+    const ilkCb=body.querySelector('.snSinifCb');
+    if(ilkCb){
+      const grup=ilkCb.closest('.form-group');
+      if(grup){
+        const picker=[].slice.call(grup.children).find(function(el){return el.tagName==='DIV' && el.querySelector('.snSinifCb');});
+        if(picker) picker.classList.add('ys-class-picker');
+      }
+      body.querySelectorAll('.snSinifCb').forEach(function(cb){
+        const lbl=cb.closest('label');
+        if(lbl) lbl.classList.add('ys-class-chip');
+      });
+    }
+
+    const notlar=document.getElementById('f_snNotlar');
+    if(notlar) notlar.setAttribute('placeholder','Sınavla ilgili kısa bir not ekleyin…');
+
+    const footer=(modal && (modal.querySelector('.modal-footer')||modal.querySelector('.modal-actions')||modal.querySelector('.modal-buttons'))) || document.getElementById('modalFooter');
+    if(footer) footer.classList.add('ys-exam-footer');
+    return true;
+  }
+
   function sayfaKur(){
     const root=document.getElementById('tab-yaziliSinavlar');
     if(!root) return false;
@@ -71,15 +139,25 @@
     return true;
   }
 
+  function modalIzle(){
+    const hedef=document.getElementById('modalOverlay') || document.body;
+    if(hedef.dataset && hedef.dataset.ysModalObserver==='1') return;
+    if(hedef.dataset) hedef.dataset.ysModalObserver='1';
+    new MutationObserver(function(){ setTimeout(sinavModalTasarimla,0); }).observe(hedef,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});
+  }
+
   function baslat(){
-    if(sayfaKur()) return;
-    const obs=new MutationObserver(function(){if(sayfaKur()) obs.disconnect();});
-    obs.observe(document.documentElement,{childList:true,subtree:true});
-    setTimeout(function(){obs.disconnect();sayfaKur();},8000);
+    if(!sayfaKur()){
+      const obs=new MutationObserver(function(){if(sayfaKur()) obs.disconnect();});
+      obs.observe(document.documentElement,{childList:true,subtree:true});
+      setTimeout(function(){obs.disconnect();sayfaKur();},8000);
+    }
+    modalIzle();
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',baslat,{once:true}); else baslat();
   document.addEventListener('click',function(e){
     if(e.target.closest('[data-tab="yaziliSinavlar"],#bnMenuBtn')) setTimeout(sayfaKur,60);
+    if(e.target.closest('#tab-yaziliSinavlar button,[onclick*="sinavModalAc"]')) setTimeout(sinavModalTasarimla,30);
   },true);
 })();
