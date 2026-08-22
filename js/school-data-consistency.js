@@ -1,5 +1,5 @@
 /* ====================================================================
-   Koruk Asistan — Okul Veri Tutarlılığı v1
+   Koruk Asistan — Okul Veri Tutarlılığı v2
    - Sınıf öğretmenliği için tek kaynak: siniflar[].sinifOgretmeniId
    - Öğrenci sayaçları için tek kaynak: varsa veliler/öğrenci kayıtları
    - Eski ogretmen.sorumluSinif ve sınıf sayaçları yalnız geriye uyumluluk
@@ -47,13 +47,17 @@ function ogretmeninSiniflari(id){
 }
 function ogretmeninSinifMetni(id){ return ogretmeninSiniflari(id).map(s=>s.ad).filter(Boolean).join(', '); }
 
+let sonImza='';
+function veriImzasi(){
+  const sinifImza=arr('siniflar').map(s=>{ const o=sinifOzet(s); return `${s.id}:${s.sinifOgretmeniId||''}:${o.toplam}:${o.kiz}:${o.erkek}`; }).sort().join('|');
+  const ogrImza=arr('ogretmenler').map(o=>`${o.id}:${ogretmeninSinifMetni(o.id)}`).sort().join('|');
+  return sinifImza+'#'+ogrImza;
+}
 function turetilenVerileriUygula(){
   const siniflar=arr('siniflar'), ogretmenler=arr('ogretmenler');
   siniflar.forEach(s=>{
     const o=sinifOzet(s);
     if(o.gercekKayit){
-      // Firestore'a burada yazmıyoruz. UI'daki tüm eski okuyucuların doğru
-      // değeri görmesi için aynı nesnenin türetilmiş alanlarını güncelliyoruz.
       s.ogrenciSayisi=o.toplam;
       s.kizSayisi=o.kiz;
       s.erkekSayisi=o.erkek;
@@ -63,7 +67,11 @@ function turetilenVerileriUygula(){
     const metin=ogretmeninSinifMetni(o.id);
     if(metin) o.sorumluSinif=metin;
   });
-  try{ window.dispatchEvent(new CustomEvent('koruk:data-consistency')); }catch(_){ }
+  const imza=veriImzasi();
+  if(imza!==sonImza){
+    sonImza=imza;
+    try{ window.dispatchEvent(new CustomEvent('koruk:data-consistency')); }catch(_){ }
+  }
 }
 window.korukSinifOzet=sinifOzet;
 window.korukOgretmeninSiniflari=ogretmeninSiniflari;
@@ -144,6 +152,16 @@ function sinifModaliniDuzelt(id){
   }));
 }
 
+let dashboardYenileniyor=false;
+window.addEventListener('koruk:data-consistency',()=>{
+  if(dashboardYenileniyor) return;
+  const ozet=document.querySelector('#tab-panel.kh-home .kh-teacher-school-summary');
+  if(!ozet) return;
+  dashboardYenileniyor=true;
+  ozet.remove();
+  setTimeout(()=>{ dashboardYenileniyor=false; },80);
+});
+
 function kur(){
   let tamam=0;
   tamam += fonksiyonSar('renderSiniflar',turetilenVerileriUygula,()=>requestAnimationFrame(ogretmenTablosunuTazele))?1:0;
@@ -157,7 +175,7 @@ function kur(){
 let deneme=0;
 const timer=setInterval(()=>{
   kur(); turetilenVerileriUygula();
-  if(++deneme>200) clearInterval(timer);
+  if(++deneme>80) clearInterval(timer);
 },100);
 [0,250,800,1800,3500].forEach(ms=>setTimeout(()=>{
   kur();
