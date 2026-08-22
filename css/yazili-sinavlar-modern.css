@@ -1,0 +1,42 @@
+/* Koruk Asistan — Yazılı Sınavlar Modern v1 */
+#tab-yaziliSinavlar.ys-modern{max-width:980px;margin:0 auto;padding:16px 16px 120px!important;background:transparent!important;color:#162033!important}
+#tab-yaziliSinavlar.ys-modern>.page-header{position:relative!important;overflow:hidden!important;margin:0 0 14px!important;padding:22px 20px!important;border-radius:24px!important;border:1px solid #d3ddea!important;background:linear-gradient(145deg,#f7faff,#edf3fb)!important;box-shadow:0 8px 24px rgba(25,42,63,.08)!important}
+#tab-yaziliSinavlar.ys-modern>.page-header:after{content:"";position:absolute;right:-28px;top:-32px;width:140px;height:140px;border-radius:42px;background:linear-gradient(145deg,rgba(47,111,237,.18),rgba(128,102,232,.12));transform:rotate(18deg)}
+#tab-yaziliSinavlar.ys-modern>.page-header .page-title{font-size:25px!important;line-height:1.15!important;font-weight:900!important;letter-spacing:-.03em!important;color:#13213a!important}
+#tab-yaziliSinavlar.ys-modern>.page-header .page-sub{margin-top:7px!important;max-width:78%!important;font-size:12.5px!important;line-height:1.5!important;font-weight:650!important;color:#5f6d7d!important}
+#tab-yaziliSinavlar.ys-modern .ys-summary{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:0 0 14px!important}
+#tab-yaziliSinavlar.ys-modern .ys-stat{min-width:0!important;padding:12px 10px!important;border-radius:16px!important;border:1px solid #dde5ee!important;background:#fff!important;box-shadow:0 3px 12px rgba(25,42,63,.045)!important}
+#tab-yaziliSinavlar.ys-modern .ys-stat b{display:block!important;font-size:20px!important;line-height:1!important;font-weight:900!important;color:#17243a!important}
+#tab-yaziliSinavlar.ys-modern .ys-stat span{display:block!important;margin-top:5px!important;font-size:9.5px!important;font-weight:800!important;color:#768394!important;text-transform:uppercase!important;letter-spacing:.05em!important}
+#tab-yaziliSinavlar.ys-modern #sinavYaziliBolum>.card{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+#tab-yaziliSinavlar.ys-modern .ys-toolbar{display:grid!important;grid-template-columns:1fr 1.45fr!important;gap:9px!important;margin:0 0 14px!important}
+#tab-yaziliSinavlar.ys-modern .ys-toolbar .btn{width:100%!important;min-height:46px!important;margin:0!important;border-radius:14px!important;font-size:12.5px!important;font-weight:850!important;box-shadow:none!important}
+#tab-yaziliSinavlar.ys-modern .ys-toolbar .btn-ghost{background:#fff!important;color:#36506f!important;border:1px solid #d4deea!important}
+#tab-yaziliSinavlar.ys-modern .ys-toolbar .btn-amber{background:linear-gradient(135deg,#2f6fed,#1769c2)!important;color:#fff!important;border:1px solid #1769c2!important;text-shadow:none!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi{display:grid!important;gap:10px!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-row{position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;min-height:104px!important;padding:15px 14px 15px 76px!important;margin:0!important;border-radius:18px!important;border:1px solid #d9e2ec!important;background:#fff!important;box-shadow:0 4px 16px rgba(24,40,59,.055)!important;overflow:hidden!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-row:before{content:"✓";position:absolute;left:16px;top:17px;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#eaf2ff,#f1edff);color:#2f6fed;font-size:20px;font-weight:900;border:1px solid #d8e5fb}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-body{min-width:0!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-title{display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important;margin:0!important;font-size:14px!important;line-height:1.35!important;font-weight:900!important;color:#17243a!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .badge{padding:4px 8px!important;border-radius:999px!important;font-size:9px!important;font-weight:850!important;line-height:1!important;background:#edf3ff!important;color:#2f6fed!important;border:1px solid #d7e4fb!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-meta{margin-top:8px!important;font-size:11px!important;line-height:1.65!important;color:#647181!important;font-weight:600!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .btn-ghost{min-width:72px!important;min-height:38px!important;padding:7px 10px!important;border-radius:11px!important;background:#f5f8fc!important;color:#2d66ab!important;border:1px solid #d6e0ec!important;font-weight:800!important}
+#tab-yaziliSinavlar.ys-modern #sinavlarListesi .empty-state{padding:34px 20px!important;border-radius:18px!important;border:1px dashed #cbd6e3!important;background:#f8fafc!important;color:#657384!important;text-align:center!important;font-size:12.5px!important;line-height:1.6!important}
+
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern{color:#f5f7fb!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern>.page-header{background:linear-gradient(145deg,#101827,#17132a)!important;border-color:#29313e!important;box-shadow:0 8px 24px rgba(0,0,0,.30)!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern>.page-header:after{background:linear-gradient(145deg,rgba(47,111,237,.30),rgba(128,102,232,.22))}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern>.page-header .page-title{color:#f7f9fd!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern>.page-header .page-sub{color:#aab2c0!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern .ys-stat{background:#11151d!important;border-color:#29313e!important;box-shadow:none!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern .ys-stat b{color:#f7f9fd!important}html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern .ys-stat span{color:#8f99a8!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern .ys-toolbar .btn-ghost{background:#11151d!important;color:#aeb8c7!important;border-color:#29313e!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern .ys-toolbar .btn-amber{background:linear-gradient(135deg,#2f6fed,#1769c2)!important;border-color:#347fe8!important;color:#fff!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-row{background:#11151d!important;border-color:#29313e!important;box-shadow:none!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-row:before{background:linear-gradient(145deg,#132a47,#2a2142)!important;color:#69b3ff!important;border-color:#244f82!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-title{color:#f7f9fd!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern #sinavlarListesi .badge{background:#132a47!important;color:#69b3ff!important;border-color:#244f82!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-meta{color:#aab2c0!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern #sinavlarListesi .btn-ghost{background:#171c26!important;color:#78baff!important;border-color:#2e3949!important}
+html[data-theme="dark"] #tab-yaziliSinavlar.ys-modern #sinavlarListesi .empty-state{background:#11151d!important;border-color:#303947!important;color:#9da7b5!important}
+@media(max-width:640px){#tab-yaziliSinavlar.ys-modern{padding:14px 12px 108px!important}#tab-yaziliSinavlar.ys-modern>.page-header{padding:19px 17px!important;border-radius:20px!important}#tab-yaziliSinavlar.ys-modern>.page-header .page-title{font-size:22px!important}#tab-yaziliSinavlar.ys-modern .ys-summary{gap:6px!important}#tab-yaziliSinavlar.ys-modern .ys-stat{padding:11px 8px!important}#tab-yaziliSinavlar.ys-modern .ys-stat b{font-size:18px!important}#tab-yaziliSinavlar.ys-modern .ys-stat span{font-size:8.6px!important}#tab-yaziliSinavlar.ys-modern #sinavlarListesi .evrak-row{grid-template-columns:1fr!important;padding:14px 12px 14px 68px!important;min-height:100px!important}#tab-yaziliSinavlar.ys-modern #sinavlarListesi .btn-ghost{justify-self:start!important;margin-top:2px!important}}
