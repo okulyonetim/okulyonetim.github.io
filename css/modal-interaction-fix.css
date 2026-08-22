@@ -1,38 +1,199 @@
-@import url('./app-v4-theme.css');
-
-/* Koruk Asistan — modal-interaction-fix v5
-   body.modal-open class artık hiç eklenmediği için bu kural
-   çalışmaz — güvenlik için bırakıldı. Asıl scroll-through önlemi
-   .modal kendi içinde overscroll-behavior ile sağlanıyor. */
-body.modal-open {
-  overflow: hidden !important;
-  touch-action: auto !important;
-  overscroll-behavior: none !important;
+/* =====================================================================
+   KORUK ASİSTAN — TEK AKTİF UYGULAMA TASARIM SİSTEMİ
+   Bu dosya index.html tarafından DOĞRUDAN yüklenir.
+   Başka bir sayfa-theme / fix CSS katmanına ihtiyaç duymaz.
+   Modal JS / observer davranışına dokunmaz.
+   ===================================================================== */
+:root{
+  --ui-accent:#0f8f86;--ui-accent-2:#08736d;--ui-accent-soft:#e7f5f3;
+  --ui-surface:#fff;--ui-surface-2:#f6f8fa;--ui-surface-3:#edf2f4;
+  --ui-line:#d8e1e5;--ui-line-2:#c7d3d9;--ui-text:#202b30;--ui-muted:#66747b;
+  --ui-danger:#c94d55;--ui-amber:#bd7b18;--ui-radius:16px;
+  --ui-shadow:0 5px 18px rgba(25,44,54,.07);--ui-float:0 20px 60px rgba(10,27,36,.22);
+}
+html[data-theme="dark"]{
+  --ui-accent:#46c8bd;--ui-accent-2:#7adbd3;--ui-accent-soft:#173b39;
+  --ui-surface:#171d22;--ui-surface-2:#1e262c;--ui-surface-3:#273139;
+  --ui-line:#344149;--ui-line-2:#43515a;--ui-text:#edf3f5;--ui-muted:#9eabb2;
+  --ui-danger:#ef7d84;--ui-amber:#dfac55;--ui-shadow:0 5px 18px rgba(0,0,0,.22);--ui-float:0 20px 60px rgba(0,0,0,.42);
 }
 
-/* Modal kutusu — scroll-through'u KENDİSİNDE önle, body'ye dokunma */
-.modal {
-  overscroll-behavior: contain;
-  overflow-y: auto;
+/* ---------- TÜM NORMAL SAYFALAR ---------- */
+.tab-panel:not(#tab-panel){color:var(--ui-text)}
+.tab-panel:not(#tab-panel)>.page-header,
+.tab-panel:not(#tab-panel)>.panel-header{
+  display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:14px!important;
+  margin:0 0 18px!important;padding:0 0 15px!important;border-bottom:1px solid var(--ui-line)!important;
+  background:transparent!important;box-shadow:none!important
+}
+.tab-panel:not(#tab-panel) .page-title,
+.tab-panel:not(#tab-panel)>.panel-header h2{
+  margin:0!important;color:var(--ui-text)!important;font:800 21px/1.2 Manrope,Inter,sans-serif!important;letter-spacing:-.025em!important
+}
+.tab-panel:not(#tab-panel) .page-sub{margin-top:5px!important;color:var(--ui-muted)!important;font-size:12.5px!important;line-height:1.45!important}
+.tab-panel:not(#tab-panel) .page-header-actions{display:flex!important;gap:8px!important;flex-wrap:wrap!important;justify-content:flex-end!important;align-items:center!important}
+
+.tab-panel:not(#tab-panel) .card,
+.tab-panel:not(#tab-panel) .panel,
+.tab-panel:not(#tab-panel) .settings-section,
+.tab-panel:not(#tab-panel) .accordion-item{
+  background:var(--ui-surface)!important;border:1px solid var(--ui-line)!important;border-radius:var(--ui-radius)!important;
+  box-shadow:var(--ui-shadow)!important;color:var(--ui-text)!important
+}
+.tab-panel:not(#tab-panel) .card{padding:15px!important;margin-bottom:14px!important}
+.tab-panel:not(#tab-panel) .card h3,.tab-panel:not(#tab-panel) .card h4{color:var(--ui-text)!important}
+
+/* ---------- BUTONLAR ---------- */
+.tab-panel:not(#tab-panel) .btn,.modal .btn,.detay-panel .btn,
+#hizliEkleModal button,#ozelOnayModal .btn,#ilerlemeOverlay .btn{
+  min-height:40px!important;padding:9px 14px!important;border:1px solid var(--ui-line-2)!important;border-radius:11px!important;
+  background:var(--ui-surface)!important;color:var(--ui-text)!important;box-shadow:none!important;
+  font:700 12.5px/1.2 Manrope,Inter,sans-serif!important;text-shadow:none!important
+}
+.tab-panel:not(#tab-panel) .btn-primary,.tab-panel:not(#tab-panel) .btn-amber,
+.modal .btn-primary,.modal .btn-amber,#modalKaydetBtn,
+#hizliEkleModal button:not(:last-child){background:var(--ui-accent)!important;border-color:var(--ui-accent)!important;color:#fff!important}
+.tab-panel:not(#tab-panel) .btn-danger,.modal .btn-danger,#modalSilBtn{
+  background:color-mix(in srgb,var(--ui-danger) 9%,var(--ui-surface))!important;color:var(--ui-danger)!important;
+  border-color:color-mix(in srgb,var(--ui-danger) 35%,var(--ui-line))!important
+}
+.tab-panel:not(#tab-panel) .btn:hover,.modal .btn:hover{border-color:var(--ui-accent)!important}
+.tab-panel:not(#tab-panel) .filtre-btn.active,.haber-altsekme-btn.active,.mevzuat-altsekme-btn.active{
+  background:var(--ui-accent-soft)!important;border-color:var(--ui-accent)!important;color:var(--ui-accent-2)!important
 }
 
-/* Overlay'ler kapalıyken tıklamayı yutmasın */
-.modal-overlay:not(.active):not(.show):not(.acik),
-.detay-overlay:not(.active):not(.show):not(.acik) {
-  pointer-events: none !important;
-  display: none !important;
+/* ---------- FORM ---------- */
+.tab-panel:not(#tab-panel) input:not([type=checkbox]):not([type=radio]):not([type=file]),
+.tab-panel:not(#tab-panel) select,.tab-panel:not(#tab-panel) textarea,
+.modal input:not([type=checkbox]):not([type=radio]):not([type=file]),.modal select,.modal textarea,
+.detay-panel input:not([type=checkbox]):not([type=radio]):not([type=file]),.detay-panel select,.detay-panel textarea{
+  width:100%!important;min-height:44px!important;box-sizing:border-box!important;padding:10px 12px!important;
+  background:var(--ui-surface)!important;color:var(--ui-text)!important;border:1px solid var(--ui-line-2)!important;border-radius:10px!important;
+  box-shadow:none!important;outline:none!important;font:500 13.5px Manrope,Inter,sans-serif!important
+}
+.tab-panel:not(#tab-panel) textarea,.modal textarea{min-height:92px!important}
+.tab-panel:not(#tab-panel) input:focus,.tab-panel:not(#tab-panel) select:focus,.tab-panel:not(#tab-panel) textarea:focus,
+.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--ui-accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ui-accent) 14%,transparent)!important}
+.modal input:disabled,.modal select:disabled,.tab-panel input:disabled{background:var(--ui-surface-3)!important;color:var(--ui-muted)!important;opacity:1!important}
+.form-group>label,.modal label,.detay-panel label{display:block!important;margin-bottom:6px!important;color:var(--ui-text)!important;font-size:12.5px!important;font-weight:750!important}
+
+/* ---------- TABLOLAR ---------- */
+.tab-panel:not(#tab-panel) table{color:var(--ui-text)!important}
+.tab-panel:not(#tab-panel) table th{background:var(--ui-surface-3)!important;color:var(--ui-muted)!important;border-color:var(--ui-line)!important;box-shadow:none!important}
+.tab-panel:not(#tab-panel) table td{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-line)!important;box-shadow:none!important}
+
+/* ---------- ORTAK MODAL: GERÇEK DOM ID'LERİ ---------- */
+.modal-overlay:not(.active):not(.show):not(.acik),.detay-overlay:not(.active):not(.show):not(.acik){pointer-events:none!important;display:none!important}
+.modal-overlay.active,.modal-overlay.show{
+  z-index:9750!important;pointer-events:auto!important;touch-action:auto!important;background:rgba(12,24,31,.55)!important;
+  backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;padding:18px 14px calc(92px + env(safe-area-inset-bottom))!important;
+  align-items:center!important;justify-content:center!important
+}
+.modal-overlay.active *,.modal-overlay.show *{pointer-events:auto!important;touch-action:auto!important}
+.modal{
+  width:min(540px,100%)!important;max-height:min(82dvh,760px)!important;overflow:auto!important;overscroll-behavior:contain!important;
+  padding:0!important;background:var(--ui-surface)!important;color:var(--ui-text)!important;border:1px solid var(--ui-line)!important;
+  border-radius:20px!important;box-shadow:var(--ui-float)!important
+}
+#modalTitle{
+  margin:0!important;padding:21px 22px 13px!important;color:var(--ui-text)!important;border-bottom:1px solid var(--ui-line)!important;
+  font:800 20px/1.2 Manrope,Inter,sans-serif!important;letter-spacing:-.025em!important
+}
+#modalBody{padding:18px 22px 20px!important}
+.modal-actions{
+  position:sticky!important;bottom:0!important;z-index:4!important;display:flex!important;gap:8px!important;align-items:center!important;
+  padding:13px 22px calc(13px + env(safe-area-inset-bottom))!important;margin:0!important;border-top:1px solid var(--ui-line)!important;
+  background:var(--ui-surface)!important
+}
+.modal-actions .btn{min-width:104px!important;min-height:43px!important}
+.modal-actions #modalSilBtn{margin-right:auto!important}
+
+.detay-overlay.active,.detay-overlay.show{background:rgba(12,24,31,.52)!important;backdrop-filter:blur(5px)!important}
+.detay-panel{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-line)!important;box-shadow:var(--ui-float)!important}
+.detay-head{border-color:var(--ui-line)!important;background:var(--ui-surface)!important}
+
+/* ---------- DERS PROGRAMI: YENİ TASARIM ---------- */
+#tab-dersProgrami>.page-header{display:block!important}
+#tab-dersProgrami .page-header-actions{
+  margin-top:14px!important;width:100%!important;display:grid!important;grid-template-columns:minmax(180px,1.35fr) repeat(4,minmax(125px,1fr))!important;gap:8px!important
+}
+#tab-dersProgrami #dersSinifSecimi{min-height:42px!important}
+#tab-dersProgrami .cizelge-wrap{
+  padding:9px!important;overflow-x:auto!important;overscroll-behavior-x:contain!important;background:var(--ui-surface-2)!important
+}
+#dersGridTablo{
+  min-width:1120px!important;width:100%!important;border-collapse:separate!important;border-spacing:6px!important;table-layout:fixed!important;background:transparent!important
+}
+#dersGridTablo th{
+  height:44px!important;padding:8px!important;border:0!important;border-radius:9px!important;background:var(--ui-surface-3)!important;
+  color:var(--ui-muted)!important;font-size:10.5px!important;font-weight:800!important;letter-spacing:.06em!important;text-transform:uppercase!important
+}
+#dersGridTablo td{
+  height:68px!important;min-width:160px!important;padding:10px 11px!important;border:1px solid var(--ui-line)!important;border-radius:12px!important;
+  background:var(--ui-surface)!important;color:var(--ui-text)!important;box-shadow:none!important;font-size:12.5px!important;font-weight:650!important
+}
+#dersGridTablo th:first-child,#dersGridTablo td:first-child{
+  position:sticky!important;left:0!important;z-index:4!important;width:108px!important;min-width:108px!important;max-width:108px!important;
+  background:var(--ui-surface-2)!important;text-align:center!important;box-shadow:7px 0 12px rgba(25,42,51,.06)!important
+}
+#dersGridTablo td[onclick]{cursor:pointer!important}
+#dersGridTablo td[onclick]:active{border-color:var(--ui-accent)!important;background:var(--ui-accent-soft)!important}
+#dersGridTablo tr:has(td[colspan]) td,#dersGridTablo .teneffus{
+  height:27px!important;min-height:27px!important;padding:4px 10px!important;border-radius:8px!important;
+  background:color-mix(in srgb,var(--ui-amber) 8%,var(--ui-surface))!important;color:var(--ui-amber)!important;font-size:10px!important
 }
 
-/* Açık overlay — z-index bottom-nav üstüne */
-.modal-overlay.active,
-.modal-overlay.show {
-  z-index: 9750 !important;
-  pointer-events: auto !important;
-  touch-action: auto !important;
+/* Ders ekle/düzenle modalı */
+#modalOverlay:has(#f_dersSinif) .modal{width:min(500px,100%)!important}
+#modalOverlay:has(#f_dersSinif) #modalBody{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px 14px!important}
+#modalOverlay:has(#f_dersSinif) #modalBody>.form-group:nth-child(n+3){grid-column:1/-1!important}
+#modalOverlay:has(#f_dersSinif) input:disabled{border-style:dashed!important}
+
+/* ---------- NÖBET PROGRAMI: YENİ TASARIM ---------- */
+#tab-nobet>.page-header{display:block!important}
+#tab-nobet .page-header-actions{margin-top:14px!important;justify-content:flex-start!important}
+#tab-nobet>div:has(>.btn-amber)>.btn-amber{width:auto!important;min-height:43px!important;padding-inline:18px!important}
+#tab-nobet .dash-cols{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+#tab-nobet .cizelge-wrap{padding:10px!important;overflow-x:auto!important;background:var(--ui-surface-2)!important}
+#nobetGridTablo{min-width:1080px!important;border-collapse:separate!important;border-spacing:6px!important;background:transparent!important}
+#nobetGridTablo th{height:42px!important;border:0!important;border-radius:9px!important;background:var(--ui-surface-3)!important;color:var(--ui-muted)!important;font-size:10.5px!important}
+#nobetGridTablo td{height:52px!important;min-width:170px!important;padding:9px 11px!important;border:1px solid var(--ui-line)!important;border-radius:11px!important;background:var(--ui-surface)!important;box-shadow:none!important;font-size:12px!important;font-weight:650!important}
+#nobetGridTablo th:first-child,#nobetGridTablo td:first-child{position:sticky!important;left:0!important;z-index:4!important;width:138px!important;min-width:138px!important;background:var(--ui-surface-2)!important;box-shadow:7px 0 12px rgba(25,42,51,.06)!important}
+
+/* ---------- PANEL-HEADER KULLANAN ESKİ SAYFALAR ---------- */
+#tab-dokumanlar>.panel-header,#tab-harita>.panel-header{display:flex!important;align-items:center!important}
+#tab-dokumanlar>.panel-header>div,#tab-harita>.panel-header>div{display:flex!important;gap:8px!important;align-items:center!important;flex-wrap:wrap!important}
+
+/* ---------- MOBİL ---------- */
+@media(max-width:760px){
+  .tab-panel:not(#tab-panel)>.page-header,.tab-panel:not(#tab-panel)>.panel-header{flex-direction:column!important;gap:11px!important}
+  .tab-panel:not(#tab-panel) .page-title,.tab-panel:not(#tab-panel)>.panel-header h2{font-size:19px!important}
+  .tab-panel:not(#tab-panel) .page-header-actions{width:100%!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .tab-panel:not(#tab-panel) .page-header-actions>.btn,.tab-panel:not(#tab-panel) .page-header-actions>select{width:100%!important;min-width:0!important}
+  .tab-panel:not(#tab-panel) .card{padding:12px!important;border-radius:14px!important}
+
+  .modal-overlay.active,.modal-overlay.show{align-items:flex-end!important;padding:10px 9px calc(86px + env(safe-area-inset-bottom))!important}
+  .modal{width:100%!important;max-height:calc(100dvh - 110px)!important;border-radius:19px!important}
+  #modalTitle{padding:17px 17px 12px!important;font-size:19px!important}
+  #modalBody{padding:15px 17px 17px!important}
+  .modal-actions{padding:11px 17px calc(11px + env(safe-area-inset-bottom))!important}
+  .modal-actions .btn{flex:1 1 105px!important;min-width:0!important}
+
+  #tab-dersProgrami .page-header-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #tab-dersProgrami #dersSinifSecimi{grid-column:1/-1!important}
+  #dersGridTablo{min-width:1040px!important;border-spacing:5px!important}
+  #dersGridTablo td{height:63px!important;min-width:150px!important}
+  #dersGridTablo th:first-child,#dersGridTablo td:first-child{width:98px!important;min-width:98px!important;max-width:98px!important}
+  #modalOverlay:has(#f_dersSinif) #modalBody{display:block!important}
+
+  #tab-nobet .dash-cols{grid-template-columns:1fr!important}
+  #nobetGridTablo{min-width:960px!important}
+  #nobetGridTablo td{min-width:154px!important}
+  #nobetGridTablo th:first-child,#nobetGridTablo td:first-child{width:126px!important;min-width:126px!important}
+
+  #tab-dokumanlar>.panel-header>div{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important}
+  #tab-dokumanlar #dokumanKategoriFiltre{width:100%!important}
 }
 
-.modal-overlay.active *,
-.modal-overlay.show * {
-  pointer-events: auto !important;
-  touch-action: auto !important;
-}
+/* body.modal-open güvenliği */
+body.modal-open{overflow:hidden!important;touch-action:auto!important;overscroll-behavior:none!important}
