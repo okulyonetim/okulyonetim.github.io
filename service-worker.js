@@ -1,7 +1,7 @@
 /* ====================================================================
    Okul Yönetim Paneli — Service Worker v7
    ==================================================================== */
-const CACHE_ADI = 'oy-cache-v533';
+const CACHE_ADI = 'oy-cache-v534';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -21,7 +21,7 @@ const ONBELLEGE_ALINACAKLAR = [
   './css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css','./css/sinif-oturma.css','./css/devamsizlik-cizelgesi.css',
   './css/web-shell-fix.css','./css/web-sidebar-v2.css','./css/dashboard-yeni.css','./css/dashboard-home.css','./css/dashboard-home-neutral.css','./css/dashboard-home-colors.css','./css/alt-navigation-theme.css','./css/checkbox-standard.css','./css/modal-interaction-fix.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js',
-  './js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/alt-navigation-list-theme.js','./js/ui-stability-fixes.js','./js/app-pages-theme.js','./js/modal-interaction-fix.js','./js/rapor-preview.js','./js/nobet-rapor.js',
+  './js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/alt-navigation-list-theme.js','./js/ui-stability-fixes.js','./js/app-pages-theme.js','./js/modal-interaction-fix.js','./js/rapor-preview.js','./js/nobet-rapor.js','./js/school-data-consistency.js',
   './js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/dashboard-home.js','./js/dashboard-duyuru.js','./js/dashboard-home-shared.js','./js/dashboard-home-enhancements.js','./js/dashboard-teacher-school-summary.js','./js/role-ui-hardening.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
