@@ -16,13 +16,18 @@ function stilKur(){
   s.id = 'korukMobileHeaderBrandStyle';
   s.textContent = `
     @media(max-width:1023px){
+      .topbar.koruk-topbar{
+        position:sticky!important;top:0!important;z-index:9500!important;
+        width:100%!important;transform:none!important
+      }
       .koruk-topbar #topbarHamburger{display:none!important}
       .koruk-topbar .topbar-brand{display:none!important}
       .koruk-mobile-school-logo{display:none!important}
       .koruk-topbar #korukTopbarSchoolLogo{
         width:42px!important;height:42px!important;min-width:42px!important;
         display:grid!important;place-items:center!important;margin:0 3px 0 0!important;
-        padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important
+        padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+        cursor:pointer!important
       }
       .koruk-topbar #korukTopbarSchoolLogo img{
         width:40px!important;height:40px!important;display:block!important;object-fit:contain!important;
@@ -34,7 +39,8 @@ function stilKur(){
       }
       .koruk-topbar-page>strong{
         font-size:13.5px!important;line-height:1.15!important;font-weight:850!important;
-        color:var(--khdr-text)!important;letter-spacing:-.025em!important;text-transform:uppercase!important
+        color:var(--khdr-text)!important;letter-spacing:-.025em!important;text-transform:uppercase!important;
+        cursor:pointer!important
       }
       .koruk-school-meta{
         display:flex!important;align-items:center!important;gap:7px!important;
@@ -50,14 +56,15 @@ function stilKur(){
         color:var(--khdr-green)!important;font:850 9.5px/1 Manrope,Inter,sans-serif!important
       }
       .koruk-school-meta #topbarHava span{display:inline!important;margin:0!important;font:inherit!important;color:inherit!important}
+      .koruk-topbar .koruk-user-menu-wrap{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
       .koruk-topbar #topbarAvatar{
         width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
-        padding:0!important;border:0!important;border-radius:10px!important;background:transparent!important;
-        box-shadow:none!important;overflow:hidden!important
+        padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;
+        box-shadow:none!important;overflow:visible!important
       }
       .koruk-topbar #topbarAvatar img{
-        width:38px!important;height:38px!important;display:block!important;object-fit:cover!important;
-        border-radius:10px!important;background:transparent!important
+        width:36px!important;height:36px!important;display:block!important;object-fit:cover!important;
+        border-radius:50%!important;background:transparent!important;border:0!important;box-shadow:none!important
       }
     }
     @media(max-width:390px){
@@ -78,6 +85,9 @@ function anaSayfaMi(){
 
 function eskiFazlaLogoTemizle(top){
   top.querySelectorAll('.koruk-mobile-school-logo').forEach(el=>el.remove());
+  top.querySelectorAll('.topbar-brand').forEach(el=>el.style.setProperty('display','none','important'));
+  const anaLogo = $('#korukTopbarSchoolLogo',top);
+  top.querySelectorAll('[id^="korukTopbarSchoolLogo"]').forEach(el=>{ if(el!==anaLogo) el.remove(); });
 }
 
 function metaKur(page){
@@ -96,6 +106,39 @@ function metaKur(page){
   if(hava && hava.parentElement !== meta) meta.appendChild(hava);
 }
 
+function anaSayfayaGit(){
+  try{
+    const anaNav = document.querySelector('.nav-tab[data-tab="panel"],[data-tab="panel"]');
+    if(anaNav && typeof anaNav.click === 'function') anaNav.click();
+    else if(typeof window.sekmeAc === 'function') window.sekmeAc('panel');
+    else if(typeof sekmeAc === 'function') sekmeAc('panel');
+  }catch(_){}
+  setTimeout(function(){
+    const panel = document.getElementById('tab-panel');
+    try{ window.scrollTo({top:0,left:0,behavior:'smooth'}); }catch(_){ window.scrollTo(0,0); }
+    if(panel){
+      try{ panel.scrollTo({top:0,left:0,behavior:'smooth'}); }catch(_){}
+      try{ panel.scrollIntoView({block:'start',behavior:'smooth'}); }catch(_){}
+    }
+    const kaydiricilar = document.querySelectorAll('.main-content,.content,.app-content,#mainContent');
+    kaydiricilar.forEach(function(el){ try{ el.scrollTo({top:0,left:0,behavior:'smooth'}); }catch(_){} });
+  },50);
+}
+
+function tiklamaKur(top,page){
+  const logo = $('#korukTopbarSchoolLogo',top);
+  const baslik = $('#korukTopbarPage',page);
+  [logo,baslik].forEach(function(el){
+    if(!el || el.dataset.anaSayfaTiklama === '1') return;
+    el.dataset.anaSayfaTiklama = '1';
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label','Ana sayfaya git');
+    el.addEventListener('click',anaSayfayaGit);
+    el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();anaSayfayaGit();} });
+  });
+}
+
 function baslikKur(){
   if(!mobilMi()) return false;
   stilKur();
@@ -107,6 +150,7 @@ function baslikKur(){
   if(!page) return false;
 
   metaKur(page);
+  tiklamaKur(top,page);
 
   const baslik = $('#korukTopbarPage',page);
   if(baslik && anaSayfaMi() && baslik.textContent !== 'KORUK İLK-ORTAOKULU'){
