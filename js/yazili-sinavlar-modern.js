@@ -1,4 +1,4 @@
-/* Koruk Asistan — Yazılı Sınavlar Modern v2 */
+/* Koruk Asistan — Yazılı Sınavlar Modern v3 */
 (function(){
   'use strict';
 
@@ -60,6 +60,13 @@
     if(overlay) overlay.classList.add('ys-exam-overlay');
     if(modal) modal.classList.add('ys-exam-modal');
 
+    const titleEl=document.getElementById('modalTitle') || (modal && modal.querySelector('.modal-title'));
+    if(titleEl){
+      titleEl.classList.add('ys-exam-title');
+      let titleWrap=titleEl.parentElement;
+      if(titleWrap && modal && titleWrap!==modal && modal.contains(titleWrap)) titleWrap.classList.add('ys-exam-header');
+    }
+
     const body=document.getElementById('modalBody') || (modal && modal.querySelector('.modal-body')) || ders.closest('.modal-content') || ders.parentElement;
     if(!body) return true;
     body.classList.add('ys-exam-modal-body');
@@ -67,7 +74,7 @@
     if(!body.querySelector('.ys-modal-intro')){
       const intro=document.createElement('div');
       intro.className='ys-modal-intro';
-      const baslik=(document.getElementById('modalTitle')?.textContent || modal?.querySelector('.modal-title')?.textContent || '').toLocaleLowerCase('tr');
+      const baslik=(titleEl?.textContent || '').toLocaleLowerCase('tr');
       const duzenleme=baslik.includes('düzenle');
       intro.innerHTML='<div class="ys-modal-intro-icon">✓</div><div><strong>'+(duzenleme?'Sınav kaydını güncelle':'Yeni yazılı sınav oluştur')+'</strong><span>Sınıf, ders, tarih ve sınav ayrıntılarını düzenli biçimde tamamlayın.</span></div>';
       body.insertBefore(intro,body.firstChild);
@@ -104,6 +111,12 @@
 
     const footer=(modal && (modal.querySelector('.modal-footer')||modal.querySelector('.modal-actions')||modal.querySelector('.modal-buttons'))) || document.getElementById('modalFooter');
     if(footer) footer.classList.add('ys-exam-footer');
+
+    /* Modal gövdesi, başlık ve alt aksiyonlar arasında kalan tek kaydırılabilir alan olsun. */
+    if(modal){
+      modal.style.display='flex';
+      modal.style.flexDirection='column';
+    }
     return true;
   }
 
