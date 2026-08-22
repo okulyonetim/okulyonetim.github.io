@@ -15,7 +15,7 @@ const svg=(ad)=>{
     eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.1 12s3.6-6 9.9-6 9.9 6 9.9 6-3.6 6-9.9 6-9.9-6-9.9-6Z"/><circle cx="12" cy="12" r="2.6"/></svg>',
     eyeOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.1A10.8 10.8 0 0 1 12 5c6.3 0 9.9 7 9.9 7a17.8 17.8 0 0 1-2.3 3.2"/><path d="M6.6 6.6C3.7 8.4 2.1 12 2.1 12s3.6 7 9.9 7a9.7 9.7 0 0 0 4.1-.9"/></svg>',
     profile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
-    settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg>',
+    settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3-1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg>',
     theme:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
     logout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>'
   };
@@ -25,9 +25,17 @@ const svg=(ad)=>{
 function korumaStiliEkle(){
   if($('#korukHeaderV2Guards'))return;
   const s=document.createElement('style');s.id='korukHeaderV2Guards';s.textContent=`
-    .koruk-topbar .topbar-bell,.koruk-topbar .topbar-avatar,.koruk-topbar #topbarGeriBtn,.koruk-topbar #topbarHamburger{position:relative!important}
+    .koruk-topbar .topbar-bell,.koruk-topbar .topbar-avatar,.koruk-topbar #topbarGeriBtn{position:relative!important}
     .koruk-topbar #topbarGeriBtn[style*="display:none"],.koruk-topbar #topbarGeriBtn[style*="display: none"]{display:none!important}
-    @media(min-width:1024px){.koruk-topbar #topbarHamburger{display:none!important}}
+    .koruk-topbar-school-logo{width:42px;height:42px;min-width:42px;display:grid;place-items:center;border:0;background:transparent;padding:0;margin:0 3px 0 0}
+    .koruk-topbar-school-logo img{width:40px;height:40px;display:block;object-fit:contain;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(20,90,70,.12)}
+    .koruk-topbar-page .koruk-topbar-weather{display:flex;align-items:center;gap:5px;margin-top:3px;color:var(--khdr-green);font:800 10px/1.1 Manrope,Inter,sans-serif;white-space:nowrap}
+    @media(min-width:1024px){.koruk-topbar-school-logo{display:none!important}}
+    @media(max-width:1023px){
+      .koruk-topbar-page strong{font-size:13.5px!important}
+      .koruk-topbar-page .koruk-topbar-weather{font-size:10px!important}
+      .koruk-topbar #topbarHava{display:none!important}
+    }
   `;document.head.appendChild(s);
 }
 function temaIkon(){return document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙'}
@@ -65,17 +73,26 @@ function loginKur(){
 
 function temizMetin(v){return String(v||'').replace(/[🏠📚🛡️📋👥🎓🚌📁⚙️🔎📊📝📅📣🗺️⭐🎗️📌🧾🏫]/g,'').trim()}
 function aktifSayfaAdi(){
-  const panel=$('.tab-panel.active');if(!panel||!panel.id)return'Genel Bakış';
-  const tab=panel.id.replace(/^tab-/,'');if(tab==='panel')return'Genel Bakış';
+  const panel=$('.tab-panel.active');if(!panel||!panel.id)return'Koruk İlk-Ortaokulu';
+  const tab=panel.id.replace(/^tab-/,'');if(tab==='panel')return'Koruk İlk-Ortaokulu';
   const esc=(window.CSS&&typeof CSS.escape==='function')?CSS.escape(tab):tab.replace(/[^a-zA-Z0-9_-]/g,'');
   const nav=document.querySelector(`.nav-tab[data-tab="${esc}"] .nt-label`);if(nav&&nav.textContent.trim())return temizMetin(nav.textContent);
   const baslik=$('.page-title',panel)||$('h2',panel);return baslik&&baslik.textContent.trim()?temizMetin(baslik.textContent):'Koruk Asistan';
 }
-function headerBaslikGuncelle(){const el=$('#korukTopbarPage');if(!el)return;const ad=aktifSayfaAdi();if(el.textContent!==ad)el.textContent=ad}
+function havaMetniOku(){
+  const h=$('#topbarHava');
+  if(h&&h.textContent.trim())return h.textContent.replace(/\s+/g,' ').trim().replace(/°(?!C)/,'°C');
+  const hero=$('.hero-hava-sicaklik');
+  return hero&&hero.textContent.trim()?('🌡️ '+hero.textContent.trim()):'Hava durumu yükleniyor';
+}
+function headerBaslikGuncelle(){
+  const el=$('#korukTopbarPage');if(el){const ad=aktifSayfaAdi();if(el.textContent!==ad)el.textContent=ad}
+  const h=$('#korukTopbarWeather');if(h){const metin=havaMetniOku();if(h.textContent!==metin)h.textContent=metin}
+}
 function profilMenuKapat(){const m=$('.koruk-user-menu');if(m)m.classList.remove('acik')}
-function profilAc(){try{if(typeof AltNav!=='undefined'&&AltNav&&typeof AltNav.profilAc==='function'){AltNav.profilAc();return}}catch(_){}try{if(typeof profilVeyaSecimAc==='function')profilVeyaSecimAc()}catch(_){}}
+function profilAc(){try{if(typeof AltNav!=='undefined'&&AltNav&&typeof AltNav.profilAc==='function'){AltNav.profilAc();return}}catch(_){}try{if(typeof profilVeyaSecimAc==='function')profilVeyaSecimAc()}catch(_){} }
 function ayarlarAc(){try{if(typeof sekmeAc==='function')sekmeAc('ayarlar')}catch(_){}profilMenuKapat()}
-function cikis(){try{if(typeof cikisYap==='function')cikisYap()}catch(_){}}
+function cikis(){try{if(typeof cikisYap==='function')cikisYap()}catch(_){} }
 function uygulamaTemaDegistir(){const b=$('#temaDugmesiTopbar')||$('#temaDugmesi');if(b){b.click();return}loginTemaDegistir()}
 function metinAyarla(el,v){if(el&&el.textContent!==v)el.textContent=v}
 function hesapBilgisiGuncelle(){
@@ -85,10 +102,18 @@ function hesapBilgisiGuncelle(){
   if(avatar&&src&&avatar.dataset.korukAvatarSrc!==src){avatar.dataset.korukAvatarSrc=src;avatar.innerHTML=`<img src="${src.replace(/"/g,'&quot;')}" alt=""><span class="koruk-avatar-status"></span>`}
 }
 
+function okulLogosuKur(top){
+  if(!top||$('#korukTopbarSchoolLogo',top))return;
+  const hamburger=$('#topbarHamburger',top);if(!hamburger)return;
+  const logo=document.createElement('div');logo.id='korukTopbarSchoolLogo';logo.className='koruk-topbar-school-logo';
+  logo.innerHTML='<img src="assets/icon-192.png" alt="Koruk İlk-Ortaokulu logosu">';
+  hamburger.replaceWith(logo);
+}
 function headerKur(){
   const top=$('.topbar');if(!top)return false;top.classList.add('koruk-topbar');
+  okulLogosuKur(top);
   const brand=$('.topbar-brand',top),brandTitle=$('.topbar-title',top);if(brandTitle&&brandTitle.textContent!=='Koruk Asistan')brandTitle.textContent='Koruk Asistan';
-  if(!$('.koruk-topbar-page',top)){const page=document.createElement('div');page.className='koruk-topbar-page';page.innerHTML='<strong id="korukTopbarPage">Genel Bakış</strong><span>Koruk İlk-Ortaokulu</span>';if(brand)brand.insertAdjacentElement('afterend',page);else top.prepend(page)}
+  if(!$('.koruk-topbar-page',top)){const page=document.createElement('div');page.className='koruk-topbar-page';page.innerHTML='<strong id="korukTopbarPage">Koruk İlk-Ortaokulu</strong><span class="koruk-topbar-weather" id="korukTopbarWeather">Hava durumu yükleniyor</span>';if(brand)brand.insertAdjacentElement('afterend',page);else{const logo=$('#korukTopbarSchoolLogo',top);if(logo)logo.insertAdjacentElement('afterend',page);else top.prepend(page)}}
   const bildirim=$('#bildirimZiliPaneli');if(bildirim)bildirim.classList.add('koruk-notification-panel');
   const avatar=$('#topbarAvatar');
   if(avatar&&!avatar.closest('.koruk-user-menu-wrap')){
@@ -108,6 +133,7 @@ function gozlemKur(){
   if(window.__KORUK_HEADER_V2_OBSERVERS__)return;window.__KORUK_HEADER_V2_OBSERVERS__=true;
   document.querySelectorAll('.tab-panel').forEach(p=>new MutationObserver(yenilePlanla).observe(p,{attributes:true,attributeFilter:['class']}));
   const hesap=$('#sidebarHesap');if(hesap)new MutationObserver(yenilePlanla).observe(hesap,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['src','style']});
+  const hava=$('#topbarHava');if(hava)new MutationObserver(yenilePlanla).observe(hava,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style']});
   document.addEventListener('click',e=>{if(e.target.closest('.nav-tab,[data-tab]'))setTimeout(yenilePlanla,20)},true);window.addEventListener('hashchange',yenilePlanla);
 }
 function baslat(){korumaStiliEkle();loginKur();headerKur();gozlemKur()}
