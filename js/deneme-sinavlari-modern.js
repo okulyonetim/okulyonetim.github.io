@@ -1,4 +1,4 @@
-/* Koruk Asistan — Deneme Sınavları Modern v1 */
+/* Koruk Asistan — Deneme Sınavları Modern v2 */
 (function(){
   'use strict';
 
@@ -8,6 +8,35 @@
     var d=new Date(iso+'T00:00:00');
     if(isNaN(d.getTime())) return null;
     return Math.round((d-t)/86400000);
+  }
+
+  function denemeSiraliListe(){
+    if(typeof denemeSinavlari==='undefined' || !Array.isArray(denemeSinavlari)) return [];
+    var bugun=new Date(); bugun.setHours(0,0,0,0);
+    var bugunIso=bugun.getFullYear()+'-'+String(bugun.getMonth()+1).padStart(2,'0')+'-'+String(bugun.getDate()).padStart(2,'0');
+    return denemeSinavlari.slice().sort(function(a,b){
+      var at=a.tarih||'', bt=b.tarih||'';
+      var aGelecek=at>=bugunIso, bGelecek=bt>=bugunIso;
+      if(aGelecek!==bGelecek) return aGelecek?-1:1;
+      if(aGelecek) return at.localeCompare(bt) || String(b.eklenmeTarihi||'').localeCompare(String(a.eklenmeTarihi||''));
+      return bt.localeCompare(at) || String(b.eklenmeTarihi||'').localeCompare(String(a.eklenmeTarihi||''));
+    });
+  }
+
+  function kartIdBul(kart){
+    var fn=kart.getAttribute('onclick')||'';
+    var m=fn.match(/denemeSayacAc\(['\"]([^'\"]+)['\"]\)/);
+    return m?m[1]:'';
+  }
+
+  function listeyiSirala(root){
+    var liste=root.querySelector('#denemeSinavlariListesi');
+    if(!liste) return;
+    var kartlar=Array.prototype.slice.call(liste.querySelectorAll('.dn-kart'));
+    if(kartlar.length<2) return;
+    var harita={};
+    kartlar.forEach(function(k){var id=kartIdBul(k);if(id)harita[id]=k;});
+    denemeSiraliListe().forEach(function(d){if(harita[d.id])liste.appendChild(harita[d.id]);});
   }
 
   function ozetGuncelle(root){
@@ -23,6 +52,13 @@
       }else toplam=root.querySelectorAll('#denemeSinavlariListesi .dn-kart').length;
     }catch(e){ toplam=root.querySelectorAll('#denemeSinavlariListesi .dn-kart').length; }
     [['toplam',toplam],['yaklasan',yaklasan],['aktif',aktif]].forEach(function(x){var el=root.querySelector('[data-dn-stat="'+x[0]+'"] b');if(el)el.textContent=x[1];});
+  }
+
+  function veriGorunumunuYenile(){
+    var root=document.getElementById('tab-denemeSinavlari');
+    if(!root) return;
+    listeyiSirala(root);
+    ozetGuncelle(root);
   }
 
   function sayfaKur(){
@@ -45,10 +81,24 @@
     var liste=root.querySelector('#denemeSinavlariListesi');
     if(liste && liste.dataset.dnObs!=='1'){
       liste.dataset.dnObs='1';
-      new MutationObserver(function(){ozetGuncelle(root);}).observe(liste,{childList:true,subtree:true});
+      new MutationObserver(function(){
+        requestAnimationFrame(function(){listeyiSirala(root);ozetGuncelle(root);});
+      }).observe(liste,{childList:true,subtree:true});
     }
-    ozetGuncelle(root);
+    veriGorunumunuYenile();
     return true;
+  }
+
+  function renderHookKur(){
+    if(window.__korukDenemeRenderHookV2) return;
+    if(typeof window.renderDenemeSinavlari!=='function') return;
+    window.__korukDenemeRenderHookV2=true;
+    var asil=window.renderDenemeSinavlari;
+    window.renderDenemeSinavlari=function(){
+      var sonuc=asil.apply(this,arguments);
+      requestAnimationFrame(function(){sayfaKur();veriGorunumunuYenile();});
+      return sonuc;
+    };
   }
 
   function ton(m){
@@ -88,29 +138,34 @@
     return true;
   }
 
-  function sayaçKur(){
+  function sayacKur(){
     var ov=document.getElementById('denemeSayacOv');
     if(!ov) return false;
-    ov.classList.add('dn-modern-counter');
+    ov.classList.add('dn-modern-counter','dn-counter-v2');
     return true;
   }
 
   function izle(){
-    if(document.documentElement.dataset.dnModernObs==='1') return;
-    document.documentElement.dataset.dnModernObs='1';
+    if(document.documentElement.dataset.dnModernObs==='2') return;
+    document.documentElement.dataset.dnModernObs='2';
     new MutationObserver(function(){
-      setTimeout(function(){denemeModalTasarimla();sayaçKur();sayfaKur();},0);
-    }).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});
+      setTimeout(function(){denemeModalTasarimla();sayacKur();sayfaKur();renderHookKur();},0);
+    }).observe(document.body,{childList:true,subtree:true});
   }
 
   function baslat(){
+    renderHookKur();
     sayfaKur();
     izle();
+    /* İlk Firestore snapshot'ı, ekran ilk açıldığında modern katmandan daha geç
+       gelebilir. Render hook bunu yakalar; aşağıdaki kısa gecikmeli senkron da
+       eski cihazlarda/sıcak cache durumunda 0 özet kartının takılı kalmasını önler. */
+    [150,500,1200,2500].forEach(function(ms){setTimeout(function(){renderHookKur();veriGorunumunuYenile();},ms);});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',baslat,{once:true});else baslat();
   document.addEventListener('click',function(e){
-    if(e.target.closest('[data-tab="denemeSinavlari"]'))setTimeout(sayfaKur,50);
+    if(e.target.closest('[data-tab="denemeSinavlari"]'))setTimeout(function(){sayfaKur();veriGorunumunuYenile();},50);
     if(e.target.closest('[onclick*="denemeModalAc"]'))setTimeout(denemeModalTasarimla,40);
-    if(e.target.closest('[onclick*="denemeSayacAc"],#denemeSinavlariListesi .dn-kart'))setTimeout(sayaçKur,20);
+    if(e.target.closest('[onclick*="denemeSayacAc"],#denemeSinavlariListesi .dn-kart'))setTimeout(sayacKur,20);
   },true);
 })();
