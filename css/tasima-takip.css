@@ -1,38 +1,32 @@
 @import url('./web-desktop.css');
 
 /* =============================================
-   css/tasima-takip.css
-   TAŞIMA TAKİP ÇİZELGESİ — Servis Kartı Butonu
-   (Çizelgenin kendisi sayfa içi bir overlay'de
-   açılır; bu dosya tetikleyici butonu ve overlay
-   açıkken yazdırma davranışını stiller.)
+   TAŞIMA TAKİP ÇİZELGESİ — mevcut bileşenin kendi v4 stili
    ============================================= */
-
 .btn-takip-cizelge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: linear-gradient(135deg, #1b5e20, #2e7d32);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-  transition: all 0.18s;
-  margin-top: 5px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:36px;
+  padding:7px 11px;
+  margin-top:5px;
+  border:1px solid var(--v4-border-strong, #cad6dc);
+  border-radius:10px;
+  background:var(--v4-surface, #fff);
+  color:var(--v4-accent-strong, #08756f);
+  box-shadow:none;
+  font:750 12px Manrope,Inter,sans-serif;
+  cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,transform .12s ease;
 }
 .btn-takip-cizelge:hover {
-  background: linear-gradient(135deg, #2e7d32, #43a047);
-  transform: translateY(-1px);
-  box-shadow: 3px 3px 8px rgba(0,0,0,0.25);
+  background:var(--v4-accent-soft, #e8f6f4);
+  border-color:var(--v4-accent, #118f86);
 }
+.btn-takip-cizelge:active { transform:translateY(1px); }
 
-/* Overlay açıkken yazdırma tetiklenirse ana sayfanın geri kalanı
-   gizlensin, sadece overlay içindeki iframe içeriği yazdırılsın. */
 @media print {
-  body.tt-overlay-acik > *:not(#ttOverlay) { display: none !important; }
-  #ttOverlay #ttToolbar { display: none !important; }
+  body.tt-overlay-acik > *:not(#ttOverlay) { display:none !important; }
+  #ttOverlay #ttToolbar { display:none !important; }
 }
