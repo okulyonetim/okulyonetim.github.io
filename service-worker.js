@@ -1,7 +1,7 @@
 /* ====================================================================
    Okul Yönetim Paneli — Service Worker v7
    ==================================================================== */
-const CACHE_ADI = 'oy-cache-v524';
+const CACHE_ADI = 'oy-cache-v525';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -18,7 +18,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 const ONBELLEGE_ALINACAKLAR = [
   './','./index.html','./manifest.json',
-  './css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css',
+  './css/styles.css','./css/tasima-takip.css','./css/servis-denetim.css','./css/dilekce.css','./css/sinif-oturma.css','./css/devamsizlik-cizelgesi.css',
   './css/web-shell-fix.css','./css/web-sidebar-v2.css','./css/dashboard-yeni.css','./css/dashboard-home.css','./css/dashboard-home-neutral.css','./css/dashboard-home-colors.css','./css/alt-navigation-theme.css','./css/app-v4-theme.css','./css/checkbox-standard.css','./css/modal-interaction-fix.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js','./js/push.js',
   './js/core/utils.js','./js/core/store.js','./js/core/event-bus.js','./js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/alt-navigation-list-theme.js','./js/ui-stability-fixes.js','./js/app-pages-theme.js','./js/modal-interaction-fix.js',
