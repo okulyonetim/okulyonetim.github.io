@@ -46,7 +46,7 @@
   stilYukle('css/ogretmenler-modern.css?v=2','data-ogretmenler-modern-style');
   stilYukle('css/ogretmen-detay-modern.css?v=3','data-ogretmen-detay-modern-style');
   stilYukle('css/dark-theme-soft.css?v=4','data-dark-theme-soft');
-  stilYukle('css/ayarlar-modern.css?v=1','data-ayarlar-modern-style');
+  stilYukle('css/ayarlar-modern.css?v=2','data-ayarlar-modern-style');
   yukle('js/alt-navigasyon-core.js','data-alt-nav-core',function(){
     altNavAktifDurumunuKur();
     yukle('js/alt-navigation-list-theme.js?v=1','data-alt-nav-list-theme',function(){
