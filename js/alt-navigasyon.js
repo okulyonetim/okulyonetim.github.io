@@ -46,7 +46,7 @@
       yukle('js/deneme-sayac-tarih-fix.js?v=2','data-deneme-sayac-tarih-fix',function(){
         yukle('js/deneme-sayac-runtime-v2.js?v=2','data-deneme-sayac-runtime-v2',function(){
           yukle('js/deneme-sinavlari-modern.js?v=3','data-deneme-sinavlari-modern',function(){
-            yukle('js/deneme-sayac-modern-v4.js?v=1','data-deneme-sayac-modern-v4');
+            yukle('js/deneme-sayac-modern-v4.js?v=2','data-deneme-sayac-modern-v4');
           });
         });
       });
