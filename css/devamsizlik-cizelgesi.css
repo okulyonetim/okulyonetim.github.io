@@ -1,86 +1,73 @@
 /* ====================================================================
-   css/devamsizlik-cizelgesi.css
-   Devamsızlık Çizelgesi modülü — Excel benzeri ızgara stilleri
+   DEVAMSIZLIK ÇİZELGESİ — mevcut bileşenin kendi v4 stili
    ==================================================================== */
-
+#devamsizlikGridTablo{
+  border-collapse:separate;
+  border-spacing:0;
+  color:var(--v4-text, #202a2f);
+  background:var(--v4-surface, #fff);
+}
 #devamsizlikGridTablo th,
 #devamsizlikGridTablo td {
-  border: 1px solid var(--border);
-  padding: 4px 2px;
+  border:1px solid var(--v4-border, #dce4e8);
+  padding:6px 5px;
 }
-
 #devamsizlikGridTablo thead th {
-  background: var(--bg-card);
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  font-weight: 700;
+  background:var(--v4-surface-3, #eef3f5);
+  color:var(--v4-muted, #66747c);
+  position:sticky;
+  top:0;
+  z-index:2;
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-transform:uppercase;
 }
-
 .dc-th-sabit {
-  position: sticky;
-  background: var(--bg-card);
-  z-index: 1;
-  padding: 4px 6px !important;
+  position:sticky;
+  background:var(--v4-surface-2, #f7f9fb);
+  z-index:1;
+  padding:6px 8px !important;
 }
-
-thead .dc-th-sabit { z-index: 3; }
-
-/* ---- Adı Soyadı artık TEK sabit (sticky) sütun ----
-   No ve Görevi artık sağa kaydırınca ekrandan çıkar (sticky değil) — sadece
-   Adı Soyadı left:0'da sabit kalır. Tek sticky sütun kaldığı için left ofseti
-   ile genişlik arasında senkron kaybı riski de ortadan kalkmış oluyor. */
-.dc-col-ad { left: 0; }
-.dc-th-sabit.dc-col-ad { min-width: 150px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
-
-/* No ve Görevi: sadece genişlik amaçlı, sticky DEĞİL. */
-.dc-col-no    { min-width: 28px; }
-.dc-col-gorev { min-width: 110px; }
-
-/* Adı Soyadı artık tıklanabilir (haftalık ders saatleri popup'ını açar) */
-.dc-ad-tikla { cursor: pointer; }
-.dc-ad-tikla:hover { text-decoration: underline; }
-
-/* ---- Toplam Saat / Toplam Devam / Toplam Devamsız / Açıklama sütunları ----
-   Gün sütunlarından ayırt edilsinler diye ince bir ayraç ve Açıklama için
-   sabit bir genişlik (uzun metinler '...' ile kısaltılır, tıklayınca
-   düzenleme popup'ı tam metni gösterir). */
-.dc-col-toplam-ilk { border-left: 2px solid var(--border); }
-.dc-col-aciklama { min-width: 110px; max-width: 160px; }
-
-@media (max-width: 640px) {
-  .dc-col-aciklama { min-width: 80px; max-width: 110px; }
+thead .dc-th-sabit { z-index:3; }
+.dc-col-ad { left:0; }
+.dc-th-sabit.dc-col-ad {
+  min-width:150px;
+  max-width:150px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  box-shadow:8px 0 14px rgba(20,35,44,.05);
 }
-
+.dc-col-no { min-width:28px; }
+.dc-col-gorev { min-width:110px; }
+.dc-ad-tikla { cursor:pointer; }
+.dc-ad-tikla:hover { color:var(--v4-accent-strong, #08756f); }
+.dc-col-toplam-ilk { border-left:2px solid var(--v4-border-strong, #cad6dc) !important; }
+.dc-col-aciklama { min-width:110px; max-width:160px; }
 .dc-hucre {
-  cursor: pointer;
-  font-weight: 700;
-  color: #1a2a2a;
-  transition: filter 0.15s;
+  cursor:pointer;
+  font-weight:750;
+  color:var(--v4-text, #202a2f);
+  background:var(--v4-surface, #fff);
+  transition:background .15s ease,border-color .15s ease;
 }
-
 .dc-hucre:hover {
-  filter: brightness(0.92);
-  outline: 2px solid var(--ink);
-  outline-offset: -2px;
+  filter:none;
+  outline:none;
+  background:var(--v4-accent-soft, #e8f6f4);
+  border-color:var(--v4-accent, #118f86);
 }
-
-@media (max-width: 640px) {
-  #devamsizlikGridTablo { font-size: 10px; }
-  .dc-th-sabit.dc-col-ad { min-width: 90px; max-width: 90px; }
-  .dc-col-no    { min-width: 22px; }
-  .dc-col-gorev { min-width: 70px; }
-}
-
-/* ---- Popup (modal) seçenek butonları: white-space:nowrap taşmasını önle ----
-   .btn genel sınıfı nowrap uyguluyor; grid hücresi içindeki buton bu yüzden
-   1fr sütur genişliğini göz ardı edip metin genişliğine göre büyüyor ve
-   modal dışına taşıyordu. Bu sınıf grid içindeki butonlara özel olarak
-   metnin sarmasına ve butonun sütun genişliğine sıkışmasına izin verir. */
 .dc-modal-btn {
-  white-space: normal !important;
-  min-width: 0;
-  width: 100%;
-  word-break: break-word;
-  box-sizing: border-box;
+  white-space:normal !important;
+  min-width:0;
+  width:100%;
+  word-break:break-word;
+  box-sizing:border-box;
+}
+@media (max-width:640px) {
+  #devamsizlikGridTablo { font-size:10px; }
+  .dc-th-sabit.dc-col-ad { min-width:96px; max-width:96px; }
+  .dc-col-no { min-width:24px; }
+  .dc-col-gorev { min-width:76px; }
+  .dc-col-aciklama { min-width:86px; max-width:112px; }
 }
