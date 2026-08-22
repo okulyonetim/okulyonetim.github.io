@@ -1,9 +1,9 @@
-/* Koruk Asistan — Öğretmen detay modern katmanı v2
+/* Koruk Asistan — Öğretmen detay modern katmanı v3
    Mevcut ogretmenDetayAc veri/yetki mantığını korur; açılan gerçek detay DOM'unu modernleştirir. */
 (function(){'use strict';
 let sonId=null, isleniyor=false;
 function esc(s){return typeof escapeHtml==='function'?escapeHtml(s||''):String(s||'').replace(/[&<>"']/g,'')}
-function stilGaranti(){if(document.querySelector('link[data-ogd-direct]'))return;const l=document.createElement('link');l.rel='stylesheet';l.href='css/ogretmen-detay-modern.css?v=2';l.setAttribute('data-ogd-direct','1');document.head.appendChild(l)}
+function stilGaranti(){if(document.querySelector('link[data-ogd-direct]'))return;const l=document.createElement('link');l.rel='stylesheet';l.href='css/ogretmen-detay-modern.css?v=3';l.setAttribute('data-ogd-direct','1');document.head.appendChild(l)}
 function avatar(o){const src=o.fotograf||o.foto||o.photoURL||o.profilFoto||'';if(src)return `<img src="${esc(src)}" alt="">`;return esc(((o.ad||'?')[0]+(o.soyad||'')[0]).toLocaleUpperCase('tr'))}
 function bolumIkon(b){const t=(b||'').toLocaleLowerCase('tr');if(t.includes('temel'))return'👤';if(t.includes('ders'))return'📚';if(t.includes('nöbet'))return'🛡️';if(t.includes('kulüp'))return'👥';if(t.includes('belirli'))return'📅';if(t.includes('izin'))return'🏥';if(t.includes('evrak'))return'📄';return'•'}
 function sec(tab){const body=document.getElementById('detayBody');if(!body)return;body.querySelectorAll('.ogd-tab').forEach(b=>b.classList.toggle('active',b.dataset.ogd===tab));body.querySelectorAll('.detay-card').forEach(c=>{const grup=c.dataset.ogdGrup||'diger';c.classList.toggle('ogd-hidden',tab!=='tumu'&&grup!==tab)})}
