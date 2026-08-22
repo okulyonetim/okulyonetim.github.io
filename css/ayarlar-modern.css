@@ -1,28 +1,50 @@
-/* Koruk Asistan — Ayarlar Merkezi v1 */
-#tab-ayarlar.ayarlar-modern{max-width:980px;margin:0 auto;padding:18px 18px 120px!important;background:transparent!important;color:var(--ink)}
-#tab-ayarlar.ayarlar-modern>.page-header{margin:0 0 18px!important;padding:22px 22px 20px!important;border:1px solid var(--border)!important;border-radius:22px!important;background:linear-gradient(145deg,var(--bg-card),var(--bg-app-soft))!important;box-shadow:var(--shadow-sm)!important}
-#tab-ayarlar.ayarlar-modern>.page-header .page-title{font-size:24px!important;font-weight:850!important;letter-spacing:-.02em!important}
-#tab-ayarlar.ayarlar-modern>.page-header .page-sub{margin-top:6px!important;font-size:12.5px!important;color:var(--ink-muted)!important;line-height:1.45!important}
-#tab-ayarlar.ayarlar-modern .accordion-item{margin:0 0 10px!important;border:1px solid var(--border)!important;border-radius:18px!important;background:var(--bg-card)!important;box-shadow:none!important;overflow:hidden!important}
-#tab-ayarlar.ayarlar-modern .accordion-header{min-height:64px!important;padding:14px 16px!important;background:transparent!important;border:0!important;color:var(--ink)!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;font-size:14px!important;font-weight:800!important;cursor:pointer!important}
-#tab-ayarlar.ayarlar-modern .accordion-header>span:first-child{display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important}
-#tab-ayarlar.ayarlar-modern .accordion-header .arrow{width:32px!important;height:32px!important;border-radius:10px!important;display:grid!important;place-items:center!important;background:var(--bg-secondary)!important;color:var(--ink-muted)!important;font-size:11px!important;flex:0 0 auto!important;transition:transform .18s ease,background .18s ease,color .18s ease!important}
-#tab-ayarlar.ayarlar-modern .accordion-header:has(+ .accordion-content.open) .arrow{transform:rotate(180deg)!important;background:var(--an-accent-soft)!important;color:var(--an-accent)!important}
-#tab-ayarlar.ayarlar-modern .accordion-content{padding:0 16px!important;background:transparent!important;border:0!important;color:var(--ink)!important}
-#tab-ayarlar.ayarlar-modern .accordion-content.open{padding:0 16px 16px!important;border-top:1px solid var(--border-soft)!important}
-#tab-ayarlar.ayarlar-modern .accordion-content>p:first-child{margin:13px 0 14px!important;color:var(--ink-muted)!important;font-size:12.5px!important;line-height:1.55!important;font-weight:500!important}
-#tab-ayarlar.ayarlar-modern label{display:block!important;margin:10px 0 6px!important;color:var(--ink-soft)!important;font-size:11.5px!important;font-weight:750!important}
-#tab-ayarlar.ayarlar-modern input,#tab-ayarlar.ayarlar-modern select,#tab-ayarlar.ayarlar-modern textarea{width:100%!important;min-height:44px!important;padding:10px 12px!important;border-radius:12px!important;background:var(--bg-secondary)!important;color:var(--ink)!important;border:1px solid var(--border)!important;box-shadow:none!important}
-#tab-ayarlar.ayarlar-modern input:focus,#tab-ayarlar.ayarlar-modern select:focus,#tab-ayarlar.ayarlar-modern textarea:focus{outline:none!important;border-color:var(--an-accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--an-accent) 14%,transparent)!important}
-#tab-ayarlar.ayarlar-modern .btn{min-height:42px!important;border-radius:12px!important;font-weight:800!important;box-shadow:none!important}
-#tab-ayarlar.ayarlar-modern .btn-amber{background:var(--an-accent)!important;border-color:var(--an-accent)!important;color:#07101a!important}
+/* Koruk Asistan — Ayarlar Merkezi v2 / yüksek kontrast */
+#tab-ayarlar.ayarlar-modern{max-width:980px;margin:0 auto;padding:18px 18px 120px!important;background:transparent!important;color:#18212c!important}
+#tab-ayarlar.ayarlar-modern>.page-header{margin:0 0 20px!important;padding:22px!important;border:1px solid #ccd6e2!important;border-radius:22px!important;background:linear-gradient(145deg,#f8fbff,#eaf1f8)!important;box-shadow:0 8px 24px rgba(28,43,61,.08)!important}
+#tab-ayarlar.ayarlar-modern>.page-header .page-title{font-size:24px!important;font-weight:850!important;letter-spacing:-.02em!important;color:#152133!important;text-shadow:none!important}
+#tab-ayarlar.ayarlar-modern>.page-header .page-sub{margin-top:6px!important;font-size:12.5px!important;color:#536170!important;line-height:1.45!important;font-weight:600!important}
+#tab-ayarlar.ayarlar-modern .ayarlar-modern-group-label{margin:22px 2px 9px!important;color:#4a5968!important;font-size:10.5px!important;font-weight:900!important;letter-spacing:.11em!important;text-transform:uppercase!important}
+#tab-ayarlar.ayarlar-modern .accordion-item{margin:0 0 10px!important;border:1px solid #ccd6e2!important;border-radius:18px!important;background:#ffffff!important;box-shadow:0 3px 12px rgba(27,42,58,.045)!important;overflow:hidden!important}
+#tab-ayarlar.ayarlar-modern .accordion-header{min-height:64px!important;padding:14px 16px!important;background:#fff!important;border:0!important;color:#18212c!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;font-size:14px!important;font-weight:850!important;cursor:pointer!important}
+#tab-ayarlar.ayarlar-modern .accordion-header>span:first-child{display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important;color:#18212c!important}
+#tab-ayarlar.ayarlar-modern .accordion-header .arrow{width:32px!important;height:32px!important;border-radius:10px!important;display:grid!important;place-items:center!important;background:#edf2f7!important;color:#536170!important;border:1px solid #dbe3ec!important;font-size:11px!important;flex:0 0 auto!important;transition:transform .18s ease,background .18s ease,color .18s ease!important}
+#tab-ayarlar.ayarlar-modern .accordion-header:has(+ .accordion-content.open) .arrow{transform:rotate(180deg)!important;background:#e8f2ff!important;color:#1769c2!important;border-color:#bdd8f6!important}
+#tab-ayarlar.ayarlar-modern .accordion-content{padding:0 16px!important;background:#fff!important;border:0!important;color:#24303d!important}
+#tab-ayarlar.ayarlar-modern .accordion-content.open{padding:0 16px 16px!important;border-top:1px solid #e0e6ed!important}
+#tab-ayarlar.ayarlar-modern .accordion-content p,#tab-ayarlar.ayarlar-modern .accordion-content>p:first-child{margin:13px 0 14px!important;color:#536170!important;font-size:12.5px!important;line-height:1.55!important;font-weight:550!important}
+#tab-ayarlar.ayarlar-modern label{display:block!important;margin:10px 0 6px!important;color:#364453!important;font-size:11.5px!important;font-weight:800!important}
+#tab-ayarlar.ayarlar-modern input,#tab-ayarlar.ayarlar-modern select,#tab-ayarlar.ayarlar-modern textarea{width:100%!important;min-height:44px!important;padding:10px 12px!important;border-radius:12px!important;background:#f7f9fc!important;color:#18212c!important;border:1px solid #c9d3df!important;box-shadow:none!important}
+#tab-ayarlar.ayarlar-modern input::placeholder,#tab-ayarlar.ayarlar-modern textarea::placeholder{color:#7a8795!important}
+#tab-ayarlar.ayarlar-modern input:focus,#tab-ayarlar.ayarlar-modern select:focus,#tab-ayarlar.ayarlar-modern textarea:focus{outline:none!important;border-color:#3488e8!important;box-shadow:0 0 0 3px rgba(52,136,232,.12)!important}
+#tab-ayarlar.ayarlar-modern .btn{min-height:42px!important;border-radius:12px!important;font-weight:850!important;box-shadow:none!important}
+#tab-ayarlar.ayarlar-modern .btn-amber,#tab-ayarlar.ayarlar-modern .btn-primary{background:#1769c2!important;border-color:#1769c2!important;color:#fff!important;text-shadow:none!important}
+#tab-ayarlar.ayarlar-modern .btn-amber:hover,#tab-ayarlar.ayarlar-modern .btn-primary:hover{background:#125aa8!important;border-color:#125aa8!important}
 #tab-ayarlar.ayarlar-modern>.card{margin:12px 0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
 #tab-ayarlar.ayarlar-modern #ozelMenuYonetimBolumu{margin:0 0 10px!important}
-#tab-ayarlar.ayarlar-modern .ayarlar-modern-group-label{margin:22px 2px 9px!important;color:var(--ink-muted)!important;font-size:10.5px!important;font-weight:900!important;letter-spacing:.1em!important;text-transform:uppercase!important}
-#tab-ayarlar.ayarlar-modern .ayarlar-modern-note{margin:0 0 14px!important;padding:11px 13px!important;border-radius:13px!important;background:var(--bg-secondary)!important;border:1px solid var(--border-soft)!important;color:var(--ink-muted)!important;font-size:11.5px!important;line-height:1.45!important}
-html[data-theme="dark"] #tab-ayarlar.ayarlar-modern>.page-header{background:linear-gradient(145deg,#101827,#17132a)!important;border-color:#242b36!important}
-html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-item{background:#11151d!important;border-color:#242b36!important}
-html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-header .arrow{background:#171c26!important;color:#929baa!important}
-html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-header:has(+ .accordion-content.open) .arrow{background:#132a47!important;color:#69b3ff!important}
-html[data-theme="dark"] #tab-ayarlar.ayarlar-modern input,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern select,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern textarea{background:#151a23!important;border-color:#303947!important}
+#tab-ayarlar.ayarlar-modern .ayarlar-modern-note{margin:0 0 14px!important;padding:11px 13px!important;border-radius:13px!important;background:#f4f7fb!important;border:1px solid #d8e0e9!important;color:#536170!important;font-size:11.5px!important;line-height:1.45!important}
+/* Dinamik yönetim listelerinde okunabilirlik */
+#tab-ayarlar.ayarlar-modern #dersListesiYonetim>*,#tab-ayarlar.ayarlar-modern #bransListesiYonetim>*,#tab-ayarlar.ayarlar-modern #hatirlatmaAyarForm>*,#tab-ayarlar.ayarlar-modern #depolamaAyarForm>*{color:#24303d!important}
+#tab-ayarlar.ayarlar-modern button:not(.accordion-header):not(.arrow){text-shadow:none!important}
+#tab-ayarlar.ayarlar-modern button[style*="background"]{color:#fff!important}
+#tab-ayarlar.ayarlar-modern button[title*="Sil"],#tab-ayarlar.ayarlar-modern button[aria-label*="Sil"]{background:#fff!important;color:#c43b48!important;border:1px solid #e4b9bf!important}
+
+/* Koyu tema — graphite + electric blue */
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern{color:#f5f7fb!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern>.page-header{background:linear-gradient(145deg,#101827,#17132a)!important;border-color:#29313e!important;box-shadow:0 8px 24px rgba(0,0,0,.30)!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern>.page-header .page-title{color:#f7f9fd!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern>.page-header .page-sub{color:#aab2c0!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .ayarlar-modern-group-label{color:#8f9aaa!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-item{background:#11151d!important;border-color:#29313e!important;box-shadow:none!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-header{background:#11151d!important;color:#f5f7fb!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-header>span:first-child{color:#f5f7fb!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-header .arrow{background:#171c26!important;color:#9da7b5!important;border-color:#29313e!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-header:has(+ .accordion-content.open) .arrow{background:#132a47!important;color:#69b3ff!important;border-color:#244f82!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-content{background:#11151d!important;color:#dce2eb!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-content.open{border-top-color:#242b36!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-content p,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .accordion-content>p:first-child{color:#aab2c0!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern label{color:#d3d9e2!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern input,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern select,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern textarea{background:#151a23!important;color:#f7f9fd!important;border-color:#303947!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern .ayarlar-modern-note{background:#151a23!important;border-color:#29313e!important;color:#aab2c0!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern #dersListesiYonetim>*,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern #bransListesiYonetim>*,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern #hatirlatmaAyarForm>*,html[data-theme="dark"] #tab-ayarlar.ayarlar-modern #depolamaAyarForm>*{color:#e5e9f0!important}
+html[data-theme="dark"] #tab-ayarlar.ayarlar-modern button[title*="Sil"],html[data-theme="dark"] #tab-ayarlar.ayarlar-modern button[aria-label*="Sil"]{background:#171c26!important;color:#ff8b95!important;border-color:#52303a!important}
 @media(max-width:640px){#tab-ayarlar.ayarlar-modern{padding:14px 12px 110px!important}#tab-ayarlar.ayarlar-modern>.page-header{padding:18px 16px!important;border-radius:18px!important}#tab-ayarlar.ayarlar-modern>.page-header .page-title{font-size:21px!important}#tab-ayarlar.ayarlar-modern .accordion-header{min-height:58px!important;padding:12px 14px!important;font-size:13px!important}#tab-ayarlar.ayarlar-modern .accordion-content.open{padding:0 14px 14px!important}}
