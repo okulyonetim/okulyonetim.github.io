@@ -13,49 +13,28 @@
     var nav=document.getElementById('bottomNav');
     if(!nav || nav.dataset.activeStateBound==='1') return;
     nav.dataset.activeStateBound='1';
-
     function aktifYap(item){
-      nav.querySelectorAll('.bn-item').forEach(function(btn){
-        btn.classList.remove('active');
-        btn.removeAttribute('aria-current');
-      });
-      if(item){
-        item.classList.add('active');
-        item.setAttribute('aria-current','page');
-      }
+      nav.querySelectorAll('.bn-item').forEach(function(btn){btn.classList.remove('active');btn.removeAttribute('aria-current');});
+      if(item){item.classList.add('active');item.setAttribute('aria-current','page');}
     }
-
-    nav.addEventListener('click',function(e){
-      var item=e.target.closest('.bn-item');
-      if(!item || !nav.contains(item)) return;
-      aktifYap(item);
-    },true);
-
-    requestAnimationFrame(function(){
-      var secili=nav.querySelector('.bn-item.active,[aria-current="page"]');
-      if(secili) aktifYap(secili);
-    });
-
-    window.KorukAltNavAktifYap=function(hedef){
-      var item=typeof hedef==='string' ? nav.querySelector(hedef) : hedef;
-      if(item && item.classList && item.classList.contains('bn-item')) aktifYap(item);
-    };
+    nav.addEventListener('click',function(e){var item=e.target.closest('.bn-item');if(!item||!nav.contains(item))return;aktifYap(item);},true);
+    requestAnimationFrame(function(){var secili=nav.querySelector('.bn-item.active,[aria-current="page"]');if(secili)aktifYap(secili);});
+    window.KorukAltNavAktifYap=function(hedef){var item=typeof hedef==='string'?nav.querySelector(hedef):hedef;if(item&&item.classList&&item.classList.contains('bn-item'))aktifYap(item);};
   }
 
   stilYukle('css/alt-navigation-theme.css?v=13','data-alt-nav-theme');
   stilYukle('css/ogretmenler-modern.css?v=2','data-ogretmenler-modern-style');
   stilYukle('css/ogretmen-detay-modern.css?v=3','data-ogretmen-detay-modern-style');
   stilYukle('css/dark-theme-soft.css?v=4','data-dark-theme-soft');
-  stilYukle('css/ayarlar-modern.css?v=2','data-ayarlar-modern-style');
+  stilYukle('css/ayarlar-modern.css?v=3','data-ayarlar-modern-style');
   yukle('js/alt-navigasyon-core.js','data-alt-nav-core',function(){
     altNavAktifDurumunuKur();
     yukle('js/alt-navigation-list-theme.js?v=1','data-alt-nav-list-theme',function(){
       yukle('js/ui-stability-fixes.js','data-ui-stability');
       yukle('js/ogretmenler-modern.js?v=2','data-ogretmenler-modern');
       yukle('js/ogretmen-detay-modern.js?v=3','data-ogretmen-detay-modern');
-      yukle('js/ayarlar-modern.js?v=1','data-ayarlar-modern');
+      yukle('js/ayarlar-modern.js?v=2','data-ayarlar-modern');
     });
   });
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',altNavAktifDurumunuKur,{once:true});
-  else altNavAktifDurumunuKur();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',altNavAktifDurumunuKur,{once:true}); else altNavAktifDurumunuKur();
 })();
