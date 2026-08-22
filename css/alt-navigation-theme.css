@@ -1,4 +1,4 @@
-/* Koruk Asistan — Alt Navigasyon / Profil tema v10 */
+/* Koruk Asistan — Alt Navigasyon / Profil tema v11 */
 :root{--an-bg:#f2f7f4;--an-surface:#fff;--an-surface-soft:#f7faf8;--an-text:#17352b;--an-muted:#687b73;--an-line:#d7e5de;--an-shadow-soft:0 6px 18px rgba(18,69,52,.07);--an-accent:#14634b;--an-accent-soft:#e5f3ed}
 [data-theme="dark"]{--an-bg:#07110d;--an-surface:#0e1b16;--an-surface-soft:#13251e;--an-text:#edf8f3;--an-muted:#9eb5aa;--an-line:#29483b;--an-shadow-soft:0 8px 22px rgba(0,0,0,.25);--an-accent:#73d6ae;--an-accent-soft:#163b2e}
 .an-grid-katman,.an-liste-katman,.an-profil-katman{background:var(--an-bg)!important;color:var(--an-text)!important}.an-profil-katman{overflow-y:auto!important;overscroll-behavior:contain}
@@ -15,4 +15,22 @@
 /* Profil alt ekranları */
 #modalOverlay .an-alt-grup-baslik{color:var(--an-accent)!important;font-weight:850!important}#modalOverlay .an-liste-ogesi,#modalOverlay .evrak-row{background:var(--an-surface)!important;color:var(--an-text)!important;border:1px solid var(--an-line)!important;border-radius:14px!important;box-shadow:none!important;margin-bottom:7px!important;min-height:54px!important}
 .bottom-nav{background:var(--an-surface)!important;border-top:1px solid var(--an-line)!important;color:var(--an-text)!important}.bottom-nav button,.bottom-nav a{color:var(--an-muted)!important}.bottom-nav .active,.bottom-nav [aria-current="page"]{color:var(--an-accent)!important;background:var(--an-accent-soft)!important}
+
+/* Nöbet programı — mobil/koyu tema düzeltmeleri */
+#tab-nobet>.page-header .page-sub{display:none!important}
+#tab-nobet button[onclick*="nobetOtomatikDagitimModalAc"]{color:#fff!important;background:linear-gradient(135deg,#17684f,#0b4937)!important;border-color:#17684f!important;text-shadow:none!important}
+[data-theme="dark"] #tab-nobet button[onclick*="nobetOtomatikDagitimModalAc"]{color:#f7fffba!important;background:linear-gradient(135deg,#2a8c6e,#17684f)!important;border-color:#4fb58e!important}
+#tab-nobet .cizelge-wrap{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+#tab-nobet #nobetGridTablo{min-width:680px}
+#tab-nobet #nobetAyBasligi{padding-left:0!important}
+#tab-nobet #nobetAyBasligi:before{display:none!important}
+
+/* Mobil ana sayfa hero — hava ve zil kartlarında yatay taşmayı kes */
+#tab-panel.kh-home .kh-hero,#tab-panel.kh-home .kh-live-stack,#tab-panel.kh-home .kh-live-card{max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+#tab-panel.kh-home .kh-live-card{width:100%!important;overflow:hidden!important}
+#tab-panel.kh-home .kh-live-main{min-width:0!important;max-width:100%!important;overflow:hidden!important}
+#tab-panel.kh-home .kh-live-main b,#tab-panel.kh-home .kh-live-main small{max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#tab-panel.kh-home .kh-live-icon{flex:0 0 42px!important;width:42px!important;height:42px!important}
+@media(max-width:420px){#tab-panel.kh-home .kh-hero{padding-left:12px!important;padding-right:12px!important}.kh-live-card{gap:9px!important;padding:10px!important}.kh-live-main b{font-size:17px!important}.kh-live-main small{font-size:10px!important}}
+
 @media(max-width:370px){.an-profil-grup{grid-template-columns:1fr!important}.an-profil-satir{min-height:68px!important}.an-profil-ust{padding-left:104px!important}.an-profil-avatar{width:72px!important;height:72px!important}}
