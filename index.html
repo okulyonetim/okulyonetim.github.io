@@ -7,6 +7,23 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
 <meta name="theme-color" content="#053827">
+<style>
+/* DÜZELTME: mobilde ilk açılışta eski (statik) hero kart + kartlar bir anlık
+   görünüp sonra yeni mobil anasayfa (js/dashboard-home.js, .kh-home) üstüne
+   binmesin diye — yeni sistem devreye girene (#tab-panel .kh-home alsın) ya
+   da 4sn içinde hiç girmezse (aşağıdaki JS fallback, ör. henüz giriş
+   yapılmadıysa) kadar bu eski elemanlar gizli tutuluyor. SADECE mobilde
+   (masaüstünde .kh-home sistemi hiç devreye girmiyor, eski kart orada kalıcı
+   arayüz olduğu için dokunulmuyor). */
+@media (max-width:1023px){
+  #tab-panel.dash-modern:not(.kh-home):not(.dash-hero-goster) .dash-hero,
+  #tab-panel.dash-modern:not(.kh-home):not(.dash-hero-goster) #dashSayacKarti,
+  #tab-panel.dash-modern:not(.kh-home):not(.dash-hero-goster) #bugunIzinliKart,
+  #tab-panel.dash-modern:not(.kh-home):not(.dash-hero-goster) .haber-ticker{
+    display:none!important;
+  }
+}
+</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script src="js/modal-interaction-fix.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1816,6 +1833,17 @@
       izleyici.observe(app, { childList:true, subtree:true, attributes:true, attributeFilter:['data-lucide'] });
     });
   })();
+</script>
+<script>
+  /* DÜZELTME: eski hero kart flash fix'inin güvenlik ağı — yeni mobil
+     anasayfa (.kh-home) 4sn içinde devreye girmezse (ör. henüz giriş
+     yapılmadıysa, ya da dinamik script yükleme zinciri bir sebeple
+     tamamlanmazsa) eski kartı kalıcı olarak tekrar görünür yap; aksi
+     halde kullanıcı boş bir ekranda kalır. */
+  setTimeout(function(){
+    var tp = document.getElementById('tab-panel');
+    if(tp && !tp.classList.contains('kh-home')) tp.classList.add('dash-hero-goster');
+  }, 4000);
 </script>
 </body>
 </html>
