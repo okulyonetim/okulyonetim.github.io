@@ -438,7 +438,8 @@ body.modal-open{overflow:hidden!important;touch-action:auto!important;overscroll
 }
 #tab-nobet .cizelge-wrap>div:first-child .btn:first-child::after{content:'‹';font-size:24px!important;color:var(--ui-text)}
 #tab-nobet .cizelge-wrap>div:first-child .btn:last-child::after{content:'›';font-size:24px!important;color:var(--ui-text)}
-#nobetAyBasligi{
+/* Ay başlığı .page-title sınıfı taşıdığı için genel beyaz başlık kuralından ayrılır. */
+#tab-nobet #nobetAyBasligi.page-title{
   min-width:0!important;
   padding:0!important;
   text-align:center!important;
