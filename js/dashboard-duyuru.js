@@ -9,7 +9,7 @@ if(window.__KH_DUYURU_COMPONENT__)return;
 window.__KH_DUYURU_COMPONENT__=true;
 
 const $=(s,r=document)=>r.querySelector(s);
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 function aktifDuyuru(){
   try{
     if(typeof duyurular==='undefined'||!Array.isArray(duyurular))return null;
@@ -51,8 +51,8 @@ function kartHtml(d){
     ${kisa?`<button type="button" class="kh-announcement-body" data-action="detail">${esc(kisa)}</button>`:''}
     <div class="kh-announcement-footer">
       <label class="kh-read-check ${okundu?'checked':''}">
-        <input type="checkbox" data-action="read" ${okundu?'checked disabled':''}>
-        <span class="kh-read-box">✓</span>
+        <input type="checkbox" data-action="read" ${okundu?'checked disabled':''} style="position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;min-width:1px!important;min-height:1px!important;margin:0!important;clip-path:inset(50%)!important;">
+        <span class="kh-read-box" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></span>
         <span>${okundu?'Okundu olarak işaretlendi':'Okudum'}</span>
       </label>
       ${adminMi()?`<button type="button" class="kh-read-count" data-action="readers"><span>👁</span><b>${okuyan}</b> kişi okudu <span class="arrow">›</span></button>`:''}
