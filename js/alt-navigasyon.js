@@ -11,7 +11,7 @@
   stilYukle('css/alt-navigation-theme.css?v=12','data-alt-nav-theme');
   stilYukle('css/ogretmenler-modern.css?v=2','data-ogretmenler-modern-style');
   stilYukle('css/ogretmen-detay-modern.css?v=3','data-ogretmen-detay-modern-style');
-  stilYukle('css/dark-theme-soft.css?v=2','data-dark-theme-soft');
+  stilYukle('css/dark-theme-soft.css?v=4','data-dark-theme-soft');
   yukle('js/alt-navigasyon-core.js','data-alt-nav-core',function(){
     yukle('js/alt-navigation-list-theme.js?v=1','data-alt-nav-list-theme',function(){
       yukle('js/ui-stability-fixes.js','data-ui-stability');
