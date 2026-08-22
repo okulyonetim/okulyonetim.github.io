@@ -8,7 +8,7 @@
     s.addEventListener('load',function(){ s.dataset.loaded='1'; if(sonra) sonra(); },{once:true}); document.head.appendChild(s);
   }
   function stilYukle(href,attr){if(document.querySelector('link['+attr+']'))return;var l=document.createElement('link');l.rel='stylesheet';l.href=href;l.setAttribute(attr,'1');document.head.appendChild(l);}
-  stilYukle('css/alt-navigation-theme.css?v=11','data-alt-nav-theme');
+  stilYukle('css/alt-navigation-theme.css?v=12','data-alt-nav-theme');
   stilYukle('css/ogretmenler-modern.css?v=2','data-ogretmenler-modern-style');
   stilYukle('css/ogretmen-detay-modern.css?v=3','data-ogretmen-detay-modern-style');
   stilYukle('css/dark-theme-soft.css?v=2','data-dark-theme-soft');
