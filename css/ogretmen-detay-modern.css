@@ -1,25 +1,65 @@
-/* Koruk Asistan — Öğretmen detay modern görünüm */
-#detayOverlay.ogd-modern{--ogd-bg:#f3f7f5;--ogd-card:#fff;--ogd-text:#17362b;--ogd-muted:#6c7d75;--ogd-line:#dce8e2;--ogd-green:#155f49;--ogd-soft:#e8f4ee;--ogd-shadow:0 8px 26px rgba(17,72,54,.09)}
-[data-theme="dark"] #detayOverlay.ogd-modern{--ogd-bg:#08120e;--ogd-card:#0f1d17;--ogd-text:#eff9f4;--ogd-muted:#9db3a8;--ogd-line:#29463a;--ogd-green:#75d8b0;--ogd-soft:#16382c;--ogd-shadow:0 10px 30px rgba(0,0,0,.28)}
-#detayOverlay.ogd-modern{background:rgba(3,18,12,.58)!important;backdrop-filter:blur(5px)}
+/* Koruk Asistan — Öğretmen detay modern görünüm v3 */
+#detayOverlay.ogd-modern{--ogd-bg:#f4f8f6;--ogd-card:#fff;--ogd-text:#17362b;--ogd-muted:#6c7d75;--ogd-line:#dce8e2;--ogd-green:#155f49;--ogd-green-2:#0f4938;--ogd-soft:#e8f4ee;--ogd-shadow:0 8px 26px rgba(17,72,54,.09);background:rgba(3,18,12,.58)!important;backdrop-filter:blur(5px)}
+[data-theme="dark"] #detayOverlay.ogd-modern{--ogd-bg:#07110d;--ogd-card:#0e1b16;--ogd-text:#eff9f4;--ogd-muted:#9db3a8;--ogd-line:#29463a;--ogd-green:#75d8b0;--ogd-green-2:#0a2d22;--ogd-soft:#16382c;--ogd-shadow:0 10px 30px rgba(0,0,0,.28)}
+
 #detayOverlay.ogd-modern .detay-panel{width:min(980px,96vw)!important;max-width:980px!important;height:min(92dvh,900px)!important;max-height:92dvh!important;border-radius:26px!important;overflow:hidden!important;background:var(--ogd-bg)!important;border:1px solid var(--ogd-line)!important;box-shadow:0 24px 70px rgba(0,0,0,.28)!important;display:flex!important;flex-direction:column!important}
-#detayOverlay.ogd-modern .detay-head{padding:14px 16px!important;background:var(--ogd-card)!important;border-bottom:1px solid var(--ogd-line)!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;gap:12px!important;align-items:center!important}
-#detayOverlay.ogd-modern .detay-avatar{width:48px!important;height:48px!important;border-radius:15px!important;overflow:hidden!important;background:var(--ogd-soft)!important;border:1px solid var(--ogd-line)!important}
-#detayOverlay.ogd-modern .detay-avatar img{width:100%!important;height:100%!important;object-fit:cover!important}
-#detayOverlay.ogd-modern .detay-baslik{font-size:17px!important;font-weight:900!important;color:var(--ogd-text)!important;line-height:1.2!important}
-#detayOverlay.ogd-modern .detay-alt{font-size:11px!important;color:var(--ogd-muted)!important;margin-top:3px!important}
-#detayOverlay.ogd-modern .detay-head-actions{display:flex!important;gap:7px!important;flex-wrap:wrap!important;justify-content:flex-end!important}
-#detayOverlay.ogd-modern .detay-head-actions .btn{min-height:36px!important;padding:7px 11px!important;border-radius:11px!important;box-shadow:none!important;border:1px solid var(--ogd-line)!important;background:var(--ogd-card)!important;color:var(--ogd-text)!important}
+
+/* Eski başlıktaki avatar/ad/fotoğraf alanını kaldır; yalnız aksiyonlar kalsın. */
+#detayOverlay.ogd-modern .detay-head{padding:10px 12px!important;background:var(--ogd-card)!important;border-bottom:1px solid var(--ogd-line)!important;display:block!important;min-height:0!important;flex:none!important}
+#detayOverlay.ogd-modern .detay-head>.detay-avatar,
+#detayOverlay.ogd-modern .detay-head>div:not(.detay-head-actions){display:none!important}
+#detayOverlay.ogd-modern .detay-head-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin:0!important}
+#detayOverlay.ogd-modern .detay-head-actions .btn{width:100%!important;min-height:40px!important;padding:8px 10px!important;border-radius:12px!important;box-shadow:none!important;border:1px solid var(--ogd-line)!important;background:var(--ogd-card)!important;color:var(--ogd-text)!important;font-size:11.5px!important;font-weight:800!important}
 #detayOverlay.ogd-modern #detayRaporBtn{background:var(--ogd-soft)!important;color:var(--ogd-green)!important}
-#detayOverlay.ogd-modern .detay-body{flex:1!important;overflow-y:auto!important;padding:14px!important;background:var(--ogd-bg)!important}
-.ogd-hero{position:relative;overflow:hidden;border-radius:22px;padding:18px;background:linear-gradient(135deg,#17684f,#0b4937);color:#fff;box-shadow:0 12px 28px rgba(11,73,55,.20);margin-bottom:12px}
-.ogd-hero:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-45px;top:-65px;background:rgba(255,255,255,.08)}
-.ogd-hero-main{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;align-items:center;position:relative;z-index:1}.ogd-hero-avatar{width:72px;height:72px;border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,.7);background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:22px;font-weight:900}.ogd-hero-avatar img{width:100%;height:100%;object-fit:cover}.ogd-hero-name{font-size:21px;font-weight:900;line-height:1.15}.ogd-hero-role{font-size:12px;color:#bdf0da;font-weight:750;margin-top:4px}.ogd-hero-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.ogd-chip{padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);font-size:10px;font-weight:800}.ogd-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:14px;position:relative;z-index:1}.ogd-stat{padding:9px;border-radius:13px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12)}.ogd-stat b{display:block;font-size:17px}.ogd-stat span{display:block;font-size:8.5px;opacity:.78;margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
-.ogd-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 1px 9px;scrollbar-width:none}.ogd-tabs::-webkit-scrollbar{display:none}.ogd-tab{flex:none;border:1px solid var(--ogd-line);background:var(--ogd-card);color:var(--ogd-muted);border-radius:12px;padding:8px 11px;font-size:10.5px;font-weight:850}.ogd-tab.active{background:var(--ogd-soft);color:var(--ogd-green);border-color:transparent}
-#detayOverlay.ogd-modern .detay-card{background:var(--ogd-card)!important;border:1px solid var(--ogd-line)!important;border-radius:18px!important;padding:13px!important;margin:0 0 10px!important;box-shadow:var(--ogd-shadow)!important;color:var(--ogd-text)!important}
-#detayOverlay.ogd-modern .detay-card h4{font-size:12.5px!important;font-weight:900!important;color:var(--ogd-text)!important;margin:0 0 10px!important;display:flex;align-items:center;gap:7px}
-#detayOverlay.ogd-modern .detay-row{padding:8px 0!important;border-bottom:1px solid var(--ogd-line)!important;color:var(--ogd-text)!important;font-size:11.5px!important;line-height:1.45!important}
-#detayOverlay.ogd-modern .detay-row:last-child{border-bottom:0!important}.detay-row-muted{color:var(--ogd-muted)!important}
-#detayOverlay.ogd-modern table{display:block;max-width:100%;overflow-x:auto;border-collapse:separate!important;border-spacing:0!important;border:1px solid var(--ogd-line);border-radius:13px;background:var(--ogd-card)}
-#detayOverlay.ogd-modern th{background:var(--ogd-soft)!important;color:var(--ogd-green)!important;border:0!important}.ogd-hidden{display:none!important}
-@media(max-width:640px){#detayOverlay.ogd-modern .detay-panel{width:100%!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important;border:0!important}#detayOverlay.ogd-modern .detay-head{grid-template-columns:auto minmax(0,1fr)!important;padding:10px 11px!important}#detayOverlay.ogd-modern .detay-head-actions{grid-column:1/-1;display:grid!important;grid-template-columns:repeat(3,1fr)!important;width:100%}#detayOverlay.ogd-modern .detay-head-actions .btn{width:100%!important;padding:6px 7px!important;font-size:10px!important}.ogd-hero{padding:14px;border-radius:18px}.ogd-hero-main{grid-template-columns:58px minmax(0,1fr);gap:11px}.ogd-hero-avatar{width:58px;height:58px;border-radius:17px}.ogd-hero-name{font-size:18px}.ogd-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ogd-stat{padding:8px}.ogd-stat b{font-size:15px}#detayOverlay.ogd-modern .detay-body{padding:10px!important}}
+#detayOverlay.ogd-modern #detayMesajArkaplanBtn{display:none!important}
+
+#detayOverlay.ogd-modern .detay-body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;padding:12px!important;background:var(--ogd-bg)!important;display:flex!important;flex-direction:column!important;gap:10px!important;scroll-behavior:smooth!important}
+
+/* Tek kimlik kartı */
+#detayOverlay.ogd-modern .ogd-hero{display:block!important;position:relative!important;overflow:hidden!important;width:100%!important;height:auto!important;min-height:210px!important;max-height:none!important;flex:0 0 auto!important;border-radius:22px!important;padding:18px!important;background:linear-gradient(135deg,#17684f,#0b4937)!important;color:#fff!important;box-shadow:0 12px 28px rgba(11,73,55,.20)!important;margin:0!important}
+[data-theme="dark"] #detayOverlay.ogd-modern .ogd-hero{background:linear-gradient(135deg,#134735,#08291f)!important}
+#detayOverlay.ogd-modern .ogd-hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-55px;top:-78px;background:rgba(255,255,255,.07);pointer-events:none}
+#detayOverlay.ogd-modern .ogd-hero-main{display:grid!important;grid-template-columns:76px minmax(0,1fr)!important;gap:15px!important;align-items:center!important;position:relative!important;z-index:1!important;min-height:80px!important}
+#detayOverlay.ogd-modern .ogd-hero-avatar{width:76px!important;height:76px!important;min-width:76px!important;min-height:76px!important;border-radius:21px!important;overflow:hidden!important;border:2px solid rgba(255,255,255,.76)!important;background:rgba(255,255,255,.12)!important;display:grid!important;place-items:center!important;font-size:23px!important;font-weight:900!important;color:#fff!important}
+#detayOverlay.ogd-modern .ogd-hero-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+#detayOverlay.ogd-modern .ogd-hero-name{font-size:22px!important;font-weight:900!important;line-height:1.15!important;color:#fff!important;letter-spacing:-.02em!important}
+#detayOverlay.ogd-modern .ogd-hero-role{font-size:12px!important;color:#bdf0da!important;font-weight:750!important;margin-top:4px!important}
+#detayOverlay.ogd-modern .ogd-hero-meta{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin-top:10px!important}
+#detayOverlay.ogd-modern .ogd-chip{padding:5px 8px!important;border-radius:999px!important;background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.14)!important;color:#fff!important;font-size:10px!important;font-weight:800!important}
+#detayOverlay.ogd-modern .ogd-stats{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin-top:14px!important;position:relative!important;z-index:1!important}
+#detayOverlay.ogd-modern .ogd-stat{min-height:58px!important;padding:9px!important;border-radius:13px!important;background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.12)!important;color:#fff!important}
+#detayOverlay.ogd-modern .ogd-stat b{display:block!important;font-size:17px!important;line-height:1.1!important;color:#fff!important}
+#detayOverlay.ogd-modern .ogd-stat span{display:block!important;font-size:8.5px!important;opacity:.8!important;margin-top:4px!important;text-transform:uppercase!important;letter-spacing:.04em!important;color:#fff!important}
+
+/* Sekmeler */
+#detayOverlay.ogd-modern .ogd-tabs{display:flex!important;flex:0 0 auto!important;gap:6px!important;overflow-x:auto!important;padding:1px 1px 4px!important;margin:0!important;scrollbar-width:none!important}
+#detayOverlay.ogd-modern .ogd-tabs::-webkit-scrollbar{display:none!important}
+#detayOverlay.ogd-modern .ogd-tab{flex:none!important;min-height:36px!important;border:1px solid var(--ogd-line)!important;background:var(--ogd-card)!important;color:var(--ogd-muted)!important;border-radius:12px!important;padding:8px 12px!important;font-size:10.5px!important;font-weight:850!important;box-shadow:none!important}
+#detayOverlay.ogd-modern .ogd-tab.active{background:var(--ogd-soft)!important;color:var(--ogd-green)!important;border-color:transparent!important}
+
+/* İçerik kartları */
+#detayOverlay.ogd-modern .detay-card{flex:0 0 auto!important;background:var(--ogd-card)!important;border:1px solid var(--ogd-line)!important;border-radius:18px!important;padding:14px!important;margin:0!important;box-shadow:var(--ogd-shadow)!important;color:var(--ogd-text)!important;min-height:0!important}
+#detayOverlay.ogd-modern .detay-card h4{font-size:12.5px!important;font-weight:900!important;color:var(--ogd-text)!important;margin:0 0 10px!important;display:flex!important;align-items:center!important;gap:7px!important;text-transform:uppercase!important;letter-spacing:.03em!important}
+#detayOverlay.ogd-modern .detay-row{padding:9px 0!important;border-bottom:1px solid var(--ogd-line)!important;color:var(--ogd-text)!important;font-size:11.5px!important;line-height:1.45!important;background:transparent!important}
+#detayOverlay.ogd-modern .detay-row:last-child{border-bottom:0!important}
+#detayOverlay.ogd-modern .detay-row-muted{color:var(--ogd-muted)!important}
+#detayOverlay.ogd-modern .empty-state{padding:24px 12px!important;text-align:center!important;color:var(--ogd-muted)!important;font-size:12px!important}
+#detayOverlay.ogd-modern table{display:block!important;max-width:100%!important;overflow-x:auto!important;border-collapse:separate!important;border-spacing:0!important;border:1px solid var(--ogd-line)!important;border-radius:13px!important;background:var(--ogd-card)!important}
+#detayOverlay.ogd-modern th{background:var(--ogd-soft)!important;color:var(--ogd-green)!important;border:0!important}
+#detayOverlay.ogd-modern .ogd-hidden{display:none!important}
+
+@media(max-width:640px){
+  #detayOverlay.ogd-modern .detay-panel{width:100%!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important;border:0!important;padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))!important}
+  #detayOverlay.ogd-modern .detay-head{padding:10px!important;position:sticky!important;top:0!important;z-index:5!important}
+  #detayOverlay.ogd-modern .detay-head-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #detayOverlay.ogd-modern .detay-head-actions .btn{min-height:38px!important;padding:6px 7px!important;font-size:10.5px!important}
+  #detayOverlay.ogd-modern .detay-body{padding:10px!important;gap:9px!important}
+  #detayOverlay.ogd-modern .ogd-hero{min-height:238px!important;padding:15px!important;border-radius:19px!important}
+  #detayOverlay.ogd-modern .ogd-hero-main{grid-template-columns:66px minmax(0,1fr)!important;gap:12px!important;min-height:72px!important}
+  #detayOverlay.ogd-modern .ogd-hero-avatar{width:66px!important;height:66px!important;min-width:66px!important;min-height:66px!important;border-radius:18px!important}
+  #detayOverlay.ogd-modern .ogd-hero-name{font-size:19px!important}
+  #detayOverlay.ogd-modern .ogd-hero-role{font-size:11.5px!important}
+  #detayOverlay.ogd-modern .ogd-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin-top:14px!important}
+  #detayOverlay.ogd-modern .ogd-stat{min-height:54px!important;padding:8px 9px!important}
+  #detayOverlay.ogd-modern .detay-card{border-radius:16px!important;padding:13px!important}
+}
