@@ -1,0 +1,320 @@
+/* ====================================================================
+   KORUK ASİSTAN — HEADER + GİRİŞ EKRANI v1
+   Görsel katman. Auth, rol ve veri akışına müdahale etmez.
+   ==================================================================== */
+:root{
+  --khdr-bg:#ffffff;
+  --khdr-surface:#f7faf8;
+  --khdr-line:#d9e5de;
+  --khdr-text:#183128;
+  --khdr-muted:#718078;
+  --khdr-green:#145a46;
+  --khdr-green-2:#1f7a5c;
+  --khdr-green-soft:#e7f2ed;
+  --khdr-gold:#d7a928;
+  --khdr-gold-soft:#fff6d9;
+  --khdr-danger:#b93848;
+  --khdr-danger-soft:#fff0f2;
+  --khdr-shadow:0 10px 30px rgba(12,55,42,.09);
+}
+html[data-theme="dark"]{
+  --khdr-bg:#0d1814;
+  --khdr-surface:#12211b;
+  --khdr-line:#294238;
+  --khdr-text:#edf7f2;
+  --khdr-muted:#9fb2a8;
+  --khdr-green:#72d0aa;
+  --khdr-green-2:#4fb98f;
+  --khdr-green-soft:#15372b;
+  --khdr-gold:#e3bd4e;
+  --khdr-gold-soft:#392f16;
+  --khdr-danger:#ff9aa5;
+  --khdr-danger-soft:#3b1f24;
+  --khdr-shadow:0 12px 32px rgba(0,0,0,.30);
+}
+
+/* ========================= GİRİŞ EKRANI ========================= */
+#girisEkrani.koruk-login{
+  position:fixed!important;
+  inset:0!important;
+  z-index:20000!important;
+  overflow:auto!important;
+  padding:max(18px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))!important;
+  background:
+    radial-gradient(circle at 9% 8%,rgba(31,122,92,.13),transparent 28%),
+    radial-gradient(circle at 92% 86%,rgba(215,169,40,.10),transparent 26%),
+    #f1f5f2!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html[data-theme="dark"] #girisEkrani.koruk-login{
+  background:
+    radial-gradient(circle at 8% 8%,rgba(72,168,129,.14),transparent 28%),
+    radial-gradient(circle at 92% 88%,rgba(227,189,78,.08),transparent 25%),
+    #07100d!important;
+}
+#girisEkrani.koruk-login.active{display:flex!important}
+
+.koruk-login-shell{
+  position:relative;
+  width:min(980px,100%);
+  min-height:590px;
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(390px,.92fr);
+  overflow:hidden;
+  border:1px solid var(--khdr-line);
+  border-radius:28px;
+  background:var(--khdr-bg);
+  box-shadow:0 34px 90px rgba(10,49,37,.16);
+}
+html[data-theme="dark"] .koruk-login-shell{box-shadow:0 34px 90px rgba(0,0,0,.42)}
+
+.koruk-login-brand{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-width:0;
+  padding:48px 46px 38px;
+  background:
+    radial-gradient(circle at 86% 13%,rgba(255,255,255,.13),transparent 24%),
+    radial-gradient(circle at 14% 88%,rgba(215,169,40,.17),transparent 30%),
+    linear-gradient(145deg,#0b3c2e 0%,#145a46 52%,#1f7a5c 100%);
+  color:#fff;
+}
+.koruk-login-brand::after{
+  content:'';
+  position:absolute;
+  right:-88px;
+  bottom:-112px;
+  width:290px;
+  height:290px;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:50%;
+  box-shadow:0 0 0 48px rgba(255,255,255,.028),0 0 0 96px rgba(255,255,255,.018);
+  pointer-events:none;
+}
+.koruk-login-mark{position:relative;z-index:1;display:flex;align-items:center;gap:14px}
+.koruk-login-mark img{
+  width:68px;height:68px;object-fit:cover;border-radius:19px;
+  padding:4px;background:#fff;border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 10px 28px rgba(0,0,0,.17);
+}
+.koruk-login-mark-text{min-width:0}
+.koruk-login-mark-text b{display:block;font:800 16px/1.25 Manrope,Inter,sans-serif;letter-spacing:-.02em}
+.koruk-login-mark-text span{display:block;margin-top:4px;color:rgba(255,255,255,.68);font:700 10px/1.3 Manrope,Inter,sans-serif;letter-spacing:.105em;text-transform:uppercase}
+.koruk-login-brand-copy{position:relative;z-index:1;max-width:430px;margin:54px 0 auto}
+.koruk-login-brand-copy .eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:15px;color:#ffe99a;font:800 10px/1 Manrope,Inter,sans-serif;letter-spacing:.13em;text-transform:uppercase}
+.koruk-login-brand-copy .eyebrow::before{content:'';width:22px;height:2px;border-radius:9px;background:var(--khdr-gold)}
+.koruk-login-brand-copy h1{margin:0;max-width:390px;font:800 clamp(30px,4.3vw,48px)/1.06 Sora,Manrope,sans-serif;letter-spacing:-.055em}
+.koruk-login-brand-copy p{margin:18px 0 0;max-width:390px;color:rgba(255,255,255,.72);font:500 14px/1.7 Manrope,Inter,sans-serif}
+.koruk-login-brand-foot{position:relative;z-index:1;display:flex;align-items:center;gap:9px;margin-top:34px;color:rgba(255,255,255,.70);font:650 10.5px Manrope,Inter,sans-serif}
+.koruk-login-brand-foot i{width:8px;height:8px;border-radius:50%;background:var(--khdr-gold);box-shadow:0 0 0 5px rgba(215,169,40,.12)}
+
+#girisEkrani .koruk-login-card.config-box{
+  position:relative!important;
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:62px 50px 44px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:var(--khdr-bg)!important;
+  color:var(--khdr-text)!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+#girisEkrani .koruk-login-card>img{display:none!important}
+#girisEkrani .koruk-login-card>h2{
+  margin:0!important;color:var(--khdr-text)!important;
+  font:800 27px/1.18 Sora,Manrope,sans-serif!important;letter-spacing:-.045em!important;
+}
+#girisEkrani .koruk-login-card>p:first-of-type{
+  margin:9px 0 0!important;color:var(--khdr-muted)!important;
+  font:500 13px/1.55 Manrope,Inter,sans-serif!important;
+}
+#girisEkrani .koruk-login-card form{
+  margin-top:28px!important;display:flex!important;flex-direction:column!important;gap:16px!important;text-align:left!important;
+}
+#girisEkrani .koruk-login-card .form-group{margin:0!important}
+#girisEkrani .koruk-login-card .form-group>label{
+  display:block!important;margin:0 0 7px!important;color:var(--khdr-text)!important;
+  font:800 10.5px/1.2 Manrope,Inter,sans-serif!important;letter-spacing:.065em!important;text-transform:uppercase!important;
+}
+.koruk-login-input{position:relative;display:flex;align-items:center}
+.koruk-login-input .koruk-field-icon{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:2;
+  width:18px;height:18px;color:var(--khdr-muted);pointer-events:none;
+}
+#girisEkrani .koruk-login-input input{
+  width:100%!important;height:50px!important;min-height:50px!important;
+  padding:0 46px 0 44px!important;
+  border:1px solid var(--khdr-line)!important;border-radius:13px!important;
+  background:var(--khdr-surface)!important;color:var(--khdr-text)!important;
+  outline:none!important;box-shadow:none!important;
+  font:650 14px Manrope,Inter,sans-serif!important;
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease!important;
+}
+#girisEkrani .koruk-login-input input::placeholder{color:color-mix(in srgb,var(--khdr-muted) 75%,transparent)}
+#girisEkrani .koruk-login-input input:focus{
+  border-color:var(--khdr-green)!important;background:var(--khdr-bg)!important;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--khdr-green) 12%,transparent)!important;
+}
+#girisEkrani .koruk-login-input:focus-within .koruk-field-icon{color:var(--khdr-green)}
+.koruk-password-toggle{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);z-index:3;
+  width:34px;height:34px;display:grid;place-items:center;padding:0;
+  border:0;border-radius:9px;background:transparent;color:var(--khdr-muted);cursor:pointer;
+}
+.koruk-password-toggle:hover,.koruk-password-toggle:focus-visible{background:var(--khdr-green-soft);color:var(--khdr-green);outline:none}
+.koruk-password-toggle svg{width:17px;height:17px}
+
+#girisEkrani #girisHataMetni{
+  margin:0!important;padding:10px 12px!important;border:1px solid color-mix(in srgb,var(--khdr-danger) 30%,var(--khdr-line))!important;
+  border-radius:11px!important;background:var(--khdr-danger-soft)!important;color:var(--khdr-danger)!important;
+  font:700 11.5px/1.45 Manrope,Inter,sans-serif!important;
+}
+#girisEkrani #girisBtn{
+  position:relative;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
+  width:100%!important;height:50px!important;min-height:50px!important;margin:2px 0 0!important;padding:0 18px!important;
+  border:1px solid #145a46!important;border-radius:13px!important;
+  background:linear-gradient(135deg,#145a46,#1f7a5c)!important;color:#fff!important;
+  box-shadow:0 10px 22px rgba(20,90,70,.19)!important;
+  font:800 13px Manrope,Inter,sans-serif!important;letter-spacing:.01em!important;cursor:pointer!important;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important;
+}
+#girisEkrani #girisBtn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 13px 26px rgba(20,90,70,.24)!important;filter:saturate(1.06)}
+#girisEkrani #girisBtn:active:not(:disabled){transform:translateY(0)}
+#girisEkrani #girisBtn:disabled{opacity:.82!important;cursor:wait!important}
+#girisEkrani #girisBtn:disabled::before{
+  content:'';width:15px;height:15px;flex:none;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:korukLoginSpin .75s linear infinite;
+}
+@keyframes korukLoginSpin{to{transform:rotate(360deg)}}
+#girisEkrani .koruk-login-card>p:last-child{
+  position:relative;margin:20px 0 0!important;padding:13px 13px 13px 38px!important;
+  border-radius:12px;background:var(--khdr-surface)!important;color:var(--khdr-muted)!important;
+  font:600 10.5px/1.55 Manrope,Inter,sans-serif!important;
+}
+#girisEkrani .koruk-login-card>p:last-child::before{
+  content:'🔒';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;
+}
+.koruk-login-theme{
+  position:absolute;z-index:5;right:16px;top:16px;
+  width:40px;height:40px;display:grid;place-items:center;
+  border:1px solid var(--khdr-line);border-radius:12px;background:var(--khdr-bg);color:var(--khdr-text);
+  box-shadow:0 6px 16px rgba(17,48,39,.07);cursor:pointer;font-size:17px;
+}
+.koruk-login-theme:hover{background:var(--khdr-green-soft);color:var(--khdr-green)}
+
+/* ============================ HEADER ============================ */
+.topbar.koruk-topbar{
+  min-height:66px!important;height:66px!important;padding:0 18px!important;gap:9px!important;
+  background:color-mix(in srgb,var(--khdr-bg) 94%,transparent)!important;
+  border-bottom:1px solid var(--khdr-line)!important;
+  box-shadow:0 5px 20px rgba(18,69,52,.055)!important;
+  backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;
+  color:var(--khdr-text)!important;
+}
+.koruk-topbar .topbar-brand{
+  flex:0 0 auto!important;display:flex!important;align-items:center!important;gap:9px!important;
+  height:44px!important;padding:5px 9px 5px 6px!important;border-radius:12px!important;
+  transition:background .16s ease!important;
+}
+.koruk-topbar .topbar-brand:hover{background:var(--khdr-green-soft)!important}
+.koruk-topbar .topbar-logo{
+  width:34px!important;height:34px!important;object-fit:cover!important;border-radius:10px!important;
+  border:1px solid color-mix(in srgb,var(--khdr-green) 22%,var(--khdr-line))!important;background:#fff!important;padding:2px!important;
+}
+.koruk-topbar .topbar-title{color:var(--khdr-green)!important;font:800 13px/1 Manrope,Inter,sans-serif!important;letter-spacing:-.02em!important;white-space:nowrap!important}
+.koruk-topbar-page{
+  min-width:0;flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
+  padding-left:15px;margin-left:3px;border-left:1px solid var(--khdr-line);
+}
+.koruk-topbar-page strong{
+  display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--khdr-text);font:800 14px/1.22 Sora,Manrope,sans-serif;letter-spacing:-.025em;
+}
+.koruk-topbar-page span{display:block;margin-top:3px;color:var(--khdr-muted);font:650 9.5px/1.15 Manrope,Inter,sans-serif;letter-spacing:.025em}
+.koruk-topbar .topbar-bell,.koruk-topbar .topbar-avatar,.koruk-topbar #topbarGeriBtn,.koruk-topbar #topbarHamburger{
+  width:39px!important;height:39px!important;min-width:39px!important;min-height:39px!important;padding:0!important;
+  display:grid!important;place-items:center!important;border:1px solid var(--khdr-line)!important;border-radius:11px!important;
+  background:var(--khdr-bg)!important;color:var(--khdr-text)!important;box-shadow:none!important;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease!important;
+}
+.koruk-topbar .topbar-bell:hover,.koruk-topbar .topbar-avatar:hover,.koruk-topbar #topbarGeriBtn:hover,.koruk-topbar #topbarHamburger:hover{
+  background:var(--khdr-green-soft)!important;border-color:color-mix(in srgb,var(--khdr-green) 28%,var(--khdr-line))!important;color:var(--khdr-green)!important;
+}
+.koruk-topbar .topbar-bell:active,.koruk-topbar .topbar-avatar:active{transform:scale(.96)}
+.koruk-topbar #temaDugmesiTopbar{font-size:16px!important}
+.koruk-topbar .topbar-bell-badge{
+  position:absolute!important;right:-3px!important;top:-4px!important;min-width:17px!important;height:17px!important;padding:0 4px!important;
+  border:2px solid var(--khdr-bg)!important;border-radius:999px!important;background:var(--khdr-gold)!important;color:#3c2c00!important;
+  font:900 8px/13px Manrope,Inter,sans-serif!important;text-align:center!important;
+}
+.koruk-user-menu-wrap{position:relative;display:flex;align-items:center;gap:8px}
+.koruk-header-user-name{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--khdr-text);font:750 11px Manrope,Inter,sans-serif}
+.koruk-topbar .topbar-avatar{overflow:hidden!important;padding:2px!important}
+.koruk-topbar .topbar-avatar img{width:100%;height:100%;display:block;object-fit:cover;border-radius:9px}
+.koruk-avatar-fallback{display:grid;width:100%;height:100%;place-items:center}
+.koruk-avatar-fallback svg{width:18px;height:18px}
+.koruk-avatar-status{position:absolute;right:0;bottom:0;width:10px;height:10px;border:2px solid var(--khdr-bg);border-radius:50%;background:#31a66f;pointer-events:none}
+.koruk-user-menu{
+  position:absolute;right:0;top:calc(100% + 10px);z-index:1000;width:224px;padding:7px;
+  border:1px solid var(--khdr-line);border-radius:14px;background:var(--khdr-bg);box-shadow:0 18px 44px rgba(8,37,28,.18);
+  opacity:0;visibility:hidden;transform:translateY(-5px);transition:opacity .15s ease,transform .15s ease,visibility .15s ease;
+}
+html[data-theme="dark"] .koruk-user-menu{box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.koruk-user-menu.acik{opacity:1;visibility:visible;transform:translateY(0)}
+.koruk-user-menu-head{padding:10px 10px 9px;border-bottom:1px solid var(--khdr-line);margin-bottom:5px}
+.koruk-user-menu-head b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--khdr-text);font:800 12px Manrope,Inter,sans-serif}
+.koruk-user-menu-head span{display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--khdr-muted);font:600 9.5px Manrope,Inter,sans-serif}
+.koruk-user-menu button{
+  width:100%;height:38px;display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:9px;
+  background:transparent;color:var(--khdr-text);font:700 11px Manrope,Inter,sans-serif;text-align:left;cursor:pointer;
+}
+.koruk-user-menu button:hover{background:var(--khdr-green-soft);color:var(--khdr-green)}
+.koruk-user-menu button svg{width:16px;height:16px;flex:none}
+.koruk-user-menu .koruk-menu-danger{margin-top:4px;border-top:1px solid var(--khdr-line);border-radius:0 0 9px 9px;color:#c54a58}
+#bildirimZiliPaneli.koruk-notification-panel{
+  margin-top:2px!important;border:1px solid var(--khdr-line)!important;border-radius:14px!important;background:var(--khdr-bg)!important;color:var(--khdr-text)!important;
+  box-shadow:0 18px 48px rgba(8,37,28,.18)!important;overflow:hidden auto!important;
+}
+
+@media(min-width:1024px){
+  .topbar.koruk-topbar{padding-left:20px!important;padding-right:22px!important}
+  .koruk-topbar #topbarGeriBtn[style*="display: none"]{display:none!important}
+}
+
+@media(max-width:1023px){
+  #girisEkrani.koruk-login{align-items:stretch!important;padding:0!important;background:var(--khdr-bg)!important}
+  .koruk-login-shell{width:100%;min-height:100dvh;grid-template-columns:1fr;border:0;border-radius:0;box-shadow:none;overflow:visible}
+  .koruk-login-brand{min-height:auto;padding:max(34px,calc(env(safe-area-inset-top) + 24px)) 22px 26px;border-radius:0 0 28px 28px}
+  .koruk-login-mark img{width:54px;height:54px;border-radius:16px}.koruk-login-mark-text b{font-size:14px}.koruk-login-mark-text span{font-size:9px}
+  .koruk-login-brand-copy{margin:30px 0 0}.koruk-login-brand-copy .eyebrow{margin-bottom:10px;font-size:9px}.koruk-login-brand-copy h1{font-size:27px;max-width:320px}.koruk-login-brand-copy p{margin-top:11px;font-size:12px;line-height:1.55;max-width:330px}.koruk-login-brand-foot{display:none}
+  #girisEkrani .koruk-login-card.config-box{padding:30px 22px max(32px,calc(env(safe-area-inset-bottom) + 24px))!important;justify-content:flex-start!important}
+  #girisEkrani .koruk-login-card>h2{font-size:22px!important}#girisEkrani .koruk-login-card>p:first-of-type{font-size:12px!important}#girisEkrani .koruk-login-card form{margin-top:23px!important;gap:14px!important}
+  .koruk-login-theme{right:14px;top:max(14px,env(safe-area-inset-top));background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.24);color:#fff;box-shadow:none}.koruk-login-theme:hover{background:rgba(255,255,255,.18);color:#fff}
+
+  .topbar.koruk-topbar{
+    height:60px!important;min-height:60px!important;padding:max(5px,env(safe-area-inset-top)) 10px 5px!important;gap:6px!important;
+  }
+  .koruk-topbar .topbar-brand{display:none!important}
+  .koruk-topbar-page{padding-left:2px;margin-left:0;border-left:0;flex:1 1 auto}
+  .koruk-topbar-page strong{font-size:13px}.koruk-topbar-page span{font-size:8.5px;margin-top:2px}
+  .koruk-topbar #temaDugmesiTopbar{display:none!important}
+  .koruk-topbar .topbar-bell,.koruk-topbar .topbar-avatar,.koruk-topbar #topbarGeriBtn,.koruk-topbar #topbarHamburger{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;border-radius:11px!important}
+  .koruk-header-user-name{display:none!important}
+  .koruk-user-menu{position:fixed;right:10px;top:calc(60px + env(safe-area-inset-top));width:min(250px,calc(100vw - 20px));z-index:9800}
+  #bildirimZiliPaneli.koruk-notification-panel{position:fixed!important;right:10px!important;top:calc(60px + env(safe-area-inset-top))!important;width:min(330px,calc(100vw - 20px))!important;max-width:none!important;max-height:min(460px,calc(100dvh - 145px))!important}
+}
+
+@media(max-width:390px){
+  .koruk-login-brand{padding-left:18px;padding-right:18px}.koruk-login-brand-copy h1{font-size:24px}.koruk-login-brand-copy p{font-size:11.5px}
+  #girisEkrani .koruk-login-card.config-box{padding-left:18px!important;padding-right:18px!important}
+  .koruk-topbar-page span{display:none}.koruk-topbar-page strong{font-size:12.5px}
+}
