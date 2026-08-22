@@ -27,6 +27,7 @@
   stilYukle('css/ogretmen-detay-modern.css?v=3','data-ogretmen-detay-modern-style');
   stilYukle('css/dark-theme-soft.css?v=4','data-dark-theme-soft');
   stilYukle('css/ayarlar-modern.css?v=3','data-ayarlar-modern-style');
+  stilYukle('css/yazili-sinavlar-modern.css?v=1','data-yazili-sinavlar-modern-style');
   yukle('js/alt-navigasyon-core.js','data-alt-nav-core',function(){
     altNavAktifDurumunuKur();
     yukle('js/alt-navigation-list-theme.js?v=1','data-alt-nav-list-theme',function(){
@@ -34,6 +35,7 @@
       yukle('js/ogretmenler-modern.js?v=2','data-ogretmenler-modern');
       yukle('js/ogretmen-detay-modern.js?v=3','data-ogretmen-detay-modern');
       yukle('js/ayarlar-modern.js?v=2','data-ayarlar-modern');
+      yukle('js/yazili-sinavlar-modern.js?v=1','data-yazili-sinavlar-modern');
     });
   });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',altNavAktifDurumunuKur,{once:true}); else altNavAktifDurumunuKur();
