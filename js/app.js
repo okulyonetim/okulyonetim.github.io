@@ -2567,16 +2567,8 @@ function baglantilariKur(){
   sinifBaglantilariKur();
   nobetBaglantilariKur();
   if(typeof takvimBaglantilariKur === 'function') takvimBaglantilariKur();
-  // DÜZELTME: evrak (Evrak Takibi) eskiden sadece o sekme ilk açıldığında
-  // tembel yükleniyordu. Hatırlatma Sistemi bu veriye sekme hiç açılmadan
-  // da ihtiyaç duyduğu için koşulsuz başlatılıyor.
-  db.collection(COL.evrak).onSnapshot(s=>{ evrakTakibi = s.docs.map(d=>({id:d.id,...d.data()})); renderEvrakTakibi(); renderDashboard(); if(typeof globalAramaYap==='function') globalAramaYap(); onbellekKaydet(); }, hataGoster);
   if(typeof dersSaatleriBaglantisiKur === 'function') dersSaatleriBaglantisiKur(); // dashboard zil sayacı buna bağlı, tembel kalamaz
-  if(typeof depolamaSinirlariBaglantisiKur === 'function') depolamaSinirlariBaglantisiKur();
-  if(typeof hatirlatmaAyarlariBaglantisiniKur === 'function') hatirlatmaAyarlariBaglantisiniKur();
-  if(typeof notlarBaglantilariKur === 'function') notlarBaglantilariKur();
   if(typeof mesajlasmaBaglantilariKur === 'function') mesajlasmaBaglantilariKur(); // anlık bildirim gerektiği için hep açık
-
   if(typeof duyurularBaglantilariKur === 'function') duyurularBaglantilariKur();
   if(typeof ogretmenIzinBaglantilariKur === 'function') ogretmenIzinBaglantilariKur();
   if(typeof haberlerBaglantilariKur === 'function') haberlerBaglantilariKur();
@@ -2587,6 +2579,48 @@ function baglantilariKur(){
     if(typeof widgetGuncelle==='function') setTimeout(widgetGuncelle,500);
   }, hataGoster);
   if(typeof personelBaglantilariKur === 'function') personelBaglantilariKur();
+  if(typeof sinavBaglantilariKur === 'function') sinavBaglantilariKur();
+
+  // YENİ: Hatırlatma Sistemi — tüm kaynaklar (görevler, evrak, nöbet,
+  // çizelgeler, kontrol listeleri, sınavlar) birkaç saniye içinde ilk
+  // verilerini alır (bir kısmı hemen yukarıda, bir kısmı aşağıdaki
+  // baglantilariKurGecikmeli() içinde ~1.5sn gecikmeli başlıyor — hâlâ
+  // koşulsuz, sadece başlangıç anı ertelendi). Pop-up'ı, veriler oturması
+  // için kısa bir gecikmeyle tetikliyoruz (bkz. js/hatirlatmalar.js).
+  if(typeof hatirlatmalariKontrolEtVeGoster === 'function') setTimeout(hatirlatmalariKontrolEtVeGoster, 4000);
+
+  // DÜZELTME (performans, Ağustos 2026): aşağıdaki ~18 dinleyici (Çizelgeler
+  // grubunun 7 alt-koleksiyonu dahil) ilk ekranda (anasayfa) doğrudan
+  // GÖRÜNMEYEN ya da sadece Hatırlatma Sistemi'nin arka planda ihtiyaç
+  // duyduğu veriler — hiçbiri "sekme açılınca tembel" moduna GERİ dönmedi,
+  // hepsi hâlâ koşulsuz yükleniyor (Hatırlatma Sistemi'nin veri garantisi
+  // bozulmadı). Tek değişen: uygulama açılır açılmaz hepsini tek seferde
+  // (30'a yakın dinleyiciyi senkron patlama halinde) ateşleyip ilk ekranı
+  // render trafiğine boğmak yerine, ilk ekran oturduktan ~1.5sn sonra ayrı
+  // bir turda başlatılıyor — yukarıdaki 4000ms'lik hatırlatma kontrolünden
+  // önce hâlâ bolca zaman kalıyor.
+  setTimeout(baglantilariKurGecikmeli, 1500);
+
+  // Aşağıdakiler artık burada DEĞİL — ilgili sekme ilk açıldığında
+  // sekmeAc() içinden _tembelModulBaslat() ile tetiklenir:
+  // anket, periyodikIsler, tasima, dokumanlar, evrak, ayarlar(ders/branş listesi)
+  // (Çizelgeler grubu ve sınavlar artık koşulsuz — bkz. yukarısı / baglantilariKurGecikmeli.)
+}
+
+/* DÜZELTME (performans, Ağustos 2026): bkz. baglantilariKur() içindeki not —
+   burada başlatılan dinleyicilerin tamamı daha önce de koşulsuzdu, sadece
+   BAŞLANGIÇ ANI ~1.5sn ertelendi. baglantilariKur() kendi içindeki
+   baglantilarKuruldu koruması sayesinde en fazla bir kez çalışabildiği için
+   bu fonksiyon da doğal olarak yalnızca bir kez zamanlanır — ayrıca bir
+   "tekrar çalışma" koruması gerekmiyor. */
+function baglantilariKurGecikmeli(){
+  // DÜZELTME: evrak (Evrak Takibi) eskiden sadece o sekme ilk açıldığında
+  // tembel yükleniyordu. Hatırlatma Sistemi bu veriye sekme hiç açılmadan
+  // da ihtiyaç duyduğu için koşulsuz başlatılıyor.
+  db.collection(COL.evrak).onSnapshot(s=>{ evrakTakibi = s.docs.map(d=>({id:d.id,...d.data()})); renderEvrakTakibi(); renderDashboard(); if(typeof globalAramaYap==='function') globalAramaYap(); onbellekKaydet(); }, hataGoster);
+  if(typeof depolamaSinirlariBaglantisiKur === 'function') depolamaSinirlariBaglantisiKur();
+  if(typeof hatirlatmaAyarlariBaglantisiniKur === 'function') hatirlatmaAyarlariBaglantisiniKur();
+  if(typeof notlarBaglantilariKur === 'function') notlarBaglantilariKur();
   // DÜZELTME: personelIzinler (İzin/Rapor kayıtları) ayrı bir sekme DEĞİL —
   // personel detay panelinin içinde gösteriliyor. Bu yüzden eskiden tembel
   // tabloya 'personelIzin' anahtarıyla eklenmişti ama böyle bir sekme hiç
@@ -2605,7 +2639,6 @@ function baglantilariKur(){
   // artık koşulsuz — yeni Hatırlatma Sistemi bu verilere Çizelgeler
   // sekmesi hiç açılmadan da ihtiyaç duyuyor.
   if(typeof cizelgelerBaglantilariKur === 'function') cizelgelerBaglantilariKur();
-  if(typeof sinavBaglantilariKur === 'function') sinavBaglantilariKur();
   // DÜZELTME: yillikPlan de aynı gerekçeyle koşulsuz — anasayfadaki zil
   // widget'ı (zilTiklandi()) tıklanınca hangi yıllık planın açılacağını
   // bulmak için yillikPlanTanimlari'na ihtiyaç duyuyor, Yıllık Plan
@@ -2618,17 +2651,6 @@ function baglantilariKur(){
   if(typeof akademikTakvimBaglantisiKur === 'function') akademikTakvimBaglantisiKur();
   if(typeof kontrolListeleriBaglantisiniKur === 'function') kontrolListeleriBaglantisiniKur();
   if(typeof sinavSonuclariBaglantisiniKur === 'function') sinavSonuclariBaglantisiniKur();
-
-  // YENİ: Hatırlatma Sistemi — tüm kaynaklar (görevler, evrak, nöbet,
-  // çizelgeler, kontrol listeleri, sınavlar) yukarıda koşulsuz başlatıldığı
-  // için birkaç saniye içinde ilk verilerini alır. Pop-up'ı, veriler
-  // oturması için kısa bir gecikmeyle tetikliyoruz (bkz. js/hatirlatmalar.js).
-  if(typeof hatirlatmalariKontrolEtVeGoster === 'function') setTimeout(hatirlatmalariKontrolEtVeGoster, 4000);
-
-  // Aşağıdakiler artık burada DEĞİL — ilgili sekme ilk açıldığında
-  // sekmeAc() içinden _tembelModulBaslat() ile tetiklenir:
-  // anket, periyodikIsler, tasima, dokumanlar, evrak, ayarlar(ders/branş listesi)
-  // (Çizelgeler grubu ve sınavlar artık koşulsuz — bkz. yukarısı.)
 }
 
 /* ============== UYGULAMA BAŞLATMA / GEZİNME ============== */

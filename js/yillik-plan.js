@@ -1266,12 +1266,34 @@ function _yplGenislikToplamGuncelle(){
 }
 
 /* ================================================================
+   DÜZELTME (performans): YILLIK_PLAN_TOHUM_VERI (234 KB statik şablon
+   verisi) artık index.html'de her açılışta yüklenmiyor — bu fonksiyon,
+   js/yillik-plan-tohum-veri.js'i SADECE burada gerçekten ihtiyaç
+   duyulduğunda (admin butona tıklayınca) dinamik olarak yükler. Desen
+   bu dosyadaki _yplMammothYukle() ile birebir aynı.
+   ================================================================ */
+let _yplTohumVeriYukleme = null;
+function _yplTohumVeriYukle(){
+  if (typeof YILLIK_PLAN_TOHUM_VERI !== 'undefined') return Promise.resolve();
+  if (_yplTohumVeriYukleme) return _yplTohumVeriYukleme;
+  _yplTohumVeriYukleme = new Promise((resolve,reject)=>{
+    const mevcut = Array.from(document.scripts).find(s=>/yillik-plan-tohum-veri\.js/i.test(s.src||''));
+    if (mevcut){ mevcut.addEventListener('load',resolve,{once:true}); mevcut.addEventListener('error',reject,{once:true}); return; }
+    const sc=document.createElement('script');
+    sc.src='js/yillik-plan-tohum-veri.js';
+    sc.onload=resolve; sc.onerror=()=>reject(new Error('Tohum veri dosyası yüklenemedi.'));
+    document.head.appendChild(sc);
+  }).catch(e=>{ _yplTohumVeriYukleme=null; throw e; });
+  return _yplTohumVeriYukleme;
+}
+
+/* ================================================================
    ADMİN — Örnek Planları İçe Aktar (tek seferlik, YILLIK_PLAN_TOHUM_VERI)
    Zaten mevcut aynı ders+seviye tanımı varsa TEKRAR eklemez (idempotent).
    ================================================================ */
-function yillikPlanOrnekVerileriIceAktar(){
-  if (typeof YILLIK_PLAN_TOHUM_VERI === 'undefined'){ toast('Tohum veri dosyası bulunamadı.'); return; }
+async function yillikPlanOrnekVerileriIceAktar(){
   if (!confirm('Fen Bilimleri, Matematik, Müzik (6.sınıf), Görsel Sanatlar (5.sınıf) ve İngilizce (6.sınıf) örnek yıllık planları içe aktarılacak. Devam edilsin mi?')) return;
+  try { await _yplTohumVeriYukle(); } catch(e) { toast(e.message || 'Tohum veri dosyası bulunamadı.'); return; }
 
   const baslikIslemleri = YILLIK_PLAN_TOHUM_VERI.baslikKatalogu
     .filter(b => !yillikPlanBasliklari.some(mevcut => mevcut.ad === b.ad))
