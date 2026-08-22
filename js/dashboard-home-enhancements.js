@@ -115,6 +115,24 @@ function apply(){
   renderImportantCalendar(findSections('Takvim')[0]);
   fixSchoolSummaryStudentLink();
 }
-let busy=false;const obs=new MutationObserver(()=>{if(busy)return;busy=true;requestAnimationFrame(()=>{try{apply()}finally{busy=false}})});obs.observe(document.documentElement,{subtree:true,childList:true});
+/* DÜZELTME (kök sebep — "herhangi bir modal açıkken bir butona basılınca
+   uygulama tamamen donuyor", tarayıcıda da APK'de de aynı şekilde):
+   apply() -> renderQuick() her çağrıda .kh-quick'in innerHTML'ini İÇERİK
+   AYNI OLSA BİLE koşulsuz yeniden yazıyordu. Bu yazım kendisi bir DOM
+   mutasyonu olduğu için, document.documentElement'i izleyen AŞAĞIDAKİ
+   MutationObserver'ı YENİDEN tetikliyordu — busy bayrağı apply() biter
+   bitmez false'a döndüğü için (mutasyon kaydı bir mikro-görev olarak
+   AYRICA işlendiğinden) bu koruma yeterli olmuyordu. Sonuç: ana sayfa
+   (mobil "Hızlı İşlemler" bölümü) ekranda kaldığı sürece apply() saniyede
+   ~60 kez (requestAnimationFrame hızında) SONSUZA DEK çalışıyor, ana
+   iş parçacığını sürekli meşgul tutuyordu — Playwright ile ölçüldü:
+   1.5 saniyede 92 çağrı. Bu sürekli arka plan yükü, üstüne modal açma +
+   kaydetme gibi gerçek senkron işler bindiğinde (özellikle daha yavaş
+   telefonlarda) ana iş parçacığının geride kalıp donma hissi vermesine
+   yol açıyor. Kalıcı çözüm: observer kendi ürettiği mutasyonları
+   GÖRMESİN diye apply() çalışırken disconnect edilip, iş bitince tekrar
+   bağlanıyor — böylece sadece GERÇEKTEN DIŞARIDAN gelen değişikliklere
+   tepki veriyor. */
+let busy=false;const obs=new MutationObserver(()=>{if(busy)return;busy=true;requestAnimationFrame(()=>{obs.disconnect();try{apply()}finally{busy=false;obs.observe(document.documentElement,{subtree:true,childList:true})}})});obs.observe(document.documentElement,{subtree:true,childList:true});
 setInterval(apply,900);window.addEventListener('load',()=>setTimeout(apply,250));document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(apply,80)});
 })();
