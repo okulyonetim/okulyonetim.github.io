@@ -1,4 +1,4 @@
-/* Koruk Asistan — Yazılı Sınavlar Modern v3 */
+/* Koruk Asistan — Yazılı Sınavlar Modern v4 */
 (function(){
   'use strict';
 
@@ -20,16 +20,12 @@
           if(f===0) bugun++;
           if(f!==null && f>=0 && f<=7) yaklasan++;
         });
-      }else{
-        toplam=root.querySelectorAll('#sinavlarListesi .evrak-row').length;
-      }
+      }else toplam=root.querySelectorAll('#sinavlarListesi .evrak-row').length;
     }catch(e){ toplam=root.querySelectorAll('#sinavlarListesi .evrak-row').length; }
     const a=root.querySelector('[data-ys-stat="toplam"] b');
     const b=root.querySelector('[data-ys-stat="yaklasan"] b');
     const c=root.querySelector('[data-ys-stat="bugun"] b');
-    if(a) a.textContent=toplam;
-    if(b) b.textContent=yaklasan;
-    if(c) c.textContent=bugun;
+    if(a) a.textContent=toplam;if(b) b.textContent=yaklasan;if(c) c.textContent=bugun;
   }
 
   function toolbarDuzenle(root){
@@ -50,6 +46,8 @@
     return 'blue';
   }
 
+  function important(el,prop,val){ if(el) el.style.setProperty(prop,val,'important'); }
+
   function sinavModalTasarimla(){
     const ders=document.getElementById('f_snDers');
     const donem=document.getElementById('f_snDonem');
@@ -61,10 +59,16 @@
     if(modal) modal.classList.add('ys-exam-modal');
 
     const titleEl=document.getElementById('modalTitle') || (modal && modal.querySelector('.modal-title'));
+    const dark=document.documentElement.getAttribute('data-theme')==='dark';
     if(titleEl){
       titleEl.classList.add('ys-exam-title');
-      let titleWrap=titleEl.parentElement;
-      if(titleWrap && modal && titleWrap!==modal && modal.contains(titleWrap)) titleWrap.classList.add('ys-exam-header');
+      important(titleEl,'color',dark?'#f7f9fd':'#16213a');
+      const titleWrap=titleEl.parentElement;
+      if(titleWrap && modal && titleWrap!==modal && modal.contains(titleWrap)){
+        titleWrap.classList.add('ys-exam-header');
+        important(titleWrap,'background',dark?'linear-gradient(135deg,#101827 0%,#17213a 58%,#211a3b 100%)':'linear-gradient(135deg,#eef4ff 0%,#edf2ff 55%,#f3efff 100%)');
+        important(titleWrap,'border-bottom-color',dark?'#29313e':'#d8e1ee');
+      }
     }
 
     const body=document.getElementById('modalBody') || (modal && modal.querySelector('.modal-body')) || ders.closest('.modal-content') || ders.parentElement;
@@ -100,10 +104,7 @@
         const picker=[].slice.call(grup.children).find(function(el){return el.tagName==='DIV' && el.querySelector('.snSinifCb');});
         if(picker) picker.classList.add('ys-class-picker');
       }
-      body.querySelectorAll('.snSinifCb').forEach(function(cb){
-        const lbl=cb.closest('label');
-        if(lbl) lbl.classList.add('ys-class-chip');
-      });
+      body.querySelectorAll('.snSinifCb').forEach(function(cb){const lbl=cb.closest('label');if(lbl) lbl.classList.add('ys-class-chip');});
     }
 
     const notlar=document.getElementById('f_snNotlar');
@@ -112,42 +113,47 @@
     const footer=(modal && (modal.querySelector('.modal-footer')||modal.querySelector('.modal-actions')||modal.querySelector('.modal-buttons'))) || document.getElementById('modalFooter');
     if(footer) footer.classList.add('ys-exam-footer');
 
-    /* Modal gövdesi, başlık ve alt aksiyonlar arasında kalan tek kaydırılabilir alan olsun. */
+    /* Android / mobil: başlık ve alt butonlar sabit, orta içerik tek başına kayar. */
     if(modal){
-      modal.style.display='flex';
-      modal.style.flexDirection='column';
+      important(modal,'display','flex');
+      important(modal,'flex-direction','column');
+      important(modal,'overflow','hidden');
+      if(window.matchMedia('(max-width:640px)').matches){
+        important(modal,'height','calc(100dvh - 96px)');
+        important(modal,'max-height','calc(100dvh - 96px)');
+      }else{
+        important(modal,'max-height','min(90dvh,820px)');
+      }
     }
+    important(body,'flex','1 1 auto');
+    important(body,'min-height','0');
+    important(body,'height','auto');
+    important(body,'overflow-y','auto');
+    important(body,'overflow-x','hidden');
+    important(body,'overscroll-behavior','contain');
+    important(body,'touch-action','pan-y');
+    body.style.setProperty('-webkit-overflow-scrolling','touch','important');
+    if(footer) important(footer,'flex','0 0 auto');
     return true;
   }
 
   function sayfaKur(){
     const root=document.getElementById('tab-yaziliSinavlar');
     if(!root) return false;
-    if(!root.classList.contains('ys-modern')) root.classList.add('ys-modern');
-
+    root.classList.add('ys-modern');
     const title=root.querySelector(':scope > .page-header .page-title');
     const sub=root.querySelector(':scope > .page-header .page-sub');
     if(title) title.textContent='Yazılı Sınavlar';
     if(sub) sub.textContent='Sınav takvimini, sınıfları ve sınav ayrıntılarını tek ekrandan yönetin.';
-
     if(!root.querySelector('.ys-summary')){
-      const summary=document.createElement('div');
-      summary.className='ys-summary';
-      summary.innerHTML='\
-        <div class="ys-stat" data-ys-stat="toplam"><b>0</b><span>Toplam sınav</span></div>\
-        <div class="ys-stat" data-ys-stat="yaklasan"><b>0</b><span>7 gün içinde</span></div>\
-        <div class="ys-stat" data-ys-stat="bugun"><b>0</b><span>Bugün</span></div>';
-      const yazili=root.querySelector('#sinavYaziliBolum');
-      if(yazili) root.insertBefore(summary,yazili);
+      const summary=document.createElement('div');summary.className='ys-summary';
+      summary.innerHTML='<div class="ys-stat" data-ys-stat="toplam"><b>0</b><span>Toplam sınav</span></div><div class="ys-stat" data-ys-stat="yaklasan"><b>0</b><span>7 gün içinde</span></div><div class="ys-stat" data-ys-stat="bugun"><b>0</b><span>Bugün</span></div>';
+      const yazili=root.querySelector('#sinavYaziliBolum');if(yazili) root.insertBefore(summary,yazili);
     }
-
-    toolbarDuzenle(root);
-    ozetGuncelle(root);
-
+    toolbarDuzenle(root);ozetGuncelle(root);
     const liste=root.querySelector('#sinavlarListesi');
     if(liste && liste.dataset.ysObserver!=='1'){
-      liste.dataset.ysObserver='1';
-      new MutationObserver(function(){ozetGuncelle(root);}).observe(liste,{childList:true,subtree:true});
+      liste.dataset.ysObserver='1';new MutationObserver(function(){ozetGuncelle(root);}).observe(liste,{childList:true,subtree:true});
     }
     return true;
   }
