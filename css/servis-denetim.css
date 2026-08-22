@@ -1,36 +1,31 @@
 /* =============================================
-   css/servis-denetim.css
-   OKUL SERVİS ARACI DENETİM FORMU — Servis Kartı Butonu
-   (Form sayfa içi bir overlay'de açılır; bu dosya tetikleyici
-   butonu ve overlay açıkken yazdırma davranışını stiller.)
+   OKUL SERVİS ARACI DENETİM FORMU — mevcut bileşenin kendi v4 stili
    ============================================= */
-
 .btn-denetim-formu {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: linear-gradient(135deg, #14304a, #1B3A5C);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-  transition: all 0.18s;
-  margin-top: 5px;
-  margin-left: 6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:36px;
+  padding:7px 11px;
+  margin-top:5px;
+  margin-left:6px;
+  border:1px solid var(--v4-border-strong, #cad6dc);
+  border-radius:10px;
+  background:var(--v4-surface, #fff);
+  color:var(--v4-plum, #7457b8);
+  box-shadow:none;
+  font:750 12px Manrope,Inter,sans-serif;
+  cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,transform .12s ease;
 }
 .btn-denetim-formu:hover {
-  background: linear-gradient(135deg, #1B3A5C, #2b527a);
-  transform: translateY(-1px);
-  box-shadow: 3px 3px 8px rgba(0,0,0,0.25);
+  background:color-mix(in srgb,var(--v4-plum,#7457b8) 9%,var(--v4-surface,#fff));
+  border-color:color-mix(in srgb,var(--v4-plum,#7457b8) 45%,var(--v4-border,#dce4e8));
 }
+.btn-denetim-formu:active { transform:translateY(1px); }
 
-/* Overlay açıkken yazdırma tetiklenirse ana sayfanın geri kalanı
-   gizlensin, sadece overlay içindeki iframe içeriği yazdırılsın. */
 @media print {
-  body.sd-overlay-acik > *:not(#sdOverlay) { display: none !important; }
-  #sdOverlay #sdToolbar { display: none !important; }
+  body.sd-overlay-acik > *:not(#sdOverlay) { display:none !important; }
+  #sdOverlay #sdToolbar { display:none !important; }
 }
