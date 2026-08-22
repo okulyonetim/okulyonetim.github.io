@@ -19,7 +19,7 @@
 /* Nöbet programı — mobil/koyu tema düzeltmeleri */
 #tab-nobet>.page-header .page-sub{display:none!important}
 #tab-nobet button[onclick*="nobetOtomatikDagitimModalAc"]{color:#fff!important;background:linear-gradient(135deg,#17684f,#0b4937)!important;border-color:#17684f!important;text-shadow:none!important}
-[data-theme="dark"] #tab-nobet button[onclick*="nobetOtomatikDagitimModalAc"]{color:#f7fffba!important;background:linear-gradient(135deg,#2a8c6e,#17684f)!important;border-color:#4fb58e!important}
+[data-theme="dark"] #tab-nobet button[onclick*="nobetOtomatikDagitimModalAc"]{color:#f7fffb!important;background:linear-gradient(135deg,#2a8c6e,#17684f)!important;border-color:#4fb58e!important}
 #tab-nobet .cizelge-wrap{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
 #tab-nobet #nobetGridTablo{min-width:680px}
 #tab-nobet #nobetAyBasligi{padding-left:0!important}
