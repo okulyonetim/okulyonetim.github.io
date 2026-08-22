@@ -4,20 +4,15 @@
 if(window.__APP_PAGES_THEME_JS__) return;
 window.__APP_PAGES_THEME_JS__=true;
 
-/* KÖK SEBEP DÜZELTMESİ (empirik olarak doğrulandı — "herhangi bir modal
-   açıkken bir butona basılınca uygulama tamamen donuyor"):
-   Chromium'da, HENÜZ VAR OLMAYAN bir class'ı classList.remove() ile
-   kaldırmaya çalışmak bile bir mutation fire ediyor (izole test: 5 denemenin
-   5'i de MutationObserver'ı tetikledi, sadece ilki gerçek bir değişiklikti).
-   Aşağıdaki mo/mo2 gözlemcileri #modalOverlay / #detayOverlay görünmez
-   olunca modalTemaTemizle()/sinifDetayTemizle()'i çağırıyor, onlar da HİÇ
-   EKLENMEMİŞ class'ları remove etmeye çalışıyordu — bu "boş" remove çağrısı
-   dahi yeni bir mutation sayıldığı için AYNI gözlemciyi tekrar tetikliyor,
-   o da tekrar temizle()'i çağırıyor... Mikro-görev kuyruğuna bağlı olduğu
-   için tarayıcı render/dokunma işlemeye HİÇ dönemiyor — gerçek, tam bir
-   donma. Çift önlem: (1) sadece GERÇEKTEN kaldırılacak bir class varsa
-   remove çağrılıyor, (2) gözlemciler kendi tetikledikleri mutasyonu
-   görmesin diye çalışırken disconnect/reconnect ediliyor. */
+/* Uygulama geneli daha açık koyu tema paleti. */
+if(!document.querySelector('link[data-soft-dark-theme]')){
+  const temaLink=document.createElement('link');
+  temaLink.rel='stylesheet';
+  temaLink.href='css/dark-theme-soft.css?v=1';
+  temaLink.setAttribute('data-soft-dark-theme','1');
+  document.head.appendChild(temaLink);
+}
+
 function modalSinifEkle(cls){
   const ov=document.getElementById('modalOverlay');
   if(!ov) return;
@@ -42,16 +37,10 @@ document.addEventListener('click',function(e){
   const sinifSekmesinde=!!btn.closest('#tab-siniflar');
   const ogrenciSekmesinde=!!btn.closest('#tab-ogrenciler');
   const sinifDetayinda=!!btn.closest('#detayOverlay.ap-sinif-detay');
-
   if(ogretmenSekmesinde && (onclick.includes('ogretmenModalAc') || /düzenle|yeni öğretmen/i.test(text))){ requestAnimationFrame(ogretmenModalIsaretle); return; }
   if(sinifSekmesinde && (onclick.includes('sinifModalAc') || /düzenle|yeni sınıf/i.test(text))) requestAnimationFrame(sinifModalIsaretle);
   if(sinifSekmesinde && (onclick.includes('sinifDetayAc') || btn.matches('tr.row-clickable'))) requestAnimationFrame(sinifDetayIsaretle);
-
-  if(ogrenciSekmesinde && /ogrenciDetayModalAc|sinifVeliModalAc|sinifOgrenciExcelModalAc/.test(onclick)){
-    requestAnimationFrame(ogrenciModalIsaretle);
-    return;
-  }
-
+  if(ogrenciSekmesinde && /ogrenciDetayModalAc|sinifVeliModalAc|sinifOgrenciExcelModalAc/.test(onclick)){ requestAnimationFrame(ogrenciModalIsaretle); return; }
   if(sinifDetayinda){
     if(onclick.includes('sinifModalAc')) requestAnimationFrame(sinifModalIsaretle);
     if(/sinifVeliModalAc|sinifOgrenciExcelModalAc|ogrenciDetayModalAc/.test(onclick)) requestAnimationFrame(sinifModalIsaretle);
