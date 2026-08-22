@@ -28,6 +28,7 @@
   stilYukle('css/dark-theme-soft.css?v=4','data-dark-theme-soft');
   stilYukle('css/ayarlar-modern.css?v=3','data-ayarlar-modern-style');
   stilYukle('css/yazili-sinavlar-modern.css?v=2','data-yazili-sinavlar-modern-style');
+  stilYukle('css/yazili-rapor-modern.css?v=1','data-yazili-rapor-modern-style');
   stilYukle('css/deneme-sinavlari-modern.css?v=1','data-deneme-sinavlari-modern-style');
   stilYukle('css/deneme-sayac-modern-v4.css?v=1','data-deneme-sayac-modern-v4-style');
   yukle('js/alt-navigasyon-core.js','data-alt-nav-core',function(){
@@ -38,6 +39,10 @@
       yukle('js/ogretmen-detay-modern.js?v=3','data-ogretmen-detay-modern');
       yukle('js/ayarlar-modern.js?v=2','data-ayarlar-modern');
       yukle('js/yazili-sinavlar-modern.js?v=4','data-yazili-sinavlar-modern');
+      /* Android rapor akışı: gerçek A4 önizleme -> native PrintPlugin */
+      yukle('js/native-report-preview.js?v=2','data-native-report-preview',function(){
+        yukle('js/yazili-rapor-modern.js?v=1','data-yazili-rapor-modern');
+      });
       yukle('js/deneme-sayac-tarih-fix.js?v=2','data-deneme-sayac-tarih-fix',function(){
         yukle('js/deneme-sayac-runtime-v2.js?v=2','data-deneme-sayac-runtime-v2',function(){
           yukle('js/deneme-sinavlari-modern.js?v=3','data-deneme-sinavlari-modern',function(){
