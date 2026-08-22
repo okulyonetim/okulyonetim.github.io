@@ -35,7 +35,7 @@
       yukle('js/ogretmenler-modern.js?v=2','data-ogretmenler-modern');
       yukle('js/ogretmen-detay-modern.js?v=3','data-ogretmen-detay-modern');
       yukle('js/ayarlar-modern.js?v=2','data-ayarlar-modern');
-      yukle('js/yazili-sinavlar-modern.js?v=2','data-yazili-sinavlar-modern');
+      yukle('js/yazili-sinavlar-modern.js?v=4','data-yazili-sinavlar-modern');
     });
   });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',altNavAktifDurumunuKur,{once:true}); else altNavAktifDurumunuKur();
