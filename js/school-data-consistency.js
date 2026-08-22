@@ -1,5 +1,5 @@
 /* ====================================================================
-   Koruk Asistan — Okul Veri Tutarlılığı v3
+   Koruk Asistan — Okul Veri Tutarlılığı v4
    - Sınıf öğretmenliği için tek kaynak: siniflar[].sinifOgretmeniId
    - Öğrenci sayaçları için tek kaynak: varsa veliler/öğrenci kayıtları
    - Eski ogretmen.sorumluSinif ve sınıf sayaçları yalnız geriye uyumluluk
@@ -122,7 +122,10 @@ function ogretmenModaliniDuzelt(id){
     const sel=document.getElementById('f_sorumluSinif');
     if(!sel) return;
     const siniflar=id?ogretmeninSiniflari(id):[];
+    const ogretmen=id?arr('ogretmenler').find(o=>o.id===id):null;
+    const eski=ogretmen?.sorumluSinif||'';
     if(siniflar.length) sel.value=siniflar[0].ad||'';
+    else if(eski) sel.value=eski;
     else sel.value='';
     sel.disabled=true;
     const grup=sel.closest('.form-group');
@@ -182,6 +185,7 @@ function kur(){
   tamam += fonksiyonSar('renderOgretmenler',turetilenVerileriUygula,()=>requestAnimationFrame(ogretmenBasliginiDuzelt))?1:0;
   tamam += fonksiyonSar('renderDashboard',turetilenVerileriUygula,null)?1:0;
   tamam += fonksiyonSar('renderOgrenciler',turetilenVerileriUygula,()=>requestAnimationFrame(()=>{sinifTablosunuTazele();ogretmenTablosunuTazele();dashboardTazele();}))?1:0;
+  tamam += fonksiyonSar('ogretmenDetayAc',turetilenVerileriUygula,null)?1:0;
   tamam += fonksiyonSar('ogretmenModalAc',turetilenVerileriUygula,function(id){ogretmenModaliniDuzelt(id);})?1:0;
   tamam += fonksiyonSar('sinifModalAc',turetilenVerileriUygula,function(id){sinifModaliniDuzelt(id);})?1:0;
   return tamam;
