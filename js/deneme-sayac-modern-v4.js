@@ -1,4 +1,4 @@
-/* Koruk Asistan — Deneme Sayacı Modern v4 */
+/* Koruk Asistan — Deneme Sayacı Modern v4.1 */
 (function(){
   'use strict';
   function esc(v){return typeof escapeHtml==='function'?escapeHtml(String(v??'')):String(v??'').replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];});}
@@ -49,7 +49,7 @@
     var id=window._sayacOvId;if(!id)return;var d=(typeof denemeSinavlari!=='undefined'?denemeSinavlari:[]).find(function(x){return x.id===id;});if(!d)return;
     var ds=typeof _sayacDurum==='function'?_sayacDurum(d):null;var shell=document.getElementById('dn4Shell');if(shell)shell.innerHTML=mainHtml(d,ds);
     var st=document.getElementById('dn4State');if(st){st.className='dn4-state '+(d.sayacDurumu?.aktif?'live':'');st.textContent=d.sayacDurumu?.aktif?'● Devam Ediyor':(ds&&ds.durum==='tamam'?'✓ Tamamlandı':'Hazır');}
-    var old=document.getElementById('dn4Control');if(old){var wrap=old.parentElement;old.outerHTML=btnHtml(d);var n=document.getElementById('dn4Control');if(n)n.onclick=function(){if(d.sayacDurumu?.aktif){if(typeof _sayacDurdur==='function')_sayacDurdur(d.id);}else if(typeof _sayacBaslat==='function')_sayacBaslat(d.id);};}
+    var old=document.getElementById('dn4Control');if(old){old.outerHTML=btnHtml(d);var n=document.getElementById('dn4Control');if(n)n.onclick=function(){if(d.sayacDurumu?.aktif){if(typeof _sayacDurdur==='function')_sayacDurdur(d.id);}else if(typeof _sayacBaslat==='function')_sayacBaslat(d.id);};}
   }
   window._sayacOvGuncelle=refreshOverlay;
 
@@ -58,14 +58,22 @@
     var session=ds&&ds.durum==='ara'?'Ara':(ds&&ds.segAd?ds.segAd:'Sınav');
     var kalan=ds&&ds.kalanSn!=null?fmt(ds.kalanSn):'--:--:--';
     var bit=ds&&ds.bitisStr?ds.bitisStr:(ds&&ds.toplam&&ds.toplam.bit?ds.toplam.bit:'—');
-    return '<div class="dn4-home-card"><div class="dn4-home-top"><div><div class="dn4-home-kicker">CANLI SINAV</div><div class="dn4-home-name">'+esc(d.ad||'Deneme Sınavı')+'</div></div><span class="dn4-home-live">DEVAM EDİYOR</span></div><div class="dn4-home-main"><div class="dn4-home-ring" style="--p:'+p.toFixed(1)+'"><div><small>KALAN</small><b>'+kalan+'</b></div></div><div><div class="dn4-home-session">'+esc(ds&&ds.segIkon?ds.segIkon:'⏱️')+' '+esc(session)+'</div><div class="dn4-home-detail"><span class="dn4-home-pill">⏰ Bitiş '+esc(bit)+'</span><span class="dn4-home-pill">👥 '+esc(d.sinflar||'—')+'</span><span class="dn4-home-pill">📋 '+dkMetin(toplamDk(d))+'</span></div><div class="dn4-home-progress"><i style="width:'+p.toFixed(1)+'%"></i></div></div></div><div class="dn4-home-foot"><span>Dokunarak canlı sayacı aç</span><span class="dn4-home-open">Detayları İzle ›</span></div></div>';
+    var bas=ds&&ds.toplam&&ds.toplam.bas?ds.toplam.bas:(d.oturumTuru==='İki Oturum'?(d.sozelBaslama||'—'):(d.baslamaSaati||'—'));
+    return '<div class="dn4-home-card"><div class="dn4-home-top"><div><div class="dn4-home-kicker">CANLI SINAV</div><div class="dn4-home-name">'+esc(d.ad||'Deneme Sınavı')+'</div></div><span class="dn4-home-live">DEVAM EDİYOR</span></div><div class="dn4-home-main"><div class="dn4-home-ring" style="--p:'+p.toFixed(1)+'"><div><small>KALAN</small><b>'+kalan+'</b></div></div><div><div class="dn4-home-session">'+esc(ds&&ds.segIkon?ds.segIkon:'⏱️')+' '+esc(session)+'</div><div class="dn4-home-detail"><span class="dn4-home-pill">⏰ Bitiş '+esc(bit)+'</span><span class="dn4-home-pill">👥 '+esc(d.sinflar||'—')+'</span><span class="dn4-home-pill">📋 '+dkMetin(toplamDk(d))+'</span><span class="dn4-home-pill">▶ '+esc(bas)+'</span></div><div class="dn4-home-progress"><i style="width:'+p.toFixed(1)+'%"></i></div></div></div><div class="dn4-home-foot"><span>Canlı ilerlemeyi görüntüle</span><span class="dn4-home-open">Detayları İzle ›</span></div></div>';
   }
   window._anaSayfaSayacKartiGuncelle=function(){
     var kart=document.getElementById('dashSayacKarti');if(!kart)return;var a=aktifDeneme();
     if(!a){kart.style.display='none';kart.innerHTML='';kart.classList.remove('dn4-dashboard-live');window._dashSayacAktifId=null;return;}
-    window._dashSayacAktifId=a.d.id;kart.style.display='';kart.classList.add('dn4-dashboard-live');kart.innerHTML=dashboardHtml(a.d,a.ds);kart.onclick=function(){window.denemeSayacAc(a.d.id);};
-    var shell=document.querySelector('.db4-shell,.kh-home');if(shell&&kart.parentElement!==shell){var first=shell.firstElementChild;if(first&&first.nextSibling)shell.insertBefore(kart,first.nextSibling);else shell.appendChild(kart);}
+    window._dashSayacAktifId=a.d.id;kart.style.display='block';kart.classList.add('dn4-dashboard-live');kart.innerHTML=dashboardHtml(a.d,a.ds);kart.onclick=function(){window.denemeSayacAc(a.d.id);};
   };
-  if(!window.__dn4HomeInt)window.__dn4HomeInt=setInterval(function(){try{window._anaSayfaSayacKartiGuncelle();}catch(e){}},1000);
-  setTimeout(function(){try{window._anaSayfaSayacKartiGuncelle();}catch(e){}},500);
+
+  /* Eski sinavlar.js sayaç intervali, fonksiyon referansını kurulum anında yakaladığı
+     için yeni kartı her saniye eski mini kartla eziyordu. Eski intervali kapatıp
+     aynı global handle'ı bu yeni renderer'a bağlıyoruz. */
+  try{
+    if(typeof _anaSayfaSayacInt!=='undefined' && _anaSayfaSayacInt){clearInterval(_anaSayfaSayacInt);_anaSayfaSayacInt=null;}
+    if(typeof _anaSayfaSayacInt!=='undefined') _anaSayfaSayacInt=setInterval(window._anaSayfaSayacKartiGuncelle,1000);
+    else if(!window.__dn4HomeInt) window.__dn4HomeInt=setInterval(window._anaSayfaSayacKartiGuncelle,1000);
+  }catch(e){if(!window.__dn4HomeInt)window.__dn4HomeInt=setInterval(window._anaSayfaSayacKartiGuncelle,1000);}
+  setTimeout(function(){try{window._anaSayfaSayacKartiGuncelle();}catch(e){}},150);
 })();
