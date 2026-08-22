@@ -4,8 +4,8 @@
 function scriptYukle(src,key){if(document.querySelector('script[data-'+key+']'))return;const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute('data-'+key,'1');document.head.appendChild(s)}
 function stilYukle(href,key){if(document.querySelector('link[data-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.setAttribute('data-'+key,'1');document.head.appendChild(l)}
 function gv(n){try{return eval(`typeof ${n}!=='undefined'?${n}:null`)}catch(_){return null}}
-stilYukle('css/auth-header-redesign.css?v=1','auth-header-redesign');
-scriptYukle('js/auth-header-redesign.js?v=1','auth-header-redesign-js');
+stilYukle('css/auth-header-redesign.css?v=2','auth-header-redesign');
+scriptYukle('js/auth-header-redesign-v2.js?v=2','auth-header-redesign-js');
 scriptYukle('js/theme-contrast-fixes.js','theme-contrast');
 scriptYukle('js/excel-visual-fidelity.js','excel-visual-fidelity');
 scriptYukle('js/excel-turkish-date-fix.js','excel-turkish-date');
