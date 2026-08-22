@@ -26,7 +26,7 @@
 }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<script src="js/modal-interaction-fix.js"></script>
+<script src="js/modal-interaction-fix.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/tasima-takip.css">
@@ -38,11 +38,11 @@
   <link rel="stylesheet" href="css/dashboard-yeni.css">
   <link rel="stylesheet" href="css/modal-interaction-fix.css">
 <script src="js/modal-js-patch.js" defer></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js" defer></script>
 <script>
   (function(){
     var kayitliTema = localStorage.getItem('oyTema');
@@ -1658,136 +1658,139 @@
   </div>
 </div>
 
-<script src="js/firebase-init.js"></script>
-<script src="js/core/services/istatistik.service.js"></script>
-<script src="js/core/services/depolama-sinir.service.js"></script>
+<script src="js/firebase-init.js" defer></script>
+<script src="js/core/services/istatistik.service.js" defer></script>
+<script src="js/core/services/depolama-sinir.service.js" defer></script>
 <!-- YENİ: Core katmanı (pragmatik mimari — bkz. docs/Pragmatik-Mimari-Tasarimi.md) -->
-<script src="js/core/utils.js"></script>
-<script src="js/core/store.js"></script>
-<script src="js/core/event-bus.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/kullanici-yonetimi.js"></script>
-<script src="js/core/repositories/kullanici-yonetimi.repository.js"></script>
-<script src="js/core/services/kullanici-yonetimi.service.js"></script>
-<script src="js/core/services/konum-giris.service.js"></script>
-<script src="js/core/repositories/nobet.repository.js"></script>
-<script src="js/core/services/nobet.service.js"></script>
-<script src="js/core/repositories/siniflar.repository.js"></script>
-<script src="js/core/services/siniflar.service.js"></script>
-<script src="js/core/repositories/yoklama.repository.js"></script>
-<script src="js/core/services/yoklama.service.js"></script>
-<script src="js/core/repositories/yillik-plan.repository.js"></script>
-<script src="js/core/services/yillik-plan.service.js"></script>
-<script src="js/core/repositories/takvim.repository.js"></script>
-<script src="js/core/services/takvim.service.js"></script>
-<script src="js/core/repositories/personel.repository.js"></script>
-<script src="js/core/services/personel.service.js"></script>
-<script src="js/core/repositories/tasima.repository.js"></script>
-<script src="js/core/services/tasima.service.js"></script>
-<script src="js/core/repositories/servis-oturma.repository.js"></script>
-<script src="js/core/services/servis-oturma.service.js"></script>
-<script src="js/core/repositories/sinif-oturma.repository.js"></script>
-<script src="js/core/services/sinif-oturma.service.js"></script>
-<script src="js/core/servis-yerlesim-sema.js"></script>
-<script src="js/core/repositories/notlar.repository.js"></script>
-<script src="js/core/services/notlar.service.js"></script>
-<script src="js/core/repositories/sinavlar.repository.js"></script>
-<script src="js/core/services/sinavlar.service.js"></script>
-<script src="js/core/repositories/ogretmen-izin.repository.js"></script>
-<script src="js/core/services/ogretmen-izin.service.js"></script>
-<script src="js/core/repositories/ders-saatleri.repository.js"></script>
-<script src="js/core/services/ders-saatleri.service.js"></script>
-<script src="js/core/repositories/dokumanlar.repository.js"></script>
-<script src="js/core/services/dokumanlar.service.js"></script>
-<script src="js/core/repositories/akademik-takvim.repository.js"></script>
-<script src="js/core/services/akademik-takvim.service.js"></script>
-<script src="js/core/repositories/kontrol-listeleri.repository.js"></script>
-<script src="js/core/services/kontrol-listeleri.service.js"></script>
-<script src="js/core/repositories/sinav-sonuclari.repository.js"></script>
-<script src="js/core/services/sinav-sonuclari.service.js"></script>
-<script src="js/core/repositories/harita.repository.js"></script>
-<script src="js/core/services/harita.service.js"></script>
-<script src="js/core/repositories/cizelgeler.repository.js"></script>
-<script src="js/core/services/cizelgeler.service.js"></script>
-<script src="js/core/repositories/odev-not-cizelgeleri.repository.js"></script>
-<script src="js/core/services/odev-not-cizelgeleri.service.js"></script>
-<script src="js/core/repositories/push.repository.js"></script>
-<script src="js/core/services/push.service.js"></script>
-<script src="js/core/repositories/haberler.repository.js"></script>
-<script src="js/core/services/haberler.service.js"></script>
-<script src="js/core/repositories/periyodik.repository.js"></script>
-<script src="js/core/services/periyodik.service.js"></script>
-<script src="js/core/repositories/mesajlasma.repository.js"></script>
-<script src="js/core/services/mesajlasma.service.js"></script>
-<script src="js/core/repositories/duyurular.repository.js"></script>
-<script src="js/core/services/duyurular.service.js"></script>
-<script src="js/core/repositories/anket.repository.js"></script>
-<script src="js/core/services/anket.service.js"></script>
-<script src="js/core/repositories/devamsizlik-cizelgesi.repository.js"></script>
-<script src="js/core/services/devamsizlik-cizelgesi.service.js"></script>
-<script src="js/push.js"></script>
-<script src="js/cizelgeler.js"></script>
-<script src="js/odev-not-cizelgeleri.js"></script>
-<script src="js/mesajlasma.js"></script>
-<script src="js/duyurular.js"></script>
-<script src="js/anket.js"></script>
-<script src="js/dashboard-ozellestirme.js"></script>
-<script src="js/excel-import.js"></script>
-<script src="js/kriter-dagitim.js"></script>
-<script src="js/proje-degerlendirme.js"></script>
-<script src="optik/js/layoutEngine.js"></script>
-<script src="optik/js/lgsPuanHesapla.js"></script>
-<script src="js/optik-ayarlari.js"></script>
-<script src="js/nobet.js"></script>
-<script src="js/periyodik.js"></script>
-<script src="js/ogretmen-detay.js"></script>
-<script src="js/ogretmen-izin.js"></script>
-<script src="js/ders-saatleri.js"></script>
-<script src="js/siniflar.js"></script>
-<script src="js/yoklama.js"></script>
-<script src="js/yillik-plan.js"></script>
-<script src="js/yillik-plan-tohum-veri.js"></script>
-<script src="js/tasima.js"></script>
-<script src="js/haberler.js"></script>
-<script src="js/mevzuat-asistan.js"></script>
-<script src="js/dokumanlar.js"></script>
-<script src="js/akademik-takvim.js"></script>
-<script src="js/kontrol-listeleri.js"></script>
-<script src="js/hatirlatmalar.js"></script>
-<script src="js/kontrol-listeleri-tohum-veri.js"></script>
-<script src="js/sinav-sonuclari.js"></script>
-<script src="js/dokuman-okuyucu.js"></script>
-<script src="js/harita.js"></script>
-<script src="js/servis-oturma.js"></script>
-<script src="js/sinif-oturma.js"></script>
-<script src="js/tasima-takip.js"></script>
-<script src="js/servis-denetim.js"></script>
-<script src="js/core/zengin-editor.js"></script>
-<script src="js/personel.js"></script>
-<script src="js/dilekce.js"></script>
-<script src="js/maas-degisiklik.js"></script>
-<script src="js/teblig-tebellug.js"></script>
-<script src="js/puantaj.js"></script>
-<script src="js/devamsizlik-cizelgesi.js"></script>
-<script src="js/optik-entegrasyon.js"></script>
-<script src="js/raporlama.js"></script>
-<script src="js/sinavlar.js"></script>
-<script src="js/notlar.js"></script>
-<script src="js/ogretmen-liste-olusturucu.js"></script>
-<script src="js/istatistikler.js"></script>
-<script src="js/depolama-sinirlari.js"></script>
-<script src="js/takvim.js"></script>
-<script src="js/ozellik-katalogu.js"></script>
-<script src="js/app.js"></script>
-<script src="js/ogrenciler-arama.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/sistem-bar.js"></script>
-<script src="js/hava-durumu.js"></script>
-<script src="js/widget-bridge.js"></script>
-<script src="js/alt-navigasyon.js"></script>
-<script src="js/nav-duzeni-editor.js"></script>
-<script src="js/role-ui-hardening.js"></script>
-<script src="js/dashboard-v2-init.js"></script>
+<script src="js/core/utils.js" defer></script>
+<script src="js/core/store.js" defer></script>
+<script src="js/core/event-bus.js" defer></script>
+<script src="js/auth.js" defer></script>
+<script src="js/kullanici-yonetimi.js" defer></script>
+<script src="js/core/repositories/kullanici-yonetimi.repository.js" defer></script>
+<script src="js/core/services/kullanici-yonetimi.service.js" defer></script>
+<script src="js/core/services/konum-giris.service.js" defer></script>
+<script src="js/core/repositories/nobet.repository.js" defer></script>
+<script src="js/core/services/nobet.service.js" defer></script>
+<script src="js/core/repositories/siniflar.repository.js" defer></script>
+<script src="js/core/services/siniflar.service.js" defer></script>
+<script src="js/core/repositories/yoklama.repository.js" defer></script>
+<script src="js/core/services/yoklama.service.js" defer></script>
+<script src="js/core/repositories/yillik-plan.repository.js" defer></script>
+<script src="js/core/services/yillik-plan.service.js" defer></script>
+<script src="js/core/repositories/takvim.repository.js" defer></script>
+<script src="js/core/services/takvim.service.js" defer></script>
+<script src="js/core/repositories/personel.repository.js" defer></script>
+<script src="js/core/services/personel.service.js" defer></script>
+<script src="js/core/repositories/tasima.repository.js" defer></script>
+<script src="js/core/services/tasima.service.js" defer></script>
+<script src="js/core/repositories/servis-oturma.repository.js" defer></script>
+<script src="js/core/services/servis-oturma.service.js" defer></script>
+<script src="js/core/repositories/sinif-oturma.repository.js" defer></script>
+<script src="js/core/services/sinif-oturma.service.js" defer></script>
+<script src="js/core/servis-yerlesim-sema.js" defer></script>
+<script src="js/core/repositories/notlar.repository.js" defer></script>
+<script src="js/core/services/notlar.service.js" defer></script>
+<script src="js/core/repositories/sinavlar.repository.js" defer></script>
+<script src="js/core/services/sinavlar.service.js" defer></script>
+<script src="js/core/repositories/ogretmen-izin.repository.js" defer></script>
+<script src="js/core/services/ogretmen-izin.service.js" defer></script>
+<script src="js/core/repositories/ders-saatleri.repository.js" defer></script>
+<script src="js/core/services/ders-saatleri.service.js" defer></script>
+<script src="js/core/repositories/dokumanlar.repository.js" defer></script>
+<script src="js/core/services/dokumanlar.service.js" defer></script>
+<script src="js/core/repositories/akademik-takvim.repository.js" defer></script>
+<script src="js/core/services/akademik-takvim.service.js" defer></script>
+<script src="js/core/repositories/kontrol-listeleri.repository.js" defer></script>
+<script src="js/core/services/kontrol-listeleri.service.js" defer></script>
+<script src="js/core/repositories/sinav-sonuclari.repository.js" defer></script>
+<script src="js/core/services/sinav-sonuclari.service.js" defer></script>
+<script src="js/core/repositories/harita.repository.js" defer></script>
+<script src="js/core/services/harita.service.js" defer></script>
+<script src="js/core/repositories/cizelgeler.repository.js" defer></script>
+<script src="js/core/services/cizelgeler.service.js" defer></script>
+<script src="js/core/repositories/odev-not-cizelgeleri.repository.js" defer></script>
+<script src="js/core/services/odev-not-cizelgeleri.service.js" defer></script>
+<script src="js/core/repositories/push.repository.js" defer></script>
+<script src="js/core/services/push.service.js" defer></script>
+<script src="js/core/repositories/haberler.repository.js" defer></script>
+<script src="js/core/services/haberler.service.js" defer></script>
+<script src="js/core/repositories/periyodik.repository.js" defer></script>
+<script src="js/core/services/periyodik.service.js" defer></script>
+<script src="js/core/repositories/mesajlasma.repository.js" defer></script>
+<script src="js/core/services/mesajlasma.service.js" defer></script>
+<script src="js/core/repositories/duyurular.repository.js" defer></script>
+<script src="js/core/services/duyurular.service.js" defer></script>
+<script src="js/core/repositories/anket.repository.js" defer></script>
+<script src="js/core/services/anket.service.js" defer></script>
+<script src="js/core/repositories/devamsizlik-cizelgesi.repository.js" defer></script>
+<script src="js/core/services/devamsizlik-cizelgesi.service.js" defer></script>
+<script src="js/push.js" defer></script>
+<script src="js/cizelgeler.js" defer></script>
+<script src="js/odev-not-cizelgeleri.js" defer></script>
+<script src="js/mesajlasma.js" defer></script>
+<script src="js/duyurular.js" defer></script>
+<script src="js/anket.js" defer></script>
+<script src="js/dashboard-ozellestirme.js" defer></script>
+<script src="js/excel-import.js" defer></script>
+<script src="js/kriter-dagitim.js" defer></script>
+<script src="js/proje-degerlendirme.js" defer></script>
+<script src="optik/js/layoutEngine.js" defer></script>
+<script src="optik/js/lgsPuanHesapla.js" defer></script>
+<script src="js/optik-ayarlari.js" defer></script>
+<script src="js/nobet.js" defer></script>
+<script src="js/periyodik.js" defer></script>
+<script src="js/ogretmen-detay.js" defer></script>
+<script src="js/ogretmen-izin.js" defer></script>
+<script src="js/ders-saatleri.js" defer></script>
+<script src="js/siniflar.js" defer></script>
+<script src="js/yoklama.js" defer></script>
+<script src="js/yillik-plan.js" defer></script>
+<!-- DÜZELTME (performans): yillik-plan-tohum-veri.js (234 KB statik şablon
+     verisi) artık burada YOK — sadece "Örnek Planları İçe Aktar" tıklanınca
+     js/yillik-plan.js:_yplTohumVeriYukle() tarafından dinamik olarak
+     yükleniyor. Her açılışta değil, sadece gerçekten ihtiyaç duyulduğunda. -->
+<script src="js/tasima.js" defer></script>
+<script src="js/haberler.js" defer></script>
+<script src="js/mevzuat-asistan.js" defer></script>
+<script src="js/dokumanlar.js" defer></script>
+<script src="js/akademik-takvim.js" defer></script>
+<script src="js/kontrol-listeleri.js" defer></script>
+<script src="js/hatirlatmalar.js" defer></script>
+<script src="js/kontrol-listeleri-tohum-veri.js" defer></script>
+<script src="js/sinav-sonuclari.js" defer></script>
+<script src="js/dokuman-okuyucu.js" defer></script>
+<script src="js/harita.js" defer></script>
+<script src="js/servis-oturma.js" defer></script>
+<script src="js/sinif-oturma.js" defer></script>
+<script src="js/tasima-takip.js" defer></script>
+<script src="js/servis-denetim.js" defer></script>
+<script src="js/core/zengin-editor.js" defer></script>
+<script src="js/personel.js" defer></script>
+<script src="js/dilekce.js" defer></script>
+<script src="js/maas-degisiklik.js" defer></script>
+<script src="js/teblig-tebellug.js" defer></script>
+<script src="js/puantaj.js" defer></script>
+<script src="js/devamsizlik-cizelgesi.js" defer></script>
+<script src="js/optik-entegrasyon.js" defer></script>
+<script src="js/raporlama.js" defer></script>
+<script src="js/sinavlar.js" defer></script>
+<script src="js/notlar.js" defer></script>
+<script src="js/ogretmen-liste-olusturucu.js" defer></script>
+<script src="js/istatistikler.js" defer></script>
+<script src="js/depolama-sinirlari.js" defer></script>
+<script src="js/takvim.js" defer></script>
+<script src="js/ozellik-katalogu.js" defer></script>
+<script src="js/app.js" defer></script>
+<script src="js/ogrenciler-arama.js" defer></script>
+<script src="js/ui.js" defer></script>
+<script src="js/sistem-bar.js" defer></script>
+<script src="js/hava-durumu.js" defer></script>
+<script src="js/widget-bridge.js" defer></script>
+<script src="js/alt-navigasyon.js" defer></script>
+<script src="js/nav-duzeni-editor.js" defer></script>
+<script src="js/role-ui-hardening.js" defer></script>
+<script src="js/dashboard-v2-init.js" defer></script>
 <!-- ============================================================
      YENİ — FAZ 2: LUCIDE İKON SİSTEMİ
      ------------------------------------------------------------
@@ -1799,7 +1802,7 @@
      ileride başka modüllerde data-lucide eklendikçe otomatik
      olarak ikona dönüşür — ayrıca bir şey yapmaya gerek kalmaz.
      ============================================================ -->
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
 <script>
   (function(){
     function ikonlariCiz(){
