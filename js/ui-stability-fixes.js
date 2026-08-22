@@ -12,13 +12,13 @@ scriptYukle('js/excel-turkish-date-fix.js','excel-turkish-date');
 scriptYukle('js/excel-visual-fidelity-v3.js','excel-visual-fidelity-v3');
 scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
 scriptYukle('js/modal-interaction-fix.js?v=5','modal-interaction-fix-js');
+scriptYukle('js/rapor-preview.js?v=1','rapor-preview');
 
 /* Tema olmayan ortak form standardı. */
 stilYukle('css/checkbox-standard.css?v=1','checkbox-standard');
 
 /* TEK aktif uygulama tema kaynağı:
-   css/app-v4-theme.css, index.html'de zaten doğrudan bağlı olan
-   css/modal-interaction-fix.css içinden import edilir.
+   index.html'de doğrudan bağlı css/modal-interaction-fix.css.
    Eski sayfa-tema CSS'leri burada artık YÜKLENMEZ. */
 
 /* app-pages-theme.js yalnız mevcut kararlı modal/sınıf işaretleme davranışı için
