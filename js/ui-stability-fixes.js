@@ -7,6 +7,8 @@ function gv(n){try{return eval(`typeof ${n}!=='undefined'?${n}:null`)}catch(_){r
 stilYukle('css/auth-header-redesign.css?v=2','auth-header-redesign');
 scriptYukle('js/auth-header-redesign-v2.js?v=2','auth-header-redesign-js');
 scriptYukle('js/mobile-header-brand.js?v=2','mobile-header-brand');
+stilYukle('css/profil-sayfasi.css?v=1','profil-sayfasi');
+scriptYukle('js/profil-sayfasi.js?v=1','profil-sayfasi');
 scriptYukle('js/theme-contrast-fixes.js','theme-contrast');
 scriptYukle('js/excel-visual-fidelity.js','excel-visual-fidelity');
 scriptYukle('js/excel-turkish-date-fix.js','excel-turkish-date');
