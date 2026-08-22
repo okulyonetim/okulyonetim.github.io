@@ -12,7 +12,7 @@ scriptYukle('js/nav-scroll-fix.js','nav-scroll-fix');
 scriptYukle('js/modal-interaction-fix.js?v=5','modal-interaction-fix-js');
 scriptYukle('js/rapor-preview.js?v=5','rapor-preview');
 scriptYukle('js/nobet-rapor.js?v=3','nobet-rapor');
-scriptYukle('js/school-data-consistency.js?v=3','school-data-consistency');
+scriptYukle('js/school-data-consistency.js?v=4','school-data-consistency');
 stilYukle('css/checkbox-standard.css?v=2','checkbox-standard');
 scriptYukle('js/app-pages-theme.js?v=3','app-pages-theme-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
