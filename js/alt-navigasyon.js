@@ -31,8 +31,6 @@
       aktifYap(item);
     },true);
 
-    // Uygulama ilk açıldığında sadece gerçekten görünür ana ekran varsa Ana Sayfa aktif kalsın.
-    // Sabit/hard-coded active sınıfının diğer sayfalarda takılı kalmasını engeller.
     requestAnimationFrame(function(){
       var secili=nav.querySelector('.bn-item.active,[aria-current="page"]');
       if(secili) aktifYap(secili);
@@ -48,12 +46,14 @@
   stilYukle('css/ogretmenler-modern.css?v=2','data-ogretmenler-modern-style');
   stilYukle('css/ogretmen-detay-modern.css?v=3','data-ogretmen-detay-modern-style');
   stilYukle('css/dark-theme-soft.css?v=4','data-dark-theme-soft');
+  stilYukle('css/ayarlar-modern.css?v=1','data-ayarlar-modern-style');
   yukle('js/alt-navigasyon-core.js','data-alt-nav-core',function(){
     altNavAktifDurumunuKur();
     yukle('js/alt-navigation-list-theme.js?v=1','data-alt-nav-list-theme',function(){
       yukle('js/ui-stability-fixes.js','data-ui-stability');
       yukle('js/ogretmenler-modern.js?v=2','data-ogretmenler-modern');
       yukle('js/ogretmen-detay-modern.js?v=3','data-ogretmen-detay-modern');
+      yukle('js/ayarlar-modern.js?v=1','data-ayarlar-modern');
     });
   });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',altNavAktifDurumunuKur,{once:true});
