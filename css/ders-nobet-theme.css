@@ -1,222 +1,105 @@
-/* Koruk Asistan — Ders Programı + Nöbet Programı tema uyarlaması
-   Yalnız görsel katman. Modal/observer/pull-to-refresh JS akışına dokunmaz. */
+/* Koruk Asistan — Ders Programı + Nöbet Programı modern tablo teması
+   Tek gerçek tablo korunur. Mobilde yatay kaydırma vardır.
+   Modal/observer/pull-to-refresh JS akışına dokunmaz. */
 
 #tab-dersProgrami,
 #tab-nobet{
-  --dn-surface: color-mix(in srgb, var(--bg-card, #fff) 94%, transparent);
-  --dn-surface-soft: color-mix(in srgb, var(--brand, #6d5dfc) 6%, var(--bg-card, #fff));
-  --dn-border: color-mix(in srgb, var(--border, #dfe3ea) 82%, var(--brand, #6d5dfc) 18%);
-  --dn-shadow: 0 10px 28px rgba(26,31,44,.07);
+  --dn-surface:color-mix(in srgb,var(--bg-card,#fff) 96%,transparent);
+  --dn-soft:color-mix(in srgb,var(--brand,#6d5dfc) 7%,var(--bg-card,#fff));
+  --dn-soft-2:color-mix(in srgb,var(--brand,#6d5dfc) 11%,var(--bg-card,#fff));
+  --dn-border:color-mix(in srgb,var(--border,#dfe3ea) 78%,var(--brand,#6d5dfc) 22%);
+  --dn-shadow:0 10px 26px rgba(29,35,52,.07);
 }
 
 #tab-dersProgrami .page-header,
-#tab-nobet .page-header{
-  gap:14px;
-  align-items:flex-start;
-  margin-bottom:16px;
-}
+#tab-nobet .page-header{gap:14px;align-items:flex-start;margin-bottom:16px}
 #tab-dersProgrami .page-title,
-#tab-nobet .page-title{
-  font-weight:800;
-  letter-spacing:-.02em;
-}
+#tab-nobet .page-title{font-weight:850;letter-spacing:-.025em}
 #tab-dersProgrami .page-sub,
-#tab-nobet .page-sub{
-  margin-top:4px;
-  line-height:1.45;
-}
+#tab-nobet .page-sub{margin-top:4px;line-height:1.45}
 
 #tab-dersProgrami .page-header-actions,
-#tab-nobet .page-header-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  align-items:center;
-}
+#tab-nobet .page-header-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#tab-dersProgrami #dersSinifSecimi{min-height:46px;border-radius:14px;border:1px solid var(--dn-border);background:var(--dn-surface);color:var(--ink);padding:0 38px 0 14px;font-weight:800;box-shadow:0 4px 14px rgba(20,28,45,.04)}
 #tab-dersProgrami .page-header-actions .btn,
 #tab-nobet .page-header-actions .btn,
 #tab-nobet > div > .btn-amber,
-#tab-nobet .card .btn{
-  min-height:38px;
-  border-radius:11px;
-  font-weight:700;
-  border:1px solid var(--dn-border);
-  box-shadow:none;
-}
-#tab-dersProgrami .page-header-actions .btn:hover,
-#tab-nobet .page-header-actions .btn:hover,
-#tab-nobet .card .btn:hover{
-  transform:translateY(-1px);
-}
-#tab-dersProgrami #dersSinifSecimi{
-  min-height:40px;
-  border-radius:11px;
-  border:1px solid var(--dn-border);
-  background:var(--dn-surface);
-  color:var(--ink);
-  padding:0 36px 0 12px;
-  font-weight:700;
-}
+#tab-nobet .card .btn{min-height:44px;border-radius:14px;font-weight:750;border:1px solid var(--dn-border);background:var(--dn-surface);color:var(--ink);box-shadow:0 4px 14px rgba(20,28,45,.035)}
+#tab-dersProgrami .page-header-actions .btn:active,
+#tab-nobet .page-header-actions .btn:active,
+#tab-nobet .card .btn:active{transform:scale(.985)}
+
+#tab-nobet > div > .btn-amber{min-height:50px;background:linear-gradient(135deg,color-mix(in srgb,var(--brand,#6d5dfc) 92%,#fff 8%),color-mix(in srgb,var(--brand,#6d5dfc) 70%,#8f75ff 30%));color:#fff;border:0;box-shadow:0 10px 22px color-mix(in srgb,var(--brand,#6d5dfc) 22%,transparent)}
 
 #tab-dersProgrami .card.cizelge-wrap,
 #tab-nobet .card.cizelge-wrap,
-#tab-nobet .dash-cols > .card{
-  background:var(--dn-surface);
-  border:1px solid var(--dn-border);
-  border-radius:18px;
-  box-shadow:var(--dn-shadow);
-}
+#tab-nobet .dash-cols>.card{background:var(--dn-surface);border:1px solid var(--dn-border);border-radius:22px;box-shadow:var(--dn-shadow)}
 #tab-dersProgrami .card.cizelge-wrap,
-#tab-nobet .card.cizelge-wrap{
-  overflow:auto;
-  -webkit-overflow-scrolling:touch;
-}
+#tab-nobet .card.cizelge-wrap{overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;scrollbar-width:thin;overscroll-behavior-x:contain}
 
 #tab-dersProgrami .schedule-grid,
-#tab-nobet .schedule-grid{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  background:transparent;
-}
+#tab-nobet .schedule-grid{width:100%;border-collapse:separate;border-spacing:0 8px;background:transparent;margin:0}
 #tab-dersProgrami .schedule-grid th,
-#tab-nobet .schedule-grid th{
-  background:var(--dn-surface-soft);
-  color:var(--ink);
-  font-weight:800;
-  border-color:var(--dn-border);
-}
+#tab-nobet .schedule-grid th{height:58px;padding:12px 14px;background:var(--dn-soft-2);color:var(--ink);font-weight:850;letter-spacing:.025em;border:0;border-bottom:2px solid color-mix(in srgb,var(--brand,#6d5dfc) 28%,var(--border,#ddd));white-space:nowrap;text-align:center}
+#tab-dersProgrami .schedule-grid thead th:first-child,
+#tab-nobet .schedule-grid thead th:first-child{border-top-left-radius:15px;border-bottom-left-radius:15px}
+#tab-dersProgrami .schedule-grid thead th:last-child,
+#tab-nobet .schedule-grid thead th:last-child{border-top-right-radius:15px;border-bottom-right-radius:15px}
+
 #tab-dersProgrami .schedule-grid td,
-#tab-nobet .schedule-grid td{
-  background:color-mix(in srgb, var(--bg-card, #fff) 97%, transparent);
-  border-color:var(--dn-border);
-  color:var(--ink);
-  transition:background .15s ease, border-color .15s ease, transform .15s ease;
-}
+#tab-nobet .schedule-grid td{min-height:70px;padding:14px 16px;background:color-mix(in srgb,var(--bg-card,#fff) 97%,var(--brand,#6d5dfc) 3%);border:0;color:var(--ink);vertical-align:middle;transition:background .15s ease,transform .15s ease;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--border,#ddd) 88%,transparent)}
+#tab-dersProgrami .schedule-grid tr td:first-child,
+#tab-nobet .schedule-grid tr td:first-child{border-top-left-radius:14px;border-bottom-left-radius:14px}
+#tab-dersProgrami .schedule-grid tr td:last-child,
+#tab-nobet .schedule-grid tr td:last-child{border-top-right-radius:14px;border-bottom-right-radius:14px}
 #tab-dersProgrami .schedule-grid td[onclick],
-#tab-nobet .schedule-grid td[onclick]{
-  cursor:pointer;
-}
+#tab-nobet .schedule-grid td[onclick]{cursor:pointer}
 #tab-dersProgrami .schedule-grid td[onclick]:active,
-#tab-nobet .schedule-grid td[onclick]:active{
-  transform:scale(.985);
-  background:var(--dn-surface-soft);
-}
+#tab-nobet .schedule-grid td[onclick]:active{transform:scale(.985);background:var(--dn-soft)}
 
-#tab-nobet > div > .btn-amber{
-  min-height:48px;
-  border-radius:14px;
-  background:linear-gradient(135deg, color-mix(in srgb, var(--brand,#6d5dfc) 92%, #fff 8%), color-mix(in srgb, var(--brand,#6d5dfc) 68%, #8f75ff 32%));
-  color:#fff;
-  border:0;
-  box-shadow:0 8px 20px color-mix(in srgb, var(--brand,#6d5dfc) 22%, transparent);
-}
-#tab-nobet .dash-cols{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
-}
-#tab-nobet .dash-cols .card h3{
-  margin:0 0 12px;
-  font-size:15px;
-  font-weight:800;
-}
-#tab-nobet .dash-row{
-  border:1px solid var(--dn-border);
-  border-radius:12px;
-  padding:9px 10px;
-  margin-bottom:7px;
-  background:color-mix(in srgb, var(--bg-card,#fff) 96%, var(--brand,#6d5dfc) 4%);
-}
-#tab-nobet .cz-del{
-  width:32px;
-  height:32px;
-  display:inline-grid;
-  place-items:center;
-  border-radius:9px;
-  border:1px solid color-mix(in srgb, #ef4444 25%, var(--border,#ddd));
-  background:color-mix(in srgb, #ef4444 7%, var(--bg-card,#fff));
-  color:#c23b3b;
-}
+/* Ders programı: saat sütunu belirgin, gün hücreleri ferah */
+#tab-dersProgrami .schedule-grid th:first-child,
+#tab-dersProgrami .schedule-grid td:first-child{min-width:142px;width:142px;text-align:center;font-weight:800;background:color-mix(in srgb,var(--brand,#6d5dfc) 7%,var(--bg-card,#fff))}
+#tab-dersProgrami .schedule-grid th:not(:first-child),
+#tab-dersProgrami .schedule-grid td:not(:first-child){min-width:210px;text-align:center}
+#tab-dersProgrami .schedule-grid td:not(:first-child){font-size:15px;font-weight:650}
 
-/* Ortak modal yalnız bu iki modülün gerçek alanları içerdiğinde görsel uyarlama.
-   Observer/class ekleme yoktur. */
-#modalOverlay:has(#f_nobetOgretmen) .modal,
-#modalOverlay:has(#f_tatilTarih) .modal,
-#modalOverlay:has(#f_amirId) .modal{
-  border-radius:20px;
-  border:1px solid var(--dn-border, var(--border));
-  background:var(--bg-card);
-  box-shadow:0 22px 60px rgba(13,20,40,.22);
-}
-#modalOverlay:has(#f_nobetOgretmen) .modal h3,
-#modalOverlay:has(#f_tatilTarih) .modal h3,
-#modalOverlay:has(#f_amirId) .modal h3{
-  font-weight:800;
-  letter-spacing:-.02em;
-}
-#modalOverlay:has(#f_nobetOgretmen) input,
-#modalOverlay:has(#f_nobetOgretmen) select,
-#modalOverlay:has(#f_tatilTarih) input,
-#modalOverlay:has(#f_amirId) input,
-#modalOverlay:has(#f_amirId) select{
-  min-height:44px;
-  border-radius:11px;
-  border:1px solid color-mix(in srgb, var(--border,#ddd) 82%, var(--brand,#6d5dfc) 18%);
-  background:var(--bg-card);
-  color:var(--ink);
-}
+/* Nöbet: tarih sabit ve okunaklı, görev yerleri geniş */
+#tab-nobet .schedule-grid th:first-child,
+#tab-nobet .schedule-grid td:first-child{min-width:185px;width:185px;font-weight:850;background:color-mix(in srgb,var(--brand,#6d5dfc) 6%,var(--bg-card,#fff))}
+#tab-nobet .schedule-grid th:not(:first-child),
+#tab-nobet .schedule-grid td:not(:first-child){min-width:190px;text-align:center}
+#tab-nobet .schedule-grid td:not(:first-child){font-weight:700}
+
+#tab-nobet .dash-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#tab-nobet .dash-cols .card h3{margin:0 0 12px;font-size:15px;font-weight:850}
+#tab-nobet .dash-row{border:1px solid var(--dn-border);border-radius:13px;padding:10px 11px;margin-bottom:8px;background:color-mix(in srgb,var(--bg-card,#fff) 96%,var(--brand,#6d5dfc) 4%)}
+#tab-nobet .cz-del{width:34px;height:34px;display:inline-grid;place-items:center;border-radius:10px;border:1px solid color-mix(in srgb,#ef4444 25%,var(--border,#ddd));background:color-mix(in srgb,#ef4444 7%,var(--bg-card,#fff));color:#c23b3b}
 
 html[data-theme="dark"] #tab-dersProgrami,
-html[data-theme="dark"] #tab-nobet{
-  --dn-surface:color-mix(in srgb, var(--bg-card,#171923) 94%, #000 6%);
-  --dn-surface-soft:color-mix(in srgb, var(--brand,#8c7bff) 12%, var(--bg-card,#171923));
-  --dn-border:color-mix(in srgb, var(--border,#34384a) 80%, var(--brand,#8c7bff) 20%);
-  --dn-shadow:0 12px 30px rgba(0,0,0,.22);
-}
+html[data-theme="dark"] #tab-nobet{--dn-surface:color-mix(in srgb,var(--bg-card,#171923) 95%,#000 5%);--dn-soft:color-mix(in srgb,var(--brand,#8c7bff) 12%,var(--bg-card,#171923));--dn-soft-2:color-mix(in srgb,var(--brand,#8c7bff) 17%,var(--bg-card,#171923));--dn-border:color-mix(in srgb,var(--border,#34384a) 78%,var(--brand,#8c7bff) 22%);--dn-shadow:0 12px 30px rgba(0,0,0,.24)}
 
-@media (max-width: 760px){
+@media(max-width:760px){
   #tab-dersProgrami .page-header,
-  #tab-nobet .page-header{
-    flex-direction:column;
-  }
+  #tab-nobet .page-header{flex-direction:column}
   #tab-dersProgrami .page-header-actions,
-  #tab-nobet .page-header-actions{
-    width:100%;
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-  #tab-dersProgrami #dersSinifSecimi{
-    grid-column:1/-1;
-    width:100%!important;
-  }
+  #tab-nobet .page-header-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #tab-dersProgrami #dersSinifSecimi{grid-column:1/-1;width:100%!important}
   #tab-dersProgrami .page-header-actions .btn,
-  #tab-nobet .page-header-actions .btn{
-    width:100%;
-    min-width:0;
-    white-space:normal;
-    line-height:1.25;
-  }
-  #tab-nobet .dash-cols{
-    grid-template-columns:1fr;
-  }
+  #tab-nobet .page-header-actions .btn{width:100%;min-width:0;white-space:normal;line-height:1.2;padding:10px 8px}
+  #tab-nobet .dash-cols{grid-template-columns:1fr}
   #tab-dersProgrami .card.cizelge-wrap,
-  #tab-nobet .card.cizelge-wrap{
-    margin-left:-2px;
-    margin-right:-2px;
-    padding:10px;
-    border-radius:15px;
-  }
-  #tab-dersProgrami .schedule-grid,
-  #tab-nobet .schedule-grid{
-    min-width:720px;
-  }
-  #tab-nobet .card.cizelge-wrap > div:first-child{
-    position:sticky;
-    left:0;
-    z-index:2;
-    background:var(--bg-card);
-    padding:6px;
-    border-radius:12px;
-  }
+  #tab-nobet .card.cizelge-wrap{margin-left:-2px;margin-right:-2px;padding:10px 8px 12px;border-radius:18px}
+  #tab-dersProgrami .schedule-grid{min-width:1210px}
+  #tab-nobet .schedule-grid{min-width:980px}
+  #tab-dersProgrami .schedule-grid th,
+  #tab-nobet .schedule-grid th{position:sticky;top:0;z-index:3}
+  #tab-dersProgrami .schedule-grid th:first-child,
+  #tab-dersProgrami .schedule-grid td:first-child,
+  #tab-nobet .schedule-grid th:first-child,
+  #tab-nobet .schedule-grid td:first-child{position:sticky;left:0;z-index:4;box-shadow:6px 0 14px rgba(24,32,49,.07)}
+  #tab-dersProgrami .schedule-grid th:first-child,
+  #tab-nobet .schedule-grid th:first-child{z-index:6}
+  #tab-dersProgrami .schedule-grid td{min-height:78px}
+  #tab-nobet .schedule-grid td{min-height:68px}
 }
