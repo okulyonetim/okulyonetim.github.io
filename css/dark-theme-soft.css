@@ -1,0 +1,53 @@
+/* Koruk Asistan — Daha Açık Koyu Tema v1
+   Koyu tema karakterini korur; siyaha yakın zeminleri orta koyulukta füme/zümrüt tonlara taşır. */
+[data-theme="dark"]{
+  --nm-bg:#34443f!important;
+  --nm-bg-light:#40514b!important;
+  --nm-bg-dark:#2c3b36!important;
+  --bg-app:#34443f!important;
+  --bg-app-soft:#2f3f3a!important;
+  --bg-card:#40514b!important;
+  --bg-topbar:#3a4b45!important;
+  --bg-sidebar:#30413b!important;
+  --bg-sidebar-2:#293a34!important;
+  --bg-secondary:#465852!important;
+  --ink:#f7fbf9!important;
+  --ink-soft:#e2ece7!important;
+  --ink-muted:#b9cbc2!important;
+  --ink-on-dark:#f7fbf9!important;
+  --ink-on-dark-muted:#b9d7ca!important;
+  --border:rgba(225,240,233,.22)!important;
+  --border-soft:rgba(240,250,246,.14)!important;
+  --nm-out:0 5px 16px rgba(15,28,23,.20)!important;
+  --nm-in:inset 0 1px 3px rgba(10,24,18,.18)!important;
+  --nm-sm:0 3px 10px rgba(15,28,23,.16)!important;
+  --nm-lg:0 10px 28px rgba(15,28,23,.24)!important;
+  --el-1:var(--nm-sm)!important;--el-2:var(--nm-out)!important;--el-3:var(--nm-lg)!important;
+  --shadow-sm:var(--nm-sm)!important;--shadow-md:var(--nm-out)!important;--shadow-lg:var(--nm-lg)!important;
+}
+[data-theme="dark"] body{background:#34443f!important;color:#f7fbf9!important}
+[data-theme="dark"] .card,[data-theme="dark"] .modal,[data-theme="dark"] .modal-content,[data-theme="dark"] .detay-panel{background:#40514b!important;border-color:rgba(225,240,233,.20)!important}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#4a5d56!important;color:#fff!important;border-color:rgba(225,240,233,.24)!important}
+[data-theme="dark"] input::placeholder,[data-theme="dark"] textarea::placeholder{color:#c2d1ca!important}
+
+/* Mobil ana sayfa */
+[data-theme="dark"] #tab-panel.kh-home{--kh-bg:#34443f!important;--kh-card:#40514b!important;--kh-card-2:#4a5d56!important;--kh-text:#f8fcfa!important;--kh-muted:#c1d0c9!important;--kh-line:#60736b!important;--kh-brand-soft:#4a5c57!important;--kh-green:#82e1bb!important;--kh-green-soft:#405e52!important;--kh-amber-soft:#62553b!important;--kh-red-soft:#62474b!important;--kh-blue-soft:#405b70!important;--kh-shadow:0 8px 22px rgba(12,28,22,.18)!important}
+[data-theme="dark"] .kh-hero{background:linear-gradient(125deg,#49645b 0%,#4d5d61 48%,#3f6258 100%)!important;border-color:rgba(255,255,255,.16)!important;box-shadow:0 10px 28px rgba(10,28,21,.20)!important}
+[data-theme="dark"] .kh-live-card{background:rgba(71,91,83,.92)!important;border-color:rgba(255,255,255,.17)!important;box-shadow:0 5px 16px rgba(10,28,21,.15)!important}
+
+/* Alt navigasyon / profil */
+[data-theme="dark"]{--an-bg:#34443f!important;--an-surface:#40514b!important;--an-surface-soft:#4a5d56!important;--an-text:#f7fbf9!important;--an-muted:#bdcec6!important;--an-line:#60736b!important;--an-shadow-soft:0 5px 16px rgba(12,29,23,.17)!important;--an-accent:#8ce4bf!important;--an-accent-soft:#49665a!important}
+[data-theme="dark"] .an-profil-ust{background:linear-gradient(145deg,#47705f,#36594c)!important}
+
+/* Öğretmenler */
+[data-theme="dark"] #tab-ogretmenler.ogm-modern{--ogm-bg:#34443f!important;--ogm-card:#40514b!important;--ogm-text:#f7fbf9!important;--ogm-muted:#bdcec6!important;--ogm-line:#60736b!important;--ogm-green:#8ce4bf!important;--ogm-soft:#49665a!important;--ogm-shadow:0 6px 18px rgba(12,29,23,.17)!important}
+[data-theme="dark"] .ogm-tag.warn{background:#62563e!important;color:#ffe0a0!important}[data-theme="dark"] .ogm-tag.red{background:#65494d!important;color:#ffb3ba!important}
+
+/* Öğretmen detay */
+[data-theme="dark"] #detayOverlay.ogd-modern{--ogd-bg:#34443f!important;--ogd-card:#40514b!important;--ogd-text:#f7fbf9!important;--ogd-muted:#bdcec6!important;--ogd-line:#60736b!important;--ogd-green:#8ce4bf!important;--ogd-green-2:#36594c!important;--ogd-soft:#49665a!important;--ogd-shadow:0 6px 18px rgba(12,29,23,.18)!important;background:rgba(25,38,33,.52)!important}
+[data-theme="dark"] #detayOverlay.ogd-modern .ogd-hero{background:linear-gradient(135deg,#47705f,#36594c)!important}
+
+/* Alt bar ve sık kullanılan yüzeyler */
+[data-theme="dark"] .bottom-nav{background:#3d5049!important;border-top-color:#60736b!important}
+[data-theme="dark"] .table,[data-theme="dark"] table{color:#f7fbf9}
+[data-theme="dark"] .table thead th,[data-theme="dark"] table thead th{background:#4a5d56;color:#f7fbf9}
