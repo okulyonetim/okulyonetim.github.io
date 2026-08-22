@@ -37,6 +37,7 @@
       yukle('js/ogretmen-detay-modern.js?v=3','data-ogretmen-detay-modern');
       yukle('js/ayarlar-modern.js?v=2','data-ayarlar-modern');
       yukle('js/yazili-sinavlar-modern.js?v=4','data-yazili-sinavlar-modern');
+      yukle('js/deneme-sayac-tarih-fix.js?v=1','data-deneme-sayac-tarih-fix');
       yukle('js/deneme-sinavlari-modern.js?v=1','data-deneme-sinavlari-modern');
     });
   });
