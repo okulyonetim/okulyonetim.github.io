@@ -1,0 +1,456 @@
+/* ================================================================
+   PERSONEL BELGELERİ — Dilekçe + Puantaj / İmza Sirküsü
+   Yalnız görünüm katmanı. Mevcut state, servis/repository ve A4 çıktı
+   şablonlarına dokunmaz.
+   ================================================================ */
+
+#dlkOverlay,
+#ptOverlay{
+  --pb-bg:#f3f7f5;
+  --pb-card:#ffffff;
+  --pb-card-soft:#edf6f2;
+  --pb-border:#cfe0d8;
+  --pb-ink:#142a22;
+  --pb-muted:#5d7068;
+  --pb-brand:#176d50;
+  --pb-brand-2:#0e5d43;
+  --pb-blue:#1d4f7a;
+  --pb-blue-soft:#e8f1fb;
+  background:var(--pb-bg)!important;
+  color:var(--pb-ink)!important;
+  font-family:Inter,Manrope,'Segoe UI',Arial,sans-serif!important;
+}
+
+#dlkOverlay #dlkToolbar,
+#ptOverlay #ptToolbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:20!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:10px 12px!important;
+  padding-top:max(10px,env(safe-area-inset-top))!important;
+  background:linear-gradient(135deg,#0e6548,#1b7a58)!important;
+  color:#fff!important;
+  border-bottom:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:0 5px 18px rgba(4,45,32,.18)!important;
+}
+
+#dlkOverlay #dlkToolbar > span,
+#ptOverlay #ptToolbar > span{
+  color:#fff!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  letter-spacing:-.15px!important;
+}
+
+#dlkOverlay #dlkToolbar > div,
+#ptOverlay #ptToolbar > div{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  flex-wrap:wrap!important;
+}
+
+#dlkOverlay #dlkToolbar button,
+#ptOverlay #ptToolbar button{
+  min-height:40px!important;
+  padding:0 12px!important;
+  border-radius:12px!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+  background:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1.1!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+
+#dlkOverlay #dlkToolbar button:active,
+#ptOverlay #ptToolbar button:active{
+  transform:translateY(1px)!important;
+  background:rgba(255,255,255,.2)!important;
+}
+
+#dlkOverlay #dlkPrintBtn,
+#ptOverlay #ptPrintBtn{
+  background:#173f6b!important;
+  border-color:#2e6092!important;
+  color:#eef6ff!important;
+}
+
+#dlkOverlay #dlkCloseBtn,
+#ptOverlay #ptCloseBtn{
+  background:rgba(255,255,255,.1)!important;
+  border-color:rgba(255,255,255,.25)!important;
+  color:#fff!important;
+}
+
+#ptOverlay #ptTabImza,
+#ptOverlay #ptTabPuantaj{
+  background:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+}
+
+#ptOverlay #ptTabImza[style*=".35"],
+#ptOverlay #ptTabPuantaj[style*=".35"]{
+  background:#fff!important;
+  color:#0f5f45!important;
+}
+
+#dlkOverlay > div:nth-child(2),
+#ptOverlay > div:nth-child(2){
+  background:var(--pb-bg)!important;
+  padding:12px!important;
+  gap:12px!important;
+  align-items:flex-start!important;
+}
+
+#dlkOverlay #dlkFormPanel,
+#ptOverlay #ptFormPanel{
+  width:360px!important;
+  max-width:100%!important;
+  border:1px solid var(--pb-border)!important;
+  border-radius:20px!important;
+  background:var(--pb-card)!important;
+  color:var(--pb-ink)!important;
+  padding:15px!important;
+  box-shadow:0 8px 26px rgba(15,23,42,.06)!important;
+}
+
+#dlkOverlay #dlkFormPanel h2,
+#dlkOverlay #dlkFormPanel h3,
+#dlkOverlay #dlkFormPanel h4,
+#ptOverlay #ptFormPanel h2,
+#ptOverlay #ptFormPanel h3,
+#ptOverlay #ptFormPanel h4{
+  color:var(--pb-brand)!important;
+  font-weight:850!important;
+}
+
+#dlkOverlay #dlkFormPanel label,
+#ptOverlay #ptFormPanel label{
+  color:var(--pb-muted)!important;
+  font-weight:800!important;
+}
+
+#dlkOverlay #dlkFormPanel input,
+#dlkOverlay #dlkFormPanel select,
+#dlkOverlay #dlkFormPanel textarea,
+#ptOverlay #ptFormPanel input,
+#ptOverlay #ptFormPanel select,
+#ptOverlay #ptFormPanel textarea{
+  width:100%!important;
+  box-sizing:border-box!important;
+  min-height:46px!important;
+  padding:10px 12px!important;
+  border:1px solid var(--pb-border)!important;
+  border-radius:13px!important;
+  background:#f8fbf9!important;
+  color:var(--pb-ink)!important;
+  caret-color:var(--pb-brand)!important;
+  font-size:13px!important;
+  line-height:1.3!important;
+  outline:none!important;
+  box-shadow:none!important;
+  -webkit-text-fill-color:var(--pb-ink)!important;
+}
+
+#dlkOverlay #dlkFormPanel textarea,
+#ptOverlay #ptFormPanel textarea{
+  min-height:88px!important;
+  resize:vertical!important;
+}
+
+#dlkOverlay #dlkFormPanel input::placeholder,
+#dlkOverlay #dlkFormPanel textarea::placeholder,
+#ptOverlay #ptFormPanel input::placeholder,
+#ptOverlay #ptFormPanel textarea::placeholder{
+  color:#71827a!important;
+  opacity:1!important;
+  -webkit-text-fill-color:#71827a!important;
+}
+
+#dlkOverlay #dlkFormPanel input:focus,
+#dlkOverlay #dlkFormPanel select:focus,
+#dlkOverlay #dlkFormPanel textarea:focus,
+#ptOverlay #ptFormPanel input:focus,
+#ptOverlay #ptFormPanel select:focus,
+#ptOverlay #ptFormPanel textarea:focus{
+  border-color:#23805f!important;
+  box-shadow:0 0 0 3px rgba(35,128,95,.14)!important;
+}
+
+#dlkOverlay #dlkFormPanel button,
+#ptOverlay #ptFormPanel button{
+  min-height:42px!important;
+  border-radius:12px!important;
+  border:1px solid var(--pb-border)!important;
+  background:var(--pb-card-soft)!important;
+  color:#175d47!important;
+  font-weight:800!important;
+}
+
+#ptOverlay #pt_tatilEkleBtn{
+  background:linear-gradient(145deg,#1b7a58,#0e6548)!important;
+  border-color:#176d50!important;
+  color:#fff!important;
+}
+
+#ptOverlay .pt-tatil-sil{
+  color:#b42318!important;
+  background:#fff4f2!important;
+  border:1px solid #f1c0ba!important;
+  min-width:36px!important;
+  min-height:36px!important;
+}
+
+#ptOverlay #ptFormPanel > div[style*="background:#f0f7f0"],
+#dlkOverlay #dlkFormPanel > div[style*="background:#f0f7f0"]{
+  background:#edf7f3!important;
+  color:#38564a!important;
+  border:1px solid #d3e8df!important;
+  border-radius:14px!important;
+}
+
+#ptOverlay #ptFormPanel > div[style*="background:#fff8e1"]{
+  background:#fff8e8!important;
+  color:#72531a!important;
+  border:1px solid #ead8ad!important;
+  border-radius:14px!important;
+}
+
+#ptOverlay #ptFormPanel > div[style*="background:#fdf3e3"]{
+  background:#fff8e8!important;
+  color:#664b17!important;
+  border:1px solid #e9d5a3!important;
+  border-radius:16px!important;
+}
+
+#dlkOverlay #dlkFrame,
+#ptOverlay #ptFrame{
+  background:#fff!important;
+  border:1px solid #d8dee4!important;
+  border-radius:8px!important;
+  box-shadow:0 8px 28px rgba(15,23,42,.16)!important;
+}
+
+/* Koyu tema: kontrastlar açıkça sabitlenmiştir. */
+html[data-theme="dark"] #dlkOverlay,
+html[data-theme="dark"] #ptOverlay{
+  --pb-bg:#07100d;
+  --pb-card:#0d2119;
+  --pb-card-soft:#123126;
+  --pb-border:#2a4a3e;
+  --pb-ink:#f0f7f4;
+  --pb-muted:#b3c5bd;
+  --pb-brand:#65d2a4;
+  --pb-brand-2:#4fc091;
+  --pb-blue:#82b8f1;
+  --pb-blue-soft:#122d4a;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkToolbar,
+html[data-theme="dark"] #ptOverlay #ptToolbar{
+  background:linear-gradient(135deg,#0b3f2e,#125b43)!important;
+  color:#fff!important;
+  border-bottom-color:#285747!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkToolbar button,
+html[data-theme="dark"] #ptOverlay #ptToolbar button{
+  color:#f5fbf8!important;
+  border-color:#3b6b5a!important;
+  background:#163f31!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkPrintBtn,
+html[data-theme="dark"] #ptOverlay #ptPrintBtn{
+  background:#163b64!important;
+  color:#dbeeff!important;
+  border-color:#35638f!important;
+}
+
+html[data-theme="dark"] #ptOverlay #ptTabImza[style*=".35"],
+html[data-theme="dark"] #ptOverlay #ptTabPuantaj[style*=".35"]{
+  background:#dff7ed!important;
+  color:#0c513b!important;
+  border-color:#dff7ed!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel,
+html[data-theme="dark"] #ptOverlay #ptFormPanel{
+  background:#0d2119!important;
+  border-color:#29493d!important;
+  color:#f0f7f4!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.28)!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel h2,
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel h3,
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel h4,
+html[data-theme="dark"] #ptOverlay #ptFormPanel h2,
+html[data-theme="dark"] #ptOverlay #ptFormPanel h3,
+html[data-theme="dark"] #ptOverlay #ptFormPanel h4{
+  color:#65d2a4!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel label,
+html[data-theme="dark"] #ptOverlay #ptFormPanel label{
+  color:#c4d3cd!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel input,
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel select,
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel textarea,
+html[data-theme="dark"] #ptOverlay #ptFormPanel input,
+html[data-theme="dark"] #ptOverlay #ptFormPanel select,
+html[data-theme="dark"] #ptOverlay #ptFormPanel textarea{
+  background:#0b151f!important;
+  border-color:#354657!important;
+  color:#f3f7f6!important;
+  -webkit-text-fill-color:#f3f7f6!important;
+  color-scheme:dark!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel option,
+html[data-theme="dark"] #ptOverlay #ptFormPanel option{
+  background:#0b151f!important;
+  color:#f3f7f6!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel input::placeholder,
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel textarea::placeholder,
+html[data-theme="dark"] #ptOverlay #ptFormPanel input::placeholder,
+html[data-theme="dark"] #ptOverlay #ptFormPanel textarea::placeholder{
+  color:#94a8a0!important;
+  opacity:1!important;
+  -webkit-text-fill-color:#94a8a0!important;
+}
+
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel button,
+html[data-theme="dark"] #ptOverlay #ptFormPanel button{
+  background:#15382b!important;
+  border-color:#315b4a!important;
+  color:#dff7ed!important;
+}
+
+html[data-theme="dark"] #ptOverlay #pt_tatilEkleBtn{
+  background:linear-gradient(145deg,#277f61,#176247)!important;
+  border-color:#3a9775!important;
+  color:#fff!important;
+}
+
+html[data-theme="dark"] #ptOverlay .pt-tatil-sil{
+  background:#401b1a!important;
+  border-color:#71332f!important;
+  color:#ffb4ab!important;
+}
+
+html[data-theme="dark"] #ptOverlay #ptFormPanel > div[style*="background:#f0f7f0"],
+html[data-theme="dark"] #dlkOverlay #dlkFormPanel > div[style*="background:#f0f7f0"]{
+  background:#123126!important;
+  border-color:#2b5747!important;
+  color:#d8e9e2!important;
+}
+
+html[data-theme="dark"] #ptOverlay #ptFormPanel > div[style*="background:#fff8e1"],
+html[data-theme="dark"] #ptOverlay #ptFormPanel > div[style*="background:#fdf3e3"]{
+  background:#33280f!important;
+  border-color:#655323!important;
+  color:#f2d996!important;
+}
+
+@media (max-width:700px){
+  #dlkOverlay #dlkToolbar,
+  #ptOverlay #ptToolbar{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    gap:8px!important;
+  }
+
+  #dlkOverlay #dlkToolbar > span,
+  #ptOverlay #ptToolbar > span{
+    width:100%!important;
+    padding:2px 1px!important;
+  }
+
+  #dlkOverlay #dlkToolbar > div,
+  #ptOverlay #ptToolbar > div{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+  }
+
+  #dlkOverlay #dlkToolbar button,
+  #ptOverlay #ptToolbar button{
+    width:100%!important;
+    min-width:0!important;
+    padding:0 8px!important;
+    white-space:normal!important;
+  }
+
+  #dlkOverlay > div:nth-child(2),
+  #ptOverlay > div:nth-child(2){
+    display:flex!important;
+    flex-direction:column!important;
+    flex-wrap:nowrap!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:9px!important;
+    gap:10px!important;
+  }
+
+  #dlkOverlay #dlkFormPanel,
+  #ptOverlay #ptFormPanel{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    border-radius:17px!important;
+    padding:13px!important;
+  }
+
+  #dlkOverlay #dlkFormPanel .form-row,
+  #ptOverlay #ptFormPanel .form-row{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:8px!important;
+  }
+
+  #dlkOverlay #dlkFrame,
+  #ptOverlay #ptFrame{
+    width:210mm!important;
+    min-width:210mm!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+
+  /* A4 yalnız kendi alanında yatay kayar; arkadaki sayfa asla kaymaz. */
+  #dlkOverlay #dlkFormPanel + div,
+  #dlkOverlay > div:nth-child(2):has(#dlkFrame),
+  #ptOverlay > div:nth-child(2):has(#ptFrame){
+    overscroll-behavior:contain!important;
+  }
+
+  #ptOverlay #ptFrame{
+    align-self:flex-start!important;
+  }
+}
+
+@media (max-width:390px){
+  #dlkOverlay #dlkToolbar > div,
+  #ptOverlay #ptToolbar > div{
+    grid-template-columns:1fr 1fr!important;
+  }
+  #dlkOverlay #dlkToolbar button,
+  #ptOverlay #ptToolbar button{
+    font-size:11px!important;
+  }
+}
