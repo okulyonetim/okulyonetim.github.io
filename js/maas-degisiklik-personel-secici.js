@@ -6,13 +6,19 @@
   'use strict';
 
   /* Ortak shell tarafından zaten yüklenen bu küçük runtime dosyası,
-     Puantaj mobil v2 stilini ve Devamsızlık local-first düzeltmesini de
-     güvenli biçimde ekler. */
+     Puantaj mobil v2 stilini ve Devamsızlık düzeltmelerini de güvenli biçimde ekler. */
   if(!document.querySelector('link[data-puantaj-mobile-v2]')){
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'css/puantaj-mobile-v2.css?v=2';
     link.setAttribute('data-puantaj-mobile-v2','1');
+    document.head.appendChild(link);
+  }
+  if(!document.querySelector('link[data-devamsizlik-modal-kontrast]')){
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'css/devamsizlik-modal-kontrast-fix.css?v=1';
+    link.setAttribute('data-devamsizlik-modal-kontrast','1');
     document.head.appendChild(link);
   }
   if(!document.querySelector('script[data-devamsizlik-runtime-fix]')){
