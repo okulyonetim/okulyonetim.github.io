@@ -1,42 +1,69 @@
 /* ================================================================
    js/core/repositories/odev-not-cizelgeleri.repository.js
    ÖDEV TAKİP + NOT ÇİZELGESİ — TEK FIRESTORE ERİŞİM NOKTASI
-   (bkz. js/core/repositories/cizelgeler.repository.js ile aynı desen)
-
-   İki koleksiyon de "tip" parametresiyle genelleştirilmiş şekilde
-   yönetilir: 'odevTakip' | 'notCizelgesi' (bkz. firebase-init.js: COL).
-
-   Bu dosyada SADECE db.collection() / onSnapshot() / add() / update() /
-   delete() çağrıları bulunur. Hiçbir iş kuralı, hiçbir yetki kontrolü,
-   hiçbir DOM işlemi burada yapılmaz (bkz. Pragmatik-Mimari-Tasarimi.md §2).
-   Üstündeki katman: js/core/services/odev-not-cizelgeleri.service.js
-
-   GÖRÜNÜRLÜK NOTU: Bu çizelgeler "sadece sahibi + admin görsün" kuralıyla
-   tasarlandı — ama uygulamanın genel Firestore kuralları (firestore.rules)
-   VARSAYILAN olarak giriş yapmış herkese okuma/yazma izni veriyor (diğer
-   tüm koleksiyonlarda da aynı — bu uygulamanın genel güven modeli, burada
-   yeni bir istisna açılmadı). Gizlilik burada İSTEMCİ TARAFINDA sağlanıyor:
-   admin olmayan kullanıcılar için sorgu zaten sadece kendi sahipUid'siyle
-   filtreleniyor (aşağıda), yani liste ekranında başkasının çizelgesi hiç
-   görünmüyor/indirilmiyor — ama bu bir sunucu-taraflı güvenlik duvarı
-   DEĞİL, mevcut mimariyle aynı seviyede bir gizlilik katmanıdır.
    ================================================================ */
 
 const OdevNotCizelgeleriRepository = {
+  _cacheKey(tip, aktifUid, adminMi){
+    return `koruk_onc_${tip}_${aktifUid || 'anon'}_${adminMi ? 'admin' : 'user'}_v1`;
+  },
+
+  _cacheOku(tip, aktifUid, adminMi){
+    try{
+      const ham = localStorage.getItem(this._cacheKey(tip, aktifUid, adminMi));
+      if(!ham) return null;
+      const paket = JSON.parse(ham);
+      if(!paket || !Array.isArray(paket.kayitlar)) return null;
+      return paket.kayitlar;
+    }catch(e){
+      console.warn('[ONC cache] okunamadı', e);
+      return null;
+    }
+  },
+
+  _cacheYaz(tip, aktifUid, adminMi, kayitlar){
+    try{
+      localStorage.setItem(this._cacheKey(tip, aktifUid, adminMi), JSON.stringify({
+        tarih: Date.now(),
+        kayitlar: Array.isArray(kayitlar) ? kayitlar : []
+      }));
+    }catch(e){
+      console.warn('[ONC cache] yazılamadı', e);
+    }
+  },
+
   /**
-   * adminMi=false ise sorgu sahipUid ile sınırlanır (sadece kendi
-   * çizelgeleri); admin=true ise TÜM kayıtlar dinlenir.
+   * Local-first dinleme:
+   * 1) Aynı kullanıcı/rol için daha önce alınmış kayıtları senkron olarak döndürür.
+   * 2) Firestore snapshot geldiğinde gerçek kaynakla uzlaştırır ve cache'i yeniler.
+   * Böylece eski çizelgeler ekran açılışında Firestore beklemez.
    */
   kayitlariDinle(tip, aktifUid, adminMi, callback, hataCb){
+    const cache = this._cacheOku(tip, aktifUid, adminMi);
+    if(cache !== null){
+      try{ callback(cache, { kaynak: 'local-cache' }); }catch(e){ console.warn('[ONC cache callback]', e); }
+    }
+
     let ref = db.collection(COL[tip]);
     if(!adminMi){
       ref = ref.where('sahipUid', '==', aktifUid);
     }
     return ref.onSnapshot(
-      s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
-      hataCb || hataGoster
+      s => {
+        const kayitlar = s.docs.map(d => ({ id: d.id, ...d.data() }));
+        this._cacheYaz(tip, aktifUid, adminMi, kayitlar);
+        callback(kayitlar, { kaynak: 'firestore' });
+      },
+      err => {
+        if(cache === null){
+          (hataCb || hataGoster)(err);
+        }else{
+          console.warn('[ONC] Firestore güncellemesi alınamadı; yerel kayıtlar gösteriliyor.', err);
+        }
+      }
     );
   },
+
   kayitEkle(tip, veri){
     return db.collection(COL[tip]).add({ ...veri, olusturmaTarihi: new Date().toISOString() });
   },
@@ -46,15 +73,12 @@ const OdevNotCizelgeleriRepository = {
   kayitSil(tip, id){
     return db.collection(COL[tip]).doc(id).delete();
   },
-  /** Tek bir hücreyi günceller — tüm dokümanı yeniden yazmadan (dot-path). */
   hucreGuncelle(tip, id, hucreAnahtari, deger){
     return db.collection(COL[tip]).doc(id).update({ ['hucreler.' + hucreAnahtari]: deger });
   },
-  /** Sütun ekle/çıkar veya öğrenci ekle/çıkar gibi tüm-alan güncellemeleri için. */
   alanGuncelle(tip, id, alanAdi, deger){
     return db.collection(COL[tip]).doc(id).update({ [alanAdi]: deger });
   },
-  /** Taslak kaydı — sutunlar/ogrenciler/hucreler alanlarını TEK bir update() ile yazar. */
   taslakKaydet(tip, id, sutunlar, ogrenciler, hucreler){
     return db.collection(COL[tip]).doc(id).update({ sutunlar, ogrenciler, hucreler });
   }
