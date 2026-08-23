@@ -1,4 +1,4 @@
-/* Koruk Asistan — Runtime State Bridge v1
+/* Koruk Asistan — Runtime State Bridge v2
  * Global lexical dizileri tek noktadan görünür kılar ve dashboard-kritik
  * son bilinen veriyi localStorage'da senkron önbellekler.
  */
@@ -47,15 +47,21 @@ function set(n,v){if(!Array.isArray(v))return;try{switch(n){
 function expose(n){try{const d=Object.getOwnPropertyDescriptor(window,n);if(d&&!d.configurable)return;Object.defineProperty(window,n,{configurable:true,enumerable:false,get:()=>get(n),set:v=>set(n,v)})}catch(_){}}
 let cached={};
 try{cached=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){cached={}}
-NAMES.forEach(n=>{if(Array.isArray(cached[n])&&cached[n].length)set(n,cached[n]);expose(n)});
-window.KorukDashboardCache=cached;
+function applyCache(){NAMES.forEach(n=>{if(Array.isArray(cached[n])&&cached[n].length)set(n,cached[n])})}
+applyCache();NAMES.forEach(expose);window.KorukDashboardCache=cached;
 function snapshot(){const out={savedAt:Date.now()};NAMES.forEach(n=>{const v=get(n);if(Array.isArray(v))out[n]=v});return out}
 let saveTimer=null;
-function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{const out=snapshot();localStorage.setItem(KEY,JSON.stringify(out));window.KorukDashboardCache=out}catch(e){console.warn('[state] dashboard cache yazılamadı',e)}},120)}
-function signal(source){saveSoon();window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:source||'runtime'}}));window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:source||'runtime'}}))}
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{const out=snapshot();localStorage.setItem(KEY,JSON.stringify(out));window.KorukDashboardCache=out}catch(e){console.warn('[state] dashboard cache yazılamadı',e)}},100)}
+let signalQueued=false,lastSource='';
+function signal(source){lastSource=source||'runtime';saveSoon();if(signalQueued)return;signalQueued=true;queueMicrotask(()=>{signalQueued=false;window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:lastSource}}));window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:lastSource}}))})}
 function wrap(name){const old=window[name];if(typeof old!=='function'||old.__korukStateWrapped)return false;const fn=function(){const r=old.apply(this,arguments);signal(name);return r};fn.__korukStateWrapped=true;window[name]=fn;return true}
-let tries=0;const timer=setInterval(()=>{['renderDashboard','renderDuyurular','renderDenemeSinavlari','renderSiniflar','renderNobet'].forEach(wrap);if(++tries>80)clearInterval(timer)},100);
+const RENDERS=['renderDashboard','renderDuyurular','renderDuyuruPanosu','renderDenemeSinavlari','renderSinavlar','renderSiniflar','renderOgrenciler','renderDersGrid','renderNobet','renderNobetler','renderGorevler','renderHatirlaticilar','renderEvrakTakibi','renderNotlar','renderHaberler','renderBugunIzinliOgretmenler','renderYillikPlanAnaSayfa'];
+let tries=0;const timer=setInterval(()=>{RENDERS.forEach(wrap);if(++tries>120)clearInterval(timer)},50);
+/* app.js'nin eski oyVeriOnbellek_v1 yüklemesi DOMContentLoaded sırasında
+   bazı ortak dizileri eski değerle değiştirebilir. app.js listener'ı daha önce
+   kaydedildiği için bu listener ondan sonra çalışır ve v2 cache'i yeniden uygular. */
+document.addEventListener('DOMContentLoaded',()=>{applyCache();signal('cache-reapply')});
 window.addEventListener('beforeunload',()=>{try{localStorage.setItem(KEY,JSON.stringify(snapshot()))}catch(_){}});
-window.KorukRuntimeState={get,set,snapshot,save:saveSoon,signal};
+window.KorukRuntimeState={get,set,snapshot,save:saveSoon,signal,applyCache};
 queueMicrotask(()=>signal('cache-bootstrap'));
 })();
