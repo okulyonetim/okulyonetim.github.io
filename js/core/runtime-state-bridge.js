@@ -1,0 +1,61 @@
+/* Koruk Asistan — Runtime State Bridge v1
+ * Global lexical dizileri tek noktadan görünür kılar ve dashboard-kritik
+ * son bilinen veriyi localStorage'da senkron önbellekler.
+ */
+(function(){
+'use strict';
+if(window.KorukRuntimeState)return;
+const KEY='oyDashboardState_v2';
+const NAMES=['ogretmenler','dersProgrami','siniflar','veliler','servisler','nobetAtamalari','nobetYerleri','sinavlar','denemeSinavlari','duyurular','haberler','gorevler','hatirlaticilar','ogretmenIzinleri','notlar','yillikPlanTanimlari'];
+function get(n){try{switch(n){
+ case'ogretmenler':return typeof ogretmenler!=='undefined'?ogretmenler:[];
+ case'dersProgrami':return typeof dersProgrami!=='undefined'?dersProgrami:[];
+ case'siniflar':return typeof siniflar!=='undefined'?siniflar:[];
+ case'veliler':return typeof veliler!=='undefined'?veliler:[];
+ case'servisler':return typeof servisler!=='undefined'?servisler:[];
+ case'nobetAtamalari':return typeof nobetAtamalari!=='undefined'?nobetAtamalari:[];
+ case'nobetYerleri':return typeof nobetYerleri!=='undefined'?nobetYerleri:[];
+ case'sinavlar':return typeof sinavlar!=='undefined'?sinavlar:[];
+ case'denemeSinavlari':return typeof denemeSinavlari!=='undefined'?denemeSinavlari:[];
+ case'duyurular':return typeof duyurular!=='undefined'?duyurular:[];
+ case'haberler':return typeof haberler!=='undefined'?haberler:[];
+ case'gorevler':return typeof gorevler!=='undefined'?gorevler:[];
+ case'hatirlaticilar':return typeof hatirlaticilar!=='undefined'?hatirlaticilar:[];
+ case'ogretmenIzinleri':return typeof ogretmenIzinleri!=='undefined'?ogretmenIzinleri:[];
+ case'notlar':return typeof notlar!=='undefined'?notlar:[];
+ case'yillikPlanTanimlari':return typeof yillikPlanTanimlari!=='undefined'?yillikPlanTanimlari:[];
+ default:return[];
+ }}catch(_){return[]}}
+function set(n,v){if(!Array.isArray(v))return;try{switch(n){
+ case'ogretmenler':if(typeof ogretmenler!=='undefined')ogretmenler=v;break;
+ case'dersProgrami':if(typeof dersProgrami!=='undefined')dersProgrami=v;break;
+ case'siniflar':if(typeof siniflar!=='undefined')siniflar=v;break;
+ case'veliler':if(typeof veliler!=='undefined')veliler=v;break;
+ case'servisler':if(typeof servisler!=='undefined')servisler=v;break;
+ case'nobetAtamalari':if(typeof nobetAtamalari!=='undefined')nobetAtamalari=v;break;
+ case'nobetYerleri':if(typeof nobetYerleri!=='undefined')nobetYerleri=v;break;
+ case'sinavlar':if(typeof sinavlar!=='undefined')sinavlar=v;break;
+ case'denemeSinavlari':if(typeof denemeSinavlari!=='undefined')denemeSinavlari=v;break;
+ case'duyurular':if(typeof duyurular!=='undefined')duyurular=v;break;
+ case'haberler':if(typeof haberler!=='undefined')haberler=v;break;
+ case'gorevler':if(typeof gorevler!=='undefined')gorevler=v;break;
+ case'hatirlaticilar':if(typeof hatirlaticilar!=='undefined')hatirlaticilar=v;break;
+ case'ogretmenIzinleri':if(typeof ogretmenIzinleri!=='undefined')ogretmenIzinleri=v;break;
+ case'notlar':if(typeof notlar!=='undefined')notlar=v;break;
+ case'yillikPlanTanimlari':if(typeof yillikPlanTanimlari!=='undefined')yillikPlanTanimlari=v;break;
+ }}catch(_){}}
+function expose(n){try{const d=Object.getOwnPropertyDescriptor(window,n);if(d&&!d.configurable)return;Object.defineProperty(window,n,{configurable:true,enumerable:false,get:()=>get(n),set:v=>set(n,v)})}catch(_){}}
+let cached={};
+try{cached=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){cached={}}
+NAMES.forEach(n=>{if(Array.isArray(cached[n])&&cached[n].length)set(n,cached[n]);expose(n)});
+window.KorukDashboardCache=cached;
+function snapshot(){const out={savedAt:Date.now()};NAMES.forEach(n=>{const v=get(n);if(Array.isArray(v))out[n]=v});return out}
+let saveTimer=null;
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{const out=snapshot();localStorage.setItem(KEY,JSON.stringify(out));window.KorukDashboardCache=out}catch(e){console.warn('[state] dashboard cache yazılamadı',e)}},120)}
+function signal(source){saveSoon();window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:source||'runtime'}}));window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:source||'runtime'}}))}
+function wrap(name){const old=window[name];if(typeof old!=='function'||old.__korukStateWrapped)return false;const fn=function(){const r=old.apply(this,arguments);signal(name);return r};fn.__korukStateWrapped=true;window[name]=fn;return true}
+let tries=0;const timer=setInterval(()=>{['renderDashboard','renderDuyurular','renderDenemeSinavlari','renderSiniflar','renderNobet'].forEach(wrap);if(++tries>80)clearInterval(timer)},100);
+window.addEventListener('beforeunload',()=>{try{localStorage.setItem(KEY,JSON.stringify(snapshot()))}catch(_){}});
+window.KorukRuntimeState={get,set,snapshot,save:saveSoon,signal};
+queueMicrotask(()=>signal('cache-bootstrap'));
+})();
