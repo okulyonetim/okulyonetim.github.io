@@ -1,5 +1,6 @@
-/* Koruk Asistan — Öğrenci Yoklama UI v2
+/* Koruk Asistan — Öğrenci Yoklama UI v3
  * Mevcut YoklamaService / YoklamaRepository veri akışını korur.
+ * Sınıf+tarih seçildiğinde roster anında çizilir; Firestore snapshot daha sonra durumu günceller.
  */
 let _yokAcikSinifId=null,_yokAcikTarih=null,_yokDinleyici=null,_yokAktifBelge=null;
 (function(){
@@ -14,7 +15,7 @@ const _YI={
 function _yEsc(v){return typeof escapeHtml==='function'?escapeHtml(v||''):String(v||'').replace(/[&<>"']/g,'')}
 function _ySinif(){try{return (siniflar||[]).find(s=>s.id===_yokAcikSinifId)}catch(_){return null}}
 function _yOgrenciler(){try{return (veliler||[]).filter(v=>v.sinifId===_yokAcikSinifId).slice().sort((a,b)=>(a.ogrenciAdi||'').localeCompare(b.ogrenciAdi||'','tr'))}catch(_){return[]}}
-function _yBos(mesaj){return `<div class="yok-empty"><div class="icon">${_YI.users}</div><b>${_yEsc(mesaj)}</b><span>Sınıf ve tarih bilgilerini kontrol edin.</span></div>`}
+function _yBos(mesaj,alt){return `<div class="yok-empty"><div class="icon">${_YI.users}</div><b>${_yEsc(mesaj)}</b><span>${_yEsc(alt||'Sınıf ve tarih bilgilerini kontrol edin.')}</span></div>`}
 function yoklamaAc(){
   if(typeof gorebilir==='function'&&!gorebilir('yoklama')){toast('Bu işlem için yetkiniz yok.');return}
   yoklamaKapat();
@@ -42,12 +43,26 @@ function _yokSinifTarihDegisti(){
   const s=document.getElementById('yokSinifSec'),t=document.getElementById('yokTarihSec'),govde=document.getElementById('yokOgrenciListesi');if(!s||!t||!govde)return;
   const sinifId=s.value,tarih=t.value;_yokDinleyiciKaldir();_yokAktifBelge=null;
   if(!sinifId||!tarih){_yokAcikSinifId=null;_yokAcikTarih=tarih||null;govde.innerHTML=_yBos('Sınıf ve tarih seçin');return}
-  _yokAcikSinifId=sinifId;_yokAcikTarih=tarih;govde.innerHTML=_yBos('Yoklama yükleniyor…');
-  _yokDinleyici=YoklamaService.dinle(sinifId,tarih,belge=>{_yokAktifBelge=belge;_yokListesiCiz()},()=>{govde.innerHTML=_yBos('Yoklama yüklenemedi')});
+  _yokAcikSinifId=sinifId;_yokAcikTarih=tarih;
+  /* Local roster zaten bellekte: Firestore'u beklemeden yoklama ekranını anında aç. */
+  _yokListesiCiz();
+  try{
+    _yokDinleyici=YoklamaService.dinle(sinifId,tarih,belge=>{
+      if(_yokAcikSinifId!==sinifId||_yokAcikTarih!==tarih)return;
+      _yokAktifBelge=belge;_yokListesiCiz();
+    },err=>{
+      console.warn('[yoklama] canlı veri okunamadı',err);
+      /* Listeyi kapatma: öğrenci rosterı kullanılabilir kalsın. */
+      if(typeof toast==='function')toast('Yoklama kayıtları çevrimiçi yüklenemedi. Liste kullanılabilir.');
+    });
+  }catch(err){
+    console.warn('[yoklama] dinleyici başlatılamadı',err);
+    if(typeof toast==='function')toast('Yoklama kayıtları yüklenemedi. Öğrenci listesi açıldı.');
+  }
 }
 function _yokListesiCiz(){
   const govde=document.getElementById('yokOgrenciListesi');if(!govde||!_yokAcikSinifId)return;
-  const ogr=_yOgrenciler();if(!ogr.length){govde.innerHTML=_yBos('Bu sınıfta kayıtlı öğrenci yok');return}
+  const ogr=_yOgrenciler();if(!ogr.length){govde.innerHTML=_yBos('Bu sınıfta kayıtlı öğrenci yok','Öğrenci kayıtlarını kontrol edin.');return}
   const kayitlar=_yokAktifBelge?.kayitlar||{},say={var:0,yok:0,gec:0,izinli:0,bos:0};ogr.forEach(o=>{const d=kayitlar[o.id];if(say[d]!==undefined)say[d]++;else say.bos++});
   const sinif=_ySinif();govde.innerHTML=`<div class="yok-summary"><div class="yok-stat var"><small>Var</small><b>${say.var}</b></div><div class="yok-stat yok"><small>Yok</small><b>${say.yok}</b></div><div class="yok-stat gec"><small>Geç</small><b>${say.gec}</b></div><div class="yok-stat izinli"><small>İzinli</small><b>${say.izinli}</b></div></div><div class="yok-toolbar"><b>${_yEsc(sinif?.ad||'Öğrenciler')}</b><span>${ogr.length} öğrenci · ${say.bos} işaretlenmemiş</span></div><div class="yok-list">${ogr.map(o=>_yokOgrenciKart(o,kayitlar[o.id])).join('')}</div>`;
 }
