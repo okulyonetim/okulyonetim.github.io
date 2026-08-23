@@ -1,20 +1,15 @@
 /* =============================================
    js/teblig-tebellug.js
    TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ
-   Bir resmi yazının (tarih/sayı/konu) hangi öğretmenlere duyurulup
-   okunduğunu imza karşılığında belgelemek için kullanılan çizelge.
-   Öğretmen açılır listeden seçilir; branşı/görevi otomatik dolar.
-   Yazdırma/kapat butonları ve native (Android) yazdırma köprüsü diğer
-   modüllerle (dilekçe, maaş formu) aynı mimariyi kullanır.
-
-   Mimari not: Firestore'a yazmaz — sayfa yenilenince form sıfırlanır
-   (dilekçe/maaş formu modülleriyle aynı, bkz. docs/Pragmatik-Mimari-Tasarimi.md §2).
+   Resmi A4 çıktı formatı ve mevcut geçici state yapısı korunur.
+   Mobilde form ve önizleme ayrı görünümler halinde sunulur.
    ============================================= */
 
 (function() {
   'use strict';
 
   let _state = null;
+  let _aktifGorunum = 'duzenle';
 
   function _bugunIso() {
     const d = new Date();
@@ -37,12 +32,10 @@
       tarihIso: _bugunIso(),
       sayi: '',
       konu: '',
-      satirlar: [_bosSatir()]
+      satirlar: []
     };
   }
 
-  // GÖREVİ sütunu: "Öğretmen" unvanlılar için branş + " Öğrt." (örn. "Fen Bilimleri Öğrt."),
-  // diğer unvanlar (Müdür Yardımcısı, İdari Personel vb.) için doğrudan unvan.
   function _gorevMetni(o) {
     if (!o) return '';
     const unvan = o.unvan || 'Öğretmen';
@@ -50,11 +43,18 @@
     return unvan;
   }
 
-  function _ogretmenSecenekleriHtml(seciliId) {
-    const liste = (typeof ogretmenler !== 'undefined' ? ogretmenler : []).slice()
+  function _ogretmenListesi() {
+    return (typeof ogretmenler !== 'undefined' ? ogretmenler : []).slice()
       .sort((a,b)=>`${a.ad||''} ${a.soyad||''}`.localeCompare(`${b.ad||''} ${b.soyad||''}`,'tr'));
+  }
+
+  function _ogretmenSecenekleriHtml(state) {
+    const secili = new Set((state.satirlar || []).map(s => s.ogretmenId).filter(Boolean));
     return '<option value="">— Öğretmen seçin —</option>' +
-      liste.map(o => `<option value="${o.id}" ${seciliId===o.id?'selected':''}>${escapeHtml(`${o.ad||''} ${o.soyad||''}`.trim())}</option>`).join('');
+      _ogretmenListesi()
+        .filter(o => !secili.has(o.id))
+        .map(o => `<option value="${o.id}">${escapeHtml(`${o.ad||''} ${o.soyad||''}`.trim())}</option>`)
+        .join('');
   }
 
   function _getOkulAdi() {
@@ -62,13 +62,12 @@
       ? okulBilgileriAyari.okulAdi : 'KORUK İLK - ORTAOKULU';
   }
 
-  // --- Sayfa (yazdırma/önizleme) HTML'i ---
-
   function _sayfaHtml(state) {
     const okulAdi = _getOkulAdi().toLocaleUpperCase('tr');
     const tarihTr = _tarihIsoToTr(state.tarihIso);
+    const doluSatirlar = (state.satirlar || []).filter(s => s.ad || s.ogretmenId);
 
-    const satirlarHtml = state.satirlar.map((s, i) => `
+    const satirlarHtml = doluSatirlar.map((s, i) => `
       <tr>
         <td style="text-align:center;">${i+1}</td>
         <td>${escapeHtml(s.ad||'')}</td>
@@ -128,40 +127,97 @@
 </html>`;
   }
 
-  // --- Overlay (in-page) form + önizleme ---
+  function _stilEkle() {
+    if (document.getElementById('tsModernStyle')) return;
+    const st = document.createElement('style');
+    st.id = 'tsModernStyle';
+    st.textContent = `
+      body.ts-overlay-acik{overflow:hidden!important;overscroll-behavior:none!important;}
+      #tsOverlay{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:99999!important;background:var(--bg-app,#eef4f1)!important;color:var(--ink,#17352c)!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;font-family:Manrope,Inter,'Segoe UI',Arial,sans-serif!important;}
+      #tsOverlay .ts-toolbar{flex:0 0 auto;padding:12px 14px;background:linear-gradient(135deg,#0d6548,#1d8360);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.16);}
+      #tsOverlay .ts-toolbar-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+      #tsOverlay .ts-title{font-weight:800;font-size:15px;line-height:1.25;}
+      #tsOverlay .ts-toolbar-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;}
+      #tsOverlay .ts-top-btn{min-height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.18);font-weight:800;font-size:12.5px;cursor:pointer;}
+      #tsOverlay #tsEditBtn{background:#eef7f3;color:#176d50;}
+      #tsOverlay #tsPreviewBtn,#tsOverlay #tsPrintBtn{background:#173b65;color:#c8ddff;border-color:#2a5788;}
+      #tsOverlay #tsCloseBtn{width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.12);color:#fff;font-size:18px;}
+      #tsOverlay .ts-content{flex:1 1 auto;min-height:0;overflow:hidden;position:relative;}
+      #tsOverlay .ts-pane{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+      #tsOverlay .ts-pane[hidden]{display:none!important;}
+      #tsOverlay #tsEditPane{padding:12px;}
+      #tsOverlay #tsFormPanel{width:min(100%,720px);margin:0 auto;background:transparent;color:inherit;}
+      #tsOverlay .ts-card{background:var(--bg-card,#fff);border:1px solid var(--border,#d8e2dd);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 6px 20px rgba(15,23,42,.05);}
+      #tsOverlay .ts-card-title{font-size:14px;font-weight:850;color:#176d50;margin:0 0 12px;}
+      #tsOverlay .ts-field{margin-bottom:12px;}
+      #tsOverlay .ts-field:last-child{margin-bottom:0;}
+      #tsOverlay .ts-field label{display:block;font-size:11.5px;font-weight:800;color:var(--ink-muted,#64766f);margin-bottom:6px;}
+      #tsOverlay input,#tsOverlay select{width:100%;min-height:48px;border:1px solid var(--border,#d2ddd8);border-radius:13px;background:var(--bg-app,#f5f8f6);color:var(--ink,#17352c);padding:0 12px;font-size:13px;box-sizing:border-box;}
+      #tsOverlay .ts-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;}
+      #tsOverlay #tsAddTeacherBtn{min-height:48px;border:1px solid #b7d8cc;border-radius:13px;background:#e8f4ef;color:#176d50;font-weight:850;padding:0 16px;}
+      #tsOverlay .ts-empty{padding:14px;border:1px dashed var(--border,#cad8d2);border-radius:14px;color:var(--ink-muted,#6b7e76);font-size:12.5px;text-align:center;}
+      #tsOverlay .ts-teacher-list{display:flex;flex-direction:column;gap:9px;margin-top:12px;}
+      #tsOverlay .ts-teacher-card{border:1px solid var(--border,#d8e2dd);background:var(--bg-app,#f7faf8);border-radius:15px;padding:11px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;}
+      #tsOverlay .ts-teacher-name{font-size:13px;font-weight:850;color:var(--ink,#17352c);margin-bottom:7px;}
+      #tsOverlay .ts-role-input{min-height:42px!important;background:var(--bg-card,#fff)!important;}
+      #tsOverlay .ts-remove{width:38px;height:38px;border-radius:11px;border:1px solid var(--border,#d8e2dd);background:transparent;color:var(--ink-muted,#677870);font-size:16px;}
+      #tsOverlay #tsPreviewPane{background:#51565a;padding:10px;overflow:auto;}
+      #tsOverlay .ts-frame-wrap{width:max-content;min-width:100%;display:flex;justify-content:center;align-items:flex-start;}
+      #tsOverlay #tsFrame{display:block;width:210mm;min-width:210mm;height:297mm;border:none;background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.35);}
+      html[data-theme="dark"] #tsOverlay{background:#07100d!important;color:#eef6f2!important;}
+      html[data-theme="dark"] #tsOverlay .ts-card{background:#0d2119;border-color:#28483c;}
+      html[data-theme="dark"] #tsOverlay .ts-card-title{color:#58c798;}
+      html[data-theme="dark"] #tsOverlay .ts-field label{color:#a9bbb4;}
+      html[data-theme="dark"] #tsOverlay input,html[data-theme="dark"] #tsOverlay select{background:#0f1722;border-color:#2d394a;color:#eef4f1;}
+      html[data-theme="dark"] #tsOverlay .ts-teacher-card{background:#0b1914;border-color:#28483c;}
+      html[data-theme="dark"] #tsOverlay .ts-teacher-name{color:#f0f6f3;}
+      html[data-theme="dark"] #tsOverlay .ts-role-input{background:#0f1722!important;}
+      html[data-theme="dark"] #tsOverlay .ts-empty{border-color:#28483c;color:#9eafa8;}
+      @media(min-width:760px){#tsOverlay .ts-toolbar{padding:12px 18px;}#tsOverlay .ts-toolbar-actions{grid-template-columns:auto auto auto;justify-content:end;}#tsOverlay #tsEditPane{padding:18px;}}
+    `;
+    document.head.appendChild(st);
+  }
 
   function _overlayOlustur() {
-    if (document.getElementById('tsOverlay')) return document.getElementById('tsOverlay');
+    const mevcut = document.getElementById('tsOverlay');
+    if (mevcut) return mevcut;
+    _stilEkle();
 
     const ov = document.createElement('div');
     ov.id = 'tsOverlay';
-    ov.style.cssText = `position:fixed; inset:0; z-index:99999; background:#525659; display:flex; flex-direction:column;`;
     ov.innerHTML = `
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:linear-gradient(135deg,#1b5e20,#2e7d32); color:#fff; padding:10px 14px; flex-wrap:wrap;">
-        <span style="font-weight:700;font-size:14px;">📋 Tebliğ-Tebellüğ İmza Sirküsü</span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button id="tsPrintBtn" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;padding:6px 14px;font-size:13px;font-weight:700;">🖨️ Yazdır / PDF</button>
-          <button id="tsCloseBtn" style="background:rgba(220,0,0,.4);border:none;color:#fff;border-radius:7px;padding:6px 14px;font-size:13px;font-weight:700;">✕ Kapat</button>
+      <div class="ts-toolbar">
+        <div class="ts-toolbar-top">
+          <span class="ts-title">📋 Tebliğ-Tebellüğ İmza Sirküsü</span>
+          <button id="tsCloseBtn" aria-label="Kapat">✕</button>
+        </div>
+        <div class="ts-toolbar-actions">
+          <button id="tsEditBtn" class="ts-top-btn">✎ Düzenle</button>
+          <button id="tsPreviewBtn" class="ts-top-btn">▣ Önizleme</button>
+          <button id="tsPrintBtn" class="ts-top-btn">🖨️ Yazdır / PDF</button>
         </div>
       </div>
-      <div style="flex:1 1 auto; overflow:auto; display:flex; flex-wrap:wrap; gap:16px; padding:16px; justify-content:center; align-items:flex-start;">
-        <div id="tsFormPanel" style="background:#fff; border-radius:10px; padding:16px; width:340px; max-width:100%; box-shadow:0 4px 14px rgba(0,0,0,.3); font-family:'Segoe UI',Arial,sans-serif; color:#1a1a1a;"></div>
-        <iframe id="tsFrame" style="width:210mm; max-width:100%; min-height:297mm; border:none; background:#fff; box-shadow:0 4px 18px rgba(0,0,0,.4);"></iframe>
-      </div>
-    `;
+      <div class="ts-content">
+        <div id="tsEditPane" class="ts-pane"><div id="tsFormPanel"></div></div>
+        <div id="tsPreviewPane" class="ts-pane" hidden><div class="ts-frame-wrap"><iframe id="tsFrame"></iframe></div></div>
+      </div>`;
+
     document.body.appendChild(ov);
-    document.body.classList.add('dlk-overlay-acik');
+    document.body.classList.add('ts-overlay-acik');
     if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(false);
-    ov.style.overscrollBehaviorY = 'contain';
     document.documentElement.style.overscrollBehaviorY = 'contain';
 
-    ov.querySelector('#tsCloseBtn').onclick = () => {
+    function kapat() {
       ov.remove();
-      document.body.classList.remove('dlk-overlay-acik');
+      document.body.classList.remove('ts-overlay-acik');
       document.documentElement.style.overscrollBehaviorY = '';
       if (typeof _pullToRefreshAyarla === 'function') _pullToRefreshAyarla(true);
       if (typeof _menuyeGeriDon === 'function') _menuyeGeriDon();
-    };
+    }
+
+    ov.querySelector('#tsCloseBtn').onclick = kapat;
+    ov.querySelector('#tsEditBtn').onclick = () => _gorunumDegistir(ov, 'duzenle');
+    ov.querySelector('#tsPreviewBtn').onclick = () => _gorunumDegistir(ov, 'onizleme');
     ov.querySelector('#tsPrintBtn').onclick = () => {
       const fr = ov.querySelector('#tsFrame');
       if (!fr || !fr.contentWindow) { toast('Belge henüz yüklenmedi, birkaç saniye sonra tekrar deneyin.'); return; }
@@ -179,102 +235,123 @@
     return ov;
   }
 
+  function _gorunumDegistir(ov, gorunum) {
+    _aktifGorunum = gorunum;
+    const editPane = ov.querySelector('#tsEditPane');
+    const previewPane = ov.querySelector('#tsPreviewPane');
+    if (gorunum === 'onizleme') {
+      editPane.hidden = true;
+      previewPane.hidden = false;
+      ov.querySelector('#tsPreviewBtn').setAttribute('aria-pressed','true');
+      ov.querySelector('#tsEditBtn').setAttribute('aria-pressed','false');
+    } else {
+      previewPane.hidden = true;
+      editPane.hidden = false;
+      ov.querySelector('#tsEditBtn').setAttribute('aria-pressed','true');
+      ov.querySelector('#tsPreviewBtn').setAttribute('aria-pressed','false');
+    }
+  }
+
   function _formPanelHtml(state) {
+    const satirlar = state.satirlar || [];
     return `
-      <h3 style="font-size:15px;margin-bottom:14px;color:#1b5e20;">Tebliğ Bilgileri</h3>
+      <section class="ts-card">
+        <h3 class="ts-card-title">Tebliğ Bilgileri</h3>
+        <div class="ts-field"><label>Tarih</label><input id="ts_tarih" type="date" value="${escapeHtml(state.tarihIso||'')}"></div>
+        <div class="ts-field"><label>Sayı</label><input id="ts_sayi" value="${escapeHtml(state.sayi||'')}" placeholder="örn: E-79137285-730.06-141434214"></div>
+        <div class="ts-field"><label>Konu</label><input id="ts_konu" value="${escapeHtml(state.konu||'')}" placeholder="örn: Milat Projesi"></div>
+      </section>
 
-      <div style="margin-bottom:12px;">
-        <label style="font-size:12.5px;font-weight:700;color:#555;display:block;margin-bottom:5px;">Tarih</label>
-        <input id="ts_tarih" type="date" value="${escapeHtml(state.tarihIso||'')}" style="width:100%;padding:7px 8px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <label style="font-size:12.5px;font-weight:700;color:#555;display:block;margin-bottom:5px;">Sayı</label>
-        <input id="ts_sayi" value="${escapeHtml(state.sayi||'')}" placeholder="örn: E-79137285-730.06-141434214" style="width:100%;padding:7px 8px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
-      </div>
-
-      <div style="margin-bottom:16px;">
-        <label style="font-size:12.5px;font-weight:700;color:#555;display:block;margin-bottom:5px;">Konu</label>
-        <input id="ts_konu" value="${escapeHtml(state.konu||'')}" placeholder="örn: Milat Projesi" style="width:100%;padding:7px 8px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
-      </div>
-
-      <h3 style="font-size:14px;margin-bottom:10px;color:#1b5e20;">Öğretmenler</h3>
-      <div id="ts_satirlar">
-        ${state.satirlar.map((s, i) => `
-          <div class="ts-satir" data-index="${i}" style="display:flex;gap:6px;margin-bottom:8px;align-items:center;">
-            <select class="ts_ogretmenSec" data-index="${i}" style="flex:2;padding:6px 7px;border:1px solid #ccc;border-radius:6px;font-size:12.5px;">
-              ${_ogretmenSecenekleriHtml(s.ogretmenId)}
-            </select>
-            <input class="ts_gorev" data-index="${i}" value="${escapeHtml(s.gorev||'')}" placeholder="Görevi" style="flex:1;padding:6px 7px;border:1px solid #ccc;border-radius:6px;font-size:12.5px;">
-            <button class="ts_satirSil" data-index="${i}" style="border:none;background:#fdecea;color:#c0392b;border-radius:6px;width:26px;height:26px;flex-shrink:0;cursor:pointer;font-size:13px;">✕</button>
-          </div>`).join('')}
-      </div>
-      <button id="ts_satirEkle" style="width:100%;padding:8px;border:1px solid #ccc;background:#f0f7f0;border-radius:6px;font-size:12.5px;cursor:pointer;font-weight:700;color:#1b5e20;">➕ Öğretmen Ekle</button>
-    `;
+      <section class="ts-card">
+        <h3 class="ts-card-title">Tebellüğ Edecek Öğretmenler</h3>
+        <div class="ts-add-row">
+          <select id="ts_teacherPicker">${_ogretmenSecenekleriHtml(state)}</select>
+          <button id="tsAddTeacherBtn" type="button">Ekle</button>
+        </div>
+        <div class="ts-teacher-list">
+          ${satirlar.length ? satirlar.map((s,i)=>`
+            <div class="ts-teacher-card" data-index="${i}">
+              <div>
+                <div class="ts-teacher-name">${escapeHtml(s.ad||'')}</div>
+                <input class="ts-role-input" data-index="${i}" value="${escapeHtml(s.gorev||'')}" placeholder="Görevi">
+              </div>
+              <button class="ts-remove" data-index="${i}" type="button" aria-label="Listeden çıkar">✕</button>
+            </div>`).join('') : '<div class="ts-empty">Henüz öğretmen eklenmedi. Açılır listeden öğretmen seçip “Ekle” düğmesine dokunun.</div>'}
+        </div>
+      </section>`;
   }
 
   function _overlayDoldur(ov) {
     _state = _bosState();
+    _aktifGorunum = 'duzenle';
     const state = _state;
     const formPanel = ov.querySelector('#tsFormPanel');
     const frame = ov.querySelector('#tsFrame');
 
+    function onizlemeGuncelle() {
+      frame.srcdoc = _sayfaHtml(state);
+    }
+
     function render() {
       formPanel.innerHTML = _formPanelHtml(state);
-      frame.srcdoc = _sayfaHtml(state);
+      onizlemeGuncelle();
       _bagla();
     }
 
     function _bagla() {
       formPanel.querySelector('#ts_tarih').onchange = (e) => {
         state.tarihIso = e.target.value;
-        frame.srcdoc = _sayfaHtml(state);
+        onizlemeGuncelle();
       };
       formPanel.querySelector('#ts_sayi').oninput = (e) => {
         state.sayi = e.target.value;
-        frame.srcdoc = _sayfaHtml(state);
+        onizlemeGuncelle();
       };
       formPanel.querySelector('#ts_konu').oninput = (e) => {
         state.konu = e.target.value;
-        frame.srcdoc = _sayfaHtml(state);
+        onizlemeGuncelle();
       };
 
-      formPanel.querySelectorAll('.ts_ogretmenSec').forEach(sel => {
-        sel.onchange = (e) => {
-          const i = parseInt(e.target.dataset.index, 10);
-          const oid = e.target.value;
-          const o = (typeof ogretmenler !== 'undefined') ? ogretmenler.find(x => x.id === oid) : null;
-          state.satirlar[i].ogretmenId = oid;
-          state.satirlar[i].ad = o ? `${o.ad||''} ${o.soyad||''}`.trim() : '';
-          state.satirlar[i].gorev = o ? _gorevMetni(o) : '';
-          render();
-        };
-      });
-      formPanel.querySelectorAll('.ts_gorev').forEach(inp => {
-        inp.oninput = (e) => {
-          const i = parseInt(e.target.dataset.index, 10);
-          state.satirlar[i].gorev = e.target.value;
-          frame.srcdoc = _sayfaHtml(state);
-        };
-      });
-      formPanel.querySelectorAll('.ts_satirSil').forEach(btn => {
-        btn.onclick = (e) => {
-          const i = parseInt(e.target.dataset.index, 10);
-          state.satirlar.splice(i, 1);
-          if (state.satirlar.length === 0) state.satirlar.push(_bosSatir());
-          render();
-        };
-      });
-      formPanel.querySelector('#ts_satirEkle').onclick = () => {
-        state.satirlar.push(_bosSatir());
+      const picker = formPanel.querySelector('#ts_teacherPicker');
+      const ekleBtn = formPanel.querySelector('#tsAddTeacherBtn');
+      ekleBtn.onclick = () => {
+        const oid = picker.value;
+        if (!oid) return;
+        if (state.satirlar.some(s => s.ogretmenId === oid)) return;
+        const o = _ogretmenListesi().find(x => x.id === oid);
+        if (!o) return;
+        state.satirlar.push({
+          ogretmenId: oid,
+          ad: `${o.ad||''} ${o.soyad||''}`.trim(),
+          gorev: _gorevMetni(o)
+        });
         render();
       };
+      picker.onchange = () => {
+        if (picker.value) ekleBtn.focus();
+      };
+
+      formPanel.querySelectorAll('.ts-role-input').forEach(inp => {
+        inp.oninput = (e) => {
+          const i = parseInt(e.target.dataset.index,10);
+          if (!state.satirlar[i]) return;
+          state.satirlar[i].gorev = e.target.value;
+          onizlemeGuncelle();
+        };
+      });
+      formPanel.querySelectorAll('.ts-remove').forEach(btn => {
+        btn.onclick = (e) => {
+          const i = parseInt(e.currentTarget.dataset.index,10);
+          state.satirlar.splice(i,1);
+          render();
+        };
+      });
     }
 
     render();
+    _gorunumDegistir(ov,'duzenle');
   }
 
-  // --- Public API ---
   window.TebligTebellugSirkusu = {
     ac() {
       const ov = _overlayOlustur();
