@@ -8,8 +8,8 @@
 
 /*
  * Dilekçe ile Puantaj / İmza Sirküsü gerçek tam ekran çalışma alanlarıdır.
- * Bu paneller açıkken alttaki uygulama hiçbir şekilde görünmemeli veya
- * kaymamalıdır. İşleyişe dokunmadan yalnız görünüm/izolasyon sağlanır.
+ * Maaş Değişikliği de mevcut kodda aynı body kilit sınıfını kullanır.
+ * Bu nedenle mdfOverlay kesinlikle görünür bırakılmalıdır.
  */
 body.dlk-overlay-acik,
 body.pt-overlay-acik {
@@ -18,13 +18,14 @@ body.pt-overlay-acik {
   touch-action: pan-y;
 }
 
-body.dlk-overlay-acik > *:not(#dlkOverlay),
+body.dlk-overlay-acik > *:not(#dlkOverlay):not(#mdfOverlay),
 body.pt-overlay-acik > *:not(#ptOverlay) {
   visibility: hidden !important;
   pointer-events: none !important;
 }
 
 body.dlk-overlay-acik > #dlkOverlay,
+body.dlk-overlay-acik > #mdfOverlay,
 body.pt-overlay-acik > #ptOverlay {
   visibility: visible !important;
   pointer-events: auto !important;
@@ -55,7 +56,6 @@ body.pt-overlay-acik > #ptOverlay {
   box-sizing: border-box !important;
 }
 
-/* Overlay'in içerik alanı: yalnız kendi içinde kayar. */
 #dlkOverlay > div:nth-child(2),
 #ptOverlay > div:nth-child(2) {
   flex: 1 1 auto !important;
@@ -76,7 +76,6 @@ body.pt-overlay-acik > #ptOverlay {
   box-sizing: border-box !important;
 }
 
-/* Dilekçede A4 iframe'i saran kutu da viewport dışına taşamaz. */
 #dlkOverlay #dlkFormPanel + div {
   min-width: 0 !important;
   max-width: 100% !important;
@@ -91,7 +90,173 @@ body.pt-overlay-acik > #ptOverlay {
   border: 0 !important;
 }
 
-@media (max-width: 640px) {
+/* ================================================================
+   MAAŞ DEĞİŞİKLİĞİ — yalnız görünüm katmanı
+   A-H HTML yapısı, veri akışı ve yazdırma formatı DEĞİŞMEZ.
+   ================================================================ */
+#mdfOverlay{
+  background:var(--bg-app,#f3f6f4) !important;
+  color:var(--ink,#17352c) !important;
+  width:100vw !important;
+  max-width:100vw !important;
+  height:100dvh !important;
+  max-height:100dvh !important;
+  overflow:hidden !important;
+}
+#mdfOverlay > div:first-child{
+  background:linear-gradient(135deg,#0d6548,#1d8360) !important;
+  padding:11px 13px !important;
+  gap:8px !important;
+  box-shadow:0 4px 14px rgba(0,0,0,.15) !important;
+}
+#mdfOverlay > div:first-child > span{
+  font-size:14px !important;
+  font-weight:800 !important;
+}
+#mdfOverlay > div:first-child > div{ gap:7px !important; }
+#mdfOverlay #mdf_ay,
+#mdfOverlay #mdf_yil,
+#mdfOverlay #mdfPrintBtn,
+#mdfOverlay #mdfCloseBtn{
+  min-height:42px !important;
+  border-radius:12px !important;
+  box-sizing:border-box !important;
+  font-weight:700 !important;
+}
+#mdfOverlay #mdfPrintBtn{
+  background:#173b65 !important;
+  color:#b9d5ff !important;
+  border:1px solid #2a5788 !important;
+}
+#mdfOverlay #mdfCloseBtn{
+  background:rgba(255,255,255,.14) !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.2) !important;
+}
+#mdfOverlay > div:nth-child(2){
+  min-height:0 !important;
+  background:var(--bg-app,#f3f6f4) !important;
+  padding:12px !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain !important;
+  -webkit-overflow-scrolling:touch;
+}
+#mdfOverlay #mdfFormPanel{
+  width:100% !important;
+  max-width:760px !important;
+  box-sizing:border-box !important;
+  padding:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+#mdfOverlay .mdf-bolum{
+  background:var(--bg-card,#fff) !important;
+  border:1px solid var(--border,#d8e2dd) !important;
+  border-radius:18px !important;
+  padding:13px !important;
+  margin-bottom:11px !important;
+  box-shadow:0 6px 18px rgba(15,23,42,.05) !important;
+}
+#mdfOverlay .mdf-bolum-baslik{
+  color:#176d50 !important;
+  font-size:14px !important;
+  font-weight:850 !important;
+  line-height:1.35 !important;
+  padding-bottom:9px !important;
+  margin-bottom:10px !important;
+  border-bottom:1px solid var(--border,#d8e2dd) !important;
+}
+#mdfOverlay .mdf-satir{
+  gap:8px !important;
+  margin-bottom:8px !important;
+}
+#mdfOverlay .mdf-satir input,
+#mdfOverlay .mdf-satir select,
+#mdfOverlay .mdf-mini-etiket input{
+  min-height:45px !important;
+  border-radius:12px !important;
+  border:1px solid var(--border,#d8e2dd) !important;
+  background:var(--bg-app,#f3f6f4) !important;
+  color:var(--ink,#17352c) !important;
+  font-size:13px !important;
+  box-sizing:border-box !important;
+}
+#mdfOverlay .mdf-mini-etiket{
+  color:var(--ink-muted,#667b73) !important;
+  padding:10px !important;
+  border-radius:14px !important;
+  background:rgba(23,109,80,.07) !important;
+}
+#mdfOverlay .mdf-mini-etiket input{
+  background:var(--bg-card,#fff) !important;
+  color:#176d50 !important;
+  font-weight:800 !important;
+}
+#mdfOverlay .mdf-bos-not{
+  color:var(--ink-muted,#667b73) !important;
+  background:rgba(23,109,80,.07) !important;
+  border-radius:12px !important;
+  padding:9px 10px !important;
+}
+#mdfOverlay .mdf-roster-satir{
+  border:1px solid var(--border,#d8e2dd) !important;
+  border-radius:14px !important;
+  background:var(--bg-card,#fff) !important;
+  padding:10px !important;
+  margin-bottom:8px !important;
+}
+#mdfOverlay .mdf-gizli-satir{
+  background:rgba(23,109,80,.035) !important;
+}
+#mdfOverlay .mdf-goster-gizle-btn{
+  min-height:36px !important;
+  border-radius:10px !important;
+  border:1px solid #c9e2d8 !important;
+  background:#edf7f3 !important;
+  color:#176d50 !important;
+  font-weight:800 !important;
+}
+#mdfOverlay .mdf-goster-gizle-btn.aktif{
+  background:#173b65 !important;
+  border-color:#2a5788 !important;
+  color:#b9d5ff !important;
+}
+
+html[data-theme="dark"] #mdfOverlay,
+html[data-theme="dark"] #mdfOverlay > div:nth-child(2){
+  background:#07100d !important;
+}
+html[data-theme="dark"] #mdfOverlay .mdf-bolum,
+html[data-theme="dark"] #mdfOverlay .mdf-roster-satir{
+  background:#0d2119 !important;
+  border-color:#28483c !important;
+  color:#eef6f2 !important;
+}
+html[data-theme="dark"] #mdfOverlay .mdf-bolum-baslik{
+  color:#58c798 !important;
+  border-color:#28483c !important;
+}
+html[data-theme="dark"] #mdfOverlay .mdf-satir input,
+html[data-theme="dark"] #mdfOverlay .mdf-satir select,
+html[data-theme="dark"] #mdfOverlay .mdf-mini-etiket input{
+  background:#0f1722 !important;
+  border-color:#2d394a !important;
+  color:#eef4f1 !important;
+}
+html[data-theme="dark"] #mdfOverlay .mdf-mini-etiket,
+html[data-theme="dark"] #mdfOverlay .mdf-bos-not{
+  background:#102c22 !important;
+  color:#a9bbb4 !important;
+}
+html[data-theme="dark"] #mdfOverlay .mdf-mini-etiket input{
+  color:#58c798 !important;
+}
+html[data-theme="dark"] #mdfOverlay .mdf-gizli-satir{
+  background:#0b1914 !important;
+}
+
+@media (max-width:640px){
   #dlkOverlay,
   #ptOverlay {
     left: 0 !important;
@@ -102,66 +267,112 @@ body.pt-overlay-acik > #ptOverlay {
   }
 
   #dlkOverlay #dlkToolbar,
-  #ptOverlay #ptToolbar {
-    padding: 10px 12px !important;
-  }
+  #ptOverlay #ptToolbar { padding:10px 12px !important; }
 
   #dlkOverlay #dlkToolbar > div,
   #ptOverlay #ptToolbar > div {
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
+    width:100% !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
   }
 
   #dlkOverlay > div:nth-child(2),
   #ptOverlay > div:nth-child(2) {
-    display: flex !important;
-    flex-direction: column !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    gap: 10px !important;
-    padding: 10px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    flex-wrap:nowrap !important;
+    align-items:stretch !important;
+    justify-content:flex-start !important;
+    gap:10px !important;
+    padding:10px !important;
   }
 
   #dlkOverlay #dlkFormPanel,
   #ptOverlay #ptFormPanel {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: 0 0 auto !important;
-    margin: 0 !important;
+    width:100% !important;
+    max-width:100% !important;
+    flex:0 0 auto !important;
+    margin:0 !important;
   }
 
-  /* A4 önizlemenin genişliği korunur; yalnız kendi kutusunda yatay kayar. */
   #dlkOverlay #dlkFormPanel + div {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: 0 0 auto !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch;
+    width:100% !important;
+    max-width:100% !important;
+    flex:0 0 auto !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch;
   }
 
   #dlkOverlay #dlkFrame,
   #ptOverlay #ptFrame {
-    width: 210mm !important;
-    min-width: 210mm !important;
-    max-width: none !important;
-    flex: none !important;
+    width:210mm !important;
+    min-width:210mm !important;
+    max-width:none !important;
+    flex:none !important;
   }
 
-  /* Puantaj iframe'i doğrudan içerik alanında bulunduğu için kendi yatay
-     kaydırma alanını içerik konteyneri sağlar; arka uygulamaya taşmaz. */
-  #ptOverlay > div:nth-child(2) {
-    overflow-x: auto !important;
+  #ptOverlay > div:nth-child(2) { overflow-x:auto !important; }
+
+  #mdfOverlay > div:first-child{
+    align-items:flex-start !important;
+    padding:10px 11px !important;
+  }
+  #mdfOverlay > div:first-child > span{
+    width:100% !important;
+  }
+  #mdfOverlay > div:first-child > div{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:1.2fr .8fr !important;
+    gap:7px !important;
+  }
+  #mdfOverlay #mdfPrintBtn,
+  #mdfOverlay #mdfCloseBtn{ width:100% !important; }
+  #mdfOverlay > div:nth-child(2){ padding:9px !important; }
+  #mdfOverlay .mdf-bolum{ padding:11px !important; border-radius:16px !important; }
+  #mdfOverlay .mdf-satir:not(.mdf-roster-satir){
+    flex-direction:column !important;
+    align-items:stretch !important;
+  }
+  #mdfOverlay .mdf-satir:not(.mdf-roster-satir) > input,
+  #mdfOverlay .mdf-satir:not(.mdf-roster-satir) > select{
+    width:100% !important;
+    flex:none !important;
+  }
+  #mdfOverlay .mdf-satir:has(.mdf-mini-etiket){
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  #mdfOverlay .mdf-mini-etiket{ min-width:0 !important; width:auto !important; }
+  #mdfOverlay .mdf-roster-kisi{
+    width:100% !important;
+    min-width:0 !important;
+    flex-wrap:wrap !important;
+  }
+  #mdfOverlay .mdf-roster-kisi strong{
+    max-width:100% !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+  }
+  #mdfOverlay .mdf-roster-satir > input,
+  #mdfOverlay .mdf-roster-satir > select{
+    flex:1 1 calc(50% - 4px) !important;
+    min-width:130px !important;
   }
 }
 
+@media (max-width:380px){
+  #mdfOverlay .mdf-satir:has(.mdf-mini-etiket){ grid-template-columns:1fr !important; }
+}
+
 @media print {
-  body.dlk-overlay-acik > *:not(#dlkOverlay) { display: none !important; }
-  body.pt-overlay-acik > *:not(#ptOverlay) { display: none !important; }
+  body.dlk-overlay-acik > *:not(#dlkOverlay):not(#mdfOverlay) { display:none !important; }
+  body.pt-overlay-acik > *:not(#ptOverlay) { display:none !important; }
   #dlkOverlay #dlkToolbar,
-  #ptOverlay #ptToolbar { display: none !important; }
+  #ptOverlay #ptToolbar { display:none !important; }
   #dlkOverlay #dlkFormPanel,
-  #ptOverlay #ptFormPanel { display: none !important; }
+  #ptOverlay #ptFormPanel { display:none !important; }
 }
