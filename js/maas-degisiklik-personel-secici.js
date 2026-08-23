@@ -5,6 +5,17 @@
 (function(){
   'use strict';
 
+  /* Ortak shell tarafından zaten yüklenen bu küçük runtime dosyası,
+     Puantaj mobil v2 stilini de güvenli biçimde ekler. Böylece PWA cache
+     güncellemesi beklenmeden yeni düzen devreye girer. */
+  if(!document.querySelector('link[data-puantaj-mobile-v2]')){
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'css/puantaj-mobile-v2.css?v=2';
+    link.setAttribute('data-puantaj-mobile-v2','1');
+    document.head.appendChild(link);
+  }
+
   let sarildi = false;
 
   function metin(el){ return (el && el.textContent || '').replace(/\s+/g,' ').trim(); }
