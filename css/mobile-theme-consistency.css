@@ -1,0 +1,45 @@
+/* Koruk Asistan — mobil ekranlarda ortak açık/koyu tema tutarlılığı */
+:root{--kh-surface:#fff;--kh-surface-2:#f4f7f6;--kh-text:#182c25;--kh-muted:#6f7f79;--kh-line:#dce5e1}
+[data-theme="dark"]{--kh-surface:#101a17;--kh-surface-2:#0b1411;--kh-text:#eef7f3;--kh-muted:#9daca6;--kh-line:#293a34}
+
+/* Yeni mobil sayfalarda #fff fallback kullanımını engelle */
+#tab-ogrenciler.kh-students-page,#tab-siniflar.kh-classes-page,#tab-ogretmenler.ogm-modern,#tab-notlar.kh-notes-page{--card:var(--kh-surface);--bg-app:var(--kh-surface-2);--ink:var(--kh-text);--ink-muted:var(--kh-muted);--border:var(--kh-line)}
+[data-theme="dark"] #tab-ogrenciler.kh-students-page,[data-theme="dark"] #tab-siniflar.kh-classes-page,[data-theme="dark"] #tab-ogretmenler.ogm-modern,[data-theme="dark"] #tab-notlar.kh-notes-page{background:#080d0b!important;color:var(--kh-text)!important}
+
+/* Öğrenci */
+[data-theme="dark"] .kh-stu-row,[data-theme="dark"] .kh-stu-stat,[data-theme="dark"] .kh-stu-search input,[data-theme="dark"] .kh-stu-chip{background:var(--kh-surface)!important;border-color:var(--kh-line)!important;color:var(--kh-text)!important}
+[data-theme="dark"] .kh-stu-name,[data-theme="dark"] .kh-stu-stat b,[data-theme="dark"] .kh-stu-list-head b{color:var(--kh-text)!important}
+[data-theme="dark"] .kh-stu-meta,[data-theme="dark"] .kh-stu-stat small,[data-theme="dark"] .kh-stu-list-head span{color:var(--kh-muted)!important}
+
+/* Sınıflar */
+[data-theme="dark"] .kh-cls-card,[data-theme="dark"] .kh-cls-stat,[data-theme="dark"] .kh-cls-search input,[data-theme="dark"] .kh-cls-levels button,[data-theme="dark"] .kh-cls-imports button{background:var(--kh-surface)!important;border-color:var(--kh-line)!important;color:var(--kh-text)!important}
+[data-theme="dark"] .kh-cls-main>b,[data-theme="dark"] .kh-cls-stat b,[data-theme="dark"] .kh-cls-list-head b{color:var(--kh-text)!important}
+[data-theme="dark"] .kh-cls-main>span,[data-theme="dark"] .kh-cls-list-head span,[data-theme="dark"] .kh-cls-stat small{color:var(--kh-muted)!important}
+
+/* Öğretmenler */
+[data-theme="dark"] #tab-ogretmenler .ogm-card,[data-theme="dark"] #tab-ogretmenler .ogm-stat,[data-theme="dark"] #tab-ogretmenler .ogm-search input,[data-theme="dark"] #tab-ogretmenler .ogm-filter{background:var(--kh-surface)!important;border-color:var(--kh-line)!important;color:var(--kh-text)!important}
+
+/* Tam ekran detaylar */
+[data-theme="dark"] .kh-stu-detail,[data-theme="dark"] .kh-class-detail{background:#080d0b!important;color:var(--kh-text)!important}
+[data-theme="dark"] .kh-stu-card,[data-theme="dark"] .kh-stu-exam-summary>div,[data-theme="dark"] .kh-stu-exam,[data-theme="dark"] .kh-stu-quick button,[data-theme="dark"] .kh-class-detail .kh-cd-card,[data-theme="dark"] .kh-class-detail .kh-cd-summary>div,[data-theme="dark"] .kh-class-detail .kh-cd-tabs button,[data-theme="dark"] .kh-class-detail .kh-cd-actions button{background:var(--kh-surface)!important;border-color:var(--kh-line)!important;color:var(--kh-text)!important}
+[data-theme="dark"] .kh-stu-info-row>b,[data-theme="dark"] .kh-stu-card-title b,[data-theme="dark"] .kh-stu-section-head b,[data-theme="dark"] .kh-class-detail b,[data-theme="dark"] .kh-class-detail h3{color:var(--kh-text)!important}
+
+/* Öğretmen detay overlay */
+[data-theme="dark"] #detayOverlay.ogd-modern .detay-panel,[data-theme="dark"] #detayOverlay.ogd-modern .detay-body{background:#080d0b!important}
+[data-theme="dark"] #detayOverlay.ogd-modern .detay-card,[data-theme="dark"] #detayOverlay.ogd-modern .ogd-stat,[data-theme="dark"] #detayOverlay.ogd-modern .ogd-quick button{background:var(--kh-surface)!important;border-color:var(--kh-line)!important;color:var(--kh-text)!important}
+
+/* Hızlı Not bottom sheet */
+[data-theme="dark"] #khQuickNoteOverlay .kh-qn-sheet{background:#0d1512!important;color:var(--kh-text)!important;border-color:var(--kh-line)!important}
+[data-theme="dark"] #khQuickNoteOverlay .kh-qn-head h2,[data-theme="dark"] #khQuickNoteOverlay .kh-qn-card b{color:var(--kh-text)!important}
+[data-theme="dark"] #khQuickNoteOverlay .kh-qn-head p,[data-theme="dark"] #khQuickNoteOverlay .kh-qn-card small{color:var(--kh-muted)!important}
+[data-theme="dark"] #khQuickNoteOverlay .kh-qn-close{background:#17211d!important;color:#eef7f3!important}
+/* Pastel kartların koyu sürümleri: ikon rengi korunur, metin okunur */
+[data-theme="dark"] #khQuickNoteOverlay .kh-qn-card{border-color:#34423d!important;color:var(--kh-text)!important;filter:saturate(.82) brightness(.72)}
+[data-theme="dark"] #khQuickNoteOverlay .kh-qn-card .kh-qn-icon,[data-theme="dark"] #khQuickNoteOverlay .kh-qn-card .kh-qn-arrow{filter:brightness(1.35)}
+
+/* Notlar sayfası */
+[data-theme="dark"] #tab-notlar .kh-note-stat,[data-theme="dark"] #tab-notlar .note-card,[data-theme="dark"] #tab-notlar .kh-notes-search input{background:var(--kh-surface)!important;border-color:var(--kh-line)!important;color:var(--kh-text)!important}
+[data-theme="dark"] #tab-notlar .kh-notes-hero h1,[data-theme="dark"] #tab-notlar .kh-note-stat b{color:var(--kh-text)!important}
+
+/* Açık temada koyu temadan taşınmış sabit arka planları nötrleştir */
+[data-theme="light"] #tab-ogrenciler.kh-students-page,[data-theme="light"] #tab-siniflar.kh-classes-page,[data-theme="light"] #tab-ogretmenler.ogm-modern,[data-theme="light"] #tab-notlar.kh-notes-page{background:#f4f8f6!important;color:#182c25!important}
