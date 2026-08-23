@@ -6,8 +6,162 @@
    içinde iframe srcdoc olarak üretilir.
    ============================================= */
 
+/*
+ * Dilekçe ile Puantaj / İmza Sirküsü gerçek tam ekran çalışma alanlarıdır.
+ * Bu paneller açıkken alttaki uygulama hiçbir şekilde görünmemeli veya
+ * kaymamalıdır. İşleyişe dokunmadan yalnız görünüm/izolasyon sağlanır.
+ */
+body.dlk-overlay-acik,
+body.pt-overlay-acik {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: pan-y;
+}
+
+body.dlk-overlay-acik > *:not(#dlkOverlay),
+body.pt-overlay-acik > *:not(#ptOverlay) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.dlk-overlay-acik > #dlkOverlay,
+body.pt-overlay-acik > #ptOverlay {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+#dlkOverlay,
+#ptOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  overscroll-behavior: contain !important;
+  z-index: 99999 !important;
+}
+
+#dlkOverlay #dlkToolbar,
+#ptOverlay #ptToolbar {
+  position: relative !important;
+  z-index: 4 !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Overlay'in içerik alanı: yalnız kendi içinde kayar. */
+#dlkOverlay > div:nth-child(2),
+#ptOverlay > div:nth-child(2) {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#dlkOverlay #dlkFormPanel,
+#ptOverlay #ptFormPanel {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Dilekçede A4 iframe'i saran kutu da viewport dışına taşamaz. */
+#dlkOverlay #dlkFormPanel + div {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  overscroll-behavior-x: contain !important;
+}
+
+#dlkOverlay #dlkFrame,
+#ptOverlay #ptFrame {
+  display: block !important;
+  border: 0 !important;
+}
+
+@media (max-width: 640px) {
+  #dlkOverlay,
+  #ptOverlay {
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    transform: none !important;
+  }
+
+  #dlkOverlay #dlkToolbar,
+  #ptOverlay #ptToolbar {
+    padding: 10px 12px !important;
+  }
+
+  #dlkOverlay #dlkToolbar > div,
+  #ptOverlay #ptToolbar > div {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #dlkOverlay > div:nth-child(2),
+  #ptOverlay > div:nth-child(2) {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 10px !important;
+  }
+
+  #dlkOverlay #dlkFormPanel,
+  #ptOverlay #ptFormPanel {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+  }
+
+  /* A4 önizlemenin genişliği korunur; yalnız kendi kutusunda yatay kayar. */
+  #dlkOverlay #dlkFormPanel + div {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #dlkOverlay #dlkFrame,
+  #ptOverlay #ptFrame {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: none !important;
+    flex: none !important;
+  }
+
+  /* Puantaj iframe'i doğrudan içerik alanında bulunduğu için kendi yatay
+     kaydırma alanını içerik konteyneri sağlar; arka uygulamaya taşmaz. */
+  #ptOverlay > div:nth-child(2) {
+    overflow-x: auto !important;
+  }
+}
+
 @media print {
   body.dlk-overlay-acik > *:not(#dlkOverlay) { display: none !important; }
-  #dlkOverlay #dlkToolbar { display: none !important; }
-  #dlkOverlay #dlkFormPanel { display: none !important; }
+  body.pt-overlay-acik > *:not(#ptOverlay) { display: none !important; }
+  #dlkOverlay #dlkToolbar,
+  #ptOverlay #ptToolbar { display: none !important; }
+  #dlkOverlay #dlkFormPanel,
+  #ptOverlay #ptFormPanel { display: none !important; }
 }
