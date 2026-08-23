@@ -42,7 +42,13 @@
       yukle('js/ayarlar-modern.js?v=2','data-ayarlar-modern');
       yukle('js/yazili-sinavlar-modern.js?v=4','data-yazili-sinavlar-modern');
       yukle('js/yazili-sinav-live-sync.js?v=1','data-yazili-sinav-live-sync');
-      yukle('js/mesajlasma-modern.js?v=4','data-mesajlasma-modern');
+      /* Local-first: once IndexedDB/sync cekirdegi, sonra mesaj repository patch'i,
+         en son arayuz. Boylece Firestore gecikmesi UI'yi bloke etmez. */
+      yukle('js/core/local-first-sync.js?v=1','data-local-first-sync',function(){
+        yukle('js/mesajlasma-local-first.js?v=1','data-mesajlasma-local-first',function(){
+          yukle('js/mesajlasma-modern.js?v=4','data-mesajlasma-modern');
+        });
+      });
       /* Android rapor akışı: gerçek A4 önizleme -> native PrintPlugin */
       yukle('js/native-report-preview.js?v=2','data-native-report-preview',function(){
         yukle('js/yazili-rapor-modern.js?v=1','data-yazili-rapor-modern');
