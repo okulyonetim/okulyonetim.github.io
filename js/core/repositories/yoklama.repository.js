@@ -28,16 +28,17 @@ const YoklamaRepository = {
     });
   },
 
-  /* Tüm sınıf yoklamasını tek kayıt işlemiyle günceller. mesajGonderildi alanına dokunmaz. */
+  /* Firestore kuralları create aşamasında yalnız sinifId+tarih kabul ediyor.
+     Bu yüzden belge önce temel alanlarla oluşturulur, sonra tüm yoklama tek update ile yazılır. */
   async yoklamaKaydet(sinifId,tarih,kayitlar,girenUid,girenAdi){
     const ref=this._ref(sinifId,tarih);
-    await ref.set({
-      sinifId,tarih,
+    await ref.set({sinifId,tarih},{merge:true});
+    await ref.update({
       kayitlar:{...(kayitlar||{})},
       girenUid:girenUid||null,
       girenAdi:girenAdi||'',
       guncellenmeTarihi:firebase.firestore.FieldValue.serverTimestamp()
-    },{merge:true});
+    });
   },
 
   async mesajGonderildiIsaretle(sinifId,tarih,ogrenciId){
