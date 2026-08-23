@@ -1,0 +1,77 @@
+/* Devamsızlık Çizelgesi — mobil v2 düzeltmeleri
+   Yalnız görünüm katmanı; veri/Firestore/yazdırma mantığına dokunmaz. */
+
+@media (max-width:700px){
+  /* Alt navigasyon güvenli alanı */
+  #devamsizlikCizelgesiIcerik{
+    padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+  }
+
+  /* Dönem/işlem alanı: son işlem tam satır */
+  #devamsizlikCizelgesiIcerik > div:has(> #devamsizlik_yilSecici){
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #devamsizlikCizelgesiIcerik > div:has(> #devamsizlik_yilSecici) > .btn[onclick*="devamsizlikOtomatikTazele"]{
+    grid-column:1 / -1!important;
+    width:100%!important;
+    min-height:50px!important;
+    justify-content:center!important;
+    padding-inline:14px!important;
+    white-space:normal!important;
+    text-align:center!important;
+  }
+
+  /* Mobilde yalnız Adı Soyadı sticky. Görev normal akışta yatay kayar. */
+  #devamsizlikGridTablo .dc-col-gorev{
+    position:static!important;
+    left:auto!important;
+    z-index:auto!important;
+    box-shadow:none!important;
+  }
+  #devamsizlikGridTablo .dc-th-sabit.dc-col-ad{
+    position:sticky!important;
+    left:0!important;
+    z-index:3!important;
+    min-width:124px!important;
+    max-width:124px!important;
+  }
+  #devamsizlikGridTablo thead .dc-th-sabit.dc-col-ad{
+    z-index:6!important;
+  }
+  #devamsizlikGridTablo .dc-col-gorev{
+    min-width:96px!important;
+  }
+
+  /* Tablo biraz daha kompakt ama dokunulabilir */
+  #devamsizlikGridTablo th,
+  #devamsizlikGridTablo td{
+    padding:6px 5px!important;
+  }
+  #devamsizlikGridTablo .dc-hucre{
+    min-width:30px!important;
+    height:36px!important;
+  }
+
+  /* Haftalık ders saatleri modalı: 5 kutu yerine 2 sütun, son gün tam genişlik */
+  #modalOverlay:has(#dcSaat_pzt) tbody tr{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #modalOverlay:has(#dcSaat_pzt) tbody td:nth-child(5){
+    grid-column:1 / -1!important;
+  }
+  #modalOverlay:has(#dcSaat_pzt) .modal{
+    max-height:88dvh!important;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))!important;
+  }
+  #modalOverlay:has(#dcSaat_pzt) #modalBody button[onclick*="devamsizlikDersProgramindanCek"]{
+    width:100%!important;
+    min-height:48px!important;
+  }
+}
+
+@media (max-width:390px){
+  #devamsizlikGridTablo .dc-th-sabit.dc-col-ad{
+    min-width:112px!important;
+    max-width:112px!important;
+  }
+}
