@@ -28,8 +28,6 @@ const YoklamaRepository = {
     });
   },
 
-  /* Firestore kuralları create aşamasında yalnız sinifId+tarih kabul ediyor.
-     Bu yüzden belge önce temel alanlarla oluşturulur, sonra tüm yoklama tek update ile yazılır. */
   async yoklamaKaydet(sinifId,tarih,kayitlar,girenUid,girenAdi){
     const ref=this._ref(sinifId,tarih);
     await ref.set({sinifId,tarih},{merge:true});
@@ -52,7 +50,6 @@ const YoklamaRepository = {
     return snap.docs.map(d=>({id:d.id,...d.data()}));
   },
 
-  /* Sadece sinifId eşitliği kullanır; index gerektirmeden geçmiş kayıtları getirir. */
   async sinifTumunuGetir(sinifId){
     const snap=await db.collection(COL.yoklama).where('sinifId','==',sinifId).get();
     return snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.tarih||'').localeCompare(String(a.tarih||'')));
@@ -63,3 +60,4 @@ const YoklamaRepository = {
     return tum.filter(x=>(!baslangicTarih||x.tarih>=baslangicTarih)&&(!bitisTarih||x.tarih<=bitisTarih));
   }
 };
+window.YoklamaRepository=YoklamaRepository;
