@@ -1,6 +1,6 @@
 /* Koruk Asistan — Deneme sayacı local-first v2
- * Listener kurulmadan önce devreye girer; durdurma tombstone'u eski snapshot'ın
- * sayacı yeniden başlatmasını engeller. Başlatma tombstone'u temizler.
+ * Durdurma tombstone'u eski snapshot'ın sayacı yeniden başlatmasını engeller.
+ * Daha yeni gerçek bir başlatma kaydı gelirse tombstone otomatik temizlenir.
  */
 (function(){
 'use strict';
@@ -15,21 +15,36 @@ window.KorukExamStopState={
 };
 function col(){try{return COL.denemeSinavlari}catch(_){return'oy_denemeSinavlari'}}
 function key(id){const uid=window.KorukLocalFirst?.uid?.()||window.AKTIF_KULLANICI?.uid||'';return'exam-stop:'+uid+':'+id}
+function timeMs(v){if(!v)return 0;try{if(typeof v.toMillis==='function')return v.toMillis();if(typeof v.toDate==='function')return v.toDate().getTime();const n=new Date(v).getTime();return Number.isFinite(n)?n:0}catch(_){return 0}}
 async function readStop(id){if(!window.KorukLocalFirst||!id)return null;return window.KorukLocalFirst.get(key(id),null)}
 async function writeStop(id,on){if(!window.KorukLocalFirst||!id)return;if(on){const v={aktif:false,at:Date.now()};await window.KorukLocalFirst.set(key(id),v);stopped.add(String(id))}else{await window.KorukLocalFirst.del(key(id));stopped.delete(String(id))}}
-async function applyStops(arr){const list=Array.isArray(arr)?arr:[];await Promise.all(list.map(async d=>{if(!d?.id)return;const s=await readStop(d.id);if(s&&s.aktif===false){if(d.sayacDurumu?.aktif){d.sayacDurumu={...(d.sayacDurumu||{}),aktif:false,durdurulmaTarihi:d.sayacDurumu?.durdurulmaTarihi||new Date(s.at||Date.now()).toISOString()}}stopped.add(String(d.id))}else if(d.sayacDurumu?.aktif===false){stopped.delete(String(d.id))}}));hydrated=true;return list}
+async function applyStops(arr){
+ const list=Array.isArray(arr)?arr:[];
+ await Promise.all(list.map(async d=>{
+   if(!d?.id)return;
+   const s=await readStop(d.id),remoteActive=!!d.sayacDurumu?.aktif;
+   if(s&&s.aktif===false){
+     /* Başka cihaz/yönetici stop kaydından SONRA gerçekten yeniden başlattıysa
+        bu yeni durumu kabul et; aksi halde eski aktif snapshot'ı bastır. */
+     const remoteStart=timeMs(d.sayacDurumu?.baslatmaTarihi),localStop=Number(s.at||0);
+     if(remoteActive&&remoteStart>localStop){await writeStop(d.id,false);stopped.delete(String(d.id));return}
+     if(remoteActive)d.sayacDurumu={...(d.sayacDurumu||{}),aktif:false,durdurulmaTarihi:d.sayacDurumu?.durdurulmaTarihi||new Date(localStop||Date.now()).toISOString()};
+     stopped.add(String(d.id));
+   }else if(!remoteActive){stopped.delete(String(d.id))}
+ }));
+ hydrated=true;return list;
+}
 async function hydrateCurrent(){try{const arr=window.KorukRuntimeState?.get('denemeSinavlari')||window.denemeSinavlari||[];await applyStops(arr);window.dispatchEvent(new CustomEvent('koruk:exam-stop-state',{detail:{hydrated:true}}));window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:'exam-stop-hydrate'}}))}catch(_){hydrated=true}}
 function install(){
  if(!window.KorukLocalFirst||typeof SinavlarService==='undefined'||typeof SinavlarRepository==='undefined')return false;
  if(SinavlarService.__localFirstSayacV2)return true;
  SinavlarService.__localFirstSayacV2=true;
- const stopOriginal=SinavlarService.denemeSayacDurdur.bind(SinavlarService);
  const startOriginal=SinavlarService.denemeSayacBaslat.bind(SinavlarService);
  SinavlarService.denemeSayacDurdur=async function(id,kayit){
    if(!this._sayacYetkiKontrol(kayit))throw new Error('yetkisiz');
    const now=new Date().toISOString();
    try{const arr=window.KorukRuntimeState?.get('denemeSinavlari')||[];const d=arr.find(x=>x.id===id);if(d)d.sayacDurumu={...(d.sayacDurumu||{}),aktif:false,durdurulmaTarihi:now}}catch(_){}
-   stopped.add(String(id));window.KorukExamStopState.mark(id);
+   window.KorukExamStopState.mark(id);
    window.dispatchEvent(new CustomEvent('koruk:deneme-sayac-local',{detail:{id,aktif:false}}));
    await writeStop(id,true);
    const uid=window.KorukLocalFirst.uid();
