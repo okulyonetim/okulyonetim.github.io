@@ -1,0 +1,29 @@
+/* Koruk Asistan — Ortak arama kutusu standardı v1
+ * Amaç: ikon ve metin hiçbir arama alanında üst üste binmesin.
+ * Bileşen bazlı eski stilleri değiştirmeden, en son yüklenen güvenli hizalama katmanı.
+ */
+
+/* Notlar */
+#tab-notlar .kh-notes-search{position:relative!important;display:block!important}
+#tab-notlar .kh-notes-search>svg{position:absolute!important;left:17px!important;top:50%!important;transform:translateY(-50%)!important;width:21px!important;height:21px!important;z-index:3!important;pointer-events:none!important}
+#tab-notlar .kh-notes-search>input#khNotAra{box-sizing:border-box!important;width:100%!important;padding-left:54px!important;padding-right:16px!important;text-indent:0!important}
+
+/* Öğrenciler */
+#tab-ogrenciler .kh-stu-search{position:relative!important;display:block!important}
+#tab-ogrenciler .kh-stu-search>svg{position:absolute!important;left:17px!important;top:50%!important;transform:translateY(-50%)!important;width:22px!important;height:22px!important;z-index:3!important;pointer-events:none!important}
+#tab-ogrenciler .kh-stu-search>input#ogrenciArama{box-sizing:border-box!important;width:100%!important;padding-left:56px!important;padding-right:52px!important;text-indent:0!important}
+
+/* Öğretmenler */
+#tab-ogretmenler .ogm-search{position:relative!important;display:block!important}
+#tab-ogretmenler .ogm-search>svg{position:absolute!important;left:15px!important;top:50%!important;transform:translateY(-50%)!important;width:20px!important;height:20px!important;z-index:3!important;pointer-events:none!important}
+#tab-ogretmenler .ogm-search>input{box-sizing:border-box!important;width:100%!important;padding-left:48px!important;padding-right:14px!important;text-indent:0!important}
+
+/* Genel Arama — flex tabanlı yapı, ikon ayrı kolon */
+#tab-arama .ka-searchbox{display:grid!important;grid-template-columns:28px minmax(0,1fr) 38px!important;align-items:center!important;column-gap:8px!important;padding-left:14px!important;padding-right:9px!important}
+#tab-arama .ka-searchbox>.ka-search-icon{position:static!important;transform:none!important;width:22px!important;height:22px!important;margin:0!important;justify-self:center!important;pointer-events:none!important}
+#tab-arama .ka-searchbox>input#globalAramaInput{box-sizing:border-box!important;width:100%!important;min-width:0!important;padding:14px 2px!important;text-indent:0!important;margin:0!important}
+#tab-arama .ka-searchbox>.ka-clear{position:static!important;margin:0!important;justify-self:end!important}
+
+/* Tarayıcıların search input iç boşluk/iptal butonu varyasyonlarını nötrleştir. */
+#khNotAra::-webkit-search-decoration,#ogrenciArama::-webkit-search-decoration,#globalAramaInput::-webkit-search-decoration,.ogm-search input::-webkit-search-decoration{display:none}
+#khNotAra::-webkit-search-cancel-button,#ogrenciArama::-webkit-search-cancel-button,#globalAramaInput::-webkit-search-cancel-button,.ogm-search input::-webkit-search-cancel-button{display:none}
