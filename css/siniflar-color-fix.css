@@ -1,13 +1,14 @@
-/* Sınıflar — okulun zümrüt/yeşil renk standardı
-   Yalnız Sınıflar sayfası ve sınıf detay overlay'ini etkiler. */
-#tab-siniflar{
+/* Sınıflar + Öğrenciler — okulun zümrüt/yeşil renk standardı
+   Silme, hata ve tehlike renklerine dokunmaz. */
+#tab-siniflar,
+#tab-ogrenciler{
   --sinif-emerald:#147b56;
   --sinif-emerald-2:#0f6448;
   --sinif-emerald-soft:#e9f6f0;
   --sinif-emerald-border:#b9dacb;
 }
 
-/* Ana aksiyonlar / aktif filtreler */
+/* SINIFLAR — ana aksiyonlar / aktif filtreler */
 #tab-siniflar .kh-cls-add,
 #tab-siniflar .kh-cls-levels button.active,
 #tab-siniflar .btn-primary,
@@ -23,8 +24,6 @@
 #tab-siniflar .kh-cls-main>small svg{
   color:var(--sinif-emerald)!important;
 }
-
-/* Sınıf kartlarında kırmızı/şarap zemin kullanılmasın */
 #tab-siniflar .kh-cls-card,
 #tab-siniflar .sinif-card,
 #tab-siniflar .class-card{
@@ -36,8 +35,6 @@
   color:var(--sinif-emerald)!important;
   border-color:#cae8d8!important;
 }
-
-/* Kız öğrenci istatistiği de kırmızı/pembe yerine yeşil ailesinde */
 #tab-siniflar .kh-cls-stat.rose,
 #tab-siniflar .kh-cls-numbers .girl,
 .kh-class-detail .kh-cd-summary .girl{
@@ -55,8 +52,6 @@
   border-color:#b9dacb!important;
   color:#147b56!important;
 }
-
-/* Detay ekranı */
 .kh-class-detail .kh-cd-hero{
   background:linear-gradient(135deg,#075c40,#14875d 72%,#1da36f)!important;
 }
@@ -72,14 +67,54 @@
 .kh-class-detail .kh-cd-lesson span{
   color:#147b56!important;
 }
-
-/* Eski/alternatif mobil kart yapısı için güvenli kapsamlı override */
 #tab-siniflar article[style*="background"],
 #tab-siniflar .card[style*="background"]{
   border-color:var(--sinif-emerald-border)!important;
 }
 
-html[data-theme="dark"] #tab-siniflar{
+/* ÖĞRENCİLER — dekoratif rose/kırmızı normal vurgular */
+#tab-ogrenciler .kh-stu-add,
+#tab-ogrenciler .kh-stu-chip.active{
+  background:linear-gradient(135deg,var(--sinif-emerald),var(--sinif-emerald-2))!important;
+  border-color:var(--sinif-emerald)!important;
+  color:#fff!important;
+  box-shadow:0 6px 17px color-mix(in srgb,var(--sinif-emerald) 20%,transparent)!important;
+}
+#tab-ogrenciler .kh-stu-stat.rose{
+  background:color-mix(in srgb,var(--sinif-emerald) 10%,var(--card,#fff))!important;
+}
+#tab-ogrenciler .kh-stu-stat.rose>span{
+  background:var(--sinif-emerald-soft)!important;
+  color:var(--sinif-emerald)!important;
+}
+#tab-ogrenciler .kh-stu-stat.rose b{
+  color:var(--ink)!important;
+}
+#tab-ogrenciler .kh-stu-avatar{
+  background:linear-gradient(145deg,#e8f7ef,#dff3e8)!important;
+  color:var(--sinif-emerald)!important;
+}
+#tab-ogrenciler .badge-rose,
+.kh-stu-detail .badge-rose{
+  background:#e9f6f0!important;
+  border-color:#b9dacb!important;
+  color:#147b56!important;
+}
+.kh-stu-detail .kh-stu-profile{
+  background:linear-gradient(135deg,#075c40,#14875d 70%,#1da36f)!important;
+}
+.kh-stu-detail .kh-stu-status,
+.kh-stu-detail .kh-stu-section-head button,
+.kh-stu-detail .kh-stu-net strong{
+  color:var(--brand)!important;
+}
+.kh-stu-detail .kh-stu-status{
+  background:color-mix(in srgb,var(--brand) 14%,var(--card,#fff))!important;
+}
+
+/* Koyu tema */
+html[data-theme="dark"] #tab-siniflar,
+html[data-theme="dark"] #tab-ogrenciler{
   --sinif-emerald:#46c995;
   --sinif-emerald-2:#177552;
   --sinif-emerald-soft:#102b21;
@@ -91,24 +126,29 @@ html[data-theme="dark"] #tab-siniflar .class-card{
   background:#0d2119!important;
   border-color:#315b4b!important;
 }
-html[data-theme="dark"] #tab-siniflar .kh-cls-badge{
+html[data-theme="dark"] #tab-siniflar .kh-cls-badge,
+html[data-theme="dark"] #tab-ogrenciler .kh-stu-avatar{
   background:linear-gradient(145deg,#123d30,#0d3025)!important;
   border-color:#315b4b!important;
   color:#86dfb7!important;
 }
 html[data-theme="dark"] #tab-siniflar .kh-cls-stat.rose,
 html[data-theme="dark"] #tab-siniflar .kh-cls-numbers .girl,
-html[data-theme="dark"] .kh-class-detail .kh-cd-summary .girl{
+html[data-theme="dark"] .kh-class-detail .kh-cd-summary .girl,
+html[data-theme="dark"] #tab-ogrenciler .kh-stu-stat.rose{
   background:#123327!important;
 }
 html[data-theme="dark"] #tab-siniflar .kh-cls-stat.rose>span,
 html[data-theme="dark"] #tab-siniflar .kh-cls-numbers .girl b,
-html[data-theme="dark"] .kh-class-detail .kh-cd-summary .girl b{
+html[data-theme="dark"] .kh-class-detail .kh-cd-summary .girl b,
+html[data-theme="dark"] #tab-ogrenciler .kh-stu-stat.rose>span{
   background:#173b2d!important;
   color:#86dfb7!important;
 }
 html[data-theme="dark"] #tab-siniflar .badge-rose,
-html[data-theme="dark"] .kh-class-detail .badge-rose{
+html[data-theme="dark"] .kh-class-detail .badge-rose,
+html[data-theme="dark"] #tab-ogrenciler .badge-rose,
+html[data-theme="dark"] .kh-stu-detail .badge-rose{
   background:#173b2d!important;
   border-color:#315b4b!important;
   color:#9ce5c5!important;
