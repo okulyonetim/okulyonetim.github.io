@@ -69,6 +69,59 @@
   }
 }
 
+/* Koyu temada haftalık ders saatleri modalı kontrastı */
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) .modal{
+  background:#0d2119!important;
+  color:#eef6f2!important;
+  border-color:#29483d!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalTitle,
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody,
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody p,
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody strong,
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody label,
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody span,
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody div{
+  color:#eef6f2!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody > p:first-child{
+  background:#123327!important;
+  color:#d9f2e7!important;
+  border:1px solid #315c4d!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody > p:last-child{
+  background:#10261d!important;
+  color:#c5d8d0!important;
+  border-color:#29483d!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) tbody td{
+  background:#10261d!important;
+  border-color:#29483d!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) tbody td::before{
+  color:#b9cbc4!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) input[type="number"]{
+  background:#08130f!important;
+  color:#ffffff!important;
+  border-color:#3a5b4f!important;
+  -webkit-text-fill-color:#ffffff!important;
+  opacity:1!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) #modalBody button[onclick*="devamsizlikDersProgramindanCek"]{
+  background:#173f68!important;
+  border-color:#3b78aa!important;
+  color:#e3f0ff!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) .modal-actions{
+  background:linear-gradient(to top,#0d2119 86%,transparent)!important;
+}
+html[data-theme="dark"] #modalOverlay:has(#dcSaat_pzt) .modal-actions .btn-ghost{
+  background:#10261d!important;
+  border-color:#35564a!important;
+  color:#eef6f2!important;
+}
+
 @media (max-width:390px){
   #devamsizlikGridTablo .dc-th-sabit.dc-col-ad{
     min-width:112px!important;
