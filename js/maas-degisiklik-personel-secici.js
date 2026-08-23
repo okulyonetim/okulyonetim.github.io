@@ -6,7 +6,7 @@
   'use strict';
 
   /* Ortak shell tarafından zaten yüklenen bu küçük runtime dosyası,
-     Puantaj mobil v2 stilini ve Devamsızlık düzeltmelerini de güvenli biçimde ekler. */
+     Puantaj mobil v2 stilini ve ekran düzeltmelerini güvenli biçimde ekler. */
   if(!document.querySelector('link[data-puantaj-mobile-v2]')){
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -19,6 +19,13 @@
     link.rel = 'stylesheet';
     link.href = 'css/devamsizlik-modal-kontrast-fix.css?v=1';
     link.setAttribute('data-devamsizlik-modal-kontrast','1');
+    document.head.appendChild(link);
+  }
+  if(!document.querySelector('link[data-siniflar-color-fix]')){
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'css/siniflar-color-fix.css?v=1';
+    link.setAttribute('data-siniflar-color-fix','1');
     document.head.appendChild(link);
   }
   if(!document.querySelector('script[data-devamsizlik-runtime-fix]')){
