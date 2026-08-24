@@ -6,6 +6,7 @@
 if(window.__KH_MOBILE_BACK_V3__)return;window.__KH_MOBILE_BACK_V3__=true;
 const oldBack=window.geriTusuIsle;
 function closeQuick(){const ov=document.getElementById('khQuickNoteOverlay');if(!ov)return false;const b=ov.querySelector('.kh-qn-close');if(b)b.click();else ov.remove();return true}
+function closeAcademic(){const ov=document.getElementById('akademikTakvimOverlay');if(!ov)return false;if(typeof window.akademikTakvimKapat==='function')window.akademikTakvimKapat(true);else ov.remove();return true}
 function closeAttendanceAbsent(){if(!document.getElementById('yokDevamsizOverlay'))return false;if(typeof window.yoklamaDevamsizlarKapat==='function')window.yoklamaDevamsizlarKapat();else document.getElementById('yokDevamsizOverlay')?.remove();return true}
 function closeAttendance(){const ov=document.getElementById('yokOverlay');if(!ov)return false;const active=ov.querySelector('.yv4-tabs [data-y-tab].active');if(active&&active.dataset.yTab&&active.dataset.yTab!=='yoklama'){const main=ov.querySelector('[data-y-tab="yoklama"]');if(main){main.click();return true}}if(typeof window.yoklamaKapat==='function')window.yoklamaKapat();else ov.remove();return true}
 function closeOncMini(){const ov=document.getElementById('oncMiniModal');if(!ov)return false;ov.remove();document.body.classList.remove('onc-modal-open');return true}
@@ -19,6 +20,7 @@ function closeDetailOverlay(){const ov=document.getElementById('detayOverlay');i
 window.geriTusuIsle=function(){
  try{
   if(closeQuick())return 'handled';
+  if(closeAcademic())return 'handled';
   if(closeOncMini())return 'handled';
   if(closeOncCreate())return 'handled';
   if(closeOncDetail())return 'handled';
