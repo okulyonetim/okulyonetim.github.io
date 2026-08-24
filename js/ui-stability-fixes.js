@@ -25,7 +25,7 @@ scriptYukle('js/belirli-gunler-local-first.js?v=2','belirli-gunler-local-first-j
 scriptYukle('js/belirli-gunler-modern.js?v=2','belirli-gunler-modern-js');
 stilYukle('css/zumre-modern.css?v=2','zumre-modern-css');
 scriptYukle('js/zumre-local-first.js?v=1','zumre-local-first-js');
-scriptYukle('js/zumre-modern.js?v=3','zumre-modern-js');
+scriptYukle('js/zumre-modern.js?v=4','zumre-modern-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
 const mobil=window.matchMedia('(max-width:1023px)').matches;let basladi=false;
 function kullaniciHazir(){return !!gv('AKTIF_KULLANICI')}
