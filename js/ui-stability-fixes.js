@@ -39,6 +39,8 @@ stilYukle('css/istatistikler-modern.css?v=1','istatistikler-modern-css');
 scriptYukle('js/istatistikler-modern.js?v=1','istatistikler-modern-js');
 stilYukle('css/takvim-modern.css?v=1','takvim-modern-css');
 scriptYukle('js/takvim-modern.js?v=1','takvim-modern-js');
+stilYukle('css/hava-durumu-modern.css?v=1','hava-durumu-modern-css');
+scriptYukle('js/hava-durumu-modern.js?v=1','hava-durumu-modern-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
 const mobil=window.matchMedia('(max-width:1023px)').matches;let basladi=false;
 function kullaniciHazir(){return !!gv('AKTIF_KULLANICI')}

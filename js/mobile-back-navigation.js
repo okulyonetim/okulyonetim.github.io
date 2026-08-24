@@ -5,6 +5,7 @@
 'use strict';
 if(window.__KH_MOBILE_BACK_V3__)return;window.__KH_MOBILE_BACK_V3__=true;
 const oldBack=window.geriTusuIsle;
+function closeWeather(){const ov=document.getElementById('havaDurumuDetayPanel');if(!ov)return false;if(typeof window.havaDurumuDetayKapat==='function')window.havaDurumuDetayKapat();else ov.remove();document.body.classList.remove('kh-weather-open');return true}
 function closeQuick(){const ov=document.getElementById('khQuickNoteOverlay');if(!ov)return false;const b=ov.querySelector('.kh-qn-close');if(b)b.click();else ov.remove();return true}
 function closeAcademic(){const ov=document.getElementById('akademikTakvimOverlay');if(!ov)return false;if(typeof window.akademikTakvimKapat==='function')window.akademikTakvimKapat(true);else ov.remove();return true}
 function closeKyRole(){const a=document.getElementById('rolFormAlani');if(!a||!a.firstElementChild)return false;if(typeof window.rolFormKapat==='function')window.rolFormKapat();else a.innerHTML='';return true}
@@ -21,6 +22,7 @@ function closeGenericModal(){const ov=document.getElementById('modalOverlay');if
 function closeDetailOverlay(){const ov=document.getElementById('detayOverlay');if(!ov||!ov.classList.contains('active'))return false;if(typeof window.detayPanelKapat==='function')window.detayPanelKapat();else ov.classList.remove('active');return true}
 window.geriTusuIsle=function(){
  try{
+  if(closeWeather())return 'handled';
   if(closeQuick())return 'handled';
   if(closeAcademic())return 'handled';
   if(closeKyRole())return 'handled';
