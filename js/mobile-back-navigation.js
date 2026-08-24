@@ -15,6 +15,7 @@ function closeOncDetail(){const ov=document.getElementById('oncDetayOverlay');if
 function closeStudentExam(){const el=document.querySelector('#khStuExamDetail,#khStuExamPanel,.kh-stu-exam-detail,.kh-stu-exam-panel,.ksd-exam-overlay');if(!el)return false;const back=el.querySelector('[data-back],.kh-stu-back,.ksd-top button,.back,.close');if(back)back.click();else el.remove();return true}
 function closeStudent(){const el=document.getElementById('khStuDetail')||document.querySelector('.kh-stu-detail,.ksd-overlay');if(!el)return false;const back=el.querySelector('.kh-stu-back,[data-back],.ksd-top button');if(back)back.click();else{el.remove();document.body.classList.remove('kh-stu-detail-open','ksd-open')}return true}
 function closeClass(){const el=document.getElementById('khClassDetail')||document.querySelector('.kh-class-detail');if(!el)return false;const back=el.querySelector('.kh-cd-top button:first-child,[data-back]');if(back)back.click();else{el.remove();document.body.classList.remove('kh-class-detail-open')}return true}
+function closeReport(){const ov=document.getElementById('raporOverlay');if(!ov)return false;const b=ov.querySelector('#raporCloseBtn');if(b)b.click();else{ov.remove();document.body.classList.remove('dlk-overlay-acik')}return true}
 function closeGenericModal(){const ov=document.getElementById('modalOverlay');if(!ov||!ov.classList.contains('active'))return false;if(typeof window.modalKapat==='function')window.modalKapat();else ov.classList.remove('active');return true}
 function closeDetailOverlay(){const ov=document.getElementById('detayOverlay');if(!ov||!ov.classList.contains('active'))return false;if(typeof window.detayPanelKapat==='function')window.detayPanelKapat();else ov.classList.remove('active');return true}
 window.geriTusuIsle=function(){
@@ -29,6 +30,7 @@ window.geriTusuIsle=function(){
   if(closeStudentExam())return 'handled';
   if(closeStudent())return 'handled';
   if(closeClass())return 'handled';
+  if(closeReport())return 'handled';
   if(closeGenericModal())return 'handled';
   if(closeDetailOverlay())return 'handled';
   if(typeof oldBack==='function')return oldBack.apply(this,arguments);
