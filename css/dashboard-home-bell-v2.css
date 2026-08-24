@@ -1,0 +1,17 @@
+/* Koruk Asistan — zil sayacı v2: kompakt, durum odaklı, açık/koyu tema */
+#khBell.kh-live-card{position:relative;min-height:68px!important;padding:9px 11px!important;gap:10px!important;overflow:hidden;border-radius:18px!important;background:linear-gradient(135deg,rgba(235,248,243,.96),rgba(255,255,255,.94))!important;border:1px solid rgba(21,128,96,.22)!important;box-shadow:0 6px 18px rgba(24,89,69,.08)!important}
+#khBell.kh-live-card:after{content:"";position:absolute;right:-28px;top:-36px;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle,rgba(25,185,130,.13),rgba(25,185,130,0) 70%);pointer-events:none}
+#khBell .kh-live-icon{width:42px!important;height:42px!important;border-radius:14px!important;background:linear-gradient(145deg,#dff6ed,#edf9f5)!important;color:#087657!important;border:1px solid rgba(11,143,104,.14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+#khBell .kh-live-icon svg{width:22px!important;height:22px!important;color:#087657!important;stroke-width:2!important}
+#khBell .kh-live-main{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:8px;align-items:center;position:relative;z-index:1}
+#khBell .kh-live-main b{grid-column:1;grid-row:1;font-size:16px!important;line-height:1.15!important;font-weight:900!important;letter-spacing:-.01em;color:#17332a!important}
+#khBell .kh-live-main small{grid-column:1/-1;grid-row:2;margin-top:3px!important;font-size:10px!important;line-height:1.2!important;font-weight:750!important;color:#60736b!important}
+#khBell .kh-live-main:after{content:"CANLI";grid-column:2;grid-row:1;padding:4px 7px;border-radius:999px;background:#dff6ed;color:#087657;border:1px solid rgba(11,143,104,.16);font-size:7.5px;font-weight:950;letter-spacing:.08em;line-height:1}
+[data-theme="dark"] #khBell.kh-live-card{background:linear-gradient(135deg,rgba(14,37,31,.96),rgba(13,27,24,.96))!important;border-color:rgba(80,211,166,.24)!important;box-shadow:0 7px 20px rgba(0,0,0,.18)!important}
+[data-theme="dark"] #khBell.kh-live-card:after{background:radial-gradient(circle,rgba(71,212,165,.13),rgba(71,212,165,0) 70%)}
+[data-theme="dark"] #khBell .kh-live-icon{background:linear-gradient(145deg,#163d31,#123127)!important;color:#67dfb5!important;border-color:rgba(103,223,181,.18)!important;box-shadow:none}
+[data-theme="dark"] #khBell .kh-live-icon svg{color:#67dfb5!important}
+[data-theme="dark"] #khBell .kh-live-main b{color:#f4fff9!important}
+[data-theme="dark"] #khBell .kh-live-main small{color:#b6c9c1!important}
+[data-theme="dark"] #khBell .kh-live-main:after{background:#173d31;color:#74e5bd;border-color:rgba(116,229,189,.18)}
+@media(max-width:380px){#khBell.kh-live-card{min-height:64px!important;padding:8px 10px!important}#khBell .kh-live-icon{width:39px!important;height:39px!important}#khBell .kh-live-main b{font-size:15px!important}#khBell .kh-live-main:after{font-size:7px;padding:4px 6px}}
