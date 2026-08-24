@@ -1,17 +1,21 @@
-/* Koruk Asistan — mobil ana sayfa tam genişlik + tek satır gün içi akış */
+/* Koruk Asistan — mobil ana sayfa geniş görünüm + güvenli kenar boşluğu + tek satır gün içi akış */
 @media (max-width:1023px){
   #tab-panel.kh-home{
-    padding-left:0!important;
-    padding-right:0!important;
+    padding-left:8px!important;
+    padding-right:8px!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
   }
   #tab-panel.kh-home .kh-shell{
-    position:relative!important;
-    left:50%!important;
-    transform:translateX(-50%)!important;
-    width:calc(100vw - 8px)!important;
-    max-width:none!important;
-    margin:0!important;
+    position:static!important;
+    left:auto!important;
+    transform:none!important;
+    width:100%!important;
+    max-width:760px!important;
+    margin:0 auto!important;
     padding:0!important;
+    box-sizing:border-box!important;
+    min-width:0!important;
   }
   #tab-panel.kh-home .kh-hero,
   #tab-panel.kh-home .kh-section,
@@ -24,9 +28,23 @@
   #tab-panel.kh-home .kh-card,
   #tab-panel.kh-home .kh-dyn-item{
     width:100%!important;
-    max-width:none!important;
+    max-width:100%!important;
+    min-width:0!important;
     margin-left:0!important;
     margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+  #tab-panel.kh-home .kh-section,
+  #tab-panel.kh-home .kh-stats,
+  #tab-panel.kh-home .kh-social,
+  #tab-panel.kh-home .kh-quick{
+    overflow:visible!important;
+  }
+  #tab-panel.kh-home .kh-stat,
+  #tab-panel.kh-home .kh-social>a,
+  #tab-panel.kh-home .kh-quick>button{
+    min-width:0!important;
+    max-width:100%!important;
     box-sizing:border-box!important;
   }
   #tab-panel.kh-home .kh-bell-flow{
@@ -38,6 +56,9 @@
     grid-template-columns:none!important;
     flex-wrap:nowrap!important;
     gap:8px!important;
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
     overflow-x:auto!important;
     overflow-y:hidden!important;
     padding:12px 2px 10px!important;
