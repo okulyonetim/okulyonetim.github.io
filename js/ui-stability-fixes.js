@@ -31,6 +31,8 @@ stilYukle('css/dashboard-home-wide.css?v=1','dashboard-home-wide-css');
 scriptYukle('js/dashboard-bell-modern.js?v=2','dashboard-bell-modern-js');
 stilYukle('css/ders-nobet-programim-modern.css?v=1','ders-nobet-programim-modern-css');
 scriptYukle('js/ders-nobet-programim-modern.js?v=1','ders-nobet-programim-modern-js');
+stilYukle('css/kullanici-yonetimi-modern.css?v=1','kullanici-yonetimi-modern-css');
+scriptYukle('js/kullanici-yonetimi-modern.js?v=1','kullanici-yonetimi-modern-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
 const mobil=window.matchMedia('(max-width:1023px)').matches;let basladi=false;
 function kullaniciHazir(){return !!gv('AKTIF_KULLANICI')}
