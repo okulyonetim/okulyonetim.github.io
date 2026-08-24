@@ -27,6 +27,7 @@ stilYukle('css/zumre-modern.css?v=3','zumre-modern-css');
 scriptYukle('js/zumre-local-first.js?v=1','zumre-local-first-js');
 scriptYukle('js/zumre-modern.js?v=4','zumre-modern-js');
 stilYukle('css/dashboard-bell-modern.css?v=4','dashboard-bell-modern-css');
+stilYukle('css/dashboard-home-wide.css?v=1','dashboard-home-wide-css');
 scriptYukle('js/dashboard-bell-modern.js?v=2','dashboard-bell-modern-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
 const mobil=window.matchMedia('(max-width:1023px)').matches;let basladi=false;

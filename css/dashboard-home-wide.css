@@ -1,0 +1,57 @@
+/* Koruk Asistan — mobil ana sayfa tam genişlik + tek satır gün içi akış */
+@media (max-width:1023px){
+  #tab-panel.kh-home{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+  #tab-panel.kh-home .kh-shell{
+    position:relative!important;
+    left:50%!important;
+    transform:translateX(-50%)!important;
+    width:calc(100vw - 8px)!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  #tab-panel.kh-home .kh-hero,
+  #tab-panel.kh-home .kh-section,
+  #tab-panel.kh-home .kh-dynamic,
+  #tab-panel.kh-home .kh-news,
+  #tab-panel.kh-home .kh-stats,
+  #tab-panel.kh-home .kh-social,
+  #tab-panel.kh-home .kh-quick,
+  #tab-panel.kh-home .kh-live-stack,
+  #tab-panel.kh-home .kh-card,
+  #tab-panel.kh-home .kh-dyn-item{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+  #tab-panel.kh-home .kh-bell-flow{
+    min-height:126px!important;
+    overflow:hidden!important;
+  }
+  #tab-panel.kh-home .kh-bell-rail{
+    display:flex!important;
+    grid-template-columns:none!important;
+    flex-wrap:nowrap!important;
+    gap:8px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding:12px 2px 10px!important;
+    margin:0!important;
+    min-height:92px!important;
+    scroll-snap-type:x proximity;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  #tab-panel.kh-home .kh-bell-rail::-webkit-scrollbar{display:none}
+  #tab-panel.kh-home .kh-bell-node{
+    flex:0 0 72px!important;
+    min-width:72px!important;
+    max-width:72px!important;
+    scroll-snap-align:start;
+  }
+}
