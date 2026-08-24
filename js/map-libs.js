@@ -6,6 +6,15 @@ const JS='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 const CSS='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
 let hazirPromise=null;
 
+function modernArayuzuYukle(){
+  if(!document.querySelector('link[data-kh-map-modern]')){
+    const l=document.createElement('link'); l.rel='stylesheet'; l.href='css/harita-modern.css?v=1'; l.dataset.khMapModern='1'; document.head.appendChild(l);
+  }
+  if(!document.querySelector('script[data-kh-map-modern]')){
+    const s=document.createElement('script'); s.src='js/harita-modern.js?v=1'; s.async=false; s.dataset.khMapModern='1'; document.head.appendChild(s);
+  }
+}
+
 function cssYukle(){
   if([...document.styleSheets].some(s=>String(s.href||'').includes('leaflet@1.9.4/dist/leaflet.css'))) return Promise.resolve();
   return new Promise((resolve,reject)=>{
@@ -40,6 +49,7 @@ function jsYukle(){
 }
 
 function hazir(){
+  modernArayuzuYukle();
   if(typeof window.L!=='undefined') return cssYukle();
   if(hazirPromise) return hazirPromise;
   hazirPromise=Promise.all([cssYukle(),jsYukle()])
@@ -48,5 +58,6 @@ function hazir(){
   return hazirPromise;
 }
 
+modernArayuzuYukle();
 window.MapLibs={hazir};
 })();
