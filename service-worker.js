@@ -12,7 +12,7 @@ const ONBELLEGE_ALINACAKLAR=[
   './css/styles.css','./css/dark-theme-soft.css','./css/auth-header-redesign.css',
   './css/dashboard-home.css','./css/dashboard-home-neutral.css','./css/dashboard-home-colors.css',
   './css/dashboard-bell-modern.css','./css/dashboard-home-wide.css','./css/alt-navigation-theme.css',
-  './css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css','./css/nobet-sinif-modern-fixes.css',
+  './css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js',
   './js/core/local-first-sync.js','./js/core/runtime-state-bridge.js',
   './js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/ui-stability-fixes.js','./js/pull-to-refresh-guard.js',
@@ -20,7 +20,7 @@ const ONBELLEGE_ALINACAKLAR=[
   './js/dashboard-home.js','./js/dashboard-bell-modern.js','./js/dashboard-home-shared.js',
   './js/dashboard-home-bootstrap-sync.js','./js/mobile-back-navigation.js',
   './js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js',
-  './js/deneme-sayac-local-first.js','./js/deneme-sayac-local-first-v2.js','./js/deneme-sayac-runtime-v2.js','./js/nobet-rapor-border-fix.js',
+  './js/deneme-sayac-local-first.js','./js/deneme-sayac-local-first-v2.js','./js/deneme-sayac-runtime-v2.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
@@ -62,7 +62,6 @@ async function modernShell(response){
     if(!html.includes('sosyal-kulupler-modern.css'))html=html.replace('</head>','<link rel="stylesheet" href="css/sosyal-kulupler-modern.css"></head>');
     if(!html.includes('belirli-gunler-modern.css'))html=html.replace('</head>','<link rel="stylesheet" href="css/belirli-gunler-modern.css"></head>');
     if(!html.includes('zumre-modern.css'))html=html.replace('</head>','<link rel="stylesheet" href="css/zumre-modern.css"></head>');
-    if(!html.includes('nobet-sinif-modern-fixes.css'))html=html.replace('</head>','<link rel="stylesheet" href="css/nobet-sinif-modern-fixes.css?v=1"></head>');
     if(!html.includes('kontrol-listeleri-modern.js'))html=html.replace('</body>','<script src="js/kontrol-listeleri-modern.js"></script></body>');
     if(!html.includes('maas-degisiklik-personel-secici.js'))html=html.replace('</body>','<script src="js/maas-degisiklik-personel-secici.js"></script></body>');
     if(!html.includes('sosyal-kulupler-modern.js'))html=html.replace('</body>','<script src="js/sosyal-kulupler-modern.js"></script></body>');
@@ -71,7 +70,6 @@ async function modernShell(response){
     if(!html.includes('zumre-local-first.js'))html=html.replace('</body>','<script src="js/zumre-local-first.js"></script></body>');
     if(!html.includes('zumre-modern.js'))html=html.replace('</body>','<script src="js/zumre-modern.js"></script></body>');
     if(!html.includes('deneme-sil-fix.js'))html=html.replace('</body>','<script src="js/deneme-sil-fix.js?v=2"></script></body>');
-    if(!html.includes('nobet-rapor-border-fix.js'))html=html.replace('</body>','<script src="js/nobet-rapor-border-fix.js?v=1"></script></body>');
     return new Response(html,{status:response.status,statusText:response.statusText,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'}});
   }catch(e){return response}
 }
