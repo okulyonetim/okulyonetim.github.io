@@ -122,8 +122,10 @@ function wrapRender(name, before){
   var old=window[name];
   if(typeof old!=='function' || old.__dnStableWrapped) return false;
   var fn=function(){
-    if(before) before();
-    else applyState();
+    if(before){
+      var devam=before();
+      if(devam===false) return;
+    }else applyState();
     return old.apply(this,arguments);
   };
   fn.__dnStableWrapped=true;
@@ -135,8 +137,9 @@ function installRenderGuards(){
   wrapRender('renderDenemeSinavlari');
   wrapRender('_sayacOvGuncelle');
   wrapRender('_anaSayfaSayacKartiGuncelle',function(){
-    if(!stopHydrated){hideDash();return;}
+    if(!stopHydrated){hideDash();return false;}
     applyState();
+    return true;
   });
 }
 
