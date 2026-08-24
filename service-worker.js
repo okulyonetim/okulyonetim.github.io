@@ -1,5 +1,5 @@
 /* Okul Yönetim Paneli — Service Worker v8 / performans */
-const CACHE_ADI='oy-cache-v643';
+const CACHE_ADI='oy-cache-v644';
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 firebase.initializeApp({apiKey:"AIzaSyCxLLlLCA0Deu7dcQch5e1c4R5ur5FSkc",authDomain:"okul-6e302.firebaseapp.com",projectId:"okul-6e302",storageBucket:"okul-6e302.firebasestorage.app",messagingSenderId:"738103486583",appId:"1:738103486583:web:da91129b1a08f2463efe72"});
@@ -19,7 +19,7 @@ const ONBELLEGE_ALINACAKLAR=[
   './js/app-pages-theme.js','./js/auth-header-redesign-v2.js','./js/mobile-header-brand.js',
   './js/dashboard-home.js','./js/dashboard-bell-modern.js','./js/dashboard-home-shared.js',
   './js/dashboard-home-bootstrap-sync.js','./js/mobile-back-navigation.js',
-  './js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js',
+  './js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js',
   './js/deneme-sayac-local-first.js','./js/deneme-sayac-local-first-v2.js','./js/deneme-sayac-runtime-v2.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
@@ -69,6 +69,7 @@ async function modernShell(response){
     if(!html.includes('belirli-gunler-modern.js'))html=html.replace('</body>','<script src="js/belirli-gunler-modern.js"></script></body>');
     if(!html.includes('zumre-local-first.js'))html=html.replace('</body>','<script src="js/zumre-local-first.js"></script></body>');
     if(!html.includes('zumre-modern.js'))html=html.replace('</body>','<script src="js/zumre-modern.js"></script></body>');
+    if(!html.includes('deneme-sil-fix.js'))html=html.replace('</body>','<script src="js/deneme-sil-fix.js?v=2"></script></body>');
     return new Response(html,{status:response.status,statusText:response.statusText,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'}});
   }catch(e){return response}
 }
