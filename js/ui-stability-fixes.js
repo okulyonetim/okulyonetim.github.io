@@ -18,22 +18,16 @@ scriptYukle('js/nobet-rapor.js?v=3','nobet-rapor');
 scriptYukle('js/school-data-consistency.js?v=5','school-data-consistency');
 stilYukle('css/checkbox-standard.css?v=2','checkbox-standard');
 scriptYukle('js/app-pages-theme.js?v=3','app-pages-theme-js');
-/* Çizelge modern katmanları artık yalnız Service Worker HTML enjeksiyonuna bağlı değil.
-   ui-stability-fixes.js index.html'den her açılışta yüklendiği için, mevcut WebView
-   dokümanı eski shell ile açılmış olsa bile bu dosyalar güvenilir biçimde devreye girer. */
 stilYukle('css/sosyal-kulupler-modern.css?v=4','sosyal-kulupler-modern-css');
 scriptYukle('js/sosyal-kulupler-modern.js?v=2','sosyal-kulupler-modern-js');
 stilYukle('css/belirli-gunler-modern.css?v=3','belirli-gunler-modern-css');
 scriptYukle('js/belirli-gunler-local-first.js?v=2','belirli-gunler-local-first-js');
 scriptYukle('js/belirli-gunler-modern.js?v=2','belirli-gunler-modern-js');
-stilYukle('css/zumre-modern.css?v=1','zumre-modern-css');
+stilYukle('css/zumre-modern.css?v=2','zumre-modern-css');
 scriptYukle('js/zumre-local-first.js?v=1','zumre-local-first-js');
-scriptYukle('js/zumre-modern.js?v=2','zumre-modern-js');
+scriptYukle('js/zumre-modern.js?v=3','zumre-modern-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
 const mobil=window.matchMedia('(max-width:1023px)').matches;let basladi=false;
-/* Dashboard artık öğretmen Firestore snapshot'ını beklemez. Kullanıcı kimliği
-   hazır olur olmaz yerel dashboard cache'iyle çizilir; Firestore geldikçe state
-   eventleri aynı renderer'ı günceller. */
 function kullaniciHazir(){return !!gv('AKTIF_KULLANICI')}
 function anaSayfaBaslat(){if(!mobil||basladi||!kullaniciHazir())return false;basladi=true;stilYukle('css/dashboard-home.css?v=3','dashboard-home');stilYukle('css/dashboard-home-neutral.css?v=2','dashboard-home-neutral');stilYukle('css/dashboard-home-colors.css?v=7','dashboard-home-colors');scriptYukle('js/dashboard-home.js?v=7','dashboard-home');scriptYukle('js/dashboard-duyuru-v4.js?v=4','dashboard-duyuru-v4');scriptYukle('js/dashboard-home-shared.js?v=2','dashboard-home-shared');scriptYukle('js/dashboard-home-bootstrap-sync.js?v=1','dashboard-home-bootstrap-sync');scriptYukle('js/dashboard-home-enhancements.js?v=3','dashboard-home-enhancements');scriptYukle('js/dashboard-teacher-school-summary.js?v=1','dashboard-teacher-school-summary');return true}
 if(mobil){let deneme=0;const timer=setInterval(()=>{if(anaSayfaBaslat()||++deneme>300)clearInterval(timer)},50);document.addEventListener('DOMContentLoaded',()=>setTimeout(anaSayfaBaslat,0));window.addEventListener('load',()=>setTimeout(anaSayfaBaslat,0));window.addEventListener('koruk:data-updated',anaSayfaBaslat)}
