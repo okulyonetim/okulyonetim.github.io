@@ -1,192 +1,88 @@
 /* Koruk Asistan — Nöbet + Sınıf Oturma mobil modernizasyonu */
 
-/* Nöbet programı: otomatik dağıtım koyu/açık tema kontrastı */
+/* Nöbet programı: otomatik dağıtım butonu. Eski global .btn kurallarının
+   metni koyulaştırmasını engellemek için tüm doğrudan çocukları da beyazla. */
 button[onclick*="nobetOtomatikDagitimModalAc"],
 [role="button"][onclick*="nobetOtomatikDagitimModalAc"]{
-  color:#0b5f49!important;
-  background:rgba(18,147,111,.08)!important;
-  border-color:rgba(18,147,111,.48)!important;
+  color:#ffffff!important;
+  background:linear-gradient(135deg,#08765b,#0d9a72)!important;
+  border:1px solid #159879!important;
   font-weight:800!important;
+  text-shadow:none!important;
+  box-shadow:0 7px 18px rgba(8,118,91,.18)!important;
 }
-button[onclick*="nobetOtomatikDagitimModalAc"]:active{
-  background:rgba(18,147,111,.16)!important;
-}
+button[onclick*="nobetOtomatikDagitimModalAc"] *,
+[role="button"][onclick*="nobetOtomatikDagitimModalAc"] *{color:#ffffff!important;fill:currentColor!important;stroke:currentColor!important;}
+button[onclick*="nobetOtomatikDagitimModalAc"]:active{background:#075f4a!important;transform:translateY(1px)!important;}
 [data-theme="dark"] button[onclick*="nobetOtomatikDagitimModalAc"],
 [data-theme="dark"] [role="button"][onclick*="nobetOtomatikDagitimModalAc"]{
-  color:#ecfff8!important;
-  background:rgba(16,119,91,.28)!important;
-  border-color:#2c9b7d!important;
-  text-shadow:none!important;
+  color:#ffffff!important;background:linear-gradient(135deg,#0d765c,#119b77)!important;
+  border-color:#2c9b7d!important;text-shadow:none!important;
 }
 
-/* Sınıf Oturma Planı — mevcut motoru değiştirmeden yeni mobil yüzey */
+/* Sınıf Oturma Planı — motor/veri akışı korunarak mobil yüzey yenilenir. */
 #sinifOturmaOverlay{
-  --so-modern-brand:#08765b;
-  --so-modern-brand-2:#0d9a72;
-  --so-modern-surface:#ffffff;
-  --so-modern-soft:#f4f8f6;
-  --so-modern-border:#d8e3de;
-  --so-modern-text:#18362d;
-  --so-modern-muted:#6e817a;
-  background:#eef5f1!important;
-  overflow:hidden!important;
+  --so-modern-brand:#08765b;--so-modern-brand-2:#0d9a72;
+  --so-modern-surface:#ffffff;--so-modern-soft:#f4f8f6;--so-modern-border:#d8e3de;
+  --so-modern-text:#18362d;--so-modern-muted:#6e817a;
+  background:#eef5f1!important;overflow:hidden!important;
 }
 [data-theme="dark"] #sinifOturmaOverlay{
-  --so-modern-brand:#19a27c;
-  --so-modern-brand-2:#2cc49a;
-  --so-modern-surface:#0d1b17;
-  --so-modern-soft:#12251f;
-  --so-modern-border:#29463c;
-  --so-modern-text:#f1fbf7;
-  --so-modern-muted:#a8b9b3;
-  background:#07110e!important;
+  --so-modern-brand:#19a27c;--so-modern-brand-2:#2cc49a;
+  --so-modern-surface:#0d1b17;--so-modern-soft:#12251f;--so-modern-border:#29463c;
+  --so-modern-text:#f1fbf7;--so-modern-muted:#a8b9b3;background:#07110e!important;
 }
 #sinifOturmaOverlay *{box-sizing:border-box!important}
-
 #sinifOturmaOverlay .so-header{
-  position:sticky!important;top:0!important;z-index:40!important;
-  display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;
-  align-items:center!important;gap:8px 10px!important;
-  padding:10px 12px 12px!important;
-  background:color-mix(in srgb,var(--so-modern-surface) 94%,transparent)!important;
-  border-bottom:1px solid var(--so-modern-border)!important;
-  box-shadow:0 8px 22px rgba(6,46,35,.08)!important;
-  backdrop-filter:blur(14px)!important;
+  position:sticky!important;top:0!important;z-index:40!important;display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;align-items:center!important;gap:8px 10px!important;
+  padding:10px 12px 12px!important;background:var(--so-modern-surface)!important;
+  border-bottom:1px solid var(--so-modern-border)!important;box-shadow:0 5px 18px rgba(6,46,35,.07)!important;
 }
-#sinifOturmaOverlay .so-header h1{
-  min-width:0!important;text-align:left!important;color:var(--so-modern-text)!important;
-  font-size:clamp(15px,4vw,18px)!important;line-height:1.2!important;
-  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
-}
-#sinifOturmaOverlay #btnSoKapat{
-  width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;
-  justify-content:center!important;font-size:0!important;border:1px solid var(--so-modern-border)!important;
-  background:var(--so-modern-soft)!important;color:var(--so-modern-text)!important;border-radius:14px!important;
-}
+#sinifOturmaOverlay .so-header h1{min-width:0!important;text-align:left!important;color:var(--so-modern-text)!important;font-size:clamp(15px,4vw,18px)!important;line-height:1.2!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#sinifOturmaOverlay #btnSoKapat{width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;justify-content:center!important;font-size:0!important;border:1px solid var(--so-modern-border)!important;background:var(--so-modern-soft)!important;color:var(--so-modern-text)!important;border-radius:14px!important;box-shadow:none!important}
 #sinifOturmaOverlay #btnSoKapat::before{content:'‹';font-size:32px;line-height:1;font-weight:500}
-#sinifOturmaOverlay .so-header>div{
-  grid-column:1/-1!important;width:100%!important;margin:0!important;display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;
-}
-#sinifOturmaOverlay .so-header>div .so-btn{
-  min-width:0!important;min-height:44px!important;padding:8px 7px!important;
-  justify-content:center!important;border-radius:13px!important;font-size:12px!important;
-  border:1px solid var(--so-modern-border)!important;box-shadow:none!important;
-}
-#sinifOturmaOverlay #btnSoKaydet,
-#sinifOturmaOverlay #btnSoYazdir{
-  color:#fff!important;background:linear-gradient(135deg,var(--so-modern-brand),var(--so-modern-brand-2))!important;
-  border-color:transparent!important;
-}
-#sinifOturmaOverlay #btnSoTemizle{
-  color:var(--so-modern-text)!important;background:var(--so-modern-soft)!important;
-}
+#sinifOturmaOverlay .so-header>div{grid-column:1/-1!important;width:100%!important;margin:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+#sinifOturmaOverlay .so-header>div .so-btn{min-width:0!important;min-height:44px!important;padding:8px 7px!important;justify-content:center!important;border-radius:13px!important;font-size:12px!important;border:1px solid var(--so-modern-border)!important;box-shadow:none!important}
+#sinifOturmaOverlay #btnSoKaydet,#sinifOturmaOverlay #btnSoYazdir{color:#fff!important;background:linear-gradient(135deg,var(--so-modern-brand),var(--so-modern-brand-2))!important;border-color:transparent!important}
+#sinifOturmaOverlay #btnSoTemizle{color:var(--so-modern-text)!important;background:var(--so-modern-soft)!important}
 
-#sinifOturmaOverlay .so-govde{
-  display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;
-  gap:12px!important;padding:12px 10px 24px!important;overflow-y:auto!important;overflow-x:hidden!important;
-  overscroll-behavior:contain!important;
-}
-#sinifOturmaOverlay .so-nm-raised{
-  width:100%!important;max-width:none!important;border-radius:18px!important;
-  background:var(--so-modern-surface)!important;border:1px solid var(--so-modern-border)!important;
-  box-shadow:0 8px 24px rgba(6,46,35,.07)!important;
-}
-[data-theme="dark"] #sinifOturmaOverlay .so-nm-raised{box-shadow:0 8px 22px rgba(0,0,0,.22)!important}
+#sinifOturmaOverlay .so-govde{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;gap:12px!important;padding:12px 10px 24px!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important}
+#sinifOturmaOverlay .so-nm-raised{width:100%!important;max-width:none!important;border-radius:18px!important;background:var(--so-modern-surface)!important;border:1px solid var(--so-modern-border)!important;box-shadow:0 7px 22px rgba(6,46,35,.06)!important}
+[data-theme="dark"] #sinifOturmaOverlay .so-nm-raised{box-shadow:0 7px 20px rgba(0,0,0,.20)!important}
 #sinifOturmaOverlay .so-palet{padding:12px!important;order:1!important}
-
-#sinifOturmaOverlay .so-palet-2kolon{
-  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;
-  width:100%!important;margin-bottom:12px!important;
-}
-#sinifOturmaOverlay .so-palet-grup{
-  min-width:0!important;margin:0!important;padding:10px!important;border-radius:15px!important;
-  background:var(--so-modern-soft)!important;border:1px solid var(--so-modern-border)!important;
-}
-#sinifOturmaOverlay .so-palet h3{
-  margin:0 0 9px!important;color:var(--so-modern-muted)!important;font-size:11px!important;line-height:1.25!important;
-  letter-spacing:.45px!important;
-}
-#sinifOturmaOverlay .so-palet-btn{
-  min-height:46px!important;margin:0 0 7px!important;padding:8px 9px!important;
-  border:1px solid var(--so-modern-border)!important;border-radius:12px!important;
-  background:var(--so-modern-surface)!important;color:var(--so-modern-text)!important;
-  box-shadow:none!important;font-size:12px!important;font-weight:750!important;line-height:1.2!important;
-}
+#sinifOturmaOverlay .so-palet-2kolon{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:100%!important;margin-bottom:12px!important}
+#sinifOturmaOverlay .so-palet-grup{min-width:0!important;margin:0!important;padding:10px!important;border-radius:15px!important;background:var(--so-modern-soft)!important;border:1px solid var(--so-modern-border)!important}
+#sinifOturmaOverlay .so-palet h3{margin:0 0 9px!important;color:var(--so-modern-muted)!important;font-size:11px!important;line-height:1.25!important;letter-spacing:.45px!important}
+#sinifOturmaOverlay .so-palet-btn{min-height:46px!important;margin:0 0 7px!important;padding:8px 9px!important;border:1px solid var(--so-modern-border)!important;border-radius:12px!important;background:var(--so-modern-surface)!important;color:var(--so-modern-text)!important;box-shadow:none!important;font-size:12px!important;font-weight:750!important;line-height:1.2!important}
 #sinifOturmaOverlay .so-palet-btn:last-child{margin-bottom:0!important}
-#sinifOturmaOverlay .so-palet-btn .so-ikon{
-  display:grid!important;place-items:center!important;width:30px!important;height:30px!important;min-width:30px!important;
-  border-radius:9px!important;background:rgba(13,154,114,.12)!important;color:var(--so-modern-brand)!important;font-size:16px!important;
-}
+#sinifOturmaOverlay .so-palet-btn .so-ikon{display:grid!important;place-items:center!important;width:30px!important;height:30px!important;min-width:30px!important;border-radius:9px!important;background:rgba(13,154,114,.12)!important;color:var(--so-modern-brand)!important;font-size:16px!important}
 #sinifOturmaOverlay .so-palet-btn:active{background:rgba(13,154,114,.1)!important;transform:scale(.985)!important}
-
-#sinifOturmaOverlay .so-palet-2kolon.so-oto-panel{
-  grid-template-columns:1fr!important;padding-top:12px!important;border-top:1px solid var(--so-modern-border)!important;
-}
-#sinifOturmaOverlay .so-palet-2kolon.so-oto-panel>div{
-  padding:12px!important;border:1px solid var(--so-modern-border)!important;border-radius:15px!important;background:var(--so-modern-soft)!important;
-}
-#sinifOturmaOverlay .so-oto-input{
-  min-height:44px!important;margin-bottom:10px!important;border:1px solid var(--so-modern-border)!important;
-  border-radius:12px!important;background:var(--so-modern-surface)!important;color:var(--so-modern-text)!important;
-  box-shadow:none!important;padding:8px 10px!important;
-}
+#sinifOturmaOverlay .so-palet-2kolon.so-oto-panel{grid-template-columns:1fr!important;padding-top:12px!important;border-top:1px solid var(--so-modern-border)!important}
+#sinifOturmaOverlay .so-palet-2kolon.so-oto-panel>div{padding:12px!important;border:1px solid var(--so-modern-border)!important;border-radius:15px!important;background:var(--so-modern-soft)!important}
+#sinifOturmaOverlay .so-oto-input{min-height:44px!important;margin-bottom:10px!important;border:1px solid var(--so-modern-border)!important;border-radius:12px!important;background:var(--so-modern-surface)!important;color:var(--so-modern-text)!important;box-shadow:none!important;padding:8px 10px!important}
 #sinifOturmaOverlay .so-oto-etiket{color:var(--so-modern-muted)!important;font-size:11px!important;margin:0 2px 5px!important}
-#sinifOturmaOverlay .so-oto-stepper{
-  min-height:42px!important;padding:4px!important;border:1px solid var(--so-modern-border)!important;
-  border-radius:12px!important;background:var(--so-modern-surface)!important;box-shadow:none!important;
-}
-#sinifOturmaOverlay .so-oto-stepper .so-yon-btn{
-  width:34px!important;min-width:34px!important;height:34px!important;border-radius:9px!important;
-  background:var(--so-modern-soft)!important;color:var(--so-modern-text)!important;border:0!important;
-}
+#sinifOturmaOverlay .so-oto-stepper{min-height:42px!important;padding:4px!important;border:1px solid var(--so-modern-border)!important;border-radius:12px!important;background:var(--so-modern-surface)!important;box-shadow:none!important}
+#sinifOturmaOverlay .so-oto-stepper .so-yon-btn{width:34px!important;min-width:34px!important;height:34px!important;border-radius:9px!important;background:var(--so-modern-soft)!important;color:var(--so-modern-text)!important;border:0!important}
 #sinifOturmaOverlay .so-oto-stepper span{color:var(--so-modern-text)!important;font-size:12px!important;font-weight:800!important}
-#sinifOturmaOverlay #btnSoOtoYerlestir{
-  min-height:46px!important;border-radius:13px!important;background:linear-gradient(135deg,var(--so-modern-brand),var(--so-modern-brand-2))!important;
-  color:#fff!important;border:0!important;box-shadow:none!important;
-}
+#sinifOturmaOverlay #btnSoOtoYerlestir{min-height:46px!important;border-radius:13px!important;background:linear-gradient(135deg,var(--so-modern-brand),var(--so-modern-brand-2))!important;color:#fff!important;border:0!important;box-shadow:none!important}
 #sinifOturmaOverlay .so-palet-not{color:var(--so-modern-muted)!important;background:transparent!important}
 #sinifOturmaOverlay #soHavuz .so-havuz-item{background:var(--so-modern-soft)!important;color:var(--so-modern-text)!important;border:1px solid var(--so-modern-border)!important}
 
 #sinifOturmaOverlay .so-tuval-sarici{order:2!important;min-width:0!important;padding:12px!important}
 #sinifOturmaOverlay .so-tuval-baslik{display:flex!important;gap:9px!important;margin-bottom:10px!important}
-#sinifOturmaOverlay .so-tuval-baslik .so-ad{
-  flex:0 0 100%!important;font-size:16px!important;color:var(--so-modern-text)!important;font-weight:850!important;
-}
-#sinifOturmaOverlay .so-yon-secim{
-  display:flex!important;gap:7px!important;max-width:100%!important;overflow-x:auto!important;padding:1px 0 3px!important;
-  scrollbar-width:none!important;flex-wrap:nowrap!important;
-}
+#sinifOturmaOverlay .so-tuval-baslik .so-ad{flex:0 0 100%!important;font-size:16px!important;color:var(--so-modern-text)!important;font-weight:850!important}
+#sinifOturmaOverlay .so-yon-secim{display:flex!important;gap:7px!important;max-width:100%!important;overflow-x:auto!important;padding:1px 0 3px!important;scrollbar-width:none!important;flex-wrap:nowrap!important}
 #sinifOturmaOverlay .so-yon-secim::-webkit-scrollbar{display:none!important}
-#sinifOturmaOverlay .so-yon-btn{
-  min-height:40px!important;flex:0 0 auto!important;padding:7px 11px!important;border-radius:11px!important;
-  border:1px solid var(--so-modern-border)!important;background:var(--so-modern-soft)!important;
-  color:var(--so-modern-text)!important;box-shadow:none!important;
-}
-#sinifOturmaOverlay .so-yon-btn.so-aktif{
-  background:var(--so-modern-brand)!important;color:#fff!important;border-color:var(--so-modern-brand)!important;
-}
-#sinifOturmaOverlay .so-tuval-baslik .so-ipucu{
-  flex:0 0 100%!important;padding:8px 10px!important;border-radius:10px!important;background:var(--so-modern-soft)!important;
-  color:var(--so-modern-muted)!important;font-size:10.5px!important;
-}
-#sinifOturmaOverlay .so-tuval-kaydirma{
-  width:100%!important;max-width:100%!important;max-height:61vh!important;padding:12px!important;
-  border-radius:14px!important;border:1px solid var(--so-modern-border)!important;background:#d8e0dc!important;
-  overflow:auto!important;justify-content:flex-start!important;
-}
+#sinifOturmaOverlay .so-yon-btn{min-height:40px!important;flex:0 0 auto!important;padding:7px 11px!important;border-radius:11px!important;border:1px solid var(--so-modern-border)!important;background:var(--so-modern-soft)!important;color:var(--so-modern-text)!important;box-shadow:none!important}
+#sinifOturmaOverlay .so-yon-btn.so-aktif{background:var(--so-modern-brand)!important;color:#fff!important;border-color:var(--so-modern-brand)!important}
+#sinifOturmaOverlay .so-tuval-baslik .so-ipucu{flex:0 0 100%!important;padding:8px 10px!important;border-radius:10px!important;background:var(--so-modern-soft)!important;color:var(--so-modern-muted)!important;font-size:10.5px!important}
+#sinifOturmaOverlay .so-tuval-kaydirma{width:100%!important;max-width:100%!important;max-height:61vh!important;padding:12px!important;border-radius:14px!important;border:1px solid var(--so-modern-border)!important;background:#d8e0dc!important;overflow:auto!important;justify-content:flex-start!important}
 [data-theme="dark"] #sinifOturmaOverlay .so-tuval-kaydirma{background:#16241f!important}
 #sinifOturmaOverlay #soTuval{border:2px solid #31453d!important;box-shadow:0 5px 16px rgba(0,0,0,.12)!important}
 #sinifOturmaOverlay #soTuval.so-kilitli .so-oge{outline:1.5px dashed rgba(13,154,114,.58)!important}
-
-#sinifOturmaOverlay .so-footer{
-  position:sticky!important;bottom:0!important;z-index:30!important;padding:9px 12px calc(9px + env(safe-area-inset-bottom))!important;
-  background:var(--so-modern-surface)!important;border-top:1px solid var(--so-modern-border)!important;
-  color:var(--so-modern-muted)!important;font-size:10.5px!important;
-}
-
+#sinifOturmaOverlay .so-footer{position:sticky!important;bottom:0!important;z-index:30!important;padding:9px 12px calc(9px + env(safe-area-inset-bottom))!important;background:var(--so-modern-surface)!important;border-top:1px solid var(--so-modern-border)!important;color:var(--so-modern-muted)!important;font-size:10.5px!important}
 #soSecimOverlay .so-secim-kutu{border:1px solid var(--so-modern-border,#d8e3de)!important;box-shadow:0 18px 50px rgba(0,0,0,.32)!important}
-
 @media(max-width:560px){
   #sinifOturmaOverlay .so-palet-2kolon{grid-template-columns:1fr!important}
   #sinifOturmaOverlay .so-palet-grup{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
