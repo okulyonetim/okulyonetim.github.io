@@ -37,13 +37,13 @@
 .kh-bell-progress-dot{position:absolute;left:var(--kb-progress,0%);top:50%;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);background:#fff;border:4px solid var(--kb-accent);box-shadow:0 2px 8px color-mix(in srgb,var(--kb-accent) 35%,transparent);transition:left .8s cubic-bezier(.2,.8,.2,1);z-index:2}
 [data-theme="dark"] .kh-bell-progress-dot{background:#0d1b17}
 .kh-bell-next{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;font-size:9.5px;font-weight:800;color:var(--kb-muted)}.kh-bell-next b{color:var(--kb-text);font-size:10.5px}
-.kh-bell-flow{margin-top:12px;padding-top:14px;border-top:1px solid var(--kb-line);min-height:126px;overflow:visible}
-.kh-bell-flow-title{font-size:8.5px;font-weight:950;letter-spacing:.08em;color:var(--kb-muted);margin-bottom:2px}
-.kh-bell-rail{display:flex;gap:8px;overflow-x:auto;padding:13px 5px 14px;margin:0 -5px;scrollbar-width:none;-webkit-overflow-scrolling:touch;min-height:92px}.kh-bell-rail::-webkit-scrollbar{display:none}
-.kh-bell-node{flex:0 0 70px;text-align:center;color:var(--kb-muted);position:relative}
-.kh-bell-node-icon{width:34px;height:34px;margin:0 auto 5px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--kb-line);background:color-mix(in srgb,var(--kb-soft) 35%,transparent);color:var(--kb-muted)}
-.kh-bell-node-icon svg{width:17px;height:17px;stroke-width:2!important}
-.kh-bell-node b{display:block;font-size:8.5px;line-height:1.15;color:inherit}.kh-bell-node small{display:block;margin-top:2px;font-size:7.4px;line-height:1.2;color:var(--kb-muted);white-space:nowrap}
+.kh-bell-flow{margin-top:14px;padding-top:14px;border-top:1px solid var(--kb-line);overflow:visible}
+.kh-bell-flow-title{font-size:8.5px;font-weight:950;letter-spacing:.08em;color:var(--kb-muted);margin-bottom:10px}
+.kh-bell-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 7px;overflow:visible;padding:2px 0 4px;margin:0;min-height:0}
+.kh-bell-node{min-width:0;text-align:center;color:var(--kb-muted);position:relative;padding:2px 0 4px}
+.kh-bell-node-icon{width:36px;height:36px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--kb-line);background:color-mix(in srgb,var(--kb-soft) 35%,transparent);color:var(--kb-muted)}
+.kh-bell-node-icon svg{width:18px;height:18px;stroke-width:2!important}
+.kh-bell-node b{display:block;font-size:8.5px;line-height:1.18;color:inherit}.kh-bell-node small{display:block;margin-top:3px;font-size:7.2px;line-height:1.25;color:var(--kb-muted);white-space:normal;overflow-wrap:anywhere}
 .kh-bell-node.lesson .kh-bell-node-icon{color:var(--kb-lesson);background:color-mix(in srgb,var(--kb-lesson) 9%,transparent);border-color:color-mix(in srgb,var(--kb-lesson) 35%,var(--kb-line))}
 .kh-bell-node.break .kh-bell-node-icon{color:var(--kb-break);background:color-mix(in srgb,var(--kb-break) 10%,transparent);border-color:color-mix(in srgb,var(--kb-break) 38%,var(--kb-line))}
 .kh-bell-node.break.lunch .kh-bell-node-icon{color:var(--kb-lunch);background:color-mix(in srgb,var(--kb-lunch) 11%,transparent);border-color:color-mix(in srgb,var(--kb-lunch) 38%,var(--kb-line))}
@@ -63,5 +63,5 @@
 @keyframes khBellPulse{0%{opacity:.8;transform:scale(.86)}75%,100%{opacity:0;transform:scale(1.25)}}
 @keyframes khBellFlow{to{background-position:24px 0}}
 @keyframes khBellNodePulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,currentColor 6%,transparent)}}
-@media(max-width:380px){.kh-bell-wrap{padding:12px 11px 13px}.kh-bell-head{grid-template-columns:46px minmax(0,1fr) auto;gap:8px}.kh-bell-orb{width:46px;height:46px}.kh-bell-times{gap:5px}.kh-bell-time{padding:7px}.kh-bell-time b{font-size:12px}.kh-bell-node{flex-basis:64px}.kh-bell-flow{min-height:122px}.kh-bell-rail{padding-top:12px}}
+@media(max-width:380px){.kh-bell-wrap{padding:12px 11px 13px}.kh-bell-head{grid-template-columns:46px minmax(0,1fr) auto;gap:8px}.kh-bell-orb{width:46px;height:46px}.kh-bell-times{gap:5px}.kh-bell-time{padding:7px}.kh-bell-time b{font-size:12px}.kh-bell-rail{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px 6px}.kh-bell-node-icon{width:34px;height:34px}}
 @media (prefers-reduced-motion:reduce){.kh-bell-orb.is-live:after,.kh-bell-progress>i:after,.kh-bell-node.current .kh-bell-node-icon{animation:none!important}}
