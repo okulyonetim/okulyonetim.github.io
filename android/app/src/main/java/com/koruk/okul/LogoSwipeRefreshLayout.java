@@ -40,18 +40,20 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         void onRefresh();
     }
 
-    private static final float DAMPING              = 0.6f; // parmak mesafesi -> görsel mesafe oranı
-    private static final int   TRIGGER_DISTANCE_DP   = 135;  // bu kadar (dp) çekilince yenileme tetiklenir
+    private static final float DAMPING              = 0.6f;
+    private static final int   TRIGGER_DISTANCE_DP   = 135;
     private static final int   INDICATOR_SIZE_DP     = 48;
-    private static final int   INDICATOR_TOP_MARGIN_DP = 80; // eskiden 14dp — çok üstte/başlığın içinde kalıyordu
+    private static final int   INDICATOR_TOP_MARGIN_DP = 80;
     private static final int   SPRING_BACK_MS        = 220;
+    private static final float VERTICAL_DOMINANCE    = 1.28f;
 
     private final WebView webView;
     private final LogoPullRefreshView indicator;
     private final int touchSlop;
     private final float triggerDistancePx;
-    private final float hiddenTranslationY; // indicator'ın tamamen gizliyken durduğu translationY
+    private final float hiddenTranslationY;
 
+    private float downX;
     private float downY;
     private boolean dragging = false;
     private boolean refreshing = false;
@@ -77,7 +79,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         indicatorLp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         indicatorLp.topMargin = topMarginPx;
         indicator.setTranslationY(hiddenTranslationY);
-        indicator.setVisibility(INVISIBLE); // konum/kırpma her ne olursa olsun kesin gizli başlasın
+        indicator.setVisibility(INVISIBLE);
 
         addView(webView, new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -87,8 +89,6 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        // Savunma amaçlı: Activity yeniden oluşturulsa/WebView korunsa bile
-        // her ihtimale karşı temiz bir başlangıç durumu garanti edilir.
         webView.setTranslationY(0f);
         indicator.setTranslationY(hiddenTranslationY);
         indicator.setVisibility(INVISIBLE);
@@ -99,16 +99,12 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         this.listener = listener;
     }
 
-    /** PullToRefreshPlugin bunu çağırıyor (modal açıkken jesti geçici kapatmak için). */
     public void setPullEnabled(boolean enabled) {
         this.pullEnabled = enabled;
         if (!enabled && dragging) {
             dragging = false;
             springBackTo(0);
         }
-        // Modal kapanınca (enabled=true) iç kaydırma durumunu sıfırla.
-        // Modal içinde liste kaydırılmışsa innerContentKaydirilmis=true
-        // kalıyor ve sonraki tüm dokunuşları yutuyordu.
         if (enabled) {
             innerContentKaydirilmis = false;
             dragging = false;
@@ -120,10 +116,10 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         this.refreshing = refreshing;
         if (refreshing) {
             indicator.setSpinning(true);
-            springBackTo(triggerDistancePx); // gösterge açık kalsın, dönerek yenilensin
+            springBackTo(triggerDistancePx);
         } else {
             indicator.setSpinning(false);
-            springBackTo(0); // yenileme bitti, gösterge + içerik başa dönsün
+            springBackTo(0);
         }
     }
 
@@ -132,41 +128,32 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     }
 
     private boolean canChildScrollUp() {
-        // KÖK NEDEN DÜZELTMESİ (Sedat isteği, Ağustos 2026: "yenileme ile
-        // sayfada aşağı inmeyi ayırt etmenin bir yolu yok mu") — WebView'in
-        // KENDİ scrollY'si, position:fixed bir menü panelinin (örn.
-        // alt-navigasyon ızgara/liste/profil ekranları) İÇ kaydırmasından
-        // habersiz kalıyordu (panel kaysa bile WebView'ın scrollY'si 0'da
-        // sabit kalıyor). JS tarafı bunu Capacitor eklenti köprüsüyle
-        // (asenkron, gecikmeli) bildirmeye çalışıyordu ama parmak hareketi
-        // bu gecikmeyi bazen yakalıyordu. Artık innerContentKaydirilmis
-        // SENKRON bir native köprüyle (bkz. MainActivity.innerScrollBildir)
-        // GECİKMESİZ güncelleniyor — Capacitor'ın asenkron mesaj kuyruğuna
-        // hiç girmiyor.
         return (webView != null && webView.getScrollY() > 0) || innerContentKaydirilmis;
     }
 
-    /** bkz. yukarıdaki canChildScrollUp() notu. volatile: JS köprü çağrısı
-        farklı bir iş parçacığından gelebiliyor, UI iş parçacığına post
-        etmek gecikme eklerdi (tam önlemeye çalıştığımız şey) — basit bir
-        volatile alan, düşük gecikmeli ve iş parçacığı güvenli. */
     private volatile boolean innerContentKaydirilmis = false;
     public void setInnerContentKaydirilmis(boolean v) { innerContentKaydirilmis = v; }
+
+    private boolean dikeyAsagiJestMi(MotionEvent ev) {
+        float dy = ev.getY() - downY;
+        float dx = Math.abs(ev.getX() - downX);
+        return dy > touchSlop && dy > dx * VERTICAL_DOMINANCE;
+    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (!pullEnabled || refreshing) return false;
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                downX = ev.getX();
                 downY = ev.getY();
                 dragging = false;
-                return false; // WebView önce kendi kaydırmasını denesin
+                return false;
             case MotionEvent.ACTION_MOVE: {
                 if (canChildScrollUp()) return false;
-                float dy = ev.getY() - downY;
-                if (dy > touchSlop) {
+                if (dikeyAsagiJestMi(ev)) {
                     dragging = true;
-                    return true; // jesti üstleniyoruz
+                    return true;
                 }
                 return false;
             }
@@ -181,7 +168,14 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_MOVE: {
                 if (!dragging) return false;
-                float rawDy = Math.max(0f, ev.getY() - downY);
+                float dy = ev.getY() - downY;
+                float dx = Math.abs(ev.getX() - downX);
+                if (dy <= 0 || dy <= dx * VERTICAL_DOMINANCE) {
+                    dragging = false;
+                    springBackTo(0);
+                    return false;
+                }
+                float rawDy = Math.max(0f, dy);
                 float dampedDy = rawDy * DAMPING;
                 applyPull(dampedDy);
                 return true;
@@ -202,8 +196,6 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         return false;
     }
 
-    /** Çekme sırasında SADECE göstergeyi (üstte şeffaf bir katman olarak) hareket
-        ettirir — içerik (WebView) yerinde sabit kalır, ekran aşağı kaymaz. */
     private void applyPull(float dampedDy) {
         currentDampedDy = dampedDy;
         float revealed = hiddenTranslationY + dampedDy;
@@ -212,7 +204,6 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         indicator.setVisibility(dampedDy > 0.5f ? VISIBLE : INVISIBLE);
     }
 
-    /** Belirtilen mesafeye (0 = tamamen kapalı, triggerDistancePx = tam açık) yumuşakça döner. */
     private void springBackTo(float targetDampedDy) {
         if (springAnimator != null) springAnimator.cancel();
         float startDampedDy = currentDampedDy;

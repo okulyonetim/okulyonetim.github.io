@@ -1,5 +1,5 @@
 /* Okul Yönetim Paneli — Service Worker v8 / performans */
-const CACHE_ADI='oy-cache-v641';
+const CACHE_ADI='oy-cache-v642';
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 firebase.initializeApp({apiKey:"AIzaSyCxLLlLCA0Deu7dcQch5e1c4R5ur5FSkc",authDomain:"okul-6e302.firebaseapp.com",projectId:"okul-6e302",storageBucket:"okul-6e302.firebasestorage.app",messagingSenderId:"738103486583",appId:"1:738103486583:web:da91129b1a08f2463efe72"});
@@ -14,7 +14,7 @@ const ONBELLEGE_ALINACAKLAR=[
   './css/dashboard-bell-modern.css','./css/dashboard-home-wide.css','./css/alt-navigation-theme.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js',
   './js/core/local-first-sync.js','./js/core/runtime-state-bridge.js',
-  './js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/ui-stability-fixes.js',
+  './js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/ui-stability-fixes.js','./js/pull-to-refresh-guard.js',
   './js/app-pages-theme.js','./js/auth-header-redesign-v2.js','./js/mobile-header-brand.js',
   './js/dashboard-home.js','./js/dashboard-bell-modern.js','./js/dashboard-home-shared.js',
   './js/dashboard-home-bootstrap-sync.js','./js/mobile-back-navigation.js',

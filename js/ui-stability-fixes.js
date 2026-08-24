@@ -29,6 +29,7 @@ scriptYukle('js/auth-header-redesign-v2.js?v=2','auth-header-redesign-js');
 scriptYukle('js/mobile-header-brand.js?v=2','mobile-header-brand');
 scriptYukle('js/theme-contrast-fixes.js','theme-contrast');
 scriptYukle('js/nav-scroll-fix.js?v=6','nav-scroll-fix');
+scriptYukle('js/pull-to-refresh-guard.js?v=1','pull-to-refresh-guard');
 scriptYukle('js/modal-interaction-fix.js?v=5','modal-interaction-fix-js');
 stilYukle('css/checkbox-standard.css?v=2','checkbox-standard');
 scriptYukle('js/app-pages-theme.js?v=3','app-pages-theme-js');
