@@ -1,6 +1,6 @@
-/* Koruk Asistan — Runtime State Bridge v2
- * Global lexical dizileri tek noktadan görünür kılar ve dashboard-kritik
- * son bilinen veriyi localStorage'da senkron önbellekler.
+/* Koruk Asistan — Runtime State Bridge v3
+ * Global lexical dizileri görünür kılar; render polling ve gereksiz senkron
+ * localStorage yazımlarını azaltır.
  */
 (function(){
 'use strict';
@@ -43,25 +43,47 @@ function set(n,v){if(!Array.isArray(v))return;try{switch(n){
  case'ogretmenIzinleri':if(typeof ogretmenIzinleri!=='undefined')ogretmenIzinleri=v;break;
  case'notlar':if(typeof notlar!=='undefined')notlar=v;break;
  case'yillikPlanTanimlari':if(typeof yillikPlanTanimlari!=='undefined')yillikPlanTanimlari=v;break;
- }}catch(_){}}
+ }}catch(_){}} 
 function expose(n){try{const d=Object.getOwnPropertyDescriptor(window,n);if(d&&!d.configurable)return;Object.defineProperty(window,n,{configurable:true,enumerable:false,get:()=>get(n),set:v=>set(n,v)})}catch(_){}}
 let cached={};
 try{cached=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){cached={}}
-function applyCache(){NAMES.forEach(n=>{if(Array.isArray(cached[n])&&cached[n].length)set(n,cached[n])})}
-applyCache();NAMES.forEach(expose);window.KorukDashboardCache=cached;
-function snapshot(){const out={savedAt:Date.now()};NAMES.forEach(n=>{const v=get(n);if(Array.isArray(v))out[n]=v});return out}
-let saveTimer=null;
-function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{const out=snapshot();localStorage.setItem(KEY,JSON.stringify(out));window.KorukDashboardCache=out}catch(e){console.warn('[state] dashboard cache yazılamadı',e)}},100)}
+function applyCache(onlyEmpty){
+  NAMES.forEach(n=>{
+    if(!Array.isArray(cached[n])||!cached[n].length)return;
+    if(onlyEmpty&&get(n).length)return;
+    set(n,cached[n]);
+  });
+}
+applyCache(false);NAMES.forEach(expose);window.KorukDashboardCache=cached;
+function snapshotData(){const out={};NAMES.forEach(n=>{const v=get(n);if(Array.isArray(v))out[n]=v});return out}
+let saveTimer=null,lastSaved='';
+try{const c={...cached};delete c.savedAt;lastSaved=JSON.stringify(c)}catch(_){}
+function saveNow(){
+  try{
+    const data=snapshotData(),json=JSON.stringify(data);
+    if(json===lastSaved)return;
+    lastSaved=json;
+    const out={savedAt:Date.now(),...data};
+    localStorage.setItem(KEY,JSON.stringify(out));window.KorukDashboardCache=out;cached=out;
+  }catch(e){console.warn('[state] dashboard cache yazılamadı',e)}
+}
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,700)}
 let signalQueued=false,lastSource='';
-function signal(source){lastSource=source||'runtime';saveSoon();if(signalQueued)return;signalQueued=true;queueMicrotask(()=>{signalQueued=false;window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:lastSource}}));window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:lastSource}}))})}
-function wrap(name){const old=window[name];if(typeof old!=='function'||old.__korukStateWrapped)return false;const fn=function(){const r=old.apply(this,arguments);signal(name);return r};fn.__korukStateWrapped=true;window[name]=fn;return true}
+function signal(source){
+  lastSource=source||'runtime';saveSoon();
+  if(signalQueued)return;signalQueued=true;
+  queueMicrotask(()=>{signalQueued=false;window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:lastSource}}));window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:lastSource}}))});
+}
+function wrap(name){
+  const old=window[name];if(typeof old!=='function'||old.__korukStateWrapped)return false;
+  const fn=function(){const r=old.apply(this,arguments);signal(name);return r};fn.__korukStateWrapped=true;window[name]=fn;return true;
+}
 const RENDERS=['renderDashboard','renderDuyurular','renderDuyuruPanosu','renderDenemeSinavlari','renderSinavlar','renderSiniflar','renderOgrenciler','renderDersGrid','renderNobet','renderNobetler','renderGorevler','renderHatirlaticilar','renderEvrakTakibi','renderNotlar','renderHaberler','renderBugunIzinliOgretmenler','renderYillikPlanAnaSayfa'];
-let tries=0;const timer=setInterval(()=>{RENDERS.forEach(wrap);if(++tries>120)clearInterval(timer)},50);
-/* app.js'nin eski oyVeriOnbellek_v1 yüklemesi DOMContentLoaded sırasında
-   bazı ortak dizileri eski değerle değiştirebilir. app.js listener'ı daha önce
-   kaydedildiği için bu listener ondan sonra çalışır ve v2 cache'i yeniden uygular. */
-document.addEventListener('DOMContentLoaded',()=>{applyCache();signal('cache-reapply')});
-window.addEventListener('beforeunload',()=>{try{localStorage.setItem(KEY,JSON.stringify(snapshot()))}catch(_){}});
-window.KorukRuntimeState={get,set,snapshot,save:saveSoon,signal,applyCache};
+function wrapAll(){RENDERS.forEach(wrap)}
+[0,250,1000,3000,6500].forEach(ms=>setTimeout(wrapAll,ms));
+document.addEventListener('DOMContentLoaded',()=>{applyCache(true);wrapAll();signal('cache-reapply')},{once:true});
+window.addEventListener('koruk:data-updated',wrapAll,{passive:true});
+window.addEventListener('pagehide',saveNow,{passive:true});
+window.KorukRuntimeState={get,set,snapshot:()=>({savedAt:Date.now(),...snapshotData()}),save:saveSoon,signal,applyCache};
 queueMicrotask(()=>signal('cache-bootstrap'));
 })();
