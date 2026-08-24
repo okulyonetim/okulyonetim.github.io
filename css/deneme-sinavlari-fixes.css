@@ -1,0 +1,94 @@
+/* Koruk Asistan — Deneme Sınavları kontrast ve tema düzeltmeleri v1 */
+#tab-denemeSinavlari.dn-modern{
+  --dn-green:#0f8f68;--dn-green-2:#18aa7b;--dn-green-dark:#07533e;
+  --dn-bg:#f3f8f6;--dn-card:#ffffff;--dn-card-2:#eef6f2;
+  --dn-text:#16241f;--dn-muted:#61736b;--dn-line:#cddbd5;--dn-info:#276d86;
+  color:var(--dn-text)!important;
+}
+html[data-theme="dark"] #tab-denemeSinavlari.dn-modern{
+  --dn-green:#39d4a0;--dn-green-2:#22b987;--dn-green-dark:#0a4d39;
+  --dn-bg:#080d0f;--dn-card:#10191a;--dn-card-2:#142220;
+  --dn-text:#f4faf7;--dn-muted:#aebdb7;--dn-line:#2b4039;--dn-info:#79c8e2;
+}
+#tab-denemeSinavlari.dn-modern>.page-header{background:linear-gradient(145deg,#07533e,#0d7355)!important;border-color:#2a8066!important;box-shadow:0 12px 30px rgba(5,65,47,.18)!important}
+#tab-denemeSinavlari.dn-modern>.page-header:after{background:linear-gradient(145deg,rgba(82,223,170,.22),rgba(255,255,255,.05))!important}
+#tab-denemeSinavlari.dn-modern>.page-header .page-title{color:#fff!important}
+#tab-denemeSinavlari.dn-modern>.page-header .page-sub{color:#d7eee6!important}
+#tab-denemeSinavlari.dn-modern .dn-stat{background:var(--dn-card)!important;border-color:var(--dn-line)!important;box-shadow:none!important}
+#tab-denemeSinavlari.dn-modern .dn-stat b{color:var(--dn-text)!important}
+#tab-denemeSinavlari.dn-modern .dn-stat span{color:var(--dn-muted)!important}
+#tab-denemeSinavlari.dn-modern .dn-toolbar .btn-amber,#tab-denemeSinavlari.dn-modern .dn-toolbar .btn-primary{background:linear-gradient(135deg,#0c8f66,#12a879)!important;border-color:#27b88b!important;color:#fff!important;text-shadow:none!important}
+#tab-denemeSinavlari.dn-modern .dn-toolbar .btn-ghost{background:var(--dn-card)!important;color:var(--dn-text)!important;border-color:var(--dn-line)!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .dn-kart{background:var(--dn-card)!important;border-color:var(--dn-line)!important;color:var(--dn-text)!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .dn-kart:before{background:var(--dn-card-2)!important;border-color:var(--dn-line)!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .dn-kart--bugun{background:linear-gradient(145deg,var(--dn-card),color-mix(in srgb,var(--dn-green) 7%,var(--dn-card)))!important;border-color:color-mix(in srgb,var(--dn-green) 58%,var(--dn-line))!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .dn-kart--aktif{border-color:var(--dn-green)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--dn-green) 14%,transparent)!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .evrak-title,#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .evrak-body strong{color:var(--dn-text)!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .evrak-body div[style*="var(--ink-soft)"]{color:var(--dn-muted)!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .badge-blue{background:color-mix(in srgb,var(--dn-green) 14%,var(--dn-card))!important;border:1px solid color-mix(in srgb,var(--dn-green) 46%,var(--dn-line))!important;color:var(--dn-green)!important}
+#tab-denemeSinavlari.dn-modern #denemeSinavlariListesi .btn-ghost{background:var(--dn-card-2)!important;color:var(--dn-green)!important;border-color:color-mix(in srgb,var(--dn-green) 44%,var(--dn-line))!important}
+
+/* Deneme ekle / düzenle modalı */
+#modalOverlay.dn-exam-overlay .dn-exam-modal{background:#f4f8f6!important;border-color:#c9d9d2!important}
+#modalOverlay.dn-exam-overlay .dn-exam-modal .modal-header,#modalOverlay.dn-exam-overlay .dn-exam-modal>h3{background:linear-gradient(135deg,#07533e,#0d7757)!important;color:#fff!important}
+#modalOverlay.dn-exam-overlay .dn-exam-modal #modalTitle,#modalOverlay.dn-exam-overlay .dn-exam-modal .modal-title{color:#fff!important}
+#modalOverlay.dn-exam-overlay .dn-exam-body,#modalOverlay.dn-exam-overlay .dn-exam-modal .modal-body,#modalOverlay.dn-exam-overlay #modalBody{background:#f4f8f6!important;color:#17251f!important}
+#modalOverlay.dn-exam-overlay .dn-intro{background:#e7f4ee!important;border-color:#badbcd!important}
+#modalOverlay.dn-exam-overlay .dn-intro-icon{background:linear-gradient(145deg,#0c8d66,#18aa7b)!important}
+#modalOverlay.dn-exam-overlay .dn-intro strong{color:#163126!important}
+#modalOverlay.dn-exam-overlay .dn-intro span{color:#50675e!important}
+#modalOverlay.dn-exam-overlay .dn-form-group{background:#fff!important;border-color:#cbdad4!important}
+#modalOverlay.dn-exam-overlay .dn-form-group:before{background:#11946c!important}
+#modalOverlay.dn-exam-overlay .dn-form-group[data-dn-tone="emerald"]:before{background:#0f986d!important}
+#modalOverlay.dn-exam-overlay .dn-form-group[data-dn-tone="teal"]:before{background:#178f85!important}
+#modalOverlay.dn-exam-overlay .dn-form-group[data-dn-tone="cyan"]:before{background:#2483a0!important}
+#modalOverlay.dn-exam-overlay .dn-form-group[data-dn-tone="amber"]:before{background:#c98716!important}
+#modalOverlay.dn-exam-overlay .dn-form-group>label{color:#334c42!important}
+#modalOverlay.dn-exam-overlay .dn-form-group input:not([type=checkbox]),#modalOverlay.dn-exam-overlay .dn-form-group select,#modalOverlay.dn-exam-overlay .dn-form-group textarea{background:#f8fbfa!important;border-color:#bfcfc8!important;color:#14251e!important}
+#modalOverlay.dn-exam-overlay .dn-form-group input:disabled{background:#e8efec!important;color:#4f6259!important;border-color:#c4d1cc!important}
+#modalOverlay.dn-exam-overlay .dn-class-chip{background:#f8fbfa!important;border-color:#c8d6d0!important;color:#344c42!important}
+#modalOverlay.dn-exam-overlay .dn-class-chip:has(input:checked){background:#dff3ea!important;border-color:#64b99a!important;color:#075d43!important}
+#modalOverlay.dn-exam-overlay .dn-class-chip input[type="checkbox"]{accent-color:#0d9c70!important}
+#modalOverlay.dn-exam-overlay .modal-actions{background:#fff!important;border-top-color:#cbdad4!important}
+#modalOverlay.dn-exam-overlay #modalKaydetBtn{background:#118d68!important;border-color:#118d68!important;color:#fff!important;font-weight:850!important}
+#modalOverlay.dn-exam-overlay .modal-actions .btn-ghost{background:#eef3f1!important;border-color:#cad7d2!important;color:#20332b!important}
+#modalOverlay.dn-exam-overlay #modalSilBtn{color:#fff!important;font-weight:850!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-exam-modal{background:#0b1213!important;border-color:#2b4039!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-exam-body,html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-exam-modal .modal-body,html[data-theme="dark"] #modalOverlay.dn-exam-overlay #modalBody{background:#0b1213!important;color:#f3faf7!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-intro{background:#10251f!important;border-color:#31584a!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-intro strong{color:#f4faf7!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-intro span{color:#b2c6be!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-form-group{background:#111b1a!important;border-color:#30443d!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-form-group>label{color:#dce8e3!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-form-group input:not([type=checkbox]),html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-form-group select,html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-form-group textarea{background:#0d1517!important;border-color:#354942!important;color:#f5faf8!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-form-group input:disabled{background:#16201f!important;border-color:#354942!important;color:#d3dfda!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-class-chip{background:#121d1d!important;border-color:#344840!important;color:#dce8e3!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .dn-class-chip:has(input:checked){background:#0d5b43!important;border-color:#36b889!important;color:#fff!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .modal-actions{background:#0d1516!important;border-top-color:#2b4039!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay .modal-actions .btn-ghost{background:#151e20!important;border-color:#33443f!important;color:#f0f6f3!important}
+html[data-theme="dark"] #modalOverlay.dn-exam-overlay #modalKaydetBtn{background:#2bc18d!important;border-color:#2bc18d!important;color:#06291d!important}
+
+/* Sayaç detayı: zümrüt tema ve yüksek kontrast */
+#denemeSayacOv.dn-ov{background:radial-gradient(circle at 50% 0%,#103a30 0%,#091311 46%,#060b0c 100%)!important}
+#denemeSayacOv .dn-ov-ust{background:rgba(7,20,17,.94)!important;border-bottom-color:#24463b!important}
+#denemeSayacOv .dn-ov-geri{background:#10201c!important;border-color:#36594c!important;color:#fff!important}
+#denemeSayacOv .dn-ov-baslik{color:#fff!important}
+#denemeSayacOv .dn-sayac-btn--basla{background:#15966d!important;border-color:#2db589!important;color:#fff!important}
+#denemeSayacOv .dn-sayac-btn--durdur{background:#6b4b13!important;border-color:#a77a25!important;color:#fff3cf!important}
+#denemeSayacOv .dn-ov-ana,#denemeSayacOv .dn-ov-panel{background:#0d1816!important;border-color:#29473d!important}
+#denemeSayacOv .dn-ov-info-kart{background:#0a1212!important;border-color:#29473d!important}
+#denemeSayacOv .dn-ov-info-etiket,#denemeSayacOv .dn-ov-panel-baslik{color:#aabbb4!important}
+#denemeSayacOv .dn-ov-info-deger,#denemeSayacOv .dn-ov-takvim-ad{color:#f6fbf9!important}
+#denemeSayacOv .dn-ov-takvim-saat{color:#aebeb8!important}
+#denemeSayacOv .dn-ov-takvim-no{background:#123d31!important;color:#7ee2ba!important}
+#denemeSayacOv .dn-ov-takvim-badge{background:#15231f!important;color:#c9d8d2!important}
+#denemeSayacOv .dn4-progress{background:#203a32!important}
+#denemeSayacOv .dn4-progress>i{background:linear-gradient(90deg,#28c28e,#58d8ac)!important}
+#denemeSayacOv .dn4-live-head span,#denemeSayacOv .dn4-live-head small{color:#b9cbc4!important}
+#denemeSayacOv .dn4-live-head b{color:#fff!important}
+@media(max-width:520px){
+  #modalOverlay.dn-exam-overlay .dn-exam-modal{width:calc(100vw - 20px)!important;max-height:calc(100dvh - 28px)!important}
+  #modalOverlay.dn-exam-overlay .dn-form-row{grid-template-columns:1fr!important}
+  #modalOverlay.dn-exam-overlay #f_dnSinflarKutu{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #tab-denemeSinavlari.dn-modern{padding-left:10px!important;padding-right:10px!important}
+}
