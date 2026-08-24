@@ -774,7 +774,7 @@ function raporDersProgrami() {
   const alanlarHtml = `
     <div style="margin-bottom: 14px;">
       <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #374151;">Sınıf Seçin:</label>
-      <select id="sinifSec" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 13px;">
+      <select id="dersProgramiSinifSec" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 13px;">
         <option value="">— Tüm Sınıflar —</option>
         ${siniflarHtml}
       </select>
@@ -782,7 +782,8 @@ function raporDersProgrami() {
   `;
 
   _raporModalAc('📅 Ders Programı', alanlarHtml, () => {
-    const sinifId = document.getElementById('sinifSec').value;
+    const secim = document.getElementById('dersProgramiSinifSec');
+    const sinifId = secim ? String(secim.value || '').trim() : '';
     modalKapat();
     _raporDersProgramiGoster(sinifId || null);
   });
