@@ -35,6 +35,8 @@ stilYukle('css/kullanici-yonetimi-modern.css?v=1','kullanici-yonetimi-modern-css
 scriptYukle('js/kullanici-yonetimi-modern.js?v=1','kullanici-yonetimi-modern-js');
 stilYukle('css/veri-modern.css?v=1','veri-modern-css');
 scriptYukle('js/veri-modern.js?v=1','veri-modern-js');
+stilYukle('css/istatistikler-modern.css?v=1','istatistikler-modern-css');
+scriptYukle('js/istatistikler-modern.js?v=1','istatistikler-modern-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
 const mobil=window.matchMedia('(max-width:1023px)').matches;let basladi=false;
 function kullaniciHazir(){return !!gv('AKTIF_KULLANICI')}
