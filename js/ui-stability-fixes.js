@@ -21,9 +21,9 @@ scriptYukle('js/app-pages-theme.js?v=3','app-pages-theme-js');
 /* Çizelge modern katmanları artık yalnız Service Worker HTML enjeksiyonuna bağlı değil.
    ui-stability-fixes.js index.html'den her açılışta yüklendiği için, mevcut WebView
    dokümanı eski shell ile açılmış olsa bile bu dosyalar güvenilir biçimde devreye girer. */
-stilYukle('css/sosyal-kulupler-modern.css?v=3','sosyal-kulupler-modern-css');
+stilYukle('css/sosyal-kulupler-modern.css?v=4','sosyal-kulupler-modern-css');
 scriptYukle('js/sosyal-kulupler-modern.js?v=2','sosyal-kulupler-modern-js');
-stilYukle('css/belirli-gunler-modern.css?v=2','belirli-gunler-modern-css');
+stilYukle('css/belirli-gunler-modern.css?v=3','belirli-gunler-modern-css');
 scriptYukle('js/belirli-gunler-local-first.js?v=2','belirli-gunler-local-first-js');
 scriptYukle('js/belirli-gunler-modern.js?v=2','belirli-gunler-modern-js');
 try{localStorage.removeItem('oyGorunum')}catch(_){}document.documentElement.removeAttribute('data-skin');
