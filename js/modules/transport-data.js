@@ -1,103 +1,73 @@
 /* Koruk Asistan — Transport veri katmanı
  * Taşıma + servis oturma + sınıf oturma repository/service birleşimi.
- * Mevcut local-first cache anahtarları ve global API adları korunur.
+ * Veri akışı: DeviceData/IndexedDB -> AppStore -> UI; Firestore yalnız queue/sync arka planındadır.
  */
-
 (function(global){
 'use strict';
-const CACHE_KEY='oy_tasima_servisler_local_v1';
-function oku(){try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');return Array.isArray(x)?x:[];}catch(_){return[];}}
-function yaz(v){try{localStorage.setItem(CACHE_KEY,JSON.stringify(Array.isArray(v)?v:[]));}catch(_){}}
-function imza(v){try{return JSON.stringify(v);}catch(_){return String(Date.now());}}
+
+function device(){
+  if(!global.DeviceData) throw new Error('DeviceData hazır değil.');
+  return global.DeviceData;
+}
+function localDoc(type,id){return device().get(type,id)}
+function fakeDoc(row,id){return{exists:!!row,id:id||row?.id||'',data:()=>row?{...row}:undefined}}
+function fakeQuery(rows){const docs=(rows||[]).map(r=>({id:r.id,data:()=>({...r})}));return{empty:docs.length===0,size:docs.length,docs}}
+
 const TasimaRepository={
-  servisleriDinle(callback,hataCb){
-    const ref=db.collection(COL.servisler);let son='';
-    const yayinla=(v,kaynak)=>{const arr=Array.isArray(v)?v:[];const i=imza(arr);if(i===son)return;son=i;callback(arr,{source:kaynak});};
-    const yerel=oku();if(yerel.length)yayinla(yerel,'local');
-    try{ref.get({source:'cache'}).then(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));if(a.length||!yerel.length){yaz(a);yayinla(a,'firestore-cache');}}).catch(()=>{});}catch(_){}
-    return ref.onSnapshot(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));yaz(a);yayinla(a,s.metadata?.fromCache?'firestore-cache':'firestore');},hataCb||(typeof hataGoster==='function'?hataGoster:console.error));
-  },
-  servisEkle(veri){return db.collection(COL.servisler).add({...veri,eklenmeTarihi:new Date().toISOString()});},
-  servisGuncelle(id,veri){yaz(oku().map(x=>x.id===id?{...x,...veri}:x));return db.collection(COL.servisler).doc(id).update(veri);},
-  servisSil(id){yaz(oku().filter(x=>x.id!==id));return db.collection(COL.servisler).doc(id).delete();}
+  servisleriDinle(callback){return device().listen('servisler',callback);},
+  servisEkle(veri){return device().add('servisler',COL.servisler,{...veri,eklenmeTarihi:new Date().toISOString()});},
+  servisGuncelle(id,veri){return device().update('servisler',COL.servisler,id,veri);},
+  servisSil(id){return device().remove('servisler',COL.servisler,id);}
 };
 global.TasimaRepository=TasimaRepository;
-})(window);
 
-const TasimaService = {
-  _yetkiKontrol(){
-    if(!duzenleyebilir('tasima')){ toast('Bu işlem için yetkiniz yok.'); return false; }
-    return true;
+const TasimaService={
+  _yetkiKontrol(){if(!duzenleyebilir('tasima')){toast('Bu işlem için yetkiniz yok.');return false;}return true;},
+  servisKaydet(mevcutId,veri){
+    if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));
+    return mevcutId?TasimaRepository.servisGuncelle(mevcutId,veri):TasimaRepository.servisEkle(veri);
   },
-  servisKaydet(mevcutId, veri){
-    if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
-    return mevcutId ? window.TasimaRepository.servisGuncelle(mevcutId, veri) : window.TasimaRepository.servisEkle(veri);
-  },
-  servisSil(id){
-    if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
-    return window.TasimaRepository.servisSil(id);
-  },
-  ogrencileriServiseAta(ogrenciIdListesi, servisId, servisAdi){
-    if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
-    return Promise.all(ogrenciIdListesi.map(vId => SiniflarRepository.veliGuncelle(vId, { servisId, servisAdi })));
+  servisSil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));return TasimaRepository.servisSil(id);},
+  ogrencileriServiseAta(ogrenciIdListesi,servisId,servisAdi){
+    if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));
+    return Promise.all((ogrenciIdListesi||[]).map(id=>device().update('veliler',COL.veliler,id,{servisId,servisAdi})));
   }
 };
+global.TasimaService=TasimaService;
 
-(function(global){
-'use strict';
-const CACHE_KEY='oy_servis_oturma_local_v1';
-function oku(){try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');return Array.isArray(x)?x:[];}catch(_){return[];}}
-function yaz(v){try{localStorage.setItem(CACHE_KEY,JSON.stringify(Array.isArray(v)?v:[]));}catch(_){}}
 const ServisOturmaRepository={
-  planlariDinle(callback,hataCb){
-    const ref=db.collection(COL.servisOturma);let son='';
-    const yayin=(a,k)=>{let i='';try{i=JSON.stringify(a)}catch(_){i=String(Date.now())}if(i===son)return;son=i;callback(a,{source:k});};
-    const yerel=oku();if(yerel.length)yayin(yerel,'local');
-    try{ref.get({source:'cache'}).then(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));if(a.length||!yerel.length){yaz(a);yayin(a,'firestore-cache');}}).catch(()=>{});}catch(_){}
-    return ref.onSnapshot(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));yaz(a);yayin(a,s.metadata?.fromCache?'firestore-cache':'firestore');},hataCb||(e=>console.warn('servisOturma:',e)));
-  },
-  planKaydet(servisId,veri,merge){const a=oku();const ix=a.findIndex(x=>x.id===servisId);const nv={id:servisId,...(merge&&ix>=0?a[ix]:{}),...veri};if(ix>=0)a[ix]=nv;else a.push(nv);yaz(a);return db.collection(COL.servisOturma).doc(servisId).set(veri,{merge:!!merge});},
-  planGuncelle(servisId,kismiVeri){yaz(oku().map(x=>x.id===servisId?{...x,...kismiVeri}:x));return db.collection(COL.servisOturma).doc(servisId).update(kismiVeri);},
-  planServisIdIleGetir(servisId){return db.collection(COL.servisOturma).where('servisId','==',servisId).get({source:'cache'}).catch(()=>db.collection(COL.servisOturma).where('servisId','==',servisId).get());}
+  planlariDinle(callback){return device().listen('servisOturma',callback);},
+  planKaydet(servisId,veri,merge){return device().set('servisOturma',COL.servisOturma,servisId,{servisId,...veri},{merge:!!merge});},
+  planGuncelle(servisId,kismiVeri){return device().update('servisOturma',COL.servisOturma,servisId,kismiVeri);},
+  planServisIdIleGetir(servisId){
+    const rows=device().list('servisOturma').filter(x=>x?.servisId===servisId||x?.id===servisId);
+    return Promise.resolve(fakeQuery(rows));
+  }
 };
 global.ServisOturmaRepository=ServisOturmaRepository;
+
+const ServisOturmaService={
+  _yetkiKontrol(){if(!duzenleyebilir('tasima')){toast('Bu işlem için yetkiniz yok.');return false;}return true;},
+  planKaydet(servisId,veri,merge){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));return ServisOturmaRepository.planKaydet(servisId,veri,merge);},
+  planGuncelle(servisId,kismiVeri){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));return ServisOturmaRepository.planGuncelle(servisId,kismiVeri);}
+};
+global.ServisOturmaService=ServisOturmaService;
+
+const SinifOturmaRepository={
+  planGetir(sinifId){return Promise.resolve(fakeDoc(localDoc('sinifOturma',sinifId),sinifId));},
+  planDinle(sinifId,callback){
+    const yayinla=()=>{const row=localDoc('sinifOturma',sinifId);callback(row?{id:sinifId,...row}:null,{source:'device'});};
+    yayinla();return AppStore.subscribe('data.sinifOturma',yayinla);
+  },
+  planKaydet(sinifId,veri){return device().set('sinifOturma',COL.sinifOturma,sinifId,{sinifId,...veri},{merge:false});}
+};
+global.SinifOturmaRepository=SinifOturmaRepository;
+
+const SinifOturmaService={
+  _yetkiKontrol(){if(!duzenleyebilir('siniflar')){toast('Bu işlem için yetkiniz yok.');return false;}return true;},
+  planGetir(sinifId){return SinifOturmaRepository.planGetir(sinifId);},
+  planDinle(sinifId,callback,hataCb){try{return SinifOturmaRepository.planDinle(sinifId,callback);}catch(e){hataCb?.(e);return()=>{};}},
+  planKaydet(sinifId,veri){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));return SinifOturmaRepository.planKaydet(sinifId,veri);}
+};
+global.SinifOturmaService=SinifOturmaService;
 })(window);
-
-const ServisOturmaService = {
-  _yetkiKontrol(){
-    if(!duzenleyebilir('tasima')){ toast('Bu işlem için yetkiniz yok.'); return false; }
-    return true;
-  },
-  planKaydet(servisId, veri, merge){
-    if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
-    return window.ServisOturmaRepository.planKaydet(servisId, veri, merge);
-  },
-  planGuncelle(servisId, kismiVeri){
-    if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
-    return window.ServisOturmaRepository.planGuncelle(servisId, kismiVeri);
-  }
-};
-
-const SinifOturmaRepository = {
-  planGetir(sinifId){ return db.collection(COL.sinifOturma).doc(sinifId).get(); },
-  planDinle(sinifId, callback, hataCb){
-    return db.collection(COL.sinifOturma).doc(sinifId).onSnapshot(
-      d => callback(d.exists ? { id: d.id, ...d.data() } : null),
-      hataCb || (err => console.warn('sinifOturma:', err))
-    );
-  },
-  planKaydet(sinifId, veri){ return db.collection(COL.sinifOturma).doc(sinifId).set(veri, { merge: false }); }
-};
-
-const SinifOturmaService = {
-  _yetkiKontrol(){
-    if(!duzenleyebilir('siniflar')){ toast('Bu işlem için yetkiniz yok.'); return false; }
-    return true;
-  },
-  planGetir(sinifId){ return SinifOturmaRepository.planGetir(sinifId); },
-  planDinle(sinifId, callback, hataCb){ return SinifOturmaRepository.planDinle(sinifId, callback, hataCb); },
-  planKaydet(sinifId, veri){
-    if(!this._yetkiKontrol()) return Promise.reject(new Error('yetkisiz'));
-    return SinifOturmaRepository.planKaydet(sinifId, veri);
-  }
-};
