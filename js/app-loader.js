@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v20
+/* Koruk Asistan — AppLoader v21
    Başlangıçta yalnız çekirdek yüklenir; özellikler ihtiyaç anında data + tek UI modülü olarak gelir.
    Uygulama başlangıcının tek sahibi: tema + Firebase init + auth listener + Service Worker. */
 (function(){
@@ -22,6 +22,7 @@ define('management',['js/modules/duty-data.js','js/modules/management-data.js','
 define('communication',['js/modules/settings-data.js','js/modules/messaging-data.js','js/modules/communication-data.js','js/modules/communication.js']);
 define('transport',['js/modules/people-data.js','js/modules/transport-data.js','js/modules/transport.js']);
 define('documents',['js/modules/settings-data.js','js/modules/documents-data.js','js/modules/documents.js']);
+define('tools',['js/modules/tools-data.js','js/modules/tools.js']);
 define('settings',['js/modules/settings-data.js','js/modules/settings.js']);
 
 function updateThemeChrome(){const meta=document.querySelector('meta[name="theme-color"]');if(meta){const color=getComputedStyle(document.documentElement).getPropertyValue('--ka-header-bg').trim();if(color)meta.setAttribute('content',color)}document.querySelectorAll('[data-ka-theme-toggle]').forEach(btn=>{const dark=document.documentElement.getAttribute('data-theme')==='dark';btn.textContent=dark?'☀️':'🌙';btn.setAttribute('aria-label',dark?'Açık temaya geç':'Koyu temaya geç');btn.title=dark?'Açık temaya geç':'Koyu temaya geç'})}
