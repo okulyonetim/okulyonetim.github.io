@@ -35,7 +35,7 @@ define('management',['js/core/repositories/takvim.repository.js','js/core/reposi
 define('communication',['js/core/repositories/takvim.repository.js','js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js','js/modules/communication-data.js','js/mesajlasma.js','js/duyurular.js','js/anket.js','js/haberler.js','js/takvim.js','js/notlar.js']);
 define('transport',['js/modules/people-data.js','js/modules/transport-data.js','js/tasima.js','js/servis-oturma.js','js/sinif-oturma.js','js/tasima-takip.js','js/servis-denetim.js']);
 define('documents',['js/modules/documents-data.js','js/dokumanlar.js','js/dokuman-okuyucu.js','js/raporlama.js','js/report-header-unifier.js','js/native-report-preview.js']);
-define('settings',['js/kullanici-yonetimi.js','js/depolama-sinirlari.js','js/nav-duzeni-editor.js','js/role-ui-hardening.js']);
+define('settings',['js/modules/settings-data.js','js/kullanici-yonetimi.js','js/depolama-sinirlari.js','js/nav-duzeni-editor.js','js/role-ui-hardening.js']);
 
 function syncAuthVisibility(){
   const login=document.getElementById('girisEkrani');
