@@ -4,20 +4,18 @@ const sw = fs.readFileSync('service-worker.js', 'utf8');
 
 assert(/const CACHE_ADI\s*=\s*'oy-cache-v\d+'/.test(sw), 'Service Worker sürümlü cache anahtarı kullanmalı.');
 
-/* Koruk Asistan v2: İlk kurulumda yalnız gerçek uygulama kabuğu tutulur.
-   Sayfa/modül yamaları ve ağır bağımlılıklar precache listesine dönmemeli. */
+/* Koruk Asistan v2: başlangıç kabuğu tek design system + tek core üzerinden çalışır. */
 for (const f of [
   './index.html',
+  './app-v2.html',
   './manifest.json',
   './css/design-system.css',
-  './css/styles.css',
   './js/firebase-init.js',
+  './js/core/core.js',
   './js/auth.js',
-  './js/app.js',
-  './js/ui.js',
-  './js/core/local-first-sync.js'
+  './js/app-loader.js'
 ]) {
-  assert(sw.includes(`'${f}'`), `${f} çekirdek precache içinde kalmalı.`);
+  assert(sw.includes(`'${f}'`), `${f} v2 çekirdek precache içinde kalmalı.`);
 }
 
 const liste = sw.slice(
@@ -30,6 +28,9 @@ for (const eski of [
   './optik/js/app.js',
   './optik/js/opencv.js',
   './js/omrEngine.js',
+  './js/core/local-first-sync.js',
+  './js/core/sync-engine.js',
+  './js/core/app-bootstrap.js',
   './css/web-shell-fix.css',
   './css/web-sidebar-v2.css',
   './css/dashboard-yeni.css',
