@@ -14,7 +14,7 @@ const apiContracts={
  'people-data':['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService'],
  'academic-data':['SinavlarRepository','SinavlarService','YillikPlanRepository','YillikPlanService','DersSaatleriRepository','DersSaatleriService','AkademikTakvimRepository','AkademikTakvimService','DenemeSonuclariService','TestSonuclariService'],
  'management-data':['PersonelRepository','PersonelService','PeriyodikRepository','PeriyodikService','OgretmenIzinRepository','OgretmenIzinService'],
- 'communication-data':['TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','PushRepository','PushService','HaberlerRepository','HaberlerService'],
+ 'communication-data':['TakvimRepository','TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','PushRepository','PushService','HaberlerRepository','HaberlerService'],
  'transport-data':['TasimaRepository','TasimaService','ServisOturmaRepository','ServisOturmaService','SinifOturmaRepository','SinifOturmaService'],
  'documents-data':['DokumanlarRepository','DokumanlarService'],
  'settings-data':['KullaniciYonetimiRepository','KullaniciYonetimiService','DepolamaSinirService']
@@ -31,16 +31,18 @@ for(const bundle of ['academic','management','communication','transport','docume
   assert(source[bundle].includes('localHydrate'),`${bundle}.js önce cihaz cache'ini hydrate etmeli.`);
 }
 
-/* Merkezi cihaz-verisi API'si: UI/data modülleri yazmada Firestore beklememeli. */
+/* Merkezi cihaz-verisi API'si: data modülleri Firestore'u doğrudan beklememeli. */
 for(const api of ['window.DeviceData','deviceAdd','deviceUpdate','deviceSet','deviceRemove']) assert(core.includes(api),`Core ${api} sözleşmesini içermeli.`);
 assert(core.includes("queue(uid(),{kind:'set-doc'"),'DeviceData yazmaları mevcut offline queue kullanmalı.');
 assert(core.includes("tombstone(u,type,id,true)"),'DeviceData silmede tombstone kullanmalı.');
-for(const bundle of ['people-data','academic-data','management-data','transport-data','settings-data']){
+for(const bundle of ['people-data','academic-data','management-data','communication-data','transport-data','documents-data','settings-data']){
   for(const forbidden of ['localStorage','onSnapshot','db.collection']) assert(!source[bundle].includes(forbidden),`${bundle} doğrudan ${forbidden} kullanmamalı.`);
   assert(source[bundle].includes('DeviceData'),`${bundle} merkezi DeviceData kullanmalı.`);
 }
-/* Akademik dosya binary Storage kullanabilir, ancak Firestore metadata yazamaz. */
+/* Binary dosya transferleri Storage üzerinden kalabilir; metadata Firestore CRUD yapamaz. */
 assert(source['academic-data'].includes('storage.ref()'),'Academic takvim binary dosyası Storage üzerinden yönetilmeli.');
+assert(source['documents-data'].includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
+assert(source['communication-data'].includes('storage.ref()'),'Duyuru görselleri Storage üzerinden yönetilmeli.');
 
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
 assert(registry('dashboard').includes("'js/modules/dashboard.js'"),'Dashboard yalnız temiz V2 UI yüklemeli.');
@@ -53,6 +55,7 @@ assert(registry('management').includes("'js/modules/management.js'"),'Management
 assert(!registry('management').includes('takvim.repository.js'),'Management hatırlatıcı için ayrı TakvimRepository yüklememeli.');
 for(const legacy of ['js/nobet.js','js/periyodik.js','js/personel.js','js/dilekce.js','js/puantaj.js','js/ogretmen-izin.js']) assert(!registry('management').includes(`'${legacy}'`),`Management legacy dosyayı yüklememeli: ${legacy}`);
 assert(registry('communication').includes("'js/modules/communication.js'"),'Communication tek temiz UI yüklemeli.');
+assert(!registry('communication').includes('takvim.repository.js'),'Communication TakvimRepository ayrı dosya yüklememeli.');
 for(const legacy of ['js/mesajlasma.js','js/duyurular.js','js/anket.js','js/haberler.js','js/takvim.js','js/notlar.js']) assert(!registry('communication').includes(`'${legacy}'`),`Communication legacy dosyayı yüklememeli: ${legacy}`);
 assert(registry('transport').includes("'js/modules/transport.js'"),'Transport tek temiz UI yüklemeli.');
 for(const legacy of ['js/tasima.js','js/servis-oturma.js','js/sinif-oturma.js','js/tasima-takip.js','js/servis-denetim.js']) assert(!registry('transport').includes(`'${legacy}'`),`Transport legacy dosyayı yüklememeli: ${legacy}`);
