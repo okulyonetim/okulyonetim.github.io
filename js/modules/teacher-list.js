@@ -10,6 +10,19 @@ const teacherId=()=>user().bagliOgretmenId||user().ogretmenId||'';
 const own=(row,id)=>!!row&&!!id&&row.ogretmenId===id;
 const safeClass=v=>String(v||'').trim();
 const templateId=(ogretmenId,sinif)=>`${ogretmenId}__${safeClass(sinif)}`.replace(/[^\w\-]/g,'_');
+let preparedFor='';
+
+async function prepare(){
+  const tid=teacherId();
+  if(!tid||!global.SyncEngine||!global.COL?.ogretmenListeSablon||!global.COL?.ogretmenListeKayit)return false;
+  if(preparedFor===tid)return true;
+  preparedFor=tid;
+  SyncEngine.register('ogretmenListeSablon',COL.ogretmenListeSablon,{query:q=>q.where('ogretmenId','==',tid)});
+  SyncEngine.register('ogretmenListeKayit',COL.ogretmenListeKayit,{query:q=>q.where('ogretmenId','==',tid)});
+  await SyncEngine.localHydrate(['ogretmenListeSablon','ogretmenListeKayit']);
+  SyncEngine.schedule(100);
+  return true;
+}
 
 const OgretmenListeRepository={
   sablonId:templateId,
@@ -24,13 +37,16 @@ const OgretmenListeRepository={
 
 global.OgretmenListeRepository=OgretmenListeRepository;
 global.OgretmenListeService={
+  prepare,
   ogretmenId:teacherId,
   sablonId:templateId,
-  sablonGetir(sinif){const id=teacherId();if(!id)return Promise.resolve(null);return OgretmenListeRepository.sablonGetir(id,sinif);},
-  sablonKaydet(sinif,veri){const id=teacherId();if(!id)return Promise.reject(new Error('ogretmen-bagli-degil'));return OgretmenListeRepository.sablonKaydet(id,sinif,veri);},
-  kayitlariDinle(sinif,cb){const id=teacherId();if(!id){cb([]);return()=>{};}return OgretmenListeRepository.kayitlariDinle(id,sinif,cb);},
-  kayitlariGetir(sinif){const id=teacherId();if(!id)return Promise.resolve([]);return OgretmenListeRepository.kayitlariGetir(id,sinif);},
-  kayitKaydet(sinif,mevcutId,veri){const id=teacherId();if(!id)return Promise.reject(new Error('ogretmen-bagli-degil'));return mevcutId?OgretmenListeRepository.kayitGuncelle(mevcutId,id,{...veri,sinif:safeClass(sinif)}):OgretmenListeRepository.kayitEkle(id,sinif,veri);},
-  kayitSil(id){const tid=teacherId();if(!tid)return Promise.reject(new Error('ogretmen-bagli-degil'));return OgretmenListeRepository.kayitSil(id,tid);}
+  async sablonGetir(sinif){await prepare();const id=teacherId();if(!id)return null;return OgretmenListeRepository.sablonGetir(id,sinif);},
+  async sablonKaydet(sinif,veri){await prepare();const id=teacherId();if(!id)throw new Error('ogretmen-bagli-degil');return OgretmenListeRepository.sablonKaydet(id,sinif,veri);},
+  kayitlariDinle(sinif,cb){const id=teacherId();if(!id){cb([]);return()=>{};}prepare().catch(e=>console.warn('[OgretmenListe]',e?.message||e));return OgretmenListeRepository.kayitlariDinle(id,sinif,cb);},
+  async kayitlariGetir(sinif){await prepare();const id=teacherId();if(!id)return[];return OgretmenListeRepository.kayitlariGetir(id,sinif);},
+  async kayitKaydet(sinif,mevcutId,veri){await prepare();const id=teacherId();if(!id)throw new Error('ogretmen-bagli-degil');return mevcutId?OgretmenListeRepository.kayitGuncelle(mevcutId,id,{...veri,sinif:safeClass(sinif)}):OgretmenListeRepository.kayitEkle(id,sinif,veri);},
+  async kayitSil(id){await prepare();const tid=teacherId();if(!tid)throw new Error('ogretmen-bagli-degil');return OgretmenListeRepository.kayitSil(id,tid);}
 };
+
+global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='tools')prepare().catch(err=>console.warn('[OgretmenListe/prepare]',err?.message||err));});
 })(window);
