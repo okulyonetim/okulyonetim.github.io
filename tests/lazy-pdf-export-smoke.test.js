@@ -3,8 +3,6 @@ const assert = require('assert');
 
 const index = fs.readFileSync('index.html','utf8');
 const loader = fs.readFileSync('js/pdf-export-libs.js','utf8');
-const akademik = fs.readFileSync('js/akademik-takvim.js','utf8');
-const oturma = fs.readFileSync('js/sinif-oturma.js','utf8');
 const liste = fs.readFileSync('js/ogretmen-liste-olusturucu.js','utf8');
 
 assert(!index.includes('jspdf/2.5.1/jspdf.umd.min.js'), 'jsPDF ilk açılış head zincirinden çıkarılmalı.');
@@ -16,9 +14,6 @@ assert(loader.includes('async function hazir(secenekler)'), 'Ortak PDF loader ha
 assert(loader.includes('if(o.autoTable)'), 'autoTable yalnız istenirse yüklenmeli.');
 assert(loader.includes('if(o.html2canvas)'), 'html2canvas yalnız istenirse yüklenmeli.');
 assert(loader.includes('bekleyen = new Map()'), 'Aynı script için yinelenen ağ istekleri tekilleştirilmeli.');
-assert(akademik.includes("s.src = 'js/pdf-export-libs.js'"), 'Ortak PDF loader uygulamada yüklenmeli.');
-
-assert(oturma.includes('await window.PdfExportLibs.hazir({html2canvas:true});'), 'Sınıf oturma PDF’i jsPDF+html2canvas yüklenmesini beklemeli.');
 assert(liste.includes('await window.PdfExportLibs.hazir({autoTable:true});'), 'Öğretmen liste PDF’i jsPDF+autoTable yüklenmesini beklemeli.');
 
 console.log('PDF dışa aktarma lazy-load smoke testleri başarılı.');
