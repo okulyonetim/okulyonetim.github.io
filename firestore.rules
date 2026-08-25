@@ -70,6 +70,7 @@ service cloud.firestore {
         || koleksiyon == 'oy_kullaniciIstatistikleri'
         || koleksiyon == 'oy_kullaniciTercihleri'
         || koleksiyon == 'oy_cihazTokenleri'
+        || koleksiyon == 'oy_optikSablonlari'
         || koleksiyon == 'oy_ogretmenListeSablon'
         || koleksiyon == 'oy_ogretmenListeKayit'
         || koleksiyon == 'oy_yillikPlanBasliklari'
@@ -170,6 +171,12 @@ service cloud.firestore {
         && request.resource.data.uid == request.auth.uid
         && (resource.data.uid == request.auth.uid || !('uid' in resource.data)));
       allow delete: if adminMi() || (girisYapmis() && resource.data.uid == request.auth.uid);
+    }
+
+    // Optik okuyucu uygulamadan emekli edildi. Eski koleksiyon verisi güvenlik
+    // nedeniyle genel authenticated catch-all kuralına düşmemeli.
+    match /oy_optikSablonlari/{id} {
+      allow read, write: if false;
     }
 
     match /oy_ogretmenListeSablon/{id} {
