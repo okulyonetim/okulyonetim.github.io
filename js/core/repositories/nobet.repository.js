@@ -1,88 +1,34 @@
-/* ================================================================
-   js/core/repositories/nobet.repository.js
-   NÖBET MODÜLÜ — TEK FIRESTORE ERİŞİM NOKTASI
-
-   Bu dosyada SADECE db.collection() / onSnapshot() / add() / update() /
-   delete() / batch() çağrıları bulunur. Hiçbir iş kuralı, hiçbir yetki
-   kontrolü, hiçbir DOM işlemi burada yapılmaz (bkz. Pragmatik-Mimari-
-   Tasarimi.md §2). Üstündeki katman: js/core/services/nobet.service.js
-   ================================================================ */
-
-const NobetRepository = {
-
-  /* ---------- Nöbet Yerleri ---------- */
-  yerleriDinle(callback, hataCb){
-    return db.collection(COL.nobetYerleri).onSnapshot(
-      s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
-      hataCb || hataGoster
-    );
-  },
-  yerEkle(veri){ return db.collection(COL.nobetYerleri).add(veri); },
-  yerGuncelle(id, veri){ return db.collection(COL.nobetYerleri).doc(id).update(veri); },
-  yerSil(id){ return db.collection(COL.nobetYerleri).doc(id).delete(); },
-
-  /* ---------- Nöbet Atamaları ---------- */
-  atamalariDinle(callback, hataCb){
-    return db.collection(COL.nobetAtamalari).onSnapshot(
-      s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
-      hataCb || hataGoster
-    );
-  },
-  atamaEkle(veri){ return db.collection(COL.nobetAtamalari).add(veri); },
-  atamaGuncelle(id, veri){ return db.collection(COL.nobetAtamalari).doc(id).update(veri); },
-  atamaSil(id){ return db.collection(COL.nobetAtamalari).doc(id).delete(); },
-  /* Belirli bir tarihten önceki atamaları getirir (otomatik dağıtımda "son atama neredeydi" sorgusu için). */
-  atamalariOncesiGetir(tarihISO){
-    return db.collection(COL.nobetAtamalari).where('tarih', '<', tarihISO).get();
-  },
-
-  /* ---------- Nöbetçi Amirler ---------- */
-  amirleriDinle(callback, hataCb){
-    return db.collection(COL.nobetciAmirleri).onSnapshot(
-      s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
-      hataCb || hataGoster
-    );
-  },
-  amirEkle(veri){ return db.collection(COL.nobetciAmirleri).add(veri); },
-  amirGuncelle(id, veri){ return db.collection(COL.nobetciAmirleri).doc(id).update(veri); },
-  amirSil(id){ return db.collection(COL.nobetciAmirleri).doc(id).delete(); },
-
-  /* ---------- Resmi Tatiller ---------- */
-  tatilleriDinle(callback, hataCb){
-    return db.collection(COL.resmiTatiller).onSnapshot(
-      s => callback(s.docs.map(d => ({ id: d.id, ...d.data() }))),
-      hataCb || hataGoster
-    );
-  },
-  tatilEkle(veri){ return db.collection(COL.resmiTatiller).add(veri); },
-  tatilSil(id){ return db.collection(COL.resmiTatiller).doc(id).delete(); },
-
-  /* ---------- Rotasyon Şablonu (otomatik dağıtım hafızası) ---------- */
-  rotasyonDinle(callback, hataCb){
-    return db.collection(COL.nobetRotasyon).doc('sablon').onSnapshot(
-      snap => callback(snap.exists ? snap.data() : null),
-      hataCb || (err => console.warn('nobetRotasyon:', err))
-    );
-  },
-  rotasyonKaydet(veri){ return db.collection(COL.nobetRotasyon).doc('sablon').set(veri); },
-
-  /* ---------- Toplu (batch) yazma yardımcıları ----------
-     Excel içe aktarma ve otomatik dağıtım gibi çok-kayıtlı işlemler
-     için. Batch'in İÇİNDEKİ iş kuralı (hangi kayıt yazılacak, hangi
-     sırayla) servis katmanına ait; burada sadece ilkel operasyonlar var. */
-  yeniBatch(){ return db.batch(); },
-  batchAtamaSil(batch, id){ batch.delete(db.collection(COL.nobetAtamalari).doc(id)); },
-  batchAtamaYaz(batch, veri, id){
-    const ref = id ? db.collection(COL.nobetAtamalari).doc(id) : db.collection(COL.nobetAtamalari).doc();
-    batch.set(ref, veri);
-  },
-  batchAmirYaz(batch, veri, id){
-    const ref = id ? db.collection(COL.nobetciAmirleri).doc(id) : db.collection(COL.nobetciAmirleri).doc();
-    batch.set(ref, veri);
-  },
-  batchYeriYaz(batch, veri, id){
-    const ref = id ? db.collection(COL.nobetYerleri).doc(id) : db.collection(COL.nobetYerleri).doc();
-    batch.set(ref, veri);
-  },
-  batchCommit(batch){ return batch.commit(); }
+/* Koruk Asistan — Nöbet Repository (device-first)
+ * Nöbet verileri AppStore/IndexedDB'de yaşar; Firestore yalnız Core queue/sync arka planıdır.
+ * Excel/rotasyon servis sözleşmesi için batch yardımcıları korunur.
+ */
+(function(global){
+'use strict';
+function device(){if(!global.DeviceData)throw new Error('DeviceData hazır değil');return global.DeviceData;}
+function arr(type){const v=global.AppStore?.data?.(type);return Array.isArray(v)?v:[];}
+function listen(type,cb){return device().listen(type,cb);}
+function add(type,col,v){return device().add(type,col,v);}
+function update(type,col,id,v){return device().update(type,col,id,v);}
+function remove(type,col,id){return device().remove(type,col,id);}
+function batch(){return{ops:[],delete(ref){const path=String(ref?.path||'');const p=path.split('/');if(p.length>=2)this.ops.push({kind:'delete-path',collection:p[p.length-2],id:p[p.length-1]});}};}
+function pushSet(b,type,collection,data,id){const docId=id||device().newId();b.ops.push({kind:'set',type,collection,id:docId,data});return docId;}
+function pushRemove(b,type,collection,id){b.ops.push({kind:'remove',type,collection,id});}
+async function commit(b){for(const op of b?.ops||[]){if(op.kind==='set')await device().set(op.type,op.collection,op.id,op.data,{merge:false});else if(op.kind==='remove')await device().remove(op.type,op.collection,op.id);else if(op.kind==='delete-path'){const map={[COL.nobetYerleri]:'nobetYerleri',[COL.nobetAtamalari]:'nobetAtamalari',[COL.nobetciAmirleri]:'nobetciAmirleri',[COL.resmiTatiller]:'resmiTatiller',[COL.nobetRotasyon]:'nobetRotasyon'},type=map[op.collection];if(type)await device().remove(type,op.collection,op.id);}}return true;}
+const NobetRepository={
+  yerleriDinle(cb){return listen('nobetYerleri',cb);},yerEkle(v){return add('nobetYerleri',COL.nobetYerleri,v);},yerGuncelle(id,v){return update('nobetYerleri',COL.nobetYerleri,id,v);},yerSil(id){return remove('nobetYerleri',COL.nobetYerleri,id);},
+  atamalariDinle(cb){return listen('nobetAtamalari',cb);},atamaEkle(v){return add('nobetAtamalari',COL.nobetAtamalari,v);},atamaGuncelle(id,v){return update('nobetAtamalari',COL.nobetAtamalari,id,v);},atamaSil(id){return remove('nobetAtamalari',COL.nobetAtamalari,id);},
+  async atamalariOncesiGetir(tarihISO){const rows=arr('nobetAtamalari').filter(a=>String(a.tarih||'')<tarihISO);return{docs:rows.map(r=>({id:r.id,data:()=>r}))};},
+  amirleriDinle(cb){return listen('nobetciAmirleri',cb);},amirEkle(v){return add('nobetciAmirleri',COL.nobetciAmirleri,v);},amirGuncelle(id,v){return update('nobetciAmirleri',COL.nobetciAmirleri,id,v);},amirSil(id){return remove('nobetciAmirleri',COL.nobetciAmirleri,id);},
+  tatilleriDinle(cb){return listen('resmiTatiller',cb);},tatilEkle(v){return add('resmiTatiller',COL.resmiTatiller,v);},tatilSil(id){return remove('resmiTatiller',COL.resmiTatiller,id);},
+  rotasyonDinle(cb){return listen('nobetRotasyon',rows=>cb(rows.find(x=>x.id==='sablon')||null));},rotasyonKaydet(v){return device().set('nobetRotasyon',COL.nobetRotasyon,'sablon',v,{merge:false});},
+  yeniBatch(){return batch();},
+  batchAtamaSil(b,id){pushRemove(b,'nobetAtamalari',COL.nobetAtamalari,id);},
+  batchAtamaYaz(b,v,id){return pushSet(b,'nobetAtamalari',COL.nobetAtamalari,v,id);},
+  batchAmirYaz(b,v,id){return pushSet(b,'nobetciAmirleri',COL.nobetciAmirleri,v,id);},
+  batchAmirSil(b,id){pushRemove(b,'nobetciAmirleri',COL.nobetciAmirleri,id);},
+  batchYeriYaz(b,v,id){return pushSet(b,'nobetYerleri',COL.nobetYerleri,v,id);},
+  batchYeriSil(b,id){pushRemove(b,'nobetYerleri',COL.nobetYerleri,id);},
+  batchCommit(b){return commit(b);}
 };
+global.NobetRepository=NobetRepository;
+})(window);
