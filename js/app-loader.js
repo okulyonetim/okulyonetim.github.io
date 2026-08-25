@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v13
+/* Koruk Asistan — AppLoader v14
    Başlangıçta yalnız çekirdek yüklenir; özellikler ihtiyaç anında data + tek UI modülü olarak gelir.
    Uygulama başlangıcının tek sahibi: tema + Firebase init + auth listener + Service Worker. */
 (function(){
@@ -15,7 +15,6 @@ async function load(name){if(!registry.has(name))throw new Error('module-not-def
 function isLoaded(name){return(registry.get(name)||[]).every(x=>loaded.has(normalize(x))||alreadyInDom(x))}
 function list(){return[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}))}
 
-/* V2 registry: sekiz ana alanın tamamı temiz modül mimarisinde. */
 define('dashboard',['js/modules/dashboard.js']);
 define('people',['js/modules/people-data.js','js/modules/people.js']);
 define('academic',['js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']);
@@ -25,27 +24,23 @@ define('transport',['js/modules/people-data.js','js/modules/transport-data.js','
 define('documents',['js/modules/documents-data.js','js/modules/documents.js']);
 define('settings',['js/modules/settings-data.js','js/modules/settings.js']);
 
-function applySavedTheme(){
-  let theme='light';try{theme=localStorage.getItem('oyTema')==='dark'?'dark':'light'}catch(_){}
-  document.documentElement.setAttribute('data-theme',theme);
-  window.AppStore?.set?.('ui.theme',theme);
+function updateThemeChrome(){
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta){const color=getComputedStyle(document.documentElement).getPropertyValue('--ka-header-bg').trim();if(color)meta.setAttribute('content',color)}
+  document.querySelectorAll('[data-ka-theme-toggle]').forEach(btn=>{const dark=document.documentElement.getAttribute('data-theme')==='dark';btn.textContent=dark?'☀️':'🌙';btn.setAttribute('aria-label',dark?'Açık temaya geç':'Koyu temaya geç');btn.title=dark?'Açık temaya geç':'Koyu temaya geç'})
 }
+function applyTheme(theme,{persist=true}={}){const next=theme==='dark'?'dark':'light';document.documentElement.setAttribute('data-theme',next);if(persist)try{localStorage.setItem('oyTema',next)}catch(_){}window.AppStore?.set?.('ui.theme',next);requestAnimationFrame(updateThemeChrome);return next}
+function applySavedTheme(){let theme='light';try{theme=localStorage.getItem('oyTema')==='dark'?'dark':'light'}catch(_){}return applyTheme(theme,{persist:false})}
+function toggleTheme(){return applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')}
 function registerServiceWorker(){if(!('serviceWorker'in navigator))return;window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(e=>console.warn('[SW]',e?.message||e)),{once:true})}
-function startPlatform(){
-  if(startupDone)return true;startupDone=true;applySavedTheme();registerServiceWorker();
-  try{
-    if(typeof firebaseyiBaslat!=='function'||!firebaseyiBaslat())return false;
-    if(typeof authDinleyiciKur==='function')authDinleyiciKur();
-    return true;
-  }catch(e){console.error('[AppLoader] Başlangıç hatası:',e);const warn=document.getElementById('configWarning');if(warn)warn.classList.remove('ka-hidden');return false}
-}
+function startPlatform(){if(startupDone)return true;startupDone=true;applySavedTheme();registerServiceWorker();try{if(typeof firebaseyiBaslat!=='function'||!firebaseyiBaslat())return false;if(typeof authDinleyiciKur==='function')authDinleyiciKur();return true}catch(e){console.error('[AppLoader] Başlangıç hatası:',e);const warn=document.getElementById('configWarning');if(warn)warn.classList.remove('ka-hidden');return false}}
 
-/* Eski auth.js top-level let kullanıyor. Aynı gerçek oturum V2 Core/AppStore'a aktarılır. */
 function syncLegacySession(){let user=null,role=null;try{if(typeof AKTIF_KULLANICI!=='undefined')user=AKTIF_KULLANICI}catch(_){}try{if(typeof AKTIF_ROL!=='undefined')role=AKTIF_ROL}catch(_){}if(user?.uid){window.AKTIF_KULLANICI=user;window.AKTIF_ROL=role||null;window.AppStore?.set?.('session.user',user);window.AppStore?.set?.('session.role',role||null);window.AppBootstrap?.start?.();if(!dashboardRequested){dashboardRequested=true;load('dashboard').catch(e=>console.warn('[Dashboard]',e?.message||e))}return true}return false}
 function syncAuthVisibility(){const login=document.getElementById('girisEkrani'),pending=document.getElementById('onayBekleniyorEkrani'),app=document.getElementById('app');if(!login||!pending||!app)return;syncLegacySession();const pendingActive=pending.classList.contains('active'),appReady=app.classList.contains('ready')||app.classList.contains('show'),loginActive=login.classList.contains('active')||(!pendingActive&&!appReady);login.hidden=!loginActive;pending.hidden=!pendingActive;app.hidden=!appReady;pending.classList.toggle('ka-hidden',!pendingActive)}
 function setActiveModule(name){document.querySelectorAll('[data-ka-module]').forEach(btn=>{const active=btn.dataset.kaModule===name;btn.classList.toggle('active',active);if(active)btn.setAttribute('aria-current','page');else btn.removeAttribute('aria-current')});window.AppStore?.set?.('ui.route',name)}
 function bindShell(){
   startPlatform();
+  document.querySelectorAll('[data-ka-theme-toggle]').forEach(btn=>{if(btn.dataset.kaThemeBound==='1')return;btn.dataset.kaThemeBound='1';btn.addEventListener('click',toggleTheme)});updateThemeChrome();
   const title=document.getElementById('v2ModuleTitle'),status=document.getElementById('v2ModuleStatus');
   document.querySelectorAll('[data-ka-module]').forEach(btn=>{if(btn.dataset.kaBound==='1')return;btn.dataset.kaBound='1';btn.addEventListener('click',async()=>{const name=btn.dataset.kaModule;setActiveModule(name);if(title)title.textContent=btn.textContent.trim();if(status)status.textContent='Modül yükleniyor…';try{await load(name);if(status)status.textContent='Modül hazır.'}catch(e){if(status)status.textContent='Modül yüklenemedi: '+(e?.message||e)}})});
   syncAuthVisibility();['girisEkrani','onayBekleniyorEkrani','app'].forEach(id=>{const el=document.getElementById(id);if(el)new MutationObserver(syncAuthVisibility).observe(el,{attributes:true,attributeFilter:['class']})});
@@ -54,6 +49,6 @@ function bindShell(){
   window.addEventListener('koruk:sync-state',e=>{const el=document.getElementById('v2SyncStatus');if(el)el.textContent=(e.detail?.pending||0)+' bekleyen işlem'});
   const initial=document.querySelector('[data-ka-module="dashboard"]');if(initial)setActiveModule('dashboard');
 }
-window.AppLoader={define,load,loadMany,loadScript,isLoaded,list,bindShell,syncAuthVisibility,syncLegacySession,setActiveModule,startPlatform};
+window.AppLoader={define,load,loadMany,loadScript,isLoaded,list,bindShell,syncAuthVisibility,syncLegacySession,setActiveModule,startPlatform,applyTheme,toggleTheme};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindShell,{once:true});else bindShell();
 })();
