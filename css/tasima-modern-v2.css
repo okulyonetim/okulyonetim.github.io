@@ -5,4 +5,76 @@
 [data-theme="dark"] .tm-hero{background:linear-gradient(145deg,#0b3329,#0c604a);border:1px solid #1c6d56}
 .tm-hero-top{display:flex;align-items:center;gap:13px}.tm-hero-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:17px;background:rgba(255,255,255,.14);font-size:27px}.tm-hero h2{margin:0;font-size:26px;line-height:1.1;color:#fff}.tm-hero p{margin:5px 0 0;color:rgba(255,255,255,.8);font-size:13px}.tm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:17px}.tm-stats div{padding:11px 9px;border:1px solid rgba(255,255,255,.16);border-radius:15px;background:rgba(0,0,0,.08)}.tm-stats strong,.tm-stats span{display:block}.tm-stats strong{font-size:21px}.tm-stats span{font-size:10.5px;margin-top:2px;color:rgba(255,255,255,.75)}.tm-actions{margin-top:12px}.tm-actions button{width:100%;min-height:46px;border:1px solid rgba(255,255,255,.25);border-radius:14px;background:#fff;color:#075941;font-weight:850;font-size:14px}.tm-readonly-note{margin-top:12px;padding:10px 12px;border-radius:13px;background:rgba(255,255,255,.1);font-size:12px;font-weight:700}
 #tab-tasima.tasima-v2-ready{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}.tm-segment{min-height:46px!important;border-radius:14px!important;font-weight:800!important}.tm-servis-card{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:start;margin:0 0 11px;padding:14px;border:1px solid var(--tmborder);border-radius:20px;background:var(--tmcard);box-shadow:0 8px 22px rgba(18,72,55,.07);color:var(--tmtext);overflow:hidden}.tm-bus{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:color-mix(in srgb,var(--tm) 12%,var(--tmcard));font-size:24px}.tm-card-main{min-width:0}.tm-card-head{display:flex;align-items:center;gap:8px;min-width:0}.tm-card-head strong{font-size:16px;line-height:1.25;overflow:hidden;text-overflow:ellipsis}.tm-status{margin-left:auto;padding:5px 9px;border-radius:999px;font-size:10.5px;font-weight:850}.tm-status.aktif{background:#e5f6ef;color:#08765b}.tm-status.pasif{background:#eef1f0;color:#64746e}[data-theme="dark"] .tm-status.aktif{background:#123c31;color:#6ee0bd}[data-theme="dark"] .tm-status.pasif{background:#202c28;color:#aab8b3}.tm-card-line{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;color:var(--tmmuted);font-size:12px}.tm-route{margin-top:6px;color:var(--tmmuted);font-size:11.5px;line-height:1.4;white-space:normal}.tm-card-foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid var(--tmborder);color:var(--tmmuted);font-size:11px}.tm-open{color:var(--tm);font-weight:800}.tm-edit{width:38px;height:38px;border:1px solid var(--tmborder);border-radius:12px;background:var(--tmbg);color:var(--tm);font-size:18px}.tm-empty{display:grid;place-items:center;gap:6px;padding:34px 15px;border:1px dashed var(--tmborder);border-radius:20px;background:var(--tmcard);color:var(--tmtext);text-align:center}.tm-empty>span{font-size:28px}.tm-empty small{color:var(--tmmuted);font-size:12px}
-@media(max-width:480px){#tab-tasima.tasima-v2-ready{padding-left:8px!important;padding-right:8px!important}.tm-hero{padding:17px;border-radius:21px}.tm-hero h2{font-size:23px}.tm-servis-card{grid-template-columns:44px minmax(0,1fr) auto;padding:12px;gap:10px;border-radius:18px}.tm-bus{width:44px;height:44px}.tm-card-head strong{font-size:15px}.tm-edit{width:36px;height:36px}}
+
+/* ================================================================
+   Servis oturma planı modalı — mobil viewport / kaydırma düzeltmesi
+   - modal artık alt kenara yapışmaz
+   - üst başlık daima viewport içinde kalır
+   - uzun araç planı modal gövdesinin içinde doğal olarak kayar
+   - alt butonlar modalın kendi içinde kalır, içerik üzerine binmez
+   ================================================================ */
+#modalOverlay.tasima-oturma-modal{
+  align-items:flex-start!important;
+  justify-content:center!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;
+  padding-top:max(12px,env(safe-area-inset-top))!important;
+  padding-right:max(10px,env(safe-area-inset-right))!important;
+  padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+  padding-left:max(10px,env(safe-area-inset-left))!important;
+}
+#modalOverlay.tasima-oturma-modal>.modal{
+  width:min(100%,680px)!important;
+  height:auto!important;
+  max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)))!important;
+  margin:0 auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  transform:none!important;
+}
+#modalOverlay.tasima-oturma-modal #modalTitle{
+  flex:0 0 auto;
+  margin:0!important;
+  padding-bottom:12px!important;
+}
+#modalOverlay.tasima-oturma-modal #modalBody{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y!important;
+  padding-bottom:18px!important;
+}
+#modalOverlay.tasima-oturma-modal .so-modal-wrap{
+  min-height:0!important;
+  overflow:visible!important;
+}
+#modalOverlay.tasima-oturma-modal .so-arac-wrap{
+  overflow:visible!important;
+  max-height:none!important;
+}
+#modalOverlay.tasima-oturma-modal .modal-actions{
+  position:relative!important;
+  inset:auto!important;
+  flex:0 0 auto!important;
+  z-index:3;
+  margin-top:0!important;
+  padding-top:12px!important;
+  padding-bottom:max(0px,env(safe-area-inset-bottom))!important;
+  background:var(--bg-card,var(--nm-bg))!important;
+  box-shadow:0 -8px 18px rgba(0,0,0,.05);
+}
+[data-theme="dark"] #modalOverlay.tasima-oturma-modal .modal-actions{
+  box-shadow:0 -8px 18px rgba(0,0,0,.22);
+}
+@media(max-width:480px){
+  #tab-tasima.tasima-v2-ready{padding-left:8px!important;padding-right:8px!important}.tm-hero{padding:17px;border-radius:21px}.tm-hero h2{font-size:23px}.tm-servis-card{grid-template-columns:44px minmax(0,1fr) auto;padding:12px;gap:10px;border-radius:18px}.tm-bus{width:44px;height:44px}.tm-card-head strong{font-size:15px}.tm-edit{width:36px;height:36px}
+  #modalOverlay.tasima-oturma-modal{padding-top:max(8px,env(safe-area-inset-top))!important;padding-right:6px!important;padding-left:6px!important;padding-bottom:max(8px,env(safe-area-inset-bottom))!important}
+  #modalOverlay.tasima-oturma-modal>.modal{width:100%!important;max-height:calc(100dvh - max(16px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom)))!important;border-radius:22px!important}
+  #modalOverlay.tasima-oturma-modal #modalBody{padding-right:2px!important;padding-left:2px!important;scrollbar-width:thin}
+}
