@@ -1,0 +1,195 @@
+name: One-time Tasima V2 Apply
+on:
+  push:
+    paths:
+      - '.github/workflows/tasima-v2-apply.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Apply transport v2
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          # 1) Sürekli DOM polling/observer kaldırılır. Rol wrapperları bir kez kurulur.
+          p=Path('js/tasima.js'); s=p.read_text(encoding='utf-8')
+          old="""  let deneme=0;
+          const t=setInterval(()=>{
+            kur();
+            if(++deneme>120) clearInterval(t);
+          },250);
+          document.addEventListener('DOMContentLoaded', kur);
+          window.addEventListener('load', ()=>setTimeout(kur,100));
+
+          let obsBekliyor=false;
+          const obs=new MutationObserver(()=>{
+            if(obsBekliyor) return;
+            obsBekliyor=true;
+            requestAnimationFrame(()=>{
+              obsBekliyor=false;
+              tasimaSayfaRolunuUygula();
+              const ov=document.getElementById('modalOverlay');
+              if(ov && !ov.classList.contains('active') && !ov.classList.contains('show')) tasimaModalSinifiTemizle();
+            });
+          });
+          document.addEventListener('DOMContentLoaded',()=>obs.observe(document.body,{subtree:true,childList:true}));
+          })();"""
+          new="""  // Performans: fonksiyonlar bu dosya yüklendiğinde zaten mevcut olduğu için
+          // 30 saniyelik polling ve tüm body MutationObserver gerekli değil.
+          kur();
+          document.addEventListener('DOMContentLoaded', kur, {once:true});
+          window.addEventListener('load', ()=>requestAnimationFrame(kur), {once:true});
+          })();"""
+          if old not in s:
+            raise SystemExit('tasima legacy polling block not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          # 2) Servis listesi local-first repository.
+          Path('js/core/repositories/tasima.repository.js').write_text(r'''/* ================================================================
+          js/core/repositories/tasima.repository.js
+          TAŞIMA — local-first repository
+          Son başarılı servis listesi ağ beklenmeden yerelden yayınlanır.
+          ================================================================ */
+          (function(global){
+          'use strict';
+          const CACHE_KEY='oy_tasima_servisler_local_v1';
+          function oku(){try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');return Array.isArray(x)?x:[];}catch(_){return[];}}
+          function yaz(v){try{localStorage.setItem(CACHE_KEY,JSON.stringify(Array.isArray(v)?v:[]));}catch(_){}}
+          function imza(v){try{return JSON.stringify(v);}catch(_){return String(Date.now());}}
+          const TasimaRepository={
+            servisleriDinle(callback,hataCb){
+              const ref=db.collection(COL.servisler); let son='';
+              const yayinla=(v,kaynak)=>{const arr=Array.isArray(v)?v:[];const i=imza(arr);if(i===son)return;son=i;callback(arr,{source:kaynak});};
+              const yerel=oku(); if(yerel.length) yayinla(yerel,'local');
+              try{ref.get({source:'cache'}).then(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));if(a.length||!yerel.length){yaz(a);yayinla(a,'firestore-cache');}}).catch(()=>{});}catch(_){}
+              return ref.onSnapshot(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));yaz(a);yayinla(a,s.metadata?.fromCache?'firestore-cache':'firestore');},hataCb||(typeof hataGoster==='function'?hataGoster:console.error));
+            },
+            servisEkle(veri){return db.collection(COL.servisler).add({...veri,eklenmeTarihi:new Date().toISOString()});},
+            servisGuncelle(id,veri){const a=oku().map(x=>x.id===id?{...x,...veri}:x);yaz(a);return db.collection(COL.servisler).doc(id).update(veri);},
+            servisSil(id){yaz(oku().filter(x=>x.id!==id));return db.collection(COL.servisler).doc(id).delete();}
+          };
+          global.TasimaRepository=TasimaRepository;
+          })(window);
+          ''',encoding='utf-8')
+
+          # 3) Oturma planları da local-first: sekme/önizleme Firestore beklemez.
+          Path('js/core/repositories/servis-oturma.repository.js').write_text(r'''/* ================================================================
+          SERVİS OTURMA — local-first repository
+          ================================================================ */
+          (function(global){
+          'use strict';
+          const CACHE_KEY='oy_servis_oturma_local_v1';
+          function oku(){try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');return Array.isArray(x)?x:[];}catch(_){return[];}}
+          function yaz(v){try{localStorage.setItem(CACHE_KEY,JSON.stringify(Array.isArray(v)?v:[]));}catch(_){}}
+          const ServisOturmaRepository={
+            planlariDinle(callback,hataCb){
+              const ref=db.collection(COL.servisOturma);let son='';
+              const yayin=(a,k)=>{let i='';try{i=JSON.stringify(a)}catch(_){i=String(Date.now())}if(i===son)return;son=i;callback(a,{source:k});};
+              const yerel=oku();if(yerel.length)yayin(yerel,'local');
+              try{ref.get({source:'cache'}).then(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));if(a.length||!yerel.length){yaz(a);yayin(a,'firestore-cache');}}).catch(()=>{});}catch(_){}
+              return ref.onSnapshot(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));yaz(a);yayin(a,s.metadata?.fromCache?'firestore-cache':'firestore');},hataCb||(e=>console.warn('servisOturma:',e)));
+            },
+            planKaydet(servisId,veri,merge){const a=oku();const ix=a.findIndex(x=>x.id===servisId);const nv={id:servisId,...(merge&&ix>=0?a[ix]:{}),...veri};if(ix>=0)a[ix]=nv;else a.push(nv);yaz(a);return db.collection(COL.servisOturma).doc(servisId).set(veri,{merge:!!merge});},
+            planGuncelle(servisId,kismiVeri){const a=oku().map(x=>x.id===servisId?{...x,...kismiVeri}:x);yaz(a);return db.collection(COL.servisOturma).doc(servisId).update(kismiVeri);},
+            planServisIdIleGetir(servisId){return db.collection(COL.servisOturma).where('servisId','==',servisId).get({source:'cache'}).catch(()=>db.collection(COL.servisOturma).where('servisId','==',servisId).get());}
+          };
+          global.ServisOturmaRepository=ServisOturmaRepository;
+          })(window);
+          ''',encoding='utf-8')
+
+          # 4) Gerçek yeni mobil Taşıma yüzeyi.
+          Path('js/tasima-modern-v2.js').write_text(r'''/* Koruk Asistan — Taşıma Modern v2 */
+          (function(){
+          'use strict';
+          const esc=v=>typeof escapeHtml==='function'?escapeHtml(v):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+          const yetkili=()=>typeof tasimaDuzenlemeYetkiliMi==='function'?tasimaDuzenlemeYetkiliMi():(typeof duzenleyebilir==='function'&&duzenleyebilir('tasima'));
+          function legacyHeroGizle(tab){
+            [...tab.children].forEach(el=>{const t=(el.textContent||'').replace(/\s+/g,' ').trim();if(t.includes('Servis araçları, şoför ve güzergah bilgileri')&&t.includes('Oturma Planı Raporu'))el.classList.add('tm-legacy-hero');});
+          }
+          function shellKur(){
+            const tab=document.getElementById('tab-tasima');if(!tab)return;
+            legacyHeroGizle(tab);
+            let sh=document.getElementById('tmModernShell');
+            if(!sh){sh=document.createElement('section');sh.id='tmModernShell';sh.className='tm-shell';tab.insertBefore(sh,tab.firstChild);}
+            const list=Array.isArray(window.servisler)?window.servisler:[];
+            const aktif=list.filter(x=>(x.durum||'Aktif')!=='Pasif').length;
+            const ogr=list.reduce((n,x)=>n+(Number(x.ogrenciSayisi)||0),0);
+            const admin=!!yetkili();
+            sh.innerHTML=`<div class="tm-hero"><div class="tm-hero-top"><span class="tm-hero-icon">🚌</span><div><h2>Taşıma</h2><p>Servisler, öğrenciler ve oturma planları</p></div></div><div class="tm-stats"><div><strong>${list.length}</strong><span>Servis</span></div><div><strong>${aktif}</strong><span>Aktif</span></div><div><strong>${ogr}</strong><span>Öğrenci</span></div></div>${admin?`<div class="tm-actions"><button onclick="servisModalAc()">＋ Yeni Servis</button></div>`:`<div class="tm-readonly-note">👁️ Görüntüleme modu</div>`}</div>`;
+            tab.classList.toggle('tasima-readonly',!admin);tab.classList.add('tasima-v2-ready');
+            tab.querySelectorAll('button').forEach(b=>{const t=(b.textContent||'').trim();if(t.includes('Servis Listesi')||t.includes('Oturma Planları'))b.classList.add('tm-segment');});
+          }
+          function kartlariRender(){
+            const hedef=document.getElementById('servislerListesi');if(!hedef)return;
+            const all=Array.isArray(window.servisler)?window.servisler:[];
+            let liste=(window.servisFiltre==='tumu'||!window.servisFiltre)?all:all.filter(s=>s.durum===window.servisFiltre);
+            liste=[...liste].sort((a,b)=>(a.servisAdi||'').localeCompare(b.servisAdi||'','tr'));
+            const admin=!!yetkili();
+            hedef.innerHTML=liste.length?liste.map(s=>`<article class="tm-servis-card" onclick="servisDetayAc('${s.id}')"><div class="tm-bus">🚌</div><div class="tm-card-main"><div class="tm-card-head"><strong>${esc(s.servisAdi||'Servis')}</strong><span class="tm-status ${(s.durum||'Aktif')==='Pasif'?'pasif':'aktif'}">${esc(s.durum||'Aktif')}</span></div><div class="tm-card-line">${s.plaka?`<span>🚘 ${esc(s.plaka)}</span>`:''}${s.soforAdi?`<span>👨‍✈️ ${esc(s.soforAdi)}</span>`:'<span>👨‍✈️ Şoför bilgisi yok</span>'}</div>${s.guzergah?`<div class="tm-route">📍 ${esc(s.guzergah)}</div>`:''}<div class="tm-card-foot">${s.ogrenciSayisi?`<span>👥 ${Number(s.ogrenciSayisi)} öğrenci</span>`:'<span>👥 Öğrenci bilgisi yok</span>'}<span class="tm-open">Detay ›</span></div></div>${admin?`<button class="tm-edit" onclick="event.stopPropagation();servisModalAc('${s.id}')" aria-label="Servisi düzenle">✎</button>`:''}</article>`).join(''):'<div class="tm-empty">🚌<strong>Servis kaydı bulunamadı</strong><span>${admin?'Yeni servis ekleyerek başlayabilirsiniz.':'Henüz görüntülenecek servis yok.'}</span></div>';
+            shellKur();
+          }
+          function oturmaGuvenligi(){
+            if(yetkili())return;
+            ['soSablonSec','soDuzenlemeToggle','soDuzenlemeKaydet','soDuzenlemeVazgec','soTumunuTemizle','soYuvaAktifEt','soKoltukTikla','soKaydet','sozelSiraEkle','sozelSonSiraSil','sozelTumunuSil'].forEach(ad=>{const fn=window[ad];if(typeof fn==='function'&&!fn.__tmReadonly){const g=function(){return;};g.__tmReadonly=true;window[ad]=g;}});
+          }
+          function kur(){
+            shellKur();
+            window.renderServisler=kartlariRender;
+            kartlariRender();
+            oturmaGuvenligi();
+          }
+          if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',kur,{once:true});else kur();
+          window.addEventListener('load',()=>requestAnimationFrame(()=>{shellKur();oturmaGuvenligi();}),{once:true});
+          })();
+          ''',encoding='utf-8')
+
+          Path('css/tasima-modern-v2.css').write_text(r'''/* Koruk Asistan — Taşıma Modern v2 */
+          #tab-tasima{--tm:#0b7d60;--tm2:#13a37d;--tmbg:#f2f7f4;--tmcard:#fff;--tmborder:#d5e1dc;--tmtext:#17362d;--tmmuted:#6c8178;max-width:100%;overflow-x:hidden}
+          [data-theme="dark"] #tab-tasima{--tm:#18a37c;--tm2:#2cc79c;--tmbg:#08120f;--tmcard:#0e1b17;--tmborder:#29463c;--tmtext:#f3fbf8;--tmmuted:#a7b9b2}
+          #tab-tasima .tm-legacy-hero{display:none!important}.tm-shell{margin:0 0 14px;padding:0 2px}.tm-hero{border-radius:24px;padding:20px;background:linear-gradient(145deg,#095d48,#0d8b68);color:#fff;box-shadow:0 14px 32px rgba(9,93,72,.18)}
+          [data-theme="dark"] .tm-hero{background:linear-gradient(145deg,#0b3329,#0c604a);border:1px solid #1c6d56}
+          .tm-hero-top{display:flex;align-items:center;gap:13px}.tm-hero-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:17px;background:rgba(255,255,255,.14);font-size:27px}.tm-hero h2{margin:0;font-size:26px;line-height:1.1;color:#fff}.tm-hero p{margin:5px 0 0;color:rgba(255,255,255,.8);font-size:13px}.tm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:17px}.tm-stats div{padding:11px 9px;border:1px solid rgba(255,255,255,.16);border-radius:15px;background:rgba(0,0,0,.08)}.tm-stats strong,.tm-stats span{display:block}.tm-stats strong{font-size:21px}.tm-stats span{font-size:10.5px;margin-top:2px;color:rgba(255,255,255,.75)}.tm-actions{margin-top:12px}.tm-actions button{width:100%;min-height:46px;border:1px solid rgba(255,255,255,.25);border-radius:14px;background:#fff;color:#075941;font-weight:850;font-size:14px}.tm-readonly-note{margin-top:12px;padding:10px 12px;border-radius:13px;background:rgba(255,255,255,.1);font-size:12px;font-weight:700}
+          #tab-tasima.tasima-v2-ready{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}.tm-segment{min-height:46px!important;border-radius:14px!important;font-weight:800!important}.tm-servis-card{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:start;margin:0 0 11px;padding:14px;border:1px solid var(--tmborder);border-radius:20px;background:var(--tmcard);box-shadow:0 8px 22px rgba(18,72,55,.07);color:var(--tmtext);overflow:hidden}.tm-bus{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:color-mix(in srgb,var(--tm) 12%,var(--tmcard));font-size:24px}.tm-card-main{min-width:0}.tm-card-head{display:flex;align-items:center;gap:8px;min-width:0}.tm-card-head strong{font-size:16px;line-height:1.25;overflow:hidden;text-overflow:ellipsis}.tm-status{margin-left:auto;padding:5px 9px;border-radius:999px;font-size:10.5px;font-weight:850}.tm-status.aktif{background:#e5f6ef;color:#08765b}.tm-status.pasif{background:#eef1f0;color:#64746e}[data-theme="dark"] .tm-status.aktif{background:#123c31;color:#6ee0bd}[data-theme="dark"] .tm-status.pasif{background:#202c28;color:#aab8b3}.tm-card-line{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;color:var(--tmmuted);font-size:12px}.tm-route{margin-top:6px;color:var(--tmmuted);font-size:11.5px;line-height:1.4;white-space:normal}.tm-card-foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid var(--tmborder);color:var(--tmmuted);font-size:11px}.tm-open{color:var(--tm);font-weight:800}.tm-edit{width:38px;height:38px;border:1px solid var(--tmborder);border-radius:12px;background:var(--tmbg);color:var(--tm);font-size:18px}.tm-empty{display:grid;place-items:center;gap:6px;padding:34px 15px;border:1px dashed var(--tmborder);border-radius:20px;background:var(--tmcard);color:var(--tmtext);text-align:center}.tm-empty:first-letter{font-size:28px}.tm-empty span{color:var(--tmmuted);font-size:12px}
+          @media(max-width:480px){#tab-tasima.tasima-v2-ready{padding-left:8px!important;padding-right:8px!important}.tm-hero{padding:17px;border-radius:21px}.tm-hero h2{font-size:23px}.tm-servis-card{grid-template-columns:44px minmax(0,1fr) auto;padding:12px;gap:10px;border-radius:18px}.tm-bus{width:44px;height:44px}.tm-card-head strong{font-size:15px}.tm-edit{width:36px;height:36px}}
+          ''',encoding='utf-8')
+
+          # 5) Yeni kaynakları index'e doğrudan bağla.
+          ip=Path('index.html'); h=ip.read_text(encoding='utf-8')
+          if 'css/tasima-modern-v2.css' not in h:
+            h=h.replace('<link rel="stylesheet" href="css/styles.css">','<link rel="stylesheet" href="css/styles.css">\n<link rel="stylesheet" href="css/tasima-modern-v2.css">',1)
+          if 'js/tasima-modern-v2.js' not in h:
+            h=h.replace('</body>','<script src="js/tasima-modern-v2.js"></script>\n</body>',1)
+          ip.write_text(h,encoding='utf-8')
+
+          # 6) SW yalnız bir kez artırılır ve yeni dosyalar shell cache'e alınır.
+          swp=Path('service-worker.js'); sw=swp.read_text(encoding='utf-8')
+          sw=sw.replace("const CACHE_ADI='oy-cache-v649';","const CACHE_ADI='oy-cache-v650';",1)
+          if "'./css/tasima-modern-v2.css'" not in sw:
+            sw=sw.replace("'./css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css',","'./css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css','./css/tasima-modern-v2.css',",1)
+          if "'./js/tasima-modern-v2.js'" not in sw:
+            sw=sw.replace("'./js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js',","'./js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js','./js/tasima-modern-v2.js',",1)
+          swp.write_text(sw,encoding='utf-8')
+      - name: Verify
+        run: |
+          node --check js/tasima.js
+          node --check js/tasima-modern-v2.js
+          node --check js/core/repositories/tasima.repository.js
+          node --check js/core/repositories/servis-oturma.repository.js
+          grep -q "oy-cache-v650" service-worker.js
+          grep -q "tasima-modern-v2" index.html
+      - name: Commit once to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/tasima.js js/tasima-modern-v2.js css/tasima-modern-v2.css js/core/repositories/tasima.repository.js js/core/repositories/servis-oturma.repository.js index.html service-worker.js
+          git diff --cached --quiet && exit 0
+          git commit -m "feat: rebuild transport UI and make transport local-first"
+          git push origin HEAD:main
