@@ -36,67 +36,67 @@
   color-scheme: light;
 
   /* ---------- MARKA / VURGU ---------- */
-  --ka-primary: #0b7657;          /* Ana marka rengi: aktif tab, checkbox, vurgu */
-  --ka-primary-hover: #086447;    /* Ana marka renginin hover/basılı hali */
-  --ka-primary-soft: #e8f5ef;    /* Seçili/aktif öğelerin açık tonlu zemini */
-  --ka-accent: #1570c9;           /* İkincil vurgu: gerektiğinde mavi bilgi vurgusu */
+  --ka-primary: #0b7657;
+  --ka-primary-hover: #086447;
+  --ka-primary-soft: #e8f5ef;
+  --ka-accent: #1570c9;
 
   /* ---------- UYGULAMA GENELİ ---------- */
-  --ka-app-bg: #f4f7f6;          /* TÜM uygulamanın ana arka planı */
-  --ka-text: #17231f;            /* Ana yazı rengi */
-  --ka-text-muted: #66736e;      /* Açıklama, yardımcı ve ikincil yazılar */
-  --ka-text-inverse: #ffffff;    /* Koyu/renkli zemin üzerindeki ters yazı */
+  --ka-app-bg: #f4f7f6;
+  --ka-text: #17231f;
+  --ka-text-muted: #66736e;
+  --ka-text-inverse: #ffffff;
 
   /* ---------- HEADER ---------- */
-  --ka-header-bg: #ffffff;       /* Üst header arka planı */
-  --ka-header-text: #17231f;     /* Header ana yazısı */
-  --ka-header-muted: #66736e;    /* Header yardımcı yazısı */
-  --ka-header-border: #d9e2de;   /* Header alt/çevre çizgisi */
+  --ka-header-bg: #ffffff;
+  --ka-header-text: #17231f;
+  --ka-header-muted: #66736e;
+  --ka-header-border: #d9e2de;
 
   /* ---------- NAVİGASYON ---------- */
-  --ka-nav-bg: #ffffff;          /* Navigasyon / alt menü arka planı */
-  --ka-nav-text: #66736e;        /* Pasif navigasyon yazı/ikon rengi */
-  --ka-nav-active-bg: #e8f5ef;   /* Aktif navigasyon öğesi zemini */
-  --ka-nav-active-text: #0b7657; /* Aktif navigasyon yazı/ikon rengi */
-  --ka-nav-border: #d9e2de;      /* Navigasyon sınır çizgisi */
+  --ka-nav-bg: #ffffff;
+  --ka-nav-text: #66736e;
+  --ka-nav-active-bg: #e8f5ef;
+  --ka-nav-active-text: #0b7657;
+  --ka-nav-border: #d9e2de;
 
   /* ---------- BUTON ---------- */
-  --ka-button-bg: #0b7657;       /* Ana buton arka planı */
-  --ka-button-hover: #086447;    /* Ana buton hover/basılı rengi */
-  --ka-button-text: #ffffff;     /* Ana buton yazısı */
-  --ka-button-secondary-bg: #ffffff; /* İkincil buton zemini */
-  --ka-button-secondary-text: #17231f; /* İkincil buton yazısı */
-  --ka-button-secondary-border: #d9e2de; /* İkincil buton kenarlığı */
+  --ka-button-bg: #0b7657;
+  --ka-button-hover: #086447;
+  --ka-button-text: #ffffff;
+  --ka-button-secondary-bg: #ffffff;
+  --ka-button-secondary-text: #17231f;
+  --ka-button-secondary-border: #d9e2de;
 
   /* ---------- KART / YÜZEY ---------- */
-  --ka-card-bg: #ffffff;         /* Kartların ana arka planı */
-  --ka-card-raised-bg: #ffffff;  /* Modal / yükseltilmiş kart zemini */
-  --ka-muted-bg: #eef3f1;        /* Soluk alan, tablo başlığı, hover zemini */
+  --ka-card-bg: #ffffff;
+  --ka-card-raised-bg: #ffffff;
+  --ka-muted-bg: #eef3f1;
 
   /* ---------- FORM / INPUT ---------- */
-  --ka-input-bg: #ffffff;        /* Input/select/textarea arka planı */
-  --ka-input-text: #17231f;      /* Form alanı yazı rengi */
-  --ka-input-border: #d9e2de;    /* Form alanı normal kenarlığı */
-  --ka-input-focus: #0b7657;     /* Odaklanmış form alanı kenarlığı */
+  --ka-input-bg: #ffffff;
+  --ka-input-text: #17231f;
+  --ka-input-border: #d9e2de;
+  --ka-input-focus: #0b7657;
 
   /* ---------- ÇİZGİ / ODAK ---------- */
-  --ka-border: #d9e2de;          /* Uygulama genelinde standart kenarlık */
-  --ka-border-strong: #bdcbc5;   /* Daha belirgin kenarlık */
-  --ka-focus: rgba(11, 118, 87, .24); /* Klavye/form odak halkası */
-  --ka-overlay: rgba(10, 24, 19, .48); /* Modal arkası karartma */
+  --ka-border: #d9e2de;
+  --ka-border-strong: #bdcbc5;
+  --ka-focus: rgba(11, 118, 87, .24);
+  --ka-overlay: rgba(10, 24, 19, .48);
 
   /* ---------- DURUM RENKLERİ ---------- */
-  --ka-success: #16834d;         /* Başarılı / tamamlandı */
-  --ka-warning: #b56a00;         /* Uyarı / dikkat */
-  --ka-danger: #c83b36;          /* Gerçek hata / tehlike / kritik işlem */
-  --ka-info: #1769aa;            /* Bilgilendirme */
+  --ka-success: #16834d;
+  --ka-warning: #b56a00;
+  --ka-danger: #c83b36;
+  --ka-info: #1769aa;
 
   /* ---------- TİPOGRAFİ ---------- */
-  --ka-font: Inter, Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; /* Uygulama yazı tipi */
+  --ka-font: Inter, Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ka-font-mono: "JetBrains Mono", Consolas, monospace;
   --ka-font-size-xs: 11px;
   --ka-font-size-sm: 13px;
-  --ka-font-size-md: 15px;        /* Uygulamanın temel yazı boyutu */
+  --ka-font-size-md: 15px;
   --ka-font-size-lg: 18px;
   --ka-font-size-xl: 22px;
   --ka-font-size-2xl: 28px;
@@ -113,16 +113,22 @@
 
   /* ---------- BOYUT ---------- */
   --ka-control-height-sm: 36px;
-  --ka-control-height: 44px;      /* Standart buton/input yüksekliği */
+  --ka-control-height: 44px;
   --ka-control-height-lg: 50px;
-  --ka-header-height: 58px;       /* Header minimum yüksekliği */
-  --ka-bottom-nav-height: 66px;   /* Mobil alt navigasyon yüksekliği */
-  --ka-content-max-width: 1440px; /* Ana içerik maksimum genişliği */
+  --ka-header-height: 58px;
+  --ka-bottom-nav-height: 66px;
+  --ka-content-max-width: 1440px;
+
+  /* ---------- PLATFORM / SAFE AREA ---------- */
+  --ka-safe-top: env(safe-area-inset-top, 0px);
+  --ka-safe-right: env(safe-area-inset-right, 0px);
+  --ka-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ka-safe-left: env(safe-area-inset-left, 0px);
 
   /* ---------- KÖŞE ---------- */
   --ka-radius-sm: 8px;
-  --ka-radius-md: 12px;           /* Input ve buton köşe yuvarlaklığı */
-  --ka-radius-lg: 18px;           /* Kart ve modal köşe yuvarlaklığı */
+  --ka-radius-md: 12px;
+  --ka-radius-lg: 18px;
   --ka-radius-pill: 999px;
 
   /* ---------- GÖLGE ---------- */
@@ -135,8 +141,8 @@
   --ka-transition: 180ms ease;
 
   /* ---------- RAPOR / A4 ---------- */
-  --ka-report-bg: #ffffff;        /* Rapor kağıdı rengi */
-  --ka-report-text: #000000;      /* Rapor yazı rengi */
+  --ka-report-bg: #ffffff;
+  --ka-report-text: #000000;
   --ka-report-width: 210mm;
   --ka-report-min-height: 297mm;
   --ka-report-margin: 12mm;
@@ -148,68 +154,47 @@
   --ka-report-cell-padding: 5px 7px;
 }
 
-/* =====================================================================
-   2. KOYU TEMA — AYNI DEĞİŞKENLERİN KOYU KARŞILIKLARI
-   Açık temada değiştirdiğiniz genel bir rengin koyu tema karşılığı varsa
-   burada da aynı değişken adını güncelleyin.
-   ===================================================================== */
 [data-theme="dark"] {
   color-scheme: dark;
-
   --ka-primary: #4cc79a;
   --ka-primary-hover: #6ed5ad;
   --ka-primary-soft: #123c30;
   --ka-accent: #64aaf0;
-
   --ka-app-bg: #0e1512;
   --ka-text: #e9f0ed;
   --ka-text-muted: #9dafaa;
   --ka-text-inverse: #07120e;
-
   --ka-header-bg: #151f1b;
   --ka-header-text: #e9f0ed;
   --ka-header-muted: #9dafaa;
   --ka-header-border: #2f4039;
-
   --ka-nav-bg: #151f1b;
   --ka-nav-text: #9dafaa;
   --ka-nav-active-bg: #123c30;
   --ka-nav-active-text: #4cc79a;
   --ka-nav-border: #2f4039;
-
   --ka-button-bg: #4cc79a;
   --ka-button-hover: #6ed5ad;
   --ka-button-text: #07120e;
   --ka-button-secondary-bg: #151f1b;
   --ka-button-secondary-text: #e9f0ed;
   --ka-button-secondary-border: #2f4039;
-
   --ka-card-bg: #151f1b;
   --ka-card-raised-bg: #1b2722;
   --ka-muted-bg: #202d28;
-
   --ka-input-bg: #151f1b;
   --ka-input-text: #e9f0ed;
   --ka-input-border: #2f4039;
   --ka-input-focus: #4cc79a;
-
   --ka-border: #2f4039;
   --ka-border-strong: #44594f;
   --ka-focus: rgba(76, 199, 154, .30);
   --ka-overlay: rgba(0, 0, 0, .68);
-
   --ka-shadow-sm: 0 1px 2px rgba(0, 0, 0, .25);
   --ka-shadow-md: 0 8px 24px rgba(0, 0, 0, .28);
   --ka-shadow-modal: 0 18px 54px rgba(0, 0, 0, .46);
 }
 
-/* =====================================================================
-   3. BİLEŞEN KURALLARI — NORMALDE BURADAKİ RENKLERLE OYNAMAYIN
-   Bu bölüm yukarıdaki değişkenleri kullanır. Genel tasarım değişikliğinde
-   önce 1. ve 2. bölümü düzenleyin.
-   ===================================================================== */
-
-/* ============================ TEMEL YAPI ============================ */
 html {
   font-family: var(--ka-font);
   background: var(--ka-app-bg);
@@ -218,6 +203,8 @@ html {
 }
 body {
   margin: 0;
+  min-height: 100dvh;
+  box-sizing: border-box;
   background: var(--ka-app-bg);
   color: var(--ka-text);
   font-family: var(--ka-font);
@@ -231,11 +218,13 @@ h2 { font-size: var(--ka-font-size-xl); }
 h3 { font-size: var(--ka-font-size-lg); }
 p { margin: 0; }
 
-/* ============================ UYGULAMA KABUĞU ====================== */
 .ka-app-header {
   min-height: var(--ka-header-height);
   box-sizing: border-box;
-  padding: var(--ka-space-3) var(--ka-space-4);
+  padding-top: max(var(--ka-space-3), var(--ka-safe-top));
+  padding-right: max(var(--ka-space-4), var(--ka-safe-right));
+  padding-bottom: var(--ka-space-3);
+  padding-left: max(var(--ka-space-4), var(--ka-safe-left));
   background: var(--ka-header-bg);
   color: var(--ka-header-text);
   border: 1px solid var(--ka-header-border);
@@ -252,20 +241,9 @@ p { margin: 0; }
   border-radius: var(--ka-radius-lg);
   box-shadow: var(--ka-shadow-sm);
 }
-.ka-app-nav .ka-btn--secondary {
-  background: transparent;
-  color: var(--ka-nav-text);
-  border-color: transparent;
-}
-.ka-app-nav .ka-btn--secondary:hover,
-.ka-app-nav .ka-btn--secondary.active,
-.ka-app-nav .ka-btn--secondary[aria-current="page"] {
-  background: var(--ka-nav-active-bg);
-  color: var(--ka-nav-active-text);
-  border-color: transparent;
-}
+.ka-app-nav .ka-btn--secondary { background: transparent; color: var(--ka-nav-text); border-color: transparent; }
+.ka-app-nav .ka-btn--secondary:hover,.ka-app-nav .ka-btn--secondary.active,.ka-app-nav .ka-btn--secondary[aria-current="page"] { background: var(--ka-nav-active-bg); color: var(--ka-nav-active-text); border-color: transparent; }
 
-/* ============================= BUTON =============================== */
 .btn,.ka-btn,button.ka-btn {
   min-height: var(--ka-control-height);
   display: inline-flex;
@@ -286,11 +264,7 @@ p { margin: 0; }
 .btn:active,.ka-btn:active { transform: translateY(1px); }
 .btn:focus-visible,.ka-btn:focus-visible { outline: 3px solid var(--ka-focus); outline-offset: 2px; }
 .btn:disabled,.ka-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.ka-btn--secondary {
-  background: var(--ka-button-secondary-bg);
-  color: var(--ka-button-secondary-text);
-  border-color: var(--ka-button-secondary-border);
-}
+.ka-btn--secondary { background: var(--ka-button-secondary-bg); color: var(--ka-button-secondary-text); border-color: var(--ka-button-secondary-border); }
 .ka-btn--secondary:hover { background: var(--ka-muted-bg); color: var(--ka-button-secondary-text); }
 .ka-btn--danger { background: var(--ka-danger); color: #fff; }
 .ka-btn--ghost { background: transparent; color: var(--ka-text); border-color: transparent; }
@@ -299,180 +273,107 @@ p { margin: 0; }
 .ka-btn--lg { min-height: var(--ka-control-height-lg); padding-inline: var(--ka-space-5); }
 .ka-btn--icon { width: var(--ka-control-height); padding: 0; }
 
-/* ============================ FORM ================================ */
 .form-group,.ka-field { display: grid; gap: var(--ka-space-2); }
 .form-group label,.ka-field__label { color: var(--ka-text); font-size: var(--ka-font-size-sm); font-weight: 650; }
 input:not([type="checkbox"]):not([type="radio"]),select,textarea,.ka-input {
-  width: 100%;
-  min-height: var(--ka-control-height);
-  box-sizing: border-box;
-  border: 1px solid var(--ka-input-border);
-  border-radius: var(--ka-radius-md);
-  background: var(--ka-input-bg);
-  color: var(--ka-input-text);
-  padding: 9px 12px;
-  outline: none;
+  width: 100%; min-height: var(--ka-control-height); box-sizing: border-box;
+  border: 1px solid var(--ka-input-border); border-radius: var(--ka-radius-md);
+  background: var(--ka-input-bg); color: var(--ka-input-text); padding: 9px 12px; outline: none;
   transition: border-color var(--ka-transition-fast), box-shadow var(--ka-transition-fast), background var(--ka-transition-fast);
 }
 textarea { min-height: 96px; resize: vertical; }
-input:not([type="checkbox"]):not([type="radio"]):focus,select:focus,textarea:focus,.ka-input:focus {
-  border-color: var(--ka-input-focus);
-  box-shadow: 0 0 0 3px var(--ka-focus);
-}
+input:not([type="checkbox"]):not([type="radio"]):focus,select:focus,textarea:focus,.ka-input:focus { border-color: var(--ka-input-focus); box-shadow: 0 0 0 3px var(--ka-focus); }
 input::placeholder,textarea::placeholder { color: var(--ka-text-muted); opacity: .8; }
 input[type="checkbox"],input[type="radio"] { width: 20px; height: 20px; margin: 0; accent-color: var(--ka-primary); vertical-align: middle; }
 .ka-check { display: inline-flex; align-items: center; gap: var(--ka-space-2); min-height: 32px; color: var(--ka-text); cursor: pointer; }
 
-/* ============================ KART ================================ */
-.card,.ka-card {
-  background: var(--ka-card-bg);
-  color: var(--ka-text);
-  border: 1px solid var(--ka-border);
-  border-radius: var(--ka-radius-lg);
-  box-shadow: var(--ka-shadow-sm);
-}
+.card,.ka-card { background: var(--ka-card-bg); color: var(--ka-text); border: 1px solid var(--ka-border); border-radius: var(--ka-radius-lg); box-shadow: var(--ka-shadow-sm); }
 .ka-card__header,.ka-card__body,.ka-card__footer { padding: var(--ka-space-4); }
 .ka-card__header + .ka-card__body,.ka-card__body + .ka-card__footer { border-top: 1px solid var(--ka-border); }
 .ka-list-card { transition: border-color var(--ka-transition-fast), box-shadow var(--ka-transition-fast), transform var(--ka-transition-fast); }
 .ka-list-card:hover { border-color: var(--ka-border-strong); box-shadow: var(--ka-shadow-md); }
 
-/* ============================ BADGE =============================== */
-.badge,.ka-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  padding: 2px 8px;
-  border-radius: var(--ka-radius-pill);
-  background: var(--ka-muted-bg);
-  color: var(--ka-text-muted);
-  font-size: var(--ka-font-size-xs);
-  font-weight: 700;
-}
+.badge,.ka-badge { display: inline-flex; align-items: center; min-height: 24px; padding: 2px 8px; border-radius: var(--ka-radius-pill); background: var(--ka-muted-bg); color: var(--ka-text-muted); font-size: var(--ka-font-size-xs); font-weight: 700; }
 .ka-badge--success { background: color-mix(in srgb, var(--ka-success) 14%, transparent); color: var(--ka-success); }
 .ka-badge--warning { background: color-mix(in srgb, var(--ka-warning) 14%, transparent); color: var(--ka-warning); }
-.ka-badge--danger  { background: color-mix(in srgb, var(--ka-danger) 14%, transparent); color: var(--ka-danger); }
+.ka-badge--danger { background: color-mix(in srgb, var(--ka-danger) 14%, transparent); color: var(--ka-danger); }
 
-/* ============================ TAB / LISTE ========================= */
 .ka-tabs { display: flex; align-items: center; gap: var(--ka-space-2); overflow-x: auto; padding: 2px; scrollbar-width: none; }
 .ka-tabs::-webkit-scrollbar { display: none; }
-.ka-tab {
-  min-height: var(--ka-control-height-sm);
-  flex: 0 0 auto;
-  padding: 0 var(--ka-space-3);
-  border: 1px solid var(--ka-border);
-  border-radius: var(--ka-radius-pill);
-  background: var(--ka-card-bg);
-  color: var(--ka-text-muted);
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--ka-transition-fast);
-}
+.ka-tab { min-height: var(--ka-control-height-sm); flex: 0 0 auto; padding: 0 var(--ka-space-3); border: 1px solid var(--ka-border); border-radius: var(--ka-radius-pill); background: var(--ka-card-bg); color: var(--ka-text-muted); font-weight: 700; cursor: pointer; transition: var(--ka-transition-fast); }
 .ka-tab:hover { background: var(--ka-muted-bg); color: var(--ka-text); }
-.ka-tab.active,.ka-tab[aria-selected="true"] {
-  background: var(--ka-primary-soft);
-  border-color: color-mix(in srgb, var(--ka-primary) 42%, var(--ka-border));
-  color: var(--ka-primary);
-}
-.ka-avatar {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
-  display: inline-grid;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 50%;
-  background: var(--ka-primary-soft);
-  color: var(--ka-primary);
-  font-weight: 800;
-}
+.ka-tab.active,.ka-tab[aria-selected="true"] { background: var(--ka-primary-soft); border-color: color-mix(in srgb, var(--ka-primary) 42%, var(--ka-border)); color: var(--ka-primary); }
+.ka-avatar { width: 42px; height: 42px; flex: 0 0 42px; display: inline-grid; place-items: center; overflow: hidden; border-radius: 50%; background: var(--ka-primary-soft); color: var(--ka-primary); font-weight: 800; }
 .ka-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .ka-grow { flex: 1 1 auto; min-width: 0; }
 .ka-row--between { justify-content: space-between; }
-.ka-empty {
-  padding: var(--ka-space-6);
-  border: 1px dashed var(--ka-border-strong);
-  border-radius: var(--ka-radius-lg);
-  background: var(--ka-card-bg);
-  color: var(--ka-text-muted);
-  text-align: center;
-}
-.ka-media {
-  display: block;
-  width: 100%;
-  max-height: min(70dvh, 900px);
-  object-fit: contain;
-  border-radius: var(--ka-radius-md);
-  background: var(--ka-muted-bg);
-}
+.ka-empty { padding: var(--ka-space-6); border: 1px dashed var(--ka-border-strong); border-radius: var(--ka-radius-lg); background: var(--ka-card-bg); color: var(--ka-text-muted); text-align: center; }
+.ka-media { display: block; width: 100%; max-height: min(70dvh, 900px); object-fit: contain; border-radius: var(--ka-radius-md); background: var(--ka-muted-bg); }
 
-/* ============================ MODAL =============================== */
 .ka-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: grid;
-  place-items: center;
-  padding: var(--ka-space-4);
-  background: var(--ka-overlay);
+  position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+  padding-top: max(var(--ka-space-4), var(--ka-safe-top));
+  padding-right: max(var(--ka-space-4), var(--ka-safe-right));
+  padding-bottom: max(var(--ka-space-4), var(--ka-safe-bottom));
+  padding-left: max(var(--ka-space-4), var(--ka-safe-left));
+  background: var(--ka-overlay); box-sizing: border-box;
 }
-.ka-modal {
-  width: min(680px, 100%);
-  max-height: min(88dvh, 900px);
-  overflow: auto;
-  background: var(--ka-card-raised-bg);
-  color: var(--ka-text);
-  border: 1px solid var(--ka-border);
-  border-radius: var(--ka-radius-lg);
-  box-shadow: var(--ka-shadow-modal);
-}
+.ka-modal { width: min(680px, 100%); max-height: min(88dvh, 900px); overflow: auto; background: var(--ka-card-raised-bg); color: var(--ka-text); border: 1px solid var(--ka-border); border-radius: var(--ka-radius-lg); box-shadow: var(--ka-shadow-modal); }
 .ka-modal__header,.ka-modal__body,.ka-modal__footer { padding: var(--ka-space-4); }
 .ka-modal__header { display: flex; align-items: center; justify-content: space-between; gap: var(--ka-space-3); border-bottom: 1px solid var(--ka-border); }
 .ka-modal__footer { display: flex; justify-content: flex-end; gap: var(--ka-space-2); border-top: 1px solid var(--ka-border); }
 
-/* ============================ TABLO =============================== */
 .ka-table-wrap { overflow: auto; border: 1px solid var(--ka-border); border-radius: var(--ka-radius-md); }
 .ka-table,table.ka-table { width: 100%; border-collapse: collapse; background: var(--ka-card-bg); color: var(--ka-text); }
 .ka-table th,.ka-table td { padding: 10px 12px; border-bottom: 1px solid var(--ka-border); text-align: left; vertical-align: middle; }
 .ka-table th { background: var(--ka-muted-bg); font-size: var(--ka-font-size-sm); font-weight: 750; }
 
-/* ============================ LAYOUT ============================== */
-.ka-page { width: 100%; max-width: var(--ka-content-max-width); margin: 0 auto; padding: var(--ka-space-4); box-sizing: border-box; }
+.ka-page {
+  width: 100%; max-width: var(--ka-content-max-width); margin: 0 auto; box-sizing: border-box;
+  padding-top: var(--ka-space-4);
+  padding-right: max(var(--ka-space-4), var(--ka-safe-right));
+  padding-bottom: max(var(--ka-space-4), var(--ka-safe-bottom));
+  padding-left: max(var(--ka-space-4), var(--ka-safe-left));
+}
 .ka-stack { display: flex; flex-direction: column; gap: var(--ka-space-3); }
 .ka-row { display: flex; align-items: center; gap: var(--ka-space-3); }
 .ka-grid { display: grid; gap: var(--ka-space-3); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .ka-muted { color: var(--ka-text-muted); }
 .ka-hidden { display: none !important; }
 
-/* ============================ RAPOR =============================== */
-.ka-report {
-  width: var(--ka-report-width);
-  min-height: var(--ka-report-min-height);
-  box-sizing: border-box;
-  margin: 0 auto;
-  padding: var(--ka-report-margin);
-  background: var(--ka-report-bg);
-  color: var(--ka-report-text);
-  font-family: var(--ka-report-font);
-  font-size: var(--ka-report-font-size);
-}
+.ka-report { width: var(--ka-report-width); min-height: var(--ka-report-min-height); box-sizing: border-box; margin: 0 auto; padding: var(--ka-report-margin); background: var(--ka-report-bg); color: var(--ka-report-text); font-family: var(--ka-report-font); font-size: var(--ka-report-font-size); }
 .ka-report h1,.ka-report h2,.ka-report h3 { color: var(--ka-report-text); font-family: var(--ka-report-font); }
 .ka-report h1 { font-size: var(--ka-report-heading-size); text-align: center; }
 .ka-report table { width: 100%; border-collapse: collapse; }
 .ka-report th,.ka-report td { padding: var(--ka-report-cell-padding); border: 1px solid var(--ka-report-border); color: var(--ka-report-text); }
 .ka-report th { background: var(--ka-report-header-bg); font-weight: 700; }
 
-/* ============================ RESPONSIVE ========================== */
 @media (max-width: 767px) {
   :root { --ka-font-size-md: 14px; --ka-radius-lg: 16px; }
-  .ka-page { padding: var(--ka-space-3); }
-  .ka-app-header { padding: var(--ka-space-3); }
-  .ka-modal-backdrop { align-items: end; padding: 0; }
+  .ka-page {
+    padding-top: var(--ka-space-3);
+    padding-right: max(var(--ka-space-3), var(--ka-safe-right));
+    padding-bottom: max(var(--ka-space-3), var(--ka-safe-bottom));
+    padding-left: max(var(--ka-space-3), var(--ka-safe-left));
+  }
+  .ka-app-header {
+    padding-top: max(var(--ka-space-3), var(--ka-safe-top));
+    padding-right: max(var(--ka-space-3), var(--ka-safe-right));
+    padding-bottom: var(--ka-space-3);
+    padding-left: max(var(--ka-space-3), var(--ka-safe-left));
+  }
+  .ka-app-nav {
+    padding-top: var(--ka-space-2);
+    padding-right: max(var(--ka-space-2), var(--ka-safe-right));
+    padding-bottom: max(var(--ka-space-2), var(--ka-safe-bottom));
+    padding-left: max(var(--ka-space-2), var(--ka-safe-left));
+  }
+  .ka-modal-backdrop { align-items: end; padding-top: var(--ka-safe-top); padding-right: var(--ka-safe-right); padding-bottom: var(--ka-safe-bottom); padding-left: var(--ka-safe-left); }
   .ka-modal { width: 100%; max-height: 92dvh; border-radius: var(--ka-radius-lg) var(--ka-radius-lg) 0 0; border-bottom: 0; }
   .ka-row--between { align-items: flex-start; }
   .ka-list-card .ka-card__body { padding: var(--ka-space-3); }
 }
 
-/* ============================ PRINT =============================== */
 @page { size: A4; margin: 0; }
 @media print {
   body { background: var(--ka-report-bg) !important; }
