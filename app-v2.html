@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b7657">
+  <meta name="theme-color" content="#0b7657" data-ka-theme-color>
   <title>Koruk Asistan</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-192.png">
@@ -43,13 +43,16 @@
   </section>
 
   <main id="app" class="ka-page ka-stack">
-    <header class="ka-row">
+    <header class="ka-app-header ka-row">
       <img src="assets/icon-192.png" width="44" height="44" alt="Koruk İlk-Ortaokulu">
-      <div class="ka-stack"><h1>Koruk Asistan</h1><span class="ka-muted">Local-first okul yönetim sistemi</span></div>
+      <div class="ka-stack ka-grow">
+        <h1>Koruk Asistan</h1>
+        <span class="ka-muted">Local-first okul yönetim sistemi</span>
+      </div>
       <span id="v2SyncStatus" class="ka-badge">Cihaz verisi hazırlanıyor</span>
     </header>
 
-    <nav class="ka-grid" aria-label="Uygulama bölümleri">
+    <nav class="ka-app-nav ka-grid" aria-label="Uygulama bölümleri">
       <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="dashboard">Ana Sayfa</button>
       <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="people">Öğretmen / Öğrenci</button>
       <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="academic">Akademik</button>
