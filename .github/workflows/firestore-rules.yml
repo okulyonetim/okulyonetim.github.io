@@ -38,6 +38,7 @@ on:
       - 'tests/cihaz-token-owner-rules.test.js'
       - 'tests/devamsizlik-role-rules.test.js'
       - 'tests/legacy-koleksiyonlar-rules.test.js'
+      - 'tests/retired-optical-rules.test.js'
       - 'tests/kullanici-tercihleri-owner-rules.test.js'
       - 'tests/ogretmen-liste-owner-rules.test.js'
       - 'tests/storage-rules.test.js'
@@ -77,6 +78,7 @@ on:
       - 'tests/cihaz-token-owner-rules.test.js'
       - 'tests/devamsizlik-role-rules.test.js'
       - 'tests/legacy-koleksiyonlar-rules.test.js'
+      - 'tests/retired-optical-rules.test.js'
       - 'tests/kullanici-tercihleri-owner-rules.test.js'
       - 'tests/ogretmen-liste-owner-rules.test.js'
       - 'tests/storage-rules.test.js'
@@ -137,6 +139,7 @@ jobs:
           node tests/cihaz-token-owner-rules.test.js &&
           node tests/devamsizlik-role-rules.test.js &&
           node tests/legacy-koleksiyonlar-rules.test.js &&
+          node tests/retired-optical-rules.test.js &&
           node tests/kullanici-tercihleri-owner-rules.test.js &&
           node tests/ogretmen-liste-owner-rules.test.js &&
           node tests/storage-rules.test.js"
