@@ -12,6 +12,7 @@ on:
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
+      - 'tests/web-mobile-engine-separation.test.js'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
   pull_request:
@@ -24,6 +25,7 @@ on:
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
+      - 'tests/web-mobile-engine-separation.test.js'
       - 'package.json'
 
 permissions:
@@ -37,13 +39,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
       - name: Build client bundles
         run: node scripts/build-client-bundles.mjs
       - name: Verify module bundle contracts
         run: node tests/module-bundles-smoke.test.js
       - name: Verify service worker shell
         run: node tests/service-worker-precache-smoke.test.js
+      - name: Verify Android iOS web responsive shell
+        run: node tests/web-mobile-engine-separation.test.js
       - name: Audit client architecture
         run: node scripts/check-client-architecture.mjs
       - name: Show generated bundle sizes
