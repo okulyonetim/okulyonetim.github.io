@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v15
+/* Koruk Asistan — AppLoader v16
    Başlangıçta yalnız çekirdek yüklenir; özellikler ihtiyaç anında data + tek UI modülü olarak gelir.
    Uygulama başlangıcının tek sahibi: tema + Firebase init + auth listener + Service Worker. */
 (function(){
@@ -18,7 +18,7 @@ function list(){return[...registry.entries()].map(([name,files])=>({name,files:[
 define('dashboard',['js/modules/dashboard.js']);
 define('people',['js/modules/people-data.js','js/modules/people.js']);
 define('academic',['js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']);
-define('management',['js/core/repositories/takvim.repository.js','js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js','js/modules/management-data.js','js/modules/management.js']);
+define('management',['js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js','js/modules/management-data.js','js/modules/management.js']);
 define('communication',['js/core/repositories/takvim.repository.js','js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js','js/modules/settings-data.js','js/modules/communication-data.js','js/modules/communication.js']);
 define('transport',['js/modules/people-data.js','js/modules/transport-data.js','js/modules/transport.js']);
 define('documents',['js/modules/settings-data.js','js/modules/documents-data.js','js/modules/documents.js']);
