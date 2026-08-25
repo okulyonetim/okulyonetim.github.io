@@ -10,6 +10,7 @@ const retired=[
   'js/excel-import.js',
   'js/dokuman-pdf-tools.js',
   'js/raporlama.js',
+  'js/ozellik-katalogu.js',
   'js/modules/transport-data.js',
   'js/modules/duty-data.js',
   'js/modules/settings-data.js'
