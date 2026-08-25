@@ -76,6 +76,20 @@ async function flushWrites(){if(flushing||!navigator.onLine)return;const u=uid()
 function scheduleFlush(){clearTimeout(flushTimer);flushTimer=setTimeout(flushWrites,350)}
 window.KorukLocalFirst={open,get,set,setMany,del,queue,pending,tombstone,tombstones,cache,cached,cacheMany,hydrate:hydrateLocal,meta,markBootstrap:(u,d={})=>meta(u,'bootstrap',{ready:true,completedAt:Date.now(),...d}),bootstrapState:u=>meta(u,'bootstrap'),isBootstrapReady:async u=>!!(await meta(u,'bootstrap'))?.ready,flush:flushWrites,schedule:scheduleFlush,uid};
 
+/* ========================= DEVICE DATA =========================
+   Tüm modül repository'lerinin ortak local-first yazma/okuma kapısıdır.
+   Önce AppStore + IndexedDB güncellenir; Firestore işlemi yalnız queue'ya eklenir. */
+function deviceList(type){const v=AppStore.data(type);return Array.isArray(v)?v:[]}
+function deviceId(){try{return crypto.randomUUID()}catch(_){return `local-${Date.now()}-${Math.random().toString(36).slice(2)}`}}
+async function devicePersist(type,rows){const next=Array.isArray(rows)?rows:[];AppStore.setData(type,next);const u=uid();if(u)await cache(u,type,next);return next}
+function deviceListen(type,callback){const run=v=>{try{callback(Array.isArray(v)?v:[],{source:'device'})}catch(e){console.error('[DeviceData]',type,e)}};run(deviceList(type));return AppStore.subscribe('data.'+type,run)}
+async function deviceAdd(type,collection,data,{id=null}={}){const docId=id||deviceId(),row={id:docId,...data};await devicePersist(type,[...deviceList(type).filter(x=>x?.id!==docId),row]);await queue(uid(),{kind:'set-doc',collection,id:docId,data});AppStore.set('ui.pendingWrites',(await pending()).length);return{id:docId,...row}}
+async function deviceUpdate(type,collection,id,data){if(!id)throw new Error('id-gerekli');const rows=deviceList(type),i=rows.findIndex(x=>x?.id===id),row=i>=0?{...rows[i],...data}:{id,...data},next=i>=0?rows.map((x,n)=>n===i?row:x):[...rows,row];await devicePersist(type,next);await queue(uid(),{kind:'update-doc',collection,id,data});AppStore.set('ui.pendingWrites',(await pending()).length);return row}
+async function deviceSet(type,collection,id,data,{merge=false}={}){if(!id)throw new Error('id-gerekli');const rows=deviceList(type),i=rows.findIndex(x=>x?.id===id),row=merge&&i>=0?{...rows[i],...data}:{id,...data},next=i>=0?rows.map((x,n)=>n===i?row:x):[...rows,row];await devicePersist(type,next);await queue(uid(),{kind:'set-doc',collection,id,data,merge});AppStore.set('ui.pendingWrites',(await pending()).length);return row}
+async function deviceRemove(type,collection,id){if(!id)throw new Error('id-gerekli');await devicePersist(type,deviceList(type).filter(x=>x?.id!==id));const u=uid();if(u)await tombstone(u,type,id,true);await queue(u,{kind:'delete-doc',collection,id,tombType:type,tombId:id});AppStore.set('ui.pendingWrites',(await pending()).length);return true}
+function deviceGet(type,id){return deviceList(type).find(x=>x?.id===id)||null}
+window.DeviceData={list:deviceList,get:deviceGet,listen:deviceListen,persist:devicePersist,add:deviceAdd,update:deviceUpdate,set:deviceSet,remove:deviceRemove,newId:deviceId};
+
 /* ========================= SYNC ENGINE ========================= */
 let syncing=false,syncTimer=null;const registered=new Map();
 function syncReady(){return !!(window.db&&uid())}
@@ -92,7 +106,7 @@ const CORE_TYPES=['ogretmenler','dersProgrami','siniflar','veliler','servisler',
 let bootPromise=null,booted=false;
 function waitFor(test,timeout=12000,step=50){return new Promise((resolve,reject)=>{const start=Date.now(),tick=()=>{let ok=false;try{ok=!!test()}catch(_){}if(ok)return resolve(true);if(Date.now()-start>=timeout)return reject(new Error('bootstrap-timeout'));setTimeout(tick,step)};tick()})}
 function registerCore(){if(!window.COL)return;const pairs={ogretmenler:COL.ogretmenler,dersProgrami:COL.dersProgrami,siniflar:COL.siniflar,veliler:COL.veliler,servisler:COL.servisler,nobetAtamalari:COL.nobetAtamalari,nobetYerleri:COL.nobetYerleri,sinavlar:COL.sinavlar,denemeSinavlari:COL.denemeSinavlari,duyurular:COL.duyurular,haberler:COL.haberler,gorevler:COL.gorevler,hatirlaticilar:COL.hatirlaticilar,ogretmenIzinleri:COL.ogretmenIzinleri,notlar:COL.notlar};Object.entries(pairs).forEach(([type,col])=>col&&register(type,col))}
-async function start(){if(bootPromise)return bootPromise;bootPromise=(async()=>{await waitFor(()=>window.COL&&window.AppStore&&window.KorukLocalFirst);await waitFor(()=>window.AKTIF_KULLANICI?.uid).catch(()=>false);if(!window.AKTIF_KULLANICI?.uid)return false;AppStore.set('session.user',AKTIF_KULLANICI);AppStore.set('session.role',window.AKTIF_ROL||null);registerCore();await localHydrate(CORE_TYPES);AppStore.set('session.ready',true);AppStore.set('meta.hydrated',true);window.dispatchEvent(new CustomEvent('koruk:app-ready',{detail:{source:'device'}}));setTimeout(()=>sync(CORE_TYPES),100);AppStore.set('meta.booted',true);booted=true;return true})().catch(e=>{console.warn('[AppBootstrap]',e?.message||e);return false});return bootPromise}
+async function start(){if(bootPromise)return bootPromise;bootPromise=(async()=>{await waitFor(()=>window.COL&&window.AppStore&&window.KorukLocalFirst&&window.DeviceData);await waitFor(()=>window.AKTIF_KULLANICI?.uid).catch(()=>false);if(!window.AKTIF_KULLANICI?.uid)return false;AppStore.set('session.user',AKTIF_KULLANICI);AppStore.set('session.role',window.AKTIF_ROL||null);registerCore();await localHydrate(CORE_TYPES);AppStore.set('session.ready',true);AppStore.set('meta.hydrated',true);window.dispatchEvent(new CustomEvent('koruk:app-ready',{detail:{source:'device'}}));setTimeout(()=>sync(CORE_TYPES),100);AppStore.set('meta.booted',true);booted=true;return true})().catch(e=>{console.warn('[AppBootstrap]',e?.message||e);return false});return bootPromise}
 window.AppBootstrap={start,CORE_TYPES,get started(){return booted}};
 
 window.addEventListener('online',()=>{scheduleFlush();scheduleSync(250)},{passive:true});
