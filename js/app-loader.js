@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v7
+/* Koruk Asistan — AppLoader v8
    Başlangıçta yüzlerce JS yüklemek yerine özellik gruplarını ihtiyaç anında yükler.
    Yeni çekirdek: firebase-init.js + core.js + auth.js + app-loader.js. */
 (function(){
@@ -20,7 +20,7 @@ define('people',['js/modules/people-data.js','js/modules/people.js']);
 define('academic',['js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']);
 define('management',['js/core/repositories/takvim.repository.js','js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js','js/modules/management-data.js','js/modules/management.js']);
 define('communication',['js/core/repositories/takvim.repository.js','js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js','js/modules/communication-data.js','js/modules/communication.js']);
-define('transport',['js/modules/people-data.js','js/modules/transport-data.js','js/tasima.js','js/servis-oturma.js','js/sinif-oturma.js','js/tasima-takip.js','js/servis-denetim.js']);
+define('transport',['js/modules/people-data.js','js/modules/transport-data.js','js/modules/transport.js']);
 define('documents',['js/modules/documents-data.js','js/dokumanlar.js','js/dokuman-okuyucu.js','js/raporlama.js','js/report-header-unifier.js','js/native-report-preview.js']);
 define('settings',['js/modules/settings-data.js','js/kullanici-yonetimi.js','js/depolama-sinirlari.js','js/nav-duzeni-editor.js','js/role-ui-hardening.js']);
 
