@@ -4,18 +4,14 @@
 
     <!-- İzinler -->
     <uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-<uses-permission android:name="android.permission.VIBRATE" />
-<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
-<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-<!-- Optik Okuma (OMR) modülü kağıt taramak için kamerayı (getUserMedia) kullanır. -->
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-feature android:name="android.hardware.camera" android:required="false" />
-<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="true"
@@ -26,7 +22,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <!-- Ana Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -37,7 +32,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Deep link: koruk://okul/... -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -46,7 +40,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Widget -->
         <receiver
             android:name=".OkulWidget"
             android:exported="true"
@@ -59,9 +52,6 @@
                 android:resource="@xml/okul_widget_info" />
         </receiver>
 
-
-
-        <!-- Ders Zili Geri Sayım Widget'ı -->
         <receiver
             android:name=".DersZiliWidget"
             android:exported="true"
@@ -74,7 +64,6 @@
                 android:resource="@xml/ders_zili_widget_info" />
         </receiver>
 
-        <!-- FCM Servis -->
         <service
             android:name=".OkulFirebaseMessagingService"
             android:exported="false">
@@ -83,7 +72,6 @@
             </intent-filter>
         </service>
 
-        <!-- FCM Bildirim kanalı meta -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="ch_genel" />
@@ -94,9 +82,6 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
 
-        <!-- YENİ: Uygulama içi otomatik güncelleme — indirilen APK dosyasını
-             kurulum ekranına content:// URI olarak vermek için gerekli
-             (bkz. UpdatePlugin.java). -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -109,4 +94,3 @@
 
     </application>
 </manifest>
-
