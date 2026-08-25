@@ -35,27 +35,28 @@ for(const bundle of ['academic','management','communication','transport','docume
 for(const api of ['window.DeviceData','deviceAdd','deviceUpdate','deviceSet','deviceRemove']) assert(core.includes(api),`Core ${api} sözleşmesini içermeli.`);
 assert(core.includes("queue(uid(),{kind:'set-doc'"),'DeviceData yazmaları mevcut offline queue kullanmalı.');
 assert(core.includes("tombstone(u,type,id,true)"),'DeviceData silmede tombstone kullanmalı.');
-for(const forbidden of ['localStorage','onSnapshot','db.collection']) assert(!source['transport-data'].includes(forbidden),`transport-data doğrudan ${forbidden} kullanmamalı.`);
-assert(source['transport-data'].includes('DeviceData'),'transport-data merkezi DeviceData kullanmalı.');
+for(const bundle of ['people-data','academic-data','management-data','transport-data','settings-data']){
+  for(const forbidden of ['localStorage','onSnapshot','db.collection']) assert(!source[bundle].includes(forbidden),`${bundle} doğrudan ${forbidden} kullanmamalı.`);
+  assert(source[bundle].includes('DeviceData'),`${bundle} merkezi DeviceData kullanmalı.`);
+}
+/* Akademik dosya binary Storage kullanabilir, ancak Firestore metadata yazamaz. */
+assert(source['academic-data'].includes('storage.ref()'),'Academic takvim binary dosyası Storage üzerinden yönetilmeli.');
 
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
 assert(registry('dashboard').includes("'js/modules/dashboard.js'"),'Dashboard yalnız temiz V2 UI yüklemeli.');
 for(const legacy of ['js/app.js','js/ui.js','js/alt-navigasyon.js','js/sistem-bar.js','js/hava-durumu.js']) assert(!registry('dashboard').includes(legacy),`Dashboard legacy dosyayı yüklememeli: ${legacy}`);
-
 assert(registry('people').includes("'js/modules/people-data.js'")&&registry('people').includes("'js/modules/people.js'"),'People data + tek UI olmalı.');
 for(const legacy of ['js/siniflar.js','js/ogrenciler-arama.js','js/ogretmen-detay.js','js/yoklama.js']) assert(!registry('people').includes(legacy),`People legacy dosyayı yüklememeli: ${legacy}`);
-
-for(const dep of ['js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']) assert(registry('academic').includes(`'${dep}'`),`Academic ${dep} yüklemeli.`);
+for(const dep of ['js/modules/settings-data.js','js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']) assert(registry('academic').includes(`'${dep}'`),`Academic ${dep} yüklemeli.`);
 for(const legacy of ['js/sinavlar.js','js/yillik-plan.js','js/ders-saatleri.js','js/akademik-takvim.js','js/sinav-sonuclari.js','js/deneme-sinavlari-modern.js']) assert(!registry('academic').includes(legacy),`Academic legacy dosyayı yüklememeli: ${legacy}`);
-
 assert(registry('management').includes("'js/modules/management.js'"),'Management tek temiz UI yüklemeli.');
+assert(!registry('management').includes('takvim.repository.js'),'Management hatırlatıcı için ayrı TakvimRepository yüklememeli.');
 for(const legacy of ['js/nobet.js','js/periyodik.js','js/personel.js','js/dilekce.js','js/puantaj.js','js/ogretmen-izin.js']) assert(!registry('management').includes(`'${legacy}'`),`Management legacy dosyayı yüklememeli: ${legacy}`);
 assert(registry('communication').includes("'js/modules/communication.js'"),'Communication tek temiz UI yüklemeli.');
 for(const legacy of ['js/mesajlasma.js','js/duyurular.js','js/anket.js','js/haberler.js','js/takvim.js','js/notlar.js']) assert(!registry('communication').includes(`'${legacy}'`),`Communication legacy dosyayı yüklememeli: ${legacy}`);
 assert(registry('transport').includes("'js/modules/transport.js'"),'Transport tek temiz UI yüklemeli.');
 for(const legacy of ['js/tasima.js','js/servis-oturma.js','js/sinif-oturma.js','js/tasima-takip.js','js/servis-denetim.js']) assert(!registry('transport').includes(`'${legacy}'`),`Transport legacy dosyayı yüklememeli: ${legacy}`);
-assert(registry('documents').includes("'js/modules/documents.js'"),'Documents tek temiz UI yüklemeli.');
+assert(registry('documents').includes("'js/modules/settings-data.js'")&&registry('documents').includes("'js/modules/documents.js'"),'Documents kota servisi + tek temiz UI yüklemeli.');
 assert(registry('settings').includes("'js/modules/settings.js'"),'Settings tek temiz UI yüklemeli.');
-
-assert(loader.includes('syncLegacySession'),'Eski auth oturumu V2 Core/AppStore ile köprülenmeli.');
+assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 console.log('Sekiz ana V2 modülü local-first ve tek UI sahibi: smoke test başarılı.');
