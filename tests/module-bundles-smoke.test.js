@@ -3,12 +3,13 @@ const assert=require('assert');
 
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const core=fs.readFileSync('js/core/core.js','utf8');
+const nobetRepo=fs.readFileSync('js/core/repositories/nobet.repository.js','utf8');
 const dataBundles=['people-data','academic-data','management-data','messaging-data','communication-data','transport-data','documents-data','settings-data'];
 const uiBundles=['dashboard','people','academic','management','communication','transport','documents','settings'];
 const source={};
 for(const name of dataBundles) source[name]=fs.readFileSync(`js/modules/${name}.js`,'utf8');
 for(const name of uiBundles) source[name]=fs.readFileSync(`js/modules/${name}.js`,'utf8');
-for(const text of [...Object.values(source),loader,core]) new Function(text);
+for(const text of [...Object.values(source),loader,core,nobetRepo]) new Function(text);
 
 const apiContracts={
  'people-data':['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService'],
@@ -39,6 +40,9 @@ for(const bundle of ['people-data','academic-data','management-data','messaging-
   for(const forbidden of ['localStorage','onSnapshot','db.collection']) assert(!source[bundle].includes(forbidden),`${bundle} doğrudan ${forbidden} kullanmamalı.`);
   assert(source[bundle].includes('DeviceData'),`${bundle} merkezi DeviceData kullanmalı.`);
 }
+for(const forbidden of ['localStorage','onSnapshot','db.collection','db.batch']) assert(!nobetRepo.includes(forbidden),`nobet.repository doğrudan ${forbidden} kullanmamalı.`);
+assert(nobetRepo.includes('DeviceData'),'Nöbet repository merkezi DeviceData kullanmalı.');
+assert(nobetRepo.includes('batchCommit'),'Nöbet Excel/rotasyon batch sözleşmesi korunmalı.');
 assert(source['academic-data'].includes('storage.ref()'),'Academic takvim binary dosyası Storage üzerinden yönetilmeli.');
 assert(source['documents-data'].includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
 assert(source['communication-data'].includes('storage.ref()'),'Duyuru görselleri Storage üzerinden yönetilmeli.');
