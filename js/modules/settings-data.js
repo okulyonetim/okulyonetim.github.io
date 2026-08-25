@@ -6,6 +6,23 @@
 'use strict';
 function device(){if(!global.DeviceData)throw new Error('DeviceData hazır değil.');return global.DeviceData;}
 function row(type,id){return device().get(type,id);}
+function legacySeviye(v){
+  const n=global.PermissionService?.normalize?.(v)||String(v||'');
+  if(n==='hidden')return'gizle';
+  if(n==='preview'||n==='read')return'goruntule';
+  if(n==='edit')return'duzenle';
+  return null;
+}
+function rolYetkileriniUyumla(veri){
+  if(!veri?.yetkiler||typeof veri.yetkiler!=='object')return veri;
+  const yetkiler={...veri.yetkiler},aliases=global.PermissionService?.aliases||{};
+  Object.entries(yetkiler).forEach(([key,value])=>{
+    if(!key.startsWith('module.'))return;
+    const legacy=legacySeviye(value);if(!legacy)return;
+    (aliases[key]||[]).forEach(alias=>{yetkiler[alias]=legacy;});
+  });
+  return{...veri,yetkiler};
+}
 
 const KullaniciYonetimiRepository={
   rolleriDinle(callback){return device().listen('roller',callback);},
@@ -20,7 +37,7 @@ global.KullaniciYonetimiRepository=KullaniciYonetimiRepository;
 
 const KullaniciYonetimiService={
   _yetkiKontrol(){if(!kullaniciYonetimiYetkisiVar()){toast('Bu işlem için yetkiniz yok.');return false;}return true;},
-  rolKaydet(mevcutId,veri){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));return mevcutId?KullaniciYonetimiRepository.rolGuncelle(mevcutId,veri):KullaniciYonetimiRepository.rolEkle(veri);},
+  rolKaydet(mevcutId,veri){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));veri=rolYetkileriniUyumla(veri);return mevcutId?KullaniciYonetimiRepository.rolGuncelle(mevcutId,veri):KullaniciYonetimiRepository.rolEkle(veri);},
   rolSil(id,atanmisKullaniciSayisi){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));if(atanmisKullaniciSayisi>0)return Promise.reject(new Error('rol-kullanimda:'+atanmisKullaniciSayisi));return KullaniciYonetimiRepository.rolSil(id);},
   kullaniciKaydet(uid,veri,kendiUid){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));if(uid===kendiUid&&veri.aktif===false)return Promise.reject(new Error('kendini-pasif-yapamaz'));return KullaniciYonetimiRepository.kullaniciGuncelle(uid,veri);},
   kullaniciSil(uid,kendiUid){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));if(uid===kendiUid)return Promise.reject(new Error('kendini-silemez'));return KullaniciYonetimiRepository.kullaniciSil(uid);}
