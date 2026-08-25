@@ -5,7 +5,8 @@
     "scripts": {
         "start": "node check-and-notify.js",
         "rss-fetch": "node scripts/rss-fetch.js",
-        "build:client": "node scripts/build-client-bundles.mjs"
+        "build:client": "node scripts/build-client-bundles.mjs",
+        "audit:client": "node scripts/check-client-architecture.mjs"
     },
     "dependencies": {
         "express": "^4.18.2",
