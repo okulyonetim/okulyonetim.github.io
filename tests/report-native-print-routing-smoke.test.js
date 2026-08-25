@@ -11,7 +11,6 @@ const dosyalar = [
   'js/kontrol-listeleri.js',
   'js/ogretmen-liste-olusturucu.js',
   'js/teblig-tebellug.js',
-  'js/cizelgeler.js',
   'js/kriter-dagitim.js',
   'js/proje-degerlendirme.js'
 ];
