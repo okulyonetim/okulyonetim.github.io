@@ -1,0 +1,40 @@
+name: Client Architecture
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/**'
+      - 'scripts/build-client-bundles.mjs'
+      - 'scripts/check-client-architecture.mjs'
+      - 'tests/module-bundles-smoke.test.js'
+      - 'package.json'
+      - '.github/workflows/client-architecture.yml'
+  pull_request:
+    paths:
+      - 'js/**'
+      - 'scripts/build-client-bundles.mjs'
+      - 'scripts/check-client-architecture.mjs'
+      - 'tests/module-bundles-smoke.test.js'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build client bundles
+        run: node scripts/build-client-bundles.mjs
+      - name: Verify module bundle contracts
+        run: node tests/module-bundles-smoke.test.js
+      - name: Audit client architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Show generated bundle sizes
+        run: cat dist/js/manifest.json
