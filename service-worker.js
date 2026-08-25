@@ -1,5 +1,5 @@
 /* Okul Yönetim Paneli — Service Worker v8 / performans */
-const CACHE_ADI='oy-cache-v649';
+const CACHE_ADI='oy-cache-v650';
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 firebase.initializeApp({apiKey:"AIzaSyCxLLlLCA0Deu7dcQch5e1c4R5ur5FSkc",authDomain:"okul-6e302.firebaseapp.com",projectId:"okul-6e302",storageBucket:"okul-6e302.firebasestorage.app",messagingSenderId:"738103486583",appId:"1:738103486583:web:da91129b1a08f2463efe72"});
@@ -12,14 +12,14 @@ const ONBELLEGE_ALINACAKLAR=[
   './css/styles.css','./css/dark-theme-soft.css','./css/auth-header-redesign.css',
   './css/dashboard-home.css','./css/dashboard-home-neutral.css','./css/dashboard-home-colors.css',
   './css/dashboard-bell-modern.css','./css/dashboard-home-wide.css','./css/alt-navigation-theme.css',
-  './css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css',
+  './css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css','./css/tasima-modern-v2.css',
   './js/firebase-init.js','./js/auth.js','./js/ozellik-katalogu.js','./js/app.js','./js/ui.js',
   './js/core/local-first-sync.js','./js/core/runtime-state-bridge.js',
   './js/alt-navigasyon.js','./js/alt-navigasyon-core.js','./js/ui-stability-fixes.js','./js/pull-to-refresh-guard.js',
   './js/app-pages-theme.js','./js/auth-header-redesign-v2.js','./js/mobile-header-brand.js',
   './js/dashboard-home.js','./js/dashboard-bell-modern.js','./js/dashboard-home-shared.js',
   './js/dashboard-home-bootstrap-sync.js','./js/mobile-back-navigation.js',
-  './js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js',
+  './js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js','./js/tasima-modern-v2.js',
   './js/deneme-sayac-local-first.js','./js/deneme-sayac-local-first-v2.js','./js/deneme-sayac-runtime-v2.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];

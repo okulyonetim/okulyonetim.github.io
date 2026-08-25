@@ -734,25 +734,8 @@ function servisListesiYazdir(servisId) {
     engelliYazmaFonksiyonlariniSar();
     tasimaSayfaRolunuUygula();
   }
-
-  let deneme=0;
-  const t=setInterval(()=>{
-    kur();
-    if(++deneme>120) clearInterval(t);
-  },250);
-  document.addEventListener('DOMContentLoaded', kur);
-  window.addEventListener('load', ()=>setTimeout(kur,100));
-
-  let obsBekliyor=false;
-  const obs=new MutationObserver(()=>{
-    if(obsBekliyor) return;
-    obsBekliyor=true;
-    requestAnimationFrame(()=>{
-      obsBekliyor=false;
-      tasimaSayfaRolunuUygula();
-      const ov=document.getElementById('modalOverlay');
-      if(ov && !ov.classList.contains('active') && !ov.classList.contains('show')) tasimaModalSinifiTemizle();
-    });
-  });
-  document.addEventListener('DOMContentLoaded',()=>obs.observe(document.body,{subtree:true,childList:true}));
+  // Performans: rol wrapperları tek sefer kurulur; sürekli DOM polling yok.
+  kur();
+  document.addEventListener('DOMContentLoaded', kur, {once:true});
+  window.addEventListener('load', ()=>requestAnimationFrame(kur), {once:true});
 })();
