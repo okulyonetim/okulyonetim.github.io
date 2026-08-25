@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v22
+/* Koruk Asistan — AppLoader v23
    Başlangıçta yalnız çekirdek yüklenir; özellikler ihtiyaç anında data + tek UI modülü olarak gelir.
    Uygulama başlangıcının tek sahibi: tema + Firebase init + auth listener + Service Worker. */
 (function(){
@@ -19,7 +19,7 @@ define('people',['js/modules/people-data.js','js/modules/people.js']);
 define('academic',['js/modules/settings-data.js','js/modules/academic-data.js','js/modules/academic.js']);
 define('management',['js/modules/duty-data.js','js/modules/management-data.js','js/modules/management.js']);
 define('communication',['js/modules/settings-data.js','js/modules/messaging-data.js','js/modules/communication-data.js','js/modules/communication.js']);
-define('transport',['js/modules/people-data.js','js/modules/transport-data.js','js/modules/transport.js']);
+define('transport',['js/modules/people-data.js','js/modules/report-engine.js','js/modules/transport-data.js','js/modules/transport-reports.js','js/modules/transport.js']);
 define('documents',['js/modules/settings-data.js','js/modules/documents-data.js','js/modules/documents.js']);
 define('tools',['js/modules/tools-data.js','js/modules/tools.js']);
 define('settings',['js/modules/settings-data.js','js/modules/settings.js']);
