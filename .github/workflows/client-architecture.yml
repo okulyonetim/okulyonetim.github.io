@@ -4,18 +4,26 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
+      - 'css/**'
       - 'js/**'
+      - 'service-worker.js'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
+      - 'tests/service-worker-precache-smoke.test.js'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
   pull_request:
     paths:
+      - 'index.html'
+      - 'css/**'
       - 'js/**'
+      - 'service-worker.js'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
+      - 'tests/service-worker-precache-smoke.test.js'
       - 'package.json'
 
 permissions:
@@ -34,6 +42,8 @@ jobs:
         run: node scripts/build-client-bundles.mjs
       - name: Verify module bundle contracts
         run: node tests/module-bundles-smoke.test.js
+      - name: Verify service worker shell
+        run: node tests/service-worker-precache-smoke.test.js
       - name: Audit client architecture
         run: node scripts/check-client-architecture.mjs
       - name: Show generated bundle sizes
