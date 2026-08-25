@@ -1,7 +1,7 @@
 /* Koruk Asistan — Taşıma Modern v2 */
 (function(){
 'use strict';
-const esc=v=>typeof escapeHtml==='function'?escapeHtml(v):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+const esc=v=>typeof escapeHtml==='function'?escapeHtml(v):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const yetkili=()=>typeof tasimaDuzenlemeYetkiliMi==='function'?tasimaDuzenlemeYetkiliMi():(typeof duzenleyebilir==='function'&&duzenleyebilir('tasima'));
 function legacyHeroGizle(tab){
   [...tab.children].forEach(el=>{const t=(el.textContent||'').replace(/\s+/g,' ').trim();if(t.includes('Servis araçları, şoför ve güzergah bilgileri')&&t.includes('Oturma Planı Raporu'))el.classList.add('tm-legacy-hero');});
@@ -25,7 +25,7 @@ function kartlariRender(){
   let liste=(window.servisFiltre==='tumu'||!window.servisFiltre)?all:all.filter(s=>s.durum===window.servisFiltre);
   liste=[...liste].sort((a,b)=>(a.servisAdi||'').localeCompare(b.servisAdi||'','tr'));
   const admin=!!yetkili();
-  hedef.innerHTML=liste.length?liste.map(s=>`<article class="tm-servis-card" onclick="servisDetayAc('${s.id}')"><div class="tm-bus">🚌</div><div class="tm-card-main"><div class="tm-card-head"><strong>${esc(s.servisAdi||'Servis')}</strong><span class="tm-status ${(s.durum||'Aktif')==='Pasif'?'pasif':'aktif'}">${esc(s.durum||'Aktif')}</span></div><div class="tm-card-line">${s.plaka?`<span>🚘 ${esc(s.plaka)}</span>`:''}${s.soforAdi?`<span>👨‍✈️ ${esc(s.soforAdi)}</span>`:'<span>👨‍✈️ Şoför bilgisi yok</span>'}</div>${s.guzergah?`<div class="tm-route">📍 ${esc(s.guzergah)}</div>`:''}<div class="tm-card-foot">${s.ogrenciSayisi?`<span>👥 ${Number(s.ogrenciSayisi)} öğrenci</span>`:'<span>👥 Öğrenci bilgisi yok</span>'}<span class="tm-open">Detay ›</span></div></div>${admin?`<button class="tm-edit" onclick="event.stopPropagation();servisModalAc('${s.id}')" aria-label="Servisi düzenle">✎</button>`:''}</article>`).join(''):'<div class="tm-empty"><span>🚌</span><strong>Servis kaydı bulunamadı</strong><small>${admin?'Yeni servis ekleyerek başlayabilirsiniz.':'Henüz görüntülenecek servis yok.'}</small></div>';
+  hedef.innerHTML=liste.length?liste.map(s=>`<article class="tm-servis-card" onclick="servisDetayAc('${s.id}')"><div class="tm-bus">🚌</div><div class="tm-card-main"><div class="tm-card-head"><strong>${esc(s.servisAdi||'Servis')}</strong><span class="tm-status ${(s.durum||'Aktif')==='Pasif'?'pasif':'aktif'}">${esc(s.durum||'Aktif')}</span></div><div class="tm-card-line">${s.plaka?`<span>🚘 ${esc(s.plaka)}</span>`:''}${s.soforAdi?`<span>👨‍✈️ ${esc(s.soforAdi)}</span>`:'<span>👨‍✈️ Şoför bilgisi yok</span>'}</div>${s.guzergah?`<div class="tm-route">📍 ${esc(s.guzergah)}</div>`:''}<div class="tm-card-foot">${s.ogrenciSayisi?`<span>👥 ${Number(s.ogrenciSayisi)} öğrenci</span>`:'<span>👥 Öğrenci bilgisi yok</span>'}<span class="tm-open">Detay ›</span></div></div>${admin?`<button class="tm-edit" onclick="event.stopPropagation();servisModalAc('${s.id}')" aria-label="Servisi düzenle">✎</button>`:''}</article>`).join(''):`<div class="tm-empty"><span>🚌</span><strong>Servis kaydı bulunamadı</strong><small>${admin?'Yeni servis ekleyerek başlayabilirsiniz.':'Henüz görüntülenecek servis yok.'}</small></div>`;
   shellKur();
 }
 function oturmaGuvenligi(){
