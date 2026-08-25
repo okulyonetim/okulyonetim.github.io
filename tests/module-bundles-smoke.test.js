@@ -25,6 +25,11 @@ for(const bundle of ['people-data.js','academic-data.js','management-data.js','c
 }
 assert(loader.includes("define('management',['js/core/repositories/takvim.repository.js'"),'Öğretmen izin servisi için TakvimRepository önce yüklenmeli.');
 assert(loader.includes("define('transport',['js/modules/people-data.js'"),'Taşıma servisi için people-data önce yüklenmeli.');
+const dashboardLine=loader.match(/define\('dashboard',\[(.*?)\]\);/)?.[1]||'';
+for(const dep of ['js/core/repositories/takvim.repository.js','js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js','js/modules/communication-data.js']){
+  assert(dashboardLine.includes(`'${dep}'`),`Dashboard ${dep} ortak bağımlılığını yüklemeli.`);
+}
+assert(dashboardLine.indexOf('js/modules/communication-data.js') < dashboardLine.indexOf('js/app.js'),'Dashboard servisleri app.js çalışmadan önce hazır olmalı.');
 
 for(const eski of [
   'js/core/repositories/siniflar.repository.js','js/core/services/siniflar.service.js',
@@ -57,4 +62,4 @@ for(const korunan of [
   'js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js'
 ]) assert(loader.includes(`'${korunan}'`),`${korunan} geçiş süresince ayrı yüklenmeli.`);
 
-console.log('Tüm v2 module bundle smoke testleri başarılı.');
+console.log('Tüm v2 module bundle + dashboard dependency smoke testleri başarılı.');
