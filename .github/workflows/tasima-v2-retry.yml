@@ -1,0 +1,59 @@
+name: One-time Tasima V2 Retry
+on:
+  push:
+    paths:
+      - '.github/workflows/tasima-v2-retry.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Apply transport v2
+        shell: bash
+        run: |
+          git fetch origin agent/tasima-role-ui-apply-20260825
+          git show origin/agent/tasima-role-ui-apply-20260825:js/tasima-modern-v2.js > js/tasima-modern-v2.js
+          git show origin/agent/tasima-role-ui-apply-20260825:css/tasima-modern-v2.css > css/tasima-modern-v2.css
+          git show origin/agent/tasima-role-ui-apply-20260825:staging/tasima.repository.js > js/core/repositories/tasima.repository.js
+          git show origin/agent/tasima-role-ui-apply-20260825:staging/servis-oturma.repository.js > js/core/repositories/servis-oturma.repository.js
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('js/tasima.js'); s=p.read_text(encoding='utf-8')
+          pat=r"\n\s*let deneme=0;\s*const t=setInterval\(\(\)=>\{[\s\S]*?document\.addEventListener\('DOMContentLoaded',\(\)=>obs\.observe\(document\.body,\{subtree:true,childList:true\}\)\);"
+          repl="\n  // Performans: rol wrapperları tek sefer kurulur; sürekli DOM polling yok.\n  kur();\n  document.addEventListener('DOMContentLoaded', kur, {once:true});\n  window.addEventListener('load', ()=>requestAnimationFrame(kur), {once:true});"
+          s2,n=re.subn(pat,repl,s,count=1)
+          if n!=1: raise SystemExit('tasima polling block regex not found')
+          p.write_text(s2,encoding='utf-8')
+          ip=Path('index.html'); h=ip.read_text(encoding='utf-8')
+          if 'css/tasima-modern-v2.css' not in h:
+              h=h.replace('<link rel="stylesheet" href="css/styles.css">','<link rel="stylesheet" href="css/styles.css">\n<link rel="stylesheet" href="css/tasima-modern-v2.css">',1)
+          if 'js/tasima-modern-v2.js' not in h:
+              h=h.replace('</body>','<script src="js/tasima-modern-v2.js"></script>\n</body>',1)
+          ip.write_text(h,encoding='utf-8')
+          swp=Path('service-worker.js'); sw=swp.read_text(encoding='utf-8')
+          sw=sw.replace("const CACHE_ADI='oy-cache-v649';","const CACHE_ADI='oy-cache-v650';",1)
+          if "'./css/tasima-modern-v2.css'" not in sw:
+              sw=sw.replace("'./css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css',","'./css/deneme-sinavlari-modern.css','./css/deneme-sinavlari-fixes.css','./css/tasima-modern-v2.css',",1)
+          if "'./js/tasima-modern-v2.js'" not in sw:
+              sw=sw.replace("'./js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js',","'./js/deneme-sinavlari-modern.js','./js/deneme-sinavlari-stability.js','./js/deneme-sil-fix.js','./js/tasima-modern-v2.js',",1)
+          swp.write_text(sw,encoding='utf-8')
+          PY
+      - name: Verify and commit once
+        run: |
+          node --check js/tasima.js
+          node --check js/tasima-modern-v2.js
+          node --check js/core/repositories/tasima.repository.js
+          node --check js/core/repositories/servis-oturma.repository.js
+          grep -q "oy-cache-v650" service-worker.js
+          grep -q "tasima-modern-v2" index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/tasima.js js/tasima-modern-v2.js css/tasima-modern-v2.css js/core/repositories/tasima.repository.js js/core/repositories/servis-oturma.repository.js index.html service-worker.js
+          git commit -m "feat: rebuild transport UI and make transport local-first"
+          git push origin HEAD:main
