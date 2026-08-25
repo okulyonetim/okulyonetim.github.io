@@ -2,56 +2,25 @@
    js/native-report-preview.js
    Android/Capacitor rapor akışını tek standarda getirir:
    Önizleme -> Yazdır / PDF Kaydet -> PrintPlugin.
+   Görünüm mevcut design-system.css componentlerini kullanır.
    ==================================================================== */
 (function(){
   'use strict';
-
-  let kurulumDenemesi = 0;
-  let aktifRapor = null;
-
-  function nativePrintVarMi(){
-    try {
-      return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() && window.Capacitor.Plugins && window.Capacitor.Plugins.PrintPlugin);
-    } catch (_) { return false; }
-  }
-
-  function temizDosyaAdi(ad){
-    return String(ad || 'Rapor').replace(/[^\w\sÇĞİÖŞÜçğıöşü-]/g, '').trim().replace(/\s+/g, '_') || 'Rapor';
-  }
-
-  function onizlemeHtmlHazirla(html){
-    const gizle = '<style id="native-rapor-onizleme-css">.rapor-toolbar{display:none!important}html,body{max-width:100%!important;overflow:auto!important}body{padding:0!important}</style>';
-    const metin = String(html || '');
-    return /<\/head>/i.test(metin) ? metin.replace(/<\/head>/i, gizle + '</head>') : gizle + metin;
-  }
-
-  function zoomEt(delta){const frame=document.getElementById('nativeRaporFrame'),win=frame&&frame.contentWindow;if(!win)return;try{if(typeof win.zoomAyarla==='function')win.zoomAyarla(delta);zoomEtiketiniGuncelle();}catch(_){}}
-  function zoomSigdir(){const frame=document.getElementById('nativeRaporFrame'),win=frame&&frame.contentWindow;if(!win)return;try{if(typeof win.zoomSigdir==='function')win.zoomSigdir();zoomEtiketiniGuncelle();}catch(_){}}
-  function zoomYuz(){const frame=document.getElementById('nativeRaporFrame'),win=frame&&frame.contentWindow;if(!win)return;try{if(typeof win.zoomSifirla==='function')win.zoomSifirla();zoomEtiketiniGuncelle();}catch(_){}}
-  function zoomEtiketiniGuncelle(){const label=document.getElementById('nativeRaporZoomLabel'),frame=document.getElementById('nativeRaporFrame');if(!label||!frame||!frame.contentWindow)return;try{const z=Number(frame.contentWindow._zoom);if(Number.isFinite(z)&&z>0)label.textContent=Math.round(z)+'%';}catch(_){}}
-
-  function onizlemeKapat(){
-    document.getElementById('nativeRaporOnizleme')?.remove();aktifRapor=null;document.body.classList.remove('modal-open');
-    if(document.body.dataset.nativeRaporOverflow!==undefined){document.body.style.overflow=document.body.dataset.nativeRaporOverflow;delete document.body.dataset.nativeRaporOverflow;}
-    try{if(typeof _pullToRefreshAyarla==='function')_pullToRefreshAyarla(true);}catch(_){}
-  }
-
-  async function gercekYazdir(){
-    if(!aktifRapor||typeof aktifRapor.yazdir!=='function')return;
-    const btn=document.getElementById('nativeRaporYazdirBtn');if(btn){btn.disabled=true;btn.textContent='Hazırlanıyor…';}
-    try{await Promise.resolve(aktifRapor.yazdir(aktifRapor.html,aktifRapor.dosyaAdi,aktifRapor.yon));}
-    catch(e){console.error('[NativeRaporOnizleme] Yazdırma hatası:',e);try{if(typeof toast==='function')toast('Yazdırma açılamadı: '+(e?.message||e));}catch(_){}}
-    finally{if(btn){btn.disabled=false;btn.textContent='🖨 Yazdır / PDF Kaydet';}}
-  }
-
+  let kurulumDenemesi=0,aktifRapor=null;
+  function nativePrintVarMi(){try{return!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.Plugins&&window.Capacitor.Plugins.PrintPlugin);}catch(_){return false;}}
+  function temizDosyaAdi(ad){return String(ad||'Rapor').replace(/[^\w\sÇĞİÖŞÜçğıöşü-]/g,'').trim().replace(/\s+/g,'_')||'Rapor';}
+  function onizlemeHtmlHazirla(html){const gizle='<style id="native-rapor-onizleme-css">.rapor-toolbar{display:none!important}html,body{max-width:100%!important;overflow:auto!important}body{padding:0!important}</style>',metin=String(html||'');return /<\/head>/i.test(metin)?metin.replace(/<\/head>/i,gizle+'</head>'):gizle+metin;}
+  function zoomEt(delta){const f=document.getElementById('nativeRaporFrame'),w=f&&f.contentWindow;if(!w)return;try{w.zoomAyarla?.(delta);zoomEtiketiniGuncelle();}catch(_){}}
+  function zoomSigdir(){const f=document.getElementById('nativeRaporFrame'),w=f&&f.contentWindow;if(!w)return;try{w.zoomSigdir?.();zoomEtiketiniGuncelle();}catch(_){}}
+  function zoomYuz(){const f=document.getElementById('nativeRaporFrame'),w=f&&f.contentWindow;if(!w)return;try{w.zoomSifirla?.();zoomEtiketiniGuncelle();}catch(_){}}
+  function zoomEtiketiniGuncelle(){const l=document.getElementById('nativeRaporZoomLabel'),f=document.getElementById('nativeRaporFrame');if(!l||!f?.contentWindow)return;try{const z=Number(f.contentWindow._zoom);if(Number.isFinite(z)&&z>0)l.textContent=Math.round(z)+'%';}catch(_){}}
+  function onizlemeKapat(){document.getElementById('nativeRaporOnizleme')?.remove();aktifRapor=null;document.body.classList.remove('modal-open');if(document.body.dataset.nativeRaporOverflow!==undefined){document.body.style.overflow=document.body.dataset.nativeRaporOverflow;delete document.body.dataset.nativeRaporOverflow;}try{_pullToRefreshAyarla?.(true);}catch(_){}}
+  async function gercekYazdir(){if(!aktifRapor||typeof aktifRapor.yazdir!=='function')return;const b=document.getElementById('nativeRaporYazdirBtn');if(b){b.disabled=true;b.textContent='Hazırlanıyor…';}try{await Promise.resolve(aktifRapor.yazdir(aktifRapor.html,aktifRapor.dosyaAdi,aktifRapor.yon));}catch(e){console.error('[NativeRaporOnizleme] Yazdırma hatası:',e);try{toast?.('Yazdırma açılamadı: '+(e?.message||e));}catch(_){}}finally{if(b){b.disabled=false;b.textContent='🖨 Yazdır / PDF Kaydet';}}}
   function onizlemeAc(html,dosyaAdi,yon,gercekYazdirFn){
-    onizlemeKapat();const guvenliAd=temizDosyaAdi(dosyaAdi),guvenliYon=yon==='yatay'?'yatay':'dikey';aktifRapor={html:String(html||''),dosyaAdi:guvenliAd,yon:guvenliYon,yazdir:gercekYazdirFn};
-    document.body.dataset.nativeRaporOverflow=document.body.style.overflow||'';document.body.style.overflow='hidden';document.body.classList.add('modal-open');try{if(typeof _pullToRefreshAyarla==='function')_pullToRefreshAyarla(false);}catch(_){}
-    const ov=document.createElement('div');ov.id='nativeRaporOnizleme';ov.className='ka-report-preview';ov.innerHTML=`<div class="ka-report-preview__toolbar"><button id="nativeRaporKapatBtn" type="button">✕ Kapat</button><div class="ka-report-preview__title">${guvenliAd.replace(/_/g,' ')}</div><span>${guvenliYon==='yatay'?'Yatay':'Dikey'}</span><button id="nativeRaporKucultBtn" type="button">−</button><span id="nativeRaporZoomLabel">100%</span><button id="nativeRaporBuyutBtn" type="button">+</button><button id="nativeRaporSigdirBtn" type="button">Sığdır</button><button id="nativeRaporYuzBtn" type="button">100%</button><button id="nativeRaporYazdirBtn" type="button">🖨 Yazdır / PDF Kaydet</button></div><div class="ka-report-preview__body"><iframe id="nativeRaporFrame" title="Rapor önizleme" class="ka-report-preview__frame"></iframe></div>`;document.body.appendChild(ov);
-    const frame=document.getElementById('nativeRaporFrame');frame.addEventListener('load',()=>requestAnimationFrame(()=>requestAnimationFrame(()=>{zoomSigdir();zoomEtiketiniGuncelle();})),{once:true});frame.srcdoc=onizlemeHtmlHazirla(aktifRapor.html);
-    document.getElementById('nativeRaporKapatBtn').onclick=onizlemeKapat;document.getElementById('nativeRaporKucultBtn').onclick=()=>zoomEt(-10);document.getElementById('nativeRaporBuyutBtn').onclick=()=>zoomEt(+10);document.getElementById('nativeRaporSigdirBtn').onclick=zoomSigdir;document.getElementById('nativeRaporYuzBtn').onclick=zoomYuz;document.getElementById('nativeRaporYazdirBtn').onclick=gercekYazdir;
+    onizlemeKapat();const ad=temizDosyaAdi(dosyaAdi),y=yon==='yatay'?'yatay':'dikey';aktifRapor={html:String(html||''),dosyaAdi:ad,yon:y,yazdir:gercekYazdirFn};document.body.dataset.nativeRaporOverflow=document.body.style.overflow||'';document.body.style.overflow='hidden';document.body.classList.add('modal-open');try{_pullToRefreshAyarla?.(false);}catch(_){}
+    const ov=document.createElement('div');ov.id='nativeRaporOnizleme';ov.className='ka-modal-backdrop';ov.innerHTML=`<section class="ka-modal"><div class="ka-modal__header ka-row"><button id="nativeRaporKapatBtn" class="ka-btn ka-btn--secondary ka-btn--sm" type="button">✕ Kapat</button><div class="ka-grow"><strong>${ad.replace(/_/g,' ')}</strong><div class="ka-muted">${y==='yatay'?'Yatay':'Dikey'} rapor önizlemesi</div></div><span id="nativeRaporZoomLabel" class="ka-badge">100%</span></div><div class="ka-modal__body ka-stack"><div class="ka-row"><button id="nativeRaporKucultBtn" class="ka-btn ka-btn--secondary ka-btn--sm" type="button">−</button><button id="nativeRaporBuyutBtn" class="ka-btn ka-btn--secondary ka-btn--sm" type="button">+</button><button id="nativeRaporSigdirBtn" class="ka-btn ka-btn--secondary ka-btn--sm" type="button">Sığdır</button><button id="nativeRaporYuzBtn" class="ka-btn ka-btn--secondary ka-btn--sm" type="button">100%</button></div><iframe id="nativeRaporFrame" title="Rapor önizleme" class="ka-media"></iframe></div><div class="ka-modal__footer"><button id="nativeRaporYazdirBtn" class="ka-btn" type="button">🖨 Yazdır / PDF Kaydet</button></div></section>`;document.body.appendChild(ov);
+    const f=document.getElementById('nativeRaporFrame');f.addEventListener('load',()=>requestAnimationFrame(()=>requestAnimationFrame(()=>{zoomSigdir();zoomEtiketiniGuncelle();})),{once:true});f.srcdoc=onizlemeHtmlHazirla(aktifRapor.html);document.getElementById('nativeRaporKapatBtn').onclick=onizlemeKapat;document.getElementById('nativeRaporKucultBtn').onclick=()=>zoomEt(-10);document.getElementById('nativeRaporBuyutBtn').onclick=()=>zoomEt(+10);document.getElementById('nativeRaporSigdirBtn').onclick=zoomSigdir;document.getElementById('nativeRaporYuzBtn').onclick=zoomYuz;document.getElementById('nativeRaporYazdirBtn').onclick=gercekYazdir;
   }
-
-  function kur(){const mevcut=window.uygulamaHtmlYazdir;if(typeof mevcut!=='function'){if(kurulumDenemesi++<80)setTimeout(kur,100);return;}if(mevcut.__nativeRaporOnizlemeSarmali)return;const gercekYazdirFn=mevcut.bind(window);async function sarmal(html,dosyaAdi,yon){if(!nativePrintVarMi())return gercekYazdirFn(html,dosyaAdi,yon);onizlemeAc(html,dosyaAdi,yon,gercekYazdirFn);return{preview:true};}sarmal.__nativeRaporOnizlemeSarmali=true;sarmal.__gercekYazdir=gercekYazdirFn;window.uygulamaHtmlYazdir=sarmal;window.nativeRaporOnizlemeKapat=onizlemeKapat;}
+  function kur(){const mevcut=window.uygulamaHtmlYazdir;if(typeof mevcut!=='function'){if(kurulumDenemesi++<80)setTimeout(kur,100);return;}if(mevcut.__nativeRaporOnizlemeSarmali)return;const gercek=mevcut.bind(window);async function sarmal(html,dosyaAdi,yon){if(!nativePrintVarMi())return gercek(html,dosyaAdi,yon);onizlemeAc(html,dosyaAdi,yon,gercek);return{preview:true};}sarmal.__nativeRaporOnizlemeSarmali=true;sarmal.__gercekYazdir=gercek;window.uygulamaHtmlYazdir=sarmal;window.nativeRaporOnizlemeKapat=onizlemeKapat;}
   kur();
 })();
