@@ -1,5 +1,5 @@
 /* Koruk Asistan — Tools veri katmanı
- * İlk taşınan araç: Kontrol Listeleri.
+ * Kontrol Listeleri + Harita favorileri.
  * Veri AppStore/IndexedDB'de yaşar; Firestore yalnız Core SyncEngine/queue üzerinden çalışır.
  */
 (function(global){
@@ -7,8 +7,9 @@
 if(global.ToolsData)return;
 function device(){if(!global.DeviceData)throw new Error('DeviceData hazır değil.');return global.DeviceData;}
 const arr=t=>device().list(t);
+const user=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};
 const sortLists=rows=>(Array.isArray(rows)?rows:[]).slice().sort((a,b)=>(Number(a?.sira)||0)-(Number(b?.sira)||0));
-const teacherId=()=>{const u=global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};return u.bagliOgretmenId||u.ogretmenId||'';};
+const teacherId=()=>{const u=user();return u.bagliOgretmenId||u.ogretmenId||'';};
 const fakeDoc=row=>({exists:!!row,id:row?.id||'',data:()=>row||undefined});
 
 const KontrolListeleriRepository={
@@ -21,7 +22,6 @@ const KontrolListeleriRepository={
   tumTamamlamalariDinle(listeId,callback){return device().listen('kontrolListeTamamlama',rows=>callback(rows.filter(x=>x.listeId===listeId)));}
 };
 global.KontrolListeleriRepository=KontrolListeleriRepository;
-
 const KontrolListeleriService={
   _yaziYetkisiVar(){return typeof duzenleyebilir==='function'&&duzenleyebilir('kontrolListeleri');},
   _goruntuleyebilir(){return typeof gorebilir==='function'&&gorebilir('kontrolListeleri');},
@@ -35,7 +35,26 @@ const KontrolListeleriService={
 };
 global.KontrolListeleriService=KontrolListeleriService;
 
-async function prepareControlLists(){if(!global.SyncEngine||!global.COL)return;const types=[];if(COL.kontrolListeleri){SyncEngine.register('kontrolListeleri',COL.kontrolListeleri);types.push('kontrolListeleri');}if(COL.kontrolListeTamamlama){const u=global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{},admin=!!u.admin,tid=teacherId();SyncEngine.register('kontrolListeTamamlama',COL.kontrolListeTamamlama,{query:q=>admin||!tid?q:q.where('ogretmenId','==',tid)});types.push('kontrolListeTamamlama');}if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
+const HaritaRepository={
+  favorileriDinle(callback){return device().listen('haritaFavoriler',rows=>callback((rows||[]).slice().sort((a,b)=>String(b.olusturmaTarihi||'').localeCompare(String(a.olusturmaTarihi||'')))));},
+  favoriEkle(veri){return device().add('haritaFavoriler',COL.haritaFavoriler,{...veri,olusturmaTarihi:new Date().toISOString()});},
+  favoriSil(id){return device().remove('haritaFavoriler',COL.haritaFavoriler,id);}
+};
+global.HaritaRepository=HaritaRepository;
+const HaritaService={
+  _yetkiKontrol(){if(!duzenleyebilir('harita')){if(typeof toast==='function')toast('Bu işlem için yetkiniz yok.');return false;}return true;},
+  _kendiKimlik(){const u=user(),kimlik=(typeof _hesapKimligi==='function')?_hesapKimligi():{ad:''};return{uid:u.uid||null,ad:kimlik.ad||u.adSoyad||u.ad||'Kullanıcı',adminMi:u.admin===true};},
+  favoriGorunurMu(f){const ben=this._kendiKimlik();return ben.adminMi||!!(ben.uid&&f.olusturanUid===ben.uid);},
+  gorunurFavoriler(rows){return(rows||[]).filter(f=>this.favoriGorunurMu(f));},
+  favoriSilinebilirMi(f){return this.favoriGorunurMu(f);},
+  favoriEkle(veri){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));const ben=this._kendiKimlik();return HaritaRepository.favoriEkle({...veri,olusturanUid:ben.uid,olusturanAdi:ben.ad});},
+  favoriSil(id,mevcut){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));if(mevcut&&!this.favoriSilinebilirMi(mevcut))return Promise.reject(new Error('sahip-degil'));return HaritaRepository.favoriSil(id);},
+  guzergahKaydet(servisId,mesafeKm,koordinatlar){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));if(!global.TasimaRepository)return Promise.reject(new Error('tasima-hazir-degil'));return global.TasimaRepository.servisGuncelle(servisId,{guzergahMesafe:mesafeKm,guzergahKoordinatlar:koordinatlar});}
+};
+global.HaritaService=HaritaService;
 
-global.ToolsData={prepareControlLists,teacherId};
+async function prepareControlLists(){if(!global.SyncEngine||!global.COL)return;const types=[];if(COL.kontrolListeleri){SyncEngine.register('kontrolListeleri',COL.kontrolListeleri);types.push('kontrolListeleri');}if(COL.kontrolListeTamamlama){const u=user(),admin=!!u.admin,tid=teacherId();SyncEngine.register('kontrolListeTamamlama',COL.kontrolListeTamamlama,{query:q=>admin||!tid?q:q.where('ogretmenId','==',tid)});types.push('kontrolListeTamamlama');}if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
+async function prepareMap(){if(!global.SyncEngine||!global.COL?.haritaFavoriler)return;const u=user();SyncEngine.register('haritaFavoriler',COL.haritaFavoriler,{query:q=>u.admin===true||!u.uid?q:q.where('olusturanUid','==',u.uid)});await SyncEngine.localHydrate(['haritaFavoriler']);SyncEngine.schedule(100);}
+
+global.ToolsData={prepareControlLists,prepareMap,teacherId};
 })(window);
