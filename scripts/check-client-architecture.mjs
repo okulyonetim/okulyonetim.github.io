@@ -36,6 +36,8 @@ const dashboardPath=path.join(ROOT,'js','modules','dashboard.js');
 const dashboardSource=fs.existsSync(dashboardPath)?fs.readFileSync(dashboardPath,'utf8'):'';
 const firebasePath=path.join(ROOT,'js','firebase-init.js');
 const firebaseSource=fs.existsSync(firebasePath)?fs.readFileSync(firebasePath,'utf8'):'';
+const reportEnginePath=path.join(ROOT,'js','modules','report-engine.js');
+const reportEngineSource=fs.existsSync(reportEnginePath)?fs.readFileSync(reportEnginePath,'utf8'):'';
 
 const permissionRequirements=[
   ['PermissionService',loaderSource.includes('window.PermissionService=')],
@@ -58,7 +60,21 @@ const configRequirements=[
 ];
 const missingConfigRequirements=configRequirements.filter(([,ok])=>!ok).map(([name])=>name);
 
-const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements}};
+const moduleFiles=files.filter(f=>rel(f).startsWith('js/modules/'));
+const nativeApiViolations=[];
+for(const f of moduleFiles){const r=rel(f);if(r==='js/modules/report-engine.js')continue;const src=fs.readFileSync(f,'utf8');if(/Capacitor\?*\.|PrintPlugin|Filesystem|Browser\.|StatusBar\.|Keyboard\./.test(src))nativeApiViolations.push(r)}
+const platformRequirements=[
+  ['dinamik viewport birimi',/\bdvh\b/.test(designSource)],
+  ['iOS metin ölçekleme koruması',designSource.includes('-webkit-text-size-adjust: 100%')],
+  ['dokunmatik hedef en az 44px',designSource.includes('--ka-control-height: 44px')],
+  ['native platform capability detection',reportEngineSource.includes('Capacitor?.isNativePlatform?.()')],
+  ['native yazdırma için browser fallback',reportEngineSource.includes("global.open(url,'_blank')")&&reportEngineSource.includes('win.print()')],
+  ['rapor CSS tek kaynaktan',reportEngineSource.includes("new URL('css/design-system.css'")]
+];
+const missingPlatformRequirements=platformRequirements.filter(([,ok])=>!ok).map(([name])=>name);
+const safeAreaReady=/env\(safe-area-inset-(?:top|right|bottom|left)/.test(designSource);
+
+const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements},platformContract:{targets:['android','ios-safari-pwa','web-desktop-mobile'],safeAreaReady,nativeApiViolations:nativeApiViolations.sort(),missing:missingPlatformRequirements}};
 console.log(JSON.stringify(report,null,2));
 let failed=false;
 if(optical.length){console.error('Optik okuyucu referansı kalmamalı:',optical.join(', '));failed=true}
@@ -69,4 +85,7 @@ if(missingThemeTokens.length){console.error('Eksik merkezi tema değişkenleri:'
 if(missingShellClasses.length){console.error('Eksik merkezi shell componentleri:',missingShellClasses.join(', '));failed=true}
 if(missingPermissionRequirements.length){console.error('Eksik merkezi rol/yetki sözleşmesi:',missingPermissionRequirements.join(', '));failed=true}
 if(missingConfigRequirements.length){console.error('Eksik merkezi uygulama düzeni sözleşmesi:',missingConfigRequirements.join(', '));failed=true}
+if(missingPlatformRequirements.length){console.error('Eksik cross-platform sözleşmesi:',missingPlatformRequirements.join(', '));failed=true}
+if(nativeApiViolations.length){console.error('Native API yalnız platform adaptöründe/ReportEngine içinde kullanılmalı:',nativeApiViolations.join(', '));failed=true}
+if(!safeAreaReady)console.warn('Platform notu: iOS safe-area tokenları henüz design-system.css içine eklenmeli.');
 if(failed)process.exitCode=2;
