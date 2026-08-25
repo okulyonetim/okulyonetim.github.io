@@ -39,4 +39,13 @@ async function mount(root){if(!root)return false;unmount();mountedRoot=root;root
 function refresh(){if(!mountedRoot)return;const select=document.getElementById('mapServiceSelect'),old=select?.value;if(select){select.innerHTML='<option value="">— Servis seçin —</option>'+services().map(s=>`<option value="${esc(s.id)}">${esc(serviceName(s))}${s.guzergahMesafe?` · ${esc(s.guzergahMesafe)} km`:''}</option>`).join('');if(services().some(s=>s.id===old))select.value=old}renderInfo();map?.invalidateSize()}
 function unmount(){if(map){try{map.remove()}catch(_){}map=null}markers=[];points=[];routeLine=null;locationCircle=null;distanceM=0;mountedRoot=null;clearTimeout(searchTimer)}
 global.HaritaUI={mount,unmount,refresh,addPoint,clear:clearRoute,loadService,saveRoute};
+
+/* Tools sekmesi köprüsü: HaritaUI ayrı iş motoru olarak kalır, Tools yalnız
+ * sekme durumunu belirler. Bu sayede Leaflet yalnız Harita sekmesinde açılır. */
+let toolsObserver=null,bridgeScheduled=false;
+function toolsMapActive(){return !!document.querySelector('[data-tools-tab="map"].active')}
+function scheduleToolsMount(){if(bridgeScheduled)return;bridgeScheduled=true;requestAnimationFrame(()=>{bridgeScheduled=false;const root=document.getElementById('toolsContent');if(!root||!toolsMapActive())return;if(!root.querySelector('#toolsLeafletMap'))mount(root)})}
+function watchTools(){const host=document.querySelector('[data-tools-module]');if(!host)return;toolsObserver?.disconnect();toolsObserver=new MutationObserver(()=>{if(toolsMapActive())scheduleToolsMount();else if(mountedRoot)unmount()});toolsObserver.observe(host,{childList:true,subtree:true});if(toolsMapActive())scheduleToolsMount()}
+document.addEventListener('click',e=>{const tab=e.target.closest?.('[data-tools-tab]');if(!tab)return;if(tab.dataset.toolsTab==='map')setTimeout(()=>{watchTools();scheduleToolsMount()},0);else if(mountedRoot)unmount()});
+global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='tools')setTimeout(watchTools,0)});
 })(window);
