@@ -1,6 +1,5 @@
-/* Koruk Asistan — AppLoader v10
-   Başlangıçta yüzlerce JS yüklemek yerine özellik gruplarını ihtiyaç anında yükler.
-   Yeni çekirdek: firebase-init.js + core.js + auth.js + app-loader.js. */
+/* Koruk Asistan — AppLoader v11
+   Başlangıçta yalnız çekirdek yüklenir; özellikler ihtiyaç anında data + tek UI modülü olarak gelir. */
 (function(){
 'use strict';
 if(window.AppLoader)return;
@@ -14,8 +13,8 @@ async function load(name){if(!registry.has(name))throw new Error('module-not-def
 function isLoaded(name){return(registry.get(name)||[]).every(x=>loaded.has(normalize(x))||alreadyInDom(x))}
 function list(){return[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}))}
 
-/* V2 registry. Yeniden yazılan modüller yalnız data + tek UI dosyası yükler. */
-define('dashboard',['js/core/repositories/takvim.repository.js','js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js','js/modules/communication-data.js','js/app.js','js/ui.js','js/alt-navigasyon.js','js/sistem-bar.js','js/hava-durumu.js']);
+/* V2 registry: sekiz ana alanın tamamı temiz modül mimarisinde. */
+define('dashboard',['js/modules/dashboard.js']);
 define('people',['js/modules/people-data.js','js/modules/people.js']);
 define('academic',['js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']);
 define('management',['js/core/repositories/takvim.repository.js','js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js','js/modules/management-data.js','js/modules/management.js']);
@@ -24,19 +23,8 @@ define('transport',['js/modules/people-data.js','js/modules/transport-data.js','
 define('documents',['js/modules/documents-data.js','js/modules/documents.js']);
 define('settings',['js/modules/settings-data.js','js/modules/settings.js']);
 
-/* Eski auth.js top-level let kullanıyor. V2 çekirdeği aynı gerçek oturumu window/AppStore üzerinden görsün. */
-function syncLegacySession(){
-  let user=null,role=null;
-  try{if(typeof AKTIF_KULLANICI!=='undefined')user=AKTIF_KULLANICI}catch(_){}
-  try{if(typeof AKTIF_ROL!=='undefined')role=AKTIF_ROL}catch(_){}
-  if(user?.uid){
-    window.AKTIF_KULLANICI=user;window.AKTIF_ROL=role||null;
-    window.AppStore?.set?.('session.user',user);window.AppStore?.set?.('session.role',role||null);
-    window.AppBootstrap?.start?.();
-    return true;
-  }
-  return false;
-}
+/* Eski auth.js top-level let kullanıyor. Aynı gerçek oturum V2 Core/AppStore'a aktarılır. */
+function syncLegacySession(){let user=null,role=null;try{if(typeof AKTIF_KULLANICI!=='undefined')user=AKTIF_KULLANICI}catch(_){}try{if(typeof AKTIF_ROL!=='undefined')role=AKTIF_ROL}catch(_){}if(user?.uid){window.AKTIF_KULLANICI=user;window.AKTIF_ROL=role||null;window.AppStore?.set?.('session.user',user);window.AppStore?.set?.('session.role',role||null);window.AppBootstrap?.start?.();return true}return false}
 function syncAuthVisibility(){const login=document.getElementById('girisEkrani'),pending=document.getElementById('onayBekleniyorEkrani'),app=document.getElementById('app');if(!login||!pending||!app)return;syncLegacySession();const pendingActive=pending.classList.contains('active'),appReady=app.classList.contains('ready')||app.classList.contains('show'),loginActive=login.classList.contains('active')||(!pendingActive&&!appReady);login.hidden=!loginActive;pending.hidden=!pendingActive;app.hidden=!appReady;pending.classList.toggle('ka-hidden',!pendingActive)}
 function bindShell(){const title=document.getElementById('v2ModuleTitle'),status=document.getElementById('v2ModuleStatus');document.querySelectorAll('[data-ka-module]').forEach(btn=>{if(btn.dataset.kaBound==='1')return;btn.dataset.kaBound='1';btn.addEventListener('click',async()=>{const name=btn.dataset.kaModule;if(title)title.textContent=btn.textContent.trim();if(status)status.textContent='Modül yükleniyor…';try{await load(name);if(status)status.textContent='Modül hazır.'}catch(e){if(status)status.textContent='Modül yüklenemedi: '+(e?.message||e)}})});syncAuthVisibility();['girisEkrani','onayBekleniyorEkrani','app'].forEach(id=>{const el=document.getElementById(id);if(el)new MutationObserver(syncAuthVisibility).observe(el,{attributes:true,attributeFilter:['class']})});let n=0;const authBridge=setInterval(()=>{if(syncLegacySession()||++n>240)clearInterval(authBridge)},50);window.addEventListener('koruk:app-ready',()=>{const el=document.getElementById('v2SyncStatus');if(el)el.textContent='Cihaz verisi hazır'});window.addEventListener('koruk:sync-state',e=>{const el=document.getElementById('v2SyncStatus');if(el)el.textContent=(e.detail?.pending||0)+' bekleyen işlem'})}
 window.AppLoader={define,load,loadMany,loadScript,isLoaded,list,bindShell,syncAuthVisibility,syncLegacySession};
