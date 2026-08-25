@@ -1,0 +1,14 @@
+const fs=require('fs');
+const assert=require('assert');
+const service=fs.readFileSync('js/modules/teacher-list.js','utf8');
+const firebase=fs.readFileSync('js/firebase-init.js','utf8');
+new Function(service);
+for(const api of ['OgretmenListeRepository','OgretmenListeService','DeviceData','ogretmenListeSablon','ogretmenListeKayit']) assert(service.includes(api),`Öğretmen liste servisi ${api} sözleşmesini korumalı.`);
+for(const forbidden of ['db.collection','onSnapshot','localStorage']) assert(!service.includes(forbidden),`Öğretmen liste servisi doğrudan ${forbidden} kullanmamalı.`);
+assert(service.includes("device().set('ogretmenListeSablon',COL.ogretmenListeSablon"),'Şablon yazması DeviceData üzerinden olmalı.');
+assert(service.includes("device().add('ogretmenListeKayit',COL.ogretmenListeKayit"),'Yeni çizelge DeviceData üzerinden olmalı.');
+assert(service.includes("device().update('ogretmenListeKayit',COL.ogretmenListeKayit"),'Çizelge güncellemesi DeviceData üzerinden olmalı.');
+assert(service.includes("device().remove('ogretmenListeKayit',COL.ogretmenListeKayit"),'Çizelge silme DeviceData/tombstone üzerinden olmalı.');
+assert(service.includes('sahip-degil'),'Yerel servis sahiplik kontrolünü korumalı.');
+assert(firebase.includes("ogretmenListeSablon:'oy_ogretmenListeSablon'")&&firebase.includes("ogretmenListeKayit:'oy_ogretmenListeKayit'"),'Merkezi COL haritası öğretmen liste koleksiyonlarını korumalı.');
+console.log('Öğretmen liste local-first servis sözleşmesi başarılı.');
