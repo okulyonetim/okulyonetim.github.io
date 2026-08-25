@@ -1,25 +1,23 @@
 const fs = require('fs');
 const assert = require('assert');
 
-const src = fs.readFileSync('js/native-report-preview.js', 'utf8');
-const akademik = fs.readFileSync('js/akademik-takvim.js', 'utf8');
-const raporlama = fs.readFileSync('js/raporlama.js', 'utf8');
+const src = fs.readFileSync('js/modules/report-engine.js', 'utf8');
+const transport = fs.readFileSync('js/modules/transport-reports.js', 'utf8');
+const design = fs.readFileSync('css/design-system.css', 'utf8');
+new Function(src);
+new Function(transport);
 
-assert(akademik.includes("s.src = 'js/native-report-preview.js'"), 'Native rapor önizleme katmanı uygulama açılışında yüklenmeli.');
-assert(src.includes('window.uygulamaHtmlYazdir = sarmal'), 'Ortak HTML yazdırma köprüsü native önizleme katmanıyla sarılmalı.');
-assert(src.includes('window.Capacitor.Plugins.PrintPlugin'), 'Önizleme yalnız gerçek native PrintPlugin ortamında devreye girmeli.');
-assert(src.includes("if (!nativePrintVarMi()) return gercekYazdirFn"), 'Web/PWA yazdırma davranışı değiştirilmemeli.');
-assert(src.includes("id=\"nativeRaporFrame\""), 'Android raporu ayrı iframe önizleme alanında gösterilmeli.');
-assert(src.includes('frame.srcdoc = onizlemeHtmlHazirla'), 'Rapor HTML’i iframe srcdoc ile uygulama içinde önizlenmeli.');
-assert(src.includes('.rapor-toolbar{display:none!important}'), 'İç rapor toolbarı native önizlemede gizlenip tek toolbar standardı kullanılmalı.');
-assert(src.includes('zoomEt(-10)') && src.includes('zoomEt(+10)'), 'Native rapor önizlemesinde + / - zoom bulunmalı.');
-assert(src.includes('zoomSigdir') && src.includes('zoomYuz'), 'Native rapor önizlemesinde Sığdır ve %100 kontrolleri bulunmalı.');
-assert(src.includes('🖨 Yazdır / PDF Kaydet'), 'Tek aksiyon Android sistem yazdırma/PDF kaydet ekranını açmalı.');
-assert(src.includes('aktifRapor.yazdir('), 'Önizleme sonrası gerçek işlem orijinal uygulamaHtmlYazdir/PrintPlugin hattına dönmeli.');
-assert(!src.includes('window.print()'), 'Native önizleme katmanı window.print kullanmamalı.');
-assert(src.includes('ÇĞİÖŞÜçğıöşü'), 'Türkçe rapor dosya adları temizlenirken Türkçe karakterler korunmalı.');
-assert(src.includes('_pullToRefreshAyarla(false)') && src.includes('_pullToRefreshAyarla(true)'), 'Önizleme sırasında pull-to-refresh güvenli biçimde kapatılıp geri açılmalı.');
+assert(src.includes('global.ReportEngine='), 'Tek ReportEngine global API yayınlanmalı.');
+assert(src.includes('PrintPlugin'), 'Android yazdırma tek ReportEngine içinden PrintPlugin kullanmalı.');
+assert(src.includes("plugin.yazdir({html,isAdi:fileName(name),yon:"), 'Android PrintPlugin yazdir sözleşmesi korunmalı.');
+assert(src.includes('previewHtml'), 'Raporlar yazdırmadan önce merkezi önizleme açmalı.');
+assert(src.includes('ka-modal-backdrop') && src.includes('ka-modal'), 'Önizleme ayrı stil değil merkezi modal componentlerini kullanmalı.');
+assert(src.includes('kaReportFrame'), 'A4 rapor iframe içinde uygulama içinde önizlenmeli.');
+assert(src.includes('css/design-system.css'), 'Rapor HTML’i tek design-system.css kaynağını kullanmalı.');
+assert(src.includes('new URL('), 'Web/PWA blob çıktısı design-system adresini mutlak çözmeli.');
+assert(src.includes('🖨 Yazdır / PDF Kaydet'), 'Önizlemede tek yazdır/PDF aksiyonu bulunmalı.');
+assert(src.includes('global.uygulamaHtmlYazdir='), 'Eski rapor üreticileri için ortak uyumluluk API’si korunmalı.');
+assert(transport.includes('ReportEngine.printReport'), 'Taşıma raporları ortak ReportEngine üzerinden çalışmalı.');
+assert(design.includes('--ka-report-bg') && design.includes('.ka-report'), 'Rapor görünümü design system token/componentleriyle yönetilmeli.');
 
-assert(raporlama.includes('uygulamaHtmlYazdir(tamHtml, dosyaAdi, yon);'), 'Genel rapor üreticisi ortak native yazdırma köprüsünü kullanmaya devam etmeli.');
-
-console.log('Native rapor önizleme smoke testleri başarılı.');
+console.log('Birleşik rapor motoru smoke testleri başarılı.');
