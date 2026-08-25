@@ -19,7 +19,7 @@ const apiContracts={
  'communication-data':['TakvimRepository','TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','PushRepository','PushService','HaberlerRepository','HaberlerService'],
  'transport-data':['TasimaRepository','TasimaService','ServisOturmaRepository','ServisOturmaService','SinifOturmaRepository','SinifOturmaService'],
  'documents-data':['DokumanlarRepository','DokumanlarService'],
- 'tools-data':['KontrolListeleriRepository','KontrolListeleriService','HaritaRepository','HaritaService','CizelgelerRepository','CizelgelerService','prepareControlLists','prepareMap','prepareForms','FORM_TYPES'],
+ 'tools-data':['KontrolListeleriRepository','KontrolListeleriService','HaritaRepository','HaritaService','CizelgelerRepository','CizelgelerService','DevamsizlikCizelgesiRepository','DevamsizlikCizelgesiService','OdevNotCizelgeleriRepository','OdevNotCizelgeleriService','prepareControlLists','prepareMap','prepareForms','prepareAttendance','prepareGradebooks','FORM_TYPES','GRADE_TYPES'],
  'settings-data':['KullaniciYonetimiRepository','KullaniciYonetimiService','DepolamaSinirService']
 };
 for(const [bundle,names] of Object.entries(apiContracts)) for(const name of names) assert(source[bundle].includes(name),`${bundle}.js ${name} API'sini korumalı.`);
@@ -37,7 +37,9 @@ for(const bundle of dataBundles){
   assert(source[bundle].includes('DeviceData'),`${bundle} merkezi DeviceData kullanmalı.`);
 }
 assert(source['tools-data'].includes("where('olusturanUid','==',u.uid)"),'Harita favorileri normal kullanıcıda sahiplik filtresiyle senkronize edilmeli.');
+assert(source['tools-data'].includes("where('sahipUid','==',u.uid)"),'Ödev/Not çizelgeleri normal kullanıcıda sahiplik filtresiyle senkronize edilmeli.');
 assert(source['tools-data'].includes("['sosyalKulupler','sok','zumre','bepPlani','rehberlik','maarifRapor','belirliGunler','digerEvrak']"),'Çizelge tipleri mevcut gerçek koleksiyonları korumalı.');
+assert(source['tools-data'].includes("_belgeId(yil,ay){return `${yil}-${ay}`"),'Devamsızlık belge ID şeması YIL-AY olarak korunmalı.');
 assert(source['duty-data'].includes('batchYeriSil')&&source['duty-data'].includes('batchAmirSil'),'Nöbet batch sözleşmesi cihaz-first kalmalı.');
 assert(source['academic-data'].includes('storage.ref()'),'Academic binary dosyası Storage üzerinden yönetilmeli.');
 assert(source['documents-data'].includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
@@ -46,6 +48,6 @@ assert(source['messaging-data'].includes('storage.ref()'),'Mesaj dosyaları Stor
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
 for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} tek temiz UI yüklemeli.`);
 assert(registry('tools').includes("'js/modules/tools-data.js'"),'Tools birleşik tools-data yüklemeli.');
-for(const old of ['kontrol-listeleri.repository.js','kontrol-listeleri.service.js','harita.repository.js','harita.service.js']) assert(!registry('tools').includes(old),`Tools legacy data dosyasını yüklememeli: ${old}`);
+for(const old of ['kontrol-listeleri.repository.js','kontrol-listeleri.service.js','harita.repository.js','harita.service.js','devamsizlik-cizelgesi.repository.js','devamsizlik-cizelgesi.service.js','odev-not-cizelgeleri.repository.js','odev-not-cizelgeleri.service.js']) assert(!registry('tools').includes(old),`Tools legacy data dosyasını yüklememeli: ${old}`);
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 console.log('Dokuz V2 modülü local-first ve tek UI sahibi: smoke test başarılı.');
