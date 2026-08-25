@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v29
+/* Koruk Asistan — AppLoader v30
    Tek başlangıç sahibi: tema + Firebase + auth + lazy modüller.
    Tek görünürlük sahibi: PermissionService.
    Tek davranışsal düzen sahibi: AppConfig (oy_navDuzeni/uygulama).
@@ -19,7 +19,7 @@ define('dashboard',['js/modules/dashboard.js']);
 define('people',['js/modules/people.js']);
 define('academic',['js/modules/settings-data.js','js/modules/academic.js']);
 define('management',['js/modules/duty-data.js','js/modules/management.js']);
-define('communication',['js/modules/settings-data.js','js/modules/messaging-data.js','js/modules/communication-data.js','js/modules/communication.js']);
+define('communication',['js/modules/settings-data.js','js/modules/communication.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport-data.js','js/modules/transport-reports.js','js/modules/transport.js']);
 define('documents',['js/modules/settings-data.js','js/modules/documents-data.js','js/modules/documents.js']);
 define('tools',['js/modules/tools-data.js','js/modules/tools.js']);
@@ -60,7 +60,6 @@ function permissionRefresh(){applyNavigation();permissionApply(document);const r
 window.PermissionService={LEVELS:Object.freeze({...PERMISSION_RANK}),catalog:PERMISSION_CATALOG,aliases:Object.freeze({...LEGACY_PERMISSION_ALIASES}),normalize:permissionNormalize,level:permissionLevel,moduleLevel,can:permissionCan,canEdit:k=>permissionCan(k,'edit'),isPreview:k=>permissionLevel(k)==='preview',require:permissionRequire,apply:permissionApply,applyModule:permissionApplyModule,refresh:permissionRefresh};
 window.gorebilir=window.gorebilir||((key)=>PermissionService.can(key,'read'));window.duzenleyebilir=window.duzenleyebilir||((key)=>PermissionService.can(key,'edit'));window.kullaniciYonetimiYetkisiVar=window.kullaniciYonetimiYetkisiVar||(()=>permissionSession().user?.admin===true||PermissionService.can('settings.users','edit'));
 async function load(name){if(!registry.has(name))throw new Error('module-not-defined:'+name);if(moduleMeta(name).visible===false||moduleLevel(name)==='hidden'){const e=new Error('module-forbidden:'+name);e.code='permission-hidden';throw e}await loadMany(registry.get(name));window.dispatchEvent(new CustomEvent('koruk:module-ready',{detail:{name,permissionLevel:moduleLevel(name)}}));requestAnimationFrame(()=>permissionApplyModule(name));return name}
-
 function updateThemeChrome(){const meta=document.querySelector('meta[name="theme-color"]');if(meta){const c=getComputedStyle(document.documentElement).getPropertyValue('--ka-header-bg').trim();if(c)meta.setAttribute('content',c)}document.querySelectorAll('[data-ka-theme-toggle]').forEach(btn=>{const dark=document.documentElement.getAttribute('data-theme')==='dark';btn.textContent=dark?'☀️':'🌙'})}
 function applyTheme(theme,{persist=true}={}){const next=theme==='dark'?'dark':'light';document.documentElement.setAttribute('data-theme',next);if(persist)try{localStorage.setItem('oyTema',next)}catch(_){}AppStore?.set?.('ui.theme',next);requestAnimationFrame(updateThemeChrome);return next}
 function toggleTheme(){return applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')}
