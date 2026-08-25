@@ -30,12 +30,19 @@ jobs:
       - name: Bağımlılıkları yükle
         run: npm install
 
+      - name: Koruk v2 istemci bundle'larını üret
+        run: |
+          npm run build:client
+          node tests/module-bundles-smoke.test.js
+
       - name: Web dosyalarını www/ klasörüne kopyala
         run: |
           mkdir -p www
           cp index.html www/ 2>/dev/null || true
+          cp app-v2.html www/ 2>/dev/null || true
           cp -r css www/ 2>/dev/null || true
           cp -r js www/ 2>/dev/null || true
+          cp -r dist www/ 2>/dev/null || true
           cp -r assets www/ 2>/dev/null || true
           cp manifest.json www/ 2>/dev/null || true
           cp service-worker.js www/ 2>/dev/null || true
