@@ -35,13 +35,13 @@ service cloud.firestore {
     function moduluDuzenleyebilir(modul) {
       return adminMi() || (rolBelgemVarMi()
         && modul in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
-        && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] == 'duzenle');
+        && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] in ['duzenle', 'edit']);
     }
 
     function moduluGorebilir(modul) {
       return adminMi() || (rolBelgemVarMi()
         && modul in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
-        && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] in ['goruntule', 'duzenle']);
+        && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] in ['goruntule', 'duzenle', 'preview', 'read', 'edit']);
     }
 
     function kendiOgretmenIdsi() {
@@ -70,7 +70,6 @@ service cloud.firestore {
         || koleksiyon == 'oy_kullaniciIstatistikleri'
         || koleksiyon == 'oy_kullaniciTercihleri'
         || koleksiyon == 'oy_cihazTokenleri'
-        || koleksiyon == 'oy_optikSablonlari'
         || koleksiyon == 'oy_ogretmenListeSablon'
         || koleksiyon == 'oy_ogretmenListeKayit'
         || koleksiyon == 'oy_yillikPlanBasliklari'
@@ -171,19 +170,6 @@ service cloud.firestore {
         && request.resource.data.uid == request.auth.uid
         && (resource.data.uid == request.auth.uid || !('uid' in resource.data)));
       allow delete: if adminMi() || (girisYapmis() && resource.data.uid == request.auth.uid);
-    }
-
-    match /oy_optikSablonlari/{id} {
-      allow read: if girisYapmis();
-      allow create: if moduluDuzenleyebilir('optikFormOlusturma')
-        && request.resource.data.sahipUid == request.auth.uid
-        && request.resource.data.durum == 'yayinda';
-      allow update: if adminMi() || (moduluDuzenleyebilir('optikFormOlusturma')
-        && resource.data.sahipUid == request.auth.uid
-        && request.resource.data.sahipUid == request.auth.uid
-        && request.resource.data.durum == 'yayinda');
-      allow delete: if adminMi() || (moduluDuzenleyebilir('optikFormOlusturma')
-        && resource.data.sahipUid == request.auth.uid);
     }
 
     match /oy_ogretmenListeSablon/{id} {
