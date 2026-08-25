@@ -78,14 +78,14 @@ const platformRequirements=[
   ['rapor CSS tek kaynaktan',reportEngineSource.includes("new URL('css/design-system.css'")]
 ];
 const missingPlatformRequirements=platformRequirements.filter(([,ok])=>!ok).map(([name])=>name);
-const retiredOpticalBlock=/match\s+\/oy_optikSablonlari\/\{id\}\s*\{\s*allow\s+read\s*,\s*write\s*:\s*if\s+false\s*;\s*\}/m.test(rulesSource);
-const rulesOpticalUnsafe=/optikFormOlusturma/.test(rulesSource)||(/oy_optikSablonlari/.test(rulesSource)&&!retiredOpticalBlock);
+const appNamespaceDefaultDeny=rulesSource.includes("!koleksiyon.matches('^oy_.*')");
+const rulesOpticalUnsafe=/oy_optikSablonlari/.test(rulesSource)||!appNamespaceDefaultDeny;
 
-const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),retiredOpticalBlock,rulesOpticalUnsafe,primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements},platformContract:{targets:['android','ios-safari-pwa','web-desktop-mobile'],safeAreaReady,nativeApiViolations:nativeApiViolations.sort(),missing:missingPlatformRequirements}};
+const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),appNamespaceDefaultDeny,rulesOpticalUnsafe,primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements},platformContract:{targets:['android','ios-safari-pwa','web-desktop-mobile'],safeAreaReady,nativeApiViolations:nativeApiViolations.sort(),missing:missingPlatformRequirements}};
 console.log(JSON.stringify(report,null,2));
 let failed=false;
 if(optical.length){console.error('Optik okuyucu uygulama koduna geri dönmemeli:',optical.join(', '));failed=true}
-if(rulesOpticalUnsafe){console.error('Eski optik koleksiyonu yalnız kapalı emekli deny kuralı olarak kalabilir.');failed=true}
+if(rulesOpticalUnsafe){console.error('Firestore oy_ uygulama ad alanı varsayılan kapalı olmalı ve emekli optik koleksiyon adına özel kural kalmamalı.');failed=true}
 if(stylesheetLinks.length!==1||stylesheetLinks[0]!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
 if(styleViolations.length){console.error('Ek stylesheet ihlali:',styleViolations.join(', '));failed=true}
 if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içermemeli.');failed=true}
