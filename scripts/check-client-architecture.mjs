@@ -28,6 +28,30 @@ const missingThemeTokens=requiredThemeTokens.filter(token=>!designSource.include
 const requiredShellClasses=['.ka-app-header','.ka-app-nav'];
 const missingShellClasses=requiredShellClasses.filter(name=>!designSource.includes(name));
 
+/* Merkezi rol/yetki sözleşmesi. */
+const loaderPath=path.join(ROOT,'js','app-loader.js');
+const loaderSource=fs.existsSync(loaderPath)?fs.readFileSync(loaderPath,'utf8'):'';
+const settingsPath=path.join(ROOT,'js','modules','settings.js');
+const settingsSource=fs.existsSync(settingsPath)?fs.readFileSync(settingsPath,'utf8'):'';
+const permissionRequirements=[
+  ['PermissionService',loaderSource.includes('window.PermissionService=')],
+  ['hidden seviyesi',loaderSource.includes('hidden:0')],
+  ['preview seviyesi',loaderSource.includes('preview:1')],
+  ['read seviyesi',loaderSource.includes('read:2')],
+  ['edit seviyesi',loaderSource.includes('edit:3')],
+  ['eski gizle uyumluluğu',loaderSource.includes("'gizle'")],
+  ['eski goruntule uyumluluğu',loaderSource.includes("'goruntule'")],
+  ['eski duzenle uyumluluğu',loaderSource.includes("'duzenle'")],
+  ['DOM permission attribute',loaderSource.includes('[data-ka-permission]')],
+  ['yazma koruması',loaderSource.includes('[data-ka-write]')],
+  ['rol katalog editörü',settingsSource.includes('PermissionService?.catalog')],
+  ['rol gizli seçeneği',settingsSource.includes("['hidden','Gizli']")],
+  ['rol önizleme seçeneği',settingsSource.includes("['preview','Önizleme']")],
+  ['rol salt okunur seçeneği',settingsSource.includes("['read','Salt okunur']")],
+  ['rol düzenleme seçeneği',settingsSource.includes("['edit','Düzenleme']")]
+];
+const missingPermissionRequirements=permissionRequirements.filter(([,ok])=>!ok).map(([name])=>name);
+
 const report={
   jsFiles:files.length,
   targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',
@@ -39,7 +63,8 @@ const report={
   hiddenScriptLoaders:hiddenLoaders.sort(),
   opticalReferences:optical.sort(),
   primaryStylesheets:stylesheetLinks,
-  styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses
+  styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,
+  permissionContract:{levels:['hidden','preview','read','edit'],missing:missingPermissionRequirements}
 };
 console.log(JSON.stringify(report,null,2));
 let failed=false;
@@ -49,4 +74,5 @@ if(styleViolations.length){console.error('Ek stylesheet ihlali:',styleViolations
 if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içermemeli.');failed=true}
 if(missingThemeTokens.length){console.error('Eksik merkezi tema değişkenleri:',missingThemeTokens.join(', '));failed=true}
 if(missingShellClasses.length){console.error('Eksik merkezi shell componentleri:',missingShellClasses.join(', '));failed=true}
+if(missingPermissionRequirements.length){console.error('Eksik merkezi rol/yetki sözleşmesi:',missingPermissionRequirements.join(', '));failed=true}
 if(failed)process.exitCode=2;
