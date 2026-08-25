@@ -54,6 +54,11 @@ assert(source.management.includes('batchYeriSil')&&source.management.includes('b
 assert(source.academic.includes('storage.ref()'),'Academic binary dosyası Storage üzerinden yönetilmeli.');
 assert(source.documents.includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
 assert(source.communication.includes('storage.ref()'),'Communication binary dosyaları Storage üzerinden yönetilmeli.');
+assert(source.documents.includes("s.src='js/dokuman-okuyucu.js'"),'Belge görüntüleyici yalnız dosya açılırken lazy-load edilmeli.');
+assert(source.documents.includes('data-document-open'),'Documents UI dış sekme yerine kontrollü görüntüleme eylemi kullanmalı.');
+assert(source.documents.includes("PermissionService?.can?.('documents.view','preview')"),'Belge açma documents.view iznine bağlı kalmalı.');
+assert(source.documents.includes('viewer?.destekliMi?.'),'Desteklenen belge türleri uygulama içi görüntüleyiciye yönlenmeli.');
+assert(source.documents.includes("window.open(d.dosyaUrl,'_blank','noopener')"),'Desteklenmeyen belge türlerinde web fallback korunmalı.');
 
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
 for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} kendi tek UI modülünü yüklemeli.`);
