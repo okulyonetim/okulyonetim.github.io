@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v32
+/* Koruk Asistan — AppLoader v33
    Tek başlangıç sahibi: tema + Firebase + auth + lazy modüller.
    Tek görünürlük sahibi: PermissionService.
    Tek davranışsal düzen sahibi: AppConfig (oy_navDuzeni/uygulama).
@@ -17,12 +17,12 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 define('dashboard',['js/modules/dashboard.js']);
 define('people',['js/modules/people.js']);
-define('academic',['js/modules/settings-data.js','js/modules/academic.js']);
+define('academic',['js/modules/academic.js']);
 define('management',['js/modules/duty-data.js','js/modules/management.js']);
-define('communication',['js/modules/settings-data.js','js/modules/communication.js']);
+define('communication',['js/modules/communication.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
-define('documents',['js/modules/settings-data.js','js/modules/documents.js']);
-define('tools',['js/modules/tools.js']);
+define('documents',['js/modules/documents.js']);
+define('tools',['js/modules/tools.js','js/harita.js']);
 define('settings',['js/modules/settings-data.js','js/modules/settings.js']);
 
 const MODULE_DEFAULTS=[{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];
