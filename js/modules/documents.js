@@ -1,31 +1,45 @@
-/* Koruk Asistan v2 — Documents UI
-   Doküman listesi kullanıcı yetkisine göre SyncEngine ile cihazda tutulur.
-   UI Firestore'a doğrudan erişmez. */
+/* Koruk Asistan — Documents tek modül
+ * Doküman metadata + Storage + görünürlük + UI tek dosyada.
+ */
+(function(global){
+'use strict';
+function device(){if(!global.DeviceData)throw new Error('DeviceData hazır değil.');return global.DeviceData;}
+const active=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};
+function tarih(d){const t=d?.yuklenmeTarihi;if(!t)return 0;if(typeof t.toMillis==='function')return t.toMillis();if(typeof t.seconds==='number')return t.seconds*1000;return new Date(t).getTime()||0;}
+function safeName(ad){return(String(ad||'dosya').replace(/[\\/\u0000-\u001f\u007f]+/g,'_').replace(/\s+/g,' ').trim()||'dosya').slice(0,180);}
+function allDocs(){const m=new Map();['dokumanlar','dokumanlarAcik','dokumanlarBenim'].forEach(t=>device().list(t).forEach(d=>d?.id&&m.set(d.id,d)));return[...m.values()];}
+function primaryType(){return active().admin?'dokumanlar':'dokumanlarBenim';}
+async function mirror(row){if(active().admin)return;const mine=device().list('dokumanlarBenim').filter(x=>x.id!==row.id);mine.push(row);await device().persist('dokumanlarBenim',mine);const open=device().list('dokumanlarAcik').filter(x=>x.id!==row.id);if(row.gorunurluk==='herkes')open.push(row);await device().persist('dokumanlarAcik',open);}
+async function unmirror(id){if(active().admin)return;await device().persist('dokumanlarBenim',device().list('dokumanlarBenim').filter(x=>x.id!==id));await device().persist('dokumanlarAcik',device().list('dokumanlarAcik').filter(x=>x.id!==id));}
+const fakeDoc=(row,id)=>({exists:!!row,id:id||row?.id||'',data:()=>row?{...row}:undefined});
+const DokumanlarRepository={
+ dokumanlariDinle(cb){const emit=()=>cb(allDocs().sort((a,b)=>tarih(b)-tarih(a)),{source:'device'});emit();const off=['data.dokumanlar','data.dokumanlarAcik','data.dokumanlarBenim'].map(p=>AppStore.subscribe(p,emit));return()=>off.forEach(f=>f());},
+ dokumanGetir(id){return Promise.resolve(fakeDoc(allDocs().find(x=>x.id===id),id));},
+ async dokumanEkle(meta){const row=await device().add(primaryType(),COL.dokumanlar,{...meta,yuklenmeTarihi:meta.yuklenmeTarihi||new Date().toISOString()});await mirror(row);return row;},
+ async dokumanSil(id){await device().remove(primaryType(),COL.dokumanlar,id);await unmirror(id);return true;},
+ async dokumanGuncelle(id,v){const mevcut=allDocs().find(x=>x.id===id)||{id},row=await device().update(primaryType(),COL.dokumanlar,id,v);await mirror({...mevcut,...row});return row;},
+ dosyaYukle(dosya,sahipUid,gorunurluk,cb){return new Promise((resolve,reject)=>{if(!sahipUid)return reject(new Error('Dosya sahibi bulunamadı.'));const yol=`dokumanlar/${sahipUid}/${Date.now()}_${safeName(dosya?.name)}`,ref=storage.ref().child(yol),g=ref.put(dosya,{contentType:dosya?.type||'application/octet-stream',customMetadata:{olusturanUid:String(sahipUid),gorunurluk:gorunurluk==='herkes'?'herkes':'kisisel'}});g.on('state_changed',s=>cb?.(Math.round(s.bytesTransferred/s.totalBytes*100)),reject,async()=>resolve({url:await g.snapshot.ref.getDownloadURL(),storagePath:yol}));});},
+ async dosyaGorunurlukGuncelle(path,g){if(!path||!/^dokumanlar\/[^/]+\/.+/.test(path))return false;const ref=storage.ref().child(path),m=await ref.getMetadata();await ref.updateMetadata({customMetadata:{...(m.customMetadata||{}),gorunurluk:g==='herkes'?'herkes':'kisisel'}});return true;},dosyaSil:path=>storage.ref().child(path).delete()
+};global.DokumanlarRepository=DokumanlarRepository;
+const DokumanlarService={
+ _kendiKimlik(){const u=active(),k=typeof _hesapKimligi==='function'?_hesapKimligi():{ad:''};return{uid:u.uid||null,ad:k.ad||u.adSoyad||u.displayName||'Kullanıcı',adminMi:u.admin===true};},
+ gorunurMu(d){if(!d)return false;if(d.gorunurluk==='herkes')return true;const b=this._kendiKimlik();return b.adminMi||!!(b.uid&&d.olusturanUid===b.uid);},gorunurListele:l=>(l||[]).filter(d=>DokumanlarService.gorunurMu(d)),gorunurlukDegistirilebilirMi(){return this._kendiKimlik().adminMi;},
+ async dokumanGorunurlukGuncelle(id,yeni){if(!this.gorunurlukDegistirilebilirMi())throw new Error('yetkisiz');yeni=yeni==='herkes'?'herkes':'kisisel';const snap=await DokumanlarRepository.dokumanGetir(id);if(!snap.exists)throw new Error('Döküman bulunamadı.');const mevcut={id:snap.id,...snap.data()},eski=mevcut.gorunurluk==='herkes'?'herkes':'kisisel';let storageOk=false;if(mevcut.storagePath)storageOk=await DokumanlarRepository.dosyaGorunurlukGuncelle(mevcut.storagePath,yeni);try{return await DokumanlarRepository.dokumanGuncelle(id,{gorunurluk:yeni});}catch(e){if(storageOk)await DokumanlarRepository.dosyaGorunurlukGuncelle(mevcut.storagePath,eski).catch(()=>{});throw e;}},
+ dokumanSilinebilirMi(d){const b=this._kendiKimlik();return b.adminMi||!!(b.uid&&d?.olusturanUid===b.uid);},
+ async dokumanEkle(meta,dosya,cb){if(!gorebilir('dokumanlar'))throw new Error('yetkisiz');const b=this._kendiKimlik();if(!b.uid)throw new Error('Aktif kullanıcı bulunamadı.');const gorunurluk=b.adminMi&&meta.gorunurluk==='herkes'?'herkes':'kisisel';let next={...meta,gorunurluk,olusturanUid:b.uid,olusturanAdi:b.ad,yuklenmeTarihi:new Date().toISOString()};if(dosya){if(global.DepolamaSinirService){const izin=await DepolamaSinirService.yuklemeIzniVarMi('dokuman',dosya.size);if(!izin.izinVar)throw new Error('depolama-siniri:'+izin.mesaj);}const r=await DokumanlarRepository.dosyaYukle(dosya,b.uid,gorunurluk,cb);next={...next,dosyaUrl:r.url,storagePath:r.storagePath,dosyaAdi:dosya.name,dosyaBoyutu:dosya.size,dosyaTipi:dosya.type};}return DokumanlarRepository.dokumanEkle(next);},
+ async dokumanSil(id,path,mevcut){if(!this.dokumanSilinebilirMi(mevcut))throw new Error('sahip-degil');if(path)await DokumanlarRepository.dosyaSil(path).catch(()=>{});return DokumanlarRepository.dokumanSil(id);}
+};global.DokumanlarService=DokumanlarService;
+})(window);
+
 (function(){
 'use strict';if(window.DocumentsModule)return;
 let query='',mounted=false,unsubs=[];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');
-const arr=t=>{const v=window.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
-const uid=()=>window.AKTIF_KULLANICI?.uid||window.AppStore?.get?.('session.user')?.uid||'';
-const admin=()=>window.AKTIF_KULLANICI?.admin===true;
-function time(d){const t=d?.yuklenmeTarihi;if(!t)return 0;if(typeof t.toMillis==='function')return t.toMillis();if(typeof t.seconds==='number')return t.seconds*1000;return new Date(t).getTime()||0}
-function docs(){const map=new Map();const source=admin()?arr('dokumanlar'): [...arr('dokumanlarAcik'),...arr('dokumanlarBenim')];source.forEach(d=>d?.id&&map.set(d.id,d));return [...map.values()].sort((a,b)=>time(b)-time(a))}
-async function prepareLocal(){
- if(!window.SyncEngine||!window.COL?.dokumanlar)return;
- const types=[];
- if(admin()){SyncEngine.register('dokumanlar',COL.dokumanlar);types.push('dokumanlar')}
- else{
-  SyncEngine.register('dokumanlarAcik',COL.dokumanlar,{query:q=>q.where('gorunurluk','==','herkes')});types.push('dokumanlarAcik');
-  const u=uid();if(u){SyncEngine.register('dokumanlarBenim',COL.dokumanlar,{query:q=>q.where('olusturanUid','==',u)});types.push('dokumanlarBenim')}
- }
- if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(120)}
-}
-function shell(){return `<section class="ka-stack" data-documents-module><div class="ka-row ka-row--between"><div><h2>Dokümanlar ve Raporlar</h2><p class="ka-muted">Erişebildiğiniz dokümanlar cihazdan açılır; dosya metadata'sı arka planda güncellenir.</p></div><span id="documentsCount" class="ka-badge"></span></div><label class="ka-field"><span class="ka-field__label">Ara</span><input id="documentsSearch" type="search" placeholder="Doküman, kategori veya oluşturan kişi ara…"></label><div id="documentsContent" class="ka-stack"></div></section>`}
-function render(){if(!mounted)return;const q=norm(query.trim());const list=docs().filter(d=>!q||norm([d.baslik,d.aciklama,d.kategori,d.dosyaAdi,d.olusturanAdi].filter(Boolean).join(' ')).includes(q));const out=document.getElementById('documentsContent'),count=document.getElementById('documentsCount');if(count)count.textContent=`${list.length} kayıt`;if(!out)return;out.innerHTML=list.length?list.map(d=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(d.baslik||d.dosyaAdi||'Doküman')}</strong><div class="ka-muted">${esc([d.kategori,d.olusturanAdi,d.gorunurluk==='herkes'?'Herkese açık':'Kişisel'].filter(Boolean).join(' · '))}</div></div>${d.dosyaUrl?`<a class="ka-btn ka-btn--ghost ka-btn--sm" href="${esc(d.dosyaUrl)}" target="_blank" rel="noopener">Aç</a>`:''}</div></article>`).join(''):'<div class="ka-empty">Doküman bulunamadı.</div>'}
-function bind(){const s=document.getElementById('documentsSearch');if(s)s.oninput=()=>{query=s.value;render()}}
-function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.dokumanlar','data.dokumanlarAcik','data.dokumanlarBenim'].forEach(p=>{const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));if(u)unsubs.push(u)})}
-async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}
-function unmount(){mounted=false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
-window.DocumentsModule={mount,unmount,render,prepareLocal};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='documents')mount()});
+const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');const arr=t=>{const v=AppStore?.data?.(t);return Array.isArray(v)?v:[]};const uid=()=>window.AKTIF_KULLANICI?.uid||AppStore?.get?.('session.user')?.uid||'';const admin=()=>window.AKTIF_KULLANICI?.admin===true;
+function time(d){const t=d?.yuklenmeTarihi;if(!t)return 0;if(typeof t.toMillis==='function')return t.toMillis();if(typeof t.seconds==='number')return t.seconds*1000;return new Date(t).getTime()||0}function docs(){const m=new Map(),source=admin()?arr('dokumanlar'):[...arr('dokumanlarAcik'),...arr('dokumanlarBenim')];source.forEach(d=>d?.id&&m.set(d.id,d));return[...m.values()].sort((a,b)=>time(b)-time(a))}
+async function prepareLocal(){if(!SyncEngine||!COL?.dokumanlar)return;const types=[];if(admin()){SyncEngine.register('dokumanlar',COL.dokumanlar);types.push('dokumanlar')}else{SyncEngine.register('dokumanlarAcik',COL.dokumanlar,{query:q=>q.where('gorunurluk','==','herkes')});types.push('dokumanlarAcik');const u=uid();if(u){SyncEngine.register('dokumanlarBenim',COL.dokumanlar,{query:q=>q.where('olusturanUid','==',u)});types.push('dokumanlarBenim')}}if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(120)}}
+function shell(){return `<section class="ka-stack" data-documents-module><div class="ka-row ka-row--between"><div><h2>Dokümanlar ve Raporlar</h2><p class="ka-muted">Erişebildiğiniz dokümanlar cihazdan açılır.</p></div><span id="documentsCount" class="ka-badge"></span></div><label class="ka-field"><span class="ka-field__label">Ara</span><input id="documentsSearch" type="search" placeholder="Doküman, kategori veya oluşturan kişi ara…"></label><div id="documentsContent" class="ka-stack"></div></section>`}
+function render(){if(!mounted)return;const q=norm(query.trim()),list=docs().filter(d=>!q||norm([d.baslik,d.aciklama,d.kategori,d.dosyaAdi,d.olusturanAdi].filter(Boolean).join(' ')).includes(q)),out=document.getElementById('documentsContent'),count=document.getElementById('documentsCount');if(count)count.textContent=`${list.length} kayıt`;if(out)out.innerHTML=list.length?list.map(d=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(d.baslik||d.dosyaAdi||'Doküman')}</strong><div class="ka-muted">${esc([d.kategori,d.olusturanAdi,d.gorunurluk==='herkes'?'Herkese açık':'Kişisel'].filter(Boolean).join(' · '))}</div></div>${d.dosyaUrl?`<a class="ka-btn ka-btn--ghost ka-btn--sm" href="${esc(d.dosyaUrl)}" target="_blank" rel="noopener">Aç</a>`:''}</div></article>`).join(''):'<div class="ka-empty">Doküman bulunamadı.</div>';PermissionService?.applyModule?.('documents')}
+function bind(){const s=document.getElementById('documentsSearch');if(s)s.oninput=()=>{query=s.value;render()}}function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.dokumanlar','data.dokumanlarAcik','data.dokumanlarBenim'].forEach(p=>{const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));if(u)unsubs.push(u)})}
+async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}function unmount(){mounted=false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}window.DocumentsModule={mount,unmount,render,prepareLocal};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='documents')mount()});
 })();
