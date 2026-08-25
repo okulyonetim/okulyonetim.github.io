@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b7657">
+  <title>Koruk Asistan</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="css/design-system.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js" defer></script>
+  <script src="js/firebase-init.js" defer></script>
+  <script src="js/core/core.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/app-loader.js" defer></script>
+</head>
+<body>
+  <section id="girisEkrani" class="ka-page ka-stack">
+    <div class="ka-card">
+      <div class="ka-card__header"><h1>Koruk Asistan</h1></div>
+      <form class="ka-card__body ka-stack" onsubmit="girisFormGonder(event)">
+        <p class="ka-muted">Devam etmek için kullanıcı adı ve şifrenizle giriş yapın.</p>
+        <label class="ka-field"><span class="ka-field__label">Kullanıcı Adı</span><input id="girisKullaniciAdi" autocomplete="username" required></label>
+        <label class="ka-field"><span class="ka-field__label">Şifre</span><input id="girisSifre" type="password" autocomplete="current-password" required></label>
+        <p id="girisHataMetni" class="ka-muted"></p>
+        <button id="girisBtn" class="ka-btn" type="submit">Giriş Yap</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="onayBekleniyorEkrani" class="ka-page ka-stack ka-hidden">
+    <div class="ka-card">
+      <div class="ka-card__header"><h2>Hesap Onayı Bekleniyor</h2></div>
+      <div class="ka-card__body ka-stack">
+        <p id="onayBekleniyorMetin" class="ka-muted">Hesabınız için yönetici onayı bekleniyor.</p>
+        <button class="ka-btn ka-btn--secondary" type="button" onclick="cikisYap()">Çıkış Yap</button>
+      </div>
+    </div>
+  </section>
+
+  <main id="app" class="ka-page ka-stack">
+    <header class="ka-row">
+      <img src="assets/icon-192.png" width="44" height="44" alt="Koruk İlk-Ortaokulu">
+      <div class="ka-stack"><h1>Koruk Asistan</h1><span class="ka-muted">Local-first okul yönetim sistemi</span></div>
+      <span id="v2SyncStatus" class="ka-badge">Cihaz verisi hazırlanıyor</span>
+    </header>
+
+    <nav class="ka-grid" aria-label="Uygulama bölümleri">
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="dashboard">Ana Sayfa</button>
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="people">Öğretmen / Öğrenci</button>
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="academic">Akademik</button>
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="management">Yönetim</button>
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="communication">İletişim</button>
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="transport">Taşıma</button>
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="documents">Döküman / Rapor</button>
+      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="settings">Ayarlar</button>
+    </nav>
+
+    <section class="ka-card">
+      <div class="ka-card__header"><h2 id="v2ModuleTitle">Uygulama çekirdeği</h2></div>
+      <div class="ka-card__body ka-stack">
+        <p id="v2ModuleStatus" class="ka-muted">IndexedDB verileri ekrana alınır; Firestore yalnız arka planda senkronize olur.</p>
+        <div id="v2ModuleRoot"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',()=>{
+      const title=document.getElementById('v2ModuleTitle');
+      const status=document.getElementById('v2ModuleStatus');
+      document.querySelectorAll('[data-ka-module]').forEach(btn=>btn.addEventListener('click',async()=>{
+        const name=btn.dataset.kaModule;
+        title.textContent=btn.textContent.trim();
+        status.textContent='Modül yükleniyor…';
+        try{await AppLoader.load(name);status.textContent='Modül hazır.';}catch(e){status.textContent='Modül yüklenemedi: '+(e?.message||e);}
+      }));
+      window.addEventListener('koruk:app-ready',()=>{
+        const el=document.getElementById('v2SyncStatus');if(el)el.textContent='Cihaz verisi hazır';
+      });
+      window.addEventListener('koruk:sync-state',e=>{
+        const el=document.getElementById('v2SyncStatus');if(el)el.textContent=(e.detail?.pending||0)+' bekleyen işlem';
+      });
+    });
+  </script>
+</body>
+</html>
