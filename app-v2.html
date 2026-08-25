@@ -68,24 +68,5 @@
       </div>
     </section>
   </main>
-
-  <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-      const title=document.getElementById('v2ModuleTitle');
-      const status=document.getElementById('v2ModuleStatus');
-      document.querySelectorAll('[data-ka-module]').forEach(btn=>btn.addEventListener('click',async()=>{
-        const name=btn.dataset.kaModule;
-        title.textContent=btn.textContent.trim();
-        status.textContent='Modül yükleniyor…';
-        try{await AppLoader.load(name);status.textContent='Modül hazır.';}catch(e){status.textContent='Modül yüklenemedi: '+(e?.message||e);}
-      }));
-      window.addEventListener('koruk:app-ready',()=>{
-        const el=document.getElementById('v2SyncStatus');if(el)el.textContent='Cihaz verisi hazır';
-      });
-      window.addEventListener('koruk:sync-state',e=>{
-        const el=document.getElementById('v2SyncStatus');if(el)el.textContent=(e.detail?.pending||0)+' bekleyen işlem';
-      });
-    });
-  </script>
 </body>
 </html>
