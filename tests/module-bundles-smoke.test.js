@@ -6,13 +6,14 @@ const peopleUi=fs.readFileSync('js/modules/people.js','utf8');
 const academic=fs.readFileSync('js/modules/academic-data.js','utf8');
 const academicUi=fs.readFileSync('js/modules/academic.js','utf8');
 const management=fs.readFileSync('js/modules/management-data.js','utf8');
+const managementUi=fs.readFileSync('js/modules/management.js','utf8');
 const communication=fs.readFileSync('js/modules/communication-data.js','utf8');
 const transport=fs.readFileSync('js/modules/transport-data.js','utf8');
 const documents=fs.readFileSync('js/modules/documents-data.js','utf8');
 const settings=fs.readFileSync('js/modules/settings-data.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 
-for(const source of [people,peopleUi,academic,academicUi,management,communication,transport,documents,settings,loader]) new Function(source);
+for(const source of [people,peopleUi,academic,academicUi,management,managementUi,communication,transport,documents,settings,loader]) new Function(source);
 
 for(const name of ['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService']) assert(people.includes(name),`people-data.js ${name} API'sini korumalı.`);
 assert(peopleUi.includes('window.PeopleModule'),'people.js tek v2 People UI sahibi olmalı.');
@@ -21,11 +22,15 @@ assert(!/\bdb\.collection\s*\(/.test(peopleUi),'people.js doğrudan Firestore ku
 
 for(const name of ['SinavlarRepository','SinavlarService','YillikPlanRepository','YillikPlanService','DersSaatleriRepository','DersSaatleriService','AkademikTakvimRepository','AkademikTakvimService','DenemeSonuclariService','TestSonuclariService']) assert(academic.includes(name),`academic-data.js ${name} API'sini korumalı.`);
 assert(academicUi.includes('window.AcademicModule'),'academic.js tek v2 Academic UI sahibi olmalı.');
-assert(academicUi.includes('SyncEngine.register'),'academic.js ek koleksiyonlarını merkezi SyncEngine ile kaydetmeli.');
-assert(academicUi.includes('SyncEngine.localHydrate'),'academic.js Firestore öncesinde cihaz cache’ini hydrate etmeli.');
+assert(academicUi.includes('SyncEngine.register'),'academic.js ek koleksiyonlarını SyncEngine ile kaydetmeli.');
+assert(academicUi.includes('SyncEngine.localHydrate'),'academic.js önce cihaz cache’ini hydrate etmeli.');
 assert(!/\bdb\.collection\s*\(/.test(academicUi),'academic.js doğrudan Firestore kullanmamalı.');
 
 for(const name of ['PersonelRepository','PersonelService','PeriyodikRepository','PeriyodikService','OgretmenIzinRepository','OgretmenIzinService']) assert(management.includes(name),`management-data.js ${name} API'sini korumalı.`);
+assert(managementUi.includes('window.ManagementModule'),'management.js tek v2 Management UI sahibi olmalı.');
+assert(managementUi.includes('SyncEngine.localHydrate'),'management.js önce cihaz cache’ini hydrate etmeli.');
+assert(!/\bdb\.collection\s*\(/.test(managementUi),'management.js doğrudan Firestore kullanmamalı.');
+
 for(const name of ['TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','PushRepository','PushService','HaberlerRepository','HaberlerService']) assert(communication.includes(name),`communication-data.js ${name} API'sini korumalı.`);
 for(const name of ['TasimaRepository','TasimaService','ServisOturmaRepository','ServisOturmaService','SinifOturmaRepository','SinifOturmaService']) assert(transport.includes(name),`transport-data.js ${name} API'sini korumalı.`);
 for(const name of ['DokumanlarRepository','DokumanlarService']) assert(documents.includes(name),`documents-data.js ${name} API'sini korumalı.`);
@@ -40,7 +45,10 @@ const academicLine=loader.match(/define\('academic',\[(.*?)\]\);/)?.[1]||'';
 for(const dep of ['js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']) assert(academicLine.includes(`'${dep}'`),`Academic grubu ${dep} yüklemeli.`);
 for(const legacy of ['js/sinavlar.js','js/yillik-plan.js','js/ders-saatleri.js','js/akademik-takvim.js','js/sinav-sonuclari.js','js/deneme-sinavlari-modern.js']) assert(!academicLine.includes(legacy),`V2 Academic eski UI/modernizer dosyasını yüklememeli: ${legacy}`);
 
-assert(loader.includes("define('management',['js/core/repositories/takvim.repository.js'"),'Öğretmen izin servisi için TakvimRepository önce yüklenmeli.');
+const managementLine=loader.match(/define\('management',\[(.*?)\]\);/)?.[1]||'';
+for(const dep of ['js/core/repositories/takvim.repository.js','js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js','js/modules/management-data.js','js/modules/management.js']) assert(managementLine.includes(`'${dep}'`),`Management grubu ${dep} yüklemeli.`);
+for(const legacy of ['js/nobet.js','js/periyodik.js','js/personel.js','js/dilekce.js','js/puantaj.js','js/ogretmen-izin.js']) assert(!managementLine.includes(`'${legacy}'`),`V2 Management eski UI dosyasını yüklememeli: ${legacy}`);
+
 assert(loader.includes("define('transport',['js/modules/people-data.js'"),'Taşıma servisi için people-data önce yüklenmeli.');
 const dashboardLine=loader.match(/define\('dashboard',\[(.*?)\]\);/)?.[1]||'';
 for(const dep of ['js/core/repositories/takvim.repository.js','js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js','js/modules/communication-data.js']) assert(dashboardLine.includes(`'${dep}'`),`Dashboard ${dep} ortak bağımlılığını yüklemeli.`);
@@ -59,4 +67,4 @@ for(const eski of [
   'js/core/repositories/dokumanlar.repository.js','js/core/services/dokumanlar.service.js','js/core/repositories/kullanici-yonetimi.repository.js','js/core/services/kullanici-yonetimi.service.js','js/core/services/depolama-sinir.service.js'
 ]) assert(!loader.includes(`'${eski}'`),`${eski} v2 lazy-loader listesine geri dönmemeli.`);
 for(const korunan of ['js/core/repositories/takvim.repository.js','js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js','js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js']) assert(loader.includes(`'${korunan}'`),`${korunan} geçiş süresince ayrı yüklenmeli.`);
-console.log('Tüm v2 module bundle + temiz People/Academic UI + dashboard dependency smoke testleri başarılı.');
+console.log('Tüm v2 module bundle + temiz People/Academic/Management UI + dashboard dependency smoke testleri başarılı.');
