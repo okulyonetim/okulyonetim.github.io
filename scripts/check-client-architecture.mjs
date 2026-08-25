@@ -64,7 +64,7 @@ const moduleFiles=files.filter(f=>rel(f).startsWith('js/modules/'));
 const nativeApiViolations=[];
 for(const f of moduleFiles){const r=rel(f);if(r==='js/modules/report-engine.js')continue;const src=fs.readFileSync(f,'utf8');if(/Capacitor\?*\.|PrintPlugin|Filesystem|Browser\.|StatusBar\.|Keyboard\./.test(src))nativeApiViolations.push(r)}
 const platformRequirements=[
-  ['dinamik viewport birimi',/\bdvh\b/.test(designSource)],
+  ['dinamik viewport birimi',/\d+(?:\.\d+)?dvh\b/.test(designSource)],
   ['iOS metin ölçekleme koruması',designSource.includes('-webkit-text-size-adjust: 100%')],
   ['dokunmatik hedef en az 44px',designSource.includes('--ka-control-height: 44px')],
   ['native platform capability detection',reportEngineSource.includes('Capacitor?.isNativePlatform?.()')],
