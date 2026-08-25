@@ -6,32 +6,24 @@ const academic=fs.readFileSync('js/modules/academic-data.js','utf8');
 const management=fs.readFileSync('js/modules/management-data.js','utf8');
 const communication=fs.readFileSync('js/modules/communication-data.js','utf8');
 const transport=fs.readFileSync('js/modules/transport-data.js','utf8');
+const documents=fs.readFileSync('js/modules/documents-data.js','utf8');
+const settings=fs.readFileSync('js/modules/settings-data.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 
-for(const source of [people,academic,management,communication,transport,loader]) new Function(source);
+for(const source of [people,academic,management,communication,transport,documents,settings,loader]) new Function(source);
 
-for(const name of ['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService']){
-  assert(people.includes(name),`people-data.js ${name} API'sini korumalı.`);
-}
-for(const name of ['SinavlarRepository','SinavlarService','YillikPlanRepository','YillikPlanService','DersSaatleriRepository','DersSaatleriService','AkademikTakvimRepository','AkademikTakvimService','DenemeSonuclariService','TestSonuclariService']){
-  assert(academic.includes(name),`academic-data.js ${name} API'sini korumalı.`);
-}
-for(const name of ['PersonelRepository','PersonelService','PeriyodikRepository','PeriyodikService','OgretmenIzinRepository','OgretmenIzinService']){
-  assert(management.includes(name),`management-data.js ${name} API'sini korumalı.`);
-}
-for(const name of ['TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','PushRepository','PushService','HaberlerRepository','HaberlerService']){
-  assert(communication.includes(name),`communication-data.js ${name} API'sini korumalı.`);
-}
-for(const name of ['TasimaRepository','TasimaService','ServisOturmaRepository','ServisOturmaService','SinifOturmaRepository','SinifOturmaService']){
-  assert(transport.includes(name),`transport-data.js ${name} API'sini korumalı.`);
-}
+for(const name of ['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService']) assert(people.includes(name),`people-data.js ${name} API'sini korumalı.`);
+for(const name of ['SinavlarRepository','SinavlarService','YillikPlanRepository','YillikPlanService','DersSaatleriRepository','DersSaatleriService','AkademikTakvimRepository','AkademikTakvimService','DenemeSonuclariService','TestSonuclariService']) assert(academic.includes(name),`academic-data.js ${name} API'sini korumalı.`);
+for(const name of ['PersonelRepository','PersonelService','PeriyodikRepository','PeriyodikService','OgretmenIzinRepository','OgretmenIzinService']) assert(management.includes(name),`management-data.js ${name} API'sini korumalı.`);
+for(const name of ['TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','PushRepository','PushService','HaberlerRepository','HaberlerService']) assert(communication.includes(name),`communication-data.js ${name} API'sini korumalı.`);
+for(const name of ['TasimaRepository','TasimaService','ServisOturmaRepository','ServisOturmaService','SinifOturmaRepository','SinifOturmaService']) assert(transport.includes(name),`transport-data.js ${name} API'sini korumalı.`);
+for(const name of ['DokumanlarRepository','DokumanlarService']) assert(documents.includes(name),`documents-data.js ${name} API'sini korumalı.`);
+for(const name of ['KullaniciYonetimiRepository','KullaniciYonetimiService','DepolamaSinirService']) assert(settings.includes(name),`settings-data.js ${name} API'sini korumalı.`);
 
-assert(loader.includes("define('people',['js/modules/people-data.js'"),'People grubu birleşik veri paketini yüklemeli.');
-assert(loader.includes("define('academic',['js/modules/academic-data.js'"),'Academic grubu birleşik veri paketini yüklemeli.');
-assert(loader.includes("'js/modules/management-data.js'"),'Management grubu birleşik veri paketini yüklemeli.');
+for(const bundle of ['people-data.js','academic-data.js','management-data.js','communication-data.js','transport-data.js','documents-data.js','settings-data.js']){
+  assert(loader.includes(`js/modules/${bundle}`),`${bundle} AppLoader registry'sinde olmalı.`);
+}
 assert(loader.includes("define('management',['js/core/repositories/takvim.repository.js'"),'Öğretmen izin servisi için TakvimRepository önce yüklenmeli.');
-assert(loader.includes("'js/modules/communication-data.js'"),'Communication grubu birleşik veri paketini yüklemeli.');
-assert(loader.includes("'js/modules/transport-data.js'"),'Transport grubu birleşik veri paketini yüklemeli.');
 assert(loader.includes("define('transport',['js/modules/people-data.js'"),'Taşıma servisi için people-data önce yüklenmeli.');
 
 for(const eski of [
@@ -53,18 +45,16 @@ for(const eski of [
   'js/core/repositories/haberler.repository.js','js/core/services/haberler.service.js',
   'js/core/repositories/tasima.repository.js','js/core/services/tasima.service.js',
   'js/core/repositories/servis-oturma.repository.js','js/core/services/servis-oturma.service.js',
-  'js/core/repositories/sinif-oturma.repository.js','js/core/services/sinif-oturma.service.js'
-]){
-  assert(!loader.includes(`'${eski}'`),`${eski} v2 lazy-loader listesine geri dönmemeli.`);
-}
+  'js/core/repositories/sinif-oturma.repository.js','js/core/services/sinif-oturma.service.js',
+  'js/core/repositories/dokumanlar.repository.js','js/core/services/dokumanlar.service.js',
+  'js/core/repositories/kullanici-yonetimi.repository.js','js/core/services/kullanici-yonetimi.service.js',
+  'js/core/services/depolama-sinir.service.js'
+]) assert(!loader.includes(`'${eski}'`),`${eski} v2 lazy-loader listesine geri dönmemeli.`);
 
-// Bilerek ayrı tutulan hassas/ortak katmanlar.
 for(const korunan of [
   'js/core/repositories/takvim.repository.js',
   'js/core/repositories/mesajlasma.repository.js','js/core/services/mesajlasma.service.js',
   'js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js'
-]){
-  assert(loader.includes(`'${korunan}'`),`${korunan} geçiş süresince ayrı yüklenmeli.`);
-}
+]) assert(loader.includes(`'${korunan}'`),`${korunan} geçiş süresince ayrı yüklenmeli.`);
 
-console.log('People/academic/management/communication/transport bundle smoke testleri başarılı.');
+console.log('Tüm v2 module bundle smoke testleri başarılı.');
