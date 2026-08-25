@@ -28,43 +28,46 @@ const missingThemeTokens=requiredThemeTokens.filter(token=>!designSource.include
 const requiredShellClasses=['.ka-app-header','.ka-app-nav'];
 const missingShellClasses=requiredShellClasses.filter(name=>!designSource.includes(name));
 
-/* Merkezi rol/yetki sözleşmesi. */
 const loaderPath=path.join(ROOT,'js','app-loader.js');
 const loaderSource=fs.existsSync(loaderPath)?fs.readFileSync(loaderPath,'utf8'):'';
 const settingsPath=path.join(ROOT,'js','modules','settings.js');
 const settingsSource=fs.existsSync(settingsPath)?fs.readFileSync(settingsPath,'utf8'):'';
+const dashboardPath=path.join(ROOT,'js','modules','dashboard.js');
+const dashboardSource=fs.existsSync(dashboardPath)?fs.readFileSync(dashboardPath,'utf8'):'';
+const firebasePath=path.join(ROOT,'js','firebase-init.js');
+const firebaseSource=fs.existsSync(firebasePath)?fs.readFileSync(firebasePath,'utf8'):'';
+
 const permissionRequirements=[
   ['PermissionService',loaderSource.includes('window.PermissionService=')],
-  ['hidden seviyesi',loaderSource.includes('hidden:0')],
-  ['preview seviyesi',loaderSource.includes('preview:1')],
-  ['read seviyesi',loaderSource.includes('read:2')],
-  ['edit seviyesi',loaderSource.includes('edit:3')],
-  ['eski gizle uyumluluğu',loaderSource.includes("'gizle'")],
-  ['eski goruntule uyumluluğu',loaderSource.includes("'goruntule'")],
-  ['eski duzenle uyumluluğu',loaderSource.includes("'duzenle'")],
-  ['DOM permission attribute',loaderSource.includes('[data-ka-permission]')],
-  ['yazma koruması',loaderSource.includes('[data-ka-write]')],
-  ['rol katalog editörü',settingsSource.includes('PermissionService?.catalog')],
-  ['rol gizli seçeneği',settingsSource.includes("['hidden','Gizli']")],
-  ['rol önizleme seçeneği',settingsSource.includes("['preview','Önizleme']")],
-  ['rol salt okunur seçeneği',settingsSource.includes("['read','Salt okunur']")],
-  ['rol düzenleme seçeneği',settingsSource.includes("['edit','Düzenleme']")]
+  ['hidden seviyesi',loaderSource.includes('hidden:0')],['preview seviyesi',loaderSource.includes('preview:1')],['read seviyesi',loaderSource.includes('read:2')],['edit seviyesi',loaderSource.includes('edit:3')],
+  ['eski gizle uyumluluğu',loaderSource.includes("'gizle'")],['eski goruntule uyumluluğu',loaderSource.includes("'goruntule'")],['eski duzenle uyumluluğu',loaderSource.includes("'duzenle'")],
+  ['DOM permission attribute',loaderSource.includes('[data-ka-permission]')],['yazma koruması',loaderSource.includes('[data-ka-write]')],
+  ['rol katalog editörü',settingsSource.includes('PermissionService?.catalog')],['rol gizli seçeneği',settingsSource.includes("['hidden','Gizli']")],['rol önizleme seçeneği',settingsSource.includes("['preview','Önizleme']")],['rol salt okunur seçeneği',settingsSource.includes("['read','Salt okunur']")],['rol düzenleme seçeneği',settingsSource.includes("['edit','Düzenleme']")],
+  ['modül tavanı',loaderSource.includes('moduleNameForKey')&&loaderSource.includes('ceiling')]
 ];
 const missingPermissionRequirements=permissionRequirements.filter(([,ok])=>!ok).map(([name])=>name);
 
+const configRequirements=[
+  ['mevcut navDuzeni koleksiyonu',firebaseSource.includes("navDuzeni:'oy_navDuzeni'")],
+  ['AppConfig merkezi API',loaderSource.includes('window.AppConfig=')],
+  ['AppConfig DeviceData',loaderSource.includes("DeviceData.set('appConfig',COL.navDuzeni")],
+  ['varsayılan açılış modülü',loaderSource.includes('defaultModule')],
+  ['navigasyon adı/ikon/sıra',loaderSource.includes('MODULE_DEFAULTS')&&loaderSource.includes('applyNavigation')],
+  ['dashboard kart kataloğu',loaderSource.includes('DASHBOARD_DEFAULTS')],
+  ['ayarlar uygulama düzeni',settingsSource.includes('Merkezi Uygulama Düzeni')],
+  ['ayarlar navigasyon editörü',settingsSource.includes('data-app-module-row')],
+  ['ayarlar dashboard editörü',settingsSource.includes('data-dashboard-card-row')],
+  ['dashboard AppConfig tüketimi',dashboardSource.includes('AppConfig?.dashboardCards')],
+  ['dashboard sabit sıra yerine config',dashboardSource.includes('cards().map')]
+];
+const missingConfigRequirements=configRequirements.filter(([,ok])=>!ok).map(([name])=>name);
+
 const report={
-  jsFiles:files.length,
-  targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',
-  cssFiles:cssFiles.length,
-  targetActiveStylesheets:1,
-  legacyCssFiles:legacyCssFiles.map(rel).sort(),
-  debtNamedFiles:debtFiles.map(rel).sort(),
-  jsStyleInjection:styleInject.sort(),
-  hiddenScriptLoaders:hiddenLoaders.sort(),
-  opticalReferences:optical.sort(),
-  primaryStylesheets:stylesheetLinks,
-  styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,
-  permissionContract:{levels:['hidden','preview','read','edit'],missing:missingPermissionRequirements}
+  jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,
+  legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),
+  primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,
+  permissionContract:{levels:['hidden','preview','read','edit'],missing:missingPermissionRequirements},
+  appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements}
 };
 console.log(JSON.stringify(report,null,2));
 let failed=false;
@@ -75,4 +78,5 @@ if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içer
 if(missingThemeTokens.length){console.error('Eksik merkezi tema değişkenleri:',missingThemeTokens.join(', '));failed=true}
 if(missingShellClasses.length){console.error('Eksik merkezi shell componentleri:',missingShellClasses.join(', '));failed=true}
 if(missingPermissionRequirements.length){console.error('Eksik merkezi rol/yetki sözleşmesi:',missingPermissionRequirements.join(', '));failed=true}
+if(missingConfigRequirements.length){console.error('Eksik merkezi uygulama düzeni sözleşmesi:',missingConfigRequirements.join(', '));failed=true}
 if(failed)process.exitCode=2;
