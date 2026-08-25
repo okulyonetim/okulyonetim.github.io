@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#0b7657" data-ka-theme-color>
   <title>Koruk Asistan</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
   <link rel="icon" href="assets/icon-192.png">
   <link rel="stylesheet" href="css/design-system.css">
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
@@ -19,6 +20,13 @@
   <script src="js/app-loader.js" defer></script>
 </head>
 <body>
+  <section id="configWarning" class="ka-page ka-stack ka-hidden" role="alert">
+    <div class="ka-card">
+      <div class="ka-card__header"><h2>Bağlantı yapılandırması açılamadı</h2></div>
+      <div class="ka-card__body"><p class="ka-muted">Firebase başlatılamadı. Yapılandırma ve bağlantı bilgileri kontrol edilmelidir.</p></div>
+    </div>
+  </section>
+
   <section id="girisEkrani" class="ka-page ka-stack">
     <div class="ka-card">
       <div class="ka-card__header"><h1>Koruk Asistan</h1></div>
@@ -49,6 +57,7 @@
         <h1>Koruk Asistan</h1>
         <span class="ka-muted">Local-first okul yönetim sistemi</span>
       </div>
+      <button class="ka-btn ka-btn--ghost ka-btn--icon" type="button" data-ka-theme-toggle aria-label="Koyu temaya geç">🌙</button>
       <span id="v2SyncStatus" class="ka-badge">Cihaz verisi hazırlanıyor</span>
     </header>
 
@@ -64,7 +73,7 @@
     </nav>
 
     <section class="ka-card">
-      <div class="ka-card__header"><h2 id="v2ModuleTitle">Uygulama çekirdeği</h2></div>
+      <div class="ka-card__header"><h2 id="v2ModuleTitle">Ana Sayfa</h2></div>
       <div class="ka-card__body ka-stack">
         <p id="v2ModuleStatus" class="ka-muted">IndexedDB verileri ekrana alınır; Firestore yalnız arka planda senkronize olur.</p>
         <div id="v2ModuleRoot"></div>
