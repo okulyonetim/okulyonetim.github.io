@@ -63,81 +63,12 @@ service cloud.firestore {
         && request.auth.uid in get(/databases/$(database)/documents/oy_konusmalar/$(konusmaId)).data.katilimciUidler;
     }
 
-    function ozelKuralliKoleksiyonMu(koleksiyon) {
-      return koleksiyon == 'oy_kullanicilar'
-        || koleksiyon == 'oy_roller'
-        || koleksiyon == 'oy_navDuzeni'
-        || koleksiyon == 'oy_kullaniciIstatistikleri'
-        || koleksiyon == 'oy_kullaniciTercihleri'
-        || koleksiyon == 'oy_cihazTokenleri'
-        || koleksiyon == 'oy_optikSablonlari'
-        || koleksiyon == 'oy_ogretmenListeSablon'
-        || koleksiyon == 'oy_ogretmenListeKayit'
-        || koleksiyon == 'oy_yillikPlanBasliklari'
-        || koleksiyon == 'oy_yillikPlanTanimlari'
-        || koleksiyon == 'oy_ogretmenYillikPlanSecimleri'
-        || koleksiyon == 'oy_yillikPlanNotlari'
-        || koleksiyon == 'oy_akademikTakvim'
-        || koleksiyon == 'oy_kontrolListeleri'
-        || koleksiyon == 'oy_kontrolListeTamamlama'
-        || koleksiyon == 'oy_odevTakip'
-        || koleksiyon == 'oy_notCizelgesi'
-        || koleksiyon == 'oy_notlar'
-        || koleksiyon == 'oy_hatirlaticilar'
-        || koleksiyon == 'oy_gorevler'
-        || koleksiyon == 'oy_haritaFavoriler'
-        || koleksiyon == 'oy_nobetYerleri'
-        || koleksiyon == 'oy_nobetAtamalari'
-        || koleksiyon == 'oy_nobetciAmirleri'
-        || koleksiyon == 'oy_resmiTatiller'
-        || koleksiyon == 'oy_nobetRotasyon'
-        || koleksiyon == 'oy_periyodikIsler'
-        || koleksiyon == 'oy_periyodikSablon'
-        || koleksiyon == 'oy_sinavlar'
-        || koleksiyon == 'oy_denemeSinavlari'
-        || koleksiyon == 'oy_servisOturma'
-        || koleksiyon == 'oy_sinifOturma'
-        || koleksiyon == 'oy_okulBilgileri'
-        || koleksiyon == 'oy_devamsizlikCizelgesi'
-        || koleksiyon == 'oy_ogrenciler'
-        || koleksiyon == 'oy_dilekceler'
-        || koleksiyon == 'oy_sosyalKulupler'
-        || koleksiyon == 'oy_belirliGunler'
-        || koleksiyon == 'oy_zumre'
-        || koleksiyon == 'oy_sok'
-        || koleksiyon == 'oy_bepPlani'
-        || koleksiyon == 'oy_rehberlik'
-        || koleksiyon == 'oy_maarifRapor'
-        || koleksiyon == 'oy_digerEvrak'
-        || koleksiyon == 'oy_konusmalar'
-        || koleksiyon == 'oy_mesajlar'
-        || koleksiyon == 'oy_dokumanlar'
-        || koleksiyon == 'oy_duyurular'
-        || koleksiyon == 'oy_haberler'
-        || koleksiyon == 'oy_haberKaynaklari'
-        || koleksiyon == 'oy_dersSaatleri'
-        || koleksiyon == 'oy_dersListesi'
-        || koleksiyon == 'oy_bransListesi'
-        || koleksiyon == 'oy_depolamaAyarlari'
-        || koleksiyon == 'oy_hatirlatmaAyarlari'
-        || koleksiyon == 'oy_ozelMenu'
-        || koleksiyon == 'oy_anketler'
-        || koleksiyon == 'oy_siniflar'
-        || koleksiyon == 'oy_veliler'
-        || koleksiyon == 'oy_servisler'
-        || koleksiyon == 'oy_yoklama'
-        || koleksiyon == 'oy_personel'
-        || koleksiyon == 'oy_personelIzinler'
-        || koleksiyon == 'oy_ogretmenler'
-        || koleksiyon == 'oy_ogretmenIzinleri'
-        || koleksiyon == 'oy_evrakTakibi'
-        || koleksiyon == 'oy_dersProgrami'
-        || koleksiyon == 'oy_denemeSonuclari'
-        || koleksiyon == 'oy_testSonuclari';
-    }
-
+    // Koruk Asistan'ın tüm Firestore koleksiyonları oy_ ad alanındadır.
+    // Bu ad alanında varsayılan izin YOKTUR; yalnız aşağıda açıkça tanımlanan
+    // aktif koleksiyonlar erişilebilir. Böylece emekli/unutulmuş koleksiyonlar
+    // genel authenticated catch-all üzerinden yanlışlıkla yeniden açılamaz.
     match /{koleksiyon}/{belgeId} {
-      allow read, write: if girisYapmis() && !ozelKuralliKoleksiyonMu(koleksiyon);
+      allow read, write: if girisYapmis() && !koleksiyon.matches('^oy_.*');
     }
 
     match /oy_kullanicilar/{uid} {
@@ -171,12 +102,6 @@ service cloud.firestore {
         && request.resource.data.uid == request.auth.uid
         && (resource.data.uid == request.auth.uid || !('uid' in resource.data)));
       allow delete: if adminMi() || (girisYapmis() && resource.data.uid == request.auth.uid);
-    }
-
-    // Optik okuyucu uygulamadan emekli edildi. Eski koleksiyon verisi güvenlik
-    // nedeniyle genel authenticated catch-all kuralına düşmemeli.
-    match /oy_optikSablonlari/{id} {
-      allow read, write: if false;
     }
 
     match /oy_ogretmenListeSablon/{id} {
