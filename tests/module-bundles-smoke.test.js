@@ -3,15 +3,15 @@ const assert=require('assert');
 
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const core=fs.readFileSync('js/core/core.js','utf8');
-const nobetRepo=fs.readFileSync('js/core/repositories/nobet.repository.js','utf8');
-const dataBundles=['people-data','academic-data','management-data','messaging-data','communication-data','transport-data','documents-data','settings-data'];
+const dataBundles=['duty-data','people-data','academic-data','management-data','messaging-data','communication-data','transport-data','documents-data','settings-data'];
 const uiBundles=['dashboard','people','academic','management','communication','transport','documents','settings'];
 const source={};
 for(const name of dataBundles) source[name]=fs.readFileSync(`js/modules/${name}.js`,'utf8');
 for(const name of uiBundles) source[name]=fs.readFileSync(`js/modules/${name}.js`,'utf8');
-for(const text of [...Object.values(source),loader,core,nobetRepo]) new Function(text);
+for(const text of [...Object.values(source),loader,core]) new Function(text);
 
 const apiContracts={
+ 'duty-data':['NobetRepository','NobetService','batchCommit','otomatikDagitimUygula','excelOgretmenEslestir'],
  'people-data':['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService'],
  'academic-data':['SinavlarRepository','SinavlarService','YillikPlanRepository','YillikPlanService','DersSaatleriRepository','DersSaatleriService','AkademikTakvimRepository','AkademikTakvimService','DenemeSonuclariService','TestSonuclariService'],
  'management-data':['PersonelRepository','PersonelService','PeriyodikRepository','PeriyodikService','OgretmenIzinRepository','OgretmenIzinService'],
@@ -36,13 +36,12 @@ for(const bundle of ['academic','management','communication','transport','docume
 for(const api of ['window.DeviceData','deviceAdd','deviceUpdate','deviceSet','deviceRemove']) assert(core.includes(api),`Core ${api} sözleşmesini içermeli.`);
 assert(core.includes("queue(uid(),{kind:'set-doc'"),'DeviceData yazmaları mevcut offline queue kullanmalı.');
 assert(core.includes("tombstone(u,type,id,true)"),'DeviceData silmede tombstone kullanmalı.');
-for(const bundle of ['people-data','academic-data','management-data','messaging-data','communication-data','transport-data','documents-data','settings-data']){
-  for(const forbidden of ['localStorage','onSnapshot','db.collection']) assert(!source[bundle].includes(forbidden),`${bundle} doğrudan ${forbidden} kullanmamalı.`);
+for(const bundle of dataBundles){
+  for(const forbidden of ['localStorage','onSnapshot','db.collection','db.batch']) assert(!source[bundle].includes(forbidden),`${bundle} doğrudan ${forbidden} kullanmamalı.`);
   assert(source[bundle].includes('DeviceData'),`${bundle} merkezi DeviceData kullanmalı.`);
 }
-for(const forbidden of ['localStorage','onSnapshot','db.collection','db.batch']) assert(!nobetRepo.includes(forbidden),`nobet.repository doğrudan ${forbidden} kullanmamalı.`);
-assert(nobetRepo.includes('DeviceData'),'Nöbet repository merkezi DeviceData kullanmalı.');
-assert(nobetRepo.includes('batchCommit'),'Nöbet Excel/rotasyon batch sözleşmesi korunmalı.');
+assert(source['duty-data'].includes('batchYeriSil'),'Nöbet yer silme batch sözleşmesi cihaz-first olmalı.');
+assert(source['duty-data'].includes('batchAmirSil'),'Nöbet amir silme batch sözleşmesi cihaz-first olmalı.');
 assert(source['academic-data'].includes('storage.ref()'),'Academic takvim binary dosyası Storage üzerinden yönetilmeli.');
 assert(source['documents-data'].includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
 assert(source['communication-data'].includes('storage.ref()'),'Duyuru görselleri Storage üzerinden yönetilmeli.');
@@ -55,8 +54,9 @@ assert(registry('people').includes("'js/modules/people-data.js'")&&registry('peo
 for(const legacy of ['js/siniflar.js','js/ogrenciler-arama.js','js/ogretmen-detay.js','js/yoklama.js']) assert(!registry('people').includes(legacy),`People legacy dosyayı yüklememeli: ${legacy}`);
 for(const dep of ['js/modules/settings-data.js','js/modules/academic-data.js','js/deneme-sinavlari-stability.js','js/modules/academic.js']) assert(registry('academic').includes(`'${dep}'`),`Academic ${dep} yüklemeli.`);
 for(const legacy of ['js/sinavlar.js','js/yillik-plan.js','js/ders-saatleri.js','js/akademik-takvim.js','js/sinav-sonuclari.js','js/deneme-sinavlari-modern.js']) assert(!registry('academic').includes(legacy),`Academic legacy dosyayı yüklememeli: ${legacy}`);
+assert(registry('management').includes("'js/modules/duty-data.js'"),'Management birleşik duty-data yüklemeli.');
 assert(registry('management').includes("'js/modules/management.js'"),'Management tek temiz UI yüklemeli.');
-assert(!registry('management').includes('takvim.repository.js'),'Management hatırlatıcı için ayrı TakvimRepository yüklememeli.');
+for(const old of ['nobet.repository.js','nobet.service.js','takvim.repository.js']) assert(!registry('management').includes(old),`Management eski data dosyasını yüklememeli: ${old}`);
 for(const legacy of ['js/nobet.js','js/periyodik.js','js/personel.js','js/dilekce.js','js/puantaj.js','js/ogretmen-izin.js']) assert(!registry('management').includes(`'${legacy}'`),`Management legacy dosyayı yüklememeli: ${legacy}`);
 assert(registry('communication').includes("'js/modules/messaging-data.js'"),'Communication birleşik messaging-data yüklemeli.');
 assert(registry('communication').includes("'js/modules/communication.js'"),'Communication tek temiz UI yüklemeli.');
