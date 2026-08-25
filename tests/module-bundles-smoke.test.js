@@ -4,7 +4,6 @@ const assert=require('assert');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const core=fs.readFileSync('js/core/core.js','utf8');
 
-// Gerçek v2 kaynak ağacı: UI + veri tek dosyada olan modüller tek kez okunur.
 const moduleFiles={
   dashboard:'js/modules/dashboard.js',
   people:'js/modules/people.js',
@@ -28,7 +27,7 @@ const apiContracts={
   people:['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService','PeopleModule'],
   academic:['SinavlarRepository','SinavlarService','YillikPlanRepository','YillikPlanService','DersSaatleriRepository','DersSaatleriService','AkademikTakvimRepository','AkademikTakvimService','DenemeSonuclariService','TestSonuclariService','AcademicModule'],
   management:['PersonelRepository','PersonelService','PeriyodikRepository','PeriyodikService','OgretmenIzinRepository','OgretmenIzinService','ManagementModule'],
-  communication:['MesajlasmaRepository','MesajlasmaService','TakvimRepository','TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','PushRepository','PushService','HaberlerRepository','HaberlerService','CommunicationModule'],
+  communication:['MesajlasmaRepository','MesajlasmaService','TakvimRepository','TakvimService','NotlarRepository','NotlarService','DuyurularRepository','DuyurularService','AnketRepository','AnketService','HaberlerRepository','HaberlerService','CommunicationModule'],
   transportData:['TasimaRepository','TasimaService','ServisOturmaRepository','ServisOturmaService','SinifOturmaRepository','SinifOturmaService'],
   documents:['DokumanlarRepository','DokumanlarService','DocumentsModule'],
   tools:['KontrolListeleriRepository','KontrolListeleriService','HaritaRepository','HaritaService','CizelgelerRepository','CizelgelerService','DevamsizlikCizelgesiRepository','DevamsizlikCizelgesiService','OdevNotCizelgeleriRepository','OdevNotCizelgeleriService','prepareControlLists','prepareMap','prepareForms','prepareAttendance','prepareGradebooks','FORM_TYPES','GRADE_TYPES','ToolsModule'],
@@ -46,7 +45,6 @@ for(const api of ['window.DeviceData','deviceAdd','deviceUpdate','deviceSet','de
 assert(core.includes("queue(uid(),{kind:'set-doc'"),'DeviceData yazmaları mevcut offline queue kullanmalı.');
 assert(core.includes("tombstone(u,type,id,true)"),'DeviceData silmede tombstone kullanmalı.');
 
-// Firestore yalnız Core SyncEngine/queue üzerinden; binary dosyalar Storage üzerinden gidebilir.
 for(const bundle of ['dutyData','people','academic','management','communication','transportData','documents','tools','settingsData']){
   for(const forbidden of ['localStorage','onSnapshot','db.collection','db.batch']) assert(!source[bundle].includes(forbidden),`${bundle} doğrudan ${forbidden} kullanmamalı.`);
   assert(source[bundle].includes('DeviceData'),`${bundle} merkezi DeviceData kullanmalı.`);
@@ -63,8 +61,6 @@ assert(source.communication.includes('storage.ref()'),'Communication binary dosy
 
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
 for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} kendi tek UI modülünü yüklemeli.`);
-
-// Fiziksel olarak kaldırılmış eski veri paketleri loader'a geri dönmemeli.
 for(const old of ['people-data.js','academic-data.js','management-data.js','messaging-data.js','communication-data.js','documents-data.js','tools-data.js']) assert(!loader.includes(old),`Legacy data paketi loader'a geri dönmemeli: ${old}`);
 assert(registry('management').includes("'js/modules/duty-data.js'"),'Management nöbet rotasyon motorunu yüklemeli.');
 assert(registry('transport').includes("'js/modules/transport-data.js'"),'Transport veri/yerleşim sözleşmesini yüklemeli.');
