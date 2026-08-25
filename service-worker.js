@@ -1,7 +1,7 @@
 /* Koruk Asistan — sade Service Worker
    Görev: uygulama kabuğunu önbelleğe almak, statik kaynakları SWR ile sunmak
    ve Firebase Messaging bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v670';
+const CACHE_ADI='oy-cache-v671';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -56,10 +56,7 @@ async function statikSWR(event){
     }
     return response;
   }).catch(()=>null);
-  if(cached){
-    event.waitUntil(yenile);
-    return cached;
-  }
+  if(cached){event.waitUntil(yenile);return cached;}
   return (await yenile)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
 }
 
@@ -72,23 +69,15 @@ async function navigasyonHizli(event){
     }
     return response;
   }).catch(()=>null);
-  if(cached){
-    event.waitUntil(net);
-    return cached;
-  }
+  if(cached){event.waitUntil(net);return cached;}
   return (await net)||new Response('Çevrimdışı',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
 }
 
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
   if(apiIstegiMi(event.request.url))return;
-  if(event.request.mode==='navigate'){
-    event.respondWith(navigasyonHizli(event));
-    return;
-  }
-  if(statikKaynakMi(event.request)){
-    event.respondWith(statikSWR(event));
-  }
+  if(event.request.mode==='navigate'){event.respondWith(navigasyonHizli(event));return;}
+  if(statikKaynakMi(event.request))event.respondWith(statikSWR(event));
 });
 
 messaging.onBackgroundMessage(payload=>{
