@@ -1,5 +1,5 @@
-/* Koruk Asistan — Öğretmen özel çizelgeleri local-first veri servisi.
- * UI sahibi değildir. Tools tarafından lazy-load edilir; tüm yazmalar DeviceData/SyncEngine kuyruğundan geçer.
+/* Koruk Asistan — Öğretmen özel çizelgeleri local-first veri servisi + V2 Tools presentation adaptörü.
+ * Veri DeviceData/AppStore'da yaşar; Firestore yalnız SyncEngine arka plan senkronudur.
  */
 (function(global){
 'use strict';
@@ -10,7 +10,9 @@ const teacherId=()=>user().bagliOgretmenId||user().ogretmenId||'';
 const own=(row,id)=>!!row&&!!id&&row.ogretmenId===id;
 const safeClass=v=>String(v||'').trim();
 const templateId=(ogretmenId,sinif)=>`${ogretmenId}__${safeClass(sinif)}`.replace(/[^\w\-]/g,'_');
-let preparedFor='';
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+const data=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[];};
+let preparedFor='',selectedClass='',unsubscribe=null;
 
 async function prepare(){
   const tid=teacherId();
@@ -48,5 +50,48 @@ global.OgretmenListeService={
   async kayitSil(id){await prepare();const tid=teacherId();if(!tid)throw new Error('ogretmen-bagli-degil');return OgretmenListeRepository.kayitSil(id,tid);}
 };
 
-global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='tools')prepare().catch(err=>console.warn('[OgretmenListe/prepare]',err?.message||err));});
+function ownClasses(){
+  const tid=teacherId(),set=new Set();
+  if(!tid)return[];
+  data('dersProgrami').filter(x=>x.ogretmenId===tid).forEach(x=>{if(x.sinif)set.add(String(x.sinif));if(x.sinifAdi)set.add(String(x.sinifAdi));});
+  data('siniflar').filter(x=>x.sinifOgretmeniId===tid||x.ogretmenId===tid).forEach(x=>{if(x.ad)set.add(String(x.ad));if(x.sinifAdi)set.add(String(x.sinifAdi));});
+  data('ogretmenListeKayit').filter(x=>x.ogretmenId===tid&&x.sinif).forEach(x=>set.add(String(x.sinif)));
+  return [...set].filter(Boolean).sort((a,b)=>a.localeCompare(b,'tr'));
+}
+function date(v){if(!v)return'—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('tr-TR');}
+function ensureTab(){
+  const tabs=document.querySelector('[data-tools-module] .ka-tabs');
+  if(!tabs||tabs.querySelector('[data-teacher-list-tab]'))return;
+  const b=document.createElement('button');b.className='ka-tab';b.type='button';b.dataset.teacherListTab='';b.textContent='Öğretmen Çizelgelerim';b.onclick=()=>openUI();tabs.appendChild(b);
+  tabs.addEventListener('click',e=>{if(e.target.closest?.('[data-tools-tab]'))b.classList.remove('active');});
+}
+async function openUI(){
+  await prepare();ensureTab();
+  document.querySelectorAll('[data-tools-tab]').forEach(b=>b.classList.remove('active'));
+  document.querySelector('[data-teacher-list-tab]')?.classList.add('active');
+  if(!selectedClass)selectedClass=ownClasses()[0]||'';
+  renderUI();subscribeSelection();
+}
+function subscribeSelection(){
+  try{unsubscribe?.();}catch(_){}unsubscribe=null;
+  if(!selectedClass)return;
+  unsubscribe=global.OgretmenListeService.kayitlariDinle(selectedClass,()=>requestAnimationFrame(renderUI));
+}
+function recordCard(r){
+  const rows=Array.isArray(r.satirlar)?r.satirlar.length:0,cols=(r.secilenKeyler?.length||0)+(r.ozelSutunlar?.length||0),canEdit=global.PermissionService?.can?.('tools.schedules','edit')!==false;
+  return `<article class="ka-card ka-list-card"><div class="ka-card__body ka-row ka-row--between"><div class="ka-grow"><strong>${esc(r.ad||'İsimsiz Çizelge')}</strong><div class="ka-muted">${esc(r.sinif||'')} · ${rows} satır · ${cols} sütun · ${esc(date(r.guncellenme||r.olusturulma))}</div></div>${canEdit?`<button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-teacher-list-delete="${esc(r.id)}" data-ka-permission="tools.schedules" data-ka-write="tools.schedules">Sil</button>`:''}</div></article>`;
+}
+function renderUI(){
+  const content=document.getElementById('toolsContent'),count=document.getElementById('toolsCount');if(!content)return;
+  const classes=ownClasses(),tid=teacherId(),rows=data('ogretmenListeKayit').filter(x=>x.ogretmenId===tid&&(!selectedClass||x.sinif===selectedClass)).sort((a,b)=>String(b.guncellenme||'').localeCompare(String(a.guncellenme||'')));
+  if(count)count.textContent=`${rows.length} çizelge`;
+  if(!tid){content.innerHTML='<div class="ka-empty">Hesabınıza bağlı öğretmen kaydı bulunamadı.</div>';return;}
+  content.innerHTML=`<section class="ka-stack" data-teacher-list-ui><article class="ka-card"><div class="ka-card__body ka-stack"><div><h3>Öğretmen Çizelgelerim</h3><p class="ka-muted">Kayıtlı çizelgeler önce cihazdan açılır; sunucu senkronu arka planda yürür.</p></div><label class="ka-field"><span class="ka-field__label">Sınıf</span><select data-teacher-list-class><option value="">— Sınıf seçin —</option>${classes.map(c=>`<option value="${esc(c)}" ${c===selectedClass?'selected':''}>${esc(c)}</option>`).join('')}</select></label></div></article>${selectedClass?(rows.length?rows.map(recordCard).join(''):'<div class="ka-empty">Bu sınıf için kayıtlı çizelge bulunamadı.</div>'):'<div class="ka-empty">Bir sınıf seçin.</div>'}</section>`;
+  content.querySelector('[data-teacher-list-class]')?.addEventListener('change',e=>{selectedClass=e.target.value;subscribeSelection();renderUI();});
+  content.querySelectorAll('[data-teacher-list-delete]').forEach(b=>b.onclick=async()=>{const r=rows.find(x=>x.id===b.dataset.teacherListDelete);if(!r)return;if(!global.confirm?.(`"${r.ad||'Bu çizelge'}" silinsin mi?`))return;try{await global.OgretmenListeService.kayitSil(r.id);global.toast?.('Çizelge cihazdan silindi; senkron kuyruğuna alındı.');}catch(e){global.toast?.(e?.message||'Çizelge silinemedi.');}});
+  global.PermissionService?.apply?.(content);
+}
+
+global.OgretmenListeUI={open:openUI,render:renderUI};
+global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='tools'){prepare().catch(err=>console.warn('[OgretmenListe/prepare]',err?.message||err));queueMicrotask(ensureTab);}});
 })(window);
