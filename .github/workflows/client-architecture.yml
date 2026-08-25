@@ -8,12 +8,14 @@ on:
       - 'css/**'
       - 'js/**'
       - 'service-worker.js'
+      - 'firestore.rules'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
+      - 'tests/teacher-list-core-contract.test.js'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
   pull_request:
@@ -22,12 +24,14 @@ on:
       - 'css/**'
       - 'js/**'
       - 'service-worker.js'
+      - 'firestore.rules'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
+      - 'tests/teacher-list-core-contract.test.js'
       - 'package.json'
 
 permissions:
@@ -52,6 +56,8 @@ jobs:
         run: node tests/web-mobile-engine-separation.test.js
       - name: Verify dashboard reminder engine
         run: node tests/dashboard-reminders-smoke.test.js
+      - name: Verify teacher list core contract
+        run: node tests/teacher-list-core-contract.test.js
       - name: Audit client architecture
         run: node scripts/check-client-architecture.mjs
       - name: Show generated bundle sizes
