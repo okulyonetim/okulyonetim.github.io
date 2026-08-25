@@ -2,12 +2,13 @@ const fs=require('fs');
 const assert=require('assert');
 
 const loader=fs.readFileSync('js/app-loader.js','utf8');
+const core=fs.readFileSync('js/core/core.js','utf8');
 const dataBundles=['people-data','academic-data','management-data','communication-data','transport-data','documents-data','settings-data'];
 const uiBundles=['dashboard','people','academic','management','communication','transport','documents','settings'];
 const source={};
 for(const name of dataBundles) source[name]=fs.readFileSync(`js/modules/${name}.js`,'utf8');
 for(const name of uiBundles) source[name]=fs.readFileSync(`js/modules/${name}.js`,'utf8');
-for(const text of [...Object.values(source),loader]) new Function(text);
+for(const text of [...Object.values(source),loader,core]) new Function(text);
 
 const apiContracts={
  'people-data':['SiniflarRepository','SiniflarService','YoklamaRepository','YoklamaService'],
@@ -29,6 +30,13 @@ for(const bundle of ['academic','management','communication','transport','docume
   assert(source[bundle].includes('SyncEngine'),`${bundle}.js merkezi SyncEngine kullanmalı.`);
   assert(source[bundle].includes('localHydrate'),`${bundle}.js önce cihaz cache'ini hydrate etmeli.`);
 }
+
+/* Merkezi cihaz-verisi API'si: UI/data modülleri yazmada Firestore beklememeli. */
+for(const api of ['window.DeviceData','deviceAdd','deviceUpdate','deviceSet','deviceRemove']) assert(core.includes(api),`Core ${api} sözleşmesini içermeli.`);
+assert(core.includes("queue(uid(),{kind:'set-doc'"),'DeviceData yazmaları mevcut offline queue kullanmalı.');
+assert(core.includes("tombstone(u,type,id,true)"),'DeviceData silmede tombstone kullanmalı.');
+for(const forbidden of ['localStorage','onSnapshot','db.collection']) assert(!source['transport-data'].includes(forbidden),`transport-data doğrudan ${forbidden} kullanmamalı.`);
+assert(source['transport-data'].includes('DeviceData'),'transport-data merkezi DeviceData kullanmalı.');
 
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
 assert(registry('dashboard').includes("'js/modules/dashboard.js'"),'Dashboard yalnız temiz V2 UI yüklemeli.');
