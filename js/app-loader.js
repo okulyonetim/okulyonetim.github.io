@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v2
+/* Koruk Asistan — AppLoader v3
    Başlangıçta yüzlerce JS yüklemek yerine özellik gruplarını ihtiyaç anında yükler.
    Yeni çekirdek: firebase-init.js + core.js + auth.js + app-loader.js.
    Geçiş süresince modül listeleri mevcut gerçek dosya yollarını kullanır. */
@@ -37,6 +37,20 @@ define('transport',['js/tasima.js','js/servis-oturma.js','js/sinif-oturma.js','j
 define('documents',['js/dokumanlar.js','js/dokuman-okuyucu.js','js/raporlama.js','js/report-header-unifier.js','js/native-report-preview.js']);
 define('settings',['js/kullanici-yonetimi.js','js/depolama-sinirlari.js','js/nav-duzeni-editor.js','js/role-ui-hardening.js']);
 
+function syncAuthVisibility(){
+  const login=document.getElementById('girisEkrani');
+  const pending=document.getElementById('onayBekleniyorEkrani');
+  const app=document.getElementById('app');
+  if(!login||!pending||!app)return;
+  const pendingActive=pending.classList.contains('active');
+  const appReady=app.classList.contains('ready')||app.classList.contains('show');
+  const loginActive=login.classList.contains('active')||(!pendingActive&&!appReady);
+  login.hidden=!loginActive;
+  pending.hidden=!pendingActive;
+  app.hidden=!appReady;
+  pending.classList.toggle('ka-hidden',!pendingActive);
+}
+
 function bindShell(){
   const title=document.getElementById('v2ModuleTitle'),status=document.getElementById('v2ModuleStatus');
   document.querySelectorAll('[data-ka-module]').forEach(btn=>{
@@ -48,10 +62,14 @@ function bindShell(){
       try{await load(name);if(status)status.textContent='Modül hazır.'}catch(e){if(status)status.textContent='Modül yüklenemedi: '+(e?.message||e)}
     });
   });
+  syncAuthVisibility();
+  ['girisEkrani','onayBekleniyorEkrani','app'].forEach(id=>{
+    const el=document.getElementById(id);if(el)new MutationObserver(syncAuthVisibility).observe(el,{attributes:true,attributeFilter:['class']});
+  });
   window.addEventListener('koruk:app-ready',()=>{const el=document.getElementById('v2SyncStatus');if(el)el.textContent='Cihaz verisi hazır'});
   window.addEventListener('koruk:sync-state',e=>{const el=document.getElementById('v2SyncStatus');if(el)el.textContent=(e.detail?.pending||0)+' bekleyen işlem'});
 }
 
-window.AppLoader={define,load,loadMany,loadScript,isLoaded,list,bindShell};
+window.AppLoader={define,load,loadMany,loadScript,isLoaded,list,bindShell,syncAuthVisibility};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindShell,{once:true});else bindShell();
 })();
