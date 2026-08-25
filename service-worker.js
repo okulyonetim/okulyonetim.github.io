@@ -1,7 +1,7 @@
 /* Koruk Asistan — sade Service Worker
    Görev: uygulama kabuğunu önbelleğe almak, statik kaynakları SWR ile sunmak
    ve Firebase Messaging bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v667';
+const CACHE_ADI='oy-cache-v668';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -11,8 +11,7 @@ const messaging=firebase.messaging();
 const ONBELLEGE_ALINACAKLAR=[
   './','./index.html','./manifest.json',
   './css/design-system.css','./css/styles.css',
-  './js/firebase-init.js','./js/auth.js','./js/app.js','./js/ui.js',
-  './js/core/local-first-sync.js',
+  './js/firebase-init.js','./js/core/core.js','./js/auth.js','./js/app.js','./js/ui.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
@@ -100,20 +99,11 @@ messaging.onBackgroundMessage(payload=>{
   });
 });
 
-self.addEventListener('push',event=>{
-  if(event.data)return;
-  event.waitUntil(self.registration.showNotification('Koruk İlk-Ortaokulu',{
-    body:'Yeni bir bildiriminiz var.',icon:'./assets/icon-192.png',badge:'./assets/icon-192.png',data:{url:'./'}
-  }));
-});
-
 self.addEventListener('notificationclick',event=>{
   event.notification.close();
-  const url=event.notification?.data?.url||'./';
+  const hedef=event.notification?.data?.url||'./';
   event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{
-    for(const c of list){
-      if('focus' in c){c.navigate(url).catch(()=>{});return c.focus();}
-    }
-    return clients.openWindow?clients.openWindow(url):null;
+    for(const c of list){if('focus'in c){c.navigate?.(hedef);return c.focus();}}
+    return clients.openWindow?clients.openWindow(hedef):null;
   }));
 });
