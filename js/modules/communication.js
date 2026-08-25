@@ -4,7 +4,7 @@
 (function(){
 'use strict';if(window.CommunicationModule)return;
 let active='announcements',query='',mounted=false,unsubs=[];
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]||c));
 const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');
 const arr=t=>{const v=window.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const match=vals=>{const q=norm(query.trim());return!q||norm(vals.filter(Boolean).join(' ')).includes(q)};
@@ -12,7 +12,7 @@ function date(v){if(!v)return'';try{if(typeof v.toDate==='function')return v.toD
 function uid(){return window.AKTIF_KULLANICI?.uid||window.AppStore?.get?.('session.user')?.uid||''}
 async function prepareLocal(){
   if(!window.SyncEngine||!window.COL)return;
-  const defs={anketler:COL.anketler};const types=[];
+  const defs={anketler:COL.anketler,haberKaynaklari:COL.haberKaynaklari,cihazlar:COL.cihazlar};const types=[];
   Object.entries(defs).forEach(([t,c])=>{if(c){SyncEngine.register(t,c);types.push(t)}});
   const u=uid();
   if(u&&COL.konusmalar){SyncEngine.register('konusmalar',COL.konusmalar,{query:q=>q.where('katilimciUidler','array-contains',u)});types.push('konusmalar')}
