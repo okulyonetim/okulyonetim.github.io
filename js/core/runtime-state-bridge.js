@@ -1,12 +1,16 @@
-/* Koruk Asistan — Runtime State Bridge v3
- * Global lexical dizileri görünür kılar; render polling ve gereksiz senkron
- * localStorage yazımlarını azaltır.
+/* Koruk Asistan — Runtime State Bridge v4
+ * Cihazdaki ana runtime veri kaynağı IndexedDB / KorukLocalFirst'tir.
+ * Eski oyDashboardState_v2 localStorage kaydı yalnızca tek seferlik migrasyon
+ * için okunur; başarılı IndexedDB yazımından sonra kaldırılır.
  */
 (function(){
 'use strict';
 if(window.KorukRuntimeState)return;
-const KEY='oyDashboardState_v2';
+
+const LEGACY_KEY='oyDashboardState_v2';
+const CACHE_TYPE='runtime-state';
 const NAMES=['ogretmenler','dersProgrami','siniflar','veliler','servisler','nobetAtamalari','nobetYerleri','sinavlar','denemeSinavlari','duyurular','haberler','gorevler','hatirlaticilar','ogretmenIzinleri','notlar','yillikPlanTanimlari'];
+
 function get(n){try{switch(n){
  case'ogretmenler':return typeof ogretmenler!=='undefined'?ogretmenler:[];
  case'dersProgrami':return typeof dersProgrami!=='undefined'?dersProgrami:[];
@@ -26,6 +30,7 @@ function get(n){try{switch(n){
  case'yillikPlanTanimlari':return typeof yillikPlanTanimlari!=='undefined'?yillikPlanTanimlari:[];
  default:return[];
  }}catch(_){return[]}}
+
 function set(n,v){if(!Array.isArray(v))return;try{switch(n){
  case'ogretmenler':if(typeof ogretmenler!=='undefined')ogretmenler=v;break;
  case'dersProgrami':if(typeof dersProgrami!=='undefined')dersProgrami=v;break;
@@ -43,47 +48,108 @@ function set(n,v){if(!Array.isArray(v))return;try{switch(n){
  case'ogretmenIzinleri':if(typeof ogretmenIzinleri!=='undefined')ogretmenIzinleri=v;break;
  case'notlar':if(typeof notlar!=='undefined')notlar=v;break;
  case'yillikPlanTanimlari':if(typeof yillikPlanTanimlari!=='undefined')yillikPlanTanimlari=v;break;
- }}catch(_){}} 
+ }}catch(_){}}
+
 function expose(n){try{const d=Object.getOwnPropertyDescriptor(window,n);if(d&&!d.configurable)return;Object.defineProperty(window,n,{configurable:true,enumerable:false,get:()=>get(n),set:v=>set(n,v)})}catch(_){}}
-let cached={};
-try{cached=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){cached={}}
-function applyCache(onlyEmpty){
-  NAMES.forEach(n=>{
-    if(!Array.isArray(cached[n])||!cached[n].length)return;
-    if(onlyEmpty&&get(n).length)return;
-    set(n,cached[n]);
-  });
-}
-applyCache(false);NAMES.forEach(expose);window.KorukDashboardCache=cached;
 function snapshotData(){const out={};NAMES.forEach(n=>{const v=get(n);if(Array.isArray(v))out[n]=v});return out}
-let saveTimer=null,lastSaved='';
-try{const c={...cached};delete c.savedAt;lastSaved=JSON.stringify(c)}catch(_){}
-function saveNow(){
-  try{
-    const data=snapshotData(),json=JSON.stringify(data);
-    if(json===lastSaved)return;
-    lastSaved=json;
-    const out={savedAt:Date.now(),...data};
-    localStorage.setItem(KEY,JSON.stringify(out));window.KorukDashboardCache=out;cached=out;
-  }catch(e){console.warn('[state] dashboard cache yazılamadı',e)}
+function applyCache(cache,onlyEmpty){
+ if(!cache||typeof cache!=='object')return;
+ NAMES.forEach(n=>{
+   if(!Array.isArray(cache[n])||!cache[n].length)return;
+   if(onlyEmpty&&get(n).length)return;
+   set(n,cache[n]);
+ });
 }
-function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,700)}
+
+/* Eski localStorage verisi ilk açılışta ekranın boş kalmaması için yalnız
+   migrasyon tamponu olarak kullanılabilir. Yeni yazımlar localStorage'a gitmez. */
+let legacy={};
+try{legacy=JSON.parse(localStorage.getItem(LEGACY_KEY)||'{}')||{}}catch(_){legacy={}}
+applyCache(legacy,false);
+NAMES.forEach(expose);
+window.KorukDashboardCache=legacy;
+
+let deviceCache={};
+let deviceReady=false;
+let hydratePromise=null;
+
+async function hydrateDevice(){
+ if(hydratePromise)return hydratePromise;
+ hydratePromise=(async()=>{
+   if(!window.KorukLocalFirst)return false;
+   let uid='';
+   for(let i=0;i<80&&!uid;i++){
+     uid=window.KorukLocalFirst.uid();
+     if(!uid)await new Promise(r=>setTimeout(r,50));
+   }
+   if(!uid)return false;
+
+   const saved=await window.KorukLocalFirst.cached(uid,CACHE_TYPE,{});
+   if(saved&&typeof saved==='object'&&Object.keys(saved).length){
+     deviceCache=saved;
+     applyCache(saved,true);
+   }else if(legacy&&Object.keys(legacy).some(k=>k!=='savedAt')){
+     const migrated={...legacy,savedAt:Date.now(),migratedFrom:'localStorage'};
+     await window.KorukLocalFirst.cache(uid,CACHE_TYPE,migrated);
+     deviceCache=migrated;
+   }
+
+   deviceReady=true;
+   window.KorukDashboardCache=deviceCache;
+   try{localStorage.removeItem(LEGACY_KEY)}catch(_){}
+   window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:'indexeddb-hydrate'}}));
+   window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:'indexeddb-hydrate'}}));
+   return true;
+ })().finally(()=>{hydratePromise=null});
+ return hydratePromise;
+}
+
+let saveTimer=null,lastSaved='';
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,500)}
+async function saveNow(){
+ try{
+   if(!window.KorukLocalFirst)return;
+   const uid=window.KorukLocalFirst.uid();
+   if(!uid)return;
+   const data=snapshotData(),json=JSON.stringify(data);
+   if(json===lastSaved)return;
+   lastSaved=json;
+   const out={savedAt:Date.now(),...data};
+   await window.KorukLocalFirst.cache(uid,CACHE_TYPE,out);
+   deviceCache=out;deviceReady=true;window.KorukDashboardCache=out;
+ }catch(e){console.warn('[state] IndexedDB runtime cache yazılamadı',e)}
+}
+
 let signalQueued=false,lastSource='';
 function signal(source){
-  lastSource=source||'runtime';saveSoon();
-  if(signalQueued)return;signalQueued=true;
-  queueMicrotask(()=>{signalQueued=false;window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:lastSource}}));window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:lastSource}}))});
+ lastSource=source||'runtime';saveSoon();
+ if(signalQueued)return;signalQueued=true;
+ queueMicrotask(()=>{
+   signalQueued=false;
+   window.dispatchEvent(new CustomEvent('koruk:data-updated',{detail:{source:lastSource}}));
+   window.dispatchEvent(new CustomEvent('koruk:dashboard-render',{detail:{source:lastSource}}));
+ });
 }
+
 function wrap(name){
-  const old=window[name];if(typeof old!=='function'||old.__korukStateWrapped)return false;
-  const fn=function(){const r=old.apply(this,arguments);signal(name);return r};fn.__korukStateWrapped=true;window[name]=fn;return true;
+ const old=window[name];if(typeof old!=='function'||old.__korukStateWrapped)return false;
+ const fn=function(){const r=old.apply(this,arguments);signal(name);return r};fn.__korukStateWrapped=true;window[name]=fn;return true;
 }
 const RENDERS=['renderDashboard','renderDuyurular','renderDuyuruPanosu','renderDenemeSinavlari','renderSinavlar','renderSiniflar','renderOgrenciler','renderDersGrid','renderNobet','renderNobetler','renderGorevler','renderHatirlaticilar','renderEvrakTakibi','renderNotlar','renderHaberler','renderBugunIzinliOgretmenler','renderYillikPlanAnaSayfa'];
 function wrapAll(){RENDERS.forEach(wrap)}
+
 [0,250,1000,3000,6500].forEach(ms=>setTimeout(wrapAll,ms));
-document.addEventListener('DOMContentLoaded',()=>{applyCache(true);wrapAll();signal('cache-reapply')},{once:true});
+document.addEventListener('DOMContentLoaded',()=>{wrapAll();hydrateDevice();signal('device-bootstrap')},{once:true});
 window.addEventListener('koruk:data-updated',wrapAll,{passive:true});
-window.addEventListener('pagehide',saveNow,{passive:true});
-window.KorukRuntimeState={get,set,snapshot:()=>({savedAt:Date.now(),...snapshotData()}),save:saveSoon,signal,applyCache};
-queueMicrotask(()=>signal('cache-bootstrap'));
+window.addEventListener('pagehide',()=>{saveNow()},{passive:true});
+
+window.KorukRuntimeState={
+ get,set,
+ snapshot:()=>({savedAt:Date.now(),...snapshotData()}),
+ save:saveSoon,saveNow,signal,
+ hydrate:hydrateDevice,
+ applyCache:(onlyEmpty=true)=>applyCache(deviceReady?deviceCache:legacy,onlyEmpty),
+ get deviceReady(){return deviceReady}
+};
+queueMicrotask(()=>{hydrateDevice();signal('device-cache-bootstrap')});
 })();
