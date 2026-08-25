@@ -38,6 +38,8 @@ const firebasePath=path.join(ROOT,'js','firebase-init.js');
 const firebaseSource=fs.existsSync(firebasePath)?fs.readFileSync(firebasePath,'utf8'):'';
 const reportEnginePath=path.join(ROOT,'js','modules','report-engine.js');
 const reportEngineSource=fs.existsSync(reportEnginePath)?fs.readFileSync(reportEnginePath,'utf8'):'';
+const rulesPath=path.join(ROOT,'firestore.rules');
+const rulesSource=fs.existsSync(rulesPath)?fs.readFileSync(rulesPath,'utf8'):'';
 
 const permissionRequirements=[
   ['PermissionService',loaderSource.includes('window.PermissionService=')],
@@ -48,7 +50,9 @@ const permissionRequirements=[
   ['tanımsız rol modülü gizli',loaderSource.includes("Object.keys(role.yetkiler).length?'hidden':'edit'")],
   ['modül tavanı',loaderSource.includes('const ceiling=moduleLevel(module)')],
   ['DOM permission attribute',loaderSource.includes('[data-ka-permission]')],['yazma koruması',loaderSource.includes('[data-ka-write]')],
-  ['rol katalog editörü',settingsSource.includes('PermissionService?.catalog')],['rol gizli seçeneği',settingsSource.includes("['hidden','Gizli']")],['rol önizleme seçeneği',settingsSource.includes("['preview','Önizleme']")],['rol salt okunur seçeneği',settingsSource.includes("['read','Salt okunur']")],['rol düzenleme seçeneği',settingsSource.includes("['edit','Düzenleme']")]
+  ['rol katalog editörü',settingsSource.includes('PermissionService?.catalog')],['rol gizli seçeneği',settingsSource.includes("['hidden','Gizli']")],['rol önizleme seçeneği',settingsSource.includes("['preview','Önizleme']")],['rol salt okunur seçeneği',settingsSource.includes("['read','Salt okunur']")],['rol düzenleme seçeneği',settingsSource.includes("['edit','Düzenleme']")],
+  ['rules read/preview/edit uyumluluğu',rulesSource.includes("['goruntule', 'duzenle', 'preview', 'read', 'edit']")],
+  ['rules edit uyumluluğu',rulesSource.includes("['duzenle', 'edit']")]
 ];
 const missingPermissionRequirements=permissionRequirements.filter(([,ok])=>!ok).map(([name])=>name);
 
@@ -63,21 +67,24 @@ const missingConfigRequirements=configRequirements.filter(([,ok])=>!ok).map(([na
 const moduleFiles=files.filter(f=>rel(f).startsWith('js/modules/'));
 const nativeApiViolations=[];
 for(const f of moduleFiles){const r=rel(f);if(r==='js/modules/report-engine.js')continue;const src=fs.readFileSync(f,'utf8');if(/Capacitor\?*\.|PrintPlugin|Filesystem|Browser\.|StatusBar\.|Keyboard\./.test(src))nativeApiViolations.push(r)}
+const safeAreaReady=/env\(safe-area-inset-(?:top|right|bottom|left)/.test(designSource)&&['--ka-safe-top','--ka-safe-right','--ka-safe-bottom','--ka-safe-left'].every(t=>designSource.includes(t));
 const platformRequirements=[
   ['dinamik viewport birimi',/\d+(?:\.\d+)?dvh\b/.test(designSource)],
   ['iOS metin ölçekleme koruması',designSource.includes('-webkit-text-size-adjust: 100%')],
   ['dokunmatik hedef en az 44px',designSource.includes('--ka-control-height: 44px')],
+  ['iOS safe-area tokenları',safeAreaReady],
   ['native platform capability detection',reportEngineSource.includes('Capacitor?.isNativePlatform?.()')],
   ['native yazdırma için browser fallback',reportEngineSource.includes("global.open(url,'_blank')")&&reportEngineSource.includes('win.print()')],
   ['rapor CSS tek kaynaktan',reportEngineSource.includes("new URL('css/design-system.css'")]
 ];
 const missingPlatformRequirements=platformRequirements.filter(([,ok])=>!ok).map(([name])=>name);
-const safeAreaReady=/env\(safe-area-inset-(?:top|right|bottom|left)/.test(designSource);
+const rulesOptical=/oy_optikSablonlari|optikFormOlusturma/.test(rulesSource);
 
-const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements},platformContract:{targets:['android','ios-safari-pwa','web-desktop-mobile'],safeAreaReady,nativeApiViolations:nativeApiViolations.sort(),missing:missingPlatformRequirements}};
+const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),rulesOptical,primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements},platformContract:{targets:['android','ios-safari-pwa','web-desktop-mobile'],safeAreaReady,nativeApiViolations:nativeApiViolations.sort(),missing:missingPlatformRequirements}};
 console.log(JSON.stringify(report,null,2));
 let failed=false;
 if(optical.length){console.error('Optik okuyucu referansı kalmamalı:',optical.join(', '));failed=true}
+if(rulesOptical){console.error('Firestore Rules içinde optik okuyucu kuralı kalmamalı.');failed=true}
 if(stylesheetLinks.length!==1||stylesheetLinks[0]!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
 if(styleViolations.length){console.error('Ek stylesheet ihlali:',styleViolations.join(', '));failed=true}
 if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içermemeli.');failed=true}
@@ -87,5 +94,4 @@ if(missingPermissionRequirements.length){console.error('Eksik merkezi rol/yetki 
 if(missingConfigRequirements.length){console.error('Eksik merkezi uygulama düzeni sözleşmesi:',missingConfigRequirements.join(', '));failed=true}
 if(missingPlatformRequirements.length){console.error('Eksik cross-platform sözleşmesi:',missingPlatformRequirements.join(', '));failed=true}
 if(nativeApiViolations.length){console.error('Native API yalnız platform adaptöründe/ReportEngine içinde kullanılmalı:',nativeApiViolations.join(', '));failed=true}
-if(!safeAreaReady)console.warn('Platform notu: iOS safe-area tokenları henüz design-system.css içine eklenmeli.');
 if(failed)process.exitCode=2;
