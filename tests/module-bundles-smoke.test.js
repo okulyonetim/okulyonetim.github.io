@@ -31,6 +31,10 @@ for(const dep of ['js/core/repositories/takvim.repository.js','js/core/repositor
 }
 assert(dashboardLine.indexOf('js/modules/communication-data.js') < dashboardLine.indexOf('js/app.js'),'Dashboard servisleri app.js çalışmadan önce hazır olmalı.');
 
+const academicLine=loader.match(/define\('academic',\[(.*?)\]\);/)?.[1]||'';
+assert(academicLine.includes("'js/deneme-sinavlari-stability.js'"),'Deneme local-first/stability davranışı academic grubunda açık bağımlılık olmalı.');
+assert(!loader.includes('deneme-sinavlari-modern.js'),'Silinen deneme modernizer lazy-loader listesine geri dönmemeli.');
+
 for(const eski of [
   'js/core/repositories/siniflar.repository.js','js/core/services/siniflar.service.js',
   'js/core/repositories/yoklama.repository.js','js/core/services/yoklama.service.js',
@@ -62,4 +66,4 @@ for(const korunan of [
   'js/core/repositories/nobet.repository.js','js/core/services/nobet.service.js'
 ]) assert(loader.includes(`'${korunan}'`),`${korunan} geçiş süresince ayrı yüklenmeli.`);
 
-console.log('Tüm v2 module bundle + dashboard dependency smoke testleri başarılı.');
+console.log('Tüm v2 module bundle + dashboard + academic dependency smoke testleri başarılı.');
