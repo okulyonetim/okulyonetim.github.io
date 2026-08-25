@@ -16,6 +16,7 @@ on:
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
+      - 'tests/teacher-list-local-first-service.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
@@ -33,6 +34,7 @@ on:
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
+      - 'tests/teacher-list-local-first-service.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'package.json'
 
@@ -60,6 +62,8 @@ jobs:
         run: node tests/dashboard-reminders-smoke.test.js
       - name: Verify teacher list core contract
         run: node tests/teacher-list-core-contract.test.js
+      - name: Verify teacher list local-first service
+        run: node tests/teacher-list-local-first-service.test.js
       - name: Verify retired legacy roots
         run: node tests/retired-legacy-roots-smoke.test.js
       - name: Audit client architecture
