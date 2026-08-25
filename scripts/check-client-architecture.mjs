@@ -12,7 +12,7 @@ const cssFiles=walk(CSS_ROOT).filter(f=>f.endsWith('.css'));
 const legacyCssFiles=cssFiles.filter(f=>rel(f)!=='css/design-system.css');
 const debtName=/(?:modern|fix|stability|v\d+|bridge|bootstrap-sync)/i;
 const debtFiles=files.filter(f=>debtName.test(path.basename(f)));
-const retiredLegacyRoots=['js/istatistikler.js','js/core/services/istatistik.service.js','js/cizelgeler.js','js/core/services/konum-giris.service.js'];
+const retiredLegacyRoots=['js/istatistikler.js','js/core/services/istatistik.service.js','js/cizelgeler.js','js/core/services/konum-giris.service.js','js/excel-visual-fidelity-v3.js'];
 const resurrectedLegacyRoots=retiredLegacyRoots.filter(p=>fs.existsSync(path.join(ROOT,p)));
 const styleInject=[],hiddenLoaders=[],optical=[];
 for(const f of files){const src=fs.readFileSync(f,'utf8');if(/createElement\(\s*['"]style['"]\s*\)|\.textContent\s*=\s*['"`][^\n]*(?:!important|\{)/.test(src))styleInject.push(rel(f));if(/createElement\(\s*['"]script['"]\s*\)/.test(src)&&/\.src\s*=/.test(src)&&!rel(f).endsWith('app-loader.js'))hiddenLoaders.push(rel(f));if(/opencv|\bomr\b|optik[\/-]|optik okuyucu/i.test(src)||/optik|omr|opencv/i.test(path.basename(f)))optical.push(rel(f))}
