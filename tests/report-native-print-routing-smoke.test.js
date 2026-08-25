@@ -20,12 +20,6 @@ for (const yol of dosyalar) {
   const src = fs.readFileSync(yol, 'utf8');
   if (!src.includes('window.print()')) continue;
 
-  // Güvenli kabul edilen üç yol:
-  // 1) Doğrudan native HTML yazdırma köprüsü.
-  // 2) Ortak _raporPenceresiniAc() yordamı; native ortamda içeride
-  //    uygulamaHtmlYazdir -> PrintPlugin yoluna geçer.
-  // 3) Yazdırma motorunu tamamen atlayıp PDF üretip uygulamaDosyaKaydet
-  //    ile native dosya kaydetme yoluna giden modüller (örn. sınıf oturma).
   const guvenli = src.includes('uygulamaHtmlYazdir') ||
     src.includes('_raporPenceresiniAc') ||
     src.includes('uygulamaDosyaKaydet');
@@ -48,6 +42,9 @@ assert(sinavlar.includes('_raporPenceresiniAc'), 'Sınav raporları ortak rapor 
 const sinifOturma = fs.readFileSync('js/sinif-oturma.js', 'utf8');
 assert(sinifOturma.includes('uygulamaDosyaKaydet'), 'Sınıf oturma PDF çıktısı Android’de native dosya kaydetme köprüsünü kullanmalı.');
 
+const tools = fs.readFileSync('js/modules/tools.js', 'utf8');
+assert(tools.includes('const CizelgelerRepository='), 'Çizelgeler veri katmanı tools.js içinde kalmalı.');
+assert(tools.includes('global.CizelgelerService=CizelgelerService'), 'Çizelgeler servis API’si tools.js içinde korunmalı.');
 
 assert(raporlama.includes('id="rapor-viewport"'), 'Web/PWA rapor önizlemesi ayrı viewport kullanmalı.');
 assert(raporlama.includes('function zoomSigdir()'), 'Rapor önizlemesinde genişliğe sığdır bulunmalı.');
