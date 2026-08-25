@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v34
+/* Koruk Asistan — AppLoader v35
    Tek başlangıç sahibi: tema + Firebase + auth + lazy modüller.
    Tek görünürlük sahibi: PermissionService.
    Tek davranışsal düzen sahibi: AppConfig (oy_navDuzeni/uygulama).
@@ -18,7 +18,7 @@ const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...file
 define('dashboard',['js/modules/dashboard.js']);
 define('people',['js/modules/people.js']);
 define('academic',['js/modules/academic.js']);
-define('management',['js/modules/duty-data.js','js/modules/management.js']);
+define('management',['js/modules/management.js']);
 define('communication',['js/modules/communication.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
 define('documents',['js/modules/documents.js']);
