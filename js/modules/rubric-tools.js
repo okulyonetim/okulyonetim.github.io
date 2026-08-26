@@ -6,7 +6,7 @@
 'use strict';
 if(global.RubricToolsModule)return;
 
-const ENGINE='js/modules/rubric-tools-v2-engine.js';
+const ENGINE='js/modules/rubric-tools-engine.js';
 const TOOLS=[
   {key:'rubric',label:'Kriter Dağıtım',api:'KriterDagitimAraci',permission:'tools.gradebook'},
   {key:'project',label:'Proje Değerlendirme',api:'ProjeDegerlendirmeAraci',permission:'tools.gradebook'}
