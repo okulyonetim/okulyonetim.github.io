@@ -9,7 +9,6 @@ const allowed=[
   'harita.js',
   'kriter-dagitim.js',
   'map-libs.js',
-  'mevzuat-asistan.js',
   'proje-degerlendirme.js'
 ].sort();
 
