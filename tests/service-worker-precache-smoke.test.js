@@ -9,6 +9,9 @@ for (const f of [
   './css/design-system.css',
   './js/firebase-init.js',
   './js/core/core.js',
+  './js/modules/rubric-settings.js',
+  './js/modules/rubric-tools.js',
+  './js/modules/rubric-tools-v2-engine.js',
   './js/auth.js',
   './js/app-loader.js'
 ]) assert(sw.includes(`'${f}'`), `${f} çekirdek precache içinde kalmalı.`);
