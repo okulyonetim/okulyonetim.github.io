@@ -1,7 +1,7 @@
 /* Koruk Asistan — sade Service Worker
    Görev: uygulama kabuğunu önbelleğe almak, statik kaynakları SWR ile sunmak
    ve Firebase Messaging bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v684';
+const CACHE_ADI='oy-cache-v685';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -13,6 +13,7 @@ const ONBELLEGE_ALINACAKLAR=[
   './css/design-system.css',
   './js/firebase-init.js','./js/core/core.js','./js/core/platform/widget-adapter.js','./js/modules/report-engine.js',
   './js/modules/rubric-settings.js','./js/modules/rubric-tools.js','./js/modules/rubric-tools-v2-engine.js',
+  './js/dokuman-okuyucu.js','./js/modules/document-viewer.js',
   './js/auth.js','./js/app-loader.js',
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
