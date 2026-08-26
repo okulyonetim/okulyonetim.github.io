@@ -103,7 +103,18 @@
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
     setTimeout(()=>{
       const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});
-      Promise.resolve(task).then(()=>{
+      Promise.resolve(task).then(async()=>{
+        if(title==='Öğrenci Listesi Oluşturucu'){
+          await window.OgretmenListeUI?.open?.();
+          requestAnimationFrame(()=>{
+            const root=document.getElementById('v2ModuleRoot');
+            const tools=root?.querySelector('[data-tools-module]');
+            const tabs=tools?.querySelector('.ka-tabs');if(tabs)tabs.hidden=true;
+            const top=tools?.querySelector(':scope > .ka-row');if(top)top.hidden=true;
+            const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          });
+          return;
+        }
         if(migratedPages[title])return window.StudentPages?.open?.(page,title);
         if(managementPages[title]){
           requestAnimationFrame(()=>{
