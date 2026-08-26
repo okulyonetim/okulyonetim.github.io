@@ -3,6 +3,7 @@ const assert=require('assert');
 
 const documents=fs.readFileSync('js/modules/documents.js','utf8');
 const viewer=fs.readFileSync('js/dokuman-okuyucu.js','utf8');
+const design=fs.readFileSync('css/design-system.css','utf8');
 
 assert(documents.includes("s.src='js/dokuman-okuyucu.js'"),'Documents V2 belge görüntüleyiciyi yalnız kullanım anında lazy-load etmeli.');
 assert(documents.includes("s.dataset.korukCapability='document-viewer'"),'Belge görüntüleyici capability olarak işaretlenmeli.');
@@ -14,5 +15,8 @@ assert(documents.includes("window.open(d.dosyaUrl,'_blank','noopener')"),'Destek
 for(const lib of ['pdf.js/3.11.174/pdf.min.js','docx-preview@0.3.6','exceljs/4.4.0/exceljs.min.js','xlsx/0.18.5/xlsx.full.min.js']) assert(viewer.includes(lib),`Belge görüntüleyici lazy bağımlılığı korunmalı: ${lib}`);
 assert(viewer.includes('window.DokumanOkuyucu={'),'Görüntüleyici tek DokumanOkuyucu capability API sunmalı.');
 assert(viewer.includes('function pullToRefreshAyarla(enabled)'),'Native pull-to-refresh capability fallback korunmalı.');
+assert(!/createElement\(\s*['"]style['"]\s*\)/.test(viewer),'Belge görüntüleyici runtime <style> üretmemeli.');
+assert(!viewer.includes('function style(){'),'Eski viewer style() katmanı geri dönmemeli.');
+for(const selector of ['.dv3 {','.dv3h {','.dv3body {','.dv3pdfpage {','.dv3wordviewport {','.dv3sheet {']) assert(design.includes(selector),`Belge görüntüleyici stili design-system.css içinde olmalı: ${selector}`);
 
-console.log('Documents V2 belge görüntüleyici sözleşmesi başarılı.');
+console.log('Documents V2 belge görüntüleyici + merkezi tasarım sözleşmesi başarılı.');
