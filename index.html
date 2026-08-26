@@ -24,7 +24,6 @@
   <script src="js/core/shell-ui.js" defer></script>
   <script src="js/modules/school-live-status.js" defer></script>
   <script src="js/modules/report-engine.js" defer></script>
-  <script src="js/modules/student-pages.js" defer></script>
   <script src="js/modules/payroll-change.js" defer></script>
   <script src="js/modules/assistant.js" defer></script>
   <script src="js/modules/legislation.js" defer></script>
@@ -89,49 +88,18 @@
   </main>
 
   <script>
-  function applyAcademicResultPage(title){
-    if(title!=='Deneme Sonuçları'&&title!=='Test Sonuçları')return;
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      const root=document.getElementById('v2ModuleRoot');
-      if(!root)return;
-      root.querySelectorAll('h3').forEach(h=>{
-        const text=(h.textContent||'').trim();
-        if(!text.includes('Deneme Sınavı Sonuçları')&&!text.includes('Test Sonuçları'))return;
-        const section=h.parentElement;
-        if(!section)return;
-        section.hidden=title==='Deneme Sonuçları'?text.includes('Test Sonuçları'):text.includes('Deneme Sınavı Sonuçları');
-      });
-    }));
-  }
   document.addEventListener('click',function(event){
     const button=event.target.closest?.('#kaMenuLayer [data-ka-menu-route]');
     if(!button)return;
-    const route=button.dataset.kaMenuRoute||'';
+    let route=button.dataset.kaMenuRoute||'';
     let page=button.dataset.kaMenuPage||'';
     const title=button.dataset.kaMenuTitle||'';
-    const migratedPages={
-      'Öğrenci Yoklama':'attendance',
-      'Öğrenci Listesi Oluşturucu':'student-list',
-      'Ödev Takip Çizelgesi':'homework',
-      'Not Çizelgesi':'grades'
-    };
+    const migratedPages={'Öğrenci Yoklama':'attendance','Öğrenci Listesi Oluşturucu':'student-list','Ödev Takip Çizelgesi':'homework','Not Çizelgesi':'grades'};
     page=migratedPages[title]||page;
+    if(migratedPages[title])route='tools';
     if(!route)return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    button.disabled=true;
-    setTimeout(()=>{
-      const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});
-      Promise.resolve(task).then(()=>{
-        if(migratedPages[title])return window.StudentPages?.open?.(page,title);
-        applyAcademicResultPage(title);
-      }).catch(error=>{
-        console.error('[Shell/menu-route]',error);
-        window.toast?.('Sayfa açılamadı.');
-        button.disabled=false;
-      });
-    },0);
+    event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
+    setTimeout(()=>{const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});Promise.resolve(task).then(()=>{if(migratedPages[title])return window.StudentPages?.open?.(page,title)}).catch(error=>{console.error('[Shell/menu-route]',error);window.toast?.('Sayfa açılamadı.');button.disabled=false})},0);
   },true);
   </script>
 </body>
