@@ -2,7 +2,6 @@ const fs = require('fs');
 const assert = require('assert');
 
 const viewer = fs.readFileSync('js/modules/document-viewer.js', 'utf8');
-const proxy = fs.readFileSync('js/dokuman-okuyucu.js', 'utf8');
 const documents = fs.readFileSync('js/modules/documents.js', 'utf8');
 
 for (const ext of ['pdf','docx','doc','xlsx','xls','csv','txt','ppt','pptx']) assert(viewer.includes(`'${ext}'`), `${ext} görüntüleyici kapsamından çıkmamalı.`);
@@ -35,13 +34,9 @@ assert(viewer.includes('excelSigdir'), 'Excel genişliğe sığdırma fallback y
 assert(viewer.includes("cellStyles:true"), 'SheetJS XLS stil metadata yolu açık olmalı.');
 assert(viewer.includes('function pullToRefreshAyarla(enabled)'), 'Native pull-to-refresh kontrolü korunmalı.');
 assert(viewer.includes("p.setEnabled({enabled:!!enabled})"), 'PullToRefreshPlugin setEnabled kullanılmalı.');
-
-assert(proxy.includes("const SRC='js/modules/document-viewer.js'"), 'Root viewer yalnız V2 modül motoruna köprü olmalı.');
-assert(proxy.includes('__moduleProxy:true'), 'Root compatibility API proxy olarak işaretlenmeli.');
-assert(!proxy.includes('pdfjsLib.getDocument')&&!proxy.includes('new ExcelJS.Workbook()'), 'Ağır viewer motoru root dosyada kalmamalı.');
-assert(documents.includes("s.src='js/dokuman-okuyucu.js'"), 'Geçiş boyunca Documents V2 root compatibility proxy yi kullanım anında lazy-load etmeli.');
+assert(documents.includes("s.src='js/modules/document-viewer.js'"), 'Documents V2 görüntüleyiciyi doğrudan module path üzerinden lazy-load etmeli.');
+assert(!documents.includes('js/dokuman-okuyucu.js'), 'Emekli root viewer yolu geri dönmemeli.');
 assert(documents.includes("PermissionService?.can?.('documents.view','preview')"), 'Doküman açma merkezi documents.view yetkisine bağlı kalmalı.');
 assert(documents.includes('data-document-open'), 'Documents listesi uygulama içi açma eylemini kullanmalı.');
 assert(!documents.includes('js/xlsm-viewer-support.js'), 'Emekli XLSM yaması V2 zincirine geri dönmemeli.');
-
-console.log('Belge görüntüleyici V2 module engine + compatibility proxy smoke testleri başarılı.');
+console.log('Belge görüntüleyici V2 direct module smoke testleri başarılı.');
