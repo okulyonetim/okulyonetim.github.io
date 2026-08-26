@@ -62,14 +62,16 @@ function kullaniciAdiEmaileDonustur(kullaniciAdi){
   return `${sade}@${KULLANICI_ADI_DOMAIN}`;
 }
 
+function authYuzeyiniCoz(){document.documentElement.classList.add('ka-auth-resolved');window.AppLoader?.syncAuthVisibility?.();}
 function girisEkraniGoster(){
   document.getElementById('girisEkrani')?.classList.add('active');
   document.getElementById('onayBekleniyorEkrani')?.classList.remove('active');
   const app = document.getElementById('app');
   if(app) app.classList.remove('ready','show');
+  authYuzeyiniCoz();
 }
 function girisEkraniGizle(){document.getElementById('girisEkrani')?.classList.remove('active');}
-function onayBekleniyorGoster(){document.getElementById('onayBekleniyorEkrani')?.classList.add('active');document.getElementById('girisEkrani')?.classList.remove('active');const app=document.getElementById('app');if(app)app.classList.remove('ready','show');}
+function onayBekleniyorGoster(){document.getElementById('onayBekleniyorEkrani')?.classList.add('active');document.getElementById('girisEkrani')?.classList.remove('active');const app=document.getElementById('app');if(app)app.classList.remove('ready','show');authYuzeyiniCoz();}
 function onayBekleniyorGizle(){document.getElementById('onayBekleniyorEkrani')?.classList.remove('active');}
 
 function _girisHatasiGoster(mesaj){const el=document.getElementById('girisHataMetni');if(!el)return;el.textContent=mesaj;el.style.display=mesaj?'':'none';}
@@ -103,7 +105,7 @@ function authDinleyiciKur(){
       if(typeof sidebarYetkiUygula==='function')sidebarYetkiUygula();
       if(AKTIF_KULLANICI.bagliOgretmenId){localStorage.setItem('oyAktifKullaniciId',AKTIF_KULLANICI.bagliOgretmenId);localStorage.setItem('oyAktifKullaniciTip','ogretmen');localStorage.setItem('oyKullaniciSecimiYapildi','1');if(typeof aktifKullaniciyiGuncelle==='function')aktifKullaniciyiGuncelle();}
       if(typeof kullaniciYonetimiYetkisiVar==='function'&&kullaniciYonetimiYetkisiVar()&&typeof kullaniciYonetimiDinleyiciKur==='function')kullaniciYonetimiDinleyiciKur();
-      onayBekleniyorGizle();girisEkraniGizle();const app=document.getElementById('app');if(app)app.classList.add('ready','show');
+      onayBekleniyorGizle();girisEkraniGizle();const app=document.getElementById('app');if(app)app.classList.add('ready','show');authYuzeyiniCoz();
       IstatistikService.girisKaydet();
       if(typeof KonumGirisService!=='undefined')KonumGirisService.kaydet();if(typeof uygulamaBaslat==='function')uygulamaBaslat();if(typeof window._navVerileriniYukle==='function')window._navVerileriniYukle();
       try{if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.PullToRefreshPlugin)window.Capacitor.Plugins.PullToRefreshPlugin.appHazir()}catch(e){}
