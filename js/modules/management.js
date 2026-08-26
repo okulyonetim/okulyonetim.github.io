@@ -63,6 +63,8 @@ global.OgretmenIzinService={_yetkiKontrol(){if(!duzenleyebilir('ogretmenler')){t
 (function(){
 'use strict';if(window.ManagementModule)return;
 let active='staff',query='',mounted=false,unsubs=[],dutyYear=new Date().getFullYear(),dutyMonth=new Date().getMonth();
+let ptYear=new Date().getFullYear(),ptMonth=new Date().getMonth();
+let dilekceSecili=null;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');
 const arr=t=>{const v=AppStore?.data?.(t);return Array.isArray(v)?v:[]};
@@ -71,8 +73,8 @@ const todayISO=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d
 function date(v){if(!v)return'—';const d=new Date(String(v).length===10?v+'T00:00:00':v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('tr-TR')}
 function teacherName(o){return`${o?.ad||''} ${o?.soyad||''}`.trim()||o?.adSoyad||'Öğretmen'}
 function canEditDuty(){return !!(PermissionService?.can?.('management.duty.edit','edit')||PermissionService?.can?.('management.duty','edit')||globalThis.duzenleyebilir?.('nobet'))}
-async function prepareLocal(){if(!SyncEngine||!COL)return;const defs={personel:COL.personel,personelIzinler:COL.personelIzinler,periyodikIsler:COL.periyodikIsler,periyodikSablon:COL.periyodikSablon,nobetYerleri:COL.nobetYerleri,nobetAtamalari:COL.nobetAtamalari,nobetciAmirleri:COL.nobetciAmirleri,resmiTatiller:COL.resmiTatiller,nobetRotasyon:COL.nobetRotasyon,okulBilgileri:COL.okulBilgileri};const types=[];Object.entries(defs).forEach(([t,c])=>{if(c){SyncEngine.register(t,c);types.push(t)}});if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100)}}
-function shell(){return`<section class="ka-stack" data-management-module><div class="ka-row ka-row--between"><div><h2>Yönetim</h2><p class="ka-muted">Personel, görev, izin ve nöbet bilgileri cihaz verisinden açılır.</p></div><span id="managementCount" class="ka-badge"></span></div><div class="ka-tabs"><button class="ka-tab" data-management-tab="staff" data-ka-permission="management.personnel">Personel</button><button class="ka-tab" data-management-tab="tasks">Periyodik</button><button class="ka-tab" data-management-tab="leaves">İzinler</button><button class="ka-tab" data-management-tab="duty" data-ka-permission="management.duty">Nöbet</button></div><label class="ka-field" data-management-search-wrap><span class="ka-field__label">Ara</span><input id="managementSearch" type="search" placeholder="Personel, görev veya tarih ara…"></label><div id="managementContent" class="ka-stack"></div></section>`}
+async function prepareLocal(){if(!SyncEngine||!COL)return;const defs={personel:COL.personel,personelIzinler:COL.personelIzinler,periyodikIsler:COL.periyodikIsler,periyodikSablon:COL.periyodikSablon,nobetYerleri:COL.nobetYerleri,nobetAtamalari:COL.nobetAtamalari,nobetciAmirleri:COL.nobetciAmirleri,resmiTatiller:COL.resmiTatiller,nobetRotasyon:COL.nobetRotasyon,okulBilgileri:COL.okulBilgileri,dilekceler:COL.dilekceler};const types=[];Object.entries(defs).forEach(([t,c])=>{if(c){SyncEngine.register(t,c);types.push(t)}});if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100)}}
+function shell(){return`<section class="ka-stack" data-management-module><div class="ka-row ka-row--between"><div><h2>Yönetim</h2><p class="ka-muted">Personel, görev, izin ve nöbet bilgileri cihaz verisinden açılır.</p></div><span id="managementCount" class="ka-badge"></span></div><div class="ka-tabs"><button class="ka-tab" data-management-tab="staff" data-ka-permission="management.personnel">Personel</button><button class="ka-tab" data-management-tab="tasks">Periyodik</button><button class="ka-tab" data-management-tab="leaves">İzinler</button><button class="ka-tab" data-management-tab="duty" data-ka-permission="management.duty">Nöbet</button><button class="ka-tab" data-management-tab="puantaj" data-ka-permission="management.personnel">Puantaj</button><button class="ka-tab" data-management-tab="dilekce" data-ka-permission="management.personnel">Dilekçe</button></div><label class="ka-field" data-management-search-wrap><span class="ka-field__label">Ara</span><input id="managementSearch" type="search" placeholder="Personel, görev veya tarih ara…"></label><div id="managementContent" class="ka-stack"></div></section>`}
 function staff(){const list=arr('personel').filter(p=>match([p.ad,p.soyad,p.adSoyad,p.gorev,p.unvan,p.telefon])).sort((a,b)=>String(a.adSoyad||a.ad||'').localeCompare(String(b.adSoyad||b.ad||''),'tr'));return{count:list.length,html:list.length?list.map(p=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim()||'Personel')}</strong><div class="ka-muted">${esc(p.gorev||p.unvan||'Personel')}</div></div>${p.telefon?`<a class="ka-btn ka-btn--ghost ka-btn--sm" href="tel:${esc(p.telefon)}">Ara</a>`:''}</div></article>`).join(''):'<div class="ka-empty">Personel kaydı bulunamadı.</div>'}}
 function tasks(){const list=arr('periyodikIsler').filter(p=>match([p.isAdi,p.baslangic,p.bitis,p.not])).sort((a,b)=>(a.bitis||a.baslangic||'').localeCompare(b.bitis||b.baslangic||''));return{count:list.length,html:list.length?list.map(p=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(p.isAdi||'Periyodik görev')}</strong><div class="ka-muted">${esc(date(p.baslangic))} – ${esc(date(p.bitis))}${p.not?' · '+esc(p.not):''}</div></div><span class="ka-badge">${p.tamamlandi?'Tamamlandı':'Bekliyor'}</span></div></article>`).join(''):'<div class="ka-empty">Periyodik görev bulunamadı.</div>'}}
 function leaves(){const all=[...arr('ogretmenIzinleri').map(x=>({...x,_type:'Öğretmen'})),...arr('personelIzinler').map(x=>({...x,_type:'Personel'}))].filter(x=>match([x.tur,x.aciklama,x.baslangic,x.bitis,x.ogretmenAdi,x.personelAdi])).sort((a,b)=>(b.baslangic||'').localeCompare(a.baslangic||''));return{count:all.length,html:all.length?all.map(x=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(x.ogretmenAdi||x.personelAdi||x.tur||'İzin kaydı')}</strong><div class="ka-muted">${esc(x.tur||x._type)} · ${esc(date(x.baslangic))} – ${esc(date(x.bitis))}</div></div><span class="ka-badge">${esc(x._type)}</span></div></article>`).join(''):'<div class="ka-empty">İzin kaydı bulunamadı.</div>'}}
@@ -91,9 +93,169 @@ const DUTY_TASKS=['Ders başlamadan 30 dk önce okula gelinmesi ve ders bitimind
 function dutyReportModal(){const now=new Date(),ov=modal('Nöbet Raporu',`<label class="ka-field"><span class="ka-field__label">Ay</span><input type="month" data-month value="${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}"></label><label class="ka-field"><span class="ka-field__label">Sayfa yönü</span><select data-orientation><option value="dikey">Dikey A4</option><option value="yatay">Yatay A4</option></select></label>`,'Önizle');ov.querySelector('[data-save]').onclick=async()=>{await createDutyReport(ov.querySelector('[data-month]').value,ov.querySelector('[data-orientation]').value);ov.remove()}}
 async function createDutyReport(month,yon){if(!globalThis.ReportEngine)await AppLoader.loadScript('js/modules/report-engine.js');const [ys,ms]=String(month).split('-'),y=Number(ys),m=Number(ms)-1;if(!y||m<0)return;const yerler=NobetService.yerSirali(arr('nobetYerleri')),atamalar=arr('nobetAtamalari'),amirler=arr('nobetciAmirleri'),tatiller=arr('resmiTatiller'),okul=arr('okulBilgileri')[0]||{},gunSayisi=new Date(y,m+1,0).getDate(),rows=[];for(let g=1;g<=gunSayisi;g++){const dt=new Date(y,m,g),gun=dt.getDay();if(gun===0||gun===6)continue;const iso=NobetService.tarihISO(y,m,g),tatil=tatiller.find(t=>t.tarih===iso);if(tatil){rows.push(`<tr><td>${esc(date(iso))}</td><td colspan="${yerler.length+1}"><strong>${esc(tatil.aciklama||tatil.ad||tatil.adi||'RESMİ TATİL')}</strong></td></tr>`);continue}const cells=yerler.map(yer=>`<td>${esc(atamalar.find(x=>x.tarih===iso&&x.yerId===yer.id)?.ogretmenAdSoyad||'')}</td>`).join(''),amir=amirler.find(a=>a.tarih===iso);rows.push(`<tr><td>${esc(date(iso))}</td>${cells}<td>${esc(amir?.ad||'')}</td></tr>`)}const headers=yerler.map(y=>`<th>${esc(y.ad||'Nöbet Yeri')}</th>`).join(''),body=`<header><h1>${esc(okul.okulAdi||'KORUK İLK-ORTAOKULU')}</h1><p>${esc(new Date(y,m,1).toLocaleDateString('tr-TR',{month:'long',year:'numeric'}).toLocaleUpperCase('tr'))} ÖĞRETMEN NÖBET ÇİZELGESİ</p></header><table><thead><tr><th>Tarih</th>${headers}<th>Nöbetçi Amir</th></tr></thead><tbody>${rows.join('')}</tbody></table><section><h3>NÖBETÇİ ÖĞRETMENİN GÖREVLERİ</h3><ol>${DUTY_TASKS.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></section>`;return ReportEngine.printReport('Öğretmen Nöbet Çizelgesi',body,{fileName:`Nobet_Cizelgesi_${ys}_${ms}`,yon:yon==='yatay'?'yatay':'dikey'})}
 function bindDuty(){document.querySelector('[data-duty-place-add]')?.addEventListener('click',placeModal);document.querySelector('[data-duty-holiday-add]')?.addEventListener('click',holidayModal);document.querySelector('[data-duty-auto]')?.addEventListener('click',autoModal);document.querySelector('[data-duty-report]')?.addEventListener('click',dutyReportModal);document.querySelectorAll('[data-duty-month]').forEach(b=>b.onclick=()=>{dutyMonth+=Number(b.dataset.dutyMonth);if(dutyMonth<0){dutyMonth=11;dutyYear--}if(dutyMonth>11){dutyMonth=0;dutyYear++}render()});document.querySelectorAll('[data-duty-cell]').forEach(b=>b.onclick=()=>assignmentModal(b.dataset.dutyCell,b.dataset.dutyPlace));document.querySelectorAll('[data-duty-chief]').forEach(b=>b.onclick=()=>chiefModal(b.dataset.dutyChief));document.querySelectorAll('[data-duty-holiday-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Bu tatili listeden kaldırmak istiyor musunuz?'))return;await NobetService.tatilSil(b.dataset.dutyHolidayDelete)});document.querySelectorAll('[data-duty-book]').forEach(c=>c.onchange=async()=>{const a=arr('nobetAtamalari').find(x=>x.id===c.dataset.dutyBook);if(!a)return;try{await NobetService.defterDolduToggle(a,c.checked);toast?.(c.checked?'✅ Nöbet defteri işaretlendi.':'İşaret kaldırıldı.')}catch(e){c.checked=!c.checked;toast?.('Bu nöbet size ait değil.')}})}
-function render(){if(!mounted)return;document.querySelectorAll('[data-management-tab]').forEach(b=>b.classList.toggle('active',b.dataset.managementTab===active));const searchWrap=document.querySelector('[data-management-search-wrap]');if(searchWrap)searchWrap.hidden=active==='duty';const r=active==='tasks'?tasks():active==='leaves'?leaves():active==='duty'?duty():staff(),out=document.getElementById('managementContent'),c=document.getElementById('managementCount');if(out)out.innerHTML=r.html;if(c)c.textContent=`${r.count} kayıt`;if(active==='duty')bindDuty();PermissionService?.apply?.(document.getElementById('v2ModuleRoot')||document)}
+function render(){if(!mounted)return;document.querySelectorAll('[data-management-tab]').forEach(b=>b.classList.toggle('active',b.dataset.managementTab===active));const searchWrap=document.querySelector('[data-management-search-wrap]');if(searchWrap)searchWrap.hidden=['duty','puantaj','dilekce'].includes(active);const out=document.getElementById('managementContent'),c=document.getElementById('managementCount');if(active==='puantaj'){if(out)out.innerHTML=puantaj();if(c)c.textContent='';bindPuantaj();return}if(active==='dilekce'){if(out)out.innerHTML=dilekce();if(c)c.textContent=`${arr('dilekceler').length} kayıt`;bindDilekce();PermissionService?.apply?.(out);return}const r=active==='tasks'?tasks():active==='leaves'?leaves():active==='duty'?duty():staff();if(out)out.innerHTML=r.html;if(c)c.textContent=`${r.count} kayıt`;if(active==='duty')bindDuty();PermissionService?.apply?.(document.getElementById('v2ModuleRoot')||document)}
+/* ================================================================
+   PUANTAJ & İMZA SİRKÜSÜ
+   Aylık personel devam çizelgesi.
+   Kodlar: X=Normal, H=Hafta tatili, T=Resmi tatil,
+           Y=Yıllık izin, R=Rapor, M=Mazeret, CÇ=Cmt.Çalışması
+================================================================ */
+const IZIN_KOD={'YILLIK İZİNLİ':'Y','RAPORLU':'R','ÜCRETSİZ MAZERET İZNİ':'M','CUMARTESİ ÇALIŞMASI':'CÇ','PAZAR TAM ÇALIŞMASI':'PÇ','UBGT TAM ÇALIŞMASI':'UBGT'};
+const IZIN_TURLERI=Object.keys(IZIN_KOD);
+const AYISIM=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const GUNISIM=['Pz','Pt','Sa','Çr','Pr','Cu','Ct'];
+function ptAyGun(yil,ay){return new Date(yil,ay+1,0).getDate()}
+function ptHaftaGunu(yil,ay,gun){return new Date(yil,ay,gun).getDay()}
+function ptResmiTatilMi(yil,ay,gun){const iso=`${yil}-${String(ay+1).padStart(2,'0')}-${String(gun).padStart(2,'0')}`;return arr('resmiTatiller').some(t=>String(t.tarih||'').slice(0,10)===iso)}
+function ptIzinKod(pid,yil,ay,gun){const iso=`${yil}-${String(ay+1).padStart(2,'0')}-${String(gun).padStart(2,'0')}`;const izin=arr('personelIzinler').find(x=>x.personelId===pid&&String(x.baslangic||x.baslangicTarihi||'').slice(0,10)<=iso&&String(x.bitis||x.bitisTarihi||iso).slice(0,10)>=iso);return izin?IZIN_KOD[izin.tur]||'İ':null}
+function ptHucreKod(pid,yil,ay,gun){const gd=ptHaftaGunu(yil,ay,gun);if(gd===6){const izin=ptIzinKod(pid,yil,ay,gun);return izin||'CÇ'}if(gd===0){const izin=ptIzinKod(pid,yil,ay,gun);return izin||'H'}if(ptResmiTatilMi(yil,ay,gun))return'T';return ptIzinKod(pid,yil,ay,gun)||'X'}
+function ptHucreRenk(k){if(k==='X')return'';if(k==='H'||k==='PÇ'||k==='UBGT')return'background:#e8f5e9;color:#388e3c';if(k==='T')return'background:#fff9c4;color:#f57f17';if(k==='Y')return'background:#e3f2fd;color:#1976d2';if(k==='R')return'background:#fce4ec;color:#c62828';if(k==='M')return'background:#ede7f6;color:#6a1b9a';if(k==='CÇ')return'background:#e0f7fa;color:#00838f';return''}
+function puantaj(){
+  const gunSayisi=ptAyGun(ptYear,ptMonth);
+  const baslik=`${AYISIM[ptMonth]} ${ptYear} — Puantaj Çizelgesi`;
+  const personelList=arr('personel').filter(p=>p.adSoyad||p.ad).sort((a,b)=>String(a.adSoyad||a.ad||'').localeCompare(String(b.adSoyad||b.ad||''),'tr'));
+  if(!personelList.length)return`<div class="ka-empty">Personel kaydı bulunamadı.</div>`;
+  const gunBasliklari=[];
+  for(let g=1;g<=gunSayisi;g++){const gd=ptHaftaGunu(ptYear,ptMonth,g);const isHafta=gd===0||gd===6;const isTatil=ptResmiTatilMi(ptYear,ptMonth,g);gunBasliklari.push(`<th style="padding:3px 1px;font-size:9px;text-align:center;min-width:22px;white-space:nowrap;${isHafta?'background:#e8f5e9;':isTatil?'background:#fff9c4;':''}">${g}<br><span style="font-weight:400">${GUNISIM[gd]}</span></th>`)}
+  const satirlar=personelList.map(p=>{const ad=esc(p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim()||'—');const gorev=esc(p.gorev||p.unvan||'');let toplamIzin=0,toplamCalisma=0;const hucreler=[];for(let g=1;g<=gunSayisi;g++){const k=ptHucreKod(p.id,ptYear,ptMonth,g);if(k!=='X'&&k!=='H'&&k!=='T')toplamIzin++;if(k==='X')toplamCalisma++;hucreler.push(`<td style="padding:2px 1px;text-align:center;font-size:9px;border:1px solid #ddd;${ptHucreRenk(k)}">${k}</td>`)}return`<tr><td style="padding:4px 6px;font-size:10px;border:1px solid #ddd;white-space:nowrap;font-weight:700">${ad}</td><td style="padding:4px 6px;font-size:9px;border:1px solid #ddd;color:#666">${gorev}</td>${hucreler.join('')}<td style="padding:4px 6px;text-align:center;font-size:10px;border:1px solid #ddd;font-weight:700;color:#1976d2">${toplamCalisma}</td><td style="padding:4px 6px;text-align:center;font-size:10px;border:1px solid #ddd;font-weight:700;color:#c62828">${toplamIzin}</td></tr>`});
+  const okul=arr('okulBilgileri')[0]?.okulAdi||'KORUK İLK-ORTAOKULU';
+  return`<div class="ka-row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
+    <div><h3 style="font-size:16px">${esc(baslik)}</h3><p class="ka-muted" style="font-size:12px">${esc(okul)}</p></div>
+    <div class="ka-row" style="gap:6px;margin-left:auto">
+      <button class="ka-btn ka-btn--secondary ka-btn--sm" data-pt-prev>◀ Önceki</button>
+      <button class="ka-btn ka-btn--secondary ka-btn--sm" data-pt-now>Bu Ay</button>
+      <button class="ka-btn ka-btn--secondary ka-btn--sm" data-pt-next>Sonraki ▶</button>
+      <button class="ka-btn ka-btn--sm" data-pt-print>🖨 Yazdır</button>
+    </div>
+  </div>
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+    <table id="puantajTablosu" style="border-collapse:collapse;font-family:Arial,sans-serif;min-width:100%">
+      <thead>
+        <tr>
+          <th style="padding:4px 6px;font-size:10px;border:1px solid #ddd;text-align:left;white-space:nowrap">Ad Soyad</th>
+          <th style="padding:4px 6px;font-size:10px;border:1px solid #ddd;text-align:left">Görevi</th>
+          ${gunBasliklari.join('')}
+          <th style="padding:4px 6px;font-size:10px;border:1px solid #ddd;text-align:center;color:#1976d2">Çal.</th>
+          <th style="padding:4px 6px;font-size:10px;border:1px solid #ddd;text-align:center;color:#c62828">İzin</th>
+        </tr>
+      </thead>
+      <tbody>${satirlar.join('')}</tbody>
+    </table>
+  </div>
+  <div style="margin-top:10px;font-size:10px;color:#666">
+    Kodlar: <b>X</b>=Normal · <b>Y</b>=Yıllık İzin · <b>R</b>=Rapor · <b>M</b>=Mazeret · <b>H</b>=Hafta Tatili · <b>T</b>=Resmi Tatil · <b>CÇ</b>=Cmt.Çalışması
+  </div>`
+}
+function bindPuantaj(){
+  document.querySelector('[data-pt-prev]')?.addEventListener('click',()=>{ptMonth--;if(ptMonth<0){ptMonth=11;ptYear--}render()});
+  document.querySelector('[data-pt-now]')?.addEventListener('click',()=>{ptYear=new Date().getFullYear();ptMonth=new Date().getMonth();render()});
+  document.querySelector('[data-pt-next]')?.addEventListener('click',()=>{ptMonth++;if(ptMonth>11){ptMonth=0;ptYear++}render()});
+  document.querySelector('[data-pt-print]')?.addEventListener('click',()=>{
+    if(global.ReportEngine){
+      const tablo=document.getElementById('puantajTablosu')?.outerHTML||'';
+      const baslik=`${AYISIM[ptMonth]} ${ptYear} — Puantaj & İmza Sirküsü`;
+      const okul=arr('okulBilgileri')[0]?.okulAdi||'KORUK İLK-ORTAOKULU';
+      global.ReportEngine.printReport(baslik,`<div style="overflow-x:auto">${tablo}</div><br><div style="font-size:9px">Kodlar: X=Normal · Y=Yıllık İzin · R=Rapor · M=Mazeret · H=Hafta Tatili · T=Resmi Tatil · CÇ=Cmt.Çalışması</div>`,{fileName:`Puantaj_${ptYear}_${ptMonth+1}`,ustBaslik:esc(okul),yon:'landscape'});
+    }else{window.print()}
+  });
+}
+
+/* ================================================================
+   DİLEKÇE & İZİNLER
+   Personel izin talep formu ve listesi.
+================================================================ */
+const DILEKCE_TURLERI=['Yıllık İzin','Sağlık/Rapor İzni','Mazeret İzni','Ücretsiz İzin','Doğum İzni','Babalık İzni','Diğer'];
+function dilekceKaydet(id,v){const kol=COL?.dilekceler;if(!kol)return Promise.reject(new Error('kol-yok'));return id?device().update('dilekceler',kol,id,{...v,guncellemeTarihi:new Date().toISOString()}):device().add('dilekceler',kol,{...v,olusturmaTarihi:new Date().toISOString()})}
+function dileceSil(id){const kol=COL?.dilekceler;if(!kol||!id)return;if(!confirm('Bu dilekçe kaydı silinsin mi?'))return;device().remove('dilekceler',kol,id).then(()=>render()).catch(e=>toast?.(e?.message||'Silinemedi'))}
+function dilekceYazdir(d){
+  if(!global.ReportEngine)return;
+  const p=arr('personel').find(x=>x.id===d.personelId)||{};
+  const adSoyad=esc(p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim()||d.personelAdi||'—');
+  const okul=arr('okulBilgileri')[0]?.okulAdi||'KORUK İLK-ORTAOKULU';
+  const tarih=new Date().toLocaleDateString('tr-TR');
+  const body=`<div style="font-family:Arial;font-size:11pt;line-height:1.8">
+    <p style="text-align:right"><b>Tarih:</b> ${esc(d.baslangicTarihi||tarih)}</p>
+    <p><b>Konu:</b> ${esc(d.izinTuru||'İzin Talebi')}</p>
+    <br>
+    <p><b>${esc(okul)} Müdürlüğüne</b></p>
+    <br>
+    <p>${esc(d.izinTuru||'İzin')} kapsamında ${esc(String(d.sure||''))} günlük izin kullanmak istiyorum.</p>
+    ${d.baslangicTarihi?`<p><b>Başlangıç:</b> ${esc(d.baslangicTarihi)}</p>`:''}
+    ${d.bitisTarihi?`<p><b>Bitiş:</b> ${esc(d.bitisTarihi)}</p>`:''}
+    ${d.aciklama?`<p><b>Açıklama:</b> ${esc(d.aciklama)}</p>`:''}
+    <br>
+    <p>Bilgilerinize arz ederim.</p>
+    <br><br>
+    <div style="display:flex;justify-content:space-between;margin-top:30px">
+      <div><p><b>Ad Soyad:</b> ${adSoyad}</p><p><b>Görevi:</b> ${esc(p.gorev||p.unvan||'—')}</p></div>
+      <div style="text-align:center"><p>İmza</p><br><br><p>_______________</p></div>
+    </div>
+  </div>`;
+  global.ReportEngine.printReport(`Dilekçe — ${adSoyad}`,body,{fileName:`Dilekce_${(adSoyad).replace(/\s+/g,'_')}`,ustBaslik:esc(okul)});
+}
+function dilekceForm(d={}){
+  const personelList=arr('personel').sort((a,b)=>String(a.adSoyad||a.ad||'').localeCompare(String(b.adSoyad||b.ad||''),'tr'));
+  return`<div class="ka-modal-backdrop" data-dilekce-modal style="z-index:1200">
+    <form class="ka-modal" id="dilekceForm" style="max-height:90dvh;overflow:auto">
+      <div class="ka-modal__header"><h2>${d.id?'Dilekçeyi Düzenle':'Yeni Dilekçe'}</h2></div>
+      <div class="ka-modal__body ka-stack">
+        <input type="hidden" name="id" value="${esc(d.id||'')}">
+        <label class="ka-field"><span class="ka-field__label">Personel</span>
+          <select name="personelId" required>
+            <option value="">— Seçiniz —</option>
+            ${personelList.map(p=>`<option value="${esc(p.id)}" ${p.id===d.personelId?'selected':''}>${esc(p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim())}</option>`).join('')}
+          </select>
+        </label>
+        <label class="ka-field"><span class="ka-field__label">İzin Türü</span>
+          <select name="izinTuru" required>
+            <option value="">— Seçiniz —</option>
+            ${DILEKCE_TURLERI.map(t=>`<option value="${esc(t)}" ${t===d.izinTuru?'selected':''}>${esc(t)}</option>`).join('')}
+          </select>
+        </label>
+        <div class="ka-grid">
+          <label class="ka-field"><span class="ka-field__label">Başlangıç Tarihi</span><input name="baslangicTarihi" type="date" value="${esc(d.baslangicTarihi||'')}"></label>
+          <label class="ka-field"><span class="ka-field__label">Süre (gün)</span><input name="sure" type="number" min="1" value="${esc(String(d.sure||'1'))}"></label>
+        </div>
+        <label class="ka-field"><span class="ka-field__label">Bitiş Tarihi</span><input name="bitisTarihi" type="date" value="${esc(d.bitisTarihi||'')}"></label>
+        <label class="ka-field"><span class="ka-field__label">Açıklama</span><textarea name="aciklama">${esc(d.aciklama||'')}</textarea></label>
+      </div>
+      <div class="ka-modal__footer">
+        <button class="ka-btn ka-btn--secondary" type="button" data-dilekce-modal-kapat>Vazgeç</button>
+        <button class="ka-btn" type="submit">Kaydet</button>
+      </div>
+    </form>
+  </div>`
+}
+function dilekce(){
+  const liste=arr('dilekceler').sort((a,b)=>String(b.olusturmaTarihi||'').localeCompare(String(a.olusturmaTarihi||'')));
+  const satirlar=liste.map(d=>{
+    const p=arr('personel').find(x=>x.id===d.personelId);
+    const ad=p?(p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim()):d.personelAdi||'—';
+    return`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow">
+      <strong>${esc(ad)}</strong>
+      <div class="ka-muted">${esc(d.izinTuru||'—')} · ${d.sure?`${d.sure} gün`:''}${d.baslangicTarihi?` · ${esc(d.baslangicTarihi)}`:''}${d.bitisTarihi?` – ${esc(d.bitisTarihi)}`:''}</div>
+      ${d.aciklama?`<small class="ka-muted">${esc(String(d.aciklama).slice(0,80))}</small>`:''}
+    </div>
+    <div class="ka-row" style="gap:6px">
+      <button class="ka-btn ka-btn--sm ka-btn--secondary" data-dilekce-yazdir='${JSON.stringify({personelId:d.personelId,personelAdi:ad,izinTuru:d.izinTuru,baslangicTarihi:d.baslangicTarihi,bitisTarihi:d.bitisTarihi,sure:d.sure,aciklama:d.aciklama})}'>🖨</button>
+      <button class="ka-btn ka-btn--sm ka-btn--secondary" data-dilekce-duzenle="${esc(d.id)}">Düzenle</button>
+      <button class="ka-btn ka-btn--sm ka-btn--danger" data-dilekce-sil="${esc(d.id)}">Sil</button>
+    </div></div></article>`});
+  return`<div class="ka-row" style="margin-bottom:10px">
+    <div><h3 style="font-size:16px">Dilekçe & İzin Talepleri</h3></div>
+    <button class="ka-btn ka-btn--sm" style="margin-left:auto" data-dilekce-yeni>+ Yeni Dilekçe</button>
+  </div>
+  <div class="ka-stack">${liste.length?satirlar.join(''):'<div class="ka-empty">Henüz dilekçe kaydı yok.</div>'}</div>`
+}
+function bindDilekce(){
+  document.querySelector('[data-dilekce-yeni]')?.addEventListener('click',()=>{document.querySelector('[data-dilekce-modal]')?.remove();document.body.insertAdjacentHTML('beforeend',dilekceForm());_dilekceBindModal()});
+  document.querySelectorAll('[data-dilekce-duzenle]').forEach(b=>b.addEventListener('click',()=>{const d=arr('dilekceler').find(x=>x.id===b.getAttribute('data-dilekce-duzenle'));if(!d)return;document.querySelector('[data-dilekce-modal]')?.remove();document.body.insertAdjacentHTML('beforeend',dilekceForm(d));_dilekceBindModal()}));
+  document.querySelectorAll('[data-dilekce-sil]').forEach(b=>b.addEventListener('click',()=>dileceSil(b.getAttribute('data-dilekce-sil'))));
+  document.querySelectorAll('[data-dilekce-yazdir]').forEach(b=>b.addEventListener('click',()=>{try{dilekceYazdir(JSON.parse(b.getAttribute('data-dilekce-yazdir')))}catch(_){}}))}
+function _dilekceBindModal(){const modal=document.querySelector('[data-dilekce-modal]');if(!modal)return;modal.querySelector('[data-dilekce-modal-kapat]')?.addEventListener('click',()=>modal.remove());modal.addEventListener('click',e=>{if(e.target===modal)modal.remove()});modal.querySelector('#dilekceForm')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.currentTarget),id=fd.get('id')||'',pid=fd.get('personelId');if(!pid){toast?.('Personel seçiniz');return}const v={personelId:pid,izinTuru:fd.get('izinTuru')||'',baslangicTarihi:fd.get('baslangicTarihi')||'',bitisTarihi:fd.get('bitisTarihi')||'',sure:Number(fd.get('sure')||1),aciklama:String(fd.get('aciklama')||'').trim()};try{await dilekceKaydet(id||null,v);toast?.('Dilekçe kaydedildi.');modal.remove();render()}catch(err){toast?.(err?.message||'Kaydedilemedi')}})}
+
 function bind(){document.querySelectorAll('[data-management-tab]').forEach(b=>b.onclick=()=>{active=b.dataset.managementTab;query='';render()});const s=document.getElementById('managementSearch');if(s)s.oninput=()=>{query=s.value;render()}}
-function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.personel','data.personelIzinler','data.periyodikIsler','data.ogretmenIzinleri','data.nobetYerleri','data.nobetAtamalari','data.nobetciAmirleri','data.resmiTatiller','data.nobetRotasyon','data.okulBilgileri','data.ogretmenler'].forEach(p=>{const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));if(u)unsubs.push(u)})}
+function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.personel','data.personelIzinler','data.periyodikIsler','data.ogretmenIzinleri','data.nobetYerleri','data.nobetAtamalari','data.nobetciAmirleri','data.resmiTatiller','data.nobetRotasyon','data.okulBilgileri','data.ogretmenler','data.dilekceler'].forEach(p=>{const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));if(u)unsubs.push(u)})}
 async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}
 function unmount(){mounted=false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];document.getElementById('kaManagementModal')?.remove()}
 window.ManagementModule={mount,unmount,render,prepareLocal,createDutyReport};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='management')mount()});
