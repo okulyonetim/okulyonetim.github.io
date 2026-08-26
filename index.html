@@ -39,21 +39,27 @@
     </div>
   </section>
 
-  <section id="girisEkrani" class="ka-page ka-stack">
-    <div class="ka-card">
-      <div class="ka-card__header"><h1>Koruk Asistan</h1></div>
+  <section id="girisEkrani" class="ka-login-page">
+    <div class="ka-login-card ka-card">
+      <div class="ka-login-brand">
+        <img src="assets/icon-192.png" width="72" height="72" alt="Koruk İlk-Ortaokulu">
+        <div>
+          <h1>Koruk Asistan</h1>
+          <p class="ka-muted">Koruk İlk-Ortaokulu</p>
+        </div>
+      </div>
       <form class="ka-card__body ka-stack" onsubmit="girisFormGonder(event)">
         <p class="ka-muted">Devam etmek için kullanıcı adı ve şifrenizle giriş yapın.</p>
         <label class="ka-field"><span class="ka-field__label">Kullanıcı Adı</span><input id="girisKullaniciAdi" autocomplete="username" required></label>
         <label class="ka-field"><span class="ka-field__label">Şifre</span><input id="girisSifre" type="password" autocomplete="current-password" required></label>
         <p id="girisHataMetni" class="ka-muted"></p>
-        <button id="girisBtn" class="ka-btn" type="submit">Giriş Yap</button>
+        <button id="girisBtn" class="ka-btn ka-btn--lg" type="submit">Giriş Yap</button>
       </form>
     </div>
   </section>
 
-  <section id="onayBekleniyorEkrani" class="ka-page ka-stack ka-hidden" hidden>
-    <div class="ka-card">
+  <section id="onayBekleniyorEkrani" class="ka-login-page ka-hidden" hidden>
+    <div class="ka-login-card ka-card">
       <div class="ka-card__header"><h2>Hesap Onayı Bekleniyor</h2></div>
       <div class="ka-card__body ka-stack">
         <p id="onayBekleniyorMetin" class="ka-muted">Hesabınız için yönetici onayı bekleniyor.</p>
@@ -62,36 +68,40 @@
     </div>
   </section>
 
-  <main id="app" class="ka-page ka-stack" hidden>
-    <header class="ka-app-header ka-row">
-      <img src="assets/icon-192.png" width="44" height="44" alt="Koruk İlk-Ortaokulu">
-      <div class="ka-stack ka-grow">
-        <h1>Koruk Asistan</h1>
-        <span class="ka-muted">Local-first okul yönetim sistemi</span>
+  <main id="app" class="ka-app-shell" hidden>
+    <header class="ka-app-header">
+      <div class="ka-brand-home" data-ka-home-trigger>
+        <img class="ka-school-logo" src="assets/icon-192.png" width="42" height="42" alt="Koruk İlk-Ortaokulu">
+        <div class="ka-app-brand ka-grow">
+          <strong>KORUK İLK-ORTAOKULU</strong>
+          <span>Koruk Asistan</span>
+        </div>
       </div>
-      <button class="ka-btn ka-btn--ghost ka-btn--icon" type="button" data-ka-theme-toggle aria-label="Koyu temaya geç">🌙</button>
-      <span id="v2SyncStatus" class="ka-badge">Cihaz verisi hazırlanıyor</span>
+      <div class="ka-header-actions">
+        <span id="v2SyncStatus" class="ka-sync-dot" title="Senkron durumu" aria-label="Senkron durumu"></span>
+        <button class="ka-btn ka-btn--ghost ka-btn--icon" type="button" data-ka-theme-toggle aria-label="Açık/koyu tema">🌙</button>
+      </div>
     </header>
 
-    <nav class="ka-app-nav ka-grid" aria-label="Uygulama bölümleri">
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="dashboard">Ana Sayfa</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="people">Öğretmen / Öğrenci</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="academic">Akademik</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="management">Yönetim</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="communication">İletişim</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="transport">Taşıma</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="documents">Döküman / Rapor</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="tools">Araçlar</button>
-      <button class="ka-btn ka-btn--secondary" type="button" data-ka-module="settings">Ayarlar</button>
-    </nav>
-
-    <section class="ka-card">
-      <div class="ka-card__header"><h2 id="v2ModuleTitle">Ana Sayfa</h2></div>
-      <div class="ka-card__body ka-stack">
-        <p id="v2ModuleStatus" class="ka-muted">IndexedDB verileri ekrana alınır; Firestore yalnız arka planda senkronize olur.</p>
-        <div id="v2ModuleRoot"></div>
+    <section class="ka-app-content">
+      <div class="ka-module-heading">
+        <h2 id="v2ModuleTitle">Ana Sayfa</h2>
       </div>
+      <p id="v2ModuleStatus" class="ka-hidden" aria-hidden="true"></p>
+      <div id="v2ModuleRoot"></div>
     </section>
+
+    <nav class="ka-app-nav" aria-label="Uygulama bölümleri">
+      <button class="ka-nav-item active" type="button" data-ka-module="dashboard"><span class="ka-nav-icon">⌂</span><span>Ana Sayfa</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="people"><span class="ka-nav-icon">👥</span><span>Kişiler</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="academic"><span class="ka-nav-icon">📚</span><span>Akademik</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="management"><span class="ka-nav-icon">🗂️</span><span>Yönetim</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="communication"><span class="ka-nav-icon">💬</span><span>İletişim</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="transport"><span class="ka-nav-icon">🚌</span><span>Taşıma</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="documents"><span class="ka-nav-icon">📄</span><span>Doküman</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="tools"><span class="ka-nav-icon">🧰</span><span>Araçlar</span></button>
+      <button class="ka-nav-item" type="button" data-ka-module="settings"><span class="ka-nav-icon">⚙️</span><span>Ayarlar</span></button>
+    </nav>
   </main>
 </body>
 </html>
