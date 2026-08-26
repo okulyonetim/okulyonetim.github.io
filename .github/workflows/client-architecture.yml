@@ -18,6 +18,7 @@ on:
       - 'tests/classic-shell-v2-smoke.test.js'
       - 'tests/classic-people-v2-smoke.test.js'
       - 'tests/classic-duty-v2-smoke.test.js'
+      - 'tests/classic-schedule-v2-smoke.test.js'
       - 'tests/dashboard-card-routes-smoke.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
@@ -54,6 +55,7 @@ on:
       - 'tests/classic-shell-v2-smoke.test.js'
       - 'tests/classic-people-v2-smoke.test.js'
       - 'tests/classic-duty-v2-smoke.test.js'
+      - 'tests/classic-schedule-v2-smoke.test.js'
       - 'tests/dashboard-card-routes-smoke.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
@@ -102,6 +104,8 @@ jobs:
         run: node tests/classic-people-v2-smoke.test.js
       - name: Verify classic Duty layout
         run: node tests/classic-duty-v2-smoke.test.js
+      - name: Verify classic Lesson Schedule
+        run: node tests/classic-schedule-v2-smoke.test.js
       - name: Verify dashboard card routes
         run: node tests/dashboard-card-routes-smoke.test.js
       - name: Verify report A4 preview and print
