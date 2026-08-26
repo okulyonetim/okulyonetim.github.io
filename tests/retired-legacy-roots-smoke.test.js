@@ -25,6 +25,7 @@ const retired=[
   'js/xlsm-viewer-support.js',
   'js/kriter-dagitim.js',
   'js/proje-degerlendirme.js',
+  'js/modules/rubric-settings-parity.js',
   'js/modules/transport-data.js',
   'js/modules/duty-data.js',
   'js/modules/settings-data.js'
