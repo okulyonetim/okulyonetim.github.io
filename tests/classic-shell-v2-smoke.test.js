@@ -1,0 +1,21 @@
+const fs=require('fs');
+const assert=require('assert');
+const shell=fs.readFileSync('index.html','utf8');
+const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
+const design=fs.readFileSync('css/design-system.css','utf8');
+
+assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
+for(const action of ['home','profile','menu','search','note']) assert(shell.includes(`data-ka-shell-action="${action}"`),`Alt navigasyon eylemi eksik: ${action}`);
+assert((shell.match(/data-ka-shell-action=/g)||[]).length===5,'Mobil alt navigasyon tam 5 ana eylemden oluşmalı.');
+assert(shell.includes('ka-bottom-menu-icon'),'Ortadaki Menü düğmesi ayrı yükseltilmiş sunuma sahip olmalı.');
+assert(shell.includes('id="kaMenuLayer"'),'Tam ekran Menü katmanı production shell içinde bulunmalı.');
+assert(!shell.includes('IndexedDB verileri ekrana alınır'),'Teknik local-first açıklaması kullanıcı arayüzüne dönmemeli.');
+assert(!shell.includes('data-ka-module="people"'),'Dokuz modüllü eski teknik alt navigasyon geri dönmemeli.');
+for(const key of ['people','academic','management','communication','transport','documents','tools','settings']) assert(ui.includes(`key:'${key}'`),`Menü V2 modül rotası eksik: ${key}`);
+assert(ui.includes("DeviceData?.add?.('notlar',global.COL?.notlar"),'Hızlı Not kalıcı yazımı DeviceData üzerinden yapılmalı.');
+assert(!ui.includes('db.collection('),'Shell UI doğrudan Firestore kullanmamalı.');
+assert(!ui.includes('localStorage.setItem('),'Shell UI kalıcı veriyi localStorage ile yazmamalı.');
+for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note']) assert(design.includes(selector),`Merkezi design system shell selectorünü taşımalı: ${selector}`);
+assert(design.includes('grid-template-columns: repeat(5,minmax(0,1fr))'),'Alt navigasyon beş eşit bölümlü olmalı.');
+assert(design.includes('grid-template-columns: repeat(2,minmax(0,1fr))'),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
+console.log('Classic UX + V2 mimari shell sözleşmesi başarılı.');
