@@ -7,6 +7,7 @@
 if(global.RubricToolsModule)return;
 
 const ENGINE='js/modules/rubric-tools-v2-engine.js';
+const PARITY='js/modules/rubric-settings-parity.js';
 const TOOLS=[
   {key:'rubric',label:'Kriter Dağıtım',api:'KriterDagitimAraci',permission:'tools.gradebook'},
   {key:'project',label:'Proje Değerlendirme',api:'ProjeDegerlendirmeAraci',permission:'tools.gradebook'}
@@ -15,9 +16,9 @@ let opening=false;
 
 function canOpen(def){return global.PermissionService?.can?.(def.permission,'preview')!==false;}
 async function load(def){
-  if(global[def.api])return global[def.api];
   if(!global.AppLoader?.loadScript)throw new Error('AppLoader hazır değil.');
-  await global.AppLoader.loadScript(ENGINE);
+  if(!global[def.api])await global.AppLoader.loadScript(ENGINE);
+  if(!global.RubricSettingsParity)await global.AppLoader.loadScript(PARITY);
   if(!global[def.api])throw new Error(def.label+' V2 engine yüklenemedi.');
   return global[def.api];
 }
