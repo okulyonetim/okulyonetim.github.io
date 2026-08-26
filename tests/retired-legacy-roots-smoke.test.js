@@ -19,6 +19,7 @@ const retired=[
   'js/maas-degisiklik.js',
   'js/asistan.js',
   'js/mevzuat-asistan.js',
+  'js/map-libs.js',
   'js/yedekleme.js',
   'js/yillik-plan-tohum-veri.js',
   'js/xlsm-viewer-support.js',
