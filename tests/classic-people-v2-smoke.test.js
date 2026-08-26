@@ -9,11 +9,10 @@ assert(!people.includes('db.collection('),'People UI/repository doğrudan Firest
 assert(!people.includes('localStorage.setItem('),'People kalıcı veriyi localStorage ile yazmamalı.');
 
 for(const tab of ['teachers','classes','students']) assert(people.includes(`data-people-tab=\"${tab}\"`),`People sekmesi eksik: ${tab}`);
-for(const label of ['Öğretmenler','Okuldaki öğretmenlerin bilgileri','Ada veya branşa göre ara...','Tümü','İlkokul','Ortaokul']) assert(people.includes(label),`Klasik Öğretmenler ekranı öğesi eksik: ${label}`);
-for(const col of ['Ad Soyad','Ünvan','Branş','Okul','Telefon','E-posta','Sorumlu Sınıf']) assert(people.includes(`<th>${col}</th>`),`Öğretmenler tablo sütunu eksik: ${col}`);
-for(const col of ['Sınıf','Seviye','Sınıf Öğretmeni','Öğrenci','Kız','Erkek','Derslik']) assert(people.includes(`<th>${col}</th>`),`Sınıflar tablo sütunu eksik: ${col}`);
-for(const item of ['👨‍🎓 Öğrenciler','Tüm Sınıflar','Tüm','Kız','Erkek','peopleClassFilter','peopleGenderFilter']) assert(people.includes(item),`Klasik Öğrenciler filtre öğesi eksik: ${item}`);
-assert(people.includes('ka-table ka-people-table'),'Öğretmenler/Sınıflar masaüstü tablo anatomisi korunmalı.');
-assert(people.includes('ka-people-student-list'),'Öğrenciler ayrı kart listesi olarak kalmalı.');
+for(const marker of ['ka-teacher-directory','ka-teacher-profile','ka-teacher-summary','ka-teacher-actions','data-teacher-detail','data-teacher-edit','data-teacher-report','data-teacher-program','data-teacher-message']) assert(people.includes(marker),`Yeni Öğretmenler/profil akışı öğesi eksik: ${marker}`);
+for(const marker of ['peopleClassFilter','peopleGenderFilter','ka-people-student-list']) assert(people.includes(marker),`Öğrenci filtre/liste öğesi eksik: ${marker}`);
+for(const label of ['Öğretmenler','Sınıflar','Öğrenciler','DERS PROGRAMI','NÖBETLER','KULÜP DANIŞMANLIĞI','BELİRLİ GÜN VE HAFTALAR','DİĞER EVRAK']) assert(people.includes(label),`People görünüm öğesi eksik: ${label}`);
+assert(people.includes('ka-people-table'),'Sınıf/öğrenci veri tablolarının merkezi tablo anatomisi korunmalı.');
+assert(people.includes('BelgeDurumuService'),'Öğretmen belge durumu akışı korunmalı.');
 
-console.log('Classic People V2 görünüm + local-first sözleşmesi başarılı.');
+console.log('People V2 modern profil + local-first sözleşmesi başarılı.');
