@@ -89,6 +89,20 @@
   </main>
 
   <script>
+  function applyAcademicResultPage(title){
+    if(title!=='Deneme Sonuçları'&&title!=='Test Sonuçları')return;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      const root=document.getElementById('v2ModuleRoot');
+      if(!root)return;
+      root.querySelectorAll('h3').forEach(h=>{
+        const text=(h.textContent||'').trim();
+        if(!text.includes('Deneme Sınavı Sonuçları')&&!text.includes('Test Sonuçları'))return;
+        const section=h.parentElement;
+        if(!section)return;
+        section.hidden=title==='Deneme Sonuçları'?text.includes('Test Sonuçları'):text.includes('Deneme Sınavı Sonuçları');
+      });
+    }));
+  }
   document.addEventListener('click',function(event){
     const button=event.target.closest?.('#kaMenuLayer [data-ka-menu-route]');
     if(!button)return;
@@ -111,6 +125,7 @@
       const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});
       Promise.resolve(task).then(()=>{
         if(migratedPages[title])return window.StudentPages?.open?.(page,title);
+        applyAcademicResultPage(title);
       }).catch(error=>{
         console.error('[Shell/menu-route]',error);
         window.toast?.('Sayfa açılamadı.');
