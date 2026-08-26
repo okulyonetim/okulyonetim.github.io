@@ -1,15 +1,15 @@
 /* Koruk Asistan — Kriter / Proje araçları V2 köprüsü
- * Tools presentation'a iki gerçek özelliği lazy olarak bağlar.
- * Legacy motorlar geçici olarak yalnız kullanım anında yüklenir; V2 karşılık
- * tamamlanmadan eski davranış silinmez.
+ * Tools presentation'a iki aracı tek V2 engine üzerinden lazy bağlar.
+ * Legacy root motorlar doğrulama süresince repoda tutulur ama production'da yüklenmez.
  */
 (function(global){
 'use strict';
 if(global.RubricToolsModule)return;
 
+const ENGINE='js/modules/rubric-tools-v2-engine.js';
 const TOOLS=[
-  {key:'rubric',label:'Kriter Dağıtım',script:'js/kriter-dagitim.js',api:'KriterDagitimAraci',permission:'tools.gradebook'},
-  {key:'project',label:'Proje Değerlendirme',script:'js/proje-degerlendirme.js',api:'ProjeDegerlendirmeAraci',permission:'tools.gradebook'}
+  {key:'rubric',label:'Kriter Dağıtım',api:'KriterDagitimAraci',permission:'tools.gradebook'},
+  {key:'project',label:'Proje Değerlendirme',api:'ProjeDegerlendirmeAraci',permission:'tools.gradebook'}
 ];
 let opening=false;
 
@@ -17,8 +17,8 @@ function canOpen(def){return global.PermissionService?.can?.(def.permission,'pre
 async function load(def){
   if(global[def.api])return global[def.api];
   if(!global.AppLoader?.loadScript)throw new Error('AppLoader hazır değil.');
-  await global.AppLoader.loadScript(def.script);
-  if(!global[def.api])throw new Error(def.label+' yüklenemedi.');
+  await global.AppLoader.loadScript(ENGINE);
+  if(!global[def.api])throw new Error(def.label+' V2 engine yüklenemedi.');
   return global[def.api];
 }
 async function open(def){
