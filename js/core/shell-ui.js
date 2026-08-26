@@ -31,7 +31,7 @@ const MENU_GROUPS=[
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',items:[['Takvim','📆','communication'],['Notlar','📒','communication']]},
  {key:'transport',label:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport'],['Harita','🗺️','tools']]},
  {key:'documents',label:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Dokümanlar','📁','documents'],['Mevzuat','📖','documents'],['Akademik Takvim','📅','documents'],['Kontrol Listeleri','📋','tools'],['Evrak Takibi','📄','documents'],['Aylık İşler','🕘','management']],subLabel:'Raporlar',subItems:[['Maarif Model','🏅','documents'],['Belirli Gün ve Haftalar','📅','documents'],['ŞÖK','🛡️','documents'],['Rehberlik','🧭','documents'],['Yıllık Planlar & BEP Planları','📋','documents'],['Zümre','👥','documents'],['Sosyal Kulüpler','♡','documents']]},
- {key:'management',label:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Personeller','👥','management'],['Maaş Değişikliği','💵','management'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','management'],['Puantaj & İmza Sirküsü','🕘','management'],['Dilekçe & İzinler','📄','management'],['Devamsızlık Çizelgesi','📅','management'],['Evrak Takibi','📄','documents']]},
+ {key:'management',label:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Personeller','👥','management'],['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents'],['Puantaj & İmza Sirküsü','🕘','management'],['Dilekçe & İzinler','📄','management'],['Devamsızlık Çizelgesi','📅','tools'],['Evrak Takibi','📄','documents']]},
  {key:'settings',label:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Okul Bilgileri','🏢','settings'],['Veriler','🗄️','settings'],['Kullanıcı İşlemleri','🛡️','settings'],['Kullanıcı İstatistikleri','📋','settings']]}
 ];
 const DASHBOARD_ROUTES={announcements:'communication',polls:'communication',news:'communication',stats:'people',duty:'management',absences:'management',upcoming:'communication',lessons:'academic','week-duty':'management',exams:'academic',schedule:'academic',notes:'communication',calendar:'communication'};
@@ -43,7 +43,23 @@ function closeMenu(){const layer=$('#kaMenuLayer');if(layer){layer.classList.rem
 function closeHeaderPopover(){headerPopover?.remove();headerPopover=null;document.removeEventListener('pointerdown',outsideHeaderPopover,true)}
 function outsideHeaderPopover(e){if(!headerPopover)return;if(headerPopover.contains(e.target)||e.target.closest('[data-ka-header-profile],[data-ka-header-notification],[data-ka-theme-toggle]'))return;closeHeaderPopover()}
 function popoverBase(anchor,width=330){closeHeaderPopover();const r=anchor.getBoundingClientRect(),el=document.createElement('div');el.className='ka-card';el.setAttribute('role','dialog');el.style.cssText=`position:fixed;z-index:1100;top:${Math.max(r.bottom+8,70)}px;right:${Math.max(10,innerWidth-r.right)}px;width:min(${width}px,calc(100vw - 20px));max-height:calc(100dvh - ${Math.max(r.bottom+22,86)}px);overflow:auto;background:var(--ka-card-raised-bg);border:1px solid var(--ka-border);border-radius:18px;box-shadow:var(--ka-shadow-modal);padding:12px;`;document.body.appendChild(el);headerPopover=el;setTimeout(()=>document.addEventListener('pointerdown',outsideHeaderPopover,true),0);return el}
-async function routeModule(name,{bottom='menu'}={}){closeHeaderPopover();closeMenu();const meta=global.AppConfig?.module?.(name)||{label:name};if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(meta.label||name);await global.AppLoader?.load?.(name);return true}
+async function routeModule(name,{bottom='menu'}={}){
+  closeHeaderPopover();closeMenu();
+  /* Özel rotalar — ayrı eager-loaded modüller */
+  if(name==='payroll'){
+    if(global.PayrollChangeModule?.open){
+      setBottomActive(bottom);setTitle('Maaş Değişikliği Bildirim Formu');
+      global.PayrollChangeModule.open();
+    }else{
+      await routeModule('management',{bottom});
+    }
+    return true;
+  }
+  const meta=global.AppConfig?.module?.(name)||{label:name};
+  if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
+  setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);
+  setTitle(meta.label||name);await global.AppLoader?.load?.(name);return true
+}
 function visibleItems(g){return(g.items||[]).filter(x=>moduleAllowed(x[2])).concat((g.subItems||[]).filter(x=>moduleAllowed(x[2])))}
 function visibleGroups(){return MENU_GROUPS.filter(g=>moduleAllowed(g.route)&&visibleItems(g).length)}
 function menuCount(g){return visibleItems(g).length}
