@@ -13,6 +13,7 @@ const retired=[
   'js/ozellik-katalogu.js',
   'js/pdf-export-libs.js',
   'js/ogretmen-liste-olusturucu.js',
+  'js/widget-plugin.js',
   'js/modules/transport-data.js',
   'js/modules/duty-data.js',
   'js/modules/settings-data.js'
