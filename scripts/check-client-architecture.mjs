@@ -16,6 +16,9 @@ const retiredLegacyRoots=['js/istatistikler.js','js/core/services/istatistik.ser
 const resurrectedLegacyRoots=retiredLegacyRoots.filter(p=>fs.existsSync(path.join(ROOT,p)));
 const styleInject=[],hiddenLoaders=[],optical=[];
 for(const f of files){const src=fs.readFileSync(f,'utf8');if(/createElement\(\s*['"]style['"]\s*\)|\.textContent\s*=\s*['"`][^\n]*(?:!important|\{)/.test(src))styleInject.push(rel(f));if(/createElement\(\s*['"]script['"]\s*\)/.test(src)&&/\.src\s*=/.test(src)&&!rel(f).endsWith('app-loader.js'))hiddenLoaders.push(rel(f));if(/opencv|\bomr\b|optik[\/-]|optik okuyucu/i.test(src)||/optik|omr|opencv/i.test(path.basename(f)))optical.push(rel(f))}
+const STYLE_INJECTION_ALLOWLIST=new Set(['js/dokuman-okuyucu.js']);
+const unexpectedStyleInject=styleInject.filter(f=>!STYLE_INJECTION_ALLOWLIST.has(f));
+const missingKnownStyleDebt=[...STYLE_INJECTION_ALLOWLIST].filter(f=>!styleInject.includes(f));
 
 const shellPath=path.join(ROOT,'index.html');
 const shellHtml=fs.existsSync(shellPath)?fs.readFileSync(shellPath,'utf8'):'';
@@ -83,7 +86,7 @@ const missingPlatformRequirements=platformRequirements.filter(([,ok])=>!ok).map(
 const appNamespaceDefaultDeny=rulesSource.includes("!koleksiyon.matches('^oy_.*')");
 const rulesOpticalUnsafe=/oy_optikSablonlari/.test(rulesSource)||!appNamespaceDefaultDeny;
 
-const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),retiredLegacyRoots,resurrectedLegacyRoots,jsStyleInjection:styleInject.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),appNamespaceDefaultDeny,rulesOpticalUnsafe,primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements},platformContract:{targets:['android','ios-safari-pwa','web-desktop-mobile'],safeAreaReady,nativeApiViolations:nativeApiViolations.sort(),missing:missingPlatformRequirements}};
+const report={jsFiles:files.length,targetSourceModules:'yaklaşık 12-18 mantıksal kaynak/bundle',cssFiles:cssFiles.length,targetActiveStylesheets:1,legacyCssFiles:legacyCssFiles.map(rel).sort(),debtNamedFiles:debtFiles.map(rel).sort(),retiredLegacyRoots,resurrectedLegacyRoots,jsStyleInjection:styleInject.sort(),styleInjectionAllowlist:[...STYLE_INJECTION_ALLOWLIST].sort(),unexpectedStyleInjection:unexpectedStyleInject.sort(),knownStyleDebtResolved:missingKnownStyleDebt.sort(),hiddenScriptLoaders:hiddenLoaders.sort(),opticalReferences:optical.sort(),appNamespaceDefaultDeny,rulesOpticalUnsafe,primaryStylesheets:stylesheetLinks,styleViolations,inlineStyleTags,inlineStyleAttrs,missingThemeTokens,missingShellClasses,permissionContract:{levels:['hidden','preview','read','edit'],legacyAliases:true,missing:missingPermissionRequirements},appConfigContract:{collection:'oy_navDuzeni',missing:missingConfigRequirements},platformContract:{targets:['android','ios-safari-pwa','web-desktop-mobile'],safeAreaReady,nativeApiViolations:nativeApiViolations.sort(),missing:missingPlatformRequirements}};
 console.log(JSON.stringify(report,null,2));
 let failed=false;
 if(optical.length){console.error('Optik okuyucu uygulama koduna geri dönmemeli:',optical.join(', '));failed=true}
@@ -92,6 +95,7 @@ if(rulesOpticalUnsafe){console.error('Firestore oy_ uygulama ad alanı varsayıl
 if(stylesheetLinks.length!==1||stylesheetLinks[0]!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
 if(styleViolations.length){console.error('Ek stylesheet ihlali:',styleViolations.join(', '));failed=true}
 if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içermemeli.');failed=true}
+if(unexpectedStyleInject.length){console.error('Yeni JS style enjeksiyonu yasak; css/design-system.css kullanılmalı:',unexpectedStyleInject.join(', '));failed=true}
 if(missingThemeTokens.length){console.error('Eksik merkezi tema değişkenleri:',missingThemeTokens.join(', '));failed=true}
 if(missingShellClasses.length){console.error('Eksik merkezi shell componentleri:',missingShellClasses.join(', '));failed=true}
 if(missingPermissionRequirements.length){console.error('Eksik merkezi rol/yetki sözleşmesi:',missingPermissionRequirements.join(', '));failed=true}
