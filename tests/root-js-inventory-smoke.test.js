@@ -3,7 +3,6 @@ const assert=require('assert');
 
 const allowed=[
   'app-loader.js',
-  'asistan.js',
   'auth.js',
   'dokuman-okuyucu.js',
   'firebase-init.js',
