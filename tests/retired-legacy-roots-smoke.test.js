@@ -17,6 +17,7 @@ const retired=[
   'js/widget-bridge.js',
   'js/teblig-tebellug.js',
   'js/maas-degisiklik.js',
+  'js/asistan.js',
   'js/yedekleme.js',
   'js/yillik-plan-tohum-veri.js',
   'js/xlsm-viewer-support.js',
