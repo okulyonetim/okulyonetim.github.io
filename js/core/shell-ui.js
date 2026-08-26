@@ -21,16 +21,15 @@ const SVG={
 };
 
 /* Eski uygulamadaki gerçek kategori hiyerarşisinin V2 karşılığı.
- * route: yeni mimaride açılacak ana modül. Alt özellik henüz ayrı V2 route
- * değilse ilgili ana modül açılır; eski global fonksiyon çağrılmaz. */
+ * Alt özellikler eski global fonksiyonları çağırmaz; yalnız V2 modülüne gider. */
 const MENU_GROUPS=[
  {key:'people',label:'Öğretmen & Öğrenciler',icon:'👥',tone:'green',route:'people',items:[
   ['Öğretmenler','👩‍🏫','people'],['Öğrenciler','🎓','people'],['Sınıflar','🏫','people'],['Öğrenci Yoklama','☑️','people'],['Öğrenci Listesi Oluşturucu','📋','tools'],['Ödev Takip Çizelgesi','✅','tools'],['Not Çizelgesi','📊','tools']
  ]},
- {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'blue',route:'academic',items:[
+ {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',items:[
   ['Yazılı Sınavlar','☑️','academic'],['Deneme Sınavları','🧪','academic'],['Deneme Sonuçları','🏅','academic'],['Test Sonuçları','📋','academic'],['Ders Et. Kat. Puan Dağıtımı','📊','tools'],['Proje Değerlendirme Ölçeği','📏','tools']
  ]},
- {key:'programs',label:'Programlar',icon:'📅',tone:'lime',route:'academic',items:[
+ {key:'programs',label:'Programlar',icon:'📅',tone:'green',route:'academic',items:[
   ['Ders Programı','📅','academic'],['Nöbet Programı','🛡️','management'],['Yıllık Plan','📚','academic']
  ]},
  {key:'communication',label:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[
@@ -54,21 +53,27 @@ const MENU_GROUPS=[
   ['Ayarlar','⚙️','settings'],['Okul Bilgileri','🏢','settings'],['Veriler','🗄️','settings'],['Kullanıcı İşlemleri','🛡️','settings'],['Kullanıcı İstatistikleri','📋','settings']
  ]}
 ];
-const TONE_ROUTE={green:'people',blue:'academic',lime:'academic',red:'communication',cyan:'communication',violet:'transport',amber:'documents',orange:'management',slate:'settings'};
 const DASHBOARD_ROUTES={announcements:'communication',news:'communication',stats:'people',duty:'management',upcoming:'communication',lessons:'academic','week-duty':'management',exams:'academic',schedule:'academic',notes:'communication',calendar:'communication'};
-let activeAction='home',menuGroup=null;
+let activeAction='home',menuGroup=null,dashboardObserver=null;
 function setTitle(v){const el=$('#v2ModuleTitle');if(el)el.textContent=v||''}
 function setBottomActive(action){activeAction=action;$$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
 function moduleAllowed(name){const meta=global.AppConfig?.module?.(name);return meta?.visible!==false&&global.PermissionService?.moduleLevel?.(name)!=='hidden'}
 function closeMenu(){const layer=$('#kaMenuLayer');if(layer){layer.classList.remove('open');layer.hidden=true;layer.innerHTML=''}menuGroup=null;document.body.classList.remove('ka-layer-open')}
-async function routeModule(name,{bottom='menu'}={}){closeMenu();const meta=global.AppConfig?.module?.(name)||{label:name};if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(meta.label||name);await global.AppLoader?.load?.(name);return true}
+async function routeModule(name,{bottom='menu'}={}){closeMenu();const meta=global.AppConfig?.module?.(name)||{label:name};if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(meta.label||name);await global.AppLoader?.load?.(name);if(name==='dashboard')requestAnimationFrame(normalizeDashboardLayout);return true}
 function visibleItems(g){return (g.items||[]).filter(x=>moduleAllowed(x[2])).concat((g.subItems||[]).filter(x=>moduleAllowed(x[2])))}
 function visibleGroups(){return MENU_GROUPS.filter(g=>moduleAllowed(g.route)&&visibleItems(g).length)}
 function menuCount(g){return visibleItems(g).length}
-function renderMenuGrid(){const layer=$('#kaMenuLayer');if(!layer)return;menuGroup=null;const cards=visibleGroups();layer.innerHTML=`<div class="ka-menu-page"><header class="ka-menu-head"><h2>Menü</h2><button type="button" class="ka-icon-button" data-ka-menu-close aria-label="Menüyü kapat">${SVG.close}</button></header><div class="ka-menu-grid">${cards.map(g=>`<button type="button" class="ka-menu-card ka-menu-card--${g.tone}" data-ka-menu-group="${g.key}"><span class="ka-menu-card__count">${menuCount(g)}</span><span class="ka-menu-card__icon">${g.icon}</span><strong>${esc(g.label)}</strong></button>`).join('')}</div></div>`;layer.querySelector('[data-ka-menu-close]')?.addEventListener('click',closeMenu);$$('[data-ka-menu-group]',layer).forEach(b=>b.addEventListener('click',()=>renderMenuList(b.dataset.kaMenuGroup)))}
-function listRow(item){return `<button type="button" class="ka-card ka-list-card ka-row" data-ka-menu-route="${item[2]}"><span class="ka-avatar">${item[1]}</span><strong class="ka-grow">${esc(item[0])}</strong><span class="ka-menu-chevron">${SVG.chevron}</span></button>`}
-function renderMenuList(key){const layer=$('#kaMenuLayer'),g=MENU_GROUPS.find(x=>x.key===key);if(!layer||!g)return;menuGroup=key;const main=(g.items||[]).filter(x=>moduleAllowed(x[2])),sub=(g.subItems||[]).filter(x=>moduleAllowed(x[2]));layer.innerHTML=`<div class="ka-menu-page ka-menu-list-page" data-menu-tone="${g.tone}"><header class="ka-menu-head"><button type="button" class="ka-icon-button" data-ka-menu-back aria-label="Menüye dön">${SVG.back}</button><h2>${esc(g.label)}</h2></header><div class="ka-stack ka-menu-list">${main.map(listRow).join('')}${sub.length?`<div class="ka-menu-subhead">${esc(g.subLabel||'Diğer')}</div>${sub.map(listRow).join('')}`:''}</div></div>`;layer.querySelector('[data-ka-menu-back]')?.addEventListener('click',renderMenuGrid);$$('[data-ka-menu-route]',layer).forEach(b=>b.addEventListener('click',()=>routeModule(b.dataset.kaMenuRoute,{bottom:'menu'})))}
+function renderMenuGrid(){const layer=$('#kaMenuLayer');if(!layer)return;menuGroup=null;const cards=visibleGroups();layer.innerHTML=`<div class="ka-menu-page"><header class="ka-menu-head"><h2>Menü</h2><button type="button" class="ka-icon-button" data-ka-menu-close aria-label="Menüyü kapat">${SVG.close}</button></header><div class="ka-menu-grid">${cards.map(g=>`<button type="button" class="ka-menu-card ka-menu-card--${g.tone}" data-ka-menu-group="${g.key}"><span class="ka-menu-card__icon">${g.icon}</span><strong>${esc(g.label)}</strong><span class="ka-badge">${menuCount(g)}</span></button>`).join('')}</div></div>`;layer.querySelector('[data-ka-menu-close]')?.addEventListener('click',closeMenu);$$('[data-ka-menu-group]',layer).forEach(b=>b.addEventListener('click',()=>renderMenuList(b.dataset.kaMenuGroup)))}
+function listRow(item){return `<button type="button" class="ka-btn ka-btn--secondary" data-ka-menu-route="${item[2]}"><span class="ka-avatar">${item[1]}</span><strong class="ka-grow">${esc(item[0])}</strong><span>${SVG.chevron}</span></button>`}
+function renderMenuList(key){const layer=$('#kaMenuLayer'),g=MENU_GROUPS.find(x=>x.key===key);if(!layer||!g)return;menuGroup=key;const main=(g.items||[]).filter(x=>moduleAllowed(x[2])),sub=(g.subItems||[]).filter(x=>moduleAllowed(x[2]));layer.innerHTML=`<div class="ka-menu-page"><header class="ka-menu-head"><button type="button" class="ka-icon-button" data-ka-menu-back aria-label="Menüye dön">${SVG.back}</button><h2 class="ka-grow">${esc(g.label)}</h2></header><div class="ka-stack ka-page">${main.map(listRow).join('')}${sub.length?`<h3>${esc(g.subLabel||'Diğer')}</h3>${sub.map(listRow).join('')}`:''}</div></div>`;layer.querySelector('[data-ka-menu-back]')?.addEventListener('click',renderMenuGrid);$$('[data-ka-menu-route]',layer).forEach(b=>b.addEventListener('click',()=>routeModule(b.dataset.kaMenuRoute,{bottom:'menu'})))}
 function openMenu(){const layer=$('#kaMenuLayer');if(!layer)return;renderMenuGrid();layer.hidden=false;requestAnimationFrame(()=>layer.classList.add('open'));document.body.classList.add('ka-layer-open');setBottomActive('menu')}
+
+/* Eski dashboard-home.js sözleşmesi: admin ve öğretmen aynı kart dizisini
+ * kullanmaz. Burada yalnız presentation sırası düzenlenir; veri/algoritma
+ * dashboard modülünde kalır. */
+function normalizeDashboardLayout(){const home=$('.ka-home');if(!home)return false;const admin=user().admin===true,hero=$('.ka-home-hero',home),by=id=>$(`[data-home-section="${id}"]`,home);const all=['announcements','news','stats','duty','upcoming','lessons','week-duty','exams','schedule','notes','quick','calendar'];all.forEach(id=>{const el=by(id);if(el)el.hidden=false});const order=admin?['announcements','news','stats','duty','upcoming','lessons','week-duty','exams','schedule','notes']:['announcements','news','lessons','duty','quick','exams','schedule','notes','calendar'];const hidden=admin?['quick','calendar']:['stats','upcoming','week-duty'];hidden.forEach(id=>{const el=by(id);if(el)el.hidden=true});if(hero)home.appendChild(hero);order.forEach(id=>{const el=by(id);if(el)home.appendChild(el)});home.dataset.dashboardRole=admin?'admin':'teacher';return true}
+function observeDashboard(){const root=$('#v2ModuleRoot');if(!root||dashboardObserver)return;dashboardObserver=new MutationObserver(()=>{if(global.AppStore?.get?.('ui.route')==='dashboard')requestAnimationFrame(normalizeDashboardLayout)});dashboardObserver.observe(root,{childList:true,subtree:true})}
+
 function profileName(u){return u.adSoyad||[u.ad,u.soyad].filter(Boolean).join(' ')||u.displayName||u.kullaniciAdi||'Kullanıcı'}
 function profileRole(u){return u.unvan||u.rolAdi||u.rol||u.brans||'Koruk Asistan Kullanıcısı'}
 function linkedTeacher(){const id=user().bagliOgretmenId;return id?arr('ogretmenler').find(x=>x.id===id)||null:null}
@@ -84,7 +89,7 @@ function bindHeader(){document.querySelector('[data-ka-home-trigger]')?.addEvent
 function bindBottom(){$$('[data-ka-shell-action]').forEach(btn=>btn.addEventListener('click',()=>{const a=btn.dataset.kaShellAction;if(a==='home')home();else if(a==='profile')renderProfile();else if(a==='menu')openMenu();else if(a==='search')renderSearch();else if(a==='note')openQuickNote()}))}
 function bindDashboardCards(){document.addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea,label'))return;const hero=e.target.closest('.ka-home-hero');if(hero){routeModule('academic',{bottom:'menu'});return}const card=e.target.closest('[data-home-section]');if(!card)return;const target=DASHBOARD_ROUTES[card.dataset.homeSection];if(target)routeModule(target,{bottom:'menu'});});}
 function hydrateHeader(){const u=user(),profile=$('[data-ka-header-profile]');if(profile){const n=profileName(u),initials=n.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr');profile.textContent=initials||'K';profile.setAttribute('aria-label',`${n} profili`)}}
-function init(){bindHeader();bindBottom();bindDashboardCards();hydrateHeader();window.addEventListener('koruk:app-ready',hydrateHeader);window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden){menuGroup?renderMenuList(menuGroup):renderMenuGrid()}});global.AppStore?.subscribe?.('session.user',hydrateHeader)}
-global.ShellUI={init,home,openMenu,closeMenu,routeModule,renderProfile,renderSearch,openQuickNote,renderMenuGrid,renderMenuList,MENU_GROUPS,DASHBOARD_ROUTES};
+function init(){bindHeader();bindBottom();bindDashboardCards();observeDashboard();hydrateHeader();window.addEventListener('koruk:app-ready',()=>{hydrateHeader();requestAnimationFrame(normalizeDashboardLayout)});window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden){menuGroup?renderMenuList(menuGroup):renderMenuGrid()}requestAnimationFrame(normalizeDashboardLayout)});global.AppStore?.subscribe?.('session.user',()=>{hydrateHeader();requestAnimationFrame(normalizeDashboardLayout)})}
+global.ShellUI={init,home,openMenu,closeMenu,routeModule,renderProfile,renderSearch,openQuickNote,renderMenuGrid,renderMenuList,normalizeDashboardLayout,MENU_GROUPS,DASHBOARD_ROUTES};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);
