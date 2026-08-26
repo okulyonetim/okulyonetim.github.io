@@ -65,7 +65,8 @@ function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.
 for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} kendi tek UI modülünü yüklemeli.`);
 for(const old of ['people-data.js','academic-data.js','management-data.js','messaging-data.js','communication-data.js','documents-data.js','tools-data.js','transport-data.js','settings-data.js','duty-data.js']) assert(!loader.includes(old),`Legacy data paketi loader'a geri dönmemeli: ${old}`);
 assert(registry('transport').includes("'js/modules/report-engine.js'"),'Transport ortak ReportEngine kullanmalı.');
-assert(registry('tools').includes("'js/harita.js'"),'Tools interaktif harita adaptörünü lazy-load etmeli.');
+assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif harita motorunu module path üzerinden lazy-load etmeli.');
+assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 
 console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride: smoke test başarılı.');
