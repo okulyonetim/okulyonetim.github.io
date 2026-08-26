@@ -14,6 +14,7 @@ const retired=[
   'js/pdf-export-libs.js',
   'js/ogretmen-liste-olusturucu.js',
   'js/widget-plugin.js',
+  'js/widget-bridge.js',
   'js/yedekleme.js',
   'js/yillik-plan-tohum-veri.js',
   'js/xlsm-viewer-support.js',
