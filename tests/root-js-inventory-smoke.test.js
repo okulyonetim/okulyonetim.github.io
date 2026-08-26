@@ -9,7 +9,6 @@ const allowed=[
   'firebase-init.js',
   'harita.js',
   'kriter-dagitim.js',
-  'maas-degisiklik.js',
   'map-libs.js',
   'mevzuat-asistan.js',
   'proje-degerlendirme.js'
