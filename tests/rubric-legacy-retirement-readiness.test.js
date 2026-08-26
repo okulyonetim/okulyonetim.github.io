@@ -10,8 +10,8 @@ assert(!bridge.includes('js/kriter-dagitim.js')&&!bridge.includes('js/proje-dege
 
 const parity={
   customDelete:engine.includes('rtdeletecustom')||engine.includes('Sil, varsayılana dön'),
-  inDesignSystemCategoryCreate:engine.includes('rtnewname')||engine.includes('Yeni kategori adı'),
-  destructiveOverwriteConfirm:engine.includes('confirm(')||engine.includes('global.confirm')
+  inDesignSystemCategoryCreate:engine.includes('id="rtnewname"')||engine.includes("id='rtnewname'"),
+  destructiveOverwriteConfirm:engine.includes('global.confirm(')||engine.includes('confirm(')
 };
 const ready=Object.values(parity).every(Boolean);
 const existing=roots.filter(p=>fs.existsSync(p));
