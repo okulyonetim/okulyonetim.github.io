@@ -11,11 +11,21 @@ assert(shell.includes('ka-bottom-menu-icon'),'Ortadaki Menü düğmesi ayrı yü
 assert(shell.includes('id="kaMenuLayer"'),'Tam ekran Menü katmanı production shell içinde bulunmalı.');
 assert(!shell.includes('IndexedDB verileri ekrana alınır'),'Teknik local-first açıklaması kullanıcı arayüzüne dönmemeli.');
 assert(!shell.includes('data-ka-module="people"'),'Dokuz modüllü eski teknik alt navigasyon geri dönmemeli.');
-for(const key of ['people','academic','management','communication','transport','documents','tools','settings']) assert(ui.includes(`key:'${key}'`),`Menü V2 modül rotası eksik: ${key}`);
+
+assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
+for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
+for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\"]${route}['\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
+assert(ui.includes('data-ka-menu-group'),'Birinci Menü katmanı kategori seçimi kullanmalı.');
+assert(ui.includes('data-ka-menu-route'),'İkinci Menü katmanı V2 route seçimi kullanmalı.');
+assert(ui.includes('data-ka-menu-back'),'Alt menüden kategori gridine geri dönüş bulunmalı.');
+assert(ui.includes('renderMenuGrid')&&ui.includes('renderMenuList'),'İki aşamalı Menü rendererları korunmalı.');
+assert(!ui.includes('Optik Okuma (OMR)')&&!ui.includes("key:'optik'"),'Optik okuyucu yeni Menü mimarisine dönmemeli.');
+assert(ui.includes('normalizeDashboardLayout'),'Admin/öğretmen dashboard sunum ayrımı korunmalı.');
+assert(ui.includes("home.dataset.dashboardRole=admin?'admin':'teacher'"),'Dashboard rol sözleşmesi DOM üzerinde doğrulanabilir olmalı.');
 assert(ui.includes("DeviceData?.add?.('notlar',global.COL?.notlar"),'Hızlı Not kalıcı yazımı DeviceData üzerinden yapılmalı.');
 assert(!ui.includes('db.collection('),'Shell UI doğrudan Firestore kullanmamalı.');
 assert(!ui.includes('localStorage.setItem('),'Shell UI kalıcı veriyi localStorage ile yazmamalı.');
 for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note']) assert(design.includes(selector),`Merkezi design system shell selectorünü taşımalı: ${selector}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
-console.log('Classic UX + V2 mimari shell sözleşmesi başarılı.');
+console.log('İki aşamalı classic UX + V2 mimari shell sözleşmesi başarılı.');
