@@ -20,6 +20,7 @@ on:
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
       - 'tests/widget-platform-adapter-smoke.test.js'
+      - 'tests/teblig-v2-smoke.test.js'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
   pull_request:
@@ -40,6 +41,7 @@ on:
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
       - 'tests/widget-platform-adapter-smoke.test.js'
+      - 'tests/teblig-v2-smoke.test.js'
       - 'package.json'
 
 permissions:
@@ -74,6 +76,8 @@ jobs:
         run: node tests/root-js-inventory-smoke.test.js
       - name: Verify native widget platform adapter
         run: node tests/widget-platform-adapter-smoke.test.js
+      - name: Verify V2 teblig-tebellug form
+        run: node tests/teblig-v2-smoke.test.js
       - name: Audit client architecture
         run: node scripts/check-client-architecture.mjs
       - name: Show generated bundle sizes
