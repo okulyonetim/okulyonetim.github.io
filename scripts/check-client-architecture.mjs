@@ -75,8 +75,8 @@ for(const f of moduleFiles){const r=rel(f);if(r==='js/modules/report-engine.js')
 const safeAreaReady=/env\(safe-area-inset-(?:top|right|bottom|left)/.test(designSource)&&['--ka-safe-top','--ka-safe-right','--ka-safe-bottom','--ka-safe-left'].every(t=>designSource.includes(t));
 const platformRequirements=[
   ['dinamik viewport birimi',/\d+(?:\.\d+)?dvh\b/.test(designSource)],
-  ['iOS metin ölçekleme koruması',designSource.includes('-webkit-text-size-adjust: 100%')],
-  ['dokunmatik hedef en az 44px',designSource.includes('--ka-control-height: 44px')],
+  ['iOS metin ölçekleme koruması',/-webkit-text-size-adjust\s*:\s*100%/.test(designSource)],
+  ['dokunmatik hedef en az 44px',/--ka-control-height\s*:\s*44px/.test(designSource)],
   ['iOS safe-area tokenları',safeAreaReady],
   ['native platform capability detection',reportEngineSource.includes('Capacitor?.isNativePlatform?.()')],
   ['native yazdırma için browser fallback',reportEngineSource.includes("global.open(url,'_blank')")&&reportEngineSource.includes('win.print()')],
