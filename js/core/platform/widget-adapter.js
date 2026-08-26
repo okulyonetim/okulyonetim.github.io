@@ -1,0 +1,51 @@
+/* Koruk Asistan — Android widget platform adaptörü
+ * Yalnız native capability varsa çalışır. Uygulama verisini AppStore/DeviceData hattından okur;
+ * Firestore'a doğrudan erişmez. Web/iOS tarafında sessiz no-op'tur.
+ */
+(function(global){
+'use strict';
+if(global.KorukWidgetAdapter)return;
+let prepared=false,timer=null,unsubs=[];
+const data=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[];};
+const user=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};
+const teacherId=()=>user().bagliOgretmenId||user().ogretmenId||'';
+const native=()=>{try{return !!global.Capacitor?.isNativePlatform?.()}catch(_){return false}};
+function plugin(){if(!native())return null;try{return global.Capacitor?.Plugins?.WidgetPlugin||global.Capacitor?.registerPlugin?.('WidgetPlugin')||null}catch(_){return null}}
+const iso=()=>new Date().toISOString().slice(0,10);
+const gun=()=>['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'][new Date().getDay()];
+function ogretmenAdi(id){const o=data('ogretmenler').find(x=>x.id===id);return o?`${o.ad||''} ${o.soyad||''}`.trim():(id||'?')}
+function settings(type,id='ayarlar'){return data(type).find(x=>x.id===id)||data(type)[0]||{};}
+function tatilNotu(a){if(!a?.tatilModu)return'';if(a.okulAcilisTarihi){const d=Math.ceil((new Date(a.okulAcilisTarihi+'T00:00:00')-new Date())/86400000);if(Number.isFinite(d)&&d>0)return `Okulun açılmasına ${d} gün kaldı`;}return a.tatilNotu||'Okul tatilde';}
+async function prepare(){
+  if(!native()||prepared||!global.SyncEngine||!global.COL)return false;
+  prepared=true;const types=[];
+  if(COL.dersSaatleri){SyncEngine.register('dersSaatleri',COL.dersSaatleri);types.push('dersSaatleri')}
+  if(COL.okulBilgileri){SyncEngine.register('okulBilgileri',COL.okulBilgileri);types.push('okulBilgileri')}
+  if(types.length)await SyncEngine.localHydrate(types);
+  SyncEngine.schedule(120);return true;
+}
+function etkinlikler(){
+  const ayar=settings('dersSaatleri'),bugun=iso();
+  if(ayar.tatilModu){const hs=data('hatirlaticilar').filter(h=>!h.tamamlandi&&h.tarih&&h.tarih>=bugun).sort((a,b)=>String(a.tarih||'').localeCompare(String(b.tarih||''))).slice(0,4).map(h=>({emoji:'🗓️',saat:h.saat||h.tarih||'',baslik:h.baslik||'(Başlıksız)'}));return hs.length?hs:[{emoji:'🏖️',saat:'',baslik:tatilNotu(ayar)}]}
+  const tid=teacherId();return data('dersProgrami').filter(d=>d.gun===gun()&&(!tid||d.ogretmenId===tid)).sort((a,b)=>Number(a.saat||0)-Number(b.saat||0)).slice(0,4).map(d=>({emoji:'📚',saat:d.saat?`${d.saat}.`:'',baslik:[d.sinif||d.sinifAdi,d.ders].filter(Boolean).join(' - ')}));
+}
+function notlar(){const uid=user().uid;return data('notlar').filter(n=>!n.sahipUid||n.sahipUid===uid).sort((a,b)=>String(b.eklenmeTarihi||b.guncellenmeTarihi||'').localeCompare(String(a.eklenmeTarihi||a.guncellenmeTarihi||''))).slice(0,4).map(n=>({emoji:'📝',baslik:n.baslik||'(Başlıksız)',alt:String(n.eklenmeTarihi||n.guncellenmeTarihi||'').slice(0,10)}))}
+function nobetciler(){const ayar=settings('dersSaatleri');if(ayar.tatilModu)return[{emoji:'🏖️',ad:tatilNotu(ayar),yer:''}];const bugun=iso(),yerler=data('nobetYerleri');return data('nobetAtamalari').filter(n=>n.tarih===bugun).slice(0,4).map(n=>({emoji:'🧑‍🏫',ad:ogretmenAdi(n.ogretmenId)||n.ogretmenAdSoyad||'?',yer:yerler.find(y=>y.id===n.yerId)?.ad||''}))}
+function haberler(){return data('haberler').slice().sort((a,b)=>String(b.tarih||'').localeCompare(String(a.tarih||''))).slice(0,4).map(h=>({emoji:'📰',baslik:h.baslik||'Başlıksız',alt:String(h.tarih||'').slice(0,10)}))}
+function okulAdi(){const o=settings('okulBilgileri');return o.okulAdi||'Koruk Asistan'}
+function hava(){const h=global.sonHavaVerisi;if(!h)return{havaIkon:'⛅',havaSicaklik:'--°',havaAciklama:'—'};try{const b=global.havaKoduOku?.(h.kod)||{};return{havaIkon:b.e||'⛅',havaSicaklik:Number.isFinite(Number(h.sicaklik))?`${Math.round(Number(h.sicaklik))}°`:'--°',havaAciklama:b.t||'—'}}catch(_){return{havaIkon:'⛅',havaSicaklik:'--°',havaAciklama:'—'}}}
+function zilVerisi(){
+  const ayar=settings('dersSaatleri');if(ayar.tatilModu)return{tatilModu:true,tatilNotu:tatilNotu(ayar),okulAcilisTarihi:ayar.okulAcilisTarihi||null};
+  const dersler=Array.isArray(ayar.dersler)?ayar.dersler:[];if(!dersler.length)return{dersYok:true,durumMetniOzel:'Zil programı yok'};
+  const tid=teacherId(),program=data('dersProgrami'),g=gun();
+  return{segmentler:dersler.map((s,i)=>{const saat=Number(s.saat||i+1),d=program.find(x=>x.gun===g&&x.ogretmenId===tid&&Number(x.saat)===saat);return{bas:s.baslangic||s.bas||'',bit:s.bitis||s.bit||'',baslik:d?.ders||`${saat}. Ders`,yer:(d?.sinif||d?.sinifAdi)?`(${d.sinif||d.sinifAdi})`:''}})};
+}
+async function update(){
+  if(!native())return false;await prepare();const p=plugin();if(!p)return false;
+  try{const hv=hava();if(p.sayfalariGuncelle)await p.sayfalariGuncelle({okul:okulAdi(),etkinlikJson:JSON.stringify(etkinlikler()),notJson:JSON.stringify(notlar()),nobetJson:JSON.stringify(nobetciler()),haberJson:JSON.stringify(haberler()),...hv});if(p.dersZiliGuncelle)await p.dersZiliGuncelle({veriJson:JSON.stringify(zilVerisi())});return true}catch(e){console.warn('[WidgetAdapter]',e?.message||e);return false}
+}
+function schedule(ms=250){clearTimeout(timer);timer=setTimeout(update,ms)}
+function bind(){if(!native())return false;['data.dersProgrami','data.hatirlaticilar','data.notlar','data.nobetAtamalari','data.nobetYerleri','data.haberler','data.ogretmenler','data.dersSaatleri','data.okulBilgileri'].forEach(path=>{const off=global.AppStore?.subscribe?.(path,()=>schedule());if(off)unsubs.push(off)});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')schedule(100)});global.addEventListener('koruk:app-ready',()=>schedule(50));schedule(500);return true}
+global.KorukWidgetAdapter={prepare,update,schedule,bind,zilVerisi};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+})(window);
