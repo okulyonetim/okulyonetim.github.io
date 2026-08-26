@@ -22,6 +22,8 @@ assert(ui.includes('renderMenuGrid')&&ui.includes('renderMenuList'),'İki aşama
 assert(!ui.includes('Optik Okuma (OMR)')&&!ui.includes("key:'optik'"),'Optik okuyucu yeni Menü mimarisine dönmemeli.');
 assert(ui.includes('normalizeDashboardLayout'),'Admin/öğretmen dashboard sunum ayrımı korunmalı.');
 assert(ui.includes("home.dataset.dashboardRole=admin?'admin':'teacher'"),'Dashboard rol sözleşmesi DOM üzerinde doğrulanabilir olmalı.');
+assert(ui.includes('syncVisibilityClasses')&&ui.includes("['girisEkrani','onayBekleniyorEkrani','app']"),'Login/onay/app görünürlüğü tek hidden kararından merkezi ka-hidden sınıfına aynalanmalı.');
+assert(ui.includes("classList.toggle('ka-hidden',el.hidden)"),'Hidden ekranlar CSS display kuralları tarafından tekrar görünür hale gelememeli.');
 assert(ui.includes("DeviceData?.add?.('notlar',global.COL?.notlar"),'Hızlı Not kalıcı yazımı DeviceData üzerinden yapılmalı.');
 assert(!ui.includes('db.collection('),'Shell UI doğrudan Firestore kullanmamalı.');
 assert(!ui.includes('localStorage.setItem('),'Shell UI kalıcı veriyi localStorage ile yazmamalı.');
