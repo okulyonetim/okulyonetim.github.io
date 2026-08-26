@@ -24,9 +24,9 @@ const SVG={
  logout:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M14 3h6a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 };
 const MENU_GROUPS=[
- {key:'people',label:'Öğretmen & Öğrenciler',icon:'👥',tone:'green',route:'people',items:[['Öğretmenler','👩‍🏫','people'],['Öğrenciler','🎓','people'],['Sınıflar','🏫','people'],['Öğrenci Yoklama','☑️','people'],['Öğrenci Listesi Oluşturucu','📋','tools'],['Ödev Takip Çizelgesi','✅','tools'],['Not Çizelgesi','📊','tools']]},
- {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',items:[['Yazılı Sınavlar','☑️','academic'],['Deneme Sınavları','🧪','academic'],['Deneme Sonuçları','🏅','academic'],['Test Sonuçları','📋','academic'],['Ders Et. Kat. Puan Dağıtımı','📊','tools'],['Proje Değerlendirme Ölçeği','📏','tools']]},
- {key:'programs',label:'Programlar',icon:'📅',tone:'green',route:'academic',items:[['Ders Programı','📅','academic'],['Nöbet Programı','🛡️','management'],['Yıllık Plan','📚','academic']]},
+ {key:'people',label:'Öğretmen & Öğrenciler',icon:'👥',tone:'green',route:'people',items:[['Öğretmenler','👩‍🏫','people','teachers'],['Öğrenciler','🎓','people','students'],['Sınıflar','🏫','people','classes'],['Öğrenci Yoklama','☑️','people'],['Öğrenci Listesi Oluşturucu','📋','tools'],['Ödev Takip Çizelgesi','✅','tools'],['Not Çizelgesi','📊','tools']]},
+ {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',items:[['Yazılı Sınavlar','☑️','academic','written'],['Deneme Sınavları','🧪','academic','trial'],['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools'],['Proje Değerlendirme Ölçeği','📏','tools']]},
+ {key:'programs',label:'Programlar',icon:'📅',tone:'green',route:'academic',items:[['Ders Programı','📅','academic','schedule'],['Nöbet Programı','🛡️','management'],['Yıllık Plan','📚','academic','plans']]},
  {key:'communication',label:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[['Mesajlaşma','💬','communication'],['Haberler','📰','communication'],['Duyurular','📣','communication'],['Anketler','📋','communication']]},
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',items:[['Takvim','📆','communication'],['Notlar','📒','communication']]},
  {key:'transport',label:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport'],['Harita','🗺️','tools']]},
@@ -43,7 +43,18 @@ function closeMenu(){const layer=$('#kaMenuLayer');if(layer){layer.classList.rem
 function closeHeaderPopover(){headerPopover?.remove();headerPopover=null;document.removeEventListener('pointerdown',outsideHeaderPopover,true)}
 function outsideHeaderPopover(e){if(!headerPopover)return;if(headerPopover.contains(e.target)||e.target.closest('[data-ka-header-profile],[data-ka-header-notification],[data-ka-theme-toggle]'))return;closeHeaderPopover()}
 function popoverBase(anchor,width=330){closeHeaderPopover();const r=anchor.getBoundingClientRect(),el=document.createElement('div');el.className='ka-card';el.setAttribute('role','dialog');el.style.cssText=`position:fixed;z-index:1100;top:${Math.max(r.bottom+8,70)}px;right:${Math.max(10,innerWidth-r.right)}px;width:min(${width}px,calc(100vw - 20px));max-height:calc(100dvh - ${Math.max(r.bottom+22,86)}px);overflow:auto;background:var(--ka-card-raised-bg);border:1px solid var(--ka-border);border-radius:18px;box-shadow:var(--ka-shadow-modal);padding:12px;`;document.body.appendChild(el);headerPopover=el;setTimeout(()=>document.addEventListener('pointerdown',outsideHeaderPopover,true),0);return el}
-async function routeModule(name,{bottom='menu'}={}){
+function applySubpage(name,page,title){
+  const root=$('#v2ModuleRoot');if(!root||!page)return false;
+  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='academic'?`[data-academic-tab="${page}"]`:'';
+  const tab=selector?root.querySelector(selector):null;
+  if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.style.display='none'}
+  if(name==='academic'){
+    const h=root.querySelector('[data-academic-module] > .ka-row h2');if(h&&title)h.textContent=title;
+  }
+  if(title)setTitle(title);
+  return !!tab;
+}
+async function routeModule(name,{bottom='menu',page='',title=''}={}){
   closeHeaderPopover();closeMenu();
   /* Özel rotalar — ayrı eager-loaded modüller */
   if(name==='payroll'){
@@ -58,14 +69,16 @@ async function routeModule(name,{bottom='menu'}={}){
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
   setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);
-  setTitle(meta.label||name);await global.AppLoader?.load?.(name);return true
+  setTitle(title||meta.label||name);await global.AppLoader?.load?.(name);
+  if(page)requestAnimationFrame(()=>applySubpage(name,page,title));
+  return true
 }
 function visibleItems(g){return(g.items||[]).filter(x=>moduleAllowed(x[2])).concat((g.subItems||[]).filter(x=>moduleAllowed(x[2])))}
 function visibleGroups(){return MENU_GROUPS.filter(g=>moduleAllowed(g.route)&&visibleItems(g).length)}
 function menuCount(g){return visibleItems(g).length}
 function renderMenuGrid(){const layer=$('#kaMenuLayer');if(!layer)return;menuGroup=null;const cards=visibleGroups();layer.innerHTML=`<div class="ka-menu-page"><header class="ka-menu-head"><h2>Menü</h2><button type="button" class="ka-icon-button" data-ka-menu-close aria-label="Menüyü kapat">${SVG.close}</button></header><div class="ka-menu-grid">${cards.map(g=>`<button type="button" class="ka-menu-card ka-menu-card--${g.tone}" data-ka-menu-group="${g.key}"><span class="ka-menu-card__icon">${g.icon}</span><strong>${esc(g.label)}</strong><span class="ka-badge">${menuCount(g)}</span></button>`).join('')}</div></div>`;layer.querySelector('[data-ka-menu-close]')?.addEventListener('click',closeMenu);$$('[data-ka-menu-group]',layer).forEach(b=>b.addEventListener('click',()=>renderMenuList(b.dataset.kaMenuGroup)))}
-function listRow(item){return`<button type="button" class="ka-btn ka-btn--secondary" data-ka-menu-route="${item[2]}"><span class="ka-avatar">${item[1]}</span><strong class="ka-grow">${esc(item[0])}</strong><span>${SVG.chevron}</span></button>`}
-function renderMenuList(key){const layer=$('#kaMenuLayer'),g=MENU_GROUPS.find(x=>x.key===key);if(!layer||!g)return;menuGroup=key;const main=(g.items||[]).filter(x=>moduleAllowed(x[2])),sub=(g.subItems||[]).filter(x=>moduleAllowed(x[2]));layer.innerHTML=`<div class="ka-menu-page"><header class="ka-menu-head"><button type="button" class="ka-icon-button" data-ka-menu-back aria-label="Menüye dön">${SVG.back}</button><h2 class="ka-grow">${esc(g.label)}</h2></header><div class="ka-stack ka-page">${main.map(listRow).join('')}${sub.length?`<h3>${esc(g.subLabel||'Diğer')}</h3>${sub.map(listRow).join('')}`:''}</div></div>`;layer.querySelector('[data-ka-menu-back]')?.addEventListener('click',renderMenuGrid);$$('[data-ka-menu-route]',layer).forEach(b=>b.addEventListener('click',()=>routeModule(b.dataset.kaMenuRoute,{bottom:'menu'})))}
+function listRow(item){return`<button type="button" class="ka-btn ka-btn--secondary" data-ka-menu-route="${item[2]}" data-ka-menu-page="${esc(item[3]||'')}" data-ka-menu-title="${esc(item[0]||'')}"><span class="ka-avatar">${item[1]}</span><strong class="ka-grow">${esc(item[0])}</strong><span>${SVG.chevron}</span></button>`}
+function renderMenuList(key){const layer=$('#kaMenuLayer'),g=MENU_GROUPS.find(x=>x.key===key);if(!layer||!g)return;menuGroup=key;const main=(g.items||[]).filter(x=>moduleAllowed(x[2])),sub=(g.subItems||[]).filter(x=>moduleAllowed(x[2]));layer.innerHTML=`<div class="ka-menu-page"><header class="ka-menu-head"><button type="button" class="ka-icon-button" data-ka-menu-back aria-label="Menüye dön">${SVG.back}</button><h2 class="ka-grow">${esc(g.label)}</h2></header><div class="ka-stack ka-page">${main.map(listRow).join('')}${sub.length?`<h3>${esc(g.subLabel||'Diğer')}</h3>${sub.map(listRow).join('')}`:''}</div></div>`;layer.querySelector('[data-ka-menu-back]')?.addEventListener('click',renderMenuGrid);$$('[data-ka-menu-route]',layer).forEach(b=>b.addEventListener('click',()=>routeModule(b.dataset.kaMenuRoute,{bottom:'menu',page:b.dataset.kaMenuPage||'',title:b.dataset.kaMenuTitle||''})))}
 function openMenu(){closeHeaderPopover();const layer=$('#kaMenuLayer');if(!layer)return;renderMenuGrid();layer.hidden=false;requestAnimationFrame(()=>layer.classList.add('open'));document.body.classList.add('ka-layer-open');setBottomActive('menu')}
 function syncVisibilityClasses(){for(const id of ['girisEkrani','onayBekleniyorEkrani','app']){const el=document.getElementById(id);if(el)el.classList.toggle('ka-hidden',el.hidden)}}
 function observeVisibility(){if(visibilityObserver)return;syncVisibilityClasses();visibilityObserver=new MutationObserver(syncVisibilityClasses);for(const id of ['girisEkrani','onayBekleniyorEkrani','app']){const el=document.getElementById(id);if(el)visibilityObserver.observe(el,{attributes:true,attributeFilter:['hidden']})}}
