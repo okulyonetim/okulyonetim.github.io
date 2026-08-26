@@ -3,6 +3,7 @@ const assert = require('assert');
 
 const viewer = fs.readFileSync('js/modules/document-viewer.js', 'utf8');
 const documents = fs.readFileSync('js/modules/documents.js', 'utf8');
+const platform = fs.readFileSync('js/core/platform/widget-adapter.js','utf8');
 
 for (const ext of ['pdf','docx','doc','xlsx','xls','csv','txt','ppt','pptx']) assert(viewer.includes(`'${ext}'`), `${ext} görüntüleyici kapsamından çıkmamalı.`);
 assert(viewer.includes('docx.renderAsync'), 'DOCX için docx-preview kullanılmalı.');
@@ -32,11 +33,15 @@ assert(viewer.includes('gap:18px'), 'PDF sayfaları arasında görünür ayrım 
 assert(viewer.includes('excelZoomUygula'), 'Excel zoom fallback yolu korunmalı.');
 assert(viewer.includes('excelSigdir'), 'Excel genişliğe sığdırma fallback yolu korunmalı.');
 assert(viewer.includes("cellStyles:true"), 'SheetJS XLS stil metadata yolu açık olmalı.');
-assert(viewer.includes('function pullToRefreshAyarla(enabled)'), 'Native pull-to-refresh kontrolü korunmalı.');
-assert(viewer.includes("p.setEnabled({enabled:!!enabled})"), 'PullToRefreshPlugin setEnabled kullanılmalı.');
+assert(viewer.includes('function pullToRefreshAyarla(enabled)'), 'Belge yenileme dokunma kontrolü korunmalı.');
+assert(viewer.includes('KorukPlatformAdapter?.setPullToRefreshEnabled?.'), 'Viewer native pull-to-refresh için merkezi platform adaptörünü kullanmalı.');
+assert(!viewer.includes('Capacitor'), 'Viewer modülü doğrudan native Capacitor API kullanmamalı.');
+assert(platform.includes("PullToRefreshPlugin"), 'Platform adaptörü PullToRefresh native capability sini sahiplenmeli.');
+assert(platform.includes('setPullToRefreshEnabled'), 'Platform adaptörü pull-to-refresh public API sunmalı.');
+assert(platform.includes("p.setEnabled({enabled:!!enabled})"), 'PullToRefreshPlugin setEnabled yalnız platform adaptöründe kullanılmalı.');
 assert(documents.includes("s.src='js/modules/document-viewer.js'"), 'Documents V2 görüntüleyiciyi doğrudan module path üzerinden lazy-load etmeli.');
 assert(!documents.includes('js/dokuman-okuyucu.js'), 'Emekli root viewer yolu geri dönmemeli.');
 assert(documents.includes("PermissionService?.can?.('documents.view','preview')"), 'Doküman açma merkezi documents.view yetkisine bağlı kalmalı.');
 assert(documents.includes('data-document-open'), 'Documents listesi uygulama içi açma eylemini kullanmalı.');
 assert(!documents.includes('js/xlsm-viewer-support.js'), 'Emekli XLSM yaması V2 zincirine geri dönmemeli.');
-console.log('Belge görüntüleyici V2 direct module smoke testleri başarılı.');
+console.log('Belge görüntüleyici V2 direct module + platform adapter smoke testleri başarılı.');
