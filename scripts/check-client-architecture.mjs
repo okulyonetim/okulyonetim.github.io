@@ -15,8 +15,8 @@ const debtFiles=files.filter(f=>debtName.test(path.basename(f)));
 const retiredLegacyRoots=['js/istatistikler.js','js/core/services/istatistik.service.js','js/cizelgeler.js','js/core/services/konum-giris.service.js','js/excel-visual-fidelity-v3.js'];
 const resurrectedLegacyRoots=retiredLegacyRoots.filter(p=>fs.existsSync(path.join(ROOT,p)));
 const styleInject=[],hiddenLoaders=[],optical=[];
-for(const f of files){const src=fs.readFileSync(f,'utf8');if(/createElement\(\s*['"]style['"]\s*\)/.test(src)||/createElement\([^)]*\)[\s\S]{0,180}text\/css/.test(src))styleInject.push(rel(f));if(/createElement\(\s*['"]script['"]\s*\)/.test(src)&&/\.src\s*=/.test(src)&&!rel(f).endsWith('app-loader.js'))hiddenLoaders.push(rel(f));if(/opencv|\bomr\b|optik[\/-]|optik okuyucu/i.test(src)||/optik|omr|opencv/i.test(path.basename(f)))optical.push(rel(f))}
-const STYLE_INJECTION_ALLOWLIST=new Set(['js/dokuman-okuyucu.js']);
+for(const f of files){const src=fs.readFileSync(f,'utf8');if(/createElement\(\s*['"]style['"]\s*\)|createElement\(\s*['"]link['"]\s*\)[\s\S]{0,240}rel\s*=\s*['"]stylesheet['"]/.test(src))styleInject.push(rel(f));if(/createElement\(\s*['"]script['"]\s*\)/.test(src)&&/\.src\s*=/.test(src)&&!rel(f).endsWith('app-loader.js'))hiddenLoaders.push(rel(f));if(/opencv|\bomr\b|optik[\/-]|optik okuyucu/i.test(src)||/optik|omr|opencv/i.test(path.basename(f)))optical.push(rel(f))}
+const STYLE_INJECTION_ALLOWLIST=new Set();
 const unexpectedStyleInject=styleInject.filter(f=>!STYLE_INJECTION_ALLOWLIST.has(f));
 const missingKnownStyleDebt=[...STYLE_INJECTION_ALLOWLIST].filter(f=>!styleInject.includes(f));
 
@@ -95,7 +95,7 @@ if(rulesOpticalUnsafe){console.error('Firestore oy_ uygulama ad alanı varsayıl
 if(stylesheetLinks.length!==1||stylesheetLinks[0]!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
 if(styleViolations.length){console.error('Ek stylesheet ihlali:',styleViolations.join(', '));failed=true}
 if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içermemeli.');failed=true}
-if(unexpectedStyleInject.length){console.error('Yeni JS style enjeksiyonu yasak; css/design-system.css kullanılmalı:',unexpectedStyleInject.join(', '));failed=true}
+if(unexpectedStyleInject.length){console.error('JS runtime stil/stylesheet enjeksiyonu yasak; css/design-system.css kullanılmalı:',unexpectedStyleInject.join(', '));failed=true}
 if(missingThemeTokens.length){console.error('Eksik merkezi tema değişkenleri:',missingThemeTokens.join(', '));failed=true}
 if(missingShellClasses.length){console.error('Eksik merkezi shell componentleri:',missingShellClasses.join(', '));failed=true}
 if(missingPermissionRequirements.length){console.error('Eksik merkezi rol/yetki sözleşmesi:',missingPermissionRequirements.join(', '));failed=true}
