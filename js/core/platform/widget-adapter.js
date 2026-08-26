@@ -11,6 +11,8 @@ const user=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{
 const teacherId=()=>user().bagliOgretmenId||user().ogretmenId||'';
 const native=()=>{try{return !!global.Capacitor?.isNativePlatform?.()}catch(_){return false}};
 function plugin(){if(!native())return null;try{return global.Capacitor?.Plugins?.WidgetPlugin||global.Capacitor?.registerPlugin?.('WidgetPlugin')||null}catch(_){return null}}
+function pullToRefreshPlugin(){if(!native())return null;try{return global.Capacitor?.Plugins?.PullToRefreshPlugin||global.Capacitor?.registerPlugin?.('PullToRefreshPlugin')||null}catch(_){return null}}
+async function setPullToRefreshEnabled(enabled){const p=pullToRefreshPlugin();if(!p||typeof p.setEnabled!=='function')return false;try{await p.setEnabled({enabled:!!enabled});return true}catch(e){console.warn('[PlatformAdapter/PullToRefresh]',e?.message||e);return false}}
 const iso=()=>new Date().toISOString().slice(0,10);
 const gun=()=>['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'][new Date().getDay()];
 function ogretmenAdi(id){const o=data('ogretmenler').find(x=>x.id===id);return o?`${o.ad||''} ${o.soyad||''}`.trim():(id||'?')}
@@ -46,6 +48,7 @@ async function update(){
 }
 function schedule(ms=250){clearTimeout(timer);timer=setTimeout(update,ms)}
 function bind(){if(!native())return false;['data.dersProgrami','data.hatirlaticilar','data.notlar','data.nobetAtamalari','data.nobetYerleri','data.haberler','data.ogretmenler','data.dersSaatleri','data.okulBilgileri'].forEach(path=>{const off=global.AppStore?.subscribe?.(path,()=>schedule());if(off)unsubs.push(off)});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')schedule(100)});global.addEventListener('koruk:app-ready',()=>schedule(50));schedule(500);return true}
+global.KorukPlatformAdapter={...(global.KorukPlatformAdapter||{}),isNative:native,setPullToRefreshEnabled};
 global.KorukWidgetAdapter={prepare,update,schedule,bind,zilVerisi};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })(window);
