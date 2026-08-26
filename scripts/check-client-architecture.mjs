@@ -73,13 +73,14 @@ const moduleFiles=files.filter(f=>rel(f).startsWith('js/modules/'));
 const nativeApiViolations=[];
 for(const f of moduleFiles){const r=rel(f);if(r==='js/modules/report-engine.js')continue;const src=fs.readFileSync(f,'utf8');if(/Capacitor\?*\.|PrintPlugin|Filesystem|Browser\.|StatusBar\.|Keyboard\./.test(src))nativeApiViolations.push(r)}
 const safeAreaReady=/env\(safe-area-inset-(?:top|right|bottom|left)/.test(designSource)&&['--ka-safe-top','--ka-safe-right','--ka-safe-bottom','--ka-safe-left'].every(t=>designSource.includes(t));
+const browserPrintFallback=(reportEngineSource.includes("global.open(url,'_blank')")&&reportEngineSource.includes('win.print()'))||(reportEngineSource.includes("document.createElement('iframe')")&&reportEngineSource.includes('contentWindow?.print()'));
 const platformRequirements=[
   ['dinamik viewport birimi',/\d+(?:\.\d+)?dvh\b/.test(designSource)],
   ['iOS metin ölçekleme koruması',/-webkit-text-size-adjust\s*:\s*100%/.test(designSource)],
   ['dokunmatik hedef en az 44px',/--ka-control-height\s*:\s*44px/.test(designSource)],
   ['iOS safe-area tokenları',safeAreaReady],
   ['native platform capability detection',reportEngineSource.includes('Capacitor?.isNativePlatform?.()')],
-  ['native yazdırma için browser fallback',reportEngineSource.includes("global.open(url,'_blank')")&&reportEngineSource.includes('win.print()')],
+  ['native yazdırma için browser fallback',browserPrintFallback],
   ['rapor CSS tek kaynaktan',reportEngineSource.includes("new URL('css/design-system.css'")]
 ];
 const missingPlatformRequirements=platformRequirements.filter(([,ok])=>!ok).map(([name])=>name);
