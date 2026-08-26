@@ -54,7 +54,8 @@ assert(source.management.includes('batchYeriSil')&&source.management.includes('b
 assert(source.academic.includes('storage.ref()'),'Academic binary dosyası Storage üzerinden yönetilmeli.');
 assert(source.documents.includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
 assert(source.communication.includes('storage.ref()'),'Communication binary dosyaları Storage üzerinden yönetilmeli.');
-assert(source.documents.includes("s.src='js/dokuman-okuyucu.js'"),'Belge görüntüleyici yalnız dosya açılırken lazy-load edilmeli.');
+assert(source.documents.includes("s.src='js/modules/document-viewer.js'"),'Belge görüntüleyici yalnız dosya açılırken doğrudan module path üzerinden lazy-load edilmeli.');
+assert(!source.documents.includes('js/dokuman-okuyucu.js'),'Emekli root belge görüntüleyici yolu geri dönmemeli.');
 assert(source.documents.includes('data-document-open'),'Documents UI dış sekme yerine kontrollü görüntüleme eylemi kullanmalı.');
 assert(source.documents.includes("PermissionService?.can?.('documents.view','preview')"),'Belge açma documents.view iznine bağlı kalmalı.');
 assert(source.documents.includes('viewer?.destekliMi?.'),'Desteklenen belge türleri uygulama içi görüntüleyiciye yönlenmeli.');
