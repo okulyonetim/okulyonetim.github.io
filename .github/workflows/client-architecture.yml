@@ -12,6 +12,7 @@ on:
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
+      - 'tests/modules-local-first-boundary.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
@@ -42,6 +43,7 @@ on:
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
+      - 'tests/modules-local-first-boundary.test.js'
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
@@ -78,6 +80,8 @@ jobs:
         run: node scripts/build-client-bundles.mjs
       - name: Verify module bundle contracts
         run: node tests/module-bundles-smoke.test.js
+      - name: Enforce V2 module local-first boundary
+        run: node tests/modules-local-first-boundary.test.js
       - name: Verify service worker shell
         run: node tests/service-worker-precache-smoke.test.js
       - name: Verify Android iOS web responsive shell
