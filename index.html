@@ -25,6 +25,7 @@
   <script src="js/core/shell-ui.js" defer></script>
   <script src="js/modules/school-live-status.js" defer></script>
   <script src="js/modules/report-engine.js" defer></script>
+  <script src="js/modules/student-pages.js" defer></script>
   <script src="js/modules/payroll-change.js" defer></script>
   <script src="js/modules/assistant.js" defer></script>
   <script src="js/modules/legislation.js" defer></script>
@@ -93,8 +94,15 @@
     const button=event.target.closest?.('#kaMenuLayer [data-ka-menu-route]');
     if(!button)return;
     const route=button.dataset.kaMenuRoute||'';
-    const page=button.dataset.kaMenuPage||'';
+    let page=button.dataset.kaMenuPage||'';
     const title=button.dataset.kaMenuTitle||'';
+    const migratedPages={
+      'Öğrenci Yoklama':'attendance',
+      'Öğrenci Listesi Oluşturucu':'student-list',
+      'Ödev Takip Çizelgesi':'homework',
+      'Not Çizelgesi':'grades'
+    };
+    page=migratedPages[title]||page;
     if(!route)return;
     event.preventDefault();
     event.stopPropagation();
@@ -102,7 +110,9 @@
     button.disabled=true;
     setTimeout(()=>{
       const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});
-      Promise.resolve(task).catch(error=>{
+      Promise.resolve(task).then(()=>{
+        if(migratedPages[title])return window.StudentPages?.open?.(page,title);
+      }).catch(error=>{
         console.error('[Shell/menu-route]',error);
         window.toast?.('Sayfa açılamadı.');
         button.disabled=false;
