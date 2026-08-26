@@ -21,6 +21,7 @@
   <script src="js/firebase-init.js" defer></script>
   <script src="js/core/core.js" defer></script>
   <script src="js/core/platform/widget-adapter.js" defer></script>
+  <script src="js/core/shell-ui.js" defer></script>
   <script src="js/modules/report-engine.js" defer></script>
   <script src="js/modules/payroll-change.js" defer></script>
   <script src="js/modules/assistant.js" defer></script>
@@ -33,21 +34,12 @@
 </head>
 <body>
   <section id="configWarning" class="ka-page ka-stack ka-hidden" role="alert">
-    <div class="ka-card">
-      <div class="ka-card__header"><h2>Bağlantı yapılandırması açılamadı</h2></div>
-      <div class="ka-card__body"><p class="ka-muted">Firebase başlatılamadı. Yapılandırma ve bağlantı bilgileri kontrol edilmelidir.</p></div>
-    </div>
+    <div class="ka-card"><div class="ka-card__header"><h2>Bağlantı yapılandırması açılamadı</h2></div><div class="ka-card__body"><p class="ka-muted">Firebase başlatılamadı. Yapılandırma ve bağlantı bilgileri kontrol edilmelidir.</p></div></div>
   </section>
 
   <section id="girisEkrani" class="ka-login-page">
     <div class="ka-login-card ka-card">
-      <div class="ka-login-brand">
-        <img src="assets/icon-192.png" width="72" height="72" alt="Koruk İlk-Ortaokulu">
-        <div>
-          <h1>Koruk Asistan</h1>
-          <p class="ka-muted">Koruk İlk-Ortaokulu</p>
-        </div>
-      </div>
+      <div class="ka-login-brand"><img src="assets/icon-192.png" width="72" height="72" alt="Koruk İlk-Ortaokulu"><div><h1>Koruk Asistan</h1><p class="ka-muted">Koruk İlk-Ortaokulu</p></div></div>
       <form class="ka-card__body ka-stack" onsubmit="girisFormGonder(event)">
         <p class="ka-muted">Devam etmek için kullanıcı adı ve şifrenizle giriş yapın.</p>
         <label class="ka-field"><span class="ka-field__label">Kullanıcı Adı</span><input id="girisKullaniciAdi" autocomplete="username" required></label>
@@ -59,48 +51,37 @@
   </section>
 
   <section id="onayBekleniyorEkrani" class="ka-login-page ka-hidden" hidden>
-    <div class="ka-login-card ka-card">
-      <div class="ka-card__header"><h2>Hesap Onayı Bekleniyor</h2></div>
-      <div class="ka-card__body ka-stack">
-        <p id="onayBekleniyorMetin" class="ka-muted">Hesabınız için yönetici onayı bekleniyor.</p>
-        <button class="ka-btn ka-btn--secondary" type="button" onclick="cikisYap()">Çıkış Yap</button>
-      </div>
-    </div>
+    <div class="ka-login-card ka-card"><div class="ka-card__header"><h2>Hesap Onayı Bekleniyor</h2></div><div class="ka-card__body ka-stack"><p id="onayBekleniyorMetin" class="ka-muted">Hesabınız için yönetici onayı bekleniyor.</p><button class="ka-btn ka-btn--secondary" type="button" onclick="cikisYap()">Çıkış Yap</button></div></div>
   </section>
 
   <main id="app" class="ka-app-shell" hidden>
     <header class="ka-app-header">
-      <div class="ka-brand-home" data-ka-home-trigger>
+      <button class="ka-brand-home" type="button" data-ka-home-trigger aria-label="Ana sayfaya git">
         <img class="ka-school-logo" src="assets/icon-192.png" width="42" height="42" alt="Koruk İlk-Ortaokulu">
-        <div class="ka-app-brand ka-grow">
-          <strong>KORUK İLK-ORTAOKULU</strong>
-          <span>Koruk Asistan</span>
-        </div>
-      </div>
+        <span class="ka-app-brand"><strong>KORUK İLK-ORTAOKULU</strong><small>Koruk Asistan</small></span>
+      </button>
       <div class="ka-header-actions">
+        <span class="ka-weather-chip" data-ka-weather hidden>Elazığ · —°</span>
         <span id="v2SyncStatus" class="ka-sync-dot" title="Senkron durumu" aria-label="Senkron durumu"></span>
-        <button class="ka-btn ka-btn--ghost ka-btn--icon" type="button" data-ka-theme-toggle aria-label="Açık/koyu tema">🌙</button>
+        <button class="ka-icon-button" type="button" data-ka-theme-toggle aria-label="Açık/koyu tema">🌙</button>
+        <button class="ka-header-profile" type="button" data-ka-header-profile aria-label="Profilim">K</button>
       </div>
     </header>
 
     <section class="ka-app-content">
-      <div class="ka-module-heading">
-        <h2 id="v2ModuleTitle">Ana Sayfa</h2>
-      </div>
+      <div class="ka-module-heading ka-hidden" aria-hidden="true"><h2 id="v2ModuleTitle">Ana Sayfa</h2></div>
       <p id="v2ModuleStatus" class="ka-hidden" aria-hidden="true"></p>
       <div id="v2ModuleRoot"></div>
     </section>
 
-    <nav class="ka-app-nav" aria-label="Uygulama bölümleri">
-      <button class="ka-nav-item active" type="button" data-ka-module="dashboard"><span class="ka-nav-icon">⌂</span><span>Ana Sayfa</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="people"><span class="ka-nav-icon">👥</span><span>Kişiler</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="academic"><span class="ka-nav-icon">📚</span><span>Akademik</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="management"><span class="ka-nav-icon">🗂️</span><span>Yönetim</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="communication"><span class="ka-nav-icon">💬</span><span>İletişim</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="transport"><span class="ka-nav-icon">🚌</span><span>Taşıma</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="documents"><span class="ka-nav-icon">📄</span><span>Doküman</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="tools"><span class="ka-nav-icon">🧰</span><span>Araçlar</span></button>
-      <button class="ka-nav-item" type="button" data-ka-module="settings"><span class="ka-nav-icon">⚙️</span><span>Ayarlar</span></button>
+    <section id="kaMenuLayer" class="ka-menu-layer" hidden aria-label="Menü"></section>
+
+    <nav class="ka-app-nav ka-bottom-nav" aria-label="Alt navigasyon">
+      <button class="ka-bottom-item active" type="button" data-ka-shell-action="home" aria-current="page"><span class="ka-bottom-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><span>Ana Sayfa</span></button>
+      <button class="ka-bottom-item" type="button" data-ka-shell-action="profile"><span class="ka-bottom-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Profilim</span></button>
+      <button class="ka-bottom-item ka-bottom-menu" type="button" data-ka-shell-action="menu"><span class="ka-bottom-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span>Menü</span></button>
+      <button class="ka-bottom-item" type="button" data-ka-shell-action="search"><span class="ka-bottom-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Arama</span></button>
+      <button class="ka-bottom-item" type="button" data-ka-shell-action="note"><span class="ka-bottom-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Hızlı Not</span></button>
     </nav>
   </main>
 </body>
