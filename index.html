@@ -95,11 +95,25 @@
     let page=button.dataset.kaMenuPage||'';
     const title=button.dataset.kaMenuTitle||'';
     const migratedPages={'Öğrenci Yoklama':'attendance','Öğrenci Listesi Oluşturucu':'student-list','Ödev Takip Çizelgesi':'homework','Not Çizelgesi':'grades'};
-    page=migratedPages[title]||page;
+    const managementPages={'Personeller':'staff','Aylık İşler':'tasks','Nöbet Programı':'duty','Puantaj & İmza Sirküsü':'puantaj','Dilekçe & İzinler':'dilekce'};
+    page=migratedPages[title]||managementPages[title]||page;
     if(migratedPages[title])route='tools';
+    if(managementPages[title])route='management';
     if(!route)return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
-    setTimeout(()=>{const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});Promise.resolve(task).then(()=>{if(migratedPages[title])return window.StudentPages?.open?.(page,title)}).catch(error=>{console.error('[Shell/menu-route]',error);window.toast?.('Sayfa açılamadı.');button.disabled=false})},0);
+    setTimeout(()=>{
+      const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});
+      Promise.resolve(task).then(()=>{
+        if(migratedPages[title])return window.StudentPages?.open?.(page,title);
+        if(managementPages[title]){
+          requestAnimationFrame(()=>{
+            const root=document.getElementById('v2ModuleRoot'),tab=root?.querySelector(`[data-management-tab="${page}"]`);
+            if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
+            const heading=root?.querySelector('[data-management-module] > .ka-row h2');if(heading)heading.textContent=title;
+          });
+        }
+      }).catch(error=>{console.error('[Shell/menu-route]',error);window.toast?.('Sayfa açılamadı.');button.disabled=false});
+    },0);
   },true);
   </script>
 </body>
