@@ -27,6 +27,7 @@ on:
       - 'tests/legislation-engine-v2-smoke.test.js'
       - 'tests/map-consolidation-smoke.test.js'
       - 'tests/rubric-tools-v2-smoke.test.js'
+      - 'tests/rubric-settings-v2-smoke.test.js'
       - 'tests/pwa-push-smoke.test.js'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
@@ -55,6 +56,7 @@ on:
       - 'tests/legislation-engine-v2-smoke.test.js'
       - 'tests/map-consolidation-smoke.test.js'
       - 'tests/rubric-tools-v2-smoke.test.js'
+      - 'tests/rubric-settings-v2-smoke.test.js'
       - 'tests/pwa-push-smoke.test.js'
       - 'package.json'
 
@@ -104,6 +106,8 @@ jobs:
         run: node tests/map-consolidation-smoke.test.js
       - name: Verify rubric/project Tools bridge
         run: node tests/rubric-tools-v2-smoke.test.js
+      - name: Verify local-first rubric settings
+        run: node tests/rubric-settings-v2-smoke.test.js
       - name: Verify PWA background push
         run: node tests/pwa-push-smoke.test.js
       - name: Audit client architecture
