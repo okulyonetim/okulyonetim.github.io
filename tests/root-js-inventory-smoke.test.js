@@ -8,7 +8,6 @@ const allowed=[
   'firebase-init.js',
   'harita.js',
   'kriter-dagitim.js',
-  'map-libs.js',
   'proje-degerlendirme.js'
 ].sort();
 
