@@ -32,6 +32,7 @@ assert(service.includes('uygulamaDosyaKaydet'),'Android Excel dışa aktarma ort
 assert(service.includes('wb.xlsx.writeBuffer()'),'Excel çalışma kitabı istemci tarafında üretilmeli.');
 assert(service.includes('Math.round(widthFor(c.key)/7)'),'Excel çıktısı kaydedilmiş sütun genişliğini kullanmalı.');
 assert(firebase.includes("ogretmenListeSablon:'oy_ogretmenListeSablon'")&&firebase.includes("ogretmenListeKayit:'oy_ogretmenListeKayit'"),'Merkezi COL haritası öğretmen liste koleksiyonlarını korumalı.');
-assert(loader.includes("define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/harita.js'])"),'Tools loader öğretmen liste servisini lazy-load etmeli.');
+assert(loader.includes("define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js'])"),'Tools loader öğretmen liste servisini ve harita modülünü lazy-load etmeli.');
+assert(!loader.includes("'js/harita.js'"),'Emekli root harita yolu Tools loader a geri dönmemeli.');
 assert(build.includes("'tools.js':['js/modules/tools.js','js/modules/teacher-list.js']"),'Production tools bundle öğretmen liste servisini içermeli.');
 console.log('Öğretmen liste local-first servis + V2 editör + sütun/çıktı sözleşmesi başarılı.');
