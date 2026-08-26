@@ -19,18 +19,24 @@ function schoolDoc(){
 async function personalGet(kind){
  const d=def(kind),u=uid();if(!u)return null;
  const key='rubric-settings:'+kind;
+ const migratedKey=key+':legacy-migrated';
  const saved=await global.KorukLocalFirst?.meta?.(u,key);
  if(saved)return clone(saved);
- // Tek seferlik legacy localStorage migration. Bundan sonra kaynak IndexedDB'dir.
+ const migrated=await global.KorukLocalFirst?.meta?.(u,migratedKey);
+ if(migrated===true)return null;
+ // Legacy localStorage yalnız ilk erişimde migration kaynağıdır; sonrasında IndexedDB tek kaynaktır.
  try{
    const raw=global.localStorage?.getItem?.(d.local);
-   if(raw){const value=JSON.parse(raw);await global.KorukLocalFirst?.meta?.(u,key,value);return clone(value);}
+   if(raw){const value=JSON.parse(raw);await global.KorukLocalFirst?.meta?.(u,key,value);await global.KorukLocalFirst?.meta?.(u,migratedKey,true);return clone(value);}
  }catch(e){console.warn('[RubricSettings/migrate]',kind,e?.message||e);}
+ await global.KorukLocalFirst?.meta?.(u,migratedKey,true);
  return null;
 }
 async function personalSet(kind,value){
  const u=uid();if(!u)throw new Error('girissiz');def(kind);
- await global.KorukLocalFirst.meta(u,'rubric-settings:'+kind,clone(value));
+ const key='rubric-settings:'+kind;
+ await global.KorukLocalFirst.meta(u,key,clone(value));
+ await global.KorukLocalFirst.meta(u,key+':legacy-migrated',true);
  global.dispatchEvent(new CustomEvent('koruk:rubric-settings-changed',{detail:{kind,scope:'personal'}}));
  return clone(value);
 }
@@ -47,6 +53,6 @@ async function schoolSet(kind,value){
  return clone(value);
 }
 async function resolve(kind,fallback){return clone((await personalGet(kind))||schoolGet(kind)||fallback);}
-async function clearPersonal(kind){const u=uid();if(!u)return;def(kind);await global.KorukLocalFirst.meta(u,'rubric-settings:'+kind,null);global.dispatchEvent(new CustomEvent('koruk:rubric-settings-changed',{detail:{kind,scope:'personal-clear'}}));}
+async function clearPersonal(kind){const u=uid();if(!u)return;def(kind);const key='rubric-settings:'+kind;await global.KorukLocalFirst.meta(u,key,null);await global.KorukLocalFirst.meta(u,key+':legacy-migrated',true);global.dispatchEvent(new CustomEvent('koruk:rubric-settings-changed',{detail:{kind,scope:'personal-clear'}}));}
 global.RubricSettingsService={KINDS:Object.freeze(clone(KINDS)),personalGet,personalSet,schoolGet,schoolSet,resolve,clearPersonal};
 })(window);
