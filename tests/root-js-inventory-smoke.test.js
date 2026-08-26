@@ -6,9 +6,7 @@ const allowed=[
   'auth.js',
   'dokuman-okuyucu.js',
   'firebase-init.js',
-  'harita.js',
-  'kriter-dagitim.js',
-  'proje-degerlendirme.js'
+  'harita.js'
 ].sort();
 
 const actual=fs.readdirSync('js',{withFileTypes:true})
