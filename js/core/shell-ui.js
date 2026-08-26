@@ -9,24 +9,9 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
-const SVG={
- home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
- profile:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
- menu:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
- search:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
- note:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
- close:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
-};
-const MENU=[
- {key:'people',label:'Öğretmen & Öğrenciler',icon:'👥',tone:'green'},
- {key:'academic',label:'Akademik İşlemler',icon:'📚',tone:'violet'},
- {key:'management',label:'Yönetim İşlemleri',icon:'🗂️',tone:'orange'},
- {key:'communication',label:'İletişim',icon:'💬',tone:'cyan'},
- {key:'transport',label:'Taşımalı Eğitim',icon:'🚌',tone:'amber'},
- {key:'documents',label:'Doküman & Rapor',icon:'📄',tone:'red'},
- {key:'tools',label:'Araçlar',icon:'🧰',tone:'purple'},
- {key:'settings',label:'Sistem & Ayarlar',icon:'⚙️',tone:'slate'}
-];
+const SVG={home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',profile:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',menu:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',search:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',note:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',close:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'};
+const MENU=[{key:'people',label:'Öğretmen & Öğrenciler',icon:'👥',tone:'green'},{key:'academic',label:'Akademik İşlemler',icon:'📚',tone:'violet'},{key:'management',label:'Yönetim İşlemleri',icon:'🗂️',tone:'orange'},{key:'communication',label:'İletişim',icon:'💬',tone:'cyan'},{key:'transport',label:'Taşımalı Eğitim',icon:'🚌',tone:'amber'},{key:'documents',label:'Doküman & Rapor',icon:'📄',tone:'red'},{key:'tools',label:'Araçlar',icon:'🧰',tone:'purple'},{key:'settings',label:'Sistem & Ayarlar',icon:'⚙️',tone:'slate'}];
+const DASHBOARD_ROUTES={announcements:'communication',news:'communication',stats:'people',duty:'management',upcoming:'communication',lessons:'academic','week-duty':'management',exams:'academic',schedule:'academic',notes:'communication',calendar:'communication'};
 let activeAction='home';
 function setTitle(v){const el=$('#v2ModuleTitle');if(el)el.textContent=v||''}
 function setBottomActive(action){activeAction=action;$$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
@@ -46,8 +31,9 @@ function openQuickNote(){closeMenu();setBottomActive('note');closeQuickNote();co
 function home(){closeMenu();setBottomActive('home');return routeModule('dashboard',{bottom:'home'})}
 function bindHeader(){document.querySelector('[data-ka-home-trigger]')?.addEventListener('click',home);document.querySelector('[data-ka-header-profile]')?.addEventListener('click',renderProfile)}
 function bindBottom(){$$('[data-ka-shell-action]').forEach(btn=>btn.addEventListener('click',()=>{const a=btn.dataset.kaShellAction;if(a==='home')home();else if(a==='profile')renderProfile();else if(a==='menu')openMenu();else if(a==='search')renderSearch();else if(a==='note')openQuickNote()}))}
+function bindDashboardCards(){document.addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea,label'))return;const hero=e.target.closest('.ka-home-hero');if(hero){routeModule('academic',{bottom:'menu'});return}const card=e.target.closest('[data-home-section]');if(!card)return;const target=DASHBOARD_ROUTES[card.dataset.homeSection];if(target)routeModule(target,{bottom:'menu'});});}
 function hydrateHeader(){const u=user(),profile=$('[data-ka-header-profile]');if(profile){const n=profileName(u),initials=n.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr');profile.textContent=initials||'K';profile.setAttribute('aria-label',`${n} profili`)}}
-function init(){bindHeader();bindBottom();hydrateHeader();window.addEventListener('koruk:app-ready',hydrateHeader);window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden)renderMenu()});global.AppStore?.subscribe?.('session.user',hydrateHeader)}
-global.ShellUI={init,home,openMenu,closeMenu,routeModule,renderProfile,renderSearch,openQuickNote};
+function init(){bindHeader();bindBottom();bindDashboardCards();hydrateHeader();window.addEventListener('koruk:app-ready',hydrateHeader);window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden)renderMenu()});global.AppStore?.subscribe?.('session.user',hydrateHeader)}
+global.ShellUI={init,home,openMenu,closeMenu,routeModule,renderProfile,renderSearch,openQuickNote,DASHBOARD_ROUTES};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);
