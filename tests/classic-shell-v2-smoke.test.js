@@ -16,6 +16,6 @@ assert(ui.includes("DeviceData?.add?.('notlar',global.COL?.notlar"),'Hızlı Not
 assert(!ui.includes('db.collection('),'Shell UI doğrudan Firestore kullanmamalı.');
 assert(!ui.includes('localStorage.setItem('),'Shell UI kalıcı veriyi localStorage ile yazmamalı.');
 for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note']) assert(design.includes(selector),`Merkezi design system shell selectorünü taşımalı: ${selector}`);
-assert(design.includes('grid-template-columns: repeat(5,minmax(0,1fr))'),'Alt navigasyon beş eşit bölümlü olmalı.');
-assert(design.includes('grid-template-columns: repeat(2,minmax(0,1fr))'),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
+assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
+assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
 console.log('Classic UX + V2 mimari shell sözleşmesi başarılı.');
