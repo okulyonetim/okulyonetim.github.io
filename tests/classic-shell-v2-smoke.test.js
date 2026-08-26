@@ -3,9 +3,12 @@ const assert=require('assert');
 const shell=fs.readFileSync('index.html','utf8');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const dashboard=fs.readFileSync('js/modules/dashboard.js','utf8');
+const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
+assert(shell.includes('js/modules/school-live-status.js'),'Canlı zil/hava V2 runtime production shell içinde bulunmalı.');
 for(const action of ['home','profile','menu','search','note']) assert(shell.includes(`data-ka-shell-action="${action}"`),`Alt navigasyon eylemi eksik: ${action}`);
 assert((shell.match(/data-ka-shell-action=/g)||[]).length===5,'Mobil alt navigasyon tam 5 ana eylemden oluşmalı.');
 assert(shell.includes('ka-bottom-menu-icon'),'Ortadaki Menü düğmesi ayrı yükseltilmiş sunuma sahip olmalı.');
@@ -14,6 +17,7 @@ assert(!shell.includes('IndexedDB verileri ekrana alınır'),'Teknik local-first
 assert(!shell.includes('data-ka-module="people"'),'Dokuz modüllü eski teknik alt navigasyon geri dönmemeli.');
 assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
+for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
 for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\"]${route}['\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
 assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-menu-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı.');
 assert(!ui.includes('Optik Okuma (OMR)')&&!ui.includes("key:'optik'"),'Optik okuyucu yeni Menü mimarisine dönmemeli.');
@@ -26,7 +30,20 @@ assert(ui.includes("classList.toggle('ka-hidden',el.hidden)"),'Hidden ekranlar C
 assert(ui.includes("DeviceData?.add?.('notlar',global.COL?.notlar"),'Hızlı Not kalıcı yazımı DeviceData üzerinden yapılmalı.');
 assert(!ui.includes('db.collection('),'Shell UI doğrudan Firestore kullanmamalı.');
 assert(!ui.includes('localStorage.setItem('),'Shell UI kalıcı veriyi localStorage ile yazmamalı.');
-for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note']) assert(design.includes(selector),`Merkezi design system shell selectorünü taşımalı: ${selector}`);
+
+assert(live.includes("AppStore?.data?.(t)"),'Canlı durum AppStore verisini okumalı.');
+assert(live.includes("SyncEngine.register('dersSaatleri',global.COL.dersSaatleri)"),'Ders saatleri mevcut gerçek koleksiyonla SyncEngine üzerinden bağlanmalı.');
+assert(live.includes("SyncEngine.localHydrate(['dersSaatleri'])"),'Zil sayacı önce cihazdaki ders saatlerini hydrate etmeli.');
+assert(live.includes('api.open-meteo.com'),'Hava durumu doğrulanmış Open-Meteo kaynağını kullanmalı.');
+assert(live.includes("KorukLocalFirst.meta(uid,'weatherSnapshot'"),'Hava durumu kısa süreli IndexedDB meta cache kullanmalı.');
+assert(!live.includes('db.collection('),'Canlı durum UI doğrudan Firestore kullanmamalı.');
+assert(!live.includes('localStorage.setItem('),'Canlı durum localStorage kalıcı depo yapmamalı.');
+assert(!live.includes('suankiDersDurumu(')&&!live.includes('sonHavaVerisi'),'Legacy zil/hava global bağımlılıkları V2 runtimea dönmemeli.');
+for(const mode of ["type:'lesson'","'lunch':'break'", "mode:'after'", "mode:'weekend'"]) assert(live.includes(mode),`Canlı zil durum sözleşmesi eksik: ${mode}`);
+assert(sw.includes('./js/modules/school-live-status.js'),'Canlı durum offline PWA shell içinde önbelleğe alınmalı.');
+
+for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note','.ka-home-live','.ka-live-weather']) assert(design.includes(selector),`Merkezi design system selectorü eksik: ${selector}`);
+for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
-console.log('Classic UX + rol bazlı V2 dashboard sözleşmesi başarılı.');
+console.log('Classic UX + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
