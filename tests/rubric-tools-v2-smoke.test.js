@@ -8,7 +8,7 @@ assert(index.includes('js/modules/rubric-tools.js'),'Rubric Tools V2 bridge prod
 for(const token of ["const ENGINE='js/modules/rubric-tools-v2-engine.js'","key:'rubric'","api:'KriterDagitimAraci'","key:'project'","api:'ProjeDegerlendirmeAraci'","global.AppLoader.loadScript(ENGINE)","b.dataset.rubricTool=def.key"]){
   assert(bridge.includes(token),`Rubric Tools V2 bridge sözleşmesi eksik: ${token}`);
 }
-for(const token of ["global.KorukRubricToolsV2={openRubric,openProject,scoreSplit,migrateRubric}","global.KriterDagitimAraci={ac()","global.ProjeDegerlendirmeAraci={ac()","RubricSettingsService","svc.personalSet(kind,full)","svc.schoolSet('rubric'","svc.schoolSet('project'","XLSX.read","uygulamaHtmlYazdir","class=\"ka-modal-backdrop\"","class=\"ka-card\""]){
+for(const token of ["global.KorukRubricToolsV2={openRubric,openProject,scoreSplit,migrateRubric}","global.KriterDagitimAraci={ac()","global.ProjeDegerlendirmeAraci={ac()","RubricSettingsService","svc.personalSet(kind,full)","svc.schoolSet('rubric'","svc.schoolSet('project'","XLSX.read","uygulamaHtmlYazdir","backdrop.className='ka-modal-backdrop'","class=\"ka-card\""]){
   assert(engine.includes(token),`Rubric Tools V2 engine sözleşmesi eksik: ${token}`);
 }
 assert(!engine.includes('db.collection(')&&!engine.includes('firebase.firestore'),'V2 engine doğrudan Firestore kullanmamalı.');
