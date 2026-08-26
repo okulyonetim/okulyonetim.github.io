@@ -3,7 +3,7 @@ const assert = require('assert');
 
 const index = fs.readFileSync('index.html','utf8');
 const main = fs.readFileSync('android/app/src/main/java/com/koruk/okul/MainActivity.java','utf8');
-const viewer = fs.readFileSync('js/dokuman-okuyucu.js','utf8');
+const viewer = fs.readFileSync('js/modules/document-viewer.js','utf8');
 const plan = fs.readFileSync('js/yillik-plan.js','utf8');
 
 assert(index.includes('maximum-scale=1.0'), 'Global viewport maksimum ölçeği 1 olmalı.');
