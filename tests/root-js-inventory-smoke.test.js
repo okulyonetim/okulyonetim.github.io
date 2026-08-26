@@ -13,8 +13,7 @@ const allowed=[
   'map-libs.js',
   'mevzuat-asistan.js',
   'proje-degerlendirme.js',
-  'teblig-tebellug.js',
-  'widget-bridge.js'
+  'teblig-tebellug.js'
 ].sort();
 
 const actual=fs.readdirSync('js',{withFileTypes:true})
