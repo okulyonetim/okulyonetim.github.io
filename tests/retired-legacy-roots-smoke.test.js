@@ -10,6 +10,7 @@ const retired=[
   'js/excel-import.js',
   'js/dokuman-pdf-tools.js',
   'js/dokuman-okuyucu.js',
+  'js/harita.js',
   'js/raporlama.js',
   'js/ozellik-katalogu.js',
   'js/pdf-export-libs.js',
