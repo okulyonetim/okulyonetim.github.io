@@ -18,5 +18,5 @@ assert(viewer.includes('window.DokumanOkuyucu={'),'Görüntüleyici tek DokumanO
 assert(viewer.includes('function pullToRefreshAyarla(enabled)'),'Native pull-to-refresh capability fallback korunmalı.');
 assert(!/createElement\(\s*['"]style['"]\s*\)/.test(viewer),'Belge görüntüleyici runtime <style> üretmemeli.');
 assert(!viewer.includes('function style(){'),'Eski viewer style() katmanı geri dönmemeli.');
-for(const selector of ['.dv3 {','.dv3h {','.dv3body {','.dv3pdfpage {','.dv3wordviewport {','.dv3sheet {']) assert(design.includes(selector),`Belge görüntüleyici stili design-system.css içinde olmalı: ${selector}`);
+for(const selector of ['dv3','dv3h','dv3body','dv3pdfpage','dv3wordviewport','dv3sheet']) assert(new RegExp(`\\.${selector}\\s*\\{`).test(design),`Belge görüntüleyici stili design-system.css içinde olmalı: .${selector}`);
 console.log('Documents V2 doğrudan module viewer + merkezi tasarım sözleşmesi başarılı.');
