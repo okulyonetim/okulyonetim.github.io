@@ -16,6 +16,7 @@ on:
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/classic-shell-v2-smoke.test.js'
+      - 'tests/classic-people-v2-smoke.test.js'
       - 'tests/dashboard-card-routes-smoke.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
@@ -50,6 +51,7 @@ on:
       - 'tests/service-worker-precache-smoke.test.js'
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/classic-shell-v2-smoke.test.js'
+      - 'tests/classic-people-v2-smoke.test.js'
       - 'tests/dashboard-card-routes-smoke.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
@@ -94,6 +96,8 @@ jobs:
         run: node tests/web-mobile-engine-separation.test.js
       - name: Verify rebuilt classic shell
         run: node tests/classic-shell-v2-smoke.test.js
+      - name: Verify classic People layouts
+        run: node tests/classic-people-v2-smoke.test.js
       - name: Verify dashboard card routes
         run: node tests/dashboard-card-routes-smoke.test.js
       - name: Verify report A4 preview and print
