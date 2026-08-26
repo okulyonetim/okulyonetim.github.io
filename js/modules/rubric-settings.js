@@ -10,6 +10,11 @@ const KINDS={rubric:{local:'krtDagitimAyarlari',field:'kriterDagitimAyari'},proj
 const clone=v=>v==null?v:JSON.parse(JSON.stringify(v));
 const uid=()=>global.AKTIF_KULLANICI?.uid||global.AppStore?.get?.('session.user')?.uid||'';
 function def(kind){const d=KINDS[kind];if(!d)throw new Error('rubric-kind-gecersiz:'+kind);return d;}
+async function ensureSchoolCache(){
+ if(!global.SyncEngine||!global.COL?.okulBilgileri)return;
+ global.SyncEngine.register('okulBilgileri',global.COL.okulBilgileri);
+ if(uid())await global.SyncEngine.localHydrate(['okulBilgileri']);
+}
 function schoolDoc(){
  const rows=global.AppStore?.data?.('okulBilgileri');
  const row=Array.isArray(rows)?rows.find(x=>x?.id==='ayarlar'):null;
@@ -45,6 +50,7 @@ async function schoolSet(kind,value){
  const d=def(kind),u=global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};
  if(u.admin!==true)throw Object.assign(new Error('yetkisiz'),{code:'permission-denied'});
  if(!global.DeviceData||!global.COL?.okulBilgileri)throw new Error('DeviceData/okulBilgileri hazır değil.');
+ await ensureSchoolCache();
  const current=schoolDoc();
  const next={...current,[d.field]:clone(value),id:'ayarlar',guncellenmeTarihi:new Date().toISOString()};
  await global.DeviceData.set('okulBilgileri',global.COL.okulBilgileri,'ayarlar',next,{merge:true});
@@ -52,7 +58,8 @@ async function schoolSet(kind,value){
  global.dispatchEvent(new CustomEvent('koruk:rubric-settings-changed',{detail:{kind,scope:'school'}}));
  return clone(value);
 }
-async function resolve(kind,fallback){return clone((await personalGet(kind))||schoolGet(kind)||fallback);}
+async function resolve(kind,fallback){await ensureSchoolCache();return clone((await personalGet(kind))||schoolGet(kind)||fallback);}
 async function clearPersonal(kind){const u=uid();if(!u)return;def(kind);const key='rubric-settings:'+kind;await global.KorukLocalFirst.meta(u,key,null);await global.KorukLocalFirst.meta(u,key+':legacy-migrated',true);global.dispatchEvent(new CustomEvent('koruk:rubric-settings-changed',{detail:{kind,scope:'personal-clear'}}));}
+try{global.SyncEngine?.register?.('okulBilgileri',global.COL?.okulBilgileri);}catch(_){}
 global.RubricSettingsService={KINDS:Object.freeze(clone(KINDS)),personalGet,personalSet,schoolGet,schoolSet,resolve,clearPersonal};
 })(window);
