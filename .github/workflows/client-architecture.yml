@@ -23,6 +23,7 @@ on:
       - 'tests/teblig-v2-smoke.test.js'
       - 'tests/documents-viewer-v2-smoke.test.js'
       - 'tests/payroll-change-v2-smoke.test.js'
+      - 'tests/assistant-v2-smoke.test.js'
       - 'tests/pwa-push-smoke.test.js'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
@@ -47,6 +48,7 @@ on:
       - 'tests/teblig-v2-smoke.test.js'
       - 'tests/documents-viewer-v2-smoke.test.js'
       - 'tests/payroll-change-v2-smoke.test.js'
+      - 'tests/assistant-v2-smoke.test.js'
       - 'tests/pwa-push-smoke.test.js'
       - 'package.json'
 
@@ -88,6 +90,8 @@ jobs:
         run: node tests/documents-viewer-v2-smoke.test.js
       - name: Verify V2 payroll change form
         run: node tests/payroll-change-v2-smoke.test.js
+      - name: Verify V2 AI assistant
+        run: node tests/assistant-v2-smoke.test.js
       - name: Verify PWA background push
         run: node tests/pwa-push-smoke.test.js
       - name: Audit client architecture
