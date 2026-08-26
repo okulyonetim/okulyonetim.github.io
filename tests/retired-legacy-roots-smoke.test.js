@@ -15,6 +15,7 @@ const retired=[
   'js/ogretmen-liste-olusturucu.js',
   'js/widget-plugin.js',
   'js/widget-bridge.js',
+  'js/teblig-tebellug.js',
   'js/yedekleme.js',
   'js/yillik-plan-tohum-veri.js',
   'js/xlsm-viewer-support.js',
