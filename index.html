@@ -87,5 +87,28 @@
       <button class="ka-bottom-item" type="button" data-ka-shell-action="note"><span class="ka-bottom-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Hızlı Not</span></button>
     </nav>
   </main>
+
+  <script>
+  document.addEventListener('click',function(event){
+    const button=event.target.closest?.('#kaMenuLayer [data-ka-menu-route]');
+    if(!button)return;
+    const route=button.dataset.kaMenuRoute||'';
+    const page=button.dataset.kaMenuPage||'';
+    const title=button.dataset.kaMenuTitle||'';
+    if(!route)return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    button.disabled=true;
+    setTimeout(()=>{
+      const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});
+      Promise.resolve(task).catch(error=>{
+        console.error('[Shell/menu-route]',error);
+        window.toast?.('Sayfa açılamadı.');
+        button.disabled=false;
+      });
+    },0);
+  },true);
+  </script>
 </body>
 </html>
