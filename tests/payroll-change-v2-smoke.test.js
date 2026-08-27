@@ -9,7 +9,11 @@ assert(index.includes('js/modules/payroll-change.js'),'V2 maaş formu üretim sh
 assert(src.includes("rows('ogretmenler')"),'Maaş formu öğretmenleri AppStore/DeviceData kaynağından almalı.');
 assert(src.includes("rows('personel')"),'Maaş formu diğer personeli gerçek Management personel kaynağından almalı.');
 for(const section of ["B:[],C:[]","D:r.map","E:r.map","F:r.map","G:r.map","H:r.map"]) assert(src.includes(section),`Eski A-H veri modeli korunmalı: ${section}`);
+assert(src.includes("PermissionService?.can?.('documents.view','preview')"),'Form görüntüleme yetkisi merkezi PermissionService ile yönetilmeli.');
 assert(src.includes("PermissionService?.can?.('documents.edit','edit')"),'Form düzenleme yetkisi merkezi PermissionService ile yönetilmeli.');
+assert(src.includes('function open(){if(!canView())'),'Doğrudan Payroll API açılışı documents.view sınırını aşmamalı.');
+assert(src.includes('function render(root=document.getElementById(\'v2ModuleRoot\')){if(!root)return false;if(!canView())'),'Render girişinde de görüntüleme sınırı korunmalı.');
+assert(src.includes('function print(){if(!canView())'),'Rapor çıktısı görüntüleme yetkisini aşmamalı.');
 assert(src.includes("ReportEngine.printReport('Maaş Değişikliği Bildirim Formu'"),'Çıktı merkezi ReportEngine kullanmalı.');
 assert(src.includes("yon:'yatay'"),'Maaş formu A4 yatay çıktı üretmeli.');
 assert(src.includes("data-document-form='payroll'")||src.includes("dataset.documentForm='payroll'"),'Documents ekranına maaş formu girişi eklenmeli.');
