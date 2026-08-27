@@ -15,12 +15,22 @@ assert(shell.includes('ka-bottom-menu-icon'),'Ortadaki Menü düğmesi ayrı yü
 assert(shell.includes('id="kaMenuLayer"'),'Tam ekran Menü katmanı production shell içinde bulunmalı.');
 assert(!shell.includes('IndexedDB verileri ekrana alınır'),'Teknik local-first açıklaması kullanıcı arayüzüne dönmemeli.');
 assert(!shell.includes('data-ka-module="people"'),'Dokuz modüllü eski teknik alt navigasyon geri dönmemeli.');
+assert(!shell.includes('#kaMenuLayer [data-ka-menu-route]'),'Eski capture-phase menü yönlendiricisi index.html içine geri dönmemeli.');
 assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
 for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
 for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\"]${route}['\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
 assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-shell-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı ve route sahibi ShellUI olmalı.');
 assert(!ui.includes('data-ka-menu-route'),'ShellUI eski ikinci menü yönlendiricisinin data-ka-menu-route sözleşmesini üretmemeli.');
+const directPages=[
+  ['Öğrenci Yoklama','tools','student-attendance'],['Öğrenci Listesi Oluşturucu','tools','student-list'],['Ödev Takip Çizelgesi','tools','homework'],['Not Çizelgesi','tools','grades'],
+  ['Nöbet Programı','management','duty'],['Harita','tools','map'],['Kontrol Listeleri','tools','checklists'],['Evrak Takibi','documents','evrak'],['Aylık İşler','management','tasks'],
+  ['Mevzuat','documents','mevzuat'],['Akademik Takvim','academic','calendar'],['Tebliğ-Tebellüğ İmza Sirküsü','documents','teblig'],['Puantaj & İmza Sirküsü','management','puantaj'],['Dilekçe & İzinler','management','dilekce'],['Devamsızlık Çizelgesi','tools','attendance'],
+  ['Okul Bilgileri','settings','school'],['Veriler','settings','data'],['Kullanıcı İşlemleri','settings','users'],['Kullanıcı İstatistikleri','settings','statistics']
+];
+for(const [label,route,page] of directPages) assert(ui.includes(`['${label}'`)&&ui.includes(`'${route}','${page}'`),`Doğrudan menü hedefi eksik/yanlış: ${label} -> ${route}/${page}`);
+for(const page of ['form-maarif','form-belirli','form-sok','form-rehberlik','form-bep','form-zumre','form-kulup']) assert(ui.includes(`'${page}'`),`Ayrı doküman form sayfası eksik: ${page}`);
+assert(ui.includes("global.StudentPages?.open?.")&&ui.includes("global.EvrakTakipPage.open(root)")&&ui.includes("global.LegislationModule.mount(root)")&&ui.includes("global.KaDataPage.open()"),'Özel menü hedefleri gerçek mevcut API’lere bağlanmalı.');
 assert(!ui.includes('Optik Okuma (OMR)')&&!ui.includes("key:'optik'"),'Optik okuyucu yeni Menü mimarisine dönmemeli.');
 assert(dashboard.includes('function adminShell()')&&dashboard.includes('function teacherShell()'),'Admin ve öğretmen ana sayfası ayrı renderer kullanmalı.');
 assert(dashboard.includes('data-dashboard-role="${isAdmin()?\'admin\':\'teacher\'}"'),'Dashboard rolü DOM sözleşmesinde görünür olmalı.');
@@ -47,4 +57,4 @@ for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer',
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
-console.log('Classic UX + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
+console.log('Classic UX + doğrudan menü routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
