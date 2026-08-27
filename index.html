@@ -100,7 +100,7 @@
     const rubricPages={'Ders Et. Kat. Puan Dağıtımı':'rubric','Proje Değerlendirme Ölçeği':'project'};
     const formPages={'Maarif Model':'Maarif Model Raporları','Belirli Gün ve Haftalar':'Belirli Günler ve Haftalar','ŞÖK':'ŞÖK','Rehberlik':'Rehberlik','Yıllık Planlar & BEP Planları':'BEP Planları','Zümre':'Zümre','Sosyal Kulüpler':'Sosyal Kulüpler'};
     const academicPages={'Akademik Takvim':'calendar'};
-    const settingsPages={'Kullanıcı İşlemleri':'users'};
+    const settingsPages={'Kullanıcı İşlemleri':'users','Kullanıcı İstatistikleri':'statistics'};
     page=migratedPages[title]||managementPages[title]||toolPages[title]||academicPages[title]||settingsPages[title]||(formPages[title]?'forms':page);
     if(migratedPages[title]||toolPages[title]||rubricPages[title]||formPages[title])route='tools';
     if(managementPages[title])route='management';
