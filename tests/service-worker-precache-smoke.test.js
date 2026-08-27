@@ -21,7 +21,6 @@ for (const f of [
 const liste = sw.slice(sw.indexOf('const ONBELLEGE_ALINACAKLAR'), sw.indexOf("self.addEventListener('install'"));
 for (const eski of [
   './app-v2.html','./css/styles.css','./js/app.js','./js/ui.js',
-  './optik/index.html','./optik/js/app.js','./optik/js/opencv.js','./js/omrEngine.js',
   './js/core/local-first-sync.js','./js/core/sync-engine.js','./js/core/app-bootstrap.js',
   './css/web-shell-fix.css','./css/web-sidebar-v2.css','./css/dashboard-yeni.css','./css/dashboard-home.css',
   './js/ui-stability-fixes.js','./js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/deneme-sayac-local-first-v2.js',
