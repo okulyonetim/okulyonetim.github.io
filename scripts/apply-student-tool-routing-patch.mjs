@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 
+// Guarded migration v2: canonical UI routing + explicit lifecycle close contracts.
 function patchFile(path,patcher){const original=fs.readFileSync(path,'utf8'),next=patcher(original);if(next===original)throw new Error(`No changes generated for ${path}`);fs.writeFileSync(path,next,'utf8')}
 function once(src,oldText,newText,label){if(!src.includes(oldText))throw new Error(`${label} contract not found; aborting.`);return src.replace(oldText,newText)}
 
