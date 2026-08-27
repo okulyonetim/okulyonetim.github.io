@@ -49,7 +49,7 @@ function outsideHeaderPopover(e){if(!headerPopover)return;if(headerPopover.conta
 function popoverBase(anchor,width=330){closeHeaderPopover();const r=anchor.getBoundingClientRect(),el=document.createElement('div');el.className='ka-card';el.setAttribute('role','dialog');el.style.cssText=`position:fixed;z-index:1100;top:${Math.max(r.bottom+8,70)}px;right:${Math.max(10,innerWidth-r.right)}px;width:min(${width}px,calc(100vw - 20px));max-height:calc(100dvh - ${Math.max(r.bottom+22,86)}px);overflow:auto;background:var(--ka-card-raised-bg);border:1px solid var(--ka-border);border-radius:18px;box-shadow:var(--ka-shadow-modal);padding:12px;`;document.body.appendChild(el);headerPopover=el;setTimeout(()=>document.addEventListener('pointerdown',outsideHeaderPopover,true),0);return el}
 function cleanupFormPage(){global.__kaFormPageObserver?.disconnect?.();global.__kaFormPageObserver=null}
 function hideModuleChrome(root,name){if(name==='tools'){const h=root.querySelector('[data-tools-module] > .ka-row');if(h)h.hidden=true}else if(name==='settings'){const h=root.querySelector('[data-settings-module] > div:first-child');if(h)h.hidden=true}}
-function applyFormPage(root,page,title){const wanted=FORM_PAGES[page];if(!wanted)return false;const tab=root.querySelector('[data-tools-tab="forms"]');if(!tab)return false;tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true;hideModuleChrome(root,'tools');const applyFilter=()=>{const content=root.querySelector('#toolsContent');content?.querySelectorAll(':scope > section').forEach(section=>{const h=section.querySelector('h3');section.hidden=!h||!String(h.textContent||'').trim().startsWith(wanted)})};cleanupFormPage();requestAnimationFrame(()=>{applyFilter();const content=root.querySelector('#toolsContent');if(content){global.__kaFormPageObserver=new MutationObserver(applyFilter);global.__kaFormPageObserver.observe(content,{childList:true})}});if(title)setTitle(title);return true}
+function applyFormPage(root,page,title){const wanted=FORM_PAGES[page];if(!wanted)return false;const ok=global.ToolsModule?.openPage?.('forms',title);if(ok===false)return false;hideModuleChrome(root,'tools');const applyFilter=()=>{const content=root.querySelector('#toolsContent');content?.querySelectorAll(':scope > section').forEach(section=>{const h=section.querySelector('h3');section.hidden=!h||!String(h.textContent||'').trim().startsWith(wanted)})};cleanupFormPage();requestAnimationFrame(()=>{applyFilter();const content=root.querySelector('#toolsContent');if(content){global.__kaFormPageObserver=new MutationObserver(applyFilter);global.__kaFormPageObserver.observe(content,{childList:true})}});if(title)setTitle(title);return true}
 function applySubpage(name,page,title){
   const root=$('#v2ModuleRoot');if(!root||!page)return false;
   const studentPages={'student-attendance':'attendance','student-list':'student-list',homework:'homework',grades:'grades'};
@@ -108,7 +108,12 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Kişiler sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  const selector=name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
+  if(name==='tools'&&['checklists','map','attendance'].includes(page)){
+    const ok=global.ToolsModule?.openPage?.(page,title);
+    if(ok===false)global.toast?.('Araç sayfası açılamadı.');
+    if(title)setTitle(title);return true;
+  }
+  const selector=name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
   const tab=selector?root.querySelector(selector):null;
   if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
   if(name==='academic'){
