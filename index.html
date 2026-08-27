@@ -99,9 +99,11 @@
     const toolPages={'Kontrol Listeleri':'checklists','Harita':'map','Devamsızlık Çizelgesi':'attendance'};
     const rubricPages={'Ders Et. Kat. Puan Dağıtımı':'rubric','Proje Değerlendirme Ölçeği':'project'};
     const formPages={'Maarif Model':'Maarif Model Raporları','Belirli Gün ve Haftalar':'Belirli Günler ve Haftalar','ŞÖK':'ŞÖK','Rehberlik':'Rehberlik','Yıllık Planlar & BEP Planları':'BEP Planları','Zümre':'Zümre','Sosyal Kulüpler':'Sosyal Kulüpler'};
-    page=migratedPages[title]||managementPages[title]||toolPages[title]||(formPages[title]?'forms':page);
+    const academicPages={'Akademik Takvim':'calendar'};
+    page=migratedPages[title]||managementPages[title]||toolPages[title]||academicPages[title]||(formPages[title]?'forms':page);
     if(migratedPages[title]||toolPages[title]||rubricPages[title]||formPages[title])route='tools';
     if(managementPages[title])route='management';
+    if(academicPages[title])route='academic';
     if(!route)return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
     setTimeout(()=>{
