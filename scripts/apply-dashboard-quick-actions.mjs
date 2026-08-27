@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+const path='js/modules/dashboard.js';
+let src=fs.readFileSync(path,'utf8');
+function once(oldText,newText,label){if(!src.includes(oldText))throw new Error(label+' contract not found; aborting');src=src.replace(oldText,newText)}
+const oldQuick="function quickSection(){return section('Hızlı İşlemler','⚡','quick',`<div class=\"ka-home-quick\"><button type=\"button\" data-dash-route=\"academic\"><span>📝</span><b>Sınav Ekle</b></button><button type=\"button\" data-dash-route=\"communication\"><span>💬</span><b>Mesaj Gönder</b></button><button type=\"button\" data-dash-route=\"documents\"><span>📄</span><b>Dokümanlar</b></button><button type=\"button\" data-dash-quick-note><span>📒</span><b>Hızlı Not</b></button></div>`)}";
+const newQuick="function quickSection(){return section('Hızlı İşlemler','⚡','quick',`<div class=\"ka-home-quick\"><button type=\"button\" data-dash-route=\"academic\" data-dash-page=\"written\" data-dash-title=\"Yazılı Sınavlar\"><span>📝</span><b>Sınav Ekle</b></button><button type=\"button\" data-dash-route=\"communication\" data-dash-page=\"messages\" data-dash-title=\"Mesajlaşma\"><span>💬</span><b>Mesaj Gönder</b></button><button type=\"button\" data-dash-route=\"documents\" data-dash-title=\"Dokümanlar\"><span>📄</span><b>Dokümanlar</b></button><button type=\"button\" data-dash-quick-note><span>📒</span><b>Hızlı Not</b></button></div>`)}";
+once(oldQuick,newQuick,'Dashboard quick section');
+const oldBind="function bindPresentation(root){root.querySelectorAll('[data-dash-route]').forEach(btn=>btn.addEventListener('click',()=>window.ShellUI?.routeModule?.(btn.dataset.dashRoute,{bottom:'menu'})));root.querySelector('[data-dash-quick-note]')?.addEventListener('click',()=>window.ShellUI?.openQuickNote?.())}";
+const newBind="function bindPresentation(root){root.querySelectorAll('[data-dash-route]').forEach(btn=>btn.addEventListener('click',()=>window.ShellUI?.routeModule?.(btn.dataset.dashRoute,{bottom:'menu',page:btn.dataset.dashPage||'',title:btn.dataset.dashTitle||''})));root.querySelector('[data-dash-quick-note]')?.addEventListener('click',()=>window.ShellUI?.openQuickNote?.())}";
+once(oldBind,newBind,'Dashboard route binding');
+for(const token of ['data-dash-page=\"written\"','data-dash-page=\"messages\"','openQuickNote'])if(!src.includes(token))throw new Error('Quick action contract lost: '+token);
+fs.writeFileSync(path,src,'utf8');
+console.log('Dashboard quick actions now route directly to target pages.');
