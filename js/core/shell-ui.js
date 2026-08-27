@@ -24,15 +24,15 @@ const SVG={
  logout:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M14 3h6a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 };
 const MENU_GROUPS=[
- {key:'people',label:'Öğretmen & Öğrenciler',icon:'👥',tone:'green',route:'people',items:[['Öğretmenler','👩‍🏫','people','teachers'],['Öğrenciler','🎓','people','students'],['Sınıflar','🏫','people','classes'],['Öğrenci Yoklama','☑️','people'],['Öğrenci Listesi Oluşturucu','📋','tools'],['Ödev Takip Çizelgesi','✅','tools'],['Not Çizelgesi','📊','tools']]},
- {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',items:[['Yazılı Sınavlar','☑️','academic','written'],['Deneme Sınavları','🧪','academic','trial'],['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools'],['Proje Değerlendirme Ölçeği','📏','tools']]},
- {key:'programs',label:'Programlar',icon:'📅',tone:'green',route:'academic',items:[['Ders Programı','📅','academic','schedule'],['Nöbet Programı','🛡️','management'],['Yıllık Plan','📚','academic','plans']]},
+ {key:'people',label:'Öğretmen & Öğrenciler',icon:'👥',tone:'green',route:'people',items:[['Öğretmenler','👩‍🏫','people','teachers'],['Öğrenciler','🎓','people','students'],['Sınıflar','🏫','people','classes'],['Öğrenci Yoklama','☑️','tools','student-attendance'],['Öğrenci Listesi Oluşturucu','📋','tools','student-list'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades']]},
+ {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',items:[['Yazılı Sınavlar','☑️','academic','written'],['Deneme Sınavları','🧪','academic','trial'],['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools','rubric'],['Proje Değerlendirme Ölçeği','📏','tools','project']]},
+ {key:'programs',label:'Programlar',icon:'📅',tone:'green',route:'academic',items:[['Ders Programı','📅','academic','schedule'],['Nöbet Programı','🛡️','management','duty'],['Yıllık Plan','📚','academic','plans']]},
  {key:'communication',label:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[['Mesajlaşma','💬','communication','messages'],['Haberler','📰','communication','news'],['Duyurular','📣','communication','announcements'],['Anketler','📋','communication','polls']]},
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',items:[['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]},
- {key:'transport',label:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport'],['Harita','🗺️','tools']]},
- {key:'documents',label:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Dokümanlar','📁','documents'],['Mevzuat','📖','documents'],['Akademik Takvim','📅','documents'],['Kontrol Listeleri','📋','tools'],['Evrak Takibi','📄','documents'],['Aylık İşler','🕘','management']],subLabel:'Raporlar',subItems:[['Maarif Model','🏅','documents'],['Belirli Gün ve Haftalar','📅','documents'],['ŞÖK','🛡️','documents'],['Rehberlik','🧭','documents'],['Yıllık Planlar & BEP Planları','📋','documents'],['Zümre','👥','documents'],['Sosyal Kulüpler','♡','documents']]},
- {key:'management',label:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Personeller','👥','management'],['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents'],['Puantaj & İmza Sirküsü','🕘','management'],['Dilekçe & İzinler','📄','management'],['Devamsızlık Çizelgesi','📅','tools'],['Evrak Takibi','📄','documents']]},
- {key:'settings',label:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Okul Bilgileri','🏢','settings'],['Veriler','🗄️','settings'],['Kullanıcı İşlemleri','🛡️','settings'],['Kullanıcı İstatistikleri','📋','settings']]}
+ {key:'transport',label:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport'],['Harita','🗺️','tools','map']]},
+ {key:'documents',label:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Dokümanlar','📁','documents'],['Mevzuat','📖','documents'],['Akademik Takvim','📅','documents'],['Kontrol Listeleri','📋','tools','checklists'],['Evrak Takibi','📄','documents','evrak'],['Aylık İşler','🕘','management','tasks']],subLabel:'Raporlar',subItems:[['Maarif Model','🏅','documents'],['Belirli Gün ve Haftalar','📅','documents'],['ŞÖK','🛡️','documents'],['Rehberlik','🧭','documents'],['Yıllık Planlar & BEP Planları','📋','documents'],['Zümre','👥','documents'],['Sosyal Kulüpler','♡','documents']]},
+ {key:'management',label:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Personeller','👥','management','staff'],['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Evrak Takibi','📄','documents','evrak']]},
+ {key:'settings',label:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Okul Bilgileri','🏢','settings','school'],['Veriler','🗄️','settings'],['Kullanıcı İşlemleri','🛡️','settings','users'],['Kullanıcı İstatistikleri','📋','settings','statistics']]}
 ];
 const DASHBOARD_ROUTES={announcements:'communication',polls:'communication',news:'communication',stats:'people',duty:'management',absences:'management',upcoming:'communication',lessons:'academic','week-duty':'management',exams:'academic',schedule:'academic',notes:'communication',calendar:'communication'};
 let activeAction='home',menuGroup=null,visibilityObserver=null,headerPopover=null,themeTouched=false;
@@ -45,7 +45,18 @@ function outsideHeaderPopover(e){if(!headerPopover)return;if(headerPopover.conta
 function popoverBase(anchor,width=330){closeHeaderPopover();const r=anchor.getBoundingClientRect(),el=document.createElement('div');el.className='ka-card';el.setAttribute('role','dialog');el.style.cssText=`position:fixed;z-index:1100;top:${Math.max(r.bottom+8,70)}px;right:${Math.max(10,innerWidth-r.right)}px;width:min(${width}px,calc(100vw - 20px));max-height:calc(100dvh - ${Math.max(r.bottom+22,86)}px);overflow:auto;background:var(--ka-card-raised-bg);border:1px solid var(--ka-border);border-radius:18px;box-shadow:var(--ka-shadow-modal);padding:12px;`;document.body.appendChild(el);headerPopover=el;setTimeout(()=>document.addEventListener('pointerdown',outsideHeaderPopover,true),0);return el}
 function applySubpage(name,page,title){
   const root=$('#v2ModuleRoot');if(!root||!page)return false;
-  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='academic'?`[data-academic-tab="${page}"]`:name==='communication'?`[data-communication-tab="${page}"]`:'';
+  const studentPages={'student-attendance':'attendance','student-list':'student-list',homework:'homework',grades:'grades'};
+  if(name==='tools'&&studentPages[page]){
+    global.ToolsModule?.unmount?.();
+    Promise.resolve(global.StudentPages?.open?.(studentPages[page],title)).catch(e=>{console.error('[Shell/student-page]',e);global.toast?.('Öğrenci sayfası açılamadı.');});
+    if(title)setTitle(title);return true;
+  }
+  if(name==='documents'&&page==='evrak'&&global.EvrakTakipPage?.open){
+    global.DocumentsModule?.unmount?.();
+    Promise.resolve(global.EvrakTakipPage.open(root)).catch(e=>{console.error('[Shell/evrak]',e);global.toast?.('Evrak Takibi açılamadı.');});
+    if(title)setTitle(title);return true;
+  }
+  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='academic'?`[data-academic-tab="${page}"]`:name==='communication'?`[data-communication-tab="${page}"]`:name==='management'?`[data-management-tab="${page}"]`:name==='settings'?`[data-settings-tab="${page}"]`:name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:name==='documents'&&page==='teblig'?'[data-document-form="teblig"]':'';
   const tab=selector?root.querySelector(selector):null;
   if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.style.display='none'}
   if(name==='academic'){
@@ -59,6 +70,7 @@ function applySubpage(name,page,title){
 }
 async function routeModule(name,{bottom='menu',page='',title=''}={}){
   closeHeaderPopover();closeMenu();
+  if(!(name==='tools'&&['student-attendance','student-list','homework','grades'].includes(page)))global.StudentPages?.close?.();
   if(name==='payroll'){
     if(global.PayrollChangeModule?.open){
       setBottomActive(bottom);setTitle('Maaş Değişikliği Bildirim Formu');
