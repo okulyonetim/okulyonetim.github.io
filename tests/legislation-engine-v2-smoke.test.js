@@ -8,8 +8,10 @@ const shellUi=fs.readFileSync('js/core/shell-ui.js','utf8');
 for(const token of ["RECORD_TYPE='mevzuatKayitlar'","CHUNK_TYPE='mevzuatChunklar'","LEGACY_DB='okulMevzuatDB'",'function split(text)','function stem(word)','async function search(question','async function ask(question)','async function backup()','async function restore(data)']) assert(src.includes(token),`Mevzuat V2 motor sözleşmesi eksik: ${token}`);
 assert(src.includes('global.DeviceData.persist(type'),'Mevzuat yazmaları merkezi DeviceData.persist kapısından geçmeli.');
 assert(src.includes('global.SyncEngine.localHydrate([RECORD_TYPE,CHUNK_TYPE])'),'Mevzuat okumaları merkezi local-first hydrate mekanizmasını kullanmalı.');
-assert(src.includes("indexedDB.databases()).some(x=>x?.name===LEGACY_DB)"),'Legacy mevzuat DB yalnız gerçekten mevcutsa açılmalı.');
-assert(src.includes('indexedDB.open(LEGACY_DB,LEGACY_VERSION)'),'Mevcut legacy mevzuat verisi migration amacıyla okunabilmeli.');
+assert(src.includes("indexedDB.databases()).some(x=>x?.name===LEGACY_DB)"),'Modern tarayıcıda legacy mevzuat DB varlığı oluşturma yapmadan kontrol edilmeli.');
+assert(src.includes('req=indexedDB.open(LEGACY_DB)')&&src.includes('req.onupgradeneeded=()=>{upgrade=true;'),'databases() olmayan tarayıcıda legacy DB probe upgrade transaction ile ayırt edilmeli.');
+assert(src.includes('req.transaction?.abort?.()'),'Legacy DB yokken probe işlemi upgrade transactionını abort ederek ikinci DB yaratmamalı.');
+assert(src.includes('const req=indexedDB.open(LEGACY_DB);'),'Mevcut legacy mevzuat verisi migration amacıyla sürüm zorlamadan okunabilmeli.');
 assert(src.includes('indexedDB.deleteDatabase(LEGACY_DB)'),'Başarılı migration sonrası eski ikinci IndexedDB silinmeli.');
 assert(!src.includes('createObjectStore(')&&!src.includes("createIndex('mevzuatId'"),'Mevzuat motoru ikinci IndexedDB/store oluşturmamalı.');
 assert(!src.includes("const DB_NAME='okulMevzuatDB'")&&!src.includes('function db(){'),'Legacy mevzuat DB çalışma zamanı ana veri deposu olmamalı.');
@@ -32,4 +34,4 @@ assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore'),'Mevzu
 assert(shell.includes('js/modules/legislation.js')&&shell.includes('js/modules/legislation-ui.js'),'Mevzuat V2 motoru ve presentation üretim shell tarafından yüklenmeli.');
 assert(!fs.existsSync('js/mevzuat-asistan.js'),'Legacy mevzuat-asistan.js geri dönmemeli.');
 
-console.log('Mevzuat tek IndexedDB local-first + Documents-owned permission sözleşmesi başarılı.');
+console.log('Mevzuat tek IndexedDB local-first + legacy probe + Documents-owned permission sözleşmesi başarılı.');
