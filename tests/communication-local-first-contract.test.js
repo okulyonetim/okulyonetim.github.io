@@ -20,6 +20,21 @@ assert(communication.includes('mesajlariTopluSil'),'Sohbet silerken yerel mesaj 
 assert(communication.includes("device().remove(type,COL.mesajlar,m.id)"),'Sohbet mesajları DeviceData üzerinden silinmeli.');
 assert(communication.includes('okunmayanlar'),'Okunmamış mesaj sayacı sözleşmesi korunmalı.');
 
+// Interactive local-first messaging UI must stay wired to the existing service/repository.
+assert(communication.includes('data-conversation-open'),'Konuşma kartları sohbet ekranını açabilmeli.');
+assert(communication.includes('MesajlasmaRepository?.mesajlariDinle'),'Açık sohbet mesajları repository üzerinden yerel dinleyiciyle açılmalı.');
+assert(communication.includes('MesajlasmaService?.okunduIsaretle'),'Sohbet açıldığında okunmamış sayacı servis üzerinden sıfırlanmalı.');
+assert(communication.includes('data-message-form'),'Mesaj gönderme formu korunmalı.');
+assert(communication.includes('MesajlasmaService?.mesajGonder?.'),'Metin mesajı merkezi servis üzerinden gönderilmeli.');
+assert(communication.includes('MesajlasmaService?.mesajGonderDosyaIle?.'),'Dosyalı mesaj merkezi servis üzerinden gönderilmeli.');
+assert(communication.includes('data-message-delete'),'Mesaj silme UI eylemi korunmalı.');
+assert(communication.includes('MesajlasmaService?.mesajSil?.'),'Mesaj silme merkezi servis üzerinden yapılmalı.');
+assert(communication.includes('data-conversation-delete'),'Sohbet silme UI eylemi korunmalı.');
+assert(communication.includes('MesajlasmaService?.konusmaSil?.'),'Sohbet silme merkezi servis üzerinden yapılmalı.');
+assert(communication.includes('data-message-new'),'Yeni bire bir konuşma UI eylemi korunmalı.');
+assert(communication.includes('MesajlasmaService?.konusmaBaslatOgretmenIle?.'),'Yeni öğretmen konuşması mevcut servis üzerinden açılmalı.');
+assert(communication.includes('closeMessageConversation(false)'),'Modül/sekme lifecycle mesaj dinleyicisini kapatmalı.');
+
 // Restored V2 interaction contracts: no longer passive read-only cards.
 assert(communication.includes('data-announcement-read'),'Duyuru okundu işaretleme UI bağlantısı korunmalı.');
 assert(communication.includes('DuyurularService?.okunduIsaretle'),'Duyuru okundu işlemi servis katmanına gitmeli.');
@@ -27,11 +42,12 @@ assert(communication.includes('data-poll-option'),'Anket seçenekleri etkileşim
 assert(communication.includes('data-poll-vote'),'Anket oy verme eylemi bulunmalı.');
 assert(communication.includes('AnketService?.oyVer'),'Anket oyu merkezi servise yazılmalı.');
 assert(communication.includes('data-poll-toggle'),'Admin anket kapat/aç eylemi korunmalı.');
+assert(communication.includes('AnketService?.anketKapat?.(a.id,a.aktif!==false)'),'Anket kapat/aç yönü servis sözleşmesiyle uyumlu olmalı.');
 assert(communication.includes('safeHref'),'Haber dış bağlantıları protokol doğrulamasından geçmeli.');
-assert(communication.includes('target="_blank" rel="noopener noreferrer"'),'Haber dış bağlantısı güvenli sekmede açılmalı.');
+assert(communication.includes('target="_blank" rel="noopener noreferrer"'),'Haber/dosya dış bağlantısı güvenli sekmede açılmalı.');
 assert(communication.includes('data-news-source-delete'),'Haber kaynak yönetimi UI bağlantısı korunmalı.');
 assert(communication.includes("'data.haberKaynaklari'"),'Haber kaynakları AppStore değişikliklerine abone olmalı.');
-assert(communication.includes('bindCommunicationActions(out)'),'Duyuru/anket/haber eylemleri render sonrasında bağlanmalı.');
+assert(communication.includes('bindCommunicationActions(out)'),'İletişim eylemleri render sonrasında bağlanmalı.');
 
 // Poll/calendar ownership rules must remain in the service layer.
 assert(communication.includes('if(!isAdmin())throw new Error(\'yetkisiz\')'),'Anket oluşturma admin yetkisi servis katmanında kalmalı.');
@@ -43,4 +59,4 @@ assert(rss.includes('async function eskiHaberleriTemizle(db)'),'Eski haberleri t
 assert(rss.includes('await eskiHaberleriTemizle(db);'),'Temizlik her RSS çalışmasında kaynak taramasından önce yapılmalı.');
 assert(rss.includes('if(!sonBirAyIcindeMi(it.tarih))'),'30 günden eski feed maddeleri yeniden eklenmemeli.');
 
-console.log('Communication local-first, etkileşim ve 30 günlük haber saklama sözleşmesi başarılı.');
+console.log('Communication local-first, etkileşimli mesajlaşma ve 30 günlük haber saklama sözleşmesi başarılı.');
