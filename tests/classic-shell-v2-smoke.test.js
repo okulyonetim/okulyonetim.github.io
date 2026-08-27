@@ -16,6 +16,12 @@ assert(shell.includes('id="kaMenuLayer"'),'Tam ekran Menü katmanı production s
 assert(!shell.includes('IndexedDB verileri ekrana alınır'),'Teknik local-first açıklaması kullanıcı arayüzüne dönmemeli.');
 assert(!shell.includes('data-ka-module="people"'),'Dokuz modüllü eski teknik alt navigasyon geri dönmemeli.');
 assert(!shell.includes('#kaMenuLayer [data-ka-menu-route]'),'Eski capture-phase menü yönlendiricisi index.html içine geri dönmemeli.');
+assert(shell.includes('const KaDataPage=(()=>{')&&shell.includes('window.KaDataPage=KaDataPage'),'Veri Aktarma Merkezi mevcut public API ile korunmalı.');
+for(const contract of ['importTeachers(file)','importStudents(file,classId)','importServiceStudents(file,serviceId)','downloadTemplate(type)','backupPayload()','restore(file)','driveBackup()']) assert(shell.includes(contract),`Veri Aktarma Merkezi sözleşmesi eksik: ${contract}`);
+for(const localFirst of ['KorukLocalFirst.cached','KorukLocalFirst.pending','KorukLocalFirst.tombstones','KorukLocalFirst.queue','KorukLocalFirst.cache']) assert(shell.includes(localFirst),`Veri yedekleme/geri yükleme local-first bileşeni eksik: ${localFirst}`);
+assert(shell.includes("KorukLocalFirst.meta(uid,'lastDriveBackup'")&&shell.includes("'lastDriveBackup'"),'Drive son yedek metadata’sı IndexedDB meta üzerinde tutulmalı ve yedeğe dahil edilmeli.');
+assert(!shell.includes("localStorage.setItem('oySonDriveYedek'")&&!shell.includes("localStorage.getItem('oySonDriveYedek'"),'Drive yedek metadata’sı localStorage’a geri dönmemeli.');
+assert(shell.includes("kind:'set-doc'")&&shell.includes('SyncEngine?.schedule?.(80)'),'Yedek geri yükleme cihaz verisini queue üzerinden arka plan senkronuna bırakmalı.');
 assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
 for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
@@ -57,4 +63,4 @@ for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer',
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
-console.log('Classic UX + doğrudan menü routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
+console.log('Classic UX + local-first veri merkezi + doğrudan menü routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
