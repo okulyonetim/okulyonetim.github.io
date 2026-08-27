@@ -19,6 +19,11 @@ assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('sayacDurumu?.akti
 assert(dash.includes("function trialCounterSection(){const list=arr('denemeSinavlari').filter(x=>x?.sayacDurumu?.aktif===true)"),'Dashboard deneme kartı yalnız başlatılmış gerçek sayaç için görünmeli.');
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
 assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Aktif deneme sayacı ana sayfada canlı güncellenmeli.');
+assert(dash.includes("if(!mine.length)return''"),'Öğretmenin nöbet kartı yalnız gerçek nöbeti varsa görünmeli.');
+assert(dash.includes("section('Bugünkü Nöbetim'"),'Öğretmenin kendi nöbeti ayrı odak kartı olmalı.');
+assert(dash.includes('ka-home-summary-intro')&&dash.includes("school.okulAdi"),'Okul özeti mevcut okulBilgileri verisini kullanmalı.');
+assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Evraklar</b>'),'Öğretmen hızlı işlemleri dört doğrudan aksiyonu taşımalı.');
+assert(css.includes('TEACHER DASHBOARD REFINEMENT')&&css.includes('.ka-home-duty-focus'),'Öğretmen dashboard görsel sözleşmesi merkezi design-system içinde olmalı.');
 assert(dash.includes("if(!list.length)return'';const body=list.map"),'Duyuru yoksa boş duyuru kartı gösterilmemeli.');
 assert(html.includes("localStorage.getItem('ka-theme')")&&html.includes("setAttribute('data-theme',t)"),'İlk boyamada merkezi açık/koyu tema uygulanmalı.');
 assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Shell tek merkezi tema sözleşmesini ve mevcut local-first tercihi kullanmalı.');
