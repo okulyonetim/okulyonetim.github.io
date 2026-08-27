@@ -1,0 +1,12 @@
+const fs=require('fs');
+const assert=require('assert');
+const bridge=fs.readFileSync('js/modules/rubric-tools.js','utf8');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+assert(!bridge.includes('data-rubric-tool'),'Rubric/Project Tools sekmesine buton enjekte etmemeli.');
+assert(bridge.includes('async function openPage(page)'),'RubricToolsModule doğrudan sayfa açma API sağlamalı.');
+assert(bridge.includes('TOOLS.find(x=>x.key===page)'),'openPage gerçek araç tanımını TOOLS üzerinden çözmeli.');
+for(const token of ["api:'KriterDagitimAraci'","api:'ProjeDegerlendirmeAraci'","global.AppLoader.loadScript(ENGINE)",'RubricSettingsService','openOtherDocuments','openDiploma'])assert(bridge.includes(token),`Rubric gerçek davranışı eksik: ${token}`);
+assert(shell.includes("name==='tools'&&['rubric','project'].includes(page)"),'Shell rubric/project menü hedeflerini doğrudan çözmeli.');
+assert(shell.includes('RubricToolsModule?.openPage?.(page)'),'Shell rubric/project için public openPage çağırmalı.');
+assert(!shell.includes('data-rubric-tool'),'Shell enjekte rubric tab selector kullanmamalı.');
+console.log('Rubric/project doğrudan routing sözleşmesi başarılı.');
