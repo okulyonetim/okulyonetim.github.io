@@ -130,7 +130,7 @@ function installDiplomaRoutes(){const groups=global.ShellUI?.MENU_GROUPS;if(!Arr
 global.RubricToolsModule={inject,open,keyList:()=>TOOLS.map(x=>x.key),createCategory,deleteCustom,openOtherDocuments,openDiploma};
 installOtherDocumentsRoute();
 installDiplomaRoutes();
-global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='tools')requestAnimationFrame(inject);else if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen&&e.detail?.name!=='management')cleanupDiploma();});
+global.addEventListener('koruk:module-ready',e=>{if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen)cleanupDiploma();if(e.detail?.name==='tools')requestAnimationFrame(inject);});
 })(window);
 
 /* PDF araçlarının menü/routing köprüsü. Motor js/modules/documents.js içindedir. */
@@ -161,6 +161,7 @@ async function render(){if(!mounted)return;const r=root();if(!r)return;if(user()
 async function activate(){if(user().admin!==true)return toast('Öğrenci Devamsızlığı yalnız yöneticiler içindir.');cleanup();await global.AppLoader?.load?.('people');global.PeopleModule?.unmount?.();mounted=true;date=today();subscribe();await render();return true;}
 async function open(){return global.ShellUI?.routeModule?.('people',{bottom:'menu',page:PAGE,title:'Öğrenci Devamsızlığı'});}
 function install(){const groups=global.ShellUI?.MENU_GROUPS;if(!Array.isArray(groups))return false;const group=groups.find(x=>x.key==='people');if(!group)return false;group.items=Array.isArray(group.items)?group.items:[];const i=group.items.findIndex(x=>x?.[3]===PAGE);if(user().admin===true&&i<0)group.items.push(['Öğrenci Devamsızlığı','🚫','people',PAGE]);else if(user().admin!==true&&i>=0)group.items.splice(i,1);if(!global.__studentAbsenceRouteInstalled){global.__studentAbsenceRouteInstalled=true;global.ShellUI?.registerPageRoute?.(PAGE,activate);}return true;}
+global.addEventListener('koruk:module-ready',()=>{if(mounted)cleanup();});
 global.addEventListener('koruk:app-ready',install);global.addEventListener('koruk:app-config-changed',install);global.AppStore?.subscribe?.('session.user',install);install();
 global.StudentAbsencePage={open,render,cleanup,install};
 })(window);
