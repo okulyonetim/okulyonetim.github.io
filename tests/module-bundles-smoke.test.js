@@ -88,7 +88,7 @@ for(const token of [
   "_yetkiKontrol(){return global.PermissionService?PermissionService.can('communication.notes.edit','edit')",
   "notSil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
   "notMaddeleriGuncelle(id,m){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
-  "duyuruSil(id){try{requireEdit('duyurular')}",
+  "async duyuruSil(id,resimler=[]){try{requireEdit('duyurular')}",
   "anketKapat(id,k){if(!isAdmin())return Promise.reject(new Error('yetkisiz'))",
   "anketSil(id){if(!isAdmin())return Promise.reject(new Error('yetkisiz'))",
   "HaberlerService={_yetkiKontrol(){return duzenleyebilir('haberler')}",
@@ -101,7 +101,7 @@ for(const hook of ['visibleNotes()','data-note-add','data-note-edit','data-note-
 assert(source.communication.includes("arr('notlar').filter(x=>x.sahipUid===uid())"),'Normal kullanıcı Notlar UI başka kullanıcı cache kayıtlarını göstermemeli.');
 assert(source.communication.includes('const safeToast=m=>window.toast?.(m)'),'Takvim/Notlar UI hata bildirim yardımcısı kendi scope içinde tanımlı olmalı.');
 assert(source.communication.includes("okunduIsaretle(id){return DuyurularRepository.okunduIsaretle"),'Duyuru okundu işaretleme normal kullanıcı eylemi olarak edit yetkisinden bağımsız kalmalı.');
-assert(source.communication.includes("oyVer(a,ids){const oylar="),'Anket oylama normal kullanıcı eylemi olarak admin mutation sınırından bağımsız kalmalı.');
+assert(source.communication.includes("oyVer(a,ids){const ben=user(),oylar="),'Anket oylama normal kullanıcı eylemi olarak admin mutation sınırından bağımsız kalmalı.');
 
 // Taşıma: gerçek servis CRUD'u, öğrenci koruması ve ayrık rol sınırları UI/service katmanında korunmalı.
 for(const token of [
