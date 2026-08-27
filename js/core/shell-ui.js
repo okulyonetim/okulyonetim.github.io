@@ -83,7 +83,12 @@ function applySubpage(name,page,title){
     requestAnimationFrame(()=>{const shell=root.querySelector('[data-documents-module]');if(shell){const head=shell.querySelector(':scope > .ka-row'),search=shell.querySelector('#documentsSearch')?.closest('.ka-field'),formButton=shell.querySelector('[data-document-form="teblig"]')?.closest('.ka-row');if(head)head.hidden=true;if(search)search.hidden=true;if(formButton)formButton.hidden=true}});
     if(title)setTitle(title);return true;
   }
-  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='academic'?`[data-academic-tab="${page}"]`:name==='communication'?`[data-communication-tab="${page}"]`:name==='management'?`[data-management-tab="${page}"]`:name==='settings'?`[data-settings-tab="${page}"]`:name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
+  if(name==='academic'&&['schedule','written','trial','results','plans','calendar'].includes(page)){
+    const ok=global.AcademicModule?.openPage?.(page,title);
+    if(ok===false)global.toast?.('Akademik sayfa açılamadı.');
+    if(title)setTitle(title);return true;
+  }
+  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='communication'?`[data-communication-tab="${page}"]`:name==='management'?`[data-management-tab="${page}"]`:name==='settings'?`[data-settings-tab="${page}"]`:name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
   const tab=selector?root.querySelector(selector):null;
   if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
   if(name==='academic'){
