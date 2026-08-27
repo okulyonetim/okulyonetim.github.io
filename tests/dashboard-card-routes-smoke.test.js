@@ -3,7 +3,9 @@ const assert=require('assert');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
 const dash=fs.readFileSync('js/modules/dashboard.js','utf8');
-new Function(shell);new Function(dash);
+const html=fs.readFileSync('index.html','utf8');
+const settings=fs.readFileSync('js/modules/settings.js','utf8');
+new Function(shell);new Function(dash);new Function(settings);
 for(const pair of ["announcements:'communication'","news:'communication'","stats:'people'","duty:'management'","lessons:'academic'","'week-duty':'management'","exams:'academic'","schedule:'academic'","notes:'communication'","calendar:'communication'"]){
   assert(shell.includes(pair),`Dashboard kart rotası eksik: ${pair}`);
 }
@@ -14,6 +16,12 @@ assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği ür
 assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası referans sırasıyla okul özeti, duyuru, anket ve aktif deneme sayacını göstermeli.');
 assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Yönetici ana sayfası aktif anketlerden sonra deneme sayacını göstermeli.');
 assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('sayacDurumu?.aktif')&&dash.includes('baslatmaTarihi'),'Dashboard deneme sayacı gerçek denemeSinavlari.sayacDurumu modelini kullanmalı.');
+assert(dash.includes("function trialCounterSection(){const list=arr('denemeSinavlari').filter(x=>x?.sayacDurumu?.aktif===true)"),'Dashboard deneme kartı yalnız başlatılmış gerçek sayaç için görünmeli.');
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
 assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Aktif deneme sayacı ana sayfada canlı güncellenmeli.');
-console.log('Dashboard kart bağlantıları ve geniş mobil yerleşim smoke testi başarılı.');
+assert(dash.includes("if(!list.length)return'';const body=list.map"),'Duyuru yoksa boş duyuru kartı gösterilmemeli.');
+assert(html.includes("localStorage.getItem('ka-theme')")&&html.includes("setAttribute('data-theme',t)"),'İlk boyamada merkezi açık/koyu tema uygulanmalı.');
+assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Shell tek merkezi tema sözleşmesini ve mevcut local-first tercihi kullanmalı.');
+assert(settings.includes("['appearance','Görünüm','Açık ve koyu tema']")&&settings.includes("ShellUI?.applyTheme?.(b.dataset.themeChoice)"),'Ayarlar merkezi görünüm seçicisini ikinci tema motoru açmadan kullanmalı.');
+assert(css.includes('[data-theme="dark"]')&&css.includes('--ka-primary:#53d6a4')&&css.includes('.ka-theme-picker'),'Tek Design System zümrüt koyu temayı ve merkezi görünüm bileşenini taşımalı.');
+console.log('Dashboard kart bağlantıları, öğretmen referansı ve merkezi tema smoke testi başarılı.');
