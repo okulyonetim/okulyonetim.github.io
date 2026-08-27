@@ -11,10 +11,15 @@ for(const type of ['ogretmenler','siniflar','veliler','gorevler','hatirlaticilar
 assert(src.includes('global.NotlarService.notKaydet'),'Not/metin taslakları mevcut NotlarService üzerinden kaydedilmeli.');
 assert(src.includes('global.TakvimService.gorevKaydet'),'Görev taslağı mevcut TakvimService üzerinden kaydedilmeli.');
 assert(src.includes('global.TakvimService.hatirlaticiKaydet'),'Hatırlatıcı taslağı mevcut TakvimService üzerinden kaydedilmeli.');
+assert(src.includes("const toolPermission=name=>(name==='taslak_not'||name==='taslak_metin')?'notlar':'takvim'"),'AI taslakları gerçek Notlar/Takvim yetki alanlarına eşlenmeli.');
+assert(src.includes('const canSaveTool=name=>global.duzenleyebilir?.(toolPermission(name))!==false'),'Taslak kaydı servisle aynı edit yetki modelini kullanmalı.');
+assert(src.includes('data-ka-permission="${permission}"')&&src.includes('data-ka-write="${permission}"'),'Taslak Kaydet düğmesi PermissionService görünürlük/yazma sözleşmesine bağlanmalı.');
+const saveIndex=src.indexOf('async function saveDraft()');
+assert(saveIndex>=0&&src.slice(saveIndex,saveIndex+260).includes('if(!canSaveTool(name))'),'saveDraft DOM üzerinden doğrudan çağrılsa bile edit yetkisini yeniden doğrulamalı.');
 assert(src.includes("e.detail?.name==='communication'"),'AI Asistan Communication V2 yaşam döngüsüne bağlanmalı.');
 assert(!src.includes('db.collection'),'AI Asistan doğrudan Firestore kullanmamalı.');
 assert(!src.includes('localStorage'),'AI Asistan ayrı legacy storage üretmemeli.');
 assert(!src.includes('telefon:'),'AI Worker bağlamına telefon alanı gönderilmemeli.');
 assert(!src.includes('style="'),'AI Asistan inline CSS üretmemeli; design-system.css kullanılmalı.');
 
-console.log('V2 AI Asistan sözleşmesi başarılı.');
+console.log('V2 AI Asistan + taslak edit permission sözleşmesi başarılı.');
