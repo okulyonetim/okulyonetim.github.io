@@ -35,8 +35,10 @@ const MENU_GROUPS=[
  {key:'settings',label:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Okul Bilgileri','🏢','settings','school'],['Veriler','🗄️','settings','data'],['Kullanıcı İşlemleri','🛡️','settings','users'],['Kullanıcı İstatistikleri','📋','settings','statistics']]}
 ];
 const FORM_PAGES=Object.freeze({'form-maarif':'Maarif Model Raporları','form-belirli':'Belirli Günler ve Haftalar','form-sok':'ŞÖK','form-rehberlik':'Rehberlik','form-bep':'BEP Planları','form-zumre':'Zümre','form-kulup':'Sosyal Kulüpler'});
+const CUSTOM_PAGE_ROUTES=new Map();
 const DASHBOARD_ROUTES={announcements:'communication',polls:'communication',news:'communication',stats:'people',duty:'management',absences:'management',upcoming:'communication',lessons:'academic','week-duty':'management',exams:'academic',schedule:'academic',notes:'communication',calendar:'communication'};
 let activeAction='home',menuGroup=null,visibilityObserver=null,headerPopover=null,themeTouched=false;
+function registerPageRoute(page,handler){page=String(page||'').trim();if(!page||typeof handler!=='function')return()=>{};CUSTOM_PAGE_ROUTES.set(page,handler);return()=>{if(CUSTOM_PAGE_ROUTES.get(page)===handler)CUSTOM_PAGE_ROUTES.delete(page)}}
 function setTitle(v){const el=$('#v2ModuleTitle');if(el)el.textContent=v||''}
 function setBottomActive(action){activeAction=action;$$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
 function moduleAllowed(name){const meta=global.AppConfig?.module?.(name);return meta?.visible!==false&&global.PermissionService?.moduleLevel?.(name)!=='hidden'}
@@ -108,6 +110,11 @@ async function routeModule(name,{bottom='menu',page='',title=''}={}){
   }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
+  const custom=page&&CUSTOM_PAGE_ROUTES.get(page);
+  if(custom){
+    setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||meta.label||name);
+    try{return (await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
+  }
   setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);
   setTitle(title||meta.label||name);await global.AppLoader?.load?.(name);
   if(page)requestAnimationFrame(()=>applySubpage(name,page,title));
@@ -151,6 +158,6 @@ function bindBottom(){$$('[data-ka-shell-action]').forEach(btn=>btn.addEventList
 function bindDashboardCards(){document.addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea,label'))return;const hero=e.target.closest('.ka-home-hero');if(hero){routeModule('academic',{bottom:'menu'});return}const card=e.target.closest('[data-home-section]');if(!card)return;const target=DASHBOARD_ROUTES[card.dataset.homeSection];if(target)routeModule(target,{bottom:'menu'});})}
 function hydrateHeader(){const {name,photo}=profileInfo(),profile=$('[data-ka-header-profile]');if(profile){const initials=name.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr');profile.innerHTML=photo?`<img src="${esc(photo)}" alt="${esc(name)}">`:esc(initials||'K');profile.setAttribute('aria-label',`${name} hesabı`)}updateNotificationBadge();syncThemeButton()}
 function init(){observeVisibility();bindHeader();bindBottom();bindDashboardCards();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden){menuGroup?renderMenuList(menuGroup):renderMenuGrid()}});global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});for(const type of ['hatirlaticilar','konusmalar','duyurular','ogretmenler'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
-global.ShellUI={init,home,openMenu,closeMenu,routeModule,renderProfile,renderSearch,openQuickNote,openProfilePopover,openNotifications,toggleTheme,applyTheme,renderMenuGrid,renderMenuList,normalizeDashboardLayout,syncVisibilityClasses,MENU_GROUPS,DASHBOARD_ROUTES};
+global.ShellUI={init,home,openMenu,closeMenu,routeModule,registerPageRoute,renderProfile,renderSearch,openQuickNote,openProfilePopover,openNotifications,toggleTheme,applyTheme,renderMenuGrid,renderMenuList,normalizeDashboardLayout,syncVisibilityClasses,MENU_GROUPS,DASHBOARD_ROUTES};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);
