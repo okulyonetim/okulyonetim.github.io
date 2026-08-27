@@ -23,7 +23,7 @@ function emit(path,value){
 function pathSet(path,value){
   const parts=String(path||'').split('.').filter(Boolean);if(!parts.length)return;
   let node=state;for(let i=0;i<parts.length-1;i++){const k=parts[i];if(!node[k]||typeof node[k]!=='object')node[k]={};node=node[k]}
-  node[parts.at(-1)]=value;emit(path,value);return value;
+  node[parts.at(-1)]=value;emit(path,value);return value
 }
 function setData(type,value){state.data[type]=value;emit('data.'+type,value);return value}
 function hydrateStore(data){if(data&&typeof data==='object')Object.entries(data).forEach(([k,v])=>state.data[k]=v);state.meta.hydrated=true;emit('meta.hydrated',true);return state.data}
@@ -60,6 +60,7 @@ async function get(k,def=null){try{const d=await open();return await new Promise
 async function set(k,v){const d=await open();return new Promise((res,rej)=>{const t=d.transaction(STORE,'readwrite');t.objectStore(STORE).put(v,k);t.oncomplete=()=>res(v);t.onerror=()=>rej(t.error)})}
 async function setMany(entries){if(!entries?.length)return;const d=await open();return new Promise((res,rej)=>{const t=d.transaction(STORE,'readwrite'),s=t.objectStore(STORE);entries.forEach(([k,v])=>s.put(v,k));t.oncomplete=res;t.onerror=()=>rej(t.error)})}
 async function del(k){const d=await open();return new Promise((res,rej)=>{const t=d.transaction(STORE,'readwrite');t.objectStore(STORE).delete(k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
+async function entriesByPrefix(prefix){const d=await open();return new Promise((res,rej)=>{const out=[],r=d.transaction(STORE,'readonly').objectStore(STORE).openCursor();r.onsuccess=()=>{const c=r.result;if(!c)return res(out);if(String(c.key).startsWith(prefix))out.push([String(c.key),c.value]);c.continue()};r.onerror=()=>rej(r.error)})}
 const key=(u,s)=>`u:${u||'anon'}:${s}`;
 function uid(){try{return window.AKTIF_KULLANICI?.uid||AppStore.get('session.user')?.uid||''}catch(_){return''}}
 async function queue(u,op){const k=key(u,'queue'),q=await get(k,[]),qid=op.qid||`${Date.now()}-${Math.random().toString(36).slice(2)}`,next={...op,qid,createdAt:op.createdAt||Date.now(),tries:op.tries||0},i=q.findIndex(x=>x.qid===qid);if(i>=0)q[i]=next;else q.push(next);await set(k,q);scheduleFlush();return next}
@@ -71,10 +72,16 @@ const cached=(u,type,def=[])=>get(key(u,`cache:${type}`),def);
 async function cacheMany(u,data){if(!u||!data||typeof data!=='object')return;const rows=Object.entries(data).map(([type,val])=>[key(u,`cache:${type}`),val]);rows.push([key(u,'meta:lastLocalWriteAt'),Date.now()]);await setMany(rows);return data}
 async function hydrateLocal(u,types,defaults={}){const out={};for(const type of types||[])out[type]=await cached(u,type,Object.prototype.hasOwnProperty.call(defaults,type)?defaults[type]:[]);return out}
 async function meta(u,name,value){const k=key(u,`meta:${name}`);if(arguments.length>=3){await set(k,value);return value}return get(k,null)}
+async function userSnapshot(u=uid()){
+  if(!u)return{caches:{},tombstones:{},meta:{},queue:[]};
+  const prefix=`u:${u}:`,entries=await entriesByPrefix(prefix),out={caches:{},tombstones:{},meta:{},queue:[]};
+  for(const[k,v]of entries){const scope=k.slice(prefix.length);if(scope==='queue'){out.queue=Array.isArray(v)?v:[];continue}if(scope.startsWith('cache:')){out.caches[scope.slice(6)]=v;continue}if(scope.startsWith('tomb:')){out.tombstones[scope.slice(5)]=v&&typeof v==='object'?v:{};continue}if(scope.startsWith('meta:'))out.meta[scope.slice(5)]=v;}
+  return out;
+}
 async function runWrite(op){if(!window.db)throw new Error('db-yok');const ref=op.id?db.collection(op.collection).doc(op.id):null;if(op.kind==='delete-doc')return ref.delete();if(op.kind==='set-doc')return ref.set(op.data,{merge:!!op.merge});if(op.kind==='update-doc')return ref.set(op.data,{merge:true});if(op.kind==='delete-query'){const s=await db.collection(op.collection).where(op.field,'==',op.value).get();if(s.empty)return;const b=db.batch();s.docs.forEach(d=>b.delete(d.ref));return b.commit()}throw new Error('op-bilinmiyor')}
 async function flushWrites(){if(flushing||!navigator.onLine)return;const u=uid();if(!u)return;flushing=true;const k=key(u,'queue');try{const q=await get(k,[]),left=[];for(const op of q){try{await runWrite(op);if(op.tombType&&op.tombId)await tombstone(u,op.tombType,op.tombId,false)}catch(e){op.tries=(op.tries||0)+1;op.lastError=String(e?.message||e);op.lastTryAt=Date.now();left.push(op)}}await set(k,left);AppStore.set('ui.pendingWrites',left.length);window.dispatchEvent(new CustomEvent('koruk:sync-state',{detail:{pending:left.length}}));return left.length}finally{flushing=false}}
 function scheduleFlush(){clearTimeout(flushTimer);flushTimer=setTimeout(flushWrites,350)}
-window.KorukLocalFirst={open,get,set,setMany,del,queue,pending,tombstone,tombstones,cache,cached,cacheMany,hydrate:hydrateLocal,meta,markBootstrap:(u,d={})=>meta(u,'bootstrap',{ready:true,completedAt:Date.now(),...d}),bootstrapState:u=>meta(u,'bootstrap'),isBootstrapReady:async u=>!!(await meta(u,'bootstrap'))?.ready,flush:flushWrites,schedule:scheduleFlush,uid};
+window.KorukLocalFirst={open,get,set,setMany,del,queue,pending,tombstone,tombstones,cache,cached,cacheMany,hydrate:hydrateLocal,meta,userSnapshot,markBootstrap:(u,d={})=>meta(u,'bootstrap',{ready:true,completedAt:Date.now(),...d}),bootstrapState:u=>meta(u,'bootstrap'),isBootstrapReady:async u=>!!(await meta(u,'bootstrap'))?.ready,flush:flushWrites,schedule:scheduleFlush,uid};
 
 /* ========================= DEVICE DATA =========================
    Tüm modül repository'lerinin ortak local-first yazma/okuma kapısıdır.
