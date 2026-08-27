@@ -46,6 +46,23 @@ for(const bundle of ['people','academic','management','communication','transport
   assert(source[bundle].includes('DeviceData'),`${bundle} merkezi DeviceData kullanmalı.`);
 }
 
+// Öncelikli çekirdek sayfalar rol kataloğunda gerçek, ayrı izin anahtarlarına sahip olmalı.
+for(const key of [
+  'academic.schedule','academic.schedule.edit',
+  'communication.polls','communication.polls.edit','communication.news','communication.news.edit',
+  'communication.calendar','communication.calendar.edit','communication.notes','communication.notes.edit',
+  'transport.services','transport.services.edit','transport.classSeating','transport.classSeating.edit',
+  'settings.school','settings.school.edit','settings.users','settings.roles.edit'
+]) assert(loader.includes(`['${key}'`),`Merkezi permission kataloğu eksik: ${key}`);
+for(const alias of [
+  "'academic.schedule':['dersProgrami']","'academic.schedule.edit':['dersProgrami']",
+  "'communication.calendar':['takvim']","'communication.calendar.edit':['takvim']",
+  "'communication.notes':['notlar']","'communication.notes.edit':['notlar']",
+  "'communication.news':['haberler']","'communication.polls':['anketler']",
+  "'settings.school':['okulBilgileri']"
+]) assert(loader.includes(alias),`Legacy permission alias sözleşmesi eksik: ${alias}`);
+assert(loader.includes("'module.academic':['sinavIslemleri','yillikPlan','dersProgrami'"),'Ders Programı legacy yetkisi Academic modül görünürlüğüne de dahil edilmeli.');
+
 assert(source.tools.includes("where('olusturanUid','==',u.uid)"),'Harita favorileri normal kullanıcıda sahiplik filtresiyle senkronize edilmeli.');
 assert(source.tools.includes("where('sahipUid','==',u.uid)"),'Ödev/Not çizelgeleri normal kullanıcıda sahiplik filtresiyle senkronize edilmeli.');
 assert(source.tools.includes("['sosyalKulupler','sok','zumre','bepPlani','rehberlik','maarifRapor','belirliGunler','digerEvrak']"),'Çizelge tipleri mevcut gerçek koleksiyonları korumalı.');
@@ -90,4 +107,4 @@ assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif ha
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 
-console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride ve Communication mutation izinleri kapalı: smoke test başarılı.');
+console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride, çekirdek sayfa rol kataloğu ve Communication mutation izinleri kapalı: smoke test başarılı.');
