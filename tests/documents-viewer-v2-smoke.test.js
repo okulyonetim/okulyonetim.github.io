@@ -23,9 +23,14 @@ for(const selector of ['dv3','dv3h','dv3body','dv3pdfpage','dv3wordviewport','dv
 assert(documents.includes("PermissionService?.can?.('documents.tracking','read')"),'Evrak Takibi görüntüleme merkezi documents.tracking iznini kullanmalı.');
 assert(documents.includes("PermissionService?.can?.('documents.tracking.edit','edit')"),'Evrak Takibi yazma merkezi documents.tracking.edit iznini kullanmalı.');
 assert(documents.includes("device().add('evrak',COL.evrak")&&documents.includes("device().update('evrak',COL.evrak")&&documents.includes("device().remove('evrak',COL.evrak"),'Evrak CRUD DeviceData local-first kapısında kalmalı.');
+assert(documents.includes("SyncEngine.register('evrak',COL.evrak)")&&documents.includes("SyncEngine.localHydrate(['evrak'])"),'Evrak Takibi cihaz verisini önce hydrate edip Firestore senkronunu arkaya bırakmalı.');
+assert(documents.includes("const TUR=['Gelen Evrak','Giden Evrak','İç Yazışma','Tutanak','Diğer']"),'Eski gerçek evrak türleri korunmalı.');
+assert(documents.includes("const DURUM=['Beklemede','İşlemde','Tamamlandı','Arşivlendi']"),'Eski gerçek evrak durumları korunmalı.');
+for(const field of ['evrakAdi','tur','tarih','durum','sorumluOgretmenIdler','dosyaLinki','aciklama']) assert(documents.includes(field),`Evrak gerçek veri alanı korunmalı: ${field}`);
 assert(documents.includes('responsibleNames(x.sorumluOgretmenIdler)'),'Evrak kartı gerçek sorumlu öğretmenleri göstermeli.');
+assert(!documents.includes("const canView=()=>typeof global.gorebilir==='function'?global.gorebilir('evrak'):true"),'Evrak sayfası eski yetki yardımcısını ana yetki kaynağı olarak kullanmamalı.');
 assert(loader.includes("['documents.tracking','Evrak Takibi','section']")&&loader.includes("['documents.tracking.edit','Evrak Takibi düzenleme','action']"),'Evrak izinleri merkezi katalogda olmalı.');
 assert(loader.includes("'module.documents':['dokumanlar','evrak']"),'Eski evrak yetkisi Documents modül görünürlüğünü korumalı.');
 assert(loader.includes("'documents.tracking':['evrak']")&&loader.includes("'documents.tracking.edit':['evrak']"),'Eski evrak rol yetkisi merkezi izinlere alias olmalı.');
-console.log('Documents V2 Evrak Takibi merkezi yetki + local-first sözleşmesi başarılı.');
+console.log('Documents V2 Evrak Takibi gerçek model + merkezi yetki + local-first sözleşmesi başarılı.');
 console.log('Documents V2 doğrudan module viewer + merkezi tasarım sözleşmesi başarılı.');
