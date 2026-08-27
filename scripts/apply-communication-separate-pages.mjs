@@ -10,7 +10,7 @@ communication=once(communication,"function bind(){document.querySelectorAll('[da
 communication=once(communication,"function unmount(){mounted=false;","function openPage(page,title=''){const allowed=['announcements','messages','polls','news','notes','calendar'];if(!allowed.includes(page))return false;if(active==='messages'&&page!=='messages')closeMessageConversation(false);active=page;query='';const h=document.querySelector('[data-communication-module] > .ka-row h2');if(h&&title)h.textContent=title;render();return true}\nfunction unmount(){mounted=false;",'Communication openPage insertion');
 communication=once(communication,"window.CommunicationModule={mount,unmount,render,prepareLocal};","window.CommunicationModule={mount,unmount,render,prepareLocal,openPage};",'Communication public API');
 if(communication.includes('data-communication-tab'))throw new Error('Communication tab tokens remain after migration');
-for(const token of ['konusmaBaslatOgretmenIle','grupOlustur','mesajGonderDosyaIle','okunduIsaretle','bindPolls','bindNews','bindCalendar','bindNotes'])if(!communication.includes(token))throw new Error(`Communication behavior lost: ${token}`);
+for(const token of ['konusmaBaslatOgretmenIle','grupOlustur','mesajGonderDosyaIle','okunduIsaretle','bindCommunicationActions(out)','data-poll-vote','data-news-source-delete','bindCalendar','bindNotes'])if(!communication.includes(token))throw new Error(`Communication behavior lost: ${token}`);
 write('js/modules/communication.js',communication);
 
 let shell=read('js/core/shell-ui.js');
