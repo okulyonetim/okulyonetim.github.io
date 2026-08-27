@@ -1,0 +1,40 @@
+name: Rubric Direct Routing Migration
+
+on:
+  push:
+    branches: [tmp-rubric-routing-migration]
+    paths:
+      - 'scripts/apply-rubric-direct-routing.mjs'
+      - 'tests/rubric-direct-routing.test.js'
+      - '.github/workflows/rubric-direct-routing-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-rubric-routing-migration
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply guarded Rubric direct-routing migration
+        run: node scripts/apply-rubric-direct-routing.mjs
+      - name: Verify Rubric direct routing
+        run: node tests/rubric-direct-routing.test.js
+      - name: Verify bundles
+        run: node scripts/build-client-bundles.mjs && node tests/module-bundles-smoke.test.js
+      - name: Verify architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/rubric-tools.js js/core/shell-ui.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'refactor(rubric): route rubric tools directly'
+          git push origin HEAD:tmp-rubric-routing-migration
