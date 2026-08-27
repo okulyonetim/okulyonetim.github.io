@@ -1,4 +1,5 @@
 const fs=require('fs');
+const path=require('path');
 const assert=require('assert');
 
 const allowed={
@@ -24,4 +25,23 @@ assert(!fs.existsSync('js/dokuman-okuyucu.js'),'Emekli root belge görüntüleyi
 assert(fs.existsSync('js/modules/map-ui.js'),'Harita UI motoru js/modules/map-ui.js altında bulunmalı.');
 assert(!fs.existsSync('js/harita.js'),'Emekli root harita motoru geri dönmemeli.');
 
-console.log(`Kök JS envanteri başarılı (${actual.length} dosya): ${actual.map(f=>`${f}=${allowed[f]}`).join(', ')}`);
+const opticalName=/optik|optical|\bomr\b|form[-_ ]?okuyucu|kamera[-_ ]?okuma/i;
+const opticalHits=[];
+function walk(dir){
+  for(const ent of fs.readdirSync(dir,{withFileTypes:true})){
+    if(['.git','node_modules','dist','www'].includes(ent.name))continue;
+    const p=path.join(dir,ent.name);
+    if(ent.isDirectory())walk(p);
+    else if(opticalName.test(p.replace(/\\/g,'/')))opticalHits.push(p.replace(/\\/g,'/'));
+  }
+}
+for(const dir of ['js','css','android/app/src/main'])if(fs.existsSync(dir))walk(dir);
+assert.deepStrictEqual(opticalHits,[],`Optik okuyucu/OMR dosyaları geri dönmemeli: ${opticalHits.join(', ')}`);
+
+for(const file of ['index.html','js/app-loader.js','js/core/shell-ui.js','service-worker.js']){
+  if(!fs.existsSync(file))continue;
+  const text=fs.readFileSync(file,'utf8');
+  assert(!/optik okuyucu|\bomr\b|optical reader|kamera okuma|form okuyucu/i.test(text),`${file} optik okuyucu/OMR çalışma zamanı referansı içermemeli.`);
+}
+
+console.log(`Kök JS envanteri + optik okuyucu retirement başarılı (${actual.length} dosya): ${actual.map(f=>`${f}=${allowed[f]}`).join(', ')}`);
