@@ -80,8 +80,10 @@ for(const token of [
   "gorevSil(id){try{requireEdit('takvim')}",
   "gorevDurumGuncelle(id,d){try{requireEdit('takvim')}",
   "gorevTamamlandiGuncelle(id,d){try{requireEdit('takvim')}",
-  "notSil(id){try{requireEdit('notlar')}",
-  "notMaddeleriGuncelle(id,m){try{requireEdit('notlar')}",
+  "function noteOwn(id)",
+  "_yetkiKontrol(){return global.PermissionService?PermissionService.can('communication.notes.edit','edit')",
+  "notSil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
+  "notMaddeleriGuncelle(id,m){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
   "duyuruSil(id){try{requireEdit('duyurular')}",
   "anketKapat(id,k){if(!isAdmin())return Promise.reject(new Error('yetkisiz'))",
   "anketSil(id){if(!isAdmin())return Promise.reject(new Error('yetkisiz'))",
@@ -89,6 +91,11 @@ for(const token of [
   "haberSil(id){try{requireEdit('haberler')}",
   "kaynakSil(id){try{requireEdit('haberler')}"
 ]) assert(source.communication.includes(token),`Communication mutation permission sözleşmesi eksik: ${token}`);
+assert(source.communication.includes("if(id&&!noteOwn(id))return Promise.reject(new Error('sahip-degil'))"),'Başkasının notu ID bilinerek güncellenememeli.');
+assert(source.communication.includes("if(!noteOwn(id))return Promise.reject(new Error('sahip-degil'))"),'Başkasının notu silinememeli veya checklist maddeleri değiştirilememeli.');
+for(const hook of ['visibleNotes()','data-note-add','data-note-edit','data-note-delete','data-note-item','noteForm','bindNotes(out)']) assert(source.communication.includes(hook),`Notlar yönetim UI sözleşmesi eksik: ${hook}`);
+assert(source.communication.includes("arr('notlar').filter(x=>x.sahipUid===uid())"),'Normal kullanıcı Notlar UI başka kullanıcı cache kayıtlarını göstermemeli.');
+assert(source.communication.includes('const safeToast=m=>window.toast?.(m)'),'Takvim/Notlar UI hata bildirim yardımcısı kendi scope içinde tanımlı olmalı.');
 assert(source.communication.includes("okunduIsaretle(id){return DuyurularRepository.okunduIsaretle"),'Duyuru okundu işaretleme normal kullanıcı eylemi olarak edit yetkisinden bağımsız kalmalı.');
 assert(source.communication.includes("oyVer(a,ids){const oylar="),'Anket oylama normal kullanıcı eylemi olarak admin mutation sınırından bağımsız kalmalı.');
 
@@ -107,4 +114,4 @@ assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif ha
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 
-console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride, çekirdek sayfa rol kataloğu ve Communication mutation izinleri kapalı: smoke test başarılı.');
+console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride, çekirdek sayfa rol kataloğu, Notlar sahipliği ve Communication mutation izinleri kapalı: smoke test başarılı.');
