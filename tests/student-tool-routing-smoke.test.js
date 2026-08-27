@@ -28,4 +28,11 @@ for(const legacy of ['function renderStudentList()','function createBookModal(ty
 }
 assert(!tools.includes("currentPage==='student-list'")&&!tools.includes("currentPage==='homework'||currentPage==='grades'"),'StudentPages lifecycle tekrar Liste/Ödev/Not sahibi olmamalı.');
 
-console.log('Öğrenci araçları canonical UI routing ve attendance-only StudentPages sözleşmesi başarılı.');
+// Genel ToolsModule içinde üçüncü bir Ödev/Not motoru bulunmamalı; veri servisi ortak kalmalı.
+for(const duplicate of ['data-tools-tab="gradebooks"','function gradeTitle(t)','function gradeTable(t,k)','function gradeCard(t,k)','function renderGradebooks()','function bindGradebooks()','data-grade-cell','data-grade-open']) {
+  assert(!tools.includes(duplicate),`Genel Tools içinde duplicate Ödev/Not UI geri dönmemeli: ${duplicate}`);
+}
+assert(tools.includes('prepareGradebooks'),'Canonical OdevNotUI için ortak local-first gradebook hazırlığı korunmalı.');
+assert(tools.includes('OdevNotCizelgeleriService'),'Canonical gradebook service korunmalı.');
+
+console.log('Öğrenci araçları tek canonical UI motoru ve attendance-only StudentPages sözleşmesi başarılı.');
