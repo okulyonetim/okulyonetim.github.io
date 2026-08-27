@@ -1,0 +1,38 @@
+name: News Notification Settings Migration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-news-notification-settings.mjs'
+      - '.github/workflows/news-notification-settings-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply guarded news notification migration
+        run: node scripts/migrate-news-notification-settings.mjs
+      - name: Verify push and architecture
+        run: |
+          node tests/pwa-push-smoke.test.js
+          node tests/communication-admin-actions.test.js
+          node tests/communication-local-first-contract.test.js
+          node tests/no-module-internal-tabs.test.js
+          node scripts/build-client-bundles.mjs
+          node scripts/check-client-architecture.mjs
+      - name: Commit production migration and cleanup
+        run: |
+          rm scripts/migrate-news-notification-settings.mjs .github/workflows/news-notification-settings-migration.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/communication.js scripts/migrate-news-notification-settings.mjs .github/workflows/news-notification-settings-migration.yml
+          git commit -m 'feat(news): restore local-first notification settings'
+          git push
