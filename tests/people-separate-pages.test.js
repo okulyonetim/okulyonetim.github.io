@@ -1,0 +1,14 @@
+const fs=require('fs');
+const assert=require('assert');
+const people=fs.readFileSync('js/modules/people.js','utf8');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+assert(!people.includes('data-people-tab'),'People ana iç sekme üretmemeli.');
+assert(people.includes("function openPage(page,title='')"),'PeopleModule doğrudan sayfa açma API sağlamalı.');
+for(const page of ['teachers','classes','students'])assert(people.includes(`'${page}'`),`People ayrı sayfa hedefi eksik: ${page}`);
+for(const token of ['teacherDetail','studentDetail','studentResults','classDetail','SiniflarService','YoklamaService','BelgeDurumuService','konusmaBaslatOgretmenIle'])assert(people.includes(token),`People gerçek davranışı eksik: ${token}`);
+assert(people.includes("CommunicationModule?.openPage?.('messages','Mesajlaşma')"),'Öğretmen mesaj köprüsü yeni Communication openPage API kullanmalı.');
+assert(!people.includes('data-communication-tab="messages"'),'Öğretmen mesaj köprüsü emekli Communication sekmesini kullanmamalı.');
+assert(shell.includes("name==='people'&&['teachers','classes','students'].includes(page)"),'Shell People sayfalarını doğrudan route etmeli.');
+assert(shell.includes('PeopleModule?.openPage?.(page,title)'),'Shell People tab click yerine openPage kullanmalı.');
+assert(!shell.includes('[data-people-tab='),'Shell People tab selector kullanmamalı.');
+console.log('People ayrı sayfa + mesaj köprüsü sözleşmesi başarılı.');
