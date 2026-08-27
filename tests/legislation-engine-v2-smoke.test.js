@@ -5,8 +5,14 @@ const ui=fs.readFileSync('js/modules/legislation-ui.js','utf8');
 const shell=fs.readFileSync('index.html','utf8');
 const shellUi=fs.readFileSync('js/core/shell-ui.js','utf8');
 
-for(const token of ["DB_NAME='okulMevzuatDB'","'kayitlar'","'chunklar'","createIndex('mevzuatId'",'function split(text)','function stem(word)','async function search(question','async function ask(question)','async function backup()','async function restore(data)']) assert(src.includes(token),`Mevzuat V2 motor sözleşmesi eksik: ${token}`);
-assert(src.includes('indexedDB.open(DB_NAME,DB_VERSION)'),'Mevzuat motoru mevcut IndexedDB veri modelini kullanmalı.');
+for(const token of ["RECORD_TYPE='mevzuatKayitlar'","CHUNK_TYPE='mevzuatChunklar'","LEGACY_DB='okulMevzuatDB'",'function split(text)','function stem(word)','async function search(question','async function ask(question)','async function backup()','async function restore(data)']) assert(src.includes(token),`Mevzuat V2 motor sözleşmesi eksik: ${token}`);
+assert(src.includes('global.DeviceData.persist(type'),'Mevzuat yazmaları merkezi DeviceData.persist kapısından geçmeli.');
+assert(src.includes('global.SyncEngine.localHydrate([RECORD_TYPE,CHUNK_TYPE])'),'Mevzuat okumaları merkezi local-first hydrate mekanizmasını kullanmalı.');
+assert(src.includes("indexedDB.databases()).some(x=>x?.name===LEGACY_DB)"),'Legacy mevzuat DB yalnız gerçekten mevcutsa açılmalı.');
+assert(src.includes('indexedDB.open(LEGACY_DB,LEGACY_VERSION)'),'Mevcut legacy mevzuat verisi migration amacıyla okunabilmeli.');
+assert(src.includes('indexedDB.deleteDatabase(LEGACY_DB)'),'Başarılı migration sonrası eski ikinci IndexedDB silinmeli.');
+assert(!src.includes('createObjectStore(')&&!src.includes("createIndex('mevzuatId'"),'Mevzuat motoru ikinci IndexedDB/store oluşturmamalı.');
+assert(!src.includes("const DB_NAME='okulMevzuatDB'")&&!src.includes('function db(){'),'Legacy mevzuat DB çalışma zamanı ana veri deposu olmamalı.');
 assert(!src.includes('db.collection(')&&!src.includes('firebase.firestore'),'Mevzuat motoru Firestore kullanmamalı.');
 assert(!src.includes('document.getElementById')&&!src.includes('modalAc('),'Mevzuat motoru DOM/modal presentation katmanına bağlı olmamalı.');
 assert(src.includes("https://koruk-mevzuat-asistan.sedonet23.workers.dev/"),'Mevcut mevzuat Worker sözleşmesi korunmalı.');
@@ -26,4 +32,4 @@ assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore'),'Mevzu
 assert(shell.includes('js/modules/legislation.js')&&shell.includes('js/modules/legislation-ui.js'),'Mevzuat V2 motoru ve presentation üretim shell tarafından yüklenmeli.');
 assert(!fs.existsSync('js/mevzuat-asistan.js'),'Legacy mevzuat-asistan.js geri dönmemeli.');
 
-console.log('Mevzuat local-first V2 motor + Documents-owned permission sözleşmesi başarılı.');
+console.log('Mevzuat tek IndexedDB local-first + Documents-owned permission sözleşmesi başarılı.');
