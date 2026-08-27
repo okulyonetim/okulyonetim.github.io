@@ -53,9 +53,18 @@ function applyFormPage(root,page,title){const wanted=FORM_PAGES[page];if(!wanted
 function applySubpage(name,page,title){
   const root=$('#v2ModuleRoot');if(!root||!page)return false;
   const studentPages={'student-attendance':'attendance','student-list':'student-list',homework:'homework',grades:'grades'};
-  if(name==='tools'&&studentPages[page]){
+  if(name==='tools'&&page==='student-attendance'){
     global.ToolsModule?.unmount?.();
-    Promise.resolve(global.StudentPages?.open?.(studentPages[page],title)).catch(e=>{console.error('[Shell/student-page]',e);global.toast?.('Öğrenci sayfası açılamadı.');});
+    Promise.resolve(global.StudentPages?.open?.('attendance',title)).catch(e=>{console.error('[Shell/student-attendance]',e);global.toast?.('Öğrenci yoklama açılamadı.');});
+    if(title)setTitle(title);return true;
+  }
+  if(name==='tools'&&page==='student-list'){
+    Promise.resolve(global.OgretmenListeUI?.open?.()).then(()=>requestAnimationFrame(()=>{const shell=root.querySelector('[data-tools-module]');if(shell){const head=shell.querySelector(':scope > .ka-row'),tabs=shell.querySelector('.ka-tabs');if(head)head.hidden=true;if(tabs)tabs.hidden=true}})).catch(e=>{console.error('[Shell/student-list]',e);global.toast?.('Öğrenci listesi oluşturucu açılamadı.');});
+    if(title)setTitle(title);return true;
+  }
+  if(name==='tools'&&(page==='homework'||page==='grades')){
+    global.ToolsModule?.unmount?.();
+    Promise.resolve(global.OdevNotUI?.open?.(studentPages[page])).catch(e=>{console.error('[Shell/gradebook]',e);global.toast?.('Çizelge açılamadı.');});
     if(title)setTitle(title);return true;
   }
   if(name==='tools'&&FORM_PAGES[page])return applyFormPage(root,page,title);
@@ -92,9 +101,12 @@ function applySubpage(name,page,title){
   return !!tab;
 }
 async function routeModule(name,{bottom='menu',page='',title=''}={}){
+  const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
+  if(global.OdevNotUI?.page&&global.OdevNotUI.page!==requestedGradePage&&global.OdevNotUI.close?.()===false)return false;
+  if(!(name==='tools'&&page==='student-list'))global.OgretmenListeUI?.close?.();
+  if(!(name==='tools'&&page==='student-attendance'))global.StudentPages?.close?.();
   closeHeaderPopover();closeMenu();
   if(!(name==='tools'&&FORM_PAGES[page]))cleanupFormPage();
-  if(!(name==='tools'&&['student-attendance','student-list','homework','grades'].includes(page)))global.StudentPages?.close?.();
   if(name==='payroll'){
     if(global.PayrollChangeModule?.open){
       setBottomActive(bottom);setTitle('Maaş Değişikliği Bildirim Formu');
