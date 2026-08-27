@@ -100,10 +100,12 @@
     const rubricPages={'Ders Et. Kat. Puan Dağıtımı':'rubric','Proje Değerlendirme Ölçeği':'project'};
     const formPages={'Maarif Model':'Maarif Model Raporları','Belirli Gün ve Haftalar':'Belirli Günler ve Haftalar','ŞÖK':'ŞÖK','Rehberlik':'Rehberlik','Yıllık Planlar & BEP Planları':'BEP Planları','Zümre':'Zümre','Sosyal Kulüpler':'Sosyal Kulüpler'};
     const academicPages={'Akademik Takvim':'calendar'};
-    page=migratedPages[title]||managementPages[title]||toolPages[title]||academicPages[title]||(formPages[title]?'forms':page);
+    const settingsPages={'Kullanıcı İşlemleri':'users'};
+    page=migratedPages[title]||managementPages[title]||toolPages[title]||academicPages[title]||settingsPages[title]||(formPages[title]?'forms':page);
     if(migratedPages[title]||toolPages[title]||rubricPages[title]||formPages[title])route='tools';
     if(managementPages[title])route='management';
     if(academicPages[title])route='academic';
+    if(settingsPages[title])route='settings';
     if(title==='Evrak Takibi')route='documents';
     if(!route)return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
@@ -166,6 +168,15 @@
             const heading=root?.querySelector('[data-tools-module] > .ka-row');if(heading)heading.hidden=true;
             const rubricButton=root?.querySelector(`[data-rubric-tool="${rubricPages[title]}"]`);
             if(rubricButton)rubricButton.click();else window.toast?.('Araç henüz hazır değil.');
+            const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          });
+          return;
+        }
+        if(settingsPages[title]){
+          requestAnimationFrame(()=>{
+            const root=document.getElementById('v2ModuleRoot'),tab=root?.querySelector(`[data-settings-tab="${page}"]`);
+            if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
+            const heading=root?.querySelector('[data-settings-module] > div:first-child');if(heading)heading.hidden=true;
             const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
           });
           return;
