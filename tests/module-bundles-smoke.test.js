@@ -99,6 +99,19 @@ assert(source.communication.includes('const safeToast=m=>window.toast?.(m)'),'Ta
 assert(source.communication.includes("okunduIsaretle(id){return DuyurularRepository.okunduIsaretle"),'Duyuru okundu işaretleme normal kullanıcı eylemi olarak edit yetkisinden bağımsız kalmalı.');
 assert(source.communication.includes("oyVer(a,ids){const oylar="),'Anket oylama normal kullanıcı eylemi olarak admin mutation sınırından bağımsız kalmalı.');
 
+// Taşıma: gerçek servis CRUD'u, öğrenci koruması ve ayrık rol sınırları UI/service katmanında korunmalı.
+for(const token of [
+  "PermissionService.can('transport.services.edit','edit')",
+  "PermissionService.can('transport.seating.edit','edit')",
+  "PermissionService.can('transport.classSeating.edit','edit')",
+  'data-service-add','data-service-edit','data-service-delete','serviceForm',
+  'servisAdi','guzergah','plaka','soforAdi','soforTelefon',
+  'window.TasimaService.servisKaydet','window.TasimaService.servisSil'
+]) assert(source.transport.includes(token),`Taşıma servis yönetim sözleşmesi eksik: ${token}`);
+assert(source.transport.includes("arr('veliler').filter(v=>v.servisId===id).length"),'Öğrenci atanmış servis silinmeden önce bağlı öğrenci sayısı kontrol edilmeli.');
+assert(source.transport.includes('Önce öğrencileri başka servise taşıyın.'),'Bağlı öğrencisi olan servis doğrudan silinmemeli.');
+assert(source.transport.includes("device().add('servisler',COL.servisler")&&source.transport.includes("device().update('servisler',COL.servisler")&&source.transport.includes("device().remove('servisler',COL.servisler"),'Servis CRUD merkezi DeviceData üzerinden kalmalı.');
+
 assert(source.documents.includes("s.src='js/modules/document-viewer.js'"),'Belge görüntüleyici yalnız dosya açılırken doğrudan module path üzerinden lazy-load edilmeli.');
 assert(!source.documents.includes('js/dokuman-okuyucu.js'),'Emekli root belge görüntüleyici yolu geri dönmemeli.');
 assert(source.documents.includes('data-document-open'),'Documents UI dış sekme yerine kontrollü görüntüleme eylemi kullanmalı.');
@@ -110,8 +123,8 @@ function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.
 for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} kendi tek UI modülünü yüklemeli.`);
 for(const old of ['people-data.js','academic-data.js','management-data.js','messaging-data.js','communication-data.js','documents-data.js','tools-data.js','transport-data.js','settings-data.js','duty-data.js']) assert(!loader.includes(old),`Legacy data paketi loader'a geri dönmemeli: ${old}`);
 assert(registry('transport').includes("'js/modules/report-engine.js'"),'Transport ortak ReportEngine kullanmalı.');
-assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif harita motorunu module path üzerinden lazy-load etmeli.');
+assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif harita motorunu module path üzerinden lazy-load edilmeli.');
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 
-console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride, çekirdek sayfa rol kataloğu, Notlar sahipliği ve Communication mutation izinleri kapalı: smoke test başarılı.');
+console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride; çekirdek rol, Notlar sahipliği ve Taşıma servis yönetimi smoke test başarılı.');
