@@ -30,6 +30,7 @@ on:
       - 'tests/management-separate-pages.test.js'
       - 'tests/communication-separate-pages.test.js'
       - 'tests/settings-separate-pages.test.js'
+      - 'tests/tools-separate-pages.test.js'
       - 'tests/communication-local-first-contract.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
@@ -74,6 +75,7 @@ on:
       - 'tests/management-separate-pages.test.js'
       - 'tests/communication-separate-pages.test.js'
       - 'tests/settings-separate-pages.test.js'
+      - 'tests/tools-separate-pages.test.js'
       - 'tests/communication-local-first-contract.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
@@ -142,6 +144,8 @@ jobs:
         run: node tests/communication-separate-pages.test.js
       - name: Verify Settings separate page routing
         run: node tests/settings-separate-pages.test.js
+      - name: Verify Tools separate page routing
+        run: node tests/tools-separate-pages.test.js
       - name: Verify communication local-first contract
         run: node tests/communication-local-first-contract.test.js
       - name: Verify retired legacy roots
