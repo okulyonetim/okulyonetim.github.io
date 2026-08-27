@@ -25,6 +25,7 @@ on:
       - 'tests/quick-note-launcher.test.js'
       - 'tests/communication-admin-actions.test.js'
       - 'tests/transport-separate-pages.test.js'
+      - 'tests/no-module-internal-tabs.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
@@ -75,6 +76,7 @@ on:
       - 'tests/quick-note-launcher.test.js'
       - 'tests/communication-admin-actions.test.js'
       - 'tests/transport-separate-pages.test.js'
+      - 'tests/no-module-internal-tabs.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
@@ -144,6 +146,8 @@ jobs:
         run: node tests/communication-admin-actions.test.js
       - name: Verify transport separate-page routing
         run: node tests/transport-separate-pages.test.js
+      - name: Forbid module internal tab navigation
+        run: node tests/no-module-internal-tabs.test.js
       - name: Verify report A4 preview and print
         run: node tests/report-engine-a4-smoke.test.js
       - name: Verify dashboard reminder engine
