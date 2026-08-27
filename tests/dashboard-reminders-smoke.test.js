@@ -26,4 +26,6 @@ assert(src.includes("evrak:'📄'"),'Evrak teslimleri öğretmen kartında gör�
 assert(src.includes("function collectReminders(daysOverride=null)"),'Hatırlatma motoru popup ve kart için tek motorla farklı görünüm ufku desteklemeli.');
 assert(src.includes("scanDocuments(id,days)"),'Öğretmen zaman çizelgesi gerçek evrak takip kaynağını merkezi motor üzerinden kullanmalı.');
 console.log('Dashboard birleşik öğretmen teslim/görev zaman çizelgesi sözleşmesi başarılı.');
+assert(src.includes("'documents','evrak','Evrak Takibi'"),'Evrak teslim hatırlatması doğrudan Evrak Takibi alt sayfasına gitmeli.');
+assert(src.includes("function route(module,page='',title='')"),'Hatırlatma rotası ikinci mapping oluşturmadan modül alt sayfasını taşıyabilmeli.');
 console.log('Dashboard local-first hatırlatma motoru smoke testi başarılı.');

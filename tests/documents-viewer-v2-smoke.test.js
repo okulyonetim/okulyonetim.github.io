@@ -4,6 +4,7 @@ const assert=require('assert');
 const documents=fs.readFileSync('js/modules/documents.js','utf8');
 const viewer=fs.readFileSync('js/modules/document-viewer.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
 
 assert(documents.includes("s.src='js/modules/document-viewer.js'"),'Documents V2 belge görüntüleyiciyi doğrudan module path üzerinden yalnız kullanım anında lazy-load etmeli.');
 assert(documents.includes("endsWith('js/modules/document-viewer.js')"),'Documents V2 mevcut module viewer scriptini yeniden kullanmalı.');
@@ -19,4 +20,12 @@ assert(viewer.includes('function pullToRefreshAyarla(enabled)'),'Native pull-to-
 assert(!/createElement\(\s*['"]style['"]\s*\)/.test(viewer),'Belge görüntüleyici runtime <style> üretmemeli.');
 assert(!viewer.includes('function style(){'),'Eski viewer style() katmanı geri dönmemeli.');
 for(const selector of ['dv3','dv3h','dv3body','dv3pdfpage','dv3wordviewport','dv3sheet']) assert(new RegExp(`\\.${selector}\\s*\\{`).test(design),`Belge görüntüleyici stili design-system.css içinde olmalı: .${selector}`);
+assert(documents.includes("PermissionService?.can?.('documents.tracking','read')"),'Evrak Takibi görüntüleme merkezi documents.tracking iznini kullanmalı.');
+assert(documents.includes("PermissionService?.can?.('documents.tracking.edit','edit')"),'Evrak Takibi yazma merkezi documents.tracking.edit iznini kullanmalı.');
+assert(documents.includes("device().add('evrak',COL.evrak")&&documents.includes("device().update('evrak',COL.evrak")&&documents.includes("device().remove('evrak',COL.evrak"),'Evrak CRUD DeviceData local-first kapısında kalmalı.');
+assert(documents.includes('responsibleNames(x.sorumluOgretmenIdler)'),'Evrak kartı gerçek sorumlu öğretmenleri göstermeli.');
+assert(loader.includes("['documents.tracking','Evrak Takibi','section']")&&loader.includes("['documents.tracking.edit','Evrak Takibi düzenleme','action']"),'Evrak izinleri merkezi katalogda olmalı.');
+assert(loader.includes("'module.documents':['dokumanlar','evrak']"),'Eski evrak yetkisi Documents modül görünürlüğünü korumalı.');
+assert(loader.includes("'documents.tracking':['evrak']")&&loader.includes("'documents.tracking.edit':['evrak']"),'Eski evrak rol yetkisi merkezi izinlere alias olmalı.');
+console.log('Documents V2 Evrak Takibi merkezi yetki + local-first sözleşmesi başarılı.');
 console.log('Documents V2 doğrudan module viewer + merkezi tasarım sözleşmesi başarılı.');
