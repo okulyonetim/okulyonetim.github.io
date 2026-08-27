@@ -1,6 +1,7 @@
 const fs=require('fs');
 const assert=require('assert');
 const dashboard=fs.readFileSync('js/modules/dashboard.js','utf8');
+const core=fs.readFileSync('js/core/core.js','utf8');
 assert(dashboard.includes('data-dash-page="written"'),'Sınav Ekle doğrudan Yazılı Sınavlar sayfasına gitmeli.');
 assert(dashboard.includes('data-dash-page="messages"'),'Mesaj Gönder doğrudan Mesajlaşma sayfasına gitmeli.');
 assert(dashboard.includes("page:btn.dataset.dashPage||''"),'Dashboard route binding sayfa hedefini ShellUI routeModule API sine aktarmalı.');
@@ -13,5 +14,8 @@ assert(dashboard.includes("if(opened===false)window.toast?.('Bu ders ve sınıf 
 console.log('Dashboard ders kartı yıllık plan doğrudan rota sözleşmesi başarılı.');
 assert(dashboard.includes('data-dash-duty-book'),'Öğretmenin kendi nöbetinde Dashboard nöbet defteri kutusu görünmeli.');
 assert(dashboard.includes('DutyBookService?.toggle?.'),'Dashboard nöbet defteri ikinci yazma yolu açmadan ortak servisi kullanmalı.');
+assert(core.includes('window.DutyBookService={teacherId:dutyBookTeacherId,canToggle:dutyBookCanToggle,toggle:dutyBookToggle}'),'Nöbet defteri sahiplik ve yazma davranışı ortak çekirdekte tek servis olmalı.');
+assert(core.includes("deviceUpdate('nobetAtamalari',COL.nobetAtamalari,atama.id,{defterDolduruldu:!!deger})"),'Ortak nöbet defteri servisi DeviceData local-first yazma kapısını kullanmalı.');
+assert(core.includes("u.admin===true||(tid&&atama?.ogretmenId===tid)"),'Nöbet defteri yalnız yönetici veya nöbet sahibi tarafından işaretlenebilmeli.');
 console.log('Nöbet defteri Dashboard ortak servis sözleşmesi başarılı.');
 console.log('Dashboard hızlı işlem doğrudan rota sözleşmesi başarılı.');
