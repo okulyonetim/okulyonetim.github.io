@@ -1,0 +1,40 @@
+name: Management Separate Pages Migration
+
+on:
+  push:
+    branches: [tmp-management-pages-migration]
+    paths:
+      - 'scripts/apply-management-separate-pages.mjs'
+      - 'tests/management-separate-pages.test.js'
+      - '.github/workflows/management-separate-pages-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-management-pages-migration
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply guarded Management separate-page migration
+        run: node scripts/apply-management-separate-pages.mjs
+      - name: Verify Management separate pages
+        run: node tests/management-separate-pages.test.js
+      - name: Verify bundles
+        run: node scripts/build-client-bundles.mjs && node tests/module-bundles-smoke.test.js
+      - name: Verify architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/management.js js/core/shell-ui.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'refactor(management): open management screens as separate pages'
+          git push origin HEAD:tmp-management-pages-migration
