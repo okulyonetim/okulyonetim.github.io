@@ -54,6 +54,27 @@ assert(source.management.includes('batchYeriSil')&&source.management.includes('b
 assert(source.academic.includes('storage.ref()'),'Academic binary dosyası Storage üzerinden yönetilmeli.');
 assert(source.documents.includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
 assert(source.communication.includes('storage.ref()'),'Communication binary dosyaları Storage üzerinden yönetilmeli.');
+
+// Communication servis katmanı: tüm gerçek mutation'lar yetki sınırından geçmeli.
+for(const token of [
+  "async mesajSil(m){if(!this._yetkiKontrol())throw new Error('yetkisiz')",
+  "hatirlaticiSil(id){try{requireEdit('takvim')}",
+  "hatirlaticiTamamlandiGuncelle(id,d){try{requireEdit('takvim')}",
+  "gorevSil(id){try{requireEdit('takvim')}",
+  "gorevDurumGuncelle(id,d){try{requireEdit('takvim')}",
+  "gorevTamamlandiGuncelle(id,d){try{requireEdit('takvim')}",
+  "notSil(id){try{requireEdit('notlar')}",
+  "notMaddeleriGuncelle(id,m){try{requireEdit('notlar')}",
+  "duyuruSil(id){try{requireEdit('duyurular')}",
+  "anketKapat(id,k){if(!isAdmin())return Promise.reject(new Error('yetkisiz'))",
+  "anketSil(id){if(!isAdmin())return Promise.reject(new Error('yetkisiz'))",
+  "HaberlerService={_yetkiKontrol(){return duzenleyebilir('haberler')}",
+  "haberSil(id){try{requireEdit('haberler')}",
+  "kaynakSil(id){try{requireEdit('haberler')}"
+]) assert(source.communication.includes(token),`Communication mutation permission sözleşmesi eksik: ${token}`);
+assert(source.communication.includes("okunduIsaretle(id){return DuyurularRepository.okunduIsaretle"),'Duyuru okundu işaretleme normal kullanıcı eylemi olarak edit yetkisinden bağımsız kalmalı.');
+assert(source.communication.includes("oyVer(a,ids){const oylar="),'Anket oylama normal kullanıcı eylemi olarak admin mutation sınırından bağımsız kalmalı.');
+
 assert(source.documents.includes("s.src='js/modules/document-viewer.js'"),'Belge görüntüleyici yalnız dosya açılırken doğrudan module path üzerinden lazy-load edilmeli.');
 assert(!source.documents.includes('js/dokuman-okuyucu.js'),'Emekli root belge görüntüleyici yolu geri dönmemeli.');
 assert(source.documents.includes('data-document-open'),'Documents UI dış sekme yerine kontrollü görüntüleme eylemi kullanmalı.');
@@ -69,4 +90,4 @@ assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif ha
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 
-console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride: smoke test başarılı.');
+console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride ve Communication mutation izinleri kapalı: smoke test başarılı.');
