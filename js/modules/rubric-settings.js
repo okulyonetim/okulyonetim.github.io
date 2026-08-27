@@ -29,10 +29,10 @@ async function personalGet(kind){
  if(saved)return clone(saved);
  const migrated=await global.KorukLocalFirst?.meta?.(u,migratedKey);
  if(migrated===true)return null;
- // Legacy localStorage yalnız ilk erişimde migration kaynağıdır; sonrasında IndexedDB tek kaynaktır.
+ // Legacy localStorage yalnız ilk erişimde migration kaynağıdır; başarıyla taşındığında fiziksel olarak da emekliye ayrılır.
  try{
    const raw=global.localStorage?.getItem?.(d.local);
-   if(raw){const value=JSON.parse(raw);await global.KorukLocalFirst?.meta?.(u,key,value);await global.KorukLocalFirst?.meta?.(u,migratedKey,true);return clone(value);}
+   if(raw){const value=JSON.parse(raw);await global.KorukLocalFirst?.meta?.(u,key,value);await global.KorukLocalFirst?.meta?.(u,migratedKey,true);global.localStorage?.removeItem?.(d.local);return clone(value);}
  }catch(e){console.warn('[RubricSettings/migrate]',kind,e?.message||e);}
  await global.KorukLocalFirst?.meta?.(u,migratedKey,true);
  return null;
