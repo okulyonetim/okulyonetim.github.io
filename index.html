@@ -106,7 +106,7 @@
     if(managementPages[title])route='management';
     if(academicPages[title])route='academic';
     if(settingsPages[title])route='settings';
-    if(title==='Evrak Takibi')route='documents';
+    if(title==='Evrak Takibi'||title==='Tebliğ-Tebellüğ İmza Sirküsü')route='documents';
     if(!route)return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
     setTimeout(()=>{
@@ -124,6 +124,17 @@
           const root=document.getElementById('v2ModuleRoot');
           await window.EvrakTakipPage?.open?.(root);
           const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          return;
+        }
+        if(title==='Tebliğ-Tebellüğ İmza Sirküsü'){
+          window.DocumentsModule?.openTeblig?.();
+          requestAnimationFrame(()=>{
+            const root=document.getElementById('v2ModuleRoot');
+            const heading=root?.querySelector('[data-documents-module] > .ka-row');if(heading)heading.hidden=true;
+            const search=root?.querySelector('#documentsSearch')?.closest('.ka-field');if(search)search.hidden=true;
+            const formButton=root?.querySelector('[data-document-form="teblig"]')?.closest('.ka-row');if(formButton)formButton.hidden=true;
+            const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          });
           return;
         }
         if(title==='Öğrenci Listesi Oluşturucu'){
