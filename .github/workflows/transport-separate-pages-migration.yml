@@ -1,0 +1,39 @@
+name: Transport Separate Pages Migration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-transport-separate-pages.mjs'
+      - 'tests/transport-separate-pages.test.js'
+      - '.github/workflows/transport-separate-pages-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply guarded transport separate-page migration
+        run: node scripts/apply-transport-separate-pages.mjs
+      - name: Verify transport separate-page contract
+        run: node tests/transport-separate-pages.test.js
+      - name: Verify bundles and architecture
+        run: node scripts/build-client-bundles.mjs && node tests/module-bundles-smoke.test.js && node scripts/check-client-architecture.mjs
+      - name: Commit production migration and cleanup
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/transport.js js/core/shell-ui.js
+          git diff --cached --quiet || git commit -m 'refactor(transport): replace internal tabs with separate pages'
+          git rm scripts/apply-transport-separate-pages.mjs .github/workflows/transport-separate-pages-migration.yml
+          git commit -m 'chore(transport): remove completed separate-page migration helpers'
+          git push origin HEAD:main
