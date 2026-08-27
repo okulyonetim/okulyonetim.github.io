@@ -1,50 +1,22 @@
 from pathlib import Path
-import re
 
 
-def replace_function(text, name, new_text):
-    pattern = rf"function {re.escape(name)}\([^\n]*"
-    match = re.search(pattern, text)
-    if not match:
-        raise SystemExit(f'function missing: {name}')
-    start = match.start()
-    i = match.end() - 1
-    depth = 0
-    quote = None
-    escape = False
-    template_depth = 0
-    while i < len(text):
-        ch = text[i]
-        if quote:
-            if escape:
-                escape = False
-            elif ch == '\\':
-                escape = True
-            elif ch == quote:
-                quote = None
-            i += 1
-            continue
-        if ch in "'\"`":
-            quote = ch
-            i += 1
-            continue
-        if ch == '{':
-            depth += 1
-        elif ch == '}':
-            depth -= 1
-            if depth == 0:
-                return text[:start] + new_text + text[i + 1:]
-        i += 1
-    raise SystemExit(f'unclosed function: {name}')
+def replace_line(text, prefix, new_line):
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        if line.startswith(prefix):
+            lines[i] = new_line
+            return '\n'.join(lines) + ('\n' if text.endswith('\n') else '')
+    raise SystemExit(f'line missing: {prefix}')
 
 p = Path('js/modules/dashboard.js')
 s = p.read_text()
 
-s = replace_function(s, 'statsSection', '''function statsSection(){if(!cardVisible('stats'))return'';const school=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{},name=school.okulAdi||'KORUK İLK - ORTAOKULU',place=[school.ilce,school.il].filter(Boolean).join(' · ');return section('Okul Özeti','▥','stats',`<div class="ka-home-summary-intro"><div><small>OKUL</small><strong>${esc(name)}</strong>${place?`<span>${esc(place)}</span>`:''}</div><span class="ka-badge">Bugün</span></div><div class="ka-home-stats">${statCard('👥','Öğretmen',arr('ogretmenler').length)}${statCard('🎓','Öğrenci',arr('veliler').length)}${statCard('🏫','Sınıf',arr('siniflar').length)}${statCard('🚌','Servis',arr('servisler').length)}</div>`) }''')
+s = replace_line(s, 'function statsSection()', '''function statsSection(){if(!cardVisible('stats'))return'';const school=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{},name=school.okulAdi||'KORUK İLK - ORTAOKULU',place=[school.ilce,school.il].filter(Boolean).join(' · ');return section('Okul Özeti','▥','stats',`<div class="ka-home-summary-intro"><div><small>OKUL</small><strong>${esc(name)}</strong>${place?`<span>${esc(place)}</span>`:''}</div><span class="ka-badge">Bugün</span></div><div class="ka-home-stats">${statCard('👥','Öğretmen',arr('ogretmenler').length)}${statCard('🎓','Öğrenci',arr('veliler').length)}${statCard('🏫','Sınıf',arr('siniflar').length)}${statCard('🚌','Servis',arr('servisler').length)}</div>`) }''')
 
-s = replace_function(s, 'dutySection', '''function dutySection(){if(!cardVisible('duty'))return'';const list=arr('nobetAtamalari').filter(x=>String(x.tarih||'').slice(0,10)===isoToday());if(isAdmin())return section("Bugünün Nöbetçileri",'🛡️','duty',list.length?dutyRows(list):empty('Bugün için nöbet kaydı yok.'));const tid=teacherId(),mine=list.filter(x=>tid&&x.ogretmenId===tid);if(!mine.length)return'';return section('Bugünkü Nöbetim','🛡️','duty',`<div class="ka-home-duty-focus">${dutyRows(mine)}</div>`,'ka-home-section--duty')}''')
+s = replace_line(s, 'function dutySection()', '''function dutySection(){if(!cardVisible('duty'))return'';const list=arr('nobetAtamalari').filter(x=>String(x.tarih||'').slice(0,10)===isoToday());if(isAdmin())return section("Bugünün Nöbetçileri",'🛡️','duty',list.length?dutyRows(list):empty('Bugün için nöbet kaydı yok.'));const tid=teacherId(),mine=list.filter(x=>tid&&x.ogretmenId===tid);if(!mine.length)return'';return section('Bugünkü Nöbetim','🛡️','duty',`<div class="ka-home-duty-focus">${dutyRows(mine)}</div>`,'ka-home-section--duty')}''')
 
-s = replace_function(s, 'quickSection', '''function quickSection(){return section('Hızlı İşlemler','⚡','quick',`<div class="ka-home-quick"><button type="button" data-dash-route="academic" data-dash-page="written" data-dash-title="Yazılı Sınavlar"><span>📝</span><b>Sınav Ekle</b></button><button type="button" data-dash-quick-note><span>📒</span><b>Not Ekle</b></button><button type="button" data-dash-route="communication" data-dash-page="messages" data-dash-title="Mesajlaşma"><span>💬</span><b>Mesaj Gönder</b></button><button type="button" data-dash-route="documents" data-dash-title="Dokümanlar"><span>📄</span><b>Evraklar</b></button></div>`) }''')
+s = replace_line(s, 'function quickSection()', '''function quickSection(){return section('Hızlı İşlemler','⚡','quick',`<div class="ka-home-quick"><button type="button" data-dash-route="academic" data-dash-page="written" data-dash-title="Yazılı Sınavlar"><span>📝</span><b>Sınav Ekle</b></button><button type="button" data-dash-quick-note><span>📒</span><b>Not Ekle</b></button><button type="button" data-dash-route="communication" data-dash-page="messages" data-dash-title="Mesajlaşma"><span>💬</span><b>Mesaj Gönder</b></button><button type="button" data-dash-route="documents" data-dash-title="Dokümanlar"><span>📄</span><b>Evraklar</b></button></div>`) }''')
 p.write_text(s)
 
 p = Path('css/design-system.css')
