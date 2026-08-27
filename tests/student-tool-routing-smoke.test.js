@@ -3,6 +3,7 @@ const assert=require('assert');
 
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const teacherList=fs.readFileSync('js/modules/teacher-list.js','utf8');
+const tools=fs.readFileSync('js/modules/tools.js','utf8');
 
 assert(shell.includes("page==='student-attendance'"),'Öğrenci Yoklama bağımsız route olarak kalmalı.');
 assert(shell.includes("StudentPages?.open?.('attendance',title)"),'Yoklama yalnız StudentPages attendance motoruna yönlenmeli.');
@@ -19,4 +20,12 @@ assert(shell.includes('global.OdevNotUI?.page'),'Shell kaydedilmemiş Ödev/Not 
 assert(shell.includes("global.OdevNotUI.close?.()===false"),'Kullanıcı sayfadan çıkmayı iptal ederse routing durmalı.');
 assert(shell.includes("global.OgretmenListeUI?.close?.()"),'Liste Oluşturucu sayfadan ayrılırken dinleyicisini kapatmalı.');
 
-console.log('Öğrenci araçları canonical UI routing sözleşmesi başarılı.');
+// StudentPages artık yalnız Yoklama motorudur. Liste ve çizelge UI kopyaları geri dönmemeli.
+assert(tools.includes("if(page!=='attendance')throw new Error('unsupported-student-page')"),'StudentPages yalnız attendance sayfasını kabul etmeli.');
+assert(tools.includes("subscribe(['data.siniflar','data.veliler','data.yoklama'])"),'Yoklama yalnız gerekli cihaz verilerine abone olmalı.');
+for(const legacy of ['function renderStudentList()','function createBookModal(type)','async function renderBookPage()']) {
+  assert(!tools.includes(legacy),`Emekliye ayrılan StudentPages UI geri dönmemeli: ${legacy}`);
+}
+assert(!tools.includes("currentPage==='student-list'")&&!tools.includes("currentPage==='homework'||currentPage==='grades'"),'StudentPages lifecycle tekrar Liste/Ödev/Not sahibi olmamalı.');
+
+console.log('Öğrenci araçları canonical UI routing ve attendance-only StudentPages sözleşmesi başarılı.');
