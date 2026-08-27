@@ -2,6 +2,7 @@ const fs=require('fs');
 const assert=require('assert');
 const shell=fs.readFileSync('index.html','utf8');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
+const core=fs.readFileSync('js/core/core.js','utf8');
 const dashboard=fs.readFileSync('js/modules/dashboard.js','utf8');
 const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
@@ -19,9 +20,21 @@ assert(!shell.includes('#kaMenuLayer [data-ka-menu-route]'),'Eski capture-phase 
 assert(!shell.includes('localStorage.'),'Production shell/index kalıcı veya geçici veri için localStorage kullanmamalı.');
 assert(shell.includes('const KaDataPage=(()=>{')&&shell.includes('window.KaDataPage=KaDataPage'),'Veri Aktarma Merkezi mevcut public API ile korunmalı.');
 for(const contract of ['importTeachers(file)','importStudents(file,classId)','importServiceStudents(file,serviceId)','downloadTemplate(type)','backupPayload()','restore(file)','driveBackup()']) assert(shell.includes(contract),`Veri Aktarma Merkezi sözleşmesi eksik: ${contract}`);
-for(const localFirst of ['KorukLocalFirst.cached','KorukLocalFirst.pending','KorukLocalFirst.tombstones','KorukLocalFirst.queue','KorukLocalFirst.cache']) assert(shell.includes(localFirst),`Veri yedekleme/geri yükleme local-first bileşeni eksik: ${localFirst}`);
+
+// Yedek yalnız o oturumda hydrate edilmiş AppStore verisine bağlı kalmamalı.
+assert(core.includes('async function entriesByPrefix(prefix)')&&core.includes('async function userSnapshot(u=uid())'),'Core aktif kullanıcıya ait tüm merkezi IndexedDB kayıtlarını enumerate edebilmeli.');
+assert(core.includes('userSnapshot,markBootstrap'),'KorukLocalFirst public API tam kullanıcı snapshot sözleşmesini sunmalı.');
+assert(shell.includes('window.KorukLocalFirst.userSnapshot(uid)'),'JSON/Drive yedeği bütün kullanıcı IndexedDB cache/meta/tombstone/queue snapshotını kullanmalı.');
+assert(shell.includes('...Object.keys(local.caches||{})'),'Backup type envanteri IndexedDB’de olup AppStore’da açılmamış cache tiplerini de içermeli.');
+assert(shell.includes("version:4")&&shell.includes('sync:{queue:Array.isArray(local.queue)?local.queue:[],tombstones:local.tombstones'),'Tam local-first snapshot yeni backup formatında saklanmalı.');
+assert(shell.includes('collections[type]=collection'),'Dinamik cache type -> Firestore collection eşlemesi backup içine yazılmalı.');
+assert(shell.includes("window.COL?.[String(type).split(':')[0]]"),'mesajlar:<id> gibi dinamik cache tipleri gerçek ana koleksiyonuna çözülebilmeli.');
+assert(shell.includes('await window.KorukLocalFirst.cache(uid,type,safe);window.AppStore?.setData?.(type,safe);'),'Restore COL karşılığı olmasa da local-only cache’i merkezi IndexedDB ve AppStore’a geri yüklemeli.');
+assert(shell.includes('if(collection){for(const item of safe)')&&shell.includes('else{localOnly+=safe.length}'),'Yalnız gerçek collection eşlemesi olan tipler Firestore sync kuyruğuna eklenmeli; local-only tipler yerelde kalmalı.');
+for(const localFirst of ['KorukLocalFirst.queue','KorukLocalFirst.cache','KorukLocalFirst.tombstone','KorukLocalFirst.meta','KorukLocalFirst.pending']) assert(shell.includes(localFirst),`Veri geri yükleme local-first bileşeni eksik: ${localFirst}`);
 assert(shell.includes("KorukLocalFirst.meta(uid,'lastDriveBackup'")&&shell.includes("'lastDriveBackup'"),'Drive son yedek metadata’sı IndexedDB meta üzerinde tutulmalı ve yedeğe dahil edilmeli.');
-assert(shell.includes("kind:'set-doc'")&&shell.includes('SyncEngine?.schedule?.(80)'),'Yedek geri yükleme cihaz verisini queue üzerinden arka plan senkronuna bırakmalı.');
+assert(shell.includes("kind:'set-doc'")&&shell.includes('SyncEngine?.schedule?.(80)'),'Senkron tipler restore sonrası queue üzerinden arka plan senkronuna bırakılmalı.');
+
 assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
 for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
@@ -68,4 +81,4 @@ for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer',
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
-console.log('Classic UX + local-first veri merkezi + merkezi routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
+console.log('Classic UX + tam IndexedDB yedek/restore + merkezi routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
