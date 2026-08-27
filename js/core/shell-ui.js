@@ -103,7 +103,12 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Ayarlar sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
+  if(name==='people'&&['teachers','classes','students'].includes(page)){
+    const ok=global.PeopleModule?.openPage?.(page,title);
+    if(ok===false)global.toast?.('Kişiler sayfası açılamadı.');
+    if(title)setTitle(title);return true;
+  }
+  const selector=name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
   const tab=selector?root.querySelector(selector):null;
   if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
   if(name==='academic'){
