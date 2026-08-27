@@ -1,0 +1,40 @@
+name: Tools Separate Pages Migration
+
+on:
+  push:
+    branches: [tmp-tools-pages-migration]
+    paths:
+      - 'scripts/apply-tools-separate-pages.mjs'
+      - 'tests/tools-separate-pages.test.js'
+      - '.github/workflows/tools-separate-pages-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-tools-pages-migration
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply guarded Tools separate-page migration
+        run: node scripts/apply-tools-separate-pages.mjs
+      - name: Verify Tools separate pages
+        run: node tests/tools-separate-pages.test.js
+      - name: Verify bundles
+        run: node scripts/build-client-bundles.mjs && node tests/module-bundles-smoke.test.js
+      - name: Verify architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/tools.js js/core/shell-ui.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'refactor(tools): open tool screens as separate pages'
+          git push origin HEAD:tmp-tools-pages-migration
