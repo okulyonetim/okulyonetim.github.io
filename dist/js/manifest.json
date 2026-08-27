@@ -1,13 +1,13 @@
 {
   "version": 26,
-  "generatedAt": "2026-08-27T19:35:52.667Z",
+  "generatedAt": "2026-08-27T19:43:30.830Z",
   "bundles": {
     "dashboard.js": {
       "sources": [
         "js/modules/dashboard.js"
       ],
-      "bytes": 30480,
-      "sha256": "d3355cbe34f6"
+      "bytes": 31285,
+      "sha256": "2f359f1c3ea0"
     },
     "people.js": {
       "sources": [
@@ -27,8 +27,8 @@
       "sources": [
         "js/modules/management.js"
       ],
-      "bytes": 89290,
-      "sha256": "77980fff27a4"
+      "bytes": 89068,
+      "sha256": "ae91968d59ca"
     },
     "communication.js": {
       "sources": [

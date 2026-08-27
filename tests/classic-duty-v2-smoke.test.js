@@ -10,4 +10,5 @@ for(const hook of ['data-duty-cell','data-duty-chief','data-duty-book','data-dut
 assert(src.includes('class="ka-duty-grid"'),'Aylık nöbet çizelgesi tablo anatomisi korunmalı.');
 assert(src.includes("device().set('nobetRotasyon',COL.nobetRotasyon"),'Rotasyon kaydı DeviceData üzerinden kalmalı.');
 assert(src.includes("PermissionService?.can?.('management.duty.edit','edit')"),'Nöbet yazma işlemleri merkezi management.duty.edit yetkisine bağlı kalmalı.');
+assert(src.includes('DutyBookService.toggle(atama,deger)'),'Management nöbet defteri ortak çekirdek servisine delege edilmeli.');
 console.log('Classic Duty V2 görünüm + local-first + yönetim araçları sözleşmesi başarılı.');

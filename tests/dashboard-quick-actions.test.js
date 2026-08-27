@@ -11,4 +11,7 @@ assert(dashboard.includes("routeModule?.('academic',{bottom:'menu',title:'Yıll�
 assert(dashboard.includes('AcademicModule?.openPlanForLesson?.'),'Dashboard ders kartı Academic yıllık plan API sine bağlanmalı.');
 assert(dashboard.includes("if(opened===false)window.toast?.('Bu ders ve sınıf için eşleşen yıllık plan bulunamadı.')"),'Eşleşme yoksa tahmini plan açılmamalı; kullanıcı bilgilendirilmeli.');
 console.log('Dashboard ders kartı yıllık plan doğrudan rota sözleşmesi başarılı.');
+assert(dashboard.includes('data-dash-duty-book'),'Öğretmenin kendi nöbetinde Dashboard nöbet defteri kutusu görünmeli.');
+assert(dashboard.includes('DutyBookService?.toggle?.'),'Dashboard nöbet defteri ikinci yazma yolu açmadan ortak servisi kullanmalı.');
+console.log('Nöbet defteri Dashboard ortak servis sözleşmesi başarılı.');
 console.log('Dashboard hızlı işlem doğrudan rota sözleşmesi başarılı.');

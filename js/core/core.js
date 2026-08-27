@@ -97,6 +97,12 @@ async function deviceRemove(type,collection,id){if(!id)throw new Error('id-gerek
 function deviceGet(type,id){return deviceList(type).find(x=>x?.id===id)||null}
 window.DeviceData={list:deviceList,get:deviceGet,listen:deviceListen,persist:devicePersist,add:deviceAdd,update:deviceUpdate,set:deviceSet,remove:deviceRemove,newId:deviceId};
 
+/* Nöbet defteri işaretleme davranışı Dashboard ve Management için tek merkezde tutulur. */
+function dutyBookTeacherId(){const u=window.AKTIF_KULLANICI||AppStore.get('session.user')||{};return u.bagliOgretmenId||u.ogretmenId||''}
+function dutyBookCanToggle(atama){const u=window.AKTIF_KULLANICI||AppStore.get('session.user')||{},tid=dutyBookTeacherId();return !!(u.admin===true||(tid&&atama?.ogretmenId===tid))}
+async function dutyBookToggle(atama,deger){if(!atama?.id)throw new Error('atama-yok');if(!dutyBookCanToggle(atama))throw new Error('sahip-degil');if(!window.COL?.nobetAtamalari)throw new Error('nobet-koleksiyonu-yok');return deviceUpdate('nobetAtamalari',COL.nobetAtamalari,atama.id,{defterDolduruldu:!!deger})}
+window.DutyBookService={teacherId:dutyBookTeacherId,canToggle:dutyBookCanToggle,toggle:dutyBookToggle};
+
 /* ========================= SYNC ENGINE ========================= */
 let syncing=false,syncTimer=null;const registered=new Map();
 function syncReady(){return !!(window.db&&uid())}
