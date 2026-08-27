@@ -130,3 +130,14 @@ installOtherDocumentsRoute();
 installDiplomaRoutes();
 global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='tools')requestAnimationFrame(inject);else if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen&&e.detail?.name!=='management')cleanupDiploma();});
 })(window);
+
+/* PDF araçlarının menü/routing köprüsü. Motor js/modules/documents.js içindedir. */
+(function(global){
+'use strict';
+if(global.__documentsPdfRoutesInstalled)return;
+const IMAGE='pdf-images',MERGE='pdf-merge';
+function install(){const groups=global.ShellUI?.MENU_GROUPS;if(!Array.isArray(groups))return false;const group=groups.find(x=>x.key==='documents');if(!group)return false;group.items=Array.isArray(group.items)?group.items:[];if(!group.items.some(x=>x?.[3]===IMAGE))group.items.push(['Resimden PDF Oluştur','🖼️','documents',IMAGE]);if(!group.items.some(x=>x?.[3]===MERGE))group.items.push(['PDF Birleştir','🔗','documents',MERGE]);global.__documentsPdfRoutesInstalled=true;return true;}
+async function open(page){if(global.PermissionService?.can?.('documents.view','preview')===false)return global.toast?.('Bu aracı görüntüleme yetkiniz yok.');await global.AppLoader?.load?.('documents');if(!global.DocumentsPdfTools?.open)throw new Error('PDF araç motoru hazır değil.');return global.DocumentsPdfTools.open(page);}
+document.addEventListener('click',e=>{const b=e.target?.closest?.('[data-ka-menu-page]'),page=b?.dataset?.kaMenuPage;if(page!==IMAGE&&page!==MERGE)return;e.preventDefault();e.stopImmediatePropagation();open(page).catch(err=>{console.error('[DocumentsPdfRoutes]',err);global.toast?.('PDF aracı açılamadı: '+(err?.message||err));});},true);
+install();global.addEventListener('koruk:app-ready',install);global.addEventListener('koruk:app-config-changed',install);
+})(window);
