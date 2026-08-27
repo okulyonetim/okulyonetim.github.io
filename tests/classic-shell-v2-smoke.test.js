@@ -16,11 +16,11 @@ assert(shell.includes('id="kaMenuLayer"'),'Tam ekran Menü katmanı production s
 assert(!shell.includes('IndexedDB verileri ekrana alınır'),'Teknik local-first açıklaması kullanıcı arayüzüne dönmemeli.');
 assert(!shell.includes('data-ka-module="people"'),'Dokuz modüllü eski teknik alt navigasyon geri dönmemeli.');
 assert(!shell.includes('#kaMenuLayer [data-ka-menu-route]'),'Eski capture-phase menü yönlendiricisi index.html içine geri dönmemeli.');
+assert(!shell.includes('localStorage.'),'Production shell/index kalıcı veya geçici veri için localStorage kullanmamalı.');
 assert(shell.includes('const KaDataPage=(()=>{')&&shell.includes('window.KaDataPage=KaDataPage'),'Veri Aktarma Merkezi mevcut public API ile korunmalı.');
 for(const contract of ['importTeachers(file)','importStudents(file,classId)','importServiceStudents(file,serviceId)','downloadTemplate(type)','backupPayload()','restore(file)','driveBackup()']) assert(shell.includes(contract),`Veri Aktarma Merkezi sözleşmesi eksik: ${contract}`);
 for(const localFirst of ['KorukLocalFirst.cached','KorukLocalFirst.pending','KorukLocalFirst.tombstones','KorukLocalFirst.queue','KorukLocalFirst.cache']) assert(shell.includes(localFirst),`Veri yedekleme/geri yükleme local-first bileşeni eksik: ${localFirst}`);
 assert(shell.includes("KorukLocalFirst.meta(uid,'lastDriveBackup'")&&shell.includes("'lastDriveBackup'"),'Drive son yedek metadata’sı IndexedDB meta üzerinde tutulmalı ve yedeğe dahil edilmeli.');
-assert(!shell.includes("localStorage.setItem('oySonDriveYedek'")&&!shell.includes("localStorage.getItem('oySonDriveYedek'"),'Drive yedek metadata’sı localStorage’a geri dönmemeli.');
 assert(shell.includes("kind:'set-doc'")&&shell.includes('SyncEngine?.schedule?.(80)'),'Yedek geri yükleme cihaz verisini queue üzerinden arka plan senkronuna bırakmalı.');
 assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
@@ -37,6 +37,7 @@ const directPages=[
 for(const [label,route,page] of directPages) assert(ui.includes(`['${label}'`)&&ui.includes(`'${route}','${page}'`),`Doğrudan menü hedefi eksik/yanlış: ${label} -> ${route}/${page}`);
 for(const page of ['form-maarif','form-belirli','form-sok','form-rehberlik','form-bep','form-zumre','form-kulup']) assert(ui.includes(`'${page}'`),`Ayrı doküman form sayfası eksik: ${page}`);
 assert(ui.includes("global.StudentPages?.open?.")&&ui.includes("global.EvrakTakipPage.open(root)")&&ui.includes("global.LegislationModule.mount(root)")&&ui.includes("global.KaDataPage.open()"),'Özel menü hedefleri gerçek mevcut API’lere bağlanmalı.');
+assert(ui.includes("if(name==='settings'&&page==='data'&&global.KaDataPage?.open)")&&ui.includes('global.SettingsModule?.unmount?.();'),'Veriler ayrı sayfa açılmadan önce Settings abonelikleri kapatılmalı.');
 assert(!ui.includes('Optik Okuma (OMR)')&&!ui.includes("key:'optik'"),'Optik okuyucu yeni Menü mimarisine dönmemeli.');
 assert(dashboard.includes('function adminShell()')&&dashboard.includes('function teacherShell()'),'Admin ve öğretmen ana sayfası ayrı renderer kullanmalı.');
 assert(dashboard.includes('data-dashboard-role="${isAdmin()?\'admin\':\'teacher\'}"'),'Dashboard rolü DOM sözleşmesinde görünür olmalı.');
