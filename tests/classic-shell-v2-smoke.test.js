@@ -19,7 +19,8 @@ assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI i
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
 for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
 for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\"]${route}['\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
-assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-menu-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı.');
+assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-shell-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı ve route sahibi ShellUI olmalı.');
+assert(!ui.includes('data-ka-menu-route'),'ShellUI eski ikinci menü yönlendiricisinin data-ka-menu-route sözleşmesini üretmemeli.');
 assert(!ui.includes('Optik Okuma (OMR)')&&!ui.includes("key:'optik'"),'Optik okuyucu yeni Menü mimarisine dönmemeli.');
 assert(dashboard.includes('function adminShell()')&&dashboard.includes('function teacherShell()'),'Admin ve öğretmen ana sayfası ayrı renderer kullanmalı.');
 assert(dashboard.includes('data-dashboard-role="${isAdmin()?\'admin\':\'teacher\'}"'),'Dashboard rolü DOM sözleşmesinde görünür olmalı.');
