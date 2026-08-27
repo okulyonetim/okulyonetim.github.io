@@ -39,6 +39,7 @@ const CUSTOM_PAGE_ROUTES=new Map();
 const DASHBOARD_ROUTES={announcements:'communication',polls:'communication',news:'communication',stats:'people',duty:'management',absences:'management',upcoming:'communication',lessons:'academic','week-duty':'management',exams:'academic',schedule:'academic',notes:'communication',calendar:'communication'};
 let activeAction='home',menuGroup=null,visibilityObserver=null,headerPopover=null,themeTouched=false;
 function registerPageRoute(page,handler){page=String(page||'').trim();if(!page||typeof handler!=='function')return()=>{};CUSTOM_PAGE_ROUTES.set(page,handler);return()=>{if(CUSTOM_PAGE_ROUTES.get(page)===handler)CUSTOM_PAGE_ROUTES.delete(page)}}
+function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();if(!global.KaDataPage?.open)throw new Error('KaDataPage hazır değil.');return global.KaDataPage.open()})}
 function setTitle(v){const el=$('#v2ModuleTitle');if(el)el.textContent=v||''}
 function setBottomActive(action){activeAction=action;$$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
 function moduleAllowed(name){const meta=global.AppConfig?.module?.(name);return meta?.visible!==false&&global.PermissionService?.moduleLevel?.(name)!=='hidden'}
@@ -71,11 +72,6 @@ function applySubpage(name,page,title){
   if(name==='documents'&&page==='teblig'&&global.DocumentsModule?.openTeblig){
     global.DocumentsModule.openTeblig();
     requestAnimationFrame(()=>{const shell=root.querySelector('[data-documents-module]');if(shell){const head=shell.querySelector(':scope > .ka-row'),search=shell.querySelector('#documentsSearch')?.closest('.ka-field'),formButton=shell.querySelector('[data-document-form="teblig"]')?.closest('.ka-row');if(head)head.hidden=true;if(search)search.hidden=true;if(formButton)formButton.hidden=true}});
-    if(title)setTitle(title);return true;
-  }
-  if(name==='settings'&&page==='data'&&global.KaDataPage?.open){
-    global.SettingsModule?.unmount?.();
-    Promise.resolve(global.KaDataPage.open()).catch(e=>{console.error('[Shell/data]',e);global.toast?.('Veriler açılamadı.');});
     if(title)setTitle(title);return true;
   }
   const selector=name==='people'?`[data-people-tab="${page}"]`:name==='academic'?`[data-academic-tab="${page}"]`:name==='communication'?`[data-communication-tab="${page}"]`:name==='management'?`[data-management-tab="${page}"]`:name==='settings'?`[data-settings-tab="${page}"]`:name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
@@ -157,7 +153,7 @@ function bindHeader(){document.addEventListener('click',e=>{const homeBtn=e.targ
 function bindBottom(){$$('[data-ka-shell-action]').forEach(btn=>btn.addEventListener('click',()=>{const a=btn.dataset.kaShellAction;if(a==='home')home();else if(a==='profile')renderProfile();else if(a==='menu')openMenu();else if(a==='search')renderSearch();else if(a==='note')openQuickNote()}))}
 function bindDashboardCards(){document.addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea,label'))return;const hero=e.target.closest('.ka-home-hero');if(hero){routeModule('academic',{bottom:'menu'});return}const card=e.target.closest('[data-home-section]');if(!card)return;const target=DASHBOARD_ROUTES[card.dataset.homeSection];if(target)routeModule(target,{bottom:'menu'});})}
 function hydrateHeader(){const {name,photo}=profileInfo(),profile=$('[data-ka-header-profile]');if(profile){const initials=name.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr');profile.innerHTML=photo?`<img src="${esc(photo)}" alt="${esc(name)}">`:esc(initials||'K');profile.setAttribute('aria-label',`${name} hesabı`)}updateNotificationBadge();syncThemeButton()}
-function init(){observeVisibility();bindHeader();bindBottom();bindDashboardCards();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden){menuGroup?renderMenuList(menuGroup):renderMenuGrid()}});global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});for(const type of ['hatirlaticilar','konusmalar','duyurular','ogretmenler'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
+function init(){installBuiltInPageRoutes();observeVisibility();bindHeader();bindBottom();bindDashboardCards();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden){menuGroup?renderMenuList(menuGroup):renderMenuGrid()}});global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});for(const type of ['hatirlaticilar','konusmalar','duyurular','ogretmenler'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
 global.ShellUI={init,home,openMenu,closeMenu,routeModule,registerPageRoute,renderProfile,renderSearch,openQuickNote,openProfilePopover,openNotifications,toggleTheme,applyTheme,renderMenuGrid,renderMenuList,normalizeDashboardLayout,syncVisibilityClasses,MENU_GROUPS,DASHBOARD_ROUTES};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);
