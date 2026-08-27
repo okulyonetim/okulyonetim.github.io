@@ -72,14 +72,18 @@ assert(source.academic.includes('storage.ref()'),'Academic binary dosyası Stora
 assert(source.documents.includes('storage.ref()'),'Documents binary dosyası Storage üzerinden yönetilmeli.');
 assert(source.communication.includes('storage.ref()'),'Communication binary dosyaları Storage üzerinden yönetilmeli.');
 
-// Communication servis katmanı: tüm gerçek mutation'lar yetki sınırından geçmeli.
+// Communication servis katmanı: tüm gerçek mutation'lar yetki ve sahiplik sınırından geçmeli.
 for(const token of [
   "async mesajSil(m){if(!this._yetkiKontrol())throw new Error('yetkisiz')",
-  "hatirlaticiSil(id){try{requireEdit('takvim')}",
-  "hatirlaticiTamamlandiGuncelle(id,d){try{requireEdit('takvim')}",
-  "gorevSil(id){try{requireEdit('takvim')}",
-  "gorevDurumGuncelle(id,d){try{requireEdit('takvim')}",
-  "gorevTamamlandiGuncelle(id,d){try{requireEdit('takvim')}",
+  "_yetkiKontrol(){const ok=global.PermissionService?PermissionService.can('communication.calendar.edit','edit'):duzenleyebilir('takvim')",
+  "hatirlaticiSil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
+  "hatirlaticiTamamlandiGuncelle(id,d){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
+  "gorevSil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
+  "gorevDurumGuncelle(id,d){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
+  "gorevTamamlandiGuncelle(id,d){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
+  "function calendarOwn(type,id)",
+  "if(!calendarOwn('hatirlaticilar',id))return Promise.reject(new Error('sahip-degil'))",
+  "if(!calendarOwn('gorevler',id))return Promise.reject(new Error('sahip-degil'))",
   "function noteOwn(id)",
   "_yetkiKontrol(){return global.PermissionService?PermissionService.can('communication.notes.edit','edit')",
   "notSil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'))",
@@ -127,4 +131,4 @@ assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif ha
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 
-console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride; çekirdek rol, Notlar sahipliği ve Taşıma servis yönetimi smoke test başarılı.');
+console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride; çekirdek rol, Takvim/Notlar sahipliği ve Taşıma servis yönetimi smoke test başarılı.');
