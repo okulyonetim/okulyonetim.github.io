@@ -8,7 +8,9 @@ assert(people.includes("device().add('veliler',COL.veliler"),'Öğrenci/veli yaz
 assert(!people.includes('db.collection('),'People UI/repository doğrudan Firestore kullanmamalı.');
 assert(!people.includes('localStorage.setItem('),'People kalıcı veriyi localStorage ile yazmamalı.');
 
-for(const tab of ['teachers','classes','students']) assert(people.includes(`data-people-tab=\"${tab}\"`),`Shell yönlendirme kancası eksik: ${tab}`);
+assert(!people.includes('data-people-tab'),'People üst seviye öğretmen/sınıf/öğrenci sekmeleri üretmemeli.');
+assert(people.includes("function openPage(page,title='')"),'People doğrudan sayfa açma API sağlamalı.');
+for(const page of ['teachers','classes','students']) assert(people.includes(`'${page}'`),`People doğrudan sayfa hedefi eksik: ${page}`);
 for(const marker of ['ka-teacher-directory','ka-teacher-profile','ka-teacher-summary','ka-teacher-actions','data-teacher-detail','data-teacher-edit','data-teacher-report','data-teacher-program','data-teacher-message']) assert(people.includes(marker),`Yeni Öğretmenler/profil akışı öğesi eksik: ${marker}`);
 for(const marker of ['ka-class-directory','ka-class-card','data-class-level','data-class-detail','data-class-tab','data-class-seating','ka-student-directory','ka-student-card','data-student-class','data-gender-filter','data-student-detail','data-student-results','data-results-filter','ka-people-student-list','data-class-add','data-class-edit','data-class-delete','data-student-add','data-student-edit','data-student-delete','classForm','studentForm']) assert(people.includes(marker),`Sınıf/öğrenci yönetim akışı öğesi eksik: ${marker}`);
 for(const label of ['Öğretmenler','Sınıflar','Öğrenciler','Öğrenci Detayı','Sınav Sonuçları','DERS PROGRAMI','NÖBETLER','KULÜP DANIŞMANLIĞI','BELİRLİ GÜN VE HAFTALAR','DİĞER EVRAK']) assert(people.includes(label),`People görünüm öğesi eksik: ${label}`);
@@ -20,4 +22,4 @@ assert(people.includes("PermissionService.can('people.students.edit','edit')"),'
 assert(people.includes("if(count){global.toast?.(`Bu sınıfta ${count} öğrenci var."),'Öğrencili sınıf doğrudan silinmemeli.');
 assert(people.includes('BelgeDurumuService'),'Öğretmen belge durumu akışı korunmalı.');
 
-console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first yönetim sözleşmesi başarılı.');
+console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first ayrı-sayfa sözleşmesi başarılı.');
