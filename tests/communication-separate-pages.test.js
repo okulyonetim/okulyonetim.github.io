@@ -5,7 +5,7 @@ const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 assert(!communication.includes('data-communication-tab'),'Communication ana iç sekme üretmemeli.');
 assert(communication.includes("function openPage(page,title='')"),'CommunicationModule doğrudan sayfa açma API sağlamalı.');
 for(const page of ['announcements','messages','polls','news','notes','calendar'])assert(communication.includes(`'${page}'`),`Communication ayrı sayfa hedefi eksik: ${page}`);
-for(const token of ['konusmaBaslatOgretmenIle','grupOlustur','mesajGonderDosyaIle','okunduIsaretle','bindPolls','bindNews','bindCalendar','bindNotes'])assert(communication.includes(token),`Communication gerçek davranışı eksik: ${token}`);
+for(const token of ['konusmaBaslatOgretmenIle','grupOlustur','mesajGonderDosyaIle','okunduIsaretle','bindCommunicationActions(out)','data-poll-vote','data-news-source-delete','bindCalendar','bindNotes'])assert(communication.includes(token),`Communication gerçek davranışı eksik: ${token}`);
 assert(shell.includes("name==='communication'&&['announcements','messages','polls','news','notes','calendar'].includes(page)"),'Shell Communication sayfalarını doğrudan route etmeli.');
 assert(shell.includes('CommunicationModule?.openPage?.(page,title)'),'Shell Communication tab click yerine openPage kullanmalı.');
 assert(!shell.includes('[data-communication-tab='),'Shell Communication tab selector kullanmamalı.');
