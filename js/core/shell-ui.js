@@ -93,7 +93,12 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Yönetim sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='communication'?`[data-communication-tab="${page}"]`:name==='settings'?`[data-settings-tab="${page}"]`:name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
+  if(name==='communication'&&['announcements','messages','polls','news','notes','calendar'].includes(page)){
+    const ok=global.CommunicationModule?.openPage?.(page,title);
+    if(ok===false)global.toast?.('İletişim sayfası açılamadı.');
+    if(title)setTitle(title);return true;
+  }
+  const selector=name==='people'?`[data-people-tab="${page}"]`:name==='settings'?`[data-settings-tab="${page}"]`:name==='tools'&&['checklists','map','attendance'].includes(page)?`[data-tools-tab="${page}"]`:name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
   const tab=selector?root.querySelector(selector):null;
   if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
   if(name==='academic'){
