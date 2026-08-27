@@ -96,8 +96,10 @@
     const title=button.dataset.kaMenuTitle||'';
     const migratedPages={'Öğrenci Yoklama':'attendance','Öğrenci Listesi Oluşturucu':'student-list','Ödev Takip Çizelgesi':'homework','Not Çizelgesi':'grades'};
     const managementPages={'Personeller':'staff','Aylık İşler':'tasks','Nöbet Programı':'duty','Puantaj & İmza Sirküsü':'puantaj','Dilekçe & İzinler':'dilekce'};
-    page=migratedPages[title]||managementPages[title]||page;
-    if(migratedPages[title])route='tools';
+    const toolPages={'Kontrol Listeleri':'checklists','Harita':'map','Devamsızlık Çizelgesi':'attendance'};
+    const rubricPages={'Ders Et. Kat. Puan Dağıtımı':'rubric','Proje Değerlendirme Ölçeği':'project'};
+    page=migratedPages[title]||managementPages[title]||toolPages[title]||page;
+    if(migratedPages[title]||toolPages[title]||rubricPages[title])route='tools';
     if(managementPages[title])route='management';
     if(!route)return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
@@ -116,6 +118,26 @@
           return;
         }
         if(migratedPages[title])return window.StudentPages?.open?.(page,title);
+        if(toolPages[title]){
+          requestAnimationFrame(()=>{
+            const root=document.getElementById('v2ModuleRoot'),tab=root?.querySelector(`[data-tools-tab="${page}"]`);
+            if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
+            const heading=root?.querySelector('[data-tools-module] > .ka-row');if(heading)heading.hidden=true;
+            const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          });
+          return;
+        }
+        if(rubricPages[title]){
+          requestAnimationFrame(()=>{
+            const root=document.getElementById('v2ModuleRoot');
+            const tabs=root?.querySelector('[data-tools-module] .ka-tabs');if(tabs)tabs.hidden=true;
+            const heading=root?.querySelector('[data-tools-module] > .ka-row');if(heading)heading.hidden=true;
+            const rubricButton=root?.querySelector(`[data-rubric-tool="${rubricPages[title]}"]`);
+            if(rubricButton)rubricButton.click();else window.toast?.('Araç henüz hazır değil.');
+            const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          });
+          return;
+        }
         if(managementPages[title]){
           requestAnimationFrame(()=>{
             const root=document.getElementById('v2ModuleRoot'),tab=root?.querySelector(`[data-management-tab="${page}"]`);
