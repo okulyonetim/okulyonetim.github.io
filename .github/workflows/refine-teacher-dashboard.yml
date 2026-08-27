@@ -22,48 +22,7 @@ jobs:
           node-version: '20'
 
       - name: Refine teacher dashboard
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          def rep(s, old, new, label):
-              if old not in s:
-                  raise SystemExit(f'pattern missing: {label}')
-              return s.replace(old, new, 1)
-
-          p=Path('js/modules/dashboard.js')
-          s=p.read_text()
-
-          s=rep(s,
-          "function statCard(icon,label,value){return `<article class=\"ka-home-stat\"><span>${icon}</span><div><b>${esc(String(value))}</b><small>${esc(label)}</small></div></article>`}\nfunction statsSection(){if(!cardVisible('stats'))return'';return section('Okul Özeti','▥','stats',`<div class=\"ka-home-stats\">${statCard('👥','Öğretmen',arr('ogretmenler').length)}${statCard('🎓','Öğrenci',arr('veliler').length)}${statCard('🏫','Sınıf',arr('siniflar').length)}${statCard('🚌','Servis',arr('servisler').length)}</div>`)}`,
-          "function statCard(icon,label,value){return `<article class=\"ka-home-stat\"><span>${icon}</span><div><b>${esc(String(value))}</b><small>${esc(label)}</small></div></article>`}\nfunction statsSection(){if(!cardVisible('stats'))return'';const school=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{},name=school.okulAdi||'KORUK İLK - ORTAOKULU',place=[school.ilce,school.il].filter(Boolean).join(' · ');return section('Okul Özeti','▥','stats',`<div class=\"ka-home-summary-intro\"><div><small>OKUL</small><strong>${esc(name)}</strong>${place?`<span>${esc(place)}</span>`:''}</div><span class=\"ka-badge\">Bugün</span></div><div class=\"ka-home-stats\">${statCard('👥','Öğretmen',arr('ogretmenler').length)}${statCard('🎓','Öğrenci',arr('veliler').length)}${statCard('🏫','Sınıf',arr('siniflar').length)}${statCard('🚌','Servis',arr('servisler').length)}</div>`)}`,
-          'school summary')
-
-          old_duty="function dutySection(){if(!cardVisible('duty'))return'';const list=arr('nobetAtamalari').filter(x=>String(x.tarih||'').slice(0,10)===isoToday());return section(isAdmin()?\"Bugünün Nöbetçileri\":'Nöbetim','🛡️','duty',list.length?dutyRows(isAdmin()?list:list.filter(x=>!teacherId()||x.ogretmenId===teacherId())):empty('Bugün için nöbet kaydı yok.'))}"
-          new_duty="function dutySection(){if(!cardVisible('duty'))return'';const list=arr('nobetAtamalari').filter(x=>String(x.tarih||'').slice(0,10)===isoToday());if(isAdmin())return section(\"Bugünün Nöbetçileri\",'🛡️','duty',list.length?dutyRows(list):empty('Bugün için nöbet kaydı yok.'));const tid=teacherId(),mine=list.filter(x=>tid&&x.ogretmenId===tid);if(!mine.length)return'';return section('Bugünkü Nöbetim','🛡️','duty',`<div class=\"ka-home-duty-focus\">${dutyRows(mine)}</div>`,'ka-home-section--duty')}"
-          s=rep(s,old_duty,new_duty,'teacher duty conditional')
-
-          old_quick="function quickSection(){return section('Hızlı İşlemler','⚡','quick',`<div class=\"ka-home-quick\"><button type=\"button\" data-dash-route=\"academic\" data-dash-page=\"written\" data-dash-title=\"Yazılı Sınavlar\"><span>📝</span><b>Sınav Ekle</b></button><button type=\"button\" data-dash-route=\"communication\" data-dash-page=\"messages\" data-dash-title=\"Mesajlaşma\"><span>💬</span><b>Mesaj Gönder</b></button><button type=\"button\" data-dash-route=\"documents\" data-dash-title=\"Dokümanlar\"><span>📄</span><b>Dokümanlar</b></button><button type=\"button\" data-dash-quick-note><span>📒</span><b>Hızlı Not</b></button></div>`)}`
-          new_quick="function quickSection(){return section('Hızlı İşlemler','⚡','quick',`<div class=\"ka-home-quick\"><button type=\"button\" data-dash-route=\"academic\" data-dash-page=\"written\" data-dash-title=\"Yazılı Sınavlar\"><span>📝</span><b>Sınav Ekle</b></button><button type=\"button\" data-dash-quick-note><span>📒</span><b>Not Ekle</b></button><button type=\"button\" data-dash-route=\"communication\" data-dash-page=\"messages\" data-dash-title=\"Mesajlaşma\"><span>💬</span><b>Mesaj Gönder</b></button><button type=\"button\" data-dash-route=\"documents\" data-dash-title=\"Dokümanlar\"><span>📄</span><b>Evraklar</b></button></div>`)}`
-          s=rep(s,old_quick,new_quick,'quick actions')
-          p.write_text(s)
-
-          p=Path('css/design-system.css')
-          s=p.read_text()
-          marker='/* ===== TEACHER DASHBOARD REFINEMENT ===== */'
-          if marker not in s:
-              s += '''\n\n/* ===== TEACHER DASHBOARD REFINEMENT ===== */\n.ka-home-section__head{padding:7px 4px 9px}.ka-home-section__head>div{width:100%}.ka-home-section__head h3{font-size:17px;font-weight:900;letter-spacing:-.015em}.ka-home-section__icon{color:var(--ka-primary);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ka-primary) 12%,transparent)}\n.ka-home-summary-intro{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 1px 12px;margin-bottom:10px;border-bottom:1px solid var(--ka-border)}.ka-home-summary-intro>div{min-width:0;display:flex;flex-direction:column}.ka-home-summary-intro small{color:var(--ka-primary);font-size:9px;font-weight:900;letter-spacing:.12em}.ka-home-summary-intro strong{margin-top:3px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ka-home-summary-intro span:not(.ka-badge){margin-top:2px;color:var(--ka-text-muted);font-size:10px}\n.ka-home-stat{transition:transform var(--ka-transition-fast),border-color var(--ka-transition-fast)}.ka-home-stat>span{width:42px;height:42px;border-radius:14px;background:var(--ka-primary-soft);display:grid;place-items:center;font-size:22px}.ka-home-stat b{color:var(--ka-text);font-variant-numeric:tabular-nums}.ka-home-stat small{color:var(--ka-text-muted)}\n.ka-home-duty-focus{border:1px solid color-mix(in srgb,var(--ka-primary) 30%,var(--ka-border));border-radius:17px;background:linear-gradient(135deg,var(--ka-primary-soft),var(--ka-card-bg));padding:2px 12px}.ka-home-duty-focus .ka-home-row{border-bottom:0;min-height:74px}.ka-home-duty-focus .ka-home-avatar{background:var(--ka-primary);color:var(--ka-button-text)}.ka-home-duty-focus .ka-check{background:var(--ka-card-bg);border:1px solid var(--ka-border);border-radius:12px;padding:7px 9px;color:var(--ka-text);font-size:10px}\n.ka-home-quick button{position:relative;min-height:92px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm);font-weight:850}.ka-home-quick button>span{width:40px;height:40px;border-radius:13px;background:var(--ka-primary-soft);display:grid;place-items:center}.ka-home-quick button:active{transform:scale(.97);background:var(--ka-primary-soft)}\n@media(max-width:430px){.ka-home-section__head h3{font-size:16px}.ka-home-summary-intro strong{font-size:13px}.ka-home-stats{gap:8px}.ka-home-stat{min-height:118px}.ka-home-quick{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ka-home-quick button{min-height:86px}.ka-home-duty-focus .ka-home-row{align-items:flex-start;flex-wrap:wrap;padding-block:10px}.ka-home-duty-focus .ka-check{width:100%;justify-content:center}}\n'''
-              p.write_text(s)
-
-          p=Path('tests/dashboard-card-routes-smoke.test.js')
-          s=p.read_text()
-          needle="assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Aktif deneme sayacı ana sayfada canlı güncellenmeli.');"
-          extra="""\nassert(dash.includes("if(!mine.length)return''"),'Öğretmenin nöbet kartı yalnız gerçek nöbeti varsa görünmeli.');\nassert(dash.includes("section('Bugünkü Nöbetim'"),'Öğretmenin kendi nöbeti ayrı odak kartı olmalı.');\nassert(dash.includes('ka-home-summary-intro')&&dash.includes("school.okulAdi"),'Okul özeti mevcut okulBilgileri verisini kullanmalı.');\nassert(dash.includes('>Not Ekle</b>')&&dash.includes('>Evraklar</b>'),'Öğretmen hızlı işlemleri onaylı dört doğrudan aksiyonu taşımalı.');\nassert(css.includes('TEACHER DASHBOARD REFINEMENT')&&css.includes('.ka-home-duty-focus'),'Öğretmen dashboard görsel sözleşmesi merkezi design-system içinde olmalı.');"""
-          if extra.strip() not in s:
-              s=rep(s,needle,needle+extra,'dashboard refinement regression')
-              p.write_text(s)
-          PY
+        run: python3 scripts/refine-teacher-dashboard.py
 
       - name: Build and verify
         run: |
@@ -76,7 +35,7 @@ jobs:
 
       - name: Commit refinement
         run: |
-          rm -f .github/workflows/refine-teacher-dashboard.yml
+          rm -f .github/workflows/refine-teacher-dashboard.yml scripts/refine-teacher-dashboard.py
           git config user.name 'sedonet23'
           git config user.email 'sedonet23@gmail.com'
           git add -A
