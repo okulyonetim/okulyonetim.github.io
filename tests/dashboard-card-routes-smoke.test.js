@@ -24,6 +24,11 @@ assert(dash.includes("section('Bugünkü Nöbetim'"),'Öğretmenin kendi nöbeti
 assert(dash.includes('ka-home-summary-intro')&&dash.includes("school.okulAdi"),'Okul özeti mevcut okulBilgileri verisini kullanmalı.');
 assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Evraklar</b>'),'Öğretmen hızlı işlemleri dört doğrudan aksiyonu taşımalı.');
 assert(css.includes('TEACHER DASHBOARD REFINEMENT')&&css.includes('.ka-home-duty-focus'),'Öğretmen dashboard görsel sözleşmesi merkezi design-system içinde olmalı.');
+assert(dash.includes("collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Yazılılar öğretmen görev/takvim kartında ikinci kez gösterilmemeli.');
+assert(dash.includes("title=teacherMode?'Ders Programım':'Şu Anki Dersler'")&&dash.includes('data-dash-page=\"schedule\"'),'Öğretmenin günlük ders kartı Ders Programım başlığıyla haftalık programa bağlanmalı.');
+assert(dash.includes("teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'")&&dash.includes('ka-home-exam-row'),'Öğretmenin yaklaşan yazılıları ayrı ve doğrudan yazılı sayfasına bağlı olmalı.');
+assert(!dash.includes("${lessonsSection()}${personalScheduleSection()}"),'Öğretmen ana sayfasında ikinci Ders Programım kartı üretilmemeli.');
+assert(css.includes('TEACHER WORKFLOW DASHBOARD')&&css.includes('.ka-home-lessons--teacher'),'Öğretmen iş akışı görsel düzeni merkezi design-system içinde kalmalı.');
 assert(dash.includes("if(!list.length)return'';const body=list.map"),'Duyuru yoksa boş duyuru kartı gösterilmemeli.');
 assert(html.includes("localStorage.getItem('ka-theme')")&&html.includes("setAttribute('data-theme',t)"),'İlk boyamada merkezi açık/koyu tema uygulanmalı.');
 assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Shell tek merkezi tema sözleşmesini ve mevcut local-first tercihi kullanmalı.');
