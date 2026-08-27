@@ -1,0 +1,41 @@
+name: Fix Dashboard Card Routing
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-dashboard-card-routing.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply exact dashboard routing fix
+        run: python3 scripts/fix-dashboard-card-routing.py
+      - name: Verify dashboard routing and architecture
+        run: |
+          node scripts/build-client-bundles.mjs
+          node --check js/core/shell-ui.js
+          node --check js/modules/dashboard.js
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/dashboard-quick-actions.test.js
+          node tests/dashboard-reminders-smoke.test.js
+          node tests/no-module-internal-tabs.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit fix
+        run: |
+          rm -f .github/workflows/fix-dashboard-card-routing.yml scripts/fix-dashboard-card-routing.py
+          git config user.name 'sedonet23'
+          git config user.email 'sedonet23@gmail.com'
+          git add -A
+          git commit -m 'fix(dashboard): route cards to exact subpages'
+          git push origin HEAD:main
