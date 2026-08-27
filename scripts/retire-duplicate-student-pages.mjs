@@ -6,6 +6,7 @@ const allowed=new Set([
   'js/core/shell-ui.js',
   'js/modules/tools.js',
   'tests/student-tool-routing-smoke.test.js',
+  'tests/classic-shell-v2-smoke.test.js',
   'scripts/retire-duplicate-student-pages.mjs'
 ]);
 const skipDirs=new Set(['.git','node_modules','dist','www','android']);
