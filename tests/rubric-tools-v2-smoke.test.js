@@ -27,6 +27,21 @@ assert(bridge.includes("async function openOtherDocuments(){return global.ShellU
 assert(bridge.includes("async function openDiploma(kind)")&&bridge.includes("page:kind,title"),'Diploma public açılışı ShellUI routing üzerinden geçmeli.');
 assert(bridge.includes("async function open(){return global.ShellUI?.routeModule?.('people',{bottom:'menu',page:PAGE,title:'Öğrenci Devamsızlığı'});}"),'Öğrenci Devamsızlığı public açılışı ShellUI routing üzerinden geçmeli.');
 
+// Custom page lifecycle: AppLoader.load() kendi module-ready olayını active flag set edilmeden önce yayınlar.
+// Bu nedenle daha sonra gelen her module-ready aktif özel sayfanın eski abonelik/state'ini güvenle kapatmalıdır.
+assert(bridge.includes("global.addEventListener('koruk:module-ready',e=>{if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen)cleanupDiploma();if(e.detail?.name==='tools')requestAnimationFrame(inject);});"),'Diğer Evraklar ve Diploma module geçişinde lifecycle cleanup yapmalı.');
+assert(bridge.includes("global.addEventListener('koruk:module-ready',()=>{if(mounted)cleanup();});"),'Öğrenci Devamsızlığı module geçişinde AppStore aboneliklerini kapatmalı.');
+for(const [loadToken,activeToken,label] of [
+  ["await global.AppLoader?.load?.('tools');","otherDocumentsOpen=true;",'Diğer Evraklar'],
+  ["await global.AppLoader?.load?.('management');","diplomaOpen=true;",'Diploma'],
+  ["await global.AppLoader?.load?.('people');","mounted=true;",'Öğrenci Devamsızlığı']
+]){
+  const li=bridge.indexOf(loadToken),ai=bridge.indexOf(activeToken,li);
+  assert(li>=0&&ai>li,`${label} kendi AppLoader module-ready olayı sırasında kendisini cleanup etmemek için active flag'i load sonrasında set etmeli.`);
+}
+assert(bridge.includes("function cleanupOtherDocuments(){otherDocumentsOpen=false;otherDocumentsUnsub?.();otherDocumentsUnsub=null;closeOtherDocumentModal();}"),'Diğer Evraklar cleanup AppStore aboneliğini kapatmalı.');
+assert(bridge.includes("function cleanup(){mounted=false;unsubs.forEach"),'Öğrenci Devamsızlığı cleanup tüm AppStore aboneliklerini kapatmalı.');
+
 const window={};
 assert.doesNotThrow(()=>vm.runInNewContext(engine,{window,console,Date,Math,JSON,Object,Array,String,Number,parseInt,parseFloat,isNaN,Set,Map,Promise,Error,CustomEvent:function(){}}), 'V2 engine JavaScript olarak parse edilip yüklenebilmeli.');
 assert.strictEqual(typeof window.KorukRubricToolsV2?.scoreSplit,'function','V2 scoreSplit dış test sözleşmesinde bulunmalı.');
@@ -40,4 +55,4 @@ for(const target of [0,25,50,82,100]){
 const migrated=window.KorukRubricToolsV2.migrateRubric({puanMin:1,puanMax:5,puanEtiketleri:[],gruplar:[{ad:'X',kriterler:['Y']}]});
 assert(migrated?.varsayilan?.gruplar?.length===1,'Eski düz rubric ayarı varsayılan yapıya migrate edilmeli.');
 assert(migrated?.dersOzel?.Proje&&migrated?.dersOzel?.Konuşma,'Yerleşik Proje/Konuşma şablonları migration sırasında tamamlanmalı.');
-console.log('Kriter/Proje Tools V2 engine + local-first bridge + merkezi özel sayfa routing sözleşmesi başarılı.');
+console.log('Kriter/Proje Tools V2 engine + local-first bridge + merkezi özel sayfa routing/lifecycle sözleşmesi başarılı.');
