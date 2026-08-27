@@ -24,6 +24,7 @@ on:
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
       - 'tests/teacher-list-local-first-service.test.js'
+      - 'tests/student-tool-routing-smoke.test.js'
       - 'tests/communication-local-first-contract.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
@@ -62,6 +63,7 @@ on:
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
       - 'tests/teacher-list-local-first-service.test.js'
+      - 'tests/student-tool-routing-smoke.test.js'
       - 'tests/communication-local-first-contract.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
@@ -118,6 +120,8 @@ jobs:
         run: node tests/teacher-list-core-contract.test.js
       - name: Verify teacher list local-first service
         run: node tests/teacher-list-local-first-service.test.js
+      - name: Verify canonical student tool routing
+        run: node tests/student-tool-routing-smoke.test.js
       - name: Verify communication local-first contract
         run: node tests/communication-local-first-contract.test.js
       - name: Verify retired legacy roots
