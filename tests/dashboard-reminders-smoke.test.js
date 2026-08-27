@@ -17,4 +17,9 @@ assert(!src.includes('onSnapshot'),'Dashboard hatırlatma motoru snapshot dinlem
 assert(src.includes("className='ka-modal-backdrop'")||src.includes("className='ka-modal-backdrop'"),'Hatırlatma penceresi merkezi modal bileşenini kullanmalı.');
 assert(src.includes('holidayMode()'),'Tatil modunda hatırlatma popupı gösterilmemeli.');
 assert(src.includes('.sort((a,b)=>a.gunFarki-b.gunFarki)'),'En geciken/en yakın madde üstte kalmalı.');
+assert(src.includes('function teacherUpcomingRows(){return collectReminders(30).slice(0,8)}'),'Öğretmen Teslim & Görev Takvimi merkezi hatırlatma motorunun 30 günlük görünümünü kullanmalı.');
+assert(src.includes('data-dash-reminder-index'),'Öğretmen teslim/görev satırları doğrudan kendi hatırlatma hedefini açabilmeli.');
+assert(src.includes("Object.keys(REMINDER_DEFS).map(t=>'data.'+t)"),'Dashboard tüm hatırlatma kaynaklarının AppStore değişikliklerine abone olmalı.');
+assert(src.includes("evrak:'📄'"),'Evrak teslimleri öğretmen kartında görünür bir kaynak olmalı.');
+assert(src.includes("function collectReminders(daysOverride=null)"),'Hatırlatma motoru popup ve kart için tek motorla farklı görünüm ufku desteklemeli.');
 console.log('Dashboard local-first hatırlatma motoru smoke testi başarılı.');
