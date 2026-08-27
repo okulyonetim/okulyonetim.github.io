@@ -23,6 +23,8 @@ assert(ui.includes("SyncEngine.register('ogretmenListeSablon'"),'Liste şablonla
 assert(ui.includes("SyncEngine.register('ogretmenListeKayit'"),'Kayıtlı çizelgeler merkezi SyncEngine ile hydrate edilmeli.');
 assert(ui.includes("device().set('ogretmenListeSablon'"),'Şablon yazımı merkezi DeviceData üzerinden kalmalı.');
 assert(ui.includes("device().add('ogretmenListeKayit'"),'Çizelge yazımı merkezi DeviceData üzerinden kalmalı.');
-assert(ui.includes('global.OgretmenListeUI={open:openUI,render:renderUI,newDraft,openRecord,openReport,exportExcel}'),'Zengin Liste Oluşturucu UI API sözleşmesi korunmalı.');
+for(const token of ['global.OgretmenListeUI={','open:openUI','render:renderUI','newDraft','openRecord','openReport','exportExcel','close:closeUI']) {
+  assert(ui.includes(token),`Zengin Liste Oluşturucu UI API/lifecycle sözleşmesi eksik: ${token}`);
+}
 
-console.log('Öğrenci Listesi Oluşturucu: gerçek koleksiyon + local-first + sütun/şablon/A4/Excel sözleşmesi başarılı.');
+console.log('Öğrenci Listesi Oluşturucu: gerçek koleksiyon + local-first + sütun/şablon/A4/Excel + lifecycle sözleşmesi başarılı.');
