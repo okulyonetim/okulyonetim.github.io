@@ -65,3 +65,12 @@ if extra.strip() not in s:
     if anchor not in s:
         raise SystemExit('dashboard regression anchor missing')
     p.write_text(s.replace(anchor, anchor + extra, 1))
+
+p = Path('tests/dashboard-reminders-smoke.test.js')
+s = p.read_text()
+old = "assert(src.includes(\"function teacherUpcomingRows(){return collectReminders(30).slice(0,8)}\"),'Öğretmen Teslim & Görev Takvimi merkezi hatırlatma motorunun 30 günlük görünümünü kullanmalı.');"
+new = "assert(src.includes(\"function teacherUpcomingRows(){return collectReminders(30).filter(x=>x.kaynak!=='sinav').slice(0,8)}\"),'Öğretmen Teslim & Görev Takvimi merkezi 30 günlük motoru kullanmalı ve ayrı yazılı kartındaki sınavları tekrar etmemeli.');"
+if old in s:
+    p.write_text(s.replace(old, new, 1))
+elif new not in s:
+    raise SystemExit('reminder regression contract missing')
