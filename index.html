@@ -98,14 +98,22 @@
     const managementPages={'Personeller':'staff','Aylık İşler':'tasks','Nöbet Programı':'duty','Puantaj & İmza Sirküsü':'puantaj','Dilekçe & İzinler':'dilekce'};
     const toolPages={'Kontrol Listeleri':'checklists','Harita':'map','Devamsızlık Çizelgesi':'attendance'};
     const rubricPages={'Ders Et. Kat. Puan Dağıtımı':'rubric','Proje Değerlendirme Ölçeği':'project'};
-    page=migratedPages[title]||managementPages[title]||toolPages[title]||page;
-    if(migratedPages[title]||toolPages[title]||rubricPages[title])route='tools';
+    const formPages={'Maarif Model':'Maarif Model Raporları','Belirli Gün ve Haftalar':'Belirli Günler ve Haftalar','ŞÖK':'ŞÖK','Rehberlik':'Rehberlik','Yıllık Planlar & BEP Planları':'BEP Planları','Zümre':'Zümre','Sosyal Kulüpler':'Sosyal Kulüpler'};
+    page=migratedPages[title]||managementPages[title]||toolPages[title]||(formPages[title]?'forms':page);
+    if(migratedPages[title]||toolPages[title]||rubricPages[title]||formPages[title])route='tools';
     if(managementPages[title])route='management';
     if(!route)return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
     setTimeout(()=>{
       const task=window.ShellUI?.routeModule?.(route,{bottom:'menu',page,title});
       Promise.resolve(task).then(async()=>{
+        if(title==='Mevzuat'){
+          window.DocumentsModule?.unmount?.();
+          const root=document.getElementById('v2ModuleRoot');
+          await window.LegislationModule?.mount?.(root);
+          const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          return;
+        }
         if(title==='Öğrenci Listesi Oluşturucu'){
           await window.OgretmenListeUI?.open?.();
           requestAnimationFrame(()=>{
@@ -118,6 +126,20 @@
           return;
         }
         if(migratedPages[title])return window.StudentPages?.open?.(page,title);
+        if(formPages[title]){
+          requestAnimationFrame(()=>{
+            const root=document.getElementById('v2ModuleRoot'),tab=root?.querySelector('[data-tools-tab="forms"]');
+            if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
+            const heading=root?.querySelector('[data-tools-module] > .ka-row');if(heading)heading.hidden=true;
+            const content=root?.querySelector('#toolsContent'),wanted=formPages[title];
+            const applyFilter=()=>content?.querySelectorAll(':scope > section').forEach(section=>{const h=section.querySelector('h3');section.hidden=!h||!String(h.textContent||'').trim().startsWith(wanted)});
+            window.__kaFormPageObserver?.disconnect?.();applyFilter();
+            if(content){window.__kaFormPageObserver=new MutationObserver(applyFilter);window.__kaFormPageObserver.observe(content,{childList:true})}
+            const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          });
+          return;
+        }
+        window.__kaFormPageObserver?.disconnect?.();window.__kaFormPageObserver=null;
         if(toolPages[title]){
           requestAnimationFrame(()=>{
             const root=document.getElementById('v2ModuleRoot'),tab=root?.querySelector(`[data-tools-tab="${page}"]`);
