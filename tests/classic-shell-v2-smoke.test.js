@@ -37,7 +37,11 @@ const directPages=[
 for(const [label,route,page] of directPages) assert(ui.includes(`['${label}'`)&&ui.includes(`'${route}','${page}'`),`Doğrudan menü hedefi eksik/yanlış: ${label} -> ${route}/${page}`);
 for(const page of ['form-maarif','form-belirli','form-sok','form-rehberlik','form-bep','form-zumre','form-kulup']) assert(ui.includes(`'${page}'`),`Ayrı doküman form sayfası eksik: ${page}`);
 assert(ui.includes("global.StudentPages?.open?.")&&ui.includes("global.EvrakTakipPage.open(root)")&&ui.includes("global.LegislationModule.mount(root)")&&ui.includes("global.KaDataPage.open()"),'Özel menü hedefleri gerçek mevcut API’lere bağlanmalı.');
-assert(ui.includes("if(name==='settings'&&page==='data'&&global.KaDataPage?.open)")&&ui.includes('global.SettingsModule?.unmount?.();'),'Veriler ayrı sayfa açılmadan önce Settings abonelikleri kapatılmalı.');
+assert(ui.includes('const CUSTOM_PAGE_ROUTES=new Map()')&&ui.includes('function registerPageRoute(page,handler)'),'ShellUI özel sayfalar için merkezi route registry sağlamalı.');
+assert(ui.includes("registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();")&&ui.includes('return global.KaDataPage.open()'),'Veriler ShellUI registry üzerinden doğrudan açılmalı.');
+assert(ui.includes('function init(){installBuiltInPageRoutes();'),'Yerleşik özel sayfa registry başlangıçta kurulmalı.');
+assert(!ui.includes("if(name==='settings'&&page==='data'"),'Veriler normal Settings modülü yüklendikten sonra applySubpage ile yeniden yönlendirilmemeli.');
+const customPos=ui.indexOf('const custom=page&&CUSTOM_PAGE_ROUTES.get(page)'),loadPos=ui.indexOf('await global.AppLoader?.load?.(name)');assert(customPos>=0&&loadPos>customPos,'Özel sayfa route’u normal modül yüklemesinden önce çözülmeli.');
 assert(!ui.includes('Optik Okuma (OMR)')&&!ui.includes("key:'optik'"),'Optik okuyucu yeni Menü mimarisine dönmemeli.');
 assert(dashboard.includes('function adminShell()')&&dashboard.includes('function teacherShell()'),'Admin ve öğretmen ana sayfası ayrı renderer kullanmalı.');
 assert(dashboard.includes('data-dashboard-role="${isAdmin()?\'admin\':\'teacher\'}"'),'Dashboard rolü DOM sözleşmesinde görünür olmalı.');
@@ -64,4 +68,4 @@ for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer',
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
-console.log('Classic UX + local-first veri merkezi + doğrudan menü routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
+console.log('Classic UX + local-first veri merkezi + merkezi routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
