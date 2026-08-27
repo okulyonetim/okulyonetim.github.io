@@ -1,13 +1,14 @@
 /* ====================================================================
    scripts/rss-fetch.js
-   GitHub Actions tarafından her gece çalıştırılır (bkz. .github/workflows/rss-fetch.yml).
+   GitHub Actions tarafından her saat çalıştırılır (bkz. .github/workflows/rss-fetch.yml).
 
    Akış:
-     1) oy_haberKaynaklari koleksiyonundaki AKTİF kaynakları okur
+     1) 30 günden eski haberleri oy_haberler koleksiyonundan temizler.
+     2) oy_haberKaynaklari koleksiyonundaki AKTİF kaynakları okur
         (Kaynak Yönetimi ekranından admin tarafından dinamik eklenir/silinir).
-     2) Her kaynağın RSS/Atom beslemesini çeker ve ayrıştırır.
-     3) Daha önce eklenmemiş (link ile eşleşen) haberleri oy_haberler'e yazar.
-     4) Yeni haberler için, cihazların kategori tercihine göre (oy_cihazTokenleri
+     3) Her kaynağın RSS/Atom beslemesini çeker ve ayrıştırır.
+     4) Yalnız son 30 güne ait, daha önce eklenmemiş haberleri oy_haberler'e yazar.
+     5) Yeni haberler için, cihazların kategori tercihine göre (oy_cihazTokenleri
         .kategoriler alanı) FCM push bildirimi gönderir. Tercih yoksa/boşsa
         cihaz TÜM kategorilerden bildirim alır (opt-out mantığı).
 
@@ -17,6 +18,41 @@
    ==================================================================== */
 
 const admin = require('firebase-admin');
+const HABER_SAKLAMA_GUNU = 30;
+const BIR_GUN_MS = 24 * 60 * 60 * 1000;
+
+function haberTarihiMs(v){
+  if(!v) return NaN;
+  if(typeof v.toDate === 'function') return v.toDate().getTime();
+  if(v instanceof Date) return v.getTime();
+  const ms = new Date(v).getTime();
+  return Number.isFinite(ms) ? ms : NaN;
+}
+
+function sonBirAyIcindeMi(v, simdi = Date.now()){
+  const ms = haberTarihiMs(v);
+  return Number.isFinite(ms) && ms >= simdi - HABER_SAKLAMA_GUNU * BIR_GUN_MS;
+}
+
+async function eskiHaberleriTemizle(db){
+  const esikMs = Date.now() - HABER_SAKLAMA_GUNU * BIR_GUN_MS;
+  const snap = await db.collection('oy_haberler').get();
+  const eski = snap.docs.filter(d => {
+    const ms = haberTarihiMs(d.data().tarih || d.data().eklenmeTarihi);
+    return Number.isFinite(ms) && ms < esikMs;
+  });
+  if(!eski.length){
+    console.log(`Haber saklama: ${HABER_SAKLAMA_GUNU} günden eski kayıt yok.`);
+    return 0;
+  }
+  for(let i = 0; i < eski.length; i += 400){
+    const batch = db.batch();
+    eski.slice(i, i + 400).forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+  }
+  console.log(`Haber saklama: ${eski.length} adet ${HABER_SAKLAMA_GUNU} günden eski kayıt silindi.`);
+  return eski.length;
+}
 
 /* ---------- basit RSS 2.0 / Atom ayrıştırıcı (ekstra bağımlılık yok) ---------- */
 function xmlDecode(s){
@@ -152,6 +188,11 @@ async function main(){
   admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
   const db = admin.firestore();
 
+  // Kullanıcının haber saklama politikası: yalnız son 30 gün tutulur.
+  // Temizlik kaynak kontrolünden ÖNCE yapılır; aktif kaynak olmasa bile eski
+  // kayıtlar bir sonraki saatlik çalışmada cihazlardan da düşecek şekilde silinir.
+  await eskiHaberleriTemizle(db);
+
   const kaynakSnap = await db.collection('oy_haberKaynaklari').get();
   const tumKaynaklar = kaynakSnap.docs.map(d => ({ id: d.id, ...d.data() }));
   // DÜZELTME: Aktif ama URL'si boş/eksik olan kaynaklar önceden SESSİZCE
@@ -208,15 +249,9 @@ async function main(){
       // kaydı, ya da benzeri) olup olmadığını görmek için ayrıntılı log.
       console.log(`--- [TEŞHİS] Kaynak: id=${kaynak.id} ad=${JSON.stringify(kaynak.ad)} url=${kaynak.url}`);
 
-      // DÜZELTME (kök sebep #2): Bu sorgu daha önce .limit(200) ile
-      // sınırlıydı. Elazığ Meb Duyurular gibi devlet siteleri RSS'inde
-      // Mayıs/Haziran gibi ESKİ duyurular da "son 20 madde" içinde sabit
-      // kalabiliyor. Kaynağın toplam kayıt sayısı 200'ü geçtiğinde, bu eski
-      // (ama beslemede hâlâ görünen) maddeler dedup penceresinin dışına
-      // düşüyor ve script onları "hiç görmedim" sanıp SONSUZ DÖNGÜ halinde
-      // tekrar tekrar ekleyip bildirim gönderiyordu. Artık limit yok —
-      // kaynağın TÜM geçmişine bakılıyor, böylece hiçbir kayıt pencereden
-      // "düşerek" yanlışlıkla yeni sayılamıyor.
+      // 30 günlük saklama politikası nedeniyle burada yalnız kalan yakın
+      // geçmişe bakıyoruz. Feed'deki 30 günden eski maddeler aşağıda ayrıca
+      // atlandığı için silinen eski haberlerin tekrar "yeni" sayılması mümkün değildir.
       const mevcutKaynakSnap = await db.collection('oy_haberler')
         .where('kaynakAdi', '==', kaynak.ad)
         .orderBy('tarih', 'desc')
@@ -243,8 +278,14 @@ async function main(){
       const xml = await res.text();
       const items = parseFeedItems(xml).slice(0, 20); // her kaynaktan en fazla 20 madde işlenir
 
-      let yeniSayisi = 0;
+      let yeniSayisi = 0, eskiAtlanan = 0;
       for(const it of items){
+        // Kaynak beslemesi eski maddeleri aylarca tutsa bile, saklama süresini
+        // aşan haberler Firestore'a yeniden eklenmez ve push bildirimi üretmez.
+        if(!sonBirAyIcindeMi(it.tarih)){
+          eskiAtlanan++;
+          continue;
+        }
         const baslikAnahtari = baslikAnahtariUret(kaynak.ad, it.baslik);
         const guidEslesti = it.guid && mevcutGuidler.has(it.guid);
         const linkEslesti = mevcutLinkler.has(it.link);
@@ -259,7 +300,7 @@ async function main(){
         yeniHaberler.push({ kaynak, item: it });
         yeniSayisi++;
       }
-      console.log(`${kaynak.ad}: ${items.length} madde tarandı, ${yeniSayisi} yeni.`);
+      console.log(`${kaynak.ad}: ${items.length} madde tarandı, ${yeniSayisi} yeni, ${eskiAtlanan} adet 30 günden eski madde atlandı.`);
     }catch(err){
       console.error(`Kaynak hatası (${kaynak.ad}):`, err.message);
     }
