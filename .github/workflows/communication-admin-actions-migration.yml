@@ -1,0 +1,39 @@
+name: Communication Admin Actions Migration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-communication-admin-actions.mjs'
+      - 'tests/communication-admin-actions.test.js'
+      - '.github/workflows/communication-admin-actions-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply guarded communication admin-actions migration
+        run: node scripts/apply-communication-admin-actions.mjs
+      - name: Verify communication admin-actions contract
+        run: node tests/communication-admin-actions.test.js
+      - name: Verify bundles and architecture
+        run: node scripts/build-client-bundles.mjs && node tests/module-bundles-smoke.test.js && node scripts/check-client-architecture.mjs
+      - name: Commit production migration and cleanup
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/communication.js
+          git diff --cached --quiet || git commit -m 'feat(communication): add announcement poll and news source management'
+          git rm scripts/apply-communication-admin-actions.mjs .github/workflows/communication-admin-actions-migration.yml
+          git commit -m 'chore(communication): remove completed admin-action helpers'
+          git push origin HEAD:main
