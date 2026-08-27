@@ -11,7 +11,7 @@ assert(shell.includes("closest('[data-home-section]')"),'Dashboard kart gövdesi
 assert(css.includes('padding-left:max(4px,var(--ka-safe-left))'),'Mobil ana içerik kenar boşluğu 4px/safe-area olmalı.');
 assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kartları tam kullanılabilir genişlikte olmalı.');
 assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği üretmeli.');
-assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası aktif anketleri ve deneme sayacını göstermeli.');
+assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası referans sırasıyla okul özeti, duyuru, anket ve aktif deneme sayacını göstermeli.');
 assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Yönetici ana sayfası aktif anketlerden sonra deneme sayacını göstermeli.');
 assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('sayacDurumu?.aktif')&&dash.includes('baslatmaTarihi'),'Dashboard deneme sayacı gerçek denemeSinavlari.sayacDurumu modelini kullanmalı.');
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
