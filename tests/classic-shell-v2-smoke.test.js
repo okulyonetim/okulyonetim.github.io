@@ -18,7 +18,8 @@ assert(shell.includes('id="kaMenuLayer"'),'Tam ekran Menü katmanı production s
 assert(!shell.includes('IndexedDB verileri ekrana alınır'),'Teknik local-first açıklaması kullanıcı arayüzüne dönmemeli.');
 assert(!shell.includes('data-ka-module="people"'),'Dokuz modüllü eski teknik alt navigasyon geri dönmemeli.');
 assert(!shell.includes('#kaMenuLayer [data-ka-menu-route]'),'Eski capture-phase menü yönlendiricisi index.html içine geri dönmemeli.');
-assert(!shell.includes('localStorage.'),'Production shell/index kalıcı veya geçici veri için localStorage kullanmamalı.');
+const shellLocalStorage=[...shell.matchAll(/localStorage\.(?:getItem|setItem|removeItem)\(([^)]*)\)/g)].map(m=>m[1]);
+assert(shellLocalStorage.length>0&&shellLocalStorage.every(x=>x.includes("'ka-theme'")||x.includes('"ka-theme"')),'Production shell localStorage kullanımı yalnız ilk boyama ka-theme bootstrap aynasıyla sınırlı olmalı.');
 assert(shell.includes('const KaDataPage=(()=>{')&&shell.includes('window.KaDataPage=KaDataPage'),'Veri Aktarma Merkezi mevcut public API ile korunmalı.');
 for(const contract of ['importTeachers(file)','importStudents(file,classId)','importServiceStudents(file,serviceId)','downloadTemplate(type)','backupPayload()','restore(file)','driveBackup()']) assert(shell.includes(contract),`Veri Aktarma Merkezi sözleşmesi eksik: ${contract}`);
 
@@ -65,7 +66,8 @@ assert(ui.includes("classList.toggle('ka-hidden',el.hidden)"),'Hidden ekranlar C
 assert(ui.includes('NotlarService?.notKaydet?.(null'),'Hızlı Not kalıcı yazımı merkezi NotlarService üzerinden yapılmalı.');
 assert(communication.includes("notEkle:v=>device().add('notlar',COL.notlar")&&communication.includes('notKaydet(id,v)'),'NotlarService/Repository kalıcı yazımı DeviceData üzerinden local-first yapmalı.');
 assert(!ui.includes('db.collection('),'Shell UI doğrudan Firestore kullanmamalı.');
-assert(!ui.includes('localStorage.setItem('),'Shell UI kalıcı veriyi localStorage ile yazmamalı.');
+const uiLocalStorage=[...ui.matchAll(/localStorage\.(?:getItem|setItem|removeItem)\(([^)]*)\)/g)].map(m=>m[1]);
+assert(uiLocalStorage.length>0&&uiLocalStorage.every(x=>x.includes("'ka-theme'")||x.includes('"ka-theme"')),'ShellUI localStorage kullanımı yalnız ka-theme ilk-boyama aynasıyla sınırlı olmalı; iş verisi IndexedDB’de kalmalı.');
 
 assert(live.includes("AppStore?.data?.(t)"),'Canlı durum AppStore verisini okumalı.');
 assert(live.includes("SyncEngine.register('dersSaatleri',global.COL.dersSaatleri)"),'Ders saatleri mevcut gerçek koleksiyonla SyncEngine üzerinden bağlanmalı.');
@@ -82,4 +84,4 @@ for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer',
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
-console.log('Classic UX + tam IndexedDB yedek/restore + merkezi routing + rol bazlı V2 dashboard + canlı okul durumu sözleşmesi başarılı.');
+console.log('Classic UX + tam IndexedDB yedek/restore + merkezi routing + rol bazlı V2 dashboard + canlı okul durumu + tema-only bootstrap sözleşmesi başarılı.');
