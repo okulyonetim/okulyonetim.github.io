@@ -62,11 +62,7 @@ async function open(def){
   catch(e){console.error('[RubricTools]',e);toast(def.label+' açılamadı: '+(e?.message||e));}
   finally{opening=false;}
 }
-function inject(){
-  const host=document.querySelector('[data-tools-module]');const tabs=host?.querySelector('.ka-tabs');if(!tabs)return;
-  for(const def of TOOLS){if(tabs.querySelector(`[data-rubric-tool="${def.key}"]`))continue;const b=document.createElement('button');b.type='button';b.className='ka-tab';b.dataset.rubricTool=def.key;b.dataset.kaPermission=def.permission;b.dataset.kaMinLevel='preview';b.textContent=def.label;b.onclick=()=>open(def);tabs.appendChild(b);}
-  global.PermissionService?.apply?.(host);
-}
+async function openPage(page){const def=TOOLS.find(x=>x.key===page);if(!def)return false;await open(def);return true}
 
 function otherDocumentTeacherName(id){const o=rows('ogretmenler').find(x=>x.id===id);return o?`${o.ad||''} ${o.soyad||''}`.trim():'—';}
 function otherDocumentCanEdit(){return global.PermissionService?.can?.('tools.schedules','edit')!==false;}
@@ -127,10 +123,10 @@ async function activateDiploma(kind){if(global.PermissionService?.can?.('managem
 async function openDiploma(kind){const title=kind===DIPLOMA_RESPONSE_PAGE?'Diploma Okul Dilekçesi':'Diploma Kayıt Talep Dilekçesi';return global.ShellUI?.routeModule?.('management',{bottom:'menu',page:kind,title});}
 function installDiplomaRoutes(){const groups=global.ShellUI?.MENU_GROUPS;if(!Array.isArray(groups))return;const group=groups.find(x=>x.key==='management');if(!group)return;group.items=Array.isArray(group.items)?group.items:[];if(!group.items.some(x=>x?.[3]===DIPLOMA_REQUEST_PAGE))group.items.push(['Diploma Kayıt Talep Dilekçesi','🎓','management',DIPLOMA_REQUEST_PAGE]);if(!group.items.some(x=>x?.[3]===DIPLOMA_RESPONSE_PAGE))group.items.push(['Diploma Okul Dilekçesi','🏫','management',DIPLOMA_RESPONSE_PAGE]);if(global.__diplomaRoutesInstalled)return;global.__diplomaRoutesInstalled=true;global.ShellUI?.registerPageRoute?.(DIPLOMA_REQUEST_PAGE,()=>activateDiploma(DIPLOMA_REQUEST_PAGE));global.ShellUI?.registerPageRoute?.(DIPLOMA_RESPONSE_PAGE,()=>activateDiploma(DIPLOMA_RESPONSE_PAGE));}
 
-global.RubricToolsModule={inject,open,keyList:()=>TOOLS.map(x=>x.key),createCategory,deleteCustom,openOtherDocuments,openDiploma};
+global.RubricToolsModule={openPage,open,keyList:()=>TOOLS.map(x=>x.key),createCategory,deleteCustom,openOtherDocuments,openDiploma};
 installOtherDocumentsRoute();
 installDiplomaRoutes();
-global.addEventListener('koruk:module-ready',e=>{if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen)cleanupDiploma();if(e.detail?.name==='tools')requestAnimationFrame(inject);});
+global.addEventListener('koruk:module-ready',()=>{if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen)cleanupDiploma();});
 })(window);
 
 /* PDF araçlarının menü/routing köprüsü. Motor js/modules/documents.js içindedir. */

@@ -113,9 +113,10 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Araç sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  const selector=name==='tools'&&['rubric','project'].includes(page)?`[data-rubric-tool="${page}"]`:'';
-  const tab=selector?root.querySelector(selector):null;
-  if(tab){tab.click();const tabs=tab.closest('.ka-tabs');if(tabs)tabs.hidden=true}
+  if(name==='tools'&&['rubric','project'].includes(page)){
+    Promise.resolve(global.RubricToolsModule?.openPage?.(page)).catch(e=>{console.error('[Shell/rubric]',e);global.toast?.('Değerlendirme aracı açılamadı.');});
+    if(title)setTitle(title);return true;
+  }
   if(name==='academic'){
     const h=root.querySelector('[data-academic-module] > .ka-row h2');if(h&&title)h.textContent=title;
   }
