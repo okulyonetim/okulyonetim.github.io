@@ -24,6 +24,18 @@ jobs:
       - name: Apply guarded migration
         run: python3 scripts/migrate-central-theme-dashboard.py
 
+      - name: Align teacher dashboard regression with approved reference
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tests/dashboard-card-routes-smoke.test.js')
+          s=p.read_text()
+          old="assert(dash.includes(\"function teacherShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}\"),'Öğretmen ana sayfası aktif anketleri ve deneme sayacını göstermeli.');"
+          new="assert(dash.includes(\"function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}\"),'Öğretmen ana sayfası referans sırasıyla okul özeti, duyuru, anket ve aktif deneme sayacını göstermeli.');"
+          if old not in s: raise SystemExit('teacher dashboard regression pattern missing')
+          p.write_text(s.replace(old,new,1))
+          PY
+
       - name: Build client bundles
         run: node scripts/build-client-bundles.mjs
 
