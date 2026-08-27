@@ -43,3 +43,5 @@ jobs:
           git add -A
           git commit -m 'feat(dashboard): streamline teacher daily workflow'
           git push origin HEAD:main
+
+# guarded migration retry: reminder de-duplication contract
