@@ -1,0 +1,36 @@
+name: Calendar Design System Migration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-calendar-design-system.mjs'
+      - '.github/workflows/calendar-design-system-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply central calendar styles
+        run: node scripts/apply-calendar-design-system.mjs
+      - name: Verify bundles and architecture
+        run: node scripts/build-client-bundles.mjs && node tests/module-bundles-smoke.test.js && node scripts/check-client-architecture.mjs
+      - name: Commit styles and cleanup
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add css/design-system.css
+          git diff --cached --quiet || git commit -m 'style(calendar): add responsive monthly calendar design system'
+          git rm scripts/apply-calendar-design-system.mjs .github/workflows/calendar-design-system-migration.yml
+          git commit -m 'chore(calendar): remove completed style migration helpers'
+          git push origin HEAD:main
