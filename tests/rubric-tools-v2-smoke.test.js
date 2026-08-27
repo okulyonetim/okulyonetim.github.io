@@ -7,9 +7,10 @@ const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 
 assert(index.includes('js/modules/rubric-tools.js'),'Rubric Tools V2 bridge production shell tarafından yüklenmeli.');
-for(const token of ["const ENGINE='js/modules/rubric-tools-engine.js'","key:'rubric'","api:'KriterDagitimAraci'","key:'project'","api:'ProjeDegerlendirmeAraci'","global.AppLoader.loadScript(ENGINE)","b.dataset.rubricTool=def.key"]){
+for(const token of ["const ENGINE='js/modules/rubric-tools-engine.js'","key:'rubric'","api:'KriterDagitimAraci'","key:'project'","api:'ProjeDegerlendirmeAraci'","global.AppLoader.loadScript(ENGINE)","async function openPage(page)","TOOLS.find(x=>x.key===page)"]){
   assert(bridge.includes(token),`Rubric Tools V2 bridge sözleşmesi eksik: ${token}`);
 }
+assert(!bridge.includes('data-rubric-tool'),'Rubric/Project eski Tools tab enjeksiyonuna geri dönmemeli.');
 for(const token of ["global.KorukRubricToolsV2={openRubric,openProject,scoreSplit,migrateRubric}","global.KriterDagitimAraci={ac()","global.ProjeDegerlendirmeAraci={ac()","RubricSettingsService","svc.personalSet(kind,full)","svc.schoolSet('rubric'","svc.schoolSet('project'","XLSX.read","uygulamaHtmlYazdir","backdrop.className='ka-modal-backdrop'","class=\"ka-card\""]){
   assert(engine.includes(token),`Rubric Tools V2 engine sözleşmesi eksik: ${token}`);
 }
@@ -21,6 +22,8 @@ assert(!index.includes('js/kriter-dagitim.js')&&!index.includes('js/proje-degerl
 
 assert(shell.includes('const CUSTOM_PAGE_ROUTES=new Map()')&&shell.includes('function registerPageRoute(page,handler)'),'ShellUI özel sayfalar için merkezi page-route registry sağlamalı.');
 assert(shell.includes('const custom=page&&CUSTOM_PAGE_ROUTES.get(page)'),'routeModule özel sayfaları merkezi registry üzerinden çözmeli.');
+assert(shell.includes("name==='tools'&&['rubric','project'].includes(page)")&&shell.includes('RubricToolsModule?.openPage?.(page)'),'Rubric/Project menü hedefleri doğrudan public routing kullanmalı.');
+assert(!shell.includes('data-rubric-tool'),'Shell eski rubric tab selector kullanmamalı.');
 for(const page of ['OTHER_DOCUMENT_PAGE','DIPLOMA_REQUEST_PAGE','DIPLOMA_RESPONSE_PAGE','IMAGE','MERGE','PAGE']) assert(bridge.includes(`registerPageRoute?.(${page}`),`Özel sayfa ShellUI registry’ye kaydedilmeli: ${page}`);
 assert(!bridge.includes("closest?.(`[data-ka-menu-page=\"${OTHER_DOCUMENT_PAGE}\"]`)")&&!bridge.includes("const b=e.target?.closest?.('[data-ka-menu-page]')"),'Özel menü sayfaları capture-phase click router kurmamalı.');
 assert(bridge.includes("async function openOtherDocuments(){return global.ShellUI?.routeModule?.('tools',{bottom:'menu',page:OTHER_DOCUMENT_PAGE,title:'Diğer Evraklar'});}"),'Diğer Evraklar public açılışı ShellUI routing üzerinden geçmeli.');
@@ -29,7 +32,7 @@ assert(bridge.includes("async function open(){return global.ShellUI?.routeModule
 
 // Custom page lifecycle: AppLoader.load() kendi module-ready olayını active flag set edilmeden önce yayınlar.
 // Bu nedenle daha sonra gelen her module-ready aktif özel sayfanın eski abonelik/state'ini güvenle kapatmalıdır.
-assert(bridge.includes("global.addEventListener('koruk:module-ready',e=>{if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen)cleanupDiploma();if(e.detail?.name==='tools')requestAnimationFrame(inject);});"),'Diğer Evraklar ve Diploma module geçişinde lifecycle cleanup yapmalı.');
+assert(bridge.includes("global.addEventListener('koruk:module-ready',()=>{if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen)cleanupDiploma();});"),'Diğer Evraklar ve Diploma module geçişinde lifecycle cleanup yapmalı.');
 assert(bridge.includes("global.addEventListener('koruk:module-ready',()=>{if(mounted)cleanup();});"),'Öğrenci Devamsızlığı module geçişinde AppStore aboneliklerini kapatmalı.');
 for(const [loadToken,activeToken,label] of [
   ["await global.AppLoader?.load?.('tools');","otherDocumentsOpen=true;",'Diğer Evraklar'],
@@ -55,4 +58,4 @@ for(const target of [0,25,50,82,100]){
 const migrated=window.KorukRubricToolsV2.migrateRubric({puanMin:1,puanMax:5,puanEtiketleri:[],gruplar:[{ad:'X',kriterler:['Y']}]});
 assert(migrated?.varsayilan?.gruplar?.length===1,'Eski düz rubric ayarı varsayılan yapıya migrate edilmeli.');
 assert(migrated?.dersOzel?.Proje&&migrated?.dersOzel?.Konuşma,'Yerleşik Proje/Konuşma şablonları migration sırasında tamamlanmalı.');
-console.log('Kriter/Proje Tools V2 engine + local-first bridge + merkezi özel sayfa routing/lifecycle sözleşmesi başarılı.');
+console.log('Kriter/Proje Tools V2 engine + local-first direct routing/lifecycle sözleşmesi başarılı.');
