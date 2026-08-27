@@ -15,6 +15,10 @@ for(const token of ['data-legislation-v2','data-legislation-add','data-legislati
 assert(shellUi.includes("['Mevzuat','📖','documents','mevzuat']"),'Mevzuat tek merkezi Menü kataloğunda Documents/mevzuat rotasında bulunmalı.');
 assert(shellUi.includes("name==='documents'&&page==='mevzuat'")&&shellUi.includes('global.LegislationModule.mount(root)'),'ShellUI Mevzuat sayfasını Documents altında gerçek presentation API’sine bağlamalı.');
 assert(ui.includes("PermissionService?.can?.('documents.view','preview')"),'Mevzuat görüntüleme yetkisi Documents yetki sınırından geçmeli.');
+assert(ui.includes("const canEdit=()=>global.PermissionService?.can?.('documents.edit','edit')!==false"),'Mevzuat mutation işlemleri documents.edit sınırına bağlı olmalı.');
+assert(ui.includes('function requireEdit()')&&ui.includes("data-ka-write=\"documents.edit\""),'Mevzuat yazma işlemleri hem UI hem işlem katmanında edit yetkisi istemeli.');
+for(const fn of ['async function save()','async function importFile(e)']){const i=ui.indexOf(fn);assert(i>=0&&ui.slice(i,i+180).includes('requireEdit()'),`${fn} doğrudan edit yetkisini doğrulamalı.`)}
+assert(ui.includes("if(!requireEdit())return;if(!global.confirm?.('Bu mevzuatı ve tüm bölümlerini silmek istiyor musunuz?')"),'Mevzuat silme işlemi confirm öncesi edit yetkisini doğrulamalı.');
 assert(ui.includes("ShellUI?.routeModule?.('documents',{bottom:'menu'})"),'Mevzuat geri dönüşü Documents modülüne gitmeli.');
 assert(ui.includes("PermissionService?.applyModule?.('documents')"),'Mevzuat presentation Documents permission modunu uygulamalı.');
 assert(!ui.includes("e.detail?.name==='communication'")&&!ui.includes('data-legislation-open'),'Communication içine ikinci Mevzuat sekmesi enjekte edilmemeli.');
@@ -22,4 +26,4 @@ assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore'),'Mevzu
 assert(shell.includes('js/modules/legislation.js')&&shell.includes('js/modules/legislation-ui.js'),'Mevzuat V2 motoru ve presentation üretim shell tarafından yüklenmeli.');
 assert(!fs.existsSync('js/mevzuat-asistan.js'),'Legacy mevzuat-asistan.js geri dönmemeli.');
 
-console.log('Mevzuat local-first V2 motor + Documents-owned presentation sözleşmesi başarılı.');
+console.log('Mevzuat local-first V2 motor + Documents-owned permission sözleşmesi başarılı.');
