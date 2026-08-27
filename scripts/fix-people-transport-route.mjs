@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+const path='js/modules/people.js';
+let src=fs.readFileSync(path,'utf8');
+const old="function openClassSeating(id){global.toast?.('Sınıf oturma planı ekranı açılıyor…');global.AppLoader?.setActiveModule?.('transport');global.AppLoader?.load?.('transport').then(()=>requestAnimationFrame(()=>document.querySelector('[data-transport-tab=\"classSeats\"]')?.click())).catch(()=>global.toast?.('Sınıf oturma planı açılamadı.'))}";
+const next="function openClassSeating(id){global.toast?.('Sınıf oturma planı ekranı açılıyor…');global.AppLoader?.setActiveModule?.('transport');global.AppLoader?.load?.('transport').then(()=>{const ok=global.TransportModule?.openPage?.('classSeats','Sınıf Oturma');if(ok===false)throw new Error('class-seating-route-yok');requestAnimationFrame(()=>global.TransportModule?.openClassSeating?.(id));}).catch(()=>global.toast?.('Sınıf oturma planı açılamadı.'))}";
+if(!src.includes(old))throw new Error('Beklenen legacy class seating route bulunamadı; production değişmiş olabilir.');
+src=src.replace(old,next);
+if(/data-(?:people|academic|management|communication|transport|documents|tools|settings)-tab\b/.test(src))throw new Error('People içinde modül içi tab kalıntısı devam ediyor.');
+fs.writeFileSync(path,src);
+console.log('People -> Transport class seating route openPage sözleşmesine geçirildi.');
