@@ -26,6 +26,9 @@ on:
       - 'tests/teacher-list-local-first-service.test.js'
       - 'tests/student-tool-routing-smoke.test.js'
       - 'tests/academic-separate-pages.test.js'
+      - 'tests/management-separate-pages.test.js'
+      - 'tests/communication-separate-pages.test.js'
+      - 'tests/settings-separate-pages.test.js'
       - 'tests/communication-local-first-contract.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
@@ -66,6 +69,9 @@ on:
       - 'tests/teacher-list-local-first-service.test.js'
       - 'tests/student-tool-routing-smoke.test.js'
       - 'tests/academic-separate-pages.test.js'
+      - 'tests/management-separate-pages.test.js'
+      - 'tests/communication-separate-pages.test.js'
+      - 'tests/settings-separate-pages.test.js'
       - 'tests/communication-local-first-contract.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
@@ -126,6 +132,12 @@ jobs:
         run: node tests/student-tool-routing-smoke.test.js
       - name: Verify Academic separate page routing
         run: node tests/academic-separate-pages.test.js
+      - name: Verify Management separate page routing
+        run: node tests/management-separate-pages.test.js
+      - name: Verify Communication separate page routing
+        run: node tests/communication-separate-pages.test.js
+      - name: Verify Settings separate page routing
+        run: node tests/settings-separate-pages.test.js
       - name: Verify communication local-first contract
         run: node tests/communication-local-first-contract.test.js
       - name: Verify retired legacy roots
