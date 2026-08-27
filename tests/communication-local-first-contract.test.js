@@ -20,6 +20,19 @@ assert(communication.includes('mesajlariTopluSil'),'Sohbet silerken yerel mesaj 
 assert(communication.includes("device().remove(type,COL.mesajlar,m.id)"),'Sohbet mesajları DeviceData üzerinden silinmeli.');
 assert(communication.includes('okunmayanlar'),'Okunmamış mesaj sayacı sözleşmesi korunmalı.');
 
+// Restored V2 interaction contracts: no longer passive read-only cards.
+assert(communication.includes('data-announcement-read'),'Duyuru okundu işaretleme UI bağlantısı korunmalı.');
+assert(communication.includes('DuyurularService?.okunduIsaretle'),'Duyuru okundu işlemi servis katmanına gitmeli.');
+assert(communication.includes('data-poll-option'),'Anket seçenekleri etkileşimli render edilmeli.');
+assert(communication.includes('data-poll-vote'),'Anket oy verme eylemi bulunmalı.');
+assert(communication.includes('AnketService?.oyVer'),'Anket oyu merkezi servise yazılmalı.');
+assert(communication.includes('data-poll-toggle'),'Admin anket kapat/aç eylemi korunmalı.');
+assert(communication.includes('safeHref'),'Haber dış bağlantıları protokol doğrulamasından geçmeli.');
+assert(communication.includes('target="_blank" rel="noopener noreferrer"'),'Haber dış bağlantısı güvenli sekmede açılmalı.');
+assert(communication.includes('data-news-source-delete'),'Haber kaynak yönetimi UI bağlantısı korunmalı.');
+assert(communication.includes("'data.haberKaynaklari'"),'Haber kaynakları AppStore değişikliklerine abone olmalı.');
+assert(communication.includes('bindCommunicationActions(out)'),'Duyuru/anket/haber eylemleri render sonrasında bağlanmalı.');
+
 // Poll/calendar ownership rules must remain in the service layer.
 assert(communication.includes('if(!isAdmin())throw new Error(\'yetkisiz\')'),'Anket oluşturma admin yetkisi servis katmanında kalmalı.');
 assert(communication.includes('calendarOwn'),'Takvim kayıt sahipliği merkezi servis kontrolünde kalmalı.');
@@ -30,4 +43,4 @@ assert(rss.includes('async function eskiHaberleriTemizle(db)'),'Eski haberleri t
 assert(rss.includes('await eskiHaberleriTemizle(db);'),'Temizlik her RSS çalışmasında kaynak taramasından önce yapılmalı.');
 assert(rss.includes('if(!sonBirAyIcindeMi(it.tarih))'),'30 günden eski feed maddeleri yeniden eklenmemeli.');
 
-console.log('Communication local-first ve 30 günlük haber saklama sözleşmesi başarılı.');
+console.log('Communication local-first, etkileşim ve 30 günlük haber saklama sözleşmesi başarılı.');
