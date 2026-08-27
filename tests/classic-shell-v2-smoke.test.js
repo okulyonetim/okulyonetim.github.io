@@ -4,6 +4,7 @@ const shell=fs.readFileSync('index.html','utf8');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const core=fs.readFileSync('js/core/core.js','utf8');
 const dashboard=fs.readFileSync('js/modules/dashboard.js','utf8');
+const communication=fs.readFileSync('js/modules/communication.js','utf8');
 const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
@@ -21,7 +22,6 @@ assert(!shell.includes('localStorage.'),'Production shell/index kalıcı veya ge
 assert(shell.includes('const KaDataPage=(()=>{')&&shell.includes('window.KaDataPage=KaDataPage'),'Veri Aktarma Merkezi mevcut public API ile korunmalı.');
 for(const contract of ['importTeachers(file)','importStudents(file,classId)','importServiceStudents(file,serviceId)','downloadTemplate(type)','backupPayload()','restore(file)','driveBackup()']) assert(shell.includes(contract),`Veri Aktarma Merkezi sözleşmesi eksik: ${contract}`);
 
-// Yedek yalnız o oturumda hydrate edilmiş AppStore verisine bağlı kalmamalı.
 assert(core.includes('async function entriesByPrefix(prefix)')&&core.includes('async function userSnapshot(u=uid())'),'Core aktif kullanıcıya ait tüm merkezi IndexedDB kayıtlarını enumerate edebilmeli.');
 assert(core.includes('userSnapshot,markBootstrap'),'KorukLocalFirst public API tam kullanıcı snapshot sözleşmesini sunmalı.');
 assert(shell.includes('window.KorukLocalFirst.userSnapshot(uid)'),'JSON/Drive yedeği bütün kullanıcı IndexedDB cache/meta/tombstone/queue snapshotını kullanmalı.');
@@ -62,7 +62,8 @@ for(const feature of ['pollSection()','absencesSection()','lessonsSection()','qu
 assert(ui.includes("function normalizeDashboardLayout(){return !!$('.ka-home[data-dashboard-role]')}"),'Shell dashboard sırasını yeniden düzenlememeli; rol rendererına bırakmalı.');
 assert(ui.includes('syncVisibilityClasses')&&ui.includes("['girisEkrani','onayBekleniyorEkrani','app']"),'Login/onay/app görünürlüğü merkezi ka-hidden sınıfına aynalanmalı.');
 assert(ui.includes("classList.toggle('ka-hidden',el.hidden)"),'Hidden ekranlar CSS tarafından tekrar görünür hale gelememeli.');
-assert(ui.includes("DeviceData?.add?.('notlar',global.COL?.notlar"),'Hızlı Not kalıcı yazımı DeviceData üzerinden yapılmalı.');
+assert(ui.includes('NotlarService?.notKaydet?.(null'),'Hızlı Not kalıcı yazımı merkezi NotlarService üzerinden yapılmalı.');
+assert(communication.includes("notEkle:v=>device().add('notlar',COL.notlar")&&communication.includes('notKaydet(id,v)'),'NotlarService/Repository kalıcı yazımı DeviceData üzerinden local-first yapmalı.');
 assert(!ui.includes('db.collection('),'Shell UI doğrudan Firestore kullanmamalı.');
 assert(!ui.includes('localStorage.setItem('),'Shell UI kalıcı veriyi localStorage ile yazmamalı.');
 
