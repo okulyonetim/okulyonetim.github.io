@@ -29,6 +29,8 @@ assert(dash.includes("title=teacherMode?'Ders Programım':'Şu Anki Dersler'")&&
 assert(dash.includes("teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'")&&dash.includes('ka-home-exam-row'),'Öğretmenin yaklaşan yazılıları ayrı ve doğrudan yazılı sayfasına bağlı olmalı.');
 assert(!dash.includes("${lessonsSection()}${personalScheduleSection()}"),'Öğretmen ana sayfasında ikinci Ders Programım kartı üretilmemeli.');
 assert(css.includes('TEACHER WORKFLOW DASHBOARD')&&css.includes('.ka-home-lessons--teacher'),'Öğretmen iş akışı görsel düzeni merkezi design-system içinde kalmalı.');
+assert(dash.includes("${upcomingSection()}${examsSection()}${lessonsSection()}`}"),'Öğretmen günlük akışında görevler, yaklaşan yazılılar ve ders programı tekil sırada kalmalı.');
+assert(dash.includes("live=window.SchoolLiveStatus?.status?.()")&&dash.includes('ka-home-lesson-state active'),'Öğretmen ders programı mevcut zil/ders durumundan Şimdi-Sıradaki bağlamı üretmeli.');
 assert(dash.includes("if(!list.length)return'';const body=list.map"),'Duyuru yoksa boş duyuru kartı gösterilmemeli.');
 assert(html.includes("localStorage.getItem('ka-theme')")&&html.includes("setAttribute('data-theme',t)"),'İlk boyamada merkezi açık/koyu tema uygulanmalı.');
 assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Shell tek merkezi tema sözleşmesini ve mevcut local-first tercihi kullanmalı.');
