@@ -1,3 +1,6 @@
+/* Koruk Asistan v2 generated bundle: academic.js. Kaynak dosyaları düzenleyin; bu dosyayı elle düzenlemeyin. */
+
+/* ===== SOURCE: js/modules/academic.js ===== */
 /* Koruk Asistan — Academic tek modül
  * Veri + servis + UI tek dosyada.
  * Metadata/CRUD DeviceData üzerinden cihaz-first; Firestore yalnız SyncEngine/queue arka planındadır.
@@ -224,3 +227,4 @@ function openPage(page,title=''){const allowed=['schedule','written','trial','re
 function unmount(){mounted=false;unsubs.forEach(fn=>{try{fn()}catch(_){}});unsubs=[];clearInterval(timer);timer=null;document.getElementById('kaAcademicScheduleModal')?.remove()}
 window.AcademicModule={mount,unmount,render,prepareLocal,timerState,openPage,openPlanForLesson,openSchedule(){return openPage('schedule','Ders Programı')}};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='academic')mount()});
 })();
+;

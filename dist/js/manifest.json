@@ -1,0 +1,71 @@
+{
+  "version": 26,
+  "generatedAt": "2026-08-27T19:35:52.667Z",
+  "bundles": {
+    "dashboard.js": {
+      "sources": [
+        "js/modules/dashboard.js"
+      ],
+      "bytes": 30480,
+      "sha256": "d3355cbe34f6"
+    },
+    "people.js": {
+      "sources": [
+        "js/modules/people.js"
+      ],
+      "bytes": 70721,
+      "sha256": "18f950d63564"
+    },
+    "academic.js": {
+      "sources": [
+        "js/modules/academic.js"
+      ],
+      "bytes": 80817,
+      "sha256": "7af34e336a83"
+    },
+    "management.js": {
+      "sources": [
+        "js/modules/management.js"
+      ],
+      "bytes": 89290,
+      "sha256": "77980fff27a4"
+    },
+    "communication.js": {
+      "sources": [
+        "js/modules/communication.js"
+      ],
+      "bytes": 74095,
+      "sha256": "8b4b54f00dd8"
+    },
+    "transport.js": {
+      "sources": [
+        "js/modules/report-engine.js",
+        "js/modules/transport.js"
+      ],
+      "bytes": 44165,
+      "sha256": "72b627c4ae9b"
+    },
+    "documents.js": {
+      "sources": [
+        "js/modules/documents.js"
+      ],
+      "bytes": 55194,
+      "sha256": "672531e40089"
+    },
+    "tools.js": {
+      "sources": [
+        "js/modules/tools.js",
+        "js/modules/teacher-list.js"
+      ],
+      "bytes": 86754,
+      "sha256": "a6fda87866ea"
+    },
+    "settings.js": {
+      "sources": [
+        "js/modules/settings.js"
+      ],
+      "bytes": 43933,
+      "sha256": "ca41aee29b51"
+    }
+  }
+}

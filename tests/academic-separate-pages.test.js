@@ -16,4 +16,8 @@ assert(academic.includes("title==='Deneme Sonuçları'")&&academic.includes("tit
 assert(shell.includes("name==='academic'&&['schedule','written','trial','results','plans','calendar'].includes(page)"),'Shell Academic sayfalarını doğrudan route etmelidir.');
 assert(shell.includes('AcademicModule?.openPage?.(page,title)'),'Shell Academic sayfasını tab click ile değil openPage API ile açmalıdır.');
 assert(!shell.includes('[data-academic-tab='),'Shell Academic tab selector kullanmamalı.');
+assert(academic.includes('async function openPlanForLesson'),'AcademicModule ders ve sınıftan yıllık plan açma API si sağlamalı.');
+assert(academic.includes('planClassLevel')&&academic.includes('planLessonKey')&&academic.includes('planCurrentWeekIndex'),'Ders-sınıf yıllık plan eşleşmesi sınıf seviyesi, ders adı ve mevcut hafta üzerinden yapılmalı.');
+assert(academic.includes('new Set(planSelection()?.planIdler||[])'),'Takip edilen yıllık plan eşleşmede öncelikli olmalı.');
+console.log('Ders-sınıf yıllık plan doğrudan açma sözleşmesi başarılı.');
 console.log('Academic ayrı sayfa + deneme sayacı + sonuç filtreleme sözleşmesi başarılı.');

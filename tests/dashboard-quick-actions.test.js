@@ -5,4 +5,8 @@ assert(dashboard.includes('data-dash-page="written"'),'Sınav Ekle doğrudan Yaz
 assert(dashboard.includes('data-dash-page="messages"'),'Mesaj Gönder doğrudan Mesajlaşma sayfasına gitmeli.');
 assert(dashboard.includes("page:btn.dataset.dashPage||''"),'Dashboard route binding sayfa hedefini ShellUI routeModule API sine aktarmalı.');
 assert(dashboard.includes('data-dash-quick-note'),'Hızlı Not mevcut merkezi quick-note akışını korumalı.');
+assert(dashboard.includes('data-dash-lesson-plan'),'Öğretmenin bugünkü ders kartı yıllık plan hedefi taşımalı.');
+assert(dashboard.includes("routeModule?.('academic',{bottom:'menu',title:'Yıllık Plan'})"),'Ders kartı Academic modülünü güvenli lifecycle ile yüklemeli.');
+assert(dashboard.includes('AcademicModule?.openPlanForLesson?.'),'Dashboard ders kartı Academic yıllık plan API sine bağlanmalı.');
+console.log('Dashboard ders kartı yıllık plan doğrudan rota sözleşmesi başarılı.');
 console.log('Dashboard hızlı işlem doğrudan rota sözleşmesi başarılı.');

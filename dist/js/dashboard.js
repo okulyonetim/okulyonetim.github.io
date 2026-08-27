@@ -1,3 +1,6 @@
+/* Koruk Asistan v2 generated bundle: dashboard.js. Kaynak dosyaları düzenleyin; bu dosyayı elle düzenlemeyin. */
+
+/* ===== SOURCE: js/modules/dashboard.js ===== */
 /* Koruk Asistan V2 — Ana Sayfa
  * Eski admin/öğretmen ana sayfa hiyerarşisi local-first mimaride yeniden kurulur.
  * Kalıcı veri kaynağı AppStore/DeviceData; Firestore yalnız SyncEngine arka planıdır.
@@ -101,3 +104,4 @@ window.uygulamaBaslat=function(){window.AppLoader?.load?.('dashboard').then(()=>
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard')mount()});
 window.addEventListener('koruk:app-config-changed',()=>requestAnimationFrame(render));
 })();
+;
