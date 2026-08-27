@@ -104,6 +104,7 @@
     if(migratedPages[title]||toolPages[title]||rubricPages[title]||formPages[title])route='tools';
     if(managementPages[title])route='management';
     if(academicPages[title])route='academic';
+    if(title==='Evrak Takibi')route='documents';
     if(!route)return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
     setTimeout(()=>{
@@ -113,6 +114,13 @@
           window.DocumentsModule?.unmount?.();
           const root=document.getElementById('v2ModuleRoot');
           await window.LegislationModule?.mount?.(root);
+          const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
+          return;
+        }
+        if(title==='Evrak Takibi'){
+          window.DocumentsModule?.unmount?.();
+          const root=document.getElementById('v2ModuleRoot');
+          await window.EvrakTakipPage?.open?.(root);
           const titleEl=document.getElementById('v2ModuleTitle');if(titleEl)titleEl.textContent=title;
           return;
         }
