@@ -29,7 +29,7 @@ const MENU_GROUPS=[
  {key:'programs',label:'Programlar',icon:'📅',tone:'green',route:'academic',items:[['Ders Programı','📅','academic','schedule'],['Nöbet Programı','🛡️','management','duty'],['Yıllık Plan','📚','academic','plans']]},
  {key:'communication',label:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[['Mesajlaşma','💬','communication','messages'],['Haberler','📰','communication','news'],['Duyurular','📣','communication','announcements'],['Anketler','📋','communication','polls']]},
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',items:[['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]},
- {key:'transport',label:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport'],['Harita','🗺️','tools','map']]},
+ {key:'transport',label:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Servisler','🚌','transport','services'],['Servis Oturma','💺','transport','busSeats'],['Sınıf Oturma','🏫','transport','classSeats'],['Harita','🗺️','tools','map']]},
  {key:'documents',label:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Dokümanlar','📁','documents'],['Mevzuat','📖','documents','mevzuat'],['Akademik Takvim','📅','academic','calendar'],['Kontrol Listeleri','📋','tools','checklists'],['Evrak Takibi','📄','documents','evrak'],['Aylık İşler','🕘','management','tasks']],subLabel:'Raporlar',subItems:[['Maarif Model','🏅','tools','form-maarif'],['Belirli Gün ve Haftalar','📅','tools','form-belirli'],['ŞÖK','🛡️','tools','form-sok'],['Rehberlik','🧭','tools','form-rehberlik'],['Yıllık Planlar & BEP Planları','📋','tools','form-bep'],['Zümre','👥','tools','form-zumre'],['Sosyal Kulüpler','♡','tools','form-kulup']]},
  {key:'management',label:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Personeller','👥','management','staff'],['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Evrak Takibi','📄','documents','evrak']]},
  {key:'settings',label:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Okul Bilgileri','🏢','settings','school'],['Veriler','🗄️','settings','data'],['Kullanıcı İşlemleri','🛡️','settings','users'],['Kullanıcı İstatistikleri','📋','settings','statistics']]}
@@ -96,6 +96,11 @@ function applySubpage(name,page,title){
   if(name==='communication'&&['announcements','messages','polls','news','notes','calendar'].includes(page)){
     const ok=global.CommunicationModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('İletişim sayfası açılamadı.');
+    if(title)setTitle(title);return true;
+  }
+  if(name==='transport'&&['services','busSeats','classSeats'].includes(page)){
+    const ok=global.TransportModule?.openPage?.(page,title);
+    if(ok===false)global.toast?.('Taşıma sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
   if(name==='settings'&&['school','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
