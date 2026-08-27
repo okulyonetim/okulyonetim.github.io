@@ -58,7 +58,7 @@
     const ensureGis=()=>loadScript('https://accounts.google.com/gsi/client',()=>!!window.google?.accounts?.oauth2);
     async function workbook(file){await ensureXlsx();return XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true})}
     function aoa(wb){const ws=wb.Sheets[wb.SheetNames[0]];return XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null})}
-    function findHeader(rows,tests){return rows.findIndex(r=>Array.isArray(r)&&tests.every(test=>r.some(c=>test(norm(c))))) }
+    function findHeader(rows,tests){return rows.findIndex(r=>Array.isArray(r)&&tests.every(test=>r.some(c=>test(norm(c)))))}
     function col(header,...names){for(const name of names){const i=header.indexOf(name);if(i>=0)return i}return-1}
     function splitName(value){const p=String(value||'').trim().split(/\s+/).filter(Boolean);if(p.length<2)return{ad:p[0]||'',soyad:''};return{soyad:p.pop(),ad:p.join(' ')}}
     function mergeRows(cached,live){const out=new Map();(Array.isArray(cached)?cached:[]).forEach((x,i)=>out.set(x?.id||`cache:${i}`,x));(Array.isArray(live)?live:[]).forEach((x,i)=>out.set(x?.id||`live:${i}`,x));return Array.from(out.values())}
