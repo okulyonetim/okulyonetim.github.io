@@ -48,3 +48,4 @@ assert(shell.includes("[data-dash-route],[data-dash-lesson-plan],[data-dash-remi
 assert(dash.includes("addEventListener('click',e=>{e.preventDefault();e.stopPropagation();return window.ShellUI?.routeModule"),'Dashboard özel rota tıklaması üst karta yayılmamalı.');
 assert(dash.includes("addEventListener('click',async e=>{e.preventDefault();e.stopPropagation();const ok=await window.ShellUI?.routeModule?.('academic'"),'Yıllık plan ders satırı tıklaması üst kart rota handlerına yayılmamalı.');
 assert(dash.includes('data-dash-route=\"academic\" data-dash-page=\"schedule\" data-dash-title=\"Ders Programı\"'),'Yönetici ders satırı doğrudan Ders Programı alt sayfasına gitmeli.');
+// Checkpoint: nested dashboard actions must never bubble into parent card routing.
