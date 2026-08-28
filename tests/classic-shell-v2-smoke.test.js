@@ -94,6 +94,7 @@ const authSrc=fs.readFileSync('js/auth.js','utf8');
 assert(authSrc.includes("KorukLocalFirst.meta(uid,'authSession'")&&authSrc.includes('authSessionCacheOku(user.uid)'),'Aktif kullanıcı/rol snapshotı IndexedDB meta üzerinden local-first restore edilmeli.');
 assert(authSrc.includes('authOturumuUygula(user,cached.user,cached.role,{cached:true})'),'Firebase Auth UID doğrulandıktan sonra cihazdaki oturum Firestore beklenmeden uygulanmalı.');
 assert(authSrc.includes('await authSunucuOturumuGetir(user,cached)'),'Firestore kullanıcı/rol kontrolü local restore sonrasında arka plan tazelemesi olarak sürmeli.');
+assert(!authSrc.includes("if(typeof uygulamaBaslat==='function')uygulamaBaslat()"),'Auth eski global dashboard başlangıcını çağırmamalı; tek başlangıç sahibi AppLoader olmalı.');
 assert(authSrc.includes("'Bu cihazda çevrimdışı oturum verisi bulunmuyor. İlk açılış için internet bağlantısı gerekir.'"),'İlk kez açılan cihaz çevrimdışıysa sahte oturum üretmemeli.');
 
 assert(live.includes("new CustomEvent('koruk:school-live-tick'")&&dashboard.includes("window.addEventListener('koruk:school-live-tick',liveTickHandler)"),'Canlı zil için tek saniyelik zaman motoru SchoolLiveStatus olmalı; dashboard yalnız tick eventini tüketmeli.');
