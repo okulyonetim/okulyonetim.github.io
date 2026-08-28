@@ -62,4 +62,5 @@ async function resolve(kind,fallback){await ensureSchoolCache();return clone((aw
 async function clearPersonal(kind){const u=uid();if(!u)return;def(kind);const key='rubric-settings:'+kind;await global.KorukLocalFirst.meta(u,key,null);await global.KorukLocalFirst.meta(u,key+':legacy-migrated',true);global.dispatchEvent(new CustomEvent('koruk:rubric-settings-changed',{detail:{kind,scope:'personal-clear'}}));}
 try{global.SyncEngine?.register?.('okulBilgileri',global.COL?.okulBilgileri);}catch(_){}
 global.RubricSettingsService={KINDS:Object.freeze(clone(KINDS)),personalGet,personalSet,schoolGet,schoolSet,resolve,clearPersonal};
+global.AppLoader?.loadScript?.('js/modules/student-attendance-legacy.js').catch?.(e=>console.warn('[StudentAttendanceLegacy load]',e?.message||e));
 })(window);
