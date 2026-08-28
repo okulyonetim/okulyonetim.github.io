@@ -1,11 +1,12 @@
 from pathlib import Path
-# Trigger after workflow registration.
+import re
 p=Path('css/design-system.css')
 s=p.read_text()
-needle='.ka-home .kh-social-icon{width:29px;height:29px;display:grid;place-items:center;color:var(--ka-primary);font-size:24px;line-height:1}\n'
-insert=needle+'.ka-home .kh-social-icon svg{display:block;width:24px;height:24px;max-width:100%;max-height:100%;flex:none}\n.ka-home .kh-social-icon>span{display:grid;place-items:center;width:24px;height:24px;font-size:20px;line-height:1}\n'
-if needle not in s: raise SystemExit('social icon css target not found')
-if '.ka-home .kh-social-icon svg{' not in s:s=s.replace(needle,insert,1)
+if '.ka-home .kh-social-icon svg{' not in s:
+    m=re.search(r'(\.ka-home \.kh-social-icon\{[^}]+\})',s)
+    if not m: raise SystemExit('social icon css rule not found')
+    extra="\n.ka-home .kh-social-icon svg{display:block;width:24px;height:24px;max-width:100%;max-height:100%;flex:none}\n.ka-home .kh-social-icon>span{display:grid;place-items:center;width:24px;height:24px;font-size:20px;line-height:1}"
+    s=s[:m.end()]+extra+s[m.end():]
 p.write_text(s)
 
 t=Path('tests/dashboard-card-routes-smoke.test.js')
