@@ -1,4 +1,5 @@
 from pathlib import Path
+# trigger: legacy-upcoming-v1
 
 DASH=Path('js/modules/dashboard.js')
 CSS=Path('css/design-system.css')
