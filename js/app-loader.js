@@ -25,6 +25,7 @@ define('academic',[...registry.get('academic'),'js/modules/academic-legacy-ui.js
 define('management',['js/modules/report-engine.js','js/modules/management.js']);
 define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
+define('transport',[...registry.get('transport'),'js/modules/transport-legacy-ui.js']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js']);
