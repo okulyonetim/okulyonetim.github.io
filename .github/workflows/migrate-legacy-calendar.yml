@@ -20,7 +20,17 @@ jobs:
         with:
           node-version: '24'
       - name: Apply legacy calendar migration
-        run: python3 scripts/migrate-legacy-calendar.py
+        run: |
+          python3 scripts/migrate-legacy-calendar.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tests/dashboard-card-routes-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          old="assert(dash.includes(\"routeButton('Takvimi aç','communication','calendar','Takvim','›')\"),'Takvim footer düğmesi doğrudan Takvim alt sayfasına gitmeli.');"
+          new="assert(dash.includes('class=\\\"kh-more\\\" data-dash-route=\\\"communication\\\" data-dash-page=\\\"calendar\\\" data-dash-title=\\\"Takvim\\\"'),'Takvim referanstaki ay başlığı düğmesinden doğrudan Takvim alt sayfasına gitmeli.');"
+          if old not in s: raise SystemExit('calendar legacy route assertion not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
       - name: Syntax checks
         run: |
           node --check js/modules/dashboard.js
