@@ -164,3 +164,6 @@ assert(dash.includes("function announcementSection(){")&&dash.includes("if(!d)re
 assert(dash.includes("function pollSection(){")&&dash.includes("if(!list.length)return'';const chart="),'Aktif anket yoksa anket kartı hiç render edilmemeli.');
 assert(dash.includes("function trialCounterSection(){")&&dash.includes("if(!list.length)return'';const exam="),'Aktif deneme sınavı sayacı yoksa sayaç kartı hiç render edilmemeli.');
 assert(dash.includes("function absencesSection(){if(!isAdmin())return'';")&&dash.includes("active=arr('ogretmenIzinleri').filter")&&dash.includes("if(!active.length)return'';"),'Bugün izinli öğretmen yoksa izin kartı hiç render edilmemeli.');
+
+assert(dash.includes("active=arr('ogretmenIzinleri').filter")&&dash.includes("if(!active.length)return''")&&dash.includes('<span>Bugün İzinli Öğretmenler</span>'),'Ana sayfa izin kartı yalnız aktif öğretmen izni varsa görünmeli.');
+assert(!dash.includes("active=[...arr('personelIzinler'),...arr('ogretmenIzinleri')]"),'Personel izinleri ana sayfa öğretmen izin kartına karışmamalı.');
