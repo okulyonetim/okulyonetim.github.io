@@ -155,3 +155,7 @@ assert(dash.includes('data-home-section="polls"')&&dash.includes('class="kh-dyn-
 assert(dash.includes('data-home-section="trial-counter"')&&dash.includes('data-dash-trial-timer')&&dash.includes('data-dash-page="trial"'),'Aktif deneme/sayaç referans dinamik kart geometrisini ve gerçek sayaç davranışını korumalı.');
 assert(!dash.includes("section('Aktif Anketler','📊','polls'")&&!dash.includes("section('Deneme / Sayaç','⏱️','trial-counter'"),'Geçici section tabanlı anket/deneme rendererları geri dönmemeli.');
 assert(css.includes('LEGACY DASHBOARD DYNAMIC ITEMS — REFERENCE PORT')&&css.includes('.ka-home .kh-dyn-item'),'Dinamik kart görünümü merkezi design-system içinde kalmalı.');
+
+assert(dash.includes('data-home-section="absences"')&&dash.includes('<span class="kh-chip amber">İZİNLİ</span>'),'İzinli personel kartı referans kh-section/kh-row/amber chip yüzeyini kullanmalı.');
+assert(dash.includes("[...arr('personelIzinler'),...arr('ogretmenIzinleri')]")&&dash.includes('data-dash-page="leaves"'),'İzinli kartı mevcut birleşik local-first veri kapsamını ve gerçek İzinler rotasını korumalı.');
+assert(css.includes('LEGACY ABSENCES CARD — REFERENCE PORT')&&css.includes('.ka-home .kh-chip.amber'),'İzinli vurgu rengi merkezi warning tokenından gelmeli.');

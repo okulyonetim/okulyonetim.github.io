@@ -464,3 +464,7 @@
 .ka-home .kh-dyn-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:var(--ka-primary-soft);color:var(--ka-primary)}
 .ka-home .kh-dyn-icon svg{width:20px;height:20px}
 .ka-home .kh-dyn-item .kh-chip.is-live{background:color-mix(in srgb,var(--ka-danger) 12%,var(--ka-card-bg));color:var(--ka-danger);font-variant-numeric:tabular-nums}
+
+
+/* LEGACY ABSENCES CARD — REFERENCE PORT */
+.ka-home .kh-chip.amber{background:color-mix(in srgb,var(--ka-warning) 13%,var(--ka-card-bg));color:var(--ka-warning)}
