@@ -1,4 +1,5 @@
 from pathlib import Path
+# Trigger after workflow registration.
 p=Path('js/modules/dashboard.js')
 s=p.read_text()
 old="function refreshHeroLive(live=window.SchoolLiveStatus?.status?.()||{}){const card=document.querySelector('[data-dash-live-status]');if(!card)return;const view=liveCardView(live),big=card.querySelector('[data-dash-live-big]'),sub=card.querySelector('[data-dash-live-sub]');if(big&&big.textContent!==view.big)big.textContent=view.big;if(sub&&sub.textContent!==view.sub)sub.textContent=view.sub}"
