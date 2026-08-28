@@ -21,6 +21,10 @@ if marker not in css:
 CSS.write_text(css,encoding='utf-8')
 
 t=TEST.read_text(encoding='utf-8')
+old="assert(dash.includes(\"routeButton('Programım','academic','schedule','Ders Programı','›')\"),'Hero Programım düğmesi doğrudan Ders Programı alt sayfasına gitmeli.');"
+new_assert="assert(dash.includes('class=\\\"kh-live-card\\\" data-dash-route=\\\"academic\\\" data-dash-page=\\\"schedule\\\" data-dash-title=\\\"Ders Programı\\\"'),'Hero canlı kartı doğrudan Ders Programı alt sayfasına gitmeli.');"
+if old not in t: raise SystemExit('stale hero route assertion missing')
+t=t.replace(old,new_assert,1)
 checks='''\nassert(dash.includes('class="kh-hero"')&&dash.includes('class="kh-live-card"'),'Dashboard karşılama alanı referans kh-hero/kh-live-card DOM sözleşmesini kullanmalı.');\nassert(dash.includes("window.SchoolLiveStatus?.status?.()")&&dash.includes("data-dash-page=\\\"schedule\\\""),'Hero canlı kartı ikinci sayaç yerine canonical SchoolLiveStatus ve merkezi Ders Programı rotasını kullanmalı.');\nassert(!dash.includes('class="ka-home-hero"'),'Eski geçici ka-home-hero renderer geri dönmemeli.');\nassert(css.includes('LEGACY DASHBOARD HERO — REFERENCE PORT')&&css.includes('.ka-home .kh-live-card'),'Hero referans geometrisi merkezi design-system içinde kalmalı.');\n'''
 if 'LEGACY DASHBOARD HERO — REFERENCE PORT' not in t:t+=checks
 TEST.write_text(t,encoding='utf-8')
@@ -30,6 +34,3 @@ m=re.search(r"const CACHE_ADI='oy-cache-v(\d+)'",sw)
 if not m: raise SystemExit('cache missing')
 sw=sw[:m.start(1)]+str(int(m.group(1))+1)+sw[m.end(1):]
 SW.write_text(sw,encoding='utf-8')
-
-# trigger migration workflow after workflow registration
-# second trigger
