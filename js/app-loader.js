@@ -15,15 +15,16 @@ const alreadyInDom=src=>{const n=normalize(src);return [...document.querySelecto
 function loadScript(src){const key=normalize(src);if(loaded.has(key)||alreadyInDom(src)){loaded.add(key);return Promise.resolve(key)}if(loading.has(key))return loading.get(key);const p=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.async=false;s.dataset.korukLazy=key;s.onload=()=>{loaded.add(key);loading.delete(key);resolve(key)};s.onerror=()=>{loading.delete(key);reject(new Error('module-load:'+key))};document.head.appendChild(s)});loading.set(key,p);return p}
 async function loadMany(files){for(const f of files||[])await loadScript(f)}
 function define(name,files){registry.set(name,[...(files||[])])}
+const FIREBASE_STORAGE_SDK='https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js';
 const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))||alreadyInDom(x));
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js']);
 define('people',['js/modules/people.js']);
 define('academic',['js/modules/report-engine.js','js/modules/academic.js']);
 define('management',['js/modules/report-engine.js','js/modules/management.js']);
-define('communication',['js/modules/communication.js','js/modules/assistant.js']);
+define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
-define('documents',['js/modules/report-engine.js','js/modules/documents.js']);
+define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js']);
 
@@ -61,7 +62,7 @@ function permissionApplyModule(name){const root=document.getElementById('v2Modul
 function permissionRefresh(){applyNavigation();permissionApply(document);const r=AppStore?.get?.('ui.route');if(r)requestAnimationFrame(()=>permissionApplyModule(r));return true}
 window.PermissionService={LEVELS:Object.freeze({...PERMISSION_RANK}),catalog:PERMISSION_CATALOG,aliases:Object.freeze({...LEGACY_PERMISSION_ALIASES}),normalize:permissionNormalize,level:permissionLevel,moduleLevel,can:permissionCan,canEdit:k=>permissionCan(k,'edit'),isPreview:k=>permissionLevel(k)==='preview',require:permissionRequire,apply:permissionApply,applyModule:permissionApplyModule,refresh:permissionRefresh};
 window.gorebilir=window.gorebilir||((key)=>PermissionService.can(key,'read'));window.duzenleyebilir=window.duzenleyebilir||((key)=>PermissionService.can(key,'edit'));window.kullaniciYonetimiYetkisiVar=window.kullaniciYonetimiYetkisiVar||(()=>permissionSession().user?.admin===true||PermissionService.can('settings.users','edit'));
-async function load(name){if(!registry.has(name))throw new Error('module-not-defined:'+name);if(moduleMeta(name).visible===false||moduleLevel(name)==='hidden'){const e=new Error('module-forbidden:'+name);e.code='permission-hidden';throw e}await loadMany(registry.get(name));window.dispatchEvent(new CustomEvent('koruk:module-ready',{detail:{name,permissionLevel:moduleLevel(name)}}));requestAnimationFrame(()=>permissionApplyModule(name));return name}
+async function load(name){if(!registry.has(name))throw new Error('module-not-defined:'+name);if(moduleMeta(name).visible===false||moduleLevel(name)==='hidden'){const e=new Error('module-forbidden:'+name);e.code='permission-hidden';throw e}await loadMany(registry.get(name));if((name==='communication'||name==='documents'))window.firebaseStorageHazirla?.();window.dispatchEvent(new CustomEvent('koruk:module-ready',{detail:{name,permissionLevel:moduleLevel(name)}}));requestAnimationFrame(()=>permissionApplyModule(name));return name}
 function applyTheme(theme,opts={}){return window.ShellUI?.applyTheme?.(theme,opts)??theme}
 function toggleTheme(){return window.ShellUI?.toggleTheme?.()}
 function startPlatform(){if(startupDone)return true;startupDone=true;if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}),{once:true});try{if(typeof firebaseyiBaslat!=='function'||!firebaseyiBaslat())return false;authDinleyiciKur?.();return true}catch(e){console.error('[AppLoader]',e);return false}}

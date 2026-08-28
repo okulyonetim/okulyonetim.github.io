@@ -1,0 +1,17 @@
+const fs=require('fs');
+const assert=require('assert');
+const html=fs.readFileSync('index.html','utf8');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
+const firebase=fs.readFileSync('js/firebase-init.js','utf8');
+const communication=fs.readFileSync('js/modules/communication.js','utf8');
+const documents=fs.readFileSync('js/modules/documents.js','utf8');
+assert(!html.includes('firebase-storage-compat.js'),'Firebase Storage SDK ilk HTML açılışında preload edilmemeli.');
+assert(loader.includes("const FIREBASE_STORAGE_SDK='https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js'"),'Storage SDK merkezi AppLoader capability olarak tanımlanmalı.');
+assert(loader.includes("define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js','js/modules/assistant.js'])"),'Mesajlaşma Storage SDK yüklenmeden açılmamalı.');
+assert(loader.includes("define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js'])"),'Dokümanlar Storage SDK yüklenmeden açılmamalı.');
+assert(loader.includes("window.firebaseStorageHazirla?.()"),'Lazy Storage SDK yüklendikten sonra mevcut Firebase app storage örneği hazırlanmalı.');
+const startup=firebase.slice(firebase.indexOf('function firebaseyiBaslat(){'));
+assert(!startup.includes('storage = firebase.storage();'),'Firebase başlangıç yolu Storage SDK istememeli.');
+assert(firebase.includes('function firebaseStorageHazirla()')&&firebase.includes("typeof firebase.storage !== 'function'"),'Storage örneği yalnız capability yüklendiğinde hazırlanmalı.');
+assert(communication.includes('storage.ref()')&&documents.includes('storage.ref()'),'Mevcut mesaj/doküman Storage davranışı korunmalı.');
+console.log('Lazy Firebase Storage başlangıç smoke testi başarılı.');

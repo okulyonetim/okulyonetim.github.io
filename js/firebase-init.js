@@ -45,6 +45,15 @@ window.firebaseHazir = false;
 
 function yapilandirmaEksikMi(){ return firebaseConfig.apiKey === "BURAYA_API_KEY"; }
 
+function firebaseStorageHazirla(){
+  if(storage) return storage;
+  if(typeof firebase.storage !== 'function') throw new Error('firebase-storage-sdk-yok');
+  storage = firebase.storage();
+  window.storage = storage;
+  return storage;
+}
+window.firebaseStorageHazirla = firebaseStorageHazirla;
+
 function firebaseyiBaslat(){
   if(yapilandirmaEksikMi()){
     document.getElementById('configWarning')?.classList.add('active');
@@ -55,7 +64,7 @@ function firebaseyiBaslat(){
     db = firebase.firestore();
     db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
     auth = firebase.auth();
-    storage = firebase.storage();
+    storage = null;
     firebaseHazir = true;
     window.db = db;
     window.auth = auth;
