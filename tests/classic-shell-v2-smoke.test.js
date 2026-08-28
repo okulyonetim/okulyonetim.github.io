@@ -88,3 +88,10 @@ console.log('Classic UX + tam IndexedDB yedek/restore + merkezi routing + rol ba
 
 assert(design.includes('html:not(.ka-auth-resolved) #girisEkrani'),'Mevcut Firebase oturumu çözülmeden giriş ekranı boyanmamalı.');
 assert(dashboard.includes('window.SchoolLiveStatus?.status?.()')&&dashboard.includes('refreshHeroLive'),'Dashboard zil kartı ikinci sayaç motoru kurmadan canonical SchoolLiveStatus kullanmalı.');
+
+assert(shell.includes('js/auth.js'),'Auth runtime production shell içinde bulunmalı.');
+const authSrc=fs.readFileSync('js/auth.js','utf8');
+assert(authSrc.includes("KorukLocalFirst.meta(uid,'authSession'")&&authSrc.includes('authSessionCacheOku(user.uid)'),'Aktif kullanıcı/rol snapshotı IndexedDB meta üzerinden local-first restore edilmeli.');
+assert(authSrc.includes('authOturumuUygula(user,cached.user,cached.role,{cached:true})'),'Firebase Auth UID doğrulandıktan sonra cihazdaki oturum Firestore beklenmeden uygulanmalı.');
+assert(authSrc.includes('await authSunucuOturumuGetir(user,cached)'),'Firestore kullanıcı/rol kontrolü local restore sonrasında arka plan tazelemesi olarak sürmeli.');
+assert(authSrc.includes("'Bu cihazda çevrimdışı oturum verisi bulunmuyor. İlk açılış için internet bağlantısı gerekir.'"),'İlk kez açılan cihaz çevrimdışıysa sahte oturum üretmemeli.');
