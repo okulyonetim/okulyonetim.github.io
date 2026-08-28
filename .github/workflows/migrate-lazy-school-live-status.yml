@@ -1,0 +1,38 @@
+name: migrate-lazy-school-live-status
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-lazy-school-live-status.py'
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Move SchoolLiveStatus out of startup path
+        run: python scripts/migrate-lazy-school-live-status.py
+      - name: Syntax checks
+        run: |
+          node --check js/app-loader.js
+          node --check js/modules/school-live-status.js
+          node --check js/modules/dashboard.js
+      - name: Dashboard and architecture checks
+        run: |
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Cleanup temporary migration files
+        run: rm -f scripts/migrate-lazy-school-live-status.py .github/workflows/migrate-lazy-school-live-status.yml
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'perf(startup): lazy-load school live status' || exit 0
+          git push origin main
