@@ -37,7 +37,7 @@ assert(!dash.includes("${lessonsSection()}${personalScheduleSection()}"),'Öğre
 assert(css.includes('LEGACY TODAY LESSONS — REFERENCE PORT')&&css.includes('.kh-section[data-home-section="lessons"] .kh-row.is-now'),'Öğretmen ders kartı referans legacy geometriyle merkezi design-system içinde kalmalı.');
 assert(dash.includes("${lessonsSection()}${dutySection()}${examsSection()}${upcomingSection()}${quickSection()}${calendarSection()}${notesSection()}${allTodayDutySection()}${weekDutySection()}${socialSection()}`}"),'Öğretmen ana sayfasında günlük ders, nöbet, yazılı ve görev akışı genel bilgi kartlarından önce gelmeli.');
 assert(dash.includes("live=window.SchoolLiveStatus?.status?.()")&&dash.includes('<span class=\"kh-chip green\">ŞİMDİ</span>')&&dash.includes('<span class=\"kh-chip\">SIRADAKİ</span>'),'Öğretmen ders programı mevcut zil/ders durumundan referans Şimdi-Sıradaki bağlamını üretmeli.');
-assert(dash.includes("if(!list.length)return'';const body=list.map"),'Duyuru yoksa boş duyuru kartı gösterilmemeli.');
+assert(dash.includes("function announcementSection(){if(!cardVisible('announcements'))return'';")&&dash.includes("if(!d)return'';"),'Duyuru yoksa boş duyuru kartı gösterilmemeli.');
 assert(html.includes("localStorage.getItem('ka-theme')")&&html.includes("setAttribute('data-theme',t)"),'İlk boyamada merkezi açık/koyu tema uygulanmalı.');
 assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Shell tek merkezi tema sözleşmesini ve mevcut local-first tercihi kullanmalı.');
 assert(settings.includes("['appearance','Görünüm','Açık ve koyu tema']")&&settings.includes("ShellUI?.applyTheme?.(b.dataset.themeChoice)"),'Ayarlar merkezi görünüm seçicisini ikinci tema motoru açmadan kullanmalı.');
@@ -150,3 +150,8 @@ assert(css.includes('LEGACY DASHBOARD HERO — REFERENCE PORT')&&css.includes('.
 
 assert(dash.includes('data-dash-backtop')&&dash.includes("window.scrollY>520")&&dash.includes("window.scrollTo({top:0,behavior:'smooth'})"),'Referans yukarı dön düğmesi 520px sonrasında görünmeli ve sayfa başına dönmeli.');
 assert(css.includes('LEGACY DASHBOARD BACKTOP — REFERENCE PORT')&&css.includes('.kh-backtop.is-visible'),'Yukarı dön görünümü merkezi design-system içinde kalmalı.');
+
+assert(dash.includes('data-home-section="polls"')&&dash.includes('class="kh-dyn-item"')&&dash.includes('>ANKET</span>'),'Aktif Anketler referans kh-dynamic/kh-dyn-item yüzeyini kullanmalı.');
+assert(dash.includes('data-home-section="trial-counter"')&&dash.includes('data-dash-trial-timer')&&dash.includes('data-dash-page="trial"'),'Aktif deneme/sayaç referans dinamik kart geometrisini ve gerçek sayaç davranışını korumalı.');
+assert(!dash.includes("section('Aktif Anketler','📊','polls'")&&!dash.includes("section('Deneme / Sayaç','⏱️','trial-counter'"),'Geçici section tabanlı anket/deneme rendererları geri dönmemeli.');
+assert(css.includes('LEGACY DASHBOARD DYNAMIC ITEMS — REFERENCE PORT')&&css.includes('.ka-home .kh-dyn-item'),'Dinamik kart görünümü merkezi design-system içinde kalmalı.');

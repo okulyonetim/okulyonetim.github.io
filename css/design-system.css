@@ -455,3 +455,12 @@
 .kh-backtop{position:fixed;right:14px;bottom:calc(var(--ka-bottom-nav-height) + 12px + var(--ka-safe-bottom));width:42px;height:42px;border:0;border-radius:14px;background:var(--ka-primary);color:var(--ka-text-inverse);box-shadow:var(--ka-shadow-md);font-size:20px;z-index:90;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity var(--ka-transition),transform var(--ka-transition)}
 .kh-backtop.is-visible{opacity:1;pointer-events:auto;transform:translateY(0)}
 @media(prefers-reduced-motion:reduce){.kh-backtop{transition:none}}
+
+
+/* LEGACY DASHBOARD DYNAMIC ITEMS — REFERENCE PORT */
+.ka-home .kh-dynamic{display:flex;flex-direction:column;gap:8px}
+.ka-home .kh-dynamic:empty{display:none}
+.ka-home .kh-dyn-item{width:100%;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 12px;border-radius:18px;border:1px solid var(--ka-border);background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm);color:var(--ka-text);text-align:left;font:inherit;cursor:pointer}
+.ka-home .kh-dyn-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:var(--ka-primary-soft);color:var(--ka-primary)}
+.ka-home .kh-dyn-icon svg{width:20px;height:20px}
+.ka-home .kh-dyn-item .kh-chip.is-live{background:color-mix(in srgb,var(--ka-danger) 12%,var(--ka-card-bg));color:var(--ka-danger);font-variant-numeric:tabular-nums}
