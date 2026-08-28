@@ -88,18 +88,49 @@ function firebaseyiBaslat(){
   }
 }
 
-/* Geçici tanılama: DevTools Firebase Auth iframe'ine bağlansa bile TOP sayfanın
-   gerçek Firebase başlangıç durumunu giriş ekranında gösterir. Sorun çözüldüğünde kaldırılacak. */
+/* Geçici tanılama: ana pencerenin gerçek Firebase/Auth/Firestore aşamalarını
+   DevTools bağlamından bağımsız olarak giriş kartında ayrı bir satırda gösterir. */
+let firebaseTanilamaDinleyiciKuruldu = false;
+function firebaseTanilamaSatiri(){
+  let el=document.getElementById('kaAuthDiag');
+  if(el) return el;
+  const hata=document.getElementById('girisHataMetni');
+  if(!hata?.parentElement) return null;
+  el=document.createElement('p');
+  el.id='kaAuthDiag';
+  el.className='ka-muted';
+  el.style.fontSize='12px';
+  el.style.lineHeight='1.35';
+  el.style.wordBreak='break-word';
+  hata.insertAdjacentElement('afterend',el);
+  return el;
+}
+function firebaseTanilamaYaz(mesaj){const el=firebaseTanilamaSatiri();if(el)el.textContent='Tanı: '+mesaj;}
 function firebaseBaslangicTanilamasiGoster(){
   setTimeout(()=>{
-    if(window.firebaseHazir) return;
     document.documentElement.classList.add('ka-auth-resolved');
-    const el=document.getElementById('girisHataMetni');
-    if(!el) return;
     const fb=window.firebase;
-    el.textContent=`Tanılama TOP@${location.host}: SDK=${fb?.SDK_VERSION||'yok'} | Firestore=${typeof fb?.firestore} | Auth=${typeof fb?.auth} | db=${!!window.db} | auth=${!!window.auth}`;
-    el.style.display='';
-  },1200);
+    if(!window.firebaseHazir||!window.auth||!window.db){
+      firebaseTanilamaYaz(`Firebase HAZIR DEĞİL | SDK=${fb?.SDK_VERSION||'yok'} | Firestore=${typeof fb?.firestore} | Auth=${typeof fb?.auth} | db=${!!window.db}`);
+      return;
+    }
+    firebaseTanilamaYaz(`Firebase ${fb?.SDK_VERSION||'?'} ✓ | Auth ✓ | oturum=${window.auth.currentUser?'var':'yok'}`);
+    if(firebaseTanilamaDinleyiciKuruldu)return;
+    firebaseTanilamaDinleyiciKuruldu=true;
+    window.auth.onAuthStateChanged(async user=>{
+      if(!user){firebaseTanilamaYaz(`Firebase ${fb?.SDK_VERSION||'?'} ✓ | Auth ✓ | oturum yok`);return;}
+      firebaseTanilamaYaz('Kimlik doğrulandı ✓ | kullanıcı belgesi okunuyor…');
+      try{
+        const zamanAsimi=new Promise((_,reject)=>setTimeout(()=>{const e=new Error('7 saniye içinde yanıt gelmedi');e.code='diag-timeout';reject(e)},7000));
+        const snap=await Promise.race([window.db.collection(window.COL.kullanicilar).doc(user.uid).get({source:'server'}),zamanAsimi]);
+        if(!snap.exists){firebaseTanilamaYaz('Kimlik ✓ | oy_kullanicilar belgesi YOK');return;}
+        const veri=snap.data()||{};
+        firebaseTanilamaYaz(`Kimlik ✓ | kullanıcı belgesi ✓ | aktif=${veri.aktif!==false} | rol=${veri.rolId||'yok'}`);
+      }catch(e){
+        firebaseTanilamaYaz(`Kimlik ✓ | kullanıcı belgesi HATA: ${e?.code||e?.message||e}`);
+      }
+    });
+  },700);
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',firebaseBaslangicTanilamasiGoster,{once:true});
 else firebaseBaslangicTanilamasiGoster();
