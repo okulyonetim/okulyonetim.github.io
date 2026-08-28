@@ -25,6 +25,12 @@ old="assert(dash.includes(\"routeButton('Programım','academic','schedule','Ders
 new_assert="assert(dash.includes('class=\\\"kh-live-card\\\" data-dash-route=\\\"academic\\\" data-dash-page=\\\"schedule\\\" data-dash-title=\\\"Ders Programı\\\"'),'Hero canlı kartı doğrudan Ders Programı alt sayfasına gitmeli.');"
 if old not in t: raise SystemExit('stale hero route assertion missing')
 t=t.replace(old,new_assert,1)
+old2="assert(dash.includes(\"focusLabel='Bugünkü ilk dersiniz'\")&&dash.includes(\"focusLabel='Şu anki dersiniz'\")&&dash.includes(\"focusLabel='Sıradaki dersiniz'\"),'Öğretmen karşılama kartı canlı ders durumunu Şimdi/Sıradaki bağlamına çevirmeli.');"
+new2="assert(dash.includes(\"live.mode==='lesson'\")&&dash.includes(\"live.nextPeriod\")&&dash.includes(\"big=`Sonraki · ${live.nextPeriod}. Ders`\"),'Öğretmen karşılama kartı canlı ders durumunu Şimdi/Sıradaki bağlamına çevirmeli.');"
+old3="assert(dash.includes(\"live?.mode==='after'?'Bugünkü dersler tamamlandı.'\")&&dash.includes(\"live?.mode==='weekend'?'Bugün ders günü değil.'\"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');"
+new3="assert(dash.includes(\"live.mode==='after'\")&&dash.includes(\"big='Dersler tamamlandı'\")&&dash.includes(\"live.mode==='weekend'\")&&dash.includes(\"big='Hafta sonu'\"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');"
+if old2 not in t or old3 not in t: raise SystemExit('stale teacher hero assertions missing')
+t=t.replace(old2,new2,1).replace(old3,new3,1)
 checks='''\nassert(dash.includes('class="kh-hero"')&&dash.includes('class="kh-live-card"'),'Dashboard karşılama alanı referans kh-hero/kh-live-card DOM sözleşmesini kullanmalı.');\nassert(dash.includes("window.SchoolLiveStatus?.status?.()")&&dash.includes("data-dash-page=\\\"schedule\\\""),'Hero canlı kartı ikinci sayaç yerine canonical SchoolLiveStatus ve merkezi Ders Programı rotasını kullanmalı.');\nassert(!dash.includes('class="ka-home-hero"'),'Eski geçici ka-home-hero renderer geri dönmemeli.');\nassert(css.includes('LEGACY DASHBOARD HERO — REFERENCE PORT')&&css.includes('.ka-home .kh-live-card'),'Hero referans geometrisi merkezi design-system içinde kalmalı.');\n'''
 if 'LEGACY DASHBOARD HERO — REFERENCE PORT' not in t:t+=checks
 TEST.write_text(t,encoding='utf-8')
