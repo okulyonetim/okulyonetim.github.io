@@ -18,7 +18,7 @@ assert(src.includes("className='ka-modal-backdrop'")||src.includes("className='k
 assert(src.includes('holidayMode()'),'Tatil modunda hatırlatma popupı gösterilmemeli.');
 assert(src.includes('.sort((a,b)=>a.gunFarki-b.gunFarki)'),'En geciken/en yakın madde üstte kalmalı.');
 assert(src.includes("function teacherUpcomingRows(){return collectReminders(30).filter(x=>x.kaynak!=='sinav').slice(0,8)}"),'Öğretmen Teslim & Görev Takvimi merkezi 30 günlük motoru kullanmalı ve ayrı yazılı kartındaki sınavları tekrar etmemeli.');
-assert(src.includes("if(isAdmin()){const rows=upcomingRows();return section('Yaklaşan Görevler'"),'Yönetici Yaklaşan Görevler kartının mevcut davranışı öğretmen zaman çizelgesinden ayrılmalı.');
+assert(src.includes("if(isAdmin()){const rows=upcomingRows();if(!rows.length)return'';return `<section class=\"kh-section\" data-home-section=\"upcoming\""),'Yönetici Yaklaşan Etkinlik / Görevler kartı öğretmen zaman çizelgesinden ayrılmalı ve legacy kh-section sözleşmesini kullanmalı.');
 assert(src.includes('data-dash-reminder-index'),'Öğretmen teslim/görev satırları doğrudan kendi hatırlatma hedefini açabilmeli.');
 assert(src.includes("teacherUpcomingRows()[Number(btn.dataset.dashReminderIndex)]?.git?.()"),'Öğretmen satırı merkezi reminder hedefini kullanmalı; ikinci route eşlemesi oluşturulmamalı.');
 assert(src.includes("Object.keys(REMINDER_DEFS).map(t=>'data.'+t)"),'Dashboard tüm hatırlatma kaynaklarının AppStore değişikliklerine abone olmalı.');
