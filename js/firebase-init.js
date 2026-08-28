@@ -114,32 +114,57 @@ function girisDokunmaKatmaniniGuvenceyeAl(){
   });
 }
 
-/* Kiwi/Chromium bazı mobil oturumlarda hit-test doğru olduğu halde doğal focus/click
-   üretmeyebiliyor. Yalnız giriş yüzeyinde doğrudan kullanıcı hareketinden focus/submit
-   köprüsü kurulur; normal click/Enter davranışı korunur. */
+/* Mobil Chromium'da olay hedefi BODY'ye kayarsa, gerçek kontrolü dokunma koordinatından
+   bulup giriş yüzeyine yönlendir. Normal click/Enter davranışı korunur. */
 let girisEtkilesimFallbackKuruldu=false;
+let girisSonDokunma='henüz yok';
+function girisOlayNoktasi(e){
+  const t=e?.changedTouches?.[0]||e?.touches?.[0]||e;
+  const x=Number(t?.clientX),y=Number(t?.clientY);
+  return Number.isFinite(x)&&Number.isFinite(y)?{x,y}:null;
+}
+function girisNoktasiHedefi(e){
+  const p=girisOlayNoktasi(e);
+  if(p){const hit=document.elementFromPoint(p.x,p.y);if(hit)return hit;}
+  return e?.target||null;
+}
 function girisEtkilesimFallbackKur(){
   if(girisEtkilesimFallbackKuruldu)return;
-  const login=document.getElementById('girisEkrani');
-  if(!login)return;
-  const inputs=[...login.querySelectorAll('input')],btn=document.getElementById('girisBtn'),form=btn?.form||login.querySelector('form');
-  if(!inputs.length||!btn||!form)return;
+  const login=document.getElementById('girisEkrani'),btn=document.getElementById('girisBtn'),form=btn?.form||login?.querySelector('form');
+  if(!login||!btn||!form)return;
   girisEtkilesimFallbackKuruldu=true;
   const odakla=el=>{try{el.focus({preventScroll:true})}catch(_){try{el.focus()}catch(__){}}};
-  for(const input of inputs){
-    input.addEventListener('pointerdown',()=>odakla(input),{passive:true});
-    input.addEventListener('touchstart',()=>odakla(input),{passive:true});
-    input.addEventListener('click',()=>odakla(input),{passive:true});
-  }
   let sonSubmit=0;
+  const tanila=(e,hit)=>{
+    girisSonDokunma=`${e.type} target=${pointerHedefAdi(e.target)} hit=${pointerHedefAdi(hit)}`;
+    setTimeout(()=>window.dispatchEvent(new Event('koruk-login-diag')),0);
+  };
+  const down=e=>{
+    if(login.hidden)return;
+    const hit=girisNoktasiHedefi(e);tanila(e,hit);
+    const input=hit?.closest?.('#girisEkrani input');
+    if(input)odakla(input);
+  };
   const gonder=e=>{
     const now=Date.now();if(now-sonSubmit<700)return;sonSubmit=now;
     if(e?.cancelable)e.preventDefault();
     try{form.requestSubmit(btn)}catch(_){try{if(typeof window.girisFormGonder==='function')window.girisFormGonder({preventDefault(){}})}catch(__){}}
   };
-  btn.addEventListener('pointerup',gonder,{capture:true});
-  btn.addEventListener('touchend',gonder,{capture:true});
-  btn.addEventListener('click',e=>{if(Date.now()-sonSubmit<700){if(e.cancelable)e.preventDefault();return;}gonder(e);},true);
+  const up=e=>{
+    if(login.hidden)return;
+    const hit=girisNoktasiHedefi(e);tanila(e,hit);
+    if(hit?.closest?.('#girisBtn'))gonder(e);
+  };
+  window.addEventListener('pointerdown',down,true);
+  window.addEventListener('pointerup',up,true);
+  window.addEventListener('touchstart',down,{capture:true,passive:true});
+  window.addEventListener('touchend',up,{capture:true,passive:false});
+  window.addEventListener('click',e=>{
+    if(login.hidden)return;
+    const hit=e.detail===0?e.target:girisNoktasiHedefi(e);tanila(e,hit);
+    const input=hit?.closest?.('#girisEkrani input');if(input)odakla(input);
+    if(hit?.closest?.('#girisBtn'))gonder(e);
+  },true);
 }
 
 /* Geçici tanılama: ana pencerenin gerçek Firebase/Auth/Firestore aşamalarını
@@ -191,12 +216,10 @@ function pointerTanilamaKur(){
   if(!satir) return;
   const aktif=()=>pointerHedefAdi(document.activeElement);
   const temel=()=>`Hit input=${pointerMerkezHedef(input)} | buton=${pointerMerkezHedef(btn)} | aktif=${aktif()} | iframe=${document.querySelectorAll('iframe').length}`;
-  satir.textContent='Dokunma: '+temel();
-  let son='henüz yok';
-  const yaz=()=>{satir.textContent=`Dokunma: ${temel()} | son=${son}`;};
-  document.addEventListener('pointerdown',e=>{son='down '+pointerHedefAdi(e.target);setTimeout(yaz,0);},true);
-  document.addEventListener('pointerup',e=>{son='up '+pointerHedefAdi(e.target);setTimeout(yaz,0);},true);
-  document.addEventListener('touchstart',e=>{if(!window.PointerEvent){son='touch '+pointerHedefAdi(e.target);setTimeout(yaz,0);}},true);
+  const yaz=()=>{satir.textContent=`Dokunma: ${temel()} | son=${girisSonDokunma}`;};
+  window.addEventListener('koruk-login-diag',yaz);
+  document.addEventListener('focusin',()=>setTimeout(yaz,0),true);
+  yaz();
   setTimeout(yaz,1200);
 }
 function firebaseBaslangicTanilamasiGoster(){
