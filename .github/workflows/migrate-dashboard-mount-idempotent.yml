@@ -1,0 +1,41 @@
+name: migrate-dashboard-mount-idempotent
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-dashboard-mount-idempotent.py'
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply dashboard mount idempotency
+        run: python scripts/migrate-dashboard-mount-idempotent.py
+      - name: Syntax checks
+        run: |
+          node --check js/modules/dashboard.js
+          node --check js/app-loader.js
+      - name: Dashboard and architecture checks
+        run: |
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/dashboard-reminders-smoke.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Cleanup temporary migration files
+        run: rm -f scripts/migrate-dashboard-mount-idempotent.py .github/workflows/migrate-dashboard-mount-idempotent.yml
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'perf(dashboard): make module mount idempotent'
+          git push origin main
