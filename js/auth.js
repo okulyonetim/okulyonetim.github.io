@@ -118,17 +118,54 @@ async function authSunucuOturumuGetir(user,cached){
   if(typeof renkUygula==='function'){db.collection('oy_kullaniciTercihleri').doc(user.uid).get().then(tercihSnap=>{if(tercihSnap.exists&&tercihSnap.data().renkPaketi)renkUygula(tercihSnap.data().renkPaketi,false)}).catch(e=>console.warn('Renk tercihi okunamadı:',e))}
   return true
 }
+const FIRESTORE_RETRY_BEKLEME=[0,1000,2000,4000,6000];
+let firestoreRetryTimer=null;
+const firestoreBekle=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+function firestoreBaglantiDurumuGoster(mesaj,state='info'){
+  _girisHatasiGoster(mesaj);
+  const sync=document.getElementById('v2SyncStatus');
+  if(sync){sync.textContent=mesaj;sync.classList.remove('ka-hidden');sync.setAttribute('aria-hidden','false');sync.dataset.connectionState=state}
+  window.dispatchEvent(new CustomEvent('koruk:connection-state',{detail:{state,message:mesaj}}));
+}
+async function authSunucuOturumuRetry(user,cached){
+  let sonHata=null;
+  for(let i=0;i<FIRESTORE_RETRY_BEKLEME.length;i++){
+    if(i>0){firestoreBaglantiDurumuGoster(`Bağlantı başarısız — tekrar deneniyor (${i+1}/${FIRESTORE_RETRY_BEKLEME.length})`,'retry');await firestoreBekle(FIRESTORE_RETRY_BEKLEME[i])}
+    firestoreBaglantiDurumuGoster(`Bağlanılıyor… (${i+1}/${FIRESTORE_RETRY_BEKLEME.length})`,'connecting');
+    try{
+      const ok=await authSunucuOturumuGetir(user,cached);
+      if(ok===false)return false;
+      clearTimeout(firestoreRetryTimer);
+      firestoreBaglantiDurumuGoster('Bağlantı kuruldu.','connected');
+      return true;
+    }catch(err){
+      sonHata=err;
+      console.warn(`[Firestore] ${i+1}. deneme başarısız:`,err?.message||err);
+      if(['permission-denied','unauthenticated'].includes(err?.code))break;
+    }
+  }
+  firestoreBaglantiDurumuGoster(navigator.onLine?'Bağlantı kurulamadı. Arka planda tekrar denenecek.':'İnternet bağlantısı yok. Yerel veriler kullanılacak.','failed');
+  throw sonHata||new Error('firestore-connection-failed');
+}
+function firestoreArkaPlanTekrarla(user,cached){
+  clearTimeout(firestoreRetryTimer);
+  firestoreRetryTimer=setTimeout(()=>{
+    if(!auth?.currentUser||auth.currentUser.uid!==user?.uid)return;
+    authSunucuOturumuRetry(user,cached).catch(()=>firestoreArkaPlanTekrarla(user,cached));
+  },15000);
+}
 function authDinleyiciKur(){
   if(!auth){girisEkraniGoster();return;}
   auth.onAuthStateChanged(async user=>{
-    if(!user){sidebarHesapGuncelle(null);AKTIF_KULLANICI=null;AKTIF_ROL=null;authSessionActivated=false;girisEkraniGoster();return;}
+    if(!user){clearTimeout(firestoreRetryTimer);sidebarHesapGuncelle(null);AKTIF_KULLANICI=null;AKTIF_ROL=null;authSessionActivated=false;girisEkraniGoster();return;}
     const cached=await authSessionCacheOku(user.uid);let localOpened=false;
     if(cached?.user?.uid===user.uid)localOpened=authOturumuUygula(user,cached.user,cached.role,{cached:true});
-    try{await authSunucuOturumuGetir(user,cached)}catch(err){
+    try{await authSunucuOturumuRetry(user,cached)}catch(err){
       console.warn('[Auth refresh]',err?.message||err);
+      firestoreArkaPlanTekrarla(user,cached);
       if(localOpened)return;
       console.error('Kullanıcı belgesi kontrol edilemedi:',err);
-      _girisHatasiGoster(navigator.onLine?'Hesap bilgileri okunamadı. Lütfen tekrar deneyin.':'Bu cihazda çevrimdışı oturum verisi bulunmuyor. İlk açılış için internet bağlantısı gerekir.');
+      _girisHatasiGoster(navigator.onLine?'Bağlantı kurulamadı. 15 saniye sonra tekrar denenecek.':'Bu cihazda çevrimdışı oturum verisi bulunmuyor. İlk açılış için internet bağlantısı gerekir.');
       girisEkraniGoster();
     }
   });
