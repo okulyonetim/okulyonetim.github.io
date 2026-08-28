@@ -449,3 +449,9 @@
 .ka-home .kh-live-main b{display:block;font-size:20px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ka-live-text)}
 .ka-home .kh-live-main small{display:block;margin-top:4px;font-size:10.5px;font-weight:700;color:var(--ka-live-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:370px){.ka-home .kh-greeting{font-size:24px}.ka-home .kh-live-card{min-height:74px}.ka-home .kh-live-icon{width:40px;height:40px}}
+
+
+/* LEGACY DASHBOARD BACKTOP — REFERENCE PORT */
+.kh-backtop{position:fixed;right:14px;bottom:calc(var(--ka-bottom-nav-height) + 12px + var(--ka-safe-bottom));width:42px;height:42px;border:0;border-radius:14px;background:var(--ka-primary);color:var(--ka-text-inverse);box-shadow:var(--ka-shadow-md);font-size:20px;z-index:90;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity var(--ka-transition),transform var(--ka-transition)}
+.kh-backtop.is-visible{opacity:1;pointer-events:auto;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){.kh-backtop{transition:none}}

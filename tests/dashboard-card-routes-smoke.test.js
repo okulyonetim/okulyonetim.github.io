@@ -147,3 +147,6 @@ assert(dash.includes('class="kh-hero"')&&dash.includes('class="kh-live-card"'),'
 assert(dash.includes("window.SchoolLiveStatus?.status?.()")&&dash.includes("data-dash-page=\"schedule\""),'Hero canlı kartı ikinci sayaç yerine canonical SchoolLiveStatus ve merkezi Ders Programı rotasını kullanmalı.');
 assert(!dash.includes('class="ka-home-hero"'),'Eski geçici ka-home-hero renderer geri dönmemeli.');
 assert(css.includes('LEGACY DASHBOARD HERO — REFERENCE PORT')&&css.includes('.ka-home .kh-live-card'),'Hero referans geometrisi merkezi design-system içinde kalmalı.');
+
+assert(dash.includes('data-dash-backtop')&&dash.includes("window.scrollY>520")&&dash.includes("window.scrollTo({top:0,behavior:'smooth'})"),'Referans yukarı dön düğmesi 520px sonrasında görünmeli ve sayfa başına dönmeli.');
+assert(css.includes('LEGACY DASHBOARD BACKTOP — REFERENCE PORT')&&css.includes('.kh-backtop.is-visible'),'Yukarı dön görünümü merkezi design-system içinde kalmalı.');
