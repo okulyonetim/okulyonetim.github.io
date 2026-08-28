@@ -29,3 +29,5 @@ TEST.write_text(test,encoding='utf-8')
 sw=SW.read_text(encoding='utf-8')
 sw=sw.replace("const CACHE_ADI='oy-cache-v714';","const CACHE_ADI='oy-cache-v715';")
 SW.write_text(sw,encoding='utf-8')
+
+# trigger: legacy quick actions reference port
