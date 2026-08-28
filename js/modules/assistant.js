@@ -7,7 +7,7 @@
 if(global.AssistantModule)return;
 const API='https://okul-ai-asistan.sedonet23.workers.dev';
 let history=[],loading=false,lastTool=null;
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const today=()=>new Date().toISOString().slice(0,10);
 const toolPermission=name=>(name==='taslak_not'||name==='taslak_metin')?'notlar':'takvim';
@@ -29,4 +29,5 @@ function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return;roo
 function inject(){const root=document.querySelector('[data-communication-module]');if(!root||root.querySelector('[data-ai-assistant-open]'))return;const tabs=root.querySelector('.ka-tabs');if(!tabs)return;const b=document.createElement('button');b.type='button';b.className='ka-tab';b.dataset.aiAssistantOpen='true';b.textContent='AI Asistan';b.onclick=()=>mount(document.getElementById('v2ModuleRoot'));tabs.appendChild(b)}
 global.AssistantModule={mount,context,send,saveDraft};
 global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='communication')requestAnimationFrame(inject)});
+global.AppLoader?.loadScript?.('js/modules/communication-legacy-ui.js').catch?.(e=>console.warn('[CommunicationLegacyUI load]',e?.message||e));
 })(window);
