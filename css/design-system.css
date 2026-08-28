@@ -416,3 +416,17 @@
 .ka-home .kh-section[data-home-section="lessons"] .kh-row-main{min-width:0}
 .ka-home .kh-section[data-home-section="lessons"] .kh-row-main b{display:block;font-size:12.5px;line-height:1.28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ka-text)}
 .ka-home .kh-section[data-home-section="lessons"] .kh-row-main small{display:block;font-size:10.5px;line-height:1.35;color:var(--ka-text-muted);margin-top:3px}
+
+
+/* LEGACY TEACHER LESSON FOCUS — REFERENCE PORT */
+.ka-home .kh-section[data-home-section="lesson-focus"] .kh-card{overflow:hidden}
+.ka-home .kh-focus{padding:14px}
+.ka-home .kh-focus-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px}
+.ka-home .kh-focus-label{font-size:9.5px;font-weight:900;color:var(--ka-primary)}
+.ka-home .kh-focus h3{font-size:20px;margin:0;color:var(--ka-text)}
+.ka-home .kh-outcomes{margin-top:12px;padding-top:11px;border-top:1px solid var(--ka-border)}
+.ka-home .kh-outcomes-title{font-size:9.5px;font-weight:900;color:var(--ka-text-muted);margin-bottom:7px}
+.ka-home .kh-outcomes ul{margin:0;padding-left:18px;font-size:11px;line-height:1.5;color:var(--ka-text)}
+.ka-home .kh-outcomes-more{margin-top:7px;text-align:left}
+.ka-home .kh-outcomes-empty{padding:8px 0;text-align:left}
+.ka-home .kh-plan-button{width:100%;border:0;border-top:1px solid var(--ka-border);background:transparent;color:var(--ka-primary);padding:11px 12px;font-size:10.5px;font-weight:900;text-align:right;cursor:pointer}

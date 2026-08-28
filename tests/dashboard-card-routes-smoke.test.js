@@ -136,3 +136,9 @@ assert(css.includes('LEGACY UPCOMING TASKS — REFERENCE PORT')&&css.includes('.
 assert(dash.includes('class="kh-row${now?')&&dash.includes('data-dash-lesson-plan'),'Bugünkü Derslerim satırları referans kh-row yapısını ve yıllık plan aksiyonunu korumalı.');
 assert(!dash.includes('ka-home-lessons--teacher'),'Eski yeni-taklit ders liste sınıfı aktif renderer içinde kalmamalı.');
 // Checkpoint: legacy today lessons port using canonical SchoolLiveStatus.
+
+assert(dash.includes('function teacherFocusSection()')&&dash.includes('data-home-section="lesson-focus"'),'Öğretmen referans Şu Anki/Sonraki Dersim odak kartını taşımalı.');
+assert(dash.includes("live=window.SchoolLiveStatus?.status?.()")&&dash.includes("mode==='now'?'Şu Anki Dersim':'Sonraki Dersim'"),'Ders odak kartı ikinci sayaç yerine canonical SchoolLiveStatus kullanmalı.');
+assert(dash.includes("arr('yillikPlanTanimlari')")&&dash.includes('function teacherLessonOutcomes'),'Ders odak kartı haftalık kazanımları gerçek yıllık plan snapshotından okumalı.');
+assert(dash.includes('data-dash-lesson-plan')&&dash.includes('Yıllık Planı Aç ›'),'Ders odak kartı mevcut Academic yıllık plan açma davranışına bağlanmalı.');
+assert(css.includes('LEGACY TEACHER LESSON FOCUS — REFERENCE PORT')&&css.includes('.ka-home .kh-focus'),'Ders odak kartı legacy geometrisini merkezi design-system içinde kullanmalı.');
