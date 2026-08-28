@@ -24,7 +24,7 @@ assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero
 assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('sayacDurumu?.aktif')&&dash.includes('baslatmaTarihi'),'Dashboard deneme sayacı gerçek denemeSinavlari.sayacDurumu modelini kullanmalı.');
 assert(dash.includes("function trialCounterSection(){const list=arr('denemeSinavlari').filter(x=>x?.sayacDurumu?.aktif===true)"),'Dashboard deneme kartı yalnız başlatılmış gerçek sayaç için görünmeli.');
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
-assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Aktif deneme sayacı ana sayfada canlı güncellenmeli.');
+assert(dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Aktif deneme sayacı ve zil kartı aynı saniyelik presentation tick içinde canlı güncellenmeli.');
 assert(dash.includes("if(!mine.length)return''"),'Öğretmenin nöbet kartı yalnız gerçek nöbeti varsa görünmeli.');
 assert(dash.includes('<span>Bugünkü Nöbetim</span>')&&dash.includes('class=\"kh-duty-check\"'),'Öğretmenin kendi nöbeti referans kart ve defter işaretleme davranışıyla ayrı odak olmalı.');
 assert(dash.includes("section('Okul Özeti'")&&dash.includes('ka-school-summary-section'),'Okul Özeti referans kart grubu olarak üretilmeli.');
@@ -66,7 +66,7 @@ assert(dash.includes("personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gu
 assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso"),'Öğretmen Takvim kartı okul-geneli hatırlatıcıları doğrudan saymamalı.');
 // Checkpoint: teacher calendar counts are personal and share the canonical reminder engine.
 
-assert(dash.includes("live.mode==='lesson'")&&dash.includes("live.nextPeriod")&&dash.includes("big=`Sonraki · ${live.nextPeriod}. Ders`"),'Öğretmen karşılama kartı canlı ders durumunu Şimdi/Sıradaki bağlamına çevirmeli.');
+assert(dash.includes("function liveCardView")&&dash.includes("live.mode==='lesson'")&&dash.includes("big='Teneffüs'")&&dash.includes("liveClock(live.remaining)"),'Karşılama zil kartı canonical SchoolLiveStatus durumunu canlı geri sayımla göstermeli.');
 assert(dash.includes("live.mode==='after'")&&dash.includes("big='Dersler tamamlandı'")&&dash.includes("live.mode==='weekend'")&&dash.includes("big='Hafta sonu'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
 // Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
 
@@ -170,3 +170,6 @@ assert(!dash.includes("active=[...arr('personelIzinler'),...arr('ogretmenIzinler
 
 assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}${newsSection()}${statsSection()}${socialSection()}${dutySection()}"),'Yönetici ana sayfası referanstaki Okul Özeti sonrası sosyal medya/okul siteleri kartını taşımalı.');
 assert(dash.includes("links=Array.isArray(school.sosyalLinkler)?school.sosyalLinkler.filter(x=>x?.url):[];if(!links.length)return''"),'Sosyal medya/okul siteleri kartı gerçek okulBilgileri.sosyalLinkler verisi yoksa hiç render edilmemeli.');
+
+assert(dash.includes('data-dash-live-status')&&dash.includes('refreshHeroLive()')&&dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Zil kartı dashboard yeniden render beklemeden her saniye canonical SchoolLiveStatus ile güncellenmeli.');
+assert(dash.includes('data-news-signature')&&dash.includes('freshNews.replaceWith(oldNews)')&&dash.includes('class=\"kh-news-loop\"'),'Kayan haber DOMu aynı veriyle yeniden yaratılmamalı ve kesintisiz çift şerit kullanmalı.');

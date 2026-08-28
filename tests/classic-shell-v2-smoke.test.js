@@ -85,3 +85,6 @@ for(const group of ['people','exams','programs','communication','calendar','tran
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
 console.log('Classic UX + tam IndexedDB yedek/restore + merkezi routing + rol bazlı V2 dashboard + canlı okul durumu + tema-only bootstrap sözleşmesi başarılı.');
+
+assert(design.includes('html:not(.ka-auth-resolved) #girisEkrani'),'Mevcut Firebase oturumu çözülmeden giriş ekranı boyanmamalı.');
+assert(dashboard.includes('window.SchoolLiveStatus?.status?.()')&&dashboard.includes('refreshHeroLive'),'Dashboard zil kartı ikinci sayaç motoru kurmadan canonical SchoolLiveStatus kullanmalı.');
