@@ -1,0 +1,32 @@
+name: migrate-social-svg-sizing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-social-svg-sizing.py'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply migration
+        run: python scripts/migrate-social-svg-sizing.py
+      - name: Dashboard smoke
+        run: node tests/dashboard-card-routes-smoke.test.js
+      - name: Architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Cleanup
+        run: rm -f scripts/migrate-social-svg-sizing.py .github/workflows/migrate-social-svg-sizing.yml
+      - name: Commit production
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix(dashboard): constrain social svg icons'
+          git push
