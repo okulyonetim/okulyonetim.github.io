@@ -157,5 +157,10 @@ assert(!dash.includes("section('Aktif Anketler','📊','polls'")&&!dash.includes
 assert(css.includes('LEGACY DASHBOARD DYNAMIC ITEMS — REFERENCE PORT')&&css.includes('.ka-home .kh-dyn-item'),'Dinamik kart görünümü merkezi design-system içinde kalmalı.');
 
 assert(dash.includes('data-home-section="absences"')&&dash.includes('<span class="kh-chip amber">İZİNLİ</span>'),'İzinli personel kartı referans kh-section/kh-row/amber chip yüzeyini kullanmalı.');
-assert(dash.includes("[...arr('personelIzinler'),...arr('ogretmenIzinleri')]")&&dash.includes('data-dash-page="leaves"'),'İzinli kartı mevcut birleşik local-first veri kapsamını ve gerçek İzinler rotasını korumalı.');
+assert(dash.includes("active=arr('ogretmenIzinleri').filter")&&!dash.includes("active=[...arr('personelIzinler'),...arr('ogretmenIzinleri')].filter")&&dash.includes('data-dash-page="leaves"'),'Ana sayfa izin kartı yalnız öğretmen izinlerini kullanmalı; hizmetli/işçi izinlerini göstermemeli.');
 assert(css.includes('LEGACY ABSENCES CARD — REFERENCE PORT')&&css.includes('.ka-home .kh-chip.amber'),'İzinli vurgu rengi merkezi warning tokenından gelmeli.');
+
+assert(dash.includes("function announcementSection(){")&&dash.includes("if(!d)return'';"),'Duyuru yoksa duyuru kartı hiç render edilmemeli.');
+assert(dash.includes("function pollSection(){")&&dash.includes("if(!list.length)return'';const chart="),'Aktif anket yoksa anket kartı hiç render edilmemeli.');
+assert(dash.includes("function trialCounterSection(){")&&dash.includes("if(!list.length)return'';const exam="),'Aktif deneme sınavı sayacı yoksa sayaç kartı hiç render edilmemeli.');
+assert(dash.includes("function absencesSection(){if(!isAdmin())return'';")&&dash.includes("active=arr('ogretmenIzinleri').filter")&&dash.includes("if(!active.length)return'';"),'Bugün izinli öğretmen yoksa izin kartı hiç render edilmemeli.');
