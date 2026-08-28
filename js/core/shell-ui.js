@@ -50,7 +50,14 @@ function closeHeaderPopover(){headerPopover?.remove();headerPopover=null;documen
 function outsideHeaderPopover(e){if(!headerPopover)return;if(headerPopover.contains(e.target)||e.target.closest('[data-ka-header-profile],[data-ka-header-notification],[data-ka-theme-toggle]'))return;closeHeaderPopover()}
 function popoverBase(anchor,width=330){closeHeaderPopover();const r=anchor.getBoundingClientRect(),el=document.createElement('div');el.className='ka-card';el.setAttribute('role','dialog');el.style.cssText=`position:fixed;z-index:1100;top:${Math.max(r.bottom+8,70)}px;right:${Math.max(10,innerWidth-r.right)}px;width:min(${width}px,calc(100vw - 20px));max-height:calc(100dvh - ${Math.max(r.bottom+22,86)}px);overflow:auto;background:var(--ka-card-raised-bg);border:1px solid var(--ka-border);border-radius:18px;box-shadow:var(--ka-shadow-modal);padding:12px;`;document.body.appendChild(el);headerPopover=el;setTimeout(()=>document.addEventListener('pointerdown',outsideHeaderPopover,true),0);return el}
 function cleanupFormPage(){global.__kaFormPageObserver?.disconnect?.();global.__kaFormPageObserver=null}
-function hideModuleChrome(root,name){if(name==='tools'){const h=root.querySelector('[data-tools-module] > .ka-row');if(h)h.hidden=true}else if(name==='settings'){const h=root.querySelector('[data-settings-module] > div:first-child');if(h)h.hidden=true}}
+function hideModuleChrome(root,name){
+  const shell=root?.querySelector?.(`[data-${name}-module]`);if(!shell)return;
+  const head=shell.querySelector(':scope > .ka-row');if(head)head.hidden=true;
+  const searchSelectors={academic:'[data-academic-search-wrap]',management:'[data-management-search-wrap]',communication:'#communicationSearch',transport:'#transportSearch',documents:'#documentsSearch',tools:'#toolsSearch',settings:'#settingsSearch'};
+  const target=searchSelectors[name]?shell.querySelector(searchSelectors[name]):null;
+  const searchWrap=target?.matches?.('.ka-field')?target:target?.closest?.('.ka-field');if(searchWrap)searchWrap.hidden=true;
+  const tabs=shell.querySelector(':scope > .ka-tabs');if(tabs)tabs.hidden=true;
+}
 function applyFormPage(root,page,title){const wanted=FORM_PAGES[page];if(!wanted)return false;const ok=global.ToolsModule?.openPage?.('forms',title);if(ok===false)return false;hideModuleChrome(root,'tools');const applyFilter=()=>{const content=root.querySelector('#toolsContent');content?.querySelectorAll(':scope > section').forEach(section=>{const h=section.querySelector('h3');section.hidden=!h||!String(h.textContent||'').trim().startsWith(wanted)})};cleanupFormPage();requestAnimationFrame(()=>{applyFilter();const content=root.querySelector('#toolsContent');if(content){global.__kaFormPageObserver=new MutationObserver(applyFilter);global.__kaFormPageObserver.observe(content,{childList:true})}});if(title)setTitle(title);return true}
 function applySubpage(name,page,title){
   const root=$('#v2ModuleRoot');if(!root||!page)return false;
@@ -91,27 +98,27 @@ function applySubpage(name,page,title){
     if(title)setTitle(title);return true;
   }
   if(name==='academic'&&['schedule','written','trial','results','plans','calendar'].includes(page)){
-    const ok=global.AcademicModule?.openPage?.(page,title);
+    const ok=global.AcademicModule?.openPage?.(page,title);hideModuleChrome(root,'academic');
     if(ok===false)global.toast?.('Akademik sayfa açılamadı.');
     if(title)setTitle(title);return true;
   }
   if(name==='management'&&['staff','tasks','leaves','duty','puantaj','dilekce'].includes(page)){
-    const ok=global.ManagementModule?.openPage?.(page,title);
+    const ok=global.ManagementModule?.openPage?.(page,title);hideModuleChrome(root,'management');
     if(ok===false)global.toast?.('Yönetim sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
   if(name==='communication'&&['announcements','messages','polls','news','notes','calendar'].includes(page)){
-    const ok=global.CommunicationModule?.openPage?.(page,title);
+    const ok=global.CommunicationModule?.openPage?.(page,title);hideModuleChrome(root,'communication');
     if(ok===false)global.toast?.('İletişim sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
   if(name==='transport'&&['services','busSeats','classSeats'].includes(page)){
-    const ok=global.TransportModule?.openPage?.(page,title);
+    const ok=global.TransportModule?.openPage?.(page,title);hideModuleChrome(root,'transport');
     if(ok===false)global.toast?.('Taşıma sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
   if(name==='settings'&&['school','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
-    const ok=global.SettingsModule?.openPage?.(page,title);
+    const ok=global.SettingsModule?.openPage?.(page,title);hideModuleChrome(root,'settings');
     if(ok===false)global.toast?.('Ayarlar sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
@@ -121,7 +128,7 @@ function applySubpage(name,page,title){
     if(title)setTitle(title);return true;
   }
   if(name==='tools'&&['checklists','map','attendance'].includes(page)){
-    const ok=global.ToolsModule?.openPage?.(page,title);
+    const ok=global.ToolsModule?.openPage?.(page,title);hideModuleChrome(root,'tools');
     if(ok===false)global.toast?.('Araç sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
@@ -138,8 +145,7 @@ function applySubpage(name,page,title){
   if(name==='management'){
     const h=root.querySelector('[data-management-module] > .ka-row h2');if(h&&title)h.textContent=title;
   }
-  if(name==='tools')hideModuleChrome(root,'tools');
-  if(name==='settings')hideModuleChrome(root,'settings');
+  if(['academic','communication','management','transport','documents','tools','settings'].includes(name))hideModuleChrome(root,name);
   if(title)setTitle(title);
   return false;
 }
@@ -218,7 +224,7 @@ function openImageQuickNote(){closeQuickNote();const ov=document.createElement('
 function tableQuickHtml(rows,cols,values=[]){let h='<table class="ka-table"><tbody>';for(let r=0;r<rows;r++){h+='<tr>';for(let c=0;c<cols;c++){const v=values?.[r]?.[c]||'';h+=`<${r===0?'th':'td'}><input data-table-cell data-r="${r}" data-c="${c}" value="${esc(v)}" placeholder="${r===0?'Başlık '+(c+1):'...'}"></${r===0?'th':'td'}>`}h+='</tr>'}return h+'</tbody></table>'}
 function openTableQuickNote(){closeQuickNote();const ov=document.createElement('div');ov.id='kaQuickNoteModal';ov.className='ka-modal-backdrop ka-sheet-backdrop';ov.innerHTML=`<section class="ka-modal ka-quick-note"><div class="ka-modal__header"><div><h3>Tablo Notu</h3><p class="ka-muted">Satır ve sütunlarla düzenli kayıt</p></div><button type="button" class="ka-icon-button" data-note-close>${SVG.close}</button></div><div class="ka-modal__body ka-stack">${quickNoteCommonFields()}<div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Satır</span><input type="number" min="1" max="20" value="3" data-table-rows></label><label class="ka-field"><span class="ka-field__label">Sütun</span><input type="number" min="1" max="10" value="3" data-table-cols></label></div><div style="overflow:auto" data-table-wrap>${tableQuickHtml(3,3)}</div></div><div class="ka-modal__footer"><button type="button" class="ka-btn ka-btn--secondary" data-note-cancel>İptal</button><button type="button" class="ka-btn" data-note-save>Kaydet</button></div></section>`;document.body.appendChild(ov);const rebuild=()=>{const vals=[];ov.querySelectorAll('[data-table-cell]').forEach(x=>{const r=Number(x.dataset.r),c=Number(x.dataset.c);(vals[r]??=[])[c]=x.value});const rows=Math.max(1,Math.min(20,Number(ov.querySelector('[data-table-rows]').value)||3)),cols=Math.max(1,Math.min(10,Number(ov.querySelector('[data-table-cols]').value)||3));ov.querySelector('[data-table-wrap]').innerHTML=tableQuickHtml(rows,cols,vals)};ov.querySelector('[data-table-rows]').onchange=rebuild;ov.querySelector('[data-table-cols]').onchange=rebuild;const close=quickNoteCloseAndRestore;ov.querySelector('[data-note-close]').onclick=close;ov.querySelector('[data-note-cancel]').onclick=close;ov.querySelector('[data-note-save]').onclick=async()=>{const rows=Number(ov.querySelector('[data-table-rows]').value)||3,cols=Number(ov.querySelector('[data-table-cols]').value)||3,tabloVeri=[];ov.querySelectorAll('[data-table-cell]').forEach(x=>{const r=Number(x.dataset.r),c=Number(x.dataset.c);(tabloVeri[r]??=[])[c]=x.value.trim()});try{await global.NotlarService?.notKaydet?.(null,quickNotePayload(ov,'tablo',{tabloVeri,tabloSatir:rows,tabloSutun:cols}));close();global.toast?.('Tablo notu kaydedildi.')}catch(e){console.error('[QuickNote/table]',e);global.toast?.('Tablo notu kaydedilemedi.')}}}
 function openQuickNote(){closeHeaderPopover();closeMenu();setBottomActive('note');closeQuickNote();const ov=document.createElement('div');ov.id='kaQuickNoteModal';ov.className='ka-modal-backdrop ka-sheet-backdrop';ov.innerHTML=`<section class="ka-modal ka-quick-note ka-quick-note-launcher"><div class="ka-modal__header"><div><h3>Hızlı Not</h3><p class="ka-muted">Ne eklemek istiyorsunuz?</p></div><button type="button" class="ka-icon-button" data-note-close aria-label="Kapat">${SVG.close}</button></div><div class="ka-modal__body"><div class="ka-quick-note-grid"><button type="button" data-quick-kind="text"><span>📝</span><strong>Metin Notu</strong><small>Başlık ve metin</small></button><button type="button" data-quick-kind="check"><span>☑️</span><strong>Yapılacaklar</strong><small>Kontrol edilebilir görev listesi</small></button><button type="button" data-quick-kind="draw"><span>✏️</span><strong>Çizim</strong><small>El yazısı ve serbest çizim</small></button><button type="button" data-quick-kind="image"><span>🖼️</span><strong>Görsel Not</strong><small>Fotoğraf ve açıklama</small></button><button type="button" data-quick-kind="table"><span>▦</span><strong>Tablo Notu</strong><small>Satır ve sütunlarla kayıt</small></button></div><button type="button" class="ka-quick-note-all" data-quick-kind="all"><span>📚</span><div><strong>Notlarımı Görüntüle</strong><small>Tüm notlarınıza ulaşın</small></div><b>›</b></button></div></section>`;document.body.appendChild(ov);ov.querySelector('[data-note-close]')?.addEventListener('click',quickNoteCloseAndRestore);ov.querySelector('[data-quick-kind="text"]')?.addEventListener('click',openTextQuickNote);ov.querySelector('[data-quick-kind="check"]')?.addEventListener('click',openChecklistQuickNote);ov.querySelector('[data-quick-kind="draw"]')?.addEventListener('click',openDrawingQuickNote);ov.querySelector('[data-quick-kind="image"]')?.addEventListener('click',openImageQuickNote);ov.querySelector('[data-quick-kind="table"]')?.addEventListener('click',openTableQuickNote);ov.querySelector('[data-quick-kind="all"]')?.addEventListener('click',()=>{quickNoteCloseAndRestore();routeModule('communication',{bottom:'menu',page:'notes',title:'Notlarım'})})}
-function closeTopModal(){const modal=$$('.ka-modal-backdrop').filter(x=>x.isConnected&&!x.hidden).at(-1);if(!modal)return false;if(modal.id==='kaQuickNoteModal'){quickNoteCloseAndRestore();return true}const close=modal.querySelector('[data-teacher-modal-close],[data-people-modal-close],[data-note-close],[data-note-cancel]');if(close)close.click();else modal.remove();syncLayerLock();return true}
+function closeTopModal(){const modal=$$('.ka-modal-backdrop').filter(x=>x.isConnected&&!x.hidden).at(-1);if(!modal)return false;if(modal.id==='kaQuickNoteModal'){quickNoteCloseAndRestore();return true}const close=modal.querySelector('[data-close],[data-service-close],[data-dilekce-modal-kapat],[data-teacher-modal-close],[data-people-modal-close],[data-note-close],[data-note-cancel]');if(close)close.click();else modal.remove();syncLayerLock();return true}
 function peopleDetailBack(){const root=$('#v2ModuleRoot');if(!root||global.AppStore?.get?.('ui.route')!=='people')return false;const back=root.querySelector('[data-results-back],[data-student-back],[data-class-back],[data-teacher-close]');if(!back)return false;back.click();return true}
 function handleBack(){try{if(headerPopover){closeHeaderPopover();return'handled'}if(closeTopModal())return'handled';const layer=$('#kaMenuLayer');if(layer&&!layer.hidden){if(menuGroup)renderMenuGrid();else{closeMenu();setBottomActive(global.AppStore?.get?.('ui.route')==='dashboard'?'home':'menu')}return'handled'}if(peopleDetailBack())return'handled';const route=global.AppStore?.get?.('ui.route');if(route&&route!=='dashboard'){home();return'handled'}if(activeAction!=='home'){home();return'handled'}}catch(e){console.warn('[Shell/back]',e)}return'exit'}
 function home(){closeHeaderPopover();closeMenu();setBottomActive('home');return routeModule('dashboard',{bottom:'home'})}
