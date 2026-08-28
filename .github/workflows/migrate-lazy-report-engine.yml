@@ -1,0 +1,40 @@
+name: migrate-lazy-report-engine
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-lazy-report-engine.py'
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Move ReportEngine out of startup path
+        run: python scripts/migrate-lazy-report-engine.py
+      - name: Syntax checks
+        run: |
+          node --check js/app-loader.js
+          node --check js/core/shell-ui.js
+          node --check js/modules/report-engine.js
+      - name: Report and architecture checks
+        run: |
+          node tests/report-engine-a4-smoke.test.js
+          node tests/report-native-print-routing-smoke.test.js
+          node tests/payroll-change-v2-smoke.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Cleanup temporary migration files
+        run: rm -f scripts/migrate-lazy-report-engine.py .github/workflows/migrate-lazy-report-engine.yml
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'perf(startup): lazy-load central report engine'
+          git push
