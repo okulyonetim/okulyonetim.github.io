@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/migrate-legacy-announcement.py'
+      - '.github/workflows/migrate-legacy-announcement.yml'
 
 permissions:
   contents: write
