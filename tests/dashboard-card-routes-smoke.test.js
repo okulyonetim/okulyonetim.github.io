@@ -53,3 +53,4 @@ assert(dash.includes('data-dash-route=\"academic\" data-dash-page=\"schedule\" d
 assert(shell.includes("'today-duty':{module:'management',page:'duty',title:'Nöbet Programı'}"),'Bugünün Nöbetçileri kartı doğrudan Nöbet Programı sayfasına gitmeli.');
 assert(dash.includes("mine?'Siz':'Bugün'")&&dash.includes('is-me'),'Bugünün Nöbetçileri kartında oturumdaki öğretmen açıkça işaretlenmeli.');
 assert(css.includes('TEACHER DASHBOARD DAILY PRIORITY')&&css.includes('.ka-home-row.is-me'),'Öğretmen günlük öncelik görseli merkezi design-system içinde kalmalı.');
+// Checkpoint: teacher daily-priority dashboard package.
