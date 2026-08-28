@@ -58,3 +58,4 @@ assert(css.includes('TEACHER DASHBOARD DAILY PRIORITY')&&css.includes('.ka-home-
 assert(dash.includes("x.cinsiyet==='Kadın'")&&dash.includes("x.cinsiyet==='Erkek'")&&dash.includes("x.cinsiyet==='Kız'"),'Okul Özeti gerçek öğretmen/öğrenci cinsiyet dağılımını mevcut veri modelinden üretmeli.');
 assert(dash.includes("unknownTeachers")&&dash.includes("unknownStudents")&&dash.includes("Belirtilmedi"),'Eksik cinsiyet verileri toplamdan kaybolmamalı.');
 assert(css.includes('DASHBOARD SCHOOL SUMMARY DEMOGRAPHICS')&&css.includes('.ka-home-demographics'),'Okul Özeti demografi görünümü merkezi design-system içinde kalmalı.');
+assert(dash.includes("teachers=arr('ogretmenler'),students=arr('veliler'),classes=arr('siniflar'),services=arr('servisler')"),'Okul Özeti toplam ve dağılım değerlerini aynı local-first snapshot üzerinden üretmeli.');
