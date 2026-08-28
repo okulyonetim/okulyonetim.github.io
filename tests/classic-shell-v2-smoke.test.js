@@ -88,6 +88,11 @@ for(const src of sameOriginStartup) assert(sw.includes(`'${src}'`),`Aynı-origin
 const optionalLazy=['js/modules/payroll-change.js','js/modules/assistant.js','js/modules/legislation.js','js/modules/legislation-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'];
 for(const src of optionalLazy) assert(!shell.includes(`<script src="${src}" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);
 const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
+assert(!shell.includes('<script src="js/modules/report-engine.js" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
+for(const module of ['academic','management','documents']) assert(optionalLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);
+assert(optionalLoaderSource.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');
+assert(ui.includes("if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Maaş özel rotası ReportEngine hazır değilse ihtiyaç anında yüklemeli.');
+assert(sw.includes("'./js/modules/report-engine.js'"),'ReportEngine offline Service Worker cache içinde bulunmalı.');
 assert(optionalLoaderSource.includes("define('communication',['js/modules/communication.js','js/modules/assistant.js'])"),'AI Asistan Communication lazy bundle ile yüklenmeli.');
 assert(optionalLoaderSource.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubrik köprüleri Tools lazy bundle ile yüklenmeli.');
 assert(ui.includes("loadScript?.('js/modules/payroll-change.js')"),'Maaş değişikliği özel route ihtiyaç anında script yüklemeli.');

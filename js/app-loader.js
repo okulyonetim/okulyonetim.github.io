@@ -19,11 +19,11 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 define('dashboard',['js/modules/dashboard.js']);
 define('people',['js/modules/people.js']);
-define('academic',['js/modules/academic.js']);
-define('management',['js/modules/management.js']);
+define('academic',['js/modules/report-engine.js','js/modules/academic.js']);
+define('management',['js/modules/report-engine.js','js/modules/management.js']);
 define('communication',['js/modules/communication.js','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
-define('documents',['js/modules/documents.js']);
+define('documents',['js/modules/report-engine.js','js/modules/documents.js']);
 define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js']);
 

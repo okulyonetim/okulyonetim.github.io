@@ -150,6 +150,7 @@ async function routeModule(name,{bottom='menu',page='',title=''}={}){
   if(!(name==='tools'&&FORM_PAGES[page]))cleanupFormPage();
   if(name==='payroll'){
     try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
       if(!global.PayrollChangeModule?.open)await global.AppLoader?.loadScript?.('js/modules/payroll-change.js');
       if(!global.PayrollChangeModule?.open)throw new Error('Maaş değişikliği modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Maaş Değişikliği Bildirim Formu');
