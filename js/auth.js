@@ -104,7 +104,6 @@ function authOturumuUygula(firebaseUser,kullanici,rol,{cached=false}={}){
   if(AKTIF_KULLANICI.bagliOgretmenId){localStorage.setItem('oyAktifKullaniciId',AKTIF_KULLANICI.bagliOgretmenId);localStorage.setItem('oyAktifKullaniciTip','ogretmen');localStorage.setItem('oyKullaniciSecimiYapildi','1');if(typeof aktifKullaniciyiGuncelle==='function')aktifKullaniciyiGuncelle()}
   if(typeof kullaniciYonetimiYetkisiVar==='function'&&kullaniciYonetimiYetkisiVar()&&typeof kullaniciYonetimiDinleyiciKur==='function')kullaniciYonetimiDinleyiciKur();
   onayBekleniyorGizle();girisEkraniGizle();const app=document.getElementById('app');if(app)app.classList.add('ready','show');authYuzeyiniCoz();
-  window.AppLoader?.syncLegacySession?.();
   if(!authSessionActivated){authSessionActivated=true;IstatistikService.girisKaydet();if(typeof KonumGirisService!=='undefined')KonumGirisService.kaydet();if(typeof window._navVerileriniYukle==='function')window._navVerileriniYukle();try{if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.PullToRefreshPlugin)window.Capacitor.Plugins.PullToRefreshPlugin.appHazir()}catch(e){}}
   if(cached)window.dispatchEvent(new CustomEvent('koruk:auth-local-restored',{detail:{uid:kullanici.uid}}));
   return true

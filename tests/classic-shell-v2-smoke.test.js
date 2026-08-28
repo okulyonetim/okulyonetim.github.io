@@ -112,3 +112,5 @@ assert(appLoaderSource.includes('Promise.all([Promise.resolve(AppBootstrap?.star
 const bootstrapWaitPos=appLoaderSource.indexOf('Promise.all([Promise.resolve(AppBootstrap?.start?.()),prepareAccountLocalData(user)])'),initialModulePos=appLoaderSource.indexOf('ensureInitialModule()',bootstrapWaitPos);
 assert(bootstrapWaitPos>=0&&initialModulePos>bootstrapWaitPos,'Local bootstrap dashboard açılışından önce tamamlanmalı.');
 assert(appLoaderSource.includes("sessionBootstrapUid='',sessionBootstrapPromise=null")&&appLoaderSource.includes('if(sessionBootstrapUid===user.uid&&sessionBootstrapPromise){permissionRefresh();return true}'),'Aynı UID için auth görünürlük ve başlangıç köprüsü tek local bootstrap promise kullanmalı.');
+assert(!authSrc.includes("window.AppLoader?.syncLegacySession?.();"),'Auth oturum uygulaması syncAuthVisibility sonrasında ikinci kez session bootstrap çağırmamalı.');
+assert(!appLoaderSource.includes('setInterval(()=>{if(syncLegacySession()||++n>240)clearInterval(bridge)},50)'),'AppLoader auth oturumunu 50 ms polling ile aramamalı; auth callback görünürlük köprüsü yeterli olmalı.');
