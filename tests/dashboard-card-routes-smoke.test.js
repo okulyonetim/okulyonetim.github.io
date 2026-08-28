@@ -179,3 +179,6 @@ assert(dash.includes("'data.okulBilgileri'")&&!dash.includes("'data.personelIzin
 
 assert(dash.includes("okulBilgileri:'okulBilgileri'")&&dash.includes("yillikPlanTanimlari:'yillikPlanTanimlari'")&&dash.includes("ogretmenYillikPlanSecimleri:'ogretmenYillikPlanSecimleri'"),'Dashboard sosyal bağlantılar ve öğretmen yıllık plan odağı için gereken verileri ilk açılışta local hydrate etmeli.');
 assert(!dash.includes("personelIzinler:'personelIzinler'"),'Hizmetli/işçi izinleri dashboard local hydrate ve render akışına dönmemeli.');
+
+assert(dash.includes("if(mounted&&root.querySelector('[data-dashboard-module]'))return mountPromise||Promise.resolve(true)"),'Dashboard aynı module-ready/load zincirinde ikinci kez mount edilmemeli.');
+assert(dash.includes('if(mountPromise)return mountPromise'),'Dashboard eşzamanlı mount çağrılarını tek promise altında birleştirmeli.');
