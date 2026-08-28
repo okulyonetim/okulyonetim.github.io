@@ -71,6 +71,9 @@ assert(dash.includes("live.mode==='after'")&&dash.includes("big='Dersler tamamla
 // Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
 
 assert(dash.includes('class="kh-news"')&&dash.includes('class="kh-news-label"')&&dash.includes('class="kh-news-track"')&&dash.includes('--kh-ticker-time'),'Haberler eski dashboard-home.js kayan bant DOM sözleşmesini korumalı.');
+assert(css.includes('.ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0;padding-inline:12px')&&css.includes('mask-image:linear-gradient(to right,transparent 0,#000 12px'),'Haber şeridi etikete yapışmamalı ve kırpılan başlık kenarda yumuşatılmalı.');
+assert(dash.includes('function socialIconHtml')&&dash.includes('/instagram/.test(key)')&&dash.includes('/youtube/.test(key)')&&dash.includes('socialIconHtml(x.ikon,x.etiket)'),'Sosyal bağlantı ikon anahtarları ekranda metin olarak basılmamalı; merkezi SVG ikonlara çevrilmeli.');
+assert(css.includes('.ka-home .kh-social-icon>svg{width:24px;height:24px;display:block}'),'Sosyal kart SVG ikonları sabit ve taşmayan geometri kullanmalı.');
 assert(!dash.includes('ka-home-news-ticker'),'Yeni taklit haber bileşeni aktif renderer içinde kalmamalı.');
 assert(dash.includes('class="kh-section"')&&dash.includes('class="kh-weekday ')&&dash.includes('class="kh-weekday-head"')&&dash.includes('class="kh-mini"'),'Haftalık nöbet eski kh-section/kh-weekday DOM sözleşmesini korumalı.');
 assert(dash.includes('function isDutyChief')&&dash.includes('function sortDuties')&&dash.includes('function dutyPlaceHtml'),'Haftalık nöbet eski sıralama, amir filtreleme ve yer sunum davranışlarını taşımalı.');
