@@ -126,3 +126,9 @@ assert(dash.includes("filter(x=>!teacherMode||x.ogretmenId===tid)"),'Öğretmen 
 assert(dash.includes("collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6)[Number(btn.dataset.dashCalendarReminder)]"),'Takvim gündem tıklaması görünen kişisel reminder listesiyle aynı indeks uzayını kullanmalı.');
 assert(css.includes('LEGACY EXAMS CARD — REFERENCE PORT')&&css.includes('.ka-home .kh-exam-date{'),'Sınav legacy geometrisi merkezi design-system içinde kalmalı.');
 // Checkpoint: legacy exams visual port + calendar reminder index alignment.
+
+assert(dash.includes('<span>Yaklaşan Etkinlik / Görevler</span>')&&dash.includes('<span>Teslim & Görev Takvimi</span>'),'Yönetici ve öğretmen yaklaşan görev başlıkları referans/kişisel sözleşmeyi korumalı.');
+assert(dash.includes('data-home-section="upcoming"')&&dash.includes('class="kh-side'),'Yaklaşan görevler referans kh-card/kh-row/kh-side DOM ailesini kullanmalı.');
+assert(dash.includes("teacherUpcomingRows(){return collectReminders(30).filter(x=>x.kaynak!='sinav')")||dash.includes("teacherUpcomingRows(){return collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Öğretmen görevleri canonical collectReminders motorundan gelmeli.');
+assert(css.includes('LEGACY UPCOMING TASKS — REFERENCE PORT')&&css.includes('.kh-section[data-home-section="upcoming"] .kh-side'),'Yaklaşan görev legacy geometrisi merkezi design-system içinde kalmalı.');
+// Checkpoint: legacy upcoming tasks / teacher delivery calendar port.
