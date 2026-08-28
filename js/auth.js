@@ -45,7 +45,7 @@ const service={
     (AppStore.data('mesajlar')||[]).forEach(v=>v.dosya?.boyut&&ekle(v.gonderenUid,'mesaj',v.dosya.boyut));
     const tak=(AppStore.data('akademikTakvim')||[]).find(x=>x.id==='aktif')||(AppStore.data('akademikTakvim')||[])[0];if(tak?.dosyaBoyutu)ekle(u.uid,'takvim',tak.dosyaBoyutu);
     DeviceData.list(type).forEach(v=>{const id=v.uid||v.id;if(id&&!toplam[id])toplam[id]={mesaj:0,duyuru:0,dokuman:0,takvim:0}});
-    for(const [uid,depolamaKullanimi] of Object.entries(toplam)){const old=DeviceData.get(type,uid)||{id:uid,uid};await DeviceData.set(type,COL.kullaniciIstatistikleri,uid,{...old,depolamaKullanimi,guncellenmeTarihi:new Date().toISOString()},{merge:false})}
+    for(const [uid,depolamaKullanimi] of Object.entries(toplam)){const old=DeviceData.get(type,uid)||{id:uid,uid};await DeviceData.set(type,COL.kullaniciIstatistikleri,uid,{...old,depolamaKullanimi:d,guncellenmeTarihi:new Date().toISOString()},{merge:false})}
     return{kullaniciSayisi:Object.keys(toplam).length};
   }
 };
@@ -108,11 +108,17 @@ function authOturumuUygula(firebaseUser,kullanici,rol,{cached=false}={}){
   if(cached)window.dispatchEvent(new CustomEvent('koruk:auth-local-restored',{detail:{uid:kullanici.uid}}));
   return true
 }
+const FIRESTORE_DENEME_ZAMAN_ASIMI=7000;
+function firestoreZamanAsimli(promise,ms=FIRESTORE_DENEME_ZAMAN_ASIMI){
+  let timer;
+  const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{const err=new Error('Firestore bağlantısı zaman aşımına uğradı.');err.code='firestore-timeout';reject(err)},ms)});
+  return Promise.race([promise,timeout]).finally(()=>clearTimeout(timer));
+}
 async function authSunucuOturumuGetir(user,cached){
-  const ref=db.collection(COL.kullanicilar).doc(user.uid),snap=await ref.get();
+  const ref=db.collection(COL.kullanicilar).doc(user.uid),snap=await firestoreZamanAsimli(ref.get({source:'server'}));
   if(!snap.exists){console.error('Bu hesap için oy_kullanicilar belgesi bulunamadı:',user.uid);alert('Hesabınız için gerekli kayıt bulunamadı. Lütfen yöneticinizle iletişime geçin.');await auth.signOut();return false}
   const kullanici={id:snap.id,...snap.data()};let rol=null;
-  if(kullanici.rolId){try{const rolSnap=await db.collection(COL.roller).doc(kullanici.rolId).get();if(rolSnap.exists)rol={id:rolSnap.id,...rolSnap.data()}}catch(e){if(cached?.role?.id===kullanici.rolId)rol=cached.role;else console.warn('Rol okunamadı:',e)}}
+  if(kullanici.rolId){try{const rolSnap=await firestoreZamanAsimli(db.collection(COL.roller).doc(kullanici.rolId).get({source:'server'}));if(rolSnap.exists)rol={id:rolSnap.id,...rolSnap.data()}}catch(e){if(cached?.role?.id===kullanici.rolId)rol=cached.role;else if(e?.code==='firestore-timeout')throw e;else console.warn('Rol okunamadı:',e)}}
   await authSessionCacheYaz(user.uid,kullanici,rol);
   authOturumuUygula(user,kullanici,rol);
   if(typeof renkUygula==='function'){db.collection('oy_kullaniciTercihleri').doc(user.uid).get().then(tercihSnap=>{if(tercihSnap.exists&&tercihSnap.data().renkPaketi)renkUygula(tercihSnap.data().renkPaketi,false)}).catch(e=>console.warn('Renk tercihi okunamadı:',e))}
