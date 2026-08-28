@@ -17,6 +17,7 @@ assert(src.includes('<th>Adı Soyadı</th>')&&src.includes('<th>Görevi</th>')&&
 assert(!src.includes('db.collection'),'Documents formu doğrudan Firestore kullanmamalı.');
 assert(!src.includes("createElement('style')"),'Documents V2 kendi CSS katmanını üretmemeli.');
 assert(!index.includes('<script src="js/modules/report-engine.js" defer></script>'),'ReportEngine başlangıç shelline eager dönmemeli.');
-assert(loader.includes("define('documents',['js/modules/report-engine.js','js/modules/documents.js'])"),'Documents açılmadan önce merkezi ReportEngine lazy bundle içinde yüklenmeli.');
+const documentsBundle=loader.match(/define\('documents',\[([^\]]+)\]\)/)?.[1]||'';
+assert(documentsBundle.includes("'js/modules/report-engine.js'")&&documentsBundle.includes("'js/modules/documents.js'")&&documentsBundle.indexOf("'js/modules/report-engine.js'")<documentsBundle.indexOf("'js/modules/documents.js'"),'Documents açılmadan önce merkezi ReportEngine ek lazy bağımlılıklar olsa da documents.js’den önce yüklenmeli.');
 
 console.log('Documents V2 Tebliğ-Tebellüğ + lazy ReportEngine sözleşmesi başarılı.');
