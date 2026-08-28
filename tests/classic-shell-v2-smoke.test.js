@@ -80,6 +80,8 @@ assert(!live.includes('suankiDersDurumu(')&&!live.includes('sonHavaVerisi'),'Leg
 for(const mode of ["type:'lesson'","'lunch':'break'", "mode:'after'", "mode:'weekend'"]) assert(live.includes(mode),`Canlı zil durum sözleşmesi eksik: ${mode}`);
 assert(sw.includes('./js/modules/school-live-status.js'),'Canlı durum offline PWA shell içinde önbelleğe alınmalı.');
 for(const lazy of ['./js/modules/dashboard.js','./js/modules/people.js','./js/modules/academic.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/report-engine.js','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js']) assert(sw.includes(lazy),`AppLoader lazy modülü offline PWA shell cache içinde bulunmalı: ${lazy}`);
+const sameOriginStartup=[...shell.matchAll(/<script src="(?!https?:|\/\/)([^"]+)" defer><\/script>/g)].map(m=>'./'+m[1].replace(/^\.\//,''));
+for(const src of sameOriginStartup) assert(sw.includes(`'${src}'`),`Aynı-origin startup script offline PWA shell cache içinde bulunmalı: ${src}`);
 assert(sw.includes("return clients.openWindow?clients.openWindow(hedef):null;}));});"),'Service Worker notificationclick event.waitUntil zinciri sözdizimsel olarak tam kapanmalı.');
 
 for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note','.ka-home-live','.ka-live-weather']) assert(design.includes(selector),`Merkezi design system selectorü eksik: ${selector}`);
