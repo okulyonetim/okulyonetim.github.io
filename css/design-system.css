@@ -430,3 +430,22 @@
 .ka-home .kh-outcomes-more{margin-top:7px;text-align:left}
 .ka-home .kh-outcomes-empty{padding:8px 0;text-align:left}
 .ka-home .kh-plan-button{width:100%;border:0;border-top:1px solid var(--ka-border);background:transparent;color:var(--ka-primary);padding:11px 12px;font-size:10.5px;font-weight:900;text-align:right;cursor:pointer}
+
+
+/* LEGACY DASHBOARD HERO — REFERENCE PORT */
+.ka-home .kh-hero{position:relative;overflow:hidden;border-radius:28px;padding:20px 16px 16px;color:var(--ka-hero-text);background:radial-gradient(circle at 88% 15%,color-mix(in srgb,var(--ka-card-bg) 95%,transparent) 0 6%,transparent 32%),linear-gradient(125deg,var(--ka-primary-soft) 0%,var(--ka-card-bg) 54%,color-mix(in srgb,var(--ka-warning) 8%,var(--ka-card-bg)) 100%);box-shadow:var(--ka-hero-shadow);border:1px solid var(--ka-hero-border);isolation:isolate}
+.ka-home .kh-hero:before{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:-88px;top:-100px;background:linear-gradient(135deg,color-mix(in srgb,var(--ka-primary) 28%,transparent),color-mix(in srgb,var(--ka-accent) 16%,transparent));filter:blur(2px)}
+.ka-home .kh-hero:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;left:-58px;bottom:-82px;background:linear-gradient(135deg,color-mix(in srgb,var(--ka-warning) 16%,transparent),color-mix(in srgb,var(--ka-primary) 12%,transparent));filter:blur(1px)}
+.ka-home .kh-hero>*{position:relative;z-index:1}
+.ka-home .kh-brand{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--ka-hero-kicker)}
+.ka-home .kh-greeting{font-size:27px;font-weight:900;line-height:1.12;margin:13px 0 5px;letter-spacing:-.02em;color:var(--ka-hero-text)}
+.ka-home .kh-date{font-size:11.5px;font-weight:700;color:var(--ka-hero-muted)}
+.ka-home .kh-live-stack{display:grid;grid-template-columns:1fr;gap:9px;margin-top:16px}
+.ka-home .kh-live-card{width:100%;min-height:82px;display:flex;align-items:center;gap:12px;padding:12px 13px;border:1px solid var(--ka-live-border);border-radius:20px;background:color-mix(in srgb,var(--ka-live-bg) 88%,transparent);color:var(--ka-live-text);box-shadow:var(--ka-shadow-sm);text-align:left;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.ka-home .kh-live-card:active{transform:scale(.995)}
+.ka-home .kh-live-icon{width:44px;height:44px;display:grid;place-items:center;flex:none;border-radius:15px;background:var(--ka-live-accent-soft);color:var(--ka-live-accent)}
+.ka-home .kh-live-icon svg{width:24px;height:24px}
+.ka-home .kh-live-main{min-width:0;flex:1;color:var(--ka-live-text)}
+.ka-home .kh-live-main b{display:block;font-size:20px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ka-live-text)}
+.ka-home .kh-live-main small{display:block;margin-top:4px;font-size:10.5px;font-weight:700;color:var(--ka-live-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:370px){.ka-home .kh-greeting{font-size:24px}.ka-home .kh-live-card{min-height:74px}.ka-home .kh-live-icon{width:40px;height:40px}}

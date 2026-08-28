@@ -13,7 +13,7 @@ assert(shell.includes("closest('[data-home-section]')"),'Dashboard kart gövdesi
 assert(shell.includes("routeModule(target.module,{bottom:'menu',page:target.page||'',title:target.title||''})"),'Dashboard kartı yalnız modüle değil gerçek alt sayfaya gitmeli.');
 assert(!shell.includes("const hero=e.target.closest('.ka-home-hero');if(hero){routeModule('academic'"),'Karşılama kartı alakasız Academic sayfasına yönlendirmemeli.');
 assert(!shell.includes("stats:{module:"),'Okul Özeti gerçek hedefi olmadığı için rastgele sayfa açmamalı.');
-assert(dash.includes("routeButton('Programım','academic','schedule','Ders Programı','›')"),'Hero Programım düğmesi doğrudan Ders Programı alt sayfasına gitmeli.');
+assert(dash.includes('class=\"kh-live-card\" data-dash-route=\"academic\" data-dash-page=\"schedule\" data-dash-title=\"Ders Programı\"'),'Hero canlı kartı doğrudan Ders Programı alt sayfasına gitmeli.');
 assert(dash.includes('class=\"kh-more\" data-dash-route=\"communication\" data-dash-page=\"calendar\" data-dash-title=\"Takvim\"'),'Takvim referanstaki ay başlığı düğmesinden doğrudan Takvim alt sayfasına gitmeli.');
 assert(dash.includes("function routeButton(label,module,page='',title='',icon='→')"),'Dashboard footer helper alt sayfa ve başlığı taşımalı.');
 assert(css.includes('padding-left:max(4px,var(--ka-safe-left))'),'Mobil ana içerik kenar boşluğu 4px/safe-area olmalı.');
@@ -66,8 +66,8 @@ assert(dash.includes("personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gu
 assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso"),'Öğretmen Takvim kartı okul-geneli hatırlatıcıları doğrudan saymamalı.');
 // Checkpoint: teacher calendar counts are personal and share the canonical reminder engine.
 
-assert(dash.includes("focusLabel='Bugünkü ilk dersiniz'")&&dash.includes("focusLabel='Şu anki dersiniz'")&&dash.includes("focusLabel='Sıradaki dersiniz'"),'Öğretmen karşılama kartı canlı ders durumunu Şimdi/Sıradaki bağlamına çevirmeli.');
-assert(dash.includes("live?.mode==='after'?'Bugünkü dersler tamamlandı.'")&&dash.includes("live?.mode==='weekend'?'Bugün ders günü değil.'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
+assert(dash.includes("live.mode==='lesson'")&&dash.includes("live.nextPeriod")&&dash.includes("big=`Sonraki · ${live.nextPeriod}. Ders`"),'Öğretmen karşılama kartı canlı ders durumunu Şimdi/Sıradaki bağlamına çevirmeli.');
+assert(dash.includes("live.mode==='after'")&&dash.includes("big='Dersler tamamlandı'")&&dash.includes("live.mode==='weekend'")&&dash.includes("big='Hafta sonu'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
 // Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
 
 assert(dash.includes('class="kh-news"')&&dash.includes('class="kh-news-label"')&&dash.includes('class="kh-news-track"')&&dash.includes('--kh-ticker-time'),'Haberler eski dashboard-home.js kayan bant DOM sözleşmesini korumalı.');
@@ -142,3 +142,8 @@ assert(dash.includes("live=window.SchoolLiveStatus?.status?.()")&&dash.includes(
 assert(dash.includes("arr('yillikPlanTanimlari')")&&dash.includes('function teacherLessonOutcomes'),'Ders odak kartı haftalık kazanımları gerçek yıllık plan snapshotından okumalı.');
 assert(dash.includes('data-dash-lesson-plan')&&dash.includes('Yıllık Planı Aç ›'),'Ders odak kartı mevcut Academic yıllık plan açma davranışına bağlanmalı.');
 assert(css.includes('LEGACY TEACHER LESSON FOCUS — REFERENCE PORT')&&css.includes('.ka-home .kh-focus'),'Ders odak kartı legacy geometrisini merkezi design-system içinde kullanmalı.');
+
+assert(dash.includes('class="kh-hero"')&&dash.includes('class="kh-live-card"'),'Dashboard karşılama alanı referans kh-hero/kh-live-card DOM sözleşmesini kullanmalı.');
+assert(dash.includes("window.SchoolLiveStatus?.status?.()")&&dash.includes("data-dash-page=\"schedule\""),'Hero canlı kartı ikinci sayaç yerine canonical SchoolLiveStatus ve merkezi Ders Programı rotasını kullanmalı.');
+assert(!dash.includes('class="ka-home-hero"'),'Eski geçici ka-home-hero renderer geri dönmemeli.');
+assert(css.includes('LEGACY DASHBOARD HERO — REFERENCE PORT')&&css.includes('.ka-home .kh-live-card'),'Hero referans geometrisi merkezi design-system içinde kalmalı.');
