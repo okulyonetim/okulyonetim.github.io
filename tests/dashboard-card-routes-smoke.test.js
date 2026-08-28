@@ -32,7 +32,7 @@ assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Duyurular</b>')&&dash.inc
 assert(css.includes('TEACHER DASHBOARD REFINEMENT')&&css.includes('.ka-home-duty-focus'),'Öğretmen dashboard görsel sözleşmesi merkezi design-system içinde olmalı.');
 assert(dash.includes("collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Yazılılar öğretmen görev/takvim kartında ikinci kez gösterilmemeli.');
 assert(dash.includes("title=teacherMode?'Ders Programım':'Şu Anki Dersler'")&&dash.includes('data-dash-page=\"schedule\"'),'Öğretmenin günlük ders kartı Ders Programım başlığıyla haftalık programa bağlanmalı.');
-assert(dash.includes("teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'")&&dash.includes('ka-home-exam-row'),'Öğretmenin yaklaşan yazılıları ayrı ve doğrudan yazılı sayfasına bağlı olmalı.');
+assert(dash.includes("teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'")&&dash.includes('class=\"kh-exam-date\"')&&dash.includes('data-dash-page=\"written\"'),'Öğretmenin yaklaşan yazılıları referans tarih gruplarıyla ayrı ve doğrudan yazılı sayfasına bağlı olmalı.');
 assert(!dash.includes("${lessonsSection()}${personalScheduleSection()}"),'Öğretmen ana sayfasında ikinci Ders Programım kartı üretilmemeli.');
 assert(css.includes('TEACHER WORKFLOW DASHBOARD')&&css.includes('.ka-home-lessons--teacher'),'Öğretmen iş akışı görsel düzeni merkezi design-system içinde kalmalı.');
 assert(dash.includes("${lessonsSection()}${dutySection()}${examsSection()}${upcomingSection()}${quickSection()}${calendarSection()}${notesSection()}${allTodayDutySection()}${weekDutySection()}${socialSection()}`}"),'Öğretmen ana sayfasında günlük ders, nöbet, yazılı ve görev akışı genel bilgi kartlarından önce gelmeli.');
@@ -119,3 +119,10 @@ assert(!dash.includes('class="ka-home-note"'),'Yeni taklit ka-home-note renderer
 assert(dash.includes("arr('notlar').filter(x=>u.admin||!x.sahipUid||x.sahipUid===u.uid)"),'Notlarım local-first sahiplik filtresini korumalı.');
 assert(css.includes('LEGACY NOTES CARD — REFERENCE PORT')&&css.includes('.ka-home .kh-section[data-home-section="notes"] .kh-row{'),'Notlarım legacy geometrisi merkezi design-system içinde kalmalı.');
 // Checkpoint: legacy notes card visual port.
+
+assert(dash.includes('data-home-section="exams"')&&dash.includes('class="kh-exam-date"')&&dash.includes('class="kh-row" data-dash-route="academic" data-dash-page="written"'),'Sınavlar referans kh-exam-date/kh-row DOM sözleşmesini kullanmalı.');
+assert(!dash.includes('ka-home-exam-row'),'Yeni taklit ka-home-exam-row renderer içinde kalmamalı.');
+assert(dash.includes("filter(x=>!teacherMode||x.ogretmenId===tid)"),'Öğretmen yazılıları gerçek ogretmenId bağlantısıyla filtrelenmeli.');
+assert(dash.includes("collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6)[Number(btn.dataset.dashCalendarReminder)]"),'Takvim gündem tıklaması görünen kişisel reminder listesiyle aynı indeks uzayını kullanmalı.');
+assert(css.includes('LEGACY EXAMS CARD — REFERENCE PORT')&&css.includes('.ka-home .kh-exam-date{'),'Sınav legacy geometrisi merkezi design-system içinde kalmalı.');
+// Checkpoint: legacy exams visual port + calendar reminder index alignment.
