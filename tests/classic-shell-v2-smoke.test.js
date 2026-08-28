@@ -85,6 +85,13 @@ const firebaseStartup=[...shell.matchAll(/<script src="(https:\/\/www\.gstatic\.
 for(const src of firebaseStartup) assert(sw.includes(`'${src}'`),`Firebase startup SDK Service Worker cache listesinde bulunmalı: ${src}`);
 assert(sw.includes('function firebaseSdkIstegiMi(req)')&&sw.includes('firebaseSdkCacheFirst(event)'),'Firebase SDK istekleri çevrimdışında cache-first karşılanmalı.');
 for(const src of sameOriginStartup) assert(sw.includes(`'${src}'`),`Aynı-origin startup script offline PWA shell cache içinde bulunmalı: ${src}`);
+const optionalLazy=['js/modules/payroll-change.js','js/modules/assistant.js','js/modules/legislation.js','js/modules/legislation-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'];
+for(const src of optionalLazy) assert(!shell.includes(`<script src="${src}" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);
+const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
+assert(optionalLoaderSource.includes("define('communication',['js/modules/communication.js','js/modules/assistant.js'])"),'AI Asistan Communication lazy bundle ile yüklenmeli.');
+assert(optionalLoaderSource.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubrik köprüleri Tools lazy bundle ile yüklenmeli.');
+assert(ui.includes("loadScript?.('js/modules/payroll-change.js')"),'Maaş değişikliği özel route ihtiyaç anında script yüklemeli.');
+assert(ui.includes("loadScript?.('js/modules/legislation.js')")&&ui.includes("loadScript?.('js/modules/legislation-ui.js')"),'Mevzuat özel route motor ve UI scriptlerini ihtiyaç anında yüklemeli.');
 assert(sw.includes("return clients.openWindow?clients.openWindow(hedef):null;}));});"),'Service Worker notificationclick event.waitUntil zinciri sözdizimsel olarak tam kapanmalı.');
 
 for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note','.ka-home-live','.ka-live-weather']) assert(design.includes(selector),`Merkezi design system selectorü eksik: ${selector}`);

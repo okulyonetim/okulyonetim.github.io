@@ -73,9 +73,14 @@ function applySubpage(name,page,title){
     Promise.resolve(global.EvrakTakipPage.open(root)).catch(e=>{console.error('[Shell/evrak]',e);global.toast?.('Evrak Takibi açılamadı.');});
     if(title)setTitle(title);return true;
   }
-  if(name==='documents'&&page==='mevzuat'&&global.LegislationModule?.mount){
+  if(name==='documents'&&page==='mevzuat'){
     global.DocumentsModule?.unmount?.();
-    Promise.resolve(global.LegislationModule.mount(root)).catch(e=>{console.error('[Shell/mevzuat]',e);global.toast?.('Mevzuat açılamadı.');});
+    Promise.resolve((async()=>{
+      if(!global.LegislationEngine)await global.AppLoader?.loadScript?.('js/modules/legislation.js');
+      if(!global.LegislationModule?.mount)await global.AppLoader?.loadScript?.('js/modules/legislation-ui.js');
+      if(!global.LegislationModule?.mount)throw new Error('Mevzuat modülü yüklenemedi.');
+      return global.LegislationModule.mount(root);
+    })()).catch(e=>{console.error('[Shell/mevzuat]',e);global.toast?.('Mevzuat açılamadı.');});
     if(title)setTitle(title);return true;
   }
   if(name==='documents'&&page==='teblig'&&global.DocumentsModule?.openTeblig){
@@ -144,10 +149,13 @@ async function routeModule(name,{bottom='menu',page='',title=''}={}){
   closeHeaderPopover();closeMenu();
   if(!(name==='tools'&&FORM_PAGES[page]))cleanupFormPage();
   if(name==='payroll'){
-    if(global.PayrollChangeModule?.open){
+    try{
+      if(!global.PayrollChangeModule?.open)await global.AppLoader?.loadScript?.('js/modules/payroll-change.js');
+      if(!global.PayrollChangeModule?.open)throw new Error('Maaş değişikliği modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Maaş Değişikliği Bildirim Formu');
       global.PayrollChangeModule.open();
-    }else{
+    }catch(e){
+      console.error('[Shell/payroll]',e);global.toast?.('Maaş değişikliği formu açılamadı.');
       await routeModule('management',{bottom});
     }
     return true;
