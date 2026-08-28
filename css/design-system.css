@@ -152,3 +152,9 @@
 .ka-home-link--footer{width:100%;margin-top:8px;padding:8px 2px;border-top:1px solid var(--ka-border)}.ka-home-exam-row{appearance:none;width:100%;border-left:0;border-right:0;border-top:0;background:transparent;color:var(--ka-text);text-align:left;cursor:pointer}.ka-home-exam-row:active{background:var(--ka-primary-soft)}.ka-home-exam-row .ka-badge{flex:0 0 auto}
 .ka-home-reminder-row{width:100%;color:var(--ka-text);text-align:left}.ka-home-section[data-home-section="upcoming"] .ka-home-rowicon{background:color-mix(in srgb,var(--ka-warning) 10%,var(--ka-card-bg));color:var(--ka-warning)}
 @media(max-width:430px){.ka-home-lessons--teacher article{min-height:76px;padding:11px 10px}.ka-home-lessons--teacher strong{font-size:13px}.ka-home-lessons--teacher small{font-size:10px}.ka-home-exam-row{min-height:70px}.ka-home-exam-row .ka-badge{font-size:9px}}
+
+
+/* TEACHER DASHBOARD DAILY PRIORITY */
+.ka-home-row.is-me{background:var(--ka-primary-soft);border-color:color-mix(in srgb,var(--ka-primary) 34%,var(--ka-border));}
+.ka-home-row.is-me .ka-home-rowicon{background:var(--ka-primary-soft);color:var(--ka-primary);}
+[data-dashboard-role="teacher"] .ka-home-section[data-home-section="lessons"]{scroll-margin-top:84px;}
