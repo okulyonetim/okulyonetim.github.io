@@ -1,4 +1,5 @@
 from pathlib import Path
+# Trigger migration after workflow registration on main.
 p=Path('tests/classic-shell-v2-smoke.test.js')
 s=p.read_text()
 old="for(const module of ['academic','management','documents']) assert(optionalLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);\nassert(optionalLoaderSource.includes(\"define('transport',['js/modules/report-engine.js','js/modules/transport.js'])\"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');"
