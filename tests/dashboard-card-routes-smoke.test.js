@@ -167,3 +167,6 @@ assert(dash.includes("function absencesSection(){if(!isAdmin())return'';")&&dash
 
 assert(dash.includes("active=arr('ogretmenIzinleri').filter")&&dash.includes("if(!active.length)return''")&&dash.includes('<span>Bugün İzinli Öğretmenler</span>'),'Ana sayfa izin kartı yalnız aktif öğretmen izni varsa görünmeli.');
 assert(!dash.includes("active=[...arr('personelIzinler'),...arr('ogretmenIzinleri')]"),'Personel izinleri ana sayfa öğretmen izin kartına karışmamalı.');
+
+assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}${newsSection()}${statsSection()}${socialSection()}${dutySection()}"),'Yönetici ana sayfası referanstaki Okul Özeti sonrası sosyal medya/okul siteleri kartını taşımalı.');
+assert(dash.includes("links=Array.isArray(school.sosyalLinkler)?school.sosyalLinkler.filter(x=>x?.url):[];if(!links.length)return''"),'Sosyal medya/okul siteleri kartı gerçek okulBilgileri.sosyalLinkler verisi yoksa hiç render edilmemeli.');
