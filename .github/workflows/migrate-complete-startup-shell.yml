@@ -1,0 +1,39 @@
+name: migrate-complete-startup-shell
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-complete-startup-shell.py'
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Cache every same-origin startup script
+        run: python scripts/migrate-complete-startup-shell.py
+      - name: Syntax checks
+        run: |
+          node --check service-worker.js
+          node --check js/modules/payroll-change.js
+          node --check js/modules/assistant.js
+          node --check js/modules/legislation.js
+          node --check js/modules/legislation-ui.js
+      - name: Shell and architecture checks
+        run: |
+          node tests/classic-shell-v2-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Cleanup temporary migration files
+        run: rm -f scripts/migrate-complete-startup-shell.py .github/workflows/migrate-complete-startup-shell.yml
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix(pwa): cache all same-origin startup scripts'
+          git push
