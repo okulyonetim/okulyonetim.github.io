@@ -1,0 +1,34 @@
+name: migrate-dashboard-home-polish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-dashboard-home-polish.py'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply migration
+        run: python scripts/migrate-dashboard-home-polish.py
+      - name: Syntax checks
+        run: node --check js/modules/dashboard.js
+      - name: Dashboard smoke
+        run: node tests/dashboard-card-routes-smoke.test.js
+      - name: Architecture check
+        run: node scripts/check-client-architecture.mjs
+      - name: Cleanup migration files
+        run: rm -f scripts/migrate-dashboard-home-polish.py .github/workflows/migrate-dashboard-home-polish.yml
+      - name: Commit production
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix(dashboard): polish news ticker and social icons'
+          git push
