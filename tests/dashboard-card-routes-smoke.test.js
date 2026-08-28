@@ -63,3 +63,6 @@ assert(dash.includes("teachers=arr('ogretmenler'),students=arr('veliler'),classe
 assert(dash.includes("personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6)")&&dash.includes("personal.filter(x=>x.gunFarki===i).length"),'Öğretmen Takvim kartı yalnız kişisel reminder motorunun 7 günlük sonuçlarını saymalı.');
 assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso"),'Öğretmen Takvim kartı okul-geneli hatırlatıcıları doğrudan saymamalı.');
 // Checkpoint: teacher calendar counts are personal and share the canonical reminder engine.
+
+assert(dash.includes("focusLabel='Bugünkü ilk dersiniz'")&&dash.includes("focusLabel='Şu anki dersiniz'")&&dash.includes("focusLabel='Sıradaki dersiniz'"),'Öğretmen karşılama kartı canlı ders durumunu Şimdi/Sıradaki bağlamına çevirmeli.');
+assert(dash.includes("live?.mode==='after'?'Bugünkü dersler tamamlandı.'")&&dash.includes("live?.mode==='weekend'?'Bugün ders günü değil.'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
