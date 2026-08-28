@@ -3,7 +3,6 @@
    Bu bilgileri Firebase Console > Proje Ayarları > Genel sekmesinden,
    "Web uygulaması" eklediğinizde size verilen değerlerle doldurun.
    ==================================================================== */
-document.documentElement.classList.add('ka-auth-resolved');
 const firebaseConfig = {
   apiKey: "AIzaSyDJUE-Guw0JD04xXMHPnQURtLXG91H9pCI",
   authDomain: "okul-6e302.firebaseapp.com",
