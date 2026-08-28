@@ -114,3 +114,6 @@ assert(bootstrapWaitPos>=0&&initialModulePos>bootstrapWaitPos,'Local bootstrap d
 assert(appLoaderSource.includes("sessionBootstrapUid='',sessionBootstrapPromise=null")&&appLoaderSource.includes('if(sessionBootstrapUid===user.uid&&sessionBootstrapPromise){permissionRefresh();return true}'),'Aynı UID için auth görünürlük ve başlangıç köprüsü tek local bootstrap promise kullanmalı.');
 assert(!authSrc.includes("window.AppLoader?.syncLegacySession?.();"),'Auth oturum uygulaması syncAuthVisibility sonrasında ikinci kez session bootstrap çağırmamalı.');
 assert(!appLoaderSource.includes('setInterval(()=>{if(syncLegacySession()||++n>240)clearInterval(bridge)},50)'),'AppLoader auth oturumunu 50 ms polling ile aramamalı; auth callback görünürlük köprüsü yeterli olmalı.');
+assert(!appLoaderSource.includes('oyTema'),'AppLoader eski oyTema deposunu kullanmamalı; tema sahibi ShellUI/ka-theme olmalı.');
+assert(appLoaderSource.includes('return window.ShellUI?.applyTheme?.(theme,opts)??theme')&&appLoaderSource.includes('return window.ShellUI?.toggleTheme?.()'),'AppLoader tema public API uyumluluğunu ShellUI canonical API üzerinden sağlamalı.');
+assert(!appLoaderSource.includes("querySelectorAll('[data-ka-theme-toggle]').forEach(btn=>btn.addEventListener('click',toggleTheme))"),'AppLoader tema butonuna ikinci click listener bağlamamalı.');
