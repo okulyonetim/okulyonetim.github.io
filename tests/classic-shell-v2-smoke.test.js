@@ -102,3 +102,8 @@ assert(!dashboard.includes('trialTimer=setInterval(()=>{refreshTrialTimers();ref
 assert(dashboard.includes('renderFrame=0')&&dashboard.includes('cancelAnimationFrame(renderFrame)'),'Dashboard render kuyruğu unmount sırasında temizlenmeli.');
 
 assert(dashboard.includes("SyncEngine.localHydrate(types)")&&dashboard.includes("okulBilgileri:'okulBilgileri'"),'Dashboard ek verileri Firestore beklemeden IndexedDB üzerinden hydrate etmeli.');
+
+const appLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
+assert(appLoaderSource.includes('Promise.all([Promise.resolve(AppBootstrap?.start?.()),prepareAccountLocalData(user)])'),'İlk modül core ve hesap IndexedDB hydrate tamamlanmadan açılmamalı.');
+const bootstrapWaitPos=appLoaderSource.indexOf('Promise.all([Promise.resolve(AppBootstrap?.start?.()),prepareAccountLocalData(user)])'),initialModulePos=appLoaderSource.indexOf('ensureInitialModule()',bootstrapWaitPos);
+assert(bootstrapWaitPos>=0&&initialModulePos>bootstrapWaitPos,'Local bootstrap dashboard açılışından önce tamamlanmalı.');
