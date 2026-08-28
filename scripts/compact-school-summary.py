@@ -1,7 +1,7 @@
 from pathlib import Path
+import re
 
-css=Path('css/design-system.css')
-s=css.read_text(encoding='utf-8')
+css=Path('css/design-system.css'); s=css.read_text(encoding='utf-8')
 repls={
 '.ka-school-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}':'.ka-school-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}',
 '.ka-school-summary-card{position:relative;min-width:0;min-height:226px;padding:26px 16px 18px;border:1px solid var(--ka-border);border-radius:30px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm);display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden}':'.ka-school-summary-card{position:relative;min-width:0;min-height:154px;padding:14px 10px 11px;border:1px solid var(--ka-border);border-radius:21px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm);display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden}',
@@ -17,24 +17,20 @@ repls={
 '.ka-school-stage>strong{font-size:24px;line-height:1;color:var(--ka-text)}':'.ka-school-stage>strong{font-size:17px;line-height:1;color:var(--ka-text)}',
 '.ka-school-stage>div{display:flex;justify-content:center;gap:6px;font-size:10px;font-weight:800;white-space:nowrap}':'.ka-school-stage>div{display:flex;justify-content:center;gap:4px;font-size:8px;font-weight:800;white-space:nowrap}',
 '.ka-school-unassigned{grid-column:1/-1;margin-top:6px;color:var(--ka-text-muted);font-size:10px}':'.ka-school-unassigned{grid-column:1/-1;margin-top:4px;color:var(--ka-text-muted);font-size:8px}',
-'@media(max-width:390px){.ka-school-summary-grid{gap:10px}.ka-school-summary-card{min-height:210px;padding:22px 10px 16px;border-radius:25px}.ka-school-summary-icon{width:58px;height:58px;border-radius:19px;font-size:27px}.ka-school-summary-card>b{font-size:39px}.ka-school-summary-meta{font-size:10px}.ka-school-stage>strong{font-size:21px}}':'@media(max-width:390px){.ka-school-summary-grid{gap:7px}.ka-school-summary-card{min-height:144px;padding:12px 7px 9px;border-radius:18px}.ka-school-summary-icon{width:39px;height:39px;border-radius:12px;font-size:19px;margin-bottom:6px}.ka-school-summary-card>b{font-size:27px}.ka-school-summary-meta{font-size:8px}.ka-school-stage>strong{font-size:16px}}'
-}
+'@media(max-width:390px){.ka-school-summary-grid{gap:10px}.ka-school-summary-card{min-height:210px;padding:22px 10px 16px;border-radius:25px}.ka-school-summary-icon{width:58px;height:58px;border-radius:19px;font-size:27px}.ka-school-summary-card>b{font-size:39px}.ka-school-summary-meta{font-size:10px}.ka-school-stage>strong{font-size:21px}}':'@media(max-width:390px){.ka-school-summary-grid{gap:7px}.ka-school-summary-card{min-height:144px;padding:12px 7px 9px;border-radius:18px}.ka-school-summary-icon{width:39px;height:39px;border-radius:12px;font-size:19px;margin-bottom:6px}.ka-school-summary-card>b{font-size:27px}.ka-school-summary-meta{font-size:8px}.ka-school-stage>strong{font-size:16px}}'}
 for old,new in repls.items():
     if old not in s: raise SystemExit('missing css contract: '+old[:80])
     s=s.replace(old,new,1)
 css.write_text(s,encoding='utf-8')
 
-t=Path('tests/dashboard-reminders-smoke.test.js')
-x=t.read_text(encoding='utf-8')
+t=Path('tests/dashboard-reminders-smoke.test.js'); x=t.read_text(encoding='utf-8')
 old="assert(src.includes(\"if(isAdmin()){const rows=upcomingRows();return section('Yaklaşan Görevler'\"),'Yönetici Yaklaşan Görevler kartının mevcut davranışı öğretmen zaman çizelgesinden ayrılmalı.');"
 new="assert(src.includes(\"if(isAdmin()){const rows=upcomingRows();if(!rows.length)return'';return `<section class=\\\"kh-section\\\" data-home-section=\\\"upcoming\\\"\"),'Yönetici Yaklaşan Etkinlik / Görevler kartı öğretmen zaman çizelgesinden ayrılmalı ve legacy kh-section sözleşmesini kullanmalı.');"
 if old not in x: raise SystemExit('missing stale reminder assertion')
-x=x.replace(old,new,1)
-t.write_text(x,encoding='utf-8')
+t.write_text(x.replace(old,new,1),encoding='utf-8')
 
 sw=Path('service-worker.js'); w=sw.read_text(encoding='utf-8')
-import re
-m=re.search(r"const CACHE_ADI='oy-cache-v(\\d+)'",w)
+m=re.search(r"const CACHE_ADI='oy-cache-v(\d+)'",w)
 if not m: raise SystemExit('cache version missing')
 w=w[:m.start(1)]+str(int(m.group(1))+1)+w[m.end(1):]
 sw.write_text(w,encoding='utf-8')
