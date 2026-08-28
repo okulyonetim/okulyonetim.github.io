@@ -1,4 +1,5 @@
 from pathlib import Path
+# Trigger after workflow registration.
 p=Path('js/modules/school-live-status.js')
 s=p.read_text()
 old="hydrateLessonHours().then(()=>{updateHeader();tick()})"
