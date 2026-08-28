@@ -1,0 +1,106 @@
+name: patch-firestore-retry
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/patch-firestore-retry.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch auth retry feedback
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('js/auth.js')
+          s=p.read_text()
+          old="""function authDinleyiciKur(){
+  if(!auth){girisEkraniGoster();return;}
+  auth.onAuthStateChanged(async user=>{
+    if(!user){sidebarHesapGuncelle(null);AKTIF_KULLANICI=null;AKTIF_ROL=null;authSessionActivated=false;girisEkraniGoster();return;}
+    const cached=await authSessionCacheOku(user.uid);let localOpened=false;
+    if(cached?.user?.uid===user.uid)localOpened=authOturumuUygula(user,cached.user,cached.role,{cached:true});
+    try{await authSunucuOturumuGetir(user,cached)}catch(err){
+      console.warn('[Auth refresh]',err?.message||err);
+      if(localOpened)return;
+      console.error('Kullanıcı belgesi kontrol edilemedi:',err);
+      _girisHatasiGoster(navigator.onLine?'Hesap bilgileri okunamadı. Lütfen tekrar deneyin.':'Bu cihazda çevrimdışı oturum verisi bulunmuyor. İlk açılış için internet bağlantısı gerekir.');
+      girisEkraniGoster();
+    }
+  });
+}
+"""
+          new="""const FIRESTORE_RETRY_BEKLEME=[0,1000,2000,4000,6000];
+let firestoreRetryTimer=null;
+const firestoreBekle=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+function firestoreBaglantiDurumuGoster(mesaj,state='info'){
+  _girisHatasiGoster(mesaj);
+  const sync=document.getElementById('v2SyncStatus');
+  if(sync){sync.textContent=mesaj;sync.classList.remove('ka-hidden');sync.setAttribute('aria-hidden','false');sync.dataset.connectionState=state}
+  window.dispatchEvent(new CustomEvent('koruk:connection-state',{detail:{state,message:mesaj}}));
+}
+async function authSunucuOturumuRetry(user,cached){
+  let sonHata=null;
+  for(let i=0;i<FIRESTORE_RETRY_BEKLEME.length;i++){
+    if(i>0){const ms=FIRESTORE_RETRY_BEKLEME[i];firestoreBaglantiDurumuGoster(`Bağlantı başarısız — tekrar deneniyor (${i+1}/${FIRESTORE_RETRY_BEKLEME.length})`,'retry');await firestoreBekle(ms)}
+    firestoreBaglantiDurumuGoster(`Bağlanılıyor… (${i+1}/${FIRESTORE_RETRY_BEKLEME.length})`,'connecting');
+    try{
+      const ok=await authSunucuOturumuGetir(user,cached);
+      if(ok===false)return false;
+      firestoreBaglantiDurumuGoster('Bağlantı kuruldu.','connected');
+      return true;
+    }catch(err){
+      sonHata=err;
+      console.warn(`[Firestore] ${i+1}. deneme başarısız:`,err?.message||err);
+      if(['permission-denied','unauthenticated'].includes(err?.code))break;
+    }
+  }
+  firestoreBaglantiDurumuGoster(navigator.onLine?'Bağlantı kurulamadı. Arka planda tekrar denenecek.':'İnternet bağlantısı yok. Yerel veriler kullanılacak.','failed');
+  throw sonHata||new Error('firestore-connection-failed');
+}
+function firestoreArkaPlanTekrarla(user,cached){
+  clearTimeout(firestoreRetryTimer);
+  firestoreRetryTimer=setTimeout(()=>{
+    if(!auth?.currentUser||auth.currentUser.uid!==user?.uid)return;
+    authSunucuOturumuRetry(user,cached).catch(()=>firestoreArkaPlanTekrarla(user,cached));
+  },15000);
+}
+function authDinleyiciKur(){
+  if(!auth){girisEkraniGoster();return;}
+  auth.onAuthStateChanged(async user=>{
+    if(!user){clearTimeout(firestoreRetryTimer);sidebarHesapGuncelle(null);AKTIF_KULLANICI=null;AKTIF_ROL=null;authSessionActivated=false;girisEkraniGoster();return;}
+    const cached=await authSessionCacheOku(user.uid);let localOpened=false;
+    if(cached?.user?.uid===user.uid)localOpened=authOturumuUygula(user,cached.user,cached.role,{cached:true});
+    try{await authSunucuOturumuRetry(user,cached)}catch(err){
+      console.warn('[Auth refresh]',err?.message||err);
+      firestoreArkaPlanTekrarla(user,cached);
+      if(localOpened)return;
+      console.error('Kullanıcı belgesi kontrol edilemedi:',err);
+      _girisHatasiGoster(navigator.onLine?'Bağlantı kurulamadı. 15 saniye sonra tekrar denenecek.':'Bu cihazda çevrimdışı oturum verisi bulunmuyor. İlk açılış için internet bağlantısı gerekir.');
+      girisEkraniGoster();
+    }
+  });
+}
+"""
+          if old not in s:
+              raise SystemExit('auth target not found')
+          p.write_text(s.replace(old,new))
+          sw=Path('service-worker.js')
+          t=sw.read_text()
+          if "const CACHE_ADI='oy-cache-v788';" not in t:
+              raise SystemExit('cache version mismatch')
+          sw.write_text(t.replace("const CACHE_ADI='oy-cache-v788';","const CACHE_ADI='oy-cache-v789';",1))
+          PY
+          node --check js/auth.js
+      - name: Architecture check
+        run: node scripts/check-client-architecture.mjs
+      - name: Cleanup temp workflow and commit
+        run: |
+          rm -f .github/workflows/patch-firestore-retry.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/auth.js service-worker.js .github/workflows/patch-firestore-retry.yml
+          git commit -m 'add Firestore retry status and background reconnect'
+          git push
