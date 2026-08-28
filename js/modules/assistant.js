@@ -7,7 +7,7 @@
 if(global.AssistantModule)return;
 const API='https://okul-ai-asistan.sedonet23.workers.dev';
 let history=[],loading=false,lastTool=null;
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const today=()=>new Date().toISOString().slice(0,10);
 const toolPermission=name=>(name==='taslak_not'||name==='taslak_metin')?'notlar':'takvim';
