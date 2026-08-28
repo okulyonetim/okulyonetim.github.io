@@ -1,3 +1,4 @@
+# trigger legacy teacher focus migration
 from pathlib import Path
 import re
 
