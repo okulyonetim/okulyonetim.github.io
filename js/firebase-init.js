@@ -54,9 +54,19 @@ function firebaseStorageHazirla(){
 }
 window.firebaseStorageHazirla = firebaseStorageHazirla;
 
+function baglantiUyarisiGoster(mesaj){
+  const uyari = document.getElementById('configWarning');
+  if(uyari){
+    uyari.classList.remove('ka-hidden');
+    uyari.classList.add('active');
+    const govde = uyari.querySelector('.ka-card__body p');
+    if(govde && mesaj) govde.textContent = mesaj;
+  }
+}
+
 function firebaseyiBaslat(){
   if(yapilandirmaEksikMi()){
-    document.getElementById('configWarning')?.classList.add('active');
+    baglantiUyarisiGoster();
     return false;
   }
   try{
@@ -83,7 +93,10 @@ function firebaseyiBaslat(){
     return true;
   }catch(e){
     console.error(e);
-    document.getElementById('configWarning')?.classList.add('active');
+    const agSorunuMu = typeof e?.message === 'string' && /firebase is not defined/i.test(e.message);
+    baglantiUyarisiGoster(agSorunuMu
+      ? 'Sunucu bağlantı dosyaları (Firebase) yüklenemedi. İnternet bağlantınızı, güvenlik duvarı/reklam engelleyici ayarlarınızı kontrol edip sayfayı yenileyin.'
+      : 'Firebase başlatılamadı. Yapılandırma ve bağlantı bilgileri kontrol edilmelidir.');
     return false;
   }
 }
