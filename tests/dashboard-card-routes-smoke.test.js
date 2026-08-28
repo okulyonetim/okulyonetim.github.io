@@ -66,3 +66,4 @@ assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice
 
 assert(dash.includes("focusLabel='Bugünkü ilk dersiniz'")&&dash.includes("focusLabel='Şu anki dersiniz'")&&dash.includes("focusLabel='Sıradaki dersiniz'"),'Öğretmen karşılama kartı canlı ders durumunu Şimdi/Sıradaki bağlamına çevirmeli.');
 assert(dash.includes("live?.mode==='after'?'Bugünkü dersler tamamlandı.'")&&dash.includes("live?.mode==='weekend'?'Bugün ders günü değil.'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
+// Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
