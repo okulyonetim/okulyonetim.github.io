@@ -24,7 +24,7 @@ assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero
 assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('sayacDurumu?.aktif')&&dash.includes('baslatmaTarihi'),'Dashboard deneme sayacı gerçek denemeSinavlari.sayacDurumu modelini kullanmalı.');
 assert(dash.includes("function trialCounterSection(){const list=arr('denemeSinavlari').filter(x=>x?.sayacDurumu?.aktif===true)"),'Dashboard deneme kartı yalnız başlatılmış gerçek sayaç için görünmeli.');
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
-assert(dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Aktif deneme sayacı ve zil kartı aynı saniyelik presentation tick içinde canlı güncellenmeli.');
+assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)')&&dash.includes("window.addEventListener('koruk:school-live-tick',liveTickHandler)"),'Deneme sayacı kendi presentation intervalinde kalmalı; zil kartı SchoolLiveStatus tek zaman motorunun tick eventini dinlemeli.');
 assert(dash.includes("if(!mine.length)return''"),'Öğretmenin nöbet kartı yalnız gerçek nöbeti varsa görünmeli.');
 assert(dash.includes('<span>Bugünkü Nöbetim</span>')&&dash.includes('class=\"kh-duty-check\"'),'Öğretmenin kendi nöbeti referans kart ve defter işaretleme davranışıyla ayrı odak olmalı.');
 assert(dash.includes("section('Okul Özeti'")&&dash.includes('ka-school-summary-section'),'Okul Özeti referans kart grubu olarak üretilmeli.');
@@ -171,5 +171,5 @@ assert(!dash.includes("active=[...arr('personelIzinler'),...arr('ogretmenIzinler
 assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}${newsSection()}${statsSection()}${socialSection()}${dutySection()}"),'Yönetici ana sayfası referanstaki Okul Özeti sonrası sosyal medya/okul siteleri kartını taşımalı.');
 assert(dash.includes("links=Array.isArray(school.sosyalLinkler)?school.sosyalLinkler.filter(x=>x?.url):[];if(!links.length)return''"),'Sosyal medya/okul siteleri kartı gerçek okulBilgileri.sosyalLinkler verisi yoksa hiç render edilmemeli.');
 
-assert(dash.includes('data-dash-live-status')&&dash.includes('refreshHeroLive()')&&dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Zil kartı dashboard yeniden render beklemeden her saniye canonical SchoolLiveStatus ile güncellenmeli.');
+assert(dash.includes('data-dash-live-status')&&dash.includes("window.addEventListener('koruk:school-live-tick',liveTickHandler)")&&dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Zil kartı SchoolLiveStatus tek zaman motorunun tick eventini dinlemeli; deneme sayacı intervali ayrı yalnız kendi sayacını güncellemeli.');
 assert(dash.includes('data-news-signature')&&dash.includes('freshNews.replaceWith(oldNews)')&&dash.includes('class=\"kh-news-loop\"'),'Kayan haber DOMu aynı veriyle yeniden yaratılmamalı ve kesintisiz çift şerit kullanmalı.');
