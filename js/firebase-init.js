@@ -88,6 +88,32 @@ function firebaseyiBaslat(){
   }
 }
 
+/* Giriş ekranı auth çözülene kadar shell/overlay katmanlarından fiziksel olarak üstte kalır. */
+function girisDokunmaKatmaniniGuvenceyeAl(){
+  const login=document.getElementById('girisEkrani');
+  if(!login)return;
+  login.style.position='fixed';
+  login.style.inset='0';
+  login.style.zIndex='2147483647';
+  login.style.pointerEvents='auto';
+  login.style.touchAction='auto';
+  login.style.overflow='auto';
+  login.style.background='var(--ka-app-bg)';
+  login.style.isolation='isolate';
+  const card=login.querySelector('.ka-login-card'),form=login.querySelector('form');
+  for(const el of [card,form])if(el){el.style.position='relative';el.style.zIndex='1';el.style.pointerEvents='auto';el.style.touchAction='auto';}
+  login.querySelectorAll('input,button,label').forEach(el=>{
+    el.style.pointerEvents='auto';
+    el.style.touchAction='auto';
+    el.style.position='relative';
+    el.style.zIndex='2';
+  });
+  login.querySelectorAll('input').forEach(el=>{
+    el.style.userSelect='text';
+    el.style.webkitUserSelect='text';
+  });
+}
+
 /* Geçici tanılama: ana pencerenin gerçek Firebase/Auth/Firestore aşamalarını
    DevTools bağlamından bağımsız olarak giriş kartında ayrı bir satırda gösterir. */
 let firebaseTanilamaDinleyiciKuruldu = false;
@@ -146,6 +172,7 @@ function pointerTanilamaKur(){
 function firebaseBaslangicTanilamasiGoster(){
   setTimeout(()=>{
     document.documentElement.classList.add('ka-auth-resolved');
+    girisDokunmaKatmaniniGuvenceyeAl();
     const fb=window.firebase;
     pointerTanilamaKur();
     if(!window.firebaseHazir||!window.auth||!window.db){
