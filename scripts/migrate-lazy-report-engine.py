@@ -32,8 +32,8 @@ ui=ui.replace(old,new,1)
 marker="for(const src of optionalLazy) assert(!shell.includes(`<script src=\"${src}\" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);"
 addition="""
 assert(!shell.includes('<script src=\"js/modules/report-engine.js\" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
-for(const module of ['academic','management','documents']) assert(appLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);
-assert(appLoaderSource.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');
+for(const module of ['academic','management','documents']) assert(optionalLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);
+assert(optionalLoaderSource.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');
 assert(ui.includes("if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Maaş özel rotası ReportEngine hazır değilse ihtiyaç anında yüklemeli.');
 assert(sw.includes("'./js/modules/report-engine.js'"),'ReportEngine offline Service Worker cache içinde bulunmalı.');"""
 if marker not in test: raise SystemExit('optional lazy assertion marker missing')
