@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, statik kaynakları çevrimiçiyken
    güncel ağ sürümünden, çevrimdışıyken cache'den sunmak ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v782';
+const CACHE_ADI='oy-cache-v783';
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -20,7 +20,7 @@ const FIREBASE_SDK=[
 const ONBELLEGE_ALINACAKLAR=[
   './','./index.html','./manifest.json',
   './css/design-system.css',
-  './js/firebase-init.js','./js/core/core.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js','./js/core/header-ui.js','./js/core/menu-customizer.js','./js/modules/school-live-status.js','./js/modules/report-engine.js','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/academic.js','./js/modules/academic-legacy-ui.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/communication-legacy-ui.js','./js/modules/transport.js','./js/modules/transport-legacy-ui.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/student-attendance-legacy.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js',
+  './js/firebase-init.js','./js/core/core.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js','./js/core/header-ui.js','./js/modules/school-live-status.js','./js/modules/report-engine.js','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/academic.js','./js/modules/academic-legacy-ui.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/communication-legacy-ui.js','./js/modules/transport.js','./js/modules/transport-legacy-ui.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/student-attendance-legacy.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js',
   './js/modules/payroll-change.js','./js/modules/assistant.js','./js/modules/legislation.js','./js/modules/legislation-ui.js',
   './js/modules/rubric-settings.js','./js/modules/rubric-tools.js','./js/modules/rubric-tools-engine.js',
   './js/modules/document-viewer.js',
