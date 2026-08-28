@@ -37,84 +37,33 @@ let auth = null;
 let messaging = null;
 let storage = null;
 let firebaseHazir = false;
-let firebaseSdkKurtarmaPromise = null;
 window.db = null;
 window.auth = null;
 window.messaging = null;
 window.storage = null;
 window.firebaseHazir = false;
 
-const FIREBASE_COMPAT_SURUM = '10.12.2';
-const FIREBASE_COMPAT_SCRIPTLERI = [
-  `https://www.gstatic.com/firebasejs/${FIREBASE_COMPAT_SURUM}/firebase-app-compat.js`,
-  `https://www.gstatic.com/firebasejs/${FIREBASE_COMPAT_SURUM}/firebase-firestore-compat.js`,
-  `https://www.gstatic.com/firebasejs/${FIREBASE_COMPAT_SURUM}/firebase-auth-compat.js`,
-  `https://www.gstatic.com/firebasejs/${FIREBASE_COMPAT_SURUM}/firebase-messaging-compat.js`
-];
-
 function yapilandirmaEksikMi(){ return firebaseConfig.apiKey === "BURAYA_API_KEY"; }
-function firebaseSdkSaglikliMi(){
-  const fb = window.firebase;
-  return !!fb && typeof fb.initializeApp === 'function' && Array.isArray(fb.apps) &&
-    typeof fb.firestore === 'function' && typeof fb.auth === 'function' && !!fb.SDK_VERSION;
-}
-function firebaseScriptYukle(src){
-  return new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src=src;
-    s.async=false;
-    s.dataset.korukFirebaseRecovery='1';
-    s.onload=()=>resolve(src);
-    s.onerror=()=>reject(new Error('firebase-sdk-load:'+src));
-    document.head.appendChild(s);
-  });
-}
-function firebaseUyariGoster(){
-  document.documentElement.classList.add('ka-auth-resolved');
-  const warning=document.getElementById('configWarning');
-  if(warning){warning.classList.remove('ka-hidden');warning.hidden=false;warning.classList.add('active');}
-}
-async function firebaseSdkKurtar(){
-  if(firebaseSdkSaglikliMi()) return true;
-  if(firebaseSdkKurtarmaPromise) return firebaseSdkKurtarmaPromise;
-  document.documentElement.classList.add('ka-auth-resolved');
-  firebaseSdkKurtarmaPromise=(async()=>{
-    const token=`koruk-${Date.now()}`;
-    try{
-      try{delete window.firebase;}catch(_){window.firebase=undefined;}
-      if(window.firebase) window.firebase=undefined;
-      for(const src of FIREBASE_COMPAT_SCRIPTLERI) await firebaseScriptYukle(`${src}?v=${encodeURIComponent(token)}`);
-      if(!firebaseSdkSaglikliMi()) throw new Error('firebase-sdk-runtime-sagliksiz');
-      console.info('[Firebase] Compat SDK runtime temiz olarak yeniden yüklendi.',window.firebase.SDK_VERSION);
-      return true;
-    }catch(e){
-      console.error('[Firebase SDK recovery]',e);
-      firebaseUyariGoster();
-      return false;
-    }
-  })();
-  return firebaseSdkKurtarmaPromise;
-}
 
 function firebaseStorageHazirla(){
   if(storage) return storage;
-  const fb=window.firebase;
-  if(!fb || typeof fb.storage !== 'function') throw new Error('firebase-storage-sdk-yok');
-  storage = fb.storage();
+  if(typeof firebase.storage !== 'function') throw new Error('firebase-storage-sdk-yok');
+  storage = firebase.storage();
   window.storage = storage;
   return storage;
 }
 window.firebaseStorageHazirla = firebaseStorageHazirla;
 
-function firebaseyiBaslatTemel(){
-  if(firebaseHazir && db && auth) return true;
-  const fb=window.firebase;
-  if(!firebaseSdkSaglikliMi()) return false;
+function firebaseyiBaslat(){
+  if(yapilandirmaEksikMi()){
+    document.getElementById('configWarning')?.classList.add('active');
+    return false;
+  }
   try{
-    if(!fb.apps.length) fb.initializeApp(firebaseConfig);
-    db = fb.firestore();
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
     db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
-    auth = fb.auth();
+    auth = firebase.auth();
     storage = null;
     firebaseHazir = true;
     window.db = db;
@@ -127,44 +76,14 @@ function firebaseyiBaslatTemel(){
       else console.warn('Offline destek etkinleştirilemedi:', err);
     });
     try{
-      if(fb.messaging?.isSupported?.()) messaging = fb.messaging();
+      if(firebase.messaging.isSupported()) messaging = firebase.messaging();
       window.messaging = messaging;
     }catch(e){ console.warn('Bu tarayıcı push bildirimlerini desteklemiyor.', e); }
     window.dispatchEvent(new CustomEvent('koruk:firebase-ready'));
     return true;
   }catch(e){
     console.error(e);
-    firebaseUyariGoster();
+    document.getElementById('configWarning')?.classList.add('active');
     return false;
   }
-}
-
-function firebaseAuthDinleyicisiniKurtarmaSonrasiBaslat(deneme=0){
-  if(typeof authDinleyiciKur === 'function'){
-    authDinleyiciKur();
-    return;
-  }
-  if(deneme<80) setTimeout(()=>firebaseAuthDinleyicisiniKurtarmaSonrasiBaslat(deneme+1),50);
-  else firebaseUyariGoster();
-}
-
-function firebaseyiBaslat(){
-  if(yapilandirmaEksikMi()){
-    firebaseUyariGoster();
-    return false;
-  }
-  if(firebaseSdkSaglikliMi()) return firebaseyiBaslatTemel();
-
-  /*
-     Bazı mobil Chromium/Kiwi oturumlarında global firebase nesnesi var olduğu halde
-     compat App runtime eksik kalabiliyor (SDK_VERSION/firestore kayıp). AppLoader'ı
-     kilitlemeden giriş yüzeyini aç; SDK'ları cache-bust ile temiz sırada yeniden yükle.
-     AppLoader bu ilk çağrıyı tamamlanmış sayar; gerçek auth listener kurtarma bitince kurulur.
-  */
-  document.documentElement.classList.add('ka-auth-resolved');
-  firebaseSdkKurtar().then(ok=>{
-    if(!ok) return;
-    if(firebaseyiBaslatTemel()) firebaseAuthDinleyicisiniKurtarmaSonrasiBaslat();
-  });
-  return true;
 }
