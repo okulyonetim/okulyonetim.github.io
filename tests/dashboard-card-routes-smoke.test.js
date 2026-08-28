@@ -100,3 +100,9 @@ assert(!dash.includes('class="ka-home-quick"'),'Yeni taklit ka-home-quick render
 assert(css.includes('LEGACY QUICK ACTIONS — REFERENCE PORT')&&css.includes('.ka-home .kh-quick button{'),'Hızlı İşlemler legacy geometrisi merkezi design-system içinde kalmalı.');
 assert(css.includes('background:var(--ka-card-bg)')&&css.includes('color:var(--ka-text)')&&css.includes('var(--ka-primary-soft)'),'Hızlı İşlemler renkleri merkezi --ka-* tema tokenlarından gelmeli.');
 // Checkpoint: legacy quick actions visual port.
+
+assert(dash.includes('class="kh-social"')&&dash.includes('data-home-section="social"'),'Sosyal bağlantılar referans kh-social DOM sözleşmesini kullanmalı.');
+assert(!dash.includes('class="ka-home-social"'),'Yeni taklit ka-home-social renderer içinde kalmamalı.');
+assert(css.includes('LEGACY SOCIAL CARDS — REFERENCE PORT')&&css.includes('.ka-home .kh-social button{'),'Sosyal kart legacy geometrisi merkezi design-system içinde kalmalı.');
+assert(!css.includes('.ka-home .kh-quick button:nth-child(1) svg{color:var(--ka-danger)}'),'Sınav Ekle genel aksiyonu danger kırmızısı kullanmamalı.');
+// Checkpoint: legacy social cards visual port.
