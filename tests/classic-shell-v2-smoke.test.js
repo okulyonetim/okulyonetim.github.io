@@ -10,7 +10,7 @@ const design=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
-assert(shell.includes('js/modules/school-live-status.js'),'Canlı zil/hava V2 runtime production shell içinde bulunmalı.');
+assert(!shell.includes('<script src="js/modules/school-live-status.js" defer></script>'),'Canlı zil/hava motoru ilk açılış shellinde eager yüklenmemeli.');
 for(const action of ['home','profile','menu','search','note']) assert(shell.includes(`data-ka-shell-action="${action}"`),`Alt navigasyon eylemi eksik: ${action}`);
 assert((shell.match(/data-ka-shell-action=/g)||[]).length===5,'Mobil alt navigasyon tam 5 ana eylemden oluşmalı.');
 assert(shell.includes('ka-bottom-menu-icon'),'Ortadaki Menü düğmesi ayrı yükseltilmiş sunuma sahip olmalı.');
@@ -88,6 +88,7 @@ for(const src of sameOriginStartup) assert(sw.includes(`'${src}'`),`Aynı-origin
 const optionalLazy=['js/modules/payroll-change.js','js/modules/assistant.js','js/modules/legislation.js','js/modules/legislation-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'];
 for(const src of optionalLazy) assert(!shell.includes(`<script src="${src}" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);
 const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
+assert(optionalLoaderSource.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js'])"),'Dashboard açılmadan önce SchoolLiveStatus lazy bundle içinde yüklenmeli.');
 assert(!shell.includes('<script src="js/modules/report-engine.js" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
 for(const module of ['academic','management','documents']) assert(optionalLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);
 assert(optionalLoaderSource.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');

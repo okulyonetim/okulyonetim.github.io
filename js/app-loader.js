@@ -17,7 +17,7 @@ async function loadMany(files){for(const f of files||[])await loadScript(f)}
 function define(name,files){registry.set(name,[...(files||[])])}
 const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))||alreadyInDom(x));
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
-define('dashboard',['js/modules/dashboard.js']);
+define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js']);
 define('people',['js/modules/people.js']);
 define('academic',['js/modules/report-engine.js','js/modules/academic.js']);
 define('management',['js/modules/report-engine.js','js/modules/management.js']);
