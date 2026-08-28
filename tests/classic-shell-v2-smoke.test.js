@@ -79,6 +79,8 @@ assert(!live.includes('localStorage.setItem('),'Canlı durum localStorage kalıc
 assert(!live.includes('suankiDersDurumu(')&&!live.includes('sonHavaVerisi'),'Legacy zil/hava global bağımlılıkları V2 runtimea dönmemeli.');
 for(const mode of ["type:'lesson'","'lunch':'break'", "mode:'after'", "mode:'weekend'"]) assert(live.includes(mode),`Canlı zil durum sözleşmesi eksik: ${mode}`);
 assert(sw.includes('./js/modules/school-live-status.js'),'Canlı durum offline PWA shell içinde önbelleğe alınmalı.');
+for(const lazy of ['./js/modules/dashboard.js','./js/modules/people.js','./js/modules/academic.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/report-engine.js','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js']) assert(sw.includes(lazy),`AppLoader lazy modülü offline PWA shell cache içinde bulunmalı: ${lazy}`);
+assert(sw.includes("return clients.openWindow?clients.openWindow(hedef):null;}));});"),'Service Worker notificationclick event.waitUntil zinciri sözdizimsel olarak tam kapanmalı.');
 
 for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note','.ka-home-live','.ka-live-weather']) assert(design.includes(selector),`Merkezi design system selectorü eksik: ${selector}`);
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
