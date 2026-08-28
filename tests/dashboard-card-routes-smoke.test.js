@@ -81,3 +81,7 @@ assert(shell.includes("const {name,username,photo}=profileInfo(),p=popoverBase(a
 assert(!shell.includes('ka-profile-popover__identity'),'Ekran görüntüsünden yeniden üretilen profil popup DOMu kaldırılmalı.');
 // Checkpoint: legacy news, weekly duty and profile surfaces are ported onto central themes.
 // Final regression checkpoint: legacy dashboard surfaces + centralized light/dark theme.
+
+assert(dash.includes("teacherMode=!isAdmin()&&!!tid")&&dash.includes("kh-mini${mine?' is-me':''}")&&dash.includes("x.ogretmenId===tid"),'Haftalık nöbet programı öğretmenin kendi satırını mevcut öğretmen bağlantısından vurgulamalı.');
+assert(css.includes('TEACHER WEEKLY DUTY SELF HIGHLIGHT')&&css.includes('.ka-home .kh-mini.is-me'),'Öğretmenin haftalık nöbet vurgusu merkezi design-system içinde kalmalı.');
+// Checkpoint: weekly duty keeps the legacy layout while highlighting the signed-in teacher.

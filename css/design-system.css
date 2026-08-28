@@ -248,3 +248,9 @@
 .ka-home .kh-place.admin{color:var(--ka-warning)}
 .ka-home .kh-duty-empty{color:var(--ka-text-muted)}
 .ka-profile-popover-legacy .ka-avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+
+
+/* ===== TEACHER WEEKLY DUTY SELF HIGHLIGHT ===== */
+.ka-home .kh-mini.is-me{background:var(--ka-primary-soft);box-shadow:inset 3px 0 0 var(--ka-primary);}
+.ka-home .kh-mini.is-me>span:first-child{color:var(--ka-primary);font-weight:800;}
+[data-theme="dark"] .ka-home .kh-mini.is-me{background:color-mix(in srgb,var(--ka-primary) 14%,var(--ka-card-bg));}
