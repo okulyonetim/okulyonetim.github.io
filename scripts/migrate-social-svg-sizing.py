@@ -1,4 +1,5 @@
 from pathlib import Path
+# Trigger after workflow registration.
 p=Path('css/design-system.css')
 s=p.read_text()
 needle='.ka-home .kh-social-icon{width:29px;height:29px;display:grid;place-items:center;color:var(--ka-primary);font-size:24px;line-height:1}\n'
