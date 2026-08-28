@@ -52,3 +52,4 @@ fs.writeFileSync('js/core/shell-ui.js',shell);
 fs.writeFileSync('css/design-system.css',css);
 fs.writeFileSync('tests/dashboard-card-routes-smoke.test.js',test);
 console.log('Teacher dashboard daily priority migration applied.');
+// Triggered after workflow registration.
