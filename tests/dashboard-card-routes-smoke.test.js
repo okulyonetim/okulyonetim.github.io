@@ -113,3 +113,9 @@ assert(dash.includes("personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gu
 assert(!dash.includes('class="ka-home-calendar"'),'Yeni taklit ka-home-calendar renderer içinde kalmamalı.');
 assert(css.includes('LEGACY INTERACTIVE CALENDAR — REFERENCE PORT')&&css.includes('.ka-home .kh-calendar{'),'Takvim legacy geometrisi merkezi design-system içinde kalmalı.');
 // Checkpoint: legacy interactive calendar port.
+
+assert(dash.includes('data-home-section="notes"')&&dash.includes('class="kh-card"')&&dash.includes('class="kh-row" data-dash-route="communication" data-dash-page="notes"'),'Notlarım referans kh-section/kh-card/kh-row sözleşmesini kullanmalı.');
+assert(!dash.includes('class="ka-home-note"'),'Yeni taklit ka-home-note renderer içinde kalmamalı.');
+assert(dash.includes("arr('notlar').filter(x=>u.admin||!x.sahipUid||x.sahipUid===u.uid)"),'Notlarım local-first sahiplik filtresini korumalı.');
+assert(css.includes('LEGACY NOTES CARD — REFERENCE PORT')&&css.includes('.ka-home .kh-section[data-home-section="notes"] .kh-row{'),'Notlarım legacy geometrisi merkezi design-system içinde kalmalı.');
+// Checkpoint: legacy notes card visual port.

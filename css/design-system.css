@@ -333,3 +333,19 @@
 .ka-home .kh-section[data-home-section="calendar"] .kh-row-main small{display:block;font-size:10.5px;line-height:1.35;color:var(--ka-text-muted);margin-top:3px}
 .ka-home .kh-calendar-row-icon{width:20px;text-align:center;color:var(--ka-primary)}
 .ka-home .kh-section[data-home-section="calendar"] .kh-empty{padding:14px 12px;text-align:center;color:var(--ka-text-muted);font-size:11px;border-top:1px solid var(--ka-border)}
+
+
+/* LEGACY NOTES CARD — REFERENCE PORT */
+.ka-home .kh-section[data-home-section="notes"]{display:flex;flex-direction:column;gap:8px}
+.ka-home .kh-section[data-home-section="notes"] .kh-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px}
+.ka-home .kh-section[data-home-section="notes"] .kh-section-title{display:flex;align-items:center;gap:8px;min-width:0;font-size:15.5px;font-weight:900;color:var(--ka-text)}
+.ka-home .kh-section[data-home-section="notes"] .kh-section-title>svg{width:19px;height:19px;flex:none;color:var(--ka-primary)}
+.ka-home .kh-section[data-home-section="notes"] .kh-more{border:0;background:transparent;color:var(--ka-primary);font:inherit;font-size:10.5px;font-weight:850;padding:6px 2px;white-space:nowrap}
+.ka-home .kh-section[data-home-section="notes"] .kh-card{overflow:hidden;border:1px solid var(--ka-border);border-radius:20px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
+.ka-home .kh-section[data-home-section="notes"] .kh-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 12px;border:0;border-bottom:1px solid var(--ka-border);background:transparent;color:var(--ka-text);text-align:left;font:inherit;cursor:pointer}
+.ka-home .kh-section[data-home-section="notes"] .kh-row:last-child{border-bottom:0}
+.ka-home .kh-section[data-home-section="notes"] .kh-row-main{min-width:0}
+.ka-home .kh-section[data-home-section="notes"] .kh-row-main b{display:block;font-size:12.5px;line-height:1.28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ka-text)}
+.ka-home .kh-section[data-home-section="notes"] .kh-row-main small{display:block;font-size:10.5px;line-height:1.35;color:var(--ka-text-muted);margin-top:3px}
+.ka-home .kh-note-arrow{font-size:18px;line-height:1;color:var(--ka-primary)}
+.ka-home .kh-section[data-home-section="notes"] .kh-empty{padding:14px 12px;text-align:center;color:var(--ka-text-muted);font-size:11px}
