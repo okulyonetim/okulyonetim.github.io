@@ -70,11 +70,13 @@ assert(dash.includes("focusLabel='Bugünkü ilk dersiniz'")&&dash.includes("focu
 assert(dash.includes("live?.mode==='after'?'Bugünkü dersler tamamlandı.'")&&dash.includes("live?.mode==='weekend'?'Bugün ders günü değil.'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
 // Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
 
-assert(dash.includes('ka-home-news-ticker')&&dash.includes('ka-home-news-track')&&dash.includes('HABERLER'),'Haberler referanstaki tek satır kayan altyazı bandı olmalı.');
-assert(dash.includes('ka-week-duty-day')&&dash.includes("['Pazartesi','Salı','Çarşamba','Perşembe','Cuma']")&&dash.includes("isToday?' is-today':''"),'Haftanın nöbet programı gün blokları ve Bugün vurgusunu kullanmalı.');
-assert(dash.includes("dutyPlaceVisual")&&dash.includes("icon:'🌳'")&&dash.includes("icon:'🏫'"),'Nöbet programı Bahçe ve Okul Binası yerlerini referans ikonlarıyla göstermeli.');
-assert(css.includes('DASHBOARD REFERENCE SURFACES')&&css.includes('.ka-home-news-ticker')&&css.includes('.ka-week-duty-day'),'Referans dashboard yüzeyleri merkezi design-system içinde kalmalı.');
-assert(shell.includes("p.classList.add('ka-profile-popover')")&&shell.includes('ka-profile-popover__identity')&&shell.includes('Temayı Değiştir'),'Profil popup referanstaki kimlik ve üç işlem düzenini kullanmalı.');
-assert(css.includes('.ka-profile-popover__menu')&&css.includes('.ka-profile-popover__logout'),'Profil popup görünümü merkezi design-system içinde kalmalı.');
-// Checkpoint: weekly duty, profile popover and scrolling news match the approved reference.
-// Final checkpoint trigger for the approved reference surfaces.
+assert(dash.includes('class="kh-news"')&&dash.includes('class="kh-news-label"')&&dash.includes('class="kh-news-track"')&&dash.includes('--kh-ticker-time'),'Haberler eski dashboard-home.js kayan bant DOM sözleşmesini korumalı.');
+assert(!dash.includes('ka-home-news-ticker'),'Yeni taklit haber bileşeni aktif renderer içinde kalmamalı.');
+assert(dash.includes('class="kh-section"')&&dash.includes('class="kh-weekday ')&&dash.includes('class="kh-weekday-head"')&&dash.includes('class="kh-mini"'),'Haftalık nöbet eski kh-section/kh-weekday DOM sözleşmesini korumalı.');
+assert(dash.includes('function isDutyChief')&&dash.includes('function sortDuties')&&dash.includes('function dutyPlaceHtml'),'Haftalık nöbet eski sıralama, amir filtreleme ve yer sunum davranışlarını taşımalı.');
+assert(!dash.includes('ka-week-duty-day'),'Yeni taklit haftalık nöbet bileşeni aktif renderer içinde kalmamalı.');
+assert(css.includes('LEGACY DASHBOARD SURFACES — CENTRAL THEME')&&css.includes('.ka-home .kh-news')&&css.includes('.ka-home .kh-weekday'),'Legacy dashboard geometrisi merkezi design-system içinde yaşamalı.');
+assert(css.includes('.ka-home .kh-news{')&&css.includes('background:var(--ka-card-bg)')&&css.includes('color:var(--ka-text)')&&css.includes('background:var(--ka-primary-soft)'),'Legacy yüzeylerin renkleri merkezi --ka-* tema tokenlarından gelmeli.');
+assert(shell.includes("const {name,username,photo}=profileInfo(),p=popoverBase(anchor,360)")&&shell.includes("dark?'Açık Temaya Geç':'Koyu Temaya Geç'")&&shell.includes('ka-profile-popover-legacy'),'Profil popup geçmişteki gerçek header hesap popover sözleşmesini kullanmalı.');
+assert(!shell.includes('ka-profile-popover__identity'),'Ekran görüntüsünden yeniden üretilen profil popup DOMu kaldırılmalı.');
+// Checkpoint: legacy news, weekly duty and profile surfaces are ported onto central themes.

@@ -215,3 +215,36 @@
 .ka-profile-popover__menu{padding:16px 18px 13px;display:flex;flex-direction:column;gap:3px}.ka-profile-popover__menu button,.ka-profile-popover__logout button{appearance:none;width:100%;min-height:54px;border:0;border-radius:13px;background:transparent;color:var(--ka-text);display:flex;align-items:center;gap:16px;padding:8px 13px;text-align:left;font-size:16px;font-weight:650;cursor:pointer}.ka-profile-popover__menu button:hover,.ka-profile-popover__menu button:active{background:var(--ka-muted-bg)}.ka-profile-popover__menu svg,.ka-profile-popover__logout svg{width:26px;height:26px;flex:0 0 26px}
 .ka-profile-popover__logout{padding:10px 18px 17px;border-top:1px solid var(--ka-border)}.ka-profile-popover__logout button{color:var(--ka-danger)}
 @media(max-width:430px){.ka-home-news-ticker{min-height:54px;border-radius:18px}.ka-home-news-label{min-width:132px;padding-inline:17px;font-size:11px}.ka-home-news-track>span{font-size:12px}.ka-week-duty-day{padding:16px 17px}.ka-week-duty-rows article>strong{font-size:13px}.ka-week-duty-place b{min-width:82px;font-size:10px}.ka-profile-popover__identity{padding:21px 26px 15px}.ka-profile-popover__menu,.ka-profile-popover__logout{padding-inline:14px}}
+/* ===== LEGACY DASHBOARD SURFACES — CENTRAL THEME =====
+   DOM/geometri: eski dashboard-home.css. Renkler yalnız merkezi --ka-* tokenlarından gelir. */
+.ka-home .kh-news{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;min-height:42px;overflow:hidden;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
+.ka-home .kh-news-label{height:100%;display:flex;align-items:center;gap:5px;padding:0 10px;border:0;background:var(--ka-primary);color:var(--ka-text-inverse);font-size:9.5px;font-weight:900;letter-spacing:.04em;z-index:2;cursor:pointer}
+.ka-home .kh-news-label svg{width:15px;height:15px}
+.ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0}
+.ka-home .kh-news-track{display:inline-flex;align-items:center;gap:28px;width:max-content;padding-left:100%;animation:khTicker var(--kh-ticker-time,28s) linear infinite;will-change:transform}
+.ka-home .kh-news:hover .kh-news-track{animation-play-state:paused}
+.ka-home .kh-news-item{border:0;background:none;padding:0;color:var(--ka-text);font:inherit;font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer}
+.ka-home .kh-news-dot{color:var(--ka-primary);font-weight:900}
+@keyframes khTicker{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+.ka-home .kh-section{display:flex;flex-direction:column;gap:8px}
+.ka-home .kh-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px}
+.ka-home .kh-section-title{display:flex;align-items:center;gap:8px;min-width:0;font-size:15.5px;font-weight:900;color:var(--ka-text)}
+.ka-home .kh-section-title svg{width:19px;height:19px;flex:none;color:var(--ka-primary)}
+.ka-home .kh-more{border:0;background:transparent;color:var(--ka-primary);font:inherit;font-size:10.5px;font-weight:850;padding:6px 2px;white-space:nowrap;cursor:pointer}
+.ka-home .kh-card{overflow:hidden;border:1px solid var(--ka-border);border-radius:20px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
+.ka-home .kh-weekday{padding:11px 12px;border-bottom:1px solid var(--ka-border)}
+.ka-home .kh-weekday:last-child{border-bottom:0}
+.ka-home .kh-weekday.today{background:var(--ka-primary-soft)}
+.ka-home .kh-weekday-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:10px;font-weight:900;letter-spacing:.04em;color:var(--ka-text)}
+.ka-home .kh-weekday.today .kh-weekday-head>span:first-child{color:var(--ka-primary)}
+.ka-home .kh-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;background:var(--ka-primary-soft);color:var(--ka-primary);font-size:9.5px;font-weight:900;white-space:nowrap}
+.ka-home .kh-mini{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 0;color:var(--ka-text);font-size:10.5px}
+.ka-home .kh-mini+.kh-mini{border-top:1px dotted var(--ka-border)}
+.ka-home .kh-place{display:inline-flex;align-items:center;gap:6px;justify-self:end;color:var(--ka-text-muted);max-width:150px}
+.ka-home .kh-place-ico{width:28px;height:28px;display:inline-grid;place-items:center;border-radius:9px;background:var(--ka-muted-bg);font-size:15px}
+.ka-home .kh-place b{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ka-home .kh-place.yard{color:var(--ka-success)}
+.ka-home .kh-place.building{color:var(--ka-primary)}
+.ka-home .kh-place.admin{color:var(--ka-warning)}
+.ka-home .kh-duty-empty{color:var(--ka-text-muted)}
+.ka-profile-popover-legacy .ka-avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
