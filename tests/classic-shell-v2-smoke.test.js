@@ -72,6 +72,7 @@ assert(uiLocalStorage.length>0&&uiLocalStorage.every(x=>x.includes("'ka-theme'")
 assert(live.includes("AppStore?.data?.(t)"),'Canlı durum AppStore verisini okumalı.');
 assert(live.includes("SyncEngine.register('dersSaatleri',global.COL.dersSaatleri)"),'Ders saatleri mevcut gerçek koleksiyonla SyncEngine üzerinden bağlanmalı.');
 assert(live.includes("SyncEngine.localHydrate(['dersSaatleri'])"),'Zil sayacı önce cihazdaki ders saatlerini hydrate etmeli.');
+assert(live.includes("hydrateLessonHours().then(()=>{updateHeader();lastTick='';tick()})"),'Ders saatleri local hydrate tamamlandığı anda fallback durum beklemeden gerçek program yeniden yayınlanmalı.');
 assert(live.includes('api.open-meteo.com'),'Hava durumu doğrulanmış Open-Meteo kaynağını kullanmalı.');
 assert(live.includes("KorukLocalFirst.meta(uid,'weatherSnapshot'"),'Hava durumu kısa süreli IndexedDB meta cache kullanmalı.');
 assert(!live.includes('db.collection('),'Canlı durum UI doğrudan Firestore kullanmamalı.');
