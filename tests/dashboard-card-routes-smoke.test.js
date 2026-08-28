@@ -26,10 +26,10 @@ assert(dash.includes("function trialCounterSection(){const list=arr('denemeSinav
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
 assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Aktif deneme sayacı ana sayfada canlı güncellenmeli.');
 assert(dash.includes("if(!mine.length)return''"),'Öğretmenin nöbet kartı yalnız gerçek nöbeti varsa görünmeli.');
-assert(dash.includes("section('Bugünkü Nöbetim'"),'Öğretmenin kendi nöbeti ayrı odak kartı olmalı.');
+assert(dash.includes('<span>Bugünkü Nöbetim</span>')&&dash.includes('class=\"kh-duty-check\"'),'Öğretmenin kendi nöbeti referans kart ve defter işaretleme davranışıyla ayrı odak olmalı.');
 assert(dash.includes("section('Okul Özeti'")&&dash.includes('ka-school-summary-section'),'Okul Özeti referans kart grubu olarak üretilmeli.');
 assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Duyurular</b>')&&dash.includes('data-dash-page=\"announcements\"'),'Öğretmen hızlı işlemleri referanstaki dört doğrudan aksiyonu ve kesin Duyurular rotasını taşımalı.');
-assert(css.includes('TEACHER DASHBOARD REFINEMENT')&&css.includes('.ka-home-duty-focus'),'Öğretmen dashboard görsel sözleşmesi merkezi design-system içinde olmalı.');
+assert(css.includes('LEGACY DUTY CARDS — REFERENCE PORT')&&css.includes('.ka-home .kh-duty-check'),'Öğretmen nöbet görsel sözleşmesi legacy geometriyle merkezi design-system içinde olmalı.');
 assert(dash.includes("collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Yazılılar öğretmen görev/takvim kartında ikinci kez gösterilmemeli.');
 assert(dash.includes("title=teacherMode?'Ders Programım':'Şu Anki Dersler'")&&dash.includes('data-dash-page=\"schedule\"'),'Öğretmenin günlük ders kartı Ders Programım başlığıyla haftalık programa bağlanmalı.');
 assert(dash.includes("teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'")&&dash.includes('class=\"kh-exam-date\"')&&dash.includes('data-dash-page=\"written\"'),'Öğretmenin yaklaşan yazılıları referans tarih gruplarıyla ayrı ve doğrudan yazılı sayfasına bağlı olmalı.');
@@ -51,7 +51,7 @@ assert(dash.includes('data-dash-route=\"academic\" data-dash-page=\"schedule\" d
 // Checkpoint: nested dashboard actions must never bubble into parent card routing.
 
 assert(shell.includes("'today-duty':{module:'management',page:'duty',title:'Nöbet Programı'}"),'Bugünün Nöbetçileri kartı doğrudan Nöbet Programı sayfasına gitmeli.');
-assert(dash.includes("mine?'Siz':'Bugün'")&&dash.includes('is-me'),'Bugünün Nöbetçileri kartında oturumdaki öğretmen açıkça işaretlenmeli.');
+assert(dash.includes("mine?'<span class=\"kh-chip green\">SİZ</span>'")&&dash.includes('is-me'),'Bugünün Nöbetçileri kartında oturumdaki öğretmen açıkça işaretlenmeli.');
 assert(css.includes('TEACHER DASHBOARD DAILY PRIORITY')&&css.includes('.ka-home-row.is-me'),'Öğretmen günlük öncelik görseli merkezi design-system içinde kalmalı.');
 // Checkpoint: teacher daily-priority dashboard package.
 
