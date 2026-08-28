@@ -274,3 +274,25 @@
 .ka-home .kh-read-box{width:23px;height:23px;border-radius:8px;display:grid;place-items:center;border:1.5px solid var(--ka-border-strong);background:var(--ka-card-bg);color:transparent}.ka-home .kh-read-check.checked .kh-read-box,.ka-home .kh-read-check input:checked+.kh-read-box{border-color:var(--ka-success);background:var(--ka-success);color:var(--ka-text-inverse)}
 .ka-home .kh-read-count{border:1px solid var(--ka-border);background:var(--ka-primary-soft);color:var(--ka-primary);border-radius:12px;padding:7px 9px;font:inherit;font-size:9.5px;font-weight:850;cursor:pointer}.ka-home .kh-announcement.is-read{border-color:var(--ka-border);background:linear-gradient(135deg,var(--ka-card-bg),color-mix(in srgb,var(--ka-success) 10%,var(--ka-card-bg)))}
 @media(max-width:380px){.ka-home .kh-announcement-head{grid-template-columns:42px minmax(0,1fr)}.ka-home .kh-announcement-icon{width:42px;height:42px}.ka-home .kh-announcement-status{grid-column:2;justify-self:start;margin-top:2px}.ka-home .kh-announcement-footer{align-items:flex-start;flex-direction:column}}
+
+
+/* LEGACY QUICK ACTIONS — REFERENCE PORT */
+.ka-home .kh-section[data-home-section="quick"]{display:flex;flex-direction:column;gap:8px}
+.ka-home .kh-section[data-home-section="quick"] .kh-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px}
+.ka-home .kh-section[data-home-section="quick"] .kh-section-title{display:flex;align-items:center;gap:8px;min-width:0;font-size:15.5px;font-weight:900;color:var(--ka-text)}
+.ka-home .kh-quick-heading-icon{width:19px;height:19px;display:grid;place-items:center;color:var(--ka-primary);font-size:16px}
+.ka-home .kh-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ka-home .kh-quick button{min-width:0;min-height:82px;border:1px solid var(--ka-border);border-radius:18px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm);color:var(--ka-text);font:inherit;font-size:9.5px;font-weight:800;padding:8px 3px;cursor:pointer;transition:transform var(--ka-transition-fast),border-color var(--ka-transition-fast),background var(--ka-transition-fast)}
+.ka-home .kh-quick button:active{transform:translateY(1px)}
+.ka-home .kh-quick button:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}
+.ka-home .kh-quick button svg{width:23px;height:23px;display:block;margin:0 auto 7px;color:var(--ka-primary)}
+.ka-home .kh-quick button b{display:block;font-size:9.5px;line-height:1.25;font-weight:800}
+.ka-home .kh-quick button:nth-child(1){background:linear-gradient(180deg,var(--ka-card-bg),color-mix(in srgb,var(--ka-danger) 7%,var(--ka-card-bg)))}
+.ka-home .kh-quick button:nth-child(2){background:linear-gradient(180deg,var(--ka-card-bg),color-mix(in srgb,var(--ka-warning) 8%,var(--ka-card-bg)))}
+.ka-home .kh-quick button:nth-child(3){background:linear-gradient(180deg,var(--ka-card-bg),color-mix(in srgb,var(--ka-info) 8%,var(--ka-card-bg)))}
+.ka-home .kh-quick button:nth-child(4){background:linear-gradient(180deg,var(--ka-card-bg),var(--ka-primary-soft))}
+.ka-home .kh-quick button:nth-child(1) svg{color:var(--ka-danger)}
+.ka-home .kh-quick button:nth-child(2) svg{color:var(--ka-warning)}
+.ka-home .kh-quick button:nth-child(3) svg{color:var(--ka-info)}
+.ka-home .kh-quick button:nth-child(4) svg{color:var(--ka-primary)}
+@media(max-width:380px){.ka-home .kh-quick{gap:6px}.ka-home .kh-quick button{min-height:76px;font-size:8.8px;padding-inline:2px}.ka-home .kh-quick button b{font-size:8.8px}}

@@ -94,3 +94,9 @@ assert(dash.includes("DuyurularService?.okunduIsaretle?.(box.dataset.dashAnnounc
 assert(css.includes('LEGACY DASHBOARD ANNOUNCEMENT — CENTRAL THEME')&&css.includes('.ka-home .kh-announcement-head')&&css.includes('.ka-home .kh-read-check'),'Legacy duyuru geometrisi merkezi design-system içinde kalmalı.');
 assert(css.includes('background:var(--ka-primary-soft)')&&css.includes('color:var(--ka-primary)')&&css.includes('border:1px solid var(--ka-border)'),'Legacy duyuru renkleri merkezi --ka-* tokenlarından gelmeli.');
 assert(!dash.includes('ka-home-announcement__mark'),'Eski duyuru geri taşındığında yeni taklit duyuru satırı aktif renderer içinde kalmamalı.');
+
+assert(dash.includes('class="kh-quick"')&&dash.includes('data-home-section="quick"'),'Hızlı İşlemler referans kh-quick DOM sözleşmesini kullanmalı.');
+assert(!dash.includes('class="ka-home-quick"'),'Yeni taklit ka-home-quick renderer içinde kalmamalı.');
+assert(css.includes('LEGACY QUICK ACTIONS — REFERENCE PORT')&&css.includes('.ka-home .kh-quick button{'),'Hızlı İşlemler legacy geometrisi merkezi design-system içinde kalmalı.');
+assert(css.includes('background:var(--ka-card-bg)')&&css.includes('color:var(--ka-text)')&&css.includes('var(--ka-primary-soft)'),'Hızlı İşlemler renkleri merkezi --ka-* tema tokenlarından gelmeli.');
+// Checkpoint: legacy quick actions visual port.
