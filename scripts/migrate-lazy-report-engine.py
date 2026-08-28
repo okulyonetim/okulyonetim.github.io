@@ -29,14 +29,14 @@ new="if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('
 if old not in ui: raise SystemExit('payroll lazy marker missing')
 ui=ui.replace(old,new,1)
 
-marker="for(const src of optionalLazy) assert(!shell.includes(`<script src=\"${src}\" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);"
+marker="const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');"
 addition="""
 assert(!shell.includes('<script src=\"js/modules/report-engine.js\" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
 for(const module of ['academic','management','documents']) assert(optionalLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);
 assert(optionalLoaderSource.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');
 assert(ui.includes("if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Maaş özel rotası ReportEngine hazır değilse ihtiyaç anında yüklemeli.');
 assert(sw.includes("'./js/modules/report-engine.js'"),'ReportEngine offline Service Worker cache içinde bulunmalı.');"""
-if marker not in test: raise SystemExit('optional lazy assertion marker missing')
+if marker not in test: raise SystemExit('optional loader source marker missing')
 if addition.strip() not in test: test=test.replace(marker,marker+addition,1)
 
 old="assert(report.includes('global.open(url,\\'_blank\\')'), 'Web/PWA için yeni pencere fallback’i bulunmalı.');\nassert(report.includes('win.print()'), 'Web fallback tarayıcı yazdırmasını kullanmalı.');"
