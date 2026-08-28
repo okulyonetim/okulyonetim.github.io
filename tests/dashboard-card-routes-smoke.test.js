@@ -43,3 +43,8 @@ assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukL
 assert(settings.includes("['appearance','Görünüm','Açık ve koyu tema']")&&settings.includes("ShellUI?.applyTheme?.(b.dataset.themeChoice)"),'Ayarlar merkezi görünüm seçicisini ikinci tema motoru açmadan kullanmalı.');
 assert(css.includes('[data-theme="dark"]')&&css.includes('--ka-primary:#53d6a4')&&css.includes('.ka-theme-picker'),'Tek Design System zümrüt koyu temayı ve merkezi görünüm bileşenini taşımalı.');
 console.log('Dashboard kart bağlantıları, öğretmen referansı ve merkezi tema smoke testi başarılı.');
+
+assert(shell.includes("[data-dash-route],[data-dash-lesson-plan],[data-dash-reminder-index],[data-dash-external],[data-dash-quick-note]"),'Shell dashboard içi özel aksiyonları üst kart yönlendirmesine taşımamalı.');
+assert(dash.includes("addEventListener('click',e=>{e.preventDefault();e.stopPropagation();return window.ShellUI?.routeModule"),'Dashboard özel rota tıklaması üst karta yayılmamalı.');
+assert(dash.includes("addEventListener('click',async e=>{e.preventDefault();e.stopPropagation();const ok=await window.ShellUI?.routeModule?.('academic'"),'Yıllık plan ders satırı tıklaması üst kart rota handlerına yayılmamalı.');
+assert(dash.includes('data-dash-route=\"academic\" data-dash-page=\"schedule\" data-dash-title=\"Ders Programı\"'),'Yönetici ders satırı doğrudan Ders Programı alt sayfasına gitmeli.');
