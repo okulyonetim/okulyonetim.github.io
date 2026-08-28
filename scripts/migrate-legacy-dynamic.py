@@ -20,3 +20,4 @@ T.write_text(t,encoding='utf-8')
 s=S.read_text(encoding='utf-8');m=re.search(r"const CACHE_ADI='oy-cache-v(\d+)'",s)
 if not m: raise SystemExit('cache missing')
 s=s[:m.start(1)]+str(int(m.group(1))+1)+s[m.end(1):];S.write_text(s,encoding='utf-8')
+# execute after workflow registration
