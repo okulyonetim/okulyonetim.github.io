@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Retry on current main after the previous bot push was superseded by a checkpoint commit.
 APP=Path('js/app-loader.js')
 TEST=Path('tests/classic-shell-v2-smoke.test.js')
 
