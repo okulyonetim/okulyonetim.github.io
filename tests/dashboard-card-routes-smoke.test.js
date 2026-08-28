@@ -15,6 +15,7 @@ assert(!shell.includes("const hero=e.target.closest('.ka-home-hero');if(hero){ro
 assert(!shell.includes("stats:{module:"),'Okul Özeti gerçek hedefi olmadığı için rastgele sayfa açmamalı.');
 assert(dash.includes("routeButton('Programım','academic','schedule','Ders Programı','›')"),'Hero Programım düğmesi doğrudan Ders Programı alt sayfasına gitmeli.');
 assert(dash.includes("routeButton('Takvimi aç','communication','calendar','Takvim','›')"),'Takvim footer düğmesi doğrudan Takvim alt sayfasına gitmeli.');
+assert(dash.includes("function routeButton(label,module,page='',title='',icon='→')"),'Dashboard footer helper alt sayfa ve başlığı taşımalı.');
 assert(css.includes('padding-left:max(4px,var(--ka-safe-left))'),'Mobil ana içerik kenar boşluğu 4px/safe-area olmalı.');
 assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kartları tam kullanılabilir genişlikte olmalı.');
 assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği üretmeli.');
