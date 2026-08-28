@@ -90,11 +90,14 @@ for(const src of optionalLazy) assert(!shell.includes(`<script src="${src}" defe
 const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
 assert(optionalLoaderSource.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js'])"),'Dashboard açılmadan önce SchoolLiveStatus lazy bundle içinde yüklenmeli.');
 assert(!shell.includes('<script src="js/modules/report-engine.js" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
-for(const module of ['academic','management','documents']) assert(optionalLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);
+for(const module of ['academic','management']) assert(optionalLoaderSource.includes(`define('${module}',['js/modules/report-engine.js','js/modules/${module}.js'])`),`${module} modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.`);
+const documentsBundle=optionalLoaderSource.match(/define\('documents',\[([^\]]+)\]\)/)?.[1]||'';
+assert(documentsBundle.includes("'js/modules/report-engine.js'")&&documentsBundle.includes("'js/modules/documents.js'")&&documentsBundle.indexOf("'js/modules/report-engine.js'")<documentsBundle.indexOf("'js/modules/documents.js'"),'documents modülü ek lazy bağımlılıklar olsa da ReportEngine bağımlılığını documents.js’den önce yüklemeli.');
 assert(optionalLoaderSource.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');
 assert(ui.includes("if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Maaş özel rotası ReportEngine hazır değilse ihtiyaç anında yüklemeli.');
 assert(sw.includes("'./js/modules/report-engine.js'"),'ReportEngine offline Service Worker cache içinde bulunmalı.');
-assert(optionalLoaderSource.includes("define('communication',['js/modules/communication.js','js/modules/assistant.js'])"),'AI Asistan Communication lazy bundle ile yüklenmeli.');
+const communicationBundle=optionalLoaderSource.match(/define\('communication',\[([^\]]+)\]\)/)?.[1]||'';
+assert(communicationBundle.includes("'js/modules/communication.js'")&&communicationBundle.includes("'js/modules/assistant.js'")&&communicationBundle.indexOf("'js/modules/communication.js'")<communicationBundle.indexOf("'js/modules/assistant.js'"),'AI Asistan ek lazy bağımlılıklar olsa da Communication bundle içinde communication.js sonrasında yüklenmeli.');
 assert(optionalLoaderSource.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubrik köprüleri Tools lazy bundle ile yüklenmeli.');
 assert(ui.includes("loadScript?.('js/modules/payroll-change.js')"),'Maaş değişikliği özel route ihtiyaç anında script yüklemeli.');
 assert(ui.includes("loadScript?.('js/modules/legislation.js')")&&ui.includes("loadScript?.('js/modules/legislation-ui.js')"),'Mevzuat özel route motor ve UI scriptlerini ihtiyaç anında yüklemeli.');
