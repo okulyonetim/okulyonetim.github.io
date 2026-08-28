@@ -114,6 +114,34 @@ function girisDokunmaKatmaniniGuvenceyeAl(){
   });
 }
 
+/* Kiwi/Chromium bazı mobil oturumlarda hit-test doğru olduğu halde doğal focus/click
+   üretmeyebiliyor. Yalnız giriş yüzeyinde doğrudan kullanıcı hareketinden focus/submit
+   köprüsü kurulur; normal click/Enter davranışı korunur. */
+let girisEtkilesimFallbackKuruldu=false;
+function girisEtkilesimFallbackKur(){
+  if(girisEtkilesimFallbackKuruldu)return;
+  const login=document.getElementById('girisEkrani');
+  if(!login)return;
+  const inputs=[...login.querySelectorAll('input')],btn=document.getElementById('girisBtn'),form=btn?.form||login.querySelector('form');
+  if(!inputs.length||!btn||!form)return;
+  girisEtkilesimFallbackKuruldu=true;
+  const odakla=el=>{try{el.focus({preventScroll:true})}catch(_){try{el.focus()}catch(__){}}};
+  for(const input of inputs){
+    input.addEventListener('pointerdown',()=>odakla(input),{passive:true});
+    input.addEventListener('touchstart',()=>odakla(input),{passive:true});
+    input.addEventListener('click',()=>odakla(input),{passive:true});
+  }
+  let sonSubmit=0;
+  const gonder=e=>{
+    const now=Date.now();if(now-sonSubmit<700)return;sonSubmit=now;
+    if(e?.cancelable)e.preventDefault();
+    try{form.requestSubmit(btn)}catch(_){try{if(typeof window.girisFormGonder==='function')window.girisFormGonder({preventDefault(){}})}catch(__){}}
+  };
+  btn.addEventListener('pointerup',gonder,{capture:true});
+  btn.addEventListener('touchend',gonder,{capture:true});
+  btn.addEventListener('click',e=>{if(Date.now()-sonSubmit<700){if(e.cancelable)e.preventDefault();return;}gonder(e);},true);
+}
+
 /* Geçici tanılama: ana pencerenin gerçek Firebase/Auth/Firestore aşamalarını
    DevTools bağlamından bağımsız olarak giriş kartında ayrı bir satırda gösterir. */
 let firebaseTanilamaDinleyiciKuruldu = false;
@@ -161,18 +189,21 @@ function pointerMerkezHedef(el){
 function pointerTanilamaKur(){
   const input=document.getElementById('girisKullaniciAdi'),btn=document.getElementById('girisBtn'),satir=pointerTanilamaSatiri();
   if(!satir) return;
-  const temel=()=>`Hit input=${pointerMerkezHedef(input)} | buton=${pointerMerkezHedef(btn)} | iframe=${document.querySelectorAll('iframe').length}`;
+  const aktif=()=>pointerHedefAdi(document.activeElement);
+  const temel=()=>`Hit input=${pointerMerkezHedef(input)} | buton=${pointerMerkezHedef(btn)} | aktif=${aktif()} | iframe=${document.querySelectorAll('iframe').length}`;
   satir.textContent='Dokunma: '+temel();
   let son='henüz yok';
   const yaz=()=>{satir.textContent=`Dokunma: ${temel()} | son=${son}`;};
-  document.addEventListener('pointerdown',e=>{son=pointerHedefAdi(e.target);yaz();},true);
-  document.addEventListener('touchstart',e=>{if(!window.PointerEvent){son=pointerHedefAdi(e.target);yaz();}},true);
+  document.addEventListener('pointerdown',e=>{son='down '+pointerHedefAdi(e.target);setTimeout(yaz,0);},true);
+  document.addEventListener('pointerup',e=>{son='up '+pointerHedefAdi(e.target);setTimeout(yaz,0);},true);
+  document.addEventListener('touchstart',e=>{if(!window.PointerEvent){son='touch '+pointerHedefAdi(e.target);setTimeout(yaz,0);}},true);
   setTimeout(yaz,1200);
 }
 function firebaseBaslangicTanilamasiGoster(){
   setTimeout(()=>{
     document.documentElement.classList.add('ka-auth-resolved');
     girisDokunmaKatmaniniGuvenceyeAl();
+    girisEtkilesimFallbackKur();
     const fb=window.firebase;
     pointerTanilamaKur();
     if(!window.firebaseHazir||!window.auth||!window.db){
