@@ -78,9 +78,9 @@ marker="for(const src of sameOriginStartup) assert(sw.includes(`'${src}'`),`Ayn�
 addition="""
 const optionalLazy=['js/modules/payroll-change.js','js/modules/assistant.js','js/modules/legislation.js','js/modules/legislation-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'];
 for(const src of optionalLazy) assert(!shell.includes(`<script src=\"${src}\" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);
-const appLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
-assert(appLoaderSource.includes("define('communication',['js/modules/communication.js','js/modules/assistant.js'])"),'AI Asistan Communication lazy bundle ile yüklenmeli.');
-assert(appLoaderSource.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubrik köprüleri Tools lazy bundle ile yüklenmeli.');
+const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
+assert(optionalLoaderSource.includes("define('communication',['js/modules/communication.js','js/modules/assistant.js'])"),'AI Asistan Communication lazy bundle ile yüklenmeli.');
+assert(optionalLoaderSource.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubrik köprüleri Tools lazy bundle ile yüklenmeli.');
 assert(ui.includes("loadScript?.('js/modules/payroll-change.js')"),'Maaş değişikliği özel route ihtiyaç anında script yüklemeli.');
 assert(ui.includes("loadScript?.('js/modules/legislation.js')")&&ui.includes("loadScript?.('js/modules/legislation-ui.js')"),'Mevzuat özel route motor ve UI scriptlerini ihtiyaç anında yüklemeli.');"""
 if marker not in test: raise SystemExit('startup shell assertion marker not found')
