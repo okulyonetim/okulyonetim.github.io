@@ -60,6 +60,10 @@ function firebaseyiBaslat(){
     return false;
   }
   try{
+    if(typeof window.firebase?.firestore !== 'function' || typeof window.firebase?.auth !== 'function'){
+      window.firebaseSdkleriniKurtar?.();
+      return false;
+    }
     if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
@@ -88,7 +92,7 @@ function firebaseyiBaslat(){
   }
 }
 
-/* Firebase SDK kurtarma: index yükleyicisi bir bileşende takılırsa uygulama başlangıcı sonsuza kadar beklemez. */
+/* Firebase SDK kurtarma: eksik servis için eski script olayını beklemek yerine yeni ağ isteği açar. */
 const FIREBASE_GEREKLI_SDKLAR = [
   { src:'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', hazir:()=>typeof window.firebase !== 'undefined' },
   { src:'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js', hazir:()=>typeof window.firebase?.firestore === 'function' },
@@ -103,17 +107,14 @@ function firebaseSdkTekYukle(tanim, deneme=1){
   if(tanim.hazir()) return Promise.resolve(true);
   return new Promise((resolve,reject)=>{
     let bitti=false;
-    const tamamla=(ok,hata)=>{if(bitti)return;bitti=true;clearTimeout(timer);ok?resolve(true):reject(hata||new Error('firebase-sdk-yuklenemedi'));};
-    let script=[...document.scripts].find(s=>String(s.src||'').split('?')[0]===tanim.src);
-    if(!script || deneme>1){
-      script=document.createElement('script');
-      script.src=tanim.src+(deneme>1?`?korukRetry=${Date.now()}-${deneme}`:'');
-      script.async=true;
-      document.head.appendChild(script);
-    }
-    script.addEventListener('load',()=>tanim.hazir()?tamamla(true):tamamla(false,new Error('firebase-sdk-servis-yok')),{once:true});
-    script.addEventListener('error',()=>tamamla(false,new Error('firebase-sdk-ag-hatasi')),{once:true});
+    const script=document.createElement('script');
     const timer=setTimeout(()=>tamamla(false,new Error('firebase-sdk-zaman-asimi')),7000);
+    const tamamla=(ok,hata)=>{if(bitti)return;bitti=true;clearTimeout(timer);script.onload=null;script.onerror=null;ok?resolve(true):reject(hata||new Error('firebase-sdk-yuklenemedi'));};
+    script.src=tanim.src+`?korukRetry=${Date.now()}-${deneme}`;
+    script.async=true;
+    script.onload=()=>tanim.hazir()?tamamla(true):tamamla(false,new Error('firebase-sdk-servis-yok'));
+    script.onerror=()=>tamamla(false,new Error('firebase-sdk-ag-hatasi'));
+    document.head.appendChild(script);
   }).catch(hata=>{
     if(deneme<3){
       firebaseSdkDurumYaz(`Firebase bileşeni yüklenemedi — tekrar deneniyor (${deneme+1}/3)`);
