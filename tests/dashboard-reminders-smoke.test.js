@@ -45,3 +45,4 @@ for(const target of [
 assert(src.includes('function exactReminder(type,title,subtitle,diff)'),'Hatırlatma satırları genel modül yerine merkezi kesin hedef eşlemesini kullanmalı.');
 assert(!src.includes("dayDiff(x.tarih),'academic'))"),'Yazılı hatırlatması genel Academic sayfasına düşmemeli.');
 assert(!src.includes("dayDiff(x.tarihBaslangic),'tools'))"),'Belirli gün hatırlatması genel Tools sayfasına düşmemeli.');
+// Checkpoint: reminder rows must keep exact subpage routing on main.
