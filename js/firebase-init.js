@@ -106,10 +106,48 @@ function firebaseTanilamaSatiri(){
   return el;
 }
 function firebaseTanilamaYaz(mesaj){const el=firebaseTanilamaSatiri();if(el)el.textContent='Tanı: '+mesaj;}
+function pointerTanilamaSatiri(){
+  let el=document.getElementById('kaPointerDiag');
+  if(el) return el;
+  const authDiag=firebaseTanilamaSatiri();
+  if(!authDiag?.parentElement) return null;
+  el=document.createElement('p');
+  el.id='kaPointerDiag';
+  el.className='ka-muted';
+  el.style.fontSize='12px';
+  el.style.lineHeight='1.35';
+  el.style.wordBreak='break-word';
+  authDiag.insertAdjacentElement('afterend',el);
+  return el;
+}
+function pointerHedefAdi(el){
+  if(!el) return 'yok';
+  const id=el.id?`#${el.id}`:'';
+  const cls=typeof el.className==='string'&&el.className.trim()?'.'+el.className.trim().split(/\s+/).slice(0,2).join('.'):'';
+  return `${el.tagName||'?'}${id}${cls}`;
+}
+function pointerMerkezHedef(el){
+  if(!el) return 'eleman-yok';
+  const r=el.getBoundingClientRect();
+  if(!r.width||!r.height) return 'boyut-yok';
+  return pointerHedefAdi(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));
+}
+function pointerTanilamaKur(){
+  const input=document.getElementById('girisKullaniciAdi'),btn=document.getElementById('girisBtn'),satir=pointerTanilamaSatiri();
+  if(!satir) return;
+  const temel=()=>`Hit input=${pointerMerkezHedef(input)} | buton=${pointerMerkezHedef(btn)} | iframe=${document.querySelectorAll('iframe').length}`;
+  satir.textContent='Dokunma: '+temel();
+  let son='henüz yok';
+  const yaz=()=>{satir.textContent=`Dokunma: ${temel()} | son=${son}`;};
+  document.addEventListener('pointerdown',e=>{son=pointerHedefAdi(e.target);yaz();},true);
+  document.addEventListener('touchstart',e=>{if(!window.PointerEvent){son=pointerHedefAdi(e.target);yaz();}},true);
+  setTimeout(yaz,1200);
+}
 function firebaseBaslangicTanilamasiGoster(){
   setTimeout(()=>{
     document.documentElement.classList.add('ka-auth-resolved');
     const fb=window.firebase;
+    pointerTanilamaKur();
     if(!window.firebaseHazir||!window.auth||!window.db){
       firebaseTanilamaYaz(`Firebase HAZIR DEĞİL | SDK=${fb?.SDK_VERSION||'yok'} | Firestore=${typeof fb?.firestore} | Auth=${typeof fb?.auth} | db=${!!window.db}`);
       return;
