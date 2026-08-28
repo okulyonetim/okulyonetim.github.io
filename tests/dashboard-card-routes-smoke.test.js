@@ -59,6 +59,8 @@ assert(dash.includes("x.cinsiyet==='Kadın'")&&dash.includes("x.cinsiyet==='Erke
 assert(dash.includes("function schoolClassLevel")&&dash.includes("level>=1&&level<=4?'primary':level>=5&&level<=8?'secondary'"),'Okul Özeti İlkokul/Ortaokul ayrımını gerçek sınıf seviyesinden üretmeli.');
 assert(dash.includes("teachers=arr('ogretmenler'),students=arr('veliler'),classes=arr('siniflar'),services=arr('servisler')"),'Okul Özeti toplam ve dağılım değerlerini aynı local-first snapshot üzerinden üretmeli.');
 assert(css.includes('DASHBOARD SCHOOL SUMMARY REFERENCE')&&css.includes('.ka-school-summary-grid')&&css.includes('.ka-school-stage'),'Okul Özeti referans 2x2 kart görünümü merkezi design-system içinde kalmalı.');
+assert(css.includes('grid-template-columns:repeat(2,minmax(0,1fr))')&&css.includes('.ka-school-summary-card.is-student'),'Okul Özeti mobilde referanstaki iki sütunlu kompakt kart düzenini korumalı.');
+// Checkpoint: school summary matches the compact reference layout.
 
 assert(dash.includes("personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6)")&&dash.includes("personal.filter(x=>x.gunFarki===i).length"),'Öğretmen Takvim kartı yalnız kişisel reminder motorunun 7 günlük sonuçlarını saymalı.');
 assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso"),'Öğretmen Takvim kartı okul-geneli hatırlatıcıları doğrudan saymamalı.');
