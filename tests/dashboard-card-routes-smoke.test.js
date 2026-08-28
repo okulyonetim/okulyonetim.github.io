@@ -54,3 +54,7 @@ assert(shell.includes("'today-duty':{module:'management',page:'duty',title:'Nöb
 assert(dash.includes("mine?'Siz':'Bugün'")&&dash.includes('is-me'),'Bugünün Nöbetçileri kartında oturumdaki öğretmen açıkça işaretlenmeli.');
 assert(css.includes('TEACHER DASHBOARD DAILY PRIORITY')&&css.includes('.ka-home-row.is-me'),'Öğretmen günlük öncelik görseli merkezi design-system içinde kalmalı.');
 // Checkpoint: teacher daily-priority dashboard package.
+
+assert(dash.includes("x.cinsiyet==='Kadın'")&&dash.includes("x.cinsiyet==='Erkek'")&&dash.includes("x.cinsiyet==='Kız'"),'Okul Özeti gerçek öğretmen/öğrenci cinsiyet dağılımını mevcut veri modelinden üretmeli.');
+assert(dash.includes("unknownTeachers")&&dash.includes("unknownStudents")&&dash.includes("Belirtilmedi"),'Eksik cinsiyet verileri toplamdan kaybolmamalı.');
+assert(css.includes('DASHBOARD SCHOOL SUMMARY DEMOGRAPHICS')&&css.includes('.ka-home-demographics'),'Okul Özeti demografi görünümü merkezi design-system içinde kalmalı.');
