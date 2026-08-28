@@ -44,7 +44,7 @@ if(!css.includes('TEACHER DASHBOARD DAILY PRIORITY')){
 // Keep regression contracts aligned with the new exact behavior.
 test=once(test,"assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Evraklar</b>'),'Öğretmen hızlı işlemleri dört doğrudan aksiyonu taşımalı.');","assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Duyurular</b>')&&dash.includes('data-dash-page=\\\"announcements\\\"'),'Öğretmen hızlı işlemleri referanstaki dört doğrudan aksiyonu ve kesin Duyurular rotasını taşımalı.');",'quick action regression');
 test=once(test,"assert(dash.includes(\"${upcomingSection()}${examsSection()}${lessonsSection()}`}\"),'Öğretmen günlük akışında görevler, yaklaşan yazılılar ve ders programı tekil sırada kalmalı.');","assert(dash.includes(\"${lessonsSection()}${dutySection()}${examsSection()}${upcomingSection()}${quickSection()}${calendarSection()}${notesSection()}${allTodayDutySection()}${weekDutySection()}${socialSection()}`}\"),'Öğretmen ana sayfasında günlük ders, nöbet, yazılı ve görev akışı genel bilgi kartlarından önce gelmeli.');",'teacher shell regression');
-const extra=`\nassert(shell.includes("'today-duty':{module:'management',page:'duty',title:'Nöbet Programı'}"),'Bugünün Nöbetçileri kartı doğrudan Nöbet Programı sayfasına gitmeli.');\nassert(dash.includes("mine?'Siz':'Bugün'")&&dash.includes("ka-home-row\\${mine?' is-me':''}"),'Bugünün Nöbetçileri kartında oturumdaki öğretmen açıkça işaretlenmeli.');\nassert(css.includes('TEACHER DASHBOARD DAILY PRIORITY')&&css.includes('.ka-home-row.is-me'),'Öğretmen günlük öncelik görseli merkezi design-system içinde kalmalı.');\n`;
+const extra='\nassert(shell.includes("\\\'today-duty\\\':{module:\\'management\\',page:\\'duty\\',title:\\'Nöbet Programı\\'}"),\'Bugünün Nöbetçileri kartı doğrudan Nöbet Programı sayfasına gitmeli.\');\nassert(dash.includes("mine?\\\'Siz\\\':\\\'Bugün\\\'")&&dash.includes("is-me"),\'Bugünün Nöbetçileri kartında oturumdaki öğretmen açıkça işaretlenmeli.\');\nassert(css.includes(\'TEACHER DASHBOARD DAILY PRIORITY\')&&css.includes(\'.ka-home-row.is-me\'),\'Öğretmen günlük öncelik görseli merkezi design-system içinde kalmalı.\');\n';
 if(!test.includes('Bugünün Nöbetçileri kartı doğrudan Nöbet Programı'))test+=extra;
 
 fs.writeFileSync('js/modules/dashboard.js',dash);
@@ -52,4 +52,3 @@ fs.writeFileSync('js/core/shell-ui.js',shell);
 fs.writeFileSync('css/design-system.css',css);
 fs.writeFileSync('tests/dashboard-card-routes-smoke.test.js',test);
 console.log('Teacher dashboard daily priority migration applied.');
-// Triggered after workflow registration.
