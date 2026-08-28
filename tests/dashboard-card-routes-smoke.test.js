@@ -31,12 +31,12 @@ assert(dash.includes("section('Okul Özeti'")&&dash.includes('ka-school-summary-
 assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Duyurular</b>')&&dash.includes('data-dash-page=\"announcements\"'),'Öğretmen hızlı işlemleri referanstaki dört doğrudan aksiyonu ve kesin Duyurular rotasını taşımalı.');
 assert(css.includes('LEGACY DUTY CARDS — REFERENCE PORT')&&css.includes('.ka-home .kh-duty-check'),'Öğretmen nöbet görsel sözleşmesi legacy geometriyle merkezi design-system içinde olmalı.');
 assert(dash.includes("collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Yazılılar öğretmen görev/takvim kartında ikinci kez gösterilmemeli.');
-assert(dash.includes("title=teacherMode?'Ders Programım':'Şu Anki Dersler'")&&dash.includes('data-dash-page=\"schedule\"'),'Öğretmenin günlük ders kartı Ders Programım başlığıyla haftalık programa bağlanmalı.');
+assert(dash.includes("title=teacherMode?'Bugünkü Derslerim':'Şu Anki Dersler'")&&dash.includes('data-home-section=\"lessons\"')&&dash.includes('data-dash-page=\"schedule\"'),'Öğretmenin günlük ders kartı referanstaki Bugünkü Derslerim başlığıyla haftalık programa bağlanmalı.');
 assert(dash.includes("teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'")&&dash.includes('class=\"kh-exam-date\"')&&dash.includes('data-dash-page=\"written\"'),'Öğretmenin yaklaşan yazılıları referans tarih gruplarıyla ayrı ve doğrudan yazılı sayfasına bağlı olmalı.');
 assert(!dash.includes("${lessonsSection()}${personalScheduleSection()}"),'Öğretmen ana sayfasında ikinci Ders Programım kartı üretilmemeli.');
-assert(css.includes('TEACHER WORKFLOW DASHBOARD')&&css.includes('.ka-home-lessons--teacher'),'Öğretmen iş akışı görsel düzeni merkezi design-system içinde kalmalı.');
+assert(css.includes('LEGACY TODAY LESSONS — REFERENCE PORT')&&css.includes('.kh-section[data-home-section="lessons"] .kh-row.is-now'),'Öğretmen ders kartı referans legacy geometriyle merkezi design-system içinde kalmalı.');
 assert(dash.includes("${lessonsSection()}${dutySection()}${examsSection()}${upcomingSection()}${quickSection()}${calendarSection()}${notesSection()}${allTodayDutySection()}${weekDutySection()}${socialSection()}`}"),'Öğretmen ana sayfasında günlük ders, nöbet, yazılı ve görev akışı genel bilgi kartlarından önce gelmeli.');
-assert(dash.includes("live=window.SchoolLiveStatus?.status?.()")&&dash.includes('ka-home-lesson-state active'),'Öğretmen ders programı mevcut zil/ders durumundan Şimdi-Sıradaki bağlamı üretmeli.');
+assert(dash.includes("live=window.SchoolLiveStatus?.status?.()")&&dash.includes('<span class=\"kh-chip green\">ŞİMDİ</span>')&&dash.includes('<span class=\"kh-chip\">SIRADAKİ</span>'),'Öğretmen ders programı mevcut zil/ders durumundan referans Şimdi-Sıradaki bağlamını üretmeli.');
 assert(dash.includes("if(!list.length)return'';const body=list.map"),'Duyuru yoksa boş duyuru kartı gösterilmemeli.');
 assert(html.includes("localStorage.getItem('ka-theme')")&&html.includes("setAttribute('data-theme',t)"),'İlk boyamada merkezi açık/koyu tema uygulanmalı.');
 assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Shell tek merkezi tema sözleşmesini ve mevcut local-first tercihi kullanmalı.');
@@ -132,3 +132,7 @@ assert(dash.includes('data-home-section="upcoming"')&&dash.includes('class="kh-s
 assert(dash.includes("teacherUpcomingRows(){return collectReminders(30).filter(x=>x.kaynak!='sinav')")||dash.includes("teacherUpcomingRows(){return collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Öğretmen görevleri canonical collectReminders motorundan gelmeli.');
 assert(css.includes('LEGACY UPCOMING TASKS — REFERENCE PORT')&&css.includes('.kh-section[data-home-section="upcoming"] .kh-side'),'Yaklaşan görev legacy geometrisi merkezi design-system içinde kalmalı.');
 // Checkpoint: legacy upcoming tasks / teacher delivery calendar port.
+
+assert(dash.includes('class="kh-row${now?')&&dash.includes('data-dash-lesson-plan'),'Bugünkü Derslerim satırları referans kh-row yapısını ve yıllık plan aksiyonunu korumalı.');
+assert(!dash.includes('ka-home-lessons--teacher'),'Eski yeni-taklit ders liste sınıfı aktif renderer içinde kalmamalı.');
+// Checkpoint: legacy today lessons port using canonical SchoolLiveStatus.
