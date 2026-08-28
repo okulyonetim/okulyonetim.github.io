@@ -1,0 +1,15 @@
+const fs=require('fs');
+const dashPath='js/modules/dashboard.js';
+const testPath='tests/dashboard-card-routes-smoke.test.js';
+let dash=fs.readFileSync(dashPath,'utf8');
+let test=fs.readFileSync(testPath,'utf8');
+const oldCalendar="function calendarSection(){if(isAdmin())return'';const now=new Date(),days=[];for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()+i);const iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;const count=arr('gorevler').filter(x=>String(x.sonTarih||x.tarih||'').slice(0,10)===iso&&!isDone(x)).length+arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso&&!x.tamamlandi).length+arr('sinavlar').filter(x=>String(x.tarih||'').slice(0,10)===iso).length;days.push({d,count})}return section('Takvim','📆','calendar',`<div class=\"ka-home-calendar\">${days.map((x,i)=>`<article class=\"${i===0?'today':''}\"><small>${esc(x.d.toLocaleDateString('tr-TR',{weekday:'short'}))}</small><b>${x.d.getDate()}</b>${x.count?`<span>${x.count}</span>`:'<i></i>'}</article>`).join('')}</div>${routeButton('Takvimi aç','communication','calendar','Takvim','›')}`)}";
+const newCalendar="function calendarSection(){if(isAdmin())return'';const now=new Date(),days=[],personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6);for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()+i);days.push({d,count:personal.filter(x=>x.gunFarki===i).length})}return section('Takvim','📆','calendar',`<div class=\"ka-home-calendar\">${days.map((x,i)=>`<article class=\"${i===0?'today':''}\"><small>${esc(x.d.toLocaleDateString('tr-TR',{weekday:'short'}))}</small><b>${x.d.getDate()}</b>${x.count?`<span>${x.count}</span>`:'<i></i>'}</article>`).join('')}</div>${routeButton('Takvimi aç','communication','calendar','Takvim','›')}`)}";
+if(!dash.includes(oldCalendar))throw new Error('Mevcut teacher calendar sözleşmesi bulunamadı; production değişmedi.');
+dash=dash.replace(oldCalendar,newCalendar);
+if(dash.includes("arr('gorevler').filter(x=>String(x.sonTarih||x.tarih||'').slice(0,10)===iso")||dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso"))throw new Error('Okul-geneli calendar sayaç kodu kaldı.');
+const assertion="\nassert(dash.includes(\"personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6)\")&&dash.includes(\"personal.filter(x=>x.gunFarki===i).length\"),'Öğretmen Takvim kartı yalnız kişisel reminder motorunun 7 günlük sonuçlarını saymalı.');\nassert(!dash.includes(\"arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso\"),'Öğretmen Takvim kartı okul-geneli hatırlatıcıları doğrudan saymamalı.');\n";
+if(!test.includes('Öğretmen Takvim kartı yalnız kişisel reminder motorunun 7 günlük sonuçlarını saymalı.'))test+=assertion;
+fs.writeFileSync(dashPath,dash);
+fs.writeFileSync(testPath,test);
+console.log('Teacher calendar personal counts migration applied.');
