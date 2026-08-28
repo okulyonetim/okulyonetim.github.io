@@ -100,3 +100,5 @@ assert(live.includes("new CustomEvent('koruk:school-live-tick'")&&dashboard.incl
 assert(!dashboard.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Dashboard ikinci bir zil intervali çalıştırmamalı.');
 
 assert(dashboard.includes('renderFrame=0')&&dashboard.includes('cancelAnimationFrame(renderFrame)'),'Dashboard render kuyruğu unmount sırasında temizlenmeli.');
+
+assert(dashboard.includes("SyncEngine.localHydrate(types)")&&dashboard.includes("okulBilgileri:'okulBilgileri'"),'Dashboard ek verileri Firestore beklemeden IndexedDB üzerinden hydrate etmeli.');

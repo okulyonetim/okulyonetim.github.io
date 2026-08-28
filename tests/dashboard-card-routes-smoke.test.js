@@ -176,3 +176,6 @@ assert(dash.includes('data-news-signature')&&dash.includes('freshNews.replaceWit
 
 assert(dash.includes('function queueRender(){if(!mounted||renderFrame)return')&&dash.includes('AppStore?.subscribe?.(p,queueRender)'),'Dashboard AppStore değişikliklerini aynı animation frame içinde tek rendera birleştirmeli.');
 assert(dash.includes("'data.okulBilgileri'")&&!dash.includes("'data.personelIzinler'"),'Dashboard sosyal bağlantıları okulBilgileri değişimini dinlemeli; hizmetli/işçi izinleri ana sayfa render aboneliğine dönmemeli.');
+
+assert(dash.includes("okulBilgileri:'okulBilgileri'")&&dash.includes("yillikPlanTanimlari:'yillikPlanTanimlari'")&&dash.includes("ogretmenYillikPlanSecimleri:'ogretmenYillikPlanSecimleri'"),'Dashboard sosyal bağlantılar ve öğretmen yıllık plan odağı için gereken verileri ilk açılışta local hydrate etmeli.');
+assert(!dash.includes("personelIzinler:'personelIzinler'"),'Hizmetli/işçi izinleri dashboard local hydrate ve render akışına dönmemeli.');
