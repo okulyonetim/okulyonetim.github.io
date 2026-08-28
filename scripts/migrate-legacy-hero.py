@@ -30,3 +30,5 @@ m=re.search(r"const CACHE_ADI='oy-cache-v(\d+)'",sw)
 if not m: raise SystemExit('cache missing')
 sw=sw[:m.start(1)]+str(int(m.group(1))+1)+sw[m.end(1):]
 SW.write_text(sw,encoding='utf-8')
+
+# trigger migration workflow after workflow registration
