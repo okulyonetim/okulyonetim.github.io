@@ -1,0 +1,35 @@
+name: migrate-dashboard-render-batching
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/migrate-dashboard-render-batching.py'
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply dashboard render batching
+        run: python scripts/migrate-dashboard-render-batching.py
+      - name: Syntax checks
+        run: node --check js/modules/dashboard.js
+      - name: Dashboard and architecture checks
+        run: |
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Cleanup temporary migration files
+        run: rm -f scripts/migrate-dashboard-render-batching.py .github/workflows/migrate-dashboard-render-batching.yml
+      - name: Commit production migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'perf(dashboard): batch local-first renders'
+          git push
