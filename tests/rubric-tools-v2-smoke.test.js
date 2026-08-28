@@ -6,7 +6,11 @@ const engine=fs.readFileSync('js/modules/rubric-tools-engine.js','utf8');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 
-assert(index.includes('js/modules/rubric-tools.js'),'Rubric Tools V2 bridge production shell tarafından yüklenmeli.');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+assert(!index.includes('<script src="js/modules/rubric-tools.js" defer></script>'),'Rubric Tools V2 bridge ilk açılışta eager yüklenmemeli.');
+assert(sw.includes("'./js/modules/rubric-tools.js'"),'Rubric Tools V2 bridge offline Service Worker cache içinde bulunmalı.');
+assert(loader.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubric Tools V2 bridge Tools lazy bundle ile yüklenmeli.');
 for(const token of ["const ENGINE='js/modules/rubric-tools-engine.js'","key:'rubric'","api:'KriterDagitimAraci'","key:'project'","api:'ProjeDegerlendirmeAraci'","global.AppLoader.loadScript(ENGINE)","async function openPage(page)","TOOLS.find(x=>x.key===page)"]){
   assert(bridge.includes(token),`Rubric Tools V2 bridge sözleşmesi eksik: ${token}`);
 }

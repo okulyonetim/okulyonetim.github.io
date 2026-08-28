@@ -5,7 +5,11 @@ const src=fs.readFileSync('js/modules/payroll-change.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 new Function(src);
 
-assert(index.includes('js/modules/payroll-change.js'),'V2 maaş formu üretim shell içinde yüklenmeli.');
+const shellUi=fs.readFileSync('js/core/shell-ui.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+assert(!index.includes('<script src="js/modules/payroll-change.js" defer></script>'),'V2 maaş formu ilk açılışta eager yüklenmemeli.');
+assert(sw.includes("'./js/modules/payroll-change.js'"),'V2 maaş formu offline Service Worker cache içinde bulunmalı.');
+assert(shellUi.includes("loadScript?.('js/modules/payroll-change.js')"),'V2 maaş formu özel route üzerinden ihtiyaç anında lazy yüklenmeli.');
 assert(src.includes("rows('ogretmenler')"),'Maaş formu öğretmenleri AppStore/DeviceData kaynağından almalı.');
 assert(src.includes("rows('personel')"),'Maaş formu diğer personeli gerçek Management personel kaynağından almalı.');
 for(const section of ["B:[],C:[]","D:r.map","E:r.map","F:r.map","G:r.map","H:r.map"]) assert(src.includes(section),`Eski A-H veri modeli korunmalı: ${section}`);

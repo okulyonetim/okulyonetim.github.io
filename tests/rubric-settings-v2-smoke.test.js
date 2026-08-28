@@ -4,7 +4,11 @@ const vm=require('vm');
 const src=fs.readFileSync('js/modules/rubric-settings.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 
-assert(index.includes('js/modules/rubric-settings.js'),'RubricSettingsService production shell tarafından yüklenmeli.');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+assert(!index.includes('<script src="js/modules/rubric-settings.js" defer></script>'),'RubricSettingsService ilk açılışta eager yüklenmemeli.');
+assert(sw.includes("'./js/modules/rubric-settings.js'"),'RubricSettingsService offline Service Worker cache içinde bulunmalı.');
+assert(loader.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'RubricSettingsService Tools lazy bundle ile yüklenmeli.');
 for(const token of ["rubric:{local:'krtDagitimAyarlari',field:'kriterDagitimAyari'}","project:{local:'projeDagitimAyarlari',field:'projeDegerlendirmeAyari'}","global.KorukLocalFirst?.meta?.(u,key)","legacy-migrated","migrated===true","global.SyncEngine.register('okulBilgileri',global.COL.okulBilgileri)","global.SyncEngine.localHydrate(['okulBilgileri'])","global.DeviceData.set('okulBilgileri',global.COL.okulBilgileri,'ayarlar'","global.RubricSettingsService={"]){
   assert(src.includes(token),`RubricSettings V2 sözleşmesi eksik: ${token}`);
 }

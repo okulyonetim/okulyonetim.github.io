@@ -5,7 +5,11 @@ const src=fs.readFileSync('js/modules/assistant.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 new Function(src);
 
-assert(index.includes('js/modules/assistant.js'),'V2 AI Asistan üretim shell içinde yüklenmeli.');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+assert(!index.includes('<script src="js/modules/assistant.js" defer></script>'),'V2 AI Asistan ilk açılışta eager yüklenmemeli.');
+assert(sw.includes("'./js/modules/assistant.js'"),'V2 AI Asistan offline Service Worker cache içinde bulunmalı.');
+assert(loader.includes("define('communication',['js/modules/communication.js','js/modules/assistant.js'])"),'V2 AI Asistan Communication lazy bundle ile yüklenmeli.');
 assert(src.includes("const API='https://okul-ai-asistan.sedonet23.workers.dev'"),'Mevcut AI Worker uç noktası korunmalı.');
 for(const type of ['ogretmenler','siniflar','veliler','gorevler','hatirlaticilar','notlar','sinavlar','servisler','nobetAtamalari','personel']) assert(src.includes(`arr('${type}')`),`AI bağlamı ${type} verisini AppStore üzerinden kullanmalı.`);
 assert(src.includes('global.NotlarService.notKaydet'),'Not/metin taslakları mevcut NotlarService üzerinden kaydedilmeli.');

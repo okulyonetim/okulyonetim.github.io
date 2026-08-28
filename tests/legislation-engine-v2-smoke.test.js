@@ -31,7 +31,10 @@ assert(ui.includes("ShellUI?.routeModule?.('documents',{bottom:'menu'})"),'Mevzu
 assert(ui.includes("PermissionService?.applyModule?.('documents')"),'Mevzuat presentation Documents permission modunu uygulamalı.');
 assert(!ui.includes("e.detail?.name==='communication'")&&!ui.includes('data-legislation-open'),'Communication içine ikinci Mevzuat sekmesi enjekte edilmemeli.');
 assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore'),'Mevzuat presentation Firestore kullanmamalı.');
-assert(shell.includes('js/modules/legislation.js')&&shell.includes('js/modules/legislation-ui.js'),'Mevzuat V2 motoru ve presentation üretim shell tarafından yüklenmeli.');
+const sw=fs.readFileSync('service-worker.js','utf8');
+assert(!shell.includes('<script src="js/modules/legislation.js" defer></script>')&&!shell.includes('<script src="js/modules/legislation-ui.js" defer></script>'),'Mevzuat motoru ve presentation ilk açılışta eager yüklenmemeli.');
+assert(sw.includes("'./js/modules/legislation.js'")&&sw.includes("'./js/modules/legislation-ui.js'"),'Mevzuat motoru ve presentation offline Service Worker cache içinde bulunmalı.');
+assert(shellUi.includes("loadScript?.('js/modules/legislation.js')")&&shellUi.includes("loadScript?.('js/modules/legislation-ui.js')"),'Mevzuat motoru ve presentation Documents/mevzuat rotasında lazy yüklenmeli.');
 assert(!fs.existsSync('js/mevzuat-asistan.js'),'Legacy mevzuat-asistan.js geri dönmemeli.');
 
 console.log('Mevzuat tek IndexedDB local-first + legacy probe + Documents-owned permission sözleşmesi başarılı.');
