@@ -67,6 +67,7 @@ assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice
 // Checkpoint: teacher calendar counts are personal and share the canonical reminder engine.
 
 assert(dash.includes("function liveCardView")&&dash.includes("live.mode==='lesson'")&&dash.includes("big='Teneffüs'")&&dash.includes("liveClock(live.remaining)"),'Karşılama zil kartı canonical SchoolLiveStatus durumunu canlı geri sayımla göstermeli.');
+assert(dash.includes('data-dash-live-reminder-suffix')&&dash.includes("suffix=card.dataset.dashLiveReminderSuffix||''")&&dash.includes('nextSub=view.sub+suffix'),'Canlı zil tick güncellemesi öğretmen hatırlatma ekini ilk saniyede silmemeli.');
 assert(dash.includes("live.mode==='after'")&&dash.includes("big='Dersler tamamlandı'")&&dash.includes("live.mode==='weekend'")&&dash.includes("big='Hafta sonu'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
 // Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
 
