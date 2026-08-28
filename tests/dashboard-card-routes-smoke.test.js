@@ -70,7 +70,6 @@ assert(dash.includes("focusLabel='Bugünkü ilk dersiniz'")&&dash.includes("focu
 assert(dash.includes("live?.mode==='after'?'Bugünkü dersler tamamlandı.'")&&dash.includes("live?.mode==='weekend'?'Bugün ders günü değil.'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
 // Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
 
-
 assert(dash.includes('ka-home-news-ticker')&&dash.includes('ka-home-news-track')&&dash.includes('HABERLER'),'Haberler referanstaki tek satır kayan altyazı bandı olmalı.');
 assert(dash.includes('ka-week-duty-day')&&dash.includes("['Pazartesi','Salı','Çarşamba','Perşembe','Cuma']")&&dash.includes("isToday?' is-today':''"),'Haftanın nöbet programı gün blokları ve Bugün vurgusunu kullanmalı.');
 assert(dash.includes("dutyPlaceVisual")&&dash.includes("icon:'🌳'")&&dash.includes("icon:'🏫'"),'Nöbet programı Bahçe ve Okul Binası yerlerini referans ikonlarıyla göstermeli.');
@@ -78,3 +77,4 @@ assert(css.includes('DASHBOARD REFERENCE SURFACES')&&css.includes('.ka-home-news
 assert(shell.includes("p.classList.add('ka-profile-popover')")&&shell.includes('ka-profile-popover__identity')&&shell.includes('Temayı Değiştir'),'Profil popup referanstaki kimlik ve üç işlem düzenini kullanmalı.');
 assert(css.includes('.ka-profile-popover__menu')&&css.includes('.ka-profile-popover__logout'),'Profil popup görünümü merkezi design-system içinde kalmalı.');
 // Checkpoint: weekly duty, profile popover and scrolling news match the approved reference.
+// Final checkpoint trigger for the approved reference surfaces.
