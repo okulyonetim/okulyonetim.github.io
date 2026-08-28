@@ -37,6 +37,11 @@ if old not in live: raise SystemExit('SchoolLiveStatus tick contract not found')
 live=live.replace(old,new,1)
 LIVE.write_text(live)
 
+legacy_assert="assert(dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Aktif deneme sayacı ve zil kartı aynı saniyelik presentation tick içinde canlı güncellenmeli.');"
+new_assert="assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)')&&dash.includes(\"window.addEventListener('koruk:school-live-tick',liveTickHandler)\"),'Deneme sayacı kendi presentation intervalinde kalmalı; zil kartı SchoolLiveStatus tek zaman motorunun tick eventini dinlemeli.');"
+if legacy_assert not in test: raise SystemExit('legacy combined timer assertion not found')
+test=test.replace(legacy_assert,new_assert,1)
+
 test=test.replace("assert(dash.includes('data-dash-live-status')&&dash.includes('refreshHeroLive()')&&dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Zil kartı dashboard yeniden render beklemeden her saniye canonical SchoolLiveStatus ile güncellenmeli.');","assert(dash.includes('data-dash-live-status')&&dash.includes(\"window.addEventListener('koruk:school-live-tick',liveTickHandler)\")&&dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Zil kartı SchoolLiveStatus tek zaman motorunun tick eventini dinlemeli; deneme sayacı intervali ayrı yalnız kendi sayacını güncellemeli.');",1)
 TEST.write_text(test)
 
