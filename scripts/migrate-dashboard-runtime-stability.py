@@ -53,6 +53,10 @@ old_assert="assert(dash.includes(\"live.mode==='lesson'\")&&dash.includes(\"live
 new_assert="assert(dash.includes(\"function liveCardView\")&&dash.includes(\"live.mode==='lesson'\")&&dash.includes(\"big='Teneffüs'\")&&dash.includes(\"liveClock(live.remaining)\"),'Karşılama zil kartı canonical SchoolLiveStatus durumunu canlı geri sayımla göstermeli.');"
 if old_assert not in test: raise SystemExit('old live assertion not found')
 test=test.replace(old_assert,new_assert,1)
+old_timer_assert="assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Aktif deneme sayacı ana sayfada canlı güncellenmeli.');"
+new_timer_assert="assert(dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Aktif deneme sayacı ve zil kartı aynı saniyelik presentation tick içinde canlı güncellenmeli.');"
+if old_timer_assert not in test: raise SystemExit('old trial timer assertion not found')
+test=test.replace(old_timer_assert,new_timer_assert,1)
 test += "\nassert(dash.includes('data-dash-live-status')&&dash.includes('refreshHeroLive()')&&dash.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Zil kartı dashboard yeniden render beklemeden her saniye canonical SchoolLiveStatus ile güncellenmeli.');\nassert(dash.includes('data-news-signature')&&dash.includes('freshNews.replaceWith(oldNews)')&&dash.includes('class=\\\"kh-news-loop\\\"'),'Kayan haber DOMu aynı veriyle yeniden yaratılmamalı ve kesintisiz çift şerit kullanmalı.');\n"
 TEST.write_text(test)
 
