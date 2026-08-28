@@ -24,8 +24,13 @@ if old not in dash: raise SystemExit('dashboard unmount contract not found')
 dash=dash.replace(old,new,1)
 DASH.write_text(dash)
 
-test += "\nassert(dash.includes('function queueRender(){if(!mounted||renderFrame)return')&&dash.includes("AppStore?.subscribe?.(p,queueRender)"),'Dashboard AppStore değişikliklerini aynı animation frame içinde tek rendera birleştirmeli.');\nassert(dash.includes("'data.okulBilgileri'")&&!dash.includes("'data.personelIzinler'"),'Dashboard sosyal bağlantıları okulBilgileri değişimini dinlemeli; hizmetli/işçi izinleri ana sayfa render aboneliğine dönmemeli.');\n"
+test += '''
+assert(dash.includes('function queueRender(){if(!mounted||renderFrame)return')&&dash.includes('AppStore?.subscribe?.(p,queueRender)'),'Dashboard AppStore değişikliklerini aynı animation frame içinde tek rendera birleştirmeli.');
+assert(dash.includes("'data.okulBilgileri'")&&!dash.includes("'data.personelIzinler'"),'Dashboard sosyal bağlantıları okulBilgileri değişimini dinlemeli; hizmetli/işçi izinleri ana sayfa render aboneliğine dönmemeli.');
+'''
 TEST.write_text(test)
 
-shelltest += "\nassert(dashboard.includes('renderFrame=0')&&dashboard.includes('cancelAnimationFrame(renderFrame)'),'Dashboard render kuyruğu unmount sırasında temizlenmeli.');\n"
+shelltest += '''
+assert(dashboard.includes('renderFrame=0')&&dashboard.includes('cancelAnimationFrame(renderFrame)'),'Dashboard render kuyruğu unmount sırasında temizlenmeli.');
+'''
 SHELLTEST.write_text(shelltest)
