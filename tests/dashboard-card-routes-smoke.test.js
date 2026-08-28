@@ -80,3 +80,4 @@ assert(css.includes('.ka-home .kh-news{')&&css.includes('background:var(--ka-car
 assert(shell.includes("const {name,username,photo}=profileInfo(),p=popoverBase(anchor,360)")&&shell.includes("dark?'Açık Temaya Geç':'Koyu Temaya Geç'")&&shell.includes('ka-profile-popover-legacy'),'Profil popup geçmişteki gerçek header hesap popover sözleşmesini kullanmalı.');
 assert(!shell.includes('ka-profile-popover__identity'),'Ekran görüntüsünden yeniden üretilen profil popup DOMu kaldırılmalı.');
 // Checkpoint: legacy news, weekly duty and profile surfaces are ported onto central themes.
+// Final regression checkpoint: legacy dashboard surfaces + centralized light/dark theme.
