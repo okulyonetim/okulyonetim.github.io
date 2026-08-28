@@ -139,7 +139,7 @@ function applySubpage(name,page,title){
   if(name==='tools')hideModuleChrome(root,'tools');
   if(name==='settings')hideModuleChrome(root,'settings');
   if(title)setTitle(title);
-  return !!tab;
+  return false;
 }
 async function routeModule(name,{bottom='menu',page='',title=''}={}){
   const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
