@@ -87,3 +87,19 @@ function firebaseyiBaslat(){
     return false;
   }
 }
+
+/* Geçici tanılama: DevTools Firebase Auth iframe'ine bağlansa bile TOP sayfanın
+   gerçek Firebase başlangıç durumunu giriş ekranında gösterir. Sorun çözüldüğünde kaldırılacak. */
+function firebaseBaslangicTanilamasiGoster(){
+  setTimeout(()=>{
+    if(window.firebaseHazir) return;
+    document.documentElement.classList.add('ka-auth-resolved');
+    const el=document.getElementById('girisHataMetni');
+    if(!el) return;
+    const fb=window.firebase;
+    el.textContent=`Tanılama TOP@${location.host}: SDK=${fb?.SDK_VERSION||'yok'} | Firestore=${typeof fb?.firestore} | Auth=${typeof fb?.auth} | db=${!!window.db} | auth=${!!window.auth}`;
+    el.style.display='';
+  },1200);
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',firebaseBaslangicTanilamasiGoster,{once:true});
+else firebaseBaslangicTanilamasiGoster();
