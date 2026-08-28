@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
       - name: Apply legacy announcement migration
         run: python3 scripts/migrate-legacy-announcement.py
       - name: Syntax checks
@@ -27,9 +27,8 @@ jobs:
           node --check js/core/shell-ui.js
       - name: Dashboard smoke
         run: node tests/dashboard-card-routes-smoke.test.js
-      - name: Architecture smoke suite
-        run: |
-          for f in tests/*smoke.test.js; do echo "== $f =="; node "$f"; done
+      - name: Architecture audit
+        run: node scripts/check-client-architecture.mjs
       - name: Cleanup temporary migration files
         run: |
           rm -f scripts/migrate-legacy-announcement.py
