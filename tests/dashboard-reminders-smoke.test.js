@@ -29,3 +29,19 @@ console.log('Dashboard birleşik öğretmen teslim/görev zaman çizelgesi sözl
 assert(src.includes("'documents','evrak','Evrak Takibi'"),'Evrak teslim hatırlatması doğrudan Evrak Takibi alt sayfasına gitmeli.');
 assert(src.includes("function route(module,page='',title='')"),'Hatırlatma rotası ikinci mapping oluşturmadan modül alt sayfasını taşıyabilmeli.');
 console.log('Dashboard local-first hatırlatma motoru smoke testi başarılı.');
+
+for(const target of [
+  "sosyalKulupler:['tools','form-kulup','Sosyal Kulüpler']",
+  "rehberlik:['tools','form-rehberlik','Rehberlik']",
+  "maarifRapor:['tools','form-maarif','Maarif Model']",
+  "zumre:['tools','form-zumre','Zümre']",
+  "sok:['tools','form-sok','ŞÖK']",
+  "bepPlani:['tools','form-bep','BEP Planları']",
+  "belirliGunler:['tools','form-belirli','Belirli Günler ve Haftalar']",
+  "kontrolListesi:['tools','checklists','Kontrol Listeleri']",
+  "nobet:['management','duty','Nöbet Programı']",
+  "sinav:['academic','written','Yazılı Sınavlar']"
+]) assert(src.includes(target),'Hatırlatma kesin hedefi eksik: '+target);
+assert(src.includes('function exactReminder(type,title,subtitle,diff)'),'Hatırlatma satırları genel modül yerine merkezi kesin hedef eşlemesini kullanmalı.');
+assert(!src.includes("dayDiff(x.tarih),'academic'))"),'Yazılı hatırlatması genel Academic sayfasına düşmemeli.');
+assert(!src.includes("dayDiff(x.tarihBaslangic),'tools'))"),'Belirli gün hatırlatması genel Tools sayfasına düşmemeli.');
