@@ -59,3 +59,6 @@ assert(dash.includes("x.cinsiyet==='Kadın'")&&dash.includes("x.cinsiyet==='Erke
 assert(dash.includes("unknownTeachers")&&dash.includes("unknownStudents")&&dash.includes("Belirtilmedi"),'Eksik cinsiyet verileri toplamdan kaybolmamalı.');
 assert(css.includes('DASHBOARD SCHOOL SUMMARY DEMOGRAPHICS')&&css.includes('.ka-home-demographics'),'Okul Özeti demografi görünümü merkezi design-system içinde kalmalı.');
 assert(dash.includes("teachers=arr('ogretmenler'),students=arr('veliler'),classes=arr('siniflar'),services=arr('servisler')"),'Okul Özeti toplam ve dağılım değerlerini aynı local-first snapshot üzerinden üretmeli.');
+
+assert(dash.includes("personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6)")&&dash.includes("personal.filter(x=>x.gunFarki===i).length"),'Öğretmen Takvim kartı yalnız kişisel reminder motorunun 7 günlük sonuçlarını saymalı.');
+assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice(0,10)===iso"),'Öğretmen Takvim kartı okul-geneli hatırlatıcıları doğrudan saymamalı.');
