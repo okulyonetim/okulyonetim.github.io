@@ -173,3 +173,6 @@ assert(dash.includes("links=Array.isArray(school.sosyalLinkler)?school.sosyalLin
 
 assert(dash.includes('data-dash-live-status')&&dash.includes("window.addEventListener('koruk:school-live-tick',liveTickHandler)")&&dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Zil kartı SchoolLiveStatus tek zaman motorunun tick eventini dinlemeli; deneme sayacı intervali ayrı yalnız kendi sayacını güncellemeli.');
 assert(dash.includes('data-news-signature')&&dash.includes('freshNews.replaceWith(oldNews)')&&dash.includes('class=\"kh-news-loop\"'),'Kayan haber DOMu aynı veriyle yeniden yaratılmamalı ve kesintisiz çift şerit kullanmalı.');
+
+assert(dash.includes('function queueRender(){if(!mounted||renderFrame)return')&&dash.includes('AppStore?.subscribe?.(p,queueRender)'),'Dashboard AppStore değişikliklerini aynı animation frame içinde tek rendera birleştirmeli.');
+assert(dash.includes("'data.okulBilgileri'")&&!dash.includes("'data.personelIzinler'"),'Dashboard sosyal bağlantıları okulBilgileri değişimini dinlemeli; hizmetli/işçi izinleri ana sayfa render aboneliğine dönmemeli.');

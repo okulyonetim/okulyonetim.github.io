@@ -98,3 +98,5 @@ assert(authSrc.includes("'Bu cihazda çevrimdışı oturum verisi bulunmuyor. İ
 
 assert(live.includes("new CustomEvent('koruk:school-live-tick'")&&dashboard.includes("window.addEventListener('koruk:school-live-tick',liveTickHandler)"),'Canlı zil için tek saniyelik zaman motoru SchoolLiveStatus olmalı; dashboard yalnız tick eventini tüketmeli.');
 assert(!dashboard.includes('trialTimer=setInterval(()=>{refreshTrialTimers();refreshHeroLive()},1000)'),'Dashboard ikinci bir zil intervali çalıştırmamalı.');
+
+assert(dashboard.includes('renderFrame=0')&&dashboard.includes('cancelAnimationFrame(renderFrame)'),'Dashboard render kuyruğu unmount sırasında temizlenmeli.');
