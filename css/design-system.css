@@ -310,3 +310,26 @@
 .ka-home .kh-social-icon{width:29px;height:29px;display:grid;place-items:center;color:var(--ka-primary);font-size:24px;line-height:1}
 .ka-home .kh-social button span:last-child{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:380px){.ka-home .kh-social{gap:6px}.ka-home .kh-social button{font-size:8.8px;padding-inline:3px}}
+
+
+/* LEGACY INTERACTIVE CALENDAR — REFERENCE PORT */
+.ka-home .kh-section[data-home-section="calendar"]{display:flex;flex-direction:column;gap:8px}
+.ka-home .kh-section[data-home-section="calendar"] .kh-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px}
+.ka-home .kh-section[data-home-section="calendar"] .kh-section-title{display:flex;align-items:center;gap:8px;min-width:0;font-size:15.5px;font-weight:900;color:var(--ka-text)}
+.ka-home .kh-section[data-home-section="calendar"] .kh-section-title>svg{width:19px;height:19px;flex:none;color:var(--ka-primary)}
+.ka-home .kh-section[data-home-section="calendar"] .kh-more{border:0;background:transparent;color:var(--ka-primary);font:inherit;font-size:10.5px;font-weight:850;padding:6px 2px;white-space:nowrap}
+.ka-home .kh-section[data-home-section="calendar"] .kh-card{overflow:hidden;border:1px solid var(--ka-border);border-radius:20px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
+.ka-home .kh-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;padding:10px}
+.ka-home .kh-day{border:0;background:transparent;border-radius:13px;padding:7px 2px;text-align:center;color:var(--ka-text-muted);font:inherit;font-size:8.5px;cursor:pointer}
+.ka-home .kh-day b{display:block;margin-top:3px;font-size:13px;color:var(--ka-text)}
+.ka-home .kh-day.today{background:var(--ka-primary);color:var(--ka-text-inverse)}
+.ka-home .kh-day.today b{color:var(--ka-text-inverse)}
+.ka-home .kh-day.has:after{content:"";display:block;width:4px;height:4px;border-radius:50%;margin:4px auto 0;background:var(--ka-primary)}
+.ka-home .kh-day.today.has:after{background:var(--ka-text-inverse)}
+.ka-home .kh-agenda-title{padding:0 12px 7px;font-size:9.5px;font-weight:900;color:var(--ka-text-muted)}
+.ka-home .kh-section[data-home-section="calendar"] .kh-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 12px;border:0;border-top:1px solid var(--ka-border);background:transparent;color:var(--ka-text);text-align:left;font:inherit;cursor:pointer}
+.ka-home .kh-section[data-home-section="calendar"] .kh-row-main{min-width:0}
+.ka-home .kh-section[data-home-section="calendar"] .kh-row-main b{display:block;font-size:12.5px;line-height:1.28;color:var(--ka-text)}
+.ka-home .kh-section[data-home-section="calendar"] .kh-row-main small{display:block;font-size:10.5px;line-height:1.35;color:var(--ka-text-muted);margin-top:3px}
+.ka-home .kh-calendar-row-icon{width:20px;text-align:center;color:var(--ka-primary)}
+.ka-home .kh-section[data-home-section="calendar"] .kh-empty{padding:14px 12px;text-align:center;color:var(--ka-text-muted);font-size:11px;border-top:1px solid var(--ka-border)}

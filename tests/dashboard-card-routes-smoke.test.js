@@ -14,7 +14,7 @@ assert(shell.includes("routeModule(target.module,{bottom:'menu',page:target.page
 assert(!shell.includes("const hero=e.target.closest('.ka-home-hero');if(hero){routeModule('academic'"),'Karşılama kartı alakasız Academic sayfasına yönlendirmemeli.');
 assert(!shell.includes("stats:{module:"),'Okul Özeti gerçek hedefi olmadığı için rastgele sayfa açmamalı.');
 assert(dash.includes("routeButton('Programım','academic','schedule','Ders Programı','›')"),'Hero Programım düğmesi doğrudan Ders Programı alt sayfasına gitmeli.');
-assert(dash.includes("routeButton('Takvimi aç','communication','calendar','Takvim','›')"),'Takvim footer düğmesi doğrudan Takvim alt sayfasına gitmeli.');
+assert(dash.includes('class=\"kh-more\" data-dash-route=\"communication\" data-dash-page=\"calendar\" data-dash-title=\"Takvim\"'),'Takvim referanstaki ay başlığı düğmesinden doğrudan Takvim alt sayfasına gitmeli.');
 assert(dash.includes("function routeButton(label,module,page='',title='',icon='→')"),'Dashboard footer helper alt sayfa ve başlığı taşımalı.');
 assert(css.includes('padding-left:max(4px,var(--ka-safe-left))'),'Mobil ana içerik kenar boşluğu 4px/safe-area olmalı.');
 assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kartları tam kullanılabilir genişlikte olmalı.');
@@ -106,3 +106,10 @@ assert(!dash.includes('class="ka-home-social"'),'Yeni taklit ka-home-social rend
 assert(css.includes('LEGACY SOCIAL CARDS — REFERENCE PORT')&&css.includes('.ka-home .kh-social button{'),'Sosyal kart legacy geometrisi merkezi design-system içinde kalmalı.');
 assert(!css.includes('.ka-home .kh-quick button:nth-child(1) svg{color:var(--ka-danger)}'),'Sınav Ekle genel aksiyonu danger kırmızısı kullanmamalı.');
 // Checkpoint: legacy social cards visual port.
+
+assert(dash.includes('function calendarLessons(d)')&&dash.includes('class="kh-calendar"')&&dash.includes('class="kh-day '),'Takvim referans Pazartesi-Pazar kh-calendar/kh-day DOM sözleşmesini kullanmalı.');
+assert(dash.includes('data-dash-calendar-day')&&dash.includes('data-dash-calendar-reminder'),'Takvim gün seçimi ve kişisel gündem tıklaması etkileşimli kalmalı.');
+assert(dash.includes("personal=collectReminders(6).filter(x=>x.gunFarki>=0&&x.gunFarki<=6)")&&dash.includes("personal.filter(x=>x.gunFarki===i).length"),'Takvim kişisel 7 günlük reminder motorunu korumalı.');
+assert(!dash.includes('class="ka-home-calendar"'),'Yeni taklit ka-home-calendar renderer içinde kalmamalı.');
+assert(css.includes('LEGACY INTERACTIVE CALENDAR — REFERENCE PORT')&&css.includes('.ka-home .kh-calendar{'),'Takvim legacy geometrisi merkezi design-system içinde kalmalı.');
+// Checkpoint: legacy interactive calendar port.
