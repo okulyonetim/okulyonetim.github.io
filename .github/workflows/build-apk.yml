@@ -42,7 +42,6 @@ jobs:
           cp app-v2.html www/ 2>/dev/null || true
           cp -r css www/ 2>/dev/null || true
           cp -r js www/ 2>/dev/null || true
-          cp -r dist www/ 2>/dev/null || true
           cp -r assets www/ 2>/dev/null || true
           cp manifest.json www/ 2>/dev/null || true
           cp service-worker.js www/ 2>/dev/null || true
