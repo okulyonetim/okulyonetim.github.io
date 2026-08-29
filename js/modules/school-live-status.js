@@ -9,7 +9,7 @@ const WMO={0:['☀️','Açık'],1:['🌤️','Az Bulutlu'],2:['⛅','Parçalı 
 let timer=null,weatherBusy=false,headerBound=false,lastTick='';
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const pad=n=>String(n).padStart(2,'0');
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 const minOf=v=>{if(typeof v!=='string'||!v.includes(':'))return null;const [h,m]=v.split(':').map(Number);return Number.isFinite(h)&&Number.isFinite(m)?h*60+m:null};
 const secOf=v=>{const m=minOf(v);return m==null?null:m*60};
 function settings(){const rows=arr('dersSaatleri');return rows.find(x=>x?.id==='ayarlar')||rows[0]||null}
@@ -37,7 +37,7 @@ async function initWeather(){const cached=await cachedWeather();if(cached){globa
 function tick(){const now=new Date(),key=`${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;if(key===lastTick)return;lastTick=key;const current=status(now);try{global.dispatchEvent(new CustomEvent('koruk:school-live-tick',{detail:current}))}catch(_){}}
 function start(){if(timer)return;syncHeaderIdentity();hydrateLessonHours().then(()=>{updateHeader();lastTick='';tick()});initWeather();tick();timer=setInterval(tick,1000);global.AppStore?.subscribe?.('data.ogretmenler',()=>requestAnimationFrame(decorate));global.AppStore?.subscribe?.('session.user',()=>requestAnimationFrame(decorate))}
 function stop(){clearInterval(timer);timer=null;lastTick='';closeWeather()}
-function loadClassicParity(){if(global.ClassicParity)return Promise.resolve(true);return global.AppLoader?.loadScript?.('js/modules/classic-parity.js').then(()=>true).catch(e=>{console.warn('[SchoolLiveStatus] classic parity:',e?.message||e);return false})}
+function loadClassicParity(){const jobs=[];if(!global.ClassicParity)jobs.push(global.AppLoader?.loadScript?.('js/modules/classic-parity.js'));if(!global.ClassicExcelParity)jobs.push(global.AppLoader?.loadScript?.('js/modules/classic-excel-parity.js'));return Promise.all(jobs.filter(Boolean)).then(()=>true).catch(e=>{console.warn('[SchoolLiveStatus] classic parity:',e?.message||e);return false})}
 global.SchoolLiveStatus={status,schedule,decorate,start,stop,refreshWeather,weather:weatherInfo,openWeather,closeWeather};
 global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard'){requestAnimationFrame(start);loadClassicParity()}});
 global.addEventListener('online',()=>{const w=weatherInfo();if(!w||Date.now()-Number(w.updatedAt||0)>20*60*1000)refreshWeather()});
