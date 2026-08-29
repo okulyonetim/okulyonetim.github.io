@@ -9,7 +9,7 @@ const WMO={0:['☀️','Açık'],1:['🌤️','Az Bulutlu'],2:['⛅','Parçalı 
 let timer=null,weatherBusy=false,headerBound=false,lastTick='';
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const pad=n=>String(n).padStart(2,'0');
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const minOf=v=>{if(typeof v!=='string'||!v.includes(':'))return null;const [h,m]=v.split(':').map(Number);return Number.isFinite(h)&&Number.isFinite(m)?h*60+m:null};
 const secOf=v=>{const m=minOf(v);return m==null?null:m*60};
 function settings(){const rows=arr('dersSaatleri');return rows.find(x=>x?.id==='ayarlar')||rows[0]||null}
