@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, statik kaynakları çevrimiçiyken
    güncel ağ sürümünden, çevrimdışıyken cache'den sunmak ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v800';
+const CACHE_ADI='oy-cache-v801';
 
 let messaging=null;
 try{
@@ -25,7 +25,7 @@ const FIREBASE_SDK=[
 const ONBELLEGE_ALINACAKLAR=[
   './','./index.html','./manifest.json',
   './css/design-system.css',
-  './js/firebase-init.js','./js/core/core.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js','./js/modules/school-live-status.js','./js/modules/classic-parity.js','./js/modules/classic-excel-parity.js','./js/modules/classic-documents-parity.js','./js/modules/report-engine.js','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/academic.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/communication-legacy-ui.js','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js',
+  './js/firebase-init.js','./js/core/core.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js','./js/modules/school-live-status.js','./js/modules/classic-parity.js','./js/modules/classic-excel-parity.js','./js/modules/classic-documents-parity.js','./js/modules/classic-personnel-parity.js','./js/modules/report-engine.js','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/academic.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/communication-legacy-ui.js','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js',
   './js/modules/payroll-change.js','./js/modules/personnel-documents.js','./js/modules/assistant.js','./js/modules/legislation.js','./js/modules/legislation-ui.js',
   './js/modules/rubric-settings.js','./js/modules/rubric-tools.js','./js/modules/rubric-tools-engine.js',
   './js/modules/document-viewer.js',
@@ -61,5 +61,5 @@ async function kodNetworkFirst(event){
 async function statikSWR(event){const cached=await caches.match(event.request);const yenile=fetch(event.request).then(response=>{if(response&&response.status===200&&response.type!=='opaque'){const copy=response.clone();caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});}return response;}).catch(()=>null);if(cached){event.waitUntil(yenile);return cached;}return(await yenile)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});}
 async function navigasyonNetworkFirst(event){try{const response=await fetch(event.request,{cache:'no-store'});if(response&&response.status===200){const copy=response.clone();event.waitUntil(caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{}));}return response}catch(_){return await caches.match(event.request)||await caches.match('./index.html')||new Response('Çevrimdışı',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}})}}
 self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;if(firebaseSdkIstegiMi(event.request)){event.respondWith(firebaseSdkCacheFirst(event));return;}if(apiIstegiMi(event.request.url))return;if(event.request.mode==='navigate'){event.respondWith(navigasyonNetworkFirst(event));return;}if(kodKaynakMi(event.request)){event.respondWith(kodNetworkFirst(event));return;}if(statikKaynakMi(event.request))event.respondWith(statikSWR(event));});
-if(messaging)messaging.onBackgroundMessage(payload=>{const n=payload?.notification||{},data=payload?.data||{};return self.registration.showNotification(n.title||'Koruk İlk-Ortaokulu',{body:n.body||data.body||'Yeni bir bildiriminiz var.',icon:n.icon||'./assets/icon-192.png',badge:'./assets/icon-192.png',data:{url:data.url||data.link||'./'}});});
+if(messaging)messaging.onBackgroundMessage(payload=>{const n=payload?.notification||{},data=payload?.data||{};return self.registration.showNotification(n.title||'Koruk İlk-Ortaokulu',{body:n.body||data.body||'Yeni bir bildiriminiz var.',icon:n.icon||'./assets/icon-192.png',badge:n.icon||'./assets/icon-192.png',data:{url:data.url||data.link||'./'}});});
 self.addEventListener('notificationclick',event=>{event.notification.close();const hedef=event.notification?.data?.url||'./';event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{for(const c of list){if('focus'in c){c.navigate?.(hedef);return c.focus();}}return clients.openWindow?clients.openWindow(hedef):null;}));});
