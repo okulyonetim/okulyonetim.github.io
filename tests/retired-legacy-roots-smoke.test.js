@@ -32,7 +32,8 @@ const retired=[
   'js/modules/duty-data.js',
   'js/modules/settings-data.js',
   'js/modules/academic-legacy-ui.js',
-  'js/modules/transport-legacy-ui.js'
+  'js/modules/transport-legacy-ui.js',
+  'js/core/header-ui.js'
 ];
 
 const resurrected=retired.filter(p=>fs.existsSync(p));
