@@ -18,4 +18,5 @@ assert(core.includes('window.DutyBookService={teacherId:dutyBookTeacherId,canTog
 assert(core.includes("deviceUpdate('nobetAtamalari',COL.nobetAtamalari,atama.id,{defterDolduruldu:!!deger})"),'Ortak nöbet defteri servisi DeviceData local-first yazma kapısını kullanmalı.');
 assert(core.includes("u.admin===true||(tid&&atama?.ogretmenId===tid)"),'Nöbet defteri yalnız yönetici veya nöbet sahibi tarafından işaretlenebilmeli.');
 console.log('Nöbet defteri Dashboard ortak servis sözleşmesi başarılı.');
+require('./central-theme-dashboard.test.js');
 console.log('Dashboard hızlı işlem doğrudan rota sözleşmesi başarılı.');
