@@ -30,6 +30,7 @@ assert(viewer.includes('wrap.clientHeight-20'), 'Tam sayfa sığdırma görünü
 assert(viewer.includes('wrap.scrollLeft=Math.max(0,nx*pdfZoom-wrap.clientWidth/2)'), 'PDF zoom görünür merkez odağını korumalı.');
 assert(viewer.includes('merkezY=(wrap.scrollTop+wrap.clientHeight/2)'), 'PDF aktif sayfa hesabı viewport merkezine göre yapılmalı.');
 assert(viewer.includes("page.dataset.page=String(i)"), 'PDF sayfaları numaralandırılmalı.');
+assert(design.includes('.dv3pdfpage::after{content:attr(data-page);position:absolute;right:8px;bottom:8px;'), 'PDF sayfa numarası merkezi design-system içinde görünür olmalı.');
 assert(/\.dv3pdfstage\{[^}]*display:flex;[^}]*flex-direction:column;[^}]*align-items:flex-start;[^}]*gap:18px/.test(design), 'PDF sayfaları arasında merkezi design-system içinde 18px görünür ayrım bulunmalı.');
 assert(viewer.includes('excelZoomUygula'), 'Excel zoom fallback yolu korunmalı.');
 assert(viewer.includes('excelSigdir'), 'Excel genişliğe sığdırma fallback yolu korunmalı.');
