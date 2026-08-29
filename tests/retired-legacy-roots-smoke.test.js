@@ -36,7 +36,8 @@ const retired=[
   'js/core/header-ui.js',
   'js/core/zengin-editor.js',
   'tests/feature-catalog-smoke.test.js',
-  'tests/navigation-customization-smoke.test.js'
+  'tests/navigation-customization-smoke.test.js',
+  'tests/global-zoom-smoke.test.js'
 ];
 
 const resurrected=retired.filter(p=>fs.existsSync(p));
