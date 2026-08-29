@@ -2,8 +2,11 @@ const fs=require('fs');
 const assert=require('assert');
 
 const src=fs.readFileSync('js/modules/payroll-change.js','utf8');
+const personnelDocs=fs.readFileSync('js/modules/personnel-documents.js','utf8');
+const appLoader=fs.readFileSync('js/app-loader.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 new Function(src);
+new Function(personnelDocs);
 
 const shellUi=fs.readFileSync('js/core/shell-ui.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
@@ -24,4 +27,20 @@ assert(src.includes("data-document-form='payroll'")||src.includes("dataset.docum
 for(const forbidden of ['db.collection','onSnapshot','localStorage','document.createElement(\'style\')','document.createElement("style")']) assert(!src.includes(forbidden),`V2 maaş formu ${forbidden} kullanmamalı.`);
 assert(!src.includes('style="'),'V2 maaş formu inline CSS üretmemeli; design-system.css kullanılmalı.');
 
-console.log('V2 maaş değişikliği formu sözleşmesi başarılı.');
+assert(!index.includes('<script src="js/modules/personnel-documents.js" defer></script>'),'Diploma belge adaptörü ilk açılışta eager yüklenmemeli.');
+assert(sw.includes("'./js/modules/personnel-documents.js'"),'Diploma belge adaptörü offline Service Worker cache içinde bulunmalı.');
+assert(appLoader.includes("window.ShellUI.registerPageRoute('diploma-request'"),'Diploma kayıt talep sayfası mevcut ShellUI route registry üzerinden açılmalı.');
+assert(appLoader.includes("window.ShellUI.registerPageRoute('diploma-response'"),'Diploma okul cevabı sayfası mevcut ShellUI route registry üzerinden açılmalı.');
+assert(appLoader.includes("loadScript('js/modules/personnel-documents.js')"),'Diploma belge adaptörü ihtiyaç anında lazy yüklenmeli.');
+assert(appLoader.includes('Diploma Kayıt Talep Dilekçesi')&&appLoader.includes('Diploma Okul Dilekçesi'),'Eski Personel İşleri > Diploma İşlemleri menü hedefleri görünür olmalı.');
+assert(personnelDocs.includes('SyncEngine.register(type,col)')&&personnelDocs.includes('SyncEngine.localHydrate(types)'),'Diploma belgesi okul/öğretmen verisini önce IndexedDB/AppStore üzerinden hydrate etmeli.');
+assert(personnelDocs.includes('okul.mudurId?teacherName(okul.mudurId)'),'Okul müdürü mevcut mudurId alanından gerçek öğretmen kimliğiyle çözülmeli.');
+for(const field of ['adSoyad','tc','babaAdi','anneAdi','dogumYeri','dogumTarihi','mezuniyetTarihi','mezunSinif','adres']) assert(personnelDocs.includes(`name="${field}"`),`Diploma talep alanı eksik: ${field}`);
+for(const field of ['adSoyad','tc','babaAdi','kizOglu','dogumTarihi','ogrenimSuresi','diplomaTarihi','diplomaSayisi','adres','cepNo','mudurAdi']) assert(personnelDocs.includes(`name="${field}"`),`Diploma okul cevabı alanı eksik: ${field}`);
+assert(personnelDocs.includes('Diplomamı kaybettiğimden tarafıma diploma kayıt örneği düzenlenmesi hususunda;'),'Eski diploma talep dilekçesi gövde metni korunmalı.');
+assert(personnelDocs.includes('diplomayı almaya hak kazandığı resmi kayıtların incelenmesinden anlaşılmıştır.'),'Eski diploma okul cevabı gövde metni korunmalı.');
+assert(personnelDocs.includes('ReportEngine.printReport(title,body'),'Diploma çıktıları merkezi ReportEngine kullanmalı.');
+for(const forbidden of ['db.collection','onSnapshot','localStorage','document.createElement(\'style\')','document.createElement("style")']) assert(!personnelDocs.includes(forbidden),`Diploma belge adaptörü ${forbidden} kullanmamalı.`);
+assert(!personnelDocs.includes('style="'),'Diploma belge adaptörü inline UI CSS üretmemeli.');
+
+console.log('V2 maaş + diploma personel belge sözleşmesi başarılı.');
