@@ -3,12 +3,14 @@ const assert=require('assert');
 
 const documents=fs.readFileSync('js/modules/documents.js','utf8');
 const parity=fs.readFileSync('js/modules/classic-documents-parity.js','utf8');
+const advanced=fs.readFileSync('js/modules/classic-document-tools.js','utf8');
 const viewer=fs.readFileSync('js/modules/document-viewer.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 new Function(parity);
+new Function(advanced);
 
 assert(documents.includes("s.src='js/modules/document-viewer.js'"),'Documents V2 belge görüntüleyiciyi doğrudan module path üzerinden yalnız kullanım anında lazy-load etmeli.');
 assert(documents.includes("endsWith('js/modules/document-viewer.js')"),'Documents V2 mevcut module viewer scriptini yeniden kullanmalı.');
@@ -34,10 +36,28 @@ assert(parity.includes('DokumanlarService?.dokumanGorunurlukGuncelle?.'),'Görü
 assert(parity.includes('DocumentsModule?.ensureViewer?.'),'Classic Doküman açma mevcut module viewer capability sini yeniden kullanmalı.');
 assert(parity.includes("PermissionService?.can?.('documents.edit','edit')"),'Classic Doküman yazma aksiyonları merkezi documents.edit yetkisine bağlı olmalı.');
 for(const label of ['Öğrenci Formları','Veli Formları','Gezi & Etkinlik','Proje Formları','Yazılı Senaryoları','Yönetim & İdari','Diğer']) assert(parity.includes(label),`Eski doküman kategorisi eksik: ${label}`);
-for(const marker of ['Tüm Kategoriler','+ Doküman Ekle','📎 Dosya Yükle','🔗 URL Ekle','🌐 Herkese Açık','🔒 Sadece Bana Özel','data-classic-document-open','data-classic-document-download','data-classic-document-visibility','data-classic-document-delete']) assert(parity.includes(marker),`Eski Dokümanlar görünür davranışı eksik: ${marker}`);
+for(const marker of ['Tüm Kategoriler','+ Doküman Ekle','📎 Dosya Yükle','🖼 Resimlerden PDF','🔗 PDF Birleştir','🔗 URL Ekle','🌐 Herkese Açık','🔒 Sadece Bana Özel','data-classic-document-open','data-classic-document-download','data-classic-document-visibility','data-classic-document-delete']) assert(parity.includes(marker),`Eski Dokümanlar görünür davranışı eksik: ${marker}`);
 assert(parity.includes("arr('dokumanlarAcik')")&&parity.includes("arr('dokumanlarBenim')"),'Normal kullanıcı doküman görünümü mevcut local-first açık/benim cache lerini kullanmalı.');
+assert(parity.includes("loadScript?.('js/modules/classic-document-tools.js')"),'Gelişmiş doküman araçları yalnız kullanım anında lazy yüklenmeli.');
+assert(parity.includes('ClassicDocumentTools?.fileFor?.(form)'),'Üretilen PDF mevcut DokumanlarService kaydına File olarak teslim edilmeli.');
 assert(live.includes("loadScript?.('js/modules/classic-documents-parity.js')"),'Classic Dokümanlar paritesi yalnız dashboard sonrası lazy yüklenmeli.');
 assert(sw.includes("'./js/modules/classic-documents-parity.js'"),'Classic Dokümanlar paritesi offline kabukta önbelleğe alınmalı.');
+assert(sw.includes("'./js/modules/classic-document-tools.js'"),'Gelişmiş Dokümanlar araçları offline kabukta önbelleğe alınmalı.');
+
+// Advanced image -> PDF / PDF merge parity is a pure processing capability.
+assert(!/\bdb\s*\.\s*collection\s*\(/.test(advanced),'Gelişmiş doküman araçları doğrudan Firestore kullanmamalı.');
+assert(!/localStorage\s*\.\s*setItem\s*\(/.test(advanced),'Gelişmiş doküman araçları localStorage ile kalıcı veri yazmamalı.');
+assert(!/createElement\(\s*['"]style['"]\s*\)/.test(advanced),'Gelişmiş doküman araçları ikinci runtime tema/style katmanı oluşturmamalı.');
+assert(advanced.includes('pdf.js/3.11.174/pdf.min.js'),'PDF birleştirme mevcut viewer ile aynı PDF.js sürümünü kullanmalı.');
+assert(advanced.includes('pdfjs.getDocument({data:buf'),'PDF birleştirme gerçek PDF sayfalarını PDF.js ile okumalı.');
+assert(advanced.includes('page.render({canvasContext:x,viewport:vp'),'PDF sayfaları düzenleme hattına canvas üzerinden aktarılmalı.');
+assert(advanced.includes('global.uygulamaDosyaKaydet'),'İndir/Paylaş mevcut platform dosya kaydetme köprüsünü kullanmalı.');
+assert(advanced.includes('new File([s.pdfBlob]'),'Oluşturulan PDF canonical belge kaydına File olarak verilmeli.');
+for(const fn of ['exifOrientation','orientCanvas','perspectiveCanvas','homography','solveGauss','bilinear','buildPdf']) assert(advanced.includes(`function ${fn}`),`Gelişmiş belge motoru eksik: ${fn}`);
+for(const label of ['Belge Modu','Gri Tonlama','Siyah/Beyaz Metin','Parlaklık','Kontrast','Gölge Giderme','Sıcaklık','Beyazlık','Metin Düzeltme','Netlik','Hareli Giderme','Gürültü Giderme','Otomatik Algıla','Köşeleri Sıfırla','Kırp','Döndür','Paylaş']) assert(advanced.includes(label),`Eski görsel/PDF aracı davranışı eksik: ${label}`);
+assert(advanced.includes('accept="image/*" multiple'),'Resimlerden PDF çoklu görsel seçimini korumalı.');
+assert(advanced.includes('accept="application/pdf,.pdf" multiple'),'PDF Birleştir çoklu PDF seçimini korumalı.');
+assert(advanced.includes("orientation==='auto'"),'PDF sayfa yönü otomatik/dikey/yatay seçimini korumalı.');
 
 assert(documents.includes("PermissionService?.can?.('documents.tracking','read')"),'Evrak Takibi görüntüleme merkezi documents.tracking iznini kullanmalı.');
 assert(documents.includes("PermissionService?.can?.('documents.tracking.edit','edit')"),'Evrak Takibi yazma merkezi documents.tracking.edit iznini kullanmalı.');
@@ -52,4 +72,5 @@ assert(loader.includes("['documents.tracking','Evrak Takibi','section']")&&loade
 assert(loader.includes("'module.documents':['dokumanlar','evrak']"),'Eski evrak yetkisi Documents modül görünürlüğünü korumalı.');
 assert(loader.includes("'documents.tracking':['evrak']")&&loader.includes("'documents.tracking.edit':['evrak']"),'Eski evrak rol yetkisi merkezi izinlere alias olmalı.');
 console.log('Documents V2 Evrak Takibi + classic Dokümanlar çalışma alanı local-first paritesi başarılı.');
+console.log('Documents gelişmiş Resim→PDF + PDF Birleştir local-first capability sözleşmesi başarılı.');
 console.log('Documents V2 doğrudan module viewer + merkezi tasarım sözleşmesi başarılı.');
