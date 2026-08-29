@@ -1,6 +1,9 @@
 const fs=require('fs');
 const assert=require('assert');
 const people=fs.readFileSync('js/modules/people.js','utf8');
+const importer=fs.readFileSync('js/modules/people-import.js','utf8');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(people.includes("DeviceData/IndexedDB -> AppStore -> UI"),'People local-first veri sınırı korunmalı.');
 assert(people.includes("device().add('siniflar',COL.siniflar"),'Sınıf yazımı DeviceData üzerinden kalmalı.');
@@ -22,4 +25,11 @@ assert(people.includes("PermissionService.can('people.students.edit','edit')"),'
 assert(people.includes("if(count){global.toast?.(`Bu sınıfta ${count} öğrenci var."),'Öğrencili sınıf doğrudan silinmemeli.');
 assert(people.includes('BelgeDurumuService'),'Öğretmen belge durumu akışı korunmalı.');
 
-console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first ayrı-sayfa sözleşmesi başarılı.');
+assert(loader.includes("define('people',['js/modules/people.js','js/modules/people-import.js'])"),'People modülü e-Okul/Excel adaptörünü yalnız People yüklenirken bağlamalı.');
+assert(sw.includes("'./js/modules/people-import.js'"),'People içe aktarma adaptörü offline kabukta önbelleğe alınmalı.');
+assert(importer.includes("AppStore?.get?.('ui.route')!=='people'"),'People içe aktarma UI yalnız People rotasında etkinleşmeli.');
+assert(importer.includes("SiniflarService.ogrenciVeliListesiIceAktar")&&importer.includes("SiniflarService.eOkulPlanlariniUygula"),'Excel/e-Okul yazımları canonical SiniflarService üzerinden kalmalı.');
+assert(importer.includes("data-class-seating")&&importer.includes("dataset.classSeating"),'Sınıf detayı içe aktarmada görünür başlık eşlemesi yerine gerçek sınıf ID sini öncelikli kullanmalı.');
+assert(!importer.includes('db.collection('),'People içe aktarma adaptörü doğrudan Firestore kullanmamalı.');
+
+console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first ayrı-sayfa ve e-Okul içe aktarma sözleşmesi başarılı.');
