@@ -22,7 +22,7 @@ assert(css.includes('--ka-primary:#53d6a4'),'Koyu tema okul kimliğine uygun zü
 assert(css.includes('.ka-theme-picker'),'Tema seçici ayrı CSS dosyası değil merkezi Design System içinde olmalı.');
 assert(css.includes('.ka-home-social'),'Öğretmen dashboard sosyal bağlantıları merkezi Design System tarafından stillenmeli.');
 
-assert(dashboard.includes("function announcementSection(){if(!cardVisible('announcements'))return''")&&dashboard.includes("if(!list.length)return'';const body=list.map"),'Duyuru yoksa dashboard boş duyuru kartı üretmemeli.');
+assert(dashboard.includes("function announcementSection(){if(!cardVisible('announcements'))return''")&&dashboard.includes("if(!d)return'';"),'Duyuru yoksa dashboard boş duyuru kartı üretmemeli.');
 assert(dashboard.includes("function trialCounterSection(){const list=arr('denemeSinavlari').filter(x=>x?.sayacDurumu?.aktif===true)"),'Deneme kartı yalnız gerçek sayaç aktifken görünmeli.');
 assert(!dashboard.includes("sayacDurumu?.aktif===true||String(x?.tarih||'').slice(0,10)===today"),'Bugünün denemesi sayaç başlatılmadan dashboardda gösterilmemeli.');
 assert(dashboard.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası onaylanan rol sırasını kullanmalı.');
