@@ -2,9 +2,13 @@ const fs=require('fs');
 const assert=require('assert');
 
 const documents=fs.readFileSync('js/modules/documents.js','utf8');
+const parity=fs.readFileSync('js/modules/classic-documents-parity.js','utf8');
 const viewer=fs.readFileSync('js/modules/document-viewer.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
+const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+new Function(parity);
 
 assert(documents.includes("s.src='js/modules/document-viewer.js'"),'Documents V2 belge görüntüleyiciyi doğrudan module path üzerinden yalnız kullanım anında lazy-load etmeli.');
 assert(documents.includes("endsWith('js/modules/document-viewer.js')"),'Documents V2 mevcut module viewer scriptini yeniden kullanmalı.');
@@ -20,6 +24,21 @@ assert(viewer.includes('function pullToRefreshAyarla(enabled)'),'Native pull-to-
 assert(!/createElement\(\s*['"]style['"]\s*\)/.test(viewer),'Belge görüntüleyici runtime <style> üretmemeli.');
 assert(!viewer.includes('function style(){'),'Eski viewer style() katmanı geri dönmemeli.');
 for(const selector of ['dv3','dv3h','dv3body','dv3pdfpage','dv3wordviewport','dv3sheet']) assert(new RegExp(`\\.${selector}\\s*\\{`).test(design),`Belge görüntüleyici stili design-system.css içinde olmalı: .${selector}`);
+
+// Classic Dokümanlar workspace parity: presentation only, current service/repository remains canonical.
+assert(!/\bdb\s*\.\s*collection\s*\(/.test(parity),'Classic Dokümanlar paritesi doğrudan Firestore kullanmamalı.');
+assert(!/localStorage\s*\.\s*setItem\s*\(/.test(parity),'Classic Dokümanlar paritesi kalıcı veriyi localStorage ile yazmamalı.');
+assert(parity.includes('DokumanlarService?.dokumanEkle?.'),'Doküman ekleme mevcut DokumanlarService üzerinden kalmalı.');
+assert(parity.includes('DokumanlarService?.dokumanSil?.'),'Doküman silme mevcut DokumanlarService üzerinden kalmalı.');
+assert(parity.includes('DokumanlarService?.dokumanGorunurlukGuncelle?.'),'Görünürlük değişimi mevcut DokumanlarService üzerinden kalmalı.');
+assert(parity.includes('DocumentsModule?.ensureViewer?.'),'Classic Doküman açma mevcut module viewer capability sini yeniden kullanmalı.');
+assert(parity.includes("PermissionService?.can?.('documents.edit','edit')"),'Classic Doküman yazma aksiyonları merkezi documents.edit yetkisine bağlı olmalı.');
+for(const label of ['Öğrenci Formları','Veli Formları','Gezi & Etkinlik','Proje Formları','Yazılı Senaryoları','Yönetim & İdari','Diğer']) assert(parity.includes(label),`Eski doküman kategorisi eksik: ${label}`);
+for(const marker of ['Tüm Kategoriler','+ Doküman Ekle','📎 Dosya Yükle','🔗 URL Ekle','🌐 Herkese Açık','🔒 Sadece Bana Özel','data-classic-document-open','data-classic-document-download','data-classic-document-visibility','data-classic-document-delete']) assert(parity.includes(marker),`Eski Dokümanlar görünür davranışı eksik: ${marker}`);
+assert(parity.includes("arr('dokumanlarAcik')")&&parity.includes("arr('dokumanlarBenim')"),'Normal kullanıcı doküman görünümü mevcut local-first açık/benim cache lerini kullanmalı.');
+assert(live.includes("loadScript?.('js/modules/classic-documents-parity.js')"),'Classic Dokümanlar paritesi yalnız dashboard sonrası lazy yüklenmeli.');
+assert(sw.includes("'./js/modules/classic-documents-parity.js'"),'Classic Dokümanlar paritesi offline kabukta önbelleğe alınmalı.');
+
 assert(documents.includes("PermissionService?.can?.('documents.tracking','read')"),'Evrak Takibi görüntüleme merkezi documents.tracking iznini kullanmalı.');
 assert(documents.includes("PermissionService?.can?.('documents.tracking.edit','edit')"),'Evrak Takibi yazma merkezi documents.tracking.edit iznini kullanmalı.');
 assert(documents.includes("device().add('evrak',COL.evrak")&&documents.includes("device().update('evrak',COL.evrak")&&documents.includes("device().remove('evrak',COL.evrak"),'Evrak CRUD DeviceData local-first kapısında kalmalı.');
@@ -32,5 +51,5 @@ assert(!documents.includes("const canView=()=>typeof global.gorebilir==='functio
 assert(loader.includes("['documents.tracking','Evrak Takibi','section']")&&loader.includes("['documents.tracking.edit','Evrak Takibi düzenleme','action']"),'Evrak izinleri merkezi katalogda olmalı.');
 assert(loader.includes("'module.documents':['dokumanlar','evrak']"),'Eski evrak yetkisi Documents modül görünürlüğünü korumalı.');
 assert(loader.includes("'documents.tracking':['evrak']")&&loader.includes("'documents.tracking.edit':['evrak']"),'Eski evrak rol yetkisi merkezi izinlere alias olmalı.');
-console.log('Documents V2 Evrak Takibi gerçek model + merkezi yetki + local-first sözleşmesi başarılı.');
+console.log('Documents V2 Evrak Takibi + classic Dokümanlar çalışma alanı local-first paritesi başarılı.');
 console.log('Documents V2 doğrudan module viewer + merkezi tasarım sözleşmesi başarılı.');
