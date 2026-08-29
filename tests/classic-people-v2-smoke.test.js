@@ -4,6 +4,7 @@ const people=fs.readFileSync('js/modules/people.js','utf8');
 const importer=fs.readFileSync('js/modules/people-import.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
+new Function(importer);
 
 assert(people.includes("DeviceData/IndexedDB -> AppStore -> UI"),'People local-first veri sınırı korunmalı.');
 assert(people.includes("device().add('siniflar',COL.siniflar"),'Sınıf yazımı DeviceData üzerinden kalmalı.');
@@ -36,7 +37,15 @@ assert(importer.includes('SiniflarService.ogrenciKulupGuncelle'),'Kulüp öğren
 assert(importer.includes('ReportEngine.printReport'),'Kulüp öğrenci listesi merkezi rapor motoruyla açılmalı.');
 assert(importer.includes("teacherRows('rehberlik',id)")&&importer.includes("teacherRows('bepPlani',id)"),'Rehberlik ve Yıllık/BEP sorumlulukları öğretmen ID alanlarıyla eşleşmeli.');
 assert(importer.includes('REHBERLİK')&&importer.includes('YILLIK / BEP PLANLARI'),'Eski öğretmen detayındaki sorumluluk bölümleri görünür olmalı.');
+
+assert(importer.includes("SyncEngine.register('dersListesi',global.COL.dersListesi)"),'Haftalık norm için gerçek dersListesi koleksiyonu SyncEngine ile kaydedilmeli.');
+assert(importer.includes("SyncEngine.localHydrate(['dersListesi'])"),'Ders norm tanımları önce IndexedDB/AppStore üzerinden hydrate edilmeli.');
+assert(importer.includes("arr('dersProgrami').filter(d=>d.ogretmenId===id)"),'Norm hesabı öğretmenin gerçek ogretmenId ders programını kullanmalı.');
+assert(importer.includes("arr('dersListesi').find(d=>d.ad===g.ders)"),'Norm hesabı ders adını gerçek dersListesi kaydıyla eşlemeli.');
+assert(importer.includes('dersKayit?.haftalikSaatler')&&importer.includes('dersKayit.haftalikSaatler[String(seviye)]'),'Norm plan saati eski haftalikSaatler seviye modelinden okunmalı.');
+assert(importer.includes("match(/^(\\d+)/)"),'Sınıf seviyesi eski norm davranışındaki gibi sınıf adının başındaki rakamdan çıkarılmalı.');
+for(const label of ['HAFTALIK NORM ANALİZİ','Norm (plan)','Fiili (program)','Fark','TOPLAM']) assert(importer.includes(label),`Haftalık norm görünüm öğesi eksik: ${label}`);
 assert(!importer.includes('db.collection('),'People içe aktarma/parite adaptörü doğrudan Firestore kullanmamalı.');
 
 require('./lazy-chart-smoke.test.js');
-console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first ayrı-sayfa, e-Okul ve eski öğretmen sorumluluk paritesi başarılı.');
+console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first, e-Okul ve eski öğretmen sorumluluk/norm paritesi başarılı.');
