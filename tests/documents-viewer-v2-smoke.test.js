@@ -3,12 +3,13 @@ const assert=require('assert');
 
 const documents=fs.readFileSync('js/modules/documents.js','utf8');
 const parity=fs.readFileSync('js/modules/classic-documents-parity.js','utf8');
+const pdfTools=fs.readFileSync('js/modules/classic-documents-pdf.js','utf8');
 const viewer=fs.readFileSync('js/modules/document-viewer.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
-new Function(parity);
+new Function(parity);new Function(pdfTools);
 
 assert(documents.includes("s.src='js/modules/document-viewer.js'"),'Documents V2 belge görüntüleyiciyi doğrudan module path üzerinden yalnız kullanım anında lazy-load etmeli.');
 assert(documents.includes("endsWith('js/modules/document-viewer.js')"),'Documents V2 mevcut module viewer scriptini yeniden kullanmalı.');
@@ -34,10 +35,24 @@ assert(parity.includes('DokumanlarService?.dokumanGorunurlukGuncelle?.'),'Görü
 assert(parity.includes('DocumentsModule?.ensureViewer?.'),'Classic Doküman açma mevcut module viewer capability sini yeniden kullanmalı.');
 assert(parity.includes("PermissionService?.can?.('documents.edit','edit')"),'Classic Doküman yazma aksiyonları merkezi documents.edit yetkisine bağlı olmalı.');
 for(const label of ['Öğrenci Formları','Veli Formları','Gezi & Etkinlik','Proje Formları','Yazılı Senaryoları','Yönetim & İdari','Diğer']) assert(parity.includes(label),`Eski doküman kategorisi eksik: ${label}`);
-for(const marker of ['Tüm Kategoriler','+ Doküman Ekle','📎 Dosya Yükle','🔗 URL Ekle','🌐 Herkese Açık','🔒 Sadece Bana Özel','data-classic-document-open','data-classic-document-download','data-classic-document-visibility','data-classic-document-delete']) assert(parity.includes(marker),`Eski Dokümanlar görünür davranışı eksik: ${marker}`);
+for(const marker of ['Tüm Kategoriler','+ Doküman Ekle','📎 Dosya Yükle','🖼️ Resimlerden PDF','🔗 PDF Birleştir','🔗 URL Ekle','🌐 Herkese Açık','🔒 Sadece Bana Özel','data-classic-document-open','data-classic-document-download','data-classic-document-visibility','data-classic-document-delete']) assert(parity.includes(marker),`Eski Dokümanlar görünür davranışı eksik: ${marker}`);
 assert(parity.includes("arr('dokumanlarAcik')")&&parity.includes("arr('dokumanlarBenim')"),'Normal kullanıcı doküman görünümü mevcut local-first açık/benim cache lerini kullanmalı.');
 assert(live.includes("loadScript?.('js/modules/classic-documents-parity.js')"),'Classic Dokümanlar paritesi yalnız dashboard sonrası lazy yüklenmeli.');
 assert(sw.includes("'./js/modules/classic-documents-parity.js'"),'Classic Dokümanlar paritesi offline kabukta önbelleğe alınmalı.');
+
+// Heavy PDF/image tools must be capability-lazy and must not own persistence.
+assert(parity.includes("loadScript?.('js/modules/classic-documents-pdf.js')"),'Resim/PDF motoru yalnız ilgili sekme kullanıldığında lazy yüklenmeli.');
+assert(sw.includes("'./js/modules/classic-documents-pdf.js'"),'Resim/PDF capability dosyası offline kabukta önbelleğe alınmalı.');
+assert(!/\bdb\s*\.\s*collection\s*\(/.test(pdfTools),'Resim/PDF capability doğrudan Firestore kullanmamalı.');
+assert(!pdfTools.includes('DeviceData')&&!pdfTools.includes('DokumanlarService'),'Resim/PDF capability kalıcı veri katmanının sahibi olmamalı.');
+assert(!/localStorage\s*\.\s*setItem\s*\(/.test(pdfTools),'Resim/PDF capability localStorage yazmamalı.');
+assert(pdfTools.includes('jspdf/2.5.1/jspdf.umd.min.js'),'jsPDF yalnız kullanım anında yüklenen capability bağımlılığı olmalı.');
+assert(pdfTools.includes('pdf.js/3.11.174/pdf.min.js'),'PDF birleştirme mevcut PDF.js sürümüyle lazy çalışmalı.');
+for(const marker of ['Belge Modu','Gri Tonlama','S/B Metin','Parlaklık','Kontrast','↻','PDF Oluştur','PDF Birleştir','⬇ İndir','📤 Paylaş']) assert(pdfTools.includes(marker),`Eski resim/PDF aracı davranışı eksik: ${marker}`);
+assert(pdfTools.includes('images[n]]=[images[n],images[i]]')||pdfTools.includes('[images[i],images[n]]=[images[n],images[i]]'),'Görseller sıralanabilmeli.');
+assert(pdfTools.includes('[pdfFiles[i],pdfFiles[n]]=[pdfFiles[n],pdfFiles[i]]'),'PDF dosyaları sıralanabilmeli.');
+assert(pdfTools.includes("return new File([pdfBlob]"),'Üretilen PDF normal File olarak canonical doküman kaydetme akışına verilmeli.');
+assert(parity.includes("ClassicDocumentsPdf?.getFile?.(ad)"),'Üretilen PDF mevcut DokumanlarService kaydetme yoluna bağlanmalı.');
 
 assert(documents.includes("PermissionService?.can?.('documents.tracking','read')"),'Evrak Takibi görüntüleme merkezi documents.tracking iznini kullanmalı.');
 assert(documents.includes("PermissionService?.can?.('documents.tracking.edit','edit')"),'Evrak Takibi yazma merkezi documents.tracking.edit iznini kullanmalı.');
@@ -51,5 +66,5 @@ assert(!documents.includes("const canView=()=>typeof global.gorebilir==='functio
 assert(loader.includes("['documents.tracking','Evrak Takibi','section']")&&loader.includes("['documents.tracking.edit','Evrak Takibi düzenleme','action']"),'Evrak izinleri merkezi katalogda olmalı.');
 assert(loader.includes("'module.documents':['dokumanlar','evrak']"),'Eski evrak yetkisi Documents modül görünürlüğünü korumalı.');
 assert(loader.includes("'documents.tracking':['evrak']")&&loader.includes("'documents.tracking.edit':['evrak']"),'Eski evrak rol yetkisi merkezi izinlere alias olmalı.');
-console.log('Documents V2 Evrak Takibi + classic Dokümanlar çalışma alanı local-first paritesi başarılı.');
+console.log('Documents V2 Evrak Takibi + classic Dokümanlar + resim/PDF local-first paritesi başarılı.');
 console.log('Documents V2 doğrudan module viewer + merkezi tasarım sözleşmesi başarılı.');
