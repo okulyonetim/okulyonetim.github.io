@@ -12,4 +12,5 @@ assert(src.includes('call.resolve();'), 'Başarılı PrintJob sonrası çağrı 
 assert(src.includes('handleOnDestroy()'), 'Yazdırma WebView’i plugin kapanışında temizlenmeli.');
 assert(!src.includes('call.resolve();\n    }\n\n    private void yazdirDiyaloguAc'), 'Eski erken resolve davranışı geri gelmemeli.');
 
+require('./android-deeplink-smoke.test.js');
 console.log('Android PrintPlugin smoke testleri başarılı.');
