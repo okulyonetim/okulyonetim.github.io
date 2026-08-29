@@ -40,6 +40,14 @@ assert(importer.includes('ReportEngine.printReport'),'Kulüp öğrenci listesi m
 assert(importer.includes("teacherRows('rehberlik',id)")&&importer.includes("teacherRows('bepPlani',id)"),'Rehberlik ve Yıllık/BEP sorumlulukları öğretmen ID alanlarıyla eşleşmeli.');
 assert(importer.includes('REHBERLİK')&&importer.includes('YILLIK / BEP PLANLARI'),'Eski öğretmen detayındaki sorumluluk bölümleri görünür olmalı.');
 
+assert(importer.includes('async function parseTeacherExcel(file)'),'Eski Öğretmenler Excel ayrıştırıcısı geri gelmeli.');
+for(const label of ['AD SOYAD','BRANŞ','TELEFON','E-POSTA','SORUMLU SINIF','ÜNVAN','DERECE','KADEME']) assert(importer.includes(label),`Öğretmen Excel kolonu eksik: ${label}`);
+assert(importer.includes("PermissionService.can('people.teachers','edit')"),'Öğretmen Excel içe aktarma merkezi öğretmen yazma yetkisini kullanmalı.');
+assert(importer.includes('global.OgretmenService.kaydet'),'Öğretmen Excel yazımı canonical OgretmenService üzerinden kalmalı.');
+assert(importer.includes("e.stopImmediatePropagation();chooseTeacherExcel()"),'Eski Öğretmenler Excel düğmesi dışa aktarma yerine içe aktarma akışını açmalı.');
+assert(importer.includes('kademeNo'),'Eski KADEME kolonu yeni canonical kademeNo alanına taşınmalı.');
+assert(!importer.includes('db.collection('),'People içe aktarma/parite adaptörü doğrudan Firestore kullanmamalı.');
+
 assert(importer.includes("SyncEngine.register('dersListesi',global.COL.dersListesi)"),'Haftalık norm için gerçek dersListesi koleksiyonu SyncEngine ile kaydedilmeli.');
 assert(importer.includes("SyncEngine.localHydrate(['dersListesi'])"),'Ders norm tanımları önce IndexedDB/AppStore üzerinden hydrate edilmeli.');
 assert(importer.includes("arr('dersProgrami').filter(d=>d.ogretmenId===id)"),'Norm hesabı öğretmenin gerçek ogretmenId ders programını kullanmalı.');
@@ -47,7 +55,6 @@ assert(importer.includes("arr('dersListesi').find(d=>d.ad===g.ders)"),'Norm hesa
 assert(importer.includes('dersKayit?.haftalikSaatler')&&importer.includes('dersKayit.haftalikSaatler[String(seviye)]'),'Norm plan saati eski haftalikSaatler seviye modelinden okunmalı.');
 assert(importer.includes("match(/^(\\d+)/)"),'Sınıf seviyesi eski norm davranışındaki gibi sınıf adının başındaki rakamdan çıkarılmalı.');
 for(const label of ['HAFTALIK NORM ANALİZİ','Norm (plan)','Fiili (program)','Fark','TOPLAM']) assert(importer.includes(label),`Haftalık norm görünüm öğesi eksik: ${label}`);
-assert(!importer.includes('db.collection('),'People içe aktarma/parite adaptörü doğrudan Firestore kullanmamalı.');
 
 assert(live.includes("loadScript?.('js/modules/classic-parity.js')"),'Classic parity yalnız dashboard yüklendikten sonra lazy bağlanmalı.');
 assert(sw.includes("'./js/modules/classic-parity.js'"),'Classic parity offline kabukta önbelleğe alınmalı.');
@@ -64,4 +71,4 @@ assert(parity.includes("x.ogretmenId===id")&&parity.includes("Array.isArray(x.og
 assert(parity.includes("global.ShellUI?.routeModule?.(target[0],{bottom:'profile',page:target[1],title:target[2]})"),'Profil kartları gerçek alt sayfalara gitmeli.');
 
 require('./lazy-chart-smoke.test.js');
-console.log('People V2 ve toplu klasik sayfa/modal/local-first paritesi smoke testi başarılı.');
+console.log('People V2, öğretmen Excel ve toplu klasik sayfa/modal/local-first paritesi smoke testi başarılı.');
