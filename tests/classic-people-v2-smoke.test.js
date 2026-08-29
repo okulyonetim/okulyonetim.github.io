@@ -61,7 +61,7 @@ for(const label of ['Ders Listesi','Branş Listesi','Haftalık Ders Saati','Topl
 for(const label of ['HAFTALIK NORM ANALİZİ','SOSYAL KULÜP & REHBERLİK','BELİRLİ GÜN VE HAFTALAR','BELGE DURUMU','İZİNLER / RAPORLAR','DİĞER EVRAK']) assert(parity.includes(label),`Öğretmen profil raporu parite bölümü eksik: ${label}`);
 assert(parity.includes("u.bagliOgretmenId||u.ogretmenId||''"),'Profil bağlı öğretmen çözümü canonical fallback kimliğini kullanmalı.');
 assert(parity.includes("x.ogretmenId===id")&&parity.includes("Array.isArray(x.ogretmenIdler)&&x.ogretmenIdler.includes(id)"),'Öğretmen sorumlulukları gerçek ID alanlarıyla eşleşmeli.');
-assert(parity.includes("routeModule?.(target[0],{bottom:'profile',page:target[1],title:target[2]})"),'Profil kartları gerçek alt sayfalara gitmeli.');
+assert(parity.includes("global.ShellUI?.routeModule?.(target[0],{bottom:'profile',page:target[1],title:target[2]})"),'Profil kartları gerçek alt sayfalara gitmeli.');
 
 require('./lazy-chart-smoke.test.js');
 console.log('People V2 ve toplu klasik sayfa/modal/local-first paritesi smoke testi başarılı.');
