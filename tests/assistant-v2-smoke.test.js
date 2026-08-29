@@ -13,6 +13,10 @@ const communicationBundle=loader.match(/define\('communication',\[([^\]]+)\]\)/)
 assert(communicationBundle.includes("'js/modules/communication.js'")&&communicationBundle.includes("'js/modules/assistant.js'")&&communicationBundle.indexOf("'js/modules/communication.js'")<communicationBundle.indexOf("'js/modules/assistant.js'"),'V2 AI Asistan ek lazy bağımlılıklar olsa da Communication bundle içinde communication.js sonrasında yüklenmeli.');
 assert(src.includes("const API='https://okul-ai-asistan.sedonet23.workers.dev'"),'Mevcut AI Worker uç noktası korunmalı.');
 for(const type of ['ogretmenler','siniflar','veliler','gorevler','hatirlaticilar','notlar','sinavlar','servisler','nobetAtamalari','personel']) assert(src.includes(`arr('${type}')`),`AI bağlamı ${type} verisini AppStore üzerinden kullanmalı.`);
+assert(src.includes("const classLabel=s=>s?.ad||[s?.seviye,s?.sube].filter(Boolean).join('-')||'?'"),'AI sınıf etiketi canonical sinif.ad alanını öncelikli kullanmalı.');
+assert(src.includes('const className=id=>classLabel(classes.find(x=>x.id===id))'),'Öğrenci AI bağlamı sınıf kimliğini canonical sınıf etiketi üzerinden çözmeli.');
+assert(src.includes('siniflar:classes.map(s=>({sinif:classLabel(s)'),'AI sınıf listesi canonical sınıf etiketini kullanmalı.');
+assert(!src.includes("sinif:`${s.seviye||''}-${s.sube||''}`"),'AI sınıf listesi seviye/sube birleşimini ana kimlik olarak kullanmamalı.');
 assert(src.includes('global.NotlarService.notKaydet'),'Not/metin taslakları mevcut NotlarService üzerinden kaydedilmeli.');
 assert(src.includes('global.TakvimService.gorevKaydet'),'Görev taslağı mevcut TakvimService üzerinden kaydedilmeli.');
 assert(src.includes('global.TakvimService.hatirlaticiKaydet'),'Hatırlatıcı taslağı mevcut TakvimService üzerinden kaydedilmeli.');
@@ -27,4 +31,4 @@ assert(!src.includes('localStorage'),'AI Asistan ayrı legacy storage üretmemel
 assert(!src.includes('telefon:'),'AI Worker bağlamına telefon alanı gönderilmemeli.');
 assert(!src.includes('style="'),'AI Asistan inline CSS üretmemeli; design-system.css kullanılmalı.');
 
-console.log('V2 AI Asistan + taslak edit permission sözleşmesi başarılı.');
+console.log('V2 AI Asistan + canonical sınıf kimliği + taslak edit permission sözleşmesi başarılı.');
