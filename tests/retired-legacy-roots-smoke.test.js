@@ -39,7 +39,8 @@ const retired=[
   'tests/navigation-customization-smoke.test.js',
   'tests/global-zoom-smoke.test.js',
   'tests/native-report-preview-smoke.test.js',
-  'tests/document-viewer-v3.test.js'
+  'tests/document-viewer-v3.test.js',
+  'tests/yillik-plan-preview-smoke.test.js'
 ];
 
 const resurrected=retired.filter(p=>fs.existsSync(p));
