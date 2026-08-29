@@ -30,7 +30,13 @@ assert(sw.includes("'./js/modules/people-import.js'"),'People içe aktarma adapt
 assert(importer.includes("AppStore?.get?.('ui.route')!=='people'"),'People içe aktarma UI yalnız People rotasında etkinleşmeli.');
 assert(importer.includes("SiniflarService.ogrenciVeliListesiIceAktar")&&importer.includes("SiniflarService.eOkulPlanlariniUygula"),'Excel/e-Okul yazımları canonical SiniflarService üzerinden kalmalı.');
 assert(importer.includes("data-class-seating")&&importer.includes("dataset.classSeating"),'Sınıf detayı içe aktarmada görünür başlık eşlemesi yerine gerçek sınıf ID sini öncelikli kullanmalı.');
-assert(!importer.includes('db.collection('),'People içe aktarma adaptörü doğrudan Firestore kullanmamalı.');
+for(const marker of ['data-legacy-club-add','data-legacy-club-list','data-people-club-modal','data-legacy-teacher-section']) assert(importer.includes(marker),`Eski öğretmen detay paritesi eksik: ${marker}`);
+assert(importer.includes("u.bagliOgretmenId||u.ogretmenId||''"),'Kulüp danışman yetkisi canonical öğretmen ID üzerinden çözülmeli.');
+assert(importer.includes('SiniflarService.ogrenciKulupGuncelle'),'Kulüp öğrenci ekle/çıkar işlemi canonical local-first SiniflarService üzerinden kalmalı.');
+assert(importer.includes('ReportEngine.printReport'),'Kulüp öğrenci listesi merkezi rapor motoruyla açılmalı.');
+assert(importer.includes("teacherRows('rehberlik',id)")&&importer.includes("teacherRows('bepPlani',id)"),'Rehberlik ve Yıllık/BEP sorumlulukları öğretmen ID alanlarıyla eşleşmeli.');
+assert(importer.includes('REHBERLİK')&&importer.includes('YILLIK / BEP PLANLARI'),'Eski öğretmen detayındaki sorumluluk bölümleri görünür olmalı.');
+assert(!importer.includes('db.collection('),'People içe aktarma/parite adaptörü doğrudan Firestore kullanmamalı.');
 
 require('./lazy-chart-smoke.test.js');
-console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first ayrı-sayfa ve e-Okul içe aktarma sözleşmesi başarılı.');
+console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first ayrı-sayfa, e-Okul ve eski öğretmen sorumluluk paritesi başarılı.');
