@@ -33,9 +33,7 @@ function zilVerisi(){const ayar=settings('dersSaatleri');if(ayar.tatilModu)retur
 async function update(){if(!native())return false;await prepare();const p=plugin();if(!p)return false;try{const hv=hava();if(p.sayfalariGuncelle)await p.sayfalariGuncelle({okul:okulAdi(),etkinlikJson:JSON.stringify(etkinlikler()),notJson:JSON.stringify(notlar()),nobetJson:JSON.stringify(nobetciler()),haberJson:JSON.stringify(haberler()),...hv});if(p.dersZiliGuncelle)await p.dersZiliGuncelle({veriJson:JSON.stringify(zilVerisi())});return true}catch(e){console.warn('[WidgetAdapter]',e?.message||e);return false}}
 function schedule(ms=250){clearTimeout(timer);timer=setTimeout(update,ms)}
 function bind(){if(!native())return false;['data.dersProgrami','data.hatirlaticilar','data.notlar','data.nobetAtamalari','data.nobetYerleri','data.haberler','data.ogretmenler','data.dersSaatleri','data.okulBilgileri'].forEach(path=>{const off=global.AppStore?.subscribe?.(path,()=>schedule());if(off)unsubs.push(off)});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')schedule(100)});global.addEventListener('koruk:app-ready',()=>schedule(50));schedule(500);return true}
-function loadHeaderUI(){if(document.querySelector('script[data-koruk-header-ui]'))return;const s=document.createElement('script');s.src='js/core/header-ui.js';s.async=false;s.dataset.korukHeaderUi='true';document.head.appendChild(s)}
 global.KorukPlatformAdapter={...(global.KorukPlatformAdapter||{}),isNative:native,setPullToRefreshEnabled,pushPermission,pushToken};
 global.KorukWidgetAdapter={prepare,update,schedule,bind,zilVerisi};
-loadHeaderUI();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })(window);
