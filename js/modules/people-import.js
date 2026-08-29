@@ -1,7 +1,7 @@
 /* Koruk Asistan — People yardımcı UI adaptörü
  * Eski Sınıflar UX'indeki Excel / e-Okul akışını yeni local-first SiniflarService'e bağlar.
  * Öğrenci sonuç trend grafiğini People sonuç sayfasına lazy Chart.js ile geri kazandırır.
- * Eski öğretmen detayındaki kulüp öğrenci işlemleri ve sorumluluk bölümlerini canonical People görünümüne bağlar.
+ * Eski öğretmen detayındaki kulüp öğrenci işlemleri, sorumluluk ve haftalık norm bölümlerini canonical People görünümüne bağlar.
  * Ayrı veri katmanı oluşturmaz; yalnız UI + dosya ayrıştırma / görünüm adaptörüdür.
  */
 (function(global){
@@ -88,11 +88,42 @@ async function printClubStudents(kid){
  const k=arr('sosyalKulupler').find(x=>x.id===kid);if(!k)return;const rows=clubStudents(kid);try{if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');const body=rows.length?`<table><thead><tr><th>Sıra</th><th>Öğrenci</th><th>Sınıf</th><th>Öğrenci No</th></tr></thead><tbody>${rows.map((v,i)=>`<tr><td>${i+1}</td><td>${esc(v.ogrenciAdi||'')}</td><td>${esc(classLabel(v.sinifId))}</td><td>${esc(v.ogrenciNo||'')}</td></tr>`).join('')}</tbody></table>`:'<p>Kulübe atanmış öğrenci bulunmuyor.</p>';await global.ReportEngine.printReport(`${k.ad||k.kulupAdi||'Sosyal Kulüp'} Öğrenci Listesi`,body,{fileName:`${k.ad||'Kulup'}_Ogrenci_Listesi`,compact:true})}catch(err){console.error('[PeopleImport/club-print]',err);global.toast?.('Kulüp öğrenci listesi açılamadı.')}
 }
 function teacherSection(title,icon,rows,marker){if(!rows.length)return null;const s=document.createElement('section');s.className='ka-card ka-teacher-detail-section';s.dataset.legacyTeacherSection=marker;s.innerHTML=`<div class="ka-card__header"><div class="ka-row"><span class="ka-teacher-section-icon" aria-hidden="true">${icon}</span><h3>${esc(title)}</h3></div></div><div class="ka-card__body">${rows.join('')}</div>`;return s}
+
+/* Eski Haftalık Norm Analizi — gerçek dersProgrami + dersListesi.haftalikSaatler modeli. */
+let teacherNormPromise=null;
+function prepareTeacherNormData(){
+ if(teacherNormPromise)return teacherNormPromise;
+ teacherNormPromise=(async()=>{
+  if(!global.SyncEngine||!global.COL?.dersListesi)return false;
+  global.SyncEngine.register('dersListesi',global.COL.dersListesi);
+  await global.SyncEngine.localHydrate(['dersListesi']);
+  requestAnimationFrame(enhanceTeacherProfile);
+  Promise.resolve(global.SyncEngine.pull?.(['dersListesi'])).then(()=>requestAnimationFrame(enhanceTeacherProfile)).catch(e=>console.warn('[People/teacher-norm-sync]',e));
+  return true;
+ })().catch(e=>{teacherNormPromise=null;console.warn('[People/teacher-norm]',e);return false});
+ return teacherNormPromise;
+}
+function teacherNormData(id){
+ const lessons=arr('dersProgrami').filter(d=>d.ogretmenId===id),groups={};
+ lessons.forEach(d=>{const key=`${d.ders}__${d.sinif}`;if(!groups[key])groups[key]={ders:d.ders,sinif:d.sinif,saatSayisi:0};groups[key].saatSayisi++});
+ let toplamNorm=0,toplamFiili=0;const rows=Object.values(groups).map(g=>{const m=String(g.sinif||'').match(/^(\d+)/),seviye=m?parseInt(m[1]):null,dersKayit=arr('dersListesi').find(d=>d.ad===g.ders),normSaat=dersKayit?.haftalikSaatler&&seviye?(dersKayit.haftalikSaatler[seviye]||dersKayit.haftalikSaatler[String(seviye)]||null):null;toplamFiili+=g.saatSayisi;if(normSaat!==null)toplamNorm+=normSaat;return{ders:g.ders,sinif:g.sinif,fiili:g.saatSayisi,norm:normSaat}});
+ return{rows,toplamNorm,toplamFiili,signature:JSON.stringify([id,rows,toplamNorm,toplamFiili])};
+}
+function normFark(fiili,normSaat){if(normSaat===null)return'—';const fark=fiili-normSaat;return fark>0?`+${fark}`:`${fark}`}
+function teacherNormSection(id){
+ const n=teacherNormData(id),rows=n.rows.length?n.rows.map(r=>`<div class="ka-teacher-detail-row"><b>${esc(r.ders)} · ${esc(r.sinif)}</b><span>Norm (plan): ${r.norm!==null?r.norm:'—'} · Fiili (program): ${r.fiili} · Fark: ${normFark(r.fiili,r.norm)}</span></div>`):['<div class="ka-empty">Ders programı kaydı yok.</div>'];
+ if(n.rows.length)rows.push(`<div class="ka-teacher-detail-row"><b>TOPLAM</b><span>Norm (plan): ${n.toplamNorm||'—'} · Fiili (program): ${n.toplamFiili} · Fark: ${n.toplamNorm?normFark(n.toplamFiili,n.toplamNorm):'—'}</span></div>`);
+ const s=teacherSection('HAFTALIK NORM ANALİZİ','⏱',rows,'norm');if(s)s.dataset.normSignature=n.signature;return s;
+}
+function enhanceTeacherNorm(profile,id,before){
+ prepareTeacherNormData();const current=profile.querySelector('[data-legacy-teacher-section="norm"]'),data=teacherNormData(id);if(current?.dataset.normSignature===data.signature)return;current?.remove();const s=teacherNormSection(id);if(s)(before||profile.lastElementChild)?.insertAdjacentElement(before?'beforebegin':'afterend',s)
+}
 function enhanceTeacherProfile(){
  const profile=$('.ka-teacher-profile');if(!profile)return;const id=teacherProfileId(profile);if(!id)return;
  const clubs=arr('sosyalKulupler').filter(k=>clubHasTeacher(k,id)),clubSection=$$('.ka-teacher-detail-section',profile).find(s=>$('h3',s)?.textContent?.trim()==='KULÜP DANIŞMANLIĞI');if(clubSection){const body=$('.ka-card__body',clubSection),detailRows=$$('.ka-teacher-detail-row',body);detailRows.forEach((row,i)=>{const k=clubs[i];if(!k||body.querySelector(`[data-legacy-club-actions="${CSS.escape(String(k.id))}"]`))return;const actions=document.createElement('div');actions.className='ka-row ka-wrap';actions.dataset.legacyClubActions=k.id;actions.style.margin='0 0 10px';const count=clubStudents(k.id).length;actions.innerHTML=`${canManageClub(k)?`<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-legacy-club-add="${esc(k.id)}">➕ Öğrenci Ekle</button>`:''}<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-legacy-club-list="${esc(k.id)}">👥 Öğrenciler (${count})</button>`;row.insertAdjacentElement('afterend',actions);$('[data-legacy-club-add]',actions)?.addEventListener('click',()=>clubStudentModal(k.id));$('[data-legacy-club-list]',actions)?.addEventListener('click',()=>printClubStudents(k.id))})}
  const before=$('.ka-teacher-doc-status',profile);if(!profile.querySelector('[data-legacy-teacher-section="rehberlik"]')){const rows=teacherRows('rehberlik',id).map(x=>`<div class="ka-teacher-detail-row"><b>${esc(x.ad||x.baslik||x.sinif||'Rehberlik')}</b><span>${esc([x.sinif,x.danisman].filter(Boolean).join(' · '))}</span></div>`),s=teacherSection('REHBERLİK','R',rows,'rehberlik');if(s)(before||profile.lastElementChild)?.insertAdjacentElement(before?'beforebegin':'afterend',s)}
  if(!profile.querySelector('[data-legacy-teacher-section="bep"]')){const rows=teacherRows('bepPlani',id).map(x=>`<div class="ka-teacher-detail-row"><b>${esc(x.ad||x.baslik||[x.ders,x.sinif].filter(Boolean).join(' · ')||'Yıllık / BEP Planı')}</b><span>${esc([x.ders,x.sinif].filter(Boolean).join(' · '))}</span></div>`),s=teacherSection('YILLIK / BEP PLANLARI','P',rows,'bep');if(s)(before||profile.lastElementChild)?.insertAdjacentElement(before?'beforebegin':'afterend',s)}
+ enhanceTeacherNorm(profile,id,before);
 }
 
 let resultStudentId='',resultChart=null,resultChartLoadPromise=null,resultChartScheduled=false,resultChartSignature='';
