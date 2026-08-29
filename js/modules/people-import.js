@@ -1,6 +1,7 @@
-/* Koruk Asistan — Sınıflar legacy içe aktarma araçları
+/* Koruk Asistan — People yardımcı UI adaptörü
  * Eski Sınıflar UX'indeki Excel / e-Okul akışını yeni local-first SiniflarService'e bağlar.
- * Ayrı veri katmanı oluşturmaz; yalnız UI + dosya ayrıştırma adaptörüdür.
+ * Öğrenci sonuç trend grafiğini People sonuç sayfasına lazy Chart.js ile geri kazandırır.
+ * Ayrı veri katmanı oluşturmaz; yalnız UI + dosya ayrıştırma / görünüm adaptörüdür.
  */
 (function(global){
 'use strict';
@@ -66,7 +67,47 @@ function toolbar(target,targetClassId=''){
  const box=document.createElement('div');box.className='ka-row ka-wrap';box.dataset.legacyClassImports='';box.innerHTML=`<label class="ka-btn ka-btn--secondary" type="button">📥 Excel'den Ekle<input type="file" accept=".xlsx,.xls" data-legacy-excel hidden></label><label class="ka-btn ka-btn--secondary" type="button">📋 e-Okul Aktar<input type="file" accept=".xlsx,.xls" data-legacy-eokul hidden></label>`;
  target.appendChild(box);$('[data-legacy-excel]',box).onchange=async e=>{const f=e.target.files?.[0];e.target.value='';if(!f)return;try{await importStudents(f,targetClassId)}catch(err){console.error('[PeopleImport/excel]',err);global.toast?.('İçe aktarma hatası: '+(err?.message||err))}};$('[data-legacy-eokul]',box).onchange=async e=>{const f=e.target.files?.[0];e.target.value='';if(!f)return;try{await importEOkul(f,targetClassId)}catch(err){console.error('[PeopleImport/eOkul-read]',err);global.toast?.('Dosya okunamadı: '+(err?.message||err))}};
 }
-function enhance(){if(global.AppStore?.get?.('ui.route')!=='people')return;const list=$('.ka-class-directory .ka-people-page-head');if(list)toolbar(list,'');const detail=$('.ka-class-detail');if(detail){const tab=$('.ka-detail-tabs',detail),studentsActive=$('[data-class-tab="students"].active',detail);if(tab&&studentsActive){let holder=tab.nextElementSibling;if(!holder||!holder.classList.contains('ka-class-actions')){holder=document.createElement('div');holder.className='ka-class-actions';tab.insertAdjacentElement('afterend',holder)}toolbar(holder,currentClassId())}}}
-function init(){if(observer)return;observer=new MutationObserver(()=>requestAnimationFrame(enhance));observer.observe(document.getElementById('v2ModuleRoot')||document.body,{childList:true,subtree:true});window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='people')requestAnimationFrame(enhance)});requestAnimationFrame(enhance)}
+
+let resultStudentId='',resultChart=null,resultChartLoadPromise=null,resultChartScheduled=false,resultChartSignature='';
+function loadResultsChartLibrary(){
+ if(typeof global.Chart!=='undefined')return Promise.resolve();
+ if(resultChartLoadPromise)return resultChartLoadPromise;
+ resultChartLoadPromise=new Promise((resolve,reject)=>{
+  const existing=[...document.scripts].find(s=>/chart(?:\.umd)?(?:\.min)?\.js/i.test(s.src||''));
+  if(existing){existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',reject,{once:true});return}
+  const script=document.createElement('script');script.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js';script.onload=resolve;script.onerror=()=>reject(new Error('Grafik kütüphanesi yüklenemedi.'));document.head.appendChild(script);
+ }).catch(e=>{resultChartLoadPromise=null;throw e});
+ return resultChartLoadPromise;
+}
+function resultNet(result){
+ if(Number.isFinite(Number(result?.net)))return Number(result.net);
+ if(Number.isFinite(Number(result?.toplamNet)))return Number(result.toplamNet);
+ const nets=Object.values(result?.dersSonuclari||{}).map(x=>Number(x?.net)).filter(Number.isFinite);
+ return nets.length?Math.round(nets.reduce((a,b)=>a+b,0)*100)/100:null;
+}
+function resultSeries(type,student){
+ const out=[];for(const exam of arr(type))for(const result of Array.isArray(exam.sonuclar)?exam.sonuclar:[]){const sameId=result.ogrenciId&&result.ogrenciId===student.id,sameLegacy=!result.ogrenciId&&norm(result.ogrenciAdi)===norm(student.ogrenciAdi);if(!sameId&&!sameLegacy)continue;const net=resultNet(result);if(net===null)continue;out.push({x:exam.tarih||result.tarih||'',y:net})}
+ return out.sort((a,b)=>String(a.x).localeCompare(String(b.x)));
+}
+function destroyResultChart(){if(resultChart){try{resultChart.destroy()}catch(_){ }resultChart=null}resultChartSignature=''}
+function chartColor(name,fallback){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()||fallback}
+async function drawResultChart(){
+ const page=$('.ka-student-results'),student=arr('veliler').find(v=>v.id===resultStudentId);if(!page||!student){destroyResultChart();return}
+ let card=$('[data-student-results-chart]',page);if(!card){card=document.createElement('section');card.className='ka-card';card.dataset.studentResultsChart='';card.innerHTML='<div class="ka-card__header"><div><h3>Net Gelişimi</h3><small class="ka-muted">Deneme ve test sonuçlarının tarihsel görünümü</small></div></div><div class="ka-card__body"><canvas data-student-results-chart-canvas height="220"></canvas></div>';const overview=$('.ka-result-overview',page);overview?.insertAdjacentElement('afterend',card)}
+ const canvas=$('[data-student-results-chart-canvas]',card);if(!canvas)return;
+ const deneme=resultSeries('denemeSonuclari',student),test=resultSeries('testSonuclari',student),signature=JSON.stringify([resultStudentId,deneme,test]);
+ if(!deneme.length&&!test.length){destroyResultChart();card.querySelector('.ka-card__body').innerHTML='<div class="ka-empty">Grafik için henüz sınav sonucu yok.</div>';resultChartSignature=signature;return}
+ try{await loadResultsChartLibrary()}catch(e){console.warn('[People/results-chart] Chart.js yüklenemedi:',e);card.querySelector('.ka-card__body').innerHTML='<div class="ka-empty">Grafik çevrimdışıyken yüklenemedi. Sonuç listesi kullanılabilir.</div>';return}
+ if(!canvas.isConnected||typeof global.Chart==='undefined')return;
+ if(resultChart&&resultChart.canvas===canvas&&resultChartSignature===signature)return;
+ destroyResultChart();
+ const denemeColor=chartColor('--ka-accent','#1677d2'),testColor=chartColor('--ka-primary','#17684f');
+ resultChart=new global.Chart(canvas.getContext('2d'),{type:'line',data:{datasets:[{label:'Deneme Net',data:deneme,borderColor:denemeColor,backgroundColor:denemeColor,tension:.25},{label:'Test Net',data:test,borderColor:testColor,backgroundColor:testColor,tension:.25}]},options:{responsive:true,scales:{x:{type:'category'},y:{beginAtZero:true}},plugins:{legend:{position:'bottom'}}}});resultChartSignature=signature;
+}
+function scheduleResultChart(){if(resultChartScheduled)return;resultChartScheduled=true;requestAnimationFrame(()=>{resultChartScheduled=false;drawResultChart().catch(e=>console.warn('[People/results-chart]',e))})}
+function trackStudent(e){const detail=e.target?.closest?.('[data-student-detail]');if(detail?.dataset.studentDetail)resultStudentId=detail.dataset.studentDetail;if(e.target?.closest?.('[data-student-back]')){resultStudentId='';destroyResultChart()}if(e.target?.closest?.('[data-results-back]'))destroyResultChart()}
+
+function enhance(){if(global.AppStore?.get?.('ui.route')!=='people'){destroyResultChart();return}const list=$('.ka-class-directory .ka-people-page-head');if(list)toolbar(list,'');const detail=$('.ka-class-detail');if(detail){const tab=$('.ka-detail-tabs',detail),studentsActive=$('[data-class-tab="students"].active',detail);if(tab&&studentsActive){let holder=tab.nextElementSibling;if(!holder||!holder.classList.contains('ka-class-actions')){holder=document.createElement('div');holder.className='ka-class-actions';tab.insertAdjacentElement('afterend',holder)}toolbar(holder,currentClassId())}}if($('.ka-student-results'))scheduleResultChart();else destroyResultChart()}
+function init(){if(observer)return;const root=document.getElementById('v2ModuleRoot')||document.body;root.addEventListener('click',trackStudent,true);observer=new MutationObserver(()=>requestAnimationFrame(enhance));observer.observe(root,{childList:true,subtree:true});window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='people')requestAnimationFrame(enhance)});requestAnimationFrame(enhance)}
 global.PeopleImportUI={init,importStudents,importEOkul,parseStudentExcel,parseEOkul};init();
 })(window);
