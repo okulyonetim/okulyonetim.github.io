@@ -9,6 +9,7 @@ on:
       - 'js/**'
       - 'service-worker.js'
       - 'firestore.rules'
+      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
@@ -27,6 +28,8 @@ on:
       - 'tests/transport-separate-pages.test.js'
       - 'tests/no-module-internal-tabs.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
+      - 'tests/report-native-print-routing-smoke.test.js'
+      - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
       - 'tests/teacher-list-local-first-service.test.js'
@@ -38,11 +41,14 @@ on:
       - 'tests/settings-separate-pages.test.js'
       - 'tests/tools-separate-pages.test.js'
       - 'tests/communication-local-first-contract.test.js'
+      - 'tests/lazy-firebase-storage-smoke.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
       - 'tests/widget-platform-adapter-smoke.test.js'
       - 'tests/teblig-v2-smoke.test.js'
       - 'tests/documents-viewer-v2-smoke.test.js'
+      - 'tests/document-viewer-smoke.test.js'
+      - 'tests/lazy-document-libs-smoke.test.js'
       - 'tests/payroll-change-v2-smoke.test.js'
       - 'tests/assistant-v2-smoke.test.js'
       - 'tests/legislation-engine-v2-smoke.test.js'
@@ -60,6 +66,7 @@ on:
       - 'js/**'
       - 'service-worker.js'
       - 'firestore.rules'
+      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/module-bundles-smoke.test.js'
@@ -78,6 +85,8 @@ on:
       - 'tests/transport-separate-pages.test.js'
       - 'tests/no-module-internal-tabs.test.js'
       - 'tests/report-engine-a4-smoke.test.js'
+      - 'tests/report-native-print-routing-smoke.test.js'
+      - 'tests/android-print-plugin-smoke.test.js'
       - 'tests/dashboard-reminders-smoke.test.js'
       - 'tests/teacher-list-core-contract.test.js'
       - 'tests/teacher-list-local-first-service.test.js'
@@ -89,11 +98,14 @@ on:
       - 'tests/settings-separate-pages.test.js'
       - 'tests/tools-separate-pages.test.js'
       - 'tests/communication-local-first-contract.test.js'
+      - 'tests/lazy-firebase-storage-smoke.test.js'
       - 'tests/retired-legacy-roots-smoke.test.js'
       - 'tests/root-js-inventory-smoke.test.js'
       - 'tests/widget-platform-adapter-smoke.test.js'
       - 'tests/teblig-v2-smoke.test.js'
       - 'tests/documents-viewer-v2-smoke.test.js'
+      - 'tests/document-viewer-smoke.test.js'
+      - 'tests/lazy-document-libs-smoke.test.js'
       - 'tests/payroll-change-v2-smoke.test.js'
       - 'tests/assistant-v2-smoke.test.js'
       - 'tests/legislation-engine-v2-smoke.test.js'
@@ -124,6 +136,8 @@ jobs:
         run: node tests/modules-local-first-boundary.test.js
       - name: Verify service worker shell
         run: node tests/service-worker-precache-smoke.test.js
+      - name: Verify lazy Firebase Storage startup
+        run: node tests/lazy-firebase-storage-smoke.test.js
       - name: Verify Android iOS web responsive shell
         run: node tests/web-mobile-engine-separation.test.js
       - name: Verify rebuilt classic shell
@@ -150,6 +164,10 @@ jobs:
         run: node tests/no-module-internal-tabs.test.js
       - name: Verify report A4 preview and print
         run: node tests/report-engine-a4-smoke.test.js
+      - name: Verify report native/web routing
+        run: node tests/report-native-print-routing-smoke.test.js
+      - name: Verify Android PrintPlugin
+        run: node tests/android-print-plugin-smoke.test.js
       - name: Verify dashboard reminder engine
         run: node tests/dashboard-reminders-smoke.test.js
       - name: Verify teacher list core contract
@@ -182,6 +200,10 @@ jobs:
         run: node tests/teblig-v2-smoke.test.js
       - name: Verify Documents V2 document viewer
         run: node tests/documents-viewer-v2-smoke.test.js
+      - name: Verify document viewer engine
+        run: node tests/document-viewer-smoke.test.js
+      - name: Verify lazy document libraries
+        run: node tests/lazy-document-libs-smoke.test.js
       - name: Verify V2 payroll change form
         run: node tests/payroll-change-v2-smoke.test.js
       - name: Verify V2 AI assistant
