@@ -4,6 +4,7 @@ const assert = require('assert');
 const viewer = fs.readFileSync('js/modules/document-viewer.js', 'utf8');
 const documents = fs.readFileSync('js/modules/documents.js', 'utf8');
 const platform = fs.readFileSync('js/core/platform/widget-adapter.js','utf8');
+const design = fs.readFileSync('css/design-system.css','utf8');
 
 for (const ext of ['pdf','docx','doc','xlsx','xls','csv','txt','ppt','pptx']) assert(viewer.includes(`'${ext}'`), `${ext} görüntüleyici kapsamından çıkmamalı.`);
 assert(viewer.includes('docx.renderAsync'), 'DOCX için docx-preview kullanılmalı.');
@@ -23,13 +24,13 @@ assert(viewer.includes('pdfTamSayfaSigdir'), 'PDF tam sayfaya sığdırma bulunm
 assert(viewer.includes('id="dv3pdfFitPage"'), 'PDF araç çubuğunda Tam sayfa düğmesi bulunmalı.');
 assert(viewer.includes('id="dv3pdfZoomLabel"'), 'PDF zoom yüzdesi gösterilmeli.');
 assert(viewer.includes('id="dv3pdfPageInfo"'), 'PDF sayfa sayacı bulunmalı.');
-assert(viewer.includes('.dv3pdfviewport{flex:1 1 auto;min-height:0;overflow:auto;width:100%'), 'PDF scroll yalnız viewport alanında olmalı.');
+assert(design.includes('.dv3pdfviewport,.dv3sheetviewport,.dv3wordviewport{flex:1 1 auto;min-height:0;overflow:auto;width:100%'), 'PDF scroll yalnız merkezi design-system viewport alanında olmalı.');
 assert(viewer.includes('st.style.transform=`scale(${pdfZoom})`'), 'PDF zoom yalnız PDF sahnesine uygulanmalı.');
 assert(viewer.includes('wrap.clientHeight-20'), 'Tam sayfa sığdırma görünür yüksekliği hesaba katmalı.');
 assert(viewer.includes('wrap.scrollLeft=Math.max(0,nx*pdfZoom-wrap.clientWidth/2)'), 'PDF zoom görünür merkez odağını korumalı.');
 assert(viewer.includes('merkezY=(wrap.scrollTop+wrap.clientHeight/2)'), 'PDF aktif sayfa hesabı viewport merkezine göre yapılmalı.');
 assert(viewer.includes("page.dataset.page=String(i)"), 'PDF sayfaları numaralandırılmalı.');
-assert(viewer.includes('gap:18px'), 'PDF sayfaları arasında görünür ayrım bulunmalı.');
+assert(design.includes('.dv3pdfstage{display:flex;flex-direction:column;align-items:flex-start;gap:18px}'), 'PDF sayfaları arasındaki 18px ayrım merkezi design-system içinde korunmalı.');
 assert(viewer.includes('excelZoomUygula'), 'Excel zoom fallback yolu korunmalı.');
 assert(viewer.includes('excelSigdir'), 'Excel genişliğe sığdırma fallback yolu korunmalı.');
 assert(viewer.includes("cellStyles:true"), 'SheetJS XLS stil metadata yolu açık olmalı.');
