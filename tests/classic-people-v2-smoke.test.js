@@ -2,9 +2,11 @@ const fs=require('fs');
 const assert=require('assert');
 const people=fs.readFileSync('js/modules/people.js','utf8');
 const importer=fs.readFileSync('js/modules/people-import.js','utf8');
+const parity=fs.readFileSync('js/modules/classic-parity.js','utf8');
+const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
-new Function(importer);
+new Function(importer);new Function(parity);new Function(live);
 
 assert(people.includes("DeviceData/IndexedDB -> AppStore -> UI"),'People local-first veri sınırı korunmalı.');
 assert(people.includes("device().add('siniflar',COL.siniflar"),'Sınıf yazımı DeviceData üzerinden kalmalı.');
@@ -47,5 +49,19 @@ assert(importer.includes("match(/^(\\d+)/)"),'Sınıf seviyesi eski norm davran�
 for(const label of ['HAFTALIK NORM ANALİZİ','Norm (plan)','Fiili (program)','Fark','TOPLAM']) assert(importer.includes(label),`Haftalık norm görünüm öğesi eksik: ${label}`);
 assert(!importer.includes('db.collection('),'People içe aktarma/parite adaptörü doğrudan Firestore kullanmamalı.');
 
+assert(live.includes("loadScript?.('js/modules/classic-parity.js')"),'Classic parity yalnız dashboard yüklendikten sonra lazy bağlanmalı.');
+assert(sw.includes("'./js/modules/classic-parity.js'"),'Classic parity offline kabukta önbelleğe alınmalı.');
+assert(!parity.includes('db.collection('),'Classic parity doğrudan Firestore kullanmamalı.');
+assert(!parity.includes('localStorage.setItem('),'Classic parity kalıcı veri için localStorage yazmamalı.');
+assert(parity.includes("device().add('dersListesi',global.COL.dersListesi")&&parity.includes("device().update('dersListesi',global.COL.dersListesi")&&parity.includes("device().remove('dersListesi',global.COL.dersListesi"),'Ders Listesi CRUD DeviceData üzerinden kalmalı.');
+assert(parity.includes("device().add('bransListesi',global.COL.bransListesi")&&parity.includes("device().update('bransListesi',global.COL.bransListesi")&&parity.includes("device().remove('bransListesi',global.COL.bransListesi"),'Branş Listesi CRUD DeviceData üzerinden kalmalı.');
+assert(parity.includes("SyncEngine.localHydrate(['dersListesi','bransListesi'])"),'Ders/branş listeleri önce cihazdan hydrate edilmeli.');
+assert(parity.includes("PermissionService?.can?.('settings.app.edit','edit')"),'Ders/branş yönetimi mevcut merkezi ayar yazma yetkisini kullanmalı.');
+for(const label of ['Ders Listesi','Branş Listesi','Haftalık Ders Saati','Toplam sınav','7 gün içinde','Aktif sayaç']) assert(parity.includes(label),`Toplu klasik parite öğesi eksik: ${label}`);
+for(const label of ['HAFTALIK NORM ANALİZİ','SOSYAL KULÜP & REHBERLİK','BELİRLİ GÜN VE HAFTALAR','BELGE DURUMU','İZİNLER / RAPORLAR','DİĞER EVRAK']) assert(parity.includes(label),`Öğretmen profil raporu parite bölümü eksik: ${label}`);
+assert(parity.includes("u.bagliOgretmenId||u.ogretmenId||''"),'Profil bağlı öğretmen çözümü canonical fallback kimliğini kullanmalı.');
+assert(parity.includes("x.ogretmenId===id")&&parity.includes("Array.isArray(x.ogretmenIdler)&&x.ogretmenIdler.includes(id)"),'Öğretmen sorumlulukları gerçek ID alanlarıyla eşleşmeli.');
+assert(parity.includes("routeModule?.(target[0],{bottom:'profile',page:target[1],title:target[2]})"),'Profil kartları gerçek alt sayfalara gitmeli.');
+
 require('./lazy-chart-smoke.test.js');
-console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first, e-Okul ve eski öğretmen sorumluluk/norm paritesi başarılı.');
+console.log('People V2 ve toplu klasik sayfa/modal/local-first paritesi smoke testi başarılı.');
