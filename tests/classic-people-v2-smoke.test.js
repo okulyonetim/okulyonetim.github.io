@@ -3,10 +3,11 @@ const assert=require('assert');
 const people=fs.readFileSync('js/modules/people.js','utf8');
 const importer=fs.readFileSync('js/modules/people-import.js','utf8');
 const parity=fs.readFileSync('js/modules/classic-parity.js','utf8');
+const excel=fs.readFileSync('js/modules/classic-excel-parity.js','utf8');
 const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
-new Function(importer);new Function(parity);new Function(live);
+new Function(importer);new Function(parity);new Function(excel);new Function(live);
 
 assert(people.includes("DeviceData/IndexedDB -> AppStore -> UI"),'People local-first veri sınırı korunmalı.');
 assert(people.includes("device().add('siniflar',COL.siniflar"),'Sınıf yazımı DeviceData üzerinden kalmalı.');
@@ -57,9 +58,19 @@ assert(importer.includes("match(/^(\\d+)/)"),'Sınıf seviyesi eski norm davran�
 for(const label of ['HAFTALIK NORM ANALİZİ','Norm (plan)','Fiili (program)','Fark','TOPLAM']) assert(importer.includes(label),`Haftalık norm görünüm öğesi eksik: ${label}`);
 
 assert(live.includes("loadScript?.('js/modules/classic-parity.js')"),'Classic parity yalnız dashboard yüklendikten sonra lazy bağlanmalı.');
-assert(sw.includes("'./js/modules/classic-parity.js'"),'Classic parity offline kabukta önbelleğe alınmalı.');
+assert(live.includes("loadScript?.('js/modules/classic-excel-parity.js')"),'Classic Excel parity yalnız dashboard sonrası lazy bağlanmalı.');
+assert(sw.includes("'./js/modules/classic-parity.js'")&&sw.includes("'./js/modules/classic-excel-parity.js'"),'Classic parity adaptörleri offline kabukta önbelleğe alınmalı.');
 assert(!parity.includes('db.collection('),'Classic parity doğrudan Firestore kullanmamalı.');
 assert(!parity.includes('localStorage.setItem('),'Classic parity kalıcı veri için localStorage yazmamalı.');
+assert(!excel.includes('db.collection('),'Classic Excel parity doğrudan Firestore kullanmamalı.');
+assert(!excel.includes('localStorage.setItem('),'Classic Excel parity kalıcı veri için localStorage yazmamalı.');
+assert(excel.includes('SiniflarService.sinifListesiIceAktar'),'Sınıf Excel canonical SiniflarService üzerinden yazmalı.');
+assert(excel.includes('DersProgramiService.kaydet'),'Ders Programı Excel canonical DersProgramiService üzerinden yazmalı.');
+assert(excel.includes('SinavlarService.sinavKaydet'),'Yazılı Excel canonical SinavlarService üzerinden yazmalı.');
+assert(excel.includes('ReferenceListService.lessonSave'),'Ders/Branş Excel canonical referans liste servisi üzerinden yazmalı.');
+for(const marker of ['Sınıf Excel','Program Excel','Yazılı Excel','data-classic-settings-list="lesson"']) assert(excel.includes(marker),`Klasik Excel görünür aksiyonu eksik: ${marker}`);
+for(const label of ['SINIF ADI','DERS SAATİ','YAZILI SIRASI','SENARYO NO','YAYINEVİ','KISALTMA','haftalikSaatler']) assert(excel.includes(label),`Eski Excel veri sözleşmesi eksik: ${label}`);
+
 assert(parity.includes("device().add('dersListesi',global.COL.dersListesi")&&parity.includes("device().update('dersListesi',global.COL.dersListesi")&&parity.includes("device().remove('dersListesi',global.COL.dersListesi"),'Ders Listesi CRUD DeviceData üzerinden kalmalı.');
 assert(parity.includes("device().add('bransListesi',global.COL.bransListesi")&&parity.includes("device().update('bransListesi',global.COL.bransListesi")&&parity.includes("device().remove('bransListesi',global.COL.bransListesi"),'Branş Listesi CRUD DeviceData üzerinden kalmalı.');
 assert(parity.includes("SyncEngine.localHydrate(['dersListesi','bransListesi'])"),'Ders/branş listeleri önce cihazdan hydrate edilmeli.');
@@ -71,4 +82,4 @@ assert(parity.includes("x.ogretmenId===id")&&parity.includes("Array.isArray(x.og
 assert(parity.includes("global.ShellUI?.routeModule?.(target[0],{bottom:'profile',page:target[1],title:target[2]})"),'Profil kartları gerçek alt sayfalara gitmeli.');
 
 require('./lazy-chart-smoke.test.js');
-console.log('People V2, öğretmen Excel ve toplu klasik sayfa/modal/local-first paritesi smoke testi başarılı.');
+console.log('People V2, öğretmen/toplu Excel ve klasik sayfa-modal local-first paritesi smoke testi başarılı.');
