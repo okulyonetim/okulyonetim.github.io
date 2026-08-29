@@ -2,7 +2,9 @@ const fs=require('fs');
 const assert=require('assert');
 
 const communication=fs.readFileSync('js/modules/communication.js','utf8');
+const legacy=fs.readFileSync('js/modules/communication-legacy-ui.js','utf8');
 const rss=fs.readFileSync('scripts/rss-fetch.js','utf8');
+new Function(legacy);
 
 // Communication UI/data layer must remain device-first.
 assert(communication.includes("device().listen('konusmalar'"),'Konuşmalar DeviceData üzerinden dinlenmeli.');
@@ -49,6 +51,24 @@ assert(communication.includes('data-news-source-delete'),'Haber kaynak yönetimi
 assert(communication.includes("'data.haberKaynaklari'"),'Haber kaynakları AppStore değişikliklerine abone olmalı.');
 assert(communication.includes('bindCommunicationActions(out)'),'İletişim eylemleri render sonrasında bağlanmalı.');
 
+// Old communication presentation parity must use current services, never a second data layer.
+assert(!/\bdb\s*\.\s*collection\s*\(/.test(legacy),'İletişim parite adaptörü doğrudan Firestore kullanmamalı.');
+assert(!/localStorage\s*\.\s*setItem\s*\(/.test(legacy),'İletişim parite adaptörü kalıcı veri için localStorage yazmamalı.');
+for(const type of ['metin','todo','cizim','goruntu','tablo']) assert(legacy.includes(`${type}:`)||legacy.includes(`'${type}'`),`Eski not türü eksik: ${type}`);
+for(const field of ['maddeler','cizimData','goruntu','tabloVeri','renk','etiketler']) assert(legacy.includes(field),`Eski not alanı paritesi eksik: ${field}`);
+assert(legacy.includes('NotlarService?.notKaydet?.'),'Zengin not kaydı mevcut NotlarService üzerinden kalmalı.');
+assert(legacy.includes('NotlarService?.notSil?.'),'Zengin not silme mevcut NotlarService üzerinden kalmalı.');
+assert(legacy.includes('data-hd-rich-editor')&&legacy.includes('contenteditable="true"'),'Eski zengin metin not editörü geri gelmeli.');
+assert(legacy.includes('data-hd-drawing')&&legacy.includes('canvas'),'Eski çizim notu editörü geri gelmeli.');
+assert(legacy.includes('data-hd-image-file'),'Eski görsel notu editörü geri gelmeli.');
+assert(legacy.includes('data-hd-table-editor'),'Eski tablo notu editörü geri gelmeli.');
+assert(legacy.includes('Benim Notlarım')&&legacy.includes('Diğer Kullanıcıların Notları'),'Yönetici not sahipliği görünümü korunmalı.');
+assert(legacy.includes('AnketService?.oyVer?.'),'Anket detay modalı oy yazımını mevcut servise göndermeli.');
+assert(legacy.includes('AnketService?.anketKapat?.'),'Anket detay modalı kapat/aç işlemini mevcut servise göndermeli.');
+assert(legacy.includes('Oy Kullananlar')&&legacy.includes('Detay / Sonuçlar'),'Eski anket detay/katılımcı görünümü geri gelmeli.');
+assert(legacy.includes('DuyurularService?.okunduIsaretle?.'),'Duyuru detay modalı okundu işlemini mevcut servise göndermeli.');
+assert(legacy.includes('Kimler Okudu')&&legacy.includes('data-hd-lightbox'),'Eski duyuru okuyucu listesi ve görsel lightbox geri gelmeli.');
+
 // Poll/calendar ownership rules must remain in the service layer.
 assert(communication.includes('if(!isAdmin())throw new Error(\'yetkisiz\')'),'Anket oluşturma admin yetkisi servis katmanında kalmalı.');
 assert(communication.includes('calendarOwn'),'Takvim kayıt sahipliği merkezi servis kontrolünde kalmalı.');
@@ -59,4 +79,4 @@ assert(rss.includes('async function eskiHaberleriTemizle(db)'),'Eski haberleri t
 assert(rss.includes('await eskiHaberleriTemizle(db);'),'Temizlik her RSS çalışmasında kaynak taramasından önce yapılmalı.');
 assert(rss.includes('if(!sonBirAyIcindeMi(it.tarih))'),'30 günden eski feed maddeleri yeniden eklenmemeli.');
 
-console.log('Communication local-first, etkileşimli mesajlaşma ve 30 günlük haber saklama sözleşmesi başarılı.');
+console.log('Communication local-first, zengin eski iletişim paritesi ve 30 günlük haber saklama sözleşmesi başarılı.');
