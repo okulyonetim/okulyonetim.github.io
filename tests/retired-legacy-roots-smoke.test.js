@@ -34,7 +34,8 @@ const retired=[
   'js/modules/academic-legacy-ui.js',
   'js/modules/transport-legacy-ui.js',
   'js/core/header-ui.js',
-  'js/core/zengin-editor.js'
+  'js/core/zengin-editor.js',
+  'tests/feature-catalog-smoke.test.js'
 ];
 
 const resurrected=retired.filter(p=>fs.existsSync(p));
