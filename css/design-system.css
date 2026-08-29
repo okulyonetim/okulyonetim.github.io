@@ -222,7 +222,7 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-home .kh-news{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;min-height:42px;overflow:hidden;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
 .ka-home .kh-news-label{height:100%;display:flex;align-items:center;gap:5px;padding:0 10px;border:0;background:var(--ka-primary);color:var(--ka-text-inverse);font-size:9.5px;font-weight:900;letter-spacing:.04em;z-index:2;cursor:pointer}
 .ka-home .kh-news-label svg{width:15px;height:15px}
-.ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0}
+.ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0;padding-inline:12px;contain:paint;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%)}
 .ka-home .kh-news-track{display:flex;align-items:center;gap:0;width:max-content;animation:khTicker var(--kh-ticker-time,28s) linear infinite;will-change:transform;transform:translate3d(0,0,0)}
 .ka-home .kh-news-loop{display:flex;align-items:center;gap:28px;flex:none;padding-right:28px}
 .ka-home .kh-news:hover .kh-news-track{animation-play-state:paused}
@@ -310,7 +310,7 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-home .kh-social button{min-width:0;min-height:82px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:8px 4px;border:1px solid var(--ka-border);border-radius:18px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm);color:var(--ka-text);font:inherit;font-size:9.5px;font-weight:800;text-align:center;cursor:pointer;transition:transform var(--ka-transition-fast),border-color var(--ka-transition-fast),background var(--ka-transition-fast)}
 .ka-home .kh-social button:active{transform:translateY(1px)}
 .ka-home .kh-social button:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}
-.ka-home .kh-social-icon{width:29px;height:29px;display:grid;place-items:center;color:var(--ka-primary);font-size:24px;line-height:1}
+.ka-home .kh-social-icon{width:29px;height:29px;display:grid;place-items:center;color:var(--ka-primary);font-size:24px;line-height:1;overflow:hidden}.ka-home .kh-social-icon>svg{width:24px;height:24px;display:block}.ka-home .kh-social-icon>span{font-size:22px;line-height:1}
 .ka-home .kh-social button span:last-child{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:380px){.ka-home .kh-social{gap:6px}.ka-home .kh-social button{font-size:8.8px;padding-inline:3px}}
 
