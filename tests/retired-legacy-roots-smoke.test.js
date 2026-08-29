@@ -30,7 +30,8 @@ const retired=[
   'js/modules/rubric-settings-parity.js',
   'js/modules/transport-data.js',
   'js/modules/duty-data.js',
-  'js/modules/settings-data.js'
+  'js/modules/settings-data.js',
+  'js/modules/academic-legacy-ui.js'
 ];
 
 const resurrected=retired.filter(p=>fs.existsSync(p));
