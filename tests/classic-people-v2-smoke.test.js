@@ -32,4 +32,5 @@ assert(importer.includes("SiniflarService.ogrenciVeliListesiIceAktar")&&importer
 assert(importer.includes("data-class-seating")&&importer.includes("dataset.classSeating"),'Sınıf detayı içe aktarmada görünür başlık eşlemesi yerine gerçek sınıf ID sini öncelikli kullanmalı.');
 assert(!importer.includes('db.collection('),'People içe aktarma adaptörü doğrudan Firestore kullanmamalı.');
 
+require('./lazy-chart-smoke.test.js');
 console.log('People V2 bağımsız öğretmen + sınıf + öğrenci/detay local-first ayrı-sayfa ve e-Okul içe aktarma sözleşmesi başarılı.');
