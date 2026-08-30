@@ -153,3 +153,5 @@ jobs:
         run: node scripts/check-client-architecture.mjs
       - name: Show generated bundle sizes
         run: cat dist/js/manifest.json
+
+# UI parity source refresh marker — remove after snapshot download.
