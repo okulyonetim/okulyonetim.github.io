@@ -1,0 +1,35 @@
+name: Temporary Dashboard Contract Restore Gate
+on:
+  push:
+    branches: [work/popover-settings-accordion-20260831]
+    paths: ['.github/workflows/temp-restore-dashboard-contract.yml']
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Restore exact parent test and update only compact profile contract
+        run: |
+          git fetch origin 22f528fb67500699c4aecad8f4558aa99e107099 --depth=1
+          git show 22f528fb67500699c4aecad8f4558aa99e107099:tests/dashboard-card-routes-smoke.test.js > tests/dashboard-card-routes-smoke.test.js
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/dashboard-card-routes-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          old="assert(shell.includes(\"compact=isTeacherUser(),p=popoverBase(anchor,compact?246:340)\")&&shell.includes('ka-profile-popover--compact'),'Öğretmen header profil popupı küçük bildirim kartı boyutunda açılmalı.');"
+          new="assert(shell.includes(\"popoverBase(anchor,226)\")&&shell.includes(\"p.classList.add('ka-profile-popover','ka-profile-popover--compact')\"),'Header profil popupı tüm roller için kompakt 226px bildirim kartı boyutunda açılmalı.');"
+          if s.count(old)!=1: raise SystemExit(f'profile contract match {s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          node tests/dashboard-card-routes-smoke.test.js
+          git diff --numstat 22f528fb67500699c4aecad8f4558aa99e107099 -- tests/dashboard-card-routes-smoke.test.js
+          test "$(git diff --numstat 22f528fb67500699c4aecad8f4558aa99e107099 -- tests/dashboard-card-routes-smoke.test.js | awk '{print $1":"$2}')" = "1:1"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/dashboard-card-routes-smoke.test.js
+          git commit -m 'Align dashboard profile popover contract with compact shell'
+          git push
