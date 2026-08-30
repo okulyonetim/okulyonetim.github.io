@@ -41,6 +41,9 @@ assert(shell.includes("KorukLocalFirst.meta(uid,'lastDriveBackup'")&&shell.inclu
 assert(shell.includes("kind:'set-doc'")&&shell.includes('SyncEngine?.schedule?.(80)'),'Senkron tipler restore sonrası queue üzerinden arka plan senkronuna bırakılmalı.');
 
 assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
+assert(ui.includes("popoverBase(anchor,300)"),'Bildirim popoverı mobilde kompakt 300px genişliği kullanmalı.');
+assert(ui.includes("popoverBase(anchor,226)")&&ui.includes("p.classList.add('ka-profile-popover','ka-profile-popover--compact')"),'Profil popoverı tüm roller için tek kompakt 226px görünüm kullanmalı.');
+assert(design.includes('.ka-notification-popover{max-width:300px!important}')&&design.includes('.ka-profile-popover{max-width:226px!important}'),'Merkezi design system popover maksimum genişliklerini kilitlemeli.');
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
 for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
 for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\\"]${route}['\\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
