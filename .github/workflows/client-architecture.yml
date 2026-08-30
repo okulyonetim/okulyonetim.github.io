@@ -1,46 +1,155 @@
-name: Classes Parity One Shot
+name: Client Architecture
 
 on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
+      - 'css/**'
+      - 'js/**'
+      - 'service-worker.js'
+      - 'firestore.rules'
+      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
+      - 'scripts/build-client-bundles.mjs'
+      - 'scripts/check-client-architecture.mjs'
+      - 'tests/**'
+      - 'package.json'
+      - '.github/workflows/client-architecture.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'css/**'
+      - 'js/**'
+      - 'service-worker.js'
+      - 'firestore.rules'
+      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
+      - 'scripts/build-client-bundles.mjs'
+      - 'scripts/check-client-architecture.mjs'
+      - 'tests/**'
+      - 'package.json'
       - '.github/workflows/client-architecture.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  parity:
+  architecture:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Apply verified Classes visible parity
-        run: |
-          set -euo pipefail
-          cat .github/one-shot/classes-0{0,1,2,3}.b64 | tr -d '\r\n ' | base64 -d | gzip -d > /tmp/classes-parity.patch
-          git apply -p1 --check /tmp/classes-parity.patch
-          git apply -p1 /tmp/classes-parity.patch
-          git diff --check
-      - name: Verify Classes visible parity and contracts
-        run: |
-          node tests/classes-mobile-parity-smoke.test.js
-          node tests/classic-people-v2-smoke.test.js
-          node tests/communication-local-first-contract.test.js
-          node tests/quick-note-launcher.test.js
-          node tests/assistant-v2-smoke.test.js
-          node tests/module-bundles-smoke.test.js
-          node tests/service-worker-precache-smoke.test.js
-          node tests/web-mobile-engine-separation.test.js
-          node scripts/check-client-architecture.mjs
-      - name: Commit Classes visible parity application files
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add css/design-system.css js/modules/classes-mobile-parity.js tests/classes-mobile-parity-smoke.test.js js/modules/assistant.js tests/communication-local-first-contract.test.js
-          git commit -m 'Port reference Classes visible layout and retire stale communication test dependency'
-          git push origin HEAD:main
+      - name: Build client bundles
+        run: node scripts/build-client-bundles.mjs
+      - name: Upload consolidation source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: consolidation-source-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 1
+          path: |
+            index.html
+            service-worker.js
+            css/design-system.css
+            js/**
+            scripts/**
+            tests/**
+            package.json
+      - name: Verify module bundle contracts
+        run: node tests/module-bundles-smoke.test.js
+      - name: Enforce V2 module local-first boundary
+        run: node tests/modules-local-first-boundary.test.js
+      - name: Verify service worker shell
+        run: node tests/service-worker-precache-smoke.test.js
+      - name: Verify lazy Firebase Storage startup
+        run: node tests/lazy-firebase-storage-smoke.test.js
+      - name: Verify Android iOS web responsive shell
+        run: node tests/web-mobile-engine-separation.test.js
+      - name: Verify rebuilt classic shell
+        run: node tests/classic-shell-v2-smoke.test.js
+      - name: Verify classic People layouts
+        run: node tests/classic-people-v2-smoke.test.js
+      - name: Verify Classes mobile parity and seating
+        run: node tests/classes-mobile-parity-smoke.test.js
+      - name: Verify classic Duty layout
+        run: node tests/classic-duty-v2-smoke.test.js
+      - name: Verify classic Lesson Schedule
+        run: node tests/classic-schedule-v2-smoke.test.js
+      - name: Verify dashboard card routes
+        run: node tests/dashboard-card-routes-smoke.test.js
+      - name: Verify dashboard direct quick actions
+        run: node tests/dashboard-quick-actions.test.js
+      - name: Verify monthly calendar view
+        run: node tests/calendar-month-view.test.js
+      - name: Verify quick-note launcher
+        run: node tests/quick-note-launcher.test.js
+      - name: Verify communication admin actions
+        run: node tests/communication-admin-actions.test.js
+      - name: Verify transport separate-page routing
+        run: node tests/transport-separate-pages.test.js
+      - name: Forbid module internal tab navigation
+        run: node tests/no-module-internal-tabs.test.js
+      - name: Verify report A4 preview and print
+        run: node tests/report-engine-a4-smoke.test.js
+      - name: Verify report native/web routing
+        run: node tests/report-native-print-routing-smoke.test.js
+      - name: Verify Android PrintPlugin
+        run: node tests/android-print-plugin-smoke.test.js
+      - name: Verify dashboard reminder engine
+        run: node tests/dashboard-reminders-smoke.test.js
+      - name: Verify teacher list core contract
+        run: node tests/teacher-list-core-contract.test.js
+      - name: Verify teacher list local-first service
+        run: node tests/teacher-list-local-first-service.test.js
+      - name: Verify canonical student tool routing
+        run: node tests/student-tool-routing-smoke.test.js
+      - name: Verify People separate page routing
+        run: node tests/people-separate-pages.test.js
+      - name: Verify Academic separate page routing
+        run: node tests/academic-separate-pages.test.js
+      - name: Verify Management separate page routing
+        run: node tests/management-separate-pages.test.js
+      - name: Verify Communication separate page routing
+        run: node tests/communication-separate-pages.test.js
+      - name: Verify Settings separate page routing
+        run: node tests/settings-separate-pages.test.js
+      - name: Verify Tools separate page routing
+        run: node tests/tools-separate-pages.test.js
+      - name: Verify communication local-first contract
+        run: node tests/communication-local-first-contract.test.js
+      - name: Verify retired legacy roots
+        run: node tests/retired-legacy-roots-smoke.test.js
+      - name: Verify root JavaScript inventory
+        run: node tests/root-js-inventory-smoke.test.js
+      - name: Verify native widget platform adapter
+        run: node tests/widget-platform-adapter-smoke.test.js
+      - name: Verify V2 teblig-tebellug form
+        run: node tests/teblig-v2-smoke.test.js
+      - name: Verify Documents V2 document viewer
+        run: node tests/documents-viewer-v2-smoke.test.js
+      - name: Verify document viewer engine
+        run: node tests/document-viewer-smoke.test.js
+      - name: Verify lazy document libraries
+        run: node tests/lazy-document-libs-smoke.test.js
+      - name: Verify V2 payroll change form
+        run: node tests/payroll-change-v2-smoke.test.js
+      - name: Verify V2 AI assistant
+        run: node tests/assistant-v2-smoke.test.js
+      - name: Verify V2 legislation engine
+        run: node tests/legislation-engine-v2-smoke.test.js
+      - name: Verify consolidated map adapter
+        run: node tests/map-consolidation-smoke.test.js
+      - name: Verify rubric/project Tools bridge
+        run: node tests/rubric-tools-v2-smoke.test.js
+      - name: Verify local-first rubric settings
+        run: node tests/rubric-settings-v2-smoke.test.js
+      - name: Verify rubric legacy retirement readiness
+        run: node tests/rubric-legacy-retirement-readiness.test.js
+      - name: Verify PWA background push
+        run: node tests/pwa-push-smoke.test.js
+      - name: Audit client architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Show generated bundle sizes
+        run: cat dist/js/manifest.json
