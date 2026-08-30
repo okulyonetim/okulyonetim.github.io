@@ -46,7 +46,20 @@ jobs:
           Path('/tmp/bell_patch.py').write_text(block, encoding='utf-8')
           PY
           python /tmp/bell_patch.py
-          sed -i 's/Array.isArray(cfg.dersler)/Array.isArray(s.dersler)/g' tests/dashboard-card-routes-smoke.test.js
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tests/dashboard-card-routes-smoke.test.js')
+          s = p.read_text(encoding='utf-8').replace('Array.isArray(cfg.dersler)','Array.isArray(s.dersler)')
+          old_route = "assert(dash.includes(\"window.SchoolLiveStatus?.status?.()\")&&dash.includes(\"data-dash-page=\\\"schedule\\\"\"),'Hero canlı kartı ikinci sayaç yerine canonical SchoolLiveStatus ve merkezi Ders Programı rotasını kullanmalı.');"
+          new_route = "assert(dash.includes('id=\\\"khBell\\\"')&&dash.includes('data-dash-route=\\\"settings\\\" data-dash-page=\\\"lesson-hours\\\" data-dash-title=\\\"Ders Saatleri\\\"'),'Hero canlı kartı canonical SchoolLiveStatus üzerinden doğrudan Ders Saatleri ayarına gitmeli.');"
+          old_surface = "assert(dash.includes('class=\\\"kh-bell-times\\\"')&&dash.includes('class=\\\"kh-bell-progress\\\"')&&dash.includes('GÜN İÇİ AKIŞ'),'Canlı zil kartı referanstaki Başlangıç/Kalan/Bitiş, ilerleme ve gün içi akış yüzeyini taşımalı.');"
+          new_surface = "assert(dash.includes('class=\\\"ka-tabs\\\"')&&dash.includes('ka-tab kh-bell-node')&&dash.includes('GÜN İÇİ AKIŞ')&&!dash.includes('class=\\\"kh-bell-times\\\"')&&!dash.includes('class=\\\"kh-bell-progress\\\"'),'Canlı zil kartı kompakt olmalı; gün içi akış tek yatay kaydırılabilir satırda kalmalı.');"
+          for old, new in ((old_route,new_route),(old_surface,new_surface)):
+              if s.count(old) != 1:
+                  raise SystemExit('dashboard stale contract anchor count != 1')
+              s = s.replace(old,new,1)
+          p.write_text(s, encoding='utf-8')
+          PY
       - name: Verify targeted contracts
         shell: bash
         run: |
