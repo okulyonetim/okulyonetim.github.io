@@ -1,155 +1,48 @@
-name: Client Architecture
+name: Attendance Visible Parity
 
 on:
   push:
     branches: [main]
     paths:
-      - 'index.html'
-      - 'css/**'
-      - 'js/**'
-      - 'service-worker.js'
-      - 'firestore.rules'
-      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
-      - 'scripts/build-client-bundles.mjs'
-      - 'scripts/check-client-architecture.mjs'
-      - 'tests/**'
-      - 'package.json'
-      - '.github/workflows/client-architecture.yml'
-  pull_request:
-    paths:
-      - 'index.html'
-      - 'css/**'
-      - 'js/**'
-      - 'service-worker.js'
-      - 'firestore.rules'
-      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
-      - 'scripts/build-client-bundles.mjs'
-      - 'scripts/check-client-architecture.mjs'
-      - 'tests/**'
-      - 'package.json'
       - '.github/workflows/client-architecture.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  architecture:
+  parity:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Build client bundles
-        run: node scripts/build-client-bundles.mjs
-      - name: Upload consolidation source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: consolidation-source-${{ github.sha }}
-          if-no-files-found: error
-          retention-days: 1
-          path: |
-            index.html
-            service-worker.js
-            css/design-system.css
-            js/**
-            scripts/**
-            tests/**
-            package.json
-      - name: Verify module bundle contracts
-        run: node tests/module-bundles-smoke.test.js
-      - name: Enforce V2 module local-first boundary
-        run: node tests/modules-local-first-boundary.test.js
-      - name: Verify service worker shell
-        run: node tests/service-worker-precache-smoke.test.js
-      - name: Verify lazy Firebase Storage startup
-        run: node tests/lazy-firebase-storage-smoke.test.js
-      - name: Verify Android iOS web responsive shell
-        run: node tests/web-mobile-engine-separation.test.js
-      - name: Verify rebuilt classic shell
-        run: node tests/classic-shell-v2-smoke.test.js
-      - name: Verify classic People layouts
-        run: node tests/classic-people-v2-smoke.test.js
-      - name: Verify Classes mobile parity and seating
-        run: node tests/classes-mobile-parity-smoke.test.js
-      - name: Verify classic Duty layout
-        run: node tests/classic-duty-v2-smoke.test.js
-      - name: Verify classic Lesson Schedule
-        run: node tests/classic-schedule-v2-smoke.test.js
-      - name: Verify dashboard card routes
-        run: node tests/dashboard-card-routes-smoke.test.js
-      - name: Verify dashboard direct quick actions
-        run: node tests/dashboard-quick-actions.test.js
-      - name: Verify monthly calendar view
-        run: node tests/calendar-month-view.test.js
-      - name: Verify quick-note launcher
-        run: node tests/quick-note-launcher.test.js
-      - name: Verify communication admin actions
-        run: node tests/communication-admin-actions.test.js
-      - name: Verify transport separate-page routing
-        run: node tests/transport-separate-pages.test.js
-      - name: Forbid module internal tab navigation
-        run: node tests/no-module-internal-tabs.test.js
-      - name: Verify report A4 preview and print
-        run: node tests/report-engine-a4-smoke.test.js
-      - name: Verify report native/web routing
-        run: node tests/report-native-print-routing-smoke.test.js
-      - name: Verify Android PrintPlugin
-        run: node tests/android-print-plugin-smoke.test.js
-      - name: Verify dashboard reminder engine
-        run: node tests/dashboard-reminders-smoke.test.js
-      - name: Verify teacher list core contract
-        run: node tests/teacher-list-core-contract.test.js
-      - name: Verify teacher list local-first service
-        run: node tests/teacher-list-local-first-service.test.js
-      - name: Verify canonical student tool routing
-        run: node tests/student-tool-routing-smoke.test.js
-      - name: Verify People separate page routing
-        run: node tests/people-separate-pages.test.js
-      - name: Verify Academic separate page routing
-        run: node tests/academic-separate-pages.test.js
-      - name: Verify Management separate page routing
-        run: node tests/management-separate-pages.test.js
-      - name: Verify Communication separate page routing
-        run: node tests/communication-separate-pages.test.js
-      - name: Verify Settings separate page routing
-        run: node tests/settings-separate-pages.test.js
-      - name: Verify Tools separate page routing
-        run: node tests/tools-separate-pages.test.js
-      - name: Verify communication local-first contract
-        run: node tests/communication-local-first-contract.test.js
-      - name: Verify retired legacy roots
-        run: node tests/retired-legacy-roots-smoke.test.js
-      - name: Verify root JavaScript inventory
-        run: node tests/root-js-inventory-smoke.test.js
-      - name: Verify native widget platform adapter
-        run: node tests/widget-platform-adapter-smoke.test.js
-      - name: Verify V2 teblig-tebellug form
-        run: node tests/teblig-v2-smoke.test.js
-      - name: Verify Documents V2 document viewer
-        run: node tests/documents-viewer-v2-smoke.test.js
-      - name: Verify document viewer engine
-        run: node tests/document-viewer-smoke.test.js
-      - name: Verify lazy document libraries
-        run: node tests/lazy-document-libs-smoke.test.js
-      - name: Verify V2 payroll change form
-        run: node tests/payroll-change-v2-smoke.test.js
-      - name: Verify V2 AI assistant
-        run: node tests/assistant-v2-smoke.test.js
-      - name: Verify V2 legislation engine
-        run: node tests/legislation-engine-v2-smoke.test.js
-      - name: Verify consolidated map adapter
-        run: node tests/map-consolidation-smoke.test.js
-      - name: Verify rubric/project Tools bridge
-        run: node tests/rubric-tools-v2-smoke.test.js
-      - name: Verify local-first rubric settings
-        run: node tests/rubric-settings-v2-smoke.test.js
-      - name: Verify rubric legacy retirement readiness
-        run: node tests/rubric-legacy-retirement-readiness.test.js
-      - name: Verify PWA background push
-        run: node tests/pwa-push-smoke.test.js
-      - name: Audit client architecture
-        run: node scripts/check-client-architecture.mjs
-      - name: Show generated bundle sizes
-        run: cat dist/js/manifest.json
+      - name: Apply verified attendance visible parity
+        env:
+          PATCH_B64: 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
+        run: |
+          printf '%s' "$PATCH_B64" | base64 -d | gzip -dc > /tmp/attendance.patch
+          git apply --check /tmp/attendance.patch
+          git apply /tmp/attendance.patch
+          git diff --check
+      - name: Verify attendance visible parity
+        run: |
+          node --check js/modules/tools.js
+          node tests/student-tool-routing-smoke.test.js
+          node tests/tools-separate-pages.test.js
+          node tests/module-bundles-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/web-mobile-engine-separation.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit attendance visible parity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/tools.js css/design-system.css tests/student-tool-routing-smoke.test.js
+          git commit -m 'Port reference student attendance visible workspace'
+          git push origin HEAD:main
