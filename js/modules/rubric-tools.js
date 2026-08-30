@@ -1,6 +1,6 @@
 /* Koruk Asistan — Kriter / Proje araçları V2 köprüsü
  * Tools presentation'a iki aracı tek V2 engine üzerinden lazy bağlar.
- * Kriter ayar parity davranışları bu köprüde tutulur; ayrı adapter dosyası yoktur.
+ * Kriter/Proje görünür davranışının tek sahibi rubric-tools-engine.js dosyasıdır.
  * Diğer Evraklar, mevcut digerEvrak veri tipini ayrı menü sayfası olarak açar.
  * Diploma belgeleri mevcut okul/personel verilerini okuyup merkezi A4 rapor motorunu kullanır.
  */
@@ -18,39 +18,13 @@ const DIPLOMA_REQUEST_PAGE='diploma-request';
 const DIPLOMA_RESPONSE_PAGE='diploma-response';
 let opening=false,otherDocumentsOpen=false,otherDocumentsUnsub=null,diplomaOpen=false,diplomaKind='',diplomaState=null;
 const toast=m=>global.toast?.(m);
-const clone=v=>v==null?v:JSON.parse(JSON.stringify(v));
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[];};
 
 function canOpen(def){return global.PermissionService?.can?.(def.permission,'preview')!==false;}
-function settingsBackdrop(){return document.querySelector('.ka-modal-backdrop[style*="100000"]');}
-async function currentRubric(){const s=global.RubricSettingsService;return clone((await s?.personalGet?.('rubric'))||s?.schoolGet?.('rubric')||null);}
-function modal(title,body,actions){const ov=document.createElement('div');ov.className='ka-modal-backdrop';ov.style.zIndex='100001';ov.innerHTML=`<section class="ka-modal"><header class="ka-modal__header"><h3>${title}</h3></header><div class="ka-modal__body">${body}</div><footer class="ka-modal__footer">${actions}</footer></section>`;document.body.appendChild(ov);return ov;}
-function closeSettings(){settingsBackdrop()?.remove();}
-async function createCategory(){
-  const full=await currentRubric();
-  if(!full?.varsayilan?.gruplar){toast('Önce genel ölçütleri bu cihaza kaydedin.');return;}
-  const ov=modal('Yeni kategori',`<div class="ka-field"><label class="ka-field__label" for="rtnewname">Yeni kategori adı</label><input id="rtnewname" autocomplete="off" placeholder="Örn. Fen Bilimleri"></div>`,`<button type="button" class="ka-btn ka-btn--secondary" id="rtnewcancel">Vazgeç</button><button type="button" class="ka-btn" id="rtnewsave">Oluştur</button>`);
-  ov.querySelector('#rtnewcancel').onclick=()=>ov.remove();
-  ov.querySelector('#rtnewsave').onclick=async()=>{const name=ov.querySelector('#rtnewname').value.trim();if(!name)return toast('Kategori adı girin.');full.dersOzel=full.dersOzel||{};if(full.dersOzel[name])return toast('Bu kategori zaten var.');full.dersOzel[name]=clone(full.varsayilan);await global.RubricSettingsService.personalSet('rubric',full);ov.remove();closeSettings();toast('Kategori cihaz verisine kaydedildi. Ölçütler panelini yeniden açabilirsiniz.');};
-  ov.querySelector('#rtnewname').focus();
-}
-async function deleteCustom(target){
-  const full=await currentRubric();if(!full?.dersOzel?.[target])return toast('Silinecek özel ölçüt bulunamadı.');
-  if(!global.confirm?.(`“${target}” özel ölçütleri silinsin ve genel varsayılana dönülsün mü?`))return;
-  delete full.dersOzel[target];await global.RubricSettingsService.personalSet('rubric',full);closeSettings();toast('Özel ölçüt silindi; genel varsayılana dönüldü.');
-}
-function addDeleteButton(){const sel=document.getElementById('rtd'),foot=settingsBackdrop()?.querySelector('.ka-modal__footer');if(!sel||!foot||!sel.value||sel.value==='__new__'||document.getElementById('rtdeletecustom'))return;const b=document.createElement('button');b.type='button';b.id='rtdeletecustom';b.className='ka-btn ka-btn--secondary';b.textContent='Sil, varsayılana dön';b.onclick=()=>deleteCustom(sel.value);foot.prepend(b);}
-function installSettingsParity(){
-  if(global.__rubricSettingsParityInstalled)return;global.__rubricSettingsParityInstalled=true;
-  const mo=new MutationObserver(()=>addDeleteButton());mo.observe(document.documentElement,{subtree:true,childList:true});
-  document.addEventListener('change',e=>{if(e.target?.id!=='rtd')return;setTimeout(addDeleteButton,0);if(e.target.value!=='__new__')return;e.preventDefault();e.stopImmediatePropagation();e.target.value='';createCategory().catch(err=>{console.error('[RubricTools/createCategory]',err);toast('Kategori oluşturulamadı.');});},true);
-  document.addEventListener('click',e=>{if(e.target?.id!=='rtcloud')return;if(!global.confirm?.('Okul varsayılanı mevcut cihaz ayarının üzerine yüklensin mi?')){e.preventDefault();e.stopImmediatePropagation();}},true);
-}
 async function load(def){
   if(!global.AppLoader?.loadScript)throw new Error('AppLoader hazır değil.');
   if(!global[def.api])await global.AppLoader.loadScript(ENGINE);
-  installSettingsParity();
   if(!global[def.api])throw new Error(def.label+' V2 engine yüklenemedi.');
   return global[def.api];
 }
@@ -123,7 +97,7 @@ async function activateDiploma(kind){if(global.PermissionService?.can?.('managem
 async function openDiploma(kind){const title=kind===DIPLOMA_RESPONSE_PAGE?'Diploma Okul Dilekçesi':'Diploma Kayıt Talep Dilekçesi';return global.ShellUI?.routeModule?.('management',{bottom:'menu',page:kind,title});}
 function installDiplomaRoutes(){const groups=global.ShellUI?.MENU_GROUPS;if(!Array.isArray(groups))return;const group=groups.find(x=>x.key==='management');if(!group)return;group.items=Array.isArray(group.items)?group.items:[];if(!group.items.some(x=>x?.[3]===DIPLOMA_REQUEST_PAGE))group.items.push(['Diploma Kayıt Talep Dilekçesi','🎓','management',DIPLOMA_REQUEST_PAGE]);if(!group.items.some(x=>x?.[3]===DIPLOMA_RESPONSE_PAGE))group.items.push(['Diploma Okul Dilekçesi','🏫','management',DIPLOMA_RESPONSE_PAGE]);if(global.__diplomaRoutesInstalled)return;global.__diplomaRoutesInstalled=true;global.ShellUI?.registerPageRoute?.(DIPLOMA_REQUEST_PAGE,()=>activateDiploma(DIPLOMA_REQUEST_PAGE));global.ShellUI?.registerPageRoute?.(DIPLOMA_RESPONSE_PAGE,()=>activateDiploma(DIPLOMA_RESPONSE_PAGE));}
 
-global.RubricToolsModule={openPage,open,keyList:()=>TOOLS.map(x=>x.key),createCategory,deleteCustom,openOtherDocuments,openDiploma};
+global.RubricToolsModule={openPage,open,keyList:()=>TOOLS.map(x=>x.key),openOtherDocuments,openDiploma};
 installOtherDocumentsRoute();
 installDiplomaRoutes();
 global.addEventListener('koruk:module-ready',()=>{if(otherDocumentsOpen)cleanupOtherDocuments();if(diplomaOpen)cleanupDiploma();});

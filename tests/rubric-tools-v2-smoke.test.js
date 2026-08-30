@@ -15,13 +15,23 @@ for(const token of ["const ENGINE='js/modules/rubric-tools-engine.js'","key:'rub
   assert(bridge.includes(token),`Rubric Tools V2 bridge sözleşmesi eksik: ${token}`);
 }
 assert(!bridge.includes('data-rubric-tool'),'Rubric/Project eski Tools tab enjeksiyonuna geri dönmemeli.');
-for(const token of ["global.KorukRubricToolsV2={openRubric,openProject,scoreSplit,migrateRubric}","global.KriterDagitimAraci={ac()","global.ProjeDegerlendirmeAraci={ac()","RubricSettingsService","svc.personalSet(kind,full)","svc.schoolSet('rubric'","svc.schoolSet('project'","XLSX.read","uygulamaHtmlYazdir","backdrop.className='ka-modal-backdrop'","class=\"ka-card\""]){
+for(const token of ["global.KorukRubricToolsV2={openRubric,openProject,scoreSplit,migrateRubric}","global.KriterDagitimAraci={ac()","global.ProjeDegerlendirmeAraci={ac()","RubricSettingsService","svc.personalSet(kind,full)","svc.schoolSet('rubric'","svc.schoolSet('project'","XLSX.read","uygulamaHtmlYazdir","backdrop.className='ka-modal-backdrop ka-rubric-settings-backdrop'","class=\"ka-card\""]){
   assert(engine.includes(token),`Rubric Tools V2 engine sözleşmesi eksik: ${token}`);
 }
 assert(!engine.includes('db.collection(')&&!engine.includes('firebase.firestore'),'V2 engine doğrudan Firestore kullanmamalı.');
 assert(!engine.includes('localStorage.setItem('),'V2 engine localStorage kalıcı yazımı yapmamalı.');
 assert(!bridge.includes("js/kriter-dagitim.js")&&!bridge.includes("js/proje-degerlendirme.js"),'Production bridge legacy root motorlarını yüklememeli.');
 assert(!bridge.includes('rubric-tools-v2-engine.js'),'Geçiş dönemi -v2-engine dosya adı production bridge içine geri dönmemeli.');
+
+assert(!bridge.includes('MutationObserver'),'Rubric Tools bridge ayar modalini MutationObserver ile sonradan yamamamalı.');
+assert(!bridge.includes('installSettingsParity'),'Rubric Tools bridge parity patch kurmamalı.');
+assert(!bridge.includes('settingsBackdrop()')&&!bridge.includes('addDeleteButton()'),'Ayar modalı DOM tarama/adaptör katmanı bridge içinde kalmamalı.');
+for(const token of ["className='ka-modal-backdrop ka-rubric-workspace-backdrop'","class=\"ka-rubric-workspace\"","ka-rubric-workspace__header","⚙️ Ölçütleri Düzenle","className='ka-modal-backdrop ka-rubric-settings-backdrop'","rtdeletecustom","delete full.dersOzel[target]","Okul varsayılanı mevcut cihaz ayarının üzerine yüklensin mi?","class=\"ka-rubric-step\"","class=\"ka-rubric-preview\""]){
+  assert(engine.includes(token),`Rubric/Project canonical görünür çalışma alanı eksik: ${token}`);
+}
+assert(!engine.includes("style.zIndex='99999'")&&!engine.includes("style.zIndex='100000'"),'Rubric/Project z-index görünümü JS inline style ile kurulmamali.');
+assert(!engine.includes('style=\"width:min(1100px,100%);max-height:94dvh\"'),'Rubric çalışma alanı boyutu inline style olarak kalmamalı.');
+assert(!engine.includes('title=\"Kriter çizelgesi önizleme\" style=')&&!engine.includes('title=\"Proje değerlendirme önizleme\" style='),'Rubric/Project iframe görünümü merkezi CSS dışına kaçmamalı.');
 assert(!index.includes('js/kriter-dagitim.js')&&!index.includes('js/proje-degerlendirme.js'),'Legacy rubric motorları başlangıç shellinde eager yüklenmemeli.');
 
 assert(shell.includes('const CUSTOM_PAGE_ROUTES=new Map()')&&shell.includes('function registerPageRoute(page,handler)'),'ShellUI özel sayfalar için merkezi page-route registry sağlamalı.');
