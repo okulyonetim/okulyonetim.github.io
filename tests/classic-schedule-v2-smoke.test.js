@@ -13,6 +13,9 @@ assert(!src.includes('db.collection('),'Academic doğrudan Firestore kullanmamal
 for(const field of ['sinif','gun','saat','ders','ogretmenId']) assert(src.includes(field),`Gerçek ders programı alanı eksik: ${field}`);
 for(const text of ['Ders Programı','Bir hücreye tıklayarak ders ekleyin/düzenleyin','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Teneffüs','Öğle Arası']) assert(src.includes(text),`Klasik Ders Programı öğesi eksik: ${text}`);
 for(const hook of ['data-schedule-cell','academicClassSelect','ka-schedule-table','ka-schedule-break']) assert(src.includes(hook),`Ders Programı etkileşim/DOM sözleşmesi eksik: ${hook}`);
+for(const marker of ['scheduleMobile','ka-schedule-mobile','data-schedule-day','ka-schedule-mobile-lesson','ka-schedule-mobile-break']) assert(src.includes(marker),`Mobil Ders Programı görünüm sözleşmesi eksik: ${marker}`);
+assert(src.includes('${scheduleMobile()}${scheduleGrid()}'),'Mobil ve masaüstü Ders Programı aynı canonical render akışından üretilmeli.');
+assert(!src.includes('MutationObserver'),'Ders Programı mobil görünümü sonradan DOM yamasıyla üretilmemeli.');
 assert(src.includes('ogretmenCakismasi'),'Öğretmenin aynı gün/saatte iki sınıfa atanması engellenmeli.');
 assert(src.includes("dersProgrami:COL?.dersProgrami")&&src.includes("dersListesi:COL?.dersListesi"),'Ders Programı yardımcı verileri SyncEngine ile local-first hazırlanmalı.');
 assert(src.includes("academic.schedule.edit")&&src.includes("PermissionService")&&src.includes("_duzenleyebilir()"),'Ders Programı mutation sınırı merkezi academic.schedule.edit iznini kullanmalı.');
