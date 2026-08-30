@@ -46,6 +46,7 @@ jobs:
           Path('/tmp/bell_patch.py').write_text(block, encoding='utf-8')
           PY
           python /tmp/bell_patch.py
+          sed -i 's/Array.isArray(cfg.dersler)/Array.isArray(s.dersler)/g' tests/dashboard-card-routes-smoke.test.js
       - name: Verify targeted contracts
         shell: bash
         run: |
