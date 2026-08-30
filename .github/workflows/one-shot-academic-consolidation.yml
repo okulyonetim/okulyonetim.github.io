@@ -33,6 +33,7 @@ jobs:
           gzip -dc /tmp/academic-consolidation.patch.gz > /tmp/academic-consolidation.patch
           git apply --check /tmp/academic-consolidation.patch
           git apply /tmp/academic-consolidation.patch
+          sed -i '${/^$/d;}' css/design-system.css
           git diff --check
 
       - name: Verify consolidated Academic module
