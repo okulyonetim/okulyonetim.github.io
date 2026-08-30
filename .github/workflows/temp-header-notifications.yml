@@ -20,7 +20,18 @@ jobs:
         with:
           node-version: '24'
       - name: Apply canonical patch
-        run: python .github/temp-header-notifications.py
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/temp-header-notifications.py')
+          s=p.read_text(encoding='utf-8')
+          old="text, count = re.subn(pattern, replacement, text, count=1, flags=re.S)"
+          new="text, count = re.subn(pattern, lambda _m: replacement, text, count=1, flags=re.S)"
+          if s.count(old)!=1:
+              raise SystemExit('sub_once helper anchor count != 1')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          python .github/temp-header-notifications.py
       - name: Verify targeted header contracts
         run: |
           set -euo pipefail
