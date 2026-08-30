@@ -20,7 +20,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js']);
 define('people',['js/modules/people.js','js/modules/people-import.js']);
-define('academic',['js/modules/report-engine.js','js/modules/academic.js']);
+define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js','js/modules/academic-calendar-parity.js']);
 define('management',['js/modules/report-engine.js','js/modules/management.js']);
 define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
@@ -83,7 +83,7 @@ function permissionApplyModule(name){const root=document.getElementById('v2Modul
 function permissionRefresh(){applyNavigation();permissionApply(document);const r=AppStore?.get?.('ui.route');if(r)requestAnimationFrame(()=>permissionApplyModule(r));return true}
 window.PermissionService={LEVELS:Object.freeze({...PERMISSION_RANK}),catalog:PERMISSION_CATALOG,aliases:Object.freeze({...LEGACY_PERMISSION_ALIASES}),normalize:permissionNormalize,level:permissionLevel,moduleLevel,can:permissionCan,canEdit:k=>permissionCan(k,'edit'),isPreview:k=>permissionLevel(k)==='preview',require:permissionRequire,apply:permissionApply,applyModule:permissionApplyModule,refresh:permissionRefresh};
 window.gorebilir=window.gorebilir||((key)=>PermissionService.can(key,'read'));window.duzenleyebilir=window.duzenleyebilir||((key)=>PermissionService.can(key,'edit'));window.kullaniciYonetimiYetkisiVar=window.kullaniciYonetimiYetkisiVar||(()=>permissionSession().user?.admin===true||PermissionService.can('settings.users','edit'));
-async function load(name){if(!registry.has(name))throw new Error('module-not-defined:'+name);if(moduleMeta(name).visible===false||moduleLevel(name)==='hidden'){const e=new Error('module-forbidden:'+name);e.code='permission-hidden';throw e}await loadMany(registry.get(name));if((name==='communication'||name==='documents'))window.firebaseStorageHazirla?.();window.dispatchEvent(new CustomEvent('koruk:module-ready',{detail:{name,permissionLevel:moduleLevel(name)}}));requestAnimationFrame(()=>permissionApplyModule(name));return name}
+async function load(name){if(!registry.has(name))throw new Error('module-not-defined:'+name);if(moduleMeta(name).visible===false||moduleLevel(name)==='hidden'){const e=new Error('module-forbidden:'+name);e.code='permission-hidden';throw e}await loadMany(registry.get(name));if(name==='academic'||name==='communication'||name==='documents')window.firebaseStorageHazirla?.();window.dispatchEvent(new CustomEvent('koruk:module-ready',{detail:{name,permissionLevel:moduleLevel(name)}}));requestAnimationFrame(()=>permissionApplyModule(name));return name}
 function applyTheme(theme,opts={}){return window.ShellUI?.applyTheme?.(theme,opts)??theme}
 function toggleTheme(){return window.ShellUI?.toggleTheme?.()}
 function startPlatform(){if(startupDone)return true;startupDone=true;if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}),{once:true});try{if(typeof firebaseyiBaslat!=='function'||!firebaseyiBaslat())return false;authDinleyiciKur?.();return true}catch(e){console.error('[AppLoader]',e);return false}}
