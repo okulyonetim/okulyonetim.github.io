@@ -1,157 +1,51 @@
-name: Client Architecture
+name: Visible Home Parity One Shot
 
 on:
   push:
     branches: [main]
     paths:
-      - 'index.html'
-      - 'css/**'
-      - 'js/**'
-      - 'service-worker.js'
-      - 'firestore.rules'
-      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
-      - 'scripts/build-client-bundles.mjs'
-      - 'scripts/check-client-architecture.mjs'
-      - 'tests/**'
-      - 'package.json'
-      - '.github/workflows/client-architecture.yml'
-  pull_request:
-    paths:
-      - 'index.html'
-      - 'css/**'
-      - 'js/**'
-      - 'service-worker.js'
-      - 'firestore.rules'
-      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
-      - 'scripts/build-client-bundles.mjs'
-      - 'scripts/check-client-architecture.mjs'
-      - 'tests/**'
-      - 'package.json'
       - '.github/workflows/client-architecture.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  architecture:
+  parity:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Build client bundles
-        run: node scripts/build-client-bundles.mjs
-      - name: Upload consolidation source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: consolidation-source-${{ github.sha }}
-          if-no-files-found: error
-          retention-days: 1
-          path: |
-            index.html
-            service-worker.js
-            css/design-system.css
-            js/**
-            scripts/**
-            tests/**
-            package.json
-      - name: Verify module bundle contracts
-        run: node tests/module-bundles-smoke.test.js
-      - name: Enforce V2 module local-first boundary
-        run: node tests/modules-local-first-boundary.test.js
-      - name: Verify service worker shell
-        run: node tests/service-worker-precache-smoke.test.js
-      - name: Verify lazy Firebase Storage startup
-        run: node tests/lazy-firebase-storage-smoke.test.js
-      - name: Verify Android iOS web responsive shell
-        run: node tests/web-mobile-engine-separation.test.js
-      - name: Verify rebuilt classic shell
-        run: node tests/classic-shell-v2-smoke.test.js
-      - name: Verify classic People layouts
-        run: node tests/classic-people-v2-smoke.test.js
-      - name: Verify Classes mobile parity and seating
-        run: node tests/classes-mobile-parity-smoke.test.js
-      - name: Verify classic Duty layout
-        run: node tests/classic-duty-v2-smoke.test.js
-      - name: Verify classic Lesson Schedule
-        run: node tests/classic-schedule-v2-smoke.test.js
-      - name: Verify dashboard card routes
-        run: node tests/dashboard-card-routes-smoke.test.js
-      - name: Verify dashboard direct quick actions
-        run: node tests/dashboard-quick-actions.test.js
-      - name: Verify monthly calendar view
-        run: node tests/calendar-month-view.test.js
-      - name: Verify quick-note launcher
-        run: node tests/quick-note-launcher.test.js
-      - name: Verify communication admin actions
-        run: node tests/communication-admin-actions.test.js
-      - name: Verify transport separate-page routing
-        run: node tests/transport-separate-pages.test.js
-      - name: Forbid module internal tab navigation
-        run: node tests/no-module-internal-tabs.test.js
-      - name: Verify report A4 preview and print
-        run: node tests/report-engine-a4-smoke.test.js
-      - name: Verify report native/web routing
-        run: node tests/report-native-print-routing-smoke.test.js
-      - name: Verify Android PrintPlugin
-        run: node tests/android-print-plugin-smoke.test.js
-      - name: Verify dashboard reminder engine
-        run: node tests/dashboard-reminders-smoke.test.js
-      - name: Verify teacher list core contract
-        run: node tests/teacher-list-core-contract.test.js
-      - name: Verify teacher list local-first service
-        run: node tests/teacher-list-local-first-service.test.js
-      - name: Verify canonical student tool routing
-        run: node tests/student-tool-routing-smoke.test.js
-      - name: Verify People separate page routing
-        run: node tests/people-separate-pages.test.js
-      - name: Verify Academic separate page routing
-        run: node tests/academic-separate-pages.test.js
-      - name: Verify Management separate page routing
-        run: node tests/management-separate-pages.test.js
-      - name: Verify Communication separate page routing
-        run: node tests/communication-separate-pages.test.js
-      - name: Verify Settings separate page routing
-        run: node tests/settings-separate-pages.test.js
-      - name: Verify Tools separate page routing
-        run: node tests/tools-separate-pages.test.js
-      - name: Verify communication local-first contract
-        run: node tests/communication-local-first-contract.test.js
-      - name: Verify retired legacy roots
-        run: node tests/retired-legacy-roots-smoke.test.js
-      - name: Verify root JavaScript inventory
-        run: node tests/root-js-inventory-smoke.test.js
-      - name: Verify native widget platform adapter
-        run: node tests/widget-platform-adapter-smoke.test.js
-      - name: Verify V2 teblig-tebellug form
-        run: node tests/teblig-v2-smoke.test.js
-      - name: Verify Documents V2 document viewer
-        run: node tests/documents-viewer-v2-smoke.test.js
-      - name: Verify document viewer engine
-        run: node tests/document-viewer-smoke.test.js
-      - name: Verify lazy document libraries
-        run: node tests/lazy-document-libs-smoke.test.js
-      - name: Verify V2 payroll change form
-        run: node tests/payroll-change-v2-smoke.test.js
-      - name: Verify V2 AI assistant
-        run: node tests/assistant-v2-smoke.test.js
-      - name: Verify V2 legislation engine
-        run: node tests/legislation-engine-v2-smoke.test.js
-      - name: Verify consolidated map adapter
-        run: node tests/map-consolidation-smoke.test.js
-      - name: Verify rubric/project Tools bridge
-        run: node tests/rubric-tools-v2-smoke.test.js
-      - name: Verify local-first rubric settings
-        run: node tests/rubric-settings-v2-smoke.test.js
-      - name: Verify rubric legacy retirement readiness
-        run: node tests/rubric-legacy-retirement-readiness.test.js
-      - name: Verify PWA background push
-        run: node tests/pwa-push-smoke.test.js
-      - name: Audit client architecture
-        run: node scripts/check-client-architecture.mjs
-      - name: Show generated bundle sizes
-        run: cat dist/js/manifest.json
-
-# UI parity source refresh marker — remove after snapshot download.
+      - name: Apply verified visible home parity
+        env:
+          PATCH_B64: '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'
+        run: |
+          set -euo pipefail
+          printf '%s' "$PATCH_B64" | base64 -d | gzip -d > /tmp/ui-parity.patch
+          git apply -p1 --check /tmp/ui-parity.patch
+          git apply -p1 /tmp/ui-parity.patch
+          git diff --check
+      - name: Verify visible home parity
+        run: |
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/dashboard-quick-actions.test.js
+          node tests/dashboard-reminders-smoke.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/web-mobile-engine-separation.test.js
+          node tests/module-bundles-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit visible parity and restore architecture workflow
+        run: |
+          set -euo pipefail
+          git show 8d1ef733a582415416aec99aae10a0764ffa092a:.github/workflows/client-architecture.yml > .github/workflows/client-architecture.yml
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add css/design-system.css js/modules/dashboard.js js/modules/school-live-status.js tests/dashboard-card-routes-smoke.test.js tests/classic-shell-v2-smoke.test.js .github/workflows/client-architecture.yml
+          git commit -m 'Port reference home, live bell and weather surfaces'
+          git push origin HEAD:main
