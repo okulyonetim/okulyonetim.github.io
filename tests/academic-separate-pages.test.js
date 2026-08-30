@@ -9,6 +9,8 @@ assert(!academic.includes('data-academic-tab'),'Academic modülü iç sekme üre
 assert(academic.includes("function openPage(page,title='')"),'AcademicModule doğrudan sayfa açma API sözleşmesi sağlamalı.');
 for(const page of ['schedule','written','trial','results','plans','calendar'])assert(academic.includes(`'${page}'`),`Academic ayrı sayfa hedefi eksik: ${page}`);
 assert(academic.includes('denemeSayacBaslat')&&academic.includes('denemeSayacDurdur')&&academic.includes('timerState'),'Deneme sınavı sayaç davranışı korunmalı.');
+for(const token of ['examDayDiff','ka-written-page','ka-written-summary','Toplam sınav','7 gün içinde','ka-written-card','ka-written-meta','ka-written-modal-intro','ka-written-class-picker']) assert(academic.includes(token),`Yazılı Sınavlar görünür paritesi eksik: ${token}`);
+
 for(const token of ['planCurrentWeekIndex','planTracked','ogretmenYillikPlanSecimleri','yillikPlanNotlari','data-plan-select','data-plan-note','data-plan-prev','data-plan-next']) assert(academic.includes(token),`Yıllık Plan gerçek haftalık takip sözleşmesi eksik: ${token}`);
 for(const token of ['data-plan-week-overlay','ka-plan-week--overlay','data-plan-wake','data-plan-menu','bindPlanWeekGestures','openPlanMenu','openPlanWeekPicker','openPlanWeekEditor','openPlanSignDate','navigator.wakeLock','touchstart','touchend','data-plan-full']) assert(academic.includes(token),`Yıllık Plan tam ekran haftalık görünür paritesi eksik: ${token}`);
 assert(!fs.existsSync('js/modules/yillik-plan.js'),'Yıllık Plan ayrı runtime JS dosyasına geri bölünmemeli.');
