@@ -35,25 +35,59 @@ jobs:
             git apply "/tmp/${out}.patch"
           }
 
+          echo 'cf3ee0e407149f49515964ef110edf8f93bbb2489910002ec077ad50bdfdb601  .github/staging/teacher-groups/shell00' | sha256sum -c -
+          echo '73e7dbf9d3c9e8217a6c071c8e89ab66d060e97d0113ee6b344105733ad03356  .github/staging/teacher-groups/shell01' | sha256sum -c -
+          echo '1c6f256081681067be6a1250b6d9f86fd11bf65ea4fed6da934dbb563956d047  .github/staging/teacher-groups/shell02a' | sha256sum -c -
+          echo 'd805062ed982d721a4bcbe1c8b86646f59b8a54cd9e7cc70e792bf71dcfa84df  .github/staging/teacher-groups/shell02b' | sha256sum -c -
+          echo '4888107929ab823d55ec37416b8aac2f8ea006e643717130bd7620ffe39bdd96  .github/staging/teacher-groups/shell03' | sha256sum -c -
           check_apply '.github/staging/teacher-groups/shell0' 'a04134a14d624b8bbadb6582814c0f7e542f3bebaa12d187a76afe28d236ba81' 'f899f805d3b1331fb29239db8261479501965c4e6fe4d74d062b472dd9000b02' 'shell'
+
+          echo 'db7959b180f21b20f3c353c48f897a1d892e10a9a62caada8769d3c03b74eece  .github/staging/teacher-groups/people-mgmt00' | sha256sum -c -
+          echo 'bf6911c1bce2caf4cc13f730a788060aee28f934d29188d610ced85fb9479eb7  .github/staging/teacher-groups/people-mgmt01' | sha256sum -c -
           check_apply '.github/staging/teacher-groups/people-mgmt0' '4f3704159107432ad36941fa6b76e844a270b893a84b1eb13e79ccc30cb72074' 'dd26840b38c30ad51e4b9d2e95bbdf0e76f0a05688aba490fe4484fb0b65eb15' 'people-mgmt'
+
+          echo 'eb9081873fc79eb2b5360e4156036027c33fd6a85aee6d9adb02d23b15f5bf2d  .github/staging/teacher-shell-missing3/part00' | sha256sum -c -
+          echo 'e57adc41b89c22d947835e6488ccc33e8d4a54fd788a05523afedc21ed724134  .github/staging/teacher-shell-missing3/part01' | sha256sum -c -
+          echo 'ec2d24233777fd60d37d3316af74045ed42da98740fd2786223f4bc7922af6bb  .github/staging/teacher-shell-missing3/part02' | sha256sum -c -
+          echo '97f6f25fd40ddfe15529a8b603063df3fe82b10bd342586741b6879a79f9c41e  .github/staging/teacher-shell-missing3/part03' | sha256sum -c -
           check_apply '.github/staging/teacher-shell-missing3/part0' '5c40b51e99133ff916a4d9c7d2bcef7355976440ae1f4d9f9354fb481d7d64d5' 'f90935187b0047945d46f16d221d2adfa01c1f7cf33d86daaf171f420e7869fd' 'seating'
+
+          echo '55327424f1c150b23d01f570ef5054b3039e6867459941f42879cf09c03fe7e2  .github/staging/teacher-groups/tests00' | sha256sum -c -
+          echo 'ab388c59089f0eb0710d5172fbeda93e0ec9718e4f2e588e984d755298cd4b47  .github/staging/teacher-groups/tests01' | sha256sum -c -
           check_apply '.github/staging/teacher-groups/tests0' '0d67844b936ac14b3f0327f4dce6d27676feeceaed519fed81509429ad0bd251' 'c2945b05c3de509a37ef8d1f7d5952dbd0d377bd98d9128dd6c3d81ed1a6cba1' 'tests'
 
           python - <<'PY'
           from pathlib import Path
-          p = Path('firestore.rules')
-          s = p.read_text(encoding='utf-8')
-          own_teacher = "    function kendiOgretmenIdsi() {\n      return kendiBelgemVarMi() ? kullaniciBelgesi().data.bagliOgretmenId : null;\n    }\n"
-          own_class = "\n    function kendiSinifiMi(sinifId) {\n      return girisYapmis()\n        && kendiOgretmenIdsi() != null\n        && exists(/databases/$(database)/documents/oy_siniflar/$(sinifId))\n        && get(/databases/$(database)/documents/oy_siniflar/$(sinifId)).data.sinifOgretmeniId == kendiOgretmenIdsi();\n    }\n"
-          old_rule = "    match /oy_sinifOturma/{sinifId} {\n      allow read: if girisYapmis();\n      allow create, update, delete: if moduluDuzenleyebilir('siniflar');\n    }\n"
-          new_rule = "    match /oy_sinifOturma/{sinifId} {\n      allow read: if girisYapmis();\n      allow create, update, delete: if moduluDuzenleyebilir('siniflar') || kendiSinifiMi(sinifId);\n    }\n"
+          p=Path('firestore.rules')
+          s=p.read_text(encoding='utf-8')
+          own_teacher="""    function kendiOgretmenIdsi() {
+              return kendiBelgemVarMi() ? kullaniciBelgesi().data.bagliOgretmenId : null;
+            }
+          """
+          own_class="""
+              function kendiSinifiMi(sinifId) {
+                return girisYapmis()
+                  && kendiOgretmenIdsi() != null
+                  && exists(/databases/$(database)/documents/oy_siniflar/$(sinifId))
+                  && get(/databases/$(database)/documents/oy_siniflar/$(sinifId)).data.sinifOgretmeniId == kendiOgretmenIdsi();
+              }
+          """
+          old_rule="""    match /oy_sinifOturma/{sinifId} {
+              allow read: if girisYapmis();
+              allow create, update, delete: if moduluDuzenleyebilir('siniflar');
+            }
+          """
+          new_rule="""    match /oy_sinifOturma/{sinifId} {
+              allow read: if girisYapmis();
+              allow create, update, delete: if moduluDuzenleyebilir('siniflar') || kendiSinifiMi(sinifId);
+            }
+          """
           if s.count(own_teacher) != 1:
               raise SystemExit('kendiOgretmenIdsi anchor exactly once bulunamadı')
           if s.count(old_rule) != 1:
               raise SystemExit('oy_sinifOturma anchor exactly once bulunamadı')
-          s = s.replace(own_teacher, own_teacher + own_class, 1).replace(old_rule, new_rule, 1)
-          p.write_text(s, encoding='utf-8')
+          s=s.replace(own_teacher, own_teacher+own_class, 1).replace(old_rule,new_rule,1)
+          p.write_text(s,encoding='utf-8')
           PY
 
           node --check js/app-loader.js
