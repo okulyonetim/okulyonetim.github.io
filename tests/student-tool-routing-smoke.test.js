@@ -36,3 +36,10 @@ assert(tools.includes('prepareGradebooks'),'Canonical OdevNotUI için ortak loca
 assert(tools.includes('OdevNotCizelgeleriService'),'Canonical gradebook service korunmalı.');
 
 console.log('Öğrenci araçları tek canonical UI motoru ve attendance-only StudentPages sözleşmesi başarılı.');
+
+assert(tools.includes("attendanceDraftKey")&&tools.includes("data-att-status=\"${k}\"")&&tools.includes('data-att-save'),'Yoklama referans butonlu durum seçimi ve tek toplu Kaydet akışını canonical StudentPages içinde taşımalı.');
+assert(tools.includes('ka-attendance-summary')&&tools.includes("counts={toplam:students.length,var:0,yok:0,gec:0,izinli:0}"),'Yoklama Toplam/Var/Yok/Geç/İzinli canlı özetini canonical renderer içinde üretmeli.');
+assert(tools.includes("gunOzetiGetir?.(selectedDate)")&&tools.includes("gununDevamsizlariGetir?.(selectedDate)")&&tools.includes('data-att-admin-view'),'Yönetici Tüm Sınıflar ve Devamsızlar görünümü mevcut YoklamaService APIlerinden beslenmeli.');
+assert(!tools.includes('attendanceStatusOptions('),'Eski öğrenci başına select ile anında kayıt yoklama görünümü geri dönmemeli.');
+const design=fs.readFileSync('css/design-system.css','utf8');
+assert(design.includes('STUDENT ATTENDANCE — REFERENCE VISIBLE WORKSPACE')&&design.includes('.ka-attendance-status.is-var.is-selected')&&design.includes('.ka-attendance-savebar'),'Yoklama açık/koyu uyumlu görünür sözleşmesi tek design-system içinde bulunmalı.');
