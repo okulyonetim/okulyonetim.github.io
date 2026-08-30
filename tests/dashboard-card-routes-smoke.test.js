@@ -13,7 +13,7 @@ assert(shell.includes("closest('[data-home-section]')"),'Dashboard kart gövdesi
 assert(shell.includes("routeModule(target.module,{bottom:'menu',page:target.page||'',title:target.title||''})"),'Dashboard kartı yalnız modüle değil gerçek alt sayfaya gitmeli.');
 assert(!shell.includes("const hero=e.target.closest('.ka-home-hero');if(hero){routeModule('academic'"),'Karşılama kartı alakasız Academic sayfasına yönlendirmemeli.');
 assert(!shell.includes("stats:{module:"),'Okul Özeti gerçek hedefi olmadığı için rastgele sayfa açmamalı.');
-assert(dash.includes('class=\"kh-live-card\" data-dash-route=\"academic\" data-dash-page=\"schedule\" data-dash-title=\"Ders Programı\"'),'Hero canlı kartı doğrudan Ders Programı alt sayfasına gitmeli.');
+assert(dash.includes('id=\"khBell\"')&&dash.includes('data-dash-route=\"academic\" data-dash-page=\"schedule\" data-dash-title=\"Ders Programı\"'),'Hero canlı zil kartı doğrudan Ders Programı alt sayfasına gitmeli.');
 assert(dash.includes('class=\"kh-more\" data-dash-route=\"communication\" data-dash-page=\"calendar\" data-dash-title=\"Takvim\"'),'Takvim referanstaki ay başlığı düğmesinden doğrudan Takvim alt sayfasına gitmeli.');
 assert(dash.includes("function routeButton(label,module,page='',title='',icon='→')"),'Dashboard footer helper alt sayfa ve başlığı taşımalı.');
 assert(css.includes('padding-left:max(4px,var(--ka-safe-left))'),'Mobil ana içerik kenar boşluğu 4px/safe-area olmalı.');
@@ -67,7 +67,7 @@ assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice
 // Checkpoint: teacher calendar counts are personal and share the canonical reminder engine.
 
 assert(dash.includes("function liveCardView")&&dash.includes("live.mode==='lesson'")&&dash.includes("big='Teneffüs'")&&dash.includes("liveClock(live.remaining)"),'Karşılama zil kartı canonical SchoolLiveStatus durumunu canlı geri sayımla göstermeli.');
-assert(dash.includes('data-dash-live-reminder-suffix')&&dash.includes("suffix=card.dataset.dashLiveReminderSuffix||''")&&dash.includes('nextSub=view.sub+suffix'),'Canlı zil tick güncellemesi öğretmen hatırlatma ekini ilk saniyede silmemeli.');
+assert(dash.includes('function bellModel')&&dash.includes('class=\"kh-bell-times\"')&&dash.includes('class=\"kh-bell-next\"'),'Canlı zil tick güncellemesi referans modern zil modelini yeniden üretmeli.');
 assert(dash.includes("live.mode==='after'")&&dash.includes("big='Dersler tamamlandı'")&&dash.includes("live.mode==='weekend'")&&dash.includes("big='Hafta sonu'"),'Karşılama kartı ders bitince geçmiş ilk dersi tekrar göstermemeli.');
 // Checkpoint: teacher hero shares the canonical SchoolLiveStatus lesson context.
 
@@ -147,10 +147,14 @@ assert(dash.includes("arr('yillikPlanTanimlari')")&&dash.includes('function teac
 assert(dash.includes('data-dash-lesson-plan')&&dash.includes('Yıllık Planı Aç ›'),'Ders odak kartı mevcut Academic yıllık plan açma davranışına bağlanmalı.');
 assert(css.includes('LEGACY TEACHER LESSON FOCUS — REFERENCE PORT')&&css.includes('.ka-home .kh-focus'),'Ders odak kartı legacy geometrisini merkezi design-system içinde kullanmalı.');
 
-assert(dash.includes('class="kh-hero"')&&dash.includes('class="kh-live-card"'),'Dashboard karşılama alanı referans kh-hero/kh-live-card DOM sözleşmesini kullanmalı.');
+assert(dash.includes('class="kh-hero"')&&dash.includes('id="khBell"')&&dash.includes('id="khWeather"'),'Dashboard karşılama alanı referans hero + canlı zil + hava kartı DOM sözleşmesini kullanmalı.');
 assert(dash.includes("window.SchoolLiveStatus?.status?.()")&&dash.includes("data-dash-page=\"schedule\""),'Hero canlı kartı ikinci sayaç yerine canonical SchoolLiveStatus ve merkezi Ders Programı rotasını kullanmalı.');
 assert(!dash.includes('class="ka-home-hero"'),'Eski geçici ka-home-hero renderer geri dönmemeli.');
 assert(css.includes('LEGACY DASHBOARD HERO — REFERENCE PORT')&&css.includes('.ka-home .kh-live-card'),'Hero referans geometrisi merkezi design-system içinde kalmalı.');
+
+assert(dash.includes('class="kh-bell-times"')&&dash.includes('class="kh-bell-progress"')&&dash.includes('GÜN İÇİ AKIŞ'),'Canlı zil kartı referanstaki Başlangıç/Kalan/Bitiş, ilerleme ve gün içi akış yüzeyini taşımalı.');
+assert(dash.includes('function weatherModel()')&&dash.includes('data-dash-weather')&&dash.includes('SchoolLiveStatus?.openWeather?.()'),'Ana sayfadaki ayrı hava kartı canonical SchoolLiveStatus detayına bağlanmalı.');
+assert(css.includes('VISIBLE HOME PARITY')&&css.includes('#khBell.kh-bell-modern')&&css.includes('.ka-home .kh-weather-card'),'Canlı zil ve hava kartı tasarımı tek merkezi CSS sahibinde olmalı.');
 
 assert(dash.includes('data-dash-backtop')&&dash.includes("window.scrollY>520")&&dash.includes("window.scrollTo({top:0,behavior:'smooth'})"),'Referans yukarı dön düğmesi 520px sonrasında görünmeli ve sayfa başına dönmeli.');
 assert(css.includes('LEGACY DASHBOARD BACKTOP — REFERENCE PORT')&&css.includes('.kh-backtop.is-visible'),'Yukarı dön görünümü merkezi design-system içinde kalmalı.');
