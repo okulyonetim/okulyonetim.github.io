@@ -5,6 +5,7 @@ const classes=fs.readFileSync('js/modules/classes-mobile-parity.js','utf8');
 const seating=fs.readFileSync('js/modules/class-seating.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
+const design=fs.readFileSync('css/design-system.css','utf8');
 
 new Function(classes);
 new Function(seating);
@@ -16,9 +17,11 @@ for(const [name,src] of [['classes',classes],['seating',seating]]){
   assert(!/createElement\(\s*['"]style['"]\s*\)/.test(src),`${name}: runtime style üretmemeli.`);
 }
 
-for(const marker of ['SINIF YÖNETİMİ','TOPLAM SINIF','TOPLAM ÖĞRENCİ','KIZ ÖĞRENCİ','ERKEK ÖĞRENCİ','Bilgiler','Öğrenciler (','Ders Programı','GENEL BİLGİLER','Oturma Planı','Excel','e-Okul']){
+for(const marker of ['SINIF YÖNETİMİ','TOPLAM SINIF','TOPLAM ÖĞRENCİ','KIZ ÖĞRENCİ','ERKEK ÖĞRENCİ','Bilgiler','Öğrenciler (','Ders Programı','GENEL BİLGİLER','Oturma Planı','Excel','e-Okul','data-cmp-search-clear','data-cmp-directory-excel-pick','data-cmp-directory-eokul-pick','ka-class-numbers','is-girl','is-boy','ka-class-edit','ka-class-detail-summary','ka-class-detail-tabs']){
   assert(classes.includes(marker),`Sınıflar görünür parite öğesi eksik: ${marker}`);
 }
+for(const marker of ['.ka-class-toolbar','.ka-class-summary-grid','.ka-class-numbers','.ka-class-edit','.ka-class-detail-summary','.ka-class-detail-tabs','.ka-class-quick-actions','.ka-class-info-row']) assert(design.includes(marker),`Sınıflar merkezi görünüm stili eksik: ${marker}`);
+assert(!classes.includes("level===x?'ka-btn--danger'")&&!classes.includes("detailTab===key?'ka-btn--danger'"),'Sınıf filtre/sekmelerinde danger rengi aktif durum için kullanılmamalı.');
 assert(!classes.includes('>Aktif<')&&!classes.includes('Aktif</span>'),'Sınıf detayındaki Aktif rozeti geri gelmemeli.');
 const info=classes.match(/function infoBody\([\s\S]*?function studentActions/)?.[0]||'';
 assert(info.includes('GENEL BİLGİLER'),'Bilgiler sekmesi genel bilgileri göstermeli.');

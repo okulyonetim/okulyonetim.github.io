@@ -30,5 +30,4 @@ function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return;roo
 function inject(){const root=document.querySelector('[data-communication-module]');if(!root||root.querySelector('[data-ai-assistant-open]'))return;const tabs=root.querySelector('.ka-tabs');if(!tabs)return;const b=document.createElement('button');b.type='button';b.className='ka-tab';b.dataset.aiAssistantOpen='true';b.textContent='AI Asistan';b.onclick=()=>mount(document.getElementById('v2ModuleRoot'));tabs.appendChild(b)}
 global.AssistantModule={mount,context,send,saveDraft};
 global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='communication')requestAnimationFrame(inject)});
-global.AppLoader?.loadScript?.('js/modules/communication-legacy-ui.js').catch?.(e=>console.warn('[CommunicationLegacyUI load]',e?.message||e));
 })(window);
