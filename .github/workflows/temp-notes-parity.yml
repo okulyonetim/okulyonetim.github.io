@@ -22,8 +22,9 @@ jobs:
       - name: Reconstruct and apply candidate patch
         shell: bash
         run: |
-          echo '4bb09c5651f4eb3eb0c9e9f555a217888f4fae628361709dceb3490196d83abe  .github/staging/notes-parity/patch.xz.b64' | sha256sum -c -
-          base64 -d .github/staging/notes-parity/patch.xz.b64 | xz -d > /tmp/notes-parity.patch
+          base64 -d .github/staging/notes-parity/patch.xz.b64 > /tmp/notes-parity.patch.xz
+          xz -t /tmp/notes-parity.patch.xz
+          xz -d -c /tmp/notes-parity.patch.xz > /tmp/notes-parity.patch
           echo '9988c1054aabd4dd746a32c658392be32595126b1b6469989bd3e440e01cebe9  /tmp/notes-parity.patch' | sha256sum -c -
           git apply --check /tmp/notes-parity.patch
           git apply /tmp/notes-parity.patch
