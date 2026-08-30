@@ -6,7 +6,7 @@
 'use strict';
 if(global.SchoolLiveStatus)return;
 const WMO={0:['☀️','Açık'],1:['🌤️','Az Bulutlu'],2:['⛅','Parçalı Bulutlu'],3:['☁️','Bulutlu'],45:['🌫️','Sisli'],48:['🌫️','Kırağı Sisi'],51:['🌦️','Hafif Çisenti'],53:['🌦️','Çisenti'],55:['🌧️','Yoğun Çisenti'],56:['🌧️','Donucu Çisenti'],57:['🌧️','Yoğun Donucu Çisenti'],61:['🌦️','Hafif Yağmur'],63:['🌧️','Yağmur'],65:['🌧️','Şiddetli Yağmur'],66:['🌧️','Donucu Yağmur'],67:['🌧️','Şiddetli Donucu Yağmur'],71:['🌨️','Hafif Kar'],73:['🌨️','Kar'],75:['❄️','Yoğun Kar'],77:['❄️','Kar Taneleri'],80:['🌦️','Hafif Sağanak'],81:['🌧️','Sağanak'],82:['⛈️','Şiddetli Sağanak'],85:['🌨️','Kar Sağanağı'],86:['❄️','Yoğun Kar Sağanağı'],95:['⛈️','Gök Gürültülü Fırtına'],96:['⛈️','Dolu ile Fırtına'],99:['⛈️','Şiddetli Dolu ile Fırtına']};
-let timer=null,weatherBusy=false,headerBound=false,lastTick='';
+let timer=null,weatherBusy=false,lastTick='';
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const pad=n=>String(n).padStart(2,'0');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -21,7 +21,7 @@ function teacherId(){const u=user();return u.bagliOgretmenId||u.ogretmenId||''}
 function linkedTeacher(){const id=teacherId();return id?arr('ogretmenler').find(x=>x.id===id)||null:null}
 function displayName(){const u=user(),t=linkedTeacher();return(t?.adSoyad||[t?.ad,t?.soyad].filter(Boolean).join(' ')||u.adSoyad||[u.ad,u.soyad].filter(Boolean).join(' ')||u.displayName||u.kullaniciAdi||'Kullanıcı').trim()}
 function profilePhoto(){const u=user(),t=linkedTeacher();return t?.profilFotoUrl||t?.fotoUrl||t?.fotografUrl||u.profilFotoUrl||u.fotoUrl||u.photoURL||''}
-function syncHeaderIdentity(){const btn=document.querySelector('[data-ka-header-profile]');if(btn){const photo=profilePhoto(),name=displayName(),initials=name.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr-TR');btn.innerHTML=photo?`<img src="${esc(photo)}" alt="${esc(name)}">`:esc(initials||'K')}const bell=document.querySelector('[data-ka-header-notification]');if(bell&&!headerBound){headerBound=true;bell.addEventListener('click',()=>global.ShellUI?.routeModule?.('communication',{bottom:'menu'}))}}
+function syncHeaderIdentity(){const btn=document.querySelector('[data-ka-header-profile]');if(btn){const photo=profilePhoto(),name=displayName(),initials=name.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr-TR');btn.innerHTML=photo?`<img src="${esc(photo)}" alt="${esc(name)}">`:esc(initials||'K')}}
 function weatherInfo(){return global.AppStore?.get?.('ui.weather')||null}
 function weatherView(){const w=weatherInfo();if(!w)return null;const info=WMO[w.code]||['🌡️','Hava Durumu'];return{emoji:info[0],text:info[1],temp:Math.round(Number(w.temp)||0),location:w.location||'',apparent:Math.round(Number(w.apparent)||Number(w.temp)||0),humidity:Math.round(Number(w.humidity)||0),wind:Math.round(Number(w.wind)||0)}}
 function closeWeather(){document.querySelector('[data-ka-weather-modal]')?.remove();document.body.classList.remove('ka-layer-open')}
