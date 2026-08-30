@@ -12,52 +12,7 @@ on:
       - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
-      - 'tests/module-bundles-smoke.test.js'
-      - 'tests/modules-local-first-boundary.test.js'
-      - 'tests/service-worker-precache-smoke.test.js'
-      - 'tests/web-mobile-engine-separation.test.js'
-      - 'tests/classic-shell-v2-smoke.test.js'
-      - 'tests/classic-people-v2-smoke.test.js'
-      - 'tests/classes-mobile-parity-smoke.test.js'
-      - 'tests/classic-duty-v2-smoke.test.js'
-      - 'tests/classic-schedule-v2-smoke.test.js'
-      - 'tests/dashboard-card-routes-smoke.test.js'
-      - 'tests/dashboard-quick-actions.test.js'
-      - 'tests/calendar-month-view.test.js'
-      - 'tests/quick-note-launcher.test.js'
-      - 'tests/communication-admin-actions.test.js'
-      - 'tests/transport-separate-pages.test.js'
-      - 'tests/no-module-internal-tabs.test.js'
-      - 'tests/report-engine-a4-smoke.test.js'
-      - 'tests/report-native-print-routing-smoke.test.js'
-      - 'tests/android-print-plugin-smoke.test.js'
-      - 'tests/dashboard-reminders-smoke.test.js'
-      - 'tests/teacher-list-core-contract.test.js'
-      - 'tests/teacher-list-local-first-service.test.js'
-      - 'tests/student-tool-routing-smoke.test.js'
-      - 'tests/people-separate-pages.test.js'
-      - 'tests/academic-separate-pages.test.js'
-      - 'tests/management-separate-pages.test.js'
-      - 'tests/communication-separate-pages.test.js'
-      - 'tests/settings-separate-pages.test.js'
-      - 'tests/tools-separate-pages.test.js'
-      - 'tests/communication-local-first-contract.test.js'
-      - 'tests/lazy-firebase-storage-smoke.test.js'
-      - 'tests/retired-legacy-roots-smoke.test.js'
-      - 'tests/root-js-inventory-smoke.test.js'
-      - 'tests/widget-platform-adapter-smoke.test.js'
-      - 'tests/teblig-v2-smoke.test.js'
-      - 'tests/documents-viewer-v2-smoke.test.js'
-      - 'tests/document-viewer-smoke.test.js'
-      - 'tests/lazy-document-libs-smoke.test.js'
-      - 'tests/payroll-change-v2-smoke.test.js'
-      - 'tests/assistant-v2-smoke.test.js'
-      - 'tests/legislation-engine-v2-smoke.test.js'
-      - 'tests/map-consolidation-smoke.test.js'
-      - 'tests/rubric-tools-v2-smoke.test.js'
-      - 'tests/rubric-settings-v2-smoke.test.js'
-      - 'tests/rubric-legacy-retirement-readiness.test.js'
-      - 'tests/pwa-push-smoke.test.js'
+      - 'tests/**'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
   pull_request:
@@ -70,53 +25,9 @@ on:
       - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
-      - 'tests/module-bundles-smoke.test.js'
-      - 'tests/modules-local-first-boundary.test.js'
-      - 'tests/service-worker-precache-smoke.test.js'
-      - 'tests/web-mobile-engine-separation.test.js'
-      - 'tests/classic-shell-v2-smoke.test.js'
-      - 'tests/classic-people-v2-smoke.test.js'
-      - 'tests/classes-mobile-parity-smoke.test.js'
-      - 'tests/classic-duty-v2-smoke.test.js'
-      - 'tests/classic-schedule-v2-smoke.test.js'
-      - 'tests/dashboard-card-routes-smoke.test.js'
-      - 'tests/dashboard-quick-actions.test.js'
-      - 'tests/calendar-month-view.test.js'
-      - 'tests/quick-note-launcher.test.js'
-      - 'tests/communication-admin-actions.test.js'
-      - 'tests/transport-separate-pages.test.js'
-      - 'tests/no-module-internal-tabs.test.js'
-      - 'tests/report-engine-a4-smoke.test.js'
-      - 'tests/report-native-print-routing-smoke.test.js'
-      - 'tests/android-print-plugin-smoke.test.js'
-      - 'tests/dashboard-reminders-smoke.test.js'
-      - 'tests/teacher-list-core-contract.test.js'
-      - 'tests/teacher-list-local-first-service.test.js'
-      - 'tests/student-tool-routing-smoke.test.js'
-      - 'tests/people-separate-pages.test.js'
-      - 'tests/academic-separate-pages.test.js'
-      - 'tests/management-separate-pages.test.js'
-      - 'tests/communication-separate-pages.test.js'
-      - 'tests/settings-separate-pages.test.js'
-      - 'tests/tools-separate-pages.test.js'
-      - 'tests/communication-local-first-contract.test.js'
-      - 'tests/lazy-firebase-storage-smoke.test.js'
-      - 'tests/retired-legacy-roots-smoke.test.js'
-      - 'tests/root-js-inventory-smoke.test.js'
-      - 'tests/widget-platform-adapter-smoke.test.js'
-      - 'tests/teblig-v2-smoke.test.js'
-      - 'tests/documents-viewer-v2-smoke.test.js'
-      - 'tests/document-viewer-smoke.test.js'
-      - 'tests/lazy-document-libs-smoke.test.js'
-      - 'tests/payroll-change-v2-smoke.test.js'
-      - 'tests/assistant-v2-smoke.test.js'
-      - 'tests/legislation-engine-v2-smoke.test.js'
-      - 'tests/map-consolidation-smoke.test.js'
-      - 'tests/rubric-tools-v2-smoke.test.js'
-      - 'tests/rubric-settings-v2-smoke.test.js'
-      - 'tests/rubric-legacy-retirement-readiness.test.js'
-      - 'tests/pwa-push-smoke.test.js'
+      - 'tests/**'
       - 'package.json'
+      - '.github/workflows/client-architecture.yml'
 
 permissions:
   contents: read
@@ -132,6 +43,20 @@ jobs:
           node-version: '24'
       - name: Build client bundles
         run: node scripts/build-client-bundles.mjs
+      - name: Upload consolidation source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: consolidation-source-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 1
+          path: |
+            index.html
+            service-worker.js
+            css/design-system.css
+            js/**
+            scripts/**
+            tests/**
+            package.json
       - name: Verify module bundle contracts
         run: node tests/module-bundles-smoke.test.js
       - name: Enforce V2 module local-first boundary
