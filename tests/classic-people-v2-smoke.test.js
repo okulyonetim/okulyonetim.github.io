@@ -3,6 +3,7 @@ const assert=require('assert');
 const people=fs.readFileSync('js/modules/people.js','utf8');
 const importer=fs.readFileSync('js/modules/people-import.js','utf8');
 const exact=fs.readFileSync('js/modules/people-classic-ui.js','utf8');
+const classesMobile=fs.readFileSync('js/modules/classes-mobile-parity.js','utf8');
 const parity=fs.readFileSync('js/modules/classic-parity.js','utf8');
 const excel=fs.readFileSync('js/modules/classic-excel-parity.js','utf8');
 const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
@@ -39,6 +40,11 @@ for(const marker of ['ogm-shell','ogm-grid','ogm-card','ogm-avatar','ogm-stats',
 for(const api of ['global.OgretmenService.kaydet','global.SiniflarService.sinifKaydet','global.SiniflarService.veliKaydet','global.PeopleImportUI?.importTeachers','global.PeopleImportUI?.importStudents']) assert(exact.includes(api),`Exact People canonical service kapısı eksik: ${api}`);
 assert(exact.includes('const canonical=global.PeopleModule')&&exact.includes('canonical.unmount?.()'),'Canonical People abonelikleri exact UI devralırken kontrollü kapatılmalı.');
 assert(exact.includes('global.PeopleModule=api'),'Shell aynı PeopleModule lifecycle API ile exact UI kullanmalı.');
+assert(exact.includes("if(next==='students'){stopSubs();delegated=true;canonical.mount?.(root);return canonical.openPage?.('students')!==false}"),'Öğrenciler görünür sayfası doğrudan canonical People rendererına delege edilmeli.');
+assert(!exact.includes("page==='students'?studentView()"),'Classic People renderer öğrenci görünümünün ikinci sahibi olmamalı.');
+const peopleReadyOwners=[people,exact,classesMobile].filter(src=>src.includes("e.detail?.name==='people'")&&src.includes("koruk:module-ready"));
+assert.strictEqual(peopleReadyOwners.length,1,'People modülü için yalnız en dış yönlendirici module-ready mount sahibi olmalı.');
+assert(classesMobile.includes("[data-student-detail],[data-exact-student-detail]"),'Sınıf detayından öğrenci açma canonical öğrenci kartını desteklemeli.');
 for(const label of ['Program, nöbet ve sorumluluklar tek ekranda.','Sınıf Öğretmeni','Öğrenci Listesi','Bilgiler','Ders Programı','Öğrenciler']) assert(exact.includes(label),`Eski People metin/hiyerarşi paritesi eksik: ${label}`);
 
 const peopleRegistry=loader.match(/define\('people',\[([^\]]+)\]\)/)?.[1]||'';

@@ -124,5 +124,5 @@ function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.og
 function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();render();preparePeopleData().catch(e=>console.warn('[People] ilişkisel veri hazırlığı',e?.message||e));return true}
 function openPage(page,title=''){const allowed=['teachers','classes','students'];if(!allowed.includes(page))return false;activeTab=page;teacherDetailId='';studentDetailId='';studentResultsMode=false;classDetailId='';classDetailTab='info';query='';render();return true}
 function unmount(){mounted=false;teacherDetailId='';studentDetailId='';studentResultsMode=false;classDetailId='';classDetailTab='info';document.querySelector('[data-teacher-modal]')?.remove();document.querySelector('[data-people-modal]')?.remove();unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
-global.PeopleModule={mount,unmount,render,openPage};global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='people')mount()});
+global.PeopleModule={mount,unmount,render,openPage};
 })(window);
