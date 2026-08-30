@@ -57,6 +57,10 @@ let editable=true;
 let resizeHandler=null;
 
 const currentClass=()=>arr('siniflar').find(x=>x.id===classId)||null;
+const activeUser=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};
+const activeTeacherId=()=>{const u=activeUser();return u.bagliOgretmenId||u.ogretmenId||''};
+const isTeacherUser=()=>activeUser().admin!==true&&!!activeTeacherId();
+const ownClass=()=>!!activeTeacherId()&&currentClass()?.sinifOgretmeniId===activeTeacherId();
 const students=()=>arr('veliler')
   .filter(v=>v.sinifId===classId)
   .slice()
@@ -66,9 +70,9 @@ const teacherName=()=>{
   const t=arr('ogretmenler').find(o=>o.id===s?.sinifOgretmeniId);
   return t?[t.ad,t.soyad].filter(Boolean).join(' '):'';
 };
-const canEdit=()=>!global.PermissionService
+const canEdit=()=>isTeacherUser()?ownClass():(activeUser().admin===true||!global.PermissionService
   ||global.PermissionService.can('transport.classSeating.edit','edit')
-  ||global.PermissionService.can('people.classes','edit');
+  ||global.PermissionService.can('people.classes','edit'));
 
 function schoolYear(){
   const d=new Date(),y=d.getFullYear();

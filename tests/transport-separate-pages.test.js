@@ -10,8 +10,20 @@ for(const [label,page] of [['Taşıma','services'],['Servis Oturma','busSeats'],
   assert(shell.includes(`['${label}'`)&&shell.includes(`'transport','${page}'`),`${label} ayrı Transport sayfasına yönlenmeli.`);
 }
 assert(shell.includes("name==='transport'&&['services','busSeats','classSeats'].includes(page)"),'ShellUI Transport alt sayfalarını doğrudan çözmeli.');
-assert(transport.includes('function openPage(page,title=')&&transport.includes('window.TransportModule={mount,unmount,render,prepareLocal,openBusEditor,openPage}'),'TransportModule public openPage API sunmalı.');
+assert(transport.includes('function openPage(page,title=')&&transport.includes('window.TransportModule={mount,unmount,render,prepareLocal,openBusEditor,openClassSeating,openPage,back}'),'TransportModule public openPage / seating / back API sunmalı.');
 assert(!transport.includes('data-transport-tab'),'Transport içinde ikinci bir sekme navigasyonu kalmamalı.');
+
+assert(transport.includes("const uiTeacher=()=>uiUser().admin!==true&&!!uiTeacherId()"),'Transport UI öğretmen kullanıcısını bağlı öğretmen kimliğiyle ayırmalı.');
+assert(transport.includes("const canEditBusSeats=()=>!uiTeacher()"),'Öğretmen servis oturma planında düzenleme yetkisi alamamalı.');
+assert(transport.includes("data-bus-edit=\"${esc(s.id)}\">${editable?'Düzenle':'Görüntüle'}"),'Servis oturma kartı öğretmene Görüntüle eylemi sunmalı.');
+assert(transport.includes("editor={servisId,sablon,elements,editable:canEditBusSeats()}"),'Servis oturma modalı düzenleme/salt-okunur durumunu açıkça taşımalı.');
+assert(transport.includes("if(!editor?.editable)return"),'Salt okunur servis oturma modalında düzenleme bindingleri kurulmamalı.');
+assert(transport.includes("const canEditClassSeat=id=>uiTeacher()?classOwn(id)"),'Öğretmen sınıf oturma planını yalnız kendi sınıfında düzenleyebilmeli.');
+assert(transport.includes('data-class-seat-open'),'Sınıf oturma listesi görüntüle/düzenle eylemi sunmalı.');
+assert(transport.includes("loadScript?.('js/modules/class-seating.js')")&&transport.includes('openClassSeating'),'Sınıf oturma motoru canonical Transport üzerinden lazy-load edilip açılmalı.');
+assert(transport.includes("if(isTeacherUser()){toast?.('Öğretmen kullanıcıları servis oturma planını yalnız görüntüleyebilir.')"),'Servis oturma service katmanı öğretmen yazmasını reddetmeli.');
+assert(transport.includes("_yetkiKontrol(id){const u=activeUser(),ok=isTeacherUser()?ownsClass(id)"),'Sınıf oturma service katmanı öğretmeni yalnız kendi sınıfında yazdırmalı.');
+
 
 for(const token of ['TransportServiceParity','openDetail','openAddStudents','openPresidents','openExcel','openListBuilder','data-transport-detail','data-transport-remove-student','data-transport-presidents','data-transport-settings-save'])assert(parity.includes(token),`Klasik servis detay çalışma alanı eksik: ${token}`);
 for(const token of ['TasimaService.ogrencileriServiseAta','TasimaService.servisKaydet','PeopleImportUI.parseStudentExcel','ReportEngine?.printReport'])assert(parity.includes(token),`Servis detay canonical servis/parite davranışı eksik: ${token}`);
@@ -38,4 +50,5 @@ for(const forbidden of ['db.collection','firebase.firestore','DeviceData','local
 assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js','js/modules/transport-service-parity.js'])"),'Transport companion UI canonical modülle birlikte lazy yüklenmeli.');
 assert(build.includes("'transport.js':['js/modules/report-engine.js','js/modules/transport.js','js/modules/transport-service-parity.js']"),'Üretim Transport bundle servis ve rapor paritesini içermeli.');
 assert(sw.includes("'./js/modules/transport-service-parity.js'"),'Transport servis/rapor companion UI çevrimdışı PWA cache içinde olmalı.');
+assert(transport.includes("if(document.querySelector('[data-class-seating-overlay]')){window.SinifOturma?.kapat?.();return true}"),'Kaydedilmemiş sınıf oturma planında geri kapatma iptal edilse bile alttaki sayfa kapanmamalı.');
 console.log('Transport ayrı-sayfa + klasik servis detay/öğrenci yönetimi + resmî rapor parite sözleşmesi başarılı.');

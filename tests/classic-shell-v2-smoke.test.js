@@ -117,6 +117,19 @@ for(const token of ['--ka-nav-menu-start','--ka-nav-menu-end','--ka-nav-menu-ico
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
+assert(ui.includes("const TEACHER_HIDDEN_PAGES=new Set(['documents:evrak','management:staff','management:tasks'"),'Öğretmen için sayfa bazlı gizleme listesi ShellUI içinde merkezi olmalı.');
+assert(ui.includes("function visibleGroups(){return MENU_GROUPS.filter(g=>g.hidden!==true&&visibleItems(g).length)}"),'Bir menü grubunun kendi modülü gizli olsa bile içindeki izinli Tools sayfaları görünmeye devam etmeli.');
+assert(!ui.match(/TEACHER_HIDDEN_PAGES[^;]*form-belirli/),'Öğretmende Belirli Gün ve Haftalar sayfası gizlenmemeli.');
+for(const hidden of ['tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger'])assert(ui.includes(hidden),`Öğretmen menü gizleme sözleşmesi eksik: ${hidden}`);
+assert(ui.includes("function pageAllowed(name,page='')")&&ui.includes('filter(itemAllowed)'),'Menü görünürlüğü ve doğrudan route aynı sayfa bazlı öğretmen kuralını kullanmalı.');
+assert(ui.includes('ka-stack ka-page ka-menu-list'),'Alt menü listesi ayrı scroll sahibine bağlanmalı.');
+assert(design.includes('.ka-menu-list{flex:1 1 auto;min-height:0;overflow-y:auto')&&design.includes('row-gap:12px;column-gap:12px'),'Menü listesi kaydırılabilir, yatay/dikey kart boşlukları eşit olmalı.');
+assert(ui.includes('function installBackNavigation()')&&ui.includes("app.addListener('backButton'")&&ui.includes("window.addEventListener('popstate'"),'Shell browser ve native fiziksel geri tuşunu merkezi yönetmeli.');
+assert(ui.includes("confirm('Uygulamadan çıkmak istediğinize emin misiniz?')"),'Geri tuşu uygulamadan çıkmadan önce onay istemeli.');
+assert(ui.includes('browserExitApproved')&&ui.includes('if(browserExitApproved){browserExitApproved=false;history.back();return}'),'Web geri/çıkış onayı aynı çıkışta ikinci kez sorulmamalı.');
+assert(ui.includes('global.TransportModule?.back?.()')&&ui.includes('global.PeopleModule?.back?.()'),'Fiziksel geri önce açık detay/modal sahibi modüllere yönlenmeli.');
+assert(ui.includes("if(!pageAllowed(name,page)){global.toast?.('Bu sayfa öğretmen kullanıcıları için gizli.')"),'Gizli öğretmen sayfaları URL/route yoluyla da açılamamalı.');
+assert(optionalLoaderSource.includes("if(name==='transport'&&user?.uid&&user?.admin!==true&&(user?.bagliOgretmenId||user?.ogretmenId))return'read';if(direct)return direct"),'Legacy öğretmen rolü oturma planlarını görüntülemek için Transport modülüne read fallback almalı.');
 console.log('Classic UX + tam IndexedDB yedek/restore + merkezi routing + rol bazlı V2 dashboard + canlı okul durumu + tema-only bootstrap sözleşmesi başarılı.');
 
 assert(design.includes('html:not(.ka-auth-resolved) #girisEkrani'),'Mevcut Firebase oturumu çözülmeden giriş ekranı boyanmamalı.');
@@ -124,6 +137,8 @@ assert(dashboard.includes('window.SchoolLiveStatus?.status?.()')&&dashboard.incl
 
 assert(shell.includes('js/auth.js'),'Auth runtime production shell içinde bulunmalı.');
 const authSrc=fs.readFileSync('js/auth.js','utf8');
+assert(authSrc.includes("function cikisYap(onayli=false){if(!onayli&&!confirm('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'))return false"),'Tüm çıkış yolları merkezi onay istemeli.');
+assert(!ui.includes("if(confirm('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'))global.cikisYap"),'Shell çıkışı ikinci bir onay katmanı üretmemeli.');
 assert(authSrc.includes("KorukLocalFirst.meta(uid,'authSession'")&&authSrc.includes('authSessionCacheOku(user.uid)'),'Aktif kullanıcı/rol snapshotı IndexedDB meta üzerinden local-first restore edilmeli.');
 assert(authSrc.includes('authOturumuUygula(user,cached.user,cached.role,{cached:true})'),'Firebase Auth UID doğrulandıktan sonra cihazdaki oturum Firestore beklenmeden uygulanmalı.');
 assert(authSrc.includes('await authSunucuOturumuGetir(user,cached)'),'Firestore kullanıcı/rol kontrolü local restore sonrasında arka plan tazelemesi olarak sürmeli.');
