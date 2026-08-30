@@ -1,0 +1,108 @@
+name: Temporary Teacher Navigation Permissions Gate
+
+on:
+  push:
+    branches: [work/teacher-navigation-permissions-20260830]
+    paths:
+      - '.github/workflows/temp-teacher-navigation-permissions.yml'
+      - '.github/staging/teacher-shell/**'
+
+permissions:
+  contents: write
+
+jobs:
+  validate-and-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Reconstruct and apply candidate patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'c758ca7d7a714b5cf7d56cee637e9e75035804c1bd3d564969625a1219b2aa28  .github/staging/teacher-shell/part00' | sha256sum -c -
+          echo 'e07f4387eaec2645ae4fbea40c0ec00bcfdc0e7672ae0439b8b9ae30158bf5a0  .github/staging/teacher-shell/part01' | sha256sum -c -
+          echo '44ca25c6005d34cb9152d13b9a4fd1a6ba20fdaff493c588f9cd55de0ea06556  .github/staging/teacher-shell/part02' | sha256sum -c -
+          echo '6d95ab76705e7a67cfbb066d08695e1e1f4b6b7afd125e7f4eac6cae74a3206c  .github/staging/teacher-shell/part03' | sha256sum -c -
+          echo '16e0abda56e3c6f3d0bc25c17f9e10b9b67763e90f60092a4addecb5f87b6a3d  .github/staging/teacher-shell/part04' | sha256sum -c -
+          echo 'b1d3d0198d3ffe4f56e40daa1b8f4e9ab4c235179a9dc770497c3ac127c5750a  .github/staging/teacher-shell/part05' | sha256sum -c -
+          echo 'ef905faf2a0428abdcdb526c9a54ee34b710d3b237fe790479b389cbdd57ee03  .github/staging/teacher-shell/part06' | sha256sum -c -
+          echo '2a1a76ca3d5487b73a0fd3cf2eaab57d1f7bb20ff3486b920ad5c5ac3f877cbb  .github/staging/teacher-shell/part07' | sha256sum -c -
+          cat .github/staging/teacher-shell/part0* | base64 -d > /tmp/teacher-shell.patch.xz
+          echo '8ea7ed3998fe2672561a426d5102c1c93e8131a7c772a3902fd99d43a8a42e4c  /tmp/teacher-shell.patch.xz' | sha256sum -c -
+          xz -t /tmp/teacher-shell.patch.xz
+          xz -d -c /tmp/teacher-shell.patch.xz > /tmp/teacher-shell.patch
+          echo 'c6cbe74727523610599d7eb15a2c337e657774ed0049d7d9019e4d22974f069e  /tmp/teacher-shell.patch' | sha256sum -c -
+          git apply --check /tmp/teacher-shell.patch
+          git apply /tmp/teacher-shell.patch
+          node --check js/app-loader.js
+          node --check js/auth.js
+          node --check js/modules/management.js
+          node --check js/modules/people-classic-ui.js
+      - name: Verify full client architecture
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-client-bundles.mjs
+          node tests/module-bundles-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/lazy-firebase-storage-smoke.test.js
+          node tests/web-mobile-engine-separation.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/classic-people-v2-smoke.test.js
+          node tests/classes-mobile-parity-smoke.test.js
+          node tests/classic-duty-v2-smoke.test.js
+          node tests/classic-schedule-v2-smoke.test.js
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/dashboard-quick-actions.test.js
+          node tests/calendar-month-view.test.js
+          node tests/quick-note-launcher.test.js
+          node tests/communication-admin-actions.test.js
+          node tests/transport-separate-pages.test.js
+          node tests/no-module-internal-tabs.test.js
+          node tests/report-engine-a4-smoke.test.js
+          node tests/report-native-print-routing-smoke.test.js
+          node tests/android-print-plugin-smoke.test.js
+          node tests/dashboard-reminders-smoke.test.js
+          node tests/teacher-list-core-contract.test.js
+          node tests/teacher-list-local-first-service.test.js
+          node tests/student-tool-routing-smoke.test.js
+          node tests/people-separate-pages.test.js
+          node tests/academic-separate-pages.test.js
+          node tests/management-separate-pages.test.js
+          node tests/communication-separate-pages.test.js
+          node tests/settings-separate-pages.test.js
+          node tests/tools-separate-pages.test.js
+          node tests/communication-local-first-contract.test.js
+          node tests/retired-legacy-roots-smoke.test.js
+          node tests/root-js-inventory-smoke.test.js
+          node tests/widget-platform-adapter-smoke.test.js
+          node tests/teblig-v2-smoke.test.js
+          node tests/documents-viewer-v2-smoke.test.js
+          node tests/document-viewer-smoke.test.js
+          node tests/lazy-document-libs-smoke.test.js
+          node tests/payroll-change-v2-smoke.test.js
+          node tests/assistant-v2-smoke.test.js
+          node tests/legislation-engine-v2-smoke.test.js
+          node tests/map-consolidation-smoke.test.js
+          node tests/rubric-tools-v2-smoke.test.js
+          node tests/rubric-settings-v2-smoke.test.js
+          node tests/rubric-legacy-retirement-readiness.test.js
+          node tests/pwa-push-smoke.test.js
+          node tests/oturma-planlari-role-rules.test.js
+          node scripts/check-client-architecture.mjs
+          cat dist/js/manifest.json
+      - name: Commit validated application changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add css/design-system.css js/app-loader.js js/auth.js js/modules/management.js js/modules/people-classic-ui.js tests/classes-mobile-parity-smoke.test.js tests/classic-people-v2-smoke.test.js tests/classic-shell-v2-smoke.test.js tests/dashboard-card-routes-smoke.test.js tests/management-separate-pages.test.js tests/transport-separate-pages.test.js tests/oturma-planlari-role-rules.test.js firestore.rules
+          git diff --cached --quiet && { echo 'No application changes to commit'; exit 1; }
+          git commit -m 'Tighten teacher navigation and seating permissions'
+          git push
