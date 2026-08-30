@@ -72,7 +72,7 @@ jobs:
           node --check js/modules/settings.js
           node tests/settings-separate-pages.test.js
           node tests/classic-shell-v2-smoke.test.js
-          node tests/android-ios-web-responsive.test.js
+          node tests/web-mobile-engine-separation.test.js
           node tests/module-bundles-smoke.test.js
           node scripts/audit-client-architecture.js
       - name: Commit validated canonical changes
