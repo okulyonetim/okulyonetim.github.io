@@ -13,6 +13,8 @@ assert(!shell.includes('mobile-theme-consistency.css'),'Ayrı mobil tema katman�
 assert(design.includes('@media'),'Tek design system responsive kuralları kendi içinde taşımalı.');
 assert(design.includes('--ka-safe-top')&&design.includes('safe-area-inset-bottom'),'iOS safe-area altyapısı merkezi design system içinde olmalı.');
 assert(design.includes('100dvh'),'Mobil Safari/Chrome için dinamik viewport kullanılmalı.');
+assert(shell.includes('class="ka-school-meta"')&&shell.includes('Koruk Asistan'),'Mobil/web ortak header okul meta satırını aynı shell içinde taşımalı.');
+assert(design.includes('@media(max-width:390px)')&&design.includes('.ka-school-logo{width:37px;height:37px'),'Dar telefon header ayarı aynı merkezi design system içinde bulunmalı.');
 assert(loader.includes("define('dashboard'"),'Dashboard lazy modül olarak tanımlanmalı.');
 assert(!loader.includes('dashboard-v2-init.js'),'Ayrı eski web dashboard motoru loadera dönmemeli.');
 assert(!loader.includes('web-sidebar-v2.js'),'Ayrı eski web sidebar motoru loadera dönmemeli.');
