@@ -24,7 +24,7 @@ for (const eski of [
   './js/core/local-first-sync.js','./js/core/sync-engine.js','./js/core/app-bootstrap.js',
   './css/web-shell-fix.css','./css/web-sidebar-v2.css','./css/dashboard-yeni.css','./css/dashboard-home.css',
   './js/ui-stability-fixes.js','./js/dashboard-v2-init.js','./js/web-sidebar-v2.js','./js/deneme-sayac-local-first-v2.js',
-  './js/modules/rubric-tools-v2-engine.js','xlsx.full.min.js','exceljs.min.js','pdf.min.js','mammoth.browser.min.js','leaflet.js'
+  './js/modules/communication-legacy-ui.js','./js/modules/rubric-tools-v2-engine.js','xlsx.full.min.js','exceljs.min.js','pdf.min.js','mammoth.browser.min.js','leaflet.js'
 ]) assert(!liste.includes(eski), `${eski} ilk kurulum precache listesinde olmamalı.`);
 
 assert(!sw.includes('modernShell('), 'Service Worker HTML/CSS/JS enjekte etmemeli.');
