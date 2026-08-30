@@ -18,6 +18,7 @@ on:
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/classic-shell-v2-smoke.test.js'
       - 'tests/classic-people-v2-smoke.test.js'
+      - 'tests/classes-mobile-parity-smoke.test.js'
       - 'tests/classic-duty-v2-smoke.test.js'
       - 'tests/classic-schedule-v2-smoke.test.js'
       - 'tests/dashboard-card-routes-smoke.test.js'
@@ -75,6 +76,7 @@ on:
       - 'tests/web-mobile-engine-separation.test.js'
       - 'tests/classic-shell-v2-smoke.test.js'
       - 'tests/classic-people-v2-smoke.test.js'
+      - 'tests/classes-mobile-parity-smoke.test.js'
       - 'tests/classic-duty-v2-smoke.test.js'
       - 'tests/classic-schedule-v2-smoke.test.js'
       - 'tests/dashboard-card-routes-smoke.test.js'
@@ -144,6 +146,8 @@ jobs:
         run: node tests/classic-shell-v2-smoke.test.js
       - name: Verify classic People layouts
         run: node tests/classic-people-v2-smoke.test.js
+      - name: Verify Classes mobile parity and seating
+        run: node tests/classes-mobile-parity-smoke.test.js
       - name: Verify classic Duty layout
         run: node tests/classic-duty-v2-smoke.test.js
       - name: Verify classic Lesson Schedule
