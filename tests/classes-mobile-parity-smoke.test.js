@@ -28,6 +28,13 @@ assert(studentSection.includes('studentActions')&&studentSection.includes('stude
 assert(classes.indexOf("['info','Bilgiler']")<classes.indexOf("['students',`Öğrenciler")&&classes.indexOf("['students',`Öğrenciler")<classes.indexOf("['schedule','Ders Programı']"),'Detay sekme sırası Bilgiler → Öğrenciler → Ders Programı olmalı.');
 for(const api of ['global.SiniflarService.sinifKaydet','global.SiniflarService.veliKaydet','global.PeopleImportUI.importStudents','global.PeopleImportUI.importEOkul']) assert(classes.includes(api),`Canonical sınıf servisi eksik: ${api}`);
 
+assert(classes.includes("active='pending'"),'Sınıflar görünüm sahibi ilk yüklemede pending başlamalı.');
+const mountBody=classes.match(/function mount\([^\n]+/)?.[0]||'';
+assert(mountBody.includes('root.replaceChildren()'),'İlk People mount görünür eski tasarımı basmamalı; kök boş tutulmalı.');
+assert(!mountBody.includes('base.mount?.(root)'),'İlk mount başka People tasarımını render etmemeli.');
+const openPageBody=classes.match(/function openPage\([^\n]+/)?.[0]||'';
+assert(openPageBody.includes("next!=='classes'")&&openPageBody.includes("active='classes'"),'Görünüm sahibi alt sayfa seçildikten sonra yalnız ilgili render yolunu açmalı.');
+
 for(const marker of ['tekli-sira','ikili-masa','grup-masasi-4','grup-masasi-6','ogretmen-masasi','kapi','pencere','yazi-tahtasi','data-so-portrait','data-so-landscape','data-so-move-all','data-so-lock','data-so-pool']) assert(seating.includes(marker),`Oturma planı motor öğesi eksik: ${marker}`);
 assert(seating.includes('global.SinifOturmaService.planKaydet(classId,serialize())'),'Oturma planı canonical local-first servisle kaydedilmeli.');
 assert(seating.includes('global.ReportEngine.printReport'),'Oturma planı çıktısı tek ReportEngine kullanmalı.');
@@ -35,8 +42,8 @@ assert(seating.includes('global.SinifOturma={ac:open'),'Legacy public SinifOturm
 
 const peopleRegistry=loader.match(/define\('people',\[([^\]]+)\]\)/)?.[1]||'';
 for(const src of ["'js/modules/people.js'","'js/modules/people-import.js'","'js/modules/people-classic-ui.js'","'js/modules/classes-mobile-parity.js'"]) assert(peopleRegistry.includes(src),`People loader kaynağı eksik: ${src}`);
-assert(peopleRegistry.indexOf("'js/modules/people-classic-ui.js'")<peopleRegistry.indexOf("'js/modules/classes-mobile-parity.js'"),'Sınıflar mobil parite katmanı exact People UI sonrasında yüklenmeli.');
-assert(sw.includes("'./js/modules/classes-mobile-parity.js'")&&sw.includes("'./js/modules/class-seating.js'"),'Sınıflar parite ve oturma motoru offline kabukta olmalı.');
+assert(peopleRegistry.indexOf("'js/modules/people-classic-ui.js'")<peopleRegistry.indexOf("'js/modules/classes-mobile-parity.js'"),'Sınıflar tek görünüm sahibi exact People altyapısından sonra yüklenmeli.');
+assert(sw.includes("'./js/modules/classes-mobile-parity.js'")&&sw.includes("'./js/modules/class-seating.js'"),'Sınıflar görünüm sahibi ve oturma motoru offline kabukta olmalı.');
 assert(sw.includes("CACHE_ADI='oy-cache-v805'"),'Sınıflar düzeltmesinde statik cache sürümü yenilenmeli.');
 
-console.log('Sınıflar mobil parite + gerçek oturma planı davranış kilidi başarılı.');
+console.log('Sınıflar tek render sahibi + gerçek oturma planı davranış kilidi başarılı.');
