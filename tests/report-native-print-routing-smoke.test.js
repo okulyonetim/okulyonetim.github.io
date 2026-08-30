@@ -21,6 +21,7 @@ assert(report.includes('previewHtml') && report.includes('kaReportPreview'), 'A4
 assert(design.includes('--ka-report-bg') && design.includes('.ka-report'), 'Rapor görünümü design system içinde tanımlı olmalı.');
 assert(tools.includes('const CizelgelerRepository='), 'Çizelgeler veri katmanı tools.js içinde kalmalı.');
 assert(tools.includes('global.CizelgelerService=CizelgelerService'), 'Çizelgeler servis API’si tools.js içinde korunmalı.');
-assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"), 'Transport raporları merkezi ReportEngine ile yüklenmeli.');
+const transportBundle=loader.match(/define\('transport',\[([^\]]+)\]\)/)?.[1]||'';
+assert(transportBundle.includes("'js/modules/report-engine.js'")&&transportBundle.includes("'js/modules/transport.js'")&&transportBundle.indexOf("'js/modules/report-engine.js'")<transportBundle.indexOf("'js/modules/transport.js'"), 'Transport raporları companion UI eklense de merkezi ReportEngine sonrasında canonical Transport sırasını korumalı.');
 
 console.log('Merkezi ReportEngine native/web yazdırma smoke testleri başarılı.');
