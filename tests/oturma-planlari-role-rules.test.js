@@ -19,15 +19,20 @@ async function main(){
       await setDoc(doc(db,'oy_kullanicilar','tasimaViewerUid'),{uid:'tasimaViewerUid',admin:false,aktif:true,rolId:'tasima-viewer'});
       await setDoc(doc(db,'oy_kullanicilar','sinifEditorUid'),{uid:'sinifEditorUid',admin:false,aktif:true,rolId:'sinif-editor'});
       await setDoc(doc(db,'oy_kullanicilar','sinifViewerUid'),{uid:'sinifViewerUid',admin:false,aktif:true,rolId:'sinif-viewer'});
+      await setDoc(doc(db,'oy_kullanicilar','ownClassTeacherUid'),{uid:'ownClassTeacherUid',admin:false,aktif:true,rolId:'sinif-viewer',bagliOgretmenId:'teacher1'});
       await setDoc(doc(db,'oy_kullanicilar','adminUid'),{uid:'adminUid',admin:true,aktif:true});
       await setDoc(doc(db,'oy_servisOturma','servis1'),{servisId:'servis1',sablon:'minibus',koltuklar:[]});
+      await setDoc(doc(db,'oy_siniflar','sinif1'),{ad:'5-A',sinifOgretmeniId:'teacher1'});
+      await setDoc(doc(db,'oy_siniflar','sinif2'),{ad:'5-B',sinifOgretmeniId:'teacher2'});
       await setDoc(doc(db,'oy_sinifOturma','sinif1'),{sinifId:'sinif1',sayfaYonu:'yatay',ogeler:[]});
+      await setDoc(doc(db,'oy_sinifOturma','sinif2'),{sinifId:'sinif2',sayfaYonu:'yatay',ogeler:[]});
     });
 
     const tasimaEditor = env.authenticatedContext('tasimaEditorUid').firestore();
     const tasimaViewer = env.authenticatedContext('tasimaViewerUid').firestore();
     const sinifEditor = env.authenticatedContext('sinifEditorUid').firestore();
     const sinifViewer = env.authenticatedContext('sinifViewerUid').firestore();
+    const ownClassTeacher = env.authenticatedContext('ownClassTeacherUid').firestore();
     const admin = env.authenticatedContext('adminUid').firestore();
     const anon = env.unauthenticatedContext().firestore();
 
@@ -42,6 +47,8 @@ async function main(){
     await assertSucceeds(updateDoc(doc(sinifEditor,'oy_sinifOturma','sinif1'),{sayfaYonu:'dikey'}));
     await assertFails(updateDoc(doc(sinifViewer,'oy_sinifOturma','sinif1'),{sayfaYonu:'yetkisiz'}));
     await assertFails(updateDoc(doc(tasimaEditor,'oy_sinifOturma','sinif1'),{sayfaYonu:'yanlis-rol'}));
+    await assertSucceeds(updateDoc(doc(ownClassTeacher,'oy_sinifOturma','sinif1'),{sayfaYonu:'ogretmen-kendi-sinifi'}));
+    await assertFails(updateDoc(doc(ownClassTeacher,'oy_sinifOturma','sinif2'),{sayfaYonu:'ogretmen-baska-sinif'}));
 
     await assertSucceeds(setDoc(doc(admin,'oy_servisOturma','servis2'),{servisId:'servis2'}));
     await assertSucceeds(setDoc(doc(admin,'oy_sinifOturma','sinif2'),{sinifId:'sinif2'}));

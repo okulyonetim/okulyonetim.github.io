@@ -48,6 +48,13 @@ service cloud.firestore {
       return kendiBelgemVarMi() ? kullaniciBelgesi().data.bagliOgretmenId : null;
     }
 
+    function kendiSinifiMi(sinifId) {
+      return girisYapmis()
+        && kendiOgretmenIdsi() != null
+        && exists(/databases/$(database)/documents/oy_siniflar/$(sinifId))
+        && get(/databases/$(database)/documents/oy_siniflar/$(sinifId)).data.sinifOgretmeniId == kendiOgretmenIdsi();
+    }
+
     function kulupDanismaniMi(kulupId) {
       return girisYapmis()
         && kulupId != null
@@ -157,7 +164,7 @@ service cloud.firestore {
 
     match /oy_sinifOturma/{sinifId} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('siniflar');
+      allow create, update, delete: if moduluDuzenleyebilir('siniflar') || kendiSinifiMi(sinifId);
     }
 
     match /oy_veliler/{id} {

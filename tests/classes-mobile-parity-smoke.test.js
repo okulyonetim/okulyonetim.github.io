@@ -6,6 +6,7 @@ const seating=fs.readFileSync('js/modules/class-seating.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
+const rules=fs.readFileSync('firestore.rules','utf8');
 
 new Function(classes);
 new Function(seating);
@@ -50,4 +51,6 @@ assert(sw.includes("'./js/modules/classes-mobile-parity.js'")&&sw.includes("'./j
 const cacheVersion=Number(sw.match(/CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
 assert(cacheVersion>=805,'Sınıflar düzeltmesinden eski bir statik cache sürümüne dönülmemeli.');
 
+assert(seating.includes('const isTeacherUser=()=>activeUser().admin!==true&&!!activeTeacherId()')&&seating.includes('const canEdit=()=>isTeacherUser()?ownClass()'),'Sınıf oturma editörü öğretmeni yalnız kendi atanmış sınıfında düzenleyebilir yapmalı.');
+assert(rules.includes('function kendiSinifiMi(sinifId)')&&rules.includes("allow create, update, delete: if moduluDuzenleyebilir('siniflar') || kendiSinifiMi(sinifId);"),'Firestore senkronizasyonu öğretmene yalnız kendi atanmış sınıfının oturma planını yazdırmalı.');
 console.log('Sınıflar tek render sahibi + gerçek oturma planı davranış kilidi başarılı.');

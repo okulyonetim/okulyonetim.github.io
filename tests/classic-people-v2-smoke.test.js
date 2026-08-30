@@ -104,4 +104,8 @@ assert(parity.includes("x.ogretmenId===id")&&parity.includes("Array.isArray(x.og
 assert(parity.includes("global.ShellUI?.routeModule?.(target[0],{bottom:'profile',page:target[1],title:target[2]})"),'Profil kartları gerçek alt sayfalara gitmeli.');
 
 require('./lazy-chart-smoke.test.js');
+assert(exact.includes("const canTeacherReport=id=>teacherId()===id||(!isTeacherUser()&&can('people.teachers','edit'))"),'Öğretmen başka öğretmenin rapor butonunu görememeli; kendi raporu korunmalı.');
+assert(exact.includes("canTeacherReport(id)?`<button class=\"ka-btn ka-btn--secondary\" type=\"button\" data-exact-teacher-report"),'Exact öğretmen detay toolbarı raporu öğretmen sahipliğine göre üretmeli.');
+assert(people.includes('canViewTeacherReport=o=>ownProfile(o)||(!isTeacherUser()&&canEdit())'),'Canonical People de aynı öğretmen rapor sınırını korumalı.');
+assert(exact.includes('function back(){')&&exact.includes('if(detail){closeDetail();return true}'),'People visible owner fiziksel geri için detay kapatma API’si sunmalı.');
 console.log('People canonical local-first davranış + exact legacy görünür ekran paritesi smoke testi başarılı.');

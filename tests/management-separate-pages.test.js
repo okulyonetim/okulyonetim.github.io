@@ -98,4 +98,6 @@ assert(live.includes("loadScript?.('js/modules/classic-personnel-parity.js')"),'
 assert(sw.includes("'./js/modules/classic-personnel-parity.js'"),'Classic Management paritesi offline uygulama kabuğunda bulunmalı.');
 
 console.log('Management ayrı sayfa + nöbet gerçek davranış sözleşmesi başarılı.');
+assert(management.includes("teacher=u.admin!==true&&!!(u.bagliOgretmenId||u.ogretmenId)"),'Management öğretmen kullanıcı bağını gerçek oturumdan çözmeli.');
+assert(management.includes("teacher&&['staff','tasks'].includes(page)"),'Öğretmen Personel İşleri ve Aylık İşler sayfalarını doğrudan açamamalı.');
 console.log('Personel + Periyodik + Puantaj + Resmi Dilekçe classic görünür paritesi başarılı.');
