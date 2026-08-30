@@ -74,7 +74,7 @@ jobs:
           node tests/classic-shell-v2-smoke.test.js
           node tests/web-mobile-engine-separation.test.js
           node tests/module-bundles-smoke.test.js
-          node scripts/audit-client-architecture.js
+          node scripts/check-client-architecture.mjs
       - name: Commit validated canonical changes
         run: |
           git config user.name 'github-actions[bot]'
