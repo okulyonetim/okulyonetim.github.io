@@ -34,6 +34,12 @@ assert(live.includes("loadScript?.('js/modules/classic-documents-parity.js')"),'
 assert(sw.includes("'./js/modules/classic-documents-parity.js'"),'Classic Documents offline shell içinde olmalı.');
 assert(!sw.includes('classic-document-tools.js'),'Silinen paralel belge motoru offline shell içinde olmamalı.');
 
+// User-visible classic density and mobile stability stay locked.
+for(const token of ['maximum-scale=1','user-scalable=no','pan-x pan-y','function compactMenu()','function compactTransport()','class="evrak-row"']) assert(parity.includes(token),`Klasik mobil görünüm/kararlılık davranışı eksik: ${token}`);
+assert(parity.includes("inspection.hidden=true")&&parity.includes("monthly.hidden=true"),'Taşıma ana listesinde raporlar dev buton olarak kalmamalı; servis detayında kullanılmalı.');
+assert(parity.includes("edit.textContent='✏️'")&&parity.includes("del.textContent='🗑'"),'Taşıma liste eylemleri eski kompakt ikon düzeninde olmalı.');
+assert(parity.includes("target.style.visibility='hidden'")&&parity.includes('requestAnimationFrame(()=>requestAnimationFrame(reveal))'),'Sayfa geçişindeki ara render kullanıcıya gösterilmemeli.');
+
 // One canonical image->PDF / PDF merge engine inside documents.js.
 assert(documents.includes('if(global.DocumentsPdfTools)return'),'Tek DocumentsPdfTools capability olmalı.');
 assert(documents.includes("const JSPDF_SRC='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'"),'Resimden PDF jsPDF lazy capability kullanmalı.');
@@ -57,4 +63,4 @@ assert(documents.includes("const DURUM=['Beklemede','İşlemde','Tamamlandı','A
 for(const field of ['evrakAdi','tur','tarih','durum','sorumluOgretmenIdler','dosyaLinki','aciklama']) assert(documents.includes(field),`Evrak alanı korunmalı: ${field}`);
 assert(loader.includes("['documents.tracking','Evrak Takibi','section']")&&loader.includes("['documents.tracking.edit','Evrak Takibi düzenleme','action']"),'Evrak izinleri merkezi katalogda olmalı.');
 
-console.log('Documents viewer + classic workspace + canonical PDF tools + Evrak local-first sözleşmesi başarılı.');
+console.log('Documents viewer + classic workspace + compact mobile parity + canonical PDF tools + Evrak local-first sözleşmesi başarılı.');
