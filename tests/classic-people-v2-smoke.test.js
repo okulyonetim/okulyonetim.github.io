@@ -2,12 +2,14 @@ const fs=require('fs');
 const assert=require('assert');
 const people=fs.readFileSync('js/modules/people.js','utf8');
 const importer=fs.readFileSync('js/modules/people-import.js','utf8');
+const exact=fs.readFileSync('js/modules/people-classic-ui.js','utf8');
 const parity=fs.readFileSync('js/modules/classic-parity.js','utf8');
 const excel=fs.readFileSync('js/modules/classic-excel-parity.js','utf8');
 const live=fs.readFileSync('js/modules/school-live-status.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
-new Function(importer);new Function(parity);new Function(excel);new Function(live);
+const build=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
+new Function(importer);new Function(exact);new Function(parity);new Function(excel);new Function(live);
 
 assert(people.includes("DeviceData/IndexedDB -> AppStore -> UI"),'People local-first veri sınırı korunmalı.');
 assert(people.includes("device().add('siniflar',COL.siniflar"),'Sınıf yazımı DeviceData üzerinden kalmalı.');
@@ -18,9 +20,9 @@ assert(!people.includes('localStorage.setItem('),'People kalıcı veriyi localSt
 assert(!people.includes('data-people-tab'),'People üst seviye öğretmen/sınıf/öğrenci sekmeleri üretmemeli.');
 assert(people.includes("function openPage(page,title='')"),'People doğrudan sayfa açma API sağlamalı.');
 for(const page of ['teachers','classes','students']) assert(people.includes(`'${page}'`),`People doğrudan sayfa hedefi eksik: ${page}`);
-for(const marker of ['ka-teacher-directory','ka-teacher-profile','ka-teacher-summary','ka-teacher-actions','data-teacher-detail','data-teacher-edit','data-teacher-report','data-teacher-program','data-teacher-message']) assert(people.includes(marker),`Yeni Öğretmenler/profil akışı öğesi eksik: ${marker}`);
-for(const marker of ['ka-class-directory','ka-class-card','data-class-level','data-class-detail','data-class-tab','data-class-seating','ka-student-directory','ka-student-card','data-student-class','data-gender-filter','data-student-detail','data-student-results','data-results-filter','ka-people-student-list','data-class-add','data-class-edit','data-class-delete','data-student-add','data-student-edit','data-student-delete','classForm','studentForm']) assert(people.includes(marker),`Sınıf/öğrenci yönetim akışı öğesi eksik: ${marker}`);
-for(const label of ['Öğretmenler','Sınıflar','Öğrenciler','Öğrenci Detayı','Sınav Sonuçları','DERS PROGRAMI','NÖBETLER','KULÜP DANIŞMANLIĞI','BELİRLİ GÜN VE HAFTALAR','DİĞER EVRAK']) assert(people.includes(label),`People görünüm öğesi eksik: ${label}`);
+for(const marker of ['ka-teacher-directory','ka-teacher-profile','ka-teacher-summary','ka-teacher-actions','data-teacher-detail','data-teacher-edit','data-teacher-report','data-teacher-program','data-teacher-message']) assert(people.includes(marker),`Canonical Öğretmenler/profil akışı öğesi eksik: ${marker}`);
+for(const marker of ['ka-class-directory','ka-class-card','data-class-level','data-class-detail','data-class-tab','data-class-seating','ka-student-directory','ka-student-card','data-student-class','data-gender-filter','data-student-detail','data-student-results','data-results-filter','ka-people-student-list','data-class-add','data-class-edit','data-class-delete','data-student-add','data-student-edit','data-student-delete','classForm','studentForm']) assert(people.includes(marker),`Canonical sınıf/öğrenci yönetim akışı öğesi eksik: ${marker}`);
+for(const label of ['Öğretmenler','Sınıflar','Öğrenciler','Öğrenci Detayı','Sınav Sonuçları','DERS PROGRAMI','NÖBETLER','KULÜP DANIŞMANLIĞI','BELİRLİ GÜN VE HAFTALAR','DİĞER EVRAK']) assert(people.includes(label),`People veri/ayrıntı davranışı eksik: ${label}`);
 assert(people.includes('function resultEntries(type,v){')&&people.includes('for(const exam of data(type))'),'Öğrenci sonuç motoru AppStore cache tipini dinamik kullanmalı.');
 assert(people.includes("resultEntries('denemeSonuclari',v)")&&people.includes("resultEntries('testSonuclari',v)"),'Öğrenci sonuç detayı gerçek Deneme/Test cache tiplerini kullanmalı.');
 assert(people.includes("data('yoklama')"),'Öğrenci detayındaki devamsızlık özeti merkezi yoklama cache ini kullanmalı.');
@@ -29,8 +31,22 @@ assert(people.includes("PermissionService.can('people.students.edit','edit')"),'
 assert(people.includes("if(count){global.toast?.(`Bu sınıfta ${count} öğrenci var."),'Öğrencili sınıf doğrudan silinmemeli.');
 assert(people.includes('BelgeDurumuService'),'Öğretmen belge durumu akışı korunmalı.');
 
-assert(loader.includes("define('people',['js/modules/people.js','js/modules/people-import.js'])"),'People modülü e-Okul/Excel adaptörünü yalnız People yüklenirken bağlamalı.');
-assert(sw.includes("'./js/modules/people-import.js'"),'People içe aktarma adaptörü offline kabukta önbelleğe alınmalı.');
+// Eski görünür People yapısı literal referans olarak yeni local-first servislerin üstünde çalışmalı.
+assert(!/\bdb\s*\.\s*collection\s*\(/.test(exact),'Exact People UI doğrudan Firestore kullanmamalı.');
+assert(!/\bDeviceData\b/.test(exact),'Exact People UI DeviceData katmanına doğrudan inmemeli.');
+assert(!/localStorage\s*\.\s*setItem\s*\(/.test(exact),'Exact People UI kalıcı veriyi localStorage ile yazmamalı.');
+for(const marker of ['ogm-shell','ogm-grid','ogm-card','ogm-avatar','ogm-stats','classic-table','detay-overlay','detay-panel','detay-row','data-exact-class-tab','data-exact-student-detail']) assert(exact.includes(marker),`Eski People görünür yapısı eksik: ${marker}`);
+for(const api of ['global.OgretmenService.kaydet','global.SiniflarService.sinifKaydet','global.SiniflarService.veliKaydet','global.PeopleImportUI?.importTeachers','global.PeopleImportUI?.importStudents']) assert(exact.includes(api),`Exact People canonical service kapısı eksik: ${api}`);
+assert(exact.includes('const canonical=global.PeopleModule')&&exact.includes('canonical.unmount?.()'),'Canonical People abonelikleri exact UI devralırken kontrollü kapatılmalı.');
+assert(exact.includes('global.PeopleModule=api'),'Shell aynı PeopleModule lifecycle API ile exact UI kullanmalı.');
+for(const label of ['Program, nöbet ve sorumluluklar tek ekranda.','Sınıf Öğretmeni','Öğrenci Listesi','Bilgiler','Ders Programı','Öğrenciler']) assert(exact.includes(label),`Eski People metin/hiyerarşi paritesi eksik: ${label}`);
+
+const peopleRegistry=loader.match(/define\('people',\[([^\]]+)\]\)/)?.[1]||'';
+for(const src of ["'js/modules/people.js'","'js/modules/people-import.js'","'js/modules/people-classic-ui.js'"]) assert(peopleRegistry.includes(src),`People loader kaynağı eksik: ${src}`);
+assert(peopleRegistry.indexOf("'js/modules/people.js'")<peopleRegistry.indexOf("'js/modules/people-import.js'")&&peopleRegistry.indexOf("'js/modules/people-import.js'")<peopleRegistry.indexOf("'js/modules/people-classic-ui.js'"),'People exact UI canonical servis ve importer sonrasında yüklenmeli.');
+assert(sw.includes("'./js/modules/people-import.js'")&&sw.includes("'./js/modules/people-classic-ui.js'"),'People importer ve exact UI offline kabukta önbelleğe alınmalı.');
+assert(build.includes("'people.js':['js/modules/people.js','js/modules/people-classic-ui.js']"),'Generated People bundle canonical veri/servis ve exact görünür UI sırasını korumalı.');
+
 assert(importer.includes("AppStore?.get?.('ui.route')!=='people'"),'People içe aktarma UI yalnız People rotasında etkinleşmeli.');
 assert(importer.includes("SiniflarService.ogrenciVeliListesiIceAktar")&&importer.includes("SiniflarService.eOkulPlanlariniUygula"),'Excel/e-Okul yazımları canonical SiniflarService üzerinden kalmalı.');
 assert(importer.includes("data-class-seating")&&importer.includes("dataset.classSeating"),'Sınıf detayı içe aktarmada görünür başlık eşlemesi yerine gerçek sınıf ID sini öncelikli kullanmalı.');
@@ -82,4 +98,4 @@ assert(parity.includes("x.ogretmenId===id")&&parity.includes("Array.isArray(x.og
 assert(parity.includes("global.ShellUI?.routeModule?.(target[0],{bottom:'profile',page:target[1],title:target[2]})"),'Profil kartları gerçek alt sayfalara gitmeli.');
 
 require('./lazy-chart-smoke.test.js');
-console.log('People V2, öğretmen/toplu Excel ve klasik sayfa-modal local-first paritesi smoke testi başarılı.');
+console.log('People canonical local-first davranış + exact legacy görünür ekran paritesi smoke testi başarılı.');
