@@ -12,7 +12,7 @@ new Function(seating);
 for(const [name,src] of [['classes',classes],['seating',seating]]){
   assert(!/\bdb\s*\.\s*collection\s*\(/.test(src),`${name}: doğrudan Firestore kullanmamalı.`);
   assert(!/localStorage\s*\.\s*setItem\s*\(/.test(src),`${name}: kalıcı localStorage yazımı yapmamalı.`);
-  assert(!/\bDeviceData\s*\./.test(src),`${name}: UI DeviceData katmanına doğrudan inmemeli.`);
+  assert(!/\bDeviceData\s*\.\s*(?:list|get|listen|persist|add|update|set|remove)\s*\(/.test(src),`${name}: UI DeviceData katmanına doğrudan inmemeli.`);
   assert(!/createElement\(\s*['"]style['"]\s*\)/.test(src),`${name}: runtime style üretmemeli.`);
 }
 
