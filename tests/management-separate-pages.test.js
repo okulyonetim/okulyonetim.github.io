@@ -38,9 +38,9 @@ for(const field of ['adSoyad','tc','telefon','gorev','kadroKademesi','gorevYeriK
 for(const role of ['Sürekli İşçi','Hizmetli','Memur','Güvenlik Görevlisi','Aşçı','Kaloriferci','Temizlik Görevlisi','Diğer']) assert(management.includes(role),`Personel görev seçeneği korunmalı: ${role}`);
 
 // 708c82a Personel İşleri görünür çalışma alanı presentation paritesi.
-assert(!/\bdb\s*\.\s*collection\s*\(/.test(personnel),'Classic Personel paritesi doğrudan Firestore kullanmamalı.');
-assert(!/DeviceData\s*\.\s*(?:add|set|update|remove|persist)\s*\(/.test(personnel),'Classic Personel paritesi ikinci veri yazma katmanı oluşturmamalı.');
-assert(!/createElement\(\s*['"]style['"]\s*\)/.test(personnel),'Classic Personel paritesi runtime tema/style katmanı oluşturmamalı.');
+assert(!/\bdb\s*\.\s*collection\s*\(/.test(personnel),'Classic Management paritesi doğrudan Firestore kullanmamalı.');
+assert(!/DeviceData\s*\.\s*(?:add|set|update|remove|persist)\s*\(/.test(personnel),'Classic Management paritesi ikinci veri yazma katmanı oluşturmamalı.');
+assert(!/createElement\(\s*['"]style['"]\s*\)/.test(personnel),'Classic Management paritesi runtime tema/style katmanı oluşturmamalı.');
 for(const label of [
   'Personel İşleri',
   'Sürekli işçi, hizmetli ve diğer personel kayıtları &amp; dilekçe sistemi',
@@ -55,8 +55,47 @@ assert(personnel.includes("data-staff-new")&&personnel.includes("data-staff-deta
 assert(personnel.includes("#kaManagementStaffDetail [data-staff-edit]"),'Eski satırdaki doğrudan Düzenle davranışı mevcut canonical personel edit modalına delege edilmeli.');
 assert(personnel.includes("AppStore?.data?.('personel')"),'Classic Personel listesi cihazdan hydrate edilmiş AppStore personel verisini okumalı.');
 assert(personnel.includes("PermissionService?.can?.('management.personnel.edit','edit')"),'Personel düzenleme görünürlüğü merkezi yetkiyi kullanmalı.');
-assert(live.includes("loadScript?.('js/modules/classic-personnel-parity.js')"),'Classic Personel paritesi dashboard sonrası lazy yüklenmeli.');
-assert(sw.includes("'./js/modules/classic-personnel-parity.js'"),'Classic Personel paritesi offline uygulama kabuğunda bulunmalı.');
+
+// Periyodik İşler görünür sözleşmesi canonical PeriyodikService ekranını yeniden yazmadan restore edilmeli.
+for(const label of [
+  'Periyodik İşler',
+  'Okul taşıma, ek ders, puantaj, İŞKUR gibi her ay tekrarlayan işler',
+  'görev tanımlı — "Bu Ayın Görevlerini Oluştur" ile tek tıkla ekleyebilirsiniz.',
+  'Henüz şablon tanımlanmadı. "Şablonu Düzenle" ile puantaj, ek ders, İŞKUR gibi her ay tekrarlayan görevlerinizi bir kez tanımlayın.',
+  'Henüz periyodik iş eklenmedi. "+ Yeni İş" ile okul taşıma, ek ders, puantaj, İŞKUR gibi tekrarlayan işlerini ekleyebilirsin.'
+]) assert(personnel.includes(label),`Periyodik İşler classic görünür paritesi eksik: ${label}`);
+assert(personnel.includes("data('periyodikSablon')")&&!personnel.includes('PeriyodikService.isKaydet('),'Classic Periyodik parite yalnız görünümü düzeltmeli; ikinci görev yazma motoru oluşturmamalı.');
+
+// Puantaj 708c82a kod önceliği: açık kayıt > resmi tatil > hafta tatili > X.
+for(const token of [
+  "if(n.includes('cumartesi calismasi'))return'CÇ'",
+  "if(n.includes('pazar tam calismasi'))return'PÇ'",
+  "if(n.includes('ubgt'))return'UBGT'",
+  "if(code)return code;if(officialHoliday(day))return'T'",
+  "if(wd===0||wd===6)return'H';return'X'",
+  "data('personelIzinler')",
+  "data('resmiTatiller')"
+]) assert(personnel.includes(token),`Puantaj classic kod sözleşmesi eksik: ${token}`);
+assert(personnel.includes('CÇ</b>=Cumartesi Çalışması')&&personnel.includes('PÇ</b>=Pazar Tam Çalışması')&&personnel.includes('UBGT</b>=Ulusal Bayram/Genel Tatil Çalışması'),'Puantaj özel çalışma kodları görünür açıklamada korunmalı.');
+
+// Eski dilekçe modülünün üç resmi belge türü A4/contenteditable önizleme ile geri gelmeli.
+for(const token of [
+  "['personelIzin','Personel İzin Dilekçesi']",
+  "['diplomaKayit','Diploma Kayıt Örneği Talep Dilekçesi']",
+  "['diplomaKayitCevap','Diploma Kayıt Örneği (Okul Cevabı)']",
+  'Resmi Dilekçe Oluştur',
+  'A4 önizleme alanı doğrudan düzenlenebilir.',
+  'contenteditable="true"',
+  'Diploma Kayıt Örneği',
+  'Gereğini olurlarınıza arz ederim.',
+  "global.ReportEngine.printReport",
+  '⬇ HTML İndir',
+  "global.AppLoader.loadScript('js/modules/report-engine.js')"
+]) assert(personnel.includes(token),`Resmi dilekçe classic belge paritesi eksik: ${token}`);
+assert(!personnel.includes("device().add('dilekceler'")&&!personnel.includes("device().update('dilekceler'"),'Classic resmi dilekçe üreticisi eski belge davranışı gibi salt üretim/çıktı olmalı; yeni veri deposu kurmamalı.');
+
+assert(live.includes("loadScript?.('js/modules/classic-personnel-parity.js')"),'Classic Management paritesi dashboard sonrası lazy yüklenmeli.');
+assert(sw.includes("'./js/modules/classic-personnel-parity.js'"),'Classic Management paritesi offline uygulama kabuğunda bulunmalı.');
 
 console.log('Management ayrı sayfa + nöbet gerçek davranış sözleşmesi başarılı.');
-console.log('Personel İşleri classic görünür UX + canonical local-first davranış paritesi başarılı.');
+console.log('Personel + Periyodik + Puantaj + Resmi Dilekçe classic görünür paritesi başarılı.');
