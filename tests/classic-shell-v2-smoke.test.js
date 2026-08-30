@@ -39,7 +39,7 @@ assert(shell.includes("kind:'set-doc'")&&shell.includes('SyncEngine?.schedule?.(
 assert(ui.includes('const MENU_GROUPS=['),'Menü kategori kataloğu V2 ShellUI içinde merkezi olmalı.');
 for(const key of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(ui.includes(`key:'${key}'`),`Eski UX kategori karşılığı eksik: ${key}`);
 for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
-for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\"]${route}['\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
+for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\\"]${route}['\\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
 assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-shell-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı ve route sahibi ShellUI olmalı.');
 assert(!ui.includes('data-ka-menu-route'),'ShellUI eski ikinci menü yönlendiricisinin data-ka-menu-route sözleşmesini üretmemeli.');
 const directPages=[
@@ -80,7 +80,7 @@ assert(!live.includes('localStorage.setItem('),'Canlı durum localStorage kalıc
 assert(!live.includes('suankiDersDurumu(')&&!live.includes('sonHavaVerisi'),'Legacy zil/hava global bağımlılıkları V2 runtimea dönmemeli.');
 for(const mode of ["type:'lesson'","'lunch':'break'", "mode:'after'", "mode:'weekend'"]) assert(live.includes(mode),`Canlı zil durum sözleşmesi eksik: ${mode}`);
 assert(sw.includes('./js/modules/school-live-status.js'),'Canlı durum offline PWA shell içinde önbelleğe alınmalı.');
-for(const lazy of ['./js/modules/dashboard.js','./js/modules/people.js','./js/modules/academic.js','./js/modules/academic-calendar-parity.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/report-engine.js','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js']) assert(sw.includes(lazy),`AppLoader lazy modülü offline PWA shell cache içinde bulunmalı: ${lazy}`);
+for(const lazy of ['./js/modules/dashboard.js','./js/modules/people.js','./js/modules/academic.js','./js/modules/academic-calendar-parity.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/report-engine.js','./js/modules/transport.js','./js/modules/transport-service-parity.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js']) assert(sw.includes(lazy),`AppLoader lazy modülü offline PWA shell cache içinde bulunmalı: ${lazy}`);
 const sameOriginStartup=[...shell.matchAll(/<script src="(?!https?:|\/\/)([^"]+)" defer><\/script>/g)].map(m=>'./'+m[1].replace(/^\.\//,''));
 const firebaseStartup=[...shell.matchAll(/<script src="(https:\/\/www\.gstatic\.com\/firebasejs\/10\.12\.2\/firebase-[^"]+-compat\.js)" defer><\/script>/g)].map(m=>m[1]);
 for(const src of firebaseStartup) assert(sw.includes(`'${src}'`),`Firebase startup SDK Service Worker cache listesinde bulunmalı: ${src}`);
@@ -96,7 +96,8 @@ assert(academicBundle.includes('FIREBASE_STORAGE_SDK')&&academicBundle.includes(
 assert(optionalLoaderSource.includes("define('management',['js/modules/report-engine.js','js/modules/management.js'])"),'management modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.');
 const documentsBundle=optionalLoaderSource.match(/define\('documents',\[([^\]]+)\]\)/)?.[1]||'';
 assert(documentsBundle.includes("'js/modules/report-engine.js'")&&documentsBundle.includes("'js/modules/documents.js'")&&documentsBundle.indexOf("'js/modules/report-engine.js'")<documentsBundle.indexOf("'js/modules/documents.js'"),'documents modülü ek lazy bağımlılıklar olsa da ReportEngine bağımlılığını documents.js’den önce yüklemeli.');
-assert(optionalLoaderSource.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport modülü ReportEngine bağımlılığını lazy bundle içinde korumalı.');
+const transportBundle=optionalLoaderSource.match(/define\('transport',\[([^\]]+)\]\)/)?.[1]||'';
+assert(transportBundle.includes("'js/modules/report-engine.js'")&&transportBundle.includes("'js/modules/transport.js'")&&transportBundle.includes("'js/modules/transport-service-parity.js'")&&transportBundle.indexOf("'js/modules/report-engine.js'")<transportBundle.indexOf("'js/modules/transport.js'")&&transportBundle.indexOf("'js/modules/transport.js'")<transportBundle.indexOf("'js/modules/transport-service-parity.js'"),'Transport modülü ReportEngine + canonical Transport + servis detay paritesi sırasını lazy bundle içinde korumalı.');
 assert(ui.includes("if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Maaş özel rotası ReportEngine hazır değilse ihtiyaç anında yüklemeli.');
 assert(sw.includes("'./js/modules/report-engine.js'"),'ReportEngine offline Service Worker cache içinde bulunmalı.');
 const communicationBundle=optionalLoaderSource.match(/define\('communication',\[([^\]]+)\]\)/)?.[1]||'';
