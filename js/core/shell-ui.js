@@ -141,12 +141,13 @@ function applySubpage(name,page,title){
   if(title)setTitle(title);
   return !!tab;
 }
+function hideRouteTransitionFrame(){const root=$('#v2ModuleRoot');if(!root)return;root.classList.add('ka-route-switching');let done=false,timer=0;const reveal=()=>{if(done)return;done=true;if(timer)clearTimeout(timer);root.classList.remove('ka-route-switching')};requestAnimationFrame(()=>requestAnimationFrame(reveal));timer=setTimeout(reveal,180)}
 async function routeModule(name,{bottom='menu',page='',title=''}={}){
   const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
   if(global.OdevNotUI?.page&&global.OdevNotUI.page!==requestedGradePage&&global.OdevNotUI.close?.()===false)return false;
   if(!(name==='tools'&&page==='student-list'))global.OgretmenListeUI?.close?.();
   if(!(name==='tools'&&page==='student-attendance'))global.StudentPages?.close?.();
-  closeHeaderPopover();closeMenu();
+  closeHeaderPopover();closeMenu();hideRouteTransitionFrame();
   if(!(name==='tools'&&FORM_PAGES[page]))cleanupFormPage();
   if(name==='payroll'){
     try{
