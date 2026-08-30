@@ -126,6 +126,8 @@ assert(source.documents.includes("window.open(d.dosyaUrl,'_blank','noopener')"),
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
 for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} kendi tek UI modülünü yüklemeli.`);
 for(const old of ['people-data.js','academic-data.js','management-data.js','messaging-data.js','communication-data.js','documents-data.js','tools-data.js','transport-data.js','settings-data.js','duty-data.js']) assert(!loader.includes(old),`Legacy data paketi loader'a geri dönmemeli: ${old}`);
+assert(!registry('academic').includes('academic-calendar-parity.js'),'Academic bundle ayrı takvim parity kaynağı yüklememeli.');
+assert(source.academic.includes('openAcademicCalendar')&&source.academic.includes('kaAcademicCalendarOverlay'),'Akademik Takvim davranışı canonical academic.js içinde yaşamalı.');
 assert(registry('transport').includes("'js/modules/report-engine.js'"),'Transport ortak ReportEngine kullanmalı.');
 assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif harita motorunu module path üzerinden lazy-load edilmeli.');
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
