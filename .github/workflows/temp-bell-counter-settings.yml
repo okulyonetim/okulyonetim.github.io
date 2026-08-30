@@ -26,12 +26,23 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
+          import re
+          target = Path('js/modules/school-live-status.js')
+          text = target.read_text(encoding='utf-8')
+          schedule = "function schedule(){const s=settings()||fallbackSettings(),source=Array.isArray(s.donemler)&&s.donemler.length?s.donemler:(Array.isArray(s.dersler)?s.dersler:[]),lessons=source.map((x,i)=>{const period=Number(x.saat||i+1);return{type:'lesson',period,start:secOf(x.baslangic),end:secOf(x.bitis),label:`${period}. Ders`}}).filter(x=>x.start!=null&&x.end!=null).sort((a,b)=>a.start-b.start);const out=[];for(let i=0;i<lessons.length;i++){const l=lessons[i];out.push(l);const n=lessons[i+1];if(!n||n.start<=l.end)continue;const lunch=s.ogleArasiVarMi!==false&&s.ogleArasi&&secOf(s.ogleArasi.baslangic)===l.end&&secOf(s.ogleArasi.bitis)===n.start;out.push({type:lunch?'lunch':'break',start:l.end,end:n.start,label:lunch?'Öğle Arası':'Teneffüs',nextPeriod:n.period})}return out}\nfunction status"
+          text, count = re.subn(r"function schedule\(\)\{.*?\}\nfunction status", lambda _m: schedule, text, count=1, flags=re.S)
+          if count != 1:
+              raise SystemExit(f'school-live-status schedule anchor count {count} != 1')
+          target.write_text(text, encoding='utf-8')
           src = Path('.github/temp-bell-source.yml').read_text(encoding='utf-8')
           marker = "          python - <<'PY'\n"
           start = src.index(marker) + len(marker)
           end = src.index("\n          PY\n", start)
           block = src[start:end]
           block = '\n'.join(line[10:] if line.startswith('          ') else line for line in block.splitlines()) + '\n'
+          first = block.index("replace_once('js/modules/school-live-status.js',")
+          second = block.index("sub_once('js/modules/school-live-status.js'", first)
+          block = block[:first] + block[second:]
           Path('/tmp/bell_patch.py').write_text(block, encoding='utf-8')
           PY
           python /tmp/bell_patch.py
