@@ -19,6 +19,29 @@ assert(src.indexOf('await global.KorukLocalFirst?.meta?.(u,key,value)')<src.inde
 assert(src.includes("await global.KorukLocalFirst.meta(u,key+':legacy-migrated',true)"),'Kişisel kayıttan sonra legacy migration tekrar çalışmamalı.');
 assert(src.includes("await global.KorukLocalFirst.meta(u,key,null);await global.KorukLocalFirst.meta(u,key+':legacy-migrated',true)"),'Kişisel ayar temizlendikten sonra legacy localStorage verisi yeniden dirilmemeli.');
 
+const ciz=src.slice(src.indexOf('CLASSIC ÇİZELGELER PARITY'));
+for(const token of [
+  'global.ClassicCizelgelerParity=',
+  "sosyalKulupler:['Yıllık Plan','Toplum Hizm. Planı','Eki','Kas','Ara','Oca','Şub','Mar','Nis','May','Haz','Sene Sonu Rap.']",
+  "rehberlik:['Yıllık Çalışma Planı','Eki','Kas','Ara','Oca','Şub','Mar','Nis','May','Haz','1.Dönem Sonu Rap.','Sene Sonu Rap.']",
+  "bepPlani:['Yıllık Ders Planı','BEP Planı']",
+  "maarifRapor:['Eyl','Eki','Kas','Ara','Oca','Şub','Mar','Nis','May','Haz']",
+  "evrakAdi:String(fd.get('evrakAdi')||'').trim()",
+  "tur:String(fd.get('tur')||'')",
+  "teslimEdildi:fd.has('teslimEdildi')",
+  "konu:String(fd.get('konu')||'').trim()",
+  "global.CizelgelerService.kayitKaydet",
+  "global.CizelgelerService.kayitSil",
+  "global.CizelgelerService.kontrolToggle",
+  "global.CizelgelerService.cokluKayitOlustur",
+  '📅 Tarihleri Toplu Ayarla',
+  "global.ReportEngine.printReport",
+  '⇪ Excel\'den İçe Aktar'
+]) assert(ciz.includes(token),`Classic Çizelgeler parite sözleşmesi eksik: ${token}`);
+for(const title of ['Sosyal Kulüpler','Belirli Gün ve Haftalar','Zümre Toplantıları','ŞÖK – Şube Öğretmenler Kurulu','Yıllık / BEP Planları','Rehberlik','Maarif Model Aylık Raporlar','Diğer Evraklar'])assert(ciz.includes(title),`Classic çizelge başlığı eksik: ${title}`);
+assert(!ciz.includes('global.DeviceData.')&&!ciz.includes('db.collection(')&&!ciz.includes('firebase.firestore'),'Classic Çizelgeler sunum katmanı doğrudan veri motoruna/Firestore’a yazmamalı.');
+assert(!ciz.includes("ogrenciAdi:String(fd.get('ogrenciAdi')"),'BEP formu yanlış öğrenci-adı modeline geri dönmemeli.');
+
 (async()=>{
   const metaStore=new Map(),syncCalls={register:[],hydrate:[]},removed=[];
   const legacy={puanMin:1,puanMax:5,puanEtiketleri:['A'],gruplar:[{ad:'G',kriterler:['K']}]};
@@ -35,7 +58,7 @@ assert(src.includes("await global.KorukLocalFirst.meta(u,key,null);await global.
     },
     DeviceData:{set:async()=>{}},COL:{okulBilgileri:'oy_okulBilgileri'},dispatchEvent:()=>{}
   };
-  vm.runInNewContext(src,{window,console,JSON,Object,Array,String,Date,Error,CustomEvent:function(){}});
+  vm.runInNewContext(src,{window,console,JSON,Object,Array,String,Date,Error,CustomEvent:function(){},setInterval:()=>0,clearInterval:()=>{}});
   const svc=window.RubricSettingsService;
   const first=await svc.personalGet('rubric');
   assert.deepStrictEqual(JSON.parse(JSON.stringify(first)),legacy,'Legacy rubric ayarı ilk erişimde IndexedDB meta katmanına migrate edilmeli.');
@@ -49,5 +72,10 @@ assert(src.includes("await global.KorukLocalFirst.meta(u,key,null);await global.
   assert.deepStrictEqual(JSON.parse(JSON.stringify(resolvedProject)),school,'Okul ortak ayarı offline cache hydrate edildikten sonra çözülmeli.');
   assert(syncCalls.register.some(([type,col])=>type==='okulBilgileri'&&col==='oy_okulBilgileri'),'okulBilgileri SyncEngine kaydı yapılmalı.');
   assert(syncCalls.hydrate.some(types=>Array.isArray(types)&&types.includes('okulBilgileri')),'okulBilgileri IndexedDB cache hydrate edilmeli.');
-  console.log('Kriter/Proje local-first ayar servisi + migration + legacy retirement + okul cache hydrate davranışı başarılı.');
+  const parity=window.ClassicCizelgelerParity;
+  assert(parity,'ClassicCizelgelerParity browser köprüsü kurulmalı.');
+  assert.strictEqual(parity.typeFromTitle('Yıllık Planlar & BEP Planları'),'bepPlani');
+  assert.strictEqual(parity.typeFromTitle('ŞÖK'),'sok');
+  assert.strictEqual(parity.typeFromTitle('Diğer Evrak'),'digerEvrak');
+  console.log('Kriter/Proje local-first ayar servisi + Classic Çizelgeler görünür parite sözleşmesi başarılı.');
 })().catch(err=>{console.error(err);process.exitCode=1;});
