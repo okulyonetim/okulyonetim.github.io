@@ -1,6 +1,9 @@
 const fs=require('fs');
 const assert=require('assert');
 const academic=fs.readFileSync('js/modules/academic.js','utf8');
+const calendarParity=fs.readFileSync('js/modules/academic-calendar-parity.js','utf8');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
+const build=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 
 assert(!academic.includes('data-academic-tab'),'Academic modülü iç sekme üretmemeli.');
@@ -19,5 +22,16 @@ assert(!shell.includes('[data-academic-tab='),'Shell Academic tab selector kulla
 assert(academic.includes('async function openPlanForLesson'),'AcademicModule ders ve sınıftan yıllık plan açma API si sağlamalı.');
 assert(academic.includes('planClassLevel')&&academic.includes('planLessonKey')&&academic.includes('planCurrentWeekIndex'),'Ders-sınıf yıllık plan eşleşmesi sınıf seviyesi, ders adı ve mevcut hafta üzerinden yapılmalı.');
 assert(academic.includes('new Set(planSelection()?.planIdler||[])'),'Takip edilen yıllık plan eşleşmede öncelikli olmalı.');
+
+// Akademik Takvim: eski poster görüntüleme davranışı yeni local-first servisin üzerinde kalmalı.
+for(const token of ['AcademicCalendarParity','kaAcademicCalendarOverlay','AkademikTakvimService.gorselYukle','data-academic-calendar-file','data-academic-calendar-progress','touchstart','touchmove','dblclick','Math.min(6','zoom=2.2','caches.open','CACHE_NAME']) assert(calendarParity.includes(token),`Akademik Takvim klasik çalışma alanı sözleşmesi eksik: ${token}`);
+assert(calendarParity.includes("page==='calendar'"),'Akademik Takvim paritesi yalnız academic/calendar sayfasını devralmalı.');
+assert(calendarParity.includes("activeUser().admin===true"),'Takvim görseli değiştirme admin sınırında kalmalı.');
+for(const forbidden of ['db.collection','firebase.firestore','DeviceData','localStorage.setItem'])assert(!calendarParity.includes(forbidden),`Akademik Takvim UI doğrudan veri yazmamalı: ${forbidden}`);
+assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js','js/modules/academic-calendar-parity.js'])"),'Academic loader Storage SDK ve takvim parite UI katmanını birlikte yüklemeli.');
+assert(loader.includes("name==='academic'||name==='communication'||name==='documents'"),'Academic açıldığında Firebase Storage örneği merkezi loader tarafından hazırlanmalı.');
+assert(build.includes("'academic.js':['js/modules/academic.js','js/modules/academic-calendar-parity.js']"),'Academic üretim bundle takvim parite UI katmanını içermeli.');
+
 console.log('Ders-sınıf yıllık plan doğrudan açma sözleşmesi başarılı.');
+console.log('Akademik Takvim tam ekran poster + admin yükleme + çevrimdışı Cache Storage paritesi başarılı.');
 console.log('Academic ayrı sayfa + deneme sayacı + sonuç filtreleme sözleşmesi başarılı.');
