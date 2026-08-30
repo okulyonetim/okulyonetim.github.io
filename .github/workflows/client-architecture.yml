@@ -40,6 +40,7 @@ jobs:
       - name: Commit visible parity and clean staging
         run: |
           set -euo pipefail
+          git fetch --no-tags origin c20257c80d61f68d78e6b943c4fe1367c11a4c4d --depth=1
           git show c20257c80d61f68d78e6b943c4fe1367c11a4c4d:.github/workflows/client-architecture.yml > .github/workflows/client-architecture.yml
           rm -rf .github/one-shot
           git diff --check
