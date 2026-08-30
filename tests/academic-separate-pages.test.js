@@ -4,11 +4,16 @@ const academic=fs.readFileSync('js/modules/academic.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const build=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
 
 assert(!academic.includes('data-academic-tab'),'Academic modülü iç sekme üretmemeli.');
 assert(academic.includes("function openPage(page,title='')"),'AcademicModule doğrudan sayfa açma API sözleşmesi sağlamalı.');
 for(const page of ['schedule','written','trial','results','plans','calendar'])assert(academic.includes(`'${page}'`),`Academic ayrı sayfa hedefi eksik: ${page}`);
 assert(academic.includes('denemeSayacBaslat')&&academic.includes('denemeSayacDurdur')&&academic.includes('timerState'),'Deneme sınavı sayaç davranışı korunmalı.');
+for(const token of ['ka-trial-page','ka-trial-summary','Toplam deneme','Aktif sayaç','trialSort','trialSchedule','trialCounterState','data-trial-open','ka-trial-card__live','ka-trial-modal-intro','ka-trial-class-picker','openTrialCounter','renderTrialCounter','kaTrialCounterOverlay','ka-trial-counter__ring','ka-trial-counter__schedule','ka-trial-counter__follow']) assert(academic.includes(token),`Deneme Sınavları görünür paritesi eksik: ${token}`);
+for(const token of ['.ka-trial-page','.ka-trial-card','.ka-trial-summary','.ka-trial-modal','.ka-trial-counter','.ka-trial-counter__ring','.ka-trial-counter__row','.ka-trial-counter__follow']) assert(css.includes(token),`Deneme Sınavları merkezi CSS yüzeyi eksik: ${token}`);
+assert(!fs.existsSync('js/modules/deneme-sinavlari-modern.js'),'Deneme Sınavları ayrı modern runtime dosyasına geri bölünmemeli.');
+assert(!fs.existsSync('js/modules/deneme-sayac-modern-v4.js'),'Deneme sayacı ayrı modern runtime dosyasına geri bölünmemeli.');
 for(const token of ['examDayDiff','ka-written-page','ka-written-summary','Toplam sınav','7 gün içinde','ka-written-card','ka-written-meta','ka-written-modal-intro','ka-written-class-picker']) assert(academic.includes(token),`Yazılı Sınavlar görünür paritesi eksik: ${token}`);
 
 for(const token of ['planCurrentWeekIndex','planTracked','ogretmenYillikPlanSecimleri','yillikPlanNotlari','data-plan-select','data-plan-note','data-plan-prev','data-plan-next']) assert(academic.includes(token),`Yıllık Plan gerçek haftalık takip sözleşmesi eksik: ${token}`);
