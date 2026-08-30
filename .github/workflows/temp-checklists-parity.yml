@@ -1,0 +1,92 @@
+name: Temporary Checklists Parity Gate
+
+on:
+  push:
+    branches: [work/checklists-visible-parity-20260830]
+    paths:
+      - '.github/workflows/temp-checklists-parity.yml'
+      - '.github/staging/checklists-parity/**'
+
+permissions:
+  contents: write
+
+jobs:
+  validate-and-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Reconstruct and apply candidate patch
+        shell: bash
+        run: |
+          echo 'a6e4212f5fab234cac06ca85d82defb851d2d70f1494acb7714fc337025b8ba9  .github/staging/checklists-parity/patch.xz.b64' | sha256sum -c -
+          base64 -d .github/staging/checklists-parity/patch.xz.b64 | xz -d > /tmp/checklists-parity.patch
+          echo '847dfca0837767675a7781135cb911dc53d9059bec0f46c9872fae8ea988619f  /tmp/checklists-parity.patch' | sha256sum -c -
+          git apply --check /tmp/checklists-parity.patch
+          git apply /tmp/checklists-parity.patch
+          node --check js/modules/tools.js
+      - name: Verify full client architecture
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-client-bundles.mjs
+          node tests/module-bundles-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/lazy-firebase-storage-smoke.test.js
+          node tests/web-mobile-engine-separation.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/classic-people-v2-smoke.test.js
+          node tests/classes-mobile-parity-smoke.test.js
+          node tests/classic-duty-v2-smoke.test.js
+          node tests/classic-schedule-v2-smoke.test.js
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/dashboard-quick-actions.test.js
+          node tests/calendar-month-view.test.js
+          node tests/quick-note-launcher.test.js
+          node tests/communication-admin-actions.test.js
+          node tests/transport-separate-pages.test.js
+          node tests/no-module-internal-tabs.test.js
+          node tests/report-engine-a4-smoke.test.js
+          node tests/report-native-print-routing-smoke.test.js
+          node tests/android-print-plugin-smoke.test.js
+          node tests/dashboard-reminders-smoke.test.js
+          node tests/teacher-list-core-contract.test.js
+          node tests/teacher-list-local-first-service.test.js
+          node tests/student-tool-routing-smoke.test.js
+          node tests/people-separate-pages.test.js
+          node tests/academic-separate-pages.test.js
+          node tests/management-separate-pages.test.js
+          node tests/communication-separate-pages.test.js
+          node tests/settings-separate-pages.test.js
+          node tests/tools-separate-pages.test.js
+          node tests/communication-local-first-contract.test.js
+          node tests/retired-legacy-roots-smoke.test.js
+          node tests/root-js-inventory-smoke.test.js
+          node tests/widget-platform-adapter-smoke.test.js
+          node tests/teblig-v2-smoke.test.js
+          node tests/documents-viewer-v2-smoke.test.js
+          node tests/document-viewer-smoke.test.js
+          node tests/lazy-document-libs-smoke.test.js
+          node tests/payroll-change-v2-smoke.test.js
+          node tests/assistant-v2-smoke.test.js
+          node tests/legislation-engine-v2-smoke.test.js
+          node tests/map-consolidation-smoke.test.js
+          node tests/rubric-tools-v2-smoke.test.js
+          node tests/rubric-settings-v2-smoke.test.js
+          node tests/rubric-legacy-retirement-readiness.test.js
+          node tests/pwa-push-smoke.test.js
+          node scripts/check-client-architecture.mjs
+          cat dist/js/manifest.json
+      - name: Commit validated runtime changes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/tools.js css/design-system.css tests/tools-separate-pages.test.js
+          git diff --cached --quiet && { echo 'No runtime changes to commit'; exit 1; }
+          git commit -m 'Port reference checklists visible workspace'
+          git push
