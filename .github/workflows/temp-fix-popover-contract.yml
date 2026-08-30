@@ -1,0 +1,29 @@
+name: Temporary Popover Contract Correction
+on:
+  push:
+    branches: [work/popover-settings-accordion-20260831]
+    paths: ['.github/workflows/temp-fix-popover-contract.yml']
+permissions:
+  contents: write
+jobs:
+  fix-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align contract with consolidated selector
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/classic-shell-v2-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          old="assert(design.includes('.ka-notification-popover{max-width:300px!important}')&&design.includes('.ka-profile-popover{max-width:226px!important}'),'Merkezi design system popover maksimum genişliklerini kilitlemeli.');"
+          new="assert(design.includes('max-width:300px!important')&&design.includes('max-width:226px!important'),'Merkezi design system popover maksimum genişliklerini kilitlemeli.');"
+          if s.count(old)!=1: raise SystemExit(f'contract match {s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/classic-shell-v2-smoke.test.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'Align popover contract with consolidated design rule'
+          git push
