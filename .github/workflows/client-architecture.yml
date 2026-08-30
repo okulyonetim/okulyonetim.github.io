@@ -15,8 +15,6 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 6
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -37,15 +35,12 @@ jobs:
           node tests/module-bundles-smoke.test.js
           node tests/service-worker-precache-smoke.test.js
           node scripts/check-client-architecture.mjs
-      - name: Commit visible parity and clean staging
+      - name: Commit visible parity application files
         run: |
           set -euo pipefail
-          git fetch --no-tags origin c20257c80d61f68d78e6b943c4fe1367c11a4c4d --depth=1
-          git show c20257c80d61f68d78e6b943c4fe1367c11a4c4d:.github/workflows/client-architecture.yml > .github/workflows/client-architecture.yml
-          rm -rf .github/one-shot
           git diff --check
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A css/design-system.css js/modules/dashboard.js js/modules/school-live-status.js tests/dashboard-card-routes-smoke.test.js tests/classic-shell-v2-smoke.test.js .github
+          git add css/design-system.css js/modules/dashboard.js js/modules/school-live-status.js tests/dashboard-card-routes-smoke.test.js tests/classic-shell-v2-smoke.test.js
           git commit -m 'Port reference home, live bell and weather surfaces'
           git push origin HEAD:main
