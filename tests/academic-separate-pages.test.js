@@ -24,6 +24,9 @@ for(const token of ['data-plan-word','openPlanWordImport','ensurePlanWordReader'
 assert(academic.includes('AppLoader?.loadScript?.'),'Word parser uygulama açılışında değil merkezi lazy loader ile yüklenmeli.');
 assert(academic.includes("PermissionService?.can?.('academic.plans','edit')")&&academic.includes("PermissionService?.can?.('academic.plans','read')"),'Yıllık Plan merkezi PermissionService kullanmalı.');
 assert(academic.includes("title==='Deneme Sonuçları'")&&academic.includes("title==='Test Sonuçları'"),'Deneme ve Test Sonuçları ayrı filtrelenmiş sayfa davranışını korumalı.');
+for(const token of ['ka-results-page','ka-results-summary','ssResultCard','ssResultDetail','data-ss-open','data-ss-back','ka-results-detail__actions','ka-results-table','ka-results-modal','ka-results-entry-grid']) assert(academic.includes(token),`Sınav Sonuçları görünür paritesi eksik: ${token}`);
+for(const token of ['.ka-results-page','.ka-results-card','.ka-results-summary','.ka-results-detail','.ka-results-table','.ka-results-modal','.ka-results-entry-row']) assert(css.includes(token),`Sınav Sonuçları merkezi CSS yüzeyi eksik: ${token}`);
+assert(!fs.existsSync('js/modules/sinav-sonuclari.js'),'Sınav Sonuçları ayrı legacy runtime dosyasına geri bölünmemeli.');
 assert(shell.includes("name==='academic'&&['schedule','written','trial','results','plans','calendar'].includes(page)"),'Shell Academic sayfalarını doğrudan route etmelidir.');
 assert(shell.includes('AcademicModule?.openPage?.(page,title)'),'Shell Academic sayfasını tab click ile değil openPage API ile açmalıdır.');
 assert(!shell.includes('[data-academic-tab='),'Shell Academic tab selector kullanmamalı.');
