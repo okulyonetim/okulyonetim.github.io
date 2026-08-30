@@ -9,10 +9,10 @@ if(global.ClassicPersonnelParity)return;
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]||c));
 const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');
 const data=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
-const people=()=>data('personel');
+const people=()=>{const v=global.AppStore?.data?.('personel');return Array.isArray(v)?v:[]};
 const canEdit=()=>!!(global.PermissionService?.can?.('management.personnel.edit','edit')||global.PermissionService?.can?.('management.personnel','edit')||global.duzenleyebilir?.('personel'));
 let search='',observer=null,scheduled=false,newBridge=null;
 const detailBridge=new Map();
@@ -61,9 +61,6 @@ function render(force=false){
   return true;
 }
 
-/* ================================================================
-   PERİYODİK İŞLER — eski görünür metin/sözleşme, canonical butonlar aynı.
-================================================================ */
 function periodicTemplate(){const d=data('periyodikSablon').find(x=>x.id==='sablon');return Array.isArray(d?.gorevler)?d.gorevler:[];}
 function decoratePeriodic(){
   const c=content(),h=nativeHeading();if(!c||!h||!['Aylık İşler','Periyodik İşler'].includes(h.textContent.trim()))return false;
@@ -86,11 +83,6 @@ function decoratePeriodic(){
   return true;
 }
 
-/* ================================================================
-   PUANTAJ — 708c82a kod önceliği:
-   açık izin/çalışma kaydı > resmi tatil > hafta tatili > normal çalışma.
-   Cumartesi kayıtsız CÇ DEĞİL H'dir. CÇ/PÇ/UBGT yalnız gerçek kayıttan gelir.
-================================================================ */
 const MONTHS={ocak:0,subat:1,mart:2,nisan:3,mayis:4,haziran:5,temmuz:6,agustos:7,eylul:8,ekim:9,kasim:10,aralik:11};
 function iso(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
 function activeStaffStatus(personelId,day){return data('personelIzinler').find(k=>{if(k.personelId!==personelId)return false;const b=k.baslangic||k.baslangicTarihi||'',e=k.bitis||k.bitisTarihi||b;return b&&day>=b&&day<=e;})||null;}
@@ -112,10 +104,6 @@ function decoratePuantaj(){
   return true;
 }
 
-/* ================================================================
-   RESMİ DİLEKÇE ÜRETİCİ — eski üç belge türü, veri yazmaz.
-   Önizleme contenteditable; çıktı merkezi ReportEngine üzerinden A4'tür.
-================================================================ */
 const OFFICIAL_PETITION_TYPES=[
   ['personelIzin','Personel İzin Dilekçesi'],
   ['diplomaKayit','Diploma Kayıt Örneği Talep Dilekçesi'],
@@ -179,15 +167,7 @@ function decorateDilekce(){
   return true;
 }
 
-function sync(){
-  scheduled=false;
-  if(nativeStaffPage()){captureBridges();render();return;}
-  if(parityStaffPage())return;
-  restoreShell();
-  decoratePeriodic();
-  decoratePuantaj();
-  decorateDilekce();
-}
+function sync(){scheduled=false;if(nativeStaffPage()){captureBridges();render();return;}if(parityStaffPage())return;restoreShell();decoratePeriodic();decoratePuantaj();decorateDilekce();}
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(sync);}
 function start(){
   if(observer)return;
