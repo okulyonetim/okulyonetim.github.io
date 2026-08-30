@@ -44,6 +44,7 @@ const peopleRegistry=loader.match(/define\('people',\[([^\]]+)\]\)/)?.[1]||'';
 for(const src of ["'js/modules/people.js'","'js/modules/people-import.js'","'js/modules/people-classic-ui.js'","'js/modules/classes-mobile-parity.js'"]) assert(peopleRegistry.includes(src),`People loader kaynağı eksik: ${src}`);
 assert(peopleRegistry.indexOf("'js/modules/people-classic-ui.js'")<peopleRegistry.indexOf("'js/modules/classes-mobile-parity.js'"),'Sınıflar tek görünüm sahibi exact People altyapısından sonra yüklenmeli.');
 assert(sw.includes("'./js/modules/classes-mobile-parity.js'")&&sw.includes("'./js/modules/class-seating.js'"),'Sınıflar görünüm sahibi ve oturma motoru offline kabukta olmalı.');
-assert(sw.includes("CACHE_ADI='oy-cache-v805'"),'Sınıflar düzeltmesinde statik cache sürümü yenilenmeli.');
+const cacheVersion=Number(sw.match(/CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
+assert(cacheVersion>=805,'Sınıflar düzeltmesinden eski bir statik cache sürümüne dönülmemeli.');
 
 console.log('Sınıflar tek render sahibi + gerçek oturma planı davranış kilidi başarılı.');
