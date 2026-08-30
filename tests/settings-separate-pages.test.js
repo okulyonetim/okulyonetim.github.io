@@ -6,9 +6,10 @@ assert(!settings.includes('data-settings-tab'),'Settings iç sekme üretmemeli.'
 assert(settings.includes("let active='home'"),'Settings ana landing sayfasıyla açılmalı.');
 assert(settings.includes('function settingsHome()'),'Settings kartlı ana yönetim ekranı sağlamalı.');
 assert(settings.includes("function openPage(page,title='')"),'Settings doğrudan sayfa API sağlamalı.');
-for(const page of ['school','users','statistics','account','sync','roles','app','reminders','storage'])assert(settings.includes(`'${page}'`),`Settings sayfa hedefi eksik: ${page}`);
+for(const page of ['school','lesson-hours','users','statistics','account','sync','roles','app','reminders','storage'])assert(settings.includes(`'${page}'`),`Settings sayfa hedefi eksik: ${page}`);
+assert(settings.includes("['lesson-hours','Ders Saatleri','Zil saatleri, öğle arası ve tatil modu']")&&settings.includes('data-lesson-holiday')&&settings.includes("DeviceData.set('dersSaatleri',COL.dersSaatleri,'ayarlar'"),'Ders Saatleri ve Tatil Modu mevcut local-first dersSaatleri modeline bağlı olmalı.');
 for(const token of ['OkulBilgileriService','KullaniciYonetimiService','appLayout','bindAppEditor','saveReminderSettings','DepolamaSinirService'])assert(settings.includes(token),`Settings gerçek davranışı eksik: ${token}`);
-assert(shell.includes("name==='settings'&&['school','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)"),'Shell Settings alt sayfalarını doğrudan route etmeli.');
+assert(shell.includes("name==='settings'&&['school','lesson-hours','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)"),'Shell Settings alt sayfalarını doğrudan route etmeli.');
 assert(shell.includes('SettingsModule?.openPage?.(page,title)'),'Shell Settings tab click yerine openPage kullanmalı.');
 assert(!shell.includes('[data-settings-tab='),'Shell Settings tab selector kullanmamalı.');
 console.log('Settings landing + ayrı sayfa routing sözleşmesi başarılı.');
