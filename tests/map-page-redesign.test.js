@@ -1,0 +1,15 @@
+const fs=require('fs');
+const assert=require('assert');
+const map=fs.readFileSync('js/modules/map-ui.js','utf8');
+const tools=fs.readFileSync('js/modules/tools.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+for(const token of ['data-map-workspace','ka-map-hero','ULAŞIM &amp; GÜZERGÂH','Güzergâh Haritası','Yer adı ara (örn: Koruk Köyü)...','ka-map-canvas-wrap','mapFavoriteCount','mapRouteCount','Servise Kaydet','ka-map-hint'])assert(map.includes(token),`Yeni Harita görünümü eksik: ${token}`);
+for(const token of ["global.HaritaUI.mount(content)","content.querySelector('[data-map-workspace]')","previous==='map'&&page!=='map'","global.HaritaUI?.unmount?.()","ka-tools-map-active"])assert(tools.includes(token),`Tools→Harita canonical lifecycle eksik: ${token}`);
+assert(!map.includes('data-tools-tab'),'Emekli Harita tab köprüsü geri dönmemeli.');
+assert(!map.includes('MutationObserver'),'Harita runtime DOM gözlemci parity katmanı kullanmamalı.');
+for(const token of ['/* Harita — premium rota çalışma alanı v1 */','.ka-map-hero{','.ka-map-lists-grid{','.ka-map-floating-tools{','[data-theme="dark"] .ka-map-hero{'])assert(css.includes(token),`Merkezi Harita tasarımı eksik: ${token}`);
+assert(map.includes("global.DeviceData.update('servisler'"),'Harita rota kaydı local-first DeviceData hattında kalmalı.');
+assert(map.includes("PermissionService?.require?.('tools.map','edit')"),'Harita düzenleme yetkisi merkezi PermissionService üzerinde kalmalı.');
+assert(sw.includes('oy-cache-v815'),'Yeni Harita CSS/JS için PWA cache sürümü yükseltilmeli.');
+console.log('Harita açık/koyu premium sayfa redesign sözleşmesi başarılı.');
