@@ -37,7 +37,7 @@ for(const token of [
   "global.CizelgelerService.cokluKayitOlustur",
   '📅 Tarihleri Toplu Ayarla',
   "global.ReportEngine.printReport",
-  '⇪ Excel\'den İçe Aktar'
+  'data-cizelge-excel'
 ]) assert(ciz.includes(token),`Classic Çizelgeler parite sözleşmesi eksik: ${token}`);
 for(const title of ['Sosyal Kulüpler','Belirli Gün ve Haftalar','Zümre Toplantıları','ŞÖK – Şube Öğretmenler Kurulu','Yıllık / BEP Planları','Rehberlik','Maarif Model Aylık Raporlar','Diğer Evraklar'])assert(ciz.includes(title),`Classic çizelge başlığı eksik: ${title}`);
 assert(!ciz.includes('global.DeviceData.')&&!ciz.includes('db.collection(')&&!ciz.includes('firebase.firestore'),'Classic Çizelgeler sunum katmanı doğrudan veri motoruna/Firestore’a yazmamalı.');

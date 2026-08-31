@@ -1,0 +1,18 @@
+const fs=require('fs');
+const assert=require('assert');
+const rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+for(const type of ['sosyalKulupler','belirliGunler','zumre','sok','bepPlani','maarifRapor','digerEvrak'])assert(rubric.includes(`${type}:`),`Sayfa UI metası eksik: ${type}`);
+assert(rubric.includes('function modernPageHead(type)')&&rubric.includes('ka-cizelge-page-head'),'Yedi çizelge sayfası ortak responsive başlık rendererını kullanmalı.');
+for(const token of ['data-cizelge-report','data-cizelge-excel','data-cizelge-bulk','data-cizelge-add','data-cizelge-edit','data-cizelge-check'])assert(rubric.includes(token),`Mevcut davranış kancası korunmalı: ${token}`);
+assert(rubric.includes('data-club-student-edit')&&rubric.includes('data-club-student-list'),'Sosyal kulüp öğrenci yönetimi korunmalı.');
+assert(rubric.includes("controlGrid('sosyalKulupler',r)")&&rubric.includes("controlGrid('belirliGunler',r)")&&rubric.includes("controlGrid('maarifRapor',r)"),'Gerçek kontrol dizileri yeni kartlarda kullanılmalı.');
+assert(rubric.includes('genericCard(type,r,false)')&&rubric.includes('data-cizelge-teacher-group='),'Zümre, ŞÖK ve BEP öğretmen gruplaması korunmalı.');
+assert(rubric.includes("if(type==='rehberlik')return guidanceTeacherGroupedList(rows)"),'Mevcut Rehberlik özel rendererı korunmalı.');
+assert(rubric.includes("if(TEACHER_GROUPED_TYPES.has(type))return teacherGroupedList(type,rows);"),'Dönem sayfaları canonical öğretmen gruplu rendererı kullanmalı.');
+assert(rubric.includes('ka-cizelge-main-grid')&&rubric.includes('ka-cizelge-event-list')&&rubric.includes('ka-maarif-record-grid'),'Sayfa türlerine uygun responsive liste/grid yüzeyleri bulunmalı.');
+for(const field of ['yillikPlanTarihi','toplumHizmetiTarihi','tarihBaslangic','tarihBitis','tarih1','tarih2','tarih3','yillikDersPlaniTarihi','bepPlaniTarihi','teslimEdildi','kontroller'])assert(rubric.includes(field),`Gerçek veri alanı korunmalı: ${field}`);
+assert(css.includes('/* Çizelge pages — shared responsive document tracking workspace. */'),'Ortak sayfa tasarımı merkezi design-system içinde olmalı.');
+assert(css.includes('[data-classic-cizelge-page="sosyalKulupler"]')&&css.includes('[data-classic-cizelge-page="digerEvrak"]'),'Tüm yeni sayfalar merkezi responsive kapsamda olmalı.');
+assert(css.includes('@media(max-width:760px)')&&css.includes('@media(max-width:520px)')&&css.includes('@media(max-width:390px)'),'Telefon kırılımları tanımlı olmalı.');
+console.log('Seven schedule/document pages responsive redesign OK');
