@@ -1,0 +1,38 @@
+name: Temp Schedule Print Fix
+on:
+  push:
+    branches: [work/schedule-sheet-print-fix-20260831]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/schedule-sheet-print-fix-20260831
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Apply schedule print fix
+        run: python .github/schedule-print-fix.py
+      - name: Verify schedule print bridge
+        run: |
+          set -e
+          node --check js/modules/academic.js
+          node --check js/modules/report-engine.js
+          node tests/schedule-report-print-bridge.test.js
+          node tests/schedule-report-visible-parity.test.js
+          node tests/academic-separate-pages.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit verified print fix
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/academic.js service-worker.js tests/schedule-report-print-bridge.test.js
+          git commit -m "fix: restore schedule sheet printing"
+          git push origin HEAD:work/schedule-sheet-print-fix-20260831
