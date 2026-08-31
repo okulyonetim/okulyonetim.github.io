@@ -1,0 +1,87 @@
+name: temp-map-visible-owner
+on:
+  push:
+    branches: [work/map-visible-owner-20260831]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Connect canonical HaritaUI to Tools lifecycle
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          tools_path=Path('js/modules/tools.js')
+          tools=tools_path.read_text(encoding='utf-8')
+          map_pattern=re.compile(r"function mapFavoriteCard\(f\)\{.*?\nfunction monthDoc",re.S)
+          map_replacement="""function renderMap(){const content=document.getElementById('toolsContent'),count=document.getElementById('toolsCount');if(!content)return;const favorites=global.HaritaService?.gorunurFavoriler?.(arr('haritaFavoriler'))||[];if(count)count.textContent=`${favorites.length} favori`;if(content.querySelector('[data-harita-ui]')){global.HaritaUI?.refresh?.();return}if(!global.HaritaUI?.mount){content.innerHTML='<div class=\"ka-empty\">Harita çalışma alanı hazır değil.</div>';return}Promise.resolve(global.HaritaUI.mount(content)).catch(e=>{console.warn('[Tools/Harita]',e?.message||e);if(content.isConnected)content.innerHTML='<div class=\"ka-empty\">Harita çalışma alanı açılamadı.</div>'})}
+          function monthDoc"""
+          tools,n=map_pattern.subn(lambda m:map_replacement,tools,count=1)
+          assert n==1,'duplicate map renderer removal failed'
+          bind_pattern=re.compile(r"\nfunction bindMap\(\)\{.*?\}\nfunction bindAttendance",re.S)
+          tools,n=bind_pattern.subn('\nfunction bindAttendance',tools,count=1)
+          assert n==1,'legacy bindMap removal failed'
+          old_open="function openPage(page,title=''){const allowed=['checklists','map','forms','attendance'];if(!allowed.includes(page))return false;const previous=active;if(previous==='forms'&&page!=='forms')global.ClassicCizelgelerParity?.close?.();active=page;"
+          new_open="function openPage(page,title=''){const allowed=['checklists','map','forms','attendance'];if(!allowed.includes(page))return false;const previous=active;if(previous==='forms'&&page!=='forms')global.ClassicCizelgelerParity?.close?.();if(previous==='map'&&page!=='map')global.HaritaUI?.unmount?.();active=page;"
+          assert tools.count(old_open)==1,'openPage map lifecycle marker mismatch'
+          tools=tools.replace(old_open,new_open,1)
+          old_unmount="function unmount(){mounted=false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];global.ClassicCizelgelerParity?.close?.()}"
+          new_unmount="function unmount(){mounted=false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];global.HaritaUI?.unmount?.();global.ClassicCizelgelerParity?.close?.()}"
+          assert tools.count(old_unmount)==1,'Tools unmount marker mismatch'
+          tools=tools.replace(old_unmount,new_unmount,1)
+          tools_path.write_text(tools,encoding='utf-8')
+
+          map_path=Path('js/modules/map-ui.js')
+          src=map_path.read_text(encoding='utf-8')
+          assert src.count('function shell(){return `<section class="ka-stack">')==1,'map shell marker mismatch'
+          src=src.replace('function shell(){return `<section class="ka-stack">','function shell(){return `<section class="ka-stack" data-harita-ui>',1)
+          old_save="async function saveRoute(){const id=document.getElementById('mapServiceSelect')?.value;if(!id||points.length<2)return;try{requireEdit();await global.DeviceData.update('servisler',global.COL.servisler,id,{guzergahMesafe:km(),guzergahKoordinatlar:points.map(p=>({lat:p.lat,lng:p.lng,ad:p.ad}))});global.toast?.(`Güzergâh cihazda kaydedildi: ${km()} km`);renderDataLists()}catch(e){global.toast?.(e?.code==='permission-denied'?'Bu işlem için yetkiniz yok.':e?.message||'Güzergâh kaydedilemedi.')}}"
+          new_save="async function saveRoute(){const id=document.getElementById('mapServiceSelect')?.value;if(!id||points.length<2)return;try{requireEdit();if(!global.TasimaRepository)await global.AppLoader?.load?.('transport');await global.HaritaService.guzergahKaydet(id,km(),points.map(p=>({lat:p.lat,lng:p.lng,ad:p.ad})));global.toast?.(`Güzergâh cihazda kaydedildi: ${km()} km`);renderDataLists()}catch(e){global.toast?.(e?.code==='permission-denied'?'Bu işlem için yetkiniz yok.':e?.message==='tasima-hazir-degil'?'Taşıma veri katmanı hazır değil.':e?.message||'Güzergâh kaydedilemedi.')}}"
+          assert src.count(old_save)==1,'saveRoute service marker mismatch'
+          src=src.replace(old_save,new_save,1)
+          bridge=re.compile(r"\n/\* Tools sekmesi köprüsü:.*?global\.addEventListener\('koruk:module-ready'.*?\);\n",re.S)
+          src,n=bridge.subn('\n',src,count=1)
+          assert n==1,'legacy map tab observer bridge removal failed'
+          map_path.write_text(src,encoding='utf-8')
+
+          test_path=Path('tests/map-consolidation-smoke.test.js')
+          test=test_path.read_text(encoding='utf-8')
+          test=test.replace("const loader=fs.readFileSync('js/app-loader.js','utf8');","const loader=fs.readFileSync('js/app-loader.js','utf8');\nconst tools=fs.readFileSync('js/modules/tools.js','utf8');")
+          old="assert(map.includes(\"global.DeviceData.update('servisler'\"),'Servis güzergâhı DeviceData local-first hattında kalmalı.');"
+          new="assert(!map.includes(\"global.DeviceData.update('servisler'\"),'Harita UI servis güzergâhına doğrudan DeviceData ile yazmamalı.');\nassert(map.includes('global.HaritaService.guzergahKaydet('),'Servis güzergâhı canonical HaritaService üzerinden kaydedilmeli.');\nassert(map.includes(\"global.AppLoader?.load?.('transport')\"),'Harita gerektiğinde mevcut Taşıma repository sahibini lazy-load etmeli.');\nassert(!map.includes('new MutationObserver')&&!map.includes('data-tools-tab'),'Harita eski sekme gözlemcisiyle mount edilmemeli.');\nassert(tools.includes('global.HaritaUI.mount(content)')&&tools.includes('global.HaritaUI?.refresh?.()'),'Tools Harita görünümünü canonical HaritaUI sahibine devretmeli.');\nassert(tools.includes(\"previous==='map'&&page!=='map'\")&&tools.includes('global.HaritaUI?.unmount?.()'),'Tools Harita lifecycle kapanışını yönetmeli.');\nassert(!tools.includes('function mapFavoriteCard(')&&!tools.includes('function routeCard('),'Tools ikinci Harita kart rendererını taşımamalı.');"
+          assert test.count(old)==1,'map test contract marker mismatch'
+          test=test.replace(old,new,1)
+          test_path.write_text(test,encoding='utf-8')
+          PY
+      - name: Syntax and focused contracts
+        run: |
+          node --check js/modules/tools.js
+          node --check js/modules/map-ui.js
+          node tests/map-consolidation-smoke.test.js
+          node tests/tools-separate-pages.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/module-bundles-smoke.test.js
+          node tests/root-js-inventory-smoke.test.js
+      - name: Build and architecture audit
+        run: |
+          node scripts/build-client-bundles.mjs
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit canonical files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/tools.js js/modules/map-ui.js tests/map-consolidation-smoke.test.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Restore interactive map visible ownership [skip ci]"
+          git push
