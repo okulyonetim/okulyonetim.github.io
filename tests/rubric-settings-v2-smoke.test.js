@@ -46,6 +46,11 @@ assert(tools.includes('async function prepareClubStudents()'),'Sosyal Kulüp ö�
 assert(tools.includes('prepareForms,prepareClubStudents,prepareAttendance'),'prepareClubStudents ToolsData üzerinden sunulmalı.');
 for(const token of ['data-club-student-edit','data-club-student-list','openClubStudentEditor','saveClubStudentAssignments','service.ogrenciKulupGuncelle','printClubStudentList',"ustBaslik:'Sosyal Kulüpler'"])assert(ciz.includes(token),`Sosyal Kulüp öğrenci paritesi eksik: ${token}`);
 assert(!ciz.includes('SiniflarRepository.veliGuncelle'),'Sosyal Kulüp UI öğrenci repositorysine doğrudan yazmamalı.');
+assert(!ciz.includes('new MutationObserver')&&!ciz.includes('ToolsModule.openPage=function'),'Çizelgeler görünümü DOM gözlemcisi veya Tools monkey-patch ile kurulmamali.');
+assert(ciz.includes("function open(title='')")&&ciz.includes('function close(){currentType='),'Çizelgeler açık lifecycle API sunmalı.');
+assert(!tools.includes('const FORM_COLS=')&&!tools.includes('function renderForms(')&&!tools.includes('function formModal('),'Tools ikinci çizelge renderer taşımamalı.');
+assert(tools.includes("active==='forms')global.ClassicCizelgelerParity?.render?.(true)"),'Tools çizelge görünümünü canonical sahibine devretmeli.');
+assert(tools.includes("global.ClassicCizelgelerParity?.open?.(title)"),'Tools forms route canonical çizelge open lifecycle kullanmalı.');
 
 (async()=>{
   const metaStore=new Map(),syncCalls={register:[],hydrate:[]},removed=[];
