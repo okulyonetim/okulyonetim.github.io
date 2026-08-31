@@ -34,6 +34,11 @@ for(const token of [
   "global.CizelgelerService.kayitSil",
   "global.CizelgelerService.kontrolToggle",
   "global.CizelgelerService.cokluKayitOlustur",
+  'data-cizelge-club-students',
+  'data-cizelge-club-print',
+  "global.AppLoader.load('people')",
+  'global.SiniflarService.ogrenciKulupGuncelle',
+  "arr('veliler').filter(v=>v.kulupId===id)",
   '📅 Tarihleri Toplu Ayarla',
   "global.ReportEngine.printReport",
   '⇪ Excel\'den İçe Aktar'
