@@ -1,0 +1,12 @@
+const fs=require('fs');
+const assert=require('assert');
+const rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+assert(rubric.includes('data-class-level-quick=\"primary\"')&&rubric.includes('Tüm İlkokul (1-4)'),'Sosyal kulüp modalı ilkokul hızlı seçimini korumalı.');
+assert(rubric.includes('data-class-level-quick=\"middle\"')&&rubric.includes('Tüm Ortaokul (5-8)'),'Sosyal kulüp modalı ortaokul hızlı seçimini korumalı.');
+assert(rubric.includes('data-class-level-quick=\"clear\"')&&rubric.includes('✕ Temizle'),'Sosyal kulüp modalı sınıf seçimini temizleyebilmeli.');
+assert(rubric.includes('data-seviye='),'Sınıf checkboxları seviye bilgisini korumalı.');
+assert(rubric.includes("classChecks('sinifIdler',r.sinifIdler,true,true)"),'Hızlı seçim yalnız sosyal kulüp sınıf alanında etkin olmalı.');
+assert(rubric.includes("mode==='primary'&&level>=1&&level<=4")&&rubric.includes("mode==='middle'&&level>=5&&level<=8"),'Hızlı seçim 1-4 ve 5-8 seviye aralıklarını kullanmalı.');
+assert(rubric.includes("if(mode==='clear'){cb.checked=false;return}"),'Temizle tüm sosyal kulüp sınıf seçimlerini kaldırmalı.');
+assert(rubric.includes('Hiç sınıf seçilmezse bu kulübü tüm sınıflar seçebilir.'),'Eski sosyal kulüp sınıf seçimi açıklaması korunmalı.');
+console.log('Social club class quick-select parity OK');
