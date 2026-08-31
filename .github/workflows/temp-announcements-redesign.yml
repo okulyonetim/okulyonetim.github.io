@@ -1,0 +1,38 @@
+name: Temporary Announcements Redesign
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/temp-announcements-redesign.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply canonical announcements redesign
+        run: python3 scripts/temp-announcements-redesign.py
+      - name: Verify documents and communication contracts
+        run: |
+          node --check js/modules/documents.js
+          node --check js/modules/communication.js
+          node tests/announcements-page-redesign.test.js
+          node tests/communication-admin-actions.test.js
+          node tests/communication-separate-pages.test.js
+          node tests/teblig-v2-smoke.test.js
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+      - name: Commit canonical changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/documents.js js/modules/communication.js css/design-system.css tests/announcements-page-redesign.test.js service-worker.js
+          git commit -m 'feat: redesign announcements page and clean documents entry'
+          git push origin main
