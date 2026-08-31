@@ -1,0 +1,37 @@
+name: temp-transport-shell-contract
+on:
+  push:
+    branches: [work/transport-detail-consolidation-20260831]
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Update retired transport companion shell contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tests/classic-shell-v2-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          old="for(const lazy of ['./js/modules/dashboard.js','./js/modules/people.js','./js/modules/academic.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/report-engine.js','./js/modules/transport.js','./js/modules/transport-service-parity.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js']) assert(sw.includes(lazy),`AppLoader lazy modülü offline PWA shell cache içinde bulunmalı: ${lazy}`);"
+          new="for(const lazy of ['./js/modules/dashboard.js','./js/modules/people.js','./js/modules/academic.js','./js/modules/management.js','./js/modules/communication.js','./js/modules/report-engine.js','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js']) assert(sw.includes(lazy),`AppLoader lazy modülü offline PWA shell cache içinde bulunmalı: ${lazy}`);\nassert(!sw.includes('./js/modules/transport-service-parity.js'),'Emekli Transport companion offline PWA cache içinde kalmamalı.');"
+          assert s.count(old)==1, s.count(old)
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/transport-separate-pages.test.js
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit contract update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/classic-shell-v2-smoke.test.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Align shell contract with canonical transport owner [skip ci]"
+          git push
