@@ -1,0 +1,13 @@
+const fs=require('fs');
+const assert=require('assert');
+const rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+assert(rubric.includes('function maarifMatrix(rows)'),'Maarif görünümü öğretmen bazlı canonical matris renderer kullanmalı.');
+assert(rubric.includes('DERS / SINIF')&&rubric.includes('CONTROLS.maarifRapor||[]'),'Maarif matrisi ders/sınıf ve 10 aylık kontrol başlıklarını kullanmalı.');
+assert(rubric.includes('groups=new Map')&&rubric.includes('if(!r.ogretmenId)return'),'Maarif kayıtları eski davranıştaki gibi öğretmen bazında gruplanmalı.');
+assert(rubric.includes("sorted.length*labels.length")&&rubric.includes("filter(Boolean).length"),'Öğretmen grup başlığı toplam ilerlemeyi göstermeli.');
+assert(rubric.includes("String(a.ders||'').localeCompare")&&rubric.includes("String(a.sinif||'').localeCompare"),'Maarif satırları ders ve sınıfa göre sıralanmalı.');
+assert(rubric.includes('data-cizelge-check data-type=\"maarifRapor\"')&&rubric.includes('data-index=\"${i}\"'),'Aylık hücreler mevcut canonical kontrol toggle akışını kullanmalı.');
+assert(rubric.includes("editButton('maarifRapor',r.id)"),'Maarif matrisinde mevcut düzenleme davranışı korunmalı.');
+assert(rubric.includes("if(type==='maarifRapor')return maarifMatrix(rows);"),'Maarif sayfası kart listesi yerine matris görünümüne yönlenmeli.');
+assert(rubric.includes('class=\"ka-table-wrap\"')&&rubric.includes('class=\"ka-table\"'),'Maarif matrisi merkezi design-system tablo yüzeyini kullanmalı.');
+console.log('Maarif teacher matrix visible parity OK');
