@@ -128,10 +128,11 @@ global.OdevNotCizelgeleriService=OdevNotCizelgeleriService;
 async function prepareControlLists(){if(!global.SyncEngine||!global.COL)return;const types=[];if(COL.kontrolListeleri){SyncEngine.register('kontrolListeleri',COL.kontrolListeleri);types.push('kontrolListeleri');}if(COL.kontrolListeTamamlama){const u=user(),admin=!!u.admin,tid=teacherId();SyncEngine.register('kontrolListeTamamlama',COL.kontrolListeTamamlama,{query:q=>admin||!tid?q:q.where('ogretmenId','==',tid)});types.push('kontrolListeTamamlama');}for(const tip of FORM_TYPES){if(COL[tip]){SyncEngine.register(tip,COL[tip]);types.push(tip);}}if(types.length){await SyncEngine.localHydrate([...new Set(types)]);SyncEngine.schedule(100);}}
 async function prepareMap(){if(!global.SyncEngine||!global.COL?.haritaFavoriler)return;const u=user();SyncEngine.register('haritaFavoriler',COL.haritaFavoriler,{query:q=>u.admin===true||!u.uid?q:q.where('olusturanUid','==',u.uid)});await SyncEngine.localHydrate(['haritaFavoriler']);SyncEngine.schedule(100);}
 async function prepareForms(){if(!global.SyncEngine||!global.COL)return;const types=[];for(const tip of FORM_TYPES){if(COL[tip]){SyncEngine.register(tip,COL[tip]);types.push(tip);}}if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
+async function prepareClubStudents(){if(!global.SyncEngine||!global.COL)return;const types=['ogretmenler','siniflar','veliler','sosyalKulupler'].filter(type=>COL[type]);for(const type of types)SyncEngine.register(type,COL[type]);if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
 async function prepareAttendance(){if(!global.SyncEngine||!global.COL?.devamsizlikCizelgesi)return;SyncEngine.register('devamsizlikCizelgesi',COL.devamsizlikCizelgesi);await SyncEngine.localHydrate(['devamsizlikCizelgesi']);SyncEngine.schedule(100);}
 async function prepareGradebooks(){if(!global.SyncEngine||!global.COL)return;const u=user(),types=[];for(const tip of GRADE_TYPES){if(COL[tip]){SyncEngine.register(tip,COL[tip],{query:q=>u.admin===true||!u.uid?q:q.where('sahipUid','==',u.uid)});types.push(tip);}}if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
 
-global.ToolsData={prepareControlLists,prepareMap,prepareForms,prepareAttendance,prepareGradebooks,teacherId,FORM_TYPES,GRADE_TYPES};
+global.ToolsData={prepareControlLists,prepareMap,prepareForms,prepareClubStudents,prepareAttendance,prepareGradebooks,teacherId,FORM_TYPES,GRADE_TYPES};
 })(window);
 
 /* ========================= TOOLS UI ========================= */
