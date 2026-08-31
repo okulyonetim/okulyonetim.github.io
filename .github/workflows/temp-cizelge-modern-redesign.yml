@@ -1,0 +1,44 @@
+name: Temporary Cizelge Modern Redesign
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/temp-cizelge-modern-redesign.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply canonical multi-page redesign
+        run: python3 scripts/temp-cizelge-modern-redesign.py
+      - name: Verify çizelge redesign and architecture contracts
+        run: |
+          node --check js/modules/rubric-settings.js
+          node tests/cizelge-modern-pages-redesign.test.js
+          node tests/rehberlik-page-redesign.test.js
+          node tests/teacher-grouped-period-visible-parity.test.js
+          node tests/maarif-matrix-visible-parity.test.js
+          node tests/social-club-class-quick-select-parity.test.js
+          node tests/belirli-gunler-visible-parity.test.js
+          node tests/cizelge-report-detail-visible-parity.test.js
+          node tests/tools-separate-pages.test.js
+          node tests/rubric-settings-v2-smoke.test.js
+          node tests/module-bundles-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit canonical changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/rubric-settings.js css/design-system.css tests/maarif-matrix-visible-parity.test.js tests/cizelge-modern-pages-redesign.test.js service-worker.js
+          git commit -m 'feat: redesign schedule and document tracking pages'
+          git push origin main
