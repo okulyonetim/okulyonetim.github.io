@@ -1,0 +1,12 @@
+const fs=require('fs');
+const assert=require('assert');
+const rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+assert(rubric.includes('function reportRecordLabel(type,r)'),'Çizelge raporları görünür kayıt ayrıntıları için ayrı canonical özet kullanmalı.');
+for(const token of ['Danışman: ${teachers}','Sınıflar: ${classes}','Yıllık plan: ${trDate(r.yillikPlanTarihi)}','Toplum hizmeti: ${trDate(r.toplumHizmetiTarihi)}'])assert(rubric.includes(token),`Sosyal kulüp rapor ayrıntısı eksik: ${token}`);
+assert(rubric.includes("r.aktif===false?'Pasif':'Aktif'"),'Sosyal kulüp raporu aktif/pasif durumunu korumalı.');
+assert(rubric.includes("if(type==='maarifRapor')return [r.ders||'Ders',r.sinif||'Sınıf',r.aciklama||'']"),'Maarif raporu ders, sınıf ve açıklama ayrıntısını korumalı.');
+assert(rubric.includes('genericMeta(type,r,false)'),'Zümre, ŞÖK, BEP ve Rehberlik raporları tarih/not meta ayrıntılarını korumalı.');
+assert(rubric.includes("const first=reportRecordLabel(type,r),checks=checkArray(type,r).map(v=>v?'✓':'');"),'Rapor tablosu ayrıntılı canonical kayıt özetini kullanmalı.');
+assert(rubric.includes("['Etkinlik','Başlangıç','Bitiş','Sorumlu Öğretmenler','Durum','Notlar']"),'Belirli Günler özel rapor alanları değişmemeli.');
+assert(rubric.includes("checkArray(type,r)[0]?'Yapıldı':'Bekliyor'"),'Belirli Günler Yapıldı durumu korunmalı.');
+console.log('Schedule report detail visible parity OK');
