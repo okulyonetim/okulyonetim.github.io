@@ -1,0 +1,10 @@
+const fs=require('fs');
+const assert=require('assert');
+const a=fs.readFileSync('js/modules/academic.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+assert(a.includes('async function ensureScheduleReportEngine()'),'Ders programı rapor motoru hazır olma kontrolü eksik.');
+assert(a.includes("loadScript('js/modules/report-engine.js')"),'Rapor motoru gerektiğinde lazy-load edilmeli.');
+assert(a.includes("document.getElementById('kaReportPreview')"),'Yazdır düğmesi gerçek rapor önizlemesini doğrulamalı.');
+assert(a.includes("throw new Error('Rapor önizlemesi açılamadı.')"),'Sessiz yazdırma başarısızlığı engellenmeli.');
+assert(sw.includes("CACHE_ADI='oy-cache-v817'"),'Ders programı yazdırma düzeltmesi için cache sürümü artırılmalı.');
+console.log('Ders Programı çarşaf Yazdır akışı başarılı.');
