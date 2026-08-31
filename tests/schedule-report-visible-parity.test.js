@@ -1,0 +1,14 @@
+const fs=require('fs');
+const assert=require('assert');
+const academic=fs.readFileSync('js/modules/academic.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+const excel=fs.readFileSync('js/modules/classic-excel-parity.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+for(const token of ['ka-schedule-hero','data-schedule-add','data-schedule-import','data-schedule-report','data-schedule-sheet-report','firstEmptySchedulePeriod','printScheduleSingleClass','openScheduleReportHub','Tek Sınıf Programı','Tek Öğretmen Programı','Tüm Sınıflar Çarşaf','Tüm Öğretmenler Çarşaf','scheduleSheetClasses','scheduleSheetTeachers','scheduleLessonAbbr','scheduleTeacherInitials','ReportEngine.printReport','data-schedule-report-class-list','data-schedule-report-teacher-list','ka-schedule-modal-intro'])assert(academic.includes(token),`Ders Programı görünür/rapor paritesi eksik: ${token}`);
+for(const token of ['.ka-academic-schedule-active','.ka-schedule-hero','.ka-schedule-actions','.ka-schedule-modal','.ka-schedule-report-modal','.ka-schedule-report-types','.ka-schedule-report-sheet'])assert(css.includes(token),`Ders Programı merkezi CSS yüzeyi eksik: ${token}`);
+assert(academic.includes('siniflar:COL?.siniflar')&&academic.includes('ogretmenler:COL?.ogretmenler')&&academic.includes('okulBilgileri:COL?.okulBilgileri'),'Ders Programı rapor bağımlılıkları local-first hydrate edilmeli.');
+assert(academic.includes("yon:meta.yon")&&academic.includes("logoGoster:false")&&academic.includes("baslikGoster:false"),'Ders Programı raporu merkezi ReportEngine A4 seçeneklerini kullanmalı.');
+assert(excel.includes("!out.querySelector('[data-schedule-import]')"),'Classic Excel adaptörü canonical içe aktarma düğmesini görünce ikinci düğme eklememeli.');
+assert(!fs.existsSync('js/raporlama.js'),'Emekli legacy raporlama.js geri dönmemeli.');
+const m=sw.match(/CACHE_ADI='oy-cache-v(\d+)'/);assert(m&&Number(m[1])>=816,'Ders Programı görünür değişikliği için PWA cache artırılmalı.');
+console.log('Ders Programı yeni çalışma alanı + tekil/toplu/çarşaf rapor paritesi başarılı.');
