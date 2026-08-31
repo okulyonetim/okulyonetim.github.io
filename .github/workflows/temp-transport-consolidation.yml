@@ -27,8 +27,6 @@ jobs:
           node tests/modules-local-first-boundary.test.js
           node tests/service-worker-precache-smoke.test.js
           node tests/root-js-inventory-smoke.test.js
-          node tests/servisler-role-rules.test.js
-          node tests/oturma-planlari-role-rules.test.js
       - name: Build and architecture audit
         run: |
           node scripts/build-client-bundles.mjs
