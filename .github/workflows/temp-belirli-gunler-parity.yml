@@ -1,0 +1,53 @@
+name: temp-belirli-gunler-parity
+on:
+  push:
+    branches: [work/belirli-gunler-parity-20260831]
+permissions:
+  contents: write
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Restore Belirli Günler visible parity
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('js/modules/dashboard.js')
+          s=p.read_text(encoding='utf-8')
+          old="function upcomingRows(){const exams=upcoming([...arr('sinavlar'),...arr('denemeSinavlari')],'tarih',14).map(x=>({icon:'📝',title:x.ad||x.ders||x.sinavAdi||'Sınav',meta:`${date(x.tarih)} · Sınav`}));const reminders=upcoming(arr('hatirlaticilar'),'tarih',14).filter(x=>!x.tamamlandi).map(x=>({icon:'🔔',title:x.baslik||'Hatırlatıcı',meta:`${date(x.tarih)} · Hatırlatıcı`}));const tasks=upcoming(arr('gorevler'),'sonTarih',14).filter(x=>!isDone(x)).map(x=>({icon:'✓',title:x.baslik||'Görev',meta:`${date(x.sonTarih)} · Görev`}));return[...exams,...reminders,...tasks].sort((a,b)=>a.meta.localeCompare(b.meta)).slice(0,8)}"
+          new="function upcomingRows(){const exams=upcoming([...arr('sinavlar'),...arr('denemeSinavlari')],'tarih',14).map(x=>({icon:'📝',title:x.ad||x.ders||x.sinavAdi||'Sınav',meta:`${date(x.tarih)} · Sınav`}));const reminders=upcoming(arr('hatirlaticilar'),'tarih',14).filter(x=>!x.tamamlandi).map(x=>({icon:'🔔',title:x.baslik||'Hatırlatıcı',meta:`${date(x.tarih)} · Hatırlatıcı`}));const tasks=upcoming(arr('gorevler'),'sonTarih',14).filter(x=>!isDone(x)).map(x=>({icon:'✓',title:x.baslik||'Görev',meta:`${date(x.sonTarih)} · Görev`}));const specialDays=upcoming(arr('belirliGunler').filter(x=>!(x.kontroller||[])[0]),'tarihBaslangic',14).map(x=>({icon:'🎉',title:x.ad||'Belirli Gün / Hafta',meta:`${date(x.tarihBaslangic)} · Belirli Gün / Hafta`}));return[...exams,...reminders,...tasks,...specialDays].sort((a,b)=>a.meta.localeCompare(b.meta)).slice(0,8)}"
+          assert s.count(old)==1, ('dashboard-upcoming-contract',s.count(old))
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          p=Path('js/modules/rubric-settings.js')
+          s=p.read_text(encoding='utf-8')
+          old="function reportTable(type){const rows=arr(type),labels=CONTROLS[type]||[];if(type==='digerEvrak')return'';let heads=['Kayıt'];if(type!=='sosyalKulupler'&&type!=='belirliGunler')heads.unshift('Öğretmen');heads.push(...labels);const body=rows.map(r=>{const first=recordLabel(type,r),checks=checkArray(type,r).map(v=>v?'✓':'');const cells=[];if(type!=='sosyalKulupler'&&type!=='belirliGunler')cells.push(teacherName(r.ogretmenId));cells.push(first,...checks);return `<tr>${cells.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`}).join('');return `<table><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${body||`<tr><td colspan=\"${heads.length}\">Kayıt yok.</td></tr>`}</tbody></table>`}"
+          new="function reportTable(type){const rows=arr(type),labels=CONTROLS[type]||[];if(type==='digerEvrak')return'';if(type==='belirliGunler'){const heads=['Etkinlik','Başlangıç','Bitiş','Sorumlu Öğretmenler','Durum','Notlar'],body=rows.map(r=>{const teachers=Array.isArray(r.ogretmenIdler)?r.ogretmenIdler.map(teacherName).filter(Boolean).join(', '):'',cells=[r.ad||'Etkinlik',trDate(r.tarihBaslangic),r.tarihBitis?trDate(r.tarihBitis):'',teachers,checkArray(type,r)[0]?'Yapıldı':'Bekliyor',r.aciklama||''];return `<tr>${cells.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`}).join('');return `<table><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${body||`<tr><td colspan=\"${heads.length}\">Kayıt yok.</td></tr>`}</tbody></table>`}let heads=['Kayıt'];if(type!=='sosyalKulupler')heads.unshift('Öğretmen');heads.push(...labels);const body=rows.map(r=>{const first=recordLabel(type,r),checks=checkArray(type,r).map(v=>v?'✓':'');const cells=[];if(type!=='sosyalKulupler')cells.push(teacherName(r.ogretmenId));cells.push(first,...checks);return `<tr>${cells.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`}).join('');return `<table><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${body||`<tr><td colspan=\"${heads.length}\">Kayıt yok.</td></tr>`}</tbody></table>`}"
+          assert s.count(old)==1, ('report-table-contract',s.count(old))
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          test=Path('tests/belirli-gunler-visible-parity.test.js')
+          test.write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst dash=fs.readFileSync('js/modules/dashboard.js','utf8');\nconst rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');\nconst people=fs.readFileSync('js/modules/people.js','utf8');\nassert(dash.includes(\"arr('belirliGunler').filter(x=>!(x.kontroller||[])[0])\"),'Admin yaklaşan listesi tamamlanmamış belirli günleri kullanmalı.');\nassert(dash.includes(\"'tarihBaslangic',14\"),'Belirli günler yaklaşan 14 günlük pencereye bağlanmalı.');\nassert(rubric.includes(\"['Etkinlik','Başlangıç','Bitiş','Sorumlu Öğretmenler','Durum','Notlar']\"),'Belirli gün raporu görünür alanları korumalı.');\nassert(rubric.includes(\"checkArray(type,r)[0]?'Yapıldı':'Bekliyor'\"),'Belirli gün raporu Yapıldı durumunu korumalı.');\nassert(rubric.includes(\"tarihBaslangic\")&&rubric.includes(\"tarihBitis\")&&rubric.includes(\"ogretmenIdler\")&&rubric.includes(\"aciklama\"),'Belirli gün veri modeli korunmalı.');\nassert(people.includes(\"specialDaysOf=id=>data('belirliGunler')\")&&people.includes(\"docGroup(o,'belirliGunler','BELİRLİ GÜN VE HAFTALAR'\"),'Öğretmen profilindeki belirli gün sorumluluk ve belge durumu korunmalı.');\nconsole.log('Belirli Günler visible parity OK');\n""",encoding='utf-8')
+          PY
+      - name: Run complete client test suite
+        run: |
+          set -e
+          for f in tests/*.test.js; do
+            echo "==> $f"
+            node "$f"
+          done
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit verified parity package
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/dashboard.js js/modules/rubric-settings.js tests/belirli-gunler-visible-parity.test.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Restore Belirli Gunler dashboard and report parity [skip ci]"
+          git push
