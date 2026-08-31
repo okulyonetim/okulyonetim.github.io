@@ -1,0 +1,46 @@
+name: Temporary Announcement Detail Gallery Diagnose
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/temp-announcement-detail-gallery-diagnose.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply canonical announcement detail and gallery
+        run: python3 scripts/temp-announcement-detail-gallery.py
+      - name: Syntax check communication
+        run: node --check js/modules/communication.js
+      - name: Verify announcement detail gallery
+        run: node tests/announcement-detail-gallery.test.js
+      - name: Verify announcements redesign
+        run: node tests/announcements-page-redesign.test.js
+      - name: Verify communication admin actions
+        run: node tests/communication-admin-actions.test.js
+      - name: Verify communication separate pages
+        run: node tests/communication-separate-pages.test.js
+      - name: Verify communication local-first
+        run: node tests/communication-local-first-contract.test.js
+      - name: Verify dashboard routes
+        run: node tests/dashboard-card-routes-smoke.test.js
+      - name: Verify module local-first boundary
+        run: node tests/modules-local-first-boundary.test.js
+      - name: Verify service worker
+        run: node tests/service-worker-precache-smoke.test.js
+      - name: Commit canonical changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/communication.js css/design-system.css tests/announcements-page-redesign.test.js tests/announcement-detail-gallery.test.js service-worker.js
+          git commit -m 'feat: add announcement detail and in-app gallery'
+          git push origin main
