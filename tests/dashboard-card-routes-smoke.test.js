@@ -85,7 +85,7 @@ assert(dash.includes('function isDutyChief')&&dash.includes('function sortDuties
 assert(!dash.includes('ka-week-duty-day'),'Yeni taklit haftalık nöbet bileşeni aktif renderer içinde kalmamalı.');
 assert(css.includes('LEGACY DASHBOARD SURFACES — CENTRAL THEME')&&css.includes('.ka-home .kh-news')&&css.includes('.ka-home .kh-weekday'),'Legacy dashboard geometrisi merkezi design-system içinde yaşamalı.');
 assert(css.includes('.ka-home .kh-news{')&&css.includes('background:var(--ka-card-bg)')&&css.includes('color:var(--ka-text)')&&css.includes('background:var(--ka-primary-soft)'),'Legacy yüzeylerin renkleri merkezi --ka-* tema tokenlarından gelmeli.');
-assert(shell.includes("compact=isTeacherUser(),p=popoverBase(anchor,compact?246:340)")&&shell.includes('ka-profile-popover--compact'),'Öğretmen header profil popupı küçük bildirim kartı boyutunda açılmalı.');
+assert(shell.includes("popoverBase(anchor,226)")&&shell.includes("p.classList.add('ka-profile-popover','ka-profile-popover--compact')"),'Header profil popupı tüm roller için kompakt 226px bildirim kartı boyutunda açılmalı.');
 assert(shell.includes('ka-profile-popover__identity')&&css.includes('.ka-profile-popover--compact .ka-profile-popover__identity'),'Profil popup görünümü merkezi design-system sınıflarıyla yönetilmeli.');
 // Checkpoint: legacy news, weekly duty and profile surfaces are ported onto central themes.
 // Final regression checkpoint: legacy dashboard surfaces + centralized light/dark theme.

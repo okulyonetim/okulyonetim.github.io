@@ -90,14 +90,16 @@ assert(excel.includes('SiniflarService.sinifListesiIceAktar'),'Sınıf Excel can
 assert(excel.includes('DersProgramiService.kaydet'),'Ders Programı Excel canonical DersProgramiService üzerinden yazmalı.');
 assert(excel.includes('SinavlarService.sinavKaydet'),'Yazılı Excel canonical SinavlarService üzerinden yazmalı.');
 assert(excel.includes('ReferenceListService.lessonSave'),'Ders/Branş Excel canonical referans liste servisi üzerinden yazmalı.');
-for(const marker of ['Sınıf Excel','Program Excel','Yazılı Excel','data-classic-settings-list="lesson"']) assert(excel.includes(marker),`Klasik Excel görünür aksiyonu eksik: ${marker}`);
+for(const marker of ['Sınıf Excel','Program Excel','Yazılı Excel']) assert(excel.includes(marker),`Klasik Excel görünür aksiyonu eksik: ${marker}`);
+assert(!excel.includes('function enhanceSettings()'),'Classic Excel Settings DOM’una ikinci kez buton enjekte etmemeli.');
 for(const label of ['SINIF ADI','DERS SAATİ','YAZILI SIRASI','SENARYO NO','YAYINEVİ','KISALTMA','haftalikSaatler']) assert(excel.includes(label),`Eski Excel veri sözleşmesi eksik: ${label}`);
 
 assert(parity.includes("device().add('dersListesi',global.COL.dersListesi")&&parity.includes("device().update('dersListesi',global.COL.dersListesi")&&parity.includes("device().remove('dersListesi',global.COL.dersListesi"),'Ders Listesi CRUD DeviceData üzerinden kalmalı.');
 assert(parity.includes("device().add('bransListesi',global.COL.bransListesi")&&parity.includes("device().update('bransListesi',global.COL.bransListesi")&&parity.includes("device().remove('bransListesi',global.COL.bransListesi"),'Branş Listesi CRUD DeviceData üzerinden kalmalı.');
 assert(parity.includes("SyncEngine.localHydrate(['dersListesi','bransListesi'])"),'Ders/branş listeleri önce cihazdan hydrate edilmeli.');
 assert(parity.includes("PermissionService?.can?.('settings.app.edit','edit')"),'Ders/branş yönetimi mevcut merkezi ayar yazma yetkisini kullanmalı.');
-for(const label of ['Ders Listesi','Branş Listesi','Haftalık Ders Saati','Toplam sınav','7 gün içinde','Aktif sayaç']) assert(parity.includes(label),`Toplu klasik parite öğesi eksik: ${label}`);
+for(const label of ['Toplam sınav','7 gün içinde','Aktif sayaç']) assert(parity.includes(label),`Toplu klasik parite öğesi eksik: ${label}`);
+assert(!parity.includes('function enhanceSettings()')&&!parity.includes('data-classic-settings-card'),'Classic parity Settings ana ekranına ikinci renderer olarak müdahale etmemeli.');
 for(const label of ['HAFTALIK NORM ANALİZİ','SOSYAL KULÜP & REHBERLİK','BELİRLİ GÜN VE HAFTALAR','BELGE DURUMU','İZİNLER / RAPORLAR','DİĞER EVRAK']) assert(parity.includes(label),`Öğretmen profil raporu parite bölümü eksik: ${label}`);
 assert(parity.includes("u.bagliOgretmenId||u.ogretmenId||''"),'Profil bağlı öğretmen çözümü canonical fallback kimliğini kullanmalı.');
 assert(parity.includes("x.ogretmenId===id")&&parity.includes("Array.isArray(x.ogretmenIdler)&&x.ogretmenIdler.includes(id)"),'Öğretmen sorumlulukları gerçek ID alanlarıyla eşleşmeli.');
