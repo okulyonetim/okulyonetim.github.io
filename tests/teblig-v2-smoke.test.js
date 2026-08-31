@@ -12,8 +12,11 @@ assert(src.includes("arr('okulBilgileri')"),'Rapor başlığı mevcut okul bilgi
 assert(src.includes("PermissionService?.can?.('documents.view','preview')"),'Form erişimi merkezi documents.view yetkisine bağlı olmalı.');
 assert(src.includes("PermissionService?.can?.('documents.edit','edit')"),'Form düzenleme merkezi documents.edit yetkisine bağlı olmalı.');
 assert(src.includes("ReportEngine?.printReport")||src.includes("ReportEngine.printReport"),'A4/PDF çıktısı merkezi ReportEngine kullanmalı.');
-assert(src.includes('Tebliğ‑Tebellüğ Belgesi')||src.includes('Tebliğ-Tebellüğ Belgesi'),'Resmi belge başlığı korunmalı.');
-assert(src.includes('<th>Adı Soyadı</th>')&&src.includes('<th>Görevi</th>')&&src.includes('<th>İmza</th>'),'Tebellüğ imza tablosu korunmalı.');
+assert(src.includes('Tebliğ-Tebellüğ İmza Sirküsü'),'Eski görünür İmza Sirküsü başlığı korunmalı.');
+assert(src.includes('TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ'),'Resmi A4 üst başlığı korunmalı.');
+assert(src.includes('TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.'),'Eski resmi tebellüğ beyanı korunmalı.');
+assert(src.includes("unvan==='Öğretmen'&&o.brans")&&src.includes('Öğrt.'),'Öğretmen görev metni eski davranış gibi branş + Öğrt. olmalı.');
+assert(src.includes('<th>S.NO</th>')&&src.includes('<th>ADI VE SOYADI</th>')&&src.includes('<th>GÖREVİ</th>')&&src.includes('<th>İMZA</th>'),'Tebellüğ imza tablosunun resmi başlıkları korunmalı.');
 assert(!src.includes('db.collection'),'Documents formu doğrudan Firestore kullanmamalı.');
 assert(!src.includes("createElement('style')"),'Documents V2 kendi CSS katmanını üretmemeli.');
 assert(!index.includes('<script src="js/modules/report-engine.js" defer></script>'),'ReportEngine başlangıç shelline eager dönmemeli.');
