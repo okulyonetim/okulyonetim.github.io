@@ -3,11 +3,12 @@ on:
   push:
     branches:
       - work/transport-button-polish-20260831
+    paths:
+      - .github/.transport-button-trigger
 permissions:
   contents: write
 jobs:
   patch:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +41,7 @@ jobs:
 .ka-transport-detail__toolbar .ka-btn{min-height:40px;padding:0 14px;border-radius:var(--ka-radius-md);white-space:nowrap;font-size:14px;box-shadow:none}
 .ka-transport-detail__toolbar .ka-btn--secondary{background:var(--ka-card-bg);color:var(--ka-text);border-color:var(--ka-border)}
 .ka-transport-detail__toolbar .ka-btn--secondary:hover{background:var(--ka-primary-soft);color:var(--ka-primary);border-color:var(--ka-primary)}
-.ka-transport-detail__toolbar [data-transport-detail-delete]{background:color-mix(in srgb,var(--ka-danger) 10%,transparent);color:var(--ka-danger);border-color:color-mix(in srgb,var(--ka-danger) 35%,var(--ka-border));}
+.ka-transport-detail__toolbar [data-transport-detail-delete]{background:color-mix(in srgb,var(--ka-danger) 10%,transparent);color:var(--ka-danger);border-color:color-mix(in srgb,var(--ka-danger) 35%,var(--ka-border))}
 .ka-transport-detail__toolbar [data-transport-detail-delete]:hover{background:var(--ka-danger);color:#fff;border-color:var(--ka-danger)}
 @media(max-width:560px){
   .ka-transport-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
