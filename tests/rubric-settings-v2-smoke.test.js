@@ -2,6 +2,7 @@ const fs=require('fs');
 const assert=require('assert');
 const vm=require('vm');
 const src=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+const tools=fs.readFileSync('js/modules/tools.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 
 const loader=fs.readFileSync('js/app-loader.js','utf8');
@@ -41,6 +42,10 @@ for(const token of [
 for(const title of ['Sosyal Kulüpler','Belirli Gün ve Haftalar','Zümre Toplantıları','ŞÖK – Şube Öğretmenler Kurulu','Yıllık / BEP Planları','Rehberlik','Maarif Model Aylık Raporlar','Diğer Evraklar'])assert(ciz.includes(title),`Classic çizelge başlığı eksik: ${title}`);
 assert(!ciz.includes('global.DeviceData.')&&!ciz.includes('db.collection(')&&!ciz.includes('firebase.firestore'),'Classic Çizelgeler sunum katmanı doğrudan veri motoruna/Firestore’a yazmamalı.');
 assert(!ciz.includes("ogrenciAdi:String(fd.get('ogrenciAdi')"),'BEP formu yanlış öğrenci-adı modeline geri dönmemeli.');
+assert(tools.includes('async function prepareClubStudents()'),'Sosyal Kulüp öğrenci yönetimi gerekli local-first kişi cache hazırlığını kullanmalı.');
+assert(tools.includes('prepareForms,prepareClubStudents,prepareAttendance'),'prepareClubStudents ToolsData üzerinden sunulmalı.');
+for(const token of ['data-club-student-edit','data-club-student-list','openClubStudentEditor','saveClubStudentAssignments','service.ogrenciKulupGuncelle','printClubStudentList',"ustBaslik:'Sosyal Kulüpler'"])assert(ciz.includes(token),`Sosyal Kulüp öğrenci paritesi eksik: ${token}`);
+assert(!ciz.includes('SiniflarRepository.veliGuncelle'),'Sosyal Kulüp UI öğrenci repositorysine doğrudan yazmamalı.');
 
 (async()=>{
   const metaStore=new Map(),syncCalls={register:[],hydrate:[]},removed=[];
