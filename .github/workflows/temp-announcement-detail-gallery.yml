@@ -19,17 +19,24 @@ jobs:
           node-version: '20'
       - name: Apply canonical announcement detail and gallery
         run: python3 scripts/temp-announcement-detail-gallery.py
-      - name: Verify communication contracts
-        run: |
-          node --check js/modules/communication.js
-          node tests/announcement-detail-gallery.test.js
-          node tests/announcements-page-redesign.test.js
-          node tests/communication-admin-actions.test.js
-          node tests/communication-separate-pages.test.js
-          node tests/communication-local-first-contract.test.js
-          node tests/dashboard-card-routes-smoke.test.js
-          node tests/modules-local-first-boundary.test.js
-          node tests/service-worker-precache-smoke.test.js
+      - name: Syntax check communication
+        run: node --check js/modules/communication.js
+      - name: Verify announcement detail gallery
+        run: node tests/announcement-detail-gallery.test.js
+      - name: Verify announcements redesign
+        run: node tests/announcements-page-redesign.test.js
+      - name: Verify communication admin actions
+        run: node tests/communication-admin-actions.test.js
+      - name: Verify communication separate pages
+        run: node tests/communication-separate-pages.test.js
+      - name: Verify communication local-first
+        run: node tests/communication-local-first-contract.test.js
+      - name: Verify dashboard routes
+        run: node tests/dashboard-card-routes-smoke.test.js
+      - name: Verify module local-first boundary
+        run: node tests/modules-local-first-boundary.test.js
+      - name: Verify service worker
+        run: node tests/service-worker-precache-smoke.test.js
       - name: Commit canonical changes
         run: |
           git config user.name 'github-actions[bot]'
