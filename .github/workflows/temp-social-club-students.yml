@@ -1,0 +1,106 @@
+name: Temp Social Club Students Gate
+
+on:
+  push:
+    branches: [work/social-club-students-20260831]
+    paths:
+      - '.github/workflows/temp-social-club-students.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact base ancestry
+        run: |
+          git merge-base --is-ancestor 4453e951eb5a4805cefeed7163113abcff642b13 HEAD
+      - name: Apply canonical social club student parity
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          def replace_once(text, old, new, label):
+              count=text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected 1 marker, found {count}')
+              return text.replace(old,new,1)
+
+          tools_path=Path('js/modules/tools.js')
+          tools=tools_path.read_text()
+          tools=replace_once(
+              tools,
+              "async function prepareAttendance(){if(!global.SyncEngine||!global.COL?.devamsizlikCizelgesi)return;",
+              "async function prepareClubStudents(){if(!global.SyncEngine||!global.COL)return;const types=['ogretmenler','siniflar','veliler','sosyalKulupler'].filter(type=>COL[type]);for(const type of types)SyncEngine.register(type,COL[type]);if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}\nasync function prepareAttendance(){if(!global.SyncEngine||!global.COL?.devamsizlikCizelgesi)return;",
+              'tools prepareClubStudents insert'
+          )
+          tools=replace_once(
+              tools,
+              "global.ToolsData={prepareControlLists,prepareMap,prepareForms,prepareAttendance,prepareGradebooks,teacherId,FORM_TYPES,GRADE_TYPES};",
+              "global.ToolsData={prepareControlLists,prepareMap,prepareForms,prepareClubStudents,prepareAttendance,prepareGradebooks,teacherId,FORM_TYPES,GRADE_TYPES};",
+              'ToolsData export'
+          )
+          tools_path.write_text(tools)
+
+          rubric_path=Path('js/modules/rubric-settings.js')
+          rubric=rubric_path.read_text()
+          helpers="""function studentName(v){return String(v?.ogrenciAdi||[v?.ad,v?.soyad].filter(Boolean).join(' ')||'Öğrenci').trim()}\nfunction clubStudents(id){return arr('veliler').filter(v=>String(v.kulupId||'')===String(id||'')).slice().sort((a,b)=>className(a.sinifId).localeCompare(className(b.sinifId),'tr',{numeric:true})||studentName(a).localeCompare(studentName(b),'tr'))}\nfunction canManageClubStudents(r){try{const u=global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};if(u.admin===true)return true;if(global.SiniflarService?._yetkiKontrolSessiz?.())return true;if(global.PermissionService?.can?.('people.students.edit','edit')===true||global.PermissionService?.can?.('people.classes','edit')===true)return true;if(typeof global.duzenleyebilir==='function'&&(global.duzenleyebilir('ogrenciler')||global.duzenleyebilir('siniflar')))return true;const tid=global.ToolsData?.teacherId?.()||u.bagliOgretmenId||u.ogretmenId||'';return !!(tid&&Array.isArray(r?.ogretmenIdler)&&r.ogretmenIdler.map(String).includes(String(tid)))}catch(_){return false}}\n"""
+          rubric=replace_once(rubric,"function socialCard(r){",helpers+"function socialCard(r){",'rubric helper insert')
+          pattern=r"function socialCard\(r\)\{.*?\}\nfunction belirliCard"
+          matches=list(re.finditer(pattern,rubric,flags=re.S))
+          if len(matches)!=1:
+              raise SystemExit(f'socialCard replace: expected 1, found {len(matches)}')
+          social="""function socialCard(r){const a=checkArray('sosyalKulupler',r),done=a.filter(Boolean).length,classes=Array.isArray(r.sinifIdler)&&r.sinifIdler.length?r.sinifIdler.map(className).join(', '):'Sınıf kısıtı yok — tüm sınıflar seçebilir',students=clubStudents(r.id),manage=canManageClubStudents(r);return `<article class=\"ka-card\"><div class=\"ka-card__body ka-stack\"><div class=\"ka-row ka-row--between\"><div class=\"ka-grow\"><div class=\"ka-row ka-wrap\"><strong>${esc(r.ad||'İsimsiz Kulüp')}</strong><span class=\"ka-badge\">${r.aktif===false?'Pasif':'Aktif'}</span></div></div><div class=\"ka-row\"><span class=\"ka-badge\">${done}/12</span>${editButton('sosyalKulupler',r.id)}</div></div>${teacherBadges(r.ogretmenIdler)}<div class=\"ka-muted\">${esc(classes)}</div>${r.yillikPlanTarihi||r.toplumHizmetiTarihi?`<div class=\"ka-muted\">${r.yillikPlanTarihi?`Yıllık plan: ${esc(trDate(r.yillikPlanTarihi))}`:''}${r.yillikPlanTarihi&&r.toplumHizmetiTarihi?' · ':''}${r.toplumHizmetiTarihi?`Toplum hizmeti: ${esc(trDate(r.toplumHizmetiTarihi))}`:''}</div>`:''}<div class=\"ka-row ka-wrap\">${manage?`<button class=\"ka-btn ka-btn--sm\" type=\"button\" data-club-student-edit=\"${esc(r.id)}\">➕ Öğrenci Ekle</button>`:''}<button class=\"ka-btn ka-btn--secondary ka-btn--sm\" type=\"button\" data-club-student-list=\"${esc(r.id)}\">👥 Öğrenciler (${students.length})</button></div>${controlGrid('sosyalKulupler',r)}</div></article>`}\nfunction belirliCard"""
+          rubric=re.sub(pattern,social,rubric,count=1,flags=re.S)
+
+          bind_pattern=r"function bindPage\(root\)\{.*?\}\nasync function toggleControl"
+          bind_matches=list(re.finditer(bind_pattern,rubric,flags=re.S))
+          if len(bind_matches)!=1:
+              raise SystemExit(f'bindPage replace: expected 1, found {len(bind_matches)}')
+          bind="""function bindPage(root){root.querySelector('[data-cizelge-add]')?.addEventListener('click',()=>openEdit(currentType));root.querySelectorAll('[data-cizelge-edit]').forEach(b=>b.addEventListener('click',()=>openEdit(currentType,b.dataset.cizelgeEdit)));root.querySelectorAll('[data-cizelge-check]').forEach(cb=>cb.addEventListener('change',()=>toggleControl(cb)));root.querySelector('[data-cizelge-bulk]')?.addEventListener('click',()=>openBulk(currentType));root.querySelector('[data-cizelge-report]')?.addEventListener('click',()=>printReport(currentType));root.querySelector('[data-cizelge-excel]')?.addEventListener('click',()=>chooseExcel(currentType));root.querySelectorAll('[data-club-student-edit]').forEach(b=>b.addEventListener('click',()=>openClubStudentEditor(b.dataset.clubStudentEdit)));root.querySelectorAll('[data-club-student-list]').forEach(b=>b.addEventListener('click',()=>openClubStudentList(b.dataset.clubStudentList)))}\nasync function toggleControl"""
+          rubric=re.sub(bind_pattern,bind,rubric,count=1,flags=re.S)
+
+          modal_helpers="""async function prepareClubStudentData(){if(!global.ToolsData?.prepareClubStudents)throw new Error('Kulüp öğrenci verisi hazırlanamadı.');await global.ToolsData.prepareClubStudents()}\nasync function ensureClubStudentService(){await prepareClubStudentData();if(!global.SiniflarService?.ogrenciKulupGuncelle){if(!global.AppLoader?.loadScript)throw new Error('Öğrenci servisi yüklenemedi.');await global.AppLoader.loadScript('js/modules/people.js')}if(!global.SiniflarService?.ogrenciKulupGuncelle)throw new Error('Öğrenci servisi hazır değil.');return global.SiniflarService}\nfunction allowedClubClasses(club){const ids=Array.isArray(club?.sinifIdler)?new Set(club.sinifIdler.map(String)):new Set();return arr('siniflar').filter(s=>!ids.size||ids.has(String(s.id))).slice().sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true}))}\nfunction studentsInClass(id){return arr('veliler').filter(v=>String(v.sinifId||'')===String(id||'')).slice().sort((a,b)=>{const an=Number(a.ogrenciNo||a.no||0),bn=Number(b.ogrenciNo||b.no||0);return(an&&bn?an-bn:0)||studentName(a).localeCompare(studentName(b),'tr')})}\nasync function openClubStudentEditor(id){try{const club=arr('sosyalKulupler').find(x=>String(x.id)===String(id));if(!club)throw new Error('Kulüp bulunamadı.');if(!canManageClubStudents(club)){global.toast?.('Bu kulübün öğrenci listesini düzenleme yetkiniz yok.');return}await ensureClubStudentService();const current=new Set(clubStudents(id).map(v=>String(v.id))),groups=allowedClubClasses(club).map(s=>{const students=studentsInClass(s.id),selected=students.filter(v=>current.has(String(v.id))).length;return `<details class=\"ka-card\" ${selected?'open':''}><summary><span class=\"ka-card__body ka-row ka-row--between\"><strong>${esc(className(s.id))}</strong><span class=\"ka-badge\">${students.length} öğrenci${selected?` · ${selected} seçili`:''}</span></span></summary><div class=\"ka-card__body ka-stack\">${students.length?students.map(v=>{const other=v.kulupId&&String(v.kulupId)!==String(id)?(v.kulupAdi||arr('sosyalKulupler').find(k=>String(k.id)===String(v.kulupId))?.ad||'Başka kulüp'):'';return `<label class=\"ka-row\"><input type=\"checkbox\" name=\"studentIds\" value=\"${esc(v.id)}\" ${current.has(String(v.id))?'checked':''}><span class=\"ka-stack ka-grow\"><strong>${esc(studentName(v))}</strong><small class=\"ka-muted\">${v.ogrenciNo?`No ${esc(v.ogrenciNo)}`:'Öğrenci no yok'}${other?` · ${esc(other)} kulübünde`:''}</small></span></label>`}).join(''):'<div class=\"ka-muted\">Bu sınıfta öğrenci yok.</div>'}</div></details>`}).join('');closeModal();document.body.insertAdjacentHTML('beforeend',`<div class=\"ka-modal-backdrop\" data-cizelge-modal><form class=\"ka-modal\" data-club-student-form data-club-id=\"${esc(id)}\"><div class=\"ka-modal__header\"><h2>${esc(club.ad||'Sosyal Kulüp')} — Öğrenci Ekle</h2></div><div class=\"ka-modal__body ka-stack\"><p class=\"ka-muted\">Kulübe dahil olacak öğrencileri işaretleyin. Başka bir kulüpte görünen öğrenci seçilirse bu kulübe taşınır.</p>${groups||'<div class=\"ka-empty\">Bu kulüp için seçilebilir sınıf bulunamadı.</div>'}</div><div class=\"ka-modal__footer\"><button class=\"ka-btn ka-btn--secondary\" type=\"button\" data-cizelge-cancel>Vazgeç</button><button class=\"ka-btn\" type=\"submit\">Kaydet</button></div></form></div>`);const modal=$('[data-cizelge-modal]');modal?.addEventListener('click',e=>{if(e.target===modal)closeModal()});modal?.querySelector('[data-cizelge-cancel]')?.addEventListener('click',closeModal);modal?.querySelector('[data-club-student-form]')?.addEventListener('submit',saveClubStudentAssignments)}catch(e){global.toast?.('Öğrenci listesi açılamadı: '+(e?.message||e))}}\nasync function saveClubStudentAssignments(e){e.preventDefault();const f=e.currentTarget,id=f.dataset.clubId||'',club=arr('sosyalKulupler').find(x=>String(x.id)===String(id));if(!club)return;const before=new Set(clubStudents(id).map(v=>String(v.id))),after=new Set(new FormData(f).getAll('studentIds').map(String)),added=[...after].filter(x=>!before.has(x)),removed=[...before].filter(x=>!after.has(x)),submit=f.querySelector('[type=\"submit\"]');if(!added.length&&!removed.length){global.toast?.('Değişiklik yapılmadı.');closeModal();return}try{submit.disabled=true;const service=await ensureClubStudentService();for(const studentId of added)await service.ogrenciKulupGuncelle(studentId,id,club.ad||'');for(const studentId of removed)await service.ogrenciKulupGuncelle(studentId,'','');global.toast?.(`Kaydedildi — ${added.length} eklendi, ${removed.length} çıkarıldı.`);closeModal();render(true)}catch(err){global.toast?.(err?.message==='yetkisiz'?'Bu işlem için yetkiniz yok.':'Kulüp öğrenci listesi kaydedilemedi.');render(true)}finally{if(submit?.isConnected)submit.disabled=false}}\nasync function openClubStudentList(id){try{await prepareClubStudentData();const club=arr('sosyalKulupler').find(x=>String(x.id)===String(id));if(!club)throw new Error('Kulüp bulunamadı.');const students=clubStudents(id);closeModal();document.body.insertAdjacentHTML('beforeend',`<div class=\"ka-modal-backdrop\" data-cizelge-modal><section class=\"ka-modal\"><div class=\"ka-modal__header\"><h2>${esc(club.ad||'Sosyal Kulüp')} — Öğrenciler</h2></div><div class=\"ka-modal__body ka-stack\"><div class=\"ka-row ka-row--between\"><span class=\"ka-muted\">${esc((club.ogretmenIdler||[]).map(teacherName).join(', ')||'Danışman öğretmen atanmadı')}</span><span class=\"ka-badge\">${students.length} öğrenci</span></div>${students.length?students.map((v,i)=>`<article class=\"ka-card\"><div class=\"ka-card__body ka-row\"><span class=\"ka-badge\">${i+1}</span><div class=\"ka-grow\"><strong>${esc(studentName(v))}</strong><div class=\"ka-muted\">${esc(className(v.sinifId))}${v.ogrenciNo?' · No '+esc(v.ogrenciNo):''}</div></div></div></article>`).join(''):'<div class=\"ka-empty\">Bu kulübe atanmış öğrenci yok.</div>'}</div><div class=\"ka-modal__footer\"><button class=\"ka-btn ka-btn--secondary\" type=\"button\" data-cizelge-cancel>Kapat</button><button class=\"ka-btn\" type=\"button\" data-club-student-print>🖨 Öğrenci Listesi</button></div></section></div>`);const modal=$('[data-cizelge-modal]');modal?.addEventListener('click',e=>{if(e.target===modal)closeModal()});modal?.querySelector('[data-cizelge-cancel]')?.addEventListener('click',closeModal);modal?.querySelector('[data-club-student-print]')?.addEventListener('click',()=>printClubStudentList(id))}catch(e){global.toast?.('Öğrenci listesi açılamadı: '+(e?.message||e))}}\nasync function printClubStudentList(id){try{await prepareClubStudentData();const club=arr('sosyalKulupler').find(x=>String(x.id)===String(id));if(!club)throw new Error('Kulüp bulunamadı.');const students=clubStudents(id),advisers=(club.ogretmenIdler||[]).map(teacherName).filter(Boolean).join(', ')||'—',body=`<p><b>Danışman Öğretmenler:</b> ${esc(advisers)}</p><table><thead><tr><th>No</th><th>Öğrenci</th><th>Sınıf</th><th>Öğrenci No</th></tr></thead><tbody>${students.length?students.map((v,i)=>`<tr><td>${i+1}</td><td>${esc(studentName(v))}</td><td>${esc(className(v.sinifId))}</td><td>${esc(v.ogrenciNo||'—')}</td></tr>`).join(''):'<tr><td colspan=\"4\">Bu kulübe atanmış öğrenci yok.</td></tr>'}</tbody></table>`;await ensureReport();await global.ReportEngine.printReport(`${club.ad||'Sosyal Kulüp'} — Öğrenci Listesi`,body,{yon:'dikey',compact:true,fileName:`${club.ad||'Sosyal Kulüp'} Öğrenci Listesi`,ustBaslik:'Sosyal Kulüpler'})}catch(e){global.toast?.('Rapor açılamadı: '+(e?.message||e))}}\n"""
+          rubric=replace_once(rubric,"function getAll(fd,name){",modal_helpers+"function getAll(fd,name){",'club modal helpers insert')
+          rubric_path.write_text(rubric)
+
+          test_path=Path('tests/rubric-settings-v2-smoke.test.js')
+          test=test_path.read_text()
+          test=replace_once(test,"const src=fs.readFileSync('js/modules/rubric-settings.js','utf8');","const src=fs.readFileSync('js/modules/rubric-settings.js','utf8');\nconst tools=fs.readFileSync('js/modules/tools.js','utf8');",'test tools source')
+          anchor="assert(!ciz.includes(\"ogrenciAdi:String(fd.get('ogrenciAdi')\"),'BEP formu yanlış öğrenci-adı modeline geri dönmemeli.');"
+          extra="""assert(tools.includes('async function prepareClubStudents()'),'Sosyal Kulüp öğrenci yönetimi gerekli local-first kişi cache hazırlığını kullanmalı.');\nassert(tools.includes('prepareForms,prepareClubStudents,prepareAttendance'),'prepareClubStudents ToolsData üzerinden sunulmalı.');\nfor(const token of ['data-club-student-edit','data-club-student-list','openClubStudentEditor','saveClubStudentAssignments','global.SiniflarService.ogrenciKulupGuncelle','printClubStudentList','ustBaslik:\'Sosyal Kulüpler\''])assert(ciz.includes(token),`Sosyal Kulüp öğrenci paritesi eksik: ${token}`);\nassert(!ciz.includes('SiniflarRepository.veliGuncelle'),'Sosyal Kulüp UI öğrenci repositorysine doğrudan yazmamalı.');"""
+          test=replace_once(test,anchor,anchor+'\n'+extra,'social club test contract')
+          test_path.write_text(test)
+          PY
+      - name: Verify syntax
+        run: |
+          node --check js/modules/tools.js
+          node --check js/modules/rubric-settings.js
+          node --check tests/rubric-settings-v2-smoke.test.js
+      - name: Run focused contracts
+        run: |
+          node tests/rubric-settings-v2-smoke.test.js
+          node tests/tools-separate-pages.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/report-engine-a4-smoke.test.js
+      - name: Build and audit
+        run: |
+          node scripts/build-client-bundles.mjs
+          node scripts/check-client-architecture.mjs
+      - name: Commit verified application changes
+        run: |
+          git config user.name 'sedonet23'
+          git config user.email 'sedonet23@gmail.com'
+          git add js/modules/tools.js js/modules/rubric-settings.js tests/rubric-settings-v2-smoke.test.js
+          git diff --cached --check
+          git commit -m 'Restore social club student management'
+          git push origin HEAD:work/social-club-students-20260831
