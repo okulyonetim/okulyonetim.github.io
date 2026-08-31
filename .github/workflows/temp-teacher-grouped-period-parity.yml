@@ -1,0 +1,57 @@
+name: temp-teacher-grouped-period-parity
+on:
+  push:
+    branches: [work/teacher-grouped-period-parity-20260831]
+permissions:
+  contents: write
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install test dependencies
+        run: npm install --no-save --package-lock=false firebase @firebase/rules-unit-testing firebase-tools
+      - name: Restore teacher grouped period schedule parity
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('js/modules/rubric-settings.js')
+          s=p.read_text(encoding='utf-8')
+          old_meta="function genericMeta(type,r){const dates=type==='bepPlani'?[r.yillikDersPlaniTarihi,r.bepPlaniTarihi]:type==='rehberlik'?[r.yillikPlanTarihi]:[r.tarih1,r.tarih2,r.tarih3];return [r.ogretmenId?teacherName(r.ogretmenId):'',...dates.filter(Boolean).map(trDate),r.aciklama||''].filter(Boolean).join(' · ')}"
+          new_meta="function genericMeta(type,r,includeTeacher=true){const dates=type==='bepPlani'?[r.yillikDersPlaniTarihi,r.bepPlaniTarihi]:type==='rehberlik'?[r.yillikPlanTarihi]:[r.tarih1,r.tarih2,r.tarih3];return [includeTeacher&&r.ogretmenId?teacherName(r.ogretmenId):'',...dates.filter(Boolean).map(trDate),r.aciklama||''].filter(Boolean).join(' · ')}"
+          assert s.count(old_meta)==1,('generic-meta-contract',s.count(old_meta))
+          s=s.replace(old_meta,new_meta,1)
+          old_card="function genericCard(type,r){const a=checkArray(type,r),done=a.filter(Boolean).length;return `<article class=\"ka-card\"><div class=\"ka-card__body ka-stack\"><div class=\"ka-row ka-row--between\"><div class=\"ka-grow\"><strong>${esc(genericTitle(type,r))}</strong><div class=\"ka-muted\">${esc(genericMeta(type,r))}</div></div><div class=\"ka-row\"><span class=\"ka-badge\">${done}/${a.length}</span>${editButton(type,r.id)}</div></div>${controlGrid(type,r)}</div></article>`}"
+          new_card="function genericCard(type,r,includeTeacher=true){const a=checkArray(type,r),done=a.filter(Boolean).length;return `<article class=\"ka-card\"><div class=\"ka-card__body ka-stack\"><div class=\"ka-row ka-row--between\"><div class=\"ka-grow\"><strong>${esc(genericTitle(type,r))}</strong><div class=\"ka-muted\">${esc(genericMeta(type,r,includeTeacher))}</div></div><div class=\"ka-row\"><span class=\"ka-badge\">${done}/${a.length}</span>${editButton(type,r.id)}</div></div>${controlGrid(type,r)}</div></article>`}"
+          assert s.count(old_card)==1,('generic-card-contract',s.count(old_card))
+          s=s.replace(old_card,new_card,1)
+          needle=new_card
+          grouped="const TEACHER_GROUPED_TYPES=new Set(['zumre','sok','bepPlani','rehberlik']);\nfunction teacherGroupedList(type,rows){const labels=CONTROLS[type]||[],groups=new Map;rows.forEach(r=>{const key=r.ogretmenId?String(r.ogretmenId):'__yok__';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r)});const name=key=>key==='__yok__'?'Öğretmen Atanmamış':teacherName(key)||'Öğretmen';return `<div class=\"ka-stack\">${[...groups.entries()].sort((a,b)=>name(a[0]).localeCompare(name(b[0]),'tr')).map(([teacherId,records])=>{const sorted=records.slice().sort((a,b)=>genericTitle(type,a).localeCompare(genericTitle(type,b),'tr',{numeric:true})),done=sorted.reduce((sum,r)=>sum+checkArray(type,r).filter(Boolean).length,0),total=sorted.length*labels.length;return `<section class=\"ka-stack\" data-cizelge-teacher-group=\"${esc(teacherId)}\"><div class=\"ka-row ka-row--between ka-wrap\" style=\"padding:8px 2px;border-bottom:1px solid var(--ka-border)\"><div class=\"ka-grow\"><strong>${esc(name(teacherId))}</strong><div class=\"ka-muted\">${sorted.length} kayıt</div></div><span class=\"ka-badge\">${done}/${total}</span></div><div class=\"ka-stack\">${sorted.map(r=>genericCard(type,r,false)).join('')}</div></section>`}).join('')}</div>`}"
+          s=s.replace(needle,needle+'\n'+grouped,1)
+          old_body="if(type==='digerEvrak')return `<div class=\"ka-stack\">${rows.map(otherCard).join('')}</div>`;return `<div class=\"ka-stack\">${rows.map(r=>genericCard(type,r)).join('')}</div>`"
+          new_body="if(type==='digerEvrak')return `<div class=\"ka-stack\">${rows.map(otherCard).join('')}</div>`;if(TEACHER_GROUPED_TYPES.has(type))return teacherGroupedList(type,rows);return `<div class=\"ka-stack\">${rows.map(r=>genericCard(type,r)).join('')}</div>`"
+          assert s.count(old_body)==1,('grouped-body-contract',s.count(old_body))
+          s=s.replace(old_body,new_body,1)
+          p.write_text(s,encoding='utf-8')
+
+          Path('tests/teacher-grouped-period-visible-parity.test.js').write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');\nassert(rubric.includes("const TEACHER_GROUPED_TYPES=new Set(['zumre','sok','bepPlani','rehberlik'])"),'Zümre, ŞÖK, BEP ve Rehberlik öğretmen bazlı görünür gruplamayı paylaşmalı.');\nassert(rubric.includes('function teacherGroupedList(type,rows)')&&rubric.includes("'__yok__'"),'Dönem çizelgeleri canonical öğretmen gruplama rendererı kullanmalı ve atanmamış kayıtları korumalı.');\nassert(rubric.includes("'Öğretmen Atanmamış'"),'Atanmamış kayıtlar görünür bir öğretmen grubunda kalmalı.');\nassert(rubric.includes('sorted.length*labels.length')&&rubric.includes('checkArray(type,r).filter(Boolean).length'),'Öğretmen grup başlığı toplam tamamlanma ilerlemesini göstermeli.');\nassert(rubric.includes('data-cizelge-teacher-group=')&&rubric.includes('${done}/${total}'),'Öğretmen grubu görünür ilerleme sayacı taşımalı.');\nassert(rubric.includes('genericCard(type,r,false)'),'Grup içi kayıt kartı öğretmen adını gereksiz yere tekrar etmemeli.');\nassert(rubric.includes('function genericMeta(type,r,includeTeacher=true)'),'Mevcut kayıt meta görünümü öğretmen tekrarını kontrollü biçimde saklamalı.');\nassert(rubric.includes('if(TEACHER_GROUPED_TYPES.has(type))return teacherGroupedList(type,rows);'),'İlgili dört çizelge sayfası öğretmen gruplu görünümü kullanmalı.');\nassert(rubric.includes('${controlGrid(type,r)}'),'Mevcut dönem kontrol checkbox davranışı grup görünümünde korunmalı.');\nconsole.log('Teacher grouped period visible parity OK');\n""",encoding='utf-8')
+          PY
+      - name: Run complete test suite in Firebase emulators
+        run: |
+          npx firebase emulators:exec --only firestore,storage --project demo-okul-rules "bash -lc 'set -e; for f in tests/*.test.js; do echo ==\> \$f; node \"\$f\"; done; node scripts/check-client-architecture.mjs; git diff --check'"
+      - name: Commit verified parity package and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/temp-teacher-grouped-period-parity.yml
+          git add js/modules/rubric-settings.js tests/teacher-grouped-period-visible-parity.test.js .github/workflows/temp-teacher-grouped-period-parity.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Restore teacher grouped period schedule parity [skip ci]"
+          git push
