@@ -1,0 +1,95 @@
+name: temp-cizelgeler-single-owner
+on:
+  push:
+    branches: [work/cizelgeler-single-owner-20260831]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Consolidate Cizelgeler visible owner
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          tools_path=Path('js/modules/tools.js')
+          tools=tools_path.read_text(encoding='utf-8')
+
+          label_pattern=re.compile(r"\nconst FORM_LABELS=\{.*?\};\n")
+          tools,n=label_pattern.subn('\n',tools,count=1)
+          assert n==1,'FORM_LABELS removal failed'
+
+          generic_pattern=re.compile(r"function recordTitle\(r\)\{.*?\nfunction monthDoc",re.S)
+          tools,n=generic_pattern.subn('function monthDoc',tools,count=1)
+          assert n==1,'generic forms renderer removal failed'
+
+          old_render="function render(){if(!mounted)return;if(active==='map')renderMap();else if(active==='forms')renderForms();else if(active==='attendance')renderAttendance();else renderChecklists()}"
+          new_render="function render(){if(!mounted)return;if(active==='map')renderMap();else if(active==='forms')global.ClassicCizelgelerParity?.render?.(true);else if(active==='attendance')renderAttendance();else renderChecklists()}"
+          assert tools.count(old_render)==1,'Tools render owner marker mismatch'
+          tools=tools.replace(old_render,new_render,1)
+
+          route_pattern=re.compile(r"function openPage\(page,title=''\)\{.*?\nfunction unmount\(\)\{.*?\}\nglobal\.ToolsModule=",re.S)
+          route_replacement="""function openPage(page,title=''){const allowed=['checklists','map','forms','attendance'];if(!allowed.includes(page))return false;const previous=active;if(previous==='forms'&&page!=='forms')global.ClassicCizelgelerParity?.close?.();active=page;const h=document.querySelector('[data-tools-module] > .ka-row h2');if(h&&title)h.textContent=title;if(page==='forms')global.ClassicCizelgelerParity?.open?.(title);else render();let prep=null;if(page==='map')prep=global.ToolsData?.prepareMap?.();else if(page==='forms')prep=global.ToolsData?.prepareForms?.();else if(page==='attendance')prep=global.ToolsData?.prepareAttendance?.();else prep=global.ToolsData?.prepareControlLists?.();Promise.resolve(prep).then(()=>{if(!mounted||active!==page)return;if(page==='forms')global.ClassicCizelgelerParity?.render?.(true);else render()}).catch(e=>console.warn('[Tools/openPage]',e?.message||e));return true}
+          function unmount(){mounted=false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];global.ClassicCizelgelerParity?.close?.()}
+          global.ToolsModule="""
+          tools,n=route_pattern.subn(lambda m:route_replacement,tools,count=1)
+          assert n==1,'Tools lifecycle replacement failed'
+          tools_path.write_text(tools,encoding='utf-8')
+
+          rub_path=Path('js/modules/rubric-settings.js')
+          rub=rub_path.read_text(encoding='utf-8')
+          old_vars="let currentType='',observer=null,scheduled=false,installed=false,openOriginal=null,unmountOriginal=null;"
+          assert rub.count(old_vars)==1,'Classic owner state marker mismatch'
+          rub=rub.replace(old_vars,"let currentType='';",1)
+
+          observer_pattern=re.compile(r"function schedule\(\)\{.*?\nfunction bindPage",re.S)
+          rub,n=observer_pattern.subn('function bindPage',rub,count=1)
+          assert n==1,'MutationObserver lifecycle removal failed'
+
+          install_pattern=re.compile(r"function install\(\)\{.*?\nfunction boot\(\)\{.*?\nglobal\.ClassicCizelgelerParity=\{.*?\};boot\(\);",re.S)
+          install_replacement="""function open(title=''){const next=typeFromTitle(title)||currentType;if(!next||!CFG[next])return false;currentType=next;return render(true)}
+          function close(){currentType='';closeModal();return true}
+          global.ClassicCizelgelerParity={open,close,render,openEdit,openBulk,printReport,importExcel,typeFromTitle,get currentType(){return currentType}};"""
+          rub,n=install_pattern.subn(lambda m:install_replacement,rub,count=1)
+          assert n==1,'Classic lifecycle replacement failed'
+          rub_path.write_text(rub,encoding='utf-8')
+
+          test_path=Path('tests/rubric-settings-v2-smoke.test.js')
+          test=test_path.read_text(encoding='utf-8')
+          marker="assert(!ciz.includes('SiniflarRepository.veliGuncelle'),'Sosyal Kulüp UI öğrenci repositorysine doğrudan yazmamalı.');\n"
+          assert test.count(marker)==1,'test marker mismatch'
+          extra=marker+"assert(!ciz.includes('new MutationObserver')&&!ciz.includes('ToolsModule.openPage=function'),'Çizelgeler görünümü DOM gözlemcisi veya Tools monkey-patch ile kurulmamali.');\nassert(ciz.includes(\"function open(title='')\")&&ciz.includes('function close(){currentType='),'Çizelgeler açık lifecycle API sunmalı.');\nassert(!tools.includes('const FORM_COLS=')&&!tools.includes('function renderForms(')&&!tools.includes('function formModal('),'Tools ikinci çizelge renderer taşımamalı.');\nassert(tools.includes(\"active==='forms')global.ClassicCizelgelerParity?.render?.(true)\"),'Tools çizelge görünümünü canonical sahibine devretmeli.');\nassert(tools.includes(\"global.ClassicCizelgelerParity?.open?.(title)\"),'Tools forms route canonical çizelge open lifecycle kullanmalı.');\n"
+          test=test.replace(marker,extra,1)
+          test_path.write_text(test,encoding='utf-8')
+          PY
+      - name: Syntax and focused contracts
+        run: |
+          node --check js/modules/tools.js
+          node --check js/modules/rubric-settings.js
+          node tests/rubric-settings-v2-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/module-bundles-smoke.test.js
+          node tests/root-js-inventory-smoke.test.js
+          node tests/web-mobile-engine-separation.test.js
+      - name: Build and architecture audit
+        run: |
+          node scripts/build-client-bundles.mjs
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit canonical files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/tools.js js/modules/rubric-settings.js tests/rubric-settings-v2-smoke.test.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Consolidate Cizelgeler visible ownership [skip ci]"
+          git push
