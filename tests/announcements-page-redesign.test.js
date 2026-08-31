@@ -6,7 +6,7 @@ const css=fs.readFileSync('css/design-system.css','utf8');
 new Function(communication);
 new Function(documents);
 const announcementBlock=communication.slice(communication.indexOf('function announcements(){'),communication.indexOf('\nfunction conversationTitle(k)',communication.indexOf('function announcements(){')));
-for(const token of ['ka-announcement-list','ka-announcement-card','ka-announcement-status','ka-announcement-gallery','ka-announcement-details','ka-announcement-card__actions','data-announcement-read','data-announcement-edit','data-announcement-delete'])assert(announcementBlock.includes(token),`Duyurular yeni görünüm/işlem sözleşmesi eksik: ${token}`);
+for(const token of ['ka-announcement-list','ka-announcement-card','ka-announcement-status','ka-announcement-gallery','ka-announcement-open','data-announcement-image','ka-announcement-card__actions','data-announcement-read','data-announcement-edit','data-announcement-delete'])assert(announcementBlock.includes(token),`Duyurular yeni görünüm/işlem sözleşmesi eksik: ${token}`);
 assert(!announcementBlock.includes('style='),'Duyuru kartları inline style üretmemeli.');
 const actionBlock=communication.slice(communication.indexOf('function communicationActionBar(){'),communication.indexOf('\nfunction openAnnouncementModal',communication.indexOf('function communicationActionBar(){')));
 for(const token of ['ka-announcement-toolbar','ka-announcement-segmented','data-announcement-filter="active"','data-announcement-filter="archive"','data-announcement-new'])assert(actionBlock.includes(token),`Duyuru toolbar sözleşmesi eksik: ${token}`);

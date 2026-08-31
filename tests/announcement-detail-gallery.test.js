@@ -1,0 +1,16 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/modules/communication.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+new Function(src);
+for(const token of ['function openAnnouncementDetail(item)','function openAnnouncementImageViewer(item,startIndex=0)','data-announcement-open','data-announcement-image','data-announcement-detail','data-announcement-detail-image','data-announcement-lightbox','data-announcement-lightbox-prev','data-announcement-lightbox-next','data-announcement-lightbox-thumb','ArrowLeft','ArrowRight','Escape']) assert(src.includes(token),`Duyuru detay/galeri davranışı eksik: ${token}`);
+const block=src.slice(src.indexOf('function announcements(){'),src.indexOf('\nfunction conversationTitle(k)',src.indexOf('function announcements(){')));
+assert(!block.includes('target="_blank"'),'Duyuru görselleri uygulama dışı yeni sekmeye açılmamalı.');
+assert(!block.includes('ka-announcement-details'),'Kart içinde ikinci detay renderer kalmamalı.');
+assert(block.includes('button type="button" class="ka-announcement-gallery__item"'),'Kart görselleri canonical uygulama içi viewer butonu olmalı.');
+for(const token of ['body.ka-announcement-overlay-open','.ka-announcement-detail-backdrop{','.ka-announcement-detail{','.ka-announcement-lightbox{','.ka-announcement-lightbox__stage{','@media(max-width:700px)']) assert(css.includes(token),`Merkezi design-system detay/galeri stili eksik: ${token}`);
+assert(!src.includes("createElement('style')"),'Duyuru detay/galeri JS içinden style üretmemeli.');
+assert(!src.includes('.collection('),'Duyuru detay/galeri Firestore sınırını aşmamalı.');
+assert(src.includes("if(page!=='announcements')closeAnnouncementOverlays()"),'Duyurular sayfasından ayrılırken overlay temizlenmeli.');
+assert(src.includes('closeAnnouncementOverlays();document.querySelector(\'[data-new-message-modal]\')'),'Communication unmount duyuru overlaylerini temizlemeli.');
+console.log('Duyuru tam ekran detay + uygulama içi galeri sözleşmesi başarılı.');
