@@ -1,0 +1,13 @@
+const fs=require('fs');
+const assert=require('assert');
+const rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+assert(rubric.includes("const TEACHER_GROUPED_TYPES=new Set(['zumre','sok','bepPlani','rehberlik'])"),'Zümre, ŞÖK, BEP ve Rehberlik öğretmen bazlı görünür gruplamayı paylaşmalı.');
+assert(rubric.includes('function teacherGroupedList(type,rows)')&&rubric.includes("'__yok__'"),'Dönem çizelgeleri canonical öğretmen gruplama rendererı kullanmalı ve atanmamış kayıtları korumalı.');
+assert(rubric.includes("'Öğretmen Atanmamış'"),'Atanmamış kayıtlar görünür bir öğretmen grubunda kalmalı.');
+assert(rubric.includes('sorted.length*labels.length')&&rubric.includes('checkArray(type,r).filter(Boolean).length'),'Öğretmen grup başlığı toplam tamamlanma ilerlemesini göstermeli.');
+assert(rubric.includes('data-cizelge-teacher-group=')&&rubric.includes('${done}/${total}'),'Öğretmen grubu görünür ilerleme sayacı taşımalı.');
+assert(rubric.includes('genericCard(type,r,false)'),'Grup içi kayıt kartı öğretmen adını gereksiz yere tekrar etmemeli.');
+assert(rubric.includes('function genericMeta(type,r,includeTeacher=true)'),'Mevcut kayıt meta görünümü öğretmen tekrarını kontrollü biçimde saklamalı.');
+assert(rubric.includes('if(TEACHER_GROUPED_TYPES.has(type))return teacherGroupedList(type,rows);'),'İlgili dört çizelge sayfası öğretmen gruplu görünümü kullanmalı.');
+assert(rubric.includes('${controlGrid(type,r)}'),'Mevcut dönem kontrol checkbox davranışı grup görünümünde korunmalı.');
+console.log('Teacher grouped period visible parity OK');
