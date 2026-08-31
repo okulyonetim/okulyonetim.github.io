@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, statik kaynakları çevrimiçiyken
    güncel ağ sürümünden, çevrimdışıyken cache'den sunmak ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v811';
+const CACHE_ADI='oy-cache-v812';
 
 let messaging=null;
 try{

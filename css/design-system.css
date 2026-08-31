@@ -787,3 +787,32 @@ body.ka-gradebook-open{overflow:hidden}
 .ka-transport-service-list{gap:14px}.ka-transport-service-card{cursor:pointer;min-width:0}.ka-transport-service-card__main{min-width:0}.ka-transport-service-card__main .ka-muted{overflow-wrap:anywhere}.ka-transport-service-card__side{display:flex;align-items:center;gap:10px;flex:0 0 auto}.ka-transport-filters{gap:8px}.ka-transport-detail{width:100%;max-width:100%;min-width:0;overflow-x:hidden}.ka-transport-detail__toolbar{display:flex;flex-wrap:wrap;gap:8px}.ka-transport-detail__head{padding:18px 4px 4px}.ka-transport-detail__head h2{margin:0 0 6px}.ka-transport-detail__head p{margin:0;color:var(--ka-text-muted)}.ka-transport-info-list{display:grid;gap:0}.ka-transport-info-list>div{display:grid;grid-template-columns:minmax(110px,.7fr) minmax(0,1.3fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--ka-border)}.ka-transport-info-list>div:last-child{border-bottom:0}.ka-transport-info-list span{color:var(--ka-text-muted)}.ka-transport-info-list strong,.ka-transport-info-list a{min-width:0;overflow-wrap:anywhere}.ka-transport-report-actions,.ka-transport-detail-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ka-transport-report-actions .ka-btn,.ka-transport-detail-actions .ka-btn{width:100%;min-width:0;white-space:normal}.ka-transport-student-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 2px;border-bottom:1px solid var(--ka-border);min-width:0}.ka-transport-student-row:last-child{border-bottom:0}.ka-transport-student-row>.ka-grow{min-width:0}
 @media(max-width:560px){.ka-transport-service-card>.ka-card__body{align-items:flex-start}.ka-transport-service-card__side{flex-direction:column;align-items:stretch}.ka-transport-info-list>div{grid-template-columns:1fr;gap:4px}.ka-transport-detail{padding-inline:2px}.ka-transport-detail-actions,.ka-transport-report-actions{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:360px){.ka-transport-detail-actions,.ka-transport-report-actions{grid-template-columns:1fr}}
+
+/* Taşıma — mobil buton düzeni v2 */
+.ka-transport-filters{display:inline-flex;width:fit-content;max-width:100%;padding:4px;gap:4px;border:1px solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
+.ka-transport-filters .ka-btn{min-height:38px;padding:0 16px;border:0;border-radius:var(--ka-radius-pill);background:transparent;color:var(--ka-text-muted);box-shadow:none;font-size:14px;font-weight:750;white-space:nowrap}
+.ka-transport-filters .ka-btn:hover{background:var(--ka-muted-bg);color:var(--ka-text)}
+.ka-transport-filters .ka-btn:not(.ka-btn--secondary){background:var(--ka-primary-soft);color:var(--ka-primary)}
+.ka-transport-service-card>.ka-card__body{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px}
+.ka-transport-service-card__side{display:grid;align-items:center;justify-items:stretch;gap:9px;width:96px;min-width:96px}
+.ka-transport-service-card__side>.ka-badge{justify-content:center;white-space:nowrap}
+.ka-transport-service-card__side .ka-btn[data-service-edit]{width:100%;min-width:0;min-height:38px;padding:0 11px;white-space:nowrap;border:1px solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-muted-bg);color:var(--ka-text);box-shadow:none;font-size:14px}
+.ka-transport-service-card__side .ka-btn[data-service-edit]:hover{border-color:var(--ka-primary);background:var(--ka-primary-soft);color:var(--ka-primary)}
+.ka-transport-detail__toolbar{display:grid;grid-template-columns:repeat(4,max-content);justify-content:start;align-items:center;gap:8px;width:100%}
+.ka-transport-detail__toolbar .ka-btn{min-height:40px;padding:0 14px;border-radius:var(--ka-radius-md);white-space:nowrap;font-size:14px;box-shadow:none}
+.ka-transport-detail__toolbar .ka-btn--secondary{background:var(--ka-card-bg);color:var(--ka-text);border-color:var(--ka-border)}
+.ka-transport-detail__toolbar .ka-btn--secondary:hover{background:var(--ka-primary-soft);color:var(--ka-primary);border-color:var(--ka-primary)}
+.ka-transport-detail__toolbar [data-transport-detail-delete]{background:color-mix(in srgb,var(--ka-danger) 10%,transparent);color:var(--ka-danger);border-color:color-mix(in srgb,var(--ka-danger) 35%,var(--ka-border))}
+.ka-transport-detail__toolbar [data-transport-detail-delete]:hover{background:var(--ka-danger);color:#fff;border-color:var(--ka-danger)}
+@media(max-width:560px){
+  .ka-transport-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+  .ka-transport-filters .ka-btn{width:100%;padding-inline:10px}
+  .ka-transport-service-card>.ka-card__body{align-items:start;gap:12px}
+  .ka-transport-service-card__side{width:92px;min-width:92px}
+  .ka-transport-detail__toolbar{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ka-transport-detail__toolbar .ka-btn{width:100%;min-width:0;padding-inline:10px}
+}
+@media(max-width:340px){
+  .ka-transport-service-card__side{width:86px;min-width:86px}
+  .ka-transport-service-card__side .ka-btn[data-service-edit]{font-size:13px;padding-inline:8px}
+}
