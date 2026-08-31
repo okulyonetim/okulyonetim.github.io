@@ -96,7 +96,7 @@ for(const src of sameOriginStartup) assert(sw.includes(`'${src}'`),`Aynı-origin
 const optionalLazy=['js/modules/payroll-change.js','js/modules/assistant.js','js/modules/legislation.js','js/modules/legislation-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'];
 for(const src of optionalLazy) assert(!shell.includes(`<script src="${src}" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);
 const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
-assert(optionalLoaderSource.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js'])"),'Dashboard açılmadan önce SchoolLiveStatus lazy bundle içinde yüklenmeli.');
+assert(optionalLoaderSource.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js','js/modules/dashboard.js'])"),'Dashboard açılmadan önce SchoolLiveStatus ve mevcut tek duyuru servis sahibi lazy bundle içinde yüklenmeli.');
 assert(!shell.includes('<script src="js/modules/report-engine.js" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
 const academicBundle=optionalLoaderSource.match(/define\('academic',\[([^\]]+)\]\)/)?.[1]||'';
 assert(academicBundle.includes('FIREBASE_STORAGE_SDK')&&academicBundle.includes("'js/modules/report-engine.js'")&&academicBundle.includes("'js/modules/academic.js'")&&!academicBundle.includes('academic-calendar-parity.js')&&academicBundle.indexOf("'js/modules/report-engine.js'")<academicBundle.indexOf("'js/modules/academic.js'"),'Academic modülü Storage + ReportEngine + tek canonical Academic sırasını lazy bundle içinde korumalı.');

@@ -17,7 +17,7 @@ assert(!shell.includes("stats:{module:"),'Okul Özeti gerçek hedefi olmadığı
 assert(dash.includes('id=\"khBell\"')&&dash.includes('data-dash-route=\"settings\" data-dash-page=\"lesson-hours\" data-dash-title=\"Ders Saatleri\"'),'Hero canlı zil kartı doğrudan Ders Saatleri ayarına gitmeli.');
 assert(dash.includes('class=\"kh-more\" data-dash-route=\"communication\" data-dash-page=\"calendar\" data-dash-title=\"Takvim\"'),'Takvim referanstaki ay başlığı düğmesinden doğrudan Takvim alt sayfasına gitmeli.');
 assert(dash.includes("function routeButton(label,module,page='',title='',icon='→')"),'Dashboard footer helper alt sayfa ve başlığı taşımalı.');
-assert(css.includes('padding-left:max(10px,var(--ka-safe-left))')&&css.includes('padding-right:max(10px,var(--ka-safe-right))'),'Mobil ana sayfa kartları kenarlardan en az 10px/safe-area boşluk bırakmalı.');
+assert(css.includes('padding-left:max(12px,var(--ka-safe-left))')&&css.includes('padding-right:max(12px,var(--ka-safe-right))')&&css.includes('gap:20px!important'),'Mobil ana sayfa kartları kenarlardan güvenli boşluk ve kartlar arasında belirgin dikey mesafe bırakmalı.');
 assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kartları tam kullanılabilir genişlikte olmalı.');
 assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği üretmeli.');
 assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası referans sırasıyla okul özeti, duyuru, anket ve aktif deneme sayacını göstermeli.');
@@ -45,7 +45,7 @@ assert(settings.includes("['appearance','Görünüm','Açık ve koyu tema']")&&s
 assert(css.includes('[data-theme="dark"]')&&css.includes('--ka-primary:#53d6a4')&&css.includes('.ka-theme-picker'),'Tek Design System zümrüt koyu temayı ve merkezi görünüm bileşenini taşımalı.');
 assert(dash.includes("{module:'people',page:'teachers',title:'Öğretmenler'}")&&dash.includes("{module:'people',page:'students',title:'Öğrenciler'}")&&dash.includes("{module:'people',page:'classes',title:'Sınıflar'}")&&dash.includes("{module:'transport',page:'services',title:'Servisler'}"),'Okul Özeti dört metriği doğrudan gerçek alt sayfalarına bağlamalı.');
 assert(dash.includes("function dashboardHoliday()")&&dash.includes("live.mode==='holiday'")&&dash.includes('holidayCardBody')&&dash.includes('Haftanın Nöbet Programı'),'Tatil modunda ders ve nöbet kartları aynı SchoolLiveStatus tatil durumunu göstermeli.');
-assert(dash.includes('function stabilizeNewsTicker')&&dash.includes('--kh-news-distance')&&css.includes('var(--kh-news-distance,-50%)'),'Kayan haberler ölçülmüş tam loop mesafesiyle kesintisiz akmalı.');
+assert(dash.includes('function stabilizeNewsTicker')&&dash.includes("news.classList.add('is-ready')")&&dash.includes('document.fonts?.ready')&&css.includes('.kh-news.is-ready .kh-news-track')&&!css.includes('.kh-news-track{display:flex;align-items:center;gap:0;width:max-content;animation:khTicker'),'Kayan haberler font/layout ölçülmeden animasyona başlamamalı; ölçülmüş tam loop mesafesiyle kesintisiz akmalı.');
 assert(dash.includes('kh-wave')&&css.includes('@keyframes khWave')&&css.includes('khWeatherFloat'),'Karşılama eli ve hava durumu merkezi design-system animasyonlarını kullanmalı.');
 assert(dash.includes("orb=isLesson?'book':isLunch?'utensils':isBreak?'coffee':'bell'")&&dash.includes('kh-icon-${esc(orb)}')&&dash.includes('kh-icon-sun')&&dash.includes("specialBell('weekend'")&&css.includes('@keyframes khBellSwing')&&css.includes('.kh-icon-home svg'),'Zil/ders/teneffüs/hafta sonu/tatil ikonları durum bazlı animasyon sınıfları taşımalı.');
 console.log('Dashboard kart bağlantıları, öğretmen referansı ve merkezi tema smoke testi başarılı.');
@@ -191,7 +191,7 @@ assert(dash.includes("links=Array.isArray(school.sosyalLinkler)?school.sosyalLin
 assert(dash.includes('data-dash-live-status')&&dash.includes("window.addEventListener('koruk:school-live-tick',liveTickHandler)")&&dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)'),'Zil kartı SchoolLiveStatus tek zaman motorunun tick eventini dinlemeli; deneme sayacı intervali ayrı yalnız kendi sayacını güncellemeli.');
 assert(dash.includes('data-news-signature')&&dash.includes('freshNews.replaceWith(oldNews)')&&dash.includes('class=\"kh-news-loop\"'),'Kayan haber DOMu aynı veriyle yeniden yaratılmamalı ve kesintisiz çift şerit kullanmalı.');
 
-assert(dash.includes('function queueRender(){if(!mounted||renderFrame)return')&&dash.includes('AppStore?.subscribe?.(p,queueRender)'),'Dashboard AppStore değişikliklerini aynı animation frame içinde tek rendera birleştirmeli.');
+assert(dash.includes('function queueRender(){if(!mounted)return;if(scrolling){pendingRender=true;return}')&&dash.includes('AppStore?.subscribe?.(p,queueRender)')&&dash.includes('scrollIdleTimer=setTimeout'),'Dashboard AppStore değişikliklerini tek frame içinde birleştirmeli ve kullanıcı kaydırırken tam DOM renderını ertelemeli.');
 assert(dash.includes("'data.okulBilgileri'")&&!dash.includes("'data.personelIzinler'"),'Dashboard sosyal bağlantıları okulBilgileri değişimini dinlemeli; hizmetli/işçi izinleri ana sayfa render aboneliğine dönmemeli.');
 
 assert(dash.includes("okulBilgileri:'okulBilgileri'")&&dash.includes("yillikPlanTanimlari:'yillikPlanTanimlari'")&&dash.includes("ogretmenYillikPlanSecimleri:'ogretmenYillikPlanSecimleri'"),'Dashboard sosyal bağlantılar ve öğretmen yıllık plan odağı için gereken verileri ilk açılışta local hydrate etmeli.');
@@ -199,3 +199,8 @@ assert(!dash.includes("personelIzinler:'personelIzinler'"),'Hizmetli/işçi izin
 
 assert(dash.includes("if(mounted&&root.querySelector('[data-dashboard-module]'))return mountPromise||Promise.resolve(true)"),'Dashboard aynı module-ready/load zincirinde ikinci kez mount edilmemeli.');
 assert(dash.includes('if(mountPromise)return mountPromise'),'Dashboard eşzamanlı mount çağrılarını tek promise altında birleştirmeli.');
+
+assert(dash.includes('kh-holiday-days')&&dash.includes('kh-holiday-progress')&&dash.includes('holidayProgress'),'Tatil zil kartı büyük kalan gün sayısı ve ilerleme çubuğu göstermeli.');
+assert(dash.includes('function liveRenderKey(live)')&&dash.includes('key!==lastLiveRenderKey')&&dash.includes('queueRender();return'),'Canlı okul modu değiştiğinde yalnız zil değil ders/nöbet tatil kartları da yeniden render edilmeli.');
+assert(css.includes('touch-action:manipulation')&&dash.includes('data-dash-route="${esc(routeInfo.module)}"'),'Okul Özeti kartları mobil dokunma yüzeyi ve canonical route verisi taşımalı.');
+assert(dash.includes('readerDetails=isAdmin()')&&dash.includes('kh-home-readers'),'Admin ana sayfa duyurusunda okuyan adları ve zaman damgası doğrudan görülebilmeli.');
