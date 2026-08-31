@@ -17,7 +17,7 @@ assert(!shell.includes("stats:{module:"),'Okul Özeti gerçek hedefi olmadığı
 assert(dash.includes('id=\"khBell\"')&&dash.includes('data-dash-route=\"settings\" data-dash-page=\"lesson-hours\" data-dash-title=\"Ders Saatleri\"'),'Hero canlı zil kartı doğrudan Ders Saatleri ayarına gitmeli.');
 assert(dash.includes('class=\"kh-more\" data-dash-route=\"communication\" data-dash-page=\"calendar\" data-dash-title=\"Takvim\"'),'Takvim referanstaki ay başlığı düğmesinden doğrudan Takvim alt sayfasına gitmeli.');
 assert(dash.includes("function routeButton(label,module,page='',title='',icon='→')"),'Dashboard footer helper alt sayfa ve başlığı taşımalı.');
-assert(css.includes('padding-left:max(4px,var(--ka-safe-left))'),'Mobil ana içerik kenar boşluğu 4px/safe-area olmalı.');
+assert(css.includes('padding-left:max(10px,var(--ka-safe-left))')&&css.includes('padding-right:max(10px,var(--ka-safe-right))'),'Mobil ana sayfa kartları kenarlardan en az 10px/safe-area boşluk bırakmalı.');
 assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kartları tam kullanılabilir genişlikte olmalı.');
 assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği üretmeli.');
 assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası referans sırasıyla okul özeti, duyuru, anket ve aktif deneme sayacını göstermeli.');
@@ -32,7 +32,7 @@ assert(dash.includes("section('Okul Özeti'")&&dash.includes('ka-school-summary-
 assert(dash.includes('>Not Ekle</b>')&&dash.includes('>Duyurular</b>')&&dash.includes('data-dash-page=\"announcements\"'),'Öğretmen hızlı işlemleri referanstaki dört doğrudan aksiyonu ve kesin Duyurular rotasını taşımalı.');
 assert(css.includes('LEGACY DUTY CARDS — REFERENCE PORT')&&css.includes('.ka-home .kh-duty-check'),'Öğretmen nöbet görsel sözleşmesi legacy geometriyle merkezi design-system içinde olmalı.');
 assert(dash.includes("collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Yazılılar öğretmen görev/takvim kartında ikinci kez gösterilmemeli.');
-assert(dash.includes("title=teacherMode?'Bugünkü Derslerim':'Şu Anki Dersler'")&&dash.includes('data-home-section=\"lessons\"')&&dash.includes('data-dash-page=\"schedule\"'),'Öğretmenin günlük ders kartı referanstaki Bugünkü Derslerim başlığıyla haftalık programa bağlanmalı.');
+assert(dash.includes("title=teacherMode?'Bugünkü Derslerim':'Şu An Kim Nerede?'")&&dash.includes('data-home-section=\"lessons\"')&&dash.includes('data-dash-page=\"schedule\"'),'Öğretmen günlük ders kartı Bugünkü Derslerim kalmalı; admin aynı canonical kartta Şu An Kim Nerede bağlamını görmeli.');
 assert(dash.includes("teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'")&&dash.includes('class=\"kh-exam-date\"')&&dash.includes('data-dash-page=\"written\"'),'Öğretmenin yaklaşan yazılıları referans tarih gruplarıyla ayrı ve doğrudan yazılı sayfasına bağlı olmalı.');
 assert(!dash.includes("${lessonsSection()}${personalScheduleSection()}"),'Öğretmen ana sayfasında ikinci Ders Programım kartı üretilmemeli.');
 assert(css.includes('LEGACY TODAY LESSONS — REFERENCE PORT')&&css.includes('.kh-section[data-home-section="lessons"] .kh-row.is-now'),'Öğretmen ders kartı referans legacy geometriyle merkezi design-system içinde kalmalı.');
@@ -43,6 +43,11 @@ assert(html.includes("localStorage.getItem('ka-theme')")&&html.includes("setAttr
 assert(shell.includes("setAttribute('data-theme',next)")&&shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Shell tek merkezi tema sözleşmesini ve mevcut local-first tercihi kullanmalı.');
 assert(settings.includes("['appearance','Görünüm','Açık ve koyu tema']")&&settings.includes("ShellUI?.applyTheme?.(b.dataset.themeChoice)"),'Ayarlar merkezi görünüm seçicisini ikinci tema motoru açmadan kullanmalı.');
 assert(css.includes('[data-theme="dark"]')&&css.includes('--ka-primary:#53d6a4')&&css.includes('.ka-theme-picker'),'Tek Design System zümrüt koyu temayı ve merkezi görünüm bileşenini taşımalı.');
+assert(dash.includes("{module:'people',page:'teachers',title:'Öğretmenler'}")&&dash.includes("{module:'people',page:'students',title:'Öğrenciler'}")&&dash.includes("{module:'people',page:'classes',title:'Sınıflar'}")&&dash.includes("{module:'transport',page:'services',title:'Servisler'}"),'Okul Özeti dört metriği doğrudan gerçek alt sayfalarına bağlamalı.');
+assert(dash.includes("function dashboardHoliday()")&&dash.includes("live.mode==='holiday'")&&dash.includes('holidayCardBody')&&dash.includes('Haftanın Nöbet Programı'),'Tatil modunda ders ve nöbet kartları aynı SchoolLiveStatus tatil durumunu göstermeli.');
+assert(dash.includes('function stabilizeNewsTicker')&&dash.includes('--kh-news-distance')&&css.includes('var(--kh-news-distance,-50%)'),'Kayan haberler ölçülmüş tam loop mesafesiyle kesintisiz akmalı.');
+assert(dash.includes('kh-wave')&&css.includes('@keyframes khWave')&&css.includes('khWeatherFloat'),'Karşılama eli ve hava durumu merkezi design-system animasyonlarını kullanmalı.');
+assert(dash.includes("orb=isLesson?'book':isLunch?'utensils':isBreak?'coffee':'bell'")&&dash.includes('kh-icon-${esc(orb)}')&&dash.includes('kh-icon-sun')&&dash.includes("specialBell('weekend'")&&css.includes('@keyframes khBellSwing')&&css.includes('.kh-icon-home svg'),'Zil/ders/teneffüs/hafta sonu/tatil ikonları durum bazlı animasyon sınıfları taşımalı.');
 console.log('Dashboard kart bağlantıları, öğretmen referansı ve merkezi tema smoke testi başarılı.');
 
 assert(shell.includes("[data-dash-route],[data-dash-lesson-plan],[data-dash-reminder-index],[data-dash-external],[data-dash-quick-note]"),'Shell dashboard içi özel aksiyonları üst kart yönlendirmesine taşımamalı.');
@@ -56,7 +61,7 @@ assert(dash.includes("mine?'<span class=\"kh-chip green\">SİZ</span>'")&&dash.i
 assert(css.includes('TEACHER DASHBOARD DAILY PRIORITY')&&css.includes('.ka-home-row.is-me'),'Öğretmen günlük öncelik görseli merkezi design-system içinde kalmalı.');
 // Checkpoint: teacher daily-priority dashboard package.
 
-assert(dash.includes("x.cinsiyet==='Kadın'")&&dash.includes("x.cinsiyet==='Erkek'")&&dash.includes("x.cinsiyet==='Kız'"),'Okul Özeti gerçek öğretmen/öğrenci cinsiyet dağılımını mevcut veri modelinden üretmeli.');
+assert(dash.includes('function schoolGender(v)')&&dash.includes('function genderOf(x)')&&dash.includes('x?.cinsiyeti')&&dash.includes('x?.gender'),'Okul Özeti öğretmen/öğrenci cinsiyetini eski ve yeni gerçek alan adlarından normalize etmeli.');
 assert(dash.includes("function schoolClassLevel")&&dash.includes("level>=1&&level<=4?'primary':level>=5&&level<=8?'secondary'"),'Okul Özeti İlkokul/Ortaokul ayrımını gerçek sınıf seviyesinden üretmeli.');
 assert(dash.includes("teachers=arr('ogretmenler'),students=arr('veliler'),classes=arr('siniflar'),services=arr('servisler')"),'Okul Özeti toplam ve dağılım değerlerini aynı local-first snapshot üzerinden üretmeli.');
 assert(css.includes('DASHBOARD SCHOOL SUMMARY REFERENCE')&&css.includes('.ka-school-summary-grid')&&css.includes('.ka-school-stage'),'Okul Özeti referans 2x2 kart görünümü merkezi design-system içinde kalmalı.');

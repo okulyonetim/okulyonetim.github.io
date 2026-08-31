@@ -23,17 +23,18 @@ function headerIndex(data,test){return data.findIndex(r=>Array.isArray(r)&&test(
 function col(h,...names){for(const n of names){const i=h.indexOf(n);if(i>=0)return i}return-1}
 function classByName(name){return arr('siniflar').find(s=>String(s.ad||'').localeCompare(String(name||''),'tr',{sensitivity:'base'})===0)||null}
 function serviceByName(name){return arr('servisler').find(s=>String(s.servisAdi||s.guzergah||'').localeCompare(String(name||''),'tr',{sensitivity:'base'})===0)||null}
+function teacherGender(v){const n=norm(v);if(['K','KADIN','BAYAN','FEMALE','KIZ'].includes(n)||n.includes('KADIN')||n.includes('KIZ'))return'Kadın';if(['E','ERKEK','BAY','MALE'].includes(n)||n.includes('ERKEK'))return'Erkek';return''}
 
 /* Eski ogretmenExceliIceAktar sözleşmesi — yazma artık OgretmenService üzerinden. */
 async function parseTeacherExcel(file){
  const data=await rows(file),hi=headerIndex(data,r=>r.some(c=>norm(c)==='AD'||norm(c)==='AD SOYAD'));
  if(hi<0)throw new Error('Başlık satırı bulunamadı (AD / AD SOYAD sütunu gerekli).');
- const h=data[hi].map(norm),cAS=col(h,'AD SOYAD'),cA=col(h,'AD'),cS=col(h,'SOYAD'),cB=col(h,'BRANŞ','BRANS'),cT=col(h,'TELEFON'),cE=col(h,'E-POSTA','EPOSTA','E POSTA'),cR=col(h,'SORUMLU SINIF','SORUMLU SINIFI'),cU=col(h,'ÜNVAN','UNVAN'),cD=col(h,'DERECE'),cK=col(h,'KADEME'),out=[];
+ const h=data[hi].map(norm),cAS=col(h,'AD SOYAD'),cA=col(h,'AD'),cS=col(h,'SOYAD'),cB=col(h,'BRANŞ','BRANS'),cT=col(h,'TELEFON'),cE=col(h,'E-POSTA','EPOSTA','E POSTA'),cR=col(h,'SORUMLU SINIF','SORUMLU SINIFI'),cU=col(h,'ÜNVAN','UNVAN'),cD=col(h,'DERECE'),cK=col(h,'KADEME'),cC=col(h,'CİNSİYET','CINSIYET','CİNSİYETİ','CINSIYETI'),out=[];
  for(let i=hi+1;i<data.length;i++){
   const r=data[i]||[];let ad='',soyad='';
   if(cAS>=0&&r[cAS]){const p=String(r[cAS]).trim().split(/\s+/);soyad=p.pop()||'';ad=p.join(' ')}else{ad=cA>=0?String(r[cA]||'').trim():'';soyad=cS>=0?String(r[cS]||'').trim():''}
   if(!ad)continue;const derece=cD>=0?parseInt(r[cD]):NaN,kademe=cK>=0?parseInt(r[cK]):NaN;
-  out.push({ad,soyad,unvan:cU>=0?String(r[cU]||'').trim():'',brans:cB>=0?String(r[cB]||'').trim():'',derece:Number.isNaN(derece)?null:derece,kademeNo:Number.isNaN(kademe)?null:kademe,telefon:cT>=0?String(r[cT]||'').trim():'',eposta:cE>=0?String(r[cE]||'').trim():'',sorumluSinif:cR>=0?String(r[cR]||'').trim():''});
+  out.push({ad,soyad,unvan:cU>=0?String(r[cU]||'').trim():'',brans:cB>=0?String(r[cB]||'').trim():'',derece:Number.isNaN(derece)?null:derece,kademeNo:Number.isNaN(kademe)?null:kademe,telefon:cT>=0?String(r[cT]||'').trim():'',eposta:cE>=0?String(r[cE]||'').trim():'',sorumluSinif:cR>=0?String(r[cR]||'').trim():'',cinsiyet:cC>=0?teacherGender(r[cC]):''});
  }
  if(!out.length)throw new Error('Dosyada öğretmen satırı bulunamadı.');return out;
 }

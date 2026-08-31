@@ -64,6 +64,8 @@ assert(communication.includes('window.NotlarService?.notSil?.'),'Notlar sayfası
 assert(communication.includes('noteTypePreview')&&communication.includes("x.tip==='cizim'")&&communication.includes("x.tip==='goruntu'")&&communication.includes("x.tip==='tablo'"),'Çizim/görsel/tablo notları Notlar sayfasında önizlenmeli.');
 assert(communication.includes('Kim neye oy verdi?'),'Admin anket katılımcı/oy ayrıntısı görünür kalmalı.');
 assert(communication.includes('data-announcement-read')&&communication.includes('DuyurularService?.okunduIsaretle'),'Duyuru okundu akışı canonical Communication içinde kalmalı.');
+assert(communication.includes('function duyuruOkuyanAdi()')&&communication.includes('{ad:duyuruOkuyanAdi(),tarih:new Date().toISOString()}'),'Duyuru okundu kaydı kullanıcı adı ve ISO zaman damgasını mevcut okuyanlar haritasına yazmalı.');
+assert(communication.includes('function announcementReaders(x)')&&communication.includes('ka-announcement-readers')&&communication.includes('data-announcement-reader-count'),'Admin okuyan ad/zaman ayrıntısını, öğretmen ise yalnız okuyan sayısını görmeli.');
 assert(!assistant.includes('communication-legacy-ui.js'),'AI Asistan silinmiş iletişim parite dosyasını yüklemeye çalışmamalı.');
 
 // Poll/calendar ownership rules must remain in the service layer.

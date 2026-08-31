@@ -100,7 +100,7 @@ assert(source.communication.includes("if(!noteOwn(id))return Promise.reject(new 
 for(const hook of ['visibleNotes()','data-note-add','data-note-edit','data-note-delete','data-note-item','noteForm','bindNotes(out)']) assert(source.communication.includes(hook),`Notlar yönetim UI sözleşmesi eksik: ${hook}`);
 assert(source.communication.includes("arr('notlar').filter(x=>x.sahipUid===uid())"),'Normal kullanıcı Notlar UI başka kullanıcı cache kayıtlarını göstermemeli.');
 assert(source.communication.includes('const safeToast=m=>window.toast?.(m)'),'Takvim/Notlar UI hata bildirim yardımcısı kendi scope içinde tanımlı olmalı.');
-assert(source.communication.includes("okunduIsaretle(id){return DuyurularRepository.okunduIsaretle"),'Duyuru okundu işaretleme normal kullanıcı eylemi olarak edit yetkisinden bağımsız kalmalı.');
+assert(source.communication.includes("okunduIsaretle(id){const u=uid();if(!u)return Promise.reject(new Error('kimlik-yok'));return DuyurularRepository.okunduIsaretle")&&!source.communication.includes("okunduIsaretle(id){if(!this._yetkiKontrol())"),'Duyuru okundu işaretleme kimlikli normal kullanıcı eylemi olarak edit yetkisinden bağımsız kalmalı.');
 assert(source.communication.includes("oyVer(a,ids){const ben=user(),oylar="),'Anket oylama normal kullanıcı eylemi olarak admin mutation sınırından bağımsız kalmalı.');
 
 // Taşıma: gerçek servis CRUD'u, öğrenci koruması ve ayrık rol sınırları UI/service katmanında korunmalı.

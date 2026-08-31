@@ -64,7 +64,8 @@ assert(importer.includes("teacherRows('rehberlik',id)")&&importer.includes("teac
 assert(importer.includes('REHBERLİK')&&importer.includes('YILLIK / BEP PLANLARI'),'Eski öğretmen detayındaki sorumluluk bölümleri görünür olmalı.');
 
 assert(importer.includes('async function parseTeacherExcel(file)'),'Eski Öğretmenler Excel ayrıştırıcısı geri gelmeli.');
-for(const label of ['AD SOYAD','BRANŞ','TELEFON','E-POSTA','SORUMLU SINIF','ÜNVAN','DERECE','KADEME']) assert(importer.includes(label),`Öğretmen Excel kolonu eksik: ${label}`);
+for(const label of ['AD SOYAD','BRANŞ','TELEFON','E-POSTA','SORUMLU SINIF','ÜNVAN','DERECE','KADEME','CİNSİYET']) assert(importer.includes(label),`Öğretmen Excel kolonu eksik: ${label}`);
+assert(importer.includes('function teacherGender(v)')&&importer.includes('cinsiyet:cC>=0?teacherGender(r[cC])'),'Öğretmen Excel cinsiyet alanı canonical Kadın/Erkek değerine normalize edilerek taşınmalı.');
 assert(importer.includes("PermissionService.can('people.teachers','edit')"),'Öğretmen Excel içe aktarma merkezi öğretmen yazma yetkisini kullanmalı.');
 assert(importer.includes('global.OgretmenService.kaydet'),'Öğretmen Excel yazımı canonical OgretmenService üzerinden kalmalı.');
 assert(importer.includes("e.stopImmediatePropagation();chooseTeacherExcel()"),'Eski Öğretmenler Excel düğmesi dışa aktarma yerine içe aktarma akışını açmalı.');
