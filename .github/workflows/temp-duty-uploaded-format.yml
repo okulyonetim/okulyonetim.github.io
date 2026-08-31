@@ -1,0 +1,35 @@
+name: Temporary Duty Uploaded Format Patch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/temp-duty-uploaded-format.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply canonical duty format patch
+        run: node scripts/temp-duty-uploaded-format.js
+      - name: Verify
+        run: |
+          node --check js/modules/management.js
+          node tests/classic-duty-v2-smoke.test.js
+          node tests/duty-report-full-parity.test.js
+          node tests/management-separate-pages.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/management.js css/design-system.css tests/classic-duty-v2-smoke.test.js tests/duty-report-full-parity.test.js service-worker.js
+          git commit -m 'feat: match uploaded duty roster format'
+          git push origin main
