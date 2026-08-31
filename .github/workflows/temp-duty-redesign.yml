@@ -18,7 +18,9 @@ jobs:
         with:
           node-version: 24
       - name: Apply canonical duty redesign
-        run: python .github/temp-duty-redesign.py
+        run: |
+          python .github/temp-duty-redesign.py
+          python .github/temp-duty-redesign-fix.py
       - name: Verify
         run: |
           set -e
@@ -34,7 +36,7 @@ jobs:
       - name: Commit verified redesign and remove helpers
         run: |
           set -e
-          rm .github/temp-duty-redesign.py .github/workflows/temp-duty-redesign.yml
+          rm .github/temp-duty-redesign.py .github/temp-duty-redesign-fix.py .github/workflows/temp-duty-redesign.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
