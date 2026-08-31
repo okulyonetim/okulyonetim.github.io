@@ -8,6 +8,7 @@ const documents=fs.readFileSync('js/modules/documents.js','utf8');
 assert(!html.includes('firebase-storage-compat.js'),'Firebase Storage SDK ilk HTML açılışında preload edilmemeli.');
 assert(loader.includes("const FIREBASE_STORAGE_SDK='https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js'"),'Storage SDK merkezi AppLoader capability olarak tanımlanmalı.');
 assert(loader.includes("define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js','js/modules/assistant.js'])"),'Mesajlaşma Storage SDK yüklenmeden açılmamalı.');
+assert(loader.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js','js/modules/dashboard.js'])"),'Dashboard duyuru okundu işlemi için mevcut tek Communication servis sahibini kullanmalı; ikinci DuyurularService üretmemeli.');
 assert(loader.includes("define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js'])"),'Dokümanlar Storage SDK yüklenmeden açılmamalı.');
 assert(loader.includes("window.firebaseStorageHazirla?.()"),'Lazy Storage SDK yüklendikten sonra mevcut Firebase app storage örneği hazırlanmalı.');
 const startup=firebase.slice(firebase.indexOf('function firebaseyiBaslat(){'));
