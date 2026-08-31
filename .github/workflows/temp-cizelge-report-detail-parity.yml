@@ -1,0 +1,50 @@
+name: temp-cizelge-report-detail-parity
+on:
+  push:
+    branches: [work/cizelge-report-detail-parity-20260831]
+permissions:
+  contents: write
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install test dependencies
+        run: npm install --no-save --package-lock=false firebase @firebase/rules-unit-testing firebase-tools
+      - name: Restore schedule report detail parity
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('js/modules/rubric-settings.js')
+          s=p.read_text(encoding='utf-8')
+          record="function recordLabel(type,r){if(type==='sosyalKulupler')return r.ad||'Kulüp';if(type==='belirliGunler')return r.ad||'Etkinlik';if(type==='digerEvrak')return r.evrakAdi||'Evrak';return `${teacherName(r.ogretmenId)} — ${genericTitle(type,r)}`}"
+          assert s.count(record)==1,('record-label-contract',s.count(record))
+          helper="function reportRecordLabel(type,r){if(type==='sosyalKulupler'){const teachers=Array.isArray(r.ogretmenIdler)?r.ogretmenIdler.map(teacherName).filter(Boolean).join(', '):'',classes=Array.isArray(r.sinifIdler)&&r.sinifIdler.length?r.sinifIdler.map(className).join(', '):'Tüm sınıflar';return [r.ad||'Kulüp',r.aktif===false?'Pasif':'Aktif',teachers?`Danışman: ${teachers}`:'Öğretmen atanmadı',`Sınıflar: ${classes}`,r.yillikPlanTarihi?`Yıllık plan: ${trDate(r.yillikPlanTarihi)}`:'',r.toplumHizmetiTarihi?`Toplum hizmeti: ${trDate(r.toplumHizmetiTarihi)}`:''].filter(Boolean).join(' · ')}if(type==='maarifRapor')return [r.ders||'Ders',r.sinif||'Sınıf',r.aciklama||''].filter(Boolean).join(' · ');return [genericTitle(type,r),genericMeta(type,r,false)].filter(Boolean).join(' · ')}"
+          s=s.replace(record,record+'\n'+helper,1)
+          old="const first=recordLabel(type,r),checks=checkArray(type,r).map(v=>v?'✓':'');"
+          new="const first=reportRecordLabel(type,r),checks=checkArray(type,r).map(v=>v?'✓':'');"
+          assert s.count(old)==1,('report-record-contract',s.count(old))
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+
+          Path('tests/cizelge-report-detail-visible-parity.test.js').write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');\nassert(rubric.includes('function reportRecordLabel(type,r)'),'Çizelge raporları görünür kayıt ayrıntıları için ayrı canonical özet kullanmalı.');\nfor(const token of ['Danışman: ${teachers}','Sınıflar: ${classes}','Yıllık plan: ${trDate(r.yillikPlanTarihi)}','Toplum hizmeti: ${trDate(r.toplumHizmetiTarihi)}'])assert(rubric.includes(token),`Sosyal kulüp rapor ayrıntısı eksik: ${token}`);\nassert(rubric.includes("r.aktif===false?'Pasif':'Aktif'"),'Sosyal kulüp raporu aktif/pasif durumunu korumalı.');\nassert(rubric.includes("if(type==='maarifRapor')return [r.ders||'Ders',r.sinif||'Sınıf',r.aciklama||'']"),'Maarif raporu ders, sınıf ve açıklama ayrıntısını korumalı.');\nassert(rubric.includes('genericMeta(type,r,false)'),'Zümre, ŞÖK, BEP ve Rehberlik raporları tarih/not meta ayrıntılarını korumalı.');\nassert(rubric.includes("const first=reportRecordLabel(type,r),checks=checkArray(type,r).map(v=>v?'✓':'');"),'Rapor tablosu ayrıntılı canonical kayıt özetini kullanmalı.');\nassert(rubric.includes("['Etkinlik','Başlangıç','Bitiş','Sorumlu Öğretmenler','Durum','Notlar']"),'Belirli Günler özel rapor alanları değişmemeli.');\nassert(rubric.includes("checkArray(type,r)[0]?'Yapıldı':'Bekliyor'"),'Belirli Günler Yapıldı durumu korunmalı.');\nconsole.log('Schedule report detail visible parity OK');\n""",encoding='utf-8')
+          PY
+      - name: Run complete test suite in Firebase emulators
+        run: |
+          npx firebase emulators:exec --only firestore,storage --project demo-okul-rules "bash -lc 'set -e; for f in tests/*.test.js; do echo ==\> \$f; node \"\$f\"; done; node scripts/check-client-architecture.mjs; git diff --check'"
+      - name: Commit verified parity package and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/temp-cizelge-report-detail-parity.yml
+          git add js/modules/rubric-settings.js tests/cizelge-report-detail-visible-parity.test.js .github/workflows/temp-cizelge-report-detail-parity.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Restore schedule report detail parity [skip ci]"
+          git push
