@@ -28,9 +28,9 @@ jobs:
       - name: Verify targeted regressions
         run: |
           node tests/transport-button-layout.test.js
-          node tests/transport-service-parity.test.js
-          node tests/transport-bus-seat-detail.test.js
-          node tests/client-architecture.test.js
+          node tests/transport-separate-pages.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
           node scripts/check-client-architecture.mjs
           git diff --check
       - name: Commit verified patch
