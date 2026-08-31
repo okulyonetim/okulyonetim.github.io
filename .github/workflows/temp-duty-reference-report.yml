@@ -1,0 +1,40 @@
+name: Temporary duty reference report parity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/temp-duty-reference-report.py'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply reference duty report patch
+        run: python3 .github/temp-duty-reference-report.py
+      - name: Verify
+        run: |
+          node --check js/modules/management.js
+          node tests/duty-report-full-parity.test.js
+          node tests/classic-duty-v2-smoke.test.js
+          node tests/management-separate-pages.test.js
+          node tests/report-engine-a4-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit canonical changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/management.js css/design-system.css tests/classic-duty-v2-smoke.test.js tests/duty-report-full-parity.test.js service-worker.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "fix: match duty roster reference format"
+          git push origin HEAD:main
