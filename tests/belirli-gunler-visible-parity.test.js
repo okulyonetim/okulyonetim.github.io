@@ -1,0 +1,12 @@
+const fs=require('fs');
+const assert=require('assert');
+const dash=fs.readFileSync('js/modules/dashboard.js','utf8');
+const rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+const people=fs.readFileSync('js/modules/people.js','utf8');
+assert(dash.includes("arr('belirliGunler').filter(x=>!(x.kontroller||[])[0])"),'Admin yaklaşan listesi tamamlanmamış belirli günleri kullanmalı.');
+assert(dash.includes("'tarihBaslangic',14"),'Belirli günler yaklaşan 14 günlük pencereye bağlanmalı.');
+assert(rubric.includes("['Etkinlik','Başlangıç','Bitiş','Sorumlu Öğretmenler','Durum','Notlar']"),'Belirli gün raporu görünür alanları korumalı.');
+assert(rubric.includes("checkArray(type,r)[0]?'Yapıldı':'Bekliyor'"),'Belirli gün raporu Yapıldı durumunu korumalı.');
+assert(rubric.includes("tarihBaslangic")&&rubric.includes("tarihBitis")&&rubric.includes("ogretmenIdler")&&rubric.includes("aciklama"),'Belirli gün veri modeli korunmalı.');
+assert(people.includes("specialDaysOf=id=>data('belirliGunler')")&&people.includes("docGroup(o,'belirliGunler','BELİRLİ GÜN VE HAFTALAR'"),'Öğretmen profilindeki belirli gün sorumluluk ve belge durumu korunmalı.');
+console.log('Belirli Günler visible parity OK');
