@@ -1,0 +1,88 @@
+name: Temp Transport Mobile Layout V3
+on:
+  push:
+    branches:
+      - work/transport-mobile-layout-fix-20260831
+    paths:
+      - .github/.transport-mobile-v3-trigger
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/transport-mobile-layout-fix-20260831
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply mobile layout fix
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          css = Path('css/design-system.css')
+          s = css.read_text(encoding='utf-8')
+          marker = '/* Taşıma — mobil yerleşim düzeltmesi v3 */'
+          block = r'''
+          /* Taşıma — mobil yerleşim düzeltmesi v3 */
+          .ka-transport-service-card__side{width:106px;min-width:106px;gap:8px}
+          .ka-transport-service-card__side>.ka-badge{width:100%;justify-content:center}
+          .ka-transport-service-card__side .ka-btn[data-service-edit]{width:100%!important;min-width:0!important;min-height:38px!important;padding:0 10px!important;border:1px solid var(--ka-border-strong)!important;border-radius:12px!important;background:var(--ka-card-raised-bg)!important;color:var(--ka-text)!important;box-shadow:var(--ka-shadow-sm)!important;font-size:13px!important;font-weight:800!important;white-space:nowrap!important}
+          .ka-transport-detail__toolbar{display:grid!important;grid-template-columns:repeat(4,minmax(0,max-content))!important;justify-content:start!important;align-items:center!important;gap:8px!important;width:100%!important}
+          .ka-transport-detail__toolbar>.ka-btn{min-width:0!important;min-height:40px!important;padding:0 13px!important;white-space:nowrap!important;border-radius:12px!important;font-size:13px!important;font-weight:800!important;box-shadow:none!important}
+          .ka-transport-detail__toolbar>[data-service-edit],.ka-transport-detail__toolbar>[data-transport-list],.ka-transport-detail__toolbar>[data-transport-detail-close]{background:var(--ka-card-raised-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border-strong)!important}
+          .ka-transport-detail__toolbar>[data-transport-detail-delete]{background:color-mix(in srgb,var(--ka-danger) 9%,var(--ka-card-bg))!important;color:var(--ka-danger)!important;border-color:color-mix(in srgb,var(--ka-danger) 42%,var(--ka-border))!important}
+          .ka-transport-detail-actions{gap:8px!important}
+          .ka-transport-detail-actions>.ka-btn{min-height:42px!important;padding:0 12px!important;border-radius:13px!important;font-size:13px!important;font-weight:800!important;white-space:nowrap!important;box-shadow:none!important}
+          .ka-transport-detail-actions>[data-transport-excel],.ka-transport-detail-actions>[data-transport-list],.ka-transport-detail-actions>[data-transport-presidents]{background:var(--ka-card-raised-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border-strong)!important}
+          .ka-transport-detail-actions>[data-transport-add-student]{background:var(--ka-button-bg)!important;color:var(--ka-button-text)!important;border-color:var(--ka-button-bg)!important}
+          .ka-transport-student-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;padding:12px 4px!important}
+          .ka-transport-student-row>.ka-grow{min-width:0!important}
+          .ka-transport-student-row>.ka-grow>.ka-row{min-width:0!important;gap:6px 8px!important}
+          .ka-transport-student-row>.ka-grow>.ka-row>strong{min-width:0;font-size:14px;line-height:1.35}
+          .ka-transport-student-row .ka-muted,.ka-transport-student-row .ka-badge{white-space:nowrap!important}
+          .ka-transport-student-row>[data-transport-remove-student]{min-width:68px!important;min-height:36px!important;padding:0 11px!important;border:1px solid color-mix(in srgb,var(--ka-danger) 35%,var(--ka-border))!important;border-radius:999px!important;background:color-mix(in srgb,var(--ka-danger) 8%,var(--ka-card-bg))!important;color:var(--ka-danger)!important;box-shadow:none!important;font-size:12px!important;font-weight:850!important;white-space:nowrap!important}
+          @media(max-width:560px){
+            .ka-transport-service-card>.ka-card__body{grid-template-columns:minmax(0,1fr) 100px!important;gap:10px!important}
+            .ka-transport-service-card__side{width:100px!important;min-width:100px!important}
+            .ka-transport-detail__toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+            .ka-transport-detail__toolbar>.ka-btn{width:100%!important;max-width:none!important;padding-inline:9px!important}
+            .ka-transport-detail-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+            .ka-transport-detail-actions>.ka-btn{width:100%!important;min-width:0!important;padding-inline:8px!important}
+            .ka-transport-student-row>.ka-grow>.ka-row>strong{flex:1 0 100%;font-size:14px}
+          }
+          @media(max-width:390px){
+            .ka-transport-service-card>.ka-card__body{grid-template-columns:minmax(0,1fr) 92px!important}
+            .ka-transport-service-card__side{width:92px!important;min-width:92px!important}
+            .ka-transport-service-card__side .ka-btn[data-service-edit]{font-size:12px!important;padding-inline:7px!important}
+            .ka-transport-detail__toolbar>.ka-btn,.ka-transport-detail-actions>.ka-btn{font-size:12px!important}
+            .ka-transport-student-row{gap:7px!important;padding-inline:2px!important}
+            .ka-transport-student-row>[data-transport-remove-student]{min-width:60px!important;padding-inline:8px!important}
+          }
+          '''.strip()
+          if marker not in s:
+              css.write_text(s.rstrip('\n') + '\n\n' + block + '\n', encoding='utf-8')
+          sw = Path('service-worker.js')
+          w = sw.read_text(encoding='utf-8')
+          if "CACHE_ADI='oy-cache-v812'" not in w:
+              raise SystemExit('Beklenen v812 cache bulunamadı')
+          sw.write_text(w.replace("CACHE_ADI='oy-cache-v812'", "CACHE_ADI='oy-cache-v813'", 1), encoding='utf-8')
+          test = Path('tests/transport-mobile-layout-v3.test.js')
+          test.write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst css=fs.readFileSync('css/design-system.css','utf8');\nconst sw=fs.readFileSync('service-worker.js','utf8');\nfor(const token of ['Taşıma — mobil yerleşim düzeltmesi v3','grid-template-columns:repeat(2,minmax(0,1fr))!important','.ka-transport-student-row>[data-transport-remove-student]','.ka-transport-detail-actions>[data-transport-excel]','.ka-transport-service-card__side .ka-btn[data-service-edit]']) assert(css.includes(token),`Eksik mobil taşıma kuralı: ${token}`);\nassert(css.includes('white-space:nowrap!important'),'Taşıma etiketleri tek satırda tutulmalı.');\nassert(/CACHE_ADI='oy-cache-v(\\d+)'/.test(sw) && Number(sw.match(/CACHE_ADI='oy-cache-v(\\d+)'/)[1])>=813,'Yeni taşıma CSS için cache artırılmalı.');\nconsole.log('Taşıma mobil yerleşim v3 başarılı.');\n""",encoding='utf-8')
+          PY
+      - name: Verify targeted regressions
+        run: |
+          node tests/transport-mobile-layout-v3.test.js
+          node tests/transport-separate-pages.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit verified patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add css/design-system.css service-worker.js tests/transport-mobile-layout-v3.test.js
+          git commit -m 'Fix transport mobile action layout [skip ci]'
+          git push origin HEAD:work/transport-mobile-layout-fix-20260831
