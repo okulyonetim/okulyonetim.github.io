@@ -1,0 +1,72 @@
+name: Temp Social Club Students Retry
+
+on:
+  push:
+    branches: [work/social-club-students-20260831]
+    paths:
+      - '.github/workflows/temp-social-club-students-retry.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact base ancestry
+        run: git merge-base --is-ancestor 4453e951eb5a4805cefeed7163113abcff642b13 HEAD
+      - name: Reuse exact candidate generator and fix test quoting
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          source=Path('.github/workflows/temp-social-club-students.yml').read_text()
+          marker="python3 <<'PY'\n"
+          if source.count(marker)!=1:
+              raise SystemExit('candidate generator marker mismatch')
+          block=source.split(marker,1)[1].split('\n          PY',1)[0]
+          lines=[]
+          for line in block.splitlines():
+              lines.append(line[10:] if line.startswith('          ') else line)
+          Path('/tmp/social-club-apply.py').write_text('\n'.join(lines)+'\n')
+          PY
+          python3 /tmp/social-club-apply.py
+          python3 <<'PY'
+          from pathlib import Path
+          p=Path('tests/rubric-settings-v2-smoke.test.js')
+          s=p.read_text()
+          bad="'printClubStudentList','ustBaslik:'Sosyal Kulüpler'']"
+          good="'printClubStudentList',\"ustBaslik:'Sosyal Kulüpler'\"]"
+          if s.count(bad)!=1:
+              raise SystemExit(f'expected one bad token, found {s.count(bad)}')
+          p.write_text(s.replace(bad,good,1))
+          PY
+      - name: Verify syntax
+        run: |
+          node --check js/modules/tools.js
+          node --check js/modules/rubric-settings.js
+          node --check tests/rubric-settings-v2-smoke.test.js
+      - name: Run focused contracts
+        run: |
+          node tests/rubric-settings-v2-smoke.test.js
+          node tests/tools-separate-pages.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/report-engine-a4-smoke.test.js
+      - name: Build and audit
+        run: |
+          node scripts/build-client-bundles.mjs
+          node scripts/check-client-architecture.mjs
+      - name: Commit verified application changes
+        run: |
+          git config user.name 'sedonet23'
+          git config user.email 'sedonet23@gmail.com'
+          git add js/modules/tools.js js/modules/rubric-settings.js tests/rubric-settings-v2-smoke.test.js
+          git diff --cached --check
+          git commit -m 'Restore social club student management'
+          git push origin HEAD:work/social-club-students-20260831
