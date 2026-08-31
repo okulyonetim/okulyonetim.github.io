@@ -1,0 +1,83 @@
+name: Temp Transport Button Polish
+on:
+  push:
+    branches:
+      - work/transport-button-polish-20260831
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/transport-button-polish-20260831
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply transport button polish
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          css_path=Path('css/design-system.css')
+          css=css_path.read_text(encoding='utf-8')
+          marker='/* Taşıma — mobil buton düzeni v2 */'
+          block=r'''
+
+/* Taşıma — mobil buton düzeni v2 */
+.ka-transport-filters{display:inline-flex;width:fit-content;max-width:100%;padding:4px;gap:4px;border:1px solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
+.ka-transport-filters .ka-btn{min-height:38px;padding:0 16px;border:0;border-radius:var(--ka-radius-pill);background:transparent;color:var(--ka-text-muted);box-shadow:none;font-size:14px;font-weight:750;white-space:nowrap}
+.ka-transport-filters .ka-btn:hover{background:var(--ka-muted-bg);color:var(--ka-text)}
+.ka-transport-filters .ka-btn:not(.ka-btn--secondary){background:var(--ka-primary-soft);color:var(--ka-primary)}
+.ka-transport-service-card>.ka-card__body{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px}
+.ka-transport-service-card__side{display:grid;align-items:center;justify-items:stretch;gap:9px;width:96px;min-width:96px}
+.ka-transport-service-card__side>.ka-badge{justify-content:center;white-space:nowrap}
+.ka-transport-service-card__side .ka-btn[data-service-edit]{width:100%;min-width:0;min-height:38px;padding:0 11px;white-space:nowrap;border:1px solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-muted-bg);color:var(--ka-text);box-shadow:none;font-size:14px}
+.ka-transport-service-card__side .ka-btn[data-service-edit]:hover{border-color:var(--ka-primary);background:var(--ka-primary-soft);color:var(--ka-primary)}
+.ka-transport-detail__toolbar{display:grid;grid-template-columns:repeat(4,max-content);justify-content:start;align-items:center;gap:8px;width:100%}
+.ka-transport-detail__toolbar .ka-btn{min-height:40px;padding:0 14px;border-radius:var(--ka-radius-md);white-space:nowrap;font-size:14px;box-shadow:none}
+.ka-transport-detail__toolbar .ka-btn--secondary{background:var(--ka-card-bg);color:var(--ka-text);border-color:var(--ka-border)}
+.ka-transport-detail__toolbar .ka-btn--secondary:hover{background:var(--ka-primary-soft);color:var(--ka-primary);border-color:var(--ka-primary)}
+.ka-transport-detail__toolbar [data-transport-detail-delete]{background:color-mix(in srgb,var(--ka-danger) 10%,transparent);color:var(--ka-danger);border-color:color-mix(in srgb,var(--ka-danger) 35%,var(--ka-border));}
+.ka-transport-detail__toolbar [data-transport-detail-delete]:hover{background:var(--ka-danger);color:#fff;border-color:var(--ka-danger)}
+@media(max-width:560px){
+  .ka-transport-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+  .ka-transport-filters .ka-btn{width:100%;padding-inline:10px}
+  .ka-transport-service-card>.ka-card__body{align-items:start;gap:12px}
+  .ka-transport-service-card__side{width:92px;min-width:92px}
+  .ka-transport-detail__toolbar{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ka-transport-detail__toolbar .ka-btn{width:100%;min-width:0;padding-inline:10px}
+}
+@media(max-width:340px){
+  .ka-transport-service-card__side{width:86px;min-width:86px}
+  .ka-transport-service-card__side .ka-btn[data-service-edit]{font-size:13px;padding-inline:8px}
+}
+'''
+          if marker not in css:
+              css=css.rstrip()+block+'\n'
+              css_path.write_text(css,encoding='utf-8')
+          sw_path=Path('service-worker.js')
+          sw=sw_path.read_text(encoding='utf-8')
+          if "CACHE_ADI='oy-cache-v811'" in sw:
+              sw=sw.replace("CACHE_ADI='oy-cache-v811'","CACHE_ADI='oy-cache-v812'",1)
+              sw_path.write_text(sw,encoding='utf-8')
+          test=Path('tests/transport-button-layout.test.js')
+          test.write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst css=fs.readFileSync('css/design-system.css','utf8');\nconst sw=fs.readFileSync('service-worker.js','utf8');\nfor(const token of ['Taşıma — mobil buton düzeni v2','.ka-transport-filters .ka-btn:not(.ka-btn--secondary)','.ka-transport-service-card__side .ka-btn[data-service-edit]','.ka-transport-detail__toolbar [data-transport-detail-delete]','grid-template-columns:repeat(2,minmax(0,1fr))']) assert(css.includes(token),`Taşıma buton düzeni eksik: ${token}`);\nassert(css.includes('white-space:nowrap'),'Taşıma aksiyon etiketleri satır kırmamalı.');\nassert(/CACHE_ADI='oy-cache-v(\\d+)'/.test(sw) && Number(sw.match(/CACHE_ADI='oy-cache-v(\\d+)'/)[1])>=812,'Yeni taşıma CSS sürümü için cache artırılmalı.');\nconsole.log('Taşıma mobil buton düzeni başarılı.');\n""",encoding='utf-8')
+          PY
+      - name: Verify targeted regressions
+        run: |
+          node tests/transport-button-layout.test.js
+          node tests/transport-service-parity.test.js
+          node tests/transport-bus-seat-detail.test.js
+          node tests/client-architecture.test.js
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit verified patch
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add css/design-system.css service-worker.js tests/transport-button-layout.test.js
+          git commit -m "Polish transport mobile action buttons [skip ci]"
+          git push origin HEAD:work/transport-button-polish-20260831
