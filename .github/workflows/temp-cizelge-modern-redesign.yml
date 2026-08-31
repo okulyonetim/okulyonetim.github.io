@@ -21,6 +21,17 @@ jobs:
         run: |
           python3 scripts/temp-cizelge-modern-redesign.py
           sed -i "s/oy-cache-v824/oy-cache-v825/g" tests/rehberlik-page-redesign.test.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('js/modules/rubric-settings.js')
+          s=p.read_text(encoding='utf-8')
+          token="const TEACHER_GROUPED_TYPES=new Set(['zumre','sok','bepPlani','rehberlik']);"
+          if token not in s:
+              anchor='function teacherGroupedList(type,rows)'
+              if anchor not in s: raise RuntimeError('teacherGroupedList anchor missing')
+              s=s.replace(anchor,token+'\n'+anchor,1)
+              p.write_text(s,encoding='utf-8')
+          PY
       - name: Verify çizelge redesign and architecture contracts
         run: |
           node --check js/modules/rubric-settings.js
