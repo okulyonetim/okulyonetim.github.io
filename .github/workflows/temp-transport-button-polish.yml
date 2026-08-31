@@ -18,55 +18,13 @@ jobs:
         with:
           node-version: '24'
       - name: Apply transport button polish
-        shell: bash
+        env:
+          CSS_BLOCK_B64: LyogVGHFn8SxbWEg4oCUIG1vYmlsIGJ1dG9uIGTDvHplbmkgdjIgKi8KLmthLXRyYW5zcG9ydC1maWx0ZXJze2Rpc3BsYXk6aW5saW5lLWZsZXg7d2lkdGg6Zml0LWNvbnRlbnQ7bWF4LXdpZHRoOjEwMCU7cGFkZGluZzo0cHg7Z2FwOjRweDtib3JkZXI6MXB4IHNvbGlkIHZhcigtLWthLWJvcmRlcik7Ym9yZGVyLXJhZGl1czp2YXIoLS1rYS1yYWRpdXMtcGlsbCk7YmFja2dyb3VuZDp2YXIoLS1rYS1jYXJkLWJnKTtib3gtc2hhZG93OnZhcigtLWthLXNoYWRvdy1zbSl9Ci5rYS10cmFuc3BvcnQtZmlsdGVycyAua2EtYnRue21pbi1oZWlnaHQ6MzhweDtwYWRkaW5nOjAgMTZweDtib3JkZXI6MDtib3JkZXItcmFkaXVzOnZhcigtLWthLXJhZGl1cy1waWxsKTtiYWNrZ3JvdW5kOnRyYW5zcGFyZW50O2NvbG9yOnZhcigtLWthLXRleHQtbXV0ZWQpO2JveC1zaGFkb3c6bm9uZTtmb250LXNpemU6MTRweDtmb250LXdlaWdodDo3NTA7d2hpdGUtc3BhY2U6bm93cmFwfQoua2EtdHJhbnNwb3J0LWZpbHRlcnMgLmthLWJ0bjpob3ZlcntiYWNrZ3JvdW5kOnZhcigtLWthLW11dGVkLWJnKTtjb2xvcjp2YXIoLS1rYS10ZXh0KX0KLmthLXRyYW5zcG9ydC1maWx0ZXJzIC5rYS1idG46bm90KC5rYS1idG4tLXNlY29uZGFyeSl7YmFja2dyb3VuZDp2YXIoLS1rYS1wcmltYXJ5LXNvZnQpO2NvbG9yOnZhcigtLWthLXByaW1hcnkpfQoua2EtdHJhbnNwb3J0LXNlcnZpY2UtY2FyZD4ua2EtY2FyZF9fYm9keXtkaXNwbGF5OmdyaWQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOm1pbm1heCgwLDFmcikgYXV0bzthbGlnbi1pdGVtczpjZW50ZXI7Z2FwOjE0cHh9Ci5rYS10cmFuc3BvcnQtc2VydmljZS1jYXJkX19zaWRle2Rpc3BsYXk6Z3JpZDthbGlnbi1pdGVtczpjZW50ZXI7anVzdGlmeS1pdGVtczpzdHJldGNoO2dhcDo5cHg7d2lkdGg6OTZweDttaW4td2lkdGg6OTZweH0KLmthLXRyYW5zcG9ydC1zZXJ2aWNlLWNhcmRfX3NpZGU+LmthLWJhZGdle2p1c3RpZnktY29udGVudDpjZW50ZXI7d2hpdGUtc3BhY2U6bm93cmFwfQoua2EtdHJhbnNwb3J0LXNlcnZpY2UtY2FyZF9fc2lkZSAua2EtYnRuW2RhdGEtc2VydmljZS1lZGl0XXt3aWR0aDoxMDAlO21pbi13aWR0aDowO21pbi1oZWlnaHQ6MzhweDtwYWRkaW5nOjAgMTFweDt3aGl0ZS1zcGFjZTpub3dyYXA7Ym9yZGVyOjFweCBzb2xpZCB2YXIoLS1rYS1ib3JkZXIpO2JvcmRlci1yYWRpdXM6dmFyKC0ta2EtcmFkaXVzLXBpbGwpO2JhY2tncm91bmQ6dmFyKC0ta2EtbXV0ZWQtYmcpO2NvbG9yOnZhcigtLWthLXRleHQpO2JveC1zaGFkb3c6bm9uZTtmb250LXNpemU6MTRweH0KLmthLXRyYW5zcG9ydC1zZXJ2aWNlLWNhcmRfX3NpZGUgLmthLWJ0bltkYXRhLXNlcnZpY2UtZWRpdF06aG92ZXJ7Ym9yZGVyLWNvbG9yOnZhcigtLWthLXByaW1hcnkpO2JhY2tncm91bmQ6dmFyKC0ta2EtcHJpbWFyeS1zb2Z0KTtjb2xvcjp2YXIoLS1rYS1wcmltYXJ5KX0KLmthLXRyYW5zcG9ydC1kZXRhaWxfX3Rvb2xiYXJ7ZGlzcGxheTpncmlkO2dyaWQtdGVtcGxhdGUtY29sdW1uczpyZXBlYXQoNCxtYXgtY29udGVudCk7anVzdGlmeS1jb250ZW50OnN0YXJ0O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6OHB4O3dpZHRoOjEwMCV9Ci5rYS10cmFuc3BvcnQtZGV0YWlsX190b29sYmFyIC5rYS1idG57bWluLWhlaWdodDo0MHB4O3BhZGRpbmc6MCAxNHB4O2JvcmRlci1yYWRpdXM6dmFyKC0ta2EtcmFkaXVzLW1kKTt3aGl0ZS1zcGFjZTpub3dyYXA7Zm9udC1zaXplOjE0cHg7Ym94LXNoYWRvdzpub25lfQoua2EtdHJhbnNwb3J0LWRldGFpbF9fdG9vbGJhciAua2EtYnRuLS1zZWNvbmRhcnl7YmFja2dyb3VuZDp2YXIoLS1rYS1jYXJkLWJnKTtjb2xvcjp2YXIoLS1rYS10ZXh0KTtib3JkZXItY29sb3I6dmFyKC0ta2EtYm9yZGVyKX0KLmthLXRyYW5zcG9ydC1kZXRhaWxfX3Rvb2xiYXIgLmthLWJ0bi0tc2Vjb25kYXJ5OmhvdmVye2JhY2tncm91bmQ6dmFyKC0ta2EtcHJpbWFyeS1zb2Z0KTtjb2xvcjp2YXIoLS1rYS1wcmltYXJ5KTtib3JkZXItY29sb3I6dmFyKC0ta2EtcHJpbWFyeSl9Ci5rYS10cmFuc3BvcnQtZGV0YWlsX190b29sYmFyIFtkYXRhLXRyYW5zcG9ydC1kZXRhaWwtZGVsZXRlXXtiYWNrZ3JvdW5kOmNvbG9yLW1peChpbiBzcmdiLHZhcigtLWthLWRhbmdlcikgMTAlLHRyYW5zcGFyZW50KTtjb2xvcjp2YXIoLS1rYS1kYW5nZXIpO2JvcmRlci1jb2xvcjpjb2xvci1taXgoaW4gc3JnYix2YXIoLS1rYS1kYW5nZXIpIDM1JSx2YXIoLS1rYS1ib3JkZXIpKX0KLmthLXRyYW5zcG9ydC1kZXRhaWxfX3Rvb2xiYXIgW2RhdGEtdHJhbnNwb3J0LWRldGFpbC1kZWxldGVdOmhvdmVye2JhY2tncm91bmQ6dmFyKC0ta2EtZGFuZ2VyKTtjb2xvcjojZmZmO2JvcmRlci1jb2xvcjp2YXIoLS1rYS1kYW5nZXIpfQpAbWVkaWEobWF4LXdpZHRoOjU2MHB4KXsKICAua2EtdHJhbnNwb3J0LWZpbHRlcnN7ZGlzcGxheTpncmlkO2dyaWQtdGVtcGxhdGUtY29sdW1uczpyZXBlYXQoMyxtaW5tYXgoMCwxZnIpKTt3aWR0aDoxMDAlfQogIC5rYS10cmFuc3BvcnQtZmlsdGVycyAua2EtYnRue3dpZHRoOjEwMCU7cGFkZGluZy1pbmxpbmU6MTBweH0KICAua2EtdHJhbnNwb3J0LXNlcnZpY2UtY2FyZD4ua2EtY2FyZF9fYm9keXthbGlnbi1pdGVtczpzdGFydDtnYXA6MTJweH0KICAua2EtdHJhbnNwb3J0LXNlcnZpY2UtY2FyZF9fc2lkZXt3aWR0aDo5MnB4O21pbi13aWR0aDo5MnB4fQogIC5rYS10cmFuc3BvcnQtZGV0YWlsX190b29sYmFye2dyaWQtdGVtcGxhdGUtY29sdW1uczpyZXBlYXQoMixtaW5tYXgoMCwxZnIpKTtnYXA6OHB4fQogIC5rYS10cmFuc3BvcnQtZGV0YWlsX190b29sYmFyIC5rYS1idG57d2lkdGg6MTAwJTttaW4td2lkdGg6MDtwYWRkaW5nLWlubGluZToxMHB4fQp9CkBtZWRpYShtYXgtd2lkdGg6MzQwcHgpewogIC5rYS10cmFuc3BvcnQtc2VydmljZS1jYXJkX19zaWRle3dpZHRoOjg2cHg7bWluLXdpZHRoOjg2cHh9CiAgLmthLXRyYW5zcG9ydC1zZXJ2aWNlLWNhcmRfX3NpZGUgLmthLWJ0bltkYXRhLXNlcnZpY2UtZWRpdF17Zm9udC1zaXplOjEzcHg7cGFkZGluZy1pbmxpbmU6OHB4fQp9Cg==
+          TEST_B64: Y29uc3QgZnM9cmVxdWlyZSgnZnMnKTsKY29uc3QgYXNzZXJ0PXJlcXVpcmUoJ2Fzc2VydCcpOwpjb25zdCBjc3M9ZnMucmVhZEZpbGVTeW5jKCdjc3MvZGVzaWduLXN5c3RlbS5jc3MnLCd1dGY4Jyk7CmNvbnN0IHN3PWZzLnJlYWRGaWxlU3luYygnc2VydmljZS13b3JrZXIuanMnLCd1dGY4Jyk7CmZvcihjb25zdCB0b2tlbiBvZiBbJ1RhxZ/EsW1hIOKAlCBtb2JpbCBidXRvbiBkw7x6ZW5pIHYyJywnLmthLXRyYW5zcG9ydC1maWx0ZXJzIC5rYS1idG46bm90KC5rYS1idG4tLXNlY29uZGFyeSknLCcua2EtdHJhbnNwb3J0LXNlcnZpY2UtY2FyZF9fc2lkZSAua2EtYnRuW2RhdGEtc2VydmljZS1lZGl0XScsJy5rYS10cmFuc3BvcnQtZGV0YWlsX190b29sYmFyIFtkYXRhLXRyYW5zcG9ydC1kZXRhaWwtZGVsZXRlXScsJ2dyaWQtdGVtcGxhdGUtY29sdW1uczpyZXBlYXQoMixtaW5tYXgoMCwxZnIpKSddKSBhc3NlcnQoY3NzLmluY2x1ZGVzKHRva2VuKSxgVGHFn8SxbWEgYnV0b24gZMO8emVuaSBla3NpazogJHt0b2tlbn1gKTsKYXNzZXJ0KGNzcy5pbmNsdWRlcygnd2hpdGUtc3BhY2U6bm93cmFwJyksJ1RhxZ/EsW1hIGFrc2l5b24gZXRpa2V0bGVyaSBzYXTEsXIga8Sxcm1hbWFsxLEuJyk7CmFzc2VydCgvQ0FDSEVfQURJPSdveS1jYWNoZS12KFxkKyknLy50ZXN0KHN3KSAmJiBOdW1iZXIoc3cubWF0Y2goL0NBQ0hFX0FEST0nb3ktY2FjaGUtdihcZCspJy8pWzFdKT49ODEyLCdZZW5pIHRhxZ/EsW1hIENTUyBzw7xyw7xtw7wgacOnaW4gY2FjaGUgYXJ0xLFyxLFsbWFsxLEuJyk7CmNvbnNvbGUubG9nKCdUYcWfxLFtYSBtb2JpbCBidXRvbiBkw7x6ZW5pIGJhxZ9hcsSxbMSxLicpOwo=
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          css_path=Path('css/design-system.css')
-          css=css_path.read_text(encoding='utf-8')
-          marker='/* Taşıma — mobil buton düzeni v2 */'
-          block=r'''
-
-/* Taşıma — mobil buton düzeni v2 */
-.ka-transport-filters{display:inline-flex;width:fit-content;max-width:100%;padding:4px;gap:4px;border:1px solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
-.ka-transport-filters .ka-btn{min-height:38px;padding:0 16px;border:0;border-radius:var(--ka-radius-pill);background:transparent;color:var(--ka-text-muted);box-shadow:none;font-size:14px;font-weight:750;white-space:nowrap}
-.ka-transport-filters .ka-btn:hover{background:var(--ka-muted-bg);color:var(--ka-text)}
-.ka-transport-filters .ka-btn:not(.ka-btn--secondary){background:var(--ka-primary-soft);color:var(--ka-primary)}
-.ka-transport-service-card>.ka-card__body{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px}
-.ka-transport-service-card__side{display:grid;align-items:center;justify-items:stretch;gap:9px;width:96px;min-width:96px}
-.ka-transport-service-card__side>.ka-badge{justify-content:center;white-space:nowrap}
-.ka-transport-service-card__side .ka-btn[data-service-edit]{width:100%;min-width:0;min-height:38px;padding:0 11px;white-space:nowrap;border:1px solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-muted-bg);color:var(--ka-text);box-shadow:none;font-size:14px}
-.ka-transport-service-card__side .ka-btn[data-service-edit]:hover{border-color:var(--ka-primary);background:var(--ka-primary-soft);color:var(--ka-primary)}
-.ka-transport-detail__toolbar{display:grid;grid-template-columns:repeat(4,max-content);justify-content:start;align-items:center;gap:8px;width:100%}
-.ka-transport-detail__toolbar .ka-btn{min-height:40px;padding:0 14px;border-radius:var(--ka-radius-md);white-space:nowrap;font-size:14px;box-shadow:none}
-.ka-transport-detail__toolbar .ka-btn--secondary{background:var(--ka-card-bg);color:var(--ka-text);border-color:var(--ka-border)}
-.ka-transport-detail__toolbar .ka-btn--secondary:hover{background:var(--ka-primary-soft);color:var(--ka-primary);border-color:var(--ka-primary)}
-.ka-transport-detail__toolbar [data-transport-detail-delete]{background:color-mix(in srgb,var(--ka-danger) 10%,transparent);color:var(--ka-danger);border-color:color-mix(in srgb,var(--ka-danger) 35%,var(--ka-border))}
-.ka-transport-detail__toolbar [data-transport-detail-delete]:hover{background:var(--ka-danger);color:#fff;border-color:var(--ka-danger)}
-@media(max-width:560px){
-  .ka-transport-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
-  .ka-transport-filters .ka-btn{width:100%;padding-inline:10px}
-  .ka-transport-service-card>.ka-card__body{align-items:start;gap:12px}
-  .ka-transport-service-card__side{width:92px;min-width:92px}
-  .ka-transport-detail__toolbar{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .ka-transport-detail__toolbar .ka-btn{width:100%;min-width:0;padding-inline:10px}
-}
-@media(max-width:340px){
-  .ka-transport-service-card__side{width:86px;min-width:86px}
-  .ka-transport-service-card__side .ka-btn[data-service-edit]{font-size:13px;padding-inline:8px}
-}
-'''
-          if marker not in css:
-              css=css.rstrip()+block+'\n'
-              css_path.write_text(css,encoding='utf-8')
-          sw_path=Path('service-worker.js')
-          sw=sw_path.read_text(encoding='utf-8')
-          if "CACHE_ADI='oy-cache-v811'" in sw:
-              sw=sw.replace("CACHE_ADI='oy-cache-v811'","CACHE_ADI='oy-cache-v812'",1)
-              sw_path.write_text(sw,encoding='utf-8')
-          test=Path('tests/transport-button-layout.test.js')
-          test.write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst css=fs.readFileSync('css/design-system.css','utf8');\nconst sw=fs.readFileSync('service-worker.js','utf8');\nfor(const token of ['Taşıma — mobil buton düzeni v2','.ka-transport-filters .ka-btn:not(.ka-btn--secondary)','.ka-transport-service-card__side .ka-btn[data-service-edit]','.ka-transport-detail__toolbar [data-transport-detail-delete]','grid-template-columns:repeat(2,minmax(0,1fr))']) assert(css.includes(token),`Taşıma buton düzeni eksik: ${token}`);\nassert(css.includes('white-space:nowrap'),'Taşıma aksiyon etiketleri satır kırmamalı.');\nassert(/CACHE_ADI='oy-cache-v(\\d+)'/.test(sw) && Number(sw.match(/CACHE_ADI='oy-cache-v(\\d+)'/)[1])>=812,'Yeni taşıma CSS sürümü için cache artırılmalı.');\nconsole.log('Taşıma mobil buton düzeni başarılı.');\n""",encoding='utf-8')
-          PY
+          python -c "import os,base64,pathlib;p=pathlib.Path('css/design-system.css');s=p.read_text(encoding='utf-8');m='/* Taşıma — mobil buton düzeni v2 */';b=base64.b64decode(os.environ['CSS_BLOCK_B64']).decode();p.write_text(s.rstrip()+'\n\n'+b+'\n',encoding='utf-8') if m not in s else None"
+          python -c "from pathlib import Path;p=Path('service-worker.js');s=p.read_text(encoding='utf-8');p.write_text(s.replace(\"CACHE_ADI='oy-cache-v811'\",\"CACHE_ADI='oy-cache-v812'\",1),encoding='utf-8') if \"CACHE_ADI='oy-cache-v811'\" in s else None"
+          python -c "import os,base64,pathlib;pathlib.Path('tests/transport-button-layout.test.js').write_bytes(base64.b64decode(os.environ['TEST_B64']))"
       - name: Verify targeted regressions
         run: |
           node tests/transport-button-layout.test.js
