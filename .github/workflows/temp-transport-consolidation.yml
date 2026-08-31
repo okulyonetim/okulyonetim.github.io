@@ -15,7 +15,9 @@ jobs:
         with:
           node-version: 20
       - name: Apply canonical transport consolidation
-        run: python3 .github/temp_transport_consolidation.py
+        run: |
+          python3 .github/temp_transport_consolidation.py
+          python3 .github/temp_transport_postfix.py
       - name: Syntax and focused transport contracts
         run: |
           node --check js/modules/transport.js
