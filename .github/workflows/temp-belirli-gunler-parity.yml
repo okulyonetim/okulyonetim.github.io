@@ -12,6 +12,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install test dependencies
+        run: npm install --no-save --package-lock=false firebase @firebase/rules-unit-testing firebase-tools
       - name: Restore Belirli Günler visible parity
         run: |
           python3 - <<'PY'
@@ -34,15 +40,9 @@ jobs:
           test=Path('tests/belirli-gunler-visible-parity.test.js')
           test.write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst dash=fs.readFileSync('js/modules/dashboard.js','utf8');\nconst rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');\nconst people=fs.readFileSync('js/modules/people.js','utf8');\nassert(dash.includes(\"arr('belirliGunler').filter(x=>!(x.kontroller||[])[0])\"),'Admin yaklaşan listesi tamamlanmamış belirli günleri kullanmalı.');\nassert(dash.includes(\"'tarihBaslangic',14\"),'Belirli günler yaklaşan 14 günlük pencereye bağlanmalı.');\nassert(rubric.includes(\"['Etkinlik','Başlangıç','Bitiş','Sorumlu Öğretmenler','Durum','Notlar']\"),'Belirli gün raporu görünür alanları korumalı.');\nassert(rubric.includes(\"checkArray(type,r)[0]?'Yapıldı':'Bekliyor'\"),'Belirli gün raporu Yapıldı durumunu korumalı.');\nassert(rubric.includes(\"tarihBaslangic\")&&rubric.includes(\"tarihBitis\")&&rubric.includes(\"ogretmenIdler\")&&rubric.includes(\"aciklama\"),'Belirli gün veri modeli korunmalı.');\nassert(people.includes(\"specialDaysOf=id=>data('belirliGunler')\")&&people.includes(\"docGroup(o,'belirliGunler','BELİRLİ GÜN VE HAFTALAR'\"),'Öğretmen profilindeki belirli gün sorumluluk ve belge durumu korunmalı.');\nconsole.log('Belirli Günler visible parity OK');\n""",encoding='utf-8')
           PY
-      - name: Run complete client test suite
+      - name: Run complete test suite in Firebase emulators
         run: |
-          set -e
-          for f in tests/*.test.js; do
-            echo "==> $f"
-            node "$f"
-          done
-          node scripts/check-client-architecture.mjs
-          git diff --check
+          npx firebase emulators:exec --only firestore,storage --project demo-okul-rules "bash -lc 'set -e; for f in tests/*.test.js; do echo ==\> \$f; node \"\$f\"; done; node scripts/check-client-architecture.mjs; git diff --check'"
       - name: Commit verified parity package
         run: |
           git config user.name "github-actions[bot]"
