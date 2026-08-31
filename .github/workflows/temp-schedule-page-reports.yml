@@ -27,6 +27,7 @@ jobs:
           node tests/modules-local-first-boundary.test.js
           node tests/classic-people-v2-smoke.test.js
           node scripts/check-client-architecture.mjs
+          python -c "from pathlib import Path; p=Path('css/design-system.css'); p.write_text(p.read_text(encoding='utf-8').rstrip()+'\\n',encoding='utf-8')"
           git diff --check
       - name: Commit verified schedule redesign
         run: |
