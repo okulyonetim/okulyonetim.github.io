@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '20'
       - name: Apply canonical duty format patch
-        run: node scripts/temp-duty-uploaded-format.js
+        run: python3 scripts/temp-duty-uploaded-format.py
       - name: Verify
         run: |
           node --check js/modules/management.js
