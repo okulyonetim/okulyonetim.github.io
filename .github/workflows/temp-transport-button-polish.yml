@@ -32,6 +32,7 @@ jobs:
           node tests/service-worker-precache-smoke.test.js
           node tests/modules-local-first-boundary.test.js
           node scripts/check-client-architecture.mjs
+          python -c "from pathlib import Path;p=Path('css/design-system.css');p.write_text(p.read_text(encoding='utf-8').rstrip()+'\n',encoding='utf-8')"
           git diff --check
       - name: Commit verified patch
         run: |
