@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/temp-duty-report-full-parity.py'
+      - '.github/temp-duty-report-full-parity-fix.py'
 
 permissions:
   contents: write
@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 20
       - name: Apply canonical duty report patch
-        run: python3 .github/temp-duty-report-full-parity.py
+        run: python3 .github/temp-duty-report-full-parity-fix.py
       - name: Verify
         run: |
           node --check js/modules/management.js
