@@ -1,0 +1,18 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/modules/management.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+assert(src.includes('ogretmenler:COL.ogretmenler'),'Nöbet raporu müdür/telefon eşleşmesi için öğretmenleri local-first hydrate etmeli.');
+assert(src.includes('TARİH / GÜN'),'Tam nöbet çizelgesi tarih/gün başlığını korumalı.');
+for(const marker of ['ka-duty-report-weekend','ka-duty-report-holiday','ka-duty-report-phones','ka-duty-report-footer','ka-duty-report-signature','Geçerlilik Tarihi','Okul Müdürü']) assert(src.includes(marker),`Tam nöbet raporu bölümü eksik: ${marker}`);
+assert(!src.includes('if(gun===0||gun===6)continue;'),'Nöbet raporu hafta sonlarını atlamamalı.');
+const reportStart=src.indexOf('async function createDutyReport');
+const reportEnd=src.indexOf('\nfunction bindDuty(',reportStart);
+const report=src.slice(reportStart,reportEnd);
+assert(report.indexOf('if(tatil)')>=0&&report.indexOf('if(haftasonu)')>=0&&report.indexOf('if(tatil)')<report.indexOf('if(haftasonu)'),'Resmi tatil hafta sonundan önce değerlendirilmeli; 30 Ağustos gibi tatiller kaybolmamalı.');
+assert(src.includes('function dutyReportPrincipal(okul)')&&src.includes('okul?.mudurId')&&src.includes("arr('ogretmenler')"),'Okul müdürü gerçek okulBilgileri.mudurId üzerinden çözülmeli.');
+for(const flag of ['logoGoster:false','tarihGoster:false','baslikGoster:false','compact:true','fontSize:7','kenarBosluk:5']) assert(report.includes(flag),`Rapor motoru tam çizelge ayarı eksik: ${flag}`);
+const taskBlock=src.slice(src.indexOf('const DUTY_TASKS=['),src.indexOf('];',src.indexOf('const DUTY_TASKS=['))+2);
+assert((taskBlock.match(/^\s*'/gm)||[]).length===14,'Nöbetçi öğretmen görevleri 14 maddelik tam liste olmalı.');
+for(const marker of ['.ka-duty-report-weekend','.ka-duty-report-holiday','.ka-duty-report-phones','.ka-duty-report-signature']) assert(css.includes(marker),`Tam nöbet raporu design-system stili eksik: ${marker}`);
+console.log('Tam aylık nöbet çizelgesi + telefon + görev + imza parity sözleşmesi başarılı.');
