@@ -1,0 +1,75 @@
+name: temp-teblig-visible-parity
+on:
+  push:
+    branches: [work/teblig-visible-parity-20260831]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply canonical Teblig visible parity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path=Path('js/modules/documents.js')
+          src=path.read_text(encoding='utf-8')
+
+          old="function teacherRole(o){return o?.unvan||o?.brans||'Öğretmen'}"
+          new="function teacherRole(o){if(!o)return'';const unvan=o.unvan||'Öğretmen';return unvan==='Öğretmen'&&o.brans?`${o.brans} Öğrt.`:unvan}"
+          assert src.count(old)==1,'teacherRole marker mismatch'
+          src=src.replace(old,new,1)
+
+          old_report="""function tebligReportBody(){const s=tebligState||blankTeblig(),okul=school(),tarih=s.tarihIso?new Date(s.tarihIso+'T00:00:00').toLocaleDateString('tr-TR'):'';return `<h1>${esc(okul.okulAdi||'KORUK İLK-ORTAOKULU')}</h1><h2>Tebliğ‑Tebellüğ Belgesi</h2><table class=\"ka-table\"><tbody><tr><th>Tarih</th><td>${esc(tarih)}</td></tr><tr><th>Sayı</th><td>${esc(s.sayi)}</td></tr><tr><th>Konu</th><td>${esc(s.konu)}</td></tr></tbody></table><p>Yukarıda tarih, sayı ve konusu belirtilen yazı aşağıda adı bulunan personele tebliğ edilmiş ve tebellüğ edilmiştir.</p><table class=\"ka-table\"><thead><tr><th>Sıra</th><th>Adı Soyadı</th><th>Görevi</th><th>İmza</th></tr></thead><tbody>${s.satirlar.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.ad)}</td><td>${esc(r.gorev)}</td><td>........................</td></tr>`).join('')}</tbody></table>`}"""
+          new_report="""function tebligReportBody(){const s=tebligState||blankTeblig(),okul=school(),okulAdi=String(okul.okulAdi||'KORUK İLK - ORTAOKULU').toLocaleUpperCase('tr'),tarih=s.tarihIso?new Date(s.tarihIso+'T00:00:00').toLocaleDateString('tr-TR'):'';return `<h1>${esc(okulAdi)} TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ</h1><table class=\"ka-table\"><thead><tr><th>TARİH</th><th>SAYI</th><th>KONU</th></tr></thead><tbody><tr><td>${esc(tarih)}</td><td>${esc(s.sayi)}</td><td>${esc(s.konu)}</td></tr></tbody></table><p><strong>TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.</strong></p><table class=\"ka-table\"><thead><tr><th>S.NO</th><th>ADI VE SOYADI</th><th>GÖREVİ</th><th>İMZA</th></tr></thead><tbody>${s.satirlar.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.ad)}</td><td>${esc(r.gorev)}</td><td>&nbsp;</td></tr>`).join('')}</tbody></table>`}"""
+          assert src.count(old_report)==1,'tebligReportBody marker mismatch'
+          src=src.replace(old_report,new_report,1)
+
+          old_title='<h3>Tebliğ‑Tebellüğ Formu</h3>'
+          new_title='<h3>Tebliğ-Tebellüğ İmza Sirküsü</h3>'
+          assert src.count(old_title)==1,'visible title marker mismatch'
+          src=src.replace(old_title,new_title,1)
+
+          old_print="window.ReportEngine.printReport('Tebliğ-Tebellüğ Belgesi',tebligReportBody(),{fileName:'Teblig_Tebellug_Belgesi',yon:'dikey'})"
+          new_print="window.ReportEngine.printReport('Tebliğ-Tebellüğ İmza Sirküsü',tebligReportBody(),{fileName:'Teblig_Tebellug_Imza_Sirkusu',yon:'dikey'})"
+          assert src.count(old_print)==1,'ReportEngine title marker mismatch'
+          src=src.replace(old_print,new_print,1)
+          path.write_text(src,encoding='utf-8')
+
+          test=Path('tests/teblig-v2-smoke.test.js')
+          t=test.read_text(encoding='utf-8')
+          old_assert="assert(src.includes('Tebliğ‑Tebellüğ Belgesi')||src.includes('Tebliğ-Tebellüğ Belgesi'),'Resmi belge başlığı korunmalı.');\nassert(src.includes('<th>Adı Soyadı</th>')&&src.includes('<th>Görevi</th>')&&src.includes('<th>İmza</th>'),'Tebellüğ imza tablosu korunmalı.');"
+          new_assert="assert(src.includes('Tebliğ-Tebellüğ İmza Sirküsü'),'Eski görünür İmza Sirküsü başlığı korunmalı.');\nassert(src.includes('TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ'),'Resmi A4 üst başlığı korunmalı.');\nassert(src.includes('TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.'),'Eski resmi tebellüğ beyanı korunmalı.');\nassert(src.includes(\"unvan==='Öğretmen'&&o.brans\")&&src.includes('Öğrt.'),'Öğretmen görev metni eski davranış gibi branş + Öğrt. olmalı.');\nassert(src.includes('<th>S.NO</th>')&&src.includes('<th>ADI VE SOYADI</th>')&&src.includes('<th>GÖREVİ</th>')&&src.includes('<th>İMZA</th>'),'Tebellüğ imza tablosunun resmi başlıkları korunmalı.');"
+          assert t.count(old_assert)==1,'teblig test marker mismatch'
+          t=t.replace(old_assert,new_assert,1)
+          test.write_text(t,encoding='utf-8')
+          PY
+      - name: Syntax and focused contracts
+        run: |
+          node --check js/modules/documents.js
+          node tests/teblig-v2-smoke.test.js
+          node tests/documents-viewer-v2-smoke.test.js
+          node tests/report-engine-a4-smoke.test.js
+          node tests/report-native-print-routing-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/module-bundles-smoke.test.js
+      - name: Architecture audit
+        run: |
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit canonical files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/documents.js tests/teblig-v2-smoke.test.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Restore Teblig Tebellug visible parity [skip ci]"
+          git push
