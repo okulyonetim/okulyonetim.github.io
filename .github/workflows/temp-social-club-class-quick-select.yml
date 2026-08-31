@@ -1,0 +1,59 @@
+name: temp-social-club-class-quick-select
+on:
+  push:
+    branches: [work/social-club-class-quick-select-20260831]
+permissions:
+  contents: write
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install test dependencies
+        run: npm install --no-save --package-lock=false firebase @firebase/rules-unit-testing firebase-tools
+      - name: Restore social club class quick-select parity
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('js/modules/rubric-settings.js')
+          s=p.read_text(encoding='utf-8')
+          old="function classChecks(name,selected=[],useId=false){const set=new Set(Array.isArray(selected)?selected:[]);return `<div class=\"ka-stack\" style=\"max-height:190px;overflow:auto;border:1px solid var(--ka-border);border-radius:12px;padding:8px\">${arr('siniflar').slice().sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true})).map(s=>{const v=useId?s.id:s.ad;return`<label class=\"ka-row\"><input type=\"checkbox\" name=\"${name}\" value=\"${esc(v||'')}\" ${set.has(v)?'checked':''}><span>${esc(s.ad||'')}</span></label>`}).join('')||'<span class=\"ka-muted\">Sınıf bulunamadı.</span>'}</div>`}"
+          new="function classChecks(name,selected=[],useId=false,quick=false){const set=new Set(Array.isArray(selected)?selected:[]),quickBar=quick?`<div class=\"ka-row ka-wrap\" style=\"gap:6px\"><button class=\"ka-btn ka-btn--secondary ka-btn--sm\" type=\"button\" data-class-level-quick=\"primary\">🧒 Tüm İlkokul (1-4)</button><button class=\"ka-btn ka-btn--secondary ka-btn--sm\" type=\"button\" data-class-level-quick=\"middle\">🎓 Tüm Ortaokul (5-8)</button><button class=\"ka-btn ka-btn--secondary ka-btn--sm\" type=\"button\" data-class-level-quick=\"clear\">✕ Temizle</button></div>`:'';return `${quickBar}<div class=\"ka-stack\" style=\"max-height:190px;overflow:auto;border:1px solid var(--ka-border);border-radius:12px;padding:8px\">${arr('siniflar').slice().sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true})).map(s=>{const v=useId?s.id:s.ad;return`<label class=\"ka-row\"><input type=\"checkbox\" name=\"${name}\" value=\"${esc(v||'')}\" data-seviye=\"${esc(s.seviye||'')}\" ${set.has(v)?'checked':''}><span>${esc(s.ad||'')}</span></label>`}).join('')||'<span class=\"ka-muted\">Sınıf bulunamadı.</span>'}</div>${quick?'<small class=\"ka-muted\">Hiç sınıf seçilmezse bu kulübü tüm sınıflar seçebilir.</small>':''}`;}"
+          assert s.count(old)==1, ('class-checks-contract',s.count(old))
+          s=s.replace(old,new,1)
+          old_call="classChecks('sinifIdler',r.sinifIdler,true)"
+          assert s.count(old_call)==1, ('social-class-check-call',s.count(old_call))
+          s=s.replace(old_call,"classChecks('sinifIdler',r.sinifIdler,true,true)",1)
+          needle="function openEdit(type,id=''){"
+          assert s.count(needle)==1, ('open-edit-contract',s.count(needle))
+          helper="function bindClassQuickSelect(modal){modal?.querySelectorAll('[data-class-level-quick]').forEach(button=>button.addEventListener('click',()=>{const mode=button.dataset.classLevelQuick;modal.querySelectorAll('input[name=\"sinifIdler\"][data-seviye]').forEach(cb=>{if(mode==='clear'){cb.checked=false;return}const level=Number(cb.dataset.seviye);if(!Number.isFinite(level))return;if(mode==='primary'&&level>=1&&level<=4)cb.checked=true;if(mode==='middle'&&level>=5&&level<=8)cb.checked=true})}))}\n"
+          s=s.replace(needle,helper+needle,1)
+          old_bind="const modal=$('[data-cizelge-modal]');modal?.addEventListener('click',e=>{if(e.target===modal)closeModal()});modal?.querySelector('[data-cizelge-cancel]')?.addEventListener('click',closeModal);modal?.querySelector('[data-cizelge-delete]')?.addEventListener('click',()=>deleteRow(type,id));modal?.querySelector('[data-cizelge-form]')?.addEventListener('submit',saveForm)}"
+          new_bind="const modal=$('[data-cizelge-modal]');bindClassQuickSelect(modal);modal?.addEventListener('click',e=>{if(e.target===modal)closeModal()});modal?.querySelector('[data-cizelge-cancel]')?.addEventListener('click',closeModal);modal?.querySelector('[data-cizelge-delete]')?.addEventListener('click',()=>deleteRow(type,id));modal?.querySelector('[data-cizelge-form]')?.addEventListener('submit',saveForm)}"
+          assert s.count(old_bind)==1, ('open-edit-bind-contract',s.count(old_bind))
+          s=s.replace(old_bind,new_bind,1)
+          p.write_text(s,encoding='utf-8')
+
+          test=Path('tests/social-club-class-quick-select-parity.test.js')
+          test.write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');\nassert(rubric.includes('data-class-level-quick=\\\"primary\\\"')&&rubric.includes('Tüm İlkokul (1-4)'),'Sosyal kulüp modalı ilkokul hızlı seçimini korumalı.');\nassert(rubric.includes('data-class-level-quick=\\\"middle\\\"')&&rubric.includes('Tüm Ortaokul (5-8)'),'Sosyal kulüp modalı ortaokul hızlı seçimini korumalı.');\nassert(rubric.includes('data-class-level-quick=\\\"clear\\\"')&&rubric.includes('✕ Temizle'),'Sosyal kulüp modalı sınıf seçimini temizleyebilmeli.');\nassert(rubric.includes('data-seviye=\\\"${esc(s.seviye||\'\')}\\\"'),'Sınıf checkboxları seviye bilgisini korumalı.');\nassert(rubric.includes(\"classChecks('sinifIdler',r.sinifIdler,true,true)\"),'Hızlı seçim yalnız sosyal kulüp sınıf alanında etkin olmalı.');\nassert(rubric.includes(\"mode==='primary'&&level>=1&&level<=4\")&&rubric.includes(\"mode==='middle'&&level>=5&&level<=8\"),'Hızlı seçim 1-4 ve 5-8 seviye aralıklarını kullanmalı.');\nassert(rubric.includes(\"if(mode==='clear'){cb.checked=false;return}\"),'Temizle tüm sosyal kulüp sınıf seçimlerini kaldırmalı.');\nassert(rubric.includes('Hiç sınıf seçilmezse bu kulübü tüm sınıflar seçebilir.'),'Eski sosyal kulüp sınıf seçimi açıklaması korunmalı.');\nconsole.log('Social club class quick-select parity OK');\n""",encoding='utf-8')
+          PY
+      - name: Run complete test suite in Firebase emulators
+        run: |
+          npx firebase emulators:exec --only firestore,storage --project demo-okul-rules "bash -lc 'set -e; for f in tests/*.test.js; do echo ==\> \$f; node \"\$f\"; done; node scripts/check-client-architecture.mjs; git diff --check'"
+      - name: Commit verified parity package and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/temp-social-club-class-quick-select.yml
+          git add js/modules/rubric-settings.js tests/social-club-class-quick-select-parity.test.js .github/workflows/temp-social-club-class-quick-select.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Restore social club class quick select parity [skip ci]"
+          git push
