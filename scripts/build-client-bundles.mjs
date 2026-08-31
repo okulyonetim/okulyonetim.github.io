@@ -10,7 +10,7 @@ const bundles={
   'academic.js':['js/modules/academic.js'],
   'management.js':['js/modules/management.js'],
   'communication.js':['js/modules/communication.js'],
-  'transport.js':['js/modules/report-engine.js','js/modules/transport.js','js/modules/transport-service-parity.js'],
+  'transport.js':['js/modules/report-engine.js','js/modules/transport.js'],
   'documents.js':['js/modules/documents.js'],
   'tools.js':['js/modules/tools.js','js/modules/teacher-list.js'],
   'settings.js':['js/modules/settings.js']
