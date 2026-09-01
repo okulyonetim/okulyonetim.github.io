@@ -1,0 +1,100 @@
+name: Apply PWA runtime refresh
+
+on:
+  push:
+    branches:
+      - work/pwa-runtime-refresh-20260901
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch runtime update propagation and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p=Path(path); s=p.read_text(encoding='utf-8')
+              n=s.count(old)
+              if n!=1:
+                  raise SystemExit(f'{path}: anchor count {n}: {old[:120]!r}')
+              p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          replace_once('index.html','css/design-system.css?v=834','css/design-system.css?v=835')
+          replace_once('index.html','js/app-loader.js?v=834','js/app-loader.js?v=835')
+
+          replace_once('js/app-loader.js',"define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=834']);","define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=835']);")
+          replace_once('js/app-loader.js',"if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}),{once:true});","if('serviceWorker'in navigator)window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./service-worker.js?v=835',{updateViaCache:'none'});await reg.update()}catch(_){}},{once:true});")
+
+          sw=Path('service-worker.js')
+          s=sw.read_text(encoding='utf-8')
+          if s.count("const CACHE_ADI='oy-cache-v834';")!=1:
+              raise SystemExit('service worker cache version anchor missing')
+          s=s.replace("const CACHE_ADI='oy-cache-v834';","const CACHE_ADI='oy-cache-v835';",1)
+          for old,new in [
+              ('./css/design-system.css?v=834','./css/design-system.css?v=835'),
+              ('./js/app-loader.js?v=834','./js/app-loader.js?v=835'),
+              ('./js/modules/academic.js?v=834','./js/modules/academic.js?v=835')
+          ]:
+              if s.count(old)!=1: raise SystemExit(f'precache anchor missing: {old}')
+              s=s.replace(old,new,1)
+          old_activate="self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(names=>Promise.all(names.filter(n=>n!==CACHE_ADI).map(n=>caches.delete(n)))));self.clients.claim();});"
+          new_activate="self.addEventListener('activate',event=>{event.waitUntil((async()=>{const names=await caches.keys(),old=names.filter(n=>n!==CACHE_ADI),runtimeChanged=old.some(n=>/^oy-cache-v\\d+$/.test(n));await Promise.all(old.map(n=>caches.delete(n)));await self.clients.claim();if(runtimeChanged){const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});await Promise.allSettled(windows.map(client=>client.navigate(client.url)))}})())});"
+          if s.count(old_activate)!=1: raise SystemExit('service worker activate anchor missing')
+          s=s.replace(old_activate,new_activate,1)
+          sw.write_text(s,encoding='utf-8')
+
+          for path in ['tests/academic-separate-pages.test.js','tests/classic-shell-v2-smoke.test.js','tests/module-bundles-smoke.test.js']:
+              p=Path(path); t=p.read_text(encoding='utf-8')
+              if 'v=834' not in t: raise SystemExit(f'{path}: v834 assertion anchor missing')
+              p.write_text(t.replace('v=834','v=835'),encoding='utf-8')
+
+          p=Path('tests/service-worker-precache-smoke.test.js')
+          t=p.read_text(encoding='utf-8')
+          marker="assert(/const CACHE_ADI\\s*=\\s*'oy-cache-v\\d+'/.test(sw), 'Service Worker sürümlü cache anahtarı kullanmalı.');"
+          insert=marker+"\nconst loader = fs.readFileSync('js/app-loader.js', 'utf8');\nassert(sw.includes(\"const CACHE_ADI='oy-cache-v835'\"), 'Yeni runtime ayrı v835 cache anahtarı kullanmalı.');\nassert(sw.includes(\"self.clients.matchAll({type:'window',includeUncontrolled:true})\")&&sw.includes('client.navigate(client.url)'), 'Yeni Service Worker eski runtime kullanan açık PWA pencerelerini yeni belgeye taşımalı.');\nassert(loader.includes(\"register('./service-worker.js?v=835',{updateViaCache:'none'})\")&&loader.includes('await reg.update()'), 'AppLoader Service Worker güncellemesini HTTP cache dışından zorlamalı.');"
+          if t.count(marker)!=1: raise SystemExit('service worker test marker missing')
+          t=t.replace(marker,insert,1)
+          p.write_text(t,encoding='utf-8')
+          PY
+          git diff --check
+          node --check js/app-loader.js
+          node --check service-worker.js
+          node --test tests/service-worker-precache-smoke.test.js
+          node --test tests/academic-separate-pages.test.js
+          node --test tests/classic-shell-v2-smoke.test.js
+          node --test tests/module-bundles-smoke.test.js
+          node --test tests/modules-local-first-boundary.test.js
+      - name: Build clean final branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS='index.html js/app-loader.js service-worker.js tests/service-worker-precache-smoke.test.js tests/academic-separate-pages.test.js tests/classic-shell-v2-smoke.test.js tests/module-bundles-smoke.test.js'
+          git diff -- $TARGETS > /tmp/pwa-runtime-refresh.patch
+          test -s /tmp/pwa-runtime-refresh.patch
+          git reset --hard origin/main
+          git clean -fd
+          git checkout -B work/pwa-runtime-refresh-final-20260901 origin/main
+          git apply /tmp/pwa-runtime-refresh.patch
+          git diff --check
+          node --check js/app-loader.js
+          node --check service-worker.js
+          node --test tests/service-worker-precache-smoke.test.js
+          node --test tests/academic-separate-pages.test.js
+          node --test tests/classic-shell-v2-smoke.test.js
+          node --test tests/module-bundles-smoke.test.js
+          node --test tests/modules-local-first-boundary.test.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add $TARGETS
+          git commit -m 'fix: refresh stale PWA runtime after updates'
+          git push --force origin HEAD:work/pwa-runtime-refresh-final-20260901
