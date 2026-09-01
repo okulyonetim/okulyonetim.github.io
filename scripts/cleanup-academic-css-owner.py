@@ -11,6 +11,11 @@ for pattern,repl,label in patterns:
     c,n=re.subn(pattern,repl,c,count=1,flags=re.S)
     if n!=1:
         raise SystemExit(f'{label}: expected 1, got {n}')
+old='@media(max-width:640px){.ka-trial-hero{align-items:stretch;flex-direction:column;padding:var(--ka-space-4)}.ka-trial-hero .ka-btn{width:100%}.ka-trial-summary{gap:7px}'
+new='@media(max-width:640px){.ka-trial-summary{gap:7px}'
+if c.count(old)!=1:
+    raise SystemExit(f'trial-hero-mobile-css: expected 1, got {c.count(old)}')
+c=c.replace(old,new,1)
 p.write_text(c,encoding='utf-8')
 
 p=Path('tests/academic-separate-pages.test.js')
