@@ -45,11 +45,9 @@ jobs:
         run: |
           set -euo pipefail
           TARGETS='js/modules/dashboard.js js/core/shell-ui.js js/app-loader.js css/design-system.css service-worker.js tests/trial-auto-timer.test.js tests/dashboard-card-routes-smoke.test.js tests/classic-shell-v2-smoke.test.js tests/module-bundles-smoke.test.js'
-          git diff -- $TARGETS > /tmp/dashboard-stability.patch
-          test -s /tmp/dashboard-stability.patch
           git checkout -B work/dashboard-motion-stability-final-20260901 origin/main
-          git apply /tmp/dashboard-stability.patch
           git diff --check
+          test -n "$(git status --short -- $TARGETS)"
           node --check js/modules/dashboard.js
           node --check js/core/shell-ui.js
           node --check js/app-loader.js
