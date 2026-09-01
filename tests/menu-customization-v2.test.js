@@ -1,0 +1,16 @@
+const fs=require('fs');
+const assert=require('assert');
+const app=fs.readFileSync('js/app-loader.js','utf8');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+const settings=fs.readFileSync('js/modules/settings.js','utf8');
+const design=fs.readFileSync('css/design-system.css','utf8');
+assert(app.includes("menuLayout=r.menuLayout&&typeof r.menuLayout==='object'?r.menuLayout:{groups:{}}"),'AppConfig gerçek menuLayout alanını korumalı.');
+assert(app.includes("menuLayout:{groups:{}}"),'Varsayılana dönüş classic menuLayout alanını da sıfırlamalı.');
+assert(shell.includes('function menuGroupView(g,index)')&&shell.includes('function menuItemView(g,item,index,groupSettings)'),'ShellUI classic menü özelleştirmesini doğrudan render modeline uygulamalı.');
+assert(shell.includes('data-menu-custom-color')&&shell.includes('customizedVisibleGroups().find'),'Ana ve alt menü özelleştirmeleri görünür renderer tarafından tüketilmeli.');
+assert(settings.includes('Ana Menü Kartları')&&settings.includes('function readMenuLayoutFromDom()')&&settings.includes('menuLayout:readMenuLayoutFromDom()'),'Settings menü kartı/öğe özelleştirmesini AppConfig.menuLayout içine yazmalı.');
+for(const field of ['data-menu-group-label','data-menu-group-icon','data-menu-group-color','data-menu-group-visible','data-menu-group-order','data-menu-item-label','data-menu-item-color','data-menu-item-visible'])assert(settings.includes(field),`Menü özelleştirme alanı eksik: ${field}`);
+assert(design.includes('.ka-menu-card::before{content:none!important'),'Dekoratif dişli balonları görünür menüden kaldırılmalı.');
+assert(design.includes('min-height:116px')&&design.includes('row-gap:10px'),'Ana menü mobilde kompakt ve aralıklı olmalı.');
+assert(!fs.existsSync('js/core/menu-customizer.js'),'İkinci runtime menu customizer sahibi geri dönmemeli.');
+console.log('Menü özelleştirme + kompakt görünüm sözleşmesi başarılı.');
