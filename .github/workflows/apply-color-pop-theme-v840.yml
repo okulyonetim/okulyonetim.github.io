@@ -29,7 +29,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           def rep(path, old, new):
-              p=Path(path); s=p.read_text(encoding='utf-8');
+              p=Path(path); s=p.read_text(encoding='utf-8')
               if old not in s: raise SystemExit(f'missing contract in {path}: {old[:80]}')
               p.write_text(s.replace(old,new,1),encoding='utf-8')
           rep('tests/classic-shell-v2-smoke.test.js', 'css/design-system.css?v=838', 'css/design-system.css?v=839')
@@ -41,6 +41,30 @@ jobs:
           rep('tests/trial-counter-scroll-stability.test.js', "assert(index.includes('css/design-system.css?v=838')&&index.includes('js/app-loader.js?v=838'),'Üretim shell v838 cache-bust kullanmalı.');", "assert(index.includes('css/design-system.css?v=839')&&index.includes('js/app-loader.js?v=838'),'Üretim shell yeni tema CSS v839 ve mevcut app-loader v838 cache-bust sözleşmesini kullanmalı.');")
           rep('tests/trial-counter-scroll-stability.test.js', "assert(sw.includes(\"const CACHE_ADI='oy-cache-v838'\"),'Service Worker v838 cache kullanmalı.');", "assert(sw.includes(\"const CACHE_ADI='oy-cache-v839'\"),'Service Worker tema güncellemesi için v839 cache kullanmalı.');")
           PY
+      - name: Keep architecture audit strict but cache-bust aware
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/check-client-architecture.mjs')
+          s=p.read_text(encoding='utf-8')
+          old="const stylesheetLinks=[...shellHtml.matchAll(/<link\\b[^>]*rel=[\"']stylesheet[\"'][^>]*href=[\"']([^\"']+)[\"'][^>]*>/gi)].map(m=>m[1]);\nconst styleViolations=stylesheetLinks.filter(href=>href!=='css/design-system.css');"
+          new="const stylesheetLinks=[...shellHtml.matchAll(/<link\\b[^>]*rel=[\"']stylesheet[\"'][^>]*href=[\"']([^\"']+)[\"'][^>]*>/gi)].map(m=>m[1]);\nconst canonicalStylesheetHref=href=>String(href||'').split(/[?#]/,1)[0];\nconst styleViolations=stylesheetLinks.filter(href=>canonicalStylesheetHref(href)!=='css/design-system.css');"
+          if old not in s: raise SystemExit('stylesheet audit contract not found')
+          s=s.replace(old,new,1)
+          old="const designSource=fs.existsSync(designPath)?fs.readFileSync(designPath,'utf8'):'';"
+          new="const designSource=fs.existsSync(designPath)?fs.readFileSync(designPath,'utf8'):'';\nconst controlHeight=Number((designSource.match(/--ka-control-height\\s*:\\s*(\\d+(?:\\.\\d+)?)px/)||[])[1]||0);"
+          if old not in s: raise SystemExit('design source audit contract not found')
+          s=s.replace(old,new,1)
+          s=s.replace("['dokunmatik hedef en az 44px',/--ka-control-height\\s*:\\s*44px/.test(designSource)]", "['dokunmatik hedef en az 44px',controlHeight>=44]",1)
+          s=s.replace("if(stylesheetLinks.length!==1||stylesheetLinks[0]!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}", "if(stylesheetLinks.length!==1||canonicalStylesheetHref(stylesheetLinks[0])!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}",1)
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('css/design-system.css')
+          s=p.read_text(encoding='utf-8')
+          if '--ka-control-height:46px' not in s: raise SystemExit('control height token not found')
+          p.write_text(s.replace('--ka-control-height:46px','--ka-control-height:48px',1),encoding='utf-8')
+          PY
       - name: Verify single CSS ownership and visual contract
         shell: bash
         run: |
@@ -49,6 +73,7 @@ jobs:
           grep -q -- "--ka-primary:#2563eb" css/design-system.css
           grep -q -- "--ka-primary:#38bdf8" css/design-system.css
           grep -q -- "--ka-app-bg:#07111f" css/design-system.css
+          grep -q -- "--ka-control-height:48px" css/design-system.css
           grep -q -- "--ka-module-people-1:#ec4899" css/design-system.css
           grep -q -- "--ka-module-communication-1:#fb7185" css/design-system.css
           grep -q -- "--ka-module-documents-1:#8b5cf6" css/design-system.css
@@ -57,13 +82,15 @@ jobs:
           grep -q "prefers-reduced-motion" css/design-system.css
           grep -q "design-system.css?v=839" index.html
           grep -q "oy-cache-v839" service-worker.js
+          grep -q "canonicalStylesheetHref" scripts/check-client-architecture.mjs
+          grep -q "controlHeight>=44" scripts/check-client-architecture.mjs
           git diff --check
       - name: Run focused regressions
         shell: bash
         run: |
           node --test tests/classic-shell-v2-smoke.test.js tests/menu-customization-v2.test.js tests/dashboard-quick-actions.test.js tests/dashboard-card-routes-smoke.test.js tests/module-bundles-smoke.test.js tests/service-worker-precache-smoke.test.js tests/trial-counter-scroll-stability.test.js
           npm run audit:client
-      - name: Ensure theme changes stay presentation-only
+      - name: Ensure production renderer ownership is untouched
         shell: bash
         run: |
           git diff --name-only origin/main | sort
@@ -74,6 +101,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add css/design-system.css index.html service-worker.js tests/classic-shell-v2-smoke.test.js tests/dashboard-card-routes-smoke.test.js tests/dashboard-quick-actions.test.js tests/menu-customization-v2.test.js tests/service-worker-precache-smoke.test.js tests/trial-counter-scroll-stability.test.js
+          git add css/design-system.css index.html service-worker.js scripts/check-client-architecture.mjs tests/classic-shell-v2-smoke.test.js tests/dashboard-card-routes-smoke.test.js tests/dashboard-quick-actions.test.js tests/menu-customization-v2.test.js tests/service-worker-precache-smoke.test.js tests/trial-counter-scroll-stability.test.js
           git commit -m "feat: apply colorful light and dark theme globally"
           git push origin HEAD:main
