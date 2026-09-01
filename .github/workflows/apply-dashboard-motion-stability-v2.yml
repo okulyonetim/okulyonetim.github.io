@@ -27,6 +27,13 @@ jobs:
               raise SystemExit('staged run block not found')
           lines=match.group(1).splitlines()
           script='\n'.join(line[10:] if line.startswith('          ') else line for line in lines)+'\n'
+          replacement="""new_section,new_refresh=new_card.split('\\nfunction refreshTrialTimers',1)
+new_refresh='function refreshTrialTimers'+new_refresh
+s=sub1(s,r"function trialCounterSection\\(\\).*?(?=\\nfunction refreshTrialTimers)",new_section,'trial-home-card')
+s=sub1(s,r"function refreshTrialTimers\\(root=document\\).*?(?=\\nfunction )",new_refresh,'trial-home-refresh')"""
+          script,n=re.subn(r'^s=sub1\(s,r"function trialCounterSection.*?\x27trial-home-bars\x27\)\s*$',lambda _:replacement,script,count=1,flags=re.M)
+          if n!=1:
+              raise SystemExit(f'trigger patch: expected 1 trial-home-bars line, got {n}')
           script=script.replace('rm -f .github/workflows/apply-dashboard-motion-stability.yml','rm -f .github/workflows/apply-dashboard-motion-stability.yml .github/workflows/apply-dashboard-motion-stability-v2.yml')
           Path('/tmp/apply-dashboard.sh').write_text(script,encoding='utf-8')
           PY
