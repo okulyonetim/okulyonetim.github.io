@@ -20,6 +20,15 @@ jobs:
         run: |
           set -euo pipefail
           python .github/scripts/apply_dashboard_motion_stability.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/dashboard-card-routes-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          old='assert(dash.includes("function trialCounterSection(){")&&dash.includes("if(!list.length)return\'\';const exam="),\'Aktif deneme sınavı sayacı yoksa sayaç kartı hiç render edilmemeli.\');'
+          new='assert(dash.includes("function trialCounterSection(){const list=trialLiveRows().slice(0,1);if(!list.length)return\'\';"),\'Aktif deneme sınavı sayacı yoksa sayaç kartı hiç render edilmemeli.\');'
+          if s.count(old)!=1: raise SystemExit(f'trial visibility regression anchor count: {s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
           git diff --check
           node --check js/modules/dashboard.js
           node --check js/core/shell-ui.js
