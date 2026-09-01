@@ -1,0 +1,34 @@
+name: Audit live exam runtime
+
+on:
+  push:
+    branches:
+      - audit/live-exam-runtime-20260901
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect deployed GitHub Pages assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://sedonet23.github.io/okul'
+          TS="$(date +%s)"
+          curl -fsSL -D /tmp/index.headers "$BASE/index.html?audit=$TS" -o /tmp/index.html
+          curl -fsSL "$BASE/css/design-system.css?audit=$TS" -o /tmp/design.css
+          curl -fsSL "$BASE/js/app-loader.js?audit=$TS" -o /tmp/loader.js
+          curl -fsSL "$BASE/js/modules/academic.js?audit=$TS" -o /tmp/academic.js
+          echo '--- INDEX HEADERS ---'
+          sed -n '1,25p' /tmp/index.headers
+          echo '--- LIVE MARKERS ---'
+          grep -F 'css/design-system.css?v=834' /tmp/index.html
+          grep -F 'js/app-loader.js?v=834' /tmp/index.html
+          grep -F 'ACADEMIC EXAM MOBILE VISIBILITY — CANONICAL' /tmp/design.css
+          grep -F "define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=834'])" /tmp/loader.js
+          grep -F 'function prioritizeExamRecords(out,count)' /tmp/academic.js
+          grep -F "page.insertBefore(list,summary)" /tmp/academic.js
+          echo 'LIVE_RUNTIME_V834_OK'
