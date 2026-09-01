@@ -17,6 +17,7 @@ assert(!fs.existsSync('js/modules/deneme-sayac-modern-v4.js'),'Deneme sayacı ay
 for(const token of ['examDayDiff','ka-written-page','ka-written-summary','Toplam sınav','7 gün içinde','ka-written-card','ka-written-meta','ka-written-modal-intro','ka-written-class-picker']) assert(academic.includes(token),`Yazılı Sınavlar görünür paritesi eksik: ${token}`);
 assert(academic.includes("ready=false")&&academic.includes("if(!mounted||!ready)return")&&academic.includes("await prepareLocal();if(!mounted)return false;subscribe();ready=true;render();"),'Academic ilk boyamada önce local hydrate etmeli ve tek hazır render üretmeli.');
 assert(!academic.includes('ka-written-hero')&&!academic.includes('ka-trial-hero'),'Yazılı/Deneme kendi ikinci hero başlığını üretmemeli; ortak Academic başlığı tek görsel owner olmalı.');
+assert(!css.includes('.ka-written-hero')&&!css.includes('.ka-trial-hero'),'Emekli ikinci sınav hero tasarımları merkezi CSS içinde yama/ölü katman olarak kalmamalı.');
 assert(academic.includes('data-academic-title')&&academic.includes('data-academic-description')&&academic.includes('applyAcademicMeta(title)'),'Academic ayrı sayfa başlığı ortak tek shell owner üzerinden yönetilmeli.');
 
 for(const token of ['planCurrentWeekIndex','planTracked','ogretmenYillikPlanSecimleri','yillikPlanNotlari','data-plan-select','data-plan-note','data-plan-prev','data-plan-next']) assert(academic.includes(token),`Yıllık Plan gerçek haftalık takip sözleşmesi eksik: ${token}`);
