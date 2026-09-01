@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '24'
       - name: Apply repair
-        run: python scripts/tmp-fix-menu-customization.py
+        run: |
+          python scripts/tmp-fix-menu-customization.py
+          python scripts/tmp-fix-menu-contract.py
       - name: Syntax
         run: |
           node --check js/app-loader.js
@@ -43,7 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -f .github/workflows/fix-menu-customization.yml scripts/tmp-fix-menu-customization.py
+          rm -f .github/workflows/fix-menu-customization.yml scripts/tmp-fix-menu-customization.py scripts/tmp-fix-menu-contract.py
           git add -A
           git commit -m "fix: repair menu customization and compact layout"
           git push origin HEAD:main
