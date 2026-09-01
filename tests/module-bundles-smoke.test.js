@@ -132,5 +132,6 @@ assert(registry('transport').includes("'js/modules/report-engine.js'"),'Transpor
 assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif harita motorunu module path üzerinden lazy-load edilmeli.');
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
+assert(loader.includes("const active=AppStore?.get?.('ui.route')===name")&&loader.includes("if(active){window.dispatchEvent(new CustomEvent('koruk:module-ready'"),'Lazy yüklenen bağımlılık aktif rota değilse UI mount eventi üretmemeli; eski async yükleme yeni sayfanın üstüne binmemeli.');
 
 console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride; çekirdek rol, Takvim/Notlar sahipliği ve Taşıma servis yönetimi smoke test başarılı.');

@@ -148,7 +148,8 @@ function applySubpage(name,page,title){
   if(title)setTitle(title);
   return !!tab;
 }
-function academicRouteMounted(){const root=$('#v2ModuleRoot');return !!(global.AcademicModule&&root?.querySelector?.('[data-academic-module]'))}
+const MODULE_ROOT_SELECTORS=Object.freeze({dashboard:'[data-dashboard-module]',people:'[data-people-module]',academic:'[data-academic-module]',management:'[data-management-module]',communication:'[data-communication-module]',transport:'[data-transport-module]',documents:'[data-documents-module]',tools:'[data-tools-module]',settings:'[data-settings-module]'});
+function moduleRouteMounted(name){const root=$('#v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(selector&&global.AppLoader?.moduleApi?.(name)&&root?.querySelector?.(selector))}
 async function routeModule(name,{bottom='menu',page='',title='',remember=true}={}){
   if(!pageAllowed(name,page)){global.toast?.('Bu sayfa öğretmen kullanıcıları için gizli.');return false}
   const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
@@ -177,8 +178,8 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true}={
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||meta.label||name);
     try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
   }
-  setBottomActive(bottom);const reuseAcademic=name==='academic'&&academicRouteMounted();global.AppLoader?.setActiveModule?.(name);
-  setTitle(title||meta.label||name);if(!reuseAcademic)await global.AppLoader?.load?.(name);
+  setBottomActive(bottom);const reuseModule=moduleRouteMounted(name);global.AppLoader?.setActiveModule?.(name);
+  setTitle(title||meta.label||name);if(!reuseModule)await global.AppLoader?.load?.(name);
   if(page)applySubpage(name,page,title);
   if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name});
   return true
