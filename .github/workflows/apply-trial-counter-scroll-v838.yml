@@ -1,0 +1,75 @@
+name: Apply trial counter scroll stability v838
+
+on:
+  push:
+    branches:
+      - work/trial-counter-scroll-stability-20260901
+    paths:
+      - .github/workflows/apply-trial-counter-scroll-v838.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout patch branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/trial-counter-scroll-stability-20260901
+          fetch-depth: 0
+
+      - name: Preserve patch script and verify main base
+        run: |
+          cp scripts/apply-trial-counter-scroll-v838.py /tmp/apply-trial-counter-scroll-v838.py
+          git fetch origin main
+          ACTUAL=$(git rev-parse origin/main)
+          EXPECTED=61591d7da877b961d911a845b2a7de9fa25f780d
+          echo "main=$ACTUAL"
+          test "$ACTUAL" = "$EXPECTED"
+          git checkout -B main origin/main
+
+      - name: Apply root-cause fix
+        run: python3 /tmp/apply-trial-counter-scroll-v838.py
+
+      - name: Static syntax and diff checks
+        run: |
+          git diff --check
+          node --check js/modules/academic.js
+          node --check js/app-loader.js
+          node --check service-worker.js
+          node --check tests/trial-counter-scroll-stability.test.js
+
+      - name: Verify stable scroll ownership
+        run: |
+          node --test tests/trial-counter-scroll-stability.test.js
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('js/modules/academic.js').read_text()
+          a=s.index('function renderTrialCounter(')
+          b=s.index('\nfunction openTrialCounter(',a)
+          block=s[a:b]
+          assert block.count('ov.innerHTML=') == 1
+          assert 'scrollTop' not in block
+          assert 'replaceTrialCounterNode' in block
+          assert 'data-trial-counter-scroll' in block
+          print('Stable counter DOM ownership OK')
+          PY
+
+      - name: Run focused regressions
+        run: |
+          node --test \
+            tests/academic-separate-pages.test.js \
+            tests/classic-shell-v2-smoke.test.js \
+            tests/module-bundles-smoke.test.js \
+            tests/modules-local-first-boundary.test.js \
+            tests/service-worker-precache-smoke.test.js
+
+      - name: Commit clean result to main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/academic.js index.html js/app-loader.js service-worker.js tests
+          git commit -m 'fix: keep trial counter scroll stable during ticks'
+          git push origin main
