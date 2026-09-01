@@ -1,0 +1,127 @@
+from pathlib import Path
+import re
+
+
+def rep1(text, old, new, label):
+    n = text.count(old)
+    if n != 1:
+        raise SystemExit(f'{label}: expected 1 exact match, got {n}')
+    return text.replace(old, new, 1)
+
+
+def sub1(text, pattern, repl, label):
+    out, n = re.subn(pattern, repl, text, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit(f'{label}: expected 1 regex match, got {n}')
+    return out
+
+
+# Academic: one visual owner, one render after local hydrate.
+p = Path('js/modules/academic.js')
+a = p.read_text(encoding='utf-8')
+a = rep1(
+    a,
+    "let active='written',query='',mounted=false,unsubs=[],timer=null,selectedClass='',selectedScheduleDay=todayScheduleDay(),planView={planId:'',weekIndex:0};",
+    "let active='written',query='',mounted=false,ready=false,unsubs=[],timer=null,selectedClass='',selectedScheduleDay=todayScheduleDay(),planView={planId:'',weekIndex:0};",
+    'academic-ready-state'
+)
+a = rep1(
+    a,
+    'function shell(){return`<section class="ka-stack ka-academic-page" data-academic-module><div class="ka-row ka-row--between"><div><h2>Akademik</h2><p class="ka-muted">Ders programı, sınavlar ve planlar önce cihaz verisinden gösterilir.</p></div><span id="academicCount" class="ka-badge"></span></div><label class="ka-field" data-academic-search-wrap><span class="ka-field__label">Ara</span><input id="academicSearch" type="search" placeholder="Sınav, ders, sınıf veya plan ara…"></label><div id="academicContent" class="ka-stack"></div></section>`}',
+    '''function shell(){return`<section class="ka-stack ka-academic-page" data-academic-module><div class="ka-row ka-row--between" data-academic-heading><div><h2 data-academic-title>Akademik</h2><p class="ka-muted" data-academic-description>Ders programı, sınavlar ve planlar önce cihaz verisinden gösterilir.</p></div><span id="academicCount" class="ka-badge"></span></div><label class="ka-field" data-academic-search-wrap><span class="ka-field__label">Ara</span><input id="academicSearch" type="search" placeholder="Sınav, ders, sınıf veya plan ara…"></label><div id="academicContent" class="ka-stack"></div></section>`}
+const ACADEMIC_PAGE_META={written:{title:'Yazılı Sınavlar',description:'Yazılı sınav takvimini, sınıfları ve sınav ayrıntılarını yönetin.'},trial:{title:'Deneme Sınavları',description:'Deneme takvimini, oturumları ve otomatik canlı sayacı yönetin.'},schedule:{title:'Ders Programı',description:'Ders programını cihaz verisi üzerinden görüntüleyin ve yönetin.'},results:{title:'Sınav Sonuçları',description:'Sınav sonuçlarını görüntüleyin ve yönetin.'},plans:{title:'Yıllık Plan',description:'Yıllık planları cihaz verisi üzerinden görüntüleyin ve yönetin.'},calendar:{title:'Akademik Takvim',description:'Akademik takvimi görüntüleyin.'}};
+function applyAcademicMeta(title=''){const meta=ACADEMIC_PAGE_META[active]||{title:'Akademik',description:'Ders programı, sınavlar ve planlar önce cihaz verisinden gösterilir.'},h=document.querySelector('[data-academic-title]'),d=document.querySelector('[data-academic-description]');if(h)h.textContent=title||meta.title;if(d)d.textContent=meta.description}''',
+    'academic-shell-meta'
+)
+a = sub1(
+    a,
+    r'<section class="ka-stack ka-written-page"><article class="ka-written-hero">.*?</article><div class="ka-written-summary">',
+    '<section class="ka-stack ka-written-page">${add?`<div class="ka-exam-toolbar">${add}</div>`:\'\'}<div class="ka-written-summary">',
+    'written-single-owner'
+)
+a = sub1(
+    a,
+    r'<section class="ka-stack ka-trial-page"><article class="ka-trial-hero">.*?</article><div class="ka-trial-summary">',
+    '<section class="ka-stack ka-trial-page">${add?`<div class="ka-exam-toolbar">${add}</div>`:\'\'}<div class="ka-trial-summary">',
+    'trial-single-owner'
+)
+a = rep1(
+    a,
+    "function render(){if(!mounted)return;const academicHost=document.querySelector('[data-academic-module]');academicHost?.classList.toggle('ka-academic-schedule-active',active==='schedule');",
+    "function render(){if(!mounted||!ready)return;const academicHost=document.querySelector('[data-academic-module]');academicHost?.classList.toggle('ka-academic-schedule-active',active==='schedule');academicHost?.classList.toggle('ka-academic-written-active',active==='written');academicHost?.classList.toggle('ka-academic-trial-active',active==='trial');applyAcademicMeta();",
+    'academic-render-guard'
+)
+a = rep1(
+    a,
+    "async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();clearInterval(timer);",
+    "async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;ready=false;root.innerHTML=shell();bind();await prepareLocal();if(!mounted)return false;subscribe();ready=true;render();clearInterval(timer);",
+    'academic-hydrate-before-subscribe'
+)
+a = rep1(
+    a,
+    "const h=document.querySelector('[data-academic-module] > .ka-row h2');if(h&&title)h.textContent=title;render();",
+    "applyAcademicMeta(title);render();",
+    'academic-open-page-meta'
+)
+a = rep1(
+    a,
+    "function unmount(){mounted=false;ssOpen=null;ssOpenTur=null;",
+    "function unmount(){mounted=false;ready=false;ssOpen=null;ssOpenTur=null;",
+    'academic-unmount-ready'
+)
+p.write_text(a, encoding='utf-8')
+
+# Shell: no hidden transition frame, no next-frame subpage swap, no same-academic remount.
+p = Path('js/core/shell-ui.js')
+s = p.read_text(encoding='utf-8')
+s = sub1(
+    s,
+    r'function hideRouteTransitionFrame\(\)\{.*?\}\nasync function routeModule',
+    "function academicRouteMounted(){const root=$('#v2ModuleRoot');return !!(global.AcademicModule&&root?.querySelector?.('[data-academic-module]'))}\nasync function routeModule",
+    'remove-hidden-route-frame'
+)
+s = rep1(s, '  closeHeaderPopover();closeMenu();hideRouteTransitionFrame();', '  closeHeaderPopover();closeMenu();', 'route-no-hide')
+s = rep1(
+    s,
+    "  setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);\n  setTitle(title||meta.label||name);await global.AppLoader?.load?.(name);\n  if(page)requestAnimationFrame(()=>applySubpage(name,page,title));",
+    "  setBottomActive(bottom);const reuseAcademic=name==='academic'&&academicRouteMounted();global.AppLoader?.setActiveModule?.(name);\n  setTitle(title||meta.label||name);if(!reuseAcademic)await global.AppLoader?.load?.(name);\n  if(page)applySubpage(name,page,title);",
+    'route-sync-subpage'
+)
+p.write_text(s, encoding='utf-8')
+
+# Central CSS only: remove route visibility hack and make the shared Academic heading the exam-page visual owner.
+p = Path('css/design-system.css')
+c = p.read_text(encoding='utf-8')
+c = rep1(c, '.ka-route-switching{visibility:hidden!important}\n', '', 'css-remove-route-hide')
+marker = '/* Written Exams visible workspace */\n'
+insert = '''/* Written Exams visible workspace */
+.ka-academic-written-active>[data-academic-heading],.ka-academic-trial-active>[data-academic-heading]{padding:var(--ka-space-5);border:1px solid var(--ka-hero-border);border-radius:var(--ka-radius-xl);background:var(--ka-hero-bg);box-shadow:var(--ka-hero-shadow);color:var(--ka-hero-text)}
+.ka-academic-written-active>[data-academic-heading] p,.ka-academic-trial-active>[data-academic-heading] p{margin-top:5px;color:var(--ka-hero-muted)}
+.ka-exam-toolbar{display:flex;justify-content:flex-end;align-items:center}
+'''
+c = rep1(c, marker, insert, 'css-exam-owner')
+mobile_old = '@media(max-width:640px){.ka-written-hero{align-items:stretch;flex-direction:column;padding:var(--ka-space-4)}.ka-written-hero .ka-btn{width:100%}.ka-written-summary{gap:7px}'
+mobile_new = '@media(max-width:640px){.ka-academic-written-active>[data-academic-heading],.ka-academic-trial-active>[data-academic-heading]{padding:var(--ka-space-4)}.ka-exam-toolbar .ka-btn{width:100%}.ka-written-summary{gap:7px}'
+c = rep1(c, mobile_old, mobile_new, 'css-written-mobile-owner')
+p.write_text(c, encoding='utf-8')
+
+# Force a fresh PWA code cache after the lifecycle/CSS change.
+p = Path('service-worker.js')
+w = p.read_text(encoding='utf-8')
+w = rep1(w, "const CACHE_ADI='oy-cache-v831';", "const CACHE_ADI='oy-cache-v832';", 'service-worker-cache')
+p.write_text(w, encoding='utf-8')
+
+# Regression contracts: one stylesheet, no hidden-frame transition, one Academic page owner.
+p = Path('tests/academic-separate-pages.test.js')
+t = p.read_text(encoding='utf-8')
+anchor = "for(const token of ['examDayDiff','ka-written-page','ka-written-summary','Toplam sınav','7 gün içinde','ka-written-card','ka-written-meta','ka-written-modal-intro','ka-written-class-picker']) assert(academic.includes(token),`Yazılı Sınavlar görünür paritesi eksik: ${token}`);\n"
+extra = anchor + "assert(academic.includes(\"ready=false\")&&academic.includes(\"if(!mounted||!ready)return\")&&academic.includes(\"await prepareLocal();if(!mounted)return false;subscribe();ready=true;render();\"),'Academic ilk boyamada önce local hydrate etmeli ve tek hazır render üretmeli.');\nassert(!academic.includes('ka-written-hero')&&!academic.includes('ka-trial-hero'),'Yazılı/Deneme kendi ikinci hero başlığını üretmemeli; ortak Academic başlığı tek görsel owner olmalı.');\nassert(academic.includes('data-academic-title')&&academic.includes('data-academic-description')&&academic.includes('applyAcademicMeta(title)'),'Academic ayrı sayfa başlığı ortak tek shell owner üzerinden yönetilmeli.');\n"
+t = rep1(t, anchor, extra, 'academic-regression-contract')
+p.write_text(t, encoding='utf-8')
+
+p = Path('tests/classic-shell-v2-smoke.test.js')
+t = p.read_text(encoding='utf-8')
+anchor = "assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');\n"
+extra = anchor + "assert((shell.match(/<link\\s+rel=\\\"stylesheet\\\"/g)||[]).length===1&&shell.includes('<link rel=\\\"stylesheet\\\" href=\\\"css/design-system.css\\\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');\nassert(!ui.includes('hideRouteTransitionFrame')&&!design.includes('.ka-route-switching'),'Route geçişinde görünür içeriği saklayan titreme katmanı bulunmamalı.');\nassert(ui.includes(\"const reuseAcademic=name==='academic'&&academicRouteMounted()\")&&ui.includes('if(!reuseAcademic)await global.AppLoader?.load?.(name)'),'Aynı Academic modülü Yazılı/Deneme geçişinde yeniden mount edilmemeli.');\nassert(ui.includes('if(page)applySubpage(name,page,title)')&&!ui.includes('if(page)requestAnimationFrame(()=>applySubpage(name,page,title))'),'Alt sayfa seçimi sonraki frame bırakılmamalı; ilk boyama doğru sayfa olmalı.');\n"
+t = rep1(t, anchor, extra, 'shell-regression-contract')
+p.write_text(t, encoding='utf-8')
