@@ -1,0 +1,94 @@
+name: Apply canonical menu shell redesign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-shell-design.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply canonical shell design and verify
+        shell: bash
+        run: |
+          set -u
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('css/design-system.css')
+          text = path.read_text(encoding='utf-8')
+          start_marker = '/* The compact shell/transport values were previously applied by a Documents parity observer. */'
+          end_marker = '[data-transport-module]'
+          start = text.find(start_marker)
+          if start < 0:
+              raise SystemExit('Canonical compact shell marker not found')
+          end = text.find(end_marker, start)
+          if end < 0:
+              raise SystemExit('Transport marker not found after shell marker')
+
+          replacement = r'''/* Shell menu + bottom navigation — canonical modern surface. */
+          .ka-menu-grid{padding:16px max(14px,var(--ka-safe-right)) calc(22px + var(--ka-safe-bottom)) max(14px,var(--ka-safe-left));row-gap:12px;column-gap:12px}
+          .ka-menu-card{min-height:138px;aspect-ratio:1/.9;border-radius:21px;padding:16px 10px 14px;gap:10px;border:1px solid color-mix(in srgb,var(--ka-button-text) 14%,transparent);box-shadow:0 9px 22px color-mix(in srgb,var(--ka-text) 12%,transparent);transition:transform var(--ka-transition-fast),box-shadow var(--ka-transition-fast),filter var(--ka-transition-fast)}
+          .ka-menu-card:hover{filter:saturate(1.04) brightness(1.02);box-shadow:0 12px 26px color-mix(in srgb,var(--ka-text) 16%,transparent)}
+          .ka-menu-card:active{transform:scale(.975)}
+          .ka-menu-card__icon{width:52px;height:52px;font-size:26px;border:1px solid color-mix(in srgb,var(--ka-button-text) 18%,transparent);background:color-mix(in srgb,var(--ka-button-text) 17%,transparent);box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ka-button-text) 22%,transparent)}
+          .ka-menu-card strong{font-size:13px;line-height:1.25}
+          .ka-menu-card>.ka-badge{right:11px;top:11px;min-width:28px;height:28px;padding-inline:7px;border:1px solid color-mix(in srgb,var(--ka-button-text) 14%,transparent);background:color-mix(in srgb,var(--ka-button-text) 21%,transparent)}
+          .ka-menu-card::before{left:11px;top:11px;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--ka-button-text) 13%,transparent);background:color-mix(in srgb,var(--ka-button-text) 17%,transparent)}
+          .ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd){grid-column:1/-1;min-height:72px;aspect-ratio:auto;flex-direction:row;justify-content:flex-start;padding:11px 14px;text-align:left}
+          .ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd) .ka-menu-card__icon{width:44px;height:44px;flex:0 0 44px;font-size:22px}
+          .ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd)>strong{padding-left:2px}
+          .ka-menu-head{min-height:68px;padding:max(10px,var(--ka-safe-top)) max(13px,var(--ka-safe-right)) 10px max(13px,var(--ka-safe-left));background:color-mix(in srgb,var(--ka-header-bg) 94%,transparent);backdrop-filter:blur(19px);-webkit-backdrop-filter:blur(19px)}
+          .ka-menu-head h2{font-size:20px;letter-spacing:-.02em}
+          .ka-menu-list{padding:13px max(12px,var(--ka-safe-right)) calc(24px + var(--ka-safe-bottom)) max(12px,var(--ka-safe-left));gap:9px}
+          .ka-menu-list>.ka-btn{min-height:66px;justify-content:flex-start;padding:8px 12px;border-radius:17px;border-color:var(--ka-border);background:var(--ka-card-bg);color:var(--ka-text);box-shadow:var(--ka-shadow-sm);text-align:left}
+          .ka-menu-list>.ka-btn:hover{background:var(--ka-card-raised-bg);border-color:var(--ka-border-strong);color:var(--ka-text)}
+          .ka-menu-list>.ka-btn:active{background:var(--ka-primary-soft);transform:scale(.995)}
+          .ka-menu-list>.ka-btn .ka-avatar{width:43px;height:43px;flex:0 0 43px;border-radius:14px;background:var(--ka-primary-soft);color:var(--ka-primary);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ka-primary) 14%,transparent)}
+          .ka-menu-list>.ka-btn strong{font-size:13.5px;line-height:1.25}
+          .ka-menu-list>.ka-btn>span:last-child{color:var(--ka-text-muted);display:grid;place-items:center}
+          .ka-menu-list>h3{margin:13px 2px 2px;color:var(--ka-text);font-size:17px;letter-spacing:-.02em}
+          .ka-app-nav.ka-bottom-nav{background:color-mix(in srgb,var(--ka-nav-bg) 95%,transparent);border-top-color:color-mix(in srgb,var(--ka-nav-border) 88%,transparent);box-shadow:0 -8px 26px color-mix(in srgb,var(--ka-text) 8%,transparent);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+          .ka-bottom-item{min-height:58px;border-radius:14px;background:transparent;transition:color var(--ka-transition-fast),transform var(--ka-transition-fast)}
+          .ka-bottom-icon{width:36px;height:32px;border-radius:11px;background:transparent;transition:background var(--ka-transition-fast),box-shadow var(--ka-transition-fast),transform var(--ka-transition-fast)}
+          .ka-bottom-item.active:not(.ka-bottom-menu),.ka-bottom-item[aria-current="page"]:not(.ka-bottom-menu){background:transparent;color:var(--ka-nav-active-text)}
+          .ka-bottom-item.active:not(.ka-bottom-menu) .ka-bottom-icon,.ka-bottom-item[aria-current="page"]:not(.ka-bottom-menu) .ka-bottom-icon{background:var(--ka-nav-active-bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ka-nav-active-text) 12%,transparent)}
+          .ka-bottom-menu-icon{width:60px;height:60px;margin-top:-22px;border-radius:20px;border-color:var(--ka-nav-menu-ring);box-shadow:0 9px 24px color-mix(in srgb,var(--ka-nav-menu-end) 34%,transparent),0 0 0 1px color-mix(in srgb,var(--ka-nav-menu-end) 12%,transparent)}
+          [data-theme="dark"] .ka-menu-card{border-color:color-mix(in srgb,#fff 9%,transparent);box-shadow:0 11px 26px rgba(0,0,0,.27)}
+          [data-theme="dark"] .ka-menu-list>.ka-btn{background:color-mix(in srgb,var(--ka-card-bg) 94%,#07110d);border-color:var(--ka-border)}
+          @media(max-width:380px){.ka-menu-grid{padding-inline:max(9px,var(--ka-safe-left));gap:9px}.ka-menu-card{min-height:126px;border-radius:18px;padding:13px 7px 11px}.ka-menu-card__icon{width:47px;height:47px;font-size:24px}.ka-menu-card strong{font-size:12px}.ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd){min-height:66px;padding:9px 11px}.ka-menu-list>.ka-btn{min-height:61px;padding-inline:10px}.ka-menu-list>.ka-btn .ka-avatar{width:39px;height:39px;flex-basis:39px;border-radius:12px}.ka-bottom-menu-icon{width:56px;height:56px;margin-top:-19px;border-radius:18px}}
+          '''
+          replacement = '\n'.join(line.strip() for line in replacement.splitlines() if line.strip()) + '\n'
+          path.write_text(text[:start] + replacement + text[end:], encoding='utf-8')
+          PY
+
+          git diff --check -- css/design-system.css
+          test_status=0
+          node --test tests/classic-shell-v2-smoke.test.js || test_status=$?
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ "$test_status" -ne 0 ]; then
+            git restore css/design-system.css
+            rm -f .github/workflows/apply-shell-design.yml
+            git add -A
+            git commit -m "chore: remove failed menu shell workflow"
+            git push origin HEAD:main
+            exit "$test_status"
+          fi
+
+          rm -f .github/workflows/apply-shell-design.yml
+          git add css/design-system.css .github/workflows/apply-shell-design.yml
+          git commit -m "feat: modernize menu and bottom navigation"
+          git push origin HEAD:main
