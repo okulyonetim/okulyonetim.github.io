@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '24'
       - name: Apply menu redesign
-        run: python scripts/tmp-apply-menu-v3.py
+        run: |
+          python scripts/tmp-apply-menu-v3.py
+          git restore .github/workflows/client-architecture.yml
       - name: Syntax and focused tests
         run: |
           node --check js/core/shell-ui.js
