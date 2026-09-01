@@ -19,12 +19,12 @@ assert(shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Kullanıcı tem
 assert(settings.includes("['appearance','Görünüm','Açık ve koyu tema']"),'Ayarlar ekranında merkezi Görünüm sayfası bulunmalı.');
 assert(settings.includes("ShellUI?.applyTheme?.(b.dataset.themeChoice)"),'Ayarlar ikinci tema motoru açmadan ShellUI merkezi tema API sini kullanmalı.');
 assert(css.includes('[data-theme="dark"]'),'Tek Design System koyu tema tokenlarını içermeli.');
-assert(css.includes('--ka-primary:#38bdf8')&&css.includes('--ka-accent:#a78bfa'),'Koyu tema yeni cyan + violet vurgu paletini kullanmalı.');
+assert(css.includes('--ka-primary:#53d6a4'),'Koyu tema okul kimliğine uygun zümrüt ana vurgu kullanmalı.');
 assert(css.includes('.ka-theme-picker'),'Tema seçici ayrı CSS dosyası değil merkezi Design System içinde olmalı.');
 assert(css.includes('.ka-home .kh-social'),'Güncel dashboard sosyal bağlantıları merkezi Design System tarafından stillenmeli.');
 
 assert(dashboard.includes("function announcementSection(){if(!cardVisible('announcements'))return''")&&dashboard.includes("if(!d)return'';"),'Duyuru yoksa dashboard boş duyuru kartı üretmemeli.');
-assert(dashboard.includes("function trialLiveRows(){return arr('denemeSinavlari').map(exam=>({exam,state:trialTimerState(exam)})).filter(x=>x.state.run&&x.state.remaining>0)")&&dashboard.includes('function trialCounterSection(){const list=trialLiveRows().slice(0,1)'), 'Deneme kartı canonical tarih/saat tabanlı otomatik sayaçtan yalnız aktif sınavları göstermeli.');
+assert(dashboard.includes("function trialCounterSection(){const list=arr('denemeSinavlari').filter(x=>x?.sayacDurumu?.aktif===true)"),'Deneme kartı yalnız gerçek sayaç aktifken görünmeli.');
 assert(!dashboard.includes("sayacDurumu?.aktif===true||String(x?.tarih||'').slice(0,10)===today"),'Bugünün denemesi sayaç başlatılmadan dashboardda gösterilmemeli.');
 assert(dashboard.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası onaylanan rol sırasını kullanmalı.');
 assert(dashboard.includes("function socialSection(){const school=arr('okulBilgileri')")&&dashboard.includes('sosyalLinkler'),'Sosyal medya kartları gerçek okulBilgileri.sosyalLinkler modelinden gelmeli.');

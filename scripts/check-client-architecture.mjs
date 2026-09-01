@@ -23,13 +23,11 @@ const missingKnownStyleDebt=[...STYLE_INJECTION_ALLOWLIST].filter(f=>!styleInjec
 const shellPath=path.join(ROOT,'index.html');
 const shellHtml=fs.existsSync(shellPath)?fs.readFileSync(shellPath,'utf8'):'';
 const stylesheetLinks=[...shellHtml.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi)].map(m=>m[1]);
-const canonicalStylesheetHref=href=>String(href||'').split(/[?#]/,1)[0];
-const styleViolations=stylesheetLinks.filter(href=>canonicalStylesheetHref(href)!=='css/design-system.css');
+const styleViolations=stylesheetLinks.filter(href=>href!=='css/design-system.css');
 const inlineStyleTags=(shellHtml.match(/<style\b/gi)||[]).length;
 const inlineStyleAttrs=(shellHtml.match(/\sstyle=["']/gi)||[]).length;
 const designPath=path.join(ROOT,'css','design-system.css');
 const designSource=fs.existsSync(designPath)?fs.readFileSync(designPath,'utf8'):'';
-const controlHeight=Number((designSource.match(/--ka-control-height\s*:\s*(\d+(?:\.\d+)?)px/)||[])[1]||0);
 const requiredThemeTokens=['--ka-app-bg','--ka-header-bg','--ka-header-text','--ka-nav-bg','--ka-nav-active-bg','--ka-button-bg','--ka-button-text','--ka-card-bg','--ka-input-bg','--ka-text','--ka-border','--ka-primary','--ka-report-bg'];
 const missingThemeTokens=requiredThemeTokens.filter(token=>!designSource.includes(token));
 const requiredShellClasses=['.ka-app-header','.ka-app-nav'];
@@ -79,7 +77,7 @@ const browserPrintFallback=(reportEngineSource.includes("global.open(url,'_blank
 const platformRequirements=[
   ['dinamik viewport birimi',/\d+(?:\.\d+)?dvh\b/.test(designSource)],
   ['iOS metin ölçekleme koruması',/-webkit-text-size-adjust\s*:\s*100%/.test(designSource)],
-  ['dokunmatik hedef en az 44px',controlHeight>=44],
+  ['dokunmatik hedef en az 44px',/--ka-control-height\s*:\s*44px/.test(designSource)],
   ['iOS safe-area tokenları',safeAreaReady],
   ['native platform capability detection',reportEngineSource.includes('Capacitor?.isNativePlatform?.()')],
   ['native yazdırma için browser fallback',browserPrintFallback],
@@ -93,7 +91,7 @@ console.log(JSON.stringify(report,null,2));
 let failed=false;
 if(resurrectedLegacyRoots.length){console.error('Emekli legacy kök dosyalar geri dönmemeli:',resurrectedLegacyRoots.join(', '));failed=true}
 if(!appNamespaceDefaultDeny){console.error('Firestore oy_ uygulama ad alanı varsayılan kapalı olmalı.');failed=true}
-if(stylesheetLinks.length!==1||canonicalStylesheetHref(stylesheetLinks[0])!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
+if(stylesheetLinks.length!==1||stylesheetLinks[0]!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
 if(styleViolations.length){console.error('Ek stylesheet ihlali:',styleViolations.join(', '));failed=true}
 if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içermemeli.');failed=true}
 if(unexpectedStyleInject.length){console.error('JS runtime <style> enjeksiyonu yasak; css/design-system.css kullanılmalı:',unexpectedStyleInject.join(', '));failed=true}
