@@ -10,6 +10,10 @@ const design=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
+assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
+assert(!ui.includes('hideRouteTransitionFrame')&&!design.includes('.ka-route-switching'),'Route geçişinde görünür içeriği saklayan titreme katmanı bulunmamalı.');
+assert(ui.includes("const reuseAcademic=name==='academic'&&academicRouteMounted()")&&ui.includes('if(!reuseAcademic)await global.AppLoader?.load?.(name)'),'Aynı Academic modülü Yazılı/Deneme geçişinde yeniden mount edilmemeli.');
+assert(ui.includes('if(page)applySubpage(name,page,title)')&&!ui.includes('if(page)requestAnimationFrame(()=>applySubpage(name,page,title))'),'Alt sayfa seçimi sonraki frame bırakılmamalı; ilk boyama doğru sayfa olmalı.');
 assert(!shell.includes('<script src="js/modules/school-live-status.js" defer></script>'),'Canlı zil/hava motoru ilk açılış shellinde eager yüklenmemeli.');
 for(const action of ['home','profile','menu','search','note']) assert(shell.includes(`data-ka-shell-action="${action}"`),`Alt navigasyon eylemi eksik: ${action}`);
 assert((shell.match(/data-ka-shell-action=/g)||[]).length===5,'Mobil alt navigasyon tam 5 ana eylemden oluşmalı.');

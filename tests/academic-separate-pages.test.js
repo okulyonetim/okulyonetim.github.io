@@ -15,6 +15,9 @@ for(const token of ['.ka-trial-page','.ka-trial-card','.ka-trial-summary','.ka-t
 assert(!fs.existsSync('js/modules/deneme-sinavlari-modern.js'),'Deneme Sınavları ayrı modern runtime dosyasına geri bölünmemeli.');
 assert(!fs.existsSync('js/modules/deneme-sayac-modern-v4.js'),'Deneme sayacı ayrı modern runtime dosyasına geri bölünmemeli.');
 for(const token of ['examDayDiff','ka-written-page','ka-written-summary','Toplam sınav','7 gün içinde','ka-written-card','ka-written-meta','ka-written-modal-intro','ka-written-class-picker']) assert(academic.includes(token),`Yazılı Sınavlar görünür paritesi eksik: ${token}`);
+assert(academic.includes("ready=false")&&academic.includes("if(!mounted||!ready)return")&&academic.includes("await prepareLocal();if(!mounted)return false;subscribe();ready=true;render();"),'Academic ilk boyamada önce local hydrate etmeli ve tek hazır render üretmeli.');
+assert(!academic.includes('ka-written-hero')&&!academic.includes('ka-trial-hero'),'Yazılı/Deneme kendi ikinci hero başlığını üretmemeli; ortak Academic başlığı tek görsel owner olmalı.');
+assert(academic.includes('data-academic-title')&&academic.includes('data-academic-description')&&academic.includes('applyAcademicMeta(title)'),'Academic ayrı sayfa başlığı ortak tek shell owner üzerinden yönetilmeli.');
 
 for(const token of ['planCurrentWeekIndex','planTracked','ogretmenYillikPlanSecimleri','yillikPlanNotlari','data-plan-select','data-plan-note','data-plan-prev','data-plan-next']) assert(academic.includes(token),`Yıllık Plan gerçek haftalık takip sözleşmesi eksik: ${token}`);
 for(const token of ['data-plan-week-overlay','ka-plan-week--overlay','data-plan-wake','data-plan-menu','bindPlanWeekGestures','openPlanMenu','openPlanWeekPicker','openPlanWeekEditor','openPlanSignDate','navigator.wakeLock','touchstart','touchend','data-plan-full']) assert(academic.includes(token),`Yıllık Plan tam ekran haftalık görünür paritesi eksik: ${token}`);

@@ -148,14 +148,14 @@ function applySubpage(name,page,title){
   if(title)setTitle(title);
   return !!tab;
 }
-function hideRouteTransitionFrame(){const root=$('#v2ModuleRoot');if(!root)return;root.classList.add('ka-route-switching');let done=false,timer=0;const reveal=()=>{if(done)return;done=true;if(timer)clearTimeout(timer);root.classList.remove('ka-route-switching')};requestAnimationFrame(()=>requestAnimationFrame(reveal));timer=setTimeout(reveal,180)}
+function academicRouteMounted(){const root=$('#v2ModuleRoot');return !!(global.AcademicModule&&root?.querySelector?.('[data-academic-module]'))}
 async function routeModule(name,{bottom='menu',page='',title='',remember=true}={}){
   if(!pageAllowed(name,page)){global.toast?.('Bu sayfa öğretmen kullanıcıları için gizli.');return false}
   const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
   if(global.OdevNotUI?.page&&global.OdevNotUI.page!==requestedGradePage&&global.OdevNotUI.close?.()===false)return false;
   if(!(name==='tools'&&page==='student-list'))global.OgretmenListeUI?.close?.();
   if(!(name==='tools'&&page==='student-attendance'))global.StudentPages?.close?.();
-  closeHeaderPopover();closeMenu();hideRouteTransitionFrame();
+  closeHeaderPopover();closeMenu();
   if(!(name==='tools'&&FORM_PAGES[page]))cleanupFormPage();
   if(name==='payroll'){
     try{
@@ -177,9 +177,9 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true}={
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||meta.label||name);
     try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
   }
-  setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);
-  setTitle(title||meta.label||name);await global.AppLoader?.load?.(name);
-  if(page)requestAnimationFrame(()=>applySubpage(name,page,title));
+  setBottomActive(bottom);const reuseAcademic=name==='academic'&&academicRouteMounted();global.AppLoader?.setActiveModule?.(name);
+  setTitle(title||meta.label||name);if(!reuseAcademic)await global.AppLoader?.load?.(name);
+  if(page)applySubpage(name,page,title);
   if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name});
   return true
 }
