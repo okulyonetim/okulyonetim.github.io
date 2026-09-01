@@ -1,0 +1,45 @@
+name: Audit live v836 calendar exam
+
+on:
+  push:
+    branches:
+      - audit/live-v836-calendar-exam-20260901
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for deployed v836 fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://sedonet23.github.io/okul'
+          for i in $(seq 1 18); do
+            TS="$(date +%s)-$i"
+            curl -fsSL "$BASE/index.html?verify=$TS" -o /tmp/index.html || true
+            curl -fsSL "$BASE/js/app-loader.js?verify=$TS" -o /tmp/loader.js || true
+            curl -fsSL "$BASE/js/modules/communication.js?verify=$TS" -o /tmp/communication.js || true
+            curl -fsSL "$BASE/js/modules/academic.js?verify=$TS" -o /tmp/academic.js || true
+            curl -fsSL "$BASE/css/design-system.css?verify=$TS" -o /tmp/design.css || true
+            curl -fsSL "$BASE/service-worker.js?verify=$TS" -o /tmp/sw.js || true
+            if grep -Fq 'css/design-system.css?v=836' /tmp/index.html && \
+               grep -Fq 'js/app-loader.js?v=836' /tmp/index.html && \
+               grep -Fq "js/modules/academic.js?v=836" /tmp/loader.js && \
+               grep -Fq "js/modules/communication.js?v=836" /tmp/loader.js && \
+               grep -Fq 'const service=globalThis.TakvimService' /tmp/communication.js && \
+               grep -Fq "submit.textContent='Kaydediliyor…'" /tmp/communication.js && \
+               grep -Fq 'function stabilizeExamRecords(out,count)' /tmp/academic.js && \
+               grep -Fq 'requestAnimationFrame(()=>stabilizeExamRecords(out,r.count))' /tmp/academic.js && \
+               grep -Fq '.ka-written-page,.ka-trial-page{display:flex!important' /tmp/design.css && \
+               grep -Fq "const CACHE_ADI='oy-cache-v836'" /tmp/sw.js; then
+              echo "LIVE_V836_CALENDAR_EXAM_OK attempt=$i"
+              exit 0
+            fi
+            echo "v836 fixes not live yet; attempt=$i"
+            sleep 10
+          done
+          echo 'v836 fixes did not become live within verification window' >&2
+          exit 1
