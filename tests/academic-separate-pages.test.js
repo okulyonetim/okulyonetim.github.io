@@ -44,7 +44,7 @@ for(const token of ['kaAcademicCalendarOverlay','AkademikTakvimService.gorselYuk
 assert(academic.includes("page==='calendar'"),'Akademik Takvim yalnız academic/calendar sayfasında otomatik açılmalı.');
 assert(academic.includes('calendarAdmin()'),'Takvim görseli değiştirme yönetici sınırında kalmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem'])assert(!academic.includes(forbidden),`Academic UI doğrudan legacy veri erişimi yapmamalı: ${forbidden}`);
-assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=837'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
+assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=838'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
 assert(!loader.includes('academic-calendar-parity.js'),'Academic loader ayrı takvim parity dosyası yüklememeli.');
 assert(loader.includes("name==='academic'||name==='communication'||name==='documents'"),'Academic açıldığında Firebase Storage örneği merkezi loader tarafından hazırlanmalı.');
 assert(build.includes("'academic.js':['js/modules/academic.js']"),'Academic üretim bundle tek canonical kaynak kullanmalı.');
@@ -60,5 +60,5 @@ assert(!academic.includes('stabilizeExamRecords('),'Sınav görünürlüğü run
 assert(!css.includes('ACADEMIC EXAM MOBILE VISIBILITY — CANONICAL')&&!css.includes('.ka-written-card,.ka-trial-card{width:100%!important'),'Sınav görünürlüğü !important yamasıyla sahiplenilmemeli.');
 assert(css.includes('.ka-written-list{display:grid;gap:10px}')&&css.includes('.ka-trial-list{display:grid;gap:10px}')&&css.includes('.ka-written-page,.ka-trial-page{width:100%;min-width:0}'),'Yazılı/Deneme listeleri tek merkezi design-system CSS akışında görünür kalmalı.');
 const productionShell=fs.readFileSync('index.html','utf8');
-assert(productionShell.includes('css/design-system.css?v=837')&&productionShell.includes('js/app-loader.js?v=837'),'Academic scope düzeltmesi eski PWA cache tarafından maskelenmemeli.');
+assert(productionShell.includes('css/design-system.css?v=838')&&productionShell.includes('js/app-loader.js?v=838'),'Academic scope düzeltmesi eski PWA cache tarafından maskelenmemeli.');
 console.log('Academic ayrı sayfa + deneme sayacı + sonuç filtreleme sözleşmesi başarılı.');
