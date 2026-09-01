@@ -20,6 +20,15 @@ jobs:
         run: |
           set -euo pipefail
           python .github/scripts/apply_exam_mobile_visibility.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/module-bundles-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          old="academic:'academic.js'"
+          new="academic:'academic.js?v=834'"
+          if s.count(old)!=1: raise SystemExit(f'module bundle academic anchor count: {s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
           git diff --check
           node --check js/modules/academic.js
           node --check js/app-loader.js
@@ -33,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TARGETS='js/modules/academic.js css/design-system.css index.html js/app-loader.js service-worker.js tests/academic-separate-pages.test.js tests/classic-shell-v2-smoke.test.js'
+          TARGETS='js/modules/academic.js css/design-system.css index.html js/app-loader.js service-worker.js tests/academic-separate-pages.test.js tests/classic-shell-v2-smoke.test.js tests/module-bundles-smoke.test.js'
           git diff -- $TARGETS > /tmp/exam-mobile.patch
           test -s /tmp/exam-mobile.patch
           git reset --hard origin/main
