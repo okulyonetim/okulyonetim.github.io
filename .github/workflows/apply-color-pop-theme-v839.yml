@@ -1,0 +1,51 @@
+name: Apply Color Pop global theme v839
+on:
+  push:
+    branches:
+      - work/color-pop-global-theme-20260901
+permissions:
+  contents: write
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout theme branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/color-pop-global-theme-20260901
+          fetch-depth: 0
+      - name: Preserve patch and verify main base
+        shell: bash
+        run: |
+          cp scripts/_apply_color_pop_theme_v839.py /tmp/apply_color_pop_theme_v839.py
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "23dab748456ae501dc80699f73b6de1ab31a8cc9"
+          git checkout -B main origin/main
+      - name: Apply canonical global theme
+        run: python3 /tmp/apply_color_pop_theme_v839.py
+      - name: Verify single CSS ownership
+        shell: bash
+        run: |
+          test "$(find css -maxdepth 1 -type f -name '*.css' | wc -l | tr -d ' ')" = "1"
+          test -f css/design-system.css
+          ! grep -R "<style" -n index.html js/core js/modules
+          grep -q -- "--ka-primary:#2563eb" css/design-system.css
+          grep -q -- "--ka-app-bg:#07111f" css/design-system.css
+          grep -q -- "--ka-module-communication-1:#fb7185" css/design-system.css
+          grep -q "kaBadgePop" css/design-system.css
+          grep -q "design-system.css?v=839" index.html
+          grep -q "oy-cache-v839" service-worker.js
+          git diff --check
+      - name: Run focused regressions
+        shell: bash
+        run: |
+          node --test tests/classic-shell-v2-smoke.test.js tests/menu-customization-v2.test.js tests/dashboard-quick-actions.test.js tests/dashboard-card-routes-smoke.test.js tests/module-bundles-smoke.test.js tests/service-worker-precache-smoke.test.js tests/trial-counter-scroll-stability.test.js
+          npm run audit:client
+      - name: Commit clean theme to main
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add css/design-system.css index.html service-worker.js
+          git commit -m "feat: apply colorful light and dark theme globally"
+          git push origin HEAD:main
