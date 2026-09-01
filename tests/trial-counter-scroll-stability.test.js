@@ -16,7 +16,7 @@ assert(!renderBlock.includes('scrollTop'),'Scroll sorunu scrollTop kaydet/geri y
 for(const token of ['data-trial-counter-main','data-trial-counter-schedule','data-trial-counter-overview'])assert(academic.includes(token),`Dinamik sayaç slotu eksik: ${token}`);
 assert(academic.includes("if(trialCounterId){renderTrialCounter();return}if(needsTick)render()"),'Overlay açıkken alttaki Academic liste her saniye yeniden render edilmemeli.');
 assert(academic.includes('renderTrialCounter(true)'),'Sayaç ilk açılışta yapısal render istemeli.');
-assert(index.includes('css/design-system.css?v=838')&&index.includes('js/app-loader.js?v=838'),'Üretim shell v838 cache-bust kullanmalı.');
+assert(index.includes('css/design-system.css?v=839')&&index.includes('js/app-loader.js?v=838'),'Üretim shell yeni tema CSS v839 ve mevcut app-loader v838 cache-bust sözleşmesini kullanmalı.');
 assert(loader.includes('js/modules/academic.js?v=838'),'Academic loader v838 kullanmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v838'"),'Service Worker v838 cache kullanmalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v839'"),'Service Worker tema güncellemesi için v839 cache kullanmalı.');
 console.log('Deneme sayacı scroll konumu kalıcı DOM owner ile stabil.');
