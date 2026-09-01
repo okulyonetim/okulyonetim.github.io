@@ -1,0 +1,58 @@
+name: Apply dashboard motion stability v3
+
+on:
+  push:
+    branches:
+      - work/dashboard-motion-stability-20260901
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Transform and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          python .github/scripts/apply_dashboard_motion_stability.py
+          git diff --check
+          node --check js/modules/dashboard.js
+          node --check js/core/shell-ui.js
+          node --check js/app-loader.js
+          node --test tests/trial-auto-timer.test.js
+          node --test tests/dashboard-card-routes-smoke.test.js
+          node --test tests/classic-shell-v2-smoke.test.js
+          node --test tests/module-bundles-smoke.test.js
+          node --test tests/academic-separate-pages.test.js
+          node --test tests/modules-local-first-boundary.test.js
+          node --test tests/service-worker-precache-smoke.test.js
+      - name: Build clean final branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS='js/modules/dashboard.js js/core/shell-ui.js js/app-loader.js css/design-system.css service-worker.js tests/trial-auto-timer.test.js tests/dashboard-card-routes-smoke.test.js tests/classic-shell-v2-smoke.test.js tests/module-bundles-smoke.test.js'
+          git diff -- $TARGETS > /tmp/dashboard-stability.patch
+          test -s /tmp/dashboard-stability.patch
+          git checkout -B work/dashboard-motion-stability-final-20260901 origin/main
+          git apply /tmp/dashboard-stability.patch
+          git diff --check
+          node --check js/modules/dashboard.js
+          node --check js/core/shell-ui.js
+          node --check js/app-loader.js
+          node --test tests/trial-auto-timer.test.js
+          node --test tests/dashboard-card-routes-smoke.test.js
+          node --test tests/classic-shell-v2-smoke.test.js
+          node --test tests/module-bundles-smoke.test.js
+          node --test tests/academic-separate-pages.test.js
+          node --test tests/modules-local-first-boundary.test.js
+          node --test tests/service-worker-precache-smoke.test.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add $TARGETS
+          git commit -m 'fix: stabilize dashboard timers ticker and module rendering'
+          git push --force origin HEAD:work/dashboard-motion-stability-final-20260901
