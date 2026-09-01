@@ -1,0 +1,78 @@
+name: Apply Color Pop global theme v840
+on:
+  push:
+    branches:
+      - work/color-pop-global-theme-v840
+permissions:
+  contents: write
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout theme branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/color-pop-global-theme-v840
+          fetch-depth: 0
+      - name: Load verified theme patch and main
+        shell: bash
+        run: |
+          git fetch origin main work/color-pop-global-theme-20260901
+          test "$(git rev-parse origin/main)" = "23dab748456ae501dc80699f73b6de1ab31a8cc9"
+          git show origin/work/color-pop-global-theme-20260901:scripts/_apply_color_pop_theme_v839.py > /tmp/apply_color_pop_theme_v839.py
+          git checkout -B main origin/main
+      - name: Apply canonical global theme
+        run: python3 /tmp/apply_color_pop_theme_v839.py
+      - name: Update intentional theme regression contracts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          def rep(path, old, new):
+              p=Path(path); s=p.read_text(encoding='utf-8');
+              if old not in s: raise SystemExit(f'missing contract in {path}: {old[:80]}')
+              p.write_text(s.replace(old,new,1),encoding='utf-8')
+          rep('tests/classic-shell-v2-smoke.test.js', 'css/design-system.css?v=838', 'css/design-system.css?v=839')
+          rep('tests/dashboard-card-routes-smoke.test.js', "assert(css.includes('[data-theme=\"dark\"]')&&css.includes('--ka-primary:#53d6a4')&&css.includes('.ka-theme-picker'),'Tek Design System zümrüt koyu temayı ve merkezi görünüm bileşenini taşımalı.');", "assert(css.includes('[data-theme=\"dark\"]')&&css.includes('--ka-primary:#38bdf8')&&css.includes('--ka-module-communication-1:#fb7185')&&css.includes('.ka-theme-picker'),'Tek Design System yeni renkli koyu temayı ve merkezi görünüm bileşenini taşımalı.');")
+          rep('tests/dashboard-quick-actions.test.js', "assert(css.includes('--ka-primary:#53d6a4'),'Koyu tema okul kimliğine uygun zümrüt ana vurgu kullanmalı.');", "assert(css.includes('--ka-primary:#38bdf8')&&css.includes('--ka-accent:#a78bfa'),'Koyu tema yeni cyan + violet vurgu paletini kullanmalı.');")
+          rep('tests/menu-customization-v2.test.js', "assert(sw.includes(\"const CACHE_ADI='oy-cache-v829';\"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');", "assert(sw.includes(\"const CACHE_ADI='oy-cache-v839';\"),'Yeni global tema için PWA cache sürümü yükseltilmeli.');")
+          rep('tests/service-worker-precache-smoke.test.js', "assert(sw.includes(\"const CACHE_ADI='oy-cache-v838'\"), 'Yeni runtime ayrı v835 cache anahtarı kullanmalı.');", "assert(sw.includes(\"const CACHE_ADI='oy-cache-v839'\"), 'Yeni tema runtimeı v839 cache anahtarı kullanmalı.');")
+          rep('tests/trial-counter-scroll-stability.test.js', "assert(index.includes('css/design-system.css?v=838')&&index.includes('js/app-loader.js?v=838'),'Üretim shell v838 cache-bust kullanmalı.');", "assert(index.includes('css/design-system.css?v=839')&&index.includes('js/app-loader.js?v=838'),'Üretim shell yeni tema CSS v839 ve mevcut app-loader v838 cache-bust sözleşmesini kullanmalı.');")
+          rep('tests/trial-counter-scroll-stability.test.js', "assert(sw.includes(\"const CACHE_ADI='oy-cache-v838'\"),'Service Worker v838 cache kullanmalı.');", "assert(sw.includes(\"const CACHE_ADI='oy-cache-v839'\"),'Service Worker tema güncellemesi için v839 cache kullanmalı.');")
+          PY
+      - name: Verify single CSS ownership and visual contract
+        shell: bash
+        run: |
+          test "$(find css -maxdepth 1 -type f -name '*.css' | wc -l | tr -d ' ')" = "1"
+          test -f css/design-system.css
+          grep -q -- "--ka-primary:#2563eb" css/design-system.css
+          grep -q -- "--ka-primary:#38bdf8" css/design-system.css
+          grep -q -- "--ka-app-bg:#07111f" css/design-system.css
+          grep -q -- "--ka-module-people-1:#ec4899" css/design-system.css
+          grep -q -- "--ka-module-communication-1:#fb7185" css/design-system.css
+          grep -q -- "--ka-module-documents-1:#8b5cf6" css/design-system.css
+          grep -q -- "--ka-module-management-1:#34d399" css/design-system.css
+          grep -q "kaBadgePop" css/design-system.css
+          grep -q "prefers-reduced-motion" css/design-system.css
+          grep -q "design-system.css?v=839" index.html
+          grep -q "oy-cache-v839" service-worker.js
+          git diff --check
+      - name: Run focused regressions
+        shell: bash
+        run: |
+          node --test tests/classic-shell-v2-smoke.test.js tests/menu-customization-v2.test.js tests/dashboard-quick-actions.test.js tests/dashboard-card-routes-smoke.test.js tests/module-bundles-smoke.test.js tests/service-worker-precache-smoke.test.js tests/trial-counter-scroll-stability.test.js
+          npm run audit:client
+      - name: Ensure theme changes stay presentation-only
+        shell: bash
+        run: |
+          git diff --name-only origin/main | sort
+          test -z "$(git diff --name-only origin/main -- js | cat)"
+          test "$(find css -maxdepth 1 -type f -name '*.css' | wc -l | tr -d ' ')" = "1"
+      - name: Commit clean theme to main
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add css/design-system.css index.html service-worker.js tests/classic-shell-v2-smoke.test.js tests/dashboard-card-routes-smoke.test.js tests/dashboard-quick-actions.test.js tests/menu-customization-v2.test.js tests/service-worker-precache-smoke.test.js tests/trial-counter-scroll-stability.test.js
+          git commit -m "feat: apply colorful light and dark theme globally"
+          git push origin HEAD:main
