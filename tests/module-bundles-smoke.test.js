@@ -124,7 +124,7 @@ assert(source.documents.includes('viewer.destekliMi?.')&&source.documents.includ
 assert(source.documents.includes("window.open(url,'_blank','noopener')"),'Desteklenmeyen belge türleri ve harici URL için web fallback korunmalı.');
 
 function registry(name){return loader.match(new RegExp(`define\\('${name}',\\[(.*?)\\]\\);`))?.[1]||''}
-for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js?v=834',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} kendi tek UI modülünü yüklemeli.`);
+for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people.js',academic:'academic.js?v=835',management:'management.js',communication:'communication.js',transport:'transport.js',documents:'documents.js',tools:'tools.js',settings:'settings.js'})) assert(registry(name).includes(`'js/modules/${file}'`),`${name} kendi tek UI modülünü yüklemeli.`);
 for(const old of ['people-data.js','academic-data.js','management-data.js','messaging-data.js','communication-data.js','documents-data.js','tools-data.js','transport-data.js','settings-data.js','duty-data.js']) assert(!loader.includes(old),`Legacy data paketi loader'a geri dönmemeli: ${old}`);
 assert(!registry('academic').includes('academic-calendar-parity.js'),'Academic bundle ayrı takvim parity kaynağı yüklememeli.');
 assert(source.academic.includes('openAcademicCalendar')&&source.academic.includes('kaAcademicCalendarOverlay'),'Akademik Takvim davranışı canonical academic.js içinde yaşamalı.');

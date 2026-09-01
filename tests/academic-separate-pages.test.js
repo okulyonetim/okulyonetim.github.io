@@ -44,7 +44,7 @@ for(const token of ['kaAcademicCalendarOverlay','AkademikTakvimService.gorselYuk
 assert(academic.includes("page==='calendar'"),'Akademik Takvim yalnız academic/calendar sayfasında otomatik açılmalı.');
 assert(academic.includes('calendarAdmin()'),'Takvim görseli değiştirme yönetici sınırında kalmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem'])assert(!academic.includes(forbidden),`Academic UI doğrudan legacy veri erişimi yapmamalı: ${forbidden}`);
-assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=834'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
+assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=835'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
 assert(!loader.includes('academic-calendar-parity.js'),'Academic loader ayrı takvim parity dosyası yüklememeli.');
 assert(loader.includes("name==='academic'||name==='communication'||name==='documents'"),'Academic açıldığında Firebase Storage örneği merkezi loader tarafından hazırlanmalı.');
 assert(build.includes("'academic.js':['js/modules/academic.js']"),'Academic üretim bundle tek canonical kaynak kullanmalı.');
@@ -56,5 +56,5 @@ console.log('Akademik Takvim tam ekran poster + admin yükleme + çevrimdışı 
 assert(academic.includes('function prioritizeExamRecords(out,count)')&&academic.includes("page.insertBefore(list,summary)")&&academic.includes("academicRecordsVisible='true'"),'Yazılı/Deneme gerçek kayıt listesi mobilde özet kartlarından önce görünür olmalı.');
 assert(css.includes('ACADEMIC EXAM MOBILE VISIBILITY — CANONICAL')&&css.includes('.ka-written-list,.ka-trial-list{display:grid!important')&&css.includes('grid-template-columns:repeat(3,minmax(0,1fr))!important'),'Sınav özetleri mobilde kompakt üçlü düzen kullanmalı ve kayıt listesi gizlenememeli.');
 const productionShell=fs.readFileSync('index.html','utf8');
-assert(productionShell.includes('css/design-system.css?v=834')&&productionShell.includes('js/app-loader.js?v=834'),'Sınav görünürlük düzeltmesi eski PWA asset cache tarafından maskelenmemeli.');
+assert(productionShell.includes('css/design-system.css?v=835')&&productionShell.includes('js/app-loader.js?v=835'),'Sınav görünürlük düzeltmesi eski PWA asset cache tarafından maskelenmemeli.');
 console.log('Academic ayrı sayfa + deneme sayacı + sonuç filtreleme sözleşmesi başarılı.');
