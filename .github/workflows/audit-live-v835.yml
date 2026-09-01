@@ -1,0 +1,38 @@
+name: Audit live v835 runtime
+
+on:
+  push:
+    branches:
+      - audit/live-v835-20260901
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for GitHub Pages v835
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://sedonet23.github.io/okul'
+          for i in $(seq 1 18); do
+            TS="$(date +%s)-$i"
+            curl -fsSL "$BASE/index.html?verify=$TS" -o /tmp/index.html || true
+            curl -fsSL "$BASE/js/app-loader.js?verify=$TS" -o /tmp/loader.js || true
+            curl -fsSL "$BASE/service-worker.js?verify=$TS" -o /tmp/sw.js || true
+            if grep -Fq 'css/design-system.css?v=835' /tmp/index.html && \
+               grep -Fq 'js/app-loader.js?v=835' /tmp/index.html && \
+               grep -Fq "js/modules/academic.js?v=835" /tmp/loader.js && \
+               grep -Fq "register('./service-worker.js?v=835',{updateViaCache:'none'})" /tmp/loader.js && \
+               grep -Fq "const CACHE_ADI='oy-cache-v835'" /tmp/sw.js && \
+               grep -Fq "client.navigate(client.url)" /tmp/sw.js; then
+              echo "LIVE_V835_OK attempt=$i"
+              exit 0
+            fi
+            echo "v835 not live yet; attempt=$i"
+            sleep 10
+          done
+          echo 'v835 did not become live within verification window' >&2
+          exit 1
