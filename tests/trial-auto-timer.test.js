@@ -1,0 +1,14 @@
+const fs=require('fs');
+const assert=require('assert');
+const academic=fs.readFileSync('js/modules/academic.js','utf8');
+const dash=fs.readFileSync('js/modules/dashboard.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+new Function(academic);new Function(dash);
+assert(academic.includes('function trialAutomaticStartMs')&&academic.includes("status:'scheduled'")&&academic.includes("activeCount=list.filter(s=>trialCounterState(s).running).length"),'Academic deneme sayacı tarih+saat üzerinden otomatik duruma geçmeli.');
+assert(academic.includes("return scoped===true||legacy===true"),'Deneme ekleme butonu canonical ve legacy sınav düzenleme yetkisini birlikte tanımalı.');
+assert(academic.includes('ka-trial-counter__overview')&&academic.includes('Sınav devam ediyor')&&academic.includes('Sınav tamamlandı'),'Detay sayaç görünümü aktif, bekleyen ve tamamlanan durumlarını taşımalı.');
+assert(dash.includes('function trialLiveRows()')&&dash.includes(".filter(x=>x.state.run&&x.state.remaining>0)"),'Ana sayfa kartı yalnız gerçek zaman aralığında aktif denemeyi göstermeli.');
+assert(dash.includes('wanted!==shown')&&dash.includes('queueRender()'),'Ana sayfa kartı sınav başında eklenip bitişte otomatik kaldırılmalı.');
+for(const token of ['.kh-trial-live__card','.kh-trial-live__ring','.ka-trial-counter__overview','[data-theme="dark"] .kh-trial-live__card'])assert(css.includes(token),`Açık/koyu deneme tasarım sözleşmesi eksik: ${token}`);
+for(const source of [academic,dash])for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem'])assert(!source.includes(forbidden),`Deneme local-first sınırı ihlal edildi: ${forbidden}`);
+console.log('Deneme otomatik sayaç + ana sayfa canlı kart sözleşmesi başarılı.');

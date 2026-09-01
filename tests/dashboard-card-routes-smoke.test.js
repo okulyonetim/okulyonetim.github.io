@@ -22,8 +22,8 @@ assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kart
 assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği üretmeli.');
 assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası referans sırasıyla okul özeti, duyuru, anket ve aktif deneme sayacını göstermeli.');
 assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Yönetici ana sayfası aktif anketlerden sonra deneme sayacını göstermeli.');
-assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('sayacDurumu?.aktif')&&dash.includes('baslatmaTarihi'),'Dashboard deneme sayacı gerçek denemeSinavlari.sayacDurumu modelini kullanmalı.');
-assert(dash.includes("function trialCounterSection(){const list=arr('denemeSinavlari').filter(x=>x?.sayacDurumu?.aktif===true)"),'Dashboard deneme kartı yalnız başlatılmış gerçek sayaç için görünmeli.');
+assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('trialStartMs')&&dash.includes("status:'scheduled'")&&dash.includes('sayacDurumu?.aktif'),'Dashboard deneme sayacı kayıtlı tarih/saatten otomatik çalışmalı ve legacy manuel sayaçla uyumlu kalmalı.');
+assert(dash.includes("function trialCounterSection(){const list=trialLiveRows().slice(0,1)")&&dash.includes(".filter(x=>x.state.run&&x.state.remaining>0)"),'Dashboard deneme kartı yalnız zaman aralığı gerçekten aktifken görünmeli.');
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
 assert(dash.includes('trialTimer=setInterval(()=>refreshTrialTimers(),1000)')&&dash.includes("window.addEventListener('koruk:school-live-tick',liveTickHandler)"),'Deneme sayacı kendi presentation intervalinde kalmalı; zil kartı SchoolLiveStatus tek zaman motorunun tick eventini dinlemeli.');
 assert(dash.includes("if(!mine.length)return''"),'Öğretmenin nöbet kartı yalnız gerçek nöbeti varsa görünmeli.');
