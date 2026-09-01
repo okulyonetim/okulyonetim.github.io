@@ -1,0 +1,75 @@
+name: Fix menu route bindings
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fix-menu-route-bindings.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Restore submenu route bindings
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          shell_path=Path('js/core/shell-ui.js')
+          shell=shell_path.read_text(encoding='utf-8')
+          marker="function renderMenuList(key){"
+          if "function bindMenuRoutes(root){" in shell:
+              raise SystemExit('bindMenuRoutes already exists; refusing duplicate patch')
+          if marker not in shell:
+              raise SystemExit('renderMenuList marker not found')
+          helper="function bindMenuRoutes(root){$$('[data-ka-shell-route]',root).forEach(b=>b.addEventListener('click',()=>routeModule(b.dataset.kaShellRoute,{bottom:'menu',page:b.dataset.kaShellPage||'',title:b.dataset.kaShellTitle||''})))}\n"
+          shell=shell.replace(marker,helper+marker,1)
+          shell_path.write_text(shell,encoding='utf-8')
+
+          test_path=Path('tests/menu-customization-v2.test.js')
+          test=test_path.read_text(encoding='utf-8')
+          needle="assert(shell.includes('data-menu-custom-color')&&shell.includes('customizedVisibleGroups().find'),'Ana ve alt menü özelleştirmeleri görünür renderer tarafından tüketilmeli.');"
+          addition="\nassert(shell.includes('function bindMenuRoutes(root)')&&shell.includes('dataset.kaShellRoute')&&shell.includes('dataset.kaShellPage')&&shell.includes('dataset.kaShellTitle'),'Alt menü butonları routeModule bağlantısını gerçek dataset alanlarıyla kurmalı.');"
+          if needle not in test:
+              raise SystemExit('menu customization assertion marker not found')
+          if 'Alt menü butonları routeModule bağlantısını' not in test:
+              test=test.replace(needle,needle+addition,1)
+          test=test.replace("oy-cache-v828","oy-cache-v829")
+          test_path.write_text(test,encoding='utf-8')
+
+          sw_path=Path('service-worker.js')
+          sw=sw_path.read_text(encoding='utf-8')
+          if "const CACHE_ADI='oy-cache-v828';" not in sw:
+              raise SystemExit('Expected service worker cache v828 not found')
+          sw=sw.replace("const CACHE_ADI='oy-cache-v828';","const CACHE_ADI='oy-cache-v829';",1)
+          sw_path.write_text(sw,encoding='utf-8')
+          PY
+      - name: Verify
+        run: |
+          node --check js/core/shell-ui.js
+          git diff --check -- js/core/shell-ui.js tests/menu-customization-v2.test.js service-worker.js
+          node tests/menu-customization-v2.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/core/shell-ui.js tests/menu-customization-v2.test.js service-worker.js
+          git commit -m "fix: restore submenu button routing"
+          git push origin HEAD:main
