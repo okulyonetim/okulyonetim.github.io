@@ -11,13 +11,16 @@ assert(shell.includes('function menuGroupView(g,index)')&&shell.includes('functi
 assert(shell.includes('data-menu-custom-color')&&shell.includes('customizedVisibleGroups().find'),'Ana ve alt menü özelleştirmeleri görünür renderer tarafından tüketilmeli.');
 assert(shell.includes('data-ka-menu-edit')&&shell.includes('function renderMenuCardEditor(key)'),'Ana menü tek global Düzenle girişi ve kart editörü taşımalı.');
 assert(shell.includes('MENU_CARD_COLOR_PRESETS')&&shell.includes('data-menu-editor-color-input')&&shell.includes('data-menu-editor-hex-input'),'Kart editörü hazır renkler, özel renk ve HEX girişi sunmalı.');
+assert(shell.includes('data-menu-editor-sv')&&shell.includes('data-menu-editor-hue')&&shell.includes('menuColorHsvToHex'),'Kart editörü görünür tam renk paleti ve ton seçici sunmalı.');
+assert(shell.includes('🎯')&&shell.includes('🧭')&&shell.includes('🧩'),'Kart editörü genişletilmiş ikon/şekil seçeneklerini taşımalı.');
 assert(shell.includes("global.AppConfig?.save?.({menuLayout:{...cfg,groups}})"),'Kart editörü mevcut AppConfig local-first sahibine kaydetmeli.');
 assert(settings.includes('Ana Menü Kartları')&&settings.includes('function readMenuLayoutFromDom()')&&settings.includes('menuLayout:readMenuLayoutFromDom()'),'Gelişmiş Settings menü düzeni korunmalı.');
 assert(design.includes('.ka-menu-card::before{content:none!important'),'Normal kartlarda eski dişli balonu olmamalı.');
 assert(design.includes('.ka-menu-edit-toggle')&&design.includes('.ka-menu-editor-sheet')&&design.includes('.ka-menu-editor-preview'),'Yeni global düzenleme ve önizleme yüzeyi design-system sahibi olmalı.');
+assert(design.includes('.ka-menu-editor-sv')&&design.includes('.ka-menu-editor-hue')&&design.includes('.ka-menu-editor-palette'),'Tam renk paleti canonical design-system içinde olmalı.');
 assert(design.includes('grid-auto-rows:146px')&&design.includes('height:146px;min-height:146px'),'Ana menü kartları büyütülmüş ve eşit yükseklikte olmalı.');
 assert(!design.includes('.ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd)'),'Ayarlar kartı diğer kartlardan farklı kompakt ölçü almamalı.');
 assert(design.includes('grid-auto-rows:136px')&&design.includes('height:136px;min-height:136px'),'Dar ekranlarda da tüm menü kartları eşit ölçüde kalmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v827';"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v828';"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
 assert(!fs.existsSync('js/core/menu-customizer.js'),'İkinci runtime menu customizer sahibi geri dönmemeli.');
 console.log('Menü özelleştirme + global kart editörü sözleşmesi başarılı.');
