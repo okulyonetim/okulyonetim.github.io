@@ -6,6 +6,7 @@ on:
       - work/academic-single-render-20260901
     paths:
       - '.github/workflows/cleanup-academic-css-owner.yml'
+      - 'scripts/cleanup-academic-css-owner.py'
 
 permissions:
   contents: write
