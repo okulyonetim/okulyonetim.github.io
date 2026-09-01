@@ -20,12 +20,13 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re, textwrap
+          import re
           source=Path('.github/workflows/apply-dashboard-motion-stability.yml').read_text(encoding='utf-8')
           match=re.search(r'\n        run: \|\n(.*)\Z',source,re.S)
           if not match:
               raise SystemExit('staged run block not found')
-          script=textwrap.dedent(match.group(1))
+          lines=match.group(1).splitlines()
+          script='\n'.join(line[10:] if line.startswith('          ') else line for line in lines)+'\n'
           script=script.replace('rm -f .github/workflows/apply-dashboard-motion-stability.yml','rm -f .github/workflows/apply-dashboard-motion-stability.yml .github/workflows/apply-dashboard-motion-stability-v2.yml')
           Path('/tmp/apply-dashboard.sh').write_text(script,encoding='utf-8')
           PY
