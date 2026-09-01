@@ -1,0 +1,32 @@
+name: Trigger dashboard motion stability
+
+on:
+  push:
+    branches:
+      - work/dashboard-motion-stability-20260901
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Execute staged refactor
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, textwrap
+          source=Path('.github/workflows/apply-dashboard-motion-stability.yml').read_text(encoding='utf-8')
+          match=re.search(r'\n        run: \|\n(.*)\Z',source,re.S)
+          if not match:
+              raise SystemExit('staged run block not found')
+          script=textwrap.dedent(match.group(1))
+          script=script.replace('rm -f .github/workflows/apply-dashboard-motion-stability.yml','rm -f .github/workflows/apply-dashboard-motion-stability.yml .github/workflows/apply-dashboard-motion-stability-v2.yml')
+          Path('/tmp/apply-dashboard.sh').write_text(script,encoding='utf-8')
+          PY
+          bash /tmp/apply-dashboard.sh
