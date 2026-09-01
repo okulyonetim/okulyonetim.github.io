@@ -1,0 +1,56 @@
+name: Apply exam mobile visibility v2
+
+on:
+  push:
+    branches:
+      - work/exam-mobile-visibility-20260901
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Transform and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          python .github/scripts/apply_exam_mobile_visibility.py
+          git diff --check
+          node --check js/modules/academic.js
+          node --check js/app-loader.js
+          node --test tests/academic-separate-pages.test.js
+          node --test tests/trial-auto-timer.test.js
+          node --test tests/classic-shell-v2-smoke.test.js
+          node --test tests/module-bundles-smoke.test.js
+          node --test tests/modules-local-first-boundary.test.js
+          node --test tests/service-worker-precache-smoke.test.js
+      - name: Build clean final branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS='js/modules/academic.js css/design-system.css index.html js/app-loader.js service-worker.js tests/academic-separate-pages.test.js tests/classic-shell-v2-smoke.test.js'
+          git diff -- $TARGETS > /tmp/exam-mobile.patch
+          test -s /tmp/exam-mobile.patch
+          git reset --hard origin/main
+          git clean -fd
+          git checkout -B work/exam-mobile-visibility-final-20260901 origin/main
+          git apply /tmp/exam-mobile.patch
+          git diff --check
+          node --check js/modules/academic.js
+          node --check js/app-loader.js
+          node --test tests/academic-separate-pages.test.js
+          node --test tests/trial-auto-timer.test.js
+          node --test tests/classic-shell-v2-smoke.test.js
+          node --test tests/module-bundles-smoke.test.js
+          node --test tests/modules-local-first-boundary.test.js
+          node --test tests/service-worker-precache-smoke.test.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add $TARGETS
+          git commit -m 'fix: restore visible exam records on mobile'
+          git push --force origin HEAD:work/exam-mobile-visibility-final-20260901
