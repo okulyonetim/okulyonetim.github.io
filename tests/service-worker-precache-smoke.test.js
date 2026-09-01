@@ -4,9 +4,9 @@ const sw = fs.readFileSync('service-worker.js', 'utf8');
 
 assert(/const CACHE_ADI\s*=\s*'oy-cache-v\d+'/.test(sw), 'Service Worker sürümlü cache anahtarı kullanmalı.');
 const loader = fs.readFileSync('js/app-loader.js', 'utf8');
-assert(sw.includes("const CACHE_ADI='oy-cache-v836'"), 'Yeni runtime ayrı v835 cache anahtarı kullanmalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v837'"), 'Yeni runtime ayrı v835 cache anahtarı kullanmalı.');
 assert(sw.includes("self.clients.matchAll({type:'window',includeUncontrolled:true})")&&sw.includes('client.navigate(client.url)'), 'Yeni Service Worker eski runtime kullanan açık PWA pencerelerini yeni belgeye taşımalı.');
-assert(loader.includes("register('./service-worker.js?v=836',{updateViaCache:'none'})")&&loader.includes('await reg.update()'), 'AppLoader Service Worker güncellemesini HTTP cache dışından zorlamalı.');
+assert(loader.includes("register('./service-worker.js?v=837',{updateViaCache:'none'})")&&loader.includes('await reg.update()'), 'AppLoader Service Worker güncellemesini HTTP cache dışından zorlamalı.');
 for (const f of [
   './index.html',
   './manifest.json',

@@ -44,7 +44,7 @@ for(const token of ['kaAcademicCalendarOverlay','AkademikTakvimService.gorselYuk
 assert(academic.includes("page==='calendar'"),'Akademik Takvim yalnız academic/calendar sayfasında otomatik açılmalı.');
 assert(academic.includes('calendarAdmin()'),'Takvim görseli değiştirme yönetici sınırında kalmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem'])assert(!academic.includes(forbidden),`Academic UI doğrudan legacy veri erişimi yapmamalı: ${forbidden}`);
-assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=836'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
+assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=837'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
 assert(!loader.includes('academic-calendar-parity.js'),'Academic loader ayrı takvim parity dosyası yüklememeli.');
 assert(loader.includes("name==='academic'||name==='communication'||name==='documents'"),'Academic açıldığında Firebase Storage örneği merkezi loader tarafından hazırlanmalı.');
 assert(build.includes("'academic.js':['js/modules/academic.js']"),'Academic üretim bundle tek canonical kaynak kullanmalı.');
@@ -53,8 +53,12 @@ assert(!build.includes('academic-calendar-parity.js'),'Academic bundle üretimi 
 console.log('Ders-sınıf yıllık plan doğrudan açma sözleşmesi başarılı.');
 console.log('Akademik Takvim tam ekran poster + admin yükleme + çevrimdışı Cache Storage paritesi başarılı.');
 
-assert(academic.includes('function stabilizeExamRecords(out,count)')&&academic.includes('page.insertBefore(list,summary)')&&academic.includes("requestAnimationFrame(()=>stabilizeExamRecords(out,r.count))")&&academic.includes("academicRecordsVisible='true'"),'Yazılı/Deneme gerçek kayıt listesi ilk ve son boyamada görünür kalmalı.');
-assert(css.includes('ACADEMIC EXAM MOBILE VISIBILITY — CANONICAL')&&css.includes('.ka-written-page,.ka-trial-page{display:flex!important')&&css.includes('.ka-written-list,.ka-trial-list{display:grid!important')&&css.includes('grid-template-columns:repeat(3,minmax(0,1fr))!important'),'Sınav çalışma alanı ve kayıt listesi mobilde çökmemeli; özetler kompakt üçlü düzen kullanmalı.');
+const academicUi=academic.split('/* ========================= ACADEMIC UI ========================= */')[1]||'';
+assert(academicUi&&!/\bglobal\./.test(academicUi),'Academic UI browser scope içinde tanımsız global.* kullanmamalı.');
+assert(academicUi.includes("globalThis.PermissionService?.can?.('academic.exams.edit','edit')"),'Sınav düzenleme yetkisi browser-safe globalThis üzerinden okunmalı.');
+assert(!academic.includes('stabilizeExamRecords('),'Sınav görünürlüğü runtime DOM/style yamasıyla zorlanmamalı.');
+assert(!css.includes('ACADEMIC EXAM MOBILE VISIBILITY — CANONICAL')&&!css.includes('.ka-written-card,.ka-trial-card{width:100%!important'),'Sınav görünürlüğü !important yamasıyla sahiplenilmemeli.');
+assert(css.includes('.ka-written-list{display:grid;gap:10px}')&&css.includes('.ka-trial-list{display:grid;gap:10px}')&&css.includes('.ka-written-page,.ka-trial-page{width:100%;min-width:0}'),'Yazılı/Deneme listeleri tek merkezi design-system CSS akışında görünür kalmalı.');
 const productionShell=fs.readFileSync('index.html','utf8');
-assert(productionShell.includes('css/design-system.css?v=836')&&productionShell.includes('js/app-loader.js?v=836'),'Sınav görünürlük düzeltmesi eski PWA asset cache tarafından maskelenmemeli.');
+assert(productionShell.includes('css/design-system.css?v=837')&&productionShell.includes('js/app-loader.js?v=837'),'Academic scope düzeltmesi eski PWA cache tarafından maskelenmemeli.');
 console.log('Academic ayrı sayfa + deneme sayacı + sonuç filtreleme sözleşmesi başarılı.');
