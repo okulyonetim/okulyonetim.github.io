@@ -1,45 +1,11 @@
-name: Run shell UX patch
+name: Temporary shell UX runner disabled
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/run-shell-ux-patch.yml'
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
-  apply:
+  disabled:
+    if: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Extract and run canonical patch
-        shell: bash
-        run: |
-          awk '/python3 - <<'\''PY'\''/{flag=1;next} /^[[:space:]]+PY$/{if(flag){exit}} flag{sub(/^          /,"");print}' .github/workflows/apply-shell-ux-upgrade.yml > /tmp/shell_patch.py
-          test -s /tmp/shell_patch.py
-          echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCnAgPSBQYXRoKCcvdG1wL3NoZWxsX3BhdGNoLnB5JykKcyA9IHAucmVhZF90ZXh0KGVuY29kaW5nPSd1dGYtOCcpCm1hcmtlciA9ICJvbGRfc2FtZSA9ICIKaWYgbWFya2VyIG5vdCBpbiBzOgogICAgcmFpc2UgU3lzdGVtRXhpdCgib2xkX3NhbWUgbWFya2VyIG5vdCBmb3VuZCIpCm92ZXJyaWRlID0gJycnZGVmIHN1Yl9vbmNlKHBhdHRlcm4sIHJlcGxhY2VtZW50LCBsYWJlbCk6CiAgICBnbG9iYWwgdGV4dAogICAgYm91bmRzID0gewogICAgICAgICJwcm9maWxlIGJsb2NrIjogKCJmdW5jdGlvbiBsaW5rZWRUZWFjaGVyKCkiLCAiZnVuY3Rpb24gY3VycmVudFRoZW1lKCkiKSwKICAgICAgICAic2VhcmNoIGFuZCBxdWljay1ub3RlIGNsb3NlIGJsb2NrIjogKCJmdW5jdGlvbiBzZWxlY3RlZFNldCgiLCAiZnVuY3Rpb24gb3BlblRleHRRdWlja05vdGUoKSIpLAogICAgICAgICJxdWljayBub3RlIGxhdW5jaGVyIjogKCJmdW5jdGlvbiBvcGVuUXVpY2tOb3RlKCkiLCAiZnVuY3Rpb24gaG9tZSh7cmVtZW1iZXI9dHJ1ZX09e30pIiksCiAgICB9CiAgICBpZiBsYWJlbCBpbiBib3VuZHM6CiAgICAgICAgc3RhcnRfbWFya2VyLCBlbmRfbWFya2VyID0gYm91bmRzW2xhYmVsXQogICAgICAgIHN0YXJ0ID0gdGV4dC5maW5kKHN0YXJ0X21hcmtlcikKICAgICAgICBlbmQgPSB0ZXh0LmZpbmQoZW5kX21hcmtlciwgc3RhcnQgKyAxKQogICAgICAgIGlmIHN0YXJ0IDwgMCBvciBlbmQgPCAwOgogICAgICAgICAgICByYWlzZSBTeXN0ZW1FeGl0KGYie2xhYmVsfTogbWFya2VyIGJvdW5kYXJ5IG5vdCBmb3VuZCIpCiAgICAgICAgdGV4dCA9IHRleHRbOnN0YXJ0XSArIHJlcGxhY2VtZW50ICsgdGV4dFtlbmQ6XQogICAgICAgIHJldHVybgogICAgbmV3LCBjb3VudCA9IHJlLnN1Ym4ocGF0dGVybiwgbGFtYmRhIF9tOiByZXBsYWNlbWVudCwgdGV4dCwgY291bnQ9MSwgZmxhZ3M9cmUuUykKICAgIGlmIGNvdW50ICE9IDE6CiAgICAgICAgcmFpc2UgU3lzdGVtRXhpdChmIntsYWJlbH06IGV4cGVjdGVkIDEgcmVwbGFjZW1lbnQsIGdvdCB7Y291bnR9IikKICAgIHRleHQgPSBuZXcKJycnCnMgPSBzLnJlcGxhY2UobWFya2VyLCBvdmVycmlkZSArICJcbiIgKyBtYXJrZXIsIDEpCnAud3JpdGVfdGV4dChzLCBlbmNvZGluZz0ndXRmLTgnKQo=' | base64 -d > /tmp/fix_shell_patch.py
-          python3 /tmp/fix_shell_patch.py
-          python3 /tmp/shell_patch.py
-
-      - name: Validate JavaScript and focused regressions
-        shell: bash
-        run: |
-          node --check js/core/shell-ui.js
-          node --test tests/quick-note-launcher.test.js tests/classic-shell-v2-smoke.test.js tests/sinav-islemleri-owner-rules.test.js tests/ders-programi-role-rules.test.js
-          node scripts/check-client-architecture.mjs
-
-      - name: Commit canonical changes
-        shell: bash
-        run: |
-          rm -f .github/workflows/apply-shell-ux-upgrade.yml .github/workflows/run-shell-ux-patch.yml
-          git config user.name 'koruk-asistan-bot'
-          git config user.email 'actions@users.noreply.github.com'
-          git add js/core/shell-ui.js .github/workflows/apply-shell-ux-upgrade.yml .github/workflows/run-shell-ux-patch.yml
-          git commit -m 'feat: personalize profile search and navigation UX'
-          git push origin HEAD:main
+      - run: echo disabled
