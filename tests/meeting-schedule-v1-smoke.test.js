@@ -23,5 +23,9 @@ assert(page.includes("function levelChooser(){if(draft.kademe!=='ilkokul'||draft
 assert(page.includes("function branchChooser(){if(draft.kademe!=='ortaokul'||draft.tur!=='zumre')return''"),'Ortaokul zümresi branş bazlı olmalı.');
 for(const selector of ['.ka-meeting-page{','.ka-meeting-segmented{','.ka-meeting-chip{','.ka-meeting-item{','.ka-meeting-report{']) assert(design.includes(selector),`Merkezi toplantı stili eksik: ${selector}`);
 assert(sw.includes("'./js/modules/meeting-schedule.js'"),'Yeni sayfa offline shell içinde olmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v851';"),'Toplantı sayfası cache sürümünü yükseltmeli.');
+assert(page.includes("root.onclick=handleClick")&&page.includes("root.onchange=handleChange")&&page.includes("root.oninput=handleInput"),'Toplantı formu yeniden çizimlere dayanıklı delegated event kullanmalı.');
+assert(page.includes("data-meeting-form-message")&&page.includes("formMessage=err;render()"),'Doğrulama hatası form içinde görünür olmalı.');
+assert(page.includes("'+ Satırı Ekle'")&&page.includes("save({keepReady:true})"),'Yeni Satır gerçek kayıt ekleme davranışına bağlı olmalı.');
+assert(!page.includes("root.querySelector('[data-meeting-new]')?.addEventListener('click',()=>{const keep=draft.kademe;editingId='';draft=blankDraft(keep);render()})"),'Yeni Satır yalnız form sıfırlamamalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v852';"),'Toplantı eylem düzeltmesi cache sürümünü yükseltmeli.');
 console.log('Meeting Schedule V1 local-first + mobile + report sözleşmesi başarılı.');
