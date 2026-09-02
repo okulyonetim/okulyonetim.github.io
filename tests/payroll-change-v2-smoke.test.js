@@ -1,7 +1,9 @@
 const fs=require('fs');
 const assert=require('assert');
+const vm=require('vm');
 
 const src=fs.readFileSync('js/modules/payroll-change.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
 const personnelDocs=fs.readFileSync('js/modules/personnel-documents.js','utf8');
 const appLoader=fs.readFileSync('js/app-loader.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
@@ -15,17 +17,32 @@ assert(sw.includes("'./js/modules/payroll-change.js'"),'V2 maaş formu offline S
 assert(shellUi.includes("loadScript?.('js/modules/payroll-change.js')"),'V2 maaş formu özel route üzerinden ihtiyaç anında lazy yüklenmeli.');
 assert(src.includes("rows('ogretmenler')"),'Maaş formu öğretmenleri AppStore/DeviceData kaynağından almalı.');
 assert(src.includes("rows('personel')"),'Maaş formu diğer personeli gerçek Management personel kaynağından almalı.');
-for(const section of ["B:[],C:[]","D:r.map","E:r.map","F:r.map","G:r.map","H:r.map"]) assert(src.includes(section),`Eski A-H veri modeli korunmalı: ${section}`);
+for(const section of ["B:[],C:[],D:[],E:[],F:[],G:[],H:[]","B:{title:","C:{title:","D:{title:","E:{title:","F:{title:","G:{title:","H:{title:"]) assert(src.includes(section),`A-H veri modeli korunmalı ve yalnız seçilen kişiler eklenmeli: ${section}`);
+for(const token of ["<optgroup label=\"Öğretmenler\">","<optgroup label=\"Diğer Personel\">","data-payroll-picker","data-payroll-add-person","kaynakId:r.id","Bu kişi bölüme zaten eklendi.","Object.keys(SECTION_META).map(sectionCard)"]) assert(src.includes(token),`Tüm öğretmen/personel seçme ve ekleme sözleşmesi eksik: ${token}`);
+assert(!src.includes('D:r.map')&&!src.includes('data-payroll-toggle'),'Tüm kadro gizli kart olarak önceden oluşturulmamalı.');
+for(const selector of ['.ka-payroll-page','.ka-payroll-header','.ka-payroll-metrics','.ka-payroll-section','.ka-payroll-picker','.ka-payroll-person-card','.ka-payroll-actions','[data-theme="dark"] .ka-payroll-page','@media(max-width:760px)']) assert(css.includes(selector),`Maaş değişikliği tasarım sözleşmesi eksik: ${selector}`);
 assert(src.includes("PermissionService?.can?.('documents.view','preview')"),'Form görüntüleme yetkisi merkezi PermissionService ile yönetilmeli.');
 assert(src.includes("PermissionService?.can?.('documents.edit','edit')"),'Form düzenleme yetkisi merkezi PermissionService ile yönetilmeli.');
 assert(src.includes('function open(){if(!canView())'),'Doğrudan Payroll API açılışı documents.view sınırını aşmamalı.');
-assert(src.includes('function render(root=document.getElementById(\'v2ModuleRoot\')){if(!root)return false;if(!canView())'),'Render girişinde de görüntüleme sınırı korunmalı.');
+assert(/function render\(root=document\.getElementById\('v2ModuleRoot'\)\)\s*\{\s*if\(!root\)return false;\s*if\(!canView\(\)\)/.test(src),'Render girişinde de görüntüleme sınırı korunmalı.');
 assert(src.includes('function print(){if(!canView())'),'Rapor çıktısı görüntüleme yetkisini aşmamalı.');
 assert(src.includes("ReportEngine.printReport('Maaş Değişikliği Bildirim Formu'"),'Çıktı merkezi ReportEngine kullanmalı.');
 assert(src.includes("yon:'yatay'"),'Maaş formu A4 yatay çıktı üretmeli.');
 assert(src.includes("data-document-form='payroll'")||src.includes("dataset.documentForm='payroll'"),'Documents ekranına maaş formu girişi eklenmeli.');
 for(const forbidden of ['db.collection','onSnapshot','localStorage','document.createElement(\'style\')','document.createElement("style")']) assert(!src.includes(forbidden),`V2 maaş formu ${forbidden} kullanmamalı.`);
 assert(!src.includes('style="'),'V2 maaş formu inline CSS üretmemeli; design-system.css kullanılmalı.');
+
+const runtimeAddButton={dataset:{payrollAddPerson:'D'},onclick:null},runtimePicker={value:'o_t1'};
+const runtimeRoot={innerHTML:'',querySelector:selector=>selector==='[data-payroll-picker="D"]'?runtimePicker:null,querySelectorAll:selector=>selector==='[data-payroll-add-person]'?[runtimeAddButton]:[]};
+const runtime={console,requestAnimationFrame:fn=>fn(),document:{getElementById:()=>runtimeRoot,querySelector:()=>null,createElement:()=>({})},AppStore:{data:type=>type==='ogretmenler'?[{id:'t1',ad:'Ayşe',soyad:'Yılmaz',brans:'Türkçe'},{id:'t2',ad:'Mehmet',soyad:'Kaya',brans:'Matematik'}]:type==='personel'?[{id:'p1',adSoyad:'Fatma Demir',gorev:'Hizmetli'}]:[]},PermissionService:{can:()=>true,applyModule:()=>{}},addEventListener:()=>{},toast:()=>{}};
+runtime.window=runtime;
+vm.runInNewContext(src,runtime);
+assert(runtime.PayrollChangeModule.open(),'Maaş değişikliği modülü örnek AppStore verisiyle açılmalı.');
+for(const name of ['Ayşe Yılmaz · Türkçe','Mehmet Kaya · Matematik','Fatma Demir · Hizmetli']) assert(runtimeRoot.innerHTML.includes(name),`Açılır listede gerçek kadro seçeneği eksik: ${name}`);
+assert(!runtimeRoot.innerHTML.includes('ka-payroll-person-card'),'Seçim yapılmadan öğretmen/personel kartı oluşturulmamalı.');
+assert.strictEqual(typeof runtimeAddButton.onclick,'function','Ekle düğmesi çalışma davranışına bağlanmalı.');
+runtimeAddButton.onclick();
+assert(runtimeRoot.innerHTML.includes('ka-payroll-person-card')&&runtimeRoot.innerHTML.includes('Ayşe Yılmaz'),'Seçilen öğretmen ilgili bölüme eklenip düzenleme kartı oluşturmalı.');
 
 assert(!index.includes('<script src="js/modules/personnel-documents.js" defer></script>'),'Diploma belge adaptörü ilk açılışta eager yüklenmemeli.');
 assert(sw.includes("'./js/modules/personnel-documents.js'"),'Diploma belge adaptörü offline Service Worker cache içinde bulunmalı.');
