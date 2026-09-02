@@ -1,0 +1,34 @@
+name: One-shot Meeting Actions Fix
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/one-shot-meeting-actions-fix.yml
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply fix
+        run: python3 .github/scripts/fix-meeting-actions.py
+      - name: Validate
+        run: |
+          node --check js/modules/meeting-schedule.js
+          node tests/meeting-schedule-v1-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+      - name: Commit fix
+        run: |
+          rm .github/workflows/one-shot-meeting-actions-fix.yml
+          rm .github/scripts/fix-meeting-actions.py
+          git config user.name "sedonet23"
+          git config user.email "sedonet23@gmail.com"
+          git add js/modules/meeting-schedule.js tests/meeting-schedule-v1-smoke.test.js service-worker.js .github/workflows/one-shot-meeting-actions-fix.yml .github/scripts/fix-meeting-actions.py
+          git commit -m "fix: repair meeting schedule actions"
+          git push origin main
