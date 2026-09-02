@@ -1,9 +1,10 @@
 name: One-shot Meeting Schedule Integration
-on:
+"on":
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - '.github/workflows/one-shot-meeting-schedule.yml'
+      - .github/workflows/one-shot-meeting-schedule.yml
 permissions:
   contents: write
 jobs:
@@ -14,70 +15,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Integrate meeting schedule
-        shell: bash
-        run: |
-          python3 <<'PY'
-          from pathlib import Path
-
-          def replace_once(path, old, new):
-              p=Path(path); s=p.read_text(encoding='utf-8')
-              if old not in s:
-                  raise SystemExit(f'Pattern not found in {path}: {old[:100]}')
-              p.write_text(s.replace(old,new,1),encoding='utf-8')
-
-          replace_once('js/firebase-init.js',
-            "ogretmenListeSablon:'oy_ogretmenListeSablon', ogretmenListeKayit:'oy_ogretmenListeKayit'",
-            "ogretmenListeSablon:'oy_ogretmenListeSablon', ogretmenListeKayit:'oy_ogretmenListeKayit', toplantiCizelgesi:'oy_toplantiCizelgesi'")
-
-          replace_once('js/app-loader.js',
-            "['Dilekçe & İzinler','📄','management','dilekce'],['Devamsızlık Çizelgesi','📅','tools','attendance']",
-            "['Dilekçe & İzinler','📄','management','dilekce'],['Toplantı Çizelgesi','📅','management','meeting-schedule'],['Devamsızlık Çizelgesi','📅','tools','attendance']")
-
-          replace_once('js/app-loader.js',
-            "  window.ShellUI.registerPageRoute('diploma-request',diplomaRoute('request'));\n  window.ShellUI.registerPageRoute('diploma-response',diplomaRoute('response'));\n  return true;",
-            "  const meetingRoute=async({root})=>{window.ManagementModule?.unmount?.();if(!window.ReportEngine?.printReport)await loadScript('js/modules/report-engine.js');if(!window.MeetingSchedulePage?.open)await loadScript('js/modules/meeting-schedule.js');if(!window.MeetingSchedulePage?.open)throw new Error('meeting-schedule-load');return window.MeetingSchedulePage.open(root)};\n  window.ShellUI.registerPageRoute('diploma-request',diplomaRoute('request'));\n  window.ShellUI.registerPageRoute('diploma-response',diplomaRoute('response'));\n  window.ShellUI.registerPageRoute('meeting-schedule',meetingRoute);\n  return true;")
-
-          replace_once('js/core/shell-ui.js',
-            "['Devamsızlık Çizelgesi','📅','tools','attendance']],subLabel:'Diğer İdari İşler'",
-            "['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler'")
-
-          rules=Path('firestore.rules'); r=rules.read_text(encoding='utf-8')
-          anchor="""    match /oy_dilekceler/{id} {
-      allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('personel');
-    }
-"""
-          block=anchor+"""
-    match /oy_toplantiCizelgesi/{id} {
-      allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('personel');
-    }
-"""
-          if anchor not in r: raise SystemExit('firestore dilekceler anchor not found')
-          rules.write_text(r.replace(anchor,block,1),encoding='utf-8')
-
-          css=Path('css/design-system.css'); c=css.read_text(encoding='utf-8')
-          if '/* TOPLANTI ÇİZELGESİ */' not in c:
-              c += r'''
-
-/* TOPLANTI ÇİZELGESİ */
-.ka-meeting-page{width:100%;max-width:920px;margin:0 auto;gap:16px}.ka-meeting-page__intro{display:grid;gap:4px}.ka-meeting-form-card{overflow:hidden}.ka-meeting-form-card .ka-card__body{gap:16px}.ka-meeting-segmented{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:4px;border:1px solid var(--ka-border);border-radius:14px;background:var(--ka-muted-bg)}.ka-meeting-segmented:has([data-meeting-type]){grid-template-columns:repeat(3,minmax(0,1fr))}.ka-meeting-segment{min-height:42px;border:0;border-radius:10px;background:transparent;color:var(--ka-text);font-weight:750;cursor:pointer}.ka-meeting-segment.is-active{background:var(--ka-button-bg);color:var(--ka-button-text);box-shadow:var(--ka-shadow-sm)}.ka-meeting-chips,.ka-meeting-class-grid{display:flex;flex-wrap:wrap;gap:8px}.ka-meeting-chip{min-height:38px;padding:7px 13px;border:1px solid var(--ka-input-border);border-radius:12px;background:var(--ka-input-bg);color:var(--ka-text);font-weight:700;cursor:pointer}.ka-meeting-chip:hover{border-color:var(--ka-border-strong);background:var(--ka-muted-bg)}.ka-meeting-chip.is-active{border-color:var(--ka-primary);background:var(--ka-primary-soft);color:var(--ka-primary)}.ka-meeting-chip--all{min-width:112px}.ka-meeting-form-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ka-meeting-list{gap:10px}.ka-meeting-item{overflow:hidden}.ka-meeting-item .ka-card__body{display:grid;gap:10px}.ka-meeting-item__top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.ka-meeting-item__date{white-space:nowrap;color:var(--ka-text-muted);font-size:13px;font-weight:700}.ka-meeting-item__meta{display:flex;flex-wrap:wrap;gap:6px 10px;color:var(--ka-text-muted);font-size:13px}.ka-meeting-item__meta span{display:inline-flex;align-items:center}.ka-meeting-item__meta span+span:before{content:'•';margin-right:10px;color:var(--ka-border-strong)}.ka-meeting-item__actions{display:flex;justify-content:flex-end;gap:6px;border-top:1px solid var(--ka-border);padding-top:8px}.ka-meeting-delete{color:var(--ka-danger)!important}.ka-meeting-badge{display:inline-flex;align-items:center;min-height:25px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800}.ka-meeting-badge--sok{background:color-mix(in srgb,var(--ka-success) 15%,transparent);color:var(--ka-success)}.ka-meeting-badge--zumre{background:color-mix(in srgb,var(--ka-info) 15%,transparent);color:var(--ka-info)}.ka-meeting-badge--diger{background:color-mix(in srgb,var(--ka-warning) 16%,transparent);color:var(--ka-warning)}.ka-meeting-report-button{width:100%;min-height:48px}.ka-meeting-report{font-family:var(--ka-report-font);color:var(--ka-report-text)}.ka-meeting-report>h1{text-align:center;color:#000;font-size:14pt;margin:0 0 12px}.ka-meeting-report__table{width:100%;font-size:8pt}.ka-meeting-report__table th,.ka-meeting-report__table td{vertical-align:middle}.ka-meeting-report__signatures{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:28px;text-align:center}.ka-meeting-report__signatures>div{display:grid;justify-items:center;gap:5px;min-height:70px}.ka-meeting-report__signatures span{min-width:160px;border-top:1px solid #000;padding-top:5px;margin-top:24px}.ka-meeting-report__signatures small{font-size:8pt}
-@media(max-width:720px){.ka-meeting-page{gap:12px}.ka-meeting-page__intro h2{font-size:21px}.ka-meeting-form-card .ka-card__body{padding:14px;gap:14px}.ka-meeting-date-grid{grid-template-columns:1fr 1fr}.ka-meeting-segment{min-height:40px;padding-inline:7px;font-size:13px}.ka-meeting-chip{min-height:36px;padding:6px 11px;font-size:13px}.ka-meeting-item .ka-card__body{padding:13px}.ka-meeting-item__top{display:grid;gap:7px}.ka-meeting-item__date{font-size:12px}.ka-meeting-item__actions .ka-btn{min-height:34px}.ka-meeting-report-button{position:sticky;bottom:calc(var(--ka-bottom-nav-height) + var(--ka-safe-bottom) + 8px);z-index:3;box-shadow:var(--ka-shadow-md)}}
-@media(max-width:420px){.ka-meeting-form-actions{grid-template-columns:1fr}.ka-meeting-date-grid{grid-template-columns:1fr 1fr;gap:8px}.ka-meeting-class-grid{gap:6px}.ka-meeting-chip{padding-inline:9px}.ka-meeting-segmented{gap:5px}.ka-meeting-item__meta{display:grid;gap:3px}.ka-meeting-item__meta span+span:before{content:none}}
-'''
-          css.write_text(c,encoding='utf-8')
-
-          sw=Path('service-worker.js'); s=sw.read_text(encoding='utf-8')
-          if "const CACHE_ADI='oy-cache-v850';" not in s: raise SystemExit('cache v850 not found')
-          s=s.replace("const CACHE_ADI='oy-cache-v850';","const CACHE_ADI='oy-cache-v851';",1)
-          old="'./js/modules/payroll-change.js','./js/modules/personnel-documents.js','./js/modules/assistant.js'"
-          new="'./js/modules/payroll-change.js','./js/modules/personnel-documents.js','./js/modules/meeting-schedule.js','./js/modules/assistant.js'"
-          if old not in s: raise SystemExit('service worker module anchor not found')
-          sw.write_text(s.replace(old,new,1),encoding='utf-8')
-          PY
-      - name: Validate meeting schedule
-        shell: bash
+      - name: Apply integration
+        run: python3 .github/scripts/apply-meeting-schedule.py
+      - name: Validate
         run: |
           node --check js/modules/meeting-schedule.js
           node --check js/app-loader.js
@@ -87,11 +27,11 @@ jobs:
           node tests/modules-local-first-boundary.test.js
           node tests/service-worker-precache-smoke.test.js
       - name: Commit integration
-        shell: bash
         run: |
           rm .github/workflows/one-shot-meeting-schedule.yml
+          rm .github/scripts/apply-meeting-schedule.py
           git config user.name "sedonet23"
           git config user.email "sedonet23@gmail.com"
-          git add js/firebase-init.js js/app-loader.js js/core/shell-ui.js css/design-system.css service-worker.js firestore.rules .github/workflows/one-shot-meeting-schedule.yml
+          git add js/modules/meeting-schedule.js js/firebase-init.js js/app-loader.js js/core/shell-ui.js css/design-system.css service-worker.js firestore.rules .github/workflows/one-shot-meeting-schedule.yml .github/scripts/apply-meeting-schedule.py
           git commit -m "feat: integrate meeting schedule under personnel menu"
           git push origin main
