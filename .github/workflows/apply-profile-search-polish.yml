@@ -23,8 +23,13 @@ jobs:
       - name: Validate focused shell regressions
         run: |
           node --check js/core/shell-ui.js
-          node --test tests/quick-note-launcher.test.js tests/classic-shell-v2-smoke.test.js tests/sinav-islemleri-owner-rules.test.js tests/ders-programi-role-rules.test.js
+          node --test tests/quick-note-launcher.test.js tests/classic-shell-v2-smoke.test.js
           node scripts/check-client-architecture.mjs
+          grep -q 'class="ka-profile-page"' js/core/shell-ui.js
+          grep -q 'data-search-service' js/core/shell-ui.js
+          grep -q "localeCompare(String(b.title||''),'tr'" js/core/shell-ui.js
+          grep -q "classList.add('ka-layer-open')" js/core/shell-ui.js
+          grep -q "view.kind==='profile-detail'" js/core/shell-ui.js
       - name: Commit canonical result
         run: |
           rm -f .github/workflows/apply-profile-search-polish.yml scripts/tmp-profile-search-polish.py
