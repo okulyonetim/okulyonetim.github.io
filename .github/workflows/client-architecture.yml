@@ -135,6 +135,8 @@ jobs:
         run: node tests/lazy-document-libs-smoke.test.js
       - name: Verify V2 payroll change form
         run: node tests/payroll-change-v2-smoke.test.js
+      - name: Verify Diploma form focus
+        run: node tests/personnel-documents-focus-smoke.test.js
       - name: Verify V2 AI assistant
         run: node tests/assistant-v2-smoke.test.js
       - name: Verify V2 legislation engine
