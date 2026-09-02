@@ -28,13 +28,16 @@ assert(/function render\(root=document\.getElementById\('v2ModuleRoot'\)\)\s*\{\
 assert(src.includes('function print(){if(!canView())'),'Rapor çıktısı görüntüleme yetkisini aşmamalı.');
 assert(src.includes("ReportEngine.printReport('Maaş Değişikliği Bildirim Formu'"),'Çıktı merkezi ReportEngine kullanmalı.');
 assert(src.includes("yon:'yatay'"),'Maaş formu A4 yatay çıktı üretmeli.');
+for(const token of ['ka-payroll-report__identity','ka-payroll-report__summary','ka-payroll-report__promotion','MAAŞ DEĞİŞİKLİĞİ YAPILACAK PERSONELİN','7 Günü Geçen Kesinti Yapılacak Gün Sayısı','ka-payroll-report__approval','Olur/Kurum Yetkilisinin','principalName(school)']) assert(src.includes(token),`Referans resmî maaş raporu sözleşmesi eksik: ${token}`);
+for(const option of ['baslikGoster:false','logoGoster:false','tarihGoster:false','compact:true','kenarBosluk:8','fontSize:7']) assert(src.includes(option),`Referans şablona özel baskı ayarı eksik: ${option}`);
+for(const selector of ['.ka-report .ka-payroll-report__title','.ka-report .ka-payroll-report__section-title th','.ka-report .ka-payroll-report__approval','.ka-report .ka-payroll-report__approval dl div','.ka-report .ka-payroll-report__approval dt::after']) assert(css.includes(selector),`Maaş raporu hizalama stili eksik: ${selector}`);
 assert(src.includes("data-document-form='payroll'")||src.includes("dataset.documentForm='payroll'"),'Documents ekranına maaş formu girişi eklenmeli.');
 for(const forbidden of ['db.collection','onSnapshot','localStorage','document.createElement(\'style\')','document.createElement("style")']) assert(!src.includes(forbidden),`V2 maaş formu ${forbidden} kullanmamalı.`);
 assert(!src.includes('style="'),'V2 maaş formu inline CSS üretmemeli; design-system.css kullanılmalı.');
 
 const runtimeAddButton={dataset:{payrollAddPerson:'D'},onclick:null},runtimePicker={value:'o_t1'};
 const runtimeRoot={innerHTML:'',querySelector:selector=>selector==='[data-payroll-picker="D"]'?runtimePicker:null,querySelectorAll:selector=>selector==='[data-payroll-add-person]'?[runtimeAddButton]:[]};
-const runtime={console,requestAnimationFrame:fn=>fn(),document:{getElementById:()=>runtimeRoot,querySelector:()=>null,createElement:()=>({})},AppStore:{data:type=>type==='ogretmenler'?[{id:'t1',ad:'Ayşe',soyad:'Yılmaz',brans:'Türkçe'},{id:'t2',ad:'Mehmet',soyad:'Kaya',brans:'Matematik'}]:type==='personel'?[{id:'p1',adSoyad:'Fatma Demir',gorev:'Hizmetli'}]:[]},PermissionService:{can:()=>true,applyModule:()=>{}},addEventListener:()=>{},toast:()=>{}};
+const runtime={console,requestAnimationFrame:fn=>fn(),document:{getElementById:()=>runtimeRoot,querySelector:()=>null,createElement:()=>({})},AppStore:{data:type=>type==='ogretmenler'?[{id:'t1',ad:'Ayşe',soyad:'Yılmaz',brans:'Türkçe'},{id:'t2',ad:'Mehmet',soyad:'Kaya',brans:'Matematik'}]:type==='personel'?[{id:'p1',adSoyad:'Fatma Demir',gorev:'Hizmetli'}]:type==='okulBilgileri'?[{id:'ayarlar',okulAdi:'Koruk Ortaokulu',mudurId:'t2'}]:[]},PermissionService:{can:()=>true,applyModule:()=>{}},addEventListener:()=>{},toast:()=>{}};
 runtime.window=runtime;
 vm.runInNewContext(src,runtime);
 assert(runtime.PayrollChangeModule.open(),'Maaş değişikliği modülü örnek AppStore verisiyle açılmalı.');
@@ -43,6 +46,9 @@ assert(!runtimeRoot.innerHTML.includes('ka-payroll-person-card'),'Seçim yapılm
 assert.strictEqual(typeof runtimeAddButton.onclick,'function','Ekle düğmesi çalışma davranışına bağlanmalı.');
 runtimeAddButton.onclick();
 assert(runtimeRoot.innerHTML.includes('ka-payroll-person-card')&&runtimeRoot.innerHTML.includes('Ayşe Yılmaz'),'Seçilen öğretmen ilgili bölüme eklenip düzenleme kartı oluşturmalı.');
+const report=runtime.PayrollChangeModule.reportBody();
+assert(report.includes('KORUK ORTAOKULU')&&report.includes('Mehmet Kaya'),'Rapor okul adını ve okul müdürünü merkezi okul ayarlarından çözmeli.');
+assert(report.includes('ka-payroll-report__promotion')&&report.includes('ka-payroll-report__approval'),'Rapor boş durumda da referanstaki ana tabloları ve hizalı onay bloğunu üretmeli.');
 
 assert(!index.includes('<script src="js/modules/personnel-documents.js" defer></script>'),'Diploma belge adaptörü ilk açılışta eager yüklenmemeli.');
 assert(sw.includes("'./js/modules/personnel-documents.js'"),'Diploma belge adaptörü offline Service Worker cache içinde bulunmalı.');
