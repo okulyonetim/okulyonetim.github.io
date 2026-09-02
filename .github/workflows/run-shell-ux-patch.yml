@@ -23,6 +23,7 @@ jobs:
         run: |
           awk '/python3 - <<'\''PY'\''/{flag=1;next} /^[[:space:]]+PY$/{if(flag){exit}} flag{sub(/^          /,"");print}' .github/workflows/apply-shell-ux-upgrade.yml > /tmp/shell_patch.py
           test -s /tmp/shell_patch.py
+          python3 -c "from pathlib import Path;p=Path('/tmp/shell_patch.py');s=p.read_text(encoding='utf-8');old='new, count = re.subn(pattern, replacement, text, count=1, flags=re.S)';new='new, count = re.subn(pattern, lambda _m: replacement, text, count=1, flags=re.S)';assert old in s;p.write_text(s.replace(old,new,1),encoding='utf-8')"
           python3 /tmp/shell_patch.py
 
       - name: Validate JavaScript and focused regressions
