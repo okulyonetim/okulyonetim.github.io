@@ -6,7 +6,7 @@ const sw=fs.readFileSync('service-worker.js','utf8');
 new Function(src);
 
 assert(src.includes('const drafts={request:Object.create(null),response:Object.create(null)}'),'Diploma form draft state eksik.');
-assert(src.includes('const existing=root.querySelector?.(`[data-personnel-document-page=\\"${pageKey}\\"]`)'),'Aynı diploma sayfası yeniden açıldığında form DOM’u korunmalı.');
+assert(src.includes('data-personnel-document-page=')&&src.includes('${pageKey}')&&src.includes("if(existing?.querySelector?.('[data-personnel-document-form]'))return true"),'Aynı diploma sayfası yeniden açıldığında form DOM’u korunmalı.');
 assert(src.includes("form.addEventListener('beforeinput',stop)"),'Mobil yazı girişi üst katmana taşınmamalı.');
 assert(src.includes("form.addEventListener('keydown',stop)")&&src.includes("form.addEventListener('keyup',stop)"),'Klavye olayları form sınırında kalmalı.');
 assert(src.includes("form.addEventListener('input',sync)")&&src.includes('drafts[pageKey][target.name]=target.value'),'Yazarken yalnız draft güncellenmeli; form yeniden çizilmemeli.');
