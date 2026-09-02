@@ -83,27 +83,6 @@ function decoratePeriodic(){
   return true;
 }
 
-const MONTHS={ocak:0,subat:1,mart:2,nisan:3,mayis:4,haziran:5,temmuz:6,agustos:7,eylul:8,ekim:9,kasim:10,aralik:11};
-function iso(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
-function activeStaffStatus(personelId,day){return data('personelIzinler').find(k=>{if(k.personelId!==personelId)return false;const b=k.baslangic||k.baslangicTarihi||'',e=k.bitis||k.bitisTarihi||b;return b&&day>=b&&day<=e;})||null;}
-function statusCode(tur){const n=norm(tur).replace(/\s+/g,' ');if(n.includes('cumartesi calismasi'))return'CÇ';if(n.includes('pazar tam calismasi'))return'PÇ';if(n.includes('ubgt'))return'UBGT';if(n.includes('yillik'))return'Y';if(n.includes('rapor')||n.includes('hastalik'))return'R';if(n.includes('mazeret')||n.includes('ucretsiz'))return'M';return n?'M':'';}
-function officialHoliday(day){return data('resmiTatiller').some(t=>t.tarih===day);}
-function legacyDayCode(personelId,y,m,d){const day=iso(y,m,d),k=activeStaffStatus(personelId,day),code=statusCode(k?.tur);if(code)return code;if(officialHoliday(day))return'T';const wd=new Date(y,m,d).getDay();if(wd===0||wd===6)return'H';return'X';}
-function codeStyle(td,code){td.style.background='';td.style.color='';td.style.fontWeight='';if(code==='H'){td.style.background='#e8f5e9';td.style.color='#607d8b'}else if(code==='T'){td.style.background='#fff9c4';td.style.color='#7a6500'}else if(code==='Y'||code==='R'||code==='M'){td.style.background='#ffebee';td.style.color='#b3261e'}else if(['CÇ','PÇ','UBGT'].includes(code)){td.style.background='#e3f2fd';td.style.color='#1565c0'}else{td.style.background='#fff';td.style.color='#222'}if(code!=='X')td.style.fontWeight='700';}
-function puantajPeriod(){const h=nativeHeading();if(!h)return null;const parts=norm(h.textContent).split(/\s+/),m=MONTHS[parts[0]],y=Number(parts.find(x=>/^20\d\d$/.test(x)));return Number.isInteger(m)&&y?{y,m}:null;}
-function decoratePuantaj(){
-  const table=$('#puantajTablosu');if(!table)return false;const per=puantajPeriod();if(!per)return false;
-  setShellTitle('Puantaj & İmza Sirküsü');
-  const list=people().filter(p=>p.adSoyad||p.ad).sort((a,b)=>String(a.adSoyad||a.ad||'').localeCompare(String(b.adSoyad||b.ad||''),'tr'));
-  const sig=JSON.stringify([per.y,per.m,list.map(x=>x.id),data('personelIzinler').map(x=>[x.id,x.personelId,x.tur,x.baslangic,x.bitis,x.baslangicTarihi,x.bitisTarihi]),data('resmiTatiller').map(x=>[x.id,x.tarih])]);
-  if(table.dataset.classicPuantajSignature===sig)return true;
-  const rows=[...table.tBodies?.[0]?.rows||[]],days=new Date(per.y,per.m+1,0).getDate();
-  rows.forEach((tr,ri)=>{const p=list[ri];if(!p)return;let work=0,special=0;for(let d=1;d<=days;d++){const td=tr.cells[d+1];if(!td)continue;const code=legacyDayCode(p.id,per.y,per.m,d);td.textContent=code;codeStyle(td,code);if(code==='X')work++;else if(!['H','T'].includes(code))special++;}const workCell=tr.cells[days+2],specialCell=tr.cells[days+3];if(workCell)workCell.textContent=String(work);if(specialCell)specialCell.textContent=String(special);});
-  const legend=table.parentElement?.nextElementSibling;if(legend&&legend.textContent.includes('Kodlar:'))legend.innerHTML='Kodlar: <b>X</b>=Normal · <b>Y</b>=Yıllık İzin · <b>R</b>=Rapor · <b>M</b>=Mazeret · <b>H</b>=Hafta Tatili · <b>T</b>=Resmi Tatil · <b>CÇ</b>=Cumartesi Çalışması · <b>PÇ</b>=Pazar Tam Çalışması · <b>UBGT</b>=Ulusal Bayram/Genel Tatil Çalışması';
-  table.dataset.classicPuantajSignature=sig;
-  return true;
-}
-
 const OFFICIAL_PETITION_TYPES=[
   ['personelIzin','Personel İzin Dilekçesi'],
   ['diplomaKayit','Diploma Kayıt Örneği Talep Dilekçesi'],
@@ -167,13 +146,13 @@ function decorateDilekce(){
   return true;
 }
 
-function sync(){scheduled=false;if(nativeStaffPage()){captureBridges();render();return;}if(parityStaffPage())return;restoreShell();decoratePeriodic();decoratePuantaj();decorateDilekce();}
+function sync(){scheduled=false;if(nativeStaffPage()){captureBridges();render();return;}if(parityStaffPage())return;restoreShell();decoratePeriodic();decorateDilekce();}
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(sync);}
 function start(){
   if(observer)return;
   const root=$('#v2ModuleRoot')||document.body;
   observer=new MutationObserver(schedule);observer.observe(root,{childList:true,subtree:true,characterData:true});
-  ['data.personel','data.personelIzinler','data.periyodikIsler','data.periyodikSablon','data.resmiTatiller'].forEach(p=>global.AppStore?.subscribe?.(p,schedule));
+  ['data.personel','data.periyodikIsler','data.periyodikSablon'].forEach(p=>global.AppStore?.subscribe?.(p,schedule));
   global.PermissionService?.subscribe?.(schedule);
   schedule();
 }

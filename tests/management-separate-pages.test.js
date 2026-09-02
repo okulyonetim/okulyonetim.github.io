@@ -66,17 +66,18 @@ for(const label of [
 ]) assert(personnel.includes(label),`Periyodik İşler classic görünür paritesi eksik: ${label}`);
 assert(personnel.includes("data('periyodikSablon')")&&!personnel.includes('PeriyodikService.isKaydet('),'Classic Periyodik parite yalnız görünümü düzeltmeli; ikinci görev yazma motoru oluşturmamalı.');
 
-// Puantaj 708c82a kod önceliği: açık kayıt > resmi tatil > hafta tatili > X.
+// Puantaj tek sahibi ManagementModule; kod önceliği açık kayıt > resmi tatil > hafta tatili > X.
 for(const token of [
   "if(n.includes('cumartesi calismasi'))return'CÇ'",
   "if(n.includes('pazar tam calismasi'))return'PÇ'",
   "if(n.includes('ubgt'))return'UBGT'",
-  "if(code)return code;if(officialHoliday(day))return'T'",
-  "if(wd===0||wd===6)return'H';return'X'",
-  "data('personelIzinler')",
-  "data('resmiTatiller')"
-]) assert(personnel.includes(token),`Puantaj classic kod sözleşmesi eksik: ${token}`);
-assert(personnel.includes('CÇ</b>=Cumartesi Çalışması')&&personnel.includes('PÇ</b>=Pazar Tam Çalışması')&&personnel.includes('UBGT</b>=Ulusal Bayram/Genel Tatil Çalışması'),'Puantaj özel çalışma kodları görünür açıklamada korunmalı.');
+  "if(izin)return kod;if(ptTatil(g.iso))return'T'",
+  "return wd===0||wd===6?'H':'X'",
+  "arr('personelIzinler')",
+  "arr('resmiTatiller')"
+]) assert(management.includes(token),`Puantaj canonical kod sözleşmesi eksik: ${token}`);
+assert(management.includes('CUMARTESİ ÇALIŞMASI')&&management.includes('PAZAR TAM ÇALIŞMASI')&&management.includes('UBGT TAM ÇALIŞMASI'),'Puantaj özel çalışma kodları görünür açıklamada korunmalı.');
+assert(!personnel.includes('decoratePuantaj')&&!personnel.includes('puantajTablosu'),'Classic görünüm ikinci bir puantaj sahibi oluşturmamalı.');
 
 // Eski dilekçe modülünün üç resmi belge türü A4/contenteditable önizleme ile geri gelmeli.
 for(const token of [
