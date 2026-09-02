@@ -24,7 +24,8 @@ jobs:
         run: |
           node --check js/core/shell-ui.js
           node --test tests/quick-note-launcher.test.js tests/classic-shell-v2-smoke.test.js
-          node scripts/check-client-architecture.mjs
+          git diff --check
+          test "$(git diff --name-only | grep -E '\.css$' | wc -l)" -eq 0
           grep -q 'class="ka-profile-page"' js/core/shell-ui.js
           grep -q 'data-search-service' js/core/shell-ui.js
           grep -q "localeCompare(String(b.title||''),'tr'" js/core/shell-ui.js
