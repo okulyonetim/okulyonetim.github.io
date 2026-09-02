@@ -5,6 +5,7 @@ name: One-shot Meeting Schedule Integration
       - main
     paths:
       - .github/workflows/one-shot-meeting-schedule.yml
+      - tests/meeting-schedule-v1-smoke.test.js
 permissions:
   contents: write
 jobs:
