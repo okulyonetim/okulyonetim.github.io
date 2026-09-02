@@ -15,5 +15,6 @@ assert(!ui.includes('Kod girin (D, İ, Y, R, T, + veya saat)'),'Eski prompt taba
 assert(src.includes("AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Yazdırma merkezi ReportEngine üzerinden lazy yüklenmeli.');
 assert(css.includes('DEVAMSIZLIK ÇİZELGESİ V2')&&css.includes('.ka-attendance-personnel-table')&&css.includes('.ka-attendance-legend'),'Devamsızlık tasarımı merkezi design-system.css içinde olmalı.');
 assert(!src.includes("createElement('style')"),'Tools çalışma anında CSS üretmemeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v846';"),'Attendance güncellemesi cache v846 ile dağıtılmalı.');
+assert(css.includes('@media(max-width:720px){.ka-attendance-personnel-table .ka-att-name,.ka-attendance-personnel-table .ka-att-role'),'Mobilde Adı Soyadı ve Görevi sütunları tabloyla birlikte kaymalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v847';"),'Attendance mobil kaydırma düzeltmesi cache v847 ile dağıtılmalı.');
 console.log('Tools V2 Devamsızlık Çizelgesi görünür + local-first sözleşmesi başarılı.');
