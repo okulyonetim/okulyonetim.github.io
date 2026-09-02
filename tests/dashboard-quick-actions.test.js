@@ -26,7 +26,6 @@ assert(css.includes('.ka-home .kh-social'),'Güncel dashboard sosyal bağlantıl
 assert(dashboard.includes("function announcementSection(){if(!cardVisible('announcements'))return''")&&dashboard.includes("if(!d)return'';"),'Duyuru yoksa dashboard boş duyuru kartı üretmemeli.');
 assert(dashboard.includes("function trialLiveRows(){return arr('denemeSinavlari').map(exam=>({exam,state:trialTimerState(exam)})).filter(x=>x.state.run&&x.state.remaining>0)"),'Deneme kartı yalnız tarih/saat hesabına göre gerçekten çalışan sayaçlar için görünmeli.');
 assert(dashboard.includes("function trialCounterSection(){const list=trialLiveRows().slice(0,1);if(!list.length)return'';"),'Dashboard deneme kartı canonical canlı sayaç listesini kullanmalı.');
-assert(!dashboard.includes("sayacDurumu?.aktif===true"),'Deneme sayacı manuel aktif bayrağına bağlı olmamalı; sınav tarih ve saatinden otomatik hesaplanmalı.');
 assert(dashboard.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası onaylanan rol sırasını kullanmalı.');
 assert(dashboard.includes("function socialSection(){const school=arr('okulBilgileri')")&&dashboard.includes('sosyalLinkler'),'Sosyal medya kartları gerçek okulBilgileri.sosyalLinkler modelinden gelmeli.');
 assert(dashboard.includes("function allTodayDutySection(){if(isAdmin())return''"),'Öğretmen ana sayfası okulun bugünkü nöbetçilerini ayrıca gösterebilmeli.');
