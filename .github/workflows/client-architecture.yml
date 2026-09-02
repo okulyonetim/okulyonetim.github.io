@@ -63,6 +63,8 @@ jobs:
         run: node tests/modules-local-first-boundary.test.js
       - name: Verify service worker shell
         run: node tests/service-worker-precache-smoke.test.js
+      - name: Verify Diploma form focus
+        run: node tests/personnel-documents-focus-smoke.test.js
       - name: Verify lazy Firebase Storage startup
         run: node tests/lazy-firebase-storage-smoke.test.js
       - name: Verify Android iOS web responsive shell
