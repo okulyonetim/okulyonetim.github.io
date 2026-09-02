@@ -60,7 +60,7 @@ global.OgretmenIzinRepository=OgretmenIzinRepository;
 global.OgretmenIzinService={_yetkiKontrol(){if(!duzenleyebilir('ogretmenler')){toast?.('Bu işlem için yetkiniz yok.');return false}return true},gunSayisiHesapla:(b,s)=>Math.round((new Date(s+'T00:00:00')-new Date(b+'T00:00:00'))/86400000)+1,tarihAraligiGecerliMi:(b,s)=>!!(b&&s)&&s>=b,_isoTarihYaz:d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),async izinKaydet(id,eskiHat,adSoyad,v){if(!this._yetkiKontrol())throw new Error('yetkisiz');if(eskiHat)await device().remove('hatirlaticilar',COL.hatirlaticilar,eskiHat);let hatirlaticiId=null;const bitis=new Date(v.bitis+'T00:00:00'),hat=new Date(bitis.getTime()-86400000);if(hat>=new Date(todayISO()+'T00:00:00')){const h=await device().add('hatirlaticilar',COL.hatirlaticilar,{baslik:`🏥 ${adSoyad} — ${v.tur} bitiyor`,tarih:this._isoTarihYaz(hat),saat:'',oncelik:'Orta',aciklama:`${v.tur} kaydı ${formatTarih(v.bitis)} tarihinde sona eriyor.`,tamamlandi:false,bildirimGonderildi:false,sahipUid:aktif().uid||''});hatirlaticiId=h.id}const next={...v,hatirlaticiId};return id?OgretmenIzinRepository.izinGuncelle(id,next):OgretmenIzinRepository.izinEkle(next)},async izinSil(id,h){if(!this._yetkiKontrol())throw new Error('yetkisiz');if(h)await device().remove('hatirlaticilar',COL.hatirlaticilar,h);return OgretmenIzinRepository.izinSil(id)}};
 })(window);
 
-(function(){
+(function(global){
 'use strict';if(window.ManagementModule)return;
 let active='staff',query='',mounted=false,unsubs=[],dutyYear=new Date().getFullYear(),dutyMonth=new Date().getMonth();
 const ptToday=new Date(),ptPad=n=>String(n).padStart(2,'0');
@@ -286,4 +286,4 @@ async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)retu
 function openPage(page,title=''){const allowed=['staff','tasks','leaves','duty','puantaj','dilekce'],u=window.AKTIF_KULLANICI||window.AppStore?.get?.('session.user')||{},teacher=u.admin!==true&&!!(u.bagliOgretmenId||u.ogretmenId);if(!allowed.includes(page)||(teacher&&['staff','tasks'].includes(page)))return false;active=page;query='';const h=document.querySelector('[data-management-module] > .ka-row h2');if(h&&title)h.textContent=title;render();return true}
 function unmount(){mounted=false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];document.getElementById('kaManagementModal')?.remove();document.getElementById('kaManagementStaffDetail')?.remove()}
 window.ManagementModule={mount,unmount,render,prepareLocal,createDutyReport,openPage};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='management')mount()});
-})();
+})(window);

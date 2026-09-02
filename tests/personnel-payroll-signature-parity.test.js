@@ -6,6 +6,11 @@ const css=fs.readFileSync('css/design-system.css','utf8');
 
 new Function(management);
 
+assert(
+  management.includes("(function(global){\n'use strict';if(window.ManagementModule)return;")&&management.trimEnd().endsWith('})(window);'),
+  'Management çalışma alanı window nesnesini global parametresi olarak almalı; aksi halde Yazdır ve Kapat tıklamaları ReferenceError üretir.'
+);
+
 for(const label of [
   'Puantaj ve İmza Sirküsü','İmza Sirküsü','Puantaj','Yazdır','HTML İndir','Kapat',
   'Dönem ve Personel','Başlangıç Tarihi','Bitiş Tarihi','Resmî Tatiller',
