@@ -19,8 +19,8 @@ assert(page.includes("SyncEngine.register(t,c)")&&page.includes("SyncEngine.loca
 assert(!/\bdb\s*\.\s*collection\s*\(/.test(page),'Toplantı sayfası doğrudan Firestore kullanmamalı.');
 assert(!/localStorage\s*\.\s*(setItem|removeItem)\s*\(/.test(page),'Toplantı sayfası kalıcı veriyi localStorage ile yazmamalı.');
 for(const token of ["sok:'ŞÖK'","zumre:'Zümre'","diger:'Diğer'",'[1,2,3,4]','bransListesi','siniflar','type=\"date\"','type=\"time\"','Raporu Yazdır','ReportEngine.printReport']) assert(page.includes(token),`Toplantı davranışı eksik: ${token}`);
-assert(page.includes("draft.kademe==='ilkokul'&&draft.tur==='zumre'"),'İlkokul zümresi sınıf düzeyi bazlı olmalı.');
-assert(page.includes("draft.kademe==='ortaokul'&&draft.tur==='zumre'"),'Ortaokul zümresi branş bazlı olmalı.');
+assert(page.includes("function levelChooser(){if(draft.kademe!=='ilkokul'||draft.tur!=='zumre')return''"),'İlkokul zümresi sınıf düzeyi bazlı olmalı.');
+assert(page.includes("function branchChooser(){if(draft.kademe!=='ortaokul'||draft.tur!=='zumre')return''"),'Ortaokul zümresi branş bazlı olmalı.');
 for(const selector of ['.ka-meeting-page{','.ka-meeting-segmented{','.ka-meeting-chip{','.ka-meeting-item{','.ka-meeting-report{']) assert(design.includes(selector),`Merkezi toplantı stili eksik: ${selector}`);
 assert(sw.includes("'./js/modules/meeting-schedule.js'"),'Yeni sayfa offline shell içinde olmalı.');
 assert(sw.includes("const CACHE_ADI='oy-cache-v851';"),'Toplantı sayfası cache sürümünü yükseltmeli.');
