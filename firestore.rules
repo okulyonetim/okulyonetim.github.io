@@ -198,7 +198,7 @@ service cloud.firestore {
 
     match /oy_toplantiCizelgesi/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('personel');
+      allow create, update, delete: if adminMi();
     }
 
     match /oy_ogretmenler/{id} {
