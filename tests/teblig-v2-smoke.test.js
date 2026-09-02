@@ -17,6 +17,9 @@ assert(src.includes('TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ'),'Resmi A4 üst başl
 assert(src.includes('TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.'),'Eski resmi tebellüğ beyanı korunmalı.');
 assert(src.includes("unvan==='Öğretmen'&&o.brans")&&src.includes('Öğrt.'),'Öğretmen görev metni eski davranış gibi branş + Öğrt. olmalı.');
 assert(src.includes('<th>S.NO</th>')&&src.includes('<th>ADI VE SOYADI</th>')&&src.includes('<th>GÖREVİ</th>')&&src.includes('<th>İMZA</th>'),'Tebellüğ imza tablosunun resmi başlıkları korunmalı.');
+assert(src.includes('<th colspan=\"3\">${esc(okulAdi)} TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ</th>'),'Rapor ana başlığı ilk tablonun birleşik üst satırında olmalı.');
+assert(src.includes('<th colspan=\"4\">TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.</th>'),'Tebellüğ beyanı ikinci tablonun birleşik üst satırında olmalı.');
+assert(src.includes('logoGoster:false')&&src.includes('baslikGoster:false')&&src.includes('tarihGoster:false'),'Tebliğ raporu merkezi logo/üst başlık/tarih bloğunu kapatmalı.');
 assert(!src.includes('db.collection'),'Documents formu doğrudan Firestore kullanmamalı.');
 assert(!src.includes("createElement('style')"),'Documents V2 kendi CSS katmanını üretmemeli.');
 assert(!index.includes('<script src="js/modules/report-engine.js" defer></script>'),'ReportEngine başlangıç shelline eager dönmemeli.');
