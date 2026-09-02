@@ -12,55 +12,24 @@ permissions:
 
 jobs:
   apply:
-    if: "github.actor != 'github-actions[bot]'"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: tmp-profile-search-polish-20260902d
           fetch-depth: 0
-
       - name: Patch canonical shell UI
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('js/core/shell-ui.js')
-          s=p.read_text(encoding='utf-8')
-
-          def replace_between(start_marker,end_marker,new_block):
-              global s
-              a=s.find(start_marker)
-              if a<0:
-                  raise SystemExit(f'missing start marker: {start_marker}')
-              b=s.find(end_marker,a)
-              if b<0:
-                  raise SystemExit(f'missing end marker: {end_marker}')
-              s=s[:a]+new_block+s[b:]
-
-          profile=r'''function renderProfile({remember=true}={}){closeHeaderPopover();closeMenu();setBottomActive('profile');if(remember)rememberView({kind:'profile'});setTitle('Profilim');const {u,t,name,role,photo,username}=profileInfo(),root=$('#v2ModuleRoot');if(!root)return;const initials=name.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr'),schedule=profileOwnSchedule(),duties=profileOwnDuties(),exams=profileOwnExams(),tasks=profileOwnTasks(),phone=t?.telefon||u.telefon||'',email=t?.email||t?.eposta||u.email||'',contact=[username,phone?`☎ ${phone}`:'',email?`✉ ${email}`:''].filter(Boolean).join(' · ');root.innerHTML=`<section class="ka-profile-page"><article class="ka-profile-hero"><div class="ka-profile-avatar">${photo?`<img src="${esc(photo)}" alt="${esc(name)}">`:esc(initials||'K')}</div><div class="ka-profile-copy"><small>ÖĞRETMEN PROFİLİ</small><h2>${esc(name)}</h2><p>${esc(role)}</p>${contact?`<small>${esc(contact)}</small>`:''}</div></article><div class="ka-home-stats"><article class="ka-home-stat"><span>📅</span><div><b>${schedule.length}</b><small>Ders</small></div></article><article class="ka-home-stat"><span>🛡️</span><div><b>${duties.length}</b><small>Nöbet</small></div></article><article class="ka-home-stat"><span>📝</span><div><b>${exams.length}</b><small>Sınav</small></div></article><article class="ka-home-stat"><span>🗂️</span><div><b>${tasks.length}</b><small>Görev</small></div></article></div><section class="ka-profile-section"><h3>Kişisel Çalışma Alanım</h3><p class="ka-muted">Aşağıdaki ekranlar yalnız öğretmen kaydınıza bağlı verileri gösterir.</p><div class="ka-profile-grid"><button type="button" data-profile-view="schedule"><span>📅</span><span><strong>Ders Programım</strong><small class="ka-muted">Kendi haftalık derslerim</small><small>${schedule.length} kayıt</small></span></button><button type="button" data-profile-view="duty"><span>🛡️</span><span><strong>Nöbetlerim</strong><small class="ka-muted">Bana atanmış nöbetler</small><small>${duties.length} kayıt</small></span></button><button type="button" data-profile-view="exams"><span>📝</span><span><strong>Sınavlarım</strong><small class="ka-muted">Kendi oluşturduğum sınavlar</small><small>${exams.length} kayıt</small></span></button><button type="button" data-profile-view="tasks"><span>🗂️</span><span><strong>Diğer Görevlerim</strong><small class="ka-muted">ŞÖK, zümre, rehberlik, Maarif, BEP ve diğerleri</small><small>${tasks.length} kayıt</small></span></button></div></section><button type="button" class="ka-logout-button" data-profile-logout>↪ Oturumu Kapat</button></section>`;$$('[data-profile-view]',root).forEach(b=>b.addEventListener('click',()=>renderProfileDetail(b.dataset.profileView)));root.querySelector('[data-profile-logout]')?.addEventListener('click',()=>global.cikisYap?.())}
-'''
-          replace_between('function renderProfile({remember=true}={}){','function profileDetailHead',profile)
-
-          search=r'''function renderSearch({remember=true}={}){closeHeaderPopover();closeMenu();setBottomActive('search');if(remember)rememberView({kind:'search'});setTitle('Arama');const root=$('#v2ModuleRoot');if(!root)return;const classes=[...arr('siniflar')].sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{sensitivity:'base'})),services=[...arr('servisler')].sort((a,b)=>String(a.guzergah||a.servisAdi||'').localeCompare(String(b.guzergah||b.servisAdi||''),'tr',{sensitivity:'base'})),clubs=[...arr('sosyalKulupler')].sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{sensitivity:'base'}));root.innerHTML=`<section class="ka-search-page"><div class="ka-card"><div class="ka-card__body ka-row"><span class="ka-avatar" aria-hidden="true">🔎</span><div class="ka-grow"><h2>Arama</h2><p class="ka-muted">Öğretmen, öğrenci, servis, evrak ve notlarda hızlı ara.</p></div></div></div><div class="ka-search-box">${SVG.search}<input type="search" data-shell-search-input placeholder="İsim, sınıf, telefon, servis, evrak…" autocomplete="off" aria-label="Tüm kayıtlarda ara"></div><div class="ka-tabs" data-search-categories role="group" aria-label="Arama kategorileri">${SEARCH_CATEGORIES.map(([k,l],i)=>`<button type="button" class="ka-tab ${i===0?'active':''}" data-search-category="${k}" aria-pressed="${i===0?'true':'false'}">${l}</button>`).join('')}</div><details class="ka-card"><summary class="ka-card__body ka-row ka-row--between"><div><strong>⚙️ Gelişmiş Filtreler</strong><p class="ka-muted">Sınıf, servis, kulüp ve cinsiyete göre süzün.</p></div><span class="ka-badge" data-search-filter-count>Filtre yok</span></summary><div class="ka-card__body ka-stack"><section class="ka-stack"><div class="ka-row ka-row--between"><strong>🚌 Servisler</strong><span class="ka-badge">${services.length}</span></div><div class="ka-tabs">${services.length?services.map(s=>`<label class="ka-btn ka-btn--secondary ka-btn--sm ka-check"><input type="checkbox" data-search-service value="${esc(s.id)}"><span>${esc(s.guzergah||s.servisAdi||s.plaka||'Servis')}</span></label>`).join(''):'<span class="ka-muted">Servis kaydı yok.</span>'}</div></section><section class="ka-stack"><div class="ka-row ka-row--between"><strong>🏫 Sınıflar</strong><span class="ka-badge">${classes.length}</span></div><div class="ka-tabs">${classes.length?classes.map(s=>`<label class="ka-btn ka-btn--secondary ka-btn--sm ka-check"><input type="checkbox" data-search-class value="${esc(s.id)}"><span>${esc(s.ad||'Sınıf')}</span></label>`).join(''):'<span class="ka-muted">Sınıf kaydı yok.</span>'}</div></section><section class="ka-stack"><div class="ka-row ka-row--between"><strong>♡ Sosyal Kulüpler</strong><span class="ka-badge">${clubs.length}</span></div><div class="ka-tabs">${clubs.length?clubs.map(k=>`<label class="ka-btn ka-btn--secondary ka-btn--sm ka-check"><input type="checkbox" data-search-club value="${esc(k.id)}"><span>${esc(k.ad||'Kulüp')}</span></label>`).join(''):'<span class="ka-muted">Sosyal kulüp kaydı yok.</span>'}</div></section><section class="ka-stack"><strong>♀♂ Cinsiyet</strong><div class="ka-tabs" role="group" aria-label="Cinsiyet filtresi"><button type="button" class="ka-tab active" data-search-gender="" aria-pressed="true">Tümü</button><button type="button" class="ka-tab" data-search-gender="Kız" aria-pressed="false">Kız</button><button type="button" class="ka-tab" data-search-gender="Erkek" aria-pressed="false">Erkek</button></div></section><div class="ka-row"><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-search-reset>Filtreleri Sıfırla</button><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-search-print>🖨️ Yazdır</button></div></div></details><div class="ka-row ka-row--between"><strong>Arama Sonuçları</strong><span class="ka-badge" data-search-count></span></div><div class="ka-stack" data-shell-search-results></div></section>`;const input=root.querySelector('[data-shell-search-input]'),refresh=()=>renderSearchResults(root,input?.value||'');input?.addEventListener('input',refresh);$$('[data-search-category]',root).forEach(b=>b.addEventListener('click',()=>{$$('[data-search-category]',root).forEach(x=>{const on=x===b;x.setAttribute('aria-pressed',on?'true':'false');x.classList.toggle('active',on)});refresh()}));for(const cb of $$('[data-search-service],[data-search-class],[data-search-club]',root))cb.addEventListener('change',refresh);$$('[data-search-gender]',root).forEach(b=>b.addEventListener('click',()=>{$$('[data-search-gender]',root).forEach(x=>{const on=x===b;x.setAttribute('aria-pressed',on?'true':'false');x.classList.toggle('active',on)});refresh()}));root.querySelector('[data-search-reset]')?.addEventListener('click',()=>{$$('[data-search-service],[data-search-class],[data-search-club]',root).forEach(x=>x.checked=false);const genders=$$('[data-search-gender]',root);genders.forEach((x,i)=>{x.setAttribute('aria-pressed',i===0?'true':'false');x.classList.toggle('active',i===0)});refresh()});root.querySelector('[data-search-print]')?.addEventListener('click',()=>window.print());refresh()}
-'''
-          replace_between('function renderSearch({remember=true}={}){','function menuLayerOpen',search)
-          p.write_text(s,encoding='utf-8')
-          PY
-
+        run: python3 scripts/tmp-profile-search-polish.py
       - name: Validate focused shell regressions
-        shell: bash
         run: |
           node --check js/core/shell-ui.js
           node --test tests/quick-note-launcher.test.js tests/classic-shell-v2-smoke.test.js tests/sinav-islemleri-owner-rules.test.js tests/ders-programi-role-rules.test.js
           node scripts/check-client-architecture.mjs
-
-      - name: Commit canonical result and remove temporary workflow
-        shell: bash
+      - name: Commit canonical result
         run: |
-          rm -f .github/workflows/apply-profile-search-polish.yml
+          rm -f .github/workflows/apply-profile-search-polish.yml scripts/tmp-profile-search-polish.py
           git config user.name 'koruk-asistan-bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add js/core/shell-ui.js .github/workflows/apply-profile-search-polish.yml
+          git add js/core/shell-ui.js .github/workflows/apply-profile-search-polish.yml scripts/tmp-profile-search-polish.py
           git commit -m 'fix: polish profile and advanced search filters'
           git push origin HEAD:tmp-profile-search-polish-20260902d
