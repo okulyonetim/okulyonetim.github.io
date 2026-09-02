@@ -1,0 +1,58 @@
+name: One-shot Teblig Report Layout
+on:
+  push:
+    paths:
+      - '.github/workflows/one-shot-teblig-report.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply canonical report change
+        shell: python
+        run: |
+          from pathlib import Path
+
+          p = Path('js/modules/documents.js')
+          s = p.read_text(encoding='utf-8')
+          old_body = '''function tebligReportBody(){const s=tebligState||blankTeblig(),okul=school(),okulAdi=String(okul.okulAdi||'KORUK İLK - ORTAOKULU').toLocaleUpperCase('tr'),tarih=s.tarihIso?new Date(s.tarihIso+'T00:00:00').toLocaleDateString('tr-TR'):'';return `<h1>${esc(okulAdi)} TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ</h1><table class="ka-table"><thead><tr><th>TARİH</th><th>SAYI</th><th>KONU</th></tr></thead><tbody><tr><td>${esc(tarih)}</td><td>${esc(s.sayi)}</td><td>${esc(s.konu)}</td></tr></tbody></table><p><strong>TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.</strong></p><table class="ka-table"><thead><tr><th>S.NO</th><th>ADI VE SOYADI</th><th>GÖREVİ</th><th>İMZA</th></tr></thead><tbody>${s.satirlar.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.ad)}</td><td>${esc(r.gorev)}</td><td>&nbsp;</td></tr>`).join('')}</tbody></table>`}'''
+          new_body = '''function tebligReportBody(){const s=tebligState||blankTeblig(),okul=school(),okulAdi=String(okul.okulAdi||'KORUK İLK - ORTAOKULU').toLocaleUpperCase('tr'),tarih=s.tarihIso?new Date(s.tarihIso+'T00:00:00').toLocaleDateString('tr-TR'):'';return `<table class="ka-table"><thead><tr><th colspan="3">${esc(okulAdi)} TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ</th><tr><th>TARİH</th><th>SAYI</th><th>KONU</th></tr></thead><tbody><tr><td>${esc(tarih)}</td><td>${esc(s.sayi)}</td><td>${esc(s.konu)}</td></tr></tbody></table><table class="ka-table"><thead><tr><th colspan="4">TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.</th></tr><tr><th>S.NO</th><th>ADI VE SOYADI</th><th>GÖREVİ</th><th>İMZA</th></tr></thead><tbody>${s.satirlar.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.ad)}</td><td>${esc(r.gorev)}</td><td>&nbsp;</td></tr>`).join('')}</tbody></table>`}'''
+          old_call = "window.ReportEngine.printReport('Tebliğ-Tebellüğ İmza Sirküsü',tebligReportBody(),{fileName:'Teblig_Tebellug_Imza_Sirkusu',yon:'dikey'})"
+          new_call = "window.ReportEngine.printReport('Tebliğ-Tebellüğ İmza Sirküsü',tebligReportBody(),{fileName:'Teblig_Tebellug_Imza_Sirkusu',yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false})"
+          if old_body not in s:
+              raise SystemExit('tebligReportBody expected source not found')
+          if old_call not in s:
+              raise SystemExit('Teblig print call expected source not found')
+          s = s.replace(old_body, new_body, 1).replace(old_call, new_call, 1)
+          p.write_text(s, encoding='utf-8')
+
+          t = Path('tests/teblig-v2-smoke.test.js')
+          ts = t.read_text(encoding='utf-8')
+          marker = "assert(src.includes('<th>S.NO</th>')&&src.includes('<th>ADI VE SOYADI</th>')&&src.includes('<th>GÖREVİ</th>')&&src.includes('<th>İMZA</th>'),'Tebellüğ imza tablosunun resmi başlıkları korunmalı.');"
+          extra = marker + "\nassert(src.includes('<th colspan=\\\"3\\\">${esc(okulAdi)} TEBLİĞ-TEBELLÜĞ İMZA SİRKÜSÜ</th>'),'Rapor ana başlığı ilk tablonun birleşik üst satırında olmalı.');\nassert(src.includes('<th colspan=\\\"4\\\">TARİH, SAYI VE KONUSU BELİRTİLEN YAZIYI OKUDUM VE BİLGİ EDİNDİM.</th>'),'Tebellüğ beyanı ikinci tablonun birleşik üst satırında olmalı.');\nassert(src.includes('logoGoster:false')&&src.includes('baslikGoster:false')&&src.includes('tarihGoster:false'),'Tebliğ raporu merkezi logo/üst başlık/tarih bloğunu kapatmalı.');"
+          if marker not in ts:
+              raise SystemExit('test insertion marker not found')
+          ts = ts.replace(marker, extra, 1)
+          t.write_text(ts, encoding='utf-8')
+
+          sw = Path('service-worker.js')
+          sws = sw.read_text(encoding='utf-8')
+          if "const CACHE_ADI='oy-cache-v844';" not in sws:
+              raise SystemExit('expected cache v844 not found')
+          sw.write_text(sws.replace("const CACHE_ADI='oy-cache-v844';", "const CACHE_ADI='oy-cache-v845';", 1), encoding='utf-8')
+      - name: Validate
+        run: |
+          node tests/teblig-v2-smoke.test.js
+          node -e "new Function(require('fs').readFileSync('js/modules/documents.js','utf8')); console.log('documents syntax ok')"
+      - name: Commit result and remove one-shot workflow
+        run: |
+          git config user.name "sedonet23"
+          git config user.email "sedonet23@gmail.com"
+          git rm .github/workflows/one-shot-teblig-report.yml
+          git add js/modules/documents.js tests/teblig-v2-smoke.test.js service-worker.js
+          git commit -m "fix: simplify teblig tebellug report header"
+          git push origin HEAD:main
