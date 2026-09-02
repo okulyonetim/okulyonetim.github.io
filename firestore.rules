@@ -196,6 +196,11 @@ service cloud.firestore {
       allow create, update, delete: if moduluDuzenleyebilir('personel');
     }
 
+    match /oy_toplantiCizelgesi/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('personel');
+    }
+
     match /oy_ogretmenler/{id} {
       allow read: if girisYapmis();
       allow create: if moduluDuzenleyebilir('ogretmenler')

@@ -46,7 +46,7 @@ const CLASSIC_MENU_GROUPS=[
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',items:[['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]},
  {key:'transport',label:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport','services'],['Harita','🗺️','tools','map']],subLabel:'Yerleşim Araçları',subItems:[['Servis Oturma','💺','transport','busSeats'],['Sınıf Oturma','🏫','transport','classSeats']]},
  {key:'documents',label:'Döküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Dökümanlar','📁','documents'],['Evrak Takibi','📄','documents','evrak'],['Mevzuat','📖','documents','mevzuat'],['Aylık İşler','🕘','management','tasks'],['Akademik Takvim','📅','academic','calendar'],['Kontrol Listeleri','📋','tools','checklists']],subLabel:'Raporlar',subItems:[['Maarif Model','🏅','tools','form-maarif'],['Belirli Gün ve Haftalar','📅','tools','form-belirli'],['ŞÖK','🛡️','tools','form-sok'],['Zümre','👥','tools','form-zumre'],['Sosyal Kulüpler','♡','tools','form-kulup'],['Rehberlik','🧭','tools','form-rehberlik'],['Yıllık Planlar & BEP Planları','📋','tools','form-bep'],['Diğer Evraklar','📁','tools','form-diger']]},
- {key:'management',label:'Personel İşleri',icon:'🧑‍💼',tone:'orange',route:'management',items:[['Personeller','🧑‍💼','management','staff'],['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Devamsızlık Çizelgesi','📅','tools','attendance']]},
+ {key:'management',label:'Personel İşleri',icon:'🧑‍💼',tone:'orange',route:'management',items:[['Personeller','🧑‍💼','management','staff'],['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Toplantı Çizelgesi','📅','management','meeting-schedule'],['Devamsızlık Çizelgesi','📅','tools','attendance']]},
  {key:'settings',label:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Okul Bilgileri','🏢','settings','school'],['Veriler','🗄️','settings','data'],['Kullanıcı İşlemleri','🛡️','settings','users'],['Kullanıcı İstatistikleri','📋','settings','statistics']]}
 ];
 function applyClassicMenuGroups(){const target=window.ShellUI?.MENU_GROUPS;if(!Array.isArray(target))return false;target.splice(0,target.length,...CLASSIC_MENU_GROUPS.map(g=>({...g,items:(g.items||[]).map(x=>[...x]),subItems:(g.subItems||[]).map(x=>[...x])})));return true}
@@ -55,8 +55,10 @@ applyClassicMenuGroups();
 function registerClassicPageRoutes(){
   if(typeof window.ShellUI?.registerPageRoute!=='function')return false;
   const diplomaRoute=type=>async({root})=>{window.ManagementModule?.unmount?.();if(!window.ReportEngine?.printReport)await loadScript('js/modules/report-engine.js');if(!window.PersonnelDocuments?.open)await loadScript('js/modules/personnel-documents.js');if(!window.PersonnelDocuments?.open)throw new Error('personnel-documents-load');return window.PersonnelDocuments.open(type,root)};
+  const meetingRoute=async({root})=>{window.ManagementModule?.unmount?.();if(!window.ReportEngine?.printReport)await loadScript('js/modules/report-engine.js');if(!window.MeetingSchedulePage?.open)await loadScript('js/modules/meeting-schedule.js');if(!window.MeetingSchedulePage?.open)throw new Error('meeting-schedule-load');return window.MeetingSchedulePage.open(root)};
   window.ShellUI.registerPageRoute('diploma-request',diplomaRoute('request'));
   window.ShellUI.registerPageRoute('diploma-response',diplomaRoute('response'));
+  window.ShellUI.registerPageRoute('meeting-schedule',meetingRoute);
   return true;
 }
 registerClassicPageRoutes();
