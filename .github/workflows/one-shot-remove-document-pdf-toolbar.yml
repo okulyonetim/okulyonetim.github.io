@@ -14,30 +14,29 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Remove duplicate PDF actions from Documents page
-        shell: python
+      - name: Apply cleanup
         run: |
+          python - <<'PY'
           from pathlib import Path
           import re
 
           p=Path('js/modules/documents.js')
           s=p.read_text(encoding='utf-8')
-          pattern=re.compile(r"function renderToolbar\(\)\{.*?\}\nfunction ensureViewer",re.S)
-          m=pattern.search(s)
-          if not m:
+          pattern=re.compile(r'function renderToolbar\(\)\{.*?\}\nfunction ensureViewer',re.S)
+          if not pattern.search(s):
               raise SystemExit('renderToolbar block not found')
-          new="""function renderToolbar(){const bar=document.getElementById('documentsToolbar');if(!bar||mode!=='list')return;bar.innerHTML=`<div class=\"ka-row ka-documents-toolbar__main\"><label class=\"ka-field ka-grow\"><span class=\"ka-field__label\">Kategori</span><select data-document-category><option value=\"\">Tüm Kategoriler</option>${categories().map(k=>`<option value=\"${esc(k)}\" ${category===k?'selected':''}>${esc(k)}</option>`).join('')}</select></label>${canEdit()?'<button class=\"ka-btn ka-btn--sm\" type=\"button\" data-document-add title=\"Doküman Ekle\" aria-label=\"Doküman Ekle\">+ Doküman Ekle</button>':''}</div>`;bar.querySelector('[data-document-category]')?.addEventListener('change',e=>{category=e.currentTarget.value;render()});bar.querySelector('[data-document-add]')?.addEventListener('click',openAddModal);}
-function ensureViewer"""
+          new='''function renderToolbar(){const bar=document.getElementById('documentsToolbar');if(!bar||mode!==\'list\')return;bar.innerHTML=`<div class="ka-row ka-documents-toolbar__main"><label class="ka-field ka-grow"><span class="ka-field__label">Kategori</span><select data-document-category><option value="">Tüm Kategoriler</option>${categories().map(k=>`<option value="${esc(k)}" ${category===k?\'selected\':\'\'}>${esc(k)}</option>`).join(\'\')}</select></label>${canEdit()?\'<button class="ka-btn ka-btn--sm" type="button" data-document-add title="Doküman Ekle" aria-label="Doküman Ekle">+ Doküman Ekle</button>\':\'\'}</div>`;bar.querySelector(\'[data-document-category]\')?.addEventListener(\'change\',e=>{category=e.currentTarget.value;render()});bar.querySelector(\'[data-document-add]\')?.addEventListener(\'click\',openAddModal);}
+          function ensureViewer'''
           s=pattern.sub(new,s,count=1)
           p.write_text(s,encoding='utf-8')
 
           t=Path('tests/documents-viewer-v2-smoke.test.js')
           x=t.read_text(encoding='utf-8')
           old="for(const label of ['Tüm Kategoriler','+ Doküman Ekle','🖼 Resimlerden PDF','🔗 PDF Birleştir','Harici URL','🌐 Herkese Açık','🔒 Sadece Bana Özel']) assert(documents.includes(label),`Documents görünür davranışı eksik: ${label}`);"
-          newtest="for(const label of ['Tüm Kategoriler','+ Doküman Ekle','Harici URL','🌐 Herkese Açık','🔒 Sadece Bana Özel']) assert(documents.includes(label),`Documents görünür davranışı eksik: ${label}`);\nconst toolbarBlock=(documents.match(/function renderToolbar\\(\\)\\{[\\s\\S]*?\\}\\nfunction ensureViewer/)||[''])[0];\nassert(toolbarBlock&&!toolbarBlock.includes('data-document-images')&&!toolbarBlock.includes('data-document-merge')&&!toolbarBlock.includes('ka-documents-pdf-actions'),'Doküman listesi içinde PDF araçları tekrar gösterilmemeli; araçlar menüde kalmalı.');"
+          new_test="for(const label of ['Tüm Kategoriler','+ Doküman Ekle','Harici URL','🌐 Herkese Açık','🔒 Sadece Bana Özel']) assert(documents.includes(label),`Documents görünür davranışı eksik: ${label}`);\nconst toolbarBlock=(documents.match(/function renderToolbar\\(\\)\\{[\\s\\S]*?\\}\\nfunction ensureViewer/)||[''])[0];\nassert(toolbarBlock&&!toolbarBlock.includes('data-document-images')&&!toolbarBlock.includes('data-document-merge')&&!toolbarBlock.includes('ka-documents-pdf-actions'),'Doküman listesi içinde PDF araçları tekrar gösterilmemeli; araçlar menüde kalmalı.');"
           if old not in x:
               raise SystemExit('documents viewer label contract not found')
-          x=x.replace(old,newtest,1)
+          x=x.replace(old,new_test,1)
           x=x.replace("assert(documents.includes('window.DocumentsPdfTools'),'Documents toolbar mevcut PDF çalışma alanını kullanmalı.');","assert(documents.includes('window.DocumentsPdfTools'),'Menüdeki PDF araçları mevcut DocumentsPdfTools çalışma alanını kullanmalı.');",1)
           t.write_text(x,encoding='utf-8')
 
@@ -46,7 +45,8 @@ function ensureViewer"""
           if "const CACHE_ADI='oy-cache-v849';" not in w:
               raise SystemExit('expected cache v849 not found')
           sw.write_text(w.replace("const CACHE_ADI='oy-cache-v849';","const CACHE_ADI='oy-cache-v850';",1),encoding='utf-8')
-      - name: Validate cleanup
+          PY
+      - name: Validate
         run: |
           node --check js/modules/documents.js
           node - <<'NODE'
@@ -56,13 +56,12 @@ function ensureViewer"""
           assert(m&&!m.includes('data-document-images')&&!m.includes('data-document-merge')&&!m.includes('ka-documents-pdf-actions'));
           assert(s.includes('global.DocumentsPdfTools={open,cleanup,renderImages,renderMerge,cleanPdfName,PAGE_IMAGES,PAGE_MERGE}'));
           assert(s.includes('launchPdfTool'));
-          const sw=fs.readFileSync('service-worker.js','utf8');
-          assert(sw.includes("const CACHE_ADI='oy-cache-v850';"));
+          assert(fs.readFileSync('service-worker.js','utf8').includes("const CACHE_ADI='oy-cache-v850';"));
           console.log('Documents PDF duplicate toolbar cleanup OK');
           NODE
           node tests/modules-local-first-boundary.test.js
           node tests/service-worker-precache-smoke.test.js
-      - name: Commit cleanup
+      - name: Commit
         run: |
           rm .github/workflows/one-shot-remove-document-pdf-toolbar.yml
           git config user.name "sedonet23"
