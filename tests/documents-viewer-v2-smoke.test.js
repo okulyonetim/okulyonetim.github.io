@@ -30,10 +30,12 @@ for(const selector of ['dv3','dv3h','dv3body','dv3pdfpage','dv3wordviewport','dv
 assert(!/\bdb\s*\.\s*collection\s*\(/.test(documents),'Documents doğrudan Firestore kullanmamalı.');
 assert(!/localStorage\s*\.\s*setItem\s*\(/.test(documents),'Documents kalıcı veriyi localStorage ile yazmamalı.');
 for(const api of ['DokumanlarService?.dokumanEkle?.','DokumanlarService?.dokumanSil?.','DokumanlarService?.dokumanGorunurlukGuncelle?.','ensureViewer()']) assert(documents.includes(api),`Canonical Documents API eksik: ${api}`);
-for(const label of ['Tüm Kategoriler','+ Doküman Ekle','🖼 Resimlerden PDF','🔗 PDF Birleştir','Harici URL','🌐 Herkese Açık','🔒 Sadece Bana Özel']) assert(documents.includes(label),`Documents görünür davranışı eksik: ${label}`);
+for(const label of ['Tüm Kategoriler','+ Doküman Ekle','Harici URL','🌐 Herkese Açık','🔒 Sadece Bana Özel']) assert(documents.includes(label),`Documents görünür davranışı eksik: ${label}`);
+const toolbarBlock=(documents.match(/function renderToolbar\(\)\{[\s\S]*?\}\nfunction ensureViewer/)||[''])[0];
+assert(toolbarBlock&&!toolbarBlock.includes('data-document-images')&&!toolbarBlock.includes('data-document-merge')&&!toolbarBlock.includes('ka-documents-pdf-actions'),'Doküman listesi içinde PDF araçları tekrar gösterilmemeli; araçlar menüde kalmalı.');
 for(const marker of ['data-document-open','data-document-download','data-document-visibility','data-document-delete']) assert(documents.includes(marker),`Documents aksiyonu eksik: ${marker}`);
 assert(documents.includes("arr('dokumanlarAcik')")&&documents.includes("arr('dokumanlarBenim')"),'Normal kullanıcı local-first açık/benim cache lerini kullanmalı.');
-assert(documents.includes('window.DocumentsPdfTools'),'Documents toolbar mevcut PDF çalışma alanını kullanmalı.');
+assert(documents.includes('window.DocumentsPdfTools'),'Menüdeki PDF araçları mevcut DocumentsPdfTools çalışma alanını kullanmalı.');
 assert(documents.includes('tools.PAGE_IMAGES')&&documents.includes('tools.PAGE_MERGE'),'Resimden PDF ve PDF Birleştir mevcut sayfalara gitmeli.');
 assert(!documents.includes('classic-document-tools.js'),'İkinci eski belge işleme motoru yüklenmemeli.');
 
