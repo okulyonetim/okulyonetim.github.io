@@ -2,9 +2,10 @@ const fs = require('fs');
 const assert = require('assert');
 const sw = fs.readFileSync('service-worker.js', 'utf8');
 
-assert(/const CACHE_ADI\s*=\s*'oy-cache-v\d+'/.test(sw), 'Service Worker sürümlü cache anahtarı kullanmalı.');
+const cacheMatch=sw.match(/const CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/);
+assert(cacheMatch, 'Service Worker sürümlü cache anahtarı kullanmalı.');
+assert(Number(cacheMatch[1])>=843, 'Service Worker cache sürümü yeni runtime geçiş sürümünün gerisine düşmemeli.');
 const loader = fs.readFileSync('js/app-loader.js', 'utf8');
-assert(sw.includes("const CACHE_ADI='oy-cache-v843'"), 'Yeni runtime ayrı v843 cache anahtarı kullanmalı.');
 assert(sw.includes("self.clients.matchAll({type:'window',includeUncontrolled:true})")&&sw.includes('client.navigate(client.url)'), 'Yeni Service Worker eski runtime kullanan açık PWA pencerelerini yeni belgeye taşımalı.');
 assert(loader.includes("register('./service-worker.js?v=838',{updateViaCache:'none'})")&&loader.includes('await reg.update()'), 'AppLoader Service Worker güncellemesini HTTP cache dışından zorlamalı.');
 for (const f of [
