@@ -1,0 +1,44 @@
+# temporary one-shot workflow; removed after verification
+name: Legislation escape fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/legislation-escape-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix HTML quote escape and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('js/modules/legislation-ui.js')
+          s=p.read_text(encoding='utf-8')
+          old='\'"\':\'&quot\''
+          new='\'"\':\'&quot;\''
+          if old not in s:
+              raise SystemExit('escape target not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          node --check js/modules/legislation-ui.js
+          node tests/legislation-engine-v2-smoke.test.js
+          node tests/legislation-page-redesign.test.js
+          ! grep -Eq 'db[[:space:]]*\.[[:space:]]*collection|firebase[[:space:]]*\.[[:space:]]*firestore' js/modules/legislation-ui.js
+      - name: Commit verified escape fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/legislation-ui.js
+          git commit -m "fix: harden legislation HTML escaping"
+          git push origin main
