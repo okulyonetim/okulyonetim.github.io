@@ -18,6 +18,6 @@ assert(design.includes('[data-theme="dark"] .ka-profile-page{--ka-profile-hero-s
 assert(design.includes('.ka-profile-copy h2{')&&design.includes('color:#fff')&&design.includes('--ka-profile-hero-muted:#e4f4ed'),'Hero metin kontrastı beyaz/açık sabit paletle korunmalı.');
 assert(design.includes('@media(max-width:520px)')&&design.includes('.ka-profile-actions{display:grid;grid-template-columns:1fr;gap:8px}'),'Mobil çalışma kartları sıkışık iki sütun yerine tek sütun olmalı.');
 assert(!design.includes('.ka-profile-hero{padding-left:104px}'),'Eski mutlak konum profil telafisi geri dönmemeli.');
-assert(index.includes('css/design-system.css?v=866'),'Profil tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v866'")&&sw.includes('./css/design-system.css?v=866'),'Yeni profil tasarımı PWA cache sürümüyle yayınlanmalı.');
+assert(index.includes('css/design-system.css?v=867'),'Profil tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v867'")&&sw.includes('./css/design-system.css?v=867'),'Yeni profil tasarımı PWA cache sürümüyle yayınlanmalı.');
 console.log('Profil sayfası kontrast + düzen yeniden tasarım sözleşmesi başarılı.');

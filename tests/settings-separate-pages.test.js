@@ -7,6 +7,10 @@ assert(!settings.includes('data-settings-tab'),'Settings iç sekme üretmemeli.'
 assert(settings.includes("let active='home'"),'Settings ana landing sayfasıyla açılmalı.');
 assert(settings.includes('function settingsHome()'),'Settings kartlı ana yönetim ekranı sağlamalı.');
 assert(settings.includes('function bindSettingsAccordion(out)')&&settings.includes('data-settings-accordion-toggle')&&settings.includes("label:'Hesap ve Güvenlik'")&&settings.includes("label:'Akademik Yapı'")&&settings.includes("label:'Sistem Yönetimi'"),'Settings ana ekranı tek canonical akordeon gruplarıyla çalışmalı.');
+const design=fs.readFileSync('css/design-system.css','utf8');
+assert(settings.includes("settingsAccordion=''"),'Settings ana ekranı kategori özetini kapalı ve düzenli başlamalı.');
+assert(settings.includes('data-settings-back')&&settings.includes('data-settings-title')&&settings.includes('function backSettings()')&&settings.includes("openPage('home','Ayarlar')")&&settings.includes('window.ShellUI?.back'),'Settings üst geri düğmesi alt sayfada landing sayfasına, landing sayfasında Shell geçmişine dönmeli.');
+assert(design.includes('.ka-settings-page')&&design.includes('.ka-settings-toolbar')&&design.includes('.ka-settings-toolbar__copy'),'Settings başlığı merkezi Design System içinde canonical toolbar stiline sahip olmalı.');
 assert(!settings.includes('ka-grid ka-settings-home'),'Eski düz Settings kart grid ana görünümü geri dönmemeli.');
 assert(settings.includes("['lesson-list','Ders Listesi'")&&settings.includes("['branch-list','Branş Listesi'")&&settings.includes("active==='lesson-list'?referenceList('lesson')")&&settings.includes('function openReferenceListEdit(kind,id=')&&settings.includes('ClassicExcelParity.importLessons(file)'),'Ders/Branş listesi görünür yönetimi canonical SettingsModule içinde kalmalı.');
 assert(settings.includes("function openPage(page,title='')"),'Settings doğrudan sayfa API sağlamalı.');
