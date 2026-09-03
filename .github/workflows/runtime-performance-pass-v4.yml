@@ -1,0 +1,112 @@
+name: Runtime performance pass v4
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/runtime-performance-pass-v4.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify expected main ancestry
+        run: test "$(git rev-parse HEAD^)" = 'a09262c852d9c58b4ee45227987d91f3900ca35a'
+      - name: Apply runtime performance package
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          import re, textwrap
+          core=Path('js/core/core.js');s=core.read_text(encoding='utf-8')
+          old="function setData(type,value){state.data[type]=value;emit('data.'+type,value);return value}"
+          assert old in s;s=s.replace(old,old+"\nfunction setDataMany(data){if(!data||typeof data!=='object')return state.data;const changes=Object.entries(data);for(const [type,value] of changes)state.data[type]=value;for(const [type,value] of changes)emit('data.'+type,value);return data}",1)
+          old="data:t=>state.data[t],setData,hydrate:hydrateStore";assert old in s;s=s.replace(old,"data:t=>state.data[t],setData,setDataMany,hydrate:hydrateStore",1)
+          old="async function get(k,def=null){try{const d=await open();return await new Promise((res,rej)=>{const r=d.transaction(STORE,'readonly').objectStore(STORE).get(k);r.onsuccess=()=>res(r.result===undefined?def:r.result);r.onerror=()=>rej(r.error)})}catch(_){return def}}";assert old in s;s=s.replace(old,old+"\nasync function getMany(keys,defaults={}){const list=[...new Set(keys||[])];if(!list.length)return{};try{const d=await open();return await new Promise((res,rej)=>{const out={},t=d.transaction(STORE,'readonly'),store=t.objectStore(STORE);for(const k of list){const r=store.get(k);r.onsuccess=()=>{out[k]=r.result===undefined?defaults[k]:r.result}}t.oncomplete=()=>{for(const k of list)if(!Object.prototype.hasOwnProperty.call(out,k))out[k]=defaults[k];res(out)};t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||new Error('indexeddb-abort'))})}catch(_){return Object.fromEntries(list.map(k=>[k,defaults[k]]))}}",1)
+          old="async function hydrateLocal(u,types,defaults={}){const out={};for(const type of types||[])out[type]=await cached(u,type,Object.prototype.hasOwnProperty.call(defaults,type)?defaults[type]:[]);return out}";assert old in s;s=s.replace(old,"async function hydrateLocal(u,types,defaults={}){const names=[...(types||[])],keys=names.map(type=>key(u,`cache:${type}`)),defs={};names.forEach((type,i)=>{defs[keys[i]]=Object.prototype.hasOwnProperty.call(defaults,type)?defaults[type]:[]});const values=await getMany(keys,defs),out={};names.forEach((type,i)=>{out[type]=values[keys[i]]});return out}",1)
+          old="window.KorukLocalFirst={open,get,set,setMany,del,queue,pending,tombstone,tombstones,cache,cached,cacheMany,hydrate:hydrateLocal,meta,userSnapshot,markBootstrap:(u,d={})=>meta(u,'bootstrap',{ready:true,completedAt:Date.now(),...d}),bootstrapState:u=>meta(u,'bootstrap'),isBootstrapReady:async u=>!!(await meta(u,'bootstrap'))?.ready,flush:flushWrites,schedule:scheduleFlush,uid};";assert old in s;s=s.replace(old,old.replace('{open,get,set,setMany','{open,get,getMany,set,setMany'),1)
+          old="async function pull(types){if(!syncReady()||!navigator.onLine)return{updated:0,skipped:true};const names=types?.length?types:Array.from(registered.keys());if(!names.length)return{updated:0};syncing=true;AppStore.set('ui.syncing',true);let updated=0;try{for(const name of names){const def=registered.get(name);if(!def)continue;try{const rows=await fetchCollection(def);await cache(uid(),name,rows);AppStore.setData(name,rows);updated++}catch(e){console.warn('[SyncEngine]',name,e?.message||e)}}const now=Date.now();await meta(uid(),'lastSyncAt',now);AppStore.set('ui.lastSyncAt',now);return{updated}}finally{syncing=false;AppStore.set('ui.syncing',false)}}";assert old in s;s=s.replace(old,"async function pull(types){if(!syncReady()||!navigator.onLine)return{updated:0,skipped:true};const names=types?.length?types:Array.from(registered.keys());if(!names.length)return{updated:0};syncing=true;AppStore.set('ui.syncing',true);let updated=0;try{const u=uid(),data={};for(const name of names){const def=registered.get(name);if(!def)continue;try{const rows=await fetchCollection(def);data[name]=rows;updated++}catch(e){console.warn('[SyncEngine]',name,e?.message||e)}}if(updated){await cacheMany(u,data);AppStore.setDataMany(data)}const now=Date.now();await meta(u,'lastSyncAt',now);AppStore.set('ui.lastSyncAt',now);return{updated}}finally{syncing=false;AppStore.set('ui.syncing',false)}}",1);core.write_text(s,encoding='utf-8')
+          p=Path('css/design-system.css');s=p.read_text(encoding='utf-8');s,n=re.subn(r"\.ka-home \.kh-news-viewport\{[^}]*\}",".ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0;padding-inline:12px;contain:layout paint;transform:translateZ(0);backface-visibility:hidden}",s,count=1);assert n==1;p.write_text(s,encoding='utf-8')
+          p=Path('service-worker.js');s=p.read_text(encoding='utf-8');assert "const CACHE_ADI='oy-cache-v867';" in s;s=s.replace("const CACHE_ADI='oy-cache-v867';","const CACHE_ADI='oy-cache-v868';",1).replace("'./css/design-system.css?v=867'","'./css/design-system.css?v=868'",1)
+          old="""async function kodNetworkFirst(event){
+            try{
+              const response=await fetch(event.request,{cache:'no-store'});
+              if(response&&response.status===200&&response.type!=='opaque'){
+                const copy=response.clone();
+                event.waitUntil(caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{}));
+              }
+              return response;
+            }catch(_){
+              return await caches.match(event.request)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+            }
+          }"""
+          new="""async function kodCacheFirst(event){
+            const cached=await caches.match(event.request);
+            const yenile=fetch(event.request,{cache:'no-store'}).then(async response=>{
+              if(response&&response.status===200&&response.type!=='opaque'){
+                const copy=response.clone();
+                await caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});
+              }
+              return response;
+            }).catch(()=>null);
+            if(cached){event.waitUntil(yenile);return cached;}
+            return(await yenile)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+          }"""
+          assert old in s;s=s.replace(old,new,1);old="if(kodKaynakMi(event.request)){event.respondWith(kodNetworkFirst(event));return;}";assert old in s;p.write_text(s.replace(old,"if(kodKaynakMi(event.request)){event.respondWith(kodCacheFirst(event));return;}",1),encoding='utf-8')
+          p=Path('index.html');s=p.read_text(encoding='utf-8');assert 'css/design-system.css?v=867' in s;p.write_text(s.replace('css/design-system.css?v=867','css/design-system.css?v=868',1),encoding='utf-8')
+          p=Path('tests/service-worker-precache-smoke.test.js');s=p.read_text(encoding='utf-8');old="""assert(sw.includes("fetch(event.request,{cache:'no-store'})"), 'JS/CSS çevrimiçiyken cache yerine güncel ağ sürümünden alınmalı.');
+          assert(sw.includes('kodNetworkFirst(event)'), 'JS/CSS fetch akışı network-first olmalı.');""";new="""assert(sw.includes('async function kodCacheFirst(event)'), 'JS/CSS için anlık cache-first + arka plan yenileme stratejisi bulunmalı.');
+          assert(sw.includes("const yenile=fetch(event.request,{cache:'no-store'})"), 'Cache-first kod stratejisi arka planda HTTP cache dışından güncellenmeli.');
+          assert(sw.includes('if(cached){event.waitUntil(yenile);return cached;}'), 'Önbellekteki JS/CSS ağ yanıtını beklemeden sunulmalı.');
+          assert(sw.includes('kodCacheFirst(event)'), 'JS/CSS fetch akışı cache-first olmalı.');
+          assert(!sw.includes('kodNetworkFirst(event)'), 'Eski ağ bekleten JS/CSS network-first yolu geri dönmemeli.');""";assert old in s;p.write_text(s.replace(old,new,1),encoding='utf-8')
+          for p in Path('tests').glob('*.js'):
+              s=p.read_text(encoding='utf-8');n=s.replace('css/design-system.css?v=867','css/design-system.css?v=868').replace('oy-cache-v867','oy-cache-v868');
+              if n!=s:p.write_text(n,encoding='utf-8')
+          Path('tests/runtime-performance-smoke.test.js').write_text(textwrap.dedent("""\
+          const fs=require('fs');const assert=require('assert');
+          const core=fs.readFileSync('js/core/core.js','utf8'),sw=fs.readFileSync('service-worker.js','utf8'),css=fs.readFileSync('css/design-system.css','utf8'),dashboard=fs.readFileSync('js/modules/dashboard.js','utf8'),index=fs.readFileSync('index.html','utf8');
+          new Function(core);
+          assert(core.includes('async function getMany(keys,defaults={})'));assert(core.includes('const values=await getMany(keys,defs)'));assert(!core.includes('for(const type of types||[])out[type]=await cached('));assert(core.includes('function setDataMany(data)'));assert(core.includes('await cacheMany(u,data);AppStore.setDataMany(data)'));assert(!core.includes('await cache(uid(),name,rows);AppStore.setData(name,rows)'));
+          assert(sw.includes("const CACHE_ADI='oy-cache-v868'")&&sw.includes('async function kodCacheFirst(event)')&&!sw.includes('kodNetworkFirst(event)'));assert(index.includes('css/design-system.css?v=868'));
+          const a=css.indexOf('.ka-home .kh-news-viewport{'),b=css.indexOf('}',a),v=css.slice(a,b+1);assert(a>=0&&b>a&&!v.includes('mask-image'));assert(v.includes('contain:layout paint')&&v.includes('translateZ(0)'));assert(css.includes('will-change:transform')&&css.includes('@keyframes khTicker'));assert(dashboard.includes('freshNews.replaceWith(oldNews)'));
+          console.log('Runtime performans sözleşmesi başarılı.');
+          """),encoding='utf-8')
+          PY
+      - name: Check core syntax
+        run: node --check js/core/core.js
+      - name: Check dashboard syntax
+        run: node --check js/modules/dashboard.js
+      - name: Runtime performance contract
+        run: node tests/runtime-performance-smoke.test.js
+      - name: Service worker contract
+        run: node tests/service-worker-precache-smoke.test.js
+      - name: Module bundle contract
+        run: node tests/module-bundles-smoke.test.js
+      - name: Local first boundary
+        run: node tests/modules-local-first-boundary.test.js
+      - name: Dashboard routes
+        run: node tests/dashboard-card-routes-smoke.test.js
+      - name: Trial scroll stability
+        run: node tests/trial-counter-scroll-stability.test.js
+      - name: Build client bundles
+        run: npm run build:client
+      - name: Commit verified performance package
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/runtime-performance-pass.yml .github/workflows/runtime-performance-pass-v2.yml .github/workflows/runtime-performance-pass-v3.yml .github/workflows/runtime-performance-pass-v4.yml
+          git add js/core/core.js css/design-system.css service-worker.js index.html tests
+          git commit -m 'perf: smooth runtime navigation and news ticker'
+          git push origin HEAD:main
