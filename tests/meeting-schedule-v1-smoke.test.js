@@ -57,6 +57,8 @@ assert(page.includes('data-meeting-class-panel=')&&!page.includes('data-meeting-
 assert(!page.includes('<table class="ka-table ka-meeting-table">'),'Dar mobil tablo düzeni toplantı taslağından kaldırılmalı.');
 assert(page.includes("draftField('users','Sınıflar',classDropdown(row)")&&page.includes('Birden fazla sınıf seçebilir veya boş bırakabilirsiniz.')&&!page.includes('En az bir sınıf seçiniz'),'Sınıf seçimi toplantı satırı için zorunlu olmamalı.');
 assert(page.includes('function groupedRecords()')&&page.includes('data-meeting-edit-group')&&page.includes('data-meeting-delete-group'),'Kaydedilen satırlar ortak başlık altında grup olarak yönetilebilmeli.');
+assert(page.includes('ka-meeting-saved-card')&&page.includes('ka-meeting-session-list')&&page.includes('ka-meeting-session__meta')&&!page.includes('const chips=group.list.slice(0,5)'),'Kaydedilen toplantılar tekrar eden ders rozetleri yerine mobil uyumlu kompakt oturum listesi kullanmalı.');
+assert(page.includes('logoGoster:false,baslikGoster:false,tarihGoster:false'),'Toplantı raporu üstteki logolu marka başlığını üretmemeli.');
 assert(page.includes('for(let i=0;i<rows.length;i++)')&&page.includes('await Service.kaydet(row.recordId||null,payload)'),'Toplu kaydet her satırı local-first service kapısından geçirmeli.');
 
 assert(dashboard.includes("arr('toplantiCizelgesi')"),'Dashboard toplantıları local AppStore snapshotından okumalı.');
@@ -69,6 +71,8 @@ for(const selector of ['.ka-meeting-page{','.ka-meeting-chip{','.ka-meeting-item
 assert(design.includes('.ka-meeting-draft-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))'),'Toplantı kartı ders/sınıf ve tarih/saat alanlarını okunabilir iki sütunlu düzende göstermeli.');
 assert(design.includes('.ka-meeting-draft-card{min-width:0;padding:13px 14px;border:1px solid var(--ka-border);border-radius:18px'),'Toplantı satır kartı merkezi tasarım sisteminde belirgin kart yüzeyi kullanmalı.');
 assert(design.includes('.ka-meeting-report-button{position:static'),'Rapor düğmesi mobil alt navigasyonun üzerine sticky olarak binmemeli.');
+assert(design.includes('.ka-meeting-report__table th,.ka-meeting-report__table td{text-align:center!important;vertical-align:middle!important}'),'Toplantı raporundaki tüm sütun başlıkları ve veriler ortalanmalı.');
+assert(design.includes('.ka-meeting-saved-head{')&&design.includes('.ka-meeting-session{display:grid;grid-template-columns:32px minmax(0,1fr)'),'Kaydedilen toplantı kartı merkezi design-system içinde kompakt oturum düzeni kullanmalı.');
 assert(sw.includes("'./js/modules/meeting-schedule.js'"),'Toplantı sayfası offline shell içinde olmalı.');
 assert(page.includes("root.onclick=handleClick")&&page.includes("root.onchange=handleChange")&&page.includes("root.oninput=handleInput"),'Toplantı formu yeniden çizimlere dayanıklı delegated event kullanmalı.');
 assert(page.includes("data-meeting-form-message")&&page.includes("formMessage=err;render()"),'Doğrulama hatası form içinde görünür olmalı.');
