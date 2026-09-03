@@ -15,14 +15,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 5
+          fetch-depth: 6
 
       - name: Verify staged base
         shell: bash
         run: |
           set -euo pipefail
           EXPECTED="be38d2289792c1a9b91c6aade1ddae197d42877c"
-          test "$(git rev-parse HEAD~2)" = "$EXPECTED"
+          test "$(git rev-parse HEAD~3)" = "$EXPECTED"
+
+      - name: Prepare patch helper
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('scripts/tmp-profile-redesign.py')
+          s=p.read_text(encoding='utf-8')
+          old='shell,count=pattern.subn(replacement,shell,count=1)'
+          new="replacement=replacement.replace(chr(92)+chr(34),chr(34))\nshell,count=pattern.subn(lambda _m: replacement,shell,count=1)"
+          if old not in s: raise SystemExit('shell replacement anchor missing')
+          s=s.replace(old,new,1)
+          old='css,count=profile_pattern.subn(profile_css,css,count=1)'
+          new="profile_css=profile_css.replace(chr(92)+chr(34),chr(34))\ncss,count=profile_pattern.subn(lambda _m: profile_css,css,count=1)"
+          if old not in s: raise SystemExit('css replacement anchor missing')
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
 
       - name: Apply profile redesign
         run: python scripts/tmp-profile-redesign.py
