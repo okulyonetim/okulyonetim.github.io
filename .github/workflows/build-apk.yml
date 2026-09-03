@@ -34,41 +34,87 @@ jobs:
       - name: Koruk v2 istemci bundle'larını üret
         run: |
           npm run build:client
+          node tests/module-bundles-smoke.test.js
 
-      - name: Capacitor senkronizasyonu
+      - name: Web dosyalarını www/ klasörüne kopyala
         run: |
-          npx cap sync android
+          mkdir -p www
+          cp index.html www/ 2>/dev/null || true
+          cp app-v2.html www/ 2>/dev/null || true
+          cp -r css www/ 2>/dev/null || true
+          cp -r js www/ 2>/dev/null || true
+          cp -r assets www/ 2>/dev/null || true
+          cp manifest.json www/ 2>/dev/null || true
+          cp service-worker.js www/ 2>/dev/null || true
 
-      - name: Gradle izinleri
-        run: chmod +x android/gradlew
+      - name: Sürüm numarasını göm (uygulama içi güncelleme kontrolü için)
+        run: |
+          echo "{\"kod\": ${{ github.run_number }}}" > www/version.json
 
-      - name: Release APK oluştur
+      - name: google-services.json oluştur
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+
+      - name: Keystore ve şifreyi sırlardan hazırla (görünmez/geçersiz karakterler temizlenir)
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | tr -dc 'A-Za-z0-9+/=' | base64 -d > android/app/koruk-okul.jks
+          TEMIZ_SIFRE=$(printf '%s' "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" | tr -d '[:space:]')
+          echo "::add-mask::$TEMIZ_SIFRE"
+          echo "KEYSTORE_SIFRE_TEMIZ=$TEMIZ_SIFRE" >> "$GITHUB_ENV"
+
+      - name: Keystore'u doğrula (build'i beklemeden erken hata ver)
+        run: |
+          echo "Keystore dosya boyutu:"
+          ls -la android/app/koruk-okul.jks
+          echo "---"
+          if keytool -list -keystore android/app/koruk-okul.jks -storepass "$KEYSTORE_SIFRE_TEMIZ" -alias koruk > /dev/null 2>&1; then
+            echo "✅ Keystore ve şifre DOĞRU — build'e devam ediliyor."
+          else
+            echo "❌ HATA: Keystore açılamadı veya şifre yanlış."
+            echo "Bu, ANDROID_KEYSTORE_BASE64 veya ANDROID_KEYSTORE_PASSWORD sırlarının"
+            echo "GitHub'a YANLIŞ/EKSİK girildiği anlamına gelir. Dosyanın ilk birkaç"
+            echo "karakteri (teşhis amaçlı, şifre değil):"
+            head -c 50 android/app/koruk-okul.jks | base64 | head -c 100
+            echo ""
+            exit 1
+          fi
+
+      - name: Gradle wrapper oluştur
         run: |
           cd android
-          ./gradlew assembleRelease
+          gradle wrapper --gradle-version 8.7
 
-      - name: APK adını düzenle
-        run: |
-          mkdir -p release
-          APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
-          cp "$APK_PATH" release/okul-yonetim.apk
+      - name: Capacitor sync
+        run: npx cap sync android
 
-      - name: Artifact yükle
+      - name: Gradle izni ver
+        run: chmod +x android/gradlew
+
+      - name: Release APK derle
+        working-directory: android
+        env:
+          KEYSTORE_PATH: koruk-okul.jks
+          KEYSTORE_PASSWORD: ${{ env.KEYSTORE_SIFRE_TEMIZ }}
+          KEY_ALIAS: koruk
+          KEY_PASSWORD: ${{ env.KEYSTORE_SIFRE_TEMIZ }}
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: APK artifacts olarak yükle
         uses: actions/upload-artifact@v4
         with:
-          name: okul-yonetim-apk
-          path: release/okul-yonetim.apk
-          retention-days: 30
+          name: koruk-okul-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 90
 
-      - name: GitHub Release oluştur / güncelle
+      - name: GitHub Release oluştur (uygulama içi güncelleme kontrolü bunu kullanır)
+        if: github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: Okul Yönetim — Son Sürüm
-          body: |
-            Otomatik oluşturulan güncel Android APK.
-            Aşağıdaki okul-yonetim.apk dosyasını indirip kurabilirsiniz.
-          files: release/okul-yonetim.apk
+          tag_name: v${{ github.run_number }}
+          name: "Sürüm ${{ github.run_number }}"
+          files: android/app/build/outputs/apk/release/app-release.apk
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
