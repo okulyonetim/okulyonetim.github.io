@@ -1,0 +1,63 @@
+# temporary verified settings toolbar workflow
+name: Settings toolbar redesign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/settings-toolbar-redesign.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  redesign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 12
+
+      - name: Verify current main ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="44e8cffde54dcbaa0cb2fd1d723f4207d34a15b1"
+          git merge-base --is-ancestor "$EXPECTED" HEAD
+
+      - name: Apply Settings toolbar redesign
+        run: python scripts/tmp-settings-toolbar-redesign.py
+
+      - name: Validate syntax and regression contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check js/modules/settings.js
+          node --check service-worker.js
+          node tests/settings-separate-pages.test.js
+          node tests/user-statistics-admin-view.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/profile-page-redesign.test.js
+          node tests/notification-popover-redesign.test.js
+          node tests/search-page-redesign.test.js
+          node tests/web-mobile-engine-separation.test.js
+          node scripts/check-client-architecture.mjs
+
+      - name: Verify cache generation
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F 'css/design-system.css?v=867' index.html
+          grep -F "const CACHE_ADI='oy-cache-v867'" service-worker.js
+          grep -F './css/design-system.css?v=867' service-worker.js
+
+      - name: Commit verified Settings redesign
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/settings.js css/design-system.css index.html service-worker.js tests/settings-separate-pages.test.js
+          git commit -m "feat: refine settings navigation and header"
+          git push origin main
