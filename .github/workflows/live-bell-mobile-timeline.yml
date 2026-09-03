@@ -21,11 +21,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          EXPECTED="a88062a1c997691e73e070528feb67b1b85d881d"
+          EXPECTED="607d1e41a51f51f166f9692a8411a4c7bb9a2f00"
           test "$(git rev-parse HEAD^)" = "$EXPECTED"
 
       - name: Apply live bell patch
-        run: python scripts/apply-live-bell-v2.py
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/apply-live-bell-v2.py')
+          s=p.read_text(encoding='utf-8')
+          start=s.index('stale_flow=')
+          end=s.index("test_path.write_text(test,encoding='utf-8')",start)+len("test_path.write_text(test,encoding='utf-8')")
+          replacement='''timeline_flow="assert(dash.includes('function bellModel')&&dash.includes('function bellTimeline(live)')&&dash.includes('kh-bell-timeline')&&dash.includes('kh-bell-progress-v2'),'Gün içi akış yatay kaydırma ve pulse yerine mobil zaman çizgisi ve gerçek ilerleme göstergesi kullanmalı.');"\nflow_lines=[line for line in test.splitlines() if 'Gün içi akış tek yatay kaydırılabilir satır olmalı' in line]\nif len(flow_lines)!=1:\n    raise SystemExit(f'stale bell flow assertion count={len(flow_lines)}')\ntest=test.replace(flow_lines[0],timeline_flow,1)\ntest_path.write_text(test,encoding='utf-8')'''
+          p.write_text(s[:start]+replacement+s[end:],encoding='utf-8')
+          PY
+          python scripts/apply-live-bell-v2.py
 
       - name: Validate syntax and focused contracts
         shell: bash
