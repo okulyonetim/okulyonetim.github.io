@@ -12,8 +12,8 @@ assert(!src.includes('function dutyMobile('),'Mobil gün-kartı rendererı emekl
 assert(!src.includes('${dutyMobile()}${dutyGrid()}'),'Nöbet Programı mobilde ayrı gün kartı rendererı kullanmamalı.');
 assert(src.includes('${dutyGrid()}'),'Aylık Nöbet Programı tüm ekranlarda canonical tablo rendererı üzerinden üretilmeli.');
 for(const marker of ['ka-duty-action-grid','ka-duty-report-card','ka-duty-grid__day','tabindex=\"0\"','Gün']) assert(src.includes(marker),`Yeni Nöbet tablo/tasarım sözleşmesi eksik: ${marker}`);
-assert(src.includes('ka-duty-report-meta')&&src.includes('ka-duty-report-title')&&src.includes('ka-duty-report-table')&&src.includes('ka-duty-report-tasks'),'Yüklenen çizelge örneğine karşılık gelen nöbet rapor anatomisi korunmalı.');
-assert(src.includes('compact:false')&&src.includes('fontSize:8.5')&&src.includes('kenarBosluk:5'),'Nöbet raporu yüklenen örnekteki okunaklı tam sayfa A4 ayarlarını kullanmalı.');
+assert(src.includes('ka-duty-report-banner')&&src.includes('ka-duty-report-table')&&src.includes('ka-duty-report-weekend')&&src.includes('ka-duty-report-holiday')&&src.includes('ka-duty-report-phones')&&src.includes('ka-duty-report-tasks')&&src.includes('ka-duty-report-footer')&&src.includes('ka-duty-report-signature'),'Tam sayfa nöbet raporu anatomisi korunmalı.');
+assert(src.includes('compact:true')&&src.includes('fontSize:7')&&src.includes('kenarBosluk:5'),'Nöbet raporu tüm ayı tek A4 sayfaya sığdıran ayarları kullanmalı.');
 assert(!src.includes('MutationObserver'),'Nöbet mobil görünümü sonradan DOM yamasıyla üretilmemeli.');
 assert(src.includes("device().set('nobetRotasyon',COL.nobetRotasyon"),'Rotasyon kaydı DeviceData üzerinden kalmalı.');
 assert(src.includes("PermissionService?.can?.('management.duty.edit','edit')"),'Nöbet yazma işlemleri merkezi management.duty.edit yetkisine bağlı kalmalı.');
