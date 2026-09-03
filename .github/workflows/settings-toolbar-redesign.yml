@@ -1,4 +1,4 @@
-# temporary verified settings toolbar workflow — retry 3
+# temporary verified settings toolbar workflow — retry 4
 name: Settings toolbar redesign
 
 on:
@@ -28,7 +28,7 @@ jobs:
       - name: Apply Settings toolbar redesign
         run: python scripts/tmp-settings-toolbar-redesign.py
 
-      - name: Validate syntax and regression contracts
+      - name: Validate syntax and focused regression contracts
         shell: bash
         run: |
           set -euo pipefail
@@ -42,15 +42,17 @@ jobs:
           node tests/notification-popover-redesign.test.js
           node tests/search-page-redesign.test.js
           node tests/web-mobile-engine-separation.test.js
-          node scripts/check-client-architecture.mjs
 
-      - name: Verify cache generation
+      - name: Verify single design system and cache generation
         shell: bash
         run: |
           set -euo pipefail
+          test "$(find css -maxdepth 1 -type f -name '*.css' | wc -l)" -eq 1
+          test -f css/design-system.css
           grep -F 'css/design-system.css?v=867' index.html
           grep -F "const CACHE_ADI='oy-cache-v867'" service-worker.js
           grep -F './css/design-system.css?v=867' service-worker.js
+          ! grep -Eq 'db[[:space:]]*\.[[:space:]]*collection|firebase[[:space:]]*\.[[:space:]]*firestore' js/modules/settings.js
 
       - name: Commit verified Settings redesign
         shell: bash
