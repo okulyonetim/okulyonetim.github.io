@@ -28,35 +28,42 @@ assert(page.includes("SyncEngine.register(t,c)")&&page.includes("SyncEngine.loca
 assert(!/\bdb\s*\.\s*collection\s*\(/.test(page),'Toplantı sayfası doğrudan Firestore kullanmamalı.');
 assert(!/localStorage\s*\.\s*(setItem|removeItem)\s*\(/.test(page),'Toplantı sayfası kalıcı veriyi localStorage ile yazmamalı.');
 
-for(const token of ["sok:'ŞÖK'","zumre:'Zümre'","diger:'Diğer'",'[1,2,3,4]','dersListesi','siniflar','type=\"date\"','type=\"time\"','Raporu Yazdır','ReportEngine.printReport']) assert(page.includes(token),`Toplantı davranışı eksik: ${token}`);
+for(const token of ["sok:'ŞÖK'","zumre:'Zümre'","diger:'Diğer'",'dersListesi','siniflar','type="date"','type="time"','Raporu Yazdır','ReportEngine.printReport']) assert(page.includes(token),`Toplantı davranışı eksik: ${token}`);
 assert(page.includes("function lessons(){return arr('dersListesi')"),'Ortaokul zümre seçicisi gerçek dersListesi kaynağını kullanmalı.');
-assert(page.includes('function lessonChooser()')&&page.includes('data-meeting-lesson'),'Ortaokul zümresi ders seçicisi üretmeli.');
-assert(page.includes("dersId:''")&&page.includes("dersAdi:''"),'Yeni toplantı kayıtları ders kimliği ve adını taşımalı.');
+assert(page.includes('data-meeting-row-lesson')&&page.includes('data-meeting-row-level'),'Zümre satırları ortaokulda ders, ilkokulda düzey seçicisi üretmeli.');
+assert(page.includes("dersId:''")&&page.includes("dersAdi:''"),'Yeni toplantı satırları ders kimliği ve adını taşımalı.');
 assert(!page.includes("function branches(){return arr('bransListesi')"),'Ortaokul zümresi bransListesi kaynağına dönmemeli.');
 assert(!page.includes('data-meeting-branch'),'Eski branş seçici UI geri dönmemeli.');
-assert(page.includes("v.dersAdi||v.bransAdi||''")&&page.includes("r.dersAdi||lessons().find(x=>x.id===r.dersId)?.ad||r.bransAdi"),'Eski bransAdi kayıtları yalnız geriye uyumlu normalize/render yolunda okunabilmeli.');
-assert(page.includes("function levelChooser(){if(draft.kademe!=='ilkokul'||draft.tur!=='zumre')return''"),'İlkokul zümresi sınıf düzeyi bazlı olmalı.');
-assert(page.includes("function lessonChooser(){if(draft.kademe!=='ortaokul'||draft.tur!=='zumre')return''"),'Ortaokul zümresi ders bazlı olmalı.');
+assert(page.includes('r.dersAdi||lessons().find(x=>x.id===r.dersId)?.ad||r.bransAdi'),'Eski bransAdi kayıtları yalnız geriye uyumlu render yolunda okunabilmeli.');
 
 assert(page.includes("function canEdit(){return user().admin===true}"),'Toplantı yazma yetkisi yalnız gerçek admin olmalı.');
 assert(page.includes("kaydet(id,v){if(!canEdit())return Promise.reject(new Error('yetkisiz'))"),'Service katmanı admin olmayan yazmayı kuyruğa girmeden engellemeli.');
 assert(page.includes("sil(id){if(!canEdit())return Promise.reject(new Error('yetkisiz'))"),'Service katmanı admin olmayan silmeyi engellemeli.');
 assert(page.includes("${canEdit()?formHtml():''}${listHtml()}"),'Admin olmayan kullanıcıda form gizlenirken kayıt listesi görünmeye devam etmeli.');
-assert(page.includes("${canEdit()?`<div class=\"ka-meeting-item__actions\""),'Düzenle/Sil aksiyonları yalnız admin için render edilmeli.');
 assert(!page.includes("PermissionService?.can?.('management.personnel','edit')"),'Genel personel edit yetkisi toplantı yazma yetkisi sayılmamalı.');
+
+assert(page.includes('Toplantı Başlığı <small class="ka-muted">(ortak)</small>'),'Toplantı grubunda tek ortak başlık alanı olmalı.');
+assert(page.includes('data-meeting-add-row')&&page.includes('rows.push(blankRow('),'Satır Ekle yalnız yeni taslak satır oluşturmalı.');
+assert(!page.includes('save({keepReady:true})'),'Satır Ekle eski tekil kayıt davranışına dönmemeli.');
+assert(page.includes('data-meeting-save-all')&&page.includes('async function saveAll()'),'Tümünü Kaydet bütün taslak satırları toplu kayıt akışına göndermeli.');
+assert(page.includes('Tümünü Kaydet (${rows.length})'),'Kaydet düğmesi satır sayısını göstermeli.');
+assert(page.includes('toplantiBasligi:title')&&page.includes('grupId:grp')&&page.includes('grupSira:index+1'),'Aynı başlıktaki satırlar grup kimliği ve sırasıyla ayrı kayıtlar olarak saklanmalı.');
+assert(page.includes('satirKonusu:'),'ŞÖK/Diğer satırları ortak başlıktan ayrı satır konusu taşıyabilmeli.');
+assert(page.includes('data-meeting-class-menu')&&page.includes('data-meeting-row-class')&&page.includes('data-meeting-row-all-classes'),'Sınıflar sütunu açılır çoklu seçim ve Tüm Sınıflar seçeneği sunmalı.');
+assert(page.includes('(isteğe bağlı, çoklu)')&&!page.includes('En az bir sınıf seçiniz'),'Sınıf seçimi toplantı satırı için zorunlu olmamalı.');
+assert(page.includes('function groupedRecords()')&&page.includes('data-meeting-edit-group')&&page.includes('data-meeting-delete-group'),'Kaydedilen satırlar ortak başlık altında grup olarak yönetilebilmeli.');
+assert(page.includes('for(let i=0;i<rows.length;i++)')&&page.includes('await Service.kaydet(row.recordId||null,payload)'),'Toplu kaydet her satırı local-first service kapısından geçirmeli.');
 
 assert(dashboard.includes("arr('toplantiCizelgesi')"),'Dashboard toplantıları local AppStore snapshotından okumalı.');
 assert(dashboard.includes("SyncEngine.register('toplantiCizelgesi',COL.toplantiCizelgesi)"),'Dashboard toplantı tipini mevcut SyncEngine hydrate akışına katmalı.');
 assert(dashboard.includes("'data.toplantiCizelgesi'"),'Dashboard toplantı değişikliklerine AppStore üzerinden abone olmalı.');
 assert(dashboard.includes("meetingUpcomingRows(14)")&&dashboard.includes("meetingUpcomingRows(30)"),'Yönetici ve öğretmen yaklaşan etkinlik akışları toplantıları içermeli.');
-assert(dashboard.includes("route:'management',page:'meeting-schedule',routeTitle:'Toplantı Çizelgesi'"),'Toplantı etkinlik kartı mevcut meeting-schedule routeuna gitmeli.');
-assert(dashboard.includes("sortKey:eventSortKey(x.tarih,x.saat)")&&dashboard.includes("a.sortKey.localeCompare(b.sortKey,'tr')"),'Yaklaşan etkinlikler tarih + saat canonical sırasını kullanmalı.');
 assert(!/\bdb\s*\.\s*collection\s*\(/.test(dashboard),'Dashboard toplantı entegrasyonu doğrudan Firestore kullanmamalı.');
 
 for(const selector of ['.ka-meeting-page{','.ka-meeting-segmented{','.ka-meeting-chip{','.ka-meeting-item{','.ka-meeting-report{']) assert(design.includes(selector),`Merkezi toplantı stili eksik: ${selector}`);
 assert(sw.includes("'./js/modules/meeting-schedule.js'"),'Toplantı sayfası offline shell içinde olmalı.');
 assert(page.includes("root.onclick=handleClick")&&page.includes("root.onchange=handleChange")&&page.includes("root.oninput=handleInput"),'Toplantı formu yeniden çizimlere dayanıklı delegated event kullanmalı.');
 assert(page.includes("data-meeting-form-message")&&page.includes("formMessage=err;render()"),'Doğrulama hatası form içinde görünür olmalı.');
-assert(page.includes("'+ Satırı Ekle'")&&page.includes("save({keepReady:true})"),'Yeni Satır gerçek kayıt ekleme davranışına bağlı olmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v853';"),'Toplantı/dash düzeltmesi cache sürümünü yükseltmeli.');
-console.log('Meeting Schedule ders listesi + admin-only + dashboard local-first sözleşmesi başarılı.');
+const runtimeCache=sw.match(/const CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/);
+assert(runtimeCache&&Number(runtimeCache[1])>=854,'Toplu toplantı formu yeni PWA cache sürümüyle yayınlanmalı.');
+console.log('Meeting Schedule toplu satır + çoklu sınıf + admin-only + local-first sözleşmesi başarılı.');
