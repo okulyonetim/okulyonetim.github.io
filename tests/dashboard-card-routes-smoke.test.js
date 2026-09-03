@@ -87,6 +87,7 @@ assert(dash.includes("live.mode==='after'")&&dash.includes("big='Dersler tamamla
 
 assert(dash.includes('class="kh-news"')&&dash.includes('class="kh-news-label"')&&dash.includes('class="kh-news-track"')&&dash.includes('--kh-ticker-time'),'Haberler eski dashboard-home.js kayan bant DOM sözleşmesini korumalı.');
 assert(css.includes('.ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0;padding-inline:12px')&&css.includes('mask-image:linear-gradient(to right,transparent 0,#000 12px'),'Haber şeridi etikete yapışmamalı ve kırpılan başlık kenarda yumuşatılmalı.');
+assert(css.includes('.ka-home .kh-news.is-ready .kh-news-track{animation:khTicker var(--kh-ticker-time,28s) linear infinite;animation-play-state:running}')&&css.includes('@media(hover:hover) and (pointer:fine){.ka-home .kh-news:hover .kh-news-track{animation-play-state:paused}}'),'Haber bandı dokunmatik cihazlarda sticky hover nedeniyle durmamalı; duraklatma yalnız gerçek hover cihazlarında çalışmalı.');
 assert(dash.includes('function socialIconHtml')&&dash.includes('/instagram/.test(key)')&&dash.includes('/youtube/.test(key)')&&dash.includes('socialIconHtml(x.ikon,x.etiket)'),'Sosyal bağlantı ikon anahtarları ekranda metin olarak basılmamalı; merkezi SVG ikonlara çevrilmeli.');
 assert(css.includes('.ka-home .kh-social-icon>svg{width:24px;height:24px;display:block}'),'Sosyal kart SVG ikonları sabit ve taşmayan geometri kullanmalı.');
 assert(!dash.includes('ka-home-news-ticker'),'Yeni taklit haber bileşeni aktif renderer içinde kalmamalı.');
