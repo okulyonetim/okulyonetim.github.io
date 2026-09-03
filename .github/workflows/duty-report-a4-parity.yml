@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/duty-report-a4-parity.yml'
       - '.github/temp-duty-report-a4.py'
+      - '.github/temp-duty-test-fix.py'
 
 permissions:
   contents: write
@@ -17,14 +18,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 4
+          fetch-depth: 8
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
       - name: Verify expected baseline
         run: git merge-base --is-ancestor d85543f9f97123012eb4cd98c99f21414fb22287 HEAD
       - name: Apply duty report patch
-        run: python3 .github/temp-duty-report-a4.py
+        run: |
+          python3 .github/temp-duty-report-a4.py
+          python3 .github/temp-duty-test-fix.py
       - name: Validate duty report and report engine
         run: |
           set -euo pipefail
@@ -45,7 +48,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .github/workflows/duty-report-a4-parity.yml .github/temp-duty-report-a4.py
+          git rm .github/workflows/duty-report-a4-parity.yml .github/temp-duty-report-a4.py .github/temp-duty-test-fix.py
           git add js/modules/management.js css/design-system.css js/app-loader.js index.html service-worker.js tests
           git commit -m 'fix: restore full A4 duty roster report'
           git push origin HEAD:main
