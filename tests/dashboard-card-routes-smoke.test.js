@@ -78,6 +78,7 @@ assert(!dash.includes("arr('hatirlaticilar').filter(x=>String(x.tarih||'').slice
 
 assert(dash.includes("function liveCardView")&&dash.includes("live.mode==='lesson'")&&dash.includes("big='Teneffüs'")&&dash.includes("liveClock(live.remaining)"),'Karşılama zil kartı canonical SchoolLiveStatus durumunu canlı geri sayımla göstermeli.');
 assert(dash.includes('function bellModel')&&dash.includes('function bellTimeline(live)')&&dash.includes('kh-bell-timeline')&&dash.includes('kh-bell-progress-v2'),'Gün içi akış yatay kaydırma ve pulse yerine mobil zaman çizgisi ve gerçek ilerleme göstergesi kullanmalı.');
+assert(css.includes('.kh-bell-special-icon,.kh-bell-special-icon svg{animation:none!important;transition:none!important;transform:none!important}'),'Ders tamamlandı ve diğer özel zil durumlarının ikonları sürekli animasyon taşımamalı.');
 assert(!dash.includes('OKUL BAŞLAMADI')&&!dash.includes('Dersler başlamadı'),'Canlı zil kartı okul başlamadı metnini üretmemeli.');
 assert(liveStatus.includes('countdownLead=60*60')&&liveStatus.includes("mode:'idle'")&&liveStatus.includes('sec<first.start-countdownLead'),'Zil geri sayımı ilk dersten yalnızca 1 saat önce aktifleşmeli.');
 assert(liveStatus.includes('Array.isArray(s.dersler)'),'Canlı zil motoru mevcut dersSaatleri.dersler verisini de okumalı.');
