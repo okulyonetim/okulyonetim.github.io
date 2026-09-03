@@ -1,0 +1,55 @@
+name: One-time Meeting Card Apply V2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/meeting-card-apply-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Apply card layout from verified payloads
+        run: |
+          python - <<'PY'
+          import base64,gzip,re
+          from pathlib import Path
+          wf=Path('.github/workflows/meeting-card-apply.yml').read_text()
+          def payload(name):
+              m=re.search(r'^\s*'+name+r':\s*(\S+)\s*$',wf,re.M)
+              assert m, name
+              return gzip.decompress(base64.b64decode(m.group(1))).decode('utf-8')
+          js_path=Path('js/modules/meeting-schedule.js')
+          js=js_path.read_text()
+          js_new,n=re.subn(r'function classSelectionTags\(row\)\{.*?(?=function groupSummary\(group\)\{)',payload('JSBLOCK_B64'),js,flags=re.S)
+          assert n==1, n
+          js_path.write_text(js_new)
+          css_path=Path('css/design-system.css')
+          css=css_path.read_text(); marker='/* TOPLANTI ÇİZELGESİ */'; assert marker in css
+          css_path.write_text(css[:css.index(marker)]+payload('CSSSECTION_B64'))
+          Path('tests/meeting-schedule-v1-smoke.test.js').write_text(payload('TEST_B64'))
+          sw_path=Path('service-worker.js'); sw=sw_path.read_text()
+          sw_new,n=re.subn(r"const CACHE_ADI='oy-cache-v\d+';","const CACHE_ADI='oy-cache-v858';",sw,count=1); assert n==1
+          sw_path.write_text(sw_new)
+          PY
+      - name: Verify
+        run: |
+          node --check js/modules/meeting-schedule.js
+          node tests/meeting-schedule-v1-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm -f .github/workflows/meeting-card-apply.yml .github/workflows/meeting-card-apply-v2.yml
+          git add js/modules/meeting-schedule.js css/design-system.css tests/meeting-schedule-v1-smoke.test.js service-worker.js
+          git commit -m 'fix: switch meeting rows to mobile cards'
+          git push origin HEAD:main
