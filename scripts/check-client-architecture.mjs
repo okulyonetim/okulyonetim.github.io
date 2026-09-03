@@ -23,7 +23,8 @@ const missingKnownStyleDebt=[...STYLE_INJECTION_ALLOWLIST].filter(f=>!styleInjec
 const shellPath=path.join(ROOT,'index.html');
 const shellHtml=fs.existsSync(shellPath)?fs.readFileSync(shellPath,'utf8'):'';
 const stylesheetLinks=[...shellHtml.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi)].map(m=>m[1]);
-const styleViolations=stylesheetLinks.filter(href=>href!=='css/design-system.css');
+const normalizeAssetHref=href=>String(href||'').split(/[?#]/)[0];
+const styleViolations=stylesheetLinks.filter(href=>normalizeAssetHref(href)!=='css/design-system.css');
 const inlineStyleTags=(shellHtml.match(/<style\b/gi)||[]).length;
 const inlineStyleAttrs=(shellHtml.match(/\sstyle=["']/gi)||[]).length;
 const designPath=path.join(ROOT,'css','design-system.css');
@@ -91,7 +92,7 @@ console.log(JSON.stringify(report,null,2));
 let failed=false;
 if(resurrectedLegacyRoots.length){console.error('Emekli legacy kök dosyalar geri dönmemeli:',resurrectedLegacyRoots.join(', '));failed=true}
 if(!appNamespaceDefaultDeny){console.error('Firestore oy_ uygulama ad alanı varsayılan kapalı olmalı.');failed=true}
-if(stylesheetLinks.length!==1||stylesheetLinks[0]!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
+if(stylesheetLinks.length!==1||normalizeAssetHref(stylesheetLinks[0])!=='css/design-system.css'){console.error('Ana kabuk yalnız css/design-system.css yüklemeli.');failed=true}
 if(styleViolations.length){console.error('Ek stylesheet ihlali:',styleViolations.join(', '));failed=true}
 if(inlineStyleTags||inlineStyleAttrs){console.error('Ana kabuk inline stil içermemeli.');failed=true}
 if(unexpectedStyleInject.length){console.error('JS runtime <style> enjeksiyonu yasak; css/design-system.css kullanılmalı:',unexpectedStyleInject.join(', '));failed=true}

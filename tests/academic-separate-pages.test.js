@@ -60,5 +60,5 @@ assert(!academic.includes('stabilizeExamRecords('),'Sınav görünürlüğü run
 assert(!css.includes('ACADEMIC EXAM MOBILE VISIBILITY — CANONICAL')&&!css.includes('.ka-written-card,.ka-trial-card{width:100%!important'),'Sınav görünürlüğü !important yamasıyla sahiplenilmemeli.');
 assert(css.includes('.ka-written-list{display:grid;gap:10px}')&&css.includes('.ka-trial-list{display:grid;gap:10px}')&&css.includes('.ka-written-page,.ka-trial-page{width:100%;min-width:0}'),'Yazılı/Deneme listeleri tek merkezi design-system CSS akışında görünür kalmalı.');
 const productionShell=fs.readFileSync('index.html','utf8');
-assert(productionShell.includes('css/design-system.css?v=838')&&productionShell.includes('js/app-loader.js?v=838'),'Academic scope düzeltmesi eski PWA cache tarafından maskelenmemeli.');
+assert(/css\/design-system\.css\?v=\d+/.test(productionShell)&&/js\/app-loader\.js\?v=\d+/.test(productionShell),'Academic scope düzeltmesi sürümlü CSS/AppLoader ile eski PWA cache tarafından maskelenmemeli.');
 console.log('Academic ayrı sayfa + deneme sayacı + sonuç filtreleme sözleşmesi başarılı.');

@@ -219,7 +219,7 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-home .kh-news{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;min-height:42px;overflow:hidden;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}
 .ka-home .kh-news-label{height:100%;display:flex;align-items:center;gap:5px;padding:0 10px;border:0;background:var(--ka-primary);color:var(--ka-text-inverse);font-size:9.5px;font-weight:900;letter-spacing:.04em;z-index:2;cursor:pointer}
 .ka-home .kh-news-label svg{width:15px;height:15px}
-.ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0;padding-inline:12px;contain:paint;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%)}
+.ka-home .kh-news-viewport{overflow:hidden;white-space:nowrap;min-width:0;padding-inline:12px;contain:layout paint;transform:translateZ(0);backface-visibility:hidden}
 .ka-home .kh-news-track{display:flex;align-items:center;gap:0;width:max-content;animation:none;will-change:transform;transform:translate3d(0,0,0);backface-visibility:hidden;contain:paint}.ka-home .kh-news.is-ready .kh-news-track{animation:khTicker var(--kh-ticker-time,28s) linear infinite;animation-play-state:running}
 .ka-home .kh-news-loop{display:flex;align-items:center;gap:28px;flex:none;padding-right:28px}
 @media(hover:hover) and (pointer:fine){.ka-home .kh-news:hover .kh-news-track{animation-play-state:paused}}

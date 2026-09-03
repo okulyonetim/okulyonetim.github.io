@@ -41,9 +41,9 @@ assert(!documents.includes('classic-document-tools.js'),'İkinci eski belge işl
 
 // Former global visual patch behavior is owned by shell/index/design-system, not Documents.
 assert(index.includes('maximum-scale=1')&&index.includes('user-scalable=no'),'Mobil viewport kararlılığı merkezi shell HTML içinde korunmalı.');
-assert(design.includes('.ka-route-switching{visibility:hidden!important}'),'Sayfa geçişi görünürlük stili merkezi design-system içinde olmalı.');
-assert(shell.includes('function hideRouteTransitionFrame()')&&shell.includes("root.classList.add('ka-route-switching')")&&shell.includes('requestAnimationFrame(()=>requestAnimationFrame(reveal))'),'Ara route renderı merkezi ShellUI tarafından gizlenmeli.');
-for(const token of ['.ka-menu-card{min-height:126px','[data-transport-module]{width:100%;max-width:760px','[data-transport-denetim],#transportContent [data-transport-takip]{display:none!important}','[data-service-edit],#transportContent [data-service-delete]{width:34px']) assert(design.includes(token),`Kompakt mobil görünüm merkezi CSS içinde korunmalı: ${token}`);
+assert(!design.includes('.ka-route-switching{visibility:hidden!important}'),'Sayfa geçişi tüm modül kökünü gizleyip boş kare üretmemeli.');
+assert(shell.includes('const reuseModule=moduleRouteMounted(name)')&&shell.includes('if(!reuseModule)await global.AppLoader?.load?.(name)'),'Shell aynı modül geçişlerinde yeniden yükleme yapmamalı; mevcut ekran yeni modül hazır olana kadar korunmalı.');
+for(const token of ['.ka-menu-card{position:relative;height:146px;min-height:146px','[data-transport-module]{width:100%;max-width:760px','[data-transport-denetim],#transportContent [data-transport-takip]{display:none!important}','[data-service-edit],#transportContent [data-service-delete]{width:34px']) assert(design.includes(token),`Kompakt mobil görünüm merkezi CSS içinde korunmalı: ${token}`);
 assert(design.includes('.ka-document-row{')&&documents.includes('class="evrak-row ka-document-row"'),'Doküman satır yoğunluğu merkezi CSS ile korunmalı.');
 
 // Current advanced image->PDF / PDF merge workspace remains intact until ReportEngine migration package.

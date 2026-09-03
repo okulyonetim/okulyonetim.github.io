@@ -10,7 +10,7 @@ const design=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
-assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css?v=867\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
+assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css?v=868\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
 assert(!ui.includes('hideRouteTransitionFrame')&&!design.includes('.ka-route-switching'),'Route geçişinde görünür içeriği saklayan titreme katmanı bulunmamalı.');
 assert(ui.includes('const MODULE_ROOT_SELECTORS=Object.freeze')&&ui.includes('function moduleRouteMounted(name)')&&ui.includes('const reuseModule=moduleRouteMounted(name)')&&ui.includes('if(!reuseModule)await global.AppLoader?.load?.(name)'),'Aynı canonical modülün alt sayfaları arasında geçişte hiçbir modül yeniden mount edilmemeli.');
 assert(ui.includes('if(page)applySubpage(name,page,title)')&&!ui.includes('if(page)requestAnimationFrame(()=>applySubpage(name,page,title))'),'Alt sayfa seçimi sonraki frame bırakılmamalı; ilk boyama doğru sayfa olmalı.');
@@ -57,9 +57,11 @@ const directPages=[
   ['Öğrenci Yoklama','tools','student-attendance'],['Öğrenci Listesi Oluşturucu','tools','student-list'],['Ödev Takip Çizelgesi','tools','homework'],['Not Çizelgesi','tools','grades'],
   ['Nöbet Programı','management','duty'],['Harita','tools','map'],['Kontrol Listeleri','tools','checklists'],['Evrak Takibi','documents','evrak'],['Aylık İşler','management','tasks'],
   ['Mevzuat','documents','mevzuat'],['Akademik Takvim','academic','calendar'],['Tebliğ-Tebellüğ İmza Sirküsü','documents','teblig'],['Puantaj & İmza Sirküsü','management','puantaj'],['Dilekçe & İzinler','management','dilekce'],['Devamsızlık Çizelgesi','tools','attendance'],
-  ['Okul Bilgileri','settings','school'],['Veriler','settings','data'],['Kullanıcı İşlemleri','settings','users'],['Kullanıcı İstatistikleri','settings','statistics']
+  ['Veriler','settings','data']
 ];
 for(const [label,route,page] of directPages) assert(ui.includes(`['${label}'`)&&ui.includes(`'${route}','${page}'`),`Doğrudan menü hedefi eksik/yanlış: ${label} -> ${route}/${page}`);
+const settingsGroup=ui.match(/\{key:'settings'.*?\},\n \{key:'exams'/s)?.[0]||'';
+for(const duplicate of ["['Okul Bilgileri'","['Kullanıcı İşlemleri'","['Kullanıcı İstatistikleri'"]) assert(!settingsGroup.includes(duplicate),`Settings shell tekrarı geri dönmemeli: ${duplicate}`);
 for(const page of ['form-maarif','form-belirli','form-sok','form-rehberlik','form-bep','form-zumre','form-kulup']) assert(ui.includes(`'${page}'`),`Ayrı doküman form sayfası eksik: ${page}`);
 assert(ui.includes("global.StudentPages?.open?.")&&ui.includes("global.EvrakTakipPage.open(root)")&&ui.includes("global.LegislationModule.mount(root)")&&ui.includes("global.KaDataPage.open()"),'Özel menü hedefleri gerçek mevcut API’lere bağlanmalı.');
 assert(ui.includes('const CUSTOM_PAGE_ROUTES=new Map()')&&ui.includes('function registerPageRoute(page,handler)'),'ShellUI özel sayfalar için merkezi route registry sağlamalı.');
@@ -101,10 +103,12 @@ for(const src of sameOriginStartup) assert(sw.includes(`'${src}'`),`Aynı-origin
 const optionalLazy=['js/modules/payroll-change.js','js/modules/assistant.js','js/modules/legislation.js','js/modules/legislation-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'];
 for(const src of optionalLazy) assert(!shell.includes(`<script src="${src}" defer></script>`),`Opsiyonel araç ilk açılışta eager yüklenmemeli: ${src}`);
 const optionalLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
-assert(optionalLoaderSource.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js'])"),'Dashboard açılmadan önce SchoolLiveStatus ve mevcut tek duyuru servis sahibi lazy bundle içinde yüklenmeli.');
+const normalizeLoaderBundle=v=>String(v||'').replace(/\?v=\d+/g,'');
+const dashboardBundleNormalized=normalizeLoaderBundle(optionalLoaderSource.match(/define\('dashboard',\[([^\]]+)\]\)/)?.[1]||'');
+assert(dashboardBundleNormalized.includes("'js/modules/school-live-status.js'")&&dashboardBundleNormalized.includes("'js/modules/communication.js'")&&dashboardBundleNormalized.includes("'js/modules/dashboard.js'")&&dashboardBundleNormalized.indexOf("'js/modules/school-live-status.js'")<dashboardBundleNormalized.indexOf("'js/modules/communication.js'")&&dashboardBundleNormalized.indexOf("'js/modules/communication.js'")<dashboardBundleNormalized.indexOf("'js/modules/dashboard.js'"),'Dashboard açılmadan önce SchoolLiveStatus ve mevcut tek duyuru servis sahibi lazy bundle içinde yüklenmeli.');
 assert(!shell.includes('<script src="js/modules/report-engine.js" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
-const academicBundle=optionalLoaderSource.match(/define\('academic',\[([^\]]+)\]\)/)?.[1]||'';
-assert(academicBundle.includes('FIREBASE_STORAGE_SDK')&&academicBundle.includes("'js/modules/report-engine.js'")&&academicBundle.includes("'js/modules/academic.js?v=838'")&&!academicBundle.includes('academic-calendar-parity.js')&&academicBundle.indexOf("'js/modules/report-engine.js'")<academicBundle.indexOf("'js/modules/academic.js?v=838'"),'Academic modülü Storage + ReportEngine + tek canonical Academic sırasını lazy bundle içinde korumalı.');
+const academicBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\('academic',\[([^\]]+)\]\)/)?.[1]||'');
+assert(academicBundle.includes('FIREBASE_STORAGE_SDK')&&academicBundle.includes("'js/modules/report-engine.js'")&&academicBundle.includes("'js/modules/academic.js'")&&!academicBundle.includes('academic-calendar-parity.js')&&academicBundle.indexOf("'js/modules/report-engine.js'")<academicBundle.indexOf("'js/modules/academic.js'"),'Academic modülü Storage + ReportEngine + tek canonical Academic sırasını lazy bundle içinde korumalı.');
 assert(optionalLoaderSource.includes("define('management',['js/modules/report-engine.js','js/modules/management.js'])"),'management modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.');
 const documentsBundle=optionalLoaderSource.match(/define\('documents',\[([^\]]+)\]\)/)?.[1]||'';
 assert(documentsBundle.includes("'js/modules/report-engine.js'")&&documentsBundle.includes("'js/modules/documents.js'")&&documentsBundle.indexOf("'js/modules/report-engine.js'")<documentsBundle.indexOf("'js/modules/documents.js'"),'documents modülü ek lazy bağımlılıklar olsa da ReportEngine bağımlılığını documents.js’den önce yüklemeli.');
@@ -112,8 +116,8 @@ const transportBundle=optionalLoaderSource.match(/define\('transport',\[([^\]]+)
 assert(transportBundle.includes("'js/modules/report-engine.js'")&&transportBundle.includes("'js/modules/transport.js'")&&!transportBundle.includes('transport-service-parity.js')&&transportBundle.indexOf("'js/modules/report-engine.js'")<transportBundle.indexOf("'js/modules/transport.js'"),'Transport modülü ReportEngine + tek canonical Transport sırasını lazy bundle içinde korumalı.');
 assert(ui.includes("if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Maaş özel rotası ReportEngine hazır değilse ihtiyaç anında yüklemeli.');
 assert(sw.includes("'./js/modules/report-engine.js'"),'ReportEngine offline Service Worker cache içinde bulunmalı.');
-const communicationBundle=optionalLoaderSource.match(/define\('communication',\[([^\]]+)\]\)/)?.[1]||'';
-assert(communicationBundle.includes("'js/modules/communication.js?v=838'")&&communicationBundle.includes("'js/modules/assistant.js'")&&communicationBundle.indexOf("'js/modules/communication.js?v=838'")<communicationBundle.indexOf("'js/modules/assistant.js'"),'AI Asistan ek lazy bağımlılıklar olsa da Communication bundle içinde communication.js sonrasında yüklenmeli.');
+const communicationBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\('communication',\[([^\]]+)\]\)/)?.[1]||'');
+assert(communicationBundle.includes("'js/modules/communication.js'")&&communicationBundle.includes("'js/modules/assistant.js'")&&communicationBundle.indexOf("'js/modules/communication.js'")<communicationBundle.indexOf("'js/modules/assistant.js'"),'AI Asistan ek lazy bağımlılıklar olsa da Communication bundle içinde communication.js sonrasında yüklenmeli.');
 assert(optionalLoaderSource.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubrik köprüleri Tools lazy bundle ile yüklenmeli.');
 assert(ui.includes("loadScript?.('js/modules/payroll-change.js')"),'Maaş değişikliği özel route ihtiyaç anında script yüklemeli.');
 assert(ui.includes("loadScript?.('js/modules/legislation.js')")&&ui.includes("loadScript?.('js/modules/legislation-ui.js')"),'Mevzuat özel route motor ve UI scriptlerini ihtiyaç anında yüklemeli.');
@@ -162,7 +166,7 @@ assert(!dashboard.includes('trialTimer=setInterval(()=>{refreshTrialTimers();ref
 
 assert(dashboard.includes('renderFrame=0')&&dashboard.includes('cancelAnimationFrame(renderFrame)'),'Dashboard render kuyruğu unmount sırasında temizlenmeli.');
 
-assert(dashboard.includes("SyncEngine.localHydrate(types)")&&dashboard.includes("okulBilgileri:'okulBilgileri'"),'Dashboard ek verileri Firestore beklemeden IndexedDB üzerinden hydrate etmeli.');
+assert(dashboard.includes("SyncEngine.localHydrate([...new Set(types)])")&&dashboard.includes("okulBilgileri:'okulBilgileri'"),'Dashboard ek verileri Firestore beklemeden IndexedDB üzerinden hydrate etmeli.');
 
 const appLoaderSource=fs.readFileSync('js/app-loader.js','utf8');
 assert(appLoaderSource.includes('Promise.all([Promise.resolve(AppBootstrap?.start?.()),prepareAccountLocalData(user)])'),'İlk modül core ve hesap IndexedDB hydrate tamamlanmadan açılmamalı.');

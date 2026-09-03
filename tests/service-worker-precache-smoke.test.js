@@ -35,8 +35,12 @@ for (const eski of [
 assert(!sw.includes('modernShell('), 'Service Worker HTML/CSS/JS enjekte etmemeli.');
 assert(!sw.includes("html.replace('</head>'"), 'Service Worker tasarım dosyası enjekte etmemeli.');
 assert(sw.includes('function kodKaynakMi'), 'JS/CSS için ayrı güncel-kod stratejisi bulunmalı.');
-assert(sw.includes("fetch(event.request,{cache:'no-store'})"), 'JS/CSS çevrimiçiyken cache yerine güncel ağ sürümünden alınmalı.');
-assert(sw.includes('kodNetworkFirst(event)'), 'JS/CSS fetch akışı network-first olmalı.');
+assert(sw.includes('async function kodCacheFirst(event)'), 'JS/CSS anlık cache-first + arka plan yenileme stratejisine sahip olmalı.');
+assert(sw.includes("const yenile=fetch(event.request,{cache:'no-store'})"), 'Cache-first kod stratejisi arka planda HTTP cache dışından güncellenmeli.');
+assert(sw.includes('if(cached){event.waitUntil(yenile);return cached;}'), 'Önbellekteki JS/CSS ağ yanıtını beklemeden sunulmalı.');
+assert(sw.includes('async function navigasyonCacheFirst(event)'), 'Uygulama kabuğu da yavaş ağda cache üzerinden anında açılmalı.');
+assert(sw.includes('kodCacheFirst(event)')&&!sw.includes('kodNetworkFirst(event)'), 'Eski ağ bekleten JS/CSS network-first yolu geri dönmemeli.');
+assert(sw.includes('navigasyonCacheFirst(event)')&&!sw.includes('navigasyonNetworkFirst(event)'), 'Eski ağ bekleten navigasyon yolu geri dönmemeli.');
 assert(/cache\.put\(event\.request\s*,\s*copy\)/.test(sw), 'Başarılı GET kaynakları runtime-cache edilmeli.');
 assert(sw.includes('caches.match(event.request)'), 'Çevrimdışı cache fallback kullanılmalı.');
 console.log('Service Worker tek-shell/güncel-kod/offline-dashboard smoke testleri başarılı.');

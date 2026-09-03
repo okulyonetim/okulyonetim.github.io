@@ -26,9 +26,10 @@ function pathSet(path,value){
   node[parts.at(-1)]=value;emit(path,value);return value
 }
 function setData(type,value){state.data[type]=value;emit('data.'+type,value);return value}
+function setDataMany(data){if(!data||typeof data!=='object')return state.data;const changes=Object.entries(data);for(const [type,value] of changes)state.data[type]=value;for(const [type,value] of changes)emit('data.'+type,value);return data}
 function hydrateStore(data){if(data&&typeof data==='object')Object.entries(data).forEach(([k,v])=>state.data[k]=v);state.meta.hydrated=true;emit('meta.hydrated',true);return state.data}
 function subscribe(path,fn,{immediate=false}={}){if(!listeners.has(path))listeners.set(path,new Set());listeners.get(path).add(fn);if(immediate)try{fn(pathGet(path),path,state)}catch(e){console.error('[AppStore]',e)}return()=>listeners.get(path)?.delete(fn)}
-window.AppStore={__v2:true,get:pathGet,set:pathSet,data:t=>state.data[t],setData,hydrate:hydrateStore,subscribe,subscribeAll:fn=>(anyListeners.add(fn),()=>anyListeners.delete(fn)),snapshot:()=>{try{return structuredClone(state)}catch(_){return JSON.parse(JSON.stringify(state))}},get state(){return state},getir:pathGet,ayarla:pathSet,abone:(p,f)=>subscribe(p,f)};
+window.AppStore={__v2:true,get:pathGet,set:pathSet,data:t=>state.data[t],setData,setDataMany,hydrate:hydrateStore,subscribe,subscribeAll:fn=>(anyListeners.add(fn),()=>anyListeners.delete(fn)),snapshot:()=>{try{return structuredClone(state)}catch(_){return JSON.parse(JSON.stringify(state))}},get state(){return state},getir:pathGet,ayarla:pathSet,abone:(p,f)=>subscribe(p,f)};
 window.addEventListener('online',()=>AppStore.set('ui.online',true),{passive:true});
 window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:true});
 
@@ -57,6 +58,7 @@ function open(){
   });return dbp;
 }
 async function get(k,def=null){try{const d=await open();return await new Promise((res,rej)=>{const r=d.transaction(STORE,'readonly').objectStore(STORE).get(k);r.onsuccess=()=>res(r.result===undefined?def:r.result);r.onerror=()=>rej(r.error)})}catch(_){return def}}
+async function getMany(keys,defaults={}){const list=[...new Set(keys||[])];if(!list.length)return{};try{const d=await open();return await new Promise((res,rej)=>{const out={},t=d.transaction(STORE,'readonly'),store=t.objectStore(STORE);for(const k of list){const r=store.get(k);r.onsuccess=()=>{out[k]=r.result===undefined?defaults[k]:r.result}}t.oncomplete=()=>{for(const k of list)if(!Object.prototype.hasOwnProperty.call(out,k))out[k]=defaults[k];res(out)};t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||new Error('indexeddb-abort'))})}catch(_){return Object.fromEntries(list.map(k=>[k,defaults[k]]))}}
 async function set(k,v){const d=await open();return new Promise((res,rej)=>{const t=d.transaction(STORE,'readwrite');t.objectStore(STORE).put(v,k);t.oncomplete=()=>res(v);t.onerror=()=>rej(t.error)})}
 async function setMany(entries){if(!entries?.length)return;const d=await open();return new Promise((res,rej)=>{const t=d.transaction(STORE,'readwrite'),s=t.objectStore(STORE);entries.forEach(([k,v])=>s.put(v,k));t.oncomplete=res;t.onerror=()=>rej(t.error)})}
 async function del(k){const d=await open();return new Promise((res,rej)=>{const t=d.transaction(STORE,'readwrite');t.objectStore(STORE).delete(k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
@@ -69,8 +71,8 @@ async function tombstone(u,type,id,on=true){const k=key(u,`tomb:${type}`),x=awai
 const tombstones=(u,type)=>get(key(u,`tomb:${type}`),{});
 const cache=(u,type,data)=>set(key(u,`cache:${type}`),data);
 const cached=(u,type,def=[])=>get(key(u,`cache:${type}`),def);
-async function cacheMany(u,data){if(!u||!data||typeof data!=='object')return;const rows=Object.entries(data).map(([type,val])=>[key(u,`cache:${type}`),val]);rows.push([key(u,'meta:lastLocalWriteAt'),Date.now()]);await setMany(rows);return data}
-async function hydrateLocal(u,types,defaults={}){const out={};for(const type of types||[])out[type]=await cached(u,type,Object.prototype.hasOwnProperty.call(defaults,type)?defaults[type]:[]);return out}
+async function cacheMany(u,data,{markWrite=true}={}){if(!u||!data||typeof data!=='object')return;const rows=Object.entries(data).map(([type,val])=>[key(u,`cache:${type}`),val]);if(markWrite)rows.push([key(u,'meta:lastLocalWriteAt'),Date.now()]);await setMany(rows);return data}
+async function hydrateLocal(u,types,defaults={}){const names=[...(types||[])],keys=names.map(type=>key(u,`cache:${type}`)),defs={};names.forEach((type,i)=>{defs[keys[i]]=Object.prototype.hasOwnProperty.call(defaults,type)?defaults[type]:[]});const values=await getMany(keys,defs),out={};names.forEach((type,i)=>{out[type]=values[keys[i]]});return out}
 async function meta(u,name,value){const k=key(u,`meta:${name}`);if(arguments.length>=3){await set(k,value);return value}return get(k,null)}
 async function userSnapshot(u=uid()){
   if(!u)return{caches:{},tombstones:{},meta:{},queue:[]};
@@ -81,7 +83,7 @@ async function userSnapshot(u=uid()){
 async function runWrite(op){if(!window.db)throw new Error('db-yok');const ref=op.id?db.collection(op.collection).doc(op.id):null;if(op.kind==='delete-doc')return ref.delete();if(op.kind==='set-doc')return ref.set(op.data,{merge:!!op.merge});if(op.kind==='update-doc')return ref.set(op.data,{merge:true});if(op.kind==='delete-query'){const s=await db.collection(op.collection).where(op.field,'==',op.value).get();if(s.empty)return;const b=db.batch();s.docs.forEach(d=>b.delete(d.ref));return b.commit()}throw new Error('op-bilinmiyor')}
 async function flushWrites(){if(flushing||!navigator.onLine)return;const u=uid();if(!u)return;flushing=true;const k=key(u,'queue');try{const q=await get(k,[]),left=[];for(const op of q){try{await runWrite(op);if(op.tombType&&op.tombId)await tombstone(u,op.tombType,op.tombId,false)}catch(e){op.tries=(op.tries||0)+1;op.lastError=String(e?.message||e);op.lastTryAt=Date.now();left.push(op)}}await set(k,left);AppStore.set('ui.pendingWrites',left.length);window.dispatchEvent(new CustomEvent('koruk:sync-state',{detail:{pending:left.length}}));return left.length}finally{flushing=false}}
 function scheduleFlush(){clearTimeout(flushTimer);flushTimer=setTimeout(flushWrites,350)}
-window.KorukLocalFirst={open,get,set,setMany,del,queue,pending,tombstone,tombstones,cache,cached,cacheMany,hydrate:hydrateLocal,meta,userSnapshot,markBootstrap:(u,d={})=>meta(u,'bootstrap',{ready:true,completedAt:Date.now(),...d}),bootstrapState:u=>meta(u,'bootstrap'),isBootstrapReady:async u=>!!(await meta(u,'bootstrap'))?.ready,flush:flushWrites,schedule:scheduleFlush,uid};
+window.KorukLocalFirst={open,get,getMany,set,setMany,del,queue,pending,tombstone,tombstones,cache,cached,cacheMany,hydrate:hydrateLocal,meta,userSnapshot,markBootstrap:(u,d={})=>meta(u,'bootstrap',{ready:true,completedAt:Date.now(),...d}),bootstrapState:u=>meta(u,'bootstrap'),isBootstrapReady:async u=>!!(await meta(u,'bootstrap'))?.ready,flush:flushWrites,schedule:scheduleFlush,uid};
 
 /* ========================= DEVICE DATA =========================
    Tüm modül repository'lerinin ortak local-first yazma/okuma kapısıdır.
@@ -109,7 +111,7 @@ function syncReady(){return !!(window.db&&uid())}
 function register(type,collection,opts={}){if(type&&collection)registered.set(type,{type,collection,...opts})}
 async function localHydrate(types){const u=uid();if(!u)return{};const names=types?.length?types:Array.from(registered.keys()),data=await hydrateLocal(u,names,{});AppStore.hydrate(data);return data}
 async function fetchCollection(def){let q=db.collection(def.collection);if(typeof def.query==='function')q=def.query(q)||q;const snap=await q.get();return snap.docs.map(doc=>({id:doc.id,...doc.data()}))}
-async function pull(types){if(!syncReady()||!navigator.onLine)return{updated:0,skipped:true};const names=types?.length?types:Array.from(registered.keys());if(!names.length)return{updated:0};syncing=true;AppStore.set('ui.syncing',true);let updated=0;try{for(const name of names){const def=registered.get(name);if(!def)continue;try{const rows=await fetchCollection(def);await cache(uid(),name,rows);AppStore.setData(name,rows);updated++}catch(e){console.warn('[SyncEngine]',name,e?.message||e)}}const now=Date.now();await meta(uid(),'lastSyncAt',now);AppStore.set('ui.lastSyncAt',now);return{updated}}finally{syncing=false;AppStore.set('ui.syncing',false)}}
+async function pull(types){if(!syncReady()||!navigator.onLine)return{updated:0,skipped:true};const names=types?.length?types:Array.from(registered.keys());if(!names.length)return{updated:0};syncing=true;AppStore.set('ui.syncing',true);let updated=0;try{const u=uid(),data={};for(const name of names){const def=registered.get(name);if(!def)continue;try{const rows=await fetchCollection(def);data[name]=rows;updated++}catch(e){console.warn('[SyncEngine]',name,e?.message||e)}}if(updated){await cacheMany(u,data,{markWrite:false});AppStore.setDataMany(data)}const now=Date.now();await meta(u,'lastSyncAt',now);AppStore.set('ui.lastSyncAt',now);return{updated}}finally{syncing=false;AppStore.set('ui.syncing',false)}}
 async function sync(types){if(syncing)return;await flushWrites();return pull(types)}
 function scheduleSync(ms=1200){clearTimeout(syncTimer);syncTimer=setTimeout(()=>sync(),ms)}
 window.SyncEngine={register,unregister:t=>registered.delete(t),localHydrate,pull,flush:flushWrites,sync,schedule:scheduleSync,definitions:()=>Array.from(registered.values()).map(x=>({...x})),get syncing(){return syncing}};
