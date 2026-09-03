@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          EXPECTED="66750972fb0735b71d5e8f0a87818fb18eeb1d59"
+          EXPECTED="02184f957d6a9483f38ec3b3a8951c70f6651a44"
           test "$(git rev-parse HEAD^)" = "$EXPECTED"
 
       - name: Apply live bell patch
@@ -73,7 +73,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm scripts/apply-live-bell-v2.py
+          git rm -f scripts/apply-live-bell-v2.py
           git add js/modules/dashboard.js css/design-system.css index.html js/app-loader.js service-worker.js tests/dashboard-card-routes-smoke.test.js tests/trial-counter-scroll-stability.test.js
           git commit -m "feat: redesign live bell timeline cards"
           git push origin main
