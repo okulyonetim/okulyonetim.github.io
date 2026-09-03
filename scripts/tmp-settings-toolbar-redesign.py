@@ -83,21 +83,16 @@ sw=sw.replace("const CACHE_ADI='oy-cache-v866'","const CACHE_ADI='oy-cache-v867'
 sw=sw.replace('./css/design-system.css?v=866','./css/design-system.css?v=867',1)
 sw_path.write_text(sw,encoding='utf-8')
 
-# The statistics regression intentionally pins the currently deployed central CSS/cache generation.
-stats_test_path=Path('tests/user-statistics-admin-view.test.js')
-stats_test=stats_test_path.read_text(encoding='utf-8')
-for old,new in [
-    ('css/design-system.css?v=866','css/design-system.css?v=867'),
-    ("const CACHE_ADI='oy-cache-v866'","const CACHE_ADI='oy-cache-v867'"),
-    ('./css/design-system.css?v=866','./css/design-system.css?v=867'),
-    ('merkezi CSS v866','merkezi CSS v867'),
-    ('PWA cache v866','PWA cache v867')
-]:
-    if old in stats_test:
-        stats_test=stats_test.replace(old,new)
-if 'css/design-system.css?v=867' not in stats_test or "oy-cache-v867" not in stats_test:
-    raise SystemExit('statistics cache regression contract could not be aligned to v867')
-stats_test_path.write_text(stats_test,encoding='utf-8')
+# Cache-pinning regression tests intentionally track the currently deployed central CSS/SW generation.
+for p in Path('tests').glob('*.test.js'):
+    t=p.read_text(encoding='utf-8')
+    original=t
+    t=t.replace('css/design-system.css?v=866','css/design-system.css?v=867')
+    t=t.replace("const CACHE_ADI='oy-cache-v866'","const CACHE_ADI='oy-cache-v867'")
+    t=t.replace('./css/design-system.css?v=866','./css/design-system.css?v=867')
+    t=t.replace('merkezi CSS v866','merkezi CSS v867').replace('PWA cache v866','PWA cache v867')
+    if t!=original:
+        p.write_text(t,encoding='utf-8')
 
 # Regression contract for the new Settings navigation/header behavior.
 test_path=Path('tests/settings-separate-pages.test.js')
