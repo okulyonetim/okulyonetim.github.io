@@ -21,18 +21,21 @@ jobs:
         with:
           node-version: '24'
       - name: Verify expected parent
-        run: test "$(git rev-parse HEAD^)" = '78517ab1d528ee9645caa6c008dc2f48230b840e'
+        run: test "$(git rev-parse HEAD^)" = 'f817447768dca03d6ae24ff680823afbb8ae0bf4'
       - name: Apply performance patch
         run: python3 scripts/tmp-runtime-performance-final.py
       - name: Apply regression contract fixes
         run: |
           python3 scripts/tmp-runtime-performance-extra.py
           python3 scripts/tmp-runtime-performance-extra2.py
+          python3 scripts/tmp-runtime-performance-extra3.py
       - name: Build client bundles
         run: npm run build:client
       - name: Check syntax
         run: |
           node --check js/core/core.js
+          node --check js/core/shell-ui.js
+          node --check js/app-loader.js
           node --check js/modules/dashboard.js
           node --check service-worker.js
       - name: Run non-emulator smoke tests
@@ -41,7 +44,7 @@ jobs:
           failed=0
           for f in tests/*.test.js; do
             case "$f" in
-              *-rules.test.js) echo "--- $f (Firestore emulator test; dedicated workflow)"; continue ;;
+              *-rules.test.js|*/firestore-regression-extra.test.js) echo "--- $f (Firestore emulator test; dedicated workflow)"; continue ;;
             esac
             echo "--- $f"
             if ! node "$f"; then failed=1; fi
@@ -64,7 +67,8 @@ jobs:
             scripts/tmp-runtime-performance-final.py \
             scripts/tmp-runtime-performance-extra.py \
             scripts/tmp-runtime-performance-extra2.py \
+            scripts/tmp-runtime-performance-extra3.py \
             tests/.tmp-module-contract-error.txt
-          git add js/core/core.js css/design-system.css service-worker.js index.html tests scripts/check-client-architecture.mjs
+          git add js/core/core.js js/core/shell-ui.js js/app-loader.js css/design-system.css service-worker.js index.html tests scripts/check-client-architecture.mjs
           git commit -m 'perf: speed up local runtime and smooth news ticker'
           git push origin HEAD:main
