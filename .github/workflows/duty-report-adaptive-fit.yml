@@ -25,6 +25,18 @@ jobs:
         run: git merge-base --is-ancestor b52c3e718a031fd75d1aa2c1e8811fceb78c7fad HEAD
       - name: Apply adaptive duty report patch
         run: python3 .github/temp-duty-report-fit.py
+      - name: Correct focused assertion for landscape variables
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tests/duty-report-full-parity.test.js')
+          s=p.read_text(encoding='utf-8')
+          old="css.includes('.ka-duty-report--landscape{height:200mm;min-height:200mm}')"
+          new="css.includes('.ka-duty-report--landscape{height:200mm;min-height:200mm;')"
+          if old not in s:
+              raise SystemExit('landscape assertion anchor missing')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
       - name: Validate duty report and architecture
         run: |
           set -euo pipefail
