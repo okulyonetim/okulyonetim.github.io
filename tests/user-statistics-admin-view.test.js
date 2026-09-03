@@ -14,7 +14,7 @@ assert(settings.includes("if(page==='statistics')void prepareStatisticsData(fals
 assert(auth.includes("if(preparing){await preparing;if(mode===wanted)return true;return prepare(all);}"),'Self hazırlığı sürerken admin all isteği kaybolmamalı.');
 assert(!settings.includes('db.collection(')&&!settings.includes('firebase.firestore('),'Settings UI doğrudan Firestore kullanmamalı.');
 for(const token of ['.ka-statistics-page{--ka-stat-hero-start:','.ka-statistics-summary{display:grid;grid-template-columns:repeat(2','.ka-statistics-user{min-width:0','.ka-statistics-metrics{','.ka-statistics-storage__body{','@media(max-width:390px)'])assert(design.includes(token),`Yeni kullanıcı istatistik tasarımı eksik: ${token}`);
-assert(index.includes('css/design-system.css?v=869'),'Yeni istatistik tasarımı merkezi CSS v867 ile yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v869'")&&sw.includes('./css/design-system.css?v=869'),'PWA cache v867 olmalı.');
+assert(index.includes('css/design-system.css?v=870'),'Yeni istatistik tasarımı merkezi CSS v867 ile yüklenmeli.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v870'")&&sw.includes('./css/design-system.css?v=870'),'PWA cache v867 olmalı.');
 assert(rules.includes('match /oy_kullaniciIstatistikleri/{uid}')&&rules.includes('allow read: if adminMi() || (girisYapmis() && request.auth.uid == uid);'),'Firestore admin tüm istatistikleri okuyabilmeli.');
 console.log('Admin tüm kullanıcı istatistikleri + mobil tasarım sözleşmesi başarılı.');

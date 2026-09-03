@@ -4,6 +4,7 @@ const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
+const parity=fs.readFileSync('js/modules/classic-parity.js','utf8');
 const start=ui.indexOf('function renderProfile({remember=true}={})');
 const end=ui.indexOf('\nfunction profileDetailHead',start);
 assert(start>=0&&end>start,'Profil renderer bulunmalı.');
@@ -12,6 +13,9 @@ assert(block.includes('ka-profile-stats')&&!block.includes('ka-home-stats'),'Pro
 for(const token of ['ka-profile-contact','ka-profile-actions','ka-profile-action__copy','ka-profile-action__count','ka-profile-action__chevron'])assert(block.includes(token),`Profil yeni düzen bileşeni eksik: ${token}`);
 assert(ui.includes("function profileContactHtml({handle='',phone='',email=''})")&&ui.includes('const seen=new Set()')&&block.includes('const contact=profileContactHtml({handle,phone,email});'),'Profil kullanıcı adı, telefon ve e-postayı tek canonical iletişim rendererı üzerinden, yinelenmeden üretmeli.');
 assert(!block.includes('phone?`<span class=\"ka-profile-contact__item')&&!block.includes('email?`<span class=\"ka-profile-contact__item'),'Eski inline telefon/e-posta rendererı geri dönmemeli.');
+assert(!parity.includes("insertAdjacentHTML('beforeend',`<small>☎")&&!parity.includes("insertAdjacentHTML('beforeend',`<small>✉"),'Classic parity profil kartına ikinci telefon/e-posta satırı eklememeli.');
+assert(parity.includes("copy.querySelectorAll(':scope > small').forEach(x=>x.remove())"),'Classic parity eski raw iletişim satırlarını temizlemeli.');
+assert(design.includes('.ka-profile-copy>small{display:none!important}'),'Merkezi CSS eski cache kaynaklı raw profil iletişim satırlarını da gizlemeli.');
 assert(block.includes("action('schedule'")&&block.includes("action('duty'")&&block.includes("action('exams'")&&block.includes("action('tasks'"),'Dört kişisel çalışma alanı davranışı korunmalı.');
 assert(block.includes('data-profile-logout')&&block.includes('global.cikisYap?.()'),'Oturum kapatma davranışı korunmalı.');
 for(const token of ['.ka-profile-page{--ka-profile-hero-start:#17684f','.ka-profile-stats{display:grid;grid-template-columns:repeat(4','.ka-profile-action__copy{min-width:0;display:flex;flex-direction:column','.ka-profile-contact__item{','.ka-logout-button{width:100%'])assert(design.includes(token),`Profil merkezi tasarım sözleşmesi eksik: ${token}`);
@@ -19,7 +23,7 @@ assert(design.includes('[data-theme="dark"] .ka-profile-page{--ka-profile-hero-s
 assert(design.includes('.ka-profile-copy h2{')&&design.includes('color:#fff')&&design.includes('--ka-profile-hero-muted:#e4f4ed'),'Hero metin kontrastı beyaz/açık sabit paletle korunmalı.');
 assert(design.includes('@media(max-width:520px)')&&design.includes('.ka-profile-actions{display:grid;grid-template-columns:1fr;gap:8px}'),'Mobil çalışma kartları sıkışık iki sütun yerine tek sütun olmalı.');
 assert(!design.includes('.ka-profile-hero{padding-left:104px}'),'Eski mutlak konum profil telafisi geri dönmemeli.');
-assert(index.includes('css/design-system.css?v=869'),'Profil tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
+assert(index.includes('css/design-system.css?v=870'),'Profil tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
 assert(index.includes('js/core/shell-ui.js?v=869'),'Profil rendererı cache-bust edilmiş güncel ShellUI sürümünden yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v869'")&&sw.includes('./css/design-system.css?v=869'),'Yeni profil tasarımı PWA cache sürümüyle yayınlanmalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v870'")&&sw.includes('./css/design-system.css?v=870'),'Yeni profil tasarımı PWA cache sürümüyle yayınlanmalı.');
 console.log('Profil sayfası kontrast + düzen yeniden tasarım sözleşmesi başarılı.');

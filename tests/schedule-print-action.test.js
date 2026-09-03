@@ -6,5 +6,5 @@ assert(a.includes('async function ensureScheduleReportEngine()'),'Ders programı
 assert(a.includes("loadScript('js/modules/report-engine.js')"),'Rapor motoru gerektiğinde lazy-load edilmeli.');
 assert(a.includes("document.getElementById('kaReportPreview')"),'Yazdır düğmesi gerçek rapor önizlemesini doğrulamalı.');
 assert(a.includes("throw new Error('Rapor önizlemesi açılamadı.')"),'Sessiz yazdırma başarısızlığı engellenmeli.');
-assert(sw.includes("CACHE_ADI='oy-cache-v869'"),'Ders programı yazdırma düzeltmesi için cache sürümü artırılmalı.');
+assert(sw.includes("CACHE_ADI='oy-cache-v870'"),'Ders programı yazdırma düzeltmesi için cache sürümü artırılmalı.');
 console.log('Ders Programı çarşaf Yazdır akışı başarılı.');
