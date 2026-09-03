@@ -11,5 +11,5 @@ assert(!map.includes('MutationObserver'),'Harita runtime DOM gözlemci parity ka
 for(const token of ['/* Harita — premium rota çalışma alanı v1 */','.ka-map-hero{','.ka-map-lists-grid{','.ka-map-floating-tools{','[data-theme="dark"] .ka-map-hero{'])assert(css.includes(token),`Merkezi Harita tasarımı eksik: ${token}`);
 assert(map.includes("global.DeviceData.update('servisler'"),'Harita rota kaydı local-first DeviceData hattında kalmalı.');
 assert(map.includes("PermissionService?.require?.('tools.map','edit')"),'Harita düzenleme yetkisi merkezi PermissionService üzerinde kalmalı.');
-assert(sw.includes('oy-cache-v868'),'Yeni Harita CSS/JS için PWA cache sürümü yükseltilmeli.');
+assert(sw.includes('oy-cache-v869'),'Yeni Harita CSS/JS için PWA cache sürümü yükseltilmeli.');
 console.log('Harita açık/koyu premium sayfa redesign sözleşmesi başarılı.');
