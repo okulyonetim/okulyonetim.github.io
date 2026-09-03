@@ -1,0 +1,54 @@
+name: User statistics redesign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/user-statistics-redesign.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  redesign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 8
+
+      - name: Verify staged base
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="9eb68ff057324706b2966f1cfc6be6843e1d3953"
+          git merge-base --is-ancestor "$EXPECTED" HEAD
+
+      - name: Apply admin statistics redesign
+        run: python scripts/tmp-user-statistics-redesign.py
+
+      - name: Validate statistics and architecture contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check js/modules/settings.js
+          node --check js/auth.js
+          node --check service-worker.js
+          node tests/user-statistics-admin-view.test.js
+          node tests/settings-separate-pages.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/profile-page-redesign.test.js
+          node tests/notification-popover-redesign.test.js
+          node tests/search-page-redesign.test.js
+          node tests/web-mobile-engine-separation.test.js
+
+      - name: Commit verified admin statistics redesign
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/settings.js js/auth.js css/design-system.css index.html service-worker.js tests/*.test.js
+          git commit -m "feat: redesign admin user statistics"
+          git push origin main
