@@ -1,4 +1,4 @@
-# temporary verified settings toolbar workflow — retry 2
+# temporary verified settings toolbar workflow — retry 3
 name: Settings toolbar redesign
 
 on:
@@ -58,6 +58,6 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/modules/settings.js css/design-system.css index.html service-worker.js tests/settings-separate-pages.test.js tests/user-statistics-admin-view.test.js
+          git add js/modules/settings.js css/design-system.css index.html service-worker.js tests/*.test.js
           git commit -m "feat: refine settings navigation and header"
           git push origin main
