@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '24'
       - name: Verify expected parent
-        run: test "$(git rev-parse HEAD^)" = '682a561057f102d54cb2269c41412ee4a03e261d'
+        run: test "$(git rev-parse HEAD^)" = '27c5aec878ae697652c5578e1a4b1f35ca5ec358'
       - name: Apply performance patch
         run: python3 scripts/tmp-runtime-performance-final.py
       - name: Apply regression contract fixes
