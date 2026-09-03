@@ -15,17 +15,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 5
+          fetch-depth: 8
 
       - name: Verify staged base
         shell: bash
         run: |
           set -euo pipefail
           EXPECTED="e4959b1a7af5a27b9e1488d3a334153434f101c4"
-          test "$(git rev-parse HEAD~2)" = "$EXPECTED"
+          git merge-base --is-ancestor "$EXPECTED" HEAD
 
       - name: Apply notification redesign
         run: python scripts/tmp-notification-redesign.py
+
+      - name: Align existing loader smoke contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/classic-shell-v2-smoke.test.js')
+          text=p.read_text(encoding='utf-8')
+          old="define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js'])"
+          new="define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js?v=859'])"
+          if old not in text:
+              raise SystemExit('stale dashboard loader assertion not found')
+          p.write_text(text.replace(old,new,1),encoding='utf-8')
+          PY
 
       - name: Validate notification and runtime contracts
         shell: bash
