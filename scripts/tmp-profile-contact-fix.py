@@ -41,8 +41,9 @@ p.write_text(s,encoding='utf-8')
 # Bu jenerasyona sabitlenmiş regresyon testlerini yeni cache nesline taşı.
 for p in Path('tests').glob('*.test.js'):
     s=p.read_text(encoding='utf-8')
-    if 'v868' in s:
-        p.write_text(s.replace('v868','v869'),encoding='utf-8')
+    next_s=s.replace('v868','v869').replace('v=868','v=869')
+    if next_s!=s:
+        p.write_text(next_s,encoding='utf-8')
 
 # Profil testi: iletişim bilgileri tek helper üzerinden ve benzersiz render edilmeli.
 p=Path('tests/profile-page-redesign.test.js');s=p.read_text(encoding='utf-8')
