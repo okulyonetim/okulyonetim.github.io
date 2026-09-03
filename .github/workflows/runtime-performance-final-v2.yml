@@ -21,11 +21,13 @@ jobs:
         with:
           node-version: '24'
       - name: Verify expected parent
-        run: test "$(git rev-parse HEAD^)" = '28e7a35cab4926afa73e55ef1257ea911ed1848f'
+        run: test "$(git rev-parse HEAD^)" = '78517ab1d528ee9645caa6c008dc2f48230b840e'
       - name: Apply performance patch
         run: python3 scripts/tmp-runtime-performance-final.py
       - name: Apply regression contract fixes
-        run: python3 scripts/tmp-runtime-performance-extra.py
+        run: |
+          python3 scripts/tmp-runtime-performance-extra.py
+          python3 scripts/tmp-runtime-performance-extra2.py
       - name: Build client bundles
         run: npm run build:client
       - name: Check syntax
@@ -35,14 +37,16 @@ jobs:
           node --check service-worker.js
       - name: Run non-emulator smoke tests
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          failed=0
           for f in tests/*.test.js; do
             case "$f" in
               *-rules.test.js) echo "--- $f (Firestore emulator test; dedicated workflow)"; continue ;;
             esac
             echo "--- $f"
-            node "$f"
+            if ! node "$f"; then failed=1; fi
           done
+          exit "$failed"
       - name: Audit architecture
         run: npm run audit:client
       - name: Commit and cleanup
@@ -59,6 +63,7 @@ jobs:
             .github/workflows/runtime-performance-final-v2.yml \
             scripts/tmp-runtime-performance-final.py \
             scripts/tmp-runtime-performance-extra.py \
+            scripts/tmp-runtime-performance-extra2.py \
             tests/.tmp-module-contract-error.txt
           git add js/core/core.js css/design-system.css service-worker.js index.html tests scripts/check-client-architecture.mjs
           git commit -m 'perf: speed up local runtime and smooth news ticker'
