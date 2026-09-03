@@ -50,7 +50,9 @@ assert(page.includes('Tümünü Kaydet (${rows.length})'),'Kaydet düğmesi sat�
 assert(page.includes('toplantiBasligi:title')&&page.includes('grupId:grp')&&page.includes('grupSira:index+1'),'Aynı başlıktaki satırlar grup kimliği ve sırasıyla ayrı kayıtlar olarak saklanmalı.');
 assert(page.includes('satirKonusu:'),'ŞÖK/Diğer satırları ortak başlıktan ayrı satır konusu taşıyabilmeli.');
 assert(page.includes('data-meeting-class-menu')&&page.includes('data-meeting-row-class')&&page.includes('data-meeting-row-all-classes'),'Sınıflar sütunu açılır çoklu seçim ve Tüm Sınıflar seçeneği sunmalı.');
-assert(page.includes('<div class="ka-table-wrap"><table class="ka-table">')&&page.includes('<thead><tr><th class="ka-meeting-col-detail">Ders / Konu</th>')&&page.includes('data-meeting-class-panel-row'),'Toplantı satırları mobilde de kart değil gerçek tablo satırı olmalı.');
+assert(page.includes('ka-meeting-class-summary')&&page.includes('${names.length} sınıf')&&page.includes('<small>seçildi</small>'),'Mobil sınıf hücresi uzun chipler yerine kompakt seçim özeti göstermeli.');
+assert(page.includes('ka-meeting-detail-control')&&page.includes('ka-meeting-date-control')&&page.includes('ka-meeting-time-control'),'Tablo hücreleri mobil geometri için özel kontrol sınıfları taşımalı.');
+assert(page.includes('<div class="ka-table-wrap ka-meeting-table-wrap"><table class="ka-table ka-meeting-table">')&&page.includes('<thead><tr><th class="ka-meeting-col-detail">Ders / Konu</th>')&&page.includes('data-meeting-class-panel-row'),'Toplantı satırları mobilde de kart değil gerçek tablo satırı olmalı.');
 assert(!page.includes('<article class="ka-card ka-meeting-item" data-meeting-row='),'Taslak toplantı satırları ayrı kartlara dönmemeli.');
 assert(page.includes('Sınıflar <small>(isteğe bağlı)</small>')&&page.includes('Birden fazla sınıf seçebilir veya boş bırakabilirsiniz.')&&!page.includes('En az bir sınıf seçiniz'),'Sınıf seçimi toplantı satırı için zorunlu olmamalı.');
 assert(page.includes('function groupedRecords()')&&page.includes('data-meeting-edit-group')&&page.includes('data-meeting-delete-group'),'Kaydedilen satırlar ortak başlık altında grup olarak yönetilebilmeli.');
@@ -62,10 +64,13 @@ assert(dashboard.includes("'data.toplantiCizelgesi'"),'Dashboard toplantı deği
 assert(dashboard.includes("meetingUpcomingRows(14)")&&dashboard.includes("meetingUpcomingRows(30)"),'Yönetici ve öğretmen yaklaşan etkinlik akışları toplantıları içermeli.');
 assert(!/\bdb\s*\.\s*collection\s*\(/.test(dashboard),'Dashboard toplantı entegrasyonu doğrudan Firestore kullanmamalı.');
 
-for(const selector of ['.ka-meeting-page{','.ka-meeting-chip{','.ka-meeting-item{','.ka-meeting-report{']) assert(design.includes(selector),`Merkezi toplantı stili eksik: ${selector}`);
+for(const selector of ['.ka-meeting-page{','.ka-meeting-chip{','.ka-meeting-item{','.ka-meeting-report{','.ka-meeting-table{','.ka-meeting-detail-control{','.ka-meeting-class-summary{']) assert(design.includes(selector),`Merkezi toplantı stili eksik: ${selector}`);
+assert(design.includes('.ka-meeting-table{width:100%;table-layout:fixed'),'Toplantı tablosu mobilde sütunların ezilmesini önleyen fixed layout kullanmalı.');
+assert(design.includes('.ka-meeting-col-detail{width:32%')&&design.includes('.ka-meeting-col-date{width:22%'),'Toplantı tablosu ders ve tarih için kontrollü sütun oranları tanımlamalı.');
+assert(design.includes('.ka-meeting-report-button{position:static'),'Rapor düğmesi mobil alt navigasyonun üzerine sticky olarak binmemeli.');
 assert(sw.includes("'./js/modules/meeting-schedule.js'"),'Toplantı sayfası offline shell içinde olmalı.');
 assert(page.includes("root.onclick=handleClick")&&page.includes("root.onchange=handleChange")&&page.includes("root.oninput=handleInput"),'Toplantı formu yeniden çizimlere dayanıklı delegated event kullanmalı.');
 assert(page.includes("data-meeting-form-message")&&page.includes("formMessage=err;render()"),'Doğrulama hatası form içinde görünür olmalı.');
 const runtimeCache=sw.match(/const CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/);
-assert(runtimeCache&&Number(runtimeCache[1])>=855,'Toplu toplantı formu yeni PWA cache sürümüyle yayınlanmalı.');
+assert(runtimeCache&&Number(runtimeCache[1])>=856,'Toplu toplantı formu yeni PWA cache sürümüyle yayınlanmalı.');
 console.log('Meeting Schedule toplu satır + çoklu sınıf + admin-only + local-first sözleşmesi başarılı.');
