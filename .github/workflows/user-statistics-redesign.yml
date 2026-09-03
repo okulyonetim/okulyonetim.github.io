@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 8
+          fetch-depth: 10
 
       - name: Verify staged base
         shell: bash
@@ -23,6 +23,9 @@ jobs:
           set -euo pipefail
           EXPECTED="9eb68ff057324706b2966f1cfc6be6843e1d3953"
           git merge-base --is-ancestor "$EXPECTED" HEAD
+
+      - name: Patch helper matcher
+        run: python scripts/tmp-patch-user-stat-helper.py
 
       - name: Apply admin statistics redesign
         run: python scripts/tmp-user-statistics-redesign.py
