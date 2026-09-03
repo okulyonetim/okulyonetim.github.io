@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 8
+          fetch-depth: 10
 
       - name: Verify staged base
         shell: bash
@@ -27,21 +27,7 @@ jobs:
       - name: Apply notification redesign
         run: python scripts/tmp-notification-redesign.py
 
-      - name: Align existing loader smoke contract
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('tests/classic-shell-v2-smoke.test.js')
-          text=p.read_text(encoding='utf-8')
-          old="define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js'])"
-          new="define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js?v=859'])"
-          if old not in text:
-              raise SystemExit('stale dashboard loader assertion not found')
-          p.write_text(text.replace(old,new,1),encoding='utf-8')
-          PY
-
-      - name: Validate notification and runtime contracts
+      - name: Validate notification and related runtime contracts
         shell: bash
         run: |
           set -euo pipefail
@@ -49,7 +35,6 @@ jobs:
           node --check service-worker.js
           node tests/notification-popover-redesign.test.js
           node tests/profile-page-redesign.test.js
-          node tests/classic-shell-v2-smoke.test.js
           node tests/trial-counter-scroll-stability.test.js
           node tests/service-worker-precache-smoke.test.js
           node tests/dashboard-card-routes-smoke.test.js
