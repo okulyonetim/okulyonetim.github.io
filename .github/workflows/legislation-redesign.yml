@@ -1,0 +1,50 @@
+# temporary one-shot workflow; removed after verified redesign commit
+name: Legislation page redesign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/legislation-redesign.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  redesign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 12
+
+      - name: Verify expected main ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="59a9566650f5bc88a28eb9f4874153c0d8d4a5da"
+          git merge-base --is-ancestor "$EXPECTED" HEAD
+
+      - name: Install centralized legislation redesign
+        run: python scripts/tmp-legislation-redesign.py
+
+      - name: Validate syntax and focused contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check js/modules/legislation-ui.js
+          node tests/legislation-engine-v2-smoke.test.js
+          node tests/legislation-page-redesign.test.js
+          node tests/modules-local-first-boundary.test.js
+          ! grep -Eq 'db[[:space:]]*\.[[:space:]]*collection|firebase[[:space:]]*\.[[:space:]]*firestore' js/modules/legislation-ui.js
+          grep -F '/* MEVZUAT WORKSPACE — LOCAL-FIRST REDESIGN */' css/design-system.css
+
+      - name: Commit verified redesign
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add css/design-system.css tests/legislation-page-redesign.test.js
+          git commit -m "feat: finish legislation workspace redesign"
+          git push origin main
