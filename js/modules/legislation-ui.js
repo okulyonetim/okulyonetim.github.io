@@ -7,7 +7,7 @@
 if(global.LegislationModule)return;
 
 let rows=[],history=[],loading=false,view='sources',sourceQuery='',mountedRoot=null;
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('tr-TR')};
 const norm=v=>String(v??'').toLocaleLowerCase('tr').trim();
 const canEdit=()=>global.PermissionService?.can?.('documents.edit','edit')!==false;
