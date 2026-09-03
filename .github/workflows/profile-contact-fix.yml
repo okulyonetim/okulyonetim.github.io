@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '24'
       - name: Verify expected parent
-        run: test "$(git rev-parse HEAD^)" = 'a09c91d7053b067c7f1a33e391b21f97877f403f'
+        run: test "$(git rev-parse HEAD^)" = 'fa26cc03242aa7067e2dceec7669491382db3a1b'
       - name: Apply profile fix
         run: python3 scripts/tmp-profile-contact-fix.py
       - name: Check syntax
