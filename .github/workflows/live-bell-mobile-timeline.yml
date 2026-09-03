@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          EXPECTED="607d1e41a51f51f166f9692a8411a4c7bb9a2f00"
+          EXPECTED="66750972fb0735b71d5e8f0a87818fb18eeb1d59"
           test "$(git rev-parse HEAD^)" = "$EXPECTED"
 
       - name: Apply live bell patch
@@ -38,6 +38,21 @@ jobs:
           p.write_text(s[:start]+replacement+s[end:],encoding='utf-8')
           PY
           python scripts/apply-live-bell-v2.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/dashboard-card-routes-smoke.test.js')
+          t=p.read_text(encoding='utf-8')
+          replacements={
+            'Canlı zil kartı kompakt olmalı; gün içi akış tek yatay kaydırılabilir satırda kalmalı.': "assert(dash.includes('kh-bell-timeline-v2')&&dash.includes('kh-bell-progress-v2')&&!dash.includes('GÜN İÇİ AKIŞ')&&!dash.includes('ka-tab kh-bell-node'),'Canlı zil kartı mobil timeline ve gerçek progress ile kompakt kalmalı.');",
+            'Tatil zil kartı büyük kalan gün sayısı ve ilerleme çubuğu göstermeli.': "assert(dash.includes('kh-bell-holiday-countdown')&&dash.includes('holidayProgress')&&dash.includes('holidayBellSvg')&&dash.includes('live?.message'),'Tatil zil kartı ayrı tatil ikonu, kalan gün sayacı, ilerleme ve tatil mesajı göstermeli.');"
+          }
+          for message,new_line in replacements.items():
+              matches=[line for line in t.splitlines() if message in line]
+              if len(matches)!=1:
+                  raise SystemExit(f'legacy bell assertion count for {message!r}: {len(matches)}')
+              t=t.replace(matches[0],new_line,1)
+          p.write_text(t,encoding='utf-8')
+          PY
 
       - name: Validate syntax and focused contracts
         shell: bash
