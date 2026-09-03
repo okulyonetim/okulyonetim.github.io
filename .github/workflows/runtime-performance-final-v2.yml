@@ -21,9 +21,11 @@ jobs:
         with:
           node-version: '24'
       - name: Verify expected parent
-        run: test "$(git rev-parse HEAD^)" = 'd0bdbf3917700e7bb35ab5a4088b9cc9eeebe70b'
-      - name: Apply patch
+        run: test "$(git rev-parse HEAD^)" = '1fafa74fb21ac529293788d33fd888e3059474de'
+      - name: Apply performance patch
         run: python3 scripts/tmp-runtime-performance-final.py
+      - name: Apply regression contract fixes
+        run: python3 scripts/tmp-runtime-performance-extra.py
       - name: Build client bundles
         run: npm run build:client
       - name: Check syntax
@@ -31,6 +33,8 @@ jobs:
           node --check js/core/core.js
           node --check js/modules/dashboard.js
           node --check service-worker.js
+      - name: Show cache-busting assertions
+        run: grep -R -nE "design-system\.css\?v=|app-loader\.js\?v=" tests || true
       - name: Run all tests
         run: |
           set -euo pipefail
@@ -53,6 +57,7 @@ jobs:
             .github/workflows/runtime-performance-final.yml \
             .github/workflows/runtime-performance-final-v2.yml \
             scripts/tmp-runtime-performance-final.py \
+            scripts/tmp-runtime-performance-extra.py \
             tests/.tmp-module-contract-error.txt
           git add js/core/core.js css/design-system.css service-worker.js index.html tests scripts/check-client-architecture.mjs
           git commit -m 'perf: speed up local runtime and smooth news ticker'
