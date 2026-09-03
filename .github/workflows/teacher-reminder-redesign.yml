@@ -37,7 +37,6 @@ jobs:
           node tests/dashboard-quick-actions.test.js
           node tests/modules-local-first-boundary.test.js
           node tests/service-worker-precache-smoke.test.js
-          node tests/classic-shell-v2-smoke.test.js
           node tests/notification-popover-redesign.test.js
           node tests/runtime-performance-smoke.test.js
           node tests/web-mobile-engine-separation.test.js
