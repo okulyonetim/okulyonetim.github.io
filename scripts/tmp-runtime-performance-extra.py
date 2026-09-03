@@ -11,7 +11,6 @@ s=s.replace(old,new,1)
 p.write_text(s,encoding='utf-8')
 
 # Assistant test: communication module is legitimately cache-busted (communication.js?v=N).
-# Normalize only the version query before checking source order so the architecture contract remains strict.
 p=Path('tests/assistant-v2-smoke.test.js')
 lines=p.read_text(encoding='utf-8').splitlines()
 idx=next((i for i,line in enumerate(lines) if line.startswith('const communicationBundle=loader.match(')),None)
@@ -24,4 +23,20 @@ lines[idx:idx+2]=[
 ]
 p.write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
-print('Ek regression sözleşmeleri güncel loader/cache-bust gerçeğine hizalandı.')
+# Classic shell test: Settings was intentionally consolidated. School/users/statistics are now only inside Settings;
+# the shell Settings group keeps only the central Settings entry plus the separate Data page.
+p=Path('tests/classic-shell-v2-smoke.test.js')
+s=p.read_text(encoding='utf-8')
+old="  ['Okul Bilgileri','settings','school'],['Veriler','settings','data'],['Kullanıcı İşlemleri','settings','users'],['Kullanıcı İstatistikleri','settings','statistics']"
+new="  ['Veriler','settings','data']"
+if old not in s:
+    raise SystemExit('Classic shell eski tekrar eden Settings directPages satırı bulunamadı')
+s=s.replace(old,new,1)
+anchor="for(const [label,route,page] of directPages) assert(ui.includes(`['${label}'`)&&ui.includes(`'${route}','${page}'`),`Doğrudan menü hedefi eksik/yanlış: ${label} -> ${route}/${page}`);"
+if anchor not in s:
+    raise SystemExit('Classic shell directPages assertion bulunamadı')
+extra="\nconst settingsGroup=ui.match(/\\{key:'settings'.*?\\},\\n \\{key:'exams'/s)?.[0]||'';\nfor(const duplicate of [\"['Okul Bilgileri'\",\"['Kullanıcı İşlemleri'\",\"['Kullanıcı İstatistikleri'\"]) assert(!settingsGroup.includes(duplicate),`Settings shell tekrarı geri dönmemeli: ${duplicate}`);"
+s=s.replace(anchor,anchor+extra,1)
+p.write_text(s,encoding='utf-8')
+
+print('Ek regression sözleşmeleri güncel loader/cache/settings gerçeğine hizalandı.')
