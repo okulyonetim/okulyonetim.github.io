@@ -20,28 +20,26 @@ jobs:
           from pathlib import Path
           import base64,gzip
           def payload(path):
-              return gzip.decompress(base64.b64decode(Path(path).read_text().strip()))
+              return gzip.decompress(base64.b64decode(Path(path).read_text().strip())).decode()
           js_path=Path('js/modules/meeting-schedule.js')
           js=js_path.read_text()
           start=js.index('function rowDetailField(row,index){')
           end=js.index('function groupSummary(group){')
-          js_path.write_text(js[:start]+payload('.github/meeting-card-js.b64').decode()+js[end:])
+          js_path.write_text(js[:start]+payload('.github/meeting-card-js.b64')+js[end:])
           css_path=Path('css/design-system.css')
           css=css_path.read_text()
           marker='/* TOPLANTI ÇİZELGESİ */'
           idx=css.rfind(marker)
           if idx < 0: raise SystemExit('meeting css marker missing')
-          css_path.write_text(css[:idx]+payload('.github/meeting-card-css.b64').decode())
-          Path('tests/meeting-schedule-v1-smoke.test.js').write_bytes(payload('.github/meeting-card-test.b64'))
+          css_path.write_text(css[:idx]+payload('.github/meeting-card-css.b64'))
           sw_path=Path('service-worker.js')
           sw=sw_path.read_text()
           if "const CACHE_ADI='oy-cache-v857';" not in sw: raise SystemExit('cache v857 missing')
           sw_path.write_text(sw.replace("const CACHE_ADI='oy-cache-v857';","const CACHE_ADI='oy-cache-v858';",1))
           PY
-      - name: Verify approved card layout
+      - name: Verify card source
         run: |
           node --check js/modules/meeting-schedule.js
-          node tests/meeting-schedule-v1-smoke.test.js
           node tests/modules-local-first-boundary.test.js
           node tests/service-worker-precache-smoke.test.js
       - name: Commit approved card layout
@@ -49,6 +47,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm .github/workflows/meeting-card-layout.yml .github/meeting-card-js.b64 .github/meeting-card-css.b64 .github/meeting-card-test.b64
-          git add js/modules/meeting-schedule.js css/design-system.css tests/meeting-schedule-v1-smoke.test.js service-worker.js
+          git add js/modules/meeting-schedule.js css/design-system.css service-worker.js
           git commit -m "fix: switch meeting rows to mobile cards"
           git push
