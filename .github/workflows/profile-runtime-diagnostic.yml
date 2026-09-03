@@ -1,0 +1,32 @@
+name: Profile Runtime Diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/profile-runtime-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect profile renderers and contact mutations
+        run: |
+          set -euo pipefail
+          echo '=== PROFILE / CONTACT REFERENCES ==='
+          grep -RniE --exclude-dir=node_modules --exclude-dir=.git 'renderProfile|ka-profile-contact|ka-profile-hero|profileContact|profil.*(telefon|email|eposta)|(telefon|email|eposta).*profil' js index.html css tests || true
+          echo '=== DOM MUTATION REFERENCES NEAR PROFILE DATA ==='
+          grep -RniE --exclude-dir=node_modules --exclude-dir=.git 'insertAdjacentHTML|appendChild|append\(|innerHTML|textContent' js/core js/modules | grep -Ei 'profile|profil|telefon|email|eposta' || true
+          echo '=== CURRENT PROFILE RENDERER ==='
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('js/core/shell-ui.js').read_text(encoding='utf-8')
+          a=s.index('function profileContactHtml')
+          b=s.index('\nfunction profileDetailHead',a)
+          print(s[a:b])
+          PY
