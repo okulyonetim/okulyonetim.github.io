@@ -19,5 +19,5 @@ for(const token of ['.ka-guidance-action-grid{','.ka-guidance-teacher{','.ka-gui
 const monthCss=css.slice(css.indexOf('.ka-guidance-month-grid{'),css.indexOf('.ka-guidance-report-grid{'));
 assert(monthCss.includes('display:grid')&&monthCss.includes('grid-template-columns'),'Aylık Rehberlik kontrolleri responsive grid olmalı.');
 assert(!monthCss.includes('overflow-x:auto'),'Aylık Rehberlik kontrolleri yatay kaydırma üretmemeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v871';"),'PWA cache v824 olmalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v872';"),'PWA cache v824 olmalı.');
 console.log('Rehberlik responsive page redesign contract OK');

@@ -193,9 +193,61 @@ function collectReminders(daysOverride=null){const id=teacherId();if(!id)return[
 function holidayMode(){return window.SchoolLiveStatus?.status?.()?.mode==='holiday'}
 async function reminderSnoozed(){const u=user().uid;if(!u||!window.KorukLocalFirst)return false;const until=await KorukLocalFirst.meta(u,'reminderSnoozeUntil');return Number(until||0)>Date.now()}
 async function snoozeReminders(){const hours=Number(reminderSettings().erteleSaat)||4,u=user().uid;if(u&&window.KorukLocalFirst)await KorukLocalFirst.meta(u,'reminderSnoozeUntil',Date.now()+hours*3600000);closeReminderPopup()}
-function closeReminderPopup(){document.getElementById('dashboardReminderModal')?.remove()}
-function reminderStatus(r){if(r.gunFarki<0)return{label:`${Math.abs(r.gunFarki)} gün gecikti`,cls:'ka-badge--danger'};if(r.gunFarki===0)return{label:'Bugün son gün',cls:'ka-badge--warning'};return{label:`${r.gunFarki} gün kaldı`,cls:''}}
-function openReminderPopup(items){closeReminderPopup();const settings=reminderSettings(),ov=document.createElement('div');ov.id='dashboardReminderModal';ov.className='ka-modal-backdrop';ov.innerHTML=`<section class="ka-modal"><div class="ka-modal__header"><div><strong>🔔 Hatırlatmalarınız</strong><div class="ka-muted">${items.length} bekleyen madde</div></div><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-reminder-close>Kapat</button></div><div class="ka-modal__body ka-stack">${items.map((r,i)=>{const s=reminderStatus(r);return`<button class="ka-btn ka-btn--secondary" type="button" data-reminder-index="${i}"><span class="ka-grow"><strong>${esc(r.baslik)}</strong>${r.altBaslik?`<small>${esc(r.altBaslik)}</small>`:''}</span><span class="ka-badge ${s.cls}">${esc(s.label)}</span></button>`}).join('')}</div><div class="ka-modal__footer"><button class="ka-btn ka-btn--secondary" type="button" data-reminder-snooze>⏰ ${Number(settings.erteleSaat)||4} saat ertele</button><button class="ka-btn" type="button" data-reminder-ok>Tamam</button></div></section>`;document.body.appendChild(ov);ov.querySelector('[data-reminder-close]').onclick=closeReminderPopup;ov.querySelector('[data-reminder-ok]').onclick=closeReminderPopup;ov.querySelector('[data-reminder-snooze]').onclick=snoozeReminders;ov.querySelectorAll('[data-reminder-index]').forEach(btn=>btn.onclick=()=>{const r=items[Number(btn.dataset.reminderIndex)];closeReminderPopup();r?.git?.()})}
+function closeReminderPopup(){const ov=document.getElementById('dashboardReminderModal');if(!ov)return;if(ov._reminderKeyHandler)document.removeEventListener('keydown',ov._reminderKeyHandler);ov.remove()}
+const REMINDER_KIND_META=Object.freeze({
+  gorev:{icon:'✅',label:'Görev',tone:'task'},
+  evrak:{icon:'📄',label:'Evrak',tone:'document'},
+  nobet:{icon:'🛡️',label:'Nöbet',tone:'duty'},
+  sosyalKulupler:{icon:'👥',label:'Sosyal Kulüp',tone:'club'},
+  rehberlik:{icon:'🧭',label:'Rehberlik',tone:'guidance'},
+  maarifRapor:{icon:'📊',label:'Maarif Raporu',tone:'report'},
+  zumre:{icon:'👥',label:'Zümre',tone:'meeting'},
+  sok:{icon:'🏫',label:'ŞÖK',tone:'meeting'},
+  bepPlani:{icon:'📋',label:'BEP Planı',tone:'plan'},
+  belirliGunler:{icon:'📅',label:'Belirli Gün',tone:'calendar'},
+  kontrolListesi:{icon:'☑️',label:'Kontrol Listesi',tone:'checklist'},
+  sinav:{icon:'📝',label:'Sınav',tone:'exam'}
+});
+function reminderKind(r){return REMINDER_KIND_META[r?.kaynak]||{icon:'🔔',label:'Hatırlatma',tone:'default'}}
+function reminderSummary(items){return{overdue:items.filter(x=>x.gunFarki<0).length,today:items.filter(x=>x.gunFarki===0).length,upcoming:items.filter(x=>x.gunFarki>0).length}}
+function reminderStatus(r){if(r.gunFarki<0)return{label:`${Math.abs(r.gunFarki)} gün gecikti`,cls:'ka-badge--danger',state:'is-overdue'};if(r.gunFarki===0)return{label:'Bugün son gün',cls:'ka-badge--warning',state:'is-today'};return{label:`${r.gunFarki} gün kaldı`,cls:'',state:'is-upcoming'}}
+function reminderChevron(){return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>'}
+function reminderCloseIcon(){return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>'}
+function openReminderPopup(items){
+  closeReminderPopup();
+  const settings=reminderSettings(),hours=Number(settings.erteleSaat)||4,summary=reminderSummary(items),ov=document.createElement('div');
+  ov.id='dashboardReminderModal';
+  ov.className='ka-modal-backdrop';
+  ov.classList.add('ka-reminder-backdrop');
+  ov.innerHTML=`<section class="ka-modal ka-reminder-modal" role="dialog" aria-modal="true" aria-labelledby="dashboardReminderTitle" aria-describedby="dashboardReminderDescription">
+    <header class="ka-reminder-head">
+      <span class="ka-reminder-head__mark">${bellSvg('bell')}</span>
+      <div class="ka-reminder-head__copy"><small>ÖĞRETMEN HATIRLATMALARI</small><h2 id="dashboardReminderTitle">Hatırlatmalarınız</h2><p id="dashboardReminderDescription"><b>${esc(firstName())}</b>, ${items.length} işlemi gözden geçirmeniz gerekiyor.</p></div>
+      <button class="ka-reminder-close" type="button" data-reminder-close aria-label="Hatırlatmaları kapat">${reminderCloseIcon()}</button>
+    </header>
+    <div class="ka-reminder-summary" aria-label="Hatırlatma özeti">
+      <div class="is-overdue"><span>!</span><small>Geciken</small><strong>${summary.overdue}</strong></div>
+      <div class="is-today"><span>●</span><small>Bugün</small><strong>${summary.today}</strong></div>
+      <div class="is-upcoming"><span>→</span><small>Yaklaşan</small><strong>${summary.upcoming}</strong></div>
+    </div>
+    <div class="ka-reminder-list-head"><div><strong>Yapılacaklar</strong><small>Öncelikli olanlar listenin üstünde</small></div><b>${items.length}</b></div>
+    <div class="ka-reminder-list" role="list">${items.map((r,i)=>{const status=reminderStatus(r),kind=reminderKind(r);return`<button class="ka-reminder-item ka-reminder-item--${kind.tone} ${status.state}" type="button" data-reminder-index="${i}" role="listitem"><span class="ka-reminder-item__icon" aria-hidden="true">${kind.icon}</span><span class="ka-reminder-item__copy"><small>${esc(kind.label)}</small><strong>${esc(r.baslik)}</strong>${r.altBaslik?`<span>${esc(r.altBaslik)}</span>`:''}</span><span class="ka-reminder-item__side"><b>${esc(status.label)}</b><i>${reminderChevron()}</i></span></button>`}).join('')}</div>
+    <footer class="ka-reminder-footer">
+      <button class="ka-reminder-snooze" type="button" data-reminder-snooze>${bellSvg('clock')}<span><strong>${hours} saat sonra</strong><small>Tekrar hatırlat</small></span></button>
+      <button class="ka-btn ka-reminder-done" type="button" data-reminder-ok><span>✓</span> Tamam, gördüm</button>
+    </footer>
+  </section>`;
+  document.body.appendChild(ov);
+  const close=()=>closeReminderPopup();
+  ov.querySelector('[data-reminder-close]').onclick=close;
+  ov.querySelector('[data-reminder-ok]').onclick=close;
+  ov.querySelector('[data-reminder-snooze]').onclick=snoozeReminders;
+  ov.querySelectorAll('[data-reminder-index]').forEach(btn=>btn.onclick=()=>{const r=items[Number(btn.dataset.reminderIndex)];closeReminderPopup();r?.git?.()});
+  ov.addEventListener('click',e=>{if(e.target===ov)close()});
+  ov._reminderKeyHandler=e=>{if(e.key==='Escape')close()};
+  document.addEventListener('keydown',ov._reminderKeyHandler);
+  requestAnimationFrame(()=>ov.querySelector('[data-reminder-index]')?.focus({preventScroll:true}));
+}
 async function maybeShowReminders(){if(reminderShown||holidayMode()||await reminderSnoozed())return;const items=collectReminders();if(!items.length)return;reminderShown=true;openReminderPopup(items)}
 async function prepareReminderData(){if(!window.SyncEngine||!window.COL)return;const types=[];for(const[type,colKey]of Object.entries(REMINDER_DEFS)){const col=COL[colKey];if(!col)continue;SyncEngine.register(type,col);types.push(type)}if(COL.toplantiCizelgesi){SyncEngine.register('toplantiCizelgesi',COL.toplantiCizelgesi);types.push('toplantiCizelgesi')}if(types.length){await SyncEngine.localHydrate([...new Set(types)]);SyncEngine.schedule(120)}}
 function render(){if(!mounted)return;const root=document.querySelector('[data-dashboard-module]');if(!root)return;const parent=root.parentElement||document.getElementById('v2ModuleRoot'),signature=cards().map(x=>x.key).join('|'),role=isAdmin()?'admin':'teacher';if(root.dataset.cardSignature!==signature||root.dataset.dashboardRole!==role){parent.innerHTML=shell();bindPresentation(parent);stabilizeNewsTicker(parent);refreshHeroLive();lastLiveRenderKey=liveRenderKey(window.SchoolLiveStatus?.status?.()||{});return}const oldNews=root.querySelector('.kh-news'),oldNewsSignature=oldNews?.dataset.newsSignature||'',scrollY=window.scrollY;parent.innerHTML=shell();bindPresentation(parent);const freshNews=parent.querySelector('.kh-news');if(oldNews&&freshNews&&oldNewsSignature&&freshNews.dataset.newsSignature===oldNewsSignature)freshNews.replaceWith(oldNews);stabilizeNewsTicker(parent);refreshHeroLive();lastLiveRenderKey=liveRenderKey(window.SchoolLiveStatus?.status?.()||{});if(scrollY>0&&!scrolling)requestAnimationFrame(()=>{if(Math.abs(window.scrollY-scrollY)>2)window.scrollTo(0,scrollY)})}

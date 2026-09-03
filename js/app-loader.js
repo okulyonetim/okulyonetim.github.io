@@ -18,7 +18,7 @@ function define(name,files){registry.set(name,[...(files||[])])}
 const FIREBASE_STORAGE_SDK='https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js';
 const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))||alreadyInDom(x));
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
-define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js?v=859']);
+define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js?v=872']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=838']);
 define('management',['js/modules/report-engine.js','js/modules/management.js?v=871']);
