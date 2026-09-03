@@ -23,24 +23,41 @@ if old_shell not in shell:
 shell = shell.replace(old_shell, new_shell, 1)
 shell_path.write_text(shell, encoding='utf-8')
 
-# Regression: shell menu must not repeat pages already owned by SettingsModule.
-test_path = repo / 'tests/classic-shell-v2-smoke.test.js'
-test = test_path.read_text(encoding='utf-8')
-old_decl = "const ui=fs.readFileSync('js/core/shell-ui.js','utf8');\n"
-new_decl = old_decl + "const appLoader=fs.readFileSync('js/app-loader.js','utf8');\n"
-if old_decl not in test or "const appLoader=fs.readFileSync('js/app-loader.js','utf8');" in test:
-    raise SystemExit('classic-shell appLoader declaration target not found or already patched')
-test = test.replace(old_decl, new_decl, 1)
-old_direct = "  ['Okul Bilgileri','settings','school'],['Veriler','settings','data'],['Kullanıcı İşlemleri','settings','users'],['Kullanıcı İstatistikleri','settings','statistics']\n"
-new_direct = "  ['Veriler','settings','data']\n"
-if old_direct not in test:
-    raise SystemExit('classic-shell settings directPages target not found')
-test = test.replace(old_direct, new_direct, 1)
-needle = "for(const [label,route,page] of directPages) assert(ui.includes(`['${label}'`)&&ui.includes(`'${route}','${page}'`),`Doğrudan menü hedefi eksik/yanlış: ${label} -> ${route}/${page}`);\n"
-extra = "const uiMenuCatalog=ui.slice(ui.indexOf('const MENU_GROUPS=['),ui.indexOf('const FORM_PAGES='));\nconst appMenuCatalog=appLoader.slice(appLoader.indexOf('const CLASSIC_MENU_GROUPS=['),appLoader.indexOf('function applyClassicMenuGroups'));\nfor(const block of [uiMenuCatalog,appMenuCatalog]){\n  assert(block.includes(\"['Ayarlar','⚙️','settings']\")&&block.includes(\"['Veriler','🗄️','settings','data']\"),'Ayarlar menüsü canonical Settings girişi ile bağımsız Veriler merkezini korumalı.');\n  for(const duplicate of [\"['Okul Bilgileri','🏢','settings','school']\",\"['Ders Saatleri','⏱️','settings','lesson-hours']\",\"['Kullanıcı İşlemleri','🛡️','settings','users']\",\"['Kullanıcı İstatistikleri','📋','settings','statistics']\"])assert(!block.includes(duplicate),`Ayarlar alt sayfası shell menüsünde tekrar etmemeli: ${duplicate}`);\n}\n"
-if needle not in test:
-    raise SystemExit('classic-shell insertion target not found')
-test = test.replace(needle, needle + extra, 1)
-test_path.write_text(test, encoding='utf-8')
+# Focused regression. Do not rewrite the broader classic-shell test merely to
+# accommodate an unrelated stale bundle-version assertion already present there.
+test_path = repo / 'tests/settings-menu-consolidation.test.js'
+test_path.write_text("""const fs=require('fs');
+const assert=require('assert');
+const app=fs.readFileSync('js/app-loader.js','utf8');
+const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
+const settings=fs.readFileSync('js/modules/settings.js','utf8');
+
+const appMenu=app.slice(app.indexOf('const CLASSIC_MENU_GROUPS=['),app.indexOf('function applyClassicMenuGroups'));
+const uiMenu=ui.slice(ui.indexOf('const MENU_GROUPS=['),ui.indexOf('const FORM_PAGES='));
+assert(appMenu.length>0&&uiMenu.length>0,'Ayarlar menü katalogları bulunmalı.');
+
+for(const block of [appMenu,uiMenu]){
+  assert(block.includes("['Ayarlar','⚙️','settings']"),'Ayarlar menüsü canonical Settings girişini korumalı.');
+  assert(block.includes("['Veriler','🗄️','settings','data']"),'Bağımsız Veri Aktarma Merkezi menüden erişilebilir kalmalı.');
+  for(const duplicate of [
+    "['Okul Bilgileri','🏢','settings','school']",
+    "['Ders Saatleri','⏱️','settings','lesson-hours']",
+    "['Kullanıcı İşlemleri','🛡️','settings','users']",
+    "['Kullanıcı İstatistikleri','📋','settings','statistics']"
+  ]) assert(!block.includes(duplicate),`Settings alt sayfası shell menüsünde tekrar etmemeli: ${duplicate}`);
+}
+
+for(const canonical of [
+  "['school','Okul Bilgileri'",
+  "['lesson-hours','Ders Saatleri'",
+  "['users','Kullanıcı İşlemleri'",
+  "['statistics','Kullanıcı İstatistikleri'"
+]) assert(settings.includes(canonical),`Detay ayarı canonical SettingsModule içinde kalmalı: ${canonical}`);
+
+assert(app.includes('function applyClassicMenuGroups()'),'Runtime classic menü uygulama akışı korunmalı.');
+assert(ui.includes('function renderMenuList(key)')&&ui.includes('function bindMenuRoutes(root)'),'Shell menü yönlendirme sahibi değişmemeli.');
+assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore('),'Shell UI doğrudan Firestore kullanmamalı.');
+console.log('Ayarlar menüsü tek giriş noktası + ayrı Veriler merkezi sözleşmesi başarılı.');
+""", encoding='utf-8')
 
 print('Settings menu duplicate shortcuts consolidated.')
