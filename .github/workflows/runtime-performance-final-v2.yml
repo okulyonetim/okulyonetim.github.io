@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '24'
       - name: Verify expected parent
-        run: test "$(git rev-parse HEAD^)" = '1fafa74fb21ac529293788d33fd888e3059474de'
+        run: test "$(git rev-parse HEAD^)" = 'e4df4bb0a8d518bcaba5393647bb6bd7f9b13817'
       - name: Apply performance patch
         run: python3 scripts/tmp-runtime-performance-final.py
       - name: Apply regression contract fixes
@@ -33,12 +33,13 @@ jobs:
           node --check js/core/core.js
           node --check js/modules/dashboard.js
           node --check service-worker.js
-      - name: Show cache-busting assertions
-        run: grep -R -nE "design-system\.css\?v=|app-loader\.js\?v=" tests || true
-      - name: Run all tests
+      - name: Run non-emulator smoke tests
         run: |
           set -euo pipefail
           for f in tests/*.test.js; do
+            case "$f" in
+              *-rules.test.js) echo "--- $f (Firestore emulator test; dedicated workflow)"; continue ;;
+            esac
             echo "--- $f"
             node "$f"
           done
