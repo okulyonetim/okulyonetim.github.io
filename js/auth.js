@@ -19,7 +19,7 @@ const type='kullaniciIstatistikleri';
 function me(){const u=global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user');if(!u?.uid)return null;return{uid:u.uid,ad:u.ad||u.adSoyad||u.kullaniciAdi||'Kullanıcı'}}
 async function prepare(all=false){
   const ben=me();if(!ben||!global.SyncEngine||!global.DeviceData||!global.COL?.kullaniciIstatistikleri)return false;
-  const wanted=all?'all':'self';if(mode===wanted)return true;if(preparing)return preparing;
+  const wanted=all?'all':'self';if(mode===wanted)return true;if(preparing){await preparing;if(mode===wanted)return true;return prepare(all);}
   preparing=(async()=>{const opts=all?{}:{query:q=>q.where(firebase.firestore.FieldPath.documentId(),'==',ben.uid)};SyncEngine.register(type,COL.kullaniciIstatistikleri,opts);await SyncEngine.localHydrate([type]);if(navigator.onLine)await SyncEngine.pull([type]);mode=wanted;return true})().catch(e=>{console.warn('[İstatistik hazırlama]',e?.message||e);return false}).finally(()=>{preparing=null});return preparing;
 }
 async function mutate(fn){
