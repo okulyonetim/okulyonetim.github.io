@@ -1,0 +1,52 @@
+name: Notification popover redesign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/notification-redesign.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  redesign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
+
+      - name: Verify staged base
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="e4959b1a7af5a27b9e1488d3a334153434f101c4"
+          test "$(git rev-parse HEAD~2)" = "$EXPECTED"
+
+      - name: Apply notification redesign
+        run: python scripts/tmp-notification-redesign.py
+
+      - name: Validate notification and runtime contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check js/core/shell-ui.js
+          node --check service-worker.js
+          node tests/notification-popover-redesign.test.js
+          node tests/profile-page-redesign.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/trial-counter-scroll-stability.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/dashboard-card-routes-smoke.test.js
+          node tests/web-mobile-engine-separation.test.js
+
+      - name: Commit verified notification redesign
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/core/shell-ui.js css/design-system.css index.html service-worker.js tests/*.test.js
+          git commit -m "feat: redesign notification popover"
+          git push origin main
