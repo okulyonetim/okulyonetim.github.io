@@ -22,6 +22,7 @@ async function main(){
       await setDoc(doc(db,'oy_kullanicilar','adminUid'),{uid:'adminUid',admin:true,aktif:true});
       await setDoc(doc(db,'oy_personel','p1'),{adSoyad:'Ali Personel',gorev:'Hizmetli'});
       await setDoc(doc(db,'oy_personelIzinler','i1'),{personelId:'p1',baslangic:'2026-08-18',bitis:'2026-08-19',tur:'YILLIK İZİNLİ'});
+      await setDoc(doc(db,'oy_toplantiCizelgesi','m1'),{kademe:'ortaokul',tur:'zumre',dersId:'d1',dersAdi:'Fen Bilimleri',tarih:'2026-09-10',saat:'14:00'});
     });
 
     const editor=testEnv.authenticatedContext('editorUid').firestore();
@@ -39,7 +40,18 @@ async function main(){
     await assertFails(deleteDoc(doc(viewer,'oy_personelIzinler','i1')));
     await assertSucceeds(deleteDoc(doc(admin,'oy_personel','p1')));
 
-    console.log('Personel rol güvenliği testleri başarılı.');
+    // Toplantı Çizelgesi: giriş yapanlar okuyabilir, ancak personel edit rolü dahil yalnız admin yazabilir.
+    await assertSucceeds(getDoc(doc(viewer,'oy_toplantiCizelgesi','m1')));
+    await assertSucceeds(getDoc(doc(editor,'oy_toplantiCizelgesi','m1')));
+    await assertFails(getDoc(doc(anon,'oy_toplantiCizelgesi','m1')));
+    await assertFails(setDoc(doc(editor,'oy_toplantiCizelgesi','m2'),{kademe:'ortaokul',tur:'zumre',dersAdi:'Matematik',tarih:'2026-09-11',saat:'14:00'}));
+    await assertFails(updateDoc(doc(editor,'oy_toplantiCizelgesi','m1'),{saat:'15:00'}));
+    await assertFails(deleteDoc(doc(viewer,'oy_toplantiCizelgesi','m1')));
+    await assertSucceeds(setDoc(doc(admin,'oy_toplantiCizelgesi','m2'),{kademe:'ortaokul',tur:'zumre',dersAdi:'Matematik',tarih:'2026-09-11',saat:'14:00'}));
+    await assertSucceeds(updateDoc(doc(admin,'oy_toplantiCizelgesi','m1'),{saat:'15:00'}));
+    await assertSucceeds(deleteDoc(doc(admin,'oy_toplantiCizelgesi','m2')));
+
+    console.log('Personel rol + Toplantı Çizelgesi admin-only güvenlik testleri başarılı.');
   } finally {
     await testEnv.cleanup();
   }

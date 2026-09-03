@@ -20,6 +20,7 @@ assert(src.includes("SyncEngine.register(type,col)")&&src.includes('SyncEngine.l
 assert(src.includes('ReportEngine.printReport(title,body'),'Resmî çıktı merkezi ReportEngine üzerinden kalmalı.');
 for(const forbidden of ['db.collection','onSnapshot','localStorage','document.createElement(\'style\')','document.createElement("style")'])assert(!src.includes(forbidden),`Diploma modülü ${forbidden} kullanmamalı.`);
 assert(!src.includes('style="'),'Diploma UI inline CSS üretmemeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v848';"),'Diploma güncellemesi cache v848 ile dağıtılmalı.');
+const runtimeCache=sw.match(/const CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/);
+assert(runtimeCache&&Number(runtimeCache[1])>=848,'Diploma güncellemesinden eski cache sürümüne dönülmemeli.');
 
 console.log('Diploma form odak + yeniden tasarım + resmî çıktı/local-first sözleşmesi başarılı.');
