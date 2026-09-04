@@ -10,7 +10,7 @@ const design=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
-assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css?v=877\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
+assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css?v=878\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
 assert(!ui.includes('hideRouteTransitionFrame')&&!design.includes('.ka-route-switching'),'Route geçişinde görünür içeriği saklayan titreme katmanı bulunmamalı.');
 assert(ui.includes('const MODULE_ROOT_SELECTORS=Object.freeze')&&ui.includes('function moduleRouteMounted(name)')&&ui.includes('const reuseModule=moduleRouteMounted(name)')&&ui.includes('if(!reuseModule)await global.AppLoader?.load?.(name)'),'Aynı canonical modülün alt sayfaları arasında geçişte hiçbir modül yeniden mount edilmemeli.');
 assert(ui.includes('if(page)applySubpage(name,page,title)')&&!ui.includes('if(page)requestAnimationFrame(()=>applySubpage(name,page,title))'),'Alt sayfa seçimi sonraki frame bırakılmamalı; ilk boyama doğru sayfa olmalı.');
@@ -54,6 +54,7 @@ for(const route of ['people','academic','management','communication','transport'
 assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-shell-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı ve route sahibi ShellUI olmalı.');
 
 assert(ui.includes("kind:'menu-list'")&&ui.includes("if(view.kind==='menu-list'){openMenu();renderMenuList(view.page);return true}"),'Alt menüden açılan sayfada geri önceki menü listesine dönmeli.');
+assert(ui.includes('const parentMenu=menuGroup')&&ui.includes('parentMenu})')&&ui.includes('navStack[0]?.parentMenu'),'Alt menü kaynağı route geçmişinde tutulmalı ve stack bozulsa bile geri dönüş hedefi korunmalı.');
 assert(!ui.includes('data-ka-menu-route'),'ShellUI eski ikinci menü yönlendiricisinin data-ka-menu-route sözleşmesini üretmemeli.');
 const directPages=[
   ['Öğrenci Yoklama','tools','student-attendance'],['Öğrenci Listesi Oluşturucu','tools','student-list'],['Ödev Takip Çizelgesi','tools','homework'],['Not Çizelgesi','tools','grades'],

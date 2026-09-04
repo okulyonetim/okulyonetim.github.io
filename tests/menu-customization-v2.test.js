@@ -15,16 +15,22 @@ assert(shell.includes('MENU_CARD_COLOR_PRESETS')&&shell.includes('data-menu-edit
 assert(shell.includes('data-menu-editor-sv')&&shell.includes('data-menu-editor-hue')&&shell.includes('menuColorHsvToHex'),'Kart editörü görünür tam renk paleti ve ton seçici sunmalı.');
 assert(shell.includes('🎯')&&shell.includes('🧭')&&shell.includes('🧩'),'Kart editörü genişletilmiş ikon/şekil seçeneklerini taşımalı.');
 assert(shell.includes("global.AppConfig?.save?.({menuLayout:{...cfg,groups}})"),'Kart editörü mevcut AppConfig local-first sahibine kaydetmeli.');
-assert(settings.includes('Ana Menü Düzenleyici')&&settings.includes('function readMenuLayoutFromDom()')&&settings.includes('menuLayout:readMenuLayoutFromDom()'),'Gelişmiş Settings menü düzeni yeni sabit panel tasarımında korunmalı.');
+assert(settings.includes('Menü ve ekran düzeni')&&settings.includes('function readMenuLayoutFromDom()')&&settings.includes('menuLayout:readMenuLayoutFromDom()'),'Gelişmiş Settings menü düzeni yeni sabit stüdyo tasarımında korunmalı.');
 assert(design.includes('.ka-menu-card::before{content:none!important'),'Normal kartlarda eski dişli balonu olmamalı.');
 assert(design.includes('.ka-menu-edit-toggle')&&design.includes('.ka-menu-editor-sheet')&&design.includes('.ka-menu-editor-preview'),'Yeni global düzenleme ve önizleme yüzeyi design-system sahibi olmalı.');
 assert(design.includes('.ka-menu-editor-sv')&&design.includes('.ka-menu-editor-hue')&&design.includes('.ka-menu-editor-palette'),'Tam renk paleti canonical design-system içinde olmalı.');
 assert(design.includes('grid-auto-rows:146px')&&design.includes('height:146px;min-height:146px'),'Ana menü kartları büyütülmüş ve eşit yükseklikte olmalı.');
 assert(!design.includes('.ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd)'),'Ayarlar kartı diğer kartlardan farklı kompakt ölçü almamalı.');
 assert(design.includes('grid-auto-rows:136px')&&design.includes('height:136px;min-height:136px'),'Dar ekranlarda da tüm menü kartları eşit ölçüde kalmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v877';"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v878';"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
 
 assert(settings.includes('data-layout-menu-select')&&settings.includes('data-layout-panel')&&!settings.includes('<details class=\"ka-card ka-settings-menu-group'),'Uygulama Düzeni akordiyon yerine tek panel seçici kullanmalı.');
+assert(settings.includes('data-layout-section-select')&&settings.includes('data-layout-section-panel'),'Uygulama Düzeni Menüler / Modüller / Ana Sayfa sabit bölüm seçicisini kullanmalı.');
+assert(settings.includes('data-menu-item-source')&&settings.includes('function moveMenuItemToTarget(out,select)'),'Alt menü taşıma source kimliğini koruyarak hedef menüye canlı taşınmalı.');
+assert(settings.includes("layoutSection='menus'")&&settings.includes("layoutMenu='people'"),'Düzenleyici aktif bölüm ve menüyü renderlar arasında korumalı.');
+assert(settings.includes('function markLayoutDirty(out)')&&settings.includes('Kaydedilmemiş değişiklikler var.'),'Kaydedilmemiş düzen değişiklikleri görünür durum mesajı üretmeli.');
+assert(design.includes('.ka-layout-section-tabs')&&design.includes('.ka-layout-section[hidden]')&&design.includes('.ka-layout-subitem'),'Yeni mobil düzen stüdyosu yalnız merkezi Design System içinde tanımlanmalı.');
+
 assert(settings.includes('data-menu-item-target')&&settings.includes('targetGroup:item.querySelector'),'Alt menü başka ana menüye taşınabilmeli.');
 assert(shell.includes('__menuTargetGroup')&&shell.includes('configuredMenuItems(targetKey)'),'Shell taşınan alt menüyü yeni menü altında render etmeli.');
 assert(design.includes('.ka-layout-picker')&&design.includes('.ka-layout-menu-panel[hidden]'),'Yeni Uygulama Düzeni tasarımı merkezi Design System sahibi olmalı.');

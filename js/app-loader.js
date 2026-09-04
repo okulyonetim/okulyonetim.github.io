@@ -26,7 +26,7 @@ define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js?v=838'
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
-define('settings',['js/modules/settings.js?v=877']);
+define('settings',['js/modules/settings.js?v=878']);
 
 const MODULE_DEFAULTS=[{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];
 const DASHBOARD_DEFAULTS=[{key:'welcome',label:'Karşılama',visible:true,order:10},{key:'stats',label:'Okul Özeti',visible:true,order:20},{key:'upcoming',label:'Yaklaşanlar',visible:true,order:30},{key:'announcements',label:'Duyurular',visible:true,order:40},{key:'duty',label:'Bugünün Nöbeti',visible:true,order:50}];
