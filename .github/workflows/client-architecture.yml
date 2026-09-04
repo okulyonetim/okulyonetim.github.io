@@ -28,6 +28,7 @@ on:
       - 'tests/**'
       - 'package.json'
       - '.github/workflows/client-architecture.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
