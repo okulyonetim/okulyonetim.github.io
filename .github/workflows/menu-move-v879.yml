@@ -1,0 +1,51 @@
+name: Menu move v879
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/menu-move-v879.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify baseline ancestry
+        run: git merge-base --is-ancestor ed5cb231d127148d9f2304f2e3bfbcf1f7657aeb HEAD
+      - name: Apply menu relocation fix
+        run: python3 scripts/tmp-fix-menu-move-v879.py
+      - name: Validate menu relocation and client contracts
+        run: |
+          set -euo pipefail
+          node --check js/modules/settings.js
+          node --check js/core/shell-ui.js
+          node --check js/app-loader.js
+          node --check service-worker.js
+          node tests/menu-customization-v2.test.js
+          node tests/settings-separate-pages.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/module-bundles-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/web-mobile-engine-separation.test.js
+          npm run audit:client
+          npm run build:client
+      - name: Commit verified fix and cleanup
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/menu-move-v879.yml scripts/tmp-fix-menu-move-v879.py
+          git add js/modules/settings.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests
+          git commit -m 'fix: keep moved menu items in target group'
+          git push origin HEAD:main
