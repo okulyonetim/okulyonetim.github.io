@@ -68,6 +68,7 @@ if "css/design-system.css?v=890" not in parity or "CACHE_ADI='oy-cache-v890'" no
     raise SystemExit('classic parity cache expectations moved')
 parity = parity.replace('css/design-system.css?v=890', 'css/design-system.css?v=891')
 parity = parity.replace("CACHE_ADI='oy-cache-v890'", "CACHE_ADI='oy-cache-v891'")
+parity = parity.replace("'overflow-x:hidden!important'", "'overflow:visible!important'")
 parity_path.write_text(parity, encoding='utf-8')
 
 visibility_test = Path('tests/transport-bus-shell-visible.test.js')
