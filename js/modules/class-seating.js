@@ -93,6 +93,33 @@ function assigned(){
   return set;
 }
 
+function seatForStudent(id,except=null){
+  if(!id||!canvas)return null;
+  return $$('[data-so-seat][data-student-id]',canvas).find(k=>k!==except&&k.dataset.studentId===id)||null;
+}
+function setSeatVisual(seat,{id='',name='',free=false}={}){
+  if(!seat)return;
+  const clean=String(name||'').trim();
+  if(id)seat.dataset.studentId=id;else delete seat.dataset.studentId;
+  seat.dataset.name=clean;
+  seat.dataset.empty=clean?'false':'true';
+  seat.textContent=clean||'+';
+  seat.classList.toggle('is-assigned',!!id);
+  seat.classList.toggle('is-free',!id&&!!clean&&free);
+  seat.classList.toggle('is-empty',!clean);
+  seat.setAttribute('aria-label',clean?`${clean} — öğrenciyi değiştir`:'Öğrenci seç');
+}
+function clearSeat(seat,{refresh=true}={}){
+  setSeatVisual(seat);
+  if(refresh){dirty=true;refreshPool();}
+}
+function assignStudentToSeat(seat,student,{refresh=true}={}){
+  if(!seat||!student)return;
+  const other=seatForStudent(student.id,seat);
+  if(other)clearSeat(other,{refresh:false});
+  setSeatVisual(seat,{id:student.id,name:student.ogrenciAdi||''});
+  if(refresh){dirty=true;refreshPool();}
+}
 function refreshPool(){
   const pool=$('[data-so-pool]',overlay);
   const label=$('[data-so-pool-count]',overlay);
@@ -100,32 +127,34 @@ function refreshPool(){
   if(!pool)return;
   const used=assigned();
   const all=students();
-  const left=all.filter(v=>!used.has(v.id));
-  if(label)label.textContent=`${left.length}/${all.length}`;
-  if(card)card.hidden=all.length>0&&left.length===0;
-  pool.innerHTML=left.length
-    ?left.map(v=>`<div class="ka-search-result"><span>🎓</span><div><strong>${esc(v.ogrenciAdi)}</strong><small>${esc(v.ogrenciNo?'No: '+v.ogrenciNo:'Atanmamış')}</small></div></div>`).join('')
-    :`<div class="ka-empty">${all.length?'Tüm öğrenciler yerleştirildi ✅':'Bu sınıfa henüz öğrenci eklenmemiş.'}</div>`;
+  const placed=all.filter(v=>used.has(v.id)).length;
+  const left=Math.max(0,all.length-placed);
+  if(label)label.textContent=`${placed}/${all.length}`;
+  if(card)card.hidden=false;
+  const assignedCount=$('[data-so-assigned-count]',overlay),unassignedCount=$('[data-so-unassigned-count]',overlay),totalCount=$('[data-so-total-count]',overlay);
+  if(assignedCount)assignedCount.textContent=String(placed);
+  if(unassignedCount)unassignedCount.textContent=String(left);
+  if(totalCount)totalCount.textContent=String(all.length);
+  pool.innerHTML=all.length?all.map(v=>{
+    const isPlaced=used.has(v.id),name=v.ogrenciAdi||'Öğrenci',initial=name.trim().charAt(0).toLocaleUpperCase('tr')||'Ö';
+    return `<article class="ka-class-seating-student ${isPlaced?'is-assigned':'is-unassigned'}"><span class="ka-class-seating-student-avatar">${esc(initial)}</span><span class="ka-grow"><strong>${esc(name)}</strong><small>${v.ogrenciNo?`No: ${esc(v.ogrenciNo)} · `:''}${isPlaced?'Sıraya yerleştirildi':'Yerleşim bekliyor'}</small></span><span class="ka-class-seating-student-state">${isPlaced?'Yerleşti':'Bekliyor'}</span></article>`;
+  }).join(''):'<div class="ka-empty">Bu sınıfa henüz öğrenci eklenmemiş.</div>';
 }
 
 function chooseStudent(seat){
   if(!editable)return;
   document.querySelector('[data-so-student-picker]')?.remove();
-  const used=assigned();
-  const current=seat.dataset.studentId||'';
-  const available=students().filter(v=>v.id===current||!used.has(v.id));
+  const used=assigned(),current=seat.dataset.studentId||'',all=students();
   const ov=document.createElement('div');
-  ov.className='ka-modal-backdrop';
+  ov.className='ka-modal-backdrop ka-class-seating-picker';
   ov.dataset.soStudentPicker='';
   ov.innerHTML=`<section class="ka-modal">
     <div class="ka-modal__header">
-      <h3>Öğrenci Seç</h3>
-      <button class="ka-icon-button" type="button" data-close>×</button>
+      <div><h3>Öğrenci Yerleştir</h3><p class="ka-muted">${esc(className)} sınıf listesinden öğrenci seçin. Yerleşmiş öğrenci seçilirse yeni sıraya taşınır.</p></div>
+      <button class="ka-icon-button" type="button" data-close aria-label="Kapat">×</button>
     </div>
     <div class="ka-modal__body ka-stack">
-      ${available.length
-        ?available.map(v=>`<button type="button" class="ka-btn ka-btn--secondary" data-student="${esc(v.id)}">${v.id===current?'✓ ':''}${esc(v.ogrenciAdi)}</button>`).join('')
-        :'<div class="ka-empty">Atanacak öğrenci kalmadı.</div>'}
+      ${all.length?`<label class="ka-class-seating-picker-search"><span aria-hidden="true">⌕</span><input type="search" data-so-student-search placeholder="Öğrenci ara" autocomplete="off"></label><div class="ka-class-seating-picker-legend"><span class="is-unassigned">● Yerleşmedi</span><span class="is-assigned">● Yerleşti</span></div><div class="ka-class-seating-picker-list">${all.map(v=>{const placed=used.has(v.id),isCurrent=v.id===current,name=v.ogrenciAdi||'Öğrenci',initial=name.trim().charAt(0).toLocaleUpperCase('tr')||'Ö';return `<button type="button" class="ka-class-seating-picker-student ${isCurrent?'is-current':placed?'is-assigned':'is-unassigned'}" data-student="${esc(v.id)}" data-student-filter="${esc(`${name} ${v.ogrenciNo||''}`.toLocaleLowerCase('tr'))}"><span class="ka-class-seating-student-avatar">${esc(initial)}</span><span class="ka-grow"><strong>${isCurrent?'✓ ':''}${esc(name)}</strong><small>${v.ogrenciNo?`No: ${esc(v.ogrenciNo)} · `:''}${isCurrent?'Bu sırada':placed?'Başka sırada':'Yerleşmedi'}</small></span><span class="ka-class-seating-student-state">${isCurrent?'Seçili':placed?'Yerleşti':'Seç'}</span></button>`}).join('')}</div>`:'<div class="ka-empty">Bu sınıfta öğrenci bulunmuyor.</div>'}
     </div>
     <div class="ka-modal__footer">
       <button class="ka-btn ka-btn--secondary" type="button" data-free>Serbest İsim</button>
@@ -134,41 +163,27 @@ function chooseStudent(seat){
     </div>
   </section>`;
   document.body.appendChild(ov);
-  $$('[data-close]',ov).forEach(b=>b.onclick=()=>ov.remove());
+  const close=()=>ov.remove();
+  $$('[data-close]',ov).forEach(b=>b.onclick=close);
+  ov.addEventListener('click',e=>{if(e.target===ov)close()});
+  const search=$('[data-so-student-search]',ov);
+  search?.addEventListener('input',()=>{const q=search.value.trim().toLocaleLowerCase('tr');$$('[data-student]',ov).forEach(b=>b.hidden=!!q&&!String(b.dataset.studentFilter||'').includes(q))});
   $$('[data-student]',ov).forEach(b=>b.onclick=()=>{
-    const v=students().find(x=>x.id===b.dataset.student);
+    const v=all.find(x=>x.id===b.dataset.student);
     if(!v)return;
-    seat.dataset.studentId=v.id;
-    seat.dataset.name=v.ogrenciAdi||'';
-    seat.dataset.empty='false';
-    seat.textContent=v.ogrenciAdi||'';
-    seat.style.color='#6b5b3a';
-    ov.remove();
-    dirty=true;
-    refreshPool();
+    assignStudentToSeat(seat,v);
+    close();
   });
   $('[data-free]',ov).onclick=()=>{
     const v=prompt('Öğrenci adı (serbest metin):',seat.dataset.name||'');
     if(v===null)return;
-    delete seat.dataset.studentId;
-    seat.dataset.name=v;
-    seat.dataset.empty=v.trim()?'false':'true';
-    seat.textContent=v.trim()?v:'+';
-    seat.style.color=v.trim()?'#6b5b3a':'rgba(107,91,58,.45)';
-    ov.remove();
+    setSeatVisual(seat,{name:v,free:true});
     dirty=true;
     refreshPool();
+    close();
   };
-  $('[data-clear]',ov)?.addEventListener('click',()=>{
-    delete seat.dataset.studentId;
-    seat.dataset.name='';
-    seat.dataset.empty='true';
-    seat.textContent='+';
-    seat.style.color='rgba(107,91,58,.45)';
-    ov.remove();
-    dirty=true;
-    refreshPool();
-  });
+  $('[data-clear]',ov)?.addEventListener('click',()=>{clearSeat(seat);close()});
+  requestAnimationFrame(()=>search?.focus());
 }
 
 function setSelected(el){
@@ -286,71 +301,60 @@ function createObject(type,x,y,free=false){
   if(!size)return null;
   const seatDef=SEATS[type];
   const el=document.createElement('div');
+  el.className=`ka-class-seating-object ka-class-seating-object--${type}`;
   el.dataset.soObject='';
   el.dataset.type=type;
   el.dataset.rotation='0';
-  el.style.cssText=`position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;line-height:1.1;padding:3px;border-radius:10px;touch-action:none;box-sizing:border-box;left:${free?Math.round(x):snap(x)}px;top:${free?Math.round(y):snap(y)}px;width:${size.w}px;height:${size.h}px;box-shadow:0 3px 8px #0002`;
+  el.style.cssText=`position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;line-height:1.1;padding:3px;touch-action:none;box-sizing:border-box;left:${free?Math.round(x):snap(x)}px;top:${free?Math.round(y):snap(y)}px;width:${size.w}px;height:${size.h}px`;
 
   if(seatDef){
-    el.style.background='#f4efe3';
-    el.style.color='#6b5b3a';
-    el.style.border='1px solid #d7cdb7';
     const grid=document.createElement('div');
-    grid.style.cssText='position:absolute;inset:4px';
+    grid.className='ka-class-seating-seat-grid';
     for(let i=0;i<seatDef.count;i++){
       const seat=document.createElement('div');
       const c=i%seatDef.cols;
       const r=Math.floor(i/seatDef.cols);
       seat.dataset.soSeat='';
       seat.dataset.empty='true';
+      seat.className='ka-class-seating-seat is-empty';
       seat.textContent='+';
-      seat.style.cssText=`position:absolute;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;border:1px dashed #b9aa8d;border-radius:6px;background:#ffffff99;color:rgba(107,91,58,.45);left:${c*100/seatDef.cols}%;top:${r*100/seatDef.rows}%;width:${100/seatDef.cols}%;height:${100/seatDef.rows}%;word-break:break-word`;
+      seat.style.cssText=`position:absolute;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;left:${c*100/seatDef.cols}%;top:${r*100/seatDef.rows}%;width:${100/seatDef.cols}%;height:${100/seatDef.rows}%;word-break:break-word`;
+      if(editable){
+        seat.tabIndex=0;
+        seat.setAttribute('role','button');
+        seat.setAttribute('aria-label','Öğrenci seç');
+        seat.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseStudent(seat)}});
+      }
       grid.appendChild(seat);
     }
     el.appendChild(grid);
   }else if(type==='ogretmen-masasi'){
-    el.style.background='var(--ka-primary-soft)';
-    el.style.color='var(--ka-primary)';
-    el.style.border='1.5px dashed var(--ka-primary)';
     const span=document.createElement('span');
     span.dataset.soTeacherName='';
+    span.className='ka-class-seating-teacher-name';
     span.textContent=teacherName()||'🧑‍🏫 Öğretmen';
-    span.style.fontSize='16px';
-    span.style.fontWeight='800';
     el.appendChild(span);
   }else if(type==='kapi'){
-    el.style.background='#fff';
-    el.style.border='2px solid #c98a2e';
-    el.innerHTML='<span>🚪</span>';
+    el.innerHTML='<span aria-label="Kapı">🚪</span>';
   }else if(type==='pencere'){
-    el.style.background='#fff';
-    el.style.border='2px solid #64b5f6';
+    el.innerHTML='<span class="ka-class-seating-window-line" aria-hidden="true"></span>';
   }else if(type==='yazi-tahtasi'){
-    el.style.background='#213238';
-    el.style.color='#fff';
-    el.style.border='2px solid #0a1518';
     el.innerHTML='<span>▣ Yazı Tahtası</span>';
   }
 
   if(editable){
     const del=control('×','top:-9px;right:-9px','var(--ka-danger)');
-    del.onclick=e=>{
-      e.stopPropagation();
-      el.remove();
-      if(selected===el)setSelected(null);
-      dirty=true;
-      refreshPool();
-    };
+    del.onclick=e=>{e.stopPropagation();el.remove();if(selected===el)setSelected(null);dirty=true;refreshPool()};
     el.appendChild(del);
     if(seatDef){
       const rot=control('↻','top:-9px;left:-9px','var(--ka-primary)');
       rot.onclick=e=>{e.stopPropagation();rotate(el)};
       el.appendChild(rot);
     }
-    const plus=control('+','bottom:-9px;right:-9px','#596d65');
+    const plus=control('+','bottom:-9px;right:-9px','var(--ka-text-muted)');
     plus.onclick=e=>{e.stopPropagation();sizeType(type,1.15)};
     el.appendChild(plus);
-    const minus=control('−','bottom:-9px;left:-9px','#596d65');
+    const minus=control('−','bottom:-9px;left:-9px','var(--ka-text-muted)');
     minus.onclick=e=>{e.stopPropagation();sizeType(type,.87)};
     el.appendChild(minus);
   }
@@ -459,17 +463,10 @@ function updateFitStatus(){
 function autoFill(){
   const list=students();
   const seats=$$('[data-so-seat]',canvas);
-  let i=0;
-  for(const k of seats){
-    if(i>=list.length)break;
-    const v=list[i++];
-    k.dataset.studentId=v.id;
-    k.dataset.name=v.ogrenciAdi||'';
-    k.dataset.empty='false';
-    k.textContent=v.ogrenciAdi||'';
-    k.style.color='#6b5b3a';
-  }
+  seats.forEach(k=>clearSeat(k,{refresh:false}));
+  list.slice(0,seats.length).forEach((v,i)=>assignStudentToSeat(seats[i],v,{refresh:false}));
   refreshPool();
+  dirty=true;
 }
 
 function updateSizeLabels(){
@@ -532,30 +529,17 @@ function loadPlan(p){
 
   for(const o of p.ogeler||[]){
     if(!DEFAULT_SIZE[o.tur])continue;
-    if(Number.isFinite(Number(o.w))&&Number.isFinite(Number(o.h))){
-      sizes[o.tur]={w:Number(o.w),h:Number(o.h)};
-    }
+    if(Number.isFinite(Number(o.w))&&Number.isFinite(Number(o.h)))sizes[o.tur]={w:Number(o.w),h:Number(o.h)};
     const el=createObject(o.tur,Number(o.x)||0,Number(o.y)||0,true);
     if(!el)continue;
-    if(o.rotasyon){
-      el.dataset.rotation=String(o.rotasyon);
-      el.style.transform=`rotate(${o.rotasyon}deg)`;
-    }
-    if(o.isim){
-      el.dataset.name=o.isim;
-      const span=$('[data-so-teacher-name]',el)||$('span',el);
-      if(span)span.textContent=o.isim;
-    }
+    if(o.rotasyon){el.dataset.rotation=String(o.rotasyon);el.style.transform=`rotate(${o.rotasyon}deg)`;}
+    if(o.isim){el.dataset.name=o.isim;const span=$('[data-so-teacher-name]',el)||$('span',el);if(span)span.textContent=o.isim;}
     (o.koltuklar||[]).forEach((k,i)=>{
       const seat=$$('[data-so-seat]',el)[i];
       if(!seat)return;
-      if(k.ogrenciId)seat.dataset.studentId=k.ogrenciId;
-      if(k.isim){
-        seat.dataset.name=k.isim;
-        seat.dataset.empty='false';
-        seat.textContent=k.isim;
-        seat.style.color='#6b5b3a';
-      }
+      const student=k.ogrenciId?students().find(v=>v.id===k.ogrenciId):null;
+      const name=k.isim||student?.ogrenciAdi||'';
+      if(k.ogrenciId||name)setSeatVisual(seat,{id:k.ogrenciId||'',name,free:!k.ogrenciId});
     });
     fitText(el);
   }
@@ -592,14 +576,26 @@ async function save(){
 }
 
 function reportBody(){
-  const clone=canvas.cloneNode(true);
+  const clone=canvas.cloneNode(true),p=PAGE[orientation],pxPerMm=96/25.4,printable=orientation==='yatay'?{w:291,h:204}:{w:204,h:291},headH=13,stageH=printable.h-headH,scale=Math.min(1,printable.w*pxPerMm/p.w,stageH*pxPerMm/p.h)*.985;
   clone.removeAttribute('data-so-canvas');
+  clone.classList.add('ka-class-seating-print-canvas');
   clone.querySelectorAll('[data-so-object-control]').forEach(x=>x.remove());
   clone.querySelectorAll('[data-so-seat][data-empty="true"]').forEach(x=>x.textContent='');
-  clone.style.transform='none';
-  clone.style.transformOrigin='';
-  clone.style.margin='0 auto';
-  return `<div style="overflow:hidden">${clone.outerHTML}</div>`;
+  clone.querySelectorAll('[data-selected]').forEach(x=>{x.removeAttribute('data-selected');x.style.outline='';x.style.outlineOffset=''});
+  clone.style.width=p.w+'px';
+  clone.style.height=p.h+'px';
+  clone.style.position='absolute';
+  clone.style.left='50%';
+  clone.style.top='50%';
+  clone.style.margin='0';
+  clone.style.border='0';
+  clone.style.boxShadow='none';
+  clone.style.backgroundColor='#fff';
+  clone.style.backgroundImage='none';
+  clone.style.transform=`translate(-50%,-50%) scale(${scale})`;
+  clone.style.transformOrigin='center center';
+  const teacher=teacherName();
+  return `<section class="ka-class-seating-report" style="height:${printable.h}mm"><header class="ka-class-seating-report-head"><strong>${esc(reportTitle())}</strong>${teacher?`<span>Sınıf Öğretmeni: ${esc(teacher)}</span>`:''}</header><div class="ka-class-seating-report-stage" style="height:${stageH}mm">${clone.outerHTML}</div></section>`;
 }
 async function pdf(){
   try{
@@ -608,8 +604,10 @@ async function pdf(){
     await global.ReportEngine.printReport(reportTitle(),reportBody(),{
       fileName:`${className||'Sinif'}_Oturma_Plani`,
       yon:orientation,
+      baslikGoster:false,
+      logoGoster:false,
       tarihGoster:false,
-      kenarBosluk:5,
+      kenarBosluk:3,
       fontSize:8
     });
   }catch(e){
@@ -634,108 +632,60 @@ function step(label,key,type){
 
 function editControls(){
   if(!editable)return'';
-  return `<section class="ka-card">
-    <div class="ka-card__header"><h3>➕ Sınıfa Öğe Ekle</h3></div>
-    <div class="ka-card__body">
-      <div class="ka-theme-picker">
-        ${paletteButton('▭','Tekli Sıra','tekli-sira')}
-        ${paletteButton('▬','İkili Masa','ikili-masa')}
-        ${paletteButton('▦',"4'lü Grup",'grup-masasi-4')}
-        ${paletteButton('▦',"6'lı Grup",'grup-masasi-6')}
-        ${paletteButton('🧑‍🏫','Öğretmen','ogretmen-masasi')}
-        ${paletteButton('🚪','Kapı','kapi')}
-        ${paletteButton('🪟','Pencere','pencere')}
-        ${paletteButton('▣','Tahta','yazi-tahtasi')}
-      </div>
-    </div>
-  </section>
-  <section class="ka-card">
-    <div class="ka-card__header"><h3>🪄 Otomatik Yerleşim</h3></div>
-    <div class="ka-card__body ka-stack">
-      <label class="ka-field"><span class="ka-field__label">Masa türü</span><select data-so-table-type>
-        <option value="tekli-sira">Tekli Sıra</option>
-        <option value="ikili-masa" selected>İkili Masa</option>
-        <option value="grup-masasi-4">4'lü Grup</option>
-        <option value="grup-masasi-6">6'lı Grup</option>
-      </select></label>
-      <div class="ka-theme-picker">
-        <label class="ka-field"><span class="ka-field__label">Sütun</span><input data-so-cols type="number" value="3" min="1" max="10"></label>
-        <label class="ka-field"><span class="ka-field__label">Satır</span><input data-so-rows type="number" value="5" min="1" max="15"></label>
-      </div>
-      <label class="ka-field"><span class="ka-field__label">Kapı konumu</span><select data-so-door><option value="sol">Sol</option><option value="sag" selected>Sağ</option></select></label>
-      <div class="ka-theme-picker">
-        <label class="ka-field"><span class="ka-field__label">Sütun aralığı</span><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-col-minus>−</button><b class="ka-grow" data-so-col-gap style="text-align:center">12px</b><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-col-plus>＋</button></div></label>
-        <label class="ka-field"><span class="ka-field__label">Satır aralığı</span><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-row-minus>−</button><b class="ka-grow" data-so-row-gap style="text-align:center">66px</b><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-row-plus>＋</button></div></label>
-      </div>
-    </div>
-    <div class="ka-card__footer"><button class="ka-btn ka-btn--danger" type="button" data-so-auto>🪄 Otomatik Yerleştir</button></div>
-  </section>
-  <section class="ka-card">
-    <div class="ka-card__header"><h3>📐 Öğe Boyutları</h3></div>
-    <div class="ka-card__body ka-theme-picker">
-      ${step('Masa','masa','table')}
-      ${step('Öğretmen','teacher','ogretmen-masasi')}
-      ${step('Kapı','door','kapi')}
-      ${step('Pencere','window','pencere')}
-      ${step('Tahta','board','yazi-tahtasi')}
+  return `<section class="ka-class-seating-tools">
+    <div class="ka-row ka-row--between ka-class-seating-section-title"><div><small>YERLEŞİM ARAÇLARI</small><h2>Sınıfı Düzenle</h2></div><span class="ka-badge">Dokun · Taşı · Boyutlandır</span></div>
+    <div class="ka-class-seating-tools-grid">
+      <section class="ka-card ka-class-seating-tool-card">
+        <div class="ka-card__header"><span class="ka-class-seating-tool-icon">＋</span><div><h3>Öğe Ekle</h3><small class="ka-muted">Masa ve sınıf elemanları</small></div></div>
+        <div class="ka-card__body"><div class="ka-class-seating-palette">${paletteButton('▭','Tekli Sıra','tekli-sira')}${paletteButton('▬','İkili Masa','ikili-masa')}${paletteButton('▦',"4'lü Grup",'grup-masasi-4')}${paletteButton('▦',"6'lı Grup",'grup-masasi-6')}${paletteButton('🧑‍🏫','Öğretmen','ogretmen-masasi')}${paletteButton('🚪','Kapı','kapi')}${paletteButton('🪟','Pencere','pencere')}${paletteButton('▣','Tahta','yazi-tahtasi')}</div></div>
+      </section>
+      <section class="ka-card ka-class-seating-tool-card">
+        <div class="ka-card__header"><span class="ka-class-seating-tool-icon">✦</span><div><h3>Otomatik Yerleşim</h3><small class="ka-muted">Sıra düzenini hızlı oluşturun</small></div></div>
+        <div class="ka-card__body ka-stack">
+<label class="ka-field"><span class="ka-field__label">Masa türü</span><select data-so-table-type><option value="tekli-sira">Tekli Sıra</option><option value="ikili-masa" selected>İkili Masa</option><option value="grup-masasi-4">4'lü Grup</option><option value="grup-masasi-6">6'lı Grup</option></select></label>
+<div class="ka-class-seating-form-grid"><label class="ka-field"><span class="ka-field__label">Sütun</span><input data-so-cols type="number" value="3" min="1" max="10"></label><label class="ka-field"><span class="ka-field__label">Satır</span><input data-so-rows type="number" value="5" min="1" max="15"></label></div>
+<label class="ka-field"><span class="ka-field__label">Kapı konumu</span><select data-so-door><option value="sol">Sol</option><option value="sag" selected>Sağ</option></select></label>
+<div class="ka-class-seating-gap-grid"><label class="ka-field"><span class="ka-field__label">Sütun aralığı</span><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-col-minus>−</button><b class="ka-grow" data-so-col-gap>12px</b><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-col-plus>＋</button></div></label><label class="ka-field"><span class="ka-field__label">Satır aralığı</span><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-row-minus>−</button><b class="ka-grow" data-so-row-gap>66px</b><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-row-plus>＋</button></div></label></div>
+        </div>
+        <div class="ka-card__footer"><button class="ka-btn ka-grow" type="button" data-so-auto>✦ Düzeni Oluştur</button></div>
+      </section>
+      <section class="ka-card ka-class-seating-tool-card">
+        <div class="ka-card__header"><span class="ka-class-seating-tool-icon">↔</span><div><h3>Öğe Boyutları</h3><small class="ka-muted">Seçili türlerin ölçülerini ayarlayın</small></div></div>
+        <div class="ka-card__body ka-stack">${step('Masa','masa','table')}${step('Öğretmen Masası','teacher','ogretmen-masasi')}${step('Kapı','door','kapi')}${step('Pencere','window','pencere')}${step('Yazı Tahtası','board','yazi-tahtasi')}</div>
+      </section>
     </div>
   </section>`;
 }
 
+function studentRosterCard(){
+  return `<aside class="ka-card ka-class-seating-roster" data-so-pool-card><div class="ka-card__header"><div><small>SINIF LİSTESİ</small><h3>Öğrenciler <span class="ka-badge" data-so-pool-count></span></h3></div><div class="ka-class-seating-roster-legend"><span class="is-assigned">● Yerleşti</span><span class="is-unassigned">● Yerleşmedi</span></div></div><div class="ka-card__body ka-class-seating-roster-list" data-so-pool></div></aside>`;
+}
+
 function layoutCard(){
-  return `<section class="ka-card">
-    <div class="ka-card__header ka-stack">
-      <div>
-        <h2>Sınıf Yerleşimi</h2>
-        <small class="ka-muted" data-so-fit-status></small>
-      </div>
-      <div class="ka-theme-picker">
-        <button class="ka-btn ka-btn--danger" type="button" data-so-portrait>📄 Dikey A4</button>
-        <button class="ka-btn ka-btn--secondary" type="button" data-so-landscape>📄 Yatay A4</button>
-      </div>
-      <div class="ka-row">
-        <button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-zoom-minus>−</button>
-        <button class="ka-btn ka-btn--secondary ka-btn--sm ka-grow" type="button" data-so-fit>🔍 Sığdır <span data-so-zoom-label></span></button>
-        <button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-zoom-plus>＋</button>
-      </div>
-      ${editable?`<div class="ka-theme-picker">
-        <button class="ka-btn ka-btn--secondary" type="button" data-so-move-all>🔗 Birlikte Taşı</button>
-        <button class="ka-btn ka-btn--secondary" type="button" data-so-lock>🔒 Masaları Kilitle</button>
-      </div>`:''}
+  return `<section class="ka-card ka-class-seating-layout">
+    <div class="ka-class-seating-layout-head">
+      <div><small>CANLI A4 ÇALIŞMA ALANI</small><h2>Sınıf Yerleşimi</h2><span class="ka-class-seating-fit" data-so-fit-status></span></div>
+      <div class="ka-class-seating-orientation" role="group" aria-label="Sayfa yönü"><button class="ka-btn ka-btn--danger ka-btn--sm" type="button" data-so-portrait>▯ Dikey</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-landscape>▭ Yatay</button></div>
     </div>
-    <div class="dv3sheetviewport" data-so-canvas-scroll>
-      <div class="dv3sheetscene" data-so-canvas-stage>
-        <div class="dv3sheet" data-so-canvas style="position:relative;flex:none;border:2px solid #18231f;background-color:#fff;background-image:linear-gradient(#e5e9e7 1px,transparent 1px),linear-gradient(90deg,#e5e9e7 1px,transparent 1px);background-size:28px 28px;transform-origin:top left"></div>
-      </div>
+    <div class="ka-class-seating-layout-toolbar">
+      <div class="ka-class-seating-zoom"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-zoom-minus aria-label="Uzaklaştır">−</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-fit>⌗ Sığdır <span data-so-zoom-label></span></button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-zoom-plus aria-label="Yakınlaştır">＋</button></div>
+      ${editable?`<div class="ka-class-seating-layout-actions"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-move-all>🔗 Birlikte Taşı</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-so-lock>🔒 Masaları Kilitle</button></div>`:''}
     </div>
+    <div class="dv3sheetviewport ka-class-seating-canvas-scroll" data-so-canvas-scroll><div class="dv3sheetscene" data-so-canvas-stage><div class="dv3sheet ka-class-seating-canvas" data-so-canvas style="position:relative;flex:none;transform-origin:top left"></div></div></div>
+    <div class="ka-class-seating-layout-tip">İsim alanına dokunarak sınıf listesinden öğrenci seçin. Masaları sürükleyerek taşıyabilirsiniz.</div>
   </section>`;
 }
 
 function scaffold(){
-  return `<header class="dv3h">
-    <button class="dv3btn" type="button" data-so-close>← Kapat</button>
-    <div class="dv3title">
-      <b>${esc(className)} Oturma Planı</b>
-      <small>${esc(schoolYear())} eğitim öğretim yılı</small>
-    </div>
-  </header>
-  <div class="dv3body">
-    <div class="ka-page ka-stack">
-      <section class="ka-card">
-        <div class="ka-card__body ka-row">
-          ${editable?'<button class="ka-btn ka-btn--secondary ka-btn--sm ka-grow" type="button" data-so-clear>🗑 Temizle</button><button class="ka-btn ka-btn--sm ka-grow" type="button" data-so-save>💾 Kaydet</button>':''}
-          <button class="ka-btn ka-btn--secondary ka-btn--sm ka-grow" type="button" data-so-pdf>📄 PDF</button>
-        </div>
-      </section>
-      <section class="ka-card" data-so-pool-card>
-        <div class="ka-card__header"><h3>👥 Atanmamış Öğrenciler <span class="ka-badge" data-so-pool-count></span></h3></div>
-        <div class="ka-card__body ka-stack" data-so-pool></div>
-      </section>
-      ${layoutCard()}
-      ${editControls()}
-      <div class="dv3info">${editable?'Değişiklikler otomatik kaydedilmez — bitirdiğinizde Kaydet’e basın.':'Salt okunur görünüm — düzenleme yetkiniz bulunmuyor.'}</div>
-    </div>
-  </div>`;
+  const total=students().length;
+  return `<header class="dv3h ka-class-seating-topbar"><button class="dv3btn" type="button" data-so-close>← Kapat</button><div class="dv3title"><b>${esc(className)} Oturma Planı</b><small>${esc(schoolYear())} eğitim öğretim yılı</small></div><span class="ka-badge">${editable?'Düzenlenebilir':'Salt okunur'}</span></header>
+  <div class="dv3body"><main class="ka-page ka-class-seating-page">
+    <section class="ka-class-seating-hero"><div class="ka-class-seating-hero-copy"><span class="ka-class-seating-hero-icon">🏫</span><div><small>SINIF OTURMA PLANI</small><h1>${esc(className)} Sınıfı</h1><p>Öğrencileri sıralara dokunarak yerleştirin, sınıf düzenini A4 üzerinde canlı olarak hazırlayın.</p></div></div><div class="ka-class-seating-stats"><div><b data-so-total-count>${total}</b><small>Öğrenci</small></div><div class="is-assigned"><b data-so-assigned-count>0</b><small>Yerleşti</small></div><div class="is-unassigned"><b data-so-unassigned-count>${total}</b><small>Yerleşmedi</small></div></div></section>
+    <section class="ka-class-seating-commandbar">${editable?'<button class="ka-btn ka-btn--secondary" type="button" data-so-clear>🗑 Temizle</button><button class="ka-btn" type="button" data-so-save>💾 Kaydet</button>':''}<button class="ka-btn ka-btn--secondary" type="button" data-so-pdf>📄 PDF / Yazdır</button></section>
+    <div class="ka-class-seating-workspace">${layoutCard()}${studentRosterCard()}</div>
+    ${editControls()}
+    <div class="dv3info ka-class-seating-info">${editable?'Değişiklikler otomatik kaydedilmez. Yerleşimi tamamladıktan sonra Kaydet düğmesine basın.':'Salt okunur görünüm — bu sınıf için düzenleme yetkiniz bulunmuyor.'}</div>
+  </main></div>`;
 }
 
 function bind(){
