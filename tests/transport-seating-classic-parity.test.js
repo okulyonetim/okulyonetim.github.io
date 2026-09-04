@@ -10,11 +10,11 @@ for(const token of ['function busElementLayoutUsable','function elementAssignmen
 assert(transport.includes("if(sb==='ozel'&&raw.length)"),'Özel tasarım ham yerleşimi korunmalı.');
 assert(transport.includes('assignments=Array.isArray(plan?.koltuklar)&&plan.koltuklar.length?plan.koltuklar:elementAssignmentsToLegacy(raw)'),'Bozuk element yerleşiminde öğrenci atamaları kaybolmamalı.');
 assert(!transport.includes('<div class="ka-bus-cabin ka-bus-classic-shell">'),'Klasik araç şeması eski generic cabin sınıfıyla çakışmamalı.');
-for(const token of ['Servis Oturma — eski ekran birebir düzeltme v3','.ka-bus-template-card.is-active','background:#e72b2f!important','.ka-bus-classic-stage{','overflow-x:hidden!important','.ka-bus-classic-shell{','min-width:0!important'])assert(css.includes(token),`Klasik mobil stil eksik: ${token}`);
+for(const token of ['Servis Oturma — eski ekran birebir düzeltme v3','.ka-bus-template-card.is-active','background:#e72b2f!important','.ka-bus-classic-stage{','overflow:visible!important','.ka-bus-classic-shell{','min-width:0!important'])assert(css.includes(token),`Klasik mobil stil eksik: ${token}`);
 assert(css.includes('@media(max-width:390px)')&&css.includes('grid-template-columns:repeat(2,minmax(0,1fr))!important'),'Dar telefonda araç tipleri iki sütunda kalmalı.');
 assert(css.includes('.ka-bus-classic-stats div:last-child')&&css.includes('grid-column:1!important'),'Doluluk eski ekrandaki gibi ikinci satır ilk hücrede olmalı.');
 assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport canonical lazy-loader sözleşmesini korumalı.');
-assert(index.includes('css/design-system.css?v=890')&&index.includes('js/app-loader.js?v=890'),'Index yeni oturma düzenini zorunlu yüklemeli.');
-assert(sw.includes("CACHE_ADI='oy-cache-v890'")&&sw.includes("./js/modules/transport.js?v=890"),'Service Worker yeni transport paketini önbelleğe almalı.');
+assert(index.includes('css/design-system.css?v=891')&&index.includes('js/app-loader.js?v=890'),'Index yeni oturma düzenini zorunlu yüklemeli.');
+assert(sw.includes("CACHE_ADI='oy-cache-v891'")&&sw.includes("./js/modules/transport.js?v=890"),'Service Worker yeni transport paketini önbelleğe almalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem','localStorage.removeItem'])assert(!transport.includes(forbidden),`Local-first sınırı ihlal edildi: ${forbidden}`);
 console.log('Servis oturma eski ekran mobil paritesi başarılı.');
