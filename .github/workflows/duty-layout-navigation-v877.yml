@@ -21,167 +21,9 @@ jobs:
         with:
           node-version: '24'
       - name: Verify baseline
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD^)" = '4e26739cf60f2aa895c468c7e719c03c7bb2ba18'
-      - name: Apply verified UX fixes
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 <<'PY'
-          from pathlib import Path
-
-          def between(text,start,end,replacement,path):
-              a=text.find(start)
-              b=text.find(end,a+len(start))
-              if a<0 or b<0:
-                  raise SystemExit(f'block not found in {path}: {start} .. {end}')
-              return text[:a]+replacement+text[b:]
-
-          # ---------------- duty report ----------------
-          p=Path('js/modules/management.js'); s=p.read_text(encoding='utf-8')
-          old="function dutyReportDensity(days,assignments,chiefs){const names=[...(assignments||[]).map(x=>x?.ogretmenAdSoyad),...(chiefs||[]).map(x=>x?.ad)].map(x=>String(x||'').trim()).filter(Boolean),longest=names.reduce((n,v)=>Math.max(n,v.length),0),dayCount=Number(days)||31;if(dayCount>=31||longest>=24)return'dense';if(dayCount<=29&&longest<=19)return'roomy';return'normal'}"
-          new="function dutyReportDensity(days,assignments,chiefs){const names=[...(assignments||[]).map(x=>x?.ogretmenAdSoyad),...(chiefs||[]).map(x=>dutyReportChiefName(x))].map(x=>String(x||'').trim()).filter(Boolean),longest=names.reduce((n,v)=>Math.max(n,v.length),0),dayCount=Number(days)||31;if(dayCount>=31||longest>=24)return'dense';if(dayCount<=29&&longest<=19)return'roomy';return'normal'}"
-          if old not in s: raise SystemExit('dutyReportDensity baseline missing')
-          s=s.replace(old,new,1)
-          marker="function dutyReportPrincipal(okul){const teacher=arr('ogretmenler').find(o=>o.id===okul?.mudurId);return teacher?{ad:teacherName(teacher),telefon:teacher.telefon||''}:{ad:String(okul?.mudurAdi||okul?.mudur||'').trim()||'—',telefon:String(okul?.mudurTelefon||'').trim()}}"
-          helper=marker+"\nfunction dutyReportChiefName(record){if(!record)return'';const teacher=record.ogretmenId?arr('ogretmenler').find(o=>o.id===record.ogretmenId):null;return String(record.ad||record.ogretmenAdSoyad||record.adSoyad||record.amirAdSoyad||record.amirAd||(teacher?teacherName(teacher):'')).trim()}"
-          if marker not in s: raise SystemExit('principal marker missing')
-          s=s.replace(marker,helper,1)
-          old="<td>${esc(String(amir?.ad||'').toLocaleUpperCase('tr'))}</td>"
-          new="<td>${esc(dutyReportChiefName(amir).toLocaleUpperCase('tr'))}</td>"
-          if old not in s: raise SystemExit('chief report cell baseline missing')
-          s=s.replace(old,new,1)
-          old="amirler.filter(a=>String(a.tarih||'').startsWith(`${ys}-${ms}`)&&a.ad).forEach(a=>{const teacher=a.ogretmenId?arr('ogretmenler').find(o=>o.id===a.ogretmenId):null,name=String(a.ad||'').trim(),phone=String(a.telefon||teacher?.telefon||'').trim();"
-          new="amirler.filter(a=>String(a.tarih||'').startsWith(`${ys}-${ms}`)&&dutyReportChiefName(a)).forEach(a=>{const teacher=a.ogretmenId?arr('ogretmenler').find(o=>o.id===a.ogretmenId):null,name=dutyReportChiefName(a),phone=String(a.telefon||teacher?.telefon||'').trim();"
-          if old not in s: raise SystemExit('chief phone baseline missing')
-          s=s.replace(old,new,1)
-          old="<section class=\"ka-duty-report-tasks\"><h2>NÖBETÇİ ÖĞRETMENİN GÖREVLERİ</h2><ol>${DUTY_TASKS.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></section><footer class=\"ka-duty-report-footer\"><div class=\"ka-duty-report-footer-copy\"><p>Bu çizelge ${esc(validityText)} tarihinden itibaren geçerlidir.</p><p>Öğretmen arkadaşların okuldaki eğitim öğretim hizmetlerinin verimli geçmesi için yukarıda sayılan talimatlara göre nöbet hizmetlerini yerine getirmelerini rica ederim.</p></div><div class=\"ka-duty-report-signature\">"
-          new="<section class=\"ka-duty-report-tasks\"><h2>NÖBETÇİ ÖĞRETMENİN GÖREVLERİ</h2><ol>${DUTY_TASKS.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class=\"ka-duty-report-note\"><p>Bu çizelge ${esc(validityText)} tarihinden itibaren geçerlidir.</p><p>Öğretmen arkadaşların okuldaki eğitim öğretim hizmetlerinin verimli geçmesi için yukarıda sayılan talimatlara göre nöbet hizmetlerini yerine getirmelerini rica ederim.</p></div></section><footer class=\"ka-duty-report-footer\"><div class=\"ka-duty-report-signature\">"
-          if old not in s: raise SystemExit('duty footer copy baseline missing')
-          s=s.replace(old,new,1)
-          p.write_text(s,encoding='utf-8')
-
-          # ---------------- settings / app layout studio ----------------
-          p=Path('js/modules/settings.js'); s=p.read_text(encoding='utf-8')
-          new_menu=r'''function menuTargetGroups(){return(window.AppConfig?.CLASSIC_MENU_GROUPS||[]).filter(g=>g.hidden!==true)}
-function menuTargetOptions(selected){return menuTargetGroups().map(g=>`<option value="${esc(g.key)}" ${String(selected||'')===String(g.key)?'selected':''}>${esc(g.icon||'')} ${esc(g.label)}</option>`).join('')}
-function menuEditorItem(g,item,index){const s=menuItemSetting(g,item),fallback=menuColorValue(menuGroupSetting(g)?.color,MENU_COLOR_DEFAULTS[g.key]||'#17684f'),order=Number(s.order),target=String(s.targetGroup||g.key);return `<article class="ka-settings-menu-item" data-menu-item-row="${esc(menuItemKey(g,item))}"><div class="ka-row ka-row--between"><div class="ka-grow"><strong>${esc(s.label||item[0])}</strong><small class="ka-muted">${esc(item[2]||'')}${item[3]?` / ${esc(item[3])}`:''}</small></div><label class="ka-check"><input type="checkbox" data-menu-item-visible ${s.visible!==false?'checked':''}> Göster</label></div><div class="ka-settings-menu-fields ka-settings-menu-fields--item"><label class="ka-field"><span class="ka-field__label">Ad</span><input data-menu-item-label value="${esc(s.label||item[0])}"></label><label class="ka-field"><span class="ka-field__label">İkon</span><input data-menu-item-icon value="${esc(s.icon||item[1]||'')}" maxlength="8"></label><label class="ka-field"><span class="ka-field__label">Bulunduğu Menü</span><select data-menu-item-target>${menuTargetOptions(target)}</select></label><label class="ka-field ka-settings-color-field"><span class="ka-field__label">Renk</span><input type="color" data-menu-item-color value="${esc(menuColorValue(s.color,fallback))}"></label><label class="ka-field"><span class="ka-field__label">Sıra</span><input type="number" min="1" step="1" data-menu-item-order value="${Number.isFinite(order)?order:(index+1)*10}"></label></div></article>`}
-function menuEditorGroup(g,index){const s=menuGroupSetting(g),items=[...(g.items||[]),...(g.subItems||[])],order=Number(s.order),color=menuColorValue(s.color,MENU_COLOR_DEFAULTS[g.key]||'#17684f');return `<article class="ka-card ka-layout-menu-panel" data-menu-group-row="${esc(g.key)}" data-layout-panel="${esc(g.key)}" ${index?'hidden':''}><div class="ka-card__header ka-layout-menu-panel__head"><div class="ka-row"><span class="ka-settings-menu-swatch" style="--ka-settings-menu-color:${color}"></span><div><strong>${esc(g.icon)} ${esc(g.label)}</strong><small class="ka-muted">${items.length} alt menü öğesi</small></div></div><label class="ka-check"><input type="checkbox" data-menu-group-visible ${s.visible!==false?'checked':''}> Göster</label></div><div class="ka-card__body ka-stack"><div class="ka-settings-menu-fields"><label class="ka-field"><span class="ka-field__label">Menü adı</span><input data-menu-group-label value="${esc(s.label||g.label)}"></label><label class="ka-field"><span class="ka-field__label">İkon</span><input data-menu-group-icon value="${esc(s.icon||g.icon||'')}" maxlength="8"></label><label class="ka-field ka-settings-color-field"><span class="ka-field__label">Kart rengi</span><input type="color" data-menu-group-color value="${esc(color)}"></label><label class="ka-field"><span class="ka-field__label">Sıra</span><input type="number" min="1" step="1" data-menu-group-order value="${Number.isFinite(order)?order:(index+1)*10}"></label></div><div class="ka-layout-items-head"><div><h4>Alt menüler</h4><p class="ka-muted">Bir öğeyi başka bir ana menüye taşımak için “Bulunduğu Menü” alanını değiştirin.</p></div></div><div class="ka-stack ka-layout-item-list">${items.map((item,i)=>menuEditorItem(g,item,i)).join('')}</div></div></article>`}
-function menuLayoutEditor(){const groups=menuTargetGroups();if(!groups.length)return'<div class="ka-empty">Ana menü kataloğu hazırlanıyor.</div>';return `<section class="ka-layout-studio" data-layout-studio><nav class="ka-layout-picker" aria-label="Düzenlenecek ana menü">${groups.map((g,i)=>`<button type="button" class="ka-layout-picker__item ${i===0?'is-active':''}" data-layout-menu-select="${esc(g.key)}"><span>${g.icon}</span><strong>${esc(g.label)}</strong><small>${[...(g.items||[]),...(g.subItems||[])].length}</small></button>`).join('')}</nav><div class="ka-layout-panels">${groups.map(menuEditorGroup).join('')}</div></section>`}
-'''
-          s=between(s,'function menuEditorItem(','function moduleEditorRow(',new_menu+'function moduleEditorRow(','js/modules/settings.js')
-          # between helper kept start token replacement intentionally; repair doubled function marker if any
-          s=s.replace('function moduleEditorRow(function moduleEditorRow(','function moduleEditorRow(',1)
-          app_layout=r'''function appLayout(){const cfg=window.AppConfig?.get?.();if(!cfg)return'<div class="ka-empty">Uygulama konfigürasyonu hazırlanıyor.</div>';const opts=cfg.modules.map(m=>`<option value="${esc(m.key)}" ${m.key===cfg.defaultModule?'selected':''}>${esc(m.label)}</option>`).join('');return `<section class="ka-layout-page ka-stack"><article class="ka-card ka-layout-intro"><div class="ka-card__body ka-stack"><div><span class="ka-badge">Merkezi Düzen</span><h3>Uygulama Düzeni</h3><p class="ka-muted">Menüleri tek tek seçerek düzenleyin. Alt menüleri farklı bir ana menüye taşıyabilir, renk/ikon/sıra ve görünürlüğü değiştirebilirsiniz.</p></div><label class="ka-field"><span class="ka-field__label">Varsayılan açılış sayfası</span><select id="appDefaultModule">${opts}</select></label></div></article><section class="ka-stack"><div><h3>Ana Menü Düzenleyici</h3><div class="ka-muted">Akordiyon yerine sabit menü seçici kullanılır; sayfa konumu değişmez.</div></div><div id="appClassicMenuEditor">${menuLayoutEditor()}</div></section><section class="ka-stack"><h3>Modül Erişimi</h3><div id="appModuleEditor" class="ka-stack">${cfg.modules.map(moduleEditorRow).join('')}</div></section><section class="ka-stack"><h3>Dashboard Kartları</h3><div id="dashboardCardEditor" class="ka-stack">${cfg.dashboardCards.map(dashboardEditorRow).join('')}</div></section><div class="ka-layout-savebar"><button class="ka-btn ka-btn--secondary" type="button" data-app-reset data-ka-permission="settings.app.edit" data-ka-write="settings.app.edit">Varsayılana Dön</button><button class="ka-btn" type="button" data-app-save data-ka-permission="settings.app.edit" data-ka-write="settings.app.edit">Uygulama Düzenini Kaydet</button></div></section>`}
-'''
-          s=between(s,'function appLayout()','function moveRow(',app_layout+'function moveRow(','js/modules/settings.js')
-          s=s.replace('function moveRow(function moveRow(','function moveRow(',1)
-          read_layout=r'''function readMenuLayoutFromDom(){const groups={};[...document.querySelectorAll('[data-menu-group-row]')].forEach((row,gi)=>{const key=row.dataset.menuGroupRow,items={};[...row.querySelectorAll('[data-menu-item-row]')].forEach((item,ii)=>{const order=Number(item.querySelector('[data-menu-item-order]')?.value);items[item.dataset.menuItemRow]={label:item.querySelector('[data-menu-item-label]')?.value.trim()||'',icon:item.querySelector('[data-menu-item-icon]')?.value.trim()||'',color:menuColorValue(item.querySelector('[data-menu-item-color]')?.value,''),visible:!!item.querySelector('[data-menu-item-visible]')?.checked,order:Number.isFinite(order)?order:(ii+1)*10,targetGroup:item.querySelector('[data-menu-item-target]')?.value||key}});const order=Number(row.querySelector('[data-menu-group-order]')?.value);groups[key]={label:row.querySelector('[data-menu-group-label]')?.value.trim()||key,icon:row.querySelector('[data-menu-group-icon]')?.value.trim()||'',color:menuColorValue(row.querySelector('[data-menu-group-color]')?.value,''),visible:!!row.querySelector('[data-menu-group-visible]')?.checked,order:Number.isFinite(order)?order:(gi+1)*10,items}});return{groups}}
-'''
-          s=between(s,'function readMenuLayoutFromDom()','function readAppConfigFromDom()',read_layout+'function readAppConfigFromDom()','js/modules/settings.js')
-          bind=r'''function selectLayoutMenu(out,key){const root=out.querySelector('[data-layout-studio]');if(!root)return;root.querySelectorAll('[data-layout-menu-select]').forEach(b=>{const active=b.dataset.layoutMenuSelect===key;b.classList.toggle('is-active',active);b.setAttribute('aria-pressed',active?'true':'false')});root.querySelectorAll('[data-layout-panel]').forEach(panel=>{panel.hidden=panel.dataset.layoutPanel!==key})}
-function bindAppEditor(out){out.querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveRow(b,-1));out.querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveRow(b,1));out.querySelectorAll('[data-layout-menu-select]').forEach(b=>b.addEventListener('click',()=>selectLayoutMenu(out,b.dataset.layoutMenuSelect)));out.querySelector('[data-app-save]')?.addEventListener('click',saveAppLayout);out.querySelector('[data-app-reset]')?.addEventListener('click',resetAppLayout)}
-'''
-          s=between(s,'function bindAppEditor(out)','function activeAllowed(',bind+'function activeAllowed(','js/modules/settings.js')
-          s=s.replace('function activeAllowed(function activeAllowed(','function activeAllowed(',1)
-          p.write_text(s,encoding='utf-8')
-
-          # ---------------- shell menu relocation + history ----------------
-          p=Path('js/core/shell-ui.js'); s=p.read_text(encoding='utf-8')
-          new_model=r'''function menuItemView(g,item,index,groupSettings){const items=groupSettings?.items||{},s=items[menuItemKey(g,item)]||items[legacyMenuItemKey(g,item)]||{},x=[...item],order=Number(s.order);x[0]=String(s.label||item?.[0]||'');x[1]=String(s.icon||item?.[1]||'');x.__menuColor=validMenuColor(s.color);x.__menuVisible=s.visible!==false;x.__menuOrder=Number.isFinite(order)?order:(index+1)*10;x.__menuSourceGroup=g.key;x.__menuTargetGroup=String(s.targetGroup||g.key);return x}
-function configuredMenuItems(targetKey){const cfg=menuLayoutConfig(),all=[];MENU_GROUPS.forEach(source=>{const gs=cfg?.groups?.[source.key]||{};(source.items||[]).forEach((item,i)=>{const x=menuItemView(source,item,i,gs);x.__menuSection='main';if(x.__menuTargetGroup===targetKey)all.push(x)});(source.subItems||[]).forEach((item,i)=>{const x=menuItemView(source,item,(source.items||[]).length+i,gs);x.__menuSection=source.key===targetKey?'sub':'main';if(x.__menuTargetGroup===targetKey)all.push(x)})});return all}
-function menuGroupView(g,index){const s=menuLayoutConfig()?.groups?.[g.key]||{},order=Number(s.order),x={...g},all=configuredMenuItems(g.key).filter(item=>item.__menuVisible);x.label=String(s.label||g.label||'');x.icon=String(s.icon||g.icon||'');x.__menuColor=validMenuColor(s.color);x.__menuVisible=s.visible!==false;x.__menuOrder=Number.isFinite(order)?order:(index+1)*10;x.items=all.filter(item=>item.__menuSection!=='sub').sort((a,b)=>a.__menuOrder-b.__menuOrder);x.subItems=all.filter(item=>item.__menuSection==='sub').sort((a,b)=>a.__menuOrder-b.__menuOrder);return x}
-function visibleItems(g){return(g.items||[]).filter(itemAllowed).concat((g.subItems||[]).filter(itemAllowed))}
-function visibleGroups(){return MENU_GROUPS.filter(g=>g.hidden!==true)}
-function customizedVisibleGroups(){return visibleGroups().map((g,index)=>menuGroupView(g,index)).filter(g=>g.__menuVisible!==false&&teacherMenuGroupAllowed(g)&&visibleItems(g).length).sort((a,b)=>a.__menuOrder-b.__menuOrder)}
-'''
-          s=between(s,'function menuItemView(g,item,index,groupSettings)','function menuCount(g)',new_model+'function menuCount(g)','js/core/shell-ui.js')
-          s=s.replace('function menuCount(g)function menuCount(g)','function menuCount(g)',1)
-          old="function bindMenuRoutes(root){$$('[data-ka-shell-route]',root).forEach(b=>b.addEventListener('click',()=>routeModule(b.dataset.kaShellRoute,{bottom:'menu',page:b.dataset.kaShellPage||'',title:b.dataset.kaShellTitle||''})))}"
-          new="function bindMenuRoutes(root){$$('[data-ka-shell-route]',root).forEach(b=>b.addEventListener('click',()=>{if(menuGroup){const g=customizedVisibleGroups().find(x=>x.key===menuGroup);rememberView({kind:'menu-list',name:'menu',bottom:'menu',page:menuGroup,title:g?.label||'Menü'})}routeModule(b.dataset.kaShellRoute,{bottom:'menu',page:b.dataset.kaShellPage||'',title:b.dataset.kaShellTitle||''})}))}"
-          if old not in s: raise SystemExit('bindMenuRoutes baseline missing')
-          s=s.replace(old,new,1)
-          old="async function restoreView(view){if(!view)return false;if(view.kind==='profile'){renderProfile({remember:false});return true}if(view.kind==='profile-detail'){renderProfileDetail(view.page,{remember:false});return true}if(view.kind==='search'){renderSearch({remember:false});return true}if(view.kind==='route')return routeModule(view.name,{bottom:view.bottom||'menu',page:view.page||'',title:view.title||'',remember:false});return false}"
-          new="async function restoreView(view){if(!view)return false;if(view.kind==='profile'){renderProfile({remember:false});return true}if(view.kind==='profile-detail'){renderProfileDetail(view.page,{remember:false});return true}if(view.kind==='search'){renderSearch({remember:false});return true}if(view.kind==='menu-list'){openMenu();renderMenuList(view.page);return true}if(view.kind==='route')return routeModule(view.name,{bottom:view.bottom||'menu',page:view.page||'',title:view.title||'',remember:false});return false}"
-          if old not in s: raise SystemExit('restoreView baseline missing')
-          s=s.replace(old,new,1)
-          p.write_text(s,encoding='utf-8')
-
-          # ---------------- central CSS ----------------
-          p=Path('css/design-system.css'); s=p.read_text(encoding='utf-8')
-          duty=r'''/* Duty report — table-first adaptive full-page A4 roster. */
-.ka-report .ka-duty-report{--ka-duty-head-font:9.5pt;--ka-duty-cell-font:8.7pt;--ka-duty-task-font:7.2pt;--ka-duty-footer-font:6.6pt;--ka-duty-table-height:188mm;width:100%;color:#111;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;gap:0;background:#fff;overflow:hidden}
-.ka-report .ka-duty-report--portrait{height:287mm;min-height:287mm}.ka-report .ka-duty-report--landscape{height:200mm;min-height:200mm;--ka-duty-table-height:132mm}
-.ka-report .ka-duty-report[data-duty-density="dense"]{--ka-duty-table-height:190mm}.ka-report .ka-duty-report[data-duty-density="roomy"]{--ka-duty-table-height:184mm}.ka-report .ka-duty-report--landscape[data-duty-density="dense"]{--ka-duty-table-height:134mm}.ka-report .ka-duty-report--landscape[data-duty-density="roomy"]{--ka-duty-table-height:129mm}
-.ka-report .ka-duty-report-banner{position:relative;flex:0 0 auto;width:100%;min-height:14mm;margin:0 0 .7mm;padding:.7mm 0;display:flex;align-items:center;justify-content:center;border-bottom:1.2px solid #17684f;text-align:center;overflow:hidden}.ka-report .ka-duty-report-logo{position:absolute;left:0;top:50%;transform:translateY(-50%);width:10mm;height:10mm;object-fit:contain}.ka-report .ka-duty-report-banner h1{width:calc(100% - 12mm);margin:0 0 0 12mm!important;padding:0 .6mm!important;color:#155c46!important;font-size:12.8pt!important;font-weight:850!important;line-height:1!important;letter-spacing:-.035em!important;text-align:center!important;white-space:nowrap!important;transform:none!important}.ka-report .ka-duty-report--landscape .ka-duty-report-banner h1{font-size:14pt!important;letter-spacing:-.02em!important}
-.ka-report .ka-duty-report-table{flex:0 0 var(--ka-duty-table-height);align-self:stretch;width:100%!important;height:var(--ka-duty-table-height)!important;min-height:0!important;table-layout:fixed!important;margin:0!important;border-collapse:collapse!important;border-spacing:0!important}.ka-report .ka-duty-report-table th{padding:.08mm .28mm!important;background:#173f60!important;border:1px solid #294f6b!important;color:#fff!important;font-size:var(--ka-duty-head-font)!important;line-height:.94!important;font-weight:800!important;text-align:center!important;white-space:nowrap!important;overflow:hidden!important}.ka-report .ka-duty-report-table td{padding:.03mm .25mm!important;border:1px solid #aeb7bb!important;background:#fff!important;color:#111!important;font-size:var(--ka-duty-cell-font)!important;line-height:.93!important;vertical-align:middle!important;text-align:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.ka-report .ka-duty-report-table tbody tr:nth-child(even) td{background:#f7f7f7!important}.ka-report .ka-duty-report-table td:first-child{text-align:left!important;font-weight:650!important}.ka-report .ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#e6e6e6!important;color:#666!important;font-weight:600!important}.ka-report .ka-duty-report-holiday td{background:#fff4cf!important;color:#6b5200!important;font-weight:800!important}.ka-report .ka-duty-report-holiday td:not(:first-child){text-align:center!important;letter-spacing:.01em!important}
-.ka-report .ka-duty-report--portrait .ka-duty-report-col-date{width:22%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-garden{width:20%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-building{width:20%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-entry{width:18%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-chief{width:20%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-date{width:18%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-garden{width:20%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-building{width:20%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-entry{width:18%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-chief{width:24%}
-.ka-report .ka-duty-report-phones{flex:0 0 auto;display:flex;align-items:center;gap:3mm;flex-wrap:wrap;margin:1.15mm 0 0;padding:.45mm 0;border-top:.45px solid #555;border-bottom:.45px solid #777;font-size:7pt;line-height:1}.ka-report .ka-duty-report-phones>strong{font-size:7.4pt}.ka-report .ka-duty-report-phones span{white-space:nowrap}.ka-report .ka-duty-report-phones b{font-weight:800}
-.ka-report .ka-duty-report-tasks{flex:1 1 auto;min-height:0;margin:1.15mm 0 0!important;padding:0!important;color:#111;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}.ka-report .ka-duty-report-tasks h2{flex:0 0 auto;margin:0 0 .25mm!important;color:#111!important;font-size:9pt!important;line-height:1!important;font-weight:850!important}.ka-report .ka-duty-report-tasks ol{flex:0 0 auto;margin:0!important;padding-left:4.2mm!important;font-size:var(--ka-duty-task-font)!important;line-height:1!important;display:block!important}.ka-report .ka-duty-report-tasks li{margin:0!important;padding:0!important;color:#111!important;font-size:var(--ka-duty-task-font)!important;line-height:1!important}.ka-report .ka-duty-report-note{margin-top:.55mm;padding-top:.45mm;border-top:.35px solid #aaa;font-size:6.4pt;line-height:1.05}.ka-report .ka-duty-report-note p{margin:0 0 .2mm!important}.ka-report .ka-duty-report--landscape .ka-duty-report-tasks ol{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:column;grid-template-rows:repeat(7,auto);column-gap:8mm;row-gap:0;align-content:start}.ka-report .ka-duty-report--landscape .ka-duty-report-tasks li{break-inside:avoid;page-break-inside:avoid}
-.ka-report .ka-duty-report-footer{flex:0 0 auto;margin-top:.45mm;padding-top:.45mm;border-top:.45px solid #777;color:#111;font-size:var(--ka-duty-footer-font);line-height:1.02;display:flex;justify-content:flex-end;align-items:flex-end}.ka-report .ka-duty-report-signature{width:44mm;display:flex;flex-direction:column;align-items:center;text-align:center;font-size:10.5pt!important;line-height:1.02}.ka-report .ka-duty-report-signature strong{margin-top:.15mm;font-size:10.5pt!important;font-weight:850}.ka-report .ka-duty-report-signature span{display:block;font-size:10.5pt!important}.ka-report .ka-duty-report-signature span:last-child{margin-top:.05mm;font-size:10.5pt!important;font-weight:700}.ka-report .ka-duty-report--landscape .ka-duty-report-signature{width:48mm}
-@media print{.ka-report .ka-duty-report{break-inside:avoid;page-break-inside:avoid}.ka-report .ka-duty-report-table tr,.ka-report .ka-duty-report-tasks,.ka-report .ka-duty-report-footer{break-inside:avoid;page-break-inside:avoid}}
-
-'''
-          s=between(s,'/* Duty report — adaptive full-page A4 roster. */','/* Announcements page — canonical communication redesign. */',duty+'/* Announcements page — canonical communication redesign. */','css/design-system.css')
-          s=s.replace('/* Announcements page — canonical communication redesign. *//* Announcements page — canonical communication redesign. */','/* Announcements page — canonical communication redesign. */',1)
-          old_start='.ka-settings-menu-group>summary{cursor:pointer}'
-          old_end='@media(max-width:380px){.ka-menu-list>.ka-btn{min-height:54px}'
-          a=s.find(old_start); b=s.find(old_end,a)
-          if a<0 or b<0: raise SystemExit('settings menu css block missing')
-          # keep the unrelated max-width:380 rule from b onward
-          studio=r'''.ka-layout-page{gap:14px}.ka-layout-intro h3{margin:7px 0 3px}.ka-layout-studio{display:grid;gap:12px}.ka-layout-picker{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 7px;scroll-snap-type:x proximity;scrollbar-width:none}.ka-layout-picker::-webkit-scrollbar{display:none}.ka-layout-picker__item{min-width:148px;max-width:190px;min-height:68px;display:grid;grid-template-columns:32px minmax(0,1fr) 24px;align-items:center;gap:7px;padding:9px 10px;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);color:var(--ka-text);text-align:left;scroll-snap-align:start}.ka-layout-picker__item>span{font-size:21px}.ka-layout-picker__item strong{font-size:11.5px;line-height:1.15}.ka-layout-picker__item small{display:grid;place-items:center;width:24px;height:24px;border-radius:999px;background:var(--ka-muted-bg);color:var(--ka-text-muted);font-size:9px;font-weight:800}.ka-layout-picker__item.is-active{border-color:var(--ka-primary);background:var(--ka-primary-soft);box-shadow:0 0 0 2px color-mix(in srgb,var(--ka-primary) 16%,transparent)}.ka-layout-panels{min-height:0}.ka-layout-menu-panel[hidden]{display:none!important}.ka-layout-menu-panel__head{align-items:center}.ka-layout-menu-panel__head small{display:block;margin-top:2px}.ka-settings-menu-swatch{width:12px;height:42px;flex:0 0 12px;border-radius:999px;background:var(--ka-settings-menu-color)}.ka-settings-menu-fields{display:grid;grid-template-columns:minmax(0,1.4fr) 90px 84px 74px;gap:8px}.ka-settings-menu-fields--item{grid-template-columns:minmax(0,1.25fr) 80px minmax(135px,.8fr) 74px 66px}.ka-settings-menu-item{padding:11px;border:1px solid var(--ka-border);border-radius:14px;background:var(--ka-muted-bg);display:grid;gap:9px}.ka-settings-menu-item small{display:block;margin-top:2px;font-size:9px}.ka-settings-color-field input[type="color"]{padding:4px;min-height:44px}.ka-layout-items-head h4{margin:0 0 2px}.ka-layout-items-head p{margin:0;font-size:10px}.ka-layout-savebar{position:sticky;bottom:calc(var(--ka-bottom-nav-h) + 8px);z-index:8;display:grid;grid-template-columns:1fr 1.35fr;gap:8px;padding:9px;border:1px solid var(--ka-border);border-radius:16px;background:color-mix(in srgb,var(--ka-card-raised-bg) 94%,transparent);box-shadow:var(--ka-shadow-md);backdrop-filter:blur(14px)}
-@media(max-width:700px){.ka-settings-menu-fields,.ka-settings-menu-fields--item{grid-template-columns:minmax(0,1fr) 86px}.ka-settings-menu-fields--item .ka-field:has([data-menu-item-target]){grid-column:1/-1}.ka-settings-color-field input[type="color"]{min-height:42px}.ka-layout-menu-panel__head{padding:12px}.ka-layout-menu-panel>.ka-card__body{padding:12px}.ka-layout-savebar{bottom:calc(var(--ka-bottom-nav-h) + 5px)}}
-'''
-          s=s[:a]+studio+s[b:]
-          p.write_text(s,encoding='utf-8')
-
-          # ---------------- cache/version pins ----------------
-          p=Path('index.html'); s=p.read_text(encoding='utf-8').replace('css/design-system.css?v=876','css/design-system.css?v=877').replace('js/core/shell-ui.js?v=876','js/core/shell-ui.js?v=877').replace('js/app-loader.js?v=876','js/app-loader.js?v=877'); p.write_text(s,encoding='utf-8')
-          p=Path('js/app-loader.js'); s=p.read_text(encoding='utf-8').replace("'js/modules/academic.js?v=876'","'js/modules/academic.js?v=877'").replace("'js/modules/management.js?v=873'","'js/modules/management.js?v=877'").replace("'js/modules/settings.js?v=876'","'js/modules/settings.js?v=877'"); p.write_text(s,encoding='utf-8')
-          p=Path('service-worker.js'); s=p.read_text(encoding='utf-8').replace("oy-cache-v876","oy-cache-v877").replace('design-system.css?v=876','design-system.css?v=877').replace('app-loader.js?v=876','app-loader.js?v=877').replace('academic.js?v=876','academic.js?v=877').replace('shell-ui.js?v=876','shell-ui.js?v=877').replace('management.js?v=873','management.js?v=877').replace('settings.js?v=876','settings.js?v=877'); p.write_text(s,encoding='utf-8')
-
-          # ---------------- regression contracts ----------------
-          duty_test=r'''const fs=require('fs');
-const assert=require('assert');
-const src=fs.readFileSync('js/modules/management.js','utf8');
-const css=fs.readFileSync('css/design-system.css','utf8');
-const report=fs.readFileSync('js/modules/report-engine.js','utf8');
-assert(src.includes('const DUTY_REPORT_COLUMNS=['),'Nöbet raporu sabit referans sütunlarını kullanmalı.');
-for(const header of ['BAHÇE','OKUL BİNASI','GİRİŞ - BAHÇE','NÖBETÇİ AMİR']) assert(src.includes(header),`Nöbet raporu sütunu eksik: ${header}`);
-assert(src.includes('function dutyReportChiefName(record)')&&src.includes('record.ogretmenAdSoyad')&&src.includes('record.amirAdSoyad')&&src.includes('teacherName(teacher)'),'Nöbetçi amir adı legacy alanlardan ve öğretmen bağlantısından çözülebilmeli.');
-assert(src.includes("dutyReportChiefName(amir).toLocaleUpperCase('tr')"),'Rapor Nöbetçi Amir hücresini merkezi ad çözücüsüyle doldurmalı.');
-assert(src.includes('for(let g=1;g<=gunSayisi;g++)'),'Rapor ayın tüm günlerini üretmeli.');
-assert(!src.includes('if(haftasonu||tatil)continue;'),'Hafta sonu ve tatil günleri rapordan atılmamalı.');
-const taskBlock=src.slice(src.indexOf('const DUTY_TASKS=['),src.indexOf('];',src.indexOf('const DUTY_TASKS=['))+2);
-assert((taskBlock.match(/^\s*'/gm)||[]).length===14,'Tam nöbet talimatı 14 maddeden oluşmalı.');
-assert(src.includes('ka-duty-report-note')&&src.includes('Bu çizelge ${esc(validityText)} tarihinden itibaren geçerlidir.'),'Alt açıklamalar imzadan ayrılıp kuralların hemen altında bulunmalı.');
-assert(css.includes('--ka-duty-table-height:188mm')&&css.includes('[data-duty-density="dense"]{--ka-duty-table-height:190mm'),'Dikey A4 alanının büyük bölümü nöbet tablosuna ayrılmalı.');
-assert(css.includes('font-size:12.8pt!important')&&css.includes('width:calc(100% - 12mm)'),'Rapor başlığı tek satıra sığan kompakt genişlikte olmalı.');
-assert(css.includes('--ka-duty-head-font:9.5pt;--ka-duty-cell-font:8.7pt;--ka-duty-task-font:7.2pt'),'Tablo ve kurallar tablo-öncelikli kompakt punto ölçeğini kullanmalı.');
-assert(css.includes('font-size:var(--ka-duty-head-font)!important')&&css.includes('font-size:var(--ka-duty-cell-font)!important'),'Sütun ve hücre puntoları canonical değişkenlerden gelmeli.');
-assert(css.includes('.ka-duty-report-tasks ol{flex:0 0 auto')&&css.includes('font-size:var(--ka-duty-task-font)!important;line-height:1!important'),'14 kural daha az dikey alan kaplamalı.');
-assert(css.includes('.ka-duty-report-phones')&&css.includes('margin:1.15mm 0 0')&&css.includes('.ka-duty-report-tasks{')&&css.includes('margin:1.15mm 0 0!important'),'Tablo-telefon ve telefon-görev aralıkları okunaklı biçimde ayrılmalı.');
-assert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#e6e6e6!important'),'Tüm hafta sonu hücreleri aynı dolgu renginde olmalı.');
-assert(report.includes("page=o.yon==='yatay'?'A4 landscape':'A4 portrait'")&&report.includes('@page{size:${page};margin:0}'),'Merkezi ReportEngine gerçek A4 boyutunu korumalı.');
-console.log('Tablo öncelikli tam A4 nöbet raporu sözleşmesi başarılı.');
-'''
-          Path('tests/duty-report-full-parity.test.js').write_text(duty_test,encoding='utf-8')
-
-          # Update only central generation pins in tests; leave dashboard v872 untouched.
-          for t in Path('tests').glob('*.js'):
-              x=t.read_text(encoding='utf-8')
-              x=x.replace('oy-cache-v876','oy-cache-v877').replace('css/design-system.css?v=876','css/design-system.css?v=877').replace('js/app-loader.js?v=876','js/app-loader.js?v=877').replace('js/core/shell-ui.js?v=876','js/core/shell-ui.js?v=877').replace('js/modules/settings.js?v=876','js/modules/settings.js?v=877').replace('js/modules/academic.js?v=876','js/modules/academic.js?v=877').replace('js/modules/management.js?v=873','js/modules/management.js?v=877')
-              if t.name=='menu-customization-v2.test.js':
-                  x=x.replace("const CACHE_ADI='oy-cache-v872';","const CACHE_ADI='oy-cache-v877';")
-                  inject="""\nassert(settings.includes('data-layout-menu-select')&&settings.includes('data-layout-panel')&&!settings.includes('<details class=\\\"ka-card ka-settings-menu-group'),'Uygulama Düzeni akordiyon yerine konum değiştirmeyen tek panel seçici kullanmalı.');\nassert(settings.includes('data-menu-item-target')&&settings.includes('targetGroup:item.querySelector'),'Alt menü öğesi başka ana menüye taşınabilmeli ve hedef grup AppConfig içine kaydedilmeli.');\nassert(shell.includes('__menuTargetGroup')&&shell.includes('configuredMenuItems(targetKey)'),'Shell taşınan alt menüyü yeni ana menü altında render etmeli.');\nassert(design.includes('.ka-layout-picker')&&design.includes('.ka-layout-menu-panel[hidden]'),'Yeni Uygulama Düzeni tasarımı merkezi Design System sahibi olmalı.');\n"""
-                  x=x.replace("assert(!fs.existsSync('js/core/menu-customizer.js')",inject+"assert(!fs.existsSync('js/core/menu-customizer.js')",1)
-              if t.name=='classic-shell-v2-smoke.test.js':
-                  x=x.replace('css/design-system.css?v=872','css/design-system.css?v=877')
-                  inject="""\nassert(ui.includes("kind:'menu-list'")&&ui.includes("if(view.kind==='menu-list'){openMenu();renderMenuList(view.page);return true}"),'Alt menüden açılan sayfada geri işlemi önceki menü listesine dönmeli.');\n"""
-                  x=x.replace("assert(!ui.includes('data-ka-menu-route')",inject+"assert(!ui.includes('data-ka-menu-route')",1)
-              t.write_text(x,encoding='utf-8')
-          PY
+        run: test "$(git rev-parse HEAD^)" = '7bf437533f9378a751f3927191b962fb3b6ea646'
+      - name: Apply focused fixes
+        run: python3 scripts/tmp-duty-layout-navigation-v877.py
       - name: Validate syntax regressions and architecture
         run: |
           set -euo pipefail
@@ -202,12 +44,12 @@ console.log('Tablo öncelikli tam A4 nöbet raporu sözleşmesi başarılı.');
           node tests/web-mobile-engine-separation.test.js
           npm run audit:client
           npm run build:client
-      - name: Commit verified package
+      - name: Commit verified package and cleanup
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .github/workflows/duty-layout-navigation-v877.yml
+          git rm .github/workflows/duty-layout-navigation-v877.yml scripts/tmp-duty-layout-navigation-v877.py
           git add js/modules/management.js js/modules/settings.js js/core/shell-ui.js js/app-loader.js css/design-system.css index.html service-worker.js tests
           git commit -m 'fix: rebalance duty report and redesign app layout'
           git push origin HEAD:main
