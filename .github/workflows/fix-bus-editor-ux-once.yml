@@ -21,6 +21,7 @@ jobs:
           python .github/scripts/fix-bus-editor-ux.py
           sed -i 's/js\/app-loader.js?v=890/js\/app-loader.js?v=892/g' tests/transport-seating-classic-parity.test.js
           sed -i 's/transport.js?v=890/transport.js?v=892/g' tests/transport-seating-classic-parity.test.js
+          sed -i 's/window.ServisOturmaService.planElementsKaydet(editor.servisId,editor.sablon,editor.elements,false)/window.ServisOturmaService.planElementsKaydet(servisId,sablon,elements,false)/g' tests/transport-seating-visual-editor.test.js
       - name: Check transport syntax
         run: node --check js/modules/transport.js
       - name: Test bus editor actions
