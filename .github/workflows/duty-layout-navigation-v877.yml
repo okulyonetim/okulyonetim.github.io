@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '24'
       - name: Verify baseline
-        run: test "$(git rev-parse HEAD^)" = '66c9c12e568ca70e7aeefeca570d528d7c812956'
+        run: test "$(git rev-parse HEAD^)" = '94746c46cfa26fb2bdb5986a56b1730459535833'
       - name: Apply focused fixes
         run: |
           python3 scripts/tmp-duty-layout-navigation-v877.py
@@ -29,6 +29,7 @@ jobs:
           python3 scripts/tmp-duty-layout-testfix2-v877.py
           python3 scripts/tmp-duty-layout-testfix3-v877.py
           python3 scripts/tmp-duty-layout-testfix4-v877.py
+          python3 scripts/tmp-duty-layout-codefix5-v877.py
       - name: Validate syntax regressions and architecture
         run: |
           set -euo pipefail
@@ -54,7 +55,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .github/workflows/duty-layout-navigation-v877.yml scripts/tmp-duty-layout-navigation-v877.py scripts/tmp-duty-layout-testfix-v877.py scripts/tmp-duty-layout-testfix2-v877.py scripts/tmp-duty-layout-testfix3-v877.py scripts/tmp-duty-layout-testfix4-v877.py
+          git rm .github/workflows/duty-layout-navigation-v877.yml scripts/tmp-duty-layout-navigation-v877.py scripts/tmp-duty-layout-testfix-v877.py scripts/tmp-duty-layout-testfix2-v877.py scripts/tmp-duty-layout-testfix3-v877.py scripts/tmp-duty-layout-testfix4-v877.py scripts/tmp-duty-layout-codefix5-v877.py
           git add js/modules/management.js js/modules/settings.js js/core/shell-ui.js js/app-loader.js css/design-system.css index.html service-worker.js tests
           git commit -m 'fix: rebalance duty report and redesign app layout'
           git push origin HEAD:main
