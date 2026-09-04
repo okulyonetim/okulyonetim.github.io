@@ -36,7 +36,7 @@ assert(transport.includes("t.id!==a.mudurId"),'Nöbetçi öğretmen seçimi okul
 assert(transport.includes('if(target%2)target++'),'30 kişiyi aşan öğrenci listesi iki sütun için çift sayıya tamamlanmalı.');
 assert(transport.includes("select.replaceWith(span)"),'Denetim çıktısında seçilen nöbetçi öğretmen yazdırma HTML’ine düz metin olarak aktarılmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem','localStorage.removeItem'])assert(!transport.includes(forbidden),`Transport canonical modülü doğrudan yasaklı kalıcı katmana yazmamalı: ${forbidden}`);
-assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js'])"),'Transport yalnız canonical UI + ortak ReportEngine ile lazy yüklenmeli.');
+assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])"),'Transport yalnız canonical UI + ortak ReportEngine ile lazy yüklenmeli.');
 assert(build.includes("'transport.js':['js/modules/report-engine.js','js/modules/transport.js']"),'Üretim Transport bundle tek canonical UI kaynağını içermeli.');
 assert(transport.includes("if(document.querySelector('[data-class-seating-overlay]')){window.SinifOturma?.kapat?.();return true}"),'Kaydedilmemiş sınıf oturma planında geri kapatma iptal edilse bile alttaki sayfa kapanmamalı.');
 console.log('Transport ayrı-sayfa + klasik servis detay/öğrenci yönetimi + resmî rapor parite sözleşmesi başarılı.');

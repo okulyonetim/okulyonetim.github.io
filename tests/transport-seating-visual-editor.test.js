@@ -8,7 +8,7 @@ for(const token of ['.ka-bus-classic-modal','.ka-bus-classic-hero','.ka-bus-temp
 assert(!transport.includes('data-seat-index'),'Servis oturma planı koltuk başına dropdown kartlara geri dönmemeli.');
 assert(!transport.includes('id="busTemplateSelect"'),'Araç seçimi eski ekrandaki kartlı şablon seçicisi olmalı.');
 assert(transport.includes('editor={servisId,sablon,elements,editable:canEditBusSeats()}'),'Canonical editör state/permission sözleşmesi korunmalı.');
-assert(transport.includes('window.ServisOturmaService.planElementsKaydet(editor.servisId,editor.sablon,editor.elements,false)'),'Kayıt local-first canonical servis üzerinden yapılmalı.');
+assert(transport.includes('window.ServisOturmaService.planElementsKaydet(servisId,sablon,elements,false)'),'Kayıt local-first canonical servis üzerinden yapılmalı.');
 assert(transport.includes("if(!editor?.editable)return"),'Öğretmen salt-okunur davranışı korunmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem','localStorage.removeItem'])assert(!transport.includes(forbidden),`Servis oturma editörü yasaklı kalıcı katmana inmemeli: ${forbidden}`);
 console.log('Klasik görsel servis oturma editörü parite kilidi başarılı.');
