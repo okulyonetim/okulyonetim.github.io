@@ -25,7 +25,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import subprocess
-          old=subprocess.check_output(['git','show','HEAD^:.github/workflows/class-seating-redesign-once.yml'],text=True)
+          old=subprocess.check_output(['git','show','6c139df4e37c66ead487eb66cd2b0d18cb9b2188:.github/workflows/class-seating-redesign-once.yml'],text=True)
           start=old.index("          python3 - <<'PY'\n")+len("          python3 - <<'PY'\n")
           end=old.index("\n          PY",start)
           raw=old[start:end]
@@ -33,6 +33,7 @@ jobs:
           compile(code,'class-seating-redesign.py','exec')
           exec(code,{'__name__':'__main__'})
           PY
+          git checkout HEAD -- .github/workflows/client-architecture.yml
       - name: Verify focused class seating package
         run: |
           node --check js/modules/class-seating.js
@@ -49,6 +50,6 @@ jobs:
           git rm .github/workflows/class-seating-redesign-once.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add js/modules/class-seating.js js/modules/transport.js js/app-loader.js css/design-system.css index.html service-worker.js tests/class-seating-redesign-smoke.test.js .github/workflows/client-architecture.yml
+          git add js/modules/class-seating.js js/modules/transport.js js/app-loader.js css/design-system.css index.html service-worker.js tests/class-seating-redesign-smoke.test.js
           git commit -m 'feat: redesign class seating planner'
           git push origin HEAD:main
