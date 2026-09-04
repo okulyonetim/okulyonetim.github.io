@@ -18,6 +18,19 @@ jobs:
           fetch-depth: 0
       - name: Apply exact classic bus seating parity
         run: python .github/scripts/fix-classic-bus-seating.py
+      - name: Preserve canonical Transport loader contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('js/app-loader.js')
+          s=p.read_text()
+          s=s.replace("define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=890']);","define('transport',['js/modules/report-engine.js','js/modules/transport.js']);")
+          p.write_text(s)
+          t=Path('tests/transport-seating-classic-parity.test.js')
+          q=t.read_text()
+          q=q.replace("assert(loader.includes(\"js/modules/transport.js?v=890\"),'Transport modülü cache-busted yüklenmeli.');","assert(loader.includes(\"define('transport',['js/modules/report-engine.js','js/modules/transport.js'])\"),'Transport canonical lazy-loader sözleşmesini korumalı.');")
+          t.write_text(q)
+          PY
       - name: Check transport syntax
         run: node --check js/modules/transport.js
       - name: Test visual seating editor
