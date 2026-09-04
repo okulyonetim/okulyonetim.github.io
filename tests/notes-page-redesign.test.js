@@ -1,5 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
@@ -35,7 +36,7 @@ test('note actions are readable and theme-safe',()=>{
 });
 
 test('notes redesign cache versions are wired',()=>{
-  assert.ok(index.includes('css/design-system.css?v=895'));
-  assert.ok(sw.includes("const CACHE_ADI='oy-cache-v896';"));
-  assert.ok(sw.includes("'./css/design-system.css?v=895'"));
+  assert.ok(assetVersion(index,'css/design-system.css')>=895);
+  assert.ok(cacheVersion(sw)>=896);
+  assert.ok(assetVersion(sw,'css/design-system.css')>=895);
 });

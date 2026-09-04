@@ -1,5 +1,6 @@
 const fs = require('fs');
 const assert = require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const sw = fs.readFileSync('service-worker.js', 'utf8');
 
 const cacheMatch=sw.match(/const CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/);
@@ -23,7 +24,7 @@ for (const f of [
   './js/auth.js',
   './js/app-loader.js'
 ]) assert(sw.includes(`'${f}'`), `${f} çekirdek precache içinde kalmalı.`);
-assert(sw.includes("'./js/core/login-security.js?v=885'"),'Profil güvenliği ve giriş konumu sürümlü olarak precache edilmeli.');
+assert(assetVersion(sw,'js/core/login-security.js')>=885,'Profil güvenliği ve giriş konumu sürümlü olarak precache edilmeli.');
 
 const liste = sw.slice(sw.indexOf('const ONBELLEGE_ALINACAKLAR'), sw.indexOf("self.addEventListener('install'"));
 for (const eski of [

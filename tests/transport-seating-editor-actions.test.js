@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const transport=fs.readFileSync('js/modules/transport.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
@@ -11,7 +12,7 @@ assert(transport.includes("b.textContent='Kaydedildi ✓'"),'Kaydet butonu sonsu
 assert(transport.includes('const task=window.ServisOturmaService.planElementsKaydet'),'Local-first kayıt görevi başlatılmalı.');
 assert(transport.includes('setTimeout(()=>{closeEditor();try{render()}'),'Kayıt arka planda sürse bile editör kullanıcıyı kilitlememeli.');
 for(const token of ['Servis Oturma — hızlı editör UX v4','.ka-bus-tool-grid{','.ka-bus-classic-stage+.ka-bus-row-actions{display:none!important}', 'white-space:normal!important','overflow-wrap:anywhere!important'])assert(css.includes(token),`Yeni servis oturma UX stili eksik: ${token}`);
-assert(index.includes('css/design-system.css?v=893')&&index.includes('js/app-loader.js?v=892'),'Index yeni servis oturma paketini yüklemeli.');
-assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])"),'Transport cache-bust sürümü güncel olmalı.');
-assert(sw.includes("CACHE_ADI='oy-cache-v893'")&&sw.includes("'./js/modules/transport.js?v=892'")&&sw.includes("'./css/design-system.css?v=893'"),'Service Worker yeni servis oturma paketini önbelleğe almalı.');
+assert(assetVersion(index,'css/design-system.css')>=893&&assetVersion(index,'js/app-loader.js')>=892,'Index yeni servis oturma paketini yüklemeli.');
+assert((loader.includes("'js/modules/report-engine.js'")&&assetVersion(loader,'js/modules/transport.js')>=892),'Transport cache-bust sürümü güncel olmalı.');
+assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=892&&assetVersion(sw,'css/design-system.css')>=893,'Service Worker yeni servis oturma paketini önbelleğe almalı.');
 console.log('Servis oturma editör hızlı erişim/kayıt/isim sığdırma testi başarılı.');

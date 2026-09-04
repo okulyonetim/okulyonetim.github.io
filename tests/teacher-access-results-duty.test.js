@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const settings=fs.readFileSync('js/modules/settings.js','utf8');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const academic=fs.readFileSync('js/modules/academic.js','utf8');
@@ -14,8 +15,8 @@ assert(shell.includes("function teacherMenuGroupAllowed(group){return !isTeacher
 assert(shell.includes("global.AKTIF_ROL||global.AppStore?.get?.('session.role')")&&shell.includes("n.includes('öğretmen')||n.includes('ogretmen')"),'Öğretmen tespiti yalnız öğretmen ID bağlantısına bağlı kalmamalı.');
 for(const token of ["kaydet:(id,v)=>device().set(type,collection,id,v,{merge:true})",'sinavKaydet(id,v)',"function ssDenemeResult(id)","function ssStudentClass(v={})","function ssStudentNumber(v={})",'name="ogrenciNo"',"querySelectorAll('[data-ss-modal-kapat]')", "select?.addEventListener('change',syncStudent)", 'await svc.sinavKaydet(sinavId,payload)'])assert(academic.includes(token),`Deneme sonucu düzeltmesi eksik: ${token}`);
 assert(css.includes('--ka-duty-head-font:9.5pt;--ka-duty-cell-font:8.7pt;--ka-duty-task-font:7.2pt')&&css.includes('font-size:12.8pt!important')&&css.includes('.ka-duty-report-signature')&&css.includes('font-size:10.5pt!important'),'Nöbet raporu tablo öncelikli kompakt font ölçülerini ve okunaklı imza alanını korumalı.');
-assert(index.includes('css/design-system.css?v=878')&&index.includes('js/core/shell-ui.js?v=878')&&index.includes('js/app-loader.js?v=878'),'Değişen kabuk kaynakları v876 ile cache-bust edilmeli.');
-assert(loader.includes("'js/modules/academic.js?v=877'")&&loader.includes("define('settings',['js/modules/settings.js?v=878'])"),'Değişen lazy modüller v876 ile yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v877'")&&sw.includes('./js/modules/settings.js?v=878'),'Service Worker v876 kaynaklarını önbelleğe almalı.');
+assert(assetVersion(index,'css/design-system.css')>=878&&assetVersion(index,'js/core/shell-ui.js')>=878&&assetVersion(index,'js/app-loader.js')>=878,'Değişen kabuk kaynakları v876 ile cache-bust edilmeli.');
+assert(assetVersion(loader,'js/modules/academic.js')>=877&&assetVersion(loader,'js/modules/settings.js')>=878,'Değişen lazy modüller v876 ile yüklenmeli.');
+assert(cacheVersion(sw)>=877&&assetVersion(sw,'js/modules/settings.js')>=878,'Service Worker v876 kaynaklarını önbelleğe almalı.');
 for(const src of [settings,shell,academic])assert(!src.includes('firebase.firestore(')&&!src.includes('db.collection('),'UI doğrudan Firestore kullanmamalı.');
 console.log('Öğretmen erişimi + deneme sonuç girişi + nöbet raporu font sözleşmesi başarılı.');

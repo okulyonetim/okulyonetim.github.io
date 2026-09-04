@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const css=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
@@ -11,6 +12,6 @@ assert(block.includes('min-height:560px!important;'),'Otobüs kabini görünür 
 assert(block.includes('height:auto!important;'),'Otobüs kabini satır sayısına göre büyüyebilmeli.');
 assert(block.includes('flex:0 0 auto!important;'),'Otobüs kabini modal flex alanında sıfıra sıkışmamalı.');
 assert(!block.includes('max-width:410px!important;\n  min-width:0!important;\n  min-height:0!important;'),'Klasik kabin tekrar sıfır yüksekliğe düşmemeli.');
-assert(index.includes('css/design-system.css?v=893'),'Yeni görünür otobüs CSS sürümü index tarafından yüklenmeli.');
-assert(sw.includes("CACHE_ADI='oy-cache-v893'")&&sw.includes("'./css/design-system.css?v=893'"),'Service Worker yeni görünür otobüs CSS sürümünü önbelleğe almalı.');
+assert(assetVersion(index,'css/design-system.css')>=893,'Yeni görünür otobüs CSS sürümü index tarafından yüklenmeli.');
+assert(cacheVersion(sw)>=893&&assetVersion(sw,'css/design-system.css')>=893,'Service Worker yeni görünür otobüs CSS sürümünü önbelleğe almalı.');
 console.log('Servis oturma otobüs kabini görünürlük kilidi başarılı.');

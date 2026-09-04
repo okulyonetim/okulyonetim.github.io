@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const parity=fs.readFileSync('js/modules/classic-parity.js','utf8');
@@ -22,6 +23,6 @@ assert(block.includes('data-profile-logout')&&block.includes('global.cikisYap?.(
 for(const token of ['data-profile-password-card','data-profile-password-open','data-password-current','data-password-new','data-password-repeat','global.kendiSifremiDegistir(current,next)','next.length<6','next!==repeat'])assert(feature.includes(token),`Profil şifre değiştirme sözleşmesi eksik: ${token}`);
 assert(feature.includes('Mevcut şifreniz hatalı.')&&feature.includes('Şifreniz başarıyla değiştirildi.'),'Şifre değiştirme hata/başarı geri bildirimi bulunmalı.');
 assert(!feature.includes('db.collection(')&&!feature.includes('firebase.firestore('),'Profil güvenliği eklentisi doğrudan Firestore kullanmamalı.');
-assert(firebaseInit.includes("script.src='js/core/login-security.js?v=885'"),'Profil güvenliği çekirdek bootstrap üzerinden yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v885'")&&sw.includes("'./js/core/login-security.js?v=885'"),'Profil güvenliği PWA cache içinde olmalı.');
+assert(assetVersion(firebaseInit,'js/core/login-security.js')>=885,'Profil güvenliği çekirdek bootstrap üzerinden yüklenmeli.');
+assert(cacheVersion(sw)>=885&&assetVersion(sw,'js/core/login-security.js')>=885,'Profil güvenliği PWA cache içinde olmalı.');
 console.log('Profil sayfası + güvenli şifre değiştirme sözleşmesi başarılı.');

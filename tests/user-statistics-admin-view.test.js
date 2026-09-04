@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const settings=fs.readFileSync('js/modules/settings.js','utf8');
 const auth=fs.readFileSync('js/auth.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
@@ -19,5 +20,5 @@ assert(feature.includes('if(!isAdmin())return;'),'Giriş konumu haritası yalnı
 assert(feature.includes('global.DeviceData.set(STATS_TYPE,global.COL.kullaniciIstatistikleri')&&feature.includes('{merge:true}'),'Giriş konumu mevcut local-first kullanıcı istatistik belgesine merge edilerek yazılmalı.');
 assert(!feature.includes('db.collection(')&&!feature.includes('firebase.firestore('),'Giriş konumu özelliği doğrudan Firestore kullanmamalı.');
 assert(rules.includes('match /oy_kullaniciIstatistikleri/{uid}')&&rules.includes('allow read: if adminMi() || (girisYapmis() && request.auth.uid == uid);'),'Firestore admin tüm istatistikleri okuyabilmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v885'")&&sw.includes("'./js/core/login-security.js'"),'Giriş konumu özelliği offline shell içinde olmalı.');
+assert(cacheVersion(sw)>=885&&sw.includes("'./js/core/login-security.js'"),'Giriş konumu özelliği offline shell içinde olmalı.');
 console.log('Admin kullanıcı istatistikleri + giriş konumu/platform haritası sözleşmesi başarılı.');

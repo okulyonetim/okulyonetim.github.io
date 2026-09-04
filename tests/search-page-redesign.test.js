@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
@@ -16,6 +17,6 @@ assert(block.includes("state.category!=='all'")&&block.includes('ka-search-empty
 assert(block.includes('data-search-clear')&&block.includes('setSearchCategory(root,\'student\')'),'Temizleme kontrolü ve öğrenci filtrelerinin kategori senkronu korunmalı.');
 for(const token of ['.ka-search-page{width:100%;max-width:760px','.ka-search-box{width:100%;min-height:54px','.ka-search-box>svg{position:static','.ka-search-filter-options{min-width:0;display:flex;flex-wrap:wrap','.ka-search-result{--ka-search-accent:','.ka-search-empty{min-height:150px'])assert(design.includes(token),`Yeni arama tasarım sözleşmesi eksik: ${token}`);
 assert(!design.includes('.ka-search-box svg{position:absolute'),'Arama ikonu placeholder üstüne binen mutlak konuma dönmemeli.');
-assert(index.includes('css/design-system.css?v=872'),'Arama tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v872'")&&sw.includes('./css/design-system.css?v=872'),'Yeni arama tasarımı PWA cache sürümüyle yayınlanmalı.');
+assert(assetVersion(index,'css/design-system.css')>=872,'Arama tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
+assert(cacheVersion(sw)>=872&&assetVersion(sw,'css/design-system.css')>=872,'Yeni arama tasarımı PWA cache sürümüyle yayınlanmalı.');
 console.log('Arama sayfası sade veri kapsamı + mobil düzen sözleşmesi başarılı.');

@@ -164,6 +164,8 @@ jobs:
         run: node tests/rubric-legacy-retirement-readiness.test.js
       - name: Verify PWA background push
         run: node tests/pwa-push-smoke.test.js
+      - name: Run complete client regression suite
+        run: node scripts/run-client-tests.mjs
       - name: Audit client architecture
         run: node scripts/check-client-architecture.mjs
       - name: Show generated bundle sizes

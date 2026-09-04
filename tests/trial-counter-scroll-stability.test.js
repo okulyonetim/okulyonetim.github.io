@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const academic=fs.readFileSync('js/modules/academic.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
@@ -16,7 +17,7 @@ assert(!renderBlock.includes('scrollTop'),'Scroll sorunu scrollTop kaydet/geri y
 for(const token of ['data-trial-counter-main','data-trial-counter-schedule','data-trial-counter-overview'])assert(academic.includes(token),`Dinamik sayaç slotu eksik: ${token}`);
 assert(academic.includes("if(trialCounterId){renderTrialCounter();return}if(needsTick)render()"),'Overlay açıkken alttaki Academic liste her saniye yeniden render edilmemeli.');
 assert(academic.includes('renderTrialCounter(true)'),'Sayaç ilk açılışta yapısal render istemeli.');
-assert(index.includes('css/design-system.css?v=872')&&index.includes('js/app-loader.js?v=872'),'Üretim shell güncel cache-bust sürümünü kullanmalı.');
-assert(loader.includes('js/modules/academic.js?v=838'),'Academic loader v838 kullanmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v872'"),'Service Worker güncel cache sürümünü kullanmalı.');
+assert(assetVersion(index,'css/design-system.css')>=872&&assetVersion(index,'js/app-loader.js')>=872,'Üretim shell güncel cache-bust sürümünü kullanmalı.');
+assert(assetVersion(loader,'js/modules/academic.js')>=838,'Academic loader v838 kullanmalı.');
+assert(cacheVersion(sw)>=872,'Service Worker güncel cache sürümünü kullanmalı.');
 console.log('Deneme sayacı scroll konumu kalıcı DOM owner ile stabil.');

@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const core=fs.readFileSync('js/core/core.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
@@ -13,10 +14,10 @@ assert(core.includes('function setDataMany(data)'),'AppStore toplu veri güncell
 assert(core.includes("await cacheMany(u,data,{markWrite:false});AppStore.setDataMany(data)"),'Remote sync tek cache transactionı ve tek frame render burstü kullanmalı.');
 assert(!core.includes('await cache(uid(),name,rows);AppStore.setData(name,rows)'),'Sync koleksiyon başına cache/render tetiklememeli.');
 assert(core.includes('if(markWrite)rows.push'),'Remote cache yenilemesi local write zaman damgasını bozmamalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v872'"),'Runtime cache v869 olmalı.');
+assert(cacheVersion(sw)>=872,'Runtime cache v869 olmalı.');
 assert(sw.includes('async function kodCacheFirst(event)')&&!sw.includes('kodNetworkFirst(event)'),'JS/CSS ağ beklemeden cache-first açılmalı.');
 assert(sw.includes('async function navigasyonCacheFirst(event)')&&!sw.includes('navigasyonNetworkFirst(event)'),'Uygulama kabuğu yavaş ağda cache-first açılmalı.');
-assert(index.includes('css/design-system.css?v=872'),'CSS v869 yüklenmeli.');
+assert(assetVersion(index,'css/design-system.css')>=872,'CSS v869 yüklenmeli.');
 const a=css.indexOf('.ka-home .kh-news-viewport{'),b=css.indexOf('}',a),viewport=css.slice(a,b+1);
 assert(a>=0&&b>a&&!viewport.includes('mask-image'),'Kayan haber viewportunda pahalı mask compositing olmamalı.');
 assert(viewport.includes('contain:layout paint')&&viewport.includes('translateZ(0)'),'Ticker compositor sınırında tutulmalı.');

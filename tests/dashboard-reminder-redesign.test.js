@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const dashboard=fs.readFileSync('js/modules/dashboard.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
@@ -13,7 +14,7 @@ assert(dashboard.includes("if(e.key==='Escape')close()")&&dashboard.includes('if
 assert(dashboard.includes("KorukLocalFirst.meta(u,'reminderSnoozeUntil'"),'Erteleme IndexedDB meta üzerinden local-first kalmalı.');
 assert(!dashboard.includes('db.collection(')&&!dashboard.includes('onSnapshot'),'Hatırlatma görünümü doğrudan Firestore kullanmamalı.');
 for(const marker of ['/* TEACHER STARTUP REMINDERS — CANONICAL */','.ka-reminder-modal','.ka-reminder-item.is-overdue','.ka-reminder-footer','[data-theme="dark"] .ka-reminder-modal','@media(max-width:767px)']) assert(design.includes(marker),`Merkezi Design System reminder stili eksik: ${marker}`);
-assert(index.includes('css/design-system.css?v=872')&&index.includes('js/app-loader.js?v=872'),'Yeni reminder tasarımı cache-busted shell üzerinden yüklenmeli.');
-assert(loader.includes('js/modules/dashboard.js?v=872'),'Dashboard yeni reminder sürümüyle lazy-load edilmeli.');
-assert(sw.includes("oy-cache-v872")&&sw.includes('./css/design-system.css?v=872')&&sw.includes('./js/app-loader.js?v=872')&&sw.includes('./js/modules/dashboard.js?v=872'),'Service Worker reminder v872 varlıklarını önbelleğe almalı.');
+assert(assetVersion(index,'css/design-system.css')>=872&&assetVersion(index,'js/app-loader.js')>=872,'Yeni reminder tasarımı cache-busted shell üzerinden yüklenmeli.');
+assert(assetVersion(loader,'js/modules/dashboard.js')>=872,'Dashboard yeni reminder sürümüyle lazy-load edilmeli.');
+assert(cacheVersion(sw)>=872&&assetVersion(sw,'css/design-system.css')>=872&&assetVersion(sw,'js/app-loader.js')>=872&&assetVersion(sw,'js/modules/dashboard.js')>=872,'Service Worker reminder v872 varlıklarını önbelleğe almalı.');
 console.log('Öğretmen açılış hatırlatma penceresi redesign sözleşmesi başarılı.');

@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
@@ -14,6 +15,6 @@ for(const token of ['ka-notification-popover__mark','ka-notification-popover__co
 for(const tone of ['reminder','exam','trial','task','message','announcement'])assert(block.includes(`return '${tone}'`),`Bildirim renk tonu eşlemesi eksik: ${tone}`);
 for(const token of ['.ka-notification-popover{padding:0!important','.ka-notification-popover__list{flex:1 1 auto','.ka-notification-row{--ka-notice-accent:','.ka-notification-row--reminder{','.ka-notification-row--announcement{','[data-theme="dark"] .ka-notification-row--message{'])assert(design.includes(token),`Merkezi bildirim tasarım sözleşmesi eksik: ${token}`);
 assert(design.includes('background:var(--ka-card-bg)')&&design.includes('background:var(--ka-muted-bg)'),'Liste nötr kart yüzeyleri kullanmalı; tüm satır yeşile boyanmamalı.');
-assert(index.includes('css/design-system.css?v=872'),'Yeni bildirim tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v872'")&&sw.includes('./css/design-system.css?v=872'),'Bildirim tasarımı yeni PWA cache sürümüyle yayınlanmalı.');
+assert(assetVersion(index,'css/design-system.css')>=872,'Yeni bildirim tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');
+assert(cacheVersion(sw)>=872&&assetVersion(sw,'css/design-system.css')>=872,'Bildirim tasarımı yeni PWA cache sürümüyle yayınlanmalı.');
 console.log('Bildirim popover kontrast + kart düzeni sözleşmesi başarılı.');

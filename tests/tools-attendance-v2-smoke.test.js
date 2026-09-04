@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const src=fs.readFileSync('js/modules/tools.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
@@ -16,5 +17,5 @@ assert(src.includes("AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Y
 assert(css.includes('DEVAMSIZLIK ÇİZELGESİ V2')&&css.includes('.ka-attendance-personnel-table')&&css.includes('.ka-attendance-legend'),'Devamsızlık tasarımı merkezi design-system.css içinde olmalı.');
 assert(!src.includes("createElement('style')"),'Tools çalışma anında CSS üretmemeli.');
 assert(css.includes('@media(max-width:720px){.ka-attendance-personnel-table .ka-att-name,.ka-attendance-personnel-table .ka-att-role'),'Mobilde Adı Soyadı ve Görevi sütunları tabloyla birlikte kaymalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v872';"),'Attendance mobil kaydırma düzeltmesi cache v847 ile dağıtılmalı.');
+assert(cacheVersion(sw)>=872,'Attendance mobil kaydırma düzeltmesi cache v847 ile dağıtılmalı.');
 console.log('Tools V2 Devamsızlık Çizelgesi görünür + local-first sözleşmesi başarılı.');

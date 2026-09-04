@@ -1,5 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
+const {cacheVersion,assetVersion}=require('./helpers/version-contract');
 const app=fs.readFileSync('js/app-loader.js','utf8');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const settings=fs.readFileSync('js/modules/settings.js','utf8');
@@ -22,7 +23,7 @@ assert(design.includes('.ka-menu-editor-sv')&&design.includes('.ka-menu-editor-h
 assert(design.includes('grid-auto-rows:146px')&&design.includes('height:146px;min-height:146px'),'Ana menü kartları büyütülmüş ve eşit yükseklikte olmalı.');
 assert(!design.includes('.ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd)'),'Ayarlar kartı diğer kartlardan farklı kompakt ölçü almamalı.');
 assert(design.includes('grid-auto-rows:136px')&&design.includes('height:136px;min-height:136px'),'Dar ekranlarda da tüm menü kartları eşit ölçüde kalmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v879';"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
+assert(cacheVersion(sw)>=879,'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
 
 assert(settings.includes('data-layout-menu-select')&&settings.includes('data-layout-panel')&&!settings.includes('<details class=\"ka-card ka-settings-menu-group'),'Uygulama Düzeni akordiyon yerine tek panel seçici kullanmalı.');
 assert(settings.includes('data-layout-section-select')&&settings.includes('data-layout-section-panel'),'Uygulama Düzeni Menüler / Modüller / Ana Sayfa sabit bölüm seçicisini kullanmalı.');
