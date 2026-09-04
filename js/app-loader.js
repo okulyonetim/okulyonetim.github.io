@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v43
+/* Koruk Asistan — AppLoader v42
    Tek başlangıç sahibi: Firebase + auth + lazy modüller. Tema sahibi: ShellUI.
    Tek görünürlük sahibi: PermissionService.
    Tek davranışsal düzen sahibi: AppConfig (oy_navDuzeni/uygulama).
@@ -23,7 +23,7 @@ define('people',['js/modules/people.js','js/modules/people-import.js','js/module
 define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=877']);
 define('management',['js/modules/report-engine.js','js/modules/management.js?v=882']);
 define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js?v=838','js/modules/assistant.js']);
-define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=883']);
+define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js?v=879']);

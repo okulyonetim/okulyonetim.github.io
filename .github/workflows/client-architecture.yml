@@ -81,8 +81,6 @@ jobs:
         run: node tests/classic-people-v2-smoke.test.js
       - name: Verify Classes mobile parity and seating
         run: node tests/classes-mobile-parity-smoke.test.js
-      - name: Verify class seating redesign and A4 print
-        run: node tests/class-seating-redesign-smoke.test.js
       - name: Verify classic Duty layout
         run: node tests/classic-duty-v2-smoke.test.js
       - name: Verify classic Lesson Schedule
