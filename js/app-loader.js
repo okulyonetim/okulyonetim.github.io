@@ -20,13 +20,13 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 define('dashboard',['js/modules/school-live-status.js','js/modules/communication.js?v=838','js/modules/dashboard.js?v=872']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
-define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=838']);
+define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=876']);
 define('management',['js/modules/report-engine.js','js/modules/management.js?v=873']);
 define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js?v=838','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
-define('settings',['js/modules/settings.js']);
+define('settings',['js/modules/settings.js?v=876']);
 
 const MODULE_DEFAULTS=[{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];
 const DASHBOARD_DEFAULTS=[{key:'welcome',label:'Karşılama',visible:true,order:10},{key:'stats',label:'Okul Özeti',visible:true,order:20},{key:'upcoming',label:'Yaklaşanlar',visible:true,order:30},{key:'announcements',label:'Duyurular',visible:true,order:40},{key:'duty',label:'Bugünün Nöbeti',visible:true,order:50}];

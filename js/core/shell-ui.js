@@ -40,8 +40,9 @@ const DASHBOARD_ROUTES={announcements:{module:'communication',page:'announcement
 let activeAction='home',menuGroup=null,menuEditing=false,visibilityObserver=null,headerPopover=null,themeTouched=false,nativeBackBound=false,browserBackBound=false,browserExitApproved=false;
 let navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
 const TEACHER_HIDDEN_PAGES=new Set(['documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:']);
-function isTeacherUser(){const u=user();return u.admin!==true&&!!(u.bagliOgretmenId||u.ogretmenId)}
+function isTeacherUser(){const u=user();if(u.admin===true)return false;const r=global.AKTIF_ROL||global.AppStore?.get?.('session.role')||arr('roller').find(x=>x.id===u.rolId)||{};const n=String(r.ad||r.rolAdi||u.rolAdi||u.rol||'').trim().toLocaleLowerCase('tr-TR');return n.includes('öğretmen')||n.includes('ogretmen')||!!(u.bagliOgretmenId||u.ogretmenId)}
 function pageAllowed(name,page=''){return !isTeacherUser()||!TEACHER_HIDDEN_PAGES.has(`${name}:${page||''}`)}
+function teacherMenuGroupAllowed(group){return !isTeacherUser()||group?.key!=='management'}
 function itemAllowed(item){return moduleAllowed(item[2])&&pageAllowed(item[2],item[3]||'')}
 function sameView(a,b){return !!a&&!!b&&a.kind===b.kind&&a.name===b.name&&a.bottom===b.bottom&&a.page===b.page&&a.title===b.title}
 function rememberView(view){if(!view)return;const top=navStack[navStack.length-1];if(sameView(top,view))return;navStack.push(view);if(navStack.length>30)navStack.splice(0,navStack.length-30)}
@@ -192,7 +193,7 @@ function menuItemView(g,item,index,groupSettings){const items=groupSettings?.ite
 function menuGroupView(g,index){const s=menuLayoutConfig()?.groups?.[g.key]||{},order=Number(s.order),x={...g};x.label=String(s.label||g.label||'');x.icon=String(s.icon||g.icon||'');x.__menuColor=validMenuColor(s.color);x.__menuVisible=s.visible!==false;x.__menuOrder=Number.isFinite(order)?order:(index+1)*10;x.items=(g.items||[]).map((item,i)=>menuItemView(g,item,i,s)).filter(item=>item.__menuVisible).sort((a,b)=>a.__menuOrder-b.__menuOrder);x.subItems=(g.subItems||[]).map((item,i)=>menuItemView(g,item,(g.items||[]).length+i,s)).filter(item=>item.__menuVisible).sort((a,b)=>a.__menuOrder-b.__menuOrder);return x}
 function visibleItems(g){return(g.items||[]).filter(itemAllowed).concat((g.subItems||[]).filter(itemAllowed))}
 function visibleGroups(){return MENU_GROUPS.filter(g=>g.hidden!==true&&visibleItems(g).length)}
-function customizedVisibleGroups(){return visibleGroups().map((g,index)=>menuGroupView(g,index)).filter(g=>g.__menuVisible!==false&&visibleItems(g).length).sort((a,b)=>a.__menuOrder-b.__menuOrder)}
+function customizedVisibleGroups(){return visibleGroups().map((g,index)=>menuGroupView(g,index)).filter(g=>g.__menuVisible!==false&&teacherMenuGroupAllowed(g)&&visibleItems(g).length).sort((a,b)=>a.__menuOrder-b.__menuOrder)}
 function menuCount(g){return visibleItems(g).length}
 function menuGroupAttrs(g){return g.__menuColor?` data-menu-custom-color="true" style="--ka-menu-custom:${g.__menuColor}"`:''}
 function menuItemAttrs(item){return item.__menuColor?` data-menu-custom-color="true" style="--ka-menu-item-custom:${item.__menuColor}"`:''}
