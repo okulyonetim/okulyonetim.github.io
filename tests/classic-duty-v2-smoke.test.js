@@ -15,6 +15,8 @@ for(const marker of ['ka-duty-action-grid','ka-duty-report-card','ka-duty-grid__
 assert(src.includes('ka-duty-report-banner')&&src.includes('ka-duty-report-table')&&src.includes('ka-duty-report-weekend')&&src.includes('ka-duty-report-holiday')&&src.includes('ka-duty-report-phones')&&src.includes('ka-duty-report-tasks')&&src.includes('ka-duty-report-footer')&&src.includes('ka-duty-report-signature'),'Tam sayfa nöbet raporu anatomisi korunmalı.');
 assert(src.includes('compact:true')&&src.includes('fontSize:7')&&src.includes('kenarBosluk:5'),'Nöbet raporu tüm ayı tek A4 sayfaya sığdıran ayarları kullanmalı.');
 assert(!src.includes('MutationObserver'),'Nöbet mobil görünümü sonradan DOM yamasıyla üretilmemeli.');
+assert(src.includes('function holidayDateRange(start,end)')&&src.includes('data-date-start')&&src.includes('data-date-end'),'Nöbet tatil ekleme modalı başlangıç-bitiş tarih aralığı desteklemeli.');
+assert(src.includes("for(const tarih of eklenecek)await NobetService.tatilEkle({tarih,aciklama})"),'Tatil aralığı mevcut tek-gün veri modeline gün gün yazılmalı.');
 assert(src.includes("device().set('nobetRotasyon',COL.nobetRotasyon"),'Rotasyon kaydı DeviceData üzerinden kalmalı.');
 assert(src.includes("PermissionService?.can?.('management.duty.edit','edit')"),'Nöbet yazma işlemleri merkezi management.duty.edit yetkisine bağlı kalmalı.');
 assert(src.includes('DutyBookService.toggle(atama,deger)'),'Management nöbet defteri ortak çekirdek servisine delege edilmeli.');
