@@ -10,7 +10,7 @@ const design=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
-assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css?v=878\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
+assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&/<link rel=\"stylesheet\" href=\"css\/design-system\.css\?v=\d+\">/.test(shell),'Production shell yalnız tek sürümlü merkezi css/design-system.css yüklemeli.');
 assert(!ui.includes('hideRouteTransitionFrame')&&!design.includes('.ka-route-switching'),'Route geçişinde görünür içeriği saklayan titreme katmanı bulunmamalı.');
 assert(ui.includes('const MODULE_ROOT_SELECTORS=Object.freeze')&&ui.includes('function moduleRouteMounted(name)')&&ui.includes('const reuseModule=moduleRouteMounted(name)')&&ui.includes('if(!reuseModule)await global.AppLoader?.load?.(name)'),'Aynı canonical modülün alt sayfaları arasında geçişte hiçbir modül yeniden mount edilmemeli.');
 assert(ui.includes('if(page)applySubpage(name,page,title)')&&!ui.includes('if(page)requestAnimationFrame(()=>applySubpage(name,page,title))'),'Alt sayfa seçimi sonraki frame bırakılmamalı; ilk boyama doğru sayfa olmalı.');
@@ -116,7 +116,7 @@ const managementBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\
 assert(managementBundle.includes("'js/modules/report-engine.js'")&&managementBundle.includes("'js/modules/management.js'")&&managementBundle.indexOf("'js/modules/report-engine.js'")<managementBundle.indexOf("'js/modules/management.js'"),'management modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.');
 const documentsBundle=optionalLoaderSource.match(/define\('documents',\[([^\]]+)\]\)/)?.[1]||'';
 assert(documentsBundle.includes("'js/modules/report-engine.js'")&&documentsBundle.includes("'js/modules/documents.js'")&&documentsBundle.indexOf("'js/modules/report-engine.js'")<documentsBundle.indexOf("'js/modules/documents.js'"),'documents modülü ek lazy bağımlılıklar olsa da ReportEngine bağımlılığını documents.js’den önce yüklemeli.');
-const transportBundle=optionalLoaderSource.match(/define\('transport',\[([^\]]+)\]\)/)?.[1]||'';
+const transportBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\('transport',\[([^\]]+)\]\)/)?.[1]||'');
 assert(transportBundle.includes("'js/modules/report-engine.js'")&&transportBundle.includes("'js/modules/transport.js'")&&!transportBundle.includes('transport-service-parity.js')&&transportBundle.indexOf("'js/modules/report-engine.js'")<transportBundle.indexOf("'js/modules/transport.js'"),'Transport modülü ReportEngine + tek canonical Transport sırasını lazy bundle içinde korumalı.');
 assert(ui.includes("if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js')"),'Maaş özel rotası ReportEngine hazır değilse ihtiyaç anında yüklemeli.');
 assert(sw.includes("'./js/modules/report-engine.js'"),'ReportEngine offline Service Worker cache içinde bulunmalı.');
