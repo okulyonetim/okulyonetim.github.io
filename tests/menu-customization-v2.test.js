@@ -22,7 +22,7 @@ assert(design.includes('.ka-menu-editor-sv')&&design.includes('.ka-menu-editor-h
 assert(design.includes('grid-auto-rows:146px')&&design.includes('height:146px;min-height:146px'),'Ana menü kartları büyütülmüş ve eşit yükseklikte olmalı.');
 assert(!design.includes('.ka-menu-card[data-ka-menu-group="settings"]:last-child:nth-child(odd)'),'Ayarlar kartı diğer kartlardan farklı kompakt ölçü almamalı.');
 assert(design.includes('grid-auto-rows:136px')&&design.includes('height:136px;min-height:136px'),'Dar ekranlarda da tüm menü kartları eşit ölçüde kalmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v878';"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v879';"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');
 
 assert(settings.includes('data-layout-menu-select')&&settings.includes('data-layout-panel')&&!settings.includes('<details class=\"ka-card ka-settings-menu-group'),'Uygulama Düzeni akordiyon yerine tek panel seçici kullanmalı.');
 assert(settings.includes('data-layout-section-select')&&settings.includes('data-layout-section-panel'),'Uygulama Düzeni Menüler / Modüller / Ana Sayfa sabit bölüm seçicisini kullanmalı.');
@@ -31,7 +31,9 @@ assert(settings.includes("layoutSection='menus'")&&settings.includes("layoutMenu
 assert(settings.includes('function markLayoutDirty(out)')&&settings.includes('Kaydedilmemiş değişiklikler var.'),'Kaydedilmemiş düzen değişiklikleri görünür durum mesajı üretmeli.');
 assert(design.includes('.ka-layout-section-tabs')&&design.includes('.ka-layout-section[hidden]')&&design.includes('.ka-layout-subitem'),'Yeni mobil düzen stüdyosu yalnız merkezi Design System içinde tanımlanmalı.');
 
-assert(settings.includes('data-menu-item-target')&&settings.includes('targetGroup:item.querySelector'),'Alt menü başka ana menüye taşınabilmeli.');
+assert(settings.includes('data-menu-item-target')&&settings.includes('targetGroup:target')&&settings.includes('moves[key]=target'),'Alt menü hedefi hem source ayarında hem kararlı move haritasında saklanmalı.');
+assert(settings.includes('selectLayoutMenu(out,target)'),'Öğe taşınınca düzenleyici hedef menüyü anında göstermeli.');
+assert(shell.includes('cfg?.moves?.[key]')&&shell.includes('__menuTargetGroup=String(target)'),'Shell taşınan öğeyi kararlı move haritasından hedef menüde göstermeli.');
 assert(shell.includes('__menuTargetGroup')&&shell.includes('configuredMenuItems(targetKey)'),'Shell taşınan alt menüyü yeni menü altında render etmeli.');
 assert(design.includes('.ka-layout-picker')&&design.includes('.ka-layout-menu-panel[hidden]'),'Yeni Uygulama Düzeni tasarımı merkezi Design System sahibi olmalı.');
 assert(!fs.existsSync('js/core/menu-customizer.js'),'İkinci runtime menu customizer sahibi geri dönmemeli.');
