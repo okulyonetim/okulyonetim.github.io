@@ -21,9 +21,11 @@ jobs:
         with:
           node-version: '24'
       - name: Verify baseline
-        run: test "$(git rev-parse HEAD^)" = 'e11b126e6f573f0c4247ed4a65e1d7e0b9d29155'
+        run: test "$(git rev-parse HEAD^)" = 'f126ad3f8f3fcf69c7b63dc7054cf6f86c886d1f'
       - name: Apply app layout studio redesign
-        run: python3 scripts/tmp-app-layout-studio-v878.py
+        run: |
+          python3 scripts/tmp-app-layout-studio-v878.py
+          python3 scripts/tmp-app-layout-studio-v878-testfix.py
       - name: Validate syntax, navigation, local-first and design contracts
         run: |
           set -euo pipefail
@@ -45,7 +47,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .github/workflows/app-layout-studio-v878.yml scripts/tmp-app-layout-studio-v878.py
+          git rm .github/workflows/app-layout-studio-v878.yml scripts/tmp-app-layout-studio-v878.py scripts/tmp-app-layout-studio-v878-testfix.py
           git add js/modules/settings.js js/core/shell-ui.js js/app-loader.js css/design-system.css index.html service-worker.js tests
           git commit -m 'feat: redesign app layout studio and preserve menu back history'
           git push origin HEAD:main
