@@ -9,6 +9,8 @@ if(global.SinifOturma)return;
 
 const GRID=14;
 const CLICK_LIMIT=7;
+const TOUCH_CLICK_LIMIT=18;
+const pointerClickLimit=type=>(type==='touch'||type==='pen'||(!type&&navigator.maxTouchPoints>0))?TOUCH_CLICK_LIMIT:CLICK_LIMIT;
 const HEADER_GAP=60;
 const PAGE={
   dikey:{w:794,h:1123-HEADER_GAP},
@@ -243,13 +245,15 @@ function control(text,pos,bg){
 }
 
 function bindDrag(el){
-  let sx=0,sy=0,ox=0,oy=0,startTarget=null,moving=false,group=[];
+  let sx=0,sy=0,ox=0,oy=0,startTarget=null,moving=false,dragging=false,pointerType='',group=[];
   el.addEventListener('pointerdown',e=>{
     if(!editable||e.target.closest('[data-so-object-control]'))return;
     setSelected(el);
     sx=e.clientX; sy=e.clientY;
     ox=el.offsetLeft; oy=el.offsetTop;
     startTarget=e.target;
+    pointerType=e.pointerType||'';
+    dragging=false;
     moving=true;
     try{el.setPointerCapture(e.pointerId)}catch(_){}
     if(moveAll&&!locked&&SEATS[el.dataset.type]){
@@ -260,8 +264,11 @@ function bindDrag(el){
   });
   el.addEventListener('pointermove',e=>{
     if(!moving||locked)return;
-    const dx=(e.clientX-sx)/(baseZoom*userZoom);
-    const dy=(e.clientY-sy)/(baseZoom*userZoom);
+    const screenDx=e.clientX-sx,screenDy=e.clientY-sy,clickLimit=pointerClickLimit(pointerType);
+    if(!dragging&&Math.hypot(screenDx,screenDy)<clickLimit)return;
+    dragging=true;
+    const dx=screenDx/(baseZoom*userZoom);
+    const dy=screenDy/(baseZoom*userZoom);
     if(group.length){
       group.forEach(g=>{
         g.el.style.left=Math.max(0,Math.min(canvas.clientWidth-g.el.offsetWidth,g.x+dx))+'px';
@@ -276,18 +283,19 @@ function bindDrag(el){
     if(!moving)return;
     moving=false;
     const dist=Math.hypot((e.clientX||sx)-sx,(e.clientY||sy)-sy);
+    const clickLimit=pointerClickLimit(pointerType),dragged=dragging||dist>=clickLimit;
     const dragSeat=startTarget?.closest?.('[data-so-seat]');
-    if(dist>=CLICK_LIMIT&&dragSeat){
+    if(dragged&&dragSeat){
       dragSeat.dataset.soSuppressClick='true';
-      setTimeout(()=>{if(dragSeat.isConnected)delete dragSeat.dataset.soSuppressClick},0);
+      setTimeout(()=>{if(dragSeat.isConnected)delete dragSeat.dataset.soSuppressClick},400);
     }
-    if(!locked&&dist>=CLICK_LIMIT){
+    if(!locked&&dragged){
       (group.length?group.map(x=>x.el):[el]).forEach(x=>{
         x.style.left=snap(x.offsetLeft)+'px';
         x.style.top=snap(x.offsetTop)+'px';
       });
       dirty=true;
-    }else if(dist<CLICK_LIMIT){
+    }else if(!dragged){
       const seat=startTarget?.closest?.('[data-so-seat]');
       if(seat){
         seat.dataset.soSuppressClick='true';
@@ -304,6 +312,8 @@ function bindDrag(el){
       }
     }
     group=[];
+    dragging=false;
+    pointerType='';
   };
   el.addEventListener('pointerup',up);
   el.addEventListener('pointercancel',up);
