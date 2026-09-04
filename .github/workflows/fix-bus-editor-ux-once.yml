@@ -17,7 +17,9 @@ jobs:
         with:
           ref: main
       - name: Apply bus editor UX fix
-        run: python .github/scripts/fix-bus-editor-ux.py
+        run: |
+          python .github/scripts/fix-bus-editor-ux.py
+          sed -i 's/js\/app-loader.js?v=890/js\/app-loader.js?v=892/g' tests/transport-seating-classic-parity.test.js
       - name: Check transport syntax
         run: node --check js/modules/transport.js
       - name: Test bus editor actions
