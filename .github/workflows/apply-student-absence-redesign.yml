@@ -1,0 +1,60 @@
+name: Apply student absence class filter redesign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-student-absence-redesign.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Patch student absence view
+        env:
+          NEW_SEGMENT_B64: 'ZnVuY3Rpb24gYWJzZW5jZVJvdyhzKXsKICBjb25zdCB3YT1nbG9iYWwuWW9rbGFtYVNlcnZpY2U/LndoYXRzYXBwTGlua09sdXN0dXI/LihzKSxwaG9uZT1TdHJpbmcocy50ZWxlZm9ufHwnJykudHJpbSgpLGxhdGU9cy5kdXJ1bT09PSdnZWMnLHN0YXR1cz1sYXRlPydHZcOnJzonWW9rJzsKICByZXR1cm4gYDxhcnRpY2xlIGNsYXNzPSJrYS1hdHRlbmRhbmNlLWFic2VuY2UiPjxkaXYgY2xhc3M9ImthLWdyb3ciPjxkaXYgY2xhc3M9ImthLXJvdyBrYS1yb3ctLWJldHdlZW4iPjxzdHJvbmc+JHtlc2Mocy5vZ3JlbmNpQWRpfHwnw5bEn3JlbmNpJyl9PC9zdHJvbmc+PHNwYW4gY2xhc3M9ImthLWJhZGdlICR7bGF0ZT8na2EtYmFkZ2UtLXdhcm5pbmcnOidrYS1iYWRnZS0tZGFuZ2VyJ30iPiR7c3RhdHVzfTwvc3Bhbj48L2Rpdj48c21hbGw+JHtlc2MoW3Muc2luaWZBZGkscy52ZWxpQWRpXS5maWx0ZXIoQm9vbGVhbikuam9pbignIMK3ICcpKX08L3NtYWxsPiR7cGhvbmU/YDxlbT4ke2VzYyhwaG9uZSl9PC9lbT5gOicnfTwvZGl2PjxkaXYgY2xhc3M9ImthLXN0YWNrIj48c3BhbiBjbGFzcz0ia2EtYmFkZ2UgJHtzLmdvbmRlcmlsZGk/J2thLWJhZGdlLS1zdWNjZXNzJzonJ30iPiR7cy5nb25kZXJpbGRpPyfinJMgQmlsZ2lsZW5kaXJpbGRpJzonQmlsZ2kgYmVrbGl5b3InfTwvc3Bhbj4ke3dhP2A8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgY2xhc3M9ImthLWJ0biBrYS1idG4tLXNlY29uZGFyeSBrYS1idG4tLXNtIiBkYXRhLWF0dC1jb250YWN0PSIke2VzYyh3YSl9Ij5XaGF0c0FwcDwvYnV0dG9uPmA6Jyd9PC9kaXY+PC9hcnRpY2xlPmA7Cn0KYXN5bmMgZnVuY3Rpb24gcmVuZGVyQXR0ZW5kYW5jZUFkbWluKHIsY2xhc3Nlcyl7CiAgaWYoYXR0ZW5kYW5jZUFkbWluVmlldz09PSdjbGFzcycpcmV0dXJuIGZhbHNlOwogIGlmKGF0dGVuZGFuY2VBZG1pblZpZXc9PT0nYWxsJyl7CiAgICBsZXQgZG9jcz1bXTt0cnl7ZG9jcz1hd2FpdCBnbG9iYWwuWW9rbGFtYVNlcnZpY2U/Lmd1bk96ZXRpR2V0aXI/LihzZWxlY3RlZERhdGUpfHxbXX1jYXRjaChlKXtkb2NzPVtdfQogICAgY29uc3Qgcm93cz1kb2NzLm1hcChkb2M9Pntjb25zdCBzdD1zdHVkZW50c09mKGRvYy5zaW5pZklkKSxzdGF0ZXM9ZG9jLmtheWl0bGFyfHx7fSxjPXt0b3BsYW06c3QubGVuZ3RoLHZhcjowLHlvazowLGdlYzowLGl6aW5saTowfTtPYmplY3QudmFsdWVzKHN0YXRlcykuZm9yRWFjaChrPT57aWYoY1trXSE9PXVuZGVmaW5lZCljW2tdKyt9KTtjb25zdCBjbHM9Y2xhc3Nlcy5maW5kKHg9PnguaWQ9PT1kb2Muc2luaWZJZCk7cmV0dXJuIGA8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgY2xhc3M9ImthLWF0dGVuZGFuY2UtY2xhc3MtY2FyZCIgZGF0YS1hdHQtb3Blbi1jbGFzcz0iJHtlc2MoZG9jLnNpbmlmSWQpfSI+PHNwYW4+PHN0cm9uZz4ke2VzYyhjbGFzc05hbWUoY2xzKXx8J1PEsW7EsWYnKX08L3N0cm9uZz48c21hbGw+JHtjLnRvcGxhbX0gw7bEn3JlbmNpPC9zbWFsbD48L3NwYW4+PHNwYW4+PGI+JHtjLnZhcn08L2I+IFZhcjwvc3Bhbj48c3BhbiBjbGFzcz0iaXMtYWJzZW50Ij48Yj4ke2MueW9rfTwvYj4gWW9rPC9zcGFuPjxzcGFuIGNsYXNzPSJpcy1sYXRlIj48Yj4ke2MuZ2VjfTwvYj4gR2XDpzwvc3Bhbj48L2J1dHRvbj5gfSkuam9pbignJyk7CiAgICByLmlubmVySFRNTD1gPHNlY3Rpb24gY2xhc3M9ImthLXN0YWNrIiBkYXRhLXN0dWRlbnQtcGFnZT0iYXR0ZW5kYW5jZSI+JHtwYWdlSGVhZCgnw5bEn3JlbmNpIFlva2xhbWEnLCdHw7xubMO8ayB0w7xtIHPEsW7EsWYgeW9rbGFtYWxhcsSxIGNpaGF6ZGFraSBsb2NhbC1maXJzdCBrYXnEsXRsYXJkYW4gZ8O2c3RlcmlsaXIuJyl9PGRpdiBjbGFzcz0ia2EtYXR0ZW5kYW5jZS1hZG1pbi10YWJzIj48YnV0dG9uIHR5cGU9ImJ1dHRvbiIgZGF0YS1hdHQtYWRtaW4tdmlldz0iY2xhc3MiPlPEsW7EsWYgWW9rbGFtYXPEsTwvYnV0dG9uPjxidXR0b24gdHlwZT0iYnV0dG9uIiBjbGFzcz0iaXMtYWN0aXZlIiBkYXRhLWF0dC1hZG1pbi12aWV3PSJhbGwiPlTDvG0gU8SxbsSxZmxhcjwvYnV0dG9uPjxidXR0b24gdHlwZT0iYnV0dG9uIiBkYXRhLWF0dC1hZG1pbi12aWV3PSJhYnNlbnQiPkRldmFtc8SxemxhcjwvYnV0dG9uPjwvZGl2PjxkaXYgY2xhc3M9ImthLWF0dGVuZGFuY2UtZGF0ZWJhciI+PGxhYmVsIGNsYXNzPSJrYS1maWVsZCI+PHNwYW4gY2xhc3M9ImthLWZpZWxkX19sYWJlbCI+VGFyaWg8L3NwYW4+PGlucHV0IGlkPSJzdHVkZW50QXR0ZW5kYW5jZURhdGUiIHR5cGU9ImRhdGUiIHZhbHVlPSIke2VzYyhzZWxlY3RlZERhdGUpfSI+PC9sYWJlbD48L2Rpdj48ZGl2IGNsYXNzPSJrYS1zdGFjayI+JHtyb3dzfHxlbXB0eSgnQnUgdGFyaWh0ZSBrYXlkZWRpbG1pxZ8gc8SxbsSxZiB5b2tsYW1hc8SxIGJ1bHVuYW1hZMSxLicpfTwvZGl2Pjwvc2VjdGlvbj5gOwogICAgcmV0dXJuIHRydWUKICB9CiAgbGV0IGFsbD1bXTt0cnl7YWxsPWF3YWl0IGdsb2JhbC5Zb2tsYW1hU2VydmljZT8uZ3VudW5EZXZhbXNpemxhcmlHZXRpcj8uKHNlbGVjdGVkRGF0ZSl8fFtdfWNhdGNoKGUpe2FsbD1bXX0KICBjb25zdCBsaXN0PXNlbGVjdGVkQ2xhc3M/YWxsLmZpbHRlcih4PT5TdHJpbmcoeC5zaW5pZklkKT09PVN0cmluZyhzZWxlY3RlZENsYXNzKSk6YWxsOwogIGNvbnN0IHlvaz1saXN0LmZpbHRlcih4PT54LmR1cnVtPT09J3lvaycpLmxlbmd0aCxnZWM9bGlzdC5maWx0ZXIoeD0+eC5kdXJ1bT09PSdnZWMnKS5sZW5ndGgsYmlsZ2lsZW5kaXJpbGRpPWxpc3QuZmlsdGVyKHg9PnguZ29uZGVyaWxkaT09PXRydWUpLmxlbmd0aCxiZWtsaXlvcj1NYXRoLm1heCgwLGxpc3QubGVuZ3RoLWJpbGdpbGVuZGlyaWxkaSk7CiAgY29uc3Qgc2VsZWN0ZWQ9Y2xhc3Nlcy5maW5kKHg9PlN0cmluZyh4LmlkKT09PVN0cmluZyhzZWxlY3RlZENsYXNzKSksc2NvcGU9c2VsZWN0ZWQ/Y2xhc3NOYW1lKHNlbGVjdGVkKTonVMO8bSBzxLFuxLFmbGFyJzsKICBjb25zdCBjbGFzc09wdHM9YDxvcHRpb24gdmFsdWU9IiI+VMO8bSBzxLFuxLFmbGFyPC9vcHRpb24+JHtjbGFzc2VzLm1hcChzPT5gPG9wdGlvbiB2YWx1ZT0iJHtlc2Mocy5pZCl9IiAke1N0cmluZyhzLmlkKT09PVN0cmluZyhzZWxlY3RlZENsYXNzKT8nc2VsZWN0ZWQnOicnfT4ke2VzYyhjbGFzc05hbWUocykpfTwvb3B0aW9uPmApLmpvaW4oJycpfWA7CiAgY29uc3QgZW1wdHlUZXh0PXNlbGVjdGVkP2Ake2NsYXNzTmFtZShzZWxlY3RlZCl9IHPEsW7EsWbEsW5kYSBidSB0YXJpaHRlIHlvayB2ZXlhIGdlw6cgw7bEn3JlbmNpIGJ1bHVubXV5b3IuYDonQnUgdGFyaWh0ZSB5b2sgdmV5YSBnZcOnIMO2xJ9yZW5jaSBidWx1bm11eW9yLic7CiAgci5pbm5lckhUTUw9YDxzZWN0aW9uIGNsYXNzPSJrYS1zdGFjayIgZGF0YS1zdHVkZW50LXBhZ2U9ImF0dGVuZGFuY2UiPiR7cGFnZUhlYWQoJ8OWxJ9yZW5jaSBEZXZhbXPEsXpsxLHEn8SxJywnU8SxbsSxZiB2ZSB0YXJpaGkgc2XDp2luOyB5b2sgdmUgZ2XDpyDDtsSfcmVuY2lsZXJpIGfDtnLDvG50w7xsZXlpcCB2ZWxpIGlsZXRpxZ9pbWluaSB5w7ZuZXRpbi4nKX08ZGl2IGNsYXNzPSJrYS1hdHRlbmRhbmNlLWFkbWluLXRhYnMiPjxidXR0b24gdHlwZT0iYnV0dG9uIiBkYXRhLWF0dC1hZG1pbi12aWV3PSJjbGFzcyI+U8SxbsSxZiBZb2tsYW1hc8SxPC9idXR0b24+PGJ1dHRvbiB0eXBlPSJidXR0b24iIGRhdGEtYXR0LWFkbWluLXZpZXc9ImFsbCI+VMO8bSBTxLFuxLFmbGFyPC9idXR0b24+PGJ1dHRvbiB0eXBlPSJidXR0b24iIGNsYXNzPSJpcy1hY3RpdmUiIGRhdGEtYXR0LWFkbWluLXZpZXc9ImFic2VudCI+RGV2YW1zxLF6bGFyPC9idXR0b24+PC9kaXY+PGRpdiBjbGFzcz0ia2EtYXR0ZW5kYW5jZS1maWx0ZXJzIj48bGFiZWwgY2xhc3M9ImthLWZpZWxkIj48c3BhbiBjbGFzcz0ia2EtZmllbGRfX2xhYmVsIj5TSU5JRjwvc3Bhbj48c2VsZWN0IGlkPSJzdHVkZW50QXR0ZW5kYW5jZUNsYXNzIj4ke2NsYXNzT3B0c308L3NlbGVjdD48L2xhYmVsPjxsYWJlbCBjbGFzcz0ia2EtZmllbGQiPjxzcGFuIGNsYXNzPSJrYS1maWVsZF9fbGFiZWwiPlRBUsSwSDwvc3Bhbj48aW5wdXQgaWQ9InN0dWRlbnRBdHRlbmRhbmNlRGF0ZSIgdHlwZT0iZGF0ZSIgdmFsdWU9IiR7ZXNjKHNlbGVjdGVkRGF0ZSl9Ij48L2xhYmVsPjwvZGl2PjxkaXYgY2xhc3M9ImthLWF0dGVuZGFuY2Utc3VtbWFyeSI+PGFydGljbGU+PHNtYWxsPlRPUExBTTwvc21hbGw+PGI+JHtsaXN0Lmxlbmd0aH08L2I+PC9hcnRpY2xlPjxhcnRpY2xlIGNsYXNzPSJpcy1hYnNlbnQiPjxzbWFsbD5ZT0s8L3NtYWxsPjxiPiR7eW9rfTwvYj48L2FydGljbGU+PGFydGljbGUgY2xhc3M9ImlzLWxhdGUiPjxzbWFsbD5HRcOHPC9zbWFsbD48Yj4ke2dlY308L2I+PC9hcnRpY2xlPjxhcnRpY2xlIGNsYXNzPSJpcy1wcmVzZW50Ij48c21hbGw+QsSwTEfEsExFTkTEsFLEsExExLA8L3NtYWxsPjxiPiR7YmlsZ2lsZW5kaXJpbGRpfTwvYj48L2FydGljbGU+PGFydGljbGU+PHNtYWxsPkJFS0zEsFlPUjwvc21hbGw+PGI+JHtiZWtsaXlvcn08L2I+PC9hcnRpY2xlPjwvZGl2PjxkaXYgY2xhc3M9ImthLXJvdyBrYS1yb3ctLWJldHdlZW4ga2EtYXR0ZW5kYW5jZS1saXN0LWhlYWQiPjxkaXY+PHN0cm9uZz4ke2VzYyhzY29wZSl9PC9zdHJvbmc+PHNtYWxsPiR7ZXNjKHNlbGVjdGVkRGF0ZSl9PC9zbWFsbD48L2Rpdj48c3BhbiBjbGFzcz0ia2EtYmFkZ2UiPiR7bGlzdC5sZW5ndGh9IMO2xJ9yZW5jaTwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSJrYS1zdGFjayI+JHtsaXN0Lmxlbmd0aD9saXN0Lm1hcChhYnNlbmNlUm93KS5qb2luKCcnKTplbXB0eShlbXB0eVRleHQpfTwvZGl2Pjwvc2VjdGlvbj5gOwogIHJldHVybiB0cnVlCn0='
+          TEST_B64: 'Y29uc3QgdGVzdD1yZXF1aXJlKCdub2RlOnRlc3QnKTsKY29uc3QgYXNzZXJ0PXJlcXVpcmUoJ25vZGU6YXNzZXJ0L3N0cmljdCcpOwpjb25zdCBmcz1yZXF1aXJlKCdub2RlOmZzJyk7CmNvbnN0IHNyYz1mcy5yZWFkRmlsZVN5bmMoJ2pzL21vZHVsZXMvdG9vbHMuanMnLCd1dGY4Jyk7Cgp0ZXN0KCdhZG1pbiBzdHVkZW50IGFic2VuY2UgdmlldyBzdXBwb3J0cyBjbGFzcyBmaWx0ZXJpbmcnLCgpPT57CiAgYXNzZXJ0Lm1hdGNoKHNyYywvcGFnZUhlYWRcKCfDlsSfcmVuY2kgRGV2YW1zxLF6bMSxxJ/EsScvKTsKICBhc3NlcnQubWF0Y2goc3JjLC88b3B0aW9uIHZhbHVlPSIiPlTDvG0gc8SxbsSxZmxhcjxcL29wdGlvbj4vKTsKICBhc3NlcnQubWF0Y2goc3JjLC9pZD0ic3R1ZGVudEF0dGVuZGFuY2VDbGFzcyIvKTsKICBhc3NlcnQubWF0Y2goc3JjLC9zZWxlY3RlZENsYXNzXD9hbGxcLmZpbHRlclwoeD0+U3RyaW5nXCh4XC5zaW5pZklkXCk9PT1TdHJpbmdcKHNlbGVjdGVkQ2xhc3NcKVwpOmFsbC8pOwp9KTsKCnRlc3QoJ2Fic2VuY2Ugc3VtbWFyeSBmb2xsb3dzIHNlbGVjdGVkIGNsYXNzIGFuZCBrZWVwcyBndWFyZGlhbiB3b3JrZmxvdycsKCk9PnsKICBhc3NlcnQubWF0Y2goc3JjLC9iaWxnaWxlbmRpcmlsZGk9bGlzdFwuZmlsdGVyXCh4PT54XC5nb25kZXJpbGRpPT09dHJ1ZVwpXC5sZW5ndGgvKTsKICBhc3NlcnQubWF0Y2goc3JjLC9CxLBMR8SwTEVORMSwUsSwTETEsC8pOwogIGFzc2VydC5tYXRjaChzcmMsL0JFS0zEsFlPUi8pOwogIGFzc2VydC5tYXRjaChzcmMsL2RhdGEtYXR0LWNvbnRhY3QvKTsKICBhc3NlcnQubWF0Y2goc3JjLC9rYS1iYWRnZS0tZGFuZ2VyLyk7CiAgYXNzZXJ0Lm1hdGNoKHNyYywva2EtYmFkZ2UtLXdhcm5pbmcvKTsKfSk7'
+        run: |
+          python3 - <<'PY'
+          import os,base64
+          from pathlib import Path
+          p=Path('js/modules/tools.js')
+          text=p.read_text(encoding='utf-8')
+          start='function absenceRow(s){'
+          end='async function renderAttendance(){'
+          if text.count(start)!=1 or text.count(end)!=1:
+              raise SystemExit('attendance patch markers are not unique')
+          a=text.index(start);b=text.index(end,a)
+          segment=base64.b64decode(os.environ['NEW_SEGMENT_B64']).decode('utf-8')
+          p.write_text(text[:a]+segment+'\n'+text[b:],encoding='utf-8')
+          sw=Path('service-worker.js')
+          s=sw.read_text(encoding='utf-8')
+          old="const CACHE_ADI='oy-cache-v896';"
+          new="const CACHE_ADI='oy-cache-v897';"
+          if s.count(old)!=1: raise SystemExit('unexpected service worker cache version')
+          sw.write_text(s.replace(old,new),encoding='utf-8')
+          Path('tests/student-attendance-absence-filter.test.js').write_text(base64.b64decode(os.environ['TEST_B64']).decode('utf-8'),encoding='utf-8')
+          PY
+      - name: Focused regression tests
+        run: |
+          node --check js/modules/tools.js
+          node --test tests/student-attendance-absence-filter.test.js
+          node tests/student-tool-routing-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit verified fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f .github/workflows/apply-student-absence-redesign.yml
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: add class filter to student absence view'
+          git push
