@@ -18,18 +18,26 @@ jobs:
           fetch-depth: 0
       - name: Apply exact classic bus seating parity
         run: python .github/scripts/fix-classic-bus-seating.py
-      - name: Verify focused transport package
-        run: |
-          node --check js/modules/transport.js
-          node tests/transport-seating-visual-editor.test.js
-          node tests/transport-seating-classic-parity.test.js
-          node tests/transport-mobile-layout-v3.test.js
-          node tests/transport-button-layout.test.js
-          node tests/transport-concept-redesign.test.js
-          node tests/transport-separate-pages.test.js
-          node tests/modules-local-first-boundary.test.js
-          node tests/service-worker-precache-smoke.test.js
-          node scripts/check-client-architecture.mjs
+      - name: Check transport syntax
+        run: node --check js/modules/transport.js
+      - name: Test visual seating editor
+        run: node tests/transport-seating-visual-editor.test.js
+      - name: Test classic mobile parity
+        run: node tests/transport-seating-classic-parity.test.js
+      - name: Test transport mobile layout
+        run: node tests/transport-mobile-layout-v3.test.js
+      - name: Test transport button layout
+        run: node tests/transport-button-layout.test.js
+      - name: Test transport concept
+        run: node tests/transport-concept-redesign.test.js
+      - name: Test transport separate pages
+        run: node tests/transport-separate-pages.test.js
+      - name: Test local-first boundary
+        run: node tests/modules-local-first-boundary.test.js
+      - name: Test service worker
+        run: node tests/service-worker-precache-smoke.test.js
+      - name: Check client architecture
+        run: node scripts/check-client-architecture.mjs
       - name: Commit verified package and remove one-time files
         run: |
           git config user.name "github-actions[bot]"
