@@ -17,7 +17,7 @@ assert(!shell.includes("stats:{module:"),'Okul Özeti gerçek hedefi olmadığı
 assert(dash.includes('id=\"khBell\"')&&dash.includes('data-dash-route=\"settings\" data-dash-page=\"lesson-hours\" data-dash-title=\"Ders Saatleri\"'),'Hero canlı zil kartı doğrudan Ders Saatleri ayarına gitmeli.');
 assert(dash.includes('class=\"kh-more\" data-dash-route=\"communication\" data-dash-page=\"calendar\" data-dash-title=\"Takvim\"'),'Takvim referanstaki ay başlığı düğmesinden doğrudan Takvim alt sayfasına gitmeli.');
 assert(dash.includes("function routeButton(label,module,page='',title='',icon='→')"),'Dashboard footer helper alt sayfa ve başlığı taşımalı.');
-assert(css.includes('padding-left:max(12px,var(--ka-safe-left))')&&css.includes('padding-right:max(12px,var(--ka-safe-right))')&&css.includes('gap:20px!important'),'Mobil ana sayfa kartları kenarlardan güvenli boşluk ve kartlar arasında belirgin dikey mesafe bırakmalı.');
+assert(css.includes('DASHBOARD COMPACT MOBILE REDESIGN V1')&&css.includes('padding-left:max(10px,var(--ka-safe-left))')&&css.includes('padding-right:max(10px,var(--ka-safe-right))')&&css.includes('gap:12px!important'),'Mobil ana sayfa yeni kompakt tasarımda güvenli kenar boşluğu ve daha sıkı dikey ritim kullanmalı.');
 assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kartları tam kullanılabilir genişlikte olmalı.');
 assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği üretmeli.');
 assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası referans sırasıyla okul özeti, duyuru, anket ve aktif deneme sayacını göstermeli.');

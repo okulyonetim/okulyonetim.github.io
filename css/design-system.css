@@ -1275,3 +1275,79 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 @media(max-width:560px){.ka-legislation-page{gap:9px;padding-inline:3px}.ka-legislation-hero{min-height:108px;padding:13px;border-radius:20px;grid-template-columns:44px minmax(0,1fr);gap:10px}.ka-legislation-hero__icon{width:44px;height:44px;border-radius:14px;font-size:21px}.ka-legislation-hero h2{font-size:18px}.ka-legislation-hero p{font-size:9.5px}.ka-legislation-local-badge{grid-column:2/-1;justify-self:start;min-height:25px;padding:3px 7px;font-size:7.5px;margin-top:-4px}.ka-legislation-summary article{min-height:58px;padding:7px;grid-template-columns:28px minmax(0,1fr);gap:6px}.ka-legislation-summary article>span{width:28px;height:28px;font-size:13px}.ka-legislation-summary small{font-size:6.8px}.ka-legislation-summary b{font-size:15px}.ka-legislation-action{min-height:58px;padding:7px 8px;grid-template-columns:33px minmax(0,1fr);gap:7px}.ka-legislation-action__icon{width:33px;height:33px;border-radius:10px;font-size:15px}.ka-legislation-action strong{font-size:9.5px}.ka-legislation-action small{font-size:7.3px}.ka-legislation-switch>button{min-height:37px;font-size:9.5px}.ka-legislation-source{grid-template-columns:37px minmax(0,1fr) 34px;gap:7px;padding:8px}.ka-legislation-source__icon{width:37px;height:37px}.ka-legislation-source__title strong{font-size:10.5px}.ka-legislation-source__meta{gap:5px;font-size:7.5px}.ka-legislation-delete{width:34px;padding:0}.ka-legislation-delete span{display:none}.ka-legislation-chat{height:calc(100dvh - var(--ka-header-height) - var(--ka-bottom-nav-height) - 122px);min-height:410px;max-height:640px}.ka-legislation-chat__head{min-height:66px;padding:9px 10px}.ka-legislation-chat__head p{font-size:8px}.ka-legislation-messages{padding:9px}.ka-legislation-composer{padding:8px}.ka-legislation-composer textarea{font-size:10.5px}.ka-legislation-send{min-width:52px;padding-inline:8px}.ka-legislation-form-grid{grid-template-columns:1fr}.ka-legislation-modal-backdrop{align-items:end;padding:0}.ka-legislation-modal{width:100%;max-height:94dvh;border-radius:20px 20px 0 0}.ka-legislation-modal .ka-modal__body{padding:12px}.ka-legislation-modal .ka-modal__header,.ka-legislation-modal .ka-modal__footer{padding:12px}}
 @media(max-width:360px){.ka-legislation-hero{grid-template-columns:40px minmax(0,1fr)}.ka-legislation-hero__icon{width:40px;height:40px}.ka-legislation-hero p{font-size:9px}.ka-legislation-summary article{grid-template-columns:1fr;justify-items:center;text-align:center;gap:3px}.ka-legislation-summary article>span{display:none}.ka-legislation-action strong{font-size:9px}.ka-legislation-action small{display:none}.ka-legislation-source__title span{max-width:72px}.ka-legislation-message__bubble{max-width:88%}}
 
+
+/* ===== DASHBOARD COMPACT MOBILE REDESIGN V1 ===== */
+/* Mobil-first ana sayfa: mevcut local-first veri/rota davranışını değiştirmeden daha sıkı, okunaklı ve açık/koyu tema uyumlu yüzey. */
+.ka-home{
+  --kh-dashboard-gap:12px;
+  width:100%;max-width:860px;margin:0 auto;
+  gap:12px!important;
+  padding-top:12px!important;
+  padding-left:max(10px,var(--ka-safe-left))!important;
+  padding-right:max(10px,var(--ka-safe-right))!important;
+  padding-bottom:calc(var(--ka-bottom-nav-height) + var(--ka-safe-bottom) + 18px)!important;
+}
+.ka-home .kh-section{gap:7px!important}.ka-home .kh-section-head{padding:0 3px}.ka-home .kh-section-title{gap:7px;font-size:14.5px;letter-spacing:-.012em}.ka-home .kh-section-title svg{width:18px;height:18px}.ka-home .kh-more{font-size:9.5px;padding:4px 1px}.ka-home .kh-card{border-radius:17px;box-shadow:0 3px 12px color-mix(in srgb,var(--ka-text) 5%,transparent)}
+
+/* Karşılama + canlı ders + hava */
+.ka-home .kh-hero{padding:15px 14px 13px;border-radius:22px;box-shadow:0 5px 18px color-mix(in srgb,var(--ka-text) 7%,transparent)}
+.ka-home .kh-hero:before{width:160px;height:160px;right:-72px;top:-82px}.ka-home .kh-hero:after{width:112px;height:112px;left:-48px;bottom:-62px}
+.ka-home .kh-brand{font-size:8.5px;letter-spacing:.11em}.ka-home .kh-greeting{margin:7px 0 2px;font-size:22px;line-height:1.08;letter-spacing:-.025em}.ka-home .kh-date{font-size:10px}.ka-home .kh-live-stack{gap:8px!important;margin-top:12px}
+#khBell.kh-bell-modern{border-radius:17px!important;box-shadow:none!important}
+#khBell .kh-bell-timeline-v2{padding:10px 10px 9px}
+#khBell .kh-bell-timeline-head{grid-template-columns:38px minmax(0,1fr) auto;gap:8px}
+#khBell .kh-bell-timeline-current-icon{width:38px;height:38px;border-radius:12px}#khBell .kh-bell-timeline-current-icon svg{width:20px;height:20px}
+#khBell .kh-bell-timeline-copy small{font-size:7px}#khBell .kh-bell-timeline-copy strong{font-size:14.5px}#khBell .kh-bell-timeline-copy span{font-size:8.5px}
+#khBell .kh-bell-timeline-chip{padding:4px 7px;font-size:7px}
+#khBell .kh-bell-timeline{margin-top:8px;gap:2px;grid-template-columns:minmax(0,.72fr) minmax(64px,1.05fr) minmax(0,.72fr) minmax(0,.88fr)}
+#khBell .kh-bell-countdown-ring{width:64px;height:64px}#khBell .kh-bell-countdown-ring>b{font-size:12.5px}#khBell .kh-bell-countdown-ring>small{font-size:6.5px}
+#khBell .kh-bell-step>i{width:28px;height:28px}#khBell .kh-bell-timeline::before{top:14px}#khBell .kh-bell-step>small,#khBell .kh-bell-step>span:not(.kh-bell-countdown-ring){font-size:6.5px}#khBell .kh-bell-step>b{font-size:8.2px}
+#khBell .kh-bell-progress-v2{margin-top:7px;gap:6px;font-size:7px}#khBell .kh-bell-progress-v2 i{height:5px}
+.ka-home .kh-weather-card{grid-template-columns:42px minmax(0,1fr) auto;gap:9px;min-height:62px;padding:9px 11px;border-radius:16px;box-shadow:none}.ka-home .kh-weather-card .kh-live-icon{width:42px;height:42px;border-radius:13px}.ka-home .kh-weather-emoji{font-size:23px}.ka-home .kh-weather-card .kh-live-main b{font-size:16px}.ka-home .kh-weather-card .kh-live-main small{margin-top:1px;font-size:8.8px}.ka-home .kh-weather-arrow{font-size:20px}
+
+/* Duyuru ve anketler: ana sayfada özet, ayrıntı kendi sayfasında */
+.ka-home .kh-dynamic{gap:7px}.ka-home .kh-announcement{border-radius:17px;box-shadow:0 3px 12px color-mix(in srgb,var(--ka-text) 5%,transparent)}.ka-home .kh-announcement-accent{height:3px}
+.ka-home .kh-announcement-head{grid-template-columns:38px minmax(0,1fr) auto;gap:9px;padding:10px 11px 7px}.ka-home .kh-announcement-icon{width:38px;height:38px;border-radius:12px}.ka-home .kh-announcement-icon svg{width:20px;height:20px}.ka-home .kh-announcement-kicker{font-size:7.5px;margin-bottom:2px}.ka-home .kh-announcement h3{font-size:12.5px}.ka-home .kh-announcement-meta{margin-top:2px;font-size:8px}.ka-home .kh-announcement-status{padding:4px 6px;font-size:7px}
+.ka-home .kh-announcement-body{padding:5px 11px 9px;font-size:10.2px;line-height:1.38;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.ka-home .kh-announcement-footer{gap:7px;padding:8px 11px 9px}.ka-home .kh-read-check{gap:6px;font-size:9px}.ka-home .kh-read-box{width:20px;height:20px;border-radius:7px}.ka-home .kh-read-count{padding:5px 7px;border-radius:9px;font-size:8px}.ka-home .kh-home-readers{margin:0 11px 9px}
+.ka-home .kh-dyn-item{min-height:52px;padding:8px 10px;border-radius:15px}.ka-home .kh-dyn-icon{width:34px;height:34px;border-radius:11px}.ka-home .kh-dyn-icon svg{width:18px;height:18px}.ka-home .kh-dyn-item .kh-row-main b{font-size:11px}.ka-home .kh-dyn-item .kh-row-main small{font-size:8.5px}.ka-home .kh-dyn-item .kh-chip{font-size:7.5px;padding:4px 6px}
+
+/* Dinamik deneme sayacı */
+.ka-home .kh-trial-live__card{padding:11px;border-radius:18px;box-shadow:0 4px 15px color-mix(in srgb,var(--ka-text) 7%,transparent)}.ka-home .kh-trial-live__badge{gap:6px;font-size:8px}.ka-home .kh-trial-live__badge i{width:6px;height:6px;box-shadow:0 0 0 4px color-mix(in srgb,var(--ka-success) 12%,transparent)}.ka-home .kh-trial-live__detail{font-size:9px}.ka-home .kh-trial-live__title{margin-top:7px;font-size:16px}.ka-home .kh-trial-live__session{margin-top:2px;font-size:10px}.ka-home .kh-trial-live__timers{gap:6px;margin-top:9px}.ka-home .kh-trial-live__timer{padding:8px 9px;border-radius:12px}.ka-home .kh-trial-live__timer-head{gap:8px;align-items:center}.ka-home .kh-trial-live__timer-head small{font-size:6.8px}.ka-home .kh-trial-live__timer-head b{font-size:9px}.ka-home .kh-trial-live__timer-head strong{font-size:14px}.ka-home .kh-trial-live__bar{height:5px;margin-top:6px}.ka-home .kh-trial-live__meta{gap:5px;margin-top:7px}.ka-home .kh-trial-live__meta>span{gap:1px;padding:6px 5px;border-radius:10px;text-align:center}.ka-home .kh-trial-live__meta small{font-size:6.5px}.ka-home .kh-trial-live__meta b{font-size:9px}
+
+/* Haber bandı */
+.ka-home .kh-news{min-height:42px!important;border-radius:14px!important}.ka-home .kh-news-label{min-width:102px!important;padding:0 13px!important;font-size:9.5px!important;gap:6px!important}.ka-home .kh-news-track{min-height:42px}.ka-home .kh-news-item{font-size:9.5px}.ka-home .kh-news-loop{gap:20px;padding-right:20px}
+
+/* Okul özeti: 154px ağır kartlar yerine gerçek mobil 2x2 özet */
+.ka-school-summary-section>.ka-home-section__head{padding:1px 3px 7px}.ka-school-summary-section>.ka-home-section__head h3{font-size:15px}.ka-school-summary-section>.ka-home-section__head .ka-home-section__icon{font-size:17px}
+.ka-school-summary-grid{gap:7px}.ka-school-summary-card{min-height:108px;padding:9px 8px 8px;border-radius:16px;box-shadow:0 3px 10px color-mix(in srgb,var(--ka-text) 5%,transparent)}.ka-school-summary-card::after{width:54px;height:54px;right:-17px;top:-17px}.ka-school-summary-icon{width:34px;height:34px;border-radius:11px;font-size:17px;margin-bottom:4px}.ka-school-summary-card>small{font-size:8px}.ka-school-summary-card>b{margin:2px 0 3px;font-size:23px}.ka-school-summary-meta{min-height:15px;gap:4px;font-size:7.5px}.ka-school-summary-card.is-student .ka-school-summary-meta{padding-top:4px}.ka-school-stage{gap:1px;padding:0 2px}.ka-school-stage-icon{width:17px;height:17px;border-radius:5px;font-size:9px}.ka-school-stage>small{font-size:6.5px}.ka-school-stage>strong{font-size:13px}.ka-school-stage>div{gap:3px;font-size:6.5px}.ka-school-unassigned{margin-top:2px;font-size:6.3px}
+
+/* Sosyal bağlantılar */
+.ka-home .kh-social{gap:6px}.ka-home .kh-social button{min-height:54px;padding:7px 5px;border-radius:14px;gap:5px;font-size:8.8px}.ka-home .kh-social-icon{width:28px;height:28px}.ka-home .kh-social-icon svg{width:17px;height:17px}
+
+/* Günlük kartlar: daha az dikey alan, aynı rota ve veriler */
+.ka-home .kh-section[data-home-section="duty"] .kh-row,.ka-home .kh-section[data-home-section="today-duty"] .kh-row,.ka-home .kh-section[data-home-section="upcoming"] .kh-row,.ka-home .kh-section[data-home-section="lessons"] .kh-row,.ka-home .kh-section[data-home-section="exams"] .kh-row,.ka-home .kh-section[data-home-section="notes"] .kh-row,.ka-home .kh-section[data-home-section="calendar"] .kh-row{gap:8px;padding:9px 11px}
+.ka-home .kh-section[data-home-section="duty"] .kh-row-main>b,.ka-home .kh-section[data-home-section="today-duty"] .kh-row-main>b,.ka-home .kh-section[data-home-section="upcoming"] .kh-row-main b,.ka-home .kh-section[data-home-section="lessons"] .kh-row-main b,.ka-home .kh-section[data-home-section="exams"] .kh-row-main b,.ka-home .kh-section[data-home-section="notes"] .kh-row-main b,.ka-home .kh-section[data-home-section="calendar"] .kh-row-main b{font-size:11.2px}
+.ka-home .kh-section[data-home-section="duty"] .kh-row-main>small,.ka-home .kh-section[data-home-section="today-duty"] .kh-row-main>small,.ka-home .kh-section[data-home-section="upcoming"] .kh-row-main small,.ka-home .kh-section[data-home-section="lessons"] .kh-row-main small,.ka-home .kh-section[data-home-section="exams"] .kh-row-main small,.ka-home .kh-section[data-home-section="notes"] .kh-row-main small,.ka-home .kh-section[data-home-section="calendar"] .kh-row-main small{margin-top:2px;font-size:9px}.ka-home .kh-chip{font-size:7.5px;padding:4px 6px}.ka-home .kh-place{gap:5px}.ka-home .kh-place-ico{width:26px;height:26px;border-radius:9px;font-size:14px}.ka-home .kh-place b{font-size:8px}.ka-home .kh-exam-date{padding:6px 10px 4px;font-size:8px}
+
+/* Haftalık nöbet programı: dikey uzun liste yerine yatay gün kartları */
+.ka-home .kh-section[data-home-section="week-duty"]>.kh-card{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:0;border:0;background:transparent;box-shadow:none;scrollbar-width:none}.ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex:0 0 min(78%,300px);scroll-snap-align:start;overflow:hidden;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);box-shadow:0 2px 8px color-mix(in srgb,var(--ka-text) 4%,transparent)}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:8px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:40px;padding:7px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{font-size:9.5px}
+
+/* Koyu temada katman ayrımı; sabit açık renk yüzey üretme. */
+[data-theme="dark"] .ka-home .kh-hero,[data-theme="dark"] .ka-home .kh-announcement,[data-theme="dark"] .ka-home .kh-trial-live__card{box-shadow:0 5px 20px rgba(0,0,0,.26)}
+[data-theme="dark"] .ka-school-summary-card,[data-theme="dark"] .ka-home .kh-card,[data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{box-shadow:0 3px 14px rgba(0,0,0,.20)}
+
+@media(max-width:390px){
+  .ka-home{gap:11px!important;padding-left:max(8px,var(--ka-safe-left))!important;padding-right:max(8px,var(--ka-safe-right))!important}
+  .ka-home .kh-hero{padding:13px 11px 11px;border-radius:19px}.ka-home .kh-greeting{font-size:20px}.ka-home .kh-live-stack{margin-top:10px}
+  #khBell .kh-bell-timeline-v2{padding:9px 8px 8px}#khBell .kh-bell-timeline-head{grid-template-columns:34px minmax(0,1fr) auto;gap:6px}#khBell .kh-bell-timeline-current-icon{width:34px;height:34px}#khBell .kh-bell-timeline-copy strong{font-size:13.5px}#khBell .kh-bell-countdown-ring{width:60px;height:60px}#khBell .kh-bell-step>i{width:25px;height:25px}
+  .ka-home .kh-announcement-head{grid-template-columns:34px minmax(0,1fr) auto;padding-inline:9px}.ka-home .kh-announcement-icon{width:34px;height:34px}.ka-home .kh-announcement-body{padding-inline:9px}.ka-home .kh-announcement-footer{padding-inline:9px}
+  .ka-school-summary-grid{gap:6px}.ka-school-summary-card{min-height:104px;padding-inline:6px}.ka-school-summary-icon{width:31px;height:31px}.ka-school-summary-card>b{font-size:21px}.ka-school-stage>strong{font-size:12px}
+  .ka-home .kh-trial-live__card{padding:9px}.ka-home .kh-trial-live__timer-head strong{font-size:12.5px}.ka-home .kh-trial-live__meta>span{padding-inline:3px}
+  .ka-home .kh-section-title{font-size:13.5px}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:84%}
+}
+
+@media(min-width:700px){
+  .ka-home{max-width:920px;gap:14px!important;padding-inline:16px!important}.ka-home .kh-hero{padding:18px}.ka-home .kh-greeting{font-size:25px}
+  .ka-school-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.ka-school-summary-card{min-height:112px}
+  .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:min(46%,320px)}
+}
