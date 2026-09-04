@@ -1,0 +1,54 @@
+name: Teacher access and results fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/teacher-results-duty-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify baseline
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '914fe0665da90b7d9a23e72c0cd85acca65dd9f7'
+      - name: Apply focused fixes
+        run: python3 scripts/tmp-teacher-results-duty-fix.py
+      - name: Validate syntax, regressions and architecture
+        run: |
+          set -euo pipefail
+          node --check js/modules/settings.js
+          node --check js/core/shell-ui.js
+          node --check js/modules/academic.js
+          node --check service-worker.js
+          node tests/teacher-access-results-duty.test.js
+          node tests/duty-report-full-parity.test.js
+          node tests/academic-separate-pages.test.js
+          node tests/settings-separate-pages.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/module-bundles-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/web-mobile-engine-separation.test.js
+          npm run audit:client
+          npm run build:client
+      - name: Commit verified fixes and clean temporary files
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/teacher-results-duty-fix.yml scripts/tmp-teacher-results-duty-fix.py
+          git add js/modules/settings.js js/core/shell-ui.js js/modules/academic.js js/app-loader.js css/design-system.css index.html service-worker.js tests/teacher-access-results-duty.test.js tests/duty-report-full-parity.test.js tests/academic-separate-pages.test.js
+          git commit -m 'fix: tighten teacher access and result entry'
+          git push origin HEAD:main
