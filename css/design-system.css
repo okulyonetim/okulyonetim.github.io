@@ -1147,7 +1147,8 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 .ka-report .ka-payroll-report__section-title th{height:16px!important;padding:2px 4px!important;background:#e9f1e3!important;color:#000!important;font-size:6.2pt!important;font-weight:400!important;text-align:left!important}
 .ka-report .ka-payroll-report__section-title strong{font-weight:800}.ka-report .ka-payroll-report__section-title span{font-size:5.8pt;font-style:italic;font-weight:500}
 .ka-report .ka-payroll-report__summary th{font-size:5.6pt!important}.ka-report .ka-payroll-report__summary td{height:18px;text-align:center;font-weight:700}
-.ka-report .ka-payroll-report__section td{height:19px}.ka-report .ka-payroll-report__section td:first-child{width:14%}.ka-report .ka-payroll-report__section td:nth-child(2){font-weight:600}
+.ka-report .ka-payroll-report__section td{height:19px}
+.ka-report .ka-payroll-report__section tbody td{text-align:center!important;vertical-align:middle!important}.ka-report .ka-payroll-report__section td:first-child{width:14%}.ka-report .ka-payroll-report__section td:nth-child(2){font-weight:600}
 .ka-report .ka-payroll-report__promotion th:nth-child(1){width:14%}.ka-report .ka-payroll-report__promotion th:nth-child(2){width:19%}.ka-report .ka-payroll-report__promotion th:nth-child(3){width:14%}.ka-report .ka-payroll-report__promotion th:nth-child(8){width:13%}
 .ka-report .ka-payroll-report__statement{margin:5px 0 0!important;color:#000!important;font-size:6.4pt!important;line-height:1.25!important;text-align:left!important}
 .ka-report .ka-payroll-report__approval{width:72mm;min-height:42mm;display:grid;grid-template-columns:1fr;align-content:start;margin:7mm 4mm 0 auto;padding:0 3mm;color:#000;break-inside:avoid;page-break-inside:avoid}
