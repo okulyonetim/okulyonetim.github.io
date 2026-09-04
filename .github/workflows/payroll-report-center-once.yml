@@ -1,0 +1,78 @@
+name: Apply payroll report center alignment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/payroll-report-center-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Center payroll report personnel cells
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          css_path=Path('css/design-system.css')
+          css=css_path.read_text()
+          rule='.ka-report .ka-payroll-report__section tbody td{text-align:center!important;vertical-align:middle!important}'
+          anchor='.ka-report .ka-payroll-report__section td{height:19px}'
+          if rule not in css:
+              if anchor not in css:
+                  raise SystemExit('Payroll report section cell anchor not found')
+              css=css.replace(anchor,anchor+'\n'+rule,1)
+          css_path.write_text(css)
+
+          test_path=Path('tests/payroll-change-v2-smoke.test.js')
+          test=test_path.read_text()
+          assertion="assert(css.includes('.ka-report .ka-payroll-report__section tbody td{text-align:center!important;vertical-align:middle!important}'),'Maaş raporundaki personel bilgi hücreleri yatay ve dikey ortalanmalı.');"
+          marker="assert(src.includes(\"data-document-form='payroll'\")||src.includes(\"dataset.documentForm='payroll'\"),'Documents ekranına maaş formu girişi eklenmeli.');"
+          if assertion not in test:
+              if marker not in test:
+                  raise SystemExit('Payroll smoke insertion marker not found')
+              test=test.replace(marker,assertion+'\n'+marker,1)
+          test_path.write_text(test)
+
+          index_path=Path('index.html')
+          index=index_path.read_text()
+          if 'css/design-system.css?v=880' not in index:
+              raise SystemExit('Expected design-system v880 reference not found')
+          index_path.write_text(index.replace('css/design-system.css?v=880','css/design-system.css?v=881',1))
+
+          sw_path=Path('service-worker.js')
+          sw=sw_path.read_text()
+          if "const CACHE_ADI='oy-cache-v880';" not in sw:
+              raise SystemExit('Expected service worker cache v880 not found')
+          sw=sw.replace("const CACHE_ADI='oy-cache-v880';","const CACHE_ADI='oy-cache-v881';",1)
+          if "'./css/design-system.css?v=880'" not in sw:
+              raise SystemExit('Expected precache design-system v880 not found')
+          sw=sw.replace("'./css/design-system.css?v=880'","'./css/design-system.css?v=881'",1)
+          sw_path.write_text(sw)
+          PY
+      - name: Verify payroll report package
+        run: |
+          node --check js/modules/payroll-change.js
+          node tests/payroll-change-v2-smoke.test.js
+          node tests/service-worker-precache-smoke.test.js
+      - name: Commit verified fix and remove one-time workflow
+        shell: bash
+        run: |
+          rm .github/workflows/payroll-report-center-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add css/design-system.css tests/payroll-change-v2-smoke.test.js index.html service-worker.js .github/workflows/payroll-report-center-once.yml
+          git commit -m 'fix: center payroll report personnel cells'
+          git push origin HEAD:main
