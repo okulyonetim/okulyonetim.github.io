@@ -45,6 +45,7 @@ assert(seating.includes('global.ReportEngine.printReport'),'Oturma planı çıkt
 assert(seating.includes('global.SinifOturma={ac:open'),'Legacy public SinifOturma.ac API geri gelmeli.');
 assert(seating.includes('function clearStudentAssignments()')&&seating.includes('Sıra ve sınıf düzeni korunacak.'),'Temizle işlemi yalnız öğrenci yerleşimlerini silmeli; sınıf düzenini korumalı.');
 assert(seating.includes("seat.addEventListener('click'")&&seating.includes('chooseStudent(seat)'),'Sıradaki artı/isim alanına dokunma öğrenci seçiciyi açmalı.');
+assert(seating.includes('(overlay||document.body).appendChild(ov)'),'Öğrenci seçici tam ekran oturma katmanının üstünde açılmalı.');
 assert(seating.includes('const TOUCH_CLICK_LIMIT=18')&&seating.includes('navigator.maxTouchPoints>0')&&seating.includes('if(!dragging&&Math.hypot(screenDx,screenDy)<clickLimit)return')&&seating.includes('const clickLimit=pointerClickLimit(pointerType),dragged=dragging||dist>=clickLimit'),'Mobil dokunma titreşimi masa dokunmasını sürükleme olarak yutmamalı.');
 assert(seating.includes("const printable=orientation==='yatay'?{w:287,h:200}:{w:200,h:287}")&&seating.includes('baslikGoster:false')&&seating.includes('logoGoster:false'),'Sınıf oturma çıktısı seçilen yönde tek A4 yazdırılabilir alana ölçeklenmeli.');
 

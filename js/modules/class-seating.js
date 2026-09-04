@@ -152,7 +152,7 @@ function chooseStudent(seat){
       <button class="ka-btn ka-btn--secondary" type="button" data-close>Kapat</button>
     </div>
   </section>`;
-  document.body.appendChild(ov);
+  (overlay||document.body).appendChild(ov);
   $$('[data-close]',ov).forEach(b=>b.onclick=()=>ov.remove());
   $$('[data-student]',ov).forEach(b=>b.onclick=()=>{
     const v=students().find(x=>x.id===b.dataset.student);
