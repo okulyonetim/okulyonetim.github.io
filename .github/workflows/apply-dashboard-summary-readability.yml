@@ -36,76 +36,76 @@ jobs:
           marker='/* ===== DASHBOARD SCHOOL SUMMARY READABILITY V2 ===== */'
           if marker in css:
               raise SystemExit('readability marker already exists')
-          block=r'''
-
-/* ===== DASHBOARD SCHOOL SUMMARY READABILITY V2 ===== */
-/* 2x2 mobil düzen korunur; bilgi yoğunluğu azaltılmadan okunabilirlik yükseltilir. */
-.ka-school-summary-section>.ka-home-section__head{padding:2px 3px 9px}
-.ka-school-summary-section>.ka-home-section__head h3{font-size:17px;letter-spacing:-.01em}
-.ka-school-summary-section>.ka-home-section__head .ka-home-section__icon{font-size:20px}
-.ka-school-summary-grid{gap:8px}
-.ka-school-summary-card{min-height:128px;padding:12px 10px 10px;border-radius:18px}
-.ka-school-summary-card::after{width:60px;height:60px;right:-19px;top:-19px}
-.ka-school-summary-icon{width:39px;height:39px;border-radius:12px;font-size:19px;margin-bottom:5px}
-.ka-school-summary-card>small{font-size:10px;letter-spacing:.04em;line-height:1.2}
-.ka-school-summary-card>b{margin:3px 0 5px;font-size:27px;line-height:1}
-.ka-school-summary-meta{min-height:18px;gap:6px;font-size:9.5px;line-height:1.25;font-weight:700}
-.ka-school-summary-card.is-student{padding-inline:10px}
-.ka-school-summary-card.is-student .ka-school-summary-meta{margin-top:2px;padding-top:6px}
-.ka-school-stage{gap:2px;padding:0 3px}
-.ka-school-stage-icon{width:20px;height:20px;border-radius:6px;font-size:10px}
-.ka-school-stage>small{font-size:8.5px;letter-spacing:.025em;line-height:1.15}
-.ka-school-stage>strong{font-size:16px;line-height:1.05}
-.ka-school-stage>div{gap:5px;font-size:9.5px;line-height:1.2;font-weight:850}
-.ka-school-unassigned{margin-top:3px;font-size:8px;line-height:1.25}
-@media(max-width:390px){
-  .ka-school-summary-grid{gap:7px}
-  .ka-school-summary-card{min-height:124px;padding:11px 8px 9px;border-radius:17px}
-  .ka-school-summary-icon{width:36px;height:36px;border-radius:11px;font-size:18px;margin-bottom:4px}
-  .ka-school-summary-card>small{font-size:9.5px}
-  .ka-school-summary-card>b{font-size:25px}
-  .ka-school-summary-meta{gap:5px;font-size:9.2px}
-  .ka-school-summary-card.is-student .ka-school-summary-meta{padding-top:5px}
-  .ka-school-stage>small{font-size:8.2px}
-  .ka-school-stage>strong{font-size:15.5px}
-  .ka-school-stage>div{gap:4px;font-size:9px}
-  .ka-school-unassigned{font-size:7.8px}
-}
-@media(min-width:700px){
-  .ka-school-summary-card{min-height:128px}
-}
-'''
-          css_path.write_text(css.rstrip()+block+'\n',encoding='utf-8')
+          css_lines=[
+              '',marker,
+              '/* 2x2 mobil düzen korunur; bilgi yoğunluğu azaltılmadan okunabilirlik yükseltilir. */',
+              '.ka-school-summary-section>.ka-home-section__head{padding:2px 3px 9px}',
+              '.ka-school-summary-section>.ka-home-section__head h3{font-size:17px;letter-spacing:-.01em}',
+              '.ka-school-summary-section>.ka-home-section__head .ka-home-section__icon{font-size:20px}',
+              '.ka-school-summary-grid{gap:8px}',
+              '.ka-school-summary-card{min-height:128px;padding:12px 10px 10px;border-radius:18px}',
+              '.ka-school-summary-card::after{width:60px;height:60px;right:-19px;top:-19px}',
+              '.ka-school-summary-icon{width:39px;height:39px;border-radius:12px;font-size:19px;margin-bottom:5px}',
+              '.ka-school-summary-card>small{font-size:10px;letter-spacing:.04em;line-height:1.2}',
+              '.ka-school-summary-card>b{margin:3px 0 5px;font-size:27px;line-height:1}',
+              '.ka-school-summary-meta{min-height:18px;gap:6px;font-size:9.5px;line-height:1.25;font-weight:700}',
+              '.ka-school-summary-card.is-student{padding-inline:10px}',
+              '.ka-school-summary-card.is-student .ka-school-summary-meta{margin-top:2px;padding-top:6px}',
+              '.ka-school-stage{gap:2px;padding:0 3px}',
+              '.ka-school-stage-icon{width:20px;height:20px;border-radius:6px;font-size:10px}',
+              '.ka-school-stage>small{font-size:8.5px;letter-spacing:.025em;line-height:1.15}',
+              '.ka-school-stage>strong{font-size:16px;line-height:1.05}',
+              '.ka-school-stage>div{gap:5px;font-size:9.5px;line-height:1.2;font-weight:850}',
+              '.ka-school-unassigned{margin-top:3px;font-size:8px;line-height:1.25}',
+              '@media(max-width:390px){',
+              '  .ka-school-summary-grid{gap:7px}',
+              '  .ka-school-summary-card{min-height:124px;padding:11px 8px 9px;border-radius:17px}',
+              '  .ka-school-summary-icon{width:36px;height:36px;border-radius:11px;font-size:18px;margin-bottom:4px}',
+              '  .ka-school-summary-card>small{font-size:9.5px}',
+              '  .ka-school-summary-card>b{font-size:25px}',
+              '  .ka-school-summary-meta{gap:5px;font-size:9.2px}',
+              '  .ka-school-summary-card.is-student .ka-school-summary-meta{padding-top:5px}',
+              '  .ka-school-stage>small{font-size:8.2px}',
+              '  .ka-school-stage>strong{font-size:15.5px}',
+              '  .ka-school-stage>div{gap:4px;font-size:9px}',
+              '  .ka-school-unassigned{font-size:7.8px}',
+              '}',
+              '@media(min-width:700px){',
+              '  .ka-school-summary-card{min-height:128px}',
+              '}',
+          ]
+          css_path.write_text(css.rstrip()+'\n'+'\n'.join(css_lines)+'\n',encoding='utf-8')
 
           replace_exact('index.html','<link rel="stylesheet" href="css/design-system.css?v=893">','<link rel="stylesheet" href="css/design-system.css?v=894">')
           replace_exact('service-worker.js',"const CACHE_ADI='oy-cache-v894';","const CACHE_ADI='oy-cache-v895';")
           replace_exact('service-worker.js',"'./css/design-system.css?v=893'","'./css/design-system.css?v=894'")
 
-          test=Path('tests/dashboard-school-summary-readability.test.js')
-          test.write_text(r'''const test=require('node:test');
-          const assert=require('node:assert/strict');
-          const fs=require('node:fs');
-          const path=require('node:path');
-          const root=path.resolve(__dirname,'..');
-          const css=fs.readFileSync(path.join(root,'css/design-system.css'),'utf8');
-          const marker='/* ===== DASHBOARD SCHOOL SUMMARY READABILITY V2 ===== */';
-          const block=css.slice(css.lastIndexOf(marker));
-
-          test('school summary has readable general mobile typography',()=>{
-            assert.ok(block.startsWith(marker));
-            assert.match(block,/\.ka-school-summary-card\{min-height:128px;padding:12px 10px 10px/);
-            assert.match(block,/\.ka-school-summary-card>small\{font-size:10px/);
-            assert.match(block,/\.ka-school-summary-card>b\{margin:3px 0 5px;font-size:27px/);
-            assert.match(block,/\.ka-school-summary-meta\{min-height:18px;gap:6px;font-size:9\.5px/);
-          });
-
-          test('student gender breakdown stays readable on narrow phones',()=>{
-            assert.match(block,/\.ka-school-stage>small\{font-size:8\.5px/);
-            assert.match(block,/\.ka-school-stage>div\{gap:5px;font-size:9\.5px/);
-            assert.match(block,/@media\(max-width:390px\)[\s\S]*?\.ka-school-summary-meta\{gap:5px;font-size:9\.2px\}/);
-            assert.match(block,/@media\(max-width:390px\)[\s\S]*?\.ka-school-stage>div\{gap:4px;font-size:9px\}/);
-          });
-          ''',encoding='utf-8')
+          test_lines=[
+              "const test=require('node:test');",
+              "const assert=require('node:assert/strict');",
+              "const fs=require('node:fs');",
+              "const path=require('node:path');",
+              "const root=path.resolve(__dirname,'..');",
+              "const css=fs.readFileSync(path.join(root,'css/design-system.css'),'utf8');",
+              "const marker='/* ===== DASHBOARD SCHOOL SUMMARY READABILITY V2 ===== */';",
+              "const block=css.slice(css.lastIndexOf(marker));",
+              "",
+              "test('school summary has readable general mobile typography',()=>{",
+              "  assert.ok(block.startsWith(marker));",
+              "  assert.match(block,/\\.ka-school-summary-card\\{min-height:128px;padding:12px 10px 10px/);",
+              "  assert.match(block,/\\.ka-school-summary-card>small\\{font-size:10px/);",
+              "  assert.match(block,/\\.ka-school-summary-card>b\\{margin:3px 0 5px;font-size:27px/);",
+              "  assert.match(block,/\\.ka-school-summary-meta\\{min-height:18px;gap:6px;font-size:9\\.5px/);",
+              "});",
+              "",
+              "test('student gender breakdown stays readable on narrow phones',()=>{",
+              "  assert.match(block,/\\.ka-school-stage>small\\{font-size:8\\.5px/);",
+              "  assert.match(block,/\\.ka-school-stage>div\\{gap:5px;font-size:9\\.5px/);",
+              "  assert.match(block,/@media\\(max-width:390px\\)[\\s\\S]*?\\.ka-school-summary-meta\\{gap:5px;font-size:9\\.2px\\}/);",
+              "  assert.match(block,/@media\\(max-width:390px\\)[\\s\\S]*?\\.ka-school-stage>div\\{gap:4px;font-size:9px\\}/);",
+              "});",
+          ]
+          Path('tests/dashboard-school-summary-readability.test.js').write_text('\n'.join(test_lines)+'\n',encoding='utf-8')
           PY
       - name: Focused regression tests
         run: |
