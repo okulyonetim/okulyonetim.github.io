@@ -16,355 +16,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 4
+          fetch-depth: 3
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Apply central CSS redesign
+      - name: Apply central CSS redesign from validated parent
         shell: bash
         run: |
           set -euo pipefail
-          git show c2a0a12aff373cc7e008096b36d214479bca1405:.github/workflows/client-architecture.yml > /tmp/client-architecture.yml
-          marker='/* ===== RUBRIC / EXAM WORKSPACE REDESIGN 2026-09-05 ===== */'
-          if grep -Fq "$marker" css/design-system.css; then
-            echo 'Rubric redesign marker already exists'
-            exit 1
-          fi
-          cat >> css/design-system.css <<'CSS'
-
-          /* ===== RUBRIC / EXAM WORKSPACE REDESIGN 2026-09-05 ===== */
-          /* Görsel katman: davranış, DOM ve local-first veri akışı değiştirilmez. */
-          .ka-rubric-workspace{
-            width:min(1080px,100%);
-            height:min(94dvh,880px);
-            border-color:color-mix(in srgb,var(--ka-primary) 16%,var(--ka-border));
-            border-radius:24px;
-            background:color-mix(in srgb,var(--ka-app-bg) 94%,var(--ka-card-bg));
-          }
-          .ka-rubric-workspace__header{
-            gap:12px;
-            padding:12px 14px;
-            background:linear-gradient(135deg,color-mix(in srgb,var(--ka-primary) 92%,#fff),var(--ka-primary));
-            box-shadow:0 8px 24px color-mix(in srgb,var(--ka-primary) 20%,transparent);
-          }
-          .ka-rubric-workspace__identity{gap:10px}
-          .ka-rubric-workspace__icon{
-            width:40px;height:40px;flex-basis:40px;border-radius:13px;
-            background:color-mix(in srgb,#fff 18%,transparent);
-            border:1px solid color-mix(in srgb,#fff 22%,transparent);
-            font-size:20px;
-          }
-          .ka-rubric-workspace__identity h2{
-            font-size:18px;line-height:1.12;letter-spacing:-.015em;font-weight:850;
-          }
-          .ka-rubric-workspace__identity p{margin-top:2px;font-size:10.5px}
-          .ka-rubric-workspace__actions{gap:6px;flex-wrap:nowrap}
-          .ka-rubric-workspace__actions .ka-btn{
-            min-height:38px;padding:7px 11px;border-radius:12px;font-size:11px;font-weight:800;white-space:nowrap;
-          }
-          .ka-rubric-workspace__actions .ka-btn--secondary{
-            background:color-mix(in srgb,#fff 14%,transparent);
-            border-color:color-mix(in srgb,#fff 28%,transparent);
-            color:#fff;
-          }
-          .ka-rubric-workspace__actions .ka-btn--secondary:hover{
-            background:color-mix(in srgb,#fff 22%,transparent);color:#fff;
-          }
-          .ka-rubric-workspace__body{
-            padding:14px;
-            background:
-              radial-gradient(circle at 12% -10%,color-mix(in srgb,var(--ka-primary) 8%,transparent),transparent 34%),
-              var(--ka-app-bg);
-          }
-          .ka-rubric-flow{width:min(940px,100%)}
-          .ka-rubric-step{
-            overflow:hidden;
-            border:1px solid color-mix(in srgb,var(--ka-primary) 14%,var(--ka-border));
-            border-radius:20px;
-            background:var(--ka-card-bg);
-            box-shadow:0 12px 30px color-mix(in srgb,#000 7%,transparent);
-          }
-          .ka-rubric-step__head{
-            gap:11px;padding:12px 14px;
-            background:linear-gradient(90deg,color-mix(in srgb,var(--ka-primary-soft) 76%,var(--ka-card-bg)),var(--ka-card-bg));
-            border-bottom:1px solid var(--ka-border);
-          }
-          .ka-rubric-step__head>span{
-            min-width:46px;height:32px;padding:0 9px;border-radius:999px;
-            background:var(--ka-primary);color:var(--ka-button-text);
-            box-shadow:0 5px 14px color-mix(in srgb,var(--ka-primary) 20%,transparent);
-            font-size:11px;font-weight:900;
-          }
-          .ka-rubric-step__head h3{font-size:16px;line-height:1.15;letter-spacing:-.01em}
-          .ka-rubric-step__head p{margin-top:2px;font-size:10.5px;line-height:1.35}
-          .ka-rubric-step__body{padding:14px;gap:12px}
-          .ka-rubric-step__body>.ka-grid{gap:11px 12px}
-          .ka-rubric-step .ka-field{gap:5px}
-          .ka-rubric-step .ka-field__label{font-size:11.5px;font-weight:800;color:var(--ka-text)}
-          .ka-rubric-step input:not([type="file"]),
-          .ka-rubric-step select{
-            min-height:46px;height:46px;padding:9px 11px;border-radius:13px;
-            background:color-mix(in srgb,var(--ka-card-bg) 94%,var(--ka-muted-bg));
-            font-size:12.5px;
-          }
-          .ka-rubric-step input[type="file"]{
-            min-height:48px;padding:9px;border:1px dashed color-mix(in srgb,var(--ka-primary) 35%,var(--ka-border));
-            border-radius:13px;background:var(--ka-primary-soft);
-          }
-          .ka-rubric-step__body>.ka-btn:last-child{min-height:46px;border-radius:13px;font-weight:850}
-          .ka-rubric-choice-grid{gap:8px}
-          .ka-rubric-preview{border-radius:14px;border-color:var(--ka-border);background:#fff}
-
-          /* Ölçüt düzenleyici: daha kısa, daha okunaklı, mobilde taşmayan düzen. */
-          .ka-rubric-settings{
-            width:min(860px,calc(100% - 24px));
-            max-height:min(92dvh,820px);
-            border-radius:22px;
-            border:1px solid color-mix(in srgb,var(--ka-primary) 18%,var(--ka-border));
-            background:var(--ka-card-bg);
-            box-shadow:0 24px 70px color-mix(in srgb,#000 30%,transparent);
-          }
-          .ka-rubric-settings__header{
-            align-items:center;padding:13px 15px;
-            background:linear-gradient(135deg,color-mix(in srgb,var(--ka-primary-soft) 86%,var(--ka-card-bg)),var(--ka-card-bg));
-            border-bottom:1px solid var(--ka-border);
-          }
-          .ka-rubric-settings__header h3{font-size:18px;line-height:1.15;letter-spacing:-.01em}
-          .ka-rubric-settings__header p{margin-top:3px;font-size:10.5px;line-height:1.35}
-          .ka-rubric-settings__header #rtx{
-            min-height:38px;padding:7px 11px;border-radius:12px;white-space:nowrap;
-          }
-          .ka-rubric-settings .ka-modal__body{
-            gap:12px;padding:13px 15px 16px;
-            background:color-mix(in srgb,var(--ka-app-bg) 76%,var(--ka-card-bg));
-            scrollbar-gutter:stable;
-          }
-          .ka-rubric-settings .ka-field{gap:5px;min-width:0}
-          .ka-rubric-settings .ka-field__label{font-size:11px;font-weight:800;color:var(--ka-text)}
-          .ka-rubric-settings input,
-          .ka-rubric-settings select{
-            min-width:0;width:100%;min-height:44px;height:44px;
-            padding:8px 10px;border-radius:12px;
-            background:var(--ka-card-bg);font-size:12px;
-          }
-          .ka-rubric-settings #rtform{min-width:0}
-          .ka-rubric-settings #rtform>.ka-grid{
-            grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
-          }
-          .ka-rubric-settings #rtform>.ka-stack{gap:11px}
-          .ka-rubric-settings #rtlabels{
-            display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 9px;
-          }
-          .ka-rubric-settings #rtlabels .ka-field{
-            display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:7px;
-          }
-          .ka-rubric-settings #rtlabels .ka-field__label{
-            display:grid;place-items:center;margin:0;min-height:28px;border-radius:8px;
-            background:var(--ka-primary-soft);color:var(--ka-primary);font-size:10.5px;font-weight:900;
-          }
-          .ka-rubric-settings #rtlabels input{height:40px;min-height:40px}
-          .ka-rubric-settings #rtgroups{gap:10px}
-          .ka-rubric-settings #rtgroups>.ka-card{
-            overflow:hidden;border-radius:16px;
-            border:1px solid color-mix(in srgb,var(--ka-primary) 12%,var(--ka-border));
-            background:var(--ka-card-bg);box-shadow:none;
-          }
-          .ka-rubric-settings #rtgroups>.ka-card .ka-card__body{gap:8px;padding:11px}
-          .ka-rubric-settings #rtgroups>.ka-card .ka-field{margin-bottom:1px}
-          .ka-rubric-settings #rtgroups>.ka-card .ka-field__label{
-            font-size:10.5px;text-transform:uppercase;letter-spacing:.035em;color:var(--ka-text-muted);
-          }
-          .ka-rubric-settings #rtgroups>.ka-card .ka-row:has(>[data-del-k]){
-            display:grid;grid-template-columns:minmax(0,1fr) 52px;align-items:stretch;gap:7px;
-          }
-          .ka-rubric-settings #rtgroups input[id^="rtk"]{
-            width:100%;min-width:0;height:42px;min-height:42px;
-            overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-          }
-          .ka-rubric-settings [data-del-k]{
-            width:52px;min-width:52px;min-height:42px;padding:6px;border-radius:11px;
-            background:color-mix(in srgb,var(--ka-danger) 10%,var(--ka-card-bg));
-            border-color:color-mix(in srgb,var(--ka-danger) 28%,var(--ka-border));
-            color:var(--ka-danger);font-size:10.5px;font-weight:850;
-          }
-          .ka-rubric-settings [data-del-k]:hover{
-            background:color-mix(in srgb,var(--ka-danger) 16%,var(--ka-card-bg));color:var(--ka-danger);
-          }
-          .ka-rubric-settings #rtgroups>.ka-card .ka-row:has(>[data-add-k]){
-            display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7px;margin-top:2px;
-          }
-          .ka-rubric-settings [data-add-k],
-          .ka-rubric-settings [data-del-g]{
-            width:100%;min-height:40px;padding:7px 9px;border-radius:11px;font-size:10.5px;font-weight:850;
-          }
-          .ka-rubric-settings [data-add-k]{
-            background:var(--ka-primary);border-color:var(--ka-primary);color:var(--ka-button-text);
-          }
-          .ka-rubric-settings [data-del-g]{
-            background:color-mix(in srgb,var(--ka-danger) 8%,var(--ka-card-bg));
-            border-color:color-mix(in srgb,var(--ka-danger) 24%,var(--ka-border));color:var(--ka-danger);
-          }
-          .ka-rubric-settings #rtaddg{
-            min-height:38px;padding:7px 11px;border-radius:11px;
-            background:var(--ka-primary-soft);border-color:color-mix(in srgb,var(--ka-primary) 28%,var(--ka-border));
-            color:var(--ka-primary);font-weight:850;
-          }
-          .ka-rubric-settings__footer{
-            display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;
-            padding:10px 14px max(10px,var(--ka-safe-bottom));
-            border-top:1px solid var(--ka-border);background:var(--ka-card-bg);
-          }
-          .ka-rubric-settings__footer .ka-btn{
-            width:100%;min-height:42px;padding:8px 10px;border-radius:12px;
-            font-size:10.5px;line-height:1.2;font-weight:850;
-          }
-          .ka-rubric-settings__footer #rtdeletecustom{grid-column:1/-1;margin:0;color:var(--ka-danger)}
-          .ka-rubric-settings__footer #rtsave{grid-column:1/-1;min-height:44px}
-          .ka-rubric-settings__footer:not(:has(#rtschool)) #rtcloud{grid-column:1/-1}
-
-          /* Sınavlar ve Not İşlemleri: yalnız rubric rotasını içeren menü grubu. */
-          .ka-menu-page:has([data-ka-shell-page="rubric"]){
-            background:
-              radial-gradient(circle at 50% -12%,color-mix(in srgb,var(--ka-primary) 10%,transparent),transparent 28%),
-              var(--ka-app-bg);
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-head{
-            min-height:68px;padding:10px 14px;
-            border-bottom:1px solid var(--ka-border);
-            background:color-mix(in srgb,var(--ka-app-bg) 92%,var(--ka-card-bg));
-            backdrop-filter:blur(16px);
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-head h2{
-            font-size:19px;line-height:1.15;letter-spacing:-.015em;font-weight:850;
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-head .ka-icon-button{
-            width:38px;height:38px;border-radius:12px;
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list{
-            width:min(720px,100%);margin:0 auto;padding:14px 12px calc(100px + var(--ka-safe-bottom));gap:9px;
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn{
-            min-height:62px;padding:8px 10px;border-radius:17px;
-            border:1px solid color-mix(in srgb,var(--ka-primary) 12%,var(--ka-border));
-            background:color-mix(in srgb,var(--ka-card-bg) 96%,var(--ka-primary-soft));
-            box-shadow:0 7px 20px color-mix(in srgb,#000 5%,transparent);
-            transition:transform .16s ease,border-color .16s ease,background .16s ease;
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn:hover{
-            border-color:color-mix(in srgb,var(--ka-primary) 32%,var(--ka-border));
-            background:color-mix(in srgb,var(--ka-primary-soft) 50%,var(--ka-card-bg));
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn:active{transform:scale(.985)}
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn .ka-avatar{
-            width:42px;height:42px;flex:0 0 42px;border-radius:13px;
-            background:var(--ka-primary-soft);border:1px solid color-mix(in srgb,var(--ka-primary) 14%,transparent);
-            font-size:19px;
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn strong{
-            font-size:13.5px;line-height:1.2;letter-spacing:-.005em;
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn>span:last-child{
-            width:30px;height:30px;border-radius:10px;background:var(--ka-muted-bg);
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn[data-ka-shell-page="rubric"],
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn[data-ka-shell-page="project"]{
-            border-color:color-mix(in srgb,var(--ka-primary) 26%,var(--ka-border));
-            background:linear-gradient(90deg,color-mix(in srgb,var(--ka-primary-soft) 58%,var(--ka-card-bg)),var(--ka-card-bg) 72%);
-          }
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn[data-ka-shell-page="rubric"]::before,
-          .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn[data-ka-shell-page="project"]::before{
-            content:"";width:3px;align-self:stretch;border-radius:999px;background:var(--ka-primary);margin-right:1px;
-          }
-
-          @media(max-width:720px){
-            .ka-rubric-workspace{width:100%;height:100dvh;max-height:none;border:0;border-radius:0}
-            .ka-rubric-workspace__header{
-              display:grid;grid-template-columns:minmax(0,1fr);gap:8px;
-              padding:max(9px,var(--ka-safe-top)) 10px 9px;
-            }
-            .ka-rubric-workspace__identity{width:100%;gap:8px}
-            .ka-rubric-workspace__icon{width:36px;height:36px;flex-basis:36px;border-radius:11px;font-size:18px}
-            .ka-rubric-workspace__identity h2{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-            .ka-rubric-workspace__identity p{display:none}
-            .ka-rubric-workspace__actions{
-              width:100%;display:grid;grid-template-columns:minmax(0,1fr) 86px;gap:6px;
-            }
-            .ka-rubric-workspace__actions .ka-btn{
-              width:100%;min-height:38px;padding:7px 9px;border-radius:11px;font-size:10.5px;
-            }
-            .ka-rubric-workspace__body{padding:10px 9px max(16px,var(--ka-safe-bottom))}
-            .ka-rubric-flow{width:100%}
-            .ka-rubric-step{border-radius:17px}
-            .ka-rubric-step__head{gap:9px;padding:10px 11px}
-            .ka-rubric-step__head>span{min-width:43px;height:29px;font-size:10px}
-            .ka-rubric-step__head h3{font-size:15px}
-            .ka-rubric-step__head p{font-size:10px}
-            .ka-rubric-step__body{padding:11px;gap:10px}
-            .ka-rubric-step__body>.ka-grid{grid-template-columns:1fr;gap:9px}
-            .ka-rubric-step input:not([type="file"]),
-            .ka-rubric-step select{height:44px;min-height:44px;font-size:12px}
-            .ka-rubric-step__body>.ka-btn:last-child{min-height:44px}
-            .ka-rubric-settings{
-              width:100%;height:100dvh;max-height:none;border:0;border-radius:0;align-self:stretch;
-            }
-            .ka-rubric-settings__header{
-              position:sticky;top:0;z-index:3;padding:max(10px,var(--ka-safe-top)) 11px 10px;
-            }
-            .ka-rubric-settings__header h3{font-size:17px}
-            .ka-rubric-settings__header p{font-size:10px;max-width:240px}
-            .ka-rubric-settings__header #rtx{min-height:36px;padding:6px 9px;font-size:10.5px}
-            .ka-rubric-settings .ka-modal__body{padding:11px 10px 13px;gap:10px}
-            .ka-rubric-settings input,
-            .ka-rubric-settings select{height:42px;min-height:42px;font-size:11.5px}
-            .ka-rubric-settings #rtform>.ka-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-            .ka-rubric-settings #rtlabels{grid-template-columns:1fr;gap:6px}
-            .ka-rubric-settings #rtlabels input{height:39px;min-height:39px}
-            .ka-rubric-settings #rtgroups{gap:8px}
-            .ka-rubric-settings #rtgroups>.ka-card{border-radius:14px}
-            .ka-rubric-settings #rtgroups>.ka-card .ka-card__body{padding:9px;gap:7px}
-            .ka-rubric-settings #rtgroups>.ka-card .ka-row:has(>[data-del-k]){
-              grid-template-columns:minmax(0,1fr) 48px;gap:6px;
-            }
-            .ka-rubric-settings #rtgroups input[id^="rtk"]{height:40px;min-height:40px;font-size:11.5px}
-            .ka-rubric-settings [data-del-k]{width:48px;min-width:48px;min-height:40px;font-size:10px}
-            .ka-rubric-settings [data-add-k],
-            .ka-rubric-settings [data-del-g]{min-height:38px;font-size:10px}
-            .ka-rubric-settings__footer{
-              position:sticky;bottom:0;z-index:3;grid-template-columns:repeat(2,minmax(0,1fr));
-              gap:6px;padding:8px 10px max(9px,var(--ka-safe-bottom));
-            }
-            .ka-rubric-settings__footer .ka-btn{min-height:40px;padding:7px 8px;font-size:10px}
-            .ka-rubric-settings__footer #rtsave{min-height:42px}
-            .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-head{
-              min-height:62px;padding:8px 10px;
-            }
-            .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-head h2{font-size:18px}
-            .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list{
-              padding:11px 10px calc(96px + var(--ka-safe-bottom));gap:8px;
-            }
-            .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn{
-              min-height:58px;padding:7px 9px;border-radius:15px;
-            }
-            .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn .ka-avatar{
-              width:40px;height:40px;flex-basis:40px;border-radius:12px;font-size:18px;
-            }
-            .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn strong{font-size:12.5px}
-          }
-          @media(max-width:360px){
-            .ka-rubric-workspace__identity h2{font-size:16px}
-            .ka-rubric-settings__header p{display:none}
-            .ka-rubric-settings #rtform>.ka-grid{grid-template-columns:1fr}
-            .ka-rubric-settings__footer .ka-btn{font-size:9.5px}
-            .ka-menu-page:has([data-ka-shell-page="rubric"]) .ka-menu-list>.ka-btn strong{font-size:12px}
-          }
-          CSS
           python3 - <<'PY'
           from pathlib import Path
-          text=Path('css/design-system.css').read_text(encoding='utf-8')
-          if text.count('{') != text.count('}'):
+          import subprocess
+          marker='/* ===== RUBRIC / EXAM WORKSPACE REDESIGN 2026-09-05 ===== */'
+          css=Path('css/design-system.css')
+          current=css.read_text(encoding='utf-8')
+          if marker in current:
+              raise SystemExit('Rubric redesign marker already exists')
+          prev=subprocess.check_output(['git','show','HEAD^:.github/workflows/client-architecture.yml'],text=True)
+          needle='          '+marker
+          start=prev.index(needle)
+          end=prev.index('\n          CSS',start)
+          raw=prev[start:end]
+          lines=raw.splitlines()
+          block='\n'.join(line[10:] if line.startswith('          ') else line for line in lines)
+          updated=current.rstrip()+'\n\n'+block+'\n'
+          if updated.count('{') != updated.count('}'):
               raise SystemExit('CSS brace balance check failed')
-          if text.count('/* ===== RUBRIC / EXAM WORKSPACE REDESIGN 2026-09-05 ===== */') != 1:
-              raise SystemExit('Rubric redesign marker count invalid')
+          css.write_text(updated,encoding='utf-8')
           PY
       - name: Verify rubric contracts
         run: |
@@ -372,14 +50,13 @@ jobs:
           node tests/rubric-settings-v2-smoke.test.js
           node tests/rubric-legacy-retirement-readiness.test.js
           node scripts/check-client-architecture.mjs
-      - name: Restore workflow and commit central CSS
+      - name: Commit central CSS only
         shell: bash
         run: |
           set -euo pipefail
-          cp /tmp/client-architecture.yml .github/workflows/client-architecture.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add css/design-system.css .github/workflows/client-architecture.yml
+          git add css/design-system.css
           git diff --cached --check
           git commit -m 'style: redesign rubric workspace and exam menu'
           git push
