@@ -44,3 +44,4 @@ jobs:
           git add -A
           git commit -m 'fix: keep bus seating cabin visible'
           git push origin HEAD:main
+      # retry 2: parity now expects the intentionally visible stage overflow
