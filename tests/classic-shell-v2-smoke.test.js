@@ -10,7 +10,7 @@ const design=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
 assert(shell.includes('js/core/shell-ui.js'),'Yeni shell UI çekirdekten yüklenmeli.');
-assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css?v=872\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
+assert((shell.match(/<link\s+rel=\"stylesheet\"/g)||[]).length===1&&shell.includes('<link rel=\"stylesheet\" href=\"css/design-system.css?v=877\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');
 assert(!ui.includes('hideRouteTransitionFrame')&&!design.includes('.ka-route-switching'),'Route geçişinde görünür içeriği saklayan titreme katmanı bulunmamalı.');
 assert(ui.includes('const MODULE_ROOT_SELECTORS=Object.freeze')&&ui.includes('function moduleRouteMounted(name)')&&ui.includes('const reuseModule=moduleRouteMounted(name)')&&ui.includes('if(!reuseModule)await global.AppLoader?.load?.(name)'),'Aynı canonical modülün alt sayfaları arasında geçişte hiçbir modül yeniden mount edilmemeli.');
 assert(ui.includes('if(page)applySubpage(name,page,title)')&&!ui.includes('if(page)requestAnimationFrame(()=>applySubpage(name,page,title))'),'Alt sayfa seçimi sonraki frame bırakılmamalı; ilk boyama doğru sayfa olmalı.');
@@ -52,6 +52,8 @@ for(const key of ['people','exams','programs','communication','calendar','transp
 for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','Programlar','İletişim & Haberler','Takvim & Notlar','Taşıma','Doküman & Evraklar','İdari İşler']) assert(ui.includes(label),`Klasik Menü etiketi eksik: ${label}`);
 for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\\"]${route}['\\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
 assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-shell-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı ve route sahibi ShellUI olmalı.');
+
+assert(ui.includes("kind:'menu-list'")&&ui.includes("if(view.kind==='menu-list'){openMenu();renderMenuList(view.page);return true}"),'Alt menüden açılan sayfada geri önceki menü listesine dönmeli.');
 assert(!ui.includes('data-ka-menu-route'),'ShellUI eski ikinci menü yönlendiricisinin data-ka-menu-route sözleşmesini üretmemeli.');
 const directPages=[
   ['Öğrenci Yoklama','tools','student-attendance'],['Öğrenci Listesi Oluşturucu','tools','student-list'],['Ödev Takip Çizelgesi','tools','homework'],['Not Çizelgesi','tools','grades'],
@@ -109,7 +111,8 @@ assert(dashboardBundleNormalized.includes("'js/modules/school-live-status.js'")&
 assert(!shell.includes('<script src="js/modules/report-engine.js" defer></script>'),'Merkezi ReportEngine ilk açılışta eager yüklenmemeli.');
 const academicBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\('academic',\[([^\]]+)\]\)/)?.[1]||'');
 assert(academicBundle.includes('FIREBASE_STORAGE_SDK')&&academicBundle.includes("'js/modules/report-engine.js'")&&academicBundle.includes("'js/modules/academic.js'")&&!academicBundle.includes('academic-calendar-parity.js')&&academicBundle.indexOf("'js/modules/report-engine.js'")<academicBundle.indexOf("'js/modules/academic.js'"),'Academic modülü Storage + ReportEngine + tek canonical Academic sırasını lazy bundle içinde korumalı.');
-assert(optionalLoaderSource.includes("define('management',['js/modules/report-engine.js','js/modules/management.js'])"),'management modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.');
+const managementBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\('management',\[([^\]]+)\]\)/)?.[1]||'');
+assert(managementBundle.includes("'js/modules/report-engine.js'")&&managementBundle.includes("'js/modules/management.js'")&&managementBundle.indexOf("'js/modules/report-engine.js'")<managementBundle.indexOf("'js/modules/management.js'"),'management modülü ReportEngine bağımlılığını lazy bundle içinde önce yüklemeli.');
 const documentsBundle=optionalLoaderSource.match(/define\('documents',\[([^\]]+)\]\)/)?.[1]||'';
 assert(documentsBundle.includes("'js/modules/report-engine.js'")&&documentsBundle.includes("'js/modules/documents.js'")&&documentsBundle.indexOf("'js/modules/report-engine.js'")<documentsBundle.indexOf("'js/modules/documents.js'"),'documents modülü ek lazy bağımlılıklar olsa da ReportEngine bağımlılığını documents.js’den önce yüklemeli.');
 const transportBundle=optionalLoaderSource.match(/define\('transport',\[([^\]]+)\]\)/)?.[1]||'';
@@ -130,7 +133,7 @@ for(const group of ['people','exams','programs','communication','calendar','tran
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
 assert(ui.includes("const TEACHER_HIDDEN_PAGES=new Set(['documents:evrak','management:staff','management:tasks'"),'Öğretmen için sayfa bazlı gizleme listesi ShellUI içinde merkezi olmalı.');
-assert(ui.includes("function visibleGroups(){return MENU_GROUPS.filter(g=>g.hidden!==true&&visibleItems(g).length)}"),'Bir menü grubunun kendi modülü gizli olsa bile içindeki izinli Tools sayfaları görünmeye devam etmeli.');
+assert(ui.includes("function visibleGroups(){return MENU_GROUPS.filter(g=>g.hidden!==true)}")&&ui.includes('teacherMenuGroupAllowed(g)&&visibleItems(g).length'),'Bir menü grubunun kendi modülü gizli olsa bile taşınmış veya izinli alt sayfaları varsa grup görünmeye devam etmeli.');
 assert(!ui.match(/TEACHER_HIDDEN_PAGES[^;]*form-belirli/),'Öğretmende Belirli Gün ve Haftalar sayfası gizlenmemeli.');
 for(const hidden of ['tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger'])assert(ui.includes(hidden),`Öğretmen menü gizleme sözleşmesi eksik: ${hidden}`);
 assert(ui.includes("function pageAllowed(name,page='')")&&ui.includes('filter(itemAllowed)'),'Menü görünürlüğü ve doğrudan route aynı sayfa bazlı öğretmen kuralını kullanmalı.');
