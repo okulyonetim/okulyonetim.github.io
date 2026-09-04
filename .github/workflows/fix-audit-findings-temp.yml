@@ -1,0 +1,215 @@
+name: Apply application audit fixes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-audit-findings-temp.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply audit fixes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p=Path(path)
+              text=p.read_text(encoding='utf-8')
+              count=text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly 1 match, found {count}: {old}')
+              p.write_text(text.replace(old,new),encoding='utf-8')
+
+          def add_version_helper(path):
+              p=Path(path)
+              text=p.read_text(encoding='utf-8')
+              marker="require('./helpers/version-contract')"
+              if marker in text:
+                  return
+              lines=text.splitlines()
+              insert_at=None
+              for i,line in enumerate(lines):
+                  if line.startswith('const assert=') or line.startswith('const assert ='):
+                      insert_at=i+1
+                      break
+              if insert_at is None:
+                  raise SystemExit(f'{path}: assert require line not found')
+              lines.insert(insert_at,"const {cacheVersion,assetVersion}=require('./helpers/version-contract');")
+              p.write_text('\n'.join(lines)+'\n',encoding='utf-8')
+
+          helper=Path('tests/helpers/version-contract.js')
+          helper.parent.mkdir(parents=True,exist_ok=True)
+          helper.write_text(r'''const assert=require('assert');
+
+function escapeRegex(value){
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+}
+function cacheVersion(source){
+  const match=String(source||'').match(/const CACHE_ADI\s*=\s*['"]oy-cache-v(\d+)['"]/);
+  return match?Number(match[1]):0;
+}
+function assetVersion(source,asset){
+  const normalized=String(asset||'').replace(/^\.\//,'');
+  const match=String(source||'').match(new RegExp(`(?:\\.\\/)?${escapeRegex(normalized)}\\?v=(\\d+)`));
+  return match?Number(match[1]):0;
+}
+function assertVersionAtLeast(actual,minimum,label){
+  assert(Number(actual)>=Number(minimum),`${label}: beklenen >= v${minimum}, bulunan v${actual||0}`);
+}
+module.exports={cacheVersion,assetVersion,assertVersionAtLeast};
+''',encoding='utf-8')
+
+          version_files=[
+            'tests/dashboard-reminder-redesign.test.js','tests/map-page-redesign.test.js','tests/menu-customization-v2.test.js',
+            'tests/notes-page-redesign.test.js','tests/notification-popover-redesign.test.js','tests/profile-page-redesign.test.js',
+            'tests/rehberlik-page-redesign.test.js','tests/runtime-performance-smoke.test.js','tests/schedule-print-action.test.js',
+            'tests/search-page-redesign.test.js','tests/teacher-access-results-duty.test.js','tests/tools-attendance-v2-smoke.test.js',
+            'tests/transport-bus-shell-visible.test.js','tests/transport-seating-alt-design.test.js',
+            'tests/transport-seating-classic-parity.test.js','tests/transport-seating-editor-actions.test.js',
+            'tests/trial-counter-scroll-stability.test.js','tests/user-statistics-admin-view.test.js'
+          ]
+          for f in version_files:add_version_helper(f)
+
+          replacements={
+          'tests/dashboard-reminder-redesign.test.js':[
+            ("assert(index.includes('css/design-system.css?v=872')&&index.includes('js/app-loader.js?v=872'),'Yeni reminder tasarımı cache-busted shell üzerinden yüklenmeli.');","assert(assetVersion(index,'css/design-system.css')>=872&&assetVersion(index,'js/app-loader.js')>=872,'Yeni reminder tasarımı cache-busted shell üzerinden yüklenmeli.');"),
+            ("assert(loader.includes('js/modules/dashboard.js?v=872'),'Dashboard yeni reminder sürümüyle lazy-load edilmeli.');","assert(assetVersion(loader,'js/modules/dashboard.js')>=872,'Dashboard yeni reminder sürümüyle lazy-load edilmeli.');"),
+            ("assert(sw.includes(\"oy-cache-v872\")&&sw.includes('./css/design-system.css?v=872')&&sw.includes('./js/app-loader.js?v=872')&&sw.includes('./js/modules/dashboard.js?v=872'),'Service Worker reminder v872 varlıklarını önbelleğe almalı.');","assert(cacheVersion(sw)>=872&&assetVersion(sw,'css/design-system.css')>=872&&assetVersion(sw,'js/app-loader.js')>=872&&assetVersion(sw,'js/modules/dashboard.js')>=872,'Service Worker reminder varlıklarını güncel veya daha yeni sürümle önbelleğe almalı.');")],
+          'tests/map-page-redesign.test.js':[
+            ("assert(sw.includes('oy-cache-v872'),'Yeni Harita CSS/JS için PWA cache sürümü yükseltilmeli.');","assert(cacheVersion(sw)>=872,'Yeni Harita CSS/JS için PWA cache sürümü geriye düşmemeli.');")],
+          'tests/menu-customization-v2.test.js':[
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v879';\"),'Yeni menü kabuğu için PWA cache sürümü yükseltilmeli.');","assert(cacheVersion(sw)>=879,'Yeni menü kabuğu için PWA cache sürümü geriye düşmemeli.');")],
+          'tests/notes-page-redesign.test.js':[
+            ("  assert.ok(index.includes('css/design-system.css?v=895'));","  assert.ok(assetVersion(index,'css/design-system.css')>=895);"),
+            ("  assert.ok(sw.includes(\"const CACHE_ADI='oy-cache-v896';\"));","  assert.ok(cacheVersion(sw)>=896);"),
+            ("  assert.ok(sw.includes(\"'./css/design-system.css?v=895'\"));","  assert.ok(assetVersion(sw,'css/design-system.css')>=895);")],
+          'tests/notification-popover-redesign.test.js':[
+            ("assert(index.includes('css/design-system.css?v=872'),'Yeni bildirim tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');","assert(assetVersion(index,'css/design-system.css')>=872,'Yeni bildirim tasarımı güncel veya daha yeni merkezi CSS sürümüyle yüklenmeli.');"),
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v872'\")&&sw.includes('./css/design-system.css?v=872'),'Bildirim tasarımı yeni PWA cache sürümüyle yayınlanmalı.');","assert(cacheVersion(sw)>=872&&assetVersion(sw,'css/design-system.css')>=872,'Bildirim tasarımı yeni veya daha ileri PWA cache sürümüyle yayınlanmalı.');")],
+          'tests/profile-page-redesign.test.js':[
+            ("assert(firebaseInit.includes(\"script.src='js/core/login-security.js?v=885'\"),'Profil güvenliği çekirdek bootstrap üzerinden yüklenmeli.');","assert(assetVersion(firebaseInit,'js/core/login-security.js')>=885,'Profil güvenliği çekirdek bootstrap üzerinden sürümlü yüklenmeli.');"),
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v885'\")&&sw.includes(\"'./js/core/login-security.js?v=885'\"),'Profil güvenliği PWA cache içinde olmalı.');","assert(cacheVersion(sw)>=885&&assetVersion(sw,'js/core/login-security.js')>=885,'Profil güvenliği PWA cache içinde güncel veya daha yeni sürümle olmalı.');")],
+          'tests/rehberlik-page-redesign.test.js':[
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v872';\"),'PWA cache v824 olmalı.');","assert(cacheVersion(sw)>=872,'Rehberlik PWA cache sürümü geriye düşmemeli.');")],
+          'tests/runtime-performance-smoke.test.js':[
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v872'\"),'Runtime cache v869 olmalı.');","assert(cacheVersion(sw)>=872,'Runtime cache performans düzeltmesi sürümünün gerisine düşmemeli.');"),
+            ("assert(index.includes('css/design-system.css?v=872'),'CSS v869 yüklenmeli.');","assert(assetVersion(index,'css/design-system.css')>=872,'Performans CSS sürümü geriye düşmemeli.');")],
+          'tests/schedule-print-action.test.js':[
+            ("assert(sw.includes(\"CACHE_ADI='oy-cache-v872'\"),'Ders programı yazdırma düzeltmesi için cache sürümü artırılmalı.');","assert(cacheVersion(sw)>=872,'Ders programı yazdırma düzeltmesi cache sürümünün gerisine düşmemeli.');")],
+          'tests/search-page-redesign.test.js':[
+            ("assert(index.includes('css/design-system.css?v=872'),'Arama tasarımı güncel merkezi CSS sürümüyle yüklenmeli.');","assert(assetVersion(index,'css/design-system.css')>=872,'Arama tasarımı güncel veya daha yeni merkezi CSS sürümüyle yüklenmeli.');"),
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v872'\")&&sw.includes('./css/design-system.css?v=872'),'Yeni arama tasarımı PWA cache sürümüyle yayınlanmalı.');","assert(cacheVersion(sw)>=872&&assetVersion(sw,'css/design-system.css')>=872,'Yeni arama tasarımı PWA cache sürümünün gerisine düşmemeli.');")],
+          'tests/teacher-access-results-duty.test.js':[
+            ("assert(index.includes('css/design-system.css?v=878')&&index.includes('js/core/shell-ui.js?v=878')&&index.includes('js/app-loader.js?v=878'),'Değişen kabuk kaynakları v876 ile cache-bust edilmeli.');","assert(assetVersion(index,'css/design-system.css')>=878&&assetVersion(index,'js/core/shell-ui.js')>=878&&assetVersion(index,'js/app-loader.js')>=878,'Değişen kabuk kaynakları özellik sürümünün gerisine düşmemeli.');"),
+            ("assert(loader.includes(\"'js/modules/academic.js?v=877'\")&&loader.includes(\"define('settings',['js/modules/settings.js?v=878'])\"),'Değişen lazy modüller v876 ile yüklenmeli.');","assert(assetVersion(loader,'js/modules/academic.js')>=877&&assetVersion(loader,'js/modules/settings.js')>=878,'Değişen lazy modüller özellik sürümünün gerisine düşmemeli.');"),
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v877'\")&&sw.includes('./js/modules/settings.js?v=878'),'Service Worker v876 kaynaklarını önbelleğe almalı.');","assert(cacheVersion(sw)>=877&&assetVersion(sw,'js/modules/settings.js')>=878,'Service Worker ilgili kaynakları özellik sürümünün gerisine düşmeden önbelleğe almalı.');")],
+          'tests/tools-attendance-v2-smoke.test.js':[
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v872';\"),'Attendance mobil kaydırma düzeltmesi cache v847 ile dağıtılmalı.');","assert(cacheVersion(sw)>=872,'Attendance mobil kaydırma düzeltmesi cache sürümünün gerisine düşmemeli.');")],
+          'tests/transport-bus-shell-visible.test.js':[
+            ("assert(index.includes('css/design-system.css?v=893'),'Yeni görünür otobüs CSS sürümü index tarafından yüklenmeli.');","assert(assetVersion(index,'css/design-system.css')>=893,'Yeni görünür otobüs CSS sürümü veya daha yenisi index tarafından yüklenmeli.');"),
+            ("assert(sw.includes(\"CACHE_ADI='oy-cache-v893'\")&&sw.includes(\"'./css/design-system.css?v=893'\"),'Service Worker yeni görünür otobüs CSS sürümünü önbelleğe almalı.');","assert(cacheVersion(sw)>=893&&assetVersion(sw,'css/design-system.css')>=893,'Service Worker görünür otobüs CSS özellik sürümünün gerisine düşmemeli.');")],
+          'tests/transport-seating-alt-design.test.js':[
+            ("assert(index.includes('css/design-system.css?v=893'),'Index yeni servis oturma tasarımını yüklemeli.');","assert(assetVersion(index,'css/design-system.css')>=893,'Index yeni servis oturma tasarımını veya daha yeni sürümü yüklemeli.');"),
+            ("assert(sw.includes(\"CACHE_ADI='oy-cache-v893'\")&&sw.includes(\"'./css/design-system.css?v=893'\"),'Service Worker yeni tasarım CSS paketini önbelleğe almalı.');","assert(cacheVersion(sw)>=893&&assetVersion(sw,'css/design-system.css')>=893,'Service Worker servis oturma CSS özellik sürümünün gerisine düşmemeli.');")],
+          'tests/transport-seating-classic-parity.test.js':[
+            ("assert(loader.includes(\"define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])\"),'Transport canonical lazy-loader sözleşmesini korumalı.');","const transportBundle=String(loader.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'').replace(/\\?v=\\d+/g,'');\nassert(transportBundle.includes(\"'js/modules/report-engine.js'\")&&transportBundle.includes(\"'js/modules/transport.js'\")&&transportBundle.indexOf(\"'js/modules/report-engine.js'\")<transportBundle.indexOf(\"'js/modules/transport.js'\")&&assetVersion(loader,'js/modules/transport.js')>=892,'Transport canonical lazy-loader sırası ve asgari sürümü korunmalı.');"),
+            ("assert(index.includes('css/design-system.css?v=893')&&index.includes('js/app-loader.js?v=892'),'Index yeni oturma düzenini zorunlu yüklemeli.');","assert(assetVersion(index,'css/design-system.css')>=893&&assetVersion(index,'js/app-loader.js')>=892,'Index yeni oturma düzenini veya daha yeni sürümü zorunlu yüklemeli.');"),
+            ("assert(sw.includes(\"CACHE_ADI='oy-cache-v893'\")&&sw.includes(\"./js/modules/transport.js?v=892\"),'Service Worker yeni transport paketini önbelleğe almalı.');","assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=892,'Service Worker yeni transport paketini veya daha yeni sürümü önbelleğe almalı.');")],
+          'tests/transport-seating-editor-actions.test.js':[
+            ("assert(index.includes('css/design-system.css?v=893')&&index.includes('js/app-loader.js?v=892'),'Index yeni servis oturma paketini yüklemeli.');","assert(assetVersion(index,'css/design-system.css')>=893&&assetVersion(index,'js/app-loader.js')>=892,'Index yeni servis oturma paketini veya daha yeni sürümü yüklemeli.');"),
+            ("assert(loader.includes(\"define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])\"),'Transport cache-bust sürümü güncel olmalı.');","assert(loader.includes(\"'js/modules/report-engine.js'\")&&assetVersion(loader,'js/modules/transport.js')>=892,'Transport cache-bust sürümü ve ReportEngine bağımlılığı güncel olmalı.');"),
+            ("assert(sw.includes(\"CACHE_ADI='oy-cache-v893'\")&&sw.includes(\"'./js/modules/transport.js?v=892'\")&&sw.includes(\"'./css/design-system.css?v=893'\"),'Service Worker yeni servis oturma paketini önbelleğe almalı.');","assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=892&&assetVersion(sw,'css/design-system.css')>=893,'Service Worker yeni servis oturma paketini veya daha yeni sürümü önbelleğe almalı.');")],
+          'tests/trial-counter-scroll-stability.test.js':[
+            ("assert(index.includes('css/design-system.css?v=872')&&index.includes('js/app-loader.js?v=872'),'Üretim shell güncel cache-bust sürümünü kullanmalı.');","assert(assetVersion(index,'css/design-system.css')>=872&&assetVersion(index,'js/app-loader.js')>=872,'Üretim shell özellik sürümünün gerisine düşmemeli.');"),
+            ("assert(loader.includes('js/modules/academic.js?v=838'),'Academic loader v838 kullanmalı.');","assert(assetVersion(loader,'js/modules/academic.js')>=838,'Academic loader sayaç düzeltmesi sürümünün gerisine düşmemeli.');"),
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v872'\"),'Service Worker güncel cache sürümünü kullanmalı.');","assert(cacheVersion(sw)>=872,'Service Worker sayaç düzeltmesi sürümünün gerisine düşmemeli.');")],
+          'tests/user-statistics-admin-view.test.js':[
+            ("assert(sw.includes(\"const CACHE_ADI='oy-cache-v885'\")&&sw.includes(\"'./js/core/login-security.js'\"),'Giriş konumu özelliği offline shell içinde olmalı.');","assert(cacheVersion(sw)>=885&&sw.includes(\"'./js/core/login-security.js'\"),'Giriş konumu özelliği offline shell içinde güncel veya daha yeni cache ile olmalı.');")]
+          }
+          for path,pairs in replacements.items():
+              for old,new in pairs:replace_once(path,old,new)
+
+          # Versioned Transport kaynakları testlerde canonical adla karşılaştırılırken query string'i yok say.
+          replace_once('tests/classic-shell-v2-smoke.test.js',
+            "const transportBundle=optionalLoaderSource.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'';",
+            "const transportBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'');")
+          replace_once('tests/report-native-print-routing-smoke.test.js',
+            "const transportBundle=loader.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'';",
+            "const transportBundle=String(loader.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'').replace(/\\?v=\\d+/g,'');")
+
+          runner=Path('scripts/run-client-tests.mjs')
+          runner.write_text(r'''import fs from 'node:fs';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+
+const root=process.cwd();
+const testsDir=path.join(root,'tests');
+const files=fs.readdirSync(testsDir).filter(name=>name.endsWith('.test.js')).sort();
+const client=[];
+const emulator=[];
+for(const name of files){
+  const file=path.join(testsDir,name);
+  const source=fs.readFileSync(file,'utf8');
+  if(source.includes('@firebase/rules-unit-testing'))emulator.push(name);
+  else client.push(name);
+}
+let failed=0;
+for(const name of client){
+  const rel=path.join('tests',name);
+  const run=spawnSync(process.execPath,[rel],{cwd:root,encoding:'utf8'});
+  if(run.status===0){
+    process.stdout.write(`✓ ${rel}\n`);
+  }else{
+    failed++;
+    process.stderr.write(`\n✗ ${rel}\n${run.stdout||''}${run.stderr||''}\n`);
+  }
+}
+console.log(`Client regression summary: total=${client.length} passed=${client.length-failed} failed=${failed} emulator-skipped=${emulator.length}`);
+if(emulator.length)console.log(`Firebase emulator suite ayrı workflow tarafından çalıştırılır: ${emulator.length} test.`);
+if(failed)process.exit(1);
+''',encoding='utf-8')
+
+          workflow=Path('.github/workflows/client-architecture.yml')
+          text=workflow.read_text(encoding='utf-8')
+          anchor="      - name: Audit client architecture\n        run: node scripts/check-client-architecture.mjs\n"
+          step="      - name: Run complete client regression suite\n        run: node scripts/run-client-tests.mjs\n"
+          if step not in text:
+              if anchor not in text:raise SystemExit('client architecture insertion anchor missing')
+              text=text.replace(anchor,step+anchor,1)
+              workflow.write_text(text,encoding='utf-8')
+          PY
+      - name: Build client bundles
+        run: node scripts/build-client-bundles.mjs
+      - name: Validate production JavaScript syntax
+        shell: bash
+        run: |
+          set -e
+          while IFS= read -r -d '' f; do node --check "$f"; done < <(find js scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0)
+      - name: Run complete client regression suite
+        run: node scripts/run-client-tests.mjs
+      - name: Audit client architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Verify Service Worker contract
+        run: node tests/service-worker-precache-smoke.test.js
+      - name: Commit verified audit fixes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f .github/workflows/app-audit-temp.yml .github/workflows/fix-audit-findings-temp.yml
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'test: repair stale regression contracts and broaden client audit'
+          git push
