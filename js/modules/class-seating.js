@@ -92,17 +92,20 @@ function assigned(){
   });
   return set;
 }
+function clearSeatStudent(seat){
+  if(!seat)return false;
+  const had=!!(seat.dataset.studentId||seat.dataset.name||seat.dataset.empty!=='true');
+  delete seat.dataset.studentId;
+  seat.dataset.name='';
+  seat.dataset.empty='true';
+  seat.textContent='+';
+  seat.style.color='rgba(107,91,58,.45)';
+  return had;
+}
 function clearStudentAssignments(){
   const seats=$$('[data-so-seat]',canvas);
   let cleared=0;
-  seats.forEach(seat=>{
-    if(seat.dataset.studentId||seat.dataset.name||seat.dataset.empty!=='true')cleared++;
-    delete seat.dataset.studentId;
-    seat.dataset.name='';
-    seat.dataset.empty='true';
-    seat.textContent='+';
-    seat.style.color='rgba(107,91,58,.45)';
-  });
+  seats.forEach(seat=>{if(clearSeatStudent(seat))cleared++;});
   if(cleared){dirty=true;refreshPool();}
   return cleared;
 }
@@ -127,7 +130,7 @@ function chooseStudent(seat){
   document.querySelector('[data-so-student-picker]')?.remove();
   const used=assigned();
   const current=seat.dataset.studentId||'';
-  const available=students().filter(v=>v.id===current||!used.has(v.id));
+  const available=students();
   const ov=document.createElement('div');
   ov.className='ka-modal-backdrop';
   ov.dataset.soStudentPicker='';
@@ -152,6 +155,9 @@ function chooseStudent(seat){
   $$('[data-student]',ov).forEach(b=>b.onclick=()=>{
     const v=students().find(x=>x.id===b.dataset.student);
     if(!v)return;
+    $$('[data-so-seat]',canvas).forEach(other=>{
+      if(other!==seat&&other.dataset.studentId===v.id)clearSeatStudent(other);
+    });
     seat.dataset.studentId=v.id;
     seat.dataset.name=v.ogrenciAdi||'';
     seat.dataset.empty='false';
@@ -283,7 +289,11 @@ function bindDrag(el){
       dirty=true;
     }else if(dist<CLICK_LIMIT){
       const seat=startTarget?.closest?.('[data-so-seat]');
-      if(!seat&&startTarget?.closest?.('[data-so-teacher-name]')){
+      if(seat){
+        seat.dataset.soSuppressClick='true';
+        setTimeout(()=>{if(seat.isConnected)delete seat.dataset.soSuppressClick},350);
+        chooseStudent(seat);
+      }else if(startTarget?.closest?.('[data-so-teacher-name]')){
         const span=startTarget.closest('[data-so-teacher-name]');
         const v=prompt('Öğretmen adı:',span.textContent||'');
         if(v!==null){
