@@ -1,0 +1,94 @@
+name: Apply duty holiday range update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/duty-holiday-range-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply duty holiday and report changes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('js/modules/management.js')
+          s=p.read_text()
+          start=s.index('function holidayModal(){')
+          end=s.index('function assignmentModal(',start)
+          new="""function holidayDateRange(start,end){
+ const a=new Date(String(start||'')+'T00:00:00'),b=new Date(String(end||'')+'T00:00:00');
+ if(!start||!end||Number.isNaN(a.getTime())||Number.isNaN(b.getTime())||b<a)return[];
+ const out=[];
+ for(const d=new Date(a);d<=b;d.setDate(d.getDate()+1))out.push(NobetService.tarihISO(d.getFullYear(),d.getMonth(),d.getDate()));
+ return out
+}
+function holidayModal(){
+ const today=todayISO(),ov=modal('Resmi Tatil Ekle',`<div class=\"ka-grid\"><label class=\"ka-field\"><span class=\"ka-field__label\">Başlangıç Tarihi</span><input type=\"date\" data-date-start value=\"${today}\"></label><label class=\"ka-field\"><span class=\"ka-field__label\">Bitiş Tarihi</span><input type=\"date\" data-date-end value=\"${today}\"></label></div><label class=\"ka-field\"><span class=\"ka-field__label\">Açıklama</span><input data-note placeholder=\"Örn: Ara tatil / Resmi tatil\"></label>`),startInput=ov.querySelector('[data-date-start]'),endInput=ov.querySelector('[data-date-end]');
+ startInput.addEventListener('change',()=>{if(!endInput.value||endInput.value<startInput.value)endInput.value=startInput.value});
+ ov.querySelector('[data-save]').onclick=async()=>{
+   const baslangic=startInput.value,bitis=endInput.value,aciklama=ov.querySelector('[data-note]').value.trim();
+   if(!baslangic||!bitis)return toast?.('Başlangıç ve bitiş tarihi zorunludur.');
+   if(bitis<baslangic)return toast?.('Bitiş tarihi başlangıç tarihinden önce olamaz.');
+   const gunler=holidayDateRange(baslangic,bitis),mevcut=new Set(arr('resmiTatiller').map(x=>String(x.tarih||'').slice(0,10))),eklenecek=gunler.filter(tarih=>!mevcut.has(tarih));
+   if(!eklenecek.length)return toast?.('Seçilen tarih aralığındaki günler zaten tatil listesinde.');
+   const save=ov.querySelector('[data-save]');save.disabled=true;
+   try{
+     for(const tarih of eklenecek)await NobetService.tatilEkle({tarih,aciklama});
+     ov.remove();
+     const atlanan=gunler.length-eklenecek.length;
+     toast?.(atlanan?`${eklenecek.length} gün eklendi, ${atlanan} gün zaten vardı.`:`${eklenecek.length} gün tatil eklendi.`)
+   }catch(e){save.disabled=false;console.error('Tatil aralığı ekleme:',e);toast?.('Tatil aralığı eklenemedi.')}
+ }
+}
+"""
+          s=s[:start]+new+s[end:]
+          old='validity=gecerlilikTarihi||dutyReportFirstWorkday(y,m,tatiller),validityText=dutyReportDisplayDate(validity),documentDate=dutyReportDocumentDate(),chiefPhones=[];'
+          if old not in s: raise SystemExit('duty report document date anchor not found')
+          s=s.replace(old,'validity=gecerlilikTarihi||dutyReportFirstWorkday(y,m,tatiller),validityText=dutyReportDisplayDate(validity),documentDate=validityText,chiefPhones=[];',1)
+          p.write_text(s)
+
+          p=Path('js/app-loader.js');s=p.read_text();s=s.replace('/* Koruk Asistan — AppLoader v41','/* Koruk Asistan — AppLoader v42',1);s=s.replace("define('management',['js/modules/report-engine.js','js/modules/management.js?v=877']);","define('management',['js/modules/report-engine.js','js/modules/management.js?v=882']);",1);p.write_text(s)
+          p=Path('index.html');s=p.read_text();s=s.replace('js/app-loader.js?v=879','js/app-loader.js?v=882',1);p.write_text(s)
+          p=Path('service-worker.js');s=p.read_text();s=s.replace("const CACHE_ADI='oy-cache-v881';","const CACHE_ADI='oy-cache-v882';",1);s=s.replace("'./js/app-loader.js?v=879'","'./js/app-loader.js?v=882'",1);s=s.replace("'./js/modules/management.js?v=877'","'./js/modules/management.js?v=882'",1);p.write_text(s)
+
+          p=Path('tests/classic-duty-v2-smoke.test.js');s=p.read_text();needle="assert(!src.includes('MutationObserver'),'Nöbet mobil görünümü sonradan DOM yamasıyla üretilmemeli.');";extra="\nassert(src.includes('function holidayDateRange(start,end)')&&src.includes('data-date-start')&&src.includes('data-date-end'),'Nöbet tatil ekleme modalı başlangıç-bitiş tarih aralığı desteklemeli.');\nassert(src.includes(\"for(const tarih of eklenecek)await NobetService.tatilEkle({tarih,aciklama})\"),'Tatil aralığı mevcut tek-gün veri modeline gün gün yazılmalı.');";s=s.replace(needle,needle+extra,1);p.write_text(s)
+
+          p=Path('tests/duty-report-full-parity.test.js');s=p.read_text();needle="assert(src.includes('ka-duty-report-note')&&src.includes('Bu çizelge ${esc(validityText)} tarihinden itibaren geçerlidir.'));";extra="\nassert(src.includes('first=dutyReportFirstWorkday(dutyYear,dutyMonth)'),'Nöbet raporu önizlemesi geçerlilik tarihini ilgili ayın ilk iş gününden başlatmalı.');\nassert(src.includes('if(y&&m>=0)validity.value=dutyReportFirstWorkday(y,m)'),'Rapor ayı değiştiğinde geçerlilik tarihi yeni ayın ilk iş gününe güncellenmeli.');\nassert(src.includes('documentDate=validityText'),'Müdür adı üzerindeki tarih rapor geçerlilik tarihi ile aynı olmalı.');";s=s.replace(needle,needle+extra,1);p.write_text(s)
+
+          p=Path('.github/workflows/client-architecture.yml');s=p.read_text();needle="      - name: Verify classic Duty layout\n        run: node tests/classic-duty-v2-smoke.test.js\n";extra="      - name: Verify full Duty report\n        run: node tests/duty-report-full-parity.test.js\n";
+          if extra not in s:s=s.replace(needle,needle+extra,1)
+          p.write_text(s)
+          PY
+      - name: Verify focused duty package
+        run: |
+          node --check js/modules/management.js
+          node tests/classic-duty-v2-smoke.test.js
+          node tests/duty-report-full-parity.test.js
+          node tests/management-separate-pages.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+      - name: Commit verified package and remove one-time workflow
+        shell: bash
+        run: |
+          rm .github/workflows/duty-holiday-range-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/management.js js/app-loader.js index.html service-worker.js tests/classic-duty-v2-smoke.test.js tests/duty-report-full-parity.test.js .github/workflows/client-architecture.yml .github/workflows/duty-holiday-range-once.yml
+          git commit -m 'feat: add duty holiday date ranges'
+          git push origin HEAD:main
