@@ -1,0 +1,46 @@
+name: Fix bus shell visibility once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-bus-shell-visible-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply bus shell visibility fix
+        run: python .github/scripts/fix-bus-shell-visible.py
+      - name: Check transport syntax
+        run: node --check js/modules/transport.js
+      - name: Test bus shell visibility
+        run: node tests/transport-bus-shell-visible.test.js
+      - name: Test classic mobile parity
+        run: node tests/transport-seating-classic-parity.test.js
+      - name: Test visual seating editor
+        run: node tests/transport-seating-visual-editor.test.js
+      - name: Test transport mobile layout
+        run: node tests/transport-mobile-layout-v3.test.js
+      - name: Test transport separate pages
+        run: node tests/transport-separate-pages.test.js
+      - name: Test local-first boundary
+        run: node tests/modules-local-first-boundary.test.js
+      - name: Test service worker
+        run: node tests/service-worker-precache-smoke.test.js
+      - name: Check client architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Commit verified fix and remove one-time files
+        run: |
+          rm -f .github/workflows/fix-bus-shell-visible-once.yml .github/scripts/fix-bus-shell-visible.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: keep bus seating cabin visible'
+          git push origin HEAD:main
