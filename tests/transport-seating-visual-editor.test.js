@@ -1,0 +1,13 @@
+const fs=require('fs');
+const assert=require('assert');
+const transport=fs.readFileSync('js/modules/transport.js','utf8');
+const design=fs.readFileSync('css/design-system.css','utf8');
+new Function(transport);
+for(const token of ['ka-bus-cabin','data-bus-seat-index','function openBusSeatPicker','data-bus-student','function assignBusStudent','data-bus-clear-all','Koltuğa dokunarak öğrenci yerleştirin'])assert(transport.includes(token),`Görsel servis oturma editörü eksik: ${token}`);
+for(const token of ['.ka-bus-cabin','.ka-bus-row','.ka-bus-seat','.ka-bus-seat.is-filled','.ka-bus-seat-picker','.ka-bus-student-option'])assert(design.includes(token),`Merkezi servis oturma stili eksik: ${token}`);
+assert(!transport.includes('data-seat-index'),'Servis oturma planı koltuk başına dropdown kartlara geri dönmemeli.');
+assert(transport.includes('editor={servisId,sablon,elements,editable:canEditBusSeats()}'),'Canonical editör state/permission sözleşmesi korunmalı.');
+assert(transport.includes('window.ServisOturmaService.planElementsKaydet(editor.servisId,editor.sablon,editor.elements,false)'),'Kayıt local-first canonical servis üzerinden yapılmalı.');
+assert(transport.includes("if(!editor?.editable)return"),'Öğretmen salt-okunur davranışı korunmalı.');
+for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem','localStorage.removeItem'])assert(!transport.includes(forbidden),`Servis oturma editörü yasaklı kalıcı katmana inmemeli: ${forbidden}`);
+console.log('Görsel servis oturma editörü davranış kilidi başarılı.');
