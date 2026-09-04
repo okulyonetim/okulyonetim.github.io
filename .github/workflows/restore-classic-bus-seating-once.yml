@@ -1,0 +1,39 @@
+name: Restore classic bus seating once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-classic-bus-seating-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply classic bus seating parity
+        run: python3 scripts/restore-classic-bus-seating.py
+      - name: Verify focused transport package
+        run: |
+          node --check js/modules/transport.js
+          node tests/transport-seating-visual-editor.test.js
+          node tests/transport-separate-pages.test.js
+          node tests/transport-concept-redesign.test.js
+          node tests/transport-mobile-layout-v3.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node scripts/check-client-architecture.mjs
+          git diff --check
+      - name: Commit verified package and remove one-time files
+        run: |
+          rm -f scripts/restore-classic-bus-seating.py .github/workflows/restore-classic-bus-seating-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: restore classic bus seating editor"
+          git push origin HEAD:main
