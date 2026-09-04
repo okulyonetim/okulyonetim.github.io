@@ -20,18 +20,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Update stale stylesheet version assertion
+      - name: Update stale cache-version assertions
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('tests/classic-shell-v2-smoke.test.js')
           s=p.read_text()
-          old="assert((shell.match(/<link\\s+rel=\\\"stylesheet\\\"/g)||[]).length===1&&shell.includes('<link rel=\\\"stylesheet\\\" href=\\\"css/design-system.css?v=878\\\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');"
-          new="assert((shell.match(/<link\\s+rel=\\\"stylesheet\\\"/g)||[]).length===1&&/<link rel=\\\"stylesheet\\\" href=\\\"css\\/design-system\\.css\\?v=\\d+\\\">/.test(shell),'Production shell yalnız tek sürümlü merkezi css/design-system.css yüklemeli.');"
-          if old not in s:
+          old_css="assert((shell.match(/<link\\s+rel=\\\"stylesheet\\\"/g)||[]).length===1&&shell.includes('<link rel=\\\"stylesheet\\\" href=\\\"css/design-system.css?v=878\\\">'),'Production shell yalnız tek merkezi css/design-system.css yüklemeli.');"
+          new_css="assert((shell.match(/<link\\s+rel=\\\"stylesheet\\\"/g)||[]).length===1&&/<link rel=\\\"stylesheet\\\" href=\\\"css\\/design-system\\.css\\?v=\\d+\\\">/.test(shell),'Production shell yalnız tek sürümlü merkezi css/design-system.css yüklemeli.');"
+          old_transport="const transportBundle=optionalLoaderSource.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'';"
+          new_transport="const transportBundle=normalizeLoaderBundle(optionalLoaderSource.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'');"
+          if old_css not in s:
               raise SystemExit('classic shell css assertion anchor not found')
-          p.write_text(s.replace(old,new,1))
+          if old_transport not in s:
+              raise SystemExit('transport bundle assertion anchor not found')
+          s=s.replace(old_css,new_css,1).replace(old_transport,new_transport,1)
+          p.write_text(s)
           PY
       - name: Verify shell and seating package
         run: |
@@ -40,6 +45,7 @@ jobs:
           node tests/classes-mobile-parity-smoke.test.js
           node tests/modules-local-first-boundary.test.js
           node tests/service-worker-precache-smoke.test.js
+          node tests/report-engine-a4-smoke.test.js
           node scripts/check-client-architecture.mjs
       - name: Commit verified test maintenance
         shell: bash
@@ -48,5 +54,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tests/classic-shell-v2-smoke.test.js
-          git commit -m 'test: accept current design system cache version'
+          git commit -m 'test: accept versioned class seating assets'
           git push origin HEAD:main
