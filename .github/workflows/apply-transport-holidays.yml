@@ -54,6 +54,7 @@ jobs:
           transport.write_text(text,encoding='utf-8')
 
           replace_exact('js/app-loader.js', "define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892']);", "define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=893']);")
+          replace_exact('tests/transport-separate-pages.test.js', "define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])", "define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=893'])")
           replace_exact('index.html', '<script src="js/app-loader.js?v=892" defer></script>', '<script src="js/app-loader.js?v=893" defer></script>')
           replace_exact('service-worker.js', "const CACHE_ADI='oy-cache-v893';", "const CACHE_ADI='oy-cache-v894';")
           replace_exact('service-worker.js', "'./css/design-system.css?v=893','./js/app-loader.js?v=892'", "'./css/design-system.css?v=893','./js/app-loader.js?v=893'")
