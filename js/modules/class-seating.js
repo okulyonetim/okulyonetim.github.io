@@ -92,6 +92,20 @@ function assigned(){
   });
   return set;
 }
+function clearStudentAssignments(){
+  const seats=$$('[data-so-seat]',canvas);
+  let cleared=0;
+  seats.forEach(seat=>{
+    if(seat.dataset.studentId||seat.dataset.name||seat.dataset.empty!=='true')cleared++;
+    delete seat.dataset.studentId;
+    seat.dataset.name='';
+    seat.dataset.empty='true';
+    seat.textContent='+';
+    seat.style.color='rgba(107,91,58,.45)';
+  });
+  if(cleared){dirty=true;refreshPool();}
+  return cleared;
+}
 
 function refreshPool(){
   const pool=$('[data-so-pool]',overlay);
@@ -256,6 +270,11 @@ function bindDrag(el){
     if(!moving)return;
     moving=false;
     const dist=Math.hypot((e.clientX||sx)-sx,(e.clientY||sy)-sy);
+    const dragSeat=startTarget?.closest?.('[data-so-seat]');
+    if(dist>=CLICK_LIMIT&&dragSeat){
+      dragSeat.dataset.soSuppressClick='true';
+      setTimeout(()=>{if(dragSeat.isConnected)delete dragSeat.dataset.soSuppressClick},0);
+    }
     if(!locked&&dist>=CLICK_LIMIT){
       (group.length?group.map(x=>x.el):[el]).forEach(x=>{
         x.style.left=snap(x.offsetLeft)+'px';
@@ -264,8 +283,7 @@ function bindDrag(el){
       dirty=true;
     }else if(dist<CLICK_LIMIT){
       const seat=startTarget?.closest?.('[data-so-seat]');
-      if(seat)chooseStudent(seat);
-      else if(startTarget?.closest?.('[data-so-teacher-name]')){
+      if(!seat&&startTarget?.closest?.('[data-so-teacher-name]')){
         const span=startTarget.closest('[data-so-teacher-name]');
         const v=prompt('Öğretmen adı:',span.textContent||'');
         if(v!==null){
@@ -305,6 +323,19 @@ function createObject(type,x,y,free=false){
       seat.dataset.empty='true';
       seat.textContent='+';
       seat.style.cssText=`position:absolute;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;border:1px dashed #b9aa8d;border-radius:6px;background:#ffffff99;color:rgba(107,91,58,.45);left:${c*100/seatDef.cols}%;top:${r*100/seatDef.rows}%;width:${100/seatDef.cols}%;height:${100/seatDef.rows}%;word-break:break-word`;
+      if(editable){
+        seat.tabIndex=0;
+        seat.setAttribute('role','button');
+        seat.setAttribute('aria-label','Öğrenci seç');
+        seat.addEventListener('click',e=>{
+          e.stopPropagation();
+          if(seat.dataset.soSuppressClick==='true')return;
+          chooseStudent(seat);
+        });
+        seat.addEventListener('keydown',e=>{
+          if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseStudent(seat);}
+        });
+      }
       grid.appendChild(seat);
     }
     el.appendChild(grid);
@@ -592,14 +623,22 @@ async function save(){
 }
 
 function reportBody(){
-  const clone=canvas.cloneNode(true);
+  const clone=canvas.cloneNode(true),p=PAGE[orientation],pxPerMm=96/25.4;
+  const printable=orientation==='yatay'?{w:287,h:200}:{w:200,h:287};
+  const titleH=10,stageH=printable.h-titleH;
+  const scale=Math.min(1,printable.w*pxPerMm/p.w,stageH*pxPerMm/p.h)*.99;
   clone.removeAttribute('data-so-canvas');
   clone.querySelectorAll('[data-so-object-control]').forEach(x=>x.remove());
   clone.querySelectorAll('[data-so-seat][data-empty="true"]').forEach(x=>x.textContent='');
-  clone.style.transform='none';
-  clone.style.transformOrigin='';
-  clone.style.margin='0 auto';
-  return `<div style="overflow:hidden">${clone.outerHTML}</div>`;
+  clone.style.width=p.w+'px';
+  clone.style.height=p.h+'px';
+  clone.style.position='absolute';
+  clone.style.left='50%';
+  clone.style.top='50%';
+  clone.style.margin='0';
+  clone.style.transform=`translate(-50%,-50%) scale(${scale})`;
+  clone.style.transformOrigin='center center';
+  return `<div style="width:100%;height:${printable.h}mm;overflow:hidden"><div style="height:${titleH}mm;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:10pt">${esc(reportTitle())}</div><div style="position:relative;width:100%;height:${stageH}mm;overflow:hidden">${clone.outerHTML}</div></div>`;
 }
 async function pdf(){
   try{
@@ -608,6 +647,8 @@ async function pdf(){
     await global.ReportEngine.printReport(reportTitle(),reportBody(),{
       fileName:`${className||'Sinif'}_Oturma_Plani`,
       yon:orientation,
+      baslikGoster:false,
+      logoGoster:false,
       tarihGoster:false,
       kenarBosluk:5,
       fontSize:8
@@ -744,11 +785,9 @@ function bind(){
   $('[data-so-close]',overlay).onclick=()=>close(true);
   $('[data-so-pdf]',overlay).onclick=pdf;
   $('[data-so-clear]',overlay)?.addEventListener('click',()=>{
-    if(canvas.children.length&&confirm('Tüm yerleşim temizlensin mi?')){
-      canvas.innerHTML='';
-      setSelected(null);
-      dirty=true;
-      refreshPool();
+    const occupied=$$('[data-so-seat]',canvas).some(seat=>seat.dataset.studentId||seat.dataset.name);
+    if(occupied&&confirm('Tüm öğrenci yerleşimleri temizlensin mi? Sıra ve sınıf düzeni korunacak.')){
+      clearStudentAssignments();
       updateFitStatus();
     }
   });

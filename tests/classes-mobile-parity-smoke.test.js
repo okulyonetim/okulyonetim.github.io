@@ -43,6 +43,9 @@ for(const marker of ['tekli-sira','ikili-masa','grup-masasi-4','grup-masasi-6','
 assert(seating.includes('global.SinifOturmaService.planKaydet(classId,serialize())'),'Oturma planı canonical local-first servisle kaydedilmeli.');
 assert(seating.includes('global.ReportEngine.printReport'),'Oturma planı çıktısı tek ReportEngine kullanmalı.');
 assert(seating.includes('global.SinifOturma={ac:open'),'Legacy public SinifOturma.ac API geri gelmeli.');
+assert(seating.includes('function clearStudentAssignments()')&&seating.includes('Sıra ve sınıf düzeni korunacak.'),'Temizle işlemi yalnız öğrenci yerleşimlerini silmeli; sınıf düzenini korumalı.');
+assert(seating.includes("seat.addEventListener('click'")&&seating.includes('chooseStudent(seat)'),'Sıradaki artı/isim alanına dokunma öğrenci seçiciyi açmalı.');
+assert(seating.includes("const printable=orientation==='yatay'?{w:287,h:200}:{w:200,h:287}")&&seating.includes('baslikGoster:false')&&seating.includes('logoGoster:false'),'Sınıf oturma çıktısı seçilen yönde tek A4 yazdırılabilir alana ölçeklenmeli.');
 
 const peopleRegistry=loader.match(/define\('people',\[([^\]]+)\]\)/)?.[1]||'';
 for(const src of ["'js/modules/people.js'","'js/modules/people-import.js'","'js/modules/people-classic-ui.js'","'js/modules/classes-mobile-parity.js'"]) assert(peopleRegistry.includes(src),`People loader kaynağı eksik: ${src}`);
