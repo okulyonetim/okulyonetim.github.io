@@ -4,7 +4,7 @@ const sw = fs.readFileSync('service-worker.js', 'utf8');
 
 const cacheMatch=sw.match(/const CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/);
 assert(cacheMatch, 'Service Worker sürümlü cache anahtarı kullanmalı.');
-assert(Number(cacheMatch[1])>=843, 'Service Worker cache sürümü yeni runtime geçiş sürümünün gerisine düşmemeli.');
+assert(Number(cacheMatch[1])>=885, 'Service Worker cache sürümü profil güvenliği/giriş konumu sürümünün gerisine düşmemeli.');
 const loader = fs.readFileSync('js/app-loader.js', 'utf8');
 assert(sw.includes("self.clients.matchAll({type:'window',includeUncontrolled:true})")&&sw.includes('client.navigate(client.url)'), 'Yeni Service Worker eski runtime kullanan açık PWA pencerelerini yeni belgeye taşımalı.');
 assert(loader.includes("register('./service-worker.js?v=838',{updateViaCache:'none'})")&&loader.includes('await reg.update()'), 'AppLoader Service Worker güncellemesini HTTP cache dışından zorlamalı.');
@@ -14,6 +14,7 @@ for (const f of [
   './css/design-system.css',
   './js/firebase-init.js',
   './js/core/core.js',
+  './js/core/login-security.js',
   './js/core/shell-ui.js',
   './js/modules/dashboard.js',
   './js/modules/rubric-settings.js',
@@ -22,6 +23,7 @@ for (const f of [
   './js/auth.js',
   './js/app-loader.js'
 ]) assert(sw.includes(`'${f}'`), `${f} çekirdek precache içinde kalmalı.`);
+assert(sw.includes("'./js/core/login-security.js?v=885'"),'Profil güvenliği ve giriş konumu sürümlü olarak precache edilmeli.');
 
 const liste = sw.slice(sw.indexOf('const ONBELLEGE_ALINACAKLAR'), sw.indexOf("self.addEventListener('install'"));
 for (const eski of [

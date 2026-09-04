@@ -100,3 +100,14 @@ function firebaseyiBaslat(){
     return false;
   }
 }
+
+/* Profil güvenliği ve giriş konumu özelliği auth oturumundan bağımsız yüklenir;
+   servis kendi içinde AppStore/DeviceData hazır olana kadar bekler. */
+(function loginSecurityFeatureLoad(){
+  if(document.querySelector('script[data-login-security-feature]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/login-security.js?v=885';
+  script.async=false;
+  script.dataset.loginSecurityFeature='';
+  document.head.appendChild(script);
+})();

@@ -63,6 +63,12 @@ jobs:
         run: node tests/modules-local-first-boundary.test.js
       - name: Verify service worker shell
         run: node tests/service-worker-precache-smoke.test.js
+      - name: Check login security syntax
+        run: node --check js/core/login-security.js
+      - name: Verify profile security
+        run: node tests/profile-page-redesign.test.js
+      - name: Verify admin user statistics and login locations
+        run: node tests/user-statistics-admin-view.test.js
       - name: Check meeting schedule syntax
         run: node --check js/modules/meeting-schedule.js
       - name: Check dashboard syntax
