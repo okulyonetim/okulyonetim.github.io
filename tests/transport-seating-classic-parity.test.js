@@ -14,7 +14,7 @@ for(const token of ['Servis Oturma — eski ekran birebir düzeltme v3','.ka-bus
 assert(css.includes('@media(max-width:390px)')&&css.includes('grid-template-columns:repeat(2,minmax(0,1fr))!important'),'Dar telefonda araç tipleri iki sütunda kalmalı.');
 assert(css.includes('.ka-bus-classic-stats div:last-child')&&css.includes('grid-column:1!important'),'Doluluk eski ekrandaki gibi ikinci satır ilk hücrede olmalı.');
 assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])"),'Transport canonical lazy-loader sözleşmesini korumalı.');
-assert(index.includes('css/design-system.css?v=892')&&index.includes('js/app-loader.js?v=892'),'Index yeni oturma düzenini zorunlu yüklemeli.');
-assert(sw.includes("CACHE_ADI='oy-cache-v892'")&&sw.includes("./js/modules/transport.js?v=892"),'Service Worker yeni transport paketini önbelleğe almalı.');
+assert(index.includes('css/design-system.css?v=893')&&index.includes('js/app-loader.js?v=892'),'Index yeni oturma düzenini zorunlu yüklemeli.');
+assert(sw.includes("CACHE_ADI='oy-cache-v893'")&&sw.includes("./js/modules/transport.js?v=892"),'Service Worker yeni transport paketini önbelleğe almalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem','localStorage.removeItem'])assert(!transport.includes(forbidden),`Local-first sınırı ihlal edildi: ${forbidden}`);
 console.log('Servis oturma eski ekran mobil paritesi başarılı.');

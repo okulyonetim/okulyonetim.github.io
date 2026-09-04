@@ -11,6 +11,6 @@ assert(block.includes('min-height:560px!important;'),'Otobüs kabini görünür 
 assert(block.includes('height:auto!important;'),'Otobüs kabini satır sayısına göre büyüyebilmeli.');
 assert(block.includes('flex:0 0 auto!important;'),'Otobüs kabini modal flex alanında sıfıra sıkışmamalı.');
 assert(!block.includes('max-width:410px!important;\n  min-width:0!important;\n  min-height:0!important;'),'Klasik kabin tekrar sıfır yüksekliğe düşmemeli.');
-assert(index.includes('css/design-system.css?v=892'),'Yeni görünür otobüs CSS sürümü index tarafından yüklenmeli.');
-assert(sw.includes("CACHE_ADI='oy-cache-v892'")&&sw.includes("'./css/design-system.css?v=892'"),'Service Worker yeni görünür otobüs CSS sürümünü önbelleğe almalı.');
+assert(index.includes('css/design-system.css?v=893'),'Yeni görünür otobüs CSS sürümü index tarafından yüklenmeli.');
+assert(sw.includes("CACHE_ADI='oy-cache-v893'")&&sw.includes("'./css/design-system.css?v=893'"),'Service Worker yeni görünür otobüs CSS sürümünü önbelleğe almalı.');
 console.log('Servis oturma otobüs kabini görünürlük kilidi başarılı.');

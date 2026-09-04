@@ -11,7 +11,7 @@ assert(transport.includes("b.textContent='Kaydedildi ✓'"),'Kaydet butonu sonsu
 assert(transport.includes('const task=window.ServisOturmaService.planElementsKaydet'),'Local-first kayıt görevi başlatılmalı.');
 assert(transport.includes('setTimeout(()=>{closeEditor();try{render()}'),'Kayıt arka planda sürse bile editör kullanıcıyı kilitlememeli.');
 for(const token of ['Servis Oturma — hızlı editör UX v4','.ka-bus-tool-grid{','.ka-bus-classic-stage+.ka-bus-row-actions{display:none!important}', 'white-space:normal!important','overflow-wrap:anywhere!important'])assert(css.includes(token),`Yeni servis oturma UX stili eksik: ${token}`);
-assert(index.includes('css/design-system.css?v=892')&&index.includes('js/app-loader.js?v=892'),'Index yeni servis oturma paketini yüklemeli.');
+assert(index.includes('css/design-system.css?v=893')&&index.includes('js/app-loader.js?v=892'),'Index yeni servis oturma paketini yüklemeli.');
 assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])"),'Transport cache-bust sürümü güncel olmalı.');
-assert(sw.includes("CACHE_ADI='oy-cache-v892'")&&sw.includes("'./js/modules/transport.js?v=892'")&&sw.includes("'./css/design-system.css?v=892'"),'Service Worker yeni servis oturma paketini önbelleğe almalı.');
+assert(sw.includes("CACHE_ADI='oy-cache-v893'")&&sw.includes("'./js/modules/transport.js?v=892'")&&sw.includes("'./css/design-system.css?v=893'"),'Service Worker yeni servis oturma paketini önbelleğe almalı.');
 console.log('Servis oturma editör hızlı erişim/kayıt/isim sığdırma testi başarılı.');
