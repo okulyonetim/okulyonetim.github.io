@@ -1,0 +1,100 @@
+name: Duty report exact print fonts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/duty-report-exact-fonts.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  duty-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify current baseline
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '9a3fd93e1b41ef73981d09b755b2a93b79ca7598'
+      - name: Apply exact print typography
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          css_path=Path('css/design-system.css')
+          css=css_path.read_text(encoding='utf-8')
+          start=css.index('/* Duty report — adaptive full-page A4 roster. */')
+          end=css.index('/* Announcements page — canonical communication redesign. */',start)
+          block=r'''/* Duty report — adaptive full-page A4 roster. */
+.ka-report .ka-duty-report{--ka-duty-head-font:14pt;--ka-duty-cell-font:12pt;--ka-duty-task-font:11pt;--ka-duty-footer-font:7.6pt;--ka-duty-table-height:168mm;width:100%;color:#111;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;gap:0;background:#fff;overflow:hidden}
+.ka-report .ka-duty-report--portrait{height:287mm;min-height:287mm}.ka-report .ka-duty-report--landscape{height:200mm;min-height:200mm;--ka-duty-table-height:126mm}
+.ka-report .ka-duty-report[data-duty-density="dense"]{--ka-duty-table-height:170mm}.ka-report .ka-duty-report[data-duty-density="roomy"]{--ka-duty-table-height:164mm}.ka-report .ka-duty-report--landscape[data-duty-density="dense"]{--ka-duty-table-height:128mm}.ka-report .ka-duty-report--landscape[data-duty-density="roomy"]{--ka-duty-table-height:123mm}
+.ka-report .ka-duty-report-banner{position:relative;flex:0 0 auto;width:100%;min-height:18mm;margin:0 0 1mm;padding:1mm 0;display:flex;align-items:center;justify-content:center;border-bottom:1.2px solid #17684f;text-align:center;overflow:hidden}.ka-report .ka-duty-report-logo{position:absolute;left:0;top:50%;transform:translateY(-50%);width:12mm;height:12mm;object-fit:contain}.ka-report .ka-duty-report-banner h1{width:111.2%;margin:0 -5.6%!important;padding:0!important;color:#155c46!important;font-size:18pt!important;font-weight:850!important;line-height:.98!important;letter-spacing:-.02em!important;text-align:center!important;white-space:nowrap!important;transform:scaleX(.9);transform-origin:center center}.ka-report .ka-duty-report--landscape .ka-duty-report-banner h1{font-size:18pt!important;transform:scaleX(1)}
+.ka-report .ka-duty-report-table{flex:0 0 var(--ka-duty-table-height);align-self:stretch;width:100%!important;height:var(--ka-duty-table-height)!important;min-height:0!important;table-layout:fixed!important;margin:0!important;border-collapse:collapse!important;border-spacing:0!important}.ka-report .ka-duty-report-table th{padding:.12mm .45mm!important;background:#173f60!important;border:1px solid #294f6b!important;color:#fff!important;font-size:14pt!important;line-height:.94!important;font-weight:800!important;text-align:center!important;white-space:nowrap!important}.ka-report .ka-duty-report-table td{padding:.06mm .42mm!important;border:1px solid #aeb7bb!important;background:#fff!important;color:#111!important;font-size:12pt!important;line-height:.94!important;vertical-align:middle!important;text-align:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.ka-report .ka-duty-report-table tbody tr:nth-child(even) td{background:#f7f7f7!important}.ka-report .ka-duty-report-table td:first-child{text-align:left!important;font-weight:650!important}.ka-report .ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#e6e6e6!important;color:#666!important;font-weight:600!important}.ka-report .ka-duty-report-holiday td{background:#fff4cf!important;color:#6b5200!important;font-weight:800!important}.ka-report .ka-duty-report-holiday td:not(:first-child){text-align:center!important;letter-spacing:.01em!important}
+.ka-report .ka-duty-report--portrait .ka-duty-report-col-date{width:22%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-garden{width:20%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-building{width:20%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-entry{width:18%}.ka-report .ka-duty-report--portrait .ka-duty-report-col-chief{width:20%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-date{width:18%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-garden{width:20%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-building{width:20%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-entry{width:18%}.ka-report .ka-duty-report--landscape .ka-duty-report-col-chief{width:24%}
+.ka-report .ka-duty-report-phones{flex:0 0 auto;display:flex;align-items:center;gap:3mm;flex-wrap:wrap;margin:.55mm 0 0;padding:.45mm 0;border-top:.45px solid #555;border-bottom:.45px solid #777;font-size:8pt;line-height:1}.ka-report .ka-duty-report-phones>strong{font-size:8.5pt}.ka-report .ka-duty-report-phones span{white-space:nowrap}.ka-report .ka-duty-report-phones b{font-weight:800}
+.ka-report .ka-duty-report-tasks{flex:1 1 auto;min-height:0;margin:.65mm 0 0!important;padding:0!important;color:#111;display:flex;flex-direction:column;justify-content:flex-start}.ka-report .ka-duty-report-tasks h2{flex:0 0 auto;margin:0 0 .45mm!important;color:#111!important;font-size:12.5pt!important;line-height:1!important;font-weight:850!important}.ka-report .ka-duty-report-tasks ol{flex:0 0 auto;margin:0!important;padding-left:5mm!important;font-size:11pt!important;line-height:1.02!important;display:block!important}.ka-report .ka-duty-report-tasks li{margin:0 0 .08mm!important;padding:0!important;color:#111!important;font-size:11pt!important;line-height:1.02!important}.ka-report .ka-duty-report--landscape .ka-duty-report-tasks ol{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:column;grid-template-rows:repeat(7,auto);column-gap:8mm;row-gap:.1mm;align-content:start}.ka-report .ka-duty-report--landscape .ka-duty-report-tasks li{break-inside:avoid;page-break-inside:avoid}
+.ka-report .ka-duty-report-footer{flex:0 0 auto;margin-top:.65mm;padding-top:.75mm;border-top:.45px solid #777;color:#111;font-size:var(--ka-duty-footer-font);line-height:1.05;display:grid;grid-template-columns:minmax(0,1fr) 44mm;gap:5mm;align-items:end}.ka-report .ka-duty-report-footer-copy p{margin:0 0 .35mm!important}.ka-report .ka-duty-report-signature{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:11pt!important;line-height:1.03}.ka-report .ka-duty-report-signature strong{margin-top:.25mm;font-size:11pt!important;font-weight:850}.ka-report .ka-duty-report-signature span{display:block;font-size:11pt!important}.ka-report .ka-duty-report-signature span:last-child{margin-top:.1mm;font-size:11pt!important;font-weight:700}.ka-report .ka-duty-report--landscape .ka-duty-report-footer{grid-template-columns:minmax(0,1fr) 48mm}
+@media print{.ka-report .ka-duty-report{break-inside:avoid;page-break-inside:avoid}.ka-report .ka-duty-report-table tr,.ka-report .ka-duty-report-tasks,.ka-report .ka-duty-report-footer{break-inside:avoid;page-break-inside:avoid}}
+'''
+          css_path.write_text(css[:start]+block+'\n'+css[end:],encoding='utf-8')
+
+          test=Path('tests/duty-report-full-parity.test.js')
+          s=test.read_text(encoding='utf-8')
+          old="""assert(css.includes('.ka-duty-report-banner h1{width:100%')&&css.includes('font-size:12.4pt!important'),'Nöbet raporu başlığı büyük ve tam genişlik olmalı.');
+assert(css.includes('--ka-duty-cell-font:6.35pt')&&css.includes('[data-duty-density=\"dense\"]{--ka-duty-head-font:6.4pt;--ka-duty-cell-font:6.05pt')&&css.includes('[data-duty-density=\"roomy\"]{--ka-duty-head-font:7pt;--ka-duty-cell-font:6.65pt'),'Hücre puntoları yoğunluğa göre büyüyüp küçülmeli ve hücreyi okunur biçimde doldurmalı.');
+assert(css.includes('.ka-duty-report-tasks{flex:1 1 auto')&&css.includes('justify-content:space-between')&&css.includes('--ka-duty-task-font:5.9pt'),'14 nöbet kuralı kalan alanı kullanmalı ve küçük yazı yerine daha büyük puntoyla yayılmalı.');
+assert(css.includes('.ka-duty-report-signature strong{margin-top:.45mm;font-size:calc(var(--ka-duty-footer-font) + 1.5pt)')&&css.includes('.ka-duty-report-signature span:last-child'),'Okul Müdürü imza alanı görünür biçimde daha büyük olmalı.');"""
+          new="""assert(css.includes('.ka-duty-report-banner h1{width:111.2%')&&css.includes('font-size:18pt!important'),'Nöbet raporu başlığı 18 punto ve tam genişlik olmalı.');
+assert(css.includes('--ka-duty-head-font:14pt;--ka-duty-cell-font:12pt;--ka-duty-task-font:11pt')&&css.includes('.ka-duty-report-table th{padding:.12mm .45mm!important')&&css.includes('font-size:14pt!important')&&css.includes('.ka-duty-report-table td{padding:.06mm .42mm!important')&&css.includes('font-size:12pt!important'),'Sütun başlıkları 14 punto, tablo verileri 12 punto olmalı.');
+assert(css.includes('.ka-duty-report-tasks ol{flex:0 0 auto')&&css.includes('font-size:11pt!important;line-height:1.02!important')&&css.includes('.ka-duty-report-tasks li{margin:0 0 .08mm!important'),'14 nöbet kuralı 11 punto ve çok sık satır aralığıyla gösterilmeli.');
+assert(css.includes('.ka-duty-report-signature{display:flex')&&css.includes('font-size:11pt!important')&&css.includes('.ka-duty-report-signature strong{margin-top:.25mm;font-size:11pt!important'),'Okul Müdürü bölümü 11 punto olmalı.');"""
+          if old not in s:
+              raise SystemExit('Focused duty typography assertions not found')
+          test.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          index=Path('index.html')
+          s=index.read_text(encoding='utf-8')
+          if 'css/design-system.css?v=874' not in s: raise SystemExit('index css v874 not found')
+          index.write_text(s.replace('css/design-system.css?v=874','css/design-system.css?v=875',1),encoding='utf-8')
+
+          sw=Path('service-worker.js')
+          s=sw.read_text(encoding='utf-8')
+          if "const CACHE_ADI='oy-cache-v874';" not in s: raise SystemExit('sw cache v874 not found')
+          s=s.replace("const CACHE_ADI='oy-cache-v874';","const CACHE_ADI='oy-cache-v875';",1).replace("'./css/design-system.css?v=874'","'./css/design-system.css?v=875'",1)
+          sw.write_text(s,encoding='utf-8')
+
+          for p in Path('tests').glob('*.js'):
+              s=p.read_text(encoding='utf-8')
+              n=s.replace('css/design-system.css?v=874','css/design-system.css?v=875').replace('oy-cache-v874','oy-cache-v875')
+              if n!=s:p.write_text(n,encoding='utf-8')
+          PY
+      - name: Validate report and architecture
+        run: |
+          set -euo pipefail
+          node tests/duty-report-full-parity.test.js
+          node tests/report-engine-a4-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/module-bundles-smoke.test.js
+          node --check js/modules/management.js
+          node --check service-worker.js
+          npm run build:client
+      - name: Commit verified typography and remove temporary workflow
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/duty-report-exact-fonts.yml
+          git add css/design-system.css index.html service-worker.js tests
+          git commit -m 'fix: set duty report print font sizes'
+          git push origin HEAD:main
