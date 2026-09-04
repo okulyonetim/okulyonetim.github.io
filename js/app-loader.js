@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v42
+/* Koruk Asistan — AppLoader v43
    Tek başlangıç sahibi: Firebase + auth + lazy modüller. Tema sahibi: ShellUI.
    Tek görünürlük sahibi: PermissionService.
    Tek davranışsal düzen sahibi: AppConfig (oy_navDuzeni/uygulama).
