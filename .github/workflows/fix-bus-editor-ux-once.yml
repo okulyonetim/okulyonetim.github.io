@@ -22,6 +22,7 @@ jobs:
           sed -i 's/js\/app-loader.js?v=890/js\/app-loader.js?v=892/g' tests/transport-seating-classic-parity.test.js
           sed -i 's/transport.js?v=890/transport.js?v=892/g' tests/transport-seating-classic-parity.test.js
           sed -i 's/window.ServisOturmaService.planElementsKaydet(editor.servisId,editor.sablon,editor.elements,false)/window.ServisOturmaService.planElementsKaydet(servisId,sablon,elements,false)/g' tests/transport-seating-visual-editor.test.js
+          sed -i "s#define('transport',\['js/modules/report-engine.js','js/modules/transport.js'\])#define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=892'])#g" tests/transport-separate-pages.test.js
       - name: Check transport syntax
         run: node --check js/modules/transport.js
       - name: Test bus editor actions
