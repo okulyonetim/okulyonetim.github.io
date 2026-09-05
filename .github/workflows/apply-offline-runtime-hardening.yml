@@ -34,20 +34,28 @@ jobs:
           PY
       - name: Check all JavaScript syntax
         run: find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
-      - name: Verify Android pull-to-refresh guard
-        run: node tests/android-pull-refresh-guard.test.js
-      - name: Verify service worker live-session stability
-        run: node tests/service-worker-no-forced-reload.test.js
-      - name: Verify legislation architecture
-        run: node tests/legislation-engine-v2-smoke.test.js
-      - name: Verify dashboard V3 readability
-        run: node tests/dashboard-school-summary-readability-v3.test.js
-      - name: Verify service worker precache
-        run: node tests/service-worker-precache-smoke.test.js
-      - name: Verify local-first boundaries
-        run: node tests/modules-local-first-boundary.test.js
+      - name: Verify focused regressions
+        run: |
+          node tests/android-pull-refresh-guard.test.js
+          node tests/service-worker-no-forced-reload.test.js
+          node tests/legislation-engine-v2-smoke.test.js
+          node tests/dashboard-school-summary-readability-v3.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
       - name: Run complete client regression suite
-        run: node scripts/run-client-tests.mjs
+        id: fulltests
+        continue-on-error: true
+        run: node scripts/run-client-tests.mjs > full-client-tests.log 2>&1
+      - name: Upload regression log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-client-tests-log
+          path: full-client-tests.log
+          retention-days: 1
+      - name: Fail when complete suite fails
+        if: steps.fulltests.outcome == 'failure'
+        run: exit 1
       - name: Audit client architecture
         run: node scripts/check-client-architecture.mjs
       - name: Verify bundle generation
