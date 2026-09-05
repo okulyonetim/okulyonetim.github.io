@@ -66,6 +66,32 @@ jobs:
           assert anchor in p
           p=p.replace(anchor,anchor+add,1)
           perf.write_text(p,encoding='utf-8')
+
+          # Eski regresyon sözleşmeleri communication.js'in dashboard açılışında eager yüklenmesini
+          # zorunlu kılıyordu. Yeni sözleşme: veri IndexedDB/AppStore'dan okunur, servis sadece yazma anında lazy yüklenir.
+          classic=Path('tests/classic-shell-v2-smoke.test.js')
+          c=classic.read_text(encoding='utf-8')
+          old_c="assert(dashboardBundleNormalized.includes(\"'js/modules/school-live-status.js'\")&&dashboardBundleNormalized.includes(\"'js/modules/communication.js'\")&&dashboardBundleNormalized.includes(\"'js/modules/dashboard.js'\")&&dashboardBundleNormalized.indexOf(\"'js/modules/school-live-status.js'\")<dashboardBundleNormalized.indexOf(\"'js/modules/communication.js'\")&&dashboardBundleNormalized.indexOf(\"'js/modules/communication.js'\")<dashboardBundleNormalized.indexOf(\"'js/modules/dashboard.js'\"),'Dashboard açılmadan önce SchoolLiveStatus ve mevcut tek duyuru servis sahibi lazy bundle içinde yüklenmeli.');"
+          new_c="assert(dashboardBundleNormalized.includes(\"'js/modules/school-live-status.js'\")&&dashboardBundleNormalized.includes(\"'js/modules/dashboard.js'\")&&!dashboardBundleNormalized.includes(\"'js/modules/communication.js'\")&&dashboardBundleNormalized.indexOf(\"'js/modules/school-live-status.js'\")<dashboardBundleNormalized.indexOf(\"'js/modules/dashboard.js'\"),'Dashboard açılışı SchoolLiveStatus + Dashboard ile hafif kalmalı; Communication yalnız etkileşimde yüklenmeli.');"
+          assert old_c in c
+          classic.write_text(c.replace(old_c,new_c,1),encoding='utf-8')
+
+          routes=Path('tests/dashboard-card-routes-smoke.test.js')
+          r=routes.read_text(encoding='utf-8')
+          old_r1="assert(dash.includes(\"DuyurularService?.benOkudumMu?.(d)\")&&dash.includes('data-dash-announcement-read'),'Duyuru kartı mevcut local-first okundu servisini kullanmalı.');"
+          new_r1="assert(dash.includes(\"d?.okuyanlar?.[user().uid||'']\")&&dash.includes('data-dash-announcement-read'),'Duyuru kartı okundu durumunu hydrate edilmiş local-first kayıttan hesaplamalı.');"
+          old_r2="assert(dash.includes(\"DuyurularService?.okunduIsaretle?.(box.dataset.dashAnnouncementRead)\"),'Dashboard Okudum işlemi mevcut DuyurularService üzerinden yazmalı.');"
+          new_r2="assert(dash.includes(\"AppLoader?.load?.('communication')\")&&dash.includes('DuyurularService.okunduIsaretle(box.dataset.dashAnnouncementRead)'),'Dashboard Okudum işlemi mevcut DuyurularService sahibini ihtiyaç anında lazy yükleyip kullanmalı.');"
+          assert old_r1 in r and old_r2 in r
+          r=r.replace(old_r1,new_r1,1).replace(old_r2,new_r2,1)
+          routes.write_text(r,encoding='utf-8')
+
+          lazy=Path('tests/lazy-firebase-storage-smoke.test.js')
+          l=lazy.read_text(encoding='utf-8')
+          old_l="assert(/define\\('dashboard',\\['js\\/modules\\/school-live-status\\.js','js\\/modules\\/communication\\.js(?:\\?v=\\d+)?','js\\/modules\\/dashboard\\.js(?:\\?v=\\d+)?'\\]\\)/.test(loader),'Dashboard duyuru okundu işlemi için mevcut tek Communication servis sahibini kullanmalı; ikinci DuyurularService üretmemeli.');"
+          new_l="assert(/define\\('dashboard',\\['js\\/modules\\/school-live-status\\.js','js\\/modules\\/dashboard\\.js(?:\\?v=\\d+)?'\\]\\)/.test(loader)&&!loader.match(/define\\('dashboard',\\[[^\\]]*communication\\.js/),'Dashboard başlangıcı Communication/Storage zincirini eager yüklememeli.');\nassert(communication.includes('global.DuyurularService=')&&!fs.readFileSync('js/modules/dashboard.js','utf8').includes('global.DuyurularService='),'DuyurularService tek sahibi Communication modülü olarak kalmalı.');"
+          assert old_l in l
+          lazy.write_text(l.replace(old_l,new_l,1),encoding='utf-8')
           PY
       - name: Syntax checks
         run: |
@@ -82,6 +108,6 @@ jobs:
           if git diff --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add js/app-loader.js js/modules/dashboard.js index.html service-worker.js tests/runtime-performance-smoke.test.js
+          git add js/app-loader.js js/modules/dashboard.js index.html service-worker.js tests/runtime-performance-smoke.test.js tests/classic-shell-v2-smoke.test.js tests/dashboard-card-routes-smoke.test.js tests/lazy-firebase-storage-smoke.test.js
           git commit -m 'perf: lazy load communication after dashboard startup'
           git push origin main
