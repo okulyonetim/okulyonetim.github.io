@@ -46,18 +46,21 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private static final int   INDICATOR_TOP_MARGIN_DP = 80;
     private static final int   SPRING_BACK_MS        = 220;
     private static final float VERTICAL_DOMINANCE    = 1.28f;
+    private static final int   BOTTOM_EXCLUSION_DP   = 104;
 
     private final WebView webView;
     private final LogoPullRefreshView indicator;
     private final int touchSlop;
     private final float triggerDistancePx;
     private final float hiddenTranslationY;
+    private final float bottomExclusionPx;
 
     private float downX;
     private float downY;
     private boolean dragging = false;
     private boolean refreshing = false;
     private boolean pullEnabled = true;
+    private boolean gestureExcluded = false;
     private float currentDampedDy = 0f;
     private OnRefreshListener listener;
     private ValueAnimator springAnimator;
@@ -69,6 +72,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         float density = context.getResources().getDisplayMetrics().density;
         this.touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         this.triggerDistancePx = TRIGGER_DISTANCE_DP * density;
+        this.bottomExclusionPx = BOTTOM_EXCLUSION_DP * density;
 
         int indicatorSizePx = Math.round(INDICATOR_SIZE_DP * density);
         int topMarginPx = Math.round(INDICATOR_TOP_MARGIN_DP * density);
@@ -105,6 +109,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
             dragging = false;
             springBackTo(0);
         }
+        if (!enabled) gestureExcluded = false;
         if (enabled) {
             innerContentKaydirilmis = false;
             dragging = false;
@@ -148,15 +153,20 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
                 downX = ev.getX();
                 downY = ev.getY();
                 dragging = false;
+                gestureExcluded = getHeight() > 0 && ev.getY() >= getHeight() - bottomExclusionPx;
                 return false;
             case MotionEvent.ACTION_MOVE: {
-                if (canChildScrollUp()) return false;
+                if (gestureExcluded || canChildScrollUp()) return false;
                 if (dikeyAsagiJestMi(ev)) {
                     dragging = true;
                     return true;
                 }
                 return false;
             }
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                gestureExcluded = false;
+                return false;
             default:
                 return false;
         }
@@ -164,10 +174,15 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!pullEnabled || refreshing) return false;
+        if (!pullEnabled || refreshing || gestureExcluded) return false;
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_MOVE: {
                 if (!dragging) return false;
+                if (canChildScrollUp()) {
+                    dragging = false;
+                    springBackTo(0);
+                    return false;
+                }
                 float dy = ev.getY() - downY;
                 float dx = Math.abs(ev.getX() - downX);
                 if (dy <= 0 || dy <= dx * VERTICAL_DOMINANCE) {
@@ -182,6 +197,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
             }
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL: {
+                gestureExcluded = false;
                 if (!dragging) return false;
                 dragging = false;
                 if (currentDampedDy >= triggerDistancePx) {

@@ -2227,3 +2227,9 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
   .ka-school-unassigned{font-size:8.7px}
 }
 @media(min-width:700px){.ka-school-summary-card{min-height:140px}}
+
+
+/* ===== GLOBAL SCROLL / PULL-TO-REFRESH GUARD ===== */
+html,body,.ka-app-shell{overscroll-behavior-y:none}
+.ka-app-content{overscroll-behavior-y:contain}
+.ka-app-nav.ka-bottom-nav{overscroll-behavior:none;touch-action:manipulation}

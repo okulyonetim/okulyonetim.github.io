@@ -33,6 +33,32 @@ window.AppStore={__v2:true,get:pathGet,set:pathSet,data:t=>state.data[t],setData
 window.addEventListener('online',()=>AppStore.set('ui.online',true),{passive:true});
 window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:true});
 
+
+/* Android WebView pull-to-refresh yalnız gerçek sayfa tepesinde çalışır.
+   İç scroll alanları, modal/menü ve sabit alt navigasyon native katmana bildirilir. */
+(function installAndroidPullRefreshGuard(){
+  if(window.__kaAndroidPullRefreshGuard)return;window.__kaAndroidPullRefreshGuard=true;
+  const BLOCK_SELECTOR='.ka-app-nav.ka-bottom-nav,.ka-menu-layer,.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh]';
+  const bridge=()=>window.AndroidPullToRefreshKopru;
+  const report=blocked=>{try{bridge()?.innerScrollBildir?.(!!blocked)}catch(_){}};
+  const docTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
+  function scrollableAncestor(target){
+    for(let el=target instanceof Element?target:null;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
+      const style=getComputedStyle(el),oy=style.overflowY;
+      if((oy==='auto'||oy==='scroll'||oy==='overlay')&&el.scrollHeight>el.clientHeight+2)return el;
+    }
+    return null;
+  }
+  let nestedGesture=false;
+  function begin(e){const target=e.target instanceof Element?e.target:null;nestedGesture=!!(target?.closest?.(BLOCK_SELECTOR)||scrollableAncestor(target));report(nestedGesture||docTop()>0)}
+  function move(e){if(nestedGesture){report(true);return}const target=e.target instanceof Element?e.target:null;if(target?.closest?.(BLOCK_SELECTOR)||scrollableAncestor(target)){nestedGesture=true;report(true);return}report(docTop()>0)}
+  function end(){nestedGesture=false;report(false)}
+  document.addEventListener('touchstart',begin,{capture:true,passive:true});
+  document.addEventListener('touchmove',move,{capture:true,passive:true});
+  document.addEventListener('touchend',end,{capture:true,passive:true});
+  document.addEventListener('touchcancel',end,{capture:true,passive:true});
+})();
+
 /* ========================= EVENT BUS ========================= */
 if(!window.EventBus){
   const events=new Map();

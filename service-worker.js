@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu önbellekten hızlıca sunup
    ağı arka planda yenilemek ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v898';
+const CACHE_ADI='oy-cache-v899';
 
 let messaging=null;
 try{
@@ -24,7 +24,7 @@ const FIREBASE_SDK=[
 
 const ONBELLEGE_ALINACAKLAR=[
   './','./index.html','./manifest.json',
-  './css/design-system.css?v=896','./js/app-loader.js?v=893','./js/modules/academic.js?v=877','./js/modules/communication.js?v=838',
+  './css/design-system.css?v=897','./js/app-loader.js?v=893','./js/modules/academic.js?v=877','./js/modules/communication.js?v=838',
   './css/design-system.css',
   './js/firebase-init.js','./js/core/core.js','./js/core/login-security.js?v=885','./js/core/login-security.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js?v=879','./js/core/shell-ui.js','./js/modules/school-live-status.js','./js/modules/classic-parity.js','./js/modules/classic-excel-parity.js','./js/modules/classic-personnel-parity.js','./js/modules/report-engine.js','./js/modules/dashboard.js?v=872','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/people-classic-ui.js','./js/modules/classes-mobile-parity.js','./js/modules/class-seating.js','./js/modules/academic.js','./js/modules/management.js?v=882','./js/modules/management.js','./js/modules/communication.js','./js/modules/transport.js?v=893','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js?v=879','./js/modules/settings.js',
   './js/modules/payroll-change.js','./js/modules/personnel-documents.js','./js/modules/meeting-schedule.js','./js/modules/assistant.js','./js/modules/legislation.js','./js/modules/legislation-ui.js',
@@ -41,7 +41,7 @@ self.addEventListener('install',event=>{
   ])));
   self.skipWaiting();
 });
-self.addEventListener('activate',event=>{event.waitUntil((async()=>{const names=await caches.keys(),old=names.filter(n=>n!==CACHE_ADI),runtimeChanged=old.some(n=>/^oy-cache-v\d+$/.test(n));await Promise.all(old.map(n=>caches.delete(n)));await self.clients.claim();if(runtimeChanged){const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});await Promise.allSettled(windows.map(client=>client.navigate(client.url)))}})())});
+self.addEventListener('activate',event=>{event.waitUntil((async()=>{const names=await caches.keys(),old=names.filter(n=>n!==CACHE_ADI&&/^oy-cache-v\d+$/.test(n));await Promise.all(old.map(n=>caches.delete(n)));await self.clients.claim()})())});
 function firebaseSdkIstegiMi(req){try{const u=new URL(req.url);return u.origin==='https://www.gstatic.com'&&u.pathname.startsWith('/firebasejs/10.12.2/')&&/-compat\.js$/.test(u.pathname)}catch(_){return false}}
 async function firebaseSdkCacheFirst(event){const cached=await caches.match(event.request);if(cached)return cached;try{const response=await fetch(event.request);if(response){const copy=response.clone();event.waitUntil(caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{}));}return response}catch(_){return new Response('',{status:503,headers:{'Content-Type':'application/javascript; charset=utf-8'}})}}
 function apiIstegiMi(url){return url.includes('firestore.googleapis.com')||url.includes('identitytoolkit.googleapis.com')||url.includes('securetoken.googleapis.com')||url.includes('firebaseinstallations.googleapis.com')||url.includes('fcmregistrations.googleapis.com');}
