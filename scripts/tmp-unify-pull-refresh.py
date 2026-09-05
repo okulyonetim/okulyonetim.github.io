@@ -74,7 +74,7 @@ index.write_text(text,encoding='utf-8')
 sw=root/'service-worker.js'
 text=sw.read_text(encoding='utf-8')
 text=text.replace("const CACHE_ADI='oy-cache-v904';","const CACHE_ADI='oy-cache-v905';",1)
-text=text.replace("'./js/firebase-init.js','./js/core/core.js',","'./js/firebase-init.js','./js/core/core.js?v=905',",1)
+text=text.replace("'./js/firebase-init.js','./js/core/core.js',","'./js/firebase-init.js','./js/core/core.js?v=905','./js/core/core.js',",1)
 sw.write_text(text,encoding='utf-8')
 
 test=root/'tests/android-pull-refresh-guard.test.js'
