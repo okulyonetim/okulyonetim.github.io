@@ -1,4 +1,5 @@
 name: Apply Maarif multiclass modal navigation fix
+# retry: pull-refresh asset version contract is now resilient
 
 on:
   push:
