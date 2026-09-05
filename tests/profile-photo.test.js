@@ -23,5 +23,6 @@ for(const token of ['.ka-profile-photo{','.ka-profile-photo-edit{','.ka-profile-
 assert(rules.includes('match /dokumanlar/{sahipUid}/{dosyaYolu=**}')&&rules.includes('request.auth.uid == sahipUid'),'Profil fotoğrafının kullandığı Storage yolu sahiplik kuralıyla korunmalı.');
 assert(sw.includes('firebase-storage-compat.js'),'Firebase Storage SDK offline kabukta tutulmalı.');
 assert(index.includes('css/design-system.css?v=899')&&index.includes('js/core/shell-ui.js?v=881'),'Yeni profil fotoğrafı UI sürümleri index tarafından zorlanmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v904';")&&sw.includes("'./css/design-system.css?v=899'")&&sw.includes("'./js/core/shell-ui.js?v=881'"),'PWA cache yeni profil fotoğrafı sürümünü taşımalı.');
+const cacheVersion=Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
+assert(cacheVersion>=904&&sw.includes("'./css/design-system.css?v=899'")&&sw.includes("'./js/core/shell-ui.js?v=881'"),'PWA cache profil fotoğrafı sürümünün gerisine düşmemeli.');
 console.log('Kullanıcı profil fotoğrafı ekle/değiştir sözleşmesi başarılı.');
