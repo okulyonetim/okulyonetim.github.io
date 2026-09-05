@@ -1,0 +1,13 @@
+const fs=require('fs');
+const assert=require('assert');
+const rubric=fs.readFileSync('js/modules/rubric-settings.js','utf8');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+assert(rubric.includes("classChecks('siniflar',r.sinif?[r.sinif]:[],false)"),'Maarif düzenleme formu çoklu sınıf seçimini korumalı.');
+assert(rubric.includes("if(type==='maarifRapor'){const classes=getAll(fd,'siniflar')"),'Maarif kaydetme akışı seçili sınıfları ayrı ele almalı.');
+assert(rubric.includes("CizelgelerService.cokluKayitOlustur(type,fresh,'sinif',extras)"),'Düzenlemede eklenen sınıflar ayrı takip kayıtları oluşturmalı.');
+assert(rubric.includes("data-cizelge-back")&&rubric.includes("global.ShellUI?.back?.()"),'Tüm klasik çizelge sayfalarında üst geri düğmesi olmalı.');
+assert(rubric.includes("ka-cizelge-modal-open")&&rubric.includes("function lockModal()"),'Çizelge modalı arka sayfa kaymasını kilitlemeli.');
+assert(shell.includes('[data-cizelge-cancel]'),'Uygulama geri hareketi açık çizelge modalını önce kapatmalı.');
+assert(css.includes('body.ka-cizelge-modal-open{overflow:hidden!important')&&css.includes('[data-cizelge-modal] .ka-modal__body'),'Modal scroll zinciri arka sayfaya taşmamalı.');
+console.log('Maarif multi-class, modal lock and schedule back navigation OK');
