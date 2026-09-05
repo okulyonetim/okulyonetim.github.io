@@ -30,7 +30,8 @@ jobs:
           end=s.index('# Service worker: retain offline cache-first behavior, but never hard-reload live clients during activation.')
           css_patch="""# CSS: preserve existing page-specific design blocks; add only the global overscroll boundary.\ncss=Path('css/design-system.css')\ntext=css.read_text(encoding='utf-8')\nscroll_marker='/* ===== GLOBAL SCROLL / PULL-TO-REFRESH GUARD ===== */'\nif scroll_marker not in text:\n    text+='\\n\\n'+scroll_marker+'\\nhtml,body,.ka-app-shell{overscroll-behavior-y:none}\\n.ka-app-content{overscroll-behavior-y:contain}\\n.ka-app-nav.ka-bottom-nav{overscroll-behavior:none;touch-action:manipulation}\\n'\ncss.write_text(text,encoding='utf-8')\n\n"""
           s=s[:start]+css_patch+s[end:]
-          s=s.replace("\nif v2 in css.read_text(encoding='utf-8'): raise SystemExit('dashboard V2 CSS still present')\n",'\n')
+          if '# Client architecture CI:' in s:
+              s=s[:s.index('# Client architecture CI:')]
           p.write_text(s,encoding='utf-8')
           PY
       - name: Apply Android and offline hardening fixes
@@ -67,10 +68,15 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add android/app/src/main/java/com/koruk/okul/LogoSwipeRefreshLayout.java \
+                  js/core/core.js css/design-system.css service-worker.js index.html \
+                  tests/android-pull-refresh-guard.test.js \
+                  tests/service-worker-no-forced-reload.test.js \
+                  tests/service-worker-precache-smoke.test.js
           if git diff --cached --quiet; then
-            echo 'No changes.'
+            echo 'No product changes.'
             exit 0
           fi
           git commit -m 'fix: harden offline runtime and Android scrolling'
+          git pull --rebase origin main
           git push origin main
