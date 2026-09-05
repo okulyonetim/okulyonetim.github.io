@@ -1,4 +1,4 @@
-/* Koruk Asistan — AppLoader v45
+/* Koruk Asistan — AppLoader v46
    Tek başlangıç sahibi: Firebase + auth + lazy modüller. Tema sahibi: ShellUI.
    Tek görünürlük sahibi: PermissionService.
    Tek davranışsal düzen sahibi: AppConfig (oy_navDuzeni/uygulama).
@@ -22,7 +22,7 @@ define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=877']);
 define('management',['js/modules/report-engine.js','js/modules/management.js?v=882']);
-define('communication',[FIREBASE_STORAGE_SDK,'js/modules/communication.js?v=838','js/modules/assistant.js']);
+define('communication',['js/modules/communication.js?v=839','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=893']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('tools',['js/modules/tools.js','js/modules/teacher-list.js','js/modules/map-ui.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
@@ -85,7 +85,7 @@ function permissionApplyModule(name){const root=document.getElementById('v2Modul
 function permissionRefresh(){applyNavigation();permissionApply(document);const r=AppStore?.get?.('ui.route');if(r)requestAnimationFrame(()=>permissionApplyModule(r));return true}
 window.PermissionService={LEVELS:Object.freeze({...PERMISSION_RANK}),catalog:PERMISSION_CATALOG,aliases:Object.freeze({...LEGACY_PERMISSION_ALIASES}),normalize:permissionNormalize,level:permissionLevel,moduleLevel,can:permissionCan,canEdit:k=>permissionCan(k,'edit'),isPreview:k=>permissionLevel(k)==='preview',require:permissionRequire,apply:permissionApply,applyModule:permissionApplyModule,refresh:permissionRefresh};
 window.gorebilir=window.gorebilir||((key)=>PermissionService.can(key,'read'));window.duzenleyebilir=window.duzenleyebilir||((key)=>PermissionService.can(key,'edit'));window.kullaniciYonetimiYetkisiVar=window.kullaniciYonetimiYetkisiVar||(()=>permissionSession().user?.admin===true||PermissionService.can('settings.users','edit'));
-async function load(name){if(!registry.has(name))throw new Error('module-not-defined:'+name);if(moduleMeta(name).visible===false||moduleLevel(name)==='hidden'){const e=new Error('module-forbidden:'+name);e.code='permission-hidden';throw e}await loadMany(registry.get(name));if(name==='academic'||name==='communication'||name==='documents')window.firebaseStorageHazirla?.();const active=AppStore?.get?.('ui.route')===name;if(active){window.dispatchEvent(new CustomEvent('koruk:module-ready',{detail:{name,permissionLevel:moduleLevel(name)}}));requestAnimationFrame(()=>{if(AppStore?.get?.('ui.route')===name)permissionApplyModule(name)})}return name}
+async function load(name){if(!registry.has(name))throw new Error('module-not-defined:'+name);if(moduleMeta(name).visible===false||moduleLevel(name)==='hidden'){const e=new Error('module-forbidden:'+name);e.code='permission-hidden';throw e}await loadMany(registry.get(name));if(name==='academic'||name==='documents')window.firebaseStorageHazirla?.();const active=AppStore?.get?.('ui.route')===name;if(active){window.dispatchEvent(new CustomEvent('koruk:module-ready',{detail:{name,permissionLevel:moduleLevel(name)}}));requestAnimationFrame(()=>{if(AppStore?.get?.('ui.route')===name)permissionApplyModule(name)})}return name}
 function applyTheme(theme,opts={}){return window.ShellUI?.applyTheme?.(theme,opts)??theme}
 function toggleTheme(){return window.ShellUI?.toggleTheme?.()}
 function startPlatform(){if(startupDone)return true;startupDone=true;if('serviceWorker'in navigator)window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./service-worker.js?v=838',{updateViaCache:'none'});await reg.update()}catch(_){}},{once:true});try{if(typeof firebaseyiBaslat!=='function'||!firebaseyiBaslat())return false;authDinleyiciKur?.();return true}catch(e){console.error('[AppLoader]',e);return false}}
