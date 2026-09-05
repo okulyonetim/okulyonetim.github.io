@@ -9,7 +9,7 @@ on:
       - 'js/**'
       - 'service-worker.js'
       - 'firestore.rules'
-      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
+      - 'android/app/src/main/java/com/koruk/okul/**'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/**'
@@ -22,7 +22,7 @@ on:
       - 'js/**'
       - 'service-worker.js'
       - 'firestore.rules'
-      - 'android/app/src/main/java/com/koruk/okul/PrintPlugin.java'
+      - 'android/app/src/main/java/com/koruk/okul/**'
       - 'scripts/build-client-bundles.mjs'
       - 'scripts/check-client-architecture.mjs'
       - 'tests/**'
@@ -42,6 +42,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Check all client JavaScript syntax
+        run: find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
       - name: Build client bundles
         run: node scripts/build-client-bundles.mjs
       - name: Upload consolidation source snapshot
@@ -112,6 +114,10 @@ jobs:
         run: node tests/report-native-print-routing-smoke.test.js
       - name: Verify Android PrintPlugin
         run: node tests/android-print-plugin-smoke.test.js
+      - name: Verify Android pull-to-refresh guard
+        run: node tests/android-pull-refresh-guard.test.js
+      - name: Verify offline activation stability
+        run: node tests/service-worker-no-forced-reload.test.js
       - name: Verify dashboard reminder engine
         run: node tests/dashboard-reminders-smoke.test.js
       - name: Verify teacher list core contract
