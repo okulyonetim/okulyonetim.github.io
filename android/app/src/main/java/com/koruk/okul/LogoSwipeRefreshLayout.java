@@ -48,6 +48,9 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private static final float VERTICAL_DOMINANCE    = 1.28f;
     // Sabit alt navigasyon bölgesinden başlayan jestler hiçbir sayfada yenileme başlatmaz.
     private static final int   BOTTOM_EXCLUSION_DP   = 104;
+    // Yenileme yalnız ekranın üst bölümünden başlayan bilinçli aşağı çekme jestiyle açılır.
+    // Böylece içerikte aşağı/yukarı gezinirken ve alt navigasyona yakın bölgede yanlışlıkla tetiklenmez.
+    private static final int   TOP_ACTIVATION_ZONE_DP = 200;
 
     private final WebView webView;
     private final LogoPullRefreshView indicator;
@@ -55,6 +58,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private final float triggerDistancePx;
     private final float hiddenTranslationY;
     private final float bottomExclusionPx;
+    private final float topActivationZonePx;
 
     private float downX;
     private float downY;
@@ -74,6 +78,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         this.touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         this.triggerDistancePx = TRIGGER_DISTANCE_DP * density;
         this.bottomExclusionPx = BOTTOM_EXCLUSION_DP * density;
+        this.topActivationZonePx = TOP_ACTIVATION_ZONE_DP * density;
 
         int indicatorSizePx = Math.round(INDICATOR_SIZE_DP * density);
         int topMarginPx = Math.round(INDICATOR_TOP_MARGIN_DP * density);
@@ -154,7 +159,8 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
                 downX = ev.getX();
                 downY = ev.getY();
                 dragging = false;
-                gestureExcluded = getHeight() > 0 && ev.getY() >= getHeight() - bottomExclusionPx;
+                gestureExcluded = ev.getY() > topActivationZonePx
+                    || (getHeight() > 0 && ev.getY() >= getHeight() - bottomExclusionPx);
                 return false;
             case MotionEvent.ACTION_MOVE: {
                 if (gestureExcluded || canChildScrollUp()) return false;

@@ -6,7 +6,7 @@ const main=fs.readFileSync('android/app/src/main/java/com/koruk/okul/MainActivit
 const core=fs.readFileSync('js/core/core.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
 test('Android pull refresh ignores bottom navigation and nested scroll gestures',()=>{
-  for(const token of ['BOTTOM_EXCLUSION_DP','bottomExclusionPx','gestureExcluded = getHeight() > 0','if (gestureExcluded || canChildScrollUp())','if (canChildScrollUp()) {']) assert.ok(java.includes(token),`Eksik native guard: ${token}`);
+  for(const token of ['BOTTOM_EXCLUSION_DP','bottomExclusionPx','TOP_ACTIVATION_ZONE_DP','topActivationZonePx','gestureExcluded = ev.getY() > topActivationZonePx','getHeight() - bottomExclusionPx','if (gestureExcluded || canChildScrollUp())','if (canChildScrollUp()) {']) assert.ok(java.includes(token),`Eksik native guard: ${token}`);
   assert.ok(main.includes('AndroidPullToRefreshKopru')&&main.includes('innerScrollBildir'),'Native JS bridge korunmalı.');
   for(const token of ['installAndroidPullRefreshGuard','AndroidPullToRefreshKopru','scrollableAncestor','touchstart','touchmove','.ka-app-nav.ka-bottom-nav']) assert.ok(core.includes(token),`Eksik web/native scroll guard: ${token}`);
 });
