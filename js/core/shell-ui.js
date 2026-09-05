@@ -58,6 +58,15 @@ function popoverBase(anchor,width=330){closeHeaderPopover();const r=anchor.getBo
 function cleanupFormPage(){global.__kaFormPageObserver?.disconnect?.();global.__kaFormPageObserver=null}
 function hideModuleChrome(root,name){if(name==='tools'){const h=root.querySelector('[data-tools-module] > .ka-row');if(h)h.hidden=true}else if(name==='settings'){const h=root.querySelector('[data-settings-module] > div:first-child');if(h)h.hidden=true}}
 function applyFormPage(root,page,title){const wanted=FORM_PAGES[page];if(!wanted)return false;const ok=global.ToolsModule?.openPage?.('forms',title);if(ok===false)return false;hideModuleChrome(root,'tools');const applyFilter=()=>{const content=root.querySelector('#toolsContent');content?.querySelectorAll(':scope > section').forEach(section=>{const h=section.querySelector('h3');section.hidden=!h||!String(h.textContent||'').trim().startsWith(wanted)})};cleanupFormPage();requestAnimationFrame(()=>{applyFilter();const content=root.querySelector('#toolsContent');if(content){global.__kaFormPageObserver=new MutationObserver(applyFilter);global.__kaFormPageObserver.observe(content,{childList:true})}});if(title)setTitle(title);return true}
+async function ensureToolsPageDependencies(page){
+  const files=[];
+  if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js');
+  if(page==='map')files.push('js/modules/map-ui.js');
+  if(!files.length)return true;
+  if(!global.AppLoader?.loadScript)throw new Error('Tools companion loader hazır değil.');
+  for(const src of files)await global.AppLoader.loadScript(src);
+  return true;
+}
 function applySubpage(name,page,title){
   const root=$('#v2ModuleRoot');if(!root||!page)return false;
   const studentPages={'student-attendance':'attendance','student-list':'student-list',homework:'homework',grades:'grades'};
@@ -180,7 +189,7 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
   }
   setBottomActive(bottom);const reuseModule=moduleRouteMounted(name);global.AppLoader?.setActiveModule?.(name);
-  setTitle(title||meta.label||name);if(!reuseModule)await global.AppLoader?.load?.(name);
+  setTitle(title||meta.label||name);if(name==='tools'&&page)await ensureToolsPageDependencies(page);if(!reuseModule)await global.AppLoader?.load?.(name);
   if(page)applySubpage(name,page,title);
   if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});
   return true

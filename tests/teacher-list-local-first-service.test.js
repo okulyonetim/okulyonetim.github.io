@@ -3,6 +3,7 @@ const assert=require('assert');
 const service=fs.readFileSync('js/modules/teacher-list.js','utf8');
 const firebase=fs.readFileSync('js/firebase-init.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const build=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
 new Function(service);
 for(const api of ['OgretmenListeRepository','OgretmenListeService','DeviceData','ogretmenListeSablon','ogretmenListeKayit','OgretmenListeUI']) assert(service.includes(api),`Öğretmen liste servisi ${api} sözleşmesini korumalı.`);
@@ -32,7 +33,8 @@ assert(service.includes('uygulamaDosyaKaydet'),'Android Excel dışa aktarma ort
 assert(service.includes('wb.xlsx.writeBuffer()'),'Excel çalışma kitabı istemci tarafında üretilmeli.');
 assert(service.includes('Math.round(widthFor(c.key)/7)'),'Excel çıktısı kaydedilmiş sütun genişliğini kullanmalı.');
 assert(firebase.includes("ogretmenListeSablon:'oy_ogretmenListeSablon'")&&firebase.includes("ogretmenListeKayit:'oy_ogretmenListeKayit'"),'Merkezi COL haritası öğretmen liste koleksiyonlarını korumalı.');
-assert(loader.includes("'js/modules/teacher-list.js'")&&loader.includes("'js/modules/map-ui.js'"),'Tools loader öğretmen liste servisini ve harita modülünü lazy-load etmeli.');
+assert(!loader.match(/define\('tools',\[[^\]]*teacher-list\.js/)&&!loader.match(/define\('tools',\[[^\]]*map-ui\.js/),'Tools varsayılan bundle rota-özel öğretmen liste ve harita companionlarını eager yüklememeli.');
+assert(shell.includes("if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js')")&&shell.includes("if(page==='map')files.push('js/modules/map-ui.js')"),'Shell öğretmen liste ve harita companionlarını ilgili rotalarda lazy-load etmeli.');
 assert(!loader.includes("'js/harita.js'"),'Emekli root harita yolu Tools loader a geri dönmemeli.');
 assert(/'tools\.js':\[[^\]]*'js\/modules\/teacher-list\.js'[^\]]*\]/.test(build),'Production tools bundle öğretmen liste servisini içermeli.');
 console.log('Öğretmen liste local-first servis + V2 editör + sütun/çıktı sözleşmesi başarılı.');

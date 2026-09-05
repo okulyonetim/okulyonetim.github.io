@@ -2,6 +2,7 @@ const fs=require('fs');
 const assert=require('assert');
 
 const loader=fs.readFileSync('js/app-loader.js','utf8');
+const shellUi=fs.readFileSync('js/core/shell-ui.js','utf8');
 const core=fs.readFileSync('js/core/core.js','utf8');
 
 const moduleFiles={
@@ -130,7 +131,9 @@ for(const old of ['people-data.js','academic-data.js','management-data.js','mess
 assert(!registry('academic').includes('academic-calendar-parity.js'),'Academic bundle ayrı takvim parity kaynağı yüklememeli.');
 assert(source.academic.includes('openAcademicCalendar')&&source.academic.includes('kaAcademicCalendarOverlay'),'Akademik Takvim davranışı canonical academic.js içinde yaşamalı.');
 assert(registry('transport').includes("'js/modules/report-engine.js'"),'Transport ortak ReportEngine kullanmalı.');
-assert(registry('tools').includes("'js/modules/map-ui.js'"),'Tools interaktif harita motorunu module path üzerinden lazy-load edilmeli.');
+assert(!registry('tools').includes("'js/modules/map-ui.js'")&&!registry('tools').includes("'js/modules/teacher-list.js'"),'Tools varsayılan bundle rota-özel companion dosyalarını eager yüklememeli.');
+assert(shellUi.includes("if(page==='map')files.push('js/modules/map-ui.js')"),'Harita motoru yalnız Harita rotasında lazy yüklenmeli.');
+assert(shellUi.includes("if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js')"),'Öğretmen liste/ödev/not companionı yalnız ilgili rotalarda lazy yüklenmeli.');
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
 assert(loader.includes("const active=AppStore?.get?.('ui.route')===name")&&loader.includes("if(active){window.dispatchEvent(new CustomEvent('koruk:module-ready'"),'Lazy yüklenen bağımlılık aktif rota değilse UI mount eventi üretmemeli; eski async yükleme yeni sayfanın üstüne binmemeli.');

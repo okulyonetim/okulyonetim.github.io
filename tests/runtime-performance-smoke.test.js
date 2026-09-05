@@ -6,6 +6,7 @@ const sw=fs.readFileSync('service-worker.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
 const dashboard=fs.readFileSync('js/modules/dashboard.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
+const shellUi=fs.readFileSync('js/core/shell-ui.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 new Function(core);
 assert(core.includes('async function getMany(keys,defaults={})'),'IndexedDB toplu okuma kapısı bulunmalı.');
@@ -28,4 +29,6 @@ assert(dashboard.includes('renderFrame=requestAnimationFrame'),'Dashboard veri g
 assert(loader.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=873'])"),'Dashboard başlangıcı ağır communication modülünü eager yüklememeli.');
 assert(dashboard.includes("AppLoader?.load?.('communication')"),'Duyuru yazma servisi yalnız etkileşim anında lazy yüklenmeli.');
 assert(dashboard.includes("d?.okuyanlar?.[user().uid||'']"),'Duyuru okundu görünümü local-first kayıttan hesaplanmalı.');
+assert(loader.includes("define('tools',['js/modules/tools.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'])"),'Tools başlangıcı rota-özel teacher-list/map companionlarını eager yüklememeli.');
+assert(shellUi.includes('async function ensureToolsPageDependencies(page)'),'Tools rota companionları ShellUI tarafından ihtiyaç anında hazırlanmalı.');
 console.log('Runtime performans sözleşmesi başarılı.');
