@@ -92,6 +92,28 @@ jobs:
           assert anchor in p
           p=p.replace(anchor,anchor+add,1)
           perf.write_text(p,encoding='utf-8')
+
+          map_test=Path('tests/map-consolidation-smoke.test.js')
+          m=map_test.read_text(encoding='utf-8')
+          map_loader="const loader=fs.readFileSync('js/app-loader.js','utf8');"
+          assert map_loader in m
+          if "const shell=fs.readFileSync('js/core/shell-ui.js','utf8');" not in m:
+              m=m.replace(map_loader,map_loader+"\nconst shell=fs.readFileSync('js/core/shell-ui.js','utf8');",1)
+          old_map="assert(loader.includes(\"'js/modules/map-ui.js'\"),'Tools registry HaritaUI motorunu module path üzerinden yüklemeli.');"
+          new_map="assert(!loader.match(/define\\('tools',\\[[^\\]]*map-ui\\.js/),'Harita motoru varsayılan Tools bundle içinde eager olmamalı.');\nassert(shell.includes(\"if(page==='map')files.push('js/modules/map-ui.js')\"),'Shell HaritaUI motorunu yalnız Harita rotasında module path üzerinden yüklemeli.');"
+          assert old_map in m
+          map_test.write_text(m.replace(old_map,new_map,1),encoding='utf-8')
+
+          teacher_test=Path('tests/teacher-list-local-first-service.test.js')
+          t=teacher_test.read_text(encoding='utf-8')
+          teacher_loader="const loader=fs.readFileSync('js/app-loader.js','utf8');"
+          assert teacher_loader in t
+          if "const shell=fs.readFileSync('js/core/shell-ui.js','utf8');" not in t:
+              t=t.replace(teacher_loader,teacher_loader+"\nconst shell=fs.readFileSync('js/core/shell-ui.js','utf8');",1)
+          old_teacher="assert(loader.includes(\"'js/modules/teacher-list.js'\")&&loader.includes(\"'js/modules/map-ui.js'\"),'Tools loader öğretmen liste servisini ve harita modülünü lazy-load etmeli.');"
+          new_teacher="assert(!loader.match(/define\\('tools',\\[[^\\]]*teacher-list\\.js/)&&!loader.match(/define\\('tools',\\[[^\\]]*map-ui\\.js/),'Tools varsayılan bundle rota-özel öğretmen liste ve harita companionlarını eager yüklememeli.');\nassert(shell.includes(\"if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js')\")&&shell.includes(\"if(page==='map')files.push('js/modules/map-ui.js')\"),'Shell öğretmen liste ve harita companionlarını ilgili rotalarda lazy-load etmeli.');"
+          assert old_teacher in t
+          teacher_test.write_text(t.replace(old_teacher,new_teacher,1),encoding='utf-8')
           PY
       - name: Syntax checks
         run: |
@@ -108,6 +130,6 @@ jobs:
           if git diff --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add js/app-loader.js js/core/shell-ui.js index.html service-worker.js tests/module-bundles-smoke.test.js tests/runtime-performance-smoke.test.js
+          git add js/app-loader.js js/core/shell-ui.js index.html service-worker.js tests/module-bundles-smoke.test.js tests/runtime-performance-smoke.test.js tests/map-consolidation-smoke.test.js tests/teacher-list-local-first-service.test.js
           git commit -m 'perf: lazy load tools route companions'
           git push origin main
