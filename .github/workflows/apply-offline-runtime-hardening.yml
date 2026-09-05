@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '24'
       - name: Apply Android, offline and consolidation fixes
-        run: python3 scripts/apply-offline-runtime-hardening.py
+        run: |
+          sed -i "s/for p in \[Path('js'),Path('tests')\]:/for p in [Path('js')]:/" scripts/apply-offline-runtime-hardening.py
+          python3 scripts/apply-offline-runtime-hardening.py
       - name: Check all JavaScript syntax
         run: find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
       - name: Run focused offline and Android regressions
