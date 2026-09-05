@@ -21,7 +21,17 @@ jobs:
         with:
           node-version: '24'
       - name: Apply Android and offline hardening fixes
-        run: python3 scripts/apply-offline-runtime-hardening-v2.py
+        run: |
+          python3 scripts/apply-offline-runtime-hardening-v2.py
+          python3 <<'PY'
+          from pathlib import Path
+          p=Path('tests/service-worker-precache-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          old="assert(sw.includes(\"self.clients.matchAll({type:'window',includeUncontrolled:true})\")&&sw.includes('client.navigate(client.url)'), 'Yeni Service Worker eski runtime kullanan açık PWA pencerelerini yeni belgeye taşımalı.');"
+          new="assert(sw.includes('await self.clients.claim()')&&!sw.includes('windows.map(client=>client.navigate(client.url))'), 'Yeni Service Worker canlı local-first oturumu zorla yenilemeden istemciyi devralmalı.');"
+          if old not in s: raise SystemExit('stale service-worker reload assertion not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
       - name: Check all JavaScript syntax
         run: find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
       - name: Verify Android pull-to-refresh guard
