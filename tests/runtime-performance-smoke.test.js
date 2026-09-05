@@ -5,6 +5,7 @@ const core=fs.readFileSync('js/core/core.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
 const dashboard=fs.readFileSync('js/modules/dashboard.js','utf8');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 new Function(core);
 assert(core.includes('async function getMany(keys,defaults={})'),'IndexedDB toplu okuma kapısı bulunmalı.');
@@ -24,4 +25,7 @@ assert(viewport.includes('contain:layout paint')&&viewport.includes('translateZ(
 assert(css.includes('will-change:transform')&&css.includes('@keyframes khTicker'),'Ticker GPU transform animasyonunu korumalı.');
 assert(dashboard.includes('freshNews.replaceWith(oldNews)'),'Aynı haber akışının DOMu yeniden yaratılmamalı.');
 assert(dashboard.includes('renderFrame=requestAnimationFrame'),'Dashboard veri güncellemelerini frame bazında birleştirmeli.');
+assert(loader.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=873'])"),'Dashboard başlangıcı ağır communication modülünü eager yüklememeli.');
+assert(dashboard.includes("AppLoader?.load?.('communication')"),'Duyuru yazma servisi yalnız etkileşim anında lazy yüklenmeli.');
+assert(dashboard.includes("d?.okuyanlar?.[user().uid||'']"),'Duyuru okundu görünümü local-first kayıttan hesaplanmalı.');
 console.log('Runtime performans sözleşmesi başarılı.');

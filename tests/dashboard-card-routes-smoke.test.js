@@ -109,8 +109,8 @@ assert(css.includes('TEACHER WEEKLY DUTY SELF HIGHLIGHT')&&css.includes('.ka-hom
 
 // LEGACY ANNOUNCEMENT CARD CHECKPOINT
 assert(dash.includes('class="kh-announcement ${ok?\'is-read\':\'is-unread\'}"'),'Dashboard duyurusu referans kh-announcement DOM sözleşmesini kullanmalı.');
-assert(dash.includes("DuyurularService?.benOkudumMu?.(d)")&&dash.includes('data-dash-announcement-read'),'Duyuru kartı mevcut local-first okundu servisini kullanmalı.');
-assert(dash.includes("DuyurularService?.okunduIsaretle?.(box.dataset.dashAnnouncementRead)"),'Dashboard Okudum işlemi mevcut DuyurularService üzerinden yazmalı.');
+assert(dash.includes("d?.okuyanlar?.[user().uid||'']")&&dash.includes('data-dash-announcement-read'),'Duyuru kartı okundu durumunu hydrate edilmiş local-first kayıttan hesaplamalı.');
+assert(dash.includes("AppLoader?.load?.('communication')")&&dash.includes('DuyurularService.okunduIsaretle(box.dataset.dashAnnouncementRead)'),'Dashboard Okudum işlemi mevcut DuyurularService sahibini ihtiyaç anında lazy yükleyip kullanmalı.');
 assert(css.includes('LEGACY DASHBOARD ANNOUNCEMENT — CENTRAL THEME')&&css.includes('.ka-home .kh-announcement-head')&&css.includes('.ka-home .kh-read-check'),'Legacy duyuru geometrisi merkezi design-system içinde kalmalı.');
 assert(css.includes('background:var(--ka-primary-soft)')&&css.includes('color:var(--ka-primary)')&&css.includes('border:1px solid var(--ka-border)'),'Legacy duyuru renkleri merkezi --ka-* tokenlarından gelmeli.');
 assert(!dash.includes('ka-home-announcement__mark'),'Eski duyuru geri taşındığında yeni taklit duyuru satırı aktif renderer içinde kalmamalı.');
