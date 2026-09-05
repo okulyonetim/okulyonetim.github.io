@@ -87,6 +87,16 @@ async function main(){
     await assertSucceeds(uploadBytes(ref(teacherStorage, 'dokumanlar/legacy.pdf'), pdfData, { contentType:'application/pdf' }));
     await assertSucceeds(getBytes(ref(teacher2Storage, 'dokumanlar/legacy.pdf')));
 
+    // Profil fotoğrafı mevcut dokumanlar/{uid} kişisel Storage alanında tutulur.
+    // Kullanıcı ekleyip değiştirebilir; başka kullanıcı aynı objeyi okuyamaz/yazamaz.
+    const profileRef = ref(teacherStorage, 'dokumanlar/teacherUid/profil/profil');
+    const profileMeta = { contentType:'image/webp', customMetadata:{ olusturanUid:'teacherUid', gorunurluk:'kisisel', tur:'profil-fotografi' } };
+    await assertSucceeds(uploadBytes(profileRef, new Uint8Array([1,2,3,4]), profileMeta));
+    await assertSucceeds(uploadBytes(profileRef, new Uint8Array([5,6,7,8]), profileMeta));
+    await assertSucceeds(getBytes(profileRef));
+    await assertFails(getBytes(ref(teacher2Storage, 'dokumanlar/teacherUid/profil/profil')));
+    await assertFails(uploadBytes(ref(teacher2Storage, 'dokumanlar/teacherUid/profil/profil'), new Uint8Array([9]), { contentType:'image/webp', customMetadata:{ olusturanUid:'teacherUid', gorunurluk:'kisisel', tur:'profil-fotografi' } }));
+
     // Duyuru görsellerinde artık rol güvenliği var: admin/yetkili yazar,
     // sıradan girişli kullanıcı yalnız okur, anonim erişemez.
     await assertSucceeds(uploadBytes(ref(adminStorage, 'duyurular/test.png'), new Uint8Array([1,2,3]), { contentType:'image/png' }));

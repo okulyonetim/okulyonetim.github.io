@@ -88,8 +88,50 @@ async function adminYeniKullaniciOlustur(kullaniciAdi,sifre,ekBilgiler){ekBilgil
 async function adminSifreSifirlaYeniHesapla(eskiKullaniciBelgesi,yeniKullaniciAdi,yeniSifre){await db.collection(COL.kullanicilar).doc(eskiKullaniciBelgesi.id).update({aktif:false,sifreSifirlandiEskiHesap:true});return adminYeniKullaniciOlustur(yeniKullaniciAdi,yeniSifre,{ad:eskiKullaniciBelgesi.ad,rolId:eskiKullaniciBelgesi.rolId,bagliOgretmenId:eskiKullaniciBelgesi.bagliOgretmenId,admin:eskiKullaniciBelgesi.admin});}
 async function kendiSifremiDegistir(mevcutSifre,yeniSifre){const user=auth.currentUser;if(!user)throw new Error('oturum-yok');const cred=firebase.auth.EmailAuthProvider.credential(user.email,mevcutSifre);await user.reauthenticateWithCredential(cred);await user.updatePassword(yeniSifre);}
 
+const PROFIL_FOTO_STORAGE_SDK='https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js';
+const PROFIL_FOTO_TURLERI=new Set(['image/jpeg','image/png','image/webp']);
+const PROFIL_FOTO_GIRIS_LIMITI=8*1024*1024;
+async function profilFotoStorageHazirla(){
+  if(window.storage)return window.storage;
+  if(typeof window.firebase?.storage!=='function'){
+    if(!window.AppLoader?.loadScript)throw new Error('Profil fotoğrafı yükleyicisi hazır değil.');
+    await window.AppLoader.loadScript(PROFIL_FOTO_STORAGE_SDK);
+  }
+  const s=window.firebaseStorageHazirla?.()||window.storage;
+  if(!s)throw new Error('Profil fotoğrafı depolama alanı açılamadı.');
+  return s;
+}
+async function profilFotografiniHazirla(file){
+  if(!file||!PROFIL_FOTO_TURLERI.has(String(file.type||'').toLowerCase()))throw new Error('JPG, PNG veya WEBP biçiminde bir fotoğraf seçin.');
+  if(!file.size||file.size>PROFIL_FOTO_GIRIS_LIMITI)throw new Error('Fotoğraf en fazla 8 MB olabilir.');
+  const objectUrl=URL.createObjectURL(file);
+  try{
+    const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Fotoğraf okunamadı.'));img.src=objectUrl});
+    const w=Number(image.naturalWidth||image.width)||0,h=Number(image.naturalHeight||image.height)||0,edge=Math.min(w,h);
+    if(!edge)throw new Error('Fotoğraf boyutları okunamadı.');
+    const size=Math.max(1,Math.min(512,Math.round(edge))),canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;
+    const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Fotoğraf işlenemedi.');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    const sx=Math.max(0,(w-edge)/2),sy=Math.max(0,(h-edge)/2);ctx.drawImage(image,sx,sy,edge,edge,0,0,size,size);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.86));
+    if(!blob)throw new Error('Fotoğraf hazırlanamadı.');
+    return blob;
+  }finally{URL.revokeObjectURL(objectUrl)}
+}
+async function kendiProfilFotografimiGuncelle(file){
+  const user=auth?.currentUser;if(!user?.uid)throw new Error('Aktif kullanıcı oturumu bulunamadı.');
+  if(typeof navigator!=='undefined'&&navigator.onLine===false)throw new Error('Profil fotoğrafını değiştirmek için internet bağlantısı gerekiyor.');
+  const blob=await profilFotografiniHazirla(file),storage=await profilFotoStorageHazirla(),path=`dokumanlar/${user.uid}/profil/profil`,ref=storage.ref(path);
+  const snapshot=await ref.put(blob,{contentType:blob.type||'image/webp',customMetadata:{olusturanUid:user.uid,gorunurluk:'kisisel',tur:'profil-fotografi'}}),url=await snapshot.ref.getDownloadURL();
+  await user.updateProfile({photoURL:url});
+  const patch={photoURL:url,profilFotoUrl:url,profilFotoGuncellenmeTarihi:new Date().toISOString()};
+  AKTIF_KULLANICI={...(AKTIF_KULLANICI||{}),...patch};window.AKTIF_KULLANICI=AKTIF_KULLANICI;window.AppStore?.set?.('session.user',AKTIF_KULLANICI);
+  await authSessionCacheYaz(user.uid,AKTIF_KULLANICI,AKTIF_ROL);sidebarHesapGuncelle(user);
+  return{url,path};
+}
+window.kendiProfilFotografimiGuncelle=kendiProfilFotografimiGuncelle;
+
 function sidebarHesapGuncelle(user){
-  const kutu=document.getElementById('sidebarHesap');if(!kutu)return;if(!user){kutu.style.display='none';return}kutu.style.display='flex';const avatar=document.getElementById('hesapAvatar'),ad=document.getElementById('hesapAd'),email=document.getElementById('hesapEmail'),bagliVarMi=!!(AKTIF_KULLANICI&&AKTIF_KULLANICI.bagliOgretmenId),ben=(typeof bagliOgretmenimGetir==='function')?bagliOgretmenimGetir():null,ogretmenlerYuklendiMi=typeof ogretmenler!=='undefined'&&ogretmenler.length>0;if(bagliVarMi&&!ben&&!ogretmenlerYuklendiMi)return;if(avatar)avatar.src=(ben&&ben.profilFotoUrl)||'assets/icon-192.png';if(ad)ad.textContent=ben?`${ben.ad||''} ${ben.soyad||''}`.trim():(AKTIF_KULLANICI?.ad||AKTIF_KULLANICI?.kullaniciAdi||'Kullanıcı');if(email)email.textContent=AKTIF_KULLANICI?.kullaniciAdi?'@'+AKTIF_KULLANICI.kullaniciAdi:(user.email||'');
+  const kutu=document.getElementById('sidebarHesap');if(!kutu)return;if(!user){kutu.style.display='none';return}kutu.style.display='flex';const avatar=document.getElementById('hesapAvatar'),ad=document.getElementById('hesapAd'),email=document.getElementById('hesapEmail'),bagliVarMi=!!(AKTIF_KULLANICI&&AKTIF_KULLANICI.bagliOgretmenId),ben=(typeof bagliOgretmenimGetir==='function')?bagliOgretmenimGetir():null,ogretmenlerYuklendiMi=typeof ogretmenler!=='undefined'&&ogretmenler.length>0;if(bagliVarMi&&!ben&&!ogretmenlerYuklendiMi)return;if(avatar)avatar.src=AKTIF_KULLANICI?.profilFotoUrl||AKTIF_KULLANICI?.photoURL||(ben&&ben.profilFotoUrl)||'assets/icon-192.png';if(ad)ad.textContent=ben?`${ben.ad||''} ${ben.soyad||''}`.trim():(AKTIF_KULLANICI?.ad||AKTIF_KULLANICI?.kullaniciAdi||'Kullanıcı');if(email)email.textContent=AKTIF_KULLANICI?.kullaniciAdi?'@'+AKTIF_KULLANICI.kullaniciAdi:(user.email||'');
 }
 
 let authSessionActivated=false;
@@ -111,7 +153,7 @@ function authOturumuUygula(firebaseUser,kullanici,rol,{cached=false}={}){
 async function authSunucuOturumuGetir(user,cached){
   const ref=db.collection(COL.kullanicilar).doc(user.uid),snap=await ref.get();
   if(!snap.exists){console.error('Bu hesap için oy_kullanicilar belgesi bulunamadı:',user.uid);alert('Hesabınız için gerekli kayıt bulunamadı. Lütfen yöneticinizle iletişime geçin.');await auth.signOut();return false}
-  const kullanici={id:snap.id,...snap.data()};let rol=null;
+  const kullanici={id:snap.id,...snap.data()};if(user.photoURL){kullanici.photoURL=user.photoURL;kullanici.profilFotoUrl=user.photoURL}let rol=null;
   if(kullanici.rolId){try{const rolSnap=await db.collection(COL.roller).doc(kullanici.rolId).get();if(rolSnap.exists)rol={id:rolSnap.id,...rolSnap.data()}}catch(e){if(cached?.role?.id===kullanici.rolId)rol=cached.role;else console.warn('Rol okunamadı:',e)}}
   await authSessionCacheYaz(user.uid,kullanici,rol);
   authOturumuUygula(user,kullanici,rol);
