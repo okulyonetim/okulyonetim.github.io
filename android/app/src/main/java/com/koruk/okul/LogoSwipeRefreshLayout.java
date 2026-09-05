@@ -46,6 +46,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private static final int   INDICATOR_TOP_MARGIN_DP = 80;
     private static final int   SPRING_BACK_MS        = 220;
     private static final float VERTICAL_DOMINANCE    = 1.28f;
+    // Sabit alt navigasyon bölgesinden başlayan jestler hiçbir sayfada yenileme başlatmaz.
     private static final int   BOTTOM_EXCLUSION_DP   = 104;
 
     private final WebView webView;
