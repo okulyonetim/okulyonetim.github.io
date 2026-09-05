@@ -1,0 +1,75 @@
+name: Apply Android refresh gesture hardening
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Restrict native refresh gesture to top zone
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/java/com/koruk/okul/LogoSwipeRefreshLayout.java')
+          s=p.read_text()
+          if 'TOP_ACTIVATION_ZONE_DP' not in s:
+              s=s.replace(
+                  '    private static final int   BOTTOM_EXCLUSION_DP   = 104;\n',
+                  '    private static final int   BOTTOM_EXCLUSION_DP   = 104;\n'
+                  '    // Yenileme yalnız ekranın üst bölümünden başlayan bilinçli aşağı çekme jestiyle açılır.\n'
+                  '    // Böylece içerikte aşağı/yukarı gezinirken ve alt navigasyona yakın bölgede yanlışlıkla tetiklenmez.\n'
+                  '    private static final int   TOP_ACTIVATION_ZONE_DP = 200;\n'
+              )
+              s=s.replace(
+                  '    private final float bottomExclusionPx;\n',
+                  '    private final float bottomExclusionPx;\n'
+                  '    private final float topActivationZonePx;\n'
+              )
+              s=s.replace(
+                  '        this.bottomExclusionPx = BOTTOM_EXCLUSION_DP * density;\n',
+                  '        this.bottomExclusionPx = BOTTOM_EXCLUSION_DP * density;\n'
+                  '        this.topActivationZonePx = TOP_ACTIVATION_ZONE_DP * density;\n'
+              )
+              s=s.replace(
+                  '                gestureExcluded = getHeight() > 0 && ev.getY() >= getHeight() - bottomExclusionPx;\n',
+                  '                gestureExcluded = ev.getY() > topActivationZonePx\n'
+                  '                    || (getHeight() > 0 && ev.getY() >= getHeight() - bottomExclusionPx);\n'
+              )
+          p.write_text(s)
+
+          t=Path('tests/android-pull-refresh-guard.test.js')
+          q=t.read_text()
+          old="  for(const token of ['BOTTOM_EXCLUSION_DP','bottomExclusionPx','gestureExcluded = getHeight() > 0','if (gestureExcluded || canChildScrollUp())','if (canChildScrollUp()) {']) assert.ok(java.includes(token),`Eksik native guard: ${token}`);"
+          new="  for(const token of ['BOTTOM_EXCLUSION_DP','bottomExclusionPx','TOP_ACTIVATION_ZONE_DP','topActivationZonePx','gestureExcluded = ev.getY() > topActivationZonePx','getHeight() - bottomExclusionPx','if (gestureExcluded || canChildScrollUp())','if (canChildScrollUp()) {']) assert.ok(java.includes(token),`Eksik native guard: ${token}`);"
+          if old in q:
+              q=q.replace(old,new)
+          t.write_text(q)
+          PY
+      - name: Full client regression suite
+        run: node scripts/run-client-tests.mjs
+      - name: Syntax checks
+        run: |
+          node --check js/core/core.js
+          node --check js/app-loader.js
+          node --check service-worker.js
+      - name: Commit verified fix
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No change required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add android/app/src/main/java/com/koruk/okul/LogoSwipeRefreshLayout.java tests/android-pull-refresh-guard.test.js
+          git commit -m 'fix: prevent accidental Android pull refresh while scrolling'
+          git push origin main
