@@ -20,6 +20,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Prepare safe runtime patch
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p=Path('scripts/apply-offline-runtime-hardening-v2.py')
+          s=p.read_text(encoding='utf-8')
+          start=s.index('# CSS: remove superseded dashboard override and stop browser/PWA overscroll-refresh globally.')
+          end=s.index('# Service worker: retain offline cache-first behavior, but never hard-reload live clients during activation.')
+          css_patch="""# CSS: preserve existing page-specific design blocks; add only the global overscroll boundary.\ncss=Path('css/design-system.css')\ntext=css.read_text(encoding='utf-8')\nscroll_marker='/* ===== GLOBAL SCROLL / PULL-TO-REFRESH GUARD ===== */'\nif scroll_marker not in text:\n    text+='\\n\\n'+scroll_marker+'\\nhtml,body,.ka-app-shell{overscroll-behavior-y:none}\\n.ka-app-content{overscroll-behavior-y:contain}\\n.ka-app-nav.ka-bottom-nav{overscroll-behavior:none;touch-action:manipulation}\\n'\ncss.write_text(text,encoding='utf-8')\n\n"""
+          s=s[:start]+css_patch+s[end:]
+          s=s.replace("\nif v2 in css.read_text(encoding='utf-8'): raise SystemExit('dashboard V2 CSS still present')\n",'\n')
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Apply Android and offline hardening fixes
         run: |
           python3 scripts/apply-offline-runtime-hardening-v2.py
@@ -39,23 +52,13 @@ jobs:
           node tests/android-pull-refresh-guard.test.js
           node tests/service-worker-no-forced-reload.test.js
           node tests/legislation-engine-v2-smoke.test.js
+          node tests/dashboard-school-summary-readability.test.js
           node tests/dashboard-school-summary-readability-v3.test.js
+          node tests/notes-page-redesign.test.js
           node tests/service-worker-precache-smoke.test.js
           node tests/modules-local-first-boundary.test.js
       - name: Run complete client regression suite
-        id: fulltests
-        continue-on-error: true
-        run: node scripts/run-client-tests.mjs > full-client-tests.log 2>&1
-      - name: Upload regression log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: full-client-tests-log
-          path: full-client-tests.log
-          retention-days: 1
-      - name: Fail when complete suite fails
-        if: steps.fulltests.outcome == 'failure'
-        run: exit 1
+        run: node scripts/run-client-tests.mjs
       - name: Audit client architecture
         run: node scripts/check-client-architecture.mjs
       - name: Verify bundle generation
