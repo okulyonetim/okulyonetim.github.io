@@ -34,13 +34,14 @@ window.addEventListener('online',()=>AppStore.set('ui.online',true),{passive:tru
 window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:true});
 
 
-/* Android WebView pull-to-refresh yalnız gerçek sayfa tepesinde çalışır.
-   İç scroll alanları, modal/menü ve sabit alt navigasyon native katmana bildirilir. */
-(function installAndroidPullRefreshGuard(){
-  if(window.__kaAndroidPullRefreshGuard)return;window.__kaAndroidPullRefreshGuard=true;
+/* APK / PWA / mobil web için TEK pull-to-refresh davranışı.
+   Browser/native varsayılan yenilemeleri CSS ile bastırılır; yalnız gerçek belge
+   tepesinde, iç kaydırma alanı dışında ve bilinçli aşağı çekme eşiğinde yenilenir. */
+(function installUnifiedPullToRefresh(){
+  if(window.__kaUnifiedPullRefresh)return;window.__kaUnifiedPullRefresh=true;
   const BLOCK_SELECTOR='.ka-app-nav.ka-bottom-nav,.ka-menu-layer,.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh]';
-  const bridge=()=>window.AndroidPullToRefreshKopru;
-  const report=blocked=>{try{bridge()?.innerScrollBildir?.(!!blocked)}catch(_){}};
+  const ARM_DISTANCE=96,MAX_VISUAL=78,DEAD_ZONE=8;
+  let tracking=false,armed=false,startX=0,startY=0,indicator=null,reloading=false;
   const docTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
   function scrollableAncestor(target){
     for(let el=target instanceof Element?target:null;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
@@ -49,14 +50,28 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     }
     return null;
   }
-  let nestedGesture=false;
-  function begin(e){const target=e.target instanceof Element?e.target:null;nestedGesture=!!(target?.closest?.(BLOCK_SELECTOR)||scrollableAncestor(target));report(nestedGesture||docTop()>0)}
-  function move(e){if(nestedGesture){report(true);return}const target=e.target instanceof Element?e.target:null;if(target?.closest?.(BLOCK_SELECTOR)||scrollableAncestor(target)){nestedGesture=true;report(true);return}report(docTop()>0)}
-  function end(){nestedGesture=false;report(false)}
+  function blocked(target){return !!(document.body.classList.contains('ka-layer-open')||target?.closest?.(BLOCK_SELECTOR)||scrollableAncestor(target))}
+  function ensureIndicator(){
+    if(indicator?.isConnected)return indicator;
+    indicator=document.createElement('div');indicator.id='kaPullRefreshIndicator';indicator.hidden=true;indicator.setAttribute('aria-hidden','true');indicator.innerHTML='<img src="assets/icon-192.png" alt=""><span>Yenilemek için çek</span>';document.body.appendChild(indicator);return indicator;
+  }
+  function draw(raw){
+    const el=ensureIndicator(),visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.48);armed=raw>=ARM_DISTANCE;el.hidden=visual<2;el.classList.toggle('is-armed',armed);el.classList.remove('is-refreshing');el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);const label=el.querySelector('span');if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
+  }
+  function reset(){tracking=false;armed=false;const el=indicator;if(el&&!reloading){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}
+  function begin(e){
+    if(reloading||e.touches?.length!==1)return;const target=e.target instanceof Element?e.target:null;if(docTop()>1||blocked(target)){tracking=false;return}tracking=true;armed=false;startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+  }
+  function move(e){
+    if(!tracking||reloading||e.touches?.length!==1)return;const touch=e.touches[0],dx=touch.clientX-startX,dy=touch.clientY-startY;if(Math.abs(dx)>Math.abs(dy)+8){reset();return}if(dy<0||docTop()>1){reset();return}if(dy<=DEAD_ZONE)return;e.preventDefault();draw(dy);
+  }
+  function finish(){
+    if(!tracking||reloading){if(!reloading)reset();return}const refresh=armed;tracking=false;armed=false;if(!refresh){reset();return}reloading=true;const el=ensureIndicator();el.hidden=false;el.classList.remove('is-armed');el.classList.add('is-refreshing');el.style.setProperty('--ka-pull-y','74px');const label=el.querySelector('span');if(label)label.textContent='Yenileniyor…';setTimeout(()=>window.location.reload(),120);
+  }
   document.addEventListener('touchstart',begin,{capture:true,passive:true});
-  document.addEventListener('touchmove',move,{capture:true,passive:true});
-  document.addEventListener('touchend',end,{capture:true,passive:true});
-  document.addEventListener('touchcancel',end,{capture:true,passive:true});
+  document.addEventListener('touchmove',move,{capture:true,passive:false});
+  document.addEventListener('touchend',finish,{capture:true,passive:true});
+  document.addEventListener('touchcancel',reset,{capture:true,passive:true});
 })();
 
 /* ========================= EVENT BUS ========================= */

@@ -22,7 +22,9 @@ assert(!/\bdb\s*\.\s*collection\s*\(/.test(shell)&&!shell.includes('firebase.fir
 for(const token of ['.ka-profile-photo{','.ka-profile-photo-edit{','.ka-profile-photo-label{','Profil fotoğrafı ekle/değiştir v1'])assert(css.includes(token),`Profil fotoğrafı stili eksik: ${token}`);
 assert(rules.includes('match /dokumanlar/{sahipUid}/{dosyaYolu=**}')&&rules.includes('request.auth.uid == sahipUid'),'Profil fotoğrafının kullandığı Storage yolu sahiplik kuralıyla korunmalı.');
 assert(sw.includes('firebase-storage-compat.js'),'Firebase Storage SDK offline kabukta tutulmalı.');
-assert(index.includes('css/design-system.css?v=899')&&index.includes('js/core/shell-ui.js?v=881'),'Yeni profil fotoğrafı UI sürümleri index tarafından zorlanmalı.');
+const cssVersion=Number(index.match(/css\/design-system\.css\?v=(\d+)/)?.[1]||0);
+const shellVersion=Number(index.match(/js\/core\/shell-ui\.js\?v=(\d+)/)?.[1]||0);
+assert(cssVersion>=899&&shellVersion>=881,'Profil fotoğrafı UI varlıkları gerekli sürümün gerisine düşmemeli.');
 const cacheVersion=Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=904&&sw.includes("'./css/design-system.css?v=899'")&&sw.includes("'./js/core/shell-ui.js?v=881'"),'PWA cache profil fotoğrafı sürümünün gerisine düşmemeli.');
+assert(cacheVersion>=904&&sw.includes(`'./css/design-system.css?v=${cssVersion}'`)&&sw.includes(`'./js/core/shell-ui.js?v=${shellVersion}'`),'PWA cache profil fotoğrafı sürümünün gerisine düşmemeli.');
 console.log('Kullanıcı profil fotoğrafı ekle/değiştir sözleşmesi başarılı.');

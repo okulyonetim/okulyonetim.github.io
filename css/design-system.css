@@ -2203,3 +2203,13 @@ html,body,.ka-app-shell{overscroll-behavior-y:none}
 .ka-profile-photo{position:relative;z-index:2;width:92px;display:grid;justify-items:center;gap:7px}.ka-profile-avatar-wrap{position:relative;width:92px;height:92px}.ka-profile-photo-edit{position:absolute;right:-6px;bottom:-6px;width:32px;height:32px;padding:0;border:2px solid rgba(255,255,255,.9);border-radius:50%;background:var(--ka-card-raised-bg);color:var(--ka-primary);box-shadow:0 5px 14px rgba(0,0,0,.22);display:grid;place-items:center;font-size:14px;line-height:1;cursor:pointer}.ka-profile-photo-label{appearance:none;width:92px;min-height:22px;padding:2px 3px;border:0;border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:8.6px;line-height:1.25;font-weight:850;cursor:pointer}.ka-profile-photo-edit:hover,.ka-profile-photo-label:hover{filter:brightness(1.08)}.ka-profile-photo-edit:focus-visible,.ka-profile-photo-label:focus-visible{outline:3px solid rgba(255,255,255,.48);outline-offset:2px}.ka-profile-photo-edit:disabled,.ka-profile-photo-label:disabled{opacity:.55;cursor:wait}.ka-profile-photo-edit[aria-busy="true"] span{animation:ka-profile-photo-busy .8s linear infinite}@keyframes ka-profile-photo-busy{to{transform:rotate(360deg)}}
 @media(max-width:520px){.ka-profile-photo{width:78px;gap:6px}.ka-profile-avatar-wrap{width:78px;height:78px}.ka-profile-photo-label{width:78px;font-size:7.8px}.ka-profile-photo-edit{width:29px;height:29px;right:-5px;bottom:-5px;font-size:12px}}
 @media(max-width:360px){.ka-profile-photo{width:68px}.ka-profile-avatar-wrap{width:68px;height:68px}.ka-profile-photo-label{width:68px;font-size:7.2px}.ka-profile-photo-edit{width:27px;height:27px}}
+
+
+/* ===== UNIFIED PULL TO REFRESH ===== */
+#kaPullRefreshIndicator{--ka-pull-y:0px;position:fixed;z-index:1200000;left:50%;top:max(8px,env(safe-area-inset-top,0px));transform:translate(-50%,calc(var(--ka-pull-y) - 64px));min-width:118px;height:42px;padding:5px 10px 5px 5px;border:1px solid var(--ka-border,#d7e5de);border-radius:999px;background:var(--ka-card-raised-bg,#fff);color:var(--ka-text,#17352b);box-shadow:0 8px 24px rgba(7,36,27,.18);display:flex;align-items:center;gap:7px;pointer-events:none;opacity:.96;transition:transform 110ms ease,opacity 110ms ease}
+#kaPullRefreshIndicator[hidden]{display:none!important}
+#kaPullRefreshIndicator img{width:30px;height:30px;border-radius:50%;object-fit:cover}
+#kaPullRefreshIndicator span{font-size:9px;font-weight:850;white-space:nowrap}
+#kaPullRefreshIndicator.is-armed{border-color:var(--ka-primary,#17684f);color:var(--ka-primary,#17684f)}
+#kaPullRefreshIndicator.is-refreshing img{animation:kaPullRefreshSpin .75s linear infinite}
+@keyframes kaPullRefreshSpin{to{transform:rotate(360deg)}}

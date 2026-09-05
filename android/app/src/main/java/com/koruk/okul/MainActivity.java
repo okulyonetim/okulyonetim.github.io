@@ -43,7 +43,7 @@ public class MainActivity extends BridgeActivity {
         }
 
         handleIntent(getIntent());
-        setupPullToRefresh();
+        // Pull-to-refresh APK/PWA/web için js/core/core.js tarafından tek merkezden yönetilir.
         kenarJestiniAyir();
     }
 
