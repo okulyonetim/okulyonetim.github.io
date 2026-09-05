@@ -60,6 +60,41 @@ jobs:
           cp manifest.json www/ 2>/dev/null || true
           cp service-worker.js www/ 2>/dev/null || true
 
+      - name: Firebase SDK'yı APK içine yerel paketle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p www/vendor/firebase
+          for sdk in app firestore auth messaging storage; do
+            file="firebase-${sdk}-compat.js"
+            curl -fsSL --retry 3 --retry-delay 2 \
+              "https://www.gstatic.com/firebasejs/10.12.2/${file}" \
+              -o "www/vendor/firebase/${file}"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('www')
+          base='https://www.gstatic.com/firebasejs/10.12.2/'
+          files=[f'firebase-{name}-compat.js' for name in ('app','firestore','auth','messaging','storage')]
+          targets=[root/'index.html',root/'service-worker.js',*root.joinpath('js').rglob('*.js')]
+          for path in targets:
+              if not path.exists():
+                  continue
+              text=path.read_text(encoding='utf-8')
+              changed=text
+              for name in files:
+                  changed=changed.replace(base+name,'./vendor/firebase/'+name)
+              if changed!=text:
+                  path.write_text(changed,encoding='utf-8')
+          for name in files:
+              p=root/'vendor'/'firebase'/name
+              if not p.exists() or p.stat().st_size < 1000:
+                  raise SystemExit(f'Firebase SDK yerel paketlenemedi: {name}')
+          if base in (root/'index.html').read_text(encoding='utf-8'):
+              raise SystemExit('APK index.html içinde uzak Firebase SDK bağımlılığı kaldı')
+          print('Firebase SDK APK içine yerel olarak paketlendi.')
+          PY
+
       - name: Sürüm numarasını göm (uygulama içi güncelleme kontrolü için)
         run: |
           echo "{\"kod\": ${{ github.run_number }}}" > www/version.json
