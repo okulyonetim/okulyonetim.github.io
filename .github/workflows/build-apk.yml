@@ -4,6 +4,19 @@ name: Android APK Build
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'index.html'
+      - 'css/**'
+      - 'js/**'
+      - 'assets/**'
+      - 'manifest.json'
+      - 'service-worker.js'
+      - 'capacitor.config.json'
+      - 'android/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/build-client-bundles.mjs'
+      - '.github/workflows/build-apk.yml'
   workflow_dispatch:
 
 jobs:
