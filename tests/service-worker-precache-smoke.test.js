@@ -45,5 +45,7 @@ assert(sw.includes('async function navigasyonCacheFirst(event)'), 'Uygulama kabu
 assert(sw.includes('kodCacheFirst(event)')&&!sw.includes('kodNetworkFirst(event)'), 'Eski ağ bekleten JS/CSS network-first yolu geri dönmemeli.');
 assert(sw.includes('navigasyonCacheFirst(event)')&&!sw.includes('navigasyonNetworkFirst(event)'), 'Eski ağ bekleten navigasyon yolu geri dönmemeli.');
 assert(/cache\.put\(event\.request\s*,\s*copy\)/.test(sw), 'Başarılı GET kaynakları runtime-cache edilmeli.');
-assert(sw.includes('caches.match(event.request)'), 'Çevrimdışı cache fallback kullanılmalı.');
+assert(sw.includes('caches.match(event.request,{ignoreSearch:true})'), 'JS/CSS cache eşleşmesi sürüm query-stringinden bağımsız olmalı.');
+assert(sw.includes('const ONBELLEGE_TEKIL=ONBELLEGE_ALINACAKLAR.filter'), 'İlk kurulum precache listesi aynı fiziksel yolu tekilleştirmeli.');
+assert(sw.includes('ONBELLEGE_TEKIL.map(url=>cache.add(url)'), 'Kurulum tekilleştirilmiş precache listesini kullanmalı.');
 console.log('Service Worker tek-shell/güncel-kod/offline-dashboard smoke testleri başarılı.');

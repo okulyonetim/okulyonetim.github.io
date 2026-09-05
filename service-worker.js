@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu önbellekten hızlıca sunup
    ağı arka planda yenilemek ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v899';
+const CACHE_ADI='oy-cache-v900';
 
 let messaging=null;
 try{
@@ -24,7 +24,7 @@ const FIREBASE_SDK=[
 
 const ONBELLEGE_ALINACAKLAR=[
   './','./index.html','./manifest.json',
-  './css/design-system.css?v=897','./js/app-loader.js?v=893','./js/modules/academic.js?v=877','./js/modules/communication.js?v=838',
+  './css/design-system.css?v=898','./js/app-loader.js?v=893','./js/modules/academic.js?v=877','./js/modules/communication.js?v=838',
   './css/design-system.css',
   './js/firebase-init.js','./js/core/core.js','./js/core/login-security.js?v=885','./js/core/login-security.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js?v=879','./js/core/shell-ui.js','./js/modules/school-live-status.js','./js/modules/classic-parity.js','./js/modules/classic-excel-parity.js','./js/modules/classic-personnel-parity.js','./js/modules/report-engine.js','./js/modules/dashboard.js?v=872','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/people-classic-ui.js','./js/modules/classes-mobile-parity.js','./js/modules/class-seating.js','./js/modules/academic.js','./js/modules/management.js?v=882','./js/modules/management.js','./js/modules/communication.js','./js/modules/transport.js?v=893','./js/modules/transport.js','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js?v=879','./js/modules/settings.js',
   './js/modules/payroll-change.js','./js/modules/personnel-documents.js','./js/modules/meeting-schedule.js','./js/modules/assistant.js','./js/modules/legislation.js','./js/modules/legislation-ui.js',
@@ -34,9 +34,16 @@ const ONBELLEGE_ALINACAKLAR=[
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
+// Sürümlü ve sürümsüz aynı JS/CSS yolunu ilk kurulumda iki kez indirme.
+// İlk görülen URL tutulur; runtime kod cache eşleşmesi query-string'i yok sayar.
+const ONBELLEGE_TEKIL=ONBELLEGE_ALINACAKLAR.filter((url,index,list)=>{
+  const path=String(url).split('?')[0];
+  return list.findIndex(item=>String(item).split('?')[0]===path)===index;
+});
+
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE_ADI).then(cache=>Promise.all([
-    Promise.allSettled(ONBELLEGE_ALINACAKLAR.map(url=>cache.add(url).catch(err=>console.warn('[SW] Önbelleklenemedi:',url,err)))),
+    Promise.allSettled(ONBELLEGE_TEKIL.map(url=>cache.add(url).catch(err=>console.warn('[SW] Önbelleklenemedi:',url,err)))),
     Promise.allSettled(FIREBASE_SDK.map(async url=>{try{const response=await fetch(url,{mode:'no-cors',cache:'no-store'});await cache.put(url,response)}catch(err){console.warn('[SW] Firebase SDK önbelleklenemedi:',url,err)}}))
   ])));
   self.skipWaiting();
@@ -48,7 +55,7 @@ function apiIstegiMi(url){return url.includes('firestore.googleapis.com')||url.i
 function statikKaynakMi(req){try{const u=new URL(req.url);if(u.origin!==self.location.origin)return false;return /\.(?:js|css|png|jpg|jpeg|webp|svg|ico|json|woff2?)$/i.test(u.pathname);}catch(_){return false;}}
 function kodKaynakMi(req){try{const u=new URL(req.url);return u.origin===self.location.origin&&/\.(?:js|css)$/i.test(u.pathname);}catch(_){return false;}}
 async function kodCacheFirst(event){
-  const cached=await caches.match(event.request);
+  const cached=await caches.match(event.request,{ignoreSearch:true});
   const yenile=fetch(event.request,{cache:'no-store'}).then(async response=>{
     if(response&&response.status===200&&response.type!=='opaque'){
       const copy=response.clone();
