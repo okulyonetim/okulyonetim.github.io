@@ -20,35 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Prepare safe hardening script
-        run: |
-          python3 <<'PY'
-          from pathlib import Path
-          p=Path('scripts/apply-offline-runtime-hardening.py')
-          s=p.read_text(encoding='utf-8')
-          a=s.index('# Consolidate legislation engine + presentation: always opened together.')
-          b=s.index('# Service worker: no forced client navigation on activation; preserve unrelated caches.')
-          s=s[:a]+s[b:]
-          s=s.replace("text=text.replace(,\"./js/modules/legislation-ui.js'\",'',1)\n",'')
-          s=s.replace("text=text.replace(,\'./js/modules/legislation-ui.js\'\",'',1)\n",'')
-          s=s.replace("text=text.replace(,\'./js/modules/legislation-ui.js\'",'',1)\n",'')
-          s=s.replace("text=text.replace(,\'./js/modules/legislation-ui.js\'\",'',1)",'')
-          # Exact source line is easier to remove by filtering.
-          lines=[]
-          for line in s.splitlines(True):
-              if "legislation-ui.js" in line and ("text.replace" in line or "raise SystemExit('service-worker still references" in line):
-                  continue
-              lines.append(line)
-          s=''.join(lines)
-          a=s.index('# Update legislation contract test to single-file source.')
-          b=s.index('# Superseded V2 typography regression is replaced by V3.')
-          s=s[:a]+s[b:]
-          a=s.index('# Consolidation must not leave runtime/test references to retired file.')
-          s=s[:a]+"if v2 in css.read_text(encoding='utf-8'): raise SystemExit('Superseded dashboard V2 CSS still present')\n"
-          p.write_text(s,encoding='utf-8')
-          PY
-      - name: Apply Android, offline and consolidation fixes
-        run: python3 scripts/apply-offline-runtime-hardening.py
+      - name: Apply Android and offline hardening fixes
+        run: python3 scripts/apply-offline-runtime-hardening-v2.py
       - name: Check all JavaScript syntax
         run: find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
       - name: Verify Android pull-to-refresh guard
