@@ -83,7 +83,7 @@ jobs:
           assert(src.includes('canEditHolidaySettings')&&src.includes('Tatil ayarlarını düzenleme yetkiniz yok.')&&src.includes('Bu alan salt okunur.'),'Tatil ayarı yetki koruması eksik.');
           assert(src.includes('Object.assign(cfg,patch)')&&src.includes("AppStore?.subscribe?.('data.dersSaatleri'"),'Tatil modu tarih geçişi runtime senkronu eksik.');
           assert(src.includes('data-quality-student-delete')&&src.includes('SiniflarService.veliSil(id)'),'Öğrenci düzenleme silme işlemi eksik.');
-          assert(src.includes('name=\"adres\"')&&src.includes('data-quality-student-address'),'Öğrenci adres alanı/ayrıntı koruması eksik.');
+          assert(src.includes('name=\"adres\"')&&src.includes('qualityStudentAddress'),'Öğrenci adres alanı/ayrıntı koruması eksik.');
           for(const text of ['queueMicrotask','setSelectionRange','data-exact-search','peopleSearch'])assert(src.includes(text),`Mobil arama odağı koruması eksik: ${text}`);
           const cache=sw.match(/const CACHE_ADI='oy-cache-v(\\d+)'/);assert(cache&&Number(cache[1])>=907,'Yeni düzeltmeler için service worker cache sürümü güncellenmedi.');
           console.log('Öğrenci silme + adres + arama odağı + çoklu tatil sözleşmesi başarılı.');
