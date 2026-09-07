@@ -18,9 +18,9 @@ async function main(){
       await setDoc(doc(db,'oy_kullanicilar','viewerUid'),{uid:'viewerUid',admin:false,aktif:true,rolId:'sinav-viewer'});
       await setDoc(doc(db,'oy_kullanicilar','adminUid'),{uid:'adminUid',admin:true,aktif:true});
 
-      await setDoc(doc(db,'oy_sinavlar','ownedWritten'),{sinif:'5-A',ders:'Fen',sahipUid:'ownerUid'});
+      await setDoc(doc(db,'oy_sinavlar','ownedWritten'),{sinif:'5-A',ders:'Fen',sahipUid:'ownerUid',herkeseAcik:false});
       await setDoc(doc(db,'oy_sinavlar','legacyWritten'),{sinif:'6-A',ders:'Matematik'});
-      await setDoc(doc(db,'oy_denemeSinavlari','ownedTrial'),{ad:'Deneme 1',sahipUid:'ownerUid',sayacDurumu:{aktif:false}});
+      await setDoc(doc(db,'oy_denemeSinavlari','ownedTrial'),{ad:'Deneme 1',sahipUid:'ownerUid',herkeseAcik:false,sayacDurumu:{aktif:false}});
       await setDoc(doc(db,'oy_denemeSinavlari','legacyTrial'),{ad:'Eski Deneme',sayacDurumu:{aktif:false}});
     });
 
@@ -33,10 +33,12 @@ async function main(){
     await assertSucceeds(getDoc(doc(viewer,'oy_sinavlar','ownedWritten')));
     await assertFails(getDoc(doc(anon,'oy_sinavlar','ownedWritten')));
 
-    // Yeni kayıt sahibiyle damgalanmalı; başka UID adına kayıt açılamaz.
-    await assertSucceeds(setDoc(doc(owner,'oy_sinavlar','newWritten'),{sinif:'7-A',ders:'Türkçe',sahipUid:'ownerUid'}));
+    // Yeni kayıt sahibiyle damgalanmalı; başka UID adına veya herkese açık kayıt açılamaz.
+    await assertSucceeds(setDoc(doc(owner,'oy_sinavlar','newWritten'),{sinif:'7-A',ders:'Türkçe',sahipUid:'ownerUid',herkeseAcik:false}));
     await assertFails(setDoc(doc(owner,'oy_sinavlar','spoofWritten'),{sinif:'7-B',ders:'Türkçe',sahipUid:'otherUid'}));
-    await assertSucceeds(setDoc(doc(owner,'oy_denemeSinavlari','newTrial'),{ad:'Deneme 2',sahipUid:'ownerUid'}));
+    await assertFails(setDoc(doc(owner,'oy_sinavlar','publicWritten'),{sinif:'7-C',ders:'Türkçe',sahipUid:'ownerUid',herkeseAcik:true}));
+    await assertSucceeds(setDoc(doc(owner,'oy_denemeSinavlari','newTrial'),{ad:'Deneme 2',sahipUid:'ownerUid',herkeseAcik:false}));
+    await assertFails(setDoc(doc(owner,'oy_denemeSinavlari','publicTrial'),{ad:'Yetkisiz Yayın',sahipUid:'ownerUid',herkeseAcik:true}));
     await assertFails(setDoc(doc(viewer,'oy_denemeSinavlari','viewerTrial'),{ad:'Yetkisiz',sahipUid:'viewerUid'}));
 
     // Sahip kendi kaydını yönetir; başka editör sahipli kaydı değiştiremez.
@@ -44,9 +46,16 @@ async function main(){
     await assertFails(updateDoc(doc(other,'oy_sinavlar','ownedWritten'),{ders:'Yetkisiz'}));
     await assertFails(deleteDoc(doc(other,'oy_denemeSinavlari','ownedTrial')));
 
+    // Herkese açık/özel durumunu yalnız admin değiştirebilir.
+    await assertFails(updateDoc(doc(owner,'oy_sinavlar','ownedWritten'),{herkeseAcik:true}));
+    await assertFails(updateDoc(doc(owner,'oy_denemeSinavlari','ownedTrial'),{herkeseAcik:true}));
+    await assertSucceeds(updateDoc(doc(admin,'oy_denemeSinavlari','ownedTrial'),{herkeseAcik:true}));
+    await assertSucceeds(updateDoc(doc(admin,'oy_sinavlar','ownedWritten'),{herkeseAcik:true}));
+
     // Eski sahipsiz kayıtlar mevcut davranış gereği editörlerce düzenlenebilir/silinebilir.
     await assertSucceeds(updateDoc(doc(other,'oy_sinavlar','legacyWritten'),{ders:'Güncel Matematik'}));
     await assertSucceeds(updateDoc(doc(other,'oy_denemeSinavlari','legacyTrial'),{ad:'Güncel Eski Deneme'}));
+    await assertFails(updateDoc(doc(other,'oy_denemeSinavlari','legacyTrial'),{herkeseAcik:true}));
 
     // Ancak sayaç, sahipsiz legacy denemede bile yalnız admin; sahipli kayıtta yalnız sahibi/admin.
     await assertSucceeds(updateDoc(doc(owner,'oy_denemeSinavlari','ownedTrial'),{sayacDurumu:{aktif:true,baslatanUid:'ownerUid'}}));
@@ -60,7 +69,7 @@ async function main(){
     await assertSucceeds(deleteDoc(doc(admin,'oy_sinavlar','ownedWritten')));
     await assertSucceeds(updateDoc(doc(admin,'oy_denemeSinavlari','legacyTrial'),{sayacDurumu:{aktif:true,baslatanUid:'adminUid'}}));
 
-    console.log('Sınav İşlemleri rol ve sahiplik testleri başarılı.');
+    console.log('Sınav İşlemleri rol, sahiplik ve yayınlama testleri başarılı.');
   } finally { await env.cleanup(); }
 }
 
