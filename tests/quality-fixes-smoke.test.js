@@ -1,0 +1,13 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/core/platform/widget-adapter.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+new Function(src);
+for(const text of ['tatilAraliklari','baslangicTarihi','bitisTarihi','data-quality-holiday-add','data-quality-holiday-save','Tatil tarih aralıkları birbiriyle çakışamaz'])assert(src.includes(text),`Çoklu tatil özelliği eksik: ${text}`);
+assert(src.includes('canEditHolidaySettings')&&src.includes('Tatil ayarlarını düzenleme yetkiniz yok.')&&src.includes('Bu alan salt okunur.'),'Tatil ayarı yetki koruması eksik.');
+assert(src.includes('Object.assign(cfg,patch)')&&src.includes("AppStore?.subscribe?.('data.dersSaatleri'"),'Tatil modu tarih geçişi runtime senkronu eksik.');
+assert(src.includes('data-quality-student-delete')&&src.includes('SiniflarService.veliSil(id)'),'Öğrenci düzenleme silme işlemi eksik.');
+assert(src.includes('name="adres"')&&src.includes('qualityStudentAddress'),'Öğrenci adres alanı/ayrıntı koruması eksik.');
+for(const text of ['queueMicrotask','setSelectionRange','data-exact-search','peopleSearch'])assert(src.includes(text),`Mobil arama odağı koruması eksik: ${text}`);
+const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=907,'Yeni düzeltmeler için service worker cache sürümü güncellenmedi.');
+console.log('Öğrenci silme + adres + arama odağı + çoklu tatil sözleşmesi başarılı.');
