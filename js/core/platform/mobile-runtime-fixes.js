@@ -98,7 +98,8 @@ function start(){
   document.addEventListener('focusin',e=>{if(holidayField(e.target))snapshot(e.target.closest('[data-quality-holiday-card]'))},true);
   document.addEventListener('click',clicked,false);
   new MutationObserver(queueRestore).observe(document.documentElement,{childList:true,subtree:true});
-  global.AppStore?.subscribe?.('data.dersSaatleri',()=>{
+  const subscribe=global.AppStore?.subscribe?.__korukOriginal||global.AppStore?.subscribe?.bind?.(global.AppStore);
+  subscribe?.('data.dersSaatleri',()=>{
     if(saving){draft=null;saving=false;return}
     queueRestore();
   });
