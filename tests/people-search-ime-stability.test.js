@@ -1,0 +1,18 @@
+const fs=require('fs');
+const assert=require('assert');
+const classic=fs.readFileSync('js/modules/people-classic-ui.js','utf8');
+const people=fs.readFileSync('js/modules/people.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+new Function(classic);
+new Function(people);
+assert(classic.includes('function refreshSearchResults()'),'Classic People partial search renderer missing.');
+assert(classic.includes("search.oninput=()=>{query=search.value;refreshSearchResults()}"),'Classic search still does a full render per keystroke.');
+assert(!classic.includes("search.oninput=()=>{query=search.value;render()}"),'Classic search still destroys the input DOM.');
+assert(people.includes('function refreshSearchResults()'),'Canonical People partial search renderer missing.');
+assert(people.includes("if(s)s.oninput=()=>{query=s.value;refreshSearchResults()}"),'Canonical search still does a full render per keystroke.');
+assert(!people.includes("if(s)s.oninput=()=>{query=s.value;render()}"),'Canonical search still destroys the input DOM.');
+assert(css.includes('[data-people-classic] .ogm-search input')&&css.includes('padding:0 14px 0 50px'),'Teacher search left padding is not protected from the global input rule.');
+assert(css.includes('left:16px;top:50%;transform:translateY(-50%)')&&css.includes('pointer-events:none'),'Search icon positioning contract missing.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v908';"),'PWA cache version was not bumped to v908.');
+console.log('People search IME stability + search padding contract successful.');
