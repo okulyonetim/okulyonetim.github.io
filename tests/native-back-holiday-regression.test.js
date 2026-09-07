@@ -10,6 +10,7 @@ assert(activity.includes('nativeRuntimeDuzeltmeleriniYukle();'),'Native runtime 
 assert(activity.includes('mobile-runtime-fixes.js?v=909'),'Native runtime düzeltme dosyası yüklenmiyor.');
 assert(runtime.includes('data-quality-holiday-start')&&runtime.includes('data-quality-holiday-end'),'Tatil tarih alanı taslak koruması eksik.');
 assert(runtime.includes('MutationObserver')&&runtime.includes('restoreHolidayDraft'),'Settings yeniden render olduğunda tatil taslağı geri yüklenmiyor.');
-assert(runtime.includes("AppStore?.subscribe?.('data.dersSaatleri'"),'Tatil kaydı sonrası taslak yaşam döngüsü eksik.');
+assert(runtime.includes('guardSettingsRerenders')&&runtime.includes('holidayEditorFocused'),'Android tarih seçici açıkken teknik Settings renderları engellenmiyor.');
+assert(runtime.includes("subscribe?.('data.dersSaatleri'")&&runtime.includes('__korukOriginal'),'Tatil kaydı sonrası taslak yaşam döngüsü eksik.');
 
 console.log('Android geri navigasyonu + planlı tatil tarih taslağı sözleşmesi başarılı.');
