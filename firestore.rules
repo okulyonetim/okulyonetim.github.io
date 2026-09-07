@@ -268,11 +268,12 @@ service cloud.firestore {
     match /oy_sinavlar/{id} {
       allow read: if girisYapmis();
       allow create: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
-        && request.resource.data.sahipUid == request.auth.uid);
+        && request.resource.data.sahipUid == request.auth.uid
+        && (!('herkeseAcik' in request.resource.data) || request.resource.data.herkeseAcik == false));
       allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
         && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
           || !('sahipUid' in resource.data))
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid']));
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik']));
       allow delete: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
         && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
           || !('sahipUid' in resource.data)));
@@ -281,16 +282,31 @@ service cloud.firestore {
     match /oy_denemeSinavlari/{id} {
       allow read: if girisYapmis();
       allow create: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
-        && request.resource.data.sahipUid == request.auth.uid);
+        && request.resource.data.sahipUid == request.auth.uid
+        && (!('herkeseAcik' in request.resource.data) || request.resource.data.herkeseAcik == false));
       allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
         && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
           || !('sahipUid' in resource.data))
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid'])
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik'])
         && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['sayacDurumu'])
           || ('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)));
       allow delete: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
         && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
           || !('sahipUid' in resource.data)));
+    }
+
+    // Optik Okuyucu form kataloğu: her kullanıcı kendi formunu yönetir.
+    // Herkese açık/özel yayınlama durumunu yalnız admin değiştirebilir.
+    match /oy_optikSablonlar/{id} {
+      allow read: if girisYapmis();
+      allow create: if adminMi() || (girisYapmis()
+        && request.resource.data.sahipUid == request.auth.uid
+        && (!('herkeseAcik' in request.resource.data) || request.resource.data.herkeseAcik == false));
+      allow update: if adminMi() || (girisYapmis()
+        && resource.data.sahipUid == request.auth.uid
+        && request.resource.data.sahipUid == request.auth.uid
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik']));
+      allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
     match /oy_sosyalKulupler/{id} {
