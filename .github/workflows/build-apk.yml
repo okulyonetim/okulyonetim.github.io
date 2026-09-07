@@ -97,7 +97,23 @@ jobs:
 
       - name: Sürüm numarasını göm (uygulama içi güncelleme kontrolü için)
         run: |
-          echo "{\"kod\": ${{ github.run_number }}}" > www/version.json
+          echo "{\"kod\": ${{ github.run_number }}, \"surum\": \"1.2.${{ github.run_number }}\"}" > www/version.json
+
+      - name: Android versionCode / versionName güncelle
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          path=Path('android/app/build.gradle')
+          text=path.read_text(encoding='utf-8')
+          build='${{ github.run_number }}'
+          text,n1=re.subn(r'(?m)^(\s*)versionCode\s+\d+\s*$',lambda m:f'{m.group(1)}versionCode {build}',text,count=1)
+          text,n2=re.subn(r'(?m)^(\s*)versionName\s+"[^"]*"\s*$',lambda m:f'{m.group(1)}versionName "1.2.{build}"',text,count=1)
+          if n1!=1 or n2!=1:
+              raise SystemExit('Android versionCode/versionName güncellenemedi')
+          path.write_text(text,encoding='utf-8')
+          print(f'Android sürümü: versionCode={build}, versionName=1.2.{build}')
+          PY
 
       - name: google-services.json oluştur
         env:
@@ -157,7 +173,6 @@ jobs:
           retention-days: 90
 
       - name: GitHub Release oluştur (uygulama içi güncelleme kontrolü bunu kullanır)
-        if: github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
