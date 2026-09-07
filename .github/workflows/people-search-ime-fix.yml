@@ -1,0 +1,122 @@
+name: People Search IME Fix
+
+on:
+  push:
+    branches:
+      - fix/people-search-ime-padding-20260908
+    paths:
+      - .github/workflows/people-search-ime-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/people-search-ime-padding-20260908
+          fetch-depth: 0
+
+      - name: Apply source-level search and padding fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          # 1) Classic People UI: keep the live search input mounted and repaint only results.
+          path = Path('js/modules/people-classic-ui.js')
+          src = path.read_text(encoding='utf-8')
+
+          render_marker = "function render(){if(!root||global.AppStore?.get?.('ui.route')!=='people')return;if(delegated){canonical.render?.();return}root.innerHTML=`<section data-people-classic>${page==='classes'?classView():teacherView()}</section>`;bind();global.PermissionService?.apply?.(root)}"
+          helper = "function refreshSearchResults(){if(!root||global.AppStore?.get?.('ui.route')!=='people'||delegated)return;const selector=page==='classes'?'.classic-table tbody':'.ogm-grid',html=page==='classes'?classView():teacherView(),tpl=document.createElement('template');tpl.innerHTML=html;const current=$(selector,root),next=tpl.content.querySelector(selector);if(!current||!next){render();return}current.innerHTML=next.innerHTML;bind();global.PermissionService?.apply?.(current)}\n" + render_marker
+          if 'function refreshSearchResults()' not in src:
+              assert render_marker in src, 'classic render marker missing'
+              src = src.replace(render_marker, helper, 1)
+
+          old = "if(search)search.oninput=()=>{query=search.value;render()};"
+          new = "if(search)search.oninput=()=>{query=search.value;refreshSearchResults()};"
+          assert old in src or new in src, 'classic search handler marker missing'
+          src = src.replace(old, new, 1)
+
+          old_sub = "if(!detail&&!delegated)render()"
+          new_sub = "if(!detail&&!delegated){const active=$('[data-exact-search]',root);active&&document.activeElement===active?refreshSearchResults():render()}"
+          assert old_sub in src or new_sub in src, 'classic subscription marker missing'
+          src = src.replace(old_sub, new_sub, 1)
+          path.write_text(src, encoding='utf-8')
+
+          # 2) Canonical People UI (students, and fallback teacher/class views): same source-level IME fix.
+          path = Path('js/modules/people.js')
+          src = path.read_text(encoding='utf-8')
+          render_marker = "function render(){if(!mounted)return;const out=document.getElementById('peopleContent');if(!out)return;"
+          helper = "function refreshSearchResults(){if(!mounted)return;const out=document.getElementById('peopleContent');if(!out)return;const selector=activeTab==='teachers'?'.ka-teacher-list':activeTab==='classes'?'.ka-class-list':'.ka-people-student-list',html=activeTab==='classes'?classView():activeTab==='students'?studentView():teacherView(),tpl=document.createElement('template');tpl.innerHTML=html;const current=out.querySelector(selector),next=tpl.content.querySelector(selector);if(!current||!next){render();return}current.innerHTML=next.innerHTML;const count=out.querySelector('.ka-directory-title > span'),nextCount=tpl.content.querySelector('.ka-directory-title > span');if(count&&nextCount)count.textContent=nextCount.textContent;bindView();global.PermissionService?.apply?.(current)}\n" + render_marker
+          if 'function refreshSearchResults()' not in src:
+              assert render_marker in src, 'canonical render marker missing'
+              src = src.replace(render_marker, helper, 1)
+
+          old = "if(s)s.oninput=()=>{query=s.value;render()};"
+          new = "if(s)s.oninput=()=>{query=s.value;refreshSearchResults()};"
+          assert old in src or new in src, 'canonical search handler marker missing'
+          src = src.replace(old, new, 1)
+
+          old_sub = "const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));"
+          new_sub = "const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(()=>{const s=document.getElementById('peopleSearch');s&&document.activeElement===s?refreshSearchResults():render()}));"
+          assert old_sub in src or new_sub in src, 'canonical subscription marker missing'
+          src = src.replace(old_sub, new_sub, 1)
+          path.write_text(src, encoding='utf-8')
+
+          # 3) Fix the icon/text collision. The old selector lost to the global input selector on specificity.
+          path = Path('css/design-system.css')
+          css = path.read_text(encoding='utf-8')
+          old_css = ".ogm-search{position:relative}.ogm-search input{width:100%;height:43px;border:1px solid var(--ogm-line);border-radius:14px;background:var(--ogm-card);color:var(--ogm-text);padding:0 12px 0 38px}.ogm-search span{position:absolute;left:12px;top:10px;font-size:18px;color:var(--ogm-muted)}"
+          new_css = ".ogm-search{position:relative}[data-people-classic] .ogm-search input{width:100%;height:43px;border:1px solid var(--ogm-line);border-radius:14px;background:var(--ogm-card);color:var(--ogm-text);padding:0 14px 0 50px}[data-people-classic] .ogm-search span{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;line-height:1;color:var(--ogm-muted);pointer-events:none}"
+          assert old_css in css or new_css in css, 'classic search CSS marker missing'
+          css = css.replace(old_css, new_css, 1)
+          path.write_text(css, encoding='utf-8')
+
+          # 4) Force Android/PWA clients to receive the new JS/CSS instead of v907 cache.
+          path = Path('service-worker.js')
+          sw = path.read_text(encoding='utf-8')
+          if "const CACHE_ADI='oy-cache-v908';" not in sw:
+              assert "const CACHE_ADI='oy-cache-v907';" in sw, 'service worker v907 marker missing'
+              sw = sw.replace("const CACHE_ADI='oy-cache-v907';", "const CACHE_ADI='oy-cache-v908';", 1)
+          path.write_text(sw, encoding='utf-8')
+
+          # 5) Regression contract for Android IME stability and visual padding.
+          Path('tests/people-search-ime-stability.test.js').write_text(r'''const fs=require('fs');
+          const assert=require('assert');
+          const classic=fs.readFileSync('js/modules/people-classic-ui.js','utf8');
+          const people=fs.readFileSync('js/modules/people.js','utf8');
+          const css=fs.readFileSync('css/design-system.css','utf8');
+          const sw=fs.readFileSync('service-worker.js','utf8');
+          new Function(classic);
+          new Function(people);
+          assert(classic.includes('function refreshSearchResults()'),'Classic People partial search renderer missing.');
+          assert(classic.includes("search.oninput=()=>{query=search.value;refreshSearchResults()}"),'Classic search still does a full render per keystroke.');
+          assert(!classic.includes("search.oninput=()=>{query=search.value;render()}"),'Classic search still destroys the input DOM.');
+          assert(people.includes('function refreshSearchResults()'),'Canonical People partial search renderer missing.');
+          assert(people.includes("if(s)s.oninput=()=>{query=s.value;refreshSearchResults()}"),'Canonical search still does a full render per keystroke.');
+          assert(!people.includes("if(s)s.oninput=()=>{query=s.value;render()}"),'Canonical search still destroys the input DOM.');
+          assert(css.includes('[data-people-classic] .ogm-search input')&&css.includes('padding:0 14px 0 50px'),'Teacher search left padding is not protected from the global input rule.');
+          assert(css.includes('left:16px;top:50%;transform:translateY(-50%)')&&css.includes('pointer-events:none'),'Search icon positioning contract missing.');
+          assert(sw.includes("const CACHE_ADI='oy-cache-v908';"),'PWA cache version was not bumped to v908.');
+          console.log('People search IME stability + search padding contract successful.');
+          ''', encoding='utf-8')
+          PY
+
+      - name: Run targeted regression tests
+        run: |
+          node tests/people-search-ime-stability.test.js
+          node tests/classic-people-v2-smoke.test.js
+          node tests/quality-fixes-smoke.test.js
+          node --check js/modules/people-classic-ui.js
+          node --check js/modules/people.js
+
+      - name: Commit source fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/people-classic-ui.js js/modules/people.js css/design-system.css service-worker.js tests/people-search-ime-stability.test.js
+          git commit -m "fix: keep people search input mounted on mobile"
+          git push origin HEAD:fix/people-search-ime-padding-20260908
