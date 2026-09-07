@@ -27,65 +27,67 @@ jobs:
 
           path=Path('js/core/platform/widget-adapter.js')
           src=path.read_text(encoding='utf-8')
-          src=src.replace("return a.tatilNotu||'Okul tatilde';","return a.tatilModuNotu||a.tatilNotu||'Okul tatilde';")
+
+          src=src.replace("return a.tatilNotu||'Okul tatilde';","return a.tatilModuNotu||a.tatilNotu||'Okul tatilde';",1)
 
           marker="const addDays=(iso,days)=>{const d=new Date(`${iso}T12:00:00`);if(Number.isNaN(d.getTime()))return'';d.setDate(d.getDate()+days);return localISO(d)};"
           guard="function canEditHolidaySettings(){return global.AKTIF_KULLANICI?.admin===true||(typeof global.duzenleyebilir==='function'&&global.duzenleyebilir('sistemAyarlari'))||global.PermissionService?.can?.('sistemAyarlari','edit')===true}"
           if guard not in src:
-              assert marker in src, 'holiday permission insertion marker missing'
+              assert marker in src, 'holiday permission marker missing'
               src=src.replace(marker,marker+'\n'+guard,1)
 
-          new_sync="""async function syncHolidayMode({force=false}={}){
-            if(holidaySyncing||!global.COL?.dersSaatleri)return false;
-            const cfg=holidaySettings();if(!cfg||!Object.prototype.hasOwnProperty.call(cfg,'tatilAraliklari'))return false;
-            const ranges=normalizeHolidayRanges(cfg,{includeLegacy:false}),today=localISO(),patch=holidayLegacyPatch(ranges,today);
-            const changed=cfg.tatilModu!==patch.tatilModu||String(cfg.tatilBaslangicTarihi||'')!==patch.tatilBaslangicTarihi||String(cfg.okulAcilisTarihi||'')!==patch.okulAcilisTarihi||String(cfg.tatilModuNotu||'')!==patch.tatilModuNotu;
-            if(!changed){lastHolidayDate=today;return false}
-            if(!canEditHolidaySettings()){
-              Object.assign(cfg,patch);lastHolidayDate=today;global.KorukWidgetAdapter?.schedule?.(80);return true;
-            }
-            if(!global.DeviceData)return false;
-            holidaySyncing=true;
-            try{await global.DeviceData.set('dersSaatleri',global.COL.dersSaatleri,cfg.id||'ayarlar',{...patch,tatilAraliklari:ranges,tatilAraliklariVersion:1,guncellenmeTarihi:new Date().toISOString()},{merge:true});lastHolidayDate=today;global.KorukWidgetAdapter?.schedule?.(80);return true}catch(e){console.warn('[QualityFixes/holiday-sync]',e?.message||e);return false}finally{holidaySyncing=false}
-          }"""
-          src,n=re.subn(r"async function syncHolidayMode\(\{force=false\}=\{\}\)\{.*?\n\}\nfunction holidayStatusText",new_sync+'\nfunction holidayStatusText',src,count=1,flags=re.S)
-          assert n==1, 'syncHolidayMode replacement failed'
+          readonly="if(!canEditHolidaySettings()){Object.assign(cfg,patch);lastHolidayDate=today;global.KorukWidgetAdapter?.schedule?.(80);return true}"
+          sync_marker="holidaySyncing=true;\n  try{await global.DeviceData.set('dersSaatleri'"
+          if readonly not in src:
+              assert sync_marker in src, 'holiday runtime sync marker missing'
+              src=src.replace(sync_marker,readonly+'\n  holidaySyncing=true;\n  try{await global.DeviceData.set(\'dersSaatleri\'',1)
 
-          new_row="""function holidayRowHtml(r={},editable=true){const disabled=editable?'':'disabled';return `<div class=\"ka-card\" data-quality-holiday-range-row data-holiday-id=\"${esc(r.id||`tatil-${Date.now()}`)}\"><div class=\"ka-card__body ka-stack\"><div class=\"ka-row ka-row--between\"><strong>${esc(r.ad||'Tatil')}</strong>${editable?'<button class=\"ka-btn ka-btn--sm ka-btn--secondary\" type=\"button\" data-quality-holiday-remove>Sil</button>':''}</div><label class=\"ka-field\"><span class=\"ka-field__label\">Tatil Adı</span><input data-quality-holiday-name value=\"${esc(r.ad||'')}\" placeholder=\"Örn. Ara Tatil\" ${disabled}></label><div class=\"ka-grid\"><label class=\"ka-field\"><span class=\"ka-field__label\">Başlangıç Tarihi</span><input type=\"date\" data-quality-holiday-start value=\"${esc(rangeStart(r)||localISO())}\" ${disabled}></label><label class=\"ka-field\"><span class=\"ka-field__label\">Bitiş Tarihi</span><input type=\"date\" data-quality-holiday-end value=\"${esc(rangeEnd(r)||localISO())}\" ${disabled}></label></div><label class=\"ka-field\"><span class=\"ka-field__label\">Not</span><input data-quality-holiday-note value=\"${esc(r.not||'')}\" placeholder=\"İsteğe bağlı açıklama\" ${disabled}></label></div></div>`}"
-          new_build="""function buildHolidayCard(cfg){const ranges=normalizeHolidayRanges(cfg||{}),status=holidayStatusText(ranges),editable=canEditHolidaySettings();const wrap=document.createElement('article');wrap.className='ka-card';wrap.dataset.qualityHolidayCard='';wrap.innerHTML=`<div class=\"ka-card__header\"><div><h3>Planlı Tatiller</h3><p class=\"ka-muted\">Birden fazla tatil ekleyebilirsiniz. Başlangıç ve bitiş tarihleri dahildir; tatil modu bu tarihlerde otomatik açılır ve bitişten sonraki gün kapanır.</p></div><span class=\"ka-badge\" data-quality-holiday-status>${esc(status.label)}</span></div><div class=\"ka-card__body ka-stack\"><div class=\"ka-muted\" data-quality-holiday-summary>${esc(status.text)}</div><div class=\"ka-stack\" data-quality-holiday-list>${ranges.length?ranges.map(r=>holidayRowHtml(r,editable)).join(''):'<div class=\"ka-empty\" data-quality-holiday-empty>Henüz planlı tatil eklenmedi.</div>'}</div>${editable?'<div class=\"ka-row\"><button class=\"ka-btn ka-btn--secondary\" type=\"button\" data-quality-holiday-add>+ Tatil Ekle</button><button class=\"ka-btn\" type=\"button\" data-quality-holiday-save>Tatilleri Kaydet</button></div>':'<div class=\"ka-muted\">Bu alan salt okunur. Tatil planını düzenlemek için sistem ayarları yetkisi gerekir.</div>'}</div>`;return wrap}"
-          src,n=re.subn(r"function holidayRowHtml\(r=\{\}\)\{.*?\nfunction buildHolidayCard\(cfg\)\{.*?\nfunction collectHolidayRanges",new_row+'\n'+new_build+'\nfunction collectHolidayRanges',src,count=1,flags=re.S)
-          assert n==1, 'holiday UI replacement failed'
+          save_old="async function saveHolidayRanges(card){const cfg=holidaySettings()||{},ranges=collectHolidayRanges(card),patch=holidayLegacyPatch(ranges);"
+          save_new="async function saveHolidayRanges(card){if(!canEditHolidaySettings())throw new Error('Tatil ayarlarını düzenleme yetkiniz yok.');const cfg=holidaySettings()||{},ranges=collectHolidayRanges(card),patch=holidayLegacyPatch(ranges);"
+          if save_new not in src:
+              assert save_old in src, 'holiday save guard marker missing'
+              src=src.replace(save_old,save_new,1)
 
-          src=src.replace("async function saveHolidayRanges(card){const cfg=holidaySettings()||{},ranges=collectHolidayRanges(card),patch=holidayLegacyPatch(ranges);","async function saveHolidayRanges(card){if(!canEditHolidaySettings())throw new Error('Tatil ayarlarını düzenleme yetkiniz yok.');const cfg=holidaySettings()||{},ranges=collectHolidayRanges(card),patch=holidayLegacyPatch(ranges);",1)
+          m=re.search(r"function buildHolidayCard\(cfg\)\{.*?return wrap\}",src,re.S)
+          assert m, 'holiday card builder missing'
+          block=m.group(0)
+          permission_ui="if(!canEditHolidaySettings()){wrap.querySelectorAll('input,textarea,select,button').forEach(el=>el.disabled=true);wrap.querySelectorAll('[data-quality-holiday-add],[data-quality-holiday-save],[data-quality-holiday-remove]').forEach(el=>el.remove());wrap.querySelector('.ka-card__body')?.insertAdjacentHTML('beforeend','<div class=\"ka-muted\">Bu alan salt okunur. Tatil planını düzenlemek için sistem ayarları yetkisi gerekir.</div>')}"
+          if permission_ui not in block:
+              block=block.replace('return wrap}',permission_ui+'return wrap}',1)
+              src=src[:m.start()]+block+src[m.end():]
+
           src=src.replace("btn.className='ka-btn ka-btn--secondary';btn.type='button';btn.dataset.qualityStudentDelete='';btn.textContent='Öğrenciyi Sil';","btn.className='ka-btn ka-btn--danger';btn.type='button';btn.dataset.qualityStudentDelete='';btn.textContent='Öğrenciyi Sil';",1)
 
-          old_start="function start(){installSearchFocusGuard();enhance();const mo=new MutationObserver(enhance);mo.observe(document.documentElement,{childList:true,subtree:true});global.addEventListener('koruk:app-ready',()=>{enhance();syncHolidayMode({force:true})});global.addEventListener('koruk:school-live-tick',()=>syncHolidayMode());document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){enhance();syncHolidayMode({force:true})}});setInterval(()=>syncHolidayMode(),60000);setInterval(enhance,1500)}"
-          new_start="function start(){installSearchFocusGuard();enhance();const mo=new MutationObserver(enhance);mo.observe(document.documentElement,{childList:true,subtree:true});global.AppStore?.subscribe?.('data.dersSaatleri',()=>{syncHolidayMode();enhance()});global.addEventListener('koruk:app-ready',()=>{enhance();syncHolidayMode({force:true})});global.addEventListener('koruk:school-live-tick',()=>syncHolidayMode());document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){enhance();syncHolidayMode({force:true})}});setInterval(()=>syncHolidayMode(),60000);setInterval(enhance,1500)}"
-          assert old_start in src, 'start hook marker missing'
-          src=src.replace(old_start,new_start,1)
+          store_hook="global.AppStore?.subscribe?.('data.dersSaatleri',()=>{syncHolidayMode();enhance()});"
+          start_marker="function start(){installSearchFocusGuard();enhance();const mo=new MutationObserver(enhance);"
+          if store_hook not in src:
+              assert start_marker in src, 'quality fixes start marker missing'
+              src=src.replace(start_marker,"function start(){installSearchFocusGuard();enhance();"+store_hook+"const mo=new MutationObserver(enhance);",1)
+
           path.write_text(src,encoding='utf-8')
 
           sw=Path('service-worker.js')
-          text=sw.read_text(encoding='utf-8')
-          text2=text.replace("const CACHE_ADI='oy-cache-v906';","const CACHE_ADI='oy-cache-v907';",1)
-          assert text2!=text, 'service worker cache marker missing'
-          sw.write_text(text2,encoding='utf-8')
+          sw_text=sw.read_text(encoding='utf-8')
+          sw_text2=sw_text.replace("const CACHE_ADI='oy-cache-v906';","const CACHE_ADI='oy-cache-v907';",1)
+          if sw_text2==sw_text:
+              assert "const CACHE_ADI='oy-cache-v907';" in sw_text, 'service worker cache marker missing'
+          sw.write_text(sw_text2,encoding='utf-8')
 
           test=Path('tests/quality-fixes-smoke.test.js')
-          test.write_text(r'''const fs=require('fs');
+          test.write_text("""const fs=require('fs');
           const assert=require('assert');
           const src=fs.readFileSync('js/core/platform/widget-adapter.js','utf8');
           const sw=fs.readFileSync('service-worker.js','utf8');
           new Function(src);
           for(const text of ['tatilAraliklari','baslangicTarihi','bitisTarihi','data-quality-holiday-add','data-quality-holiday-save','Tatil tarih aralıkları birbiriyle çakışamaz'])assert(src.includes(text),`Çoklu tatil özelliği eksik: ${text}`);
-          assert(src.includes('canEditHolidaySettings')&&src.includes('Tatil ayarlarını düzenleme yetkiniz yok.'),'Tatil ayarı yetki koruması eksik.');
-          assert(src.includes("Object.assign(cfg,patch)")&&src.includes("AppStore?.subscribe?.('data.dersSaatleri'"),'Tatil modu tarih geçişi runtime senkronu eksik.');
+          assert(src.includes('canEditHolidaySettings')&&src.includes('Tatil ayarlarını düzenleme yetkiniz yok.')&&src.includes('Bu alan salt okunur.'),'Tatil ayarı yetki koruması eksik.');
+          assert(src.includes('Object.assign(cfg,patch)')&&src.includes("AppStore?.subscribe?.('data.dersSaatleri'"),'Tatil modu tarih geçişi runtime senkronu eksik.');
           assert(src.includes('data-quality-student-delete')&&src.includes('SiniflarService.veliSil(id)'),'Öğrenci düzenleme silme işlemi eksik.');
-          assert(src.includes('name="adres"')&&src.includes('data-quality-student-address'),'Öğrenci adres alanı/ayrıntı koruması eksik.');
+          assert(src.includes('name=\\\"adres\\\"')&&src.includes('data-quality-student-address'),'Öğrenci adres alanı/ayrıntı koruması eksik.');
           for(const text of ['queueMicrotask','setSelectionRange','data-exact-search','peopleSearch'])assert(src.includes(text),`Mobil arama odağı koruması eksik: ${text}`);
-          const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=907,'Yeni düzeltmeler için service worker cache sürümü güncellenmedi.');
+          const cache=sw.match(/const CACHE_ADI='oy-cache-v(\\d+)'/);assert(cache&&Number(cache[1])>=907,'Yeni düzeltmeler için service worker cache sürümü güncellenmedi.');
           console.log('Öğrenci silme + adres + arama odağı + çoklu tatil sözleşmesi başarılı.');
-          ''',encoding='utf-8')
+          """,encoding='utf-8')
           PY
       - name: Run targeted regression
         run: node tests/quality-fixes-smoke.test.js
