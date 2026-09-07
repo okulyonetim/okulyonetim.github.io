@@ -33,6 +33,7 @@ on:
       - 'tests/nobet-role-rules.test.js'
       - 'tests/periyodik-role-rules.test.js'
       - 'tests/sinav-islemleri-owner-rules.test.js'
+      - 'tests/optik-sablon-owner-rules.test.js'
       - 'tests/oturma-planlari-role-rules.test.js'
       - 'tests/okul-bilgileri-role-rules.test.js'
       - 'tests/cihaz-token-owner-rules.test.js'
@@ -72,6 +73,7 @@ on:
       - 'tests/nobet-role-rules.test.js'
       - 'tests/periyodik-role-rules.test.js'
       - 'tests/sinav-islemleri-owner-rules.test.js'
+      - 'tests/optik-sablon-owner-rules.test.js'
       - 'tests/oturma-planlari-role-rules.test.js'
       - 'tests/okul-bilgileri-role-rules.test.js'
       - 'tests/cihaz-token-owner-rules.test.js'
@@ -132,6 +134,7 @@ jobs:
           node tests/nobet-role-rules.test.js &&
           node tests/periyodik-role-rules.test.js &&
           node tests/sinav-islemleri-owner-rules.test.js &&
+          node tests/optik-sablon-owner-rules.test.js &&
           node tests/oturma-planlari-role-rules.test.js &&
           node tests/okul-bilgileri-role-rules.test.js &&
           node tests/cihaz-token-owner-rules.test.js &&
