@@ -81,19 +81,18 @@ public class MainActivity extends BridgeActivity {
         webView.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or_, ob) -> uygula.run());
     }
 
-    /* Donanım geri tuşu: önce web tarafındaki geriTusuIsle() fonksiyonuna
-       sor — açık bir modal/detay panel/menü varsa veya sekme geçmişi
-       boş değilse JS tarafı kendi içinde geri gider ve 'handled' döner.
-       Web tarafı zaten en üst seviyedeyse ('exit') çift basışla çıkış
-       uygulanır: ilk basışta uyarı gösterilir, 2 saniye içinde tekrar
-       basılırsa uygulama kapanır. */
+    /* Donanım geri tuşu: uygulama shell'i hazırsa geri işlemini doğrudan
+       ShellUI'ye devret. ShellUI kendi modal/menu/navStack geçmişini bilir;
+       böylece alt sayfadayken yanlışlıkla uygulamadan çıkış uyarısı gösterilmez.
+       Shell henüz hazır değilse eski geriTusuIsle sözleşmesi ve son çare olarak
+       çift basışla çıkış davranışı korunur. */
     @Override
     public void onBackPressed() {
         WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView == null) { super.onBackPressed(); return; }
 
         webView.evaluateJavascript(
-            "(function(){ try { return (typeof geriTusuIsle==='function') ? geriTusuIsle() : 'exit'; } catch(e){ return 'exit'; } })()",
+            "(function(){ try { if (window.ShellUI && typeof window.ShellUI.back==='function') { window.ShellUI.back(); return 'handled'; } return (typeof geriTusuIsle==='function') ? geriTusuIsle() : 'exit'; } catch(e){ return 'exit'; } })()",
             (String sonuc) -> {
                 String temiz = sonuc != null ? sonuc.replace("\"", "") : "exit";
                 if ("handled".equals(temiz)) return;
@@ -106,6 +105,18 @@ public class MainActivity extends BridgeActivity {
                     android.widget.Toast.makeText(MainActivity.this, "Çıkmak için tekrar geri tuşuna basın", android.widget.Toast.LENGTH_SHORT).show();
                 }
             }
+        );
+    }
+
+    /* Native WebView'e özel küçük runtime düzeltmelerini ana bundle'dan
+       ayırıyoruz. Script yalnız uygulama JS tarafı hazır olduktan sonra
+       enjekte edilir; yenilemeden sonra da tekrar güvenle yüklenebilir. */
+    private void nativeRuntimeDuzeltmeleriniYukle() {
+        WebView webView = getBridge() != null ? getBridge().getWebView() : null;
+        if (webView == null) return;
+        webView.evaluateJavascript(
+            "(function(){try{if(document.getElementById('koruk-native-runtime-fixes'))return 'loaded';var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=909';document.head.appendChild(s);return 'loading';}catch(e){return 'error';}})()",
+            null
         );
     }
 
@@ -135,6 +146,7 @@ public class MainActivity extends BridgeActivity {
             _fallbackRunnable = null;
         }
         if (swipeRefresh != null) swipeRefresh.setRefreshing(false);
+        nativeRuntimeDuzeltmeleriniYukle();
         bekleyenHedefleriGonder();
     }
 
