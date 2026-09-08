@@ -4,6 +4,7 @@ const settings=fs.readFileSync('js/modules/settings.js','utf8');
 const runtime=fs.readFileSync('js/core/platform/mobile-runtime-fixes.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
+const index=fs.readFileSync('index.html','utf8');
 new Function(settings);new Function(runtime);
 assert(settings.includes("['app-update','Güncellemeleri Kontrol Et'"),'Güncelleme kontrolü canonical Settings menüsünde değil.');
 assert(settings.includes('data-app-update-settings'),'Canonical güncelleme butonu eksik.');
@@ -14,4 +15,5 @@ assert(settings.includes("active==='school'&&schoolFormDirty&&schoolFieldFocused
 assert(settings.includes('data-admin-note-add>+ Not Ekle'),'İdari Notlar ekleme butonu eksik.');
 assert(css.includes('.ka-admin-savebar{position:static'),'İdari kaydet çubuğu Not Ekle butonunu örtebilir.');
 assert(sw.includes("oy-cache-v912"),'Service worker cache sürümü güncellenmedi.');
+assert(index.includes('css/design-system.css?v=912')&&sw.includes("'./css/design-system.css?v=912'"),'Index ve service worker design-system sürümü aynı değil.');
 console.log('Android Ayarlar donma, okul adresi taslak ve idari not görünürlük sözleşmesi başarılı.');
