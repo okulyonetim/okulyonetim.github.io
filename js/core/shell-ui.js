@@ -9,6 +9,8 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
+function installButtonFeedback(){if(global.__kaButtonFeedbackInstalled)return;global.__kaButtonFeedbackInstalled=true;document.addEventListener('pointerdown',e=>{const b=e.target.closest?.('button:not(:disabled)');if(b)b.classList.add('ka-is-pressed')},true);const clear=e=>e.target.closest?.('button')?.classList.remove('ka-is-pressed');document.addEventListener('pointerup',clear,true);document.addEventListener('pointercancel',clear,true);document.addEventListener('click',e=>{const b=e.target.closest?.('button:not(:disabled)');if(!b||b.dataset.pressToast==='off'||b.matches('.ka-icon-button,.ka-bottom-item,[data-ka-shell-action],[data-modal-close],[data-close]'))return;if(!b.matches('.ka-btn,button[type="submit"]'))return;const label=String(b.innerText||b.textContent||'İşlem').replace(/\s+/g,' ').trim().slice(0,42);if(label)global.toast?.(`✓ ${label} seçildi`)},true)}
+installButtonFeedback();
 const SVG={
  home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
  profile:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',

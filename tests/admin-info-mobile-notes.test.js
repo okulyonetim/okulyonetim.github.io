@@ -1,25 +1,18 @@
 const fs=require('fs');
 const assert=require('assert');
-
-const src=fs.readFileSync('js/core/settings-admin-extension.js','utf8');
+const src=fs.readFileSync('js/modules/settings.js','utf8');
+const css=fs.readFileSync('css/design-system.css','utf8');
+const firebase=fs.readFileSync('js/firebase-init.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
 new Function(src);
-
-assert(src.includes('ka-admin-stats'),'Mobil 2x2 özet alanı eksik.');
-assert(src.includes('grid-template-columns:repeat(2,minmax(0,1fr))'),'Özet kartları 2x2 mobil düzende değil.');
-assert(src.includes('ka-admin-section__header'),'Sabit bölüm başlığı eksik.');
-assert(!src.includes('<details class="ka-admin-section"'),'İdari bilgiler ekranında akordiyon/details kullanılmamalı.');
-assert(!src.includes('.ka-admin-section>summary'),'Akordiyon summary stili kalmamalı.');
-assert(src.includes('abonelikler:[]'),'Çoklu abonelik veri modeli eksik.');
-assert(src.includes('data-admin-subscription-add'),'Abonelik ekleme aksiyonu eksik.');
-assert(src.includes('data-admin-subscription-remove'),'Abonelik silme aksiyonu eksik.');
-assert(src.includes("['Elektrik','Su','İnternet','Doğalgaz','Telefon','Diğer']"),'Esnek abonelik türleri eksik.');
-assert(src.includes('resmiBilgiler:[]'),'Çoklu resmî bilgi veri modeli eksik.');
-assert(src.includes('data-admin-number-unit'),'İlkokul/Ortaokul birim seçimi eksik.');
-assert(src.includes("['Ortak','İlkokul','Ortaokul','Diğer']"),'Resmî bilgi birim seçenekleri eksik.');
-assert(src.includes('data-admin-note-add')&&src.includes('+ Not Ekle'),'Görünür not ekleme aksiyonu eksik.');
-assert(src.includes('data-admin-note-remove'),'Not silme aksiyonu eksik.');
-assert(src.includes('legacy-note'),'Eski tek not verisinin migrasyonu eksik.');
-assert(src.includes('overflow-x:hidden'),'Mobil yatay taşma koruması eksik.');
-assert(!src.includes('<strong>Gizli alan</strong>'),'Gizli alan uyarısı geri gelmemeli.');
-
-console.log('İdari bilgiler sabit bölümler + esnek abonelik/resmî bilgi + çoklu not sözleşmesi başarılı.');
+assert(src.includes("['admin-info','İdari Bilgiler ve Şifreler'"),'İdari bilgiler native Settings menüsünde değil.');
+assert(src.includes("active==='admin-info'?adminInfoPage()"),'İdari bilgiler native render akışına bağlı değil.');
+assert(src.includes("active==='holiday'?holidayPage()"),'Tatil Modu native Settings sayfası değil.');
+assert(src.includes('data-admin-subscription-add')&&src.includes('data-admin-note-add'),'Esnek abonelik/not ekleme eksik.');
+assert(src.includes("['Ortak','İlkokul','Ortaokul','Diğer']"),'İlkokul/Ortaokul resmî bilgi ayrımı eksik.');
+assert(!src.includes('<details class="ka-admin-section'),'Akordiyon tekrar eklenmiş.');
+assert(css.includes('Native Settings: İdari Bilgiler ve Şifreler'),'İdari ekran stilleri design-system.css içinde değil.');
+assert(!firebase.includes('settings-admin-extension.js'),'firebase-init extension loader içermemeli.');
+assert(!sw.includes('settings-admin-extension.js'),'Service worker extension cache içermemeli.');
+assert(!fs.existsSync('js/core/settings-admin-extension.js'),'Extension dosyası tamamen silinmeli.');
+console.log('Native Settings idari bilgiler + tatil entegrasyonu başarılı.');

@@ -112,12 +112,3 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Ayarlar uzantısı: tatil planı, işlem geri bildirimi ve yönetimsel bilgiler. */
-(function settingsAdminExtensionLoad(){
-  if(document.querySelector('script[data-settings-admin-extension]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/settings-admin-extension.js?v=911';
-  script.async=false;
-  script.dataset.settingsAdminExtension='';
-  document.head.appendChild(script);
-})();
