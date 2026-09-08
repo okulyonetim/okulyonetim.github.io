@@ -127,7 +127,7 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Taşıma sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  if(name==='settings'&&['school','lesson-hours','holiday','users','statistics','account','sync','roles','app','reminders','storage','admin-info'].includes(page)){
+  if(name==='settings'&&['school','social','lesson-hours','holiday','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
     const ok=global.SettingsModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Ayarlar sayfası açılamadı.');
     if(title)setTitle(title);return true;
