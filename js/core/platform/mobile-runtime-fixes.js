@@ -123,7 +123,7 @@ if(global.KorukAppUpdateManager)return;
 
 const RELEASE_API='https://api.github.com/repos/okulyonetim/okulyonetim.github.io/releases/latest';
 const RELEASE_LIST_API='https://api.github.com/repos/okulyonetim/okulyonetim.github.io/releases?per_page=10';
-let checkPromise=null,startupChecked=false,settingsObserver=null,currentCache=null;
+let checkPromise=null,startupChecked=false,currentCache=null;
 let updateState={phase:'idle',current:null,latest:null,error:null};
 const native=()=>{try{return !!global.Capacitor?.isNativePlatform?.()}catch(_){return false}};
 const toast=message=>global.toast?.(message)||console.log('[AppUpdate]',message);
@@ -151,9 +151,9 @@ function settingsStatusText(){
 function syncSettingsAction(){
   const btn=document.querySelector('[data-app-update-settings]');
   if(!btn)return;
-  const status=btn.querySelector('[data-app-update-status]');
-  if(status)status.textContent=settingsStatusText();
-  btn.dataset.updateState=updateState.phase;
+  const status=btn.querySelector('[data-app-update-status]'),next=settingsStatusText();
+  if(status&&status.textContent!==next)status.textContent=next;
+  if(btn.dataset.updateState!==updateState.phase)btn.dataset.updateState=updateState.phase;
 }
 function setUpdateState(patch){updateState={...updateState,...patch};syncSettingsAction();return updateState}
 async function currentBuild(){
@@ -281,29 +281,15 @@ async function check({manual=false,prompt=true}={}){
   const result=await checkPromise;
   return presentResult(result,{manual,prompt});
 }
-function injectSettingsAction(){
-  if(!native())return;
-  const existing=document.querySelector('[data-app-update-settings]');
-  if(existing){syncSettingsAction();return}
-  const body=document.querySelector('[data-settings-accordion="account"] .ka-settings-accordion__body');
-  if(!body)return;
-  const btn=document.createElement('button');
-  btn.type='button';btn.className='ka-settings-accordion__item';btn.dataset.appUpdateSettings='';
-  btn.innerHTML='<span><strong>Güncellemeleri Kontrol Et</strong><small data-app-update-status>Mevcut sürüm okunuyor…</small></span><span aria-hidden="true">›</span>';
-  btn.addEventListener('click',()=>check({manual:true,prompt:true}));
-  body.appendChild(btn);
-  syncSettingsAction();
-  if(!updateState.current)currentBuild().catch(err=>{setUpdateState({phase:'error',error:err});console.warn('[AppUpdate/current]',err?.message||err)});
-}
+function injectSettingsAction(){syncSettingsAction()}
 function start(){
-  injectSettingsAction();
+  syncSettingsAction();
   currentBuild().catch(err=>console.warn('[AppUpdate/current]',err?.message||err));
-  if(!settingsObserver){settingsObserver=new MutationObserver(injectSettingsAction);settingsObserver.observe(document.documentElement,{childList:true,subtree:true})}
   if(!startupChecked){startupChecked=true;setTimeout(()=>check({manual:false,prompt:true}),1800)}
-  global.addEventListener('koruk:app-ready',()=>{injectSettingsAction();if(!startupChecked){startupChecked=true;setTimeout(()=>check({manual:false,prompt:true}),1200)}});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')injectSettingsAction()});
+  global.addEventListener('koruk:app-ready',()=>{syncSettingsAction();if(!startupChecked){startupChecked=true;setTimeout(()=>check({manual:false,prompt:true}),1200)}});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncSettingsAction()});
 }
 
-global.KorukAppUpdateManager={check,currentBuild,latestRelease,versionInfo,showUpdateModal,showUpToDateModal,injectSettingsAction};
+global.KorukAppUpdateManager={check,currentBuild,latestRelease,versionInfo,showUpdateModal,showUpToDateModal,injectSettingsAction,syncSettingsAction,statusText:settingsStatusText};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(window);
