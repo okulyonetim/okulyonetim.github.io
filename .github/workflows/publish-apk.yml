@@ -1,0 +1,102 @@
+name: Android APK Yayınla
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: "Test edip onayladığınız Android APK Build çalışmasının Run ID değeri"
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Seçilen derlemeyi doğrula
+        id: build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_RUN_ID: ${{ inputs.build_run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! [[ "$BUILD_RUN_ID" =~ ^[0-9]+$ ]]; then
+            echo "Geçersiz Run ID: $BUILD_RUN_ID"
+            exit 1
+          fi
+
+          json="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${BUILD_RUN_ID}")"
+          workflow_name="$(jq -r '.name // empty' <<<"$json")"
+          head_branch="$(jq -r '.head_branch // empty' <<<"$json")"
+          conclusion="$(jq -r '.conclusion // empty' <<<"$json")"
+          run_number="$(jq -r '.run_number // empty' <<<"$json")"
+          head_sha="$(jq -r '.head_sha // empty' <<<"$json")"
+
+          if [[ "$workflow_name" != "Android APK Build" ]]; then
+            echo "Seçilen çalışma Android APK Build değil: $workflow_name"
+            exit 1
+          fi
+          if [[ "$head_branch" != "main" ]]; then
+            echo "Yalnız main dalından üretilen APK yayınlanabilir. Dal: $head_branch"
+            exit 1
+          fi
+          if [[ "$conclusion" != "success" ]]; then
+            echo "Seçilen APK derlemesi başarılı değil. Sonuç: $conclusion"
+            exit 1
+          fi
+          if ! [[ "$run_number" =~ ^[0-9]+$ ]]; then
+            echo "Derleme sürüm numarası okunamadı."
+            exit 1
+          fi
+
+          tag="v${run_number}"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "$tag zaten yayınlanmış. Aynı test derlemesi ikinci kez yayınlanamaz."
+            exit 1
+          fi
+
+          echo "run_number=$run_number" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+          echo "Onaylanan derleme: Run ID=$BUILD_RUN_ID / Sürüm=$run_number / SHA=$head_sha"
+
+      - name: Test edilen APK artefaktını indir
+        uses: actions/download-artifact@v4
+        with:
+          name: koruk-okul-apk
+          path: release
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.build_run_id }}
+
+      - name: APK'yı doğrula
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s release/app-release.apk
+          ls -lh release/app-release.apk
+          sha256sum release/app-release.apk
+
+      - name: Onaylanan APK'yı güncelleme olarak yayınla
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.build.outputs.tag }}
+          name: "Sürüm ${{ steps.build.outputs.run_number }}"
+          target_commitish: ${{ steps.build.outputs.head_sha }}
+          files: release/app-release.apk
+          make_latest: true
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Yayın özeti
+        run: |
+          echo "✅ Test edilen APK artık kullanıcı güncellemesi olarak yayınlandı."
+          echo "Sürüm: ${{ steps.build.outputs.run_number }}"
+          echo "Kaynak build Run ID: ${{ inputs.build_run_id }}"
