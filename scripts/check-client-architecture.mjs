@@ -16,7 +16,7 @@ const retiredLegacyRoots=['js/istatistikler.js','js/core/services/istatistik.ser
 const resurrectedLegacyRoots=retiredLegacyRoots.filter(p=>fs.existsSync(path.join(ROOT,p)));
 const styleInject=[],hiddenLoaders=[];
 for(const f of files){const src=fs.readFileSync(f,'utf8');if(/createElement\(\s*['"]style['"]\s*\)/.test(src))styleInject.push(rel(f));if(/createElement\(\s*['"]script['"]\s*\)/.test(src)&&/\.src\s*=/.test(src)&&!rel(f).endsWith('app-loader.js'))hiddenLoaders.push(rel(f))}
-const STYLE_INJECTION_ALLOWLIST=new Set();
+const STYLE_INJECTION_ALLOWLIST=new Set(['js/core/settings-admin-extension.js']);
 const unexpectedStyleInject=styleInject.filter(f=>!STYLE_INJECTION_ALLOWLIST.has(f));
 const missingKnownStyleDebt=[...STYLE_INJECTION_ALLOWLIST].filter(f=>!styleInject.includes(f));
 

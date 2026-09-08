@@ -24,7 +24,7 @@ const COL = {
   konusmalar:'oy_konusmalar', mesajlar:'oy_mesajlar', duyurular:'oy_duyurular', anketler:'oy_anketler', kullaniciIstatistikleri:'oy_kullaniciIstatistikleri', akademikTakvim:'oy_akademikTakvim', kontrolListeleri:'oy_kontrolListeleri',
   kontrolListeTamamlama:'oy_kontrolListeTamamlama', denemeSonuclari:'oy_denemeSonuclari', testSonuclari:'oy_testSonuclari', yillikPlanBasliklari:'oy_yillikPlanBasliklari', yillikPlanTanimlari:'oy_yillikPlanTanimlari',
   ogretmenYillikPlanSecimleri:'oy_ogretmenYillikPlanSecimleri', devamsizlikCizelgesi:'oy_devamsizlikCizelgesi', yillikPlanNotlari:'oy_yillikPlanNotlari',
-  ogretmenListeSablon:'oy_ogretmenListeSablon', ogretmenListeKayit:'oy_ogretmenListeKayit', toplantiCizelgesi:'oy_toplantiCizelgesi'
+  ogretmenListeSablon:'oy_ogretmenListeSablon', ogretmenListeKayit:'oy_ogretmenListeKayit', toplantiCizelgesi:'oy_toplantiCizelgesi', idariBilgiler:'oy_idariBilgiler'
 };
 
 /* V2 uyumluluk API'si: yeni çekirdek aynı gerçek koleksiyon haritasını kullanır. */
@@ -109,5 +109,15 @@ function firebaseyiBaslat(){
   script.src='js/core/login-security.js?v=885';
   script.async=false;
   script.dataset.loginSecurityFeature='';
+  document.head.appendChild(script);
+})();
+
+/* Ayarlar uzantısı: tatil planı, işlem geri bildirimi ve yönetimsel gizli bilgiler. */
+(function settingsAdminExtensionLoad(){
+  if(document.querySelector('script[data-settings-admin-extension]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/settings-admin-extension.js?v=910';
+  script.async=false;
+  script.dataset.settingsAdminExtension='';
   document.head.appendChild(script);
 })();

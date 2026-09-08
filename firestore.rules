@@ -32,6 +32,15 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId));
     }
 
+    function yoneticiMi() {
+      return rolBelgemVarMi() && (
+        (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.ad == 'Yönetici')
+        || (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.ad == 'YONETICI')
+        || (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.rolAdi == 'Yönetici')
+        || (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.rolAdi == 'YONETICI')
+      );
+    }
+
     function moduluDuzenleyebilir(modul) {
       return adminMi() || (rolBelgemVarMi()
         && modul in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
@@ -86,6 +95,10 @@ service cloud.firestore {
     match /oy_roller/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
+    }
+
+    match /oy_idariBilgiler/{id} {
+      allow read, create, update, delete: if adminMi() || yoneticiMi();
     }
 
     match /oy_navDuzeni/{id} {
