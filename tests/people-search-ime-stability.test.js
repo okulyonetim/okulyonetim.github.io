@@ -14,5 +14,5 @@ assert(people.includes("if(s)s.oninput=()=>{query=s.value;refreshSearchResults()
 assert(!people.includes("if(s)s.oninput=()=>{query=s.value;render()}"),'Canonical search still destroys the input DOM.');
 assert(css.includes('[data-people-classic] .ogm-search input')&&css.includes('padding:0 14px 0 50px'),'Teacher search left padding is not protected from the global input rule.');
 assert(css.includes('left:16px;top:50%;transform:translateY(-50%)')&&css.includes('pointer-events:none'),'Search icon positioning contract missing.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v908';"),'PWA cache version was not bumped to v908.');
+const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=908,'PWA cache version must remain at least v908.');
 console.log('People search IME stability + search padding contract successful.');
