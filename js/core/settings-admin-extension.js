@@ -1,17 +1,14 @@
-/* Koruk Asistan — Settings extensions
- * - Tatil planlarini Ders Saatleri ekranindan ayirir ve bagimsiz Ayarlar sayfasina tasir.
- * - Admin + Yonetici icin idari bilgi / sifre sayfasi ekler.
- * - Islem butonlarina gorunur basma ve kisa toast geri bildirimi verir.
- */
+/* Koruk Asistan — Settings extensions */
 (function(global){
 'use strict';
 if(global.KorukSettingsExtensions)return;
 
 const q=(s,r=document)=>r.querySelector(s);
 const qa=(s,r=document)=>[...r.querySelectorAll(s)];
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 const id=()=>`row-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
 const today=()=>new Date().toISOString().slice(0,10);
+const clone=v=>{try{return structuredClone(v)}catch(_){return JSON.parse(JSON.stringify(v))}};
 let customPage='';
 let adminInfo=null;
 let adminDraft=null;
@@ -32,7 +29,6 @@ function settingsContent(){return q('#settingsContent')}
 function settingsTitle(){return q('[data-settings-title]')}
 function settingsDescription(){return q('[data-settings-description]')}
 function holidayConfig(){return rows('dersSaatleri').find(x=>x.id==='ayarlar')||rows('dersSaatleri')[0]||{}}
-function structuredCloneSafe(v){try{return structuredClone(v)}catch(_){return JSON.parse(JSON.stringify(v))}}
 
 function injectStyles(){
   if(q('#koruk-settings-extension-style'))return;
@@ -47,174 +43,96 @@ function injectStyles(){
     .ka-admin-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     .ka-admin-stat{min-width:0;border:1px solid var(--ka-border,#dce8e2);border-radius:18px;padding:14px;background:var(--ka-card-bg,#fff);display:flex;align-items:center;gap:11px}
     .ka-admin-stat__icon{width:40px;height:40px;flex:0 0 auto;border-radius:13px;display:grid;place-items:center;background:rgba(22,118,79,.11);font-size:19px}
-    .ka-admin-stat strong{display:block;font-size:1.15rem;line-height:1.1}.ka-admin-stat small{display:block;margin-top:3px;color:var(--ka-muted,#7d8c86);white-space:normal}
+    .ka-admin-stat strong{display:block;font-size:1.15rem;line-height:1.1}.ka-admin-stat small{display:block;margin-top:3px;color:var(--ka-muted,#7d8c86)}
     .ka-admin-section{border:1px solid var(--ka-border,#dce8e2);border-radius:20px;background:var(--ka-card-bg,#fff);overflow:hidden}
-    .ka-admin-section>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:15px 16px;user-select:none}.ka-admin-section>summary::-webkit-details-marker{display:none}
+    .ka-admin-section__header{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--ka-border,#dce8e2)}
     .ka-admin-section__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:rgba(22,118,79,.12);font-size:20px;flex:0 0 auto}
     .ka-admin-section__title{min-width:0;flex:1}.ka-admin-section__title strong{display:block}.ka-admin-section__title small{display:block;color:var(--ka-muted,#7d8c86);margin-top:2px}
-    .ka-admin-section__chevron{transition:transform .15s ease;font-size:20px}.ka-admin-section[open] .ka-admin-section__chevron{transform:rotate(180deg)}
-    .ka-admin-section__body{border-top:1px solid var(--ka-border,#dce8e2);padding:14px;display:grid;gap:12px}
+    .ka-admin-section__body{padding:14px;display:grid;gap:12px}
     .ka-admin-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.ka-admin-form-grid .ka-field--wide{grid-column:1/-1}
-    .ka-admin-secret-row,.ka-admin-number-row,.ka-admin-note-row{border:1px solid var(--ka-border,#dce8e2);border-radius:16px;padding:13px;background:rgba(127,127,127,.025)}
+    .ka-admin-subscription-row,.ka-admin-secret-row,.ka-admin-number-row,.ka-admin-note-row{border:1px solid var(--ka-border,#dce8e2);border-radius:16px;padding:13px;background:rgba(127,127,127,.025)}
     .ka-admin-secret-actions,.ka-admin-note-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .ka-admin-secret-actions .ka-btn,.ka-admin-note-actions .ka-btn{min-width:0}
     .ka-admin-section-add{width:100%;min-height:46px}
     .ka-admin-empty{padding:14px;border:1px dashed var(--ka-border,#dce8e2);border-radius:14px;text-align:center;color:var(--ka-muted,#7d8c86)}
     .ka-admin-savebar{position:sticky;bottom:82px;z-index:5;padding:10px;border:1px solid var(--ka-border,#dce8e2);border-radius:18px;background:color-mix(in srgb,var(--ka-card-bg,#fff) 92%,transparent);backdrop-filter:blur(12px);box-shadow:0 10px 28px rgba(0,0,0,.12)}
     .ka-admin-savebar .ka-btn{width:100%;min-height:50px}
-    [data-admin-settings-page] input,[data-admin-settings-page] textarea{max-width:100%;box-sizing:border-box}
-    @media(max-width:640px){
-      [data-admin-settings-page="admin-info"]{width:100%;max-width:none}.ka-admin-form-grid{grid-template-columns:1fr}.ka-admin-form-grid .ka-field--wide{grid-column:auto}
-      .ka-admin-secret-actions,.ka-admin-note-actions{width:100%}.ka-admin-secret-actions .ka-btn,.ka-admin-note-actions .ka-btn{flex:1}
-      .ka-admin-section>summary{padding:14px}.ka-admin-section__body{padding:12px}.ka-admin-savebar{bottom:78px}
-    }
+    [data-admin-settings-page] input,[data-admin-settings-page] textarea,[data-admin-settings-page] select{max-width:100%;box-sizing:border-box}
+    @media(max-width:640px){[data-admin-settings-page="admin-info"]{width:100%;max-width:none}.ka-admin-form-grid{grid-template-columns:1fr}.ka-admin-form-grid .ka-field--wide{grid-column:auto}.ka-admin-section__header{padding:14px}.ka-admin-section__body{padding:12px}.ka-admin-savebar{bottom:78px}}
     @media(max-width:380px){.ka-admin-stats{gap:8px}.ka-admin-stat{padding:11px;gap:8px}.ka-admin-stat__icon{width:36px;height:36px}.ka-admin-stat strong{font-size:1.02rem}}
   `;
   document.head.appendChild(s);
 }
 
-function buttonLabel(button){
-  const aria=String(button.getAttribute('aria-label')||'').trim();
-  let text=String(button.innerText||button.textContent||'').replace(/\s+/g,' ').trim();
-  if(text.length>42)text=text.slice(0,42)+'…';
-  return text||aria||'İşlem';
-}
-function actionable(button){
-  if(!button||button.disabled||button.dataset.pressToast==='off')return false;
-  if(button.matches('.ka-icon-button,.ka-bottom-item,.ka-settings-accordion__toggle,[data-settings-back],[data-ka-shell-action],[data-modal-close],[data-close]'))return false;
-  return button.matches('.ka-btn,[data-settings-open],[data-admin-ext-open],button[type="submit"]');
-}
+function buttonLabel(button){const aria=String(button.getAttribute('aria-label')||'').trim();let text=String(button.innerText||button.textContent||'').replace(/\s+/g,' ').trim();if(text.length>42)text=text.slice(0,42)+'…';return text||aria||'İşlem'}
+function actionable(button){if(!button||button.disabled||button.dataset.pressToast==='off')return false;if(button.matches('.ka-icon-button,.ka-bottom-item,.ka-settings-accordion__toggle,[data-settings-back],[data-ka-shell-action],[data-modal-close],[data-close]'))return false;return button.matches('.ka-btn,[data-settings-open],[data-admin-ext-open],button[type="submit"]')}
 function installButtonFeedback(){
   document.addEventListener('pointerdown',e=>{const b=e.target.closest?.('button:not(:disabled)');if(b)b.classList.add('ka-is-pressed')},true);
   const clear=e=>{const b=e.target.closest?.('button');if(b)b.classList.remove('ka-is-pressed')};
   document.addEventListener('pointerup',clear,true);document.addEventListener('pointercancel',clear,true);document.addEventListener('pointerleave',clear,true);
-  document.addEventListener('click',e=>{
-    const b=e.target.closest?.('button');if(!actionable(b))return;
-    const now=Date.now();if(lastPressToastButton===b&&now-lastPressToastAt<500)return;lastPressToastAt=now;lastPressToastButton=b;
-    global.toast?.(`✓ ${buttonLabel(b)} seçildi`);
-  },true);
+  document.addEventListener('click',e=>{const b=e.target.closest?.('button');if(!actionable(b))return;const now=Date.now();if(lastPressToastButton===b&&now-lastPressToastAt<500)return;lastPressToastAt=now;lastPressToastButton=b;global.toast?.(`✓ ${buttonLabel(b)} seçildi`)},true);
 }
 
-function settingsItem(key,title,description){
-  const b=document.createElement('button');b.type='button';b.className='ka-settings-accordion__item';b.dataset.adminExtOpen=key;
-  b.innerHTML=`<span><strong>${esc(title)}</strong><small>${esc(description)}</small></span><span aria-hidden="true">›</span>`;
-  return b;
-}
+function settingsItem(key,title,description){const b=document.createElement('button');b.type='button';b.className='ka-settings-accordion__item';b.dataset.adminExtOpen=key;b.innerHTML=`<span><strong>${esc(title)}</strong><small>${esc(description)}</small></span><span aria-hidden="true">›</span>`;return b}
 function updateGroupCount(group){const count=group?.querySelectorAll('.ka-settings-accordion__body > .ka-settings-accordion__item').length||0;const small=q('[data-settings-accordion-toggle] small',group);if(small)small.textContent=`${count} ayar`}
 function injectSettingsMenu(){
   if(customPage||!settingsRoot())return;
-  const academic=q('[data-settings-accordion="academic"]');const academicBody=q('.ka-settings-accordion__body',academic);
-  if(academicBody&&!q('[data-admin-ext-open="holiday"]',academicBody)){
-    const item=settingsItem('holiday','Tatil Modu','Planlı tatiller ve otomatik tarih aralıkları');
-    const lesson=q('[data-settings-open="lesson-hours"]',academicBody);lesson?.after(item);if(!lesson)academicBody.appendChild(item);updateGroupCount(academic);
-    const lessonDesc=q('[data-settings-open="lesson-hours"] small',academicBody);if(lessonDesc)lessonDesc.textContent='Zil saatleri ve öğle arası';
-  }
-  const system=q('[data-settings-accordion="system"]');const systemBody=q('.ka-settings-accordion__body',system);
-  const existing=systemBody&&q('[data-admin-ext-open="admin-info"]',systemBody);
-  if(canSeeAdminInfo()){
-    if(systemBody&&!existing){systemBody.appendChild(settingsItem('admin-info','İdari Bilgiler ve Şifreler','Abonelik, resmî bilgiler, şifreler ve idari notlar'));updateGroupCount(system)}
-  }else if(existing){existing.remove();updateGroupCount(system)}
+  const academic=q('[data-settings-accordion="academic"]'),academicBody=q('.ka-settings-accordion__body',academic);
+  if(academicBody&&!q('[data-admin-ext-open="holiday"]',academicBody)){const item=settingsItem('holiday','Tatil Modu','Planlı tatiller ve otomatik tarih aralıkları');const lesson=q('[data-settings-open="lesson-hours"]',academicBody);lesson?.after(item);if(!lesson)academicBody.appendChild(item);updateGroupCount(academic);const desc=q('[data-settings-open="lesson-hours"] small',academicBody);if(desc)desc.textContent='Zil saatleri ve öğle arası'}
+  const system=q('[data-settings-accordion="system"]'),systemBody=q('.ka-settings-accordion__body',system),existing=systemBody&&q('[data-admin-ext-open="admin-info"]',systemBody);
+  if(canSeeAdminInfo()){if(systemBody&&!existing){systemBody.appendChild(settingsItem('admin-info','İdari Bilgiler ve Şifreler','Abonelik, resmî bilgiler, şifreler ve idari notlar'));updateGroupCount(system)}}else if(existing){existing.remove();updateGroupCount(system)}
 }
 
-function preserveHolidayBridge(card){
-  if(!card)return;
-  const cfg=holidayConfig();
-  let bridge=q('[data-admin-holiday-legacy-bridge]',card);
-  if(!bridge){bridge=document.createElement('div');bridge.hidden=true;bridge.dataset.adminHolidayLegacyBridge='';bridge.innerHTML='<input type="checkbox" data-lesson-holiday><input data-lesson-opening-date><textarea data-lesson-holiday-message></textarea>';card.appendChild(bridge)}
-  const toggle=q('[data-lesson-holiday]',bridge),date=q('[data-lesson-opening-date]',bridge),msg=q('[data-lesson-holiday-message]',bridge);
-  if(toggle)toggle.checked=!!cfg.tatilModu;if(date)date.value=String(cfg.okulAcilisTarihi||'').slice(0,10);if(msg)msg.value=String(cfg.tatilModuNotu||cfg.tatilNotu||'');
-}
-function hideHolidayInsideLessonHours(){
-  if(customPage||String(settingsTitle()?.textContent||'').trim()!=='Ders Saatleri')return;
-  const out=settingsContent();if(!out)return;
-  const modern=q('[data-quality-holiday-card]',out);if(modern){preserveHolidayBridge(modern);modern.hidden=true;modern.style.display='none'}
-  const legacy=q('[data-lesson-holiday]',out);if(legacy&&!legacy.closest('[data-admin-holiday-legacy-bridge]')){const card=legacy.closest('.ka-card')||legacy.parentElement;if(card){card.hidden=true;card.style.display='none'}}
-}
-
+function preserveHolidayBridge(card){if(!card)return;const cfg=holidayConfig();let bridge=q('[data-admin-holiday-legacy-bridge]',card);if(!bridge){bridge=document.createElement('div');bridge.hidden=true;bridge.dataset.adminHolidayLegacyBridge='';bridge.innerHTML='<input type="checkbox" data-lesson-holiday><input data-lesson-opening-date><textarea data-lesson-holiday-message></textarea>';card.appendChild(bridge)}const toggle=q('[data-lesson-holiday]',bridge),date=q('[data-lesson-opening-date]',bridge),msg=q('[data-lesson-holiday-message]',bridge);if(toggle)toggle.checked=!!cfg.tatilModu;if(date)date.value=String(cfg.okulAcilisTarihi||'').slice(0,10);if(msg)msg.value=String(cfg.tatilModuNotu||cfg.tatilNotu||'')}
+function hideHolidayInsideLessonHours(){if(customPage||String(settingsTitle()?.textContent||'').trim()!=='Ders Saatleri')return;const out=settingsContent();if(!out)return;const modern=q('[data-quality-holiday-card]',out);if(modern){preserveHolidayBridge(modern);modern.hidden=true;modern.style.display='none'}const legacy=q('[data-lesson-holiday]',out);if(legacy&&!legacy.closest('[data-admin-holiday-legacy-bridge]')){const card=legacy.closest('.ka-card')||legacy.parentElement;if(card){card.hidden=true;card.style.display='none'}}}
 function setCustomHeader(title,desc){const h=settingsTitle(),d=settingsDescription();if(h)h.textContent=title;if(d)d.textContent=desc}
-function renderHolidayPage(){
-  const out=settingsContent();if(!out)return;
-  setCustomHeader('Tatil Modu','Tatil tarihlerini planlayın; belirtilen günlerde tatil modu otomatik çalışır.');
-  out.innerHTML=`<section class="ka-stack" data-admin-settings-page="holiday"><div class="ka-admin-info-hero"><div class="ka-admin-info-hero__icon">🏖️</div><div><strong>Planlı Tatiller</strong><div class="ka-muted">Başlangıç ve bitiş günleri dahil edilir. Birden fazla tatil ekleyebilirsiniz.</div></div></div><article class="ka-card"><div class="ka-card__body"><label class="ka-check"><input type="checkbox" data-lesson-holiday ${holidayConfig().tatilModu?'checked':''}> Tatil modunu etkinleştir</label></div></article></section>`;
-  global.KorukQualityFixes?.enhance?.();
-  requestAnimationFrame(()=>{const card=q('[data-quality-holiday-card]',out);if(card){card.hidden=false;card.style.display='';}else global.KorukQualityFixes?.enhance?.()});
-}
+function renderHolidayPage(){const out=settingsContent();if(!out)return;setCustomHeader('Tatil Modu','Tatil tarihlerini planlayın; belirtilen günlerde tatil modu otomatik çalışır.');out.innerHTML=`<section class="ka-stack" data-admin-settings-page="holiday"><div class="ka-admin-info-hero"><div class="ka-admin-info-hero__icon">🏖️</div><div><strong>Planlı Tatiller</strong><div class="ka-muted">Başlangıç ve bitiş günleri dahil edilir. Birden fazla tatil ekleyebilirsiniz.</div></div></div><article class="ka-card"><div class="ka-card__body"><label class="ka-check"><input type="checkbox" data-lesson-holiday ${holidayConfig().tatilModu?'checked':''}> Tatil modunu etkinleştir</label></div></article></section>`;global.KorukQualityFixes?.enhance?.();requestAnimationFrame(()=>{const card=q('[data-quality-holiday-card]',out);if(card){card.hidden=false;card.style.display='';}else global.KorukQualityFixes?.enhance?.()})}
 
-function defaultAdminInfo(){return{elektrikAboneNo:'',suAboneNo:'',internetAboneNo:'',vergiDairesi:'',vergiNumarasi:'',resmiNumaralar:[],uygulamaSifreleri:[],not:'',notlar:[]}}
+function defaultAdminInfo(){return{elektrikAboneNo:'',suAboneNo:'',internetAboneNo:'',vergiDairesi:'',vergiNumarasi:'',abonelikler:[],resmiBilgiler:[],resmiNumaralar:[],uygulamaSifreleri:[],not:'',notlar:[]}}
 function normalizedAdminInfo(v={}){
-  const base=defaultAdminInfo();
-  const sourceNotes=Array.isArray(v.notlar)?v.notlar:[];
-  const legacyNote=String(v.not||'').trim();
-  const notes=(sourceNotes.length?sourceNotes:(legacyNote?[{id:'legacy-note',baslik:'Genel Not',icerik:legacyNote,tarih:''}]:[])).map(x=>({
-    id:String(x.id||id()),baslik:String(x.baslik||''),icerik:String(x.icerik??x.not??''),tarih:String(x.tarih||'').slice(0,10)
-  }));
-  return{...base,...v,
-    resmiNumaralar:(Array.isArray(v.resmiNumaralar)?v.resmiNumaralar:[]).map(x=>({id:String(x.id||id()),baslik:String(x.baslik||''),deger:String(x.deger||'')})),
-    uygulamaSifreleri:(Array.isArray(v.uygulamaSifreleri)?v.uygulamaSifreleri:[]).map(x=>({id:String(x.id||id()),ad:String(x.ad||''),kullaniciAdi:String(x.kullaniciAdi||''),sifre:String(x.sifre||''),url:String(x.url||''),not:String(x.not||'')})),
-    notlar:notes,
-    not:notes[0]?.icerik||legacyNote
-  };
+  const base=defaultAdminInfo(),sourceNotes=Array.isArray(v.notlar)?v.notlar:[],legacyNote=String(v.not||'').trim();
+  const notes=(sourceNotes.length?sourceNotes:(legacyNote?[{id:'legacy-note',baslik:'Genel Not',icerik:legacyNote,tarih:''}]:[])).map(x=>({id:String(x.id||id()),baslik:String(x.baslik||''),icerik:String(x.icerik??x.not??''),tarih:String(x.tarih||'').slice(0,10)}));
+  const legacySubs=[['Elektrik',v.elektrikAboneNo],['Su',v.suAboneNo],['İnternet',v.internetAboneNo]].filter(([,numara])=>String(numara||'').trim()).map(([tur,numara])=>({id:id(),tur,kurum:'',numara:String(numara),aciklama:''}));
+  const subs=(Array.isArray(v.abonelikler)&&v.abonelikler.length?v.abonelikler:legacySubs).map(x=>({id:String(x.id||id()),tur:String(x.tur||'Diğer'),kurum:String(x.kurum||x.birim||''),numara:String(x.numara||x.aboneNo||x.musteriNo||''),aciklama:String(x.aciklama||'')}));
+  const legacyOfficial=[];if(String(v.vergiDairesi||v.vergiNumarasi||'').trim())legacyOfficial.push({id:id(),tur:'Vergi Numarası',birim:'Ortak',baslik:String(v.vergiDairesi||'Vergi Dairesi'),deger:String(v.vergiNumarasi||''),aciklama:''});for(const x of Array.isArray(v.resmiNumaralar)?v.resmiNumaralar:[])legacyOfficial.push({id:String(x.id||id()),tur:'Resmî Numara',birim:'Ortak',baslik:String(x.baslik||''),deger:String(x.deger||''),aciklama:''});
+  const official=(Array.isArray(v.resmiBilgiler)&&v.resmiBilgiler.length?v.resmiBilgiler:legacyOfficial).map(x=>({id:String(x.id||id()),tur:String(x.tur||'Resmî Numara'),birim:String(x.birim||'Ortak'),baslik:String(x.baslik||''),deger:String(x.deger||x.numara||''),aciklama:String(x.aciklama||'')}));
+  return{...base,...v,abonelikler:subs,resmiBilgiler:official,resmiNumaralar:official.map(x=>({id:x.id,baslik:[x.birim,x.baslik||x.tur].filter(Boolean).join(' · '),deger:x.deger})),uygulamaSifreleri:(Array.isArray(v.uygulamaSifreleri)?v.uygulamaSifreleri:[]).map(x=>({id:String(x.id||id()),ad:String(x.ad||''),kullaniciAdi:String(x.kullaniciAdi||''),sifre:String(x.sifre||''),url:String(x.url||''),not:String(x.not||'')})),notlar:notes,not:notes[0]?.icerik||legacyNote};
 }
-function numberRow(x={}){return `<div class="ka-admin-number-row ka-stack" data-admin-number-row data-row-id="${esc(x.id||id())}"><div class="ka-admin-form-grid"><label class="ka-field"><span class="ka-field__label">Başlık</span><input data-admin-number-title value="${esc(x.baslik||'')}" placeholder="Örn. Mükellef No"></label><label class="ka-field"><span class="ka-field__label">Numara</span><input data-admin-number-value value="${esc(x.deger||'')}"></label></div><div class="ka-row"><button class="ka-btn ka-btn--danger ka-btn--sm" type="button" data-admin-number-remove>Sil</button></div></div>`}
+function option(value,label,current){return `<option value="${esc(value)}" ${String(current||'')===String(value)?'selected':''}>${esc(label)}</option>`}
+function subscriptionRow(x={}){const tur=x.tur||'Diğer';return `<div class="ka-admin-subscription-row ka-stack" data-admin-subscription-row data-row-id="${esc(x.id||id())}"><div class="ka-admin-form-grid"><label class="ka-field"><span class="ka-field__label">Abonelik Türü</span><select data-admin-subscription-type>${['Elektrik','Su','İnternet','Doğalgaz','Telefon','Diğer'].map(v=>option(v,v,tur)).join('')}</select></label><label class="ka-field"><span class="ka-field__label">Kurum / Birim</span><input data-admin-subscription-org value="${esc(x.kurum||'')}" placeholder="Örn. Koruk Ortaokulu"></label><label class="ka-field"><span class="ka-field__label">Abone / Müşteri No</span><input data-admin-subscription-number value="${esc(x.numara||'')}"></label><label class="ka-field"><span class="ka-field__label">Açıklama</span><input data-admin-subscription-note value="${esc(x.aciklama||'')}"></label></div><div class="ka-row"><button class="ka-btn ka-btn--danger ka-btn--sm" type="button" data-admin-subscription-remove>Aboneliği Sil</button></div></div>`}
+function numberRow(x={}){return `<div class="ka-admin-number-row ka-stack" data-admin-number-row data-row-id="${esc(x.id||id())}"><div class="ka-admin-form-grid"><label class="ka-field"><span class="ka-field__label">Bilgi Türü</span><select data-admin-number-type>${['Vergi Numarası','Kurum Kodu','Mükellef No','IBAN','Resmî Numara','Diğer'].map(v=>option(v,v,x.tur||'Resmî Numara')).join('')}</select></label><label class="ka-field"><span class="ka-field__label">Birim</span><select data-admin-number-unit>${['Ortak','İlkokul','Ortaokul','Diğer'].map(v=>option(v,v,x.birim||'Ortak')).join('')}</select></label><label class="ka-field"><span class="ka-field__label">Başlık / Kurum</span><input data-admin-number-title value="${esc(x.baslik||'')}" placeholder="Örn. Elazığ Vergi Dairesi"></label><label class="ka-field"><span class="ka-field__label">Numara / Değer</span><input data-admin-number-value value="${esc(x.deger||'')}"></label><label class="ka-field ka-field--wide"><span class="ka-field__label">Açıklama</span><input data-admin-number-note value="${esc(x.aciklama||'')}"></label></div><div class="ka-row"><button class="ka-btn ka-btn--danger ka-btn--sm" type="button" data-admin-number-remove>Kaydı Sil</button></div></div>`}
 function secretRow(x={}){return `<div class="ka-admin-secret-row ka-stack" data-admin-secret-row data-row-id="${esc(x.id||id())}"><div class="ka-admin-form-grid"><label class="ka-field"><span class="ka-field__label">Uygulama / Hizmet</span><input data-admin-secret-name value="${esc(x.ad||'')}" placeholder="Örn. MEBBİS"></label><label class="ka-field"><span class="ka-field__label">Kullanıcı Adı</span><input data-admin-secret-user value="${esc(x.kullaniciAdi||'')}" autocomplete="off"></label><label class="ka-field ka-field--wide"><span class="ka-field__label">Şifre</span><div class="ka-row"><input class="ka-grow" type="password" data-admin-secret-password value="${esc(x.sifre||'')}" autocomplete="new-password"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-admin-secret-toggle data-press-toast="off">Göster</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-admin-secret-copy data-press-toast="off">Kopyala</button></div></label><label class="ka-field"><span class="ka-field__label">Web Adresi</span><input type="url" data-admin-secret-url value="${esc(x.url||'')}" placeholder="https://..."></label><label class="ka-field"><span class="ka-field__label">Not</span><input data-admin-secret-note value="${esc(x.not||'')}"></label></div><div class="ka-admin-secret-actions"><button class="ka-btn ka-btn--danger ka-btn--sm" type="button" data-admin-secret-remove>Bu Kaydı Sil</button></div></div>`}
 function noteRow(x={}){return `<div class="ka-admin-note-row ka-stack" data-admin-note-row data-row-id="${esc(x.id||id())}"><div class="ka-admin-form-grid"><label class="ka-field"><span class="ka-field__label">Not Başlığı</span><input data-admin-note-title value="${esc(x.baslik||'')}" placeholder="Örn. İnternet sözleşmesi"></label><label class="ka-field"><span class="ka-field__label">Tarih</span><input type="date" data-admin-note-date value="${esc(x.tarih||'')}"></label><label class="ka-field ka-field--wide"><span class="ka-field__label">Not</span><textarea rows="4" data-admin-note-content placeholder="İdari notunuzu yazın…">${esc(x.icerik||'')}</textarea></label></div><div class="ka-admin-note-actions"><button class="ka-btn ka-btn--danger ka-btn--sm" type="button" data-admin-note-remove>Notu Sil</button></div></div>`}
-function countSubscriptions(d){return[d.elektrikAboneNo,d.suAboneNo,d.internetAboneNo].filter(v=>String(v||'').trim()).length}
-function countOfficial(d){return[d.vergiDairesi,d.vergiNumarasi].filter(v=>String(v||'').trim()).length+d.resmiNumaralar.filter(x=>String(x.baslik||x.deger||'').trim()).length}
 function formatUpdateDate(value){if(!value)return 'Henüz yok';const date=new Date(value);if(Number.isNaN(date.getTime()))return 'Henüz yok';return date.toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'numeric'})}
 function stat(icon,value,label){return `<div class="ka-admin-stat"><span class="ka-admin-stat__icon">${icon}</span><span><strong>${esc(value)}</strong><small>${esc(label)}</small></span></div>`}
-function section(icon,title,subtitle,body){return `<details class="ka-admin-section" open><summary><span class="ka-admin-section__icon">${icon}</span><span class="ka-admin-section__title"><strong>${esc(title)}</strong><small>${esc(subtitle)}</small></span><span class="ka-admin-section__chevron">⌃</span></summary><div class="ka-admin-section__body">${body}</div></details>`}
+function section(icon,title,subtitle,body){return `<section class="ka-admin-section"><div class="ka-admin-section__header"><span class="ka-admin-section__icon">${icon}</span><span class="ka-admin-section__title"><strong>${esc(title)}</strong><small>${esc(subtitle)}</small></span></div><div class="ka-admin-section__body">${body}</div></section>`}
 
 function collectAdminDraft(root=settingsContent()){
   if(!root)return adminDraft||adminInfo||defaultAdminInfo();
+  const subscriptions=qa('[data-admin-subscription-row]',root).map(row=>({id:row.dataset.rowId||id(),tur:q('[data-admin-subscription-type]',row)?.value||'Diğer',kurum:q('[data-admin-subscription-org]',row)?.value||'',numara:q('[data-admin-subscription-number]',row)?.value||'',aciklama:q('[data-admin-subscription-note]',row)?.value||''}));
+  const official=qa('[data-admin-number-row]',root).map(row=>({id:row.dataset.rowId||id(),tur:q('[data-admin-number-type]',row)?.value||'Resmî Numara',birim:q('[data-admin-number-unit]',row)?.value||'Ortak',baslik:q('[data-admin-number-title]',row)?.value||'',deger:q('[data-admin-number-value]',row)?.value||'',aciklama:q('[data-admin-number-note]',row)?.value||''}));
   const noteRows=qa('[data-admin-note-row]',root).map(row=>({id:row.dataset.rowId||id(),baslik:q('[data-admin-note-title]',row)?.value||'',tarih:q('[data-admin-note-date]',row)?.value||'',icerik:q('[data-admin-note-content]',row)?.value||''}));
-  const value={
-    elektrikAboneNo:q('[data-admin-electric]',root)?.value||'',suAboneNo:q('[data-admin-water]',root)?.value||'',internetAboneNo:q('[data-admin-internet]',root)?.value||'',vergiDairesi:q('[data-admin-tax-office]',root)?.value||'',vergiNumarasi:q('[data-admin-tax-no]',root)?.value||'',
-    resmiNumaralar:qa('[data-admin-number-row]',root).map(row=>({id:row.dataset.rowId||id(),baslik:q('[data-admin-number-title]',row)?.value||'',deger:q('[data-admin-number-value]',row)?.value||''})),
-    uygulamaSifreleri:qa('[data-admin-secret-row]',root).map(row=>({id:row.dataset.rowId||id(),ad:q('[data-admin-secret-name]',row)?.value||'',kullaniciAdi:q('[data-admin-secret-user]',row)?.value||'',sifre:q('[data-admin-secret-password]',row)?.value||'',url:q('[data-admin-secret-url]',row)?.value||'',not:q('[data-admin-secret-note]',row)?.value||''})),
-    notlar:noteRows,not:noteRows[0]?.icerik||'',guncellenmeTarihi:adminInfo?.guncellenmeTarihi||adminDraft?.guncellenmeTarihi||''
-  };adminDraft=value;return value;
+  const firstSub=type=>subscriptions.find(x=>x.tur===type)?.numara||'',firstTax=official.find(x=>x.tur==='Vergi Numarası')||{};
+  const value={abonelikler:subscriptions,resmiBilgiler:official,elektrikAboneNo:firstSub('Elektrik'),suAboneNo:firstSub('Su'),internetAboneNo:firstSub('İnternet'),vergiDairesi:firstTax.baslik||'',vergiNumarasi:firstTax.deger||'',resmiNumaralar:official.map(x=>({id:x.id,baslik:[x.birim,x.baslik||x.tur].filter(Boolean).join(' · '),deger:x.deger})),uygulamaSifreleri:qa('[data-admin-secret-row]',root).map(row=>({id:row.dataset.rowId||id(),ad:q('[data-admin-secret-name]',row)?.value||'',kullaniciAdi:q('[data-admin-secret-user]',row)?.value||'',sifre:q('[data-admin-secret-password]',row)?.value||'',url:q('[data-admin-secret-url]',row)?.value||'',not:q('[data-admin-secret-note]',row)?.value||''})),notlar:noteRows,not:noteRows[0]?.icerik||'',guncellenmeTarihi:adminInfo?.guncellenmeTarihi||adminDraft?.guncellenmeTarihi||''};adminDraft=value;return value;
 }
 function adminInfoHtml(data){
-  const d=normalizedAdminInfo(data);
-  const subscriptionBody=`<div class="ka-admin-form-grid"><label class="ka-field"><span class="ka-field__label">Elektrik Abone No</span><input data-admin-electric value="${esc(d.elektrikAboneNo)}"></label><label class="ka-field"><span class="ka-field__label">Su Abone No</span><input data-admin-water value="${esc(d.suAboneNo)}"></label><label class="ka-field ka-field--wide"><span class="ka-field__label">İnternet Abone / Müşteri No</span><input data-admin-internet value="${esc(d.internetAboneNo)}"></label></div>`;
-  const officialBody=`<div class="ka-admin-form-grid"><label class="ka-field"><span class="ka-field__label">Vergi Dairesi</span><input data-admin-tax-office value="${esc(d.vergiDairesi)}"></label><label class="ka-field"><span class="ka-field__label">Vergi Numarası</span><input data-admin-tax-no value="${esc(d.vergiNumarasi)}"></label></div><div class="ka-stack" data-admin-number-list>${d.resmiNumaralar.map(numberRow).join('')}</div><button class="ka-btn ka-btn--secondary ka-admin-section-add" type="button" data-admin-number-add>+ Resmî Numara Ekle</button>`;
+  const d=normalizedAdminInfo(data),subCount=d.abonelikler.filter(x=>String(x.numara||x.kurum||'').trim()).length,officialCount=d.resmiBilgiler.filter(x=>String(x.deger||x.baslik||'').trim()).length;
+  const subscriptionBody=`<div class="ka-stack" data-admin-subscription-list>${d.abonelikler.length?d.abonelikler.map(subscriptionRow).join(''):'<div class="ka-admin-empty">Henüz abonelik eklenmedi.</div>'}</div><button class="ka-btn ka-btn--secondary ka-admin-section-add" type="button" data-admin-subscription-add>+ Abonelik Ekle</button>`;
+  const officialBody=`<div class="ka-stack" data-admin-number-list>${d.resmiBilgiler.length?d.resmiBilgiler.map(numberRow).join(''):'<div class="ka-admin-empty">Henüz resmî bilgi eklenmedi.</div>'}</div><button class="ka-btn ka-btn--secondary ka-admin-section-add" type="button" data-admin-number-add>+ Resmî Bilgi Ekle</button>`;
   const secretBody=`<div class="ka-stack" data-admin-secret-list>${d.uygulamaSifreleri.length?d.uygulamaSifreleri.map(secretRow).join(''):'<div class="ka-admin-empty">Henüz uygulama veya portal şifresi eklenmedi.</div>'}</div><button class="ka-btn ka-btn--secondary ka-admin-section-add" type="button" data-admin-secret-add>+ Uygulama Şifresi Ekle</button>`;
-  const noteBody=`<div class="ka-stack" data-admin-note-list>${d.notlar.length?d.notlar.map(noteRow).join(''):'<div class="ka-admin-empty">Henüz idari not eklenmedi.</div>'}</div><button class="ka-btn ka-btn--secondary ka-admin-section-add" type="button" data-admin-note-add>+ Yeni Not Ekle</button>`;
-  return `<section class="ka-stack" data-admin-settings-page="admin-info">
-    <div class="ka-admin-info-hero"><div class="ka-admin-info-hero__icon">🔐</div><div class="ka-admin-info-hero__copy"><strong>İdari Bilgiler ve Şifreler</strong><small>Yalnız Admin ve Yönetici</small></div></div>
-    <div class="ka-admin-stats">
-      ${stat('🔌',countSubscriptions(d),'Abonelik')}
-      ${stat('🏛️',countOfficial(d),'Resmî Bilgi')}
-      ${stat('🔑',d.uygulamaSifreleri.length,'Şifre Kaydı')}
-      ${stat('📝',d.notlar.length,'İdari Not')}
-    </div>
-    ${section('🔌','Abonelik Bilgileri','Elektrik, su ve internet abonelik bilgileri',subscriptionBody)}
-    ${section('🏛️','Vergi ve Resmî Numaralar','Vergi ve diğer resmî kurum numaraları',officialBody)}
-    ${section('🔑','Uygulama ve Portal Şifreleri','Kurum adına kullanılan giriş bilgileri',secretBody)}
-    ${section('📝','İdari Notlar',`${d.notlar.length} not · Son güncelleme ${formatUpdateDate(d.guncellenmeTarihi)}`,noteBody)}
-    <div class="ka-admin-savebar"><button class="ka-btn" type="button" data-admin-info-save>💾 İdari Bilgileri Kaydet</button></div>
-  </section>`;
+  const noteBody=`<div class="ka-stack" data-admin-note-list>${d.notlar.length?d.notlar.map(noteRow).join(''):'<div class="ka-admin-empty">Henüz idari not eklenmedi.</div>'}</div><button class="ka-btn ka-btn--secondary ka-admin-section-add" type="button" data-admin-note-add>+ Not Ekle</button>`;
+  return `<section class="ka-stack" data-admin-settings-page="admin-info"><div class="ka-admin-info-hero"><div class="ka-admin-info-hero__icon">🔐</div><div class="ka-admin-info-hero__copy"><strong>İdari Bilgiler ve Şifreler</strong><small>Yalnız Admin ve Yönetici</small></div></div><div class="ka-admin-stats">${stat('🔌',subCount,'Abonelik')}${stat('🏛️',officialCount,'Resmî Bilgi')}${stat('🔑',d.uygulamaSifreleri.length,'Şifre Kaydı')}${stat('📝',d.notlar.length,'İdari Not')}</div>${section('🔌','Abonelik Bilgileri','Elektrik, su, internet ve diğer abonelikler',subscriptionBody)}${section('🏛️','Vergi ve Resmî Numaralar','İlkokul, ortaokul ve ortak resmî bilgiler',officialBody)}${section('🔑','Uygulama ve Portal Şifreleri','Kurum adına kullanılan giriş bilgileri',secretBody)}${section('📝','İdari Notlar',`${d.notlar.length} not · Son güncelleme ${formatUpdateDate(d.guncellenmeTarihi)}`,noteBody)}<div class="ka-admin-savebar"><button class="ka-btn" type="button" data-admin-info-save>💾 İdari Bilgileri Kaydet</button></div></section>`;
 }
-
-async function loadAdminInfo(){
-  if(!canSeeAdminInfo()){customPage='';global.toast?.('Bu sayfaya yalnız Admin ve Yönetici erişebilir.');global.SettingsModule?.openPage?.('home','Ayarlar');return}
-  if(adminLoading)return;adminLoading=true;const out=settingsContent();if(out)out.innerHTML='<div class="ka-empty">İdari bilgiler yükleniyor…</div>';
-  try{
-    if(!global.db||!global.COL?.idariBilgiler)throw new Error('Veri bağlantısı hazır değil.');
-    const snap=await global.db.collection(global.COL.idariBilgiler).doc('ayarlar').get();adminInfo=normalizedAdminInfo(snap.exists?snap.data():{});adminDraft=structuredCloneSafe(adminInfo);renderAdminPage();
-  }catch(e){if(out)out.innerHTML=`<div class="ka-card"><div class="ka-card__body ka-stack"><strong>İdari bilgiler açılamadı</strong><div class="ka-muted">${esc(e?.message||e)}</div><button class="ka-btn" type="button" data-admin-retry>Tekrar Dene</button></div></div>`;q('[data-admin-retry]',out)?.addEventListener('click',loadAdminInfo)}finally{adminLoading=false}
-}
-function renderAdminPage(){
-  if(customPage!=='admin-info')return;if(!canSeeAdminInfo()){customPage='';global.SettingsModule?.openPage?.('home','Ayarlar');return}
-  const out=settingsContent();if(!out)return;setCustomHeader('İdari Bilgiler ve Şifreler','Abonelik, resmî bilgi, şifre ve idari notlar.');out.innerHTML=adminInfoHtml(adminDraft||adminInfo||defaultAdminInfo());bindAdminPage(out);
-}
+async function loadAdminInfo(){if(!canSeeAdminInfo()){customPage='';global.toast?.('Bu sayfaya yalnız Admin ve Yönetici erişebilir.');global.SettingsModule?.openPage?.('home','Ayarlar');return}if(adminLoading)return;adminLoading=true;const out=settingsContent();if(out)out.innerHTML='<div class="ka-empty">İdari bilgiler yükleniyor…</div>';try{if(!global.db||!global.COL?.idariBilgiler)throw new Error('Veri bağlantısı hazır değil.');const snap=await global.db.collection(global.COL.idariBilgiler).doc('ayarlar').get();adminInfo=normalizedAdminInfo(snap.exists?snap.data():{});adminDraft=clone(adminInfo);renderAdminPage()}catch(e){if(out)out.innerHTML=`<div class="ka-card"><div class="ka-card__body ka-stack"><strong>İdari bilgiler açılamadı</strong><div class="ka-muted">${esc(e?.message||e)}</div><button class="ka-btn" type="button" data-admin-retry>Tekrar Dene</button></div></div>`;q('[data-admin-retry]',out)?.addEventListener('click',loadAdminInfo)}finally{adminLoading=false}}
+function renderAdminPage(){if(customPage!=='admin-info')return;if(!canSeeAdminInfo()){customPage='';global.SettingsModule?.openPage?.('home','Ayarlar');return}const out=settingsContent();if(!out)return;setCustomHeader('İdari Bilgiler ve Şifreler','Abonelik, resmî bilgi, şifre ve idari notlar.');out.innerHTML=adminInfoHtml(adminDraft||adminInfo||defaultAdminInfo());bindAdminPage(out)}
 function bindAdminPage(out){
   out.addEventListener('input',()=>collectAdminDraft(out));
-  q('[data-admin-number-add]',out)?.addEventListener('click',()=>{collectAdminDraft(out);adminDraft.resmiNumaralar.push({id:id(),baslik:'',deger:''});renderAdminPage()});
+  q('[data-admin-subscription-add]',out)?.addEventListener('click',()=>{collectAdminDraft(out);adminDraft.abonelikler.push({id:id(),tur:'Diğer',kurum:'',numara:'',aciklama:''});renderAdminPage();requestAnimationFrame(()=>q('[data-admin-subscription-list]')?.lastElementChild?.scrollIntoView?.({behavior:'smooth',block:'nearest'}))});
+  q('[data-admin-number-add]',out)?.addEventListener('click',()=>{collectAdminDraft(out);adminDraft.resmiBilgiler.push({id:id(),tur:'Vergi Numarası',birim:'Ortak',baslik:'',deger:'',aciklama:''});renderAdminPage();requestAnimationFrame(()=>q('[data-admin-number-list]')?.lastElementChild?.scrollIntoView?.({behavior:'smooth',block:'nearest'}))});
   q('[data-admin-secret-add]',out)?.addEventListener('click',()=>{collectAdminDraft(out);adminDraft.uygulamaSifreleri.push({id:id(),ad:'',kullaniciAdi:'',sifre:'',url:'',not:''});renderAdminPage()});
-  q('[data-admin-note-add]',out)?.addEventListener('click',()=>{collectAdminDraft(out);adminDraft.notlar.push({id:id(),baslik:'',icerik:'',tarih:today()});renderAdminPage();requestAnimationFrame(()=>{const list=q('[data-admin-note-list]');list?.lastElementChild?.scrollIntoView?.({behavior:'smooth',block:'nearest'})})});
+  q('[data-admin-note-add]',out)?.addEventListener('click',()=>{collectAdminDraft(out);adminDraft.notlar.push({id:id(),baslik:'',icerik:'',tarih:today()});renderAdminPage();requestAnimationFrame(()=>q('[data-admin-note-list]')?.lastElementChild?.scrollIntoView?.({behavior:'smooth',block:'nearest'}))});
   out.addEventListener('click',async e=>{
-    const nr=e.target.closest?.('[data-admin-number-remove]');if(nr){collectAdminDraft(out);const rid=nr.closest('[data-admin-number-row]')?.dataset.rowId;adminDraft.resmiNumaralar=adminDraft.resmiNumaralar.filter(x=>x.id!==rid);renderAdminPage();return}
+    const sub=e.target.closest?.('[data-admin-subscription-remove]');if(sub){collectAdminDraft(out);const rid=sub.closest('[data-admin-subscription-row]')?.dataset.rowId;adminDraft.abonelikler=adminDraft.abonelikler.filter(x=>x.id!==rid);renderAdminPage();return}
+    const nr=e.target.closest?.('[data-admin-number-remove]');if(nr){collectAdminDraft(out);const rid=nr.closest('[data-admin-number-row]')?.dataset.rowId;adminDraft.resmiBilgiler=adminDraft.resmiBilgiler.filter(x=>x.id!==rid);renderAdminPage();return}
     const sr=e.target.closest?.('[data-admin-secret-remove]');if(sr){collectAdminDraft(out);const rid=sr.closest('[data-admin-secret-row]')?.dataset.rowId;if(global.confirm&&!global.confirm('Bu şifre kaydı silinsin mi?'))return;adminDraft.uygulamaSifreleri=adminDraft.uygulamaSifreleri.filter(x=>x.id!==rid);renderAdminPage();return}
     const note=e.target.closest?.('[data-admin-note-remove]');if(note){collectAdminDraft(out);const rid=note.closest('[data-admin-note-row]')?.dataset.rowId;if(global.confirm&&!global.confirm('Bu idari not silinsin mi?'))return;adminDraft.notlar=adminDraft.notlar.filter(x=>x.id!==rid);adminDraft.not=adminDraft.notlar[0]?.icerik||'';renderAdminPage();return}
     const toggle=e.target.closest?.('[data-admin-secret-toggle]');if(toggle){const row=toggle.closest('[data-admin-secret-row]'),input=q('[data-admin-secret-password]',row);if(input){const show=input.type==='password';input.type=show?'text':'password';toggle.textContent=show?'Gizle':'Göster';global.toast?.(show?'Şifre gösteriliyor.':'Şifre gizlendi.')}return}
@@ -222,43 +140,14 @@ function bindAdminPage(out){
   });
   q('[data-admin-info-save]',out)?.addEventListener('click',saveAdminInfo);
 }
-async function saveAdminInfo(){
-  if(!canSeeAdminInfo())return global.toast?.('Bu işlem için yetkiniz yok.');
-  const payload=normalizedAdminInfo(collectAdminDraft());payload.not=payload.notlar[0]?.icerik||'';payload.guncellenmeTarihi=new Date().toISOString();payload.guncelleyenUid=currentUser().uid||'';payload.guncelleyenAd=currentUser().ad||currentUser().kullaniciAdi||'';
-  const btn=q('[data-admin-info-save]');if(btn){btn.disabled=true;btn.textContent='Kaydediliyor…'}
-  try{await global.db.collection(global.COL.idariBilgiler).doc('ayarlar').set(payload,{merge:false});adminInfo=normalizedAdminInfo(payload);adminDraft=structuredCloneSafe(adminInfo);global.toast?.('İdari bilgiler kaydedildi.');renderAdminPage()}catch(e){global.toast?.('İdari bilgiler kaydedilemedi: '+(e?.message||e));if(btn){btn.disabled=false;btn.textContent='💾 İdari Bilgileri Kaydet'}}
-}
+async function saveAdminInfo(){if(!canSeeAdminInfo())return global.toast?.('Bu işlem için yetkiniz yok.');const payload=normalizedAdminInfo(collectAdminDraft());payload.not=payload.notlar[0]?.icerik||'';payload.guncellenmeTarihi=new Date().toISOString();payload.guncelleyenUid=currentUser().uid||'';payload.guncelleyenAd=currentUser().ad||currentUser().kullaniciAdi||'';const btn=q('[data-admin-info-save]');if(btn){btn.disabled=true;btn.textContent='Kaydediliyor…'}try{await global.db.collection(global.COL.idariBilgiler).doc('ayarlar').set(payload,{merge:false});adminInfo=normalizedAdminInfo(payload);adminDraft=clone(adminInfo);global.toast?.('İdari bilgiler kaydedildi.');renderAdminPage()}catch(e){global.toast?.('İdari bilgiler kaydedilemedi: '+(e?.message||e));if(btn){btn.disabled=false;btn.textContent='💾 İdari Bilgileri Kaydet'}}}
 
-function openCustomPage(page){
-  if(page==='admin-info'&&!canSeeAdminInfo())return global.toast?.('Bu sayfaya yalnız Admin ve Yönetici erişebilir.');
-  customPage=page;
-  if(page==='holiday'){renderHolidayPage();return}
-  if(page==='admin-info'){setCustomHeader('İdari Bilgiler ve Şifreler','Abonelik, resmî bilgi, şifre ve idari notlar.');loadAdminInfo()}
-}
+function openCustomPage(page){if(page==='admin-info'&&!canSeeAdminInfo())return global.toast?.('Bu sayfaya yalnız Admin ve Yönetici erişebilir.');customPage=page;if(page==='holiday'){renderHolidayPage();return}if(page==='admin-info'){setCustomHeader('İdari Bilgiler ve Şifreler','Abonelik, resmî bilgi, şifre ve idari notlar.');loadAdminInfo()}}
 function leaveCustomPage(){customPage='';adminDraft=null;global.SettingsModule?.openPage?.('home','Ayarlar');requestAnimationFrame(injectSettingsMenu)}
-
-function handleSettingsClicks(e){
-  const open=e.target.closest?.('[data-admin-ext-open]');if(open){e.preventDefault();e.stopImmediatePropagation();openCustomPage(open.dataset.adminExtOpen);return}
-  if(customPage&&e.target.closest?.('[data-settings-back]')){e.preventDefault();e.stopImmediatePropagation();leaveCustomPage()}
-}
-function repairSettingsSurface(){
-  if(!settingsRoot())return;
-  if(customPage==='holiday'){
-    if(!q('[data-admin-settings-page="holiday"]'))renderHolidayPage();return;
-  }
-  if(customPage==='admin-info'){
-    if(!q('[data-admin-settings-page="admin-info"]')&&!adminLoading)renderAdminPage();return;
-  }
-  injectSettingsMenu();hideHolidayInsideLessonHours();
-}
+function handleSettingsClicks(e){const open=e.target.closest?.('[data-admin-ext-open]');if(open){e.preventDefault();e.stopImmediatePropagation();openCustomPage(open.dataset.adminExtOpen);return}if(customPage&&e.target.closest?.('[data-settings-back]')){e.preventDefault();e.stopImmediatePropagation();leaveCustomPage()}}
+function repairSettingsSurface(){if(!settingsRoot())return;if(customPage==='holiday'){if(!q('[data-admin-settings-page="holiday"]'))renderHolidayPage();return}if(customPage==='admin-info'){if(!q('[data-admin-settings-page="admin-info"]')&&!adminLoading)renderAdminPage();return}injectSettingsMenu();hideHolidayInsideLessonHours()}
 function queueRepair(){if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;repairSettingsSurface()})}
-function start(){
-  injectStyles();installButtonFeedback();document.addEventListener('click',handleSettingsClicks,true);
-  const mo=new MutationObserver(queueRepair);mo.observe(document.documentElement,{childList:true,subtree:true});
-  global.addEventListener('koruk:module-ready',queueRepair);global.addEventListener('koruk:app-ready',queueRepair);
-  global.AppStore?.subscribe?.('session.user',queueRepair);global.AppStore?.subscribe?.('session.role',queueRepair);global.AppStore?.subscribe?.('data.dersSaatleri',queueRepair);
-  setInterval(queueRepair,1200);queueRepair();
-}
+function start(){injectStyles();installButtonFeedback();document.addEventListener('click',handleSettingsClicks,true);const mo=new MutationObserver(queueRepair);mo.observe(document.documentElement,{childList:true,subtree:true});global.addEventListener('koruk:module-ready',queueRepair);global.addEventListener('koruk:app-ready',queueRepair);global.AppStore?.subscribe?.('session.user',queueRepair);global.AppStore?.subscribe?.('session.role',queueRepair);global.AppStore?.subscribe?.('data.dersSaatleri',queueRepair);setInterval(queueRepair,1200);queueRepair()}
 
 global.KorukSettingsExtensions={canSeeAdminInfo,isManagerRole,openCustomPage,repair:queueRepair};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
