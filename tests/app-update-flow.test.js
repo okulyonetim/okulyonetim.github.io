@@ -2,6 +2,7 @@ const fs=require('fs');
 const assert=require('assert');
 
 const runtime=fs.readFileSync('js/core/platform/mobile-runtime-fixes.js','utf8');
+const settings=fs.readFileSync('js/modules/settings.js','utf8');
 const buildWorkflow=fs.readFileSync('.github/workflows/build-apk.yml','utf8');
 const publishWorkflow=fs.readFileSync('.github/workflows/publish-apk.yml','utf8');
 const activity=fs.readFileSync('android/app/src/main/java/com/koruk/okul/MainActivity.java','utf8');
@@ -14,7 +15,6 @@ for(const text of [
   'releases/latest',
   'version.json',
   'data-app-update-settings',
-  'Güncellemeleri Kontrol Et',
   'UpdatePlugin',
   'indirVeKur',
   'updateAvailable:latest.build>current.build',
@@ -26,6 +26,7 @@ for(const text of [
   'RELEASE_LIST_API',
   'const result=await checkPromise'
 ])assert(runtime.includes(text),`Uygulama güncelleme akışı eksik: ${text}`);
+assert(settings.includes('Güncellemeleri Kontrol Et')&&settings.includes('data-app-update-settings'),'Güncelleme kontrolü canonical Settings ekranında değil.');
 
 assert(activity.includes('registerPlugin(UpdatePlugin.class)'),'UpdatePlugin MainActivity içinde kayıtlı değil.');
 assert(activity.includes('mobile-runtime-fixes.js'),'Native güncelleme yöneticisini taşıyan runtime dosyası yüklenmiyor.');
