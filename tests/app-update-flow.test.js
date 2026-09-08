@@ -17,7 +17,14 @@ for(const text of [
   'Güncellemeleri Kontrol Et',
   'UpdatePlugin',
   'indirVeKur',
-  'updateAvailable:latest.build>current.build'
+  'updateAvailable:latest.build>current.build',
+  'data-app-update-status',
+  'Mevcut sürüm:',
+  'Uygulama güncel',
+  'Yayınlanan son sürüm',
+  'showUpToDateModal',
+  'RELEASE_LIST_API',
+  'const result=await checkPromise'
 ])assert(runtime.includes(text),`Uygulama güncelleme akışı eksik: ${text}`);
 
 assert(activity.includes('registerPlugin(UpdatePlugin.class)'),'UpdatePlugin MainActivity içinde kayıtlı değil.');
