@@ -3,13 +3,14 @@ name: Temporary native settings integration
 on:
   push:
     branches: [ fix/admin-info-flat-sections-20260908-v2 ]
+    paths:
+      - '.tmp-trigger-native-settings'
 
 permissions:
   contents: write
 
 jobs:
   integrate:
-    if: github.event.head_commit.message == 'chore: run native settings integration'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
