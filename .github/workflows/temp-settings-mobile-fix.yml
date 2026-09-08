@@ -61,19 +61,16 @@ jobs:
           state_new="let active='home',mounted=false,unsubs=[],settingsAccordion='',statisticsRefreshing=false,layoutSection='menus',layoutMenu='people',adminInfoData=null,adminInfoDraft=null,adminInfoLoading=false,schoolFormDirty=false,schoolFormDraft=null,schoolRenderPending=false;"
           if state_old not in settings: raise SystemExit('settings state pattern not found')
           settings=settings.replace(state_old,state_new)
-
           account_old="items:[['account','Hesabım','Profil ve hesap bilgileri'],['appearance','Görünüm','Açık ve koyu tema'],['sync','Senkronizasyon','Cihaz ve arka plan senkron durumu']]"
           account_new="items:[['account','Hesabım','Profil ve hesap bilgileri'],['appearance','Görünüm','Açık ve koyu tema'],['sync','Senkronizasyon','Cihaz ve arka plan senkron durumu'],['app-update','Güncellemeleri Kontrol Et','Mevcut sürüm okunuyor…']]"
           if account_old not in settings: raise SystemExit('account items pattern not found')
           settings=settings.replace(account_old,account_new)
-
           map_old="${g.items.map(x=>`<button type=\"button\" class=\"ka-settings-accordion__item\" data-settings-open=\"${esc(x[0])}\"><span><strong>${esc(x[1])}</strong><small>${esc(x[2])}</small></span><span aria-hidden=\"true\">›</span></button>`).join('')}"
           map_new="${g.items.map(x=>x[0]==='app-update'?`<button type=\"button\" class=\"ka-settings-accordion__item\" data-app-update-settings><span><strong>${esc(x[1])}</strong><small data-app-update-status>${esc(window.KorukAppUpdateManager?.statusText?.()||x[2])}</small></span><span aria-hidden=\"true\">›</span></button>`:`<button type=\"button\" class=\"ka-settings-accordion__item\" data-settings-open=\"${esc(x[0])}\"><span><strong>${esc(x[1])}</strong><small>${esc(x[2])}</small></span><span aria-hidden=\"true\">›</span></button>`).join('')}"
           if map_old not in settings: raise SystemExit('settings item map pattern not found')
           settings=settings.replace(map_old,map_new)
 
-          school_marker='function school(){'
-          idx=settings.index(school_marker)
+          idx=settings.index('function school(){')
           helper="""function schoolFieldFocused(){const a=document.activeElement;return active==='school'&&!!a?.closest?.('[data-school-settings]')&&!!a.matches?.('input,select,textarea')}
           function captureSchoolDraft(out=document.getElementById('settingsContent')){const root=out?.querySelector?.('[data-school-settings]');if(!root)return schoolFormDraft;schoolFormDraft={okulAdi:root.querySelector('#schoolName')?.value||'',mudurId:root.querySelector('#schoolPrincipal')?.value||'',il:root.querySelector('#schoolCity')?.value||'',ilce:root.querySelector('#schoolDistrict')?.value||'',mebMudurlugu:root.querySelector('#schoolMeb')?.value||'',adres:root.querySelector('#schoolAddress')?.value||'',ilkokulAdi:root.querySelector('#schoolPrimaryName')?.value||'',ilkokulKurumKodu:root.querySelector('#schoolPrimaryCode')?.value||'',ortaokulAdi:root.querySelector('#schoolMiddleName')?.value||'',ortaokulKurumKodu:root.querySelector('#schoolMiddleCode')?.value||''};schoolFormDirty=true;return schoolFormDraft}
           """
@@ -86,27 +83,22 @@ jobs:
           if old_head not in school_block: raise SystemExit('school head pattern not found')
           school_block=school_block.replace(old_head,new_head,1)
           settings=settings[:school_start]+school_block+settings[school_end:]
-
           bind_start=settings.index('function bindSchool(out){')
           bind_end=settings.index('\nfunction userTeacher',bind_start)
           bind_new="""function bindSchool(out){const root=out.querySelector('[data-school-settings]');const capture=()=>captureSchoolDraft(out);root?.querySelectorAll('input,select,textarea').forEach(el=>{el.addEventListener('focusin',capture);el.addEventListener('input',capture);el.addEventListener('change',capture)});root?.addEventListener('focusout',()=>requestAnimationFrame(()=>{if(schoolRenderPending&&!schoolFieldFocused()){schoolRenderPending=false;render()}}));out.querySelector('[data-school-save]')?.addEventListener('click',async()=>{const veri={okulAdi:document.getElementById('schoolName')?.value||'',mudurId:document.getElementById('schoolPrincipal')?.value||'',il:document.getElementById('schoolCity')?.value||'',ilce:document.getElementById('schoolDistrict')?.value||'',mebMudurlugu:document.getElementById('schoolMeb')?.value||'',adres:document.getElementById('schoolAddress')?.value||'',ilkokulAdi:document.getElementById('schoolPrimaryName')?.value||'',ilkokulKurumKodu:document.getElementById('schoolPrimaryCode')?.value||'',ortaokulAdi:document.getElementById('schoolMiddleName')?.value||'',ortaokulKurumKodu:document.getElementById('schoolMiddleCode')?.value||''};try{await window.OkulBilgileriService.kaydet(veri);schoolFormDirty=false;schoolFormDraft=null;schoolRenderPending=false;toast?.('Okul bilgileri cihazda kaydedildi.');render()}catch(e){captureSchoolDraft(out);toast?.(e?.message==='yetkisiz'?'Bu işlem için yetkiniz yok.':'Okul bilgileri kaydedilemedi: '+(e?.message||e))}})}"""
           settings=settings[:bind_start]+bind_new+settings[bind_end:]
-
           render_old='function render(){if(!mounted)return;'
           render_new="function render(){if(!mounted)return;if(active==='school'&&schoolFormDirty&&schoolFieldFocused()){schoolRenderPending=true;return}schoolRenderPending=false;"
           if render_old not in settings: raise SystemExit('render pattern not found')
           settings=settings.replace(render_old,render_new,1)
-
           open_old="active=page;const h=document.querySelector('[data-settings-title]')"
           open_new="if(active==='school'&&page!=='school'){schoolFormDirty=false;schoolFormDraft=null;schoolRenderPending=false}active=page;const h=document.querySelector('[data-settings-title]')"
           if open_old not in settings: raise SystemExit('openPage pattern not found')
           settings=settings.replace(open_old,open_new,1)
-
           render_bind_old="out.querySelectorAll('[data-settings-open]').forEach(b=>b.onclick=()=>openPage(b.dataset.settingsOpen,b.querySelector('strong')?.textContent.trim()||b.textContent.trim()));if(active==='home')bindSettingsAccordion(out);"
           render_bind_new="out.querySelectorAll('[data-settings-open]').forEach(b=>b.onclick=()=>openPage(b.dataset.settingsOpen,b.querySelector('strong')?.textContent.trim()||b.textContent.trim()));out.querySelector('[data-app-update-settings]')?.addEventListener('click',()=>window.KorukAppUpdateManager?.check?.({manual:true,prompt:true}));window.KorukAppUpdateManager?.syncSettingsAction?.();if(active==='home')bindSettingsAccordion(out);"
           if render_bind_old not in settings: raise SystemExit('render binding pattern not found')
           settings=settings.replace(render_bind_old,render_bind_new,1)
-
           unmount_old="function unmount(){mounted=false;adminInfoData=null;adminInfoDraft=null;adminInfoLoading=false;holidayDraft=null;"
           unmount_new="function unmount(){mounted=false;adminInfoData=null;adminInfoDraft=null;adminInfoLoading=false;schoolFormDirty=false;schoolFormDraft=null;schoolRenderPending=false;holidayDraft=null;"
           if unmount_old not in settings: raise SystemExit('unmount pattern not found')
@@ -129,8 +121,17 @@ jobs:
           sw=sw.replace("'./js/modules/settings.js?v=880'","'./js/modules/settings.js?v=912'")
           sw_path.write_text(sw)
 
-          Path('tests/settings-android-stability.test.js').write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst settings=fs.readFileSync('js/modules/settings.js','utf8');\nconst runtime=fs.readFileSync('js/core/platform/mobile-runtime-fixes.js','utf8');\nconst css=fs.readFileSync('css/design-system.css','utf8');\nconst sw=fs.readFileSync('service-worker.js','utf8');\nnew Function(settings);new Function(runtime);\nassert(settings.includes(\"['app-update','Güncellemeleri Kontrol Et'\"),'Güncelleme kontrolü canonical Settings menüsünde değil.');\nassert(settings.includes('data-app-update-settings'),'Canonical güncelleme butonu eksik.');\nassert(!runtime.includes('new MutationObserver(injectSettingsAction)'),'Güncelleme satırı MutationObserver ile enjekte edilmemeli.');\nassert(runtime.includes('status.textContent!==next'),'Sürüm durum metni aynı değerle DOM mutasyonu üretmemeli.');\nassert(settings.includes('schoolFormDirty')&&settings.includes('captureSchoolDraft'),'Okul bilgileri taslak koruması eksik.');\nassert(settings.includes(\"active==='school'&&schoolFormDirty&&schoolFieldFocused()\"),'Odaktaki okul formu arka plan renderından korunmuyor.');\nassert(settings.includes('data-admin-note-add>+ Not Ekle'),'İdari Notlar ekleme butonu eksik.');\nassert(css.includes('.ka-admin-savebar{position:static'),'İdari kaydet çubuğu Not Ekle butonunu örtebilir.');\nassert(sw.includes(\"oy-cache-v912\"),'Service worker cache sürümü güncellenmedi.');\nconsole.log('Android Ayarlar donma, okul adresi taslak ve idari not görünürlük sözleşmesi başarılı.');\n""")
+          app_test_path=Path('tests/app-update-flow.test.js')
+          app_test=app_test_path.read_text()
+          app_test=app_test.replace("const runtime=fs.readFileSync('js/core/platform/mobile-runtime-fixes.js','utf8');\n","const runtime=fs.readFileSync('js/core/platform/mobile-runtime-fixes.js','utf8');\nconst settings=fs.readFileSync('js/modules/settings.js','utf8');\n")
+          app_test=app_test.replace("  'Güncellemeleri Kontrol Et',\n",'')
+          needle="])assert(runtime.includes(text),`Uygulama güncelleme akışı eksik: ${text}`);\n"
+          repl=needle+"assert(settings.includes('Güncellemeleri Kontrol Et')&&settings.includes('data-app-update-settings'),'Güncelleme kontrolü canonical Settings ekranında değil.');\n"
+          if needle not in app_test: raise SystemExit('app update test assertion pattern not found')
+          app_test=app_test.replace(needle,repl,1)
+          app_test_path.write_text(app_test)
 
+          Path('tests/settings-android-stability.test.js').write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst settings=fs.readFileSync('js/modules/settings.js','utf8');\nconst runtime=fs.readFileSync('js/core/platform/mobile-runtime-fixes.js','utf8');\nconst css=fs.readFileSync('css/design-system.css','utf8');\nconst sw=fs.readFileSync('service-worker.js','utf8');\nnew Function(settings);new Function(runtime);\nassert(settings.includes(\"['app-update','Güncellemeleri Kontrol Et'\"),'Güncelleme kontrolü canonical Settings menüsünde değil.');\nassert(settings.includes('data-app-update-settings'),'Canonical güncelleme butonu eksik.');\nassert(!runtime.includes('new MutationObserver(injectSettingsAction)'),'Güncelleme satırı MutationObserver ile enjekte edilmemeli.');\nassert(runtime.includes('status.textContent!==next'),'Sürüm durum metni aynı değerle DOM mutasyonu üretmemeli.');\nassert(settings.includes('schoolFormDirty')&&settings.includes('captureSchoolDraft'),'Okul bilgileri taslak koruması eksik.');\nassert(settings.includes(\"active==='school'&&schoolFormDirty&&schoolFieldFocused()\"),'Odaktaki okul formu arka plan renderından korunmuyor.');\nassert(settings.includes('data-admin-note-add>+ Not Ekle'),'İdari Notlar ekleme butonu eksik.');\nassert(css.includes('.ka-admin-savebar{position:static'),'İdari kaydet çubuğu Not Ekle butonunu örtebilir.');\nassert(sw.includes(\"oy-cache-v912\"),'Service worker cache sürümü güncellenmedi.');\nconsole.log('Android Ayarlar donma, okul adresi taslak ve idari not görünürlük sözleşmesi başarılı.');\n""")
           Path('.github/workflows/temp-settings-mobile-fix.yml').unlink(missing_ok=True)
           PY
       - name: Verify changed JavaScript and regressions
