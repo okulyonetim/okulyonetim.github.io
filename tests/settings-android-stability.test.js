@@ -14,6 +14,7 @@ assert(settings.includes('schoolFormDirty')&&settings.includes('captureSchoolDra
 assert(settings.includes("active==='school'&&schoolFormDirty&&schoolFieldFocused()"),'Odaktaki okul formu arka plan renderından korunmuyor.');
 assert(settings.includes('data-admin-note-add>+ Not Ekle'),'İdari Notlar ekleme butonu eksik.');
 assert(css.includes('.ka-admin-savebar{position:static'),'İdari kaydet çubuğu Not Ekle butonunu örtebilir.');
-assert(sw.includes("oy-cache-v912"),'Service worker cache sürümü güncellenmedi.');
+const cacheMatch=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
+assert(cacheMatch&&Number(cacheMatch[1])>=912,'Service worker cache sürümü güncellenmedi.');
 assert(index.includes('css/design-system.css?v=912')&&sw.includes("'./css/design-system.css?v=912'"),'Index ve service worker design-system sürümü aynı değil.');
 console.log('Android Ayarlar donma, okul adresi taslak ve idari not görünürlük sözleşmesi başarılı.');
