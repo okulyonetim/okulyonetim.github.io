@@ -20,6 +20,31 @@ function rows(root){return qa('[data-quality-holiday-range-row]',root)}
 function holidayField(el){return !!el?.matches?.('[data-quality-holiday-name],[data-quality-holiday-start],[data-quality-holiday-end],[data-quality-holiday-note]')&&!!el.closest?.('[data-quality-holiday-card]')}
 function holidayEditorFocused(){const a=document.activeElement;return !!a&&holidayField(a)}
 
+/* SettingsModule mount sırasında önce kabuğu oluşturup localHydrate tamamlanana
+   kadar içerik renderını bekliyordu. Android WebView'de hydrate gecikirse kullanıcı
+   yalnızca "Ayarlar" başlığını görüyordu. Mount'u bir kez sarıp kabuk oluşur oluşmaz
+   mevcut AppStore verisiyle render ediyor, hydrate tamamlanınca tekrar güncelliyoruz. */
+function renderSettingsSafely(){
+  try{global.SettingsModule?.render?.()}catch(error){console.warn('[Settings/first-render]',error?.message||error)}
+}
+function patchSettingsMount(){
+  const mod=global.SettingsModule;
+  if(!mod?.mount)return false;
+  if(mod.mount.__korukImmediateRender){if(document.querySelector('[data-settings-module]'))renderSettingsSafely();return true}
+  const original=mod.mount.bind(mod);
+  const wrapped=function(root){
+    let pending;
+    try{pending=original(root)}catch(error){console.warn('[Settings/mount]',error?.message||error);renderSettingsSafely();return Promise.resolve(false)}
+    renderSettingsSafely();
+    return Promise.resolve(pending).then(value=>{renderSettingsSafely();return value},error=>{console.warn('[Settings/hydrate]',error?.message||error);renderSettingsSafely();return true});
+  };
+  wrapped.__korukImmediateRender=true;
+  wrapped.__korukOriginal=original;
+  mod.mount=wrapped;
+  if(document.querySelector('[data-settings-module]'))renderSettingsSafely();
+  return true;
+}
+
 /* SettingsModule, ui.syncing/pendingWrites/lastSyncAt gibi arka plan durumları
    değiştiğinde tüm ayar sayfasını yeniden çiziyor. Android tarih seçici açıkken
    bu yeniden çizim input elementini DOM'dan koparıp seçimi eski değere çeviriyor.
@@ -92,7 +117,9 @@ function clicked(e){
 }
 
 function start(){
+  patchSettingsMount();
   guardSettingsRerenders();
+  global.addEventListener('koruk:module-ready',event=>{if(event.detail?.name==='settings'){patchSettingsMount();setTimeout(renderSettingsSafely,0)}});
   document.addEventListener('input',fieldChanged,true);
   document.addEventListener('change',fieldChanged,true);
   document.addEventListener('focusin',e=>{if(holidayField(e.target))snapshot(e.target.closest('[data-quality-holiday-card]'))},true);
@@ -103,12 +130,12 @@ function start(){
     if(saving){draft=null;saving=false;return}
     queueRestore();
   });
-  global.addEventListener('koruk:app-ready',()=>{guardSettingsRerenders();queueRestore()});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){guardSettingsRerenders();queueRestore()}});
+  global.addEventListener('koruk:app-ready',()=>{patchSettingsMount();guardSettingsRerenders();queueRestore()});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){patchSettingsMount();guardSettingsRerenders();queueRestore()}});
   setInterval(restore,800);
 }
 
-global.KorukNativeRuntimeFixes={snapshotHolidayDraft:snapshot,restoreHolidayDraft:restore,guardSettingsRerenders};
+global.KorukNativeRuntimeFixes={snapshotHolidayDraft:snapshot,restoreHolidayDraft:restore,guardSettingsRerenders,patchSettingsMount,renderSettingsSafely};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(window);
 
@@ -123,7 +150,7 @@ if(global.KorukAppUpdateManager)return;
 
 const RELEASE_API='https://api.github.com/repos/okulyonetim/okulyonetim.github.io/releases/latest';
 const RELEASE_LIST_API='https://api.github.com/repos/okulyonetim/okulyonetim.github.io/releases?per_page=10';
-let checkPromise=null,startupChecked=false,currentCache=null;
+let checkPromise=null,startupChecked=false,currentCache=null,startupTimer=null;
 let updateState={phase:'idle',current:null,latest:null,error:null};
 const native=()=>{try{return !!global.Capacitor?.isNativePlatform?.()}catch(_){return false}};
 const toast=message=>global.toast?.(message)||console.log('[AppUpdate]',message);
@@ -282,14 +309,28 @@ async function check({manual=false,prompt=true}={}){
   return presentResult(result,{manual,prompt});
 }
 function injectSettingsAction(){syncSettingsAction()}
+function scheduleStartupCheck(delay){
+  if(startupTimer)return;
+  startupTimer=setTimeout(async()=>{
+    startupTimer=null;
+    const result=await check({manual:false,prompt:true});
+    if(result?.error)startupChecked=false;
+  },delay);
+}
+function retryStartupCheck(delay=350){
+  if(startupChecked||checkPromise||updateState.phase!=='error')return;
+  startupChecked=true;
+  scheduleStartupCheck(delay);
+}
 function start(){
   syncSettingsAction();
   currentBuild().catch(err=>console.warn('[AppUpdate/current]',err?.message||err));
-  if(!startupChecked){startupChecked=true;setTimeout(()=>check({manual:false,prompt:true}),1800)}
-  global.addEventListener('koruk:app-ready',()=>{syncSettingsAction();if(!startupChecked){startupChecked=true;setTimeout(()=>check({manual:false,prompt:true}),1200)}});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncSettingsAction()});
+  if(!startupChecked){startupChecked=true;scheduleStartupCheck(1800)}
+  global.addEventListener('koruk:app-ready',()=>{syncSettingsAction();if(!startupChecked){startupChecked=true;scheduleStartupCheck(1200)}});
+  global.addEventListener('online',()=>retryStartupCheck(250));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){syncSettingsAction();retryStartupCheck()}});
 }
 
-global.KorukAppUpdateManager={check,currentBuild,latestRelease,versionInfo,showUpdateModal,showUpToDateModal,injectSettingsAction,syncSettingsAction,statusText:settingsStatusText};
+global.KorukAppUpdateManager={check,currentBuild,latestRelease,versionInfo,showUpdateModal,showUpToDateModal,injectSettingsAction,syncSettingsAction,statusText:settingsStatusText,retryStartupCheck};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(window);
