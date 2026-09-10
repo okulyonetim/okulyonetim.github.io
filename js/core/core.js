@@ -86,7 +86,7 @@ if(!window.EventBus){
 
 /* ========================= LOCAL DB ========================= */
 const DB='koruk-local-first-v1',VER=1,STORE='kv';
-let dbp=null,flushing=false,flushTimer=null;
+let dbp=null,flushing=false,flushTimer=null,flushPromise=null,queueMutationChain=Promise.resolve();
 function open(){
   if(dbp)return dbp;
   dbp=new Promise((resolve,reject)=>{
@@ -106,7 +106,8 @@ async function del(k){const d=await open();return new Promise((res,rej)=>{const 
 async function entriesByPrefix(prefix){const d=await open();return new Promise((res,rej)=>{const out=[],r=d.transaction(STORE,'readonly').objectStore(STORE).openCursor();r.onsuccess=()=>{const c=r.result;if(!c)return res(out);if(String(c.key).startsWith(prefix))out.push([String(c.key),c.value]);c.continue()};r.onerror=()=>rej(r.error)})}
 const key=(u,s)=>`u:${u||'anon'}:${s}`;
 function uid(){try{return window.AKTIF_KULLANICI?.uid||AppStore.get('session.user')?.uid||''}catch(_){return''}}
-async function queue(u,op){const k=key(u,'queue'),q=await get(k,[]),qid=op.qid||`${Date.now()}-${Math.random().toString(36).slice(2)}`,next={...op,qid,createdAt:op.createdAt||Date.now(),tries:op.tries||0},i=q.findIndex(x=>x.qid===qid);if(i>=0)q[i]=next;else q.push(next);await set(k,q);scheduleFlush();return next}
+function mutateQueue(u,mutator){const k=key(u,'queue'),run=queueMutationChain.then(async()=>{const current=await get(k,[]),working=Array.isArray(current)?current.slice():[],changed=await mutator(working),next=Array.isArray(changed)?changed:working;await set(k,next);return next});queueMutationChain=run.catch(()=>{});return run}
+async function queue(u,op){const qid=op.qid||`${Date.now()}-${Math.random().toString(36).slice(2)}`,next={...op,qid,createdAt:op.createdAt||Date.now(),tries:op.tries||0};await mutateQueue(u,q=>{const i=q.findIndex(x=>x.qid===qid);if(i>=0)q[i]=next;else q.push(next);return q});scheduleFlush();return next}
 async function pending(u=uid()){return u?get(key(u,'queue'),[]):[]}
 async function tombstone(u,type,id,on=true){const k=key(u,`tomb:${type}`),x=await get(k,{});if(on)x[id]=Date.now();else delete x[id];await set(k,x);return x}
 const tombstones=(u,type)=>get(key(u,`tomb:${type}`),{});
@@ -122,21 +123,30 @@ async function userSnapshot(u=uid()){
   return out;
 }
 async function runWrite(op){if(!window.db)throw new Error('db-yok');const ref=op.id?db.collection(op.collection).doc(op.id):null;if(op.kind==='delete-doc')return ref.delete();if(op.kind==='set-doc')return ref.set(op.data,{merge:!!op.merge});if(op.kind==='update-doc')return ref.set(op.data,{merge:true});if(op.kind==='delete-query'){const s=await db.collection(op.collection).where(op.field,'==',op.value).get();if(s.empty)return;const b=db.batch();s.docs.forEach(d=>b.delete(d.ref));return b.commit()}throw new Error('op-bilinmiyor')}
-async function flushWrites(){if(flushing||!navigator.onLine)return;const u=uid();if(!u)return;flushing=true;const k=key(u,'queue');try{const q=await get(k,[]),left=[];for(const op of q){try{await runWrite(op);if(op.tombType&&op.tombId)await tombstone(u,op.tombType,op.tombId,false)}catch(e){op.tries=(op.tries||0)+1;op.lastError=String(e?.message||e);op.lastTryAt=Date.now();left.push(op)}}await set(k,left);AppStore.set('ui.pendingWrites',left.length);window.dispatchEvent(new CustomEvent('koruk:sync-state',{detail:{pending:left.length}}));return left.length}finally{flushing=false}}
+function flushWrites(){if(!navigator.onLine)return Promise.resolve();if(flushPromise)return flushPromise;const u=uid();if(!u)return Promise.resolve();flushing=true;flushPromise=(async()=>{const q=await get(key(u,'queue'),[]),failed=new Map(),snapshotIds=new Set((Array.isArray(q)?q:[]).map(op=>op.qid));for(const original of Array.isArray(q)?q:[]){const op={...original};try{await runWrite(op);if(op.tombType&&op.tombId)await tombstone(u,op.tombType,op.tombId,false)}catch(e){op.tries=(op.tries||0)+1;op.lastError=String(e?.message||e);op.lastTryAt=Date.now();failed.set(op.qid,op)}}const finalQueue=await mutateQueue(u,current=>{const next=[];for(const op of current){if(!snapshotIds.has(op.qid)){next.push(op);continue}const retry=failed.get(op.qid);if(retry)next.push(retry)}return next});AppStore.set('ui.pendingWrites',finalQueue.length);window.dispatchEvent(new CustomEvent('koruk:sync-state',{detail:{pending:finalQueue.length}}));return finalQueue.length})().finally(()=>{flushing=false;flushPromise=null});return flushPromise}
 function scheduleFlush(){clearTimeout(flushTimer);flushTimer=setTimeout(flushWrites,350)}
 window.KorukLocalFirst={open,get,getMany,set,setMany,del,queue,pending,tombstone,tombstones,cache,cached,cacheMany,hydrate:hydrateLocal,meta,userSnapshot,markBootstrap:(u,d={})=>meta(u,'bootstrap',{ready:true,completedAt:Date.now(),...d}),bootstrapState:u=>meta(u,'bootstrap'),isBootstrapReady:async u=>!!(await meta(u,'bootstrap'))?.ready,flush:flushWrites,schedule:scheduleFlush,uid};
 
 /* ========================= DEVICE DATA =========================
    Tüm modül repository'lerinin ortak local-first yazma/okuma kapısıdır.
-   Önce AppStore + IndexedDB güncellenir; Firestore işlemi yalnız queue'ya eklenir. */
+   Önce AppStore + IndexedDB güncellenir; Firestore işlemi yalnız queue'ya eklenir.
+   Yerel değişiklik revizyonları, aynı anda çalışan uzak okumanın yeni kaydı eski
+   Firestore görüntüsüyle ezmesini engeller. */
+const dataRevisions=new Map(),activeDeviceWrites=new Map();
+function dataRevision(type){return Number(dataRevisions.get(type)||0)}
+function markDataRevision(type){const next=dataRevision(type)+1;dataRevisions.set(type,next);return next}
+function revisionSnapshot(types){return Object.fromEntries((types||[]).map(type=>[type,dataRevision(type)]))}
+function beginDeviceWrite(type){activeDeviceWrites.set(type,Number(activeDeviceWrites.get(type)||0)+1)}
+function endDeviceWrite(type){const next=Math.max(0,Number(activeDeviceWrites.get(type)||0)-1);if(next)activeDeviceWrites.set(type,next);else activeDeviceWrites.delete(type)}
+function deviceWriteActive(type){return Number(activeDeviceWrites.get(type)||0)>0}
 function deviceList(type){const v=AppStore.data(type);return Array.isArray(v)?v:[]}
 function deviceId(){try{return crypto.randomUUID()}catch(_){return `local-${Date.now()}-${Math.random().toString(36).slice(2)}`}}
-async function devicePersist(type,rows){const next=Array.isArray(rows)?rows:[];AppStore.setData(type,next);const u=uid();if(u)await cache(u,type,next);return next}
+async function devicePersist(type,rows){const next=Array.isArray(rows)?rows:[];markDataRevision(type);AppStore.setData(type,next);const u=uid();if(u)await cache(u,type,next);return next}
 function deviceListen(type,callback){const run=v=>{try{callback(Array.isArray(v)?v:[],{source:'device'})}catch(e){console.error('[DeviceData]',type,e)}};run(deviceList(type));return AppStore.subscribe('data.'+type,run)}
-async function deviceAdd(type,collection,data,{id=null}={}){const docId=id||deviceId(),row={id:docId,...data};await devicePersist(type,[...deviceList(type).filter(x=>x?.id!==docId),row]);await queue(uid(),{kind:'set-doc',collection,id:docId,data});AppStore.set('ui.pendingWrites',(await pending()).length);return{id:docId,...row}}
-async function deviceUpdate(type,collection,id,data){if(!id)throw new Error('id-gerekli');const rows=deviceList(type),i=rows.findIndex(x=>x?.id===id),row=i>=0?{...rows[i],...data}:{id,...data},next=i>=0?rows.map((x,n)=>n===i?row:x):[...rows,row];await devicePersist(type,next);await queue(uid(),{kind:'update-doc',collection,id,data});AppStore.set('ui.pendingWrites',(await pending()).length);return row}
-async function deviceSet(type,collection,id,data,{merge=false}={}){if(!id)throw new Error('id-gerekli');const rows=deviceList(type),i=rows.findIndex(x=>x?.id===id),row=merge&&i>=0?{...rows[i],...data}:{id,...data},next=i>=0?rows.map((x,n)=>n===i?row:x):[...rows,row];await devicePersist(type,next);await queue(uid(),{kind:'set-doc',collection,id,data,merge});AppStore.set('ui.pendingWrites',(await pending()).length);return row}
-async function deviceRemove(type,collection,id){if(!id)throw new Error('id-gerekli');await devicePersist(type,deviceList(type).filter(x=>x?.id!==id));const u=uid();if(u)await tombstone(u,type,id,true);await queue(u,{kind:'delete-doc',collection,id,tombType:type,tombId:id});AppStore.set('ui.pendingWrites',(await pending()).length);return true}
+async function deviceAdd(type,collection,data,{id=null}={}){beginDeviceWrite(type);try{const docId=id||deviceId(),row={id:docId,...data};await devicePersist(type,[...deviceList(type).filter(x=>x?.id!==docId),row]);await queue(uid(),{kind:'set-doc',collection,id:docId,data,dataType:type});AppStore.set('ui.pendingWrites',(await pending()).length);return{id:docId,...row}}finally{endDeviceWrite(type)}}
+async function deviceUpdate(type,collection,id,data){if(!id)throw new Error('id-gerekli');beginDeviceWrite(type);try{const rows=deviceList(type),i=rows.findIndex(x=>x?.id===id),row=i>=0?{...rows[i],...data}:{id,...data},next=i>=0?rows.map((x,n)=>n===i?row:x):[...rows,row];await devicePersist(type,next);await queue(uid(),{kind:'update-doc',collection,id,data,dataType:type});AppStore.set('ui.pendingWrites',(await pending()).length);return row}finally{endDeviceWrite(type)}}
+async function deviceSet(type,collection,id,data,{merge=false}={}){if(!id)throw new Error('id-gerekli');beginDeviceWrite(type);try{const rows=deviceList(type),i=rows.findIndex(x=>x?.id===id),row=merge&&i>=0?{...rows[i],...data}:{id,...data},next=i>=0?rows.map((x,n)=>n===i?row:x):[...rows,row];await devicePersist(type,next);await queue(uid(),{kind:'set-doc',collection,id,data,merge,dataType:type});AppStore.set('ui.pendingWrites',(await pending()).length);return row}finally{endDeviceWrite(type)}}
+async function deviceRemove(type,collection,id){if(!id)throw new Error('id-gerekli');beginDeviceWrite(type);try{await devicePersist(type,deviceList(type).filter(x=>x?.id!==id));const u=uid();if(u)await tombstone(u,type,id,true);await queue(u,{kind:'delete-doc',collection,id,tombType:type,tombId:id,dataType:type});AppStore.set('ui.pendingWrites',(await pending()).length);return true}finally{endDeviceWrite(type)}}
 function deviceGet(type,id){return deviceList(type).find(x=>x?.id===id)||null}
 window.DeviceData={list:deviceList,get:deviceGet,listen:deviceListen,persist:devicePersist,add:deviceAdd,update:deviceUpdate,set:deviceSet,remove:deviceRemove,newId:deviceId};
 
@@ -150,10 +160,12 @@ window.DutyBookService={teacherId:dutyBookTeacherId,canToggle:dutyBookCanToggle,
 let syncing=false,syncTimer=null;const registered=new Map();
 function syncReady(){return !!(window.db&&uid())}
 function register(type,collection,opts={}){if(type&&collection)registered.set(type,{type,collection,...opts})}
-async function localHydrate(types){const u=uid();if(!u)return{};const names=types?.length?types:Array.from(registered.keys()),data=await hydrateLocal(u,names,{});AppStore.hydrate(data);return data}
+function syncNames(types){return types?.length?[...types]:Array.from(registered.keys())}
+async function pendingDataTypes(u){const ops=await pending(u),blocked=new Set();for(const op of Array.isArray(ops)?ops:[]){if(op?.dataType){blocked.add(op.dataType);continue}for(const[name,def]of registered)if(def.collection===op?.collection)blocked.add(name)}return blocked}
+async function localHydrate(types){const u=uid();if(!u)return{};const names=syncNames(types),started=revisionSnapshot(names),data=await hydrateLocal(u,names,{}),safe={};for(const name of names)if(dataRevision(name)===started[name]&&!deviceWriteActive(name)&&Object.prototype.hasOwnProperty.call(data,name))safe[name]=data[name];AppStore.hydrate(safe);return safe}
 async function fetchCollection(def){let q=db.collection(def.collection);if(typeof def.query==='function')q=def.query(q)||q;const snap=await q.get();return snap.docs.map(doc=>({id:doc.id,...doc.data()}))}
-async function pull(types){if(!syncReady()||!navigator.onLine)return{updated:0,skipped:true};const names=types?.length?types:Array.from(registered.keys());if(!names.length)return{updated:0};syncing=true;AppStore.set('ui.syncing',true);let updated=0;try{const u=uid(),data={};for(const name of names){const def=registered.get(name);if(!def)continue;try{const rows=await fetchCollection(def);data[name]=rows;updated++}catch(e){console.warn('[SyncEngine]',name,e?.message||e)}}if(updated){await cacheMany(u,data,{markWrite:false});AppStore.setDataMany(data)}const now=Date.now();await meta(u,'lastSyncAt',now);AppStore.set('ui.lastSyncAt',now);return{updated}}finally{syncing=false;AppStore.set('ui.syncing',false)}}
-async function sync(types){if(syncing)return;await flushWrites();return pull(types)}
+async function pull(types,baseline=null){if(!syncReady()||!navigator.onLine)return{updated:0,skipped:true};const names=syncNames(types);if(!names.length)return{updated:0};const started=baseline||revisionSnapshot(names);syncing=true;AppStore.set('ui.syncing',true);let updated=0,skippedLocal=0;try{const u=uid(),fetched={};for(const name of names){const def=registered.get(name);if(!def)continue;try{fetched[name]=await fetchCollection(def)}catch(e){console.warn('[SyncEngine]',name,e?.message||e)}}const blocked=await pendingDataTypes(u),data={};for(const[name,rows]of Object.entries(fetched)){if(dataRevision(name)!==started[name]||deviceWriteActive(name)||blocked.has(name)){skippedLocal++;continue}data[name]=rows;updated++}if(updated){await cacheMany(u,data,{markWrite:false});AppStore.setDataMany(data)}const now=Date.now();await meta(u,'lastSyncAt',now);AppStore.set('ui.lastSyncAt',now);return{updated,skippedLocal}}finally{syncing=false;AppStore.set('ui.syncing',false)}}
+async function sync(types){if(syncing)return;const names=syncNames(types),baseline=revisionSnapshot(names);await flushWrites();return pull(names,baseline)}
 function scheduleSync(ms=1200){clearTimeout(syncTimer);syncTimer=setTimeout(()=>sync(),ms)}
 window.SyncEngine={register,unregister:t=>registered.delete(t),localHydrate,pull,flush:flushWrites,sync,schedule:scheduleSync,definitions:()=>Array.from(registered.values()).map(x=>({...x})),get syncing(){return syncing}};
 
