@@ -115,7 +115,7 @@ public class MainActivity extends BridgeActivity {
         WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView == null) return;
         webView.evaluateJavascript(
-            "(function(){try{if(document.getElementById('koruk-native-runtime-fixes'))return 'loaded';var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=909';document.head.appendChild(s);return 'loading';}catch(e){return 'error';}})()",
+            "(function(){try{if(document.getElementById('koruk-native-runtime-fixes'))return 'loaded';var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=914';document.head.appendChild(s);return 'loading';}catch(e){return 'error';}})()",
             null
         );
     }
