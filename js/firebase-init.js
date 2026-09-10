@@ -112,3 +112,13 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
+/* Nöbet raporu, sabit eski sütunlar yerine güncel nöbet yerleriyle üretilir. */
+(function dutyReportLivePlacesFeatureLoad(){
+  if(document.querySelector('script[data-duty-report-live-places]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/duty-report-live-places.js?v=913';
+  script.async=false;
+  script.dataset.dutyReportLivePlaces='';
+  document.head.appendChild(script);
+})();
+
