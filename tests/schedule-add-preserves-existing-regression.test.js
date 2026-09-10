@@ -5,7 +5,8 @@ const source=fs.readFileSync('js/core/schedule-data-integrity.js','utf8');
 const firebaseInit=fs.readFileSync('js/firebase-init.js','utf8');
 new Function(source);
 
-assert(firebaseInit.includes("js/core/schedule-data-integrity.js?v=916"),'Ders programı veri bütünlüğü koruması yüklenmiyor.');
+const runtimeVersion=firebaseInit.match(/js\/core\/schedule-data-integrity\.js\?v=(\d+)/);
+assert(runtimeVersion&&Number(runtimeVersion[1])>=916,'Ders programı veri bütünlüğü koruması yüklenmiyor.');
 assert(source.includes("const TYPE='dersProgrami'"),'Koruma doğru veri tipine bağlı değil.');
 assert(source.includes('repairCache(fixed.rows)'),'Uzak eski snapshot engellendiğinde IndexedDB önbelleği onarılmıyor.');
 
@@ -22,10 +23,14 @@ assert(source.includes('repairCache(fixed.rows)'),'Uzak eski snapshot engellendi
     readyState:'complete',
     visibilityState:'visible',
     addEventListener(){},
+    getElementById(){return null},
+    documentElement:{}
   };
+  global.MutationObserver=class{observe(){} disconnect(){}};
   global.addEventListener=(name,fn)=>listeners.set(name,fn);
   global.AppStore={
     data:type=>data[type],
+    setData(type,value){data[type]=value;return value;},
     setDataMany(next){Object.assign(data,next);return next;}
   };
   let seq=0;
