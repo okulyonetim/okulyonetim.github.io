@@ -122,3 +122,14 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
+/* Ders programında gecikmiş uzak snapshot'ın yeni eklenen/güncellenen yerel
+   dersleri görünümden düşürmesini engelleyen küçük veri bütünlüğü katmanı. */
+(function scheduleDataIntegrityFeatureLoad(){
+  if(document.querySelector('script[data-schedule-data-integrity]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/schedule-data-integrity.js?v=916';
+  script.async=false;
+  script.dataset.scheduleDataIntegrity='';
+  document.head.appendChild(script);
+})();
+
