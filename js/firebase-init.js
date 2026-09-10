@@ -127,9 +127,8 @@ function firebaseyiBaslat(){
 (function scheduleDataIntegrityFeatureLoad(){
   if(document.querySelector('script[data-schedule-data-integrity]'))return;
   const script=document.createElement('script');
-  script.src='js/core/schedule-data-integrity.js?v=916';
+  script.src='js/core/schedule-data-integrity.js?v=917';
   script.async=false;
   script.dataset.scheduleDataIntegrity='';
   document.head.appendChild(script);
 })();
-
