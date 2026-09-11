@@ -1,7 +1,9 @@
 const fs=require('fs');
 const assert=require('assert');
 const src=fs.readFileSync('js/modules/management.js','utf8');
+const holidaySource=fs.readFileSync('js/core/duty-holiday-mode-source.js','utf8');
 
+new Function(holidaySource);
 assert(src.includes('DeviceData/IndexedDB -> AppStore'),'Management local-first veri akışı korunmalı.');
 assert(!src.includes('db.collection('),'Management doğrudan Firestore kullanmamalı.');
 for(const api of ['yeriEkle','yeriGuncelle','yeriSil','tatilEkle','atamaKaydet','amirKaydet','exceliUygula','otomatikDagitimUygula','defterDolduToggle']) assert(src.includes(api),`Nöbet V2 servis API eksik: ${api}`);
@@ -20,4 +22,9 @@ assert(src.includes("for(const tarih of eklenecek)await NobetService.tatilEkle({
 assert(src.includes("device().set('nobetRotasyon',COL.nobetRotasyon"),'Rotasyon kaydı DeviceData üzerinden kalmalı.');
 assert(src.includes("PermissionService?.can?.('management.duty.edit','edit')"),'Nöbet yazma işlemleri merkezi management.duty.edit yetkisine bağlı kalmalı.');
 assert(src.includes('DutyBookService.toggle(atama,deger)'),'Management nöbet defteri ortak çekirdek servisine delege edilmeli.');
+assert(holidaySource.includes('observer?.disconnect?.();'),'Tatil Modu dekorasyonu kendi MutationObserver döngüsünü kesmeli.');
+assert(holidaySource.includes('observeManagementRoot();'),'Tatil Modu gözlemcisi dekorasyon sonrası güvenle yeniden bağlanmalı.');
+assert(holidaySource.includes('dutyHolidayModeSignature'),'Tatil listesi aynı DOM içeriğini tekrar tekrar yazmamalı.');
+assert(holidaySource.includes("typeof global.requestAnimationFrame==='function'"),'Tatil Modu dekorasyonu microtask zinciri yerine frame bazında birleştirilmeli.');
+assert(!holidaySource.includes('queueMicrotask(()=>{decorateDutyPage()})'),'Nöbet ekranını kilitleyebilecek microtask dekorasyon döngüsü geri gelmemeli.');
 console.log('Classic Duty V2 görünüm + local-first + yönetim araçları sözleşmesi başarılı.');
