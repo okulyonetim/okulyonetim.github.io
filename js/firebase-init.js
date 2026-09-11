@@ -132,3 +132,14 @@ function firebaseyiBaslat(){
   script.dataset.scheduleDataIntegrity='';
   document.head.appendChild(script);
 })();
+
+/* Ders programı raporları: toner dostu yeni tasarım, ikili kesilebilir programlar,
+   yatay çarşaflar ve öğretmen imza/onay alanı. */
+(function scheduleReportRedesignFeatureLoad(){
+  if(document.querySelector('script[data-schedule-report-redesign]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/schedule-report-redesign.js?v=918';
+  script.async=false;
+  script.dataset.scheduleReportRedesign='';
+  document.head.appendChild(script);
+})();
