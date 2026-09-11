@@ -16,6 +16,16 @@ assert(core.includes('function setDataMany(data)'),'AppStore toplu veri güncell
 assert(core.includes("await cacheMany(u,data,{markWrite:false});AppStore.setDataMany(data)"),'Remote sync tek cache transactionı ve tek frame render burstü kullanmalı.');
 assert(!core.includes('await cache(uid(),name,rows);AppStore.setData(name,rows)'),'Sync koleksiyon başına cache/render tetiklememeli.');
 assert(core.includes('if(markWrite)rows.push'),'Remote cache yenilemesi local write zaman damgasını bozmamalı.');
+assert(core.includes('const REMOTE_BATCH_SIZE=4'),'Firestore çekimleri kontrollü paralel batch kullanmalı.');
+assert(core.includes('Promise.allSettled(names.map(async name=>'),'Aynı batch içindeki Firestore sorguları paralel çalışmalı.');
+assert(core.includes('for(let i=0;i<names.length;i+=REMOTE_BATCH_SIZE)'),'Tam senkron kontrollü batchler halinde ilerlemeli.');
+assert(!core.includes('for(const name of names){const def=registered.get(name);if(!def)continue;try{fetched[name]=await fetchCollection(def)}'),'Firestore koleksiyonları seri bekletilmemeli.');
+assert(core.includes('dataRevision(name)!==started[name]||deviceWriteActive(name)||blocked.has(name)'),'Remote veri aktif/bekleyen local değişikliğin üstüne yazmamalı.');
+assert(core.includes('accepted.forEach(markDataRevision)'),'Remote uygulama revizyonu işaretlenmeli; eşzamanlı eski local hydrate remote veriyi geri almamalı.');
+assert(core.includes("const CORE_REALTIME_TYPES=['dersProgrami','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular']"),'Kritik küçük veri kümeleri realtime senkrona bağlı olmalı.');
+assert(core.includes('if(snap.metadata?.fromCache)return'),'Firestore kendi eski cache snapshotı local-first veriyi ezmemeli.');
+assert(core.includes('const localPromise=localHydrate(CORE_TYPES),remotePromise=navigator.onLine?Promise.resolve().then(()=>pull(CORE_TYPES))'),'İlk local hydrate ve uzak senkron birbirini bloklamadan paralel başlamalı.');
+assert(core.includes('await localPromise;AppStore.set(\'session.ready\',true)'),'İlk kullanılabilir ekran yalnız local hydrateı beklemeli.');
 assert(cacheVersion(sw)>=872,'Runtime cache v869 olmalı.');
 assert(sw.includes('async function kodCacheFirst(event)')&&!sw.includes('kodNetworkFirst(event)'),'JS/CSS ağ beklemeden cache-first açılmalı.');
 assert(sw.includes('async function navigasyonCacheFirst(event)')&&!sw.includes('navigasyonNetworkFirst(event)'),'Uygulama kabuğu yavaş ağda cache-first açılmalı.');
