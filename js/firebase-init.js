@@ -143,3 +143,14 @@ function firebaseyiBaslat(){
   script.dataset.scheduleReportRedesign='';
   document.head.appendChild(script);
 })();
+
+/* Ana sayfa duyuruları: kaydırılabilir görsel galeri, tam ekran zoom ve
+   göz ikonuna bağlı okuyanlar popover'ı. */
+(function dashboardAnnouncementMediaFeatureLoad(){
+  if(document.querySelector('script[data-dashboard-announcement-media]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/dashboard-announcement-media.js?v=921';
+  script.async=false;
+  script.dataset.dashboardAnnouncementMedia='';
+  document.head.appendChild(script);
+})();
