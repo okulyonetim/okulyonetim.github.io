@@ -55,7 +55,8 @@ for(const token of [
 
 assert(dashboard.includes('data-duyuru-id=')&&dashboard.includes('button type=\"button\" class=\"kh-read-count\"'),'Dashboard mevcut duyuru kartı entegrasyon kancalarını korumalı.');
 assert(init.includes('dashboard-announcement-media.js?v=921'),'Duyuru medya runtime dosyası v921 ile yüklenmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v921'"),'Service Worker cache sürümü v921 olmalı.');
+const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
+assert(cache&&Number(cache[1])>=921,'Service Worker cache sürümü duyuru medya sürümünden geri olmamalı.');
 assert(sw.includes("'./js/core/dashboard-announcement-media.js?v=921'"),'Duyuru medya runtime dosyası offline precache içinde olmalı.');
 assert(sw.includes("'./css/dashboard-announcement-media.css?v=921'"),'Duyuru medya CSS dosyası offline precache içinde olmalı.');
 

@@ -144,6 +144,17 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
+/* Ders programı çıktılarında merkezi rapor motorunun satır zebrasını bastırıp
+   yalnız Pazartesi-Cuma gün sütunları arasında çok açık zebra uygula. */
+(function scheduleReportColumnZebraFeatureLoad(){
+  if(document.querySelector('script[data-schedule-report-column-zebra]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/schedule-report-column-zebra.js?v=922';
+  script.async=false;
+  script.dataset.scheduleReportColumnZebra='';
+  document.head.appendChild(script);
+})();
+
 /* Ana sayfa duyuruları: kaydırılabilir görsel galeri, tam ekran zoom ve
    göz ikonuna bağlı okuyanlar popover'ı. */
 (function dashboardAnnouncementMediaFeatureLoad(){
