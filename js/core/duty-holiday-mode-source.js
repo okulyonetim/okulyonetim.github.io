@@ -7,7 +7,7 @@
 if(global.DutyHolidayModeSource)return;
 
 const SYNTHETIC_FLAG='__dutyHolidayModeSource';
-let managementPatched=false,servicePatched=false,settingsLoadPromise=null,observer=null,decorateQueued=false;
+let managementPatched=false,servicePatched=false,settingsLoadPromise=null,observer=null,observerRoot=null,decorateQueued=false;
 
 const arr=type=>{const value=global.AppStore?.data?.(type);return Array.isArray(value)?value:[]};
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -139,20 +139,27 @@ function decorateGrid(root){
   });
 }
 
+function holidayListSignature(ranges){
+  return (ranges||[]).map(range=>[range.id,range.ad,range.baslangicTarihi,range.bitisTarihi,range.not].join('¦')).join('§');
+}
+
 function decorateHolidayList(root){
   const box=root.querySelector?.('.ka-duty-holidays');
   if(!box)return;
-  box.querySelectorAll('[data-duty-mode-holiday-range]').forEach(node=>node.remove());
-  const ranges=holidayModeRanges();
-  if(ranges.length&&box.querySelector('.ka-empty'))box.querySelector('.ka-empty')?.remove();
-  ranges.forEach(range=>{
-    const row=document.createElement('div');
-    row.className='ka-duty-holiday';
-    row.dataset.dutyModeHolidayRange=range.id;
-    const span=range.baslangicTarihi===range.bitisTarihi?dateLabel(range.baslangicTarihi):`${dateLabel(range.baslangicTarihi)} – ${dateLabel(range.bitisTarihi)}`;
-    row.innerHTML=`<span class="ka-badge">${esc(span)}</span><span class="ka-grow"><strong>🏖️ ${esc(modeLabel(range))}</strong><small class="ka-muted">Tatil Modu${range.not?` · ${esc(range.not)}`:''}</small></span>`;
-    box.appendChild(row);
-  });
+  const ranges=holidayModeRanges(),signature=holidayListSignature(ranges);
+  if(box.dataset.dutyHolidayModeSignature!==signature){
+    box.querySelectorAll('[data-duty-mode-holiday-range]').forEach(node=>node.remove());
+    if(ranges.length&&box.querySelector('.ka-empty'))box.querySelector('.ka-empty')?.remove();
+    ranges.forEach(range=>{
+      const row=document.createElement('div');
+      row.className='ka-duty-holiday';
+      row.dataset.dutyModeHolidayRange=range.id;
+      const span=range.baslangicTarihi===range.bitisTarihi?dateLabel(range.baslangicTarihi):`${dateLabel(range.baslangicTarihi)} – ${dateLabel(range.bitisTarihi)}`;
+      row.innerHTML=`<span class="ka-badge">${esc(span)}</span><span class="ka-grow"><strong>🏖️ ${esc(modeLabel(range))}</strong><small class="ka-muted">Tatil Modu${range.not?` · ${esc(range.not)}`:''}</small></span>`;
+      box.appendChild(row);
+    });
+    box.dataset.dutyHolidayModeSignature=signature;
+  }
   const title=[...root.querySelectorAll('.ka-duty-summary-card h3')].find(node=>String(node.textContent||'').trim()==='Resmi Tatiller');
   if(title)title.textContent='Tatiller';
 }
@@ -163,31 +170,45 @@ function decorateToday(root){
   const card=[...root.querySelectorAll?.('.ka-duty-summary-card')||[]].find(node=>String(node.querySelector('h3')?.textContent||'').includes('Bugünün Nöbetçileri'));
   const body=card?.querySelector('.ka-card__body');
   if(!body)return;
-  body.innerHTML=`<div class="ka-empty">🏖️ Bugün tatil — ${esc(holiday.aciklama||holiday.ad||'Tatil Modu')}<div class="ka-muted">Tatil Modu kaynağından</div></div>`;
+  const html=`<div class="ka-empty">🏖️ Bugün tatil — ${esc(holiday.aciklama||holiday.ad||'Tatil Modu')}<div class="ka-muted">Tatil Modu kaynağından</div></div>`;
+  if(body.innerHTML!==html)body.innerHTML=html;
+}
+
+function observeManagementRoot(){
+  if(observer&&observerRoot?.isConnected)observer.observe(observerRoot,{childList:true,subtree:true});
 }
 
 function decorateDutyPage(){
   decorateQueued=false;
   const root=document.querySelector?.('.ka-duty-page');
   if(!root)return false;
-  decorateGrid(root);
-  decorateHolidayList(root);
-  decorateToday(root);
+  observer?.disconnect?.();
+  try{
+    decorateGrid(root);
+    decorateHolidayList(root);
+    decorateToday(root);
+  }finally{
+    observeManagementRoot();
+  }
   return true;
 }
 
 function queueDecorate(){
   if(decorateQueued)return;
   decorateQueued=true;
-  queueMicrotask(()=>{decorateDutyPage()});
+  const run=()=>decorateDutyPage();
+  if(typeof global.requestAnimationFrame==='function')global.requestAnimationFrame(run);
+  else setTimeout(run,0);
 }
 
 function installObserver(){
-  observer?.disconnect?.();
   const root=document.getElementById?.('managementContent');
   if(!root||typeof MutationObserver==='undefined')return false;
+  if(observer&&observerRoot===root){queueDecorate();return true;}
+  observer?.disconnect?.();
+  observerRoot=root;
   observer=new MutationObserver(()=>queueDecorate());
-  observer.observe(root,{childList:true,subtree:true});
+  observeManagementRoot();
   queueDecorate();
   return true;
 }
