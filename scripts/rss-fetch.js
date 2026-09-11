@@ -8,9 +8,11 @@
         (Kaynak Yönetimi ekranından admin tarafından dinamik eklenir/silinir).
      3) Her kaynağın RSS/Atom beslemesini çeker ve ayrıştırır.
      4) Yalnız son 30 güne ait, daha önce eklenmemiş haberleri oy_haberler'e yazar.
-     5) Yeni haberler için, cihazların kategori tercihine göre (oy_cihazTokenleri
-        .kategoriler alanı) FCM push bildirimi gönderir. Tercih yoksa/boşsa
-        cihaz TÜM kategorilerden bildirim alır (opt-out mantığı).
+     5) Yeni haberler için, cihazların kategori ve bildirim saati tercihine göre
+        (oy_cihazTokenleri.kategoriler, bildirimSaatBaslangic, bildirimSaatBitis)
+        FCM push bildirimi gönderir. Kategori tercihi yoksa/boşsa cihaz TÜM
+        kategorilerden bildirim alır; saat tercihi yoksa geriye dönük uyumluluk
+        için saat kısıtı uygulanmaz.
 
    GitHub Secrets'a eklenmesi gereken:
    FIREBASE_SERVICE_ACCOUNT → Firebase Console > Proje Ayarları >
@@ -32,6 +34,34 @@ function haberTarihiMs(v){
 function sonBirAyIcindeMi(v, simdi = Date.now()){
   const ms = haberTarihiMs(v);
   return Number.isFinite(ms) && ms >= simdi - HABER_SAKLAMA_GUNU * BIR_GUN_MS;
+}
+
+function gecerliSaatMi(v){
+  return /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(String(v || ''));
+}
+
+function turkiyeSaatiHHMM(simdi = new Date()){
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Istanbul',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23'
+  }).format(simdi);
+}
+
+/* Cihazda kaydedilmiş haber bildirim saatini uygular.
+   - Başlangıç/bitiş yoksa eski cihazları susturmamak için izin verilir.
+   - 07:00–23:00 gibi normal aralıklar doğrudan karşılaştırılır.
+   - 22:00–06:00 gibi gece yarısını aşan aralıklar da desteklenir.
+   - Başlangıç ve bitiş aynıysa 24 saat açık kabul edilir. */
+function bildirimSaatiUygunMu(cihaz, saatHHMM = turkiyeSaatiHHMM()){
+  const baslangic = String(cihaz?.bildirimSaatBaslangic || '');
+  const bitis = String(cihaz?.bildirimSaatBitis || '');
+  if(!gecerliSaatMi(baslangic) || !gecerliSaatMi(bitis)) return true;
+  if(!gecerliSaatMi(saatHHMM)) return false;
+  if(baslangic === bitis) return true;
+  if(baslangic < bitis) return saatHHMM >= baslangic && saatHHMM <= bitis;
+  return saatHHMM >= baslangic || saatHHMM <= bitis;
 }
 
 async function eskiHaberleriTemizle(db){
@@ -336,10 +366,19 @@ async function main(){
   await bildirimGonder(db, yeniHaberler);
 }
 
-/* ---------- kategori bazlı FCM bildirimi ---------- */
+/* ---------- kategori + cihaz saatine göre FCM bildirimi ---------- */
 async function bildirimGonder(db, yeniHaberler){
   const cSnap = await db.collection('oy_cihazTokenleri').get();
-  const cihazlar = cSnap.docs.map(d => ({ id: d.id, token: d.data().token, kategoriler: d.data().kategoriler }));
+  const cihazlar = cSnap.docs.map(d => {
+    const v = d.data();
+    return {
+      id: d.id,
+      token: v.token,
+      kategoriler: v.kategoriler,
+      bildirimSaatBaslangic: v.bildirimSaatBaslangic,
+      bildirimSaatBitis: v.bildirimSaatBitis
+    };
+  });
   if(cihazlar.length === 0){ console.log('Kayıtlı cihaz yok, bildirim atlanıyor.'); return; }
 
   // Spam'i önlemek için kategori bazında tek özet bildirim gönderilir
@@ -350,14 +389,23 @@ async function bildirimGonder(db, yeniHaberler){
   });
 
   const gecersiz = new Set();
+  const saat = turkiyeSaatiHHMM();
+  console.log(`Haber bildirim saati (Europe/Istanbul): ${saat}`);
 
   for(const kat of Object.keys(kategoriGruplari)){
     const haberler = kategoriGruplari[kat];
-    // Tercih boş/yoksa (opt-out) TÜM kategorilerden bildirim alır
-    const hedefTokenler = cihazlar
-      .filter(c => c.token && (!Array.isArray(c.kategoriler) || c.kategoriler.length === 0 || c.kategoriler.includes(kat)))
-      .map(c => c.token);
+    // Tercih boş/yoksa (opt-out) TÜM kategorilerden bildirim alır. Saat aralığı
+    // kaydedilmiş cihazlarda ayrıca o anın seçilen pencere içinde olması gerekir.
+    const kategoriUygunCihazlar = cihazlar.filter(c =>
+      c.token && (!Array.isArray(c.kategoriler) || c.kategoriler.length === 0 || c.kategoriler.includes(kat))
+    );
+    const hedefCihazlar = kategoriUygunCihazlar.filter(c => bildirimSaatiUygunMu(c, saat));
+    const hedefTokenler = hedefCihazlar.map(c => c.token);
+    const saatDisi = kategoriUygunCihazlar.length - hedefCihazlar.length;
 
+    if(saatDisi > 0){
+      console.log(`Bildirim saat dışında olduğu için susturuldu (${kat}): ${saatDisi} cihaz`);
+    }
     if(hedefTokenler.length === 0) continue;
 
     const baslik = haberler.length === 1 ? `📰 ${kat}` : `📰 ${kat} — ${haberler.length} yeni haber`;
@@ -391,4 +439,8 @@ async function bildirimGonder(db, yeniHaberler){
   }
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+module.exports = { gecerliSaatMi, turkiyeSaatiHHMM, bildirimSaatiUygunMu };
+
+if(require.main === module){
+  main().catch(err => { console.error(err); process.exit(1); });
+}
