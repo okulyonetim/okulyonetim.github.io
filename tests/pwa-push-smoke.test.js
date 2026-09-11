@@ -5,6 +5,8 @@ const sw = fs.readFileSync('service-worker.js', 'utf8');
 const apkWorkflow = fs.readFileSync('.github/workflows/build-apk.yml', 'utf8');
 const communication = fs.readFileSync('js/modules/communication.js', 'utf8');
 const platform = fs.readFileSync('js/core/platform/widget-adapter.js', 'utf8');
+const rss = fs.readFileSync('scripts/rss-fetch.js', 'utf8');
+const { bildirimSaatiUygunMu, turkiyeSaatiHHMM } = require('../scripts/rss-fetch.js');
 
 assert(!fs.existsSync('firebase-messaging-sw.js'), 'Eski ikinci service worker dosyası geri gelmemeli.');
 assert(!fs.existsSync('js/push.js'), 'Emekli push UI kökü geri gelmemeli.');
@@ -25,5 +27,18 @@ assert(!/Capacitor\?*\.|PushNotifications/.test(communication), 'Communication m
 for(const token of ['pushPermission','pushToken','PushNotifications']) assert(platform.includes(token), `Platform push adaptörü eksik: ${token}`);
 assert(!communication.includes('localStorage.setItem'), 'Haber bildirim tercihleri ikinci localStorage state oluşturmamalı.');
 assert(!communication.includes('.collection('), 'Communication UI/repository doğrudan Firestore collection kullanmamalı.');
+
+for(const token of ['bildirimSaatBaslangic','bildirimSaatBitis','bildirimSaatiUygunMu','Europe/Istanbul']) assert(rss.includes(token), `RSS haber saat filtresi eksik: ${token}`);
+assert.strictEqual(turkiyeSaatiHHMM(new Date('2026-09-11T21:40:00Z')), '00:40', 'RSS bildirimi Türkiye yerel saatini kullanmalı.');
+const gunduz = { bildirimSaatBaslangic:'07:00', bildirimSaatBitis:'23:00' };
+assert.strictEqual(bildirimSaatiUygunMu(gunduz, '00:40'), false, '07:00–23:00 ayarında 00:40 bildirimi engellenmeli.');
+assert.strictEqual(bildirimSaatiUygunMu(gunduz, '07:00'), true, 'Başlangıç saati dahil olmalı.');
+assert.strictEqual(bildirimSaatiUygunMu(gunduz, '23:00'), true, 'Bitiş saati dahil olmalı.');
+assert.strictEqual(bildirimSaatiUygunMu(gunduz, '23:01'), false, 'Bitiş saatinden sonra bildirim engellenmeli.');
+const gece = { bildirimSaatBaslangic:'22:00', bildirimSaatBitis:'06:00' };
+assert.strictEqual(bildirimSaatiUygunMu(gece, '23:30'), true, 'Gece yarısını aşan aralık gece tarafını desteklemeli.');
+assert.strictEqual(bildirimSaatiUygunMu(gece, '05:59'), true, 'Gece yarısını aşan aralık sabah tarafını desteklemeli.');
+assert.strictEqual(bildirimSaatiUygunMu(gece, '12:00'), false, 'Gece aralığının dışındaki gündüz saati engellenmeli.');
+assert.strictEqual(bildirimSaatiUygunMu({}, '00:40'), true, 'Saat tercihi olmayan eski cihazlar geriye dönük uyumlu kalmalı.');
 
 console.log('PWA / background push + local-first haber bildirim ayarları platform sözleşmesi başarılı.');
