@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 
 def replace(path, old, new):
@@ -9,11 +10,6 @@ def replace(path, old, new):
     p.write_text(text.replace(old,new),encoding='utf-8')
 
 academic='js/modules/academic.js'
-old="""function ssNum(v){if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null}
-function ssPuanTuru(sonuc,sinav){return String(sonuc?.puanTuru||sinav?.puanTuru||'').trim().toUpperCase()}
-function ssLgsPuani(sonuc,sinav){return ssNum(sonuc?.lgsPuani??sonuc?.lgsPuan??(ssPuanTuru(sonuc,sinav)==='LGS'?sonuc?.puan:null))}
-function ssFmt(v,d=2)=>"""
-# The final function token is used only to guard accidental partial matching below.
 text=Path(academic).read_text(encoding='utf-8')
 needle="""function ssNum(v){if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null}
 function ssPuanTuru(sonuc,sinav){return String(sonuc?.puanTuru||sinav?.puanTuru||'').trim().toUpperCase()}
@@ -32,18 +28,31 @@ if needle not in text:
     raise SystemExit('academic LGS resolver block not found')
 Path(academic).write_text(text.replace(needle,replacement),encoding='utf-8')
 
-replace('js/app-loader.js',"js/modules/academic.js?v=881","js/modules/academic.js?v=882")
+replace('js/app-loader.js','js/modules/academic.js?v=881','js/modules/academic.js?v=882')
 replace('index.html','js/app-loader.js?v=899','js/app-loader.js?v=900')
 replace('service-worker.js',"const CACHE_ADI='oy-cache-v928';","const CACHE_ADI='oy-cache-v929';")
 replace('service-worker.js','./js/app-loader.js?v=899','./js/app-loader.js?v=900')
 replace('service-worker.js','./js/modules/academic.js?v=881','./js/modules/academic.js?v=882')
 replace('tests/academic-separate-pages.test.js','js/modules/academic.js?v=881','js/modules/academic.js?v=882')
-replace('tests/exam-lgs-result-ranking.test.js',"assert(academic.includes('sonuc?.lgsPuani??sonuc?.lgsPuan')&&academic.includes(\"ssPuanTuru(sonuc,sinav)==='LGS'?sonuc?.puan:null\"),'LGS puanı OMR alias alanlarından ve LGS puan fallbackinden okunmalı.');", "assert(academic.includes('sonuc?.lgsPuani??sonuc?.lgsPuan')&&academic.includes(\"ssPuanTuru(sonuc,sinav)==='LGS'?sonuc?.puan:null\"),'LGS puanı OMR alias alanlarından ve LGS puan fallbackinden okunmalı.');\nassert(academic.includes('const SS_LGS_RULES=Object.freeze({turkce:4.1820,matematik:4.9812,fen:3.8347,inkilap:1.6816,din:1.9259,yabanci:1.6157})'),'Academic rapor Optik Okuyucu ile aynı 2026 referans katsayılarını kullanmalı.');\nassert(academic.includes('const SS_LGS_BASE=187.8131')&&academic.includes('return direct!=null?direct:ssEstimatedLgs(sonuc,sinav)'),'Eski puansız deneme kaydı raporda ders netlerinden LGS fallback hesaplamalı.');\nassert(academic.includes('Math.max(100,Math.min(500,score))'),'Tahmini LGS puanı 100-500 aralığında tutulmalı.');")
-replace('tests/exam-lgs-result-ranking.test.js','js/modules/academic.js?v=881','js/modules/academic.js?v=882')
-replace('tests/exam-lgs-result-ranking.test.js','js/app-loader.js?v=899','js/app-loader.js?v=900')
-replace('tests/exam-lgs-result-ranking.test.js',"const CACHE_ADI='oy-cache-v928';","const CACHE_ADI='oy-cache-v929';")
 
-# Add a numeric fixture test derived from the exact visible report values in the regression case.
+# Rewrite the LGS contract test in a version-robust way.
+p=Path('tests/exam-lgs-result-ranking.test.js')
+t=p.read_text(encoding='utf-8')
+anchor="assert(academic.includes('sonuc?.lgsPuani??sonuc?.lgsPuan')&&academic.includes(\"ssPuanTuru(sonuc,sinav)==='LGS'?sonuc?.puan:null\"),'LGS puanı OMR alias alanlarından ve LGS puan fallbackinden okunmalı.');"
+extra="""
+assert(academic.includes('const SS_LGS_RULES=Object.freeze({turkce:4.1820,matematik:4.9812,fen:3.8347,inkilap:1.6816,din:1.9259,yabanci:1.6157})'),'Academic rapor Optik Okuyucu ile aynı 2026 referans katsayılarını kullanmalı.');
+assert(academic.includes('const SS_LGS_BASE=187.8131')&&academic.includes('return direct!=null?direct:ssEstimatedLgs(sonuc,sinav)'),'Eski puansız deneme kaydı raporda ders netlerinden LGS fallback hesaplamalı.');
+assert(academic.includes('Math.max(100,Math.min(500,score))'),'Tahmini LGS puanı 100-500 aralığında tutulmalı.');"""
+if extra.strip() not in t:
+    if anchor not in t:
+        raise SystemExit('LGS contract anchor not found')
+    t=t.replace(anchor,anchor+extra)
+t=t.replace('js/modules/academic.js?v=881','js/modules/academic.js?v=882')
+t=t.replace('js/app-loader.js?v=899','js/app-loader.js?v=900')
+t=t.replace("const CACHE_ADI='oy-cache-v928';","const CACHE_ADI='oy-cache-v929';")
+t=t.replace("academic.js?v=881","academic.js?v=882")
+p.write_text(t,encoding='utf-8')
+
 fixture=Path('tests/exam-lgs-report-fallback-fixture.test.js')
 fixture.write_text("""const assert=require('assert');
 const RULES={turkce:4.1820,matematik:4.9812,fen:3.8347,inkilap:1.6816,din:1.9259,yabanci:1.6157};
