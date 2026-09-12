@@ -28,10 +28,14 @@ async function loadStudentPage(){
   }
   return pagePromise;
 }
+function claimStudentListSurface(){
+  const root=document.getElementById('v2ModuleRoot');if(!root)return;
+  root.innerHTML='<section class="ka-page ka-stack" data-student-list-route-loading><div class="ka-card"><div class="ka-card__body"><strong>Öğrenci Listesi Oluşturucu açılıyor…</strong><div class="ka-muted">Yerel sınıf ve öğrenci verileri hazırlanıyor.</div></div></div></section>';
+}
 global.TeacherListCoreLoader=loadCore;
 const listProxy={
   __teacherListProxy:true,
-  async open(){const page=await loadStudentPage();return page.open();},
+  async open(){claimStudentListSurface();const page=await loadStudentPage();return page.open();},
   close(){return global.StudentListPage?.close?.()!==false;},
   async render(){const page=await loadStudentPage();return page.render?.();},
   async newDraft(){const page=await loadStudentPage();return page.newDraft?.();},
