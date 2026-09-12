@@ -5,7 +5,7 @@ const feature=fs.readFileSync('js/core/teacher-delete-lifecycle.js','utf8');
 const firebase=fs.readFileSync('js/firebase-init.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
-assert(feature.includes("data-teacher-delete"),'Mevcut öğretmen düzenleme modalında Sil eylemi bulunmalı.');
+assert(feature.includes("button.dataset.teacherDelete=''"),'Mevcut öğretmen düzenleme modalında Sil eylemi bulunmalı.');
 assert(feature.includes("clearClassAssignments"),'Sınıf öğretmenliği bağı silmede temizlenmeli.');
 assert(feature.includes("'dersProgrami','nobetAtamalari','ogretmenYillikPlanSecimleri'"),'Aktif ders/nöbet/plan atamaları güvenli biçimde temizlenmeli.');
 assert(feature.includes("clearSharedReferences"),'Kulüp ve belirli gün ortak öğretmen referansları temizlenmeli.');
