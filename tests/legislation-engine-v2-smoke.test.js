@@ -17,7 +17,7 @@ assert(!src.includes('createObjectStore(')&&!src.includes("createIndex('mevzuatI
 assert(!src.includes("const DB_NAME='okulMevzuatDB'")&&!src.includes('function db(){'),'Legacy mevzuat DB çalışma zamanı ana veri deposu olmamalı.');
 assert(!src.includes('db.collection(')&&!src.includes('firebase.firestore'),'Mevzuat motoru Firestore kullanmamalı.');
 assert(!src.includes('document.getElementById')&&!src.includes('modalAc('),'Mevzuat motoru DOM/modal presentation katmanına bağlı olmamalı.');
-assert(src.includes("https://koruk-mevzuat-asistan.sedonet23.workers.dev/"),'Mevcut mevzuat Worker sözleşmesi korunmalı.');
+assert(src.includes("https://empty-base-2bc6.sedonet23.workers.dev/"),'Canlı mevzuat Worker sözleşmesi korunmalı.');
 
 for(const token of ['const EXPANSIONS=','const OFFICIAL_HOSTS=','function expandTerms(question)','function officialScore(value)','function canonicalKey(row)','function phraseScore(text,question)','async function searchDetailed(question,count=12)','function answerInstructions()','function sanitizeHistory(history)']) assert(src.includes(token),`Mevzuat V3 retrieval bileşeni eksik: ${token}`);
 assert(src.includes("'mevzuat.gov.tr','resmigazete.gov.tr','meb.gov.tr'"),'Resmî mevzuat web kaynakları öncelik listesinde bulunmalı.');
@@ -62,7 +62,7 @@ assert(ui.includes('const prior=history.slice(0,-1)'),'UI önceki sohbet turlar�
 const sw=fs.readFileSync('service-worker.js','utf8');
 assert(!shell.includes('<script src="js/modules/legislation.js" defer></script>')&&!shell.includes('<script src="js/modules/legislation-ui.js" defer></script>'),'Mevzuat motoru ve presentation ilk açılışta eager yüklenmemeli.');
 assert(sw.includes("'./js/modules/legislation.js'")&&sw.includes("'./js/modules/legislation-ui.js'"),'Mevzuat motoru ve presentation offline Service Worker cache içinde bulunmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v935'"),'Mevzuat V3 yeni PWA cache sürümüyle dağıtılmalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v936'"),'Canlı Worker bağlantısı yeni PWA cache sürümüyle dağıtılmalı.');
 assert(shellUi.includes("loadScript?.('js/modules/legislation.js')")&&shellUi.includes("loadScript?.('js/modules/legislation-ui.js')"),'Mevzuat motoru ve presentation Documents/mevzuat rotasında lazy yüklenmeli.');
 assert(!fs.existsSync('js/mevzuat-asistan.js'),'Legacy mevzuat-asistan.js geri dönmemeli.');
 

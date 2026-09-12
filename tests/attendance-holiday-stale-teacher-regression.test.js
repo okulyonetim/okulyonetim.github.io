@@ -11,5 +11,5 @@ assert(src.includes('attHolidayRows(),arr(\'ogretmenIzinleri\')'),'Otomatik hesa
 assert(src.includes("activeIds.has(String(x.ogretmenId||''))"),'Silinmiş öğretmenler çizelge görünümünden filtrelenmeli.');
 assert(src.includes('DevamsizlikCizelgesiService.ogretmenSil(y,m,rowId)'),'Otomatik tazeleme silinmiş öğretmeni aylık kayıttan temizlemeli.');
 assert(src.includes("'data.dersSaatleri'"),'Tatil ayarı değişikliği çizelgeyi yeniden render etmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v935';"),'Yeni attendance kodu yeni PWA cache sürümüyle dağıtılmalı.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v936';"),'Yeni attendance kodu güncel PWA cache sürümüyle dağıtılmalı.');
 console.log('Devamsızlık Tatil Modu + silinmiş öğretmen regresyon testi başarılı.');

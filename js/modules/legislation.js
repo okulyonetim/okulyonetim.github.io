@@ -5,7 +5,7 @@
 (function(global){
 'use strict';
 if(global.LegislationEngine)return;
-const API='https://koruk-mevzuat-asistan.sedonet23.workers.dev/';
+const API='https://empty-base-2bc6.sedonet23.workers.dev/';
 const RECORD_TYPE='mevzuatKayitlar',CHUNK_TYPE='mevzuatChunklar';
 const LEGACY_DB='okulMevzuatDB',LEGACY_META='legislationLegacyMigration';
 let readyPromise=null;
