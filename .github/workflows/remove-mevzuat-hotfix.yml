@@ -1,0 +1,91 @@
+name: Remove Mevzuat Feature
+
+on:
+  push:
+    branches: [feat/remove-mevzuat]
+
+permissions:
+  contents: write
+
+jobs:
+  retire:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/remove-mevzuat
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Remove Mevzuat from application
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, shutil
+
+          shell_path=Path('js/core/shell-ui.js')
+          shell=shell_path.read_text()
+          old="['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Mevzuat','📖','documents','mevzuat'],['Personel İşleri','👥','management','staff']"
+          new="['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Personel İşleri','👥','management','staff']"
+          if old not in shell:
+              raise SystemExit('Mevzuat menu item not found')
+          shell=shell.replace(old,new,1)
+          route=re.compile(r"\n  if\(name==='documents'&&page==='mevzuat'\)\{.*?\n    if\(title\)setTitle\(title\);return true;\n  \}",re.S)
+          shell,count=route.subn('',shell,count=1)
+          if count!=1:
+              raise SystemExit(f'Mevzuat route block removal count={count}')
+          if 'LegislationEngine' in shell or 'LegislationModule' in shell or "documents','mevzuat" in shell:
+              raise SystemExit('Mevzuat references remain in shell-ui.js')
+          shell_path.write_text(shell)
+
+          sw_path=Path('service-worker.js')
+          sw=sw_path.read_text()
+          sw=sw.replace("const CACHE_ADI='oy-cache-v936';","const CACHE_ADI='oy-cache-v937';",1)
+          sw=sw.replace(",'./js/modules/legislation.js','./js/modules/legislation-ui.js'",'',1)
+          if 'js/modules/legislation' in sw:
+              raise SystemExit('Mevzuat remains in service worker')
+          sw_path.write_text(sw)
+
+          workflow=Path('.github/workflows/client-architecture.yml')
+          text=workflow.read_text()
+          text,count=re.subn(r"\n      - name: Verify V2 legislation engine\n        run: node tests/legislation-engine-v2-smoke\.test\.js",'',text,count=1)
+          if count!=1:
+              raise SystemExit('Client workflow legislation step not found')
+          workflow.write_text(text)
+
+          for name in ['tests/attendance-holiday-stale-teacher-regression.test.js','tests/attendance-schedule-scroll-regression.test.js']:
+              p=Path(name); t=p.read_text(); t=t.replace("oy-cache-v936","oy-cache-v937"); p.write_text(t)
+
+          css_path=Path('css/design-system.css')
+          css=css_path.read_text().splitlines(True)
+          css=[line for line in css if 'ka-legislation' not in line]
+          css_path.write_text(''.join(css))
+
+          for name in [
+              'js/modules/legislation.js','js/modules/legislation-ui.js',
+              'tests/legislation-engine-v2-smoke.test.js','tests/legislation-page-redesign.test.js',
+              '.github/workflows/mevzuat-worker-check.yml'
+          ]:
+              Path(name).unlink(missing_ok=True)
+          shutil.rmtree('worker/mevzuat-ai',ignore_errors=True)
+
+          test=Path('tests/mevzuat-retired.test.js')
+          test.write_text("""const fs=require('fs');const assert=require('assert');\nconst shell=fs.readFileSync('js/core/shell-ui.js','utf8');const sw=fs.readFileSync('service-worker.js','utf8');const css=fs.readFileSync('css/design-system.css','utf8');\nassert(!shell.includes(\"['Mevzuat','📖','documents','mevzuat']\")&&!shell.includes(\"page==='mevzuat'\"),'Mevzuat menü/rota uygulamadan kaldırılmalı.');\nassert(!shell.includes('LegislationEngine')&&!shell.includes('LegislationModule'),'Mevzuat runtime modülü ShellUI içinde kalmamalı.');\nfor(const f of ['js/modules/legislation.js','js/modules/legislation-ui.js','tests/legislation-engine-v2-smoke.test.js','tests/legislation-page-redesign.test.js','.github/workflows/mevzuat-worker-check.yml']) assert(!fs.existsSync(f),`${f} kaldırılmış olmalı.`);\nassert(!fs.existsSync('worker/mevzuat-ai'),'Mevzuat AI Worker paketi repodan kaldırılmış olmalı.');\nassert(!sw.includes('js/modules/legislation')&&sw.includes(\"const CACHE_ADI='oy-cache-v937';\"),'Service Worker Mevzuat dosyalarını önbelleğe almamalı ve cache yükseltilmeli.');\nassert(!css.includes('ka-legislation'),'Mevzuata özel ölü tasarım kuralları kaldırılmalı.');\nconsole.log('Mevzuat özelliği uygulama/runtime/repo katmanlarından tamamen emekli edildi.');\n""")
+
+          Path('.github/workflows/remove-mevzuat-hotfix.yml').unlink(missing_ok=True)
+          PY
+          node tests/mevzuat-retired.test.js
+          node tests/service-worker-precache-smoke.test.js
+          node tests/attendance-holiday-stale-teacher-regression.test.js
+          node tests/attendance-schedule-scroll-regression.test.js
+          node --check js/core/shell-ui.js
+      - name: Commit retirement
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: remove Mevzuat feature"
+          git push origin HEAD:feat/remove-mevzuat
