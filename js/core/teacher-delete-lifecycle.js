@@ -1,5 +1,5 @@
 /* Okul Yönetim — Öğretmen silme yaşam döngüsü.
- * Mevcut öğretmen düzenleme modalına güvenli silme eylemi ekler.
+ * Hem canonical hem klasik öğretmen düzenleme modalında güvenli silme eylemi sağlar.
  * Silme local-first ilerler; aktif atama ve kullanıcı bağlarını temizler,
  * tarihsel evrak/izin kayıtlarını korur.
  */
@@ -10,6 +10,7 @@ if(global.TeacherDeleteLifecycle)return;
 const data=type=>{const rows=global.AppStore?.data?.(type);return Array.isArray(rows)?rows:[]};
 const device=()=>global.DeviceData;
 const fullName=t=>`${t?.ad||''} ${t?.soyad||''}`.trim()||'Öğretmen';
+let lastTeacherEditId='';
 
 function canDelete(){
   return !global.PermissionService||global.PermissionService.can?.('people.teachers','edit')===true;
@@ -65,8 +66,6 @@ async function deleteTeacher(id){
   if(!teacher)throw new Error('Öğretmen kaydı bulunamadı.');
   if(!global.confirm?.(`“${fullName(teacher)}” adlı öğretmen silinsin mi?\n\nDers programı, nöbet, sınıf öğretmenliği ve kullanıcı bağlantıları temizlenecek. Tarihsel evrak ve izin kayıtları korunacak.`))return false;
 
-  // Öğretmen kaydı en son silinir. Böylece bağımlılık temizliğinde hata oluşursa
-  // ana kayıt yerinde kalır ve yarım silinmiş bir öğretmen oluşmaz.
   await clearClassAssignments(id);
   await removeOwnedAssignments(id);
   await clearSharedReferences(id);
@@ -76,19 +75,13 @@ async function deleteTeacher(id){
   return true;
 }
 
-function teacherIdFromModal(modal){
-  return String(modal?.querySelector('#teacherForm input[name="id"]')?.value||'').trim();
-}
-function ensureDeleteButton(modal){
-  if(!modal||modal.dataset.teacherDeleteReady==='1')return;
-  modal.dataset.teacherDeleteReady='1';
-  const id=teacherIdFromModal(modal),footer=modal.querySelector('.ka-modal__footer');
-  if(!id||!footer||!canDelete())return;
-  const cancel=footer.querySelector('[data-teacher-modal-close]');
+function makeDeleteButton(modal,id,footer,beforeNode=null){
+  if(!id||!footer||!canDelete()||footer.querySelector('[data-teacher-delete],[data-exact-teacher-delete]'))return;
   const button=document.createElement('button');
   button.type='button';
   button.dataset.teacherDelete='';
-  button.className='ka-btn';
+  button.dataset.exactTeacherDelete='';
+  button.className='ka-btn ka-btn--danger ka-btn--sm';
   button.textContent='Sil';
   button.setAttribute('aria-label','Öğretmeni sil');
   button.style.background='#b42318';
@@ -105,17 +98,45 @@ function ensureDeleteButton(modal){
       modal.remove();
       global.toast?.('Öğretmen silindi.');
       global.PeopleModule?.render?.();
+      global.PeopleClassicUI?.render?.();
     }catch(err){
       console.error('[TeacherDeleteLifecycle]',err);
       global.toast?.('Öğretmen silinemedi: '+(err?.message||err));
       button.disabled=false;button.textContent=old;
     }
   });
-  if(cancel)footer.insertBefore(button,cancel);else footer.prepend(button);
+  if(beforeNode)footer.insertBefore(button,beforeNode);else footer.prepend(button);
 }
 
-function scan(){document.querySelectorAll('[data-teacher-modal]').forEach(ensureDeleteButton)}
+function teacherIdFromCanonicalModal(modal){
+  return String(modal?.querySelector('#teacherForm input[name="id"]')?.value||'').trim();
+}
+function ensureCanonicalDeleteButton(modal){
+  if(!modal||modal.dataset.teacherDeleteReady==='1')return;
+  modal.dataset.teacherDeleteReady='1';
+  const id=teacherIdFromCanonicalModal(modal),footer=modal.querySelector('.ka-modal__footer');
+  const cancel=footer?.querySelector('[data-teacher-modal-close]')||null;
+  makeDeleteButton(modal,id,footer,cancel);
+}
+function ensureClassicDeleteButton(modal){
+  if(!modal||modal.dataset.teacherDeleteReady==='1')return;
+  const title=modal.querySelector('.classic-modal-head h3')?.textContent?.trim()||'';
+  if(title!=='Öğretmen Düzenle')return;
+  modal.dataset.teacherDeleteReady='1';
+  const footer=modal.querySelector('.classic-modal-actions');
+  const cancel=footer?.querySelector('[data-exact-modal-close]')||null;
+  const id=String(lastTeacherEditId||'').trim();
+  makeDeleteButton(modal,id,footer,cancel);
+}
+function scan(){
+  document.querySelectorAll('[data-teacher-modal]').forEach(ensureCanonicalDeleteButton);
+  document.querySelectorAll('[data-exact-people-modal]').forEach(ensureClassicDeleteButton);
+}
 function install(){
+  document.addEventListener('click',event=>{
+    const trigger=event.target.closest?.('[data-exact-teacher-edit]');
+    if(trigger?.dataset?.exactTeacherEdit)lastTeacherEditId=String(trigger.dataset.exactTeacherEdit);
+  },true);
   scan();
   const observer=new MutationObserver(scan);
   observer.observe(document.body,{childList:true,subtree:true});
