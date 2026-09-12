@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '24'
       - name: Apply focused patch
-        run: python scripts/tmp-apply-lgs-result-fix.py
+        run: python scripts/tmp-apply-lgs-result-fix.py && python scripts/tmp-fix-lgs-result-test.py
       - name: Focused regressions
         run: node tests/exam-lgs-result-ranking.test.js && node tests/academic-separate-pages.test.js && node tests/profile-page-redesign.test.js
       - name: Complete client regression suite
@@ -32,7 +32,7 @@ jobs:
       - name: Commit clean target diff
         shell: bash
         run: |
-          git rm .github/workflows/tmp-lgs-result-ranking-fix.yml .github/workflows/tmp-lgs-result-ranking-fix-v2.yml scripts/tmp-apply-lgs-result-fix.py
+          git rm .github/workflows/tmp-lgs-result-ranking-fix.yml .github/workflows/tmp-lgs-result-ranking-fix-v2.yml scripts/tmp-apply-lgs-result-fix.py scripts/tmp-fix-lgs-result-test.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add js/modules/academic.js js/modules/people.js js/core/student-exam-result-details.js js/firebase-init.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/exam-lgs-result-ranking.test.js
