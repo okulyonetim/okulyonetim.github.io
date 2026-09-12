@@ -111,6 +111,16 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
+/* Öğretmen düzenleme modalında local-first ve referans güvenli silme yaşam döngüsü. */
+(function teacherDeleteLifecycleFeatureLoad(){
+  if(document.querySelector('script[data-teacher-delete-lifecycle]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/teacher-delete-lifecycle.js?v=933';
+  script.async=false;
+  script.dataset.teacherDeleteLifecycle='';
+  document.head.appendChild(script);
+})();
+
 /* Profil güvenliği ve giriş konumu özelliği auth oturumundan bağımsız yüklenir;
    servis kendi içinde AppStore/DeviceData hazır olana kadar bekler. */
 (function loginSecurityFeatureLoad(){
