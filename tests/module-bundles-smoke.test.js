@@ -136,6 +136,6 @@ assert(shellUi.includes("if(page==='map')files.push('js/modules/map-ui.js')"),'H
 assert(shellUi.includes("if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js')"),'Öğretmen liste/ödev/not companionı yalnız ilgili rotalarda lazy yüklenmeli.');
 assert(!registry('tools').includes("'js/harita.js'"),'Emekli root harita yolu Tools registry ye geri dönmemeli.');
 assert(loader.includes('prepareAccountLocalData'),'Hesap/kota verisi başlangıçta cihaz cache ine alınmalı.');
-assert(loader.includes("const active=AppStore?.get?.('ui.route')===name")&&loader.includes("if(active){window.dispatchEvent(new CustomEvent('koruk:module-ready'"),'Lazy yüklenen bağımlılık aktif rota değilse UI mount eventi üretmemeli; eski async yükleme yeni sayfanın üstüne binmemeli.');
+assert(loader.includes("const active=AppStore?.get?.('ui.route')===name")&&loader.includes('if(active){')&&loader.includes('if(!moduleMounted(name))window.dispatchEvent(new CustomEvent(\'koruk:module-ready\''),'Lazy yüklenen bağımlılık yalnız aktif rota ve mount edilmemiş canonical root için UI mount eventi üretmeli; eski async yükleme yeni sayfanın üstüne binmemeli.');
 
 console.log('Dokuz V2 modülü tekilleştirilmiş local-first mimaride; çekirdek rol, Takvim/Notlar sahipliği ve Taşıma servis yönetimi smoke test başarılı.');
