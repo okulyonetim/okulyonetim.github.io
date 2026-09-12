@@ -176,3 +176,13 @@ function firebaseyiBaslat(){
   script.dataset.dashboardAnnouncementMedia='';
   document.head.appendChild(script);
 })();
+
+/* Öğrenci sınav sonuçlarını OMR ders ayrıntıları, LGS puanı ve sıralamayla zenginleştirir. */
+(function studentExamResultDetailsFeatureLoad(){
+  if(document.querySelector('script[data-student-exam-result-details]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/student-exam-result-details.js?v=924';
+  script.async=false;
+  script.dataset.studentExamResultDetails='';
+  document.head.appendChild(script);
+})();
