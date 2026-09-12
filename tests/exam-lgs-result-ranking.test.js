@@ -13,6 +13,9 @@ for(const token of ['function ssLgsPuani(sonuc,sinav)','function ssSiraliSonucla
   assert(academic.includes(token),`Canonical deneme LGS/sıralama sözleşmesi eksik: ${token}`);
 }
 assert(academic.includes('sonuc?.lgsPuani??sonuc?.lgsPuan')&&academic.includes("ssPuanTuru(sonuc,sinav)==='LGS'?sonuc?.puan:null"),'LGS puanı OMR alias alanlarından ve LGS puan fallbackinden okunmalı.');
+assert(academic.includes('const SS_LGS_RULES=Object.freeze({turkce:4.1820,matematik:4.9812,fen:3.8347,inkilap:1.6816,din:1.9259,yabanci:1.6157})'),'Academic rapor Optik Okuyucu ile aynı 2026 referans katsayılarını kullanmalı.');
+assert(academic.includes('const SS_LGS_BASE=187.8131')&&academic.includes('return direct!=null?direct:ssEstimatedLgs(sonuc,sinav)'),'Eski puansız deneme kaydı raporda ders netlerinden LGS fallback hesaplamalı.');
+assert(academic.includes('Math.max(100,Math.min(500,score))'),'Tahmini LGS puanı 100-500 aralığında tutulmalı.');
 assert(academic.includes("const deneme=tur==='deneme',sonuclar=ssSiraliSonuclar(sinav,tur)"),'Deneme sonuç ekranı LGS puan sırasını canonical olarak kullanmalı.');
 assert(academic.includes('ka-results-lgs')&&academic.includes('${ssFmt(score)}'),'Deneme sonuç ekranında LGS puanı görünür olmalı.');
 assert(academic.includes('<td>${index+1}</td>')&&academic.includes('<th>Sıra</th>'),'Rapor sıra numarasını basmalı.');
@@ -28,7 +31,7 @@ assert(!details.includes("th.textContent='LGS Puanı';head.appendChild(th)"),'Ya
 assert(!details.includes('document.createElement(\'style\')')&&!details.includes('function installStyles()'),'Öğrenci sonuç yardımcı JS runtime style üretmemeli.');
 assert(design.includes('STUDENT EXAM RESULT DETAILS — CANONICAL')&&design.includes('.ka-student-result-ranks'),'Öğrenci sonuç stilleri merkezi design-system içinde yaşamalı.');
 assert(firebaseInit.includes('student-exam-result-details.js?v=925'),'Detay runtime cache-bust edilmeli.');
-assert(loader.includes('js/modules/academic.js?v=881'),'Academic runtime cache-bust edilmeli.');
-assert(index.includes('js/app-loader.js?v=899'),'App loader cache-bust edilmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v928';")&&sw.includes('student-exam-result-details.js?v=925')&&sw.includes('academic.js?v=881'),'PWA cache yeni LGS sonuç runtimeını taşımalı.');
+assert(loader.includes('js/modules/academic.js?v=882'),'Academic runtime cache-bust edilmeli.');
+assert(index.includes('js/app-loader.js?v=900'),'App loader cache-bust edilmeli.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v929';")&&sw.includes('student-exam-result-details.js?v=925')&&sw.includes('academic.js?v=882'),'PWA cache yeni LGS sonuç runtimeını taşımalı.');
 console.log('Deneme LGS görünümü, sıralama ve rapor sözleşmesi başarılı.');

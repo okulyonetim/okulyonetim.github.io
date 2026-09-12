@@ -23,7 +23,7 @@ function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
 define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=873']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
-define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=881']);
+define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=882']);
 define('management',['js/modules/report-engine.js','js/modules/management.js?v=882']);
 define('communication',['js/modules/communication.js?v=839','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=893']);
