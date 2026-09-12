@@ -27,5 +27,6 @@ assert(ui.includes('data-legislation-prompt')&&ui.includes('ka-legislation-chat-
 assert(ui.includes('Cihazda saklanır')&&ui.includes("hiçbir veri Firestore'a gitmez"),'Yerel saklama güvencesi görünür olmalı.');
 assert(!ui.includes('style="'),'Mevzuat sayfası görünür stil sahipliğini JS içinde inline olarak taşımamalı.');
 assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore'),'Mevzuat presentation Firestore kullanmamalı.');
-for(const call of ['engine().list()','engine().add({baslik,kaynak,kategori,metin})','engine().importJson(parsed)','engine().remove(b.dataset.legislationDelete)','engine().ask(q)']) assert(ui.includes(call),`Canonical LegislationEngine çağrısı korunmalı: ${call}`);
+for(const call of ['engine().list()','engine().add({baslik,kaynak,kategori,metin})','engine().importJson(parsed)','engine().remove(b.dataset.legislationDelete)','engine().ask(q,prior)']) assert(ui.includes(call),`Canonical LegislationEngine çağrısı korunmalı: ${call}`);
+assert(ui.includes('const prior=history.slice(0,-1)'),'Mevzuat sohbeti devam sorularında önceki konuşmaları motora aktarmalı.');
 console.log('Mevzuat mobil çalışma alanı + merkezi tasarım sözleşmesi başarılı.');
