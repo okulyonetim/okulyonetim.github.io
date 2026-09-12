@@ -1,7 +1,7 @@
 /* Okul Yönetim — Taşıma aylık takip çizelgesi / Tatil Modu köprüsü.
  * Aylık servis takip çizelgesini Nöbet Programı ile aynı birleşik tatil kaynağına bağlar.
- * Transport modülünün kendi rapor düzenine dokunmaz; yalnız rapor üretilirken tatil görünümünü
- * resmiTatiller + Ayarlar > Tatil Modu birleşimiyle çalıştırır.
+ * Transport raporunun prepare() aşamasında resmiTatiller yeniden hydrate edildiği için,
+ * hydrate sonrasında Tatil Modu satırlarını tekrar uygular.
  */
 (function(global){
 'use strict';
@@ -25,10 +25,28 @@ async function withTransportHolidays(task){
   if(!ready||!source?.combinedHolidayRows||!global.AppStore?.setData)return task();
 
   const original=arr('resmiTatiller').filter(row=>!row?.[SYNTHETIC_FLAG]);
-  global.AppStore.setData('resmiTatiller',source.combinedHolidayRows());
+  const sync=global.SyncEngine;
+  const originalHydrate=typeof sync?.localHydrate==='function'?sync.localHydrate.bind(sync):null;
+  const applyCombined=()=>global.AppStore.setData('resmiTatiller',source.combinedHolidayRows());
+
+  applyCombined();
+
+  /* TransportReports.takip -> prepare() resmiTatiller'i cihazdan yeniden hydrate eder.
+     Bu işlem Tatil Modu sentetik satırlarını siliyordu. Rapor çağrısı süresince hydrate
+     tamamlanınca birleşik tatil görünümünü yeniden kuruyoruz. */
+  if(originalHydrate){
+    sync.localHydrate=async function(types,...rest){
+      const result=await originalHydrate(types,...rest);
+      const list=Array.isArray(types)?types:[types];
+      if(list.includes('resmiTatiller'))applyCombined();
+      return result;
+    };
+  }
+
   try{
     return await task();
   }finally{
+    if(originalHydrate)sync.localHydrate=originalHydrate;
     const current=arr('resmiTatiller');
     const clean=current.filter(row=>!row?.[SYNTHETIC_FLAG]);
     global.AppStore.setData('resmiTatiller',clean.length||!original.length?clean:original);
