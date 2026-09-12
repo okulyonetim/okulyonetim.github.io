@@ -33,5 +33,6 @@ assert(design.includes('STUDENT EXAM RESULT DETAILS — CANONICAL')&&design.incl
 assert(firebaseInit.includes('student-exam-result-details.js?v=925'),'Detay runtime cache-bust edilmeli.');
 assert(loader.includes('js/modules/academic.js?v=882'),'Academic runtime cache-bust edilmeli.');
 assert(index.includes('js/app-loader.js?v=900'),'App loader cache-bust edilmeli.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v929';")&&sw.includes('student-exam-result-details.js?v=925')&&sw.includes('academic.js?v=882'),'PWA cache yeni LGS sonuç runtimeını taşımalı.');
+const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
+assert(cache&&Number(cache[1])>=929&&sw.includes('student-exam-result-details.js?v=925')&&sw.includes('academic.js?v=882'),'PWA cache yeni LGS sonuç runtimeını taşımalı.');
 console.log('Deneme LGS görünümü, sıralama ve rapor sözleşmesi başarılı.');

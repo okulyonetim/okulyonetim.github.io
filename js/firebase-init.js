@@ -122,12 +122,12 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Nöbet Programı, Ayarlar > Tatil Modu içindeki planlı tatilleri de
-   resmi tatil kaynağının yanında salt okunur ikinci tatil kaynağı olarak kullanır. */
+/* Nöbet Programı ve bağlı servis çizelgeleri, Ayarlar > Tatil Modu içindeki planlı tatilleri de
+   resmi tatil kaynağının yanında ortak tatil kaynağı olarak kullanır. */
 (function dutyHolidayModeSourceFeatureLoad(){
   if(document.querySelector('script[data-duty-holiday-mode-source]'))return;
   const script=document.createElement('script');
-  script.src='js/core/duty-holiday-mode-source.js?v=923';
+  script.src='js/core/duty-holiday-mode-source.js?v=930';
   script.async=false;
   script.dataset.dutyHolidayModeSource='';
   document.head.appendChild(script);

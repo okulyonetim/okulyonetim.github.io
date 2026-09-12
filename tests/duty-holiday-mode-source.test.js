@@ -11,7 +11,7 @@ const data={
   resmiTatiller:[{id:'r1',tarih:'2026-09-07',aciklama:'Resmî Tatil'},{id:'r2',tarih:'2026-09-03',aciklama:'Öncelikli Resmî Tatil'}],
   nobetYerleri:[]
 };
-const documentStub={querySelector:()=>null,getElementById:()=>null,addEventListener:()=>{}};
+const documentStub={querySelector:()=>null,getElementById:()=>null,addEventListener:()=>{},createElement:()=>null,documentElement:{classList:{toggle:()=>{}}},body:null,head:null};
 const windowStub={
   AppStore:{data:type=>data[type],setData:(type,value)=>{data[type]=value;return value;},subscribe:()=>()=>{}},
   document:documentStub,
@@ -37,6 +37,12 @@ assert.strictEqual(combined.filter(x=>x.tarih==='2026-09-03').length,1,'Bir tari
 assert(combined.some(x=>x.tarih==='2026-09-02'&&x.__dutyHolidayModeSource===true),'Tatil Modu günleri nöbet için sanal tatil satırına çevrilmeli.');
 assert.strictEqual(source.firstDutyWorkday('2026-09'),'2026-09-08','İlk iş günü hesabı Tatil Modu + resmî tatilleri birlikte atlamalı.');
 
+windowStub.NobetService={tatilMi:(list,iso)=>(list||[]).find(x=>x.tarih===iso)||null};
+assert(source.patchHolidayLookup(),'Nöbet/servis ortak tatil sorgusu kurulmalı.');
+assert.strictEqual(windowStub.NobetService.tatilMi(data.resmiTatiller,'2026-09-07').id,'r1','Resmî tatil önceliği korunmalı.');
+assert(windowStub.NobetService.tatilMi(data.resmiTatiller,'2026-09-02'),'Servis raporunun kullandığı NobetService.tatilMi Tatil Modu tarihini de döndürmeli.');
+assert(!windowStub.NobetService.tatilMi(data.resmiTatiller,'2026-09-08'),'Normal iş günü tatil sayılmamalı.');
+
 data.dersSaatleri=[{id:'ayarlar',tatilAraliklari:[],tatilModu:true,tatilBaslangicTarihi:'2026-06-20',okulAcilisTarihi:'2026-06-23',tatilModuNotu:'Yaz tatili'}];
 const legacy=source.ranges();
 assert.strictEqual(legacy.length,1,'Eski Tatil Modu başlangıç/açılış alanları desteklenmeli.');
@@ -44,14 +50,17 @@ assert.strictEqual(legacy[0].bitisTarihi,'2026-06-22','Eski Tatil Modunda okul a
 
 assert(code.includes("register?.('dersSaatleri',global.COL.dersSaatleri)"),'Nöbet Tatil Modu kaynağı dersSaatleri yerel verisini hazırlamalı.');
 assert(code.includes('supplied?.(iso)||modeHolidayForDate(iso)'),'Otomatik nöbet dağıtımı hem resmî hem Tatil Modu tatillerini atlamalı.');
+assert(code.includes('patchHolidayLookup'),'Servis aylık takip raporu için ortak tatil sorgusu bulunmalı.');
+assert(code.includes("'[data-service-modal]'"),'Servis modalının açık/kapalı durumu izlenmeli.');
+assert(code.includes('ka-transport-modal-lock'),'Servis modalı açıkken arka sayfa kaydırması kilitlenmeli.');
 assert(code.includes('ka-duty-grid__holiday-mode'),'Nöbet tablosunda Tatil Modu günleri tatil satırı olarak işaretlenmeli.');
 assert(code.includes('withCombinedHolidayRows'),'Nöbet raporu iki tatil kaynağını birlikte kullanmalı.');
 assert(code.includes("title.textContent='Tatiller'"),'Nöbet tatil kartı birleşik kaynağı ifade etmeli.');
 assert(!code.includes("AppStore?.setData?.('dersProgrami'"),'Bu özellik ders programı verisine yazmamalı.');
 assert(!code.includes('COL.dersProgrami'),'Bu özellik ders programı koleksiyonuna dokunmamalı.');
-assert(firebase.includes("js/core/duty-holiday-mode-source.js?v=923"),'Nöbet Tatil Modu kaynağı başlangıçta yüklenmeli.');
-assert(sw.includes("'./js/core/duty-holiday-mode-source.js?v=923'"),'Nöbet Tatil Modu kaynağı offline precache içinde olmalı.');
+assert(firebase.includes("js/core/duty-holiday-mode-source.js?v=930"),'Nöbet/servis ortak Tatil Modu kaynağı güncel sürümle yüklenmeli.');
+assert(sw.includes("'./js/core/duty-holiday-mode-source.js?v=930'"),'Nöbet/servis ortak Tatil Modu kaynağı offline precache içinde olmalı.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
-assert(cache&&Number(cache[1])>=923,'Yeni nöbet tatil kaynağı için service worker cache sürümü yükseltilmeli.');
+assert(cache&&Number(cache[1])>=930,'Yeni ortak tatil kaynağı için service worker cache sürümü yükseltilmeli.');
 
-console.log('Nöbet Tatil Modu kaynak sözleşmesi başarılı.');
+console.log('Nöbet + servis ortak Tatil Modu ve servis modal scroll kilidi sözleşmesi başarılı.');
