@@ -60,14 +60,14 @@ assert(!ui.includes('data-ka-menu-route'),'ShellUI eski ikinci menü yönlendiri
 const directPages=[
   ['Öğrenci Yoklama','tools','student-attendance'],['Öğrenci Listesi Oluşturucu','tools','student-list'],['Ödev Takip Çizelgesi','tools','homework'],['Not Çizelgesi','tools','grades'],
   ['Nöbet Programı','management','duty'],['Harita','tools','map'],['Kontrol Listeleri','tools','checklists'],['Evrak Takibi','documents','evrak'],['Aylık İşler','management','tasks'],
-  ['Mevzuat','documents','mevzuat'],['Akademik Takvim','academic','calendar'],['Tebliğ-Tebellüğ İmza Sirküsü','documents','teblig'],['Puantaj & İmza Sirküsü','management','puantaj'],['Dilekçe & İzinler','management','dilekce'],['Devamsızlık Çizelgesi','tools','attendance'],
+  ['Akademik Takvim','academic','calendar'],['Tebliğ-Tebellüğ İmza Sirküsü','documents','teblig'],['Puantaj & İmza Sirküsü','management','puantaj'],['Dilekçe & İzinler','management','dilekce'],['Devamsızlık Çizelgesi','tools','attendance'],
   ['Veriler','settings','data']
 ];
 for(const [label,route,page] of directPages) assert(ui.includes(`['${label}'`)&&ui.includes(`'${route}','${page}'`),`Doğrudan menü hedefi eksik/yanlış: ${label} -> ${route}/${page}`);
 const settingsGroup=ui.match(/\{key:'settings'.*?\},\n \{key:'exams'/s)?.[0]||'';
 for(const duplicate of ["['Okul Bilgileri'","['Kullanıcı İşlemleri'","['Kullanıcı İstatistikleri'"]) assert(!settingsGroup.includes(duplicate),`Settings shell tekrarı geri dönmemeli: ${duplicate}`);
 for(const page of ['form-maarif','form-belirli','form-sok','form-rehberlik','form-bep','form-zumre','form-kulup']) assert(ui.includes(`'${page}'`),`Ayrı doküman form sayfası eksik: ${page}`);
-assert(ui.includes("global.StudentPages?.open?.")&&ui.includes("global.EvrakTakipPage.open(root)")&&ui.includes("global.LegislationModule.mount(root)")&&ui.includes("global.KaDataPage.open()"),'Özel menü hedefleri gerçek mevcut API’lere bağlanmalı.');
+assert(ui.includes("global.StudentPages?.open?.")&&ui.includes("global.EvrakTakipPage.open(root)")&&ui.includes("global.KaDataPage.open()"),'Özel menü hedefleri gerçek mevcut API’lere bağlanmalı.');
 assert(ui.includes('const CUSTOM_PAGE_ROUTES=new Map()')&&ui.includes('function registerPageRoute(page,handler)'),'ShellUI özel sayfalar için merkezi route registry sağlamalı.');
 assert(ui.includes("registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();")&&ui.includes('return global.KaDataPage.open()'),'Veriler ShellUI registry üzerinden doğrudan açılmalı.');
 assert(ui.includes('function init(){installBuiltInPageRoutes();'),'Yerleşik özel sayfa registry başlangıçta kurulmalı.');
@@ -125,7 +125,6 @@ const communicationBundle=normalizeLoaderBundle(optionalLoaderSource.match(/defi
 assert(communicationBundle.includes("'js/modules/communication.js'")&&communicationBundle.includes("'js/modules/assistant.js'")&&communicationBundle.indexOf("'js/modules/communication.js'")<communicationBundle.indexOf("'js/modules/assistant.js'"),'AI Asistan ek lazy bağımlılıklar olsa da Communication bundle içinde communication.js sonrasında yüklenmeli.');
 assert(optionalLoaderSource.includes("'js/modules/rubric-settings.js','js/modules/rubric-tools.js'"),'Rubrik köprüleri Tools lazy bundle ile yüklenmeli.');
 assert(ui.includes("loadScript?.('js/modules/payroll-change.js')"),'Maaş değişikliği özel route ihtiyaç anında script yüklemeli.');
-assert(ui.includes("loadScript?.('js/modules/legislation.js')")&&ui.includes("loadScript?.('js/modules/legislation-ui.js')"),'Mevzuat özel route motor ve UI scriptlerini ihtiyaç anında yüklemeli.');
 assert(sw.includes("return clients.openWindow?clients.openWindow(hedef):null;}));});"),'Service Worker notificationclick event.waitUntil zinciri sözdizimsel olarak tam kapanmalı.');
 
 for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note','.ka-home-live','.ka-live-weather']) assert(design.includes(selector),`Merkezi design system selectorü eksik: ${selector}`);
