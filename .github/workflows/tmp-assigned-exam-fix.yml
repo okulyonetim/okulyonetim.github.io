@@ -38,11 +38,6 @@ jobs:
           'Academic assigned teacher edit ownership')
 
           replace_once('js/modules/academic.js',
-          "toast?.(e?.message==='sahip-degil'?'Bu kaydı yalnızca ekleyen kişi düzenleyebilir.':e?.message==='yetkisiz'?'Bu işlem için yetkiniz yok.':'Kayıt hatası: '+(e?.message||e))",
-          "toast?.(e?.message==='sahip-degil'?'Bu sınavı yalnızca ekleyen kişi, yönetici veya atanmış öğretmen düzenleyebilir.':e?.message==='yetkisiz'?'Bu işlem için yetkiniz yok.':'Kayıt hatası: '+(e?.message||e))",
-          'Written edit error copy')
-
-          replace_once('js/modules/academic.js',
           "</textarea></label>`,!!existing);ov.classList.add('ka-written-modal-backdrop')",
           "</textarea></label>`,!!existing&&SinavlarService?.sinavSilinebilirMi?.(existing));ov.classList.add('ka-written-modal-backdrop')",
           'Assigned teacher delete button visibility')
@@ -74,7 +69,7 @@ jobs:
 
           replace_once('firestore.rules',
           "      allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')\n        && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)\n          || !('sahipUid' in resource.data))\n        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik']));",
-          "      allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')\n        && (((('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)\n            || !('sahipUid' in resource.data))\n          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik']))\n        || (kendiOgretmenIdsi() != null\n          && 'ogretmenId' in resource.data\n          && resource.data.ogretmenId == kendiOgretmenIdsi()\n          && request.resource.data.ogretmenId == kendiOgretmenIdsi()\n          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik', 'ogretmenId']))));",
+          "      allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')\n        && (\n          ((('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)\n            || !('sahipUid' in resource.data))\n            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik']))\n          || (kendiOgretmenIdsi() != null\n            && 'ogretmenId' in resource.data\n            && resource.data.ogretmenId == kendiOgretmenIdsi()\n            && request.resource.data.ogretmenId == kendiOgretmenIdsi()\n            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik', 'ogretmenId']))\n        ));",
           'Firestore assigned written exam update')
 
           replace_once('tests/sinav-islemleri-owner-rules.test.js',
