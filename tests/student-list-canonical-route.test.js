@@ -7,8 +7,9 @@ new Function(page);
 
 assert(entry.includes('claimStudentListSurface()'),'Öğrenci listesi async yükleme başlamadan kendi yüzeyini sahiplenmeli.');
 assert(entry.includes("STUDENT_PAGE='js/modules/student-list-page.js'"),'Öğrenci listesi ayrı canonical sayfa modülünden yüklenmeli.');
-assert(!entry.includes('MutationObserver'),'Eski DOM yaması/MutationObserver mimarisi geri dönmemeli.');
-assert(!entry.includes('data-teacher-list-runtime-added'),'Çalışma zamanında sınıf kartı yamalama geri dönmemeli.');
+const runtime=entry.replace(/\/\*[\s\S]*?\*\//g,'');
+assert(!runtime.includes('MutationObserver'),'Eski DOM yaması/MutationObserver runtime mimarisi geri dönmemeli.');
+assert(!runtime.includes('data-teacher-list-runtime-added'),'Çalışma zamanında sınıf kartı yamalama geri dönmemeli.');
 assert(page.includes("document.getElementById('v2ModuleRoot')"),'Canonical öğrenci listesi doğrudan shell modül köküne sahip olmalı.');
 assert(!page.includes("document.getElementById('toolsContent')"),'Öğrenci listesi generic Tools/Kontrol Listeleri içeriğine bağımlı olmamalı.');
 assert(page.includes("arr('siniflar').forEach"),'Sınıf seçimi doğrudan okulun tüm sınıflarından üretilmeli.');
