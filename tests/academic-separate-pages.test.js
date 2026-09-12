@@ -29,6 +29,9 @@ assert(academic.includes("ogretmenId:teacherLocked?linkedTeacherId:ov.querySelec
 assert(academic.includes("linkedTeacherId=String(u.bagliOgretmenId||u.ogretmenId||'')")&&academic.includes('teacherLocked=!u.admin&&!!linkedTeacherId'),'Öğretmen hesabı yazılı formunda merkezi bağlı öğretmen kimliğini kullanmalı.');
 assert(academic.includes("<select data-w-teacher ${teacherLocked?'disabled':''}"),'Öğretmen hesabı başka öğretmene yazılı atayamamalı; öğretmen alanı kendi adına kilitlenmeli.');
 assert(academic.includes('sahipUid:u.uid'),'Yazılı kaydının oluşturan hesap sahipliği korunmalı.');
+assert(academic.includes("tid=String(u.bagliOgretmenId||u.ogretmenId||'')")&&academic.includes("String(s?.ogretmenId||'')===tid"),'Adminin oluşturduğu yazılı atanmış öğretmen tarafından düzenlenebilmeli.');
+assert(academic.includes('sinavSilinebilirMi(s)')&&academic.includes('sinavSilinebilirMi(m)'),'Atanmış öğretmen düzenleme hakkı yazılı silme hakkını otomatik genişletmemeli.');
+assert(academic.includes('function openWrittenExam(id)')&&academic.includes('openWrittenExam,openPlanForLesson'),'AcademicModule profil derin bağlantısı için belirli yazılıyı açma API sağlamalı.');
 for(const token of ["type!=='sinavlar'","u.bagliOgretmenId||u.ogretmenId","row?.ogretmenId","row?.sahipUid===u.uid","if(u.admin===true)return value"]){
   assert(core.includes(token),`Yazılı sınav öğretmen görünürlüğü merkezi AppStore katmanında eksik: ${token}`);
 }
@@ -64,7 +67,7 @@ for(const token of ['kaAcademicCalendarOverlay','AkademikTakvimService.gorselYuk
 assert(academic.includes("page==='calendar'"),'Akademik Takvim yalnız academic/calendar sayfasında otomatik açılmalı.');
 assert(academic.includes('calendarAdmin()'),'Takvim görseli değiştirme yönetici sınırında kalmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem'])assert(!academic.includes(forbidden),`Academic UI doğrudan legacy veri erişimi yapmamalı: ${forbidden}`);
-assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=879'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
+assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=880'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
 assert(!loader.includes('academic-calendar-parity.js'),'Academic loader ayrı takvim parity dosyası yüklememeli.');
 assert(loader.includes("if(name==='academic'||name==='documents')window.firebaseStorageHazirla?.();"),'Academic ve Documents açıldığında Firebase Storage örneği merkezi loader tarafından hazırlanmalı.');
 assert(build.includes("'academic.js':['js/modules/academic.js']"),'Academic üretim bundle tek canonical kaynak kullanmalı.');

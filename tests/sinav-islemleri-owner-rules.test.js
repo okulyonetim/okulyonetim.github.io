@@ -14,12 +14,13 @@ async function main(){
       await setDoc(doc(db,'oy_roller','sinav-editor'),{yetkiler:{sinavIslemleri:'duzenle'}});
       await setDoc(doc(db,'oy_roller','sinav-viewer'),{yetkiler:{sinavIslemleri:'goruntule'}});
       await setDoc(doc(db,'oy_kullanicilar','ownerUid'),{uid:'ownerUid',admin:false,aktif:true,rolId:'sinav-editor'});
-      await setDoc(doc(db,'oy_kullanicilar','otherUid'),{uid:'otherUid',admin:false,aktif:true,rolId:'sinav-editor'});
+      await setDoc(doc(db,'oy_kullanicilar','otherUid'),{uid:'otherUid',admin:false,aktif:true,rolId:'sinav-editor',bagliOgretmenId:'teacher-1'});
       await setDoc(doc(db,'oy_kullanicilar','viewerUid'),{uid:'viewerUid',admin:false,aktif:true,rolId:'sinav-viewer'});
       await setDoc(doc(db,'oy_kullanicilar','adminUid'),{uid:'adminUid',admin:true,aktif:true});
 
       await setDoc(doc(db,'oy_sinavlar','ownedWritten'),{sinif:'5-A',ders:'Fen',sahipUid:'ownerUid',herkeseAcik:false});
       await setDoc(doc(db,'oy_sinavlar','legacyWritten'),{sinif:'6-A',ders:'Matematik'});
+      await setDoc(doc(db,'oy_sinavlar','adminAssignedWritten'),{sinif:'5-A',ders:'Bilişim',sahipUid:'adminUid',ogretmenId:'teacher-1',herkeseAcik:false});
       await setDoc(doc(db,'oy_denemeSinavlari','ownedTrial'),{ad:'Deneme 1',sahipUid:'ownerUid',herkeseAcik:false,sayacDurumu:{aktif:false}});
       await setDoc(doc(db,'oy_denemeSinavlari','legacyTrial'),{ad:'Eski Deneme',sayacDurumu:{aktif:false}});
     });
@@ -44,6 +45,9 @@ async function main(){
     // Sahip kendi kaydını yönetir; başka editör sahipli kaydı değiştiremez.
     await assertSucceeds(updateDoc(doc(owner,'oy_sinavlar','ownedWritten'),{ders:'Fen Bilimleri'}));
     await assertFails(updateDoc(doc(other,'oy_sinavlar','ownedWritten'),{ders:'Yetkisiz'}));
+    await assertSucceeds(updateDoc(doc(other,'oy_sinavlar','adminAssignedWritten'),{ders:'Bilişim Teknolojileri ve Yazılım'}));
+    await assertFails(updateDoc(doc(other,'oy_sinavlar','adminAssignedWritten'),{ogretmenId:'teacher-2'}));
+    await assertFails(deleteDoc(doc(other,'oy_sinavlar','adminAssignedWritten')));
     await assertFails(deleteDoc(doc(other,'oy_denemeSinavlari','ownedTrial')));
 
     // Herkese açık/özel durumunu yalnız admin değiştirebilir.
