@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "okulyonetim-mevzuat-ai",
+  "name": "empty-base-2bc6",
   "main": "src/index.js",
   "compatibility_date": "2026-09-01",
   "workers_dev": true,
