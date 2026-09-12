@@ -23,7 +23,8 @@ jobs:
           s=p.read_text()
           s=s.replace("\n  ['Mevzuat','documents','mevzuat'],['Akademik Takvim'","\n  ['Akademik Takvim'",1)
           s=s.replace("&&ui.includes(\"global.LegislationModule.mount(root)\")",'',1)
-          if "['Mevzuat','documents','mevzuat']" in s or 'global.LegislationModule.mount(root)' in s:
+          s=s.replace("assert(ui.includes(\"loadScript?.('js/modules/legislation.js')\")&&ui.includes(\"loadScript?.('js/modules/legislation-ui.js')\"),'Mevzuat özel route motor ve UI scriptlerini ihtiyaç anında yüklemeli.');\n",'',1)
+          if "['Mevzuat','documents','mevzuat']" in s or 'global.LegislationModule.mount(root)' in s or "loadScript?.('js/modules/legislation.js')" in s or "loadScript?.('js/modules/legislation-ui.js')" in s:
               raise SystemExit('Retired Mevzuat expectations remain')
           p.write_text(s)
           PY
