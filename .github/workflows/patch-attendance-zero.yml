@@ -1,0 +1,35 @@
+name: Patch attendance zero-day count
+on:
+  push:
+    branches: [fix/attendance-zero-day-count]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch attendance totals and zero-day display
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('js/modules/tools.js')
+          s=p.read_text()
+          old="function attStateClass(value,weekend){if(weekend&&(value===undefined||value===null||value===''))return'is-weekend';if(value==='D')return'is-code-d';if(value==='İ')return'is-code-i';if(value==='Y')return'is-code-y';if(value==='R')return'is-code-r';if(value==='T')return'is-code-t';if(value==='+')return'is-code-plus';if(value!==undefined&&value!==null&&value!==''&&!isNaN(Number(value)))return'is-present';return'is-empty'}\nfunction attTotals(o){let saat=0,devam=0,devamsiz=0;Object.values(o?.gunler||{}).forEach(v=>{if(v!==''&&v!==null&&v!==undefined&&!isNaN(Number(v))){saat+=Number(v)||0;devam++}else if(['D','R','İ'].includes(v))devamsiz++});return{saat,devam,devamsiz}}"
+          new="function attStateClass(value,weekend){if(weekend&&(value===undefined||value===null||value===''))return'is-weekend';if(value==='D')return'is-code-d';if(value==='İ')return'is-code-i';if(value==='Y')return'is-code-y';if(value==='R')return'is-code-r';if(value==='T')return'is-code-t';if(value==='+')return'is-code-plus';if(value!==undefined&&value!==null&&value!==''&&!isNaN(Number(value))&&Number(value)>0)return'is-present';return'is-empty'}\nfunction attTotals(o){let saat=0,devam=0,devamsiz=0;Object.values(o?.gunler||{}).forEach(v=>{if(v!==''&&v!==null&&v!==undefined&&!isNaN(Number(v))){const hours=Number(v)||0;saat+=hours;if(hours>0)devam++}else if(['D','R','İ'].includes(v))devamsiz++});return{saat,devam,devamsiz}}"
+          if old not in s:
+              raise SystemExit('Target attendance block not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+      - name: Verify
+        run: |
+          grep -F "if(hours>0)devam++" js/modules/tools.js
+          grep -F "Number(value)>0)return'is-present'" js/modules/tools.js
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/tools.js
+          git commit -m "fix: ignore zero-hour days in attendance totals"
+          git push
