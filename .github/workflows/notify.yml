@@ -19,6 +19,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Narrow patch to verified owners
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/scripts/apply-academic-single-owner-fix.py')
+          text=p.read_text(encoding='utf-8')
+          start=text.index('# Scope schedule event binding to the current Academic host too.')
+          end=text.index('# 3) Teacher profile exams belong to assigned ogretmenId',start)
+          text=text[:start]+text[end:]
+          token=r',\"const host=ownedAcademicHost();if(!host)return\"'
+          if text.count(token)!=1:
+              raise SystemExit(f'Academic test schedule token: expected 1, found {text.count(token)}')
+          p.write_text(text.replace(token,'',1),encoding='utf-8')
+          PY
       - name: Apply canonical fixes
         run: python .github/scripts/apply-academic-single-owner-fix.py
       - name: Verify focused regressions
