@@ -1,16 +1,17 @@
 /* Okul Yönetim — Nöbet Programı Tatil Modu kaynağı.
- * Ayarlar > Tatil Modu içinde tutulan planlı tatilleri yalnız Nöbet Programı'na
- * ikinci bir tatil kaynağı olarak bağlar. dersProgrami verisine/davranışına dokunmaz.
+ * Ayarlar > Tatil Modu içinde tutulan planlı tatilleri Nöbet Programı ve
+ * okulun nöbet olmayan günlerde çalışmaması gereken bağlı süreçleriyle paylaşır.
+ * dersProgrami verisine/davranışına dokunmaz.
  */
 (function(global){
 'use strict';
 if(global.DutyHolidayModeSource)return;
 
 const SYNTHETIC_FLAG='__dutyHolidayModeSource';
-let managementPatched=false,servicePatched=false,settingsLoadPromise=null,observer=null,observerRoot=null,decorateQueued=false;
+let managementPatched=false,servicePatched=false,settingsLoadPromise=null,observer=null,observerRoot=null,decorateQueued=false,serviceModalObserver=null;
 
 const arr=type=>{const value=global.AppStore?.data?.(type);return Array.isArray(value)?value:[]};
-const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
 const validIso=value=>/^\d{4}-\d{2}-\d{2}$/.test(String(value||''));
 const localIso=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 const localDate=iso=>{const d=new Date(`${iso}T12:00:00`);return Number.isNaN(d.getTime())?null:d};
@@ -213,6 +214,18 @@ function installObserver(){
   return true;
 }
 
+function patchHolidayLookup(){
+  const service=global.NobetService;
+  if(!service||service.__holidayModeLookupPatched)return false;
+  const original=typeof service.tatilMi==='function'?service.tatilMi.bind(service):null;
+  service.tatilMi=function(list,iso){
+    const official=original?.(list,iso)||(list||[]).find?.(row=>String(row?.tarih||'').slice(0,10)===iso);
+    return official||modeHolidayForDate(iso)||null;
+  };
+  service.__holidayModeLookupPatched=true;
+  return true;
+}
+
 function patchAutoDistribution(){
   const service=global.NobetService;
   if(!service||typeof service.otomatikDagitimUygula!=='function'||service.__holidayModePatched)return false;
@@ -223,6 +236,7 @@ function patchAutoDistribution(){
   };
   service.__holidayModePatched=true;
   service.tatilModuTatiliMi=iso=>!!modeHolidayForDate(iso);
+  patchHolidayLookup();
   return true;
 }
 
@@ -234,6 +248,29 @@ async function withCombinedHolidayRows(task){
     const current=arr('resmiTatiller'),clean=current.filter(row=>!row?.[SYNTHETIC_FLAG]);
     global.AppStore?.setData?.('resmiTatiller',clean.length||!original.length?clean:original);
   }
+}
+
+function ensureServiceModalScrollStyle(){
+  if(document.getElementById?.('kaTransportModalScrollLockStyle'))return;
+  const style=document.createElement?.('style');
+  if(!style)return;
+  style.id='kaTransportModalScrollLockStyle';
+  style.textContent='html.ka-transport-modal-lock,html.ka-transport-modal-lock body{overflow:hidden!important;overscroll-behavior:none!important;}';
+  document.head?.appendChild?.(style);
+}
+
+function syncServiceModalScrollLock(){
+  const open=!!document.querySelector?.('[data-service-modal]');
+  document.documentElement?.classList?.toggle?.('ka-transport-modal-lock',open);
+  return open;
+}
+
+function installServiceModalScrollGuard(){
+  ensureServiceModalScrollStyle();
+  syncServiceModalScrollLock();
+  if(serviceModalObserver||typeof MutationObserver==='undefined'||!document.body)return;
+  serviceModalObserver=new MutationObserver(()=>syncServiceModalScrollLock());
+  serviceModalObserver.observe(document.body,{childList:true,subtree:true});
 }
 
 function reportModal(){
@@ -294,11 +331,12 @@ function patchManagement(){
     const originalOpen=module.openPage.bind(module);
     module.openPage=function(page,...rest){
       const result=originalOpen(page,...rest);
-      if(page==='duty')ensureSettingsLoaded().finally(()=>{installObserver();queueDecorate();patchAutoDistribution()});
+      if(page==='duty')ensureSettingsLoaded().finally(()=>{installObserver();queueDecorate();patchAutoDistribution();patchHolidayLookup()});
       return result;
     };
   }
   patchAutoDistribution();
+  patchHolidayLookup();
   installObserver();
   if(document.querySelector?.('.ka-duty-page'))ensureSettingsLoaded().finally(queueDecorate);
   return true;
@@ -307,6 +345,8 @@ function patchManagement(){
 function install(){
   patchManagement();
   patchAutoDistribution();
+  patchHolidayLookup();
+  installServiceModalScrollGuard();
   global.AppStore?.subscribe?.('data.dersSaatleri',()=>{
     if(!document.querySelector?.('.ka-duty-page'))return;
     global.ManagementModule?.render?.();
@@ -320,7 +360,12 @@ function install(){
     if(event.detail?.name==='management'){
       patchManagement();
       patchAutoDistribution();
+      patchHolidayLookup();
       setTimeout(()=>{installObserver();queueDecorate()},0);
+    }
+    if(event.detail?.name==='transport'){
+      patchHolidayLookup();
+      ensureSettingsLoaded().finally(syncServiceModalScrollLock);
     }
   });
 }
@@ -335,6 +380,8 @@ global.DutyHolidayModeSource={
   ensureSettingsLoaded,
   decorate:decorateDutyPage,
   patchManagement,
-  patchAutoDistribution
+  patchAutoDistribution,
+  patchHolidayLookup,
+  syncServiceModalScrollLock
 };
 })(window);
