@@ -36,9 +36,22 @@ jobs:
           PY
       - name: Apply canonical fixes
         run: python .github/scripts/apply-academic-single-owner-fix.py
+      - name: Align central back regression contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/classic-shell-v2-smoke.test.js')
+          text=p.read_text(encoding='utf-8')
+          old="assert(ui.includes('function installBackNavigation()')&&ui.includes(\"app.addListener('backButton'\")&&ui.includes(\"window.addEventListener('popstate'\"),'Shell browser ve native fiziksel geri tuşunu merkezi yönetmeli.');"
+          new="assert(ui.includes('function installBackNavigation()')&&!ui.includes(\"app.addListener('backButton'\")&&ui.includes(\"window.addEventListener('popstate'\"),'Shell browser geçmişini yönetmeli; Android fiziksel geri tek native sahibi MainActivity üzerinden ShellUI.back kullanmalı.');"
+          if text.count(old)!=1:
+              raise SystemExit(f'Classic back contract: expected 1, found {text.count(old)}')
+          p.write_text(text.replace(old,new,1),encoding='utf-8')
+          PY
       - name: Verify focused regressions
         run: |
-          git diff --check -- js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js
+          git diff --check -- js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js
           node --check js/modules/academic.js
           node --check js/modules/classic-parity.js
           node --check js/core/shell-ui.js
@@ -59,7 +72,7 @@ jobs:
           git rm .github/scripts/apply-academic-single-owner-fix.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A .github/workflows/notify.yml .github/scripts js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js
+          git add -A .github/workflows/notify.yml .github/scripts js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js
           git diff --cached --check
           git commit -m 'fix: make academic pages single-owner and repair teacher profile back flow'
           git push origin HEAD:fix/academic-single-owner-profile-back-20260912
