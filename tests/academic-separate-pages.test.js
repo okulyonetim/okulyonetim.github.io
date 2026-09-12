@@ -2,6 +2,7 @@ const fs=require('fs');
 const assert=require('assert');
 const academic=fs.readFileSync('js/modules/academic.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
+const core=fs.readFileSync('js/core/core.js','utf8');
 const build=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
@@ -19,6 +20,20 @@ assert(academic.includes("ready=false")&&academic.includes("if(!mounted||!ready)
 assert(!academic.includes('ka-written-hero')&&!academic.includes('ka-trial-hero'),'Yazılı/Deneme kendi ikinci hero başlığını üretmemeli; ortak Academic başlığı tek görsel owner olmalı.');
 assert(!css.includes('.ka-written-hero')&&!css.includes('.ka-trial-hero'),'Emekli ikinci sınav hero tasarımları merkezi CSS içinde yama/ölü katman olarak kalmamalı.');
 assert(academic.includes('data-academic-title')&&academic.includes('data-academic-description')&&academic.includes('applyAcademicMeta(title)'),'Academic ayrı sayfa başlığı ortak tek shell owner üzerinden yönetilmeli.');
+
+// Yazılı sınav görünürlüğü: seçilen öğretmen kayıt alanıdır; oluşturan hesap sahipUid olarak kalır.
+assert(academic.includes("ogretmenId:ov.querySelector('[data-w-teacher]').value"),'Yazılı formu seçilen öğretmeni ogretmenId alanına kaydetmeli.');
+assert(academic.includes('sahipUid:u.uid'),'Yazılı kaydının oluşturan hesap sahipliği korunmalı.');
+for(const token of ["type!=='sinavlar'","u.bagliOgretmenId||u.ogretmenId","row?.ogretmenId","row?.sahipUid===u.uid","if(u.admin===true)return value"]){
+  assert(core.includes(token),`Yazılı sınav öğretmen görünürlüğü merkezi AppStore katmanında eksik: ${token}`);
+}
+assert(core.includes('data:t=>dataVisibility(t,state.data[t])'),'AppStore.data yazılı sınav görünürlüğünü merkezi veri kapısından uygulamalı.');
+
+// Ana modüllerde aynı route yüzeyi ikinci kez mount edilmemeli; eski modül kökü yeni modüle taşınmamalı.
+for(const token of ['const MODULE_ROOT_SELECTORS=Object.freeze','function moduleMounted(name)','function clearModuleRoot()','if(!moduleMounted(name))window.dispatchEvent','unmountModule(previous);clearModuleRoot()']){
+  assert(loader.includes(token),`Merkezi tek-render lifecycle sözleşmesi eksik: ${token}`);
+}
+assert(!css.includes('.ka-route-switching{visibility:hidden!important}'),'Render geçişi CSS visibility yamasıyla gizlenmemeli.');
 
 for(const token of ['planCurrentWeekIndex','planTracked','ogretmenYillikPlanSecimleri','yillikPlanNotlari','data-plan-select','data-plan-note','data-plan-prev','data-plan-next']) assert(academic.includes(token),`Yıllık Plan gerçek haftalık takip sözleşmesi eksik: ${token}`);
 for(const token of ['data-plan-week-overlay','ka-plan-week--overlay','data-plan-wake','data-plan-menu','bindPlanWeekGestures','openPlanMenu','openPlanWeekPicker','openPlanWeekEditor','openPlanSignDate','navigator.wakeLock','touchstart','touchend','data-plan-full']) assert(academic.includes(token),`Yıllık Plan tam ekran haftalık görünür paritesi eksik: ${token}`);
