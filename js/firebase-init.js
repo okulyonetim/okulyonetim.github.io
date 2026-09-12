@@ -133,6 +133,17 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
+/* Taşıma aylık takip çizelgesi, yönetim modülü yüklenmemiş olsa bile Tatil Modu
+   tarihlerini doğrudan ortak tatil kaynağından kullanır. */
+(function transportHolidayModeBridgeFeatureLoad(){
+  if(document.querySelector('script[data-transport-holiday-mode-bridge]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/transport-holiday-mode-bridge.js?v=931';
+  script.async=false;
+  script.dataset.transportHolidayModeBridge='';
+  document.head.appendChild(script);
+})();
+
 /* Ders programında gecikmiş uzak snapshot'ın yeni eklenen/güncellenen yerel
    dersleri görünümden düşürmesini engelleyen küçük veri bütünlüğü katmanı. */
 (function scheduleDataIntegrityFeatureLoad(){
