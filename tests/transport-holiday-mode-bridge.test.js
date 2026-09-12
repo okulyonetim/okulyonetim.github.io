@@ -11,6 +11,7 @@ assert(bridge.includes("global.AppStore.setData('resmiTatiller',source.combinedH
 assert(bridge.includes("if(event.detail?.name==='transport')"),'Lazy yüklenen Taşıma modülü de köprülenmeli.');
 assert(firebase.includes('transport-holiday-mode-bridge.js?v=931'),'Taşıma Tatil Modu köprüsü başlangıçta yüklenmeli.');
 assert(sw.includes("'./js/core/transport-holiday-mode-bridge.js?v=931'"),'Taşıma Tatil Modu köprüsü offline cache içinde olmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v931';"),'Yeni köprü için PWA cache sürümü yenilenmeli.');
+const cacheVersion=Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
+assert(cacheVersion>=931,'Taşıma Tatil Modu köprüsü için PWA cache sürümü en az 931 olmalı.');
 
 console.log('Taşıma Tatil Modu köprüsü sözleşmesi başarılı.');

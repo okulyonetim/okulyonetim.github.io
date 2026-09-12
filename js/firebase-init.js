@@ -101,6 +101,16 @@ function firebaseyiBaslat(){
   }
 }
 
+/* Uygulama geneli gezinme: rapor önizlemede geri tuşu ve sayfa üstten açılma davranışı. */
+(function appNavigationBehaviorFeatureLoad(){
+  if(document.querySelector('script[data-app-navigation-behavior]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/app-navigation-behavior.js?v=932';
+  script.async=false;
+  script.dataset.appNavigationBehavior='';
+  document.head.appendChild(script);
+})();
+
 /* Profil güvenliği ve giriş konumu özelliği auth oturumundan bağımsız yüklenir;
    servis kendi içinde AppStore/DeviceData hazır olana kadar bekler. */
 (function loginSecurityFeatureLoad(){
