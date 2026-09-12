@@ -1,26 +1,94 @@
-name: Hatırlatıcı Bildirimleri
+name: Apply written exam teacher assignment completion
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'
-  workflow_dispatch:
+  push:
+    branches:
+      - fix/central-single-render-owner
+    paths:
+      - '.github/workflows/notify.yml'
+
+permissions:
+  contents: write
 
 jobs:
-  notify:
+  apply:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
-      - name: Kodu Al
-        uses: actions/checkout@v4
-
-      - name: Node.js Kur
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
         with:
-          node-version: '22'
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply safe existing-file changes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
 
-      - name: Bağımlılıkları Yükle
-        run: npm install
-        
-      - name: Bildirimleri Kontrol Et ve Gönder
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: node check-and-notify.js
+          def replace_once(path, old, new, label):
+              p=Path(path)
+              text=p.read_text(encoding='utf-8')
+              count=text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected 1 match, found {count}')
+              p.write_text(text.replace(old,new,1),encoding='utf-8')
+
+          academic='js/modules/academic.js'
+          tests='tests/academic-separate-pages.test.js'
+
+          replace_once(
+              academic,
+              "known=ls.some(x=>x.ad===existing?.ders);const ov=modal(existing?'Yazılı Sınav Düzenle':'Yazılı Sınav Ekle'",
+              "known=ls.some(x=>x.ad===existing?.ders);const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user')||{},linkedTeacherId=String(u.bagliOgretmenId||u.ogretmenId||''),selectedTeacherId=String(existing?.ogretmenId||(!u.admin&&linkedTeacherId?linkedTeacherId:'')),teacherLocked=!u.admin&&!!linkedTeacherId;const ov=modal(existing?'Yazılı Sınav Düzenle':'Yazılı Sınav Ekle'",
+              'written teacher context'
+          )
+          replace_once(
+              academic,
+              '<select data-w-teacher><option value="">Seçiniz</option>${ts.map(o=>`<option value="${esc(o.id)}" ${o.id===existing?.ogretmenId?\'selected\':\'\'}>',
+              '<select data-w-teacher ${teacherLocked?\'disabled\':\'\'}><option value="">Seçiniz</option>${ts.map(o=>`<option value="${esc(o.id)}" ${String(o.id)===selectedTeacherId?\'selected\':\'\'}>',
+              'written teacher select'
+          )
+          replace_once(
+              academic,
+              "ogretmenId:ov.querySelector('[data-w-teacher]').value",
+              "ogretmenId:teacherLocked?linkedTeacherId:ov.querySelector('[data-w-teacher]').value",
+              'written teacher payload'
+          )
+
+          marker="assert(academic.includes(\"ogretmenId:ov.querySelector('[data-w-teacher]').value\"),'Yazılı formu seçilen öğretmeni ogretmenId alanına kaydetmeli.');"
+          replacement="assert(academic.includes(\"ogretmenId:teacherLocked?linkedTeacherId:ov.querySelector('[data-w-teacher]').value\"),'Yazılı formu adminin seçtiği öğretmeni, öğretmen hesabında ise bağlı öğretmeni ogretmenId alanına kaydetmeli.');\nassert(academic.includes(\"linkedTeacherId=String(u.bagliOgretmenId||u.ogretmenId||'')\")&&academic.includes('teacherLocked=!u.admin&&!!linkedTeacherId'),'Öğretmen hesabı yazılı formunda merkezi bağlı öğretmen kimliğini kullanmalı.');\nassert(academic.includes(\"<select data-w-teacher ${teacherLocked?'disabled':''}\"),'Öğretmen hesabı başka öğretmene yazılı atayamamalı; öğretmen alanı kendi adına kilitlenmeli.');"
+          replace_once(tests,marker,replacement,'written teacher assignment tests')
+          replace_once(tests,"academic.js?v=877","academic.js?v=878",'academic loader contract version')
+
+          replace_once('js/app-loader.js',"'js/modules/academic.js?v=877'","'js/modules/academic.js?v=878'",'academic cache key')
+          replace_once('index.html','js/app-loader.js?v=897','js/app-loader.js?v=898','loader cache key')
+          replace_once('service-worker.js',"const CACHE_ADI='oy-cache-v924';","const CACHE_ADI='oy-cache-v925';",'service worker cache')
+          replace_once('service-worker.js','./js/app-loader.js?v=897','./js/app-loader.js?v=898','service worker loader key')
+          replace_once('service-worker.js','./js/modules/academic.js?v=877','./js/modules/academic.js?v=878','service worker academic key')
+          PY
+      - name: Verify focused contracts
+        run: |
+          git diff --check
+          node --check js/modules/academic.js
+          node --check js/app-loader.js
+          node --check service-worker.js
+          node tests/academic-separate-pages.test.js
+          node tests/classic-shell-v2-smoke.test.js
+          node tests/modules-local-first-boundary.test.js
+          node tests/service-worker-precache-smoke.test.js
+      - name: Run complete client regression suite
+        run: node scripts/run-client-tests.mjs
+      - name: Audit client architecture
+        run: node scripts/check-client-architecture.mjs
+      - name: Restore workflow and commit final existing files
+        shell: bash
+        run: |
+          git checkout origin/main -- .github/workflows/notify.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/academic.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js .github/workflows/notify.yml
+          git diff --cached --check
+          git commit -m 'fix: lock written exams to assigned teacher accounts'
+          git push origin HEAD:fix/central-single-render-owner
