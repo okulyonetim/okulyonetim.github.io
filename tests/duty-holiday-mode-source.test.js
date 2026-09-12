@@ -58,9 +58,9 @@ assert(code.includes('withCombinedHolidayRows'),'Nöbet raporu iki tatil kaynağ
 assert(code.includes("title.textContent='Tatiller'"),'Nöbet tatil kartı birleşik kaynağı ifade etmeli.');
 assert(!code.includes("AppStore?.setData?.('dersProgrami'"),'Bu özellik ders programı verisine yazmamalı.');
 assert(!code.includes('COL.dersProgrami'),'Bu özellik ders programı koleksiyonuna dokunmamalı.');
-assert(firebase.includes("js/core/duty-holiday-mode-source.js?v=923"),'Nöbet Tatil Modu kaynağı başlangıçta yüklenmeli.');
-assert(sw.includes("'./js/core/duty-holiday-mode-source.js?v=923'"),'Nöbet Tatil Modu kaynağı offline precache içinde olmalı.');
+assert(firebase.includes("js/core/duty-holiday-mode-source.js?v=930"),'Nöbet/servis ortak Tatil Modu kaynağı güncel sürümle yüklenmeli.');
+assert(sw.includes("'./js/core/duty-holiday-mode-source.js?v=930'"),'Nöbet/servis ortak Tatil Modu kaynağı offline precache içinde olmalı.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
-assert(cache&&Number(cache[1])>=923,'Yeni nöbet tatil kaynağı için service worker cache sürümü yükseltilmeli.');
+assert(cache&&Number(cache[1])>=930,'Yeni ortak tatil kaynağı için service worker cache sürümü yükseltilmeli.');
 
 console.log('Nöbet + servis ortak Tatil Modu ve servis modal scroll kilidi sözleşmesi başarılı.');
