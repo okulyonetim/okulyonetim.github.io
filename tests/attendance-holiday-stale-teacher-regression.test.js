@@ -1,0 +1,15 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/modules/tools.js','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+new Function(src);
+assert(src.includes("'dersSaatleri'"),'Attendance prepare Tatil Modu ayarlarını hydrate etmeli.');
+assert(src.includes('function attHolidayRows()'),'Planlı tatil tarihlerini resmî tatillerle birleştiren yardımcı bulunmalı.');
+assert(src.includes('cfg.tatilAraliklari'),'Yeni Tatil Modu aralıkları kullanılmalı.');
+assert(src.includes('cfg.tatilBaslangicTarihi')&&src.includes('cfg.okulAcilisTarihi'),'Eski Tatil Modu alanları desteklenmeli.');
+assert(src.includes('attHolidayRows(),arr(\'ogretmenIzinleri\')'),'Otomatik hesaplama planlı tatilleri kullanmalı.');
+assert(src.includes("activeIds.has(String(x.ogretmenId||''))"),'Silinmiş öğretmenler çizelge görünümünden filtrelenmeli.');
+assert(src.includes('DevamsizlikCizelgesiService.ogretmenSil(y,m,rowId)'),'Otomatik tazeleme silinmiş öğretmeni aylık kayıttan temizlemeli.');
+assert(src.includes("'data.dersSaatleri'"),'Tatil ayarı değişikliği çizelgeyi yeniden render etmeli.');
+assert(sw.includes("const CACHE_ADI='oy-cache-v935';"),'Yeni attendance kodu yeni PWA cache sürümüyle dağıtılmalı.');
+console.log('Devamsızlık Tatil Modu + silinmiş öğretmen regresyon testi başarılı.');
