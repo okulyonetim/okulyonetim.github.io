@@ -1,0 +1,46 @@
+from pathlib import Path
+import re
+import shutil
+
+shell_path = Path('js/core/shell-ui.js')
+shell = shell_path.read_text()
+old = "['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Mevzuat','📖','documents','mevzuat'],['Personel İşleri','👥','management','staff']"
+new = "['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Personel İşleri','👥','management','staff']"
+if old in shell:
+    shell = shell.replace(old, new, 1)
+route = re.compile(r"\n  if\(name==='documents'&&page==='mevzuat'\)\{.*?\n    if\(title\)setTitle\(title\);return true;\n  \}", re.S)
+shell = route.sub('', shell, count=1)
+if 'LegislationEngine' in shell or 'LegislationModule' in shell or "documents','mevzuat" in shell:
+    raise SystemExit('Mevzuat references remain in shell-ui.js')
+shell_path.write_text(shell)
+
+sw_path = Path('service-worker.js')
+sw = sw_path.read_text().replace("const CACHE_ADI='oy-cache-v936';", "const CACHE_ADI='oy-cache-v937';", 1)
+sw = sw.replace(",'./js/modules/legislation.js','./js/modules/legislation-ui.js'", '', 1)
+if 'js/modules/legislation' in sw:
+    raise SystemExit('Mevzuat remains in service worker')
+sw_path.write_text(sw)
+
+for name in ['tests/attendance-holiday-stale-teacher-regression.test.js', 'tests/attendance-schedule-scroll-regression.test.js']:
+    p = Path(name)
+    p.write_text(p.read_text().replace('oy-cache-v936', 'oy-cache-v937'))
+
+css_path = Path('css/design-system.css')
+css_path.write_text(''.join(line for line in css_path.read_text().splitlines(True) if 'ka-legislation' not in line))
+
+for name in ['js/modules/legislation.js', 'js/modules/legislation-ui.js', 'tests/legislation-page-redesign.test.js']:
+    Path(name).unlink(missing_ok=True)
+shutil.rmtree('worker/mevzuat-ai', ignore_errors=True)
+
+Path('tests/legislation-engine-v2-smoke.test.js').write_text("""const fs=require('fs');const assert=require('assert');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');const sw=fs.readFileSync('service-worker.js','utf8');const css=fs.readFileSync('css/design-system.css','utf8');
+assert(!shell.includes(\"['Mevzuat','📖','documents','mevzuat']\")&&!shell.includes(\"page==='mevzuat'\"),'Mevzuat menü/rota uygulamadan kaldırılmalı.');
+assert(!shell.includes('LegislationEngine')&&!shell.includes('LegislationModule'),'Mevzuat runtime modülü ShellUI içinde kalmamalı.');
+for(const f of ['js/modules/legislation.js','js/modules/legislation-ui.js','tests/legislation-page-redesign.test.js']) assert(!fs.existsSync(f),`${f} kaldırılmış olmalı.`);
+assert(!fs.existsSync('worker/mevzuat-ai'),'Mevzuat AI Worker paketi repodan kaldırılmış olmalı.');
+assert(!sw.includes('js/modules/legislation')&&sw.includes(\"const CACHE_ADI='oy-cache-v937';\"),'Service Worker Mevzuat dosyalarını önbelleğe almamalı ve cache yükseltilmeli.');
+assert(!css.includes('ka-legislation'),'Mevzuata özel ölü tasarım kuralları kaldırılmalı.');
+console.log('Mevzuat özelliği uygulama/runtime/repo katmanlarından tamamen emekli edildi.');
+""")
+
+Path('scripts/remove-mevzuat.py').unlink(missing_ok=True)
