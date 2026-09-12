@@ -29,7 +29,7 @@ const MENU_GROUPS=[
  {key:'people',label:'Sınıf ve Öğrenci İşlemleri',modernLabel:'Öğretmen & Öğrenciler',icon:'👥',tone:'green',route:'people',items:[['Öğretmenler','👩‍🏫','people','teachers'],['Sınıflar','🏫','people','classes'],['Öğrenciler','🎓','people','students'],['Yazılı Sınavlar','☑️','academic','written'],['Deneme Sınavları','🧪','academic','trial'],['Öğrenci Listesi Oluşturucu','📋','tools','student-list'],['Öğrenci Yoklama','☑️','tools','student-attendance']]},
  {key:'programs',label:'Ders ve Nöbet Programı',modernLabel:'Programlar',icon:'📅',tone:'green',route:'academic',items:[['Ders Programı','📅','academic','schedule'],['Nöbet Programı','🛡️','management','duty']]},
  {key:'communication',label:'İletişim',modernLabel:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[['Mesajlar','💬','communication','messages'],['Haberler','📰','communication','news'],['Duyurular','📣','communication','announcements'],['Anketler','📋','communication','polls'],['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]},
- {key:'documents',label:'Belgeler',modernLabel:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Mevzuat','📖','documents','mevzuat'],['Personel İşleri','👥','management','staff']]},
+ {key:'documents',label:'Belgeler',modernLabel:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Personel İşleri','👥','management','staff']]},
  {key:'transport',label:'Ulaşım',modernLabel:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma','🚌','transport','services'],['Servis Oturma','💺','transport','busSeats'],['Sınıf Oturma','🏫','transport','classSeats'],['Harita','🗺️','tools','map']]},
  {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Akademik Takvim','📅','academic','calendar']]},
  {key:'settings',label:'Okul ve Sistem',modernLabel:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Veriler','🗄️','settings','data']]},
@@ -92,16 +92,6 @@ function applySubpage(name,page,title){
   if(name==='documents'&&page==='evrak'&&global.EvrakTakipPage?.open){
     global.DocumentsModule?.unmount?.();
     Promise.resolve(global.EvrakTakipPage.open(root)).catch(e=>{console.error('[Shell/evrak]',e);global.toast?.('Evrak Takibi açılamadı.');});
-    if(title)setTitle(title);return true;
-  }
-  if(name==='documents'&&page==='mevzuat'){
-    global.DocumentsModule?.unmount?.();
-    Promise.resolve((async()=>{
-      if(!global.LegislationEngine)await global.AppLoader?.loadScript?.('js/modules/legislation.js');
-      if(!global.LegislationModule?.mount)await global.AppLoader?.loadScript?.('js/modules/legislation-ui.js');
-      if(!global.LegislationModule?.mount)throw new Error('Mevzuat modülü yüklenemedi.');
-      return global.LegislationModule.mount(root);
-    })()).catch(e=>{console.error('[Shell/mevzuat]',e);global.toast?.('Mevzuat açılamadı.');});
     if(title)setTitle(title);return true;
   }
   if(name==='documents'&&page==='teblig'&&global.DocumentsModule?.openTeblig){
