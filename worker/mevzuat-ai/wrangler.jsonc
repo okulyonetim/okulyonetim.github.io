@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "okulyonetim-mevzuat-ai",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "vars": {
+    "APP_ORIGIN": "https://okulyonetim.github.io",
+    "OPENAI_MODEL": "chat-latest"
+  }
+}
