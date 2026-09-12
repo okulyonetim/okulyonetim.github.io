@@ -14,11 +14,20 @@ const state={
   meta:{hydrated:false,booted:false}
 };
 const listeners=new Map(),anyListeners=new Set();
-function pathGet(path){return String(path||'').split('.').filter(Boolean).reduce((o,k)=>o==null?undefined:o[k],state)}
+function dataVisibility(type,value){
+  if(type!=='sinavlar'||!Array.isArray(value))return value;
+  const u=state.session.user||window.AKTIF_KULLANICI||{};
+  if(u.admin===true)return value;
+  const teacherId=String(u.bagliOgretmenId||u.ogretmenId||'');
+  if(!teacherId)return value;
+  return value.filter(row=>String(row?.ogretmenId||'')===teacherId||(!row?.ogretmenId&&!!u.uid&&row?.sahipUid===u.uid));
+}
+function pathGet(path){const parts=String(path||'').split('.').filter(Boolean),value=parts.reduce((o,k)=>o==null?undefined:o[k],state);return parts[0]==='data'&&parts.length===2?dataVisibility(parts[1],value):value}
 function emit(path,value){
-  listeners.get(path)?.forEach(fn=>{try{fn(value,path,state)}catch(e){console.error('[AppStore]',e)}});
-  anyListeners.forEach(fn=>{try{fn(path,value,state)}catch(e){console.error('[AppStore:any]',e)}});
-  try{window.dispatchEvent(new CustomEvent('koruk:store-change',{detail:{path,value}}))}catch(_){}
+  const parts=String(path||'').split('.').filter(Boolean),exposed=parts[0]==='data'&&parts.length===2?dataVisibility(parts[1],value):value;
+  listeners.get(path)?.forEach(fn=>{try{fn(exposed,path,state)}catch(e){console.error('[AppStore]',e)}});
+  anyListeners.forEach(fn=>{try{fn(path,exposed,state)}catch(e){console.error('[AppStore:any]',e)}});
+  try{window.dispatchEvent(new CustomEvent('koruk:store-change',{detail:{path,value:exposed}}))}catch(_){}
 }
 function pathSet(path,value){
   const parts=String(path||'').split('.').filter(Boolean);if(!parts.length)return;
@@ -29,7 +38,7 @@ function setData(type,value){state.data[type]=value;emit('data.'+type,value);ret
 function setDataMany(data){if(!data||typeof data!=='object')return state.data;const changes=Object.entries(data);for(const [type,value] of changes)state.data[type]=value;for(const [type,value] of changes)emit('data.'+type,value);return data}
 function hydrateStore(data){if(data&&typeof data==='object')Object.entries(data).forEach(([k,v])=>state.data[k]=v);state.meta.hydrated=true;emit('meta.hydrated',true);return state.data}
 function subscribe(path,fn,{immediate=false}={}){if(!listeners.has(path))listeners.set(path,new Set());listeners.get(path).add(fn);if(immediate)try{fn(pathGet(path),path,state)}catch(e){console.error('[AppStore]',e)}return()=>listeners.get(path)?.delete(fn)}
-window.AppStore={__v2:true,get:pathGet,set:pathSet,data:t=>state.data[t],setData,setDataMany,hydrate:hydrateStore,subscribe,subscribeAll:fn=>(anyListeners.add(fn),()=>anyListeners.delete(fn)),snapshot:()=>{try{return structuredClone(state)}catch(_){return JSON.parse(JSON.stringify(state))}},get state(){return state},getir:pathGet,ayarla:pathSet,abone:(p,f)=>subscribe(p,f)};
+window.AppStore={__v2:true,get:pathGet,set:pathSet,data:t=>dataVisibility(t,state.data[t]),setData,setDataMany,hydrate:hydrateStore,subscribe,subscribeAll:fn=>(anyListeners.add(fn),()=>anyListeners.delete(fn)),snapshot:()=>{try{return structuredClone(state)}catch(_){return JSON.parse(JSON.stringify(state))}},get state(){return state},getir:pathGet,ayarla:pathSet,abone:(p,f)=>subscribe(p,f)};
 window.addEventListener('online',()=>AppStore.set('ui.online',true),{passive:true});
 window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:true});
 
