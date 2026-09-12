@@ -1,87 +1,26 @@
-name: Apply academic single-owner navigation repair
+name: Hatırlatıcı Bildirimleri
 
 on:
-  push:
-    branches:
-      - fix/academic-single-owner-profile-back-20260912
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  apply:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - name: Narrow patch to verified owners
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('.github/scripts/apply-academic-single-owner-fix.py')
-          text=p.read_text(encoding='utf-8')
-          start=text.index('# Scope schedule event binding to the current Academic host too.')
-          end=text.index('# 3) Teacher profile exams belong to assigned ogretmenId',start)
-          text=text[:start]+text[end:]
-          token=r',\"const host=ownedAcademicHost();if(!host)return\"'
-          if text.count(token)!=1:
-              raise SystemExit(f'Academic test schedule token: expected 1, found {text.count(token)}')
-          p.write_text(text.replace(token,'',1),encoding='utf-8')
-          PY
-      - name: Apply canonical fixes
-        run: python .github/scripts/apply-academic-single-owner-fix.py
-      - name: Align retired legacy regression contracts
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('tests/classic-shell-v2-smoke.test.js')
-          text=p.read_text(encoding='utf-8')
-          old="assert(ui.includes('function installBackNavigation()')&&ui.includes(\"app.addListener('backButton'\")&&ui.includes(\"window.addEventListener('popstate'\"),'Shell browser ve native fiziksel geri tuşunu merkezi yönetmeli.');"
-          new="assert(ui.includes('function installBackNavigation()')&&!ui.includes(\"app.addListener('backButton'\")&&ui.includes(\"window.addEventListener('popstate'\"),'Shell browser geçmişini yönetmeli; Android fiziksel geri tek native sahibi MainActivity üzerinden ShellUI.back kullanmalı.');"
-          if text.count(old)!=1:
-              raise SystemExit(f'Classic back contract: expected 1, found {text.count(old)}')
-          p.write_text(text.replace(old,new,1),encoding='utf-8')
+      - name: Kodu Al
+        uses: actions/checkout@v4
 
-          p=Path('tests/classic-people-v2-smoke.test.js')
-          text=p.read_text(encoding='utf-8')
-          old="for(const label of ['Toplam sınav','7 gün içinde','Aktif sayaç']) assert(parity.includes(label),`Toplu klasik parite öğesi eksik: ${label}`);"
-          new="assert(!parity.includes('data-classic-written-summary')&&!parity.includes('data-classic-trial-summary')&&!parity.includes('injectAcademicSummary'),'Classic parity Academic özetlerini ikinci renderer olarak üretmemeli.');"
-          if text.count(old)!=1:
-              raise SystemExit(f'Classic Academic parity contract: expected 1, found {text.count(old)}')
-          p.write_text(text.replace(old,new,1),encoding='utf-8')
-          PY
-      - name: Verify focused regressions
-        run: |
-          git diff --check -- js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js tests/classic-people-v2-smoke.test.js
-          node --check js/modules/academic.js
-          node --check js/modules/classic-parity.js
-          node --check js/core/shell-ui.js
-          node tests/academic-separate-pages.test.js
-          node tests/profile-page-redesign.test.js
-          node tests/native-back-holiday-regression.test.js
-          node tests/classic-shell-v2-smoke.test.js
-          node tests/classic-people-v2-smoke.test.js
-          node tests/modules-local-first-boundary.test.js
-          node tests/service-worker-precache-smoke.test.js
-      - name: Run complete client regressions
-        run: node scripts/run-client-tests.mjs
-      - name: Audit client architecture
-        run: node scripts/check-client-architecture.mjs
-      - name: Commit final existing files
-        shell: bash
-        run: |
-          git checkout origin/main -- .github/workflows/notify.yml
-          git rm -f .github/scripts/apply-academic-single-owner-fix.py
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A .github/workflows/notify.yml js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js tests/classic-people-v2-smoke.test.js
-          git diff --cached --check -- js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js tests/classic-people-v2-smoke.test.js
-          git commit -m 'fix: make academic pages single-owner and repair teacher profile back flow'
-          git push origin HEAD:fix/academic-single-owner-profile-back-20260912
+      - name: Node.js Kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Bağımlılıkları Yükle
+        run: npm install
+        
+      - name: Bildirimleri Kontrol Et ve Gönder
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node check-and-notify.js

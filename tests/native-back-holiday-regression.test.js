@@ -3,9 +3,12 @@ const assert=require('assert');
 
 const activity=fs.readFileSync('android/app/src/main/java/com/koruk/okul/MainActivity.java','utf8');
 const runtime=fs.readFileSync('js/core/platform/mobile-runtime-fixes.js','utf8');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 new Function(runtime);
 
 assert(activity.includes("window.ShellUI && typeof window.ShellUI.back==='function'"),'Android geri tuşu ShellUI geçmişine devredilmiyor.');
+assert(!shell.includes("addListener('backButton'"),'Android geri tuşu MainActivity ve Capacitor listener tarafından iki kez sahiplenilmemeli.');
+assert(shell.includes('function sameSurface(a,b)')&&shell.includes('if(sameSurface(top,view))'),'Aynı görünür route geçmişte üst üste birikmemeli.');
 assert(activity.includes('nativeRuntimeDuzeltmeleriniYukle();'),'Native runtime düzeltmeleri app-ready sırasında yüklenmiyor.');
 const runtimeVersion=activity.match(/mobile-runtime-fixes\.js\?v=(\d+)/);
 assert(runtimeVersion&&Number(runtimeVersion[1])>=909,'Native runtime düzeltme dosyası sürümlü olarak yüklenmiyor.');
