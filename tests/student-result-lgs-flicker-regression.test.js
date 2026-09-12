@@ -1,0 +1,11 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/core/student-exam-result-details.js','utf8');
+new Function(src);
+for(const token of ['187.8131','4.1820','4.9812','3.8347','1.6816','1.9259','1.6157','estimatedLgs','scoreOf(r,exam)']) assert(src.includes(token),`LGS fallback eksik: ${token}`);
+assert(src.includes('new MutationObserver(mutations=>{if(mutations.some(m=>[...m.addedNodes].some(pageNodeAdded)))run()})'),'Sonuç detayları paint öncesi mutation microtask içinde senkron işlenmeli.');
+assert(!src.includes("AppStore?.subscribe?.(p,schedule)"),'Sonuç detayı ikinci AppStore aboneliği kurmamalı.');
+const nets={turkce:13.6666666667,matematik:3.6666666667,fen:1.3333333333,inkilap:-1,din:6,yabanci:7.3333333333};
+const score=187.8131+nets.turkce*4.1820+nets.matematik*4.9812+nets.fen*3.8347+nets.inkilap*1.6816+nets.din*1.9259+nets.yabanci*1.6157;
+assert(Math.abs(score-290.1)<0.15,`Referans örnek yaklaşık 290,1 olmalı, hesap=${score}`);
+console.log('LGS fallback + sonuç ekranı flicker regression sözleşmesi başarılı.');
