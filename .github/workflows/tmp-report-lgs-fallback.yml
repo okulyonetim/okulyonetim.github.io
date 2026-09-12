@@ -17,6 +17,10 @@ jobs:
           node-version: 24
       - name: Apply focused patch
         run: python scripts/tmp-fix-report-lgs-fallback.py
+      - name: Verify patched contracts
+        run: |
+          grep -n "SS_LGS_RULES\|SS_LGS_BASE\|ssEstimatedLgs" js/modules/academic.js
+          grep -n "academic.js?v=882\|app-loader.js?v=900\|oy-cache-v929" js/app-loader.js index.html service-worker.js tests/exam-lgs-result-ranking.test.js
       - name: Focused tests
         run: |
           node tests/exam-lgs-result-ranking.test.js
