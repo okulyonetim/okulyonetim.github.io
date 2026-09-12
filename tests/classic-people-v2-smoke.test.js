@@ -99,7 +99,7 @@ assert(parity.includes("device().add('dersListesi',global.COL.dersListesi")&&par
 assert(parity.includes("device().add('bransListesi',global.COL.bransListesi")&&parity.includes("device().update('bransListesi',global.COL.bransListesi")&&parity.includes("device().remove('bransListesi',global.COL.bransListesi"),'Branş Listesi CRUD DeviceData üzerinden kalmalı.');
 assert(parity.includes("SyncEngine.localHydrate(['dersListesi','bransListesi'])"),'Ders/branş listeleri önce cihazdan hydrate edilmeli.');
 assert(parity.includes("PermissionService?.can?.('settings.app.edit','edit')"),'Ders/branş yönetimi mevcut merkezi ayar yazma yetkisini kullanmalı.');
-for(const label of ['Toplam sınav','7 gün içinde','Aktif sayaç']) assert(parity.includes(label),`Toplu klasik parite öğesi eksik: ${label}`);
+assert(!parity.includes('data-classic-written-summary')&&!parity.includes('data-classic-trial-summary')&&!parity.includes('injectAcademicSummary'),'Classic parity Academic özetlerini ikinci renderer olarak üretmemeli.');
 assert(!parity.includes('function enhanceSettings()')&&!parity.includes('data-classic-settings-card'),'Classic parity Settings ana ekranına ikinci renderer olarak müdahale etmemeli.');
 for(const label of ['HAFTALIK NORM ANALİZİ','SOSYAL KULÜP & REHBERLİK','BELİRLİ GÜN VE HAFTALAR','BELGE DURUMU','İZİNLER / RAPORLAR','DİĞER EVRAK']) assert(parity.includes(label),`Öğretmen profil raporu parite bölümü eksik: ${label}`);
 assert(parity.includes("u.bagliOgretmenId||u.ogretmenId||''"),'Profil bağlı öğretmen çözümü canonical fallback kimliğini kullanmalı.');

@@ -141,7 +141,7 @@ for(const hidden of ['tools:form-kulup','tools:form-zumre','tools:form-sok','too
 assert(ui.includes("function pageAllowed(name,page='')")&&ui.includes('filter(itemAllowed)'),'Menü görünürlüğü ve doğrudan route aynı sayfa bazlı öğretmen kuralını kullanmalı.');
 assert(ui.includes('ka-stack ka-page ka-menu-list'),'Alt menü listesi ayrı scroll sahibine bağlanmalı.');
 assert(design.includes('.ka-menu-list{flex:1 1 auto;min-height:0;overflow-y:auto')&&design.includes('row-gap:12px;column-gap:12px'),'Menü listesi kaydırılabilir, yatay/dikey kart boşlukları eşit olmalı.');
-assert(ui.includes('function installBackNavigation()')&&ui.includes("app.addListener('backButton'")&&ui.includes("window.addEventListener('popstate'"),'Shell browser ve native fiziksel geri tuşunu merkezi yönetmeli.');
+assert(ui.includes('function installBackNavigation()')&&!ui.includes("app.addListener('backButton'")&&ui.includes("window.addEventListener('popstate'"),'Shell browser geçmişini yönetmeli; Android fiziksel geri tek native sahibi MainActivity üzerinden ShellUI.back kullanmalı.');
 assert(ui.includes("confirm('Uygulamadan çıkmak istediğinize emin misiniz?')"),'Geri tuşu uygulamadan çıkmadan önce onay istemeli.');
 assert(ui.includes('browserExitApproved')&&ui.includes('if(browserExitApproved){browserExitApproved=false;history.back();return}'),'Web geri/çıkış onayı aynı çıkışta ikinci kez sorulmamalı.');
 assert(ui.includes('global.TransportModule?.back?.()')&&ui.includes('global.PeopleModule?.back?.()'),'Fiziksel geri önce açık detay/modal sahibi modüllere yönlenmeli.');

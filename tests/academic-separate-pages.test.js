@@ -3,6 +3,7 @@ const assert=require('assert');
 const academic=fs.readFileSync('js/modules/academic.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const core=fs.readFileSync('js/core/core.js','utf8');
+const classicParity=fs.readFileSync('js/modules/classic-parity.js','utf8');
 const build=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 const css=fs.readFileSync('css/design-system.css','utf8');
@@ -19,6 +20,8 @@ for(const token of ['examDayDiff','ka-written-page','ka-written-summary','Toplam
 assert(academic.includes("ready=false")&&academic.includes("if(!mounted||!ready)return")&&academic.includes("await prepareLocal();if(!mounted)return false;subscribe();ready=true;render();"),'Academic ilk boyamada önce local hydrate etmeli ve tek hazır render üretmeli.');
 assert(!academic.includes('ka-written-hero')&&!academic.includes('ka-trial-hero'),'Yazılı/Deneme kendi ikinci hero başlığını üretmemeli; ortak Academic başlığı tek görsel owner olmalı.');
 assert(!css.includes('.ka-written-hero')&&!css.includes('.ka-trial-hero'),'Emekli ikinci sınav hero tasarımları merkezi CSS içinde yama/ölü katman olarak kalmamalı.');
+assert(!classicParity.includes('injectAcademicSummary')&&!classicParity.includes('data-classic-written-summary')&&!classicParity.includes('data-classic-trial-summary')&&!classicParity.includes('injectAcademicModalIntro'),'Classic parity Academic ekranına ikinci özet veya modal katmanı eklememeli.');
+for(const token of ['function ownedAcademicHost()','if(!root.contains(host))host.remove()','const academicHost=ownedAcademicHost();if(!academicHost)return',"academicHost.querySelector('#academicContent')"])assert(academic.includes(token),`Academic tek DOM sahibi sözleşmesi eksik: ${token}`);
 assert(academic.includes('data-academic-title')&&academic.includes('data-academic-description')&&academic.includes('applyAcademicMeta(title)'),'Academic ayrı sayfa başlığı ortak tek shell owner üzerinden yönetilmeli.');
 
 // Yazılı sınav görünürlüğü: seçilen öğretmen kayıt alanıdır; oluşturan hesap sahipUid olarak kalır.
@@ -61,7 +64,7 @@ for(const token of ['kaAcademicCalendarOverlay','AkademikTakvimService.gorselYuk
 assert(academic.includes("page==='calendar'"),'Akademik Takvim yalnız academic/calendar sayfasında otomatik açılmalı.');
 assert(academic.includes('calendarAdmin()'),'Takvim görseli değiştirme yönetici sınırında kalmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem'])assert(!academic.includes(forbidden),`Academic UI doğrudan legacy veri erişimi yapmamalı: ${forbidden}`);
-assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=878'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
+assert(loader.includes("define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=879'])"),'Academic loader yalnız Storage SDK + ReportEngine + canonical Academic yüklemeli.');
 assert(!loader.includes('academic-calendar-parity.js'),'Academic loader ayrı takvim parity dosyası yüklememeli.');
 assert(loader.includes("if(name==='academic'||name==='documents')window.firebaseStorageHazirla?.();"),'Academic ve Documents açıldığında Firebase Storage örneği merkezi loader tarafından hazırlanmalı.');
 assert(build.includes("'academic.js':['js/modules/academic.js']"),'Academic üretim bundle tek canonical kaynak kullanmalı.');

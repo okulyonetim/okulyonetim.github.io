@@ -19,6 +19,9 @@ assert(!parity.includes("insertAdjacentHTML('beforeend',`<small>☎")&&!parity.i
 assert(parity.includes("copy.querySelectorAll(':scope > small').forEach(x=>x.remove())"),'Classic parity eski raw iletişim satırlarını temizlemeli.');
 assert(design.includes('.ka-profile-copy>small{display:none!important}'),'Merkezi CSS eski cache kaynaklı raw profil iletişim satırlarını da gizlemeli.');
 assert(block.includes("action('schedule'")&&block.includes("action('duty'")&&block.includes("action('exams'")&&block.includes("action('tasks'"),'Dört kişisel çalışma alanı davranışı korunmalı.');
+assert(ui.includes("function profileOwnExams(tid=profileTeacherId(),uid=user().uid||'')")&&ui.includes("String(x.ogretmenId||'')===String(tid)")&&ui.includes("!x.ogretmenId&&uid&&String(x.sahipUid||'')===String(uid)"),'Profil Sınavlarım ogretmenId üzerinden, yalnız eski kayıtlarda sahipUid fallback ile çalışmalı.');
+assert(block.includes('Size atanmış yazılı sınavlar'),'Profil Sınavlarım atanmış sınavları açıklamalı.');
+assert(block.includes('suspendModuleForShellSurface()'),'Profil görünümü önce aktif modülü askıya almalı.');
 assert(block.includes('data-profile-logout')&&block.includes('global.cikisYap?.()'),'Oturum kapatma davranışı korunmalı.');
 for(const token of ['data-profile-password-card','data-profile-password-open','data-password-current','data-password-new','data-password-repeat','global.kendiSifremiDegistir(current,next)','next.length<6','next!==repeat'])assert(feature.includes(token),`Profil şifre değiştirme sözleşmesi eksik: ${token}`);
 assert(feature.includes('Mevcut şifreniz hatalı.')&&feature.includes('Şifreniz başarıyla değiştirildi.'),'Şifre değiştirme hata/başarı geri bildirimi bulunmalı.');
