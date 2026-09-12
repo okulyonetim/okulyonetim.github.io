@@ -181,7 +181,7 @@ function firebaseyiBaslat(){
 (function studentExamResultDetailsFeatureLoad(){
   if(document.querySelector('script[data-student-exam-result-details]'))return;
   const script=document.createElement('script');
-  script.src='js/core/student-exam-result-details.js?v=924';
+  script.src='js/core/student-exam-result-details.js?v=925';
   script.async=false;
   script.dataset.studentExamResultDetails='';
   document.head.appendChild(script);
