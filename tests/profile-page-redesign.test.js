@@ -22,6 +22,7 @@ assert(block.includes("action('schedule'")&&block.includes("action('duty'")&&blo
 assert(ui.includes("function profileOwnExams(tid=profileTeacherId(),uid=user().uid||'')")&&ui.includes("String(x.ogretmenId||'')===String(tid)")&&ui.includes("!x.ogretmenId&&uid&&String(x.sahipUid||'')===String(uid)"),'Profil Sınavlarım ogretmenId üzerinden, yalnız eski kayıtlarda sahipUid fallback ile çalışmalı.');
 assert(block.includes('Size atanmış yazılı sınavlar'),'Profil Sınavlarım atanmış sınavları açıklamalı.');
 assert(block.includes('suspendModuleForShellSurface()'),'Profil görünümü önce aktif modülü askıya almalı.');
+assert(ui.includes('data-profile-exam-open')&&ui.includes("async function openProfileExam(id)")&&ui.includes("routeModule('academic',{bottom:'profile',page:'written',title:'Yazılı Sınavlar'})")&&ui.includes('AcademicModule?.openWrittenExam?.(id)'),'Profil Sınavlarım kartına dokununca Yazılı Sınavlar ve seçilen kayıt doğrudan açılmalı.');
 assert(block.includes('data-profile-logout')&&block.includes('global.cikisYap?.()'),'Oturum kapatma davranışı korunmalı.');
 for(const token of ['data-profile-password-card','data-profile-password-open','data-password-current','data-password-new','data-password-repeat','global.kendiSifremiDegistir(current,next)','next.length<6','next!==repeat'])assert(feature.includes(token),`Profil şifre değiştirme sözleşmesi eksik: ${token}`);
 assert(feature.includes('Mevcut şifreniz hatalı.')&&feature.includes('Şifreniz başarıyla değiştirildi.'),'Şifre değiştirme hata/başarı geri bildirimi bulunmalı.');

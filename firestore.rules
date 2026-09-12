@@ -284,9 +284,16 @@ service cloud.firestore {
         && request.resource.data.sahipUid == request.auth.uid
         && (!('herkeseAcik' in request.resource.data) || request.resource.data.herkeseAcik == false));
       allow update: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
-        && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
-          || !('sahipUid' in resource.data))
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik']));
+        && (
+          ((('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
+            || !('sahipUid' in resource.data))
+            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik']))
+          || (kendiOgretmenIdsi() != null
+            && 'ogretmenId' in resource.data
+            && resource.data.ogretmenId == kendiOgretmenIdsi()
+            && request.resource.data.ogretmenId == kendiOgretmenIdsi()
+            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sahipUid', 'herkeseAcik', 'ogretmenId']))
+        ));
       allow delete: if adminMi() || (moduluDuzenleyebilir('sinavIslemleri')
         && (('sahipUid' in resource.data && resource.data.sahipUid == request.auth.uid)
           || !('sahipUid' in resource.data)));
