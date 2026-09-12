@@ -13,6 +13,7 @@ assert(nav.includes("global.AppStore?.subscribe?.('ui.route',scrollTopSoon)"),'M
 assert(nav.includes("'[data-ka-shell-route],[data-dash-route]"),'Alt sayfa/menu yönlendirmeleri üstten açılmalı.');
 assert(firebase.includes('app-navigation-behavior.js?v=932'),'Uygulama geneli gezinme katmanı başlangıçta yüklenmeli.');
 assert(sw.includes("'./js/core/app-navigation-behavior.js?v=932'"),'Gezinme katmanı offline cache içinde olmalı.');
-assert(sw.includes("const CACHE_ADI='oy-cache-v932';"),'PWA cache sürümü yeni davranış için yenilenmeli.');
+const cacheVersion=Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
+assert(cacheVersion>=932,'PWA cache sürümü gezinme davranışı sürümünden eski olmamalı.');
 
 console.log('Uygulama gezinme davranışı sözleşmesi başarılı.');
