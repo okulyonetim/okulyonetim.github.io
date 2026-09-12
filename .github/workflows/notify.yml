@@ -36,7 +36,7 @@ jobs:
           PY
       - name: Apply canonical fixes
         run: python .github/scripts/apply-academic-single-owner-fix.py
-      - name: Align central back regression contract
+      - name: Align retired legacy regression contracts
         shell: bash
         run: |
           python - <<'PY'
@@ -48,10 +48,18 @@ jobs:
           if text.count(old)!=1:
               raise SystemExit(f'Classic back contract: expected 1, found {text.count(old)}')
           p.write_text(text.replace(old,new,1),encoding='utf-8')
+
+          p=Path('tests/classic-people-v2-smoke.test.js')
+          text=p.read_text(encoding='utf-8')
+          old="for(const label of ['Toplam sınav','7 gün içinde','Aktif sayaç']) assert(parity.includes(label),`Toplu klasik parite öğesi eksik: ${label}`);"
+          new="assert(!parity.includes('data-classic-written-summary')&&!parity.includes('data-classic-trial-summary')&&!parity.includes('injectAcademicSummary'),'Classic parity Academic özetlerini ikinci renderer olarak üretmemeli.');"
+          if text.count(old)!=1:
+              raise SystemExit(f'Classic Academic parity contract: expected 1, found {text.count(old)}')
+          p.write_text(text.replace(old,new,1),encoding='utf-8')
           PY
       - name: Verify focused regressions
         run: |
-          git diff --check -- js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js
+          git diff --check -- js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js tests/classic-people-v2-smoke.test.js
           node --check js/modules/academic.js
           node --check js/modules/classic-parity.js
           node --check js/core/shell-ui.js
@@ -59,6 +67,7 @@ jobs:
           node tests/profile-page-redesign.test.js
           node tests/native-back-holiday-regression.test.js
           node tests/classic-shell-v2-smoke.test.js
+          node tests/classic-people-v2-smoke.test.js
           node tests/modules-local-first-boundary.test.js
           node tests/service-worker-precache-smoke.test.js
       - name: Run complete client regressions
@@ -72,7 +81,7 @@ jobs:
           git rm .github/scripts/apply-academic-single-owner-fix.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A .github/workflows/notify.yml .github/scripts js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js
+          git add -A .github/workflows/notify.yml .github/scripts js/modules/academic.js js/modules/classic-parity.js js/core/shell-ui.js js/app-loader.js index.html service-worker.js tests/academic-separate-pages.test.js tests/profile-page-redesign.test.js tests/native-back-holiday-regression.test.js tests/classic-shell-v2-smoke.test.js tests/classic-people-v2-smoke.test.js
           git diff --cached --check
           git commit -m 'fix: make academic pages single-owner and repair teacher profile back flow'
           git push origin HEAD:fix/academic-single-owner-profile-back-20260912
