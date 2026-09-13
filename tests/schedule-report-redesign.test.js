@@ -41,8 +41,10 @@ assert(src.includes('data-schedule-report-teacher-list] input:checked'),'Mevcut 
 assert(src.includes('İmza bölümü ekle')&&src.includes('class="sign"'),'Öğretmen çarşafı isteğe bağlı imza sütunu sunmalı.');
 assert(src.includes('Geçerlilik tarihi')&&src.includes('tarihinden itibaren geçerlidir.'),'Seçilebilir geçerlilik tarihi ve alt açıklama olmalı.');
 
-assert(init.includes('schedule-report-redesign.js?v=938'),'Güncel rapor runtime dosyası uygulama başlangıcında yüklenmeli.');
-assert(sw.includes("'./js/core/schedule-report-redesign.js?v=938'"),'Güncel rapor runtime dosyası offline precache içinde olmalı.');
+const initVersion=init.match(/schedule-report-redesign\.js\?v=(\d+)/);
+const swVersion=sw.match(/\.\/js\/core\/schedule-report-redesign\.js\?v=(\d+)/);
+assert(initVersion&&Number(initVersion[1])>=938,'Güncel rapor runtime dosyası uygulama başlangıcında yüklenmeli.');
+assert(swVersion&&Number(swVersion[1])===Number(initVersion[1]),'Schedule report runtime sürümü uygulama ve offline precache arasında aynı olmalı.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=938,'Service Worker cache sürümü rapor başlık/zebra güncellemesi için yükseltilmeli.');
 
 console.log('Ders programı rapor başlık, zebra ve standart satır sözleşmesi başarılı.');
