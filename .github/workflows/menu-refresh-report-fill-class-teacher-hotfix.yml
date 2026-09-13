@@ -18,18 +18,15 @@ jobs:
         with:
           node-version: 24
       - name: Apply focused fixes
-        shell: python
+        shell: python {0}
         run: |
           from pathlib import Path
-          import re
 
           def edit(path, fn):
               p=Path(path); s=p.read_text(encoding='utf-8'); n=fn(s)
               if n==s: raise SystemExit(f'No change applied: {path}')
               p.write_text(n, encoding='utf-8')
 
-          # 1) Pull-to-refresh: menu layer is a valid top surface. Scrollable menus
-          # refresh only when their own scroll position is at the top.
           def patch_core(s):
               old="""  const BLOCK_SELECTOR='.ka-app-nav.ka-bottom-nav,.ka-menu-layer,.ka-modal-backdrop,.dv3,[role=\"dialog\"],[data-ka-no-pull-refresh]';
   const ARM_DISTANCE=96,MAX_VISUAL=78,DEAD_ZONE=8;
@@ -66,8 +63,6 @@ jobs:
               return s
           edit('js/core/core.js', patch_core)
 
-          # 2) Central report engine: all generic report fills become very light,
-          # while borders/text remain readable in print/PDF.
           def patch_engine(s):
               s=s.replace("border:1px solid #397461!important;background:#17684f!important;color:#fff!important", "border:1px solid #9baba4!important;background:#f1f5f3!important;color:#173e32!important")
               s=s.replace(".ka-report tbody tr:nth-child(even) td{background:#f7faf8!important}", ".ka-report tbody tr:nth-child(even) td{background:#fbfcfb!important}")
@@ -75,7 +70,6 @@ jobs:
               return s
           edit('js/modules/report-engine.js', patch_engine)
 
-          # 3) Direct Academic schedule report: show class teacher and keep fills subtle.
           def patch_academic(s):
               anchor="function scheduleTeacherInitials(id){const name=teacherName(id);return name&&name!=='—'?name.split(/\\s+/).filter(Boolean).map(x=>x[0]?.toLocaleUpperCase('tr')||'').join(''):''}\n"
               helper="""function scheduleClassTeacherName(className){const clean=v=>String(v||'').replace(/\\s+/g,'').toLocaleLowerCase('tr-TR'),key=clean(className),cls=classes().find(x=>clean(x.ad)===key)||{},id=cls.sinifOgretmeniId||cls.ogretmenId||cls.rehberOgretmenId||'',direct=id?teacherName(id):'',fallback=teachers().find(o=>clean(o.sorumluSinif||o.sinif||o.sinifi)===key);return direct&&direct!=='—'?direct:(fallback?teacherName(fallback.id):'')}\n"""
@@ -93,7 +87,6 @@ jobs:
               return s
           edit('js/modules/academic.js', patch_academic)
 
-          # 4) Redesigned schedule reports: softer zebra/neutral fills + class teacher.
           def patch_redesign(s):
               anchor="function teacherBranch(id){const o=teacherObj(id);return normalize(o.brans||o.branş||o.bransi||o.bransAdi||o.alan||'')}\n"
               helper="""function classTeacherName(className){const clean=v=>normalize(v).replace(/\\s+/g,'').toLocaleLowerCase('tr-TR'),key=clean(className),cls=arr('siniflar').find(x=>clean(x.ad)===key)||{},id=cls.sinifOgretmeniId||cls.ogretmenId||cls.rehberOgretmenId||'',direct=id?teacherName(id):'',fallback=arr('ogretmenler').find(o=>clean(o.sorumluSinif||o.sinif||o.sinifi)===key);return direct&&direct!=='—'?direct:(fallback?teacherName(fallback.id):'')}\n"""
@@ -110,19 +103,9 @@ jobs:
               return s.replace(old,new)
           edit('js/core/schedule-report-redesign.js', patch_redesign)
 
-          # 5) Cache-busting for the modified runtime/module files.
-          def patch_index(s):
-              return s.replace('js/core/core.js?v=905','js/core/core.js?v=906')
-          edit('index.html', patch_index)
-
-          def patch_loader(s):
-              return s.replace("'js/modules/academic.js?v=882'", "'js/modules/academic.js?v=883'")
-          edit('js/app-loader.js', patch_loader)
-
-          def patch_firebase(s):
-              return s.replace("schedule-report-redesign.js?v=941", "schedule-report-redesign.js?v=942")
-          edit('js/firebase-init.js', patch_firebase)
-
+          edit('index.html', lambda s:s.replace('js/core/core.js?v=905','js/core/core.js?v=906'))
+          edit('js/app-loader.js', lambda s:s.replace("'js/modules/academic.js?v=882'", "'js/modules/academic.js?v=883'"))
+          edit('js/firebase-init.js', lambda s:s.replace("schedule-report-redesign.js?v=941", "schedule-report-redesign.js?v=942"))
           def patch_sw(s):
               s=s.replace("const CACHE_ADI='oy-cache-v941';", "const CACHE_ADI='oy-cache-v942';")
               s=s.replace("./js/core/core.js?v=905", "./js/core/core.js?v=906")
@@ -131,15 +114,13 @@ jobs:
               return s
           edit('service-worker.js', patch_sw)
 
-          # Existing color-contract tests should follow the deliberately lighter zebra.
           for path in ['tests/schedule-report-redesign.test.js','tests/schedule-report-column-zebra.test.js']:
               p=Path(path)
               if p.exists():
                   s=p.read_text(encoding='utf-8').replace('#f4f8f6','#fbfdfc').replace('#eaf2ee','#f3f7f5').replace('#f7faf8','#fafcfb')
                   p.write_text(s,encoding='utf-8')
 
-          test=Path('tests/menu-refresh-report-fill-class-teacher.test.js')
-          test.write_text("""const fs=require('fs');const assert=require('assert');\nconst core=fs.readFileSync('js/core/core.js','utf8'),engine=fs.readFileSync('js/modules/report-engine.js','utf8'),academic=fs.readFileSync('js/modules/academic.js','utf8'),redesign=fs.readFileSync('js/core/schedule-report-redesign.js','utf8'),sw=fs.readFileSync('service-worker.js','utf8');\nnew Function(core);new Function(engine);new Function(academic);new Function(redesign);\nassert(core.includes("function menuSurface(target)")&&core.includes("surfaceTop(target)"),'Menü pull-to-refresh üst yüzey desteği eksik.');\nassert(!core.includes("document.body.classList.contains('ka-layer-open')||target?.closest?.(BLOCK_SELECTOR)"),'Açık menü pull-to-refresh tarafından tamamen engellenmemeli.');\nassert(engine.includes('background:#f1f5f3!important;color:#173e32!important'),'Ortak rapor başlık dolgusu çok açık olmalı.');\nassert(academic.includes('function scheduleClassTeacherName(')&&academic.includes('Sınıf Öğretmeni:'),'Doğrudan sınıf raporu sınıf öğretmenini göstermeli.');\nassert(redesign.includes('function classTeacherName(')&&redesign.includes('Sınıf Öğretmeni:'),'Yeni ders programı raporu sınıf öğretmenini göstermeli.');\nassert(redesign.includes('background:#fbfdfc!important'),'Ders programı zebra dolgusu çok hafif olmalı.');\nconst cache=sw.match(/const CACHE_ADI='oy-cache-v(\\d+)'/);assert(cache&&Number(cache[1])>=942,'Yeni runtime için cache sürümü yükseltilmeli.');\nconsole.log('Menü yenileme + açık rapor dolgusu + sınıf öğretmeni regresyon testi başarılı.');\n""",encoding='utf-8')
+          Path('tests/menu-refresh-report-fill-class-teacher.test.js').write_text("""const fs=require('fs');const assert=require('assert');\nconst core=fs.readFileSync('js/core/core.js','utf8'),engine=fs.readFileSync('js/modules/report-engine.js','utf8'),academic=fs.readFileSync('js/modules/academic.js','utf8'),redesign=fs.readFileSync('js/core/schedule-report-redesign.js','utf8'),sw=fs.readFileSync('service-worker.js','utf8');\nnew Function(core);new Function(engine);new Function(academic);new Function(redesign);\nassert(core.includes("function menuSurface(target)")&&core.includes("surfaceTop(target)"),'Menü pull-to-refresh üst yüzey desteği eksik.');\nassert(!core.includes("document.body.classList.contains('ka-layer-open')||target?.closest?.(BLOCK_SELECTOR)"),'Açık menü pull-to-refresh tarafından tamamen engellenmemeli.');\nassert(engine.includes('background:#f1f5f3!important;color:#173e32!important'),'Ortak rapor başlık dolgusu çok açık olmalı.');\nassert(academic.includes('function scheduleClassTeacherName(')&&academic.includes('Sınıf Öğretmeni:'),'Doğrudan sınıf raporu sınıf öğretmenini göstermeli.');\nassert(redesign.includes('function classTeacherName(')&&redesign.includes('Sınıf Öğretmeni:'),'Yeni ders programı raporu sınıf öğretmenini göstermeli.');\nassert(redesign.includes('background:#fbfdfc!important'),'Ders programı zebra dolgusu çok hafif olmalı.');\nconst cache=sw.match(/const CACHE_ADI='oy-cache-v(\\d+)'/);assert(cache&&Number(cache[1])>=942,'Yeni runtime için cache sürümü yükseltilmeli.');\nconsole.log('Menü yenileme + açık rapor dolgusu + sınıf öğretmeni regresyon testi başarılı.');\n""",encoding='utf-8')
       - name: Validate focused changes
         run: |
           node --check js/core/core.js
