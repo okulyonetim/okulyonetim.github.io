@@ -19,6 +19,8 @@ assert(src.includes("const principalName=()=>")||src.includes('function principa
 assert(src.includes("SyncEngine.register(type,col)")&&src.includes('SyncEngine.localHydrate(types)'),'Diploma referans verileri local-first hydrate edilmeli.');
 assert(src.includes('ReportEngine.printReport(title,body'),'Resmî çıktı merkezi ReportEngine üzerinden kalmalı.');
 assert(src.includes('.pd-info td:first-child{width:45mm!important;max-width:45mm!important')&&src.includes('.pd-info td:nth-child(2){width:4mm!important;padding-right:2mm!important'),'Diploma talep çıktısında etiket, iki nokta ve veri alanı birbirine yakın tutulmalı.');
+assert(src.includes('.pd-info tr,.pd-info tr:nth-child(odd),.pd-info tr:nth-child(even){background:#fff!important;box-shadow:none!important'),'Diploma talep bilgi tablosunda zebra/renklendirme olmamalı.');
+assert(src.includes('<p class="pd-p pd-indent">${esc(govde)}</p><p class="pd-p pd-indent">Gereğini arz ederim.</p>'),'Talep metni ve Gereğini arz ederim satırı paragraf girintili olmalı.');
 for(const forbidden of ['db.collection','onSnapshot','localStorage','document.createElement(\'style\')','document.createElement("style")'])assert(!src.includes(forbidden),`Diploma modülü ${forbidden} kullanmamalı.`);
 assert(!src.includes('style="'),'Diploma UI inline CSS üretmemeli.');
 const runtimeCache=sw.match(/const CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/);
