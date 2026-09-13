@@ -11,3 +11,4 @@ assert(index.includes('css/design-system.css?v=941'),'Yeni mobil rapor stili yü
 assert(init.includes('schedule-report-redesign.js?v=941'),'Yeni çarşaf rapor stili yüklenmeli.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=941,'Yeni rapor dosyaları için SW cache yükseltilmeli.');
 console.log('Rapor logo, tek sayfa, kenarlık ve mobil Yazdır regresyon testi başarılı.');
+// CI retrigger: report print layout contract
