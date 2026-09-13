@@ -2,9 +2,8 @@ name: Temporary Puantaj Diploma Polish
 
 on:
   push:
-    branches: [feat/puantaj-report-polish]
-    paths:
-      - '.github/workflows/tmp-puantaj-diploma-polish.yml'
+    branches:
+      - "feat/puantaj-report-polish"
 
 permissions:
   contents: write
@@ -14,94 +13,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: feat/puantaj-report-polish
-      - name: Apply print layout refinements
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          def must_replace(text, old, new, label):
-              if old not in text:
-                  raise SystemExit(f'Missing expected pattern: {label}')
-              return text.replace(old, new, 1)
-
-          # Puantaj print layout
-          p = Path('js/modules/management.js')
-          s = p.read_text(encoding='utf-8')
-          old = "function ptDonemBasligi(){const bas=ptParseIso(ptState.baslangic),bit=ptParseIso(ptState.bitis);if(!bas||!bit)return'Dönem seçilmedi';if(bas.getFullYear()===bit.getFullYear()&&bas.getMonth()===bit.getMonth())return`${AYISIM[bas.getMonth()]} ${bas.getFullYear()}`;return`${ptTarih(bas)} – ${ptTarih(bit)}`}"
-          new = old + "\nfunction ptPuantajAyBasligi(){const bas=ptParseIso(ptState.baslangic),bit=ptParseIso(ptState.bitis);if(!bas||!bit)return'';const ilk=AYISIM[bas.getMonth()].toLocaleUpperCase('tr'),son=AYISIM[bit.getMonth()].toLocaleUpperCase('tr');return ilk===son?ilk:`${ilk} - ${son}`}"
-          s = must_replace(s, old, new, 'puantaj month helper')
-
-          old = "let blanks='';for(let i=2;i<=10;i++)blanks+=`<tr><td>${i}</td><td class=\"name\"></td><td></td>${'<td></td>'.repeat(gunler.length+10)}</tr>`;"
-          new = "let blanks='';for(let i=2;i<=10;i++)blanks+=`<tr><td>${i}</td><td class=\"name\"></td><td></td>${'<td></td>'.repeat(gunler.length)}${'<td class=\"summary-cell\"></td>'.repeat(10)}</tr>`;"
-          s = must_replace(s, old, new, 'summary blank cells')
-
-          old = ".payroll th{height:105px;padding:0 0 4px;background:#f2f2f2;vertical-align:bottom;font-size:7pt}.payroll th>span{display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}.payroll th.no{width:4.5mm}.payroll th.name{width:34mm;text-align:left}.payroll th.tc{width:17mm}.payroll th.day{width:5mm}.payroll th.summary{width:5.5mm}.payroll td{height:6mm;padding:1px 2px;font-size:7.5pt;font-weight:700}"
-          new = ".payroll th{height:118px;padding:0 0 4px;background:#fff;vertical-align:bottom;font-size:7pt}.payroll th>span{display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}.payroll th.no{width:4.5mm}.payroll th.name{width:34mm;text-align:left}.payroll th.tc{width:17mm}.payroll th.day{width:5mm}.payroll th.summary{width:6mm;background:#e8f0ee;font-size:5.8pt;padding:2px 0}.payroll th.summary>span{line-height:1;max-height:110px}.payroll td{height:6mm;padding:1px 2px;font-size:7.5pt;font-weight:700}.payroll td.summary-cell{background:#e8f0ee}"
-          s = must_replace(s, old, new, 'puantaj header styling')
-
-          old = "const period=ptDonemBasligi().toLocaleUpperCase('tr'),year=ptParseIso(ptState.baslangic)?.getFullYear()||''"
-          new = "const period=ptPuantajAyBasligi(),year=ptParseIso(ptState.baslangic)?.getFullYear()||''"
-          s = must_replace(s, old, new, 'puantaj period source')
-
-          old = "AY: ${esc(period.replace(String(year),'').trim())}"
-          new = "AY: ${esc(period)}"
-          s = must_replace(s, old, new, 'puantaj period output')
-
-          old = "<td>${sayim.X}</td><td>${sayim.H}</td><td>${sayim.T}</td><td>${sayim.Y}</td><td>${sayim.M}</td><td>${sayim.R}</td><td>${sayim['CÇ']}</td><td>${sayim['PÇ']}</td><td>${sayim.UBGT}</td><td>${toplam}</td>"
-          new = "<td class=\"summary-cell\">${sayim.X}</td><td class=\"summary-cell\">${sayim.H}</td><td class=\"summary-cell\">${sayim.T}</td><td class=\"summary-cell\">${sayim.Y}</td><td class=\"summary-cell\">${sayim.M}</td><td class=\"summary-cell\">${sayim.R}</td><td class=\"summary-cell\">${sayim['CÇ']}</td><td class=\"summary-cell\">${sayim['PÇ']}</td><td class=\"summary-cell\">${sayim.UBGT}</td><td class=\"summary-cell\">${toplam}</td>"
-          s = must_replace(s, old, new, 'puantaj summary cells')
-          p.write_text(s, encoding='utf-8')
-
-          # Diploma request print: bring labels/colon/values closer together.
-          p = Path('js/modules/personnel-documents.js')
-          s = p.read_text(encoding='utf-8')
-          old = ".pd-info{width:auto!important;margin:0 0 8mm;border-collapse:collapse!important}.pd-info td{border:0!important;background:#fff!important;color:#000!important;font-size:12pt!important;padding:1.2mm 0!important;vertical-align:top!important}.pd-info td:first-child{font-weight:700;padding-right:6mm!important;white-space:nowrap}.pd-info td:nth-child(2){padding-right:4mm!important}"
-          new = ".pd-info{width:auto!important;margin:0 0 8mm;border-collapse:collapse!important;table-layout:auto!important}.pd-info td{border:0!important;background:#fff!important;color:#000!important;font-size:12pt!important;padding:1.2mm 0!important;vertical-align:top!important}.pd-info td:first-child{width:45mm!important;max-width:45mm!important;font-weight:700;padding-right:2mm!important;white-space:nowrap}.pd-info td:nth-child(2){width:4mm!important;padding-right:2mm!important;text-align:center!important}.pd-info td:nth-child(3){width:auto!important;white-space:nowrap!important}"
-          s = must_replace(s, old, new, 'diploma info spacing')
-          p.write_text(s, encoding='utf-8')
-
-          # Cache bust for changed client modules.
-          p = Path('service-worker.js')
-          s = p.read_text(encoding='utf-8')
-          s = must_replace(s, "const CACHE_ADI='oy-cache-v937';", "const CACHE_ADI='oy-cache-v938';", 'service worker cache')
-          p.write_text(s, encoding='utf-8')
-
-          # Keep hard-coded cache regression expectations current.
-          for p in Path('tests').rglob('*.js'):
-              s = p.read_text(encoding='utf-8')
-              if "oy-cache-v937" in s:
-                  p.write_text(s.replace('oy-cache-v937','oy-cache-v938'), encoding='utf-8')
-
-          # Extend regression coverage.
-          p = Path('tests/personnel-payroll-signature-parity.test.js')
-          s = p.read_text(encoding='utf-8')
-          marker = "assert(!classic.includes('decoratePuantaj')&&!classic.includes('puantajTablosu'),'Classic parite puantajı DOM yamalarıyla yeniden sahiplenmemeli.');"
-          extra = """assert(management.includes('function ptPuantajAyBasligi()')&&management.includes('return ilk===son?ilk:`${ilk} - ${son}`'),'Puantaj AY alanı tarih aralığı yerine ay adlarını üretmeli.');
-assert(management.includes('.payroll th{height:118px;padding:0 0 4px;background:#fff'),'Tarih ve temel puantaj başlıkları renksiz/beyaz kalmalı.');
-assert(management.includes('.payroll th.summary{width:6mm;background:#e8f0ee')&&management.includes('.payroll td.summary-cell{background:#e8f0ee}'),'Tarihlerden sonraki özet sütunlarının tamamı tek ortak renkte olmalı.');
-assert(management.includes('writing-mode:vertical-rl')&&management.includes('transform:rotate(180deg)'),'Özet başlıkların dikey metin yönü korunmalı.');
-""" + marker
-          s = must_replace(s, marker, extra, 'payroll regression assertions')
-          p.write_text(s, encoding='utf-8')
-
-          p = Path('tests/personnel-documents-focus-smoke.test.js')
-          s = p.read_text(encoding='utf-8')
-          marker = "assert(src.includes('ReportEngine.printReport(title,body'),'Resmî çıktı merkezi ReportEngine üzerinden kalmalı.');"
-          extra = marker + "\nassert(src.includes('.pd-info td:first-child{width:45mm!important;max-width:45mm!important')&&src.includes('.pd-info td:nth-child(2){width:4mm!important;padding-right:2mm!important'),'Diploma talep çıktısında etiket, iki nokta ve veri alanı birbirine yakın tutulmalı.');"
-          s = must_replace(s, marker, extra, 'diploma regression assertion')
-          p.write_text(s, encoding='utf-8')
-          PY
-
-          node --check js/modules/management.js
-          node --check js/modules/personnel-documents.js
-          node tests/personnel-payroll-signature-parity.test.js
-          node tests/personnel-documents-focus-smoke.test.js
-          rm -f .github/workflows/tmp-puantaj-diploma-polish.yml
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/modules/management.js js/modules/personnel-documents.js service-worker.js tests .github/workflows/tmp-puantaj-diploma-polish.yml
-          git commit -m "fix: polish puantaj and diploma print layouts"
-          git push origin HEAD:feat/puantaj-report-polish
+      - name: Verify temporary workflow
+        run: echo "temporary workflow is running"
