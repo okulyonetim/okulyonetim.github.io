@@ -2258,3 +2258,11 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   .ka-results-table--mobile-cards .ka-results-student small{font-size:11px}
   .ka-student-result-stats .ka-card b{font-size:18px}
 }
+
+/* Rapor önizleme araç çubuğu: dar mobil ekranlarda Yazdır düğmesi daima görünür. */
+@media(max-width:767px){
+  .dv3h.dv3h-report{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;grid-template-areas:"close title title title print" "minus zoom plus . .";align-items:center;gap:5px;overflow:hidden;padding-left:max(6px,var(--ka-safe-left));padding-right:max(6px,var(--ka-safe-right))}
+  .dv3h-report [data-report-close]{grid-area:close}.dv3h-report .dv3title{grid-area:title;min-width:0}.dv3h-report [data-report-minus]{grid-area:minus}.dv3h-report [data-report-zoom]{grid-area:zoom;margin:0;min-width:46px}.dv3h-report [data-report-plus]{grid-area:plus}.dv3h-report [data-report-print]{grid-area:print;justify-self:end;max-width:100%;padding-inline:10px}
+  .dv3h-report .dv3title b{font-size:13px}.dv3h-report .dv3title small{font-size:10px}
+}
+@media(max-width:390px){.dv3h-report .dv3title small{display:none}.dv3h-report [data-report-close]{font-size:0}.dv3h-report [data-report-close]::first-letter{font-size:15px}}
