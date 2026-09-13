@@ -12,10 +12,10 @@ assert(engine.includes('.ka-report tbody tr:nth-child(even) td{background:#f7faf
 assert(redesign.includes("const dayClass=i=>i%2===0?'ka-sr-day-a':'ka-sr-day-b'"),'Ders programı gün bazlı sütun sınıflarını üretmeli.');
 assert(!fix.includes('nth-child(even)')&&!fix.includes('nth-child(odd)'),'Ders programı zebra düzeltmesi satır bazlı zebra üretmemeli.');
 for(const token of [
-  '.ka-report .ka-sr-report tbody tr>td.ka-sr-day-a{background:#f4f8f6!important}',
-  '.ka-report .ka-sr-report tbody tr>td.ka-sr-day-b{background:#fff!important}',
-  '.ka-report .ka-sr-report thead tr>th.ka-sr-day-a{background:#eaf2ee!important}',
-  '.ka-report .ka-sr-report thead tr>th.ka-sr-day-b{background:#f7faf8!important}'
+  '.ka-report .ka-sr-report tbody tr>td.ka-sr-day-a{background:#edf4f0!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}',
+  '.ka-report .ka-sr-report tbody tr>td.ka-sr-day-b{background:#fff!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}',
+  '.ka-report .ka-sr-report thead tr>th.ka-sr-day-a{background:#e2ede7!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}',
+  '.ka-report .ka-sr-report thead tr>th.ka-sr-day-b{background:#f8faf9!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}'
 ])assert(fix.includes(token),`Sütun zebra öncelik kuralı eksik: ${token}`);
 
 const window={};
@@ -28,9 +28,9 @@ assert(scheduleOpts.fontSize===7,'Rapor seçenekleri zebra düzeltmesinde korunm
 window.ReportEngine.printReport('other','',{extraHead:'<style>.other-report{}</style>'});
 assert(!otherOpts.extraHead.includes('data-ka-schedule-column-zebra'),'Ders programı dışındaki raporlara zebra düzeltmesi uygulanmamalı.');
 
-assert(init.includes('schedule-report-column-zebra.js?v=922'),'Sütun zebra runtime uygulama başlangıcında yüklenmeli.');
-assert(sw.includes("'./js/core/schedule-report-column-zebra.js?v=922'"),'Sütun zebra runtime offline precache içinde olmalı.');
+assert(init.includes('schedule-report-column-zebra.js?v=938'),'Sütun zebra runtime uygulama başlangıcında yüklenmeli.');
+assert(sw.includes("'./js/core/schedule-report-column-zebra.js?v=938'"),'Sütun zebra runtime offline precache içinde olmalı.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
-assert(cache&&Number(cache[1])>=922,'Service Worker cache sürümü sütun zebra düzeltmesi için yükseltilmeli.');
+assert(cache&&Number(cache[1])>=938,'Service Worker cache sürümü sütun zebra düzeltmesi için yükseltilmeli.');
 
 console.log('Ders programı yalnız sütun zebra sözleşmesi başarılı.');
