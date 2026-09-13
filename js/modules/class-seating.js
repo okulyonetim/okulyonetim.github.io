@@ -132,7 +132,7 @@ function chooseStudent(seat){
   document.querySelector('[data-so-student-picker]')?.remove();
   const used=assigned();
   const current=seat.dataset.studentId||'';
-  const available=students();
+  const available=students().filter(v=>v.id===current||!used.has(v.id));
   const ov=document.createElement('div');
   ov.className='ka-modal-backdrop';
   ov.dataset.soStudentPicker='';
@@ -297,11 +297,7 @@ function bindDrag(el){
       dirty=true;
     }else if(!dragged){
       const seat=startTarget?.closest?.('[data-so-seat]');
-      if(seat){
-        seat.dataset.soSuppressClick='true';
-        setTimeout(()=>{if(seat.isConnected)delete seat.dataset.soSuppressClick},350);
-        chooseStudent(seat);
-      }else if(startTarget?.closest?.('[data-so-teacher-name]')){
+      if(!seat&&startTarget?.closest?.('[data-so-teacher-name]')){
         const span=startTarget.closest('[data-so-teacher-name]');
         const v=prompt('Öğretmen adı:',span.textContent||'');
         if(v!==null){
