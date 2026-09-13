@@ -1,0 +1,13 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/modules/class-seating.js','utf8');
+new Function(src);
+assert(src.includes("const available=students().filter(v=>v.id===current||!used.has(v.id));"),'Öğrenci seçici başka sıraya atanmış öğrencileri tekrar sunmamalı.');
+const bind=src.match(/function bindDrag\(el\)\{[\s\S]*?function createObject/)?.[0]||'';
+const tapBranch=bind.match(/\}else if\(!dragged\)\{[\s\S]*?group=\[\];/)?.[0]||'';
+assert(tapBranch.includes("const seat=startTarget?.closest?.('[data-so-seat]');"),'Tap hedefi sıra koltuğu olarak ayrıştırılmalı.');
+assert(!tapBranch.includes('chooseStudent(seat)'),'pointerup öğrenci seçiciyi açmamalı; sentetik click-through riski yaratır.');
+assert(!tapBranch.includes("seat.dataset.soSuppressClick='true'"),'Normal tap sonrası gerçek click olayı bastırılmamalı.');
+assert(src.includes("seat.addEventListener('click',e=>{")&&src.includes("if(seat.dataset.soSuppressClick==='true')return;")&&src.includes('chooseStudent(seat);'),'Öğrenci seçici yalnız tamamlanmış click üzerinden açılmalı; sürükleme sonrası click bastırılmalı.');
+assert(bind.includes("if(dragged&&dragSeat){")&&bind.includes("dragSeat.dataset.soSuppressClick='true'"),'Sürükleme sonrası yanlış öğrenci seçimi engellenmeli.');
+console.log('Sınıf oturma planı öğrenci seçici touch/click regresyon testi başarılı.');
