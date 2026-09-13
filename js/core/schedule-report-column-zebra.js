@@ -9,7 +9,6 @@ if(global.ScheduleReportColumnZebra)return;
 
 const GLOBAL_SOFT_STYLE=`<style data-ka-report-soft-fill>
 .ka-report table th{background:#f3f6f4!important;color:#173e32!important;border-color:#9baba4!important}
-.ka-report tbody tr:nth-child(even)>td{background:#fbfcfb!important}
 .ka-report .bolum-baslik{background:#f7f9f8!important}
 .ka-report .ka-sr-report .ka-sr-neutral{background:#f8faf9!important}
 .ka-report .ka-sr-report .scope{background:#f8faf9!important}
