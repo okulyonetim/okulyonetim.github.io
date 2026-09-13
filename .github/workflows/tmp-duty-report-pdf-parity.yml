@@ -55,16 +55,21 @@ jobs:
           p.write_text(c)
 
           p=Path('tests/duty-report-full-parity.test.js'); t=p.read_text()
-          t=t.replace("assert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#e6e6e6!important'));", "assert(css.includes('.ka-duty-report-table tbody tr:nth-child(even) td{background:#fff!important'),'Nöbet raporunda zebra satır deseni olmamalı.');\nassert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#f6eeee!important')&&css.includes('.ka-duty-report-holiday td{background:#fff7dc!important'),'Yalnız hafta sonu ve tatil satırları hafif dolgulu olmalı.');\nassert(src.includes('function dutyReportPrintCss()')&&src.includes('extraHead:dutyReportPrintCss()'),'Native PDF çıktısı nöbet raporu stilini HTML içine gömmeli.');\nassert(src.includes('async function dutyReportLogoDataUrl()')&&src.includes('src=\"${esc(logoSrc)}\"'),'Logo native PDF için gömülebilir veri adresine çevrilmeli.');\nassert(src.includes('mudurAdSoyad')&&src.includes("role.includes('müdür')&&!role.includes('yardımc')"),'Müdür adı ayar, öğretmen kimliği veya müdür rolünden bulunabilmeli.');")
-          p.write_text(t)
+          old_test="assert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#e6e6e6!important'));"
+          new_test='''assert(css.includes('.ka-duty-report-table tbody tr:nth-child(even) td{background:#fff!important'),'Nöbet raporunda zebra satır deseni olmamalı.');
+          assert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#f6eeee!important')&&css.includes('.ka-duty-report-holiday td{background:#fff7dc!important'),'Yalnız hafta sonu ve tatil satırları hafif dolgulu olmalı.');
+          assert(src.includes('function dutyReportPrintCss()')&&src.includes('extraHead:dutyReportPrintCss()'),'Native PDF çıktısı nöbet raporu stilini HTML içine gömmeli.');
+          assert(src.includes('async function dutyReportLogoDataUrl()')&&src.includes('src="${esc(logoSrc)}"'),'Logo native PDF için gömülebilir veri adresine çevrilmeli.');
+          assert(src.includes('mudurAdSoyad')&&src.includes("role.includes('müdür')&&!role.includes('yardımc')"),'Müdür adı ayar, öğretmen kimliği veya müdür rolünden bulunabilmeli.');'''
+          if old_test not in t: raise SystemExit('duty test anchor not found')
+          p.write_text(t.replace(old_test,new_test,1))
 
           for path in [Path('service-worker.js'), *Path('tests').glob('*.js')]:
               txt=path.read_text()
               if 'oy-cache-v939' in txt:
                   path.write_text(txt.replace('oy-cache-v939','oy-cache-v940'))
 
-          wf=Path('.github/workflows/tmp-duty-report-pdf-parity.yml')
-          wf.unlink()
+          Path('.github/workflows/tmp-duty-report-pdf-parity.yml').unlink()
           PY
           node --check js/modules/management.js
           node tests/duty-report-full-parity.test.js
