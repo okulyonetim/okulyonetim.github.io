@@ -28,6 +28,10 @@ for(const token of [
   'ptState.personelId=p.id','ShellUI.routeModule'
 ]) assert(management.includes(token),`Puantaj/İmza canonical davranışı eksik: ${token}`);
 
+assert(management.includes('function ptPuantajAyBasligi()')&&management.includes('return ilk===son?ilk:`${ilk} - ${son}`'),'Puantaj AY alanı tarih aralığı yerine ay adlarını üretmeli.');
+assert(management.includes('.payroll th{height:118px;padding:0 0 4px;background:#fff'),'Tarih sütunları renksiz/beyaz kalmalı.');
+assert(management.includes('.payroll th.summary{width:6mm;background:#e8f0ee')&&management.includes('.payroll td.summary-cell{background:#e8f0ee}'),'Tarihlerden sonraki özet sütunlarının tamamı tek ortak renkte olmalı.');
+assert(management.includes('writing-mode:vertical-rl')&&management.includes('transform:rotate(180deg)'),'Özet başlıkların dikey metin yönü korunmalı.');
 assert(!classic.includes('decoratePuantaj')&&!classic.includes('puantajTablosu'),'Classic parite puantajı DOM yamalarıyla yeniden sahiplenmemeli.');
 for(const selector of [
   '.ka-pt-page','.ka-pt-header','.ka-pt-tabs','.ka-pt-workspace',
