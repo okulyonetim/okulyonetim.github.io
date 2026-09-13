@@ -20,6 +20,10 @@ assert(css.includes('font-size:12.8pt!important')&&css.includes('width:calc(100%
 assert(css.includes('--ka-duty-head-font:9.5pt;--ka-duty-cell-font:8.7pt;--ka-duty-task-font:7.2pt'));
 assert(css.includes('font-size:var(--ka-duty-head-font)!important')&&css.includes('font-size:var(--ka-duty-cell-font)!important'));
 assert(css.includes('.ka-duty-report-tasks ol{flex:0 0 auto')&&css.includes('font-size:var(--ka-duty-task-font)!important;line-height:1!important'));
-assert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#e6e6e6!important'));
+assert(css.includes('.ka-duty-report-table tbody tr:nth-child(even) td{background:#fff!important'),'Nöbet raporunda zebra satır deseni olmamalı.');
+assert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{background:#f6eeee!important')&&css.includes('.ka-duty-report-holiday td{background:#fff7dc!important'),'Yalnız hafta sonu ve tatil satırları hafif dolgulu olmalı.');
+assert(src.includes('function dutyReportPrintCss()')&&src.includes('extraHead:dutyReportPrintCss()'),'Native PDF çıktısı nöbet raporu stilini HTML içine gömmeli.');
+assert(src.includes('async function dutyReportLogoDataUrl()')&&src.includes('src="${esc(logoSrc)}"'),'Logo native PDF için gömülebilir veri adresine çevrilmeli.');
+assert(src.includes('mudurAdSoyad')&&src.includes("role.includes('müdür')&&!role.includes('yardımc')"),'Müdür adı ayar, öğretmen kimliği veya müdür rolünden bulunabilmeli.');
 assert(report.includes("page=o.yon==='yatay'?'A4 landscape':'A4 portrait'")&&report.includes('@page{size:${page};margin:0}'));
 console.log('Tablo öncelikli tam A4 nöbet raporu sözleşmesi başarılı.');
