@@ -1,17 +1,19 @@
 name: Pull refresh hotfix
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 permissions:
   contents: write
 jobs:
   patch:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - shell: python
+      - name: Apply pull refresh fix
+        shell: bash
         run: |
+          python3 - <<'PY'
           from pathlib import Path
           import re
           core=Path('js/core/core.js')
@@ -55,14 +57,14 @@ jobs:
           sw=Path('service-worker.js'); w=sw.read_text(encoding='utf-8')
           w,n=re.subn(r"const CACHE_ADI='oy-cache-v\d+'", "const CACHE_ADI='oy-cache-v939'", w, count=1)
           if n!=1: raise SystemExit('cache version not updated')
-          w=w.replace("'./js/core/core.js?v=905'","'./js/core/core.js?v=939'",1)
+          w=re.sub(r"'\./js/core/core\.js\?v=\d+'", "'./js/core/core.js?v=939'", w, count=1)
           sw.write_text(w,encoding='utf-8')
 
           assert '.ka-menu-layer' not in re.search(r"const BLOCK_SELECTOR=.*",s).group(0)
           assert 'scroller&&scroller.scrollTop>1' in s
           assert 'armSafetyReset()' in s and '2200' in s
           Path('.github/workflows/pull-refresh-hotfix.yml').unlink()
-      - run: |
+          PY
           node --check js/core/core.js
           grep -F "js/core/core.js?v=939" index.html
           grep -F "oy-cache-v939" service-worker.js
