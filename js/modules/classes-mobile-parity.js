@@ -16,6 +16,34 @@ const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
 const fullName=o=>[o?.ad,o?.soyad].filter(Boolean).join(' ')||o?.adSoyad||'—';
 const can=(k,m='read')=>!global.PermissionService||global.PermissionService.can(k,m);
+const activeUser=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};
+const activeRole=()=>global.AppStore?.get?.('session.role')||{};
+const roleName=()=>norm(activeRole().ad||activeRole().rolAdi||activeUser().rolAdi||activeUser().rol||'');
+const linkedTeacherId=()=>activeUser().bagliOgretmenId||activeUser().ogretmenId||'';
+const isManagerUser=()=>roleName().includes('yonetici')||roleName().includes('mudur');
+const isTeacherUser=()=>activeUser().admin!==true&&!!linkedTeacherId()&&!isManagerUser();
+function installTeacherStudentPolicy(){
+  const permission=global.PermissionService;
+  if(permission&&!permission.__teacherStudentEditPolicy){
+    const originalCan=permission.can.bind(permission);
+    permission.can=(key,min='read')=>key==='people.students.edit'&&isTeacherUser()?true:originalCan(key,min);
+    permission.canEdit=key=>permission.can(key,'edit');
+    permission.__teacherStudentEditPolicy=true;
+  }
+  const service=global.SiniflarService;
+  if(service&&!service.__teacherStudentEditPolicy){
+    const originalDelete=service.veliSil.bind(service);
+    service.veliSil=id=>{
+      if(isTeacherUser()){
+        global.toast?.('Öğretmen hesapları öğrenci kaydı silemez.');
+        return Promise.reject(new Error('yetkisiz'));
+      }
+      return originalDelete(id);
+    };
+    service.__teacherStudentEditPolicy=true;
+  }
+}
+installTeacherStudentPolicy();
 let root=null,active='pending',query='',level='',detailId='',detailTab='info',unsubs=[];
 const classes=()=>arr('siniflar'),students=()=>arr('veliler'),teachers=()=>arr('ogretmenler');
 const classTeacher=s=>teachers().find(o=>o.id===s?.sinifOgretmeniId)||null;
