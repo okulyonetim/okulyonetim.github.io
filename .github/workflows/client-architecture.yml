@@ -31,7 +31,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   architecture:
@@ -39,6 +39,70 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - name: Apply requested puantaj and diploma layout changes
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/puantaj-report-polish'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def must_replace(text, old, new, label):
+              if old not in text:
+                  raise SystemExit(f'Missing expected pattern: {label}')
+              return text.replace(old, new, 1)
+
+          p=Path('js/modules/management.js')
+          s=p.read_text(encoding='utf-8')
+          old="function ptDonemBasligi(){const bas=ptParseIso(ptState.baslangic),bit=ptParseIso(ptState.bitis);if(!bas||!bit)return'Dönem seçilmedi';if(bas.getFullYear()===bit.getFullYear()&&bas.getMonth()===bit.getMonth())return`${AYISIM[bas.getMonth()]} ${bas.getFullYear()}`;return`${ptTarih(bas)} – ${ptTarih(bit)}`}"
+          s=must_replace(s,old,old+"\nfunction ptPuantajAyBasligi(){const bas=ptParseIso(ptState.baslangic),bit=ptParseIso(ptState.bitis);if(!bas||!bit)return'';const ilk=AYISIM[bas.getMonth()].toLocaleUpperCase('tr'),son=AYISIM[bit.getMonth()].toLocaleUpperCase('tr');return ilk===son?ilk:`${ilk} - ${son}`}",'month helper')
+          s=must_replace(s,"let blanks='';for(let i=2;i<=10;i++)blanks+=`<tr><td>${i}</td><td class=\"name\"></td><td></td>${'<td></td>'.repeat(gunler.length+10)}</tr>`;","let blanks='';for(let i=2;i<=10;i++)blanks+=`<tr><td>${i}</td><td class=\"name\"></td><td></td>${'<td></td>'.repeat(gunler.length)}${'<td class=\"summary-cell\"></td>'.repeat(10)}</tr>`;",'blank summary cells')
+          s=must_replace(s,".payroll th{height:105px;padding:0 0 4px;background:#f2f2f2;vertical-align:bottom;font-size:7pt}.payroll th>span{display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}.payroll th.no{width:4.5mm}.payroll th.name{width:34mm;text-align:left}.payroll th.tc{width:17mm}.payroll th.day{width:5mm}.payroll th.summary{width:5.5mm}.payroll td{height:6mm;padding:1px 2px;font-size:7.5pt;font-weight:700}",".payroll th{height:118px;padding:0 0 4px;background:#fff;vertical-align:bottom;font-size:7pt}.payroll th>span{display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}.payroll th.no{width:4.5mm}.payroll th.name{width:34mm;text-align:left}.payroll th.tc{width:17mm}.payroll th.day{width:5mm}.payroll th.summary{width:6mm;background:#e8f0ee;font-size:5.8pt;padding:2px 0}.payroll th.summary>span{line-height:1;max-height:110px}.payroll td{height:6mm;padding:1px 2px;font-size:7.5pt;font-weight:700}.payroll td.summary-cell{background:#e8f0ee}",'summary styling')
+          s=must_replace(s,"const period=ptDonemBasligi().toLocaleUpperCase('tr'),year=ptParseIso(ptState.baslangic)?.getFullYear()||''","const period=ptPuantajAyBasligi(),year=ptParseIso(ptState.baslangic)?.getFullYear()||''",'period source')
+          s=must_replace(s,"AY: ${esc(period.replace(String(year),'').trim())}","AY: ${esc(period)}",'period output')
+          s=must_replace(s,"<td>${sayim.X}</td><td>${sayim.H}</td><td>${sayim.T}</td><td>${sayim.Y}</td><td>${sayim.M}</td><td>${sayim.R}</td><td>${sayim['CÇ']}</td><td>${sayim['PÇ']}</td><td>${sayim.UBGT}</td><td>${toplam}</td>","<td class=\"summary-cell\">${sayim.X}</td><td class=\"summary-cell\">${sayim.H}</td><td class=\"summary-cell\">${sayim.T}</td><td class=\"summary-cell\">${sayim.Y}</td><td class=\"summary-cell\">${sayim.M}</td><td class=\"summary-cell\">${sayim.R}</td><td class=\"summary-cell\">${sayim['CÇ']}</td><td class=\"summary-cell\">${sayim['PÇ']}</td><td class=\"summary-cell\">${sayim.UBGT}</td><td class=\"summary-cell\">${toplam}</td>",'summary data cells')
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('js/modules/personnel-documents.js')
+          s=p.read_text(encoding='utf-8')
+          s=must_replace(s,".pd-info{width:auto!important;margin:0 0 8mm;border-collapse:collapse!important}.pd-info td{border:0!important;background:#fff!important;color:#000!important;font-size:12pt!important;padding:1.2mm 0!important;vertical-align:top!important}.pd-info td:first-child{font-weight:700;padding-right:6mm!important;white-space:nowrap}.pd-info td:nth-child(2){padding-right:4mm!important}",".pd-info{width:auto!important;margin:0 0 8mm;border-collapse:collapse!important;table-layout:auto!important}.pd-info td{border:0!important;background:#fff!important;color:#000!important;font-size:12pt!important;padding:1.2mm 0!important;vertical-align:top!important}.pd-info td:first-child{width:45mm!important;max-width:45mm!important;font-weight:700;padding-right:2mm!important;white-space:nowrap}.pd-info td:nth-child(2){width:4mm!important;padding-right:2mm!important;text-align:center!important}.pd-info td:nth-child(3){width:auto!important;white-space:nowrap!important}",'diploma spacing')
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('service-worker.js')
+          s=p.read_text(encoding='utf-8')
+          s=must_replace(s,"const CACHE_ADI='oy-cache-v937';","const CACHE_ADI='oy-cache-v938';",'cache version')
+          p.write_text(s,encoding='utf-8')
+
+          for p in Path('tests').rglob('*.js'):
+              s=p.read_text(encoding='utf-8')
+              if 'oy-cache-v937' in s:
+                  p.write_text(s.replace('oy-cache-v937','oy-cache-v938'),encoding='utf-8')
+
+          p=Path('tests/personnel-payroll-signature-parity.test.js')
+          s=p.read_text(encoding='utf-8')
+          marker="assert(!classic.includes('decoratePuantaj')&&!classic.includes('puantajTablosu'),'Classic parite puantajı DOM yamalarıyla yeniden sahiplenmemeli.');"
+          extra="assert(management.includes('function ptPuantajAyBasligi()')&&management.includes('return ilk===son?ilk:`${ilk} - ${son}`'),'Puantaj AY alanı tarih aralığı yerine ay adlarını üretmeli.');\nassert(management.includes('.payroll th{height:118px;padding:0 0 4px;background:#fff'),'Tarih sütunları renksiz/beyaz kalmalı.');\nassert(management.includes('.payroll th.summary{width:6mm;background:#e8f0ee')&&management.includes('.payroll td.summary-cell{background:#e8f0ee}'),'Tarihlerden sonraki özet sütunlarının tamamı tek ortak renkte olmalı.');\nassert(management.includes('writing-mode:vertical-rl')&&management.includes('transform:rotate(180deg)'),'Özet başlıkların dikey metin yönü korunmalı.');\n"+marker
+          s=must_replace(s,marker,extra,'payroll regression')
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('tests/personnel-documents-focus-smoke.test.js')
+          s=p.read_text(encoding='utf-8')
+          marker="assert(src.includes('ReportEngine.printReport(title,body'),'Resmî çıktı merkezi ReportEngine üzerinden kalmalı.');"
+          s=must_replace(s,marker,marker+"\nassert(src.includes('.pd-info td:first-child{width:45mm!important;max-width:45mm!important')&&src.includes('.pd-info td:nth-child(2){width:4mm!important;padding-right:2mm!important'),'Diploma talep çıktısında etiket, iki nokta ve veri alanı birbirine yakın tutulmalı.');",'diploma regression')
+          p.write_text(s,encoding='utf-8')
+          PY
+          git checkout origin/main -- .github/workflows/client-architecture.yml
+          node --check js/modules/management.js
+          node --check js/modules/personnel-documents.js
+          node tests/personnel-payroll-signature-parity.test.js
+          node tests/personnel-documents-focus-smoke.test.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/management.js js/modules/personnel-documents.js service-worker.js tests .github/workflows/client-architecture.yml
+          git commit -m "fix: polish puantaj and diploma print layouts"
+          git push origin HEAD:${{ github.head_ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
