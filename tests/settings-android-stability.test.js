@@ -16,5 +16,7 @@ assert(settings.includes('data-admin-note-add>+ Not Ekle'),'İdari Notlar ekleme
 assert(css.includes('.ka-admin-savebar{position:static'),'İdari kaydet çubuğu Not Ekle butonunu örtebilir.');
 const cacheMatch=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
 assert(cacheMatch&&Number(cacheMatch[1])>=912,'Service worker cache sürümü güncellenmedi.');
-assert(index.includes('css/design-system.css?v=913')&&sw.includes("'./css/design-system.css?v=913'"),'Index ve service worker design-system sürümü aynı değil.');
+const indexCss=index.match(/css\/design-system\.css\?v=(\d+)/);
+const swCss=sw.match(/\.\/css\/design-system\.css\?v=(\d+)/);
+assert(indexCss&&swCss&&Number(indexCss[1])>=913&&indexCss[1]===swCss[1],'Index ve service worker design-system sürümü aynı değil.');
 console.log('Android Ayarlar donma, okul adresi taslak ve idari not görünürlük sözleşmesi başarılı.');
