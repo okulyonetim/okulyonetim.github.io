@@ -180,7 +180,7 @@ function firebaseyiBaslat(){
 (function scheduleReportRedesignFeatureLoad(){
   if(document.querySelector('script[data-schedule-report-redesign]'))return;
   const script=document.createElement('script');
-  script.src='js/core/schedule-report-redesign.js?v=920';
+  script.src='js/core/schedule-report-redesign.js?v=938';
   script.async=false;
   script.dataset.scheduleReportRedesign='';
   document.head.appendChild(script);
@@ -191,7 +191,7 @@ function firebaseyiBaslat(){
 (function scheduleReportColumnZebraFeatureLoad(){
   if(document.querySelector('script[data-schedule-report-column-zebra]'))return;
   const script=document.createElement('script');
-  script.src='js/core/schedule-report-column-zebra.js?v=922';
+  script.src='js/core/schedule-report-column-zebra.js?v=938';
   script.async=false;
   script.dataset.scheduleReportColumnZebra='';
   document.head.appendChild(script);

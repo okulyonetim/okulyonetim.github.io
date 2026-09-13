@@ -7,10 +7,10 @@
 if(global.ScheduleReportColumnZebra)return;
 
 const COLUMN_ZEBRA_STYLE=`<style data-ka-schedule-column-zebra>
-.ka-report .ka-sr-report tbody tr>td.ka-sr-day-a{background:#f4f8f6!important}
-.ka-report .ka-sr-report tbody tr>td.ka-sr-day-b{background:#fff!important}
-.ka-report .ka-sr-report thead tr>th.ka-sr-day-a{background:#eaf2ee!important}
-.ka-report .ka-sr-report thead tr>th.ka-sr-day-b{background:#f7faf8!important}
+.ka-report .ka-sr-report tbody tr>td.ka-sr-day-a{background:#edf4f0!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+.ka-report .ka-sr-report tbody tr>td.ka-sr-day-b{background:#fff!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+.ka-report .ka-sr-report thead tr>th.ka-sr-day-a{background:#e2ede7!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+.ka-report .ka-sr-report thead tr>th.ka-sr-day-b{background:#f8faf9!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
 </style>`;
 
 function isScheduleReport(opts){
