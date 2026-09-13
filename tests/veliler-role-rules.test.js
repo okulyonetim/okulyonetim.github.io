@@ -17,41 +17,55 @@ async function main(){
       const db = context.firestore();
       await setDoc(doc(db,'oy_roller','rol-editor'),{yetkiler:{siniflar:'duzenle'}});
       await setDoc(doc(db,'oy_roller','rol-viewer'),{yetkiler:{siniflar:'goruntule'}});
+      await setDoc(doc(db,'oy_roller','rol-manager'),{ad:'Yönetici',yetkiler:{siniflar:'duzenle'}});
       await setDoc(doc(db,'oy_kullanicilar','editorUid'),{uid:'editorUid',admin:false,aktif:true,rolId:'rol-editor'});
-      await setDoc(doc(db,'oy_kullanicilar','counselorUid'),{uid:'counselorUid',admin:false,aktif:true,rolId:'rol-viewer',bagliOgretmenId:'t1'});
-      await setDoc(doc(db,'oy_kullanicilar','otherUid'),{uid:'otherUid',admin:false,aktif:true,rolId:'rol-viewer',bagliOgretmenId:'t3'});
+      await setDoc(doc(db,'oy_kullanicilar','teacherUid'),{uid:'teacherUid',admin:false,aktif:true,rolId:'rol-viewer',bagliOgretmenId:'t1'});
+      await setDoc(doc(db,'oy_kullanicilar','viewerUid'),{uid:'viewerUid',admin:false,aktif:true,rolId:'rol-viewer'});
+      await setDoc(doc(db,'oy_kullanicilar','managerUid'),{uid:'managerUid',admin:false,aktif:true,rolId:'rol-manager',bagliOgretmenId:'t2'});
       await setDoc(doc(db,'oy_kullanicilar','adminUid'),{uid:'adminUid',admin:true,aktif:true});
-      await setDoc(doc(db,'oy_sosyalKulupler','k1'),{ad:'Bilim Kulübü',ogretmenIdler:['t1']});
-      await setDoc(doc(db,'oy_sosyalKulupler','k2'),{ad:'Spor Kulübü',ogretmenIdler:['t2']});
-      await setDoc(doc(db,'oy_veliler','v1'),{ogrenciAdi:'Ali Öğrenci',sinifId:'s1',veliAdi:'Veli 1',telefon1:'05000000000',kulupId:'k1',kulupAdi:'Bilim Kulübü'});
-      await setDoc(doc(db,'oy_veliler','v2'),{ogrenciAdi:'Ayşe Öğrenci',sinifId:'s1',veliAdi:'Veli 2',telefon1:'05000000001',kulupId:'',kulupAdi:''});
+      await setDoc(doc(db,'oy_veliler','v1'),{ogrenciAdi:'Ali Öğrenci',sinifId:'s1',veliAdi:'Veli 1',telefon1:'05000000000',adres:'Eski adres',kulupId:'',kulupAdi:''});
+      await setDoc(doc(db,'oy_ogrenciler','o1'),{ogrenciAdi:'Ali Öğrenci',sinifId:'s1',adres:'Eski adres'});
     });
 
     const editor = testEnv.authenticatedContext('editorUid').firestore();
-    const counselor = testEnv.authenticatedContext('counselorUid').firestore();
-    const other = testEnv.authenticatedContext('otherUid').firestore();
+    const teacher = testEnv.authenticatedContext('teacherUid').firestore();
+    const viewer = testEnv.authenticatedContext('viewerUid').firestore();
+    const manager = testEnv.authenticatedContext('managerUid').firestore();
     const admin = testEnv.authenticatedContext('adminUid').firestore();
     const anon = testEnv.unauthenticatedContext().firestore();
 
-    await assertSucceeds(getDoc(doc(counselor,'oy_veliler','v1')));
+    await assertSucceeds(getDoc(doc(teacher,'oy_veliler','v1')));
     await assertFails(getDoc(doc(anon,'oy_veliler','v1')));
 
-    await assertSucceeds(updateDoc(doc(editor,'oy_veliler','v1'),{veliAdi:'Yeni Veli',telefon1:'05551112233'}));
-    await assertSucceeds(setDoc(doc(editor,'oy_veliler','v3'),{ogrenciAdi:'Yeni Öğrenci',sinifId:'s1'}));
+    // Öğretmen öğrenci/veli iletişim ve adres bilgilerini güncelleyebilir.
+    await assertSucceeds(updateDoc(doc(teacher,'oy_veliler','v1'),{
+      veliAdi:'Yeni Veli',
+      telefon1:'05551112233',
+      adres:'Yeni adres',
+    }));
+    await assertSucceeds(updateDoc(doc(teacher,'oy_ogrenciler','o1'),{adres:'Yeni öğrenci adresi'}));
+
+    // Öğretmen olmayan salt-okunur kullanıcı düzenleyemez.
+    await assertFails(updateDoc(doc(viewer,'oy_veliler','v1'),{adres:'Yetkisiz adres'}));
+    await assertFails(updateDoc(doc(viewer,'oy_ogrenciler','o1'),{adres:'Yetkisiz adres'}));
+
+    // Eski düzenleme rolü kayıt oluşturup güncelleyebilir; ancak artık öğrenci silemez.
+    await assertSucceeds(updateDoc(doc(editor,'oy_veliler','v1'),{veliAdi:'Editör Veli'}));
+    await assertSucceeds(setDoc(doc(editor,'oy_veliler','v2'),{ogrenciAdi:'Yeni Öğrenci',sinifId:'s1'}));
+    await assertFails(deleteDoc(doc(editor,'oy_veliler','v2')));
+
+    // Öğretmen silme yapamaz; yönetici/admin yapabilir.
+    await assertFails(deleteDoc(doc(teacher,'oy_veliler','v1')));
+    await assertFails(deleteDoc(doc(teacher,'oy_ogrenciler','o1')));
+    await assertSucceeds(deleteDoc(doc(manager,'oy_veliler','v2')));
+
+    await testEnv.withSecurityRulesDisabled(async context => {
+      const db = context.firestore();
+      await setDoc(doc(db,'oy_veliler','v3'),{ogrenciAdi:'Admin Silinecek',sinifId:'s1'});
+    });
     await assertSucceeds(deleteDoc(doc(admin,'oy_veliler','v3')));
 
-    // Danışman kendi kulübüne öğrenci atayabilir ve kendi kulübünden çıkarabilir.
-    await assertSucceeds(updateDoc(doc(counselor,'oy_veliler','v2'),{kulupId:'k1',kulupAdi:'Bilim Kulübü'}));
-    await assertSucceeds(updateDoc(doc(counselor,'oy_veliler','v1'),{kulupId:'',kulupAdi:''}));
-
-    // Mevcut servis davranışı: öğrenci danışmanın kendi kulübündeyse yalnız kulüp alanlarında değişiklik yapılabilir.
-    // Ancak kulüpsüz bir öğrenciyi danışmanı olmadığı başka bir kulübe atayamaz.
-    await assertFails(updateDoc(doc(counselor,'oy_veliler','v1'),{telefon1:'09999999999'}));
-    await assertFails(updateDoc(doc(counselor,'oy_veliler','v1'),{kulupId:'k2',kulupAdi:'Spor Kulübü'}));
-    await assertFails(updateDoc(doc(other,'oy_veliler','v2'),{kulupId:'k1',kulupAdi:'Bilim Kulübü'}));
-    await assertFails(deleteDoc(doc(counselor,'oy_veliler','v1')));
-
-    console.log('Veli/öğrenci rol ve kulüp danışmanı güvenliği testleri başarılı.');
+    console.log('Öğretmen öğrenci düzenleme / silme sınırı güvenlik testleri başarılı.');
   } finally {
     await testEnv.cleanup();
   }
