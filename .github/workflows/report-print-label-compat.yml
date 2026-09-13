@@ -1,0 +1,31 @@
+name: Report print label compatibility
+on:
+  push:
+    branches: [fix/report-preview-print-layout]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: python
+        run: |
+          from pathlib import Path
+          p=Path('js/modules/report-engine.js')
+          s=p.read_text()
+          old='class="dv3btn primary" data-report-print type="button">🖨 Yazdır</button>'
+          new='class="dv3btn primary" data-report-print type="button" aria-label="Yazdır / PDF">🖨 Yazdır</button>'
+          if old not in s: raise SystemExit('print button anchor missing')
+          p.write_text(s.replace(old,new,1))
+          Path('.github/workflows/report-print-label-compat.yml').unlink()
+      - run: |
+          node tests/report-engine-a4-smoke.test.js
+          node tests/report-preview-print-layout-regression.test.js
+          node --check js/modules/report-engine.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/report-engine.js .github/workflows/report-print-label-compat.yml
+          git commit -m "test: preserve report print label contract"
+          git push
