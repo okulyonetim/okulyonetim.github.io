@@ -1,0 +1,31 @@
+name: Schedule PDF style hotfix
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: python
+        run: |
+          from pathlib import Path
+          p=Path('js/modules/academic.js')
+          s=p.read_text()
+          old="kenarBosluk:type==='tumSiniflar'||type==='tumOgretmenler'?4:7});if(!preview||!document.getElementById('kaReportPreview'))throw new Error('Rapor önizlemesi açılamadı.');return true}"
+          extra="<style>.ka-report .ka-schedule-report-sheet{border:1.8px solid #52665e!important;border-collapse:collapse!important}.ka-report .ka-schedule-report-sheet tbody tr:nth-child(odd)>th,.ka-report .ka-schedule-report-sheet tbody tr:nth-child(odd)>td{background:#fff!important;color:#17221e!important}.ka-report .ka-schedule-report-sheet tbody tr:nth-child(even)>th,.ka-report .ka-schedule-report-sheet tbody tr:nth-child(even)>td{background:#e6efea!important;color:#17221e!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.ka-report .ka-schedule-report-sheet tbody>tr>th.ka-schedule-report-scope{border-right:1.6px solid #52665e!important}.ka-report .ka-schedule-report-sheet tbody>tr>td:nth-of-type(7n){border-right:1.6px solid #52665e!important}.ka-report .ka-schedule-report-sheet thead>tr:first-child>th{border-bottom:1px solid #397461!important}.ka-report .ka-schedule-report-sheet thead>tr:first-child>th:not(:first-child){border-right:1.6px solid #234f40!important}.ka-report .ka-schedule-report-sheet thead>tr:first-child>th:first-child{border-right:1.6px solid #234f40!important}.ka-report .ka-schedule-report-sheet thead>tr:nth-child(2)>th:nth-child(7n){border-right:1.6px solid #234f40!important}</style>"
+          new="kenarBosluk:type==='tumSiniflar'||type==='tumOgretmenler'?4:7,extraHead:type==='tumSiniflar'||type==='tumOgretmenler'?`"+extra+"`:''});if(!preview||!document.getElementById('kaReportPreview'))throw new Error('Rapor önizlemesi açılamadı.');return true}"
+          if old not in s:
+              raise SystemExit('Target schedule report block not found')
+          p.write_text(s.replace(old,new,1))
+          Path('.github/workflows/schedule-pdf-style-hotfix.yml').unlink()
+      - run: |
+          grep -F "extraHead:type==='tumSiniflar'||type==='tumOgretmenler'" js/modules/academic.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/academic.js .github/workflows/schedule-pdf-style-hotfix.yml
+          git commit -m "fix: preserve schedule zebra and emphasize day boundaries in PDF"
+          git push
