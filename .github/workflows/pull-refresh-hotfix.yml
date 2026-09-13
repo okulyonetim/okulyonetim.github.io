@@ -1,0 +1,73 @@
+name: Pull refresh hotfix
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: python
+        run: |
+          from pathlib import Path
+          import re
+          core=Path('js/core/core.js')
+          s=core.read_text(encoding='utf-8')
+          old="const BLOCK_SELECTOR='.ka-app-nav.ka-bottom-nav,.ka-menu-layer,.ka-modal-backdrop,.dv3,[role=\"dialog\"],[data-ka-no-pull-refresh]';"
+          new="const BLOCK_SELECTOR='.ka-app-nav.ka-bottom-nav,.ka-modal-backdrop,.dv3,[role=\"dialog\"],[data-ka-no-pull-refresh]';"
+          if old not in s: raise SystemExit('BLOCK_SELECTOR target not found')
+          s=s.replace(old,new,1)
+          old="let tracking=false,armed=false,startX=0,startY=0,indicator=null,reloading=false;"
+          new="let tracking=false,armed=false,startX=0,startY=0,indicator=null,reloading=false,safetyTimer=null;"
+          if old not in s: raise SystemExit('state target not found')
+          s=s.replace(old,new,1)
+          old="function blocked(target){return !!(document.body.classList.contains('ka-layer-open')||target?.closest?.(BLOCK_SELECTOR)||scrollableAncestor(target))}"
+          new="function blocked(target){const scroller=scrollableAncestor(target);return !!(target?.closest?.(BLOCK_SELECTOR)||(scroller&&scroller.scrollTop>1))}"
+          if old not in s: raise SystemExit('blocked target not found')
+          s=s.replace(old,new,1)
+          old="""  function draw(raw){
+    const el=ensureIndicator(),visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.48);armed=raw>=ARM_DISTANCE;el.hidden=visual<2;el.classList.toggle('is-armed',armed);el.classList.remove('is-refreshing');el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);const label=el.querySelector('span');if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
+  }
+  function reset(){tracking=false;armed=false;const el=indicator;if(el&&!reloading){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}
+"""
+          new="""  function armSafetyReset(){clearTimeout(safetyTimer);safetyTimer=setTimeout(()=>{if(!reloading)reset()},2200)}
+  function draw(raw){
+    const el=ensureIndicator(),visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.48);armed=raw>=ARM_DISTANCE;el.hidden=visual<2;el.classList.toggle('is-armed',armed);el.classList.remove('is-refreshing');el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);const label=el.querySelector('span');if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';armSafetyReset();
+  }
+  function reset(){clearTimeout(safetyTimer);safetyTimer=null;tracking=false;armed=false;const el=indicator;if(el&&!reloading){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}
+"""
+          if old not in s: raise SystemExit('draw/reset target not found')
+          s=s.replace(old,new,1)
+          old="if(!tracking||reloading){if(!reloading)reset();return}const refresh=armed;tracking=false;armed=false;if(!refresh){reset();return}reloading=true;"
+          new="if(!tracking||reloading){if(!reloading)reset();return}const refresh=armed;tracking=false;armed=false;if(!refresh){reset();return}clearTimeout(safetyTimer);safetyTimer=null;reloading=true;"
+          if old not in s: raise SystemExit('finish target not found')
+          s=s.replace(old,new,1)
+          core.write_text(s,encoding='utf-8')
+
+          idx=Path('index.html'); t=idx.read_text(encoding='utf-8')
+          t,n=re.subn(r'js/core/core\.js\?v=\d+', 'js/core/core.js?v=939', t, count=1)
+          if n!=1: raise SystemExit('index core version not updated')
+          idx.write_text(t,encoding='utf-8')
+
+          sw=Path('service-worker.js'); w=sw.read_text(encoding='utf-8')
+          w,n=re.subn(r"const CACHE_ADI='oy-cache-v\d+'", "const CACHE_ADI='oy-cache-v939'", w, count=1)
+          if n!=1: raise SystemExit('cache version not updated')
+          w=w.replace("'./js/core/core.js?v=905'","'./js/core/core.js?v=939'",1)
+          sw.write_text(w,encoding='utf-8')
+
+          assert '.ka-menu-layer' not in re.search(r"const BLOCK_SELECTOR=.*",s).group(0)
+          assert 'scroller&&scroller.scrollTop>1' in s
+          assert 'armSafetyReset()' in s and '2200' in s
+          Path('.github/workflows/pull-refresh-hotfix.yml').unlink()
+      - run: |
+          node --check js/core/core.js
+          grep -F "js/core/core.js?v=939" index.html
+          grep -F "oy-cache-v939" service-worker.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/core/core.js index.html service-worker.js .github/workflows/pull-refresh-hotfix.yml
+          git commit -m "fix: make pull refresh reliable across menu surfaces"
+          git push
