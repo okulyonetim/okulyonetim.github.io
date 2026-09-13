@@ -79,7 +79,9 @@ function installReportPatch(){
 }
 
 function installMenuPullRefresh(){
-  if(global.__kaMenuPullRefresh)return;global.__kaMenuPullRefresh=true;
+  if(global.__kaMenuPullRefresh)return;
+  if(typeof document==='undefined'||typeof Element==='undefined'||typeof getComputedStyle!=='function')return;
+  global.__kaMenuPullRefresh=true;
   const ARM=96,MAX=78,DEAD=8;let tracking=false,armed=false,startX=0,startY=0,reloading=false;
   const menuFor=t=>t?.closest?.('.ka-menu-layer:not([hidden])');
   function scroller(target,menu){for(let el=target instanceof Element?target:null;el&&el!==menu.parentElement;el=el.parentElement){const s=getComputedStyle(el);if((s.overflowY==='auto'||s.overflowY==='scroll'||s.overflowY==='overlay')&&el.scrollHeight>el.clientHeight+2)return el;if(el===menu)break}return menu}
