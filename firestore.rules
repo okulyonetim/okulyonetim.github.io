@@ -167,7 +167,10 @@ service cloud.firestore {
 
     match /oy_ogrenciler/{ogrenciId} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('ogrenciler') || moduluDuzenleyebilir('siniflar');
+      allow create: if moduluDuzenleyebilir('ogrenciler') || moduluDuzenleyebilir('siniflar');
+      allow update: if moduluDuzenleyebilir('ogrenciler') || moduluDuzenleyebilir('siniflar')
+        || (girisYapmis() && kendiOgretmenIdsi() != null);
+      allow delete: if adminMi() || yoneticiMi();
     }
 
     match /oy_siniflar/{id} {
@@ -182,8 +185,10 @@ service cloud.firestore {
 
     match /oy_veliler/{id} {
       allow read: if girisYapmis();
-      allow create, delete: if moduluDuzenleyebilir('siniflar') || moduluDuzenleyebilir('ogrenciler');
+      allow create: if moduluDuzenleyebilir('siniflar') || moduluDuzenleyebilir('ogrenciler');
+      allow delete: if adminMi() || yoneticiMi();
       allow update: if moduluDuzenleyebilir('siniflar') || moduluDuzenleyebilir('ogrenciler')
+        || (girisYapmis() && kendiOgretmenIdsi() != null)
         || (girisYapmis()
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kulupId', 'kulupAdi'])
           && (kulupDanismaniMi(resource.data.kulupId) || kulupDanismaniMi(request.resource.data.kulupId)));
