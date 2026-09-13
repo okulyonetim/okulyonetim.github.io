@@ -1,0 +1,78 @@
+name: Report preview and print layout hotfix
+on:
+  push:
+    branches: [fix/report-preview-print-layout]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: python
+        run: |
+          from pathlib import Path
+
+          p=Path('js/modules/report-engine.js')
+          s=p.read_text()
+          old="function logoUrl(){try{return new URL('assets/logo.png',global.location.href).href}catch(_){return'assets/logo.png'}}\n"
+          new=old+"let reportLogoDataUrlPromise=null;\nasync function reportLogoDataUrl(){if(reportLogoDataUrlPromise)return reportLogoDataUrlPromise;reportLogoDataUrlPromise=(async()=>{try{const r=await fetch(logoUrl(),{cache:'force-cache'});if(!r.ok)throw new Error('logo-fetch');const b=await r.blob();return await new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result||''));fr.onerror=()=>no(fr.error||new Error('logo-read'));fr.readAsDataURL(b)})}catch(_){return''}})();return reportLogoDataUrlPromise;}\nasync function inlineReportAssets(html){const data=await reportLogoDataUrl();if(!data)return html;const absolute=logoUrl();return String(html).split(absolute).join(data).split('assets/logo.png').join(data);}\n"
+          if old not in s: raise SystemExit('report logo anchor missing')
+          s=s.replace(old,new,1)
+          oldcss="html,body{margin:0;padding:0;background:#fff!important;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{width:${w};min-height:${h}}.ka-report{width:${w}!important;min-height:${h}!important;margin:0!important;padding:${o.kenarBosluk}mm!important;"
+          newcss="html,body{box-sizing:border-box;margin:0;padding:0;background:#fff!important;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{width:${w};min-height:${h}}.ka-report{box-sizing:border-box;width:${w}!important;min-height:${h}!important;margin:0!important;padding:${o.kenarBosluk}mm!important;"
+          if oldcss not in s: raise SystemExit('A4 sizing anchor missing')
+          s=s.replace(oldcss,newcss,1)
+          s=s.replace('<header class="dv3h"><button class="dv3btn" data-report-close','<header class="dv3h dv3h-report"><button class="dv3btn" data-report-close',1)
+          s=s.replace('data-report-print type="button">🖨 Yazdır / PDF</button>','data-report-print type="button">🖨 Yazdır</button>',1)
+          oldprint="async function printReport(title,body,opts={}){const o=normalizeOptions(opts),html=documentHtml(title,body,o);return previewHtml(html,{title,fileName:opts.fileName||title,yon:o.yon});}"
+          newprint="async function printReport(title,body,opts={}){const o=normalizeOptions(opts);let html=documentHtml(title,body,o);html=await inlineReportAssets(html);return previewHtml(html,{title,fileName:opts.fileName||title,yon:o.yon});}"
+          if oldprint not in s: raise SystemExit('printReport anchor missing')
+          s=s.replace(oldprint,newprint,1)
+          p.write_text(s)
+
+          p=Path('css/design-system.css')
+          s=p.read_text()
+          mobile='''\n/* Rapor önizleme araç çubuğu: dar mobil ekranlarda Yazdır düğmesi daima görünür. */\n@media(max-width:767px){\n  .dv3h.dv3h-report{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;grid-template-areas:"close title title title print" "minus zoom plus . .";align-items:center;gap:5px;overflow:hidden;padding-left:max(6px,var(--ka-safe-left));padding-right:max(6px,var(--ka-safe-right))}\n  .dv3h-report [data-report-close]{grid-area:close}.dv3h-report .dv3title{grid-area:title;min-width:0}.dv3h-report [data-report-minus]{grid-area:minus}.dv3h-report [data-report-zoom]{grid-area:zoom;margin:0;min-width:46px}.dv3h-report [data-report-plus]{grid-area:plus}.dv3h-report [data-report-print]{grid-area:print;justify-self:end;max-width:100%;padding-inline:10px}\n  .dv3h-report .dv3title b{font-size:13px}.dv3h-report .dv3title small{font-size:10px}\n}\n@media(max-width:390px){.dv3h-report .dv3title small{display:none}.dv3h-report [data-report-close]{font-size:0}.dv3h-report [data-report-close]::first-letter{font-size:15px}}\n'''
+          if 'Rapor önizleme araç çubuğu: dar mobil ekranlarda Yazdır düğmesi daima görünür.' not in s:s+=mobile
+          p.write_text(s)
+
+          p=Path('js/core/schedule-report-redesign.js')
+          s=p.read_text()
+          old='.ka-report .ka-sr-report th{color:#173e32!important;border:.45pt solid #aebbb6!important;font-weight:700!important}.ka-report .ka-sr-report td{color:#17211d!important;border:.4pt solid #cbd4d0!important}'
+          new='.ka-report .ka-sr-report th{color:#173e32!important;border:.65pt solid #7f9189!important;font-weight:700!important}.ka-report .ka-sr-report td{color:#17211d!important;border:.55pt solid #9eaca6!important}'
+          if old not in s: raise SystemExit('schedule border anchor missing')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+
+          p=Path('index.html');s=p.read_text().replace('css/design-system.css?v=913','css/design-system.css?v=941');p.write_text(s)
+          p=Path('js/firebase-init.js');s=p.read_text().replace('schedule-report-redesign.js?v=938','schedule-report-redesign.js?v=941');p.write_text(s)
+          p=Path('service-worker.js');s=p.read_text().replace("const CACHE_ADI='oy-cache-v940'","const CACHE_ADI='oy-cache-v941'").replace("'./css/design-system.css?v=913'","'./css/design-system.css?v=941'").replace('schedule-report-redesign.js?v=938','schedule-report-redesign.js?v=941');p.write_text(s)
+
+          t=Path('tests/report-preview-print-layout-regression.test.js')
+          t.write_text(r'''const fs=require('fs');const assert=require('assert');
+          const engine=fs.readFileSync('js/modules/report-engine.js','utf8');const css=fs.readFileSync('css/design-system.css','utf8');const schedule=fs.readFileSync('js/core/schedule-report-redesign.js','utf8');const index=fs.readFileSync('index.html','utf8');const init=fs.readFileSync('js/firebase-init.js','utf8');const sw=fs.readFileSync('service-worker.js','utf8');
+          new Function(engine);new Function(schedule);
+          assert(engine.includes('async function inlineReportAssets(html)'),'Rapor logosu HTML içine gömülmeli.');
+          assert(engine.includes('box-sizing:border-box;width:${w}!important;min-height:${h}!important'),'A4 rapor padding dahil sayfa ölçüsünde kalmalı.');
+          assert(engine.includes('class="dv3h dv3h-report"'),'Rapor araç çubuğu özel responsive sınıf kullanmalı.');
+          assert(engine.includes('>🖨 Yazdır</button>'),'Mobil yazdır düğmesi kısa ve görünür etiket kullanmalı.');
+          assert(css.includes('.dv3h.dv3h-report')&&css.includes('grid-template-areas:"close title title title print" "minus zoom plus . ."'),'Mobil rapor araç çubuğu taşmayan grid düzenine sahip olmalı.');
+          assert(schedule.includes('border:.65pt solid #7f9189!important')&&schedule.includes('border:.55pt solid #9eaca6!important'),'Çarşaf hücre kenarlıkları daha belirgin olmalı.');
+          assert(index.includes('css/design-system.css?v=941'),'Yeni mobil rapor stili yüklenmeli.');
+          assert(init.includes('schedule-report-redesign.js?v=941'),'Yeni çarşaf rapor stili yüklenmeli.');
+          const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=941,'Yeni rapor dosyaları için SW cache yükseltilmeli.');
+          console.log('Rapor logo, tek sayfa, kenarlık ve mobil Yazdır regresyon testi başarılı.');
+          ''')
+
+          Path('.github/workflows/report-preview-print-layout-hotfix.yml').unlink()
+      - run: |
+          node tests/report-preview-print-layout-regression.test.js
+          node --check js/modules/report-engine.js
+          node --check js/core/schedule-report-redesign.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/report-engine.js css/design-system.css js/core/schedule-report-redesign.js index.html js/firebase-init.js service-worker.js tests/report-preview-print-layout-regression.test.js .github/workflows/report-preview-print-layout-hotfix.yml
+          git commit -m "fix: repair report printing and mobile preview layout"
+          git push
