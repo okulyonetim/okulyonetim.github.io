@@ -3,12 +3,16 @@ const engine=fs.readFileSync('js/modules/report-engine.js','utf8');const css=fs.
 new Function(engine);new Function(schedule);
 assert(engine.includes('async function inlineReportAssets(html)'),'Rapor logosu HTML içine gömülmeli.');
 assert(engine.includes('box-sizing:border-box;width:${w}!important;min-height:${h}!important'),'A4 rapor padding dahil sayfa ölçüsünde kalmalı.');
-assert(engine.includes('class="dv3h dv3h-report"'),'Rapor araç çubuğu özel responsive sınıf kullanmalı.');
-assert(engine.includes('>🖨 Yazdır</button>'),'Mobil yazdır düğmesi kısa ve görünür etiket kullanmalı.');
-assert(css.includes('.dv3h.dv3h-report')&&css.includes('grid-template-areas:"close title title title print" "minus zoom plus . ."'),'Mobil rapor araç çubuğu taşmayan grid düzenine sahip olmalı.');
+assert(engine.includes("ov.className='dv3 ka-report-preview'"),'Rapor önizleme generic görüntüleyiciden ayrılmış canonical yüzey kullanmalı.');
+assert(engine.includes('function scheduleFit()')&&engine.includes('scheduleFit();frame.srcdoc=html'),'Sığdırma iframe load olayına bağlı kalmadan ilk açılışta çalışmalı.');
+assert(engine.includes('ResizeObserver')&&engine.includes('if(autoFit)scheduleFit()'),'Viewport değişimlerinde otomatik sığdırma korunmalı.');
+assert(engine.includes("scene.style.marginLeft=center?'auto':'0'"),'Sığan rapor ortalanmalı, büyük rapor soldan kaydırılabilir başlamalı.');
+assert(engine.includes('aria-label="Kapat"')&&engine.includes('>✕</button>'),'Kapat butonu kompakt ve erişilebilir olmalı.');
+assert(engine.includes('>🖨 Yazdır</button>'),'Yazdır düğmesi kısa ve görünür etiket kullanmalı.');
+assert(css.includes('REPORT PREVIEW — CANONICAL')&&css.includes('.ka-report-preview{position:fixed!important;inset:0!important;width:100vw!important')&&css.includes('.ka-report-preview__main{display:grid;grid-template-columns:44px minmax(0,1fr) auto'),'Rapor yüzeyi ve header tam viewport canonical düzene sahip olmalı.');
+assert(!css.includes('grid-template-areas:"close title title title print"'),'Eski rapor toolbar yaması kaldırılmış olmalı.');
 assert(schedule.includes('border:.65pt solid #7f9189!important')&&schedule.includes('border:.55pt solid #9eaca6!important'),'Çarşaf hücre kenarlıkları daha belirgin olmalı.');
-assert(index.includes('css/design-system.css?v=942'),'Yeni mobil rapor stili güncel design-system sürümüyle yüklenmeli.');
-assert(init.includes('schedule-report-redesign.js?v=941'),'Yeni çarşaf rapor stili yüklenmeli.');
-const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=941,'Yeni rapor dosyaları için SW cache yükseltilmeli.');
-console.log('Rapor logo, tek sayfa, kenarlık ve mobil Yazdır regresyon testi başarılı.');
-// CI retrigger: report print layout contract
+const cssVer=index.match(/css\/design-system\.css\?v=(\d+)/);assert(cssVer&&Number(cssVer[1])>=943,'Canonical rapor stili yeni sürümle yüklenmeli.');
+assert(init.includes('schedule-report-redesign.js?v=941'),'Çarşaf rapor stili yüklenmeli.');
+const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=947,'Yeni rapor önizleme motoru için SW cache yükseltilmeli.');
+console.log('Canonical rapor önizleme yerleşimi ve yazdırma regresyon testi başarılı.');
