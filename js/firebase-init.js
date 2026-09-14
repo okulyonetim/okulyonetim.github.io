@@ -217,3 +217,13 @@ function firebaseyiBaslat(){
   script.dataset.studentExamResultDetails='';
   document.head.appendChild(script);
 })();
+
+/* Yönetici şifre sıfırlama: aynı Firebase UID korunur, işlem Admin SDK kuyruğuna aktarılır. */
+(function adminPasswordResetFeatureLoad(){
+  if(document.querySelector('script[data-admin-password-reset]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/admin-password-reset.js?v=948';
+  script.async=false;
+  script.dataset.adminPasswordReset='';
+  document.head.appendChild(script);
+})();
