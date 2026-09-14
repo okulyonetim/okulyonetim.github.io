@@ -1,0 +1,13 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/core/teacher-reminder-academic-year.js','utf8');
+const init=fs.readFileSync('js/firebase-init.js','utf8');
+new Function(src);
+assert(src.includes("now.getMonth()>=8?now.getFullYear():now.getFullYear()-1"),'aktif eğitim yılı Eylül başlangıcına göre hesaplanmalı');
+assert(src.includes("cutoff.setDate(cutoff.getDate()-7)"),'hatırlatmalar yaz tatilinden 7 gün önce kapanmalı');
+assert(src.includes('tatilBaslangicTarihi'),'yaz tatili başlangıcı ayarlardan okunmalı');
+assert(src.includes('okulAcilisTarihi'),'yeni eğitim yılı açılışında hatırlatmalar yeniden açılmalı');
+assert(src.includes('MONTHLY_RE'),'aylık raporlar eğitim yılına göre yeniden tarihlenmeli');
+assert(!src.includes('getFullYear()-1,idx'),'eski takvim-yılı geri sarma mantığı kullanılmamalı');
+assert(init.includes('teacher-reminder-academic-year.js?v=952'),'düzeltme uygulama başlangıcında yüklenmeli');
+console.log('teacher reminder academic year tests passed');
