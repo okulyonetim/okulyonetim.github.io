@@ -153,3 +153,13 @@ setTimeout(()=>clearInterval(timer),15000);
 
 global.KorukAdminPasswordReset={requestPasswordReset,patchResetPanel};
 })(window);
+
+/* Ayarlar alt sayfa geri navigasyonu tüm hesaplarda etkin olsun. */
+(function loadSettingsBackNavigation(){
+  if(document.querySelector('script[data-settings-back-navigation]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/settings-back-navigation.js?v=944';
+  script.async=false;
+  script.dataset.settingsBackNavigation='';
+  document.head.appendChild(script);
+})();
