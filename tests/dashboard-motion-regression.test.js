@@ -8,6 +8,6 @@ assert(!css.includes('.kh-news.is-ready .kh-news-track{animation:khTicker'), 'ti
 assert(css.includes('.ka-home .kh-weather-emoji{font-size:27px;line-height:1;display:inline-block;animation:none;transform:none}'), 'weather emoji animation must be disabled');
 assert(css.includes('.ka-home .kh-weather-card:after{content:none;display:none}'), 'weather shimmer must be disabled');
 assert(dash.includes('function stabilizeNewsTicker(root=document)'), 'dashboard compatibility helper should remain harmless');
-assert(sw.includes("const CACHE_ADI='oy-cache-v945';"), 'cache must be bumped');
+const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=945, 'cache must be v945 or newer');
 // Regression: dashboard reload should not wait for a JS readiness class before ticker motion begins.
 console.log('dashboard motion regression ok');
