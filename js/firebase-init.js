@@ -227,3 +227,14 @@ function firebaseyiBaslat(){
   script.dataset.adminPasswordReset='';
   document.head.appendChild(script);
 })();
+
+/* Öğretmen hatırlatmaları: takvim yılı yerine aktif eğitim-öğretim yılı kullanılır;
+   yaz tatili başlangıcından yedi gün önce akademik hatırlatmalar durur. */
+(function teacherReminderAcademicYearFeatureLoad(){
+  if(document.querySelector('script[data-teacher-reminder-academic-year]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/teacher-reminder-academic-year.js?v=952';
+  script.async=false;
+  script.dataset.teacherReminderAcademicYear='';
+  document.head.appendChild(script);
+})();
