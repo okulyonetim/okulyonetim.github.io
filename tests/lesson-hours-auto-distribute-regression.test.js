@@ -1,0 +1,11 @@
+const fs=require('fs');
+const assert=require('assert');
+const src=fs.readFileSync('js/modules/settings.js','utf8');
+new Function(src);
+assert(src.includes('lessonHoursDirty=false')&&src.includes('lessonHoursRenderPending=false'),'Ders saatleri düzenleme durumu ayrı izlenmeli.');
+assert(src.includes("if(active==='lesson-hours'&&lessonHoursDirty){lessonHoursRenderPending=true;return}"),'Arka plan senkron renderı düzenlenmekte olan ders saati formunu ezmemeli.');
+assert(src.includes("out.querySelectorAll('input,select').forEach(x=>{x.addEventListener('input',markDirty);x.addEventListener('change',markDirty)})"),'Ders saati formundaki güncel kullanıcı girdileri dirty olarak işaretlenmeli.');
+assert(src.includes('function distributeLessonHours(out){if(!systemSettingsEditable())return;lessonHoursDirty=true;'),'Otomatik dağıtım sonucu kaydedilene kadar korunmalı.');
+assert(src.includes("await DeviceData.set('dersSaatleri',COL.dersSaatleri,'ayarlar',payload,{merge:false});lessonHoursDirty=false;lessonHoursRenderPending=false"),'Dirty koruması yalnız yerel-first kayıt tamamlandıktan sonra kaldırılmalı.');
+assert(src.includes("if(active==='lesson-hours'&&page!=='lesson-hours'){lessonHoursDirty=false;lessonHoursRenderPending=false}"),'Sayfadan çıkarken ders saati taslak kilidi temizlenmeli.');
+console.log('Ders saatleri otomatik dağıtım / senkron render regresyon testi başarılı.');
