@@ -47,3 +47,12 @@ def patch_sw(s):
     s=s.replace("./js/modules/transport.js?v=893","./js/modules/transport.js?v=894")
     return s
 edit('service-worker.js',patch_sw)
+
+# Cache sürümü başka bir özellik tarafından artınca bu iki test eski sabit sayıya takılmamalı.
+def future_proof_cache_test(path):
+    p=Path(path); s=p.read_text(encoding='utf-8')
+    s=s.replace("assert(sw.includes(\"const CACHE_ADI='oy-cache-v945';\"));", "const cache=sw.match(/const CACHE_ADI='oy-cache-v(\\d+)'/);assert(cache&&Number(cache[1])>=945);")
+    s=s.replace("assert(sw.includes(\"const CACHE_ADI='oy-cache-v945';\"), 'cache must be bumped');", "const cache=sw.match(/const CACHE_ADI='oy-cache-v(\\d+)'/);assert(cache&&Number(cache[1])>=945, 'cache must be v945 or newer');")
+    p.write_text(s,encoding='utf-8')
+for path in ['tests/dashboard-refresh-news-stability.test.js','tests/dashboard-motion-regression.test.js']:
+    future_proof_cache_test(path)
