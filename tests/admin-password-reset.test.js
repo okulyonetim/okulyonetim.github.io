@@ -9,11 +9,11 @@ new Function(bridge);
 new Function(worker);
 
 assert(bridge.includes("REQUEST_COLLECTION='oy_idariBilgiler'"),'Sıfırlama isteği korumalı idari koleksiyonda tutulmalı.');
-assert(bridge.includes('confirmPasswordReset(code,newPassword)'),'Yeni parola tarayıcıda resmi Firebase sıfırlama koduyla uygulanmalı.');
-assert(bridge.includes("if(cleanUsername(requestedUsername)!==cleanUsername(existingUsername))"),'Sıfırlamada kullanıcı adı değiştirilememeli.');
+assert(bridge.includes('confirmPasswordReset(code,pw)'),'Yeni parola tarayıcıda resmi Firebase sıfırlama koduyla uygulanmalı.');
+assert(bridge.includes("if(clean(username)!==clean(existing))"),'Sıfırlamada kullanıcı adı değiştirilememeli.');
 assert(!bridge.includes('yeniSifre:pw'),'Yeni parola Firestore isteğine yazılmamalı.');
-assert(bridge.includes("event.stopImmediatePropagation()"),'Eski yeni-hesap oluşturma tıklama akışı engellenmeli.');
-assert(bridge.includes("button.textContent='Şifreyi Güncelle'"),'Arayüz sonsuz yüklenme durumundan çıkmalı.');
+assert(bridge.includes('stopImmediatePropagation()'),'Eski yeni-hesap oluşturma tıklama akışı engellenmeli.');
+assert(bridge.includes("textContent='Şifreyi Güncelle'"),'Arayüz sonsuz yüklenme durumundan çıkmalı.');
 
 assert(worker.includes("v.tur === 'sifreSifirlama' && v.durum === 'bekliyor'"),'Arka plan işi yalnız bekleyen sıfırlama taleplerini işlemeli.');
 assert(worker.includes('isteyen.admin !== true'),'Sunucu tarafı isteği yapan kullanıcının Süper Admin olduğunu doğrulamalı.');

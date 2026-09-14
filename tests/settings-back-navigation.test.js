@@ -1,7 +1,7 @@
 const fs=require('fs');
 const assert=require('assert');
 const bridge=fs.readFileSync('js/core/settings-back-navigation.js','utf8');
-const loader=fs.readFileSync('js/core/admin-password-reset.js','utf8');
+const loader=fs.readFileSync('js/core/teacher-reminder-academic-year.js','utf8');
 new Function(bridge);
 new Function(loader);
 
