@@ -4,6 +4,17 @@
 if(global.__korukTeacherReminderAcademicYear)return;
 global.__korukTeacherReminderAcademicYear=true;
 
+/* Önceki Ayarlar geri navigasyon düzeltmesi dosyada mevcut olsa da başlangıçta
+ * yüklenmiyordu. Bu ortak başlangıç köprüsü onu da etkinleştirir. */
+(function loadSettingsBackNavigation(){
+  if(document.querySelector('script[data-settings-back-navigation]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/settings-back-navigation.js?v=944';
+  script.async=false;
+  script.dataset.settingsBackNavigation='';
+  document.head.appendChild(script);
+})();
+
 const MONTHS=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
 const MONTHLY_RE=/^(?:Sosyal Kulüp Aylık Rapor|Rehberlik Aylık Rapor|Maarif Model Aylık Rapor)\s*[—-]\s*(Oca|Şub|Mar|Nis|May|Haz|Tem|Ağu|Eyl|Eki|Kas|Ara)\s*$/;
 const ACADEMIC_SOURCES=new Set(['sosyalKulupler','rehberlik','maarifRapor','zumre','sok','bepPlani','belirliGunler','sinav','kontrolListesi']);
