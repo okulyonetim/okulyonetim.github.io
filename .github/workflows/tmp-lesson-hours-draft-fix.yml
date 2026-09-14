@@ -1,0 +1,90 @@
+name: Temporary Lesson Hours Draft Fix
+on:
+  push:
+    branches: [fix/lesson-hours-auto-distribute-draft]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/lesson-hours-auto-distribute-draft
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Apply lesson hours form stability fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('js/modules/settings.js')
+          s=p.read_text()
+
+          old="let active='home',mounted=false,unsubs=[],settingsAccordion='',statisticsRefreshing=false,layoutSection='menus',layoutMenu='people',adminInfoData=null,adminInfoDraft=null,adminInfoLoading=false,schoolFormDirty=false,schoolFormDraft=null,schoolRenderPending=false;"
+          new="let active='home',mounted=false,unsubs=[],settingsAccordion='',statisticsRefreshing=false,layoutSection='menus',layoutMenu='people',adminInfoData=null,adminInfoDraft=null,adminInfoLoading=false,schoolFormDirty=false,schoolFormDraft=null,schoolRenderPending=false,lessonHoursDirty=false,lessonHoursRenderPending=false;"
+          if old not in s: raise SystemExit('state anchor not found')
+          s=s.replace(old,new,1)
+
+          old="function distributeLessonHours(out){if(!systemSettingsEditable())return;"
+          new="function distributeLessonHours(out){if(!systemSettingsEditable())return;lessonHoursDirty=true;"
+          if old not in s: raise SystemExit('distribute anchor not found')
+          s=s.replace(old,new,1)
+
+          old="try{await DeviceData.set('dersSaatleri',COL.dersSaatleri,'ayarlar',payload,{merge:false});toast?.('Ders saatleri kaydedildi.');render()}catch(e){"
+          new="try{await DeviceData.set('dersSaatleri',COL.dersSaatleri,'ayarlar',payload,{merge:false});lessonHoursDirty=false;lessonHoursRenderPending=false;toast?.('Ders saatleri kaydedildi.');render()}catch(e){"
+          if old not in s: raise SystemExit('save anchor not found')
+          s=s.replace(old,new,1)
+
+          old="function bindLessonHours(out){const editable=systemSettingsEditable(),lunch=out.querySelector('[data-lesson-lunch-enabled]'),lunchSync=()=>{const off=!editable||!lunch?.checked;out.querySelectorAll('[data-lesson-auto-lunch-duration],[data-lesson-auto-lunch-after]').forEach(x=>x.disabled=off)};lunch?.addEventListener('change',lunchSync);lunchSync();out.querySelector('[data-lesson-auto-distribute]')?.addEventListener('click',()=>distributeLessonHours(out));out.querySelector('[data-lesson-hours-save]')?.addEventListener('click',saveLessonHours)}"
+          new="function bindLessonHours(out){const editable=systemSettingsEditable(),lunch=out.querySelector('[data-lesson-lunch-enabled]'),markDirty=()=>{if(editable)lessonHoursDirty=true},lunchSync=()=>{const off=!editable||!lunch?.checked;out.querySelectorAll('[data-lesson-auto-lunch-duration],[data-lesson-auto-lunch-after]').forEach(x=>x.disabled=off)};out.querySelectorAll('input,select').forEach(x=>{x.addEventListener('input',markDirty);x.addEventListener('change',markDirty)});lunch?.addEventListener('change',lunchSync);lunchSync();out.querySelector('[data-lesson-auto-distribute]')?.addEventListener('click',()=>distributeLessonHours(out));out.querySelector('[data-lesson-hours-save]')?.addEventListener('click',saveLessonHours)}"
+          if old not in s: raise SystemExit('bind anchor not found')
+          s=s.replace(old,new,1)
+
+          old="function render(){if(!mounted)return;if(active==='school'&&schoolFormDirty&&schoolFieldFocused()){schoolRenderPending=true;return}schoolRenderPending=false;"
+          new="function render(){if(!mounted)return;if(active==='lesson-hours'&&lessonHoursDirty){lessonHoursRenderPending=true;return}lessonHoursRenderPending=false;if(active==='school'&&schoolFormDirty&&schoolFieldFocused()){schoolRenderPending=true;return}schoolRenderPending=false;"
+          if old not in s: raise SystemExit('render anchor not found')
+          s=s.replace(old,new,1)
+
+          old="if(active==='school'&&page!=='school'){schoolFormDirty=false;schoolFormDraft=null;schoolRenderPending=false}active=page;"
+          new="if(active==='school'&&page!=='school'){schoolFormDirty=false;schoolFormDraft=null;schoolRenderPending=false}if(active==='lesson-hours'&&page!=='lesson-hours'){lessonHoursDirty=false;lessonHoursRenderPending=false}active=page;"
+          if old not in s: raise SystemExit('openPage anchor not found')
+          s=s.replace(old,new,1)
+
+          old="function unmount(){mounted=false;adminInfoData=null;adminInfoDraft=null;adminInfoLoading=false;schoolFormDirty=false;schoolFormDraft=null;schoolRenderPending=false;holidayDraft=null;"
+          new="function unmount(){mounted=false;adminInfoData=null;adminInfoDraft=null;adminInfoLoading=false;schoolFormDirty=false;schoolFormDraft=null;schoolRenderPending=false;lessonHoursDirty=false;lessonHoursRenderPending=false;holidayDraft=null;"
+          if old not in s: raise SystemExit('unmount anchor not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+
+          test=Path('tests/lesson-hours-auto-distribute-regression.test.js')
+          test.write_text(r'''const fs=require('fs');
+          const assert=require('assert');
+          const src=fs.readFileSync('js/modules/settings.js','utf8');
+          new Function(src);
+          assert(src.includes('lessonHoursDirty=false')&&src.includes('lessonHoursRenderPending=false'),'Ders saatleri düzenleme durumu ayrı izlenmeli.');
+          assert(src.includes("if(active==='lesson-hours'&&lessonHoursDirty){lessonHoursRenderPending=true;return}"),'Arka plan senkron renderı düzenlenmekte olan ders saati formunu ezmemeli.');
+          assert(src.includes("out.querySelectorAll('input,select').forEach(x=>{x.addEventListener('input',markDirty);x.addEventListener('change',markDirty)})"),'Ders saati formundaki güncel kullanıcı girdileri dirty olarak işaretlenmeli.');
+          assert(src.includes('function distributeLessonHours(out){if(!systemSettingsEditable())return;lessonHoursDirty=true;'),'Otomatik dağıtım sonucu kaydedilene kadar korunmalı.');
+          assert(src.includes("await DeviceData.set('dersSaatleri',COL.dersSaatleri,'ayarlar',payload,{merge:false});lessonHoursDirty=false;lessonHoursRenderPending=false"),'Dirty koruması yalnız yerel-first kayıt tamamlandıktan sonra kaldırılmalı.');
+          assert(src.includes("if(active==='lesson-hours'&&page!=='lesson-hours'){lessonHoursDirty=false;lessonHoursRenderPending=false}"),'Sayfadan çıkarken ders saati taslak kilidi temizlenmeli.');
+          console.log('Ders saatleri otomatik dağıtım / senkron render regresyon testi başarılı.');
+          ''')
+
+          sw=Path('service-worker.js')
+          w=sw.read_text()
+          if "CACHE_ADI='oy-cache-v942'" not in w: raise SystemExit('cache version anchor not found')
+          sw.write_text(w.replace("CACHE_ADI='oy-cache-v942'","CACHE_ADI='oy-cache-v943'",1))
+
+          Path('.github/workflows/tmp-lesson-hours-draft-fix.yml').unlink()
+          PY
+          node --check js/modules/settings.js
+          node tests/lesson-hours-auto-distribute-regression.test.js
+          node tests/settings-separate-pages.test.js
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "fix: preserve lesson hour edits during auto distribution"
+          git push origin HEAD:fix/lesson-hours-auto-distribute-draft
