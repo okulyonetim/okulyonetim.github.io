@@ -1,0 +1,10 @@
+const fs=require('fs'),assert=require('assert');
+const s=fs.readFileSync('js/core/admin-password-reset.js','utf8');
+new Function(s);
+assert(s.includes("closest?.('[data-user-edit]')"),'Kullanıcı Düzenle tıklaması güvenli modal tarafından yakalanmalı.');
+assert(s.includes('Şifreyi Değiştir / Sıfırla'),'Şifre sıfırlama düğmesi gerçek kullanıcı modalında bulunmalı.');
+assert(s.includes('Şifreyi Güncelle'),'Yeni parola mevcut hesaba uygulanmalı.');
+assert(s.includes('requestPasswordReset(u,u.kullaniciAdi,p)'),'Mevcut kullanıcı adı ve UID korunarak sıfırlama yapılmalı.');
+assert(!s.includes('Yeni Giriş Hesabını Oluştur'),'Eski yeni-hesap oluşturma arayüzü geri gelmemeli.');
+assert(s.includes('event.stopImmediatePropagation')||s.includes('e.stopImmediatePropagation'),'Eski Düzenle modalı açılmadan önce olay durdurulmalı.');
+console.log('Gerçek kullanıcı parola modalı sözleşmesi başarılı.');
