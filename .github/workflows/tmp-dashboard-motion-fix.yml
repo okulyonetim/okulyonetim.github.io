@@ -1,0 +1,56 @@
+name: Temporary Dashboard Motion Fix
+on:
+  push:
+    branches: [fix/dashboard-weather-news-motion]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dashboard-weather-news-motion
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Patch dashboard motion
+        shell: python
+        run: |
+          from pathlib import Path
+          css=Path('css/design-system.css')
+          s=css.read_text()
+          old='.ka-home .kh-news-track{display:flex;align-items:center;gap:0;width:max-content;animation:none;will-change:transform;transform:translate3d(0,0,0);backface-visibility:hidden;contain:paint}.ka-home .kh-news.is-ready .kh-news-track{animation:khTicker var(--kh-ticker-time,28s) linear infinite;animation-play-state:running}'
+          new='.ka-home .kh-news-track{display:flex;align-items:center;gap:0;width:max-content;animation:khTicker var(--kh-ticker-time,28s) linear infinite;animation-play-state:running;will-change:transform;transform:translate3d(0,0,0);backface-visibility:hidden;contain:paint}'
+          if old not in s: raise SystemExit('news ticker block not found')
+          s=s.replace(old,new,1)
+          old2='.ka-home .kh-weather-emoji{font-size:27px;line-height:1;display:inline-block;animation:khWeatherFloat 3s ease-in-out infinite}.ka-home .kh-weather-card:after{content:"";position:absolute;inset:0 auto 0 -35%;width:24%;background:linear-gradient(100deg,transparent,color-mix(in srgb,var(--ka-text-inverse) 18%,transparent),transparent);pointer-events:none;animation:khWeatherShimmer 5.5s ease-in-out infinite}'
+          new2='.ka-home .kh-weather-emoji{font-size:27px;line-height:1;display:inline-block;animation:none;transform:none}.ka-home .kh-weather-card:after{content:none;display:none}'
+          if old2 not in s: raise SystemExit('weather animation block not found')
+          s=s.replace(old2,new2,1)
+          css.write_text(s)
+
+          sw=Path('service-worker.js')
+          w=sw.read_text()
+          if "const CACHE_ADI='oy-cache-v943';" not in w: raise SystemExit('cache version not found')
+          sw.write_text(w.replace("const CACHE_ADI='oy-cache-v943';","const CACHE_ADI='oy-cache-v944';",1))
+
+          test=Path('tests/dashboard-motion-regression.test.js')
+          test.write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst css=fs.readFileSync('css/design-system.css','utf8');\nconst dash=fs.readFileSync('js/modules/dashboard.js','utf8');\nconst sw=fs.readFileSync('service-worker.js','utf8');\nassert(css.includes('.ka-home .kh-news-track{display:flex;align-items:center;gap:0;width:max-content;animation:khTicker var(--kh-ticker-time,28s) linear infinite'), 'news ticker must animate immediately without waiting for is-ready');\nassert(!css.includes('.kh-news.is-ready .kh-news-track{animation:khTicker'), 'ticker must not depend on delayed is-ready class');\nassert(css.includes('.ka-home .kh-weather-emoji{font-size:27px;line-height:1;display:inline-block;animation:none;transform:none}'), 'weather emoji animation must be disabled');\nassert(css.includes('.ka-home .kh-weather-card:after{content:none;display:none}'), 'weather shimmer must be disabled');\nassert(dash.includes('function stabilizeNewsTicker(root=document)'), 'dashboard compatibility helper should remain harmless');\nassert(sw.includes("const CACHE_ADI='oy-cache-v944';"), 'cache must be bumped');\nconsole.log('dashboard motion regression ok');\n""")
+      - name: Verify
+        run: |
+          node tests/dashboard-motion-regression.test.js
+          node --check js/modules/dashboard.js
+      - name: Commit patch
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add css/design-system.css service-worker.js tests/dashboard-motion-regression.test.js
+          git commit -m "fix: stabilize dashboard news and weather motion"
+          git push origin fix/dashboard-weather-news-motion
+      - name: Remove temporary workflow
+        run: |
+          git rm .github/workflows/tmp-dashboard-motion-fix.yml
+          git commit -m "chore: remove temporary dashboard motion workflow"
+          git push origin fix/dashboard-weather-news-motion
