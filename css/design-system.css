@@ -2259,10 +2259,20 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   .ka-student-result-stats .ka-card b{font-size:18px}
 }
 
-/* Rapor önizleme araç çubuğu: dar mobil ekranlarda Yazdır düğmesi daima görünür. */
-@media(max-width:767px){
-  .dv3h.dv3h-report{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;grid-template-areas:"close title title title print" "minus zoom plus . .";align-items:center;gap:5px;overflow:hidden;padding-left:max(6px,var(--ka-safe-left));padding-right:max(6px,var(--ka-safe-right))}
-  .dv3h-report [data-report-close]{grid-area:close}.dv3h-report .dv3title{grid-area:title;min-width:0}.dv3h-report [data-report-minus]{grid-area:minus}.dv3h-report [data-report-zoom]{grid-area:zoom;margin:0;min-width:46px}.dv3h-report [data-report-plus]{grid-area:plus}.dv3h-report [data-report-print]{grid-area:print;justify-self:end;max-width:100%;padding-inline:10px}
-  .dv3h-report .dv3title b{font-size:13px}.dv3h-report .dv3title small{font-size:10px}
-}
-@media(max-width:390px){.dv3h-report .dv3title small{display:none}.dv3h-report [data-report-close]{font-size:0}.dv3h-report [data-report-close]::first-letter{font-size:15px}}
+.dv3h-report [data-report-close]{font-size:0}.dv3h-report [data-report-close]::first-letter{font-size:15px}}
+/* REPORT PREVIEW — CANONICAL
+   Rapor önizlemesi generic belge görüntüleyiciden bağımsız, tam viewport sahibi bir yüzeydir. */
+.ka-report-preview{position:fixed!important;inset:0!important;width:100vw!important;max-width:none!important;height:100dvh!important;min-height:100dvh!important;margin:0!important;transform:none!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;background:var(--dv-body-bg)!important}
+.ka-report-preview__toolbar{flex:0 0 auto;width:100%;background:var(--dv-hbg);border-bottom:1px solid var(--dv-border);padding:max(8px,var(--ka-safe-top)) max(8px,var(--ka-safe-right)) 8px max(8px,var(--ka-safe-left));display:grid;gap:7px;z-index:2}
+.ka-report-preview__main{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0}
+.ka-report-preview__close{width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center;font-size:23px;line-height:1;border-radius:12px}
+.ka-report-preview__title{min-width:0}.ka-report-preview__title b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dv-text)!important;font-size:14px;line-height:1.2}.ka-report-preview__title small{display:block;margin-top:2px;color:var(--dv-muted)!important;font-size:10px;line-height:1.2}
+.ka-report-preview__print{justify-self:end;min-width:92px;max-width:110px;padding-inline:10px}
+.ka-report-preview__zoom{display:grid;grid-template-columns:44px 64px 44px auto auto;align-items:center;justify-content:start;gap:7px}.ka-report-preview__zoom .dv3btn{min-height:44px}.ka-report-preview__zoom [data-report-minus],.ka-report-preview__zoom [data-report-plus]{width:44px;padding-inline:0}.ka-report-preview__zoom [data-report-zoom]{margin:0;min-width:64px;text-align:center;font-size:13px}
+.ka-report-preview__body{flex:1 1 auto;min-height:0;min-width:0;width:100%;overflow:hidden;background:var(--dv-body-bg)}
+.ka-report-preview__viewport{width:100%;height:100%;min-width:0;min-height:0;overflow:auto;padding:8px;box-sizing:border-box;overscroll-behavior:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch}
+.ka-report-preview__scene{position:relative;margin:0 auto}.ka-report-preview__frame{position:absolute;left:0;top:0;transform-origin:top left;background:#fff;border:0;max-width:none!important}
+@media(max-width:767px){.ka-report-preview__fit,.ka-report-preview__actual{display:none}.ka-report-preview__zoom{grid-template-columns:44px 64px 44px;justify-content:start}.ka-report-preview__viewport{padding:4px}}
+@media(max-width:390px){.ka-report-preview__title b{font-size:13px}.ka-report-preview__title small{display:none}.ka-report-preview__print{min-width:86px;max-width:94px;padding-inline:8px}}
+@media(min-width:768px){.ka-report-preview__toolbar{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 14px}.ka-report-preview__main{grid-template-columns:44px minmax(180px,1fr) auto}.ka-report-preview__zoom{justify-content:end}.ka-report-preview__viewport{padding:12px}}
+
