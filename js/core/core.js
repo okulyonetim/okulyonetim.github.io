@@ -50,7 +50,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   if(window.__kaUnifiedPullRefresh)return;window.__kaUnifiedPullRefresh=true;
   const BLOCK_SELECTOR='.ka-app-nav.ka-bottom-nav,.ka-menu-layer,.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh]';
   const ARM_DISTANCE=96,MAX_VISUAL=78,DEAD_ZONE=8;
-  let tracking=false,armed=false,startX=0,startY=0,indicator=null,reloading=false;
+  let tracking=false,armed=false,startX=0,startY=0,indicator=null,reloading=false,staleTimer=null,reloadFallbackTimer=null;
   const docTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
   function scrollableAncestor(target){
     for(let el=target instanceof Element?target:null;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
@@ -67,20 +67,24 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   function draw(raw){
     const el=ensureIndicator(),visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.48);armed=raw>=ARM_DISTANCE;el.hidden=visual<2;el.classList.toggle('is-armed',armed);el.classList.remove('is-refreshing');el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);const label=el.querySelector('span');if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
   }
-  function reset(){tracking=false;armed=false;const el=indicator;if(el&&!reloading){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}
+  function reset(){clearTimeout(staleTimer);staleTimer=null;tracking=false;armed=false;const el=indicator;if(el&&!reloading){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}
+  function scheduleStaleReset(){clearTimeout(staleTimer);staleTimer=setTimeout(()=>{if(tracking&&!reloading)reset()},900)}
   function begin(e){
-    if(reloading||e.touches?.length!==1)return;const target=e.target instanceof Element?e.target:null;if(docTop()>1||blocked(target)){tracking=false;return}tracking=true;armed=false;startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+    if(reloading||e.touches?.length!==1)return;const target=e.target instanceof Element?e.target:null;if(docTop()>1||blocked(target)){tracking=false;return}tracking=true;armed=false;startX=e.touches[0].clientX;startY=e.touches[0].clientY;scheduleStaleReset();
   }
   function move(e){
-    if(!tracking||reloading||e.touches?.length!==1)return;const touch=e.touches[0],dx=touch.clientX-startX,dy=touch.clientY-startY;if(Math.abs(dx)>Math.abs(dy)+8){reset();return}if(dy<0||docTop()>1){reset();return}if(dy<=DEAD_ZONE)return;e.preventDefault();draw(dy);
+    if(!tracking||reloading||e.touches?.length!==1)return;const touch=e.touches[0],dx=touch.clientX-startX,dy=touch.clientY-startY;if(Math.abs(dx)>Math.abs(dy)+8){reset();return}if(dy<0||docTop()>1){reset();return}if(dy<=DEAD_ZONE)return;e.preventDefault();draw(dy);scheduleStaleReset();
   }
   function finish(){
-    if(!tracking||reloading){if(!reloading)reset();return}const refresh=armed;tracking=false;armed=false;if(!refresh){reset();return}reloading=true;const el=ensureIndicator();el.hidden=false;el.classList.remove('is-armed');el.classList.add('is-refreshing');el.style.setProperty('--ka-pull-y','74px');const label=el.querySelector('span');if(label)label.textContent='Yenileniyor…';setTimeout(()=>window.location.reload(),120);
+    if(!tracking||reloading){if(!reloading)reset();return}const refresh=armed;tracking=false;armed=false;if(!refresh){reset();return}clearTimeout(staleTimer);staleTimer=null;reloading=true;const el=ensureIndicator();el.hidden=false;el.classList.remove('is-armed');el.classList.add('is-refreshing');el.style.setProperty('--ka-pull-y','74px');const label=el.querySelector('span');if(label)label.textContent='Yenileniyor…';clearTimeout(reloadFallbackTimer);reloadFallbackTimer=setTimeout(()=>{reloading=false;reset()},3500);setTimeout(()=>window.location.reload(),100);
   }
   document.addEventListener('touchstart',begin,{capture:true,passive:true});
   document.addEventListener('touchmove',move,{capture:true,passive:false});
   document.addEventListener('touchend',finish,{capture:true,passive:true});
   document.addEventListener('touchcancel',reset,{capture:true,passive:true});
+  window.addEventListener('pageshow',()=>{clearTimeout(reloadFallbackTimer);reloading=false;reset()},{passive:true});
+  window.addEventListener('blur',()=>{if(!reloading)reset()},{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!reloading)reset()},{passive:true});
 })();
 
 /* ========================= EVENT BUS ========================= */
