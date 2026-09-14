@@ -1,6 +1,6 @@
 name: Android APK Build
-# APK burada yalnızca derlenir ve test artefaktı olarak saklanır.
-# Kullanıcılara güncelleme olarak yayınlamak için Android APK Yayınla workflow'u elle çalıştırılır.
+# Her başarılı main APK build'i hem test artefaktı olarak saklanır hem de
+# uygulama içi güncelleme sistemi için GitHub Release olarak latest yayınlanır.
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - name: Kodu çek
@@ -173,9 +173,27 @@ jobs:
           path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 90
 
-      - name: Test / yayın bilgisi
+      - name: Başarılı main APK'sını güncelleme olarak yayınla
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: "Sürüm ${{ github.run_number }}"
+          target_commitish: ${{ github.sha }}
+          files: android/app/build/outputs/apk/release/app-release.apk
+          make_latest: true
+          generate_release_notes: false
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build / yayın bilgisi
         run: |
-          echo "APK derlendi fakat kullanıcılara YAYINLANMADI."
+          echo "✅ APK başarıyla derlendi."
           echo "Build run id: ${{ github.run_id }}"
           echo "Build run number: ${{ github.run_number }}"
-          echo "Testten sonra Actions > Android APK Yayınla workflow'una bu run id'yi girin."
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "✅ Sürüm v${{ github.run_number }} GitHub Release olarak yayınlandı ve latest yapıldı."
+          else
+            echo "ℹ️ Main dışındaki manuel build yayınlanmadı."
+          fi
