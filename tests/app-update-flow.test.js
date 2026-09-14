@@ -35,15 +35,20 @@ assert(plugin.includes('@CapacitorPlugin(name = "UpdatePlugin")')&&plugin.includ
 assert(buildWorkflow.includes('"kod": ${{ github.run_number }}')||buildWorkflow.includes('\\"kod\\": ${{ github.run_number }}'),'APK version.json build numarasıyla üretilmiyor.');
 assert(buildWorkflow.includes('Android versionCode / versionName güncelle'),'Android versionCode her APK buildinde güncellenmiyor.');
 assert(buildWorkflow.includes('versionCode {build}')&&buildWorkflow.includes('versionName "1.2.{build}"'),'Gradle sürüm enjeksiyonu eksik.');
-assert(!buildWorkflow.includes('softprops/action-gh-release'),'Normal APK build otomatik release oluşturmamalı.');
-assert(buildWorkflow.includes('APK test artefaktı olarak yükle'),'Normal APK build test artefaktı üretmeli.');
+assert(buildWorkflow.includes('contents: write'),'APK build workflowu GitHub Release yayınlama yetkisine sahip olmalı.');
+assert(buildWorkflow.includes('softprops/action-gh-release@v2'),'Başarılı main APK buildi otomatik GitHub Release olarak yayınlanmalı.');
+assert(buildWorkflow.includes('tag_name: v${{ github.run_number }}'),'Release etiketi APK build numarasıyla eşleşmeli.');
+assert(buildWorkflow.includes('make_latest: true'),'Yeni APK otomatik olarak latest release yapılmalı.');
+assert(buildWorkflow.includes("if: github.ref == 'refs/heads/main'"),'Otomatik APK yayını yalnız main dalında çalışmalı.');
+assert(buildWorkflow.includes('APK test artefaktı olarak yükle'),'APK ayrıca test/arsiv artefaktı olarak saklanmalı.');
 
-assert(publishWorkflow.includes('workflow_dispatch'),'APK yayınlama workflowu yalnız elle başlatılmalı.');
-assert(publishWorkflow.includes('build_run_id'),'Yayınlanacak test build Run ID ile seçilmeli.');
-assert(publishWorkflow.includes('actions/download-artifact@v4'),'Test edilmiş APK artefaktı yayın workflowunda indirilmeli.');
-assert(publishWorkflow.includes('softprops/action-gh-release@v2'),'Manuel yayın workflowu GitHub Release oluşturmalı.');
-assert(publishWorkflow.includes('make_latest: true'),'Onaylanan APK latest release olmalı.');
-assert(publishWorkflow.includes('conclusion')&&publishWorkflow.includes('success'),'Başarısız build yayınlanamamalı.');
+// Elle yayın workflowu olağan akış değil, gerektiğinde eski/test edilmiş bir buildi yeniden yayınlamak için yedek mekanizmadır.
+assert(publishWorkflow.includes('workflow_dispatch'),'Yedek APK yayınlama workflowu elle başlatılabilmeli.');
+assert(publishWorkflow.includes('build_run_id'),'Yedek yayın akışı build Run ID ile seçilebilmeli.');
+assert(publishWorkflow.includes('actions/download-artifact@v4'),'Yedek yayın akışı seçilen APK artefaktını indirmeli.');
+assert(publishWorkflow.includes('softprops/action-gh-release@v2'),'Yedek yayın akışı GitHub Release oluşturabilmeli.');
+assert(publishWorkflow.includes('make_latest: true'),'Yedek yayınlanan APK latest release olmalı.');
+assert(publishWorkflow.includes('conclusion')&&publishWorkflow.includes('success'),'Başarısız build yedek akıştan yayınlanamamalı.');
 assert(publishWorkflow.includes('head_branch')&&publishWorkflow.includes('main'),'Yalnız main buildi yayınlanabilmeli.');
 
-console.log('Android manuel test -> yayın güncelleme akışı sözleşmesi başarılı.');
+console.log('Android otomatik build -> latest release güncelleme akışı sözleşmesi başarılı.');
