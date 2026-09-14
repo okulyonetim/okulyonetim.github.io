@@ -1,5 +1,5 @@
 /* Okul Yönetim — Uygulama geneli gezinme davranışları.
- * 1) Rapor/PDF önizleme açıkken tarayıcı/Android geri tuşu önce önizlemeyi kapatır.
+ * 1) Rapor/PDF önizleme üst katmandır; kapanırken alttaki detay sayfasının geçmişini değiştirmez.
  * 2) Yeni bir sayfa/görünüm açıldığında içerik en üste alınır.
  * 3) Header okul markası her zaman Ana Sayfa'yı en üstten açar.
  * 4) Menü yüzeylerinde pull-to-refresh çalışır; takılı kalan yenileme göstergesi güvenle temizlenir.
@@ -8,15 +8,13 @@
 'use strict';
 if(global.AppNavigationBehavior)return;
 
-let previewHistoryArmed=false;
-let suppressNextPop=false;
-let closingFromPop=false;
 let reportObserver=null;
 let shellWrapped=false;
 let pullReliabilityInstalled=false;
+const wrappedBackApis=new WeakSet();
 
 function reportOverlay(){
-  return document.getElementById('kaReportPreview')||document.getElementById('kaPdfPreview');
+  return document.getElementById('kaReportPreview')||document.getElementById('kaPdfPreview')||document.getElementById('kaPdfTools');
 }
 
 function scrollTopNow(){
@@ -42,59 +40,64 @@ function closeReportOverlay(){
     else document.getElementById('kaPdfPreview')?.remove();
     return true;
   }
+  if(document.getElementById('kaPdfTools')){
+    if(typeof global.ReportEngine?.closePdfTools==='function')global.ReportEngine.closePdfTools();
+    else document.getElementById('kaPdfTools')?.remove();
+    return true;
+  }
   return false;
 }
 
-function armPreviewHistory(){
-  if(previewHistoryArmed||!reportOverlay())return;
-  previewHistoryArmed=true;
-  const current=history.state&&typeof history.state==='object'?history.state:{};
-  history.pushState({...current,kaReportPreviewGuard:true},'');
+/* ShellUI, modül içi detay geri fonksiyonlarını genel modal kontrolünden önce çağırır.
+ * Rapor açıkken bu geri fonksiyonlarının alttaki detayı kapatmasına izin verme.
+ * Rapor yüzeyi ayrıca standart modal olarak işaretlenir; Shell böylece önce onu kapatır. */
+function protectModuleBack(api){
+  if(!api||typeof api.back!=='function'||wrappedBackApis.has(api))return false;
+  const original=api.back;
+  api.back=function(...args){
+    if(reportOverlay())return false;
+    return original.apply(this,args);
+  };
+  wrappedBackApis.add(api);
+  return true;
 }
 
-function cleanupPreviewHistoryAfterManualClose(){
-  if(!previewHistoryArmed||closingFromPop)return;
-  previewHistoryArmed=false;
-  suppressNextPop=true;
-  history.back();
+function protectDetailBacks(){
+  protectModuleBack(global.TransportModule);
+  protectModuleBack(global.PeopleModule);
 }
 
-function syncPreviewHistory(){
-  if(reportOverlay()){
-    armPreviewHistory();
-    return;
-  }
-  if(previewHistoryArmed)cleanupPreviewHistoryAfterManualClose();
+function decorateReportOverlay(){
+  const ov=reportOverlay();
+  if(!ov)return false;
+  ov.classList.add('ka-modal-backdrop');
+  const close=ov.querySelector('[data-report-close],[data-pdf-close],[data-pdf-tools-close]');
+  if(close)close.setAttribute('data-close','');
+  protectDetailBacks();
+  return true;
 }
 
 function installPreviewGuard(){
   if(reportObserver||!document.body)return;
-  reportObserver=new MutationObserver(syncPreviewHistory);
+  reportObserver=new MutationObserver(()=>{decorateReportOverlay();protectDetailBacks();});
   reportObserver.observe(document.body,{childList:true,subtree:true});
-  syncPreviewHistory();
+  decorateReportOverlay();
+  protectDetailBacks();
 
+  /* Eski sürüm rapor açılıp kapanırken history.pushState/history.back kullanıyordu.
+   * Bu, rapor kapatıldığında alttaki servis/öğrenci detayını da geri götürüyordu.
+   * Artık rapor bir transient üst katmandır; geçmişe ayrı kayıt eklenmez. */
   global.addEventListener('popstate',event=>{
-    if(suppressNextPop){
-      suppressNextPop=false;
-      event.stopImmediatePropagation();
-      return;
-    }
     if(!reportOverlay()){
       scrollTopSoon();
       return;
     }
+    /* Shell daha önce çalışmış olsa bile modül back fonksiyonları korunduğu için
+       alttaki detay kapanmaz. Shell raporu kapatmışsa burada yapılacak iş kalmaz. */
+    if(!reportOverlay())return;
     event.stopImmediatePropagation();
     event.preventDefault?.();
-    closingFromPop=true;
-    previewHistoryArmed=false;
     closeReportOverlay();
-    closingFromPop=false;
-  },true);
-
-  document.addEventListener('click',event=>{
-    const close=event.target.closest?.('#kaReportPreview [data-report-close],#kaPdfPreview [data-pdf-close]');
-    if(!close)return;
-    setTimeout(cleanupPreviewHistoryAfterManualClose,0);
   },true);
 }
 
@@ -115,10 +118,10 @@ function wrapShellNavigation(){
 }
 
 function installNavigationScroll(){
-  const wrap=()=>wrapShellNavigation();
+  const wrap=()=>{wrapShellNavigation();protectDetailBacks();decorateReportOverlay();};
   wrap();
   global.addEventListener('koruk:app-ready',()=>{wrap();scrollTopSoon();});
-  global.addEventListener('koruk:module-ready',scrollTopSoon);
+  global.addEventListener('koruk:module-ready',()=>{wrap();scrollTopSoon();});
 
   document.addEventListener('click',event=>{
     const brand=event.target.closest?.('[data-ka-home-trigger]');
@@ -224,5 +227,5 @@ function install(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
 
-global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,syncPreviewHistory,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}};
+global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}};
 })(window);
