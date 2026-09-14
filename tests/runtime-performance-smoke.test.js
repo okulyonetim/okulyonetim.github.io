@@ -34,7 +34,7 @@ const a=css.indexOf('.ka-home .kh-news-viewport{'),b=css.indexOf('}',a),viewport
 assert(a>=0&&b>a&&!viewport.includes('mask-image'),'Kayan haber viewportunda pahalı mask compositing olmamalı.');
 assert(viewport.includes('contain:layout paint')&&viewport.includes('translateZ(0)'),'Ticker compositor sınırında tutulmalı.');
 assert(css.includes('will-change:transform')&&css.includes('@keyframes khTicker'),'Ticker GPU transform animasyonunu korumalı.');
-assert(dashboard.includes('freshNews.replaceWith(oldNews)'),'Aynı haber akışının DOMu yeniden yaratılmamalı.');
+assert(!dashboard.includes('freshNews.replaceWith(oldNews)')&&dashboard.includes('--kh-ticker-delay:${tickerDelay.toFixed(2)}s'),'Haber DOMu sökülüp tekrar takılmamalı; yeniden render saat fazlı animasyonla kesintisiz devam etmeli.');
 assert(dashboard.includes('renderFrame=requestAnimationFrame'),'Dashboard veri güncellemelerini frame bazında birleştirmeli.');
 assert(loader.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=873'])"),'Dashboard başlangıcı ağır communication modülünü eager yüklememeli.');
 assert(dashboard.includes("AppLoader?.load?.('communication')"),'Duyuru yazma servisi yalnız etkileşim anında lazy yüklenmeli.');
