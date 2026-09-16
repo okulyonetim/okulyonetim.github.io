@@ -4,7 +4,7 @@
 (function(global){
 'use strict';
 if(global.ReportsModule)return;
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 let active='home',root=null;
 function school(){const x=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{};return x.okulAdi||x.ad||'Koruk İlkokulu - Ortaokulu'}
@@ -30,8 +30,9 @@ const reportStyle='<style>.ka-report-summary{display:grid;grid-template-columns:
 async function openReport(id,printNow=false){const p=payload(id);if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');if(!global.ReportEngine?.printReport)return global.toast?.('Rapor motoru yüklenemedi.');const opts={fileName:p.title,yon:'dikey',logoGoster:true,baslikGoster:true,tarihGoster:true,ustBaslik:'OKUL YÖNETİM RAPORU',okulAdi:school(),extraHead:reportStyle};await global.ReportEngine.printReport(p.title,p.body,opts);if(printNow)setTimeout(()=>document.querySelector('#kaReportPreview [data-report-print]')?.click(),120)}
 function bind(){root?.querySelectorAll('[data-report-open]').forEach(b=>b.onclick=()=>openReport(b.dataset.reportOpen,false));root?.querySelectorAll('[data-report-print]').forEach(b=>b.onclick=()=>openReport(b.dataset.reportPrint,true))}
 function render(){root=document.getElementById('v2ModuleRoot');if(!root)return;root.innerHTML=home();bind();global.PermissionService?.apply?.(root)}
-function mount(page='home'){active=page||'home';render();return true}
+function mount(page='home',target=document.getElementById('v2ModuleRoot')){active=page||'home';root=target;if(!root)return false;root.innerHTML=home();bind();global.PermissionService?.apply?.(root);return true}
 function unmount(){root=null}
 function back(){return false}
 global.ReportsModule={mount,render,unmount,back,currentPage:()=>active,openReport};
+global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='reports')mount('home')});
 })(window);
