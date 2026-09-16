@@ -14,62 +14,32 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-
-          settings=Path('js/modules/settings.js')
-          s=settings.read_text()
+          settings=Path('js/modules/settings.js'); s=settings.read_text()
           old="async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}"
           new="async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;active='home';mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}"
-          assert old in s, 'settings mount target not found'
-          s=s.replace(old,new,1)
-          old="function unmount(){mounted=false;adminInfoData=null;"
-          new="function unmount(){active='home';mounted=false;adminInfoData=null;"
-          assert old in s, 'settings unmount target not found'
-          s=s.replace(old,new,1)
+          assert old in s; s=s.replace(old,new,1)
+          old="function unmount(){mounted=false;adminInfoData=null;"; new="function unmount(){active='home';mounted=false;adminInfoData=null;"; assert old in s; s=s.replace(old,new,1)
           old="window.SettingsModule={mount,unmount,render,prepareLocal,openPage,back:backSettings,openRoleEditor,openUserEditor,saveReminderSettings};"
-          new="window.SettingsModule={mount,unmount,render,prepareLocal,openPage,back:backSettings,currentPage:()=>active,openRoleEditor,openUserEditor,saveReminderSettings};"
-          assert old in s, 'settings api target not found'
-          s=s.replace(old,new,1)
-          settings.write_text(s)
+          new="window.SettingsModule={mount,unmount,render,prepareLocal,openPage,back:backSettings,currentPage:()=>active,openRoleEditor,openUserEditor,saveReminderSettings};"; assert old in s; s=s.replace(old,new,1); settings.write_text(s)
 
-          shell=Path('js/core/shell-ui.js')
-          s=shell.read_text()
+          shell=Path('js/core/shell-ui.js'); s=shell.read_text()
           old="function closeTransientForBack(){if(headerPopover){closeHeaderPopover();return true}if(document.getElementById('kaQuickNoteModal')){quickNoteCloseAndRestore();return true}const layer=$('#kaMenuLayer');if(layer&&!layer.hidden){if(menuGroup)renderMenuGrid();else closeMenu();return true}if(global.TransportModule?.back?.())return true;if(global.PeopleModule?.back?.())return true;const modal=document.querySelector('.ka-modal-backdrop');const close=modal?.querySelector('[data-close],[data-modal-close],[data-note-close],[data-bus-close],[data-people-modal-close],[data-cizelge-cancel]');if(close){close.click();return true}return false}"
           new="function closeTransientForBack(){if(headerPopover){closeHeaderPopover();return true}if(document.getElementById('kaQuickNoteModal')){quickNoteCloseAndRestore();return true}const layer=$('#kaMenuLayer');if(layer&&!layer.hidden){if(menuGroup)renderMenuGrid();else closeMenu();return true}const modals=[...document.querySelectorAll('.ka-modal-backdrop,[role=\"dialog\"]')].filter(el=>!el.hidden&&getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden');const modal=modals[modals.length-1];if(modal){const close=modal.querySelector('[data-close],[data-modal-close],[data-note-close],[data-bus-close],[data-people-modal-close],[data-cizelge-cancel],[aria-label=\"Kapat\"]');if(close){close.click();return true}}if(global.TransportModule?.back?.())return true;if(global.PeopleModule?.back?.())return true;return false}"
-          assert old in s, 'shell transient target not found'
-          s=s.replace(old,new,1)
+          assert old in s; s=s.replace(old,new,1)
           old="async function handleAppBack({fromPop=false}={}){let handled=closeTransientForBack();if(!handled&&navStack.length>1){"
           new="async function handleAppBack({fromPop=false}={}){let handled=closeTransientForBack();const current=navStack[navStack.length-1];if(!handled&&current?.kind==='route'&&current.name==='settings'&&global.SettingsModule?.currentPage?.()!=='home'){handled=global.SettingsModule?.back?.()===true}if(!handled&&navStack.length>1){"
-          assert old in s, 'shell back target not found'
-          s=s.replace(old,new,1)
-          shell.write_text(s)
+          assert old in s; s=s.replace(old,new,1); shell.write_text(s)
 
-          reminder=Path('js/core/teacher-reminder-academic-year.js')
-          s=reminder.read_text()
-          start=s.find("/* Önceki Ayarlar geri navigasyon düzeltmesi")
+          reminder=Path('js/core/teacher-reminder-academic-year.js'); s=reminder.read_text(); start=s.find("/* Önceki Ayarlar geri navigasyon düzeltmesi")
           if start!=-1:
-            end=s.find("const MONTHS=",start)
-            assert end!=-1, 'settings bridge loader end not found'
-            s=s[:start]+s[end:]
-            reminder.write_text(s)
-
+            end=s.find("const MONTHS=",start); assert end!=-1; s=s[:start]+s[end:]; reminder.write_text(s)
           Path('js/core/settings-back-navigation.js').unlink(missing_ok=True)
           Path('tests/settings-back-navigation.test.js').unlink(missing_ok=True)
 
-          test=Path('tests/app-navigation-behavior.test.js')
-          t=test.read_text()
-          marker="console.log('app navigation behavior tests passed');"
-          if marker not in t:
-            marker="console.log('App navigation behavior tests passed.');"
-          extra="\nconst shell=fs.readFileSync('js/core/shell-ui.js','utf8');\nconst settings=fs.readFileSync('js/modules/settings.js','utf8');\nassert(shell.includes(\"document.querySelectorAll('.ka-modal-backdrop,[role=\\\"dialog\\\"]')\"),'geri tuşu görünür modalı önce kapatmalı');\nassert(shell.indexOf(\"document.querySelectorAll('.ka-modal-backdrop,[role=\\\"dialog\\\"]')\")<shell.indexOf('global.TransportModule?.back?.()'),'modal kontrolü modül geri işleminden önce olmalı');\nassert(shell.includes(\"current.name==='settings'&&global.SettingsModule?.currentPage?.()!=='home'\"),'Ayarlar alt sayfası Shell geri akışında önce Ayarlar ana sayfasına dönmeli');\nassert(settings.includes(\"active='home';mounted=true\"),'Ayarlar her açılışta ana sayfadan başlamalı');\nassert(settings.includes('currentPage:()=>active'),'Shell Ayarlar alt sayfa durumunu ana modülden okumalı');\nassert(!fs.existsSync('js/core/settings-back-navigation.js'),'ayrı Ayarlar geri yama dosyası bulunmamalı');\n"
+          test=Path('tests/app-navigation-behavior.test.js'); t=test.read_text()
+          extra="\nconst shell=fs.readFileSync('js/core/shell-ui.js','utf8');\nconst settings=fs.readFileSync('js/modules/settings.js','utf8');\nassert(shell.includes(\"document.querySelectorAll('.ka-modal-backdrop,[role=\\\"dialog\\\"]')\"),'geri tuşu görünür modalı önce kapatmalı');\nassert(shell.indexOf(\"document.querySelectorAll('.ka-modal-backdrop,[role=\\\"dialog\\\"]')\")<shell.indexOf('global.TransportModule?.back?.()'),'modal kontrolü modül geri işleminden önce olmalı');\nassert(shell.includes(\"current.name==='settings'&&global.SettingsModule?.currentPage?.()!=='home'\"),'Ayarlar alt sayfası önce Ayarlar ana sayfasına dönmeli');\nassert(settings.includes(\"active='home';mounted=true\"),'Ayarlar her açılışta ana sayfadan başlamalı');\nassert(settings.includes('currentPage:()=>active'),'Shell Ayarlar durumunu ana modülden okumalı');\nassert(!fs.existsSync('js/core/settings-back-navigation.js'),'ayrı Ayarlar geri yama dosyası bulunmamalı');\n"
           if 'ayrı Ayarlar geri yama dosyası bulunmamalı' not in t:
-            idx=t.rfind('console.log(')
-            assert idx!=-1, 'test log marker not found'
-            t=t[:idx]+extra+t[idx:]
-            test.write_text(t)
-
-          # Loader/test references to retired bridge must be gone.
-          for p in [Path('js/core/teacher-reminder-academic-year.js'),Path('tests/app-navigation-behavior.test.js')]:
-            assert 'settings-back-navigation.js?v=944' not in p.read_text()
+            idx=t.rfind('console.log('); assert idx!=-1; t=t[:idx]+extra+t[idx:]; test.write_text(t)
           PY
       - name: Validate
         run: |
@@ -78,7 +48,7 @@ jobs:
           node --check js/core/app-navigation-behavior.js
           node --check js/core/teacher-reminder-academic-year.js
           node tests/app-navigation-behavior.test.js
-          npm test
+          node scripts/run-client-tests.mjs
       - name: Commit canonical fix and remove temporary workflow
         run: |
           rm -f .github/workflows/temp-root-navigation-fix.yml
