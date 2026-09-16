@@ -545,5 +545,11 @@ async function openPlanForLesson(dersAdi,sinif){active='plans';query='';await pr
 function openPage(page,title=''){const allowed=['schedule','written','trial','results','plans','calendar'];if(!allowed.includes(page))return false;if(active==='plans'&&page!=='plans')releasePlanWake();if(page!=='trial')closeTrialCounter();if(page!=='results'){ssOpen=null;ssOpenTur=null}active=page;query='';if(page==='plans')planView={planId:'',weekIndex:0};document.body.classList.remove('ka-plan-week-open');applyAcademicMeta(title);render();if(page==='calendar')requestAnimationFrame(()=>openAcademicCalendar(calendarMeta()));else closeAcademicCalendar();return true}
 function openWrittenExam(id){const exam=arr('sinavlar').find(x=>String(x.id)===String(id));if(!exam)return false;active='written';query='';render();if(!SinavlarService?.sinavDuzenlenebilirMi?.(exam)){toast?.('Bu sınavı düzenleme yetkiniz yok.');return false}writtenModal(exam.id);return true}
 function unmount(){mounted=false;ready=false;ssOpen=null;ssOpenTur=null;unsubs.forEach(fn=>{try{fn()}catch(_){}});unsubs=[];clearInterval(timer);timer=null;releasePlanWake();closeTrialCounter();document.body.classList.remove('ka-plan-week-open');closeAcademicCalendar();document.getElementById('kaAcademicScheduleModal')?.remove()}
-window.AcademicModule={mount,unmount,render,prepareLocal,timerState,openPage,openWrittenExam,openPlanForLesson,openAcademicCalendar,closeAcademicCalendar,openTrialCounter,closeTrialCounter,openSchedule(){return openPage('schedule','Ders Programı')}};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='academic')mount()});
+function back(){
+  if(academicCalendarOverlay){closeAcademicCalendar();return true}
+  if(trialCounterId){closeTrialCounter();return true}
+  if(active==='plans'&&planView.planId){releasePlanWake();planView={planId:'',weekIndex:0};render();return true}
+  return false;
+}
+window.AcademicModule={mount,unmount,render,prepareLocal,timerState,openPage,openWrittenExam,openPlanForLesson,openAcademicCalendar,closeAcademicCalendar,openTrialCounter,closeTrialCounter,back,openSchedule(){return openPage('schedule','Ders Programı')}};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='academic')mount()});
 })();
