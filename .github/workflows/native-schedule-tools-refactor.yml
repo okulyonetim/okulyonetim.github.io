@@ -1,0 +1,49 @@
+name: Native schedule tools refactor
+on:
+  push:
+    paths:
+      - '.github/workflows/native-schedule-tools-refactor.yml'
+permissions:
+  contents: write
+jobs:
+  refactor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Integrate schedule Excel tools into academic.js
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('js/modules/academic.js')
+          s=p.read_text()
+          old="  sil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));return DersProgramiRepository.sil(id)}"
+          new="  sil(id){if(!this._yetkiKontrol())return Promise.reject(new Error('yetkisiz'));return DersProgramiRepository.sil(id)},\n  async tumunuSil(){if(!this._yetkiKontrol())throw new Error('yetkisiz');const rows=[...(global.AppStore?.data?.('dersProgrami')||[])];for(const row of rows)if(row?.id)await DersProgramiRepository.sil(row.id);return rows.length}"
+          assert old in s, 'service anchor missing'
+          s=s.replace(old,new,1)
+          old="const editActions=editable?`<button class=\"ka-schedule-action\" type=\"button\" data-schedule-add data-ka-permission=\"academic.schedule.edit\" data-ka-write=\"academic.schedule.edit\"><span>＋</span><b>Ders Ekle</b><small>Seçili güne yeni ders</small></button><button class=\"ka-schedule-action\" type=\"button\" data-schedule-import data-ka-permission=\"academic.schedule.edit\" data-ka-write=\"academic.schedule.edit\"><span>⇧</span><b>Excel’den İçe Aktar</b><small>Toplu program yükle</small></button>`:'';"
+          new="const editActions=editable?`<button class=\"ka-schedule-action\" type=\"button\" data-schedule-add data-ka-permission=\"academic.schedule.edit\" data-ka-write=\"academic.schedule.edit\"><span>＋</span><b>Ders Ekle</b><small>Seçili güne yeni ders</small></button><button class=\"ka-schedule-action\" type=\"button\" data-schedule-template data-ka-permission=\"academic.schedule.edit\" data-ka-write=\"academic.schedule.edit\"><span>⬇</span><b>Excel Şablonu</b><small>Güncel listelerle şablon indir</small></button><button class=\"ka-schedule-action\" type=\"button\" data-schedule-import data-ka-permission=\"academic.schedule.edit\" data-ka-write=\"academic.schedule.edit\"><span>⇧</span><b>Excel’den İçe Aktar</b><small>Toplu program yükle</small></button><button class=\"ka-schedule-action\" type=\"button\" data-schedule-clear data-ka-permission=\"academic.schedule.edit\" data-ka-write=\"academic.schedule.edit\" ${arr('dersProgrami').length?'':'disabled'}><span>🗑</span><b>Tüm Programı Temizle</b><small>${arr('dersProgrami').length} kaydı sil</small></button>`:'';"
+          assert old in s, 'schedule actions anchor missing'
+          s=s.replace(old,new,1)
+          anchor="async function openScheduleImport(){"
+          assert anchor in s, 'import anchor missing'
+          native=r'''async function ensureScheduleExcelJs(){if(globalThis.ExcelJS)return globalThis.ExcelJS;if(globalThis.AppLoader?.loadScript)await globalThis.AppLoader.loadScript('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js');if(!globalThis.ExcelJS)throw new Error('Excel şablon kütüphanesi yüklenemedi.');return globalThis.ExcelJS}
+          function scheduleExcelListFormula(col,count){return count?`Listeler!$${col}$2:$${col}$${count+1}`:''}
+          async function downloadScheduleTemplate(){if(!canEditSchedule())return toast?.('Bu işlem için yetkiniz yok.');const ExcelJS=await ensureScheduleExcelJs(),wb=new ExcelJS.Workbook(),ws=wb.addWorksheet('Ders Programı'),lists=wb.addWorksheet('Listeler'),info=wb.addWorksheet('Açıklama'),cs=classes().map(x=>x.ad),ls=lessons().map(x=>x.ad),ts=teachers().map(x=>teacherName(x.id));ws.columns=[{header:'Sınıf',key:'sinif',width:16},{header:'Gün',key:'gun',width:16},{header:'Saat',key:'saat',width:10},{header:'Ders',key:'ders',width:28},{header:'Öğretmen',key:'ogretmen',width:28}];ws.getRow(1).font={bold:true};ws.getRow(1).alignment={horizontal:'center'};ws.views=[{state:'frozen',ySplit:1}];lists.addRow(['Sınıflar','Günler','Saatler','Dersler','Öğretmenler']);const max=Math.max(cs.length,DAYS.length,7,ls.length,ts.length,1);for(let i=0;i<max;i++)lists.addRow([cs[i]||'',DAYS[i]||'',i<7?i+1:'',ls[i]||'',ts[i]||'']);lists.state='veryHidden';info.addRow(['DERS PROGRAMI İÇE AKTARMA ŞABLONU']);info.addRow(['Her satır bir ders saatidir. Açılır listelerden seçim yapın; boş satırlar içe aktarılmaz.']);info.addRow(['Sınıf, Gün, Saat ve Ders zorunludur. Öğretmen isteğe bağlıdır.']);info.getRow(1).font={bold:true,size:14};info.getColumn(1).width=95;const formulas=[scheduleExcelListFormula('A',cs.length),scheduleExcelListFormula('B',DAYS.length),scheduleExcelListFormula('C',7),scheduleExcelListFormula('D',ls.length),scheduleExcelListFormula('E',ts.length)];for(let r=2;r<=501;r++){for(let c=1;c<=5;c++)if(formulas[c-1])ws.getCell(r,c).dataValidation={type:'list',allowBlank:c===5,formulae:[formulas[c-1]],showErrorMessage:true,errorTitle:'Geçersiz seçim',error:'Lütfen açılır listedeki değerlerden birini seçin.'}}ws.autoFilter={from:'A1',to:'E501'};const buf=await wb.xlsx.writeBuffer(),blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`Ders_Programi_Sablonu_${scheduleAcademicYear()}.xlsx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast?.('Ders programı Excel şablonu indirildi.')}
+          async function clearAllSchedule(){if(!canEditSchedule())return toast?.('Bu işlem için yetkiniz yok.');const count=arr('dersProgrami').length;if(!count)return toast?.('Silinecek ders programı kaydı yok.');if(!confirm(`Ders programındaki ${count} kaydın TAMAMI silinecek. Bu işlem geri alınamaz. Devam edilsin mi?`))return;try{const removed=await DersProgramiService.tumunuSil();toast?.(`${removed} ders programı kaydı silindi.`)}catch(e){if(e?.message!=='yetkisiz')toast?.('Ders programı temizlenemedi: '+(e?.message||e))}}
+          '''
+          s=s.replace(anchor,native+anchor,1)
+          old="document.querySelector('[data-schedule-import]')?.addEventListener('click',openScheduleImport);"
+          new="document.querySelector('[data-schedule-template]')?.addEventListener('click',()=>downloadScheduleTemplate().catch(e=>toast?.('Şablon oluşturulamadı: '+(e?.message||e))));document.querySelector('[data-schedule-import]')?.addEventListener('click',openScheduleImport);document.querySelector('[data-schedule-clear]')?.addEventListener('click',clearAllSchedule);"
+          assert old in s, 'bind anchor missing'
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+          node --check js/modules/academic.js
+          rm .github/workflows/native-schedule-tools-refactor.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/modules/academic.js .github/workflows/native-schedule-tools-refactor.yml
+          git commit -m 'feat: integrate schedule Excel tools natively'
+          git push
