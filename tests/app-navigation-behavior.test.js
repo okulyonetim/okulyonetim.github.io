@@ -16,4 +16,13 @@ assert(sw.includes("'./js/core/app-navigation-behavior.js?v=932'"),'Gezinme katm
 const cacheVersion=Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
 assert(cacheVersion>=932,'PWA cache sürümü gezinme davranışı sürümünden eski olmamalı.');
 
+
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+const settings=fs.readFileSync('js/modules/settings.js','utf8');
+assert(shell.includes("document.querySelectorAll('.ka-modal-backdrop,[role=\"dialog\"]')"),'geri tuşu görünür modalı önce kapatmalı');
+assert(shell.indexOf("document.querySelectorAll('.ka-modal-backdrop,[role=\"dialog\"]')")<shell.indexOf('global.TransportModule?.back?.()'),'modal kontrolü modül geri işleminden önce olmalı');
+assert(shell.includes("current.name==='settings'&&global.SettingsModule?.currentPage?.()!=='home'"),'Ayarlar alt sayfası önce Ayarlar ana sayfasına dönmeli');
+assert(settings.includes("active='home';mounted=true"),'Ayarlar her açılışta ana sayfadan başlamalı');
+assert(settings.includes('currentPage:()=>active'),'Shell Ayarlar durumunu ana modülden okumalı');
+assert(!fs.existsSync('js/core/settings-back-navigation.js'),'ayrı Ayarlar geri yama dosyası bulunmamalı');
 console.log('Uygulama gezinme davranışı sözleşmesi başarılı.');
