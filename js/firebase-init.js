@@ -27,7 +27,6 @@ const COL = {
   ogretmenListeSablon:'oy_ogretmenListeSablon', ogretmenListeKayit:'oy_ogretmenListeKayit', toplantiCizelgesi:'oy_toplantiCizelgesi', idariBilgiler:'oy_idariBilgiler'
 };
 
-/* V2 uyumluluk API'si: yeni çekirdek aynı gerçek koleksiyon haritasını kullanır. */
 window.firebaseConfig = firebaseConfig;
 window.VAPID_KEY = VAPID_KEY;
 window.COL = COL;
@@ -64,12 +63,75 @@ function baglantiUyarisiGoster(mesaj){
   }
 }
 
+/* Firebase SDK erişilemediğinde yalnızca daha önce bu cihazda açılmış hesabı
+   yerel authSession kaydından yeniden oluşturur. Ağ yokken yeni giriş yapılmaz. */
+async function yerelAuthUidBul(){
+  if(typeof indexedDB==='undefined')return '';
+  return new Promise(resolve=>{
+    let settled=false,request;
+    const finish=value=>{if(settled)return;settled=true;resolve(value||'')};
+    try{
+      request=indexedDB.open('koruk-local-first-v1',1);
+      request.onerror=()=>finish('');
+      request.onupgradeneeded=()=>{};
+      request.onsuccess=()=>{
+        const dbLocal=request.result;
+        if(!dbLocal.objectStoreNames.contains('kv')){finish('');return}
+        try{
+          const tx=dbLocal.transaction('kv','readonly'),store=tx.objectStore('kv'),cursor=store.openCursor();
+          let newest=null;
+          cursor.onerror=()=>finish('');
+          cursor.onsuccess=()=>{
+            const c=cursor.result;
+            if(!c){finish(newest?.uid||'');return}
+            const key=String(c.key||''),m=key.match(/^u:([^:]+):meta:authSession$/),value=c.value;
+            if(m&&value?.user?.uid===m[1]&&(!newest||Number(value.cachedAt||0)>Number(newest.cachedAt||0)))newest={uid:m[1],cachedAt:Number(value.cachedAt||0)};
+            c.continue();
+          };
+        }catch(_){finish('')}
+      };
+    }catch(_){finish('')}
+  });
+}
+
+function yerelAuthFallbackHazirla(){
+  if(auth)return auth;
+  const listeners=new Set();
+  let currentUser=null;
+  auth={
+    currentUser:null,
+    onAuthStateChanged(callback){
+      if(typeof callback!=='function')return()=>{};
+      listeners.add(callback);
+      yerelAuthUidBul().then(uid=>{
+        if(!uid){callback(null);return;}
+        currentUser={uid,offline:true};
+        auth.currentUser=currentUser;
+        callback(currentUser);
+      }).catch(()=>callback(null));
+      return()=>listeners.delete(callback);
+    },
+    signOut(){
+      currentUser=null;
+      auth.currentUser=null;
+      listeners.forEach(fn=>{try{fn(null)}catch(_) {}});
+      return Promise.resolve();
+    }
+  };
+  window.auth=auth;
+  window.firebaseHazir=true;
+  firebaseHazir=true;
+  window.dispatchEvent(new CustomEvent('koruk:firebase-ready'));
+  return auth;
+}
+
 function firebaseyiBaslat(){
   if(yapilandirmaEksikMi()){
     baglantiUyarisiGoster();
     return false;
   }
   try{
+    if(typeof firebase==='undefined')throw new Error('firebase is not defined');
     if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
@@ -93,6 +155,10 @@ function firebaseyiBaslat(){
     return true;
   }catch(e){
     console.error(e);
+    if(navigator.onLine===false){
+      yerelAuthFallbackHazirla();
+      return true;
+    }
     const agSorunuMu = typeof e?.message === 'string' && /firebase is not defined/i.test(e.message);
     baglantiUyarisiGoster(agSorunuMu
       ? 'Sunucu bağlantı dosyaları (Firebase) yüklenemedi. İnternet bağlantınızı, güvenlik duvarı/reklam engelleyici ayarlarınızı kontrol edip sayfayı yenileyin.'
@@ -101,7 +167,6 @@ function firebaseyiBaslat(){
   }
 }
 
-/* Uygulama geneli gezinme: rapor önizlemede geri tuşu ve sayfa üstten açılma davranışı. */
 (function appNavigationBehaviorFeatureLoad(){
   if(document.querySelector('script[data-app-navigation-behavior]'))return;
   const script=document.createElement('script');
@@ -111,7 +176,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Öğretmen düzenleme modalında local-first ve referans güvenli silme yaşam döngüsü. */
 (function teacherDeleteLifecycleFeatureLoad(){
   if(document.querySelector('script[data-teacher-delete-lifecycle]'))return;
   const script=document.createElement('script');
@@ -121,8 +185,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Profil güvenliği ve giriş konumu özelliği auth oturumundan bağımsız yüklenir;
-   servis kendi içinde AppStore/DeviceData hazır olana kadar bekler. */
 (function loginSecurityFeatureLoad(){
   if(document.querySelector('script[data-login-security-feature]'))return;
   const script=document.createElement('script');
@@ -132,7 +194,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Nöbet raporu, sabit eski sütunlar yerine güncel nöbet yerleriyle üretilir. */
 (function dutyReportLivePlacesFeatureLoad(){
   if(document.querySelector('script[data-duty-report-live-places]'))return;
   const script=document.createElement('script');
@@ -142,8 +203,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Nöbet Programı ve bağlı servis çizelgeleri, Ayarlar > Tatil Modu içindeki planlı tatilleri de
-   resmi tatil kaynağının yanında ortak tatil kaynağı olarak kullanır. */
 (function dutyHolidayModeSourceFeatureLoad(){
   if(document.querySelector('script[data-duty-holiday-mode-source]'))return;
   const script=document.createElement('script');
@@ -153,8 +212,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Taşıma aylık takip çizelgesi, yönetim modülü yüklenmemiş olsa bile Tatil Modu
-   tarihlerini doğrudan ortak tatil kaynağından kullanır. */
 (function transportHolidayModeBridgeFeatureLoad(){
   if(document.querySelector('script[data-transport-holiday-mode-bridge]'))return;
   const script=document.createElement('script');
@@ -164,8 +221,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Ders programında gecikmiş uzak snapshot'ın yeni eklenen/güncellenen yerel
-   dersleri görünümden düşürmesini engelleyen küçük veri bütünlüğü katmanı. */
 (function scheduleDataIntegrityFeatureLoad(){
   if(document.querySelector('script[data-schedule-data-integrity]'))return;
   const script=document.createElement('script');
@@ -175,8 +230,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Ders programı raporları: toner dostu yeni tasarım, ikili kesilebilir programlar,
-   yatay çarşaflar ve öğretmen imza/onay alanı. */
 (function scheduleReportRedesignFeatureLoad(){
   if(document.querySelector('script[data-schedule-report-redesign]'))return;
   const script=document.createElement('script');
@@ -186,8 +239,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Ders programı çıktılarında merkezi rapor motorunun satır zebrasını bastırıp
-   yalnız Pazartesi-Cuma gün sütunları arasında çok açık zebra uygula. */
 (function scheduleReportColumnZebraFeatureLoad(){
   if(document.querySelector('script[data-schedule-report-column-zebra]'))return;
   const script=document.createElement('script');
@@ -197,8 +248,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Ana sayfa duyuruları: kaydırılabilir görsel galeri, tam ekran zoom ve
-   göz ikonuna bağlı okuyanlar popover'ı. */
 (function dashboardAnnouncementMediaFeatureLoad(){
   if(document.querySelector('script[data-dashboard-announcement-media]'))return;
   const script=document.createElement('script');
@@ -208,7 +257,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Öğrenci sınav sonuçlarını OMR ders ayrıntıları, LGS puanı ve sıralamayla zenginleştirir. */
 (function studentExamResultDetailsFeatureLoad(){
   if(document.querySelector('script[data-student-exam-result-details]'))return;
   const script=document.createElement('script');
@@ -218,7 +266,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Yönetici şifre sıfırlama: aynı Firebase UID korunur, işlem Admin SDK kuyruğuna aktarılır. */
 (function adminPasswordResetFeatureLoad(){
   if(document.querySelector('script[data-admin-password-reset]'))return;
   const script=document.createElement('script');
@@ -228,8 +275,6 @@ function firebaseyiBaslat(){
   document.head.appendChild(script);
 })();
 
-/* Öğretmen hatırlatmaları: takvim yılı yerine aktif eğitim-öğretim yılı kullanılır;
-   yaz tatili başlangıcından yedi gün önce akademik hatırlatmalar durur. */
 (function teacherReminderAcademicYearFeatureLoad(){
   if(document.querySelector('script[data-teacher-reminder-academic-year]'))return;
   const script=document.createElement('script');
