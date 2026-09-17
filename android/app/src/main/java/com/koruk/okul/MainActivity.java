@@ -6,14 +6,12 @@ import android.os.Bundle;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import org.json.JSONObject;
-// (androidx SwipeRefreshLayout artık kullanılmıyor — bkz. LogoSwipeRefreshLayout)
 import com.getcapacitor.BridgeActivity;
 import com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin;
 
 public class MainActivity extends BridgeActivity {
 
     private LogoSwipeRefreshLayout swipeRefresh;
-    private long sonGeriTusuZamani = 0;
 
     /* Widget / bildirim hedefleri artık sabit 300/800 ms gecikmeyle JS'e
        fırlatılmıyor. JS auth + sekme sistemi gerçekten hazır olana kadar
@@ -47,15 +45,6 @@ public class MainActivity extends BridgeActivity {
         kenarJestiniAyir();
     }
 
-    // NOT: Ekranın ortasında dönen bir "Bağlanıyor…" başlangıç göstergesi
-    // denendi (setupBaslangicYuklemesi + WebViewListener) ama üstte duran
-    // bu yeni katman, ALTINDAKİ LogoSwipeRefreshLayout'un dokunuş
-    // olaylarını (aşağı çekince yenileme jesti) kapatıyordu — önceden
-    // ÇALIŞAN bir özelliği bozdu. Geri alındı. İleride tekrar denenirse,
-    // katmanın dokunuşları GEÇİRMESİ (setClickable(false) + touch olaylarını
-    // SwipeRefreshLayout'a iletmesi, ya da tamamen ayrı/dokunuş-şeffaf bir
-    // pencere/overlay olması) sağlanmalı.
-
     /* Android 10+ (API 29) sistem "geri" hareket algılaması, ekranın sol
        kenarına yakın başlayan sağa kaydırmaları WebView'e ULAŞTIRMADAN
        kendi başına yutuyor — bu yüzden uygulama içindeki "kaydırınca menü
@@ -81,30 +70,28 @@ public class MainActivity extends BridgeActivity {
         webView.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or_, ob) -> uygula.run());
     }
 
-    /* Donanım geri tuşu: uygulama shell'i hazırsa geri işlemini doğrudan
-       ShellUI'ye devret. ShellUI kendi modal/menu/navStack geçmişini bilir;
-       böylece alt sayfadayken yanlışlıkla uygulamadan çıkış uyarısı gösterilmez.
-       Shell henüz hazır değilse eski geriTusuIsle sözleşmesi ve son çare olarak
-       çift basışla çıkış davranışı korunur. */
+    /* Android geri tuşunun tek sahibi uygulama içindeki ShellUI'dir.
+       Burada ikinci bir geri/geçmiş/çıkış mekanizması çalıştırılmıyor.
+
+       Önceki uygulamada evaluateJavascript() sonucundan "handled" bekleniyordu.
+       Ancak ShellUI.back() async olduğu için Java tarafına Promise sonucu ("{}")
+       dönüyor, Java bunu "işlenmedi" kabul edip kendi geri/çıkış akışını çalıştırıyordu.
+       Bunun sonucu modal kapanması gereken yerde alttaki sayfa etkilenebiliyor veya
+       uygulama çıkış akışına girebiliyordu.
+
+       Native katman artık yalnızca olayı JS'e iletiyor. Modal, menü, alt sayfa,
+       navigation stack ve uygulamadan çıkış kararlarının tamamı ShellUI'de kalıyor. */
     @Override
     public void onBackPressed() {
         WebView webView = getBridge() != null ? getBridge().getWebView() : null;
-        if (webView == null) { super.onBackPressed(); return; }
+        if (webView == null) {
+            super.onBackPressed();
+            return;
+        }
 
         webView.evaluateJavascript(
-            "(function(){ try { if (window.ShellUI && typeof window.ShellUI.back==='function') { window.ShellUI.back(); return 'handled'; } return (typeof geriTusuIsle==='function') ? geriTusuIsle() : 'exit'; } catch(e){ return 'exit'; } })()",
-            (String sonuc) -> {
-                String temiz = sonuc != null ? sonuc.replace("\"", "") : "exit";
-                if ("handled".equals(temiz)) return;
-
-                long simdi = System.currentTimeMillis();
-                if (simdi - sonGeriTusuZamani < 2000) {
-                    finish();
-                } else {
-                    sonGeriTusuZamani = simdi;
-                    android.widget.Toast.makeText(MainActivity.this, "Çıkmak için tekrar geri tuşuna basın", android.widget.Toast.LENGTH_SHORT).show();
-                }
-            }
+            "(function(){try{if(window.ShellUI&&typeof window.ShellUI.back==='function'){window.ShellUI.back();return;}if(typeof geriTusuIsle==='function'){geriTusuIsle();}}catch(e){console.error('[NativeBack]',e);}})()",
+            null
         );
     }
 
