@@ -103,6 +103,12 @@ public class PrintPlugin extends Plugin {
         ozellikler.setMediaSize(yatayMi
             ? PrintAttributes.MediaSize.ISO_A4.asLandscape()
             : PrintAttributes.MediaSize.ISO_A4);
+        // HTML raporları zaten @page margin:0 ile gerçek A4 alanını tanımlıyor.
+        // Android PrintManager'ın varsayılan yazdırma marjı uygulanırsa WebView
+        // içeriği genişlikten küçültülür ve aynı oranda dikeyde de küçülerek
+        // sayfanın altında gereksiz boşluk bırakır. Native yazdırma alanını
+        // raporun CSS'iyle aynı hizaya getiriyoruz.
+        ozellikler.setMinMargins(PrintAttributes.Margins.NO_MARGINS);
 
         return printManager.print(isAdi, adapter, ozellikler.build());
     }
