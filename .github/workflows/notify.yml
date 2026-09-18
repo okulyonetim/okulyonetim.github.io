@@ -10,36 +10,12 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
       - name: Kodu Al
         uses: actions/checkout@v4
-
-      - name: Liste oluşturucuyu düzelt
-        if: github.event_name == 'push' && github.event.head_commit.message != 'fix: öğrenci liste oluşturucu A4 Word Excel'
-        shell: bash
-        run: |
-          python3 <<'PY'
-          from pathlib import Path
-          p=Path("js/modules/student-list-page.js")
-          s=p.read_text(encoding="utf-8")
-          s=s.replace("Math.max(72,Math.min(420,","Math.max(38,Math.min(360,")
-          s=s.replace('min="72" max="420"','min="38" max="360"')
-          if "sl-a4-fix-style" not in s:
-              m="function installStyles(){"
-              css='function installStyles(){if(!document.getElementById("sl-a4-fix-style")){const z=document.createElement("style");z.id="sl-a4-fix-style";z.textContent=".sl-live-preview-shell{overflow-x:auto;overflow-y:hidden;touch-action:pan-x pan-y}.sl-live-preview-table{table-layout:fixed;width:max-content;min-width:100%}.sl-preview-head-content{position:relative;overflow:visible}.sl-column-resizer{display:block!important;position:absolute;right:-8px;top:-5px;bottom:-5px;width:16px;cursor:col-resize;touch-action:none;z-index:20}.sl-column-resizer:after{content:"";position:absolute;left:6px;top:18%;bottom:18%;width:3px;background:#147a61;border-radius:4px}.sl-column-resizing{cursor:col-resize!important;user-select:none!important}.sl-column-resizing *{cursor:col-resize!important}";document.head.appendChild(z)}}'
-              s=s.replace(m,css,1)
-          p.write_text(s,encoding="utf-8")
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/modules/student-list-page.js
-          git diff --cached --quiet || (git commit -m "fix: öğrenci liste oluşturucu A4 Word Excel" && git push)
 
       - name: Node.js Kur
         uses: actions/setup-node@v4
@@ -48,7 +24,7 @@ jobs:
 
       - name: Bağımlılıkları Yükle
         run: npm install
-
+        
       - name: Bildirimleri Kontrol Et ve Gönder
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
