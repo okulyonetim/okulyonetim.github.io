@@ -12,7 +12,7 @@ test('transport hydrates and observes duty holiday data locally',()=>{
 
 test('monthly transport report uses the same canonical holiday matcher as duty',()=>{
   const matcher="global.NobetService?.tatilMi?.(list,iso)||list.find(x=>x.tarih===iso)";
-  assert.equal(source.split(matcher).length-1,2);
+  assert.equal(source.split(matcher).length-1,1);
   assert.match(source,/h=!weekend&&holiday\(dateIso\(y,m,d\)\)/);
   assert.match(source,/trp-holiday/);
 });
