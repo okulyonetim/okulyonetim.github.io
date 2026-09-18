@@ -2282,3 +2282,18 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 @media(max-width:390px){.ka-report-preview__title b{font-size:13px}.ka-report-preview__title small{display:none}.ka-report-preview__print{min-width:86px;max-width:94px;padding-inline:8px}}
 @media(min-width:768px){.ka-report-preview__toolbar{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 14px}.ka-report-preview__main{grid-template-columns:44px minmax(180px,1fr) auto}.ka-report-preview__zoom{justify-content:end}.ka-report-preview__viewport{padding:12px}}
 
+
+
+/* Öğrenci listesi canlı önizleme / sütun genişliği */
+.sl-live-preview-shell{overflow:auto;position:relative;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+.sl-live-preview-table{table-layout:fixed;width:max-content;min-width:100%}
+.sl-live-preview-table th,.sl-live-preview-table td{box-sizing:border-box}
+.sl-preview-head-content{position:relative;min-height:28px;display:flex;align-items:center;justify-content:inherit;padding-right:18px;overflow:visible}
+.sl-column-resizer{position:absolute;right:-6px;top:-6px;bottom:-6px;width:22px;cursor:col-resize;touch-action:none;z-index:20;display:block!important}
+.sl-column-resizer::after{content:'';position:absolute;right:8px;top:3px;bottom:3px;width:4px;border-radius:3px;background:var(--brand,#147a61);box-shadow:0 0 0 2px rgba(20,122,97,.14)}
+.sl-column-resizer:hover::after,.sl-column-resizer:active::after{width:6px;right:7px}
+.sl-column-resizing{cursor:col-resize!important;user-select:none!important}
+.sl-column-resizing *{cursor:col-resize!important}
+.ka-teacher-list-column__top label{min-width:0}
+.ka-teacher-list-column__top label small{display:block;color:var(--ink-muted);font-size:.72em;margin-top:2px}
+@media(max-width:700px){.sl-column-resizer{width:28px;right:-8px}}
