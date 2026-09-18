@@ -114,7 +114,7 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('İletişim sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  if(name==='transport'&&['services','busSeats','classSeats','food'].includes(page)){
+  if(name==='transport'&&['services','foodDaily','foodWeekly','foodMonthly','food'].includes(page)){
     const ok=global.TransportModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Taşıma sayfası açılamadı.');
     if(title)setTitle(title);return true;
