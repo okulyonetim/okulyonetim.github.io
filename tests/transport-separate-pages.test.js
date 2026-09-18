@@ -5,10 +5,10 @@ const transport=fs.readFileSync('js/modules/transport.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const build=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
-for(const [label,page] of [['Taşıma','services'],['Servis Oturma','busSeats'],['Sınıf Oturma','classSeats']]){
+for(const [label,page] of [['Taşıma İşlemleri','services'],['Servis Oturma','busSeats']]){
   assert(shell.includes(`['${label}'`)&&shell.includes(`'transport','${page}'`),`${label} ayrı Transport sayfasına yönlenmeli.`);
 }
-assert(shell.includes("name==='transport'&&['services','busSeats','classSeats'].includes(page)"),'ShellUI Transport alt sayfalarını doğrudan çözmeli.');
+assert(shell.includes("name==='transport'&&['services','busSeats'].includes(page)"),'ShellUI Transport görünür alt sayfalarını doğrudan çözmeli.');
 assert(transport.includes('function openPage(page,title=')&&transport.includes('window.TransportModule={mount,unmount,render,prepareLocal,openBusEditor,openClassSeating,openPage,back}'),'TransportModule public openPage / seating / back API sunmalı.');
 assert(!transport.includes('data-transport-tab'),'Transport içinde ikinci bir sekme navigasyonu kalmamalı.');
 
