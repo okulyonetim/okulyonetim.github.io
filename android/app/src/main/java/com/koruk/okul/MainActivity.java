@@ -120,6 +120,15 @@ public class MainActivity extends BridgeActivity {
         if (swipeRefresh != null) swipeRefresh.setInnerContentKaydirilmis(icerikKaydirilmisMi);
     }
 
+    /** JS tarafındaki çıkış onayından sonra Android Activity'yi gerçekten kapatır. */
+    @JavascriptInterface
+    public void uygulamadanCik() {
+        runOnUiThread(() -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) finishAndRemoveTask();
+            else finish();
+        });
+    }
+
     private static final long FALLBACK_TIMEOUT_MS = 8000;
     private final android.os.Handler _readyHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private Runnable _fallbackRunnable;
@@ -147,6 +156,7 @@ public class MainActivity extends BridgeActivity {
 
         swipeRefresh = new LogoSwipeRefreshLayout(this, webView);
         webView.addJavascriptInterface(this, "AndroidPullToRefreshKopru");
+        webView.addJavascriptInterface(this, "AndroidUygulamadanCikKopru");
 
         android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
