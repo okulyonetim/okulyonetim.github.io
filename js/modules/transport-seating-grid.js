@@ -96,7 +96,7 @@ function renderGrid(){
  bindGrid();
 }
 
-function legacy(g){
+function gridToLegacy(g){
  const elements=[],yerlesim=[];let no=0;
  g.forEach((row,r)=>row.forEach((x,c)=>{
   if(x.type==='empty')return;
@@ -145,7 +145,7 @@ function render(s){
  document.getElementById('gse-clear')?.addEventListener('click',()=>{if(confirm('Tüm hücreleri temizlemek istiyor musunuz?')){state.grid=state.grid.map(r=>r.map(cell));renderGrid()}});
  document.getElementById('gse-close')?.addEventListener('click',close);
  document.getElementById('gse-cancel')?.addEventListener('click',close);
- document.getElementById('gse-save')?.addEventListener('click',async()=>{const b=document.getElementById('gse-save');b.disabled=true;b.textContent='Kaydediliyor…';try{const legacy=legacy(state.grid);await global.ServisOturmaService?.planElementsKaydet?.(state.servisId,'ozel',legacy.elements,false);toast('Oturma planı kaydedildi.');close();global.TransportModule?.render?.()}catch(e){b.disabled=false;b.textContent='💾 Kaydet';toast('Kayıt hatası: '+(e?.message||e))}});
+ document.getElementById('gse-save')?.addEventListener('click',async()=>{const b=document.getElementById('gse-save');b.disabled=true;b.textContent='Kaydediliyor…';try{const plan=gridToLegacy(state.grid);await global.ServisOturmaService?.planElementsKaydet?.(state.servisId,'ozel',plan.elements,false);toast('Oturma planı kaydedildi.');close();global.TransportModule?.render?.()}catch(e){b.disabled=false;b.textContent='💾 Kaydet';toast('Kayıt hatası: '+(e?.message||e))}});
  bindGrid();
 }
 function close(){document.getElementById('gseOverlay')?.remove();state=null}
