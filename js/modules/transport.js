@@ -195,7 +195,7 @@ function busReportBody(s){
  return{body:top,extra};
 }
 async function busPrintReport(s){if(!window.ReportEngine?.printReport){toast?.('Rapor motoru hazır değil.');return}const {body,extra}=busReportBody(s);await window.ReportEngine.printReport(`${serviceName(s)} Oturma Planı`,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:`${serviceName(s)} Oturma Planı`,extraHead:extra})}
-function openBusEditor(servisId){const s=arr('servisler').find(x=>x.id===servisId);if(!s)return;const p=currentPlan(servisId)||{},sablon=p.sablon||'ducato',elements=window.soPlanElementleriGetir?.(p,sablon)||[];editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.layoutEditing=false;renumberBusSeats();renderBusEditor(s)}
+async function openBusEditor(servisId){try{if(!window.GridSeatingEditor)await window.AppLoader?.loadScript?.('js/modules/transport-seating-grid.js');if(window.GridSeatingEditor?.open)return window.GridSeatingEditor.open(servisId);throw new Error('Gelişmiş servis oturma editörü yüklenemedi.')}catch(e){console.error('[Transport/grid-seating]',e);toast?.('Servis oturma editörü açılamadı: '+(e?.message||e));return false}}
 function renderBusEditor(s){
  if(!editor)return;document.getElementById('transportBusEditor')?.remove();renumberBusSeats();
  const st=window.soElementIstatistik?.(editor.elements)||{toplam:0,dolu:0,bos:0,rezerve:0,doluluk:0},editable=editor.editable,sablon=window.SO_SABLONLAR?.[editor.sablon]||{},route=[s.guzergah,s.plaka?`🚘 ${s.plaka}`:''].filter(Boolean).join(' · ');
