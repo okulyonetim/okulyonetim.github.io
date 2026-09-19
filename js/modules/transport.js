@@ -195,7 +195,24 @@ function busReportBody(s){
  return{body:top,extra};
 }
 async function busPrintReport(s){if(!window.ReportEngine?.printReport){toast?.('Rapor motoru hazır değil.');return}const {body,extra}=busReportBody(s);await window.ReportEngine.printReport(`${serviceName(s)} Oturma Planı`,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:`${serviceName(s)} Oturma Planı`,extraHead:extra})}
-async function openBusEditor(servisId){try{if(!window.GridSeatingEditor)await window.AppLoader?.loadScript?.('js/modules/transport-seating-grid.js');if(window.GridSeatingEditor?.open)return window.GridSeatingEditor.open(servisId);throw new Error('Gelişmiş servis oturma editörü yüklenemedi.')}catch(e){console.error('[Transport/grid-seating]',e);toast?.('Servis oturma editörü açılamadı: '+(e?.message||e));return false}}
+async function openBusEditor(servisId){
+ try{
+  if(!window.GridSeatingEditor){
+   if(window.AppLoader?.loadScript) await window.AppLoader.loadScript('js/modules/transport-seating-grid.js');
+   if(!window.GridSeatingEditor) await new Promise((resolve,reject)=>{
+    const src='js/modules/transport-seating-grid.js';
+    const old=[...document.scripts].find(x=>x.src.endsWith(src));
+    if(old){old.addEventListener('load',resolve,{once:true});old.addEventListener('error',reject,{once:true});return}
+    const sc=document.createElement('script');sc.src=src;sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc);
+   });
+  }
+  if(window.GridSeatingEditor?.open)return window.GridSeatingEditor.open(servisId);
+  throw new Error('Gelişmiş servis oturma editörü yüklenemedi.');
+ }catch(e){
+  console.error('[Transport/grid-seating]',e);
+  toast?.('Servis oturma editörü açılamadı: '+(e?.message||e));
+  return false;
+ }}
 function renderBusEditor(s){
  if(!editor)return;document.getElementById('transportBusEditor')?.remove();renumberBusSeats();
  const st=window.soElementIstatistik?.(editor.elements)||{toplam:0,dolu:0,bos:0,rezerve:0,doluluk:0},editable=editor.editable,sablon=window.SO_SABLONLAR?.[editor.sablon]||{},route=[s.guzergah,s.plaka?`🚘 ${s.plaka}`:''].filter(Boolean).join(' · ');
