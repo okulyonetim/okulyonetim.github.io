@@ -491,7 +491,7 @@
     const s = arr('servisler').find(x => x.id === servisId);
     if (!s) return;
 
-    const raw    = global.DeviceData?.get?.('servisOturma', servisId) || {};
+    const raw    = arr('servisOturma').find(p => p.servisId === servisId || p.id === servisId) || {};
     const parsed = gridFromLegacy(raw);
     const editable = canEdit();
 
