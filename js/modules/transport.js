@@ -269,7 +269,7 @@ function render(){if(!mounted)return;const r=active==='foodDaily'?foodMenuPage('
 function bind(){const s=document.getElementById('transportSearch');if(s)s.oninput=()=>{query=s.value;render()}}
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.servisler','data.veliler','data.siniflar','data.servisOturma','data.sinifOturma','data.resmiTatiller'].forEach(p=>{const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));if(u)unsubs.push(u)})}
 async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}
-function openPage(page,title=''){const allowed=['services','foodDaily','foodWeekly','foodMonthly','food'];if(!allowed.includes(page))return false;active=page;query='';serviceDetailId='';const h=document.querySelector('[data-transport-module] > .ka-row h2');if(h&&title)h.textContent=title;render();return true}
+function openPage(page,title=''){const allowed=['services','busSeats','classSeats','foodDaily','foodWeekly','foodMonthly','food'];if(!allowed.includes(page))return false;active=page;query='';serviceDetailId='';const h=document.querySelector('[data-transport-module] > .ka-row h2');if(h&&title)h.textContent=title;render();return true}
 function unmount(){mounted=false;serviceDetailId='';closeEditor();document.querySelector('[data-service-modal]')?.remove();document.getElementById('transportReportPicker')?.remove();unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
 window.TransportModule={mount,unmount,render,prepareLocal,openBusEditor,openClassSeating,openPage,back};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='transport')mount()});
 })();
