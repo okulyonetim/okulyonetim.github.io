@@ -1,0 +1,51 @@
+name: Apply Servis Oturma UI
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/apply-servis-oturma-ui.yml"
+      - "js/modules/transport.js"
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, 'Apply Servis Oturma UI') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch transport seating UI
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path("js/modules/transport.js")
+          s=p.read_text(encoding="utf-8")
+          old="function busSeatShortName(name){const parts=String(name||'').trim().split(/\\s+/).filter(Boolean);return parts.length>1?\`\${parts[0]} \${parts.at(-1)[0]}.\`:parts[0]||'Boş'}"
+          new="function busSeatShortName(name){return String(name||'').trim()||'Boş'}"
+          if old not in s:
+              raise SystemExit("busSeatShortName hedefi bulunamadı")
+          s=s.replace(old,new,1)
+          old2='const inner=\`<span class="ka-bus-seat__number">\${esc(no)}</span>\${locked?\'<span class="ka-bus-seat__lock">🔒</span>\':\'\'}\${name?\`<span class="ka-bus-seat__avatar">\${esc(initial)}</span><span class="ka-bus-seat__name">\${esc(short)}</span>\`:reserved?\'<span class="ka-bus-seat__name">Rezerve</span>\':\'\'}\`;'
+          new2='const inner=\`<span class="ka-bus-seat__number">\${esc(no)}</span>\${locked?\'<span class="ka-bus-seat__lock">🔒</span>\':\'\'}\${name?\`<span class="ka-bus-seat__avatar">\${esc(initial)}</span><span class="ka-bus-seat__name">\${esc(short)}</span>\`:reserved?\'<span class="ka-bus-seat__name">Rezerve</span>\':\'\'}\`;'
+          if old2 not in s:
+              raise SystemExit("seat inner hedefi bulunamadı")
+          # Same markup; the full-name behavior is supplied by busSeatShortName above.
+          old3='return \`<div class="ka-bus-classic-shell" data-bus-classic-shell><div class="ka-bus-classic-lights"><span>🚨</span><i></i><span>🚨</span></div><div class="ka-bus-classic-plate">\${esc(plate||\'OKUL SERVİSİ\')}</div><div class="ka-bus-classic-front-row"><div class="ka-bus-classic-driver"><span>👨‍✈️</span><strong>\${esc(driver)}</strong></div><div class="ka-bus-classic-front-seats">\${frontRight}</div></div><div class="ka-bus-classic-body">\${rows.map(([,items])=>busRowHtml(items,report)).join(\'\')}</div>\${rearHtml}</div>\`;'
+          new3='return \`<div class="ka-bus-classic-shell" data-bus-classic-shell><div class="ka-bus-classic-lights"><span>🚨</span><i></i><span>🚨</span></div><div class="ka-bus-classic-plate">\${esc(plate||\'OKUL SERVİSİ\')}</div><div class="ka-bus-classic-front-row"><div class="ka-bus-classic-driver"><span class="ka-bus-driver-icon">👨‍✈️</span><small>ŞOFÖR</small><strong>\${esc(driver)}</strong></div><div class="ka-bus-classic-front-seats">\${frontRight}</div></div><div class="ka-bus-classic-body">\${rows.map(([,items])=>busRowHtml(items,report)).join(\'\')}</div>\${rearHtml}</div>\`;'
+          if old3 not in s:
+              raise SystemExit("driver hedefi bulunamadı")
+          s=s.replace(old3,new3,1)
+          marker='ov.innerHTML=\`<section class="ka-modal ka-bus-editor-modal ka-bus-classic-modal">'
+          style='ov.innerHTML=\`<style>\n.ka-bus-classic-shell{width:min(100%,520px)!important;box-sizing:border-box!important;padding:18px 14px 14px!important;}\n.ka-bus-classic-front-row{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)!important;gap:10px!important;align-items:center!important;}\n.ka-bus-classic-driver{min-height:78px!important;height:auto!important;max-height:96px!important;padding:9px 8px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;text-align:center!important;overflow:visible!important;}\n.ka-bus-classic-driver .ka-bus-driver-icon{font-size:18px!important;line-height:1!important;margin-bottom:3px!important;}\n.ka-bus-classic-driver small{font-size:8px!important;font-weight:800!important;letter-spacing:.5px!important;opacity:.8!important;line-height:1!important;}\n.ka-bus-classic-driver strong{display:block!important;width:100%!important;font-size:12px!important;line-height:1.15!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;}\n.ka-bus-seat{height:78px!important;min-height:78px!important;padding:7px 4px 5px!important;box-sizing:border-box!important;}\n.ka-bus-seat__name{display:block!important;width:100%!important;max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;text-align:center!important;font-size:10.5px!important;line-height:1.08!important;font-weight:800!important;}\n.ka-bus-seat__avatar{width:28px!important;height:28px!important;font-size:11px!important;flex:none!important;}\n.ka-bus-classic-aisle{min-width:38px!important;display:flex!important;justify-content:center!important;align-items:center!important;}\n.ka-bus-classic-door{width:27px!important;min-height:68px!important;padding:4px 2px!important;box-sizing:border-box!important;border-radius:10px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;font-size:10px!important;line-height:1!important;background:rgba(255,193,7,.14)!important;border:1px dashed rgba(255,193,7,.7)!important;}\n.ka-bus-classic-door b{writing-mode:vertical-rl!important;transform:rotate(180deg)!important;font-size:8px!important;letter-spacing:1px!important;margin-top:3px!important;}\n.ka-bus-classic-body{display:flex!important;flex-direction:column!important;gap:9px!important;}\n.ka-bus-classic-row{min-height:78px!important;align-items:center!important;}\n.ka-bus-classic-rear{margin-top:12px!important;padding-top:12px!important;gap:7px!important;}\n@media(max-width:520px){.ka-bus-classic-shell{padding-left:10px!important;padding-right:10px!important;}.ka-bus-seat{height:74px!important;min-height:74px!important;}.ka-bus-seat__name{font-size:9.5px!important;}.ka-bus-classic-driver strong{font-size:11px!important;}.ka-bus-classic-aisle{min-width:32px!important;}.ka-bus-classic-door{width:24px!important;}}\n</style><section class="ka-modal ka-bus-editor-modal ka-bus-classic-modal">'
+          if marker not in s:
+              raise SystemExit("render marker bulunamadı")
+          s=s.replace(marker,style,1)
+          p.write_text(s,encoding="utf-8")
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add js/modules/transport.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Apply Servis Oturma UI"
+          git push
