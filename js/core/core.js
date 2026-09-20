@@ -55,7 +55,6 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   const ARM_DISTANCE=52;
   const DEAD_ZONE=4;
   const MAX_VISUAL=84;
-  const TOP_ZONE=99999;
   const BOTTOM_EXCLUSION=82;
 
   let tracking=false,armed=false,cancelled=false;
@@ -142,7 +141,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     if(refreshing||e.touches?.length!==1)return;
     const t=e.touches[0];
     const target=e.target instanceof Element?e.target:null;
-    if(t.clientY>TOP_ZONE||nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
+    if(nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
       tracking=false;
       return;
     }
