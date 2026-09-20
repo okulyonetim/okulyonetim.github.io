@@ -11,7 +11,9 @@ import com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin;
 
 public class MainActivity extends BridgeActivity {
 
-    private LogoSwipeRefreshLayout swipeRefresh;
+    /* Pull-to-refresh APK/PWA/web için js/core/core.js tarafından tek merkezden
+       yönetilir; native SwipeRefreshLayout katmanı kaldırıldı (bkz. LogoSwipeRefreshLayout).
+       Native katmanda swipeRefresh field'ı veya setupPullToRefresh() çağrısı bulunmaz. */
 
     /* Widget / bildirim hedefleri artık sabit 300/800 ms gecikmeyle JS'e
        fırlatılmıyor. JS auth + sekme sistemi gerçekten hazır olana kadar
@@ -107,18 +109,10 @@ public class MainActivity extends BridgeActivity {
         );
     }
 
-    /* JS tarafından (bkz. PullToRefreshPlugin) modal/detay paneli açıkken
-       yenileme jestini geçici olarak kapatmak/açmak için çağrılır. */
-    public void setPullToRefreshEnabled(boolean enabled) {
-        if (swipeRefresh != null) swipeRefresh.setPullEnabled(enabled);
-    }
-
-    /* İç kaydırılabilir panellerin gerçek kaydırma durumunu native tarafa
-       senkron olarak bildirir. */
-    @JavascriptInterface
-    public void innerScrollBildir(boolean icerikKaydirilmisMi) {
-        if (swipeRefresh != null) swipeRefresh.setInnerContentKaydirilmis(icerikKaydirilmisMi);
-    }
+    /* setPullToRefreshEnabled ve innerScrollBildir kaldırıldı: pull-to-refresh
+       artık tümüyle JS motoru (core.js installUnifiedPullToRefresh) tarafından
+       yönetildiğinden native enable/disable köprüsüne gerek kalmadı.
+       PullToRefreshPlugin.setEnabled() artık no-op olarak bırakıldı (bkz. PullToRefreshPlugin.java). */
 
     /** JS tarafındaki çıkış onayından sonra Android Activity'yi gerçekten kapatır. */
     @JavascriptInterface
@@ -129,50 +123,12 @@ public class MainActivity extends BridgeActivity {
         });
     }
 
-    private static final long FALLBACK_TIMEOUT_MS = 8000;
-    private final android.os.Handler _readyHandler = new android.os.Handler(android.os.Looper.getMainLooper());
-    private Runnable _fallbackRunnable;
-
     /* JS'in (auth.js → PullToRefreshPlugin.appHazir()) gerçek hazır sinyali.
        Aynı sinyal artık bekleyen widget/bildirim deep-linklerini de açar. */
     public void markAppReady() {
         appHazir = true;
-        if (_fallbackRunnable != null) {
-            _readyHandler.removeCallbacks(_fallbackRunnable);
-            _fallbackRunnable = null;
-        }
-        if (swipeRefresh != null) swipeRefresh.setRefreshing(false);
         nativeRuntimeDuzeltmeleriniYukle();
         bekleyenHedefleriGonder();
-    }
-
-    private void setupPullToRefresh() {
-        WebView webView = getBridge().getWebView();
-        android.view.ViewGroup parent = (android.view.ViewGroup) webView.getParent();
-        if (parent == null) return;
-
-        int index = parent.indexOfChild(webView);
-        parent.removeView(webView);
-
-        swipeRefresh = new LogoSwipeRefreshLayout(this, webView);
-        webView.addJavascriptInterface(this, "AndroidPullToRefreshKopru");
-        webView.addJavascriptInterface(this, "AndroidUygulamadanCikKopru");
-
-        android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT
-        );
-        swipeRefresh.setLayoutParams(lp);
-        parent.addView(swipeRefresh, index);
-
-        swipeRefresh.setOnRefreshListener(() -> {
-            /* Yenilenen sayfanın önceki hazır durumunu miras almaması gerekir. */
-            appHazir = false;
-            webView.reload();
-            if (_fallbackRunnable != null) _readyHandler.removeCallbacks(_fallbackRunnable);
-            _fallbackRunnable = () -> { if (swipeRefresh != null) swipeRefresh.setRefreshing(false); };
-            _readyHandler.postDelayed(_fallbackRunnable, FALLBACK_TIMEOUT_MS);
-        });
     }
 
     @Override

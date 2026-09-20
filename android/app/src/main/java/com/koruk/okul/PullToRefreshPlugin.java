@@ -5,25 +5,22 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
-/* JS tarafından modal/detay paneli gibi İÇ KAYDIRMALI bir alan açıkken
-   native "aşağı çekince yenile" (pull-to-refresh) jestini geçici olarak
-   kapatmak için kullanılır. Sebep: WebViewAwareSwipeRefreshLayout (bkz.
-   MainActivity) sadece WebView'in KENDİ (dış) scrollY'sini kontrol
-   ediyor — modal içindeki bir <div style="overflow-y:auto"> listenin
-   kaydırma durumundan haberi yok. Bu yüzden modal içinde listeyi aşağı
-   kaydırmaya çalışırken bazen yenileme jesti tetiklenip kaydırma iptal
-   oluyordu. Çözüm: modal açıkken JS bu eklentiyi çağırıp jesti tamamen
-   devre dışı bırakır, modal kapanınca tekrar açar. */
+/* Pull-to-refresh artık js/core/core.js'deki installUnifiedPullToRefresh() motoru
+   tarafından tüm platformlarda (APK, PWA, web) tek merkezden yönetilmektedir.
+   Native SwipeRefreshLayout katmanı (LogoSwipeRefreshLayout) kaldırıldı;
+   bu eklenti yalnızca appHazir() sinyali için tutulmaktadır.
+
+   setEnabled() geriye dönük uyumluluk için no-op olarak bırakıldı: JS tarafı
+   hâlâ bu metodu çağırıyor olabilir; native katmanda artık karşılığı yok
+   çünkü JS motoru hasScrolledAncestor() ve blocked() kontrollerini kendisi
+   yapıyor. */
 @CapacitorPlugin(name = "PullToRefreshPlugin")
 public class PullToRefreshPlugin extends Plugin {
 
     @PluginMethod
     public void setEnabled(PluginCall call) {
-        boolean enabled = Boolean.TRUE.equals(call.getBoolean("enabled", true));
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
-            activity.runOnUiThread(() -> activity.setPullToRefreshEnabled(enabled));
-        }
+        /* No-op: pull-to-refresh artık JS motoru tarafından yönetiliyor.
+           Native enable/disable köprüsü gerekmiyor. */
         call.resolve();
     }
 
