@@ -7,33 +7,23 @@ const css=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 
-test('APK PWA and mobile web share one controlled pull refresh engine',()=>{
-  assert.ok(core.includes('installUnifiedPullToRefresh'),'Ortak pull refresh motoru eksik.');
-  for(const token of [
-    'ARM_DISTANCE=96',
-    'hasScrolledAncestor',
-    'BLOCK_SELECTOR',
-    'touchstart',
-    'touchmove',
-    'passive:false',
-    'e.preventDefault()',
-    'scheduleStaleReset',
-    'pageshow',
-    'SyncEngine?.sync',
-    'TOP_ZONE',
-    'BOTTOM_EXCLUSION',
-    '.ka-app-nav.ka-bottom-nav',
-    'visualViewport',
-    '4000',
-  ]) assert.ok(core.includes(token),`Eksik ortak pull refresh koruması: ${token}`);
-  assert.ok(!core.includes('window.location.reload()'),'Pull refresh tam sayfa reload yapmamalı.');
-  assert.ok(!core.includes('installAndroidPullRefreshGuard'),'Android-only guard geri dönmemeli.');
-  assert.ok(!core.includes('kaUnifiedPullRefreshStyle'),'Pull refresh CSS JS içinde enjekte edilmemeli.');
-  assert.ok(!main.includes('setupPullToRefresh();'),'APK native wrapper etkinleştirilmemeli.');
-  assert.ok(!main.includes('private LogoSwipeRefreshLayout swipeRefresh'),'swipeRefresh field MainActivity\'den kaldırılmalı.');
-  assert.ok(main.includes('Pull-to-refresh APK/PWA/web için js/core/core.js tarafından tek merkezden yönetilir.'),'Native katmanda ortak motor açıklaması bulunmalı.');
+test('APK and browser pull refresh use native platform gesture handlers',()=>{
+  assert.ok(core.includes('installPullToRefreshAdapter'),'Platform pull refresh adapter eksik.');
+  assert.ok(core.includes('SyncEngine?.sync'),'Programmatic refresh SyncEngine üzerinden yapılmalı.');
+  assert.ok(!core.includes('touchstart'),'Core touchstart ile native scroll motorunu engellememeli.');
+  assert.ok(!core.includes('touchmove'),'Core touchmove ile native scroll motorunu engellememeli.');
+  assert.ok(!core.includes('e.preventDefault()'),'Core pull refresh için preventDefault kullanmamalı.');
+  assert.ok(!core.includes('window.location.reload()'),'Programmatic pull refresh tam sayfa reload yapmamalı.');
+  assert.ok(main.includes('LogoSwipeRefreshLayout nativePullRefresh'),'APK native pull refresh wrapper eksik.');
+  assert.ok(main.includes('setupPullToRefresh()'),'APK native pull refresh kurulumu eksik.');
+  assert.ok(!main.includes('private LogoSwipeRefreshLayout swipeRefresh'),'Eski swipeRefresh alanı geri dönmemeli.');
 });
 
+test('browser scroll chaining is left available for Chrome/Safari native pull refresh',()=>{
+  assert.ok(css.includes('html,body,.ka-app-shell{overscroll-behavior-y:auto;touch-action:auto}'));
+  assert.ok(css.includes('.ka-app-content{overscroll-behavior-y:auto;touch-action:auto}'));
+  assert.ok(css.includes('.ka-app-nav.ka-bottom-nav{overscroll-behavior-y:auto;touch-action:auto}'));
+  assert.ok(css.includes('#kaPullRefreshIndicator{')&&css.includes('@keyframes kaPullRefreshSpin'));
 test('native overscroll is suppressed and indicator belongs to design system',()=>{
   assert.ok(css.includes('html,body,.ka-app-shell{overscroll-behavior-y:none}'));
   assert.ok(css.includes('.ka-app-content{overscroll-behavior-y:contain}'));
