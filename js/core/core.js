@@ -43,45 +43,48 @@ window.addEventListener('online',()=>AppStore.set('ui.online',true),{passive:tru
 window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:true});
 
 
-/* ========================= UNIFIED PULL-TO-REFRESH =========================
-   Android WebView + Android Chrome + iOS Safari/iPadOS + diğer mobil web tarayıcıları.
-   Tek motor: doğal kaydırma yalnız gerçek pull-refresh hareketi doğrulandığında
-   engellenir; yenileme tam sayfa reload yerine SyncEngine üzerinden yapılır. */
+/* ========================= CHROME-STYLE PULL-TO-REFRESH =========================
+   Tek gesture motoru. Chrome Android'deki davranışa yakın elastik çekme:
+   - yalnızca üstteyken aday olur
+   - birkaç px hareketten sonra yön kilitlenir
+   - aşağı çekme ilerledikçe direnç artar
+   - eşik geçilirse bırakınca yeniler
+   - yatay hareket veya gerçek iç kaydırma gesture'ı iptal eder
+   Android WebView + Chrome + Safari aynı motoru kullanır. */
 (function installUnifiedPullToRefresh(){
   if(window.__kaUnifiedPullRefresh)return;
   window.__kaUnifiedPullRefresh=true;
 
   const BLOCK_SELECTOR='.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh],input,textarea,select,[contenteditable="true"]';
-  const ARM_DISTANCE=52;
-  const DEAD_ZONE=4;
-  const MAX_VISUAL=84;
+  const INTENT_DISTANCE=6;
+  const ARM_DISTANCE=64;
+  const MAX_PULL=112;
+  const RESISTANCE=.55;
   const BOTTOM_EXCLUSION=82;
 
-  let tracking=false,armed=false,cancelled=false;
-  let startX=0,startY=0,lastY=0,indicator=null;
-  let refreshing=false,staleTimer=null,refreshTimer=null;
+  let state='idle';
+  let startX=0,startY=0,lastY=0;
+  let indicator=null,refreshing=false,staleTimer=null,refreshTimer=null;
 
-  function rootScrollTop(){
-    const doc=document.scrollingElement;
-    return Math.max(0,Number(window.scrollY||doc?.scrollTop||0));
+  const rootScrollTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
+
+  function appScrollTop(){
+    const el=document.querySelector('.ka-app-content');
+    return el?Math.max(0,Number(el.scrollTop||0)):0;
   }
 
-  function isScrollable(el){
-    if(!(el instanceof Element))return false;
-    const cs=getComputedStyle(el);
-    const oy=cs.overflowY;
-    return (oy==='auto'||oy==='scroll'||oy==='overlay')&&el.scrollHeight>el.clientHeight+2;
+  function menuScrollTop(){
+    const el=document.querySelector('.ka-menu-list,.ka-menu-grid');
+    return el?Math.max(0,Number(el.scrollTop||0)):0;
   }
 
-  function hasScrolledAncestor(target){
-    const allowedScroller=el=>el.matches?.('.ka-app-content,.ka-menu-list,.ka-menu-grid');
-    for(let el=target instanceof Element?target:null;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
-      if(!isScrollable(el))continue;
-      /* Only the app's known vertical surfaces may participate in pull refresh.
-         Tables, popovers, editors and arbitrary nested scrollers keep their own gesture. */
-      if(!allowedScroller(el)||el.scrollTop>1)return true;
-    }
-    return rootScrollTop()>1;
+  function atTop(target){
+    if(rootScrollTop()>1)return false;
+    const app=document.querySelector('.ka-app-content');
+    const menu=document.querySelector('.ka-menu-list,.ka-menu-grid');
+    if(app&&app.contains(target)&&appScrollTop()>1)return false;
+    if(menu&&menu.contains(target)&&menuScrollTop()>1)return false;
+    return true;
   }
 
   function blocked(target){
@@ -109,21 +112,9 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     return indicator;
   }
 
-  function draw(raw){
-    const el=ensureIndicator();
-    const visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.72);
-    armed=raw>=ARM_DISTANCE;
-    el.hidden=visual<2;
-    el.classList.toggle('is-armed',armed);
-    el.classList.remove('is-refreshing');
-    el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);
-    const label=el.querySelector('span');
-    if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
-  }
-
   function reset(){
     clearTimeout(staleTimer);staleTimer=null;
-    tracking=false;armed=false;cancelled=false;
+    state='idle';
     const el=indicator;
     if(el&&!refreshing){
       el.classList.remove('is-armed','is-refreshing');
@@ -134,35 +125,60 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   function scheduleStaleReset(){
     clearTimeout(staleTimer);
-    staleTimer=setTimeout(()=>{if(tracking&&!refreshing)reset()},1200);
+    staleTimer=setTimeout(()=>{if(state!=='idle'&&!refreshing)reset()},1400);
+  }
+
+  function draw(raw){
+    const el=ensureIndicator();
+    const distance=Math.max(0,raw);
+    const visual=Math.min(MAX_PULL,Math.round(distance*RESISTANCE+Math.min(distance,40)*.18));
+    const armed=distance>=ARM_DISTANCE;
+    el.hidden=visual<2;
+    el.classList.toggle('is-armed',armed);
+    el.classList.remove('is-refreshing');
+    el.style.setProperty('--ka-pull-y',visual+'px');
+    const label=el.querySelector('span');
+    if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
   }
 
   function begin(e){
-    if(refreshing||e.touches?.length!==1)return;
+    if(refreshing||state!=='idle'||e.touches?.length!==1)return;
     const t=e.touches[0];
     const target=e.target instanceof Element?e.target:null;
-    if(nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
-      tracking=false;
-      return;
-    }
-    tracking=true;armed=false;cancelled=false;
-    startX=t.clientX;startY=t.clientY;lastY=t.clientY;
+    if(nearBottomNav(t.clientY)||blocked(target)||!atTop(target))return;
+
+    state='candidate';
+    startX=lastY=t.clientX;
+    startY=lastY=t.clientY;
     scheduleStaleReset();
   }
 
   function move(e){
-    if(!tracking||refreshing||e.touches?.length!==1)return;
-    const t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;
+    if(refreshing||state==='idle'||e.touches?.length!==1)return;
+    const t=e.touches[0];
+    const dx=t.clientX-startX;
+    const dy=t.clientY-startY;
     lastY=t.clientY;
 
-    if(Math.abs(dx)>Math.abs(dy)+10||dy<0||hasScrolledAncestor(e.target instanceof Element?e.target:null)){
-      cancelled=true;reset();return;
+    if(Math.abs(dx)>Math.abs(dy)+8){
+      reset();
+      return;
     }
-    if(dy<=DEAD_ZONE)return;
+    if(dy<=0){
+      if(state==='candidate'&&Math.abs(dx)>4)reset();
+      return;
+    }
 
-    /* The pull gesture is deliberately armed early. Once 4px of clear downward
-       vertical intent exists, native overscroll must no longer steal the gesture.
-       This keeps the same gesture reliable in Android WebView and mobile browsers. */
+    if(state==='candidate'){
+      if(dy<INTENT_DISTANCE)return;
+      state='pulling';
+    }
+
+    if(!atTop(e.target instanceof Element?e.target:null)){
+      reset();
+      return;
+    }
+
     if(e.cancelable)e.preventDefault();
     draw(dy);
     scheduleStaleReset();
@@ -171,12 +187,13 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   async function runRefresh(){
     if(refreshing)return;
     refreshing=true;
+    state='refreshing';
     clearTimeout(refreshTimer);
     const el=ensureIndicator();
     el.hidden=false;
     el.classList.remove('is-armed');
     el.classList.add('is-refreshing');
-    el.style.setProperty('--ka-pull-y','74px');
+    el.style.setProperty('--ka-pull-y','78px');
     const label=el.querySelector('span');
     if(label)label.textContent='Yenileniyor…';
 
@@ -194,22 +211,22 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
       clearTimeout(refreshTimer);
       refreshTimer=setTimeout(()=>{
         refreshing=false;
-        const current=indicator;
-        if(current){
-          current.classList.remove('is-armed','is-refreshing');
-          current.style.setProperty('--ka-pull-y','0px');
-          current.hidden=true;
-        }
+        reset();
       },350);
     }
   }
 
   function finish(){
-    if(!tracking||refreshing){if(!refreshing)reset();return;}
-    const shouldRefresh=armed&&!cancelled;
-    tracking=false;armed=false;cancelled=false;
+    if(refreshing)return;
+    if(state!=='pulling'){
+      reset();
+      return;
+    }
+    const distance=lastY-startY;
+    const armed=distance>=ARM_DISTANCE;
+    state='idle';
     clearTimeout(staleTimer);staleTimer=null;
-    if(shouldRefresh)void runRefresh();
+    if(armed)void runRefresh();
     else reset();
   }
 
@@ -217,7 +234,6 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   document.addEventListener('touchmove',move,{capture:true,passive:false});
   document.addEventListener('touchend',finish,{capture:true,passive:true});
   document.addEventListener('touchcancel',reset,{capture:true,passive:true});
-
   window.addEventListener('blur',()=>{if(!refreshing)reset()},{passive:true});
   window.addEventListener('pageshow',()=>{if(!refreshing)reset()},{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!refreshing)reset()},{passive:true});
