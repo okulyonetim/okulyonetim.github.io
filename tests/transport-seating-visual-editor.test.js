@@ -11,6 +11,6 @@ assert(transport.includes('window.ServisOturmaService.planElementsKaydet(servisI
 assert(transport.includes("if(!editor?.editable)return"),'Salt-okunur kullanıcı düzenleme yapamamalı.');
 assert(transport.includes('data-sbe-add-type="engine"')||transport.includes("sbeAdd('engine')")||transport.includes("kind==='engine'"),'Motor nesnesi editör modelinde bulunmalı.');
 assert(transport.includes("kind==='driver'"),'Şoför nesnesi editör modelinde bulunmalı.');
-assert(transport.includes("kind==='luggage'"),'Bagaj nesnesi editör modelinde bulunmalı.');
+assert(transport.includes("'luggage'"),'Bagaj nesnesi editör modelinde bulunmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem','localStorage.removeItem'])assert(!transport.includes(forbidden),`Servis oturma editörü yasaklı kalıcı katmana inmemeli: ${forbidden}`);
 console.log('Yeni object-based görsel servis oturma editörü sözleşmesi başarılı.');

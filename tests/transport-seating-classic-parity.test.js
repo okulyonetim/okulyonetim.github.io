@@ -7,7 +7,7 @@ const loader=fs.readFileSync('js/app-loader.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 new Function(transport);
-for(const token of ['function sbeNormalize','function sbeSnapshot','function sbeCollision','function sbeNumber','function sbeRenderObject','function sbeStudents','function sbeAdd','function sbeAssign','function sbeDelete','function sbeAlign'])assert(transport.includes(token),`Yeni servis oturma nesne motoru eksik: ${token}`);
+for(const token of ['function sbeNormalize','function sbeSnapshot','function sbeCollision','function sbeNumber','function sbeObject','function sbeStudents','function sbeAdd','function sbeAssign','function sbeDelete','function sbeAlign'])assert(transport.includes(token),`Yeni servis oturma nesne motoru eksik: ${token}`);
 for(const token of ['id','row','column','type','studentId','x','y','width','height'])assert(transport.includes(token),`Servis oturma JSON nesne modeli alanı eksik: ${token}`);
 for(const token of ['seat','double','special','empty','door','window','emergency','engine','luggage','driver'])assert(transport.includes(token),`Servis araç/koltuk nesne tipi eksik: ${token}`);
 assert(transport.includes("if(sb==='ozel'&&raw.length)"),'Özel tasarım ham yerleşimi korunmalı.');
