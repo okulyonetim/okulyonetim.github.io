@@ -214,7 +214,7 @@ function busReportBody(s){
  return{body:top,extra};
 }
 async function busPrintReport(s){if(!window.ReportEngine?.printReport){toast?.('Rapor motoru hazır değil.');return}const {body,extra}=busReportBody(s);await window.ReportEngine.printReport(`${serviceName(s)} Oturma Planı`,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:`${serviceName(s)} Oturma Planı`,extraHead:extra})}
-function openBusEditor(servisId){const id=String(servisId??'');if(!id)return false;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},sablon=p.sablon||'ducato',elements=window.soPlanElementleriGetir?.(p,sablon)||[];editor={servisId:s.id,sablon,elements,editable:canEditBusSeats()};editor.layoutEditing=false;renumberBusSeats();renderBusEditor(s);return true}
+function openBusEditor(servisId){const id=String(servisId??'');if(!id)return false;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},servisId=s.id,sablon=p.sablon||'ducato',elements=window.soPlanElementleriGetir?.(p,sablon)||[];editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.layoutEditing=false;renumberBusSeats();renderBusEditor(s);return true}
 function renderBusEditor(s){
  if(!editor)return;
  document.getElementById('transportBusEditor')?.remove();
