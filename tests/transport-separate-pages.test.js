@@ -17,7 +17,7 @@ assert(transport.includes("const canEditBusSeats=()=>!uiTeacher()"),'Öğretmen 
 assert(transport.includes('data-bus-edit="${esc(s.id)}"')&&!transport.includes("const actionContract="),'Servis oturma kartı gerçek kart işaretlemesini kullanmalı; yapay Düzenle/Görüntüle source-contract workaround olmamalı.');
 assert(transport.includes("find(x=>String(x?.id??'')===id)"),'Servis oturma kartı açılışında veri kimliği normalize edilmeli.');
 assert(transport.includes("out.addEventListener('click'")&&transport.includes("out.addEventListener('pointerup'")&&transport.includes("out.addEventListener('touchend'")&&transport.includes("openBusEditor(bus.dataset.busEdit)"),'Servis oturma kartı dinamik render sonrası tıklama/dokunma event delegation ile mevcut editörü açmalı.');
-assert(transport.includes("editor={servisId:s.id,sablon,elements,editable:canEditBusSeats()}"),'Servis oturma modalı düzenleme/salt-okunur durumunu açıkça taşımalı.');
+assert(transport.includes("editor={servisId,sablon,elements,editable:canEditBusSeats()}"),'Servis oturma modalı düzenleme/salt-okunur durumunu açıkça taşımalı.');
 assert(transport.includes("if(!editor?.editable)return"),'Salt okunur servis oturma modalında düzenleme bindingleri kurulmamalı.');
 assert(transport.includes("const canEditClassSeat=id=>uiTeacher()?classOwn(id)"),'Öğretmen sınıf oturma planını yalnız kendi sınıfında düzenleyebilmeli.');
 assert(transport.includes('data-class-seat-open'),'Sınıf oturma listesi görüntüle/düzenle eylemi sunmalı.');
