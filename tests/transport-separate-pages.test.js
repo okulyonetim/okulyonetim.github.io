@@ -14,7 +14,9 @@ assert(!transport.includes('data-transport-tab'),'Transport içinde ikinci bir s
 
 assert(transport.includes("const uiTeacher=()=>uiUser().admin!==true&&!!uiTeacherId()"),'Transport UI öğretmen kullanıcısını bağlı öğretmen kimliğiyle ayırmalı.');
 assert(transport.includes("const canEditBusSeats=()=>!uiTeacher()"),'Öğretmen servis oturma planında düzenleme yetkisi alamamalı.');
-assert(transport.includes("data-bus-edit=\"${esc(s.id)}\">${editable?'Düzenle':'Görüntüle'}"),'Servis oturma kartı öğretmene Görüntüle eylemi sunmalı.');
+assert(transport.includes('data-bus-edit="${esc(s.id)}"')&&!transport.includes("const actionContract="),'Servis oturma kartı gerçek kart işaretlemesini kullanmalı; yapay Düzenle/Görüntüle source-contract workaround olmamalı.');
+assert(transport.includes("find(x=>String(x?.id??'')===id)"),'Servis oturma kartı açılışında veri kimliği normalize edilmeli.');
+assert(transport.includes("out.addEventListener('click'")&&transport.includes("openBusEditor(bus.dataset.busEdit)"),'Servis oturma kartı dinamik render sonrası event delegation ile mevcut editörü açmalı.');
 assert(transport.includes("editor={servisId,sablon,elements,editable:canEditBusSeats()}"),'Servis oturma modalı düzenleme/salt-okunur durumunu açıkça taşımalı.');
 assert(transport.includes("if(!editor?.editable)return"),'Salt okunur servis oturma modalında düzenleme bindingleri kurulmamalı.');
 assert(transport.includes("const canEditClassSeat=id=>uiTeacher()?classOwn(id)"),'Öğretmen sınıf oturma planını yalnız kendi sınıfında düzenleyebilmeli.');
@@ -37,7 +39,7 @@ assert(transport.includes("t.id!==a.mudurId"),'Nöbetçi öğretmen seçimi okul
 assert(transport.includes('if(target%2)target++'),'30 kişiyi aşan öğrenci listesi iki sütun için çift sayıya tamamlanmalı.');
 assert(transport.includes("printableSelect.replaceWith(value)"),'Denetim çıktısında seçilen nöbetçi öğretmen yazdırma HTML’ine düz metin olarak aktarılmalı.');
 for(const forbidden of ['db.collection','firebase.firestore','localStorage.setItem','localStorage.removeItem'])assert(!transport.includes(forbidden),`Transport canonical modülü doğrudan yasaklı kalıcı katmana yazmamalı: ${forbidden}`);
-assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=906'])"),'Transport yalnız canonical UI + ortak ReportEngine ile lazy yüklenmeli.');
+assert(loader.includes("define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=907'])"),'Transport yalnız canonical UI + ortak ReportEngine ile lazy yüklenmeli.');
 assert(build.includes("'transport.js':['js/modules/report-engine.js','js/modules/transport.js']"),'Üretim Transport bundle tek canonical UI kaynağını içermeli.');
 assert(transport.includes("if(document.querySelector('[data-class-seating-overlay]')){window.SinifOturma?.kapat?.();return true}"),'Kaydedilmemiş sınıf oturma planında geri kapatma iptal edilse bile alttaki sayfa kapanmamalı.');
 console.log('Transport ayrı-sayfa + klasik servis detay/öğrenci yönetimi + resmî rapor parite sözleşmesi başarılı.');
