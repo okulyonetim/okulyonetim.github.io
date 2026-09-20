@@ -9,11 +9,28 @@ const sw=fs.readFileSync('service-worker.js','utf8');
 
 test('APK PWA and mobile web share one controlled pull refresh engine',()=>{
   assert.ok(core.includes('installUnifiedPullToRefresh'),'Ortak pull refresh motoru eksik.');
-  for(const token of ['ARM_DISTANCE=96','hasScrolledAncestor','BLOCK_SELECTOR','touchstart','touchmove','passive:false','e.preventDefault()','scheduleStaleReset','pageshow','SyncEngine?.sync','TOP_ZONE','BOTTOM_EXCLUSION','.ka-app-nav.ka-bottom-nav']) assert.ok(core.includes(token),`Eksik ortak pull refresh koruması: ${token}`);
+  for(const token of [
+    'ARM_DISTANCE=96',
+    'hasScrolledAncestor',
+    'BLOCK_SELECTOR',
+    'touchstart',
+    'touchmove',
+    'passive:false',
+    'e.preventDefault()',
+    'scheduleStaleReset',
+    'pageshow',
+    'SyncEngine?.sync',
+    'TOP_ZONE',
+    'BOTTOM_EXCLUSION',
+    '.ka-app-nav.ka-bottom-nav',
+    'visualViewport',
+    '4000',
+  ]) assert.ok(core.includes(token),`Eksik ortak pull refresh koruması: ${token}`);
   assert.ok(!core.includes('window.location.reload()'),'Pull refresh tam sayfa reload yapmamalı.');
   assert.ok(!core.includes('installAndroidPullRefreshGuard'),'Android-only guard geri dönmemeli.');
   assert.ok(!core.includes('kaUnifiedPullRefreshStyle'),'Pull refresh CSS JS içinde enjekte edilmemeli.');
   assert.ok(!main.includes('setupPullToRefresh();'),'APK native wrapper etkinleştirilmemeli.');
+  assert.ok(!main.includes('private LogoSwipeRefreshLayout swipeRefresh'),'swipeRefresh field MainActivity\'den kaldırılmalı.');
   assert.ok(main.includes('Pull-to-refresh APK/PWA/web için js/core/core.js tarafından tek merkezden yönetilir.'),'Native katmanda ortak motor açıklaması bulunmalı.');
 });
 
