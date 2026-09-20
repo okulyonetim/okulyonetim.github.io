@@ -52,11 +52,11 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   window.__kaUnifiedPullRefresh=true;
 
   const BLOCK_SELECTOR='.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh],input,textarea,select,[contenteditable="true"]';
-  const ARM_DISTANCE=96;
-  const DEAD_ZONE=8;
-  const MAX_VISUAL=78;
-  const TOP_ZONE=220;
-  const BOTTOM_EXCLUSION=104;
+  const ARM_DISTANCE=52;
+  const DEAD_ZONE=4;
+  const MAX_VISUAL=84;
+  const TOP_ZONE=99999;
+  const BOTTOM_EXCLUSION=82;
 
   let tracking=false,armed=false,cancelled=false;
   let startX=0,startY=0,lastY=0,indicator=null;
@@ -112,7 +112,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   function draw(raw){
     const el=ensureIndicator();
-    const visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.48);
+    const visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.72);
     armed=raw>=ARM_DISTANCE;
     el.hidden=visual<2;
     el.classList.toggle('is-armed',armed);
@@ -142,8 +142,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     if(refreshing||e.touches?.length!==1)return;
     const t=e.touches[0];
     const target=e.target instanceof Element?e.target:null;
-    const inMenu=!!target?.closest?.('.ka-menu-layer');
-    if((!inMenu&&t.clientY>TOP_ZONE)||nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
+    if(t.clientY>TOP_ZONE||nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
       tracking=false;
       return;
     }
@@ -162,8 +161,9 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     }
     if(dy<=DEAD_ZONE)return;
 
-    /* Only after vertical/downward intent is clear do we cancel native scrolling.
-       This is required for Android passive-touch defaults and keeps iOS scrolling natural. */
+    /* The pull gesture is deliberately armed early. Once 4px of clear downward
+       vertical intent exists, native overscroll must no longer steal the gesture.
+       This keeps the same gesture reliable in Android WebView and mobile browsers. */
     if(e.cancelable)e.preventDefault();
     draw(dy);
     scheduleStaleReset();
