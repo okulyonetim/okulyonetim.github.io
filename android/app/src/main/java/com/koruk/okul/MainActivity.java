@@ -94,7 +94,7 @@ public class MainActivity extends BridgeActivity {
             // tüm modüllerini yeniden başlatır ve eski DOM durumunu da temizler.
             currentWebView.post(() -> {
                 appHazir = false;
-                currentWebView.reload();
+                webView.reload();
                 // reload() sonrasında WebView yeniden kurulurken göstergenin
                 // takılı kalmaması için kısa bir güvenlik kapatması.
                 currentWebView.postDelayed(() -> runOnUiThread(() -> {
