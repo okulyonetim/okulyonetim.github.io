@@ -2179,7 +2179,7 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 
 
 /* ===== GLOBAL SCROLL / PULL-TO-REFRESH GUARD ===== */
-html,body,.ka-app-shell{overscroll-behavior-y:none}
+html,body,.ka-app-shell{overscroll-behavior-y:none;touch-action:pan-y}
 .ka-app-content{overscroll-behavior-y:contain;touch-action:pan-y}
 .ka-app-nav.ka-bottom-nav{overscroll-behavior:none;touch-action:pan-y}
 
