@@ -135,7 +135,7 @@ function busSeats(){
 }
 function classSeats(){const plans=arr('sinifOturma'),classes=arr('siniflar').filter(s=>match([s.ad,s.derslik,plans.find(p=>p.sinifId===s.id||p.id===s.id)?.sinifAdi])).sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true}));return listResult(classes,s=>{const p=plans.find(x=>x.sinifId===s.id||x.id===s.id),items=Array.isArray(p?.koltuklar)?p.koltuklar:Array.isArray(p?.yerlesim)?p.yerlesim:[],editable=canEditClassSeat(s.id);return `<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(s.ad||p?.sinifAdi||'Sınıf oturma planı')}</strong><div class="ka-muted">${esc(s.derslik||'')}${p?'':' · Henüz plan yok'}</div></div><span class="ka-badge">${items.length} yer</span><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-class-seat-open="${esc(s.id)}">${editable?'Düzenle':'Görüntüle'}</button></div></article>`},'Sınıf bulunamadı.')}
 function listResult(list,renderer,empty){return{count:list.length,html:list.length?list.map(renderer).join(''):`<div class="ka-empty">${esc(empty)}</div>`}}
-function seatStudentName(e){return arr('veliler').find(v=>v.id===e.studentId)?.ogrenciAdi||e.properties?.studentName||''}
+function seatStudentName(e){if(!e)return'';return arr('veliler').find(v=>v.id===e.studentId)?.ogrenciAdi||e.properties?.studentName||''}
 function busSeatInitial(name){return String(name||'').trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toLocaleUpperCase('tr')||'+'}
 function busSeatShortName(name){return String(name||'').trim()||'Boş'}
 function busSeatState(e){const name=seatStudentName(e);return e?.locked?'is-locked':name?'is-filled':e?.properties?.reserved?'is-reserved':'is-empty'}
