@@ -2325,16 +2325,16 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 #transportBusEditor .bso-type span{font-size:16px}
 #transportBusEditor .bso-type small{color:var(--ka-text-muted);font-size:11px}
 #transportBusEditor .bso-type.is-active{border-color:var(--ka-primary);background:color-mix(in srgb,var(--ka-primary) 18%,var(--ka-card-bg))}
-#transportBusEditor .bso-bus{border:2px solid var(--ka-border-strong,var(--ka-border));border-radius:30px 30px 16px 16px;padding:10px 8px 12px;background:color-mix(in srgb,var(--ka-card-bg) 92%,var(--ka-primary) 8%);display:flex;flex-direction:column;gap:8px}
-#transportBusEditor .bso-driver{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:14px;background:var(--ka-muted-bg);border:1px dashed var(--ka-border-strong,var(--ka-border))}
+#transportBusEditor .bso-bus{box-sizing:border-box;width:100%;max-width:100%;min-width:0;overflow:hidden;border:2px solid var(--ka-border-strong,var(--ka-border));border-radius:30px 30px 16px 16px;padding:10px 8px 12px;background:color-mix(in srgb,var(--ka-card-bg) 92%,var(--ka-primary) 8%);display:flex;flex-direction:column;gap:8px}
+#transportBusEditor .bso-driver{box-sizing:border-box;max-width:100%;min-width:0;display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:14px;background:var(--ka-muted-bg);border:1px dashed var(--ka-border-strong,var(--ka-border))}
 #transportBusEditor .bso-driver span{font-size:22px}
 #transportBusEditor .bso-driver small{display:block;font-size:10px;letter-spacing:.06em;color:var(--ka-text-muted)}
 #transportBusEditor .bso-driver strong{font-size:14px}
 #transportBusEditor .bso-rows{display:flex;flex-direction:column;gap:6px}
-#transportBusEditor .bso-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) 18px repeat(2,minmax(0,1fr));gap:5px}
+#transportBusEditor .bso-row{box-sizing:border-box;width:100%;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 24px minmax(0,1fr) minmax(0,1fr);gap:4px}
 #transportBusEditor .bso-aisle{display:flex;align-items:center;justify-content:center;font-size:13px}
 #transportBusEditor .bso-void{min-height:58px}
-#transportBusEditor .bso-seat{position:relative;min-width:0;min-height:58px;padding:16px 4px 5px;border-radius:12px;border:1.5px dashed var(--ka-border-strong,var(--ka-border));background:var(--ka-card-bg);color:var(--ka-text-muted);display:flex;align-items:center;justify-content:center;text-align:center;font:inherit}
+#transportBusEditor .bso-seat{position:relative;box-sizing:border-box;width:100%;min-width:0;max-width:100%;min-height:58px;padding:16px 3px 5px;border-radius:12px;overflow:hidden;border:1.5px dashed var(--ka-border-strong,var(--ka-border));background:var(--ka-card-bg);color:var(--ka-text-muted);display:flex;align-items:center;justify-content:center;text-align:center;font:inherit}
 #transportBusEditor .bso-seat b{position:absolute;top:3px;left:6px;font-size:10px;font-weight:800;color:var(--ka-text-muted)}
 #transportBusEditor .bso-seat i{position:absolute;top:2px;right:4px;font-size:11px;font-style:normal}
 #transportBusEditor .bso-seat span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:11px;line-height:1.15;font-weight:700;word-break:break-word;text-transform:uppercase}
