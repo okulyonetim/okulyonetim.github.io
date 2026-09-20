@@ -45,7 +45,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
 /* ========================= CHROME-STYLE PULL-TO-REFRESH =========================
    Tek gesture motoru. Chrome Android'deki davranışa yakın elastik çekme:
-   - yalnızca ekranın üst bölgesinden (TOP_ZONE) başlayan jestler aday olur
+   - sayfanın herhangi bir yerinden başlayan, üstteki dikey jestler aday olur
    - birkaç px hareketten sonra yön kilitlenir
    - aşağı çekme ilerledikçe direnç artar
    - eşik geçilirse bırakınca yeniler
@@ -60,10 +60,6 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   const ARM_DISTANCE=96;
   const MAX_PULL=108;
   const RESISTANCE=.72;
-  const BOTTOM_EXCLUSION=82;
-  /* Yenileme yalnızca ekranın üst bölümünden başlayan bilinçli aşağı çekmede açılır.
-     Ortadan veya aşağıdan başlayan jestler aday bile olamaz. */
-  const TOP_ZONE=220;
 
   let state='idle';
   let startX=0,startY=0,lastY=0;
@@ -115,21 +111,6 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     return !!target?.closest?.(BLOCK_SELECTOR);
   }
 
-  /* iOS Safari'de window.innerHeight adres çubuğu göründüğünde/gizlendiğinde
-     değişir; visualViewport.height her zaman gerçek görünür yüksekliği verir. */
-  function viewportHeight(){
-    return window.visualViewport?.height||window.innerHeight;
-  }
-
-  function nearBottomNav(y){
-    const nav=document.querySelector('.ka-app-nav.ka-bottom-nav');
-    if(nav){
-      const r=nav.getBoundingClientRect();
-      if(r.height>0&&y>=r.top-BOTTOM_EXCLUSION)return true;
-    }
-    return y>=viewportHeight()-BOTTOM_EXCLUSION;
-  }
-
   function ensureIndicator(){
     if(indicator?.isConnected)return indicator;
     indicator=document.createElement('div');
@@ -177,10 +158,10 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     if(refreshing||state!=='idle'||e.touches?.length!==1)return;
     const t=e.touches[0];
     const target=e.target instanceof Element?e.target:null;
-    /* Yalnızca ekranın üst bölgesinden (TOP_ZONE px) başlayan jestler aday olur.
-       Ortadan veya alt navigasyona yakın bölgeden başlayan kaydırmalar hiçbir
-       zaman pull-refresh tetiklemez. */
-    if(t.clientY>TOP_ZONE||nearBottomNav(t.clientY)||blocked(target)||!atTop(target))return;
+    /* Chrome tarzı davranış: sayfanın herhangi bir yerinden başlayan aşağı
+       dikey jest kabul edilir; yalnızca gerçek scroll container'ı, modalı,
+       form alanını veya yatay hareketi korumalı alan olarak dışarıda bırakır. */
+    if(blocked(target)||!atTop(target))return;
 
     state='candidate';
     startX=t.clientX;
