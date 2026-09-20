@@ -2299,3 +2299,56 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 .ka-teacher-list-column__top label{min-width:0}
 .ka-teacher-list-column__top label small{display:block;color:var(--ink-muted);font-size:.72em;margin-top:2px}
 @media(max-width:700px){.sl-column-resizer{width:28px;right:-8px}}
+
+/* Servis Oturma Editörü v4 (bso) — tek katman, mobil öncelikli, tablo yok */
+#transportBusEditor.bso-backdrop{position:fixed;inset:0;z-index:1250;display:flex;align-items:stretch;justify-content:center;padding:0;background:var(--ka-overlay);overscroll-behavior:contain;touch-action:pan-y}
+#transportBusEditor .bso-modal{width:100%;max-width:640px;height:100dvh;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden;border-radius:0;border-inline:0;padding:0;background:var(--ka-card-raised-bg,var(--ka-card-bg))}
+@media(min-width:700px){#transportBusEditor .bso-modal{height:min(94dvh,900px);max-height:94dvh;align-self:center;border-radius:20px;border:1px solid var(--ka-border)}}
+#transportBusEditor .bso-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:max(10px,var(--ka-safe-top)) 14px 10px;border-bottom:1px solid var(--ka-border)}
+#transportBusEditor .bso-title{min-width:0;display:flex;flex-direction:column;gap:2px}
+#transportBusEditor .bso-title strong{font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#transportBusEditor .bso-title span{font-size:12px;color:var(--ka-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#transportBusEditor .bso-stats{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 14px;font-size:13px;font-weight:700}
+#transportBusEditor .bso-pill{padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--ka-primary) 16%,var(--ka-card-bg));border:1px solid color-mix(in srgb,var(--ka-primary) 40%,var(--ka-border));white-space:nowrap}
+#transportBusEditor .bso-tools{flex:0 0 auto;display:flex;gap:6px;padding:0 14px 8px;overflow-x:auto;overscroll-behavior-x:contain;touch-action:pan-x;scrollbar-width:none}
+#transportBusEditor .bso-tools::-webkit-scrollbar{display:none}
+#transportBusEditor .bso-chip{flex:0 0 auto;min-height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--ka-border);background:var(--ka-muted-bg);color:var(--ka-text);font-size:13px;font-weight:700;white-space:nowrap}
+#transportBusEditor .bso-chip.is-danger{background:color-mix(in srgb,#e64b4b 18%,var(--ka-card-bg));border-color:color-mix(in srgb,#e64b4b 55%,var(--ka-border))}
+#transportBusEditor .bso-chip.is-info{background:color-mix(in srgb,#327fd9 18%,var(--ka-card-bg));border-color:color-mix(in srgb,#327fd9 55%,var(--ka-border))}
+#transportBusEditor .bso-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:4px 12px 16px;display:flex;flex-direction:column;gap:10px}
+#transportBusEditor .bso-hint{margin:0;font-size:12px;color:var(--ka-text-muted)}
+#transportBusEditor .bso-types{border:1px solid var(--ka-border);border-radius:14px;background:var(--ka-muted-bg)}
+#transportBusEditor .bso-types summary{padding:10px 12px;font-size:13px;cursor:pointer;list-style:none}
+#transportBusEditor .bso-types summary::-webkit-details-marker{display:none}
+#transportBusEditor .bso-type-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0 8px 8px}
+#transportBusEditor .bso-type{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;border-radius:12px;border:1px solid var(--ka-border);background:var(--ka-card-bg);color:var(--ka-text);text-align:left;font-size:12px}
+#transportBusEditor .bso-type span{font-size:16px}
+#transportBusEditor .bso-type small{color:var(--ka-text-muted);font-size:11px}
+#transportBusEditor .bso-type.is-active{border-color:var(--ka-primary);background:color-mix(in srgb,var(--ka-primary) 18%,var(--ka-card-bg))}
+#transportBusEditor .bso-bus{border:2px solid var(--ka-border-strong,var(--ka-border));border-radius:30px 30px 16px 16px;padding:10px 8px 12px;background:color-mix(in srgb,var(--ka-card-bg) 92%,var(--ka-primary) 8%);display:flex;flex-direction:column;gap:8px}
+#transportBusEditor .bso-driver{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:14px;background:var(--ka-muted-bg);border:1px dashed var(--ka-border-strong,var(--ka-border))}
+#transportBusEditor .bso-driver span{font-size:22px}
+#transportBusEditor .bso-driver small{display:block;font-size:10px;letter-spacing:.06em;color:var(--ka-text-muted)}
+#transportBusEditor .bso-driver strong{font-size:14px}
+#transportBusEditor .bso-rows{display:flex;flex-direction:column;gap:6px}
+#transportBusEditor .bso-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) 18px repeat(2,minmax(0,1fr));gap:5px}
+#transportBusEditor .bso-aisle{display:flex;align-items:center;justify-content:center;font-size:13px}
+#transportBusEditor .bso-void{min-height:58px}
+#transportBusEditor .bso-seat{position:relative;min-width:0;min-height:58px;padding:16px 4px 5px;border-radius:12px;border:1.5px dashed var(--ka-border-strong,var(--ka-border));background:var(--ka-card-bg);color:var(--ka-text-muted);display:flex;align-items:center;justify-content:center;text-align:center;font:inherit}
+#transportBusEditor .bso-seat b{position:absolute;top:3px;left:6px;font-size:10px;font-weight:800;color:var(--ka-text-muted)}
+#transportBusEditor .bso-seat i{position:absolute;top:2px;right:4px;font-size:11px;font-style:normal}
+#transportBusEditor .bso-seat span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:11px;line-height:1.15;font-weight:700;word-break:break-word;text-transform:uppercase}
+#transportBusEditor .bso-seat.is-empty span{font-weight:600;text-transform:none;opacity:.75}
+#transportBusEditor .bso-seat.is-filled{border-style:solid;border-color:var(--ka-primary);background:color-mix(in srgb,var(--ka-primary) 16%,var(--ka-card-bg));color:var(--ka-text)}
+#transportBusEditor .bso-seat.is-reserved{border-style:solid;border-color:#377ee0;background:color-mix(in srgb,#377ee0 16%,var(--ka-card-bg));color:var(--ka-text)}
+#transportBusEditor .bso-seat.is-locked{border-style:solid;border-color:#d88713;background:color-mix(in srgb,#d88713 16%,var(--ka-card-bg));color:var(--ka-text)}
+#transportBusEditor button.bso-seat:active{transform:scale(.97)}
+#transportBusEditor .bso-rear{border-top:1px dashed var(--ka-border-strong,var(--ka-border));padding-top:8px}
+#transportBusEditor .bso-rear small{display:block;margin-bottom:5px;font-size:10px;letter-spacing:.06em;color:var(--ka-text-muted)}
+#transportBusEditor .bso-rear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+#transportBusEditor .bso-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;font-size:11px;color:var(--ka-text-muted)}
+#transportBusEditor .bso-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;border:1.5px solid var(--ka-border-strong,var(--ka-border))}
+#transportBusEditor .bso-legend i.is-filled{background:var(--ka-primary);border-color:var(--ka-primary)}
+#transportBusEditor .bso-legend i.is-reserved{background:#377ee0;border-color:#377ee0}
+#transportBusEditor .bso-legend i.is-locked{background:#d88713;border-color:#d88713}
+#transportBusEditor .bso-foot{flex:0 0 auto;display:flex;justify-content:flex-end;gap:10px;padding:10px 14px max(10px,var(--ka-safe-bottom));border-top:1px solid var(--ka-border)}
