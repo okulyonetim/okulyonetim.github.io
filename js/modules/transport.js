@@ -120,12 +120,14 @@ function busSeats(){
  return listResult(list,s=>{
   const p=currentPlan(s.id),els=window.soPlanElementleriGetir?.(p||{},p?.sablon||'ducato')||[],st=window.soElementIstatistik?.(els)||{toplam:0,dolu:0};
   return `<article class="ka-card ka-list-card ka-bus-seat-card" data-bus-edit="${esc(s.id)}" tabindex="0" role="button"><!--data-bus-edit="${esc(s.id)}">${editable?'Düzenle':'Görüntüle'}'-->
-   +'<div class="ka-card__body ka-row ka-row--between">'
-   +'<div class="ka-grow"><strong>'+esc(serviceName(s))+'</strong>'
-   +'<div class="ka-muted">'+esc(s.plaka||'')+(s.guzergah?' · '+esc(s.guzergah):'')+'</div>'
-   +'<div class="ka-muted">'+esc(window.SO_SABLONLAR?.[p?.sablon]?.ad||p?.sablon||'Henüz plan yok')+'</div></div>'
-   +'<span class="ka-badge">'+st.dolu+'/'+(st.toplam||'—')+'</span>'
-   +'</div></article>';
+   <div class="ka-card__body ka-row ka-row--between">
+    <div class="ka-grow"><strong>${esc(serviceName(s))}</strong>
+     <div class="ka-muted">${esc(s.plaka||'')}${s.guzergah?' · '+esc(s.guzergah):''}</div>
+     <div class="ka-muted">${esc(window.SO_SABLONLAR?.[p?.sablon]?.ad||p?.sablon||'Henüz plan yok')}</div>
+    </div>
+    <span class="ka-badge">${st.dolu}/${(st.toplam||'—')}</span>
+   </div>
+  </article>`;
  },'Servis kaydı bulunamadı.')
 }function classSeats(){const plans=arr('sinifOturma'),classes=arr('siniflar').filter(s=>match([s.ad,s.derslik,plans.find(p=>p.sinifId===s.id||p.id===s.id)?.sinifAdi])).sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true}));return listResult(classes,s=>{const p=plans.find(x=>x.sinifId===s.id||x.id===s.id),items=Array.isArray(p?.koltuklar)?p.koltuklar:Array.isArray(p?.yerlesim)?p.yerlesim:[],editable=canEditClassSeat(s.id);return `<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(s.ad||p?.sinifAdi||'Sınıf oturma planı')}</strong><div class="ka-muted">${esc(s.derslik||'')}${p?'':' · Henüz plan yok'}</div></div><span class="ka-badge">${items.length} yer</span><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-class-seat-open="${esc(s.id)}">${editable?'Düzenle':'Görüntüle'}</button></div></article>`},'Sınıf bulunamadı.')}
 function listResult(list,renderer,empty){return{count:list.length,html:list.length?list.map(renderer).join(''):`<div class="ka-empty">${esc(empty)}</div>`}}
