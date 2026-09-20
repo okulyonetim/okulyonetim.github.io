@@ -69,15 +69,6 @@ public class MainActivity extends BridgeActivity {
             return;
         }
 
-        webView.addJavascriptInterface(new Object() {
-            @JavascriptInterface
-            public void setInnerContentKaydirilmis(boolean value) {
-                if (nativePullRefresh != null) {
-                    nativePullRefresh.setInnerContentKaydirilmis(value);
-                }
-            }
-        }, "KorukNativePullRefresh");
-
         final ViewParent rawParent = webView.getParent();
         if (!(rawParent instanceof ViewGroup)) {
             retryPullToRefreshSetup(webView);
