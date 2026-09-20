@@ -24,19 +24,12 @@ test('browser scroll chaining is left available for Chrome/Safari native pull re
   assert.ok(css.includes('.ka-app-content{overscroll-behavior-y:auto;touch-action:auto}'));
   assert.ok(css.includes('.ka-app-nav.ka-bottom-nav{overscroll-behavior-y:auto;touch-action:auto}'));
   assert.ok(css.includes('#kaPullRefreshIndicator{')&&css.includes('@keyframes kaPullRefreshSpin'));
-test('native overscroll is suppressed and indicator belongs to design system',()=>{
-  assert.ok(css.includes('html,body,.ka-app-shell{overscroll-behavior-y:none}'));
-  assert.ok(css.includes('.ka-app-content{overscroll-behavior-y:contain}'));
-  assert.ok(css.includes('.ka-app-nav.ka-bottom-nav{overscroll-behavior:none;touch-action:manipulation}'));
-  assert.ok(css.includes('/* ===== UNIFIED PULL TO REFRESH ===== */'));
-  assert.ok(css.includes('#kaPullRefreshIndicator{')&&css.includes('@keyframes kaPullRefreshSpin'));
-
   const cssRef=index.match(/css\/design-system\.css\?v=(\d+)/);
   const coreRef=index.match(/js\/core\/core\.js\?v=(\d+)/);
   const cacheRef=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
   assert.ok(cssRef&&Number(cssRef[1])>=900,'Design system sürümü v900 veya daha yeni olmalı.');
-  assert.ok(coreRef&&Number(coreRef[1])>=905,'Core pull-refresh sürümü v905 veya daha yeni olmalı.');
-  assert.ok(cacheRef&&Number(cacheRef[1])>=905,'Service Worker cache sürümü v905 veya daha yeni olmalı.');
+  assert.ok(coreRef&&Number(coreRef[1])>=916,'Core pull-refresh sürümü v916 veya daha yeni olmalı.');
+  assert.ok(cacheRef&&Number(cacheRef[1])>=968,'Service Worker cache sürümü v968 veya daha yeni olmalı.');
   assert.ok(sw.includes(`'./css/design-system.css?v=${cssRef[1]}'`),'SW, index ile aynı design-system sürümünü precache etmeli.');
   assert.ok(sw.includes(`'./js/core/core.js?v=${coreRef[1]}'`),'SW, index ile aynı core sürümünü precache etmeli.');
 });
