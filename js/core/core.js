@@ -68,6 +68,18 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     }
   }
 
+  function reportNativeInnerScroll(){
+    try{
+      const el=document.querySelector('.ka-app-content');
+      const value=!!(el&&Number(el.scrollTop||0)>1);
+      window.KorukNativePullRefresh?.setInnerContentKaydirilmis?.(value);
+    }catch(_){}
+  }
+  document.addEventListener('scroll',reportNativeInnerScroll,{capture:true,passive:true});
+  window.addEventListener('resize',reportNativeInnerScroll,{passive:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reportNativeInnerScroll,{once:true});
+  else reportNativeInnerScroll();
+
   window.KorukPullRefresh={
     refresh,
     reset(){},
