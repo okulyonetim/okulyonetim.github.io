@@ -75,8 +75,12 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   }
 
   function hasScrolledAncestor(target){
+    const allowedScroller=el=>el.matches?.('.ka-app-content,.ka-menu-list,.ka-menu-grid');
     for(let el=target instanceof Element?target:null;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
-      if(isScrollable(el)&&el.scrollTop>1)return true;
+      if(!isScrollable(el))continue;
+      /* Only the app's known vertical surfaces may participate in pull refresh.
+         Tables, popovers, editors and arbitrary nested scrollers keep their own gesture. */
+      if(!allowedScroller(el)||el.scrollTop>1)return true;
     }
     return rootScrollTop()>1;
   }
