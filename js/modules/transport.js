@@ -119,8 +119,7 @@ function busSeats(){
  const list=arr('servisler').filter(s=>match([s.servisAdi,s.guzergah,s.plaka,currentPlan(s.id)?.sablon])).sort((a,b)=>serviceName(a).localeCompare(serviceName(b),'tr'));
  return listResult(list,s=>{
   const p=currentPlan(s.id),els=window.soPlanElementleriGetir?.(p||{},p?.sablon||'ducato')||[],st=window.soElementIstatistik?.(els)||{toplam:0,dolu:0};
-  const actionContract=`data-bus-edit="${esc(s.id)}">${editable?'Düzenle':'Görüntüle'}`;
-  return `<article class="ka-card ka-list-card ka-bus-seat-card" data-bus-edit="${esc(s.id)}" tabindex="0" role="button">
+  return `<article class="ka-card ka-list-card ka-bus-seat-card" data-bus-edit="${esc(s.id)}" tabindex="0" role="button" aria-label="${esc(serviceName(s))} servis oturma planını aç">
    <div class="ka-card__body ka-row ka-row--between">
     <div class="ka-grow"><strong>${esc(serviceName(s))}</strong>
      <div class="ka-muted">${esc(s.plaka||'')}${s.guzergah?' · '+esc(s.guzergah):''}</div>
@@ -215,7 +214,7 @@ function busReportBody(s){
  return{body:top,extra};
 }
 async function busPrintReport(s){if(!window.ReportEngine?.printReport){toast?.('Rapor motoru hazır değil.');return}const {body,extra}=busReportBody(s);await window.ReportEngine.printReport(`${serviceName(s)} Oturma Planı`,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:`${serviceName(s)} Oturma Planı`,extraHead:extra})}
-function openBusEditor(servisId){const s=arr('servisler').find(x=>x.id===servisId);if(!s)return;const p=currentPlan(servisId)||{},sablon=p.sablon||'ducato',elements=window.soPlanElementleriGetir?.(p,sablon)||[];editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.layoutEditing=false;renumberBusSeats();renderBusEditor(s)}
+function openBusEditor(servisId){const id=String(servisId??'');if(!id)return false;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},sablon=p.sablon||'ducato',elements=window.soPlanElementleriGetir?.(p,sablon)||[];editor={servisId:s.id,sablon,elements,editable:canEditBusSeats()};editor.layoutEditing=false;renumberBusSeats();renderBusEditor(s);return true}
 function renderBusEditor(s){
  if(!editor)return;
  document.getElementById('transportBusEditor')?.remove();
@@ -321,14 +320,24 @@ function bind(){
  const s=document.getElementById('transportSearch');
  if(s)s.oninput=()=>{query=s.value;render()};
  const out=document.getElementById('transportContent');
- if(out)out.onclick=e=>{
+ if(!out||out.dataset.transportEventsBound==='true')return;
+ const interactiveTarget=e=>e.target?.closest?.('button,a,input,select,textarea');
+ out.addEventListener('click',e=>{
   const bus=e.target.closest?.('[data-bus-edit]');
-  if(bus){e.preventDefault();openBusEditor(bus.dataset.busEdit);return}
+  if(bus&&out.contains(bus)){e.preventDefault();e.stopPropagation();openBusEditor(bus.dataset.busEdit);return}
   const cls=e.target.closest?.('[data-class-seat-open]');
-  if(cls){e.preventDefault();openClassSeating(cls.dataset.classSeatOpen);return}
+  if(cls&&out.contains(cls)){e.preventDefault();e.stopPropagation();openClassSeating(cls.dataset.classSeatOpen);return}
   const service=e.target.closest?.('[data-service-detail]');
-  if(service&&!e.target.closest('button,a,input,select,textarea'))openServiceDetail(service.dataset.serviceDetail);
- };
+  if(service&&out.contains(service)&&!interactiveTarget(e))openServiceDetail(service.dataset.serviceDetail);
+ });
+ out.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const bus=e.target.closest?.('[data-bus-edit]');
+  if(bus&&out.contains(bus)){e.preventDefault();e.stopPropagation();openBusEditor(bus.dataset.busEdit);return}
+  const service=e.target.closest?.('[data-service-detail]');
+  if(service&&out.contains(service)&&!interactiveTarget(e)){e.preventDefault();openServiceDetail(service.dataset.serviceDetail)}
+ });
+ out.dataset.transportEventsBound='true';
 }
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.servisler','data.veliler','data.siniflar','data.servisOturma','data.sinifOturma','data.resmiTatiller'].forEach(p=>{const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));if(u)unsubs.push(u)})}
 async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}
