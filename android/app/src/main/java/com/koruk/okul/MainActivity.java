@@ -98,12 +98,17 @@ public class MainActivity extends BridgeActivity {
                 if (nativePullRefresh != null) nativePullRefresh.setRefreshing(false);
                 return;
             }
-            currentWebView.evaluateJavascript(
-                "(async function(){try{if(window.KorukPullRefresh&&typeof window.KorukPullRefresh.refresh==='function'){await window.KorukPullRefresh.refresh('android-native');}else if(window.SyncEngine&&typeof window.SyncEngine.sync==='function'){await window.SyncEngine.sync();window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source:'android-native'}}));}else{window.location.reload();}}catch(e){console.warn('[NativePullRefresh]',e);}})()",
-                value -> runOnUiThread(() -> {
+            // Android'da pull gesture'ı kesin olarak gerçek WebView yenilemesine bağla.
+            // SyncEngine yalnız veri senkronu yapar; WebView.reload() ise sayfanın
+            // tüm modüllerini yeniden başlatır ve eski DOM durumunu da temizler.
+            currentWebView.post(() -> {
+                currentWebView.reload();
+                // reload() sonrasında WebView yeniden kurulurken göstergenin
+                // takılı kalmaması için kısa bir güvenlik kapatması.
+                currentWebView.postDelayed(() -> runOnUiThread(() -> {
                     if (nativePullRefresh != null) nativePullRefresh.setRefreshing(false);
-                })
-            );
+                }), 1200);
+            });
         });
         parent.addView(nativePullRefresh, index);
     }
