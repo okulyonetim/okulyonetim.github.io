@@ -93,6 +93,7 @@ public class MainActivity extends BridgeActivity {
             // SyncEngine yalnız veri senkronu yapar; WebView.reload() ise sayfanın
             // tüm modüllerini yeniden başlatır ve eski DOM durumunu da temizler.
             currentWebView.post(() -> {
+                appHazir = false;
                 currentWebView.reload();
                 // reload() sonrasında WebView yeniden kurulurken göstergenin
                 // takılı kalmaması için kısa bir güvenlik kapatması.
