@@ -48,7 +48,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
    - Chrome Android / Safari iOS: tarayıcının kendi native pull-to-refresh davranışı.
    - Android APK/WebView: MainActivity içindeki native LogoSwipeRefreshLayout.
    Veri yenileme işlemi her iki durumda da SyncEngine üzerinden yapılır.
-   JS artık touchmove/preventDefault ile WebView/tarayıcı scroll motoruyla yarışmaz. */
+   JS artık dokunmatik hareketi/preventDefault ile WebView/tarayıcı scroll motoruyla yarışmaz. */
 (function installPullToRefreshAdapter(){
   if(window.__kaUnifiedPullRefresh)return;
   window.__kaUnifiedPullRefresh=true;
