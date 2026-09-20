@@ -128,7 +128,7 @@ function busSeats(){
     <span class="ka-badge">${st.dolu}/${(st.toplam||'—')}</span>
    </div>
    <div class="ka-card__footer" style="padding-top:0">
-    <button class="ka-btn ka-btn--secondary" type="button" data-bus-edit="${esc(s.id)}" aria-label="${esc(serviceName(s))} servis oturma planını aç" onclick="event.preventDefault();event.stopPropagation();window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" onpointerdown="event.stopPropagation();window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" ontouchstart="event.stopPropagation();window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" style="width:100%;min-height:46px;min-width:44px;display:block;touch-action:manipulation">💺 Oturma Planını Aç</button>
+    <button class="ka-btn ka-btn--secondary" type="button" data-bus-edit="${esc(s.id)}" aria-label="${esc(serviceName(s))} servis oturma planını aç" onclick="event.preventDefault();event.stopPropagation();window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" style="width:100%;min-height:46px;min-width:44px;display:block;touch-action:manipulation">💺 Oturma Planını Aç</button>
    </div>
   </div>`;
  },'Servis kaydı bulunamadı.')
@@ -209,7 +209,7 @@ function busRemoveRow(s){
  const remove=new Set(items.map(x=>x.e));editor.elements=editor.elements.filter(e=>!remove.has(e));editor.elements.forEach(e=>{if(Number(e.row)>row)e.row=Number(e.row)-1});renumberBusSeats();renderBusEditor(s);
 }
 function busToggleLayoutEdit(s){if(!editor?.editable)return;editor.layoutEditing=!editor.layoutEditing;renderBusEditor(s)}
-function busTemplateCards(){return Object.entries(window.SO_SABLONLAR||{}).map(([k,v])=>`<button class="ka-bus-template-card ${k===editor.sablon?'is-active':''}" type="button" data-bus-template="${esc(k)}" ${editor.layoutEditing?'disabled':''}><span>${esc(v.ikon||'🚐')}</span><strong>${esc(v.ad||k)}</strong><small>${esc(v.aciklama||'')}</small></button>`).join('')}
+function busTemplateCards(){return Object.entries(window.SO_SABLONLAR||{}).map(([k,v])=>`<button class="bso-type ${k===editor.sablon?'is-active':''}" type="button" data-bus-template="${esc(k)}"><span>${esc(v.ikon||'🚐')}</span><strong>${esc(v.ad||k)}</strong><small>${esc(v.aciklama||'')}</small></button>`).join('')}
 function busReportBody(s){
  const school=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{},plan=busCabinHtml(s,true);
  const extra=`<style>.ka-bus-report-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1.5px solid #17684f;padding:0 2mm 2mm;margin-bottom:3mm;font-size:8pt}.ka-bus-report-head strong{font-size:10pt}.ka-bus-report-head small{display:block;color:#52635c}.ka-bus-report-wrap{width:100%;display:flex;justify-content:center}.ka-bus-report-wrap .ka-bus-classic-shell{width:112mm;min-height:238mm;background:#d4d8de!important;border:1px solid #68717e!important;border-radius:12mm 12mm 5mm 5mm!important;padding:7mm 3mm 5mm!important;box-shadow:none!important}.ka-bus-report-wrap .ka-bus-seat{width:24mm!important;height:24mm!important;min-height:24mm!important;border-radius:4mm!important;color:#111!important;background:#fff!important;border:1px solid #b8c0ca!important}.ka-bus-report-wrap .ka-bus-seat.is-filled{border-color:#16a05d!important}.ka-bus-report-wrap .ka-bus-seat.is-reserved{background:#e5efff!important;border-color:#377ee0!important}.ka-bus-report-wrap .ka-bus-seat.is-locked{background:#fff0d7!important;border-color:#d88713!important}.ka-bus-report-wrap .ka-bus-seat__avatar{display:none!important}.ka-bus-report-wrap .ka-bus-seat__name{font-size:7.5pt!important;white-space:normal!important;text-align:center!important;font-weight:800!important}.ka-bus-report-wrap .ka-bus-classic-driver{height:31mm!important;background:#e9dfc8!important;color:#7a4d20!important}.ka-bus-report-wrap .ka-bus-classic-lights i{background:#b9d8ff!important}.ka-bus-report-wrap .ka-bus-classic-aisle{min-width:8mm!important}</style>`;
@@ -217,46 +217,57 @@ function busReportBody(s){
  return{body:top,extra};
 }
 async function busPrintReport(s){if(!window.ReportEngine?.printReport){toast?.('Rapor motoru hazır değil.');return}const {body,extra}=busReportBody(s);await window.ReportEngine.printReport(`${serviceName(s)} Oturma Planı`,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:`${serviceName(s)} Oturma Planı`,extraHead:extra})}
-function openBusEditor(servisIdValue){const id=String(servisIdValue??'');if(!id)return false;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},servisId=s.id,sablon=p.sablon||'ducato',elements=window.soPlanElementleriGetir?.(p,sablon)||[];editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.layoutEditing=false;renumberBusSeats();renderBusEditor(s);return true}
+function openBusEditor(servisIdValue){const id=String(servisIdValue??'');if(!id)return false;if(editor&&String(editor.servisId)===id&&document.getElementById('transportBusEditor'))return true;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},servisId=s.id,sablon=p.sablon||'ducato',elements=window.soPlanElementleriGetir?.(p,sablon)||[];editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.layoutEditing=false;renumberBusSeats();busPullRefresh(false);renderBusEditor(s);return true}
+function busPullRefresh(on){try{const r=window.KorukPlatformAdapter?.setPullToRefreshEnabled?.(!!on);if(r&&typeof r.catch==='function')r.catch(()=>{})}catch(_){}}
+function busSeatCell(e){
+ const idx=editor.elements.indexOf(e),name=seatStudentName(e),state=busSeatState(e),reserved=e.properties?.reserved&&!name,no=e.seatNumber||idx+1;
+ const label=name||(reserved?'Rezerve':'Boş'),aria=`Koltuk ${no}: ${label}${e.locked?' (Kilitli)':''}`;
+ const inner=`<b>${esc(no)}</b><span>${esc(label)}</span>${e.locked?'<i>🔒</i>':''}`;
+ return editor.editable?`<button type="button" class="bso-seat ${state}" data-bus-seat-index="${idx}" aria-label="${esc(aria)}">${inner}</button>`:`<div class="bso-seat ${state}" aria-label="${esc(aria)}">${inner}</div>`;
+}
+function busPlanHtml(s){
+ if(!editor)return'';
+ const rows=busRows(),cols=['sol-dis','sol-ic','aisle','sag-ic','sag-dis'];
+ const rowsHtml=rows.map(row=>{const door=editor.elements.some(e=>Number(e.row)===row&&e.properties?.kapiSag);return `<div class="bso-row">${cols.map(key=>{if(key==='aisle')return `<span class="bso-aisle">${door?'🚪':''}</span>`;const e=busCellElement(row,key);return e?busSeatCell(e):'<span class="bso-void"></span>'}).join('')}</div>`}).join('');
+ const rear=editor.elements.filter(e=>e.visible!==false&&(e.type==='arka-koltuk'||e.properties?.konum==='arka'));
+ const rearHtml=rear.length?`<div class="bso-rear"><small>ARKA SIRA</small><div class="bso-rear-grid">${rear.map(busSeatCell).join('')}</div></div>`:'';
+ return `<div class="bso-bus" data-bus-classic-shell><div class="bso-driver"><span>👨‍✈️</span><div><small>ŞOFÖR</small><strong>${esc(s?.soforAdi||'—')}</strong></div></div><div class="bso-rows">${rowsHtml}</div>${rearHtml}</div>`;
+}
 function renderBusEditor(s){
  if(!editor)return;
- document.getElementById('transportBusEditor')?.remove();
+ const prevOv=document.getElementById('transportBusEditor'),prevScroll=prevOv?.querySelector('.bso-body')?.scrollTop||0;
+ prevOv?.remove();
  renumberBusSeats();
  const st=window.soElementIstatistik?.(editor.elements)||{toplam:0,dolu:0,bos:0,rezerve:0,doluluk:0};
- const editable=editor.editable;
+ const editable=editor.editable,tpl=window.SO_SABLONLAR?.[editor.sablon]?.ad||editor.sablon;
  const ov=document.createElement('div');
  ov.id='transportBusEditor';
- ov.className='ka-modal-backdrop ka-bus-editor-backdrop';
- ov.innerHTML=`<section class="ka-modal ka-bus-editor-modal">
-  <div class="ka-modal__header">
-   <div><strong>💺 Oturma Planı — ${esc(serviceName(s))}</strong><div class="ka-muted">${esc([s.plaka,s.guzergah].filter(Boolean).join(' · '))}</div></div>
-   <button class="ka-icon-button" type="button" data-bus-close>×</button>
+ ov.className='ka-modal-backdrop bso-backdrop';
+ const tools=editable?`<div class="bso-tools" data-bus-tools><button class="bso-chip" type="button" data-bus-row-add aria-label="Sıra Ekle">＋ Sıra</button><button class="bso-chip" type="button" data-bus-row-remove aria-label="Sıra Sil">－ Sıra</button><button class="bso-chip is-danger" type="button" data-bus-clear-all aria-label="Atamaları Temizle">🧹 Temizle</button><button class="bso-chip is-info" type="button" data-bus-report aria-label="Rapor Al">🖨 Rapor</button></div>`:`<div class="bso-tools"><button class="bso-chip is-info" type="button" data-bus-report aria-label="Rapor Al">🖨 Rapor</button></div>`;
+ const types=editable?`<details class="bso-types"><summary>🚐 Araç tipi: <b>${esc(tpl)}</b></summary><div class="bso-type-grid" data-bus-template-grid>${busTemplateCards()}</div></details>`:'';
+ ov.innerHTML=`<section class="ka-modal bso-modal">
+  <div class="ka-modal__header bso-head">
+   <div class="bso-title"><strong>💺 ${esc(serviceName(s))}</strong><span>${esc([s.plaka,s.guzergah].filter(Boolean).join(' · '))}</span></div>
+   <button class="ka-icon-button" type="button" data-bus-close aria-label="Kapat">×</button>
   </div>
-  <div class="ka-modal__body ka-stack">
-   <div class="ka-bus-grid-summary ka-bus-classic-stats" data-bus-classic-stats>
-    <div><small>ŞOFÖR</small><strong>${esc(s.soforAdi||'—')}</strong></div>
-    <div><small>ARAÇ</small><strong>${esc(window.SO_SABLONLAR?.[editor.sablon]?.ad||editor.sablon)}</strong></div>
-    <div><small>KOLTUK</small><strong>${st.dolu} / ${st.toplam}</strong></div>
-    <div><small>DOLULUK</small><strong>%${st.doluluk}</strong></div>
-   </div>
-   <div class="ka-bus-editor-toolbar ka-bus-tool-grid" data-bus-classic-shell>
-    ${editable?`<button class="ka-btn ka-btn--secondary" type="button" data-bus-layout-edit>⚙ ${editor.layoutEditing?'Düzenlemeyi Kapat':'Düzenlemeyi Aç'}</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-add>＋ Sıra Ekle</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-remove>－ Sıra Sil</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-clear-all>🧹 Atamaları Temizle</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor Al</button>`:'<button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor Al</button>'}
-   </div>
-   <div class="ka-bus-template-grid" data-bus-template-grid>${busTemplateCards()}</div>
-   ${editor.layoutEditing?'<div class="ka-hint">Düzenleme modunda hücrelere dokunarak seçim yapın. Bitişik boş hücreleri seçip birleştirme veya ayırma işlemlerini kullanabilirsiniz.</div>':'<div class="ka-hint">Bir koltuğa dokunarak öğrenciyi atayın, boşaltın, rezerve edin veya kilitleyin.</div>'}
-   ${busCabinHtml(s)}
-   <div class="ka-bus-legend"><span><i class="is-filled"></i>Dolu</span><span><i class="is-empty"></i>Boş</span><span><i class="is-reserved"></i>Rezerve</span><span><i class="is-locked"></i>Kilitli</span></div>
-   ${editor.layoutEditing?'<div class="ka-bus-editor-selection"><button class="ka-btn ka-btn--secondary" type="button" data-bus-merge>Birleştir</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-split>Ayır</button></div>':''}
+  <div class="bso-stats" data-bus-stats><span>👨‍✈️ ${esc(s.soforAdi||'—')}</span><span class="bso-pill">💺 ${st.dolu}/${st.toplam} · %${st.doluluk}</span></div>
+  ${tools}
+  <div class="ka-modal__body bso-body">
+   ${types}
+   <p class="bso-hint">${editable?'Koltuğa dokunarak öğrenci atayın, boşaltın, rezerve edin veya kilitleyin.':'Servis oturma planı yalnız görüntülenir.'}</p>
+   ${busPlanHtml(s)}
+   <div class="bso-legend"><span><i class="is-filled"></i>Dolu</span><span><i class="is-empty"></i>Boş</span><span><i class="is-reserved"></i>Rezerve</span><span><i class="is-locked"></i>Kilitli</span></div>
   </div>
-  <div class="ka-modal__footer">
+  <div class="ka-modal__footer bso-foot">
    <button class="ka-btn ka-btn--secondary" data-bus-close type="button">${editable?'Vazgeç':'Kapat'}</button>
    ${editable?'<button class="ka-btn" data-bus-save type="button">💾 Kaydet</button>':''}
   </div>
  </section>`;
  document.body.appendChild(ov);
+ const body=ov.querySelector('.bso-body');if(body&&prevScroll)body.scrollTop=prevScroll;
  bindEditor(ov,s);
 }
-function closeEditor(){document.getElementById('transportBusEditor')?.remove();editor=null}
+function closeEditor(){const had=!!document.getElementById('transportBusEditor');document.getElementById('transportBusEditor')?.remove();editor=null;if(had)busPullRefresh(true)}
 function bindEditor(ov,s){
  ov.querySelectorAll('[data-bus-close]').forEach(b=>b.onclick=closeEditor);
  ov.querySelector('[data-bus-report]')?.addEventListener('click',()=>busPrintReport(s));
