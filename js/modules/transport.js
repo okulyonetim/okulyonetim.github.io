@@ -327,11 +327,40 @@ function bind(){
   const now=Date.now(),last=Number(bus.dataset.busOpenAt||0);
   if(now-last<800)return true;
   bus.dataset.busOpenAt=String(now);
-  e.preventDefault();
-  e.stopPropagation();
+  e.preventDefault?.();
+  e.stopPropagation?.();
   openBusEditor(bus.dataset.busEdit);
   return true;
  };
+ const armBusTouch=e=>{
+  const bus=e.target?.closest?.('[data-bus-edit]');
+  if(!bus||!out.contains(bus))return;
+  bus.dataset.busPressX=String(e.clientX??e.touches?.[0]?.clientX??0);
+  bus.dataset.busPressY=String(e.clientY??e.touches?.[0]?.clientY??0);
+  bus.dataset.busPressAt=String(Date.now());
+  clearTimeout(Number(bus.dataset.busPressTimer||0));
+  const timer=setTimeout(()=>{
+   const sx=Number(bus.dataset.busPressX||0),sy=Number(bus.dataset.busPressY||0);
+   const cx=Number(bus.dataset.busLastX||sx),cy=Number(bus.dataset.busLastY||sy);
+   if(Math.hypot(cx-sx,cy-sy)>10)return;
+   openBusFromEvent(e);
+  },120);
+  bus.dataset.busPressTimer=String(timer);
+ };
+ const cancelBusTouch=e=>{
+  const bus=e.target?.closest?.('[data-bus-edit]');
+  if(!bus||!out.contains(bus))return;
+  clearTimeout(Number(bus.dataset.busPressTimer||0));
+  bus.dataset.busPressTimer='';
+  bus.dataset.busLastX=String(e.clientX??e.touches?.[0]?.clientX??bus.dataset.busPressX??0);
+  bus.dataset.busLastY=String(e.clientY??e.touches?.[0]?.clientY??bus.dataset.busPressY??0);
+ };
+ out.addEventListener('pointerdown',e=>{armBusTouch(e)},true);
+ out.addEventListener('pointermove',e=>{cancelBusTouch(e)},true);
+ out.addEventListener('pointercancel',e=>{cancelBusTouch(e)},true);
+ out.addEventListener('touchstart',e=>{armBusTouch(e)},true);
+ out.addEventListener('touchmove',e=>{cancelBusTouch(e)},true);
+ out.addEventListener('touchcancel',e=>{cancelBusTouch(e)},true);
  out.addEventListener('pointerup',e=>{openBusFromEvent(e)},true);
  out.addEventListener('touchend',e=>{openBusFromEvent(e)},true);
  out.addEventListener('click',e=>{openBusFromEvent(e)},true);
