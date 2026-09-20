@@ -35,6 +35,12 @@ public class LogoSwipeRefreshLayout extends SwipeRefreshLayout {
         this.webView = webView;
 
         setEnabled(true);
+        // WebView içindeki gerçek scroll alanı HTML (.ka-app-content).
+        // WebView'in nested-scroll disallow isteği SwipeRefreshLayout'ın
+        // üstten aşağı gesture'ını susturmasın; normal WebView/HTML scroll'u
+        // yine çalışmaya devam eder.
+        webView.setNestedScrollingEnabled(false);
+        setLegacyRequestDisallowInterceptTouchEventEnabled(true);
         setNestedScrollingEnabled(true);
         setDistanceToTriggerSync(dp(72));
         setProgressViewOffset(false, -dp(72), dp(24));
