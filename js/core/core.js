@@ -43,226 +43,37 @@ window.addEventListener('online',()=>AppStore.set('ui.online',true),{passive:tru
 window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:true});
 
 
-/* ========================= CHROME-STYLE PULL-TO-REFRESH =========================
-   Tek gesture motoru. Chrome Android'deki davranışa yakın elastik çekme:
-   - sayfanın herhangi bir yerinden başlayan, üstteki dikey jestler aday olur
-   - birkaç px hareketten sonra yön kilitlenir
-   - aşağı çekme ilerledikçe direnç artar
-   - eşik geçilirse bırakınca yeniler
-   - yatay hareket veya gerçek iç kaydırma (hasScrolledAncestor) gesture'ı iptal eder
-   Android WebView + Chrome + Safari aynı motoru kullanır. */
-(function installUnifiedPullToRefresh(){
+/* ========================= PULL-TO-REFRESH PLATFORM ADAPTER =========================
+   Gesture yönetimi platforma bırakılır:
+   - Chrome Android / Safari iOS: tarayıcının kendi native pull-to-refresh davranışı.
+   - Android APK/WebView: MainActivity içindeki native LogoSwipeRefreshLayout.
+   Veri yenileme işlemi her iki durumda da SyncEngine üzerinden yapılır.
+   JS artık touchmove/preventDefault ile WebView/tarayıcı scroll motoruyla yarışmaz. */
+(function installPullToRefreshAdapter(){
   if(window.__kaUnifiedPullRefresh)return;
   window.__kaUnifiedPullRefresh=true;
 
-  const BLOCK_SELECTOR='.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh],input,textarea,select,[contenteditable="true"]';
-  const INTENT_DISTANCE=8;
-  const ARM_DISTANCE=48;
-  const MAX_PULL=108;
-  const RESISTANCE=.72;
+  let refreshing=false;
 
-  let state='idle';
-  let startX=0,startY=0,lastY=0;
-  let startAtTop=false;
-  let indicator=null,refreshing=false,staleTimer=null,refreshTimer=null;
-
-  const rootScrollTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
-
-  /* Hedefin gerçekten içinde bulunduğu en yakın dikey scroll alanını bul.
-     Önceki sürüm bütün ata elemanları tarıyordu. Bu, sayfanın kendisi üstteyken
-     başka bir üst kapsayıcının scrollTop değeri yüzünden normal içerikte pull
-     gesture'ının gereksiz yere reddedilmesine neden olabiliyordu. */
-  function nearestScrollableAncestor(el){
-    let node=el instanceof Element?el.parentElement:null;
-    while(node&&node!==document.body&&node!==document.documentElement){
-      const style=getComputedStyle(node);
-      const oy=style.overflowY;
-      if((oy==='auto'||oy==='scroll')&&node.scrollHeight>node.clientHeight+1)return node;
-      node=node.parentElement;
-    }
-    return null;
-  }
-
-  function atTop(target){
-    /* Ana sayfanın gerçek scroll konumu. */
-    if(rootScrollTop()>1)return false;
-
-    /* Hedef bir iç scroll alanındaysa yalnızca o alanın konumunu dikkate al.
-       Alan aşağıdaysa aşağı çekme onun normal scroll hareketidir ve pull
-       refresh devreye girmemelidir. Alanın en üstündeyse Chrome/Safari'deki
-       overscroll davranışına izin verilir; contain/none kullanılmış özel
-       scroll alanlarında ise gesture o alana ait kalır. */
-    const scroller=nearestScrollableAncestor(target);
-    if(!scroller)return true;
-    if(Number(scroller.scrollTop||0)>1)return false;
-
-    /* İç alan en üstteyse pull gesture'ını JS motoru devralabilir.
-       CSS'teki overscroll-behavior:contain/none, normal tarayıcı overscroll'ünü
-       durdurur; ancak burada yenileme gesture'ını özellikle biz yönetiyoruz.
-       Aşağıdaki scrollTop kontrolü, alanın gerçekten aşağıda olup olmadığını
-       ayırt etmek için yeterlidir. */
-    return true;
-  }
-
-  function blocked(target){
-    if(document.body.classList.contains('ka-layer-open'))return true;
-    return !!target?.closest?.(BLOCK_SELECTOR);
-  }
-
-  function ensureIndicator(){
-    if(indicator?.isConnected)return indicator;
-    indicator=document.createElement('div');
-    indicator.id='kaPullRefreshIndicator';
-    indicator.hidden=true;
-    indicator.setAttribute('aria-hidden','true');
-    indicator.innerHTML='<img src="assets/icon-192.png" alt=""><span>Yenilemek için çek</span>';
-    document.body.appendChild(indicator);
-    return indicator;
-  }
-
-  function reset(){
-    clearTimeout(staleTimer);staleTimer=null;
-    state='idle';
-    startAtTop=false;
-    const el=indicator;
-    if(el&&!refreshing){
-      el.classList.remove('is-armed','is-refreshing');
-      el.style.setProperty('--ka-pull-y','0px');
-      el.hidden=true;
-    }
-  }
-
-  function scheduleStaleReset(){
-    clearTimeout(staleTimer);
-    /* Yavaş cihazlarda parmak tutuluyorken zaman aşımı tetiklenmesin diye
-       2600ms yerine 4000ms kullanılır. */
-    staleTimer=setTimeout(()=>{if(state!=='idle'&&!refreshing)reset()},4000);
-  }
-
-  function draw(raw){
-    const el=ensureIndicator();
-    const distance=Math.max(0,raw);
-    const visual=Math.min(MAX_PULL,Math.round(distance*RESISTANCE+Math.min(distance,40)*.18));
-    const armed=distance>=ARM_DISTANCE;
-    el.hidden=visual<2;
-    el.classList.toggle('is-armed',armed);
-    el.classList.remove('is-refreshing');
-    el.style.setProperty('--ka-pull-y',visual+'px');
-    const label=el.querySelector('span');
-    if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
-  }
-
-  function begin(e){
-    if(refreshing||state!=='idle'||e.touches?.length!==1)return;
-    const t=e.touches[0];
-    const target=e.target instanceof Element?e.target:null;
-    /* Chrome tarzı davranış: sayfanın herhangi bir yerinden başlayan aşağı
-       dikey jest kabul edilir; yalnızca gerçek scroll container'ı, modalı,
-       form alanını veya yatay hareketi korumalı alan olarak dışarıda bırakır. */
-    if(blocked(target)||!atTop(target))return;
-
-    state='candidate';
-    startX=t.clientX;
-    startY=t.clientY;
-    lastY=t.clientY;
-    startAtTop=true;
-    scheduleStaleReset();
-  }
-
-  function move(e){
-    if(refreshing||state==='idle'||e.touches?.length!==1)return;
-    const t=e.touches[0];
-    const dx=t.clientX-startX;
-    const dy=t.clientY-startY;
-    lastY=t.clientY;
-
-    if(Math.abs(dx)>Math.abs(dy)+8){
-      reset();
-      return;
-    }
-    if(dy<=0){
-      if(state==='candidate'&&Math.abs(dx)>4)reset();
-      return;
-    }
-
-    if(state==='candidate'){
-      if(dy<INTENT_DISTANCE)return;
-      state='pulling';
-    }
-
-    /* Native scrolling may move the page a few pixels before we take over.
-       Do not re-check scrollTop here: the gesture was already verified at touchstart. */
-    if(!startAtTop){
-      reset();
-      return;
-    }
-
-    if(e.cancelable)e.preventDefault();
-    draw(dy);
-    scheduleStaleReset();
-  }
-
-  async function runRefresh(){
+  async function refresh(source='programmatic'){
     if(refreshing)return;
     refreshing=true;
-    state='refreshing';
-    clearTimeout(refreshTimer);
-    const el=ensureIndicator();
-    el.hidden=false;
-    el.classList.remove('is-armed');
-    el.classList.add('is-refreshing');
-    el.style.setProperty('--ka-pull-y','78px');
-    const label=el.querySelector('span');
-    if(label)label.textContent='Yenileniyor…';
-
     try{
-      if(typeof window.SyncEngine?.sync==='function'){
-        await Promise.race([
-          Promise.resolve(window.SyncEngine.sync()),
-          new Promise((_,reject)=>setTimeout(()=>reject(new Error('refresh-timeout')),9000))
-        ]);
-      }
-      window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source:'gesture'}}));
+      if(typeof window.SyncEngine?.sync==='function')await window.SyncEngine.sync();
+      window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source}}));
     }catch(error){
       console.warn('[PullRefresh]',error?.message||error);
     }finally{
-      clearTimeout(refreshTimer);
-      refreshTimer=setTimeout(()=>{
-        refreshing=false;
-        reset();
-      },350);
+      refreshing=false;
     }
   }
-
-  function finish(){
-    if(refreshing)return;
-    if(state!=='pulling'){
-      reset();
-      return;
-    }
-    const distance=lastY-startY;
-    const armed=distance>=ARM_DISTANCE;
-    state='idle';
-    clearTimeout(staleTimer);staleTimer=null;
-    if(armed)void runRefresh();
-    else reset();
-  }
-
-  document.addEventListener('touchstart',begin,{capture:true,passive:true});
-  document.addEventListener('touchmove',move,{capture:true,passive:false});
-  document.addEventListener('touchend',finish,{capture:true,passive:true});
-  document.addEventListener('touchcancel',reset,{capture:true,passive:true});
-  window.addEventListener('blur',()=>{if(!refreshing)reset()},{passive:true});
-  window.addEventListener('pageshow',()=>{if(!refreshing)reset()},{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!refreshing)reset()},{passive:true});
 
   window.KorukPullRefresh={
-    refresh:runRefresh,
-    reset,
+    refresh,
+    reset(){},
     get refreshing(){return refreshing}
   };
 })();
-
 /* ========================= EVENT BUS ========================= */
 if(!window.EventBus){
   const events=new Map();
