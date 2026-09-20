@@ -128,7 +128,28 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     }
 
     private boolean canChildScrollUp() {
-        return (webView != null && webView.getScrollY() > 0) || innerContentKaydirilmis;
+        if (webView == null) return false;
+        return webView.canScrollVertically(-1)
+            || webView.getScrollY() > 0
+            || innerContentKaydirilmis;
+    }
+
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        /*
+         * WebView dokunma başladığında parent'tan intercept istemeyebilir.
+         * Bu istek doğrudan kabul edilirse custom PTR ACTION_MOVE aşamasına
+         * erişemez. Sayfanın en üstündeyken isteği bilinçli olarak yoksayıyoruz;
+         * böylece aşağı yönlü dikey jestte parent devreye girebiliyor.
+         * Sayfa aşağıdaysa WebView'in normal scroll davranışına dokunmuyoruz.
+         */
+        if (disallowIntercept
+                && pullEnabled
+                && !refreshing
+                && !canChildScrollUp()) {
+            return;
+        }
+        super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
 
     private volatile boolean innerContentKaydirilmis = false;
