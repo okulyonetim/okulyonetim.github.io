@@ -320,7 +320,30 @@ function bind(){
  const s=document.getElementById('transportSearch');
  if(s)s.oninput=()=>{query=s.value;render()};
  const out=document.getElementById('transportContent');
- if(!out)return;
+ if(!out||out.dataset.transportEventsBound==='true')return;
+ const openBusFromEvent=e=>{
+  const bus=e.target?.closest?.('[data-bus-edit]');
+  if(!bus||!out.contains(bus))return false;
+  const now=Date.now(),last=Number(bus.dataset.busOpenAt||0);
+  if(now-last<800)return true;
+  bus.dataset.busOpenAt=String(now);
+  e.preventDefault();
+  e.stopPropagation();
+  openBusEditor(bus.dataset.busEdit);
+  return true;
+ };
+ out.addEventListener('pointerup',e=>{openBusFromEvent(e)},true);
+ out.addEventListener('touchend',e=>{openBusFromEvent(e)},true);
+ out.addEventListener('click',e=>{openBusFromEvent(e)},true);
+ out.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const bus=e.target?.closest?.('[data-bus-edit]');
+  if(!bus||!out.contains(bus))return;
+  e.preventDefault();
+  e.stopPropagation();
+  openBusEditor(bus.dataset.busEdit);
+ },true);
+ out.dataset.transportEventsBound='true';
 }
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.servisler','data.veliler','data.siniflar','data.servisOturma','data.sinifOturma','data.resmiTatiller'].forEach(p=>{const u=AppStore?.subscribe?.(p,()=>requestAnimationFrame(render));if(u)unsubs.push(u)})}
 async function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return false;mounted=true;root.innerHTML=shell();bind();subscribe();await prepareLocal();render();return true}
