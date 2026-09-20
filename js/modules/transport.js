@@ -119,7 +119,7 @@ function busSeats(){
  const list=arr('servisler').filter(s=>match([s.servisAdi,s.guzergah,s.plaka,currentPlan(s.id)?.sablon])).sort((a,b)=>serviceName(a).localeCompare(serviceName(b),'tr'));
  return listResult(list,s=>{
   const p=currentPlan(s.id),els=window.soPlanElementleriGetir?.(p||{},p?.sablon||'ducato')||[],st=window.soElementIstatistik?.(els)||{toplam:0,dolu:0};
-  return `<article class="ka-card ka-list-card ka-bus-seat-card" data-bus-edit="${esc(s.id)}" tabindex="0" role="button" aria-label="${esc(serviceName(s))} servis oturma planını aç">
+  return `<article class="ka-card ka-list-card ka-bus-seat-card" data-bus-edit="${esc(s.id)}" tabindex="0" role="button" aria-label="${esc(serviceName(s))} servis oturma planını aç" style="touch-action:manipulation">
    <div class="ka-card__body ka-row ka-row--between">
     <div class="ka-grow"><strong>${esc(serviceName(s))}</strong>
      <div class="ka-muted">${esc(s.plaka||'')}${s.guzergah?' · '+esc(s.guzergah):''}</div>
@@ -322,9 +322,28 @@ function bind(){
  const out=document.getElementById('transportContent');
  if(!out||out.dataset.transportEventsBound==='true')return;
  const interactiveTarget=e=>e.target?.closest?.('button,a,input,select,textarea');
+ let lastBusOpenAt=0;
+ const openBusFromEvent=(e,bus)=>{
+  if(!bus||!out.contains(bus)||interactiveTarget(e))return;
+  const now=Date.now();
+  if(now-lastBusOpenAt<800)return;
+  lastBusOpenAt=now;
+  e.preventDefault();
+  e.stopPropagation();
+  openBusEditor(bus.dataset.busEdit);
+ };
+ out.addEventListener('pointerup',e=>{
+  if(e.pointerType==='mouse')return;
+  const bus=e.target.closest?.('[data-bus-edit]');
+  openBusFromEvent(e,bus);
+ });
+ out.addEventListener('touchend',e=>{
+  const bus=e.target.closest?.('[data-bus-edit]');
+  openBusFromEvent(e,bus);
+ },{passive:false});
  out.addEventListener('click',e=>{
   const bus=e.target.closest?.('[data-bus-edit]');
-  if(bus&&out.contains(bus)){e.preventDefault();e.stopPropagation();openBusEditor(bus.dataset.busEdit);return}
+  if(bus&&out.contains(bus)){openBusFromEvent(e,bus);return}
   const cls=e.target.closest?.('[data-class-seat-open]');
   if(cls&&out.contains(cls)){e.preventDefault();e.stopPropagation();openClassSeating(cls.dataset.classSeatOpen);return}
   const service=e.target.closest?.('[data-service-detail]');
