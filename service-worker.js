@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu önbellekten hızlıca sunup
    ağı arka planda yenilemek ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v982';
+const CACHE_ADI='oy-cache-v983';
 
 let messaging=null;
 try{
@@ -55,7 +55,7 @@ function apiIstegiMi(url){return url.includes('firestore.googleapis.com')||url.i
 function statikKaynakMi(req){try{const u=new URL(req.url);if(u.origin!==self.location.origin)return false;return /\.(?:js|css|png|jpg|jpeg|webp|svg|ico|json|woff2?)$/i.test(u.pathname);}catch(_){return false;}}
 function kodKaynakMi(req){try{const u=new URL(req.url);return u.origin===self.location.origin&&/\.(?:js|css)$/i.test(u.pathname);}catch(_){return false;}}
 async function kodCacheFirst(event){
-  const cached=await caches.match(event.request,{ignoreSearch:true});
+  const cached=await caches.match(event.request);
   const yenile=fetch(event.request,{cache:'no-store'}).then(async response=>{
     if(response&&response.status===200&&response.type!=='opaque'){
       const copy=response.clone();
