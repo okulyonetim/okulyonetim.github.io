@@ -54,27 +54,12 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   window.__kaUnifiedPullRefresh=true;
 
   let refreshing=false;
-  let touchStartY=0;
-  let touchStartX=0;
-  let pulling=false;
-  let touchTracking=false;
-  const PULL_TRIGGER=72;
-
-  const isNativeAndroid=()=>!!window.KorukNativePullRefresh;
-  const content=()=>document.querySelector('.ka-app-content');
-  const atTop=()=>{const el=content();return !!el&&Number(el.scrollTop||0)<=1};
 
   async function refresh(source='programmatic'){
     if(refreshing)return;
     refreshing=true;
     try{
-      if(typeof window.SyncEngine?.sync==='function'){
-        await window.SyncEngine.sync();
-      }else if(!isNativeAndroid()){
-        // Uygulama çekirdeği henüz yüklenmemişse tarayıcıda gerçek yenilemeye düş.
-        location.reload();
-        return;
-      }
+      if(typeof window.SyncEngine?.sync==='function')await window.SyncEngine.sync();
       window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source}}));
     }catch(error){
       console.warn('[PullRefresh]',error?.message||error);
@@ -85,7 +70,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   function reportNativeInnerScroll(){
     try{
-      const el=content();
+      const el=document.querySelector('.ka-app-content');
       const value=!!(el&&Number(el.scrollTop||0)>1);
       window.KorukNativePullRefresh?.setInnerContentKaydirilmis?.(value);
     }catch(_){}
@@ -95,47 +80,9 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reportNativeInnerScroll,{once:true});
   else reportNativeInnerScroll();
 
-  // Tarayıcı/PWA'da uygulamanın gerçek scroll alanı .ka-app-content'tir.
-  // Bu nedenle browser'ın document-level PTR'ı güvenilir değildir. Yalnızca
-  // native Android köprüsü YOKSA burada, top-of-content durumunda gesture'ı izleriz.
-  // Android APK'da native SwipeRefreshLayout tek gesture sahibidir; iki motor yarışmaz.
-  if(!isNativeAndroid()){
-    document.addEventListener('touchstart',event=>{
-      if(refreshing||event.touches.length!==1)return;
-      const el=content();
-      if(!el||!el.contains(event.target)||Number(el.scrollTop||0)>1)return;
-      touchTracking=true;
-      pulling=false;
-      touchStartY=event.touches[0].clientY;
-      touchStartX=event.touches[0].clientX;
-    },{capture:true,passive:true});
-
-    document.addEventListener('touchmove',event=>{
-      if(!touchTracking||refreshing||event.touches.length!==1)return;
-      const y=event.touches[0].clientY,x=event.touches[0].clientX;
-      const dy=y-touchStartY,dx=x-touchStartX;
-      if(dy<=0||Math.abs(dy)<=Math.abs(dx)||!atTop()){
-        if(dy<0||Math.abs(dx)>Math.abs(dy))touchTracking=false;
-        return;
-      }
-      if(dy>=8)pulling=true;
-      if(pulling&&event.cancelable)event.preventDefault();
-    },{capture:true,passive:false});
-
-    document.addEventListener('touchend',event=>{
-      if(!touchTracking)return;
-      const distance=event.changedTouches?.[0]?event.changedTouches[0].clientY-touchStartY:0;
-      const shouldRefresh=pulling&&distance>=PULL_TRIGGER&&atTop();
-      touchTracking=false;
-      pulling=false;
-      if(shouldRefresh)void refresh('browser-touch');
-    },{capture:true,passive:true});
-    document.addEventListener('touchcancel',()=>{touchTracking=false;pulling=false},{capture:true,passive:true});
-  }
-
   window.KorukPullRefresh={
     refresh,
-    reset(){touchTracking=false;pulling=false},
+    reset(){},
     get refreshing(){return refreshing}
   };
 })();
