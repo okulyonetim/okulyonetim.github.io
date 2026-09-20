@@ -14,7 +14,7 @@ assert(transport.includes("if(sb==='ozel'&&raw.length)"),'Özel tasarım ham yer
 assert(transport.includes('elementAssignmentsToLegacy(raw)'),'Eski kayıtların öğrenci atamaları kaybolmamalı.');
 assert(transport.includes('editor={servisId,sablon,elements,editable:canEditBusSeats()}'),'Canonical editör state/permission sözleşmesi korunmalı.');
 assert(!transport.includes('data-transport-tab'),'İkinci servis oturma sekme navigasyonu olmamalı.');
-const transportBundle=String(loader.match(/define\\('transport',\\[([^\\]]+)\\]\\)/)?.[1]||'').replace(/\\?v=\\d+/g,'');
+const transportBundle=String(loader.match(/define\('transport',\[([^\]]+)\]\)/)?.[1]||'').replace(/\?v=\d+/g,'');
 assert(transportBundle.includes("'js/modules/report-engine.js'")&&transportBundle.includes("'js/modules/transport.js'")&&assetVersion(loader,'js/modules/transport.js')>=892,'Transport canonical lazy-loader korunmalı.');
 assert(assetVersion(index,'css/design-system.css')>=893&&assetVersion(index,'js/app-loader.js')>=892,'Index servis oturma paketini yüklemeli.');
 assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=892,'Service Worker yeni transport paketini önbelleğe almalı.');
