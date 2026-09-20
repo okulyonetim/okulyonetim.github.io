@@ -129,6 +129,7 @@ function busSeatTile(e,index,report=false){
  if(report)return `<div class="ka-bus-seat ${state}">${inner}</div>`;
  return editor?.editable?`<button class="ka-bus-seat ${state}" type="button" data-bus-seat-index="${index}" aria-label="Koltuk ${esc(no)}${name?': '+esc(name):reserved?': Rezerve':locked?': Kilitli':': Boş'}">${inner}</button>`:`<div class="ka-bus-seat ${state}" aria-label="Koltuk ${esc(no)}${name?': '+esc(name):reserved?': Rezerve':locked?': Kilitli':': Boş'}">${inner}</div>`;
 }
+function busRows(){if(!editor)return[];const rows=new Set(editor.elements.filter(e=>e?.visible!==false&&e.type!=='sofor'&&e.type!=='arka-koltuk'&&e.properties?.konum!=='arka').map(e=>Number(e.row)||0));return[...rows].sort((a,b)=>a-b)}
 function busCabinRows(){
  if(!editor)return{front:[],rows:[],rear:[]};
  const active=editor.elements.map((e,index)=>({e,index})).filter(x=>x.e?.visible!==false&&x.e.type!=='sofor'),rear=active.filter(x=>x.e.type==='arka-koltuk'||x.e.properties?.konum==='arka'),regular=active.filter(x=>!rear.includes(x)),front=regular.filter(x=>Number(x.e.row)===0),rest=regular.filter(x=>Number(x.e.row)!==0),map=new Map();
