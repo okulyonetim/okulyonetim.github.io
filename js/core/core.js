@@ -45,11 +45,11 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
 /* ========================= CHROME-STYLE PULL-TO-REFRESH =========================
    Tek gesture motoru. Chrome Android'deki davranışa yakın elastik çekme:
-   - yalnızca üstteyken aday olur
+   - yalnızca ekranın üst bölgesinden (TOP_ZONE) başlayan jestler aday olur
    - birkaç px hareketten sonra yön kilitlenir
    - aşağı çekme ilerledikçe direnç artar
    - eşik geçilirse bırakınca yeniler
-   - yatay hareket veya gerçek iç kaydırma gesture'ı iptal eder
+   - yatay hareket veya gerçek iç kaydırma (hasScrolledAncestor) gesture'ı iptal eder
    Android WebView + Chrome + Safari aynı motoru kullanır. */
 (function installUnifiedPullToRefresh(){
   if(window.__kaUnifiedPullRefresh)return;
@@ -57,10 +57,13 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   const BLOCK_SELECTOR='.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh],input,textarea,select,[contenteditable="true"]';
   const INTENT_DISTANCE=8;
-  const ARM_DISTANCE=48;
+  const ARM_DISTANCE=96;
   const MAX_PULL=108;
   const RESISTANCE=.72;
   const BOTTOM_EXCLUSION=82;
+  /* Yenileme yalnızca ekranın üst bölümünden başlayan bilinçli aşağı çekmede açılır.
+     Ortadan veya aşağıdan başlayan jestler aday bile olamaz. */
+  const TOP_ZONE=220;
 
   let state='idle';
   let startX=0,startY=0,lastY=0;
@@ -79,12 +82,31 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     return el?Math.max(0,Number(el.scrollTop||0)):0;
   }
 
+  /* DOM ağacında hedef elemandan yukarı doğru çıkarak overflow-y:auto/scroll
+     olan ve gerçekten kaydırılmış (scrollTop>1) bir ata eleman olup olmadığını
+     kontrol eder. Modal içi listeler, tablo sarmalayıcıları ve özel scroll
+     container'ları bu sayede yakalanır; yanlışlıkla pull-refresh tetiklenmez. */
+  function hasScrolledAncestor(el){
+    let node=el;
+    while(node&&node!==document.body){
+      const st=node.scrollTop;
+      if(st>1){
+        const style=getComputedStyle(node);
+        const oy=style.overflowY;
+        if(oy==='auto'||oy==='scroll')return true;
+      }
+      node=node.parentElement;
+    }
+    return false;
+  }
+
   function atTop(target){
     if(rootScrollTop()>1)return false;
     const app=document.querySelector('.ka-app-content');
     const menu=document.querySelector('.ka-menu-list,.ka-menu-grid');
     if(app&&app.contains(target)&&appScrollTop()>1)return false;
     if(menu&&menu.contains(target)&&menuScrollTop()>1)return false;
+    if(target&&hasScrolledAncestor(target))return false;
     return true;
   }
 
@@ -93,13 +115,19 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     return !!target?.closest?.(BLOCK_SELECTOR);
   }
 
+  /* iOS Safari'de window.innerHeight adres çubuğu göründüğünde/gizlendiğinde
+     değişir; visualViewport.height her zaman gerçek görünür yüksekliği verir. */
+  function viewportHeight(){
+    return window.visualViewport?.height||window.innerHeight;
+  }
+
   function nearBottomNav(y){
     const nav=document.querySelector('.ka-app-nav.ka-bottom-nav');
     if(nav){
       const r=nav.getBoundingClientRect();
       if(r.height>0&&y>=r.top-BOTTOM_EXCLUSION)return true;
     }
-    return y>=window.innerHeight-BOTTOM_EXCLUSION;
+    return y>=viewportHeight()-BOTTOM_EXCLUSION;
   }
 
   function ensureIndicator(){
@@ -127,7 +155,9 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   function scheduleStaleReset(){
     clearTimeout(staleTimer);
-    staleTimer=setTimeout(()=>{if(state!=='idle'&&!refreshing)reset()},2600);
+    /* Yavaş cihazlarda parmak tutuluyorken zaman aşımı tetiklenmesin diye
+       2600ms yerine 4000ms kullanılır. */
+    staleTimer=setTimeout(()=>{if(state!=='idle'&&!refreshing)reset()},4000);
   }
 
   function draw(raw){
@@ -147,7 +177,10 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     if(refreshing||state!=='idle'||e.touches?.length!==1)return;
     const t=e.touches[0];
     const target=e.target instanceof Element?e.target:null;
-    if(nearBottomNav(t.clientY)||blocked(target)||!atTop(target))return;
+    /* Yalnızca ekranın üst bölgesinden (TOP_ZONE px) başlayan jestler aday olur.
+       Ortadan veya alt navigasyona yakın bölgeden başlayan kaydırmalar hiçbir
+       zaman pull-refresh tetiklemez. */
+    if(t.clientY>TOP_ZONE||nearBottomNav(t.clientY)||blocked(target)||!atTop(target))return;
 
     state='candidate';
     startX=t.clientX;
