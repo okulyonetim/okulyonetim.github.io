@@ -3,6 +3,9 @@ package com.koruk.okul;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import org.json.JSONObject;
@@ -11,9 +14,10 @@ import com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin;
 
 public class MainActivity extends BridgeActivity {
 
-    /* Pull-to-refresh APK/PWA/web için js/core/core.js tarafından tek merkezden
-       yönetilir; native SwipeRefreshLayout katmanı kaldırıldı (bkz. LogoSwipeRefreshLayout).
-       Native katmanda swipeRefresh field'ı veya setupPullToRefresh() çağrısı bulunmaz. */
+    private LogoSwipeRefreshLayout nativePullRefresh;
+
+    /* Pull-to-refresh platforma göre çalışır: Chrome/Safari tarayıcıda native,
+       Android APK'da LogoSwipeRefreshLayout, veri senkronunda ortak SyncEngine. */
 
     /* Widget / bildirim hedefleri artık sabit 300/800 ms gecikmeyle JS'e
        fırlatılmıyor. JS auth + sekme sistemi gerçekten hazır olana kadar
@@ -40,11 +44,48 @@ public class MainActivity extends BridgeActivity {
             anaWebView.getSettings().setSupportZoom(false);
             anaWebView.getSettings().setBuiltInZoomControls(false);
             anaWebView.getSettings().setDisplayZoomControls(false);
+            anaWebView.post(this::setupPullToRefresh);
         }
 
         handleIntent(getIntent());
         // Pull-to-refresh APK/PWA/web için js/core/core.js tarafından tek merkezden yönetilir.
         kenarJestiniAyir();
+    }
+
+    /**
+     * Android APK'da WebView'in kendi touch/scroll motoruyla yarışmak yerine
+     * gerçek native pull-to-refresh katmanını WebView'in mevcut parent'ına ekler.
+     * Tarayıcı sürümünde bu katman yoktur; Chrome/Safari kendi PTR davranışını kullanır.
+     */
+    private void setupPullToRefresh() {
+        if (nativePullRefresh != null || getBridge() == null) return;
+        final WebView webView = getBridge().getWebView();
+        if (webView == null) return;
+        final ViewParent rawParent = webView.getParent();
+        if (!(rawParent instanceof ViewGroup)) return;
+
+        final ViewGroup parent = (ViewGroup) rawParent;
+        final int index = parent.indexOfChild(webView);
+        if (index < 0) return;
+        final ViewGroup.LayoutParams webViewLp = webView.getLayoutParams();
+
+        parent.removeView(webView);
+        nativePullRefresh = new LogoSwipeRefreshLayout(this, webView);
+        nativePullRefresh.setLayoutParams(webViewLp);
+        nativePullRefresh.setOnRefreshListener(() -> {
+            final WebView currentWebView = getBridge() != null ? getBridge().getWebView() : webView;
+            if (currentWebView == null) {
+                if (nativePullRefresh != null) nativePullRefresh.setRefreshing(false);
+                return;
+            }
+            currentWebView.evaluateJavascript(
+                "(async function(){try{if(window.SyncEngine&&typeof window.SyncEngine.sync==='function'){await window.SyncEngine.sync()}window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source:'android-native'}}))}catch(e){console.warn('[NativePullRefresh]',e)}})()",
+                value -> runOnUiThread(() -> {
+                    if (nativePullRefresh != null) nativePullRefresh.setRefreshing(false);
+                })
+            );
+        });
+        parent.addView(nativePullRefresh, index);
     }
 
     /* Android 10+ (API 29) sistem "geri" hareket algılaması, ekranın sol
@@ -109,10 +150,8 @@ public class MainActivity extends BridgeActivity {
         );
     }
 
-    /* setPullToRefreshEnabled ve innerScrollBildir kaldırıldı: pull-to-refresh
-       artık tümüyle JS motoru (core.js installUnifiedPullToRefresh) tarafından
-       yönetildiğinden native enable/disable köprüsüne gerek kalmadı.
-       PullToRefreshPlugin.setEnabled() artık no-op olarak bırakıldı (bkz. PullToRefreshPlugin.java). */
+    /* PullToRefreshPlugin geriye dönük uyumluluk için ayrı tutulur; gesture'ın sahibi
+       Android APK'da nativePullRefresh, web'de tarayıcının kendi scroll motorudur. */
 
     /** JS tarafındaki çıkış onayından sonra Android Activity'yi gerçekten kapatır. */
     @JavascriptInterface
