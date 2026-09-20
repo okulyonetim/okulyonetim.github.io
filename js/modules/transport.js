@@ -221,19 +221,35 @@ function renderBusEditor(s){
  const ov=document.createElement('div');
  ov.id='transportBusEditor';
  ov.className='ka-modal-backdrop ka-bus-editor-backdrop';
- ov.innerHTML='<section class="ka-modal ka-bus-editor-modal">'
-NaN
-NaN
-NaN
-NaN
-NaN
-NaN
-NaN
-NaN
-NaN
+ ov.innerHTML=\`<section class="ka-modal ka-bus-editor-modal">
+  <div class="ka-modal__header">
+   <div><strong>💺 Oturma Planı — \${esc(serviceName(s))}</strong><div class="ka-muted">\${esc([s.plaka,s.guzergah].filter(Boolean).join(' · '))}</div></div>
+   <button class="ka-icon-button" type="button" data-bus-close>×</button>
+  </div>
+  <div class="ka-modal__body ka-stack">
+   <div class="ka-bus-grid-summary">
+    <div><small>ŞOFÖR</small><strong>\${esc(s.soforAdi||'—')}</strong></div>
+    <div><small>ARAÇ</small><strong>\${esc(window.SO_SABLONLAR?.[editor.sablon]?.ad||editor.sablon)}</strong></div>
+    <div><small>KOLTUK</small><strong>\${st.dolu} / \${st.toplam}</strong></div>
+    <div><small>DOLULUK</small><strong>%\${st.doluluk}</strong></div>
+   </div>
+   <div class="ka-bus-editor-toolbar">
+    \${editable?\`<button class="ka-btn ka-btn--secondary" type="button" data-bus-layout-edit>⚙ \${editor.layoutEditing?'Düzenlemeyi Kapat':'Yerleşimi Düzenle'}</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-add>＋ Sıra</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-remove>－ Sıra</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor</button>\`:'<button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor</button>'}
+   </div>
+   \${editor.layoutEditing?'<div class="ka-hint">Düzenleme modunda hücrelere dokunarak seçim yapın. Bitişik boş hücreleri seçip birleştirme veya ayırma işlemlerini kullanabilirsiniz.</div>':'<div class="ka-hint">Bir koltuğa dokunarak öğrenciyi atayın, boşaltın, rezerve edin veya kilitleyin.</div>'}
+   \${busCabinHtml(s)}
+   <div class="ka-bus-legend"><span><i class="is-filled"></i>Dolu</span><span><i class="is-empty"></i>Boş</span><span><i class="is-reserved"></i>Rezerve</span><span><i class="is-locked"></i>Kilitli</span></div>
+   \${editor.layoutEditing?'<div class="ka-bus-editor-selection"><button class="ka-btn ka-btn--secondary" type="button" data-bus-merge>Birleştir</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-split>Ayır</button></div>':''}
+  </div>
+  <div class="ka-modal__footer">
+   <button class="ka-btn ka-btn--secondary" data-bus-close type="button">\${editable?'Vazgeç':'Kapat'}</button>
+   \${editable?'<button class="ka-btn" data-bus-save type="button">💾 Kaydet</button>':''}
+  </div>
+ </section>\`;
  document.body.appendChild(ov);
  bindEditor(ov,s);
-}function closeEditor(){document.getElementById('transportBusEditor')?.remove();editor=null}
+}
+function closeEditor(){document.getElementById('transportBusEditor')?.remove();editor=null}
 function bindEditor(ov,s){
  ov.querySelectorAll('[data-bus-close]').forEach(b=>b.onclick=closeEditor);
  ov.querySelector('[data-bus-report]')?.addEventListener('click',()=>busPrintReport(s));
