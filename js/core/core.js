@@ -56,14 +56,15 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   window.__kaUnifiedPullRefresh=true;
 
   const BLOCK_SELECTOR='.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh],input,textarea,select,[contenteditable="true"]';
-  const INTENT_DISTANCE=6;
-  const ARM_DISTANCE=64;
-  const MAX_PULL=112;
-  const RESISTANCE=.55;
+  const INTENT_DISTANCE=8;
+  const ARM_DISTANCE=48;
+  const MAX_PULL=108;
+  const RESISTANCE=.72;
   const BOTTOM_EXCLUSION=82;
 
   let state='idle';
   let startX=0,startY=0,lastY=0;
+  let startAtTop=false;
   let indicator=null,refreshing=false,staleTimer=null,refreshTimer=null;
 
   const rootScrollTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
@@ -115,6 +116,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
   function reset(){
     clearTimeout(staleTimer);staleTimer=null;
     state='idle';
+    startAtTop=false;
     const el=indicator;
     if(el&&!refreshing){
       el.classList.remove('is-armed','is-refreshing');
@@ -125,7 +127,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   function scheduleStaleReset(){
     clearTimeout(staleTimer);
-    staleTimer=setTimeout(()=>{if(state!=='idle'&&!refreshing)reset()},1400);
+    staleTimer=setTimeout(()=>{if(state!=='idle'&&!refreshing)reset()},2600);
   }
 
   function draw(raw){
@@ -148,8 +150,10 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     if(nearBottomNav(t.clientY)||blocked(target)||!atTop(target))return;
 
     state='candidate';
-    startX=lastY=t.clientX;
-    startY=lastY=t.clientY;
+    startX=t.clientX;
+    startY=t.clientY;
+    lastY=t.clientY;
+    startAtTop=true;
     scheduleStaleReset();
   }
 
@@ -174,7 +178,9 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
       state='pulling';
     }
 
-    if(!atTop(e.target instanceof Element?e.target:null)){
+    /* Native scrolling may move the page a few pixels before we take over.
+       Do not re-check scrollTop here: the gesture was already verified at touchstart. */
+    if(!startAtTop){
       reset();
       return;
     }
