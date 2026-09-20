@@ -325,19 +325,39 @@ function bind(){
  const out=document.getElementById('transportContent');
  if(!out||out.dataset.transportEventsBound==='true')return;
  const interactiveTarget=e=>e.target?.closest?.('button,a,input,select,textarea');
- /* KÖK NEDEN DÜZELTMESİ: daha önce pointerup + touchend + click üçlüsü
-    aynı anda aktifti; touch cihazlarda tüm üçü birden tetiklenince 800ms
-    debounce birinci tıklamayı yutuyordu. Kart elementi zaten
-    touch-action:manipulation taşıdığından synthetic click 300ms gecikmesiz
-    gelir; pointerup ve touchend fazlalık. */
+ let lastBusOpenEl=null,lastBusOpenAt=0;
+ const openBusFromEvent=e=>{
+  const bus=e.target?.closest?.('[data-bus-edit]');
+  if(!bus||!out.contains(bus))return false;
+  const now=Date.now();
+  const sameTarget=bus===lastBusOpenEl;
+  const sameGesture=sameTarget&&now-lastBusOpenAt<80;
+  const clickAfterGesture=e.type==='click'&&sameTarget&&now-lastBusOpenAt<750;
+  if(sameGesture||clickAfterGesture)return true;
+  e.preventDefault();
+  e.stopPropagation();
+  lastBusOpenEl=bus;
+  lastBusOpenAt=now;
+  openBusEditor(bus.dataset.busEdit);
+  return true;
+ };
+ /* KÖK NEDEN DÜZELTMESİ:
+    Android WebView/touch cihazlarda synthetic click her zaman güvenilir
+    gelmediği için servis kartı açılışı pointerup + touchend + click olarak
+    üç girişten destekleniyor. Aynı dokunuşun birden fazla DOM event'i
+    üretmesi durumunda kısa dedupe uygulanıyor; böylece editör iki kez açılmaz. */
+ out.addEventListener('pointerup',e=>{
+  if(openBusFromEvent(e))return;
+  const cls=e.target.closest?.('[data-class-seat-open]');
+  if(cls&&out.contains(cls)){e.preventDefault();e.stopPropagation();openClassSeating(cls.dataset.classSeatOpen)}
+ });
+ out.addEventListener('touchend',e=>{
+  if(openBusFromEvent(e))return;
+  const cls=e.target.closest?.('[data-class-seat-open]');
+  if(cls&&out.contains(cls)){e.preventDefault();e.stopPropagation();openClassSeating(cls.dataset.classSeatOpen)}
+ },{passive:false});
  out.addEventListener('click',e=>{
-  const bus=e.target.closest?.('[data-bus-edit]');
-  if(bus&&out.contains(bus)){
-   e.preventDefault();
-   e.stopPropagation();
-   openBusEditor(bus.dataset.busEdit);
-   return;
-  }
+  if(openBusFromEvent(e))return;
   const cls=e.target.closest?.('[data-class-seat-open]');
   if(cls&&out.contains(cls)){e.preventDefault();e.stopPropagation();openClassSeating(cls.dataset.classSeatOpen);return}
   const service=e.target.closest?.('[data-service-detail]');
