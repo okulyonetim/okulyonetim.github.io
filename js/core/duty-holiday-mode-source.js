@@ -349,7 +349,6 @@ function install(){
   installServiceModalScrollGuard();
   global.AppStore?.subscribe?.('data.dersSaatleri',()=>{
     if(!document.querySelector?.('.ka-duty-page'))return;
-    global.ManagementModule?.render?.();
     queueDecorate();
   });
   document.addEventListener?.('click',event=>{
