@@ -190,7 +190,6 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
             }
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL: {
-                gestureExcluded = false;
                 if (!dragging) return false;
                 dragging = false;
                 if (currentDampedDy >= triggerDistancePx) {
