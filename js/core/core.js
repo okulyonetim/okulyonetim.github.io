@@ -138,7 +138,8 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     if(refreshing||e.touches?.length!==1)return;
     const t=e.touches[0];
     const target=e.target instanceof Element?e.target:null;
-    if(t.clientY>TOP_ZONE||nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
+    const inMenu=!!target?.closest?.('.ka-menu-layer');
+    if((!inMenu&&t.clientY>TOP_ZONE)||nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
       tracking=false;
       return;
     }
