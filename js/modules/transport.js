@@ -355,10 +355,15 @@ function bind(){
   bus.dataset.busLastX=String(e.clientX??e.touches?.[0]?.clientX??bus.dataset.busPressX??0);
   bus.dataset.busLastY=String(e.clientY??e.touches?.[0]?.clientY??bus.dataset.busPressY??0);
  };
- out.addEventListener('pointerdown',e=>{armBusTouch(e)},true);
+ const openBusOnPress=e=>{
+  const bus=e.target?.closest?.('[data-bus-edit]');
+  if(!bus||!out.contains(bus))return;
+  openBusFromEvent(e);
+ };
+ out.addEventListener('pointerdown',e=>{openBusOnPress(e)},true);
+ out.addEventListener('touchstart',e=>{openBusOnPress(e)},true);
  out.addEventListener('pointermove',e=>{cancelBusTouch(e)},true);
  out.addEventListener('pointercancel',e=>{cancelBusTouch(e)},true);
- out.addEventListener('touchstart',e=>{armBusTouch(e)},true);
  out.addEventListener('touchmove',e=>{cancelBusTouch(e)},true);
  out.addEventListener('touchcancel',e=>{cancelBusTouch(e)},true);
  out.addEventListener('pointerup',e=>{openBusFromEvent(e)},true);
