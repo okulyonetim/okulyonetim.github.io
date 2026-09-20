@@ -127,7 +127,7 @@ function busSeats(){
     </div>
     <span class="ka-badge">${st.dolu}/${(st.toplam||'—')}</span>
    </div>
-  </article>`;
+  </button>`;
  },'Servis kaydı bulunamadı.')
 }
 function classSeats(){const plans=arr('sinifOturma'),classes=arr('siniflar').filter(s=>match([s.ad,s.derslik,plans.find(p=>p.sinifId===s.id||p.id===s.id)?.sinifAdi])).sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true}));return listResult(classes,s=>{const p=plans.find(x=>x.sinifId===s.id||x.id===s.id),items=Array.isArray(p?.koltuklar)?p.koltuklar:Array.isArray(p?.yerlesim)?p.yerlesim:[],editable=canEditClassSeat(s.id);return `<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><div class="ka-grow"><strong>${esc(s.ad||p?.sinifAdi||'Sınıf oturma planı')}</strong><div class="ka-muted">${esc(s.derslik||'')}${p?'':' · Henüz plan yok'}</div></div><span class="ka-badge">${items.length} yer</span><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-class-seat-open="${esc(s.id)}">${editable?'Düzenle':'Görüntüle'}</button></div></article>`},'Sınıf bulunamadı.')}
@@ -332,7 +332,7 @@ function bind(){
     gelir; pointerup ve touchend fazlalık. */
  out.addEventListener('click',e=>{
   const bus=e.target.closest?.('[data-bus-edit]');
-  if(bus&&out.contains(bus)&&!interactiveTarget(e)){
+  if(bus&&out.contains(bus)){
    e.preventDefault();
    e.stopPropagation();
    openBusEditor(bus.dataset.busEdit);
