@@ -43,48 +43,186 @@ window.addEventListener('online',()=>AppStore.set('ui.online',true),{passive:tru
 window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:true});
 
 
-/* APK / PWA / mobil web için TEK pull-to-refresh davranışı.
-   Browser/native varsayılan yenilemeleri CSS ile bastırılır; yalnız gerçek belge
-   tepesinde, iç kaydırma alanı dışında ve bilinçli aşağı çekme eşiğinde yenilenir. */
+/* ========================= UNIFIED PULL-TO-REFRESH =========================
+   Android WebView + Android Chrome + iOS Safari/iPadOS + diğer mobil web tarayıcıları.
+   Tek motor: doğal kaydırma yalnız gerçek pull-refresh hareketi doğrulandığında
+   engellenir; yenileme tam sayfa reload yerine SyncEngine üzerinden yapılır. */
 (function installUnifiedPullToRefresh(){
-  if(window.__kaUnifiedPullRefresh)return;window.__kaUnifiedPullRefresh=true;
-  const BLOCK_SELECTOR='.ka-app-nav.ka-bottom-nav,.ka-menu-layer,.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh]';
-  const ARM_DISTANCE=96,MAX_VISUAL=78,DEAD_ZONE=8;
-  let tracking=false,armed=false,startX=0,startY=0,indicator=null,reloading=false,staleTimer=null,reloadFallbackTimer=null;
-  const docTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
-  function scrollableAncestor(target){
-    for(let el=target instanceof Element?target:null;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
-      const style=getComputedStyle(el),oy=style.overflowY;
-      if((oy==='auto'||oy==='scroll'||oy==='overlay')&&el.scrollHeight>el.clientHeight+2)return el;
-    }
-    return null;
+  if(window.__kaUnifiedPullRefresh)return;
+  window.__kaUnifiedPullRefresh=true;
+
+  const BLOCK_SELECTOR='.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh],input,textarea,select,[contenteditable="true"]';
+  const ARM_DISTANCE=96;
+  const DEAD_ZONE=8;
+  const MAX_VISUAL=78;
+  const TOP_ZONE=220;
+  const BOTTOM_EXCLUSION=104;
+
+  let tracking=false,armed=false,cancelled=false;
+  let startX=0,startY=0,lastY=0,indicator=null;
+  let refreshing=false,staleTimer=null,refreshTimer=null;
+
+  function rootScrollTop(){
+    const doc=document.scrollingElement;
+    return Math.max(0,Number(window.scrollY||doc?.scrollTop||0));
   }
-  function blocked(target){return !!(document.body.classList.contains('ka-layer-open')||target?.closest?.(BLOCK_SELECTOR)||scrollableAncestor(target))}
+
+  function isScrollable(el){
+    if(!(el instanceof Element))return false;
+    const cs=getComputedStyle(el);
+    const oy=cs.overflowY;
+    return (oy==='auto'||oy==='scroll'||oy==='overlay')&&el.scrollHeight>el.clientHeight+2;
+  }
+
+  function hasScrolledAncestor(target){
+    for(let el=target instanceof Element?target:null;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
+      if(isScrollable(el)&&el.scrollTop>1)return true;
+    }
+    return rootScrollTop()>1;
+  }
+
+  function blocked(target){
+    if(document.body.classList.contains('ka-layer-open'))return true;
+    return !!target?.closest?.(BLOCK_SELECTOR);
+  }
+
+  function nearBottomNav(y){
+    const nav=document.querySelector('.ka-app-nav.ka-bottom-nav');
+    if(nav){
+      const r=nav.getBoundingClientRect();
+      if(r.height>0&&y>=r.top-BOTTOM_EXCLUSION)return true;
+    }
+    return y>=window.innerHeight-BOTTOM_EXCLUSION;
+  }
+
   function ensureIndicator(){
     if(indicator?.isConnected)return indicator;
-    indicator=document.createElement('div');indicator.id='kaPullRefreshIndicator';indicator.hidden=true;indicator.setAttribute('aria-hidden','true');indicator.innerHTML='<img src="assets/icon-192.png" alt=""><span>Yenilemek için çek</span>';document.body.appendChild(indicator);return indicator;
+    indicator=document.createElement('div');
+    indicator.id='kaPullRefreshIndicator';
+    indicator.hidden=true;
+    indicator.setAttribute('aria-hidden','true');
+    indicator.innerHTML='<img src="assets/icon-192.png" alt=""><span>Yenilemek için çek</span>';
+    document.body.appendChild(indicator);
+    return indicator;
   }
+
   function draw(raw){
-    const el=ensureIndicator(),visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.48);armed=raw>=ARM_DISTANCE;el.hidden=visual<2;el.classList.toggle('is-armed',armed);el.classList.remove('is-refreshing');el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);const label=el.querySelector('span');if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
+    const el=ensureIndicator();
+    const visual=Math.min(MAX_VISUAL,Math.max(0,raw)*.48);
+    armed=raw>=ARM_DISTANCE;
+    el.hidden=visual<2;
+    el.classList.toggle('is-armed',armed);
+    el.classList.remove('is-refreshing');
+    el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);
+    const label=el.querySelector('span');
+    if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek';
   }
-  function reset(){clearTimeout(staleTimer);staleTimer=null;tracking=false;armed=false;const el=indicator;if(el&&!reloading){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}
-  function scheduleStaleReset(){clearTimeout(staleTimer);staleTimer=setTimeout(()=>{if(tracking&&!reloading)reset()},900)}
+
+  function reset(){
+    clearTimeout(staleTimer);staleTimer=null;
+    tracking=false;armed=false;cancelled=false;
+    const el=indicator;
+    if(el&&!refreshing){
+      el.classList.remove('is-armed','is-refreshing');
+      el.style.setProperty('--ka-pull-y','0px');
+      el.hidden=true;
+    }
+  }
+
+  function scheduleStaleReset(){
+    clearTimeout(staleTimer);
+    staleTimer=setTimeout(()=>{if(tracking&&!refreshing)reset()},1200);
+  }
+
   function begin(e){
-    if(reloading||e.touches?.length!==1)return;const target=e.target instanceof Element?e.target:null;if(docTop()>1||blocked(target)){tracking=false;return}tracking=true;armed=false;startX=e.touches[0].clientX;startY=e.touches[0].clientY;scheduleStaleReset();
+    if(refreshing||e.touches?.length!==1)return;
+    const t=e.touches[0];
+    const target=e.target instanceof Element?e.target:null;
+    if(t.clientY>TOP_ZONE||nearBottomNav(t.clientY)||blocked(target)||hasScrolledAncestor(target)){
+      tracking=false;
+      return;
+    }
+    tracking=true;armed=false;cancelled=false;
+    startX=t.clientX;startY=t.clientY;lastY=t.clientY;
+    scheduleStaleReset();
   }
+
   function move(e){
-    if(!tracking||reloading||e.touches?.length!==1)return;const touch=e.touches[0],dx=touch.clientX-startX,dy=touch.clientY-startY;if(Math.abs(dx)>Math.abs(dy)+8){reset();return}if(dy<0||docTop()>1){reset();return}if(dy<=DEAD_ZONE)return;e.preventDefault();draw(dy);scheduleStaleReset();
+    if(!tracking||refreshing||e.touches?.length!==1)return;
+    const t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;
+    lastY=t.clientY;
+
+    if(Math.abs(dx)>Math.abs(dy)+10||dy<0||hasScrolledAncestor(e.target instanceof Element?e.target:null)){
+      cancelled=true;reset();return;
+    }
+    if(dy<=DEAD_ZONE)return;
+
+    /* Only after vertical/downward intent is clear do we cancel native scrolling.
+       This is required for Android passive-touch defaults and keeps iOS scrolling natural. */
+    if(e.cancelable)e.preventDefault();
+    draw(dy);
+    scheduleStaleReset();
   }
+
+  async function runRefresh(){
+    if(refreshing)return;
+    refreshing=true;
+    clearTimeout(refreshTimer);
+    const el=ensureIndicator();
+    el.hidden=false;
+    el.classList.remove('is-armed');
+    el.classList.add('is-refreshing');
+    el.style.setProperty('--ka-pull-y','74px');
+    const label=el.querySelector('span');
+    if(label)label.textContent='Yenileniyor…';
+
+    try{
+      if(typeof window.SyncEngine?.sync==='function'){
+        await Promise.race([
+          Promise.resolve(window.SyncEngine.sync()),
+          new Promise((_,reject)=>setTimeout(()=>reject(new Error('refresh-timeout')),9000))
+        ]);
+      }
+      window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source:'gesture'}}));
+    }catch(error){
+      console.warn('[PullRefresh]',error?.message||error);
+    }finally{
+      clearTimeout(refreshTimer);
+      refreshTimer=setTimeout(()=>{
+        refreshing=false;
+        const current=indicator;
+        if(current){
+          current.classList.remove('is-armed','is-refreshing');
+          current.style.setProperty('--ka-pull-y','0px');
+          current.hidden=true;
+        }
+      },350);
+    }
+  }
+
   function finish(){
-    if(!tracking||reloading){if(!reloading)reset();return}const refresh=armed;tracking=false;armed=false;if(!refresh){reset();return}clearTimeout(staleTimer);staleTimer=null;reloading=true;const el=ensureIndicator();el.hidden=false;el.classList.remove('is-armed');el.classList.add('is-refreshing');el.style.setProperty('--ka-pull-y','74px');const label=el.querySelector('span');if(label)label.textContent='Yenileniyor…';clearTimeout(reloadFallbackTimer);reloadFallbackTimer=setTimeout(()=>{reloading=false;reset()},3500);setTimeout(()=>window.location.reload(),100);
+    if(!tracking||refreshing){if(!refreshing)reset();return;}
+    const shouldRefresh=armed&&!cancelled;
+    tracking=false;armed=false;cancelled=false;
+    clearTimeout(staleTimer);staleTimer=null;
+    if(shouldRefresh)void runRefresh();
+    else reset();
   }
+
   document.addEventListener('touchstart',begin,{capture:true,passive:true});
   document.addEventListener('touchmove',move,{capture:true,passive:false});
   document.addEventListener('touchend',finish,{capture:true,passive:true});
   document.addEventListener('touchcancel',reset,{capture:true,passive:true});
-  window.addEventListener('pageshow',()=>{clearTimeout(reloadFallbackTimer);reloading=false;reset()},{passive:true});
-  window.addEventListener('blur',()=>{if(!reloading)reset()},{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!reloading)reset()},{passive:true});
+
+  window.addEventListener('blur',()=>{if(!refreshing)reset()},{passive:true});
+  window.addEventListener('pageshow',()=>{if(!refreshing)reset()},{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!refreshing)reset()},{passive:true});
+
+  window.KorukPullRefresh={
+    refresh:runRefresh,
+    reset,
+    get refreshing(){return refreshing}
+  };
 })();
 
 /* ========================= EVENT BUS ========================= */
