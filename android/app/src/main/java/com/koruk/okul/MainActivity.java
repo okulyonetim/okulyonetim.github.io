@@ -44,6 +44,10 @@ public class MainActivity extends BridgeActivity {
             anaWebView.getSettings().setSupportZoom(false);
             anaWebView.getSettings().setBuiltInZoomControls(false);
             anaWebView.getSettings().setDisplayZoomControls(false);
+            // Capacitor'ın WebView parent'ı bazı cihazlarda ilk onCreate anında
+            // henüz tamamlanmamış olabilir. Kurulumu birkaç frame boyunca güvenle
+            // tekrar dene; tek seferlik post ile PTR'ın hiç kurulmadan kalmasına
+            // izin verme.
             anaWebView.post(this::setupPullToRefresh);
         }
 
@@ -60,9 +64,16 @@ public class MainActivity extends BridgeActivity {
     private void setupPullToRefresh() {
         if (nativePullRefresh != null || getBridge() == null) return;
         final WebView webView = getBridge().getWebView();
-        if (webView == null) return;
+        if (webView == null) {
+            retryPullToRefreshSetup(webView);
+            return;
+        }
+
         final ViewParent rawParent = webView.getParent();
-        if (!(rawParent instanceof ViewGroup)) return;
+        if (!(rawParent instanceof ViewGroup)) {
+            retryPullToRefreshSetup(webView);
+            return;
+        }
 
         final ViewGroup parent = (ViewGroup) rawParent;
         final int index = parent.indexOfChild(webView);
@@ -86,6 +97,11 @@ public class MainActivity extends BridgeActivity {
             );
         });
         parent.addView(nativePullRefresh, index);
+    }
+
+    private void retryPullToRefreshSetup(final WebView webView) {
+        if (nativePullRefresh != null || webView == null) return;
+        webView.postDelayed(() -> setupPullToRefresh(), 250);
     }
 
     /* Android 10+ (API 29) sistem "geri" hareket algılaması, ekranın sol
