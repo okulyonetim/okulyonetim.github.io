@@ -135,14 +135,23 @@ function busCabinRows(){
  rest.forEach(x=>{const r=Number(x.e.row)||0;if(!map.has(r))map.set(r,[]);map.get(r).push(x)});
  return{front,rows:[...map.entries()].sort((a,b)=>a[0]-b[0]),rear};
 }
-function busRowHtml(items,report=false){
- const left=items.filter(x=>String(x.e.properties?.konum||'').startsWith('sol')).sort((a,b)=>busSeatPositionOrder(a.e)-busSeatPositionOrder(b.e)),right=items.filter(x=>String(x.e.properties?.konum||'').startsWith('sag')).sort((a,b)=>busSeatPositionOrder(a.e)-busSeatPositionOrder(b.e)),door=items.some(x=>x.e.properties?.kapiSag)&&!right.length;
- return `<div class="ka-bus-row ka-bus-classic-row"><div class="ka-bus-classic-side is-left">${left.map(x=>busSeatTile(x.e,x.index,report)).join('')}</div><div class="ka-bus-classic-aisle">${door?'<span class="ka-bus-classic-door">🚪<b>KAPI</b></span>':'<span></span>'}</div><div class="ka-bus-classic-side is-right">${right.map(x=>busSeatTile(x.e,x.index,report)).join('')}</div></div>`;
+function busCellElement(row,key){
+ if(!editor)return null;
+ return editor.elements.find(e=>e.visible!==false&&e.type!=='sofor'&&e.type!=='arka-koltuk'&&Number(e.row)===Number(row)&&String(e.properties?.konum||'')===key)||null;
+}
+function busTableCell(e,index,label){
+ const name=seatStudentName(e),state=busSeatState(e),no=e?.seatNumber||'';
+ if(!e)return '<td class="ka-bus-grid-cell is-void"></td>';
+ return \`<td class="ka-bus-grid-cell \${state}" data-bus-seat-index="\${index}" title="\${esc(name||label)}"><span class="ka-bus-grid-no">\${esc(no)}</span>\${name?\`<span class="ka-bus-grid-avatar">\${esc(busSeatInitial(name))}</span><strong>\${esc(name)}</strong>\`:e.properties?.reserved?'<strong>REZERVE</strong>':'<small>BOŞ</small>'}\${e.locked?'<i>🔒</i>':''}</td>\`;
 }
 function busCabinHtml(s,report=false){
  if(!editor)return'';
- const {front,rows,rear}=busCabinRows(),plate=s?.plaka||'',driver=s?.soforAdi||'Şoför',frontRight=front.map(x=>busSeatTile(x.e,x.index,report)).join(''),rearHtml=rear.length?`<div class="ka-bus-classic-rear">${rear.map(x=>busSeatTile(x.e,x.index,report)).join('')}</div>`:'';
- return `<div class="ka-bus-classic-shell" data-bus-classic-shell><div class="ka-bus-classic-lights"><span>🚨</span><i></i><span>🚨</span></div><div class="ka-bus-classic-plate">${esc(plate||'OKUL SERVİSİ')}</div><div class="ka-bus-classic-front-row"><div class="ka-bus-classic-driver"><span class="ka-bus-driver-icon">👨‍✈️</span><small>ŞOFÖR</small><strong>${esc(driver)}</strong></div><div class="ka-bus-classic-front-seats">${frontRight}</div></div><div class="ka-bus-classic-body">${rows.map(([,items])=>busRowHtml(items,report)).join('')}</div>${rearHtml}</div>`;
+ const rows=busRows(),plate=s?.plaka||'',driver=s?.soforAdi||'Şoför',keys=[['sol-dis','Sol dış'],['sol-ic','Sol iç'],['aisle','Koridor'],['sag-ic','Sağ iç'],['sag-dis','Sağ dış']];
+ const head=\`<thead><tr><th>SIRA</th>\${keys.map(x=>\`<th>\${x[1]}</th>\`).join('')}</tr></thead>\`;
+ const body=rows.map(row=>\`<tr><th>\${row===0?'ÖN':row}</th>\${keys.map(([key,label])=>{if(key==='aisle'){const door=editor.elements.some(e=>Number(e.row)===row&&e.properties?.kapiSag);return \`<td class="ka-bus-grid-aisle">\${door?'🚪<small>KAPI</small>':''}</td>\`}const e=busCellElement(row,key),idx=e?editor.elements.indexOf(e):-1;return busTableCell(e,idx,label)}).join('')}</tr>\`).join('');
+ const rear=editor.elements.filter(e=>e.visible!==false&&(e.type==='arka-koltuk'||e.properties?.konum==='arka'));
+ const rearHtml=rear.length?\`<div class="ka-bus-grid-rear"><span>ARKA SIRA</span>\${rear.map(e=>busTableCell(e,editor.elements.indexOf(e),'Arka koltuk').replace('<td ','<button type="button" ' ).replace('</td>','</button>')).join('')}</div>\`:'';
+ return \`<div class="ka-bus-grid-shell"><div class="ka-bus-grid-top"><div class="ka-bus-grid-driver">👨‍✈️<small>ŞOFÖR</small><strong>\${esc(driver)}</strong></div><div class="ka-bus-grid-vehicle"><small>ARAÇ / PLAKA</small><strong>\${esc(plate||'OKUL SERVİSİ')}</strong></div></div><div class="ka-bus-grid-table-wrap"><table class="ka-bus-grid-table">\${head}<tbody>\${body}</tbody></table></div>\${rearHtml}</div>\`;
 }
 function busHasAssignments(){return !!editor?.elements?.some(e=>e.studentId||e.properties?.reserved)}
 function clearBusSeat(e){if(!e)return;e.studentId=null;e.properties={...(e.properties||{}),studentName:'',reserved:false}}
