@@ -13,6 +13,6 @@ assert(css.includes('REPORT PREVIEW — CANONICAL')&&css.includes('.ka-report-pr
 assert(!css.includes('grid-template-areas:"close title title title print"'),'Eski rapor toolbar yaması kaldırılmış olmalı.');
 assert(schedule.includes('border:.65pt solid #7f9189!important')&&schedule.includes('border:.55pt solid #9eaca6!important'),'Çarşaf hücre kenarlıkları daha belirgin olmalı.');
 const cssVer=index.match(/css\/design-system\.css\?v=(\d+)/);assert(cssVer&&Number(cssVer[1])>=943,'Canonical rapor stili yeni sürümle yüklenmeli.');
-assert(init.includes('schedule-report-redesign.js?v=941'),'Çarşaf rapor stili yüklenmeli.');
+assert(init.includes('schedule-report-redesign.js?v=942'),'Çarşaf rapor stili yüklenmeli.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);assert(cache&&Number(cache[1])>=947,'Yeni rapor önizleme motoru için SW cache yükseltilmeli.');
 console.log('Canonical rapor önizleme yerleşimi ve yazdırma regresyon testi başarılı.');
