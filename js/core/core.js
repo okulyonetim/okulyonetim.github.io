@@ -96,8 +96,11 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
     if(!scroller)return true;
     if(Number(scroller.scrollTop||0)>1)return false;
 
-    const oy=getComputedStyle(scroller).overscrollBehaviorY;
-    if(oy==='contain'||oy==='none')return false;
+    /* İç alan en üstteyse pull gesture'ını JS motoru devralabilir.
+       CSS'teki overscroll-behavior:contain/none, normal tarayıcı overscroll'ünü
+       durdurur; ancak burada yenileme gesture'ını özellikle biz yönetiyoruz.
+       Aşağıdaki scrollTop kontrolü, alanın gerçekten aşağıda olup olmadığını
+       ayırt etmek için yeterlidir. */
     return true;
   }
 
