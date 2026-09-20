@@ -119,7 +119,7 @@ function busSeats(){
  const list=arr('servisler').filter(s=>match([s.servisAdi,s.guzergah,s.plaka,currentPlan(s.id)?.sablon])).sort((a,b)=>serviceName(a).localeCompare(serviceName(b),'tr'));
  return listResult(list,s=>{
   const p=currentPlan(s.id),els=window.soPlanElementleriGetir?.(p||{},p?.sablon||'ducato')||[],st=window.soElementIstatistik?.(els)||{toplam:0,dolu:0};
-  return `<button class="ka-card ka-list-card ka-bus-seat-card" type="button" data-bus-edit="${esc(s.id)}" aria-label="${esc(serviceName(s))} servis oturma planını aç" style="display:block;width:100%;margin:0;padding:0;border:0;text-align:left;cursor:pointer;touch-action:manipulation">
+  return `<button class="ka-card ka-list-card ka-bus-seat-card" type="button" data-bus-edit="${esc(s.id)}" aria-label="${esc(serviceName(s))} servis oturma planını aç" onclick="window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" onpointerup="window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" ontouchend="window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" style="display:block;width:100%;margin:0;padding:0;border:0;text-align:left;cursor:pointer;touch-action:manipulation">
    <div class="ka-card__body ka-row ka-row--between">
     <div class="ka-grow"><strong>${esc(serviceName(s))}</strong>
      <div class="ka-muted">${esc(s.plaka||'')}${s.guzergah?' · '+esc(s.guzergah):''}</div>
