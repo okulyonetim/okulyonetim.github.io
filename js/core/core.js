@@ -57,7 +57,7 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   const BLOCK_SELECTOR='.ka-modal-backdrop,.dv3,[role="dialog"],[data-ka-no-pull-refresh],input,textarea,select,[contenteditable="true"]';
   const INTENT_DISTANCE=8;
-  const ARM_DISTANCE=96;
+  const ARM_DISTANCE=48;
   const MAX_PULL=108;
   const RESISTANCE=.72;
 
