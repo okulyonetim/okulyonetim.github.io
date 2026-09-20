@@ -68,41 +68,36 @@ window.addEventListener('offline',()=>AppStore.set('ui.online',false),{passive:t
 
   const rootScrollTop=()=>Math.max(0,Number(window.scrollY||document.scrollingElement?.scrollTop||0));
 
-  function appScrollTop(){
-    const el=document.querySelector('.ka-app-content');
-    return el?Math.max(0,Number(el.scrollTop||0)):0;
-  }
-
-  function menuScrollTop(){
-    const el=document.querySelector('.ka-menu-list,.ka-menu-grid');
-    return el?Math.max(0,Number(el.scrollTop||0)):0;
-  }
-
-  /* DOM ağacında hedef elemandan yukarı doğru çıkarak overflow-y:auto/scroll
-     olan ve gerçekten kaydırılmış (scrollTop>1) bir ata eleman olup olmadığını
-     kontrol eder. Modal içi listeler, tablo sarmalayıcıları ve özel scroll
-     container'ları bu sayede yakalanır; yanlışlıkla pull-refresh tetiklenmez. */
-  function hasScrolledAncestor(el){
-    let node=el;
-    while(node&&node!==document.body){
-      const st=node.scrollTop;
-      if(st>1){
-        const style=getComputedStyle(node);
-        const oy=style.overflowY;
-        if(oy==='auto'||oy==='scroll')return true;
-      }
+  /* Hedefin gerçekten içinde bulunduğu en yakın dikey scroll alanını bul.
+     Önceki sürüm bütün ata elemanları tarıyordu. Bu, sayfanın kendisi üstteyken
+     başka bir üst kapsayıcının scrollTop değeri yüzünden normal içerikte pull
+     gesture'ının gereksiz yere reddedilmesine neden olabiliyordu. */
+  function nearestScrollableAncestor(el){
+    let node=el instanceof Element?el.parentElement:null;
+    while(node&&node!==document.body&&node!==document.documentElement){
+      const style=getComputedStyle(node);
+      const oy=style.overflowY;
+      if((oy==='auto'||oy==='scroll')&&node.scrollHeight>node.clientHeight+1)return node;
       node=node.parentElement;
     }
-    return false;
+    return null;
   }
 
   function atTop(target){
+    /* Ana sayfanın gerçek scroll konumu. */
     if(rootScrollTop()>1)return false;
-    const app=document.querySelector('.ka-app-content');
-    const menu=document.querySelector('.ka-menu-list,.ka-menu-grid');
-    if(app&&app.contains(target)&&appScrollTop()>1)return false;
-    if(menu&&menu.contains(target)&&menuScrollTop()>1)return false;
-    if(target&&hasScrolledAncestor(target))return false;
+
+    /* Hedef bir iç scroll alanındaysa yalnızca o alanın konumunu dikkate al.
+       Alan aşağıdaysa aşağı çekme onun normal scroll hareketidir ve pull
+       refresh devreye girmemelidir. Alanın en üstündeyse Chrome/Safari'deki
+       overscroll davranışına izin verilir; contain/none kullanılmış özel
+       scroll alanlarında ise gesture o alana ait kalır. */
+    const scroller=nearestScrollableAncestor(target);
+    if(!scroller)return true;
+    if(Number(scroller.scrollTop||0)>1)return false;
+
+    const oy=getComputedStyle(scroller).overscrollBehaviorY;
+    if(oy==='contain'||oy==='none')return false;
     return true;
   }
 
