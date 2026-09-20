@@ -171,69 +171,94 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         return dy > touchSlop && dy > dx * VERTICAL_DOMINANCE;
     }
 
+    /*
+     * WebView kendi içinde requestDisallowInterceptTouchEvent() çağırabildiği
+     * için klasik onInterceptTouchEvent yaklaşımı cihaz/ekran değişimlerinden
+     * sonra kararsızlaşabiliyor.
+     *
+     * Burada jesti dispatchTouchEvent seviyesinde izliyoruz. Parent her touch
+     * olayını WebView'e göndermeden önce görür. Aşağı doğru jest eşik değerini
+     * geçtiği anda WebView'e CANCEL gönderip kontrolü tamamen native PTR'a
+     * alıyoruz. Böylece WebView'in interception durumu PTR'ı kilitleyemez.
+     */
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!pullEnabled || refreshing || gestureExcluded) return false;
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!pullEnabled || refreshing) {
+            return super.dispatchTouchEvent(ev);
+        }
+
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 downX = ev.getX();
                 downY = ev.getY();
                 dragging = false;
-                gestureExcluded = getHeight() > 0 && ev.getY() >= getHeight() - bottomExclusionPx;
-                return false;
-            case MotionEvent.ACTION_MOVE: {
-                if (gestureExcluded || canChildScrollUp()) return false;
-                if (dikeyAsagiJestMi(ev)) {
-                    dragging = true;
+                gestureExcluded = false;
+                return super.dispatchTouchEvent(ev);
+
+            case MotionEvent.ACTION_MOVE:
+                if (dragging) {
+                    handlePullMove(ev);
                     return true;
                 }
-                return false;
-            }
+
+                if (!gestureExcluded
+                        && !canChildScrollUp()
+                        && dikeyAsagiJestMi(ev)) {
+                    dragging = true;
+
+                    // WebView'in o anki gesture'ını temizle; bundan sonraki
+                    // MOVE/UP olaylarının sahibi native PTR olsun.
+                    MotionEvent cancel = MotionEvent.obtain(ev);
+                    cancel.setAction(MotionEvent.ACTION_CANCEL);
+                    webView.dispatchTouchEvent(cancel);
+                    cancel.recycle();
+
+                    handlePullMove(ev);
+                    return true;
+                }
+
+                return super.dispatchTouchEvent(ev);
+
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                return false;
+                if (dragging) {
+                    dragging = false;
+                    if (currentDampedDy >= triggerDistancePx
+                            && ev.getActionMasked() == MotionEvent.ACTION_UP) {
+                        setRefreshing(true);
+                        if (listener != null) listener.onRefresh();
+                    } else {
+                        springBackTo(0);
+                    }
+                    return true;
+                }
+                return super.dispatchTouchEvent(ev);
+
             default:
-                return false;
+                return super.dispatchTouchEvent(ev);
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (!pullEnabled || refreshing) return false;
-        switch (ev.getActionMasked()) {
-            case MotionEvent.ACTION_MOVE: {
-                if (!dragging) return false;
-                if (canChildScrollUp()) {
-                    dragging = false;
-                    springBackTo(0);
-                    return false;
-                }
-                float dy = ev.getY() - downY;
-                float dx = Math.abs(ev.getX() - downX);
-                if (dy <= 0 || dy <= dx * VERTICAL_DOMINANCE) {
-                    dragging = false;
-                    springBackTo(0);
-                    return false;
-                }
-                float rawDy = Math.max(0f, dy);
-                float dampedDy = rawDy * DAMPING;
-                applyPull(dampedDy);
-                return true;
-            }
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL: {
-                if (!dragging) return false;
-                dragging = false;
-                if (currentDampedDy >= triggerDistancePx) {
-                    setRefreshing(true);
-                    if (listener != null) listener.onRefresh();
-                } else {
-                    springBackTo(0);
-                }
-                return true;
-            }
+    private void handlePullMove(MotionEvent ev) {
+        float dy = ev.getY() - downY;
+        float dx = Math.abs(ev.getX() - downX);
+
+        if (dy <= 0 || dy <= dx * VERTICAL_DOMINANCE) {
+            dragging = false;
+            springBackTo(0);
+            return;
         }
-        return false;
+
+        // Kullanıcı parmağı aşağı doğru çekmeye devam ederken sayfa tekrar
+        // scroll edebiliyorsa native PTR'ı bırak.
+        if (canChildScrollUp()) {
+            dragging = false;
+            springBackTo(0);
+            return;
+        }
+
+        float dampedDy = Math.max(0f, dy) * DAMPING;
+        applyPull(dampedDy);
     }
 
     private void applyPull(float dampedDy) {
