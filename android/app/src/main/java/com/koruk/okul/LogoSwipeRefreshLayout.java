@@ -110,7 +110,6 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
             springBackTo(0);
         }
         if (enabled) {
-            innerContentKaydirilmis = false;
             dragging = false;
         }
     }
@@ -133,9 +132,19 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
 
     private boolean canChildScrollUp() {
         if (webView == null) return false;
-        return webView.canScrollVertically(-1)
-            || webView.getScrollY() > 0
-            || innerContentKaydirilmis;
+
+        /*
+         * WebView'in gerçek scroll konumu tek otoritedir.
+         *
+         * Daha önce JS tarafındaki .ka-app-content.scrollTop değerini de
+         * buraya taşıyorduk. Bu değer bazı ekranlarda scroll container
+         * olmadığı için yanlışlıkla true kalabiliyor ve birkaç dakika sonra
+         * pull-to-refresh'i kalıcı olarak kilitliyordu.
+         *
+         * WebView.canScrollVertically(-1), WebView içindeki gerçek belge
+         * kaydırma durumunu Android tarafında doğrudan sorgular.
+         */
+        return webView.canScrollVertically(-1) || webView.getScrollY() > 0;
     }
 
     @Override
@@ -155,9 +164,6 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         }
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
-
-    private volatile boolean innerContentKaydirilmis = false;
-    public void setInnerContentKaydirilmis(boolean v) { innerContentKaydirilmis = v; }
 
     private boolean dikeyAsagiJestMi(MotionEvent ev) {
         float dy = ev.getY() - downY;
