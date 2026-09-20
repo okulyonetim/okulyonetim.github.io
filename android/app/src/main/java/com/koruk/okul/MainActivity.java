@@ -69,6 +69,20 @@ public class MainActivity extends BridgeActivity {
             return;
         }
 
+        webView.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public void setInnerContentKaydirilmis(boolean value) {
+                if (nativePullRefresh != null) {
+                    nativePullRefresh.setInnerContentKaydirilmis(value);
+                }
+            }
+        }, "KorukNativePullRefresh");
+
+        webView.evaluateJavascript(
+            "(function(){try{if(window.__korukNativePullScrollInstalled)return;window.__korukNativePullScrollInstalled=true;function report(){var el=document.querySelector('.ka-app-content');var y=el?Number(el.scrollTop||0):0;try{window.KorukNativePullRefresh&&window.KorukNativePullRefresh.setInnerContentKaydirilmis(y>1)}catch(e){}}document.addEventListener('scroll',report,true);window.addEventListener('resize',report,{passive:true});report()}catch(e){console.warn('[NativePullScroll]',e)}})()",
+            null
+        );
+
         final ViewParent rawParent = webView.getParent();
         if (!(rawParent instanceof ViewGroup)) {
             retryPullToRefreshSetup(webView);
