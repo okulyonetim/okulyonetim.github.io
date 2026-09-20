@@ -128,7 +128,7 @@ function busSeats(){
     <span class="ka-badge">${st.dolu}/${(st.toplam||'—')}</span>
    </div>
    <div class="ka-card__footer" style="padding-top:0">
-    <button class="ka-btn ka-btn--secondary" type="button" data-bus-edit="${esc(s.id)}" aria-label="${esc(serviceName(s))} servis oturma planını aç" style="width:100%;min-height:46px">💺 Oturma Planını Aç</button>
+    <button class="ka-btn ka-btn--secondary" type="button" data-bus-edit="${esc(s.id)}" aria-label="${esc(serviceName(s))} servis oturma planını aç" onclick="event.preventDefault();event.stopPropagation();window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" onpointerdown="event.stopPropagation();window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" ontouchstart="event.stopPropagation();window.TransportModule?.openBusEditor?.(this.dataset.busEdit)" style="width:100%;min-height:46px;min-width:44px;display:block;touch-action:manipulation">💺 Oturma Planını Aç</button>
    </div>
   </div>`;
  },'Servis kaydı bulunamadı.')
