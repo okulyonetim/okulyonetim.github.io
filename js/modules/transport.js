@@ -162,7 +162,7 @@ function busCabinHtml(s,report=false){
  const body=rows.map(row=>`<tr><th>${row===0?'ÖN':row}</th>${keys.map(([key,label])=>{if(key==='aisle'){const door=editor.elements.some(e=>Number(e.row)===row&&e.properties?.kapiSag);return `<td class="ka-bus-grid-aisle">${door?'🚪<small>KAPI</small>':''}</td>`}const e=busCellElement(row,key),idx=e?editor.elements.indexOf(e):-1;return busTableCell(e,idx,label)}).join('')}</tr>`).join('');
  const rear=editor.elements.filter(e=>e.visible!==false&&(e.type==='arka-koltuk'||e.properties?.konum==='arka'));
  const rearHtml=rear.length?`<div class="ka-bus-grid-rear"><span>ARKA SIRA</span>${rear.map(e=>busTableCell(e,editor.elements.indexOf(e),'Arka koltuk').replace('<td ','<button type="button" ' ).replace('</td>','</button>')).join('')}</div>`:'';
- return `<div class="ka-bus-grid-shell"><div class="ka-bus-grid-top"><div class="ka-bus-grid-driver">👨‍✈️<small>ŞOFÖR</small><strong>${esc(driver)}</strong></div><div class="ka-bus-grid-vehicle"><small>ARAÇ / PLAKA</small><strong>${esc(plate||'OKUL SERVİSİ')}</strong></div></div><div class="ka-bus-grid-table-wrap"><table class="ka-bus-grid-table">${head}<tbody>${body}</tbody></table></div>${rearHtml}</div>`;
+ return `<div class="ka-bus-grid-shell ka-bus-classic-shell" data-bus-classic-shell><div class="ka-bus-grid-top"><div class="ka-bus-grid-driver">👨‍✈️<small>ŞOFÖR</small><strong>${esc(driver)}</strong></div><div class="ka-bus-grid-vehicle"><small>ARAÇ / PLAKA</small><strong>${esc(plate||'OKUL SERVİSİ')}</strong></div></div><div class="ka-bus-grid-table-wrap"><table class="ka-bus-grid-table">${head}<tbody>${body}</tbody></table></div>${rearHtml}</div>`;
 }
 function busHasAssignments(){return !!editor?.elements?.some(e=>e.studentId||e.properties?.reserved)}
 function clearBusSeat(e){if(!e)return;e.studentId=null;e.properties={...(e.properties||{}),studentName:'',reserved:false}}
@@ -231,15 +231,16 @@ function renderBusEditor(s){
    <button class="ka-icon-button" type="button" data-bus-close>×</button>
   </div>
   <div class="ka-modal__body ka-stack">
-   <div class="ka-bus-grid-summary">
+   <div class="ka-bus-grid-summary ka-bus-classic-stats" data-bus-classic-stats>
     <div><small>ŞOFÖR</small><strong>${esc(s.soforAdi||'—')}</strong></div>
     <div><small>ARAÇ</small><strong>${esc(window.SO_SABLONLAR?.[editor.sablon]?.ad||editor.sablon)}</strong></div>
     <div><small>KOLTUK</small><strong>${st.dolu} / ${st.toplam}</strong></div>
     <div><small>DOLULUK</small><strong>%${st.doluluk}</strong></div>
    </div>
-   <div class="ka-bus-editor-toolbar">
-    ${editable?`<button class="ka-btn ka-btn--secondary" type="button" data-bus-layout-edit>⚙ ${editor.layoutEditing?'Düzenlemeyi Kapat':'Yerleşimi Düzenle'}</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-add>＋ Sıra</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-remove>－ Sıra</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor</button>`:'<button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor</button>'}
+   <div class="ka-bus-editor-toolbar ka-bus-tool-grid" data-bus-classic-shell>
+    ${editable?`<button class="ka-btn ka-btn--secondary" type="button" data-bus-layout-edit>⚙ ${editor.layoutEditing?'Düzenlemeyi Kapat':'Düzenlemeyi Aç'}</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-add>＋ Sıra Ekle</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-row-remove>－ Sıra Sil</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-clear-all>🧹 Atamaları Temizle</button><button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor Al</button>`:'<button class="ka-btn ka-btn--secondary" type="button" data-bus-report>🖨 Rapor Al</button>'}
    </div>
+   <div class="ka-bus-template-grid" data-bus-template-grid>${busTemplateCards()}</div>
    ${editor.layoutEditing?'<div class="ka-hint">Düzenleme modunda hücrelere dokunarak seçim yapın. Bitişik boş hücreleri seçip birleştirme veya ayırma işlemlerini kullanabilirsiniz.</div>':'<div class="ka-hint">Bir koltuğa dokunarak öğrenciyi atayın, boşaltın, rezerve edin veya kilitleyin.</div>'}
    ${busCabinHtml(s)}
    <div class="ka-bus-legend"><span><i class="is-filled"></i>Dolu</span><span><i class="is-empty"></i>Boş</span><span><i class="is-reserved"></i>Rezerve</span><span><i class="is-locked"></i>Kilitli</span></div>
