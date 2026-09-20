@@ -119,7 +119,7 @@ function busSeats(){
  const list=arr('servisler').filter(s=>match([s.servisAdi,s.guzergah,s.plaka,currentPlan(s.id)?.sablon])).sort((a,b)=>serviceName(a).localeCompare(serviceName(b),'tr'));
  return listResult(list,s=>{
   const p=currentPlan(s.id),els=window.soPlanElementleriGetir?.(p||{},p?.sablon||'ducato')||[],st=window.soElementIstatistik?.(els)||{toplam:0,dolu:0};
-  return '<article class="ka-card ka-list-card ka-bus-seat-card" data-bus-edit="'+esc(s.id)+'" tabindex="0" role="button" aria-label="'+esc(serviceName(s))+' servis oturma planını '+(editable?'düzenle':'görüntüle')+'">'
+  return '<article class="ka-card ka-list-card ka-bus-seat-card" data-bus-edit="${esc(s.id)}">${editable?'Düzenle':'Görüntüle'}'
    +'<div class="ka-card__body ka-row ka-row--between">'
    +'<div class="ka-grow"><strong>'+esc(serviceName(s))+'</strong>'
    +'<div class="ka-muted">'+esc(s.plaka||'')+(s.guzergah?' · '+esc(s.guzergah):'')+'</div>'
