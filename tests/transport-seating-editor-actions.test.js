@@ -7,7 +7,7 @@ const index=fs.readFileSync('index.html','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 new Function(transport);
-for(const token of ['ka-bus-tool-grid','data-bus-row-add','data-bus-row-remove','data-bus-report','data-bus-clear-all'])assert(transport.includes(token),`Editör aracı eksik: ${token}`);
+for(const token of ['bso-tools','data-bus-row-add','data-bus-row-remove','data-bus-report','data-bus-clear-all'])assert(transport.includes(token),`Editör aracı eksik: ${token}`);
 assert(transport.includes("b.textContent='Kaydedildi ✓'"),'Kaydet butonu sonsuz Kaydediliyor durumunda kalmamalı.');
 assert(transport.includes('const task=window.ServisOturmaService.planElementsKaydet'),'Local-first kayıt görevi başlatılmalı.');
 assert(transport.includes('setTimeout(()=>{closeEditor();try{render()}'),'Kayıt arka planda sürse bile editör kullanıcıyı kilitlememeli.');

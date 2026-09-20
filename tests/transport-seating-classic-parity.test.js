@@ -7,7 +7,7 @@ const loader=fs.readFileSync('js/app-loader.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 new Function(transport);
-for(const token of ['function busElementLayoutUsable','function elementAssignmentsToLegacy','busElementLayoutUsable(raw)','data-bus-classic-shell','ka-bus-classic-stats','ka-bus-template-grid','data-bus-row-add','data-bus-row-remove','data-bus-report'])assert(transport.includes(token),`Eski oturma paritesi eksik: ${token}`);
+for(const token of ['function busElementLayoutUsable','function elementAssignmentsToLegacy','busElementLayoutUsable(raw)','data-bus-classic-shell','bso-stats','data-bus-template-grid','data-bus-row-add','data-bus-row-remove','data-bus-report'])assert(transport.includes(token),`Eski oturma paritesi eksik: ${token}`);
 assert(transport.includes("if(sb==='ozel'&&raw.length)"),'Özel tasarım ham yerleşimi korunmalı.');
 assert(transport.includes('assignments=Array.isArray(plan?.koltuklar)&&plan.koltuklar.length?plan.koltuklar:elementAssignmentsToLegacy(raw)'),'Bozuk element yerleşiminde öğrenci atamaları kaybolmamalı.');
 assert(!transport.includes('<div class="ka-bus-cabin ka-bus-classic-shell">'),'Klasik araç şeması eski generic cabin sınıfıyla çakışmamalı.');
