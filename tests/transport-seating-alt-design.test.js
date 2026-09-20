@@ -5,7 +5,7 @@ const css=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 const js=fs.readFileSync('js/modules/transport.js','utf8');
-for(const token of ['.ka-bus-grid-shell','.ka-bus-grid-table','.ka-bus-grid-cell','.ka-bus-grid-driver','.ka-bus-grid-aisle','.ka-bus-grid-rear','function busCabinHtml'])assert(js.includes(token),`Yeni servis oturma tablo hücre sözleşmesi eksik: ${token}`);
+for(const token of ['ka-bus-grid-shell','ka-bus-grid-table','ka-bus-grid-cell','ka-bus-grid-driver','ka-bus-grid-aisle','ka-bus-grid-rear','function busCabinHtml'])assert(js.includes(token),`Yeni servis oturma tablo hücre sözleşmesi eksik: ${token}`);
 assert(assetVersion(index,'css/design-system.css')>=893,'Index yeni servis oturma tasarımını yüklemeli.');
 assert(cacheVersion(sw)>=980&&assetVersion(sw,'css/design-system.css')>=893,'Service Worker yeni tasarım CSS paketini önbelleğe almalı.');
 console.log('Servis oturma alternatif tasarım testi başarılı.');
