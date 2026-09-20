@@ -1,132 +1,256 @@
 package com.koruk.okul;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 /**
- * Android APK pull-to-refresh.
+ * LogoSwipeRefreshLayout — WebViewAwareSwipeRefreshLayout'un yerini alır.
  *
- * WebView ile elle MotionEvent/intercept yarıştırmak yerine AndroidX
- * SwipeRefreshLayout'ın nested-scroll mekanizmasını kullanır. Bu, WebView'in
- * requestDisallowInterceptTouchEvent() ve nested scrolling davranışlarıyla
- * custom ViewGroup çözümünden çok daha güvenilir çalışır.
+ * AndroidX SwipeRefreshLayout kendi dairesel CircularProgressDrawable'ını
+ * kullanır ve bunu özel bir View ile değiştirmeye izin vermez (renk/boyut
+ * dışında). Bu yüzden "aşağı çekince yenile" jestinin kendisini (dokunma
+ * takibi, eşik, geri yaylanma) burada yeniden uyguluyoruz; görsel kısmı
+ * LogoPullRefreshView üstleniyor (logo sabit, halka dönüyor).
  *
- * Tarayıcı sürümünde bu sınıf kullanılmaz; Chrome/Safari kendi native PTR
- * davranışını kullanır.
+ * WebView'in KENDİ scrollY'sini kontrol etme mantığı, eski
+ * WebViewAwareSwipeRefreshLayout.canChildScrollUp()'tan birebir taşındı —
+ * aynı sebep: standart View kaydırma sistemi WebView'in iç durumuyla her
+ * zaman senkron olmuyor.
+ *
+ * NOT: Bir ara web'deki (HTML demo) davranışına benzetmek için içeriğin
+ * (WebView) parmakla birlikte kaymasını, kare-kök tabanlı "rubber-band"
+ * direncini ve OvershootInterpolator'ı denedik — ama gerçek cihazda bu,
+ * ÇALIŞAN bir deneyimi bozdu (içerik aşağı kayıp arkada koyu bir boşluk
+ * bırakıyordu, dönme/bekleme davranışı da bozuluyordu). Geri alındı.
+ * Eğer ileride tekrar denenirse, "arkadaki boşluk" sorununun kaynağı
+ * muhtemelen FrameLayout'un kendi arka planının (webView'in ardından
+ * görünen alan) şeffaf/uygulama temasıyla eşleşmemesidir — o kısım
+ * çözülmeden içerik kaydırma denemesi tekrar aynı soruna yol açar.
  */
-public class LogoSwipeRefreshLayout extends SwipeRefreshLayout {
+public class LogoSwipeRefreshLayout extends FrameLayout {
+
+    public interface OnRefreshListener {
+        void onRefresh();
+    }
+
+    private static final float DAMPING              = 0.72f;
+    private static final int   TRIGGER_DISTANCE_DP   = 72;
+    private static final int   INDICATOR_SIZE_DP     = 48;
+    private static final int   INDICATOR_TOP_MARGIN_DP = 24;
+    private static final int   SPRING_BACK_MS        = 220;
+    private static final float VERTICAL_DOMINANCE    = 1.12f;
+    private static final int   BOTTOM_EXCLUSION_DP   = 104;
+    private final float bottomExclusionPx;
 
     private final WebView webView;
     private final LogoPullRefreshView indicator;
-    private boolean pullEnabled = true;
-    private boolean refreshing = false;
-    private boolean innerContentKaydirilmis = false;
+    private final int touchSlop;
+    private final float triggerDistancePx;
+    private final float hiddenTranslationY;
 
-    private static final int INDICATOR_SIZE_DP = 48;
-    private static final int INDICATOR_TOP_MARGIN_DP = 24;
+    private float downX;
+    private float downY;
+    private boolean dragging = false;
+    private boolean refreshing = false;
+    private boolean pullEnabled = true;
+    private boolean gestureExcluded = false;
+    private float currentDampedDy = 0f;
+    private OnRefreshListener listener;
+    private ValueAnimator springAnimator;
 
     public LogoSwipeRefreshLayout(Context context, WebView webView) {
         super(context);
         this.webView = webView;
 
-        setEnabled(true);
-        // WebView içindeki gerçek scroll alanı HTML (.ka-app-content).
-        // WebView'in nested-scroll disallow isteği SwipeRefreshLayout'ın
-        // üstten aşağı gesture'ını susturmasın; normal WebView/HTML scroll'u
-        // yine çalışmaya devam eder.
-        webView.setNestedScrollingEnabled(false);
-        setLegacyRequestDisallowInterceptTouchEventEnabled(true);
-        setNestedScrollingEnabled(true);
-        setDistanceToTriggerSync(dp(72));
-        setProgressViewOffset(false, -dp(72), dp(24));
+        float density = context.getResources().getDisplayMetrics().density;
+        this.touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        this.triggerDistancePx = TRIGGER_DISTANCE_DP * density;
+        this.bottomExclusionPx = BOTTOM_EXCLUSION_DP * density;
 
-        // AndroidX'in standart spinner'ı görünmesin; görseli okul logosu sağlar.
-        setColorSchemeColors(Color.TRANSPARENT);
-
-        addView(webView, new LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            LayoutParams.MATCH_PARENT
-        ));
+        int indicatorSizePx = Math.round(INDICATOR_SIZE_DP * density);
+        int topMarginPx = Math.round(INDICATOR_TOP_MARGIN_DP * density);
+        this.hiddenTranslationY = -(indicatorSizePx + topMarginPx);
 
         indicator = new LogoPullRefreshView(context);
-        FrameLayout.LayoutParams indicatorLp = new FrameLayout.LayoutParams(
-            dp(INDICATOR_SIZE_DP),
-            dp(INDICATOR_SIZE_DP)
-        );
+        FrameLayout.LayoutParams indicatorLp = new FrameLayout.LayoutParams(indicatorSizePx, indicatorSizePx);
         indicatorLp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        indicatorLp.topMargin = dp(INDICATOR_TOP_MARGIN_DP);
+        indicatorLp.topMargin = topMarginPx;
+        indicator.setTranslationY(hiddenTranslationY);
         indicator.setVisibility(INVISIBLE);
+
+        addView(webView, new FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         addView(indicator, indicatorLp);
-
-        setOnRefreshListener(() -> {
-            if (!pullEnabled) {
-                setRefreshing(false);
-                return;
-            }
-
-            refreshing = true;
-            indicator.setVisibility(VISIBLE);
-            indicator.setSpinning(true);
-        });
-    }
-
-    private int dp(int value) {
-        return Math.round(value * getResources().getDisplayMetrics().density);
-    }
-
-    public void setPullEnabled(boolean enabled) {
-        pullEnabled = enabled;
-        setEnabled(enabled);
-
-        if (!enabled && isRefreshing()) {
-            setRefreshing(false);
-        }
-
-        if (!enabled) {
-            refreshing = false;
-            indicator.setSpinning(false);
-            indicator.setVisibility(INVISIBLE);
-        }
-    }
-
-    @Override
-    public void setRefreshing(boolean refreshing) {
-        super.setRefreshing(refreshing);
-        this.refreshing = refreshing;
-
-        if (refreshing) {
-            indicator.setVisibility(VISIBLE);
-            indicator.setSpinning(true);
-        } else {
-            indicator.setSpinning(false);
-            indicator.setVisibility(INVISIBLE);
-        }
-    }
-
-    public boolean isRefreshing() {
-        return super.isRefreshing();
-    }
-
-    public void setInnerContentKaydirilmis(boolean value) {
-        innerContentKaydirilmis = value;
-    }
-
-    @Override
-    public boolean canChildScrollUp() {
-        // WebView'in gerçek dikey kaydırması HTML içindeki .ka-app-content
-        // tarafından yapılıyorsa WebView.canScrollVertically(-1) bunu göremez.
-        // JS bridge bu durumda innerContentKaydirilmis'i günceller.
-        return innerContentKaydirilmis || webView.canScrollVertically(-1);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setEnabled(pullEnabled);
+        webView.setTranslationY(0f);
+        indicator.setTranslationY(hiddenTranslationY);
+        indicator.setVisibility(INVISIBLE);
+        currentDampedDy = 0f;
+    }
+
+    public void setOnRefreshListener(OnRefreshListener listener) {
+        this.listener = listener;
+    }
+
+    public void setPullEnabled(boolean enabled) {
+        this.pullEnabled = enabled;
+        if (!enabled && dragging) {
+            dragging = false;
+            springBackTo(0);
+        }
+        if (enabled) {
+            innerContentKaydirilmis = false;
+            dragging = false;
+        }
+    }
+
+    public void setRefreshing(boolean refreshing) {
+        if (this.refreshing == refreshing) return;
+        this.refreshing = refreshing;
+        if (refreshing) {
+            indicator.setSpinning(true);
+            springBackTo(triggerDistancePx);
+        } else {
+            indicator.setSpinning(false);
+            springBackTo(0);
+        }
+    }
+
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    private boolean canChildScrollUp() {
+        if (webView == null) return false;
+        return webView.canScrollVertically(-1)
+            || webView.getScrollY() > 0
+            || innerContentKaydirilmis;
+    }
+
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        /*
+         * WebView dokunma başladığında parent'tan intercept istemeyebilir.
+         * Bu istek doğrudan kabul edilirse custom PTR ACTION_MOVE aşamasına
+         * erişemez. Sayfanın en üstündeyken isteği bilinçli olarak yoksayıyoruz;
+         * böylece aşağı yönlü dikey jestte parent devreye girebiliyor.
+         * Sayfa aşağıdaysa WebView'in normal scroll davranışına dokunmuyoruz.
+         */
+        if (disallowIntercept
+                && pullEnabled
+                && !refreshing
+                && !canChildScrollUp()) {
+            return;
+        }
+        super.requestDisallowInterceptTouchEvent(disallowIntercept);
+    }
+
+    private volatile boolean innerContentKaydirilmis = false;
+    public void setInnerContentKaydirilmis(boolean v) { innerContentKaydirilmis = v; }
+
+    private boolean dikeyAsagiJestMi(MotionEvent ev) {
+        float dy = ev.getY() - downY;
+        float dx = Math.abs(ev.getX() - downX);
+        return dy > touchSlop && dy > dx * VERTICAL_DOMINANCE;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!pullEnabled || refreshing || gestureExcluded) return false;
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                downX = ev.getX();
+                downY = ev.getY();
+                dragging = false;
+                gestureExcluded = getHeight() > 0 && ev.getY() >= getHeight() - bottomExclusionPx;
+                return false;
+            case MotionEvent.ACTION_MOVE: {
+                if (gestureExcluded || canChildScrollUp()) return false;
+                if (dikeyAsagiJestMi(ev)) {
+                    dragging = true;
+                    return true;
+                }
+                return false;
+            }
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                return false;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!pullEnabled || refreshing) return false;
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_MOVE: {
+                if (!dragging) return false;
+                if (canChildScrollUp()) {
+                    dragging = false;
+                    springBackTo(0);
+                    return false;
+                }
+                float dy = ev.getY() - downY;
+                float dx = Math.abs(ev.getX() - downX);
+                if (dy <= 0 || dy <= dx * VERTICAL_DOMINANCE) {
+                    dragging = false;
+                    springBackTo(0);
+                    return false;
+                }
+                float rawDy = Math.max(0f, dy);
+                float dampedDy = rawDy * DAMPING;
+                applyPull(dampedDy);
+                return true;
+            }
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL: {
+                if (!dragging) return false;
+                dragging = false;
+                if (currentDampedDy >= triggerDistancePx) {
+                    setRefreshing(true);
+                    if (listener != null) listener.onRefresh();
+                } else {
+                    springBackTo(0);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void applyPull(float dampedDy) {
+        currentDampedDy = dampedDy;
+        float revealed = hiddenTranslationY + dampedDy;
+        indicator.setTranslationY(Math.min(0f, revealed));
+        indicator.setProgress(dampedDy / triggerDistancePx);
+        indicator.setVisibility(dampedDy > 0.5f ? VISIBLE : INVISIBLE);
+    }
+
+    private void springBackTo(float targetDampedDy) {
+        if (springAnimator != null) springAnimator.cancel();
+        float startDampedDy = currentDampedDy;
+        springAnimator = ValueAnimator.ofFloat(startDampedDy, targetDampedDy);
+        springAnimator.setDuration(SPRING_BACK_MS);
+        springAnimator.setInterpolator(new DecelerateInterpolator());
+        springAnimator.addUpdateListener(a -> applyPull((float) a.getAnimatedValue()));
+        springAnimator.start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (springAnimator != null) { springAnimator.cancel(); springAnimator = null; }
     }
 }
