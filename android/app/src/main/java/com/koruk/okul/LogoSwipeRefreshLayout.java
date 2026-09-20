@@ -25,6 +25,7 @@ public class LogoSwipeRefreshLayout extends SwipeRefreshLayout {
     private final LogoPullRefreshView indicator;
     private boolean pullEnabled = true;
     private boolean refreshing = false;
+    private boolean innerContentKaydirilmis = false;
 
     private static final int INDICATOR_SIZE_DP = 48;
     private static final int INDICATOR_TOP_MARGIN_DP = 24;
@@ -106,8 +107,15 @@ public class LogoSwipeRefreshLayout extends SwipeRefreshLayout {
     }
 
     public void setInnerContentKaydirilmis(boolean value) {
-        // AndroidX nested-scroll/WebView yönetimi artık gerçek scroll durumunu
-        // kendisi takip ediyor. Eski JS bridge uyumluluğu için metot korunuyor.
+        innerContentKaydirilmis = value;
+    }
+
+    @Override
+    public boolean canChildScrollUp() {
+        // WebView'in gerçek dikey kaydırması HTML içindeki .ka-app-content
+        // tarafından yapılıyorsa WebView.canScrollVertically(-1) bunu göremez.
+        // JS bridge bu durumda innerContentKaydirilmis'i günceller.
+        return innerContentKaydirilmis || webView.canScrollVertically(-1);
     }
 
     @Override
