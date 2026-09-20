@@ -99,7 +99,7 @@ public class MainActivity extends BridgeActivity {
                 return;
             }
             currentWebView.evaluateJavascript(
-                "(async function(){try{if(window.SyncEngine&&typeof window.SyncEngine.sync==='function'){await window.SyncEngine.sync()}window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source:'android-native'}}))}catch(e){console.warn('[NativePullRefresh]',e)}})()",
+                "(async function(){try{if(window.KorukPullRefresh&&typeof window.KorukPullRefresh.refresh==='function'){await window.KorukPullRefresh.refresh('android-native');}else if(window.SyncEngine&&typeof window.SyncEngine.sync==='function'){await window.SyncEngine.sync();window.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source:'android-native'}}));}else{window.location.reload();}}catch(e){console.warn('[NativePullRefresh]',e);}})()",
                 value -> runOnUiThread(() -> {
                     if (nativePullRefresh != null) nativePullRefresh.setRefreshing(false);
                 })
