@@ -40,12 +40,12 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         void onRefresh();
     }
 
-    private static final float DAMPING              = 0.6f;
-    private static final int   TRIGGER_DISTANCE_DP   = 135;
+    private static final float DAMPING              = 0.72f;
+    private static final int   TRIGGER_DISTANCE_DP   = 72;
     private static final int   INDICATOR_SIZE_DP     = 48;
-    private static final int   INDICATOR_TOP_MARGIN_DP = 80;
+    private static final int   INDICATOR_TOP_MARGIN_DP = 24;
     private static final int   SPRING_BACK_MS        = 220;
-    private static final float VERTICAL_DOMINANCE    = 1.28f;
+    private static final float VERTICAL_DOMINANCE    = 1.12f;
 
     private final WebView webView;
     private final LogoPullRefreshView indicator;
