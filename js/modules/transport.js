@@ -486,10 +486,12 @@ function sbeTableCellClick(r,c){
   }
   if(sbeTableAssignStudentToCell(r,c))return;
   const e=sbeTableCell(r,c);
-  if(e){editor.selection=[e.id];sbeTableRender();return}
-  sbeTableSetCell(r,c,'seat');
-  const created=sbeTableCell(r,c);if(created)editor.selection=[created.id];
-  sbeTableRender();
+  if(e){
+    editor.selection=[e.id];
+    sbeTableRender();
+  }
+  // Araç seçilmeden boş hücreye dokunmak yalnızca seçimdir; otomatik koltuk oluşturulmaz.
+
 }
 function sbeTableBind(root,s){
   root.querySelector('[data-sbe-table-add-row]')?.addEventListener('click',sbeTableAddRow);
