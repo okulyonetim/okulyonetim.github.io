@@ -2627,6 +2627,18 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   transform:translateY(-1px);
   font-weight:800;
 }
+#transportBusEditor .sbe-table-tools [data-sbe-add-type="seat"].is-active{background:#15803d!important;border-color:#166534!important}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type="door"].is-active{background:#d97706!important;border-color:#b45309!important}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type="driver"].is-active{background:#2563eb!important;border-color:#1d4ed8!important}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type="empty"].is-active{background:#64748b!important;border-color:#475569!important}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type].is-active::after{content:'  ✓ AKTİF';font-size:.78em}
+#transportBusEditor .sbe-student-panel [data-sbe-student].is-active{
+  background:#7c3aed!important;color:#fff!important;border-color:#6d28d9!important;
+  box-shadow:0 0 0 3px rgba(124,58,237,.25),0 3px 10px rgba(0,0,0,.18)!important;
+  font-weight:800;
+}
+#transportBusEditor .sbe-student-panel [data-sbe-student].is-active::after{content:'  ✓ SEÇİLDİ';font-size:.75em;margin-left:auto}
+
 #transportBusEditor .sbe-table-tools [data-sbe-add-type].is-active::after{
   content:'  ✓ AKTİF';
   font-size:.78em;
