@@ -15,6 +15,7 @@ import com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin;
 public class MainActivity extends BridgeActivity {
 
     private LogoSwipeRefreshLayout nativePullRefresh;
+    private volatile boolean jsChildCanScrollUp = false;
 
     /* Pull-to-refresh platforma göre çalışır: Chrome/Safari tarayıcıda native,
        Android APK'da LogoSwipeRefreshLayout, veri senkronunda ortak SyncEngine. */
@@ -41,6 +42,7 @@ public class MainActivity extends BridgeActivity {
         // Belge/Yıllık Plan gibi ekranların kendi CSS transform zoomları bundan etkilenmez.
         WebView anaWebView = getBridge() != null ? getBridge().getWebView() : null;
         if (anaWebView != null) {
+            anaWebView.addJavascriptInterface(new PullRefreshScrollBridge(), "KorukNativePull");
             anaWebView.getSettings().setSupportZoom(false);
             anaWebView.getSettings().setBuiltInZoomControls(false);
             anaWebView.getSettings().setDisplayZoomControls(false);
@@ -103,6 +105,14 @@ public class MainActivity extends BridgeActivity {
             });
         });
         parent.addView(nativePullRefresh, index);
+    }
+
+    private final class PullRefreshScrollBridge {
+        @JavascriptInterface
+        public void setChildCanScrollUp(boolean canScrollUp) {
+            jsChildCanScrollUp = canScrollUp;
+            if (nativePullRefresh != null) nativePullRefresh.setJsChildCanScrollUp(canScrollUp);
+        }
     }
 
     private void retryPullToRefreshSetup(final WebView webView) {

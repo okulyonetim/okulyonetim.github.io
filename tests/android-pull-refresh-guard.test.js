@@ -16,6 +16,8 @@ test('APK and browser pull refresh use native platform gesture handlers',()=>{
   assert.ok(!core.includes('window.location.reload()'),'Programmatic pull refresh tam sayfa reload yapmamalı.');
   assert.ok(main.includes('LogoSwipeRefreshLayout nativePullRefresh'),'APK native pull refresh wrapper eksik.');
   assert.ok(main.includes('setupPullToRefresh()'),'APK native pull refresh kurulumu eksik.');
+  assert.ok(main.includes('KorukNativePull'),'Android nested-scroll pull refresh bridge eksik.');
+  assert.ok(main.includes('setChildCanScrollUp'),'Android native scroll guard eksik.');
   assert.ok(!main.includes('private LogoSwipeRefreshLayout swipeRefresh'),'Eski swipeRefresh alanı geri dönmemeli.');
 });
 

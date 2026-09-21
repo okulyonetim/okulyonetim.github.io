@@ -59,6 +59,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private boolean refreshing = false;
     private boolean pullEnabled = true;
     private float currentDampedDy = 0f;
+    private volatile boolean jsChildCanScrollUp = false;
     private OnRefreshListener listener;
     private ValueAnimator springAnimator;
 
@@ -122,6 +123,10 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         }
     }
 
+    public void setJsChildCanScrollUp(boolean canScrollUp) {
+        jsChildCanScrollUp = canScrollUp;
+    }
+
     public boolean isRefreshing() {
         return refreshing;
     }
@@ -140,7 +145,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
          * WebView.canScrollVertically(-1), WebView içindeki gerçek belge
          * kaydırma durumunu Android tarafında doğrudan sorgular.
          */
-        return webView.canScrollVertically(-1) || webView.getScrollY() > 0;
+        return jsChildCanScrollUp || webView.canScrollVertically(-1) || webView.getScrollY() > 0;
     }
 
     @Override

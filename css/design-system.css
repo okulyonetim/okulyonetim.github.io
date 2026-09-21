@@ -1,9 +1,9 @@
 /* KORUK ASİSTAN — TEK MERKEZİ DESIGN SYSTEM
    Android / iOS / web aynı responsive çekirdeği kullanır. */
-:root{
+ :root{
   color-scheme:light;
   --ka-primary:#17684f;--ka-primary-hover:#10543f;--ka-primary-soft:#e8f4ef;--ka-accent:#1677d2;
-  --ka-app-bg:#f2f7f4;--ka-text:#17352b;--ka-text-muted:#687b73;--ka-text-inverse:#fff;
+  --ka-app-bg:#f2f7f4;--ka-bg:#f2f7f4;--ka-text:#17352b;--ka-text-muted:#687b73;--ka-text-inverse:#fff;
   --ka-header-bg:#fff;--ka-header-text:#17352b;--ka-header-muted:#71827a;--ka-header-border:#d7e5de;
   --ka-nav-bg:rgba(255,255,255,.97);--ka-nav-text:#71827a;--ka-nav-active-bg:#e8f4ef;--ka-nav-active-text:#17684f;--ka-nav-border:#d7e5de;--ka-nav-menu-start:#1f7b5d;--ka-nav-menu-end:#145a46;--ka-nav-menu-icon:#fff;--ka-nav-menu-ring:#d9eee5;
   --ka-button-bg:#17684f;--ka-button-hover:#10543f;--ka-button-text:#fff;--ka-button-secondary-bg:#fff;--ka-button-secondary-text:#17352b;--ka-button-secondary-border:#d7e5de;
@@ -25,7 +25,7 @@
 }
 [data-theme="dark"]{
   color-scheme:dark;--ka-primary:#53d6a4;--ka-primary-hover:#78e2ba;--ka-primary-soft:#123126;--ka-accent:#53d6a4;
-  --ka-app-bg:#09110e;--ka-text:#f1f8f5;--ka-text-muted:#91a69d;--ka-text-inverse:#07120e;--ka-header-bg:#0d1713;--ka-header-text:#f1f8f5;--ka-header-muted:#91a69d;--ka-header-border:#22372f;
+  --ka-app-bg:#09110e;--ka-bg:#09110e;--ka-text:#f1f8f5;--ka-text-muted:#91a69d;--ka-text-inverse:#07120e;--ka-header-bg:#0d1713;--ka-header-text:#f1f8f5;--ka-header-muted:#91a69d;--ka-header-border:#22372f;
   --ka-nav-bg:rgba(10,19,15,.98);--ka-nav-text:#869b92;--ka-nav-active-bg:#133126;--ka-nav-active-text:#67dbad;--ka-nav-border:#22372f;--ka-nav-menu-start:#1a3a2e;--ka-nav-menu-end:#10251d;--ka-nav-menu-icon:#78e2ba;--ka-nav-menu-ring:#29483c;
   --ka-button-bg:#238763;--ka-button-hover:#2c9d74;--ka-button-text:#fff;--ka-button-secondary-bg:#111d18;--ka-button-secondary-text:#f1f8f5;--ka-button-secondary-border:#294239;
   --ka-card-bg:#101b17;--ka-card-raised-bg:#14221c;--ka-muted-bg:#16241e;--ka-input-bg:#101b17;--ka-input-text:#f1f8f5;--ka-input-border:#294239;--ka-input-focus:#53d6a4;
@@ -2518,3 +2518,22 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   .sbe-col-resize{right:-7px;top:0;height:100%}
   .sbe-row-resize{bottom:-7px;left:0;width:100%}
 }
+
+/* SBE table theme normalization: no hard-coded dark surfaces in light mode. */
+#transportBusEditor .sbe-modal,
+.sbe-table-editor{background:var(--ka-card-bg);color:var(--ka-text)}
+#transportBusEditor .sbe-top input,#transportBusEditor .sbe-top select,
+#transportBusEditor .sbe-search{background:var(--ka-input-bg);color:var(--ka-input-text);border-color:var(--ka-input-border)}
+.sbe-table-toolbar,.sbe-table-tools{border-color:var(--ka-border);background:var(--ka-card-bg);color:var(--ka-text)}
+.sbe-table-toolbar button,.sbe-table-tools button{border-color:var(--ka-border);background:var(--ka-muted-bg);color:var(--ka-text)}
+.sbe-table-scroll{background:var(--ka-app-bg)}
+.sbe-table{border-color:var(--ka-border-strong);background:var(--ka-muted-bg)}
+.sbe-tcell{border-color:var(--ka-border-strong);background:var(--ka-muted-bg);color:var(--ka-text)}
+.sbe-tcell:hover{background:color-mix(in srgb,var(--ka-muted-bg) 78%,var(--ka-primary) 22%)}
+.sbe-tcell.has-object{background:color-mix(in srgb,var(--ka-muted-bg) 82%,var(--ka-text) 8%)}
+.sbe-tcell.filled{background:color-mix(in srgb,var(--ka-primary) 82%,var(--ka-card-bg) 18%);color:#fff}
+.sbe-tcell-door,.sbe-tcell-window,.sbe-tcell-emergency,.sbe-tcell-engine,.sbe-tcell-luggage,.sbe-tcell-driver{background:color-mix(in srgb,var(--ka-warning) 16%,var(--ka-card-bg));color:var(--ka-text)}
+.sbe-col-resize:after,.sbe-row-resize:after{background:var(--ka-primary)}
+.sbe-student-panel{border-color:var(--ka-border);background:var(--ka-card-bg)}
+.sbe-table-editor .sbe-student{color:var(--ka-text)}
+@media(max-width:700px){.sbe-table-scroll{background:var(--ka-app-bg)}}

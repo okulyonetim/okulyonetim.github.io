@@ -116,7 +116,37 @@ function clicked(e){
   if(e.target.closest('[data-quality-holiday-add],[data-quality-holiday-remove]'))setTimeout(()=>snapshot(root),0);
 }
 
+
+function installNativePullRefreshScrollGuard(){
+  const native=global.KorukNativePull;
+  if(!native?.setChildCanScrollUp||global.__korukNativePullScrollGuard)return;
+  global.__korukNativePullScrollGuard=true;
+  let activeTarget=null;
+  const isScrollable=el=>{
+    if(!el||el===document.body||el===document.documentElement)return false;
+    const cs=getComputedStyle(el);
+    return /(auto|scroll|overlay)/.test(cs.overflowY||'') && el.scrollHeight>el.clientHeight+1;
+  };
+  const report=target=>{
+    let blocked=Number(document.scrollingElement?.scrollTop||0)>1;
+    let el=target||activeTarget||document.activeElement;
+    while(el&&el!==document.body&&el!==document.documentElement){
+      if(isScrollable(el)&&Number(el.scrollTop||0)>1){blocked=true;break;}
+      el=el.parentElement;
+    }
+    try{native.setChildCanScrollUp(!!blocked)}catch(_){ }
+  };
+  const onPointerDown=e=>{activeTarget=e.target;report(activeTarget)};
+  const onScroll=e=>report(e.target?.nodeType===1?e.target:activeTarget);
+  document.addEventListener('pointerdown',onPointerDown,true);
+  document.addEventListener('scroll',onScroll,true);
+  global.addEventListener('scroll',()=>report(activeTarget),{passive:true});
+  global.addEventListener('pageshow',()=>setTimeout(()=>report(activeTarget),0),{passive:true});
+  setTimeout(()=>report(activeTarget),0);
+}
+
 function start(){
+  installNativePullRefreshScrollGuard();
   patchSettingsMount();
   guardSettingsRerenders();
   global.addEventListener('koruk:module-ready',event=>{if(event.detail?.name==='settings'){patchSettingsMount();setTimeout(renderSettingsSafely,0)}});
