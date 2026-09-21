@@ -308,9 +308,14 @@ function sbeTableConfig(){
   const d=defaults[editor.sablon]||defaults.minibus;
   const old=editor.layout?.table||{};
   const rows=Math.max(1,Number(old.rows)||d[0]),cols=Math.max(1,Number(old.cols)||d[1]);
-  const rowHeights=Array.from({length:rows},(_,i)=>Math.max(52,Number(old.rowHeights?.[i])||82));
-  const colWidths=Array.from({length:cols},(_,i)=>Math.max(70,Number(old.colWidths?.[i])||Math.max(82,Math.floor(330/cols))));
-  editor.layout={...(editor.layout||{}),width:0,height:0,table:{rows,cols,rowHeights,colWidths}};
+  const isCurrent=Number(old.editorVersion)===2;
+  const viewport=Math.max(280,(window.innerWidth||360)-32);
+  const defaultCol=Math.max(82,Math.floor(Math.min(520,viewport)/cols));
+  const rowHeights=Array.from({length:rows},(_,i)=>isCurrent?Math.max(52,Number(old.rowHeights?.[i])||82):82);
+  const colWidths=Array.from({length:cols},(_,i)=>isCurrent?Math.max(70,Number(old.colWidths?.[i])||defaultCol):defaultCol);
+  const manualRows=Array.from({length:rows},(_,i)=>!!old.manualRows?.[i]);
+  const manualCols=Array.from({length:cols},(_,i)=>!!old.manualCols?.[i]);
+  editor.layout={...(editor.layout||{}),width:0,height:0,table:{editorVersion:2,rows,cols,rowHeights,colWidths,manualRows,manualCols}};
   const seats=editor.elements.filter(sbeIsSeat);
   seats.forEach((e,i)=>{
     let r=Number(e.row),c=Number(e.column);
@@ -372,37 +377,49 @@ function sbeTableRender(){
   root.querySelector('[data-sbe-table-info]')?.replaceChildren(document.createTextNode(t.rows+' satır · '+t.cols+' sütun · '+total+' koltuk'));
 }
 function sbeTableSetCell(r,c,kind){
-  if(!editor?.editable)return;
+  if(!editor?.editable)return false;
   const existing=sbeTableCell(r,c);
   if(existing){
     sbePush();
-    existing.properties={...(existing.properties||{}),kind};
+    existing.properties={...(existing.properties||{}),kind,label:existing.properties?.label||SBE_TYPES[kind]?.label||''};
     existing.type=kind==='driver'?'sofor':(sbeIsSeatKind(kind)?'koltuk':'vehicle');
     existing.locked=['door','window','emergency','engine','luggage','driver'].includes(kind);
   }else{
-    sbePush();sbeTableSeat(r,c,kind);
+    sbePush();
+    const created=sbeTableSeat(r,c,kind);
+    created.type=kind==='driver'?'sofor':(sbeIsSeatKind(kind)?'koltuk':'vehicle');
+    created.locked=['door','window','emergency','engine','luggage','driver'].includes(kind);
   }
   sbeNumber();sbeTableRender();
+  return true;
+}
+function sbeTableSelectTool(kind){
+  if(!editor?.editable)return;
+  editor.pendingCellKind=kind;
+  editor.pendingStudentId=null;
+  const root=document.getElementById('transportBusEditor');
+  root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.toggle('is-active',b.dataset.sbeAddType===kind));
+  toast?.((SBE_TYPES[kind]?.label||'Hücre')+' seçildi. Şimdi tabloda bir hücreye dokunun.');
 }
 function sbeTableAddRow(){
   if(!editor?.editable)return;sbePush();
-  const t=sbeTableConfig();t.rows++;t.rowHeights.push(82);sbeTableRender();
+  const t=sbeTableConfig();t.rows++;t.rowHeights.push(82);t.manualRows.push(false);sbeTableRender();
 }
 function sbeTableDeleteRow(){
   if(!editor?.editable)return;const t=sbeTableConfig();if(t.rows<=1)return;
   const r=t.rows;
   if(editor.elements.some(e=>Number(e.row)===r&&sbeIsSeat(e)&&seatStudentName(e))&&!confirm('Son satırda öğrenciler var. Satır silinsin mi?'))return;
-  sbePush();editor.elements=editor.elements.filter(e=>Number(e.row)!==r);t.rows--;t.rowHeights.pop();editor.selection=[];sbeTableRender();
+  sbePush();editor.elements=editor.elements.filter(e=>Number(e.row)!==r);t.rows--;t.rowHeights.pop();t.manualRows.pop();editor.selection=[];sbeTableRender();
 }
 function sbeTableAddCol(){
   if(!editor?.editable)return;sbePush();
-  const t=sbeTableConfig();t.cols++;t.colWidths.push(100);sbeTableRender();
+  const t=sbeTableConfig();t.cols++;t.colWidths.push(Math.max(82,Math.floor(Math.min(520,Math.max(280,(window.innerWidth||360)-32))/t.cols)));t.manualCols.push(false);sbeTableRender();
 }
 function sbeTableDeleteCol(){
   if(!editor?.editable)return;const t=sbeTableConfig();if(t.cols<=1)return;
   const c=t.cols;
   if(editor.elements.some(e=>Number(e.column)===c&&sbeIsSeat(e)&&seatStudentName(e))&&!confirm('Son sütunda öğrenciler var. Sütun silinsin mi?'))return;
-  sbePush();editor.elements=editor.elements.filter(e=>Number(e.column)!==c);t.cols--;t.colWidths.pop();editor.selection=[];sbeTableRender();
+  sbePush();editor.elements=editor.elements.filter(e=>Number(e.column)!==c);t.cols--;t.colWidths.pop();t.manualCols.pop();editor.selection=[];sbeTableRender();
 }
 function sbeTableResizeStart(ev,type,index){
   if(!editor?.editable)return;
@@ -416,6 +433,7 @@ function sbeTableResizeStart(ev,type,index){
     const next=Math.max(type==='col'?70:52,startSize+delta);
     if(Math.abs(next-startSize)>1)moved=true;
     arr[index-1]=next;
+    if(type==='col')t.manualCols[index-1]=true;else t.manualRows[index-1]=true;
     sbeTableRender();
   };
   const end=e=>{
@@ -431,9 +449,18 @@ function sbeTableAssignStudentToCell(r,c){
 function sbeTableCellClick(r,c){
   if(!editor?.editable)return;
   if(sbeTableAssignStudentToCell(r,c))return;
+  if(editor.pendingCellKind){
+    const kind=editor.pendingCellKind;
+    if(sbeTableSetCell(r,c,kind))editor.pendingCellKind=null;
+    const root=document.getElementById('transportBusEditor');
+    root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.remove('is-active'));
+    return;
+  }
   const e=sbeTableCell(r,c);
   if(e){editor.selection=[e.id];sbeTableRender();return}
-  sbePush();const seat=sbeTableSeat(r,c,'seat');editor.selection=[seat.id];sbeNumber();sbeTableRender();
+  sbeTableSetCell(r,c,'seat');
+  const created=sbeTableCell(r,c);if(created)editor.selection=[created.id];
+  sbeTableRender();
 }
 function sbeTableBind(root,s){
   root.querySelector('[data-sbe-table-add-row]')?.addEventListener('click',sbeTableAddRow);
@@ -467,29 +494,18 @@ function sbeRenderTableEditor(s){
     '<footer class="sbe-footer"><span>↔ Sütun sınırını · ↕ Satır sınırını sürükleyerek boyutu değiştirin.</span><button class="ka-btn ka-btn--secondary" type="button" data-bus-close>'+ (editor.editable?'Vazgeç':'Kapat') +'</button></footer></section>';
   document.body.appendChild(ov);
   sbeBind(ov,s);sbeTableBind(ov,s);sbeTableRender();
-  ov.querySelectorAll('[data-sbe-cell-kind]').forEach(b=>b.addEventListener('click',()=>{
-    if(!editor.selection.length)return toast?.('Önce tabloda bir hücre seçin.');
-    const e=editor.elements.find(x=>x.id===editor.selection[0]);if(!e)return;
-    sbePush();e.properties={...(e.properties||{}),kind:b.dataset.sbeCellKind};e.type=sbeIsSeatKind(b.dataset.sbeCellKind)?'koltuk':'vehicle';e.locked=['door','window','emergency'].includes(b.dataset.sbeCellKind);sbeTableRender();
-  }));
   ov.querySelector('[data-bus-clear-all]')?.addEventListener('click',()=>sbeClearAll(s));
   requestAnimationFrame(()=>{const fresh=document.getElementById('transportBusEditor');if(fresh)fresh.scrollTop=oldScroll});
 }
 function renderBusEditor(s){return sbeRenderTableEditor(s)}
 function sbeBind(ov,s){const canvas=ov.querySelector('[data-sbe-canvas]');ov.querySelector('[data-sbe-save]')?.addEventListener('click',()=>sbeSave(s));ov.querySelector('[data-sbe-print]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelector('[data-sbe-pdf]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelector('[data-bus-report]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelectorAll('[data-bus-close]').forEach(b=>b.addEventListener('click',closeEditor));ov.querySelector('[data-sbe-undo]')?.addEventListener('click',sbeUndo);ov.querySelector('[data-sbe-redo]')?.addEventListener('click',sbeRedo);ov.querySelector('[data-sbe-delete]')?.addEventListener('click',sbeDelete);ov.querySelector('[data-bus-clear-all]')?.addEventListener('click',()=>sbeClearAll(s));ov.querySelectorAll('[data-sbe-align]').forEach(b=>b.addEventListener('click',()=>sbeAlign(b.dataset.sbeAlign)));ov.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.addEventListener('click',()=>{
   const kind=b.dataset.sbeAddType;
-  const selected=editor.selection[0]&&editor.elements.find(e=>e.id===editor.selection[0]);
-  if(document.querySelector('[data-sbe-table]')&&selected){
-    sbePush();
-    selected.properties={...(selected.properties||{}),kind};
-    selected.type=sbeIsSeatKind(kind)?'koltuk':(kind==='driver'?'sofor':'vehicle');
-    selected.locked=['door','window','emergency','engine','luggage','driver'].includes(kind);
-    sbeTableRender();
-  }else if(document.querySelector('[data-sbe-table]')){
-    toast?.('Önce tabloda bir hücre seçin.');
+  if(document.querySelector('[data-sbe-table]')){
+    if(editor.selection.length)sbeTableSetCell(Number(editor.elements.find(e=>e.id===editor.selection[0])?.row)||1,Number(editor.elements.find(e=>e.id===editor.selection[0])?.column)||1,kind);
+    else sbeTableSelectTool(kind);
   }else sbeAdd(kind);
 }));ov.querySelector('[data-sbe-zoom-out]')?.addEventListener('click',()=>{editor._mobileZoomUser=true;editor.zoom=Math.max(SBE_MIN,editor.zoom-.1);renderBusEditor(s)});ov.querySelector('[data-sbe-zoom-in]')?.addEventListener('click',()=>{editor._mobileZoomUser=true;editor.zoom=Math.min(SBE_MAX,editor.zoom+.1);renderBusEditor(s)});ov.querySelector('[data-sbe-zoom-reset]')?.addEventListener('click',()=>{editor._mobileZoomUser=false;editor.zoom=1;renderBusEditor(s)});ov.querySelector('[data-sbe-plan-name]')?.addEventListener('input',e=>editor.planAdi=e.target.value);ov.querySelector('[data-sbe-template]')?.addEventListener('change',e=>{const next=e.target.value;if(next==='custom'){editor.sablon='custom';return}if(!confirm('Şablon uygulanınca mevcut düzen başlangıç düzenine dönecek. Devam edilsin mi?')){e.target.value=editor.sablon;return}sbePush();editor.sablon=next;editor.elements=sbeNormalize(sbeSeed(next));sbeNumber();renderBusEditor(s)});const search=ov.querySelector('[data-sbe-student-search]');search?.addEventListener('input',()=>{ov.querySelector('[data-sbe-students]').innerHTML=sbeStudents(search.value);sbeBindStudents(ov)});sbeBindStudents(ov);sbeBindPinch(ov.querySelector('[data-sbe-stage]'));if(canvas){canvas.addEventListener('pointerdown',sbePointer,true);canvas.addEventListener('pointermove',sbePointer,true);canvas.addEventListener('pointerup',sbePointer,true);canvas.addEventListener('pointercancel',sbePointer,true);canvas.addEventListener('dragover',e=>e.preventDefault());canvas.addEventListener('drop',e=>{e.preventDefault();const sid=e.dataTransfer?.getData('text/plain'),obj=e.target.closest?.('[data-sbe-id]');if(sid&&obj)sbeAssign(sid,obj.dataset.sbeId)})}}
-function openBusEditor(servisIdValue){const id=String(servisIdValue??'');if(!id)return false;if(editor&&String(editor.servisId)===id&&document.getElementById('transportBusEditor'))return true;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},servisId=s.id,sablon=sablonValue(p.sablon||'minibus'),elements=sbeNormalize(window.soPlanElementleriGetir?.(p,p.sablon||'ducato')||[]);editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.planAdi=p.planAdi||p.ad||'Servis Oturma Planı';editor.selection=[];editor.pendingStudentId=null;editor.zoom=1;editor._mobileZoomUser=false;editor.layout={...(editor.layout||{}),width:0,height:0};editor.undo=[];editor.redo=[];editor.layoutEditing=false;busPullRefresh(false);renderBusEditor(s);return true}
+function openBusEditor(servisIdValue){const id=String(servisIdValue??'');if(!id)return false;if(editor&&String(editor.servisId)===id&&document.getElementById('transportBusEditor'))return true;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},servisId=s.id,sablon=sablonValue(p.sablon||'minibus'),elements=sbeNormalize(window.soPlanElementleriGetir?.(p,p.sablon||'ducato')||[]);editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.planAdi=p.planAdi||p.ad||'Servis Oturma Planı';editor.selection=[];editor.pendingStudentId=null;editor.pendingCellKind=null;editor.zoom=1;editor._mobileZoomUser=false;editor.layout={...(editor.layout||{}),width:0,height:0};editor.undo=[];editor.redo=[];editor.layoutEditing=false;busPullRefresh(false);renderBusEditor(s);return true}
 function closeEditor(){const ov=document.getElementById('transportBusEditor');if(ov)ov.remove();editor=null;busPullRefresh(true);try{document.body.classList.remove('modal-open')}catch(_){}}
 function busPullRefresh(on){try{const r=window.KorukPlatformAdapter?.setPullToRefreshEnabled?.(!!on);if(r&&typeof r.catch==='function')r.catch(()=>{})}catch(_){} }
 async function openClassSeating(id){try{if(!window.SinifOturma?.ac)await window.AppLoader?.loadScript?.('js/modules/class-seating.js');if(!window.SinifOturma?.ac)throw new Error('Sınıf oturma motoru yüklenemedi.');return await window.SinifOturma.ac(id)}catch(e){console.error('[Transport/class-seating]',e);toast?.('Sınıf oturma planı açılamadı.');return false}}
