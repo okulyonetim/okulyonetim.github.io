@@ -2718,3 +2718,28 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   #transportBusEditor .sbe-table-tools{gap:5px!important;padding:6px 8px!important}
   #transportBusEditor .sbe-table-tools [data-sbe-add-type]{min-height:38px!important;height:38px!important;padding:0 10px!important;font-size:13px!important}
 }
+
+
+/* SBE DARK STUDENT CONTRAST v959 */
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-unseated{
+  background:#10221b!important;
+  border-color:#53d6a4!important;
+  color:#f1f8f5!important;
+  opacity:1!important;
+}
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-unseated strong,
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-unseated small{
+  color:#f1f8f5!important;
+  opacity:1!important;
+}
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-unseated small{color:#b9cbc4!important}
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-seated{
+  background:#1b2b25!important;
+  border-color:#3a5148!important;
+  color:#d2ded9!important;
+  opacity:1!important;
+}
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-seated strong{color:#dce8e3!important}
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-seated small{color:#9eb3aa!important}
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student-status{color:#53d6a4!important}
+[data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-avatar{color:#f1f8f5!important}
