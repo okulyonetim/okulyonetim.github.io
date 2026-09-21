@@ -2675,3 +2675,14 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 .sbe-table-editor [data-sbe-add-type].is-active::after{content:' ✓';font-weight:900}
 .sbe-table-editor .sbe-student.is-active,.sbe-table-editor .sbe-student.is-pending{background:var(--ka-primary,#17684f)!important;color:#fff!important;border-color:var(--ka-primary,#17684f)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary,#17684f) 20%,transparent)!important}
 .sbe-table-editor .sbe-student.is-active strong,.sbe-table-editor .sbe-student.is-active small,.sbe-table-editor .sbe-student.is-pending strong,.sbe-table-editor .sbe-student.is-pending small{color:#fff!important}
+
+
+/* SBE STUDENT PLACEMENT STATE v921 */
+.sbe-table-editor .sbe-student{position:relative;transition:background-color .16s ease,border-color .16s ease,opacity .16s ease}
+.sbe-table-editor .sbe-student.is-seated{background:var(--ka-surface-muted,#eef2ef)!important;border-color:var(--ka-border,#cbd5d0)!important;color:var(--ka-text-muted,#64706b)!important;opacity:.82}
+.sbe-table-editor .sbe-student.is-seated strong,.sbe-table-editor .sbe-student.is-seated small{color:var(--ka-text-muted,#64706b)!important}
+.sbe-table-editor .sbe-student.is-unseated{background:var(--ka-surface,#fff)!important;border-color:var(--ka-primary,#17684f)!important}
+.sbe-table-editor .sbe-student.is-unseated strong{font-weight:800!important}
+.sbe-table-editor .sbe-student-status{margin-left:auto;min-width:22px;text-align:center;font-weight:900;font-size:17px;align-self:center}
+.sbe-table-editor .sbe-student.is-seated .sbe-student-status{color:var(--ka-text-muted,#64706b)!important}
+.sbe-table-editor .sbe-student.is-unseated .sbe-student-status{color:var(--ka-primary,#17684f)!important}
