@@ -193,10 +193,10 @@ function sbeEnsureMobileStyles(){
 #transportBusEditor .sbe-footer{flex:0 0 auto}
 @media(max-width:700px){
   #transportBusEditor .sbe-modal{width:100vw;height:100dvh}
-  #transportBusEditor .sbe-layout{display:flex;flex-direction:column}
-  #transportBusEditor .sbe-work{order:1;flex:0 0 auto;max-height:none}
+  #transportBusEditor .sbe-layout{display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+  #transportBusEditor .sbe-work{display:block;order:1;flex:none;width:100%}
   #transportBusEditor .sbe-stage{height:min(58dvh,620px);min-height:360px;flex:none;width:100%;overflow:auto}
-  #transportBusEditor .sbe-students{order:2;flex:1 1 auto;min-height:240px;max-height:none;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+  #transportBusEditor .sbe-students{order:2;display:block;flex:none;width:100%;min-height:300px;max-height:none;overflow:visible;-webkit-overflow-scrolling:touch;touch-action:pan-y}
   #transportBusEditor .sbe-toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px}
   #transportBusEditor .sbe-alignbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px}
   #transportBusEditor .sbe-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
