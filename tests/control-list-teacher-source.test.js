@@ -19,4 +19,8 @@ if(!src.includes("const hedefIds=bagliTip?[]:fd.getAll('hedefOgretmenIdler').map
 if(!src.includes("teacherRows().slice().sort((a,b)=>teacherName(a.id).localeCompare(teacherName(b.id),'tr'))")){
   throw new Error('Öğretmen seçim listesi birleşik kaynaktan üretilmeli.');
 }
-console.log('Kontrol listesi öğretmen kaynağı + silinmiş öğretmen adı regresyon testi başarılı.');
+
+if(!src.includes("if(typeof SyncEngine.pull==='function')await SyncEngine.pull(hydrated)")){
+  throw new Error('Kontrol listeleri açılırken öğretmen ve bağlı evrak kaynakları güncel remote snapshot ile yenilenmeli.');
+}
+console.log('Kontrol listesi öğretmen kaynağı + remote refresh + silinmiş öğretmen adı regresyon testi başarılı.');
