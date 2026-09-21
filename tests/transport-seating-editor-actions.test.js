@@ -13,6 +13,13 @@ assert(transport.includes("if(ov.querySelector('[data-sbe-table]')) sbeTableSele
 assert(transport.includes("aria-label=\"'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')"),'Boş hücre görünür metin yerine erişilebilir etiket kullanmalı.');
 assert(!transport.includes("!e?'<em>＋ Koltuk</em>':''"),'Boş hücre içinde görünür + Koltuk metni olmamalı.');
 assert(transport.includes("type==='col'?44:52"),'Sütunlar 44px seviyesine kadar daraltılabilmeli.');
+assert(transport.includes('data-sbe-merge'), 'Hücre birleştirme butonu bulunmalı.');
+assert(transport.includes('sbeTableMergeSelection'), 'Hücre birleştirme işlevi bulunmalı.');
+assert(!transport.includes('data-sbe-add-type="double"'), 'İkili oturma butonu kaldırılmalı.');
+assert(!transport.includes('data-sbe-add-type="engine"'), 'Motor butonu kaldırılmalı.');
+assert(!transport.includes('data-sbe-add-type="luggage"'), 'Bagaj butonu kaldırılmalı.');
+assert(!transport.includes('data-sbe-add-type="emergency"'), 'Acil butonu kaldırılmalı.');
+assert(!transport.includes('data-sbe-add-type="window"'), 'Cam butonu kaldırılmalı.');
 assert(transport.includes("b.textContent='Kaydedildi ✓'"),'Kaydet butonu kullanıcı geri bildirimi sağlamalı.');
 assert(transport.includes('const task=window.ServisOturmaService.planElementsKaydet'),'Canonical servis kayıt görevi kullanılmalı.');
 assert(transport.includes('window.ServisOturmaService.planGuncelle'),'Plan üst bilgisi canonical servis üzerinden güncellenmeli.');
