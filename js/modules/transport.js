@@ -163,6 +163,20 @@ function sbeStudents(term=''){const q=norm(term);return students(editor.servisId
 function sbeAdd(kind){if(!editor?.editable)return;sbePush();const c=SBE_TYPES[kind]||SBE_TYPES.seat;const e={id:kind+'_'+Date.now(),row:null,column:null,type:sbeIsSeatKind(kind)?'koltuk':'vehicle',seatNumber:null,studentId:null,x:120,y:180,width:c.w,height:c.h,rotation:0,visible:true,locked:['door','window','emergency','engine','luggage','driver'].includes(kind),properties:{kind,studentName:'',reserved:false,label:c.label}};if(kind==='driver')e.type='sofor';editor.elements.push(e);sbeNumber();editor.selection=[e.id];renderBusEditor(service(editor.servisId))}
 function sbeIsSeatKind(k){return ['seat','double','special'].includes(k)}
 function sbeAssign(sid,eid){if(!editor?.editable)return;const person=students(editor.servisId).find(v=>String(v.id)===String(sid)),seat=editor.elements.find(e=>e.id===eid);if(!person||!seat||!sbeIsSeat(seat))return;sbePush();editor.elements.forEach(e=>{if(e!==seat&&String(e.studentId)===String(person.id)){e.studentId=null;e.properties={...(e.properties||{}),studentName:''}}});seat.studentId=person.id;seat.properties={...(seat.properties||{}),studentName:person.ogrenciAdi||'',reserved:false};editor.pendingStudentId=null;renderBusEditor(service(editor.servisId))}
+function clearBusSeat(e){
+  if(!e)return;
+  e.studentId=null;
+  e.properties={...(e.properties||{}),studentName:'',reserved:false};
+}
+function sbeClearAll(s){
+  if(!editor?.editable)return;
+  sbePush();
+  editor.elements.filter(sbeIsSeat).forEach(clearBusSeat);
+  editor.pendingStudentId=null;
+  editor.selection=[];
+  renderBusEditor(s);
+  toast?.('Koltuklar temizlendi.');
+}
 function sbeDelete(){if(!editor?.editable||!editor.selection.length)return;const bad=editor.elements.some(e=>editor.selection.includes(e.id)&&seatStudentName(e));if(bad&&!confirm('Seçili koltukta öğrenci var. Silmek istediğinize emin misiniz?'))return;sbePush();editor.elements=editor.elements.filter(e=>!editor.selection.includes(e.id));editor.selection=[];sbeNumber();renderBusEditor(service(editor.servisId))}
 function sbeAlign(mode){if(!editor?.editable||editor.selection.length<2)return;sbePush();const a=editor.elements.filter(e=>editor.selection.includes(e.id));if(mode==='left'){const x=Math.min(...a.map(e=>e.x));a.forEach(e=>e.x=x)}if(mode==='top'){const y=Math.min(...a.map(e=>e.y));a.forEach(e=>e.y=y)}if(mode==='h'){a.sort((x,y)=>x.x-y.x);const step=(a.at(-1).x-a[0].x)/(a.length-1);a.forEach((e,i)=>e.x=a[0].x+step*i)}if(mode==='v'){a.sort((x,y)=>x.y-y.y);const step=(a.at(-1).y-a[0].y)/(a.length-1);a.forEach((e,i)=>e.y=a[0].y+step*i)}renderBusEditor(service(editor.servisId))}
 function sbeDistance(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
@@ -171,41 +185,57 @@ function sbePointer(ev){
   if(!editor?.editable)return;
   const node=ev.target.closest?.('[data-sbe-id]');
   if(!node)return;
-  const id=node.dataset.sbeId,obj=editor.elements.find(e=>e.id===id);
+  const id=node.dataset.sbeId;
+  const obj=editor.elements.find(e=>e.id===id);
   if(!obj)return;
+
   if(editor.pendingStudentId&&sbeIsSeat(obj)){
-    ev.preventDefault();sbeAssign(editor.pendingStudentId,id);return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    sbeAssign(editor.pendingStudentId,id);
+    return;
   }
-  if(ev.type!=='pointerdown')return;
-  if(obj.locked)return;
+
+  if(ev.type!=='pointerdown'||obj.locked)return;
+
   ev.preventDefault();
   ev.stopPropagation();
+  ev.stopImmediatePropagation();
+
   editor.selection=ev.shiftKey
-    ?(editor.selection.includes(id)?editor.selection.filter(x=>x!==id):editor.selection.concat(id))
+    ?(editor.selection.includes(id)
+      ?editor.selection.filter(x=>x!==id)
+      :editor.selection.concat(id))
     :[id];
-  renderSbeSelectionOnly();
 
   const sx=ev.clientX,sy=ev.clientY;
-  const orig=editor.elements.filter(e=>editor.selection.includes(e.id))
+  const orig=editor.elements
+    .filter(e=>editor.selection.includes(e.id))
     .map(e=>({id:e.id,x:e.x,y:e.y}));
   const before=sbeSnapshot();
-  editor._drag={id,pointerId:ev.pointerId,moved:false};
-  canvas.setPointerCapture?.(ev.pointerId);
+  const pointerId=ev.pointerId;
+  let moved=false;
+  editor._drag={id,pointerId};
 
   const move=e=>{
-    if(!editor._drag||e.pointerId!==editor._drag.pointerId||editor._pinch)return;
+    if(!editor._drag||e.pointerId!==pointerId||editor._pinch)return;
     e.preventDefault();
-    const dx=(e.clientX-sx)/(editor.zoom||1);
-    const dy=(e.clientY-sy)/(editor.zoom||1);
-    if(Math.abs(dx)+Math.abs(dy)>2)editor._drag.moved=true;
-    if(!editor._drag.moved)return;
+    e.stopPropagation();
+
+    const z=editor.zoom||1;
+    const dx=(e.clientX-sx)/z;
+    const dy=(e.clientY-sy)/z;
+
+    if(Math.abs(dx)+Math.abs(dy)<3&&!moved)return;
+    moved=true;
 
     orig.forEach(o=>{
       const x=editor.elements.find(q=>q.id===o.id);
       if(!x)return;
       x.x=Math.max(0,Math.min(SBE_W-x.width,o.x+dx));
       x.y=Math.max(0,Math.min(SBE_H-x.height,o.y+dy));
-      const n=canvas.querySelector('[data-sbe-id="'+CSS.escape(x.id)+'"]');
+
+      const n=document.querySelector('[data-sbe-id="'+CSS.escape(x.id)+'"]');
       if(n){
         n.style.left=x.x+'px';
         n.style.top=x.y+'px';
@@ -214,36 +244,44 @@ function sbePointer(ev){
   };
 
   const end=e=>{
-    if(!editor._drag||e.pointerId!==editor._drag.pointerId)return;
+    if(!editor._drag||e.pointerId!==pointerId)return;
     e.preventDefault();
-    canvas.releasePointerCapture?.(e.pointerId);
-    canvas.removeEventListener('pointermove',move,true);
-    canvas.removeEventListener('pointerup',end,true);
-    canvas.removeEventListener('pointercancel',end,true);
-    const moved=editor._drag.moved;
-    editor._drag=null;
-    if(!moved){renderSbeSelectionOnly();return;}
+    e.stopPropagation();
 
-    if(sbeCollision(editor.selection)){
-      orig.forEach(o=>{
-        const x=editor.elements.find(q=>q.id===o.id);
-        if(x){
-          x.x=o.x;x.y=o.y;
-          const n=canvas.querySelector('[data-sbe-id="'+CSS.escape(x.id)+'"]');
-          if(n){n.style.left=x.x+'px';n.style.top=x.y+'px';}
-        }
-      });
-      toast?.('Çakışma: nesne bu konuma bırakılamaz.');
-    }else{
-      editor.undo.push(before);
-      editor.redo=[];
+    window.removeEventListener('pointermove',move,true);
+    window.removeEventListener('pointerup',end,true);
+    window.removeEventListener('pointercancel',end,true);
+
+    editor._drag=null;
+
+    if(moved){
+      if(sbeCollision(editor.selection)){
+        orig.forEach(o=>{
+          const x=editor.elements.find(q=>q.id===o.id);
+          if(x){
+            x.x=o.x;
+            x.y=o.y;
+            const n=document.querySelector('[data-sbe-id="'+CSS.escape(x.id)+'"]');
+            if(n){
+              n.style.left=x.x+'px';
+              n.style.top=x.y+'px';
+            }
+          }
+        });
+        toast?.('Çakışma: nesne bu konuma bırakılamaz.');
+      }else{
+        editor.undo.push(before);
+        if(editor.undo.length>40)editor.undo.shift();
+        editor.redo=[];
+      }
     }
+
     renderSbeSelectionOnly();
   };
 
-  canvas.addEventListener('pointermove',move,true);
-  canvas.addEventListener('pointerup',end,true);
-  canvas.addEventListener('pointercancel',end,true);
+  window.addEventListener('pointermove',move,true);
+  window.addEventListener('pointerup',end,true);
+  window.addEventListener('pointercancel',end,true);
 }
 function pinchDistance(p){const a=[...p.values()][0],b=[...p.values()][1];return a&&b?Math.hypot(a.x-b.x,a.y-b.y):0}
 function sbeBindPinch(stage){if(!stage)return;const pts=new Map();let d0=0,z0=1;stage.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===2){editor._pinch=true;editor._mobileZoomUser=true;d0=pinchDistance(pts);z0=editor.zoom}},{passive:false});stage.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===2){e.preventDefault();editor.zoom=Math.max(SBE_MIN,Math.min(SBE_MAX,z0*pinchDistance(pts)/Math.max(1,d0)));const r=document.getElementById('transportBusEditor'),i=r?.querySelector('[data-sbe-stage-inner]'),c=r?.querySelector('.sbe-canvas-scale'),q=r?.querySelector('.sbe-zoom b');if(i){i.style.width=SBE_W*editor.zoom+'px';i.style.height=SBE_H*editor.zoom+'px'}if(c)c.style.transform='scale('+editor.zoom+')';if(q)q.textContent=Math.round(editor.zoom*100)+'%'}},{passive:false});const end=e=>{pts.delete(e.pointerId);if(pts.size<2)editor._pinch=false};stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end)}
@@ -276,17 +314,20 @@ requestAnimationFrame(()=>{
   const fresh=document.getElementById('transportBusEditor');
   if(!fresh)return;
   const stage=fresh.querySelector('[data-sbe-stage]');
-  if(stage&&!editor._mobileZoomUser&&window.matchMedia('(max-width:700px)').matches){
-    const available=Math.max(320,Math.min(window.innerWidth-16,stage.clientWidth-16));
-    editor.zoom=Math.max(SBE_MIN,Math.min(1,available/SBE_W));
-    sbeApplyZoom();
+  if(stage&&window.matchMedia('(max-width:700px)').matches){
+    const available=Math.max(280,Math.min(window.innerWidth-16,stage.clientWidth-16));
+    const fit=Math.max(SBE_MIN,Math.min(1,available/SBE_W));
+    if(!editor._mobileZoomUser||editor.zoom>1||editor.zoom===1){
+      editor.zoom=fit;
+      sbeApplyZoom();
+    }
   }
   fresh.scrollTop=oldScrollTop;
   fresh.scrollLeft=oldScrollLeft;
   if(stage){stage.scrollTop=oldStageTop;stage.scrollLeft=oldStageLeft}
 });
 }
-function sbeBind(ov,s){const canvas=ov.querySelector('[data-sbe-canvas]');if(!canvas)return;ov.querySelector('[data-sbe-save]')?.addEventListener('click',()=>sbeSave(s));ov.querySelector('[data-sbe-print]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelector('[data-sbe-pdf]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelector('[data-bus-report]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelectorAll('[data-bus-close]').forEach(b=>b.addEventListener('click',closeEditor));ov.querySelector('[data-sbe-undo]')?.addEventListener('click',sbeUndo);ov.querySelector('[data-sbe-redo]')?.addEventListener('click',sbeRedo);ov.querySelector('[data-sbe-delete]')?.addEventListener('click',sbeDelete);ov.querySelector('[data-bus-clear-all]')?.addEventListener('click',()=>{if(!editor?.editable)return;sbePush();editor.elements.filter(sbeIsSeat).forEach(clearBusSeat);renderBusEditor(s)});ov.querySelectorAll('[data-sbe-align]').forEach(b=>b.addEventListener('click',()=>sbeAlign(b.dataset.sbeAlign)));ov.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.addEventListener('click',()=>sbeAdd(b.dataset.sbeAddType)));ov.querySelector('[data-sbe-zoom-out]')?.addEventListener('click',()=>{editor._mobileZoomUser=true;editor.zoom=Math.max(SBE_MIN,editor.zoom-.1);renderBusEditor(s)});ov.querySelector('[data-sbe-zoom-in]')?.addEventListener('click',()=>{editor._mobileZoomUser=true;editor.zoom=Math.min(SBE_MAX,editor.zoom+.1);renderBusEditor(s)});ov.querySelector('[data-sbe-zoom-reset]')?.addEventListener('click',()=>{editor._mobileZoomUser=true;editor.zoom=1;renderBusEditor(s)});ov.querySelector('[data-sbe-plan-name]')?.addEventListener('input',e=>editor.planAdi=e.target.value);ov.querySelector('[data-sbe-template]')?.addEventListener('change',e=>{const next=e.target.value;if(next==='custom'){editor.sablon='custom';return}if(!confirm('Şablon uygulanınca mevcut düzen başlangıç düzenine dönecek. Devam edilsin mi?')){e.target.value=editor.sablon;return}sbePush();editor.sablon=next;editor.elements=sbeNormalize(sbeSeed(next));sbeNumber();renderBusEditor(s)});const search=ov.querySelector('[data-sbe-student-search]');search?.addEventListener('input',()=>{ov.querySelector('[data-sbe-students]').innerHTML=sbeStudents(search.value);sbeBindStudents(ov)});sbeBindStudents(ov);sbeBindPinch(ov.querySelector('[data-sbe-stage]'));canvas.addEventListener('pointerdown',sbePointer,true);canvas.addEventListener('pointermove',sbePointer,true);canvas.addEventListener('pointerup',sbePointer,true);canvas.addEventListener('pointercancel',sbePointer,true);canvas.addEventListener('dragover',e=>e.preventDefault());canvas.addEventListener('drop',e=>{e.preventDefault();const sid=e.dataTransfer?.getData('text/plain'),obj=e.target.closest?.('[data-sbe-id]');if(sid&&obj)sbeAssign(sid,obj.dataset.sbeId)})}
+function sbeBind(ov,s){const canvas=ov.querySelector('[data-sbe-canvas]');if(!canvas)return;ov.querySelector('[data-sbe-save]')?.addEventListener('click',()=>sbeSave(s));ov.querySelector('[data-sbe-print]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelector('[data-sbe-pdf]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelector('[data-bus-report]')?.addEventListener('click',()=>busPrintReport(s));ov.querySelectorAll('[data-bus-close]').forEach(b=>b.addEventListener('click',closeEditor));ov.querySelector('[data-sbe-undo]')?.addEventListener('click',sbeUndo);ov.querySelector('[data-sbe-redo]')?.addEventListener('click',sbeRedo);ov.querySelector('[data-sbe-delete]')?.addEventListener('click',sbeDelete);ov.querySelector('[data-bus-clear-all]')?.addEventListener('click',()=>sbeClearAll(s));ov.querySelectorAll('[data-sbe-align]').forEach(b=>b.addEventListener('click',()=>sbeAlign(b.dataset.sbeAlign)));ov.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.addEventListener('click',()=>sbeAdd(b.dataset.sbeAddType)));ov.querySelector('[data-sbe-zoom-out]')?.addEventListener('click',()=>{editor._mobileZoomUser=true;editor.zoom=Math.max(SBE_MIN,editor.zoom-.1);renderBusEditor(s)});ov.querySelector('[data-sbe-zoom-in]')?.addEventListener('click',()=>{editor._mobileZoomUser=true;editor.zoom=Math.min(SBE_MAX,editor.zoom+.1);renderBusEditor(s)});ov.querySelector('[data-sbe-zoom-reset]')?.addEventListener('click',()=>{editor._mobileZoomUser=false;editor.zoom=1;renderBusEditor(s)});ov.querySelector('[data-sbe-plan-name]')?.addEventListener('input',e=>editor.planAdi=e.target.value);ov.querySelector('[data-sbe-template]')?.addEventListener('change',e=>{const next=e.target.value;if(next==='custom'){editor.sablon='custom';return}if(!confirm('Şablon uygulanınca mevcut düzen başlangıç düzenine dönecek. Devam edilsin mi?')){e.target.value=editor.sablon;return}sbePush();editor.sablon=next;editor.elements=sbeNormalize(sbeSeed(next));sbeNumber();renderBusEditor(s)});const search=ov.querySelector('[data-sbe-student-search]');search?.addEventListener('input',()=>{ov.querySelector('[data-sbe-students]').innerHTML=sbeStudents(search.value);sbeBindStudents(ov)});sbeBindStudents(ov);sbeBindPinch(ov.querySelector('[data-sbe-stage]'));canvas.addEventListener('pointerdown',sbePointer,true);canvas.addEventListener('pointermove',sbePointer,true);canvas.addEventListener('pointerup',sbePointer,true);canvas.addEventListener('pointercancel',sbePointer,true);canvas.addEventListener('dragover',e=>e.preventDefault());canvas.addEventListener('drop',e=>{e.preventDefault();const sid=e.dataTransfer?.getData('text/plain'),obj=e.target.closest?.('[data-sbe-id]');if(sid&&obj)sbeAssign(sid,obj.dataset.sbeId)})}
 function openBusEditor(servisIdValue){const id=String(servisIdValue??'');if(!id)return false;if(editor&&String(editor.servisId)===id&&document.getElementById('transportBusEditor'))return true;const s=arr('servisler').find(x=>String(x?.id??'')===id);if(!s){console.warn('[Transport/seating] servis bulunamadı:',id);return false}const p=currentPlan(s.id)||{},servisId=s.id,sablon=sablonValue(p.sablon||'minibus'),elements=sbeNormalize(window.soPlanElementleriGetir?.(p,p.sablon||'ducato')||[]);editor={servisId,sablon,elements,editable:canEditBusSeats()};editor.planAdi=p.planAdi||p.ad||'Servis Oturma Planı';editor.selection=[];editor.pendingStudentId=null;editor.zoom=1;editor._mobileZoomUser=false;editor.layout={width:SBE_W,height:SBE_H};editor.undo=[];editor.redo=[];editor.layoutEditing=false;busPullRefresh(false);renderBusEditor(s);return true}
 function closeEditor(){const ov=document.getElementById('transportBusEditor');if(ov)ov.remove();editor=null;busPullRefresh(true);try{document.body.classList.remove('modal-open')}catch(_){}}
 function busPullRefresh(on){try{const r=window.KorukPlatformAdapter?.setPullToRefreshEnabled?.(!!on);if(r&&typeof r.catch==='function')r.catch(()=>{})}catch(_){} }
