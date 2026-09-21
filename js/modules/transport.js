@@ -374,7 +374,8 @@ function sbeTableRender(){
     const label=e
       ? (n || (sbeIsSeatKind(kind) ? 'BOŞ' : (SBE_TYPES[kind]?.label || '')))
       : '';
-    cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" style="'+(e?((Number(e.rowSpan)>1?'grid-row:span '+Number(e.rowSpan)+';':'')+(Number(e.colSpan)>1?'grid-column:span '+Number(e.colSpan)+';')):'')+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
+    const spanStyle=e ? ((Number(e.rowSpan)>1?'grid-row:span '+Number(e.rowSpan)+';':'')+(Number(e.colSpan)>1?'grid-column:span '+Number(e.colSpan)+';')) : '';
+    cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" style="'+spanStyle+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
       ''+
       (e?'<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span><span class="sbe-tcell-icon">'+icon+'</span><strong>'+esc(label)+'</strong>'+
         (n?'<small>'+esc(className(arr('veliler').find(v=>String(v.id)===String(e.studentId))?.sinifId))+'</small>':''):'')+
