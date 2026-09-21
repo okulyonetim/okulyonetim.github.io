@@ -360,13 +360,21 @@ function sbeTableRender(){
   host.style.setProperty('--sbe-cols',cols);host.style.setProperty('--sbe-rows',rows);
   const total=editor.elements.filter(sbeIsSeat).length;
   const cells=[];
+  const occupied=new Set();
+  for(const e of editor.elements){
+    const rs=Math.max(1,Number(e.rowSpan)||1),cs=Math.max(1,Number(e.colSpan)||1);
+    for(let rr=Number(e.row);rr<Number(e.row)+rs;rr++)for(let cc=Number(e.column);cc<Number(e.column)+cs;cc++){
+      if(!(rr===Number(e.row)&&cc===Number(e.column)))occupied.add(rr+','+cc);
+    }
+  }
   for(let r=1;r<=t.rows;r++)for(let c=1;c<=t.cols;c++){
+    if(occupied.has(r+','+c))continue;
     const e=sbeTableCell(r,c),n=e?seatStudentName(e):'',sel=e&&editor.selection.includes(e.id),kind=e?sbeKind(e):'empty';
     const icon=SBE_TYPES[kind]?.icon||'';
     const label=e
       ? (n || (sbeIsSeatKind(kind) ? 'BOŞ' : (SBE_TYPES[kind]?.label || '')))
       : '';
-    cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
+    cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" style="'+(e?((Number(e.rowSpan)>1?'grid-row:span '+Number(e.rowSpan)+';':'')+(Number(e.colSpan)>1?'grid-column:span '+Number(e.colSpan)+';')):'')+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
       ''+
       (e?'<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span><span class="sbe-tcell-icon">'+icon+'</span><strong>'+esc(label)+'</strong>'+
         (n?'<small>'+esc(className(arr('veliler').find(v=>String(v.id)===String(e.studentId))?.sinifId))+'</small>':''):'')+
@@ -472,6 +480,37 @@ function sbeTableAssignStudentToCell(r,c){
   const sid=editor.pendingStudentId;if(!sid)return false;
   const seat=sbeTableSeat(r,c,'seat');sbeAssign(sid,seat.id);return true;
 }
+function sbeTableMergeSelection(){
+  if(!editor?.editable)return;
+  const ids=editor.selection||[];
+  if(ids.length<2){toast?.('Birleştirmek için en az iki hücre seçin.');return;}
+  const cells=ids.map(id=>editor.elements.find(e=>e.id===id)).filter(Boolean);
+  const rows=cells.map(e=>Number(e.row)), cols=cells.map(e=>Number(e.column));
+  const r1=Math.min(...rows),r2=Math.max(...rows),c1=Math.min(...cols),c2=Math.max(...cols);
+  const expected=(r2-r1+1)*(c2-c1+1);
+  const key=new Set(cells.map(e=>e.row+','+e.column));
+  if(key.size!==expected){toast?.('Birleştirme için dikdörtgen bir hücre alanı seçin.');return;}
+  const inside=editor.elements.filter(e=>{
+    const r=Number(e.row),c=Number(e.column);
+    return r>=r1&&r<=r2&&c>=c1&&c<=c2;
+  });
+  const nonAnchor=inside.filter(e=>!(Number(e.row)===r1&&Number(e.column)===c1)&& (seatStudentName(e)||!sbeIsSeat(e)));
+  if(nonAnchor.length){toast?.('Seçimde dolu veya özel nesne bulunan hücre var. Önce bunları taşıyın/silin.');return;}
+  const anchor=inside.find(e=>Number(e.row)===r1&&Number(e.column)===c1);
+  if(!anchor){toast?.('Birleştirme alanının sol üst hücresini önce oluşturun.');return;}
+  sbePush();
+  editor.elements=editor.elements.filter(e=>e===anchor||!inside.includes(e));
+  anchor.rowSpan=r2-r1+1; anchor.colSpan=c2-c1+1;
+  editor.selection=[anchor.id];
+  sbeTableRender();
+}
+function sbeTableToggleCell(r,c){
+  const e=sbeTableCell(r,c);
+  if(!e)return;
+  const i=editor.selection.indexOf(e.id);
+  if(i>=0)editor.selection.splice(i,1);else editor.selection.push(e.id);
+  sbeTableRender();
+}
 function sbeTableCellClick(r,c){
   if(!editor?.editable)return;
   if(editor.pendingCellKind){
@@ -487,13 +526,24 @@ function sbeTableCellClick(r,c){
   if(sbeTableAssignStudentToCell(r,c))return;
   const e=sbeTableCell(r,c);
   if(e){
-    editor.selection=[e.id];
-    sbeTableRender();
+    if(editor.mergeMode){
+      sbeTableToggleCell(r,c);
+    }else{
+      editor.selection=[e.id];
+      sbeTableRender();
+    }
   }
   // Araç seçilmeden boş hücreye dokunmak yalnızca seçimdir; otomatik koltuk oluşturulmaz.
 
 }
 function sbeTableBind(root,s){
+  root.querySelector('[data-sbe-merge]')?.addEventListener('click',()=>{
+    editor.mergeMode=!editor.mergeMode;
+    editor.selection=[];
+    root.querySelector('[data-sbe-merge]')?.classList.toggle('is-active',!!editor.mergeMode);
+    toast?.(editor.mergeMode?'Birleştirme modu: hücreleri seçin, sonra ↔ Birleştir butonuna basın.':'Birleştirme modu kapatıldı.');
+    sbeTableRender();
+  });
   root.querySelector('[data-sbe-table-add-row]')?.addEventListener('click',sbeTableAddRow);
   root.querySelector('[data-sbe-table-del-row]')?.addEventListener('click',sbeTableDeleteRow);
   root.querySelector('[data-sbe-table-add-col]')?.addEventListener('click',sbeTableAddCol);
@@ -518,8 +568,8 @@ function sbeRenderTableEditor(s){
   ov.innerHTML='<section class="ka-modal sbe-modal sbe-table-editor">'+
     '<header class="sbe-header"><div><strong>🚌 '+esc(serviceName(s))+'</strong><small>'+esc(s.plaka||'—')+' · '+esc(s.soforAdi||'Şoför')+'</small></div><button class="ka-icon-button" type="button" data-bus-close>×</button></header>'+
     '<div class="sbe-top"><label><span>Plan adı</span><input data-sbe-plan-name value="'+esc(editor.planAdi||'Servis Oturma Planı')+'"></label><label><span>Araç tipi</span><select data-sbe-template>'+options+'</select></label><div class="sbe-stat"><b>'+st.dolu+'/'+st.toplam+'</b><small>'+st.bos+' boş · '+st.rezerve+' rezerve</small></div><div class="sbe-actions"><button class="ka-btn" type="button" data-sbe-save>💾 Kaydet</button><button class="ka-btn ka-btn--secondary" type="button" data-sbe-print>🖨 Yazdır</button><button class="ka-btn ka-btn--secondary" type="button" data-sbe-pdf>📄 PDF</button></div></div>'+
-    '<div class="sbe-table-toolbar"><span>Tablo düzeni</span><button type="button" data-sbe-table-add-row>＋ Satır</button><button type="button" data-sbe-table-del-row>− Satır</button><button type="button" data-sbe-table-add-col>＋ Sütun</button><button type="button" data-sbe-table-del-col>− Sütun</button><button type="button" data-sbe-undo>↶</button><button type="button" data-sbe-redo>↷</button><button type="button" data-bus-clear-all>🧹 Temizle</button><button type="button" data-sbe-delete>🗑 Sil</button><button type="button" data-bus-report>🖨 Rapor</button><span data-sbe-table-info></span></div>'+
-    '<div class="sbe-table-tools"><button type="button" data-sbe-cell-kind="seat" data-sbe-add-type="seat">＋ Koltuk</button><button type="button" data-sbe-cell-kind="double" data-sbe-add-type="double">👥 İkili</button><button type="button" data-sbe-cell-kind="door" data-sbe-add-type="door">🚪 Kapı</button><button type="button" data-sbe-cell-kind="window" data-sbe-add-type="window">🪟 Cam</button><button type="button" data-sbe-cell-kind="emergency" data-sbe-add-type="emergency">⛔ Acil</button><button type="button" data-sbe-cell-kind="luggage" data-sbe-add-type="luggage">🧳 Bagaj</button><button type="button" data-sbe-cell-kind="engine" data-sbe-add-type="engine">🔧 Motor</button><button type="button" data-sbe-cell-kind="driver" data-sbe-add-type="driver">🧑‍✈️ Şoför</button><button type="button" data-sbe-cell-kind="empty" data-sbe-add-type="empty">⬜ Boş alan</button></div>'+
+    '<div class="sbe-table-toolbar"><span>Tablo düzeni</span><button type="button" data-sbe-table-add-row>＋ Satır</button><button type="button" data-sbe-table-del-row>− Satır</button><button type="button" data-sbe-table-add-col>＋ Sütun</button><button type="button" data-sbe-table-del-col>− Sütun</button><button type="button" data-sbe-merge>↔ Birleştir</button><button type="button" data-sbe-undo>↶</button><button type="button" data-sbe-redo>↷</button><button type="button" data-bus-clear-all>🧹 Temizle</button><button type="button" data-sbe-delete>🗑 Sil</button><button type="button" data-bus-report>🖨 Rapor</button><span data-sbe-table-info></span></div>'+
+    '<div class="sbe-table-tools"><button type="button" data-sbe-cell-kind="seat" data-sbe-add-type="seat">＋ Koltuk</button><button type="button" data-sbe-cell-kind="door" data-sbe-add-type="door">🚪 Kapı</button><button type="button" data-sbe-cell-kind="driver" data-sbe-add-type="driver">👨‍✈️ Şoför</button><button type="button" data-sbe-cell-kind="driver" data-sbe-add-type="driver">🧑‍✈️ Şoför</button><button type="button" data-sbe-cell-kind="empty" data-sbe-add-type="empty">⬜ Boş alan</button></div>'+
     '<div class="sbe-table-scroll"><div class="sbe-table" data-sbe-table></div></div>'+
     '<div class="sbe-student-panel"><div class="sbe-panel-title"><b>ÖĞRENCİLER</b><small>Öğrenciyi seçin, sonra tablodaki hücreye dokunun.</small></div><input class="sbe-search" data-sbe-student-search placeholder="🔍 Öğrenci ara…"><div class="sbe-student-list" data-sbe-students>'+sbeStudents()+'</div></div>'+
     '<footer class="sbe-footer"><span>↔ Sütun sınırını · ↕ Satır sınırını sürükleyerek boyutu değiştirin.</span><button class="ka-btn ka-btn--secondary" type="button" data-bus-close>'+ (editor.editable?'Vazgeç':'Kapat') +'</button></footer></section>';
