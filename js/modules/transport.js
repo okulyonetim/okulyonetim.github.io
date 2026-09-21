@@ -521,6 +521,25 @@ function sbeTableMergeSelection(){
   editor.selection=[anchor.id];
   sbeTableRender();
 }
+function sbeTableUnmergeSelection(){
+  if(!editor?.editable)return;
+  const ids=editor.selection||[];
+  const anchor=editor.elements.find(e=>ids.includes(e.id)&&((Number(e.rowSpan)||1)>1||(Number(e.colSpan)||1)>1));
+  if(!anchor){toast?.('Ayırmak için önce birleşmiş hücreye dokunun.');return;}
+  sbePush();
+  const rs=Math.max(1,Number(anchor.rowSpan)||1),cs=Math.max(1,Number(anchor.colSpan)||1);
+  const synthetic=anchor.properties?.kind==='merge' || anchor.type==='vehicle'&&anchor.properties?.kind==='merge';
+  anchor.rowSpan=1;
+  anchor.colSpan=1;
+  if(synthetic){
+    editor.elements=editor.elements.filter(e=>e!==anchor);
+  }
+  editor.selection=synthetic?[]:[anchor.id];
+  editor.mergeSelection=[];
+  editor.mergeMode=false;
+  sbeTableRender();
+  toast?.('Birleşmiş hücreler ayrıldı.');
+}
 function sbeTableToggleCell(r,c){
   editor.mergeSelection=editor.mergeSelection||[];
   const key=r+','+c;
@@ -554,6 +573,7 @@ function sbeTableCellClick(r,c){
 
 }
 function sbeTableBind(root,s){
+  root.querySelector('[data-sbe-unmerge]')?.addEventListener('click',()=>sbeTableUnmergeSelection());
   root.querySelector('[data-sbe-merge]')?.addEventListener('click',()=>{
     if(editor.mergeMode && (editor.mergeSelection||[]).length>=2){
       sbeTableMergeSelection();
@@ -591,7 +611,7 @@ function sbeRenderTableEditor(s){
   ov.innerHTML='<section class="ka-modal sbe-modal sbe-table-editor">'+
     '<header class="sbe-header"><div><strong>🚌 '+esc(serviceName(s))+'</strong><small>'+esc(s.plaka||'—')+' · '+esc(s.soforAdi||'Şoför')+'</small></div><button class="ka-icon-button" type="button" data-bus-close>×</button></header>'+
     '<div class="sbe-top"><label><span>Plan adı</span><input data-sbe-plan-name value="'+esc(editor.planAdi||'Servis Oturma Planı')+'"></label><label><span>Araç tipi</span><select data-sbe-template>'+options+'</select></label><div class="sbe-stat"><b>'+st.dolu+'/'+st.toplam+'</b><small>'+st.bos+' boş · '+st.rezerve+' rezerve</small></div><div class="sbe-actions"><button class="ka-btn" type="button" data-sbe-save>💾 Kaydet</button><button class="ka-btn ka-btn--secondary" type="button" data-sbe-print>🖨 Yazdır</button><button class="ka-btn ka-btn--secondary" type="button" data-sbe-pdf>📄 PDF</button></div></div>'+
-    '<div class="sbe-table-toolbar"><span>Tablo düzeni</span><button type="button" data-sbe-table-add-row>＋ Satır</button><button type="button" data-sbe-table-del-row>− Satır</button><button type="button" data-sbe-table-add-col>＋ Sütun</button><button type="button" data-sbe-table-del-col>− Sütun</button><button type="button" data-sbe-merge>↔ Birleştir</button><button type="button" data-sbe-undo>↶</button><button type="button" data-sbe-redo>↷</button><button type="button" data-bus-clear-all>🧹 Temizle</button><button type="button" data-sbe-delete>🗑 Sil</button><button type="button" data-bus-report>🖨 Rapor</button><span data-sbe-table-info></span></div>'+
+    '<div class="sbe-table-toolbar"><span>Tablo düzeni</span><button type="button" data-sbe-table-add-row>＋ Satır</button><button type="button" data-sbe-table-del-row>− Satır</button><button type="button" data-sbe-table-add-col>＋ Sütun</button><button type="button" data-sbe-table-del-col>− Sütun</button><button type="button" data-sbe-merge>↔ Birleştir</button><button type="button" data-sbe-unmerge>↔ Ayır</button><button type="button" data-sbe-undo>↶</button><button type="button" data-sbe-redo>↷</button><button type="button" data-bus-clear-all>🧹 Temizle</button><button type="button" data-sbe-delete>🗑 Sil</button><button type="button" data-bus-report>🖨 Rapor</button><span data-sbe-table-info></span></div>'+
     '<div class="sbe-table-tools"><button type="button" data-sbe-cell-kind="seat" data-sbe-add-type="seat">＋ Koltuk</button><button type="button" data-sbe-cell-kind="door" data-sbe-add-type="door">🚪 Kapı</button><button type="button" data-sbe-cell-kind="driver" data-sbe-add-type="driver">👨‍✈️ Şoför</button><button type="button" data-sbe-cell-kind="empty" data-sbe-add-type="empty">⬜ Boş alan</button></div>'+
     '<div class="sbe-table-scroll"><div class="sbe-table" data-sbe-table></div></div>'+
     '<div class="sbe-student-panel"><div class="sbe-panel-title"><b>ÖĞRENCİLER</b><small>Öğrenciyi seçin, sonra tablodaki hücreye dokunun.</small></div><input class="sbe-search" data-sbe-student-search placeholder="🔍 Öğrenci ara…"><div class="sbe-student-list" data-sbe-students>'+sbeStudents()+'</div></div>'+
