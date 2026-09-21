@@ -374,7 +374,11 @@ function sbeTableRender(){
     const label=e
       ? (n || (sbeIsSeatKind(kind) ? 'BOŞ' : (SBE_TYPES[kind]?.label || '')))
       : '';
-    const spanStyle=e ? ((Number(e.rowSpan)>1?'grid-row:span '+Number(e.rowSpan)+';':'')+(Number(e.colSpan)>1?'grid-column:span '+Number(e.colSpan)+';')) : '';
+    let spanStyle='';
+    if(e){
+      if(Number(e.rowSpan)>1)spanStyle+='grid-row:span '+Number(e.rowSpan)+';';
+      if(Number(e.colSpan)>1)spanStyle+='grid-column:span '+Number(e.colSpan)+';';
+    }
     cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" style="'+spanStyle+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
       ''+
       (e?'<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span><span class="sbe-tcell-icon">'+icon+'</span><strong>'+esc(label)+'</strong>'+
