@@ -19,6 +19,10 @@ assert(transport.includes('function sbeTableUnmergeSelection'), 'Birleşmiş hü
 assert(transport.includes('sbeTableMergeSelection'), 'Hücre birleştirme işlevi bulunmalı.');
 assert(transport.includes("if(kind==='seat' && editor.pendingCellKind==='seat')"), 'Koltuk aracı ikinci dokunuşta pasifleşmeli.');
 assert(transport.includes("if(kind!=='seat')"), 'Koltuk aracı hücre ekledikten sonra aktif kalmalı; diğer araçlar tek kullanımlı olmalı.');
+assert(transport.includes('editor.pendingStudentId=editor.pendingStudentId===sid?null:sid'),'Öğrenci seçimi aç/kapat yapılabilmeli.');
+assert(transport.includes('function sbeTableCellAt'),'Birleşmiş hücrelerde öğrenci hedefi anchor hücresine çözülmeli.');
+assert(transport.includes("sbeTableSeat(r,c,'seat')"),'Seçili öğrenci boş hücreye dokununca koltuk oluşturulabilmeli.');
+assert(css.includes('.sbe-table-tools button.is-active')&&css.includes('.sbe-table-editor .sbe-student.is-active'),'Aktif araç ve öğrenci renk ile belirgin olmalı.');
 assert(transport.includes("Number(table?.editorVersion)===2"), 'Tablo editörü kayıtlı hücre yerleşimini eski servis şablonuna dönüştürmemeli.');
 assert(transport.includes("await window.ServisOturmaService.planElementsKaydet"), 'Kaydetme işlemi veritabanı tamamlanmadan editörü kapatmamalı.');
 assert(!transport.includes('data-sbe-add-type="double"'), 'İkili oturma butonu kaldırılmalı.');
@@ -32,6 +36,6 @@ assert(transport.includes('window.ServisOturmaService.planGuncelle'),'Plan üst 
 assert(transport.includes('function busPrintReport')&&transport.includes('ReportEngine?.printReport'),'Yazdır/PDF ortak rapor motorunu kullanmalı.');
 for(const token of ['.sbe-toolbar','.sbe-tool','.sbe-alignbar','.sbe-zoom','.sbe-stage'])assert(css.includes(token),`Yeni servis oturma araç stili eksik: ${token}`);
 assert(assetVersion(index,'css/design-system.css')>=955&&assetVersion(index,'js/app-loader.js')>=892,'Index yeni servis oturma paketini yüklemeli.');
-assert(assetVersion(loader,'js/modules/transport.js')>=919,'Transport cache-bust sürümü güncel olmalı.');
-assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=919&&assetVersion(sw,'css/design-system.css')>=955,'Service Worker yeni servis oturma paketini önbelleğe almalı.');
+assert(assetVersion(loader,'js/modules/transport.js')>=920,'Transport cache-bust sürümü güncel olmalı.');
+assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=920&&assetVersion(sw,'css/design-system.css')>=955,'Service Worker yeni servis oturma paketini önbelleğe almalı.');
 console.log('Servis oturma yeni editör hızlı erişim/kayıt araçları başarılı.');
