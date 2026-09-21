@@ -542,11 +542,16 @@ function sbeTableCellClick(r,c){
 }
 function sbeTableBind(root,s){
   root.querySelector('[data-sbe-merge]')?.addEventListener('click',()=>{
-    editor.mergeMode=!editor.mergeMode;
+    if(editor.mergeMode && (editor.mergeSelection||[]).length>=2){
+      sbeTableMergeSelection();
+      root.querySelector('[data-sbe-merge]')?.classList.remove('is-active');
+      return;
+    }
+    editor.mergeMode=true;
     editor.selection=[];
     editor.mergeSelection=[];
-    root.querySelector('[data-sbe-merge]')?.classList.toggle('is-active',!!editor.mergeMode);
-    toast?.(editor.mergeMode?'Birleştirme modu: hücreleri seçin, sonra ↔ Birleştir butonuna basın.':'Birleştirme modu kapatıldı.');
+    root.querySelector('[data-sbe-merge]')?.classList.add('is-active');
+    toast?.('Birleştirme modu: birleştirilecek hücreleri seçin, sonra ↔ Birleştir butonuna tekrar basın.');
     sbeTableRender();
   });
   root.querySelector('[data-sbe-table-add-row]')?.addEventListener('click',sbeTableAddRow);
