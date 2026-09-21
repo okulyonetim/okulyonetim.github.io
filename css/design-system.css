@@ -2534,6 +2534,20 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 .sbe-student-panel{border-top:1px solid rgba(140,180,165,.16);padding:14px;max-height:330px;overflow:auto}
 .sbe-table-editor .sbe-student-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px}
 .sbe-table-editor .sbe-student{touch-action:manipulation}
+.sbe-table-tools button.is-active{
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+  color:#fff!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary) 24%,transparent),0 3px 10px rgba(0,0,0,.18);
+  transform:translateY(-1px);
+}
+.sbe-table-tools button.is-active::after{content:' ✓';font-weight:900}
+.sbe-table-editor .sbe-student.is-active{
+  background:color-mix(in srgb,var(--ka-primary) 18%,var(--ka-card-bg))!important;
+  border-color:var(--ka-primary)!important;
+  box-shadow:inset 4px 0 0 var(--ka-primary),0 0 0 2px color-mix(in srgb,var(--ka-primary) 20%,transparent);
+}
+.sbe-table-editor .sbe-student.is-active .sbe-avatar{background:var(--ka-primary)!important;color:#fff!important}
 @media(max-width:700px){
   .sbe-table-editor{width:100vw!important;max-width:none!important;margin:0!important;border-radius:0!important}
   .sbe-table-toolbar{position:sticky;top:0;z-index:8;background:rgba(8,27,21,.98);padding:8px 10px}
