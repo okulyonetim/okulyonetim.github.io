@@ -2473,3 +2473,48 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
  #transportBusEditor .sbe-footer{padding:10px 16px}
  #transportBusEditor .sbe-footer>span{display:none}
 }
+
+
+/* Service seating table planner */
+.sbe-table-editor{max-width:1100px!important;width:min(1100px,calc(100vw - 24px))!important}
+.sbe-table-toolbar,.sbe-table-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid rgba(140,180,165,.16)}
+.sbe-table-toolbar>span:first-child{font-weight:800;margin-right:auto}
+.sbe-table-toolbar button,.sbe-table-tools button{border:1px solid rgba(140,180,165,.2);background:rgba(20,45,37,.78);color:inherit;border-radius:12px;min-height:40px;padding:0 13px;font-weight:700}
+.sbe-table-toolbar button:active,.sbe-table-tools button:active{transform:scale(.98)}
+.sbe-table-scroll{width:100%;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:14px 12px 18px;touch-action:pan-x pan-y}
+.sbe-table{display:grid;grid-template-columns:var(--sbe-cols);grid-template-rows:var(--sbe-rows);width:max-content;min-width:100%;border:2px solid rgba(105,145,132,.65);border-radius:18px;overflow:visible;background:rgba(8,27,21,.55)}
+.sbe-tcell{position:relative;min-width:0;min-height:0;border:0;border-right:1px solid rgba(150,180,170,.3);border-bottom:1px solid rgba(150,180,170,.3);background:rgba(80,92,88,.82);color:#fff;padding:12px 8px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:inherit;overflow:visible}
+.sbe-tcell:nth-child(n){grid-row:auto;grid-column:auto}
+.sbe-tcell:hover{background:rgba(92,108,102,.95)}
+.sbe-tcell.has-object{background:rgba(90,103,98,.9)}
+.sbe-tcell.filled{background:rgba(25,143,105,.92)}
+.sbe-tcell.selected{outline:3px solid #f4c84d;outline-offset:-3px;z-index:2}
+.sbe-tcell strong{max-width:100%;font-size:14px;line-height:1.15;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbe-tcell small{font-size:11px;opacity:.85}
+.sbe-tcell-number{position:absolute;left:8px;top:6px;font-size:12px;opacity:.95}
+.sbe-tcell-icon{font-size:22px;line-height:1}
+.sbe-tcell em{font-size:11px;opacity:.6;font-style:normal}
+.sbe-tcell-door,.sbe-tcell-window,.sbe-tcell-emergency{background:rgba(80,70,55,.9)}
+.sbe-col-resize{position:absolute;right:-5px;top:0;width:10px;height:100%;cursor:col-resize;touch-action:none;z-index:4}
+.sbe-row-resize{position:absolute;left:0;bottom:-5px;width:100%;height:10px;cursor:row-resize;touch-action:none;z-index:4}
+.sbe-col-resize:after,.sbe-row-resize:after{content:"";position:absolute;opacity:0;background:#29a87c;border-radius:8px;transition:opacity .15s}
+.sbe-col-resize:after{left:3px;top:10%;width:4px;height:80%}
+.sbe-row-resize:after{left:10%;top:3px;width:80%;height:4px}
+.sbe-col-resize:hover:after,.sbe-row-resize:hover:after{opacity:1}
+.sbe-student-panel{border-top:1px solid rgba(140,180,165,.16);padding:14px;max-height:330px;overflow:auto}
+.sbe-table-editor .sbe-student-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px}
+.sbe-table-editor .sbe-student{touch-action:manipulation}
+@media(max-width:700px){
+  .sbe-table-editor{width:100vw!important;max-width:none!important;margin:0!important;border-radius:0!important}
+  .sbe-table-toolbar{position:sticky;top:0;z-index:8;background:rgba(8,27,21,.98);padding:8px 10px}
+  .sbe-table-toolbar button,.sbe-table-tools button{min-height:42px;padding:0 11px;font-size:14px}
+  .sbe-table-toolbar>span:first-child{width:100%;margin:0}
+  .sbe-table-scroll{padding:10px 8px 16px;max-height:52vh;overflow:auto;touch-action:pan-x pan-y}
+  .sbe-table{min-width:max-content}
+  .sbe-tcell strong{font-size:13px}
+  .sbe-student-panel{max-height:300px}
+  .sbe-table-editor .sbe-student-list{grid-template-columns:1fr}
+  .sbe-col-resize,.sbe-row-resize{width:14px;height:14px}
+  .sbe-col-resize{right:-7px;top:0;height:100%}
+  .sbe-row-resize{bottom:-7px;left:0;width:100%}
+}
