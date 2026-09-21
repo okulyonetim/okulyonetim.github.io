@@ -2668,3 +2668,10 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   outline:3px solid var(--ka-primary,#16a34a)!important;
   outline-offset:-3px;
 }
+
+
+/* SBE ACTIVE TOOL STATE v920 */
+.sbe-table-editor [data-sbe-add-type].is-active{background:var(--ka-primary,#17684f)!important;color:#fff!important;border-color:var(--ka-primary,#17684f)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary,#17684f) 22%,transparent),0 2px 8px rgba(0,0,0,.18)!important;transform:translateY(-1px);font-weight:800!important}
+.sbe-table-editor [data-sbe-add-type].is-active::after{content:' ✓';font-weight:900}
+.sbe-table-editor .sbe-student.is-active,.sbe-table-editor .sbe-student.is-pending{background:var(--ka-primary,#17684f)!important;color:#fff!important;border-color:var(--ka-primary,#17684f)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary,#17684f) 20%,transparent)!important}
+.sbe-table-editor .sbe-student.is-active strong,.sbe-table-editor .sbe-student.is-active small,.sbe-table-editor .sbe-student.is-pending strong,.sbe-table-editor .sbe-student.is-pending small{color:#fff!important}
