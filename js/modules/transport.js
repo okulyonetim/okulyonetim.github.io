@@ -341,7 +341,8 @@ function sbeTableSeat(r,c,kind='seat'){
   let e=sbeTableCell(r,c);
   if(e)return e;
   const cfg=SBE_TYPES[kind]||SBE_TYPES.seat;
-  e={id:'seat_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),row:r,column:c,type:'koltuk',seatNumber:null,studentId:null,x:0,y:0,width:cfg.w,height:cfg.h,rotation:0,visible:true,locked:false,properties:{kind,studentName:'',reserved:false,label:cfg.label}};
+  const seatKind=sbeIsSeatKind(kind);
+  e={id:(seatKind?'seat_':'cell_')+Date.now()+'_'+Math.random().toString(36).slice(2,7),row:r,column:c,type:kind==='driver'?'sofor':(seatKind?'koltuk':'vehicle'),seatNumber:null,studentId:null,x:0,y:0,width:cfg.w,height:cfg.h,rotation:0,visible:true,locked:['door','window','emergency','engine','luggage','driver'].includes(kind),properties:{kind,studentName:'',reserved:false,label:cfg.label}};
   editor.elements.push(e);sbeNumber();return e;
 }
 function sbeTableRemoveCell(r,c){
@@ -424,23 +425,40 @@ function sbeTableDeleteCol(){
 function sbeTableResizeStart(ev,type,index){
   if(!editor?.editable)return;
   ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();
-  const t=sbeTableConfig(),arr=type==='col'?t.colWidths:t.rowHeights;
-  const start=type==='col'?ev.clientX:ev.clientY,startSize=arr[index-1];
+  const t0=sbeTableConfig();
+  const start=type==='col'?ev.clientX:ev.clientY;
+  const startSize=(type==='col'?t0.colWidths:t0.rowHeights)[index-1];
   const before=sbeSnapshot();let moved=false;
+  const pointerId=ev.pointerId;
+  try{ev.target.setPointerCapture?.(pointerId)}catch(_){}
   const move=e=>{
-    e.preventDefault();
+    if(e.pointerId!==pointerId)return;
+    e.preventDefault();e.stopPropagation();
     const delta=(type==='col'?e.clientX:e.clientY)-start;
     const next=Math.max(type==='col'?70:52,startSize+delta);
     if(Math.abs(next-startSize)>1)moved=true;
-    arr[index-1]=next;
-    if(type==='col')t.manualCols[index-1]=true;else t.manualRows[index-1]=true;
+    const t=sbeTableConfig();
+    if(type==='col'){
+      t.colWidths[index-1]=next;
+      t.manualCols[index-1]=true;
+    }else{
+      t.rowHeights[index-1]=next;
+      t.manualRows[index-1]=true;
+    }
     sbeTableRender();
   };
   const end=e=>{
-    e.preventDefault();window.removeEventListener('pointermove',move,true);window.removeEventListener('pointerup',end,true);window.removeEventListener('pointercancel',end,true);
-    if(moved){editor.undo.push(before);editor.redo=[]}
+    if(e.pointerId!==pointerId)return;
+    e.preventDefault();
+    try{ev.target.releasePointerCapture?.(pointerId)}catch(_){}
+    window.removeEventListener('pointermove',move,true);
+    window.removeEventListener('pointerup',end,true);
+    window.removeEventListener('pointercancel',end,true);
+    if(moved){editor.undo.push(before);if(editor.undo.length>40)editor.undo.shift();editor.redo=[]}
   };
-  window.addEventListener('pointermove',move,true);window.addEventListener('pointerup',end,true);window.addEventListener('pointercancel',end,true);
+  window.addEventListener('pointermove',move,true);
+  window.addEventListener('pointerup',end,true);
+  window.addEventListener('pointercancel',end,true);
 }
 function sbeTableAssignStudentToCell(r,c){
   const sid=editor.pendingStudentId;if(!sid)return false;
@@ -473,7 +491,7 @@ function sbeTableBind(root,s){
     if(row){sbeTableResizeStart(e,'row',Number(row.dataset.sbeRowResize));return}
     const cell=e.target.closest('[data-sbe-cell]');
     if(cell){e.preventDefault();const [r,c]=cell.dataset.sbeCell.split(',').map(Number);sbeTableCellClick(r,c)}
-  });
+  },{passive:false});
   sbeBindStudents(root);
 }
 function sbeRenderTableEditor(s){
