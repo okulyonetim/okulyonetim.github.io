@@ -136,9 +136,21 @@ function installNativePullRefreshScrollGuard(){
     }
     try{native.setChildCanScrollUp(!!blocked)}catch(_){ }
   };
-  const onPointerDown=e=>{activeTarget=e.target;report(activeTarget)};
+  const interactiveSelector='button,a,input,textarea,select,summary,[role="button"],[role="link"],[contenteditable="true"],[data-sbe-merge],[data-sbe-unmerge],[data-sbe-delete],[data-sbe-table-add-row],[data-sbe-table-del-row],[data-sbe-table-add-col],[data-sbe-table-del-col]';
+  const setInteractive=active=>{
+    try{native.setInteractiveTouch?.(!!active)}catch(_){}
+  };
+  const onPointerDown=e=>{
+    activeTarget=e.target;
+    const interactive=!!e.target?.closest?.(interactiveSelector);
+    setInteractive(interactive);
+    report(activeTarget);
+  };
+  const onPointerEnd=()=>setInteractive(false);
   const onScroll=e=>report(e.target?.nodeType===1?e.target:activeTarget);
   document.addEventListener('pointerdown',onPointerDown,true);
+  document.addEventListener('pointerup',onPointerEnd,true);
+  document.addEventListener('pointercancel',onPointerEnd,true);
   document.addEventListener('scroll',onScroll,true);
   global.addEventListener('scroll',()=>report(activeTarget),{passive:true});
   global.addEventListener('pageshow',()=>setTimeout(()=>report(activeTarget),0),{passive:true});
