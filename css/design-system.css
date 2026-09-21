@@ -2692,15 +2692,17 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 #transportBusEditor .sbe-table-tools{
   position:sticky!important;
   top:0!important;
-  z-index:40!important;
+  z-index:100!important;
   display:flex!important;
   flex-wrap:wrap!important;
   gap:6px!important;
   padding:7px 10px!important;
   margin:0!important;
-  background:color-mix(in srgb,var(--ka-card-bg,#fff) 94%,var(--ka-primary,#17684f) 6%)!important;
+  background:var(--ka-card-bg,#0d1f19)!important;
+  opacity:1!important;
+  box-shadow:0 3px 10px rgba(0,0,0,.18)!important;
   border-bottom:1px solid var(--ka-border,#d8e2de)!important;
-  box-shadow:0 2px 8px rgba(0,0,0,.08)!important;
+  isolation:isolate!important;
 }
 #transportBusEditor .sbe-table-tools [data-sbe-add-type]{
   min-height:40px!important;
