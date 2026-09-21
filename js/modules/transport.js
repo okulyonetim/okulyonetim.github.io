@@ -290,7 +290,8 @@ function sbeBindStudents(ov){ov.querySelectorAll('[data-sbe-student]').forEach(b
   b.addEventListener('dragstart',e=>e.dataTransfer?.setData('text/plain',b.dataset.sbeStudent));
   b.addEventListener('click',e=>{
     e.preventDefault();e.stopPropagation();
-    const sid=b.dataset.sbeStudent;
+    const sid=String(b.dataset.sbeStudent||'');
+    if(!sid)return;
     editor.pendingStudentId=editor.pendingStudentId===sid?null:sid;
     editor.pendingCellKind=null;
     ov.querySelectorAll('[data-sbe-add-type]').forEach(x=>x.classList.remove('is-active'));
@@ -625,7 +626,6 @@ function sbeTableBind(root,s){
     const cell=e.target.closest('[data-sbe-cell]');
     if(cell){e.preventDefault();e.stopPropagation();const [r,c]=cell.dataset.sbeCell.split(',').map(Number);sbeTableCellClick(r,c)}
   },{passive:false});
-  sbeBindStudents(root);
 }
 function sbeRenderTableEditor(s){
   const old=document.getElementById('transportBusEditor');const oldScroll=old?.scrollTop||0;
