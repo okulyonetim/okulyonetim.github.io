@@ -2449,3 +2449,27 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
     bottom:0!important;
   }
 }
+
+/* SBE modal shell/mobile behavior moved from runtime JS to canonical stylesheet */
+#transportBusEditor.sbe-backdrop{z-index:10050!important;padding:0!important;touch-action:auto}
+#transportBusEditor .sbe-modal{width:min(1180px,100vw);height:100dvh;max-height:100dvh;margin:0!important;border-radius:0!important}
+#transportBusEditor .sbe-layout{flex:1 1 auto;min-height:0}
+#transportBusEditor .sbe-work{min-width:0;min-height:0;flex:1 1 auto}
+#transportBusEditor .sbe-stage{min-height:220px;min-width:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#transportBusEditor .sbe-stage-inner{position:relative;flex:0 0 auto}
+#transportBusEditor .sbe-canvas-scale{transform-origin:top left;position:relative}
+#transportBusEditor .sbe-canvas{position:relative;overflow:visible}
+#transportBusEditor .sbe-object{touch-action:none;-webkit-user-select:none;user-select:none}
+#transportBusEditor .sbe-footer{flex:0 0 auto}
+@media(max-width:700px){
+ #transportBusEditor .sbe-modal{width:100vw;height:100dvh}
+ #transportBusEditor .sbe-layout{display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+ #transportBusEditor .sbe-work{display:block;order:1;flex:none;width:100%;overflow:visible}
+ #transportBusEditor .sbe-stage{height:min(58dvh,620px);min-height:360px;flex:none;width:100%;overflow:auto;touch-action:pan-x pan-y}
+ #transportBusEditor .sbe-students{order:2;display:block;flex:none;width:100%;min-height:300px;max-height:none;overflow:visible;touch-action:pan-y}
+ #transportBusEditor .sbe-toolbar,#transportBusEditor .sbe-alignbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;overflow:visible}
+ #transportBusEditor .sbe-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ #transportBusEditor .sbe-actions>*{min-width:0}
+ #transportBusEditor .sbe-footer{padding:10px 16px}
+ #transportBusEditor .sbe-footer>span{display:none}
+}
