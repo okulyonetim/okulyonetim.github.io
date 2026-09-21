@@ -2614,3 +2614,31 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   overflow:visible!important;
   -webkit-overflow-scrolling:auto!important;
 }
+
+/* Servis editörü: aktif araç modu görsel olarak belirgin. */
+#transportBusEditor .sbe-table-tools [data-sbe-add-type]{
+  transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease;
+}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type].is-active{
+  background:var(--ka-primary,#16a34a)!important;
+  color:#fff!important;
+  border-color:var(--ka-primary,#16a34a)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary,#16a34a) 24%,transparent),0 3px 10px rgba(0,0,0,.18)!important;
+  transform:translateY(-1px);
+  font-weight:800;
+}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type].is-active::after{
+  content:'  ✓ AKTİF';
+  font-size:.78em;
+}
+#transportBusEditor .sbe-student-panel [data-student-id].is-active,
+#transportBusEditor .sbe-student-panel [data-sbe-student].is-active{
+  background:var(--ka-primary,#16a34a)!important;
+  color:#fff!important;
+  border-color:var(--ka-primary,#16a34a)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary,#16a34a) 22%,transparent)!important;
+}
+#transportBusEditor .sbe-tcell.selected{
+  outline:3px solid var(--ka-primary,#16a34a)!important;
+  outline-offset:-3px;
+}
