@@ -2379,3 +2379,60 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 #transportBusEditor .sbe-seat.is-filled{background:#167e62;border-color:#42b998}.sbe-seat.is-selected{outline:3px solid #f3c64d;outline-offset:2px;z-index:5}
 @media(max-width:700px){#transportBusEditor.sbe-backdrop{align-items:flex-start;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y}#transportBusEditor .sbe-modal{width:100%;height:auto;min-height:100dvh;border:0;border-radius:0;overflow:visible}#transportBusEditor .sbe-top{grid-template-columns:1fr 1fr;gap:7px;padding:8px}#transportBusEditor .sbe-layout{display:flex;flex-direction:column;overflow:visible;min-height:0}#transportBusEditor .sbe-work{order:1;display:flex;flex:0 0 auto;min-height:560px;overflow:visible}#transportBusEditor .sbe-students{order:2;flex:0 0 auto;min-height:0;height:auto;max-height:none;border-right:0;border-top:1px solid var(--ka-border,#355047)}#transportBusEditor .sbe-student-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:auto;max-height:420px;padding-bottom:14px}#transportBusEditor .sbe-stage{flex:0 0 500px;height:500px;min-height:500px;overflow:auto;padding:8px 3px;justify-content:flex-start;touch-action:pan-x pan-y}#transportBusEditor .sbe-footer{display:flex;position:sticky;bottom:0;background:var(--ka-card-bg,#0f211b);z-index:5}}
 @media(max-width:390px){#transportBusEditor .sbe-top{grid-template-columns:1fr}#transportBusEditor .sbe-students{flex-basis:165px;min-height:165px}.sbe-student-list{grid-template-columns:1fr!important}}
+
+/* SBE mobile scroll contract — overrides legacy !important modal rules */
+@media (max-width:700px){
+  #transportBusEditor.sbe-backdrop{
+    position:fixed!important;
+    inset:0!important;
+    display:block!important;
+    padding:0!important;
+    align-items:initial!important;
+    justify-content:initial!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:auto!important;
+    touch-action:pan-y!important;
+  }
+  #transportBusEditor .sbe-modal{
+    width:100%!important;
+    height:auto!important;
+    min-height:100dvh!important;
+    max-height:none!important;
+    margin:0!important;
+    overflow:visible!important;
+    border:0!important;
+    border-radius:0!important;
+  }
+  #transportBusEditor .sbe-layout{
+    overflow:visible!important;
+    min-height:0!important;
+  }
+  #transportBusEditor .sbe-work{
+    min-height:560px!important;
+    overflow:visible!important;
+  }
+  #transportBusEditor .sbe-stage{
+    flex:0 0 500px!important;
+    height:500px!important;
+    min-height:500px!important;
+    overflow:auto!important;
+    touch-action:pan-x pan-y!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #transportBusEditor .sbe-students{
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  #transportBusEditor .sbe-student-list{
+    max-height:420px!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #transportBusEditor .sbe-footer{
+    position:sticky!important;
+    bottom:0!important;
+  }
+}
