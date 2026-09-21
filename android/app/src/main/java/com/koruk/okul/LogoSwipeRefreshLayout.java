@@ -60,6 +60,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private boolean pullEnabled = true;
     private float currentDampedDy = 0f;
     private volatile boolean jsChildCanScrollUp = false;
+    private volatile boolean interactiveTouchActive = false;
     private OnRefreshListener listener;
     private ValueAnimator springAnimator;
 
@@ -127,6 +128,14 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         jsChildCanScrollUp = canScrollUp;
     }
 
+    public void setInteractiveTouchActive(boolean active) {
+        interactiveTouchActive = active;
+        if (active && dragging) {
+            dragging = false;
+            springBackTo(0);
+        }
+    }
+
     public boolean isRefreshing() {
         return refreshing;
     }
@@ -183,6 +192,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
                 dragging = false;
                 return false;
             case MotionEvent.ACTION_MOVE:
+                if (interactiveTouchActive) return false;
                 if (canChildScrollUp()) return false;
                 if (dikeyAsagiJestMi(ev)) {
                     dragging = true;
@@ -191,6 +201,10 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
                 return false;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                if (interactiveTouchActive) {
+                    dragging = false;
+                    return false;
+                }
                 dragging = false;
                 return false;
             default:
