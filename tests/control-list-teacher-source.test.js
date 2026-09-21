@@ -23,4 +23,8 @@ if(!src.includes("teacherRows().slice().sort((a,b)=>teacherName(a.id).localeComp
 if(!src.includes("if(typeof SyncEngine.pull==='function')await SyncEngine.pull(hydrated)")){
   throw new Error('Kontrol listeleri açılırken öğretmen ve bağlı evrak kaynakları güncel remote snapshot ile yenilenmeli.');
 }
+
+if(!src.includes("function canonicalTeacherClasses(ids)"))throw new Error('Kontrol listeleri ŞÖK/Rehberlik sınıfını siniflar kaydındaki öğretmen-sınıf bağlantısından çözmeli.');
+if(!src.includes("const canonical=canonicalTeacherClasses(ids);if(canonical.length)return canonical.join(', ')"))throw new Error('ŞÖK/Rehberlik kayıtlarında eski sinif alanı yerine güncel öğretmen sınıfı kullanılmalı.');
+if(!src.includes("['kontrolListeleri','ogretmenler','siniflar']"))throw new Error('Kontrol listeleri sınıf eşlemesi için siniflar kaynağını hydrate etmeli.');
 console.log('Kontrol listesi öğretmen kaynağı + remote refresh + silinmiş öğretmen adı regresyon testi başarılı.');
