@@ -445,7 +445,11 @@ function sbeTableResizeStart(ev,type,index){
       t.rowHeights[index-1]=next;
       t.manualRows[index-1]=true;
     }
-    sbeTableRender();
+    const host=document.querySelector('#transportBusEditor [data-sbe-table]');
+    if(host){
+      host.style.setProperty('--sbe-cols',t.colWidths.map(v=>Math.round(v)+'px').join(' '));
+      host.style.setProperty('--sbe-rows',t.rowHeights.map(v=>Math.round(v)+'px').join(' '));
+    }
   };
   const end=e=>{
     if(e.pointerId!==pointerId)return;
@@ -490,7 +494,7 @@ function sbeTableBind(root,s){
     if(col){sbeTableResizeStart(e,'col',Number(col.dataset.sbeColResize));return}
     if(row){sbeTableResizeStart(e,'row',Number(row.dataset.sbeRowResize));return}
     const cell=e.target.closest('[data-sbe-cell]');
-    if(cell){e.preventDefault();const [r,c]=cell.dataset.sbeCell.split(',').map(Number);sbeTableCellClick(r,c)}
+    if(cell){e.preventDefault();e.stopPropagation();const [r,c]=cell.dataset.sbeCell.split(',').map(Number);sbeTableCellClick(r,c)}
   },{passive:false});
   sbeBindStudents(root);
 }
