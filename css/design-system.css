@@ -2686,3 +2686,33 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 .sbe-table-editor .sbe-student-status{margin-left:auto;min-width:22px;text-align:center;font-weight:900;font-size:17px;align-self:center}
 .sbe-table-editor .sbe-student.is-seated .sbe-student-status{color:var(--ka-text-muted,#64706b)!important}
 .sbe-table-editor .sbe-student.is-unseated .sbe-student-status{color:var(--ka-primary,#17684f)!important}
+
+
+/* SBE STICKY TOOLBAR v958 */
+#transportBusEditor .sbe-table-tools{
+  position:sticky!important;
+  top:0!important;
+  z-index:40!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  padding:7px 10px!important;
+  margin:0!important;
+  background:color-mix(in srgb,var(--ka-card-bg,#fff) 94%,var(--ka-primary,#17684f) 6%)!important;
+  border-bottom:1px solid var(--ka-border,#d8e2de)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.08)!important;
+}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type]{
+  min-height:40px!important;
+  height:40px!important;
+  padding:0 13px!important;
+  border-radius:11px!important;
+  font-size:14px!important;
+  line-height:1!important;
+  flex:0 0 auto!important;
+}
+#transportBusEditor .sbe-table-tools [data-sbe-add-type].is-active::after{content:' ✓'!important;font-size:.8em!important}
+@media(max-width:700px){
+  #transportBusEditor .sbe-table-tools{gap:5px!important;padding:6px 8px!important}
+  #transportBusEditor .sbe-table-tools [data-sbe-add-type]{min-height:38px!important;height:38px!important;padding:0 10px!important;font-size:13px!important}
+}
