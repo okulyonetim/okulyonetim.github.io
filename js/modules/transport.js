@@ -286,7 +286,18 @@ function sbePointer(ev){
 function pinchDistance(p){const a=[...p.values()][0],b=[...p.values()][1];return a&&b?Math.hypot(a.x-b.x,a.y-b.y):0}
 function sbeBindPinch(stage){if(!stage)return;const pts=new Map();let d0=0,z0=1;stage.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===2){editor._pinch=true;editor._mobileZoomUser=true;d0=pinchDistance(pts);z0=editor.zoom}},{passive:false});stage.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===2){e.preventDefault();editor.zoom=Math.max(SBE_MIN,Math.min(SBE_MAX,z0*pinchDistance(pts)/Math.max(1,d0)));const r=document.getElementById('transportBusEditor'),i=r?.querySelector('[data-sbe-stage-inner]'),c=r?.querySelector('.sbe-canvas-scale'),q=r?.querySelector('.sbe-zoom b');if(i){i.style.width=SBE_W*editor.zoom+'px';i.style.height=SBE_H*editor.zoom+'px'}if(c)c.style.transform='scale('+editor.zoom+')';if(q)q.textContent=Math.round(editor.zoom*100)+'%'}},{passive:false});const end=e=>{pts.delete(e.pointerId);if(pts.size<2)editor._pinch=false};stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end)}
 function renderSbeSelectionOnly(){const root=document.getElementById('transportBusEditor');root?.querySelectorAll('[data-sbe-id]').forEach(n=>n.classList.toggle('is-selected',editor.selection.includes(n.dataset.sbeId)))}
-function sbeBindStudents(ov){ov.querySelectorAll('[data-sbe-student]').forEach(b=>{b.addEventListener('dragstart',e=>e.dataTransfer?.setData('text/plain',b.dataset.sbeStudent));b.addEventListener('pointerdown',()=>{editor.pendingStudentId=b.dataset.sbeStudent;editor.pendingCellKind=null;ov.querySelectorAll('[data-sbe-add-type]').forEach(x=>x.classList.remove('is-active'));ov.querySelectorAll('[data-sbe-student]').forEach(x=>x.classList.toggle('is-active',x===b));toast?.('Öğrenci seçildi. Şimdi bir koltuğa dokunun.')})})}
+function sbeBindStudents(ov){ov.querySelectorAll('[data-sbe-student]').forEach(b=>{
+  b.addEventListener('dragstart',e=>e.dataTransfer?.setData('text/plain',b.dataset.sbeStudent));
+  b.addEventListener('click',e=>{
+    e.preventDefault();e.stopPropagation();
+    const sid=b.dataset.sbeStudent;
+    editor.pendingStudentId=editor.pendingStudentId===sid?null:sid;
+    editor.pendingCellKind=null;
+    ov.querySelectorAll('[data-sbe-add-type]').forEach(x=>x.classList.remove('is-active'));
+    ov.querySelectorAll('[data-sbe-student]').forEach(x=>x.classList.toggle('is-active',x===b&&editor.pendingStudentId===sid));
+    toast?.(editor.pendingStudentId?'Öğrenci seçildi. Tablodaki koltuğa veya boş hücreye dokunun.':'Öğrenci seçimi kaldırıldı.');
+  });
+})}
 async function sbeSave(s){if(!editor?.editable)return;if(!canEditBusSeats())return;const b=document.querySelector('[data-sbe-save]');sbeNumber();sbeTableConfig();const servisId=editor.servisId,sablon=editor.sablon,elements=structuredClone(editor.elements),planAdi=editor.planAdi,layout=structuredClone(editor.layout);if(b){b.disabled=true;b.textContent='Kaydediliyor…'}try{const task=window.ServisOturmaService.planElementsKaydet(servisId,sablon,elements,false);await Promise.resolve(task);await window.ServisOturmaService.planGuncelle(servisId,{planAdi,layout,semaVersiyon:3});if(b)b.textContent='Kaydedildi ✓';toast?.('Oturma planı kaydedildi.');closeEditor();try{render()}catch(e){console.error('[Transport/seating-render]',e)}}catch(e){if(b){b.disabled=false;b.textContent='💾 Kaydet'}console.error('[Transport/seating-save]',e);toast?.('Plan kaydedilemedi: '+(e?.message||e))}}
 function busPrintReport(s){if(!window.ReportEngine?.printReport)return;const school=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{},seats=editor.elements.filter(sbeIsSeat),body='<div class="sbe-print"><h1>'+esc(school.okulAdi||'KORUK İLK-ORTAOKULU')+'</h1><h2>SERVİS OTURMA PLANI</h2><p><b>Servis:</b> '+esc(serviceName(s))+' &nbsp; <b>Plaka:</b> '+esc(s.plaka||'—')+' &nbsp; <b>Şoför:</b> '+esc(s.soforAdi||'—')+'</p><p><b>Toplam:</b> '+seats.length+' &nbsp; <b>Öğrenci:</b> '+seats.filter(e=>seatStudentName(e)).length+' &nbsp; <b>Boş:</b> '+seats.filter(e=>!seatStudentName(e)&&!e.properties?.reserved).length+'</p><div class="sbe-print-vehicle">'+seats.map(e=>'<div class="sbe-print-seat" style="left:'+(e.x/SBE_W*100)+'%;top:'+(e.y/SBE_H*100)+'%;width:'+(e.width/SBE_W*100)+'%;height:'+(e.height/SBE_H*100)+'%"><b>'+esc(e.seatNumber||'')+'</b><span>'+esc(seatStudentName(e)||'BOŞ')+'</span></div>').join('')+'</div></div>';const extra='<style>.sbe-print{font-family:Arial,sans-serif}.sbe-print h1,.sbe-print h2{text-align:center}.sbe-print-vehicle{position:relative;width:110mm;height:190mm;margin:8mm auto;border:2px solid #50605a;border-radius:14mm;background:#eef2f0}.sbe-print-seat{position:absolute;box-sizing:border-box;border:1px solid #17684f;border-radius:3mm;background:#fff;padding:2mm;font-size:7pt;text-align:center;overflow:hidden}.sbe-print-seat b,.sbe-print-seat span{display:block}</style>';return window.ReportEngine.printReport(serviceName(s)+' Oturma Planı',body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:serviceName(s)+'_Oturma_Plani',extraHead:extra})}
 function sbeRepairOverlappedSeats(){
@@ -424,6 +435,7 @@ function sbeTableSelectTool(kind){
   editor.pendingCellKind=kind;
   editor.pendingStudentId=null;
   root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.toggle('is-active',b.dataset.sbeAddType===kind));
+  root?.querySelectorAll('[data-sbe-student]').forEach(b=>b.classList.remove('is-active'));
   toast?.((SBE_TYPES[kind]?.label||'Hücre')+' ekleme aktif. Boş hücrelere dokunabilirsiniz.');
 }
 function sbeTableAddRow(){
@@ -488,10 +500,23 @@ function sbeTableResizeStart(ev,type,index){
   window.addEventListener('pointerup',end,true);
   window.addEventListener('pointercancel',end,true);
 }
+function sbeTableCellAt(r,c){
+  return editor.elements.find(e=>{
+    if(e?.visible===false)return false;
+    const er=Number(e.row),ec=Number(e.column),rs=Math.max(1,Number(e.rowSpan)||1),cs=Math.max(1,Number(e.colSpan)||1);
+    return Number.isFinite(er)&&Number.isFinite(ec)&&r>=er&&r<er+rs&&c>=ec&&c<ec+cs;
+  })||null;
+}
 function sbeTableAssignStudentToCell(r,c){
   const sid=editor.pendingStudentId;if(!sid)return false;
-  const seat=sbeTableCell(r,c);
-  if(!seat||!sbeIsSeat(seat)){toast?.('Öğrenci yalnızca mevcut bir koltuğa yerleştirilebilir.');return true}
+  let seat=sbeTableCellAt(r,c);
+  if(seat&&!sbeIsSeat(seat)){
+    toast?.('Öğrenci yalnızca koltuğa yerleştirilebilir.');return true;
+  }
+  if(!seat){
+    sbePush();
+    seat=sbeTableSeat(r,c,'seat');
+  }
   sbeAssign(sid,seat.id);return true;
 }
 function sbeTableMergeSelection(){
