@@ -30,6 +30,6 @@ assert(transport.includes('window.ServisOturmaService.planGuncelle'),'Plan üst 
 assert(transport.includes('function busPrintReport')&&transport.includes('ReportEngine?.printReport'),'Yazdır/PDF ortak rapor motorunu kullanmalı.');
 for(const token of ['.sbe-toolbar','.sbe-tool','.sbe-alignbar','.sbe-zoom','.sbe-stage'])assert(css.includes(token),`Yeni servis oturma araç stili eksik: ${token}`);
 assert(assetVersion(index,'css/design-system.css')>=955&&assetVersion(index,'js/app-loader.js')>=892,'Index yeni servis oturma paketini yüklemeli.');
-assert(assetVersion(loader,'js/modules/transport.js')>=917,'Transport cache-bust sürümü güncel olmalı.');
-assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=917&&assetVersion(sw,'css/design-system.css')>=955,'Service Worker yeni servis oturma paketini önbelleğe almalı.');
+assert(assetVersion(loader,'js/modules/transport.js')>=918,'Transport cache-bust sürümü güncel olmalı.');
+assert(cacheVersion(sw)>=893&&assetVersion(sw,'js/modules/transport.js')>=918&&assetVersion(sw,'css/design-system.css')>=955,'Service Worker yeni servis oturma paketini önbelleğe almalı.');
 console.log('Servis oturma yeni editör hızlı erişim/kayıt araçları başarılı.');
