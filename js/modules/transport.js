@@ -314,13 +314,11 @@ requestAnimationFrame(()=>{
   const fresh=document.getElementById('transportBusEditor');
   if(!fresh)return;
   const stage=fresh.querySelector('[data-sbe-stage]');
-  if(stage&&window.matchMedia('(max-width:700px)').matches){
+  if(stage&&!editor._mobileZoomUser&&window.matchMedia('(max-width:700px)').matches){
     const available=Math.max(280,Math.min(window.innerWidth-16,stage.clientWidth-16));
     const fit=Math.max(SBE_MIN,Math.min(1,available/SBE_W));
-    if(!editor._mobileZoomUser||editor.zoom>1||editor.zoom===1){
-      editor.zoom=fit;
-      sbeApplyZoom();
-    }
+    editor.zoom=fit;
+    sbeApplyZoom();
   }
   fresh.scrollTop=oldScrollTop;
   fresh.scrollLeft=oldScrollLeft;
