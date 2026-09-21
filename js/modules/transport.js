@@ -334,8 +334,7 @@ function sbeTableNumber(){
   });
 }
 function sbeTableCell(r,c){
-  return editor.elements.find(e=>sbeIsSeat(e)&&Number(e.row)===r&&Number(e.column)===c)||
-         editor.elements.find(e=>sbeKind(e)!=='driver'&&Number(e.row)===r&&Number(e.column)===c);
+  return editor.elements.find(e=>Number(e.row)===r&&Number(e.column)===c&&e.visible!==false)||null;
 }
 function sbeTableSeat(r,c,kind='seat'){
   let e=sbeTableCell(r,c);
@@ -364,13 +363,11 @@ function sbeTableRender(){
   for(let r=1;r<=t.rows;r++)for(let c=1;c<=t.cols;c++){
     const e=sbeTableCell(r,c),n=e?seatStudentName(e):'',sel=e&&editor.selection.includes(e.id),kind=e?sbeKind(e):'empty';
     const icon=SBE_TYPES[kind]?.icon||'';
-    const label=e?(n||'BOŞ'):'Boş hücre';
-    cells.push('<button type="button" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
-      '<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span>'+
-      '<span class="sbe-tcell-icon">'+icon+'</span>'+
-      '<strong>'+esc(label)+'</strong>'+
-      (n?'<small>'+esc(className(arr('veliler').find(v=>String(v.id)===String(e.studentId))?.sinifId))+'</small>':'')+
-      (!e?'<em>＋ Koltuk</em>':'')+
+    const label=e?(n||'BOŞ'):'';
+    cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
+      ''+
+      (e?'<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span><span class="sbe-tcell-icon">'+icon+'</span><strong>'+esc(label)+'</strong>'+
+        (n?'<small>'+esc(className(arr('veliler').find(v=>String(v.id)===String(e.studentId))?.sinifId))+'</small>':''):'')+
       '<span class="sbe-col-resize" data-sbe-col-resize="'+c+'"></span><span class="sbe-row-resize" data-sbe-row-resize="'+r+'"></span>'+
       '</button>');
   }
@@ -382,9 +379,14 @@ function sbeTableSetCell(r,c,kind){
   const existing=sbeTableCell(r,c);
   if(existing){
     sbePush();
-    existing.properties={...(existing.properties||{}),kind,label:existing.properties?.label||SBE_TYPES[kind]?.label||''};
+    existing.properties={...(existing.properties||{}),kind,label:SBE_TYPES[kind]?.label||existing.properties?.label||''};
     existing.type=kind==='driver'?'sofor':(sbeIsSeatKind(kind)?'koltuk':'vehicle');
     existing.locked=['door','window','emergency','engine','luggage','driver'].includes(kind);
+    if(!sbeIsSeatKind(kind)){
+      existing.studentId=null;
+      existing.properties.studentName='';
+      existing.properties.reserved=false;
+    }
   }else{
     sbePush();
     const created=sbeTableSeat(r,c,kind);
@@ -435,7 +437,7 @@ function sbeTableResizeStart(ev,type,index){
     if(e.pointerId!==pointerId)return;
     e.preventDefault();e.stopPropagation();
     const delta=(type==='col'?e.clientX:e.clientY)-start;
-    const next=Math.max(type==='col'?70:52,startSize+delta);
+    const next=Math.max(type==='col'?44:52,startSize+delta);
     if(Math.abs(next-startSize)>1)moved=true;
     const t=sbeTableConfig();
     if(type==='col'){
@@ -470,14 +472,17 @@ function sbeTableAssignStudentToCell(r,c){
 }
 function sbeTableCellClick(r,c){
   if(!editor?.editable)return;
-  if(sbeTableAssignStudentToCell(r,c))return;
   if(editor.pendingCellKind){
     const kind=editor.pendingCellKind;
-    if(sbeTableSetCell(r,c,kind))editor.pendingCellKind=null;
+    if(sbeTableSetCell(r,c,kind)){
+      editor.pendingCellKind=null;
+      editor.selection=[];
+    }
     const root=document.getElementById('transportBusEditor');
     root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.remove('is-active'));
     return;
   }
+  if(sbeTableAssignStudentToCell(r,c))return;
   const e=sbeTableCell(r,c);
   if(e){editor.selection=[e.id];sbeTableRender();return}
   sbeTableSetCell(r,c,'seat');
