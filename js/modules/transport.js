@@ -363,7 +363,9 @@ function sbeTableRender(){
   for(let r=1;r<=t.rows;r++)for(let c=1;c<=t.cols;c++){
     const e=sbeTableCell(r,c),n=e?seatStudentName(e):'',sel=e&&editor.selection.includes(e.id),kind=e?sbeKind(e):'empty';
     const icon=SBE_TYPES[kind]?.icon||'';
-    const label=e?(n||'BOŞ'):'';
+    const label=e
+      ? (n || (sbeIsSeatKind(kind) ? 'BOŞ' : (SBE_TYPES[kind]?.label || '')))
+      : '';
     cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
       ''+
       (e?'<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span><span class="sbe-tcell-icon">'+icon+'</span><strong>'+esc(label)+'</strong>'+
