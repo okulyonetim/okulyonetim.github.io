@@ -369,7 +369,7 @@ function sbeTableRender(){
   }
   for(let r=1;r<=t.rows;r++)for(let c=1;c<=t.cols;c++){
     if(occupied.has(r+','+c))continue;
-    const e=sbeTableCell(r,c),n=e?seatStudentName(e):'',sel=e&&editor.selection.includes(e.id),kind=e?sbeKind(e):'empty';
+    const e=sbeTableCell(r,c),n=e?seatStudentName(e):'',sel=editor.mergeMode ? (editor.mergeSelection||[]).includes(r+','+c) : (e&&editor.selection.includes(e.id)),kind=e?sbeKind(e):'empty';
     const icon=SBE_TYPES[kind]?.icon||'';
     const label=e
       ? (n || (sbeIsSeatKind(kind) ? 'BOŞ' : (SBE_TYPES[kind]?.label || '')))
@@ -482,13 +482,13 @@ function sbeTableAssignStudentToCell(r,c){
 }
 function sbeTableMergeSelection(){
   if(!editor?.editable)return;
-  const ids=editor.selection||[];
-  if(ids.length<2){toast?.('Birleştirmek için en az iki hücre seçin.');return;}
-  const cells=ids.map(id=>editor.elements.find(e=>e.id===id)).filter(Boolean);
-  const rows=cells.map(e=>Number(e.row)), cols=cells.map(e=>Number(e.column));
+  const coords=editor.mergeSelection||[];
+  if(coords.length<2){toast?.('Birleştirmek için en az iki hücre seçin.');return;}
+  const points=coords.map(x=>x.split(',').map(Number));
+  const rows=points.map(x=>x[0]), cols=points.map(x=>x[1]);
   const r1=Math.min(...rows),r2=Math.max(...rows),c1=Math.min(...cols),c2=Math.max(...cols);
   const expected=(r2-r1+1)*(c2-c1+1);
-  const key=new Set(cells.map(e=>e.row+','+e.column));
+  const key=new Set(coords);
   if(key.size!==expected){toast?.('Birleştirme için dikdörtgen bir hücre alanı seçin.');return;}
   const inside=editor.elements.filter(e=>{
     const r=Number(e.row),c=Number(e.column);
@@ -496,19 +496,24 @@ function sbeTableMergeSelection(){
   });
   const nonAnchor=inside.filter(e=>!(Number(e.row)===r1&&Number(e.column)===c1)&& (seatStudentName(e)||!sbeIsSeat(e)));
   if(nonAnchor.length){toast?.('Seçimde dolu veya özel nesne bulunan hücre var. Önce bunları taşıyın/silin.');return;}
-  const anchor=inside.find(e=>Number(e.row)===r1&&Number(e.column)===c1);
-  if(!anchor){toast?.('Birleştirme alanının sol üst hücresini önce oluşturun.');return;}
+  let anchor=inside.find(e=>Number(e.row)===r1&&Number(e.column)===c1);
   sbePush();
+  if(!anchor){
+    anchor={id:'merge_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),row:r1,column:c1,type:'vehicle',seatNumber:null,studentId:null,x:0,y:0,width:1,height:1,rotation:0,visible:true,locked:false,properties:{kind:'merge',studentName:'',reserved:false,label:''}};
+    editor.elements.push(anchor);
+  }
   editor.elements=editor.elements.filter(e=>e===anchor||!inside.includes(e));
   anchor.rowSpan=r2-r1+1; anchor.colSpan=c2-c1+1;
+  editor.mergeSelection=[];
+  editor.mergeMode=false;
   editor.selection=[anchor.id];
   sbeTableRender();
 }
 function sbeTableToggleCell(r,c){
-  const e=sbeTableCell(r,c);
-  if(!e)return;
-  const i=editor.selection.indexOf(e.id);
-  if(i>=0)editor.selection.splice(i,1);else editor.selection.push(e.id);
+  editor.mergeSelection=editor.mergeSelection||[];
+  const key=r+','+c;
+  const i=editor.mergeSelection.indexOf(key);
+  if(i>=0)editor.mergeSelection.splice(i,1);else editor.mergeSelection.push(key);
   sbeTableRender();
 }
 function sbeTableCellClick(r,c){
@@ -525,13 +530,11 @@ function sbeTableCellClick(r,c){
   }
   if(sbeTableAssignStudentToCell(r,c))return;
   const e=sbeTableCell(r,c);
-  if(e){
-    if(editor.mergeMode){
-      sbeTableToggleCell(r,c);
-    }else{
-      editor.selection=[e.id];
-      sbeTableRender();
-    }
+  if(editor.mergeMode){
+    sbeTableToggleCell(r,c);
+  }else if(e){
+    editor.selection=[e.id];
+    sbeTableRender();
   }
   // Araç seçilmeden boş hücreye dokunmak yalnızca seçimdir; otomatik koltuk oluşturulmaz.
 
@@ -540,6 +543,7 @@ function sbeTableBind(root,s){
   root.querySelector('[data-sbe-merge]')?.addEventListener('click',()=>{
     editor.mergeMode=!editor.mergeMode;
     editor.selection=[];
+    editor.mergeSelection=[];
     root.querySelector('[data-sbe-merge]')?.classList.toggle('is-active',!!editor.mergeMode);
     toast?.(editor.mergeMode?'Birleştirme modu: hücreleri seçin, sonra ↔ Birleştir butonuna basın.':'Birleştirme modu kapatıldı.');
     sbeTableRender();
