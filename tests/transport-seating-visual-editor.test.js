@@ -7,7 +7,7 @@ for(const token of ['function openBusEditor','function renderBusEditor','functio
 for(const token of ['data-sbe-plan-name','data-sbe-template','data-sbe-save','data-sbe-print','data-sbe-pdf','data-sbe-student-search','data-sbe-students','data-sbe-canvas','data-sbe-id','data-sbe-undo','data-sbe-redo'])assert(transport.includes(token),`Yeni servis oturma UI sözleşmesi eksik: ${token}`);
 for(const token of ['.sbe-backdrop','.sbe-modal','.sbe-header','.sbe-top','.sbe-layout','.sbe-students','.sbe-work','.sbe-toolbar','.sbe-tool','.sbe-alignbar','.sbe-stage','.sbe-stage-inner','.sbe-canvas-scale','.sbe-canvas','.sbe-object','.sbe-seat','.sbe-student','.sbe-footer'])assert(design.includes(token),`Merkezi servis oturma stili eksik: ${token}`);
 assert(transport.includes('editor={servisId,sablon,elements,editable:canEditBusSeats()}'),'Canonical editör state/permission sözleşmesi korunmalı.');
-assert(transport.includes('window.ServisOturmaService.planElementsKaydet(servisId,sablon,elements,false)'),'Kayıt canonical servis üzerinden yapılmalı.');
+assert(transport.includes('window.ServisOturmaService.planTableKaydet(servisId,sablon,elements,layout,planAdi)'),'Kayıt canonical servis üzerinden yapılmalı.');
 assert(transport.includes("if(!editor?.editable)return"),'Salt-okunur kullanıcı düzenleme yapamamalı.');
 assert(transport.includes('data-sbe-add-type="engine"')||transport.includes("sbeAdd('engine')")||transport.includes("kind==='engine'"),'Motor nesnesi editör modelinde bulunmalı.');
 assert(transport.includes("kind==='driver'"),'Şoför nesnesi editör modelinde bulunmalı.');
