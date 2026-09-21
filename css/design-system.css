@@ -2567,3 +2567,50 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 .sbe-student-panel{border-color:var(--ka-border);background:var(--ka-card-bg)}
 .sbe-table-editor .sbe-student{color:var(--ka-text)}
 @media(max-width:700px){.sbe-table-scroll{background:var(--ka-app-bg)}}
+
+/* Servis tablo editörü: tek sayfa kaydırması. Yerleşim alanı ve öğrenci listesi kendi içinde kaymaz. */
+#transportBusEditor.sbe-backdrop{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  touch-action:pan-y!important;
+}
+#transportBusEditor .sbe-table-editor{
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+#transportBusEditor .sbe-layout{
+  overflow:visible!important;
+  min-height:0!important;
+}
+#transportBusEditor .sbe-work{
+  overflow:visible!important;
+  min-height:0!important;
+}
+#transportBusEditor .sbe-stage{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  touch-action:pan-y!important;
+}
+#transportBusEditor .sbe-stage-inner{
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+#transportBusEditor .sbe-table-scroll{
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  touch-action:pan-y!important;
+  -webkit-overflow-scrolling:auto!important;
+}
+#transportBusEditor .sbe-student-panel,
+#transportBusEditor .sbe-student-list{
+  max-height:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  -webkit-overflow-scrolling:auto!important;
+}
