@@ -413,11 +413,18 @@ function sbeTableSetCell(r,c,kind){
 }
 function sbeTableSelectTool(kind){
   if(!editor?.editable)return;
+  const root=document.getElementById('transportBusEditor');
+  if(kind==='seat' && editor.pendingCellKind==='seat'){
+    editor.pendingCellKind=null;
+    editor.pendingStudentId=null;
+    root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.remove('is-active'));
+    toast?.('Koltuk ekleme kapatıldı.');
+    return;
+  }
   editor.pendingCellKind=kind;
   editor.pendingStudentId=null;
-  const root=document.getElementById('transportBusEditor');
   root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.toggle('is-active',b.dataset.sbeAddType===kind));
-  toast?.((SBE_TYPES[kind]?.label||'Hücre')+' seçildi. Şimdi tabloda bir hücreye dokunun.');
+  toast?.((SBE_TYPES[kind]?.label||'Hücre')+' ekleme aktif. Boş hücrelere dokunabilirsiniz.');
 }
 function sbeTableAddRow(){
   if(!editor?.editable)return;sbePush();
@@ -526,11 +533,13 @@ function sbeTableCellClick(r,c){
   if(editor.pendingCellKind){
     const kind=editor.pendingCellKind;
     if(sbeTableSetCell(r,c,kind)){
-      editor.pendingCellKind=null;
       editor.selection=[];
+      if(kind!=='seat'){
+        editor.pendingCellKind=null;
+        const root=document.getElementById('transportBusEditor');
+        root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.remove('is-active'));
+      }
     }
-    const root=document.getElementById('transportBusEditor');
-    root?.querySelectorAll('[data-sbe-add-type]').forEach(b=>b.classList.remove('is-active'));
     return;
   }
   if(sbeTableAssignStudentToCell(r,c))return;
