@@ -934,6 +934,8 @@ function render(){if(!mounted)return;const r=active==='foodDaily'?foodMenuPage('
  const fm=out?.querySelector('[data-food-menu-page]');
  if(fm){
   fm.querySelector('[data-fm-month]')?.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
+  fm.querySelector('[data-fm-day]')?.addEventListener('change',e=>{if(e.target.value){foodMenuViewDate=e.target.value;foodMenuCurrentMonth=foodMenuMonthKey(e.target.value);render()}});
+  fm.querySelector('[data-fm-week-date]')?.addEventListener('change',e=>{if(e.target.value){foodMenuViewDate=e.target.value;render()}});
   fm.querySelectorAll('[data-fm-item]').forEach(inp=>inp.addEventListener('input',()=>{
     const day=Number(inp.dataset.fmItem),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
     foodDayEnsure(d);
