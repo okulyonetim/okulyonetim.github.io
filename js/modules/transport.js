@@ -877,28 +877,35 @@ function foodMenuDate(k,day){return k+'-'+String(day).padStart(2,'0')}
 function foodMenuPrint(mode){
  const sc=foodSchool(),k=foodMenuCurrentMonth||foodMenuMonthKey(new Date().toISOString().slice(0,10)),data=foodMenuData(k);
  const title=mode==='foodMonthly'?'Aylık Yemek Menüsü':mode==='foodWeekly'?'Haftalık Yemek Menüsü':'Günlük Yemek Menüsü';
- let rows='',head='';
- if(mode==='foodDaily'){
-  const d=new Date(),x=foodDayEnsure(data[d.getDate()]||{}),items=foodDayItems(x);
-  head='<tr><th>Menü</th></tr>';
-  rows=items.map(v=>'<tr><td>'+esc(v)+'</td></tr>').join('')||'<tr><td>Menü girilmemiş</td></tr>';
- }else if(mode==='foodWeekly'){
-  const t=new Date(),w=t.getDay()||7,m=new Date(t);m.setDate(t.getDate()-w+1);
-  head='<tr><th>Gün</th><th>Yemekler</th></tr>';
-  rows=Array.from({length:5},(_,i)=>{
-   const d=new Date(m);d.setDate(m.getDate()+i);const kk=foodMenuMonthKey(d.toISOString().slice(0,10)),items=foodDayItems(foodMenuData(kk)[d.getDate()]||{});
-   return '<tr><th>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long',day:'2-digit',month:'2-digit'}))+'</th><td>'+items.map(esc).join('<br>')+'</td></tr>';
-  }).join('');
- }else{
-  const max=new Date(Number(k.slice(0,4)),Number(k.slice(5,7)),0).getDate();
-  head='<tr><th>Gün</th><th>Hafta</th><th>Menü</th></tr>';
-  rows=Array.from({length:max},(_,i)=>{
-   const n=i+1,items=foodDayItems(data[n]||{}),d=new Date(k+'-'+String(n).padStart(2,'0')+'T00:00:00');
-   return '<tr><th>'+n+'</th><td>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'</td><td>'+items.map(esc).join('<br>')+'</td></tr>';
-  }).join('');
+ if(mode==='foodMonthly'){
+  const y=Number(k.slice(0,4)),m=Number(k.slice(5,7))-1,last=new Date(y,m+1,0).getDate(),first=new Date(y,m,1),offset=(first.getDay()||7)-1,weeks=Math.ceil((offset+last)/7);
+  let rows='';
+  for(let w=0;w<weeks;w++){
+   rows+='<tr>';
+   for(let ci=0;ci<5;ci++){
+    const day=w*7+ci-offset+1;
+    if(day<1||day>last){rows+='<td class="empty"></td>';continue}
+    const items=foodDayItems(data[day]||{});
+    const d=new Date(y,m,day);
+    rows+='<td><div class="day-head"><b>'+String(day).padStart(2,'0')+'</b><span>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'</span></div><div class="day-items">'+(items.length?items.map(v=>'<div>'+esc(v)+'</div>').join(''):'<div class="muted">Menü girilmemiş</div>')+'</div></td>';
+   }
+   rows+='</tr>';
+  }
+  const body='<div class="fm-month-print"><h1>'+esc(sc.okulAdi||'KORUK İLK - ORTAOKULU')+'</h1><h2>'+esc(d.toLocaleDateString('tr-TR',{month:'long',year:'numeric'}).toUpperCase())+' AYLIK YEMEK MENÜSÜ</h2><table><thead><tr><th>Pazartesi</th><th>Salı</th><th>Çarşamba</th><th>Perşembe</th><th>Cuma</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  const extra='<style>@page{size:A4 landscape;margin:8mm}.fm-month-print{font-family:Arial,sans-serif;color:#17241f}.fm-month-print h1{text-align:center;font-size:15pt;margin:0 0 2mm}.fm-month-print h2{text-align:center;font-size:12pt;margin:0 0 5mm}.fm-month-print table{width:100%;border-collapse:collapse;table-layout:fixed}.fm-month-print th{border:1px solid #465850;background:#e8efec;padding:2.2mm;text-align:center;font-size:8.5pt}.fm-month-print td{border:1px solid #66766f;vertical-align:top;padding:2mm;height:31mm}.fm-month-print td.empty{background:#f5f7f6}.fm-month-print .day-head{display:flex;align-items:center;gap:2mm;border-bottom:1px solid #b9c5c0;padding-bottom:1.2mm;margin-bottom:1.5mm}.fm-month-print .day-head b{font-size:11pt}.fm-month-print .day-head span{font-size:7.5pt;font-weight:700}.fm-month-print .day-items{font-size:8pt;line-height:1.45}.fm-month-print .day-items div{padding:.6mm 0}.fm-month-print .muted{color:#7b8580;font-style:italic}</style>';
+  return window.ReportEngine.printReport(title,body,{yon:'yatay',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:5,fileName:title.replaceAll(' ','_'),extraHead:extra});
  }
- const body='<div class="fm-print"><h1>'+esc(sc.okulAdi)+'</h1><h2>'+esc(title)+'</h2><table><thead>'+head+'</thead><tbody>'+rows+'</tbody></table></div>';
- return window.ReportEngine.printReport(title,body,{yon:mode==='foodMonthly'?'yatay':'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:mode==='foodMonthly'?8:9,compact:true,fileName:title.replaceAll(' ','_')});
+ const viewDate=foodMenuViewDate||new Date().toISOString().slice(0,10);
+ if(mode==='foodDaily'){
+  const d=new Date(viewDate+'T00:00:00'),kk=foodMenuMonthKey(viewDate),items=foodDayItems(foodMenuData(kk)[d.getDate()]||{});
+  const rows=items.map(v=>'<tr><td>'+esc(v)+'</td></tr>').join('')||'<tr><td>Menü girilmemiş</td></tr>';
+  const body='<div class="fm-print"><h1>'+esc(sc.okulAdi)+'</h1><h2>'+esc(d.toLocaleDateString('tr-TR',{dateStyle:'full'}))+'</h2><table><thead><tr><th>Menü</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  return window.ReportEngine.printReport(title,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:title.replaceAll(' ','_')});
+ }
+ const base=new Date(viewDate+'T00:00:00'),w=base.getDay()||7,mon=new Date(base);mon.setDate(base.getDate()-w+1);
+ const rows=Array.from({length:5},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);const kk=foodMenuMonthKey(d.toISOString().slice(0,10)),items=foodDayItems(foodMenuData(kk)[d.getDate()]||{});return '<tr><th>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long',day:'2-digit',month:'2-digit'}))+'</th><td>'+ (items.length?items.map(esc).join('<br>'):'—') +'</td></tr>'}).join('');
+ const body='<div class="fm-print"><h1>'+esc(sc.okulAdi)+'</h1><h2>'+esc(title)+'</h2><table><thead><tr><th>Gün</th><th>Yemekler</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+ return window.ReportEngine.printReport(title,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:title.replaceAll(' ','_')});
 }
 function foodMenuCalendarRows(k,data){
  const y=Number(k.slice(0,4)),m=Number(k.slice(5,7))-1,last=new Date(y,m+1,0).getDate();
