@@ -875,13 +875,19 @@ function foodMenuMonthOptions(selected){
 function foodMenuDayName(k,day){const d=new Date(k+'-'+String(day).padStart(2,'0')+'T00:00:00');return d.toLocaleDateString('tr-TR',{weekday:'long'})}
 function foodMenuDate(k,day){return k+'-'+String(day).padStart(2,'0')}
 function foodMenuCalendarRows(key,data){
- const y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,last=new Date(y,m+1,0).getDate(),first=new Date(y,m,1),offset=(first.getDay()||7)-1,weeks=Math.ceil((offset+last)/7);
+ const y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,last=new Date(y,m+1,0).getDate();
+ const weekdays=[];
+ for(let day=1;day<=last;day++){
+  const dow=new Date(y,m,day).getDay();
+  if(dow>=1&&dow<=5)weekdays.push(day);
+ }
+ const weeks=Math.ceil(weekdays.length/5);
  let rows='';
  for(let w=0;w<weeks;w++){
   rows+='<div class="food-calendar-week">';
   for(let ci=0;ci<5;ci++){
-   const day=w*7+ci-offset+1;
-   if(day<1||day>last){rows+='<div class="food-calendar-cell is-empty"></div>';continue}
+   const day=weekdays[w*5+ci];
+   if(!day){rows+='<div class="food-calendar-cell is-empty"></div>';continue}
    const d=new Date(y,m,day),x=foodDayEnsure(data[day]||{}),items=foodDayItems(x);
    rows+='<div class="food-calendar-cell"><div class="food-calendar-date"><strong>'+String(day).padStart(2,'0')+'</strong><span>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'</span><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-fm-add="'+day+'">+ Yemek</button></div><div class="food-calendar-items">'+(items.length?items.map((v,j)=>'<div class="food-menu-item-row"><input type="text" data-fm-item="'+day+'" value="'+esc(v)+'" placeholder="Yemek adı"><button class="ka-btn ka-btn--secondary" type="button" data-fm-remove="'+day+':'+j+'" aria-label="Yemeği sil">×</button></div>').join(''):'<div class="ka-muted">Henüz yemek eklenmedi.</div>')+'</div></div>';
   }
