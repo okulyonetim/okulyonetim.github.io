@@ -31,7 +31,7 @@ const MENU_GROUPS=[
  {key:'communication',label:'İletişim',modernLabel:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[['Mesajlar','💬','communication','messages'],['Haberler','📰','communication','news'],['Duyurular','📣','communication','announcements'],['Anketler','📋','communication','polls'],['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]},
  {key:'documents',label:'Belgeler',modernLabel:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Personel İşleri','👥','management','staff']]},
  {key:'transport',label:'Taşıma',modernLabel:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport','services'],['Harita','🗺️','tools','map'],['Servis Oturma','💺','transport','busSeats']]},
- {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'food',items:[['Günlük Menü','☀️','food','foodDaily'],['Haftalık Menü','📆','food','foodWeekly'],['Aylık Menü','🗓️','food','foodMonthly'],['Yemek Denetim Formu','📝','food','food']]},
+ {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'transport',items:[['Günlük Menü','☀️','transport','foodDaily'],['Haftalık Menü','📆','transport','foodWeekly'],['Aylık Menü','🗓️','transport','foodMonthly'],['Yemek Denetimi','📝','transport','food']]},
  {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Akademik Takvim','📅','academic','calendar']]},
  {key:'settings',label:'Okul ve Sistem',modernLabel:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Veriler','🗄️','settings','data']]},
  {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',hidden:true,items:[['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools','rubric'],['Proje Değerlendirme Ölçeği','📏','tools','project']]},
@@ -42,7 +42,7 @@ const CUSTOM_PAGE_ROUTES=new Map();
 const DASHBOARD_ROUTES={announcements:{module:'communication',page:'announcements',title:'Duyurular'},polls:{module:'communication',page:'polls',title:'Anketler'},news:{module:'communication',page:'news',title:'Haberler'},duty:{module:'management',page:'duty',title:'Nöbet Programı'},'today-duty':{module:'management',page:'duty',title:'Nöbet Programı'},absences:{module:'management',page:'leaves',title:'İzinler'},upcoming:{module:'communication',page:'calendar',title:'Takvim'},lessons:{module:'academic',page:'schedule',title:'Ders Programı'},'week-duty':{module:'management',page:'duty',title:'Nöbet Programı'},exams:{module:'academic',page:'written',title:'Yazılı Sınavlar'},schedule:{module:'academic',page:'schedule',title:'Ders Programı'},notes:{module:'communication',page:'notes',title:'Notlar'},calendar:{module:'communication',page:'calendar',title:'Takvim'}};
 let activeAction='home',menuGroup=null,menuEditing=false,visibilityObserver=null,headerPopover=null,themeTouched=false,browserBackBound=false,browserExitApproved=false;
 let navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
-const TEACHER_HIDDEN_PAGES=new Set(['documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:food']);
+const TEACHER_HIDDEN_PAGES=new Set(['documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','transport:food']);
 function isTeacherUser(){const u=user();if(u.admin===true)return false;const r=global.AKTIF_ROL||global.AppStore?.get?.('session.role')||arr('roller').find(x=>x.id===u.rolId)||{};const n=String(r.ad||r.rolAdi||u.rolAdi||u.rol||'').trim().toLocaleLowerCase('tr-TR');return n.includes('öğretmen')||n.includes('ogretmen')||!!(u.bagliOgretmenId||u.ogretmenId)}
 function pageAllowed(name,page=''){return !isTeacherUser()||!TEACHER_HIDDEN_PAGES.has(`${name}:${page||''}`)}
 function teacherMenuGroupAllowed(group){return !isTeacherUser()||group?.key!=='management'}
@@ -115,12 +115,7 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('İletişim sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  if(name==='food'&&['foodDaily','foodWeekly','foodMonthly','food'].includes(page)){
-    const ok=global.FoodModule?.openPage?.(page,title);
-    if(ok===false)global.toast?.('Yemek sayfası açılamadı.');
-    if(title)setTitle(title);return true;
-  }
-  if(name==='transport'&&['services','busSeats','classSeats'].includes(page)){
+  if(name==='transport'&&['services','busSeats','classSeats','foodDaily','foodWeekly','foodMonthly','food'].includes(page)){
     const ok=global.TransportModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Taşıma sayfası açılamadı.');
     if(title)setTitle(title);return true;
