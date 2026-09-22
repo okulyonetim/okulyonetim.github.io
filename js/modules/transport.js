@@ -911,13 +911,14 @@ function foodMenuCalendarRows(k,data){
  const y=Number(k.slice(0,4)),m=Number(k.slice(5,7))-1,last=new Date(y,m+1,0).getDate();
  const first=new Date(y,m,1),offset=(first.getDay()||7)-1,weeks=Math.ceil((offset+last)/7),days=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma'];
  return Array.from({length:weeks},(_,w)=>{
-  return '<div class="food-calendar-week">'+Array.from({length:5},(_,ci)=>{
+  const cells=Array.from({length:5},(_,ci)=>{
    const day=w*7+ci-offset+1;
    if(day<1||day>last)return '<div class="food-calendar-cell is-empty"></div>';
    const x=foodDayEnsure(data[day]||{}),items=foodDayItems(x);
    const fields=items.map((v,j)=>'<div class="food-menu-item-row"><input data-fm-item="'+day+'" value="'+esc(v)+'" placeholder="Yemek adı"><button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-fm-remove="'+day+':'+j+'" aria-label="Yemeği sil">×</button></div>').join('');
    return '<div class="food-calendar-cell"><div class="food-calendar-date"><strong>'+String(day).padStart(2,'0')+'</strong><span>'+days[ci]+'</span><button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-fm-add="'+day+'">+ Yemek</button></div><div class="food-calendar-items">'+(fields||'<span class="ka-muted">Henüz yemek eklenmedi.</span>')+'</div></div>';
-  }).join('')+'</div>';
+  });
+  return cells.some(x=>!x.includes('is-empty'))?'<div class="food-calendar-week">'+cells.join('')+'</div>':'';
  }).join('');
 }
 function foodMenuPage(mode){
