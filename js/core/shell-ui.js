@@ -215,42 +215,7 @@ function canEditMenu(){const u=user();return u.admin===true||global.PermissionSe
 function menuCardDefaultColor(key){return MENU_CARD_DEFAULT_COLORS[key]||'#17684f'}
 function renderMenuGrid(){const layer=$('#kaMenuLayer');if(!layer)return;menuGroup=null;const cards=customizedVisibleGroups(),editable=canEditMenu();layer.innerHTML=`<div class="ka-menu-page"><div class="ka-menu-head"><h2>Menü</h2><div class="ka-menu-head__actions">${editable?`<button class="ka-menu-edit-toggle ${menuEditing?'is-active':''}" type="button" data-ka-menu-edit>${menuEditing?'✓ Bitti':'✎ Düzenle'}</button>`:''}<button class="ka-icon-button" type="button" data-ka-menu-close aria-label="Kapat">${SVG.close}</button></div></div><div class="ka-menu-grid ${menuEditing?'ka-menu-grid--editing':''}">${cards.map(g=>`<button class="ka-menu-card ka-menu-card--${g.tone}" type="button" data-ka-menu-group="${g.key}" aria-label="${esc(menuEditing?`${g.label} kartını düzenle`:g.label)}"${menuGroupAttrs(g)}>${menuEditing?'<span class="ka-menu-card__edit-indicator" aria-hidden="true">✎</span>':''}<span class="ka-menu-card__icon">${g.icon}</span><strong>${esc(g.label)}</strong><span class="ka-badge">${menuCount(g)}</span></button>`).join('')}</div></div>`;layer.querySelector('[data-ka-menu-close]')?.addEventListener('click',closeMenu);layer.querySelector('[data-ka-menu-edit]')?.addEventListener('click',()=>{menuEditing=!menuEditing;renderMenuGrid()});layer.querySelectorAll('[data-ka-menu-group]').forEach(b=>b.addEventListener('click',()=>menuEditing?renderMenuCardEditor(b.dataset.kaMenuGroup):renderMenuList(b.dataset.kaMenuGroup)))}
 function listRow(item){return `<button type="button" class="ka-btn ka-btn--secondary" data-ka-shell-route="${item[2]}" data-ka-shell-page="${item[3]||''}" data-ka-shell-title="${esc(item[0])}"${menuItemAttrs(item)}><span class="ka-avatar">${item[1]}</span><span class="ka-grow"><strong>${esc(item[0])}</strong></span><span>${SVG.chevron}</span></button>`}
-async function openFoodMenuRoute(page,title,parentMenu){
- if(!['foodDaily','foodWeekly','foodMonthly','food'].includes(page))return false;
- const g=customizedVisibleGroups().find(x=>x.key===parentMenu),menuTitle=g?.label||'Yemek';
- closeHeaderPopover();closeMenu();setBottomActive('menu');
- rememberView({kind:'menu-list',name:'menu',bottom:'menu',page:parentMenu,title:menuTitle});
- try{
-  global.AppLoader?.setActiveModule?.('transport');
-  await global.AppLoader?.load?.('transport');
-  const ok=global.TransportModule?.openPage?.(page,title);
-  if(ok===false)throw new Error('Yemek sayfası açılamadı.');
-  setTitle(title||page);
-  rememberView({kind:'route',name:'transport',bottom:'menu',page,title:title||page,parentMenu});
-  return true;
- }catch(e){
-  console.error('[Shell/food-menu]',e);
-  global.toast?.('Yemek menüsü açılamadı: '+(e?.message||e));
-  return false;
- }
-}
-function bindMenuRoutes(root){
- $('[data-ka-shell-route]',root).forEach(b=>b.addEventListener('click',async e=>{
-  e.preventDefault();
-  e.stopPropagation();
-  const parentMenu=menuGroup||'';
-  const page=b.dataset.kaShellPage||'',title=b.dataset.kaShellTitle||'';
-  if(parentMenu==='food'&&['foodDaily','foodWeekly','foodMonthly','food'].includes(page)){
-   await openFoodMenuRoute(page,title,parentMenu);
-   return;
-  }
-  if(parentMenu){
-   const g=customizedVisibleGroups().find(x=>x.key===parentMenu);
-   rememberView({kind:'menu-list',name:'menu',bottom:'menu',page:parentMenu,title:g?.label||'Menü'});
-  }
-  await routeModule(b.dataset.kaShellRoute,{bottom:'menu',page,title,parentMenu});
- }));
-}
+function bindMenuRoutes(root){$$('[data-ka-shell-route]',root).forEach(b=>b.addEventListener('click',()=>{const parentMenu=menuGroup||'';if(parentMenu){const g=customizedVisibleGroups().find(x=>x.key===parentMenu);rememberView({kind:'menu-list',name:'menu',bottom:'menu',page:parentMenu,title:g?.label||'Menü'})}routeModule(b.dataset.kaShellRoute,{bottom:'menu',page:b.dataset.kaShellPage||'',title:b.dataset.kaShellTitle||'',parentMenu})}))}
 function renderMenuList(key){const layer=$('#kaMenuLayer'),g=customizedVisibleGroups().find(x=>x.key===key);if(!layer||!g)return;menuGroup=key;const main=(g.items||[]).filter(itemAllowed),sub=(g.subItems||[]).filter(itemAllowed);layer.innerHTML=`<div class="ka-menu-page"><div class="ka-menu-head"><button class="ka-icon-button" type="button" data-ka-menu-back aria-label="Geri">${SVG.back}</button><h2>${esc(g.label)}</h2><button class="ka-icon-button" type="button" data-ka-menu-close aria-label="Kapat">${SVG.close}</button></div><div class="ka-stack ka-page ka-menu-list">${main.map(listRow).join('')}${sub.length?`<h3>${esc(g.subLabel||'Diğer')}</h3>${sub.map(listRow).join('')}`:''}</div></div>`;layer.querySelector('[data-ka-menu-back]')?.addEventListener('click',()=>{menuEditing=false;renderMenuGrid()});layer.querySelector('[data-ka-menu-close]')?.addEventListener('click',closeMenu);bindMenuRoutes(layer)}
 function menuEditorIcons(current){return [...new Set([current,...MENU_CARD_ICON_PRESETS].filter(Boolean))]}
 function menuEditorColors(current){return [...new Set([current,...MENU_CARD_COLOR_PRESETS].filter(validMenuColor))]}
