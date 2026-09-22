@@ -452,9 +452,34 @@ function sbeTableRender(){
       const [r,c]=cell.dataset.sbeCell.split(',').map(Number);
       sbeTableCellClick(r,c);
     };
-    cell.addEventListener('pointerup',activate,{passive:false});
+    /* Android WebView'de özellikle +Koltuk modunda boş hücreye
+       pointerup gelmeden önce dokunma zinciri kaybolabiliyor.
+       Araç/öğrenci yerleştirme aktifken işlemi pointerdown'da doğrudan yap. */
+    cell.addEventListener('pointerdown',e=>{
+      if(!editor?.editable)return;
+      if(!editor.pendingCellKind && !editor.pendingStudentId)return;
+      const resize=e.target.closest?.('[data-sbe-col-resize],[data-sbe-row-resize]');
+      if(resize)return;
+      e.preventDefault();
+      e.stopPropagation();
+      const [r,c]=cell.dataset.sbeCell.split(',').map(Number);
+      editor._sbeCellPointerHandled=true;
+      sbeTableCellClick(r,c);
+    },{passive:false});
+    cell.addEventListener('pointerup',e=>{
+      if(editor._sbeCellPointerHandled){
+        editor._sbeCellPointerHandled=false;
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      activate(e);
+    },{passive:false});
     cell.addEventListener('touchend',activate,{passive:false});
-    cell.addEventListener('click',activate,{passive:false});
+    cell.addEventListener('click',e=>{
+      if(editor._sbeCellPointerHandled){editor._sbeCellPointerHandled=false;return}
+      activate(e);
+    },{passive:false});
   });
   root.querySelector('[data-sbe-table-info]')?.replaceChildren(document.createTextNode(t.rows+' satır · '+t.cols+' sütun · '+total+' koltuk'));
   sbeApplyTableZoom();
