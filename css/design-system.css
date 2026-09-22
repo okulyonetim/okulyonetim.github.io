@@ -2755,3 +2755,60 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 @media (min-width:560px){
   .ka-evrak-filter-row{grid-template-columns:repeat(5,minmax(0,1fr))}
 }
+
+
+/* Servis oturma tablo editörü v931: yatay erişim, zoom ve Android dokunma düzeltmeleri. */
+#transportBusEditor .sbe-table-scroll{
+  width:100%!important;
+  max-width:100%!important;
+  overflow:auto!important;
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x pan-y!important;
+  overscroll-behavior:contain!important;
+}
+#transportBusEditor .sbe-table-zoom{
+  position:relative;
+  display:block;
+  flex:none;
+}
+#transportBusEditor .sbe-table-zoom .sbe-table{
+  transform-origin:top left;
+}
+#transportBusEditor .sbe-table-zoom-controls{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-right:6px;
+  padding:3px;
+  border:1px solid var(--ka-border);
+  border-radius:10px;
+  background:var(--ka-muted-bg);
+}
+#transportBusEditor .sbe-table-zoom-controls button{
+  min-width:38px!important;
+  min-height:36px!important;
+  padding:0 9px!important;
+}
+#transportBusEditor .sbe-table-zoom-controls b{
+  min-width:48px;
+  text-align:center;
+  font-size:13px;
+}
+@media(max-width:700px){
+  #transportBusEditor .sbe-table-scroll{
+    max-height:55vh!important;
+    overflow:auto!important;
+    overflow-x:auto!important;
+    overflow-y:auto!important;
+    touch-action:pan-x pan-y!important;
+  }
+  #transportBusEditor .sbe-table-zoom-controls{
+    order:2;
+    margin-left:0;
+  }
+  #transportBusEditor .sbe-table-toolbar{
+    align-items:center;
+  }
+}
