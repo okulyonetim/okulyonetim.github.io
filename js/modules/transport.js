@@ -676,6 +676,7 @@ function sbeTableBind(root,s){
       fn(e);
     };
     b.addEventListener('pointerup',run,{passive:false});
+    b.addEventListener('touchend',run,{passive:false});
     b.addEventListener('click',run,{passive:false});
   };
   once('[data-sbe-unmerge]',()=>sbeTableUnmergeSelection());
@@ -698,6 +699,21 @@ function sbeTableBind(root,s){
   once('[data-sbe-table-del-col]',()=>sbeTableDeleteCol());
 
   const table=root.querySelector('[data-sbe-table]');
+  /* Android WebView'de bazı cihazlarda pointerup/click zinciri butonlarda
+     kararsız olabildiği için tablo araçları için touchend yedeği de vardır. */
+  table?.addEventListener('touchend',e=>{
+    const cell=e.target.closest?.('[data-sbe-cell]');
+    if(!cell)return;
+    if(editor?.mergeMode){
+      e.preventDefault();
+      e.stopPropagation();
+      const now=Date.now();
+      if((table.__sbeLastTouch||0)+350>now)return;
+      table.__sbeLastTouch=now;
+      const [r,c]=cell.dataset.sbeCell.split(',').map(Number);
+      sbeTableCellClick(r,c);
+    }
+  },{passive:false});
   table?.addEventListener('pointerdown',e=>{
     /* Sütun sınırını hücrenin hangi tarafına dokunulduğundan bağımsız hesapla.
        Böylece Android'de parmak bir sonraki hücreye kaysa bile doğru sütun
