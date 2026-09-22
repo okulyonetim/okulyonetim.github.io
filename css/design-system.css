@@ -2743,3 +2743,15 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 [data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student.is-seated small{color:#9eb3aa!important}
 [data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-student-status{color:#53d6a4!important}
 [data-theme="dark"] #transportBusEditor .sbe-student-list .sbe-avatar{color:#f1f8f5!important}
+
+/* Evrak Takibi — dar ekran taşma koruması */
+.ka-evrak-page{width:100%;min-width:0;max-width:100%;overflow-x:clip}
+.ka-evrak-page .ka-row,.ka-evrak-page .ka-card__body{min-width:0}
+.ka-evrak-page-head>div{min-width:0}
+.ka-evrak-page-head h2,.ka-evrak-page-head p{overflow-wrap:anywhere}
+.ka-evrak-add-btn{flex:0 0 auto}
+.ka-evrak-filter-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-space-2);width:100%;min-width:0}
+.ka-evrak-filter-row .ka-btn{width:100%;min-width:0;white-space:normal;text-align:center;padding-inline:8px}
+@media (min-width:560px){
+  .ka-evrak-filter-row{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
