@@ -722,6 +722,34 @@ function sbeTableBind(root,s){
   once('[data-sbe-table-del-col]',()=>sbeTableDeleteCol());
 
   const table=root.querySelector('[data-sbe-table]');
+  /* Boş hücrelerde Android bazen hücrenin <button> hedefini vermiyor.
+     Özellikle ilk satırdaki araç hücrelerinin yanındaki boş grid alanında
+     olay doğrudan tabloya düşebiliyor. Araç ekleme aktifse koordinattan hücreyi
+     bulup doğrudan işlemi çalıştırıyoruz. */
+  table?.addEventListener('pointerdown',e=>{
+    if(!editor?.editable || !editor.pendingCellKind)return;
+    if(e.target.closest?.('[data-sbe-col-resize],[data-sbe-row-resize]'))return;
+    const direct=e.target.closest?.('[data-sbe-cell]');
+    if(direct){
+      const [r,c]=direct.dataset.sbeCell.split(',').map(Number);
+      editor._sbeCellPointerHandled=true;
+      e.preventDefault();e.stopPropagation();
+      sbeTableCellClick(r,c);
+      return;
+    }
+    const t=sbeTableConfig(),rect=table.getBoundingClientRect();
+    const x=e.clientX-rect.left,y=e.clientY-rect.top;
+    if(x<0||y<0)return;
+    let acc=0,col=0,row=0;
+    for(let i=0;i<t.cols;i++){const w=Number(t.colWidths[i])||0;if(x>=acc&&x<acc+w){col=i+1;break}acc+=w}
+    acc=0;
+    for(let i=0;i<t.rows;i++){const h=Number(t.rowHeights[i])||0;if(y>=acc&&y<acc+h){row=i+1;break}acc+=h}
+    if(row&&col){
+      editor._sbeCellPointerHandled=true;
+      e.preventDefault();e.stopPropagation();
+      sbeTableCellClick(row,col);
+    }
+  },{passive:false});
   /* Android WebView'de bazı cihazlarda pointerup/click zinciri butonlarda
      kararsız olabildiği için tablo araçları için touchend yedeği de vardır. */
   table?.addEventListener('touchend',e=>{
