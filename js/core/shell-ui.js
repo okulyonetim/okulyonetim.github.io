@@ -53,7 +53,7 @@ function rememberView(view){if(!view)return;const top=navStack[navStack.length-1
 function registerPageRoute(page,handler){page=String(page||'').trim();if(!page||typeof handler!=='function')return()=>{};CUSTOM_PAGE_ROUTES.set(page,handler);return()=>{if(CUSTOM_PAGE_ROUTES.get(page)===handler)CUSTOM_PAGE_ROUTES.delete(page)}}
 function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();if(!global.KaDataPage?.open)throw new Error('KaDataPage hazır değil.');return global.KaDataPage.open()})}
 function setTitle(v){const el=$('#v2ModuleTitle');if(el)el.textContent=v||''}
-function setBottomActive(action){activeAction=action;$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
+function setBottomActive(action){activeAction=action;$$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
 function syncShellBack(){const b=document.querySelector('[data-ka-shell-back]');if(!b)return;const show=navStack.length>1||!!navStack[0]?.parentMenu;b.hidden=!show;b.setAttribute('aria-hidden',String(!show));}
 function suspendModuleForShellSurface(){global.AppLoader?.suspendActiveModule?.()}
 function moduleAllowed(name){const meta=global.AppConfig?.module?.(name);return meta?.visible!==false&&global.PermissionService?.moduleLevel?.(name)!=='hidden'}
