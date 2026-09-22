@@ -130,6 +130,7 @@ for(const [name,file] of Object.entries({dashboard:'dashboard.js',people:'people
 for(const old of ['people-data.js','academic-data.js','management-data.js','messaging-data.js','communication-data.js','documents-data.js','tools-data.js','transport-data.js','settings-data.js','duty-data.js']) assert(!loader.includes(old),`Legacy data paketi loader'a geri dönmemeli: ${old}`);
 assert(!registry('academic').includes('academic-calendar-parity.js'),'Academic bundle ayrı takvim parity kaynağı yüklememeli.');
 assert(source.academic.includes('openAcademicCalendar')&&source.academic.includes('kaAcademicCalendarOverlay'),'Akademik Takvim davranışı canonical academic.js içinde yaşamalı.');
+assert(!source.academic.includes('calendarFmtDate(meta.guncellenmeTarihi)')&&!source.academic.includes('meta?.yukleyenAdi?` ·'),'Akademik Takvim üst başlığında tarih/yükleyen metadata gösterilmemeli.');
 assert(registry('transport').includes("'js/modules/report-engine.js'"),'Transport ortak ReportEngine kullanmalı.');
 assert(!registry('tools').includes("'js/modules/map-ui.js'")&&!registry('tools').includes("'js/modules/teacher-list.js'"),'Tools varsayılan bundle rota-özel companion dosyalarını eager yüklememeli.');
 assert(shellUi.includes("if(page==='map')files.push('js/modules/map-ui.js')"),'Harita motoru yalnız Harita rotasında lazy yüklenmeli.');
