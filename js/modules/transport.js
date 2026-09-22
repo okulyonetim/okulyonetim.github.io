@@ -464,11 +464,14 @@ function sbeTableRender(){
     const label=e
       ? (n || (sbeIsSeatKind(kind) ? 'BOŞ' : (SBE_TYPES[kind]?.label || '')))
       : '';
-    let spanStyle='';
-    if(e){
-      if(Number(e.rowSpan)>1)spanStyle+='grid-row:span '+Number(e.rowSpan)+';';
-      if(Number(e.colSpan)>1)spanStyle+='grid-column:span '+Number(e.colSpan)+';';
-    }
+    /* CSS Grid'i auto-placement'a bırakmıyoruz.
+       Birleşme/boş hücreler olduğunda auto-placement DOM sırasını değiştirip
+       örneğin 15 numaralı öğrenciyi sağ sütuna kaydırabiliyordu. Her hücre
+       kendi gerçek row/column koordinatına açıkça yerleştiriliyor. */
+    const rs=e?Math.max(1,Number(e.rowSpan)||1):1;
+    const cs=e?Math.max(1,Number(e.colSpan)||1):1;
+    let spanStyle='grid-row:'+r+' / span '+rs+';grid-column:'+c+' / span '+cs+';';
+
     cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" style="'+spanStyle+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
       ''+
       (e?'<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span><span class="sbe-tcell-icon">'+icon+'</span><strong>'+esc(label)+'</strong>'+
@@ -481,15 +484,13 @@ function sbeTableRender(){
      yeniden çizmek Android WebView'de sonraki click/touchend olayını düşürüyor.
      Hücreler kendi olaylarını, DOM yerleştikten sonra alıyor. */
   host.querySelectorAll('[data-sbe-cell]').forEach(cell=>{
-    let lastTouch=0;
     const activate=e=>{
-      if(e.type==='touchend'){
-        const now=Date.now();
-        if(now-lastTouch<400)return;
-        lastTouch=now;
-      }else if(Date.now()-lastTouch<400){
-        return;
-      }
+      const now=Date.now();
+      /* touchend sonrası Android'in ürettiği click aynı seçimi ikinci kez
+         kaldırmasın. Zaman damgası editor üzerinde tutuluyor; çünkü hücre
+         seçimi render ettiğinde DOM düğümü yeniden oluşuyor. */
+      if(e.type==='click' && now-(editor._sbeLastCellTouch||0)<650)return;
+      if(e.type==='touchend')editor._sbeLastCellTouch=now;
       e.preventDefault?.();
       e.stopPropagation?.();
       const [r,c]=cell.dataset.sbeCell.split(',').map(Number);
@@ -747,8 +748,8 @@ function sbeTableBind(root,s){
       e.preventDefault();
       e.stopPropagation();
       const now=Date.now();
-      if((table.__sbeLastTouch||0)+350>now)return;
-      table.__sbeLastTouch=now;
+      if(now-(editor._sbeLastCellTouch||0)<350)return;
+      editor._sbeLastCellTouch=now;
       const [r,c]=cell.dataset.sbeCell.split(',').map(Number);
       sbeTableCellClick(r,c);
     }
