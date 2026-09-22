@@ -459,6 +459,27 @@ function sbeTableRender(){
       '</button>');
   }
   host.innerHTML=cells.join('');
+  /* Hücre seçimini pointerdown üzerinden yapma: pointerdown içinde DOM'u
+     yeniden çizmek Android WebView'de sonraki click/touchend olayını düşürüyor.
+     Hücreler kendi olaylarını, DOM yerleştikten sonra alıyor. */
+  host.querySelectorAll('[data-sbe-cell]').forEach(cell=>{
+    let lastTouch=0;
+    const activate=e=>{
+      if(e.type==='touchend'){
+        const now=Date.now();
+        if(now-lastTouch<400)return;
+        lastTouch=now;
+      }else if(Date.now()-lastTouch<400){
+        return;
+      }
+      e.preventDefault?.();
+      e.stopPropagation?.();
+      const [r,c]=cell.dataset.sbeCell.split(',').map(Number);
+      sbeTableCellClick(r,c);
+    };
+    cell.addEventListener('touchend',activate,{passive:false});
+    cell.addEventListener('click',activate,{passive:false});
+  });
   root.querySelector('[data-sbe-table-info]')?.replaceChildren(document.createTextNode(t.rows+' satır · '+t.cols+' sütun · '+total+' koltuk'));
 }
 function sbeTableSetCell(r,c,kind){
@@ -736,13 +757,8 @@ function sbeTableBind(root,s){
         return;
       }
     }
-    const cell=e.target.closest('[data-sbe-cell]');
-    if(cell){
-      e.preventDefault();
-      e.stopPropagation();
-      const [r,c]=cell.dataset.sbeCell.split(',').map(Number);
-      sbeTableCellClick(r,c);
-    }
+    /* Hücre seçimi burada yapılmıyor. pointerdown'da render etmek
+       Android'de click/touchend hedefini DOM'dan kaldırıyordu. */
   },{passive:false});
 }
 function sbeRenderTableEditor(s){
