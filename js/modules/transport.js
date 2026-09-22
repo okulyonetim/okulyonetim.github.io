@@ -895,6 +895,9 @@ function foodMenuPrint(mode){
   const extra='<style>@page{size:A4 landscape;margin:8mm}.fm-month-print{font-family:Arial,sans-serif;color:#17241f}.fm-month-print h1{text-align:center;font-size:15pt;margin:0 0 2mm}.fm-month-print h2{text-align:center;font-size:12pt;margin:0 0 5mm}.fm-month-print table{width:100%;border-collapse:collapse;table-layout:fixed}.fm-month-print th{border:1px solid #465850;background:#e8efec;padding:2.2mm;text-align:center;font-size:8.5pt}.fm-month-print td{border:1px solid #66766f;vertical-align:top;padding:2mm;height:31mm}.fm-month-print td.empty{background:#f5f7f6}.fm-month-print .day-head{display:flex;align-items:center;gap:2mm;border-bottom:1px solid #b9c5c0;padding-bottom:1.2mm;margin-bottom:1.5mm}.fm-month-print .day-head b{font-size:11pt}.fm-month-print .day-head span{font-size:7.5pt;font-weight:700}.fm-month-print .day-items{font-size:8pt;line-height:1.45}.fm-month-print .day-items div{padding:.6mm 0}.fm-month-print .muted{color:#7b8580;font-style:italic}</style>';
   return window.ReportEngine.printReport(title,body,{yon:'yatay',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:5,fileName:title.replaceAll(' ','_'),extraHead:extra});
  }
+}
+function foodMenuPage(mode){
+ const now=new Date(),initial=foodMenuCurrentMonth||foodMenuMonthKey(now.toISOString().slice(0,10)),data=foodMenuData(initial);
  const viewDate=foodMenuViewDate||new Date().toISOString().slice(0,10);
  if(mode==='foodDaily'){
   const viewDate=foodMenuViewDate||now.toISOString().slice(0,10);
