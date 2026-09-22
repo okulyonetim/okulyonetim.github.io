@@ -854,32 +854,70 @@ function foodMenuData(key){const all=foodMenuLoad();all[key]??={};for(let i=1;i<
 function foodMenuMonthOptions(selected){const now=new Date(),out=[];for(let n=-2;n<=10;n++){const d=new Date(now.getFullYear(),now.getMonth()+n,1),k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');out.push(`<option value="${k}" ${k===selected?'selected':''}>${d.toLocaleDateString('tr-TR',{month:'long',year:'numeric'})}</option>`)}return out.join('')}
 function foodMenuDayName(k,day){const d=new Date(k+'-'+String(day).padStart(2,'0')+'T00:00:00');return d.toLocaleDateString('tr-TR',{weekday:'long'})}
 function foodMenuDate(k,day){return k+'-'+String(day).padStart(2,'0')}
-function foodMenuFields(x,prefix){return `<input data-fm-field="${prefix}-corba" value="${esc(x.corba||'')}" placeholder="Çorba"><input data-fm-field="${prefix}-ana" value="${esc(x.ana||'')}" placeholder="Ana yemek"><input data-fm-field="${prefix}-yardimci" value="${esc(x.yardimci||'')}" placeholder="Yardımcı / garnitür"><input data-fm-field="${prefix}-tatli" value="${esc(x.tatli||'')}" placeholder="Tatlı / meyve">`}
+function foodDayItems(x){
+ const old=[x?.corba,x?.ana,x?.yardimci,x?.tatli].map(v=>String(v||'').trim()).filter(Boolean);
+ const items=Array.isArray(x?.items)?x.items.map(v=>String(v??'').trim()).filter(Boolean):[];
+ return items.length?items:old;
+}
+function foodDayEnsure(x){
+ if(!x||typeof x!=='object')x={};
+ x.items=foodDayItems(x);
+ return x;
+}
+function foodMenuMonthOptions(selected){
+ const now=new Date(),out=[];
+ for(let n=-2;n<=10;n++){
+  const d=new Date(now.getFullYear(),now.getMonth()+n,1),k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  out.push('<option value="'+k+'" '+(k===selected?'selected':'')+'>'+d.toLocaleDateString('tr-TR',{month:'long',year:'numeric'})+'</option>');
+ }
+ return out.join('');
+}
+function foodMenuDayName(k,day){const d=new Date(k+'-'+String(day).padStart(2,'0')+'T00:00:00');return d.toLocaleDateString('tr-TR',{weekday:'long'})}
+function foodMenuDate(k,day){return k+'-'+String(day).padStart(2,'0')}
 function foodMenuPrint(mode){
  const sc=foodSchool(),k=foodMenuCurrentMonth||foodMenuMonthKey(new Date().toISOString().slice(0,10)),data=foodMenuData(k);
  const title=mode==='foodMonthly'?'Aylık Yemek Menüsü':mode==='foodWeekly'?'Haftalık Yemek Menüsü':'Günlük Yemek Menüsü';
- let rows='';
+ let rows='',head='';
  if(mode==='foodDaily'){
-  const d=new Date(),x=data[d.getDate()]||{};
-  rows='<tr><th>Çorba</th><td>'+esc(x.corba||'')+'</td></tr><tr><th>Ana Yemek</th><td>'+esc(x.ana||'')+'</td></tr><tr><th>Yardımcı / Garnitür</th><td>'+esc(x.yardimci||'')+'</td></tr><tr><th>Tatlı / Meyve</th><td>'+esc(x.tatli||'')+'</td></tr>';
+  const d=new Date(),x=foodDayEnsure(data[d.getDate()]||{}),items=foodDayItems(x);
+  head='<tr><th>Menü</th></tr>';
+  rows=items.map(v=>'<tr><td>'+esc(v)+'</td></tr>').join('')||'<tr><td>Menü girilmemiş</td></tr>';
  }else if(mode==='foodWeekly'){
   const t=new Date(),w=t.getDay()||7,m=new Date(t);m.setDate(t.getDate()-w+1);
-  rows=Array.from({length:5},(_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i),kk=foodMenuMonthKey(d.toISOString().slice(0,10)),x=foodMenuData(kk)[d.getDate()]||{};return '<tr><th>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long',day:'2-digit',month:'2-digit'}))+'</th><td>'+esc(x.corba||'')+'</td><td>'+esc(x.ana||'')+'</td><td>'+esc(x.yardimci||'')+'</td><td>'+esc(x.tatli||'')+'</td></tr>'}).join('');
+  head='<tr><th>Gün</th><th>Yemekler</th></tr>';
+  rows=Array.from({length:5},(_,i)=>{
+   const d=new Date(m);d.setDate(m.getDate()+i);const kk=foodMenuMonthKey(d.toISOString().slice(0,10)),items=foodDayItems(foodMenuData(kk)[d.getDate()]||{});
+   return '<tr><th>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long',day:'2-digit',month:'2-digit'}))+'</th><td>'+items.map(esc).join('<br>')+'</td></tr>';
+  }).join('');
  }else{
   const max=new Date(Number(k.slice(0,4)),Number(k.slice(5,7)),0).getDate();
-  rows=Array.from({length:max},(_,i)=>{const n=i+1,x=data[n]||{},d=new Date(k+'-'+String(n).padStart(2,'0')+'T00:00:00');return '<tr><th>'+n+'</th><td>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'</td><td>'+esc(x.corba||'')+'</td><td>'+esc(x.ana||'')+'</td><td>'+esc(x.yardimci||'')+'</td><td>'+esc(x.tatli||'')+'</td></tr>'}).join('');
+  head='<tr><th>Gün</th><th>Hafta</th><th>Menü</th></tr>';
+  rows=Array.from({length:max},(_,i)=>{
+   const n=i+1,items=foodDayItems(data[n]||{}),d=new Date(k+'-'+String(n).padStart(2,'0')+'T00:00:00');
+   return '<tr><th>'+n+'</th><td>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'</td><td>'+items.map(esc).join('<br>')+'</td></tr>';
+  }).join('');
  }
- const head=mode==='foodDaily'?'<tr><th>Yemek</th><th>Menü</th></tr>':mode==='foodWeekly'?'<tr><th>Gün</th><th>Çorba</th><th>Ana Yemek</th><th>Yardımcı</th><th>Tatlı / Meyve</th></tr>':'<tr><th>Gün</th><th>Hafta</th><th>Çorba</th><th>Ana Yemek</th><th>Yardımcı</th><th>Tatlı / Meyve</th></tr>';
  const body='<div class="fm-print"><h1>'+esc(sc.okulAdi)+'</h1><h2>'+esc(title)+'</h2><table><thead>'+head+'</thead><tbody>'+rows+'</tbody></table></div>';
- return window.ReportEngine.printReport(title,body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:8,compact:true,fileName:title.replaceAll(' ','_')});
+ return window.ReportEngine.printReport(title,body,{yon:mode==='foodMonthly'?'yatay':'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:mode==='foodMonthly'?8:9,compact:true,fileName:title.replaceAll(' ','_')});
 }
 function foodMenuPage(mode){
  const now=new Date(),initial=foodMenuCurrentMonth||foodMenuMonthKey(now.toISOString().slice(0,10)),data=foodMenuData(initial);
- if(mode==='foodDaily'){const day=now.getDate(),x=data[day]||{};return{count:0,html:`<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodDaily"><div class="ka-row ka-row--between ka-wrap"><div><h3>☀️ Günlük Menü</h3><p class="ka-muted">${esc(now.toLocaleDateString('tr-TR',{dateStyle:'full'}))}</p></div><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div><div class="ka-card"><div class="ka-card__body"><div class="food-day-menu"><div><b>🥣 Çorba</b><span>${esc(x.corba||'Menü girilmemiş')}</span></div><div><b>🍲 Ana Yemek</b><span>${esc(x.ana||'Menü girilmemiş')}</span></div><div><b>🍚 Yardımcı / Garnitür</b><span>${esc(x.yardimci||'Menü girilmemiş')}</span></div><div><b>🍎 Tatlı / Meyve</b><span>${esc(x.tatli||'Menü girilmemiş')}</span></div></div><p class="ka-muted">Menüyü Aylık Menü ekranından girin; günlük görünüm otomatik güncellenir.</p></div></div></section>`}}
- if(mode==='foodWeekly'){const day=now.getDay()||7,mon=new Date(now);mon.setDate(now.getDate()-day+1);const rows=Array.from({length:5},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);const k=foodMenuMonthKey(d.toISOString().slice(0,10)),x=foodMenuData(k)[d.getDate()]||{};return`<tr><th>${d.toLocaleDateString('tr-TR',{weekday:'long',day:'2-digit',month:'2-digit'})}</th><td>${esc(x.corba||'—')}</td><td>${esc(x.ana||'—')}</td><td>${esc(x.yardimci||'—')}</td><td>${esc(x.tatli||'—')}</td></tr>`}).join('');return{count:5,html:`<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodWeekly"><div class="ka-row ka-row--between ka-wrap"><div><h3>📆 Haftalık Menü</h3><p class="ka-muted">Pazartesi–Cuma</p></div><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div><div class="ka-card"><div class="ka-card__body"><div class="ka-table-wrap"><table class="ka-table food-week-table"><thead><tr><th>Gün</th><th>Çorba</th><th>Ana Yemek</th><th>Yardımcı</th><th>Tatlı / Meyve</th></tr></thead><tbody>${rows}</tbody></table></div></div></div></section>`}}
- const days=Object.keys(data).map(Number).filter(d=>d<=new Date(initial+'-01T00:00:00').getDate()).sort((a,b)=>a-b);
- const rows=days.map(d=>{const x=data[d]||{};return`<tr><th>${d}</th><td>${foodMenuDayName(initial,d)}</td><td>${foodMenuFields(x,d)}</td></tr>`}).join('');
- return{count:days.length,html:`<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodMonthly"><style>.food-month-head{display:grid;grid-template-columns:52px 120px 1fr;gap:8px;padding:10px;border-bottom:2px solid var(--ka-border,#ddd)}.food-month-list{display:flex;flex-direction:column;gap:6px;margin:8px 0 14px}.food-month-list tr{border-bottom:1px solid #e1e7e4}.food-month-list td,.food-month-list th{padding:6px;vertical-align:top}.food-month-list input{display:block;width:100%;box-sizing:border-box;margin:2px 0;padding:8px;border:1px solid #d7dfdc;border-radius:8px}.food-week-table th,.food-week-table td{vertical-align:top}.food-week-table td{min-width:110px}</style><div class="ka-row ka-row--between ka-wrap"><div><h3>🗓️ Aylık Menü</h3><p class="ka-muted">Aylık yemek listesi ana kayıt ekranıdır. Günlük ve haftalık menüler buradan oluşur.</p></div><div class="ka-row"><select data-fm-month>${foodMenuMonthOptions(initial)}</select><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div></div><div class="ka-card"><div class="ka-card__body"><div class="food-month-head"><b>Gün</b><b>Hafta</b><b>Yemekler</b></div><div class="food-month-list">${rows}</div><button class="ka-btn" type="button" data-fm-save>💾 Menüyü Kaydet</button></div></div></section>`};
+ if(mode==='foodDaily'){
+  const day=now.getDate(),x=foodDayEnsure(data[day]||{}),items=foodDayItems(x);
+  return{count:items.length,html:'<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodDaily"><div class="ka-row ka-row--between ka-wrap"><div><h3>☀️ Günlük Menü</h3><p class="ka-muted">'+esc(now.toLocaleDateString('tr-TR',{dateStyle:'full'}))+'</p></div><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div><div class="ka-card"><div class="ka-card__body food-day-menu">'+(items.length?items.map((v,i)=>'<div><b>'+(i+1)+'.</b><span>'+esc(v)+'</span></div>').join(''):'<div><span>Menü girilmemiş</span></div>')+'</div></div></section>'};
+ }
+ if(mode==='foodWeekly'){
+  const day=now.getDay()||7,mon=new Date(now);mon.setDate(now.getDate()-day+1);
+  const rows=Array.from({length:5},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);const k=foodMenuMonthKey(d.toISOString().slice(0,10)),items=foodDayItems(foodMenuData(k)[d.getDate()]||{});return '<tr><th>'+esc(d.toLocaleDateString('tr-TR',{weekday:'long',day:'2-digit',month:'2-digit'}))+'</th><td>'+ (items.length?items.map((v,j)=>(j+1)+'. '+esc(v)).join('<br>'):'—') +'</td></tr>'}).join('');
+  return{count:5,html:'<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodWeekly"><div class="ka-row ka-row--between ka-wrap"><div><h3>📆 Haftalık Menü</h3><p class="ka-muted">Pazartesi–Cuma</p></div><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div><div class="ka-card"><div class="ka-card__body"><div class="ka-table-wrap"><table class="ka-table food-week-table"><thead><tr><th>Gün</th><th>Yemekler</th></tr></thead><tbody>'+rows+'</tbody></table></div></div></div></section>'};
+ }
+ const max=new Date(Number(initial.slice(0,4)),Number(initial.slice(5,7)),0).getDate();
+ const rows=Array.from({length:max},(_,i)=>{
+  const d=i+1,x=foodDayEnsure(data[d]||{}),items=foodDayItems(x);
+  const fields=items.map((v,j)=>'<div class="food-menu-item-row"><input data-fm-item="'+d+'" value="'+esc(v)+'" placeholder="Yemek / menü satırı"><button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-fm-remove="'+d+':'+j+'">×</button></div>').join('');
+  return '<article class="food-month-day"><div class="food-month-day-head"><strong>'+String(d).padStart(2,'0')+'</strong><span>'+esc(foodMenuDayName(initial,d))+'</span><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-fm-add="'+d+'">+ Yemek</button></div><div class="food-month-items">'+(fields||'<span class="ka-muted">Henüz yemek eklenmedi.</span>')+'</div></article>';
+ }).join('');
+ return{count:max,html:'<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodMonthly"><style>.food-month-days{display:flex;flex-direction:column;gap:10px}.food-month-day{border:1px solid var(--ka-border,#d7dfdc);border-radius:14px;padding:10px;background:var(--ka-card,#fff)}.food-month-day-head{display:grid;grid-template-columns:42px 1fr auto;gap:8px;align-items:center;margin-bottom:8px}.food-month-day-head strong{font-size:18px}.food-month-items{display:flex;flex-direction:column;gap:7px}.food-menu-item-row{display:grid;grid-template-columns:1fr auto;gap:6px}.food-menu-item-row input{width:100%;box-sizing:border-box}.food-week-table td{vertical-align:top;line-height:1.6}</style><div class="ka-row ka-row--between ka-wrap"><div><h3>🗓️ Aylık Menü</h3><p class="ka-muted">Her gün için yemekleri istediğiniz kadar satır halinde ekleyin.</p></div><div class="ka-row"><select data-fm-month>'+foodMenuMonthOptions(initial)+'</select><button class="ka-btn" type="button" data-fm-save>💾 Kaydet</button><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div></div><div class="ka-card"><div class="ka-card__body food-month-days">'+rows+'</div></div></section>'};
 }
 
 function foodPage(){const sc=foodSchool(),ins=foodInspectors(),opts=ins.ts.filter(t=>t.id!==ins.mudur&&t.id!==ins.yard).map(t=>`<option value="${esc(t.id)}" ${String(t.id)===String(foodState.teacher)?"selected":""}>${esc(`${t.ad||''} ${t.soyad||''}`.trim())}</option>`).join('');if(!foodState.teacher)foodState.teacher=ins.ts.find(t=>t.id!==ins.mudur&&t.id!==ins.yard)?.id||'';return{count:12,html:`<section class="ka-stack" data-food-page><div class="ka-row ka-row--between ka-wrap"><div><h3>🍽️ Ücretsiz Öğle Yemeği Denetim ve Kontrol Formu</h3><p class="ka-muted">${esc(sc.okulAdi)} — yalnızca çıktı alınır, form elle doldurulur.</p></div><button class="ka-btn" type="button" data-food-print>🖨 A4 / PDF Yazdır</button></div><div class="ka-card"><div class="ka-card__body"><div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Yemek sunulan öğrenci sayısı</span><input id="food-count" inputmode="numeric" value="${esc(foodState.count)}"></label><label class="ka-field"><span class="ka-field__label">Denetim ve kontrol tarihi</span><input id="food-date" type="date" value="${esc(foodState.date)}"></label></div><label class="ka-field"><span class="ka-field__label">Denetleyen öğretmen</span><select data-food-teacher><option value="">Öğretmen seçin</option>${opts}</select></label><p class="ka-muted">Formdaki Evet, Hayır ve Açıklamalar alanlarına uygulama üzerinden veri girilmez. Çıktı üzerinde elle doldurulur.</p></div></div></section>`}}
