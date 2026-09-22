@@ -928,12 +928,15 @@ function foodMenuPage(mode){
   return{count:items.length,html:'<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodDaily"><div class="ka-row ka-row--between ka-wrap"><div><h3>☀️ Günlük Menü</h3><p class="ka-muted">'+esc(vd.toLocaleDateString('tr-TR',{dateStyle:'full'}))+'</p></div><div class="ka-row"><input class="ka-input" type="date" data-fm-day value="'+esc(viewDate)+'"><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div></div><div class="ka-card"><div class="ka-card__body food-day-menu">'+(items.length?items.map((v,i)=>'<div><b>'+(i+1)+'.</b><span>'+esc(v)+'</span></div>').join(''):'<div><span>Menü girilmemiş</span></div>')+'</div></div></section>'};
  }
  if(mode==='foodWeekly'){
-  const viewDate=foodMenuViewDate||now.toISOString().slice(0,10),base=new Date(viewDate+'T00:00:00'),day=base.getDay()||7,mon=new Date(base);mon.setDate(base.getDate()-day+1);
-  const weekTitle=mon.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'})+' – '+new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+4).toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'});
+  const viewDate=foodMenuViewDate||now.toISOString().slice(0,10),base=new Date(viewDate+'T00:00:00'),day=base.getDay()||7,mon=new Date(base);
+  mon.setDate(base.getDate()-day+1);
+  const weekEnd=new Date(mon);weekEnd.setDate(mon.getDate()+4);
+  const weekTitle=mon.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'})+' – '+weekEnd.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'});
   const rows=Array.from({length:5},(_,i)=>{
    const d=new Date(mon);d.setDate(mon.getDate()+i);
    const iso=d.toISOString().slice(0,10),k=foodMenuMonthKey(iso),items=foodDayItems(foodMenuData(k)[d.getDate()]||{});
-   return '<tr><th><div class="food-week-day">'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'<small>'+esc(d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}))+'</small></div></th><td>'+(items.length?items.map((v,j)=>'<div class="food-week-item"><span>'+(j+1)+'.</span>'+esc(v)+'</div>').join(''):'<span class="ka-muted">Menü girilmemiş</span>')+'</td></tr>';
+   const menu=items.length?items.map((v,j)=>'<div class="food-week-item"><span>'+(j+1)+'.</span>'+esc(v)+'</div>').join(''):'<span class="ka-muted">Menü girilmemiş</span>';
+   return '<tr><th><div class="food-week-day">'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'<small>'+esc(d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}))+'</small></div></th><td>'+menu+'</td></tr>';
   }).join('');
   return{count:5,html:'<section class="ka-stack" data-food-menu-page data-food-menu-mode="foodWeekly"><style>.food-week-title{margin:0}.food-week-table th{width:145px;vertical-align:top}.food-week-day{font-size:14px}.food-week-day small{display:block;margin-top:4px;font-weight:400;opacity:.7}.food-week-item{padding:5px 0;border-bottom:1px solid var(--ka-border,#e4e8e6)}.food-week-item:last-child{border-bottom:0}.food-week-item span{display:inline-block;min-width:24px;font-weight:700}</style><div class="ka-row ka-row--between ka-wrap"><div><h3 class="food-week-title">📆 Haftalık Menü</h3><p class="ka-muted">'+esc(weekTitle)+'</p><p class="ka-muted">Bu ekran aylık menüde girilen bilgileri gösterir.</p></div><div class="ka-row"><input class="ka-input" type="date" data-fm-week-date value="'+esc(viewDate)+'"><button class="ka-btn" type="button" data-fm-print>🖨 A4</button></div></div><div class="ka-card"><div class="ka-card__body"><div class="ka-table-wrap"><table class="ka-table food-week-table"><thead><tr><th>Gün</th><th>Yemekler</th></tr></thead><tbody>'+rows+'</tbody></table></div></div></div></section>'};
  }
