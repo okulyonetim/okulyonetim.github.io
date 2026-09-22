@@ -339,8 +339,12 @@ function busPrintReport(s){
       (studentClass?'<small>'+esc(studentClass)+'</small>':'')+
       '</div>');
   }
-  const colTemplate=colWidths.map(v=>Math.max(70,Number(v)||70)+'px').join(' ');
-  const rowTemplate=rowHeights.map(v=>v+'px').join(' ');
+  /* Rapor alanının fiziksel genişliği editörden farklı olabilir.
+     Bu nedenle px toplamını sabitlemek yerine editördeki genişlik oranlarını
+     koruyarak fr kullanıyoruz. Böylece tüm sütunlar rapor alanını doldurur,
+     fakat elle ayarlanan sütun oranları birebir korunur. */
+  const colTemplate=colWidths.map(v=>Math.max(1,Number(v)||1)+'fr').join(' ');
+  const rowTemplate=rowHeights.map(v=>Math.max(1,Number(v)||1)+'fr').join(' ');
   const body='<div class="sbe-print">'+
     '<h1>'+esc(school.okulAdi||'KORUK İLK-ORTAOKULU')+'</h1>'+
     '<h2>SERVİS OTURMA PLANI</h2>'+
@@ -350,7 +354,7 @@ function busPrintReport(s){
     '</div>';
   const extra='<style>'+
     '.sbe-print{font-family:Arial,sans-serif;color:#18241f;font-size:9pt}.sbe-print h1,.sbe-print h2{text-align:center;margin:2mm 0}.sbe-print p{margin:2mm 0;font-size:8pt}'+
-    '.sbe-print-table{display:grid;width:170mm;margin:5mm auto 0;border:1.5px solid #50605a;border-radius:7mm;overflow:hidden;background:#eef2f0;box-sizing:border-box;break-inside:avoid}'+
+    '.sbe-print-table{display:grid;width:170mm;max-width:100%;margin:5mm auto 0;border:1.5px solid #50605a;border-radius:7mm;overflow:hidden;background:#eef2f0;box-sizing:border-box;break-inside:avoid}'+
     '.sbe-print-cell{box-sizing:border-box;min-width:0;min-height:0;border-right:1px solid #789088;border-bottom:1px solid #789088;background:#fff;padding:2mm 1mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}'+
     '.sbe-print-empty{background:#eef2f0}.sbe-print-cell.seat{background:#f8fbfa}.sbe-print-cell.filled{background:#d7f1e8}.sbe-print-cell.driver{background:#fff3d6}.sbe-print-cell.door{background:#e9eef2}.sbe-print-cell.special{background:#eef2f0}'+
     '.sbe-print-no{align-self:flex-start;font-size:7pt;font-weight:400}.sbe-print-icon{font-size:18pt;line-height:1.05}.sbe-print-cell strong{font-size:8pt;line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sbe-print-cell small{font-size:6.5pt;margin-top:1mm}'+
@@ -657,7 +661,23 @@ function sbeTableCellClick(r,c){
 
 }
 function sbeTableBind(root,s){
-  const once=(selector,fn)=>root.querySelector(selector)?.addEventListener('pointerup',e=>{e.preventDefault();e.stopPropagation();fn(e)});
+  /* Android WebView'de toolbar düğmelerini hem pointerup hem click ile yakala.
+     pointerup bazı WebView/native touch katmanlarında click'e dönüşmeden kesilebildiği
+     için click yedeği gerekir. Aynı dokunuşun iki kez çalışmasını kısa kilitle önle. */
+  const once=(selector,fn)=>{
+    const b=root.querySelector(selector);if(!b)return;
+    let lastRun=0;
+    const run=e=>{
+      const now=Date.now();
+      if(now-lastRun<350)return;
+      lastRun=now;
+      e.preventDefault?.();
+      e.stopPropagation?.();
+      fn(e);
+    };
+    b.addEventListener('pointerup',run,{passive:false});
+    b.addEventListener('click',run,{passive:false});
+  };
   once('[data-sbe-unmerge]',()=>sbeTableUnmergeSelection());
   once('[data-sbe-merge]',()=>{
     if(editor.mergeMode && (editor.mergeSelection||[]).length>=2){
@@ -669,7 +689,7 @@ function sbeTableBind(root,s){
     editor.selection=[];
     editor.mergeSelection=[];
     root.querySelector('[data-sbe-merge]')?.classList.add('is-active');
-    toast?.('Birleştirme modu: birleştirilecek hücreleri seçin, sonra ↔ Birleştir butonuna tekrar basın.');
+    toast?.('Birleştirme modu aktif. Birleştirilecek hücrelere dokunun; seçimler sarı çerçeveyle görünecek. Sonra ↔ Birleştir düğmesine basın.');
     sbeTableRender();
   });
   once('[data-sbe-table-add-row]',()=>sbeTableAddRow());
