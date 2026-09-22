@@ -319,7 +319,7 @@ function busPrintReport(s){
     const rs=Math.max(1,Number(e.rowSpan)||1),cs=Math.max(1,Number(e.colSpan)||1);
     for(let rr=r;rr<r+rs;rr++)for(let cc=c;cc<c+cs;cc++)if(!(rr===r&&cc===c))occupied.add(rr+','+cc);
     const kind=sbeKind(e),name=seatStudentName(e),icon=SBE_TYPES[kind]?.icon||'',label=name||(sbeIsSeatKind(kind)?'BOŞ':(SBE_TYPES[kind]?.label||'')),cls=(name?' filled':'')+' '+(kind==='driver'?' driver':kind==='door'?' door':sbeIsSeatKind(kind)?' seat':' special'),studentClass=name?className(arr('veliler').find(v=>String(v.id)===String(e.studentId))?.sinifId):'';
-    cells.push('<div class="sbe-print-cell'+cls+'" style="grid-row:'+r+' / span '+rs+';grid-column:'+c+' / span '+cs+'"><b class="sbe-print-no">'+esc(e.seatNumber||'')+'</b><span class="sbe-print-icon">'+esc(icon)+'</span><strong>'+esc(label)+'</strong>'+(studentClass?'<small>'+esc(studentClass)+'</small>':'')+'</div>');
+    cells.push('<div class="sbe-print-cell'+cls+'" style="grid-row:'+r+' / span '+rs+';grid-column:'+c+' / span '+cs+'"><strong>'+esc(label)+'</strong>'+(studentClass?'<small>'+esc(studentClass)+'</small>':'')+'</div>');
   }
   const totalCol=colWidths.reduce((a,v)=>a+Math.max(1,Number(v)||1),0);
   const colTemplate=colWidths.map(v=>(Math.max(1,Number(v)||1)/totalCol*100).toFixed(4)+'%').join(' ');
@@ -432,8 +432,8 @@ function sbeTableRender(){
 
     cells.push('<button type="button" aria-label="'+esc(e?(n||SBE_TYPES[kind]?.label||'Hücre'):'Boş hücre')+'" style="'+spanStyle+'" class="sbe-tcell '+(e?'has-object ':'')+(n?'filled ':'')+(sel?'selected ':'')+'sbe-tcell-'+kind+'" data-sbe-cell="'+r+','+c+'">'+
       ''+
-      (e?'<span class="sbe-tcell-number">'+(e?.seatNumber||'')+'</span><span class="sbe-tcell-icon">'+icon+'</span><strong>'+esc(label)+'</strong>'+
-        (n?'<small>'+esc(className(arr('veliler').find(v=>String(v.id)===String(e.studentId))?.sinifId))+'</small>':''):'')+
+      (e?'<strong class="sbe-tcell-student-name">'+esc(label)+'</strong>'+
+        (n?'<small class="sbe-tcell-student-class">'+esc(className(arr('veliler').find(v=>String(v.id)===String(e.studentId))?.sinifId))+'</small>':''):'')+
       '<span class="sbe-col-resize" data-sbe-col-resize="'+c+'"></span><span class="sbe-row-resize" data-sbe-row-resize="'+r+'"></span>'+
       '</button>');
   }
