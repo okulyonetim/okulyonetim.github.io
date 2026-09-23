@@ -51,6 +51,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private final LogoPullRefreshView indicator;
     private final int touchSlop;
     private final float triggerDistancePx;
+    private final float interceptDistancePx;
     private final float hiddenTranslationY;
 
     private float downX;
@@ -71,6 +72,9 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         float density = context.getResources().getDisplayMetrics().density;
         this.touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         this.triggerDistancePx = TRIGGER_DISTANCE_DP * density;
+        // Küçük parmak hareketleri buton tıklamasını kaydırma olarak yorumlatmamalı.
+        // Android touch-slop tek başına WebView içindeki küçük butonlarda yetersiz kalabilir.
+        this.interceptDistancePx = Math.max(this.touchSlop * 3f, 24f * density);
 
         int indicatorSizePx = Math.round(INDICATOR_SIZE_DP * density);
         int topMarginPx = Math.round(INDICATOR_TOP_MARGIN_DP * density);
@@ -157,28 +161,10 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
         return jsChildCanScrollUp || webView.canScrollVertically(-1) || webView.getScrollY() > 0;
     }
 
-    @Override
-    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        /*
-         * WebView dokunma başladığında parent'tan intercept istemeyebilir.
-         * Bu istek doğrudan kabul edilirse custom PTR ACTION_MOVE aşamasına
-         * erişemez. Sayfanın en üstündeyken isteği bilinçli olarak yoksayıyoruz;
-         * böylece aşağı yönlü dikey jestte parent devreye girebiliyor.
-         * Sayfa aşağıdaysa WebView'in normal scroll davranışına dokunmuyoruz.
-         */
-        if (disallowIntercept
-                && pullEnabled
-                && !refreshing
-                && !canChildScrollUp()) {
-            return;
-        }
-        super.requestDisallowInterceptTouchEvent(disallowIntercept);
-    }
-
     private boolean dikeyAsagiJestMi(MotionEvent ev) {
         float dy = ev.getY() - downY;
         float dx = Math.abs(ev.getX() - downX);
-        return dy > touchSlop && dy > dx * VERTICAL_DOMINANCE;
+        return dy > interceptDistancePx && dy > dx * VERTICAL_DOMINANCE;
     }
 
     @Override
