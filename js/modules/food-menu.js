@@ -175,43 +175,44 @@ function render(){
    foodMenuSave(foodMenuLoad());
   }));
   out.onclick=null;
-  let addHandled=false;
+  let touchHandled=false;
   const addFoodItem=(add,e)=>{
    e?.preventDefault?.();
    e?.stopPropagation?.();
    e?.stopImmediatePropagation?.();
-   if(addHandled)return;
-   addHandled=true;
-   const day=Number(add.dataset.fmAdd),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
+   const day=Number(add.dataset.fmAdd);
+   if(!Number.isInteger(day)||day<1||day>31)return;
+   if(touchHandled&&e?.type==='click')return;
+   const d=foodMenuData(foodMenuCurrentMonth)[day]||{};
    foodDayEnsure(d);
    d.items.push('');
    foodMenuSave(foodMenuLoad());
+   touchHandled=e?.type==='touchend'||e?.type==='touchstart';
    render();
-   requestAnimationFrame(()=>{
-    document.querySelector('#foodMenuContent [data-fm-item="'+day+'"]')?.focus();
-    setTimeout(()=>{addHandled=false},250);
+   requestAnimationFrame(()=>document.querySelector('#foodMenuContent [data-fm-item="'+day+'"]')?.focus());
+   if(touchHandled)setTimeout(()=>{touchHandled=false},500);
+  };
+  out.querySelectorAll('[data-fm-add]').forEach(add=>{
+   add.addEventListener('touchend',e=>addFoodItem(add,e),{passive:false});
+   add.addEventListener('click',e=>{
+    if(!touchHandled)addFoodItem(add,e);
    });
-  };
-  const handleAddPointer=e=>{
-   const add=e.target?.closest?.('[data-fm-add]');
-   if(!add||!out.contains(add))return;
-   if(e.pointerType==='touch'||e.pointerType==='pen'){
-    addFoodItem(add,e);
-   }
-  };
-  out.onpointerdown=handleAddPointer;
-  out.onclick=e=>{
-   const add=e.target?.closest?.('[data-fm-add]');
-   if(!add||!out.contains(add))return;
-   if(e.pointerType==='mouse'||e.detail===0||!('PointerEvent' in window))addFoodItem(add,e);
-  };
+  });
   out.querySelectorAll('[data-fm-remove]').forEach(remove=>{
-   remove.onclick=e=>{
+   remove.addEventListener('touchend',e=>{
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation?.();
     const [day,j]=String(remove.dataset.fmRemove).split(':').map(Number),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
     foodDayEnsure(d);if(Number.isInteger(j))d.items.splice(j,1);
     foodMenuSave(foodMenuLoad());render();
-   };
+   },{passive:false});
+   remove.addEventListener('click',e=>{
+    if(e.detail===0||!touchHandled){
+     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation?.();
+     const [day,j]=String(remove.dataset.fmRemove).split(':').map(Number),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
+     foodDayEnsure(d);if(Number.isInteger(j))d.items.splice(j,1);
+     foodMenuSave(foodMenuLoad());render();
+    }
+   });
   });
   out.querySelector('[data-fm-save]')?.addEventListener('click',()=>{foodMenuSave(foodMenuLoad());toast?.('Yemek menüsü kaydedildi.');});
  }else{
@@ -257,20 +258,8 @@ function openPage(page,title=''){
  render();
  return true;
 }
-function addMonthlyItem(day){
- if(active!=='monthly'||!mounted)return false;
- const n=Number(day);
- if(!Number.isInteger(n)||n<1||n>31)return false;
- const d=foodMenuData(foodMenuCurrentMonth)[n]||{};
- foodDayEnsure(d);
- d.items.push('');
- foodMenuSave(foodMenuLoad());
- render();
- requestAnimationFrame(()=>document.querySelector('#foodMenuContent [data-fm-item="'+n+'"]')?.focus());
- return false;
-}
 function back(){return false}
 
-window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back,addMonthlyItem};
+window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back};
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='food')mount()});
 })(window);
