@@ -40,7 +40,7 @@ function foodMenuSave(x,key=foodMenuCurrentMonth){
   .catch(e=>console.warn('[FoodMenu] Firestore kayıt kuyruğa alınamadı:',e?.message||e))
   .finally(()=>{if(seq===foodSaveSeq)foodSelfSaving=false});
 }
-function foodMenuData(key){const all=foodMenuLoad();const isNew=!all[key];if(isNew)all[key]={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};if(isNew)foodMenuSave(all);return all[key]}
+function foodMenuData(key){const all=foodMenuLoad();const isNew=!all[key];if(isNew)all[key]={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};if(isNew)foodMenuSave(all,key);return all[key]}
 function foodDayItems(x){
  const old=[x?.corba,x?.ana,x?.yardimci,x?.tatli].map(v=>String(v||'').trim()).filter(Boolean);
  const items=Array.isArray(x?.items)?x.items.map(v=>String(v??'').trim()).filter(Boolean):[];
