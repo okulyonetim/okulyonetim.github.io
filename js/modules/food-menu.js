@@ -27,7 +27,19 @@ function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getF
 let foodMenuHydrated=false,foodSelfSaving=false;
 function foodMenuLoad(){if(!foodMenuHydrated){const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[];const out={};rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});foodMenuCache=out;foodMenuHydrated=true}return foodMenuCache}
 function foodMenuPersistRows(x){return Object.entries(x||{}).map(([id,menu])=>{const clean={};Object.entries(menu||{}).forEach(([day,v])=>{clean[day]={...(v||{}),items:foodDayItems(v)}});return{id,menu:clean}})}
-function foodMenuSave(x){foodMenuCache=x;if(!global.DeviceData?.persist)return;foodSelfSaving=true;try{global.DeviceData.persist(FOOD_DATA_TYPE,foodMenuPersistRows(x)).catch(()=>{})}finally{foodSelfSaving=false}}
+let foodSaveSeq=0;
+function foodMenuSave(x,key=foodMenuCurrentMonth){
+ foodMenuCache=x;
+ const id=String(key||foodMenuCurrentMonth||'').trim();
+ if(!id||!global.DeviceData?.set||!global.COL?.yemekMenuleri)return;
+ const menu=x?.[id]||{};
+ const clean=Object.fromEntries(Object.entries(menu).map(([day,v])=>[day,{...(v||{}),items:foodDayItems(v)}]));
+ const seq=++foodSaveSeq;
+ foodSelfSaving=true;
+ Promise.resolve(global.DeviceData.set(FOOD_DATA_TYPE,global.COL.yemekMenuleri,id,{menu:clean},{merge:false}))
+  .catch(e=>console.warn('[FoodMenu] Firestore kayıt kuyruğa alınamadı:',e?.message||e))
+  .finally(()=>{if(seq===foodSaveSeq)foodSelfSaving=false});
+}
 function foodMenuData(key){const all=foodMenuLoad();const isNew=!all[key];if(isNew)all[key]={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};if(isNew)foodMenuSave(all);return all[key]}
 function foodDayItems(x){
  const old=[x?.corba,x?.ana,x?.yardimci,x?.tatli].map(v=>String(v||'').trim()).filter(Boolean);
@@ -241,7 +253,7 @@ function render(){
     foodDayEnsure(d);
     const rows=[...out.querySelectorAll('[data-fm-item="'+day+'"]')];
     d.items=rows.map(x=>x.value);
-    foodMenuSave(foodMenuLoad());
+    foodMenuSave(foodMenuLoad(),foodMenuCurrentMonth);
    });
    out.addEventListener('click',e=>{
     const add=e.target?.closest?.('[data-fm-add]');
@@ -253,7 +265,7 @@ function render(){
      const d=foodMenuData(foodMenuCurrentMonth)[day]||{};
      foodDayEnsure(d);
      d.items.push('');
-     foodMenuSave(foodMenuLoad());
+     foodMenuSave(foodMenuLoad(),foodMenuCurrentMonth);
      render();
      requestAnimationFrame(()=>out.querySelector('[data-fm-item="'+day+'"]')?.focus());
      return;
@@ -267,15 +279,15 @@ function render(){
      const d=foodMenuData(foodMenuCurrentMonth)[day]||{};
      foodDayEnsure(d);
      d.items.splice(j,1);
-     foodMenuSave(foodMenuLoad());
+     foodMenuSave(foodMenuLoad(),foodMenuCurrentMonth);
      render();
      return;
     }
     if(e.target?.closest?.('[data-fm-save]')){
      e.preventDefault();
      e.stopPropagation();
-     foodMenuSave(foodMenuLoad());
-     toast?.('Yemek menüsü kaydedildi.');
+     foodMenuSave(foodMenuLoad(),foodMenuCurrentMonth);
+     toast?.('Yemek menüsü kaydedildi ve senkronizasyon kuyruğuna alındı.');
     }
    });
   }
