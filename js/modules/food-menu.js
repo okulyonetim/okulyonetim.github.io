@@ -74,7 +74,7 @@ const FOOD_MENU_STYLE='<style>'
  +'.food-cal-date span{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--fm-day-text)}'
  +'[data-food-menu-module] select[data-fm-month]{flex:0 0 155px;width:155px;min-width:155px;min-height:44px;appearance:auto;-webkit-appearance:auto;color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important;border-color:var(--ka-input-border)!important;color-scheme:dark}'
  +'[data-food-menu-module] select[data-fm-month] option{color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important}'
- +'.food-add-btn{width:22px;height:22px;border-radius:50%;background:color-mix(in srgb,var(--ka-card-bg) 92%,transparent);border:1.5px solid var(--fm-day-border);color:var(--fm-day-text);font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative;z-index:2;pointer-events:auto}'
+ +'.food-add-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent;width:22px;height:22px;border-radius:50%;background:color-mix(in srgb,var(--ka-card-bg) 92%,transparent);border:1.5px solid var(--fm-day-border);color:var(--fm-day-text);font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative;z-index:2;pointer-events:auto}'
  +'[data-theme="dark"] [data-food-menu-module] .food-cal-cell{background:color-mix(in srgb,var(--fm-day-text) 8%,var(--ka-card-bg));border-color:color-mix(in srgb,var(--fm-day-text) 82%,var(--ka-border));}'
  +'[data-theme="dark"] [data-food-menu-module] .food-cal-date strong,[data-theme="dark"] [data-food-menu-module] .food-cal-date span{color:var(--fm-day-text)}'
  +'[data-theme="dark"] [data-food-menu-module] .food-add-btn{background:var(--ka-card-raised-bg);border-color:color-mix(in srgb,var(--fm-day-text) 82%,var(--ka-border));color:var(--fm-day-text)}'
@@ -174,28 +174,31 @@ function render(){
    d.items=rows.map(x=>x.value.trim()).filter(Boolean);
    foodMenuSave(foodMenuLoad());
   }));
-  out.onclick=e=>{
-   const add=e.target.closest?.('[data-fm-add]');
-   if(add&&out.contains(add)){
+  out.onclick=null;
+  out.querySelectorAll('[data-fm-add]').forEach(add=>{
+   add.addEventListener('click',e=>{
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation?.();
     const day=Number(add.dataset.fmAdd),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
     foodDayEnsure(d);d.items.push('');
     foodMenuSave(foodMenuLoad());
+    const focusIndex=d.items.length-1;
     render();
-    requestAnimationFrame(()=>out.querySelectorAll('[data-fm-item="'+day+'"]')[d.items.length-1]?.focus());
-    return;
-   }
-   const remove=e.target.closest?.('[data-fm-remove]');
-   if(remove&&out.contains(remove)){
+    requestAnimationFrame(()=>document.querySelector('#foodMenuContent [data-fm-item="'+day+'"]:nth-of-type('+(focusIndex+1)+')')?.focus());
+   },{passive:false});
+  });
+  out.querySelectorAll('[data-fm-remove]').forEach(remove=>{
+   remove.addEventListener('click',e=>{
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation?.();
     const [day,j]=String(remove.dataset.fmRemove).split(':').map(Number),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
     foodDayEnsure(d);if(Number.isInteger(j))d.items.splice(j,1);
     foodMenuSave(foodMenuLoad());
     render();
-   }
-  };
+   },{passive:false});
+  });
   out.querySelector('[data-fm-save]')?.addEventListener('click',()=>{foodMenuSave(foodMenuLoad());toast?.('Yemek menüsü kaydedildi.');});
  }else{
   out.onclick=null;
