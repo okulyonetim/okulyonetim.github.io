@@ -284,7 +284,7 @@ function render(){
      const d=foodMenuData(foodMenuCurrentMonth)[day]||{};
      foodDayEnsure(d);
      d.items.push('');
-     foodMenuSave(foodMenuLoad(),foodMenuCurrentMonth);
+     void foodMenuLocalSave();
      render();
      requestAnimationFrame(()=>out.querySelector('[data-fm-item="'+day+'"]')?.focus());
      return;
@@ -298,7 +298,7 @@ function render(){
      const d=foodMenuData(foodMenuCurrentMonth)[day]||{};
      foodDayEnsure(d);
      d.items.splice(j,1);
-     foodMenuSave(foodMenuLoad(),foodMenuCurrentMonth);
+     void foodMenuLocalSave();
      render();
      return;
     }
