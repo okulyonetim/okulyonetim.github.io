@@ -31,7 +31,7 @@ const MENU_GROUPS=[
  {key:'communication',label:'İletişim',modernLabel:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[['Mesajlar','💬','communication','messages'],['Haberler','📰','communication','news'],['Duyurular','📣','communication','announcements'],['Anketler','📋','communication','polls'],['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]},
  {key:'documents',label:'Belgeler',modernLabel:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Personel İşleri','👥','management','staff']]},
  {key:'transport',label:'Taşıma',modernLabel:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport','services'],['Harita','🗺️','tools','map'],['Servis Oturma','💺','transport','busSeats']]},
- {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'transport',items:[['Günlük Menü','☀️','transport','foodDaily'],['Haftalık Menü','📆','transport','foodWeekly'],['Aylık Menü','🗓️','transport','foodMonthly'],['Yemek Denetimi','📝','transport','food']]},
+ {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'food',items:[['Günlük Menü','☀️','food','daily'],['Haftalık Menü','📆','food','weekly'],['Aylık Menü','🗓️','food','monthly'],['Yemek Denetimi','📝','food','audit']]},
  {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Akademik Takvim','📅','academic','calendar']]},
  {key:'settings',label:'Okul ve Sistem',modernLabel:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Veriler','🗄️','settings','data']]},
  {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',hidden:true,items:[['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools','rubric'],['Proje Değerlendirme Ölçeği','📏','tools','project']]},
@@ -116,9 +116,14 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('İletişim sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  if(name==='transport'&&['services','busSeats','classSeats','foodDaily','foodWeekly','foodMonthly','food'].includes(page)){
+  if(name==='transport'&&['services','busSeats','classSeats'].includes(page)){
     const ok=global.TransportModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Taşıma sayfası açılamadı.');
+    if(title)setTitle(title);return true;
+  }
+  if(name==='food'&&['daily','weekly','monthly','audit'].includes(page)){
+    const ok=global.FoodMenuModule?.openPage?.(page,title);
+    if(ok===false)global.toast?.('Yemek sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
   if(name==='settings'&&['school','social','lesson-hours','holiday','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
