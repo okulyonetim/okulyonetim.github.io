@@ -91,7 +91,7 @@ function confirmServiceDelete(s){
 }
 async function deleteService(id){
  if(!canEditServices())return;
- const s=arr('servisler').find(x=>x.id===id);
+ const s=arr('servisler').find(x=>String(x?.id)===String(id));
  if(!s){toast?.('Servis kaydı bulunamadı.');return}
  const n=arr('veliler').filter(v=>v.servisId===id).length;
  if(n){toast?.(`Bu servise bağlı ${n} öğrenci var. Önce öğrencileri başka servise taşıyın.`);return}
