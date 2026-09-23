@@ -47,12 +47,12 @@ function foodMenuCalendarRows(key,data){
   for(let ci=0;ci<5;ci++){
    const day=weekdays[w*5+ci];
    if(!day){rows+='<div class="food-cal-cell food-cal-cell--empty"></div>';continue}
-   const d=new Date(y,m,day),iso=d.toISOString().slice(0,10),dow=d.getDay(),th=themeFor(dow),today=isToday(iso);
+   const d=new Date(y,m,day),iso=d.toISOString().slice(0,10),dow=d.getDay(),th=themeFor(dow),today=isToday(iso),themeClass='food-cal-cell--'+String(dow);
    const x=foodDayEnsure(data[day]||{}),items=foodDayItems(x);
-   rows+='<div class="food-cal-cell'+(today?' food-cal-cell--today':'')+'" style="background:'+th.bg+';border-color:'+th.border+'">'
-    +'<div class="food-cal-date"><strong style="color:'+th.text+'">'+String(day).padStart(2,'0')+'</strong>'
-    +'<span style="color:'+th.text+'">'+esc(d.toLocaleDateString('tr-TR',{weekday:'short'}))+'</span>'
-    +'<button class="food-add-btn" type="button" data-fm-add="'+day+'" style="color:'+th.text+';border-color:'+th.border+'" aria-label="Yemek ekle">+</button></div>'
+   rows+='<div class="food-cal-cell '+themeClass+(today?' food-cal-cell--today':'')+'" style="--fm-day-bg:'+th.bg+';--fm-day-border:'+th.border+';--fm-day-text:'+th.text+'">'
+    +'<div class="food-cal-date"><strong>'+String(day).padStart(2,'0')+'</strong>'
+    +'<span>'+esc(d.toLocaleDateString('tr-TR',{weekday:'short'}))+'</span>'
+    +'<button class="food-add-btn" type="button" data-fm-add="'+day+'" aria-label="Yemek ekle">+</button></div>
     +'<div class="food-cal-items">'+(items.length?items.map((v,j)=>'<div class="food-item-row"><input type="text" data-fm-item="'+day+'" value="'+esc(v)+'" placeholder="Yemek adı"><button class="food-remove-btn" type="button" data-fm-remove="'+day+':'+j+'" aria-label="Sil">×</button></div>').join(''):'<div class="food-cal-empty">Henüz yemek eklenmedi</div>')+'</div></div>';
   }
   rows+='</div>';
@@ -66,15 +66,19 @@ const FOOD_MENU_STYLE='<style>'
  +'.food-tab{padding:8px 14px;border-radius:999px;border:1px solid var(--ka-border,#e4e8e6);background:var(--ka-card,#fff);font-weight:600;font-size:13px;white-space:nowrap;cursor:pointer}'
  +'.food-tab.is-active{background:#0f6e56;border-color:#0f6e56;color:#fff}'
  +'.food-cal-week{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:8px;margin-bottom:8px}'
- +'.food-cal-cell{border:1.5px solid;border-radius:12px;padding:8px;min-height:130px}'
+ +'.food-cal-cell{border:1.5px solid var(--fm-day-border);border-radius:12px;padding:8px;min-height:130px;background:var(--fm-day-bg);color:var(--ka-text)}'
  +'.food-cal-cell--empty{background:transparent;border:none}'
- +'.food-cal-cell--today{box-shadow:0 0 0 2px #0f6e56 inset}'
+ +'.food-cal-cell--today{box-shadow:0 0 0 2px var(--ka-primary) inset}'
  +'.food-cal-date{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:4px;margin-bottom:6px}'
- +'.food-cal-date strong{font-size:16px}'
- +'.food-cal-date span{font-size:11px;font-weight:700;text-transform:uppercase}'
- +'[data-food-menu-module] select[data-fm-month]{min-width:155px;min-height:34px;appearance:auto;-webkit-appearance:auto;color:#111!important;background:#fff!important;color-scheme:light}'
- +'[data-food-menu-module] select[data-fm-month] option{color:#111!important;background:#fff!important}'
- +'.food-add-btn{width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid;font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative;z-index:2;pointer-events:auto}'
+ +'.food-cal-date strong{font-size:16px;color:var(--fm-day-text)}'
+ +'.food-cal-date span{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--fm-day-text)}'
+ +'[data-food-menu-module] select[data-fm-month]{flex:0 0 155px;width:155px;min-width:155px;min-height:44px;appearance:auto;-webkit-appearance:auto;color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important;border-color:var(--ka-input-border)!important;color-scheme:dark}'
+ +'[data-food-menu-module] select[data-fm-month] option{color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important}'
+ +'.food-add-btn{width:22px;height:22px;border-radius:50%;background:color-mix(in srgb,var(--ka-card-bg) 92%,transparent);border:1.5px solid var(--fm-day-border);color:var(--fm-day-text);font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative;z-index:2;pointer-events:auto}'
+ +'[data-theme="dark"] [data-food-menu-module] .food-cal-cell{background:color-mix(in srgb,var(--fm-day-text) 8%,var(--ka-card-bg));border-color:color-mix(in srgb,var(--fm-day-text) 82%,var(--ka-border));}'
+ +'[data-theme="dark"] [data-food-menu-module] .food-cal-date strong,[data-theme="dark"] [data-food-menu-module] .food-cal-date span{color:var(--fm-day-text)}'
+ +'[data-theme="dark"] [data-food-menu-module] .food-add-btn{background:var(--ka-card-raised-bg);border-color:color-mix(in srgb,var(--fm-day-text) 82%,var(--ka-border));color:var(--fm-day-text)}'
+ +'[data-theme="dark"] [data-food-menu-module] .food-cal-empty{color:var(--ka-text-muted)}'
  +'.food-cal-items{display:flex;flex-direction:column;gap:4px}'
  +'.food-cal-empty{font-size:12px;color:rgba(0,0,0,.55);padding:4px 0}'
  +'.food-item-row{display:grid;grid-template-columns:1fr auto;gap:4px}'
