@@ -76,7 +76,7 @@ function foodMenuSection(){
   +'<button type="button" class="kh-more" data-dash-route="food" data-dash-page="daily" data-dash-title="Günlük Menü">Tümü ›</button></div>'
   +'<button type="button" class="kh-food-card" data-dash-route="food" data-dash-page="daily" data-dash-title="Günlük Menü">'
   +'<span class="kh-food-date">'+esc(dateText)+'</span>'
-  +'<span class="kh-food-items">'+shown.map((v,i)=>'<span class="kh-food-item"><i aria-hidden="true">'+(['🍲','🍗','🍚','🥗'][i]||'🍽️')+'</i><b>'+esc(v)+'</b></span>').join('')
+  +'<span class="kh-food-items">'+shown.map(v=>'<span class="kh-food-item"><i aria-hidden="true"></i><b>'+esc(v)+'</b></span>').join('')
   +(extra>0?'<span class="kh-food-more">+'+extra+' yemek daha</span>':'')
   +'</span></button></section>';
 }
