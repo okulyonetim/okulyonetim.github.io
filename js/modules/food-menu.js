@@ -103,6 +103,61 @@ const FOOD_MENU_STYLE='<style>'
  +'@media (max-width:640px){.food-cal-week{grid-template-columns:1fr}}'
  +'</style>';
 
+/* --- A4 yatay çıktı: ekrandaki düzenleme kutularından bağımsız, sıkışık ve tek sayfaya sığan yazdırma düzeni --- */
+const FOOD_PRINT_STYLE='<style>'
+ +'.fm-print{font-family:Arial,Helvetica,sans-serif;color:#111;width:100%}'
+ +'.fm-p-title{text-align:center;line-height:1.15;margin:0 0 2.2mm}'
+ +'.fm-p-title b{display:block;font-size:10pt;letter-spacing:.02em}'
+ +'.fm-p-title span{display:block;font-size:12.5pt;font-weight:800;margin-top:.8mm;color:#17684f}'
+ +'.fm-p-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.6mm}'
+ +'.fm-p-h{background:var(--tx);color:#fff;text-align:center;font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1.1mm 0;border-radius:1.6mm}'
+ +'.fm-p-cell{box-sizing:border-box;min-height:16mm;padding:1.2mm 1.8mm 1.4mm;border:.3mm solid var(--bd);background:var(--bg);border-radius:1.8mm;break-inside:avoid;page-break-inside:avoid}'
+ +'.fm-p-cell--empty{background:transparent;border:0}'
+ +'.fm-p-day{font-size:9.5pt;font-weight:800;line-height:1;color:var(--tx);margin-bottom:.9mm;padding-bottom:.7mm;border-bottom:.25mm solid var(--bd)}'
+ +'.fm-p-item{display:flex;gap:1.2mm;font-size:var(--fs);line-height:1.2;padding:.3mm 0;margin:0;color:#111}'
+ +'.fm-p-item::before{content:"•";color:var(--tx);font-weight:700}'
+ +'</style>';
+
+/* Ayın Pzt–Cum hücreleri, sütunlar gerçek haftaya hizalı (boş günler boş hücre). */
+function foodMenuPrintWeeks(key){
+ const y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,last=new Date(y,m+1,0).getDate();
+ const firstDow=new Date(y,m,1).getDay(),weeks=[];
+ for(let start=1-((firstDow+6)%7);start<=last;start+=7){
+  const row=[];
+  for(let ci=0;ci<5;ci++){const day=start+ci;row.push(day>=1&&day<=last?day:0)}
+  if(row.some(Boolean))weeks.push(row);
+ }
+ return weeks;
+}
+/* Yazı boyutu: en kalabalık haftaya göre 9pt'ten 6pt'ye kadar, sayfaya sığan en büyük değer. */
+function foodMenuPrintFontSize(weeks,data){
+ const AVAIL_MM=170,ROW_OVERHEAD_MM=6.6,GAP_MM=1.6*(weeks.length-1);
+ for(let fs=9;fs>=6;fs-=.5){
+  const cpl=Math.max(8,Math.floor(48/(fs*0.19))),lineMm=fs*0.3528*1.2+0.6;
+  let total=GAP_MM;
+  weeks.forEach(row=>{
+   const lines=Math.max(0,...row.map(d=>d?foodDayItems(data[d]||{}).reduce((n,t)=>n+Math.max(1,Math.ceil(t.length/cpl)),0):0));
+   total+=Math.max(16,ROW_OVERHEAD_MM+lines*lineMm);
+  });
+  if(total<=AVAIL_MM)return fs;
+ }
+ return 6;
+}
+function foodMenuPrintBody(key,data){
+ const y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,weeks=foodMenuPrintWeeks(key),fs=foodMenuPrintFontSize(weeks,data);
+ const monthName=new Date(y,m,1).toLocaleDateString('tr-TR',{month:'long',year:'numeric'}).toLocaleUpperCase('tr-TR');
+ let html='<div class="fm-print" style="--fs:'+fs+'pt">'+FOOD_PRINT_STYLE
+  +'<div class="fm-p-title"><b>'+esc(foodSchool().okulAdi)+'</b><span>'+esc(monthName)+' YEMEK MENÜSÜ</span></div><div class="fm-p-grid">';
+ for(let dow=1;dow<=5;dow++){const th=themeFor(dow);html+='<div class="fm-p-h" style="--tx:'+th.text+'">'+th.name+'</div>'}
+ weeks.forEach(row=>row.forEach((day,ci)=>{
+  if(!day){html+='<div class="fm-p-cell fm-p-cell--empty"></div>';return}
+  const th=themeFor(ci+1),items=foodDayItems(data[day]||{});
+  html+='<div class="fm-p-cell" style="--bg:'+th.bg+';--bd:'+th.border+';--tx:'+th.text+'"><div class="fm-p-day">'+String(day).padStart(2,'0')+'</div>'
+   +items.map(v=>'<div class="fm-p-item"><span>'+esc(v)+'</span></div>').join('')+'</div>';
+ }));
+ return html+'</div></div>';
+}
+
 const TITLES={daily:'Günlük Menü',weekly:'Haftalık Menü',monthly:'Aylık Menü',audit:'Yemek Denetim Formu'};
 
 function dailyView(){
@@ -152,8 +207,7 @@ async function printMode(mode){
  try{
   if(mode==='daily'||mode==='weekly'||mode==='monthly'){
    const now=new Date(),key=foodMenuCurrentMonth||foodMenuMonthKey(localIso(now)),data=foodMenuData(key);
-   const rows=foodMenuCalendarRows(key,data,{forPrint:true});
-   const body='<div class="fm-print">'+FOOD_MENU_STYLE+'<h1>'+esc(foodSchool().okulAdi)+'</h1><h2>'+esc(new Date(Number(key.slice(0,4)),Number(key.slice(5,7))-1,1).toLocaleDateString('tr-TR',{month:'long',year:'numeric'}).toUpperCase())+' YEMEK MENÜSÜ</h2>'+rows+'</div>';
+   const body=foodMenuPrintBody(key,data);
    await global.ReportEngine.printReport('Yemek Menüsü',body,{yon:'yatay',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:8,compact:true,fileName:'Yemek_Menusu'});
   }else{
    await global.ReportEngine.printReport('Ücretsiz Öğle Yemeği Denetim ve Kontrol Formu',foodPrintBody(),{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:5,fontSize:8,compact:true,fileName:'Ucretsiz_Ogle_Yemegi_Denetim_Formu'});
@@ -270,6 +324,6 @@ function openPage(page,title=''){
 }
 function back(){return false}
 
-window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back};
+window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back,printBody:key=>foodMenuPrintBody(key,foodMenuData(key))};
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='food')mount()});
 })(window);
