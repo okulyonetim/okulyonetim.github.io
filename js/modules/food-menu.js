@@ -312,7 +312,17 @@ function render(){
 
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const u=global.AppStore?.subscribe?.('data.yemekMenuleri',()=>{if(foodSelfSaving)return;foodMenuHydrated=false;requestAnimationFrame(render)});if(u)unsubs.push(u)}
 
-async function prepareLocal(){if(!global.SyncEngine)return;global.SyncEngine.register?.('yemekMenuleri',global.COL?.yemekMenuleri);await global.SyncEngine.localHydrate?.(['yemekMenuleri']);global.SyncEngine.schedule?.(100)}
+async function prepareLocal(){
+ if(!global.SyncEngine)return;
+ global.SyncEngine.register?.('yemekMenuleri',global.COL?.yemekMenuleri);
+ await global.SyncEngine.localHydrate?.(['yemekMenuleri']);
+ if(global.navigator?.onLine&&typeof global.SyncEngine.sync==='function'){
+  try{await global.SyncEngine.sync(['yemekMenuleri'])}
+  catch(e){console.warn('[FoodMenu] Uzak menü senkronizasyonu başarısız:',e?.message||e);global.SyncEngine.schedule?.(100)}
+ }else{
+  global.SyncEngine.schedule?.(100);
+ }
+}
 
 async function mount(root=document.getElementById('v2ModuleRoot')){
  if(!root)return false;
