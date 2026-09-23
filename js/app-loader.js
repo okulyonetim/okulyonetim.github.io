@@ -27,7 +27,7 @@ define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/module
 define('management',['js/modules/report-engine.js','js/modules/management.js?v=882']);
 define('communication',['js/modules/communication.js?v=839','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=946']);
-define('food',['js/modules/report-engine.js','js/modules/food-menu.js']);
+define('food',['js/modules/report-engine.js','js/modules/food-menu.js?v=1030']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('reports',['js/modules/report-engine.js','js/modules/reports.js']);
 define('tools',['js/modules/tools.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js']);
