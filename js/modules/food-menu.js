@@ -24,8 +24,21 @@ const DAY_THEMES=[
 function themeFor(dow){return DAY_THEMES[dow]||DAY_THEMES[1]}
 
 function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-let foodMenuHydrated=false,foodSelfSaving=false,foodSaveSeq=0;
-function foodMenuLoad(){if(!foodMenuHydrated){const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[];const out={};rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});foodMenuCache=out;foodMenuHydrated=true}return foodMenuCache}
+let foodMenuHydrated=false,foodSelfSaving=false,foodSaveSeq=0,foodMenuStoreRef=null;
+function foodMenuLoad(){
+ const storeRows=global.AppStore?.data?.(FOOD_DATA_TYPE);
+ if(storeRows!==foodMenuStoreRef){
+  const rows=Array.isArray(storeRows)?storeRows:(global.DeviceData?.list?.(FOOD_DATA_TYPE)||[]),out={};
+  rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});
+  foodMenuCache=out;foodMenuStoreRef=storeRows;foodMenuHydrated=true;
+ }
+ if(!foodMenuHydrated){
+  const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[],out={};
+  rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});
+  foodMenuCache=out;foodMenuStoreRef=global.AppStore?.data?.(FOOD_DATA_TYPE)||null;foodMenuHydrated=true;
+ }
+ return foodMenuCache;
+}
 function foodMenuPersistRows(x){return Object.entries(x||{}).map(([id,menu])=>({id,menu:menu||{}}))}
 function foodMenuClean(key){
  const id=String(key||foodMenuCurrentMonth||'').trim(),menu=foodMenuLoad()[id]||{};
