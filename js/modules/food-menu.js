@@ -24,23 +24,42 @@ const DAY_THEMES=[
 function themeFor(dow){return DAY_THEMES[dow]||DAY_THEMES[1]}
 
 function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-let foodMenuHydrated=false,foodSelfSaving=false;
+let foodMenuHydrated=false,foodSelfSaving=false,foodSaveSeq=0;
 function foodMenuLoad(){if(!foodMenuHydrated){const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[];const out={};rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});foodMenuCache=out;foodMenuHydrated=true}return foodMenuCache}
-function foodMenuPersistRows(x){return Object.entries(x||{}).map(([id,menu])=>{const clean={};Object.entries(menu||{}).forEach(([day,v])=>{clean[day]={...(v||{}),items:foodDayItems(v)}});return{id,menu:clean}})}
-let foodSaveSeq=0;
-function foodMenuSave(x,key=foodMenuCurrentMonth){
+function foodMenuPersistRows(x){return Object.entries(x||{}).map(([id,menu])=>({id,menu:menu||{}}))}
+function foodMenuClean(key){
+ const id=String(key||foodMenuCurrentMonth||'').trim(),menu=foodMenuLoad()[id]||{};
+ return Object.fromEntries(Object.entries(menu).map(([day,v])=>[day,{...(v||{}),items:foodDayItems(v)}]));
+}
+async function foodMenuLocalSave(){
+ const rows=foodMenuPersistRows(foodMenuLoad());
+ if(!global.DeviceData?.persist)return false;
+ foodSelfSaving=true;
+ try{await global.DeviceData.persist(FOOD_DATA_TYPE,rows);return true}
+ catch(e){console.warn('[FoodMenu] Yerel kayıt başarısız:',e?.message||e);return false}
+ finally{foodSelfSaving=false}
+}
+async function foodMenuSave(x,key=foodMenuCurrentMonth){
  foodMenuCache=x;
  const id=String(key||foodMenuCurrentMonth||'').trim();
- if(!id||!global.DeviceData?.set||!global.COL?.yemekMenuleri)return;
- const menu=x?.[id]||{};
- const clean=Object.fromEntries(Object.entries(menu).map(([day,v])=>[day,{...(v||{}),items:foodDayItems(v)}]));
- const seq=++foodSaveSeq;
+ if(!id||!global.DeviceData?.set||!global.COL?.yemekMenuleri)return false;
+ const clean=foodMenuClean(id),seq=++foodSaveSeq;
  foodSelfSaving=true;
- Promise.resolve(global.DeviceData.set(FOOD_DATA_TYPE,global.COL.yemekMenuleri,id,{menu:clean},{merge:false}))
-  .catch(e=>console.warn('[FoodMenu] Firestore kayıt kuyruğa alınamadı:',e?.message||e))
-  .finally(()=>{if(seq===foodSaveSeq)foodSelfSaving=false});
+ try{
+  await global.DeviceData.set(FOOD_DATA_TYPE,global.COL.yemekMenuleri,id,{menu:clean},{merge:false});
+  return true;
+ }catch(e){
+  console.warn('[FoodMenu] Firestore kayıt kuyruğa alınamadı:',e?.message||e);
+  return false;
+ }finally{if(seq===foodSaveSeq)foodSelfSaving=false}
 }
-function foodMenuData(key){const all=foodMenuLoad();const isNew=!all[key];if(isNew)all[key]={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};if(isNew)foodMenuSave(all,key);return all[key]}
+function foodMenuData(key){
+ const all=foodMenuLoad(),id=String(key||'').trim(),isNew=!all[id];
+ if(!id)return {};
+ if(isNew)all[id]={};
+ for(let i=1;i<=31;i++)all[id][i]??={items:[]};
+ return all[id];
+}
 function foodDayItems(x){
  const old=[x?.corba,x?.ana,x?.yardimci,x?.tatli].map(v=>String(v||'').trim()).filter(Boolean);
  const items=Array.isArray(x?.items)?x.items.map(v=>String(v??'').trim()).filter(Boolean):[];
@@ -253,7 +272,7 @@ function render(){
     foodDayEnsure(d);
     const rows=[...out.querySelectorAll('[data-fm-item="'+day+'"]')];
     d.items=rows.map(x=>x.value);
-    foodMenuSave(foodMenuLoad(),foodMenuCurrentMonth);
+    void foodMenuLocalSave();
    });
    out.addEventListener('click',e=>{
     const add=e.target?.closest?.('[data-fm-add]');
