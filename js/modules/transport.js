@@ -93,12 +93,13 @@ async function deleteService(id){
  if(!canEditServices())return;
  const s=arr('servisler').find(x=>String(x?.id)===String(id));
  if(!s){toast?.('Servis kaydı bulunamadı.');return}
+ id=s.id;
  const n=arr('veliler').filter(v=>v.servisId===id).length;
  if(n){toast?.(`Bu servise bağlı ${n} öğrenci var. Önce öğrencileri başka servise taşıyın.`);return}
  if(!(await confirmServiceDelete(s)))return;
  try{
   await window.TasimaService.servisSil(id);
-  if(serviceDetailId===id){serviceDetailId='';}
+  if(String(serviceDetailId)===String(id)){serviceDetailId='';}
   toast?.('Servis silindi.');
   render();
  }catch(err){toast?.('Servis silinemedi: '+(err?.message||err))}
