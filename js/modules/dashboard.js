@@ -56,10 +56,21 @@ function hero(){const live=window.SchoolLiveStatus?.status?.()||{},w=weatherMode
 function announcementDateTime(v){if(!v)return'';try{const d=new Date(v);if(Number.isNaN(d.getTime()))return date(v);return d.toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(_){return date(v)}}
 function announcementSection(){if(!cardVisible('announcements'))return'';const d=arr('duyurular').filter(x=>x&&!x.arsivlendi&&x.aktif!==false&&!x.pasif).sort((a,b)=>String(b.tarih||b.eklenmeTarihi||'').localeCompare(String(a.tarih||a.eklenmeTarihi||'')))[0];if(!d)return'';const ok=!!d?.okuyanlar?.[user().uid||''],readerRows=Object.values(d.okuyanlar||{}).filter(Boolean).sort((a,b)=>String(b?.tarih||'').localeCompare(String(a?.tarih||''))),readers=readerRows.length,readerDetails=isAdmin()&&readerRows.length?`<details class="kh-home-readers"><summary>Okuyanları göster</summary>${readerRows.map(r=>`<div><strong>${esc(r?.ad||'Kullanıcı')}</strong><small>${esc(announcementDateTime(r?.tarih||''))}</small></div>`).join('')}</details>`:'',raw=String(d.icerik||d.aciklama||'').replace(/<[^>]*>/g,'').trim(),short=raw.length>180?raw.slice(0,180).trim()+'…':raw;return `<div class="kh-dynamic" data-home-section="announcements"><article class="kh-announcement ${ok?'is-read':'is-unread'}" data-duyuru-id="${esc(d.id||'')}"><div class="kh-announcement-accent"></div><div class="kh-announcement-head"><div class="kh-announcement-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3Z"/><path d="M11.6 16.5 13 21H7l-1.2-6"/></svg></div><div class="kh-announcement-title-wrap"><div class="kh-announcement-kicker">DUYURU</div><h3>${esc(d.baslik||d.ad||'Duyuru')}</h3><div class="kh-announcement-meta">${esc(d.olusturanAdi||'Yönetim')}${d.tarih?' · '+esc(announcementDateTime(d.tarih)):''}</div></div><span class="kh-announcement-status ${ok?'read':'new'}">${ok?'✓ OKUNDU':'YENİ'}</span></div>${short?`<button type="button" class="kh-announcement-body" data-dash-route="communication" data-dash-page="announcements" data-dash-title="Duyurular">${esc(short)}</button>`:''}<div class="kh-announcement-footer"><label class="kh-read-check ${ok?'checked':''}"><input type="checkbox" data-dash-announcement-read="${esc(d.id||'')}" ${ok?'checked disabled':''}><span class="kh-read-box" aria-hidden="true">✓</span><span>${ok?'Okundu olarak işaretlendi':'Okudum'}</span></label>${isAdmin()?`<button type="button" class="kh-read-count" data-dash-route="communication" data-dash-page="announcements" data-dash-title="Duyurular"><span>👁</span><b>${readers}</b> kişi okudu <span class="arrow">›</span></button>`:`<span class="kh-read-count is-static"><span>👁</span><b>${readers}</b> kişi okudu</span>`}</div>${readerDetails}</article></div>`}
 function foodMenuSection(){
- const key=foodMenuTodayKey(),row=foodMenuTodayRow(key),items=foodMenuTodayItems(row);
- if(!items.length)return '';
+ const key=foodMenuTodayKey(),live=window.SchoolLiveStatus?.status?.()||{},row=foodMenuTodayRow(key),items=foodMenuTodayItems(row);
  const dateText=new Date(key+'T00:00:00').toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
- const shown=items.slice(0,4),extra=items.length- shown.length;
+ if(live.mode==='holiday'){
+  const message=String(live.message||'Bugün okul tatil.').trim();
+  return '<section class="kh-section kh-food-section" data-home-section="food-menu">'
+   +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-food-title-icon" aria-hidden="true">🍽️</span><span>Günün Yemek Menüsü</span></div></div>'
+   +'<div class="kh-food-card kh-food-card--status"><span class="kh-food-date">'+esc(dateText)+'</span><span class="kh-food-status-icon" aria-hidden="true">🏖️</span><div><b>Bugün tatil</b><small>'+esc(message)+'</small></div></div></section>';
+ }
+ if(live.mode==='weekend'){
+  return '<section class="kh-section kh-food-section" data-home-section="food-menu">'
+   +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-food-title-icon" aria-hidden="true">🍽️</span><span>Günün Yemek Menüsü</span></div></div>'
+   +'<div class="kh-food-card kh-food-card--status"><span class="kh-food-date">'+esc(dateText)+'</span><span class="kh-food-status-icon" aria-hidden="true">🏠</span><div><b>Hafta sonu</b><small>Bugün yemek servisi bulunmuyor.</small></div></div></section>';
+ }
+ if(!items.length)return '';
+ const shown=items.slice(0,4),extra=items.length-shown.length;
  return '<section class="kh-section kh-food-section" data-home-section="food-menu">'
   +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-food-title-icon" aria-hidden="true">🍽️</span><span>Günün Yemek Menüsü</span></div>'
   +'<button type="button" class="kh-more" data-dash-route="food" data-dash-page="daily" data-dash-title="Günlük Menü">Tümü ›</button></div>'
