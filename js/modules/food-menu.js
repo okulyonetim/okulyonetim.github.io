@@ -52,7 +52,7 @@ function foodMenuCalendarRows(key,data){
    rows+='<div class="food-cal-cell '+themeClass+(today?' food-cal-cell--today':'')+'" style="--fm-day-bg:'+th.bg+';--fm-day-border:'+th.border+';--fm-day-text:'+th.text+'">'
     +'<div class="food-cal-date"><strong>'+String(day).padStart(2,'0')+'</strong>'
     +'<span>'+esc(d.toLocaleDateString('tr-TR',{weekday:'short'}))+'</span>'
-    +'<button class="food-add-btn" type="button" data-fm-add="'+day+'" aria-label="Yemek ekle">+</button></div>'
+    +'<button class="food-add-btn" type="button" data-fm-add="'+day+'" aria-label="Yemek ekle" onclick="return window.FoodMenuModule&&window.FoodMenuModule.addMonthlyItem&&window.FoodMenuModule.addMonthlyItem('+day+')" ontouchend="return window.FoodMenuModule&&window.FoodMenuModule.addMonthlyItem&&window.FoodMenuModule.addMonthlyItem('+day+')">+</button></div>'
     +'<div class="food-cal-items">'+(items.length?items.map((v,j)=>'<div class="food-item-row"><input type="text" data-fm-item="'+day+'" value="'+esc(v)+'" placeholder="Yemek adı"><button class="food-remove-btn" type="button" data-fm-remove="'+day+':'+j+'" aria-label="Sil">×</button></div>').join(''):'<div class="food-cal-empty">Henüz yemek eklenmedi</div>')+'</div></div>';
   }
   rows+='</div>';
@@ -257,8 +257,20 @@ function openPage(page,title=''){
  render();
  return true;
 }
+function addMonthlyItem(day){
+ if(active!=='monthly'||!mounted)return false;
+ const n=Number(day);
+ if(!Number.isInteger(n)||n<1||n>31)return false;
+ const d=foodMenuData(foodMenuCurrentMonth)[n]||{};
+ foodDayEnsure(d);
+ d.items.push('');
+ foodMenuSave(foodMenuLoad());
+ render();
+ requestAnimationFrame(()=>document.querySelector('#foodMenuContent [data-fm-item="'+n+'"]')?.focus());
+ return false;
+}
 function back(){return false}
 
-window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back};
+window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back,addMonthlyItem};
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='food')mount()});
 })(window);
