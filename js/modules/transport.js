@@ -75,7 +75,34 @@ function closeServiceDetail(){if(!serviceDetailId)return false;serviceDetailId='
 
 function serviceModal(s={}){return `<div class="ka-modal-backdrop" data-service-modal><form class="ka-modal" id="serviceForm"><div class="ka-modal__header"><h2>${s.id?'Servisi Düzenle':'Yeni Servis'}</h2></div><div class="ka-modal__body ka-stack"><input type="hidden" name="id" value="${esc(s.id||'')}"><label class="ka-field"><span class="ka-field__label">Servis Adı</span><input name="servisAdi" value="${esc(s.servisAdi||'')}" placeholder="Örn. Balıbey Servisi"></label><label class="ka-field"><span class="ka-field__label">Güzergâh *</span><input name="guzergah" required value="${esc(s.guzergah||'')}" placeholder="Örn. Aydınlar - Balıbey"></label><label class="ka-field"><span class="ka-field__label">Plaka *</span><input name="plaka" required value="${esc(s.plaka||'')}" placeholder="23 ABC 123"></label><div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Sürücü Adı Soyadı</span><input name="soforAdi" value="${esc(s.soforAdi||'')}"></label><label class="ka-field"><span class="ka-field__label">Şoför T.C. Kimlik No</span><input name="soforTc" inputmode="numeric" autocomplete="off" maxlength="11" minlength="11" pattern="[0-9]{11}" value="${esc(s.soforTc||'')}" placeholder="11 haneli T.C. kimlik numarası"></label></div><div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Sürücü Telefonu</span><input name="soforTelefon" inputmode="tel" value="${esc(s.soforTelefon||'')}"></label><label class="ka-field"><span class="ka-field__label">Araç Model Yılı</span><input name="modelYili" inputmode="numeric" maxlength="4" value="${esc(s.modelYili||'')}" placeholder="Örn. 2022"></label></div><div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Sürücü Belgesi Yılı</span><input name="ehliyetYili" inputmode="numeric" maxlength="4" value="${esc(s.ehliyetYili||'')}" placeholder="Örn. 2014"></label><label class="ka-field"><span class="ka-field__label">Sürücü Belgesi Sınıfı</span><input name="ehliyetSinifi" value="${esc(s.ehliyetSinifi||'')}" placeholder="Örn. B, D1, D"></label></div></div><div class="ka-modal__footer"><button class="ka-btn ka-btn--secondary" type="button" data-service-close>Vazgeç</button>${s.id?'<button class="ka-btn ka-btn--danger" type="button" data-service-modal-delete>🗑 Sil</button>':''}<button class="ka-btn" type="submit">Kaydet</button></div></form></div>`}
 function openServiceModal(item={}){if(!canEditServices())return;document.querySelector('[data-service-modal]')?.remove();document.body.insertAdjacentHTML('beforeend',serviceModal(item));const modal=document.querySelector('[data-service-modal]');modal.querySelector('[data-service-close]')?.addEventListener('click',()=>modal.remove());modal.querySelector('[data-service-modal-delete]')?.addEventListener('click',()=>{modal.remove();deleteService(String(item.id||''))});modal.addEventListener('click',e=>{if(e.target===modal)modal.remove()});modal.querySelector('#serviceForm')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.currentTarget),id=String(fd.get('id')||''),tc=String(fd.get('soforTc')||'').replace(/\D/g,'').slice(0,11),veri={servisAdi:String(fd.get('servisAdi')||'').trim(),guzergah:String(fd.get('guzergah')||'').trim(),plaka:String(fd.get('plaka')||'').trim().toLocaleUpperCase('tr'),soforAdi:String(fd.get('soforAdi')||'').trim(),soforTc:tc,soforTelefon:String(fd.get('soforTelefon')||'').trim(),modelYili:String(fd.get('modelYili')||'').trim(),ehliyetYili:String(fd.get('ehliyetYili')||'').trim(),ehliyetSinifi:String(fd.get('ehliyetSinifi')||'').trim().toLocaleUpperCase('tr')};if(!veri.guzergah||!veri.plaka)return toast?.('Güzergâh ve plaka zorunludur.');if(tc&&tc.length!==11)return toast?.('Şoför T.C. kimlik numarası 11 haneli olmalıdır.');try{await window.TasimaService.servisKaydet(id||null,veri);toast?.('Servis kaydedildi.');modal.remove();render()}catch(err){toast?.('Servis kaydedilemedi: '+(err?.message||err))}})}
-async function deleteService(id){if(!canEditServices())return;const s=arr('servisler').find(x=>x.id===id);if(!s)return;const n=arr('veliler').filter(v=>v.servisId===id).length;if(n){toast?.(`Bu servise bağlı ${n} öğrenci var. Önce öğrencileri başka servise taşıyın.`);return}if(!confirm(`“${serviceName(s)}” silinsin mi?`))return;try{await window.TasimaService.servisSil(id);toast?.('Servis silindi.');render()}catch(err){toast?.('Servis silinemedi: '+(err?.message||err))}}
+function confirmServiceDelete(s){
+ return new Promise(resolve=>{
+  document.getElementById('transportDeleteConfirm')?.remove();
+  const ov=document.createElement('div');
+  ov.id='transportDeleteConfirm';
+  ov.className='ka-modal-backdrop';
+  ov.innerHTML=`<section class="ka-modal" role="dialog" aria-modal="true" aria-labelledby="transportDeleteTitle"><div class="ka-modal__header"><div><strong id="transportDeleteTitle">Servisi Sil</strong><div class="ka-muted">Bu işlem geri alınamaz.</div></div><button class="ka-icon-button" type="button" data-delete-cancel aria-label="Kapat">×</button></div><div class="ka-modal__body"><p><strong>“${esc(serviceName(s))}”</strong> servisini silmek istediğinizden emin misiniz?</p></div><div class="ka-modal__footer"><button class="ka-btn ka-btn--secondary" type="button" data-delete-cancel>Vazgeç</button><button class="ka-btn ka-btn--danger" type="button" data-delete-confirm>Servisi Sil</button></div></section>`;
+  document.body.appendChild(ov);
+  const finish=value=>{ov.remove();resolve(value)};
+  ov.querySelectorAll('[data-delete-cancel]').forEach(b=>b.onclick=()=>finish(false));
+  ov.querySelector('[data-delete-confirm]')?.addEventListener('click',()=>finish(true));
+  ov.addEventListener('click',e=>{if(e.target===ov)finish(false)});
+ });
+}
+async function deleteService(id){
+ if(!canEditServices())return;
+ const s=arr('servisler').find(x=>x.id===id);
+ if(!s){toast?.('Servis kaydı bulunamadı.');return}
+ const n=arr('veliler').filter(v=>v.servisId===id).length;
+ if(n){toast?.(`Bu servise bağlı ${n} öğrenci var. Önce öğrencileri başka servise taşıyın.`);return}
+ if(!(await confirmServiceDelete(s)))return;
+ try{
+  await window.TasimaService.servisSil(id);
+  if(serviceDetailId===id){serviceDetailId='';}
+  toast?.('Servis silindi.');
+  render();
+ }catch(err){toast?.('Servis silinemedi: '+(err?.message||err))}
+}
 function detailStudentRow(v,presidents){
  const isPresident=presidents.has(v.id),tel=phone(v);
  return `<article class="ka-card"><div class="ka-card__body ka-row ka-row--between" style="gap:12px"><div class="ka-grow"><strong>${isPresident?'👑 ':''}${esc(v.ogrenciAdi||'Öğrenci')}</strong>${v.ogrenciNo?` <span class="ka-muted">No: ${esc(v.ogrenciNo)}</span>`:''}<div class="ka-muted">${esc(className(v.sinifId))}${v.cinsiyet?` · ${esc(v.cinsiyet)}`:''}${v.veliAdi?` · Veli: ${esc(v.veliAdi)}`:''}</div>${tel?`<div class="ka-muted">📞 <a href="tel:${esc(tel)}">${esc(tel)}</a></div>`:''}</div>${canEdit()?`<button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-transport-remove-student="${esc(v.id)}">Çıkar</button>`:''}</div></article>`;
