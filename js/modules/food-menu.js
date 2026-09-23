@@ -160,7 +160,7 @@ function render(){
  if(active==='monthly'){
   const monthSelect=out.querySelector('[data-fm-month]');
   if(monthSelect){
-   monthSelect.value=initial;
+   monthSelect.value=foodMenuCurrentMonth||foodMenuMonthKey(new Date().toISOString().slice(0,10));
    monthSelect.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
   }
   out.querySelectorAll('[data-fm-item]').forEach(inp=>inp.addEventListener('input',()=>{
