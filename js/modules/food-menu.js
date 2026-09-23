@@ -199,12 +199,12 @@ function render(){
     addFoodItem(add,e);
    }
   };
-  out.addEventListener('pointerdown',handleAddPointer,true);
-  out.addEventListener('click',e=>{
+  out.onpointerdown=handleAddPointer;
+  out.onclick=e=>{
    const add=e.target?.closest?.('[data-fm-add]');
    if(!add||!out.contains(add))return;
    if(e.pointerType==='mouse'||e.detail===0||!('PointerEvent' in window))addFoodItem(add,e);
-  },true);
+  };
   out.querySelectorAll('[data-fm-remove]').forEach(remove=>{
    remove.onclick=e=>{
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation?.();
