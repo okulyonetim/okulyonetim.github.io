@@ -72,7 +72,9 @@ const FOOD_MENU_STYLE='<style>'
  +'.food-cal-date{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:4px;margin-bottom:6px}'
  +'.food-cal-date strong{font-size:16px}'
  +'.food-cal-date span{font-size:11px;font-weight:700;text-transform:uppercase}'
- +'.food-add-btn{width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid;font-weight:700;line-height:1;cursor:pointer}'
+ +'[data-food-menu-module] select[data-fm-month]{min-width:155px;min-height:34px;appearance:auto;-webkit-appearance:auto;color:#111!important;background:#fff!important;color-scheme:light}'
+ +'[data-food-menu-module] select[data-fm-month] option{color:#111!important;background:#fff!important}'
+ +'.food-add-btn{width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid;font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative;z-index:2;pointer-events:auto}'
  +'.food-cal-items{display:flex;flex-direction:column;gap:4px}'
  +'.food-cal-empty{font-size:12px;color:rgba(0,0,0,.55);padding:4px 0}'
  +'.food-item-row{display:grid;grid-template-columns:1fr auto;gap:4px}'
@@ -156,7 +158,11 @@ function render(){
  const h=document.querySelector('[data-food-title]');
  if(h)h.textContent='🍽️ '+(TITLES[active]||'Yemek');
  if(active==='monthly'){
-  out.querySelector('[data-fm-month]')?.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
+  const monthSelect=out.querySelector('[data-fm-month]');
+  if(monthSelect){
+   monthSelect.value=initial;
+   monthSelect.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
+  }
   out.querySelectorAll('[data-fm-item]').forEach(inp=>inp.addEventListener('input',()=>{
    const day=Number(inp.dataset.fmItem),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
    foodDayEnsure(d);
@@ -164,18 +170,31 @@ function render(){
    d.items=rows.map(x=>x.value.trim()).filter(Boolean);
    foodMenuSave(foodMenuLoad());
   }));
-  out.querySelectorAll('[data-fm-add]').forEach(btn=>btn.addEventListener('click',()=>{
-   const day=Number(btn.dataset.fmAdd),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
-   foodDayEnsure(d);d.items.push('');
-   foodMenuSave(foodMenuLoad());render();
-   requestAnimationFrame(()=>out.querySelectorAll('[data-fm-item="'+day+'"]')[d.items.length-1]?.focus());
-  }));
-  out.querySelectorAll('[data-fm-remove]').forEach(btn=>btn.addEventListener('click',()=>{
-   const [day,j]=String(btn.dataset.fmRemove).split(':').map(Number),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
-   foodDayEnsure(d);if(Number.isInteger(j))d.items.splice(j,1);
-   foodMenuSave(foodMenuLoad());render();
-  }));
+  out.onclick=e=>{
+   const add=e.target.closest?.('[data-fm-add]');
+   if(add&&out.contains(add)){
+    e.preventDefault();
+    e.stopPropagation();
+    const day=Number(add.dataset.fmAdd),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
+    foodDayEnsure(d);d.items.push('');
+    foodMenuSave(foodMenuLoad());
+    render();
+    requestAnimationFrame(()=>out.querySelectorAll('[data-fm-item="'+day+'"]')[d.items.length-1]?.focus());
+    return;
+   }
+   const remove=e.target.closest?.('[data-fm-remove]');
+   if(remove&&out.contains(remove)){
+    e.preventDefault();
+    e.stopPropagation();
+    const [day,j]=String(remove.dataset.fmRemove).split(':').map(Number),d=foodMenuData(foodMenuCurrentMonth)[day]||{};
+    foodDayEnsure(d);if(Number.isInteger(j))d.items.splice(j,1);
+    foodMenuSave(foodMenuLoad());
+    render();
+   }
+  };
   out.querySelector('[data-fm-save]')?.addEventListener('click',()=>{foodMenuSave(foodMenuLoad());toast?.('Yemek menüsü kaydedildi.');});
+ }else{
+  out.onclick=null;
  }
  if(active==='daily'){
   out.querySelector('[data-fm-day]')?.addEventListener('change',e=>{if(e.target.value){foodMenuViewDate=e.target.value;foodMenuCurrentMonth=foodMenuMonthKey(e.target.value);render()}});
