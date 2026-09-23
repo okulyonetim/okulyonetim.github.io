@@ -9,8 +9,9 @@ const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 function toast(msg){global.toast?.(msg)}
 
 const FOOD_DATA_TYPE='yemekMenuleri';
+function localIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 let active='monthly',mounted=false,unsubs=[],pendingPage=null;
-let foodMenuCurrentMonth=foodMenuMonthKey(new Date().toISOString().slice(0,10)),foodMenuViewDate=new Date().toISOString().slice(0,10),foodMenuCache={};
+let foodMenuCurrentMonth=foodMenuMonthKey(localIso(new Date())),foodMenuViewDate=localIso(new Date()),foodMenuCache={};
 
 const DAY_THEMES=[
  null,
@@ -23,20 +24,28 @@ const DAY_THEMES=[
 function themeFor(dow){return DAY_THEMES[dow]||DAY_THEMES[1]}
 
 function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-let foodMenuHydrated=false;
+let foodMenuHydrated=false,foodSelfSaving=false;
 function foodMenuLoad(){if(!foodMenuHydrated){const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[];const out={};rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});foodMenuCache=out;foodMenuHydrated=true}return foodMenuCache}
-function foodMenuSave(x){foodMenuCache=x;const rows=Object.entries(x||{}).map(([id,menu])=>({id,menu}));if(global.DeviceData?.persist)global.DeviceData.persist(FOOD_DATA_TYPE,rows).catch(()=>{})}
+function foodMenuPersistRows(x){return Object.entries(x||{}).map(([id,menu])=>{const clean={};Object.entries(menu||{}).forEach(([day,v])=>{clean[day]={...(v||{}),items:foodDayItems(v)}});return{id,menu:clean}})}
+function foodMenuSave(x){foodMenuCache=x;if(!global.DeviceData?.persist)return;foodSelfSaving=true;try{global.DeviceData.persist(FOOD_DATA_TYPE,foodMenuPersistRows(x)).catch(()=>{})}finally{foodSelfSaving=false}}
 function foodMenuData(key){const all=foodMenuLoad();const isNew=!all[key];if(isNew)all[key]={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};if(isNew)foodMenuSave(all);return all[key]}
 function foodDayItems(x){
  const old=[x?.corba,x?.ana,x?.yardimci,x?.tatli].map(v=>String(v||'').trim()).filter(Boolean);
  const items=Array.isArray(x?.items)?x.items.map(v=>String(v??'').trim()).filter(Boolean):[];
  return items.length?items:old;
 }
-function foodDayEnsure(x){if(!x||typeof x!=='object')x={};x.items=foodDayItems(x);return x}
+function foodDayRaw(x){
+ const items=Array.isArray(x?.items)?x.items.map(v=>String(v??'')):[];
+ if(items.some(v=>v.trim()))return items;
+ const old=foodDayItems({corba:x?.corba,ana:x?.ana,yardimci:x?.yardimci,tatli:x?.tatli});
+ return old.length?old:items;
+}
+function foodDayEnsure(x){if(!x||typeof x!=='object')x={};x.items=foodDayRaw(x);return x}
 function foodMenuMonthOptions(selected){const now=new Date(),out=[];for(let n=-2;n<=10;n++){const d=new Date(now.getFullYear(),now.getMonth()+n,1),k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');out.push('<option value="'+k+'" '+(k===selected?'selected':'')+'>'+d.toLocaleDateString('tr-TR',{month:'long',year:'numeric'})+'</option>')}return out.join('')}
-function isToday(iso){return iso===new Date().toISOString().slice(0,10)}
+function isToday(iso){return iso===localIso(new Date())}
 
-function foodMenuCalendarRows(key,data){
+function foodMenuCalendarRows(key,data,opts){
+ opts=opts||{};
  const y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,last=new Date(y,m+1,0).getDate();
  const weekdays=[];
  for(let day=1;day<=last;day++){const dow=new Date(y,m,day).getDay();if(dow>=1&&dow<=5)weekdays.push(day)}
@@ -47,8 +56,8 @@ function foodMenuCalendarRows(key,data){
   for(let ci=0;ci<5;ci++){
    const day=weekdays[w*5+ci];
    if(!day){rows+='<div class="food-cal-cell food-cal-cell--empty"></div>';continue}
-   const d=new Date(y,m,day),iso=d.toISOString().slice(0,10),dow=d.getDay(),th=themeFor(dow),today=isToday(iso),themeClass='food-cal-cell--'+String(dow);
-   const x=foodDayEnsure(data[day]||{}),items=foodDayItems(x);
+   const d=new Date(y,m,day),iso=localIso(d),dow=d.getDay(),th=themeFor(dow),today=isToday(iso),themeClass='food-cal-cell--'+String(dow);
+   const x=foodDayEnsure(data[day]||{}),items=opts.forPrint?foodDayItems(x):foodDayRaw(x);
    rows+='<div class="food-cal-cell '+themeClass+(today?' food-cal-cell--today':'')+'" style="--fm-day-bg:'+th.bg+';--fm-day-border:'+th.border+';--fm-day-text:'+th.text+'">'
     +'<div class="food-cal-date"><strong>'+String(day).padStart(2,'0')+'</strong>'
     +'<span>'+esc(d.toLocaleDateString('tr-TR',{weekday:'short'}))+'</span>'
@@ -90,13 +99,14 @@ const FOOD_MENU_STYLE='<style>'
  +'.food-day-empty{padding:12px 0;color:var(--ka-muted,#6b756f)}'
  +'.food-week-item{padding:6px 8px;border-radius:8px;margin-bottom:4px;font-size:13px}'
  +'.food-week-day small{display:block;margin-top:4px;font-weight:400;opacity:.7}'
+ +'.food-head>p{flex:1 1 100%;margin:0}.food-head .ka-row{flex-wrap:wrap}'
  +'@media (max-width:640px){.food-cal-week{grid-template-columns:1fr}}'
  +'</style>';
 
 const TITLES={daily:'Günlük Menü',weekly:'Haftalık Menü',monthly:'Aylık Menü',audit:'Yemek Denetim Formu'};
 
 function dailyView(){
- const now=new Date(),viewDate=foodMenuViewDate||now.toISOString().slice(0,10);
+ const now=new Date(),viewDate=foodMenuViewDate||localIso(now);
  const vd=new Date(viewDate+'T00:00:00'),key=foodMenuMonthKey(viewDate),day=vd.getDate();
  const x=foodDayEnsure(foodMenuData(key)[day]||{}),items=foodDayItems(x);
  const menu=items.length?items.map((v,i)=>'<div class="food-day-item"><span class="food-day-no">'+(i+1)+'.</span><span>'+esc(v)+'</span></div>').join(''):'<div class="food-day-empty">Bu gün için aylık menüye yemek girilmemiş.</div>';
@@ -104,13 +114,13 @@ function dailyView(){
 }
 
 function weeklyView(){
- const now=new Date(),viewDate=foodMenuViewDate||now.toISOString().slice(0,10),base=new Date(viewDate+'T00:00:00'),dow=base.getDay()||7,mon=new Date(base);
+ const now=new Date(),viewDate=foodMenuViewDate||localIso(now),base=new Date(viewDate+'T00:00:00'),dow=base.getDay()||7,mon=new Date(base);
  mon.setDate(base.getDate()-dow+1);
  const weekEnd=new Date(mon);weekEnd.setDate(mon.getDate()+4);
  const weekTitle=mon.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'})+' – '+weekEnd.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'});
  const rows=Array.from({length:5},(_,i)=>{
   const d=new Date(mon);d.setDate(mon.getDate()+i);
-  const iso=d.toISOString().slice(0,10),k=foodMenuMonthKey(iso),th=themeFor(d.getDay()),items=foodDayItems(foodMenuData(k)[d.getDate()]||{});
+  const iso=localIso(d),k=foodMenuMonthKey(iso),th=themeFor(d.getDay()),items=foodDayItems(foodMenuData(k)[d.getDate()]||{});
   const menu=items.length?items.map((v,j)=>'<div class="food-week-item" style="background:'+th.bg+';color:'+th.text+'">'+(j+1)+'. '+esc(v)+'</div>').join(''):'<span class="ka-muted">Menü girilmemiş</span>';
   return '<tr><th style="color:'+th.text+'"><div class="food-week-day">'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'<small>'+esc(d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}))+'</small></div></th><td>'+menu+'</td></tr>';
  }).join('');
@@ -118,15 +128,15 @@ function weeklyView(){
 }
 
 function monthlyView(){
- const now=new Date(),initial=foodMenuCurrentMonth||foodMenuMonthKey(now.toISOString().slice(0,10)),data=foodMenuData(initial);
+ const now=new Date(),initial=foodMenuCurrentMonth||foodMenuMonthKey(localIso(now)),data=foodMenuData(initial);
  const rows=foodMenuCalendarRows(initial,data);
- return '<div class="ka-row ka-row--between ka-wrap"><p class="ka-muted">Pazartesi–Cuma. Her güne istediğiniz kadar yemek satırı ekleyebilirsiniz.</p><div class="ka-row"><select data-fm-month>'+foodMenuMonthOptions(initial)+'</select><button class="ka-btn" type="button" data-fm-save>💾 Kaydet</button><button class="ka-btn" type="button" data-fm-print="monthly">🖨 A4</button></div></div>'+rows;
+ return '<div class="ka-row ka-row--between ka-wrap food-head"><p class="ka-muted">Pazartesi–Cuma. Her güne istediğiniz kadar yemek satırı ekleyebilirsiniz.</p><div class="ka-row"><select data-fm-month>'+foodMenuMonthOptions(initial)+'</select><button class="ka-btn" type="button" data-fm-save>💾 Kaydet</button><button class="ka-btn" type="button" data-fm-print="monthly">🖨 A4</button></div></div>'+rows;
 }
 
 /* --- Yemek Denetim Formu --- */
 function foodInspectors(){const ts=arr('ogretmenler').filter(x=>x?.id).slice().sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr'));const school=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{};const mudur=school.mudurId?ts.find(x=>x.id===school.mudurId):null;const yard=ts.find(x=>/müdür yardımc|mudur yardimc/i.test(String(x.unvan||x.gorev||x.gorevi||'')));return{ts,mudur:mudur?.id||'',yard:yard?.id||''}}
 const FOOD_CHECKS=['Yemekler paslanmaz çelik-krom ve ısı yalıtımlı kaplarda taze ve sıcak bir şekilde okula getirildi mi? (Teknik Şartname)','Yemekler, yemek saatinden önce okulda hazır oldu mu? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Yemekler "Aylık Yemek Listesine" uygun olarak getirildi mi? (Teknik Şartname)','Yemeklerin miktarı ve bozuk olup olmadığı durumu "Muayene Kabul Komisyonu" tarafından teslim alınırken ve öğrencilere servis yapılmadan önce kontrol edildi mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Getirilen yemekler imza karşılığı sevk irsaliyesi veya tutanakla okula teslim edildi mi? (Teknik Şartname)','Ambalajlı gıdaların kullanım tarihleri uygun mu? (Teknik Şartname)','Gelen yemeklerden ilgili mevzuatta belirtilen süreye uygun olarak günlük numune alındı mı? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Yemekler öğrencilere zamanında ve sıcak bir şekilde servis edildi mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 13/3-d, 13/4-d, 20/3, Teknik Şartname)','Yemekler, sıhhi ve disposable (tek kullanımlık) malzemelerden oluşan setlerle servis edildi mi? (Teknik Şartname)','Yemekte görevli personel dağıtım esnasında takılması gereken ekipmanları kullanarak yemek servisini gerçekleştirdi mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 13/4-e, Teknik Şartname)','Yemekte görevli personel yemek dağıtımı yaparken hijyen şartlarına uygun bir şekilde hareket etti mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Yemek sonrası; yemek yenilen bölümün temizliği yapıldı mı? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)'];
-let foodState={date:new Date().toISOString().slice(0,10),count:String(arr('veliler').length||0),teacher:''};
+let foodState={date:localIso(new Date()),count:String(arr('veliler').length||0),teacher:''};
 function foodSchool(){const x=arr('okulBilgileri').find(r=>r.id==='ayarlar')||arr('okulBilgileri')[0]||global.okulBilgileriAyari||{};return{il:x.il||x.ili||x.sehir||x.ilAdi||'',ilce:x.ilce||x.ilceAdi||x.mudurluk||'',okulAdi:x.okulAdi||x.ad||'KORUK İLK-ORTAOKULU'}}
 function foodInspectorName(id){const x=arr('ogretmenler').find(t=>String(t.id)===String(id));return x?`${x.ad||''} ${x.soyad||''}`.replace(/\s+/g,' ').trim():''}
 function foodRows(){return FOOD_CHECKS.map((q,i)=>`<tr><td class="food-q" style="width:60%!important">${i+1}. ${esc(q)}</td><td class="food-blank" style="width:10%!important"></td><td class="food-blank" style="width:10%!important"></td><td class="food-note-cell" style="width:20%!important"></td></tr>`).join('')}
@@ -141,8 +151,8 @@ async function printMode(mode){
  if(!global.ReportEngine?.printReport){toast?.('Yazdırma bileşeni yüklenemedi.');return}
  try{
   if(mode==='daily'||mode==='weekly'||mode==='monthly'){
-   const now=new Date(),key=foodMenuCurrentMonth||foodMenuMonthKey(now.toISOString().slice(0,10)),data=foodMenuData(key);
-   const rows=foodMenuCalendarRows(key,data);
+   const now=new Date(),key=foodMenuCurrentMonth||foodMenuMonthKey(localIso(now)),data=foodMenuData(key);
+   const rows=foodMenuCalendarRows(key,data,{forPrint:true});
    const body='<div class="fm-print">'+FOOD_MENU_STYLE+'<h1>'+esc(foodSchool().okulAdi)+'</h1><h2>'+esc(new Date(Number(key.slice(0,4)),Number(key.slice(5,7))-1,1).toLocaleDateString('tr-TR',{month:'long',year:'numeric'}).toUpperCase())+' YEMEK MENÜSÜ</h2>'+rows+'</div>';
    await global.ReportEngine.printReport('Yemek Menüsü',body,{yon:'yatay',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:8,compact:true,fileName:'Yemek_Menusu'});
   }else{
@@ -164,7 +174,7 @@ function render(){
  if(active==='monthly'){
   const monthSelect=out.querySelector('[data-fm-month]');
   if(monthSelect){
-   monthSelect.value=foodMenuCurrentMonth||foodMenuMonthKey(new Date().toISOString().slice(0,10));
+   monthSelect.value=foodMenuCurrentMonth||foodMenuMonthKey(localIso(new Date()));
    monthSelect.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
   }
   if(!out.__foodMonthlyEventsBound){
@@ -176,7 +186,7 @@ function render(){
     if(!Number.isInteger(day)||day<1||day>31)return;
     foodDayEnsure(d);
     const rows=[...out.querySelectorAll('[data-fm-item="'+day+'"]')];
-    d.items=rows.map(x=>x.value.trim()).filter(Boolean);
+    d.items=rows.map(x=>x.value);
     foodMenuSave(foodMenuLoad());
    });
    out.addEventListener('click',e=>{
@@ -234,7 +244,7 @@ function render(){
  global.PermissionService?.apply?.(document.getElementById('v2ModuleRoot')||document);
 }
 
-function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const u=global.AppStore?.subscribe?.('data.yemekMenuleri',()=>{foodMenuHydrated=false;requestAnimationFrame(render)});if(u)unsubs.push(u)}
+function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const u=global.AppStore?.subscribe?.('data.yemekMenuleri',()=>{if(foodSelfSaving)return;foodMenuHydrated=false;requestAnimationFrame(render)});if(u)unsubs.push(u)}
 
 async function prepareLocal(){if(!global.SyncEngine)return;global.SyncEngine.register?.('yemekMenuleri',global.COL?.yemekMenuleri);await global.SyncEngine.localHydrate?.(['yemekMenuleri']);global.SyncEngine.schedule?.(100)}
 
