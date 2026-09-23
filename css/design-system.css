@@ -40,9 +40,9 @@
 .kh-food-card{width:100%;border:1px solid var(--ka-border);border-radius:14px;background:var(--ka-card-bg);color:var(--ka-text);padding:9px 11px;text-align:left;display:block;cursor:pointer;box-shadow:var(--ka-shadow-sm);transition:border-color var(--ka-transition-fast),transform var(--ka-transition-fast)}
 .kh-food-card:active{transform:translateY(1px)}
 .kh-food-date{display:block;color:var(--ka-text-muted);font-size:11px;font-weight:700;margin-bottom:5px}
-.kh-food-items{display:flex;flex-wrap:wrap;align-items:center;gap:4px 9px}
-.kh-food-item{min-width:0;display:inline-flex;align-items:center;gap:4px;font-size:12.5px;line-height:1.35}
-.kh-food-item i{font-style:normal;font-size:13px}
+.kh-food-items{display:flex;flex-wrap:wrap;align-items:center;gap:7px 14px}
+.kh-food-item{min-width:0;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;line-height:1.35}
+.kh-food-item i{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:var(--ka-primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary) 12%,transparent)}
 .kh-food-item b{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
 .kh-food-more{font-size:11px;color:var(--ka-primary);font-weight:800;white-space:nowrap}.kh-food-card--status{display:flex;align-items:center;gap:9px;cursor:default}
 .kh-food-card--status .kh-food-date{margin:0}
