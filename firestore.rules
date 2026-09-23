@@ -533,6 +533,11 @@ service cloud.firestore {
       allow write: if adminMi();
     }
 
+    match /oy_yemekMenuleri/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if moduluDuzenleyebilir('yemek');
+    }
+
     match /oy_kontrolListeleri/{id} {
       allow read: if girisYapmis();
       allow write: if adminMi();
