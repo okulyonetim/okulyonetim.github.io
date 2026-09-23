@@ -23,7 +23,8 @@ const DAY_THEMES=[
 function themeFor(dow){return DAY_THEMES[dow]||DAY_THEMES[1]}
 
 function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-function foodMenuLoad(){const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[];if(rows.length){const out={};rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});foodMenuCache=out;return out}return foodMenuCache}
+let foodMenuHydrated=false;
+function foodMenuLoad(){if(!foodMenuHydrated){const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[];const out={};rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});foodMenuCache=out;foodMenuHydrated=true}return foodMenuCache}
 function foodMenuSave(x){foodMenuCache=x;const rows=Object.entries(x||{}).map(([id,menu])=>({id,menu}));if(global.DeviceData?.persist)global.DeviceData.persist(FOOD_DATA_TYPE,rows).catch(()=>{})}
 function foodMenuData(key){const all=foodMenuLoad();all[key]??={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};foodMenuSave(all);return all[key]}
 function foodDayItems(x){
@@ -60,6 +61,7 @@ function foodMenuCalendarRows(key,data){
 }
 
 const FOOD_MENU_STYLE='<style>'
+ +'[data-food-menu-module] select[data-fm-month]{background:#fff!important;color:#111!important;border:1px solid rgba(0,0,0,.2);border-radius:8px;padding:6px 10px;font-size:13px}'
  +'.food-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}'
  +'.food-tab{padding:8px 14px;border-radius:999px;border:1px solid var(--ka-border,#e4e8e6);background:var(--ka-card,#fff);font-weight:600;font-size:13px;white-space:nowrap;cursor:pointer}'
  +'.food-tab.is-active{background:#0f6e56;border-color:#0f6e56;color:#fff}'
@@ -191,7 +193,7 @@ function render(){
  global.PermissionService?.apply?.(document.getElementById('v2ModuleRoot')||document);
 }
 
-function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const u=global.AppStore?.subscribe?.('data.yemekMenuleri',()=>requestAnimationFrame(render));if(u)unsubs.push(u)}
+function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const u=global.AppStore?.subscribe?.('data.yemekMenuleri',()=>{foodMenuHydrated=false;requestAnimationFrame(render)});if(u)unsubs.push(u)}
 
 async function prepareLocal(){if(!global.SyncEngine)return;global.SyncEngine.register?.('yemekMenuleri',global.COL?.yemekMenuleri);await global.SyncEngine.localHydrate?.(['yemekMenuleri']);global.SyncEngine.schedule?.(100)}
 
