@@ -26,7 +26,7 @@ function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getF
 let foodMenuHydrated=false;
 function foodMenuLoad(){if(!foodMenuHydrated){const rows=global.DeviceData?.list?.(FOOD_DATA_TYPE)||[];const out={};rows.forEach(r=>{if(r?.id)out[r.id]=r.menu||{}});foodMenuCache=out;foodMenuHydrated=true}return foodMenuCache}
 function foodMenuSave(x){foodMenuCache=x;const rows=Object.entries(x||{}).map(([id,menu])=>({id,menu}));if(global.DeviceData?.persist)global.DeviceData.persist(FOOD_DATA_TYPE,rows).catch(()=>{})}
-function foodMenuData(key){const all=foodMenuLoad();all[key]??={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};foodMenuSave(all);return all[key]}
+function foodMenuData(key){const all=foodMenuLoad();const isNew=!all[key];if(isNew)all[key]={};for(let i=1;i<=31;i++)all[key][i]??={items:[]};if(isNew)foodMenuSave(all);return all[key]}
 function foodDayItems(x){
  const old=[x?.corba,x?.ana,x?.yardimci,x?.tatli].map(v=>String(v||'').trim()).filter(Boolean);
  const items=Array.isArray(x?.items)?x.items.map(v=>String(v??'').trim()).filter(Boolean):[];
