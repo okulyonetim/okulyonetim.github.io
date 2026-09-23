@@ -72,9 +72,9 @@ const FOOD_MENU_STYLE='<style>'
  +'.food-cal-date span{font-size:11px;font-weight:700;text-transform:uppercase}'
  +'.food-add-btn{width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid;font-weight:700;line-height:1;cursor:pointer}'
  +'.food-cal-items{display:flex;flex-direction:column;gap:4px}'
- +'.food-cal-empty{font-size:12px;opacity:.6;padding:4px 0}'
+ +'.food-cal-empty{font-size:12px;color:rgba(0,0,0,.55);padding:4px 0}'
  +'.food-item-row{display:grid;grid-template-columns:1fr auto;gap:4px}'
- +'.food-item-row input{width:100%;min-width:0;box-sizing:border-box;padding:5px 7px;border-radius:8px;border:1px solid rgba(0,0,0,.15);font-size:12px;background:rgba(255,255,255,.7)}'
+ +'.food-item-row input{width:100%;min-width:0;box-sizing:border-box;padding:5px 7px;border-radius:8px;border:1px solid rgba(0,0,0,.2);font-size:12px;background:#fff!important;color:#111!important}'
  +'.food-remove-btn{border:none;background:transparent;font-size:16px;cursor:pointer;opacity:.6}'
  +'.food-day-item{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--ka-border,#e4e8e6);font-size:15px}'
  +'.food-day-item:last-child{border-bottom:0}'
@@ -85,10 +85,7 @@ const FOOD_MENU_STYLE='<style>'
  +'@media (max-width:640px){.food-cal-week{grid-template-columns:1fr}}'
  +'</style>';
 
-function tabsHtml(){
- const tabs=[['daily','☀️ Günlük'],['weekly','📆 Haftalık'],['monthly','🗓️ Aylık'],['audit','📋 Denetim Formu']];
- return '<div class="food-tabs">'+tabs.map(([k,l])=>'<button type="button" class="food-tab'+(active===k?' is-active':'')+'" data-food-tab="'+k+'">'+l+'</button>').join('')+'</div>';
-}
+const TITLES={daily:'Günlük Menü',weekly:'Haftalık Menü',monthly:'Aylık Menü',audit:'Yemek Denetim Formu'};
 
 function dailyView(){
  const now=new Date(),viewDate=foodMenuViewDate||now.toISOString().slice(0,10);
@@ -146,7 +143,7 @@ async function printMode(mode){
  }catch(e){toast?.('A4 çıktı hazırlanamadı: '+(e?.message||e))}
 }
 
-function shell(){return '<section class="ka-stack" data-food-menu-module><div class="ka-row ka-row--between"><div><h2>🍽️ Yemek</h2><p class="ka-muted">Günlük, haftalık, aylık menü ve denetim formu tek ekrandan yönetilir.</p></div></div>'+tabsHtml()+FOOD_MENU_STYLE+'<div id="foodMenuContent" class="ka-stack"></div></section>'}
+function shell(){return '<section class="ka-stack" data-food-menu-module><div class="ka-row ka-row--between"><div><h2 data-food-title>🍽️ Yemek</h2><p class="ka-muted">Günlük, haftalık, aylık menü ve denetim formu.</p></div></div>'+FOOD_MENU_STYLE+'<div id="foodMenuContent" class="ka-stack"></div></section>'}
 
 function render(){
  if(!mounted)return;
@@ -154,7 +151,8 @@ function render(){
  if(!out)return;
  const html=active==='daily'?dailyView():active==='weekly'?weeklyView():active==='monthly'?monthlyView():auditView();
  out.innerHTML=html;
- document.querySelectorAll('[data-food-tab]').forEach(b=>b.classList.toggle('is-active',b.dataset.foodTab===active));
+ const h=document.querySelector('[data-food-title]');
+ if(h)h.textContent='🍽️ '+(TITLES[active]||'Yemek');
  if(active==='monthly'){
   out.querySelector('[data-fm-month]')?.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
   out.querySelectorAll('[data-fm-item]').forEach(inp=>inp.addEventListener('input',()=>{
@@ -193,10 +191,6 @@ function render(){
  global.PermissionService?.apply?.(document.getElementById('v2ModuleRoot')||document);
 }
 
-function bindTabs(root){
- root.querySelectorAll('[data-food-tab]').forEach(b=>b.addEventListener('click',()=>{active=b.dataset.foodTab;render()}));
-}
-
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const u=global.AppStore?.subscribe?.('data.yemekMenuleri',()=>requestAnimationFrame(render));if(u)unsubs.push(u)}
 
 async function prepareLocal(){if(!global.SyncEngine)return;global.SyncEngine.register?.('yemekMenuleri',global.COL?.yemekMenuleri);await global.SyncEngine.localHydrate?.(['yemekMenuleri']);global.SyncEngine.schedule?.(100)}
@@ -205,7 +199,6 @@ async function mount(root=document.getElementById('v2ModuleRoot')){
  if(!root)return false;
  mounted=true;
  root.innerHTML=shell();
- bindTabs(root);
  subscribe();
  await prepareLocal();
  if(pendingPage){active=pendingPage.page;pendingPage=null}
