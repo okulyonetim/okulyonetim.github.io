@@ -305,8 +305,15 @@ async function prepareFoodData(){
  try{
   window.SyncEngine.register?.('yemekMenuleri',window.COL.yemekMenuleri);
   await window.SyncEngine.localHydrate?.(['yemekMenuleri']);
+  if(navigator.onLine&&typeof window.SyncEngine.sync==='function'){
+   await window.SyncEngine.sync(['yemekMenuleri']);
+  }else{
+   window.SyncEngine.schedule?.(120);
+  }
+ }catch(e){
+  console.warn('[Dashboard/Food]',e?.message||e);
   window.SyncEngine.schedule?.(120);
- }catch(e){console.warn('[Dashboard/Food]',e?.message||e)}
+ }
 }
 async function prepareReminderData(){if(!window.SyncEngine||!window.COL)return;const types=[];for(const[type,colKey]of Object.entries(REMINDER_DEFS)){const col=COL[colKey];if(!col)continue;SyncEngine.register(type,col);types.push(type)}if(COL.toplantiCizelgesi){SyncEngine.register('toplantiCizelgesi',COL.toplantiCizelgesi);types.push('toplantiCizelgesi')}if(types.length){await SyncEngine.localHydrate([...new Set(types)]);SyncEngine.schedule(120)}}
 function render(){if(!mounted)return;const root=document.querySelector('[data-dashboard-module]');if(!root)return;const parent=root.parentElement||document.getElementById('v2ModuleRoot'),signature=cards().map(x=>x.key).join('|'),role=isAdmin()?'admin':'teacher';if(root.dataset.cardSignature!==signature||root.dataset.dashboardRole!==role){parent.innerHTML=shell();bindPresentation(parent);stabilizeNewsTicker(parent);refreshHeroLive();lastLiveRenderKey=liveRenderKey(window.SchoolLiveStatus?.status?.()||{});return}const scrollY=window.scrollY;parent.innerHTML=shell();bindPresentation(parent);stabilizeNewsTicker(parent);refreshHeroLive();lastLiveRenderKey=liveRenderKey(window.SchoolLiveStatus?.status?.()||{});if(scrollY>0&&!scrolling)requestAnimationFrame(()=>{if(Math.abs(window.scrollY-scrollY)>2)window.scrollTo(0,scrollY)})}
