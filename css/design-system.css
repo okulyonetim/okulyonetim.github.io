@@ -3061,3 +3061,89 @@ button.ka-primary,
 }
 [data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special-copy strong{color:#f5f5f5!important}
 [data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special-copy span{color:#aaa!important}
+
+/* ===== TEACHER DIRECTORY DARK THEME — FINAL OVERRIDE ===== */
+[data-theme="dark"] .ka-teacher-directory{
+  color:#f5f5f5;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-intro,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-summary>div,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-filters>*,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-card,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-list .ka-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#2b2b2b!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.28)!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-intro small{
+  color:#ffc400!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-intro h1,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-intro p,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-summary b,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-summary span,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-card h3{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-summary span,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-meta,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-branch{
+  color:#a9a9a9!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-avatar{
+  background:#3a300c!important;
+  color:#ffc400!important;
+  border-color:#5a4b13!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-arrow{
+  background:#1c1c1c!important;
+  color:#ffc400!important;
+  border-color:#343434!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-chips .ka-badge{
+  background:#1d1d1d!important;
+  color:#d6d6d6!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-chips .ka-badge--success{
+  background:#12372b!important;
+  color:#55d9a2!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-chips .ka-badge--warning{
+  background:#3a290f!important;
+  color:#ffc56b!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-meta{
+  border-color:#2b2b2b!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-meta a{
+  color:#bdbdbd!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-actions .ka-btn--secondary{
+  background:#1c1c1c!important;
+  color:#f5f5f5!important;
+  border-color:#343434!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-actions .ka-btn--secondary:first-child{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-top-actions .ka-btn:not(.ka-btn--secondary){
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-filters input,
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-filters select{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-filters input::placeholder{
+  color:#888!important;
+}
+[data-theme="dark"] .ka-teacher-directory .ka-teacher-filters select option{
+  background:#151515;
+  color:#f5f5f5;
+}
