@@ -4925,3 +4925,223 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
   color:#111 !important;
   border-color:#ffc400 !important;
 }
+
+
+
+/* ===== PEOPLE DETAIL / DARK WEBVIEW FINAL POLISH v979 =====
+   Öğretmen ve öğrenci ayrıntı ekranlarında eski siyah metin/teal araç çubuğu
+   sızıntılarını kapatır. Yalnız sunum katmanına dokunur; veri/işleyiş değişmez. */
+
+/* People sayfa başlıkları: tema niteliğinin html/body üzerinde olmasından bağımsız. */
+html[data-theme="dark"] .ka-people-page-head,
+body[data-theme="dark"] .ka-people-page-head,
+html[data-theme="dark"] .ka-people-page-head h1,
+body[data-theme="dark"] .ka-people-page-head h1,
+html[data-theme="dark"] .ka-people-page-head p,
+body[data-theme="dark"] .ka-people-page-head p,
+html[data-theme="dark"] .ka-people-page-head .ka-people-kicker,
+body[data-theme="dark"] .ka-people-page-head .ka-people-kicker,
+html[data-theme="dark"] .ka-directory-title,
+body[data-theme="dark"] .ka-directory-title,
+html[data-theme="dark"] .ka-directory-title h2,
+body[data-theme="dark"] .ka-directory-title h2,
+html[data-theme="dark"] .ka-directory-title span,
+body[data-theme="dark"] .ka-directory-title span {
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-people-page-head p,
+body[data-theme="dark"] .ka-people-page-head p,
+html[data-theme="dark"] .ka-directory-title span,
+body[data-theme="dark"] .ka-directory-title span {
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] .ka-people-page-head .ka-people-kicker,
+body[data-theme="dark"] .ka-people-page-head .ka-people-kicker {
+  color:var(--ka-primary)!important;
+}
+
+/* Öğretmen detay üst alanı. */
+.ka-teacher-profile-toolbar{
+  padding:8px 0 2px;
+}
+.ka-teacher-profile-toolbar .ka-btn{
+  min-height:42px;
+  border-radius:14px;
+}
+.ka-teacher-profile-hero{
+  background:linear-gradient(135deg,#ffc400 0%,#b48700 68%,#745600 100%)!important;
+  color:#111!important;
+  border:1px solid rgba(255,196,0,.55);
+  box-shadow:0 12px 28px rgba(120,90,0,.16);
+}
+.ka-teacher-profile-hero h1,
+.ka-teacher-profile-hero p,
+.ka-teacher-profile-hero .ka-badge,
+.ka-teacher-profile-avatar,
+.ka-teacher-profile-book{
+  color:#111!important;
+}
+.ka-teacher-profile-hero p{color:rgba(17,17,17,.72)!important}
+.ka-teacher-profile-hero .ka-badge{
+  background:rgba(255,255,255,.28)!important;
+  border-color:rgba(17,17,17,.12)!important;
+}
+.ka-teacher-profile-avatar,
+.ka-teacher-profile-book{
+  background:rgba(255,255,255,.20)!important;
+  border-color:rgba(17,17,17,.18)!important;
+}
+
+/* Öğretmen detay kartları daha belirgin, tek tip yüzey. */
+.ka-teacher-detail-section,
+.ka-teacher-doc-group{
+  border:1px solid var(--ka-border)!important;
+  background:var(--ka-card-bg)!important;
+  border-radius:20px!important;
+}
+.ka-teacher-detail-section>.ka-card__header,
+.ka-teacher-doc-group-head{
+  background:var(--ka-muted-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-teacher-detail-section,
+body[data-theme="dark"] .ka-teacher-detail-section,
+html[data-theme="dark"] .ka-teacher-doc-group,
+body[data-theme="dark"] .ka-teacher-doc-group{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] .ka-teacher-detail-section h3,
+body[data-theme="dark"] .ka-teacher-detail-section h3,
+html[data-theme="dark"] .ka-teacher-detail-row b,
+body[data-theme="dark"] .ka-teacher-detail-row b,
+html[data-theme="dark"] .ka-teacher-info b,
+body[data-theme="dark"] .ka-teacher-info b,
+html[data-theme="dark"] .ka-teacher-doc-group-head h3,
+body[data-theme="dark"] .ka-teacher-doc-group-head h3{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-teacher-detail-row span,
+body[data-theme="dark"] .ka-teacher-detail-row span,
+html[data-theme="dark"] .ka-teacher-info span,
+body[data-theme="dark"] .ka-teacher-info span{
+  color:#a8a8a8!important;
+}
+
+/* Öğrenci detay: başlık, hero ve bölümler. */
+.ka-student-detail{
+  gap:14px;
+}
+.ka-student-detail .ka-detail-topbar{
+  min-height:52px;
+  padding:0 2px;
+}
+.ka-student-detail .ka-detail-topbar h2{
+  color:var(--ka-text)!important;
+  font-size:18px;
+  font-weight:900;
+}
+.ka-student-detail .ka-detail-topbar .ka-icon-button{
+  color:var(--ka-text)!important;
+  background:transparent!important;
+  border-color:transparent!important;
+}
+.ka-student-hero{
+  background:linear-gradient(135deg,#ffc400 0%,#b48700 68%,#745600 100%)!important;
+  color:#111!important;
+  border:1px solid rgba(255,196,0,.55);
+}
+.ka-student-hero h1,
+.ka-student-hero p,
+.ka-student-hero .ka-badge,
+.ka-student-hero-avatar,
+.ka-student-hero-icon{
+  color:#111!important;
+}
+.ka-student-hero p{color:rgba(17,17,17,.72)!important}
+.ka-student-hero .ka-badge{
+  background:rgba(255,255,255,.28)!important;
+  color:#111!important;
+}
+.ka-student-hero-avatar,
+.ka-student-hero-icon{
+  background:rgba(255,255,255,.20)!important;
+  border-color:rgba(17,17,17,.16)!important;
+}
+.ka-student-quick{
+  gap:9px!important;
+}
+.ka-student-quick>a,
+.ka-student-quick>button,
+.ka-student-quick>span{
+  border:1px solid var(--ka-border)!important;
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-radius:18px!important;
+}
+.ka-student-detail .ka-profile-section,
+.ka-student-detail .ka-card,
+.ka-student-detail .ka-teacher-detail-section{
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-detail-topbar h2,
+body[data-theme="dark"] .ka-student-detail .ka-detail-topbar h2{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-detail-topbar .ka-icon-button,
+body[data-theme="dark"] .ka-student-detail .ka-detail-topbar .ka-icon-button{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-card,
+body[data-theme="dark"] .ka-student-detail .ka-card,
+html[data-theme="dark"] .ka-student-detail .ka-profile-section,
+body[data-theme="dark"] .ka-student-detail .ka-profile-section{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-info-row>b,
+body[data-theme="dark"] .ka-student-detail .ka-info-row>b,
+html[data-theme="dark"] .ka-student-detail .ka-directory-title h2,
+body[data-theme="dark"] .ka-student-detail .ka-directory-title h2{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-info-row>span,
+body[data-theme="dark"] .ka-student-detail .ka-info-row>span,
+html[data-theme="dark"] .ka-student-detail .ka-directory-title span,
+body[data-theme="dark"] .ka-student-detail .ka-directory-title span{
+  color:#a8a8a8!important;
+}
+
+/* Rapor önizleme / profil araç çubuğu: teal yüzey tamamen kaldırıldı. */
+#kaReportPreview .ka-report-preview__toolbar,
+#kaReportPreview .dv3h,
+.ka-report-preview .ka-report-preview__toolbar,
+.ka-report-preview .dv3h,
+[data-profile-toolbar],
+[data-ka-profile-toolbar]{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+#kaReportPreview .ka-report-preview__toolbar .dv3btn,
+#kaReportPreview .dv3h .dv3btn,
+.ka-report-preview .ka-report-preview__toolbar .dv3btn,
+.ka-report-preview .dv3h .dv3btn,
+[data-profile-toolbar] button,
+[data-ka-profile-toolbar] button{
+  background:#1c1c1c!important;
+  color:#f5f5f5!important;
+  border-color:#3a3a3a!important;
+}
+#kaReportPreview .ka-report-preview__toolbar .dv3btn.primary,
+#kaReportPreview .dv3h .dv3btn.primary,
+.ka-report-preview .ka-report-preview__toolbar .dv3btn.primary,
+.ka-report-preview .dv3h .dv3btn.primary,
+[data-profile-toolbar] .primary,
+[data-ka-profile-toolbar] .primary{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
