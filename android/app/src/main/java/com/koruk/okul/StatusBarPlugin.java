@@ -17,7 +17,7 @@ import com.getcapacitor.annotation.CapacitorPlugin;
  *
  * JS çağrımı:
  *   window.Capacitor.Plugins.StatusBarPlugin.temaUygula({
- *     renk: '#1B3A3A',
+ *     renk: '#111111',
  *     acikMi: false   // false = açık ikonlar (koyu arka plan), true = koyu ikonlar
  *   });
  */
@@ -26,7 +26,7 @@ public class StatusBarPlugin extends Plugin {
 
     @PluginMethod
     public void temaUygula(PluginCall call) {
-        final String renk = call.getString("renk", "#0A7A7A");
+        final String renk = call.getString("renk", "#FFC400");
         final boolean acikMi = Boolean.TRUE.equals(call.getBoolean("acikMi", false));
 
         getActivity().runOnUiThread(new Runnable() {
@@ -79,12 +79,12 @@ public class StatusBarPlugin extends Plugin {
 
     private int parseColor(String hex) {
         try {
-            if (hex == null || hex.isEmpty()) return Color.parseColor("#0A7A7A");
+            if (hex == null || hex.isEmpty()) return Color.parseColor("#FFC400");
             String temiz = hex.trim();
             if (!temiz.startsWith("#")) temiz = "#" + temiz;
             return Color.parseColor(temiz);
         } catch (Exception e) {
-            return Color.parseColor("#0A7A7A");
+            return Color.parseColor("#FFC400");
         }
     }
 }
