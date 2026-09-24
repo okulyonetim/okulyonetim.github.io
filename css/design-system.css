@@ -2879,3 +2879,24 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 .ka-menu-card strong{color:#fff}
 [data-theme="dark"] .ka-menu-card{box-shadow:0 10px 24px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06)}
 [data-theme="dark"] .ka-menu-card__icon{background:rgba(255,255,255,.12)}
+
+/* Theme contrast pass — menu cards, profile and home surfaces */
+.ka-menu-card,.ka-menu-card strong,.ka-menu-card .ka-menu-card__icon{color:#fff}
+.ka-menu-card__count,.ka-menu-card .count,.ka-menu-card [data-count]{color:#fff!important}
+.ka-menu-card__icon{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22)}
+.ka-menu-card::after{opacity:.72}
+[data-theme="dark"] .ka-menu-card{filter:saturate(.9) brightness(.92)}
+[data-theme="dark"] .ka-menu-card strong{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.28)}
+[data-theme="dark"] .ka-menu-card__icon{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.18)}
+.ka-bottom-item.active:not(.ka-bottom-menu) .ka-bottom-icon{background:var(--ka-nav-active-bg);color:var(--ka-nav-active-text)}
+.ka-bottom-item.active:not(.ka-bottom-menu){box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ka-primary) 10%,transparent)}
+.ka-menu-card{position:relative;overflow:hidden}
+.ka-menu-card::before{content:"";position:absolute;inset:auto -14% -38% auto;width:58%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.10);pointer-events:none}
+.ka-menu-card>*{position:relative;z-index:1}
+[data-theme="dark"] .ka-menu-card--green{background:linear-gradient(145deg,#276e59,#174b3d)}
+[data-theme="dark"] .ka-menu-card--amber{background:linear-gradient(145deg,#8b7015,#59490d)}
+[data-theme="dark"] .ka-menu-card--cyan{background:linear-gradient(145deg,#2c7180,#1e505c)}
+[data-theme="dark"] .ka-menu-card--violet,.ka-menu-card--purple{background:linear-gradient(145deg,#604b86,#40315e)}
+[data-theme="dark"] .ka-menu-card--red{background:linear-gradient(145deg,#854843,#5b302d)}
+[data-theme="dark"] .ka-menu-card--orange{background:linear-gradient(145deg,#966126,#654117)}
+[data-theme="dark"] .ka-menu-card--slate{background:linear-gradient(145deg,#59656e,#3d464d)}
