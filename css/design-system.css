@@ -4446,3 +4446,161 @@ html[data-theme="dark"] .ka-duty-grid thead th{
   background:linear-gradient(180deg,#5c4800,#2d250b)!important;
   color:#fff!important;
 }
+
+
+/* ===== DARK THEME — FINAL MODULE CONTAINMENT v977 ===== */
+/* Koyu tema Android/WebView'da eski modül CSS'lerinin siyah metin ve beyaz
+   yüzey sızdırmasını son katmanda kapatır. Rapor kağıdı gibi özel çıktı
+   yüzeylerine dokunulmaz. */
+html[data-theme="dark"] .ka-app-header,
+html[data-theme="dark"] .ka-app-header .ka-brand-home,
+html[data-theme="dark"] .ka-app-header .ka-icon-button,
+html[data-theme="dark"] .ka-app-header .ka-header-notification,
+html[data-theme="dark"] .ka-app-header .ka-header-profile{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-app-header .ka-icon-button svg,
+html[data-theme="dark"] .ka-app-header .ka-header-notification svg,
+html[data-theme="dark"] .ka-app-header .ka-shell-back svg{
+  color:#f5f5f5!important;
+  stroke:#f5f5f5!important;
+  opacity:1!important;
+}
+
+/* Modül başlığı: h1/h2/p ve yardımcı metinler */
+html[data-theme="dark"] #v2ModuleRoot,
+html[data-theme="dark"] #v2ModuleRoot h1,
+html[data-theme="dark"] #v2ModuleRoot h2,
+html[data-theme="dark"] #v2ModuleRoot h3,
+html[data-theme="dark"] #v2ModuleRoot h4,
+html[data-theme="dark"] #v2ModuleRoot h5,
+html[data-theme="dark"] #v2ModuleRoot h6,
+html[data-theme="dark"] #v2ModuleRoot strong,
+html[data-theme="dark"] #v2ModuleRoot b{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot > section > .ka-row > .ka-grow > p,
+html[data-theme="dark"] #v2ModuleRoot > section > .ka-row > .ka-grow .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-page-head p,
+html[data-theme="dark"] #v2ModuleRoot .ka-people-page-head p,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page > p,
+html[data-theme="dark"] #v2ModuleRoot .ka-muted{
+  color:#a8a8a8!important;
+}
+
+/* Genel modül kartları */
+html[data-theme="dark"] #v2ModuleRoot .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .card,
+html[data-theme="dark"] #v2ModuleRoot .ka-list-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-panel,
+html[data-theme="dark"] #v2ModuleRoot .ka-surface,
+html[data-theme="dark"] #v2ModuleRoot .ka-section-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-card__header,
+html[data-theme="dark"] #v2ModuleRoot .ka-card__body,
+html[data-theme="dark"] #v2ModuleRoot .ka-card__footer{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+
+/* Form alanları ve ikincil butonlar */
+html[data-theme="dark"] #v2ModuleRoot input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] #v2ModuleRoot select,
+html[data-theme="dark"] #v2ModuleRoot textarea{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border-color:#333!important;
+  -webkit-text-fill-color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot input::placeholder,
+html[data-theme="dark"] #v2ModuleRoot textarea::placeholder{
+  color:#777!important;
+  -webkit-text-fill-color:#777!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-btn--secondary{
+  background:#1b1b1b!important;
+  color:#f5f5f5!important;
+  border-color:#3a3a3a!important;
+}
+
+/* Profil/öğretmen detayındaki eski beyaz kart katmanları */
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid > a,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid > button,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid > .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section > .ka-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row{
+  border-color:#303030!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row span,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid small,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid span{
+  color:#a8a8a8!important;
+}
+
+/* Öğrenci/sınıf/yoklama/ders programı özel yüzeyleri */
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-filters,
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-datebar,
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-summary article,
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-student,
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-absence,
+html[data-theme="dark"] #v2ModuleRoot .ka-class-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-row,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-mobile-day,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-mobile-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-student *,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-row *,
+html[data-theme="dark"] #v2ModuleRoot .ka-class-card *{
+  color:inherit;
+}
+
+/* Menü katmanı başlığı ve ikonları */
+html[data-theme="dark"] #kaMenuLayer .ka-menu-head,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-head h2,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-head .ka-icon-button{
+  color:#f5f5f5!important;
+  opacity:1!important;
+}
+html[data-theme="dark"] #kaMenuLayer .ka-menu-head .ka-icon-button svg{
+  color:#f5f5f5!important;
+  stroke:#f5f5f5!important;
+}
+
+/* Rapor önizleme araç çubuğu: yeşil/teal eski yüzeyi kaldır. */
+html[data-theme="dark"] .dv3h,
+html[data-theme="dark"] .ka-report-preview__toolbar,
+html[data-theme="dark"] [data-profile-toolbar],
+html[data-theme="dark"] [data-ka-profile-toolbar]{
+  background:#0b0b0b!important;
+  color:#f5f5f5!important;
+  border-color:#2d2d2d!important;
+}
+html[data-theme="dark"] .dv3h .dv3btn,
+html[data-theme="dark"] .ka-report-preview__toolbar .dv3btn{
+  background:#1a1a1a!important;
+  color:#f5f5f5!important;
+  border-color:#3a3a3a!important;
+}
+html[data-theme="dark"] .dv3h .dv3btn.primary,
+html[data-theme="dark"] .ka-report-preview__toolbar .dv3btn.primary{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
