@@ -2991,3 +2991,73 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 [data-theme="dark"] [data-people-classic] .ogm-card,[data-theme="dark"] [data-people-classic] .ogm-stat{background:#141414!important;border-color:#242424!important}
 [data-theme="dark"] [data-people-classic] .ogm-search input,[data-theme="dark"] [data-people-classic] .ogm-filter{background:#151515!important;color:#f5f5f5!important;border-color:#2b2b2b!important}
 [data-theme="dark"] [data-people-classic] .ogm-add{background:linear-gradient(135deg,#ffc400,#e5b000)!important;color:#111!important}
+
+/* ===== LIGHT THEME CONTRAST PASS ===== */
+:root{
+  --ka-primary:#ffc400;
+  --ka-primary-hover:#e5b000;
+  --ka-primary-soft:#fff4c2;
+  --ka-button-text:#111111;
+  --ka-text:#151515;
+  --ka-text-muted:#5f6266;
+  --ka-card-bg:#ffffff;
+  --ka-surface:#f6f6f4;
+  --ka-muted-bg:#f0f0ed;
+  --ka-border:#d7d7d2;
+  --ka-shadow-sm:0 4px 14px rgba(0,0,0,.07);
+  --ka-warning:#b76500;
+}
+[data-theme="dark"]{
+  --ka-primary:#ffc400;
+  --ka-primary-hover:#ffd34d;
+  --ka-primary-soft:#3a300c;
+  --ka-button-text:#111111;
+  --ka-text:#f5f5f5;
+  --ka-text-muted:#a6a6a6;
+  --ka-card-bg:#141414;
+  --ka-surface:#080808;
+  --ka-muted-bg:#1c1c1c;
+  --ka-border:#242424;
+}
+.ka-btn:not(.ka-btn--secondary),
+button.ka-primary,
+.ka-primary-btn{
+  background:var(--ka-primary)!important;
+  color:#111!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-btn--secondary{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+.ka-teacher-directory .ka-teacher-intro small,
+.ka-teacher-directory .ka-teacher-branch{
+  color:#111!important;
+}
+.ka-teacher-directory .ka-teacher-avatar{
+  background:var(--ka-primary-soft)!important;
+  color:#111!important;
+}
+.ka-teacher-directory .ka-teacher-card .ka-teacher-actions .ka-btn--secondary:first-child{
+  background:var(--ka-primary)!important;
+  color:#111!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-teacher-directory .ka-teacher-chips .ka-badge--success{
+  color:#087a4f!important;
+  background:#d9f5e8!important;
+}
+.ka-teacher-directory .ka-teacher-chips .ka-badge--warning{
+  color:#7a4800!important;
+  background:#fff0c7!important;
+}
+#khBell.kh-bell-modern .kh-bell-special-copy strong,
+#khBell.kh-bell-modern .kh-bell-special-copy span{
+  color:#111!important;
+}
+#khBell.kh-bell-modern .kh-bell-special{
+  background:#111a16!important;
+}
+[data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special-copy strong{color:#f5f5f5!important}
+[data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special-copy span{color:#aaa!important}
