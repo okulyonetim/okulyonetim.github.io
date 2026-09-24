@@ -3313,3 +3313,166 @@ button.ka-primary,
   color:#9a7200!important;
   border-color:#e0c65b!important;
 }
+
+/* ===== ANDROID DARK THEME — LEGACY/COMPOSITE SURFACES =====
+   APK ekranlarında eski dashboard sınıfları merkezi dark değişkenlerine açıkça bağlanır. */
+[data-theme="dark"] .ka-menu-head,
+[data-theme="dark"] .ka-menu-page{
+  background:var(--ka-app-bg)!important;
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-menu-head h2{
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-menu-list>.ka-btn{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+  box-shadow:0 3px 12px rgba(0,0,0,.28)!important;
+}
+[data-theme="dark"] .ka-menu-list>.ka-btn *{
+  color:inherit;
+}
+[data-theme="dark"] .ka-home .kh-section-title,
+[data-theme="dark"] .ka-home .kh-section-title *,
+[data-theme="dark"] .ka-home .kh-section-head,
+[data-theme="dark"] .ka-home .kh-row,
+[data-theme="dark"] .ka-home .kh-row-main,
+[data-theme="dark"] .ka-home .kh-row-main>b,
+[data-theme="dark"] .ka-home .kh-mini,
+[data-theme="dark"] .ka-home .kh-weekday-head,
+[data-theme="dark"] .ka-home .kh-dyn-item,
+[data-theme="dark"] .ka-home .kh-dyn-item .kh-row-main b,
+[data-theme="dark"] .ka-home .kh-news-item{
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-home .kh-section-title svg{
+  color:var(--ka-primary)!important;
+  stroke:currentColor!important;
+}
+[data-theme="dark"] .ka-home .kh-row-main>small,
+[data-theme="dark"] .ka-home .kh-row-main small,
+[data-theme="dark"] .ka-home .kh-mini small,
+[data-theme="dark"] .ka-home .kh-place,
+[data-theme="dark"] .ka-home .kh-place b,
+[data-theme="dark"] .ka-home .kh-dyn-item .kh-row-main small{
+  color:var(--ka-text-muted)!important;
+}
+[data-theme="dark"] .ka-home .kh-more{
+  color:var(--ka-primary)!important;
+}
+[data-theme="dark"] .ka-home .kh-chip{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border-color:#5d4b0c!important;
+}
+[data-theme="dark"] .ka-home .kh-section[data-home-section="duty"] .kh-place b,
+[data-theme="dark"] .ka-home .kh-section[data-home-section="today-duty"] .kh-place b{
+  color:var(--ka-success)!important;
+}
+[data-theme="dark"] .ka-home .kh-card,
+[data-theme="dark"] .ka-home .kh-weekday{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-theme="dark"] .ka-home .kh-hero{
+  color:var(--ka-hero-text)!important;
+  background:var(--ka-hero-bg)!important;
+  border-color:var(--ka-hero-border)!important;
+}
+[data-theme="dark"] .ka-home .kh-brand{
+  color:var(--ka-hero-kicker)!important;
+}
+[data-theme="dark"] .ka-home .kh-greeting{
+  color:var(--ka-hero-text)!important;
+}
+[data-theme="dark"] .ka-home .kh-date{
+  color:var(--ka-hero-muted)!important;
+}
+[data-theme="dark"] .ka-home .kh-weather-card{
+  background:var(--ka-live-bg)!important;
+  color:var(--ka-live-text)!important;
+  border-color:var(--ka-live-border)!important;
+}
+[data-theme="dark"] .ka-home .kh-weather-card *{
+  color:var(--ka-live-text);
+}
+[data-theme="dark"] .ka-home .kh-weather-card .kh-live-main small{
+  color:var(--ka-live-muted)!important;
+}
+[data-theme="dark"] .ka-home .kh-news{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-theme="dark"] .ka-home .kh-news-label{
+  background:var(--ka-primary)!important;
+  color:#111!important;
+}
+[data-theme="dark"] .ka-home .kh-social button{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+  box-shadow:none!important;
+}
+[data-theme="dark"] .ka-home .kh-social button>b{
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-home .kh-social-icon{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border-color:#5d4b0c!important;
+}
+[data-theme="dark"] .ka-profile-page{
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-profile-page .ka-section-title,
+[data-theme="dark"] .ka-profile-page h3,
+[data-theme="dark"] .ka-profile-page h4,
+[data-theme="dark"] .ka-profile-page p,
+[data-theme="dark"] .ka-profile-page .ka-muted,
+[data-theme="dark"] .ka-profile-page .ka-profile-section-title{
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-section-subtitle{
+  color:var(--ka-text-muted)!important;
+}
+[data-theme="dark"] .ka-search-page,
+[data-theme="dark"] .ka-search-page h1,
+[data-theme="dark"] .ka-search-page h2,
+[data-theme="dark"] .ka-search-page h3,
+[data-theme="dark"] .ka-search-page strong,
+[data-theme="dark"] .ka-search-page label{
+  color:var(--ka-text);
+}
+[data-theme="dark"] .ka-search-page p,
+[data-theme="dark"] .ka-search-page small{
+  color:var(--ka-text-muted);
+}
+[data-theme="dark"] .ka-search-page .ka-search-results,
+[data-theme="dark"] .ka-search-page .ka-search-empty,
+[data-theme="dark"] .ka-search-page .ka-search-result{
+  color:var(--ka-text);
+  background:var(--ka-card-bg);
+  border-color:var(--ka-border);
+}
+[data-theme="dark"] .ka-search-page .ka-search-box input{
+  color:var(--ka-input-text)!important;
+  caret-color:var(--ka-primary)!important;
+}
+[data-theme="dark"] .ka-search-page .ka-search-box input::placeholder{
+  color:#8f8f8f!important;
+}
+[data-theme="dark"] .ka-modal{
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-modal h1,
+[data-theme="dark"] .ka-modal h2,
+[data-theme="dark"] .ka-modal h3,
+[data-theme="dark"] .ka-modal strong,
+[data-theme="dark"] .ka-modal label{
+  color:var(--ka-text)!important;
+}
+[data-theme="dark"] .ka-modal p,
+[data-theme="dark"] .ka-modal small{
+  color:var(--ka-text-muted)!important;
+}
