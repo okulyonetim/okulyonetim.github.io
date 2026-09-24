@@ -3246,3 +3246,70 @@ button.ka-primary,
   background:#ffc400!important;
   color:#111!important;
 }
+
+/* ===== HOME LIGHT THEME — HIGH CONTRAST DETAILS ===== */
+:root:not([data-theme="dark"]) .ka-home .kh-news-label{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#d6a800!important;
+  font-weight:900!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-news-label svg,
+:root:not([data-theme="dark"]) .ka-home .kh-news-label i{
+  color:#111!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-news-item{
+  color:#171717!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-news-loop,
+:root:not([data-theme="dark"]) .ka-home .kh-news-track{
+  color:#171717!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-social button{
+  background:#fff!important;
+  color:#171717!important;
+  border-color:#cfcfc9!important;
+  box-shadow:0 3px 10px rgba(0,0,0,.08)!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-social button>b{
+  color:#171717!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-social-icon{
+  background:#fff3bd!important;
+  color:#9a7200!important;
+  border-color:#e0c65b!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-section[data-home-section="duty"] .kh-chip,
+:root:not([data-theme="dark"]) .ka-home .kh-section[data-home-section="today-duty"] .kh-chip{
+  background:#fff0bd!important;
+  color:#7a5700!important;
+  border:1px solid #e1c45a!important;
+  font-weight:900!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-section[data-home-section="duty"] .kh-place b,
+:root:not([data-theme="dark"]) .ka-home .kh-section[data-home-section="today-duty"] .kh-place b{
+  color:#8a6500!important;
+  font-weight:900!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-section[data-home-section="duty"] .kh-place-ico,
+:root:not([data-theme="dark"]) .ka-home .kh-section[data-home-section="today-duty"] .kh-place-ico{
+  border:1px solid #deded8!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-section-head a,
+:root:not([data-theme="dark"]) .ka-home .kh-section-title a,
+:root:not([data-theme="dark"]) .ka-home .kh-section-head button{
+  color:#8a6500!important;
+  font-weight:900!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-section-title,
+:root:not([data-theme="dark"]) .ka-home .kh-section-title svg{
+  color:#171717!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-section-title svg{
+  stroke:#c08f00!important;
+}
+:root:not([data-theme="dark"]) .ka-home .kh-section-icon{
+  background:#fff3bd!important;
+  color:#9a7200!important;
+  border-color:#e0c65b!important;
+}
