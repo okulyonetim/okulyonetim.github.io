@@ -3147,3 +3147,102 @@ button.ka-primary,
   background:#151515;
   color:#f5f5f5;
 }
+
+/* ===== GLOBAL LIGHT THEME CONTRAST + LIVE LESSON CARD ===== */
+:root{
+  --ka-primary:#ffc400;
+  --ka-primary-hover:#e5b000;
+  --ka-primary-soft:#fff3bd;
+  --ka-button-text:#111111;
+  --ka-text:#171717;
+  --ka-text-muted:#5e6268;
+  --ka-card-bg:#ffffff;
+  --ka-surface:#f6f6f4;
+  --ka-muted-bg:#f0f0ed;
+  --ka-border:#d7d7d2;
+}
+:root:not([data-theme="dark"]) body{
+  color:var(--ka-text);
+}
+:root:not([data-theme="dark"]) .ka-card,
+:root:not([data-theme="dark"]) .card,
+:root:not([data-theme="dark"]) .module-card{
+  color:var(--ka-text);
+}
+:root:not([data-theme="dark"]) input,
+:root:not([data-theme="dark"]) select,
+:root:not([data-theme="dark"]) textarea{
+  color:#171717;
+  background:#fff;
+  border-color:#d7d7d2;
+}
+:root:not([data-theme="dark"]) input::placeholder,
+:root:not([data-theme="dark"]) textarea::placeholder{
+  color:#777b82;
+}
+:root:not([data-theme="dark"]) .ka-primary,
+:root:not([data-theme="dark"]) .ka-btn-primary,
+:root:not([data-theme="dark"]) button.ka-primary,
+:root:not([data-theme="dark"]) .ka-btn:not(.ka-btn--secondary){
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
+:root:not([data-theme="dark"]) .ka-btn--secondary{
+  background:#fff!important;
+  color:#171717!important;
+  border-color:#d0d0cc!important;
+}
+:root:not([data-theme="dark"]) .ka-teacher-directory .ka-teacher-card,
+:root:not([data-theme="dark"]) .ka-teacher-directory .ka-teacher-summary>div,
+:root:not([data-theme="dark"]) .ka-teacher-directory .ka-teacher-filters>*{
+  background:#fff!important;
+  color:#171717!important;
+  border-color:#d7d7d2!important;
+}
+:root:not([data-theme="dark"]) .ka-teacher-directory .ka-teacher-avatar{
+  background:#fff3bd!important;
+  color:#111!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern{
+  --kb-accent:#b88900;
+  --kb-accent-2:#ffc400;
+  --kb-soft:#fff3bd;
+  --kb-text:#111111;
+  --kb-muted:#4f5358;
+  --kb-line:#d9c97c;
+  --kb-track:#e7e1c8;
+  --kb-lesson:#9a7200;
+  background:linear-gradient(145deg,#fffdf2,#fff3bd)!important;
+  color:#111!important;
+  box-shadow:0 8px 24px rgba(70,55,0,.12)!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-special{
+  background:#ffc400!important;
+  border:1px solid #d6a800!important;
+  color:#111!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-special-icon{
+  background:#fff3bd!important;
+  color:#111!important;
+  border-color:#d6a800!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-special-copy strong,
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-special-copy span,
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-special-copy em{
+  color:#111!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-special-copy em{
+  background:#111!important;
+  color:#ffc400!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-progress-track{
+  background:#e0e0dc!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-progress-fill{
+  background:#111!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-orb{
+  background:#ffc400!important;
+  color:#111!important;
+}
