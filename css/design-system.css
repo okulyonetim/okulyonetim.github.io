@@ -3864,3 +3864,265 @@ html[data-theme="dark"] .ka-profile-page .classic-toolbar{
   border-color: #333 !important;
   color: #f5f5f5 !important;
 }
+
+/* ===== TEMA RENK DÜZELTMELERİ v3 — 4 ekran sorunu =====
+   Resim 1: Mesajlaşma başlık/metin görünmüyor (koyu üstünde koyu)
+   Resim 2: Rapor/Düzenle/Kapat butonları siyah arka plan
+   Resim 3: Ana sayfa boş kh-dynamic alanı
+   Resim 4: Arama boş-durum kartı beyaz
+*/
+
+/* ── RESİM 1: MESAJlaşma sayfası başlık ve metinler ── */
+[data-theme="dark"] .ka-communication-page,
+[data-theme="dark"] .ka-communication-page h1,
+[data-theme="dark"] .ka-communication-page h2,
+[data-theme="dark"] .ka-communication-page h3 {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-communication-page .ka-communication-heading h2 {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-communication-page .ka-communication-heading p,
+[data-theme="dark"] .ka-communication-page .ka-muted,
+[data-theme="dark"] .ka-communication-page p {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-communication-page .ka-field__label {
+  color: #c0c0c0 !important;
+}
+/* Mesaj listesi: konuşma satırları beyaz kalmasın */
+[data-theme="dark"] .ka-communication-page .ka-list-card,
+[data-theme="dark"] .ka-communication-page .ka-list-card .ka-card__body,
+[data-theme="dark"] .ka-communication-page .ka-card,
+[data-theme="dark"] .ka-communication-page .ka-card__body {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-communication-page .ka-list-card strong,
+[data-theme="dark"] .ka-communication-page .ka-list-card b {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-communication-page .ka-list-card small,
+[data-theme="dark"] .ka-communication-page .ka-list-card .ka-muted {
+  color: #a0a0a0 !important;
+}
+/* Konuşma avatarı */
+[data-theme="dark"] .ka-communication-page .ka-avatar,
+[data-theme="dark"] .ka-communication-page .ka-list-card .ka-avatar {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+/* "Mesajlar" başlığı altındaki section başlıkları */
+[data-theme="dark"] .ka-communication-page > .ka-stack > strong,
+[data-theme="dark"] .ka-communication-page [data-communication-section] strong,
+[data-theme="dark"] .ka-communication-page h3 {
+  color: #f5f5f5 !important;
+}
+/* Arama kutusu */
+[data-theme="dark"] .ka-communication-page .ka-communication-search input,
+[data-theme="dark"] .ka-communication-page input[type="search"] {
+  background: #1a1a1a !important;
+  border-color: #333 !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-communication-page input::placeholder {
+  color: #777 !important;
+}
+/* Rozet sayaç */
+[data-theme="dark"] .ka-communication-page .ka-badge {
+  background: #2b2b2b !important;
+  color: #a0a0a0 !important;
+}
+
+/* ── RESİM 2: Öğretmen profil araç çubuğu — Rapor/Düzenle/Kapat ── */
+/* Bu butonlar dv3 (belge görüntüleyici) değil, profil toolbar'ı */
+[data-theme="dark"] .ka-teacher-profile-toolbar .ka-btn,
+[data-theme="dark"] .ka-teacher-profile-toolbar .ka-btn--secondary {
+  background: #1e1e1e !important;
+  border-color: #3a3a3a !important;
+  color: #f5f5f5 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4) !important;
+}
+[data-theme="dark"] .ka-teacher-profile-toolbar .ka-btn svg,
+[data-theme="dark"] .ka-teacher-profile-toolbar .ka-btn span {
+  color: #f5f5f5 !important;
+}
+/* Profil araç çubuğu genel wrapper */
+[data-theme="dark"] [data-ka-profile-toolbar],
+[data-theme="dark"] [data-profile-actions] {
+  background: transparent !important;
+}
+/* Temel bilgiler kartı içindeki "Ara" butonu */
+[data-theme="dark"] .ka-teacher-detail-section .ka-btn--secondary,
+[data-theme="dark"] .ka-teacher-detail-section .ka-btn {
+  background: #1e1e1e !important;
+  border-color: #3a3a3a !important;
+  color: #f5f5f5 !important;
+}
+/* Temel Bilgiler bölüm başlığı */
+[data-theme="dark"] .ka-teacher-detail-section > .ka-card__header {
+  background: #1a1a1a !important;
+  border-color: #2d2d2d !important;
+}
+[data-theme="dark"] .ka-teacher-detail-section > .ka-card__header h3,
+[data-theme="dark"] .ka-teacher-detail-section > .ka-card__header * {
+  color: #f5f5f5 !important;
+}
+/* Profil stat kartları (WhatsApp / Ara / Mesaj / Program) */
+[data-theme="dark"] .ka-teacher-contact-grid > a,
+[data-theme="dark"] .ka-teacher-contact-grid > button {
+  background: #1a1a1a !important;
+  border-color: #2d2d2d !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-teacher-contact-grid b {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-teacher-contact-grid > a > span,
+[data-theme="dark"] .ka-teacher-contact-grid > button > span {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+/* HAFTALIK DERS / BUGÜN / NÖBET / SORUMLULUK kartları */
+[data-theme="dark"] .ka-teacher-stat-grid > .ka-card {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-teacher-stat-grid small {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-teacher-stat-grid b {
+  color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-teacher-stat-grid span {
+  color: #c0c0c0 !important;
+}
+/* Temel bilgiler satır içi (Telefon, vb.) */
+[data-theme="dark"] .ka-teacher-detail-row {
+  border-bottom-color: #2d2d2d !important;
+}
+[data-theme="dark"] .ka-teacher-detail-row b {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-teacher-detail-row span {
+  color: #a0a0a0 !important;
+}
+
+/* ── RESİM 3: Ana sayfa kh-dynamic boş/görünmez alan ── */
+/* Tarama barcode alanı veya boş dyn-item */
+html[data-theme="dark"] .ka-home .kh-dynamic:not(:empty) {
+  background: transparent !important;
+}
+html[data-theme="dark"] .ka-home .kh-dyn-item {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+  color: #f5f5f5 !important;
+}
+html[data-theme="dark"] .ka-home .kh-dyn-icon {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+/* Barkod/QR tarayıcı alanı */
+html[data-theme="dark"] .ka-home [data-home-section="scan"],
+html[data-theme="dark"] .ka-home .kh-scan-area,
+html[data-theme="dark"] .ka-home .kh-qr-area {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+  color: #f5f5f5 !important;
+}
+/* Genel: görünmez kalan her bölüm başlığını zorla */
+html[data-theme="dark"] .ka-home .kh-section > .kh-section-head,
+html[data-theme="dark"] .ka-home .kh-section > .kh-section-head * {
+  color: #f5f5f5 !important;
+}
+html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
+  color: #ffc400 !important;
+  stroke: #ffc400 !important;
+}
+
+/* ── RESİM 4: Arama boş-durum ve arama kutusu ── */
+/* "Aramaya başlayın" kartı beyaz kalıyor */
+[data-theme="dark"] .ka-search-empty {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-search-empty > strong {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-search-empty > small {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-search-empty > span {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+/* "Arama Sonuçları" başlık ve alt metin */
+[data-theme="dark"] .ka-search-results-head strong {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-search-results-head small {
+  color: #a0a0a0 !important;
+}
+/* Hero kart: "HIZLI ERİŞİM / Arama" */
+[data-theme="dark"] .ka-search-hero {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+}
+[data-theme="dark"] .ka-search-hero .ka-search-hero__copy > span {
+  color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-search-hero h2 {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-search-hero p {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-search-hero .ka-search-hero__icon {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+/* Arama kutusu */
+[data-theme="dark"] .ka-search-box {
+  background: #1a1a1a !important;
+  border-color: #333 !important;
+}
+[data-theme="dark"] .ka-search-box input {
+  color: #f5f5f5 !important;
+  caret-color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-search-box input::placeholder {
+  color: #666 !important;
+}
+/* Gelişmiş Filtreler kartı */
+[data-theme="dark"] .ka-search-filters {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+}
+[data-theme="dark"] .ka-search-filters__copy strong {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-search-filters__copy small {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-search-filters__icon {
+  background: #2b2b2b !important;
+}
+[data-theme="dark"] .ka-search-filters__status > b {
+  background: #222 !important;
+  color: #a0a0a0 !important;
+}
+/* Kategori pill butonları (Tümü, Öğretmen...) */
+[data-theme="dark"] .ka-search-category {
+  background: #1a1a1a !important;
+  border-color: #333 !important;
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-search-category.active,
+[data-theme="dark"] .ka-search-category[aria-pressed="true"] {
+  background: #ffc400 !important;
+  border-color: #ffc400 !important;
+  color: #111 !important;
+}
