@@ -11,7 +11,7 @@
   --ka-border:#dedfe2;--ka-border-strong:#c7c9cd;--ka-focus:rgba(255,196,0,.28);--ka-overlay:rgba(10,10,10,.52);
   --ka-success:#22bf73;--ka-warning:#f5a400;--ka-danger:#ef4b5f;--ka-info:#3b91e8;
   --ka-hero-bg:radial-gradient(circle at 86% 10%,rgba(255,196,0,.13),transparent 36%),linear-gradient(145deg,#fffdf1,#f4f5f3);--ka-hero-border:#dfe5e1;--ka-hero-text:#15171a;--ka-hero-muted:#697077;--ka-hero-kicker:#c39700;--ka-hero-badge-bg:#fff3c4;--ka-hero-badge-text:#9b7900;--ka-hero-shadow:0 12px 28px rgba(20,24,22,.08);
-  --ka-live-bg:#fff;--ka-live-border:#dfe5e1;--ka-live-surface:#f3f6f4;--ka-live-text:#15171a;--ka-live-muted:#70757d;--ka-live-accent:#22bf73;--ka-live-accent-soft:#e5f8ee;--ka-live-progress-bg:#dce9e1;--ka-live-progress:linear-gradient(90deg,#35d07f,#22bf73);--ka-weather-bg:#f7f8f8;--ka-weather-icon-bg:#edf1ef;
+  --ka-live-bg:#fffdf3;--ka-live-border:#eadba0;--ka-live-surface:#f4f0dc;--ka-live-text:#15171a;--ka-live-muted:#756f5b;--ka-live-accent:#c99700;--ka-live-accent-soft:#fff3bd;--ka-live-progress-bg:#e8e0bf;--ka-live-progress:linear-gradient(90deg,#ffc400,#c99700);--ka-weather-bg:#f7f6f0;--ka-weather-icon-bg:#eee9d8;
   --ka-module-people-1:#e8bf22;--ka-module-people-2:#c99f00;--ka-module-exams-1:#4b91d0;--ka-module-exams-2:#356ea5;--ka-module-programs-1:#d99729;--ka-module-programs-2:#b86f16;--ka-module-communication-1:#d96861;--ka-module-communication-2:#b94b46;--ka-module-calendar-1:#439aae;--ka-module-calendar-2:#317889;--ka-module-transport-1:#8061b5;--ka-module-transport-2:#60498d;--ka-module-documents-1:#d59642;--ka-module-documents-2:#ae6f25;--ka-module-management-1:#39a96b;--ka-module-management-2:#27814f;--ka-module-settings-1:#8b969f;--ka-module-settings-2:#68727b;
   --ka-font:Inter,Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ka-font-mono:"JetBrains Mono",Consolas,monospace;
   --ka-font-size-xs:11px;--ka-font-size-sm:13px;--ka-font-size-md:15px;--ka-font-size-lg:18px;--ka-font-size-xl:22px;--ka-font-size-2xl:28px;--ka-line-height:1.5;
@@ -31,7 +31,7 @@
   --ka-card-bg:#141414;--ka-card-raised-bg:#191919;--ka-muted-bg:#1c1c1c;--ka-input-bg:#151515;--ka-input-text:#f5f5f5;--ka-input-border:#2b2b2b;--ka-input-focus:#ffc400;
   --ka-border:#242424;--ka-border-strong:#383838;--ka-focus:rgba(255,196,0,.28);--ka-overlay:rgba(0,0,0,.76);--ka-shadow-sm:0 3px 12px rgba(0,0,0,.24);--ka-shadow-md:0 10px 28px rgba(0,0,0,.36);--ka-shadow-modal:0 22px 64px rgba(0,0,0,.58);
   --ka-hero-bg:radial-gradient(circle at 86% 8%,rgba(255,196,0,.16),transparent 36%),linear-gradient(145deg,#171717,#0a0a0a);--ka-hero-border:#3a3218;--ka-hero-text:#f5f5f5;--ka-hero-muted:#a0a0a0;--ka-hero-kicker:#ffc400;--ka-hero-badge-bg:#332b0d;--ka-hero-badge-text:#ffd34d;--ka-hero-shadow:0 18px 38px rgba(0,0,0,.48);
-  --ka-live-bg:#151515;--ka-live-border:#383838;--ka-live-surface:#1b1b1b;--ka-live-text:#f5f5f5;--ka-live-muted:#929292;--ka-live-accent:#35d07f;--ka-live-accent-soft:#143a29;--ka-live-progress-bg:#2b2b2b;--ka-live-progress:linear-gradient(90deg,#35d07f,#22bf73);--ka-weather-bg:#191919;--ka-weather-icon-bg:#242424;
+  --ka-live-bg:#151515;--ka-live-border:#55491f;--ka-live-surface:#1b1b1b;--ka-live-text:#f5f5f5;--ka-live-muted:#aaa38b;--ka-live-accent:#ffc400;--ka-live-accent-soft:#3a300c;--ka-live-progress-bg:#2b2b2b;--ka-live-progress:linear-gradient(90deg,#ffc400,#c99700);--ka-weather-bg:#191919;--ka-weather-icon-bg:#242424;
   --ka-module-people-1:#6d5a00;--ka-module-people-2:#443900;--ka-module-exams-1:#315d86;--ka-module-exams-2:#223f5d;--ka-module-programs-1:#79521c;--ka-module-programs-2:#4f3612;--ka-module-communication-1:#733c39;--ka-module-communication-2:#4c2927;--ka-module-calendar-1:#2e626e;--ka-module-calendar-2:#21474f;--ka-module-transport-1:#51406f;--ka-module-transport-2:#392d4f;--ka-module-documents-1:#76501f;--ka-module-documents-2:#4d3516;--ka-module-management-1:#286b48;--ka-module-management-2:#1b4932;--ka-module-settings-1:#4d565d;--ka-module-settings-2:#353c42;
 }
 *{box-sizing:border-box}html{font-family:var(--ka-font);background:var(--ka-app-bg);color:var(--ka-text);-webkit-text-size-adjust:100%}body{margin:0;min-height:100dvh;background:var(--ka-app-bg);color:var(--ka-text);font-family:var(--ka-font);font-size:var(--ka-font-size-md);line-height:var(--ka-line-height)}button,input,select,textarea{font:inherit}a{color:var(--ka-primary)}option{background:var(--ka-card-bg);color:var(--ka-text)}::selection{background:var(--ka-primary-soft);color:var(--ka-text)}button{-webkit-tap-highlight-color:transparent}h1,h2,h3,h4,h5,h6{margin:0;color:var(--ka-text);line-height:1.2;font-weight:800}h1{font-size:var(--ka-font-size-2xl)}h2{font-size:var(--ka-font-size-xl)}h3{font-size:var(--ka-font-size-lg)}p{margin:0}
@@ -4603,4 +4603,144 @@ html[data-theme="dark"] .ka-report-preview__toolbar .dv3btn.primary{
   background:#ffc400!important;
   color:#111!important;
   border-color:#ffc400!important;
+}
+
+
+/* ===== DARK THEME — FINAL MODULE CONTRAST / SURFACE RESET v977 =====
+   Koyu temada modül başlıkları, kartlar, üst araç çubuğu ve shell ikonları
+   hiçbir eski sabit açık/siyah renkten etkilenmez. Rapor kağıdı iframe'i hariçtir. */
+html[data-theme="dark"] #v2ModuleRoot h1,
+html[data-theme="dark"] #v2ModuleRoot h2,
+html[data-theme="dark"] #v2ModuleRoot h3,
+html[data-theme="dark"] #v2ModuleRoot h4,
+html[data-theme="dark"] #v2ModuleRoot h5,
+html[data-theme="dark"] #v2ModuleRoot h6,
+html[data-theme="dark"] #v2ModuleRoot .ka-page-head *,
+html[data-theme="dark"] #v2ModuleRoot .ka-module-heading *,
+html[data-theme="dark"] #v2ModuleRoot .ka-people-page-head *,
+html[data-theme="dark"] #v2ModuleRoot .ka-directory-title *,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page > header *,
+html[data-theme="dark"] #v2ModuleRoot .ka-duty-page-head * {
+  color:#f5f5f5 !important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot p:not(.ka-btn),
+html[data-theme="dark"] #v2ModuleRoot small {
+  color:#a8a8a8;
+}
+
+/* Generic module cards: dark surface is the default in dark mode. */
+html[data-theme="dark"] #v2ModuleRoot .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .card,
+html[data-theme="dark"] #v2ModuleRoot .ka-list-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-empty,
+html[data-theme="dark"] #v2ModuleRoot .ka-class-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-row,
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-student,
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-absence,
+html[data-theme="dark"] #v2ModuleRoot .ka-attendance-class-card {
+  background:#141414 !important;
+  color:#f5f5f5 !important;
+  border-color:#303030 !important;
+}
+
+/* Card descendants inherit the readable foreground; muted metadata stays muted. */
+html[data-theme="dark"] #v2ModuleRoot .ka-card h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-card h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-card h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-card h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-card strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-card b,
+html[data-theme="dark"] #v2ModuleRoot .ka-class-card strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-card strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-row strong {
+  color:#f5f5f5 !important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-card small,
+html[data-theme="dark"] #v2ModuleRoot .ka-card p,
+html[data-theme="dark"] #v2ModuleRoot .ka-card .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-class-card small,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-card small,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-row small {
+  color:#a8a8a8 !important;
+}
+
+/* Profil: Temel Bilgiler, Ders Programı ve diğer detay kartları. */
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > section,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page [class*="profile-section"],
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page [class*="profile-info"],
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page [class*="profile-card"] {
+  background:#141414 !important;
+  color:#f5f5f5 !important;
+  border-color:#303030 !important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > section h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > section h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > section strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > section b,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article b {
+  color:#f5f5f5 !important;
+}
+
+/* Shell: güneş/bildirim/geri ikonları koyu temada kaybolmasın. */
+html[data-theme="dark"] .ka-app-header .ka-icon-button,
+html[data-theme="dark"] .ka-app-header .ka-icon-button svg,
+html[data-theme="dark"] .ka-app-header .ka-shell-back,
+html[data-theme="dark"] .ka-app-header .ka-shell-back svg {
+  color:#f5f5f5 !important;
+  stroke:#f5f5f5 !important;
+  fill:none;
+  opacity:1 !important;
+}
+
+/* Report/PDF preview toolbar: teal/legacy surface tamamen kaldırılır. */
+html[data-theme="dark"] #kaReportPreview,
+html[data-theme="dark"] .ka-report-preview {
+  --dv-hbg:#0b0b0b !important;
+  --dv-tbg:#141414 !important;
+  --dv-border:#2d2d2d !important;
+  --dv-text:#f5f5f5 !important;
+  --dv-muted:#a8a8a8 !important;
+}
+html[data-theme="dark"] #kaReportPreview .ka-report-preview__toolbar,
+html[data-theme="dark"] #kaReportPreview .dv3h {
+  background:#0b0b0b !important;
+  border-color:#2d2d2d !important;
+  color:#f5f5f5 !important;
+}
+html[data-theme="dark"] #kaReportPreview .ka-report-preview__toolbar .dv3btn,
+html[data-theme="dark"] #kaReportPreview .dv3h .dv3btn {
+  background:#f5f5f5 !important;
+  color:#111 !important;
+  border-color:#d0d0d0 !important;
+}
+html[data-theme="dark"] #kaReportPreview .ka-report-preview__toolbar .dv3btn.primary,
+html[data-theme="dark"] #kaReportPreview .dv3h .dv3btn.primary {
+  background:#ffc400 !important;
+  color:#111 !important;
+  border-color:#ffc400 !important;
+}
+html[data-theme="dark"] #kaReportPreview .ka-report-preview__title b {
+  color:#f5f5f5 !important;
+}
+html[data-theme="dark"] #kaReportPreview .ka-report-preview__title small {
+  color:#a8a8a8 !important;
+}
+
+/* Dashboard canlı ders kartı: yeşil dekoratif yüzey yerine sarı/anthracite. */
+html[data-theme="dark"] #khBell.kh-bell-modern {
+  --kb-accent:#ffc400;
+  --kb-accent-2:#ffe071;
+  --kb-soft:#3a300c;
+  --kb-text:#f7f3df;
+  --kb-muted:#aaa38b;
+  --kb-line:#55491f;
+  --kb-track:#383421;
+  --kb-lesson:#ffc400;
+  background:linear-gradient(145deg,#171717,#101010)!important;
 }
