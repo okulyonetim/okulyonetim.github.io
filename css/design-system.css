@@ -551,16 +551,16 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 }
 #khBell:not(.kh-bell-modern){opacity:0!important;pointer-events:none!important}
 #khBell.kh-bell-modern{
-  --kb-accent:#07865f;--kb-accent-2:#16b681;--kb-soft:#e8f7f1;--kb-text:#142c24;--kb-muted:#64766f;--kb-line:#cfe3db;--kb-track:#dce5e1;
-  --kb-lesson:#087a5b;--kb-break:#b76500;--kb-lunch:#7e56b5;
+  --kb-accent:#c99700;--kb-accent-2:#ffc400;--kb-soft:#fff7d6;--kb-text:#24200f;--kb-muted:#756f5b;--kb-line:#eadba0;--kb-track:#e8e0bf;
+  --kb-lesson:#c99700;--kb-break:#b76500;--kb-lunch:#7e56b5;
   display:block!important;position:relative;overflow:hidden;min-height:0!important;padding:0!important;border-radius:22px!important;
   background:linear-gradient(145deg,#fffdf3,#f8f4e4)!important;border:1px solid var(--kb-line)!important;
   color:var(--kb-text)!important;box-shadow:0 9px 26px rgba(110,84,0,.10)!important;text-align:left!important;opacity:1!important;
 }
 [data-theme="dark"] #khBell.kh-bell-modern{
-  --kb-accent:#38d39f;--kb-accent-2:#16b681;--kb-soft:#12372b;--kb-text:#f5fffb;--kb-muted:#b5c8c0;--kb-line:#315247;--kb-track:#30453e;
-  --kb-lesson:#53ddb0;--kb-break:#ffbd62;--kb-lunch:#c79cff;
-  background:linear-gradient(145deg,#11231d,#0c1915)!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important
+  --kb-accent:#ffc400;--kb-accent-2:#ffe071;--kb-soft:#3a300c;--kb-text:#f7f3df;--kb-muted:#aaa38b;--kb-line:#55491f;--kb-track:#383421;
+  --kb-lesson:#ffc400;--kb-break:#ffbd62;--kb-lunch:#c79cff;
+  background:linear-gradient(145deg,#171717,#101010)!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important
 }
 #khBell.kh-bell-modern:active{transform:none!important}
 .kh-bell-wrap{padding:14px 14px 15px}
@@ -2960,4 +2960,26 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   background:#151515!important;
   color:#f5f5f5!important;
   border-color:#2b2b2b!important;
+}
+
+/* KH BELL COMPLETED STATE — sarı/antrasit tema */
+#khBell.kh-bell-modern .kh-bell-special{
+  background:#0f1815;
+  border:1px solid #294338;
+  border-radius:18px;
+}
+#khBell.kh-bell-modern .kh-bell-special-icon{
+  background:color-mix(in srgb,var(--kb-accent) 13%,transparent);
+  border-color:color-mix(in srgb,var(--kb-accent) 38%,var(--kb-line));
+  color:var(--kb-accent);
+}
+#khBell.kh-bell-modern .kh-bell-special-copy strong{color:var(--kb-text)}
+#khBell.kh-bell-modern .kh-bell-special-copy span{color:var(--kb-muted)}
+#khBell.kh-bell-modern .kh-bell-special-copy em{
+  background:color-mix(in srgb,var(--kb-accent) 13%,transparent);
+  color:var(--kb-accent);
+}
+[data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special{
+  background:#111111;
+  border-color:#2b2b2b;
 }
