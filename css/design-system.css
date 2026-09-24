@@ -3562,3 +3562,109 @@ html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-duty"] .kh
   color:#ffc400!important;
   border-color:#5b4b12!important;
 }
+
+
+/* ===== DARK THEME — DASHBOARD / PROFILE / MENU FINAL CLEANUP =====
+   Eski modül katmanlarından kalan beyaz/yeşil yüzeyleri tek bir dark yüzey sistemine bağlar. */
+html[data-theme="dark"] .ka-home .ka-home-section,
+html[data-theme="dark"] .ka-home .ka-home-section__body,
+html[data-theme="dark"] .ka-home .kh-card,
+html[data-theme="dark"] .ka-home .kh-weekday,
+html[data-theme="dark"] .ka-home .kh-row,
+html[data-theme="dark"] .ka-home .kh-dyn-item,
+html[data-theme="dark"] .ka-home .kh-notes,
+html[data-theme="dark"] .ka-home .kh-news,
+html[data-theme="dark"] .ka-home .kh-food,
+html[data-theme="dark"] .ka-home .kh-food-card,
+html[data-theme="dark"] .ka-home .food-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#2d2d2d!important;
+}
+html[data-theme="dark"] .ka-home .kh-weekday-head,
+html[data-theme="dark"] .ka-home .kh-mini,
+html[data-theme="dark"] .ka-home .kh-mini *,
+html[data-theme="dark"] .ka-home .kh-weekday *,
+html[data-theme="dark"] .ka-home .kh-card *{
+  color:inherit;
+}
+html[data-theme="dark"] .ka-home .kh-weekday-head,
+html[data-theme="dark"] .ka-home .kh-weekday-head *{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-home .kh-mini{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-home .kh-place,
+html[data-theme="dark"] .ka-home .kh-place b,
+html[data-theme="dark"] .ka-home .kh-duty-empty{
+  color:#a8a8a8!important;
+}
+html[data-theme="dark"] .ka-home .kh-mini+.kh-mini{
+  border-top-color:#303030!important;
+}
+
+/* Menü sayfası: başlıkta siyah metin kalmasını ve yeşil üst şeridi engelle. */
+html[data-theme="dark"] .ka-menu-page,
+html[data-theme="dark"] .ka-menu-head{
+  background:#080808!important;
+  color:#f5f5f5!important;
+  border-color:#2d2d2d!important;
+}
+html[data-theme="dark"] .ka-menu-head h2,
+html[data-theme="dark"] .ka-menu-head h2 *,
+html[data-theme="dark"] .ka-menu-head button{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-menu-head button{
+  background:transparent!important;
+}
+html[data-theme="dark"] .ka-menu-list{
+  background:#080808!important;
+}
+html[data-theme="dark"] .ka-menu-list>.ka-btn{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#2d2d2d!important;
+}
+html[data-theme="dark"] .ka-menu-list>.ka-btn *{
+  color:inherit!important;
+}
+
+/* Profil: istatistik, temel bilgi ve işlem kartları artık beyaz kalmaz. */
+html[data-theme="dark"] .ka-profile-page .ka-profile-stat,
+html[data-theme="dark"] .ka-profile-page .ka-profile-action,
+html[data-theme="dark"] .ka-profile-page .ka-card,
+html[data-theme="dark"] .ka-profile-page .ka-card__body,
+html[data-theme="dark"] .ka-profile-page [class*="profile-info"],
+html[data-theme="dark"] .ka-profile-page [class*="profile-card"]{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#2d2d2d!important;
+}
+html[data-theme="dark"] .ka-profile-page .ka-profile-stat *,
+html[data-theme="dark"] .ka-profile-page .ka-profile-action *,
+html[data-theme="dark"] .ka-profile-page .ka-card *{
+  color:inherit;
+}
+html[data-theme="dark"] .ka-profile-page .ka-profile-stat__icon,
+html[data-theme="dark"] .ka-profile-page .ka-profile-action__icon{
+  background:#2b2b2b!important;
+  color:#ffc400!important;
+}
+html[data-theme="dark"] .ka-profile-page .ka-profile-stat>b,
+html[data-theme="dark"] .ka-profile-page .ka-profile-action__copy strong{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-profile-page .ka-profile-stat>small,
+html[data-theme="dark"] .ka-profile-page .ka-profile-action__copy small{
+  color:#a8a8a8!important;
+}
+
+/* Profilde eski yeşil işlem çubuğu yerine anthracite + sarı aksan. */
+html[data-theme="dark"] .ka-profile-page~* .classic-toolbar,
+html[data-theme="dark"] .ka-profile-page + .classic-toolbar,
+html[data-theme="dark"] .ka-profile-page .classic-toolbar{
+  background:#141414!important;
+  border-color:#2d2d2d!important;
+}
