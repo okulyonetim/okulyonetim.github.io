@@ -15,11 +15,11 @@ let foodMenuCurrentMonth=foodMenuMonthKey(localIso(new Date())),foodMenuViewDate
 
 const DAY_THEMES=[
  null,
- {bg:'#EEF2FF',border:'#C7D2FE',text:'#4338CA',name:'Pazartesi'},
- {bg:'#ECFEFF',border:'#A5F3FC',text:'#0E7490',name:'Salı'},
- {bg:'#FFFBEB',border:'#FDE68A',text:'#B45309',name:'Çarşamba'},
- {bg:'#F0FDF4',border:'#BBF7D0',text:'#15803D',name:'Perşembe'},
- {bg:'#FDF2F8',border:'#FBCFE8',text:'#BE185D',name:'Cuma'},
+ {bg:'#FFF8D9',border:'#F0D36A',text:'#8A6A00',name:'Pazartesi'},
+ {bg:'#EAFBF3',border:'#A9E8C7',text:'#167A4A',name:'Salı'},
+ {bg:'#FFF4D6',border:'#F3C96A',text:'#9A6700',name:'Çarşamba'},
+ {bg:'#EFF9F4',border:'#B8DEC9',text:'#26724D',name:'Perşembe'},
+ {bg:'#F4F5F5',border:'#D4D7D8',text:'#62676B',name:'Cuma'},
 ];
 function themeFor(dow){return DAY_THEMES[dow]||DAY_THEMES[1]}
 
@@ -117,7 +117,7 @@ const FOOD_MENU_STYLE='<style>'
  +'[data-food-menu-module] select[data-fm-month]{background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border:1px solid var(--ka-input-border)!important;border-radius:8px;padding:6px 10px;font-size:13px}'
  +'.food-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}'
  +'.food-tab{padding:8px 14px;border-radius:999px;border:1px solid var(--ka-border,#e4e8e6);background:var(--ka-card,#fff);font-weight:600;font-size:13px;white-space:nowrap;cursor:pointer}'
- +'.food-tab.is-active{background:#0f6e56;border-color:#0f6e56;color:#fff}'
+ +'.food-tab.is-active{background:var(--ka-primary);border-color:var(--ka-primary);color:var(--ka-button-text)}'
  +'.food-cal-week{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:8px;margin-bottom:8px}'
  +'.food-cal-cell{border:1.5px solid var(--fm-day-border);border-radius:12px;padding:8px;min-height:130px;background:var(--fm-day-bg);color:var(--ka-text)}'
  +'.food-cal-cell--empty{background:transparent;border:none}'
@@ -139,8 +139,8 @@ const FOOD_MENU_STYLE='<style>'
  +'.food-remove-btn{border:none;background:transparent;color:var(--ka-text-muted);font-size:16px;cursor:pointer;opacity:.9}'
  +'.food-day-item{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--ka-border,#e4e8e6);font-size:15px}'
  +'.food-day-item:last-child{border-bottom:0}'
- +'.food-day-no{font-weight:700;min-width:24px;color:#0f6e56}'
- +'.food-day-empty{padding:12px 0;color:var(--ka-muted,#6b756f)}'
+ +'.food-day-no{font-weight:700;min-width:24px;color:var(--ka-primary)}'
+ +'.food-day-empty{padding:12px 0;color:var(--ka-text-muted)}'
  +'.food-week-item{padding:6px 8px;border-radius:8px;margin-bottom:4px;font-size:13px}'
  +'.food-week-day small{display:block;margin-top:4px;font-weight:400;opacity:.7}'
  +'.food-head>p{flex:1 1 100%;margin:0}.food-head .ka-row{flex-wrap:wrap}'
@@ -152,7 +152,7 @@ const FOOD_PRINT_STYLE='<style>'
  +'.fm-print{font-family:Arial,Helvetica,sans-serif;color:#111;width:100%}'
  +'.fm-p-title{text-align:center;line-height:1.15;margin:0 0 2.2mm}'
  +'.fm-p-title b{display:block;font-size:10pt;letter-spacing:.02em}'
- +'.fm-p-title span{display:block;font-size:12.5pt;font-weight:800;margin-top:.8mm;color:#17684f}'
+ +'.fm-p-title span{display:block;font-size:12.5pt;font-weight:800;margin-top:.8mm;color:var(--ka-primary)}'
  +'.fm-p-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.6mm}'
  +'.fm-p-h{background:var(--tx);color:#fff;text-align:center;font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1.1mm 0;border-radius:1.6mm}'
  +'.fm-p-cell{box-sizing:border-box;min-height:16mm;padding:1.2mm 1.8mm 1.4mm;border:.3mm solid var(--bd);background:var(--bg);border-radius:1.8mm;break-inside:avoid;page-break-inside:avoid}'
