@@ -2850,3 +2850,25 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
   line-height:1.15;
   font-weight:500;
 }
+
+/* KORUK ASİSTAN — premium neutral surfaces / yellow-mint theme */
+.ka-card,.card{transition:background var(--ka-transition-fast),border-color var(--ka-transition-fast),box-shadow var(--ka-transition-fast),transform var(--ka-transition-fast)}
+.ka-card__header,.ka-card__body,.ka-card__footer{background:transparent}
+.ka-list-card:hover{transform:translateY(-1px)}
+.ka-btn,.btn{letter-spacing:-.01em}
+.ka-btn:not(.ka-btn--secondary):not(.ka-btn--ghost):not(.ka-btn--danger),.btn:not(.ka-btn--secondary):not(.ka-btn--ghost):not(.ka-btn--danger){box-shadow:0 5px 14px color-mix(in srgb,var(--ka-primary) 16%,transparent)}
+.ka-btn--secondary{box-shadow:none}
+.ka-tab{transition:background var(--ka-transition-fast),color var(--ka-transition-fast),border-color var(--ka-transition-fast)}
+.ka-tab.active,.ka-tab[aria-selected="true"]{border-color:color-mix(in srgb,var(--ka-primary) 42%,var(--ka-border))}
+.ka-avatar{border:1px solid color-mix(in srgb,var(--ka-primary) 20%,var(--ka-border))}
+.ka-table th{color:var(--ka-text);background:var(--ka-muted-bg)}
+.ka-table tbody tr:hover td{background:color-mix(in srgb,var(--ka-primary) 5%,var(--ka-card-bg))}
+[data-theme="dark"] .ka-table tbody tr:hover td{background:color-mix(in srgb,var(--ka-primary) 7%,var(--ka-card-bg))}
+[data-theme="dark"] .ka-btn:not(.ka-btn--secondary):not(.ka-btn--ghost):not(.ka-btn--danger),
+[data-theme="dark"] .btn:not(.ka-btn--secondary):not(.ka-btn--ghost):not(.ka-btn--danger){box-shadow:0 6px 18px rgba(0,0,0,.34)}
+[data-theme="dark"] .ka-card,.ka-card{backdrop-filter:saturate(105%);-webkit-backdrop-filter:saturate(105%)}
+@media (max-width:640px){
+  .ka-card{border-radius:16px}
+  .ka-card__header,.ka-card__body,.ka-card__footer{padding:14px}
+  .ka-btn,.btn{min-height:42px}
+}
