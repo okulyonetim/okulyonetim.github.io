@@ -8,7 +8,7 @@
         <!-- Uygulama status bar ve nav bar renklerini JS ile kontrol edebilsin -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <!-- Başlangıç rengi (JS tema uygulanana kadar görünür) -->
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:statusBarColor">#FFC400</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 </resources>
