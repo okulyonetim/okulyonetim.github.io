@@ -4287,3 +4287,162 @@ html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
   color:#111!important;
   border-color:#ffc400!important;
 }
+
+
+/* ===== DARK THEME — SCREENSHOT CONTRAST FIX v976 =====
+   Gerçek cihaz ekranlarında kalan eski sabit açık yüzeyleri ve siyaha
+   gömülen başlık/ikonları merkezi tema ile eşleştir. */
+html[data-theme="dark"],
+body[data-theme="dark"]{
+  --ka-nav-menu-icon:#f5f5f5;
+}
+[data-theme="dark"]{
+  --ka-nav-menu-icon:#f5f5f5;
+}
+
+/* Sayfa başlıkları hiçbir modülün eski siyah renginde kalmasın. */
+html[data-theme="dark"] .ka-app-content h1,
+html[data-theme="dark"] .ka-app-content h2,
+html[data-theme="dark"] .ka-app-content h3,
+html[data-theme="dark"] .ka-app-content h4,
+html[data-theme="dark"] .ka-app-content h5,
+html[data-theme="dark"] .ka-app-content h6,
+html[data-theme="dark"] .ka-app-content .ka-page-head h1,
+html[data-theme="dark"] .ka-app-content .ka-page-head h2,
+html[data-theme="dark"] .ka-app-content .ka-page-head h3,
+html[data-theme="dark"] .ka-app-content .ka-people-page-head h1,
+html[data-theme="dark"] .ka-app-content .ka-people-page-head h2,
+html[data-theme="dark"] .ka-app-content .ka-schedule-head h2,
+html[data-theme="dark"] .ka-app-content .ka-duty-page-head h2,
+html[data-theme="dark"] .ka-app-content .ka-directory-title h2{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-app-content .ka-page-head p,
+html[data-theme="dark"] .ka-app-content .ka-people-page-head p,
+html[data-theme="dark"] .ka-app-content .ka-schedule-page p,
+html[data-theme="dark"] .ka-app-content .ka-duty-page p{
+  color:#a8a8a8!important;
+}
+
+/* Sınıf/öğrenci dizinleri */
+html[data-theme="dark"] .ka-app-content .ka-class-card,
+html[data-theme="dark"] .ka-app-content .ka-student-card,
+html[data-theme="dark"] .ka-app-content .ka-student-row,
+html[data-theme="dark"] .ka-app-content .ka-people-summary-grid>.ka-card,
+html[data-theme="dark"] .ka-app-content .ka-class-imports>button,
+html[data-theme="dark"] .ka-app-content .ka-filter-pills button,
+html[data-theme="dark"] .ka-app-content .ka-detail-tabs button,
+html[data-theme="dark"] .ka-app-content .ka-class-levels button,
+html[data-theme="dark"] .ka-app-content .ka-class-detail-tabs button{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] .ka-app-content .ka-class-card *,
+html[data-theme="dark"] .ka-app-content .ka-student-card *,
+html[data-theme="dark"] .ka-app-content .ka-student-row *{
+  color:inherit;
+}
+html[data-theme="dark"] .ka-app-content .ka-class-card small,
+html[data-theme="dark"] .ka-app-content .ka-student-card small,
+html[data-theme="dark"] .ka-app-content .ka-student-row small,
+html[data-theme="dark"] .ka-app-content .ka-class-main small{
+  color:#a8a8a8!important;
+}
+
+/* Yoklama */
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-filters,
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-datebar,
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-summary article,
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-student,
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-class-card,
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-absence{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-list-head strong,
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-name strong{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-name small,
+html[data-theme="dark"] [data-student-page="attendance"] .ka-attendance-list-head small{
+  color:#a8a8a8!important;
+}
+
+/* Ders programı */
+html[data-theme="dark"] .ka-schedule-page .ka-card,
+html[data-theme="dark"] .ka-schedule-page .ka-schedule-surface,
+html[data-theme="dark"] .ka-schedule-page .ka-schedule-mobile,
+html[data-theme="dark"] .ka-schedule-page .ka-schedule-mobile-day,
+html[data-theme="dark"] .ka-schedule-page .ka-schedule-mobile-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] .ka-schedule-page .ka-schedule-table,
+html[data-theme="dark"] .ka-schedule-page .ka-schedule-table td,
+html[data-theme="dark"] .ka-schedule-page .ka-schedule-table th{
+  color:#f5f5f5;
+}
+
+/* Mesajlaşma */
+html[data-theme="dark"] .ka-communication-page .ka-card,
+html[data-theme="dark"] .ka-communication-page .ka-communication-card,
+html[data-theme="dark"] .ka-communication-page .ka-message-card,
+html[data-theme="dark"] .ka-communication-page .ka-conversation-card,
+html[data-theme="dark"] .ka-communication-page .ka-communication-item{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] .ka-communication-page .ka-card *,
+html[data-theme="dark"] .ka-communication-page .ka-communication-card *,
+html[data-theme="dark"] .ka-communication-page .ka-message-card *,
+html[data-theme="dark"] .ka-communication-page .ka-conversation-card *{
+  color:inherit;
+}
+html[data-theme="dark"] .ka-communication-page .ka-muted,
+html[data-theme="dark"] .ka-communication-page small{
+  color:#a8a8a8!important;
+}
+
+/* Profilde beyaz detay yüzeylerini kesin olarak kapat. */
+html[data-theme="dark"] .ka-profile-page .ka-profile-section,
+html[data-theme="dark"] .ka-profile-page .ka-profile-detail-section,
+html[data-theme="dark"] .ka-profile-page .ka-profile-info,
+html[data-theme="dark"] .ka-profile-page .ka-profile-info-card,
+html[data-theme="dark"] .ka-profile-page .ka-profile-contact,
+html[data-theme="dark"] .ka-profile-page .ka-profile-contact-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+html[data-theme="dark"] .ka-profile-page .ka-profile-section *{
+  border-color:#303030;
+}
+html[data-theme="dark"] .ka-profile-page .ka-profile-section h3,
+html[data-theme="dark"] .ka-profile-page .ka-profile-section strong,
+html[data-theme="dark"] .ka-profile-page .ka-profile-section b{
+  color:#f5f5f5!important;
+}
+
+/* Ana sayfa: başlık ve okul özeti başlığı okunur olsun. */
+html[data-theme="dark"] .ka-home h1,
+html[data-theme="dark"] .ka-home h2,
+html[data-theme="dark"] .ka-home h3,
+html[data-theme="dark"] .ka-home .kh-section-title,
+html[data-theme="dark"] .ka-home .kh-section-head,
+html[data-theme="dark"] .ka-home .ka-school-summary-section h2{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-home .kh-section-head small,
+html[data-theme="dark"] .ka-home .kh-section-head p{
+  color:#a8a8a8!important;
+}
+
+/* Eski nöbet tablosundaki dekoratif yeşil başlık da yeni sarı sisteme bağlanır. */
+html[data-theme="dark"] .ka-duty-grid thead th{
+  background:linear-gradient(180deg,#5c4800,#2d250b)!important;
+  color:#fff!important;
+}
