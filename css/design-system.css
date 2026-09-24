@@ -3668,3 +3668,199 @@ html[data-theme="dark"] .ka-profile-page .classic-toolbar{
   background:#141414!important;
   border-color:#2d2d2d!important;
 }
+
+/* ===== TEMA RENK DÜZELTMELERİ — v2 =====
+   Resim 1: Profil kartları beyaz kalıyor (dark temada)
+   Resim 2: Sosyal medya butonları renk uyumsuzluğu
+   Resim 3: Haber silme butonu ve hava durumu kontrast
+   Resim 4: Menü "Öğretmen & Öğrenciler" başlık alanı
+*/
+
+/* ── SOSYAL MEDYA BUTONLARI (Resim 2) ── */
+/* Hem koyu hem açık temada net görünüm */
+.ka-home .kh-social button {
+  background: var(--ka-card-bg) !important;
+  color: var(--ka-text) !important;
+  border-color: var(--ka-border) !important;
+}
+.ka-home .kh-social button > span:last-child,
+.ka-home .kh-social button > b {
+  color: var(--ka-text) !important;
+}
+.ka-home .kh-social-icon {
+  color: var(--ka-primary) !important;
+}
+[data-theme="dark"] .ka-home .kh-social button {
+  background: #1a1a1a !important;
+  border-color: #333 !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-home .kh-social button > span:last-child,
+[data-theme="dark"] .ka-home .kh-social button > b {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-home .kh-social-icon {
+  color: #ffc400 !important;
+}
+
+/* ── HABERLER ŞERIDI (Resim 3) ── */
+/* Silme/kapat butonu ve haber metni rengi */
+.ka-home .kh-news {
+  background: var(--ka-card-bg) !important;
+  border-color: var(--ka-border) !important;
+}
+.ka-home .kh-news-item {
+  color: var(--ka-text) !important;
+}
+[data-theme="dark"] .ka-home .kh-news {
+  background: #141414 !important;
+  border-color: #2d2d2d !important;
+}
+[data-theme="dark"] .ka-home .kh-news-item {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-home .kh-news-label {
+  background: #ffc400 !important;
+  color: #111 !important;
+}
+
+/* ── HAVA DURUMU KARTI (Resim 3) ── */
+[data-theme="dark"] .ka-home .kh-weather-card {
+  background: #141414 !important;
+  border-color: #333 !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-home .kh-weather-card .kh-live-main b {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-home .kh-weather-card .kh-live-main small {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-home .kh-weather-arrow {
+  color: #a0a0a0 !important;
+}
+
+/* ── MENÜ SAYFASI BAŞLIĞI — "Öğretmen & Öğrenciler" (Resim 4) ── */
+/* Menü listesi ve başlık satırı */
+.ka-menu-head {
+  background: var(--ka-header-bg) !important;
+  border-bottom-color: var(--ka-border) !important;
+  color: var(--ka-text) !important;
+}
+.ka-menu-head h2 {
+  color: var(--ka-text) !important;
+}
+.ka-menu-head .ka-icon-button {
+  color: var(--ka-text) !important;
+}
+[data-theme="dark"] .ka-menu-head {
+  background: #0b0b0b !important;
+  border-bottom-color: #252525 !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-menu-head h2 {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-menu-head .ka-icon-button {
+  color: #f5f5f5 !important;
+  background: transparent !important;
+}
+[data-theme="dark"] .ka-menu-page {
+  background: #080808 !important;
+  color: #f5f5f5 !important;
+}
+
+/* Menü listesi — liste satırları */
+[data-theme="dark"] .ka-menu-list > .ka-btn {
+  background: #141414 !important;
+  color: #f5f5f5 !important;
+  border-color: #252525 !important;
+}
+[data-theme="dark"] .ka-menu-list > .ka-btn .ka-avatar {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-menu-list > .ka-btn strong {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-menu-list > .ka-btn > span:last-child {
+  color: #a0a0a0 !important;
+}
+
+/* ── PROFİL SAYFASI KARTLARI (Resim 1) ── */
+/* İstatistik, eylem ve temel bilgi kartları */
+[data-theme="dark"] .ka-profile-page .ka-profile-stat {
+  background: #141414 !important;
+  border-color: #252525 !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-stat__icon {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-stat > b {
+  color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-stat > small {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action {
+  background: #141414 !important;
+  border-color: #252525 !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action__icon {
+  background: #2b2b2b !important;
+  color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action__copy strong {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action__copy small {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action__count {
+  background: #1f1f1f !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action__count b {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action__count small {
+  color: #a0a0a0 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-action__chevron {
+  color: #666 !important;
+}
+/* Temel Bilgiler bölümü / ka-card */
+[data-theme="dark"] .ka-profile-page .ka-card {
+  background: #141414 !important;
+  border-color: #252525 !important;
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-card__header,
+[data-theme="dark"] .ka-profile-page .ka-card__body {
+  background: #141414 !important;
+  color: #f5f5f5 !important;
+  border-color: #252525 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-card *:not(.ka-profile-action__icon):not(.ka-badge) {
+  color: inherit;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-section__head > span {
+  color: #ffc400 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-section__head h3 {
+  color: #f5f5f5 !important;
+}
+[data-theme="dark"] .ka-profile-page .ka-profile-section__head p {
+  color: #a0a0a0 !important;
+}
+
+/* ── RAPOR/DÜZENLE/KAPAT TOOLBAR BUTONLARI (Resim 1 üst kısım) ── */
+[data-theme="dark"] .dv3h .dv3btn,
+[data-theme="dark"] [data-profile-toolbar] .ka-btn,
+[data-theme="dark"] .ka-teacher-profile-toolbar .ka-btn {
+  background: #1a1a1a !important;
+  border-color: #333 !important;
+  color: #f5f5f5 !important;
+}
