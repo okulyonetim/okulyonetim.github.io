@@ -4126,3 +4126,164 @@ html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
   border-color: #ffc400 !important;
   color: #111 !important;
 }
+
+
+/* ===== DARK THEME VISIBLE-SURFACE RESET v975 =====
+   Bu katman, eski modül CSS'lerinin tema değişkenlerini ezdiği ekranları
+   tekrar merkezi koyu yüzeye bağlar. Semantik başarı/uyarı renkleri korunur. */
+[data-theme="dark"] .ka-home,
+[data-theme="dark"] .ka-home-section,
+[data-theme="dark"] .ka-home-section__body,
+[data-theme="dark"] .ka-school-summary-section,
+[data-theme="dark"] .ka-school-summary-grid{
+  background:#080808!important;
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-school-summary-card{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#3a3a3a!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.28)!important;
+}
+[data-theme="dark"] .ka-school-summary-card *,
+[data-theme="dark"] .ka-school-summary-card>b,
+[data-theme="dark"] .ka-school-summary-card>small{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta,
+[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{
+  color:#a8a8a8!important;
+}
+[data-theme="dark"] .ka-school-summary-icon,
+[data-theme="dark"] .ka-school-stage-icon{
+  background:#252525!important;
+  color:#ffc400!important;
+  box-shadow:inset 0 0 0 1px #3a3a3a!important;
+}
+[data-theme="dark"] .ka-school-summary-card::after{
+  background:rgba(255,196,0,.08)!important;
+}
+
+/* Ana sayfa eski/nested kartlar: beyaz yüzey sızıntısını kapat. */
+[data-theme="dark"] .ka-home [class*="kh-"],
+[data-theme="dark"] .ka-home [class*="home-section"]{
+  border-color:#2d2d2d;
+}
+[data-theme="dark"] .ka-home .kh-card,
+[data-theme="dark"] .ka-home .kh-food-card,
+[data-theme="dark"] .ka-home .kh-weekday,
+[data-theme="dark"] .ka-home .kh-notes,
+[data-theme="dark"] .ka-home .kh-news,
+[data-theme="dark"] .ka-home .kh-dyn-item{
+  background:#141414!important;
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-home .kh-card h1,
+[data-theme="dark"] .ka-home .kh-card h2,
+[data-theme="dark"] .ka-home .kh-card h3,
+[data-theme="dark"] .ka-home .kh-card strong,
+[data-theme="dark"] .ka-home .kh-card b{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-home .kh-card small,
+[data-theme="dark"] .ka-home .kh-card .ka-muted{
+  color:#a8a8a8!important;
+}
+
+/* Menü liste ekranı: başlık, liste ve satırları tek dark sistemde tut. */
+[data-theme="dark"] #kaMenuLayer,
+[data-theme="dark"] #kaMenuLayer .ka-menu-page,
+[data-theme="dark"] #kaMenuLayer .ka-menu-head,
+[data-theme="dark"] #kaMenuLayer .ka-menu-list{
+  background:#080808!important;
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-head{
+  border-bottom-color:#2d2d2d!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-head h2,
+[data-theme="dark"] #kaMenuLayer .ka-menu-head h2 *,
+[data-theme="dark"] #kaMenuLayer .ka-menu-head .ka-icon-button{
+  color:#f5f5f5!important;
+  opacity:1!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-list>.ka-btn,
+[data-theme="dark"] #kaMenuLayer .ka-menu-list>.ka-btn.ka-btn--secondary{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-list>.ka-btn strong,
+[data-theme="dark"] #kaMenuLayer .ka-menu-list>.ka-btn span{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-list>.ka-btn .ka-avatar{
+  background:#252525!important;
+  border-color:#3b3b3b!important;
+}
+
+/* Profil ekranı: gerçek kartların sınıfı değişse bile beyaz kart kalmasın. */
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero),
+[data-theme="dark"] .ka-profile-page>article,
+[data-theme="dark"] .ka-profile-page .ka-profile-stats,
+[data-theme="dark"] .ka-profile-page .ka-profile-stat,
+[data-theme="dark"] .ka-profile-page .ka-profile-actions,
+[data-theme="dark"] .ka-profile-page .ka-profile-action,
+[data-theme="dark"] .ka-profile-page .ka-card,
+[data-theme="dark"] .ka-profile-page .ka-card__body{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#2d2d2d!important;
+}
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) h1,
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) h2,
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) h3,
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) strong,
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) b,
+[data-theme="dark"] .ka-profile-page>article h1,
+[data-theme="dark"] .ka-profile-page>article h2,
+[data-theme="dark"] .ka-profile-page>article h3,
+[data-theme="dark"] .ka-profile-page>article strong,
+[data-theme="dark"] .ka-profile-page>article b{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) small,
+[data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) p,
+[data-theme="dark"] .ka-profile-page>article small,
+[data-theme="dark"] .ka-profile-page>article p{
+  color:#a8a8a8!important;
+}
+
+/* Eski yeşil yönetim yüzeyleri: dekoratif yeşil yerine anthracite/sarı. */
+[data-theme="dark"] .ka-statistics-page{
+  --ka-stat-hero-start:#ffc400;
+  --ka-stat-hero-end:#7f5d00;
+  --ka-stat-hero-text:#111;
+  --ka-stat-hero-muted:#2b250f;
+}
+[data-theme="dark"] .ka-statistics-hero{
+  box-shadow:0 14px 30px rgba(0,0,0,.36)!important;
+}
+[data-theme="dark"] .classic-btn.primary{
+  background:#ffc400!important;
+  border-color:#ffc400!important;
+  color:#111!important;
+}
+[data-theme="dark"] .ka-report-preview__toolbar,
+[data-theme="dark"] .dv3h{
+  background:#0b0b0b!important;
+  color:#f5f5f5!important;
+  border-color:#2d2d2d!important;
+}
+[data-theme="dark"] .ka-report-preview__toolbar .dv3btn,
+[data-theme="dark"] .dv3h .dv3btn{
+  background:#f5f5f5!important;
+  color:#111!important;
+  border-color:#d0d0d0!important;
+}
+[data-theme="dark"] .ka-report-preview__toolbar .dv3btn.primary,
+[data-theme="dark"] .dv3h .dv3btn.primary{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
