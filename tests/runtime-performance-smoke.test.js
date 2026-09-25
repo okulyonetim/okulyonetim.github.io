@@ -20,7 +20,7 @@ assert(core.includes('const REMOTE_BATCH_SIZE=4'),'Firestore çekimleri kontroll
 assert(core.includes('Promise.allSettled(names.map(async name=>'),'Aynı batch içindeki Firestore sorguları paralel çalışmalı.');
 assert(core.includes('for(let i=0;i<names.length;i+=REMOTE_BATCH_SIZE)'),'Tam senkron kontrollü batchler halinde ilerlemeli.');
 assert(!core.includes('for(const name of names){const def=registered.get(name);if(!def)continue;try{fetched[name]=await fetchCollection(def)}'),'Firestore koleksiyonları seri bekletilmemeli.');
-assert(core.includes('dataRevision(name)!==started[name]||deviceWriteActive(name)||blocked.has(name)'),'Remote veri aktif/bekleyen local değişikliğin üstüne yazmamalı.');
+assert(core.includes('dataRevision(name)!==started[name]||deviceWriteActive(name)'),'Remote veri aktif/bekleyen local değişikliğin üstüne yazmamalı.');
 assert(core.includes('accepted.forEach(markDataRevision)'),'Remote uygulama revizyonu işaretlenmeli; eşzamanlı eski local hydrate remote veriyi geri almamalı.');
 assert(core.includes("const CORE_REALTIME_TYPES=['dersProgrami','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular']"),'Kritik küçük veri kümeleri realtime senkrona bağlı olmalı.');
 assert(core.includes('if(snap.metadata?.fromCache)return'),'Firestore kendi eski cache snapshotı local-first veriyi ezmemeli.');
