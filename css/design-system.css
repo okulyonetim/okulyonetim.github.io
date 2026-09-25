@@ -7858,3 +7858,28 @@ html[data-theme="dark"] .ka-app-header .ka-header-actions>.ka-header-profile{
 #v2ModuleRoot section.ka-teacher-profile .ka-teacher-stat-grid b{
   color:var(--ka-primary)!important;
 }
+
+
+/* ===== CENTRAL THEME — TEACHER DETAIL OUTSIDE MODULE ROOT ===== */
+.ka-teacher-profile-toolbar{
+  position:sticky!important;top:0!important;z-index:7!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;padding:12px 18px!important;margin:0!important;
+  background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border:0!important;border-bottom:1px solid var(--ka-border)!important;box-shadow:var(--ka-shadow-sm)!important;
+}
+.ka-teacher-profile-toolbar .ka-btn{
+  min-height:52px!important;background:var(--ka-card-raised-bg)!important;color:var(--ka-text)!important;border:1px solid var(--ka-border-strong)!important;border-radius:15px!important;box-shadow:none!important;
+}
+.ka-teacher-profile-toolbar .ka-btn svg,.ka-teacher-profile-toolbar .ka-btn span{color:var(--ka-text)!important}
+.ka-teacher-profile-hero{
+  margin:20px 20px 0!important;background:var(--ka-card-raised-bg)!important;background-image:none!important;color:var(--ka-text)!important;border:1px solid var(--ka-border)!important;box-shadow:var(--ka-shadow-md)!important;
+}
+.ka-teacher-profile-hero h1{color:var(--ka-text)!important}
+.ka-teacher-profile-hero p{color:var(--ka-text-muted)!important}
+.ka-teacher-profile-avatar,.ka-teacher-profile-book{background:var(--ka-muted-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border-strong)!important}
+.ka-teacher-contact-grid,.ka-teacher-stat-grid{margin-left:20px!important;margin-right:20px!important}
+html[data-theme="dark"] .ka-teacher-profile-toolbar,
+html[data-theme="dark"] .ka-teacher-profile-hero,
+html[data-theme="dark"] .ka-teacher-contact-grid>a,
+html[data-theme="dark"] .ka-teacher-contact-grid>button,
+html[data-theme="dark"] .ka-teacher-stat-grid>.ka-card{
+  background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important;
+}
