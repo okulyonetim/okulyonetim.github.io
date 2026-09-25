@@ -7147,3 +7147,42 @@ html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-week-item{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-text)!important;
 }
+
+
+/* ===== CENTRAL THEME ENFORCEMENT v1015 =====
+   Tüm modül renkleri tek merkezden beslenir. */
+:root{
+  --ka-module-people-1:var(--ka-primary);--ka-module-people-2:var(--ka-primary-hover);
+  --ka-module-exams-1:var(--ka-primary);--ka-module-exams-2:var(--ka-primary-hover);
+  --ka-module-programs-1:var(--ka-primary);--ka-module-programs-2:var(--ka-primary-hover);
+  --ka-module-communication-1:var(--ka-primary);--ka-module-communication-2:var(--ka-primary-hover);
+  --ka-module-calendar-1:var(--ka-primary);--ka-module-calendar-2:var(--ka-primary-hover);
+  --ka-module-transport-1:var(--ka-primary);--ka-module-transport-2:var(--ka-primary-hover);
+  --ka-module-documents-1:var(--ka-primary);--ka-module-documents-2:var(--ka-primary-hover);
+  --ka-module-management-1:var(--ka-primary);--ka-module-management-2:var(--ka-primary-hover);
+  --ka-module-settings-1:var(--ka-primary);--ka-module-settings-2:var(--ka-primary-hover);
+  --ka-food-mon-bg:var(--ka-card-raised-bg);--ka-food-mon-border:var(--ka-border);--ka-food-mon-text:var(--ka-text);
+  --ka-food-tue-bg:var(--ka-card-raised-bg);--ka-food-tue-border:var(--ka-border);--ka-food-tue-text:var(--ka-text);
+  --ka-food-wed-bg:var(--ka-card-raised-bg);--ka-food-wed-border:var(--ka-border);--ka-food-wed-text:var(--ka-text);
+  --ka-food-thu-bg:var(--ka-card-raised-bg);--ka-food-thu-border:var(--ka-border);--ka-food-thu-text:var(--ka-text);
+  --ka-food-fri-bg:var(--ka-card-raised-bg);--ka-food-fri-border:var(--ka-border);--ka-food-fri-text:var(--ka-text);
+}
+[data-theme="dark"]{
+  --ka-module-people-1:var(--ka-primary);--ka-module-people-2:var(--ka-primary-hover);
+  --ka-module-exams-1:var(--ka-primary);--ka-module-exams-2:var(--ka-primary-hover);
+  --ka-module-programs-1:var(--ka-primary);--ka-module-programs-2:var(--ka-primary-hover);
+  --ka-module-communication-1:var(--ka-primary);--ka-module-communication-2:var(--ka-primary-hover);
+  --ka-module-calendar-1:var(--ka-primary);--ka-module-calendar-2:var(--ka-primary-hover);
+  --ka-module-transport-1:var(--ka-primary);--ka-module-transport-2:var(--ka-primary-hover);
+  --ka-module-documents-1:var(--ka-primary);--ka-module-documents-2:var(--ka-primary-hover);
+  --ka-module-management-1:var(--ka-primary);--ka-module-management-2:var(--ka-primary-hover);
+  --ka-module-settings-1:var(--ka-primary);--ka-module-settings-2:var(--ka-primary-hover);
+  --ka-food-mon-bg:var(--ka-card-raised-bg);--ka-food-mon-border:var(--ka-border);--ka-food-mon-text:var(--ka-text);
+  --ka-food-tue-bg:var(--ka-card-raised-bg);--ka-food-tue-border:var(--ka-border);--ka-food-tue-text:var(--ka-text);
+  --ka-food-wed-bg:var(--ka-card-raised-bg);--ka-food-wed-border:var(--ka-border);--ka-food-wed-text:var(--ka-text);
+  --ka-food-thu-bg:var(--ka-card-raised-bg);--ka-food-thu-border:var(--ka-border);--ka-food-thu-text:var(--ka-text);
+  --ka-food-fri-bg:var(--ka-card-raised-bg);--ka-food-fri-border:var(--ka-border);--ka-food-fri-text:var(--ka-text);
+}
+#v2ModuleRoot .ka-menu-card{
+  background:linear-gradient(145deg,var(--ka-primary),var(--ka-primary-hover))!important;
+}
