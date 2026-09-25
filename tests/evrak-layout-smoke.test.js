@@ -6,5 +6,5 @@ if(!documents.includes('ka-evrak-page'))throw new Error('Evrak Takibi kök konte
 if(!documents.includes('ka-evrak-filter-row'))throw new Error('Evrak durum filtreleri taşmayı önleyen grid konteynerini kullanmalı.');
 if(!css.includes('.ka-evrak-filter-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))'))throw new Error('Dar ekranda evrak filtreleri iki sütunlu responsive grid olmalı.');
 if(!css.includes('@media (min-width:560px)'))throw new Error('Geniş ekranda evrak filtreleri beş sütuna dönebilmeli.');
-if(!index.includes('css/design-system.css?v=993'))throw new Error('Evrak düzeni CSS cache sürümü güncel olmalı.');
+if(!index.includes('css/design-system.css?v=994'))throw new Error('Evrak düzeni CSS cache sürümü güncel olmalı.');
 console.log('Evrak Takibi mobil taşma regresyon testi başarılı.');
