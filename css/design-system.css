@@ -9126,3 +9126,45 @@ html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-brea
 html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-break *{
   color:#f5f5f5!important;
 }
+
+
+/* ===== DARK THEME — TAŞIMA ANA SAYFA HERO FINAL v1042 ===== */
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero{
+  background:#151515!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border:2px solid #ffc400!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero::before,
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero::after{
+  display:none!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero__copy{
+  background:transparent!important;
+  border:0!important;
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero__copy *{
+  border:0!important;
+  background:transparent!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero__eyebrow{
+  color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero__copy h2{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero__copy p{
+  color:#bdbdbd!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero__icon{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-transport-page .ka-transport-page-hero__count{
+  background:#191919!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+}
