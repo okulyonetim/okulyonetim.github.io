@@ -8,18 +8,18 @@
 if(global.ScheduleReportColumnZebra)return;
 
 const GLOBAL_SOFT_STYLE=`<style data-ka-report-soft-fill>
-.ka-report table th{background:#f3f6f4!important;color:#173e32!important;border-color:#9baba4!important}
-.ka-report .bolum-baslik{background:#f7f9f8!important}
-.ka-report .ka-sr-report .ka-sr-neutral{background:#f8faf9!important}
-.ka-report .ka-sr-report .scope{background:#f8faf9!important}
+.ka-report table th{background:var(--ka-report-soft-header-bg)!important;color:var(--ka-report-soft-header-text)!important;border-color:var(--ka-report-soft-border)!important}
+.ka-report .bolum-baslik{background:var(--ka-report-soft-section-bg)!important}
+.ka-report .ka-sr-report .ka-sr-neutral{background:var(--ka-report-soft-neutral-bg)!important}
+.ka-report .ka-sr-report .scope{background:var(--ka-report-soft-neutral-bg)!important}
 .ka-report .ka-sr-class-teacher{display:block;margin:.45mm 0 0;font-size:8pt;line-height:1.08;font-weight:700;color:#53645d;text-align:center}
 </style>`;
 
 const COLUMN_ZEBRA_STYLE=`<style data-ka-schedule-column-zebra>
-.ka-report .ka-sr-report tbody tr>td.ka-sr-day-a{background:#fbfdfc!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
-.ka-report .ka-sr-report tbody tr>td.ka-sr-day-b{background:#fff!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
-.ka-report .ka-sr-report thead tr>th.ka-sr-day-a{background:#f3f7f5!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
-.ka-report .ka-sr-report thead tr>th.ka-sr-day-b{background:#fafcfb!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+.ka-report .ka-sr-report tbody tr>td.ka-sr-day-a{background:var(--ka-report-zebra-a)!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+.ka-report .ka-sr-report tbody tr>td.ka-sr-day-b{background:var(--ka-report-zebra-b)!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+.ka-report .ka-sr-report thead tr>th.ka-sr-day-a{background:var(--ka-report-zebra-head-a)!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+.ka-report .ka-sr-report thead tr>th.ka-sr-day-b{background:var(--ka-report-zebra-head-b)!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
 </style>`;
 
 const arr=key=>{const v=global.AppStore?.data?.(key);return Array.isArray(v)?v:[]};
