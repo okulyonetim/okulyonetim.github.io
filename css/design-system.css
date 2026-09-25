@@ -6496,3 +6496,111 @@ html[data-theme="dark"] .ka-app-header .ka-icon-button,
 html[data-theme="dark"] .ka-app-header .ka-header-notification{
   color:var(--ka-header-text)!important;
 }
+
+
+/* ===== DARK THEME FINAL OVERRIDE — TEK MERKEZ =====
+   Gerçek ekran bileşenleri için root bağımsız son katman. */
+html[data-theme="dark"] .ka-app-header,
+html[data-theme="dark"] .ka-app-header .ka-app-brand,
+html[data-theme="dark"] .ka-app-header .ka-school-meta,
+html[data-theme="dark"] .ka-app-header .ka-icon-button{
+  background:var(--ka-header-bg)!important;
+  color:var(--ka-header-text)!important;
+  border-color:var(--ka-header-border)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-profile-hero{
+  background:linear-gradient(135deg,var(--ka-module-people-2),var(--ka-module-people-1))!important;
+  color:var(--ka-on-accent)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-profile-hero h1,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-profile-hero p,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-profile-hero .ka-badge,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-profile-avatar,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-profile-book{
+  color:var(--ka-on-accent)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-contact-grid .ka-card,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-stat-grid .ka-card,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-detail-section,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-doc-group{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-contact-grid .ka-card *,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-stat-grid .ka-card *,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-detail-section *,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-doc-group *{
+  color:inherit;
+}
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-stat-grid .ka-card small,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-stat-grid .ka-card span,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-detail-row span,
+html[data-theme="dark"] .ka-teacher-profile .ka-teacher-info span,
+html[data-theme="dark"] .ka-teacher-profile .ka-muted{
+  color:var(--ka-module-muted)!important;
+}
+html[data-theme="dark"] .ka-profile-page .ka-card,
+html[data-theme="dark"] .ka-profile-page .ka-profile-section,
+html[data-theme="dark"] .ka-profile-page .ka-profile-stat{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-profile-page .ka-card *,
+html[data-theme="dark"] .ka-profile-page .ka-profile-section *{
+  color:inherit;
+}
+html[data-theme="dark"] .ka-home .kh-card,
+html[data-theme="dark"] .ka-home .kh-weather-card,
+html[data-theme="dark"] .ka-home .kh-task-card,
+html[data-theme="dark"] .ka-home .kh-duty-card,
+html[data-theme="dark"] .ka-home .kh-news,
+html[data-theme="dark"] .ka-home .kh-notes,
+html[data-theme="dark"] .ka-home .kh-weekday,
+html[data-theme="dark"] .ka-home .kh-dyn-item,
+html[data-theme="dark"] .ka-home .kh-quick button,
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="calendar"] .kh-row{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-home .kh-card *,
+html[data-theme="dark"] .ka-home .kh-weather-card *,
+html[data-theme="dark"] .ka-home .kh-task-card *,
+html[data-theme="dark"] .ka-home .kh-duty-card *,
+html[data-theme="dark"] .ka-home .kh-news *,
+html[data-theme="dark"] .ka-home .kh-notes *,
+html[data-theme="dark"] .ka-home .kh-weekday *,
+html[data-theme="dark"] .ka-home .kh-quick button *{
+  border-color:var(--ka-module-border);
+}
+html[data-theme="dark"] .ka-home .kh-card strong,
+html[data-theme="dark"] .ka-home .kh-card b,
+html[data-theme="dark"] .ka-home .kh-card h1,
+html[data-theme="dark"] .ka-home .kh-card h2,
+html[data-theme="dark"] .ka-home .kh-card h3,
+html[data-theme="dark"] .ka-home .kh-task-card strong,
+html[data-theme="dark"] .ka-home .kh-duty-card strong,
+html[data-theme="dark"] .ka-home .kh-section-title{
+  color:var(--ka-module-text)!important;
+}
+html[data-theme="dark"] .ka-home .kh-card small,
+html[data-theme="dark"] .ka-home .kh-card p,
+html[data-theme="dark"] .ka-home .kh-task-card small,
+html[data-theme="dark"] .ka-home .kh-duty-card small,
+html[data-theme="dark"] .ka-home .kh-place{
+  color:var(--ka-module-muted)!important;
+}
+html[data-theme="dark"] .ka-school-summary-card{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-school-summary-card *{
+  color:inherit;
+}
+html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta,
+html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{
+  color:var(--ka-module-muted)!important;
+}
