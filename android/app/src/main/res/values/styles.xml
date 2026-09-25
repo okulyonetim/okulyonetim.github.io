@@ -7,7 +7,7 @@
         <item name="android:windowBackground">@color/colorPrimary</item>
         <!-- Uygulama status bar ve nav bar renklerini JS ile kontrol edebilsin -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <!-- Başlangıç rengi (JS tema uygulanana kadar görünür) -->
+        <!-- Merkezi tema başlangıç rengi; çalışma zamanında design-system tokenları uygulanır. -->
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
