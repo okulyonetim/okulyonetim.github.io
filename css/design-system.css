@@ -7497,3 +7497,68 @@ html[data-theme="dark"] #kaMenuLayer .ka-menu-card>.ka-badge{
   color:var(--ka-button-text)!important;
   border-color:color-mix(in srgb,var(--ka-button-text) 20%,transparent)!important;
 }
+
+
+/* ===== CENTRAL THEME FINAL MODULE LOCK v1025 =====
+   Legacy module surfaces are forced onto the central theme tokens. */
+html[data-theme="dark"] #v2ModuleRoot,
+html[data-theme="dark"] #v2ModuleRoot *:not(svg):not(path):not(line):not(circle):not(rect):not(polyline):not(polygon){
+  --module-bg:var(--ka-card-bg);
+  --module-surface:var(--ka-card-bg);
+  --module-border:var(--ka-border);
+  --module-text:var(--ka-text);
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-home-section,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-row,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button,
+html[data-theme="dark"] #v2ModuleRoot .card,
+html[data-theme="dark"] #v2ModuleRoot .module-card,
+html[data-theme="dark"] #v2ModuleRoot .classic-card,
+html[data-theme="dark"] #v2ModuleRoot .detay-card,
+html[data-theme="dark"] #v2ModuleRoot .detay-panel,
+html[data-theme="dark"] #v2ModuleRoot .ka-panel,
+html[data-theme="dark"] #v2ModuleRoot .ka-surface,
+html[data-theme="dark"] #v2ModuleRoot .ka-table-wrap{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot input,
+html[data-theme="dark"] #v2ModuleRoot select,
+html[data-theme="dark"] #v2ModuleRoot textarea{
+  background:var(--ka-input-bg)!important;
+  color:var(--ka-input-text)!important;
+  border-color:var(--ka-input-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot table th,
+html[data-theme="dark"] #v2ModuleRoot table td{
+  color:var(--ka-text);
+  border-color:var(--ka-border);
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-card__header,
+html[data-theme="dark"] #v2ModuleRoot .ka-card__footer,
+html[data-theme="dark"] #v2ModuleRoot .ka-detail-panel>.ka-card__header{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot p,
+html[data-theme="dark"] #v2ModuleRoot span,
+html[data-theme="dark"] #v2ModuleRoot small,
+html[data-theme="dark"] #v2ModuleRoot label,
+html[data-theme="dark"] #v2ModuleRoot h1,
+html[data-theme="dark"] #v2ModuleRoot h2,
+html[data-theme="dark"] #v2ModuleRoot h3,
+html[data-theme="dark"] #v2ModuleRoot h4,
+html[data-theme="dark"] #v2ModuleRoot strong,
+html[data-theme="dark"] #v2ModuleRoot b{color:var(--ka-text);}
+html[data-theme="dark"] #v2ModuleRoot .ka-text-muted,
+html[data-theme="dark"] #v2ModuleRoot .muted,
+html[data-theme="dark"] #v2ModuleRoot [class*="muted"]{color:var(--ka-text-muted)!important;}
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-meta{color:var(--ka-text-muted)!important;}
+html[data-theme="dark"] #v2ModuleRoot .ka-class-hero,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-hero,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero{color:var(--ka-on-accent)!important;}
