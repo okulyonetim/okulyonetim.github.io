@@ -30,7 +30,7 @@ for(const token of [
 
 assert(management.includes('function ptPuantajAyBasligi()')&&management.includes('return ilk===son?ilk:`${ilk} - ${son}`'),'Puantaj AY alanı tarih aralığı yerine ay adlarını üretmeli.');
 assert(management.includes('.payroll th{height:118px;padding:0 0 4px;background:#fff'),'Tarih sütunları renksiz/beyaz kalmalı.');
-assert(management.includes('.payroll th.summary{width:6mm;background:#e8f0ee')&&management.includes('.payroll td.summary-cell{background:#e8f0ee}'),'Tarihlerden sonraki özet sütunlarının tamamı tek ortak renkte olmalı.');
+assert(management.includes('.payroll th.summary{width:6mm;background:var(--ka-report-payroll-summary)')&&management.includes('.payroll td.summary-cell{background:var(--ka-report-payroll-summary)}'),'Tarihlerden sonraki özet sütunlarının tamamı tek ortak renkte olmalı.');
 assert(management.includes('writing-mode:vertical-rl')&&management.includes('transform:rotate(180deg)'),'Özet başlıkların dikey metin yönü korunmalı.');
 assert(!classic.includes('decoratePuantaj')&&!classic.includes('puantajTablosu'),'Classic parite puantajı DOM yamalarıyla yeniden sahiplenmemeli.');
 for(const selector of [
