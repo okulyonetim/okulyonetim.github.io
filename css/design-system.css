@@ -5545,3 +5545,146 @@ body[data-theme="dark"] .ka-report-preview svg{
   color:currentColor!important;
   stroke:currentColor!important;
 }
+
+
+/* ===== TEACHER / STUDENT DETAIL DARK CONTRAST — FINAL v984 =====
+   Yalnız dark tema. Light tema ve çalışan modül renkleri değiştirilmez. */
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile section,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail section,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail section{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail b,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail b{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile p,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile small,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail p,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail small,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail p,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail small,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-muted{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile [class*="section-head"] *,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail [class*="section-head"] *,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail [class*="section-head"] *{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile [class*="section-head"] p,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail [class*="section-head"] p,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail [class*="section-head"] p{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-surface,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-surface,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-surface{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-card__header,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-card__body,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-card__footer,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-card__header,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-card__body,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-card__footer,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-card__header,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-card__body,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-card__footer{
+  background:transparent!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-row,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-teacher-detail-row,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-info-row{
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-row b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-teacher-detail-row b,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-info-row>b{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-row span,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-teacher-detail-row span,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-info-row>span{
+  color:var(--ka-text-muted)!important;
+}
+
+/* Ders programı / nöbet / belirli gün-hafta başlık ve satırları */
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page *,
+html[data-theme="dark"] #v2ModuleRoot .ka-duty-page *{
+  border-color:var(--ka-border);
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-table th,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-table td,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-duty-page .ka-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-duty-page table *{
+  color:var(--ka-text);
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-table small,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-card small,
+html[data-theme="dark"] #v2ModuleRoot .ka-duty-page .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-duty-page small{
+  color:var(--ka-text-muted)!important;
+}
+
+/* Rapor / Düzenle / Kapat: öğretmen detay toolbarı tamamen anthracite + sarı. */
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-toolbar,
+html[data-theme="dark"] #v2ModuleRoot [data-profile-toolbar],
+html[data-theme="dark"] #v2ModuleRoot [data-ka-profile-toolbar],
+html[data-theme="dark"] #v2ModuleRoot [data-profile-actions]{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn,
+html[data-theme="dark"] #v2ModuleRoot [data-profile-toolbar] .ka-btn,
+html[data-theme="dark"] #v2ModuleRoot [data-ka-profile-toolbar] .ka-btn,
+html[data-theme="dark"] #v2ModuleRoot [data-profile-actions] .ka-btn{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border-strong)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn:hover,
+html[data-theme="dark"] #v2ModuleRoot [data-profile-toolbar] .ka-btn:hover,
+html[data-theme="dark"] #v2ModuleRoot [data-ka-profile-toolbar] .ka-btn:hover,
+html[data-theme="dark"] #v2ModuleRoot [data-profile-actions] .ka-btn:hover{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn.primary,
+html[data-theme="dark"] #v2ModuleRoot [data-profile-toolbar] .primary,
+html[data-theme="dark"] #v2ModuleRoot [data-ka-profile-toolbar] .primary{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
