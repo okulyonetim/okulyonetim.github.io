@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu önbellekten hızlıca sunup
    ağı arka planda yenilemek ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v1075';
+const CACHE_ADI='oy-cache-v1076';
 
 let messaging=null;
 try{
@@ -24,7 +24,7 @@ const FIREBASE_SDK=[
 
 const ONBELLEGE_ALINACAKLAR=[
   './','./index.html','./manifest.json',
-  './css/design-system.css?v=1010','./css/dashboard-announcement-media.css?v=921','./js/app-loader.js?v=1036','./js/modules/academic.js?v=882','./js/modules/communication.js?v=839',
+  './css/design-system.css?v=1011','./css/dashboard-announcement-media.css?v=921','./js/app-loader.js?v=1036','./js/modules/academic.js?v=882','./js/modules/communication.js?v=839',
 './css/dashboard-announcement-media.css',
   './js/firebase-init.js','./js/modules/food-menu.js?v=1036','./js/modules/food-menu.js','./js/core/app-navigation-behavior.js?v=934','./js/core/app-navigation-behavior.js','./js/core/teacher-delete-lifecycle.js?v=933','./js/core/teacher-delete-lifecycle.js','./js/core/student-exam-result-details.js?v=925','./js/core/core.js?v=1034','./js/core/core.js','./js/core/login-security.js?v=885','./js/core/login-security.js','./js/core/duty-report-live-places.js?v=913','./js/core/duty-report-live-places.js','./js/core/duty-holiday-mode-source.js?v=930','./js/core/duty-holiday-mode-source.js','./js/core/transport-holiday-mode-bridge.js?v=931','./js/core/transport-holiday-mode-bridge.js','./js/core/schedule-data-integrity.js?v=917','./js/core/schedule-data-integrity.js','./js/core/schedule-report-redesign.js?v=942','./js/core/schedule-report-redesign.js','./js/core/schedule-report-column-zebra.js?v=939','./js/core/schedule-report-column-zebra.js','./js/core/dashboard-announcement-media.js?v=921','./js/core/dashboard-announcement-media.js','./js/core/admin-password-reset.js?v=948','./js/core/admin-password-reset.js','./js/core/settings-back-navigation.js?v=944','./js/core/settings-back-navigation.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js?v=1035','./js/core/shell-ui.js','./js/modules/school-live-status.js','./js/modules/classic-parity.js','./js/modules/classic-excel-parity.js','./js/modules/classic-personnel-parity.js','./js/modules/report-engine.js','./js/modules/dashboard.js?v=1031','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/people-classic-ui.js','./js/modules/classes-mobile-parity.js','./js/modules/class-seating.js','./js/modules/academic.js','./js/modules/management.js?v=882','./js/modules/management.js','./js/modules/communication.js','./js/modules/transport.js?v=947','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js?v=912','./js/modules/settings.js',
   './js/modules/payroll-change.js','./js/modules/personnel-documents.js','./js/modules/meeting-schedule.js','./js/modules/assistant.js',
@@ -49,7 +49,7 @@ self.addEventListener('install',event=>{
 });
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const names=await caches.keys(),old=names.filter(n=>n!==CACHE_ADI&&/^oy-cache-v\d+$/.test(n));await Promise.all(old.map(n=>caches.delete(n)));await self.clients.claim()})())});
 function firebaseSdkIstegiMi(req){try{const u=new URL(req.url);return u.origin==='https://www.gstatic.com'&&u.pathname.startsWith('/firebasejs/10.12.2/')&&/-compat\.js$/.test(u.pathname)}catch(_){return false}}
-async function firebaseSdkCacheFirst(event){const cached=await caches.match(event.request);if(cached)return cached;try{const response=await fetch(event.request);if(response){const copy=response.clone();event.waitUntil(caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{}));}return response}catch(_){return new Response('',{status:503,headers:{'Content-Type':'application/javascript; charset=utf-8'}})}}
+async function firebaseSdkCacheFirst(event){const cached=await caches.match(event.request,{ignoreSearch:true});if(cached)return cached;try{const response=await fetch(event.request);if(response){const copy=response.clone();event.waitUntil(caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{}));}return response}catch(_){return new Response('',{status:503,headers:{'Content-Type':'application/javascript; charset=utf-8'}})}}
 function apiIstegiMi(url){return url.includes('firestore.googleapis.com')||url.includes('identitytoolkit.googleapis.com')||url.includes('securetoken.googleapis.com')||url.includes('firebaseinstallations.googleapis.com')||url.includes('fcmregistrations.googleapis.com');}
 function statikKaynakMi(req){try{const u=new URL(req.url);if(u.origin!==self.location.origin)return false;return /\.(?:js|css|png|jpg|jpeg|webp|svg|ico|json|woff2?)$/i.test(u.pathname);}catch(_){return false;}}
 function kodKaynakMi(req){try{const u=new URL(req.url);return u.origin===self.location.origin&&/\.(?:js|css)$/i.test(u.pathname);}catch(_){return false;}}
