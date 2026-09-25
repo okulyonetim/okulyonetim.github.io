@@ -8429,3 +8429,53 @@ html[data-theme="dark"] .ka-home-page .ka-stat-card,
 html[data-theme="dark"] .ka-home-page .ka-summary-card{
   background:var(--ka-card-bg)!important;
 }
+
+/* ===== DARK MAP PAGE — YELLOW BORDER / REDUCED FILL AUTHORITY ===== */
+/* Harita modülünde sarı dolgu yerine koyu yüzey + belirgin sarı kenarlık. */
+html[data-theme="dark"] .ka-map-page .ka-map-hero,
+html[data-theme="dark"] .ka-map-page .ka-map-workspace,
+html[data-theme="dark"] .ka-map-page .ka-map-canvas-wrap,
+html[data-theme="dark"] .ka-map-page .ka-map-route-hint,
+html[data-theme="dark"] .ka-map-page .ka-map-favorites,
+html[data-theme="dark"] .ka-map-page .ka-map-card{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-hero::after{
+  display:none!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-route-hint,
+html[data-theme="dark"] .ka-map-page [class*="route-hint"],
+html[data-theme="dark"] .ka-map-page [class*="map-hint"]{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-route-hint *,
+html[data-theme="dark"] .ka-map-page [class*="route-hint"] *,
+html[data-theme="dark"] .ka-map-page [class*="map-hint"] *{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-favorites,
+html[data-theme="dark"] .ka-map-page [class*="favorite"]{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page [class*="favorite"] button,
+html[data-theme="dark"] .ka-map-page [class*="favorite"] .ka-btn{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page [class*="favorite"] button:hover,
+html[data-theme="dark"] .ka-map-page [class*="favorite"] .ka-btn:hover{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-search-results,
+html[data-theme="dark"] .ka-map-page .ka-map-stat{
+  border-color:var(--ka-primary)!important;
+}
