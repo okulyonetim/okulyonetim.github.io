@@ -8310,3 +8310,102 @@ html[data-theme="dark"] #kaMenuLayer .ka-menu-card__icon *,
 html[data-theme="dark"] #v2ModuleRoot .ka-menu-card__icon *{
   color:inherit!important;
 }
+
+/* ===== DARK TRANSPORT — YELLOW BORDER / REDUCED YELLOW FILL AUTHORITY ===== */
+/* Taşıma modülünde sarı vurgu kenarlık olarak kalır; büyük sarı dolgular
+   ve soluk sarı ikon yüzeyleri koyu kart yüzeyine çekilir. */
+html[data-theme="dark"] .ka-transport-service-card,
+html[data-theme="dark"] .ka-transport-detail,
+html[data-theme="dark"] .ka-transport-info-card,
+html[data-theme="dark"] .ka-transport-student-list,
+html[data-theme="dark"] .ka-transport-student-card{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-service-card .ka-card__body,
+html[data-theme="dark"] .ka-transport-detail .ka-card,
+html[data-theme="dark"] .ka-transport-detail .ka-card__body{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-transport-service-card__side .ka-btn,
+html[data-theme="dark"] [data-service-edit]{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-service-card__side .ka-btn:hover,
+html[data-theme="dark"] [data-service-edit]:hover{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-transport-filters{
+  border:2px solid var(--ka-primary)!important;
+  background:var(--ka-card-bg)!important;
+}
+html[data-theme="dark"] .ka-transport-filters .ka-btn:not(.ka-btn--secondary){
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-filters .ka-btn:not(.ka-btn--secondary):hover,
+html[data-theme="dark"] .ka-transport-filters .ka-btn.active,
+html[data-theme="dark"] .ka-transport-filters .ka-btn[aria-selected="true"]{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-transport-report-actions .ka-btn--secondary,
+html[data-theme="dark"] .ka-transport-detail-actions .ka-btn--secondary{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-report-actions .ka-btn--secondary:hover,
+html[data-theme="dark"] .ka-transport-detail-actions .ka-btn--secondary:hover{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-transport-info-list>div{
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-transport-detail [class*="icon"],
+html[data-theme="dark"] .ka-transport-detail [class*="icon"] > span{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-detail .ka-badge,
+html[data-theme="dark"] .ka-transport-service-card .ka-badge{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-detail .ka-badge--success,
+html[data-theme="dark"] .ka-transport-service-card .ka-badge--success{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+/* Taşıma kahraman alanı */
+html[data-theme="dark"] .ka-transport-hero,
+html[data-theme="dark"] .ka-transport-page .ka-hero,
+html[data-theme="dark"] .ka-transport-page [class*="hero"]{
+  background:var(--ka-card-raised-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+html[data-theme="dark"] .ka-transport-hero h1,
+html[data-theme="dark"] .ka-transport-hero h2,
+html[data-theme="dark"] .ka-transport-hero p,
+html[data-theme="dark"] .ka-transport-page [class*="hero"] h1,
+html[data-theme="dark"] .ka-transport-page [class*="hero"] h2,
+html[data-theme="dark"] .ka-transport-page [class*="hero"] p{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-transport-hero .ka-badge,
+html[data-theme="dark"] .ka-transport-page [class*="hero"] .ka-badge{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
