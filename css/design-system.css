@@ -90,7 +90,7 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-reminder-head__mark{width:48px;height:48px;border-radius:15px;background:var(--ka-primary);color:var(--ka-button-text);display:grid;place-items:center;box-shadow:0 8px 20px color-mix(in srgb,var(--ka-primary) 24%,transparent)}.ka-reminder-head__mark svg{width:24px;height:24px}.ka-reminder-head__copy{min-width:0}.ka-reminder-head__copy>small{display:block;color:var(--ka-primary);font-size:8.5px;font-weight:900;letter-spacing:.12em;line-height:1.2}.ka-reminder-head__copy h2{margin-top:3px;color:var(--ka-text);font-size:20px;line-height:1.15;letter-spacing:-.02em}.ka-reminder-head__copy p{margin-top:4px;color:var(--ka-text-muted);font-size:10.5px;line-height:1.35}.ka-reminder-head__copy p b{color:var(--ka-text);font-weight:850}.ka-reminder-close{width:38px;height:38px;padding:0;border:1px solid var(--ka-border);border-radius:12px;background:var(--ka-card-bg);color:var(--ka-text-muted);display:grid;place-items:center;cursor:pointer}.ka-reminder-close svg{width:18px;height:18px}.ka-reminder-close:active{background:var(--ka-muted-bg);transform:scale(.96)}.ka-reminder-close:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}
 .ka-reminder-summary{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:10px 12px 9px;background:var(--ka-card-raised-bg)}.ka-reminder-summary>div{min-width:0;min-height:52px;padding:7px 8px;border:1px solid var(--ka-border);border-radius:14px;background:var(--ka-card-bg);display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:6px}.ka-reminder-summary>div>span{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:10px;font-weight:950}.ka-reminder-summary small{min-width:0;color:var(--ka-text-muted);font-size:8.2px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ka-reminder-summary strong{color:var(--ka-text);font-size:15px;line-height:1;font-variant-numeric:tabular-nums}.ka-reminder-summary .is-overdue>span{background:color-mix(in srgb,var(--ka-danger) 13%,transparent);color:var(--ka-danger)}.ka-reminder-summary .is-today>span{background:color-mix(in srgb,var(--ka-warning) 14%,transparent);color:var(--ka-warning)}.ka-reminder-summary .is-upcoming>span{background:var(--ka-primary-soft);color:var(--ka-primary)}
 .ka-reminder-list-head{flex:0 0 auto;min-height:43px;padding:5px 14px 7px;display:flex;align-items:center;justify-content:space-between;gap:10px}.ka-reminder-list-head>div{min-width:0}.ka-reminder-list-head strong{display:block;color:var(--ka-text);font-size:12px}.ka-reminder-list-head small{display:block;margin-top:1px;color:var(--ka-text-muted);font-size:8.5px}.ka-reminder-list-head>b{min-width:29px;height:27px;padding:0 7px;border-radius:9px;background:var(--ka-muted-bg);color:var(--ka-text-muted);display:grid;place-items:center;font-size:9px;font-variant-numeric:tabular-nums}
-.ka-reminder-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 11px 11px;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin}.ka-reminder-item{--ka-reminder-accent:var(--ka-primary);--ka-reminder-soft:var(--ka-primary-soft);appearance:none;width:100%;min-width:0;min-height:70px;margin:0;padding:9px 9px 9px 10px;border:1px solid var(--ka-border);border-left:3px solid color-mix(in srgb,var(--ka-reminder-accent) 72%,var(--ka-border));border-radius:16px;background:var(--ka-card-bg);color:var(--ka-text);box-shadow:0 2px 7px rgba(18,69,52,.045);display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:9px;text-align:left;cursor:pointer;transition:transform var(--ka-transition-fast),border-color var(--ka-transition-fast),background var(--ka-transition-fast),box-shadow var(--ka-transition-fast)}.ka-reminder-item:hover{border-color:color-mix(in srgb,var(--ka-reminder-accent) 38%,var(--ka-border));border-left-color:var(--ka-reminder-accent);box-shadow:var(--ka-shadow-sm)}.ka-reminder-item:active{transform:scale(.987);background:color-mix(in srgb,var(--ka-reminder-soft) 38%,var(--ka-card-bg))}.ka-reminder-item:focus-visible{outline:3px solid var(--ka-focus);outline-offset:1px}.ka-reminder-item__icon{width:42px;height:42px;border-radius:13px;background:var(--ka-reminder-soft);color:var(--ka-reminder-accent);display:grid;place-items:center;font-size:19px;line-height:1}.ka-reminder-item__copy{min-width:0;display:flex;flex-direction:column;gap:2px}.ka-reminder-item__copy>small{color:var(--ka-reminder-accent);font-size:8px;font-weight:900;letter-spacing:.045em;text-transform:uppercase}.ka-reminder-item__copy>strong{min-width:0;color:var(--ka-text);font-size:12px;font-weight:850;line-height:1.24;overflow-wrap:anywhere}.ka-reminder-item__copy>span{color:var(--ka-text-muted);font-size:9px;line-height:1.25;overflow-wrap:anywhere}.ka-reminder-item__side{min-width:83px;display:grid;grid-template-columns:minmax(0,1fr) 17px;align-items:center;justify-items:end;gap:5px}.ka-reminder-item__side>b{min-height:25px;padding:4px 7px;border-radius:9px;background:var(--ka-muted-bg);color:var(--ka-text-muted);display:grid;place-items:center;text-align:center;font-size:8px;font-weight:900;line-height:1.15;white-space:nowrap}.ka-reminder-item__side>i{width:17px;height:20px;color:var(--ka-text-muted);display:grid;place-items:center;font-style:normal;opacity:.65}.ka-reminder-item__side svg{width:15px;height:15px}.ka-reminder-item.is-overdue{border-left-color:var(--ka-danger)}.ka-reminder-item.is-overdue .ka-reminder-item__side>b{background:color-mix(in srgb,var(--ka-danger) 12%,transparent);color:var(--ka-danger)}.ka-reminder-item.is-today{border-left-color:var(--ka-warning)}.ka-reminder-item.is-today .ka-reminder-item__side>b{background:color-mix(in srgb,var(--ka-warning) 13%,transparent);color:var(--ka-warning)}.ka-reminder-item.is-upcoming .ka-reminder-item__side>b{background:var(--ka-primary-soft);color:var(--ka-primary)}.ka-reminder-item--document{--ka-reminder-accent:#1769aa;--ka-reminder-soft:#e7f2fb}.ka-reminder-item--duty{--ka-reminder-accent:#735faf;--ka-reminder-soft:#eeeafb}.ka-reminder-item--club,.ka-reminder-item--guidance{--ka-reminder-accent:#237052;--ka-reminder-soft:#e5f2ec}.ka-reminder-item--report,.ka-reminder-item--plan{--ka-reminder-accent:#9a6509;--ka-reminder-soft:#fff1d9}.ka-reminder-item--meeting{--ka-reminder-accent:#a4493d;--ka-reminder-soft:#fae9e6}.ka-reminder-item--calendar{--ka-reminder-accent:#23758a;--ka-reminder-soft:#e3f2f5}.ka-reminder-item--exam{--ka-reminder-accent:#1769aa;--ka-reminder-soft:#e7f2fb}
+.ka-reminder-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 11px 11px;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin}.ka-reminder-item{--ka-reminder-accent:var(--ka-primary);--ka-reminder-soft:var(--ka-primary-soft);appearance:none;width:100%;min-width:0;min-height:70px;margin:0;padding:9px 9px 9px 10px;border:1px solid var(--ka-border);border-left:3px solid color-mix(in srgb,var(--ka-reminder-accent) 72%,var(--ka-border));border-radius:16px;background:var(--ka-card-bg);color:var(--ka-text);box-shadow:0 2px 7px rgba(18,69,52,.045);display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:9px;text-align:left;cursor:pointer;transition:transform var(--ka-transition-fast),border-color var(--ka-transition-fast),background var(--ka-transition-fast),box-shadow var(--ka-transition-fast)}.ka-reminder-item:hover{border-color:color-mix(in srgb,var(--ka-reminder-accent) 38%,var(--ka-border));border-left-color:var(--ka-reminder-accent);box-shadow:var(--ka-shadow-sm)}.ka-reminder-item:active{transform:scale(.987);background:color-mix(in srgb,var(--ka-reminder-soft) 38%,var(--ka-card-bg))}.ka-reminder-item:focus-visible{outline:3px solid var(--ka-focus);outline-offset:1px}.ka-reminder-item__icon{width:42px;height:42px;border-radius:13px;background:var(--ka-reminder-soft);color:var(--ka-reminder-accent);display:grid;place-items:center;font-size:19px;line-height:1}.ka-reminder-item__copy{min-width:0;display:flex;flex-direction:column;gap:2px}.ka-reminder-item__copy>small{color:var(--ka-reminder-accent);font-size:8px;font-weight:900;letter-spacing:.045em;text-transform:uppercase}.ka-reminder-item__copy>strong{min-width:0;color:var(--ka-text);font-size:12px;font-weight:850;line-height:1.24;overflow-wrap:anywhere}.ka-reminder-item__copy>span{color:var(--ka-text-muted);font-size:9px;line-height:1.25;overflow-wrap:anywhere}.ka-reminder-item__side{min-width:83px;display:grid;grid-template-columns:minmax(0,1fr) 17px;align-items:center;justify-items:end;gap:5px}.ka-reminder-item__side>b{min-height:25px;padding:4px 7px;border-radius:9px;background:var(--ka-muted-bg);color:var(--ka-text-muted);display:grid;place-items:center;text-align:center;font-size:8px;font-weight:900;line-height:1.15;white-space:nowrap}.ka-reminder-item__side>i{width:17px;height:20px;color:var(--ka-text-muted);display:grid;place-items:center;font-style:normal;opacity:.65}.ka-reminder-item__side svg{width:15px;height:15px}.ka-reminder-item.is-overdue{border-left-color:var(--ka-danger)}.ka-reminder-item.is-overdue .ka-reminder-item__side>b{background:color-mix(in srgb,var(--ka-danger) 12%,transparent);color:var(--ka-danger)}.ka-reminder-item.is-today{border-left-color:var(--ka-warning)}.ka-reminder-item.is-today .ka-reminder-item__side>b{background:color-mix(in srgb,var(--ka-warning) 13%,transparent);color:var(--ka-warning)}.ka-reminder-item.is-upcoming .ka-reminder-item__side>b{background:var(--ka-primary-soft);color:var(--ka-primary)}.ka-reminder-item--document{--ka-reminder-accent:var(--ka-info);--ka-reminder-soft:color-mix(in srgb,var(--ka-info) 10%,var(--ka-card-bg))}.ka-reminder-item--duty{--ka-reminder-accent:var(--ka-module-transport-1);--ka-reminder-soft:color-mix(in srgb,var(--ka-module-transport-1) 10%,var(--ka-card-bg))}.ka-reminder-item--club,.ka-reminder-item--guidance{--ka-reminder-accent:var(--ka-success);--ka-reminder-soft:color-mix(in srgb,var(--ka-success) 10%,var(--ka-card-bg))}.ka-reminder-item--report,.ka-reminder-item--plan{--ka-reminder-accent:var(--ka-warning);--ka-reminder-soft:color-mix(in srgb,var(--ka-warning) 10%,var(--ka-card-bg))}.ka-reminder-item--meeting{--ka-reminder-accent:var(--ka-danger);--ka-reminder-soft:color-mix(in srgb,var(--ka-danger) 10%,var(--ka-card-bg))}.ka-reminder-item--calendar{--ka-reminder-accent:var(--ka-info);--ka-reminder-soft:color-mix(in srgb,var(--ka-info) 10%,var(--ka-card-bg))}.ka-reminder-item--exam{--ka-reminder-accent:var(--ka-info);--ka-reminder-soft:color-mix(in srgb,var(--ka-info) 10%,var(--ka-card-bg))}
 .ka-reminder-footer{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:8px;padding:10px 12px calc(10px + var(--ka-safe-bottom));border-top:1px solid var(--ka-border);background:var(--ka-card-raised-bg)}.ka-reminder-snooze{appearance:none;min-width:0;min-height:48px;padding:7px 10px;border:1px solid var(--ka-border);border-radius:14px;background:var(--ka-card-bg);color:var(--ka-text);display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:7px;text-align:left;cursor:pointer}.ka-reminder-snooze>svg{width:22px;height:22px;color:var(--ka-primary)}.ka-reminder-snooze>span{min-width:0;display:flex;flex-direction:column}.ka-reminder-snooze strong{font-size:10px;line-height:1.15}.ka-reminder-snooze small{margin-top:2px;color:var(--ka-text-muted);font-size:8px}.ka-reminder-snooze:active{background:var(--ka-primary-soft)}.ka-reminder-snooze:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}.ka-reminder-done{width:100%;min-width:0;min-height:48px;border-radius:14px;font-size:11px}.ka-reminder-done>span{font-size:14px}
 [data-theme="dark"] .ka-reminder-modal{box-shadow:0 28px 76px rgba(0,0,0,.58)}[data-theme="dark"] .ka-reminder-item{box-shadow:none}[data-theme="dark"] .ka-reminder-item--document,[data-theme="dark"] .ka-reminder-item--exam{--ka-reminder-accent:#78b8eb;--ka-reminder-soft:#132b3d}[data-theme="dark"] .ka-reminder-item--duty{--ka-reminder-accent:#b7a4ea;--ka-reminder-soft:#29223f}[data-theme="dark"] .ka-reminder-item--club,[data-theme="dark"] .ka-reminder-item--guidance{--ka-reminder-accent:#67d2aa;--ka-reminder-soft:#18372c}[data-theme="dark"] .ka-reminder-item--report,[data-theme="dark"] .ka-reminder-item--plan{--ka-reminder-accent:#e8bd68;--ka-reminder-soft:#362b15}[data-theme="dark"] .ka-reminder-item--meeting{--ka-reminder-accent:#e78c7f;--ka-reminder-soft:#3a211f}[data-theme="dark"] .ka-reminder-item--calendar{--ka-reminder-accent:#76c6d8;--ka-reminder-soft:#16343b}
 @media(max-width:767px){.ka-reminder-backdrop{padding:max(7px,var(--ka-safe-top)) 6px max(6px,var(--ka-safe-bottom));align-items:end}.ka-reminder-modal{width:100%;max-height:min(88dvh,820px);margin:0;border:1px solid var(--ka-border-strong);border-radius:26px 26px 18px 18px}.ka-reminder-head{grid-template-columns:44px minmax(0,1fr) 36px;gap:10px;padding:14px 13px 12px}.ka-reminder-head__mark{width:44px;height:44px;border-radius:14px}.ka-reminder-head__copy h2{font-size:18px}.ka-reminder-head__copy p{font-size:9.5px}.ka-reminder-close{width:36px;height:36px}.ka-reminder-summary{padding:8px 9px 7px;gap:5px}.ka-reminder-summary>div{min-height:46px;padding:5px 6px;grid-template-columns:21px minmax(0,1fr) auto;gap:4px;border-radius:12px}.ka-reminder-summary>div>span{width:21px;height:21px;border-radius:7px;font-size:8px}.ka-reminder-summary small{font-size:7.4px}.ka-reminder-summary strong{font-size:13px}.ka-reminder-list-head{padding-inline:11px}.ka-reminder-list{padding:0 8px 8px;gap:6px}.ka-reminder-item{min-height:66px;padding:8px;grid-template-columns:39px minmax(0,1fr) auto;gap:8px;border-radius:15px}.ka-reminder-item__icon{width:39px;height:39px;border-radius:12px;font-size:18px}.ka-reminder-item__copy>strong{font-size:11.5px}.ka-reminder-item__copy>span{font-size:8.5px}.ka-reminder-item__side{min-width:76px;grid-template-columns:minmax(0,1fr) 14px;gap:3px}.ka-reminder-item__side>b{padding-inline:5px;font-size:7.5px}.ka-reminder-item__side>i{width:14px}.ka-reminder-footer{padding:8px 9px calc(8px + var(--ka-safe-bottom));gap:6px}.ka-reminder-snooze,.ka-reminder-done{min-height:46px;border-radius:13px}.ka-reminder-done{padding-inline:8px;font-size:10.5px}}
@@ -5902,13 +5902,24 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
 /* ===== CENTRAL DETAIL TOKENS — STUDENTS / CLASSES / REMINDERS ===== */
 :root{
   --ka-detail-surface:var(--ka-card-bg);
-  --ka-detail-raised:var(--ka-surface);
+  --ka-detail-raised:var(--ka-card-raised-bg);
   --ka-detail-header:var(--ka-card-bg);
   --ka-detail-text:var(--ka-text);
   --ka-detail-muted:var(--ka-text-muted);
   --ka-detail-border:var(--ka-border);
   --ka-detail-accent:var(--ka-primary);
   --ka-detail-accent-soft:var(--ka-primary-soft);
+  --ka-detail-icon-surface:var(--ka-icon-surface);
+  --ka-detail-icon-text:var(--ka-icon-text);
+  --ka-detail-icon-border:var(--ka-icon-border);
+  --ka-student-boy:var(--ka-info);
+  --ka-student-girl:var(--ka-module-communication-1);
+  --ka-reminder-overdue-bg:color-mix(in srgb,var(--ka-danger) 12%,var(--ka-card-bg));
+  --ka-reminder-overdue-text:var(--ka-danger);
+  --ka-reminder-today-bg:color-mix(in srgb,var(--ka-warning) 12%,var(--ka-card-bg));
+  --ka-reminder-today-text:var(--ka-warning);
+  --ka-reminder-upcoming-bg:var(--ka-primary-soft);
+  --ka-reminder-upcoming-text:var(--ka-primary);
   --ka-detail-hero-start:var(--ka-primary);
   --ka-detail-hero-end:#a77b00;
   --ka-detail-hero-text:#111;
@@ -5918,7 +5929,7 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
   --ka-detail-hero-glow:rgba(255,255,255,.07);
 }
 [data-theme="dark"]{
-  --ka-detail-surface:#141414;
+  --ka-detail-surface:var(--ka-card-bg);
   --ka-detail-raised:#1c1c1c;
   --ka-detail-header:#181818;
   --ka-detail-text:#f5f5f5;
@@ -5932,7 +5943,13 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
   --ka-detail-hero-muted:#2b250f;
   --ka-detail-hero-surface:rgba(255,255,255,.16);
   --ka-detail-hero-border:rgba(255,255,255,.22);
-  --ka-detail-hero-glow:rgba(255,255,255,.055);
+  --ka-detail-hero-glow:var(--ka-on-accent-glow);
+  --ka-reminder-overdue-bg:color-mix(in srgb,var(--ka-danger) 22%,var(--ka-card-bg));
+  --ka-reminder-overdue-text:#ff8d96;
+  --ka-reminder-today-bg:color-mix(in srgb,var(--ka-warning) 22%,var(--ka-card-bg));
+  --ka-reminder-today-text:#ffd166;
+  --ka-reminder-upcoming-bg:var(--ka-primary-soft);
+  --ka-reminder-upcoming-text:var(--ka-primary);
 }
 
 /* Öğrenci listesi: aksiyon alanları tema yüzeyinden ayrılmalı. */
@@ -5980,5 +5997,134 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
 [data-theme="dark"] .ka-student-detail .ka-student-quick>*>span{
   background:var(--ka-detail-accent-soft)!important;
   color:var(--ka-detail-accent)!important;
+  border-color:var(--ka-detail-border)!important;
+}
+
+
+/* ===== CENTRAL TEMA — ÖĞRENCİLER / ÖĞRENCİ DETAYI / HATIRLATICI =====
+   Bu katman son tüketim noktasıdır. Renkler yalnız merkezi tokenlardan gelir. */
+.ka-student-directory,
+.ka-student-detail{color:var(--ka-detail-text)}
+
+.ka-student-directory .ka-people-summary-grid>.ka-card,
+.ka-student-directory .ka-filter-pills button,
+.ka-student-directory .ka-student-card,
+.ka-student-directory .ka-student-row,
+.ka-student-detail .ka-card,
+.ka-student-detail .ka-profile-section,
+.ka-student-detail .ka-teacher-detail-section{
+  background:var(--ka-detail-surface)!important;
+  color:var(--ka-detail-text)!important;
+  border-color:var(--ka-detail-border)!important;
+}
+
+.ka-student-directory .ka-people-summary-grid small,
+.ka-student-directory .ka-people-summary-grid span,
+.ka-student-directory .ka-directory-title span{
+  color:var(--ka-detail-muted)!important;
+}
+.ka-student-directory .ka-people-summary-grid b{color:var(--ka-detail-accent)!important}
+.ka-student-directory .ka-people-summary-grid .is-boy b{color:var(--ka-student-boy)!important}
+.ka-student-directory .ka-people-summary-grid .is-girl b{color:var(--ka-student-girl)!important}
+
+.ka-student-directory .ka-filter-pills button.active{
+  background:var(--ka-detail-accent-soft)!important;
+  color:var(--ka-detail-accent)!important;
+  border-color:var(--ka-detail-border)!important;
+}
+
+.ka-student-avatar{
+  background:var(--ka-detail-icon-surface)!important;
+  color:var(--ka-detail-icon-text)!important;
+  border:1px solid var(--ka-detail-icon-border)!important;
+}
+.ka-student-card-actions a,
+.ka-student-card-actions button,
+.ka-student-contact{
+  background:var(--ka-detail-raised)!important;
+  color:var(--ka-detail-accent)!important;
+  border:1px solid var(--ka-detail-border)!important;
+  box-shadow:none!important;
+}
+.ka-student-card-actions a:hover,
+.ka-student-card-actions button:hover,
+.ka-student-contact:hover{
+  background:var(--ka-detail-icon-surface)!important;
+  color:var(--ka-detail-icon-text)!important;
+  border-color:var(--ka-detail-icon-border)!important;
+}
+
+.ka-student-hero{
+  background:linear-gradient(135deg,var(--ka-detail-hero-start),color-mix(in srgb,var(--ka-detail-hero-start) 58%,var(--ka-detail-hero-end)) 68%,var(--ka-detail-hero-end))!important;
+  color:var(--ka-detail-hero-text)!important;
+  border-color:var(--ka-detail-hero-border)!important;
+}
+.ka-student-hero h1,
+.ka-student-hero .ka-badge,
+.ka-student-hero-avatar,
+.ka-student-hero-icon{color:var(--ka-detail-hero-text)!important}
+.ka-student-hero p{color:var(--ka-detail-hero-muted)!important}
+.ka-student-hero .ka-badge{background:var(--ka-detail-hero-surface)!important}
+.ka-student-hero-avatar,
+.ka-student-hero-icon{
+  background:var(--ka-detail-hero-surface)!important;
+  border-color:var(--ka-detail-hero-border)!important;
+}
+
+.ka-student-quick>a,
+.ka-student-quick>button,
+.ka-student-quick>span{
+  background:var(--ka-detail-raised)!important;
+  color:var(--ka-detail-text)!important;
+  border:1px solid var(--ka-detail-border)!important;
+}
+.ka-student-quick>*>span{
+  background:var(--ka-detail-icon-surface)!important;
+  color:var(--ka-detail-icon-text)!important;
+  border:1px solid var(--ka-detail-icon-border)!important;
+}
+.ka-student-quick b{color:var(--ka-detail-text)!important}
+.ka-student-quick .is-disabled{opacity:.58}
+
+.ka-student-detail .ka-teacher-section-icon{
+  background:var(--ka-detail-icon-surface)!important;
+  color:var(--ka-detail-icon-text)!important;
+  border:1px solid var(--ka-detail-icon-border)!important;
+}
+.ka-student-detail .ka-card__header{
+  background:var(--ka-detail-header)!important;
+  color:var(--ka-detail-text)!important;
+  border-color:var(--ka-detail-border)!important;
+}
+.ka-student-detail .ka-info-row{border-color:var(--ka-detail-border)!important}
+.ka-student-detail .ka-info-row>b{color:var(--ka-detail-text)!important}
+.ka-student-detail .ka-info-row>span{color:var(--ka-detail-muted)!important}
+.ka-student-detail .ka-detail-topbar h2,
+.ka-student-detail .ka-detail-topbar .ka-icon-button{
+  color:var(--ka-detail-text)!important;
+}
+
+.ka-reminder-summary>div{
+  background:var(--ka-detail-raised)!important;
+  color:var(--ka-detail-text)!important;
+  border-color:var(--ka-detail-border)!important;
+}
+.ka-reminder-summary small{color:var(--ka-detail-muted)!important}
+.ka-reminder-summary strong{color:var(--ka-detail-text)!important}
+.ka-reminder-summary .is-overdue>span{
+  background:var(--ka-reminder-overdue-bg)!important;
+  color:var(--ka-reminder-overdue-text)!important;
+}
+.ka-reminder-summary .is-today>span{
+  background:var(--ka-reminder-today-bg)!important;
+  color:var(--ka-reminder-today-text)!important;
+}
+.ka-reminder-summary .is-upcoming>span{
+  background:var(--ka-reminder-upcoming-bg)!important;
+  color:var(--ka-reminder-upcoming-text)!important;
+}
+.ka-reminder-item{
+  background:var(--ka-detail-surface)!important;
+  color:var(--ka-detail-text)!important;
   border-color:var(--ka-detail-border)!important;
 }
