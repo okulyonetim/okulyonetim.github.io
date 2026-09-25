@@ -5865,3 +5865,35 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
 .ka-reminder-summary strong{color:var(--ka-detail-text)!important}
 .ka-reminder-item{background:var(--ka-detail-surface)!important;color:var(--ka-detail-text)!important;border-color:var(--ka-detail-border)!important}
 
+
+
+/* ===== TEK MERKEZ — PEOPLE UI / DARK-LIGHT SURFACE ENFORCEMENT ===== */
+.ka-student-card-actions a,.ka-student-card-actions button,.ka-student-contact,
+.ka-student-row-actions a,.ka-student-row-actions button{
+  background:var(--ka-detail-raised)!important;
+  color:var(--ka-detail-accent)!important;
+  border:1px solid var(--ka-detail-border)!important;
+}
+.ka-student-detail .ka-profile-section,
+.ka-student-detail .ka-card,
+.ka-student-detail .ka-teacher-detail-section,
+.ka-student-detail .ka-card__header,
+.ka-student-detail .ka-card__body,
+.ka-student-detail .ka-card__footer{
+  background:var(--ka-detail-surface)!important;
+  color:var(--ka-detail-text)!important;
+  border-color:var(--ka-detail-border)!important;
+}
+.ka-student-detail .ka-card__header{background:var(--ka-detail-header)!important}
+.ka-student-detail .ka-info-row{border-color:var(--ka-detail-border)!important}
+.ka-student-detail .ka-info-row>b{color:var(--ka-detail-text)!important}
+.ka-student-detail .ka-info-row>span{color:var(--ka-detail-muted)!important}
+.ka-class-detail .ka-card,
+.ka-class-detail .ka-class-detail-summary>div,
+.ka-class-detail .ka-class-numbers>span{
+  background:var(--ka-detail-surface)!important;
+  color:var(--ka-detail-text)!important;
+  border-color:var(--ka-detail-border)!important;
+}
+.ka-class-detail .ka-card__header{background:var(--ka-detail-header)!important;color:var(--ka-detail-text)!important}
+
