@@ -2,7 +2,7 @@
    Android / iOS / web aynı responsive çekirdeği kullanır. */
  :root{
   color-scheme:light;
-  --ka-primary:#ffc400;--ka-primary-hover:#e5b000;--ka-primary-soft:#fff6cc;--ka-accent:#35d07f;
+  --ka-primary:#ffc400;--ka-primary-hover:#e5b000;--ka-color-scheme:light;--ka-primary-soft:#fff6cc;--ka-accent:#35d07f;
   --ka-app-bg:#f6f6f4;--ka-bg:#f6f6f4;--ka-text:#15171a;--ka-text-muted:#70757d;--ka-text-inverse:#fff;
   --ka-header-bg:#fff;--ka-header-text:#15171a;--ka-header-muted:#747980;--ka-header-border:#e1e3e6;
   --ka-nav-bg:rgba(255,255,255,.98);--ka-nav-text:#737981;--ka-nav-active-bg:#fff7d6;--ka-nav-active-text:#c39700;--ka-nav-border:#e0e2e5;--ka-nav-menu-start:#ffc400;--ka-nav-menu-end:#e5b000;--ka-nav-menu-icon:#15171a;--ka-nav-menu-ring:#f2d66b;
@@ -24,7 +24,7 @@
   --ka-report-bg:#fff;--ka-report-text:#000;--ka-report-class-teacher:#53645d;--ka-status-bg:rgba(255,255,255,.06);--ka-report-soft-header-bg:#f3f6f4;--ka-report-soft-header-text:#173e32;--ka-report-soft-border:#9baba4;--ka-report-soft-section-bg:#f7f9f8;--ka-report-soft-neutral-bg:#f8faf9;--ka-report-zebra-a:#fbfdfc;--ka-report-zebra-b:#fff;--ka-report-zebra-head-a:#f3f7f5;--ka-report-zebra-head-b:#fafcfb;--ka-report-width:210mm;--ka-report-min-height:297mm;--ka-report-margin:8mm;--ka-report-font:Arial,Helvetica,sans-serif;--ka-report-font-size:9.5pt;--ka-report-heading-size:14pt;--ka-report-border:#222;--ka-report-header-bg:#f0f0f0;--ka-report-cell-padding:5px 7px;
 }
 [data-theme="dark"]{
-  color-scheme:dark;--ka-primary:#ffc400;--ka-primary-hover:#ffd34d;--ka-primary-soft:#3a310e;--ka-accent:#35d07f;
+  color-scheme:dark;--ka-primary:#ffc400;--ka-primary-hover:#ffd34d;--ka-color-scheme:dark;--ka-primary-soft:#3a310e;--ka-accent:#35d07f;
   --ka-app-bg:#080808;--ka-bg:#080808;--ka-text:#f5f5f5;--ka-text-muted:#929292;--ka-text-inverse:#111;--ka-header-bg:#0b0b0b;--ka-header-text:#f5f5f5;--ka-header-muted:#929292;--ka-header-border:#252525;
   --ka-nav-bg:rgba(12,12,12,.98);--ka-nav-text:#858585;--ka-nav-active-bg:#211d0c;--ka-nav-active-text:#ffc400;--ka-nav-border:#252525;--ka-nav-menu-start:#ffc400;--ka-nav-menu-end:#e5b000;--ka-nav-menu-icon:#111;--ka-nav-menu-ring:#5d4b0c;
   --ka-button-bg:#ffc400;--ka-button-hover:#ffd34d;--ka-button-text:#111;--ka-button-secondary-bg:#151515;--ka-button-secondary-text:#f5f5f5;--ka-button-secondary-border:#2b2b2b;
