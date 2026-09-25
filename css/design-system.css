@@ -7060,3 +7060,53 @@ html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="settings"
 [data-theme="dark"] #v2ModuleRoot .sbe-tcell.filled{
   background:var(--ka-primary-soft)!important;
 }
+
+
+/* ===== CENTRAL THEME VARIABLE BRIDGE v1013 =====
+   Legacy module tokens are aliases of the single central design system.
+   Thus modules cannot carry an independent light/dark palette. */
+:root{
+  --dv-bg:var(--ka-app-bg);--dv-hbg:var(--ka-header-bg);--dv-tbg:var(--ka-card-raised-bg);
+  --dv-border:var(--ka-border);--dv-text:var(--ka-text);--dv-muted:var(--ka-text-muted);
+  --dv-btn-bg:var(--ka-button-secondary-bg);--dv-btn-bd:var(--ka-button-secondary-border);--dv-accent:var(--ka-primary);
+  --dv-body-bg:var(--ka-app-bg);--dv-sheet-bg:var(--ka-card-bg);
+  --ogm-bg:var(--ka-app-bg);--ogm-card:var(--ka-card-bg);--ogm-text:var(--ka-text);--ogm-muted:var(--ka-text-muted);
+  --ogm-line:var(--ka-border);--ogm-green:var(--ka-primary);--ogm-soft:var(--ka-primary-soft);
+  --kb-accent:var(--ka-primary);--kb-accent-2:var(--ka-primary-hover);--kb-soft:var(--ka-primary-soft);
+  --kb-text:var(--ka-text);--kb-muted:var(--ka-text-muted);--kb-line:var(--ka-border);--kb-track:var(--ka-muted-bg);
+  --kb-lesson:var(--ka-primary);--kb-break:var(--ka-warning);--kb-lunch:var(--ka-info);
+  --note-accent:var(--ka-primary);--note-soft:var(--ka-primary-soft);
+}
+[data-theme="dark"]{
+  --dv-body-bg:var(--ka-app-bg);--dv-sheet-bg:var(--ka-card-bg);
+  --ogm-bg:var(--ka-app-bg);--ogm-card:var(--ka-card-bg);--ogm-text:var(--ka-text);--ogm-muted:var(--ka-text-muted);
+  --ogm-line:var(--ka-border);--ogm-green:var(--ka-primary);--ogm-soft:var(--ka-primary-soft);
+  --kb-accent:var(--ka-primary);--kb-accent-2:var(--ka-primary-hover);--kb-soft:var(--ka-primary-soft);
+  --kb-text:var(--ka-text);--kb-muted:var(--ka-text-muted);--kb-line:var(--ka-border);--kb-track:var(--ka-muted-bg);
+  --kb-lesson:var(--ka-primary);--kb-break:var(--ka-warning);--kb-lunch:var(--ka-info);
+  --note-accent:var(--ka-primary);--note-soft:var(--ka-primary-soft);
+  --ka-food-mon-bg:var(--ka-card-raised-bg);--ka-food-mon-border:var(--ka-border);--ka-food-mon-text:var(--ka-text);
+  --ka-food-tue-bg:var(--ka-card-raised-bg);--ka-food-tue-border:var(--ka-border);--ka-food-tue-text:var(--ka-text);
+  --ka-food-wed-bg:var(--ka-card-raised-bg);--ka-food-wed-border:var(--ka-border);--ka-food-wed-text:var(--ka-text);
+  --ka-food-thu-bg:var(--ka-card-raised-bg);--ka-food-thu-border:var(--ka-border);--ka-food-thu-text:var(--ka-text);
+  --ka-food-fri-bg:var(--ka-card-raised-bg);--ka-food-fri-border:var(--ka-border);--ka-food-fri-text:var(--ka-text);
+}
+/* The shell and every module inherit the same base surface. */
+#v2ModuleRoot{background:var(--ka-app-bg);color:var(--ka-module-text)}
+#v2ModuleRoot .ka-card,
+#v2ModuleRoot .ka-surface,
+#v2ModuleRoot .ka-panel,
+#v2ModuleRoot .ka-table-wrap,
+#v2ModuleRoot .classic-card,
+#v2ModuleRoot .classic-table-wrap,
+#v2ModuleRoot .detay-card,
+#v2ModuleRoot .detay-panel,
+#v2ModuleRoot .ka-communication-page,
+#v2ModuleRoot .ka-documents-page,
+#v2ModuleRoot .ka-management-page,
+#v2ModuleRoot .ka-food-page,
+#v2ModuleRoot .ka-academic-page{
+  background:var(--ka-module-surface);
+  color:var(--ka-module-text);
+  border-color:var(--ka-module-border);
+}
