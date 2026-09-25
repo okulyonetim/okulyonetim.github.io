@@ -9382,3 +9382,91 @@ html[data-theme="dark"] #v2ModuleRoot .ka-payroll-section-head .ka-badge{
   color:#ffc400!important;
   border:1px solid #ffc400!important;
 }
+
+
+/* ===== CENTRAL DARK THEME — ÖĞRETMEN DETAYI v1044 ===== */
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero{
+  background:#075f40!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.35)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero::after{
+  background:rgba(255,196,0,.08)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero p,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero .ka-badge,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-avatar,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-book{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-avatar{
+  background:#191919!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-book{
+  background:#211d0c!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn{
+  background:#191919!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn svg,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn span{
+  color:#f5f5f5!important;
+  stroke:currentColor!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>a,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>button{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>a>span,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>button>span{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid>.ka-card{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid small,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid span{
+  color:#aaa!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid b{
+  color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section>.ka-card__header{
+  background:#191919!important;
+  color:#f5f5f5!important;
+  border-bottom:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-section-icon{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-info>div,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row{
+  border-bottom-color:#333!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-info span,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row span{
+  color:#aaa!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-info b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
+  color:#f5f5f5!important;
+}
