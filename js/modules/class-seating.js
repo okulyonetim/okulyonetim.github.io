@@ -323,12 +323,12 @@ function createObject(type,x,y,free=false){
   el.dataset.soObject='';
   el.dataset.type=type;
   el.dataset.rotation='0';
-  el.style.cssText=`position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;line-height:1.1;padding:3px;border-radius:10px;touch-action:none;box-sizing:border-box;left:${free?Math.round(x):snap(x)}px;top:${free?Math.round(y):snap(y)}px;width:${size.w}px;height:${size.h}px;box-shadow:0 3px 8px #0002`;
+  el.style.cssText=`position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;line-height:1.1;padding:3px;border-radius:10px;touch-action:none;box-sizing:border-box;left:${free?Math.round(x):snap(x)}px;top:${free?Math.round(y):snap(y)}px;width:${size.w}px;height:${size.h}px;box-shadow:var(--ka-shadow-sm)`;
 
   if(seatDef){
-    el.style.background='#f4efe3';
-    el.style.color='#6b5b3a';
-    el.style.border='1px solid #d7cdb7';
+    el.style.background='var(--ka-module-icon-surface)';
+    el.style.color='var(--ka-module-icon-text)';
+    el.style.border='1px solid var(--ka-module-icon-border)';
     const grid=document.createElement('div');
     grid.style.cssText='position:absolute;inset:4px';
     for(let i=0;i<seatDef.count;i++){
@@ -366,16 +366,16 @@ function createObject(type,x,y,free=false){
     span.style.fontWeight='800';
     el.appendChild(span);
   }else if(type==='kapi'){
-    el.style.background='#fff';
-    el.style.border='2px solid #c98a2e';
+    el.style.background='var(--ka-card-bg)';
+    el.style.border='2px solid var(--ka-warning)';
     el.innerHTML='<span>🚪</span>';
   }else if(type==='pencere'){
-    el.style.background='#fff';
-    el.style.border='2px solid #64b5f6';
+    el.style.background='var(--ka-card-bg)';
+    el.style.border='2px solid var(--ka-info)';
   }else if(type==='yazi-tahtasi'){
-    el.style.background='#213238';
-    el.style.color='#fff';
-    el.style.border='2px solid #0a1518';
+    el.style.background='var(--ka-header-text)';
+    el.style.color='var(--ka-text-inverse)';
+    el.style.border='2px solid var(--ka-header-border)';
     el.innerHTML='<span>▣ Yazı Tahtası</span>';
   }
 
@@ -394,10 +394,10 @@ function createObject(type,x,y,free=false){
       rot.onclick=e=>{e.stopPropagation();rotate(el)};
       el.appendChild(rot);
     }
-    const plus=control('+','bottom:-9px;right:-9px','#596d65');
+    const plus=control('+','bottom:-9px;right:-9px','var(--ka-module-muted)');
     plus.onclick=e=>{e.stopPropagation();sizeType(type,1.15)};
     el.appendChild(plus);
-    const minus=control('−','bottom:-9px;left:-9px','#596d65');
+    const minus=control('−','bottom:-9px;left:-9px','var(--ka-module-muted)');
     minus.onclick=e=>{e.stopPropagation();sizeType(type,.87)};
     el.appendChild(minus);
   }
@@ -762,7 +762,7 @@ function layoutCard(){
     </div>
     <div class="dv3sheetviewport" data-so-canvas-scroll>
       <div class="dv3sheetscene" data-so-canvas-stage>
-        <div class="dv3sheet" data-so-canvas style="position:relative;flex:none;border:2px solid var(--ka-module-border-strong);background-color:var(--ka-module-surface);background-image:linear-gradient(#e5e9e7 1px,transparent 1px),linear-gradient(90deg,#e5e9e7 1px,transparent 1px);background-size:28px 28px;transform-origin:top left"></div>
+        <div class="dv3sheet" data-so-canvas style="position:relative;flex:none;border:2px solid var(--ka-module-border-strong);background-color:var(--ka-module-surface);background-image:linear-gradient(var(--ka-border) 1px,transparent 1px),linear-gradient(90deg,var(--ka-border) 1px,transparent 1px);background-size:28px 28px;transform-origin:top left"></div>
       </div>
     </div>
   </section>`;
