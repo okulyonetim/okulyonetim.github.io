@@ -242,7 +242,7 @@ function firebaseyiBaslat(){
 (function scheduleReportColumnZebraFeatureLoad(){
   if(document.querySelector('script[data-schedule-report-column-zebra]'))return;
   const script=document.createElement('script');
-  script.src='js/core/schedule-report-column-zebra.js?v=938';
+  script.src='js/core/schedule-report-column-zebra.js?v=939';
   script.async=false;
   script.dataset.scheduleReportColumnZebra='';
   document.head.appendChild(script);
