@@ -19,7 +19,7 @@ assert(shell.includes("KorukLocalFirst.meta(uid,'theme',next)"),'Kullanıcı tem
 assert(settings.includes("['appearance','Görünüm','Açık ve koyu tema']"),'Ayarlar ekranında merkezi Görünüm sayfası bulunmalı.');
 assert(settings.includes("ShellUI?.applyTheme?.(b.dataset.themeChoice)"),'Ayarlar ikinci tema motoru açmadan ShellUI merkezi tema API sini kullanmalı.');
 assert(css.includes('[data-theme="dark"]'),'Tek Design System koyu tema tokenlarını içermeli.');
-assert(css.includes('--ka-primary:#53d6a4'),'Koyu tema okul kimliğine uygun zümrüt ana vurgu kullanmalı.');
+assert(css.includes('--ka-primary:#ffc400'),'Koyu tema merkezi tasarım sistemindeki sarı ana vurguyu kullanmalı.');
 assert(css.includes('.ka-theme-picker'),'Tema seçici ayrı CSS dosyası değil merkezi Design System içinde olmalı.');
 assert(css.includes('.ka-home .kh-social'),'Güncel dashboard sosyal bağlantıları merkezi Design System tarafından stillenmeli.');
 
