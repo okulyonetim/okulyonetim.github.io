@@ -7110,3 +7110,40 @@ html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="settings"
   color:var(--ka-module-text);
   border-color:var(--ka-module-border);
 }
+
+
+/* ===== CENTRAL LEGACY OVERRIDE v1014 ===== */
+html[data-theme="dark"] [data-people-classic]{
+  --ogm-bg:var(--ka-app-bg)!important;--ogm-card:var(--ka-card-bg)!important;--ogm-text:var(--ka-text)!important;
+  --ogm-muted:var(--ka-text-muted)!important;--ogm-line:var(--ka-border)!important;--ogm-green:var(--ka-primary)!important;
+  --ogm-soft:var(--ka-primary-soft)!important;--ogm-shadow:var(--ka-shadow-sm)!important;
+}
+html[data-theme="dark"] #khBell.kh-bell-modern{
+  --kb-accent:var(--ka-primary)!important;--kb-accent-2:var(--ka-primary-hover)!important;--kb-soft:var(--ka-primary-soft)!important;
+  --kb-text:var(--ka-text)!important;--kb-muted:var(--ka-text-muted)!important;--kb-line:var(--ka-border)!important;
+  --kb-track:var(--ka-muted-bg)!important;--kb-lesson:var(--ka-primary)!important;--kb-break:var(--ka-warning)!important;--kb-lunch:var(--ka-info)!important;
+  background:var(--ka-card-bg)!important;border-color:var(--ka-border)!important;color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-note-card{
+  --note-accent:var(--ka-primary)!important;
+  --note-soft:var(--ka-primary-soft)!important;
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-note-card *{
+  color:inherit;
+}
+html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-cal-cell{
+  background:var(--ka-card-raised-bg)!important;
+  border-color:var(--ka-border)!important;
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-cal-date strong,
+html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-cal-date span{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-week-item{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+}
