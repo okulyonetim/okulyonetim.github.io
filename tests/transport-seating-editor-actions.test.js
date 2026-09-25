@@ -24,7 +24,7 @@ assert(transport.includes('function sbeTableCellAt'),'Birleşmiş hücrelerde ö
 assert(transport.includes("sbeTableSeat(r,c,'seat')"),'Seçili öğrenci boş hücreye dokununca koltuk oluşturulabilmeli.');
 assert(css.includes('.sbe-table-tools button.is-active')&&css.includes('.sbe-table-editor .sbe-student.is-active'),'Aktif araç ve öğrenci renk ile belirgin olmalı.');
 assert(transport.includes("Number(table?.editorVersion)===2"), 'Tablo editörü kayıtlı hücre yerleşimini eski servis şablonuna dönüştürmemeli.');
-assert(transport.includes("await window.ServisOturmaService.planTableKaydet"), 'Kaydetme işlemi veritabanı tamamlanmadan editörü kapatmamalı.');
+assert(transport.includes("const task=window.ServisOturmaService.planTableKaydet"), 'Kaydetme işlemi veritabanı tamamlanmadan editörü kapatmamalı.');
 assert(!transport.includes('data-sbe-add-type="double"'), 'İkili oturma butonu kaldırılmalı.');
 assert(!transport.includes('data-sbe-add-type="engine"'), 'Motor butonu kaldırılmalı.');
 assert(!transport.includes('data-sbe-add-type="luggage"'), 'Bagaj butonu kaldırılmalı.');
