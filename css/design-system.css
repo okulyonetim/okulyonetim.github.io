@@ -939,7 +939,7 @@ body.ka-gradebook-open{overflow:hidden}
 
 [data-theme="dark"] [data-transport-service-detail]{--tr-soft:color-mix(in srgb,var(--ka-primary) 7%,#141414)}
 [data-theme="dark"] .ka-transport-service-hero,[data-theme="dark"] .ka-transport-info-card,[data-theme="dark"] .ka-transport-students-card,[data-theme="dark"] .ka-transport-student-list,[data-theme="dark"] .ka-transport-info-grid{background:#141414}
-[data-theme="dark"] .ka-transport-action-grid>.ka-btn,[data-theme="dark"] .ka-transport-detail-actions>.ka-btn--secondary,[data-theme="dark"] .ka-transport-report-actions>.ka-btn{background:#151515!important;border-color:#2b2b2b!important}
+[data-theme="dark"] .ka-transport-action-grid>.ka-btn,[data-theme="dark"] .ka-transport-detail-actions>.ka-btn--secondary,[data-theme="dark"] .ka-transport-report-actions>.ka-btn{background:var(--ka-module-surface)!important;border-color:#2b2b2b!important}
 [data-theme="dark"] .ka-transport-student-row{background:#141414}.ka-transport-service-hero,.ka-transport-info-card,.ka-transport-students-card{transition:border-color var(--ka-transition),background var(--ka-transition),box-shadow var(--ka-transition)}
 
 @media(max-width:560px){
@@ -2957,7 +2957,7 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 }
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-filters input,
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-filters select{
-  background:#151515!important;
+  background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
   border-color:#2b2b2b!important;
 }
@@ -2989,7 +2989,7 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 [data-people-classic] .ogm-title small,[data-people-classic] .ogm-name span,[data-people-classic] .ogm-tag,[data-people-classic] .ogm-action.primary{color:var(--ogm-green)!important}
 [data-people-classic] .ogm-tag{background:var(--ogm-soft)!important}
 [data-theme="dark"] [data-people-classic] .ogm-card,[data-theme="dark"] [data-people-classic] .ogm-stat{background:#141414!important;border-color:#242424!important}
-[data-theme="dark"] [data-people-classic] .ogm-search input,[data-theme="dark"] [data-people-classic] .ogm-filter{background:#151515!important;color:var(--ka-module-text)!important;border-color:#2b2b2b!important}
+[data-theme="dark"] [data-people-classic] .ogm-search input,[data-theme="dark"] [data-people-classic] .ogm-filter{background:var(--ka-module-surface)!important;color:var(--ka-module-text)!important;border-color:#2b2b2b!important}
 [data-theme="dark"] [data-people-classic] .ogm-add{background:linear-gradient(135deg,#ffc400,#e5b000)!important;color:#111!important}
 
 /* ===== LIGHT THEME CONTRAST PASS ===== */
@@ -3064,7 +3064,7 @@ button.ka-primary,
 
 /* ===== TEACHER DIRECTORY DARK THEME — FINAL OVERRIDE ===== */
 [data-theme="dark"] .ka-teacher-directory{
-  color:#f5f5f5;
+  color:var(--ka-module-text);
 }
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-intro,
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-summary>div,
@@ -3136,7 +3136,7 @@ button.ka-primary,
 }
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-filters input,
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-filters select{
-  background:#151515!important;
+  background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
   border-color:#303030!important;
 }
@@ -3145,7 +3145,7 @@ button.ka-primary,
 }
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-filters select option{
   background:#151515;
-  color:#f5f5f5;
+  color:var(--ka-module-text);
 }
 
 /* ===== GLOBAL LIGHT THEME CONTRAST + LIVE LESSON CARD ===== */
@@ -3509,7 +3509,7 @@ html[data-theme="dark"] .ka-home-section,
 html[data-theme="dark"] .ka-school-summary-card{
   background:#141414!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-home .kh-row *,
 html[data-theme="dark"] .ka-home .kh-dyn-item *,
@@ -3579,7 +3579,7 @@ html[data-theme="dark"] .ka-home .kh-food-card,
 html[data-theme="dark"] .ka-home .food-card{
   background:#141414!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-home .kh-weekday-head,
 html[data-theme="dark"] .ka-home .kh-mini,
@@ -3609,7 +3609,7 @@ html[data-theme="dark"] .ka-menu-page,
 html[data-theme="dark"] .ka-menu-head{
   background:#080808!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-menu-head h2,
 html[data-theme="dark"] .ka-menu-head h2 *,
@@ -3625,7 +3625,7 @@ html[data-theme="dark"] .ka-menu-list{
 html[data-theme="dark"] .ka-menu-list>.ka-btn{
   background:#141414!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-menu-list>.ka-btn *{
   color:inherit!important;
@@ -3640,7 +3640,7 @@ html[data-theme="dark"] .ka-profile-page [class*="profile-info"],
 html[data-theme="dark"] .ka-profile-page [class*="profile-card"]{
   background:#141414!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-profile-page .ka-profile-stat *,
 html[data-theme="dark"] .ka-profile-page .ka-profile-action *,
@@ -3666,7 +3666,7 @@ html[data-theme="dark"] .ka-profile-page~* .classic-toolbar,
 html[data-theme="dark"] .ka-profile-page + .classic-toolbar,
 html[data-theme="dark"] .ka-profile-page .classic-toolbar{
   background:#141414!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 
 /* ===== TEMA RENK DÜZELTMELERİ — v2 =====
@@ -4142,7 +4142,7 @@ html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
 [data-theme="dark"] .ka-school-summary-card{
   background:#141414!important;
   color:var(--ka-module-text)!important;
-  border-color:#3a3a3a!important;
+  border-color:var(--ka-module-border-strong)!important;
   box-shadow:0 6px 18px rgba(0,0,0,.28)!important;
 }
 [data-theme="dark"] .ka-school-summary-card *,
@@ -4233,7 +4233,7 @@ html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
 [data-theme="dark"] .ka-profile-page .ka-card__body{
   background:#141414!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 [data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) h1,
 [data-theme="dark"] .ka-profile-page>section:not(.ka-profile-hero) h2,
@@ -4271,9 +4271,9 @@ html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
 }
 [data-theme="dark"] .ka-report-preview__toolbar,
 [data-theme="dark"] .dv3h{
-  background:#0b0b0b!important;
+  background:var(--ka-module-surface-muted)!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 [data-theme="dark"] .ka-report-preview__toolbar .dv3btn,
 [data-theme="dark"] .dv3h .dv3btn{
@@ -4383,7 +4383,7 @@ html[data-theme="dark"] .ka-schedule-page .ka-schedule-mobile-card{
 html[data-theme="dark"] .ka-schedule-page .ka-schedule-table,
 html[data-theme="dark"] .ka-schedule-page .ka-schedule-table td,
 html[data-theme="dark"] .ka-schedule-page .ka-schedule-table th{
-  color:#f5f5f5;
+  color:var(--ka-module-text);
 }
 
 /* Mesajlaşma */
@@ -4419,7 +4419,7 @@ html[data-theme="dark"] .ka-profile-page .ka-profile-contact-card{
   border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-profile-page .ka-profile-section *{
-  border-color:#303030;
+  border-color:var(--ka-module-border);
 }
 html[data-theme="dark"] .ka-profile-page .ka-profile-section h3,
 html[data-theme="dark"] .ka-profile-page .ka-profile-section strong,
@@ -4443,8 +4443,8 @@ html[data-theme="dark"] .ka-home .kh-section-head p{
 
 /* Eski nöbet tablosundaki dekoratif yeşil başlık da yeni sarı sisteme bağlanır. */
 html[data-theme="dark"] .ka-duty-grid thead th{
-  background:linear-gradient(180deg,#5c4800,#2d250b)!important;
-  color:#fff!important;
+  background:linear-gradient(180deg,var(--ka-module-accent),color-mix(in srgb,var(--ka-module-accent) 48%,#111))!important;
+  color:var(--ka-button-text)!important;
 }
 
 
@@ -4511,20 +4511,20 @@ html[data-theme="dark"] #v2ModuleRoot .ka-card__footer{
 html[data-theme="dark"] #v2ModuleRoot input:not([type="checkbox"]):not([type="radio"]),
 html[data-theme="dark"] #v2ModuleRoot select,
 html[data-theme="dark"] #v2ModuleRoot textarea{
-  background:#151515!important;
+  background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
-  border-color:#333!important;
+  border-color:var(--ka-module-border-strong)!important;
   -webkit-text-fill-color:var(--ka-module-text)!important;
 }
 html[data-theme="dark"] #v2ModuleRoot input::placeholder,
 html[data-theme="dark"] #v2ModuleRoot textarea::placeholder{
-  color:#777!important;
-  -webkit-text-fill-color:#777!important;
+  color:var(--ka-module-muted)!important;
+  -webkit-text-fill-color:var(--ka-module-muted)!important;
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-btn--secondary{
-  background:#1b1b1b!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#3a3a3a!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 
 /* Profil/öğretmen detayındaki eski beyaz kart katmanları */
@@ -4588,15 +4588,15 @@ html[data-theme="dark"] .dv3h,
 html[data-theme="dark"] .ka-report-preview__toolbar,
 html[data-theme="dark"] [data-profile-toolbar],
 html[data-theme="dark"] [data-ka-profile-toolbar]{
-  background:#0b0b0b!important;
+  background:var(--ka-module-surface-muted)!important;
   color:var(--ka-module-text)!important;
-  border-color:#2d2d2d!important;
+  border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .dv3h .dv3btn,
 html[data-theme="dark"] .ka-report-preview__toolbar .dv3btn{
-  background:#1a1a1a!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#3a3a3a!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] .dv3h .dv3btn.primary,
 html[data-theme="dark"] .ka-report-preview__toolbar .dv3btn.primary{
@@ -4809,7 +4809,7 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > section:not(.ka-profile-hero) *,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > article *,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-section * {
-  border-color:#303030;
+  border-color:var(--ka-module-border);
 }
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > section:not(.ka-profile-hero) h1,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > section:not(.ka-profile-hero) h2,
@@ -5151,7 +5151,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile,
 body[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-detail,
 body[data-theme="dark"] #v2ModuleRoot .ka-student-detail{
-  color:#f5f5f5;
+  color:var(--ka-module-text);
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-contact-grid>a,
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-contact-grid>button,
@@ -5298,7 +5298,7 @@ html[data-theme="dark"] .ka-profile-popover__logout {
 }
 html[data-theme="dark"] .ka-profile-popover__menu button:hover,
 html[data-theme="dark"] .ka-profile-popover__menu button:active {
-  background:#202020!important;
+  background:var(--ka-module-surface-muted)!important;
 }
 html[data-theme="dark"] .ka-profile-popover__logout {
   border-color:#303030!important;
@@ -5306,7 +5306,7 @@ html[data-theme="dark"] .ka-profile-popover__logout {
 html[data-theme="dark"] .ka-profile-popover__logout button,
 html[data-theme="dark"] .ka-profile-popover__logout button span,
 html[data-theme="dark"] .ka-profile-popover__logout button svg {
-  color:#ef4b5f!important;
+  color:var(--ka-danger)!important;
 }
 
 /* Öğretmen hatırlatma penceresi: siyaha düşen metin ve eski açık yüzeyleri
@@ -5343,9 +5343,9 @@ html[data-theme="dark"] .ka-reminder-snooze small {
 }
 html[data-theme="dark"] .ka-reminder-close,
 html[data-theme="dark"] .ka-reminder-snooze {
-  background:#1b1b1b!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#3a3a3a!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] .ka-reminder-item {
   background:#191919!important;
@@ -5361,8 +5361,8 @@ html[data-theme="dark"] .ka-reminder-item__side>i {
   color:var(--ka-module-muted)!important;
 }
 html[data-theme="dark"] .ka-reminder-item__side>b {
-  background:#242424!important;
-  color:#c8c8c8!important;
+  background:var(--ka-module-surface-muted)!important;
+  color:var(--ka-module-muted)!important;
 }
 html[data-theme="dark"] .ka-reminder-done {
   background:#ffc400!important;
@@ -5382,9 +5382,9 @@ html[data-theme="dark"] #kaPdfTools [data-ka-profile-toolbar] {
 }
 html[data-theme="dark"] #kaPdfTools button,
 html[data-theme="dark"] #kaPdfTools .ka-btn {
-  background:#1b1b1b!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#3a3a3a!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] #kaPdfTools button.primary,
 html[data-theme="dark"] #kaPdfTools .ka-btn.primary,
@@ -5432,12 +5432,12 @@ body[data-theme="dark"] .ka-profile-popover__identity small{
 }
 body[data-theme="dark"] .ka-profile-popover__menu button:hover,
 body[data-theme="dark"] .ka-profile-popover__menu button:active{
-  background:#202020!important;
+  background:var(--ka-module-surface-muted)!important;
 }
 body[data-theme="dark"] .ka-profile-popover__logout button,
 body[data-theme="dark"] .ka-profile-popover__logout button span,
 body[data-theme="dark"] .ka-profile-popover__logout button svg{
-  color:#ef4b5f!important;
+  color:var(--ka-danger)!important;
   stroke:currentColor!important;
 }
 
@@ -5474,9 +5474,9 @@ body[data-theme="dark"] .ka-reminder-snooze small{
 }
 body[data-theme="dark"] .ka-reminder-close,
 body[data-theme="dark"] .ka-reminder-snooze{
-  background:#1b1b1b!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#3a3a3a!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 body[data-theme="dark"] .ka-reminder-item{
   background:#191919!important;
@@ -5492,8 +5492,8 @@ body[data-theme="dark"] .ka-reminder-item__side>i{
   color:var(--ka-module-muted)!important;
 }
 body[data-theme="dark"] .ka-reminder-item__side>b{
-  background:#242424!important;
-  color:#c8c8c8!important;
+  background:var(--ka-module-surface-muted)!important;
+  color:var(--ka-module-muted)!important;
 }
 body[data-theme="dark"] .ka-reminder-done{
   background:#ffc400!important;
@@ -5525,9 +5525,9 @@ body[data-theme="dark"] #kaReportPreview .dv3btn,
 body[data-theme="dark"] .ka-report-preview .dv3btn,
 body[data-theme="dark"] [data-profile-toolbar] button,
 body[data-theme="dark"] [data-ka-profile-toolbar] button{
-  background:#1b1b1b!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#3a3a3a!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 body[data-theme="dark"] #kaPdfTools button.primary,
 body[data-theme="dark"] #kaPdfTools .ka-btn.primary,
