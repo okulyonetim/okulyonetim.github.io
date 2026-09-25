@@ -4290,9 +4290,9 @@ html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
 }
 [data-theme="dark"] .ka-report-preview__toolbar .dv3btn,
 [data-theme="dark"] .dv3h .dv3btn{
-  background:#f5f5f5!important;
-  color:var(--ka-button-text)!important;
-  border-color:#d0d0d0!important;
+  background:var(--ka-button-secondary-bg)!important;
+  color:var(--ka-button-secondary-text)!important;
+  border-color:var(--ka-button-secondary-border)!important;
 }
 [data-theme="dark"] .ka-report-preview__toolbar .dv3btn.primary,
 [data-theme="dark"] .dv3h .dv3btn.primary{
