@@ -8,7 +8,7 @@ assert(cacheMatch, 'Service Worker sürümlü cache anahtarı kullanmalı.');
 assert(Number(cacheMatch[1])>=885, 'Service Worker cache sürümü profil güvenliği/giriş konumu sürümünün gerisine düşmemeli.');
 const loader = fs.readFileSync('js/app-loader.js', 'utf8');
 assert(sw.includes('await self.clients.claim()')&&!sw.includes('windows.map(client=>client.navigate(client.url))'), 'Yeni Service Worker canlı local-first oturumu zorla yenilemeden istemciyi devralmalı.');
-assert(loader.includes("register('./service-worker.js?v=838',{updateViaCache:'none'})")&&loader.includes('await reg.update()'), 'AppLoader Service Worker güncellemesini HTTP cache dışından zorlamalı.');
+assert(/register\(['"]\.\/service-worker\.js\?v=\d+['"],\s*\{updateViaCache:'none'\}\)/.test(loader)&&loader.includes('await reg.update()'), 'AppLoader Service Worker güncellemesini HTTP cache dışından zorlamalı.');
 for (const f of [
   './index.html',
   './manifest.json',
