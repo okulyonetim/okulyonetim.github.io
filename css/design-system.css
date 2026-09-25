@@ -7900,3 +7900,41 @@ html[data-theme="dark"] .ka-teacher-stat-grid>.ka-card{
   color:var(--ka-text)!important;
   border-color:var(--ka-border)!important;
 }
+
+
+/* ===== CLASS DETAIL — CENTRAL THEME FINAL OVERRIDE ===== */
+.ka-class-detail-topbar{
+  background:linear-gradient(135deg,var(--ka-primary-hover),var(--ka-primary))!important;
+  color:var(--ka-text-inverse)!important;
+  border:1px solid var(--ka-border-strong)!important;
+}
+.ka-class-hero{
+  background:linear-gradient(135deg,var(--ka-detail-hero-start),var(--ka-detail-hero-end))!important;
+  color:var(--ka-detail-hero-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+}
+.ka-class-hero h1,.ka-class-hero strong{color:var(--ka-detail-hero-text)!important}
+.ka-class-hero p{color:var(--ka-detail-hero-muted)!important}
+.ka-class-hero-avatar{
+  background:var(--ka-detail-hero-surface)!important;
+  color:var(--ka-detail-hero-text)!important;
+  border-color:var(--ka-detail-hero-border)!important;
+}
+.ka-class-quick-actions button:first-child{
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-text-inverse)!important;
+}
+.ka-class-info-row>span{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-theme="dark"] .ka-class-hero{
+  border-color:var(--ka-border-strong)!important;
+}
+[data-theme="dark"] .ka-class-info-row>span{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
