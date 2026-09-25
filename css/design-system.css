@@ -8488,3 +8488,52 @@ html[data-theme="dark"] #v2ModuleRoot .ka-menu-card{
   border:1px solid var(--ka-primary)!important;
   border-color:var(--ka-primary)!important;
 }
+
+/* ===== DARK MAP — HINT / COUNT / ACTION SURFACES FINAL ===== */
+/* Harita ekranındaki sarı dolgulu yardımcı yüzeyleri koyulaştır; sarıyı
+   kenarlık ve vurgu olarak koru. */
+html[data-theme="dark"] .ka-map-page .ka-map-hint{
+  background:var(--ka-card-raised-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:1.5px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-hint strong{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-hint span{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-hint__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:2px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-list-panel{
+  background:var(--ka-card-bg)!important;
+  border:2px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-list{
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-count{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-mini-action{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-mini-action--danger{
+  color:var(--ka-danger)!important;
+  border-color:color-mix(in srgb,var(--ka-danger) 55%,var(--ka-primary))!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-favorite-row,
+html[data-theme="dark"] .ka-map-page .ka-map-route-row{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-bottom-color:var(--ka-border)!important;
+}
