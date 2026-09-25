@@ -11,8 +11,8 @@ assert(nav.includes('event.stopImmediatePropagation()'),'Önizleme kapanırken a
 assert(nav.includes("event.target.closest?.('[data-ka-home-trigger]')"),'Header okul markası özel ana sayfa davranışına bağlı olmalı.');
 assert(nav.includes("global.AppStore?.subscribe?.('ui.route',scrollTopSoon)"),'Modül değişimlerinde sayfa en üste alınmalı.');
 assert(nav.includes("'[data-ka-shell-route],[data-dash-route]"),'Alt sayfa/menu yönlendirmeleri üstten açılmalı.');
-assert(firebase.includes('app-navigation-behavior.js?v=932'),'Uygulama geneli gezinme katmanı başlangıçta yüklenmeli.');
-assert(sw.includes("'./js/core/app-navigation-behavior.js?v=934'"),'Gezinme katmanı offline cache içinde olmalı.');
+assert(firebase.includes('app-navigation-behavior.js?v=935'),'Uygulama geneli gezinme katmanı başlangıçta yüklenmeli.');
+assert(sw.includes("'./js/core/app-navigation-behavior.js?v=935'"),'Gezinme katmanı offline cache içinde olmalı.');
 const cacheVersion=Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)?.[1]||0);
 assert(cacheVersion>=934,'PWA cache sürümü gezinme davranışı sürümünden eski olmamalı.');
 
