@@ -6604,3 +6604,179 @@ html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta,
 html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{
   color:var(--ka-module-muted)!important;
 }
+
+
+/* ===== ANDROID DARK THEME — FINAL VISUAL CONTRACT v1008 =====
+   Koyu tema attribute'u hangi kabukta tutulursa tutulsun (#app/body/html),
+   gerçek ekrandaki yüzeyler ve metinler merkezi tokenlardan okunur. */
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page{
+  color:var(--ka-module-text)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory h1,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory h2,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory h3,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory p,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory label,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory b,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory strong{
+  color:var(--ka-module-text)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-card,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-summary>div,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-filters>*,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-card{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-branch,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-meta,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-summary span{
+  color:var(--ka-module-muted)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-actions .ka-btn,
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-actions .ka-btn--secondary{
+  background:var(--ka-button-secondary-bg)!important;
+  color:var(--ka-button-secondary-text)!important;
+  border-color:var(--ka-button-secondary-border)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-avatar{
+  background:var(--ka-module-accent-soft)!important;
+  color:var(--ka-module-accent)!important;
+  border-color:var(--ka-module-border-strong)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-teacher-directory .ka-teacher-arrow{
+  background:var(--ka-module-surface-raised)!important;
+  color:var(--ka-module-accent)!important;
+  border-color:var(--ka-module-border)!important;
+}
+
+/* Profil kartları */
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page>article,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page>section:not(.ka-profile-hero),
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-stat,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-card,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-card__body{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page>section:not(.ka-profile-hero) *,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page>article *,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-stat *,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action *{
+  color:inherit;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-stat__icon,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action__icon{
+  background:var(--ka-module-surface-raised)!important;
+  color:var(--ka-module-accent)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-stat>b,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action__count b{
+  color:var(--ka-module-accent)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-stat>small,
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action__copy small{
+  color:var(--ka-module-muted)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action__count{
+  background:var(--ka-module-surface-raised)!important;
+}
+
+/* Arama */
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-hero,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-filters,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-results,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-result,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-empty{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-result *,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-empty *,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-filters *{
+  color:inherit;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-hero__copy>span,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-box>svg{
+  color:var(--ka-module-accent)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-hero p,
+[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-empty>small{
+  color:var(--ka-module-muted)!important;
+}
+
+/* Ana sayfa */
+[data-theme="dark"] #v2ModuleRoot .ka-home,
+[data-theme="dark"] #v2ModuleRoot .ka-home-section,
+[data-theme="dark"] #v2ModuleRoot .ka-school-summary-section{
+  color:var(--ka-module-text)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-section-title,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-section-title *,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-section-head *,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-row-main,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-row-main *{
+  color:var(--ka-module-text)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-row-main small,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-place,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card p,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card small{
+  color:var(--ka-module-muted)!important;
+}
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weather-card,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-task-card,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-duty-card,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-news,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-notes,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weekday,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-dyn-item,
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button,
+[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+
+/* Ana menü: özel kart rengi olsa bile koyu temada beyaz karta dönüşmesin. */
+[data-theme="dark"] #kaMenuLayer .ka-menu-page,
+[data-theme="dark"] #kaMenuLayer .ka-menu-grid{
+  background:var(--ka-app-bg)!important;
+  color:var(--ka-module-text)!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-head{
+  background:var(--ka-header-bg)!important;
+  color:var(--ka-header-text)!important;
+  border-color:var(--ka-header-border)!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-card{
+  background:linear-gradient(145deg,var(--ka-module-surface-raised),var(--ka-module-surface-muted))!important;
+  color:var(--ka-module-text)!important;
+  border:1px solid var(--ka-module-border)!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-card strong{
+  color:var(--ka-module-text)!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-card__icon{
+  background:var(--ka-module-accent-soft)!important;
+  color:var(--ka-module-accent)!important;
+  border-color:var(--ka-module-border-strong)!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-card .ka-badge{
+  background:var(--ka-module-surface-muted)!important;
+  color:var(--ka-module-muted)!important;
+}
+[data-theme="dark"] #kaMenuLayer .ka-menu-list>.ka-btn{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
