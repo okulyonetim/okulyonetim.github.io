@@ -7401,3 +7401,32 @@ html[data-theme="dark"] [data-ka-theme-toggle]{
   color:var(--ka-header-text)!important;
   border-color:var(--ka-border)!important;
 }
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY v1023 ===== */
+html[data-theme="light"]{
+  --ka-app-bg:#f6f6f4;--ka-bg:#f6f6f4;--ka-text:#15171a;--ka-text-muted:#70757d;--ka-text-inverse:#fff;
+  --ka-header-bg:#fff;--ka-header-text:#15171a;--ka-header-muted:#747980;--ka-header-border:#e1e3e6;
+  --ka-nav-bg:rgba(255,255,255,.98);--ka-nav-text:#737981;--ka-nav-active-bg:#fff7d6;--ka-nav-active-text:#c39700;--ka-nav-border:#e0e2e5;
+  --ka-card-bg:#fff;--ka-card-raised-bg:#fff;--ka-surface:#f6f6f4;--ka-muted-bg:#f0f1ef;
+  --ka-input-bg:#fff;--ka-input-text:#15171a;--ka-input-border:#dfe2e5;--ka-border:#dedfe2;--ka-border-strong:#c7c9cd;
+  --ka-module-surface:#fff;--ka-module-text:#15171a;--ka-module-muted:#70757d;--ka-module-border:#dedfe2;
+}
+html[data-theme="dark"]{
+  --ka-app-bg:#080808;--ka-bg:#080808;--ka-text:#f5f5f5;--ka-text-muted:#929292;--ka-text-inverse:#111;
+  --ka-header-bg:#0b0b0b;--ka-header-text:#f5f5f5;--ka-header-muted:#929292;--ka-header-border:#252525;
+  --ka-nav-bg:rgba(12,12,12,.98);--ka-nav-text:#858585;--ka-nav-active-bg:#211d0c;--ka-nav-active-text:#ffc400;--ka-nav-border:#252525;
+  --ka-card-bg:#141414;--ka-card-raised-bg:#191919;--ka-surface:#080808;--ka-muted-bg:#1c1c1c;
+  --ka-input-bg:#151515;--ka-input-text:#f5f5f5;--ka-input-border:#2b2b2b;--ka-border:#242424;--ka-border-strong:#383838;
+  --ka-module-surface:#141414;--ka-module-text:#f5f5f5;--ka-module-muted:#a6a6a6;--ka-module-border:#242424;
+}
+html[data-theme="dark"] .ka-home .ka-school-summary-card,
+html[data-theme="dark"] .ka-home .ka-home-section,
+html[data-theme="dark"] .ka-card,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .module-card{
+  background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-home .ka-school-summary-card>small,
+html[data-theme="dark"] .ka-home .ka-school-summary-card>b{color:var(--ka-text)!important}
+html[data-theme="dark"] .ka-home .ka-school-summary-meta{color:var(--ka-text-muted)!important}
