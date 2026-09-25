@@ -8537,3 +8537,93 @@ html[data-theme="dark"] .ka-map-page .ka-map-route-row{
   color:var(--ka-text)!important;
   border-bottom-color:var(--ka-border)!important;
 }
+
+
+/* ===== DARK THEME — FINAL MAP / TRANSPORT POLISH ===== */
+
+/* Harita: ikincil yüzeyler koyu kalır; sarı yalnızca belirgin sınır/vurgu olarak kullanılır. */
+html[data-theme="dark"] .ka-map-page{
+  --map-line:color-mix(in srgb,var(--ka-primary) 18%,var(--ka-card-bg))!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-hero__pin{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-workspace__title>span{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:2px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-floating-tools button{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-search-action{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-route-icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-favorite-star{
+  color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-list,
+html[data-theme="dark"] .ka-map-page .ka-map-search-results{
+  border-color:var(--map-line)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-favorite-row,
+html[data-theme="dark"] .ka-map-page .ka-map-route-row,
+html[data-theme="dark"] .ka-map-page .ka-map-search-row{
+  border-bottom-color:var(--map-line)!important;
+}
+html[data-theme="dark"] .ka-map-page .ka-map-route-row:hover,
+html[data-theme="dark"] .ka-map-page .ka-map-search-action:hover{
+  background:color-mix(in srgb,var(--ka-primary) 9%,var(--ka-card-bg))!important;
+  color:var(--ka-text)!important;
+}
+
+/* Taşıma: üst aksiyonlar dahil tüm ikincil kontroller koyu yüzey + sarı kenarlık. */
+html[data-theme="dark"] .ka-transport-action-grid>.ka-btn:not([data-transport-detail-delete]),
+html[data-theme="dark"] .ka-transport-detail-actions>.ka-btn--secondary,
+html[data-theme="dark"] .ka-transport-report-actions>.ka-btn{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-service-hero__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-transport-service-hero__count{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-section-title>span{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1.5px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-student-avatar:not(.is-president),
+html[data-theme="dark"] .ka-transport-chip--class{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-transport-info-item,
+html[data-theme="dark"] .ka-transport-info-item:nth-child(odd),
+html[data-theme="dark"] .ka-transport-student-row{
+  border-bottom-color:color-mix(in srgb,var(--ka-primary) 18%,var(--ka-card-bg))!important;
+}
+html[data-theme="dark"] .ka-transport-info-item:nth-child(odd){
+  border-right-color:color-mix(in srgb,var(--ka-primary) 18%,var(--ka-card-bg))!important;
+}
