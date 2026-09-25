@@ -84,9 +84,9 @@ function makeDeleteButton(modal,id,footer,beforeNode=null){
   button.className='ka-btn ka-btn--danger ka-btn--sm';
   button.textContent='Sil';
   button.setAttribute('aria-label','Öğretmeni sil');
-  button.style.background='#b42318';
-  button.style.borderColor='#b42318';
-  button.style.color='#fff';
+  button.style.background='var(--ka-danger)';
+  button.style.borderColor='var(--ka-danger)';
+  button.style.color='var(--ka-danger-text)';
   button.style.marginRight='auto';
   button.addEventListener('click',async()=>{
     if(button.disabled)return;
