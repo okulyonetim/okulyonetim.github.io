@@ -339,7 +339,7 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-home .kh-social button{min-width:0;min-height:82px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:8px 4px;border:1px solid var(--ka-border);border-radius:18px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm);color:var(--ka-text);font:inherit;font-size:9.5px;font-weight:800;text-align:center;cursor:pointer;transition:transform var(--ka-transition-fast),border-color var(--ka-transition-fast),background var(--ka-transition-fast)}
 .ka-home .kh-social button:active{transform:translateY(1px)}
 .ka-home .kh-social button:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}
-.ka-home .kh-social-icon{width:32px;height:32px;display:grid;place-items:center;color:var(--ka-icon-text);background:var(--ka-icon-surface);border:1px solid var(--ka-icon-border);border-radius:10px;font-size:24px;line-height:1;overflow:hidden}.ka-home .kh-social-icon>svg{width:22px;height:22px;display:block;color:inherit}.ka-home .kh-social-icon>span{font-size:22px;line-height:1}
+.ka-home .kh-social-icon{width:32px;height:32px;display:grid;place-items:center;color:var(--ka-icon-text);background:var(--ka-icon-surface);border:1px solid var(--ka-icon-border);border-radius:10px;font-size:24px;line-height:1;overflow:hidden}.ka-home .kh-social-icon>svg{width:24px;height:24px;display:block;color:inherit}.ka-home .kh-social-icon>span{font-size:22px;line-height:1}
 .ka-home .kh-social button span:last-child{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:380px){.ka-home .kh-social{gap:6px}.ka-home .kh-social button{font-size:8.8px;padding-inline:3px}}
 
