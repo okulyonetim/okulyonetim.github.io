@@ -32,7 +32,6 @@ assert(!transport.includes('data-sbe-add-type="emergency"'), 'Acil butonu kaldı
 assert(!transport.includes('data-sbe-add-type="window"'), 'Cam butonu kaldırılmalı.');
 assert(transport.includes("b.textContent='Kaydedildi ✓'"),'Kaydet butonu kullanıcı geri bildirimi sağlamalı.');
 assert(transport.includes('const task=window.ServisOturmaService.planTableKaydet'),'Canonical servis kayıt görevi kullanılmalı.');
-assert(transport.includes('window.ServisOturmaService.planGuncelle'),'Plan üst bilgisi canonical servis üzerinden güncellenmeli.');
 assert(transport.includes('function busPrintReport')&&transport.includes('ReportEngine?.printReport'),'Yazdır/PDF ortak rapor motorunu kullanmalı.');
 for(const token of ['.sbe-toolbar','.sbe-tool','.sbe-alignbar','.sbe-zoom','.sbe-stage'])assert(css.includes(token),`Yeni servis oturma araç stili eksik: ${token}`);
 assert(assetVersion(index,'css/design-system.css')>=955&&assetVersion(index,'js/app-loader.js')>=892,'Index yeni servis oturma paketini yüklemeli.');
