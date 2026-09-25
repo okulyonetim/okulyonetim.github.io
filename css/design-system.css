@@ -6383,3 +6383,116 @@ html[data-theme="dark"] .ka-home .kh-agenda-title{
 html[data-theme="dark"] .ka-home .kh-quick button svg{
   color:var(--ka-module-accent)!important;
 }
+
+
+/* ===== DARK THEME FINAL SURFACE CONTRACT v1006 =====
+   Koyu modda ekran görüntülerinde görülen beyaz kartlar ve siyaha düşen
+   metinler için en son, yüksek öncelikli merkezi katman. */
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail,
+html[data-theme="dark"] #v2ModuleRoot .ka-home{
+  color:var(--ka-module-text)!important;
+}
+
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-section,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-surface,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-panel,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weather-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-announcement,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-task-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-duty-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weekday,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-section[data-home-section="calendar"] .kh-row{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+  box-shadow:var(--ka-shadow-sm);
+}
+
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card *,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weekday *,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button{
+  border-color:var(--ka-module-border);
+}
+
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page b,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page label,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail b,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h3,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail h4,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-detail b,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-section-title,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weekday-head,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-mini,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-row-main b,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button b{
+  color:var(--ka-module-text)!important;
+}
+
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page p,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page small,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile p,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile small,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail p,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail small,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-muted,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-row-main small,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-place,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-agenda-title{
+  color:var(--ka-module-muted)!important;
+}
+
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-primary,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-primary,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-section-title svg,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-more,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button svg{
+  color:var(--ka-module-accent)!important;
+}
+
+html[data-theme="dark"] .ka-app-header{
+  background:var(--ka-header-bg)!important;
+  color:var(--ka-header-text)!important;
+  border-color:var(--ka-header-border)!important;
+}
+html[data-theme="dark"] .ka-app-header .ka-app-brand,
+html[data-theme="dark"] .ka-app-header .ka-app-brand strong,
+html[data-theme="dark"] .ka-app-header .ka-school-meta,
+html[data-theme="dark"] .ka-app-header .ka-school-meta-label,
+html[data-theme="dark"] .ka-app-header .ka-icon-button,
+html[data-theme="dark"] .ka-app-header .ka-header-notification{
+  color:var(--ka-header-text)!important;
+}
