@@ -5713,3 +5713,18 @@ html[data-theme="dark"] .ka-reminder-summary .is-upcoming>span{
   background:var(--ka-primary-soft)!important;
   color:var(--ka-primary)!important;
 }
+
+
+/* ===== HATIRLATICI — DARK SUMMARY CONTRAST FIX ===== */
+html[data-theme="dark"] .ka-reminder-summary>div,
+body[data-theme="dark"] .ka-reminder-summary>div{background:#191919!important;color:#f5f5f5!important;border-color:#383838!important}
+html[data-theme="dark"] .ka-reminder-summary .is-overdue>span,
+body[data-theme="dark"] .ka-reminder-summary .is-overdue>span{background:#3a2024!important;color:#ff8d96!important}
+html[data-theme="dark"] .ka-reminder-summary .is-today>span,
+body[data-theme="dark"] .ka-reminder-summary .is-today>span{background:#3a2e12!important;color:#ffd166!important}
+html[data-theme="dark"] .ka-reminder-summary .is-upcoming>span,
+body[data-theme="dark"] .ka-reminder-summary .is-upcoming>span{background:#3a310e!important;color:#ffc400!important}
+html[data-theme="dark"] .ka-reminder-summary small,
+body[data-theme="dark"] .ka-reminder-summary small{color:#a8a8a8!important}
+html[data-theme="dark"] .ka-reminder-summary strong,
+body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
