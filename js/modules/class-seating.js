@@ -164,7 +164,7 @@ function chooseStudent(seat){
     seat.dataset.name=v.ogrenciAdi||'';
     seat.dataset.empty='false';
     seat.textContent=v.ogrenciAdi||'';
-    seat.style.color='#6b5b3a';
+    seat.style.color='var(--ka-module-text)';
     ov.remove();
     dirty=true;
     refreshPool();
@@ -176,7 +176,7 @@ function chooseStudent(seat){
     seat.dataset.name=v;
     seat.dataset.empty=v.trim()?'false':'true';
     seat.textContent=v.trim()?v:'+';
-    seat.style.color=v.trim()?'#6b5b3a':'rgba(107,91,58,.45)';
+    seat.style.color=v.trim()?'var(--ka-module-text)':'var(--ka-module-muted)';
     ov.remove();
     dirty=true;
     refreshPool();
@@ -240,7 +240,7 @@ function control(text,pos,bg){
   b.dataset.soObjectControl='';
   b.hidden=true;
   b.textContent=text;
-  b.style.cssText=`position:absolute;${pos};width:22px;height:22px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:${bg};color:var(--ka-on-accent);font-weight:900;z-index:5;box-shadow:0 2px 5px #0005`;
+  b.style.cssText=`position:absolute;${pos};width:22px;height:22px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:${bg};color:var(--ka-on-accent);font-weight:900;z-index:5;box-shadow:var(--ka-shadow-sm)`;
   return b;
 }
 
@@ -601,7 +601,7 @@ function loadPlan(p){
         seat.dataset.name=k.isim;
         seat.dataset.empty='false';
         seat.textContent=k.isim;
-        seat.style.color='#6b5b3a';
+        seat.style.color='var(--ka-module-text)';
       }
     });
     fitText(el);
