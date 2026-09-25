@@ -21,7 +21,7 @@
   --ka-radius-sm:8px;--ka-radius-md:12px;--ka-radius-lg:18px;--ka-radius-xl:22px;--ka-radius-pill:999px;
   --ka-shadow-sm:0 2px 8px rgba(15,16,16,.045);--ka-shadow-md:0 8px 22px rgba(15,16,16,.08);--ka-shadow-modal:0 20px 56px rgba(7,10,9,.18);
   --ka-transition-fast:120ms ease;--ka-transition:180ms ease;
-  --ka-report-bg:#fff;--ka-report-text:#000;--ka-report-soft-header-bg:#f3f6f4;--ka-report-soft-header-text:#173e32;--ka-report-soft-border:#9baba4;--ka-report-soft-section-bg:#f7f9f8;--ka-report-soft-neutral-bg:#f8faf9;--ka-report-zebra-a:#fbfdfc;--ka-report-zebra-b:#fff;--ka-report-zebra-head-a:#f3f7f5;--ka-report-zebra-head-b:#fafcfb;--ka-report-width:210mm;--ka-report-min-height:297mm;--ka-report-margin:8mm;--ka-report-font:Arial,Helvetica,sans-serif;--ka-report-font-size:9.5pt;--ka-report-heading-size:14pt;--ka-report-border:#222;--ka-report-header-bg:#f0f0f0;--ka-report-cell-padding:5px 7px;
+  --ka-report-bg:#fff;--ka-report-text:#000;--ka-report-class-teacher:#53645d;--ka-status-bg:rgba(255,255,255,.06);--ka-report-soft-header-bg:#f3f6f4;--ka-report-soft-header-text:#173e32;--ka-report-soft-border:#9baba4;--ka-report-soft-section-bg:#f7f9f8;--ka-report-soft-neutral-bg:#f8faf9;--ka-report-zebra-a:#fbfdfc;--ka-report-zebra-b:#fff;--ka-report-zebra-head-a:#f3f7f5;--ka-report-zebra-head-b:#fafcfb;--ka-report-width:210mm;--ka-report-min-height:297mm;--ka-report-margin:8mm;--ka-report-font:Arial,Helvetica,sans-serif;--ka-report-font-size:9.5pt;--ka-report-heading-size:14pt;--ka-report-border:#222;--ka-report-header-bg:#f0f0f0;--ka-report-cell-padding:5px 7px;
 }
 [data-theme="dark"]{
   color-scheme:dark;--ka-primary:#ffc400;--ka-primary-hover:#ffd34d;--ka-primary-soft:#3a310e;--ka-accent:#35d07f;
