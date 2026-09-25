@@ -8409,3 +8409,23 @@ html[data-theme="dark"] .ka-transport-page [class*="hero"] .ka-badge{
   color:var(--ka-primary)!important;
   border:1px solid var(--ka-primary)!important;
 }
+
+/* ===== DARK HOME CARDS — YELLOW BORDER AUTHORITY ===== */
+/* Anasayfa kartları koyu temada koyu yüzey + belirgin sarı kenarlık kullanır. */
+html[data-theme="dark"] .ka-home-page .ka-card,
+html[data-theme="dark"] .ka-home-page .ka-list-card,
+html[data-theme="dark"] .ka-home-page .ka-home-card,
+html[data-theme="dark"] .ka-home-page .ka-stat-card,
+html[data-theme="dark"] .ka-home-page .ka-summary-card,
+html[data-theme="dark"] .ka-home-page [class*="summary-card"],
+html[data-theme="dark"] .ka-home-page [class*="stat-card"]{
+  border:2px solid var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home-page .ka-card,
+html[data-theme="dark"] .ka-home-page .ka-list-card,
+html[data-theme="dark"] .ka-home-page .ka-home-card,
+html[data-theme="dark"] .ka-home-page .ka-stat-card,
+html[data-theme="dark"] .ka-home-page .ka-summary-card{
+  background:var(--ka-card-bg)!important;
+}
