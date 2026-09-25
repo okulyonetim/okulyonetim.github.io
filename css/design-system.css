@@ -8704,3 +8704,45 @@ html[data-theme="dark"] #v2ModuleRoot .ka-settings-accordion__toggle,
 html[data-theme="dark"] #v2ModuleRoot .ka-settings-accordion__toggle strong{
   color:#f5f5f5!important;
 }
+
+
+/* ===== DARK THEME — BADGE + SETTINGS TAB CONTRAST AUTHORITY ===== */
+html[data-theme="dark"] #v2ModuleRoot .ka-badge,
+html[data-theme="dark"] #v2ModuleRoot .badge,
+html[data-theme="dark"] #v2ModuleRoot .ka-badge *,
+html[data-theme="dark"] #v2ModuleRoot .badge *{
+  color:#f5f5f5!important;
+  -webkit-text-fill-color:#f5f5f5!important;
+  background-color:transparent;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-badge,
+html[data-theme="dark"] #v2ModuleRoot .badge{
+  background:#1c1c1c!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot #documentsCount,
+html[data-theme="dark"] #v2ModuleRoot .ka-document-group-head .ka-badge{
+  color:#f5f5f5!important;
+  background:#1c1c1c!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-layout-section-tabs{
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-layout-section-tab{
+  border:1px solid #ffc400!important;
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-layout-section-tab strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-layout-section-tab > span{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-layout-section-tab.is-active{
+  background:#3a310e!important;
+  color:#ffc400!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-layout-section-tab.is-active strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-layout-section-tab.is-active > span{
+  color:#ffc400!important;
+}
