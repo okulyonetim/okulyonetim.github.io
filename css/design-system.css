@@ -5397,3 +5397,151 @@ html[data-theme="dark"] #kaPdfTools svg {
   color:currentColor!important;
   stroke:currentColor!important;
 }
+
+
+/* ===== ÖĞRETMEN OTURUMU DARK MODE — BODY THEME KÖPRÜSÜ v983 =====
+   Bazı Android/öğretmen oturumlarında tema body üzerinde tutuluyor.
+   Bu nedenle mevcut html[data-theme] kurallarının aynı güvenli yüzeyleri
+   body[data-theme] altında da uygulanır. Genel tema ve veri davranışına dokunmaz. */
+body[data-theme="dark"] .ka-profile-popover,
+body[data-theme="dark"] .ka-profile-popover *{
+  --ka-profile-surface:#141414;
+  --ka-profile-raised:#191919;
+}
+body[data-theme="dark"] .ka-profile-popover{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border:1px solid #303030!important;
+  box-shadow:0 22px 60px rgba(0,0,0,.62)!important;
+}
+body[data-theme="dark"] .ka-profile-popover__identity,
+body[data-theme="dark"] .ka-profile-popover__menu,
+body[data-theme="dark"] .ka-profile-popover__logout{
+  background:#141414!important;
+  border-color:#303030!important;
+}
+body[data-theme="dark"] .ka-profile-popover__identity strong,
+body[data-theme="dark"] .ka-profile-popover__menu button,
+body[data-theme="dark"] .ka-profile-popover__menu button span,
+body[data-theme="dark"] .ka-profile-popover__menu button svg{
+  color:#f5f5f5!important;
+  stroke:currentColor!important;
+}
+body[data-theme="dark"] .ka-profile-popover__identity small{
+  color:#a8a8a8!important;
+}
+body[data-theme="dark"] .ka-profile-popover__menu button:hover,
+body[data-theme="dark"] .ka-profile-popover__menu button:active{
+  background:#202020!important;
+}
+body[data-theme="dark"] .ka-profile-popover__logout button,
+body[data-theme="dark"] .ka-profile-popover__logout button span,
+body[data-theme="dark"] .ka-profile-popover__logout button svg{
+  color:#ef4b5f!important;
+  stroke:currentColor!important;
+}
+
+body[data-theme="dark"] .ka-reminder-backdrop{
+  background:rgba(0,0,0,.78)!important;
+}
+body[data-theme="dark"] .ka-reminder-modal,
+body[data-theme="dark"] .ka-reminder-summary,
+body[data-theme="dark"] .ka-reminder-list-head,
+body[data-theme="dark"] .ka-reminder-footer{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+body[data-theme="dark"] .ka-reminder-head{
+  background:linear-gradient(145deg,#1c1c1c,#141414)!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+body[data-theme="dark"] .ka-reminder-head__copy h2,
+body[data-theme="dark"] .ka-reminder-head__copy p,
+body[data-theme="dark"] .ka-reminder-head__copy p b,
+body[data-theme="dark"] .ka-reminder-summary strong,
+body[data-theme="dark"] .ka-reminder-list-head strong,
+body[data-theme="dark"] .ka-reminder-snooze,
+body[data-theme="dark"] .ka-reminder-snooze strong{
+  color:#f5f5f5!important;
+}
+body[data-theme="dark"] .ka-reminder-head__copy p,
+body[data-theme="dark"] .ka-reminder-summary small,
+body[data-theme="dark"] .ka-reminder-list-head small,
+body[data-theme="dark"] .ka-reminder-snooze small{
+  color:#a8a8a8!important;
+}
+body[data-theme="dark"] .ka-reminder-close,
+body[data-theme="dark"] .ka-reminder-snooze{
+  background:#1b1b1b!important;
+  color:#f5f5f5!important;
+  border-color:#3a3a3a!important;
+}
+body[data-theme="dark"] .ka-reminder-item{
+  background:#191919!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+  box-shadow:none!important;
+}
+body[data-theme="dark"] .ka-reminder-item__copy>strong{
+  color:#f5f5f5!important;
+}
+body[data-theme="dark"] .ka-reminder-item__copy>span,
+body[data-theme="dark"] .ka-reminder-item__side>i{
+  color:#a8a8a8!important;
+}
+body[data-theme="dark"] .ka-reminder-item__side>b{
+  background:#242424!important;
+  color:#c8c8c8!important;
+}
+body[data-theme="dark"] .ka-reminder-done{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
+
+/* Öğretmen rapor/detay araç çubuğu: teal/yeşil yerine anthracite. */
+body[data-theme="dark"] #kaPdfTools,
+body[data-theme="dark"] #kaPdfTools>*,
+body[data-theme="dark"] #kaPdfTools .ka-modal,
+body[data-theme="dark"] #kaPdfTools .ka-modal__header,
+body[data-theme="dark"] #kaPdfTools .ka-modal__body,
+body[data-theme="dark"] #kaPdfTools [data-profile-toolbar],
+body[data-theme="dark"] #kaPdfTools [data-ka-profile-toolbar],
+body[data-theme="dark"] #kaReportPreview .ka-report-preview__toolbar,
+body[data-theme="dark"] #kaReportPreview .dv3h,
+body[data-theme="dark"] .ka-report-preview .ka-report-preview__toolbar,
+body[data-theme="dark"] .ka-report-preview .dv3h,
+body[data-theme="dark"] [data-profile-toolbar],
+body[data-theme="dark"] [data-ka-profile-toolbar]{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#303030!important;
+}
+body[data-theme="dark"] #kaPdfTools button,
+body[data-theme="dark"] #kaPdfTools .ka-btn,
+body[data-theme="dark"] #kaReportPreview .dv3btn,
+body[data-theme="dark"] .ka-report-preview .dv3btn,
+body[data-theme="dark"] [data-profile-toolbar] button,
+body[data-theme="dark"] [data-ka-profile-toolbar] button{
+  background:#1b1b1b!important;
+  color:#f5f5f5!important;
+  border-color:#3a3a3a!important;
+}
+body[data-theme="dark"] #kaPdfTools button.primary,
+body[data-theme="dark"] #kaPdfTools .ka-btn.primary,
+body[data-theme="dark"] #kaReportPreview .dv3btn.primary,
+body[data-theme="dark"] .ka-report-preview .dv3btn.primary,
+body[data-theme="dark"] [data-profile-toolbar] .primary,
+body[data-theme="dark"] [data-ka-profile-toolbar] .primary{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
+body[data-theme="dark"] #kaPdfTools svg,
+body[data-theme="dark"] #kaReportPreview svg,
+body[data-theme="dark"] .ka-report-preview svg{
+  color:currentColor!important;
+  stroke:currentColor!important;
+}
