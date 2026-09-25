@@ -6270,3 +6270,116 @@ html[data-theme="dark"] .ka-teacher-stat-grid b,
 body[data-theme="dark"] .ka-teacher-stat-grid b{
   color:var(--ka-module-accent)!important;
 }
+
+
+/* ===== ANDROID DARK MODE — SCREEN SURFACE FIX v1005 =====
+   Son katman: eski People/Dashboard/Shell stillerinin koyu temada
+   açık kart ve siyah metin bırakmasını engeller. */
+html[data-theme="dark"] [data-people-classic],
+html[data-theme="dark"] [data-people-classic] .ogm-shell,
+html[data-theme="dark"] [data-people-classic] .classic-page{
+  background:var(--ka-app-bg)!important;
+  color:var(--ka-module-text)!important;
+}
+html[data-theme="dark"] [data-people-classic] .ogm-card,
+html[data-theme="dark"] [data-people-classic] .ogm-stat,
+html[data-theme="dark"] [data-people-classic] .classic-card,
+html[data-theme="dark"] [data-people-classic] .classic-table-wrap,
+html[data-theme="dark"] [data-people-classic] .detay-card,
+html[data-theme="dark"] [data-people-classic] .detay-panel,
+html[data-theme="dark"] [data-people-classic] .detay-head,
+html[data-theme="dark"] [data-people-classic] .detay-tabs{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] [data-people-classic] .ogm-card *,
+html[data-theme="dark"] [data-people-classic] .classic-card *,
+html[data-theme="dark"] [data-people-classic] .detay-card *,
+html[data-theme="dark"] [data-people-classic] .detay-panel h3,
+html[data-theme="dark"] [data-people-classic] .detay-panel h4{
+  color:var(--ka-module-text);
+}
+html[data-theme="dark"] [data-people-classic] .ogm-name span,
+html[data-theme="dark"] [data-people-classic] .ogm-info-row,
+html[data-theme="dark"] [data-people-classic] .ogm-summary,
+html[data-theme="dark"] [data-people-classic] .detay-row-muted,
+html[data-theme="dark"] [data-people-classic] .detay-head p,
+html[data-theme="dark"] [data-people-classic] .classic-summary{
+  color:var(--ka-module-muted)!important;
+}
+html[data-theme="dark"] [data-people-classic] .ogm-actions .ogm-action,
+html[data-theme="dark"] [data-people-classic] .ogm-more,
+html[data-theme="dark"] [data-people-classic] .classic-btn,
+html[data-theme="dark"] [data-people-classic] .classic-toolbar input,
+html[data-theme="dark"] [data-people-classic] .classic-toolbar select{
+  background:var(--ka-module-surface-raised)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] [data-people-classic] .ogm-avatar-fallback{
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-student-quick>a,
+html[data-theme="dark"] .ka-student-detail .ka-student-quick>button,
+html[data-theme="dark"] .ka-student-detail .ka-student-quick>.is-disabled,
+html[data-theme="dark"] .ka-student-detail .ka-teacher-detail-section,
+html[data-theme="dark"] .ka-student-detail .ka-teacher-detail-section>.ka-card__header,
+html[data-theme="dark"] .ka-student-detail .ka-teacher-detail-section>.ka-card__body,
+html[data-theme="dark"] .ka-student-detail .ka-result-card{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-info-row,
+html[data-theme="dark"] .ka-student-detail .ka-info-row b,
+html[data-theme="dark"] .ka-student-detail .ka-info-row span,
+html[data-theme="dark"] .ka-student-detail .ka-teacher-detail-section h3{
+  color:var(--ka-module-text)!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-info-row{
+  border-bottom-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-student-detail .ka-student-quick>span,
+html[data-theme="dark"] .ka-student-detail .ka-student-quick>b{
+  color:var(--ka-module-muted)!important;
+}
+html[data-theme="dark"] .ka-menu-page,
+html[data-theme="dark"] .ka-menu-list,
+html[data-theme="dark"] .ka-menu-grid{
+  background:var(--ka-app-bg)!important;
+  color:var(--ka-module-text)!important;
+}
+html[data-theme="dark"] .ka-menu-list>.ka-btn,
+html[data-theme="dark"] .ka-menu-list>.ka-btn .ka-avatar{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-menu-card{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-home .kh-quick button,
+html[data-theme="dark"] .ka-home .kh-card,
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="calendar"] .kh-card,
+html[data-theme="dark"] .ka-home .kh-row{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section-title,
+html[data-theme="dark"] .ka-home .kh-section-title *,
+html[data-theme="dark"] .ka-home .kh-section-head,
+html[data-theme="dark"] .ka-home .kh-row-main,
+html[data-theme="dark"] .ka-home .kh-row-main b{
+  color:var(--ka-module-text)!important;
+}
+html[data-theme="dark"] .ka-home .kh-row-main small,
+html[data-theme="dark"] .ka-home .kh-agenda-title{
+  color:var(--ka-module-muted)!important;
+}
+html[data-theme="dark"] .ka-home .kh-quick button svg{
+  color:var(--ka-module-accent)!important;
+}
