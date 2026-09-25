@@ -7883,3 +7883,20 @@ html[data-theme="dark"] .ka-teacher-contact-grid>button,
 html[data-theme="dark"] .ka-teacher-stat-grid>.ka-card{
   background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important;
 }
+
+
+/* ===== TEACHER DETAIL ICONS — CENTRAL NEUTRAL ICON TOKENS ===== */
+.ka-teacher-contact-grid>a>span,
+.ka-teacher-contact-grid>button>span,
+.ka-teacher-profile .ka-teacher-section-icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+}
+[data-theme="dark"] .ka-teacher-contact-grid>a>span,
+[data-theme="dark"] .ka-teacher-contact-grid>button>span,
+[data-theme="dark"] .ka-teacher-profile .ka-teacher-section-icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
