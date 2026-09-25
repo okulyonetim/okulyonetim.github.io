@@ -25,11 +25,11 @@
 }
 [data-theme="dark"]{--ka-profile-hero-start:var(--ka-detail-hero-start);--ka-profile-hero-end:var(--ka-detail-hero-end);--ka-profile-hero-text:var(--ka-detail-hero-text);--ka-profile-hero-muted:var(--ka-detail-hero-muted);--ka-profile-hero-surface:var(--ka-detail-hero-surface);--ka-profile-hero-border:var(--ka-detail-hero-border);--ka-profile-hero-glow-a:var(--ka-detail-hero-glow);--ka-profile-hero-glow-b:var(--ka-detail-hero-glow);--ka-profile-hero-shadow:var(--ka-shadow-md);--ka-profile-avatar-bg:var(--ka-detail-raised);--ka-profile-avatar-border:var(--ka-detail-hero-border);--ka-profile-avatar-shadow:var(--ka-shadow-sm);--ka-profile-avatar-text:var(--ka-detail-text);--ka-profile-image-bg:var(--ka-detail-surface);
   color-scheme:dark;--ka-primary:#ffc400;--ka-primary-hover:#ffd34d;--ka-color-scheme:dark;--ka-system-bar-bg:#0b0b0b;--ka-icon-surface:#332b0d;--ka-icon-text:#ffd34d;--ka-icon-border:#5d4b0c;--ka-detail-surface:var(--ka-card-bg);--ka-detail-raised:var(--ka-card-raised-bg);--ka-detail-header:var(--ka-muted-bg);--ka-detail-text:var(--ka-text);--ka-detail-muted:var(--ka-text-muted);--ka-detail-border:var(--ka-border);--ka-detail-accent:var(--ka-primary);--ka-detail-accent-soft:var(--ka-primary-soft);--ka-detail-hero-start:#ffc400;--ka-detail-hero-end:#745600;--ka-detail-hero-deep:#765600;--ka-gender-girl:#ff6b88;--ka-gender-boy:#7467f0;--ka-detail-hero-text:#111;--ka-detail-hero-muted:rgba(17,17,17,.72);--ka-detail-hero-surface:rgba(255,255,255,.20);--ka-detail-hero-border:rgba(17,17,17,.16);--ka-detail-hero-glow:rgba(255,255,255,.07);--ka-system-bar-icon-mode:light;--ka-header-shadow:0 2px 10px rgba(0,0,0,.28);--ka-nav-shadow:var(--ka-shadow-md);--ka-avatar-bg:var(--ka-primary-soft);--ka-avatar-text:var(--ka-primary);--ka-avatar-size:42px;--ka-profile-avatar-size:44px;--ka-profile-avatar-compact-size:34px;--ka-notification-badge-bg:var(--ka-danger);--ka-notification-badge-text:var(--ka-danger-text);--ka-notification-badge-border:var(--ka-header-bg);--ka-notification-shadow:0 18px 48px rgba(0,0,0,.52);--ka-on-accent:#fff;--ka-on-accent-muted:rgba(255,255,255,.84);--ka-on-accent-soft:rgba(255,255,255,.14);--ka-on-accent-border:rgba(255,255,255,.28);--ka-on-accent-avatar:rgba(255,255,255,.16);--ka-on-accent-glow:rgba(255,255,255,.07);--ka-accent-shadow:rgba(0,0,0,.34);--ka-primary-soft:#3a310e;--ka-accent:#35d07f;
-  --ka-app-bg:#080808;--ka-bg:#080808;--ka-text:#f5f5f5;--ka-text-muted:#929292;--ka-text-inverse:#111;--ka-header-bg:#0b0b0b;--ka-header-text:#f5f5f5;--ka-header-muted:#929292;--ka-header-border:#252525;
-  --ka-nav-bg:rgba(12,12,12,.98);--ka-nav-text:#858585;--ka-nav-active-bg:#211d0c;--ka-nav-active-text:#ffc400;--ka-nav-border:#252525;--ka-nav-menu-start:#ffc400;--ka-nav-menu-end:#e5b000;--ka-nav-menu-icon:#111;--ka-nav-menu-ring:#5d4b0c;
-  --ka-button-bg:#ffc400;--ka-button-hover:#ffd34d;--ka-button-text:#111;--ka-button-secondary-bg:#151515;--ka-button-secondary-text:#f5f5f5;--ka-button-secondary-border:#2b2b2b;
-  --ka-card-bg:#141414;--ka-card-raised-bg:#191919;--ka-muted-bg:#1c1c1c;--ka-input-bg:#151515;--ka-input-text:#f5f5f5;--ka-input-border:#2b2b2b;--ka-input-focus:#ffc400;
-  --ka-border:#242424;--ka-border-strong:#383838;--ka-focus:rgba(255,196,0,.28);--ka-overlay:rgba(0,0,0,.76);--ka-shadow-sm:0 3px 12px rgba(0,0,0,.24);--ka-shadow-md:0 10px 28px rgba(0,0,0,.36);--ka-shadow-modal:0 22px 64px rgba(0,0,0,.58);
+  --ka-app-bg:#080808;--ka-bg:#080808;--ka-text:#f5f5f5;--ka-text-muted:#929292;--ka-text-inverse:#111;--ka-header-bg:#0b0b0b;--ka-header-text:#f5f5f5;--ka-header-muted:#929292;--ka-header-border:#ffc400;
+  --ka-nav-bg:rgba(12,12,12,.98);--ka-nav-text:#858585;--ka-nav-active-bg:#211d0c;--ka-nav-active-text:#ffc400;--ka-nav-border:#ffc400;--ka-nav-menu-start:#ffc400;--ka-nav-menu-end:#e5b000;--ka-nav-menu-icon:#111;--ka-nav-menu-ring:#5d4b0c;
+  --ka-button-bg:#ffc400;--ka-button-hover:#ffd34d;--ka-button-text:#111;--ka-button-secondary-bg:#151515;--ka-button-secondary-text:#f5f5f5;--ka-button-secondary-border:#ffc400;
+  --ka-card-bg:#141414;--ka-card-raised-bg:#191919;--ka-muted-bg:#1c1c1c;--ka-input-bg:#151515;--ka-input-text:#f5f5f5;--ka-input-border:#ffc400;--ka-input-focus:#ffc400;
+  --ka-border:#ffc400;--ka-border-strong:#ffd34d;--ka-focus:rgba(255,196,0,.28);--ka-overlay:rgba(0,0,0,.76);--ka-shadow-sm:0 3px 12px rgba(0,0,0,.24);--ka-shadow-md:0 10px 28px rgba(0,0,0,.36);--ka-shadow-modal:0 22px 64px rgba(0,0,0,.58);
   --ka-hero-bg:radial-gradient(circle at 86% 8%,rgba(255,196,0,.16),transparent 36%),linear-gradient(145deg,#171717,#0a0a0a);--ka-hero-border:#3a3218;--ka-hero-text:#f5f5f5;--ka-hero-muted:#a0a0a0;--ka-hero-kicker:#ffc400;--ka-hero-badge-bg:#332b0d;--ka-hero-badge-text:#ffd34d;--ka-hero-shadow:0 18px 38px rgba(0,0,0,.48);
   --ka-live-bg:#151515;--ka-live-border:#55491f;--ka-live-surface:#1b1b1b;--ka-live-text:#f5f5f5;--ka-live-muted:#aaa38b;--ka-live-accent:#ffc400;--ka-live-accent-soft:#3a300c;--ka-live-progress-bg:#2b2b2b;--ka-live-progress:linear-gradient(90deg,#ffc400,#c99700);--ka-weather-bg:#191919;--ka-weather-icon-bg:#242424;
   --ka-module-people-1:#6d5a00;--ka-module-people-2:#443900;--ka-module-exams-1:#315d86;--ka-module-exams-2:#223f5d;--ka-module-programs-1:#79521c;--ka-module-programs-2:#4f3612;--ka-module-communication-1:#733c39;--ka-module-communication-2:#4c2927;--ka-module-calendar-1:#2e626e;--ka-module-calendar-2:#21474f;--ka-module-transport-1:#51406f;--ka-module-transport-2:#392d4f;--ka-module-documents-1:#76501f;--ka-module-documents-2:#4d3516;--ka-module-management-1:#286b48;--ka-module-management-2:#1b4932;--ka-module-settings-1:#4d565d;--ka-module-settings-2:#353c42;
@@ -8126,5 +8126,46 @@ html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge *,
 html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn *,
 html[data-theme="dark"] .ka-teacher-card .ka-teacher-arrow *{
   color:var(--ka-button-text)!important;
+}
+\n
+
+/* ===== DARK THEME — GLOBAL YELLOW BORDER AUTHORITY =====
+   Koyu temada uygulamanın ana kart/alan/kontrol kenarlıkları sarı vurguya bağlanır.
+   Sarı yüzeylerde metin merkezi siyah tokenı kullanır. */
+html[data-theme="dark"] .ka-card,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .ka-list-card,
+html[data-theme="dark"] .ka-tab,
+html[data-theme="dark"] .ka-input,
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .ka-btn--secondary,
+html[data-theme="dark"] .ka-icon-button,
+html[data-theme="dark"] .ka-app-header,
+html[data-theme="dark"] .ka-bottom-nav{
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-card,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .ka-list-card{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-btn,
+html[data-theme="dark"] .btn{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-btn:not(.ka-btn--secondary),
+html[data-theme="dark"] .btn:not(.ka-btn--secondary){
+  background:var(--ka-primary);
+  color:var(--ka-button-text);
+}
+html[data-theme="dark"] .ka-btn--secondary{
+  background:var(--ka-card-bg);
+  color:var(--ka-text);
+}
+html[data-theme="dark"] .ka-btn--secondary:hover{
+  background:var(--ka-primary);
+  color:var(--ka-button-text);
 }
 \n
