@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu önbellekten hızlıca sunup
    ağı arka planda yenilemek ve Firebase Messaging
    bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v1059';
+const CACHE_ADI='oy-cache-v1060';
 
 let messaging=null;
 try{
