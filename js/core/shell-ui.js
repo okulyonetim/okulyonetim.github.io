@@ -42,6 +42,7 @@ const CUSTOM_PAGE_ROUTES=new Map();
 const DASHBOARD_ROUTES={announcements:{module:'communication',page:'announcements',title:'Duyurular'},polls:{module:'communication',page:'polls',title:'Anketler'},news:{module:'communication',page:'news',title:'Haberler'},duty:{module:'management',page:'duty',title:'Nöbet Programı'},'today-duty':{module:'management',page:'duty',title:'Nöbet Programı'},absences:{module:'management',page:'leaves',title:'İzinler'},upcoming:{module:'communication',page:'calendar',title:'Takvim'},lessons:{module:'academic',page:'schedule',title:'Ders Programı'},'week-duty':{module:'management',page:'duty',title:'Nöbet Programı'},exams:{module:'academic',page:'written',title:'Yazılı Sınavlar'},schedule:{module:'academic',page:'schedule',title:'Ders Programı'},notes:{module:'communication',page:'notes',title:'Notlar'},calendar:{module:'communication',page:'calendar',title:'Takvim'}};
 let activeAction='home',menuGroup=null,menuEditing=false,visibilityObserver=null,headerPopover=null,themeTouched=false,browserBackBound=false,browserExitApproved=false;
 let navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
+let routeEpoch=0;
 const TEACHER_HIDDEN_PAGES=new Set(['documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
 function isTeacherUser(){const u=user();if(u.admin===true)return false;const r=global.AKTIF_ROL||global.AppStore?.get?.('session.role')||arr('roller').find(x=>x.id===u.rolId)||{};const n=String(r.ad||r.rolAdi||u.rolAdi||u.rol||'').trim().toLocaleLowerCase('tr-TR');return n.includes('öğretmen')||n.includes('ogretmen')||!!(u.bagliOgretmenId||u.ogretmenId)}
 function pageAllowed(name,page=''){return !isTeacherUser()||!TEACHER_HIDDEN_PAGES.has(`${name}:${page||''}`)}
@@ -163,6 +164,7 @@ function applySubpage(name,page,title){
 const MODULE_ROOT_SELECTORS=Object.freeze({dashboard:'[data-dashboard-module]',people:'[data-people-module]',academic:'[data-academic-module]',management:'[data-management-module]',communication:'[data-communication-module]',transport:'[data-transport-module]',documents:'[data-documents-module]',tools:'[data-tools-module]',settings:'[data-settings-module]'});
 function moduleRouteMounted(name){const root=$('#v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(selector&&global.AppLoader?.moduleApi?.(name)&&root?.querySelector?.(selector))}
 async function routeModule(name,{bottom='menu',page='',title='',remember=true,parentMenu=''}={}){
+  const routeToken=++routeEpoch;
   if(!pageAllowed(name,page)){global.toast?.('Bu sayfa öğretmen kullanıcıları için gizli.');return false}
   const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
   if(global.OdevNotUI?.page&&global.OdevNotUI.page!==requestedGradePage&&global.OdevNotUI.close?.()===false)return false;
@@ -193,10 +195,14 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
   const custom=page&&CUSTOM_PAGE_ROUTES.get(page);
   if(custom){
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||meta.label||name);
-    try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
+    try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
   }
   setBottomActive(bottom);const reuseModule=moduleRouteMounted(name);global.AppLoader?.setActiveModule?.(name);
   setTitle(title||meta.label||name);if(name==='tools'&&page)await ensureToolsPageDependencies(page);if(!reuseModule)await global.AppLoader?.load?.(name);
+  /* Sayfa yüklenirken kullanıcı başka bir rotaya geçtiyse bu eski çağrı artık
+     alt sayfa uygulamamalı. Aksi halde ör. Aylık İşler açılırken geciken
+     documents/evrak çağrısı yeni ekrana tekrar Evrak Takibi basabiliyordu. */
+  if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
   if(page)applySubpage(name,page,title);
   if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});
   return true
