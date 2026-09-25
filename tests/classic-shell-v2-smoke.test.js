@@ -134,7 +134,7 @@ for(const group of ['people','exams','programs','communication','calendar','tran
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');
 assert(ui.includes("const TEACHER_HIDDEN_PAGES=new Set(['documents:evrak','management:staff','management:tasks'"),'Öğretmen için sayfa bazlı gizleme listesi ShellUI içinde merkezi olmalı.');
-assert(ui.includes("'transport:food'"),'Öğretmen kullanıcılarında Yemek Denetimi sayfası gizlenmeli.');
+assert(ui.includes("'food:audit'"),'Öğretmen kullanıcılarında Yemek Denetimi sayfası gizlenmeli.');
 assert(ui.includes("function visibleGroups(){return MENU_GROUPS.filter(g=>g.hidden!==true)}")&&ui.includes('teacherMenuGroupAllowed(g)&&visibleItems(g).length'),'Bir menü grubunun kendi modülü gizli olsa bile taşınmış veya izinli alt sayfaları varsa grup görünmeye devam etmeli.');
 assert(!ui.match(/TEACHER_HIDDEN_PAGES[^;]*form-belirli/),'Öğretmende Belirli Gün ve Haftalar sayfası gizlenmemeli.');
 for(const hidden of ['tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger'])assert(ui.includes(hidden),`Öğretmen menü gizleme sözleşmesi eksik: ${hidden}`);
