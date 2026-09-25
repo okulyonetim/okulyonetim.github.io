@@ -7328,3 +7328,24 @@ html[data-theme="dark"] #v2ModuleRoot button[style*="background: #"]{
   color:var(--ka-button-secondary-text)!important;
   border-color:var(--ka-button-secondary-border)!important;
 }
+
+
+/* ===== CENTRAL SOCIAL ICON GEOMETRY ===== */
+.ka-home .kh-social-icon{
+  width:48px;
+  height:48px;
+  min-width:48px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  color:var(--ka-primary);
+  background:var(--ka-primary-soft);
+  border:1px solid var(--ka-border);
+}
+.ka-home .kh-social-icon>svg{width:24px;height:24px;display:block}
+html[data-theme="dark"] .ka-home .kh-social-icon{
+  color:var(--ka-primary)!important;
+  background:var(--ka-primary-soft)!important;
+  border-color:var(--ka-border)!important;
+}
