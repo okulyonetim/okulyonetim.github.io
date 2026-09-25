@@ -7758,3 +7758,47 @@ html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-social-icon>span{
   color:var(--ka-text)!important;
   border-bottom:1px solid var(--ka-border)!important;
 }
+
+
+/* ===== HEADER ACTION BORDER AUTHORITY v1030 =====
+   Tema, bildirim ve profil kontrolleri aynı belirgin merkezi kenarlıkla görünür. */
+.ka-app-header .ka-header-actions{
+  gap:8px!important;
+  align-items:center;
+}
+.ka-app-header .ka-header-actions>.ka-icon-button,
+.ka-app-header .ka-header-actions>.ka-header-notification,
+.ka-app-header .ka-header-actions>.ka-header-profile{
+  box-sizing:border-box;
+  border:1.5px solid var(--ka-border-strong)!important;
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-header-text)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+.ka-app-header .ka-header-actions>.ka-icon-button,
+.ka-app-header .ka-header-actions>.ka-header-notification{
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  border-radius:13px!important;
+}
+.ka-app-header .ka-header-actions>.ka-header-profile{
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  min-height:42px!important;
+  padding:1px!important;
+  border-radius:50%!important;
+}
+.ka-app-header .ka-header-actions>.ka-icon-button:hover,
+.ka-app-header .ka-header-actions>.ka-header-notification:hover,
+.ka-app-header .ka-header-actions>.ka-header-profile:hover{
+  border-color:var(--ka-primary)!important;
+  background:var(--ka-muted-bg)!important;
+}
+html[data-theme="dark"] .ka-app-header .ka-header-actions>.ka-icon-button,
+html[data-theme="dark"] .ka-app-header .ka-header-actions>.ka-header-notification,
+html[data-theme="dark"] .ka-app-header .ka-header-actions>.ka-header-profile{
+  border-color:var(--ka-border-strong)!important;
+}
