@@ -7938,3 +7938,50 @@ html[data-theme="dark"] .ka-teacher-stat-grid>.ka-card{
   color:var(--ka-text)!important;
   border-color:var(--ka-border)!important;
 }
+
+
+/* ===== PEOPLE PAGES — CENTRAL THEME FINAL AUTHORITY ===== */
+.ka-class-summary-grid>.is-girl,
+.ka-class-detail-summary .is-girl,
+.ka-class-numbers .is-girl{background:color-mix(in srgb,var(--ka-module-communication-1) 8%,var(--ka-card-bg))!important}
+.ka-class-summary-grid>.is-girl .ka-school-summary-icon,
+.ka-class-summary-grid>.is-girl>b,
+.ka-class-numbers .is-girl b,
+.ka-class-detail-summary .is-girl b{color:var(--ka-module-communication-1)!important}
+.ka-class-summary-grid>.is-boy,
+.ka-class-detail-summary .is-boy,
+.ka-class-numbers .is-boy{background:color-mix(in srgb,var(--ka-info) 8%,var(--ka-card-bg))!important}
+.ka-class-summary-grid>.is-boy .ka-school-summary-icon,
+.ka-class-summary-grid>.is-boy>b,
+.ka-class-numbers .is-boy b,
+.ka-class-detail-summary .is-boy b{color:var(--ka-info)!important}
+.ka-class-card,.ka-student-card,.ka-student-row,
+.ka-class-detail-summary>div,.ka-teacher-contact-grid>a,.ka-teacher-contact-grid>button{
+  border-color:var(--ka-border)!important;
+  background:var(--ka-card-bg);
+  color:var(--ka-text);
+}
+.ka-class-card:hover,.ka-student-card:hover,.ka-student-row:hover,
+.ka-teacher-contact-grid>a:hover,.ka-teacher-contact-grid>button:hover{border-color:var(--ka-border-strong)!important}
+html[data-theme="dark"] .ka-class-card,
+html[data-theme="dark"] .ka-student-card,
+html[data-theme="dark"] .ka-student-row,
+html[data-theme="dark"] .ka-class-detail-summary>div,
+html[data-theme="dark"] .ka-teacher-contact-grid>a,
+html[data-theme="dark"] .ka-teacher-contact-grid>button{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-class-avatar,
+html[data-theme="dark"] .ka-student-avatar,
+html[data-theme="dark"] .ka-student-card-actions a,
+html[data-theme="dark"] .ka-student-card-actions button{
+  border-color:var(--ka-border-strong)!important;
+}
+html[data-theme="dark"] .ka-class-main small,
+html[data-theme="dark"] .ka-class-main em,
+html[data-theme="dark"] .ka-class-numbers small,
+html[data-theme="dark"] .ka-teacher-meta,
+html[data-theme="dark"] .ka-teacher-branch{color:var(--ka-text-muted)!important}
+html[data-theme="dark"] .ka-class-main em{color:var(--ka-primary)!important}
