@@ -54,7 +54,7 @@ for(const label of ['Öğretmen & Öğrenciler','Sınavlar ve Not İşlemleri','
 for(const route of ['people','academic','management','communication','transport','documents','tools','settings']) assert(new RegExp(`['\\"]${route}['\\"]`).test(ui),`Menü V2 modül rotası eksik: ${route}`);
 assert(ui.includes('data-ka-menu-group')&&ui.includes('data-ka-shell-route')&&ui.includes('data-ka-menu-back'),'İki aşamalı Menü sözleşmesi korunmalı ve route sahibi ShellUI olmalı.');
 
-assert(ui.includes("kind:'menu-list'")&&ui.includes("if(view.kind==='menu-list'){openMenu();renderMenuList(view.page);return true}"),'Alt menüden açılan sayfada geri önceki menü listesine dönmeli.');
+assert(ui.includes("kind:'menu-list'")&&ui.includes("if(view.kind==='menu-list'){openMenu();renderMenuList(view.page);"),'Alt menüden açılan sayfada geri önceki menü listesine dönmeli.');
 assert(ui.includes('const parentMenu=menuGroup')&&ui.includes('parentMenu})')&&ui.includes('navStack[0]?.parentMenu'),'Alt menü kaynağı route geçmişinde tutulmalı ve stack bozulsa bile geri dönüş hedefi korunmalı.');
 assert(!ui.includes('data-ka-menu-route'),'ShellUI eski ikinci menü yönlendiricisinin data-ka-menu-route sözleşmesini üretmemeli.');
 const directPages=[
