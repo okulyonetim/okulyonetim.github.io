@@ -70,6 +70,8 @@ jobs:
         run: node --check js/core/login-security.js
       - name: Verify profile security
         run: node tests/profile-page-redesign.test.js
+      - name: Verify admin and teacher theme parity
+        run: node tests/admin-teacher-theme-parity.test.js
       - name: Verify admin user statistics and login locations
         run: node tests/user-statistics-admin-view.test.js
       - name: Check meeting schedule syntax
