@@ -97,6 +97,15 @@ function installPreviewGuard(){
     event.stopImmediatePropagation();
     event.preventDefault?.();
     closeReportOverlay();
+    /* Rapor/PDF üst katmanı kapanırken ShellUI'nin gerçek sayfa geçmişi
+       korunmalı. Popstate active guard'dan root guard'a düşürdüyse tekrar
+       active guard kur; aksi halde sonraki geri basımı yanlış sayfaya
+       taşıyabilir. */
+    try{
+      if(history.state?.kaShellGuard!=='active'){
+        history.pushState({...(history.state||{}),kaShellGuard:'active'},'');
+      }
+    }catch(_){}
   },true);
 }
 
