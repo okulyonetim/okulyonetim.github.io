@@ -240,7 +240,7 @@ function control(text,pos,bg){
   b.dataset.soObjectControl='';
   b.hidden=true;
   b.textContent=text;
-  b.style.cssText=`position:absolute;${pos};width:22px;height:22px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:${bg};color:#fff;font-weight:900;z-index:5;box-shadow:0 2px 5px #0005`;
+  b.style.cssText=`position:absolute;${pos};width:22px;height:22px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:${bg};color:var(--ka-on-accent);font-weight:900;z-index:5;box-shadow:0 2px 5px #0005`;
   return b;
 }
 
@@ -338,7 +338,7 @@ function createObject(type,x,y,free=false){
       seat.dataset.soSeat='';
       seat.dataset.empty='true';
       seat.textContent='+';
-      seat.style.cssText=`position:absolute;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;border:1px dashed #b9aa8d;border-radius:6px;background:#ffffff99;color:rgba(107,91,58,.45);left:${c*100/seatDef.cols}%;top:${r*100/seatDef.rows}%;width:${100/seatDef.cols}%;height:${100/seatDef.rows}%;word-break:break-word`;
+      seat.style.cssText=`position:absolute;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;border:1px dashed var(--ka-module-icon-border);border-radius:6px;background:color-mix(in srgb,var(--ka-module-icon-surface) 72%,transparent);color:color-mix(in srgb,var(--ka-module-icon-text) 55%,transparent);left:${c*100/seatDef.cols}%;top:${r*100/seatDef.rows}%;width:${100/seatDef.cols}%;height:${100/seatDef.rows}%;word-break:break-word`;
       if(editable){
         seat.tabIndex=0;
         seat.setAttribute('role','button');
@@ -762,7 +762,7 @@ function layoutCard(){
     </div>
     <div class="dv3sheetviewport" data-so-canvas-scroll>
       <div class="dv3sheetscene" data-so-canvas-stage>
-        <div class="dv3sheet" data-so-canvas style="position:relative;flex:none;border:2px solid #18231f;background-color:#fff;background-image:linear-gradient(#e5e9e7 1px,transparent 1px),linear-gradient(90deg,#e5e9e7 1px,transparent 1px);background-size:28px 28px;transform-origin:top left"></div>
+        <div class="dv3sheet" data-so-canvas style="position:relative;flex:none;border:2px solid var(--ka-module-border-strong);background-color:var(--ka-module-surface);background-image:linear-gradient(#e5e9e7 1px,transparent 1px),linear-gradient(90deg,#e5e9e7 1px,transparent 1px);background-size:28px 28px;transform-origin:top left"></div>
       </div>
     </div>
   </section>`;
