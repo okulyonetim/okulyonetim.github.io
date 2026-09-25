@@ -8046,3 +8046,39 @@ html[data-theme="dark"] [data-teacher-modal] .ka-teacher-modal-close{
   color:var(--ka-text)!important;
   border-color:var(--ka-border)!important;
 }
+
+
+/* ===== DARK THEME COMPONENT CONTRAST AUTHORITY v1033 =====
+   Koyu temada görünüm seçicisi ve yazılı sınav bilgilendirme kartı
+   açık temanın sarı yüzeyini kullanmaz. */
+html[data-theme="dark"] .ka-theme-choice.active{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ka-primary) 24%,transparent)!important;
+}
+html[data-theme="dark"] .ka-theme-choice.active>strong{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-theme-choice.active>small{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] .ka-written-modal-intro{
+  background:var(--ka-muted-bg)!important;
+  border-color:var(--ka-border)!important;
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-written-modal-intro strong{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-written-modal-intro small{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] .ka-written-modal-intro>span{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-written-modal fieldset{
+  border-color:var(--ka-border)!important;
+  color:var(--ka-text)!important;
+}
