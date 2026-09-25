@@ -8636,3 +8636,35 @@ html[data-theme="dark"] *{
   border-color:var(--ka-primary)!important;
   border-width:1px!important;
 }
+
+/* ===== DARK THEME — CANONICAL COMPONENT BORDER TOKENS ===== */
+
+/* Tüm sayfalardaki ortak UI bileşenlerinin kenarlığı tek merkezden yönetilir.
+   Modül bazlı border renkleri bu katmanda ezilir; dolgu/metin renkleri korunur. */
+html[data-theme="dark"] :where(
+  .ka-card,
+  .card,
+  .ka-btn,
+  .btn,
+  .ka-icon-button,
+  .ka-badge,
+  .badge,
+  .ka-tab,
+  .ka-field input,
+  .ka-field select,
+  .ka-field textarea,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea,
+  .ka-table-wrap,
+  .ka-table,
+  .ka-empty,
+  .ka-list-card,
+  .ka-menu-card,
+  .ka-settings-accordion__group,
+  .ka-settings-accordion__item,
+  .ka-profile-action,
+  .ka-profile-stat
+){
+  border:1px solid var(--ka-primary)!important;
+}
