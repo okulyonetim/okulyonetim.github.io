@@ -7186,3 +7186,145 @@ html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-week-item{
 #v2ModuleRoot .ka-menu-card{
   background:linear-gradient(145deg,var(--ka-primary),var(--ka-primary-hover))!important;
 }
+
+
+/* ===== DARK THEME VISUAL CONSISTENCY v1020 =====
+   Dark mode must be a complete surface/text system, not a light module on a dark shell. */
+html[data-theme="dark"] #v2ModuleRoot,
+html[data-theme="dark"] #v2ModuleRoot [data-people-classic]{
+  color:var(--ka-text);
+  background:transparent;
+}
+html[data-theme="dark"] #v2ModuleRoot [data-people-classic]{
+  --ogm-bg:var(--ka-app-bg)!important;
+  --ogm-card:var(--ka-card-bg)!important;
+  --ogm-text:var(--ka-text)!important;
+  --ogm-muted:var(--ka-text-muted)!important;
+  --ogm-line:var(--ka-border)!important;
+  --ogm-green:var(--ka-primary)!important;
+  --ogm-soft:var(--ka-primary-soft)!important;
+  --ogm-shadow:var(--ka-shadow-sm)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ogm-card,
+html[data-theme="dark"] #v2ModuleRoot .ogm-stat,
+html[data-theme="dark"] #v2ModuleRoot .ogm-teacher,
+html[data-theme="dark"] #v2ModuleRoot .ogm-student,
+html[data-theme="dark"] #v2ModuleRoot .detay-card,
+html[data-theme="dark"] #v2ModuleRoot .classic-modal{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ogm-search input,
+html[data-theme="dark"] #v2ModuleRoot .ogm-tools input,
+html[data-theme="dark"] #v2ModuleRoot .ogm-tools select,
+html[data-theme="dark"] #v2ModuleRoot [data-people-classic] input,
+html[data-theme="dark"] #v2ModuleRoot [data-people-classic] select,
+html[data-theme="dark"] #v2ModuleRoot [data-people-classic] textarea{
+  background:var(--ka-input-bg)!important;
+  color:var(--ka-input-text)!important;
+  border-color:var(--ka-input-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ogm-title h2,
+html[data-theme="dark"] #v2ModuleRoot .ogm-stat b,
+html[data-theme="dark"] #v2ModuleRoot .ogm-teacher-name,
+html[data-theme="dark"] #v2ModuleRoot .ogm-teacher-meta,
+html[data-theme="dark"] #v2ModuleRoot .detay-card h4{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ogm-title p,
+html[data-theme="dark"] #v2ModuleRoot .ogm-stat span,
+html[data-theme="dark"] #v2ModuleRoot .ogm-teacher-sub,
+html[data-theme="dark"] #v2ModuleRoot .detay-row-muted{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero{
+  background:linear-gradient(145deg,var(--ka-card-raised-bg),var(--ka-card-bg))!important;
+  color:var(--ka-text)!important;
+  border:1px solid color-mix(in srgb,var(--ka-primary) 48%,var(--ka-border))!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero h1,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero p{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero p{color:var(--ka-text-muted)!important}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-avatar,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-book{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>a,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>button,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid>.ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-info,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-doc-group{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-info b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid span,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid small{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-stat-grid b,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>a>span,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-contact-grid>button>span{
+  color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row span,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-info span{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card{
+  background:linear-gradient(145deg,var(--ka-card-raised-bg),var(--ka-card-bg))!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card strong{color:var(--ka-text)!important}
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card__icon{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page,
+html[data-theme="dark"] #v2ModuleRoot .ka-duty-page{
+  color:var(--ka-text);
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-hero{
+  background:linear-gradient(145deg,var(--ka-card-raised-bg),var(--ka-card-bg))!important;
+  border-color:var(--ka-border)!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-hero__copy h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-hero__copy p,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-surface,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-action,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-mobile-lesson{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-surface,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-action,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-mobile-lesson{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-hero__copy p,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-surface-head p,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-mobile-time small,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-mobile-main small{
+  color:var(--ka-text-muted)!important;
+}
+/* Inline legacy buttons are also forced into the central dark palette. */
+html[data-theme="dark"] #v2ModuleRoot button[style*="background:#"],
+html[data-theme="dark"] #v2ModuleRoot button[style*="background: #"]{
+  background:var(--ka-button-secondary-bg)!important;
+  color:var(--ka-button-secondary-text)!important;
+  border-color:var(--ka-button-secondary-border)!important;
+}
