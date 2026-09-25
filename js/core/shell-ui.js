@@ -34,7 +34,7 @@ const MENU_GROUPS=[
  {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'food',items:[['Günlük Menü','☀️','food','daily'],['Haftalık Menü','📆','food','weekly'],['Aylık Menü','🗓️','food','monthly'],['Yemek Denetimi','📝','food','audit']]},
  {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Akademik Takvim','📅','academic','calendar']]},
  {key:'settings',label:'Okul ve Sistem',modernLabel:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Veriler','🗄️','settings','data']]},
- {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',hidden:true,items:[['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools','rubric'],['Proje Değerlendirme Ölçeği','📏','tools','project']]},
+ {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',hidden:true,items:[['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','academic','rubric'],['Proje Değerlendirme Ölçeği','📏','academic','project']]},
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',hidden:true,items:[['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]}
 ];
 const FORM_PAGES=Object.freeze({'form-maarif':'Maarif Model Raporları','form-belirli':'Belirli Günler ve Haftalar','form-sok':'ŞÖK','form-rehberlik':'Rehberlik','form-bep':'BEP Planları','form-zumre':'Zümre','form-kulup':'Sosyal Kulüpler','form-diger':'Diğer Evrak'});
@@ -147,6 +147,11 @@ function applySubpage(name,page,title){
   }
   if(name==='academic'){
     const h=root.querySelector('[data-academic-module] > .ka-row h2');if(h&&title)h.textContent=title;
+    if(page==='rubric'){
+      Promise.resolve(global.KorukRubricToolsV2?.openRubric?.()).catch(e=>{console.error('[Shell/rubric]',e);global.toast?.('Kriter puan dağıtım aracı açılamadı.');});
+    }else if(page==='project'){
+      Promise.resolve(global.KorukRubricToolsV2?.openProject?.()).catch(e=>{console.error('[Shell/project]',e);global.toast?.('Proje değerlendirme aracı açılamadı.');});
+    }
   }
   if(name==='communication'){
     const h=root.querySelector('[data-communication-module] > .ka-row h2');if(h&&title)h.textContent=title;
