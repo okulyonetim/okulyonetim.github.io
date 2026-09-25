@@ -7802,3 +7802,59 @@ html[data-theme="dark"] .ka-app-header .ka-header-actions>.ka-header-notificatio
 html[data-theme="dark"] .ka-app-header .ka-header-actions>.ka-header-profile{
   border-color:var(--ka-border-strong)!important;
 }
+
+
+/* ===== TEACHER DETAIL FINAL AUTHORITY v1030 ===== */
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-toolbar{
+  background:var(--ka-card-bg)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero{
+  background:var(--ka-card-raised-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero::after{
+  content:none!important;
+  display:none!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero h1{
+  color:var(--ka-text)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero p{
+  color:var(--ka-text-muted)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-avatar,
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-book{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-contact-grid>a,
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-contact-grid>button,
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-stat-grid>.ka-card,
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-detail-section,
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-doc-group{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-contact-grid>a>span,
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-contact-grid>button>span,
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-section-icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+}
+#v2ModuleRoot section.ka-teacher-profile .ka-teacher-stat-grid b{
+  color:var(--ka-primary)!important;
+}
