@@ -8169,3 +8169,51 @@ html[data-theme="dark"] .ka-btn--secondary:hover{
   color:var(--ka-button-text);
 }
 \n
+
+/* ===== DARK THEME — PROMINENT YELLOW BORDER AUTHORITY ===== */
+/* Koyu temada kenarlıklar yalnızca renk olarak değil, kalınlık ve kontrast olarak da
+   belirgin görünür. Açık tema etkilenmez. */
+html[data-theme="dark"] .ka-card,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .ka-list-card,
+html[data-theme="dark"] .ka-teacher-card,
+html[data-theme="dark"] .ka-class-card,
+html[data-theme="dark"] .ka-student-card,
+html[data-theme="dark"] .ka-student-row,
+html[data-theme="dark"] .ka-school-summary-card{
+  border:2px solid var(--ka-primary)!important;
+}
+
+html[data-theme="dark"] .ka-card__header,
+html[data-theme="dark"] .ka-card__body,
+html[data-theme="dark"] .ka-card__footer{
+  border-color:var(--ka-primary)!important;
+}
+
+html[data-theme="dark"] .ka-tab,
+html[data-theme="dark"] .ka-btn--secondary,
+html[data-theme="dark"] .ka-icon-button,
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .ka-input{
+  border-width:1.5px!important;
+  border-color:var(--ka-primary)!important;
+}
+
+html[data-theme="dark"] .ka-app-header,
+html[data-theme="dark"] .ka-bottom-nav{
+  border-width:2px!important;
+  border-color:var(--ka-primary)!important;
+}
+
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-arrow{
+  border-width:2px!important;
+  border-color:var(--ka-primary)!important;
+}
+
+html[data-theme="dark"] .ka-school-summary-card::before,
+html[data-theme="dark"] .ka-school-summary-card::after{
+  pointer-events:none;
+}
