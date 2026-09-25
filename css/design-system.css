@@ -7666,3 +7666,15 @@ html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action{
   background:var(--ka-card-raised-bg)!important;
   border-color:var(--ka-border-strong)!important;
 }
+
+
+/* ===== SOCIAL ICON CONTRAST AUTHORITY v1028 =====
+   Instagram / X / okul link ikonları her iki temada siyah. */
+#v2ModuleRoot .ka-home .kh-social-icon,
+#v2ModuleRoot .ka-home .kh-social-icon>svg,
+#v2ModuleRoot .ka-home .kh-social-icon>span,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-social-icon,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-social-icon>svg,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-social-icon>span{
+  color:#000!important;
+}
