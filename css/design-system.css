@@ -7602,3 +7602,67 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero{color:var(--ka-on
   color:var(--ka-text-muted)!important;
   border-color:var(--ka-border)!important;
 }
+
+
+/* ===== CENTRAL PROFILE SURFACE AUTHORITY v1027 =====
+   Profil kartı bağımsız sarı/renkli hero tasarımından çıkarıldı.
+   Yüzey, metin ve tüm kenarlıklar merkezi tema tokenlarından gelir. */
+#v2ModuleRoot .ka-profile-page .ka-profile-hero{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-hero::before,
+#v2ModuleRoot .ka-profile-page .ka-profile-hero::after{
+  display:none!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-copy h2,
+#v2ModuleRoot .ka-profile-page .ka-profile-role{
+  color:var(--ka-text)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-eyebrow,
+#v2ModuleRoot .ka-profile-page .ka-profile-contact__item{
+  color:var(--ka-text-muted)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-contact__item{
+  background:var(--ka-muted-bg)!important;
+  border:1px solid var(--ka-border)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-contact__item>b{
+  color:var(--ka-text)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-avatar{
+  background:var(--ka-card-bg)!important;
+  border:2px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-stats{
+  gap:9px;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-stat{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-stat__icon,
+#v2ModuleRoot .ka-profile-page .ka-profile-action__icon{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-border)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-action{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+}
+#v2ModuleRoot .ka-profile-page .ka-profile-action:hover{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-hero,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-stat,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-page .ka-profile-action{
+  background:var(--ka-card-raised-bg)!important;
+  border-color:var(--ka-border-strong)!important;
+}
