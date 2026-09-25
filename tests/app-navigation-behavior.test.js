@@ -8,6 +8,7 @@ const sw=fs.readFileSync('service-worker.js','utf8');
 assert(nav.includes("document.getElementById('kaReportPreview')||document.getElementById('kaPdfPreview')"),'Rapor ve PDF önizlemeleri tek geri-tuştan önce yakalanmalı.');
 assert(nav.includes("global.addEventListener('popstate'"),'Tarayıcı/Android geri olayı rapor önizleme katmanında ele alınmalı.');
 assert(nav.includes('event.stopImmediatePropagation()'),'Önizleme kapanırken arka sayfa geri navigasyonu durdurulmalı.');
+assert(nav.includes("history.state?.kaShellGuard!=='active'")&&nav.includes("history.pushState({...(history.state||{}),kaShellGuard:'active'},'')"),'Önizleme/PDF kapanırken Shell browser guard yeniden kurulmalı.');
 assert(nav.includes("event.target.closest?.('[data-ka-home-trigger]')"),'Header okul markası özel ana sayfa davranışına bağlı olmalı.');
 assert(nav.includes("global.AppStore?.subscribe?.('ui.route',scrollTopSoon)"),'Modül değişimlerinde sayfa en üste alınmalı.');
 assert(nav.includes("'[data-ka-shell-route],[data-dash-route]"),'Alt sayfa/menu yönlendirmeleri üstten açılmalı.');
