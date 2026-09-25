@@ -8250,3 +8250,34 @@ html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge *,
 html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge--warning *{
   color:var(--ka-button-text)!important;
 }
+
+/* ===== DARK TEACHER PROFILE HERO — REDUCE YELLOW FILL ===== */
+/* Koyu temada öğretmen detayındaki sarı gradient kaldırılır; sarı yalnızca
+   belirgin kenarlık ve vurgu olarak kullanılır. */
+html[data-theme="dark"] .ka-teacher-profile-hero{
+  background:var(--ka-card-raised-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile-hero::after{
+  display:none!important;
+}
+html[data-theme="dark"] .ka-teacher-profile-hero h1{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile-hero p{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile-hero .ka-badge{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile-avatar,
+html[data-theme="dark"] .ka-teacher-profile-book{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-border)!important;
+}
