@@ -7464,3 +7464,36 @@ html[data-theme="dark"] .ka-report-preview .dv3h .dv3btn.primary{
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY v1025 =====
+   Menü katmanı #v2ModuleRoot dışında render edilir; modül bazlı renkleri
+   burada tek merkezi tema yüzeyine bağlıyoruz. */
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="people"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="exams"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="programs"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="communication"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="calendar"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="transport"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="documents"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="management"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-ka-menu-group="settings"],
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-menu-custom-color="true"]{
+  background:linear-gradient(145deg,var(--ka-primary),var(--ka-primary-hover))!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card strong,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card__icon{
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card__icon{
+  background:color-mix(in srgb,var(--ka-button-text) 14%,transparent)!important;
+  border-color:color-mix(in srgb,var(--ka-button-text) 22%,transparent)!important;
+}
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card>.ka-badge{
+  background:color-mix(in srgb,var(--ka-button-text) 18%,transparent)!important;
+  color:var(--ka-button-text)!important;
+  border-color:color-mix(in srgb,var(--ka-button-text) 20%,transparent)!important;
+}
