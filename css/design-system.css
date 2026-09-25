@@ -9,7 +9,7 @@
   --ka-button-bg:#ffc400;--ka-button-hover:#e5b000;--ka-button-text:#151515;--ka-button-secondary-bg:#fff;--ka-button-secondary-text:#15171a;--ka-button-secondary-border:#dfe2e5;
   --ka-card-bg:#fff;--ka-card-raised-bg:#fff;--ka-muted-bg:#f0f1ef;--ka-input-bg:#fff;--ka-input-text:#15171a;--ka-input-border:#dfe2e5;--ka-input-focus:#ffc400;
   --ka-border:#dedfe2;--ka-border-strong:#c7c9cd;--ka-focus:rgba(255,196,0,.28);--ka-overlay:rgba(10,10,10,.52);
-  --ka-success:#22bf73;--ka-warning:#f5a400;--ka-danger:#ef4b5f;--ka-info:#3b91e8;
+  --ka-success:#22bf73;--ka-warning:#f5a400;--ka-danger:#ef4b5f;--ka-danger-text:#fff;--ka-info:#3b91e8;
   --ka-hero-bg:radial-gradient(circle at 86% 10%,rgba(255,196,0,.13),transparent 36%),linear-gradient(145deg,#fffdf1,#f4f5f3);--ka-hero-border:#dfe5e1;--ka-hero-text:#15171a;--ka-hero-muted:#697077;--ka-hero-kicker:#c39700;--ka-hero-badge-bg:#fff3c4;--ka-hero-badge-text:#9b7900;--ka-hero-shadow:0 12px 28px rgba(20,24,22,.08);
   --ka-live-bg:#fffdf3;--ka-live-border:#eadba0;--ka-live-surface:#f4f0dc;--ka-live-text:#15171a;--ka-live-muted:#756f5b;--ka-live-accent:#c99700;--ka-live-accent-soft:#fff3bd;--ka-live-progress-bg:#e8e0bf;--ka-live-progress:linear-gradient(90deg,#ffc400,#c99700);--ka-weather-bg:#f7f6f0;--ka-weather-icon-bg:#eee9d8;
   --ka-module-people-1:#e8bf22;--ka-module-people-2:#c99f00;--ka-module-exams-1:#4b91d0;--ka-module-exams-2:#356ea5;--ka-module-programs-1:#d99729;--ka-module-programs-2:#b86f16;--ka-module-communication-1:#d96861;--ka-module-communication-2:#b94b46;--ka-module-calendar-1:#439aae;--ka-module-calendar-2:#317889;--ka-module-transport-1:#8061b5;--ka-module-transport-2:#60498d;--ka-module-documents-1:#d59642;--ka-module-documents-2:#ae6f25;--ka-module-management-1:#39a96b;--ka-module-management-2:#27814f;--ka-module-settings-1:#8b969f;--ka-module-settings-2:#68727b;
@@ -21,7 +21,7 @@
   --ka-radius-sm:8px;--ka-radius-md:12px;--ka-radius-lg:18px;--ka-radius-xl:22px;--ka-radius-pill:999px;
   --ka-shadow-sm:0 2px 8px rgba(15,16,16,.045);--ka-shadow-md:0 8px 22px rgba(15,16,16,.08);--ka-shadow-modal:0 20px 56px rgba(7,10,9,.18);
   --ka-transition-fast:120ms ease;--ka-transition:180ms ease;
-  --ka-report-bg:#fff;--ka-report-text:#000;--ka-report-width:210mm;--ka-report-min-height:297mm;--ka-report-margin:8mm;--ka-report-font:Arial,Helvetica,sans-serif;--ka-report-font-size:9.5pt;--ka-report-heading-size:14pt;--ka-report-border:#222;--ka-report-header-bg:#f0f0f0;--ka-report-cell-padding:5px 7px;
+  --ka-report-bg:#fff;--ka-report-text:#000;--ka-report-soft-header-bg:#f3f6f4;--ka-report-soft-header-text:#173e32;--ka-report-soft-border:#9baba4;--ka-report-soft-section-bg:#f7f9f8;--ka-report-soft-neutral-bg:#f8faf9;--ka-report-zebra-a:#fbfdfc;--ka-report-zebra-b:#fff;--ka-report-zebra-head-a:#f3f7f5;--ka-report-zebra-head-b:#fafcfb;--ka-report-width:210mm;--ka-report-min-height:297mm;--ka-report-margin:8mm;--ka-report-font:Arial,Helvetica,sans-serif;--ka-report-font-size:9.5pt;--ka-report-heading-size:14pt;--ka-report-border:#222;--ka-report-header-bg:#f0f0f0;--ka-report-cell-padding:5px 7px;
 }
 [data-theme="dark"]{
   color-scheme:dark;--ka-primary:#ffc400;--ka-primary-hover:#ffd34d;--ka-primary-soft:#3a310e;--ka-accent:#35d07f;
