@@ -197,7 +197,7 @@ function foodMenuPrintBody(key,data){
  weeks.forEach(row=>row.forEach((day,ci)=>{
   if(!day){html+='<div class="fm-p-cell fm-p-cell--empty"></div>';return}
   const th=themeFor(ci+1),items=foodDayItems(data[day]||{});
-  html+='<div class="fm-p-cell '+th.cls+'"><div class="fm-p-day">+String(day).padStart(2,'0')+'</div>'
+  html+='<div class="fm-p-cell '+th.cls+'"><div class="fm-p-day">'+String(day).padStart(2,'0')+'</div>'
    +items.map(v=>'<div class="fm-p-item"><span>'+esc(v)+'</span></div>').join('')+'</div>';
  }));
  return html+'</div></div>';
