@@ -135,7 +135,7 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-calendar-day{position:relative;min-width:0;aspect-ratio:1/1;border:1px solid var(--ka-border);border-radius:12px;background:var(--ka-card-bg);color:var(--ka-text);display:flex;align-items:flex-start;justify-content:flex-start;padding:7px;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
 .ka-calendar-day:not(.ka-calendar-day--empty):active{transform:scale(.96)}
 .ka-calendar-day small{font-size:.78rem;font-weight:800}
-.ka-calendar-day b{position:absolute;right:5px;bottom:5px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:var(--ka-primary);color:var(--ka-on-primary,#fff);display:grid;place-items:center;font-size:.62rem}
+.ka-calendar-day b{position:absolute;right:5px;bottom:5px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:var(--ka-primary);color:var(--ka-text-inverse);display:grid;place-items:center;font-size:.62rem}
 .ka-calendar-day i{position:absolute;right:7px;bottom:7px;width:5px;height:5px;border-radius:50%;background:var(--ka-border)}
 .ka-calendar-day.is-today{border-color:var(--ka-primary);box-shadow:0 0 0 1px var(--ka-primary) inset}
 .ka-calendar-day.is-selected{background:color-mix(in srgb,var(--ka-primary) 14%,var(--ka-card-bg));border-color:var(--ka-primary)}
