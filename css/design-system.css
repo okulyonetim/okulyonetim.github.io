@@ -9036,3 +9036,93 @@ html[data-theme="dark"] #kaReportPreview .dv3btn.primary *{
   color:#111!important;
   stroke:#111!important;
 }
+
+
+/* ===== DARK THEME — DERS PROGRAMI SCREENSHOT FIX v1041 =====
+   Ders Programı mobil görünümünde açık/sarı yüzeyler yalnız vurgu olarak kalır. */
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-action,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-lesson,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-surface{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-action:hover,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-lesson:hover{
+  background:#1d1d1d!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-action *,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-lesson *{
+  color:inherit!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-action small,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-lesson small,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-main small{
+  color:#a8a8a8!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-action__icon,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page [class*="action"] [class*="icon"]{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-date{
+  background:#151515!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-date *,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-date span{
+  color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-period{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-time{
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-time b,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-main strong{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-lesson.filled{
+  border-left:4px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-lesson.empty{
+  background:#111!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-days{
+  background:#151515!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-days button{
+  color:#a8a8a8!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-days button.active{
+  background:#ffc400!important;
+  color:#111!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-days button.today:not(.active){
+  color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-days button.active *{
+  color:#111!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-main .ka-schedule-mobile-add,
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-lesson [class*="add"]{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-break{
+  background:#21180b!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page .ka-schedule-mobile-break *{
+  color:#f5f5f5!important;
+}
