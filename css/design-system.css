@@ -8217,3 +8217,36 @@ html[data-theme="dark"] .ka-school-summary-card::before,
 html[data-theme="dark"] .ka-school-summary-card::after{
   pointer-events:none;
 }
+
+/* ===== DARK THEME — YELLOW SURFACE BLACK TEXT AUTHORITY ===== */
+/* Koyu temada sarı zemin üzerinde kalan vurgu metinleri siyah olur. */
+html[data-theme="dark"] .ka-btn,
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] .ka-btn--primary,
+html[data-theme="dark"] .ka-btn--accent,
+html[data-theme="dark"] .ka-primary-action,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-arrow{
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-btn *,
+html[data-theme="dark"] .btn *,
+html[data-theme="dark"] .ka-btn--primary *,
+html[data-theme="dark"] .ka-btn--accent *,
+html[data-theme="dark"] .ka-primary-action *,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn *,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-arrow *{
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-badge,
+html[data-theme="dark"] .ka-badge--warning,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge--warning{
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] .ka-badge *,
+html[data-theme="dark"] .ka-badge--warning *,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge *,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge--warning *{
+  color:var(--ka-button-text)!important;
+}
