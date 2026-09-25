@@ -163,13 +163,13 @@ function saveStatusElement(){
   const modal=document.getElementById('kaAcademicScheduleModal');if(!modal)return null;
   let el=modal.querySelector('[data-schedule-save-status]');if(el)return el;
   el=document.createElement('div');el.dataset.scheduleSaveStatus='';el.setAttribute('role','status');el.setAttribute('aria-live','polite');
-  el.style.cssText='margin:0 22px 12px;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.35;display:none;background:rgba(255,255,255,.06);border:1px solid var(--ka-border);';
+  el.style.cssText='margin:0 22px 12px;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.35;display:none;background:var(--ka-status-bg);border:1px solid var(--ka-border);';
   modal.querySelector('.ka-modal__footer')?.before(el);return el;
 }
 function setSaveStatus(message,state='info'){
   const el=saveStatusElement();if(!el)return;
   el.textContent=message||'';el.style.display=message?'block':'none';
-  el.style.color=state==='error'?'var(--ka-danger,#ef6b6b)':'var(--ka-text,#fff)';
+  el.style.color=state==='error'?'var(--ka-danger)':'var(--ka-text)';
 }
 function patchScheduleService(){
   const service=global.DersProgramiService;
