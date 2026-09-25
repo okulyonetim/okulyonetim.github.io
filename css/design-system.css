@@ -7678,3 +7678,83 @@ html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-social-icon>svg,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-social-icon>span{
   color:#000!important;
 }
+
+
+/* ===== TEACHER DETAIL CENTRAL SURFACE AUTHORITY v1029 =====
+   Öğretmen detayında eski yeşil araç çubuğu ve sarı profil hero'su kaldırıldı. */
+#v2ModuleRoot .ka-teacher-profile-toolbar{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px!important;
+  margin:0 0 2px;
+  background:var(--ka-card-bg)!important;
+  border:1px solid var(--ka-border)!important;
+  border-radius:18px!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn,
+#v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn--primary,
+#v2ModuleRoot .ka-teacher-profile-toolbar button{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:none!important;
+}
+#v2ModuleRoot .ka-teacher-profile-toolbar .ka-btn:hover,
+#v2ModuleRoot .ka-teacher-profile-toolbar button:hover{
+  background:var(--ka-muted-bg)!important;
+  border-color:var(--ka-primary)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-md)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero::after{
+  display:none!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero h1{
+  color:var(--ka-text)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero p{
+  color:var(--ka-text-muted)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-avatar{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-book{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-contact-grid>a,
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-contact-grid>button{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-contact-grid>a>span,
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-contact-grid>button>span{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-stat-grid>.ka-card,
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-section,
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-doc-group{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border-strong)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-section>.ka-card__header,
+#v2ModuleRoot .ka-teacher-profile .ka-teacher-doc-group-head{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border-bottom:1px solid var(--ka-border)!important;
+}
