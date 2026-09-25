@@ -3059,7 +3059,7 @@ button.ka-primary,
 #khBell.kh-bell-modern .kh-bell-special{
   background:#111a16!important;
 }
-[data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special-copy strong{color:#f5f5f5!important}
+[data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special-copy strong{color:var(--ka-module-text)!important}
 [data-theme="dark"] #khBell.kh-bell-modern .kh-bell-special-copy span{color:#aaa!important}
 
 /* ===== TEACHER DIRECTORY DARK THEME — FINAL OVERRIDE ===== */
@@ -4621,7 +4621,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-people-page-head *,
 html[data-theme="dark"] #v2ModuleRoot .ka-directory-title *,
 html[data-theme="dark"] #v2ModuleRoot .ka-schedule-page > header *,
 html[data-theme="dark"] #v2ModuleRoot .ka-duty-page-head * {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-muted,
 html[data-theme="dark"] #v2ModuleRoot p:not(.ka-btn),
@@ -4640,9 +4640,9 @@ html[data-theme="dark"] #v2ModuleRoot .ka-student-row,
 html[data-theme="dark"] #v2ModuleRoot .ka-attendance-student,
 html[data-theme="dark"] #v2ModuleRoot .ka-attendance-absence,
 html[data-theme="dark"] #v2ModuleRoot .ka-attendance-class-card {
-  background:#141414 !important;
-  color:#f5f5f5 !important;
-  border-color:#303030 !important;
+  background:var(--ka-module-surface) !important;
+  color:var(--ka-module-text) !important;
+  border-color:var(--ka-module-border) !important;
 }
 
 /* Card descendants inherit the readable foreground; muted metadata stays muted. */
@@ -4655,7 +4655,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-card b,
 html[data-theme="dark"] #v2ModuleRoot .ka-class-card strong,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-card strong,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-row strong {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-card small,
 html[data-theme="dark"] #v2ModuleRoot .ka-card p,
@@ -4663,7 +4663,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-card .ka-muted,
 html[data-theme="dark"] #v2ModuleRoot .ka-class-card small,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-card small,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-row small {
-  color:#a8a8a8 !important;
+  color:var(--ka-module-muted) !important;
 }
 
 /* Profil: Temel Bilgiler, Ders Programı ve diğer detay kartları. */
@@ -4672,9 +4672,9 @@ html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article,
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page [class*="profile-section"],
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page [class*="profile-info"],
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page [class*="profile-card"] {
-  background:#141414 !important;
-  color:#f5f5f5 !important;
-  border-color:#303030 !important;
+  background:var(--ka-module-surface) !important;
+  color:var(--ka-module-text) !important;
+  border-color:var(--ka-module-border) !important;
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > section h2,
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > section h3,
@@ -4684,7 +4684,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article h2,
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article h3,
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article strong,
 html[data-theme="dark"] #v2ModuleRoot .ka-profile-page > article b {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 
 /* Shell: güneş/bildirim/geri ikonları koyu temada kaybolmasın. */
@@ -4692,7 +4692,7 @@ html[data-theme="dark"] .ka-app-header .ka-icon-button,
 html[data-theme="dark"] .ka-app-header .ka-icon-button svg,
 html[data-theme="dark"] .ka-app-header .ka-shell-back,
 html[data-theme="dark"] .ka-app-header .ka-shell-back svg {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
   stroke:#f5f5f5 !important;
   fill:none;
   opacity:1 !important;
@@ -4709,27 +4709,27 @@ html[data-theme="dark"] .ka-report-preview {
 }
 html[data-theme="dark"] #kaReportPreview .ka-report-preview__toolbar,
 html[data-theme="dark"] #kaReportPreview .dv3h {
-  background:#0b0b0b !important;
-  border-color:#2d2d2d !important;
-  color:#f5f5f5 !important;
+  background:var(--ka-module-surface-muted) !important;
+  border-color:var(--ka-module-border) !important;
+  color:var(--ka-module-text) !important;
 }
 html[data-theme="dark"] #kaReportPreview .ka-report-preview__toolbar .dv3btn,
 html[data-theme="dark"] #kaReportPreview .dv3h .dv3btn {
   background:#f5f5f5 !important;
-  color:#111 !important;
+  color:var(--ka-button-text) !important;
   border-color:#d0d0d0 !important;
 }
 html[data-theme="dark"] #kaReportPreview .ka-report-preview__toolbar .dv3btn.primary,
 html[data-theme="dark"] #kaReportPreview .dv3h .dv3btn.primary {
-  background:#ffc400 !important;
-  color:#111 !important;
-  border-color:#ffc400 !important;
+  background:var(--ka-module-accent) !important;
+  color:var(--ka-button-text) !important;
+  border-color:var(--ka-module-accent) !important;
 }
 html[data-theme="dark"] #kaReportPreview .ka-report-preview__title b {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 html[data-theme="dark"] #kaReportPreview .ka-report-preview__title small {
-  color:#a8a8a8 !important;
+  color:var(--ka-module-muted) !important;
 }
 
 /* Dashboard canlı ders kartı: yeşil dekoratif yüzey yerine sarı/anthracite. */
@@ -4774,14 +4774,14 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] #v2ModuleRoot .ka-directory-title *,
 [data-theme="dark"] #v2ModuleRoot .ka-schedule-page > header,
 [data-theme="dark"] #v2ModuleRoot .ka-schedule-page > header * {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 [data-theme="dark"] #v2ModuleRoot .ka-page-head p,
 [data-theme="dark"] #v2ModuleRoot .ka-people-page-head p,
 [data-theme="dark"] #v2ModuleRoot .ka-schedule-page > p,
 [data-theme="dark"] #v2ModuleRoot .ka-muted,
 [data-theme="dark"] #v2ModuleRoot small {
-  color:#a8a8a8 !important;
+  color:var(--ka-module-muted) !important;
 }
 
 /* Modül yüzeyleri */
@@ -4800,9 +4800,9 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] #v2ModuleRoot .ka-profile-info-card,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-contact,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-contact-card {
-  background:#141414 !important;
-  color:#f5f5f5 !important;
-  border-color:#303030 !important;
+  background:var(--ka-module-surface) !important;
+  color:var(--ka-module-text) !important;
+  border-color:var(--ka-module-border) !important;
 }
 
 /* Profil detay kartlarının tüm yazıları */
@@ -4821,13 +4821,13 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > article h3,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > article strong,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > article b {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > section:not(.ka-profile-hero) p,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > section:not(.ka-profile-hero) small,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > article p,
 [data-theme="dark"] #v2ModuleRoot .ka-profile-page > article small {
-  color:#a8a8a8 !important;
+  color:var(--ka-module-muted) !important;
 }
 
 /* Ana sayfa bölüm başlıkları: Okul Özeti vb. */
@@ -4841,13 +4841,13 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] .ka-home .kh-section-title,
 [data-theme="dark"] .ka-home .kh-section-head,
 [data-theme="dark"] .ka-home .kh-section-head * {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 [data-theme="dark"] .ka-home .ka-home-section__head p,
 [data-theme="dark"] .ka-home .ka-home-section__head small,
 [data-theme="dark"] .ka-home .kh-section-head small,
 [data-theme="dark"] .ka-home .kh-section-head p {
-  color:#a8a8a8 !important;
+  color:var(--ka-module-muted) !important;
 }
 
 /* Menü katmanı: Öğretmen & Öğrenciler başlığı ve kapatma ikonu */
@@ -4856,7 +4856,7 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] #kaMenuLayer .ka-menu-head h2 *,
 [data-theme="dark"] #kaMenuLayer .ka-menu-head button,
 [data-theme="dark"] #kaMenuLayer .ka-menu-head button * {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
   opacity:1 !important;
 }
 
@@ -4866,20 +4866,20 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] .ka-search-page h2,
 [data-theme="dark"] .ka-search-page h3,
 [data-theme="dark"] .ka-search-results-head strong {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 [data-theme="dark"] .ka-search-page p,
 [data-theme="dark"] .ka-search-page small,
 [data-theme="dark"] .ka-search-results-head small {
-  color:#a8a8a8 !important;
+  color:var(--ka-module-muted) !important;
 }
 [data-theme="dark"] .ka-search-box,
 [data-theme="dark"] .ka-search-filters,
 [data-theme="dark"] .ka-search-result,
 [data-theme="dark"] .ka-search-empty {
-  background:#141414 !important;
-  color:#f5f5f5 !important;
-  border-color:#303030 !important;
+  background:var(--ka-module-surface) !important;
+  color:var(--ka-module-text) !important;
+  border-color:var(--ka-module-border) !important;
 }
 
 /* Ders programı / yoklama sayfa başlıkları */
@@ -4890,11 +4890,11 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] [data-student-page="attendance"] h1,
 [data-theme="dark"] [data-student-page="attendance"] h2,
 [data-theme="dark"] [data-student-page="attendance"] h3 {
-  color:#f5f5f5 !important;
+  color:var(--ka-module-text) !important;
 }
 [data-theme="dark"] .ka-schedule-page > p,
 [data-theme="dark"] [data-student-page="attendance"] > p {
-  color:#a8a8a8 !important;
+  color:var(--ka-module-muted) !important;
 }
 
 /* Rapor araç çubuğu: teal/yeşil yüzey yerine anthracite */
@@ -4904,26 +4904,26 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
 [data-theme="dark"] [data-profile-toolbar],
 [data-theme="dark"] [data-ka-profile-toolbar],
 [data-theme="dark"] .dv3h {
-  background:#0b0b0b !important;
-  color:#f5f5f5 !important;
-  border-color:#2d2d2d !important;
+  background:var(--ka-module-surface-muted) !important;
+  color:var(--ka-module-text) !important;
+  border-color:var(--ka-module-border) !important;
 }
 [data-theme="dark"] .ka-report-preview__toolbar .ka-btn,
 [data-theme="dark"] .ka-report-preview__toolbar button:not(.primary),
 [data-theme="dark"] [data-profile-toolbar] button,
 [data-theme="dark"] [data-ka-profile-toolbar] button,
 [data-theme="dark"] .dv3h .dv3btn {
-  background:#1a1a1a !important;
-  color:#f5f5f5 !important;
-  border-color:#3a3a3a !important;
+  background:var(--ka-module-surface-raised) !important;
+  color:var(--ka-module-text) !important;
+  border-color:var(--ka-module-border-strong) !important;
 }
 [data-theme="dark"] .ka-report-preview__toolbar .primary,
 [data-theme="dark"] [data-profile-toolbar] .primary,
 [data-theme="dark"] [data-ka-profile-toolbar] .primary,
 [data-theme="dark"] .dv3h .dv3btn.primary {
-  background:#ffc400 !important;
-  color:#111 !important;
-  border-color:#ffc400 !important;
+  background:var(--ka-module-accent) !important;
+  color:var(--ka-button-text) !important;
+  border-color:var(--ka-module-accent) !important;
 }
 
 
@@ -5703,11 +5703,11 @@ html[data-theme="dark"] .ka-reminder-summary strong{
 }
 html[data-theme="dark"] .ka-reminder-summary .is-overdue>span{
   background:color-mix(in srgb,var(--ka-danger) 22%,var(--ka-card-bg))!important;
-  color:#ff8d96!important;
+  color:var(--ka-reminder-overdue-text)!important;
 }
 html[data-theme="dark"] .ka-reminder-summary .is-today>span{
   background:color-mix(in srgb,var(--ka-warning) 22%,var(--ka-card-bg))!important;
-  color:#ffd166!important;
+  color:var(--ka-reminder-today-text)!important;
 }
 html[data-theme="dark"] .ka-reminder-summary .is-upcoming>span{
   background:var(--ka-primary-soft)!important;
@@ -5717,7 +5717,7 @@ html[data-theme="dark"] .ka-reminder-summary .is-upcoming>span{
 
 /* ===== HATIRLATICI — DARK SUMMARY CONTRAST FIX ===== */
 html[data-theme="dark"] .ka-reminder-summary>div,
-body[data-theme="dark"] .ka-reminder-summary>div{background:#191919!important;color:var(--ka-module-text)!important;border-color:#383838!important}
+body[data-theme="dark"] .ka-reminder-summary>div{background:var(--ka-module-surface-raised)!important;color:var(--ka-module-text)!important;border-color:var(--ka-module-border)!important}
 html[data-theme="dark"] .ka-reminder-summary .is-overdue>span,
 body[data-theme="dark"] .ka-reminder-summary .is-overdue>span{background:var(--ka-reminder-overdue-bg)!important;color:var(--ka-reminder-overdue-text)!important}
 html[data-theme="dark"] .ka-reminder-summary .is-today>span,
@@ -5725,9 +5725,9 @@ body[data-theme="dark"] .ka-reminder-summary .is-today>span{background:var(--ka-
 html[data-theme="dark"] .ka-reminder-summary .is-upcoming>span,
 body[data-theme="dark"] .ka-reminder-summary .is-upcoming>span{background:var(--ka-reminder-upcoming-bg)!important;color:var(--ka-reminder-upcoming-text)!important}
 html[data-theme="dark"] .ka-reminder-summary small,
-body[data-theme="dark"] .ka-reminder-summary small{color:#a8a8a8!important}
+body[data-theme="dark"] .ka-reminder-summary small{color:var(--ka-module-muted)!important}
 html[data-theme="dark"] .ka-reminder-summary strong,
-body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
+body[data-theme="dark"] .ka-reminder-summary strong{color:var(--ka-module-text)!important}
 
 
 /* ===== ÖĞRENCİLER + ÖĞRENCİ DETAYI — KOYU TEMA KONTRAST V1 ===== */
