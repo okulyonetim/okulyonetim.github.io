@@ -7430,3 +7430,37 @@ html[data-theme="dark"] .module-card{
 html[data-theme="dark"] .ka-home .ka-school-summary-card>small,
 html[data-theme="dark"] .ka-home .ka-school-summary-card>b{color:var(--ka-text)!important}
 html[data-theme="dark"] .ka-home .ka-school-summary-meta{color:var(--ka-text-muted)!important}
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY v1024 =====
+   Profil/rapor araç çubuğu #v2ModuleRoot dışında render edilse bile merkezi koyu tema yüzeyini kullanır. */
+html[data-theme="dark"] .ka-teacher-profile-toolbar,
+html[data-theme="dark"] [data-profile-toolbar],
+html[data-theme="dark"] [data-ka-profile-toolbar],
+html[data-theme="dark"] [data-profile-actions],
+html[data-theme="dark"] .ka-report-preview__toolbar,
+html[data-theme="dark"] .ka-report-preview .dv3h{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile-toolbar .ka-btn,
+html[data-theme="dark"] [data-profile-toolbar] .ka-btn,
+html[data-theme="dark"] [data-ka-profile-toolbar] .ka-btn,
+html[data-theme="dark"] [data-profile-actions] .ka-btn,
+html[data-theme="dark"] .ka-report-preview__toolbar .ka-btn,
+html[data-theme="dark"] .ka-report-preview .dv3h .dv3btn{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border-strong)!important;
+}
+html[data-theme="dark"] .ka-teacher-profile-toolbar .ka-btn.primary,
+html[data-theme="dark"] [data-profile-toolbar] .primary,
+html[data-theme="dark"] [data-ka-profile-toolbar] .primary,
+html[data-theme="dark"] [data-profile-actions] .primary,
+html[data-theme="dark"] .ka-report-preview__toolbar .primary,
+html[data-theme="dark"] .ka-report-preview .dv3h .dv3btn.primary{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
