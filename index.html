@@ -16,7 +16,7 @@
       const t=theme==='dark'?'dark':'light';
       root.setAttribute('data-theme',t);
       root.style.colorScheme=t;
-      if(persist){try{localStorage.setItem(KEY,t)}catch(_){}}
+      if(persist){try{localStorage.setItem('ka-theme',t)}catch(_){}}
       const meta=document.querySelector('meta[data-ka-theme-color]');
       if(meta)meta.content=t==='dark'?'#080808':'#f6f6f4';
       document.querySelectorAll('[data-ka-theme-toggle]').forEach(btn=>{
