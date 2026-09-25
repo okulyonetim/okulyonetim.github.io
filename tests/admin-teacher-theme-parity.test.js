@@ -1,0 +1,10 @@
+const fs=require('fs');
+const assert=require('assert');
+const design=fs.readFileSync('css/design-system.css','utf8');
+const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+assert(!/\[data-(?:user-)?role\s*=\s*[\"'](?:admin|teacher)[\"']\][^{]*\{[^}]*?(?:color|background|border|box-shadow)\s*:/is.test(design),'Admin/teacher role selectors must not override theme colors in the central design system.');
+assert(!/(?:admin|teacher)[_-](?:theme|color|palette)|(?:theme|color|palette)[_-](?:admin|teacher)/i.test(design),'Admin/teacher-specific theme variables must not exist.');
+assert(!/(?:admin|teacher)[^\n]*?(?:setAttribute\(['\"]data-theme|applyTheme\(|toggleTheme\()/i.test(shell),'Theme selection must not branch by admin/teacher role.');
+assert(shell.includes("document.documentElement.setAttribute('data-theme',next)"),'Theme must be applied centrally to the document root.');
+assert(shell.includes("global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()})"),'Role/session changes must rehydrate the same central theme without a role-specific palette.');
+console.log('Admin/teacher theme parity contract successful.');
