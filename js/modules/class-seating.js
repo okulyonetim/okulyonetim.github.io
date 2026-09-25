@@ -514,7 +514,7 @@ function autoFill(){
     k.dataset.name=v.ogrenciAdi||'';
     k.dataset.empty='false';
     k.textContent=v.ogrenciAdi||'';
-    k.style.color='#6b5b3a';
+    k.style.color='var(--ka-module-icon-text)';
   }
   refreshPool();
 }
