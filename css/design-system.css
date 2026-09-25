@@ -8281,3 +8281,32 @@ html[data-theme="dark"] .ka-teacher-profile-book{
   color:var(--ka-primary)!important;
   border-color:var(--ka-border)!important;
 }
+
+/* ===== DARK MENU — YELLOW CARD + ICON BORDERS AUTHORITY ===== */
+/* Menü kartları ve ikon yüzeyleri koyu temada belirgin sarı kenarlık kullanır. */
+html[data-theme="dark"] .ka-menu-card,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+html[data-theme="dark"] .ka-menu-card strong,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card strong{
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] .ka-menu-card__icon,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card__icon,
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:2px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-menu-card__icon *,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card__icon *,
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card__icon *{
+  color:inherit!important;
+}
