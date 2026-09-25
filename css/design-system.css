@@ -8838,3 +8838,97 @@ html[data-theme="dark"] #khBell.kh-bell-weekend-v2 .kh-bell-rest-next>b{
 [data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
 [data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary,
 [data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{background:#123126!important;color:#f5f5f5!important;border-color:#ffc400!important}
+
+
+/* ===== YILLIK PLAN HAFTA DETAYI — DARK THEME AUTHORITY v1039 =====
+   Hafta detay ekranı (28 Eyl – 2 Eki) açık tema renklerini koyu temaya
+   taşımamalı. Tüm yüzeyler merkezi tema sözleşmesinden okunur. */
+[data-theme="dark"] .ka-plan-week--overlay{
+  background:#0b0b0b!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.45)!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__head{
+  background:#0b0b0b!important;
+  color:#f5f5f5!important;
+  border-color:#2b2b2b!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__title strong{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__title span{
+  color:#bdbdbd!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__head .ka-btn--ghost,
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-menu-button{
+  background:#191919!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__head .ka-btn--ghost:hover,
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-menu-button:hover{
+  background:#2a250b!important;
+  color:#ffc400!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__date{
+  background:#101d18!important;
+  color:#ffc400!important;
+  border-top:1px solid #ffc400!important;
+  border-bottom:1px solid #ffc400!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__body{
+  background:#0f1714!important;
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-content-card{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+  box-shadow:none!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-content-pill{
+  background:#ffc400!important;
+  color:#111!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-note{
+  background:#151515!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-note strong,
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-note div{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-empty{
+  background:#151515!important;
+  color:#bdbdbd!important;
+  border:1px solid #2b2b2b!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__footer{
+  background:#0b0b0b!important;
+  color:#f5f5f5!important;
+  border-top:1px solid #ffc400!important;
+  box-shadow:0 -6px 20px rgba(0,0,0,.5)!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__footer span{
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__footer .ka-btn{
+  background:#ffc400!important;
+  color:#111!important;
+  border:1px solid #ffc400!important;
+  font-weight:900!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__footer .ka-btn:disabled{
+  opacity:.38!important;
+  background:#555!important;
+  color:#ddd!important;
+  border-color:#555!important;
+}
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__footer .ka-btn:focus-visible,
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-week__head .ka-btn:focus-visible,
+[data-theme="dark"] .ka-plan-week--overlay .ka-plan-menu-button:focus-visible{
+  outline:3px solid #ffc400!important;
+  outline-offset:2px;
+}
