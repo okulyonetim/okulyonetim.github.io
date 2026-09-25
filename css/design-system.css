@@ -8627,3 +8627,12 @@ html[data-theme="dark"] .ka-transport-student-row{
 html[data-theme="dark"] .ka-transport-info-item:nth-child(odd){
   border-right-color:color-mix(in srgb,var(--ka-primary) 18%,var(--ka-card-bg))!important;
 }
+
+/* ===== DARK THEME — GLOBAL 1PX YELLOW BORDER CONTROL ===== */
+
+/* Koyu temada mevcut tüm görünür border'ları merkezi olarak 1px ana sarı renge bağla.
+   Border-style değiştirilmez; border tanımlı olmayan elemanlara yeni kenarlık eklenmez. */
+html[data-theme="dark"] *{
+  border-color:var(--ka-primary)!important;
+  border-width:1px!important;
+}
