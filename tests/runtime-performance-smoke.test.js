@@ -36,7 +36,7 @@ assert(viewport.includes('contain:layout paint')&&viewport.includes('translateZ(
 assert(css.includes('will-change:transform')&&css.includes('@keyframes khTicker'),'Ticker GPU transform animasyonunu korumalı.');
 assert(!dashboard.includes('freshNews.replaceWith(oldNews)')&&dashboard.includes('--kh-ticker-delay:${tickerDelay.toFixed(2)}s'),'Haber DOMu sökülüp tekrar takılmamalı; yeniden render saat fazlı animasyonla kesintisiz devam etmeli.');
 assert(dashboard.includes('renderFrame=requestAnimationFrame'),'Dashboard veri güncellemelerini frame bazında birleştirmeli.');
-assert(loader.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=873'])"),'Dashboard başlangıcı ağır communication modülünü eager yüklememeli.');
+assert(loader.includes("define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=1031'])"),'Dashboard başlangıcı ağır communication modülünü eager yüklememeli.');
 assert(dashboard.includes("AppLoader?.load?.('communication')"),'Duyuru yazma servisi yalnız etkileşim anında lazy yüklenmeli.');
 assert(dashboard.includes("d?.okuyanlar?.[user().uid||'']"),'Duyuru okundu görünümü local-first kayıttan hesaplanmalı.');
 assert(loader.includes("define('tools',['js/modules/tools.js','js/modules/rubric-settings.js','js/modules/rubric-tools.js'])"),'Tools başlangıcı rota-özel teacher-list/map companionlarını eager yüklememeli.');
