@@ -3138,7 +3138,7 @@ button.ka-primary,
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-filters select{
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 [data-theme="dark"] .ka-teacher-directory .ka-teacher-filters input::placeholder{
   color:#888!important;
@@ -4538,7 +4538,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section > .ka-card{
   border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row{
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
   color:var(--ka-module-text)!important;
@@ -4969,9 +4969,9 @@ body[data-theme="dark"] .ka-people-page-head .ka-people-kicker {
   border-radius:14px;
 }
 .ka-teacher-profile-hero{
-  background:linear-gradient(135deg,#ffc400 0%,#b48700 68%,#745600 100%)!important;
+  background:linear-gradient(135deg,var(--ka-module-accent) 0%,color-mix(in srgb,var(--ka-module-accent) 72%,#111) 68%,color-mix(in srgb,var(--ka-module-accent) 48%,#111) 100%)!important;
   color:var(--ka-button-text)!important;
-  border:1px solid rgba(255,196,0,.55);
+  border:1px solid color-mix(in srgb,var(--ka-module-accent) 55%,transparent);
   box-shadow:0 12px 28px rgba(120,90,0,.16);
 }
 .ka-teacher-profile-hero h1,
@@ -4981,15 +4981,15 @@ body[data-theme="dark"] .ka-people-page-head .ka-people-kicker {
 .ka-teacher-profile-book{
   color:var(--ka-button-text)!important;
 }
-.ka-teacher-profile-hero p{color:rgba(17,17,17,.72)!important}
+.ka-teacher-profile-hero p{color:color-mix(in srgb,var(--ka-button-text) 72%,transparent)!important}
 .ka-teacher-profile-hero .ka-badge{
-  background:rgba(255,255,255,.28)!important;
-  border-color:rgba(17,17,17,.12)!important;
+  background:color-mix(in srgb,var(--ka-module-surface-raised) 28%,transparent)!important;
+  border-color:color-mix(in srgb,var(--ka-button-text) 12%,transparent)!important;
 }
 .ka-teacher-profile-avatar,
 .ka-teacher-profile-book{
-  background:rgba(255,255,255,.20)!important;
-  border-color:rgba(17,17,17,.18)!important;
+  background:color-mix(in srgb,var(--ka-module-surface-raised) 20%,transparent)!important;
+  border-color:color-mix(in srgb,var(--ka-button-text) 18%,transparent)!important;
 }
 
 /* Öğretmen detay kartları daha belirgin, tek tip yüzey. */
@@ -5048,9 +5048,9 @@ body[data-theme="dark"] .ka-teacher-info span{
   border-color:transparent!important;
 }
 .ka-student-hero{
-  background:linear-gradient(135deg,#ffc400 0%,#b48700 68%,#745600 100%)!important;
+  background:linear-gradient(135deg,var(--ka-module-accent) 0%,color-mix(in srgb,var(--ka-module-accent) 72%,#111) 68%,color-mix(in srgb,var(--ka-module-accent) 48%,#111) 100%)!important;
   color:var(--ka-button-text)!important;
-  border:1px solid rgba(255,196,0,.55);
+  border:1px solid color-mix(in srgb,var(--ka-module-accent) 55%,transparent);
 }
 .ka-student-hero h1,
 .ka-student-hero p,
@@ -5059,15 +5059,15 @@ body[data-theme="dark"] .ka-teacher-info span{
 .ka-student-hero-icon{
   color:var(--ka-button-text)!important;
 }
-.ka-student-hero p{color:rgba(17,17,17,.72)!important}
+.ka-student-hero p{color:color-mix(in srgb,var(--ka-button-text) 72%,transparent)!important}
 .ka-student-hero .ka-badge{
-  background:rgba(255,255,255,.28)!important;
+  background:color-mix(in srgb,var(--ka-module-surface-raised) 28%,transparent)!important;
   color:var(--ka-button-text)!important;
 }
 .ka-student-hero-avatar,
 .ka-student-hero-icon{
-  background:rgba(255,255,255,.20)!important;
-  border-color:rgba(17,17,17,.16)!important;
+  background:color-mix(in srgb,var(--ka-module-surface-raised) 20%,transparent)!important;
+  border-color:color-mix(in srgb,var(--ka-button-text) 16%,transparent)!important;
 }
 .ka-student-quick{
   gap:9px!important;
@@ -5174,9 +5174,9 @@ body[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-student-quick>span{
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-section>.ka-card__header,
 body[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-section>.ka-card__header{
-  background:#191919!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-bottom:1px solid #303030;
+  border-bottom:1px solid var(--ka-module-border-strong);
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-section h3,
 body[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-detail-section h3,
@@ -5272,12 +5272,12 @@ html[data-theme="dark"] .ka-profile-popover * {
 html[data-theme="dark"] .ka-profile-popover {
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
-  border:1px solid #303030!important;
+  border:1px solid var(--ka-module-border-strong)!important;
   box-shadow:0 22px 60px rgba(0,0,0,.62)!important;
 }
 html[data-theme="dark"] .ka-profile-popover__identity {
   background:var(--ka-module-surface)!important;
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] .ka-profile-popover__identity strong,
 html[data-theme="dark"] .ka-profile-popover__menu button,
@@ -5301,7 +5301,7 @@ html[data-theme="dark"] .ka-profile-popover__menu button:active {
   background:var(--ka-module-surface-muted)!important;
 }
 html[data-theme="dark"] .ka-profile-popover__logout {
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] .ka-profile-popover__logout button,
 html[data-theme="dark"] .ka-profile-popover__logout button span,
@@ -5323,9 +5323,9 @@ html[data-theme="dark"] .ka-reminder-footer {
   border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-reminder-head {
-  background:linear-gradient(145deg,#1c1c1c,#141414)!important;
+  background:linear-gradient(145deg,var(--ka-module-surface-raised),var(--ka-module-surface))!important;
   color:var(--ka-module-text)!important;
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] .ka-reminder-head__copy h2,
 html[data-theme="dark"] .ka-reminder-head__copy p b,
@@ -5348,9 +5348,9 @@ html[data-theme="dark"] .ka-reminder-snooze {
   border-color:var(--ka-module-border-strong)!important;
 }
 html[data-theme="dark"] .ka-reminder-item {
-  background:#191919!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
   box-shadow:none!important;
 }
 html[data-theme="dark"] .ka-reminder-item__copy>strong {
@@ -5411,14 +5411,14 @@ body[data-theme="dark"] .ka-profile-popover *{
 body[data-theme="dark"] .ka-profile-popover{
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
-  border:1px solid #303030!important;
+  border:1px solid var(--ka-module-border-strong)!important;
   box-shadow:0 22px 60px rgba(0,0,0,.62)!important;
 }
 body[data-theme="dark"] .ka-profile-popover__identity,
 body[data-theme="dark"] .ka-profile-popover__menu,
 body[data-theme="dark"] .ka-profile-popover__logout{
   background:var(--ka-module-surface)!important;
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 body[data-theme="dark"] .ka-profile-popover__identity strong,
 body[data-theme="dark"] .ka-profile-popover__menu button,
@@ -5453,9 +5453,9 @@ body[data-theme="dark"] .ka-reminder-footer{
   border-color:var(--ka-module-border)!important;
 }
 body[data-theme="dark"] .ka-reminder-head{
-  background:linear-gradient(145deg,#1c1c1c,#141414)!important;
+  background:linear-gradient(145deg,var(--ka-module-surface-raised),var(--ka-module-surface))!important;
   color:var(--ka-module-text)!important;
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
 }
 body[data-theme="dark"] .ka-reminder-head__copy h2,
 body[data-theme="dark"] .ka-reminder-head__copy p,
@@ -5479,9 +5479,9 @@ body[data-theme="dark"] .ka-reminder-snooze{
   border-color:var(--ka-module-border-strong)!important;
 }
 body[data-theme="dark"] .ka-reminder-item{
-  background:#191919!important;
+  background:var(--ka-module-surface-raised)!important;
   color:var(--ka-module-text)!important;
-  border-color:#303030!important;
+  border-color:var(--ka-module-border-strong)!important;
   box-shadow:none!important;
 }
 body[data-theme="dark"] .ka-reminder-item__copy>strong{
