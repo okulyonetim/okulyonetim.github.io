@@ -6128,3 +6128,52 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:#f5f5f5!important}
   color:var(--ka-detail-text)!important;
   border-color:var(--ka-detail-border)!important;
 }
+
+/* ===== GLOBAL MODULE THEME CONTRACT — TEK MERKEZ ===== */
+:root{
+--ka-module-surface:var(--ka-card-bg);--ka-module-surface-raised:var(--ka-card-raised-bg);--ka-module-surface-muted:var(--ka-muted-bg);
+--ka-module-text:var(--ka-text);--ka-module-muted:var(--ka-text-muted);--ka-module-border:var(--ka-border);--ka-module-border-strong:var(--ka-border-strong);
+--ka-module-accent:var(--ka-primary);--ka-module-accent-soft:var(--ka-primary-soft);
+--ka-module-icon-surface:var(--ka-icon-surface);--ka-module-icon-text:var(--ka-icon-text);--ka-module-icon-border:var(--ka-icon-border);
+--ka-module-input-bg:var(--ka-input-bg);--ka-module-input-text:var(--ka-input-text);--ka-module-input-border:var(--ka-input-border);
+}
+[data-theme="dark"]{
+--ka-module-surface:var(--ka-card-bg);--ka-module-surface-raised:var(--ka-card-raised-bg);--ka-module-surface-muted:var(--ka-muted-bg);
+--ka-module-text:var(--ka-text);--ka-module-muted:var(--ka-text-muted);--ka-module-border:var(--ka-border);--ka-module-border-strong:var(--ka-border-strong);
+--ka-module-accent:var(--ka-primary);--ka-module-accent-soft:var(--ka-primary-soft);
+--ka-module-icon-surface:var(--ka-icon-surface);--ka-module-icon-text:var(--ka-icon-text);--ka-module-icon-border:var(--ka-icon-border);
+}
+#v2ModuleRoot .ka-card,#v2ModuleRoot .ka-surface,#v2ModuleRoot .ka-panel,#v2ModuleRoot .ka-section,#v2ModuleRoot .ka-table-wrap{
+background:var(--ka-module-surface);color:var(--ka-module-text);border-color:var(--ka-module-border);
+}
+#v2ModuleRoot .ka-card__header,#v2ModuleRoot .ka-card__footer{
+background:var(--ka-module-surface-raised);color:var(--ka-module-text);border-color:var(--ka-module-border);
+}
+#v2ModuleRoot input,#v2ModuleRoot select,#v2ModuleRoot textarea{
+background:var(--ka-module-input-bg);color:var(--ka-module-input-text);border-color:var(--ka-module-input-border);
+}
+#v2ModuleRoot input::placeholder,#v2ModuleRoot textarea::placeholder{color:var(--ka-module-muted)}
+#v2ModuleRoot table th{background:var(--ka-module-surface-raised);color:var(--ka-module-text);border-color:var(--ka-module-border)}
+#v2ModuleRoot table td{color:var(--ka-module-text);border-color:var(--ka-module-border)}
+#v2ModuleRoot .ka-muted,#v2ModuleRoot small{color:var(--ka-module-muted)}
+#v2ModuleRoot .ka-icon,#v2ModuleRoot .ka-section-icon,#v2ModuleRoot .ka-card-icon{
+background:var(--ka-module-icon-surface);color:var(--ka-module-icon-text);border-color:var(--ka-module-icon-border)
+}
+#v2ModuleRoot .ka-btn--secondary{background:var(--ka-module-surface-raised);color:var(--ka-module-text);border-color:var(--ka-module-border)}
+#v2ModuleRoot .ka-btn--ghost,#v2ModuleRoot .ka-icon-button{color:var(--ka-module-text)}
+#v2ModuleRoot .ka-btn--ghost:hover,#v2ModuleRoot .ka-icon-button:hover{background:var(--ka-module-surface-muted)}
+#v2ModuleRoot .ka-filter-pills button,#v2ModuleRoot .ka-tabs button,#v2ModuleRoot .ka-tab{
+background:var(--ka-module-surface);color:var(--ka-module-muted);border-color:var(--ka-module-border)
+}
+#v2ModuleRoot .ka-filter-pills button.active,#v2ModuleRoot .ka-tabs button.active,#v2ModuleRoot .ka-tab.active{
+background:var(--ka-module-accent-soft);color:var(--ka-module-accent);border-color:var(--ka-module-border-strong)
+}
+.ka-menu-card,.ka-menu-card strong{color:var(--ka-on-accent)!important}
+.ka-menu-card__icon{background:var(--ka-on-accent-soft)!important;color:var(--ka-on-accent)!important;border:1px solid var(--ka-on-accent-border)}
+.ka-notification-popover,.ka-notification-row{
+background:var(--ka-module-surface-raised)!important;color:var(--ka-module-text)!important;border-color:var(--ka-module-border)!important
+}
+.ka-notification-row__top>strong{color:var(--ka-module-text)!important}
+.ka-notification-row__meta,.ka-notification-row__chevron{color:var(--ka-module-muted)!important}
+.ka-notification-row__icon,.ka-notification-popover__mark{background:var(--ka-module-accent-soft)!important;color:var(--ka-module-accent)!important}
+.ka-modal__header,.ka-modal__footer{background:var(--ka-module-surface-raised);color:var(--ka-module-text);border-color:var(--ka-module-border)}
