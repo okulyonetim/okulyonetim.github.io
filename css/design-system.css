@@ -6177,3 +6177,96 @@ background:var(--ka-module-surface-raised)!important;color:var(--ka-module-text)
 .ka-notification-row__meta,.ka-notification-row__chevron{color:var(--ka-module-muted)!important}
 .ka-notification-row__icon,.ka-notification-popover__mark{background:var(--ka-module-accent-soft)!important;color:var(--ka-module-accent)!important}
 .ka-modal__header,.ka-modal__footer{background:var(--ka-module-surface-raised);color:var(--ka-module-text);border-color:var(--ka-module-border)}
+
+
+/* ===== DARK THEME FINAL SURFACE GUARD v1004 =====
+   Android/öğretmen oturumunda tema body üzerinde olduğunda eski light
+   override'ların modül yüzeylerini tekrar beyaza çevirmesini engeller. */
+html[data-theme="dark"] #v2ModuleRoot .ka-card,
+body[data-theme="dark"] #v2ModuleRoot .ka-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-profile-section,
+body[data-theme="dark"] #v2ModuleRoot .ka-profile-section,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section,
+body[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-doc-group,
+body[data-theme="dark"] #v2ModuleRoot .ka-teacher-doc-group,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-quick>a,
+body[data-theme="dark"] #v2ModuleRoot .ka-student-quick>a,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-quick>button,
+body[data-theme="dark"] #v2ModuleRoot .ka-student-quick>button,
+html[data-theme="dark"] #v2ModuleRoot .ka-student-quick>span,
+body[data-theme="dark"] #v2ModuleRoot .ka-student-quick>span{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-card__header,
+body[data-theme="dark"] #v2ModuleRoot .ka-card__header,
+html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section>.ka-card__header,
+body[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-section>.ka-card__header{
+  background:var(--ka-module-surface-raised)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-teacher-directory .ka-teacher-card,
+body[data-theme="dark"] .ka-teacher-directory .ka-teacher-card,
+html[data-theme="dark"] .ka-teacher-directory .ka-teacher-summary>div,
+body[data-theme="dark"] .ka-teacher-directory .ka-teacher-summary>div,
+html[data-theme="dark"] .ka-teacher-directory .ka-teacher-filters>*,
+body[data-theme="dark"] .ka-teacher-directory .ka-teacher-filters>*,
+html[data-theme="dark"] .ka-menu-list>.ka-btn,
+body[data-theme="dark"] .ka-menu-list>.ka-btn{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-communication-page .ka-card,
+body[data-theme="dark"] .ka-communication-page .ka-card,
+html[data-theme="dark"] .ka-search-empty,
+body[data-theme="dark"] .ka-search-empty,
+html[data-theme="dark"] .ka-search-hero,
+body[data-theme="dark"] .ka-search-hero,
+html[data-theme="dark"] .ka-search-filters,
+body[data-theme="dark"] .ka-search-filters{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-reminder-modal,
+body[data-theme="dark"] .ka-reminder-modal,
+html[data-theme="dark"] .ka-reminder-summary,
+body[data-theme="dark"] .ka-reminder-summary,
+html[data-theme="dark"] .ka-reminder-list-head,
+body[data-theme="dark"] .ka-reminder-list-head,
+html[data-theme="dark"] .ka-reminder-footer,
+body[data-theme="dark"] .ka-reminder-footer{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-reminder-item,
+body[data-theme="dark"] .ka-reminder-item{
+  background:var(--ka-module-surface-raised)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border-strong)!important;
+}
+html[data-theme="dark"] .ka-teacher-stat-grid>.ka-card,
+body[data-theme="dark"] .ka-teacher-stat-grid>.ka-card,
+html[data-theme="dark"] .ka-teacher-contact-grid>a,
+body[data-theme="dark"] .ka-teacher-contact-grid>a,
+html[data-theme="dark"] .ka-teacher-contact-grid>button,
+body[data-theme="dark"] .ka-teacher-contact-grid>button{
+  background:var(--ka-module-surface)!important;
+  color:var(--ka-module-text)!important;
+  border-color:var(--ka-module-border)!important;
+}
+html[data-theme="dark"] .ka-teacher-stat-grid small,
+body[data-theme="dark"] .ka-teacher-stat-grid small,
+html[data-theme="dark"] .ka-teacher-detail-row span,
+body[data-theme="dark"] .ka-teacher-detail-row span{
+  color:var(--ka-module-muted)!important;
+}
+html[data-theme="dark"] .ka-teacher-stat-grid b,
+body[data-theme="dark"] .ka-teacher-stat-grid b{
+  color:var(--ka-module-accent)!important;
+}
