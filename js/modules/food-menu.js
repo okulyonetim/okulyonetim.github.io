@@ -102,7 +102,7 @@ function foodMenuCalendarRows(key,data,opts){
    if(!day){rows+='<div class="food-cal-cell food-cal-cell--empty"></div>';continue}
    const d=new Date(y,m,day),iso=localIso(d),dow=d.getDay(),th=themeFor(dow),today=isToday(iso),themeClass='food-cal-cell--'+String(dow);
    const x=foodDayEnsure(data[day]||{}),items=opts.forPrint?foodDayItems(x):foodDayRaw(x);
-   rows+='<div class="food-cal-cell '+themeClass+' '+th.cls+(today?' food-cal-cell--today':'')+'">
+   rows+='<div class="food-cal-cell '+themeClass+' '+th.cls+(today?' food-cal-cell--today':'')+'">'
     +'<div class="food-cal-date"><strong>'+String(day).padStart(2,'0')+'</strong>'
     +'<span>'+esc(d.toLocaleDateString('tr-TR',{weekday:'short'}))+'</span>'
     +'<button class="food-add-btn" type="button" data-fm-add="'+day+'" aria-label="Yemek ekle">+</button></div>'
