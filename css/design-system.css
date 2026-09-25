@@ -8016,3 +8016,33 @@ html[data-theme="dark"] #v2ModuleRoot .ka-menu-card>.ka-badge{
   color:var(--ka-text-muted)!important;
   border-color:var(--ka-border)!important;
 }
+
+
+/* ===== TEACHER MODAL CLOSE AUTHORITY v1032 =====
+   Öğretmen formundaki kapat kontrolü açık/koyu temada merkezi yüzey kullanır. */
+[data-teacher-modal] .ka-teacher-modal-close{
+  width:44px!important;
+  height:44px!important;
+  flex:0 0 44px!important;
+  padding:0!important;
+  border:1px solid var(--ka-border)!important;
+  border-radius:13px!important;
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  box-shadow:none!important;
+  font-size:25px!important;
+  font-weight:500!important;
+  line-height:1!important;
+  display:grid!important;
+  place-items:center!important;
+}
+[data-teacher-modal] .ka-teacher-modal-close:hover{
+  background:var(--ka-muted-bg)!important;
+  border-color:var(--ka-border-strong)!important;
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] [data-teacher-modal] .ka-teacher-modal-close{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
