@@ -12,7 +12,7 @@ const GLOBAL_SOFT_STYLE=`<style data-ka-report-soft-fill>
 .ka-report .bolum-baslik{background:var(--ka-report-soft-section-bg)!important}
 .ka-report .ka-sr-report .ka-sr-neutral{background:var(--ka-report-soft-neutral-bg)!important}
 .ka-report .ka-sr-report .scope{background:var(--ka-report-soft-neutral-bg)!important}
-.ka-report .ka-sr-class-teacher{display:block;margin:.45mm 0 0;font-size:8pt;line-height:1.08;font-weight:700;color:#53645d;text-align:center}
+.ka-report .ka-sr-class-teacher{display:block;margin:.45mm 0 0;font-size:8pt;line-height:1.08;font-weight:700;color:var(--ka-report-class-teacher);text-align:center}
 </style>`;
 
 const COLUMN_ZEBRA_STYLE=`<style data-ka-schedule-column-zebra>
