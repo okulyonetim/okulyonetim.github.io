@@ -155,12 +155,12 @@ const FOOD_PRINT_STYLE='<style>'
  +'.fm-p-title b{display:block;font-size:10pt;letter-spacing:.02em}'
  +'.fm-p-title span{display:block;font-size:12.5pt;font-weight:800;margin-top:.8mm;color:var(--ka-primary)}'
  +'.fm-p-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.6mm}'
- +'.fm-p-h{background:var(--tx);color:var(--ka-danger-text);text-align:center;font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1.1mm 0;border-radius:1.6mm}'
- +'.fm-p-cell{box-sizing:border-box;min-height:16mm;padding:1.2mm 1.8mm 1.4mm;border:.3mm solid var(--bd);background:var(--bg);border-radius:1.8mm;break-inside:avoid;page-break-inside:avoid}'
+ +'.fm-p-h{background:var(--fm-day-text);color:var(--ka-danger-text);text-align:center;font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1.1mm 0;border-radius:1.6mm}'
+ +'.fm-p-cell{box-sizing:border-box;min-height:16mm;padding:1.2mm 1.8mm 1.4mm;border:.3mm solid var(--fm-day-border);background:var(--fm-day-bg);border-radius:1.8mm;break-inside:avoid;page-break-inside:avoid}'
  +'.fm-p-cell--empty{background:transparent;border:0}'
- +'.fm-p-day{font-size:9.5pt;font-weight:800;line-height:1;color:var(--tx);margin-bottom:.9mm;padding-bottom:.7mm;border-bottom:.25mm solid var(--bd)}'
+ +'.fm-p-day{font-size:9.5pt;font-weight:800;line-height:1;color:var(--fm-day-text);margin-bottom:.9mm;padding-bottom:.7mm;border-bottom:.25mm solid var(--bd)}'
  +'.fm-p-item{display:flex;gap:1.2mm;font-size:var(--fs);line-height:1.2;padding:.3mm 0;margin:0;color:var(--ka-report-text)}'
- +'.fm-p-item::before{content:"•";color:var(--tx);font-weight:700}'
+ +'.fm-p-item::before{content:"•";color:var(--fm-day-text);font-weight:700}'
  +'</style>';
 
 /* Ayın Pzt–Cum hücreleri, sütunlar gerçek haftaya hizalı (boş günler boş hücre). */
