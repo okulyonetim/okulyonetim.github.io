@@ -8765,3 +8765,76 @@ html[data-theme="dark"] #khBell.kh-bell-weekend-v2 .kh-bell-rest-next>b{
   color:#f5f5f5!important;
   -webkit-text-fill-color:#f5f5f5!important;
 }
+
+
+/* ===== CENTRAL THEME — CLASSIC ÇİZELGELER + PDF VIEWER v1038 ===== */
+#v2ModuleRoot [data-classic-cizelge-page]{color:var(--ka-text)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card{color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-chip,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{color:var(--ka-text)!important;background:var(--ka-card-bg)!important;border-color:var(--ka-border)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{color:var(--ka-text)!important;background:var(--ka-primary-soft)!important;border-color:var(--ka-primary)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-value,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check__label,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check__label{color:var(--ka-text)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy small,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__chevron,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-empty-inline,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy small,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity span{color:var(--ka-text-muted)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back{color:var(--ka-text)!important;background:var(--ka-card-bg)!important;border:1px solid var(--ka-border)!important}
+#v2ModuleRoot [data-classic-cizelge-page] input,
+#v2ModuleRoot [data-classic-cizelge-page] select,
+#v2ModuleRoot [data-classic-cizelge-page] textarea{color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important;border-color:var(--ka-input-border)!important}
+#v2ModuleRoot [data-classic-cizelge-page] input::placeholder,
+#v2ModuleRoot [data-classic-cizelge-page] textarea::placeholder{color:var(--ka-text-muted)!important;opacity:1!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy h2{color:var(--ka-hero-text)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy p{color:var(--ka-hero-muted)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon{background:var(--ka-hero-badge-bg)!important;color:var(--ka-hero-badge-text)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-edit{background:var(--ka-button-bg)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-grid>section,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-grid>div,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-note,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-body>section,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-plan-block{color:var(--ka-text)!important;background:var(--ka-muted-bg)!important;border-color:var(--ka-border)!important}
+
+/* PDF/Rapor önizleme ve PDF araçları */
+.dv3,#kaPdfTools{color:var(--ka-text)!important;background:var(--ka-app-bg)!important}
+.dv3h,.dv3pdfviewport,.dv3sheetviewport,.dv3wordviewport{background:var(--dv-body-bg)!important}
+.dv3btn{color:var(--dv-text)!important;background:var(--dv-btn-bg)!important;border:1px solid var(--dv-btn-bd)!important}
+.dv3btn.primary{color:var(--ka-button-text)!important;background:var(--ka-primary)!important;border-color:var(--ka-primary)!important}
+#kaPdfTools .ka-modal,#kaPdfTools .ka-modal__header,#kaPdfTools .ka-modal__body{color:var(--ka-text)!important;background:var(--ka-card-bg)!important}
+#kaPdfTools .ka-btn,#kaPdfTools .ka-btn--secondary{color:var(--ka-button-secondary-text)!important;background:var(--ka-button-secondary-bg)!important;border-color:var(--ka-button-secondary-border)!important}
+#kaPdfTools .ka-btn:not(.ka-btn--secondary){color:var(--ka-button-text)!important;background:var(--ka-button-bg)!important;border-color:var(--ka-button-bg)!important}
+#kaPdfTools input,#kaPdfTools select,#kaPdfTools textarea{color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important;border-color:var(--ka-input-border)!important}
+#kaPdfTools .ka-muted{color:var(--ka-text-muted)!important}
+[data-theme="dark"] .dv3btn{color:#f5f5f5!important;background:#191919!important;border:1px solid #ffc400!important}
+[data-theme="dark"] .dv3btn.primary{color:#111!important;background:#ffc400!important;border-color:#ffc400!important}
+[data-theme="dark"] #kaPdfTools .ka-btn,[data-theme="dark"] #kaPdfTools .ka-btn--secondary{color:#f5f5f5!important;background:#191919!important;border:1px solid #ffc400!important}
+[data-theme="dark"] #kaPdfTools .ka-btn:not(.ka-btn--secondary){color:#111!important;background:#ffc400!important;border-color:#ffc400!important}
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-chip,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{background:#101d18!important;color:#f5f5f5!important;border-color:#ffc400!important}
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary,
+[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{background:#123126!important;color:#f5f5f5!important;border-color:#ffc400!important}
