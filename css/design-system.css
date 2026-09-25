@@ -7562,3 +7562,43 @@ html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-meta{color:var(--ka-tex
 html[data-theme="dark"] #v2ModuleRoot .ka-class-hero,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-hero,
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero{color:var(--ka-on-accent)!important;}
+
+
+/* ===== CENTRAL MENU SURFACE AUTHORITY v1026 =====
+   Menü kartları modül bazlı sarı/renkli gradyanlardan bağımsızdır.
+   Kart yüzeyi yalnızca merkezi açık/koyu tema tokenlarından gelir. */
+#kaMenuLayer .ka-menu-card,
+#v2ModuleRoot .ka-menu-card{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+#kaMenuLayer .ka-menu-card strong,
+#v2ModuleRoot .ka-menu-card strong{
+  color:var(--ka-text)!important;
+  text-shadow:none!important;
+}
+#kaMenuLayer .ka-menu-card__icon,
+#v2ModuleRoot .ka-menu-card__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:none!important;
+}
+#kaMenuLayer .ka-menu-card::before,
+#kaMenuLayer .ka-menu-card::after,
+#v2ModuleRoot .ka-menu-card::before,
+#v2ModuleRoot .ka-menu-card::after{
+  display:none!important;
+}
+#kaMenuLayer .ka-menu-card>.ka-badge,
+#v2ModuleRoot .ka-menu-card>.ka-badge,
+#kaMenuLayer .ka-menu-card__count,
+#v2ModuleRoot .ka-menu-card__count{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border-color:var(--ka-border)!important;
+}
