@@ -21,7 +21,7 @@ assert(css.includes('DASHBOARD COMPACT MOBILE REDESIGN V1')&&css.includes('paddi
 assert(css.includes('.ka-home-hero,.ka-home-section{width:100%'),'Ana sayfa kartları tam kullanılabilir genişlikte olmalı.');
 assert(dash.includes('data-home-section'),'Dashboard kartları rota kimliği üretmeli.');
 assert(dash.includes("function teacherShell(){return`${cardVisible('welcome')?hero():''}${foodMenuSection()}${statsSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Öğretmen ana sayfası okul özeti/duyuru/anket/deneme akışını ve öğretmen yemek görünürlüğünü taşımalı.');
-assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Yönetici ana sayfası aktif anketlerden sonra deneme sayacını göstermeli.');
+assert(dash.includes("function adminShell(){return`${cardVisible('welcome')?hero():''}${foodMenuSection()}${announcementSection()}${pollSection()}${trialCounterSection()}"),'Yönetici ana sayfası aktif anketlerden sonra deneme sayacını göstermeli.');
 assert(dash.includes("arr('denemeSinavlari')")&&dash.includes('trialStartMs')&&dash.includes("status:'scheduled'")&&dash.includes('sayacDurumu?.aktif'),'Dashboard deneme sayacı kayıtlı tarih/saatten otomatik çalışmalı ve legacy manuel sayaçla uyumlu kalmalı.');
 assert(dash.includes("function trialCounterSection(){const list=trialLiveRows().slice(0,1)")&&dash.includes(".filter(x=>x.state.run&&x.state.remaining>0)"),'Dashboard deneme kartı yalnız zaman aralığı gerçekten aktifken görünmeli.');
 assert(dash.includes('data-dash-page=\"trial\"')&&dash.includes('Deneme Sınavları'),'Dashboard deneme kartı doğrudan Academic trial sayfasına gitmeli.');
