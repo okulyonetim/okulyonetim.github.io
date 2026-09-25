@@ -13,6 +13,6 @@ assert(runtime.includes("console.warn('[Settings/hydrate]'"),'Hydrate hatası bo
 assert(runtime.includes('if(result?.error)startupChecked=false'),'Başlangıç güncelleme kontrolü hata verirse yeniden denenebilir olmalı.');
 assert(runtime.includes("global.addEventListener('online',()=>retryStartupCheck(250))"),'Bağlantı geri geldiğinde güncelleme kontrolü yeniden denenmeli.');
 assert(runtime.includes("document.visibilityState==='visible'"),'Uygulama yeniden öne geldiğinde başarısız güncelleme kontrolü yeniden denenebilmeli.');
-assert(activity.includes('mobile-runtime-fixes.js?v=914'),'Android WebView yeni runtime düzeltmesini eski cache anahtarıyla açmamalı.');
+assert(activity.includes('mobile-runtime-fixes.js?v=915'),'Android WebView yeni runtime düzeltmesini eski cache anahtarıyla açmamalı.');
 
 console.log('Android Ayarlar ilk render + güncelleme retry sözleşmesi başarılı.');
