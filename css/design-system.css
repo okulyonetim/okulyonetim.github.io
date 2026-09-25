@@ -8095,3 +8095,36 @@ html[data-theme="dark"] .ka-written-modal fieldset{
   border-color:var(--ka-border)!important;
   color:var(--ka-text)!important;
 }
+
+/* ===== DARK TEACHER CARDS — YELLOW BORDER / BLACK TEXT AUTHORITY =====
+   Öğretmenler ekranında koyu tema kart ve aksiyonları merkezi sarı vurguya bağlar.
+   Sarı yüzeylerde metin daima siyah kalır. */
+html[data-theme="dark"] .ka-teacher-card{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-arrow,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn--secondary{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-arrow:hover,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn:hover{
+  background:var(--ka-primary-hover)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary-hover)!important;
+}
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge--warning{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-chips .ka-badge *,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-actions .ka-btn *,
+html[data-theme="dark"] .ka-teacher-card .ka-teacher-arrow *{
+  color:var(--ka-button-text)!important;
+}
+\n
