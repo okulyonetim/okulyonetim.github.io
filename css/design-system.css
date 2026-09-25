@@ -8479,3 +8479,12 @@ html[data-theme="dark"] .ka-map-page .ka-map-search-results,
 html[data-theme="dark"] .ka-map-page .ka-map-stat{
   border-color:var(--ka-primary)!important;
 }
+
+/* ===== DARK MENU — 1PX CARD BORDER AUTHORITY ===== */
+/* Menü kartları: 1px belirgin sarı kenarlık. */
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card,
+html[data-theme="dark"] #kaMenuLayer .ka-menu-card[data-menu-custom-color="true"],
+html[data-theme="dark"] #v2ModuleRoot .ka-menu-card{
+  border:1px solid var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
