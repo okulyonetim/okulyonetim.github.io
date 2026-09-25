@@ -25,7 +25,7 @@ assert(src.includes('(${esc(upper(detail))})'),'Branş ad-soyad başlığının 
 assert(!/sheetTeachers[\s\S]*teacherBranch\(o\.id\)/.test(src),'Öğretmen çarşafındaki ad-soyad sütununa branş eklenmemeli.');
 
 assert(src.includes("const dayClass=i=>i%2===0?'ka-sr-day-a':'ka-sr-day-b'"),'Gün bazlı zebra sınıfları üretilmeli.');
-assert(src.includes('.ka-sr-day-a{background:#f4f8f6!important}')&&src.includes('.ka-sr-day-b{background:#fff!important}'),'Gün zebra dolguları toner dostu çok açık/beyaz olmalı.');
+assert(src.includes('.ka-sr-day-a{background:var(--ka-report-zebra-a)!important}')&&src.includes('.ka-sr-day-b{background:var(--ka-report-zebra-b)!important}'),'Gün zebra dolguları merkezi rapor tokenlarını kullanmalı.');
 assert(src.includes('DAYS.map((d,i)=>')&&src.includes('class="${dayClass(i)}"'),'Haftalık ve çarşaf tablolarında zebra gün sınıfları hücrelere uygulanmalı.');
 assert(src.includes('print-color-adjust:exact'),'PDF çıktısında zebra dolguları korunmalı.');
 
