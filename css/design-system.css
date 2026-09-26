@@ -10778,3 +10778,56 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-guidance-check:not(.is-checked) .ka-guidance-check__label{
   color:var(--ka-text)!important;
 }
+
+
+/* ===== ÇİZELGELER — v1065 KONTRAST SON KATMANI ===== */
+/* Sadece mevcut disabled/selected durumlarının görsel kontrastı. */
+.ka-cizelge-action.is-permission-disabled,
+.ka-cizelge-action:disabled,
+.ka-guidance-action.is-permission-disabled,
+.ka-guidance-action:disabled{
+  opacity:1!important;
+  background:#fff3b8!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron,
+.ka-cizelge-action:disabled .ka-cizelge-action__copy,
+.ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+.ka-cizelge-action:disabled .ka-cizelge-action__copy small,
+.ka-cizelge-action:disabled .ka-cizelge-action__chevron,
+.ka-guidance-action.is-permission-disabled *,
+.ka-guidance-action:disabled *{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon,
+.ka-cizelge-action:disabled .ka-cizelge-action__icon{
+  background:var(--ka-primary)!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
+
+/* Seçili ay: sarı zemin, koyu yazı ve koyu tik. */
+.ka-cizelge-check.is-checked{
+  background:var(--ka-primary)!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-cizelge-check.is-checked .ka-cizelge-check__label,
+.ka-cizelge-check.is-checked .ka-cizelge-check__state{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
+.ka-cizelge-check.is-checked .ka-cizelge-check__state{
+  background:#111!important;
+  border-color:#111!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+}
