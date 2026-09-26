@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=1031']);
+define('dashboard',['js/modules/school-live-status.js?v=1066','js/modules/dashboard.js?v=1031']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=882']);
 define('management',['js/modules/report-engine.js','js/modules/management.js?v=882']);
