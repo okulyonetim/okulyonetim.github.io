@@ -9748,3 +9748,123 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-a
   background:#ffc400!important;
   color:#111!important;
 }
+
+
+/* ===== CENTRAL THEME HARD OVERRIDE — ÇİZELGE / REHBERLİK v1047 =====
+   Son katman: bu ekranların eski modül gradient/renkleri merkezi temayı
+   ezemez. Hero, aksiyon, ikon ve kayıt kartları aynı tema tokenlarını kullanır. */
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head *,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head *{
+  background-image:none!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy h2{
+  color:var(--ka-text)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-kicker{
+  color:var(--ka-text-muted)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__icon{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__icon{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-border)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__head,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__head{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity small,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity span{
+  color:var(--ka-text)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity small,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-empty-inline,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-section-label{
+  color:var(--ka-text-muted)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__icon,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-teacher__icon{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-chip,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-status,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-progress,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-grid>section,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-grid>div,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-note,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-body>section,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-plan-block{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
