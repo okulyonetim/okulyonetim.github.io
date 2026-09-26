@@ -10305,3 +10305,72 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
     padding-inline:6px!important;
   }
 }
+
+
+/* ===== ÇİZELGELER — MERKEZİ TEMA SON KATMANI v1058 =====
+   Rehberlik ve diğer klasik çizelgelerde açık sarı/pastel işlem kartlarını
+   kaldır. Kart yüzeyleri tema yüzeyinde, vurgu yalnızca sarı çerçeve/ikonda. */
+[data-classic-cizelge-page] .ka-cizelge-action,
+[data-classic-cizelge-page] .ka-guidance-action{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+  opacity:1!important;
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled .ka-guidance-action__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action__chevron,
+[data-classic-cizelge-page] .ka-guidance-action__chevron{
+  color:var(--ka-text)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong{
+  color:var(--ka-text-muted)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check,
+[data-classic-cizelge-page] .ka-guidance-check{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__state,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__state{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__label{
+  color:var(--ka-text)!important;
+}
