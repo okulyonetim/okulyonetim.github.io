@@ -10459,3 +10459,49 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-guidance-teacher__icon{
   border:1px solid var(--ka-primary)!important;
 }
+
+
+/* ===== ÇİZELGELER — YETKİ DURUMU TEMA SON KATMANI v1059 =====
+   Yetkisi olmayan işlem: pasif ve nötr yüzey.
+   Yetkisi olan Yeni/Düzenle işlemleri: sarı vurgu.
+   Pasif buton kesinlikle açık sarı zemine ve beyaz metne düşmez. */
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:not(:disabled),
+[data-classic-cizelge-page] .ka-guidance-action.is-primary:not(:disabled){
+  opacity:1!important;
+  background:var(--ka-primary)!important;
+  background-image:none!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:not(:disabled) .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary:not(:disabled) .ka-guidance-action__icon{
+  background:color-mix(in srgb,var(--ka-button-text) 14%,transparent)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-button-text)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
+[data-classic-cizelge-page] .ka-guidance-action:disabled,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+  opacity:1!important;
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text-muted)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:none!important;
+  cursor:not-allowed!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy small,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy small,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
+  color:var(--ka-text-muted)!important;
+}
