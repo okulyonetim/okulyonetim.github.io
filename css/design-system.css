@@ -10702,3 +10702,79 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   color:#171717!important;
   -webkit-text-fill-color:#171717!important;
 }
+
+
+/* ===== ÇİZELGELER — MERKEZİ TEMA FİNAL v1064 =====
+   Yalnızca görsel katman. Yetki/disabled/aria/click/veri akışına dokunulmaz.
+   PermissionService ve rubric-settings.js tarafından verilen mevcut durum aynen korunur. */
+
+/* Yetkisiz veya gerçek disabled işlem: okunabilir açık sarı yüzey + koyu içerik. */
+.ka-cizelge-action:disabled,
+.ka-cizelge-action.is-permission-disabled,
+.ka-guidance-action:disabled,
+.ka-guidance-action.is-permission-disabled{
+  opacity:1!important;
+  background:#fff3b8!important;
+  background-image:none!important;
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+  cursor:not-allowed!important;
+  filter:none!important;
+}
+.ka-cizelge-action:disabled *,
+.ka-cizelge-action.is-permission-disabled *,
+.ka-guidance-action:disabled *,
+.ka-guidance-action.is-permission-disabled *{
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  text-shadow:none!important;
+}
+.ka-cizelge-action:disabled .ka-cizelge-action__icon,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon,
+.ka-guidance-action:disabled .ka-guidance-action__icon,
+.ka-guidance-action.is-permission-disabled .ka-guidance-action__icon{
+  background:var(--ka-primary)!important;
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  border:1px solid var(--ka-primary)!important;
+}
+
+/* Seçili aylar: gerçek sarı zemin + koyu metin + koyu tik. */
+.ka-cizelge-check.is-checked,
+.ka-guidance-check.is-checked{
+  background:var(--ka-primary)!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-cizelge-check.is-checked *,
+.ka-guidance-check.is-checked *{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  text-shadow:none!important;
+}
+.ka-cizelge-check.is-checked .ka-cizelge-check__state,
+.ka-guidance-check.is-checked .ka-guidance-check__state{
+  background:#111!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border-color:#111!important;
+}
+.ka-cizelge-check.is-checked input[type="checkbox"]{
+  accent-color:#111!important;
+}
+
+/* Seçili olmayan aylar: tema kartı + sarı ince kenarlık + açık metin. */
+.ka-cizelge-check:not(.is-checked),
+.ka-guidance-check:not(.is-checked){
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-cizelge-check:not(.is-checked) .ka-cizelge-check__label,
+.ka-guidance-check:not(.is-checked) .ka-guidance-check__label{
+  color:var(--ka-text)!important;
+}
