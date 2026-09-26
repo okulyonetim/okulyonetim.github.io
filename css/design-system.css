@@ -10132,3 +10132,14 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   background:var(--ka-muted-bg)!important;
   color:var(--ka-primary)!important;
 }
+
+
+/* ===== ANA SAYFA — OKUL ÖZETİ KART ÇERÇEVESİ =====
+   Dört özet kartının tamamında ince sarı çerçeve; ikon çerçevesinden bağımsızdır. */
+.ka-home .ka-school-summary-card{
+  border:0.75px solid var(--ka-primary)!important;
+}
+.ka-home .ka-school-summary-card:hover,
+.ka-home .ka-school-summary-card:focus-visible{
+  border-color:var(--ka-primary)!important;
+}
