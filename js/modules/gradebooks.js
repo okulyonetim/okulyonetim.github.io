@@ -37,7 +37,7 @@ function modalOpen(title,body,submitLabel,onSubmit,{danger=false}={}){
  document.body.appendChild(ov);activeModal=ov;syncBodyLock();
  $$('[data-gradebook-modal-close]',ov).forEach(b=>b.onclick=modalClose);ov.addEventListener('click',e=>{if(e.target===ov)modalClose()});
  modalKeyHandler=e=>{if(e.key==='Escape'){e.preventDefault();modalClose()}};document.addEventListener('keydown',modalKeyHandler);
- $('[data-gradebook-modal-form]',ov).onsubmit=async e=>{e.preventDefault();await onSubmit(new FormData(e.currentTarget),e.currentTarget)};
+ const form=ov.querySelector('[data-gradebook-modal-form]'),submitBtn=form?.querySelector('button[type="submit"]');let submitting=false;const submit=async()=>{if(submitting||!form)return;submitting=true;if(submitBtn)submitBtn.disabled=true;try{await onSubmit(new FormData(form),form)}catch(err){console.error('[Gradebook/modal-submit]',err);global.toast?.('İşlem tamamlanamadı.');}finally{if(submitBtn&&document.body.contains(submitBtn))submitBtn.disabled=false;submitting=false;}};form?.addEventListener('submit',e=>{e.preventDefault();submit()});submitBtn?.addEventListener('click',e=>{e.preventDefault();submit()});
  requestAnimationFrame(()=>ov.querySelector('input,select,textarea')?.focus());
 }
 function newModal(){
