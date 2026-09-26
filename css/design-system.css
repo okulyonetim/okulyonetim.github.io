@@ -11044,3 +11044,32 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 #v2ModuleRoot .ka-guidance-action.is-primary:disabled{
   opacity:1!important;
 }
+
+
+/* ===== ÇİZELGELER — PRIMARY BUTON METNİ v1070 =====
+   Primary sarı yüzeyde metin her durumda koyu olmalı. Yetki/disabled davranışı değişmez. */
+#v2ModuleRoot .ka-cizelge-action.is-primary,
+#v2ModuleRoot .ka-guidance-action.is-primary{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  opacity:1!important;
+}
+#v2ModuleRoot .ka-cizelge-action.is-primary .ka-cizelge-action__copy,
+#v2ModuleRoot .ka-cizelge-action.is-primary .ka-cizelge-action__copy strong,
+#v2ModuleRoot .ka-cizelge-action.is-primary .ka-cizelge-action__copy small,
+#v2ModuleRoot .ka-cizelge-action.is-primary .ka-cizelge-action__chevron,
+#v2ModuleRoot .ka-guidance-action.is-primary .ka-guidance-action__copy,
+#v2ModuleRoot .ka-guidance-action.is-primary .ka-guidance-action__copy strong,
+#v2ModuleRoot .ka-guidance-action.is-primary .ka-guidance-action__copy small,
+#v2ModuleRoot .ka-guidance-action.is-primary .ka-guidance-action__chevron{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  opacity:1!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+#v2ModuleRoot .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
+#v2ModuleRoot .ka-guidance-action.is-primary .ka-guidance-action__icon{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
