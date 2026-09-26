@@ -4,7 +4,7 @@
  */
 (function(global){
 'use strict';
-const CORE='js/modules/teacher-list-core.js';
+const CORE='js/modules/teacher-list-core.js?v=1064';
 const STUDENT_PAGE='js/modules/student-list-page.js';
 let corePromise=null,pagePromise=null;
 function loadCore(){
