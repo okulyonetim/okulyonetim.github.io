@@ -10228,3 +10228,23 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-home .ka-school-summary-section .ka-empty{
   padding:10px 14px!important;
 }
+
+
+/* ===== ANA SAYFA — ÖZET DIŞ ÇERÇEVE / BOŞ DURUM İÇ BOŞLUK v1056 =====
+   Okul Özeti'nin dış kapsayıcı çerçevesi görünmez; dört özet kartının
+   kendi sarı çerçeveleri korunur. Nöbet ve Kim Nerede boş durum metinleri
+   kapsayıcı kenarına yapışmayacak şekilde daha geniş iç boşluk kullanır. */
+.ka-home .ka-school-summary-section{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+.ka-home .ka-school-summary-section .ka-school-summary-grid{
+  border:0!important;
+  outline:0!important;
+}
+.ka-home .kh-section[data-home-section="duty"] .kh-empty,
+.ka-home .kh-section[data-home-section="lessons"] .kh-empty{
+  padding:16px 18px!important;
+  line-height:1.35!important;
+}
