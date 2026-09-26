@@ -68,6 +68,7 @@ function applyFormPage(root,page,title){const wanted=FORM_PAGES[page];if(!wanted
 async function ensureToolsPageDependencies(page){
   const files=[];
   if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js');
+  if(page==='homework'||page==='grades')files.push('js/modules/teacher-list-core.js?v=1065');
   if(page==='map')files.push('js/modules/map-ui.js');
   if(!files.length)return true;
   if(!global.AppLoader?.loadScript)throw new Error('Tools companion loader hazır değil.');
