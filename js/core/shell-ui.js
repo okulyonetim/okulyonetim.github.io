@@ -57,7 +57,7 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
     if(!global.AppLoader?.loadScript)throw new Error('Modül yükleyici hazır değil.');
     await global.AppLoader.loadScript('js/modules/gradebooks.js?v=1001');
     if(!global.OdevNotUI?.open)throw new Error('Çizelge modülü yüklenemedi.');
-    return global.OdevNotUI.open(page);
+    return global.GradebookPage.open(page);
   };
   registerPageRoute('homework',async()=>openGradebook('homework'));
   registerPageRoute('grades',async()=>openGradebook('grades'));}
