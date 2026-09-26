@@ -1077,22 +1077,22 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 
 /* Rehberlik page — responsive canonical Çizelgeler presentation. */
 .ka-cizelge-page{position:relative;min-width:0;max-width:100%}
-[data-classic-cizelge-page="rehberlik"]{width:100%;min-width:0;max-width:100%;overflow-x:clip;gap:20px}
-.ka-guidance-route-marker{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.ka-guidance-page-head{display:grid;gap:18px;min-width:0;padding:22px;border:1px solid var(--ka-hero-border);border-radius:24px;background:var(--ka-hero-bg);box-shadow:var(--ka-hero-shadow)}
-.ka-guidance-page-head__copy{display:grid;gap:5px;min-width:0}.ka-guidance-kicker{color:var(--ka-hero-kicker);font-size:10px;font-weight:900;letter-spacing:.12em}.ka-guidance-page-head__copy h2{font-size:clamp(26px,5vw,34px);letter-spacing:-.03em}.ka-guidance-page-head__copy p{max-width:620px;color:var(--ka-hero-muted);font-size:14px}
-.ka-guidance-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-width:0}.ka-guidance-action{min-width:0;min-height:78px;display:grid;grid-template-columns:42px minmax(0,1fr) 18px;align-items:center;gap:10px;padding:12px 13px;border:1px solid var(--ka-border);border-radius:17px;background:var(--ka-card-bg);color:var(--ka-text);text-align:left;cursor:pointer;box-shadow:var(--ka-shadow-sm);transition:border-color var(--ka-transition-fast),background var(--ka-transition-fast),transform var(--ka-transition-fast)}.ka-guidance-action:hover{border-color:var(--ka-border-strong);background:var(--ka-card-raised-bg)}.ka-guidance-action:active{transform:translateY(1px)}.ka-guidance-action:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}.ka-guidance-action:disabled{opacity:.5;cursor:not-allowed;transform:none}.ka-guidance-action.is-primary{border-color:color-mix(in srgb,var(--ka-primary) 42%,var(--ka-border));background:var(--ka-primary-soft)}.ka-guidance-action__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--ka-muted-bg);color:var(--ka-primary);font-size:20px;font-weight:900}.ka-guidance-action.is-primary .ka-guidance-action__icon{background:color-mix(in srgb,var(--ka-primary) 16%,var(--ka-card-bg))}.ka-guidance-action__copy{display:grid;gap:2px;min-width:0}.ka-guidance-action__copy strong{font-size:13px;line-height:1.25}.ka-guidance-action__copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ka-text-muted);font-size:10px}.ka-guidance-action__chevron{color:var(--ka-text-muted);font-size:24px;line-height:1}
-.ka-guidance-groups{display:grid;gap:22px;min-width:0}.ka-guidance-teacher{display:grid;gap:10px;min-width:0}.ka-guidance-teacher__head{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;min-width:0;padding:0 3px 10px;border-bottom:1px solid var(--ka-border)}.ka-guidance-teacher__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:var(--ka-primary-soft);color:var(--ka-primary);font-size:22px;font-weight:900}.ka-guidance-teacher__copy{display:grid;min-width:0}.ka-guidance-teacher__copy strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;letter-spacing:.01em}.ka-guidance-teacher__copy span{color:var(--ka-text-muted);font-size:12px}.ka-guidance-teacher__progress{min-width:56px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:999px;background:var(--ka-primary-soft);color:var(--ka-primary);font-size:13px;font-weight:850}.ka-guidance-teacher__records{display:grid;gap:10px;min-width:0}
-.ka-guidance-card{display:grid;gap:15px;min-width:0;padding:18px;border:1px solid var(--ka-border);border-radius:22px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}.ka-guidance-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;min-width:0}.ka-guidance-card__identity{display:grid;gap:2px;min-width:0}.ka-guidance-card__identity strong{font-size:21px;letter-spacing:-.02em}.ka-guidance-card__identity span{color:var(--ka-text-muted);font-size:13px}.ka-guidance-card__head-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.ka-guidance-card__progress{min-height:30px;display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;background:var(--ka-muted-bg);color:var(--ka-text-muted);font-size:11px;font-weight:800}.ka-guidance-edit{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 13px;border:1px solid color-mix(in srgb,var(--ka-primary) 48%,var(--ka-border));border-radius:12px;background:var(--ka-button-bg);color:var(--ka-button-text);font-weight:800;cursor:pointer}.ka-guidance-edit:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}
-.ka-guidance-card__tracking{display:grid;grid-template-columns:minmax(142px,170px) minmax(0,1fr);gap:14px;min-width:0}.ka-guidance-plan-block,.ka-guidance-period-block{min-width:0}.ka-guidance-plan-block{display:grid;align-content:start;gap:8px;padding:12px;border:1px solid var(--ka-border);border-radius:16px;background:var(--ka-muted-bg)}.ka-guidance-period-block{display:grid;gap:8px}.ka-guidance-section-label,.ka-guidance-report-caption{color:var(--ka-text-muted);font-size:9px;font-weight:900;letter-spacing:.1em}.ka-guidance-report-caption{margin-top:3px}
-.ka-guidance-month-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:7px;min-width:0}.ka-guidance-report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;min-width:0}.ka-guidance-check{min-width:0;min-height:42px;display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:7px;padding:7px 9px;border:1px solid var(--ka-border);border-radius:12px;background:var(--ka-card-raised-bg);color:var(--ka-text);cursor:pointer;user-select:none}.ka-guidance-check.is-checked{border-color:color-mix(in srgb,var(--ka-primary) 45%,var(--ka-border));background:var(--ka-primary-soft)}.ka-guidance-check input{position:absolute;inline-size:1px!important;block-size:1px!important;opacity:0;pointer-events:none}.ka-guidance-check__state{width:24px;height:24px;display:grid;place-items:center;border:2px solid var(--ka-border-strong);border-radius:8px;color:var(--ka-text-inverse);font-size:14px;font-weight:900}.ka-guidance-check.is-checked .ka-guidance-check__state{border-color:var(--ka-primary);background:var(--ka-primary);color:var(--ka-text-inverse)}.ka-guidance-check__label{min-width:0;font-size:12px;line-height:1.25}.ka-guidance-check.is-plan{grid-template-columns:28px minmax(0,1fr);min-height:76px;align-content:center;background:transparent}.ka-guidance-check.is-plan .ka-guidance-check__state{width:28px;height:28px}.ka-guidance-check.is-plan .ka-guidance-check__label{font-size:13px;font-weight:750}.ka-guidance-check.is-report .ka-guidance-check__label{font-size:11px}.ka-guidance-check:focus-within{outline:3px solid var(--ka-focus);outline-offset:1px}.ka-guidance-card__note{display:flex;align-items:flex-start;gap:8px;padding-top:11px;border-top:1px solid var(--ka-border);color:var(--ka-text-muted);font-size:12px;line-height:1.5}
+/* rehberlik artık ortak cizelge-page seçicisinde */
+.ka-cizelge-route-marker{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.ka-cizelge-page-head{display:grid;gap:18px;min-width:0;padding:22px;border:1px solid var(--ka-hero-border);border-radius:24px;background:var(--ka-hero-bg);box-shadow:var(--ka-hero-shadow)}
+.ka-cizelge-page-head__copy{display:grid;gap:5px;min-width:0}.ka-cizelge-kicker{color:var(--ka-hero-kicker);font-size:10px;font-weight:900;letter-spacing:.12em}.ka-cizelge-page-head__copy h2{font-size:clamp(26px,5vw,34px);letter-spacing:-.03em}.ka-cizelge-page-head__copy p{max-width:620px;color:var(--ka-hero-muted);font-size:14px}
+.ka-cizelge-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-width:0}.ka-cizelge-action{min-width:0;min-height:78px;display:grid;grid-template-columns:42px minmax(0,1fr) 18px;align-items:center;gap:10px;padding:12px 13px;border:1px solid var(--ka-border);border-radius:17px;background:var(--ka-card-bg);color:var(--ka-text);text-align:left;cursor:pointer;box-shadow:var(--ka-shadow-sm);transition:border-color var(--ka-transition-fast),background var(--ka-transition-fast),transform var(--ka-transition-fast)}.ka-cizelge-action:hover{border-color:var(--ka-border-strong);background:var(--ka-card-raised-bg)}.ka-cizelge-action:active{transform:translateY(1px)}.ka-cizelge-action:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}.ka-cizelge-action:disabled{opacity:.5;cursor:not-allowed;transform:none}.ka-cizelge-action.is-primary{border-color:color-mix(in srgb,var(--ka-primary) 42%,var(--ka-border));background:var(--ka-primary-soft)}.ka-cizelge-action__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--ka-muted-bg);color:var(--ka-primary);font-size:20px;font-weight:900}.ka-cizelge-action.is-primary .ka-cizelge-action__icon{background:color-mix(in srgb,var(--ka-primary) 16%,var(--ka-card-bg))}.ka-cizelge-action__copy{display:grid;gap:2px;min-width:0}.ka-cizelge-action__copy strong{font-size:13px;line-height:1.25}.ka-cizelge-action__copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ka-text-muted);font-size:10px}.ka-cizelge-action__chevron{color:var(--ka-text-muted);font-size:24px;line-height:1}
+.ka-cizelge-groups{display:grid;gap:22px;min-width:0}.ka-cizelge-teacher{display:grid;gap:10px;min-width:0}.ka-cizelge-teacher__head{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;min-width:0;padding:0 3px 10px;border-bottom:1px solid var(--ka-border)}.ka-cizelge-teacher__icon{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:var(--ka-primary-soft);color:var(--ka-primary);font-size:22px;font-weight:900}.ka-cizelge-teacher__copy{display:grid;min-width:0}.ka-cizelge-teacher__copy strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;letter-spacing:.01em}.ka-cizelge-teacher__copy span{color:var(--ka-text-muted);font-size:12px}.ka-cizelge-teacher__progress{min-width:56px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:999px;background:var(--ka-primary-soft);color:var(--ka-primary);font-size:13px;font-weight:850}.ka-cizelge-teacher__records{display:grid;gap:10px;min-width:0}
+.ka-cizelge-card{display:grid;gap:15px;min-width:0;padding:18px;border:1px solid var(--ka-border);border-radius:22px;background:var(--ka-card-bg);box-shadow:var(--ka-shadow-sm)}.ka-cizelge-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;min-width:0}.ka-cizelge-card__identity{display:grid;gap:2px;min-width:0}.ka-cizelge-card__identity strong{font-size:21px;letter-spacing:-.02em}.ka-cizelge-card__identity span{color:var(--ka-text-muted);font-size:13px}.ka-cizelge-card__head-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.ka-cizelge-card__progress{min-height:30px;display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;background:var(--ka-muted-bg);color:var(--ka-text-muted);font-size:11px;font-weight:800}.ka-cizelge-edit{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 13px;border:1px solid color-mix(in srgb,var(--ka-primary) 48%,var(--ka-border));border-radius:12px;background:var(--ka-button-bg);color:var(--ka-button-text);font-weight:800;cursor:pointer}.ka-cizelge-edit:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}
+.ka-cizelge-card__tracking{display:grid;grid-template-columns:minmax(142px,170px) minmax(0,1fr);gap:14px;min-width:0}.ka-cizelge-plan-block,.ka-cizelge-period-block{min-width:0}.ka-cizelge-plan-block{display:grid;align-content:start;gap:8px;padding:12px;border:1px solid var(--ka-border);border-radius:16px;background:var(--ka-muted-bg)}.ka-cizelge-period-block{display:grid;gap:8px}.ka-cizelge-section-label,.ka-cizelge-report-caption{color:var(--ka-text-muted);font-size:9px;font-weight:900;letter-spacing:.1em}.ka-cizelge-report-caption{margin-top:3px}
+.ka-cizelge-month-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:7px;min-width:0}.ka-cizelge-report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;min-width:0}.ka-cizelge-check{min-width:0;min-height:42px;display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:7px;padding:7px 9px;border:1px solid var(--ka-border);border-radius:12px;background:var(--ka-card-raised-bg);color:var(--ka-text);cursor:pointer;user-select:none}.ka-cizelge-check.is-checked{border-color:color-mix(in srgb,var(--ka-primary) 45%,var(--ka-border));background:var(--ka-primary-soft)}.ka-cizelge-check input{position:absolute;inline-size:1px!important;block-size:1px!important;opacity:0;pointer-events:none}.ka-cizelge-check__state{width:24px;height:24px;display:grid;place-items:center;border:2px solid var(--ka-border-strong);border-radius:8px;color:var(--ka-text-inverse);font-size:14px;font-weight:900}.ka-cizelge-check.is-checked .ka-cizelge-check__state{border-color:var(--ka-primary);background:var(--ka-primary);color:var(--ka-text-inverse)}.ka-cizelge-check__label{min-width:0;font-size:12px;line-height:1.25}.ka-cizelge-check.is-plan{grid-template-columns:28px minmax(0,1fr);min-height:76px;align-content:center;background:transparent}.ka-cizelge-check.is-plan .ka-cizelge-check__state{width:28px;height:28px}.ka-cizelge-check.is-plan .ka-cizelge-check__label{font-size:13px;font-weight:750}.ka-cizelge-check.is-report .ka-cizelge-check__label{font-size:11px}.ka-cizelge-check:focus-within{outline:3px solid var(--ka-focus);outline-offset:1px}.ka-cizelge-card__note{display:flex;align-items:flex-start;gap:8px;padding-top:11px;border-top:1px solid var(--ka-border);color:var(--ka-text-muted);font-size:12px;line-height:1.5}
 
-@media(max-width:680px){[data-classic-cizelge-page="rehberlik"]{gap:16px}.ka-guidance-page-head{padding:17px;border-radius:20px}.ka-guidance-action-grid{gap:8px}.ka-guidance-action{min-height:72px;grid-template-columns:36px minmax(0,1fr) 14px;padding:10px}.ka-guidance-action__icon{width:36px;height:36px;border-radius:11px;font-size:17px}.ka-guidance-action__copy strong{font-size:12px}.ka-guidance-action__copy small{font-size:9px}.ka-guidance-card{padding:14px;border-radius:19px}.ka-guidance-card__tracking{grid-template-columns:minmax(128px,145px) minmax(0,1fr);gap:10px}.ka-guidance-month-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ka-guidance-check{padding:6px;gap:5px}.ka-guidance-check__label{font-size:11px}.ka-guidance-report-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.ka-guidance-page-head__copy p{font-size:12px}.ka-guidance-action__copy small{display:none}.ka-guidance-card__head{align-items:center}.ka-guidance-card__head-actions{gap:6px}.ka-guidance-card__progress{display:none}.ka-guidance-edit{min-height:38px;padding-inline:11px}.ka-guidance-card__tracking{grid-template-columns:1fr}.ka-guidance-plan-block{padding:9px}.ka-guidance-check.is-plan{min-height:54px;grid-template-columns:28px minmax(0,1fr)}.ka-guidance-month-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ka-guidance-report-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){[data-classic-cizelge-page="rehberlik"]{gap:16px}.ka-cizelge-page-head{padding:17px;border-radius:20px}.ka-cizelge-action-grid{gap:8px}.ka-cizelge-action{min-height:72px;grid-template-columns:36px minmax(0,1fr) 14px;padding:10px}.ka-cizelge-action__icon{width:36px;height:36px;border-radius:11px;font-size:17px}.ka-cizelge-action__copy strong{font-size:12px}.ka-cizelge-action__copy small{font-size:9px}.ka-cizelge-card{padding:14px;border-radius:19px}.ka-cizelge-card__tracking{grid-template-columns:minmax(128px,145px) minmax(0,1fr);gap:10px}.ka-cizelge-month-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ka-cizelge-check{padding:6px;gap:5px}.ka-cizelge-check__label{font-size:11px}.ka-cizelge-report-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.ka-cizelge-page-head__copy p{font-size:12px}.ka-cizelge-action__copy small{display:none}.ka-cizelge-card__head{align-items:center}.ka-cizelge-card__head-actions{gap:6px}.ka-cizelge-card__progress{display:none}.ka-cizelge-edit{min-height:38px;padding-inline:11px}.ka-cizelge-card__tracking{grid-template-columns:1fr}.ka-cizelge-plan-block{padding:9px}.ka-cizelge-check.is-plan{min-height:54px;grid-template-columns:28px minmax(0,1fr)}.ka-cizelge-month-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ka-cizelge-report-grid{grid-template-columns:1fr 1fr}}
 
 
 /* Çizelge pages — shared responsive document tracking workspace. */
-[data-classic-cizelge-page="sosyalKulupler"],[data-classic-cizelge-page="belirliGunler"],[data-classic-cizelge-page="zumre"],[data-classic-cizelge-page="sok"],[data-classic-cizelge-page="bepPlani"],[data-classic-cizelge-page="maarifRapor"],[data-classic-cizelge-page="digerEvrak"]{width:100%;min-width:0;max-width:100%;overflow-x:clip;gap:20px}
+[data-classic-cizelge-page="sosyalKulupler"],[data-classic-cizelge-page="belirliGunler"],[data-classic-cizelge-page="zumre"],[data-classic-cizelge-page="sok"],[data-classic-cizelge-page="bepPlani"],[data-classic-cizelge-page="rehberlik"],[data-classic-cizelge-page="maarifRapor"],[data-classic-cizelge-page="digerEvrak"]{width:100%;min-width:0;max-width:100%;overflow-x:clip;gap:20px}
 .ka-cizelge-page-head{display:grid;gap:18px;min-width:0;padding:22px;border:1px solid var(--ka-hero-border);border-radius:24px;background:var(--ka-hero-bg);box-shadow:var(--ka-hero-shadow)}
 .ka-cizelge-page-head__intro{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:14px;min-width:0}.ka-cizelge-page-head__icon{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:var(--ka-hero-badge-bg);color:var(--ka-hero-badge-text);font-size:27px;font-weight:900}.ka-cizelge-page-head__copy{display:grid;gap:4px;min-width:0}.ka-cizelge-kicker{color:var(--ka-hero-kicker);font-size:10px;font-weight:900;letter-spacing:.12em}.ka-cizelge-page-head__copy h2{font-size:clamp(25px,4.8vw,34px);letter-spacing:-.03em}.ka-cizelge-page-head__copy p{max-width:680px;color:var(--ka-hero-muted);font-size:14px}
 .ka-cizelge-action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;min-width:0}.ka-cizelge-action{min-width:0;min-height:74px;display:grid;grid-template-columns:40px minmax(0,1fr) 16px;align-items:center;gap:9px;padding:11px 12px;border:1px solid var(--ka-border);border-radius:16px;background:var(--ka-card-bg);color:var(--ka-text);text-align:left;cursor:pointer;box-shadow:var(--ka-shadow-sm);transition:border-color var(--ka-transition-fast),background var(--ka-transition-fast),transform var(--ka-transition-fast)}.ka-cizelge-action:hover{border-color:var(--ka-border-strong);background:var(--ka-card-raised-bg)}.ka-cizelge-action:active{transform:translateY(1px)}.ka-cizelge-action:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}.ka-cizelge-action:disabled{opacity:.5;cursor:not-allowed;transform:none}.ka-cizelge-action.is-primary{border-color:color-mix(in srgb,var(--ka-primary) 42%,var(--ka-border));background:var(--ka-primary-soft)}.ka-cizelge-action__icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--ka-muted-bg);color:var(--ka-primary);font-size:18px;font-weight:900}.ka-cizelge-action__copy{display:grid;gap:2px;min-width:0}.ka-cizelge-action__copy strong{font-size:13px;line-height:1.2}.ka-cizelge-action__copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ka-text-muted);font-size:10px}.ka-cizelge-action__chevron{color:var(--ka-text-muted);font-size:22px}
@@ -8771,28 +8771,28 @@ html[data-theme="dark"] #khBell.kh-bell-weekend-v2 .kh-bell-rest-next>b{
 #v2ModuleRoot [data-classic-cizelge-page]{color:var(--ka-text)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card{color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card{color:var(--ka-text)!important;border-color:var(--ka-border)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-chip,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{color:var(--ka-text)!important;background:var(--ka-card-bg)!important;border-color:var(--ka-border)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check{color:var(--ka-text)!important;background:var(--ka-card-bg)!important;border-color:var(--ka-border)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{color:var(--ka-text)!important;background:var(--ka-primary-soft)!important;border-color:var(--ka-primary)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked{color:var(--ka-text)!important;background:var(--ka-primary-soft)!important;border-color:var(--ka-primary)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy strong,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy strong,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-value,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check__label,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check__label{color:var(--ka-text)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check__label{color:var(--ka-text)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy small,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__chevron,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-empty-inline,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy small,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity span{color:var(--ka-text-muted)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy small,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity span{color:var(--ka-text-muted)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back{color:var(--ka-text)!important;background:var(--ka-card-bg)!important;border:1px solid var(--ka-border)!important}
 #v2ModuleRoot [data-classic-cizelge-page] input,
 #v2ModuleRoot [data-classic-cizelge-page] select,
@@ -8800,18 +8800,18 @@ html[data-theme="dark"] #khBell.kh-bell-weekend-v2 .kh-bell-rest-next>b{
 #v2ModuleRoot [data-classic-cizelge-page] input::placeholder,
 #v2ModuleRoot [data-classic-cizelge-page] textarea::placeholder{color:var(--ka-text-muted)!important;opacity:1!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy h2{color:var(--ka-hero-text)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2{color:var(--ka-hero-text)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy p{color:var(--ka-hero-muted)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p{color:var(--ka-hero-muted)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon{background:var(--ka-hero-badge-bg)!important;color:var(--ka-hero-badge-text)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-edit{background:var(--ka-button-bg)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit{background:var(--ka-button-bg)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-grid>section,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-grid>div,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-note,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-body>section,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-plan-block{color:var(--ka-text)!important;background:var(--ka-muted-bg)!important;border-color:var(--ka-border)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-plan-block{color:var(--ka-text)!important;background:var(--ka-muted-bg)!important;border-color:var(--ka-border)!important}
 
 /* PDF/Rapor önizleme ve PDF araçları */
 .dv3,#kaPdfTools{color:var(--ka-text)!important;background:var(--ka-app-bg)!important}
@@ -9467,20 +9467,20 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
   background:var(--ka-app-bg)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head{
   color:var(--ka-hero-text)!important;
   background:var(--ka-hero-bg)!important;
   border-color:var(--ka-hero-border)!important;
   box-shadow:var(--ka-hero-shadow)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy h2{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2{
   color:var(--ka-hero-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy p,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-kicker{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker{
   color:var(--ka-hero-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon{
@@ -9488,43 +9488,43 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
   color:var(--ka-hero-badge-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card{
   color:var(--ka-text)!important;
   background:var(--ka-card-bg)!important;
   border-color:var(--ka-border)!important;
   box-shadow:var(--ka-shadow-sm)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-chip,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check{
   color:var(--ka-text)!important;
   background:var(--ka-card-raised-bg)!important;
   border-color:var(--ka-border)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   color:var(--ka-button-text)!important;
   background:var(--ka-primary)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__icon,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-teacher__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-teacher__icon{
   background:var(--ka-primary-soft)!important;
   color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy strong,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy strong,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-value,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check__label,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check__label{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check__label{
   color:var(--ka-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy small,
@@ -9532,10 +9532,10 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity small,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-empty-inline,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy small,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity span,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-section-label,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-report-caption{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy small,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity span,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-report-caption{
   color:var(--ka-text-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back{
@@ -9544,7 +9544,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
   border-color:var(--ka-button-secondary-border)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-edit{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit{
   color:var(--ka-button-text)!important;
   background:var(--ka-button-bg)!important;
   border-color:var(--ka-primary)!important;
@@ -9554,14 +9554,14 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-note,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-body>section,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-plan-block{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-plan-block{
   color:var(--ka-text)!important;
   background:var(--ka-muted-bg)!important;
   border-color:var(--ka-border)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-grid span,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range>span:last-child:not(.ka-cizelge-section-label),
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__note{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__note{
   color:var(--ka-text-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] input,
@@ -9590,30 +9590,30 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
   background:transparent!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head{
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
   border:1px solid var(--ka-primary)!important;
   box-shadow:var(--ka-shadow-sm)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy h2{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2{
   color:var(--ka-module-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy p,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-kicker{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker{
   color:var(--ka-module-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-primary)!important;
   border:1px solid var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-groups,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-list{
   background:transparent!important;
@@ -9630,66 +9630,66 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-value,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-title-row,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity strong{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong{
   color:var(--ka-module-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity small,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-empty-inline,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity span{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity span{
   color:var(--ka-module-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action{
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
   border:1px solid var(--ka-primary)!important;
   box-shadow:none!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action:hover,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action:hover{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action:hover{
   background:var(--ka-card-raised-bg)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary{
   background:var(--ka-primary-soft)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-primary)!important;
   border:1px solid var(--ka-border)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon{
   background:var(--ka-primary)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy strong,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy strong{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy strong{
   color:var(--ka-module-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy small,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__chevron,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__copy small,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__chevron{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__copy small,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__chevron{
   color:var(--ka-module-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-chip,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-status,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-progress,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-module-text)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-primary-soft)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
@@ -9703,7 +9703,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-note,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-body>section,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-plan-block{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-plan-block{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-module-text)!important;
   border-color:var(--ka-border)!important;
@@ -9721,7 +9721,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail-row b{
   border:1px solid var(--ka-primary)!important;
 }
 html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
-html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head{
+html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head{
   background:var(--ka-module-surface)!important;
   border-color:var(--ka-primary)!important;
 }
@@ -9733,7 +9733,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    Son katman: bu ekranların eski modül gradient/renkleri merkezi temayı
    ezemez. Hero, aksiyon, ikon ve kayıt kartları aynı tema tokenlarını kullanır. */
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
@@ -9741,26 +9741,26 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   box-shadow:none!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head *,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head *{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head *{
   background-image:none!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy h2{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2{
   color:var(--ka-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-kicker{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker{
   color:var(--ka-text-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-primary)!important;
   border:1px solid var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
@@ -9768,26 +9768,26 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   box-shadow:none!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-primary)!important;
   border:1px solid var(--ka-border)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon{
   background:var(--ka-primary)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
@@ -9795,24 +9795,24 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   box-shadow:none!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__head{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__head{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity strong,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity small,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity span{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity span{
   color:var(--ka-text)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity small,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-empty-inline,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-section-label{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label{
   color:var(--ka-text-muted)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-teacher__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-teacher__icon{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-primary)!important;
   border:1px solid var(--ka-primary)!important;
@@ -9821,13 +9821,13 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-status,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-progress,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-primary)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
@@ -9837,7 +9837,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-note,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-body>section,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-plan-block{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-plan-block{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-border)!important;
@@ -9853,68 +9853,68 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 /* ===== CENTRAL THEME AUTHORITY — CLASSIC ÇİZELGELER v1048 =====
    Sabit yeşil/gradient yüzey yoktur; tüm yüzeyler merkezi tema tokenlarından beslenir. */
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head{box-shadow:var(--ka-shadow-sm)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head{box-shadow:var(--ka-shadow-sm)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head *,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head *{background-image:none!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head *{background-image:none!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__intro,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity>div{background:transparent!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__copy h2,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity strong{color:var(--ka-text)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity strong{color:var(--ka-text)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-kicker,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-kicker,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity small,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__identity span,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__identity span,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-section-label{color:var(--ka-text-muted)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-section-label{color:var(--ka-text-muted)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-page-head__icon,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-page-head__icon,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-teacher__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-teacher__icon{
   background:var(--ka-card-raised-bg)!important;color:var(--ka-primary)!important;border:1px solid var(--ka-primary)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action:hover,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action:hover{background:var(--ka-card-raised-bg)!important}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action:hover{background:var(--ka-card-raised-bg)!important}
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary{
   background:var(--ka-primary-soft)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action__icon{
   background:var(--ka-muted-bg)!important;color:var(--ka-primary)!important;border-color:var(--ka-border)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon{
   background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__head,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__head{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__head{
   background:var(--ka-card-raised-bg)!important;background-image:none!important;border-color:var(--ka-border)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-chip,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-status,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-progress,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check{
   background:var(--ka-card-raised-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-check.is-checked{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-primary-soft)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-detail-grid>section,
@@ -9922,12 +9922,12 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-date-range,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-note,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-event-body>section,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-plan-block,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-period-block{
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-plan-block,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-period-block{
   background:var(--ka-muted-bg)!important;background-image:none!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important
 }
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit,
-#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-edit,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit,
 #v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back{
   background:var(--ka-button-bg)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important
 }
@@ -9966,53 +9966,53 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   background:transparent!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-page-head,
-[data-classic-cizelge-page] .ka-guidance-page-head,
+[data-classic-cizelge-page] .ka-cizelge-page-head,
 [data-classic-cizelge-page] .ka-cizelge-card,
-[data-classic-cizelge-page] .ka-guidance-card,
+[data-classic-cizelge-page] .ka-cizelge-card,
 [data-classic-cizelge-page] .ka-cizelge-action,
-[data-classic-cizelge-page] .ka-guidance-action,
+[data-classic-cizelge-page] .ka-cizelge-action,
 [data-classic-cizelge-page] .ka-cizelge-check,
-[data-classic-cizelge-page] .ka-guidance-check{
+[data-classic-cizelge-page] .ka-cizelge-check{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-page-head,
-[data-classic-cizelge-page] .ka-guidance-page-head{
+[data-classic-cizelge-page] .ka-cizelge-page-head{
   border:1px solid var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-card,
-[data-classic-cizelge-page] .ka-guidance-card{
+[data-classic-cizelge-page] .ka-cizelge-card{
   border:1px solid var(--ka-primary)!important;
   box-shadow:none!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary{
   background:var(--ka-primary-soft)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action__icon{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-primary)!important;
   border-color:var(--ka-border)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon{
   background:var(--ka-primary)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-card__head,
-[data-classic-cizelge-page] .ka-guidance-card__head{
+[data-classic-cizelge-page] .ka-cizelge-card__head{
   background:var(--ka-card-raised-bg)!important;
   background-image:none!important;
   border-color:var(--ka-border)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-card__icon,
-[data-classic-cizelge-page] .ka-guidance-card__icon,
+[data-classic-cizelge-page] .ka-cizelge-card__icon,
 [data-classic-cizelge-page] .ka-cizelge-teacher__icon{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-primary)!important;
@@ -10028,21 +10028,21 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-cizelge-note,
 [data-classic-cizelge-page] .ka-cizelge-event-body>section,
 [data-classic-cizelge-page] .ka-cizelge-date-range,
-[data-classic-cizelge-page] .ka-guidance-plan-block,
-[data-classic-cizelge-page] .ka-guidance-period-block{
+[data-classic-cizelge-page] .ka-cizelge-plan-block,
+[data-classic-cizelge-page] .ka-cizelge-period-block{
   background:var(--ka-muted-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-border)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-primary-soft)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-edit,
-[data-classic-cizelge-page] .ka-guidance-edit{
+[data-classic-cizelge-page] .ka-cizelge-edit{
   background:var(--ka-button-bg)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
@@ -10055,17 +10055,17 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   border-color:var(--ka-input-border)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
-[data-classic-cizelge-page] .ka-guidance-page-head__copy h2,
+[data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
 [data-classic-cizelge-page] .ka-cizelge-card__identity strong,
-[data-classic-cizelge-page] .ka-guidance-card__identity strong{
+[data-classic-cizelge-page] .ka-cizelge-card__identity strong{
   color:var(--ka-text)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
 [data-classic-cizelge-page] .ka-cizelge-kicker,
-[data-classic-cizelge-page] .ka-guidance-kicker,
+[data-classic-cizelge-page] .ka-cizelge-kicker,
 [data-classic-cizelge-page] .ka-cizelge-card__identity small,
 [data-classic-cizelge-page] .ka-cizelge-section-label,
-[data-classic-cizelge-page] .ka-guidance-section-label{
+[data-classic-cizelge-page] .ka-cizelge-section-label{
   color:var(--ka-text-muted)!important;
 }
 
@@ -10075,8 +10075,8 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    görünümüne düşmez; normal kart yüzeyinde, okunabilir pasif durumda kalır. */
 [data-classic-cizelge-page] .ka-cizelge-action:disabled,
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
-[data-classic-cizelge-page] .ka-guidance-action:disabled,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled{
   opacity:1!important;
   background:var(--ka-card-bg)!important;
   background-image:none!important;
@@ -10085,39 +10085,39 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   box-shadow:none!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-text-muted)!important;
   border-color:var(--ka-border)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron{
   color:var(--ka-text-muted)!important;
 }
 
 
 /* ===== ÇİZELGE DURUM KONTROLLERİ — TIKLANDIĞINDA KART SARARMAZ v1053 ===== */
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-card-raised-bg)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__state,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__state{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__state{
   background:var(--ka-primary)!important;
   border-color:var(--ka-primary)!important;
   color:var(--ka-button-text)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__label{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label{
   color:var(--ka-text)!important;
 }
 /* Düzenle: sarı zemin yerine koyu yüzey + belirgin sarı çerçeve */
 [data-classic-cizelge-page] .ka-cizelge-edit,
-[data-classic-cizelge-page] .ka-guidance-edit{
+[data-classic-cizelge-page] .ka-cizelge-edit{
   min-width:42px!important;
   min-height:42px!important;
   padding:0!important;
@@ -10128,7 +10128,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   box-shadow:none!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-edit:hover,
-[data-classic-cizelge-page] .ka-guidance-edit:hover{
+[data-classic-cizelge-page] .ka-cizelge-edit:hover{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-primary)!important;
 }
@@ -10311,7 +10311,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    Rehberlik ve diğer klasik çizelgelerde açık sarı/pastel işlem kartlarını
    kaldır. Kart yüzeyleri tema yüzeyinde, vurgu yalnızca sarı çerçeve/ikonda. */
 [data-classic-cizelge-page] .ka-cizelge-action,
-[data-classic-cizelge-page] .ka-guidance-action{
+[data-classic-cizelge-page] .ka-cizelge-action{
   background:var(--ka-card-bg)!important;
   background-image:none!important;
   color:var(--ka-text)!important;
@@ -10319,9 +10319,9 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   box-shadow:none!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary,
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled{
   opacity:1!important;
   background:var(--ka-card-bg)!important;
   background-image:none!important;
@@ -10329,49 +10329,49 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action__icon{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-primary)!important;
   border:1px solid var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled .ka-cizelge-action__icon{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-primary)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action__copy strong,
 [data-classic-cizelge-page] .ka-cizelge-action__chevron,
-[data-classic-cizelge-page] .ka-guidance-action__chevron{
+[data-classic-cizelge-page] .ka-cizelge-action__chevron{
   color:var(--ka-text)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong{
   color:var(--ka-text-muted)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check,
-[data-classic-cizelge-page] .ka-guidance-check{
+[data-classic-cizelge-page] .ka-cizelge-check{
   background:var(--ka-card-bg)!important;
   color:var(--ka-text)!important;
   border:1px solid var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-card-bg)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__state,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__state{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__state{
   background:var(--ka-primary)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__label{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label{
   color:var(--ka-text)!important;
 }
 
@@ -10380,83 +10380,83 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    Rehberlik ve diğer tüm Çizelgeler aynı merkezi yüzey, kenarlık,
    metin ve pasif buton kurallarını kullanır. */
 [data-classic-cizelge-page] .ka-cizelge-page-head,
-[data-classic-cizelge-page] .ka-guidance-page-head{
+[data-classic-cizelge-page] .ka-cizelge-page-head{
   background:var(--ka-card-raised-bg)!important;
   border:1px solid var(--ka-primary)!important;
   box-shadow:var(--ka-shadow-sm)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action,
-[data-classic-cizelge-page] .ka-guidance-action{
+[data-classic-cizelge-page] .ka-cizelge-action{
   background:var(--ka-card-bg)!important;
   color:var(--ka-text)!important;
   border:1px solid var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary{
   background:var(--ka-primary)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon{
   background:color-mix(in srgb,var(--ka-button-text) 14%,transparent)!important;
   color:var(--ka-button-text)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled,
-[data-classic-cizelge-page] .ka-guidance-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled{
   opacity:1!important;
   background:var(--ka-muted-bg)!important;
   color:var(--ka-text-muted)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron{
   color:var(--ka-text-muted)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-card,
-[data-classic-cizelge-page] .ka-guidance-card{
+[data-classic-cizelge-page] .ka-cizelge-card{
   background:var(--ka-card-bg)!important;
   border:1px solid var(--ka-primary)!important;
   box-shadow:var(--ka-shadow-sm)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-detail-grid>section,
-[data-classic-cizelge-page] .ka-guidance-plan-block{
+[data-classic-cizelge-page] .ka-cizelge-plan-block{
   background:var(--ka-muted-bg)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check,
-[data-classic-cizelge-page] .ka-guidance-check{
+[data-classic-cizelge-page] .ka-cizelge-check{
   background:var(--ka-card-bg)!important;
   color:var(--ka-text)!important;
   border:1px solid var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-primary-soft)!important;
   color:var(--ka-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check__label,
-[data-classic-cizelge-page] .ka-guidance-check__label{
+[data-classic-cizelge-page] .ka-cizelge-check__label{
   color:var(--ka-text)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-section-label,
-[data-classic-cizelge-page] .ka-guidance-section-label,
-[data-classic-cizelge-page] .ka-guidance-report-caption{
+[data-classic-cizelge-page] .ka-cizelge-section-label,
+[data-classic-cizelge-page] .ka-cizelge-report-caption{
   color:var(--ka-text-muted)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-edit,
-[data-classic-cizelge-page] .ka-guidance-edit{
+[data-classic-cizelge-page] .ka-cizelge-edit{
   background:var(--ka-button-bg)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-teacher__icon,
-[data-classic-cizelge-page] .ka-guidance-teacher__icon{
+[data-classic-cizelge-page] .ka-cizelge-teacher__icon{
   border:1px solid var(--ka-primary)!important;
 }
 
@@ -10466,7 +10466,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    Yetkisi olan Yeni/Düzenle işlemleri: sarı vurgu.
    Pasif buton kesinlikle açık sarı zemine ve beyaz metne düşmez. */
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary:not(:disabled),
-[data-classic-cizelge-page] .ka-guidance-action.is-primary:not(:disabled){
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:not(:disabled){
   opacity:1!important;
   background:var(--ka-primary)!important;
   background-image:none!important;
@@ -10474,15 +10474,15 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary:not(:disabled) .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary:not(:disabled) .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:not(:disabled) .ka-cizelge-action__icon{
   background:color-mix(in srgb,var(--ka-button-text) 14%,transparent)!important;
   color:var(--ka-button-text)!important;
   border-color:var(--ka-button-text)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled,
 [data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
-[data-classic-cizelge-page] .ka-guidance-action:disabled,
-[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled{
   opacity:1!important;
   background:var(--ka-card-bg)!important;
   background-image:none!important;
@@ -10492,17 +10492,17 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   cursor:not-allowed!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-text-muted)!important;
   border-color:var(--ka-border)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy small,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy small,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy small,
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron{
   color:var(--ka-text-muted)!important;
 }
 
@@ -10544,7 +10544,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    Yazma yetkisi olmayan işlem: sarı dolgu kullanılmaz.
    Düzenleme yetkisi olan işlem: mevcut sarı birincil tema korunur. */
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled{
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled{
   opacity:1!important;
   background:var(--ka-card-bg)!important;
   background-image:none!important;
@@ -10554,7 +10554,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   cursor:not-allowed!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon{
   background:var(--ka-muted-bg)!important;
   color:var(--ka-text-muted)!important;
   border-color:var(--ka-border)!important;
@@ -10562,9 +10562,9 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy small,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__chevron{
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron{
   color:var(--ka-text-muted)!important;
 }
 
@@ -10577,8 +10577,8 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    fakat beyaz yazı yerine koyu okunabilir metin kullanılır. */
 [data-classic-cizelge-page] .ka-cizelge-action:disabled,
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled,
-[data-classic-cizelge-page] .ka-guidance-action:disabled,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled{
   opacity:1!important;
   background:var(--ka-primary-soft)!important;
   background-image:none!important;
@@ -10588,8 +10588,8 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 }
 [data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon,
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__icon,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__icon{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon{
   background:var(--ka-primary)!important;
   color:#171717!important;
   border-color:var(--ka-primary)!important;
@@ -10600,24 +10600,24 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
 [data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy small,
-[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy strong,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy small,
-[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__chevron{
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy small,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron{
   color:#171717!important;
 }
 
 /* İşaretli aylar: sarı zemin üzerinde metin ve tik koyu kalır. */
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked{
   background:var(--ka-primary-soft)!important;
   color:#171717!important;
   border-color:var(--ka-primary)!important;
 }
 [data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label,
-[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__label{
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label{
   color:#171717!important;
 }
 
@@ -10626,8 +10626,8 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
    Yalnızca görünüm. Yetki/disabled/click davranışına dokunulmaz. */
 .ka-cizelge-action:disabled,
 .ka-cizelge-action.is-permission-disabled,
-.ka-guidance-action:disabled,
-.ka-guidance-action.is-permission-disabled{
+.ka-cizelge-action:disabled,
+.ka-cizelge-action.is-permission-disabled{
   opacity:1!important;
   background:var(--ka-primary-soft)!important;
   color:#171717!important;
@@ -10635,26 +10635,26 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 }
 .ka-cizelge-action:disabled *,
 .ka-cizelge-action.is-permission-disabled *,
-.ka-guidance-action:disabled *,
-.ka-guidance-action.is-permission-disabled *{
+.ka-cizelge-action:disabled *,
+.ka-cizelge-action.is-permission-disabled *{
   color:#171717!important;
 }
 .ka-cizelge-action:disabled .ka-cizelge-action__icon,
 .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon,
-.ka-guidance-action:disabled .ka-guidance-action__icon,
-.ka-guidance-action.is-permission-disabled .ka-guidance-action__icon{
+.ka-cizelge-action:disabled .ka-cizelge-action__icon,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon{
   background:var(--ka-primary)!important;
   color:#171717!important;
 }
 
 /* Seçilmiş aylar: sarı zemin üzerinde yazı okunaklı koyu renk. */
 .ka-cizelge-check.is-checked,
-.ka-guidance-check.is-checked{
+.ka-cizelge-check.is-checked{
   background:var(--ka-primary-soft)!important;
   color:#171717!important;
   border-color:var(--ka-primary)!important;
 }
 .ka-cizelge-check.is-checked *,
-.ka-guidance-check.is-checked *{
+.ka-cizelge-check.is-checked *{
   color:#171717!important;
 }
