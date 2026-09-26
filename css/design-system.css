@@ -11100,3 +11100,9 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-gradebook-live-summary{display:flex;gap:8px;flex-wrap:wrap;padding:7px 14px;border-top:1px solid var(--ka-border);border-bottom:1px solid var(--ka-border);background:var(--ka-card-bg);color:var(--ka-text-muted);font-size:12px}
 .ka-gradebook-live-summary span{display:inline-flex;align-items:center;gap:4px}
 .ka-gradebook-live-summary b{color:var(--ka-text);font-weight:900}
+
+/* ===== ÖDEV TAKİP — ÖĞRENCİ TOPLU İŞLEM v1074 ===== */
+.ka-gradebook-student>div{min-width:0}
+.ka-gradebook-student__tools{display:flex;align-items:center;gap:3px;margin-top:5px;flex-wrap:wrap}
+.ka-gradebook-student__tools .ka-gradebook-mini-action{min-width:21px;height:21px;font-size:11px}
+@media(max-width:700px){.ka-gradebook-student__tools{gap:2px}.ka-gradebook-student__tools .ka-gradebook-mini-action{min-width:20px;height:20px;padding:0 4px}}
