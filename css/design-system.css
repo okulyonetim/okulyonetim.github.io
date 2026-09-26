@@ -10505,3 +10505,36 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
   color:var(--ka-text-muted)!important;
 }
+
+
+/* ===== ÇİZELGELER — YETKİSİZ BUTON TEMA DÜZELTMESİ v1058 =====
+   Yetkisi olmayan kullanıcıda buton pasif kalır; ancak açık/koyu temada
+   sarı zemin + beyaz yazı ile okunamaz görünmez. Yetkili butonların
+   mevcut sarı/primary görünümü değiştirilmez. */
+.ka-cizelge-action:disabled,
+.ka-cizelge-action.is-primary:disabled{
+  opacity:1!important;
+  cursor:not-allowed!important;
+  transform:none!important;
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border-color:var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-cizelge-action:disabled .ka-cizelge-action__icon,
+.ka-cizelge-action.is-primary:disabled .ka-cizelge-action__icon{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border:1px solid var(--ka-border)!important;
+}
+.ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+.ka-cizelge-action:disabled .ka-cizelge-action__copy small,
+.ka-cizelge-action:disabled .ka-cizelge-action__chevron{
+  color:var(--ka-text-muted)!important;
+}
+[data-theme="dark"] .ka-cizelge-action:disabled,
+[data-theme="dark"] .ka-cizelge-action.is-primary:disabled{
+  background:#1b1b1b!important;
+  color:#8f8f8f!important;
+  border-color:#343434!important;
+}
