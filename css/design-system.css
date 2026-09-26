@@ -10068,3 +10068,31 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-guidance-section-label{
   color:var(--ka-text-muted)!important;
 }
+
+
+/* ===== ÇİZELGE DEVRE DIŞI İŞLEM BUTONLARI — DARK/LIGHT UYUMLU =====
+   Yetki nedeniyle pasif olan "Yeni ..." butonları açık sarı/beyaz metin
+   görünümüne düşmez; normal kart yüzeyinde, okunabilir pasif durumda kalır. */
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
+[data-classic-cizelge-page] .ka-guidance-action:disabled,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+  opacity:1!important;
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text-muted)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
+  color:var(--ka-text-muted)!important;
+}
