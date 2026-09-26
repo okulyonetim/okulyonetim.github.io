@@ -9956,3 +9956,115 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-home .ka-home-social button{
   box-shadow:var(--ka-shadow-sm);
 }
+
+
+/* ===== CLASSIC ÇİZELGELER — GERÇEK HOST SON KATMANI v1051 =====
+   Çizelge renderer'ı #toolsContent altında çalışır. Bu nedenle tema
+   kuralları data-classic-cizelge-page üzerinden doğrudan bağlanır. */
+[data-classic-cizelge-page]{
+  color:var(--ka-text)!important;
+  background:transparent!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-page-head,
+[data-classic-cizelge-page] .ka-guidance-page-head,
+[data-classic-cizelge-page] .ka-cizelge-card,
+[data-classic-cizelge-page] .ka-guidance-card,
+[data-classic-cizelge-page] .ka-cizelge-action,
+[data-classic-cizelge-page] .ka-guidance-action,
+[data-classic-cizelge-page] .ka-cizelge-check,
+[data-classic-cizelge-page] .ka-guidance-check{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-page-head,
+[data-classic-cizelge-page] .ka-guidance-page-head{
+  border:1px solid var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-card,
+[data-classic-cizelge-page] .ka-guidance-card{
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action__icon{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-card__head,
+[data-classic-cizelge-page] .ka-guidance-card__head{
+  background:var(--ka-card-raised-bg)!important;
+  background-image:none!important;
+  border-color:var(--ka-border)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-card__icon,
+[data-classic-cizelge-page] .ka-guidance-card__icon,
+[data-classic-cizelge-page] .ka-cizelge-teacher__icon{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-teacher__progress{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-detail-grid>section,
+[data-classic-cizelge-page] .ka-cizelge-date-grid>div,
+[data-classic-cizelge-page] .ka-cizelge-note,
+[data-classic-cizelge-page] .ka-cizelge-event-body>section,
+[data-classic-cizelge-page] .ka-cizelge-date-range,
+[data-classic-cizelge-page] .ka-guidance-plan-block,
+[data-classic-cizelge-page] .ka-guidance-period-block{
+  background:var(--ka-muted-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-edit,
+[data-classic-cizelge-page] .ka-guidance-edit{
+  background:var(--ka-button-bg)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] input,
+[data-classic-cizelge-page] select,
+[data-classic-cizelge-page] textarea{
+  background:var(--ka-input-bg)!important;
+  color:var(--ka-input-text)!important;
+  border-color:var(--ka-input-border)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-page-head__copy h2,
+[data-classic-cizelge-page] .ka-guidance-page-head__copy h2,
+[data-classic-cizelge-page] .ka-cizelge-card__identity strong,
+[data-classic-cizelge-page] .ka-guidance-card__identity strong{
+  color:var(--ka-text)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-page-head__copy p,
+[data-classic-cizelge-page] .ka-cizelge-kicker,
+[data-classic-cizelge-page] .ka-guidance-kicker,
+[data-classic-cizelge-page] .ka-cizelge-card__identity small,
+[data-classic-cizelge-page] .ka-cizelge-section-label,
+[data-classic-cizelge-page] .ka-guidance-section-label{
+  color:var(--ka-text-muted)!important;
+}
