@@ -10567,3 +10567,56 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__chevron{
   color:var(--ka-text-muted)!important;
 }
+
+
+/* ===== ÇİZELGELER — SADECE TEMA/KONTRAST SON KATMANI v1061 =====
+   Yetki, disabled durumu, click davranışı veya veri akışı değiştirilmez.
+   Sadece mevcut yetki durumlarının görsel kontrastı düzeltilir. */
+
+/* Pasif/yetkisiz işlem: mevcut açık sarı disabled yüzeyi korunur,
+   fakat beyaz yazı yerine koyu okunabilir metin kullanılır. */
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled,
+[data-classic-cizelge-page] .ka-guidance-action:disabled,
+[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled{
+  opacity:1!important;
+  background:var(--ka-primary-soft)!important;
+  background-image:none!important;
+  color:#171717!important;
+  border-color:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__icon{
+  background:var(--ka-primary)!important;
+  color:#171717!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy small,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
+[data-classic-cizelge-page] .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy small,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron,
+[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy small,
+[data-classic-cizelge-page] .ka-guidance-action.is-permission-disabled .ka-guidance-action__chevron{
+  color:#171717!important;
+}
+
+/* İşaretli aylar: sarı zemin üzerinde metin ve tik koyu kalır. */
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+  background:var(--ka-primary-soft)!important;
+  color:#171717!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__label{
+  color:#171717!important;
+}
