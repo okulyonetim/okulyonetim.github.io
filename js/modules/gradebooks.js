@@ -88,7 +88,7 @@ function editor(){
 function bind(){
  const r=root();if(!r)return;
  $('[data-gradebook-filter-class]',r)?.addEventListener('change',e=>{filterClass=e.target.value;render()});
- $('[data-gradebook-filter-search]',r)?.addEventListener('input',e=>{filterSearch=e.target.value;requestAnimationFrame(()=>render())});
+ $('[data-gradebook-filter-search]',r)?.addEventListener('change',e=>{filterSearch=e.target.value.trim();render()});
  $('[data-gradebook-filter-status]',r)?.addEventListener('change',e=>{const mode=e.target.value;$('.ka-gradebook-card',r).forEach(card=>{const empty=card.querySelector('.ka-gradebook-card__meta')?.textContent.includes('0 sütun');card.hidden=mode==='empty'?!empty:mode==='ready'?empty:false})});
  $('[data-on-new]',r)?.addEventListener('click',newModal);$('[data-on-close]',r)?.addEventListener('click',closeEditor);$('[data-on-add-col]',r)?.addEventListener('click',addColumn);$$('[data-on-add-col]',r).slice(1).forEach(b=>b.onclick=addColumn);$('[data-on-add-student]',r)?.addEventListener('click',addStudent);$('[data-on-save]',r)?.addEventListener('click',save);$('[data-on-report]',r)?.addEventListener('click',()=>report());
  $$('[data-on-open]',r).forEach(b=>b.onclick=()=>openBook(b.dataset.onOpen));$$('[data-on-card-report]',r).forEach(b=>b.onclick=()=>{const k=books().find(x=>x.id===b.dataset.onCardReport);if(k)report(k)});
