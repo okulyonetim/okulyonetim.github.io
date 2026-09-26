@@ -11106,3 +11106,6 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-gradebook-student__tools{display:flex;align-items:center;gap:3px;margin-top:5px;flex-wrap:wrap}
 .ka-gradebook-student__tools .ka-gradebook-mini-action{min-width:21px;height:21px;font-size:11px}
 @media(max-width:700px){.ka-gradebook-student__tools{gap:2px}.ka-gradebook-student__tools .ka-gradebook-mini-action{min-width:20px;height:20px;padding:0 4px}}
+
+/* ===== ÖDEV TAKİP — İLERLEME GÖSTERGESİ v1075 ===== */
+.ka-gradebook-progress{display:flex;align-items:center;gap:8px;margin-top:8px;max-width:260px}.ka-gradebook-progress>span{display:block;flex:1;height:7px;border:1px solid var(--ka-border);border-radius:999px;overflow:hidden;background:var(--ka-card-bg)}.ka-gradebook-progress>span i{display:block;height:100%;background:var(--ka-primary);border-radius:inherit;transition:width .2s ease}.ka-gradebook-progress>b{font-size:12px;color:var(--ka-primary);min-width:38px;text-align:right}
