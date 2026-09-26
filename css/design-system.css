@@ -10216,3 +10216,15 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
     padding-inline:12px!important;
   }
 }
+
+
+/* ===== ANA SAYFA — OKUL ÖZETİ DIŞ ÇERÇEVE / BOŞ DURUM PADDING v1056 =====
+   Okul Özeti'nin kendi kart çerçeveleri korunur; bölümün dışındaki ortak
+   home-section çerçevesi kaldırılır. Boş nöbet/ders durumları kenara
+   yapışmayacak şekilde iç boşluk kazanır. */
+.ka-home .ka-school-summary-section{
+  border:0!important;
+}
+.ka-home .ka-school-summary-section .ka-empty{
+  padding:10px 14px!important;
+}
