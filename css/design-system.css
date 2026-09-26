@@ -10374,3 +10374,88 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__label{
   color:var(--ka-text)!important;
 }
+
+
+/* ===== ÇİZELGELER — MERKEZİ TEMA SON DÜZELTME v1058 =====
+   Rehberlik ve diğer tüm Çizelgeler aynı merkezi yüzey, kenarlık,
+   metin ve pasif buton kurallarını kullanır. */
+[data-classic-cizelge-page] .ka-cizelge-page-head,
+[data-classic-cizelge-page] .ka-guidance-page-head{
+  background:var(--ka-card-raised-bg)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action,
+[data-classic-cizelge-page] .ka-guidance-action{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary .ka-guidance-action__icon{
+  background:color-mix(in srgb,var(--ka-button-text) 14%,transparent)!important;
+  color:var(--ka-button-text)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled,
+[data-classic-cizelge-page] .ka-guidance-action:disabled,
+[data-classic-cizelge-page] .ka-cizelge-action.is-primary:disabled,
+[data-classic-cizelge-page] .ka-guidance-action.is-primary:disabled{
+  opacity:1!important;
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__copy strong,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__copy strong,
+[data-classic-cizelge-page] .ka-cizelge-action:disabled .ka-cizelge-action__chevron,
+[data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
+  color:var(--ka-text-muted)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-card,
+[data-classic-cizelge-page] .ka-guidance-card{
+  background:var(--ka-card-bg)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-detail-grid>section,
+[data-classic-cizelge-page] .ka-guidance-plan-block{
+  background:var(--ka-muted-bg)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check,
+[data-classic-cizelge-page] .ka-guidance-check{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check__label,
+[data-classic-cizelge-page] .ka-guidance-check__label{
+  color:var(--ka-text)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-section-label,
+[data-classic-cizelge-page] .ka-guidance-section-label,
+[data-classic-cizelge-page] .ka-guidance-report-caption{
+  color:var(--ka-text-muted)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-edit,
+[data-classic-cizelge-page] .ka-guidance-edit{
+  background:var(--ka-button-bg)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-teacher__icon,
+[data-classic-cizelge-page] .ka-guidance-teacher__icon{
+  border:1px solid var(--ka-primary)!important;
+}
