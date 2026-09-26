@@ -10941,3 +10941,75 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-guidance-edit:disabled{
   opacity:.65!important;
 }
+
+
+/* ===== ÇİZELGELER — GERÇEK SON KATMAN v1068 =====
+   #v2ModuleRoot içindeki eski yüksek özgüllüklü kuralları ezmek için.
+   Sadece görünüm; yetki/işlev/veri değişmez. */
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-edit{
+  min-height:42px!important;
+  min-width:42px!important;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  background:var(--ka-card-raised-bg)!important;
+  background-image:none!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit span,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-edit span{
+  display:inline!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  font-size:inherit!important;
+  line-height:1!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-edit span:first-child,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-edit span:first-child{
+  font-size:15px!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back{
+  min-height:42px!important;
+  padding:0 13px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  font-size:11px!important;
+  font-weight:850!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back > span,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back > strong{
+  display:inline!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-back > span{font-size:20px!important;}
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-progress,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__progress,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-teacher__progress,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-teacher__progress{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+  opacity:1!important;
+}
