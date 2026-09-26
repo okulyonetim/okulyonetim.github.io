@@ -11089,3 +11089,14 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-gradebook-column-head>button strong{color:var(--ka-text);font-size:12px;line-height:1.15}
 .ka-gradebook-column-head>button small{color:var(--ka-text-muted);font-size:10px;line-height:1.1;font-weight:700}
 .ka-gradebook-modal textarea.ka-input{resize:vertical;min-height:82px}
+
+/* ===== ÖDEV TAKİP — TOPLU İŞARETLEME v1073 ===== */
+.ka-gradebook-column-head{display:flex;flex-direction:column;align-items:center;gap:3px}
+.ka-gradebook-column-head__tools{display:flex;gap:2px;justify-content:center}
+.ka-gradebook-mini-action{min-width:22px;height:22px;padding:0 5px;border:1px solid var(--ka-border);border-radius:6px;background:var(--ka-card-bg);color:var(--ka-text);font-weight:800;font-size:12px;line-height:1}
+.ka-gradebook-mini-action.is-done{border-color:var(--ka-primary);color:var(--ka-primary)}
+.ka-gradebook-mini-action.is-missed{border-color:var(--ka-danger,#b42318);color:var(--ka-danger,#b42318)}
+.ka-gradebook-mini-action:active{transform:scale(.96)}
+.ka-gradebook-live-summary{display:flex;gap:8px;flex-wrap:wrap;padding:7px 14px;border-top:1px solid var(--ka-border);border-bottom:1px solid var(--ka-border);background:var(--ka-card-bg);color:var(--ka-text-muted);font-size:12px}
+.ka-gradebook-live-summary span{display:inline-flex;align-items:center;gap:4px}
+.ka-gradebook-live-summary b{color:var(--ka-text);font-weight:900}
