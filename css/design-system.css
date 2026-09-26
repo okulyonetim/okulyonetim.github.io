@@ -9939,3 +9939,20 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 #v2ModuleRoot [data-classic-cizelge-page] textarea{
   background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border-color:var(--ka-input-border)!important
 }
+
+
+/* ===== ANA SAYFA KART KENARLIKLARI v1050 =====
+   Ana sayfadaki kullanıcı tarafından işaretlenen kart yüzeyleri
+   ince 1px sarı/ana vurgu kenarlığı kullanır. */
+.ka-home .ka-home-section,
+.ka-home .kh-card,
+.ka-home .ka-home-social button,
+.ka-home .ka-school-summary-card{
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-home .ka-home-section__head{
+  border-bottom-color:var(--ka-primary)!important;
+}
+.ka-home .ka-home-social button{
+  box-shadow:var(--ka-shadow-sm);
+}
