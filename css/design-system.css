@@ -10096,3 +10096,39 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 [data-classic-cizelge-page] .ka-guidance-action:disabled .ka-guidance-action__chevron{
   color:var(--ka-text-muted)!important;
 }
+
+
+/* ===== ÇİZELGE DURUM KONTROLLERİ — TIKLANDIĞINDA KART SARARMAZ v1053 ===== */
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__state,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__state{
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-check.is-checked .ka-cizelge-check__label,
+[data-classic-cizelge-page] .ka-guidance-check.is-checked .ka-guidance-check__label{
+  color:var(--ka-text)!important;
+}
+/* Düzenle: sarı zemin yerine koyu yüzey + belirgin sarı çerçeve */
+[data-classic-cizelge-page] .ka-cizelge-edit,
+[data-classic-cizelge-page] .ka-guidance-edit{
+  min-width:42px!important;
+  min-height:42px!important;
+  padding:0!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:12px!important;
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-edit:hover,
+[data-classic-cizelge-page] .ka-guidance-edit:hover{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-primary)!important;
+}
