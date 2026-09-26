@@ -10867,3 +10867,77 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   -webkit-text-fill-color:var(--ka-primary)!important;
   border-color:#111!important;
 }
+
+
+/* ===== ÇİZELGELER — DÜZENLE / GERİ / İLERLEME DURUMU v1067 =====
+   Yalnızca görsel katman. Yetki, tıklama ve veri davranışına dokunulmaz. */
+[data-classic-cizelge-page] .ka-cizelge-edit,
+[data-classic-cizelge-page] .ka-guidance-edit{
+  min-height:42px!important;
+  min-width:42px!important;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-edit span,
+[data-classic-cizelge-page] .ka-guidance-edit span{
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-back{
+  min-height:42px!important;
+  padding:0 13px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  font-weight:800!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-back *{
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-progress,
+[data-classic-cizelge-page] .ka-guidance-card__progress,
+[data-classic-cizelge-page] .ka-cizelge-teacher__progress,
+[data-classic-cizelge-page] .ka-guidance-teacher__progress{
+  min-width:54px!important;
+  min-height:42px!important;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:999px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  box-shadow:none!important;
+}
+[data-classic-cizelge-page] .ka-guidance-card__progress *,
+[data-classic-cizelge-page] .ka-cizelge-progress *{
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+}
+[data-classic-cizelge-page] .ka-cizelge-edit:disabled,
+[data-classic-cizelge-page] .ka-guidance-edit:disabled{
+  opacity:.65!important;
+}
