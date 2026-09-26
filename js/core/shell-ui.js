@@ -52,7 +52,15 @@ function sameView(a,b){return !!a&&!!b&&a.kind===b.kind&&a.name===b.name&&a.bott
 function sameSurface(a,b){if(!a||!b||a.kind!==b.kind)return false;if(a.kind==='route')return a.name===b.name&&(a.page||'')===(b.page||'');if(a.kind==='profile-detail')return a.page===b.page;return ['profile','search'].includes(a.kind)}
 function rememberView(view){if(!view)return;const top=navStack[navStack.length-1];if(sameView(top,view)){syncShellBack();return}if(sameSurface(top,view)){navStack[navStack.length-1]=view;syncShellBack();return}navStack.push(view);if(navStack.length>30)navStack.splice(0,navStack.length-30);syncShellBack()}
 function registerPageRoute(page,handler){page=String(page||'').trim();if(!page||typeof handler!=='function')return()=>{};CUSTOM_PAGE_ROUTES.set(page,handler);return()=>{if(CUSTOM_PAGE_ROUTES.get(page)===handler)CUSTOM_PAGE_ROUTES.delete(page)}}
-function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();if(!global.KaDataPage?.open)throw new Error('KaDataPage hazır değil.');return global.KaDataPage.open()})}
+function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();if(!global.KaDataPage?.open)throw new Error('KaDataPage hazır değil.');return global.KaDataPage.open()});
+  const openGradebook=async page=>{
+    if(!global.AppLoader?.loadScript)throw new Error('Modül yükleyici hazır değil.');
+    await global.AppLoader.loadScript('js/modules/gradebooks.js?v=1001');
+    if(!global.OdevNotUI?.open)throw new Error('Çizelge modülü yüklenemedi.');
+    return global.OdevNotUI.open(page);
+  };
+  registerPageRoute('homework',async()=>openGradebook('homework'));
+  registerPageRoute('grades',async()=>openGradebook('grades'));}
 function setTitle(v){const el=$('#v2ModuleTitle');if(el)el.textContent=v||''}
 function setBottomActive(action){activeAction=action;$$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
 function syncShellBack(){const b=document.querySelector('[data-ka-shell-back]');if(!b)return;const show=navStack.length>1||!!navStack[0]?.parentMenu;b.hidden=!show;b.setAttribute('aria-hidden',String(!show));}
