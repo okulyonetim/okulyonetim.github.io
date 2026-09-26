@@ -30,7 +30,7 @@ define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=947
 define('food',['js/modules/report-engine.js','js/modules/food-menu.js?v=1034']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('reports',['js/modules/report-engine.js','js/modules/reports.js']);
-define('tools',['js/modules/tools.js','js/modules/rubric-settings.js?v=1061','js/modules/rubric-tools.js']);
+define('tools',['js/modules/tools.js','js/modules/rubric-settings.js?v=1062','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js?v=880']);
 
 const MODULE_DEFAULTS=[{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'food',label:'Yemek',icon:'🍽️',visible:true,order:65},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'reports',label:'Raporlar',icon:'📊',visible:true,order:75},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];
