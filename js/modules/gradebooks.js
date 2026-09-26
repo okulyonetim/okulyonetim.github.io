@@ -50,8 +50,13 @@ function newModal(){
 }
 function columnModal(id=''){
  if(!draft)return;const current=id?draft.sutunlar.find(x=>x.id===id):null;
- modalOpen(current?'Sütunu Düzenle':'Yeni Sütun',`<label class="ka-field"><span class="ka-field__label">Başlık</span><input class="ka-input" name="baslik" required value="${esc(current?.baslik||'')}" placeholder="${type==='odevTakip'?'Örn: 1. Ünite Testi':'Örn: Ders İçi Etkinlik 1'}"></label><label class="ka-field"><span class="ka-field__label">Tarih <small>(opsiyonel)</small></span><input class="ka-input" name="tarih" type="date" value="${esc(current?.tarih||'')}"></label>`,current?'Güncelle':'Ekle',async fd=>{
-  const baslik=String(fd.get('baslik')||'').trim(),tarih=String(fd.get('tarih')||'').trim();if(!baslik)return global.toast?.('Sütun için bir başlık girin.');if(current){current.baslik=baslik;current.tarih=tarih||null}else draft.sutunlar.push({id:colId(),baslik,tarih:tarih||null});markDirty();modalClose();render();
+ const homework=type==='odevTakip';
+ modalOpen(current?(homework?'Ödevi Düzenle':'Sütunu Düzenle'):(homework?'Yeni Ödev':'Yeni Sütun'),
+ `<label class="ka-field"><span class="ka-field__label">${homework?'Ödev Başlığı':'Başlık'}</span><input class="ka-input" name="baslik" required value="${esc(current?.baslik||'')}" placeholder="${homework?'Örn: 1. Ünite Testi':'Örn: Ders İçi Etkinlik 1'}"></label>${homework?`<label class="ka-field"><span class="ka-field__label">Ders</span><input class="ka-input" name="ders" value="${esc(current?.ders||'')}" placeholder="Örn: Türkçe"></label>`:''}<label class="ka-field"><span class="ka-field__label">Tarih <small>(opsiyonel)</small></span><input class="ka-input" name="tarih" type="date" value="${esc(current?.tarih||'')}"></label>${homework?`<label class="ka-field"><span class="ka-field__label">Açıklama <small>(opsiyonel)</small></span><textarea class="ka-input" name="aciklama" rows="3" placeholder="Ödevle ilgili kısa açıklama">${esc(current?.aciklama||'')}</textarea></label>`:''}`,current?'Güncelle':(homework?'Ödevi Ekle':'Ekle'),async fd=>{
+  const baslik=String(fd.get('baslik')||'').trim(),tarih=String(fd.get('tarih')||'').trim();if(!baslik)return global.toast?.(homework?'Ödev başlığı girin.':'Sütun için bir başlık girin.');
+  const extra=homework?{ders:String(fd.get('ders')||'').trim(),aciklama:String(fd.get('aciklama')||'').trim()}:{};
+  if(current){current.baslik=baslik;current.tarih=tarih||null;if(homework){current.ders=extra.ders;current.aciklama=extra.aciklama}}
+  else draft.sutunlar.push({id:colId(),baslik,tarih:tarih||null,...extra});markDirty();modalClose();render();
  });
 }
 function addColumn(){columnModal()}
