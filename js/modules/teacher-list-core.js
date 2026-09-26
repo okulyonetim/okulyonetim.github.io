@@ -241,7 +241,7 @@ function bind(){
 }
 function render(){const r=root();if(!r)return;const rows=books();r.innerHTML=`<section class="ka-stack ka-gradebook-page" data-on-ui>${pageHero()}<div class="ka-gradebook-list-head"><div><small>${esc(label().toUpperCase())}</small><h3>Kayıtlı çizelgeler</h3><p>${rows.length} kayıt · cihaz verisi anında gösterilir</p></div><button class="ka-btn" type="button" data-on-new>+ Yeni Çizelge</button></div>${cards()}${draft?editor():''}</section>`;bind();syncBodyLock();global.PermissionService?.apply?.(r)}
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];['data.odevTakip','data.notCizelgesi','data.siniflar','data.veliler'].forEach(p=>{const u=global.AppStore?.subscribe?.(p,()=>{if(!dirty)requestAnimationFrame(render)});if(u)unsubs.push(u)})}
-async function open(which){page=which;type=which==='homework'?'odevTakip':'notCizelgesi';openId='';draft=null;dirty=false;modalClose();await global.ToolsData?.prepareGradebooks?.();subscribe();render();return true}
+async function open(which){page=which;type=which==='homework'?'odevTakip':'notCizelgesi';openId='';draft=null;dirty=false;modalClose();subscribe();render();Promise.resolve(global.ToolsData?.prepareGradebooks?.()).catch(e=>console.warn('[OdevNotUI/prepareGradebooks]',e?.message||e));return true}
 function close(){if(activeModal){modalClose();return false}if(dirty&&!global.confirm?.('Kaydedilmemiş değişiklikler var. Sayfadan çıkılsın mı?'))return false;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];draft=null;openId='';dirty=false;page='';syncBodyLock();return true}
 global.OdevNotUI={open,close,render,get page(){return page}};
 })(window);
