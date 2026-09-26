@@ -9868,3 +9868,152 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-a
   color:var(--ka-text)!important;
   border:1px solid var(--ka-primary)!important;
 }
+
+
+/* ===== CENTRAL THEME OVERRIDE — CLASSIC ÇİZELGELER GREEN SURFACES v1045 ===== */
+/* Bu katmanda yeşil/gradient yüzey kullanılmaz. Tüm klasik çizelge sayfaları
+   merkezi koyu tema yüzeylerine bağlanır. */
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-page-head,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-page-head{
+  background:#151515!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+  border-radius:28px!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-page-head *,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-page-head *{
+  background-image:none!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-page-head__intro,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-page-head__copy{
+  background:transparent!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-page-head__copy h2,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-page-head__copy h2{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-page-head__copy p,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-page-head__copy p{
+  color:#aaa!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-kicker,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-kicker{
+  color:#aaa!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-page-head__icon{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-action,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-action{
+  background:#151515!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-action.is-primary,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-action.is-primary{
+  background:#191919!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-action__icon,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-action__icon{
+  background:#191919!important;
+  color:#ffc400!important;
+  border:1px solid #333!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-action.is-primary .ka-cizelge-action__icon,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-action.is-primary .ka-guidance-action__icon{
+  background:#ffc400!important;
+  color:#111!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-card{
+  background:#151515!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-card__head,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-card__head{
+  background:#191919!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border-color:#333!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-card__identity,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-card__identity,
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-card__identity>div{
+  background:transparent!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-card__identity strong,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-card__identity strong{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-card__identity small,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-card__identity span{
+  color:#aaa!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-card__icon,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-card__icon{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-progress,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-card__progress{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-detail-grid>section,
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-date-grid>div,
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-date-range,
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-note,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-plan-block,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-period-block{
+  background:#191919!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border-color:#333!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-check,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-check{
+  background:#151515!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-check.is-checked,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-check.is-checked{
+  background:#211d0c!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-check__label,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-check__label{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-section-label,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-section-label,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-report-caption{
+  color:#aaa!important;
+  background:#191919!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-edit,
+html[data-theme="dark"] #v2ModuleRoot .ka-guidance-edit{
+  background:#191919!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-status,
+html[data-theme="dark"] #v2ModuleRoot .ka-cizelge-chip{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border-color:#ffc400!important;
+}
