@@ -106,7 +106,7 @@ const PAGE_UI={
  digerEvrak:{kicker:'EVRAK TESLİM TAKİBİ',icon:'▤',excelHint:'Evrak kayıtlarını toplu yükle',addHint:'Yeni evrak kaydı oluştur'}
 };
 let currentType='';
-function canEdit(type){try{if(typeof global.duzenleyebilir==='function')return !!global.duzenleyebilir(type);return global.PermissionService?.can?.('tools.schedules','edit')!==false}catch(_){return false}}
+function canEdit(type){try{if(!type)return false;/* Çizelge yazma yetkisi kayıt türünün kendi yetkisinden okunmalı; backend de aynı modül anahtarını kullanıyor. */if(global.PermissionService?.can)return global.PermissionService.can(type,'edit')===true;if(typeof global.duzenleyebilir==='function')return !!global.duzenleyebilir(type);return false}catch(_){return false}}
 function typeFromTitle(title){const n=norm(title);if(n.includes('sosyal'))return'sosyalKulupler';if(n.includes('belirli'))return'belirliGunler';if(n.includes('zumre'))return'zumre';if(n==='sok'||n.includes('sube ogretmen'))return'sok';if(n.includes('bep'))return'bepPlani';if(n.includes('rehber'))return'rehberlik';if(n.includes('maarif'))return'maarifRapor';if(n.includes('diger'))return'digerEvrak';return''}
 function countText(){const el=$('#toolsCount');if(el)el.textContent=`${arr(currentType).length} kayıt`}
 function pageHost(){return $('#toolsContent')}
