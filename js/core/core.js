@@ -164,7 +164,7 @@ window.DutyBookService={teacherId:dutyBookTeacherId,canToggle:dutyBookCanToggle,
 /* ========================= SYNC ENGINE ========================= */
 let syncing=false,syncTimer=null;const registered=new Map(),realtimeUnsubs=new Map();
 const REMOTE_BATCH_SIZE=4;
-const SYNC_PRIORITY=['ogretmenler','dersProgrami','siniflar','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular','servisler','veliler','sinavlar','denemeSinavlari','ogretmenIzinleri','notlar','haberler'];
+const SYNC_PRIORITY=['ogretmenler','dersProgrami','dersSaatleri','siniflar','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular','servisler','veliler','sinavlar','denemeSinavlari','ogretmenIzinleri','notlar','haberler'];
 const CORE_REALTIME_TYPES=['dersProgrami','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular'];
 function syncReady(){return !!(window.db&&uid())}
 function register(type,collection,opts={}){if(type&&collection)registered.set(type,{type,collection,...opts})}
@@ -184,7 +184,7 @@ function startRealtime(types=CORE_REALTIME_TYPES){if(!syncReady()||!navigator.on
 window.SyncEngine={register,unregister:t=>{stopRealtime(t);return registered.delete(t)},localHydrate,pull,flush:flushWrites,sync,schedule:scheduleSync,startRealtime,stopRealtime:stopAllRealtime,definitions:()=>Array.from(registered.values()).map(x=>({...x})),get syncing(){return syncing}};
 
 /* ========================= BOOTSTRAP ========================= */
-const CORE_TYPES=['ogretmenler','dersProgrami','siniflar','veliler','servisler','nobetAtamalari','nobetYerleri','sinavlar','denemeSinavlari','duyurular','haberler','gorevler','hatirlaticilar','ogretmenIzinleri','notlar','yemekMenuleri'];
+const CORE_TYPES=['ogretmenler','dersProgrami','dersSaatleri','siniflar','veliler','servisler','nobetAtamalari','nobetYerleri','sinavlar','denemeSinavlari','duyurular','haberler','gorevler','hatirlaticilar','ogretmenIzinleri','notlar','yemekMenuleri'];
 let bootPromise=null,booted=false;
 function waitFor(test,timeout=12000,step=50){return new Promise((resolve,reject)=>{const start=Date.now(),tick=()=>{let ok=false;try{ok=!!test()}catch(_){}if(ok)return resolve(true);if(Date.now()-start>=timeout)return reject(new Error('bootstrap-timeout'));setTimeout(tick,step)};tick()})}
 function registerCore(){if(!window.COL)return;const pairs={ogretmenler:COL.ogretmenler,dersProgrami:COL.dersProgrami,siniflar:COL.siniflar,veliler:COL.veliler,servisler:COL.servisler,nobetAtamalari:COL.nobetAtamalari,nobetYerleri:COL.nobetYerleri,sinavlar:COL.sinavlar,denemeSinavlari:COL.denemeSinavlari,duyurular:COL.duyurular,haberler:COL.haberler,gorevler:COL.gorevler,hatirlaticilar:COL.hatirlaticilar,ogretmenIzinleri:COL.ogretmenIzinleri,notlar:COL.notlar,yemekMenuleri:COL.yemekMenuleri};Object.entries(pairs).forEach(([type,col])=>col&&register(type,col))}
