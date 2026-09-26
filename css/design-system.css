@@ -10658,3 +10658,47 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-guidance-check.is-checked *{
   color:#171717!important;
 }
+
+
+/* ===== ÇİZELGELER — SADECE GÖRSEL KONTRAST FİNAL v1063 =====
+   Yetki mantığına, disabled niteliğine, olaylara veya veri akışına dokunulmaz.
+   Mevcut yetki durumu neyse yalnızca görünümü okunabilir hale getirir. */
+.ka-cizelge-action:disabled,
+.ka-cizelge-action.is-permission-disabled,
+.ka-guidance-action:disabled,
+.ka-guidance-action.is-permission-disabled{
+  opacity:1!important;
+  background:#fff3b8!important;
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-cizelge-action:disabled *,
+.ka-cizelge-action.is-permission-disabled *,
+.ka-guidance-action:disabled *,
+.ka-guidance-action.is-permission-disabled *{
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  text-shadow:none!important;
+}
+.ka-cizelge-action:disabled .ka-cizelge-action__icon,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon,
+.ka-guidance-action:disabled .ka-guidance-action__icon,
+.ka-guidance-action.is-permission-disabled .ka-guidance-action__icon{
+  background:var(--ka-primary)!important;
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-cizelge-check.is-checked,
+.ka-guidance-check.is-checked{
+  background:#fff3b8!important;
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-cizelge-check.is-checked *,
+.ka-guidance-check.is-checked *{
+  color:#171717!important;
+  -webkit-text-fill-color:#171717!important;
+}
