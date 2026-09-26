@@ -10831,3 +10831,39 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   color:var(--ka-primary)!important;
   -webkit-text-fill-color:var(--ka-primary)!important;
 }
+
+
+/* ===== ÇİZELGELER — KESİN PASİF BUTON KONTRASTI v1066 ===== */
+.ka-cizelge-action.is-primary:disabled,
+.ka-cizelge-action.is-permission-disabled,
+.ka-guidance-action.is-primary:disabled,
+.ka-guidance-action.is-permission-disabled{
+  opacity:1!important;
+  background:var(--ka-primary)!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  border:1px solid var(--ka-primary)!important;
+  text-shadow:none!important;
+  filter:none!important;
+}
+.ka-cizelge-action.is-primary:disabled .ka-cizelge-action__copy,
+.ka-cizelge-action.is-primary:disabled .ka-cizelge-action__copy strong,
+.ka-cizelge-action.is-primary:disabled .ka-cizelge-action__copy small,
+.ka-cizelge-action.is-primary:disabled .ka-cizelge-action__chevron,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron,
+.ka-guidance-action.is-primary:disabled *,
+.ka-guidance-action.is-permission-disabled *{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  text-shadow:none!important;
+}
+.ka-cizelge-action.is-primary:disabled .ka-cizelge-action__icon,
+.ka-cizelge-action.is-permission-disabled .ka-cizelge-action__icon{
+  background:#111!important;
+  color:var(--ka-primary)!important;
+  -webkit-text-fill-color:var(--ka-primary)!important;
+  border-color:#111!important;
+}
