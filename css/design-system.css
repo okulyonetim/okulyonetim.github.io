@@ -11013,3 +11013,34 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   box-shadow:none!important;
   opacity:1!important;
 }
+
+
+/* ===== ÇİZELGELER — PASİF YENİ KAYIT METNİ KESİN KONTRAST v1069 =====
+   Disabled butonlarda metin motoru/UA stillerinden bağımsız siyah görünüm. */
+#v2ModuleRoot .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy,
+#v2ModuleRoot .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy strong,
+#v2ModuleRoot .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__copy small,
+#v2ModuleRoot .ka-cizelge-action.is-permission-disabled .ka-cizelge-action__chevron,
+#v2ModuleRoot .ka-cizelge-action.is-primary:disabled .ka-cizelge-action__copy,
+#v2ModuleRoot .ka-cizelge-action.is-primary:disabled .ka-cizelge-action__copy strong,
+#v2ModuleRoot .ka-cizelge-action.is-primary:disabled .ka-cizelge-action__copy small,
+#v2ModuleRoot .ka-cizelge-action.is-primary:disabled .ka-cizelge-action__chevron,
+#v2ModuleRoot .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy,
+#v2ModuleRoot .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy strong,
+#v2ModuleRoot .ka-guidance-action.is-permission-disabled .ka-guidance-action__copy small,
+#v2ModuleRoot .ka-guidance-action.is-primary:disabled .ka-guidance-action__copy,
+#v2ModuleRoot .ka-guidance-action.is-primary:disabled .ka-guidance-action__copy strong,
+#v2ModuleRoot .ka-guidance-action.is-primary:disabled .ka-guidance-action__copy small{
+  opacity:1!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  filter:brightness(0)!important;
+  text-shadow:none!important;
+  mix-blend-mode:normal!important;
+}
+#v2ModuleRoot .ka-cizelge-action.is-permission-disabled,
+#v2ModuleRoot .ka-cizelge-action.is-primary:disabled,
+#v2ModuleRoot .ka-guidance-action.is-permission-disabled,
+#v2ModuleRoot .ka-guidance-action.is-primary:disabled{
+  opacity:1!important;
+}
