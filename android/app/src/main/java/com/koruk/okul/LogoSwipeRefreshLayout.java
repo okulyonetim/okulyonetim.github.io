@@ -61,6 +61,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
     private boolean pullEnabled = true;
     private float currentDampedDy = 0f;
     private volatile boolean jsChildCanScrollUp = false;
+    private volatile boolean jsScrollStateKnown = false;
     private volatile boolean interactiveTouchActive = false;
     private OnRefreshListener listener;
     private ValueAnimator springAnimator;
@@ -130,6 +131,7 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
 
     public void setJsChildCanScrollUp(boolean canScrollUp) {
         jsChildCanScrollUp = canScrollUp;
+        jsScrollStateKnown = true;
     }
 
     public void setInteractiveTouchActive(boolean active) {
@@ -158,7 +160,11 @@ public class LogoSwipeRefreshLayout extends FrameLayout {
          * WebView.canScrollVertically(-1), WebView içindeki gerçek belge
          * kaydırma durumunu Android tarafında doğrudan sorgular.
          */
-        return jsChildCanScrollUp || webView.canScrollVertically(-1) || webView.getScrollY() > 0;
+        // Once JS has reported the active scroll container, trust that state.
+        // Gradebook/Ödev çalışma alanları are fixed inner scrollers; the underlying
+        // WebView document may still have a non-zero scrollY and must not block PTR.
+        if (jsScrollStateKnown) return jsChildCanScrollUp;
+        return webView.canScrollVertically(-1) || webView.getScrollY() > 0;
     }
 
     private boolean dikeyAsagiJestMi(MotionEvent ev) {
