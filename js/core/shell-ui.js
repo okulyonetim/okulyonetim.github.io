@@ -57,7 +57,7 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
     if(!global.AppLoader?.loadScript)throw new Error('Modül yükleyici hazır değil.');
     await global.AppLoader.loadScript('js/modules/tools.js');
     if(!global.OdevNotCizelgeleriService)throw new Error('Çizelge veri servisi yüklenemedi.');
-    await global.AppLoader.loadScript('js/modules/gradebooks.js?v=1014');
+    await global.AppLoader.loadScript('js/modules/gradebooks.js?v=1015');
     if(!global.GradebookPage?.open)throw new Error('Çizelge modülü yüklenemedi.');
     return global.GradebookPage.open(page);
   };
