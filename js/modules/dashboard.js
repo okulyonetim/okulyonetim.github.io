@@ -153,11 +153,13 @@ function schoolStageForStudent(student,classMap){const cls=classMap.get(student?
 function schoolGender(v){const n=normalizeDay(v);if(['k','kadin','bayan','female','kiz'].includes(n)||n.includes('kadin')||n.includes('kiz'))return'k';if(['e','erkek','bay','male'].includes(n)||n.includes('erkek'))return'e';return''}
 function genderOf(x){return schoolGender(x?.cinsiyet??x?.cinsiyeti??x?.cins??x?.gender??'')}
 function schoolSummaryIcon(type){
-  const common='viewBox="0 0 64 64" aria-hidden="true"';
-  if(type==='teachers')return '<svg class="ka-summary-art ka-summary-art--teachers" '+common+'><circle cx="22" cy="24" r="10" fill="#f6c9a8"/><circle cx="43" cy="25" r="9" fill="#efbd98"/><path d="M7 49c1-10 8-15 15-15s14 5 15 15" fill="#2388ff"/><path d="M30 49c1-9 6-14 13-14s12 5 14 14" fill="#20b7e8"/></svg>';
-  if(type==='student')return '<svg class="ka-summary-art ka-summary-art--student" '+common+'><path d="M8 23 32 10l24 13-24 13Z" fill="#263238"/><path d="M17 28v10c7 6 23 6 30 0V28L32 36Z" fill="#3d4852"/><path d="M53 25v13" stroke="#f2b400" stroke-width="3" stroke-linecap="round"/><path d="M53 38c-4 0-5 3-5 5h10c0-2-1-5-5-5Z" fill="#f2b400"/></svg>';
-  if(type==='class')return '<svg class="ka-summary-art ka-summary-art--class" '+common+'><path d="M10 27 32 10l22 17v25H10Z" fill="#f5d6bd"/><path d="M7 27 32 7l25 20-3 4-22-17L10 31Z" fill="#e85d3f"/><rect x="26" y="37" width="12" height="15" rx="1.5" fill="#7f8c8d"/><rect x="15" y="35" width="7" height="7" rx="1" fill="#55b8e8"/><rect x="42" y="35" width="7" height="7" rx="1" fill="#55b8e8"/></svg>';
-  return '<svg class="ka-summary-art ka-summary-art--service" '+common+'><rect x="8" y="20" width="48" height="27" rx="7" fill="#f6c928"/><path d="M14 20h30l8 12H8Z" fill="#4daeea"/><rect x="14" y="25" width="10" height="9" rx="1.5" fill="#dff5ff"/><rect x="28" y="25" width="10" height="9" rx="1.5" fill="#dff5ff"/><rect x="42" y="25" width="9" height="9" rx="1.5" fill="#dff5ff"/><circle cx="19" cy="48" r="6" fill="#374151"/><circle cx="45" cy="48" r="6" fill="#374151"/><circle cx="19" cy="48" r="2.5" fill="#e5e7eb"/><circle cx="45" cy="48" r="2.5" fill="#e5e7eb"/></svg>';
+  const icons={
+    teachers:'👥',
+    student:'🎓',
+    class:'🏫',
+    service:'🚌'
+  };
+  return '<span class="ka-summary-emoji" aria-hidden="true">'+(icons[type]||'📌')+'</span>';
 }
 function summaryMetric(icon,label,value,meta='',cls='',routeInfo=null){const routeAttrs=routeInfo?(' data-dash-route="'+esc(routeInfo.module)+'" data-dash-page="'+esc(routeInfo.page)+'" data-dash-title="'+esc(routeInfo.title)+'"'):'';return '<button type="button" class="ka-school-summary-card '+cls+'"'+routeAttrs+'><span class="ka-school-summary-icon">'+icon+'</span><small>'+esc(label)+'</small><b>'+esc(String(value))+'</b>'+(meta?'<div class="ka-school-summary-meta">'+meta+'</div>':'')+'</button>'}
 function statsSection(){
