@@ -71,8 +71,39 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
 @media(max-width:480px){.ka-home .kh-section-art .kh-section-emoji,.ka-home .ka-home-section__icon .kh-section-emoji{font-size:23px!important}}
 
 
-/* ===== OKUL ÖZETİ EMOJI İKONLARI ===== */
-.ka-home .ka-school-summary-card .ka-school-summary-icon{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin-left:auto!important;margin-right:auto!important}
-.ka-home .ka-school-summary-card .ka-summary-emoji{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:31px!important;line-height:1!important;font-weight:400!important;filter:none!important;transform:none!important}
-.ka-home .ka-school-summary-card .ka-summary-art{display:none!important}
-@media(max-width:480px){.ka-home .ka-school-summary-card .ka-summary-emoji{font-size:29px!important}}
+/* ===== OKUL ÖZETİ EMOJI İKONLARI — MERKEZ HİZALAMA ===== */
+.ka-school-summary-card{position:relative!important;text-align:center!important}
+.ka-school-summary-card .ka-school-summary-icon{
+  position:absolute!important;
+  top:38px!important;
+  left:50%!important;
+  width:56px!important;
+  height:56px!important;
+  margin:0!important;
+  transform:translateX(-50%)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.ka-school-summary-card .ka-summary-emoji{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;
+  font-size:31px!important;
+  line-height:1!important;
+  font-weight:400!important;
+  filter:none!important;
+  transform:none!important;
+}
+.ka-school-summary-card .ka-summary-art{display:none!important}
+.ka-school-summary-card>small{display:block!important;text-align:center!important;margin-top:102px!important}
+.ka-school-summary-card>b{display:block!important;text-align:center!important}
+.ka-school-summary-card>.ka-school-summary-meta{text-align:center!important}
+@media(max-width:480px){
+  .ka-school-summary-card .ka-summary-emoji{font-size:29px!important}
+}
