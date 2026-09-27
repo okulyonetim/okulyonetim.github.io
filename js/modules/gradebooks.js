@@ -67,6 +67,13 @@ function removeStudent(id){if(!draft||!global.confirm?.('Öğrenci çizelgeden �
 function semanticValue(value){if(type==='odevTakip'){if(value==='✓'||value==='+')return'yapti';if(value==='✗'||value==='×'||value==='-'||value==='−')return'yapmadi';return value||''}if(value==='+')return'arti';if(value==='-'||value==='−')return'eksi';return value??''}
 function displayValue(value){const v=semanticValue(value);if(type==='odevTakip')return v==='yapti'?'+':v==='yapmadi'?'−':'';if(draft?.hucreModu==='puan')return v;return v==='arti'?'+':v==='eksi'?'−':''}
 function cellClass(value){const v=semanticValue(value);if(type==='odevTakip')return v==='yapti'?'is-done':v==='yapmadi'?'is-missed':'is-empty';if(draft?.hucreModu==='puan')return'is-score';return v==='arti'?'is-plus':v==='eksi'?'is-minus':'is-empty'}
+function renderKeepingGradebookScroll(){
+ const rootEl=root(),doc=document.scrollingElement||document.documentElement;
+ const docTop=Number(doc?.scrollTop||0),docLeft=Number(doc?.scrollLeft||0);
+ const states=['.ka-gradebook-workspace__body','.ka-gradebook-table-shell'].map(sel=>{const el=rootEl?.querySelector(sel);return el?{sel,top:Number(el.scrollTop||0),left:Number(el.scrollLeft||0)}:null}).filter(Boolean);
+ render();
+ requestAnimationFrame(()=>{const nextRoot=root();states.forEach(s=>{const el=nextRoot?.querySelector(s.sel);if(el){el.scrollTop=s.top;el.scrollLeft=s.left}});const nextDoc=document.scrollingElement||document.documentElement;if(nextDoc){nextDoc.scrollTop=docTop;nextDoc.scrollLeft=docLeft}});
+}
 function cycleCell(studentId,columnId){if(!draft||draft.hucreModu==='puan')return;const key=`${studentId}_${columnId}`,old=semanticValue(draft.hucreler[key]);let next='';if(type==='odevTakip')next=old==='yapti'?'yapmadi':old==='yapmadi'?'':'yapti';else next=old==='arti'?'eksi':old==='eksi'?'':'arti';if(next)draft.hucreler[key]=type==='odevTakip'?(next==='yapti'?'+':'−'):next;else delete draft.hucreler[key];markDirty();render()}
 function setColumnStatus(columnId,status){if(!draft||type!=='odevTakip'||!canEdit(draft))return;const valid=['arti','eksi','clear'];if(!valid.includes(status))return;for(const s of draft.ogrenciler||[]){const key=`${s.id}_${columnId}`;if(status==='clear')delete draft.hucreler[key];else draft.hucreler[key]=status==='arti'?'+':'−'}markDirty();render()}
 function homeworkStats(){if(!draft||type!=='odevTakip')return{done:0,missed:0,empty:0,total:0};let done=0,missed=0,empty=0;for(const s of draft.ogrenciler||[])for(const col of draft.sutunlar||[]){const v=semanticValue(draft.hucreler?.[`${s.id}_${col.id}`]);if(v==='yapti')done++;else if(v==='yapmadi')missed++;else empty++}return{done,missed,empty,total:done+missed+empty}}
