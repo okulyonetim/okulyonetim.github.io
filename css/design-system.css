@@ -11176,3 +11176,62 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   background:var(--ka-card-bg)!important;
   background-image:none!important;
 }
+
+/* ===== MERKEZİ ÇİZELGE KONTRAST DÜZELTMESİ =====
+   Ders Programı + Nöbet Programı: modül içinde kalan eski tonları
+   merkezi yüzey/kenarlık/metin tokenlarına bağla. */
+[data-management-module].is-duty-page>.ka-management-intro{
+  background:var(--ka-card-bg)!important;
+  border:1px solid var(--ka-primary)!important;
+  color:var(--ka-text)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+[data-management-module].is-duty-page>.ka-management-intro:after{
+  border-color:color-mix(in srgb,var(--ka-primary) 10%,transparent)!important;
+}
+[data-management-module].is-duty-page>.ka-management-intro>*,
+[data-management-module].is-duty-page>.ka-management-intro h2{
+  color:var(--ka-text)!important;
+}
+[data-management-module].is-duty-page>.ka-management-intro p{
+  color:var(--ka-text-muted)!important;
+}
+[data-management-module].is-duty-page>.ka-management-intro #managementCount{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-management-module].is-duty-page .ka-duty-grid thead th{
+  background:var(--ka-card-raised-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border-bottom:1px solid var(--ka-primary)!important;
+}
+[data-management-module].is-duty-page .ka-duty-grid,
+[data-management-module].is-duty-page .ka-duty-grid-wrap{
+  background:var(--ka-card-bg)!important;
+}
+[data-academic-module] .ka-schedule-action{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+[data-academic-module] .ka-schedule-action>span{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+[data-academic-module] .ka-schedule-action:hover{
+  background:var(--ka-card-raised-bg)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] [data-academic-module] .ka-schedule-action,
+html[data-theme="dark"] [data-management-module].is-duty-page .ka-duty-action-card{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] [data-academic-module] .ka-schedule-mobile-days button.active{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
