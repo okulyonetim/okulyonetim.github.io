@@ -33,7 +33,28 @@ function classLabel(x){return x.sinif||x.sinifAdi||x.sube||'Sınıf'}
 function teacherLabel(x){if(x.ogretmenAdSoyad||x.ogretmenAdi)return x.ogretmenAdSoyad||x.ogretmenAdi;const t=arr('ogretmenler').find(o=>o.id===x.ogretmenId);return t?.adSoyad||[t?.ad,t?.soyad].filter(Boolean).join(' ')||'Öğretmen'}
 function todayLessons({mine=false}={}){const tid=teacherId(),name=dayName();if(mine&&!tid)return[];return arr('dersProgrami').filter(x=>sameDay(x.gun,name)&&(!mine||x.ogretmenId===tid)).sort(sortHour)}
 function isDone(x){return x?.tamamlandi===true||['Tamamlandı','Tamamlandi','tamamlandi'].includes(x?.durum)}
-function section(title,icon,id,body,extra=''){return `<section class="ka-home-section ${extra}" data-home-section="${id}"><div class="ka-home-section__head"><div><span class="ka-home-section__icon">${icon}</span><h3>${esc(title)}</h3></div></div><div class="ka-home-section__body">${body}</div></section>`}
+function sectionArt(id,icon){
+ const a='viewBox="0 0 64 64" aria-hidden="true"';
+ const m={
+  'announcements':`<svg ${a}><path d="M12 24h8l25-11v38L20 40h-8z" fill="#4aa8e8"/><path d="M20 24v16" stroke="#2874c6" stroke-width="3"/><path d="M45 22c7 3 10 7 10 10s-3 7-10 10" fill="none" stroke="#f2b63d" stroke-width="5" stroke-linecap="round"/></svg>`,
+  'news':`<svg ${a}><rect x="9" y="13" width="46" height="38" rx="5" fill="#f5d7a0"/><rect x="14" y="18" width="22" height="16" rx="2" fill="#ef6a4f"/><path d="M40 19h10M40 25h10M40 31h7M14 40h36" stroke="#4b89c8" stroke-width="4" stroke-linecap="round"/></svg>`,
+  'food-menu':`<svg ${a}><circle cx="32" cy="34" r="19" fill="#f7e6d0"/><path d="M17 12v18M12 12v9c0 4 5 4 5 0M22 12v9c0 4-5 4-5 0M17 30v22" stroke="#e56b62" stroke-width="4" stroke-linecap="round"/><path d="M43 12v40M43 12c9 2 10 13 10 18H43" stroke="#54a8cf" stroke-width="4" stroke-linecap="round"/></svg>`,
+  'duty':`<svg ${a}><path d="M32 8 52 16v15c0 13-8 21-20 25C20 52 12 44 12 31V16z" fill="#65b8df"/><path d="m21 32 7 7 15-17" fill="none" stroke="#f1b83b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  'today-duty':`<svg ${a}><path d="M32 8 52 16v15c0 13-8 21-20 25C20 52 12 44 12 31V16z" fill="#65b8df"/><path d="m21 32 7 7 15-17" fill="none" stroke="#f1b83b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  'upcoming':`<svg ${a}><rect x="10" y="13" width="44" height="41" rx="6" fill="#63b9e5"/><path d="M10 24h44" stroke="#fff" stroke-width="5"/><path d="M21 9v10M43 9v10" stroke="#e86b58" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="38" r="8" fill="#f2bd42"/><path d="M32 33v6l4 3" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+  'calendar':`<svg ${a}><rect x="11" y="14" width="42" height="40" rx="6" fill="#63b9e5"/><path d="M11 25h42" stroke="#fff" stroke-width="5"/><path d="M21 10v10M43 10v10" stroke="#e86b58" stroke-width="5" stroke-linecap="round"/><rect x="20" y="32" width="8" height="8" rx="2" fill="#f2bd42"/><rect x="36" y="32" width="8" height="8" rx="2" fill="#70c67a"/></svg>`,
+  'notes':`<svg ${a}><path d="M15 10h28l9 9v35H15z" fill="#63b9e5"/><path d="m43 10 9 9h-9z" fill="#f2bd42"/><path d="M23 29h20M23 37h20M23 45h13" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`,
+  'exams':`<svg ${a}><rect x="13" y="10" width="38" height="46" rx="5" fill="#f0c04b"/><path d="M22 21h20M22 31h20M22 41h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="45" r="8" fill="#e96b5f"/></svg>`,
+  'polls':`<svg ${a}><path d="M13 12h38v30H13z" fill="#65b8df"/><path d="M20 22h24M20 30h16" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M20 50h24" stroke="#ef8b5c" stroke-width="5" stroke-linecap="round"/></svg>`,
+  'absences':`<svg ${a}><circle cx="32" cy="25" r="12" fill="#f1bd9c"/><path d="M14 53c2-12 9-18 18-18s16 6 18 18" fill="#63b9e5"/><circle cx="49" cy="45" r="9" fill="#e96b5f"/><path d="M49 40v6l4 3" stroke="#fff" stroke-width="3" fill="none"/></svg>`,
+  'week-duty':`<svg ${a}><rect x="10" y="13" width="44" height="40" rx="6" fill="#65b8df"/><path d="M10 24h44" stroke="#fff" stroke-width="5"/><path d="M22 10v10M42 10v10" stroke="#e96b5f" stroke-width="5" stroke-linecap="round"/><circle cx="22" cy="35" r="4" fill="#f2bd42"/><circle cx="32" cy="35" r="4" fill="#70c67a"/><circle cx="42" cy="35" r="4" fill="#e96b5f"/></svg>`,
+  'trial-counter':`<svg ${a}><circle cx="32" cy="32" r="21" fill="#65b8df"/><circle cx="32" cy="32" r="14" fill="#fff"/><path d="M32 21v12l8 5" stroke="#e96b5f" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
+  'social':`<svg ${a}><rect x="10" y="10" width="44" height="44" rx="13" fill="#e96b5f"/><circle cx="32" cy="32" r="11" fill="none" stroke="#fff" stroke-width="4"/><circle cx="45" cy="19" r="3" fill="#f2bd42"/></svg>`,
+  'quick':`<svg ${a}><circle cx="32" cy="32" r="23" fill="#65b8df"/><path d="M22 32h20M32 22v20" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="32" r="5" fill="#f2bd42"/></svg>`
+ };
+ return m[id]||icon;
+}
+function section(title,icon,id,body,extra=''){return `<section class="ka-home-section ${extra}" data-home-section="${id}"><div class="ka-home-section__head"><div><span class="ka-home-section__icon">${sectionArt(id,icon)}</span><h3>${esc(title)}</h3></div></div><div class="ka-home-section__body">${body}</div></section>`}
 function empty(text){return `<div class="ka-home-empty">${esc(text)}</div>`}
 function routeButton(label,module,page='',title='',icon='→'){return `<button class="ka-home-link" type="button" data-dash-route="${module}"${page?` data-dash-page="${esc(page)}"`:''}${title?` data-dash-title="${esc(title)}"`:''}><span>${esc(label)}</span><b>${icon}</b></button>`}
 function liveClock(sec){const s=Math.max(0,Math.floor(Number(sec)||0));return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
