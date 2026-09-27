@@ -26,3 +26,29 @@ html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-icon{
   background:#fff8cf!important;
   border-color:#e6d47a!important;
 }
+
+
+/* ===== ANA SAYFA DİĞER İKONLAR — ÖZET KARTLARINDAKİ RESİMLİ İKON DİLİ ===== */
+.ka-home .ka-home-section__icon{
+  width:48px!important;height:48px!important;min-width:48px!important;
+  border-radius:14px!important;
+  background:#fff8d9!important;
+  border:2px solid #eadb82!important;
+  display:grid!important;place-items:center!important;
+  box-shadow:none!important;color:initial!important;
+  font-size:0!important;
+}
+.ka-home .ka-home-section__icon svg{
+  width:34px!important;height:34px!important;
+  display:block!important;
+  overflow:visible!important;
+  color:initial!important;
+  stroke:initial!important;
+}
+.ka-home .ka-home-section__icon svg *{
+  vector-effect:non-scaling-stroke;
+}
+html[data-theme="dark"] .ka-home .ka-home-section__icon{
+  background:#302d20!important;
+  border-color:#d9bd4c!important;
+}
