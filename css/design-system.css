@@ -11581,3 +11581,19 @@ html[data-theme="dark"] .ka-documents-page .ka-documents-toolbar__main [data-doc
   border-color:#ffc400!important;
 }
 
+/* ===== TRANSPORT INPUT SELECTION CONTRAST V1 =====
+   Android/WebView metin seçimi: seçili yazı açık zeminde kaybolmasın. */
+html[data-theme="dark"] .ka-transport-page input::selection,
+html[data-theme="dark"] [data-service-modal] input::selection,
+html[data-theme="dark"] #serviceForm input::selection{
+  background:#ffc400!important;
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
+html[data-theme="dark"] .ka-transport-page input::-moz-selection,
+html[data-theme="dark"] [data-service-modal] input::-moz-selection,
+html[data-theme="dark"] #serviceForm input::-moz-selection{
+  background:#ffc400!important;
+  color:#111!important;
+}
+
