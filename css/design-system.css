@@ -11120,3 +11120,15 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 /* Ödev/Not çizelgesi — koyu temada uyarı şeridi okunabilirliği */
 [data-theme="dark"] .ka-gradebook-dirty{background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border-bottom:1px solid var(--ka-primary)!important}
 [data-theme="dark"] .ka-gradebook-dirty *{color:var(--ka-button-text)!important}
+
+/* Ödev / Not çizelgesi: yatay kaydırmada öğrenci alanını sabitle ve araçları hücre içinde tut */
+.ka-gradebook-table-shell{overflow-x:auto;overflow-y:visible;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+.ka-gradebook-table{min-width:760px}
+.ka-gradebook-table .ka-gradebook-student-head,.ka-gradebook-table .ka-gradebook-student{position:sticky!important;left:0!important;z-index:20!important;background:var(--ka-card-bg)!important;box-shadow:4px 0 7px color-mix(in srgb,var(--ka-text) 10%,transparent)}
+.ka-gradebook-table thead .ka-gradebook-student-head{z-index:30!important;background:var(--ka-surface-alt,var(--ka-card-bg))!important}
+.ka-gradebook-table .ka-gradebook-student{display:grid!important;grid-template-columns:30px minmax(0,1fr)!important;align-items:center!important;min-width:190px!important;max-width:190px!important;overflow:hidden!important}
+.ka-gradebook-table .ka-gradebook-student>div{display:block!important;min-width:0!important;max-width:100%!important;overflow:hidden!important}
+.ka-gradebook-table .ka-gradebook-student strong{display:block!important;min-width:0!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.ka-gradebook-table .ka-gradebook-student__tools{display:flex!important;align-items:center!important;gap:3px!important;margin-top:4px!important;max-width:100%!important;overflow:hidden!important;flex-wrap:nowrap!important}
+.ka-gradebook-table .ka-gradebook-student__tools .ka-gradebook-mini-action,.ka-gradebook-table .ka-gradebook-student__tools .ka-icon-button{flex:0 0 21px!important;width:21px!important;min-width:21px!important;height:21px!important;padding:0!important}
+@media(max-width:760px){.ka-gradebook-table .ka-gradebook-student{min-width:185px!important;max-width:185px!important}.ka-gradebook-table{min-width:680px}}
