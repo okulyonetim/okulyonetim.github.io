@@ -84,18 +84,18 @@ function foodMenuSection(){
  if(live.mode==='holiday'){
   const message=String(live.message||'Bugün okul tatil.').trim();
   return '<section class="kh-section kh-food-section" data-home-section="food-menu">'
-   +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('food-menu','')}</span><span>Günün Yemek Menüsü</span></div></div>'
+   +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">'+sectionArt('food-menu','')+'</span><span>Günün Yemek Menüsü</span></div></div>'
    +'<div class="kh-food-card kh-food-card--status"><span class="kh-food-date">'+esc(dateText)+'</span><span class="kh-food-status-icon" aria-hidden="true">🏖️</span><div><b>Bugün tatil</b><small>'+esc(message)+'</small></div></div></section>';
  }
  if(live.mode==='weekend'){
   return '<section class="kh-section kh-food-section" data-home-section="food-menu">'
-   +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('food-menu','')}</span><span>Günün Yemek Menüsü</span></div></div>'
+   +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">'+sectionArt('food-menu','')+'</span><span>Günün Yemek Menüsü</span></div></div>'
    +'<div class="kh-food-card kh-food-card--status"><span class="kh-food-date">'+esc(dateText)+'</span><span class="kh-food-status-icon" aria-hidden="true">🏠</span><div><b>Hafta sonu</b><small>Bugün yemek servisi bulunmuyor.</small></div></div></section>';
  }
  if(!items.length)return '';
  const shown=items.slice(0,4),extra=items.length-shown.length;
  return '<section class="kh-section kh-food-section" data-home-section="food-menu">'
-  +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('food-menu','')}</span><span>Günün Yemek Menüsü</span></div>'
+  +'<div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">'+sectionArt('food-menu','')+'</span><span>Günün Yemek Menüsü</span></div>'
   +'<button type="button" class="kh-more" data-dash-route="food" data-dash-page="daily" data-dash-title="Günlük Menü">Tümü ›</button></div>'
   +'<button type="button" class="kh-food-card" data-dash-route="food" data-dash-page="daily" data-dash-title="Günlük Menü">'
   +'<span class="kh-food-date">'+esc(dateText)+'</span>'
