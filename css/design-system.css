@@ -11597,3 +11597,83 @@ html[data-theme="dark"] #serviceForm input::-moz-selection{
   color:#111!important;
 }
 
+/* ===== SINIFLAR LIGHT THEME CONTRAST V1 =====
+   Açık temada sarı yalnızca vurgu olarak kullanılır; büyük yüzeylerde
+   daha sakin nötr yüzeyler tercih edilir. İşlev ve yetki değişmez. */
+html[data-theme="light"] .ka-class-directory .ka-class-add{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border:1px solid #ddb735!important;
+  box-shadow:0 4px 12px rgba(120,90,0,.10)!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-imports button{
+  background:#fff!important;
+  color:#4b3a00!important;
+  border:1px solid #d9c06a!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-summary-grid .ka-school-summary-card{
+  background:#fff!important;
+  border:1px solid #d9d9d9!important;
+  box-shadow:0 2px 10px rgba(0,0,0,.045)!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-summary-grid .ka-school-summary-card .ka-school-summary-icon{
+  background:#fff7d9!important;
+  border:1px solid #dfc55e!important;
+  color:#6a5200!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-summary-grid .ka-school-summary-card>b{
+  color:#202020!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-summary-grid .ka-school-summary-card.is-girl>b{
+  color:#e2b900!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-summary-grid .ka-school-summary-card.is-boy>b{
+  color:#3d88d1!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-levels button.active{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border:1px solid #ddb735!important;
+  box-shadow:none!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-levels button:not(.active){
+  background:#fff!important;
+  border-color:#d8d8d8!important;
+  color:#666!important;
+}
+html[data-theme="light"] .ka-class-detail .ka-class-detail-topbar{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border-color:#ddb735!important;
+}
+html[data-theme="light"] .ka-class-detail .ka-class-hero{
+  background:linear-gradient(135deg,#f3cf63,#d9b52e)!important;
+  color:#211b08!important;
+  border-color:#d5b12e!important;
+  box-shadow:none!important;
+}
+html[data-theme="light"] .ka-class-detail .ka-class-hero-avatar{
+  background:rgba(255,255,255,.30)!important;
+  border-color:rgba(92,70,0,.18)!important;
+  color:#3d3100!important;
+}
+html[data-theme="light"] .ka-class-detail .ka-class-detail-summary>div{
+  background:#fff!important;
+  border-color:#d9d9d9!important;
+  box-shadow:none!important;
+}
+html[data-theme="light"] .ka-class-detail .ka-class-detail-tabs button.active{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border-color:#ddb735!important;
+  box-shadow:none!important;
+}
+html[data-theme="light"] .ka-class-detail .ka-class-info-panel{
+  border-color:#d9d9d9!important;
+}
+html[data-theme="light"] .ka-class-detail .ka-class-info-row>span{
+  background:#f5f5f5!important;
+  border-color:#d9d9d9!important;
+  color:#444!important;
+}
+
