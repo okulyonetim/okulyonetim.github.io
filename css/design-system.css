@@ -11505,11 +11505,39 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
 }
 
 
-/* ===== DASHBOARD SCHOOL SUMMARY ICON CENTER V4 ===== */
-.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card{position:relative!important;display:block!important;text-align:center!important}
-.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card .ka-school-summary-icon{position:absolute!important;left:50%!important;right:auto!important;top:38px!important;margin:0!important;width:56px!important;height:56px!important;transform:translateX(-50%)!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important}
-.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card .ka-summary-emoji{position:static!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;margin:0!important;transform:none!important;text-align:center!important}
-.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>small{display:block!important;width:100%!important;margin-top:102px!important;text-align:center!important}
-.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>b{display:block!important;width:100%!important;text-align:center!important}
-.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>.ka-school-summary-meta{text-align:center!important;width:100%!important}
-@media(max-width:480px){.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card .ka-summary-emoji{font-size:29px!important}}
+/* ===== DASHBOARD SCHOOL SUMMARY ICON CENTER V5 ===== */
+.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card{
+  position:relative!important;display:block!important;text-align:center!important;
+}
+.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card .ka-school-summary-icon{
+  position:absolute!important;left:50%!important;right:auto!important;top:34px!important;
+  margin:0!important;width:44px!important;height:44px!important;
+  transform:translateX(-50%)!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;text-align:center!important;
+}
+.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card .ka-summary-emoji{
+  position:static!important;display:flex!important;align-items:center!important;
+  justify-content:center!important;width:100%!important;height:100%!important;
+  margin:0!important;transform:none!important;text-align:center!important;
+  font-size:23px!important;line-height:1!important;
+}
+.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>small{
+  display:block!important;width:100%!important;margin-top:91px!important;
+  text-align:center!important;font-size:17px!important;line-height:1.15!important;
+  font-weight:700!important;
+}
+.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>b{
+  display:block!important;width:100%!important;text-align:center!important;
+  font-size:40px!important;line-height:1.05!important;
+}
+.ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>.ka-school-summary-meta{
+  text-align:center!important;width:100%!important;
+}
+@media(max-width:480px){
+  .ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card .ka-summary-emoji{
+    font-size:23px!important;
+  }
+  .ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>small{
+    font-size:17px!important;
+  }
+}
