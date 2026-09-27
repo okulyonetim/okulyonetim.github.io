@@ -1,0 +1,67 @@
+/* Koruk Asistan — dashboard başlık/illüstrasyon katmanı
+   Design-system tokenlarını kullanır; yalnız ana sayfa görsel hiyerarşisini düzeltir. */
+.ka-home .kh-section-head,
+.ka-home .ka-home-section__head{
+  min-height:52px!important;
+  align-items:center!important;
+}
+.ka-home .kh-section-title,
+.ka-home .ka-home-section__head>div:first-child{
+  min-height:52px!important;
+  gap:12px!important;
+}
+.ka-home .kh-section-title>span:last-child,
+.ka-home .kh-section-title>h3,
+.ka-home .ka-home-section__head h3{
+  font-size:21px!important;
+  line-height:1.18!important;
+  font-weight:750!important;
+  letter-spacing:-.25px!important;
+}
+.ka-home .kh-section-art{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  flex:0 0 48px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:14px!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  background:var(--ka-icon-surface)!important;
+  border:1px solid var(--ka-icon-border)!important;
+}
+.ka-home .kh-section-art svg{
+  width:40px!important;
+  height:40px!important;
+  display:block!important;
+  overflow:visible!important;
+  fill:initial!important;
+  stroke:initial!important;
+  color:initial!important;
+}
+.ka-home .kh-section-art svg *{
+  vector-effect:non-scaling-stroke;
+}
+/* sectionArt'ın çok renkli SVG'sini eski fill:none katmanından kurtar. */
+.ka-home .ka-home-section__icon svg{
+  fill:initial!important;
+  stroke:initial!important;
+  color:initial!important;
+}
+.ka-home .ka-home-section__icon svg *{
+  vector-effect:non-scaling-stroke;
+}
+html[data-theme="dark"] .ka-home .kh-section-art,
+html[data-theme="dark"] .ka-home .ka-home-section__icon{
+  background:#343127!important;
+  border-color:#d8bd45!important;
+}
+@media(max-width:480px){
+  .ka-home .kh-section-title>span:last-child,
+  .ka-home .kh-section-title>h3,
+  .ka-home .ka-home-section__head h3{
+    font-size:20px!important;
+  }
+}
