@@ -11116,3 +11116,7 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 .ka-gradebook-back:hover{border-color:var(--ka-primary)}
 .ka-gradebook-back:active{transform:translateY(1px)}
 @media(max-width:760px){.ka-gradebook-page-head{margin:0 0 6px}.ka-gradebook-back{min-height:36px;padding:0 12px;border-radius:11px;font-size:13px}}
+
+/* Ödev/Not çizelgesi — koyu temada uyarı şeridi okunabilirliği */
+[data-theme="dark"] .ka-gradebook-dirty{background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border-bottom:1px solid var(--ka-primary)!important}
+[data-theme="dark"] .ka-gradebook-dirty *{color:var(--ka-button-text)!important}
