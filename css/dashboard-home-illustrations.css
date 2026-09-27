@@ -69,3 +69,10 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
 .ka-home .kh-section-art .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important;filter:none!important;transform:none!important}
 .ka-home .ka-home-section__icon .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important}
 @media(max-width:480px){.ka-home .kh-section-art .kh-section-emoji,.ka-home .ka-home-section__icon .kh-section-emoji{font-size:23px!important}}
+
+
+/* ===== OKUL ÖZETİ EMOJI İKONLARI ===== */
+.ka-home .ka-school-summary-card .ka-school-summary-icon{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin-left:auto!important;margin-right:auto!important}
+.ka-home .ka-school-summary-card .ka-summary-emoji{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:31px!important;line-height:1!important;font-weight:400!important;filter:none!important;transform:none!important}
+.ka-home .ka-school-summary-card .ka-summary-art{display:none!important}
+@media(max-width:480px){.ka-home .ka-school-summary-card .ka-summary-emoji{font-size:29px!important}}
