@@ -128,12 +128,21 @@ function installNativePullRefreshScrollGuard(){
     return /(auto|scroll|overlay)/.test(cs.overflowY||'') && el.scrollHeight>el.clientHeight+1;
   };
   const report=target=>{
-    let blocked=Number(document.scrollingElement?.scrollTop||0)>1;
     let el=target||activeTarget||document.activeElement;
+    let nestedScrollable=false;
+    let blocked=false;
     while(el&&el!==document.body&&el!==document.documentElement){
-      if(isScrollable(el)&&Number(el.scrollTop||0)>1){blocked=true;break;}
+      if(isScrollable(el)){
+        nestedScrollable=true;
+        blocked=Number(el.scrollTop||0)>1;
+        break;
+      }
       el=el.parentElement;
     }
+    // A fixed editor/modal may have its own scroll container while the
+    // underlying document remains scrolled. In that case the inner container
+    // is the only authoritative scroll state for pull-to-refresh.
+    if(!nestedScrollable)blocked=Number(document.scrollingElement?.scrollTop||0)>1;
     try{native.setChildCanScrollUp(!!blocked)}catch(_){ }
   };
   const interactiveSelector='button,a,input,textarea,select,summary,[role="button"],[role="link"],[contenteditable="true"],[data-sbe-merge],[data-sbe-unmerge],[data-sbe-delete],[data-sbe-table-add-row],[data-sbe-table-del-row],[data-sbe-table-add-col],[data-sbe-table-del-col]';
