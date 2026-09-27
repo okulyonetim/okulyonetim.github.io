@@ -11358,19 +11358,80 @@ html[data-theme="dark"] .ka-home .kh-section-title>svg{
   border-color:currentColor!important;
 }
 
-
-/* ANA SAYFA DİĞER İKONLAR — ÖZET KARTLARINDAKİ RESİMLİ İKON DİLİ */
+/* ===== ANA SAYFA REFERANS İKONLARI — ÇOK RENKLİ KUTU TASARIMI =====
+   Referans görseldeki gibi: ikon kutusu bölümün kendine ait rengine sahip,
+   ikonun çizgisi açık/beyaz; vurgu sarısına bağlanmaz. */
 .ka-home .ka-home-section__icon{
   width:48px!important;height:48px!important;min-width:48px!important;
-  border-radius:14px!important;background:#fff8d9!important;
-  border:2px solid #eadb82!important;display:grid!important;
-  place-items:center!important;box-shadow:none!important;color:initial!important;
+  border-radius:14px!important;border:0!important;
+  display:grid!important;place-items:center!important;
+  color:#fff!important;font-size:22px!important;line-height:1!important;
+  box-shadow:none!important;background:#2d2d2d!important;
+}
+.ka-home .ka-home-section__icon svg{
+  width:25px!important;height:25px!important;
+  color:#fff!important;stroke:#fff!important;fill:none!important;
+}
+.ka-home [data-home-section="food-menu"] .ka-home-section__icon{background:#fd3848!important}
+.ka-home [data-home-section="stats"] .ka-home-section__icon{background:#fda402!important}
+.ka-home [data-home-section="news"] .ka-home-section__icon{background:#20d020!important}
+.ka-home [data-home-section="lesson-focus"] .ka-home-section__icon,
+.ka-home [data-home-section="lessons"] .ka-home-section__icon{background:#7f18fe!important}
+.ka-home [data-home-section="announcements"] .ka-home-section__icon{background:#2388ff!important}
+.ka-home [data-home-section="upcoming"] .ka-home-section__icon{background:#ff9f19!important}
+.ka-home [data-home-section="duty"] .ka-home-section__icon,
+.ka-home [data-home-section="today-duty"] .ka-home-section__icon{background:#00bfa6!important}
+.ka-home [data-home-section="calendar"] .ka-home-section__icon{background:#ffb400!important}
+.ka-home [data-home-section="notes"] .ka-home-section__icon{background:#8b5cf6!important}
+.ka-home [data-home-section="quick"] .ka-home-section__icon{background:#ff8a00!important}
+.ka-home [data-home-section="social"] .ka-home-section__icon{background:#149fe8!important}
+.ka-home [data-home-section="exams"] .ka-home-section__icon{background:#ef476f!important}
+.ka-home [data-home-section="polls"] .ka-home-section__icon{background:#6366f1!important}
+.ka-home [data-home-section="trial-counter"] .ka-home-section__icon{background:#ec4899!important}
+.ka-home [data-home-section="week-duty"] .ka-home-section__icon{background:#f5b000!important}
+.ka-home [data-home-section="absences"] .ka-home-section__icon{background:#00a8a8!important}
+
+
+/* Okul Özeti — gerçek resimli çok renkli ikonlar */
+.ka-school-summary-card .ka-school-summary-icon{
+  right:50%!important;top:10px!important;transform:translateX(50%)!important;
+  width:52px!important;height:52px!important;border-radius:15px!important;
+  display:grid!important;place-items:center!important;
+  background:#fff8d9!important;border:1px solid #ead77b!important;
+  font-size:0!important;color:initial!important;
+}
+.ka-school-summary-card .ka-school-summary-icon svg{
+  width:40px!important;height:40px!important;
+  display:block!important;overflow:visible!important;
+  color:initial!important;stroke:none!important;fill:none!important;
+}
+.ka-school-summary-card .ka-school-summary-icon svg *{
+  vector-effect:non-scaling-stroke;
+}
+html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-icon{
+  background:#343127!important;border-color:#d8bd45!important;
+}
+
+/* ===== ANA SAYFA DİĞER İKONLAR — ÖZET İKONLARIYLA AYNI RESİMLİ DİL ===== */
+.ka-home .ka-home-section__icon{
+  width:52px!important;height:52px!important;min-width:52px!important;
+  border-radius:15px!important;
+  display:grid!important;place-items:center!important;
+  background:#fff8d9!important;
+  border:1px solid #ead77b!important;
+  box-shadow:none!important;
+  color:initial!important;
   font-size:0!important;
 }
 .ka-home .ka-home-section__icon svg{
-  width:34px!important;height:34px!important;display:block!important;
-  overflow:visible!important;color:initial!important;stroke:initial!important;
+  width:40px!important;height:40px!important;
+  display:block!important;overflow:visible!important;
+  color:initial!important;stroke:none!important;fill:none!important;
+}
+.ka-home .ka-home-section__icon svg *{
+  vector-effect:non-scaling-stroke;
 }
 html[data-theme="dark"] .ka-home .ka-home-section__icon{
-  background:#302d20!important;border-color:#d9bd4c!important;
+  background:#343127!important;
+  border-color:#d8bd45!important;
 }
