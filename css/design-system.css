@@ -11235,3 +11235,58 @@ html[data-theme="dark"] [data-academic-module] .ka-schedule-mobile-days button.a
   border:1px solid var(--ka-primary)!important;
   box-shadow:none!important;
 }
+
+/* ===== ANA SAYFA — RENKLİ VE BELİRGİN BÖLÜM İKONLARI =====
+   Hafif tema: ikonlar daha görünür; koyu tema: renkli ikon yüzeyleri
+   korunur, ana kart dolgusu değişmez. */
+.ka-home .kh-section-title>span:first-child,
+.ka-home .kh-food-title-icon,
+.ka-home .kh-quick-heading-icon{
+  width:34px!important;
+  height:34px!important;
+  min-width:34px;
+  border-radius:11px!important;
+  display:inline-grid!important;
+  place-items:center;
+  font-size:19px!important;
+  line-height:1;
+  border:1px solid currentColor;
+  box-shadow:0 2px 8px color-mix(in srgb,currentColor 18%,transparent);
+  background:color-mix(in srgb,currentColor 13%,var(--ka-card-bg))!important;
+}
+.ka-home [data-home-section="food-menu"] .kh-food-title-icon{color:#ef4444}
+.ka-home [data-home-section="announcements"] .kh-section-title>span:first-child{color:#3b82f6}
+.ka-home [data-home-section="news"] .kh-section-title>span:first-child{color:#22c55e}
+.ka-home [data-home-section="upcoming"] .kh-section-title>span:first-child{color:#8b5cf6}
+.ka-home [data-home-section="lessons"] .kh-section-title>span:first-child,
+.ka-home [data-home-section="lesson-focus"] .kh-section-title>span:first-child{color:#06b6d4}
+.ka-home [data-home-section="duty"] .kh-section-title>span:first-child,
+.ka-home [data-home-section="today-duty"] .kh-section-title>span:first-child{color:#f59e0b}
+.ka-home [data-home-section="calendar"] .kh-section-title>span:first-child,
+.ka-home [data-home-section="week-duty"] .kh-section-title>span:first-child,
+.ka-home [data-home-section="absences"] .kh-section-title>span:first-child{color:#eab308}
+.ka-home [data-home-section="notes"] .kh-section-title>span:first-child{color:#a855f7}
+.ka-home [data-home-section="quick"] .kh-quick-heading-icon{color:#f97316}
+.ka-home [data-home-section="social"] .kh-section-title>span:first-child{color:#14b8a6}
+.ka-home [data-home-section="trial-counter"] .kh-section-title>span:first-child{color:#ec4899}
+.ka-home [data-home-section="exams"] .kh-section-title>span:first-child{color:#f43f5e}
+.ka-home [data-home-section="polls"] .kh-section-title>span:first-child{color:#6366f1}
+.ka-home [data-home-section="stats"] .ka-home-section__icon{color:#f59e0b}
+
+.ka-home .ka-home-section__icon{
+  width:36px;height:36px;min-width:36px;
+  border-radius:11px;
+  font-size:18px;
+  border-width:1px;
+  box-shadow:0 2px 9px color-mix(in srgb,currentColor 16%,transparent);
+}
+html[data-theme="dark"] .ka-home .kh-section-title>span:first-child,
+html[data-theme="dark"] .ka-home .kh-food-title-icon,
+html[data-theme="dark"] .ka-home .kh-quick-heading-icon{
+  box-shadow:0 0 14px color-mix(in srgb,currentColor 22%,transparent);
+  background:color-mix(in srgb,currentColor 16%,var(--ka-card-bg))!important;
+}
+html[data-theme="dark"] .ka-home .ka-home-section__icon{
+  background:color-mix(in srgb,currentColor 16%,var(--ka-card-bg));
+  box-shadow:0 0 14px color-mix(in srgb,currentColor 20%,transparent);
+}
