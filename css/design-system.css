@@ -11390,3 +11390,24 @@ html[data-theme="dark"] .ka-home .kh-section-title>svg{
 .ka-home [data-home-section="trial-counter"] .ka-home-section__icon{background:#ec4899!important}
 .ka-home [data-home-section="week-duty"] .ka-home-section__icon{background:#f5b000!important}
 .ka-home [data-home-section="absences"] .ka-home-section__icon{background:#00a8a8!important}
+
+
+/* Okul Özeti — gerçek resimli çok renkli ikonlar */
+.ka-school-summary-card .ka-school-summary-icon{
+  right:50%!important;top:10px!important;transform:translateX(50%)!important;
+  width:52px!important;height:52px!important;border-radius:15px!important;
+  display:grid!important;place-items:center!important;
+  background:#fff8d9!important;border:1px solid #ead77b!important;
+  font-size:0!important;color:initial!important;
+}
+.ka-school-summary-card .ka-school-summary-icon svg{
+  width:40px!important;height:40px!important;
+  display:block!important;overflow:visible!important;
+  color:initial!important;stroke:none!important;fill:none!important;
+}
+.ka-school-summary-card .ka-school-summary-icon svg *{
+  vector-effect:non-scaling-stroke;
+}
+html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-icon{
+  background:#343127!important;border-color:#d8bd45!important;
+}
