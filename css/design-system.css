@@ -11320,3 +11320,40 @@ html[data-theme="dark"] .ka-home .kh-section-title>svg{
   background:color-mix(in srgb,currentColor 16%,var(--ka-card-bg));
   box-shadow:0 0 14px color-mix(in srgb,currentColor 22%,transparent);
 }
+
+/* ===== ANA SAYFA İKONLARI — REFERANS TASARIM =====
+   Referanstaki görünüm: açık/koyu yüzey üzerinde yumuşak renkli
+   yuvarlatılmış ikon kutusu + aynı renkte belirgin SVG. */
+.ka-home .kh-section-title{
+  gap:12px!important;
+}
+.ka-home .kh-section-title>svg{
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  padding:9px!important;
+  border-radius:13px!important;
+  border:1px solid currentColor!important;
+  background:color-mix(in srgb,currentColor 13%,var(--ka-card-bg))!important;
+  color:currentColor!important;
+  stroke:currentColor!important;
+  box-shadow:none!important;
+}
+.ka-home [data-home-section="food-menu"] .kh-section-title>svg{color:#d9465f!important}
+.ka-home [data-home-section="announcements"] .kh-section-title>svg{color:#2563eb!important}
+.ka-home [data-home-section="news"] .kh-section-title>svg{color:#16a34a!important}
+.ka-home [data-home-section="upcoming"] .kh-section-title>svg{color:#7c3aed!important}
+.ka-home [data-home-section="lessons"] .kh-section-title>svg,
+.ka-home [data-home-section="lesson-focus"] .kh-section-title>svg{color:#0891b2!important}
+.ka-home [data-home-section="duty"] .kh-section-title>svg,
+.ka-home [data-home-section="today-duty"] .kh-section-title>svg{color:#d97706!important}
+.ka-home [data-home-section="calendar"] .kh-section-title>svg,
+.ka-home [data-home-section="week-duty"] .kh-section-title>svg,
+.ka-home [data-home-section="absences"] .kh-section-title>svg{color:#ca8a04!important}
+.ka-home [data-home-section="notes"] .kh-section-title>svg{color:#9333ea!important}
+.ka-home [data-home-section="exams"] .kh-section-title>svg{color:#e11d48!important}
+.ka-home [data-home-section="polls"] .kh-section-title>svg{color:#4f46e5!important}
+html[data-theme="dark"] .ka-home .kh-section-title>svg{
+  background:color-mix(in srgb,currentColor 15%,var(--ka-card-bg))!important;
+  border-color:currentColor!important;
+}
