@@ -65,3 +65,7 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
     font-size:17px!important;
   }
 }
+/* Ana sayfa bölüm ikonları: Menü Kartı düzenleyicisindeki renkli emoji stili */
+.ka-home .kh-section-art .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important;filter:none!important;transform:none!important}
+.ka-home .ka-home-section__icon .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important}
+@media(max-width:480px){.ka-home .kh-section-art .kh-section-emoji,.ka-home .ka-home-section__icon .kh-section-emoji{font-size:23px!important}}
