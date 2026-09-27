@@ -11135,7 +11135,15 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 
 /* Çizelge yatay kaydırma: öğrenci sütunu sabit kalsın */
 .ka-gradebook-table-shell{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
-.ka-gradebook-table{width:max-content;min-width:100%;table-layout:fixed}
-.ka-gradebook-table .ka-gradebook-student-head,.ka-gradebook-table .ka-gradebook-student{position:sticky;left:0;z-index:4;background:var(--ka-card-bg);box-shadow:1px 0 0 var(--ka-primary)}
-.ka-gradebook-table .ka-gradebook-student-head{z-index:6}
-@media(max-width:760px){.ka-gradebook-table .ka-gradebook-student-head,.ka-gradebook-table .ka-gradebook-student{min-width:190px}}
+.ka-gradebook-table{width:max-content;min-width:100%;table-layout:auto}
+.ka-gradebook-table .ka-gradebook-student-head,.ka-gradebook-table .ka-gradebook-student{position:sticky!important;left:0!important;z-index:4!important;background:var(--ka-card-bg)!important;box-shadow:1px 0 0 var(--ka-primary)!important;vertical-align:middle!important}
+.ka-gradebook-table .ka-gradebook-student-head{z-index:6!important}
+.ka-gradebook-table .ka-gradebook-student{display:table-cell!important;width:190px!important;min-width:190px!important;max-width:190px!important;overflow:hidden!important;white-space:normal!important}
+.ka-gradebook-table .ka-gradebook-student>div{display:block!important;min-width:0!important;max-width:calc(100% - 40px)!important;overflow:hidden!important;vertical-align:middle!important}
+.ka-gradebook-table .ka-gradebook-student strong{display:block!important;min-width:0!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.ka-gradebook-table .ka-gradebook-student__tools{display:flex!important;align-items:center!important;gap:3px!important;margin-top:4px!important;max-width:100%!important;overflow:hidden!important;flex-wrap:nowrap!important}
+.ka-gradebook-table .ka-gradebook-student__tools .ka-gradebook-mini-action,.ka-gradebook-table .ka-gradebook-student__tools .ka-icon-button{flex:0 0 21px!important;width:21px!important;min-width:21px!important;height:21px!important;padding:0!important}
+@media(max-width:760px){
+  .ka-gradebook-table .ka-gradebook-student-head,.ka-gradebook-table .ka-gradebook-student{min-width:190px!important;width:190px!important;max-width:190px!important}
+  .ka-gradebook-table{min-width:680px}
+}
