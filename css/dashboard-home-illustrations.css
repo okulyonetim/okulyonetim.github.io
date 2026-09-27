@@ -142,3 +142,32 @@ html[data-theme="dark"] .kh-backtop{
   font-weight:950!important;
 }
 
+/* ===== DASHBOARD CONTRAST V2 — AÇIK TEMA =====
+   Seçili gün ve yukarı dön kontrolünde sarı dolgunun göz yormaması.
+   Kontrast korunur; parlak neon görünüm ve ağır dış parıltı kaldırılır. */
+html[data-theme="light"] .ka-home .kh-day.today{
+  background:#f4cf62!important;
+  color:#5b4600!important;
+  border:1px solid #ddb735!important;
+  box-shadow:none!important;
+}
+html[data-theme="light"] .ka-home .kh-day.today b{
+  color:#4b3a00!important;
+}
+html[data-theme="light"] .ka-home .kh-day.today.has:after{
+  background:#4b3a00!important;
+}
+html[data-theme="light"] .kh-backtop{
+  background:#e9c34d!important;
+  color:#111!important;
+  border:1px solid #d4aa28!important;
+  box-shadow:0 4px 12px rgba(120,90,0,.18)!important;
+  font-weight:850!important;
+}
+html[data-theme="light"] .kh-backtop:hover,
+html[data-theme="light"] .kh-backtop:focus-visible{
+  background:#f0ca55!important;
+  border-color:#c99e1d!important;
+  box-shadow:0 5px 14px rgba(120,90,0,.22)!important;
+}
+
