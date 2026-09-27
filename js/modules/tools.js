@@ -221,10 +221,47 @@ function attLegendHtml(){const items=[['is-present','Devam (ders saati)'],['is-c
 function attYearOptions(y){const now=new Date().getFullYear(),years=[now-1,now,now+1,y].filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);return years.map(v=>`<option value="${v}" ${v===y?'selected':''}>${v}</option>`).join('')}
 function attToolbarHtml(doc,y,m){return `<div class="ka-attendance-toolbar"><label class="ka-field"><span class="ka-field__label">Yıl</span><select data-att-year>${attYearOptions(y)}</select></label><label class="ka-field"><span class="ka-field__label">Ay</span><select data-att-month>${ATT_MONTHS.map((name,i)=>`<option value="${i+1}" ${i+1===m?'selected':''}>${name}</option>`).join('')}</select></label><button class="ka-btn ka-btn--secondary" type="button" data-att-import>Excel'den İçe Aktar</button><input type="file" accept=".xlsx,.xlsm,.xls" data-att-file hidden><button class="ka-btn ka-attendance-print" type="button" data-att-print ${doc?'':'disabled'}>Yazdır</button><button class="ka-btn ka-attendance-auto" type="button" data-att-auto ${doc?'':'disabled'}>Otomatik Doldur/Tazele</button></div>`}
 function renderAttendance(){const y=attendanceDate.getFullYear(),m=attendanceDate.getMonth()+1,doc=monthDoc(),teachers=attSortedTeachers(doc),content=document.getElementById('toolsContent'),count=document.getElementById('toolsCount');if(count)count.textContent=`${teachers.length} personel`;if(!content)return;const oldGrid=content.querySelector('.ka-attendance-grid-wrap');if(oldGrid)attendanceScrollLeft=oldGrid.scrollLeft;content.innerHTML=`<section class="ka-stack ka-attendance-page" data-attendance-page>${attToolbarHtml(doc,y,m)}${doc&&teachers.length?attTableHtml(doc,y,m,true)+attLegendHtml():`<div class="ka-card ka-attendance-empty"><div class="ka-card__body ka-stack"><strong>${ATT_MONTHS[m-1]} ${y} için henüz çizelge oluşturulmamış.</strong><span class="ka-muted">Öğretmen listesinden otomatik oluşturabilir veya Excel dosyasından içe aktarabilirsiniz.</span>${attCanEdit()?'<button class="ka-btn" type="button" data-att-create>Öğretmen Listesinden Oluştur</button>':''}</div></div>`}</section>`;bindAttendance();const nextGrid=content.querySelector('.ka-attendance-grid-wrap');if(nextGrid){const restore=()=>{if(!nextGrid.isConnected)return;nextGrid.scrollLeft=Math.min(attendanceScrollLeft,Math.max(0,nextGrid.scrollWidth-nextGrid.clientWidth))};restore();global.requestAnimationFrame?.(restore)}}
-function attWeeklyHours(teacherId){const out={pzt:0,sal:0,car:0,per:0,cum:0};let rows=arr('dersProgrami').filter(d=>String(d.ogretmenId||'')===String(teacherId||''));const unique=global.KorukScheduleDataIntegrity?.dedupeRows?.(rows);if(Array.isArray(unique?.rows))rows=unique.rows;rows.forEach(d=>{const key=ATT_DAY_KEYS[String(d.gun||'').trim()];if(key)out[key]++});return out}
+function attScheduleDayKey(value){
+  const raw=String(value??'').trim().toLocaleLowerCase('tr-TR');
+  if(!raw)return'';
+  const key=raw.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/ı/g,'i').replace(/ç/g,'c').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/\\s+/g,'');
+  if(/^1$|^pzt$|^pazartesi$/.test(key))return'pzt';
+  if(/^2$|^sal$|^sali$/.test(key))return'sal';
+  if(/^3$|^car$|^carsamba$/.test(key))return'car';
+  if(/^4$|^per$|^persembe$/.test(key))return'per';
+  if(/^5$|^cum$|^cuma$/.test(key))return'cum';
+  return ATT_DAY_KEYS[String(value||'').trim()]||'';
+}
+function attWeeklyHours(teacherId){
+  const out={pzt:0,sal:0,car:0,per:0,cum:0},tid=String(teacherId||'').trim();
+  if(!tid)return out;
+  let rows=arr('dersProgrami').filter(d=>String(d?.ogretmenId||d?.teacherId||'').trim()===tid&&String(d?.ders||'').trim());
+  const unique=global.KorukScheduleDataIntegrity?.dedupeRows?.(rows);
+  if(Array.isArray(unique?.rows))rows=unique.rows;
+  const seen=new Set();
+  rows.forEach(d=>{
+    const key=attScheduleDayKey(d?.gun??d?.gunAdi??d?.day??d?.dayName);
+    if(!key)return;
+    const period=Number(d?.saat);
+    const slot=Number.isFinite(period)?String(period):String(d?.id||'');
+    const classKey=String(d?.sinif||d?.sinifAdi||'').trim();
+    const uniqueKey=classKey+'|'+key+'|'+slot;
+    if(seen.has(uniqueKey))return;
+    seen.add(uniqueKey);
+    out[key]++;
+  });
+  return out;
+}
+async function attRefreshScheduleData(){
+  try{
+    if(global.SyncEngine?.pull)await global.SyncEngine.pull(['dersProgrami']);
+  }catch(e){
+    console.warn('[Devamsizlik/ders-programi]',e?.message||e);
+  }
+}
 function attTeacherRowsFromStore(){return arr('ogretmenler').map(o=>{const h=attWeeklyHours(o.id);return{ogretmenId:o.id,adSoyad:`${o.ad||''} ${o.soyad||''}`.trim(),gorev:o.unvan||'',...h}})}
-async function attCreateMonth(){if(!attCanEdit())return global.toast?.('Bu işlem için yetkiniz yok.');const rows=attTeacherRowsFromStore();if(!rows.length)return global.toast?.('Öğretmen listesi boş.');const y=attendanceDate.getFullYear(),m=attendanceDate.getMonth()+1,map=global.DevamsizlikCizelgesiService.excelSatirlarindanAyOlustur(rows,y,m,arr('ogretmenler'),attHolidayRows(),arr('ogretmenIzinleri'));try{await global.DevamsizlikCizelgesiService.ayOlustur(y,m,map);global.toast?.('Devamsızlık çizelgesi oluşturuldu.')}catch(e){global.toast?.(e?.message||'Çizelge oluşturulamadı.')}}
-async function attAutoRefresh(){const doc=monthDoc();if(!doc||!attCanEdit())return;if(!global.confirm?.('Elle değiştirilmemiş günler güncel izin, planlı tatil, resmî tatil ve ders programına göre yeniden hesaplanacak. Silinmiş personeller çizelgeden kaldırılacak. Devam edilsin mi?'))return;const y=attendanceDate.getFullYear(),m=attendanceDate.getMonth()+1,teacherIds=new Set(arr('ogretmenler').map(t=>String(t.id||''))),holidays=attHolidayRows();try{for(const [rowId,original] of Object.entries(doc.ogretmenler||{})){const o=structuredClone(original),oid=String(o.ogretmenId||rowId||'');if(!teacherIds.has(oid)){await global.DevamsizlikCizelgesiService.ogretmenSil(y,m,rowId);continue}o.haftalikSaatler=attWeeklyHours(oid);const fresh=global.DevamsizlikCizelgesiService.ogretmenAyiniOtomatikUret(o,y,m,holidays,arr('ogretmenIzinleri')),manual=o.elleGunler||{},merged={...(o.gunler||{})};for(const g of Object.keys(fresh))if(!manual[g])merged[g]=fresh[g];for(let g=1;g<=global.DevamsizlikCizelgesiService.gunSayisi(y,m);g++)if(!manual[g]&&!(g in fresh))delete merged[g];o.gunler=merged;await global.DevamsizlikCizelgesiService.ogretmenVerisiGuncelle(y,m,oid,o)}global.toast?.('Otomatik günler ders programı ve Tatil Modu ile tazelendi.')}catch(e){global.toast?.(e?.message||'Otomatik doldurma başarısız.')}}
+async function attCreateMonth(){if(!attCanEdit())return global.toast?.('Bu işlem için yetkiniz yok.');await attRefreshScheduleData();const rows=attTeacherRowsFromStore();if(!rows.length)return global.toast?.('Öğretmen listesi boş.');const y=attendanceDate.getFullYear(),m=attendanceDate.getMonth()+1,map=global.DevamsizlikCizelgesiService.excelSatirlarindanAyOlustur(rows,y,m,arr('ogretmenler'),attHolidayRows(),arr('ogretmenIzinleri'));try{await global.DevamsizlikCizelgesiService.ayOlustur(y,m,map);global.toast?.('Devamsızlık çizelgesi oluşturuldu.')}catch(e){global.toast?.(e?.message||'Çizelge oluşturulamadı.')}}
+async function attAutoRefresh(){const doc=monthDoc();if(!doc||!attCanEdit())return;if(!global.confirm?.('Elle değiştirilmemiş günler güncel izin, planlı tatil, resmî tatil ve ders programına göre yeniden hesaplanacak. Silinmiş personeller çizelgeden kaldırılacak. Devam edilsin mi?'))return;const y=attendanceDate.getFullYear(),m=attendanceDate.getMonth()+1,teacherIds=new Set(arr('ogretmenler').map(t=>String(t.id||''))),holidays=attHolidayRows();try{await attRefreshScheduleData();for(const [rowId,original] of Object.entries(doc.ogretmenler||{})){const o=structuredClone(original),oid=String(o.ogretmenId||rowId||'');if(!teacherIds.has(oid)){await global.DevamsizlikCizelgesiService.ogretmenSil(y,m,rowId);continue}o.haftalikSaatler=attWeeklyHours(oid);const fresh=global.DevamsizlikCizelgesiService.ogretmenAyiniOtomatikUret(o,y,m,holidays,arr('ogretmenIzinleri')),manual=o.elleGunler||{},merged={...(o.gunler||{})};for(const g of Object.keys(fresh))if(!manual[g])merged[g]=fresh[g];for(let g=1;g<=global.DevamsizlikCizelgesiService.gunSayisi(y,m);g++)if(!manual[g]&&!(g in fresh))delete merged[g];o.gunler=merged;await global.DevamsizlikCizelgesiService.ogretmenVerisiGuncelle(y,m,oid,o)}global.toast?.('Otomatik günler güncel ders programı ve Tatil Modu ile tazelendi.')}catch(e){global.toast?.(e?.message||'Otomatik doldurma başarısız.')}}
 function closeAttModal(){document.querySelector('[data-att-modal]')?.remove()}
 function openAttModal(title,body){closeAttModal();const ov=document.createElement('div');ov.className='ka-modal-backdrop';ov.dataset.attModal='';ov.innerHTML=`<section class="ka-modal ka-attendance-modal"><header class="ka-modal__header"><h3>${esc(title)}</h3><button class="ka-icon-button" type="button" data-att-close>×</button></header><div class="ka-modal__body ka-stack">${body}</div></section>`;document.body.appendChild(ov);ov.querySelector('[data-att-close]').onclick=closeAttModal;ov.onclick=e=>{if(e.target===ov)closeAttModal()};return ov}
 async function attSaveTeacherRow(o){const y=attendanceDate.getFullYear(),m=attendanceDate.getMonth()+1;await global.DevamsizlikCizelgesiService.ogretmenVerisiGuncelle(y,m,o.ogretmenId,o)}
