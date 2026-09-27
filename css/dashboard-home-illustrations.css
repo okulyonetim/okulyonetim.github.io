@@ -107,3 +107,38 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
 @media(max-width:480px){
   .ka-school-summary-card .ka-summary-emoji{font-size:29px!important}
 }
+
+/* ===== DASHBOARD CONTRAST V1 =====
+   Koyu temada kullanıcı tarafından işaretlenen üç odak kontrolü:
+   hafta sonu ev ikonu, seçili takvim günü ve yukarı dön butonu.
+   Amaç: sarı yüzey + siyah sembol/metin ile net kontrast. */
+html[data-theme="dark"] .ka-home #khBell .kh-bell-rest-icon{
+  background:#ffc400!important;
+  border:2px solid #ffe071!important;
+  color:#111!important;
+  box-shadow:0 0 0 2px rgba(255,196,0,.16),0 6px 18px rgba(255,196,0,.14)!important;
+}
+html[data-theme="dark"] .ka-home #khBell .kh-bell-rest-icon svg{
+  color:#111!important;
+  stroke:#111!important;
+}
+html[data-theme="dark"] .ka-home .kh-day.today{
+  background:#ffc400!important;
+  color:#111!important;
+  border:2px solid #ffe071!important;
+  box-shadow:0 0 0 2px rgba(255,196,0,.16),0 5px 14px rgba(255,196,0,.12)!important;
+}
+html[data-theme="dark"] .ka-home .kh-day.today b{
+  color:#111!important;
+}
+html[data-theme="dark"] .ka-home .kh-day.today.has:after{
+  background:#111!important;
+}
+html[data-theme="dark"] .kh-backtop{
+  background:#ffc400!important;
+  color:#111!important;
+  border:2px solid #ffe071!important;
+  box-shadow:0 5px 18px rgba(255,196,0,.24),0 0 0 2px rgba(255,196,0,.12)!important;
+  font-weight:950!important;
+}
+
