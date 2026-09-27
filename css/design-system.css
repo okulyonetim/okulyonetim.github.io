@@ -11435,3 +11435,71 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
   background:#343127!important;
   border-color:#d8bd45!important;
 }
+
+
+/* ===== ANA SAYFA BAŞLIKLARI — TEK BİÇİM / TEK İKON ÖLÇÜSÜ =====
+   Tüm dashboard bölüm başlıkları aynı hiyerarşi ve ikon yüzeyini kullanır. */
+.ka-home .kh-section-head,
+.ka-home .ka-home-section__head{
+  min-height:52px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+.ka-home .kh-section-title,
+.ka-home .ka-home-section__head>div:first-child{
+  display:flex!important;
+  align-items:center!important;
+  gap:14px!important;
+  min-height:52px!important;
+}
+.ka-home .kh-section-title>span:last-child,
+.ka-home .kh-section-title>h3,
+.ka-home .ka-home-section__head h3{
+  margin:0!important;
+  font-size:25px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  letter-spacing:-.35px!important;
+  color:var(--ka-text)!important;
+}
+/* Food / live / classic section icons: all exactly the same box. */
+.ka-home .kh-food-title-icon,
+.ka-home .kh-section-title>svg,
+.ka-home .ka-home-section__icon{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  flex:0 0 48px!important;
+  border-radius:14px!important;
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+}
+.ka-home .kh-food-title-icon{
+  font-size:24px!important;
+  line-height:1!important;
+  padding:0!important;
+}
+.ka-home .kh-section-title>svg{
+  padding:10px!important;
+  box-sizing:border-box!important;
+}
+.ka-home .ka-home-section__icon{
+  padding:0!important;
+  font-size:22px!important;
+  line-height:1!important;
+}
+/* Do not let section-specific rules change icon dimensions. */
+.ka-home [data-home-section] .kh-section-title>svg,
+.ka-home [data-home-section] .kh-food-title-icon,
+.ka-home [data-home-section] .ka-home-section__icon{
+  width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;
+}
+/* The title row of Şu An Kim Nerede? must use the same typography. */
+.ka-home [data-home-section="lessons"] .kh-section-title,
+.ka-home [data-home-section="lesson-focus"] .kh-section-title{
+  min-height:52px!important;
+}
