@@ -151,7 +151,7 @@ function installNativePullRefreshScrollGuard(){
   };
   const onPointerDown=e=>{
     activeTarget=e.target;
-    const interactive=!!e.target?.closest?.(interactiveSelector);
+    const interactive=!!e.target?.closest?.(interactiveSelector) && !e.target?.closest?.('.ka-gradebook-page');
     setInteractive(interactive);
     report(activeTarget);
   };
