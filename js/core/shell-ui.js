@@ -178,7 +178,11 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
   const routeToken=++routeEpoch;
   if(!pageAllowed(name,page)){global.toast?.('Bu sayfa öğretmen kullanıcıları için gizli.');return false}
   const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
-  if(global.OdevNotUI?.page&&global.OdevNotUI.page!==requestedGradePage&&global.OdevNotUI.close?.()===false)return false;
+  /* Ödev/Not çizelgesi özel sayfa olduğu için başka bir rotaya geçerken
+     kendi aboneliklerini ve modal/çalışma alanını mutlaka kapat. Aksi halde
+     dashboard açıldıktan sonra sabit workspace tekrar görünür ve geri tuşu
+     navStack'te dashboard kaldığı için uygulamadan çıkış uyarısına düşer. */
+  if(global.GradebookPage?.page&&global.GradebookPage.page!==requestedGradePage&&global.GradebookPage.close?.()===false)return false;
   if(!(name==='tools'&&page==='student-list'))global.OgretmenListeUI?.close?.();
   if(!(name==='tools'&&page==='student-attendance'))global.StudentPages?.close?.();
   closeHeaderPopover();closeMenu();
