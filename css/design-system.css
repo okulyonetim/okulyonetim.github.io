@@ -11290,3 +11290,33 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
   background:color-mix(in srgb,currentColor 16%,var(--ka-card-bg));
   box-shadow:0 0 14px color-mix(in srgb,currentColor 20%,transparent);
 }
+
+/* SVG bölüm ikonları — dashboard başlıklarının gerçek ikon elemanları */
+.ka-home .kh-section-title>svg{
+  width:34px!important;height:34px!important;min-width:34px;
+  padding:7px;
+  box-sizing:border-box;
+  border-radius:11px;
+  border:1px solid currentColor;
+  background:color-mix(in srgb,currentColor 13%,var(--ka-card-bg));
+  box-shadow:0 2px 8px color-mix(in srgb,currentColor 18%,transparent);
+  flex:none;
+}
+.ka-home [data-home-section="food-menu"] .kh-section-title>svg{color:#ef4444}
+.ka-home [data-home-section="announcements"] .kh-section-title>svg{color:#3b82f6}
+.ka-home [data-home-section="news"] .kh-section-title>svg{color:#22c55e}
+.ka-home [data-home-section="upcoming"] .kh-section-title>svg{color:#8b5cf6}
+.ka-home [data-home-section="lessons"] .kh-section-title>svg,
+.ka-home [data-home-section="lesson-focus"] .kh-section-title>svg{color:#06b6d4}
+.ka-home [data-home-section="duty"] .kh-section-title>svg,
+.ka-home [data-home-section="today-duty"] .kh-section-title>svg{color:#f59e0b}
+.ka-home [data-home-section="calendar"] .kh-section-title>svg,
+.ka-home [data-home-section="week-duty"] .kh-section-title>svg,
+.ka-home [data-home-section="absences"] .kh-section-title>svg{color:#eab308}
+.ka-home [data-home-section="notes"] .kh-section-title>svg{color:#a855f7}
+.ka-home [data-home-section="exams"] .kh-section-title>svg{color:#f43f5e}
+.ka-home [data-home-section="polls"] .kh-section-title>svg{color:#6366f1}
+html[data-theme="dark"] .ka-home .kh-section-title>svg{
+  background:color-mix(in srgb,currentColor 16%,var(--ka-card-bg));
+  box-shadow:0 0 14px color-mix(in srgb,currentColor 22%,transparent);
+}
