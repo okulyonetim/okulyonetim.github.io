@@ -11167,3 +11167,12 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   .ka-gradebook-student__tools{gap:3px!important}
   .ka-gradebook-student__tools .ka-gradebook-mini-action,.ka-gradebook-student__tools .ka-icon-button{width:26px!important;min-width:26px!important;height:26px!important}
 }
+
+/* ===== ÇİZELGE KARTI — DERS ALANI YÜZEY EŞİTLEME =====
+   Maarif Modeli, Zümre, ŞÖK ve diğer çizelgelerde ders başlığı alanı
+   kartın kendisinden farklı tonda görünmesin. İç başlık yüzeyi kart yüzeyiyle aynıdır. */
+#v2ModuleRoot [data-classic-cizelge-page] .ka-cizelge-card__head,
+#v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-card__head{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+}
