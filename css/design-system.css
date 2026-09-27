@@ -11708,3 +11708,87 @@ html[data-theme="dark"] .ka-app-nav .ka-bottom-menu-icon svg{
   stroke:#ffc400!important;
 }
 
+/* ===== SINIFLAR / ÖZET EMOJI + KONTRAST V2 ===== */
+.ka-class-summary-grid>.ka-school-summary-card{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.ka-class-summary-grid .ka-school-summary-icon{
+  position:static!important;
+  width:44px!important;
+  height:44px!important;
+  margin:0 0 8px!important;
+  border-radius:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:26px!important;
+  line-height:1!important;
+  background:transparent!important;
+  border:0!important;
+  color:inherit!important;
+}
+.ka-class-summary-grid>.ka-school-summary-card>small{
+  width:100%!important;
+  text-align:center!important;
+  margin:0!important;
+}
+.ka-class-summary-grid>.ka-school-summary-card>b{
+  width:100%!important;
+  text-align:center!important;
+}
+
+/* Açık tema: sarı yüzeyler yumuşak vurgu olarak kalır. */
+html[data-theme="light"] .ka-class-directory .ka-class-add{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border:1px solid #ddb735!important;
+  box-shadow:0 4px 12px rgba(120,90,0,.10)!important;
+}
+html[data-theme="light"] .ka-class-directory .ka-class-levels button.active,
+html[data-theme="light"] .ka-class-directory .ka-class-detail-tabs button.active{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border-color:#ddb735!important;
+  box-shadow:none!important;
+}
+
+/* Koyu tema: büyük sarı dolguları kaldır, sarıyı kenar/vurgu olarak kullan. */
+html[data-theme="dark"] .ka-class-directory .ka-class-add{
+  background:#181818!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-class-directory .ka-class-add:hover,
+html[data-theme="dark"] .ka-class-directory .ka-class-add:focus-visible{
+  background:rgba(255,196,0,.10)!important;
+}
+html[data-theme="dark"] .ka-class-directory .ka-class-levels button.active,
+html[data-theme="dark"] .ka-class-detail .ka-class-detail-tabs button.active{
+  background:#181818!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-class-hero,
+html[data-theme="dark"] .ka-student-detail .ka-student-hero{
+  background:#181818!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-class-hero h1,
+html[data-theme="dark"] .ka-student-detail .ka-student-hero h1,
+html[data-theme="dark"] .ka-class-detail .ka-class-hero strong{
+  color:#f5f5f5!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-class-hero p,
+html[data-theme="dark"] .ka-student-detail .ka-student-hero p{
+  color:#b8b8b8!important;
+}
+
