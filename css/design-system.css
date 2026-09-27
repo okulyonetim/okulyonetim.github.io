@@ -11543,3 +11543,41 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
  .ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card .ka-summary-emoji{font-size:19px!important}
  .ka-home .ka-school-summary-section .ka-school-summary-grid .ka-school-summary-card>small{font-size:14px!important}
 }
+
+/* ===== DOCUMENTS ACTION CONTRAST V1 =====
+   Koyu temada doküman işlem düğmeleri artık parlak sarı dolgu kullanmaz.
+   Sarı yalnızca ince vurgu/çerçeve olarak kalır; ikonlar metin kontrastını kullanır. */
+html[data-theme="dark"] .ka-documents-page .ka-document-action{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid rgba(255,196,0,.58)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-documents-page .ka-document-action:hover,
+html[data-theme="dark"] .ka-documents-page .ka-document-action:focus-visible{
+  background:rgba(255,196,0,.10)!important;
+  color:#ffc400!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] .ka-documents-page .ka-document-action--danger{
+  color:var(--ka-text)!important;
+  border-color:rgba(255,196,0,.58)!important;
+}
+html[data-theme="dark"] .ka-documents-page .ka-document-action--danger:hover,
+html[data-theme="dark"] .ka-documents-page .ka-document-action--danger:focus-visible{
+  color:#ffc400!important;
+  background:rgba(255,196,0,.10)!important;
+}
+html[data-theme="dark"] .ka-documents-page .ka-documents-toolbar__main [data-document-add]{
+  background:var(--ka-card-raised-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid rgba(255,196,0,.58)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-documents-page .ka-documents-toolbar__main [data-document-add]:hover,
+html[data-theme="dark"] .ka-documents-page .ka-documents-toolbar__main [data-document-add]:focus-visible{
+  background:rgba(255,196,0,.10)!important;
+  color:#ffc400!important;
+  border-color:#ffc400!important;
+}
+
