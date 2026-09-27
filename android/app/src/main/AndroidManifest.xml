@@ -67,7 +67,7 @@
 
         <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="ch_genel" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
-        <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/colorPrimary" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notificationGreen" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
