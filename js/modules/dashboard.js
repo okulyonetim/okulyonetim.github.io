@@ -34,28 +34,26 @@ function teacherLabel(x){if(x.ogretmenAdSoyad||x.ogretmenAdi)return x.ogretmenAd
 function todayLessons({mine=false}={}){const tid=teacherId(),name=dayName();if(mine&&!tid)return[];return arr('dersProgrami').filter(x=>sameDay(x.gun,name)&&(!mine||x.ogretmenId===tid)).sort(sortHour)}
 function isDone(x){return x?.tamamlandi===true||['Tamamlandı','Tamamlandi','tamamlandi'].includes(x?.durum)}
 function sectionArt(id,icon){
- const a='viewBox="0 0 24 24" aria-hidden="true"';
- const S='fill="none" stroke-linecap="round" stroke-linejoin="round"';
  const m={
-  'food-menu':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><path d="M7 3v7M5 3v4a2 2 0 0 0 4 0V3M7 10v11"/><path d="M15 3v18M15 3c4 1 4 5 4 8h-4"/></svg>',
-  'announcements':'<svg '+a+' '+S+' stroke="#3f8fc9" stroke-width="1.8"><path d="m3 10 14-4v12L3 14v-4Z"/><path d="M17 9c3 1 4 3 4 4s-1 3-4 4"/><path d="M7 15l2 6h3l-2-7"/></svg>',
-  'news':'<svg '+a+' '+S+' stroke="#3f8fc9" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M6 7h6v5H6zM14 7h4M14 10h4M6 15h12M6 18h8"/></svg>',
-  'upcoming':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M7 2v4M17 2v4M3 9h18"/><path d="m7 14 3 3 7-7" stroke="#39a66b" stroke-width="2"/></svg>',
-  'lessons':'<svg '+a+' '+S+' stroke="#3f8fc9" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"/><path d="M8 7h8M8 11h6"/><circle cx="18" cy="16" r="2" fill="#e0a900" stroke="none"/></svg>',
-  'calendar':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M7 2v4M17 2v4M3 9h18"/><circle cx="8" cy="13" r="1" fill="#3f8fc9" stroke="none"/><circle cx="12" cy="13" r="1" fill="#3f8fc9" stroke="none"/><circle cx="16" cy="13" r="1" fill="#3f8fc9" stroke="none"/><circle cx="8" cy="17" r="1" fill="#3f8fc9" stroke="none"/></svg>',
-  'week-duty':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M7 2v4M17 2v4M3 9h18"/><path d="m7 14 2 2 4-5" stroke="#39a66b" stroke-width="2"/></svg>',
-  'notes':'<svg '+a+' '+S+' stroke="#3f8fc9" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h6M9 16h6M9 20h4"/><path d="M18 17v4" stroke="#e0a900" stroke-width="2"/></svg>',
-  'social':'<svg '+a+' '+S+' stroke="#2f9c9c" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/><circle cx="18" cy="6" r="2" fill="#e0a900" stroke="none"/></svg>',
-  'duty':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><path d="M12 3 19 6v6c0 5-3 7-7 9-4-2-7-4-7-9V6z"/><path d="m8 12 3 3 5-6" stroke="#3f8fc9" stroke-width="2"/></svg>',
-  'today-duty':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><path d="M12 3 19 6v6c0 5-3 7-7 9-4-2-7-4-7-9V6z"/><path d="m8 12 3 3 5-6" stroke="#3f8fc9" stroke-width="2"/></svg>',
-  'absences':'<svg '+a+' '+S+' stroke="#d95b63" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M6 20c.5-4 2.5-6 6-6s5.5 2 6 6"/><path d="M17 5v5M14.5 7.5h5" stroke="#e0a900" stroke-width="2"/></svg>',
-  'exams':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="m15 17 1.5 1.5L20 15" stroke="#39a66b" stroke-width="2"/></svg>',
-  'polls':'<svg '+a+' '+S+' stroke="#3f8fc9" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h10M7 12h7M7 16h10"/><circle cx="18" cy="16" r="1.5" fill="#e0a900" stroke="none"/></svg>',
-  'trial-counter':'<svg '+a+' '+S+' stroke="#3f8fc9" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke="#d95b63"/></svg>',
-  'quick':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.9"><path d="m13 2-8 11h6l-1 9 8-12h-6z"/></svg>',
-  'stats':'<svg '+a+' '+S+' stroke="#e0a900" stroke-width="1.8"><path d="m4 10 8-7 8 7v10H4z"/><path d="M9 20v-6h6v6"/><circle cx="12" cy="10" r="2" fill="#3f8fc9" stroke="none"/></svg>'
+  'food-menu':'🍴',
+  'announcements':'📢',
+  'news':'📰',
+  'upcoming':'📋',
+  'lessons':'📚',
+  'calendar':'📅',
+  'week-duty':'🗓️',
+  'notes':'📝',
+  'social':'🌐',
+  'duty':'🛡️',
+  'today-duty':'🛡️',
+  'absences':'👤',
+  'exams':'📝',
+  'polls':'📊',
+  'trial-counter':'⏱️',
+  'quick':'⚡',
+  'stats':'🏫'
  };
- return m[id]||icon;
+ return '<span class="kh-section-emoji" aria-hidden="true">'+(m[id]||icon||'📌')+'</span>';
 }
 function section(title,icon,id,body,extra=''){return `<section class="ka-home-section ${extra}" data-home-section="${id}"><div class="ka-home-section__head"><div><span class="ka-home-section__icon">${sectionArt(id,icon)}</span><h3>${esc(title)}</h3></div></div><div class="ka-home-section__body">${body}</div></section>`}
 function empty(text){return `<div class="ka-home-empty">${esc(text)}</div>`}
