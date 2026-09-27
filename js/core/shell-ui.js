@@ -55,7 +55,9 @@ function registerPageRoute(page,handler){page=String(page||'').trim();if(!page||
 function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();if(!global.KaDataPage?.open)throw new Error('KaDataPage hazır değil.');return global.KaDataPage.open()});
   const openGradebook=async page=>{
     if(!global.AppLoader?.loadScript)throw new Error('Modül yükleyici hazır değil.');
-    await global.AppLoader.loadScript('js/modules/gradebooks.js?v=1004');
+    await global.AppLoader.loadScript('js/modules/tools.js');
+    if(!global.OdevNotCizelgeleriService)throw new Error('Çizelge veri servisi yüklenemedi.');
+    await global.AppLoader.loadScript('js/modules/gradebooks.js?v=1008');
     if(!global.GradebookPage?.open)throw new Error('Çizelge modülü yüklenemedi.');
     return global.GradebookPage.open(page);
   };
