@@ -11677,3 +11677,34 @@ html[data-theme="light"] .ka-class-detail .ka-class-info-row>span{
   color:#444!important;
 }
 
+/* ===== SINIF DETAY DARK CONTRAST V1 =====
+   Koyu temada büyük sarı dolgular yerine antrasit yüzey + ince sarı vurgu.
+   Yetki ve buton işlevleri değişmez. */
+html[data-theme="dark"] .ka-class-detail .ka-class-quick-actions button:first-child{
+  background:#181818!important;
+  color:#f5f5f5!important;
+  border:1px solid #ffc400!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-class-quick-actions button:first-child:hover,
+html[data-theme="dark"] .ka-class-detail .ka-class-quick-actions button:first-child:focus-visible{
+  background:rgba(255,196,0,.10)!important;
+  color:#ffc400!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-class-detail-tabs button.active{
+  background:#181818!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-app-nav .ka-bottom-menu-icon{
+  background:#181818!important;
+  color:#ffc400!important;
+  border:2px solid #ffc400!important;
+  box-shadow:0 5px 16px rgba(255,196,0,.14),0 0 0 1px rgba(255,196,0,.08)!important;
+}
+html[data-theme="dark"] .ka-app-nav .ka-bottom-menu-icon svg{
+  color:#ffc400!important;
+  stroke:#ffc400!important;
+}
+
