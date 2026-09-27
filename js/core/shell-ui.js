@@ -206,7 +206,7 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
   const custom=page&&CUSTOM_PAGE_ROUTES.get(page);
   if(custom){
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||meta.label||name);
-    try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
+    try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(routeToken!==routeEpoch)return false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
   }
   setBottomActive(bottom);const reuseModule=moduleRouteMounted(name);global.AppLoader?.setActiveModule?.(name);
   setTitle(title||meta.label||name);if(name==='tools'&&page)await ensureToolsPageDependencies(page);if(!reuseModule)await global.AppLoader?.load?.(name);
@@ -215,7 +215,8 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
      documents/evrak çağrısı yeni ekrana tekrar Evrak Takibi basabiliyordu. */
   if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
   if(page)applySubpage(name,page,title);
-  if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});
+  if(name==='dashboard'||bottom==='home'){navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];syncShellBack();}
+  else if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});
   return true
 }
 function menuLayoutConfig(){const v=global.AppConfig?.get?.()?.menuLayout;return v&&typeof v==='object'?v:{groups:{}}}
