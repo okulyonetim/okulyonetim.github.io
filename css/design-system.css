@@ -11857,3 +11857,92 @@ html[data-theme="dark"] .ka-class-detail .ka-class-hero strong{color:#ffc400!imp
 html[data-theme="dark"] .ka-class-detail .ka-class-hero-avatar{background:#222!important;color:#ffc400!important;border:1px solid #ffc400!important}
 html[data-theme="dark"] .ka-class-detail .ka-class-detail-tabs button.active{background:#181818!important;color:#ffc400!important;border:1px solid #ffc400!important;box-shadow:none!important}
 
+/* ===== YILLIK PLAN RENK DENGESI V1 =====
+   Yıllık plan ekranında sarı büyük yüzey değil, kontrollü vurgu olarak kullanılır. */
+html[data-theme="light"] .ka-plan-week{
+  background:#fff!important;
+  border-color:#d9d9d9!important;
+}
+html[data-theme="light"] .ka-plan-week__head{
+  background:#fff!important;
+  border-bottom-color:#e2e2e2!important;
+}
+html[data-theme="light"] .ka-plan-week__date{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border-bottom:1px solid #ddb735!important;
+}
+html[data-theme="light"] .ka-plan-week__body{
+  background:#f8f8f8!important;
+}
+html[data-theme="light"] .ka-plan-content-card{
+  background:#fff!important;
+  border-color:#dedede!important;
+  color:#202020!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.04)!important;
+}
+html[data-theme="light"] .ka-plan-content-pill{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border:1px solid #ddb735!important;
+}
+html[data-theme="light"] .ka-plan-week__footer{
+  background:#fff!important;
+  border-top-color:#dedede!important;
+  box-shadow:0 -3px 10px rgba(0,0,0,.04)!important;
+}
+html[data-theme="light"] .ka-plan-week__footer .ka-btn{
+  background:#f4cf62!important;
+  color:#4b3a00!important;
+  border:1px solid #ddb735!important;
+}
+html[data-theme="light"] .ka-plan-hero{
+  background:#fff!important;
+  color:#202020!important;
+  border-color:#dedede!important;
+  box-shadow:0 2px 10px rgba(0,0,0,.04)!important;
+}
+html[data-theme="dark"] .ka-plan-week{
+  background:#141414!important;
+  border-color:#2c2c2c!important;
+}
+html[data-theme="dark"] .ka-plan-week__head{
+  background:#141414!important;
+  border-bottom-color:#2c2c2c!important;
+}
+html[data-theme="dark"] .ka-plan-week__date{
+  background:#181818!important;
+  color:#ffc400!important;
+  border-bottom:1px solid #ffc400!important;
+}
+html[data-theme="dark"] .ka-plan-week__body{
+  background:#0e0e0e!important;
+}
+html[data-theme="dark"] .ka-plan-content-card{
+  background:#171717!important;
+  border-color:#2c2c2c!important;
+  color:#f5f5f5!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-plan-content-pill{
+  background:#181818!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] .ka-plan-week__footer{
+  background:#141414!important;
+  border-top-color:#2c2c2c!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .ka-plan-week__footer .ka-btn{
+  background:#181818!important;
+  color:#ffc400!important;
+  border:1px solid #ffc400!important;
+}
+html[data-theme="dark"] .ka-plan-hero{
+  background:#141414!important;
+  color:#f5f5f5!important;
+  border-color:#ffc400!important;
+  box-shadow:none!important;
+}
+
