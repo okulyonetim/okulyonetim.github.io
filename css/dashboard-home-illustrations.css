@@ -214,3 +214,21 @@ html[data-theme="dark"] .ka-home .kh-trial-live__timer-head small,
 html[data-theme="dark"] .ka-home .kh-trial-live__timer-head b{
   color:var(--ka-text)!important;
 }
+
+/* ===== DENEME SINAVI — UYGULAMA GENELİ FONTU ===== */
+.ka-home .kh-trial-live,
+.ka-home .kh-trial-live *{
+  font-family:var(--ka-font)!important;
+}
+.ka-home .kh-trial-live__title{
+  font-weight:750!important;
+}
+.ka-home .kh-trial-live__session,
+.ka-home .kh-trial-live__timer-head b{
+  font-weight:700!important;
+}
+.ka-home .kh-trial-live__timer-head strong{
+  font-family:var(--ka-font)!important;
+  font-weight:800!important;
+  font-variant-numeric:tabular-nums;
+}
