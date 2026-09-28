@@ -197,13 +197,16 @@ function enhanceDashboardCards(){
     const id=card.dataset.duyuruId,item=arr('duyurular').find(x=>String(x.id)===String(id));if(!item)return;
     const signature=imagesOf(item).map(x=>x.url).join('|');
     if(card.dataset.announcementMediaSignature!==signature){
-      card.querySelector('[data-home-announcement-gallery]')?.remove();
-      const html=renderGallery(item);
-      if(html){
-        const body=card.querySelector('.kh-announcement-body'),head=card.querySelector('.kh-announcement-head');
-        (body||head)?.insertAdjacentHTML('afterend',html);
-        bindGallery(card.querySelector('[data-home-announcement-gallery]'));
+      let gallery=card.querySelector('[data-home-announcement-gallery]');
+      if(!gallery){
+        const html=renderGallery(item);
+        if(html){
+          const body=card.querySelector('.kh-announcement-body'),head=card.querySelector('.kh-announcement-head');
+          (body||head)?.insertAdjacentHTML('afterend',html);
+          gallery=card.querySelector('[data-home-announcement-gallery]');
+        }
       }
+      if(gallery)bindGallery(gallery);
       card.dataset.announcementMediaSignature=signature;
     }
     card.querySelector('.kh-home-readers')?.remove();

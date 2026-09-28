@@ -12086,3 +12086,192 @@ html[data-theme="dark"] .ka-class-detail .ka-detail-tabs button.active{
 html[data-theme="dark"] .ka-class-detail .ka-class-hero::after{
   background:color-mix(in srgb,var(--ka-primary) 8%,transparent)!important;
 }
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY v1090 — ANA SAYFA DUYURU =====
+   Duyuru kartındaki eski yeşil/mavi durum renklerini kaldırır.
+   Ana tema: antrasit yüzey + sarı vurgu/kenarlık.
+   Etkileşim ve okundu kayıt akışı değiştirilmez.
+*/
+.ka-home .kh-announcement{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-announcement-accent{
+  height:3px!important;
+  background:var(--ka-primary)!important;
+}
+.ka-home .kh-announcement-icon{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid color-mix(in srgb,var(--ka-primary) 42%,var(--ka-border))!important;
+}
+.ka-home .kh-announcement-kicker{
+  color:var(--ka-primary)!important;
+}
+.ka-home .kh-announcement h3{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-announcement-meta{
+  color:var(--ka-text-muted)!important;
+}
+.ka-home .kh-announcement-status.new{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-home .kh-announcement-status.read{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-home .kh-announcement-body{
+  background:transparent!important;
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-announcement-footer{
+  border-top:1px solid var(--ka-border)!important;
+  background:var(--ka-card-bg)!important;
+}
+.ka-home .kh-read-check{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-read-box{
+  background:var(--ka-card-bg)!important;
+  border:1.5px solid var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+.ka-home .kh-read-check.checked .kh-read-box,
+.ka-home .kh-read-check input:checked+.kh-read-box{
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+.ka-home .kh-read-count{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-home .kh-home-readers{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+.ka-home .kh-home-readers summary{
+  color:var(--ka-primary)!important;
+}
+.ka-home .kh-home-readers small{
+  color:var(--ka-text-muted)!important;
+}
+
+/* Okunmuş duyuru da aynı merkezi yüzeyi kullanır; yeşil yüzey yok. */
+.ka-home .kh-announcement.is-read{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-home .kh-announcement,
+html[data-theme="dark"] .ka-home .kh-announcement.is-read,
+html[data-theme="dark"] .ka-home .kh-announcement-footer{
+  background:var(--ka-card-bg)!important;
+}
+html[data-theme="dark"] .ka-home .kh-announcement,
+html[data-theme="dark"] .ka-home .kh-announcement-accent{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-announcement-accent{
+  background:var(--ka-primary)!important;
+}
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY v1091 — DUYURU TITREME + RENK ===== */
+body .ka-home .kh-announcement,
+html[data-theme="light"] body .ka-home .kh-announcement,
+html:not([data-theme="dark"]) body .ka-home .kh-announcement,
+body .ka-home .kh-announcement.is-read,
+body .ka-home .kh-announcement.is-unread{
+  background:#fff!important;
+  background-image:none!important;
+  color:#15171a!important;
+  border:1px solid #dedfe2!important;
+  box-shadow:none!important;
+}
+body .ka-home .kh-announcement-accent{
+  height:3px!important;
+  background:#ffc400!important;
+  background-image:none!important;
+  border:0!important;
+}
+body .ka-home .kh-announcement-icon{
+  background:#fff7d6!important;
+  background-image:none!important;
+  color:#c39700!important;
+  border:1px solid #e1c65a!important;
+}
+body .ka-home .kh-announcement-status.new,
+body .ka-home .kh-announcement-status.read{
+  background:#fff!important;
+  background-image:none!important;
+  color:#b58b00!important;
+  border:1px solid #e0bd3d!important;
+}
+body .ka-home .kh-announcement-footer{
+  background:#fff!important;
+  background-image:none!important;
+  border-top:1px solid #dedfe2!important;
+}
+body .ka-home .kh-read-box{
+  background:#fff!important;
+}
+body .ka-home .kh-read-check.checked .kh-read-box,
+body .ka-home .kh-read-check input:checked+.kh-read-box{
+  background:#ffc400!important;
+  color:#111!important;
+}
+body .ka-home .kh-read-count{
+  background:#fff!important;
+  color:#b58b00!important;
+  border-color:#e0bd3d!important;
+}
+html[data-theme="dark"] body .ka-home .kh-announcement,
+html[data-theme="dark"] body .ka-home .kh-announcement.is-read,
+html[data-theme="dark"] body .ka-home .kh-announcement.is-unread,
+html[data-theme="dark"] body .ka-home .kh-announcement-footer{
+  background:#141414!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border-color:#242424!important;
+}
+html[data-theme="dark"] body .ka-home .kh-announcement-accent{
+  background:#ffc400!important;
+  border:0!important;
+}
+html[data-theme="dark"] body .ka-home .kh-announcement-icon{
+  background:#211d0c!important;
+  color:#ffc400!important;
+  border-color:#ffc400!important;
+}
+html[data-theme="dark"] body .ka-home .kh-announcement-status.new,
+html[data-theme="dark"] body .ka-home .kh-announcement-status.read,
+html[data-theme="dark"] body .ka-home .kh-read-count{
+  background:#141414!important;
+  color:#ffc400!important;
+  border-color:#ffc400!important;
+}
+
+/* Görsel alanı ilk yüklemede yükseklik değiştirmesin. */
+body .ka-home .kh-announcement-media{
+  min-height:320px!important;
+  background:#f4f4f2!important;
+}
+body .ka-home .kh-announcement-media__slide{
+  height:320px!important;
+  min-height:320px!important;
+  max-height:320px!important;
+}
+body .ka-home .kh-announcement-media__slide img{
+  max-height:320px!important;
+}
+html[data-theme="dark"] body .ka-home .kh-announcement-media{
+  background:#1a1a1a!important;
+}
