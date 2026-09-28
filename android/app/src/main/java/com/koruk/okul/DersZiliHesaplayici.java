@@ -98,7 +98,6 @@ public class DersZiliHesaplayici {
                     sonuc.put("sonrakiBaslik", sonrakiSeg.optString("baslik", ""));
                     sonuc.put("sonrakiYer", sonrakiSeg.optString("yer", ""));
                     sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiBas / 60, sonrakiBas % 60));
-                    sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiSeg.getInt("bas") / 60, sonrakiSeg.getInt("bas") % 60));
                 }
             } else {
                 JSONObject seg = segmentler.getJSONObject(aktifIndex);
