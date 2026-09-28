@@ -224,6 +224,8 @@ public class OkulWidget extends AppWidgetProvider {
         for (int id : ids) {
             updateWidget(context, mgr, id);
         }
+        EtkinliklerWidget.updateAll(context);
+        HavaZilWidget.updateAll(context);
     }
 
     /* ---------------------------------------------------------------- */
