@@ -12086,3 +12086,99 @@ html[data-theme="dark"] .ka-class-detail .ka-detail-tabs button.active{
 html[data-theme="dark"] .ka-class-detail .ka-class-hero::after{
   background:color-mix(in srgb,var(--ka-primary) 8%,transparent)!important;
 }
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY v1090 — ANA SAYFA DUYURU =====
+   Duyuru kartındaki eski yeşil/mavi durum renklerini kaldırır.
+   Ana tema: antrasit yüzey + sarı vurgu/kenarlık.
+   Etkileşim ve okundu kayıt akışı değiştirilmez.
+*/
+.ka-home .kh-announcement{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-announcement-accent{
+  height:3px!important;
+  background:var(--ka-primary)!important;
+}
+.ka-home .kh-announcement-icon{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid color-mix(in srgb,var(--ka-primary) 42%,var(--ka-border))!important;
+}
+.ka-home .kh-announcement-kicker{
+  color:var(--ka-primary)!important;
+}
+.ka-home .kh-announcement h3{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-announcement-meta{
+  color:var(--ka-text-muted)!important;
+}
+.ka-home .kh-announcement-status.new{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-home .kh-announcement-status.read{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-home .kh-announcement-body{
+  background:transparent!important;
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-announcement-footer{
+  border-top:1px solid var(--ka-border)!important;
+  background:var(--ka-card-bg)!important;
+}
+.ka-home .kh-read-check{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-read-box{
+  background:var(--ka-card-bg)!important;
+  border:1.5px solid var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+.ka-home .kh-read-check.checked .kh-read-box,
+.ka-home .kh-read-check input:checked+.kh-read-box{
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+.ka-home .kh-read-count{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+.ka-home .kh-home-readers{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+.ka-home .kh-home-readers summary{
+  color:var(--ka-primary)!important;
+}
+.ka-home .kh-home-readers small{
+  color:var(--ka-text-muted)!important;
+}
+
+/* Okunmuş duyuru da aynı merkezi yüzeyi kullanır; yeşil yüzey yok. */
+.ka-home .kh-announcement.is-read{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+html[data-theme="dark"] .ka-home .kh-announcement,
+html[data-theme="dark"] .ka-home .kh-announcement.is-read,
+html[data-theme="dark"] .ka-home .kh-announcement-footer{
+  background:var(--ka-card-bg)!important;
+}
+html[data-theme="dark"] .ka-home .kh-announcement,
+html[data-theme="dark"] .ka-home .kh-announcement-accent{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-announcement-accent{
+  background:var(--ka-primary)!important;
+}
