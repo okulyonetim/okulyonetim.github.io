@@ -11946,3 +11946,143 @@ html[data-theme="dark"] .ka-plan-hero{
   box-shadow:none!important;
 }
 
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY v1089 — SINIF DETAY =====
+   Sınıf detayında sarı büyük yüzeyleri kaldırır.
+   Veri, yetki, navigasyon ve bileşen davranışlarına dokunmaz.
+*/
+.ka-class-detail .ka-detail-topbar{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  border-radius:16px;
+  box-shadow:none!important;
+}
+.ka-class-detail .ka-detail-topbar h2{
+  color:var(--ka-text)!important;
+}
+.ka-class-detail .ka-detail-topbar .ka-icon-button{
+  color:var(--ka-text)!important;
+  background:var(--ka-card-bg)!important;
+  border:1px solid var(--ka-border)!important;
+}
+.ka-class-detail .ka-detail-topbar .ka-icon-button:hover{
+  background:var(--ka-muted-bg)!important;
+}
+
+.ka-class-detail .ka-class-hero{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid color-mix(in srgb,var(--ka-primary) 32%,var(--ka-border))!important;
+  box-shadow:none!important;
+}
+.ka-class-detail .ka-class-hero::after{
+  background:color-mix(in srgb,var(--ka-primary) 7%,transparent)!important;
+}
+.ka-class-detail .ka-class-hero-avatar{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid color-mix(in srgb,var(--ka-primary) 38%,var(--ka-border))!important;
+}
+.ka-class-detail .ka-class-hero h1{
+  color:var(--ka-text)!important;
+}
+.ka-class-detail .ka-class-hero p{
+  color:var(--ka-text-muted)!important;
+}
+.ka-class-detail .ka-class-hero strong{
+  color:var(--ka-text)!important;
+}
+.ka-class-detail .ka-class-hero .ka-badge{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-text)!important;
+  border:1px solid color-mix(in srgb,var(--ka-primary) 38%,var(--ka-border))!important;
+}
+
+.ka-class-detail .ka-people-summary-grid>.ka-card{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-class-detail .ka-people-summary-grid b{
+  color:var(--ka-text)!important;
+}
+.ka-class-detail .ka-people-summary-grid .is-girl b{
+  color:var(--ka-gender-girl)!important;
+}
+.ka-class-detail .ka-people-summary-grid .is-boy b{
+  color:var(--ka-gender-boy)!important;
+}
+
+.ka-class-detail .ka-detail-tabs button{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border:1px solid var(--ka-border)!important;
+}
+.ka-class-detail .ka-detail-tabs button.active{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+
+.ka-class-detail .ka-class-actions .ka-btn:not(.ka-btn--secondary){
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-class-detail .ka-class-actions .ka-btn--secondary{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-class-detail .ka-detail-panel{
+  background:var(--ka-card-bg)!important;
+  border:1px solid var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-class-detail .ka-detail-panel>.ka-card__header{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text)!important;
+}
+.ka-class-detail .ka-detail-panel>.ka-card__header h3{
+  color:var(--ka-text)!important;
+}
+.ka-class-detail .ka-info-row,
+.ka-class-detail .ka-detail-row{
+  border-bottom-color:var(--ka-border)!important;
+}
+.ka-class-detail .ka-info-row>span,
+.ka-class-detail .ka-detail-row>span,
+.ka-class-detail .ka-detail-row>small{
+  color:var(--ka-text-muted)!important;
+}
+.ka-class-detail .ka-info-row>b,
+.ka-class-detail .ka-detail-row>b,
+.ka-class-detail .ka-detail-row>strong{
+  color:var(--ka-text)!important;
+}
+
+html[data-theme="dark"] .ka-class-detail .ka-detail-topbar,
+html[data-theme="dark"] .ka-class-detail .ka-class-hero,
+html[data-theme="dark"] .ka-class-detail .ka-people-summary-grid>.ka-card,
+html[data-theme="dark"] .ka-class-detail .ka-detail-tabs button,
+html[data-theme="dark"] .ka-class-detail .ka-detail-panel{
+  background:var(--ka-card-bg)!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-detail-topbar,
+html[data-theme="dark"] .ka-class-detail .ka-class-hero{
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-detail-tabs button.active{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-class-detail .ka-class-hero::after{
+  background:color-mix(in srgb,var(--ka-primary) 8%,transparent)!important;
+}
