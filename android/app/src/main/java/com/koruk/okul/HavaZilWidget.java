@@ -25,8 +25,8 @@ public class HavaZilWidget extends AppWidgetProvider {
         v.setTextColor(R.id.hava_next_label,muted);v.setTextColor(R.id.hava_next,fg);v.setTextColor(R.id.hava_next_time,accent);
         v.setTextColor(R.id.hava_title,fg);
         v.setTextViewText(R.id.hava_icon,op.getString(OkulWidget.KEY_HAVA_IKON,"⛅"));
-        v.setTextViewText(R.id.hava_temp,op.getString(OkulWidget.KEY_HAVA_SICAKLIK,"--°"));
-        v.setTextViewText(R.id.hava_desc,op.getString(OkulWidget.KEY_HAVA_ACIKLAMA,"—"));
+        v.setTextViewText(R.id.hava_temp,temizSicaklik(op.getString(OkulWidget.KEY_HAVA_SICAKLIK,"")));
+        v.setTextViewText(R.id.hava_desc,temizMetin(op.getString(OkulWidget.KEY_HAVA_ACIKLAMA,"")));
         try{
             String s=dp.getString(DersZiliWidget.KEY_JSON,"{}");
             JSONObject raw=new JSONObject(s==null?"{}":s);
@@ -34,11 +34,22 @@ public class HavaZilWidget extends AppWidgetProvider {
             JSONObject d=DersZiliHesaplayici.hesapla(raw,now.get(Calendar.HOUR_OF_DAY)*60+now.get(Calendar.MINUTE),now.getTimeInMillis());
             String next=d.optString("sonrakiBaslik","—"), place=d.optString("sonrakiYer","");
             v.setTextViewText(R.id.hava_next,(next+(place.isEmpty()?"":" "+place)).trim());
-            v.setTextViewText(R.id.hava_next_time,d.optString("sonrakiSaat",""));
+            v.setTextViewText(R.id.hava_next_time,temizMetin(d.optString("sonrakiSaat","")));
         }catch(Exception e){v.setTextViewText(R.id.hava_next,"—");}
         Intent open=new Intent(c,MainActivity.class).putExtra("kategori","dersProgrami").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
         v.setOnClickPendingIntent(R.id.modern_hava_root,PendingIntent.getActivity(c,id+400,open,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE));
         m.updateAppWidget(id,v);
+    }
+    private static String temizSicaklik(String s){
+        if(s==null) return "—";
+        s=s.trim();
+        if(s.isEmpty()||"--°".equals(s)||"--".equals(s)||"null".equalsIgnoreCase(s)) return "—";
+        return s;
+    }
+    private static String temizMetin(String s){
+        if(s==null) return "";
+        s=s.trim();
+        return ("—".equals(s)||"--".equals(s)||"--:--".equals(s)||"null".equalsIgnoreCase(s))?"":s;
     }
     public static void updateAll(Context c){AppWidgetManager m=AppWidgetManager.getInstance(c);for(int id:m.getAppWidgetIds(new ComponentName(c,HavaZilWidget.class)))updateWidget(c,m,id);}
 }
