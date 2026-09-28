@@ -12399,6 +12399,15 @@ html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__row{
 
 
 /* ===== KORUK ASİSTAN — MERKEZİ UYGULAMA FONTU ===== */
-:root{--ka-font-family:var(--ka-font);}
+:root{--ka-font-family:"Inter",Arial,Helvetica,sans-serif;}
 html,body,button,input,select,textarea{font-family:var(--ka-font-family)!important;}
 html,body{font-synthesis:none;text-rendering:optimizeLegibility;}
+
+
+/* ===== DENEME KARTI — UYGULAMA GENELİ FONT =====
+   Sayaç dahil tüm deneme kartı metinleri uygulamanın merkezi fontunu kullanır.
+   Monospace sayaç fontu kaldırıldı. */
+.ka-home .kh-trial-live__card,
+.ka-home .kh-trial-live__card *{
+  font-family:var(--ka-font-family)!important;
+}
