@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/modern_hava_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="10dp">
- <LinearLayout android:id="@+id/modern_hava_weather" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="8dp">
-  <TextView android:id="@+id/hava_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="☀️ HAVA" android:textSize="11sp" android:textStyle="bold"/>
-  <TextView android:id="@+id/hava_icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⛅" android:textSize="28sp"/>
-  <TextView android:id="@+id/hava_temp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="--°" android:textSize="24sp" android:textStyle="bold"/>
-  <TextView android:id="@+id/hava_desc" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="9sp"/>
- </LinearLayout>
- <LinearLayout android:id="@+id/modern_hava_bell" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="8dp">
-  <TextView android:id="@+id/hava_next_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SONRAKİ ZİL" android:textSize="9sp" android:textStyle="bold"/>
-  <TextView android:id="@+id/hava_next" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="14sp" android:textStyle="bold" android:maxLines="1" android:ellipsize="end"/>
-  <TextView android:id="@+id/hava_next_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="--:--" android:textSize="12sp" android:textStyle="bold"/>
- </LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/modern_hava_root"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="4dp">
+    <LinearLayout android:id="@+id/modern_hava_weather" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:orientation="vertical" android:gravity="center" android:padding="4dp">
+        <TextView android:id="@+id/hava_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="☀️ HAVA" android:textSize="10sp" android:textStyle="bold"/>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:id="@+id/hava_icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⛅" android:textSize="24sp"/>
+            <TextView android:id="@+id/hava_temp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5dp" android:text="--°" android:textSize="20sp" android:textStyle="bold"/>
+        </LinearLayout>
+        <TextView android:id="@+id/hava_desc" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="8sp" android:maxLines="1" android:ellipsize="end"/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/modern_hava_bell" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:gravity="center" android:paddingLeft="4dp" android:paddingRight="4dp" android:paddingTop="5dp" android:paddingBottom="6dp">
+        <TextView android:id="@+id/hava_next_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SONRAKİ ZİL" android:textSize="8sp" android:textStyle="bold"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center">
+            <TextView android:id="@+id/hava_next" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="right" android:text="—" android:textSize="11sp" android:textStyle="bold" android:maxLines="1" android:ellipsize="end"/>
+            <TextView android:id="@+id/hava_next_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5dp" android:text="--:--" android:textSize="10sp" android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
