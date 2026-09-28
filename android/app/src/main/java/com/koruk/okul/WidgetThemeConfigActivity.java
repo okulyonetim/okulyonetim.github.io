@@ -39,10 +39,10 @@ public class WidgetThemeConfigActivity extends Activity {
         sub.setPadding(0,18,0,6);
         root.addView(sub);
 
-        RadioGroup group=new RadioGroup(this);
-        RadioButton system=new RadioButton(this); system.setText("Sistem"); system.setTag(WidgetTheme.SYSTEM);
-        RadioButton light=new RadioButton(this); light.setText("Açık"); light.setTag(WidgetTheme.LIGHT);
-        RadioButton dark=new RadioButton(this); dark.setText("Koyu"); dark.setTag(WidgetTheme.DARK);
+        RadioGroup group=new RadioGroup(this); group.setId(0x7f0a1001);
+        RadioButton system=new RadioButton(this); system.setId(0x7f0a1002); system.setText("Sistem"); system.setTag(WidgetTheme.SYSTEM);
+        RadioButton light=new RadioButton(this); light.setId(0x7f0a1003); light.setText("Açık"); light.setTag(WidgetTheme.LIGHT);
+        RadioButton dark=new RadioButton(this); dark.setId(0x7f0a1004); dark.setText("Koyu"); dark.setTag(WidgetTheme.DARK);
         group.addView(system);group.addView(light);group.addView(dark);
         String current=WidgetTheme.get(this,widgetId);
         (WidgetTheme.DARK.equals(current)?dark:WidgetTheme.LIGHT.equals(current)?light:system).setChecked(true);
