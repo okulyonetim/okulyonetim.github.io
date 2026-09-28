@@ -7,7 +7,7 @@
 'use strict';
 if(global.DashboardAnnouncementMedia)return;
 
-const VERSION='921';
+const VERSION='922';
 let scanQueued=false,activeHomeViewer=null,activeReaderPopup=null;
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -38,12 +38,7 @@ function readTime(value){
   return d.toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 function ensureStyles(){
-  if(document.querySelector('link[data-dashboard-announcement-media-style]'))return;
-  const link=document.createElement('link');
-  link.rel='stylesheet';
-  link.href=`css/dashboard-announcement-media.css?v=${VERSION}`;
-  link.dataset.dashboardAnnouncementMediaStyle='';
-  document.head.appendChild(link);
+  return document.querySelector('link[data-dashboard-announcement-media-style]')||null;
 }
 function closeReaderPopup(){
   activeReaderPopup?.remove?.();
