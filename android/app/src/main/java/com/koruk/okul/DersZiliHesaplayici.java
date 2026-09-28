@@ -80,7 +80,7 @@ public class DersZiliHesaplayici {
             if (aktifIndex == -1) {
                 int sonrakiIndex = -1;
                 for (int i = 0; i < segmentler.length(); i++) {
-                    if (segmentler.getJSONObject(i).getInt("bas") > simdiDk) { sonrakiIndex = i; break; }
+                    int bas = dakika(segmentler.getJSONObject(i).opt("bas"), -1); if (bas > simdiDk) { sonrakiIndex = i; break; }
                 }
                 if (sonrakiIndex == -1) {
                     sonuc.put("durumMetni", "Bugünkü dersler bitti");
@@ -90,19 +90,19 @@ public class DersZiliHesaplayici {
                     // Teneffüsteyiz: sonraki segment başlayana kadar geri sayım.
                     // Teneffüsün toplam süresi arayüzde gösterilmediği için halka sabit yarım çiziliyor.
                     JSONObject sonrakiSeg = segmentler.getJSONObject(sonrakiIndex);
-                    int kalan = sonrakiSeg.getInt("bas") - simdiDk;
+                    int sonrakiBas = dakika(sonrakiSeg.opt("bas"), -1); if (sonrakiBas < 0) { sonuc.put("durumMetni", "Zil programı yok"); return sonuc; } int kalan = sonrakiBas - simdiDk;
                     sonuc.put("kalanDakika", kalan);
                     sonuc.put("ilerlemeOran", 0.5);
                     sonuc.put("aktifBaslik", "TENEFFÜS");
                     sonuc.put("aktifYer", "");
                     sonuc.put("sonrakiBaslik", sonrakiSeg.optString("baslik", ""));
                     sonuc.put("sonrakiYer", sonrakiSeg.optString("yer", ""));
-                    sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiSeg.getInt("bas") / 60, sonrakiSeg.getInt("bas") % 60));
+                    sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiBas / 60, sonrakiBas % 60));
                     sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiSeg.getInt("bas") / 60, sonrakiSeg.getInt("bas") % 60));
                 }
             } else {
                 JSONObject seg = segmentler.getJSONObject(aktifIndex);
-                int bas = seg.getInt("bas"), bit = seg.getInt("bit");
+                int bas = dakika(seg.opt("bas"), -1), bit = dakika(seg.opt("bit"), -1); if (bas < 0 || bit <= bas) { sonuc.put("durumMetni", "Zil programı yok"); return sonuc; }
                 int kalan = bit - simdiDk;
                 int toplam = bit - bas;
                 sonuc.put("kalanDakika", kalan);
