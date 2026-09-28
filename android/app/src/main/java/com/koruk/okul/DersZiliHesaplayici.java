@@ -64,7 +64,8 @@ public class DersZiliHesaplayici {
             int aktifIndex = -1;
             for (int i = 0; i < segmentler.length(); i++) {
                 JSONObject s = segmentler.getJSONObject(i);
-                int bas = s.getInt("bas"), bit = s.getInt("bit");
+                int bas = dakika(s.opt("bas"), -1), bit = dakika(s.opt("bit"), -1);
+                if (bas < 0 || bit < 0 || bit <= bas) continue;
                 boolean simdiMi = simdiDk >= bas && simdiDk < bit;
                 if (simdiMi) aktifIndex = i;
 
@@ -96,6 +97,8 @@ public class DersZiliHesaplayici {
                     sonuc.put("aktifYer", "");
                     sonuc.put("sonrakiBaslik", sonrakiSeg.optString("baslik", ""));
                     sonuc.put("sonrakiYer", sonrakiSeg.optString("yer", ""));
+                    sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiSeg.getInt("bas") / 60, sonrakiSeg.getInt("bas") % 60));
+                    sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiSeg.getInt("bas") / 60, sonrakiSeg.getInt("bas") % 60));
                 }
             } else {
                 JSONObject seg = segmentler.getJSONObject(aktifIndex);
@@ -112,13 +115,28 @@ public class DersZiliHesaplayici {
                     sonuc.put("sonrakiYer", sonrakiSeg.optString("yer", ""));
                 } else {
                     sonuc.put("sonrakiBaslik", "Gün Sonu");
+                    sonuc.put("sonrakiSaat", "");
                     sonuc.put("sonrakiYer", "");
                 }
             }
         } catch (Exception e) {
-            try { sonuc.put("durumMetni", "Veri okunamadı"); } catch (Exception ignored) {}
+            try { sonuc.put("durumMetni", "Zil programı yok"); } catch (Exception ignored) {}
         }
         return sonuc;
+    }
+
+    private static int dakika(Object value, int fallback) {
+        if (value == null) return fallback;
+        if (value instanceof Number) return ((Number) value).intValue();
+        String s = String.valueOf(value).trim();
+        if (s.isEmpty()) return fallback;
+        try {
+            if (s.contains(":")) {
+                String[] p = s.split(":");
+                if (p.length == 2) return Integer.parseInt(p[0].trim()) * 60 + Integer.parseInt(p[1].trim());
+            }
+            return (int) Math.round(Double.parseDouble(s));
+        } catch (Exception e) { return fallback; }
     }
 
     /**
