@@ -32,6 +32,8 @@ public class WidgetPlugin extends Plugin {
 
         OkulWidget.sayfalariGuncelle(getContext(), okul, etkinlikJson, notJson,
                 nobetJson, haberJson, havaIkon, havaSicaklik, havaAciklama);
+        EtkinliklerWidget.updateAll(getContext());
+        HavaZilWidget.updateAll(getContext());
         call.resolve();
     }
 
@@ -57,6 +59,8 @@ public class WidgetPlugin extends Plugin {
     public void dersZiliGuncelle(PluginCall call) {
         String veriJson = call.getString("veriJson", "{}");
         DersZiliWidget.veriGuncelle(getContext(), veriJson);
+        ModernDersZiliWidget.updateAll(getContext());
+        HavaZilWidget.updateAll(getContext());
         call.resolve();
     }
 }
