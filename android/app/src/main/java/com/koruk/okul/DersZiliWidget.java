@@ -131,5 +131,7 @@ public class DersZiliWidget extends AppWidgetProvider {
         ComponentName comp = new ComponentName(context, DersZiliWidget.class);
         int[] ids = mgr.getAppWidgetIds(comp);
         for (int id : ids) updateWidget(context, mgr, id);
+        ModernDersZiliWidget.updateAll(context);
+        HavaZilWidget.updateAll(context);
     }
 }
