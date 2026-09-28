@@ -12275,3 +12275,124 @@ body .ka-home .kh-announcement-media__slide img{
 html[data-theme="dark"] body .ka-home .kh-announcement-media{
   background:#1a1a1a!important;
 }
+
+
+/* ===== CENTRAL THEME FINAL AUTHORITY — DENEME SINAVLARI v1092 =====
+   Deneme sınavı ekranı ve ana sayfa canlı sayaç, modül rengi yerine
+   merkezi --ka-* tema tokenlarını kullanır. */
+body .ka-academic-trial-active .ka-trial-summary article,
+body .ka-academic-trial-active .ka-trial-card{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-border)!important;
+}
+body .ka-academic-trial-active .ka-trial-card.is-today{
+  border-color:var(--ka-primary)!important;
+  background:var(--ka-card-bg)!important;
+}
+body .ka-academic-trial-active .ka-trial-card.is-live{
+  border-color:var(--ka-primary)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--ka-primary) 12%,transparent)!important;
+}
+body .ka-academic-trial-active .ka-trial-card__icon{
+  background:var(--ka-primary-soft)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+body .ka-academic-trial-active .ka-trial-live{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-primary)!important;
+}
+body .ka-academic-trial-active .ka-trial-date.is-today{
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+body .ka-academic-trial-active .ka-trial-date.is-soon{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-warning)!important;
+  border:1px solid var(--ka-warning)!important;
+}
+
+/* Ana sayfa — canlı deneme sayacı */
+body .ka-home .kh-trial-live__card{
+  background:var(--ka-card-bg)!important;
+  background-image:none!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-sm)!important;
+}
+body .ka-home .kh-trial-live__badge,
+body .ka-home .kh-trial-live__detail{
+  color:var(--ka-primary)!important;
+}
+body .ka-home .kh-trial-live__timer,
+body .ka-home .kh-trial-live__timer.is-session,
+body .ka-home .kh-trial-live__timer.is-total{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-primary)!important;
+}
+body .ka-home .kh-trial-live__timer.is-session .kh-trial-live__timer-head strong,
+body .ka-home .kh-trial-live__timer.is-total .kh-trial-live__timer-head strong{
+  color:var(--ka-primary)!important;
+}
+body .ka-home .kh-trial-live__bar{
+  background:var(--ka-border)!important;
+}
+body .ka-home .kh-trial-live__timer.is-session .kh-trial-live__bar i,
+body .ka-home .kh-trial-live__timer.is-total .kh-trial-live__bar i{
+  background:var(--ka-primary)!important;
+}
+body .ka-home .kh-trial-live__meta>span{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-primary)!important;
+}
+body .ka-home .kh-trial-live__meta small{
+  color:var(--ka-text-muted)!important;
+}
+html[data-theme="dark"] body .ka-home .kh-trial-live__card,
+html[data-theme="dark"] body .ka-academic-trial-active .ka-trial-summary article,
+html[data-theme="dark"] body .ka-academic-trial-active .ka-trial-card{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] body .ka-home .kh-trial-live__timer,
+html[data-theme="dark"] body .ka-home .kh-trial-live__timer.is-session,
+html[data-theme="dark"] body .ka-home .kh-trial-live__timer.is-total,
+html[data-theme="dark"] body .ka-home .kh-trial-live__meta>span{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] body .ka-academic-trial-active .ka-trial-card__icon{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] body .ka-academic-trial-active .ka-trial-date.is-today{
+  background:transparent!important;
+  color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+
+/* Tam ekran canlı sayaç da aynı merkezi sınav sarı/antrasit yüzeyini kullanır. */
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__main,
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__section,
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__overview{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__session,
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__session b,
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__ring .value,
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__overview strong{
+  color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__meta>div,
+html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__row{
+  border-color:var(--ka-primary)!important;
+  background:var(--ka-card-bg)!important;
+}
