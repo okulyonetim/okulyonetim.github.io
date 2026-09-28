@@ -175,3 +175,42 @@ html[data-theme="light"] .kh-backtop:focus-visible{
 /* DASHBOARD CURRENT CLASS CARD — VISIBILITY */
 .ka-home .kh-section[data-home-section="lessons"]{display:flex!important;visibility:visible!important;opacity:1!important;flex-direction:column!important;gap:8px!important;}
 .ka-home .kh-section[data-home-section="lessons"] .kh-card{display:block!important;visibility:visible!important;opacity:1!important;}
+
+
+/* ===== DENEME SAYACI — ZAMAN METİNLERİ =====
+   Geri sayım rakamları ve açıklamaları küçük/silik kalmasın. */
+.ka-home .kh-trial-live__timer-head strong{
+  color:var(--ka-text)!important;
+  font-size:28px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:.2px!important;
+  font-variant-numeric:tabular-nums;
+}
+.ka-home .kh-trial-live__timer-head small{
+  color:var(--ka-text)!important;
+  font-size:11px!important;
+  line-height:1.15!important;
+  font-weight:850!important;
+  letter-spacing:.45px!important;
+  opacity:1!important;
+}
+.ka-home .kh-trial-live__timer-head b{
+  color:var(--ka-text)!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:850!important;
+}
+@media(max-width:480px){
+  .ka-home .kh-trial-live__timer-head strong{
+    font-size:27px!important;
+  }
+  .ka-home .kh-trial-live__timer-head small{
+    font-size:10.5px!important;
+  }
+}
+html[data-theme="dark"] .ka-home .kh-trial-live__timer-head strong,
+html[data-theme="dark"] .ka-home .kh-trial-live__timer-head small,
+html[data-theme="dark"] .ka-home .kh-trial-live__timer-head b{
+  color:var(--ka-text)!important;
+}
