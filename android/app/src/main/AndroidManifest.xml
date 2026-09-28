@@ -24,6 +24,14 @@
         android:enableOnBackInvokedCallback="false">
 
         <activity
+            android:name=".WidgetThemeConfigActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
@@ -40,6 +48,36 @@
                 <data android:scheme="koruk" android:host="okul" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".ModernDersZiliWidget"
+            android:exported="true"
+            android:label="Ders Zili • Modern">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/modern_ders_zili_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".EtkinliklerWidget"
+            android:exported="true"
+            android:label="Etkinlikler">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/etkinlikler_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HavaZilWidget"
+            android:exported="true"
+            android:label="Hava + Sonraki Zil">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/hava_zil_widget_info" />
+        </receiver>
 
         <receiver
             android:name=".OkulWidget"
