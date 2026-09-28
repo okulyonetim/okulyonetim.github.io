@@ -12402,3 +12402,16 @@ html[data-theme="dark"] body.ka-trial-counter-open .ka-trial-counter__row{
 :root{--ka-font-family:"Inter",Arial,Helvetica,sans-serif;}
 html,body,button,input,select,textarea{font-family:var(--ka-font-family)!important;}
 html,body{font-synthesis:none;text-rendering:optimizeLegibility;}
+
+
+/* ===== DENEME SINAVI — UYGULAMA GENELİ FONT =====
+   Sayaç kartı ayrı bir mono font kullanmasın; uygulamanın merkezi fontuyla aynı olsun. */
+.ka-home .kh-trial-live,
+.ka-home .kh-trial-live__card,
+.ka-home .kh-trial-live__card *{
+  font-family:var(--ka-font)!important;
+}
+.ka-home .kh-trial-live__timer-head strong{
+  font-family:var(--ka-font)!important;
+  font-variant-numeric:tabular-nums;
+}
