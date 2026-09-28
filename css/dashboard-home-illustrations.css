@@ -171,3 +171,7 @@ html[data-theme="light"] .kh-backtop:focus-visible{
   box-shadow:0 5px 14px rgba(120,90,0,.22)!important;
 }
 
+
+/* DASHBOARD CURRENT CLASS CARD — VISIBILITY */
+.ka-home .kh-section[data-home-section="lessons"]{display:flex!important;visibility:visible!important;opacity:1!important;flex-direction:column!important;gap:8px!important;}
+.ka-home .kh-section[data-home-section="lessons"] .kh-card{display:block!important;visibility:visible!important;opacity:1!important;}
