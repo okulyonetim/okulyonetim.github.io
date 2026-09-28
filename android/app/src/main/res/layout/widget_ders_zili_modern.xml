@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/modern_dz_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="10dp">
- <LinearLayout android:id="@+id/modern_dz_card" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="12dp">
-  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
-   <TextView android:id="@+id/modern_dz_title" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🔔  DERS ZİLİ" android:textSize="13sp" android:textStyle="bold"/>
-   <TextView android:id="@+id/modern_dz_badge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="8dp" android:paddingRight="8dp" android:paddingTop="3dp" android:paddingBottom="3dp" android:text="CANLI" android:textSize="8sp" android:textStyle="bold"/>
-  </LinearLayout>
-  <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical">
-   <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-    <TextView android:id="@+id/modern_dz_count" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="--" android:textSize="30sp" android:textStyle="bold"/>
-    <TextView android:id="@+id/modern_dz_unit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sonraki zil" android:textSize="10sp"/>
-   </LinearLayout>
-   <ProgressBar android:id="@+id/modern_dz_progress" style="?android:attr/progressBarStyleHorizontal" android:layout_width="110dp" android:layout_height="6dp" android:max="100" android:progress="0"/>
-  </LinearLayout>
-  <LinearLayout android:id="@+id/modern_dz_details" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-   <LinearLayout android:id="@+id/modern_dz_next_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:padding="7dp" android:orientation="vertical">
-    <TextView android:id="@+id/modern_dz_next_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SONRAKİ ZİL" android:textSize="8sp" android:textStyle="bold"/>
-    <TextView android:id="@+id/modern_dz_next" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="12sp" android:textStyle="bold"/>
-   </LinearLayout>
-   <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:padding="7dp" android:orientation="vertical">
-    <TextView android:id="@+id/modern_dz_active_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ŞİMDİ" android:textSize="8sp" android:textStyle="bold"/>
-    <TextView android:id="@+id/modern_dz_active" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="12sp" android:textStyle="bold"/>
-   </LinearLayout>
-  </LinearLayout>
- </LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/modern_dz_root" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:padding="4dp">
+    <LinearLayout android:id="@+id/modern_dz_card" android:layout_width="match_parent" android:layout_height="match_parent"
+        android:orientation="vertical" android:paddingLeft="8dp" android:paddingRight="8dp" android:paddingTop="6dp" android:paddingBottom="6dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+            <TextView android:id="@+id/modern_dz_title" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="🔔  DERS ZİLİ" android:textSize="12sp" android:textStyle="bold" android:maxLines="1"/>
+            <TextView android:id="@+id/modern_dz_badge" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:paddingLeft="7dp" android:paddingRight="7dp" android:paddingTop="2dp" android:paddingBottom="2dp"
+                android:text="CANLI" android:textSize="8sp" android:textStyle="bold"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical">
+                <TextView android:id="@+id/modern_dz_count" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="--" android:textSize="24sp" android:textStyle="bold" android:maxLines="1"/>
+                <TextView android:id="@+id/modern_dz_unit" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp" android:text="Sonraki zil" android:textSize="9sp" android:maxLines="1"/>
+            </LinearLayout>
+            <ProgressBar android:id="@+id/modern_dz_progress" style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="96dp" android:layout_height="5dp" android:max="100" android:progress="0"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/modern_dz_details" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <LinearLayout android:id="@+id/modern_dz_next_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:padding="5dp" android:orientation="vertical">
+                <TextView android:id="@+id/modern_dz_next_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SONRAKİ ZİL" android:textSize="7sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/modern_dz_next" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="10sp" android:textStyle="bold" android:maxLines="1" android:ellipsize="end"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:padding="5dp" android:orientation="vertical">
+                <TextView android:id="@+id/modern_dz_active_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ŞİMDİ" android:textSize="7sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/modern_dz_active" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="10sp" android:textStyle="bold" android:maxLines="1" android:ellipsize="end"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
