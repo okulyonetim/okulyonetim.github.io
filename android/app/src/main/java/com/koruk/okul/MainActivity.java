@@ -44,6 +44,7 @@ public class MainActivity extends BridgeActivity {
         WebView anaWebView = getBridge() != null ? getBridge().getWebView() : null;
         if (anaWebView != null) {
             anaWebView.addJavascriptInterface(new PullRefreshScrollBridge(), "KorukNativePull");
+            anaWebView.addJavascriptInterface(new ExitBridge(), "AndroidUygulamadanCikKopru");
             anaWebView.getSettings().setSupportZoom(false);
             anaWebView.getSettings().setBuiltInZoomControls(false);
             anaWebView.getSettings().setDisplayZoomControls(false);
@@ -175,6 +176,17 @@ public class MainActivity extends BridgeActivity {
             "(function(){try{if(window.ShellUI&&typeof window.ShellUI.back==='function'){window.ShellUI.back();return;}if(typeof geriTusuIsle==='function'){geriTusuIsle();}}catch(e){console.error('[NativeBack]',e);}})()",
             null
         );
+    }
+
+    /** JS çıkış onayı sonrası Activity'yi güvenli biçimde kapatmak için kullanılan köprü. */
+    private final class ExitBridge {
+        @JavascriptInterface
+        public void uygulamadanCik() {
+            runOnUiThread(() -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) finishAndRemoveTask();
+                else finish();
+            });
+        }
     }
 
     /* Native WebView'e özel küçük runtime düzeltmelerini ana bundle'dan
