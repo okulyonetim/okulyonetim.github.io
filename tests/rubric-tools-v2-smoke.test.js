@@ -36,7 +36,7 @@ assert(!index.includes('js/kriter-dagitim.js')&&!index.includes('js/proje-degerl
 
 assert(shell.includes('const CUSTOM_PAGE_ROUTES=new Map()')&&shell.includes('function registerPageRoute(page,handler)'),'ShellUI özel sayfalar için merkezi page-route registry sağlamalı.');
 assert(shell.includes('const custom=page&&CUSTOM_PAGE_ROUTES.get(page)'),'routeModule özel sayfaları merkezi registry üzerinden çözmeli.');
-assert(shell.includes("name==='tools'&&['rubric','project'].includes(page)")&&shell.includes('RubricToolsModule?.openPage?.(page)'),'Rubric/Project menü hedefleri doğrudan public routing kullanmalı.');
+assert(shell.includes("name==='tools'&&['rubric','project'].includes(page)")&&shell.includes("js/modules/rubric-tools-engine.js?v=1071")&&shell.includes("page==='rubric'?global.KriterDagitimAraci:global.ProjeDegerlendirmeAraci")&&!shell.includes('RubricToolsModule?.openPage?.(page)'),'Rubric/Project menü hedefleri doğrudan V2 engine routing kullanmalı.');
 assert(!shell.includes('data-rubric-tool'),'Shell eski rubric tab selector kullanmamalı.');
 for(const page of ['OTHER_DOCUMENT_PAGE','DIPLOMA_REQUEST_PAGE','DIPLOMA_RESPONSE_PAGE','IMAGE','MERGE','PAGE']) assert(bridge.includes(`registerPageRoute?.(${page}`),`Özel sayfa ShellUI registry’ye kaydedilmeli: ${page}`);
 assert(!bridge.includes("closest?.(`[data-ka-menu-page=\"${OTHER_DOCUMENT_PAGE}\"]`)")&&!bridge.includes("const b=e.target?.closest?.('[data-ka-menu-page]')"),'Özel menü sayfaları capture-phase click router kurmamalı.');
