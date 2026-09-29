@@ -40,10 +40,18 @@ public final class WidgetTheme {
     public static int muted(Context c,int id){return isDark(c,id)?Color.rgb(184,190,196):Color.rgb(95,101,108);}
     public static int border(Context c,int id){return Color.rgb(255,196,0);}
     public static int accent(Context c,int id){return Color.rgb(255,196,0);}
-    public static int onAccent(Context c,int id){return Color.rgb(21,23,26);}
+    public static int onAccent(Context c,int id){return Color.rgb(17,17,17);}
+
+    /** Native Android widgetlerde web design-system ile aynı antrasit/sarı dili. */
+    private static int rootBackground(Context c,int id){
+        return isDark(c,id) ? R.drawable.widget_theme_root_dark : R.drawable.widget_theme_root_light;
+    }
+    private static int cardBackground(Context c,int id){
+        return isDark(c,id) ? R.drawable.widget_theme_card_dark : R.drawable.widget_theme_card_light;
+    }
 
     public static void style(RemoteViews v,Context c,int id,int root,int... cards){
-        v.setInt(root,"setBackgroundColor",bg(c,id));
-        for(int card:cards)v.setInt(card,"setBackgroundColor",card(c,id));
+        v.setInt(root,"setBackgroundResource",rootBackground(c,id));
+        for(int card:cards)v.setInt(card,"setBackgroundResource",cardBackground(c,id));
     }
 }
