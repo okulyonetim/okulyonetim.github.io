@@ -182,7 +182,7 @@ function firebaseyiBaslat(){
       else console.warn('Offline destek etkinleştirilemedi:', err);
     });
     try{
-      if(firebase.messaging.isSupported()) messaging = firebase.messaging();
+      if(typeof firebase.messaging === 'function' && firebase.messaging.isSupported()) messaging = firebase.messaging();
       window.messaging = messaging;
     }catch(e){ console.warn('Bu tarayıcı push bildirimlerini desteklemiyor.', e); }
     window.dispatchEvent(new CustomEvent('koruk:firebase-ready'));
