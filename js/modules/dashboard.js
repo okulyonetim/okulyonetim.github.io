@@ -230,9 +230,8 @@ function examsSection(){const teacherMode=!isAdmin(),tid=teacherId();if(teacherM
 function todayMyLessonsSection(){
  const admin=isAdmin(),tid=teacherId(),name=dayName();
  /*
-  * Yönetici ana sayfasında okulun tüm ders programını göstermeyelim.
-  * Yönetici bir öğretmene bağlıysa yalnızca kendi derslerini görür.
-  * Kendi dersi varsa ilgili yıllık plana doğrudan "Plan" bağlantısı verilir.
+  * Ana sayfada yalnızca kullanıcının bugünkü dersleri gösterilir.
+  * Ders satırına dokunulduğunda doğrudan ilgili yıllık plan açılır.
   */
  const list=tid
    ? arr('dersProgrami').filter(x=>sameDay(x.gun,name)&&String(x.ogretmenId||'')===String(tid)).sort(sortHour)
@@ -243,15 +242,11 @@ function todayMyLessonsSection(){
    const period=Number(x.saat??x.dersSaati),isNow=live?.mode==='lesson'&&Number(live.period)===period;
    const main=`${period||'•'}. Ders · ${lessonLabel(x)}`;
    const sub=classLabel(x);
-   const plan=admin
-     ? `<button type="button" class="ka-home-link kh-row-plan" data-dash-lesson-plan data-lesson="${esc(lessonLabel(x))}" data-class="${esc(classLabel(x))}"><span>Plan</span><b>›</b></button>`
-     : '';
    return `<div class="kh-row${isNow?' is-now':''}">
-     <button type="button" class="kh-row-main-button" data-dash-route="academic" data-dash-page="schedule" data-dash-title="Ders Programı">
+     <button type="button" class="kh-row-main-button" data-dash-lesson-plan data-lesson="${esc(lessonLabel(x))}" data-class="${esc(classLabel(x))}" aria-label="${esc(lessonLabel(x))} yıllık planını aç">
        <span class="kh-row-main"><b>${esc(main)}</b><small>${esc(sub)}</small></span>
-       <span class="kh-chip ${isNow?'green':''}">${isNow?'ŞİMDİ':''}</span>
+       ${isNow?'<span class="kh-chip green">ŞİMDİ</span>':''}
      </button>
-     ${plan}
    </div>`;
  }).join(''):`<div class="kh-empty">${esc(admin?'Bugün dersin yok.':(!tid?'Profilinize bağlı öğretmen bulunamadı.':'Bugün size atanmış ders bulunmuyor.'))}</div>`;
  return `<section class="kh-section" data-home-section="today-lessons"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art">${sectionArt('lessons','')}</span><span>${title}</span></div><button type="button" class="kh-more" data-dash-route="academic" data-dash-page="schedule" data-dash-title="Ders Programı">Program ›</button></div><div class="kh-card">${rows}</div></section>`;
