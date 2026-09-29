@@ -232,3 +232,97 @@ html[data-theme="dark"] .ka-home .kh-trial-live__timer-head b{
   font-weight:800!important;
   font-variant-numeric:tabular-nums;
 }
+
+
+/* ===== CANLI ZİL KARTI — MERKEZİ TEMA KONTRASTI =====
+   Canlı ders kartındaki sarı/kremsi yüzeylerin koyu temada metni
+   boğmasını önler. Renkler design-system tokenlarından alınır. */
+.ka-home .kh-bell-timeline-card,
+.ka-home .kh-bell-timeline-v2{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-bell-timeline-card{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+.ka-home .kh-bell-timeline-copy small,
+.ka-home .kh-bell-timeline-copy span,
+.ka-home .kh-bell-step small,
+.ka-home .kh-bell-progress-v2>span{
+  color:var(--ka-text-muted)!important;
+  opacity:1!important;
+}
+.ka-home .kh-bell-timeline-copy strong,
+.ka-home .kh-bell-step b{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-bell-timeline-head{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-bell-timeline-current-icon,
+.ka-home .kh-bell-step>i{
+  background:var(--ka-icon-surface)!important;
+  border:1px solid var(--ka-primary)!important;
+  color:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-timeline-current-icon svg,
+.ka-home .kh-bell-step>i svg{
+  color:var(--ka-primary)!important;
+  stroke:currentColor!important;
+}
+.ka-home .kh-bell-timeline-chip{
+  background:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-countdown-ring{
+  background:conic-gradient(var(--ka-primary) calc(var(--kb-progress,0%)),var(--ka-border) 0)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-countdown-ring:before,
+.ka-home .kh-bell-countdown-ring:after{
+  background:var(--ka-card-bg)!important;
+}
+.ka-home .kh-bell-countdown-ring b,
+.ka-home .kh-bell-countdown-ring small{
+  color:var(--ka-text)!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+.ka-home .kh-bell-progress-v2 i{
+  background:var(--ka-border)!important;
+  border-color:var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-progress-v2 i b{
+  background:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-progress-v2 strong{
+  color:var(--ka-text)!important;
+  opacity:1!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-card{
+  background:var(--ka-card-bg,#141414)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-current-icon,
+html[data-theme="dark"] .ka-home .kh-bell-step>i{
+  background:transparent!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-countdown-ring{
+  background:conic-gradient(var(--ka-primary) calc(var(--kb-progress,0%)),var(--ka-border) 0)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-countdown-ring:before,
+html[data-theme="dark"] .ka-home .kh-bell-countdown-ring:after{
+  background:var(--ka-card-bg,#141414)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-chip{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+}
