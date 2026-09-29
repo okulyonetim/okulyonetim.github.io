@@ -393,7 +393,23 @@ async function prepareFoodData(){
 }
 async function prepareReminderData(){if(!window.SyncEngine||!window.COL)return;const types=[];for(const[type,colKey]of Object.entries(REMINDER_DEFS)){const col=COL[colKey];if(!col)continue;SyncEngine.register(type,col);types.push(type)}if(COL.toplantiCizelgesi){SyncEngine.register('toplantiCizelgesi',COL.toplantiCizelgesi);types.push('toplantiCizelgesi')}if(types.length){await SyncEngine.localHydrate([...new Set(types)]);SyncEngine.schedule(120)}}
 function render(){if(!mounted)return;const root=document.querySelector('[data-dashboard-module]');if(!root)return;const parent=root.parentElement||document.getElementById('v2ModuleRoot'),signature=cards().map(x=>x.key).join('|'),role=isAdmin()?'admin':'teacher';if(root.dataset.cardSignature!==signature||root.dataset.dashboardRole!==role){parent.innerHTML=shell();bindPresentation(parent);stabilizeNewsTicker(parent);refreshHeroLive();lastLiveRenderKey=liveRenderKey(window.SchoolLiveStatus?.status?.()||{});return}const scrollY=window.scrollY;parent.innerHTML=shell();bindPresentation(parent);stabilizeNewsTicker(parent);refreshHeroLive();lastLiveRenderKey=liveRenderKey(window.SchoolLiveStatus?.status?.()||{});if(scrollY>0&&!scrolling)requestAnimationFrame(()=>{if(Math.abs(window.scrollY-scrollY)>2)window.scrollTo(0,scrollY)})}
-function queueRender(){if(!mounted)return;if(scrolling){pendingRender=true;return}if(renderFrame||renderTimer)return;renderTimer=setTimeout(()=>{renderTimer=0;if(!mounted||scrolling)return;renderFrame=requestAnimationFrame(()=>{renderFrame=0;render()})},180)}
+function queueRender(){
+  if(!mounted)return;
+  if(scrolling){pendingRender=true;return}
+  // Yenileme/senkronizasyon sırasında birçok AppStore bildirimi peş peşe gelir.
+  // Her bildirimi ayrı ayrı render etmek ana ekranın titremesine neden olur.
+  // Debounce ile son veri değişikliğinden sonra tek bir render yap.
+  if(renderTimer){clearTimeout(renderTimer);renderTimer=0}
+  renderTimer=setTimeout(()=>{
+    renderTimer=0;
+    if(!mounted||scrolling)return;
+    if(renderFrame)return;
+    renderFrame=requestAnimationFrame(()=>{
+      renderFrame=0;
+      if(mounted&&!scrolling)render();
+    });
+  },350);
+}
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const base=['data.yemekMenuleri','data.ogretmenler','data.dersProgrami','data.siniflar','data.veliler','data.servisler','data.hatirlaticilar','data.gorevler','data.sinavlar','data.denemeSinavlari','data.duyurular','data.haberler','data.anketler','data.nobetAtamalari','data.nobetYerleri','data.ogretmenIzinleri','data.notlar','data.yillikPlanTanimlari','data.ogretmenYillikPlanSecimleri','data.okulBilgileri','data.appConfig','data.toplantiCizelgesi','session.user'],paths=[...new Set([...base,...Object.keys(REMINDER_DEFS).map(t=>'data.'+t)])];paths.forEach(p=>{const u=window.AppStore?.subscribe?.(p,queueRender);if(u)unsubs.push(u)})}
 function liveRenderKey(live){return[ live?.mode||'',live?.remainingDays??'',live?.openingDate||'' ].join('|')}
 const liveTickHandler=e=>{const live=e?.detail||window.SchoolLiveStatus?.status?.()||{},key=liveRenderKey(live);if(key!==lastLiveRenderKey){lastLiveRenderKey=key;queueRender();return}refreshHeroLive(live)};
