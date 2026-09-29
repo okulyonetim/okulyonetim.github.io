@@ -13,6 +13,7 @@ public final class WidgetTheme {
     public static final String SYSTEM="system";
     public static final String LIGHT="light";
     public static final String DARK="dark";
+    public static final String KEY_TRANSPARENT="transparent_";
 
     private WidgetTheme(){}
 
@@ -24,6 +25,14 @@ public final class WidgetTheme {
     public static void set(Context c,int id,String mode){
         c.getSharedPreferences(PREFS,Context.MODE_PRIVATE)
                 .edit().putString(KEY_PREFIX+id,mode==null?SYSTEM:mode).apply();
+    }
+
+    public static boolean isTransparent(Context c,int id){
+        return c.getSharedPreferences(PREFS,Context.MODE_PRIVATE).getBoolean(KEY_TRANSPARENT+id,false);
+    }
+
+    public static void setTransparent(Context c,int id,boolean enabled){
+        c.getSharedPreferences(PREFS,Context.MODE_PRIVATE).edit().putBoolean(KEY_TRANSPARENT+id,enabled).apply();
     }
 
     public static boolean isDark(Context c,int id){
@@ -44,7 +53,8 @@ public final class WidgetTheme {
 
     /** Native Android widgetlerde web design-system ile aynı antrasit/sarı dili. */
     private static int rootBackground(Context c,int id){
-        return isDark(c,id) ? R.drawable.widget_theme_root_dark : R.drawable.widget_theme_root_light;
+        if(isDark(c,id)) return isTransparent(c,id) ? R.drawable.widget_theme_root_dark_transparent : R.drawable.widget_theme_root_dark;
+        return isTransparent(c,id) ? R.drawable.widget_theme_root_light_transparent : R.drawable.widget_theme_root_light;
     }
     private static int cardBackground(Context c,int id){
         return isDark(c,id) ? R.drawable.widget_theme_card_dark : R.drawable.widget_theme_card_light;
