@@ -4,7 +4,7 @@
  */
 (function(){
 'use strict';if(window.DashboardModule)return;
-let mounted=false,mountPromise=null,unsubs=[],reminderShown=false,trialTimer=null,calendarSelectedDay='',backTopHandler=null,renderFrame=0,scrollIdleTimer=null,scrolling=false,pendingRender=false,lastLiveRenderKey='';
+let mounted=false,mountPromise=null,unsubs=[],reminderShown=false,trialTimer=null,calendarSelectedDay='',backTopHandler=null,renderFrame=0,renderTimer=0,scrollIdleTimer=null,scrolling=false,pendingRender=false,lastLiveRenderKey='';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 const arr=t=>{const v=window.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 function isoToday(){const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`}
