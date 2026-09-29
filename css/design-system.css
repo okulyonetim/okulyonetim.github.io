@@ -12469,3 +12469,25 @@ html[data-theme="dark"] body .ka-announcement-card__actions .ka-announcement-ope
   border-color:var(--ka-border)!important;
   opacity:.6!important;
 }
+
+/* ===== MERKEZİ SAYFA GERİ NAVİGASYONU + MESAJ KONTRASTI ===== */
+.ka-shell-backbar{display:flex;align-items:center;min-height:44px;padding:6px 10px 2px}
+.ka-shell-back{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:76px;min-height:38px;padding:7px 13px;border:1px solid var(--ka-border);border-radius:12px;background:var(--ka-card-bg);color:var(--ka-text);font:inherit;font-weight:700;cursor:pointer;box-shadow:none;-webkit-tap-highlight-color:transparent}
+.ka-shell-back:hover,.ka-shell-back:focus-visible{border-color:var(--ka-primary);outline:2px solid var(--ka-focus);outline-offset:1px}
+.ka-shell-back:active{background:var(--ka-muted-bg)}
+.ka-shell-back::first-letter{font-size:24px;line-height:1}
+html[data-theme="dark"] .ka-shell-back{background:var(--ka-card-bg);color:var(--ka-text);border-color:var(--ka-primary)}
+html[data-theme="dark"] .ka-shell-back:active{background:var(--ka-card-raised-bg)}
+.ka-communication-page [data-conversation-open],
+.ka-communication-page [data-message-chat] .ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+.ka-communication-page [data-conversation-open] strong,
+.ka-communication-page [data-message-chat] .ka-card strong,
+.ka-communication-page [data-message-chat] .ka-card small,
+.ka-communication-page [data-message-chat] .ka-card [style*="white-space"]{color:var(--ka-text)!important}
+.ka-communication-page [data-conversation-open] .ka-muted,
+.ka-communication-page [data-message-chat] .ka-muted{color:var(--ka-text-muted)!important}
+.ka-communication-page [data-message-chat] textarea{background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border-color:var(--ka-input-border)!important}
+.ka-communication-page [data-message-chat] textarea::placeholder{color:var(--ka-text-muted)!important;opacity:1}
+html[data-theme="dark"] .ka-communication-page [data-conversation-open],
+html[data-theme="dark"] .ka-communication-page [data-message-chat] .ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important}
+html[data-theme="dark"] .ka-communication-page [data-message-chat] textarea{background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border-color:var(--ka-primary)!important}
