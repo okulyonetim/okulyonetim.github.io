@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -48,6 +49,15 @@ public class WidgetThemeConfigActivity extends Activity {
         (WidgetTheme.DARK.equals(current)?dark:WidgetTheme.LIGHT.equals(current)?light:system).setChecked(true);
         root.addView(group);
 
+        CheckBox transparent=new CheckBox(this);
+        transparent.setText("Yarı saydam arka plan");
+        transparent.setTextSize(14);
+        transparent.setTextColor(Color.rgb(21,23,26));
+        transparent.setChecked(WidgetTheme.isTransparent(this,widgetId));
+        LinearLayout.LayoutParams tp=new LinearLayout.LayoutParams(-1,-2);
+        tp.topMargin=10;
+        root.addView(transparent,tp);
+
         Button save=new Button(this);
         save.setText("Kaydet");
         save.setTextColor(Color.rgb(21,23,26));
@@ -59,6 +69,7 @@ public class WidgetThemeConfigActivity extends Activity {
             RadioButton checked=findViewById(group.getCheckedRadioButtonId());
             String mode=checked==null?WidgetTheme.SYSTEM:String.valueOf(checked.getTag());
             WidgetTheme.set(this,widgetId,mode);
+            WidgetTheme.setTransparent(this,widgetId,transparent.isChecked());
             AppWidgetManager mgr=AppWidgetManager.getInstance(this);
             ComponentName p=mgr.getAppWidgetInfo(widgetId).provider;
             if(p!=null){
