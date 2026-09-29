@@ -606,3 +606,27 @@ html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] 
     font-size:11.5px!important;
   }
 }
+
+/* ===== KOYU TEMA — SARI DOLGU / SİYAH METİN KONTRASTI =====
+   Sarı dolgu kullanan ana aksiyon yüzeylerinde metin ve ikonlar siyah kalır. */
+html[data-theme="dark"] .ka-home .kh-bell-timeline-chip,
+html[data-theme="dark"] .ka-home .kh-bell-progress-v2 i b,
+html[data-theme="dark"] .food-tab.is-active,
+html[data-theme="dark"] .ka-btn.primary,
+html[data-theme="dark"] .ka-btn--primary,
+html[data-theme="dark"] button.primary,
+html[data-theme="dark"] .primary{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-chip *,
+html[data-theme="dark"] .ka-home .kh-bell-progress-v2 i b *,
+html[data-theme="dark"] .food-tab.is-active *,
+html[data-theme="dark"] .ka-btn.primary *,
+html[data-theme="dark"] .ka-btn--primary *,
+html[data-theme="dark"] button.primary *,
+html[data-theme="dark"] .primary *{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  stroke:#111!important;
+}
