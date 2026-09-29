@@ -163,7 +163,7 @@ async function resetStatistics(){
         guncellenmeTarihi:new Date().toISOString()
       },{merge:true});
     }
-    await window.SyncEngine?.pull?.(['kullaniciIstatistikleri']);
+    window.SyncEngine?.schedule?.(80);
     toast?.(`Kullanıcı istatistikleri sıfırlandı (${stats.length} kayıt).`);
     await prepareStatisticsData(true);
   }catch(e){console.error('[Kullanıcı İstatistikleri Sıfırlama]',e);toast?.('İstatistikler sıfırlanamadı: '+(e?.message||e));}
