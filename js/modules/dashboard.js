@@ -229,17 +229,31 @@ function weekDutySection(){
 function examsSection(){const teacherMode=!isAdmin(),tid=teacherId();if(teacherMode&&!tid)return'';const list=upcoming(arr('sinavlar'),'tarih',30).filter(x=>!teacherMode||x.ogretmenId===tid).slice(0,6);if(!list.length)return'';const examIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg>',groups=[];for(const x of list){const key=String(x.tarih||'').slice(0,10);let g=groups.find(a=>a.key===key);if(!g){g={key,items:[]};groups.push(g)}g.items.push(x)}const body=groups.map(g=>{const dt=new Date(g.key+'T00:00:00'),head=Number.isNaN(dt.getTime())?g.key:dt.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'}).toLocaleUpperCase('tr'),rows=g.items.map(x=>{const d=dayDiff(x.tarih),status=d===0?'Bugün':d===1?'Yarın':`${d} gün`;return `<button type="button" class="kh-row" data-dash-route="academic" data-dash-page="written" data-dash-title="Yazılı Sınavlar"><div class="kh-row-main"><b>${esc(x.ders||x.ad||x.sinavAdi||'Sınav')}</b><small>${esc(x.siniflar||x.sinif||x.sinifAdi||'')}${x.saat?` · ${esc(x.saat)}`:''}</small></div><span class="kh-side">${esc(status)}</span></button>`}).join('');return `<div class="kh-exam-date">${esc(head)}</div>${rows}`}).join('');return `<section class="kh-section" data-home-section="exams"><div class="kh-section-head"><div class="kh-section-title">${examIcon}<span>${teacherMode?'Yaklaşan Yazılı Sınavlar':'Yaklaşan Sınavlar'}</span></div><button type="button" class="kh-more" data-dash-route="academic" data-dash-page="written" data-dash-title="Yazılı Sınavlar">Tümü ›</button></div><div class="kh-card">${body}</div></section>`}
 function todayMyLessonsSection(){
  const admin=isAdmin(),tid=teacherId(),name=dayName();
- const all=arr('dersProgrami').filter(x=>sameDay(x.gun,name)).sort(sortHour);
- const list=admin?all:all.filter(x=>x.ogretmenId===tid);
+ /*
+  * Yönetici ana sayfasında okulun tüm ders programını göstermeyelim.
+  * Yönetici aynı zamanda bir öğretmene bağlıysa yalnızca kendi derslerini
+  * görsün; bağlı öğretmen yoksa kart yine görünsün ve bilgi mesajı versin.
+  */
+ const list=tid
+   ? arr('dersProgrami').filter(x=>sameDay(x.gun,name)&&String(x.ogretmenId||'')===String(tid)).sort(sortHour)
+   : [];
  const title=admin?'Bugünkü Dersler':'Bugünkü Derslerim';
- const book='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V5H6.5A2.5 2.5 0 0 0 4 7.5v12Z"/><path d="M8 9h8M8 13h6"/></svg>';
  const live=window.SchoolLiveStatus?.status?.();
  const rows=list.length?list.map(x=>{
    const period=Number(x.saat??x.dersSaati),isNow=live?.mode==='lesson'&&Number(live.period)===period;
-   const main=admin?`${period||'•'}. Ders · ${classLabel(x)}`:`${period||'•'}. Ders · ${lessonLabel(x)}`;
-   const sub=admin?`${lessonLabel(x)} · ${teacherLabel(x)}`:classLabel(x);
-   return `<button type="button" class="kh-row${isNow?' is-now':''}" data-dash-route="academic" data-dash-page="schedule" data-dash-title="Ders Programı"><div class="kh-row-main"><b>${esc(main)}</b><small>${esc(sub)}</small></div><span class="kh-chip ${isNow?'green':''}">${isNow?'ŞİMDİ':''}</span></button>`;
- }).join(''):`<div class="kh-empty">${esc(admin?'Bugün için ders programı kaydı yok.':(!tid?'Profilinize bağlı öğretmen bulunamadı.':'Bugün size atanmış ders bulunmuyor.'))}</div>`;
+   const main=`${period||'•'}. Ders · ${lessonLabel(x)}`;
+   const sub=classLabel(x);
+   const plan=admin
+     ? `<button type="button" class="kh-row-plan" data-dash-route="academic" data-dash-page="plans" data-dash-title="Yıllık Plan" aria-label="Yıllık Planı Aç">Plan ›</button>`
+     : '';
+   return `<div class="kh-row${isNow?' is-now':''}">
+     <button type="button" class="kh-row-main-button" data-dash-route="academic" data-dash-page="schedule" data-dash-title="Ders Programı">
+       <span class="kh-row-main"><b>${esc(main)}</b><small>${esc(sub)}</small></span>
+       <span class="kh-chip ${isNow?'green':''}">${isNow?'ŞİMDİ':''}</span>
+     </button>
+     ${plan}
+   </div>`;
+ }).join(''):`<div class="kh-empty">${esc(admin?'Bugün dersin yok.':(!tid?'Profilinize bağlı öğretmen bulunamadı.':'Bugün size atanmış ders bulunmuyor.'))}</div>`;
  return `<section class="kh-section" data-home-section="today-lessons"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art">${sectionArt('lessons','')}</span><span>${title}</span></div><button type="button" class="kh-more" data-dash-route="academic" data-dash-page="schedule" data-dash-title="Ders Programı">Program ›</button></div><div class="kh-card">${rows}</div></section>`;
 }
 function personalScheduleSection(){const tid=!isAdmin()?teacherId():'';if(!tid)return'';const list=arr('dersProgrami').filter(x=>x.ogretmenId===tid).sort((a,b)=>{const ai=DAY_NAMES.indexOf(a.gun),bi=DAY_NAMES.indexOf(b.gun);return(ai-bi)||sortHour(a,b)});if(!list.length)return'';return section('Ders Programım','⏱️','schedule',`<div class="ka-home-schedule">${DAY_NAMES.slice(1,6).map(g=>{const rows=list.filter(x=>sameDay(x.gun,g));return rows.length?`<div><strong>${g}</strong><span>${rows.map(x=>`${esc(String(x.saat??'•'))}. ${esc(classLabel(x))}`).join(' · ')}</span></div>`:''}).join('')}</div>${routeButton('Tüm programı aç','academic','schedule','Ders Programı','›')}`)}
