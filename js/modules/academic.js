@@ -193,8 +193,21 @@ function planWeekDays(v){const m=/\((\d{1,2})-(\d{1,2})\)/.exec(v||'');return m?
 function planDateRange(row,schoolYear){const month=YPL_AY_NO[String(row?.ay||'').toLocaleUpperCase('tr')],days=planWeekDays(row?.hafta),years=String(schoolYear||'').split('-').map(Number);if(!month||!days||years.length!==2||!years[0])return null;const startYear=month>=9?years[0]:years[1];let endMonth=month,endYear=startYear;if(days.end<days.start){endMonth=month===12?1:month+1;endYear=endMonth===1&&month===12?startYear+1:startYear}return{start:new Date(startYear,month-1,days.start),end:new Date(endYear,endMonth-1,days.end)}}
 function planDateText(row,schoolYear){const r=planDateRange(row,schoolYear);if(!r)return row?.hafta||'';const months=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];return r.start.getMonth()===r.end.getMonth()?`${r.start.getDate()} – ${r.end.getDate()} ${months[r.end.getMonth()]}`:`${r.start.getDate()} ${months[r.start.getMonth()]} – ${r.end.getDate()} ${months[r.end.getMonth()]}`}
 function planCurrentWeekIndex(p){const rows=p?.satirlar||[];if(!rows.length)return 0;const now=new Date();now.setHours(0,0,0,0);for(let i=0;i<rows.length;i++){const r=planDateRange(rows[i],p.egitimOgretimYili);if(r&&now>=r.start&&now<=r.end)return i}for(let i=0;i<rows.length;i++){const r=planDateRange(rows[i],p.egitimOgretimYili);if(r&&r.start>=now)return i}return 0}
-function planSelection(){const tid=planTeacherId();if(!tid)return null;return arr('ogretmenYillikPlanSecimleri').find(x=>x.id===tid||x.ogretmenId===tid)||null}
-function planTracked(){const ids=planSelection()?.planIdler||[];return ids.map(id=>arr('yillikPlanTanimlari').find(x=>x.id===id)).filter(Boolean)}
+function planSelection(){const tid=planTeacherId();if(!tid)return null;return arr('ogretmenYillikPlanSecimleri').find(x=>String(x.id||'')===String(tid)||String(x.ogretmenId||'')===String(tid))||null}
+function planTracked(){
+ const s=planSelection()||{};
+ const ids=[...(Array.isArray(s.planIdler)?s.planIdler:[]),...(Array.isArray(s.planlar)?s.planlar:[]),...(Array.isArray(s.planIds)?s.planIds:[])];
+ if(s.planId)ids.push(s.planId);
+ return [...new Set(ids.map(x=>String(x||'').trim()).filter(Boolean))]
+   .map(id=>arr('yillikPlanTanimlari').find(x=>String(x.id||'')===id)).filter(Boolean);
+}
+function planTeacherAuto(){
+ const tid=String(planTeacherId()||'').trim();if(!tid)return[];
+ const lessons=arr('dersProgrami').filter(x=>String(x?.ogretmenId||'')===tid);
+ const keys=new Set(lessons.map(x=>{const level=planClassLevel(x?.sinif),lesson=planLessonKey(x?.ders);return level&&lesson?level+'|'+lesson:''}).filter(Boolean));
+ if(!keys.size)return[];
+ return arr('yillikPlanTanimlari').filter(p=>keys.has(planClassLevel(p?.seviye)+'|'+planLessonKey(p?.dersAdi)));
+}
 function planTheme(p,index){const row=(p?.satirlar||[])[index]||{},vals=row.degerler||{};for(const id of p?.sutunlar||[])if(typeof vals[id]==='string'&&vals[id].trim())return vals[id].trim();return''}
 function planNoteText(p,index){const tid=planTeacherId();if(!tid)return'';const n=arr('yillikPlanNotlari').find(x=>x.id===`${tid}_${p.id}`||(x.ogretmenId===tid&&x.planId===p.id));return String(n?.notlar?.[index]||'')}
 function planDetail(p){const rows=p.satirlar||[],idx=Math.max(0,Math.min(planView.weekIndex,Math.max(0,rows.length-1))),row=rows[idx]||{},values=row.degerler||{},content=(p.sutunlar||[]).map(id=>({id,name:planHeadingName(id),value:(typeof values[id]==='string'?values[id].trim():'').replace(/^\[object Object\]$/,'')})).filter(x=>x.value),note=planNoteText(p,idx),canNote=!!planTeacherId()&&YillikPlanService?._goruntuleyebilir?.();planView.weekIndex=idx;return{count:rows.length,html:`<section class="ka-plan-week ka-plan-week--overlay" data-plan-week-overlay><div class="ka-plan-week__head"><button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-plan-back>← Kapat</button><div class="ka-plan-week__title"><strong>${esc(p.dersAdi||'Yıllık Plan')}</strong><span>${esc(p.seviye?`${p.seviye}. Sınıf`:'')}</span></div><div class="ka-plan-week__tools"><button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-plan-wake>${planWakeLock?'🔒 Açık':'🔓 Kapalı'}</button><button class="ka-icon-button ka-plan-menu-button" type="button" data-plan-menu aria-label="Plan seçenekleri">⋮</button></div></div><div class="ka-plan-week__date">${esc(planDateText(row,p.egitimOgretimYili)||row.hafta||`${idx+1}. Hafta`)}</div><div class="ka-plan-week__body" data-plan-week-body>${content.length?content.map(x=>`<article class="ka-plan-content-card"><span class="ka-plan-content-pill">${esc(x.name)}</span><div>${esc(x.value).replace(/\n/g,'<br>')}</div></article>`).join(''):'<div class="ka-empty">Bu hafta için içerik girilmemiş.</div>'}${note?`<article class="ka-plan-note"><strong>📝 Hafta Notum</strong><div>${esc(note).replace(/\n/g,'<br>')}</div></article>`:''}${canNote?`<button class="ka-btn ka-btn--secondary" type="button" data-plan-note>${note?'Notu Düzenle':'📝 Not Ekle'}</button>`:''}</div><div class="ka-plan-week__footer"><button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-plan-prev ${idx===0?'disabled':''}>‹ Önceki</button><span>${idx+1} / ${rows.length||0}</span><button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-plan-next ${idx>=rows.length-1?'disabled':''}>Sonraki ›</button></div></section>`}}
@@ -204,13 +217,13 @@ function plans(){
  const isAdminUser=(typeof isAdmin==='function'&&isAdmin())||u.admin===true||u.rol==='admin'||u.role==='admin';
  if(planView.planId){const p=all.find(x=>x.id===planView.planId)||arr('yillikPlanTanimlari').find(x=>x.id===planView.planId);if(p)return planDetail(p);planView={planId:'',weekIndex:0}}
  const tid=planTeacherId();
- const tracked=planTracked();
+ const tracked=[...planTracked(),...planTeacherAuto()].filter((p,i,a)=>a.findIndex(x=>x.id===p.id)===i);
  const canEdit=!!YillikPlanService?._yaziYetkisiVar?.();
  const teacherBody=!tid
    ? '<div class="ka-empty">Profilinize bağlı bir öğretmen kaydı bulunamadı.</div>'
    : tracked.length
      ? tracked.map(p=>{const theme=planTheme(p,planCurrentWeekIndex(p));return `<button class="ka-plan-row" type="button" data-plan-open="${esc(p.id)}"><span><strong>${esc(p.dersAdi||'Yıllık plan')}</strong><small>${esc(p.seviye?` · ${p.seviye}. Sınıf`:'')}${theme?`<br>Bu hafta: ${esc(theme.slice(0,90))}${theme.length>90?'…':''}`:''}</small></span><span>›</span></button>`}).join('')
-     : '<div class="ka-empty">Henüz size atanmış bir yıllık plan yok.</div>';
+     : '<div class="ka-empty">Henüz size atanmış veya ders programınıza bağlı bir yıllık plan yok.</div>';
  const adminBody=isAdminUser
    ? (all.length
       ? all.map(p=>`<div class="ka-plan-admin-row"><button class="ka-plan-admin-main" type="button" data-plan-open="${esc(p.id)}"><span><strong>${esc(p.dersAdi||'Yıllık plan')}</strong><small>${esc([p.seviye?`${p.seviye}. Sınıf`:'',p.egitimOgretimYili,`${(p.satirlar||[]).length} hafta`].filter(Boolean).join(' · '))}</small></span><span>›</span></button>${canEdit?`<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-plan-edit="${esc(p.id)}">Düzenle</button>`:''}</div>`).join('')
