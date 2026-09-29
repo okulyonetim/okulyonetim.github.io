@@ -85,7 +85,19 @@ public class DersZiliHesaplayici {
                 if (sonrakiIndex == -1) {
                     sonuc.put("durumMetni", "Bugünkü dersler bitti");
                 } else if (sonrakiIndex == 0) {
-                    sonuc.put("durumMetni", "Okul henüz açılmadı");
+                    // Okul henüz açılmadıysa da ilk dersin başlamasına kalan süreyi göster.
+                    // Böylece widget yalnızca aktif ders sırasında değil, ders başlamadan önce de geri sayar.
+                    JSONObject sonrakiSeg = segmentler.getJSONObject(sonrakiIndex);
+                    int sonrakiBas = dakika(sonrakiSeg.opt("bas"), -1);
+                    if (sonrakiBas < 0) { sonuc.put("durumMetni", "Zil programı yok"); return sonuc; }
+                    int kalan = sonrakiBas - simdiDk;
+                    sonuc.put("kalanDakika", kalan);
+                    sonuc.put("ilerlemeOran", 0);
+                    sonuc.put("aktifBaslik", "OKUL HENÜZ AÇILMADI");
+                    sonuc.put("aktifYer", "");
+                    sonuc.put("sonrakiBaslik", sonrakiSeg.optString("baslik", ""));
+                    sonuc.put("sonrakiYer", sonrakiSeg.optString("yer", ""));
+                    sonuc.put("sonrakiSaat", String.format("%02d:%02d", sonrakiBas / 60, sonrakiBas % 60));
                 } else {
                     // Teneffüsteyiz: sonraki segment başlayana kadar geri sayım.
                     // Teneffüsün toplam süresi arayüzde gösterilmediği için halka sabit yarım çiziliyor.
