@@ -133,7 +133,7 @@ function ensureLeaflet(){
 }
 function locationSummaryHtml(records){
   const android=records.filter(r=>platformLabel(r.platform).startsWith('Android')).length,ios=records.filter(r=>platformLabel(r.platform).startsWith('iOS')).length,web=records.length-android-ios,users=new Set(records.map(r=>r.uid).filter(Boolean)).size;
-  return `<div class="ka-statistics-summary"><article><span aria-hidden="true">⌖</span><div><small>Konum Kaydı</small><strong>${records.length}</strong></div></article><article><span aria-hidden="true">👥</span><div><small>Kullanıcı</small><strong>${users}</strong></div></article><article><span aria-hidden="true">📱</span><div><small>Mobil Uygulama</small><strong>${android+ios}</strong></div></article><article><span aria-hidden="true">🌐</span><div><small>Web</small><strong>${web}</strong></div></article></div>`;
+  return `<div class="ka-statistics-summary ka-login-location-summary"><article><span class="ka-statistics-summary__icon" aria-hidden="true">⌖</span><div><small>Konum Kaydı</small><strong>${records.length}</strong></div></article><article><span class="ka-statistics-summary__icon" aria-hidden="true">♙</span><div><small>Kullanıcı</small><strong>${users}</strong></div></article><article><span class="ka-statistics-summary__icon" aria-hidden="true">▣</span><div><small>Mobil Uygulama</small><strong>${android+ios}</strong></div></article><article><span class="ka-statistics-summary__icon" aria-hidden="true">◎</span><div><small>Web</small><strong>${web}</strong></div></article></div>`;
 }
 function locationListHtml(records){
   const limit=12,showAll=loginLocationShowAll||records.length<=limit,rows=showAll?records:records.slice(0,limit);if(!rows.length)return'<div class="ka-empty">Henüz konum izni verilmiş bir giriş kaydı bulunmuyor.</div>';
@@ -149,7 +149,7 @@ async function drawLoginMap(section,records){
     loginMap=global.L.map(el,{zoomControl:true,tap:true});
     global.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(loginMap);
     const bounds=[];
-    records.slice(0,80).forEach((r,i)=>{const pos=[Number(r.lat),Number(r.lng)],marker=global.L.marker(pos).addTo(loginMap);marker.bindPopup(`<strong>${esc(r.displayName)}</strong><br>${esc(platformLabel(r.platform))}<br>${esc(dateText(r.timestamp))}<br><small>${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}</small>`);marker.__loginIndex=i;bounds.push(pos)});
+    records.slice(0,80).forEach((r,i)=>{const pos=[Number(r.lat),Number(r.lng)],marker=global.L.marker(pos).addTo(loginMap);marker.bindPopup(`<div class="ka-login-map-popup"><strong>${esc(r.displayName)}</strong><span>${esc(platformLabel(r.platform))}</span><span>${esc(dateText(r.timestamp))}</span><small>${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}</small></div>`);marker.__loginIndex=i;bounds.push(pos)});
     if(bounds.length===1)loginMap.setView(bounds[0],15);else loginMap.fitBounds(bounds,{padding:[28,28],maxZoom:16});
     bindLocationFocus(section,records);
     requestAnimationFrame(()=>loginMap?.invalidateSize());
