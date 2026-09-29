@@ -156,6 +156,12 @@ function start(){
   global.PermissionService?.subscribe?.(schedule);
   schedule();
 }
+const LEGACY_DAY_CODES={pazartesi:1,sali:2,çarşamba:3,carsamba:3,perşembe:4,persembe:4,cuma:5,cumartesi:6,pazar:0};
+function legacyDayCode(value){
+  const key=norm(value).replace(/\s+/g,'');
+  const n=Number(value);
+  return Number.isFinite(n)&&n>=0&&n<=6?n:(LEGACY_DAY_CODES[key]??'');
+}
 function stop(){observer?.disconnect();observer=null;restoreShell();detailBridge.clear();newBridge=null;closeOfficialPetition();}
 
 global.ClassicPersonnelParity={start,stop,refresh:()=>{render(true);schedule()},openOfficialPetition,legacyDayCode};
