@@ -57,7 +57,7 @@ public class ModernDersZiliWidget extends AppWidgetProvider {
         String durum=d.optString("durumMetni","");
         int kalan=d.optInt("kalanDeger",d.optInt("kalanDakika",0));
         String birim=d.optString("kalanBirim","DAKİKA");
-        v.setTextViewText(R.id.modern_dz_count,durum.isEmpty()?String.valueOf(kalan):durum);
+        v.setTextViewTextSize(R.id.modern_dz_count, android.util.TypedValue.COMPLEX_UNIT_SP, durum.isEmpty()?24f:16f);\n        v.setTextViewText(R.id.modern_dz_count,durum.isEmpty()?String.valueOf(kalan):durum);
         v.setTextViewText(R.id.modern_dz_unit,durum.isEmpty()?(birim.toLowerCase(new java.util.Locale("tr","TR"))+" kaldı"):"");
         String next=d.optString("sonrakiBaslik","—");
         String nextYer=d.optString("sonrakiYer","");
