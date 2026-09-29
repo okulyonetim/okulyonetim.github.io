@@ -9,8 +9,8 @@ if(global.LoginSecurityFeature)return;
 const STATS_TYPE='kullaniciIstatistikleri';
 const LEAFLET_JS='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 const LEAFLET_CSS='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-const MAX_LOGIN_HISTORY=120;
 let locationAttempted=false,locationSaving=false,locationSaved=false,leafletPromise=null,loginMap=null,locationUnsub=null,observer=null,locationRendering=false;
+let loginLocationShowAll=false;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const user=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||null;
 const isAdmin=()=>user()?.admin===true;
@@ -54,7 +54,7 @@ async function saveLocation(lat,lng){
     await prepareStats(false);
     const current=global.DeviceData.get(STATS_TYPE,u.uid)||{id:u.uid,uid:u.uid,ad:u.ad||u.adSoyad||u.kullaniciAdi||'Kullanıcı'};
     const record={lat:Number(lat),lng:Number(lng),platform:platform(),timestamp:new Date().toISOString()};
-    const history=[...(Array.isArray(current.girisKayitlari)?current.girisKayitlari:[]),record].slice(-MAX_LOGIN_HISTORY);
+    const history=[...(Array.isArray(current.girisKayitlari)?current.girisKayitlari:[]),record];
     await global.DeviceData.set(STATS_TYPE,global.COL.kullaniciIstatistikleri,u.uid,{uid:u.uid,ad:current.ad||u.ad||u.adSoyad||u.kullaniciAdi||'Kullanıcı',girisKayitlari:history,sonGirisKonumu:record,guncellenmeTarihi:new Date().toISOString()},{merge:true});
     locationSaved=true;
     return true;
@@ -136,9 +136,10 @@ function locationSummaryHtml(records){
   return `<div class="ka-statistics-summary"><article><span aria-hidden="true">⌖</span><div><small>Konum Kaydı</small><strong>${records.length}</strong></div></article><article><span aria-hidden="true">👥</span><div><small>Kullanıcı</small><strong>${users}</strong></div></article><article><span aria-hidden="true">📱</span><div><small>Mobil Uygulama</small><strong>${android+ios}</strong></div></article><article><span aria-hidden="true">🌐</span><div><small>Web</small><strong>${web}</strong></div></article></div>`;
 }
 function locationListHtml(records){
-  const rows=records.slice(0,12);if(!rows.length)return'<div class="ka-empty">Henüz konum izni verilmiş bir giriş kaydı bulunmuyor.</div>';
-  return rows.map((r,i)=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><span class="ka-avatar" aria-hidden="true">${String(r.platform||'').includes('android')?'📱':String(r.platform||'').includes('ios')?'📱':'🌐'}</span><div class="ka-grow"><strong>${esc(r.displayName)}</strong><div class="ka-muted">${esc(platformLabel(r.platform))} · ${esc(dateText(r.timestamp))}</div><small class="ka-muted">${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}</small></div><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-login-location-focus="${i}">Haritada Göster</button></div></article>`).join('');
+  const limit=12,showAll=loginLocationShowAll||records.length<=limit,rows=showAll?records:records.slice(0,limit);if(!rows.length)return'<div class="ka-empty">Henüz konum izni verilmiş bir giriş kaydı bulunmuyor.</div>';
+  return rows.map((r,i)=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><span class="ka-avatar" aria-hidden="true">${String(r.platform||'').includes('android')?'📱':String(r.platform||'').includes('ios')?'📱':'🌐'}</span><div class="ka-grow"><strong>${esc(r.displayName)}</strong><div class="ka-muted">${esc(platformLabel(r.platform))} · ${esc(dateText(r.timestamp))}</div><small class="ka-muted">${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}</small></div><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-login-location-focus="${i}">Haritada Göster</button></div></article>`).join('')+(records.length>limit?`<div class="ka-row" style="justify-content:center"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-login-location-toggle>${showAll?'Daha az göster':'Tümünü göster'} (${records.length})</button></div>`:'');
 }
+function bindLocationFocus(section,records){section.querySelectorAll('[data-login-location-focus]').forEach(b=>b.addEventListener('click',()=>{const index=Number(b.dataset.loginLocationFocus),r=records[index];if(!r||!loginMap)return;loginMap.setView([Number(r.lat),Number(r.lng)],16);for(const layer of Object.values(loginMap._layers||{})){if(layer?.__loginIndex===index){layer.openPopup?.();break}}}));section.querySelector('[data-login-location-toggle]')?.addEventListener('click',()=>{loginLocationShowAll=!loginLocationShowAll;const list=section.querySelector('[data-login-location-list]');if(list)list.innerHTML=locationListHtml(records);bindLocationFocus(section,records)});}
 async function drawLoginMap(section,records){
   const el=section.querySelector('[data-login-location-map]');if(!el)return;
   if(loginMap){try{loginMap.remove()}catch(_){}loginMap=null}
@@ -150,7 +151,7 @@ async function drawLoginMap(section,records){
     const bounds=[];
     records.slice(0,80).forEach((r,i)=>{const pos=[Number(r.lat),Number(r.lng)],marker=global.L.marker(pos).addTo(loginMap);marker.bindPopup(`<strong>${esc(r.displayName)}</strong><br>${esc(platformLabel(r.platform))}<br>${esc(dateText(r.timestamp))}<br><small>${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}</small>`);marker.__loginIndex=i;bounds.push(pos)});
     if(bounds.length===1)loginMap.setView(bounds[0],15);else loginMap.fitBounds(bounds,{padding:[28,28],maxZoom:16});
-    section.querySelectorAll('[data-login-location-focus]').forEach(b=>b.addEventListener('click',()=>{const r=records[Number(b.dataset.loginLocationFocus)];if(!r||!loginMap)return;loginMap.setView([Number(r.lat),Number(r.lng)],16);for(const layer of Object.values(loginMap._layers||{})){if(layer?.__loginIndex===Number(b.dataset.loginLocationFocus)){layer.openPopup?.();break}}}));
+    bindLocationFocus(section,records);
     requestAnimationFrame(()=>loginMap?.invalidateSize());
   }catch(e){console.warn('[Giriş konum haritası]',e?.message||e);el.innerHTML='<div class="ka-map-loading">Harita yüklenemedi. Konum kayıtları aşağıdaki listede gösteriliyor.</div>'}
 }
