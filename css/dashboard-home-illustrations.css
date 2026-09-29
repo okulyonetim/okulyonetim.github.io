@@ -562,3 +562,40 @@ html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] 
     padding:7px 8px!important;
   }
 }
+
+
+/* BUGÜNKÜ DERSLER — MOBİLDE KOMPAKT YAZI */
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+  cursor:pointer!important;
+  text-decoration:none!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
+  font-size:10px!important;
+  padding:5px 8px!important;
+}
+@media(max-width:520px){
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
+    min-height:52px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+    min-height:52px!important;
+    padding:8px 10px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+    font-size:14px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+    font-size:11.5px!important;
+  }
+}
