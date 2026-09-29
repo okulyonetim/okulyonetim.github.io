@@ -12414,3 +12414,58 @@ html,body{font-synthesis:none;text-rendering:optimizeLegibility;}
 .ka-home .kh-section[data-home-section="lessons"] .kh-row-main small{color:var(--ka-text-muted)!important}
 .ka-home .kh-section[data-home-section="lessons"] .kh-side{color:var(--ka-primary)!important;font-weight:900!important}
 html[data-theme="dark"] .ka-home .kh-section[data-home-section="lessons"] .kh-card,html[data-theme="dark"] .ka-home .kh-section[data-home-section="lessons"] .kh-row,html[data-theme="dark"] .ka-home .kh-section[data-home-section="lessons"] .kh-row.is-now{background:var(--ka-module-surface)!important;color:var(--ka-module-text)!important;border-color:var(--ka-primary)!important}
+
+
+/* ===== DUYURULAR — Duyuruyu Aç butonu tema uyumluluğu ===== */
+body .ka-announcement-card__actions .ka-announcement-open{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  min-height:40px!important;
+  padding:0 16px!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:12px!important;
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  font-weight:850!important;
+  opacity:1!important;
+  visibility:visible!important;
+  box-shadow:none!important;
+}
+body .ka-announcement-card__actions .ka-announcement-open:hover{
+  background:var(--ka-primary-strong,var(--ka-primary))!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+body .ka-announcement-card__actions .ka-announcement-open:active,
+body .ka-announcement-card__actions .ka-announcement-open:focus-visible{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--ka-primary) 22%,transparent)!important;
+}
+body .ka-announcement-card__actions .ka-announcement-open:disabled{
+  background:var(--ka-muted-bg)!important;
+  color:var(--ka-text-muted)!important;
+  border-color:var(--ka-border)!important;
+  opacity:.65!important;
+}
+html[data-theme="dark"] body .ka-announcement-card__actions .ka-announcement-open{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] body .ka-announcement-card__actions .ka-announcement-open:hover,
+html[data-theme="dark"] body .ka-announcement-card__actions .ka-announcement-open:active,
+html[data-theme="dark"] body .ka-announcement-card__actions .ka-announcement-open:focus-visible{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] body .ka-announcement-card__actions .ka-announcement-open:disabled{
+  background:transparent!important;
+  color:var(--ka-text-muted)!important;
+  border-color:var(--ka-border)!important;
+  opacity:.6!important;
+}
