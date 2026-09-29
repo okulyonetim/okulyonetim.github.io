@@ -108,7 +108,20 @@ return{run:state.running,valid,remaining:state.remaining,label:state.label,statu
 }
 
 const syncDefs=()=>({sinavlar:COL?.sinavlar,denemeSinavlari:COL?.denemeSinavlari,dersProgrami:COL?.dersProgrami,dersListesi:COL?.dersListesi,dersSaatleri:COL?.dersSaatleri,siniflar:COL?.siniflar,ogretmenler:COL?.ogretmenler,okulBilgileri:COL?.okulBilgileri,yillikPlanBasliklari:COL?.yillikPlanBasliklari,yillikPlanTanimlari:COL?.yillikPlanTanimlari,ogretmenYillikPlanSecimleri:COL?.ogretmenYillikPlanSecimleri,yillikPlanNotlari:COL?.yillikPlanNotlari,akademikTakvim:COL?.akademikTakvim,denemeSonuclari:COL?.denemeSonuclari,testSonuclari:COL?.testSonuclari});
-async function prepareLocal(){if(!window.SyncEngine)return;const types=[];Object.entries(syncDefs()).forEach(([type,col])=>{if(col){SyncEngine.register(type,col);types.push(type)}});if(types.length){await SyncEngine.localHydrate(types);if(global.navigator?.onLine&&typeof SyncEngine.sync==='function'){try{await SyncEngine.sync(types)}catch(e){console.warn('Yıllık plan senkronizasyonu:',e)}}SyncEngine.schedule(80)}}
+async function prepareLocal(){
+ if(!window.SyncEngine)return;
+ const types=[];
+ Object.entries(syncDefs()).forEach(([type,col])=>{if(col){SyncEngine.register(type,col);types.push(type)}});
+ if(!types.length)return;
+ await SyncEngine.localHydrate(types);
+ if(global.navigator?.onLine){
+   try{
+     if(typeof SyncEngine.pull==='function')await SyncEngine.pull(types);
+     else if(typeof SyncEngine.sync==='function')await SyncEngine.sync(types);
+   }catch(e){console.warn('Yıllık plan uzak veri senkronizasyonu:',e)}
+ }
+ SyncEngine.schedule(80);
+}
 function shell(){return`<section class="ka-stack ka-academic-page" data-academic-module><div class="ka-row ka-row--between" data-academic-heading><div><h2 data-academic-title>Akademik</h2><p class="ka-muted" data-academic-description>Ders programı, sınavlar ve planlar önce cihaz verisinden gösterilir.</p></div><span id="academicCount" class="ka-badge"></span></div><label class="ka-field" data-academic-search-wrap><span class="ka-field__label">Ara</span><input id="academicSearch" type="search" placeholder="Sınav, ders, sınıf veya plan ara…"></label><div id="academicContent" class="ka-stack"></div></section>`}
 const ACADEMIC_PAGE_META={written:{title:'Yazılı Sınavlar',description:'Yazılı sınav takvimini, sınıfları ve sınav ayrıntılarını yönetin.'},trial:{title:'Deneme Sınavları',description:'Deneme takvimini, oturumları ve otomatik canlı sayacı yönetin.'},schedule:{title:'Ders Programı',description:'Ders programını cihaz verisi üzerinden görüntüleyin ve yönetin.'},results:{title:'Sınav Sonuçları',description:'Sınav sonuçlarını görüntüleyin ve yönetin.'},plans:{title:'Yıllık Plan',description:'Yıllık planları cihaz verisi üzerinden görüntüleyin ve yönetin.'},calendar:{title:'Akademik Takvim',description:'Akademik takvimi görüntüleyin.'}};
 function applyAcademicMeta(title=''){const meta=ACADEMIC_PAGE_META[active]||{title:'Akademik',description:'Ders programı, sınavlar ve planlar önce cihaz verisinden gösterilir.'},host=ownedAcademicHost(),h=host?.querySelector('[data-academic-title]'),d=host?.querySelector('[data-academic-description]');if(h)h.textContent=title||meta.title;if(d)d.textContent=meta.description}
