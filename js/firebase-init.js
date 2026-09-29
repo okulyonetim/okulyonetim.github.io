@@ -13,6 +13,39 @@ const firebaseConfig = {
 };
 const VAPID_KEY = "BATuvupnzSActFxWlfg12dtT-hYMIkND9S_lfA1B-FYHIwJ0aya0HHJ4fRRfifZ5PlKETpRLnnugzOz5zjgi3u4";
 
+
+/* Firebase CDN güvenli yükleme katmanı.
+   GitHub Pages/WebView'da CDN isteği gecikir veya önbellekte bozulursa
+   Firebase başlatmasını kontrollü olarak yeniden dener. */
+(function firebaseSdkLoadGuard(global){
+  'use strict';
+  const SDK_BASE='https://www.gstatic.com/firebasejs/10.12.2/';
+  const SDKS=[
+    ['firebase-app-compat.js',()=>!!global.firebase?.initializeApp],
+    ['firebase-firestore-compat.js',()=>!!global.firebase?.firestore],
+    ['firebase-auth-compat.js',()=>!!global.firebase?.auth],
+    ['firebase-messaging-compat.js',()=>!!global.firebase?.messaging]
+  ];
+  const loadOne=(file,ready)=>new Promise((resolve,reject)=>{
+    if(ready()){resolve();return}
+    const src=SDK_BASE+file;
+    const existing=[...document.scripts].find(s=>String(s.src||'').split('?')[0]===src);
+    const script=existing||document.createElement('script');
+    let settled=false;
+    const done=(ok,error)=>{if(settled)return;settled=true;ok?resolve():reject(error||new Error('Firebase SDK yüklenemedi: '+file))};
+    script.addEventListener('load',()=>done(true),{once:true});
+    script.addEventListener('error',()=>done(false),{once:true});
+    if(!existing){script.src=src;script.async=false;script.dataset.firebaseRetry='true';document.head.appendChild(script)}
+    else if(ready())done(true);
+    setTimeout(()=>{if(ready())done(true);else done(false)},12000);
+  });
+  global.FirebaseSDKReady=(async()=>{
+    for(const [file,ready] of SDKS)await loadOne(file,ready);
+    if(!global.firebase?.initializeApp)throw new Error('Firebase App SDK yüklenemedi.');
+    return true;
+  })().catch(error=>{console.error('[FirebaseSDK]',error);throw error});
+})(window);
+
 const COL = {
   ogretmenler:'oy_ogretmenler', dersProgrami:'oy_dersProgrami', hatirlaticilar:'oy_hatirlaticilar', gorevler:'oy_gorevler', evrak:'oy_evrakTakibi', notlar:'oy_notlar', cihazlar:'oy_cihazTokenleri',
   sosyalKulupler:'oy_sosyalKulupler', belirliGunler:'oy_belirliGunler', zumre:'oy_zumre', sok:'oy_sok', bepPlani:'oy_bepPlani', rehberlik:'oy_rehberlik', maarifRapor:'oy_maarifRapor', digerEvrak:'oy_digerEvrak',
