@@ -392,3 +392,173 @@ html[data-theme="dark"] .ka-home .kh-bell-timeline-chip{
   .ka-home .kh-bell-countdown-ring b{font-size:17px!important}
   .ka-home .kh-bell-countdown-ring small{font-size:8.5px!important}
 }
+
+
+/* ===== BUGÜNKÜ DERSLER — DÜZENLİ SATIR + TEMA KONTRASTI ===== */
+.ka-home .kh-section[data-home-section="today-lessons"]{
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-card{
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:var(--ka-card-bg,#fff)!important;
+  border:1px solid var(--ka-border,#d2ad2b)!important;
+  border-radius:20px!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
+  width:100%!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:stretch!important;
+  background:var(--ka-card-bg,#fff)!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--ka-border) 45%,transparent)!important;
+  border-radius:0!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row:last-child{
+  border-bottom:0!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+  min-width:0!important;
+  width:100%!important;
+  min-height:58px!important;
+  padding:10px 12px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--ka-text)!important;
+  text-align:left!important;
+  font:inherit!important;
+  overflow:hidden!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main{
+  min-width:0!important;
+  max-width:100%!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:6px!important;
+  overflow:hidden!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+  flex:0 0 auto!important;
+  color:var(--ka-text)!important;
+  font-size:16px!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+  min-width:0!important;
+  color:var(--ka-text-muted)!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:650!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
+  flex:0 0 auto!important;
+  min-width:0!important;
+  padding:5px 9px!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  border:1px solid var(--ka-border)!important;
+  color:var(--ka-text-muted)!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  line-height:1!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip.green{
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan{
+  align-self:center!important;
+  flex:0 0 auto!important;
+  min-width:68px!important;
+  min-height:36px!important;
+  margin:0 10px 0 4px!important;
+  padding:7px 10px!important;
+  box-sizing:border-box!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:10px!important;
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  line-height:1!important;
+  text-decoration:none!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan span,
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan b{
+  color:inherit!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row.is-now{
+  background:color-mix(in srgb,var(--ka-primary) 9%,var(--ka-card-bg))!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button:active{
+  background:color-mix(in srgb,var(--ka-primary) 12%,var(--ka-card-bg))!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-empty{
+  min-height:70px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:18px!important;
+  box-sizing:border-box!important;
+  color:var(--ka-text-muted)!important;
+  background:var(--ka-card-bg,#fff)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  text-align:center!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-card{
+  background:var(--ka-card-bg,#141414)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
+  background:var(--ka-card-bg,#141414)!important;
+  border-bottom-color:rgba(255,196,0,.22)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+  color:var(--ka-text,#fff)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+  color:var(--ka-text-muted,#b8bec4)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
+  color:var(--ka-text-muted,#b8bec4)!important;
+  background:transparent!important;
+}
+@media(max-width:520px){
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+    padding:9px 10px!important;
+    gap:7px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+    font-size:15px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+    font-size:12px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan{
+    min-width:60px!important;
+    margin-right:7px!important;
+    padding:7px 8px!important;
+  }
+}
