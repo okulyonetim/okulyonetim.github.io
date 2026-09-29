@@ -13,40 +13,6 @@ const firebaseConfig = {
 };
 const VAPID_KEY = "BATuvupnzSActFxWlfg12dtT-hYMIkND9S_lfA1B-FYHIwJ0aya0HHJ4fRRfifZ5PlKETpRLnnugzOz5zjgi3u4";
 
-
-/* Firebase CDN güvenli yükleme katmanı.
-   GitHub Pages/WebView'da CDN isteği gecikir veya önbellekte bozulursa
-   Firebase başlatmasını kontrollü olarak yeniden dener. */
-(function firebaseSdkLoadGuard(global){
-  'use strict';
-  const SDK_BASE='https://www.gstatic.com/firebasejs/10.12.2/';
-  const REQUIRED=[
-    ['firebase-app-compat.js',()=>!!global.firebase?.initializeApp],
-    ['firebase-firestore-compat.js',()=>!!global.firebase?.firestore],
-    ['firebase-auth-compat.js',()=>!!global.firebase?.auth]
-  ];
-  const OPTIONAL=[['firebase-messaging-compat.js',()=>!!global.firebase?.messaging]];
-  const loadOne=(file,ready)=>new Promise((resolve,reject)=>{
-    if(ready()){resolve(true);return}
-    const script=document.createElement('script');
-    let settled=false;
-    const done=(ok,error)=>{if(settled)return;settled=true;ok?resolve(true):reject(error||new Error('Firebase SDK yüklenemedi: '+file))};
-    script.async=false;
-    script.src=SDK_BASE+file+'?retry=1';
-    script.dataset.firebaseRetry='true';
-    script.onload=()=>{if(ready())done(true);else done(false,new Error('Firebase SDK yüklendi fakat hazır değil: '+file))};
-    script.onerror=()=>done(false,new Error('Firebase SDK yüklenemedi: '+file));
-    document.head.appendChild(script);
-    setTimeout(()=>{if(ready())done(true);else done(false,new Error('Firebase SDK zaman aşımına uğradı: '+file))},12000);
-  });
-  global.FirebaseSDKReady=(async()=>{
-    for(const [file,ready] of REQUIRED)await loadOne(file,ready);
-    for(const [file,ready] of OPTIONAL){try{await loadOne(file,ready)}catch(error){console.warn('[FirebaseSDK optional]',error)}}
-    return true;
-  })().catch(error=>{console.error('[FirebaseSDK]',error);throw error});
-})(window);
-
-
 const COL = {
   ogretmenler:'oy_ogretmenler', dersProgrami:'oy_dersProgrami', hatirlaticilar:'oy_hatirlaticilar', gorevler:'oy_gorevler', evrak:'oy_evrakTakibi', notlar:'oy_notlar', cihazlar:'oy_cihazTokenleri',
   sosyalKulupler:'oy_sosyalKulupler', belirliGunler:'oy_belirliGunler', zumre:'oy_zumre', sok:'oy_sok', bepPlani:'oy_bepPlani', rehberlik:'oy_rehberlik', maarifRapor:'oy_maarifRapor', digerEvrak:'oy_digerEvrak',
@@ -182,7 +148,7 @@ function firebaseyiBaslat(){
       else console.warn('Offline destek etkinleştirilemedi:', err);
     });
     try{
-      if(typeof firebase.messaging === 'function' && firebase.messaging.isSupported()) messaging = firebase.messaging();
+      if(firebase.messaging.isSupported()) messaging = firebase.messaging();
       window.messaging = messaging;
     }catch(e){ console.warn('Bu tarayıcı push bildirimlerini desteklemiyor.', e); }
     window.dispatchEvent(new CustomEvent('koruk:firebase-ready'));
