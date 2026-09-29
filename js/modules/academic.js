@@ -107,7 +107,7 @@ const state=trialCounterState(d),valid=state.totalSeconds>0&&d?.tarih===today();
 return{run:state.running,valid,remaining:state.remaining,label:state.label,status:state.status,automatic:state.automatic,secondsUntilStart:state.secondsUntilStart||0};
 }
 
-const syncDefs=()=>({sinavlar:COL?.sinavlar,denemeSinavlari:COL?.denemeSinavlari,dersProgrami:COL?.dersProgrami,dersListesi:COL?.dersListesi,dersSaatleri:COL?.dersSaatleri,siniflar:COL?.siniflar,ogretmenler:COL?.ogretmenler,okulBilgileri:COL?.okulBilgileri,yillikPlanBasliklari:COL?.yillikPlanBasliklari,yillikPlanTanimlari:COL?.yillikPlanTanimlari,ogretmenYillikPlanSecimleri:COL?.ogretmenYillikPlanSecimleri,yillikPlanNotlari:COL?.yillikPlanNotlari,akademikTakvim:COL?.akademikTakvim,denemeSonuclari:COL?.denemeSonuclari,testSonuclari:COL?.testSonuclari});
+const syncDefs=()=>({sinavlar:COL?.sinavlar,denemeSinavlari:COL?.denemeSinavlari,dersProgrami:COL?.dersProgrami,dersListesi:COL?.dersListesi,dersSaatleri:COL?.dersSaatleri,siniflar:COL?.siniflar,ogretmenler:COL?.ogretmenler,kullanicilar:COL?.kullanicilar,okulBilgileri:COL?.okulBilgileri,yillikPlanBasliklari:COL?.yillikPlanBasliklari,yillikPlanTanimlari:COL?.yillikPlanTanimlari,ogretmenYillikPlanSecimleri:COL?.ogretmenYillikPlanSecimleri,yillikPlanNotlari:COL?.yillikPlanNotlari,akademikTakvim:COL?.akademikTakvim,denemeSonuclari:COL?.denemeSonuclari,testSonuclari:COL?.testSonuclari});
 async function prepareLocal(){
  if(!window.SyncEngine)return;
  const types=[];
