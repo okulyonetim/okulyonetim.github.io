@@ -1,4 +1,5 @@
 name: Android APK Build
+# Native widget değişiklikleri de her main APK build'inde doğrulanır.
 # Her başarılı main APK build'i hem test artefaktı olarak saklanır hem de
 # uygulama içi güncelleme sistemi için GitHub Release olarak latest yayınlanır.
 
