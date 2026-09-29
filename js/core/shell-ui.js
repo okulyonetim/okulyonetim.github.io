@@ -80,7 +80,7 @@ async function ensureToolsPageDependencies(page){
   const files=[];
   if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js');
   if(page==='homework'||page==='grades')files.push('js/modules/teacher-list-core.js?v=1065');
-  if(['rubric','project'].includes(page)){files.push('js/modules/rubric-settings.js?v=1064');files.push('js/modules/rubric-tools.js?v=1070');files.push('js/modules/rubric-tools-engine.js?v=1072');}
+  if(['rubric','project'].includes(page))files.push('js/modules/rubric-tools-engine.js?v=1071');
   if(page==='map')files.push('js/modules/map-ui.js');
   if(!files.length)return true;
   if(!global.AppLoader?.loadScript)throw new Error('Tools companion loader hazır değil.');
@@ -156,7 +156,7 @@ function applySubpage(name,page,title){
     if(title)setTitle(title);return true;
   }
   if(name==='tools'&&['rubric','project'].includes(page)){
-    const engine='js/modules/rubric-tools-engine.js?v=1072';
+    const engine='js/modules/rubric-tools-engine.js?v=1071';
     Promise.resolve(global.AppLoader?.loadScript?.(engine)).then(()=>{
       const api=page==='rubric'?global.KriterDagitimAraci:global.ProjeDegerlendirmeAraci;
       if(typeof api?.ac!=='function')throw new Error('Değerlendirme motoru hazır değil.');
@@ -184,7 +184,7 @@ function moduleRouteMounted(name){const root=$('#v2ModuleRoot'),selector=MODULE_
 async function routeModule(name,{bottom='menu',page='',title='',remember=true,parentMenu=''}={}){
   const routeToken=++routeEpoch;
   if(!pageAllowed(name,page)){global.toast?.('Bu sayfa öğretmen kullanıcıları için gizli.');return false}
-  const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';const isolatedRubricPage=name==='tools'&&['rubric','project'].includes(page);
+  const requestedGradePage=name==='tools'&&(page==='homework'||page==='grades')?page:'';
   /* Ödev/Not çizelgesi özel sayfa olduğu için başka bir rotaya geçerken
      kendi aboneliklerini ve modal/çalışma alanını mutlaka kapat. Aksi halde
      dashboard açıldıktan sonra sabit workspace tekrar görünür ve geri tuşu
@@ -221,15 +221,7 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     try{const ok=(await custom({name,bottom,page,title,root:$('#v2ModuleRoot')}))!==false;if(routeToken!==routeEpoch)return false;if(ok&&remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});return ok}catch(e){console.error('[Shell/custom-page]',page,e);global.toast?.('Sayfa açılamadı.');return false}
   }
   setBottomActive(bottom);const reuseModule=moduleRouteMounted(name);global.AppLoader?.setActiveModule?.(name);
-  setTitle(title||meta.label||name);
-  if(name==='tools'&&page)await ensureToolsPageDependencies(page);
-  if(isolatedRubricPage){
-    /* Kriter/Proje artık eski Tools yüzeyinin içinde açılmaz. Önceki
-       Tools DOM'u ve abonelikleri tamamen sökülür; çalışma alanı doğrudan
-       Shell kökünde bağımsız olarak yaşar. */
-    global.ToolsModule?.unmount?.();
-    $('#v2ModuleRoot')?.querySelector('[data-tools-module]')?.remove();
-  }else if(!reuseModule)await global.AppLoader?.load?.(name);
+  setTitle(title||meta.label||name);if(name==='tools'&&page)await ensureToolsPageDependencies(page);if(!reuseModule)await global.AppLoader?.load?.(name);
   /* Sayfa yüklenirken kullanıcı başka bir rotaya geçtiyse bu eski çağrı artık
      alt sayfa uygulamamalı. Aksi halde ör. Aylık İşler açılırken geciken
      documents/evrak çağrısı yeni ekrana tekrar Evrak Takibi basabiliyordu. */
