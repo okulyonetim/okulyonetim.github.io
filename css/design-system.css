@@ -12491,3 +12491,135 @@ html[data-theme="dark"] .ka-shell-back:active{background:var(--ka-card-raised-bg
 html[data-theme="dark"] .ka-communication-page [data-conversation-open],
 html[data-theme="dark"] .ka-communication-page [data-message-chat] .ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important}
 html[data-theme="dark"] .ka-communication-page [data-message-chat] textarea{background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border-color:var(--ka-primary)!important}
+
+
+/* ===== GİRİŞ KONUM HARİTASI — MERKEZİ KONTRAST v1093 ===== */
+body .ka-login-location-summary .ka-statistics-summary__icon{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:58px!important;
+  height:58px!important;
+  flex:0 0 58px!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:18px!important;
+  background:var(--ka-primary-soft)!important;
+  color:var(--ka-primary)!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:28px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+body .ka-login-location-summary article{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+body .ka-login-location-summary article small{color:var(--ka-text-muted)!important}
+body .ka-login-location-summary article strong{color:var(--ka-text)!important}
+html[data-theme="dark"] body .ka-login-location-summary .ka-statistics-summary__icon{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
+
+/* Leaflet'in varsayılan beyaz kontrol yüzeylerini merkezi temaya bağla. */
+body .ka-map-canvas .leaflet-control-zoom{
+  overflow:hidden!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+}
+body .ka-map-canvas .leaflet-control-zoom a{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:42px!important;
+  height:42px!important;
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:0!important;
+  border-bottom:1px solid var(--ka-primary)!important;
+  font-size:24px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  text-decoration:none!important;
+  text-shadow:none!important;
+}
+body .ka-map-canvas .leaflet-control-zoom a:last-child{border-bottom:0!important}
+body .ka-map-canvas .leaflet-control-zoom a:hover,
+body .ka-map-canvas .leaflet-control-zoom a:focus-visible{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+}
+html[data-theme="dark"] body .ka-map-canvas .leaflet-control-zoom a{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+}
+html[data-theme="dark"] body .ka-map-canvas .leaflet-control-zoom a:hover,
+html[data-theme="dark"] body .ka-map-canvas .leaflet-control-zoom a:focus-visible{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+}
+
+/* Harita bilgi kutusu: isim ve tüm bilgiler okunabilir olacak. */
+body .ka-map-canvas .leaflet-popup-content-wrapper,
+body .ka-map-canvas .leaflet-popup-tip{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:var(--ka-shadow-md,0 8px 24px rgba(0,0,0,.22))!important;
+}
+body .ka-map-canvas .leaflet-popup-content{
+  margin:14px 18px!important;
+  min-width:180px!important;
+  color:var(--ka-text)!important;
+  font-family:var(--ka-font-family,Inter,Arial,sans-serif)!important;
+}
+body .ka-map-canvas .leaflet-popup-content strong{
+  display:block!important;
+  margin-bottom:7px!important;
+  color:var(--ka-text)!important;
+  font-size:16px!important;
+  font-weight:850!important;
+  opacity:1!important;
+}
+body .ka-map-canvas .ka-login-map-popup{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  color:var(--ka-text)!important;
+}
+body .ka-map-canvas .ka-login-map-popup span{
+  color:var(--ka-text)!important;
+  font-size:14px!important;
+  font-weight:650!important;
+}
+body .ka-map-canvas .ka-login-map-popup small{
+  margin-top:2px!important;
+  color:var(--ka-text-muted)!important;
+  font-size:12px!important;
+}
+body .ka-map-canvas .leaflet-popup-close-button{
+  color:var(--ka-text)!important;
+  font-size:22px!important;
+  font-weight:800!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+body .ka-map-canvas .leaflet-popup-close-button:hover,
+body .ka-map-canvas .leaflet-popup-close-button:focus{
+  color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] body .ka-map-canvas .leaflet-popup-content-wrapper,
+html[data-theme="dark"] body .ka-map-canvas .leaflet-popup-tip{
+  background:var(--ka-card-bg)!important;
+  color:var(--ka-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] body .ka-map-canvas .leaflet-popup-content strong,
+html[data-theme="dark"] body .ka-map-canvas .ka-login-map-popup span{
+  color:var(--ka-text)!important;
+}
