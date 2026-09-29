@@ -116,10 +116,15 @@ async function prepareLocal(){
  if(!types.length)return;
  await SyncEngine.localHydrate(types);
  if(window.navigator?.onLine){
-   try{
-     if(typeof SyncEngine.pull==='function')await SyncEngine.pull(types);
-     else if(typeof SyncEngine.sync==='function')await SyncEngine.sync(types);
-   }catch(e){console.warn('Yıllık plan uzak veri senkronizasyonu:',e)}
+   // Uzak Firestore çekimini ekranın ilk render'ını bloklamadan arka planda yap.
+   // Böylece Yıllık Plan sayfası önce boş görünmez; cihazdaki mevcut veri hemen çizilir.
+   Promise.resolve().then(async()=>{
+     try{
+       if(typeof SyncEngine.pull==='function')await SyncEngine.pull(types);
+       else if(typeof SyncEngine.sync==='function')await SyncEngine.sync(types);
+       requestAnimationFrame(render);
+     }catch(e){console.warn('Yıllık plan uzak veri senkronizasyonu:',e)}
+   });
  }
  SyncEngine.schedule(80);
 }
