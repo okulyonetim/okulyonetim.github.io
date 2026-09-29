@@ -164,7 +164,7 @@ function legacyDayCode(value){
 }
 function stop(){observer?.disconnect();observer=null;restoreShell();detailBridge.clear();newBridge=null;closeOfficialPetition();}
 
-global.ClassicPersonnelParity={start,stop,refresh:()=>{render(true);schedule()},openOfficialPetition,legacyDayCode};
+global.ClassicPersonnelParity={start,stop,refresh:()=>{render(true);schedule()},openOfficialPetition};
 global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='management')schedule()});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(window);
