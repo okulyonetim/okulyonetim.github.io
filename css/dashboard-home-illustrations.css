@@ -131,6 +131,13 @@ html[data-theme="dark"] .ka-home .kh-day.today{
 html[data-theme="dark"] .ka-home .kh-day.today b{
   color:#111!important;
 }
+html[data-theme="dark"] .ka-home .kh-day.today,
+html[data-theme="dark"] .ka-home .kh-day.today *,
+html[data-theme="dark"] .ka-home .kh-day.today b,
+html[data-theme="dark"] .ka-home .kh-day.today span{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
 html[data-theme="dark"] .ka-home .kh-day.today.has:after{
   background:#111!important;
 }
