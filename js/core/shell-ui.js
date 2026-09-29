@@ -80,7 +80,7 @@ async function ensureToolsPageDependencies(page){
   const files=[];
   if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js');
   if(page==='homework'||page==='grades')files.push('js/modules/teacher-list-core.js?v=1065');
-  if(['rubric','project'].includes(page))files.push('js/modules/rubric-tools.js?v=1070');
+  if(['rubric','project'].includes(page))files.push('js/modules/rubric-tools-engine.js?v=1071');
   if(page==='map')files.push('js/modules/map-ui.js');
   if(!files.length)return true;
   if(!global.AppLoader?.loadScript)throw new Error('Tools companion loader hazır değil.');
@@ -156,7 +156,13 @@ function applySubpage(name,page,title){
     if(title)setTitle(title);return true;
   }
   if(name==='tools'&&['rubric','project'].includes(page)){
-    Promise.resolve(global.RubricToolsModule?.openPage?.(page)).then(ok=>{if(ok===false)global.toast?.('Değerlendirme aracı açılamadı.');}).catch(e=>{console.error('[Shell/rubric]',e);global.toast?.('Değerlendirme aracı açılamadı.');});
+    const engine='js/modules/rubric-tools-engine.js?v=1071';
+    Promise.resolve(global.AppLoader?.loadScript?.(engine)).then(()=>{
+      const api=page==='rubric'?global.KriterDagitimAraci:global.ProjeDegerlendirmeAraci;
+      if(typeof api?.ac!=='function')throw new Error('Değerlendirme motoru hazır değil.');
+      api.ac();
+      return true;
+    }).catch(e=>{console.error('[Shell/rubric]',e);global.toast?.('Değerlendirme aracı açılamadı.');});
     if(title)setTitle(title);return true;
   }
   if(name==='academic'){
