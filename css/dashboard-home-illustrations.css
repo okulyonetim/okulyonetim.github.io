@@ -326,3 +326,69 @@ html[data-theme="dark"] .ka-home .kh-bell-timeline-chip{
   background:var(--ka-primary)!important;
   color:var(--ka-button-text,#111)!important;
 }
+
+
+/* ===== CANLI ZİL — KALAN SÜRE METNİ TAŞMA DÜZELTMESİ =====
+   Geri sayım etiketi halka dışına taşmamalı; özellikle dar telefonlarda
+   halka içindeki iki satır birlikte merkezlenir. */
+.ka-home .kh-bell-step.is-countdown{
+  min-width:108px!important;
+  flex:0 0 108px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:visible!important;
+}
+.ka-home .kh-bell-countdown-ring{
+  width:92px!important;
+  height:92px!important;
+  min-width:92px!important;
+  min-height:92px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  padding:0!important;
+}
+.ka-home .kh-bell-countdown-ring b{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  font-size:18px!important;
+  line-height:1.05!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.ka-home .kh-bell-countdown-ring small{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  font-size:9px!important;
+  line-height:1.1!important;
+  letter-spacing:.25px!important;
+  font-weight:800!important;
+}
+@media(max-width:480px){
+  .ka-home .kh-bell-step.is-countdown{
+    min-width:104px!important;
+    flex-basis:104px!important;
+  }
+  .ka-home .kh-bell-countdown-ring{
+    width:88px!important;
+    height:88px!important;
+    min-width:88px!important;
+    min-height:88px!important;
+  }
+  .ka-home .kh-bell-countdown-ring b{font-size:17px!important}
+  .ka-home .kh-bell-countdown-ring small{font-size:8.5px!important}
+}
