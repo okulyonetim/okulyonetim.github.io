@@ -12623,3 +12623,56 @@ html[data-theme="dark"] body .ka-map-canvas .leaflet-popup-content strong,
 html[data-theme="dark"] body .ka-map-canvas .ka-login-map-popup span{
   color:var(--ka-text)!important;
 }
+
+
+/* ===== İSTATİSTİK KULLANICI ROZETLERİ + DERS EKLE MODALI KONTRAST v1094 ===== */
+/* Kullanıcı avatarı: açık/koyu temada baş harfler zemine gömülmesin. */
+body .ka-statistics-user__avatar{
+  background:var(--ka-card-bg)!important;color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;opacity:1!important;text-shadow:none!important;
+}
+body .ka-statistics-user__avatar img{border-radius:inherit}
+body .ka-statistics-user .ka-badge{
+  background:var(--ka-card-bg)!important;color:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;opacity:1!important;text-shadow:none!important;
+}
+body .ka-statistics-user__meta>.ka-badge{
+  min-height:30px!important;padding:3px 10px!important;border-radius:12px!important;
+  font-size:10px!important;font-weight:850!important;
+}
+html[data-theme="dark"] body .ka-statistics-user__avatar,
+html[data-theme="dark"] body .ka-statistics-user .ka-badge{
+  background:var(--ka-card-bg)!important;color:var(--ka-primary)!important;border-color:var(--ka-primary)!important;
+}
+
+/* Ders Programı > Ders Ekle: intro yüzeyi metni beyaz zemine/soluk sarıya karışmasın. */
+body .ka-schedule-modal .ka-schedule-modal-intro{
+  background:var(--ka-card-bg)!important;border-color:var(--ka-primary)!important;color:var(--ka-text)!important;
+}
+body .ka-schedule-modal .ka-schedule-modal-intro>span{
+  background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border:1px solid var(--ka-primary)!important;
+}
+body .ka-schedule-modal .ka-schedule-modal-intro small{color:var(--ka-primary)!important}
+body .ka-schedule-modal .ka-schedule-modal-intro strong{color:var(--ka-text)!important}
+body .ka-schedule-modal .ka-schedule-modal-intro p{color:var(--ka-text-muted)!important}
+html[data-theme="dark"] body .ka-schedule-modal .ka-schedule-modal-intro{
+  background:var(--ka-card-bg)!important;border-color:var(--ka-primary)!important;color:var(--ka-text)!important;
+}
+html[data-theme="dark"] body .ka-schedule-modal .ka-schedule-modal-intro>span{
+  background:var(--ka-primary)!important;color:var(--ka-button-text,#111)!important;
+}
+html[data-theme="dark"] body .ka-schedule-modal .ka-schedule-modal-intro strong{color:var(--ka-text)!important}
+html[data-theme="dark"] body .ka-schedule-modal .ka-schedule-modal-intro p{color:var(--ka-text-muted)!important}
+
+/* Form alanları merkezi yüzey/kenarlık kurallarında kalsın. */
+body .ka-schedule-modal .ka-field__label{color:var(--ka-text)!important}
+body .ka-schedule-modal select,body .ka-schedule-modal input{
+  background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border-color:var(--ka-input-border)!important;
+}
+body .ka-schedule-modal select:focus,body .ka-schedule-modal input:focus{
+  border-color:var(--ka-primary)!important;outline-color:var(--ka-focus)!important;
+}
+html[data-theme="dark"] body .ka-schedule-modal select,
+html[data-theme="dark"] body .ka-schedule-modal input{
+  background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border-color:var(--ka-primary)!important;
+}
