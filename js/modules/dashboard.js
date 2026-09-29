@@ -231,8 +231,8 @@ function todayMyLessonsSection(){
  const admin=isAdmin(),tid=teacherId(),name=dayName();
  /*
   * Yönetici ana sayfasında okulun tüm ders programını göstermeyelim.
-  * Yönetici aynı zamanda bir öğretmene bağlıysa yalnızca kendi derslerini
-  * görsün; bağlı öğretmen yoksa kart yine görünsün ve bilgi mesajı versin.
+  * Yönetici bir öğretmene bağlıysa yalnızca kendi derslerini görür.
+  * Kendi dersi varsa ilgili yıllık plana doğrudan "Plan" bağlantısı verilir.
   */
  const list=tid
    ? arr('dersProgrami').filter(x=>sameDay(x.gun,name)&&String(x.ogretmenId||'')===String(tid)).sort(sortHour)
@@ -244,7 +244,7 @@ function todayMyLessonsSection(){
    const main=`${period||'•'}. Ders · ${lessonLabel(x)}`;
    const sub=classLabel(x);
    const plan=admin
-     ? `<button type="button" class="kh-row-plan" data-dash-route="academic" data-dash-page="plans" data-dash-title="Yıllık Plan" aria-label="Yıllık Planı Aç">Plan ›</button>`
+     ? `<button type="button" class="ka-home-link kh-row-plan" data-dash-lesson-plan data-lesson="${esc(lessonLabel(x))}" data-class="${esc(classLabel(x))}"><span>Plan</span><b>›</b></button>`
      : '';
    return `<div class="kh-row${isNow?' is-now':''}">
      <button type="button" class="kh-row-main-button" data-dash-route="academic" data-dash-page="schedule" data-dash-title="Ders Programı">
