@@ -200,7 +200,18 @@ const title=ov.querySelector('[data-trial-counter-title]'),stateEl=ov.querySelec
 function openTrialCounter(id){const d=arr('denemeSinavlari').find(x=>x.id===id);if(!d)return;trialCounterId=id;let ov=document.getElementById('kaTrialCounterOverlay');if(!ov){ov=document.createElement('section');ov.id='kaTrialCounterOverlay';ov.className='ka-trial-counter';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');document.body.appendChild(ov)}document.body.classList.add('ka-trial-counter-open');renderTrialCounter(true)}
 
 const YPL_AY_NO={'EYLÜL':9,'EKİM':10,'KASIM':11,'ARALIK':12,'OCAK':1,'ŞUBAT':2,'MART':3,'NİSAN':4,'MAYIS':5,'HAZİRAN':6,'TEMMUZ':7,'AĞUSTOS':8};
-function planTeacherId(){const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user')||{};return u.bagliOgretmenId||u.ogretmenId||''}
+function planTeacherId(){
+ const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user')||{};
+ const direct=String(u.bagliOgretmenId||u.ogretmenId||'').trim();
+ if(direct)return direct;
+ const uid=String(u.uid||'').trim();
+ if(uid){
+   const account=arr('kullanicilar').find(x=>String(x?.uid||x?.id||'')===uid);
+   const bound=String(account?.bagliOgretmenId||account?.ogretmenId||'').trim();
+   if(bound)return bound;
+ }
+ return '';
+}
 function planHeadingName(id){return arr('yillikPlanBasliklari').find(x=>x.id===id)?.ad||id}
 function planWeekDays(v){const m=/\((\d{1,2})-(\d{1,2})\)/.exec(v||'');return m?{start:Number(m[1]),end:Number(m[2])}:null}
 function planDateRange(row,schoolYear){const month=YPL_AY_NO[String(row?.ay||'').toLocaleUpperCase('tr')],days=planWeekDays(row?.hafta),years=String(schoolYear||'').split('-').map(Number);if(!month||!days||years.length!==2||!years[0])return null;const startYear=month>=9?years[0]:years[1];let endMonth=month,endYear=startYear;if(days.end<days.start){endMonth=month===12?1:month+1;endYear=endMonth===1&&month===12?startYear+1:startYear}return{start:new Date(startYear,month-1,days.start),end:new Date(endYear,endMonth-1,days.end)}}
@@ -216,10 +227,19 @@ function planTracked(){
 }
 function planTeacherAuto(){
  const tid=String(planTeacherId()||'').trim();if(!tid)return[];
- const lessons=arr('dersProgrami').filter(x=>String(x?.ogretmenId||'')===tid);
- const keys=new Set(lessons.map(x=>{const level=planClassLevel(x?.sinif),lesson=planLessonKey(x?.ders);return level&&lesson?level+'|'+lesson:''}).filter(Boolean));
+ const lessons=arr('dersProgrami').filter(x=>String(x?.ogretmenId||x?.teacherId||'')===tid);
+ const keys=new Set();
+ lessons.forEach(x=>{
+   const level=planClassLevel(x?.sinif||x?.sinifAdi||x?.className||x?.sinifId);
+   const lesson=planLessonKey(x?.ders||x?.dersAdi||x?.dersAdiSoyadi||x?.lesson||x?.lessonName);
+   if(level&&lesson)keys.add(level+'|'+lesson);
+ });
  if(!keys.size)return[];
- return arr('yillikPlanTanimlari').filter(p=>keys.has(planClassLevel(p?.seviye)+'|'+planLessonKey(p?.dersAdi)));
+ return arr('yillikPlanTanimlari').filter(p=>{
+   const level=planClassLevel(p?.seviye||p?.sinif||p?.sinifAdi);
+   const lesson=planLessonKey(p?.dersAdi||p?.ders||p?.dersAdiSoyadi||p?.lesson);
+   return level&&lesson&&keys.has(level+'|'+lesson);
+ });
 }
 function planTheme(p,index){const row=(p?.satirlar||[])[index]||{},vals=row.degerler||{};for(const id of p?.sutunlar||[])if(typeof vals[id]==='string'&&vals[id].trim())return vals[id].trim();return''}
 function planNoteText(p,index){const tid=planTeacherId();if(!tid)return'';const n=arr('yillikPlanNotlari').find(x=>x.id===`${tid}_${p.id}`||(x.ogretmenId===tid&&x.planId===p.id));return String(n?.notlar?.[index]||'')}
