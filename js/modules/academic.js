@@ -88,6 +88,7 @@ global.TestSonuclariService=sonucService('testSonuclari',COL.testSonuclari,'test
 (function(){
 'use strict';
 if(window.AcademicModule)return;
+const activeUser=()=>window.AKTIF_KULLANICI||window.AppStore?.get?.('session.user')||{};
 const DAYS=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma'];
 const todayScheduleDay=()=>{const i=new Date().getDay()-1;return DAYS[Math.max(0,Math.min(4,i<0?0:i))]};
 let active='written',query='',mounted=false,ready=false,unsubs=[],timer=null,selectedClass='',selectedScheduleDay=todayScheduleDay(),planView={planId:'',weekIndex:0};
