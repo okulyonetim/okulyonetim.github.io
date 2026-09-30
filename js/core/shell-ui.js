@@ -213,12 +213,12 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     try{
       const root=$('#v2ModuleRoot');
       if(!global.ReportsModule){
-        await global.AppLoader?.loadScript?.('js/modules/reports.js?v=1054');
+        await global.AppLoader?.loadScript?.('js/modules/reports.js?v=1055');
       }
       if(!global.ReportsModule){
         await new Promise((resolve,reject)=>{
           const s=document.createElement('script');
-          s.src='js/modules/reports.js?force=1054';
+          s.src='js/modules/reports.js?force=1055';
           s.async=false;
           s.onload=resolve;
           s.onerror=()=>reject(new Error('reports.js yüklenemedi'));
