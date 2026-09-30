@@ -138,16 +138,6 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Yemek sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  if(name==='reports'){
-    if(global.ReportsModule?.mount){
-      const ok=global.ReportsModule.mount(page||'home',root);
-      if(ok===false)global.toast?.('Okul Raporları açılamadı.');
-      if(title)setTitle(title);
-      return ok!==false;
-    }
-    global.toast?.('Okul Raporları modülü yüklenemedi.');
-    return false;
-  }
   if(name==='settings'&&['school','social','lesson-hours','holiday','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
     const ok=global.SettingsModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Ayarlar sayfası açılamadı.');
@@ -179,12 +169,6 @@ function applySubpage(name,page,title){
   }
   if(name==='management'){
     const h=root.querySelector('[data-management-module] > .ka-row h2');if(h&&title)h.textContent=title;
-  }
-  if(name==='reports'){
-    const ok=global.ReportsModule?.mount?.(page||'home',root);
-    if(ok===false)global.toast?.('Okul Raporları açılamadı.');
-    if(title)setTitle(title);
-    return ok!==false;
   }
   if(name==='tools')hideModuleChrome(root,'tools');
   if(name==='settings')hideModuleChrome(root,'settings');
@@ -226,6 +210,24 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
   }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
+  if(name==='reports'){
+    setBottomActive(bottom);
+    global.AppLoader?.setActiveModule?.(name);
+    setTitle(title||meta.label||name);
+    try{
+      await global.AppLoader?.load?.('reports');
+      if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
+      const reportsRoot=$('#v2ModuleRoot');
+      const ok=global.ReportsModule?.mount?.(page||'home',reportsRoot);
+      if(ok===false){global.toast?.('Okul Raporları açılamadı.');return false}
+      if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||meta.label||name,parentMenu});
+      return true;
+    }catch(e){
+      console.error('[Shell/reports]',e);
+      global.toast?.('Okul Raporları modülü yüklenemedi.');
+      return false;
+    }
+  }
   const custom=page&&CUSTOM_PAGE_ROUTES.get(page);
   if(custom){
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||meta.label||name);
@@ -467,8 +469,7 @@ function bindHeader(){document.addEventListener('click',e=>{const backBtn=e.targ
 function bindBottom(){$$('[data-ka-shell-action]').forEach(btn=>btn.addEventListener('click',()=>{const a=btn.dataset.kaShellAction;if(a==='home')home();else if(a==='profile')renderProfile();else if(a==='menu')openMenu();else if(a==='search')renderSearch();else if(a==='note')openQuickNote()}))}
 function bindDashboardCards(){document.addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea,label,[data-dash-route],[data-dash-lesson-plan],[data-dash-reminder-index],[data-dash-external],[data-dash-quick-note]'))return;const card=e.target.closest('[data-home-section]');if(!card)return;const target=DASHBOARD_ROUTES[card.dataset.homeSection];if(target)routeModule(target.module,{bottom:'menu',page:target.page||'',title:target.title||''});})}
 function hydrateHeader(){const {name,photo}=profileInfo(),profile=$('[data-ka-header-profile]');if(profile){const initials=name.split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr');profile.innerHTML=photo?`<img src="${esc(photo)}" alt="${esc(name)}">`:esc(initials||'K');profile.setAttribute('aria-label',`${name} hesabı`)}updateNotificationBadge();syncThemeButton()}
-function bindShellBack(){document.querySelector('[data-ka-shell-back]')?.addEventListener('click',()=>global.ShellUI?.back?.());}
-function init(){installBuiltInPageRoutes();installBackNavigation();bindShellBack();observeVisibility();takeThemeOwnership();bindThemeCapture();bindHeader();bindBottom();bindDashboardCards();syncShellBack();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{installBackNavigation();takeThemeOwnership();syncVisibilityClasses();hydrateHeader();hydrateTheme()});window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden){menuGroup?renderMenuList(menuGroup):renderMenuGrid()}});global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});for(const type of ['hatirlaticilar','sinavlar','denemeSinavlari','gorevler','konusmalar','duyurular','ogretmenler'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
+function init(){installBuiltInPageRoutes();installBackNavigation();observeVisibility();takeThemeOwnership();bindThemeCapture();bindHeader();bindBottom();bindDashboardCards();syncShellBack();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{installBackNavigation();takeThemeOwnership();syncVisibilityClasses();hydrateHeader();hydrateTheme()});window.addEventListener('koruk:app-config-changed',()=>{if(!$('#kaMenuLayer')?.hidden){menuGroup?renderMenuList(menuGroup):renderMenuGrid()}});global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme()});for(const type of ['hatirlaticilar','sinavlar','denemeSinavlari','gorevler','konusmalar','duyurular','ogretmenler'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
 global.ShellUI={init,home,back,openMenu,closeMenu,routeModule,registerPageRoute,renderProfile,renderSearch,openQuickNote,openProfilePopover,openNotifications,toggleTheme,applyTheme,renderMenuGrid,renderMenuList,normalizeDashboardLayout,syncVisibilityClasses,pageAllowed,MENU_GROUPS,DASHBOARD_ROUTES};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);
