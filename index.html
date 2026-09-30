@@ -109,5 +109,24 @@
     return{open}
   })();window.KaDataPage=KaDataPage;
   </script>
+  <script>
+  /* ===== PWA SERVICE WORKER GÜNCELLEME ===== */
+  (() => {
+    if (!('serviceWorker' in navigator)) return;
+    if (!/^https?:$/.test(location.protocol)) return;
+    if (window.Capacitor?.isNativePlatform?.()) return;
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('./service-worker.js', {
+          scope: './',
+          updateViaCache: 'none'
+        });
+        await registration.update().catch(() => {});
+      } catch (e) {
+        console.warn('[PWA] Service Worker kaydı/güncellemesi başarısız:', e);
+      }
+    }, { once: true });
+  })();
+  </script>
 </body>
 </html>
