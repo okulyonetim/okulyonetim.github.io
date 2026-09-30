@@ -223,30 +223,9 @@ function dutyPlaceHtml(v){const p=dutyPlaceKind(v);return `<span class="kh-place
 function weekDutySection(){
   const dates=weekDatesLegacy(),all=arr('nobetAtamalari'),today=isoToday(),tid=teacherId(),teacherMode=!isAdmin()&&!!tid,holiday=dashboardHoliday();
   if(holiday)return `<section class="kh-section" data-home-section="week-duty"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('week-duty','')}</span><span>Haftanın Nöbet Programı</span></div></div><div class="kh-card">${holidayCardBody(holiday)}</div></section>`;
-  const hasWeekDuty=all.some(x=>{const k=String(x.tarih||'').slice(0,10);return dates.some(d=>k===`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)});
-  if(!hasWeekDuty)return'';
-  const rows=dates.map(d=>{
-    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const entries=sortDuties(all.filter(x=>String(x.tarih||'').slice(0,10)===key&&!isDutyChief(x)));
-    const isToday=key===today;
-    const dayLabel=esc(dayName(d).toLocaleUpperCase('tr'));
-    const dateLabel=esc(d.toLocaleDateString('tr-TR',{day:'numeric',month:'long'}));
-    const body=entries.length?entries.map(x=>{
-      const mine=teacherMode&&x.ogretmenId===tid;
-      return `<div class="kh-duty-list-row${mine?' is-me':''}">
-        <div class="kh-duty-person"><span class="kh-duty-person-icon" aria-hidden="true">👤</span><b>${esc(teacherLabel(x))}</b></div>
-        ${dutyPlaceHtml(dutyPlace(x)||'—')}
-      </div>`;
-    }).join(''):'<div class="kh-duty-list-empty">Nöbet kaydı yok</div>';
-    return `<div class="kh-duty-day${isToday?' today':''}">
-      <div class="kh-duty-day-head"><div><strong>${dayLabel}</strong><small>${dateLabel}</small></div>${isToday?'<span class="kh-duty-today">BUGÜN</span>':''}</div>
-      <div class="kh-duty-day-body">${body}</div>
-    </div>`;
-  }).join('');
-  return `<section class="kh-section" data-home-section="week-duty">
-    <div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('week-duty','')}</span><span>Haftanın Nöbet Programı</span></div><button type="button" class="kh-more" data-dash-route="management" data-dash-page="duty" data-dash-title="Nöbet Programı">Tümü ›</button></div>
-    <div class="kh-card kh-week-duty-list">${rows}</div>
-  </section>`;
+  const rows=dates.map(d=>{const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,entries=sortDuties(all.filter(x=>String(x.tarih||'').slice(0,10)===key&&!isDutyChief(x)));return `<div class="kh-weekday ${key===today?'today':''}"><div class="kh-weekday-head"><span>${esc(dayName(d).toLocaleUpperCase('tr'))}</span>${key===today?'<span class="kh-chip">BUGÜN</span>':''}</div>${entries.length?entries.map(x=>{const mine=teacherMode&&x.ogretmenId===tid;return`<div class="kh-mini${mine?' is-me':''}"><span>${esc(teacherLabel(x))}</span>${dutyPlaceHtml(dutyPlace(x)||'—')}</div>`}).join(''):'<div class="kh-mini"><span class="kh-duty-empty">Nöbet kaydı yok</span><span></span></div>'}</div>`}).join('');
+  if(!all.some(x=>{const k=String(x.tarih||'').slice(0,10);return dates.some(d=>k===`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)}))return'';
+  return `<section class="kh-section" data-home-section="week-duty"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('week-duty','')}</span><span>Haftanın Nöbet Programı</span></div><button type="button" class="kh-more" data-dash-route="management" data-dash-page="duty" data-dash-title="Nöbet Programı">Tümü ›</button></div><div class="kh-card">${rows}</div></section>`
 }
 function allTodayDutySection(){if(isAdmin())return'';const shield='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>',holiday=dashboardHoliday();if(holiday)return `<section class="kh-section" data-home-section="today-duty"><div class="kh-section-head"><div class="kh-section-title">${shield}<span>Bugünün Nöbetçileri</span></div></div><div class="kh-card">${holidayCardBody(holiday)}</div></section>`;const list=arr('nobetAtamalari').filter(x=>String(x.tarih||'').slice(0,10)===isoToday());if(!list.length)return'';return `<section class="kh-section" data-home-section="today-duty"><div class="kh-section-head"><div class="kh-section-title">${shield}<span>Bugünün Nöbetçileri</span></div><button type="button" class="kh-more" data-dash-route="management" data-dash-page="duty" data-dash-title="Nöbet Programı">Tümü ›</button></div><div class="kh-card">${sortDuties(list).map(x=>dutyRowHtml(x,{showMine:true})).join('')}</div></section>`}
 function safeSection(fn,name){try{return fn()||''}catch(err){console.warn('[Dashboard]',name||'section',err);return''}}
