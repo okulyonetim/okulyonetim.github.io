@@ -102,13 +102,6 @@ function applySubpage(name,page,title){
     Promise.resolve(global.OdevNotUI?.open?.(studentPages[page])).catch(e=>{console.error('[Shell/gradebook]',e);global.toast?.('Çizelge açılamadı.');});
     if(title)setTitle(title);return true;
   }
-  if(name==='tools'&&(page==='rubric'||page==='project')){
-    Promise.resolve(global.RubricToolsModule?.openPage?.(page))
-      .then(ok=>{if(ok===false)global.toast?.('Değerlendirme aracı açılamadı.');})
-      .catch(e=>{console.error('[Shell/rubric-tools]',e);global.toast?.('Değerlendirme aracı açılamadı.');});
-    if(title)setTitle(title);
-    return true;
-  }
   if(name==='tools'&&FORM_PAGES[page])return applyFormPage(root,page,title);
   if(name==='documents'&&page==='evrak'&&global.EvrakTakipPage?.open){
     global.DocumentsModule?.unmount?.();
@@ -188,6 +181,10 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
   if(!(name==='tools'&&page==='student-list'))global.OgretmenListeUI?.close?.();
   if(!(name==='tools'&&page==='student-attendance'))global.StudentPages?.close?.();
   closeHeaderPopover();closeMenu();
+  if(remember&&!parentMenu&&page){
+    const owner=customizedVisibleGroups().find(g=>[...(g.items||[]),...(g.subItems||[])].some(item=>itemAllowed(item)&&item[2]===name&&String(item[3]||'')===String(page||'')));
+    if(owner)parentMenu=owner.key;
+  }
   if(remember&&parentMenu){
     const menuView={kind:'menu-list',name:'menu',bottom:'menu',page:parentMenu,title:(customizedVisibleGroups().find(x=>x.key===parentMenu)?.label)||'Menü'};
     const top=navStack[navStack.length-1];
@@ -214,16 +211,39 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     global.AppLoader?.setActiveModule?.(name);
     setTitle(title||meta.label||name);
     try{
-      await global.AppLoader?.load?.('reports');
+      await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+      await global.AppLoader?.loadScript?.('js/modules/reports.js');
       if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
       const reportsRoot=$('#v2ModuleRoot');
+      reportsRoot?.replaceChildren?.();
       const ok=global.ReportsModule?.mount?.(page||'home',reportsRoot);
       if(ok===false){global.toast?.('Okul Raporları açılamadı.');return false}
       if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||meta.label||name,parentMenu});
       return true;
     }catch(e){
-      console.error('[Shell/reports]',e);
+      console.error('[Shell/reports-direct]',e);
       global.toast?.('Okul Raporları modülü yüklenemedi.');
+      return false;
+    }
+  }
+
+  if(name==='tools'&&(page==='rubric'||page==='project')){
+    setBottomActive(bottom);
+    global.AppLoader?.setActiveModule?.(name);
+    setTitle(title||meta.label||name);
+    try{
+      await global.AppLoader?.loadScript?.('js/modules/rubric-settings.js?v=1064');
+      await global.AppLoader?.loadScript?.('js/modules/rubric-tools.js');
+      await global.AppLoader?.loadScript?.('js/modules/rubric-tools-engine.js');
+      if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
+      $('#v2ModuleRoot')?.replaceChildren?.();
+      const ok=await global.RubricToolsModule?.openPage?.(page);
+      if(ok===false){global.toast?.('Değerlendirme aracı açılamadı.');return false}
+      if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});
+      return true;
+    }catch(e){
+      console.error('[Shell/rubric-direct]',e);
+      global.toast?.('Değerlendirme aracı açılamadı.');
       return false;
     }
   }
