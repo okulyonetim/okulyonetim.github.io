@@ -30,7 +30,7 @@ const OFFICIAL_FOOD_MENU_2026_10=Object.freeze({
   22:['Kıymalı Bezelye','Mercimek Çorbası','Salata','Ekmek(75 g)'],
   23:['Patates Oturtma','Salçalı Bulgur Pilavı','Kek/Kurabiye','Ekmek(75 g)'],
   26:['Patlıcan Musakka','Bulgur Pilavı','Yoğurt','Ekmek(75 g)'],
-  27:['Tavuklu Şehriyeli Nohut Y.','Pirinç Pilavı','Sigara Böreği','Ekmek(75 g)'],
+  27:['Tavuklu Şehriyeli Nohut Ç.','Pirinç Pilavı','Sigara Böreği','Ekmek(75 g)'],
   28:['Etli Taze Fasulye','Sade Makarna','Ayran','Ekmek(75 g)'],
   30:['Kıymalı Kabak Musakka','Soslu Makarna','Şekerpare','Ekmek(75 g)']
 });
