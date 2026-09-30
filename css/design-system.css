@@ -1331,7 +1331,7 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 .ka-home .kh-section[data-home-section="duty"] .kh-row-main>small,.ka-home .kh-section[data-home-section="today-duty"] .kh-row-main>small,.ka-home .kh-section[data-home-section="upcoming"] .kh-row-main small,.ka-home .kh-section[data-home-section="lessons"] .kh-row-main small,.ka-home .kh-section[data-home-section="exams"] .kh-row-main small,.ka-home .kh-section[data-home-section="notes"] .kh-row-main small,.ka-home .kh-section[data-home-section="calendar"] .kh-row-main small{margin-top:2px;font-size:9px}.ka-home .kh-chip{font-size:7.5px;padding:4px 6px}.ka-home .kh-place{gap:5px}.ka-home .kh-place-ico{width:26px;height:26px;border-radius:9px;font-size:14px}.ka-home .kh-place b{font-size:8px}.ka-home .kh-exam-date{padding:6px 10px 4px;font-size:8px}
 
 /* Haftalık nöbet programı: dikey uzun liste yerine yatay gün kartları */
-.ka-home .kh-section[data-home-section="week-duty"]>.kh-card{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:0;border:0;background:transparent;box-shadow:none;scrollbar-width:none}.ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex:0 0 min(78%,300px);scroll-snap-align:start;overflow:hidden;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);box-shadow:0 2px 8px color-mix(in srgb,var(--ka-text) 4%,transparent)}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:8px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:40px;padding:7px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{font-size:9.5px}
+.ka-home .kh-section[data-home-section="week-duty"]>.kh-card{display:flex;flex-direction:column;gap:8px;overflow:visible;padding:0;border:0;background:transparent;box-shadow:none}.ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex:0 0 auto;width:100%;overflow:hidden;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);box-shadow:0 2px 8px color-mix(in srgb,var(--ka-text) 4%,transparent)}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:8px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:40px;padding:7px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{font-size:9.5px}
 
 /* Koyu temada katman ayrımı; sabit açık renk yüzey üretme. */
 [data-theme="dark"] .ka-home .kh-hero,[data-theme="dark"] .ka-home .kh-announcement,[data-theme="dark"] .ka-home .kh-trial-live__card{box-shadow:0 5px 20px rgba(0,0,0,.26)}
@@ -1344,13 +1344,12 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
   .ka-home .kh-announcement-head{grid-template-columns:34px minmax(0,1fr) auto;padding-inline:9px}.ka-home .kh-announcement-icon{width:34px;height:34px}.ka-home .kh-announcement-body{padding-inline:9px}.ka-home .kh-announcement-footer{padding-inline:9px}
   .ka-school-summary-grid{gap:6px}.ka-school-summary-card{min-height:104px;padding-inline:6px}.ka-school-summary-icon{width:31px;height:31px}.ka-school-summary-card>b{font-size:21px}.ka-school-stage>strong{font-size:12px}
   .ka-home .kh-trial-live__card{padding:9px}.ka-home .kh-trial-live__timer-head strong{font-size:12.5px}.ka-home .kh-trial-live__meta>span{padding-inline:3px}
-  .ka-home .kh-section-title{font-size:13.5px}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:84%}
+  .ka-home .kh-section-title{font-size:13.5px}
 }
 
 @media(min-width:700px){
   .ka-home{max-width:920px;gap:14px!important;padding-inline:16px!important}.ka-home .kh-hero{padding:18px}.ka-home .kh-greeting{font-size:25px}
   .ka-school-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.ka-school-summary-card{min-height:112px}
-  .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:min(46%,320px)}
 }
 
 
