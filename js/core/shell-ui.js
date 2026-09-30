@@ -102,6 +102,13 @@ function applySubpage(name,page,title){
     Promise.resolve(global.OdevNotUI?.open?.(studentPages[page])).catch(e=>{console.error('[Shell/gradebook]',e);global.toast?.('Çizelge açılamadı.');});
     if(title)setTitle(title);return true;
   }
+  if(name==='tools'&&(page==='rubric'||page==='project')){
+    Promise.resolve(global.RubricToolsModule?.openPage?.(page))
+      .then(ok=>{if(ok===false)global.toast?.('Değerlendirme aracı açılamadı.');})
+      .catch(e=>{console.error('[Shell/rubric-tools]',e);global.toast?.('Değerlendirme aracı açılamadı.');});
+    if(title)setTitle(title);
+    return true;
+  }
   if(name==='tools'&&FORM_PAGES[page])return applyFormPage(root,page,title);
   if(name==='documents'&&page==='evrak'&&global.EvrakTakipPage?.open){
     global.DocumentsModule?.unmount?.();
@@ -155,14 +162,6 @@ function applySubpage(name,page,title){
   }
   if(name==='academic'){
     const h=root.querySelector('[data-academic-module] > .ka-row h2');if(h&&title)h.textContent=title;
-    if(page==='rubric'||page==='project'){
-      Promise.resolve()
-        .then(()=>global.AppLoader?.loadScript?.('js/modules/rubric-settings.js?v=1064'))
-        .then(()=>global.AppLoader?.loadScript?.('js/modules/rubric-tools.js'))
-        .then(()=>global.RubricToolsModule?.openPage?.(page))
-        .then(ok=>{if(ok===false)global.toast?.('Değerlendirme aracı açılamadı.');})
-        .catch(e=>{console.error('[Shell/rubric]',e);global.toast?.('Değerlendirme aracı açılamadı.');});
-    }
   }
   if(name==='communication'){
     const h=root.querySelector('[data-communication-module] > .ka-row h2');if(h&&title)h.textContent=title;
