@@ -9,6 +9,32 @@ const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 function toast(msg){global.toast?.(msg)}
 
 const FOOD_DATA_TYPE='yemekMenuleri';
+
+/* 2026 Ekim Ortak Yemek Listesi — yalnızca Ekim 2026 menüsü boşsa ilk kurulum verisi olarak kullanılır. */
+const OFFICIAL_FOOD_MENU_2026_10=Object.freeze({
+  1:['Kıymalı Kabak Musakka','Bulgur Pilavı','Ayran','Ekmek(75 g)'],
+  2:['Tas Kebabı','Bezelyeli Pirinç Pilavı','Ayran','Ekmek(75 g)'],
+  5:['Etli Taze Fasulye','Yayla Çorbası','İrmik Helvası','Ekmek(75 g)'],
+  6:['Terbiyeli Köfte','Fırında Patates','Ayran','Ekmek(75 g)'],
+  7:['Fırın Tavuk','Soslu Makarna','Ayran','Ekmek(75 g)'],
+  8:['Etli Patates','Bulgur Pilavı','Çoban Salata','Ekmek(75 g)'],
+  9:['Kıymalı Barbunya','Pirinç Pilavı','Turşu','Ekmek(75 g)'],
+  12:['Orman Kebabı','Şehriyeli Pirinç Pilavı','Meyve','Ekmek(75 g)'],
+  13:['Sebzeli Tavuk','Mercimek Çorbası','Yoğurt','Ekmek(75 g)'],
+  14:['Güveç','Pirinç Pilavı','Haydari','Ekmek(75 g)'],
+  15:['Kuru Köfte','Bulgur Pilavı','Salata','Ekmek(75 g)'],
+  16:['Ezogelin Çorba','Tavuklu Köri Soslu Makarna','Meyve','Ekmek(75 g)'],
+  19:['Etli Kuru Fasulye','Bulgur Pilavı','Meyve','Ekmek(75 g)'],
+  20:['Et Sote','Bezelyeli Pirinç Pilavı','Haydari','Ekmek(75 g)'],
+  21:['Tavuk Haşlama','Soslu Makarna','Ayran','Ekmek(75 g)'],
+  22:['Kıymalı Bezelye','Mercimek Çorbası','Salata','Ekmek(75 g)'],
+  23:['Patates Oturtma','Salçalı Bulgur Pilavı','Kek/Kurabiye','Ekmek(75 g)'],
+  26:['Patlıcan Musakka','Bulgur Pilavı','Yoğurt','Ekmek(75 g)'],
+  27:['Tavuklu Şehriyeli Nohut Y.','Pirinç Pilavı','Sigara Böreği','Ekmek(75 g)'],
+  28:['Etli Taze Fasulye','Sade Makarna','Ayran','Ekmek(75 g)'],
+  30:['Kıymalı Kabak Musakka','Soslu Makarna','Şekerpare','Ekmek(75 g)']
+});
+
 function localIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 let active='monthly',mounted=false,unsubs=[],pendingPage=null;
 let foodMenuCurrentMonth=foodMenuMonthKey(localIso(new Date())),foodMenuViewDate=localIso(new Date()),foodMenuCache={};
@@ -24,6 +50,20 @@ const DAY_THEMES=[
 function themeFor(dow){return DAY_THEMES[dow]||DAY_THEMES[1]}
 
 function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+
+async function seedOfficialOctober2026(){
+ const key='2026-10';
+ const all=foodMenuLoad();
+ const existing=all[key]||{};
+ const hasExisting=Object.values(existing).some(v=>foodDayItems(v).length);
+ if(hasExisting)return false;
+ const menu={};
+ for(let day=1;day<=31;day++)menu[day]={items:Array.isArray(OFFICIAL_FOOD_MENU_2026_10[day])?[...OFFICIAL_FOOD_MENU_2026_10[day]]:[]};
+ all[key]=menu;
+ const saved=await foodMenuLocalSave();
+ if(saved)console.info('[FoodMenu] 2026 Ekim ortak yemek listesi cihaza aktarıldı.');
+ return saved;
+}
 let foodMenuHydrated=false,foodSelfSaving=false,foodSaveSeq=0,foodMenuStoreRef=null;
 function foodMenuLoad(){
  const storeRows=global.AppStore?.data?.(FOOD_DATA_TYPE);
@@ -349,6 +389,7 @@ async function prepareLocal(){
  if(!global.SyncEngine)return;
  global.SyncEngine.register?.('yemekMenuleri',global.COL?.yemekMenuleri);
  await global.SyncEngine.localHydrate?.(['yemekMenuleri']);
+ await seedOfficialOctober2026();
  if(global.navigator?.onLine&&typeof global.SyncEngine.sync==='function'){
   try{await global.SyncEngine.sync(['yemekMenuleri'])}
   catch(e){console.warn('[FoodMenu] Uzak menü senkronizasyonu başarısız:',e?.message||e);global.SyncEngine.schedule?.(100)}
