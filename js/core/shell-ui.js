@@ -102,6 +102,12 @@ function applySubpage(name,page,title){
     Promise.resolve(global.OdevNotUI?.open?.(studentPages[page])).catch(e=>{console.error('[Shell/gradebook]',e);global.toast?.('Çizelge açılamadı.');});
     if(title)setTitle(title);return true;
   }
+  if(name==='management'&&['staff','staff-leaves','leave-annual','leave-health','leave-excuse','leave-other','tasks','leaves','duty','puantaj','dilekce'].includes(page)){
+    const ok=global.ManagementModule?.openPage?.(page,title);
+    if(ok===false)return false;
+    if(title)setTitle(title);
+    return true;
+  }
   if(name==='tools'&&FORM_PAGES[page])return applyFormPage(root,page,title);
   if(name==='documents'&&page==='evrak'&&global.EvrakTakipPage?.open){
     global.DocumentsModule?.unmount?.();
