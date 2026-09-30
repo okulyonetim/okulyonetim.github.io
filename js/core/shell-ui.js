@@ -155,10 +155,13 @@ function applySubpage(name,page,title){
   }
   if(name==='academic'){
     const h=root.querySelector('[data-academic-module] > .ka-row h2');if(h&&title)h.textContent=title;
-    if(page==='rubric'){
-      Promise.resolve(global.KorukRubricToolsV2?.openRubric?.()).catch(e=>{console.error('[Shell/rubric]',e);global.toast?.('Kriter puan dağıtım aracı açılamadı.');});
-    }else if(page==='project'){
-      Promise.resolve(global.KorukRubricToolsV2?.openProject?.()).catch(e=>{console.error('[Shell/project]',e);global.toast?.('Proje değerlendirme aracı açılamadı.');});
+    if(page==='rubric'||page==='project'){
+      Promise.resolve()
+        .then(()=>global.AppLoader?.loadScript?.('js/modules/rubric-settings.js?v=1064'))
+        .then(()=>global.AppLoader?.loadScript?.('js/modules/rubric-tools.js'))
+        .then(()=>global.RubricToolsModule?.openPage?.(page))
+        .then(ok=>{if(ok===false)global.toast?.('Değerlendirme aracı açılamadı.');})
+        .catch(e=>{console.error('[Shell/rubric]',e);global.toast?.('Değerlendirme aracı açılamadı.');});
     }
   }
   if(name==='communication'){
