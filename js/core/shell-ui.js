@@ -118,7 +118,7 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Akademik sayfa açılamadı.');
     if(title)setTitle(title);return true;
   }
-  if(name==='management'&&['staff','staff-leaves','tasks','leaves','duty','puantaj','dilekce'].includes(page)){
+  if(name==='management'&&['staff','staff-leaves','leave-annual','leave-health','leave-excuse','leave-other','tasks','leaves','duty','puantaj','dilekce'].includes(page)){
     const ok=global.ManagementModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Yönetim sayfası açılamadı.');
     if(title)setTitle(title);return true;
