@@ -180,12 +180,18 @@ function applySubpage(name,page,title){
   if(name==='management'){
     const h=root.querySelector('[data-management-module] > .ka-row h2');if(h&&title)h.textContent=title;
   }
+  if(name==='reports'){
+    const ok=global.ReportsModule?.mount?.(page||'home',root);
+    if(ok===false)global.toast?.('Okul Raporları açılamadı.');
+    if(title)setTitle(title);
+    return ok!==false;
+  }
   if(name==='tools')hideModuleChrome(root,'tools');
   if(name==='settings')hideModuleChrome(root,'settings');
   if(title)setTitle(title);
   return !!tab;
 }
-const MODULE_ROOT_SELECTORS=Object.freeze({dashboard:'[data-dashboard-module]',people:'[data-people-module]',academic:'[data-academic-module]',management:'[data-management-module]',communication:'[data-communication-module]',transport:'[data-transport-module]',documents:'[data-documents-module]',tools:'[data-tools-module]',settings:'[data-settings-module]'});
+const MODULE_ROOT_SELECTORS=Object.freeze({dashboard:'[data-dashboard-module]',people:'[data-people-module]',academic:'[data-academic-module]',management:'[data-management-module]',communication:'[data-communication-module]',transport:'[data-transport-module]',food:'[data-food-menu-module]',documents:'[data-documents-module]',reports:'[data-reports-module]',tools:'[data-tools-module]',settings:'[data-settings-module]'});
 function moduleRouteMounted(name){const root=$('#v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(selector&&global.AppLoader?.moduleApi?.(name)&&root?.querySelector?.(selector))}
 async function routeModule(name,{bottom='menu',page='',title='',remember=true,parentMenu=''}={}){
   const routeToken=++routeEpoch;
@@ -434,11 +440,25 @@ function closeTransientForBack(){
   if(global.AcademicModule?.back?.())return true;
   return false
 }
+function visibleShellModule(){
+  const root=$('#v2ModuleRoot');if(!root)return '';
+  for(const [name,selector] of Object.entries(MODULE_ROOT_SELECTORS)){
+    if(root.querySelector(selector))return name;
+  }
+  return '';
+}
 function rearmBrowserBack(){if(!browserBackBound)return;if(history.state?.kaShellGuard!=='active')history.pushState({kaShellGuard:'active'},'')}
 async function handleAppBack({fromPop=false}={}){let handled=closeTransientForBack();const current=navStack[navStack.length-1];if(!handled&&current?.kind==='route'&&current.name==='tools'&&['homework','grades'].includes(current.page)&&global.GradebookPage?.page){const closed=global.GradebookPage.close?.();if(closed===false)return true;const key=current.parentMenu||'management',g=customizedVisibleGroups().find(x=>x.key===key);const menuView={kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'};if(navStack.length>1)navStack.pop();if(!sameView(navStack[navStack.length-1],menuView)){if(navStack.length>1)navStack[navStack.length-1]=menuView;else navStack.push(menuView)}openMenu();renderMenuList(key);setBottomActive('menu');syncShellBack();if(fromPop)rearmBrowserBack();return true}if(!handled&&current?.kind==='route'&&current.name==='settings'&&global.SettingsModule?.currentPage?.()!=='home'){handled=global.SettingsModule?.back?.()===true}if(!handled&&current?.kind==='route'&&current.name==='settings'&&global.SettingsModule?.currentPage?.()==='home'&&navStack.length===1){navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];handled=await routeModule('dashboard',{bottom:'home',remember:false})}if(!handled&&navStack.length>1){navStack.pop();handled=await restoreView(navStack[navStack.length-1])}if(!handled&&current?.kind==='route'&&current.name==='tools'&&['homework','grades'].includes(current.page)&&navStack.length===1){const key=current.parentMenu||'management',g=customizedVisibleGroups().find(x=>x.key===key);navStack=[{kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'}];openMenu();renderMenuList(key);handled=true}if(!handled&&navStack.length===1&&navStack[0]?.parentMenu){const key=navStack[0].parentMenu,g=customizedVisibleGroups().find(x=>x.key===key);navStack=[{kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'}];openMenu();renderMenuList(key);handled=true}
 if(!handled&&navStack.length===1&&navStack[0]?.kind==='route'&&navStack[0]?.name!=='dashboard'){
   navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
   handled=await routeModule('dashboard',{bottom:'home',remember:false});
+}
+if(!handled&&navStack.length===1&&navStack[0]?.name==='dashboard'){
+  const visible=visibleShellModule();
+  if(visible&&visible!=='dashboard'){
+    navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
+    handled=await routeModule('dashboard',{bottom:'home',remember:false});
+  }
 }
 if(handled){if(fromPop)rearmBrowserBack();return true}if(!confirm('Uygulamadan çıkmak istediğinize emin misiniz?')){if(fromPop)rearmBrowserBack();return false}const nativeExit=global.AndroidUygulamadanCikKopru?.uygulamadanCik;if(nativeExit){try{nativeExit.call(global.AndroidUygulamadanCikKopru);return true}catch(e){console.error('[Shell/NativeExit]',e)}}const app=global.Capacitor?.Plugins?.App;if(app?.exitApp){try{await app.exitApp();return true}catch(_){}}if(fromPop){browserExitApproved=true;browserExitFromPop=true;history.back()}else{browserExitApproved=true;browserExitFromPop=false;history.back()}return true}
 function installBackNavigation(){if(browserBackBound)return;browserBackBound=true;history.replaceState({kaShellGuard:'root'},'');history.pushState({kaShellGuard:'active'},'');window.addEventListener('popstate',()=>{if(browserExitApproved){const fromPop=browserExitFromPop;browserExitApproved=false;browserExitFromPop=false;if(fromPop)return;history.back();return}handleAppBack({fromPop:true})})}
