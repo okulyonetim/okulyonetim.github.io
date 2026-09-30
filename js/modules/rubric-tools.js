@@ -10,8 +10,8 @@ if(global.RubricToolsModule)return;
 
 const ENGINE='js/modules/rubric-tools-engine.js';
 const TOOLS=[
-  {key:'rubric',label:'Kriter Dağıtım',api:'KriterDagitimAraci',permission:'tools.gradebook'},
-  {key:'project',label:'Proje Değerlendirme',api:'ProjeDegerlendirmeAraci',permission:'tools.gradebook'}
+  {key:'rubric',route:'rubric-distribution',label:'Kriter Dağıtım',api:'KriterDagitimAraci',permission:'tools.gradebook'},
+  {key:'project',route:'project-evaluation',label:'Proje Değerlendirme',api:'ProjeDegerlendirmeAraci',permission:'tools.gradebook'}
 ];
 const OTHER_DOCUMENT_PAGE='other-documents';
 const DIPLOMA_REQUEST_PAGE='diploma-request';
