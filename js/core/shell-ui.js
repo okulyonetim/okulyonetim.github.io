@@ -138,6 +138,16 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Yemek sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
+  if(name==='reports'){
+    if(global.ReportsModule?.mount){
+      const ok=global.ReportsModule.mount(page||'home',root);
+      if(ok===false)global.toast?.('Okul Raporları açılamadı.');
+      if(title)setTitle(title);
+      return ok!==false;
+    }
+    global.toast?.('Okul Raporları modülü yüklenemedi.');
+    return false;
+  }
   if(name==='settings'&&['school','social','lesson-hours','holiday','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
     const ok=global.SettingsModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Ayarlar sayfası açılamadı.');
@@ -396,6 +406,18 @@ async function restoreView(view){if(!view)return false;if(view.kind==='profile')
 function closeTransientForBack(){
   if(headerPopover){closeHeaderPopover();return true}
   if(document.getElementById('kaQuickNoteModal')){quickNoteCloseAndRestore();return true}
+  const rubricSettings=document.querySelector('.ka-rubric-settings-backdrop');
+  if(rubricSettings){
+    rubricSettings.remove();
+    return true;
+  }
+  const rubricOverlay=document.getElementById('kaRubricOverlay');
+  if(rubricOverlay){
+    rubricOverlay.remove();
+    document.body.classList.remove('dlk-overlay-acik','ka-rubric-open');
+    global._pullToRefreshAyarla?.(true);
+    return true;
+  }
   const layer=$('#kaMenuLayer');
   if(layer&&!layer.hidden){if(menuGroup)renderMenuGrid();else closeMenu();return true}
   const modals=[...document.querySelectorAll('.ka-modal-backdrop,[role="dialog"]')].filter(el=>!el.hidden&&getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden');
@@ -413,7 +435,12 @@ function closeTransientForBack(){
   return false
 }
 function rearmBrowserBack(){if(!browserBackBound)return;if(history.state?.kaShellGuard!=='active')history.pushState({kaShellGuard:'active'},'')}
-async function handleAppBack({fromPop=false}={}){let handled=closeTransientForBack();const current=navStack[navStack.length-1];if(!handled&&current?.kind==='route'&&current.name==='tools'&&['homework','grades'].includes(current.page)&&global.GradebookPage?.page){const closed=global.GradebookPage.close?.();if(closed===false)return true;const key=current.parentMenu||'management',g=customizedVisibleGroups().find(x=>x.key===key);const menuView={kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'};if(navStack.length>1)navStack.pop();if(!sameView(navStack[navStack.length-1],menuView)){if(navStack.length>1)navStack[navStack.length-1]=menuView;else navStack.push(menuView)}openMenu();renderMenuList(key);setBottomActive('menu');syncShellBack();if(fromPop)rearmBrowserBack();return true}if(!handled&&current?.kind==='route'&&current.name==='settings'&&global.SettingsModule?.currentPage?.()!=='home'){handled=global.SettingsModule?.back?.()===true}if(!handled&&current?.kind==='route'&&current.name==='settings'&&global.SettingsModule?.currentPage?.()==='home'&&navStack.length===1){navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];handled=await routeModule('dashboard',{bottom:'home',remember:false})}if(!handled&&navStack.length>1){navStack.pop();handled=await restoreView(navStack[navStack.length-1])}if(!handled&&current?.kind==='route'&&current.name==='tools'&&['homework','grades'].includes(current.page)&&navStack.length===1){const key=current.parentMenu||'management',g=customizedVisibleGroups().find(x=>x.key===key);navStack=[{kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'}];openMenu();renderMenuList(key);handled=true}if(!handled&&navStack.length===1&&navStack[0]?.parentMenu){const key=navStack[0].parentMenu,g=customizedVisibleGroups().find(x=>x.key===key);navStack=[{kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'}];openMenu();renderMenuList(key);handled=true}if(handled){if(fromPop)rearmBrowserBack();return true}if(!confirm('Uygulamadan çıkmak istediğinize emin misiniz?')){if(fromPop)rearmBrowserBack();return false}const nativeExit=global.AndroidUygulamadanCikKopru?.uygulamadanCik;if(nativeExit){try{nativeExit.call(global.AndroidUygulamadanCikKopru);return true}catch(e){console.error('[Shell/NativeExit]',e)}}const app=global.Capacitor?.Plugins?.App;if(app?.exitApp){try{await app.exitApp();return true}catch(_){}}if(fromPop){browserExitApproved=true;browserExitFromPop=true;history.back()}else{browserExitApproved=true;browserExitFromPop=false;history.back()}return true}
+async function handleAppBack({fromPop=false}={}){let handled=closeTransientForBack();const current=navStack[navStack.length-1];if(!handled&&current?.kind==='route'&&current.name==='tools'&&['homework','grades'].includes(current.page)&&global.GradebookPage?.page){const closed=global.GradebookPage.close?.();if(closed===false)return true;const key=current.parentMenu||'management',g=customizedVisibleGroups().find(x=>x.key===key);const menuView={kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'};if(navStack.length>1)navStack.pop();if(!sameView(navStack[navStack.length-1],menuView)){if(navStack.length>1)navStack[navStack.length-1]=menuView;else navStack.push(menuView)}openMenu();renderMenuList(key);setBottomActive('menu');syncShellBack();if(fromPop)rearmBrowserBack();return true}if(!handled&&current?.kind==='route'&&current.name==='settings'&&global.SettingsModule?.currentPage?.()!=='home'){handled=global.SettingsModule?.back?.()===true}if(!handled&&current?.kind==='route'&&current.name==='settings'&&global.SettingsModule?.currentPage?.()==='home'&&navStack.length===1){navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];handled=await routeModule('dashboard',{bottom:'home',remember:false})}if(!handled&&navStack.length>1){navStack.pop();handled=await restoreView(navStack[navStack.length-1])}if(!handled&&current?.kind==='route'&&current.name==='tools'&&['homework','grades'].includes(current.page)&&navStack.length===1){const key=current.parentMenu||'management',g=customizedVisibleGroups().find(x=>x.key===key);navStack=[{kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'}];openMenu();renderMenuList(key);handled=true}if(!handled&&navStack.length===1&&navStack[0]?.parentMenu){const key=navStack[0].parentMenu,g=customizedVisibleGroups().find(x=>x.key===key);navStack=[{kind:'menu-list',name:'menu',bottom:'menu',page:key,title:g?.label||'Menü'}];openMenu();renderMenuList(key);handled=true}
+if(!handled&&navStack.length===1&&navStack[0]?.kind==='route'&&navStack[0]?.name!=='dashboard'){
+  navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
+  handled=await routeModule('dashboard',{bottom:'home',remember:false});
+}
+if(handled){if(fromPop)rearmBrowserBack();return true}if(!confirm('Uygulamadan çıkmak istediğinize emin misiniz?')){if(fromPop)rearmBrowserBack();return false}const nativeExit=global.AndroidUygulamadanCikKopru?.uygulamadanCik;if(nativeExit){try{nativeExit.call(global.AndroidUygulamadanCikKopru);return true}catch(e){console.error('[Shell/NativeExit]',e)}}const app=global.Capacitor?.Plugins?.App;if(app?.exitApp){try{await app.exitApp();return true}catch(_){}}if(fromPop){browserExitApproved=true;browserExitFromPop=true;history.back()}else{browserExitApproved=true;browserExitFromPop=false;history.back()}return true}
 function installBackNavigation(){if(browserBackBound)return;browserBackBound=true;history.replaceState({kaShellGuard:'root'},'');history.pushState({kaShellGuard:'active'},'');window.addEventListener('popstate',()=>{if(browserExitApproved){const fromPop=browserExitFromPop;browserExitApproved=false;browserExitFromPop=false;if(fromPop)return;history.back();return}handleAppBack({fromPop:true})})}
 function back(){return handleAppBack()}
 function bindHeader(){document.addEventListener('click',e=>{const backBtn=e.target.closest('[data-ka-shell-back]');if(backBtn){e.preventDefault();back();return}const homeBtn=e.target.closest('[data-ka-home-trigger]');if(homeBtn){home();return}const profileBtn=e.target.closest('[data-ka-header-profile]');if(profileBtn){e.preventDefault();openProfilePopover();return}const noticeBtn=e.target.closest('[data-ka-header-notification]');if(noticeBtn&&!noticeBtn.hidden){e.preventDefault();openNotifications()}})}
