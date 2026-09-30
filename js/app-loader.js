@@ -24,7 +24,7 @@ function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if
 define('dashboard',['js/modules/school-live-status.js?v=1066','js/modules/dashboard.js?v=1095']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/academic.js?v=892']);
-define('management',['js/modules/report-engine.js','js/modules/management.js?v=885']);
+define('management',['js/modules/report-engine.js','js/modules/management.js?v=886']);
 define('communication',['js/modules/communication.js?v=839','js/modules/assistant.js']);
 define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=948']);
 define('food',['js/modules/report-engine.js','js/modules/food-menu.js?v=1037']);
