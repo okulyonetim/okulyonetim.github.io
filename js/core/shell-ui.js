@@ -211,17 +211,18 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     global.AppLoader?.setActiveModule?.(name);
     setTitle(title||meta.label||name);
     try{
-      await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
-      await global.AppLoader?.loadScript?.('js/modules/reports.js');
-      if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
+      await global.AppLoader?.load?.('reports');
+      if(routeToken!==routeEpoch)return false;
       const reportsRoot=$('#v2ModuleRoot');
-      reportsRoot?.replaceChildren?.();
-      const ok=global.ReportsModule?.mount?.(page||'home',reportsRoot);
-      if(ok===false){global.toast?.('Okul Raporları açılamadı.');return false}
+      const ok=await global.ReportsModule?.mount?.(page||'home',reportsRoot);
+      if(ok===false||!global.ReportsModule?.currentPage){
+        global.toast?.('Okul Raporları açılamadı.');
+        return false;
+      }
       if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||meta.label||name,parentMenu});
       return true;
     }catch(e){
-      console.error('[Shell/reports-direct]',e);
+      console.error('[Shell/reports]',e);
       global.toast?.('Okul Raporları modülü yüklenemedi.');
       return false;
     }
