@@ -211,23 +211,33 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     global.AppLoader?.setActiveModule?.(name);
     setTitle(title||meta.label||name);
     try{
-      await global.AppLoader?.load?.('reports');
-      if(routeToken!==routeEpoch)return false;
-      const reportsRoot=$('#v2ModuleRoot');
-      const ok=await global.ReportsModule?.mount?.(page||'home',reportsRoot);
-      if(ok===false||!global.ReportsModule?.currentPage){
-        global.toast?.('Okul Raporları açılamadı.');
-        return false;
+      const root=$('#v2ModuleRoot');
+      if(!global.ReportsModule){
+        await global.AppLoader?.loadScript?.('js/modules/reports.js?v=1054');
       }
+      if(!global.ReportsModule){
+        await new Promise((resolve,reject)=>{
+          const s=document.createElement('script');
+          s.src='js/modules/reports.js?force=1054';
+          s.async=false;
+          s.onload=resolve;
+          s.onerror=()=>reject(new Error('reports.js yüklenemedi'));
+          document.head.appendChild(s);
+        });
+      }
+      if(routeToken!==routeEpoch)return false;
+      if(!global.ReportsModule?.mount)throw new Error('ReportsModule hazır değil');
+      root?.replaceChildren?.();
+      const ok=global.ReportsModule.mount(page||'home',root);
+      if(ok===false)throw new Error('ReportsModule.mount başarısız');
       if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||meta.label||name,parentMenu});
       return true;
     }catch(e){
       console.error('[Shell/reports]',e);
-      global.toast?.('Okul Raporları modülü yüklenemedi.');
+      global.toast?.('Okul Raporları açılamadı.');
       return false;
     }
   }
-
   if(name==='tools'&&(page==='rubric'||page==='project')){
     setBottomActive(bottom);
     global.AppLoader?.setActiveModule?.(name);
