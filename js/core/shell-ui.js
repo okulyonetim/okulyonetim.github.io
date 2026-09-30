@@ -34,7 +34,7 @@ const MENU_GROUPS=[
  {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'food',items:[['Günlük Menü','☀️','food','daily'],['Haftalık Menü','📆','food','weekly'],['Aylık Menü','🗓️','food','monthly'],['Yemek Denetimi','📝','food','audit']]},
  {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Okul Raporları','📊','reports','home'],['Akademik Takvim','📅','academic','calendar']]},
  {key:'settings',label:'Okul ve Sistem',modernLabel:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Veriler','🗄️','settings','data']]},
- {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',hidden:true,items:[['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools','rubric'],['Proje Değerlendirme Ölçeği','📏','tools','project']]},
+ {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',hidden:true,items:[['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools','rubric-distribution'],['Proje Değerlendirme Ölçeği','📏','tools','project-evaluation']]},
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',hidden:true,items:[['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]}
 ];
 const FORM_PAGES=Object.freeze({'form-maarif':'Maarif Model Raporları','form-belirli':'Belirli Günler ve Haftalar','form-sok':'ŞÖK','form-rehberlik':'Rehberlik','form-bep':'BEP Planları','form-zumre':'Zümre','form-kulup':'Sosyal Kulüpler','form-diger':'Diğer Evrak'});
@@ -238,7 +238,7 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
       return false;
     }
   }
-  if(name==='tools'&&(page==='rubric'||page==='project')){
+  if(name==='tools'&&(['rubric-distribution','project-evaluation','rubric','project'].includes(page))){
     setBottomActive(bottom);
     global.AppLoader?.setActiveModule?.(name);
     setTitle(title||meta.label||name);
@@ -248,7 +248,8 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
       await global.AppLoader?.loadScript?.('js/modules/rubric-tools-engine.js');
       if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
       $('#v2ModuleRoot')?.replaceChildren?.();
-      const ok=await global.RubricToolsModule?.openPage?.(page);
+      const rubricPage=page==='rubric'||page==='rubric-distribution'?'rubric':'project';
+      const ok=await global.RubricToolsModule?.openPage?.(rubricPage);
       if(ok===false){global.toast?.('Değerlendirme aracı açılamadı.');return false}
       if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});
       return true;
@@ -454,6 +455,8 @@ function closeTransientForBack(){
     rubricOverlay.remove();
     document.body.classList.remove('dlk-overlay-acik','ka-rubric-open');
     global._pullToRefreshAyarla?.(true);
+    /* Kriter/Proje artık bağımsız route'tur: overlay kapanırken bir üst route'a dön. */
+    global.ShellUI?.back?.();
     return true;
   }
   const layer=$('#kaMenuLayer');
