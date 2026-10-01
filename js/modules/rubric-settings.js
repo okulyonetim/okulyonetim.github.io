@@ -7,32 +7,39 @@
 'use strict';
 let started=false;
 const wait=(fn,tries=120)=>new Promise((resolve,reject)=>{let n=0;const tick=()=>{try{if(fn())return resolve(true)}catch(e){if(n>=tries)return reject(e)}if(++n>=tries)return reject(new Error('AppLoader hazır değil.'));setTimeout(tick,100)};tick()});
+async function openBelirliGunlerCatalog(){
+  if(global.BelirliGunlerCatalog?.open){global.BelirliGunlerCatalog.open();return true}
+  if(typeof global.AppLoader?.loadScript==='function'){
+    try{await global.AppLoader.loadScript('js/modules/belirli-gunler-catalog.js?v=5')}catch(e){console.warn('[BelirliGunlerCatalog load]',e?.message||e)}
+  }
+  return !!global.BelirliGunlerCatalog?.open?.();
+}
+function installEntryGuard(){
+  if(document.__korukBelirliGunlerEntryGuard)return;
+  document.__korukBelirliGunlerEntryGuard=true;
+  document.addEventListener('click',e=>{
+    const btn=e.target?.closest?.('[data-cizelge-add]');
+    if(!btn)return;
+    const text=(btn.textContent||'').toLocaleLowerCase('tr');
+    const route=(document.querySelector('[data-cizelge-route-label]')?.textContent||document.title||'').toLocaleLowerCase('tr');
+    const tools=document.querySelector('#toolsContent');
+    if(!text.includes('yeni etkinlik')||(!route.includes('belirli')&&!tools))return;
+    e.preventDefault();e.stopImmediatePropagation();
+    openBelirliGunlerCatalog();
+  },true);
+}
 async function boot(){
   if(started)return;
   started=true;
   try{
     await wait(()=>typeof global.AppLoader?.loadScript==='function');
     const load=global.AppLoader.loadScript;
-    await load('js/modules/rubric-settings-core.js?v=1066');
-    await load('js/modules/belirli-gunler-catalog.js?v=4');
+    await load('js/modules/rubric-settings-core.js?v=1067');
+    await load('js/modules/belirli-gunler-catalog.js?v=5');
+    installEntryGuard();
     const catalog=global.BelirliGunlerCatalog;
     if(catalog?.install)catalog.install();
     global.dispatchEvent?.(new CustomEvent('koruk:belirli-gunler-catalog-ready'));
-    // Menüden açılan "Yeni Etkinlik" düğümü legacy forma düşerse doğrudan katalog ekranını aç.
-    if(!document.__korukBelirliGunlerClickGuard){
-      document.__korukBelirliGunlerClickGuard=true;
-      document.addEventListener('click',e=>{
-        const btn=e.target?.closest?.('[data-cizelge-add]');
-        if(!btn)return;
-        const page=document.querySelector('[data-cizelge-route-label]')?.textContent||document.title||'';
-        const text=(btn.textContent||'').toLocaleLowerCase('tr');
-        const route=page.toLocaleLowerCase('tr');
-        if(text.includes('yeni etkinlik')&&(route.includes('belirli')||document.querySelector('#toolsContent'))){
-          e.preventDefault();e.stopImmediatePropagation();
-          global.BelirliGunlerCatalog?.open?.();
-        }
-      },true);
-    }
   }catch(e){
     started=false;
     console.warn('[RubricSettings compatibility load]',e?.message||e);
