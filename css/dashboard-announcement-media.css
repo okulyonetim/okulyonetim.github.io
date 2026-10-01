@@ -41,9 +41,7 @@
 }
 @media(max-width:390px){.ka-home .kh-announcement-media__slide{min-height:155px}.kh-reader-popover{max-width:calc(100vw - 20px)}}
 
-/* ===== HAFTALIK NÖBET PROGRAMI — DİKEY DÜZEN =====
-   Ana sayfadaki haftalık nöbet kartı günleri yatay kaydırma yerine
-   tek kart içinde üstten alta listelenir. Tasarım merkezi tokenları kullanır. */
+/* ===== HAFTALIK NÖBET PROGRAMI — DİKEY DÜZEN ===== */
 .ka-home .kh-section[data-home-section="week-duty"]>.kh-card{
   display:flex!important;
   flex-direction:column!important;
@@ -55,29 +53,40 @@
   border:0!important;
   background:transparent!important;
   box-shadow:none!important;
-  scrollbar-width:auto!important;
+  scrollbar-width:none!important;
 }
 .ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}
 .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{
-  flex:0 0 auto!important;
-  width:100%!important;
-  max-width:none!important;
-  scroll-snap-align:none!important;
-  overflow:hidden!important;
-  border:0!important;
-  border-bottom:1px solid var(--ka-border)!important;
-  border-radius:0!important;
-  background:var(--ka-card-bg)!important;
-  box-shadow:none!important;
+  flex:0 0 auto!important;width:100%!important;max-width:none!important;
+  scroll-snap-align:none!important;overflow:hidden!important;
+  border:0!important;border-bottom:1px solid var(--ka-border)!important;
+  border-radius:0!important;background:var(--ka-card-bg)!important;box-shadow:none!important;
 }
 .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday:first-child{border-radius:15px 15px 0 0!important}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday:last-child{
-  border-bottom:0!important;
-  border-radius:0 0 15px 15px!important;
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday:last-child{border-bottom:0!important;border-radius:0 0 15px 15px!important}
+
+/* Kompakt görünüm: günler ve nöbetçi satırları gereksiz dikey boşluk bırakmasın. */
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{
+  padding:7px 13px!important;
+  min-height:0!important;
+  line-height:1.15!important;
 }
-.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:12px 14px!important}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:42px!important;padding:8px 14px!important}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{font-size:10px!important}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{
+  min-height:32px!important;
+  height:auto!important;
+  padding:5px 13px!important;
+  line-height:1.15!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:not(:first-child){
+  line-height:1.15!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini + .kh-mini{padding-top:4px!important}
 @media(max-width:390px){
   .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:auto!important}
+  .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:6px 11px!important}
+  .ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:30px!important;padding:4px 11px!important}
 }
