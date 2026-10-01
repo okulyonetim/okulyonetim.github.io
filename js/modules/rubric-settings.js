@@ -19,18 +19,20 @@ async function boot(){
     if(catalog?.install)catalog.install();
     global.dispatchEvent?.(new CustomEvent('koruk:belirli-gunler-catalog-ready'));
     // Menüden açılan "Yeni Etkinlik" düğümü legacy forma düşerse doğrudan katalog ekranını aç.
-    document.addEventListener('click',e=>{
-      const btn=e.target?.closest?.('[data-cizelge-add]');
-      if(!btn||global.BelirliGunlerCatalog?.__domGuardHandled)return;
-      const page=document.querySelector('[data-cizelge-route-label]')?.textContent||document.title||'';
-      const text=(btn.textContent||'').toLocaleLowerCase('tr');
-      const route=page.toLocaleLowerCase('tr');
-      if(text.includes('yeni etkinlik')&&(route.includes('belirli')||document.querySelector('#toolsContent'))){
-        e.preventDefault();e.stopImmediatePropagation();
-        global.BelirliGunlerCatalog?.open?.();
-      }
-    },true);
-    if(catalog)catalog.__domGuardHandled=true;
+    if(!document.__korukBelirliGunlerClickGuard){
+      document.__korukBelirliGunlerClickGuard=true;
+      document.addEventListener('click',e=>{
+        const btn=e.target?.closest?.('[data-cizelge-add]');
+        if(!btn)return;
+        const page=document.querySelector('[data-cizelge-route-label]')?.textContent||document.title||'';
+        const text=(btn.textContent||'').toLocaleLowerCase('tr');
+        const route=page.toLocaleLowerCase('tr');
+        if(text.includes('yeni etkinlik')&&(route.includes('belirli')||document.querySelector('#toolsContent'))){
+          e.preventDefault();e.stopImmediatePropagation();
+          global.BelirliGunlerCatalog?.open?.();
+        }
+      },true);
+    }
   }catch(e){
     started=false;
     console.warn('[RubricSettings compatibility load]',e?.message||e);
