@@ -9,6 +9,7 @@
 
   const DAY_KEYS={1:'pzt',2:'sal',3:'car',4:'per',5:'cum'};
   const norm=v=>String(v??'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR');
+  let aktifOgretmen=null;
 
   function scheduleRows(){
     const out=[];
@@ -34,18 +35,31 @@
 
   function nameOf(t){return norm(`${t?.ad||''} ${t?.soyad||''}`||t?.adSoyad);}
   function matches(row,t){
+    if(!row||!t)return false;
     const id=String(row?.ogretmenId||row?.teacherId||row?.ogretmenUid||'');
     if(id && (id===String(t?.id||'')||id===String(t?.ogretmenId||'')))return true;
     const wanted=nameOf(t);if(!wanted)return false;
     return [row?.ogretmenAdSoyad,row?.ogretmenAdi,row?.ogretmen,row?.teacherName,row?.adSoyad].some(v=>norm(v)===wanted);
   }
 
-  const old=SERVICE._haftaIciSaat;
+  const oldHours=SERVICE._haftaIciSaat;
   SERVICE._haftaIciSaat=function(haftalikSaatler,yil,ay,gun,ogretmen){
+    const teacher=ogretmen||aktifOgretmen;
     const dow=this.haftaGunu(yil,ay,gun),key=DAY_KEYS[dow];
     if(!key)return 0;
-    const total=scheduleRows().filter(r=>matches(r,ogretmen)&&dayKey(r.gun)===key).length;
-    return total>0?total:(typeof old==='function'?old.call(this,haftalikSaatler,yil,ay,gun):0);
+    const total=teacher?scheduleRows().filter(r=>matches(r,teacher)&&dayKey(r.gun)===key).length:0;
+    return total>0?total:(typeof oldHours==='function'?oldHours.call(this,haftalikSaatler,yil,ay,gun):0);
   };
+
+  const oldAuto=SERVICE.otomatikKodUret;
+  if(typeof oldAuto==='function'){
+    SERVICE.otomatikKodUret=function(ogretmen,yil,ay,gun,resmiTatiller,izinKayitlari){
+      const previous=aktifOgretmen;
+      aktifOgretmen=ogretmen||null;
+      try{return oldAuto.call(this,ogretmen,yil,ay,gun,resmiTatiller,izinKayitlari);}
+      finally{aktifOgretmen=previous;}
+    };
+  }
+
   global.__korukDevamsizlikDersProgramiTumunuSay=true;
 })(window);
