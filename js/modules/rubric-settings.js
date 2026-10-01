@@ -7,6 +7,7 @@
 const load=global.AppLoader?.loadScript;
 if(typeof load!=='function')return;
 Promise.resolve(load('js/modules/rubric-settings-core.js?v=1064'))
- .then(()=>load('js/modules/belirli-gunler-catalog.js?v=1'))
+ .then(()=>load('js/modules/belirli-gunler-catalog.js?v=2'))
+ .then(()=>load('js/modules/belirli-gunler-catalog-bridge.js?v=1'))
  .catch(e=>console.warn('[RubricSettings compatibility load]',e?.message||e));
 })(window);
