@@ -12,7 +12,7 @@
 .kh-reader-popover::before{content:"";position:absolute;top:-7px;left:calc(var(--kh-reader-arrow-x,85%) - 7px);width:14px;height:14px;transform:rotate(45deg);background:var(--ka-card-raised-bg);border-left:1px solid var(--ka-border-strong);border-top:1px solid var(--ka-border-strong)}
 .kh-reader-popover__head{position:relative;z-index:1;display:grid;grid-template-columns:34px minmax(0,1fr) 34px;gap:9px;align-items:center;padding:10px 10px 9px;border-bottom:1px solid var(--ka-border);background:var(--ka-card-raised-bg)}
 .kh-reader-popover__eye{width:34px;height:34px;border-radius:11px;background:var(--ka-primary-soft);display:grid;place-items:center}
-.kh-reader-popover__head>div{display:grid;min-width:0}.kh-reader-popover__head strong{font-size:11px}.kh-reader-popover__head small{font-size:8px;color:var(--ka-text-muted)}
+.kh-reader-popover__head>div{display:grid;min-width:0}.kh-reader-popover__head strong{font-size:11px}.kh-reader-popover__head small{margin-top:1px;color:var(--ka-text-muted);font-size:7.8px}
 .kh-reader-popover__head button{width:32px;height:32px;border:0;border-radius:10px;background:var(--ka-muted-bg);color:var(--ka-text);font-size:20px;cursor:pointer}
 .kh-reader-popover__list{max-height:280px;overflow:auto;padding:5px 8px 8px}
 .kh-reader-popover__row{display:grid;grid-template-columns:31px minmax(0,1fr);gap:9px;align-items:center;padding:7px 4px;border-bottom:1px solid color-mix(in srgb,var(--ka-border) 72%,transparent)}
@@ -89,4 +89,19 @@
   .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:auto!important}
   .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:6px 11px!important}
   .ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:30px!important;padding:4px 11px!important}
+}
+
+/* ===== BUGÜN ETİKETİ — AÇIK/KOYU TEMA KONTRASTI ===== */
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday.today .kh-weekday-head .kh-chip{
+  background:var(--ka-button-bg)!important;
+  color:var(--ka-button-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  font-weight:900!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday.today .kh-weekday-head .kh-chip{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
 }
