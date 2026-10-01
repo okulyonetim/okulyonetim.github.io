@@ -1,6 +1,7 @@
 /* Koruk Asistan — Devamsızlık ders yükü uyumluluk katmanı
  * rubric-settings.js tarafından lazy yüklenir.
  * Öğretmenin ilkokul + ortaokul dahil ders programındaki TÜM derslerini sayar.
+ * Müdür ve müdür yardımcısı için ders programı kullanılmaz; sabit günlük yük uygulanır.
  */
 (function(global){
   'use strict';
@@ -42,11 +43,33 @@
     return [row?.ogretmenAdSoyad,row?.ogretmenAdi,row?.ogretmen,row?.teacherName,row?.adSoyad].some(v=>norm(v)===wanted);
   }
 
+  // Yönetici personelin ders programındaki kayıtları dikkate alınmaz.
+  // Devamsızlık çizelgesinde istenen sabit günlük ders yükleri kullanılır.
+  function yoneticiGunlukSaat(ogretmen,dow){
+    if(!ogretmen)return null;
+    const gorev=norm(
+      ogretmen?.gorevi ?? ogretmen?.gorev ?? ogretmen?.unvan ??
+      ogretmen?.pozisyon ?? ogretmen?.kadroUnvani ?? ogretmen?.kadrosu
+    ).replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');
+
+    if(gorev==='mudur' || /^mudur\s+/.test(gorev) && !gorev.includes('yardimc')){
+      return [5,5,5,5,5][dow-1] ?? null;
+    }
+    if(gorev.includes('mudur yardimc')){
+      return [4,4,3,4,4][dow-1] ?? null;
+    }
+    return null;
+  }
+
   const oldHours=SERVICE._haftaIciSaat;
   SERVICE._haftaIciSaat=function(haftalikSaatler,yil,ay,gun,ogretmen){
     const teacher=ogretmen||aktifOgretmen;
     const dow=this.haftaGunu(yil,ay,gun),key=DAY_KEYS[dow];
     if(!key)return 0;
+
+    const yoneticiSaat=yoneticiGunlukSaat(teacher,dow);
+    if(yoneticiSaat!==null)return yoneticiSaat;
+
     const total=teacher?scheduleRows().filter(r=>matches(r,teacher)&&dayKey(r.gun)===key).length:0;
     return total>0?total:(typeof oldHours==='function'?oldHours.call(this,haftalikSaatler,yil,ay,gun):0);
   };
