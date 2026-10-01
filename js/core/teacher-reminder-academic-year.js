@@ -140,7 +140,6 @@ function patchPopup(modal){
 function scan(root=document){
   patchDashboardApi();
   patchCalendarApi();
-  injectTeacherAbsences();
   const modal=root.querySelector?.('#dashboardReminderModal')||document.getElementById('dashboardReminderModal');
   if(modal)patchPopup(modal);
 }
