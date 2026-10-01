@@ -32,7 +32,10 @@ async function sifreSifirlamaIstekleriniIsle() {
   const snap = await db.collection('oy_idariBilgiler').get();
   const istekler = snap.docs.filter(doc => {
     const v = doc.data() || {};
-    return v.tur === 'sifreSifirlama' && v.durum === 'bekliyor';
+    // Eski "hazir" kayıtların resetLink'i süresi dolmuş olabilir.
+    // Bunları da yeniden üretmek, istemcinin expired-action-code ile
+    // takılı kalmasını önler. Bekleyen kayıtlar ise normal şekilde işlenir.
+    return v.tur === 'sifreSifirlama' && (v.durum === 'bekliyor' || v.durum === 'hazir');
   });
   let hazirlanan = 0;
 
@@ -56,7 +59,7 @@ async function sifreSifirlamaIstekleriniIsle() {
         hata: admin.firestore.FieldValue.delete()
       });
       hazirlanan++;
-      console.log(`Şifre sıfırlama kodu hazırlandı: ${v.hedefUid}`);
+      console.log(`Şifre sıfırlama kodu hazırlandı/yenilendi: ${v.hedefUid}`);
     } catch (err) {
       console.error('Şifre sıfırlama isteği hatası:', err.message);
       await doc.ref.update({
