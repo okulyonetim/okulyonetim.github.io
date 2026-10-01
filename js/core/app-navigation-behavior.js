@@ -28,6 +28,22 @@ function scrollTopSoon(){
   queueMicrotask(()=>requestAnimationFrame(()=>{scrollTopNow();requestAnimationFrame(scrollTopNow);}));
 }
 
+/* Shell'in eski "‹ Geri" metin butonu bazı ekranlarda tarayıcı varsayılan
+ * buton görünümüne düşüyordu. Navigasyon davranışına dokunmadan, mevcut
+ * data-ka-shell-back hedefini merkezi ka-icon-button bileşenine dönüştür.
+ * Böylece Personel İşleri dahil tüm shell alt sayfalarında aynı görünüm kullanılır. */
+function normalizeShellBackButtons(){
+  document.querySelectorAll('[data-ka-shell-back]').forEach(btn=>{
+    if(btn.dataset.kaBackNormalized==='1')return;
+    btn.dataset.kaBackNormalized='1';
+    btn.classList.remove('ka-shell-back');
+    btn.classList.add('ka-icon-button');
+    btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    btn.setAttribute('aria-label','Geri');
+    btn.setAttribute('title','Geri');
+  });
+}
+
 function closeReportOverlay(){
   if(document.getElementById('kaReportPreview')){
     if(typeof global.ReportEngine?.closePreview==='function')global.ReportEngine.closePreview();
@@ -78,8 +94,9 @@ function decorateReportOverlay(){
 
 function installPreviewGuard(){
   if(reportObserver||!document.body)return;
-  reportObserver=new MutationObserver(()=>{decorateReportOverlay();protectDetailBacks();});
+  reportObserver=new MutationObserver(()=>{normalizeShellBackButtons();decorateReportOverlay();protectDetailBacks();});
   reportObserver.observe(document.body,{childList:true,subtree:true});
+  normalizeShellBackButtons();
   decorateReportOverlay();
   protectDetailBacks();
 
@@ -116,8 +133,10 @@ function wrapShellNavigation(){
     const original=global.ShellUI[name];
     if(typeof original!=='function')continue;
     global.ShellUI[name]=function(...args){
+      normalizeShellBackButtons();
       const result=original.apply(this,args);
-      if(result&&typeof result.then==='function')result.finally(scrollTopSoon);
+      normalizeShellBackButtons();
+      if(result&&typeof result.then==='function')result.finally(()=>{normalizeShellBackButtons();scrollTopSoon()});
       else scrollTopSoon();
       return result;
     };
@@ -126,7 +145,7 @@ function wrapShellNavigation(){
 }
 
 function installNavigationScroll(){
-  const wrap=()=>{wrapShellNavigation();protectDetailBacks();decorateReportOverlay();};
+  const wrap=()=>{normalizeShellBackButtons();wrapShellNavigation();protectDetailBacks();decorateReportOverlay();};
   wrap();
   global.addEventListener('koruk:app-ready',()=>{wrap();scrollTopSoon();});
   global.addEventListener('koruk:module-ready',()=>{wrap();scrollTopSoon();});
