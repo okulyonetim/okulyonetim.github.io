@@ -1,14 +1,14 @@
 /* Koruk Asistan — sade Service Worker
-   Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu önbellekten hızlıca sunup
-   ağı arka planda yenilemek ve Firebase Messaging
-   bildirimlerini taşımak. HTML/CSS/JS enjeksiyonu YOK. */
-const CACHE_ADI='oy-cache-v1222';
+   Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu ağdan güncel tutmak ve Firebase Messaging bildirimlerini taşımak.
+   Önemli: Sürümlü JS/CSS istekleri query-string'e göre ayrı cache anahtarı kullanır.
+   Böylece Chrome eski bir management.js/shell-ui.js sürümünü yeni sürümlü isteğe eşleştirmez. */
+const CACHE_ADI='oy-cache-v1223';
 
 let messaging=null;
 try{
   importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
   importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
-  firebase.initializeApp({apiKey:"AIzaSyCxLLlLCA0Deu7dcQch5e1c4R5ur5FSkc",authDomain:"okul-6e302.firebaseapp.com",projectId:"okul-6e302",storageBucket:"okul-6e302.firebasestorage.app",messagingSenderId:"738103486583",appId:"1:738103486583:web:da91129b1a08f2463efe72"});
+  firebase.initializeApp({apiKey:"AIzaSyCxLlLCA0Deu7dcQch5e1c4R5ur5FSkc",authDomain:"okul-6e302.firebaseapp.com",projectId:"okul-6e302",storageBucket:"okul-6e302.firebasestorage.app",messagingSenderId:"738103486583",appId:"1:738103486583:web:da91129b1a08f2463efe72"});
   messaging=firebase.messaging();
 }catch(e){
   console.warn('[SW] Firebase Messaging başlatılamadı (bildirimler devre dışı kalacak), önbellekleme normal çalışmaya devam ediyor:',e);
@@ -25,7 +25,7 @@ const FIREBASE_SDK=[
 const ONBELLEGE_ALINACAKLAR=[
   './','./index.html','./manifest.json',
   './css/design-system.css?v=1101','./css/design-system.css','./css/dashboard-announcement-media.css?v=921','./js/app-loader.js?v=1045','./js/modules/academic.js?v=892','./js/modules/communication.js?v=839',
-'./css/dashboard-announcement-media.css',
+  './css/dashboard-announcement-media.css',
   './js/firebase-init.js','./js/modules/food-menu.js?v=1037','./js/modules/food-menu.js','./js/core/app-navigation-behavior.js?v=935','./js/core/app-navigation-behavior.js','./js/core/teacher-delete-lifecycle.js?v=933','./js/core/teacher-delete-lifecycle.js','./js/core/student-exam-result-details.js?v=925','./js/core/core.js?v=1035','./js/core/core.js','./js/core/login-security.js?v=885','./js/core/login-security.js','./js/core/duty-report-live-places.js?v=913','./js/core/duty-report-live-places.js','./js/core/duty-holiday-mode-source.js?v=930','./js/core/duty-holiday-mode-source.js','./js/core/transport-holiday-mode-bridge.js?v=931','./js/core/transport-holiday-mode-bridge.js','./js/core/schedule-data-integrity.js?v=917','./js/core/schedule-data-integrity.js','./js/core/schedule-report-redesign.js?v=942','./js/core/schedule-report-redesign.js','./js/core/schedule-report-column-zebra.js?v=939','./js/core/schedule-report-column-zebra.js','./js/core/dashboard-announcement-media.js?v=921','./js/core/dashboard-announcement-media.js','./js/core/admin-password-reset.js?v=948','./js/core/admin-password-reset.js','./js/core/settings-back-navigation.js?v=944','./js/core/settings-back-navigation.js','./js/core/platform/widget-adapter.js','./js/core/shell-ui.js?v=1064','./js/core/shell-ui.js','./js/modules/school-live-status.js?v=1066','./js/modules/school-live-status.js','./js/modules/classic-parity.js','./js/modules/classic-excel-parity.js','./js/modules/classic-personnel-parity.js','./js/modules/report-engine.js','./js/modules/dashboard.js?v=1031','./js/modules/dashboard.js','./js/modules/people.js','./js/modules/people-import.js','./js/modules/people-classic-ui.js','./js/modules/classes-mobile-parity.js','./js/modules/class-seating.js','./js/modules/academic.js','./js/modules/management.js?v=888','./js/modules/management.js','./js/modules/communication.js','./js/modules/transport.js?v=948','./js/modules/documents.js','./js/modules/tools.js','./js/modules/teacher-list.js','./js/modules/map-ui.js','./js/modules/settings.js?v=912','./js/modules/settings.js',
   './js/modules/payroll-change.js','./js/modules/personnel-documents.js','./js/modules/meeting-schedule.js','./js/modules/assistant.js',
   './js/modules/rubric-settings.js?v=1064','./js/modules/rubric-tools.js','./js/modules/rubric-tools-engine.js',
@@ -34,10 +34,12 @@ const ONBELLEGE_ALINACAKLAR=[
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
-// Sürümlü kaynakları ayrı cache anahtarıyla tut; runtime kodda query-string sürümünü dikkate al.
+// Aynı path'in sürümlü ve sürümsüz kopyalarını tekilleştirirken sürümlü kaynağı tercih et.
 const ONBELLEGE_TEKIL=ONBELLEGE_ALINACAKLAR.filter((url,index,list)=>{
   const path=String(url).split('?')[0];
-  return list.findIndex(item=>String(item).split('?')[0]===path)===index;
+  const same=list.filter(item=>String(item).split('?')[0]===path);
+  const preferred=same.find(item=>String(item).includes('?'))||same[0];
+  return url===preferred && list.findIndex(item=>item===url)===index;
 });
 
 self.addEventListener('install',event=>{
@@ -47,14 +49,18 @@ self.addEventListener('install',event=>{
   ])));
   self.skipWaiting();
 });
+
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const names=await caches.keys(),old=names.filter(n=>n!==CACHE_ADI&&/^oy-cache-v\d+$/.test(n));await Promise.all(old.map(n=>caches.delete(n)));await self.clients.claim()})())});
+
 function firebaseSdkIstegiMi(req){try{const u=new URL(req.url);return u.origin==='https://www.gstatic.com'&&u.pathname.startsWith('/firebasejs/10.12.2/')&&/-compat\.js$/.test(u.pathname)}catch(_){return false}}
 async function firebaseSdkCacheFirst(event){const cached=await caches.match(event.request,{ignoreSearch:false});if(cached)return cached;try{const response=await fetch(event.request);if(response){const copy=response.clone();event.waitUntil(caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{}));}return response}catch(_){return new Response('',{status:503,headers:{'Content-Type':'application/javascript; charset=utf-8'}})}}
 function apiIstegiMi(url){return url.includes('firestore.googleapis.com')||url.includes('identitytoolkit.googleapis.com')||url.includes('securetoken.googleapis.com')||url.includes('firebaseinstallations.googleapis.com')||url.includes('fcmregistrations.googleapis.com');}
-function statikKaynakMi(req){try{const u=new URL(req.url);if(u.origin!==self.location.origin)return false;return /\.(?:js|css|png|jpg|jpeg|webp|svg|ico|json|woff2?)$/i.test(u.pathname);}catch(_){return false;}}
-function kodKaynakMi(req){try{const u=new URL(req.url);return u.origin===self.location.origin&&/\.(?:js|css)$/i.test(u.pathname);}catch(_){return false;}}
+function statikKaynakMi(req){try{const u=new URL(req.url);if(u.origin!==self.location.origin)return false;return /\.(?:js|css|png|jpg|jpeg|webp|svg|ico|json|woff2?)$/i.test(u.pathname);}catch(_){return false}}
+function kodKaynakMi(req){try{const u=new URL(req.url);return u.origin===self.location.origin&&/\.(?:js|css)$/i.test(u.pathname);}catch(_){return false}}
+
+// Kritik düzeltme: ignoreSearch=true kullanılmıyor. management.js?v=888 ile management.js aynı kaynak değildir.
 async function kodCacheFirst(event){
-  const cached=await caches.match(event.request,{ignoreSearch:true});
+  const cached=await caches.match(event.request,{ignoreSearch:false});
   const yenile=fetch(event.request,{cache:'no-store'}).then(async response=>{
     if(response&&response.status===200&&response.type!=='opaque'){
       const copy=response.clone();
@@ -65,8 +71,23 @@ async function kodCacheFirst(event){
   if(cached){event.waitUntil(yenile);return cached;}
   return(await yenile)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
 }
-async function statikSWR(event){const cached=await caches.match(event.request,{ignoreSearch:true});const yenile=fetch(event.request).then(response=>{if(response&&response.status===200&&response.type!=='opaque'){const copy=response.clone();caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});}return response;}).catch(()=>null);if(cached){event.waitUntil(yenile);return cached;}return(await yenile)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});}
+
+async function statikSWR(event){
+  const cached=await caches.match(event.request,{ignoreSearch:false});
+  const yenile=fetch(event.request,{cache:'no-store'}).then(response=>{
+    if(response&&response.status===200&&response.type!=='opaque'){
+      const copy=response.clone();
+      caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});
+    }
+    return response;
+  }).catch(()=>null);
+  if(cached){event.waitUntil(yenile);return cached;}
+  return(await yenile)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+}
+
 async function navigasyonCacheFirst(event){const fetchNow=fetch(event.request,{cache:'no-store'}).then(async response=>{if(response&&response.status===200){const copy=response.clone();await caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});}return response}).catch(()=>null);return(await fetchNow)||await caches.match(event.request)||await caches.match('./index.html')||new Response('Çevrimdışı',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}})}
+
 self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;if(firebaseSdkIstegiMi(event.request)){event.respondWith(firebaseSdkCacheFirst(event));return;}if(apiIstegiMi(event.request.url))return;if(event.request.mode==='navigate'){event.respondWith(navigasyonCacheFirst(event));return;}if(kodKaynakMi(event.request)){event.respondWith(kodCacheFirst(event));return;}if(statikKaynakMi(event.request))event.respondWith(statikSWR(event));});
+
 if(messaging)messaging.onBackgroundMessage(payload=>{const n=payload?.notification||{},data=payload?.data||{};return self.registration.showNotification(n.title||'Koruk İlk-Ortaokulu',{body:n.body||data.body||'Yeni bir bildiriminiz var.',icon:n.icon||'./assets/icon-192.png',badge:'./assets/icon-192.png',data:{url:data.url||data.link||'./'}});});
 self.addEventListener('notificationclick',event=>{event.notification.close();const hedef=event.notification?.data?.url||'./';event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{for(const c of list){if('focus'in c){c.navigate?.(hedef);return c.focus();}}return clients.openWindow?clients.openWindow(hedef):null;}));});
