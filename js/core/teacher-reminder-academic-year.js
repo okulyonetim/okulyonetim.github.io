@@ -94,19 +94,21 @@ function patchDashboardApi(){
 }
 function activeTeacherLeaves(){const now=today(),todayIso=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');return rows('ogretmenIzinleri').filter(x=>{const{start,end}=leaveRange(x);return start&&start<=todayIso&&(!end||end>=todayIso)})}
 function absencesMarkup(){
-  const user=global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
-  if(user.admin===true)return'';
   const active=activeTeacherLeaves();if(!active.length)return'';
   const calendar='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>';
   return `<section class="kh-section" data-home-section="absences"><div class="kh-section-head"><div class="kh-section-title">${calendar}<span>Bugün İzinli Öğretmenler</span></div></div><div class="kh-card">${active.map(x=>`<div class="kh-row"><div class="kh-row-main"><b>${String(leaveTeacherName(x)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</b></div><span class="kh-chip amber">İZİNLİ</span></div>`).join('')}</div></section>`;
 }
 function injectTeacherAbsences(){
   const root=document.querySelector('[data-dashboard-module]');if(!root)return;
-  if((global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{}).admin===true)return;
-  const old=root.querySelector('[data-home-section="absences"]');if(old)old.remove();
+  const old=root.querySelector('[data-home-section="absences"]');if(old)return;
   const html=absencesMarkup();if(!html)return;
   const anchor=root.querySelector('[data-home-section="upcoming"]')||root.querySelector('[data-home-section="quick"]');
   if(anchor)anchor.insertAdjacentHTML('beforebegin',html);else root.insertAdjacentHTML('beforeend',html);
+}
+function injectNextLessonFontFix(){
+  if(document.getElementById('koruk-next-lesson-font-fix'))return;
+  const style=document.createElement('style');style.id='koruk-next-lesson-font-fix';style.textContent=`.ka-home .kh-focus h3{font-size:22px!important;line-height:1.25!important;letter-spacing:-.2px!important}.ka-home .kh-focus .kh-plan-button{font-size:14px!important;line-height:1.2!important}@media(max-width:480px){.ka-home .kh-focus h3{font-size:20px!important}}`;
+  document.head.appendChild(style);
 }
 function patchCalendarApi(){
   const t=global.TakvimRepository;
@@ -153,6 +155,7 @@ function scan(root=document){
   patchReminderStore();
   patchDashboardApi();
   patchCalendarApi();
+  injectNextLessonFontFix();
   const modal=root.querySelector?.('#dashboardReminderModal')||document.getElementById('dashboardReminderModal');
   if(modal)patchPopup(modal);
 }
