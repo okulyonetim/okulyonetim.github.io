@@ -11,6 +11,7 @@
   const DAY_KEYS={1:'pzt',2:'sal',3:'car',4:'per',5:'cum'};
   const norm=v=>String(v??'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR');
   let aktifOgretmen=null;
+  let aktifOgretmenId='';
 
   function scheduleRows(){
     const out=[];
@@ -43,8 +44,6 @@
     return [row?.ogretmenAdSoyad,row?.ogretmenAdi,row?.ogretmen,row?.teacherName,row?.adSoyad].some(v=>norm(v)===wanted);
   }
 
-  // Yönetici personelin ders programındaki kayıtları dikkate alınmaz.
-  // Devamsızlık çizelgesinde istenen sabit günlük ders yükleri kullanılır.
   function yoneticiGunlukSaat(ogretmen,dow){
     if(!ogretmen)return null;
     const gorev=norm(
@@ -52,13 +51,31 @@
       ogretmen?.pozisyon ?? ogretmen?.kadroUnvani ?? ogretmen?.kadrosu
     ).replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');
 
-    if(gorev==='mudur' || /^mudur\s+/.test(gorev) && !gorev.includes('yardimc')){
+    if(gorev==='mudur' || (/^mudur\s+/.test(gorev) && !gorev.includes('yardimc'))){
       return [5,5,5,5,5][dow-1] ?? null;
     }
     if(gorev.includes('mudur yardimc')){
       return [4,4,3,4,4][dow-1] ?? null;
     }
     return null;
+  }
+
+  function haftalikSaatleriHesapla(teacher){
+    const fixed={pzt:yoneticiGunlukSaat(teacher,1),sal:yoneticiGunlukSaat(teacher,2),car:yoneticiGunlukSaat(teacher,3),per:yoneticiGunlukSaat(teacher,4),cum:yoneticiGunlukSaat(teacher,5)};
+    if(Object.values(fixed).some(v=>v!==null))return fixed;
+    const out={pzt:0,sal:0,car:0,per:0,cum:0};
+    if(!teacher)return out;
+    const rows=scheduleRows().filter(r=>matches(r,teacher));
+    const seen=new Set();
+    rows.forEach(r=>{
+      const key=dayKey(r?.gun);if(!key)return;
+      const slot=Number.isFinite(Number(r?.saat))?String(Number(r.saat)):String(r?.id||'');
+      const cls=String(r?.sinif||r?.sinifAdi||'').trim();
+      const unique=`${cls}|${key}|${slot}`;
+      if(seen.has(unique))return;
+      seen.add(unique);out[key]++;
+    });
+    return out;
   }
 
   const oldHours=SERVICE._haftaIciSaat;
@@ -83,6 +100,36 @@
       finally{aktifOgretmen=previous;}
     };
   }
+
+  // Haftalık ders saatleri penceresi doğrudan Tools modülü içindeki kapalı
+  // scope'tan beslendiği için, pencere açılır açılmaz aynı merkezi hesaplamayı
+  // görünür alanlara uygula. Böylece yönetici sabitleri de ekranda doğrudan
+  // 5-5-5-5-5 / 4-4-3-4-4 olarak görünür.
+  function teacherById(id){
+    const rows=global.AppStore?.data?.('ogretmenler');
+    if(!Array.isArray(rows))return null;
+    return rows.find(t=>String(t?.id||'')===String(id||''))||null;
+  }
+  function syncWeeklyHoursModal(){
+    const modal=[...document.querySelectorAll('.ka-modal')].find(el=>/Haftalık Ders Saatleri/i.test(el.textContent||''));
+    if(!modal||!aktifOgretmenId)return;
+    const teacher=teacherById(aktifOgretmenId);if(!teacher)return;
+    const weekly=haftalikSaatleriHesapla(teacher);
+    modal.querySelectorAll('[data-att-week]').forEach(input=>{
+      const key=String(input.dataset.attWeek||'');
+      if(Object.prototype.hasOwnProperty.call(weekly,key))input.value=String(Number(weekly[key])||0);
+    });
+  }
+
+  document.addEventListener('click',e=>{
+    const btn=e.target?.closest?.('[data-att-hours]');
+    if(btn)aktifOgretmenId=String(btn.getAttribute('data-att-hours')||'');
+  },true);
+
+  const observer=new MutationObserver(()=>{
+    if(aktifOgretmenId)global.requestAnimationFrame?.(syncWeeklyHoursModal);
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
 
   global.__korukDevamsizlikDersProgramiTumunuSay=true;
 })(window);
