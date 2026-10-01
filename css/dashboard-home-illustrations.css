@@ -630,3 +630,19 @@ html[data-theme="dark"] .primary *{
   -webkit-text-fill-color:#111!important;
   stroke:#111!important;
 }
+
+
+/* ===== ANA SAYFA BUGÜN İZİNLİ ÖĞRETMENLER — SATIR İÇ BOŞLUĞU ===== */
+.ka-home .kh-section[data-home-section="absences"] .kh-row{
+  padding:18px 20px!important;
+  min-height:74px!important;
+  box-sizing:border-box!important;
+}
+.ka-home .kh-section[data-home-section="absences"] .kh-row-main{
+  min-width:0!important;
+  padding:0!important;
+}
+.ka-home .kh-section[data-home-section="absences"] .kh-row-main b{
+  display:block!important;
+  line-height:1.25!important;
+}
