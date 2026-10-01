@@ -88,7 +88,7 @@ function patchDashboardApi(){
   const original=d.collectReminders?.bind(d),renderOriginal=d.render?.bind(d);
   if(original)d.collectReminders=function(days){return normalizeList(original(days),Number.isFinite(Number(days))?Number(days):reminderDays())};
   if(renderOriginal){
-    d.render=function(){const result=renderOriginal();requestAnimationFrame(injectTeacherAbsences);return result};
+    d.render=function(){const result=renderOriginal();requestAnimationFrame(()=>{injectTeacherAbsences();normalizeTeacherUpcomingChecklistRows()});return result};
   }
   return true;
 }
@@ -104,6 +104,18 @@ function injectTeacherAbsences(){
   const html=absencesMarkup();if(!html)return;
   const anchor=root.querySelector('[data-home-section="upcoming"]')||root.querySelector('[data-home-section="quick"]');
   if(anchor)anchor.insertAdjacentHTML('beforebegin',html);else root.insertAdjacentHTML('beforeend',html);
+}
+function normalizeTeacherUpcomingChecklistRows(){
+  const root=document.querySelector('[data-dashboard-module]');if(!root)return;
+  const section=root.querySelector('[data-home-section="upcoming"]');if(!section)return;
+  section.querySelectorAll('.kh-row').forEach(row=>{
+    const title=row.querySelector('.kh-row-main b'),subtitle=row.querySelector('.kh-row-main small');
+    if(!title||!/^Kontrol Listesi\s*:/i.test(title.textContent||''))return;
+    const content=String(subtitle?.textContent||'').trim();
+    const fallback=(title.textContent||'').replace(/^Kontrol Listesi\s*:\s*/i,'').trim();
+    title.textContent=content||fallback;
+    if(subtitle){subtitle.textContent='';subtitle.style.display='none';}
+  });
 }
 function injectNextLessonFontFix(){
   if(document.getElementById('koruk-next-lesson-font-fix'))return;
@@ -183,13 +195,15 @@ function scan(root=document){
   patchDashboardApi();
   patchCalendarApi();
   injectNextLessonFontFix();
+  injectTeacherAbsences();
+  normalizeTeacherUpcomingChecklistRows();
   const modal=root.querySelector?.('#dashboardReminderModal')||document.getElementById('dashboardReminderModal');
   if(modal)patchPopup(modal);
 }
 const observer=new MutationObserver(records=>{for(const r of records)if(r.addedNodes?.length){scan(document);break}});
-function start(){scan(document);observer.observe(document.documentElement,{childList:true,subtree:true})}
+function start(){scan(document);observer.observe(document.documentElement,{childList:true,subtree:true});[0,250,1000,2500].forEach(ms=>setTimeout(()=>scan(document),ms))}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard'||e.detail?.name==='communication')setTimeout(()=>scan(document),0)});
+window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard'||e.detail?.name==='communication'){setTimeout(()=>scan(document),0);setTimeout(()=>scan(document),500);setTimeout(()=>scan(document),1500)}});
 
 global.KorukTeacherReminderAcademicYear={academicStartYear,academicDeadline,seasonClosed,normalizeList,scan};
 })(window);
