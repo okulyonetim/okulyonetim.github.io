@@ -54,6 +54,18 @@ function isLeaveReminder(item){
   });
 }
 function filterLeaveReminders(items){return(items||[]).filter(x=>!isLeaveReminder(x))}
+function patchReminderStore(){
+  const store=global.AppStore;
+  if(!store||store.__leaveReminderDataPatched||typeof store.data!=='function')return false;
+  const original=store.data.bind(store);
+  store.data=function(type,...args){
+    const value=original(type,...args);
+    if(type==='hatirlaticilar'&&Array.isArray(value))return filterLeaveReminders(value);
+    return value;
+  };
+  store.__leaveReminderDataPatched=true;
+  return true;
+}
 function normalizeReminder(item,days=reminderDays(),now=today()){
   if(!item||isLeaveReminder(item))return null;
   if(seasonClosed(now)&&ACADEMIC_SOURCES.has(item.kaynak))return null;
@@ -138,6 +150,7 @@ function patchPopup(modal){
   refreshPopupSummary(modal);
 }
 function scan(root=document){
+  patchReminderStore();
   patchDashboardApi();
   patchCalendarApi();
   const modal=root.querySelector?.('#dashboardReminderModal')||document.getElementById('dashboardReminderModal');
