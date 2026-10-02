@@ -171,8 +171,17 @@ function wrapShellNavigation(){
   return true;
 }
 
+function installReportPreviewLayout(){
+  if(document.querySelector('link[data-report-preview-layout]'))return;
+  const link=document.createElement('link');
+  link.rel='stylesheet';
+  link.href='css/report-preview-layout.css?v=20261002';
+  link.dataset.reportPreviewLayout='';
+  document.head.appendChild(link);
+}
+
 function installNavigationScroll(){
-  const wrap=()=>{normalizeShellBackButtons();wrapShellNavigation();protectDetailBacks();decorateReportOverlay();};
+  const wrap=()=>{installReportPreviewLayout();normalizeShellBackButtons();wrapShellNavigation();protectDetailBacks();decorateReportOverlay();};
   wrap();
   global.addEventListener('koruk:app-ready',()=>{wrap();scrollTopSoon();});
   global.addEventListener('koruk:module-ready',()=>{wrap();scrollTopSoon();});
