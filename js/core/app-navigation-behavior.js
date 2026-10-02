@@ -3,6 +3,7 @@
  * 2) Yeni bir sayfa/görünüm açıldığında içerik en üste alınır.
  * 3) Header okul markası her zaman Ana Sayfa'yı en üstten açar.
  * 4) Pull-to-refresh core.js içindeki ortak motor tarafından yönetilir; gezinme davranışları gesture motoruna müdahale etmez.
+ * 5) Modülün kendi Geri butonu varsa ortak shell Geri çubuğu gizlenir; böylece aynı sayfada iki Geri butonu oluşmaz.
  */
 (function(global){
 'use strict';
@@ -38,6 +39,23 @@ function normalizeShellBackButtons(){
     btn.setAttribute('aria-label','Geri');
     btn.setAttribute('title','Geri');
   });
+}
+
+/* Bazı çizelge/form modülleri kendi "Geri" butonunu üretir. Shell'in
+ * ortak Geri çubuğu da aynı anda görünürse kullanıcı iki Geri görür.
+ * Öncelik modülün kendi geri davranışındadır; ortak çubuk yalnızca modül
+ * içinde ayrı bir Geri butonu yoksa gösterilir. */
+function syncShellBackbar(){
+  const bar=document.querySelector('[data-ka-shell-backbar]');
+  const root=document.getElementById('v2ModuleRoot');
+  if(!bar)return;
+  if(!root||!root.children.length){bar.hidden=true;return;}
+  const localBack=[...root.querySelectorAll('button,a,[role="button"]')].find(el=>{
+    if(el.closest('[hidden],[aria-hidden="true"]'))return false;
+    const text=String(el.getAttribute('aria-label')||el.getAttribute('title')||el.textContent||'').replace(/\s+/g,' ').trim();
+    return /(^|\s)geri(\s|$)/i.test(text);
+  });
+  bar.hidden=!!localBack;
 }
 
 function closeReportOverlay(){
@@ -132,9 +150,10 @@ function decorateReportOverlay(){
 
 function installPreviewGuard(){
   if(reportObserver||!document.body)return;
-  reportObserver=new MutationObserver(()=>{normalizeShellBackButtons();decorateReportOverlay();protectDetailBacks();});
+  reportObserver=new MutationObserver(()=>{normalizeShellBackButtons();syncShellBackbar();decorateReportOverlay();protectDetailBacks();});
   reportObserver.observe(document.body,{childList:true,subtree:true});
   normalizeShellBackButtons();
+  syncShellBackbar();
   decorateReportOverlay();
   protectDetailBacks();
 
@@ -163,7 +182,8 @@ function wrapShellNavigation(){
       normalizeShellBackButtons();
       const result=original.apply(this,args);
       normalizeShellBackButtons();
-      if(result&&typeof result.then==='function')result.finally(()=>{normalizeShellBackButtons();scrollTopSoon()});
+      syncShellBackbar();
+      if(result&&typeof result.then==='function')result.finally(()=>{normalizeShellBackButtons();syncShellBackbar();scrollTopSoon()});
       else scrollTopSoon();
       return result;
     };
@@ -181,7 +201,7 @@ function installReportPreviewLayout(){
 }
 
 function installNavigationScroll(){
-  const wrap=()=>{installReportPreviewLayout();normalizeShellBackButtons();wrapShellNavigation();protectDetailBacks();decorateReportOverlay();};
+  const wrap=()=>{installReportPreviewLayout();normalizeShellBackButtons();wrapShellNavigation();syncShellBackbar();protectDetailBacks();decorateReportOverlay();};
   wrap();
   global.addEventListener('koruk:app-ready',()=>{wrap();scrollTopSoon();});
   global.addEventListener('koruk:module-ready',()=>{wrap();scrollTopSoon();});
@@ -192,14 +212,14 @@ function installNavigationScroll(){
       event.preventDefault();
       event.stopImmediatePropagation();
       const result=global.ShellUI?.home?.();
-      if(result&&typeof result.finally==='function')result.finally(scrollTopSoon);else scrollTopSoon();
+      if(result&&typeof result.finally==='function')result.finally(()=>{syncShellBackbar();scrollTopSoon()});else{syncShellBackbar();scrollTopSoon()}
       return;
     }
     const nav=event.target.closest?.('[data-ka-shell-route],[data-dash-route],[data-ka-shell-action="home"],[data-ka-shell-action="profile"],[data-ka-shell-action="search"]');
-    if(nav)scrollTopSoon();
+    if(nav){syncShellBackbar();scrollTopSoon()}
   },true);
 
-  global.AppStore?.subscribe?.('ui.route',scrollTopSoon);
+  global.AppStore?.subscribe?.('ui.route',()=>{syncShellBackbar();scrollTopSoon()});
 }
 
 function install(){
@@ -211,5 +231,5 @@ function install(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
 
-global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}};
+global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,syncShellBackbar,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}};
 })(window);
