@@ -1,41 +1,57 @@
 /* Koruk Asistan — Rapor önizleme araçları yerleşimi.
- * Mobilde Yazdır üst satırda; Görsel ve Paylaş ikinci satırda eşit genişlikte.
- * Geniş ekranda üç işlem butonu aynı satırda, tutarlı ölçüde gösterilir.
+ * Mobilde: Kapat + başlık + Yazdır ilk satırda;
+ * Görsel + Paylaş ikinci satırda eşit genişlikte.
+ * Masaüstünde üç işlem butonu aynı satırda ve aynı görsel ölçüde.
  */
 
 #kaReportPreview .ka-report-preview__main{
   min-width:0!important;
 }
 
+#kaReportPreview .ka-report-preview__main > button{
+  box-sizing:border-box!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
 #kaReportPreview .ka-report-preview__image,
 #kaReportPreview .ka-report-preview__share{
   min-height:44px!important;
   max-width:none!important;
-  white-space:nowrap!important;
 }
 
 @media (max-width:767px){
   #kaReportPreview .ka-report-preview__main{
+    display:grid!important;
     grid-template-columns:44px minmax(0,1fr) minmax(0,1fr)!important;
     grid-template-rows:auto auto!important;
+    grid-template-areas:
+      "close title print"
+      ". image share"!important;
     grid-auto-flow:row!important;
     gap:8px!important;
+    align-items:stretch!important;
   }
 
   #kaReportPreview .ka-report-preview__close{
-    grid-column:1!important;
-    grid-row:1!important;
+    grid-area:close!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    min-height:44px!important;
+    padding:0!important;
+    justify-self:stretch!important;
   }
 
   #kaReportPreview .ka-report-preview__title{
-    grid-column:2!important;
-    grid-row:1!important;
+    grid-area:title!important;
     min-width:0!important;
+    overflow:hidden!important;
   }
 
   #kaReportPreview .ka-report-preview__print{
-    grid-column:3!important;
-    grid-row:1!important;
+    grid-area:print!important;
     justify-self:stretch!important;
     width:100%!important;
     min-width:0!important;
@@ -47,55 +63,73 @@
   #kaReportPreview .ka-report-preview__image,
   #kaReportPreview .ka-report-preview__share{
     justify-self:stretch!important;
+    align-self:stretch!important;
     width:100%!important;
     min-width:0!important;
     max-width:none!important;
     min-height:44px!important;
-    padding-inline:8px!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
+    height:44px!important;
+    padding:0 8px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    box-sizing:border-box!important;
   }
 
   #kaReportPreview .ka-report-preview__image{
-    grid-column:2!important;
-    grid-row:2!important;
+    grid-area:image!important;
   }
 
   #kaReportPreview .ka-report-preview__share{
-    grid-column:3!important;
-    grid-row:2!important;
+    grid-area:share!important;
   }
 }
 
 @media (min-width:768px){
   #kaReportPreview .ka-report-preview__main{
+    display:grid!important;
     grid-template-columns:44px minmax(180px,1fr) auto auto auto!important;
     grid-template-rows:auto!important;
+    grid-template-areas:"close title print image share"!important;
     grid-auto-flow:column!important;
+    gap:8px!important;
+    align-items:stretch!important;
   }
 
   #kaReportPreview .ka-report-preview__close{
-    grid-column:1!important;
-    grid-row:1!important;
+    grid-area:close!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
   }
 
   #kaReportPreview .ka-report-preview__title{
-    grid-column:2!important;
-    grid-row:1!important;
+    grid-area:title!important;
+    min-width:0!important;
   }
 
   #kaReportPreview .ka-report-preview__print,
   #kaReportPreview .ka-report-preview__image,
   #kaReportPreview .ka-report-preview__share{
     grid-row:1!important;
-    justify-self:end!important;
+    justify-self:stretch!important;
     min-width:104px!important;
-    width:auto!important;
+    width:104px!important;
+    max-width:104px!important;
+    min-height:44px!important;
+    height:44px!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    padding-inline:8px!important;
   }
 
-  #kaReportPreview .ka-report-preview__print{grid-column:3!important;}
-  #kaReportPreview .ka-report-preview__image{grid-column:4!important;}
-  #kaReportPreview .ka-report-preview__share{grid-column:5!important;}
+  #kaReportPreview .ka-report-preview__print{grid-area:print!important;}
+  #kaReportPreview .ka-report-preview__image{grid-area:image!important;}
+  #kaReportPreview .ka-report-preview__share{grid-area:share!important;}
 }
 
 @media (max-width:390px){
