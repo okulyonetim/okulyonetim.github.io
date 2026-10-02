@@ -1,8 +1,7 @@
-/* Koruk Asistan — Read Optimized Sync v2
- * Okuma-ağırlıklı okul kullanımında IndexedDB birincil okuma kaynağıdır.
- * Firestore yalnızca ilk veri yoksa, uzak önbellek süresi dolduysa veya
- * kullanıcı açıkça senkronizasyon istediğinde kullanılır.
- * Yazma kuyruğuna ve Firestore Rules'a dokunmaz.
+/* Koruk Asistan — Read Optimized Sync v3
+ * IndexedDB birincil okuma kaynağıdır. Firestore yalnızca ilk veri yoksa,
+ * uzak önbellek süresi dolduysa veya kullanıcı açıkça yenileme istediğinde
+ * senkronizasyon yapar. Yazma kuyruğu ve yetki sistemi korunur.
  */
 (function(global){
   'use strict';
@@ -13,6 +12,7 @@
   const MISSING = '__ka_missing__';
   let patched = false;
   let forceRemote = false;
+  let pullRefreshPatched = false;
 
   const uid = () => String(global.AKTIF_KULLANICI?.uid || global.AppStore?.get?.('session.user')?.uid || '');
   const now = () => Date.now();
@@ -76,8 +76,6 @@
     if(!originalSync && !originalPull) return false;
     patched = true;
 
-    /* sync(types) normalde tam Firestore pull yapıyor. Yerel cache tazeyse
-       yalnızca IndexedDB hydrate edilir. Böylece modül açılışları read üretmez. */
     if(originalSync){
       sync.sync = async function(types, ...rest){
         const requested = Array.isArray(types) ? types.filter(Boolean) : [];
@@ -114,17 +112,39 @@
     return true;
   }
 
+  function patchPullRefresh(){
+    if(pullRefreshPatched || !global.KorukPullRefresh?.refresh || !global.KorukReadOptimized?.forceSync) return false;
+    const original = global.KorukPullRefresh.refresh;
+    if(original.__kaReadOptimized) return true;
+    const refresh = async function(source='programmatic'){
+      if(refreshing) return;
+      refreshing = true;
+      try{
+        await global.KorukReadOptimized.forceSync();
+        global.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source}}));
+      }catch(error){console.warn('[PullRefresh]',error?.message||error)}
+      finally{refreshing=false;}
+    };
+    let refreshing = false;
+    refresh.__kaReadOptimized = true;
+    refresh.original = original;
+    global.KorukPullRefresh.refresh = refresh;
+    pullRefreshPatched = true;
+    return true;
+  }
+
   async function install(){
     if(!global.SyncEngine || !global.KorukLocalFirst) return false;
-    return patchSyncEngine();
+    await patchSyncEngine();
+    patchPullRefresh();
+    return true;
   }
 
   function boot(){
     if(global.SyncEngine && global.KorukLocalFirst){
       install().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e));
-      return;
     }
-    setTimeout(boot,100);
+    if(!pullRefreshPatched || !patched) setTimeout(boot,100);
   }
 
   global.KorukReadOptimized={
