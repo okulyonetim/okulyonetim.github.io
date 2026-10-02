@@ -1,4 +1,4 @@
-/* Koruk Asistan — Read Optimized Sync v4
+/* Koruk Asistan — Read Optimized Sync v5
  * IndexedDB birincil okuma kaynağıdır. Firestore yalnızca ilk veri yoksa,
  * uzak önbellek süresi dolduysa veya kullanıcı açıkça yenileme istediğinde
  * senkronizasyon yapar. Sürekli onSnapshot/realtime dinleme kapalıdır;
@@ -9,7 +9,9 @@
   if(global.__KA_READ_OPTIMIZED_SYNC__) return;
   global.__KA_READ_OPTIMIZED_SYNC__ = true;
 
-  const REMOTE_TTL = 6 * 60 * 60 * 1000;
+  /* Okul verileri nadiren değiştiği için otomatik uzak senkronizasyon günde
+     en fazla bir kez yapılır. Manuel yenileme her zaman anında senkronize eder. */
+  const REMOTE_TTL = 24 * 60 * 60 * 1000;
   const PERIODIC_SYNC_MS = REMOTE_TTL;
   const MISSING = '__ka_missing__';
   let patched = false;
