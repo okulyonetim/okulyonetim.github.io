@@ -43,19 +43,34 @@ function normalizeShellBackButtons(){
 
 /* Bazı çizelge/form modülleri kendi "Geri" butonunu üretir. Shell'in
  * ortak Geri çubuğu da aynı anda görünürse kullanıcı iki Geri görür.
- * Öncelik modülün kendi geri davranışındadır; ortak çubuk yalnızca modül
- * içinde ayrı bir Geri butonu yoksa gösterilir. */
+ * Modülün kendi geri davranışı varsa shell çubuğu tamamen gizlenir. */
 function syncShellBackbar(){
   const bar=document.querySelector('[data-ka-shell-backbar]');
-  const root=document.getElementById('v2ModuleRoot');
   if(!bar)return;
-  if(!root||!root.children.length){bar.hidden=true;return;}
-  const localBack=[...root.querySelectorAll('button,a,[role="button"]')].find(el=>{
+  const content=document.querySelector('.ka-app-content');
+  const moduleRoot=document.getElementById('v2ModuleRoot');
+  if(!content||!moduleRoot||!moduleRoot.children.length){
+    bar.hidden=true;
+    bar.style.display='none';
+    return;
+  }
+
+  /* Daha önceki sürüm yalnızca v2ModuleRoot içini tarıyordu. Bazı çizelge
+     modülleri geri butonunu app-content içinde root'un dışında oluşturduğu
+     için bu kontrol iki buton sorununu yakalayamıyordu. Shell çubuğunun
+     kendisini hariç tutarak tüm aktif içerik alanını tarıyoruz. */
+  const localBack=[...content.querySelectorAll('button,a,[role="button"]')].find(el=>{
+    if(el.closest('[data-ka-shell-backbar]'))return false;
     if(el.closest('[hidden],[aria-hidden="true"]'))return false;
+    const style=global.getComputedStyle?global.getComputedStyle(el):null;
+    if(style&&(style.display==='none'||style.visibility==='hidden'))return false;
     const text=String(el.getAttribute('aria-label')||el.getAttribute('title')||el.textContent||'').replace(/\s+/g,' ').trim();
-    return /(^|\s)geri(\s|$)/i.test(text);
+    return /(^|\s)geri(\s|$)/i.test(text)||/←\s*geri/i.test(text)||/‹\s*geri/i.test(text);
   });
-  bar.hidden=!!localBack;
+
+  const show= !localBack;
+  bar.hidden=!show;
+  bar.style.display=show?'':'none';
 }
 
 function closeReportOverlay(){
