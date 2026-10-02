@@ -42,7 +42,11 @@
       query?._delegate?._query?.path?.canonicalString?.(),
       query?._delegate?._queryOptions?.path?.canonicalString?.(),
       query?._query?.path?.canonicalString?.(),
-      query?._queryOptions?.path?.canonicalString?.()
+      query?._queryOptions?.path?.canonicalString?.(),
+      query?._delegate?._query?.path?.lastSegment?.(),
+      query?._delegate?._queryOptions?.path?.lastSegment?.(),
+      query?._query?.path?.lastSegment?.(),
+      query?._queryOptions?.path?.lastSegment?.()
     ];
     for(const candidate of candidates){
       if(Array.isArray(candidate) && candidate.length) return String(candidate[candidate.length-1]);
@@ -108,21 +112,16 @@
     return now() - last < REMOTE_TTL;
   }
 
-  async function beginRemoteWindow(){
+  function beginRemoteWindow(){
     remoteUntil = now() + REMOTE_WINDOW;
-    const last = Number(await meta('lastRemotePullAt') || 0);
-    if(!last || now() - last >= REMOTE_TTL || forceRemoteUntil > now()){
-      await meta('lastRemotePullAt', now());
-    }
   }
 
   async function patchFirestore(){
     if(patched || !global.db?.collection) return false;
     patched = true;
     const db = global.db;
-    const collection = db.collection.bind(db);
     let sample;
-    try{ sample = collection('__ka_read_probe__'); }catch(_){sample=null;}
+    try{ sample = db.collection('__ka_read_probe__'); }catch(_){sample=null;}
     const proto = sample && Object.getPrototypeOf(sample);
     if(!proto || typeof proto.get !== 'function') return false;
     if(proto.__kaReadOptimized) return true;
@@ -135,8 +134,10 @@
         const rows = await localRows(type);
         if(rows !== null) return makeSnapshot(rows);
       }
-      if(type) await beginRemoteWindow();
-      return originalGet.apply(this,args);
+      if(type) beginRemoteWindow();
+      const result = await originalGet.apply(this,args);
+      if(type) await meta('lastRemotePullAt', now());
+      return result;
     };
 
     if(typeof proto.onSnapshot === 'function'){
