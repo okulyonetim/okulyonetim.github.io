@@ -196,7 +196,7 @@ public class MainActivity extends BridgeActivity {
         WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView == null) return;
         webView.evaluateJavascript(
-            "(function(){try{if(document.getElementById('koruk-native-runtime-fixes'))return 'loaded';var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=916';document.head.appendChild(s);return 'loading';}catch(e){return 'error';}})()",
+            "(function(){try{if(window.uygulamaDosyaKaydet)return 'save-ready';window.uygulamaDosyaKaydet=function(base64,dosyaAdi,mimeTuru,paylas){try{var p=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.SavePlugin;if(!p||typeof p.kaydet!=='function')return Promise.reject(new Error('Android dosya kaydetme servisi hazır değil.'));return p.kaydet({base64:base64,dosyaAdi:dosyaAdi,mimeTuru:mimeTuru,paylas:!!paylas});}catch(e){return Promise.reject(e);}};if(!document.getElementById('koruk-native-runtime-fixes')){var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=916';document.head.appendChild(s);}return 'ready';}catch(e){console.error('[NativeRuntimeBridge]',e);return 'error';}})()",
             null
         );
     }
