@@ -3,218 +3,33 @@
    GitHub Actions (.github/workflows/notify.yml) düzenli olarak
    bu dosyayı "node check-and-notify.js" ile çalıştırır, iş bitince
    process kapanır.
-
-   Gerekli ortam değişkeni (GitHub > Settings > Secrets > Actions):
-     FIREBASE_SERVICE_ACCOUNT  → Firebase service account JSON içeriği
    ==================================================================== */
-
 const admin = require('firebase-admin');
-
 let db;
-
-function firebaseBaslat() {
-  const json = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!json) { console.error('FIREBASE_SERVICE_ACCOUNT eksik!'); process.exit(1); }
-  admin.initializeApp({ credential: admin.credential.cert(JSON.parse(json)) });
-  db = admin.firestore();
+function firebaseBaslat(){const json=process.env.FIREBASE_SERVICE_ACCOUNT;if(!json){console.error('FIREBASE_SERVICE_ACCOUNT eksik!');process.exit(1)}admin.initializeApp({credential:admin.credential.cert(JSON.parse(json))});db=admin.firestore()}
+function pad(n){return n.toString().padStart(2,'0')}
+function turkiyeSimdi(){const simdi=new Date(Date.now()+3*60*60*1000);const tarihISO=`${simdi.getUTCFullYear()}-${pad(simdi.getUTCMonth()+1)}-${pad(simdi.getUTCDate())}`;const saatHHMM=`${pad(simdi.getUTCHours())}:${pad(simdi.getUTCMinutes())}`;return{tarihISO,saatHHMM}}
+async function sifreSifirlamaIstekleriniIsle(){const snap=await db.collection('oy_idariBilgiler').where('tur','==','sifreSifirlama').get();const istekler=snap.docs.filter(doc=>{const v=doc.data()||{};return v.durum==='bekliyor'||v.durum==='hazir'});let hazirlanan=0;for(const doc of istekler){const v=doc.data()||{};try{if(!v.hedefUid||!v.email||!v.isteyenUid)throw new Error('Eksik şifre sıfırlama isteği.');const isteyenSnap=await db.collection('oy_kullanicilar').doc(v.isteyenUid).get();const isteyenSnapData=isteyenSnap.exists?isteyenSnap.data():null;if(!isteyenSnapData||isteyenSnapData.admin!==true||isteyenSnapData.aktif===false)throw new Error('Şifre sıfırlama yetkisi doğrulanamadı.');const hedefAuth=await admin.auth().getUser(v.hedefUid);if(!hedefAuth.email||hedefAuth.email.toLowerCase()!==String(v.email).toLowerCase())throw new Error('Hedef kullanıcı giriş hesabı eşleşmiyor.');const resetLink=await admin.auth().generatePasswordResetLink(hedefAuth.email);await doc.ref.update({durum:'hazir',resetLink,hazirlanmaZamani:admin.firestore.FieldValue.serverTimestamp(),hata:admin.firestore.FieldValue.delete()});hazirlanan++;console.log(`Şifre sıfırlama kodu hazırlandı/yenilendi: ${v.hedefUid}`)}catch(err){console.error('Şifre sıfırlama isteği hatası:',err.message);await doc.ref.update({durum:'hata',hata:String(err.message||'İşlem tamamlanamadı.').slice(0,300),tamamlanmaZamani:admin.firestore.FieldValue.serverTimestamp(),resetLink:admin.firestore.FieldValue.delete()}).catch(()=>{})}}return hazirlanan}
+async function kontrolEt(){const sifreSifirlamaHazirlanan=await sifreSifirlamaIstekleriniIsle();const{tarihISO:bugun,saatHHMM:saat}=turkiyeSimdi();const esikSimdi=`${bugun} ${saat}`;console.log(`Kontrol: ${esikSimdi}`);const gonderilecekler=[];
+  // Yalnızca vadesi bugüne kadar gelmiş kayıtları Firestore'dan getir.
+  // tamamlandi/bildirimGonderildi kontrolleri yerelde korunur.
+  const hSnap=await db.collection('oy_hatirlaticilar').where('tarih','<=',bugun).get();hSnap.forEach(doc=>{const v=doc.data();if(v.tamamlandi||v.bildirimGonderildi||!v.tarih)return;const esik=`${v.tarih} ${v.saat||'00:00'}`;if(esik<=esikSimdi)gonderilecekler.push({baslik:`⏰ Hatırlatıcı: ${v.baslik||''}`,govde:v.aciklama||`${v.tarih}${v.saat?' '+v.saat:''}`,koleksiyon:'oy_hatirlaticilar',docId:doc.id})});
+  const gSnap=await db.collection('oy_gorevler').where('sonTarih','<=',bugun).get();gSnap.forEach(doc=>{const v=doc.data();if(v.durum==='tamamlandi'||v.bildirimGonderildi||!v.sonTarih)return;if(v.sonTarih<=bugun)gonderilecekler.push({baslik:`✅ Görev Vadesi: ${v.baslik||''}`,govde:v.aciklama||`Son tarih: ${v.sonTarih}`,koleksiyon:'oy_gorevler',docId:doc.id})});
+  const pSnap=await db.collection('oy_periyodikIsler').where('bitis','<=',bugun).get();pSnap.forEach(doc=>{const v=doc.data();if(v.tamamlandi||v.bildirimGonderildi||!v.bitis)return;if(v.bitis<=bugun)gonderilecekler.push({baslik:`📋 Periyodik İş: ${v.isAdi||''}`,govde:v.not||`Bitiş: ${v.bitis}`,koleksiyon:'oy_periyodikIsler',docId:doc.id})});
+  if(gonderilecekler.length===0)console.log('Genel bildirim yok.');
+  // Tokenlar yalnız gerçekten bildirim adayı varsa veya mesaj bildirimi gerekiyorsa okunur.
+  let tokenDocs=[];
+  if(gonderilecekler.length>0){const cSnap=await db.collection('oy_cihazTokenleri').get();tokenDocs=cSnap.docs.map(d=>({id:d.id,token:d.data().token,uid:d.data().uid||null})).filter(t=>t.token)}
+  const gecersiz=new Set();const tokens=tokenDocs.map(t=>t.token).filter(Boolean);
+  for(const item of gonderilecekler){if(tokens.length>0){try{const yanit=await admin.messaging().sendEachForMulticast({tokens,data:{kategori:'takvim',baslik:item.baslik,icerik:item.govde}});yanit.responses.forEach((r,i)=>{if(!r.success){const kod=r.error?.code||'';if(kod.includes('not-registered')||kod.includes('invalid-registration'))gecersiz.add(tokens[i]);console.warn('Hata:',kod)}});console.log(`Gönderildi: "${item.baslik}" (${yanit.successCount}/${tokens.length})`)}catch(err){console.error('FCM hatası:',err.message)}}await db.collection(item.koleksiyon).doc(item.docId).update({bildirimGonderildi:true})}
+  // Mesajlaşma: yalnız son mesajı henüz bildirilmeyen konuşmaları aday olarak getir.
+  const kSnap=await db.collection('oy_konusmalar').where('sonMesaj.tarih','<=',esikSimdi).get();
+  const mesajAdaylari=[];
+  for(const kDoc of kSnap.docs){const k=kDoc.data();if(!k.sonMesaj||!k.sonMesaj.tarih)continue;const sonBildirilen=k.sonBildirilenMesajTarihi||'';if(k.sonMesaj.tarih<=sonBildirilen)continue;mesajAdaylari.push({doc:kDoc,k})}
+  if(mesajAdaylari.length>0&&tokenDocs.length===0){const cSnap=await db.collection('oy_cihazTokenleri').get();tokenDocs=cSnap.docs.map(d=>({id:d.id,token:d.data().token,uid:d.data().uid||null})).filter(t=>t.token)}
+  let mesajGonderilen=0;
+  for(const{doc:kDoc,k}of mesajAdaylari){const aliciUidler=(k.katilimciUidler||[]).filter(uid=>uid!==k.sonMesaj.gonderenUid);const aliciTokenlari=tokenDocs.filter(t=>t.uid&&aliciUidler.includes(t.uid)).map(t=>t.token);if(aliciTokenlari.length>0){const baslik=k.grupMu?`${k.grupAdi||'Grup'} — ${k.katilimciAdlari?.[k.sonMesaj.gonderenUid]||'Biri'}`:(k.katilimciAdlari?.[k.sonMesaj.gonderenUid]||'Yeni mesaj');try{const yanit=await admin.messaging().sendEachForMulticast({tokens:aliciTokenlari,data:{kategori:'mesaj',baslik:`💬 ${baslik}`,icerik:String(k.sonMesaj.metin||'').slice(0,120)}});yanit.responses.forEach((r,i)=>{if(!r.success){const kod=r.error?.code||'';if(kod.includes('not-registered')||kod.includes('invalid-registration'))gecersiz.add(aliciTokenlari[i])}});mesajGonderilen++;console.log(`Mesaj bildirimi gönderildi: konuşma ${kDoc.id} (${yanit.successCount}/${aliciTokenlari.length})`)}catch(err){console.error('Mesaj FCM hatası:',err.message)}}await db.collection('oy_konusmalar').doc(kDoc.id).update({sonBildirilenMesajTarihi:k.sonMesaj.tarih})}
+  for(const t of gecersiz){const eslesen=tokenDocs.find(d=>d.token===t);if(eslesen)await db.collection('oy_cihazTokenleri').doc(eslesen.id).delete()}
+  return{gonderilen:gonderilecekler.length,mesajBildirimGonderilen:mesajGonderilen,sifreSifirlamaHazirlanan};
 }
-
-function pad(n) { return n.toString().padStart(2, '0'); }
-
-function turkiyeSimdi() {
-  const simdi = new Date(Date.now() + 3 * 60 * 60 * 1000);
-  const tarihISO  = `${simdi.getUTCFullYear()}-${pad(simdi.getUTCMonth()+1)}-${pad(simdi.getUTCDate())}`;
-  const saatHHMM  = `${pad(simdi.getUTCHours())}:${pad(simdi.getUTCMinutes())}`;
-  return { tarihISO, saatHHMM };
-}
-
-async function sifreSifirlamaIstekleriniIsle() {
-  const snap = await db.collection('oy_idariBilgiler').get();
-  const istekler = snap.docs.filter(doc => {
-    const v = doc.data() || {};
-    // Eski "hazir" kayıtların resetLink'i süresi dolmuş olabilir.
-    // Bunları da yeniden üretmek, istemcinin expired-action-code ile
-    // takılı kalmasını önler. Bekleyen kayıtlar ise normal şekilde işlenir.
-    return v.tur === 'sifreSifirlama' && (v.durum === 'bekliyor' || v.durum === 'hazir');
-  });
-  let hazirlanan = 0;
-
-  for (const doc of istekler) {
-    const v = doc.data() || {};
-    try {
-      if (!v.hedefUid || !v.email || !v.isteyenUid) throw new Error('Eksik şifre sıfırlama isteği.');
-
-      const isteyenSnap = await db.collection('oy_kullanicilar').doc(v.isteyenUid).get();
-      const isteyen = isteyenSnap.exists ? isteyenSnap.data() : null;
-      if (!isteyen || isteyen.admin !== true || isteyen.aktif === false) throw new Error('Şifre sıfırlama yetkisi doğrulanamadı.');
-
-      const hedefAuth = await admin.auth().getUser(v.hedefUid);
-      if (!hedefAuth.email || hedefAuth.email.toLowerCase() !== String(v.email).toLowerCase()) throw new Error('Hedef kullanıcı giriş hesabı eşleşmiyor.');
-
-      const resetLink = await admin.auth().generatePasswordResetLink(hedefAuth.email);
-      await doc.ref.update({
-        durum: 'hazir',
-        resetLink,
-        hazirlanmaZamani: admin.firestore.FieldValue.serverTimestamp(),
-        hata: admin.firestore.FieldValue.delete()
-      });
-      hazirlanan++;
-      console.log(`Şifre sıfırlama kodu hazırlandı/yenilendi: ${v.hedefUid}`);
-    } catch (err) {
-      console.error('Şifre sıfırlama isteği hatası:', err.message);
-      await doc.ref.update({
-        durum: 'hata',
-        hata: String(err.message || 'İşlem tamamlanamadı.').slice(0, 300),
-        tamamlanmaZamani: admin.firestore.FieldValue.serverTimestamp(),
-        resetLink: admin.firestore.FieldValue.delete()
-      }).catch(() => {});
-    }
-  }
-  return hazirlanan;
-}
-
-async function kontrolEt() {
-  const sifreSifirlamaHazirlanan = await sifreSifirlamaIstekleriniIsle();
-  const { tarihISO: bugun, saatHHMM: saat } = turkiyeSimdi();
-  const esikSimdi = `${bugun} ${saat}`;
-  console.log(`Kontrol: ${esikSimdi}`);
-
-  const gonderilecekler = [];
-
-  // Hatırlatıcılar
-  const hSnap = await db.collection('oy_hatirlaticilar').get();
-  hSnap.forEach(doc => {
-    const v = doc.data();
-    if (v.tamamlandi || v.bildirimGonderildi || !v.tarih) return;
-    const esik = `${v.tarih} ${v.saat || '00:00'}`;
-    if (esik <= esikSimdi) {
-      gonderilecekler.push({
-        baslik: `⏰ Hatırlatıcı: ${v.baslik || ''}`,
-        govde:  v.aciklama || `${v.tarih}${v.saat ? ' ' + v.saat : ''}`,
-        koleksiyon: 'oy_hatirlaticilar', docId: doc.id
-      });
-    }
-  });
-
-  // Görevler
-  const gSnap = await db.collection('oy_gorevler').get();
-  gSnap.forEach(doc => {
-    const v = doc.data();
-    if (v.durum === 'tamamlandi' || v.bildirimGonderildi || !v.sonTarih) return;
-    if (v.sonTarih <= bugun) {
-      gonderilecekler.push({
-        baslik: `✅ Görev Vadesi: ${v.baslik || ''}`,
-        govde:  v.aciklama || `Son tarih: ${v.sonTarih}`,
-        koleksiyon: 'oy_gorevler', docId: doc.id
-      });
-    }
-  });
-
-  // Periyodik işler
-  const pSnap = await db.collection('oy_periyodikIsler').get();
-  pSnap.forEach(doc => {
-    const v = doc.data();
-    if (v.tamamlandi || v.bildirimGonderildi || !v.bitis) return;
-    if (v.bitis <= bugun) {
-      gonderilecekler.push({
-        baslik: `📋 Periyodik İş: ${v.isAdi || ''}`,
-        govde:  v.not || `Bitiş: ${v.bitis}`,
-        koleksiyon: 'oy_periyodikIsler', docId: doc.id
-      });
-    }
-  });
-
-  if (gonderilecekler.length === 0) {
-    console.log('Genel bildirim yok.');
-  }
-
-  // FCM Tokenları (genel — hatırlatıcı/görev/periyodik için TÜM cihazlara gider)
-  const cSnap = await db.collection('oy_cihazTokenleri').get();
-  const tokenDocs = cSnap.docs.map(d => ({ id: d.id, token: d.data().token, uid: d.data().uid || null }));
-  const tokens = tokenDocs.map(t => t.token).filter(Boolean);
-
-  const gecersiz = new Set();
-
-  for (const item of gonderilecekler) {
-    if (tokens.length > 0) {
-      try {
-        const yanit = await admin.messaging().sendEachForMulticast({
-          tokens,
-          data: { kategori: 'takvim', baslik: item.baslik, icerik: item.govde }
-        });
-        yanit.responses.forEach((r, i) => {
-          if (!r.success) {
-            const kod = r.error?.code || '';
-            if (kod.includes('not-registered') || kod.includes('invalid-registration')) {
-              gecersiz.add(tokens[i]);
-            }
-            console.warn('Hata:', kod);
-          }
-        });
-        console.log(`Gönderildi: "${item.baslik}" (${yanit.successCount}/${tokens.length})`);
-      } catch (err) {
-        console.error('FCM hatası:', err.message);
-      }
-    }
-    await db.collection(item.koleksiyon).doc(item.docId).update({ bildirimGonderildi: true });
-  }
-
-  // ---- Mesajlaşma bildirimleri (HEDEFLİ — sadece o konuşmanın katılımcılarına) ----
-  let mesajGonderilen = 0;
-  const kSnap = await db.collection('oy_konusmalar').get();
-  for (const kDoc of kSnap.docs) {
-    const k = kDoc.data();
-    if (!k.sonMesaj || !k.sonMesaj.tarih) continue;
-    const sonBildirilen = k.sonBildirilenMesajTarihi || '';
-    if (k.sonMesaj.tarih <= sonBildirilen) continue;
-
-    const aliciUidler = (k.katilimciUidler || []).filter(uid => uid !== k.sonMesaj.gonderenUid);
-    const aliciTokenlari = tokenDocs.filter(t => t.uid && aliciUidler.includes(t.uid)).map(t => t.token);
-
-    if (aliciTokenlari.length > 0) {
-      const baslik = k.grupMu ? `${k.grupAdi || 'Grup'} — ${k.katilimciAdlari?.[k.sonMesaj.gonderenUid] || 'Biri'}` : (k.katilimciAdlari?.[k.sonMesaj.gonderenUid] || 'Yeni mesaj');
-      try {
-        const yanit = await admin.messaging().sendEachForMulticast({
-          tokens: aliciTokenlari,
-          data: { kategori: 'mesaj', baslik: `💬 ${baslik}`, icerik: k.sonMesaj.metin.slice(0, 120) }
-        });
-        yanit.responses.forEach((r, i) => {
-          if (!r.success) {
-            const kod = r.error?.code || '';
-            if (kod.includes('not-registered') || kod.includes('invalid-registration')) gecersiz.add(aliciTokenlari[i]);
-          }
-        });
-        mesajGonderilen++;
-        console.log(`Mesaj bildirimi gönderildi: konuşma ${kDoc.id} (${yanit.successCount}/${aliciTokenlari.length})`);
-      } catch (err) {
-        console.error('Mesaj FCM hatası:', err.message);
-      }
-    }
-    await db.collection('oy_konusmalar').doc(kDoc.id).update({ sonBildirilenMesajTarihi: k.sonMesaj.tarih });
-  }
-
-  // Geçersiz tokenları temizle
-  for (const t of gecersiz) {
-    const eslesen = tokenDocs.find(d => d.token === t);
-    if (eslesen) await db.collection('oy_cihazTokenleri').doc(eslesen.id).delete();
-  }
-
-  return {
-    gonderilen: gonderilecekler.length,
-    mesajBildirimGonderilen: mesajGonderilen,
-    sifreSifirlamaHazirlanan
-  };
-}
-
-// ── Tek seferlik çalıştırma ──────────────────────────────────────────
-(async () => {
-  try {
-    firebaseBaslat();
-    const sonuc = await kontrolEt();
-    console.log('Tamamlandı:', JSON.stringify(sonuc));
-    process.exit(0);
-  } catch (err) {
-    console.error('Hata:', err.message);
-    process.exit(1);
-  }
-})();
+(async()=>{try{firebaseBaslat();const sonuc=await kontrolEt();console.log('Tamamlandı:',JSON.stringify(sonuc));process.exit(0)}catch(err){console.error('Hata:',err.message);process.exit(1)}})();
