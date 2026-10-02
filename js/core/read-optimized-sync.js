@@ -1,4 +1,4 @@
-/* Koruk Asistan — Read Optimized Sync v5
+/* Koruk Asistan — Read Optimized Sync v6
  * IndexedDB birincil okuma kaynağıdır. Firestore yalnızca ilk veri yoksa,
  * uzak önbellek süresi dolduysa veya kullanıcı açıkça yenileme istediğinde
  * senkronizasyon yapar. Sürekli onSnapshot/realtime dinleme kapalıdır;
@@ -9,14 +9,13 @@
   if(global.__KA_READ_OPTIMIZED_SYNC__) return;
   global.__KA_READ_OPTIMIZED_SYNC__ = true;
 
-  /* Okul verileri nadiren değiştiği için otomatik uzak senkronizasyon günde
-     en fazla bir kez yapılır. Manuel yenileme her zaman anında senkronize eder. */
   const REMOTE_TTL = 24 * 60 * 60 * 1000;
   const PERIODIC_SYNC_MS = REMOTE_TTL;
   const MISSING = '__ka_missing__';
   let patched = false;
   let realtimePatched = false;
   let pullRefreshPatched = false;
+  let schedulePatched = false;
   let forceRemote = false;
   let periodicTimer = null;
 
@@ -54,18 +53,18 @@
     return !!last && now() - last < REMOTE_TTL;
   }
 
+  async function allLocalFresh(types){
+    const list = Array.isArray(types) && types.length ? types.filter(Boolean) : [];
+    if(!list.length) return false;
+    const states = await Promise.all(list.map(type => localIsFresh(type)));
+    return states.every(Boolean);
+  }
+
   async function markRemote(types){
     const list = Array.isArray(types) && types.length ? types : Object.keys(global.COL || {});
     const t = now();
     await Promise.all(list.map(type => meta(`lastRemotePullAt:${type}`, t).catch(()=>{})));
     await meta('lastRemotePullAt', t).catch(()=>{});
-  }
-
-  async function allLocalFresh(types){
-    const list = Array.isArray(types) && types.length ? types : [];
-    if(!list.length) return false;
-    const states = await Promise.all(list.map(type => localIsFresh(type)));
-    return states.every(Boolean);
   }
 
   async function hydrateLocal(types){
@@ -114,6 +113,26 @@
       };
     }
     sync.__kaReadOptimizedWrapped = true;
+    return true;
+  }
+
+  function patchSchedule(){
+    if(schedulePatched || !global.SyncEngine || typeof global.SyncEngine.schedule !== 'function') return false;
+    const original = global.SyncEngine.schedule;
+    if(original.__kaReadOptimized) return true;
+    const wrapped = function(delay=100){
+      if(forceRemote) return original.call(this,delay);
+      /* Modüller çoğunlukla localHydrate() sonrasında schedule() çağırıyor.
+         Taze yerel cache varken bu çağrı Firestore'a yeni bir okuma başlatmamalı. */
+      const last = Number(global.AppStore?.get?.('meta.lastRemotePullAt') || 0);
+      if(last && now()-last < REMOTE_TTL) return null;
+      const p = original.call(this,delay);
+      return p;
+    };
+    wrapped.__kaReadOptimized = true;
+    wrapped.original = original;
+    global.SyncEngine.schedule = wrapped;
+    schedulePatched = true;
     return true;
   }
 
@@ -169,6 +188,7 @@
   async function install(){
     if(!global.SyncEngine || !global.KorukLocalFirst) return false;
     await patchSyncEngine();
+    patchSchedule();
     patchRealtime();
     patchPullRefresh();
     startPeriodicSync();
@@ -179,7 +199,7 @@
     if(global.SyncEngine && global.KorukLocalFirst){
       install().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e));
     }
-    if(!patched || !realtimePatched || !pullRefreshPatched) setTimeout(boot,100);
+    if(!patched || !schedulePatched || !realtimePatched || !pullRefreshPatched) setTimeout(boot,100);
   }
 
   global.KorukReadOptimized={
