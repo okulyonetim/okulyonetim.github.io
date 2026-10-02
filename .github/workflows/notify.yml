@@ -7,7 +7,7 @@ on:
       - '.github/workflows/notify.yml'
       - 'check-and-notify.js'
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
 
       - name: Bağımlılıkları Yükle
         run: npm install
-        
+
       - name: Bildirimleri Kontrol Et ve Gönder
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
