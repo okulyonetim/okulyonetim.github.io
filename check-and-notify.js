@@ -32,9 +32,6 @@ async function sifreSifirlamaIstekleriniIsle() {
   const snap = await db.collection('oy_idariBilgiler').get();
   const istekler = snap.docs.filter(doc => {
     const v = doc.data() || {};
-    // Eski "hazir" kayıtların resetLink'i süresi dolmuş olabilir.
-    // Bunları da yeniden üretmek, istemcinin expired-action-code ile
-    // takılı kalmasını önler. Bekleyen kayıtlar ise normal şekilde işlenir.
     return v.tur === 'sifreSifirlama' && (v.durum === 'bekliyor' || v.durum === 'hazir');
   });
   let hazirlanan = 0;
@@ -81,8 +78,8 @@ async function kontrolEt() {
 
   const gonderilecekler = [];
 
-  // Hatırlatıcılar
-  const hSnap = await db.collection('oy_hatirlaticilar').get();
+  // Hatırlatıcılar: yalnızca vadesi gelmiş olabilecek kayıtları getir.
+  const hSnap = await db.collection('oy_hatirlaticilar').where('tarih', '<=', bugun).get();
   hSnap.forEach(doc => {
     const v = doc.data();
     if (v.tamamlandi || v.bildirimGonderildi || !v.tarih) return;
@@ -96,32 +93,28 @@ async function kontrolEt() {
     }
   });
 
-  // Görevler
-  const gSnap = await db.collection('oy_gorevler').get();
+  // Görevler: yalnızca son tarihi bugün veya daha eski kayıtları getir.
+  const gSnap = await db.collection('oy_gorevler').where('sonTarih', '<=', bugun).get();
   gSnap.forEach(doc => {
     const v = doc.data();
     if (v.durum === 'tamamlandi' || v.bildirimGonderildi || !v.sonTarih) return;
-    if (v.sonTarih <= bugun) {
-      gonderilecekler.push({
-        baslik: `✅ Görev Vadesi: ${v.baslik || ''}`,
-        govde:  v.aciklama || `Son tarih: ${v.sonTarih}`,
-        koleksiyon: 'oy_gorevler', docId: doc.id
-      });
-    }
+    gonderilecekler.push({
+      baslik: `✅ Görev Vadesi: ${v.baslik || ''}`,
+      govde:  v.aciklama || `Son tarih: ${v.sonTarih}`,
+      koleksiyon: 'oy_gorevler', docId: doc.id
+    });
   });
 
-  // Periyodik işler
-  const pSnap = await db.collection('oy_periyodikIsler').get();
+  // Periyodik işler: yalnızca bitiş tarihi bugün veya daha eski kayıtları getir.
+  const pSnap = await db.collection('oy_periyodikIsler').where('bitis', '<=', bugun).get();
   pSnap.forEach(doc => {
     const v = doc.data();
     if (v.tamamlandi || v.bildirimGonderildi || !v.bitis) return;
-    if (v.bitis <= bugun) {
-      gonderilecekler.push({
-        baslik: `📋 Periyodik İş: ${v.isAdi || ''}`,
-        govde:  v.not || `Bitiş: ${v.bitis}`,
-        koleksiyon: 'oy_periyodikIsler', docId: doc.id
-      });
-    }
+    gonderilecekler.push({
+      baslik: `📋 Periyodik İş: ${v.isAdi || ''}`,
+      govde:  v.not || `Bitiş: ${v.bitis}`,
+      koleksiyon: 'oy_periyodikIsler', docId: doc.id
+    });
   });
 
   if (gonderilecekler.length === 0) {
