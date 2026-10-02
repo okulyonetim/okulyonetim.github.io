@@ -63,8 +63,6 @@ function baglantiUyarisiGoster(mesaj){
   }
 }
 
-/* Firebase SDK erişilemediğinde yalnızca daha önce bu cihazda açılmış hesabı
-   yerel authSession kaydından yeniden oluşturur. Ağ yokken yeni giriş yapılmaz. */
 async function yerelAuthUidBul(){
   if(typeof indexedDB==='undefined')return '';
   return new Promise(resolve=>{
@@ -170,7 +168,7 @@ function firebaseyiBaslat(){
 (function appNavigationBehaviorFeatureLoad(){
   if(document.querySelector('script[data-app-navigation-behavior]'))return;
   const script=document.createElement('script');
-  script.src='js/core/app-navigation-behavior.js?v=935';
+  script.src='js/core/app-navigation-behavior.js?v=943';
   script.async=false;
   script.dataset.appNavigationBehavior='';
   document.head.appendChild(script);
