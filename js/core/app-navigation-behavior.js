@@ -1,4 +1,4 @@
-/* Okul Yönetim — Uygulama geneli gezinme davranışları.
+/* Koruk Asistan — Uygulama geneli gezinme davranışları.
  * 1) Rapor/PDF önizleme üst katmandır; kapanırken alttaki detay sayfasının geçmişini değiştirmez.
  * 2) Yeni bir sayfa/görünüm açıldığında içerik en üste alınır.
  * 3) Header okul markası her zaman Ana Sayfa'yı en üstten açar.
@@ -28,10 +28,6 @@ function scrollTopSoon(){
   queueMicrotask(()=>requestAnimationFrame(()=>{scrollTopNow();requestAnimationFrame(scrollTopNow);}));
 }
 
-/* Shell'in eski "‹ Geri" metin butonu bazı ekranlarda tarayıcı varsayılan
- * buton görünümüne düşüyordu. Navigasyon davranışına dokunmadan, mevcut
- * data-ka-shell-back hedefini merkezi ka-icon-button bileşenine dönüştür.
- * Böylece Personel İşleri dahil tüm shell alt sayfalarında aynı görünüm kullanılır. */
 function normalizeShellBackButtons(){
   document.querySelectorAll('[data-ka-shell-back]').forEach(btn=>{
     if(btn.dataset.kaBackNormalized==='1')return;
@@ -63,9 +59,51 @@ function closeReportOverlay(){
   return false;
 }
 
-/* ShellUI, modül içi detay geri fonksiyonlarını genel modal kontrolünden önce çağırır.
- * Rapor açıkken bu geri fonksiyonlarının alttaki detayı kapatmasına izin verme.
- * Rapor yüzeyi ayrıca standart modal olarak işaretlenir; Shell böylece önce onu kapatır. */
+/* Profil > Ders Programım, Ders Programı modülündeki mevcut tek öğretmen
+ * raporunu kullanır. Öğretmen otomatik olarak oturumdaki bağlı kayıttan alınır. */
+function profileScheduleReportMeta(){
+  const rows=global.AppStore?.data?.('okulBilgileri');
+  const list=Array.isArray(rows)?rows:[];
+  const info=list.find(x=>x.id==='ayarlar')||list[0]||{};
+  const school=String(info.okulAdi||info.ad||'Koruk İlkokulu - Ortaokulu').trim();
+  const now=new Date(),year=now.getFullYear(),start=now.getMonth()>=7?year:year-1;
+  return{school,title:'Ders Programı',year:`${start}-${start+1}`,subtitle:'',showSchool:true,showTitle:false,showYear:true,showSubtitle:false};
+}
+function profileTeacherId(){
+  const u=global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
+  return String(u.bagliOgretmenId||u.ogretmenId||'').trim();
+}
+async function openProfileScheduleReport(){
+  const teacherId=profileTeacherId();
+  if(!teacherId){global.toast?.('Bu kullanıcıya bağlı öğretmen kaydı bulunamadı.');return false;}
+  try{
+    if(!global.ScheduleReportRedesign)await global.AppLoader?.loadScript?.('js/core/schedule-report-redesign.js?v=942');
+    if(!global.ScheduleReportRedesign?.individualBody)throw new Error('Ders programı rapor motoru hazır değil.');
+    if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+    if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
+    const body=global.ScheduleReportRedesign.individualBody('teacher',[teacherId],profileScheduleReportMeta(),'single');
+    if(!body)throw new Error('Öğretmen ders programı oluşturulamadı.');
+    return await global.ReportEngine.printReport('Öğretmen Ders Programı',body,{
+      fileName:'Öğretmen Ders Programı',yon:'yatay',logoGoster:false,tarihGoster:false,
+      baslikGoster:false,compact:false,fontSize:7,kenarBosluk:3,
+      extraHead:global.ScheduleReportRedesign.PRINT_STYLE
+    });
+  }catch(e){
+    console.error('[Profile/ScheduleReport]',e);
+    global.toast?.(e?.message||'Öğretmen ders programı raporu açılamadı.');
+    return false;
+  }
+}
+function bindProfileScheduleReport(){
+  document.addEventListener('click',event=>{
+    const btn=event.target.closest?.('[data-profile-view="schedule"]');
+    if(!btn)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    Promise.resolve(openProfileScheduleReport()).catch(e=>console.error('[Profile/ScheduleReport]',e));
+  },true);
+}
+
 function protectModuleBack(api){
   if(!api||typeof api.back!=='function'||wrappedBackApis.has(api))return false;
   const original=api.back;
@@ -100,28 +138,17 @@ function installPreviewGuard(){
   decorateReportOverlay();
   protectDetailBacks();
 
-  /* Eski sürüm rapor açılıp kapanırken history.pushState/history.back kullanıyordu.
-   * Bu, rapor kapatıldığında alttaki servis/öğrenci detayını da geri götürüyordu.
-   * Artık rapor bir transient üst katmandır; geçmişe ayrı kayıt eklenmez. */
   global.addEventListener('popstate',event=>{
     if(!reportOverlay()){
       scrollTopSoon();
       return;
     }
-    /* Shell daha önce çalışmış olsa bile modül back fonksiyonları korunduğu için
-       alttaki detay kapanmaz. Shell raporu kapatmışsa burada yapılacak iş kalmaz. */
     if(!reportOverlay())return;
     event.stopImmediatePropagation();
     event.preventDefault?.();
     closeReportOverlay();
-    /* Rapor/PDF üst katmanı kapanırken ShellUI'nin gerçek sayfa geçmişi
-       korunmalı. Popstate active guard'dan root guard'a düşürdüyse tekrar
-       active guard kur; aksi halde sonraki geri basımı yanlış sayfaya
-       taşıyabilir. */
     try{
-      if(history.state?.kaShellGuard!=='active'){
-        history.pushState({...(history.state||{}),kaShellGuard:'active'},'');
-      }
+      if(history.state?.kaShellGuard!=='active')history.pushState({...(history.state||{}),kaShellGuard:'active'},'');
     }catch(_){}
   },true);
 }
@@ -166,12 +193,9 @@ function installNavigationScroll(){
   global.AppStore?.subscribe?.('ui.route',scrollTopSoon);
 }
 
-/* Pull-to-refresh tek merkezden js/core/core.js tarafından yönetilir.
- * Bu dosyada ikinci bir touch engine bulunmaz; böylece Android WebView, Android
- * Chrome ve iOS Safari aynı gesture durum makinesini kullanır. */
-
 function install(){
   installPreviewGuard();
+  bindProfileScheduleReport();
   installNavigationScroll();
 }
 
