@@ -26,267 +26,90 @@ const COL = {
   ogretmenYillikPlanSecimleri:'oy_ogretmenYillikPlanSecimleri', devamsizlikCizelgesi:'oy_devamsizlikCizelgesi', yillikPlanNotlari:'oy_yillikPlanNotlari',
   ogretmenListeSablon:'oy_ogretmenListeSablon', ogretmenListeKayit:'oy_ogretmenListeKayit', toplantiCizelgesi:'oy_toplantiCizelgesi', idariBilgiler:'oy_idariBilgiler', yemekMenuleri:'oy_yemekMenuleri'
 };
-
 window.firebaseConfig = firebaseConfig;
 window.VAPID_KEY = VAPID_KEY;
 window.COL = COL;
-
-let db = null;
-let auth = null;
-let messaging = null;
-let storage = null;
-let firebaseHazir = false;
-window.db = null;
-window.auth = null;
-window.messaging = null;
-window.storage = null;
-window.firebaseHazir = false;
-
+let db = null, auth = null, messaging = null, storage = null, firebaseHazir = false;
+window.db = null; window.auth = null; window.messaging = null; window.storage = null; window.firebaseHazir = false;
 function yapilandirmaEksikMi(){ return firebaseConfig.apiKey === "BURAYA_API_KEY"; }
-
 function firebaseStorageHazirla(){
   if(storage) return storage;
   if(typeof firebase.storage !== 'function') throw new Error('firebase-storage-sdk-yok');
-  storage = firebase.storage();
-  window.storage = storage;
-  return storage;
+  storage = firebase.storage(); window.storage = storage; return storage;
 }
 window.firebaseStorageHazirla = firebaseStorageHazirla;
-
 function baglantiUyarisiGoster(mesaj){
   const uyari = document.getElementById('configWarning');
-  if(uyari){
-    uyari.classList.remove('ka-hidden');
-    uyari.classList.add('active');
-    const govde = uyari.querySelector('.ka-card__body p');
-    if(govde && mesaj) govde.textContent = mesaj;
-  }
+  if(uyari){ uyari.classList.remove('ka-hidden'); uyari.classList.add('active'); const govde = uyari.querySelector('.ka-card__body p'); if(govde && mesaj) govde.textContent = mesaj; }
 }
-
 async function yerelAuthUidBul(){
   if(typeof indexedDB==='undefined')return '';
-  return new Promise(resolve=>{
-    let settled=false,request;
-    const finish=value=>{if(settled)return;settled=true;resolve(value||'')};
-    try{
-      request=indexedDB.open('koruk-local-first-v1',1);
-      request.onerror=()=>finish('');
-      request.onupgradeneeded=()=>{};
-      request.onsuccess=()=>{
-        const dbLocal=request.result;
-        if(!dbLocal.objectStoreNames.contains('kv')){finish('');return}
-        try{
-          const tx=dbLocal.transaction('kv','readonly'),store=tx.objectStore('kv'),cursor=store.openCursor();
-          let newest=null;
-          cursor.onerror=()=>finish('');
-          cursor.onsuccess=()=>{
-            const c=cursor.result;
-            if(!c){finish(newest?.uid||'');return}
-            const key=String(c.key||''),m=key.match(/^u:([^:]+):meta:authSession$/),value=c.value;
-            if(m&&value?.user?.uid===m[1]&&(!newest||Number(value.cachedAt||0)>Number(newest.cachedAt||0)))newest={uid:m[1],cachedAt:Number(value.cachedAt||0)};
-            c.continue();
-          };
-        }catch(_){finish('')}
-      };
-    }catch(_){finish('')}
-  });
+  return new Promise(resolve=>{ let settled=false,request; const finish=value=>{if(settled)return;settled=true;resolve(value||'')}; try{
+    request=indexedDB.open('koruk-local-first-v1',1); request.onerror=()=>finish(''); request.onupgradeneeded=()=>{}; request.onsuccess=()=>{ const dbLocal=request.result; if(!dbLocal.objectStoreNames.contains('kv')){finish('');return} try{
+      const tx=dbLocal.transaction('kv','readonly'),store=tx.objectStore('kv'),cursor=store.openCursor(); let newest=null; cursor.onerror=()=>finish(''); cursor.onsuccess=()=>{ const c=cursor.result; if(!c){finish(newest?.uid||'');return} const key=String(c.key||''),m=key.match(/^u:([^:]+):meta:authSession$/),value=c.value; if(m&&value?.user?.uid===m[1]&&(!newest||Number(value.cachedAt||0)>Number(newest.cachedAt||0)))newest={uid:m[1],cachedAt:Number(value.cachedAt||0)}; c.continue(); };
+    }catch(_){finish('')} }; }catch(_){finish('')} });
 }
-
 function yerelAuthFallbackHazirla(){
-  if(auth)return auth;
-  const listeners=new Set();
-  let currentUser=null;
-  auth={
-    currentUser:null,
-    onAuthStateChanged(callback){
-      if(typeof callback!=='function')return()=>{};
-      listeners.add(callback);
-      yerelAuthUidBul().then(uid=>{
-        if(!uid){callback(null);return;}
-        currentUser={uid,offline:true};
-        auth.currentUser=currentUser;
-        callback(currentUser);
-      }).catch(()=>callback(null));
-      return()=>listeners.delete(callback);
-    },
-    signOut(){
-      currentUser=null;
-      auth.currentUser=null;
-      listeners.forEach(fn=>{try{fn(null)}catch(_) {}});
-      return Promise.resolve();
-    }
-  };
-  window.auth=auth;
-  window.firebaseHazir=true;
-  firebaseHazir=true;
-  window.dispatchEvent(new CustomEvent('koruk:firebase-ready'));
-  return auth;
+  if(auth)return auth; const listeners=new Set(); let currentUser=null;
+  auth={currentUser:null,onAuthStateChanged(callback){ if(typeof callback!=='function')return()=>{}; listeners.add(callback); yerelAuthUidBul().then(uid=>{ if(!uid){callback(null);return} currentUser={uid,offline:true}; auth.currentUser=currentUser; callback(currentUser); }).catch(()=>callback(null)); return()=>listeners.delete(callback); },signOut(){ currentUser=null; auth.currentUser=null; listeners.forEach(fn=>{try{fn(null)}catch(_){}}); return Promise.resolve(); }};
+  window.auth=auth; window.firebaseHazir=true; firebaseHazir=true; window.dispatchEvent(new CustomEvent('koruk:firebase-ready')); return auth;
 }
-
 function firebaseyiBaslat(){
-  if(yapilandirmaEksikMi()){
-    baglantiUyarisiGoster();
-    return false;
-  }
+  if(yapilandirmaEksikMi()){baglantiUyarisiGoster();return false}
   try{
     if(typeof firebase==='undefined')throw new Error('firebase is not defined');
-    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-    db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
-    auth = firebase.auth();
-    storage = null;
-    firebaseHazir = true;
-    window.db = db;
-    window.auth = auth;
-    window.storage = storage;
-    window.firebaseHazir = true;
-    db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
-      if(err.code === 'failed-precondition') console.warn('Offline destek: birden fazla sekme açık, sadece ilk sekmede etkin.');
-      else if(err.code === 'unimplemented') console.warn('Offline destek: bu tarayıcı desteklemiyor.');
-      else console.warn('Offline destek etkinleştirilemedi:', err);
-    });
-    try{
-      if(firebase.messaging.isSupported()) messaging = firebase.messaging();
-      window.messaging = messaging;
-    }catch(e){ console.warn('Bu tarayıcı push bildirimlerini desteklemiyor.', e); }
-    window.dispatchEvent(new CustomEvent('koruk:firebase-ready'));
-    return true;
-  }catch(e){
-    console.error(e);
-    if(navigator.onLine===false){
-      yerelAuthFallbackHazirla();
-      return true;
-    }
-    const agSorunuMu = typeof e?.message === 'string' && /firebase is not defined/i.test(e.message);
-    baglantiUyarisiGoster(agSorunuMu
-      ? 'Sunucu bağlantı dosyaları (Firebase) yüklenemedi. İnternet bağlantınızı, güvenlik duvarı/reklam engelleyici ayarlarınızı kontrol edip sayfayı yenileyin.'
-      : 'Firebase başlatılamadı. Yapılandırma ve bağlantı bilgileri kontrol edilmelidir.');
-    return false;
-  }
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); db=firebase.firestore(); db.settings({experimentalAutoDetectLongPolling:true,merge:true}); auth=firebase.auth(); storage=null; firebaseHazir=true;
+    window.db=db; window.auth=auth; window.storage=storage; window.firebaseHazir=true;
+    db.enablePersistence({synchronizeTabs:true}).catch(err=>{if(err.code==='failed-precondition')console.warn('Offline destek: birden fazla sekme açık, sadece ilk sekmede etkin.');else if(err.code==='unimplemented')console.warn('Offline destek: bu tarayıcı desteklemiyor.');else console.warn('Offline destek etkinleştirilemedi:',err)});
+    try{if(firebase.messaging.isSupported()) messaging=firebase.messaging(); window.messaging=messaging}catch(e){console.warn('Bu tarayıcı push bildirimlerini desteklemiyor.',e)}
+    window.dispatchEvent(new CustomEvent('koruk:firebase-ready')); return true;
+  }catch(e){ console.error(e); if(navigator.onLine===false){yerelAuthFallbackHazirla();return true} const agSorunuMu=typeof e?.message==='string'&&/firebase is not defined/i.test(e.message); baglantiUyarisiGoster(agSorunuMu?'Sunucu bağlantı dosyaları (Firebase) yüklenemedi. İnternet bağlantınızı, güvenlik duvarı/reklam engelleyici ayarlarınızı kontrol edip sayfayı yenileyin.':'Firebase başlatılamadı. Yapılandırma ve bağlantı bilgileri kontrol edilmelidir.'); return false }
 }
+(function appNavigationBehaviorFeatureLoad(){if(document.querySelector('script[data-app-navigation-behavior]'))return;const script=document.createElement('script');script.src='js/core/app-navigation-behavior.js?v=943';script.async=false;script.dataset.appNavigationBehavior='';document.head.appendChild(script)})();
+(function teacherDeleteLifecycleFeatureLoad(){if(document.querySelector('script[data-teacher-delete-lifecycle]'))return;const script=document.createElement('script');script.src='js/core/teacher-delete-lifecycle.js?v=933';script.async=false;script.dataset.teacherDeleteLifecycle='';document.head.appendChild(script)})();
+(function loginSecurityFeatureLoad(){if(document.querySelector('script[data-login-security-feature]'))return;const script=document.createElement('script');script.src='js/core/login-security.js?v=885';script.async=false;script.dataset.loginSecurityFeature='';document.head.appendChild(script)})();
+(function dutyReportLivePlacesFeatureLoad(){if(document.querySelector('script[data-duty-report-live-places]'))return;const script=document.createElement('script');script.src='js/core/duty-report-live-places.js?v=913';script.async=false;script.dataset.dutyReportLivePlaces='';document.head.appendChild(script)})();
+(function dutyHolidayModeSourceFeatureLoad(){if(document.querySelector('script[data-duty-holiday-mode-source]'))return;const script=document.createElement('script');script.src='js/core/duty-holiday-mode-source.js?v=930';script.async=false;script.dataset.dutyHolidayModeSource='';document.head.appendChild(script)})();
+(function transportHolidayModeBridgeFeatureLoad(){if(document.querySelector('script[data-transport-holiday-mode-bridge]'))return;const script=document.createElement('script');script.src='js/core/transport-holiday-mode-bridge.js?v=931';script.async=false;script.dataset.transportHolidayModeBridge='';document.head.appendChild(script)})();
+(function scheduleDataIntegrityFeatureLoad(){if(document.querySelector('script[data-schedule-data-integrity]'))return;const script=document.createElement('script');script.src='js/core/schedule-data-integrity.js?v=917';script.async=false;script.dataset.scheduleDataIntegrity='';document.head.appendChild(script)})();
+(function scheduleReportRedesignFeatureLoad(){if(document.querySelector('script[data-schedule-report-redesign]'))return;const script=document.createElement('script');script.src='js/core/schedule-report-redesign.js?v=942';script.async=false;script.dataset.scheduleReportRedesign='';document.head.appendChild(script)})();
+(function scheduleReportColumnZebraFeatureLoad(){if(document.querySelector('script[data-schedule-report-column-zebra]'))return;const script=document.createElement('script');script.src='js/core/schedule-report-column-zebra.js?v=939';script.async=false;script.dataset.scheduleReportColumnZebra='';document.head.appendChild(script)})();
+(function dashboardAnnouncementMediaFeatureLoad(){if(document.querySelector('script[data-dashboard-announcement-media]'))return;const script=document.createElement('script');script.src='js/core/dashboard-announcement-media.js?v=921';script.async=false;script.dataset.dashboardAnnouncementMedia='';document.head.appendChild(script)})();
+(function studentExamResultDetailsFeatureLoad(){if(document.querySelector('script[data-student-exam-result-details]'))return;const script=document.createElement('script');script.src='js/core/student-exam-result-details.js?v=925';script.async=false;script.dataset.studentExamResultDetails='';document.head.appendChild(script)})();
+(function adminPasswordResetFeatureLoad(){if(document.querySelector('script[data-admin-password-reset]'))return;const script=document.createElement('script');script.src='js/core/admin-password-reset.js?v=948';script.async=false;script.dataset.adminPasswordReset='';document.head.appendChild(script)})();
+(function teacherReminderAcademicYearFeatureLoad(){if(document.querySelector('script[data-teacher-reminder-academic-year]'))return;const script=document.createElement('script');script.src='js/core/teacher-reminder-academic-year.js?v=952';script.async=false;script.dataset.teacherReminderAcademicYear='';document.head.appendChild(script)})();
+(function reportCustomizerFeatureLoad(){if(document.querySelector('script[data-report-customizer]'))return;const script=document.createElement('script');script.src='js/core/report-customizer.js?v=1001';script.async=false;script.dataset.reportCustomizer='';document.head.appendChild(script)})();
 
-(function appNavigationBehaviorFeatureLoad(){
-  if(document.querySelector('script[data-app-navigation-behavior]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/app-navigation-behavior.js?v=943';
-  script.async=false;
-  script.dataset.appNavigationBehavior='';
-  document.head.appendChild(script);
-})();
-
-(function teacherDeleteLifecycleFeatureLoad(){
-  if(document.querySelector('script[data-teacher-delete-lifecycle]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/teacher-delete-lifecycle.js?v=933';
-  script.async=false;
-  script.dataset.teacherDeleteLifecycle='';
-  document.head.appendChild(script);
-})();
-
-(function loginSecurityFeatureLoad(){
-  if(document.querySelector('script[data-login-security-feature]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/login-security.js?v=885';
-  script.async=false;
-  script.dataset.loginSecurityFeature='';
-  document.head.appendChild(script);
-})();
-
-(function dutyReportLivePlacesFeatureLoad(){
-  if(document.querySelector('script[data-duty-report-live-places]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/duty-report-live-places.js?v=913';
-  script.async=false;
-  script.dataset.dutyReportLivePlaces='';
-  document.head.appendChild(script);
-})();
-
-(function dutyHolidayModeSourceFeatureLoad(){
-  if(document.querySelector('script[data-duty-holiday-mode-source]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/duty-holiday-mode-source.js?v=930';
-  script.async=false;
-  script.dataset.dutyHolidayModeSource='';
-  document.head.appendChild(script);
-})();
-
-(function transportHolidayModeBridgeFeatureLoad(){
-  if(document.querySelector('script[data-transport-holiday-mode-bridge]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/transport-holiday-mode-bridge.js?v=931';
-  script.async=false;
-  script.dataset.transportHolidayModeBridge='';
-  document.head.appendChild(script);
-})();
-
-(function scheduleDataIntegrityFeatureLoad(){
-  if(document.querySelector('script[data-schedule-data-integrity]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/schedule-data-integrity.js?v=917';
-  script.async=false;
-  script.dataset.scheduleDataIntegrity='';
-  document.head.appendChild(script);
-})();
-
-(function scheduleReportRedesignFeatureLoad(){
-  if(document.querySelector('script[data-schedule-report-redesign]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/schedule-report-redesign.js?v=942';
-  script.async=false;
-  script.dataset.scheduleReportRedesign='';
-  document.head.appendChild(script);
-})();
-
-(function scheduleReportColumnZebraFeatureLoad(){
-  if(document.querySelector('script[data-schedule-report-column-zebra]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/schedule-report-column-zebra.js?v=939';
-  script.async=false;
-  script.dataset.scheduleReportColumnZebra='';
-  document.head.appendChild(script);
-})();
-
-(function dashboardAnnouncementMediaFeatureLoad(){
-  if(document.querySelector('script[data-dashboard-announcement-media]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/dashboard-announcement-media.js?v=921';
-  script.async=false;
-  script.dataset.dashboardAnnouncementMedia='';
-  document.head.appendChild(script);
-})();
-
-(function studentExamResultDetailsFeatureLoad(){
-  if(document.querySelector('script[data-student-exam-result-details]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/student-exam-result-details.js?v=925';
-  script.async=false;
-  script.dataset.studentExamResultDetails='';
-  document.head.appendChild(script);
-})();
-
-(function adminPasswordResetFeatureLoad(){
-  if(document.querySelector('script[data-admin-password-reset]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/admin-password-reset.js?v=948';
-  script.async=false;
-  script.dataset.adminPasswordReset='';
-  document.head.appendChild(script);
-})();
-
-(function teacherReminderAcademicYearFeatureLoad(){
-  if(document.querySelector('script[data-teacher-reminder-academic-year]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/teacher-reminder-academic-year.js?v=952';
-  script.async=false;
-  script.dataset.teacherReminderAcademicYear='';
-  document.head.appendChild(script);
-})();
-
-(function reportCustomizerFeatureLoad(){
-  if(document.querySelector('script[data-report-customizer]'))return;
-  const script=document.createElement('script');
-  script.src='js/core/report-customizer.js?v=1001';
-  script.async=false;
-  script.dataset.reportCustomizer='';
-  document.head.appendChild(script);
+/* Firestore read guard: local-first açılış + realtime korunur; tekrar eden tam pull'lar 5 dk bastırılır. */
+(function installFirestoreReadGuard(){
+  const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:';let installed=false;
+  const uid=()=>String(window.AKTIF_KULLANICI?.uid||window.AppStore?.get?.('session.user')?.uid||'');
+  const stampKey=()=>KEY+uid();
+  const getStamp=()=>{try{return Number(localStorage.getItem(stampKey())||0)}catch(_){return 0}};
+  const setStamp=()=>{try{localStorage.setItem(stampKey(),String(Date.now()))}catch(_) {}};
+  const fresh=()=>{const t=getStamp();return !!t&&(Date.now()-t<TTL)};
+  function registerCoreTypes(){
+    if(!window.COL||!window.SyncEngine)return;
+    const pairs={ogretmenler:COL.ogretmenler,dersProgrami:COL.dersProgrami,siniflar:COL.siniflar,veliler:COL.veliler,servisler:COL.servisler,nobetAtamalari:COL.nobetAtamalari,nobetYerleri:COL.nobetYerleri,sinavlar:COL.sinavlar,denemeSinavlari:COL.denemeSinavlari,duyurular:COL.duyurular,haberler:COL.haberler,gorevler:COL.gorevler,hatirlaticilar:COL.hatirlaticilar,ogretmenIzinleri:COL.ogretmenIzinleri,notlar:COL.notlar,yemekMenuleri:COL.yemekMenuleri,odevTakip:COL.odevTakip,notCizelgesi:COL.notCizelgesi};
+    Object.entries(pairs).forEach(([type,col])=>{if(!col)return;if(type==='odevTakip'||type==='notCizelgesi'){const u=window.AKTIF_KULLANICI||window.AppStore?.get?.('session.user')||{};window.SyncEngine.register(type,col,{query:q=>u.admin===true||!u.uid?q:q.where('sahipUid','==',u.uid)})}else window.SyncEngine.register(type,col)});
+  }
+  function install(){
+    if(installed||!window.SyncEngine||!window.AppBootstrap||!window.AppStore||!window.KorukLocalFirst)return;installed=true;
+    const originalSchedule=window.SyncEngine.schedule;
+    if(typeof originalSchedule==='function')window.SyncEngine.schedule=function readGuardedSchedule(ms=1200){if(fresh())return;return originalSchedule(ms)};
+    const originalStart=window.AppBootstrap.start;
+    if(typeof originalStart==='function')window.AppBootstrap.start=async function readOptimizedBootstrap(){
+      if(!uid()||!fresh()){const result=await originalStart();if(result)setTimeout(()=>{if(window.AppStore?.get?.('ui.lastSyncAt'))setStamp()},1500);return result}
+      registerCoreTypes();
+      const types=Array.isArray(window.AppBootstrap.CORE_TYPES)?window.AppBootstrap.CORE_TYPES:[];
+      try{
+        window.AppStore.set('session.user',window.AKTIF_KULLANICI);window.AppStore.set('session.role',window.AKTIF_ROL||null);
+        await window.SyncEngine.localHydrate(types);window.AppStore.set('session.ready',true);window.AppStore.set('meta.hydrated',true);
+        window.dispatchEvent(new CustomEvent('koruk:app-ready',{detail:{source:'device-cache'}}));
+        window.SyncEngine.startRealtime?.(['dersProgrami','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular']);
+        window.AppStore.set('meta.booted',true);return true;
+      }catch(error){console.warn('[FirestoreReadGuard] local bootstrap failed, using normal bootstrap:',error?.message||error);return originalStart()}
+    };
+  }
+  const wait=()=>{if(window.SyncEngine&&window.AppBootstrap&&window.AppStore&&window.KorukLocalFirst)install();else setTimeout(wait,50)};wait();
 })();
