@@ -39,8 +39,6 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(UpdatePlugin.class);
         super.onCreate(savedInstanceState);
 
-        // Uygulama genelinde WebView pinch/double-tap zoomunu kapat.
-        // Belge/Yıllık Plan gibi ekranların kendi CSS transform zoomları bundan etkilenmez.
         WebView anaWebView = getBridge() != null ? getBridge().getWebView() : null;
         if (anaWebView != null) {
             anaWebView.addJavascriptInterface(new PullRefreshScrollBridge(), "KorukNativePull");
@@ -48,23 +46,13 @@ public class MainActivity extends BridgeActivity {
             anaWebView.getSettings().setSupportZoom(false);
             anaWebView.getSettings().setBuiltInZoomControls(false);
             anaWebView.getSettings().setDisplayZoomControls(false);
-            // Capacitor'ın WebView parent'ı bazı cihazlarda ilk onCreate anında
-            // henüz tamamlanmamış olabilir. Kurulumu birkaç frame boyunca güvenle
-            // tekrar dene; tek seferlik post ile PTR'ın hiç kurulmadan kalmasına
-            // izin verme.
             anaWebView.post(this::setupPullToRefresh);
         }
 
         handleIntent(getIntent());
-        // Pull-to-refresh APK/PWA/web için js/core/core.js tarafından tek merkezden yönetilir.
         kenarJestiniAyir();
     }
 
-    /**
-     * Android APK'da WebView'in kendi touch/scroll motoruyla yarışmak yerine
-     * gerçek native pull-to-refresh katmanını WebView'in mevcut parent'ına ekler.
-     * Tarayıcı sürümünde bu katman yoktur; Chrome/Safari kendi PTR davranışını kullanır.
-     */
     private void setupPullToRefresh() {
         if (nativePullRefresh != null || getBridge() == null) return;
         final WebView webView = getBridge().getWebView();
@@ -72,18 +60,15 @@ public class MainActivity extends BridgeActivity {
             retryPullToRefreshSetup(webView);
             return;
         }
-
         final ViewParent rawParent = webView.getParent();
         if (!(rawParent instanceof ViewGroup)) {
             retryPullToRefreshSetup(webView);
             return;
         }
-
         final ViewGroup parent = (ViewGroup) rawParent;
         final int index = parent.indexOfChild(webView);
         if (index < 0) return;
         final ViewGroup.LayoutParams webViewLp = webView.getLayoutParams();
-
         parent.removeView(webView);
         nativePullRefresh = new LogoSwipeRefreshLayout(this, webView);
         nativePullRefresh.setLayoutParams(webViewLp);
@@ -93,14 +78,9 @@ public class MainActivity extends BridgeActivity {
                 if (nativePullRefresh != null) nativePullRefresh.setRefreshing(false);
                 return;
             }
-            // Android'da pull gesture'ı kesin olarak gerçek WebView yenilemesine bağla.
-            // SyncEngine yalnız veri senkronu yapar; WebView.reload() ise sayfanın
-            // tüm modüllerini yeniden başlatır ve eski DOM durumunu da temizler.
             currentWebView.post(() -> {
-            appHazir = false;
-            webView.reload();
-                // reload() sonrasında WebView yeniden kurulurken göstergenin
-                // takılı kalmaması için kısa bir güvenlik kapatması.
+                appHazir = false;
+                webView.reload();
                 currentWebView.postDelayed(() -> runOnUiThread(() -> {
                     if (nativePullRefresh != null) nativePullRefresh.setRefreshing(false);
                 }), 1200);
@@ -128,17 +108,10 @@ public class MainActivity extends BridgeActivity {
         webView.postDelayed(() -> setupPullToRefresh(), 250);
     }
 
-    /* Android 10+ (API 29) sistem "geri" hareket algılaması, ekranın sol
-       kenarına yakın başlayan sağa kaydırmaları WebView'e ULAŞTIRMADAN
-       kendi başına yutuyor — bu yüzden uygulama içindeki "kaydırınca menü
-       aç" jesti hiç tetiklenmiyordu. setSystemGestureExclusionRects ile
-       sol kenardan ~36dp'lik bir şeridi sistem hareketinden muaf tutup
-       dokunuşun WebView'e (ve dolayısıyla JS'e) ulaşmasını sağlıyoruz. */
     private void kenarJestiniAyir() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
         final WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView == null) return;
-
         Runnable uygula = () -> {
             int yukseklik = webView.getHeight();
             if (yukseklik <= 0) return;
@@ -148,22 +121,10 @@ public class MainActivity extends BridgeActivity {
                 java.util.Collections.singletonList(new android.graphics.Rect(0, 0, genislikPx, yukseklik))
             );
         };
-
         webView.post(uygula);
         webView.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or_, ob) -> uygula.run());
     }
 
-    /* Android geri tuşunun tek sahibi uygulama içindeki ShellUI'dir.
-       Burada ikinci bir geri/geçmiş/çıkış mekanizması çalıştırılmıyor.
-
-       Önceki uygulamada evaluateJavascript() sonucundan "handled" bekleniyordu.
-       Ancak ShellUI.back() async olduğu için Java tarafına Promise sonucu ("{}")
-       dönüyor, Java bunu "işlenmedi" kabul edip kendi geri/çıkış akışını çalıştırıyordu.
-       Bunun sonucu modal kapanması gereken yerde alttaki sayfa etkilenebiliyor veya
-       uygulama çıkış akışına girebiliyordu.
-
-       Native katman artık yalnızca olayı JS'e iletiyor. Modal, menü, alt sayfa,
-       navigation stack ve uygulamadan çıkış kararlarının tamamı ShellUI'de kalıyor. */
     @Override
     public void onBackPressed() {
         WebView webView = getBridge() != null ? getBridge().getWebView() : null;
@@ -171,14 +132,12 @@ public class MainActivity extends BridgeActivity {
             super.onBackPressed();
             return;
         }
-
         webView.evaluateJavascript(
             "(function(){try{if(window.ShellUI&&typeof window.ShellUI.back==='function'){window.ShellUI.back();return;}if(typeof geriTusuIsle==='function'){geriTusuIsle();}}catch(e){console.error('[NativeBack]',e);}})()",
             null
         );
     }
 
-    /** JS çıkış onayı sonrası Activity'yi güvenli biçimde kapatmak için kullanılan köprü. */
     private final class ExitBridge {
         @JavascriptInterface
         public void uygulamadanCik() {
@@ -189,22 +148,56 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
-    /* Native WebView'e özel küçük runtime düzeltmelerini ana bundle'dan
-       ayırıyoruz. Script yalnız uygulama JS tarafı hazır olduktan sonra
-       enjekte edilir; yenilemeden sonra da tekrar güvenle yüklenebilir. */
+    /* Android WebView, <a download> ile blob URL indirmeyi desteklemez.
+       Rapor motoru PNG'yi önce blob URL ile hazırlıyor. Android APK'da bu
+       anchor tıklamasını yakalayıp aynı blob'u base64'e çevirerek mevcut
+       SavePlugin'e gönderiyoruz. Paylaşım zaten aynı plugin üzerinden çalışıyor. */
     private void nativeRuntimeDuzeltmeleriniYukle() {
         WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView == null) return;
         webView.evaluateJavascript(
-            "(function(){try{if(window.uygulamaDosyaKaydet)return 'save-ready';window.uygulamaDosyaKaydet=function(base64,dosyaAdi,mimeTuru,paylas){try{var p=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.SavePlugin;if(!p||typeof p.kaydet!=='function')return Promise.reject(new Error('Android dosya kaydetme servisi hazır değil.'));return p.kaydet({base64:base64,dosyaAdi:dosyaAdi,mimeTuru:mimeTuru,paylas:!!paylas});}catch(e){return Promise.reject(e);}};if(!document.getElementById('koruk-native-runtime-fixes')){var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=916';document.head.appendChild(s);}return 'ready';}catch(e){console.error('[NativeRuntimeBridge]',e);return 'error';}})()",
+            "(function(){try{" +
+            "if(!window.__korukNativePngDownload){" +
+            "window.__korukNativePngDownload=true;" +
+            "document.addEventListener('click',function(e){" +
+            "try{" +
+            "var a=e.target&&e.target.closest?e.target.closest('a[download]'):null;" +
+            "if(!a)return;" +
+            "var name=String(a.getAttribute('download')||'Koruk_Rapor.png');" +
+            "if(!/\\.png$/i.test(name))return;" +
+            "var href=String(a.href||'');" +
+            "if(href.indexOf('blob:')!==0)return;" +
+            "e.preventDefault();e.stopImmediatePropagation();" +
+            "fetch(href).then(function(r){return r.blob()}).then(function(blob){" +
+            "return new Promise(function(resolve,reject){" +
+            "var fr=new FileReader();fr.onload=function(){resolve(String(fr.result||'').split(',')[1]||'')};" +
+            "fr.onerror=reject;fr.readAsDataURL(blob);" +
+            "})" +
+            "}).then(function(b64){" +
+            "if(typeof window.uygulamaDosyaKaydet!=='function')throw new Error('Android dosya kaydetme servisi hazır değil.');" +
+            "return window.uygulamaDosyaKaydet(b64,name,'image/png',false);" +
+            "}).then(function(){try{window.toast&&window.toast('Görsel İndirilenler klasörüne kaydedildi.')}catch(_){}})" +
+            ".catch(function(err){console.error('[NativePngDownload]',err);try{window.toast&&window.toast('Görsel kaydedilemedi: '+(err&&err.message||err))}catch(_){}});" +
+            "}catch(err){console.error('[NativePngDownload]',err)}} ,true);" +
+            "}" +
+            "if(typeof window.uygulamaDosyaKaydet!=='function'){" +
+            "window.uygulamaDosyaKaydet=function(base64,dosyaAdi,mimeTuru,paylas){" +
+            "try{" +
+            "var p=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.SavePlugin;" +
+            "if(!p||typeof p.kaydet!=='function')return Promise.reject(new Error('Android dosya kaydetme servisi hazır değil.'));" +
+            "return p.kaydet({base64:base64,dosyaAdi:dosyaAdi,mimeTuru:mimeTuru,paylas:!!paylas});" +
+            "}catch(e){return Promise.reject(e)}" +
+            "};" +
+            "}" +
+            "if(!document.getElementById('koruk-native-runtime-fixes')){" +
+            "var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=917';document.head.appendChild(s);" +
+            "}" +
+            "return 'ready';" +
+            "}catch(e){console.error('[NativeRuntimeBridge]',e);return 'error';}})()",
             null
         );
     }
 
-    /* PullToRefreshPlugin geriye dönük uyumluluk için ayrı tutulur; gesture'ın sahibi
-       Android APK'da nativePullRefresh, web'de tarayıcının kendi scroll motorudur. */
-
-    /** JS tarafındaki çıkış onayından sonra Android Activity'yi gerçekten kapatır. */
     @JavascriptInterface
     public void uygulamadanCik() {
         runOnUiThread(() -> {
@@ -213,8 +206,6 @@ public class MainActivity extends BridgeActivity {
         });
     }
 
-    /* JS'in (auth.js → PullToRefreshPlugin.appHazir()) gerçek hazır sinyali.
-       Aynı sinyal artık bekleyen widget/bildirim deep-linklerini de açar. */
     public void markAppReady() {
         appHazir = true;
         nativeRuntimeDuzeltmeleriniYukle();
@@ -230,30 +221,23 @@ public class MainActivity extends BridgeActivity {
 
     private synchronized void handleIntent(Intent intent) {
         if (intent == null) return;
-
         String page = intent.getStringExtra("page");
         if (page != null && !page.trim().isEmpty()) bekleyenPage = page;
-
         String kategori = intent.getStringExtra("kategori");
         if (kategori != null && !kategori.trim().isEmpty()) bekleyenKategori = kategori;
-
         if (appHazir) bekleyenHedefleriGonder();
     }
 
     private synchronized void bekleyenHedefleriGonder() {
         if (!appHazir || getBridge() == null || getBridge().getWebView() == null) return;
-
         final String page = bekleyenPage;
         final String kategori = bekleyenKategori;
         bekleyenPage = null;
         bekleyenKategori = null;
-
         if (page == null && kategori == null) return;
-
         runOnUiThread(() -> {
             WebView webView = getBridge() != null ? getBridge().getWebView() : null;
             if (webView == null) return;
-
             if (page != null) {
                 String jsPage = JSONObject.quote(page);
                 webView.evaluateJavascript(
@@ -261,7 +245,6 @@ public class MainActivity extends BridgeActivity {
                     null
                 );
             }
-
             if (kategori != null) {
                 String jsKategori = JSONObject.quote(kategori);
                 webView.evaluateJavascript(
