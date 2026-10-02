@@ -1,13 +1,14 @@
-/* Koruk Asistan — Read Optimized Sync v7
- * IndexedDB birincil okuma kaynağıdır. Firestore yalnızca ilk veri yoksa,
- * uzak önbellek süresi dolduysa veya kullanıcı açıkça yenileme istediğinde
- * senkronizasyon yapar. Sürekli onSnapshot/realtime dinleme kapalıdır.
+/* Koruk Asistan — Read Optimized Sync v8
+ * IndexedDB birincil okuma kaynağıdır. Firestore günlük uygulama okumalarının kaynağı değildir;
+ * yalnızca ilk veri yoksa, uzak önbellek süresi dolduysa veya kullanıcı açıkça yenileme istediğinde senkronizasyon yapar.
+ * Sürekli onSnapshot/realtime dinleme kapalıdır. Periyodik senkron yalnızca sık değişebilen küçük koleksiyonlarla sınırlıdır.
  */
 (function(global){
 'use strict';
 if(global.__KA_READ_OPTIMIZED_SYNC__)return;
 global.__KA_READ_OPTIMIZED_SYNC__=true;
 const REMOTE_TTL=24*60*60*1000,PERIODIC_SYNC_MS=REMOTE_TTL,MISSING='__ka_missing__';
+const PERIODIC_TYPES=['duyurular','hatirlaticilar','gorevler','yemekMenuleri'];
 let patched=false,realtimePatched=false,pullRefreshPatched=false,schedulePatched=false,forceRemote=false,periodicTimer=null;
 const uid=()=>String(global.AKTIF_KULLANICI?.uid||global.AppStore?.get?.('session.user')?.uid||''),now=()=>Date.now(),cacheKey=(u,t)=>`u:${u}:cache:${t}`;
 async function meta(name,value){const u=uid();if(!u||!global.KorukLocalFirst?.meta)return null;if(arguments.length>1)return global.KorukLocalFirst.meta(u,name,value);return global.KorukLocalFirst.meta(u,name)}
@@ -21,8 +22,8 @@ async function patchSyncEngine(){if(patched||!global.SyncEngine)return false;con
 function patchSchedule(){if(schedulePatched||!global.SyncEngine||typeof global.SyncEngine.schedule!=='function')return false;const original=global.SyncEngine.schedule;if(original.__kaReadOptimized)return true;const wrapped=function(delay=100){if(forceRemote)return original.call(this,delay);const last=Number(global.AppStore?.get?.('meta.lastRemotePullAt')||0);if(last&&now()-last<REMOTE_TTL)return null;return original.call(this,delay)};wrapped.__kaReadOptimized=true;wrapped.original=original;global.SyncEngine.schedule=wrapped;schedulePatched=true;return true}
 function patchRealtime(){if(realtimePatched||!global.SyncEngine||typeof global.SyncEngine.startRealtime!=='function')return false;const original=global.SyncEngine.startRealtime;if(original.__kaReadOptimized)return true;const blocked=function(){global.AppStore?.set?.('meta.realtimeDisabled',true);return[]};blocked.__kaReadOptimized=true;blocked.original=original;global.SyncEngine.startRealtime=blocked;realtimePatched=true;return true}
 function patchPullRefresh(){if(pullRefreshPatched||!global.KorukPullRefresh?.refresh||!global.KorukReadOptimized?.forceSync)return false;const original=global.KorukPullRefresh.refresh;if(original.__kaReadOptimized)return true;let refreshing=false;const refresh=async function(source='programmatic'){if(refreshing)return;refreshing=true;try{await global.KorukReadOptimized.forceSync();global.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source}}))}catch(error){console.warn('[PullRefresh]',error?.message||error)}finally{refreshing=false}};refresh.__kaReadOptimized=true;refresh.original=original;global.KorukPullRefresh.refresh=refresh;pullRefreshPatched=true;return true}
-function startPeriodicSync(){if(periodicTimer||!global.SyncEngine?.sync)return;periodicTimer=setInterval(async()=>{if(!navigator.onLine||!uid())return;try{forceRemote=true;await global.SyncEngine.sync();await markRemote([])}catch(error){console.warn('[ReadOptimizedSync] periodic sync failed:',error?.message||error)}finally{forceRemote=false}},PERIODIC_SYNC_MS)}
+function startPeriodicSync(){if(periodicTimer||!global.SyncEngine?.sync)return;periodicTimer=setInterval(async()=>{if(!navigator.onLine||!uid())return;try{forceRemote=true;await global.SyncEngine.sync(PERIODIC_TYPES);await markRemote(PERIODIC_TYPES)}catch(error){console.warn('[ReadOptimizedSync] periodic sync failed:',error?.message||error)}finally{forceRemote=false}},PERIODIC_SYNC_MS)}
 async function install(){if(!global.SyncEngine||!global.KorukLocalFirst)return false;await patchSyncEngine();patchSchedule();patchRealtime();patchPullRefresh();startPeriodicSync();return true}
 function boot(){if(global.SyncEngine&&global.KorukLocalFirst)install().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e));if(!patched||!schedulePatched||!realtimePatched||!pullRefreshPatched)setTimeout(boot,100)}
-global.KorukReadOptimized={remoteTTL:REMOTE_TTL,periodicSyncMs:PERIODIC_SYNC_MS,async forceSync(types){forceRemote=true;try{return await global.SyncEngine?.sync?.(types)}finally{forceRemote=false}},async status(){return{localFirst:true,realtime:false,periodicSyncMs:PERIODIC_SYNC_MS,remoteTTL:REMOTE_TTL,lastRemotePullAt:Number(await meta('lastRemotePullAt')||0)}}};boot();
+global.KorukReadOptimized={remoteTTL:REMOTE_TTL,periodicSyncMs:PERIODIC_SYNC_MS,periodicTypes:PERIODIC_TYPES.slice(),async forceSync(types){forceRemote=true;try{return await global.SyncEngine?.sync?.(types)}finally{forceRemote=false}},async status(){return{localFirst:true,realtime:false,periodicSyncMs:PERIODIC_SYNC_MS,remoteTTL:REMOTE_TTL,periodicTypes:PERIODIC_TYPES.slice(),lastRemotePullAt:Number(await meta('lastRemotePullAt')||0)}}};boot();
 })(window);
