@@ -113,3 +113,13 @@ function firebaseyiBaslat(){
   }
   const wait=()=>{if(window.SyncEngine&&window.AppBootstrap&&window.AppStore&&window.KorukLocalFirst)install();else setTimeout(wait,50)};wait();
 })();
+
+/* Okuma-ağırlıklı kullanım: IndexedDB birincil okuma kaynağı, Firestore yalnız senkronizasyon. */
+(function readOptimizedSyncFeatureLoad(){
+  if(document.querySelector('script[data-read-optimized-sync]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/read-optimized-sync.js?v=1105';
+  script.async=false;
+  script.dataset.readOptimizedSync='';
+  document.head.appendChild(script);
+})();
