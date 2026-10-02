@@ -105,3 +105,8 @@ html[data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-
   color:var(--ka-button-text)!important;
   border-color:var(--ka-primary)!important;
 }
+
+/* ===== ÖĞRETMENLER — KOYU TEMADA PROFİL GÖR BUTONU ===== */
+[data-theme="dark"] .ka-teacher-actions .ka-btn:first-child{
+  color:#fff!important;
+}
