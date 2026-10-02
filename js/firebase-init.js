@@ -281,3 +281,12 @@ function firebaseyiBaslat(){
   script.dataset.teacherReminderAcademicYear='';
   document.head.appendChild(script);
 })();
+
+(function reportCustomizerFeatureLoad(){
+  if(document.querySelector('script[data-report-customizer]'))return;
+  const script=document.createElement('script');
+  script.src='js/core/report-customizer.js?v=1001';
+  script.async=false;
+  script.dataset.reportCustomizer='';
+  document.head.appendChild(script);
+})();
