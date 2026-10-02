@@ -1,7 +1,8 @@
-/* Koruk Asistan — Read Optimized Sync v3
+/* Koruk Asistan — Read Optimized Sync v4
  * IndexedDB birincil okuma kaynağıdır. Firestore yalnızca ilk veri yoksa,
  * uzak önbellek süresi dolduysa veya kullanıcı açıkça yenileme istediğinde
- * senkronizasyon yapar. Yazma kuyruğu ve yetki sistemi korunur.
+ * senkronizasyon yapar. Sürekli onSnapshot/realtime dinleme kapalıdır;
+ * veri değişiklikleri periyodik senkronizasyon veya manuel yenileme ile alınır.
  */
 (function(global){
   'use strict';
@@ -9,10 +10,13 @@
   global.__KA_READ_OPTIMIZED_SYNC__ = true;
 
   const REMOTE_TTL = 6 * 60 * 60 * 1000;
+  const PERIODIC_SYNC_MS = REMOTE_TTL;
   const MISSING = '__ka_missing__';
   let patched = false;
-  let forceRemote = false;
+  let realtimePatched = false;
   let pullRefreshPatched = false;
+  let forceRemote = false;
+  let periodicTimer = null;
 
   const uid = () => String(global.AKTIF_KULLANICI?.uid || global.AppStore?.get?.('session.user')?.uid || '');
   const now = () => Date.now();
@@ -107,8 +111,22 @@
         } finally { forceRemote = false; }
       };
     }
-
     sync.__kaReadOptimizedWrapped = true;
+    return true;
+  }
+
+  function patchRealtime(){
+    if(realtimePatched || !global.SyncEngine || typeof global.SyncEngine.startRealtime !== 'function') return false;
+    const original = global.SyncEngine.startRealtime;
+    if(original.__kaReadOptimized) return true;
+    const blocked = function(){
+      global.AppStore?.set?.('meta.realtimeDisabled',true);
+      return [];
+    };
+    blocked.__kaReadOptimized = true;
+    blocked.original = original;
+    global.SyncEngine.startRealtime = blocked;
+    realtimePatched = true;
     return true;
   }
 
@@ -116,16 +134,16 @@
     if(pullRefreshPatched || !global.KorukPullRefresh?.refresh || !global.KorukReadOptimized?.forceSync) return false;
     const original = global.KorukPullRefresh.refresh;
     if(original.__kaReadOptimized) return true;
+    let refreshing = false;
     const refresh = async function(source='programmatic'){
-      if(refreshing) return;
-      refreshing = true;
+      if(refreshing)return;
+      refreshing=true;
       try{
         await global.KorukReadOptimized.forceSync();
         global.dispatchEvent(new CustomEvent('koruk:pull-refresh',{detail:{source}}));
       }catch(error){console.warn('[PullRefresh]',error?.message||error)}
       finally{refreshing=false;}
     };
-    let refreshing = false;
     refresh.__kaReadOptimized = true;
     refresh.original = original;
     global.KorukPullRefresh.refresh = refresh;
@@ -133,10 +151,25 @@
     return true;
   }
 
+  function startPeriodicSync(){
+    if(periodicTimer || !global.SyncEngine?.sync) return;
+    periodicTimer = setInterval(async()=>{
+      if(!navigator.onLine || !uid()) return;
+      try{
+        forceRemote = true;
+        await global.SyncEngine.sync();
+        await markRemote([]);
+      }catch(error){console.warn('[ReadOptimizedSync] periodic sync failed:',error?.message||error)}
+      finally{forceRemote=false;}
+    },PERIODIC_SYNC_MS);
+  }
+
   async function install(){
     if(!global.SyncEngine || !global.KorukLocalFirst) return false;
     await patchSyncEngine();
+    patchRealtime();
     patchPullRefresh();
+    startPeriodicSync();
     return true;
   }
 
@@ -144,20 +177,22 @@
     if(global.SyncEngine && global.KorukLocalFirst){
       install().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e));
     }
-    if(!pullRefreshPatched || !patched) setTimeout(boot,100);
+    if(!patched || !realtimePatched || !pullRefreshPatched) setTimeout(boot,100);
   }
 
   global.KorukReadOptimized={
     remoteTTL:REMOTE_TTL,
+    periodicSyncMs:PERIODIC_SYNC_MS,
     async forceSync(types){
       forceRemote = true;
       try{return await global.SyncEngine?.sync?.(types)}
-      finally{forceRemote = false;}
+      finally{forceRemote=false;}
     },
     async status(){
       return {
         localFirst:true,
         realtime:false,
+        periodicSyncMs:PERIODIC_SYNC_MS,
         remoteTTL:REMOTE_TTL,
         lastRemotePullAt:Number(await meta('lastRemotePullAt')||0)
       };
