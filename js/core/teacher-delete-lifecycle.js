@@ -108,18 +108,41 @@ function makeDeleteButton(modal,id,footer,beforeNode=null){
   if(beforeNode)footer.insertBefore(button,beforeNode);else footer.prepend(button);
 }
 
+function ensureSaveButtonContrast(modal){
+  if(!modal||modal.dataset.teacherSaveContrast==='1')return;
+  modal.dataset.teacherSaveContrast='1';
+  const style=document.createElement('style');
+  style.textContent=`
+    [data-exact-people-modal] .classic-modal-actions button[type="submit"]:disabled,
+    [data-exact-people-modal] .classic-modal-actions .ka-btn:disabled,
+    [data-teacher-modal] .ka-modal__footer button[type="submit"]:disabled,
+    [data-teacher-modal] .ka-modal__footer .ka-btn:disabled{
+      color:var(--ka-text)!important;
+      -webkit-text-fill-color:var(--ka-text)!important;
+      opacity:1!important;
+      text-shadow:none!important;
+      visibility:visible!important;
+    }
+  `;
+  modal.appendChild(style);
+}
+
 function teacherIdFromCanonicalModal(modal){
   return String(modal?.querySelector('#teacherForm input[name="id"]')?.value||'').trim();
 }
 function ensureCanonicalDeleteButton(modal){
-  if(!modal||modal.dataset.teacherDeleteReady==='1')return;
+  if(!modal)return;
+  ensureSaveButtonContrast(modal);
+  if(modal.dataset.teacherDeleteReady==='1')return;
   modal.dataset.teacherDeleteReady='1';
   const id=teacherIdFromCanonicalModal(modal),footer=modal.querySelector('.ka-modal__footer');
   const cancel=footer?.querySelector('[data-teacher-modal-close]')||null;
   makeDeleteButton(modal,id,footer,cancel);
 }
 function ensureClassicDeleteButton(modal){
-  if(!modal||modal.dataset.teacherDeleteReady==='1')return;
+  if(!modal)return;
+  ensureSaveButtonContrast(modal);
+  if(modal.dataset.teacherDeleteReady==='1')return;
   const title=modal.querySelector('.classic-modal-head h3')?.textContent?.trim()||'';
   if(title!=='Öğretmen Düzenle')return;
   modal.dataset.teacherDeleteReady='1';
