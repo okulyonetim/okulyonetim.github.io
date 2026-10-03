@@ -11,6 +11,21 @@ const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
 function installButtonFeedback(){if(global.__kaButtonFeedbackInstalled)return;global.__kaButtonFeedbackInstalled=true;document.addEventListener('pointerdown',e=>{const b=e.target.closest?.('button:not(:disabled)');if(b)b.classList.add('ka-is-pressed')},true);const clear=e=>e.target.closest?.('button')?.classList.remove('ka-is-pressed');document.addEventListener('pointerup',clear,true);document.addEventListener('pointercancel',clear,true);document.addEventListener('click',e=>{const b=e.target.closest?.('button:not(:disabled)');if(!b||b.dataset.pressToast==='off'||b.matches('.ka-icon-button,.ka-bottom-item,[data-ka-shell-action],[data-modal-close],[data-close]'))return;if(!b.matches('.ka-btn,button[type="submit"]'))return;const label=String(b.innerText||b.textContent||'İşlem').replace(/\s+/g,' ').trim().slice(0,42);if(label)global.toast?.(`✓ ${label} seçildi`)},true)}
 installButtonFeedback();
+document.addEventListener('click',async e=>{
+  const b=e.target.closest?.('button'); if(!b)return;
+  const text=String(b.innerText||b.textContent||'').replace(/\s+/g,' ').trim();
+  const mode=text==='Resimden PDF Oluştur'?'images':text==='PDF Birleştir'?'merge':'';
+  if(!mode)return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  try{
+    if(!global.ReportEngine?.openPdfTools){
+      if(global.AppLoader?.loadScript) await global.AppLoader.loadScript('js/modules/report-engine.js');
+      else await new Promise((resolve,reject)=>{const sc=document.createElement('script');sc.src='js/modules/report-engine.js';sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc)});
+    }
+    if(!global.ReportEngine?.openPdfTools) throw new Error('PDF araçları hazır değil.');
+    global.ReportEngine.openPdfTools(mode);
+  }catch(err){ console.error('[PDF menu]',err); global.toast?.('PDF aracı açılamadı: '+(err?.message||err)); }
+},true);
 const SVG={
  home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
  profile:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
@@ -29,7 +44,7 @@ const MENU_GROUPS=[
  {key:'people',label:'Sınıf ve Öğrenci İşlemleri',modernLabel:'Öğretmen & Öğrenciler',icon:'👥',tone:'green',route:'people',items:[['Öğretmenler','👩‍🏫','people','teachers'],['Sınıflar','🏫','people','classes'],['Öğrenciler','🎓','people','students'],['Yazılı Sınavlar','☑️','academic','written'],['Deneme Sınavları','🧪','academic','trial'],['Öğrenci Listesi Oluşturucu','📋','tools','student-list'],['Öğrenci Yoklama','☑️','tools','student-attendance']]},
  {key:'programs',label:'Ders ve Nöbet Programı',modernLabel:'Programlar',icon:'📅',tone:'green',route:'academic',items:[['Ders Programı','📅','academic','schedule'],['Nöbet Programı','🛡️','management','duty']]},
  {key:'communication',label:'İletişim',modernLabel:'İletişim & Haberler',icon:'💬',tone:'red',route:'communication',items:[['Mesajlar','💬','communication','messages'],['Haberler','📰','communication','news'],['Duyurular','📣','communication','announcements'],['Anketler','📋','communication','polls'],['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]},
- {key:'documents',label:'Belgeler',modernLabel:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Personel İşleri','👥','management','staff']]},
+ {key:'documents',label:'Belgeler',modernLabel:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Resimden PDF Oluştur','🖼️','documents','pdf-images'],['PDF Birleştir','📑','documents','pdf-merge'],['Personel İşleri','👥','management','staff']]},
  {key:'transport',label:'Taşıma',modernLabel:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport','services'],['Harita','🗺️','tools','map'],['Servis Oturma','💺','transport','busSeats']]},
  {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'food',items:[['Günlük Menü','☀️','food','daily'],['Haftalık Menü','📆','food','weekly'],['Aylık Menü','🗓️','food','monthly'],['Yemek Denetimi','📝','food','audit']]},
  {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['İzin İşlemleri','📋','management','staff-leaves'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Okul Raporları','📊','reports','home'],['Akademik Takvim','📅','academic','calendar']]},
