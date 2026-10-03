@@ -19,6 +19,11 @@ for(const block of [appMenu,uiMenu]){
   ]) assert(!block.includes(duplicate),`Settings alt sayfası shell menüsünde tekrar etmemeli: ${duplicate}`);
 }
 
+assert(appMenu.includes("['Dökümanlar','📁','documents']")&&appMenu.includes("['Resimden PDF Oluştur','🖼️','documents','pdf-images']")&&appMenu.includes("['PDF Birleştir','📑','documents','pdf-merge']"),'Doküman & Evraklar PDF araçlarını ve Dökümanlar arşivini korumalı.');
+assert(!appMenu.includes("['Mevzuat','📖','documents','mevzuat']")&&!uiMenu.includes("['Mevzuat','📖','documents','mevzuat']"),'Mevzuat menüden tamamen kaldırılmış olmalı.');
+assert(ui.includes("if(name==='documents'&&page==='evrak'"),'Evrak Takibi canonical route korunmalı.');
+assert(!ui.includes("if(name==='documents'&&!page)return false"),'Dökümanlar kök sayfası engellenmemeli.');
+
 for(const canonical of [
   "['school','Okul Bilgileri'",
   "['lesson-hours','Ders Saatleri'",
