@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu ağdan güncel tutmak ve Firebase Messaging bildirimlerini taşımak.
    Önemli: Sürümlü JS/CSS istekleri query-string'e göre ayrı cache anahtarı kullanır.
    Böylece Chrome eski bir management.js/shell-ui.js sürümünü yeni sürümlü isteğe eşleştirmez. */
-const CACHE_ADI='oy-cache-v1224';
+const CACHE_ADI='oy-cache-v1225';
 
 let messaging=null;
 try{
@@ -34,7 +34,6 @@ const ONBELLEGE_ALINACAKLAR=[
   './assets/icon-192.png','./assets/icon-512.png','./assets/icon-180.png'
 ];
 
-// Aynı path'in sürümlü ve sürümsüz kopyalarını tekilleştirirken sürümlü kaynağı tercih et.
 const ONBELLEGE_TEKIL=ONBELLEGE_ALINACAKLAR.filter((url,index,list)=>{
   const path=String(url).split('?')[0];
   const same=list.filter(item=>String(item).split('?')[0]===path);
@@ -58,7 +57,6 @@ function apiIstegiMi(url){return url.includes('firestore.googleapis.com')||url.i
 function statikKaynakMi(req){try{const u=new URL(req.url);if(u.origin!==self.location.origin)return false;return /\.(?:js|css|png|jpg|jpeg|webp|svg|ico|json|woff2?)$/i.test(u.pathname);}catch(_){return false}}
 function kodKaynakMi(req){try{const u=new URL(req.url);return u.origin===self.location.origin&&/\.(?:js|css)$/i.test(u.pathname);}catch(_){return false}}
 
-// Kritik düzeltme: ignoreSearch=true kullanılmıyor. management.js?v=888 ile management.js aynı kaynak değildir.
 async function kodCacheFirst(event){
   const cached=await caches.match(event.request,{ignoreSearch:false});
   const yenile=fetch(event.request,{cache:'no-store'}).then(async response=>{
