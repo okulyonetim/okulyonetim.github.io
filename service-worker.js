@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu ağdan güncel tutmak ve Firebase Messaging bildirimlerini taşımak.
    Önemli: Sürümlü JS/CSS istekleri query-string'e göre ayrı cache anahtarı kullanır.
    Böylece Chrome eski bir management.js/shell-ui.js sürümünü yeni sürümlü isteğe eşleştirmez. */
-const CACHE_ADI='oy-cache-v1225';
+const CACHE_ADI='oy-cache-v1226';
 
 let messaging=null;
 try{
