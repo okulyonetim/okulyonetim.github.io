@@ -1,0 +1,41 @@
+name: Temporary cleanup legacy documents
+on:
+  push:
+    paths:
+      - '.github/workflows/cleanup-legacy-documents.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Remove legacy documents entry and root route
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('js/core/shell-ui.js')
+          s = p.read_text(encoding='utf-8')
+          old = "['Evrak Takibi','📄','documents','evrak'],['Dokümanlar','📁','documents'],['Resimden PDF Oluştur','🖼️','documents','pdf-images']"
+          new = "['Evrak Takibi','📄','documents','evrak'],['Resimden PDF Oluştur','🖼️','documents','pdf-images']"
+          if old not in s:
+              raise SystemExit('Legacy Dokümanlar menu entry not found')
+          s = s.replace(old, new, 1)
+          old_guard = "async function routeModule(name,{bottom='menu',page='',title='',remember=true,parentMenu=''}={}){\n  const routeToken=++routeEpoch;\n  if(!pageAllowed(name,page))"
+          new_guard = "async function routeModule(name,{bottom='menu',page='',title='',remember=true,parentMenu=''}={}){\n  const routeToken=++routeEpoch;\n  if(name==='documents'&&!page)return false;\n  if(!pageAllowed(name,page))"
+          if old_guard not in s:
+              raise SystemExit('routeModule guard anchor not found')
+          s = s.replace(old_guard, new_guard, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+          node --check js/core/shell-ui.js
+      - name: Commit direct source changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/core/shell-ui.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'Remove legacy documents page and menu entry'
+          git push
