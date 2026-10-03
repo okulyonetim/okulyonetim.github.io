@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu ağdan güncel tutmak ve Firebase Messaging bildirimlerini taşımak.
    Önemli: Sürümlü JS/CSS istekleri query-string'e göre ayrı cache anahtarı kullanır.
    Böylece Chrome eski bir management.js/shell-ui.js sürümünü yeni sürümlü isteğe eşleştirmez. */
-const CACHE_ADI='oy-cache-v1226';
+const CACHE_ADI='oy-cache-v1227';
 
 let messaging=null;
 try{
@@ -83,7 +83,7 @@ async function statikSWR(event){
   return(await yenile)||new Response('Kaynak çevrimdışı kullanılamıyor.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
 }
 
-async function navigasyonCacheFirst(event){const fetchNow=fetch(event.request,{cache:'no-store'}).then(async response=>{if(response&&response.status===200){const copy=response.clone();await caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});}return response}).catch(()=>null);return(await fetchNow)||await caches.match(event.request)||await caches.match('./index.html')||new Response('Çevrimdışı',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}})}
+async function navigasyonCacheFirst(event){const fetchNow=fetch(event.request,{cache:'no-store'}).then(async response=>{if(response&&response.status===200){const copy=response.clone();await caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});}return response}).catch(()=>null);return(await fetchNow)||await caches.match(event.request)||await caches.match('./index.html')||new Response('Çevrimdışı',{status:503,headers:{'Content-Type':'text/html; charset=utf-8'}})}
 
 self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;if(firebaseSdkIstegiMi(event.request)){event.respondWith(firebaseSdkCacheFirst(event));return;}if(apiIstegiMi(event.request.url))return;if(event.request.mode==='navigate'){event.respondWith(navigasyonCacheFirst(event));return;}if(kodKaynakMi(event.request)){event.respondWith(kodCacheFirst(event));return;}if(statikKaynakMi(event.request))event.respondWith(statikSWR(event));});
 
