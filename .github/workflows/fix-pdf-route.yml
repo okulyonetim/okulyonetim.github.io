@@ -1,20 +1,15 @@
 name: Fix PDF route
-on:
-  push:
-    branches: [main]
+on: push
 permissions:
   contents: write
 jobs:
   fix:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
       - name: Patch PDF route
+        shell: python
         run: |
-          python - <<'PY'
           from pathlib import Path
           p = Path('js/core/shell-ui.js')
           s = p.read_text(encoding='utf-8')
@@ -36,15 +31,13 @@ jobs:
           if block.strip() not in s:
               if anchor not in s:
                   raise SystemExit('PDF route anchor not found')
-              s = s.replace(anchor, block + anchor, 1)
-              p.write_text(s, encoding='utf-8')
-          PY
-          node --check js/core/shell-ui.js
-      - name: Commit source fix and remove temporary workflow
+              p.write_text(s.replace(anchor, block + anchor, 1), encoding='utf-8')
+      - name: Validate
+        run: node --check js/core/shell-ui.js
+      - name: Commit source fix
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add js/core/shell-ui.js
-          git rm .github/workflows/fix-pdf-route.yml
-          git commit -m "fix: open PDF tools directly"
+          git diff --cached --quiet || git commit -m "fix: open PDF tools directly"
           git push
