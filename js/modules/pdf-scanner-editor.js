@@ -122,16 +122,16 @@ function filterCanvas(c,p){
 function processed(p,max=1100){return filterCanvas(perspective(p,max),p);}
 function blob(c,q=.94){return new Promise((r,j)=>c.toBlob(x=>x?r(x):j(new Error('Görüntü hazırlanamadı.')),'image/jpeg',q));}
 
-function stageCanvasGeom(c,p){
-  const pad=12,s=Math.min((c.width-pad*2)/p.width,(c.height-pad*2)/p.height),w=p.width*s,h=p.height*s,x=(c.width-w)/2,y=(c.height-h)/2;
+function stageCanvasGeom(c,w0,h0){
+  const pad=12,s=Math.min((c.width-pad*2)/w0,(c.height-pad*2)/h0),w=w0*s,h=h0*s,x=(c.width-w)/2,y=(c.height-h)/2;
   return {x,y,w,h};
 }
 function drawCornerStage(c,p){
   const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#151515';ctx.fillRect(0,0,c.width,c.height);
-  const g=stageCanvasGeom(c,p);ctx.drawImage(p.img,g.x,g.y,g.w,g.h);
+  const src=sourceCanvas(p,1400),g=stageCanvasGeom(c,src.width,src.height);ctx.drawImage(src,g.x,g.y,g.w,g.h);
   const pts=p.corners.map(q=>({x:g.x+q.x*g.w,y:g.y+q.y*g.h}));
   ctx.save();ctx.fillStyle='rgba(0,0,0,.34)';ctx.fillRect(0,0,c.width,c.height);
-  ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.closePath();ctx.clip();ctx.drawImage(p.img,g.x,g.y,g.w,g.h);ctx.restore();
+  ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.closePath();ctx.clip();ctx.drawImage(src,g.x,g.y,g.w,g.h);ctx.restore();
   ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.closePath();ctx.strokeStyle='#ffc400';ctx.lineWidth=3;ctx.stroke();
   pts.forEach((q,i)=>{ctx.beginPath();ctx.arc(q.x,q.y,15,0,Math.PI*2);ctx.fillStyle='#ffc400';ctx.fill();ctx.strokeStyle='#111';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#111';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),q.x,q.y);});
   c._geom=g;
@@ -236,14 +236,14 @@ function bind(){
   el.querySelector('[data-export]')?.addEventListener('click',exportPdf);
   el.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{setMode(active(),b.dataset.mode);render();}));
   el.querySelectorAll('[data-k]').forEach(i=>i.addEventListener('input',()=>{active()[i.dataset.k]=Number(i.value);state.tab='preview';schedule();}));
-  el.querySelector('[data-rotate]')?.addEventListener('click',()=>{const p=active();p.rotation=(p.rotation+90)%360;render();});
+  el.querySelector('[data-rotate]')?.addEventListener('click',()=>{const p=active(),cs=p.corners.map(q=>({...q}));p.rotation=(p.rotation+90)%360;p.corners=cs.map(q=>({x:1-q.y,y:q.x}));render();});
   el.querySelector('[data-reset]')?.addEventListener('click',()=>{resetPage(active());render();});
   const c=el.querySelector('[data-corner-canvas]');if(c){
     let drag=-1;
-    const hit=e=>{const r=c.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height,x=(e.clientX-r.left)*sx,y=(e.clientY-r.top)*sy,g=c._geom||stageCanvasGeom(c,active());
+    const hit=e=>{const r=c.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height,x=(e.clientX-r.left)*sx,y=(e.clientY-r.top)*sy,g=c._geom||stageCanvasGeom(c,sourceCanvas(active(),1400).width,sourceCanvas(active(),1400).height);
       let best=-1,dist=999;active().corners.forEach((q,i)=>{const px=g.x+q.x*g.w,py=g.y+q.y*g.h,d=Math.hypot(px-x,py-y);if(d<dist){dist=d;best=i;}});return dist<40?best:-1;};
     c.addEventListener('pointerdown',e=>{drag=hit(e);if(drag>=0){c.setPointerCapture(e.pointerId);e.preventDefault();}});
-    c.addEventListener('pointermove',e=>{if(drag<0)return;const r=c.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height,x=(e.clientX-r.left)*sx,y=(e.clientY-r.top)*sy,g=c._geom||stageCanvasGeom(c,active());active().corners[drag]={x:clamp((x-g.x)/g.w,.001,.999),y:clamp((y-g.y)/g.h,.001,.999)};schedule();});
+    c.addEventListener('pointermove',e=>{if(drag<0)return;const r=c.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height,x=(e.clientX-r.left)*sx,y=(e.clientY-r.top)*sy,g=c._geom||stageCanvasGeom(c,sourceCanvas(active(),1400).width,sourceCanvas(active(),1400).height);active().corners[drag]={x:clamp((x-g.x)/g.w,.001,.999),y:clamp((y-g.y)/g.h,.001,.999)};schedule();});
     c.addEventListener('pointerup',()=>{drag=-1;});c.addEventListener('pointercancel',()=>{drag=-1;});
   }
 }
