@@ -4,7 +4,7 @@
  * 3) Header okul markası her zaman Ana Sayfa'yı en üstten açar.
  * 4) Pull-to-refresh core.js içindeki ortak motor tarafından yönetilir; gezinme davranışları gesture motoruna müdahale etmez.
  * 5) Modülün kendi Geri butonu varsa ortak shell Geri çubuğu gizlenir; böylece aynı sayfada iki Geri butonu oluşmaz.
- * 6) PDF araçları gerçek bir documents sayfası değildir; menü tıklaması doğrudan PDF aracına yönlendirilir.
+ * 6) PDF araçları gerçek bir documents sayfası değildir; tek menü girişi doğrudan sekmeli PDF aracına yönlendirilir.
  */
 (function(global){
 'use strict';
@@ -84,8 +84,41 @@ function closeReportOverlay(){
   return false;
 }
 
+/*
+ * PDF araçlarının menü sözleşmesi tekilleştirilir.
+ * AppLoader ve ShellUI'da eski iki ayrı giriş bulunsa bile çalışma zamanında
+ * bunlar tek bir "PDF İşlemleri" girişine dönüştürülür. Böylece iki farklı
+ * butonun aynı sekmeli pencereyi açması engellenir.
+ */
+function normalizePdfMenuGroup(group){
+  if(!group||group.key!=='documents'||!Array.isArray(group.items))return false;
+  const before=group.items.length;
+  group.items=group.items.filter(item=>{
+    const module=String(item?.[2]||'');
+    const page=String(item?.[3]||'');
+    return !(module==='documents'&&(page==='pdf-images'||page==='pdf-merge'||page==='pdf-tools'));
+  });
+  const hasPdfTools=group.items.some(item=>String(item?.[2]||'')==='documents'&&String(item?.[3]||'')==='pdf-tools');
+  if(!hasPdfTools){
+    const idx=Math.max(0,group.items.findIndex(item=>String(item?.[3]||'')==='evrak')+1);
+    group.items.splice(idx,0,['PDF İşlemleri','📑','documents','pdf-tools']);
+  }
+  return before!==group.items.length||!hasPdfTools;
+}
+
+function normalizePdfMenuCatalog(){
+  let changed=false;
+  const catalogs=[global.AppConfig?.CLASSIC_MENU_GROUPS,global.ShellUI?.MENU_GROUPS];
+  catalogs.forEach(groups=>{
+    if(!Array.isArray(groups))return;
+    const group=groups.find(g=>g?.key==='documents');
+    if(group)changed=normalizePdfMenuGroup(group)||changed;
+  });
+  return changed;
+}
+
 async function openPdfMenuTool(mode,event){
-  if(mode!=='images'&&mode!=='merge')return false;
+  if(mode!=='images'&&mode!=='merge'&&mode!=='tools')return false;
   event?.preventDefault?.();
   event?.stopImmediatePropagation?.();
   try{
@@ -116,7 +149,7 @@ async function openPdfMenuTool(mode,event){
       }
     }
     if(!global.ReportEngine?.openPdfTools)throw new Error('PDF araçları hazır değil.');
-    global.ReportEngine.openPdfTools(mode);
+    global.ReportEngine.openPdfTools(mode==='merge'?'merge':'images');
     return true;
   }catch(e){
     console.error('[PDF/direct-route]',e);
@@ -135,6 +168,7 @@ function bindDirectPdfRoutes(){
       const item=event.target.closest?.('[data-ka-shell-route][data-ka-shell-page]');
       if(!item)return;
       const page=String(item.dataset.kaShellPage||'').trim();
+      if(page==='pdf-tools'){openPdfMenuTool('tools',event);return;}
       if(page==='pdf-images'){openPdfMenuTool('images',event);return;}
       if(page==='pdf-merge'){openPdfMenuTool('merge',event);return;}
     },true);
@@ -216,19 +250,20 @@ function installReportPreviewLayout(){
   const link=document.createElement('link');link.rel='stylesheet';link.href='css/report-preview-layout.css?v=20261002';link.dataset.reportPreviewLayout='';document.head.appendChild(link);
 }
 function installNavigationScroll(){
-  const wrap=()=>{installReportPreviewLayout();normalizeShellBackButtons();wrapShellNavigation();syncShellBackbar();protectDetailBacks();decorateReportOverlay();bindDirectPdfRoutes()};
+  const wrap=()=>{installReportPreviewLayout();normalizePdfMenuCatalog();normalizeShellBackButtons();wrapShellNavigation();syncShellBackbar();protectDetailBacks();decorateReportOverlay();bindDirectPdfRoutes()};
   wrap();
   global.addEventListener('koruk:app-ready',()=>{wrap();scrollTopSoon()});
   global.addEventListener('koruk:module-ready',()=>{wrap();scrollTopSoon()});
+  global.addEventListener('koruk:app-config-changed',()=>{normalizePdfMenuCatalog()});
   document.addEventListener('click',event=>{
     const brand=event.target.closest?.('[data-ka-home-trigger]');
     if(brand){event.preventDefault();event.stopImmediatePropagation();const result=global.ShellUI?.home?.();if(result&&typeof result.finally==='function')result.finally(()=>{syncShellBackbar();scrollTopSoon()});else{syncShellBackbar();scrollTopSoon()}return}
     const nav=event.target.closest?.('[data-ka-shell-route],[data-dash-route],[data-ka-shell-action="home"],[data-ka-shell-action="profile"],[data-ka-shell-action="search"]');
-    if(nav){syncShellBackbar();scrollTopSoon()}
+    if(nav){normalizePdfMenuCatalog();syncShellBackbar();scrollTopSoon()}
   },true);
   global.AppStore?.subscribe?.('ui.route',()=>{syncShellBackbar();scrollTopSoon()});
 }
 function install(){installPreviewGuard();bindProfileScheduleReport();installNavigationScroll()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
-global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,syncShellBackbar,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}},openPdfMenuTool};
+global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,syncShellBackbar,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}},openPdfMenuTool,normalizePdfMenuCatalog};
 })(window);
