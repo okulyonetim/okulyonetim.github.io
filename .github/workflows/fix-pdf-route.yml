@@ -1,0 +1,50 @@
+name: Fix PDF route
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Patch PDF route
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('js/core/shell-ui.js')
+          s = p.read_text(encoding='utf-8')
+          anchor = "  if(name==='documents'&&page==='evrak'&&global.EvrakTakipPage?.open){"
+          block = """  if(name==='documents'&&(page==='pdf-images'||page==='pdf-merge')&&global.ReportEngine?.openPdfTools){
+    global.DocumentsModule?.unmount?.();
+    if(title)setTitle(title);
+    try{
+      global.ReportEngine.openPdfTools(page==='pdf-merge'?'merge':'images');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:title||meta.label||name,parentMenu});
+      return true;
+    }catch(e){
+      console.error('[Shell/pdf-tools]',e);
+      global.toast?.('PDF aracı açılamadı.');
+      return false;
+    }
+  }
+"""
+          if block.strip() not in s:
+              if anchor not in s:
+                  raise SystemExit('PDF route anchor not found')
+              s = s.replace(anchor, block + anchor, 1)
+              p.write_text(s, encoding='utf-8')
+          PY
+          node --check js/core/shell-ui.js
+      - name: Commit source fix and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/core/shell-ui.js
+          git rm .github/workflows/fix-pdf-route.yml
+          git commit -m "fix: open PDF tools directly"
+          git push
