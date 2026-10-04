@@ -14,6 +14,7 @@ const express = require('express');
 const app  = express();
 let dbReady = false;
 let db;
+let kontrolCalisiyor = false;
 
 // Firebase'i bir kez başlat
 function firebaseBaslat() {
@@ -41,10 +42,19 @@ async function kontrolEt() {
 
   const gonderilecekler = [];
 
-  // Hatırlatıcılar
-  const hSnap = await db.collection('oy_hatirlaticilar').get();
+  // ------------------------------------------------------------------
+  // ÖNEMLİ KOTA OPTİMİZASYONU
+  // Eski sürüm bu üç koleksiyonun tamamını her dakika okuyordu (.get()).
+  // Bu, kayıt sayısı büyüdükçe günlük Firestore okuma kotasını tüketiyordu.
+  // Sadece vadesi gelmiş olabilecek kayıtlar sorgulanıyor.
+  // ------------------------------------------------------------------
+
+  // Hatırlatıcılar: yalnızca bugün veya geçmiş tarihli kayıtlar.
+  const hSnap = await db.collection('oy_hatirlaticilar')
+    .where('tarih', '<=', bugun)
+    .get();
   hSnap.forEach(doc => {
-    const v = doc.data();
+    const v = doc.data() || {};
     if (v.tamamlandi || v.bildirimGonderildi || !v.tarih) return;
     const esik = `${v.tarih} ${v.saat || '00:00'}`;
     if (esik <= esikSimdi) {
@@ -56,56 +66,78 @@ async function kontrolEt() {
     }
   });
 
-  // Görevler
-  const gSnap = await db.collection('oy_gorevler').get();
+  // Görevler: yalnızca son tarihi bugün veya geçmiş olanlar.
+  const gSnap = await db.collection('oy_gorevler')
+    .where('sonTarih', '<=', bugun)
+    .get();
   gSnap.forEach(doc => {
-    const v = doc.data();
+    const v = doc.data() || {};
     if (v.durum === 'tamamlandi' || v.bildirimGonderildi || !v.sonTarih) return;
-    if (v.sonTarih <= bugun) {
-      gonderilecekler.push({
-        baslik: `✅ Görev Vadesi: ${v.baslik || ''}`,
-        govde:  v.aciklama || `Son tarih: ${v.sonTarih}`,
-        koleksiyon: 'oy_gorevler', docId: doc.id
-      });
-    }
+    gonderilecekler.push({
+      baslik: `✅ Görev Vadesi: ${v.baslik || ''}`,
+      govde:  v.aciklama || `Son tarih: ${v.sonTarih}`,
+      koleksiyon: 'oy_gorevler', docId: doc.id
+    });
   });
 
-  // Periyodik işler
-  const pSnap = await db.collection('oy_periyodikIsler').get();
+  // Periyodik işler: yalnızca bitiş tarihi bugün veya geçmiş olanlar.
+  const pSnap = await db.collection('oy_periyodikIsler')
+    .where('bitis', '<=', bugun)
+    .get();
   pSnap.forEach(doc => {
-    const v = doc.data();
+    const v = doc.data() || {};
     if (v.tamamlandi || v.bildirimGonderildi || !v.bitis) return;
-    if (v.bitis <= bugun) {
-      gonderilecekler.push({
-        baslik: `📋 Periyodik İş: ${v.isAdi || ''}`,
-        govde:  v.not || `Bitiş: ${v.bitis}`,
-        koleksiyon: 'oy_periyodikIsler', docId: doc.id
-      });
-    }
+    gonderilecekler.push({
+      baslik: `📋 Periyodik İş: ${v.isAdi || ''}`,
+      govde:  v.not || `Bitiş: ${v.bitis}`,
+      koleksiyon: 'oy_periyodikIsler', docId: doc.id
+    });
   });
 
   if (gonderilecekler.length === 0) {
     console.log('Genel bildirim yok.');
   }
 
-  // FCM Tokenları (genel — hatırlatıcı/görev/periyodik için TÜM cihazlara gider)
-  const cSnap = await db.collection('oy_cihazTokenleri').get();
-  const tokenDocs = cSnap.docs.map(d => ({ id: d.id, token: d.data().token, uid: d.data().uid || null }));
-  const tokens = tokenDocs.map(t => t.token).filter(Boolean);
+  // ------------------------------------------------------------------
+  // Mesajlaşma: bütün konuşmaları okumak yerine en güncel konuşmaları
+  // sırayla alıyoruz. Böylece eski/çok büyük konuşma koleksiyonlarında
+  // her dakika binlerce doküman okunmasının önüne geçilir.
+  // ------------------------------------------------------------------
+  const mesajAdaylari = [];
+  const kSnap = await db.collection('oy_konusmalar')
+    .orderBy('sonMesaj.tarih', 'desc')
+    .limit(100)
+    .get();
+
+  for (const kDoc of kSnap.docs) {
+    const k = kDoc.data() || {};
+    if (!k.sonMesaj || !k.sonMesaj.tarih) continue;
+    const sonBildirilen = k.sonBildirilenMesajTarihi || '';
+    if (k.sonMesaj.tarih <= sonBildirilen) continue;
+    mesajAdaylari.push({ doc: kDoc, data: k });
+  }
+
+  // Token koleksiyonunu yalnızca gerçekten bildirim gönderilecekse oku.
+  // Eski sürüm bunu her dakika, bildirim olmasa bile okuyordu.
+  let tokenDocs = [];
+  let tokens = [];
+  if (gonderilecekler.length > 0 || mesajAdaylari.length > 0) {
+    const cSnap = await db.collection('oy_cihazTokenleri').get();
+    tokenDocs = cSnap.docs
+      .map(d => ({ id: d.id, token: d.data().token, uid: d.data().uid || null }))
+      .filter(t => t.token);
+    tokens = tokenDocs.map(t => t.token);
+  }
 
   const gecersiz = new Set();
 
+  // Genel bildirimler
   for (const item of gonderilecekler) {
     if (tokens.length > 0) {
       try {
         const yanit = await admin.messaging().sendEachForMulticast({
           tokens,
-          // DÜZELTME: 'notification' alanı, uygulama ARKA PLANDAYKEN
-          // Android'in KENDİ otomatik bildirim gösterimini tetikliyordu —
-          // bu da OkulFirebaseMessagingService.java > onMessageReceived()'ı
-          // (dolayısıyla özel okul logosu/büyük ikon kodunu) tamamen ATLIYORDU.
-          // Sadece 'data' göndermek, HER durumda (ön/arka plan fark etmeksizin)
-          // bildirimin bizim kendi Java kodumuzdan geçmesini garantiler.
+          // Sadece data gönderilir; Android tarafındaki özel bildirim servisi çalışır.
           data: { kategori: 'takvim', baslik: item.baslik, icerik: item.govde }
         });
         yanit.responses.forEach((r, i) => {
@@ -114,7 +146,7 @@ async function kontrolEt() {
             if (kod.includes('not-registered') || kod.includes('invalid-registration')) {
               gecersiz.add(tokens[i]);
             }
-            console.warn('Hata:', kod);
+            console.warn('FCM token hatası:', kod);
           }
         });
         console.log(`Gönderildi: "${item.baslik}" (${yanit.successCount}/${tokens.length})`);
@@ -125,33 +157,36 @@ async function kontrolEt() {
     await db.collection(item.koleksiyon).doc(item.docId).update({ bildirimGonderildi: true });
   }
 
-  // ---- Mesajlaşma bildirimleri (HEDEFLİ — sadece o konuşmanın katılımcılarına) ----
-  // DÜZELTME: Diğer bildirimlerin aksine mesajlar TÜM cihazlara değil, SADECE
-  // ilgili konuşmanın katılımcılarına (gönderen hariç) gönderilir — bu yüzden
-  // oy_cihazTokenleri artık uid alanı taşıyor (bkz. js/push.js).
+  // Hedefli mesaj bildirimleri
   let mesajGonderilen = 0;
-  const kSnap = await db.collection('oy_konusmalar').get();
-  for (const kDoc of kSnap.docs) {
-    const k = kDoc.data();
-    if (!k.sonMesaj || !k.sonMesaj.tarih) continue;
-    const sonBildirilen = k.sonBildirilenMesajTarihi || '';
-    if (k.sonMesaj.tarih <= sonBildirilen) continue; // bu mesaj için zaten bildirim gönderildi
-
-    const aliciUidler = (k.katilimciUidler || []).filter(uid => uid !== k.sonMesaj.gonderenUid);
-    const aliciTokenlari = tokenDocs.filter(t => t.uid && aliciUidler.includes(t.uid)).map(t => t.token);
+  for (const aday of mesajAdaylari) {
+    const kDoc = aday.doc;
+    const k = aday.data;
+    const aliciUidler = (k.katilimciUidler || [])
+      .filter(uid => uid !== k.sonMesaj.gonderenUid);
+    const aliciTokenlari = tokenDocs
+      .filter(t => t.uid && aliciUidler.includes(t.uid))
+      .map(t => t.token);
 
     if (aliciTokenlari.length > 0) {
-      const baslik = k.grupMu ? `${k.grupAdi || 'Grup'} — ${k.katilimciAdlari?.[k.sonMesaj.gonderenUid] || 'Biri'}` : (k.katilimciAdlari?.[k.sonMesaj.gonderenUid] || 'Yeni mesaj');
+      const baslik = k.grupMu
+        ? `${k.grupAdi || 'Grup'} — ${k.katilimciAdlari?.[k.sonMesaj.gonderenUid] || 'Biri'}`
+        : (k.katilimciAdlari?.[k.sonMesaj.gonderenUid] || 'Yeni mesaj');
       try {
         const yanit = await admin.messaging().sendEachForMulticast({
           tokens: aliciTokenlari,
-          // DÜZELTME: bkz. yukarıdaki genel bildirim notu — aynı sebep.
-          data: { kategori: 'mesaj', baslik: `💬 ${baslik}`, icerik: k.sonMesaj.metin.slice(0, 120) }
+          data: {
+            kategori: 'mesaj',
+            baslik: `💬 ${baslik}`,
+            icerik: String(k.sonMesaj.metin || '').slice(0, 120)
+          }
         });
         yanit.responses.forEach((r, i) => {
           if (!r.success) {
             const kod = r.error?.code || '';
-            if (kod.includes('not-registered') || kod.includes('invalid-registration')) gecersiz.add(aliciTokenlari[i]);
+            if (kod.includes('not-registered') || kod.includes('invalid-registration')) {
+              gecersiz.add(aliciTokenlari[i]);
+            }
           }
         });
         mesajGonderilen++;
@@ -160,16 +195,24 @@ async function kontrolEt() {
         console.error('Mesaj FCM hatası:', err.message);
       }
     }
-    await db.collection('oy_konusmalar').doc(kDoc.id).update({ sonBildirilenMesajTarihi: k.sonMesaj.tarih });
+
+    await kDoc.ref.update({ sonBildirilenMesajTarihi: k.sonMesaj.tarih });
   }
 
   // Geçersiz tokenları temizle
-  for (const t of gecersiz) {
-    const eslesen = tokenDocs.find(d => d.token === t);
-    if (eslesen) await db.collection('oy_cihazTokenleri').doc(eslesen.id).delete();
+  if (gecersiz.size > 0) {
+    for (const t of gecersiz) {
+      const eslesen = tokenDocs.find(d => d.token === t);
+      if (eslesen) {
+        await db.collection('oy_cihazTokenleri').doc(eslesen.id).delete();
+      }
+    }
   }
 
-  return { gonderilen: gonderilecekler.length, mesajBildirimGonderilen: mesajGonderilen };
+  return {
+    gonderilen: gonderilecekler.length,
+    mesajBildirimGonderilen: mesajGonderilen
+  };
 }
 
 // ── Sağlık kontrolü ──────────────────────────────────────────────────
@@ -177,12 +220,19 @@ app.get('/', (req, res) => res.send('OK'));
 
 // ── Cron endpoint ─────────────────────────────────────────────────────
 app.get('/kontrol', async (req, res) => {
-  // Güvenlik: cron-job.org header kontrolü
   const secret = process.env.CRON_SECRET;
   if (secret && req.headers['x-cron-secret'] !== secret) {
     return res.status(401).send('Unauthorized');
   }
 
+  // cron-job.org dakikada bir çağırıyor. Önceki çağrı hâlâ çalışıyorsa
+  // ikinci bir tam Firestore taraması başlatma.
+  if (kontrolCalisiyor) {
+    console.warn('Kontrol atlandı: önceki kontrol hâlâ çalışıyor.');
+    return res.status(200).json({ ok: true, skipped: true, reason: 'already-running' });
+  }
+
+  kontrolCalisiyor = true;
   try {
     firebaseBaslat();
     const sonuc = await kontrolEt();
@@ -190,6 +240,8 @@ app.get('/kontrol', async (req, res) => {
   } catch (err) {
     console.error('Hata:', err.message);
     res.status(500).json({ ok: false, hata: err.message });
+  } finally {
+    kontrolCalisiyor = false;
   }
 });
 
