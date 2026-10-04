@@ -4,6 +4,7 @@
  * 3) Header okul markası her zaman Ana Sayfa'yı en üstten açar.
  * 4) Pull-to-refresh core.js içindeki ortak motor tarafından yönetilir; gezinme davranışları gesture motoruna müdahale etmez.
  * 5) Modülün kendi Geri butonu varsa ortak shell Geri çubuğu gizlenir; böylece aynı sayfada iki Geri butonu oluşmaz.
+ * 6) PDF araçları gerçek bir documents sayfası değildir; menü tıklaması doğrudan PDF aracına yönlendirilir.
  */
 (function(global){
 'use strict';
@@ -83,6 +84,65 @@ function closeReportOverlay(){
   return false;
 }
 
+async function openPdfMenuTool(mode,event){
+  if(mode!=='images'&&mode!=='merge')return false;
+  event?.preventDefault?.();
+  event?.stopImmediatePropagation?.();
+  try{
+    // PDF araçları documents modülünün bir alt sayfası değildir.
+    // Daha önce yanlışlıkla açılmış bir documents yüzeyi varsa önce tamamen kaldır.
+    global.DocumentsModule?.unmount?.();
+    global.EvrakTakipPage?.close?.();
+    const root=document.getElementById('v2ModuleRoot');
+    if(root)root.replaceChildren();
+    if(!global.ReportEngine?.openPdfTools){
+      if(global.AppLoader?.loadScript)await global.AppLoader.loadScript('js/modules/report-engine.js');
+      if(!global.ReportEngine?.openPdfTools){
+        await new Promise((resolve,reject)=>{
+          const existing=[...document.scripts].find(s=>String(s.src||'').split('?')[0].endsWith('/js/modules/report-engine.js'));
+          if(existing){
+            if(global.ReportEngine?.openPdfTools)return resolve();
+            existing.addEventListener('load',resolve,{once:true});
+            existing.addEventListener('error',reject,{once:true});
+            return;
+          }
+          const script=document.createElement('script');
+          script.src='js/modules/report-engine.js?v=pdf-direct';
+          script.async=true;
+          script.onload=resolve;
+          script.onerror=()=>reject(new Error('PDF araçları yüklenemedi.'));
+          document.head.appendChild(script);
+        });
+      }
+    }
+    if(!global.ReportEngine?.openPdfTools)throw new Error('PDF araçları hazır değil.');
+    global.ReportEngine.openPdfTools(mode);
+    return true;
+  }catch(e){
+    console.error('[PDF/direct-route]',e);
+    global.toast?.('PDF aracı açılamadı: '+(e?.message||e));
+    return false;
+  }
+}
+
+function bindDirectPdfRoutes(){
+  if(document.body?.dataset.kaPdfDirectRoutes==='1')return;
+  const bind=()=>{
+    if(!document.body)return;
+    if(document.body.dataset.kaPdfDirectRoutes==='1')return;
+    document.body.dataset.kaPdfDirectRoutes='1';
+    document.addEventListener('click',event=>{
+      const item=event.target.closest?.('[data-ka-shell-route][data-ka-shell-page]');
+      if(!item)return;
+      const page=String(item.dataset.kaShellPage||'').trim();
+      if(page==='pdf-images'){openPdfMenuTool('images',event);return;}
+      if(page==='pdf-merge'){openPdfMenuTool('merge',event);return;}
+    },true);
+  };
+  if(document.body)bind();
+  else document.addEventListener('DOMContentLoaded',bind,{once:true});
+}
+
 function profileScheduleReportMeta(){
   const rows=global.AppStore?.data?.('okulBilgileri');
   const list=Array.isArray(rows)?rows:[];
@@ -156,7 +216,7 @@ function installReportPreviewLayout(){
   const link=document.createElement('link');link.rel='stylesheet';link.href='css/report-preview-layout.css?v=20261002';link.dataset.reportPreviewLayout='';document.head.appendChild(link);
 }
 function installNavigationScroll(){
-  const wrap=()=>{installReportPreviewLayout();normalizeShellBackButtons();wrapShellNavigation();syncShellBackbar();protectDetailBacks();decorateReportOverlay()};
+  const wrap=()=>{installReportPreviewLayout();normalizeShellBackButtons();wrapShellNavigation();syncShellBackbar();protectDetailBacks();decorateReportOverlay();bindDirectPdfRoutes()};
   wrap();
   global.addEventListener('koruk:app-ready',()=>{wrap();scrollTopSoon()});
   global.addEventListener('koruk:module-ready',()=>{wrap();scrollTopSoon()});
@@ -170,5 +230,5 @@ function installNavigationScroll(){
 }
 function install(){installPreviewGuard();bindProfileScheduleReport();installNavigationScroll()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
-global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,syncShellBackbar,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}};
+global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,syncShellBackbar,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}},openPdfMenuTool};
 })(window);
