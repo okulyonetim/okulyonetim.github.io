@@ -3,6 +3,7 @@ const assert=require('assert');
 const app=fs.readFileSync('js/app-loader.js','utf8');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const settings=fs.readFileSync('js/modules/settings.js','utf8');
+const navigation=fs.readFileSync('js/core/app-navigation-behavior.js','utf8');
 
 const appMenu=app.slice(app.indexOf('const CLASSIC_MENU_GROUPS=['),app.indexOf('function applyClassicMenuGroups'));
 const uiMenu=ui.slice(ui.indexOf('const MENU_GROUPS=['),ui.indexOf('const FORM_PAGES='));
@@ -19,7 +20,9 @@ for(const block of [appMenu,uiMenu]){
   ]) assert(!block.includes(duplicate),`Settings alt sayfası shell menüsünde tekrar etmemeli: ${duplicate}`);
 }
 
-assert(appMenu.includes("['Dökümanlar','📁','documents']")&&appMenu.includes("['Resimden PDF Oluştur','🖼️','documents','pdf-images']")&&appMenu.includes("['PDF Birleştir','📑','documents','pdf-merge']"),'Doküman & Evraklar PDF araçlarını ve Dökümanlar arşivini korumalı.');
+assert(appMenu.includes("['Dökümanlar','📁','documents']"),'Dokümanlar arşivi korunmalı.');
+assert(navigation.includes("['PDF İşlemleri','📑','documents','pdf-tools']")&&navigation.includes("page==='pdf-tools'"),'PDF araçları tek bir PDF İşlemleri menü girişinden açılmalı.');
+assert(!navigation.includes("page==='pdf-images'" )||navigation.includes("page==='pdf-images'){openPdfMenuTool('images',event);return;"),'Eski PDF resim rotası yalnızca geriye dönük uyumluluk için tutulabilir.');
 assert(!appMenu.includes("['Mevzuat','📖','documents','mevzuat']")&&!uiMenu.includes("['Mevzuat','📖','documents','mevzuat']"),'Mevzuat menüden tamamen kaldırılmış olmalı.');
 assert(ui.includes("if(name==='documents'&&page==='evrak'"),'Evrak Takibi canonical route korunmalı.');
 assert(!ui.includes("if(name==='documents'&&!page)return false"),'Dökümanlar kök sayfası engellenmemeli.');
@@ -34,4 +37,4 @@ for(const canonical of [
 assert(app.includes('function applyClassicMenuGroups()'),'Runtime classic menü uygulama akışı korunmalı.');
 assert(ui.includes('function renderMenuList(key)')&&ui.includes('function bindMenuRoutes(root)'),'Shell menü yönlendirme sahibi değişmemeli.');
 assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore('),'Shell UI doğrudan Firestore kullanmamalı.');
-console.log('Ayarlar menüsü tek giriş noktası + ayrı Veriler merkezi sözleşmesi başarılı.');
+console.log('Ayarlar menüsü tek giriş noktası + PDF İşlemleri tek menü girişi sözleşmesi başarılı.');
