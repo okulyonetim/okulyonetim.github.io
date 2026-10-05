@@ -60,7 +60,25 @@ jobs:
           replace('service-worker.js',"'./js/app-loader.js?v=1045'","'./js/app-loader.js?v=1046'")
           replace('service-worker.js',"'./js/core/core.js','./js/core/login-security.js?v=885'","'./js/core/core.js','./js/core/read-optimized-sync.js?v=2','./js/core/login-security.js?v=885'")
 
-          Path('tests/first-login-initial-sync.test.js').write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst core=fs.readFileSync('js/core/core.js','utf8');\nconst guard=fs.readFileSync('js/firebase-init.js','utf8');\nassert(core.includes(\"function requestedSyncNames(types,options={}){if(types?.length)return[...types];return options?.force||options?.manual?ALL_SYNC_TYPES.slice():AUTO_SYNC_TYPES.slice()}\"), 'requestedSyncNames options desteğini korumalı.');\nassert(core.includes(\"function syncNames(types,options={}){return requestedSyncNames(types,options)}\"), 'sync() options bilgisini requestedSyncNames\'e aktarmalı.');\nassert(core.includes(\"return pull(names,{...options,baseline})\"), 'sync() force/manual/full seçeneklerini pull()\'a aktarmalı.');\nassert(core.includes(\"const names=syncNames(types,options)\"), 'sync() tip listesini options ile üretmeli.');\nassert(core.includes(\"delete x.force;delete x.full;delete x.manual;delete x.baseline;\"), 'revision snapshot hesabı kontrol seçeneklerini içermemeli.');\nassert(core.includes(\"if(!window.AKTIF_KULLANICI?.uid){bootPromise=null;return false}\"), 'uid yokken bootstrap promise temizlenmeli.');\nassert(core.includes(\"bootPromise=null;return false});return bootPromise\"), 'bootstrap başarısızlığında sonraki çağrı yeniden denenebilmeli.');\nassert(guard.includes(\"CRITICAL_TYPES=['ogretmenler','siniflar','veliler']\"), 'Guard kritik cache tiplerini tanımlamalı.');\nassert(guard.includes(\"await window.KorukLocalFirst.cached(u,type,'__ka_missing__')\"), 'Guard cache anahtarının gerçekten var olup olmadığını kontrol etmeli.');\nassert(guard.includes(\"fresh()&&await criticalCacheReady()\"), 'Taze damga yalnız kritik cache mevcutsa sync\'i bastırmalı.');\nassert(guard.includes(\"!fresh()||!(await criticalCacheReady())\"), 'Kritik cache yoksa normal bootstrap yolu çalışmalı.');\nassert(guard.includes(\"await criticalCacheReady())setStamp()\"), 'Taze damga kritik cache oluşmadan yazılmamalı.');\nconsole.log('first-login initial sync regression testleri başarılı.');\n""",encoding='utf8')
+          Path('tests/first-login-initial-sync.test.js').write_text(r'''const fs=require('fs');
+const assert=require('assert');
+const core=fs.readFileSync('js/core/core.js','utf8');
+const guard=fs.readFileSync('js/firebase-init.js','utf8');
+const must=(ok,msg)=>assert.ok(ok,msg);
+must(/function requestedSyncNames\(types,options=\{\}\)/.test(core),'requestedSyncNames options desteğini korumalı.');
+must(/function syncNames\(types,options=\{\}\)\{return requestedSyncNames\(types,options\)\}/.test(core),'sync() options bilgisini requestedSyncNames\'e aktarmalı.');
+must(/const names=syncNames\(types,options\)/.test(core),'sync() tip listesini options ile üretmeli.');
+must(/return pull\(names,\{\.\.\.options,baseline\}\)/.test(core),'sync() force/manual/full seçeneklerini pull()\'a aktarmalı.');
+must(/delete x\.force;delete x\.full;delete x\.manual;delete x\.baseline;/.test(core),'revision snapshot kontrol seçeneklerini içermemeli.');
+must(/if\(!window\.AKTIF_KULLANICI\?\.uid\)\{bootPromise=null;return false\}/.test(core),'uid yokken bootstrap promise temizlenmeli.');
+must(/bootPromise=null;return false\}\);return bootPromise/.test(core),'bootstrap başarısızlığında yeniden denenebilmeli.');
+must(/CRITICAL_TYPES=\['ogretmenler','siniflar','veliler'\]/.test(guard),'Guard kritik cache tiplerini tanımlamalı.');
+must(/KorukLocalFirst\.cached\(u,type,'__ka_missing__'\)/.test(guard),'Guard cache anahtarının gerçekten var olup olmadığını kontrol etmeli.');
+must(/fresh\(\)&&await criticalCacheReady\(\)/.test(guard),'Taze damga kritik cache mevcutsa sync\'i bastırmalı.');
+must(/!fresh\(\)\|\|!\(await criticalCacheReady\(\)\)/.test(guard),'Kritik cache yoksa normal bootstrap çalışmalı.');
+must(/await criticalCacheReady\(\)\)setStamp\(\)/.test(guard),'Taze damga kritik cache oluşmadan yazılmamalı.');
+console.log('first-login initial sync regression testleri başarılı.');
+''',encoding='utf8')
       - name: Syntax and client regression tests
         run: |
           node --check js/core/core.js
