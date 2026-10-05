@@ -55,3 +55,66 @@
 /* Koyu tema */
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>a,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>button,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{color:var(--ka-text)!important}
+
+/* ===== DERS PROGRAMI — KOYU TEMADA AKSİYON İKON KONTRASTI ===== */
+/* Eylem kartlarının pale ikon kutusunda beyaz ikon kalması düşük kontrast
+   oluşturuyordu. Sadece canonical Ders Programı action düğmelerini hedefler. */
+.ka-schedule-actions [data-schedule-add],
+.ka-schedule-actions [data-schedule-import],
+.ka-schedule-actions [data-schedule-report],
+.ka-schedule-actions [data-schedule-sheet-report]{
+  color:var(--ka-text)!important;
+}
+.ka-schedule-actions [data-schedule-add] > svg:first-child,
+.ka-schedule-actions [data-schedule-add] > i:first-child,
+.ka-schedule-actions [data-schedule-add] > span:first-child,
+.ka-schedule-actions [data-schedule-import] > svg:first-child,
+.ka-schedule-actions [data-schedule-import] > i:first-child,
+.ka-schedule-actions [data-schedule-import] > span:first-child,
+.ka-schedule-actions [data-schedule-report] > svg:first-child,
+.ka-schedule-actions [data-schedule-report] > i:first-child,
+.ka-schedule-actions [data-schedule-report] > span:first-child,
+.ka-schedule-actions [data-schedule-sheet-report] > svg:first-child,
+.ka-schedule-actions [data-schedule-sheet-report] > i:first-child,
+.ka-schedule-actions [data-schedule-sheet-report] > span:first-child{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-schedule-actions [data-schedule-add] > svg:first-child,
+.ka-schedule-actions [data-schedule-import] > svg:first-child,
+.ka-schedule-actions [data-schedule-report] > svg:first-child,
+.ka-schedule-actions [data-schedule-sheet-report] > svg:first-child{stroke:var(--ka-button-text)!important;fill:currentColor!important}
+.ka-schedule-actions [data-schedule-add] > i:first-child,
+.ka-schedule-actions [data-schedule-import] > i:first-child,
+.ka-schedule-actions [data-schedule-report] > i:first-child,
+.ka-schedule-actions [data-schedule-sheet-report] > i:first-child{color:var(--ka-button-text)!important}
+.ka-schedule-actions [data-schedule-add] > span:first-child,
+.ka-schedule-actions [data-schedule-import] > span:first-child,
+.ka-schedule-actions [data-schedule-report] > span:first-child,
+.ka-schedule-actions [data-schedule-sheet-report] > span:first-child{color:var(--ka-button-text)!important}
+
+/* Temizleme kartındaki çöp kutusu da aynı yüksek kontrast yüzeyde kalsın. */
+.ka-schedule-actions [data-schedule-clear] > svg:first-child,
+.ka-schedule-actions [data-schedule-clear] > i:first-child,
+.ka-schedule-actions [data-schedule-clear] > span:first-child{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-schedule-actions [data-schedule-clear] > svg:first-child{stroke:var(--ka-button-text)!important;fill:currentColor!important}
+
+/* Ders programı kaydetme düğmesi: sarı/pale zeminde beyaz ikon yerine merkezi
+   buton kontrastı kullanılır. */
+.ka-academic-schedule-active [data-schedule-save],
+#kaAcademicScheduleModal [data-schedule-save]{
+  background:var(--ka-button-bg)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+.ka-academic-schedule-active [data-schedule-save] svg,
+.ka-academic-schedule-active [data-schedule-save] i,
+.ka-academic-schedule-active [data-schedule-save] span,
+#kaAcademicScheduleModal [data-schedule-save] svg,
+#kaAcademicScheduleModal [data-schedule-save] i,
+#kaAcademicScheduleModal [data-schedule-save] span{color:var(--ka-button-text)!important;stroke:currentColor!important}
