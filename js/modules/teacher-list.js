@@ -4,15 +4,39 @@
  */
 (function(global){
 'use strict';
-const CORE='js/modules/teacher-list-core.js?v=1064';
+const CORE='js/modules/teacher-list-core.js?v=1065';
 const STUDENT_PAGE='js/modules/student-list-page.js';
 let corePromise=null,pagePromise=null;
+function installGlobalTemplateMode(){
+  const svc=global.OgretmenListeService;
+  if(!svc||svc.__globalTemplateMode)return;
+  const originalGet=svc.sablonGetir.bind(svc);
+  const originalSave=svc.sablonKaydet.bind(svc);
+  const GLOBAL='__GENEL__';
+  svc.__globalTemplateMode=true;
+  svc.sablonGetir=async function(sinif){
+    const tid=svc.ogretmenId?.()||global.AKTIF_KULLANICI?.bagliOgretmenId||global.AKTIF_KULLANICI?.ogretmenId||'';
+    if(!tid||!global.DeviceData)return originalGet(sinif);
+    const rows=(global.DeviceData.list('ogretmenListeSablon')||[]).filter(x=>x.ogretmenId===tid);
+    const globalTpl=rows.find(x=>String(x.sinif||'')===GLOBAL);
+    if(globalTpl)return globalTpl;
+    const current=rows.find(x=>String(x.sinif||'')===String(sinif||'').trim());
+    if(current)return current;
+    return rows.slice().sort((a,b)=>String(b.guncellenme||'').localeCompare(String(a.guncellenme||'')))[0]||null;
+  };
+  svc.sablonKaydet=async function(_sinif,veri){
+    const payload={...(veri||{})};
+    delete payload.sinif;
+    return originalSave(GLOBAL,payload);
+  };
+}
 function loadCore(){
-  if(global.OgretmenListeService&&global.OdevNotUI&&!global.OdevNotUI.__teacherListProxy)return Promise.resolve(true);
+  if(global.OgretmenListeService&&global.OdevNotUI&&!global.OdevNotUI.__teacherListProxy){installGlobalTemplateMode();return Promise.resolve(true);}
   if(corePromise)return corePromise;
   if(!global.AppLoader?.loadScript)return Promise.reject(new Error('Uygulama yükleyicisi hazır değil.'));
   corePromise=global.AppLoader.loadScript(CORE).then(()=>{
     if(!global.OgretmenListeService)throw new Error('Öğrenci liste veri servisi yüklenemedi.');
+    installGlobalTemplateMode();
     return true;
   }).catch(e=>{corePromise=null;throw e});
   return corePromise;
