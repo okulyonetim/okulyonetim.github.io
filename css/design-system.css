@@ -67,7 +67,7 @@
 .ka-profile-copy>small{display:none!important}
 
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>a,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>button,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-detail .ka-teacher-profile-book{color:var(--ka-text)!important}
+html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{color:var(--ka-text)!important}
 
 /* ===== DERS PROGRAMI — EKRANDA GÖRÜNMEYEN AKSİYONLAR ===== */
 [data-schedule-add] + *{background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
@@ -90,7 +90,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-transport-service-card__main h1,.ka-transport-service-card__main h2,.ka-transport-service-card__main h3,.ka-transport-service-card__title,.ka-transport-service-card__name{color:var(--ka-text)!important}
 
 /* ===== TAŞIMA — SON DÜZELTME ===== */
-/* Servis detayında servis adı/güzergâh alanının etrafındaki sarı çerçeve kaldırıldı. */
 .ka-transport-service-hero__main,
 .ka-transport-service-hero__main h1,
 .ka-transport-service-hero__main h2,
@@ -104,7 +103,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-transport-service-hero__main h1,.ka-transport-service-hero__main h2,.ka-transport-service-hero__main h3{background:transparent!important;color:var(--ka-text)!important;padding:0!important}
 .ka-transport-service-hero__main p{background:transparent!important;color:var(--ka-text-muted)!important;padding:0!important}
 
-/* Taşıma detayındaki Rapor / Düzenle / Sil / Kapat ikonları renkli emoji ikonlara dönüştürülür. */
 .ka-transport-detail__toolbar .ka-transport-action__icon{font-size:0!important;line-height:1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:1.35em!important}
 .ka-transport-detail__toolbar [data-transport-list] .ka-transport-action__icon::before{content:'📋';font-size:1.15rem;line-height:1}
 .ka-transport-detail__toolbar [data-service-edit] .ka-transport-action__icon::before{content:'✏️';font-size:1.15rem;line-height:1}
