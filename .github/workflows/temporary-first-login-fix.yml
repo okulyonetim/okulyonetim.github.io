@@ -1,0 +1,80 @@
+name: temporary-first-login-fix
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.event.head_commit.message != 'Fix first-login Firestore bootstrap'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply first-login fixes
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace(path, old, new):
+              p=Path(path); s=p.read_text(encoding='utf-8')
+              if old not in s:
+                  raise SystemExit(f'pattern not found: {path}: {old[:120]}')
+              p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          replace('js/core/core.js',
+            "function syncNames(types){return requestedSyncNames(types)}",
+            "function syncNames(types,options={}){return requestedSyncNames(types,options)}")
+          replace('js/core/core.js',
+            "const started=options?.baseline||((options&&Object.keys(options).length)?(()=>{const x={...options};delete x.force;return x})():revisionSnapshot(names));",
+            "const started=options?.baseline||((options&&Object.keys(options).length)?(()=>{const x={...options};delete x.force;delete x.full;delete x.manual;delete x.baseline;return x})():revisionSnapshot(names));")
+          replace('js/core/core.js',
+            "async function sync(types,options={}){if(syncPromise)return syncPromise;syncPromise=(async()=>{const names=syncNames(types),baseline=revisionSnapshot(names);await flushWrites();return pull(names,baseline)})().finally(()=>{syncPromise=null});return syncPromise}",
+            "async function sync(types,options={}){if(syncPromise)return syncPromise;syncPromise=(async()=>{const names=syncNames(types,options),baseline=revisionSnapshot(names);await flushWrites();return pull(names,{...options,baseline})})().finally(()=>{syncPromise=null});return syncPromise}")
+          replace('js/core/core.js',
+            "async function start(){if(bootPromise)return bootPromise;bootPromise=(async()=>{await waitFor(()=>window.COL&&window.AppStore&&window.KorukLocalFirst&&window.DeviceData);await waitFor(()=>window.AKTIF_KULLANICI?.uid).catch(()=>false);if(!window.AKTIF_KULLANICI?.uid)return false;AppStore.set('session.user',AKTIF_KULLANICI);AppStore.set('session.role',window.AKTIF_ROL||null);registerCore();await localHydrate(ALL_SYNC_TYPES);AppStore.set('session.ready',true);AppStore.set('meta.hydrated',true);window.dispatchEvent(new CustomEvent('koruk:app-ready',{detail:{source:'device'}}));scheduleSync(250);AppStore.set('meta.booted',true);booted=true;return true})().catch(e=>{console.warn('[AppBootstrap]',e?.message||e);return false});return bootPromise}",
+            "async function start(){if(bootPromise)return bootPromise;bootPromise=(async()=>{await waitFor(()=>window.COL&&window.AppStore&&window.KorukLocalFirst&&window.DeviceData);await waitFor(()=>window.AKTIF_KULLANICI?.uid).catch(()=>false);if(!window.AKTIF_KULLANICI?.uid){bootPromise=null;return false}AppStore.set('session.user',AKTIF_KULLANICI);AppStore.set('session.role',window.AKTIF_ROL||null);registerCore();await localHydrate(ALL_SYNC_TYPES);AppStore.set('session.ready',true);AppStore.set('meta.hydrated',true);window.dispatchEvent(new CustomEvent('koruk:app-ready',{detail:{source:'device'}}));scheduleSync(250);AppStore.set('meta.booted',true);booted=true;return true})().catch(e=>{console.warn('[AppBootstrap]',e?.message||e);bootPromise=null;return false});return bootPromise}")
+
+          replace('js/firebase-init.js',
+            "  const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:';let installed=false;",
+            "  const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:',CRITICAL_TYPES=['ogretmenler','siniflar','veliler'];let installed=false;")
+          replace('js/firebase-init.js',
+            "  const fresh=()=>{const t=getStamp();return !!t&&(Date.now()-t<TTL)};",
+            "  const fresh=()=>{const t=getStamp();return !!t&&(Date.now()-t<TTL)};\n  const criticalCacheReady=async()=>{const u=uid();if(!u||!window.KorukLocalFirst?.cached)return false;for(const type of CRITICAL_TYPES){const marker=await window.KorukLocalFirst.cached(u,type,'__ka_missing__');if(marker==='__ka_missing__')return false}return true};")
+          replace('js/firebase-init.js',
+            "    if(typeof originalSchedule==='function')window.SyncEngine.schedule=function readGuardedSchedule(ms=1200){if(fresh())return;return originalSchedule(ms)};",
+            "    if(typeof originalSchedule==='function')window.SyncEngine.schedule=async function readGuardedSchedule(ms=1200,options={}){if(fresh()&&await criticalCacheReady())return;return originalSchedule(ms,options)};")
+          replace('js/firebase-init.js',
+            "      if(!uid()||!fresh()){const result=await originalStart();if(result)setTimeout(()=>{if(window.AppStore?.get?.('ui.lastSyncAt'))setStamp()},1500);return result}",
+            "      if(!uid()||!fresh()||!(await criticalCacheReady())){const result=await originalStart();if(result)setTimeout(async()=>{if(window.AppStore?.get?.('ui.lastSyncAt')&&await criticalCacheReady())setStamp()},1500);return result}")
+
+          replace('js/auth.js',
+            "  onayBekleniyorGizle();girisEkraniGizle();const app=document.getElementById('app');if(app)app.classList.add('ready','show');authYuzeyiniCoz();",
+            "  onayBekleniyorGizle();girisEkraniGizle();const app=document.getElementById('app');if(app)app.classList.add('ready','show');window.AppLoader?.syncLegacySession?.();authYuzeyiniCoz();")
+
+          replace('index.html','js/core/core.js?v=1036','js/core/core.js?v=1037')
+          replace('index.html','js/app-loader.js?v=1045','js/app-loader.js?v=1046')
+          replace('service-worker.js',"const CACHE_ADI='oy-cache-v1233';","const CACHE_ADI='oy-cache-v1234';")
+          replace('service-worker.js',"'./js/core/core.js?v=1035'","'./js/core/core.js?v=1037'")
+          replace('service-worker.js',"'./js/app-loader.js?v=1045'","'./js/app-loader.js?v=1046'")
+          replace('service-worker.js',"'./js/core/core.js','./js/core/login-security.js?v=885'","'./js/core/core.js','./js/core/read-optimized-sync.js?v=2','./js/core/login-security.js?v=885'")
+
+          Path('tests/first-login-initial-sync.test.js').write_text("""const fs=require('fs');\nconst assert=require('assert');\nconst core=fs.readFileSync('js/core/core.js','utf8');\nconst guard=fs.readFileSync('js/firebase-init.js','utf8');\nassert(core.includes(\"function requestedSyncNames(types,options={}){if(types?.length)return[...types];return options?.force||options?.manual?ALL_SYNC_TYPES.slice():AUTO_SYNC_TYPES.slice()}\"), 'requestedSyncNames options desteğini korumalı.');\nassert(core.includes(\"function syncNames(types,options={}){return requestedSyncNames(types,options)}\"), 'sync() options bilgisini requestedSyncNames\'e aktarmalı.');\nassert(core.includes(\"return pull(names,{...options,baseline})\"), 'sync() force/manual/full seçeneklerini pull()\'a aktarmalı.');\nassert(core.includes(\"const names=syncNames(types,options)\"), 'sync() tip listesini options ile üretmeli.');\nassert(core.includes(\"delete x.force;delete x.full;delete x.manual;delete x.baseline;\"), 'revision snapshot hesabı kontrol seçeneklerini içermemeli.');\nassert(core.includes(\"if(!window.AKTIF_KULLANICI?.uid){bootPromise=null;return false}\"), 'uid yokken bootstrap promise temizlenmeli.');\nassert(core.includes(\"bootPromise=null;return false});return bootPromise\"), 'bootstrap başarısızlığında sonraki çağrı yeniden denenebilmeli.');\nassert(guard.includes(\"CRITICAL_TYPES=['ogretmenler','siniflar','veliler']\"), 'Guard kritik cache tiplerini tanımlamalı.');\nassert(guard.includes(\"await window.KorukLocalFirst.cached(u,type,'__ka_missing__')\"), 'Guard cache anahtarının gerçekten var olup olmadığını kontrol etmeli.');\nassert(guard.includes(\"fresh()&&await criticalCacheReady()\"), 'Taze damga yalnız kritik cache mevcutsa sync\'i bastırmalı.');\nassert(guard.includes(\"!fresh()||!(await criticalCacheReady())\"), 'Kritik cache yoksa normal bootstrap yolu çalışmalı.');\nassert(guard.includes(\"await criticalCacheReady())setStamp()\"), 'Taze damga kritik cache oluşmadan yazılmamalı.');\nconsole.log('first-login initial sync regression testleri başarılı.');\n""",encoding='utf8')
+      - name: Syntax and client regression tests
+        run: |
+          node --check js/core/core.js
+          node --check js/firebase-init.js
+          node --check js/app-loader.js
+          node --check js/auth.js
+          node tests/first-login-initial-sync.test.js
+          node scripts/run-client-tests.mjs
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f .github/workflows/temporary-first-login-fix.yml
+          git add index.html service-worker.js js/core/core.js js/firebase-init.js js/auth.js tests/first-login-initial-sync.test.js .github/workflows/temporary-first-login-fix.yml
+          git commit -m 'Fix first-login Firestore bootstrap'
+          git push origin main
