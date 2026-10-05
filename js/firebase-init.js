@@ -82,12 +82,13 @@ function firebaseyiBaslat(){
 
 /* Firestore read guard: local-first açılış + realtime korunur; tekrar eden tam pull'lar 5 dk bastırılır. */
 (function installFirestoreReadGuard(){
-  const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:';let installed=false;
+  const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:',CRITICAL_TYPES=['ogretmenler','siniflar','veliler'];let installed=false;
   const uid=()=>String(window.AKTIF_KULLANICI?.uid||window.AppStore?.get?.('session.user')?.uid||'');
   const stampKey=()=>KEY+uid();
   const getStamp=()=>{try{return Number(localStorage.getItem(stampKey())||0)}catch(_){return 0}};
   const setStamp=()=>{try{localStorage.setItem(stampKey(),String(Date.now()))}catch(_) {}};
   const fresh=()=>{const t=getStamp();return !!t&&(Date.now()-t<TTL)};
+  const criticalCacheReady=async()=>{const u=uid();if(!u||!window.KorukLocalFirst?.cached)return false;for(const type of CRITICAL_TYPES){const marker=await window.KorukLocalFirst.cached(u,type,'__ka_missing__');if(marker==='__ka_missing__')return false}return true};
   function registerCoreTypes(){
     if(!window.COL||!window.SyncEngine)return;
     const pairs={ogretmenler:COL.ogretmenler,dersProgrami:COL.dersProgrami,siniflar:COL.siniflar,veliler:COL.veliler,servisler:COL.servisler,nobetAtamalari:COL.nobetAtamalari,nobetYerleri:COL.nobetYerleri,sinavlar:COL.sinavlar,denemeSinavlari:COL.denemeSinavlari,duyurular:COL.duyurular,haberler:COL.haberler,gorevler:COL.gorevler,hatirlaticilar:COL.hatirlaticilar,ogretmenIzinleri:COL.ogretmenIzinleri,notlar:COL.notlar,yemekMenuleri:COL.yemekMenuleri,odevTakip:COL.odevTakip,notCizelgesi:COL.notCizelgesi};
@@ -96,10 +97,10 @@ function firebaseyiBaslat(){
   function install(){
     if(installed||!window.SyncEngine||!window.AppBootstrap||!window.AppStore||!window.KorukLocalFirst)return;installed=true;
     const originalSchedule=window.SyncEngine.schedule;
-    if(typeof originalSchedule==='function')window.SyncEngine.schedule=function readGuardedSchedule(ms=1200){if(fresh())return;return originalSchedule(ms)};
+    if(typeof originalSchedule==='function')window.SyncEngine.schedule=async function readGuardedSchedule(ms=1200,options={}){if(fresh()&&await criticalCacheReady())return;return originalSchedule(ms,options)};
     const originalStart=window.AppBootstrap.start;
     if(typeof originalStart==='function')window.AppBootstrap.start=async function readOptimizedBootstrap(){
-      if(!uid()||!fresh()){const result=await originalStart();if(result)setTimeout(()=>{if(window.AppStore?.get?.('ui.lastSyncAt'))setStamp()},1500);return result}
+      if(!uid()||!fresh()||!(await criticalCacheReady())){const result=await originalStart();if(result)setTimeout(async()=>{if(window.AppStore?.get?.('ui.lastSyncAt')&&await criticalCacheReady())setStamp()},1500);return result}
       registerCoreTypes();
       const types=Array.isArray(window.AppBootstrap.CORE_TYPES)?window.AppBootstrap.CORE_TYPES:[];
       try{
