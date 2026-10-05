@@ -49,6 +49,9 @@
 .ka-pt-preview table td,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table td{color:var(--ka-text)!important}
 @media print{.ka-pt-preview table th,.ka-pt-preview table td,.ka-pt-preview .ka-pt-table th,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table th,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table th,.ka-pt-preview-scene .ka-pt-table td{border:1px solid #000!important}}
 
+/* Profil kartlarında eski cache/parity tarafından eklenebilen ham iletişim satırlarını gizle. */
+.ka-profile-copy>small{display:none!important}
+
 /* Koyu tema */
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>a,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>button,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{color:var(--ka-text)!important}
