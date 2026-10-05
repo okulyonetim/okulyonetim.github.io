@@ -1,31 +1,14 @@
 name: Hatırlatıcı Bildirimleri
 
+# Bildirimler artık Render üzerindeki /kontrol endpointinden yürütülüyor.
+# GitHub Actions tarafındaki eski zamanlayıcı kapatıldı; böylece Firebase'e
+# ikinci bir bildirim taraması yapılıp kota tüketilmesi engelleniyor.
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/notify.yml'
-      - 'check-and-notify.js'
-  schedule:
-    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
-  notify:
+  notify-disabled:
     runs-on: ubuntu-latest
     steps:
-      - name: Kodu Al
-        uses: actions/checkout@v4
-
-      - name: Node.js Kur
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Bağımlılıkları Yükle
-        run: npm install
-        
-      - name: Bildirimleri Kontrol Et ve Gönder
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: node check-and-notify.js
+      - name: Bilgi
+        run: echo "Bildirim servisi Render /kontrol endpointinde çalışıyor."
