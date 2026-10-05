@@ -6,7 +6,6 @@ permissions:
   contents: write
 jobs:
   fix:
-    if: github.actor == 'sedonet23'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,9 +22,7 @@ jobs:
           r('js/core/core.js','function syncNames(types){return requestedSyncNames(types)}','function syncNames(types,options={}){return requestedSyncNames(types,options)}')
           r('js/core/core.js','const started=options?.baseline||((options&&Object.keys(options).length)?(()=>{const x={...options};delete x.force;return x})():revisionSnapshot(names));','const started=options?.baseline||((options&&Object.keys(options).length)?(()=>{const x={...options};delete x.force;delete x.full;delete x.manual;delete x.baseline;return x})():revisionSnapshot(names));')
           r('js/core/core.js','async function sync(types,options={}){if(syncPromise)return syncPromise;syncPromise=(async()=>{const names=syncNames(types),baseline=revisionSnapshot(names);await flushWrites();return pull(names,baseline)})().finally(()=>{syncPromise=null});return syncPromise}','async function sync(types,options={}){if(syncPromise)return syncPromise;syncPromise=(async()=>{const names=syncNames(types,options),baseline=revisionSnapshot(names);await flushWrites();return pull(names,{...options,baseline})})().finally(()=>{syncPromise=null});return syncPromise}')
-          old="if(!window.AKTIF_KULLANICI?.uid)return false"
-          new="if(!window.AKTIF_KULLANICI?.uid){bootPromise=null;return false}"
-          r('js/core/core.js',old,new)
+          r('js/core/core.js','if(!window.AKTIF_KULLANICI?.uid)return false','if(!window.AKTIF_KULLANICI?.uid){bootPromise=null;return false}')
           r('js/firebase-init.js',"  const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:';let installed=false;","  const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:',CRITICAL_TYPES=['ogretmenler','siniflar','veliler'];let installed=false;")
           r('js/firebase-init.js','  const fresh=()=>{const t=getStamp();return !!t&&(Date.now()-t<TTL)};',"  const fresh=()=>{const t=getStamp();return !!t&&(Date.now()-t<TTL)};\n  const criticalCacheReady=async()=>{const u=uid();if(!u||!window.KorukLocalFirst?.cached)return false;for(const type of CRITICAL_TYPES){const marker=await window.KorukLocalFirst.cached(u,type,'__ka_missing__');if(marker==='__ka_missing__')return false}return true};")
           r('js/firebase-init.js',"if(typeof originalSchedule==='function')window.SyncEngine.schedule=function readGuardedSchedule(ms=1200){if(fresh())return;return originalSchedule(ms)};","if(typeof originalSchedule==='function')window.SyncEngine.schedule=async function readGuardedSchedule(ms=1200,options={}){if(fresh()&&await criticalCacheReady())return;return originalSchedule(ms,options)};")
