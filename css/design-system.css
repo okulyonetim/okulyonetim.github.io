@@ -2,13 +2,28 @@
 /* Mevcut merkezi tema aynen korunur; bu dosya yalnızca ortak giriş noktasıdır. */
 @import url("./design-system-base.css?v=1231");
 
-/* ===== CENTRAL THEME — TEACHER LIST + TEACHER DETAIL ===== */
-[data-people-classic] .ogm-card,
-[data-people-classic] .ogm-stat,
-[data-people-classic] .ogm-search input,
-[data-people-classic] .ogm-filter,
-[data-people-classic] .ogm-action,
-[data-people-classic] .ogm-more{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+/* Ders Programı aksiyon butonları: açık ikon kutularında ikon görünürlüğü */
+[data-schedule-add],[data-schedule-import],[data-schedule-report],[data-schedule-sheet-report],[data-schedule-clear]{color:var(--ka-text)!important}
+[data-schedule-add] svg,[data-schedule-import] svg,[data-schedule-report] svg,[data-schedule-sheet-report] svg,[data-schedule-clear] svg,
+[data-schedule-add] i,[data-schedule-import] i,[data-schedule-report] i,[data-schedule-sheet-report] i,[data-schedule-clear] i{
+  color:var(--ka-button-text)!important;
+  stroke:var(--ka-button-text)!important;
+  fill:currentColor!important;
+}
+[data-schedule-add] > :first-child,[data-schedule-import] > :first-child,[data-schedule-report] > :first-child,[data-schedule-sheet-report] > :first-child,[data-schedule-clear] > :first-child{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+[data-schedule-add] > :first-child svg,[data-schedule-import] > :first-child svg,[data-schedule-report] > :first-child svg,[data-schedule-sheet-report] > :first-child svg,[data-schedule-clear] > :first-child svg{
+  stroke:var(--ka-button-text)!important;
+  color:var(--ka-button-text)!important;
+}
+[data-schedule-save]{background:var(--ka-button-bg)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
+[data-schedule-save] svg,[data-schedule-save] i,[data-schedule-save] span{color:var(--ka-button-text)!important;stroke:currentColor!important}
+
+/* Öğretmen listesi */
+[data-people-classic] .ogm-card,[data-people-classic] .ogm-stat,[data-people-classic] .ogm-search input,[data-people-classic] .ogm-filter,[data-people-classic] .ogm-action,[data-people-classic] .ogm-more{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
 [data-people-classic] .ogm-action.primary{background:var(--ka-button-secondary-bg)!important;color:var(--ka-button-secondary-text)!important;border-color:var(--ka-button-secondary-border)!important}
 [data-people-classic] .ogm-action:disabled,[data-people-classic] .ogm-action.is-disabled{background:var(--ka-muted-bg)!important;color:var(--ka-text-muted)!important;border-color:var(--ka-border)!important;opacity:1!important}
 [data-people-classic] .ogm-title small,[data-people-classic] .ogm-name span,[data-people-classic] .ogm-tag{color:var(--ka-primary)!important}
@@ -42,79 +57,14 @@
 [data-teacher-profile-detail] .ka-teacher-doc-check{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
 [data-teacher-profile-detail] .ka-teacher-doc-check.is-complete{background:var(--ka-primary-soft)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important}
 
-/* Personel Puantaj / İmza Sirküsü: gerçek tablo hücre kenarlıkları */
+/* Personel Puantaj / İmza Sirküsü hücre kenarlıkları */
 .ka-pt-preview table,.ka-pt-preview .ka-pt-table,.ka-pt-preview-scene table,.ka-pt-preview-scene .ka-pt-table{border-collapse:collapse!important;border-spacing:0!important}
 .ka-pt-preview table th,.ka-pt-preview table td,.ka-pt-preview .ka-pt-table th,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table th,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table th,.ka-pt-preview-scene .ka-pt-table td{border:1px solid var(--ka-border-strong)!important}
 .ka-pt-preview table th,.ka-pt-preview .ka-pt-table th,.ka-pt-preview-scene table th,.ka-pt-preview-scene .ka-pt-table th{background:var(--ka-muted-bg)!important;color:var(--ka-text)!important}
 .ka-pt-preview table td,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table td{color:var(--ka-text)!important}
 @media print{.ka-pt-preview table th,.ka-pt-preview table td,.ka-pt-preview .ka-pt-table th,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table th,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table th,.ka-pt-preview-scene .ka-pt-table td{border:1px solid #000!important}}
 
-/* Profil kartlarında eski cache/parity tarafından eklenebilen ham iletişim satırlarını gizle. */
 .ka-profile-copy>small{display:none!important}
 
-/* Koyu tema */
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>a,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>button,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{color:var(--ka-text)!important}
-
-/* ===== DERS PROGRAMI — KOYU TEMADA AKSİYON İKON KONTRASTI ===== */
-/* Eylem kartlarının pale ikon kutusunda beyaz ikon kalması düşük kontrast
-   oluşturuyordu. Sadece canonical Ders Programı action düğmelerini hedefler. */
-.ka-schedule-actions [data-schedule-add],
-.ka-schedule-actions [data-schedule-import],
-.ka-schedule-actions [data-schedule-report],
-.ka-schedule-actions [data-schedule-sheet-report]{
-  color:var(--ka-text)!important;
-}
-.ka-schedule-actions [data-schedule-add] > svg:first-child,
-.ka-schedule-actions [data-schedule-add] > i:first-child,
-.ka-schedule-actions [data-schedule-add] > span:first-child,
-.ka-schedule-actions [data-schedule-import] > svg:first-child,
-.ka-schedule-actions [data-schedule-import] > i:first-child,
-.ka-schedule-actions [data-schedule-import] > span:first-child,
-.ka-schedule-actions [data-schedule-report] > svg:first-child,
-.ka-schedule-actions [data-schedule-report] > i:first-child,
-.ka-schedule-actions [data-schedule-report] > span:first-child,
-.ka-schedule-actions [data-schedule-sheet-report] > svg:first-child,
-.ka-schedule-actions [data-schedule-sheet-report] > i:first-child,
-.ka-schedule-actions [data-schedule-sheet-report] > span:first-child{
-  background:var(--ka-primary)!important;
-  color:var(--ka-button-text)!important;
-  border-color:var(--ka-primary)!important;
-}
-.ka-schedule-actions [data-schedule-add] > svg:first-child,
-.ka-schedule-actions [data-schedule-import] > svg:first-child,
-.ka-schedule-actions [data-schedule-report] > svg:first-child,
-.ka-schedule-actions [data-schedule-sheet-report] > svg:first-child{stroke:var(--ka-button-text)!important;fill:currentColor!important}
-.ka-schedule-actions [data-schedule-add] > i:first-child,
-.ka-schedule-actions [data-schedule-import] > i:first-child,
-.ka-schedule-actions [data-schedule-report] > i:first-child,
-.ka-schedule-actions [data-schedule-sheet-report] > i:first-child{color:var(--ka-button-text)!important}
-.ka-schedule-actions [data-schedule-add] > span:first-child,
-.ka-schedule-actions [data-schedule-import] > span:first-child,
-.ka-schedule-actions [data-schedule-report] > span:first-child,
-.ka-schedule-actions [data-schedule-sheet-report] > span:first-child{color:var(--ka-button-text)!important}
-
-/* Temizleme kartındaki çöp kutusu da aynı yüksek kontrast yüzeyde kalsın. */
-.ka-schedule-actions [data-schedule-clear] > svg:first-child,
-.ka-schedule-actions [data-schedule-clear] > i:first-child,
-.ka-schedule-actions [data-schedule-clear] > span:first-child{
-  background:var(--ka-primary)!important;
-  color:var(--ka-button-text)!important;
-  border-color:var(--ka-primary)!important;
-}
-.ka-schedule-actions [data-schedule-clear] > svg:first-child{stroke:var(--ka-button-text)!important;fill:currentColor!important}
-
-/* Ders programı kaydetme düğmesi: sarı/pale zeminde beyaz ikon yerine merkezi
-   buton kontrastı kullanılır. */
-.ka-academic-schedule-active [data-schedule-save],
-#kaAcademicScheduleModal [data-schedule-save]{
-  background:var(--ka-button-bg)!important;
-  color:var(--ka-button-text)!important;
-  border-color:var(--ka-primary)!important;
-}
-.ka-academic-schedule-active [data-schedule-save] svg,
-.ka-academic-schedule-active [data-schedule-save] i,
-.ka-academic-schedule-active [data-schedule-save] span,
-#kaAcademicScheduleModal [data-schedule-save] svg,
-#kaAcademicScheduleModal [data-schedule-save] i,
-#kaAcademicScheduleModal [data-schedule-save] span{color:var(--ka-button-text)!important;stroke:currentColor!important}
