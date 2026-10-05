@@ -2,7 +2,7 @@
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu ağdan güncel tutmak ve Firebase Messaging bildirimlerini taşımak.
    Önemli: Sürümlü JS/CSS istekleri query-string'e göre ayrı cache anahtarı kullanır.
    Böylece Chrome eski bir management.js/shell-ui.js sürümünü yeni sürümlü isteğe eşleştirmez. */
-const CACHE_ADI='oy-cache-v1227';
+const CACHE_ADI='oy-cache-v1228';
 
 let messaging=null;
 try{
@@ -57,12 +57,25 @@ function apiIstegiMi(url){return url.includes('firestore.googleapis.com')||url.i
 function statikKaynakMi(req){try{const u=new URL(req.url);if(u.origin!==self.location.origin)return false;return /\.(?:js|css|png|jpg|jpeg|webp|svg|ico|json|woff2?)$/i.test(u.pathname);}catch(_){return false}}
 function kodKaynakMi(req){try{const u=new URL(req.url);return u.origin===self.location.origin&&/\.(?:js|css)$/i.test(u.pathname);}catch(_){return false}}
 
+/* Teacher detail contrast fix: injected only into design-system.css responses. */
+const OGRETMEN_DETAY_CONTRAST_CSS=`html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero{background:#191919!important;background-image:none!important;color:#f5f5f5!important;border:2px solid #ffc400!important;box-shadow:0 8px 22px rgba(0,0,0,.35)!important}
+html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero::after,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero::after{display:none!important}
+html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero h1,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero h1{color:#f5f5f5!important;-webkit-text-fill-color:#f5f5f5!important}
+html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero p,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero p{color:#929292!important;-webkit-text-fill-color:#929292!important}
+html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-hero .ka-badge,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-hero .ka-badge{background:#1c1c1c!important;color:#ffc400!important;border:1px solid #ffc400!important;-webkit-text-fill-color:#ffc400!important}
+html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-avatar,html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-book,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-avatar,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-book{background:#1c1c1c!important;color:#f5f5f5!important;border:1px solid #ffc400!important;-webkit-text-fill-color:#f5f5f5!important}
+html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn{background:#191919!important;color:#f5f5f5!important;border:1px solid #ffc400!important;-webkit-text-fill-color:#f5f5f5!important;box-shadow:none!important}
+html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn svg,html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn i,html[data-theme="dark"] #v2ModuleRoot section.ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn span,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn svg,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn i,html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-teacher-profile-toolbar .ka-btn span{color:#f5f5f5!important;fill:currentColor!important;stroke:currentColor!important;-webkit-text-fill-color:#f5f5f5!important}`;
+async function ogretmenDetayCssResponse(response){if(!response||response.status!==200||response.type==='opaque')return response;try{const text=await response.clone().text();if(!text.includes('.ka-teacher-profile-hero'))return response;const headers=new Headers(response.headers);headers.set('Content-Type','text/css; charset=utf-8');return new Response(text+'\n'+OGRETMEN_DETAY_CONTRAST_CSS,{status:response.status,statusText:response.statusText,headers});}catch(_){return response}}
+
 async function kodCacheFirst(event){
   const cached=await caches.match(event.request,{ignoreSearch:false});
   const yenile=fetch(event.request,{cache:'no-store'}).then(async response=>{
     if(response&&response.status===200&&response.type!=='opaque'){
-      const copy=response.clone();
+      const adjusted=event.request.url.includes('/css/design-system.css')?await ogretmenDetayCssResponse(response):response;
+      const copy=adjusted.clone();
       await caches.open(CACHE_ADI).then(cache=>cache.put(event.request,copy)).catch(()=>{});
+      return adjusted;
     }
     return response;
   }).catch(()=>null);
