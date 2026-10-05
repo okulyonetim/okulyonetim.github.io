@@ -32,6 +32,66 @@ jobs:
       - name: Kodu çek
         uses: actions/checkout@v4
 
+      - name: Kalıcı rapor ve öğretmen liste düzeltmelerini uygula
+        if: ${{ !contains(github.event.head_commit.message, '[report-fix-applied]') }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new, count=1):
+              p=Path(path)
+              s=p.read_text(encoding='utf-8')
+              if old not in s:
+                  raise SystemExit(f'Target not found in {path}: {old[:120]}')
+              p.write_text(s.replace(old,new,count),encoding='utf-8')
+
+          replace('js/app-loader.js','js/modules/management.js?v=888','js/modules/management.js?v=889')
+          replace('service-worker.js',"const CACHE_ADI='oy-cache-v1230';","const CACHE_ADI='oy-cache-v1231';")
+          replace('service-worker.js','./js/modules/management.js?v=888','./js/modules/management.js?v=889')
+
+          # Personel raporları: iframe içinde tema değişkenine bağlı kalmadan gerçek çizgi üret.
+          replace('js/modules/management.js','.signature{width:100%;border-collapse:collapse;table-layout:fixed;border:2.5px solid var(--ka-text)}','.signature{width:100%;border-collapse:collapse;table-layout:fixed;border:2.5px solid #111827 !important}')
+          replace('js/modules/management.js','.signature td,.signature th{border:1px solid var(--ka-text);padding:2px 4px;overflow:hidden}', '.signature td,.signature th{border:1px solid #111827 !important;padding:2px 4px;overflow:hidden}')
+          replace('js/modules/management.js','.signature .date-head{border-right:1.5px solid var(--ka-text);','.signature .date-head{border-right:1.5px solid #111827 !important;')
+          replace('js/modules/management.js','.signature .time-head{padding:3px 2px;border-bottom:2px solid var(--ka-text);','.signature .time-head{padding:3px 2px;border-bottom:2px solid #111827 !important;')
+          replace('js/modules/management.js','.signature tbody td{border-bottom-color:var(--ka-text-muted)}','.signature tbody td{border-bottom:1px solid #111827 !important}')
+          replace('js/modules/management.js','.signature td.date{padding-left:6px;border-right:1.5px solid var(--ka-text);','.signature td.date{padding-left:6px;border-right:1.5px solid #111827 !important;')
+          replace('js/modules/management.js','.head,.payroll{width:100%;table-layout:fixed;border:2.5px solid var(--ka-text)}','.head,.payroll{width:100%;table-layout:fixed;border:2.5px solid #111827 !important}')
+          replace('js/modules/management.js','.head td{border:1.5px solid var(--ka-text)}','.head td{border:1.5px solid #111827 !important}')
+          replace('js/modules/management.js','.payroll th,.payroll td{border:1px solid var(--ka-text);','.payroll th,.payroll td{border:1px solid #111827 !important;')
+          replace('js/modules/management.js','.approval{width:62mm;border:2.5px solid var(--ka-text);','.approval{width:62mm;border:2.5px solid #111827 !important;')
+
+          # Öğretmen liste şablonu: öğretmenin kaydettiği düzen tüm sınıflarda ortak kullanılır.
+          core=Path('js/modules/teacher-list-core.js')
+          s=core.read_text(encoding='utf-8')
+          old="""sablonGetir(ogretmenId,sinif){const id=templateId(ogretmenId,sinif);return Promise.resolve(device().list('ogretmenListeSablon').find(x=>x.id===id)||null);},
+sablonKaydet(ogretmenId,sinif,veri){const id=templateId(ogretmenId,sinif);return device().set('ogretmenListeSablon',COL.ogretmenListeSablon,id,{...veri,ogretmenId,sinif:safeClass(sinif),guncellenme:new Date().toISOString()},{merge:false});},"""
+          new="""sablonGetir(ogretmenId,sinif){const rows=device().list('ogretmenListeSablon').filter(x=>x.ogretmenId===ogretmenId);const globalTpl=rows.find(x=>String(x.sinif||'')==='__GENEL__');if(globalTpl)return Promise.resolve(globalTpl);const classTpl=rows.find(x=>x.id===templateId(ogretmenId,sinif));const fallback=classTpl||rows.slice().sort((a,b)=>String(b.guncellenme||'').localeCompare(String(a.guncellenme||'')))[0]||null;if(fallback){const data={...fallback};delete data.id;delete data.sinif;return device().set('ogretmenListeSablon',COL.ogretmenListeSablon,templateId(ogretmenId,'__GENEL__'),{...data,ogretmenId,sinif:'__GENEL__',guncellenme:new Date().toISOString()},{merge:false}).then(()=>data).catch(()=>data);}return Promise.resolve(null);},
+sablonKaydet(ogretmenId,sinif,veri){const id=templateId(ogretmenId,'__GENEL__');return device().set('ogretmenListeSablon',COL.ogretmenListeSablon,id,{...veri,ogretmenId,sinif:'__GENEL__',guncellenme:new Date().toISOString()},{merge:false});},"""
+          if old not in s:
+              raise SystemExit('Teacher-list template repository target not found')
+          core.write_text(s.replace(old,new,1),encoding='utf-8')
+          replace('js/modules/teacher-list.js',"const CORE='js/modules/teacher-list-core.js?v=1066';","const CORE='js/modules/teacher-list-core.js?v=1067';")
+          PY
+
+          node --check js/modules/management.js
+          node --check js/modules/teacher-list-core.js
+          node --check js/modules/teacher-list.js
+          node --check js/app-loader.js
+          node --check service-worker.js
+
+      - name: Düzeltilmiş kaynakları kalıcı olarak kaydet
+        if: ${{ !contains(github.event.head_commit.message, '[report-fix-applied]') }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/management.js js/modules/teacher-list-core.js js/modules/teacher-list.js js/app-loader.js service-worker.js
+          git rm -f .github/workflows/fix-report-template-cache.yml 2>/dev/null || true
+          git commit -m "Fix report borders and global teacher list templates [report-fix-applied]" || true
+          git push
+
       - name: Java 17 kur
         uses: actions/setup-java@v4
         with:
@@ -76,7 +136,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           root=Path('www')
-          base='https://www.gstatic.com/firebasejs/10.12.2/'
+          base='https://www.gstatic.com/firebase/10.12.2/'
           files=[f'firebase-{name}-compat.js' for name in ('app','firestore','auth','messaging','storage')]
           targets=[root/'index.html',root/'service-worker.js',*root.joinpath('js').rglob('*.js')]
           for path in targets:
@@ -139,11 +199,6 @@ jobs:
             echo "✅ Keystore ve şifre DOĞRU — build'e devam ediliyor."
           else
             echo "❌ HATA: Keystore açılamadı veya şifre yanlış."
-            echo "Bu, ANDROID_KEYSTORE_BASE64 veya ANDROID_KEYSTORE_PASSWORD sırlarının"
-            echo "GitHub'a YANLIŞ/EKSİK girildiği anlamına gelir. Dosyanın ilk birkaç"
-            echo "karakteri (teşhis amaçlı, şifre değil):"
-            head -c 50 android/app/koruk-okul.jks | base64 | head -c 100
-            echo ""
             exit 1
           fi
 
