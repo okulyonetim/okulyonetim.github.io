@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   apply:
-    if: ${{ !contains(github.event.head_commit.message, '[theme-fix-applied]') }}
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,195 +31,42 @@ jobs:
 [data-people-classic] .ogm-search input,
 [data-people-classic] .ogm-filter,
 [data-people-classic] .ogm-action,
-[data-people-classic] .ogm-more{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-people-classic] .ogm-action.primary{
-  background:var(--ka-button-secondary-bg)!important;
-  color:var(--ka-button-secondary-text)!important;
-  border-color:var(--ka-button-secondary-border)!important;
-}
-[data-people-classic] .ogm-action:disabled,
-[data-people-classic] .ogm-action.is-disabled{
-  background:var(--ka-muted-bg)!important;
-  color:var(--ka-text-muted)!important;
-  border-color:var(--ka-border)!important;
-  opacity:1!important;
-}
-[data-people-classic] .ogm-title small,
-[data-people-classic] .ogm-name span,
-[data-people-classic] .ogm-tag{
-  color:var(--ka-primary)!important;
-}
-[data-people-classic] .ogm-tag{
-  background:var(--ka-primary-soft)!important;
-  border:1px solid var(--ka-border)!important;
-}
+[data-people-classic] .ogm-more{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-people-classic] .ogm-action.primary{background:var(--ka-button-secondary-bg)!important;color:var(--ka-button-secondary-text)!important;border-color:var(--ka-button-secondary-border)!important}
+[data-people-classic] .ogm-action:disabled,[data-people-classic] .ogm-action.is-disabled{background:var(--ka-muted-bg)!important;color:var(--ka-text-muted)!important;border-color:var(--ka-border)!important;opacity:1!important}
+[data-people-classic] .ogm-title small,[data-people-classic] .ogm-name span,[data-people-classic] .ogm-tag{color:var(--ka-primary)!important}
+[data-people-classic] .ogm-tag{background:var(--ka-primary-soft)!important;border:1px solid var(--ka-border)!important}
 [data-people-classic] .ogm-info-row{color:var(--ka-text-muted)!important}
-[data-people-classic] .ogm-avatar-fallback{
-  background:var(--ka-primary-soft)!important;
-  color:var(--ka-primary)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-people-classic] .ogm-actions .ogm-action:hover,
-[data-people-classic] .ogm-more:hover,
-[data-people-classic] .classic-btn:hover{
-  border-color:var(--ka-primary)!important;
-}
-
-/* Öğretmen detay üst araç çubuğu */
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn{
-  background:var(--ka-button-secondary-bg)!important;
-  color:var(--ka-button-secondary-text)!important;
-  border-color:var(--ka-button-secondary-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg,
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg *{
-  color:currentColor!important;
-  stroke:currentColor!important;
-  fill:none!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn:hover{
-  border-color:var(--ka-primary)!important;
-  color:var(--ka-text)!important;
-}
-
-/* Öğretmen detay başlığı / hero */
-[data-teacher-profile-detail] .ka-teacher-profile-hero{
-  background:linear-gradient(135deg,var(--ka-detail-hero-start),var(--ka-detail-hero-end))!important;
-  color:var(--ka-detail-hero-text)!important;
-  border-color:var(--ka-detail-hero-border)!important;
-  box-shadow:var(--ka-shadow-md)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-hero h1,
-[data-teacher-profile-detail] .ka-teacher-profile-hero p,
-[data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{
-  color:var(--ka-detail-hero-text)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-avatar{
-  background:var(--ka-profile-avatar-bg,var(--ka-detail-raised))!important;
-  color:var(--ka-profile-avatar-text,var(--ka-detail-text))!important;
-  border-color:var(--ka-profile-avatar-border,var(--ka-detail-border))!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-book svg,
-[data-teacher-profile-detail] .ka-teacher-profile-book svg *{
-  color:currentColor!important;
-  stroke:currentColor!important;
-  fill:none!important;
-}
-
-/* WhatsApp / Ara / Mesaj / Program */
-[data-teacher-profile-detail] .ka-teacher-contact-grid > a,
-[data-teacher-profile-detail] .ka-teacher-contact-grid > button{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-contact-grid > a span,
-[data-teacher-profile-detail] .ka-teacher-contact-grid > button span,
-[data-teacher-profile-detail] .ka-teacher-contact-grid svg,
-[data-teacher-profile-detail] .ka-teacher-contact-grid svg *{
-  color:currentColor!important;
-  stroke:currentColor!important;
-  fill:none!important;
-}
-[data-teacher-profile-detail] .ka-teacher-contact-grid > a:hover,
-[data-teacher-profile-detail] .ka-teacher-contact-grid > button:hover{
-  border-color:var(--ka-primary)!important;
-  color:var(--ka-text)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-contact-grid .is-disabled{
-  background:var(--ka-muted-bg)!important;
-  color:var(--ka-text-muted)!important;
-  border-color:var(--ka-border)!important;
-  opacity:1!important;
-}
-
-/* İstatistik kartları */
-[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card small,
-[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card span{
-  color:var(--ka-text-muted)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card b{
-  color:var(--ka-primary)!important;
-}
-
-/* Temel bilgiler ve tüm detay bölümleri */
-[data-teacher-profile-detail] .ka-teacher-detail-section,
-[data-teacher-profile-detail] .ka-teacher-doc-status,
-[data-teacher-profile-detail] .ka-teacher-doc-group,
-[data-teacher-profile-detail] .ka-teacher-info{
-  color:var(--ka-text)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__header,
-[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__body,
-[data-teacher-profile-detail] .ka-teacher-info > div{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-section-icon{
-  background:var(--ka-muted-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-info > div > span,
-[data-teacher-profile-detail] .ka-teacher-detail-row > span,
-[data-teacher-profile-detail] .detay-row-muted,
-[data-teacher-profile-detail] .ka-empty{
-  color:var(--ka-text-muted)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-info > div > b,
-[data-teacher-profile-detail] .ka-teacher-detail-row > b{
-  color:var(--ka-text)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-info .ka-btn{
-  background:var(--ka-button-secondary-bg)!important;
-  color:var(--ka-button-secondary-text)!important;
-  border-color:var(--ka-button-secondary-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-doc-title h2,
-[data-teacher-profile-detail] .ka-teacher-doc-group-head h3{
-  color:var(--ka-text)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-doc-check{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-doc-check.is-complete{
-  background:var(--ka-primary-soft)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-primary)!important;
-}
-
-/* Koyu tema: sarı vurgu sadece vurgu/border; sarı zemin üzerindeki yazı daima siyah. */
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero *{
-  color:var(--ka-detail-hero-text)!important;
-}
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn,
-html[data-theme="dark"] [data-people-classic] .ogm-action,
-html[data-theme="dark"] [data-people-classic] .ogm-action.primary{
-  background:var(--ka-button-secondary-bg)!important;
-  color:var(--ka-button-secondary-text)!important;
-  border-color:var(--ka-primary)!important;
-}
-html[data-theme="dark"] [data-people-classic] .ogm-action.primary:hover,
-html[data-theme="dark"] [data-people-classic] .ogm-action:hover{
-  color:var(--ka-button-secondary-text)!important;
-}
+[data-people-classic] .ogm-avatar-fallback{background:var(--ka-primary-soft)!important;color:var(--ka-primary)!important;border-color:var(--ka-border)!important}
+[data-people-classic] .ogm-actions .ogm-action:hover,[data-people-classic] .ogm-more:hover,[data-people-classic] .classic-btn:hover{border-color:var(--ka-primary)!important}
+[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn{background:var(--ka-button-secondary-bg)!important;color:var(--ka-button-secondary-text)!important;border-color:var(--ka-button-secondary-border)!important}
+[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg,[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg *{color:currentColor!important;stroke:currentColor!important;fill:none!important}
+[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn:hover{border-color:var(--ka-primary)!important;color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-profile-hero{background:linear-gradient(135deg,var(--ka-detail-hero-start),var(--ka-detail-hero-end))!important;color:var(--ka-detail-hero-text)!important;border-color:var(--ka-detail-hero-border)!important;box-shadow:var(--ka-shadow-md)!important}
+[data-teacher-profile-detail] .ka-teacher-profile-hero h1,[data-teacher-profile-detail] .ka-teacher-profile-hero p,[data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{color:var(--ka-detail-hero-text)!important}
+[data-teacher-profile-detail] .ka-teacher-profile-avatar{background:var(--ka-profile-avatar-bg,var(--ka-detail-raised))!important;color:var(--ka-profile-avatar-text,var(--ka-detail-text))!important;border-color:var(--ka-profile-avatar-border,var(--ka-detail-border))!important}
+[data-teacher-profile-detail] .ka-teacher-profile-book svg,[data-teacher-profile-detail] .ka-teacher-profile-book svg *{color:currentColor!important;stroke:currentColor!important;fill:none!important}
+[data-teacher-profile-detail] .ka-teacher-contact-grid>a,[data-teacher-profile-detail] .ka-teacher-contact-grid>button{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-contact-grid>a span,[data-teacher-profile-detail] .ka-teacher-contact-grid>button span,[data-teacher-profile-detail] .ka-teacher-contact-grid svg,[data-teacher-profile-detail] .ka-teacher-contact-grid svg *{color:currentColor!important;stroke:currentColor!important;fill:none!important}
+[data-teacher-profile-detail] .ka-teacher-contact-grid>a:hover,[data-teacher-profile-detail] .ka-teacher-contact-grid>button:hover{border-color:var(--ka-primary)!important;color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-contact-grid .is-disabled{background:var(--ka-muted-bg)!important;color:var(--ka-text-muted)!important;border-color:var(--ka-border)!important;opacity:1!important}
+[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card small,[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card span{color:var(--ka-text-muted)!important}
+[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card b{color:var(--ka-primary)!important}
+[data-teacher-profile-detail] .ka-teacher-detail-section,[data-teacher-profile-detail] .ka-teacher-doc-status,[data-teacher-profile-detail] .ka-teacher-doc-group,[data-teacher-profile-detail] .ka-teacher-info{color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__header,[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__body,[data-teacher-profile-detail] .ka-teacher-info>div{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-section-icon{background:var(--ka-muted-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-info>div>span,[data-teacher-profile-detail] .ka-teacher-detail-row>span,[data-teacher-profile-detail] .detay-row-muted,[data-teacher-profile-detail] .ka-empty{color:var(--ka-text-muted)!important}
+[data-teacher-profile-detail] .ka-teacher-info>div>b,[data-teacher-profile-detail] .ka-teacher-detail-row>b{color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-info .ka-btn{background:var(--ka-button-secondary-bg)!important;color:var(--ka-button-secondary-text)!important;border-color:var(--ka-button-secondary-border)!important}
+[data-teacher-profile-detail] .ka-teacher-doc-title h2,[data-teacher-profile-detail] .ka-teacher-doc-group-head h3{color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-doc-check{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-doc-check.is-complete{background:var(--ka-primary-soft)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important}
+html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero *{color:var(--ka-detail-hero-text)!important}
+html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn,html[data-theme="dark"] [data-people-classic] .ogm-action,html[data-theme="dark"] [data-people-classic] .ogm-action.primary{background:var(--ka-button-secondary-bg)!important;color:var(--ka-button-secondary-text)!important;border-color:var(--ka-primary)!important}
 CSS
           fi
-
-          sed -i "s/oy-cache-v1229/oy-cache-v1230/g" service-worker.js
+          sed -i 's/oy-cache-v1229/oy-cache-v1230/g' service-worker.js
           rm -f .github/workflows/one-shot-central-teacher-theme.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
