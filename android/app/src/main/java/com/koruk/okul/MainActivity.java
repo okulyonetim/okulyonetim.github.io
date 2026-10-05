@@ -107,7 +107,7 @@ public class MainActivity extends BridgeActivity {
             "}catch(err){console.error('[NativePngDownload]',err)}},true);}" +
             "if(typeof window.uygulamaDosyaKaydet!=='function'){window.uygulamaDosyaKaydet=function(base64,dosyaAdi,mimeTuru,paylas){try{var p=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.SavePlugin;if(!p||typeof p.kaydet!=='function')return Promise.reject(new Error('Android dosya kaydetme servisi hazır değil.'));return p.kaydet({base64:base64,dosyaAdi:dosyaAdi,mimeTuru:mimeTuru,paylas:!!paylas});}catch(e){return Promise.reject(e)}};}" +
             "if(!document.getElementById('koruk-native-runtime-fixes')){var s=document.createElement('script');s.id='koruk-native-runtime-fixes';s.src='js/core/platform/mobile-runtime-fixes.js?v=917';document.head.appendChild(s);}" +
-            "if(!document.getElementById('koruk-native-report-image-fix')){var r=document.createElement('script');r.id='koruk-native-report-image-fix';r.src='js/core/report-image-native-fix.js?v=1';document.head.appendChild(r);}" +
+            "if(!document.getElementById('koruk-native-report-image-fix')){var r=document.createElement('script');r.id='koruk-native-report-image-fix';r.src='js/core/report-image-native-fix.js?v=2';document.head.appendChild(r);}" +
             "return 'ready';}catch(e){console.error('[NativeRuntimeBridge]',e);return 'error';}})()",
             null
         );
