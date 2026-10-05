@@ -1,0 +1,36 @@
+name: Fix Personnel Report Borders
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-personnel-report-borders.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix report iframe theme variables
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('js/modules/management.js')
+          s = p.read_text(encoding='utf-8')
+          old = '''function ptDocument(title,yon,body,css){const page=yon==='yatay'?'A4 landscape':'A4 portrait';return`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>@page{size:${page};margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--ka-text-inverse);color:var(--ka-text)}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}${css}</style></head><body>${body}</body></html>`}'''
+          new = '''function ptDocument(title,yon,body,css){const page=yon==='yatay'?'A4 landscape':'A4 portrait';return`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>:root{--ka-text:#111827;--ka-text-inverse:#ffffff;--ka-text-muted:#6b7280;--ka-report-payroll-identity:#f3f4f6;--ka-report-payroll-rest-bg:#eef2f7;--ka-report-payroll-rest-text:#374151;--ka-report-payroll-summary:#f3f4f6}@page{size:${page};margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--ka-text-inverse);color:var(--ka-text)}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}${css}</style></head><body>${body}</body></html>`}'''
+          if old not in s:
+              raise SystemExit('Target ptDocument function not found; refusing to modify the file.')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit fix and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/management.js
+          git rm .github/workflows/fix-personnel-report-borders.yml
+          git commit -m "Fix personnel report table borders"
+          git push
