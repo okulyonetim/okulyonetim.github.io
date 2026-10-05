@@ -68,3 +68,27 @@
 
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>a,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>button,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
 html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{color:var(--ka-text)!important}
+
+/* ===== DERS PROGRAMI — EKRANDA GÖRÜNMEYEN AKSİYONLAR ===== */
+/* Excel Şablonu ikinci aksiyon olarak render ediliyor; doğrudan kardeş seçiciyle hedeflenir. */
+[data-schedule-add] + *{background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
+[data-schedule-add] + * svg,[data-schedule-add] + * i,[data-schedule-add] + * span{color:var(--ka-button-text)!important;stroke:currentColor!important;fill:currentColor!important}
+/* Kaydet pasifken sarı zeminde beyaz yazı oluşmasını engelle. */
+[data-schedule-save]:disabled,[data-schedule-save][disabled]{background:var(--ka-muted-bg)!important;color:var(--ka-text-muted)!important;border-color:var(--ka-border)!important;opacity:1!important}
+[data-schedule-save]:disabled svg,[data-schedule-save][disabled] svg,[data-schedule-save]:disabled i,[data-schedule-save][disabled] i{color:var(--ka-text-muted)!important;stroke:currentColor!important}
+
+/* Ders Ekle modalındaki üst bilgilendirme kartı: koyu temada açık sarı zemin + beyaz yazı olmasın. */
+#kaAcademicScheduleModal .ka-modal__body>div:first-child{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+#kaAcademicScheduleModal .ka-modal__body>div:first-child h1,
+#kaAcademicScheduleModal .ka-modal__body>div:first-child h2,
+#kaAcademicScheduleModal .ka-modal__body>div:first-child h3,
+#kaAcademicScheduleModal .ka-modal__body>div:first-child p,
+#kaAcademicScheduleModal .ka-modal__body>div:first-child span{color:var(--ka-text)!important}
+#kaAcademicScheduleModal .ka-modal__body>div:first-child svg{color:var(--ka-button-text)!important;stroke:var(--ka-button-text)!important}
+#kaAcademicScheduleModal .ka-modal__body>div:first-child> :first-child{background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
+
+/* ===== TAŞIMA — SERVİS ADI ===== */
+/* Servis kartındaki isim alanı kartın kendisi gibi görünmeli; yalnız isim kutusundaki sarı çerçeve kaldırılır. */
+.ka-transport-service-card__main,.ka-transport-service-card__title,.ka-transport-service-card__name{border-color:transparent!important;box-shadow:none!important}
+.ka-transport-service-card__main,.ka-transport-service-card__title,.ka-transport-service-card__name{background:transparent!important;color:var(--ka-text)!important}
+.ka-transport-service-card__main h1,.ka-transport-service-card__main h2,.ka-transport-service-card__main h3,.ka-transport-service-card__title,.ka-transport-service-card__name{color:var(--ka-text)!important}
