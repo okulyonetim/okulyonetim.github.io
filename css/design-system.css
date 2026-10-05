@@ -1,189 +1,54 @@
 /* KORUK ASİSTAN — MERKEZİ DESIGN SYSTEM ENTRYPOINT */
 /* Mevcut merkezi tema aynen korunur; bu dosya yalnızca ortak giriş noktasıdır. */
-@import url("./design-system-base.css?v=1230");
+@import url("./design-system-base.css?v=1231");
 
 /* ===== CENTRAL THEME — TEACHER LIST + TEACHER DETAIL ===== */
-/* Tüm renkler mevcut --ka-* tokenlarından gelir. Rapor yüzeylerine dokunulmaz. */
 [data-people-classic] .ogm-card,
 [data-people-classic] .ogm-stat,
 [data-people-classic] .ogm-search input,
 [data-people-classic] .ogm-filter,
 [data-people-classic] .ogm-action,
-[data-people-classic] .ogm-more{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-people-classic] .ogm-action.primary{
-  background:var(--ka-button-secondary-bg)!important;
-  color:var(--ka-button-secondary-text)!important;
-  border-color:var(--ka-button-secondary-border)!important;
-}
-[data-people-classic] .ogm-action:disabled,
-[data-people-classic] .ogm-action.is-disabled{
-  background:var(--ka-muted-bg)!important;
-  color:var(--ka-text-muted)!important;
-  border-color:var(--ka-border)!important;
-  opacity:1!important;
-}
-[data-people-classic] .ogm-title small,
-[data-people-classic] .ogm-name span,
-[data-people-classic] .ogm-tag{
-  color:var(--ka-primary)!important;
-}
-[data-people-classic] .ogm-tag{
-  background:var(--ka-primary-soft)!important;
-  border:1px solid var(--ka-border)!important;
-}
+[data-people-classic] .ogm-more{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-people-classic] .ogm-action.primary{background:var(--ka-button-secondary-bg)!important;color:var(--ka-button-secondary-text)!important;border-color:var(--ka-button-secondary-border)!important}
+[data-people-classic] .ogm-action:disabled,[data-people-classic] .ogm-action.is-disabled{background:var(--ka-muted-bg)!important;color:var(--ka-text-muted)!important;border-color:var(--ka-border)!important;opacity:1!important}
+[data-people-classic] .ogm-title small,[data-people-classic] .ogm-name span,[data-people-classic] .ogm-tag{color:var(--ka-primary)!important}
+[data-people-classic] .ogm-tag{background:var(--ka-primary-soft)!important;border:1px solid var(--ka-border)!important}
 [data-people-classic] .ogm-info-row{color:var(--ka-text-muted)!important}
-[data-people-classic] .ogm-avatar-fallback{
-  background:var(--ka-primary-soft)!important;
-  color:var(--ka-primary)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-people-classic] .ogm-actions .ogm-action:hover,
-[data-people-classic] .ogm-more:hover,
-[data-people-classic] .classic-btn:hover{
-  border-color:var(--ka-primary)!important;
-}
+[data-people-classic] .ogm-avatar-fallback{background:var(--ka-primary-soft)!important;color:var(--ka-primary)!important;border-color:var(--ka-border)!important}
+[data-people-classic] .ogm-actions .ogm-action:hover,[data-people-classic] .ogm-more:hover,[data-people-classic] .classic-btn:hover{border-color:var(--ka-primary)!important}
 
-/* Öğretmen detay üst araç çubuğu */
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-bottom:1px solid var(--ka-border)!important;
-  box-shadow:var(--ka-shadow-sm)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn{
-  min-height:52px!important;
-  background:var(--ka-card-raised-bg)!important;
-  color:var(--ka-text)!important;
-  border:1px solid var(--ka-border-strong)!important;
-  border-radius:15px!important;
-  box-shadow:none!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg,
-[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg *{
-  color:currentColor!important;
-  stroke:currentColor!important;
-  fill:none!important;
-}
-
-/* Öğretmen detay başlığı */
-[data-teacher-profile-detail] .ka-teacher-profile-hero{
-  margin:20px 20px 0!important;
-  background:var(--ka-card-raised-bg)!important;
-  background-image:none!important;
-  color:var(--ka-text)!important;
-  border:1px solid var(--ka-border)!important;
-  box-shadow:var(--ka-shadow-md)!important;
-}
+/* Öğretmen detay */
+[data-teacher-profile-detail] .ka-teacher-profile-toolbar{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-bottom:1px solid var(--ka-border)!important;box-shadow:var(--ka-shadow-sm)!important}
+[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn{min-height:52px!important;background:var(--ka-card-raised-bg)!important;color:var(--ka-text)!important;border:1px solid var(--ka-border-strong)!important;border-radius:15px!important;box-shadow:none!important}
+[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg,[data-teacher-profile-detail] .ka-teacher-profile-toolbar .ka-btn svg *{color:currentColor!important;stroke:currentColor!important;fill:none!important}
+[data-teacher-profile-detail] .ka-teacher-profile-hero{margin:20px 20px 0!important;background:var(--ka-card-raised-bg)!important;background-image:none!important;color:var(--ka-text)!important;border:1px solid var(--ka-border)!important;box-shadow:var(--ka-shadow-md)!important}
 [data-teacher-profile-detail] .ka-teacher-profile-hero h1{color:var(--ka-text)!important}
 [data-teacher-profile-detail] .ka-teacher-profile-hero p{color:var(--ka-text-muted)!important}
-[data-teacher-profile-detail] .ka-teacher-profile-avatar,
-[data-teacher-profile-detail] .ka-teacher-profile-book{
-  background:var(--ka-muted-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border-strong)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-profile-book svg,
-[data-teacher-profile-detail] .ka-teacher-profile-book svg *{
-  color:currentColor!important;
-  stroke:currentColor!important;
-  fill:none!important;
-}
-
-/* WhatsApp / Ara / Mesaj / Program */
-[data-teacher-profile-detail] .ka-teacher-contact-grid>a,
-[data-teacher-profile-detail] .ka-teacher-contact-grid>button{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-contact-grid>a span,
-[data-teacher-profile-detail] .ka-teacher-contact-grid>button span,
-[data-teacher-profile-detail] .ka-teacher-contact-grid svg,
-[data-teacher-profile-detail] .ka-teacher-contact-grid svg *{
-  color:currentColor!important;
-  stroke:currentColor!important;
-  fill:none!important;
-}
-[data-teacher-profile-detail] .ka-teacher-contact-grid .is-disabled{
-  background:var(--ka-muted-bg)!important;
-  color:var(--ka-text-muted)!important;
-  border-color:var(--ka-border)!important;
-  opacity:1!important;
-}
-
-/* İstatistik kartları */
-[data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card small,
-[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card span{
-  color:var(--ka-text-muted)!important;
-}
+[data-teacher-profile-detail] .ka-teacher-profile-avatar,[data-teacher-profile-detail] .ka-teacher-profile-book{background:var(--ka-muted-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border-strong)!important}
+[data-teacher-profile-detail] .ka-teacher-profile-book svg,[data-teacher-profile-detail] .ka-teacher-profile-book svg *{color:currentColor!important;stroke:currentColor!important;fill:none!important}
+[data-teacher-profile-detail] .ka-teacher-contact-grid>a,[data-teacher-profile-detail] .ka-teacher-contact-grid>button{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-contact-grid>a span,[data-teacher-profile-detail] .ka-teacher-contact-grid>button span,[data-teacher-profile-detail] .ka-teacher-contact-grid svg,[data-teacher-profile-detail] .ka-teacher-contact-grid svg *{color:currentColor!important;stroke:currentColor!important;fill:none!important}
+[data-teacher-profile-detail] .ka-teacher-contact-grid .is-disabled{background:var(--ka-muted-bg)!important;color:var(--ka-text-muted)!important;border-color:var(--ka-border)!important;opacity:1!important}
+[data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card small,[data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card span{color:var(--ka-text-muted)!important}
 [data-teacher-profile-detail] .ka-teacher-stat-grid .ka-card b{color:var(--ka-primary)!important}
+[data-teacher-profile-detail] .ka-teacher-detail-section,[data-teacher-profile-detail] .ka-teacher-doc-status,[data-teacher-profile-detail] .ka-teacher-doc-group,[data-teacher-profile-detail] .ka-teacher-info{color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__header,[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__body,[data-teacher-profile-detail] .ka-teacher-info>div{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-section-icon{background:var(--ka-muted-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-info>div>span,[data-teacher-profile-detail] .ka-teacher-detail-row>span,[data-teacher-profile-detail] .detay-row-muted,[data-teacher-profile-detail] .ka-empty{color:var(--ka-text-muted)!important}
+[data-teacher-profile-detail] .ka-teacher-info>div>b,[data-teacher-profile-detail] .ka-teacher-detail-row>b{color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-info .ka-btn{background:var(--ka-button-secondary-bg)!important;color:var(--ka-button-secondary-text)!important;border-color:var(--ka-button-secondary-border)!important}
+[data-teacher-profile-detail] .ka-teacher-doc-title h2,[data-teacher-profile-detail] .ka-teacher-doc-group-head h3{color:var(--ka-text)!important}
+[data-teacher-profile-detail] .ka-teacher-doc-check{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+[data-teacher-profile-detail] .ka-teacher-doc-check.is-complete{background:var(--ka-primary-soft)!important;color:var(--ka-text)!important;border-color:var(--ka-primary)!important}
 
-/* Detay bölümleri */
-[data-teacher-profile-detail] .ka-teacher-detail-section,
-[data-teacher-profile-detail] .ka-teacher-doc-status,
-[data-teacher-profile-detail] .ka-teacher-doc-group,
-[data-teacher-profile-detail] .ka-teacher-info{
-  color:var(--ka-text)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__header,
-[data-teacher-profile-detail] .ka-teacher-detail-section .ka-card__body,
-[data-teacher-profile-detail] .ka-teacher-info>div{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-section-icon{
-  background:var(--ka-muted-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-info>div>span,
-[data-teacher-profile-detail] .ka-teacher-detail-row>span,
-[data-teacher-profile-detail] .detay-row-muted,
-[data-teacher-profile-detail] .ka-empty{
-  color:var(--ka-text-muted)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-info>div>b,
-[data-teacher-profile-detail] .ka-teacher-detail-row>b{color:var(--ka-text)!important}
-[data-teacher-profile-detail] .ka-teacher-info .ka-btn{
-  background:var(--ka-button-secondary-bg)!important;
-  color:var(--ka-button-secondary-text)!important;
-  border-color:var(--ka-button-secondary-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-doc-title h2,
-[data-teacher-profile-detail] .ka-teacher-doc-group-head h3{color:var(--ka-text)!important}
-[data-teacher-profile-detail] .ka-teacher-doc-check{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-[data-teacher-profile-detail] .ka-teacher-doc-check.is-complete{
-  background:var(--ka-primary-soft)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-primary)!important;
-}
+/* Personel Puantaj / İmza Sirküsü: gerçek tablo hücre kenarlıkları */
+.ka-pt-preview table,.ka-pt-preview .ka-pt-table,.ka-pt-preview-scene table,.ka-pt-preview-scene .ka-pt-table{border-collapse:collapse!important;border-spacing:0!important}
+.ka-pt-preview table th,.ka-pt-preview table td,.ka-pt-preview .ka-pt-table th,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table th,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table th,.ka-pt-preview-scene .ka-pt-table td{border:1px solid var(--ka-border-strong)!important}
+.ka-pt-preview table th,.ka-pt-preview .ka-pt-table th,.ka-pt-preview-scene table th,.ka-pt-preview-scene .ka-pt-table th{background:var(--ka-muted-bg)!important;color:var(--ka-text)!important}
+.ka-pt-preview table td,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table td{color:var(--ka-text)!important}
+@media print{.ka-pt-preview table th,.ka-pt-preview table td,.ka-pt-preview .ka-pt-table th,.ka-pt-preview .ka-pt-table td,.ka-pt-preview-scene table th,.ka-pt-preview-scene table td,.ka-pt-preview-scene .ka-pt-table th,.ka-pt-preview-scene .ka-pt-table td{border:1px solid #000!important}}
 
-/* Koyu tema: sarı vurgu border/highlight olarak kalır; sarı hero üzerindeki metin siyah olur. */
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar,
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>a,
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>button,
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{
-  background:var(--ka-card-bg)!important;
-  color:var(--ka-text)!important;
-  border-color:var(--ka-border)!important;
-}
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,
-html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{
-  color:var(--ka-text)!important;
-}
+/* Koyu tema */
+html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-toolbar,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>a,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-contact-grid>button,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-stat-grid>.ka-card{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
+html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h1,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero p,html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero .ka-teacher-profile-book{color:var(--ka-text)!important}
