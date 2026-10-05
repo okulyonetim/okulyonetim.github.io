@@ -1,10 +1,6 @@
 name: Fix report borders and teacher list templates
 
-on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/fix-report-template-cache.yml'
+on: push
 
 permissions:
   contents: write
@@ -15,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Apply direct source fixes
+        shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -26,24 +23,21 @@ jobs:
                   raise SystemExit(f'Target not found in {path}: {old[:120]}')
               p.write_text(s.replace(old,new,count),encoding='utf-8')
 
-          # Force the report module to a fresh URL so WebView/Service Worker cannot keep the old report renderer.
           replace('js/app-loader.js','js/modules/management.js?v=888','js/modules/management.js?v=889')
           replace('service-worker.js',"const CACHE_ADI='oy-cache-v1230';","const CACHE_ADI='oy-cache-v1231';")
           replace('service-worker.js','./js/modules/management.js?v=888','./js/modules/management.js?v=889')
 
-          # Make personnel report borders explicit and independent of inherited theme variables.
           replace('js/modules/management.js','.signature{width:100%;border-collapse:collapse;table-layout:fixed;border:2.5px solid var(--ka-text)}','.signature{width:100%;border-collapse:collapse;table-layout:fixed;border:2.5px solid #111827 !important}')
-          replace(' .signature td,.signature th{border:1px solid var(--ka-text);padding:2px 4px;overflow:hidden}',' .signature td,.signature th{border:1px solid #111827 !important;padding:2px 4px;overflow:hidden}')
-          replace(' .signature .date-head{border-right:1.5px solid var(--ka-text);',' .signature .date-head{border-right:1.5px solid #111827 !important;')
-          replace(' .signature .time-head{padding:3px 2px;border-bottom:2px solid var(--ka-text);',' .signature .time-head{padding:3px 2px;border-bottom:2px solid #111827 !important;')
-          replace(' .signature tbody td{border-bottom-color:var(--ka-text-muted)}',' .signature tbody td{border-bottom:1px solid #111827 !important}')
-          replace(' .signature td.date{padding-left:6px;border-right:1.5px solid var(--ka-text);',' .signature td.date{padding-left:6px;border-right:1.5px solid #111827 !important;')
-          replace(' .head,.payroll{width:100%;table-layout:fixed;border:2.5px solid var(--ka-text)}','.head,.payroll{width:100%;table-layout:fixed;border:2.5px solid #111827 !important}')
-          replace(' .head td{border:1.5px solid var(--ka-text)}',' .head td{border:1.5px solid #111827 !important}')
-          replace(' .payroll th,.payroll td{border:1px solid var(--ka-text);',' .payroll th,.payroll td{border:1px solid #111827 !important;')
-          replace(' .approval{width:62mm;border:2.5px solid var(--ka-text);',' .approval{width:62mm;border:2.5px solid #111827 !important;')
+          replace('js/modules/management.js','.signature td,.signature th{border:1px solid var(--ka-text);padding:2px 4px;overflow:hidden}', '.signature td,.signature th{border:1px solid #111827 !important;padding:2px 4px;overflow:hidden}')
+          replace('js/modules/management.js','.signature .date-head{border-right:1.5px solid var(--ka-text);','.signature .date-head{border-right:1.5px solid #111827 !important;')
+          replace('js/modules/management.js','.signature .time-head{padding:3px 2px;border-bottom:2px solid var(--ka-text);','.signature .time-head{padding:3px 2px;border-bottom:2px solid #111827 !important;')
+          replace('js/modules/management.js','.signature tbody td{border-bottom-color:var(--ka-text-muted)}','.signature tbody td{border-bottom:1px solid #111827 !important}')
+          replace('js/modules/management.js','.signature td.date{padding-left:6px;border-right:1.5px solid var(--ka-text);','.signature td.date{padding-left:6px;border-right:1.5px solid #111827 !important;')
+          replace('js/modules/management.js','.head,.payroll{width:100%;table-layout:fixed;border:2.5px solid var(--ka-text)}','.head,.payroll{width:100%;table-layout:fixed;border:2.5px solid #111827 !important}')
+          replace('js/modules/management.js','.head td{border:1.5px solid var(--ka-text)}','.head td{border:1.5px solid #111827 !important}')
+          replace('js/modules/management.js','.payroll th,.payroll td{border:1px solid var(--ka-text);','.payroll th,.payroll td{border:1px solid #111827 !important;')
+          replace('js/modules/management.js','.approval{width:62mm;border:2.5px solid var(--ka-text);','.approval{width:62mm;border:2.5px solid #111827 !important;')
 
-          # Teacher list core: one teacher-owned global template, reused for every selected class.
           core=Path('js/modules/teacher-list-core.js')
           s=core.read_text(encoding='utf-8')
           old="""sablonGetir(ogretmenId,sinif){const id=templateId(ogretmenId,sinif);return Promise.resolve(device().list('ogretmenListeSablon').find(x=>x.id===id)||null);},
@@ -56,7 +50,7 @@ sablonKaydet(ogretmenId,sinif,veri){const id=templateId(ogretmenId,'__GENEL__');
 
           replace('js/modules/teacher-list.js',"const CORE='js/modules/teacher-list-core.js?v=1066';","const CORE='js/modules/teacher-list-core.js?v=1067';")
           PY
-      - name: Run focused syntax/contract checks
+      - name: Validate
         run: |
           node --check js/modules/management.js
           node --check js/modules/teacher-list-core.js
