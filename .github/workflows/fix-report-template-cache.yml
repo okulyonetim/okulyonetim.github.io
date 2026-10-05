@@ -1,0 +1,77 @@
+name: Fix report borders and teacher list templates
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-report-template-cache.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply direct source fixes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new, count=1):
+              p=Path(path)
+              s=p.read_text(encoding='utf-8')
+              if old not in s:
+                  raise SystemExit(f'Target not found in {path}: {old[:120]}')
+              p.write_text(s.replace(old,new,count),encoding='utf-8')
+
+          # Force the report module to a fresh URL so WebView/Service Worker cannot keep the old report renderer.
+          replace('js/app-loader.js','js/modules/management.js?v=888','js/modules/management.js?v=889')
+          replace('service-worker.js',"const CACHE_ADI='oy-cache-v1230';","const CACHE_ADI='oy-cache-v1231';")
+          replace('service-worker.js','./js/modules/management.js?v=888','./js/modules/management.js?v=889')
+
+          # Make personnel report borders explicit and independent of inherited theme variables.
+          replace('js/modules/management.js','.signature{width:100%;border-collapse:collapse;table-layout:fixed;border:2.5px solid var(--ka-text)}','.signature{width:100%;border-collapse:collapse;table-layout:fixed;border:2.5px solid #111827 !important}')
+          replace(' .signature td,.signature th{border:1px solid var(--ka-text);padding:2px 4px;overflow:hidden}',' .signature td,.signature th{border:1px solid #111827 !important;padding:2px 4px;overflow:hidden}')
+          replace(' .signature .date-head{border-right:1.5px solid var(--ka-text);',' .signature .date-head{border-right:1.5px solid #111827 !important;')
+          replace(' .signature .time-head{padding:3px 2px;border-bottom:2px solid var(--ka-text);',' .signature .time-head{padding:3px 2px;border-bottom:2px solid #111827 !important;')
+          replace(' .signature tbody td{border-bottom-color:var(--ka-text-muted)}',' .signature tbody td{border-bottom:1px solid #111827 !important}')
+          replace(' .signature td.date{padding-left:6px;border-right:1.5px solid var(--ka-text);',' .signature td.date{padding-left:6px;border-right:1.5px solid #111827 !important;')
+          replace(' .head,.payroll{width:100%;table-layout:fixed;border:2.5px solid var(--ka-text)}','.head,.payroll{width:100%;table-layout:fixed;border:2.5px solid #111827 !important}')
+          replace(' .head td{border:1.5px solid var(--ka-text)}',' .head td{border:1.5px solid #111827 !important}')
+          replace(' .payroll th,.payroll td{border:1px solid var(--ka-text);',' .payroll th,.payroll td{border:1px solid #111827 !important;')
+          replace(' .approval{width:62mm;border:2.5px solid var(--ka-text);',' .approval{width:62mm;border:2.5px solid #111827 !important;')
+
+          # Teacher list core: one teacher-owned global template, reused for every selected class.
+          core=Path('js/modules/teacher-list-core.js')
+          s=core.read_text(encoding='utf-8')
+          old="""sablonGetir(ogretmenId,sinif){const id=templateId(ogretmenId,sinif);return Promise.resolve(device().list('ogretmenListeSablon').find(x=>x.id===id)||null);},
+sablonKaydet(ogretmenId,sinif,veri){const id=templateId(ogretmenId,sinif);return device().set('ogretmenListeSablon',COL.ogretmenListeSablon,id,{...veri,ogretmenId,sinif:safeClass(sinif),guncellenme:new Date().toISOString()},{merge:false});},"""
+          new="""sablonGetir(ogretmenId,sinif){const rows=device().list('ogretmenListeSablon').filter(x=>x.ogretmenId===ogretmenId);const globalTpl=rows.find(x=>String(x.sinif||'')==='__GENEL__');if(globalTpl)return Promise.resolve(globalTpl);const classTpl=rows.find(x=>x.id===templateId(ogretmenId,sinif));const fallback=classTpl||rows.slice().sort((a,b)=>String(b.guncellenme||'').localeCompare(String(a.guncellenme||'')))[0]||null;if(fallback){const data={...fallback};delete data.id;delete data.sinif;return device().set('ogretmenListeSablon',COL.ogretmenListeSablon,templateId(ogretmenId,'__GENEL__'),{...data,ogretmenId,sinif:'__GENEL__',guncellenme:new Date().toISOString()},{merge:false}).then(()=>data).catch(()=>data);}return Promise.resolve(null);},
+sablonKaydet(ogretmenId,sinif,veri){const id=templateId(ogretmenId,'__GENEL__');return device().set('ogretmenListeSablon',COL.ogretmenListeSablon,id,{...veri,ogretmenId,sinif:'__GENEL__',guncellenme:new Date().toISOString()},{merge:false});},"""
+          if old not in s:
+              raise SystemExit('Teacher-list template repository target not found')
+          core.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          replace('js/modules/teacher-list.js',"const CORE='js/modules/teacher-list-core.js?v=1066';","const CORE='js/modules/teacher-list-core.js?v=1067';")
+          PY
+      - name: Run focused syntax/contract checks
+        run: |
+          node --check js/modules/management.js
+          node --check js/modules/teacher-list-core.js
+          node --check js/modules/teacher-list.js
+          node --check js/app-loader.js
+          node --check service-worker.js
+          grep -q "management.js?v=889" js/app-loader.js
+          grep -q "teacher-list-core.js?v=1067" js/modules/teacher-list.js
+          grep -q "__GENEL__" js/modules/teacher-list-core.js
+          grep -q "signature td,.signature th{border:1px solid #111827 !important" js/modules/management.js
+      - name: Commit source fixes and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/modules/management.js js/modules/teacher-list-core.js js/modules/teacher-list.js js/app-loader.js service-worker.js
+          git rm .github/workflows/fix-report-template-cache.yml
+          git commit -m "Fix personnel report borders and global teacher list templates"
+          git push
