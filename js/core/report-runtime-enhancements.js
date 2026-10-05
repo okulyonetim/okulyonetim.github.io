@@ -1,25 +1,423 @@
 /* Koruk Asistan — güvenli genel rapor özelleştirme + görsel/paylaşım */
-(function(w){'use strict';
-if(w.KAReportRuntimeEnhancements)return;
-const SPECIAL=/puantaj|imza\s*sirküsü|denetim|kontrol\s*formu|takip\s*çizelgesi|takip\s*listesi|toplantı\s*çizelgesi|devamsızlık|devamsizlik|ders\s*programı|oturma\s*planı|oturma\s*plani|nöbet|nobet|yemek\s*menüsü/i;
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const parse=b=>new DOMParser().parseFromString('<div id="ka-report-root">'+String(b||'')+'</div>','text/html').getElementById('ka-report-root');
-const tables=r=>[...r.querySelectorAll('table')].filter(t=>t.querySelector('thead th'));
-function eligible(title,body,opts){if(opts?.ozellestirilebilir===false)return false;const t=String(title||'');if(SPECIAL.test(t)||/data-ka-special-report|data-report-fixed-layout/i.test(String(body||'')))return false;const ts=tables(parse(body));if(!ts.length)return false;/* Birleştirilmiş hücreli tabloların düzenini koru. */if(ts.some(t=>t.querySelector('[rowspan],[colspan]')))return false;return true}
-function css(){if(document.getElementById('ka-report-runtime-css'))return;const s=document.createElement('style');s.id='ka-report-runtime-css';s.textContent='.ka-rr-mask{position:fixed;inset:0;z-index:200000;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:12px}.ka-rr-box{width:min(760px,100%);max-height:94vh;overflow:auto;background:var(--ka-card-bg,#171717);color:var(--ka-text,#fff);border:1px solid var(--ka-border,#444);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55)}.ka-rr-head{position:sticky;top:0;z-index:2;padding:16px 18px;background:var(--ka-card-bg,#171717);border-bottom:1px solid var(--ka-border,#444)}.ka-rr-head h2{margin:0;font-size:20px}.ka-rr-head p{margin:5px 0 0;color:var(--ka-text-muted,#aaa);font-size:12px}.ka-rr-body{padding:14px 18px}.ka-rr-sec{border:1px solid var(--ka-border,#444);border-radius:12px;padding:12px;margin-bottom:10px}.ka-rr-sec>strong{display:block;margin-bottom:9px}.ka-rr-item{display:grid;grid-template-columns:26px 1fr auto;gap:7px;align-items:center;padding:7px;border:1px solid var(--ka-border,#444);border-radius:9px;margin:6px 0}.ka-rr-item input[type=text]{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid var(--ka-border,#444);background:var(--ka-input-bg,#111);color:var(--ka-text,#fff)}.ka-rr-actions{position:sticky;bottom:0;display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;background:var(--ka-card-bg,#171717);border-top:1px solid var(--ka-border,#444)}.ka-rr-actions button,.ka-rr-move button{border:1px solid var(--ka-border,#555);background:transparent;color:var(--ka-text,#fff);border-radius:9px;padding:8px 12px;font-weight:700}.ka-rr-actions .primary{background:var(--ka-accent,#ffc400);color:#111;border-color:var(--ka-accent,#ffc400)}.ka-rr-preview-btn{margin-left:6px!important}@media(max-width:560px){.ka-rr-item{grid-template-columns:26px 1fr}.ka-rr-move{grid-column:2}}
-';document.head.appendChild(s)}
-function customize(title,body){const root=parse(body),ts=tables(root);if(!ts.length)return Promise.resolve(null);css();const m=document.createElement('div');m.className='ka-rr-mask';let sections='';ts.forEach((t,ti)=>{const hs=[...t.querySelectorAll('thead th')];sections+='<section class="ka-rr-sec"><strong>Tablo '+(ti+1)+' — Sütunlar</strong>'+hs.map((h,i)=>'<div class="ka-rr-item" data-i="'+i+'"><input type="checkbox" checked data-c><input type="text" data-t value="'+esc(h.textContent.trim()||('Sütun '+(i+1)))+'"><span class="ka-rr-move"><button type="button" data-up>↑</button> <button type="button" data-down>↓</button></span></div>').join('')+'</section>'});m.innerHTML='<form class="ka-rr-box"><div class="ka-rr-head"><h2>Raporu Özelleştir</h2><p>'+esc(title||'Rapor')+' — Sütunları seçebilir, sıralayabilir ve başlıklarını değiştirebilirsin.</p></div><div class="ka-rr-body"><section class="ka-rr-sec"><strong>Rapor başlığı</strong><input name="title" value="'+esc(title||'Rapor')+'" style="width:100%;box-sizing:border-box;padding:9px;border-radius:8px;border:1px solid var(--ka-border,#444);background:var(--ka-input-bg,#111);color:var(--ka-text,#fff)"></section>'+sections+'</div><div class="ka-rr-actions"><button type="button" data-cancel>Vazgeç</button><button class="primary" type="submit">Raporu Oluştur</button></div></form>';document.body.appendChild(m);m.querySelectorAll('.ka-rr-sec').forEach(sec=>sec.addEventListener('click',e=>{const item=e.target.closest('.ka-rr-item');if(!item)return;const list=item.parentElement;if(e.target.closest('[data-up]')&&item.previousElementSibling)list.insertBefore(item,item.previousElementSibling);if(e.target.closest('[data-down]')&&item.nextElementSibling)list.insertBefore(item.nextElementSibling,item.nextElementSibling)}));return new Promise(resolve=>{const end=v=>{m.remove();resolve(v)};m.querySelector('[data-cancel]').onclick=()=>end(null);m.onclick=e=>{if(e.target===m)end(null)};m.querySelector('form').onsubmit=e=>{e.preventDefault();const selectedColumns={},columnTitles={};ts.forEach((_,ti)=>{const sec=m.querySelectorAll('.ka-rr-sec')[ti],items=[...sec.querySelectorAll('.ka-rr-item')];selectedColumns[ti]=items.filter(x=>x.querySelector('[data-c]').checked).map(x=>Number(x.dataset.i));columnTitles[ti]=items.map(x=>({index:Number(x.dataset.i),title:x.querySelector('[data-t]').value.trim()}))});end({title:m.querySelector('[name=title]').value.trim()||title,selectedColumns,columnTitles})}})}
-function apply(body,sel){const root=parse(body);tables(root).forEach((t,ti)=>{const order=Array.isArray(sel.selectedColumns?.[ti])?sel.selectedColumns[ti]:[];if(!order.length)return;const titles=new Map((sel.columnTitles?.[ti]||[]).map(x=>[Number(x.index),String(x.title||'')]));[...t.rows].forEach(row=>{const cells=[...row.cells],picked=order.map(i=>cells[i]).filter(Boolean);if(row.parentElement?.tagName==='THEAD')picked.forEach((c,n)=>{const old=order[n];if(titles.has(old)&&titles.get(old))c.textContent=titles.get(old)});picked.forEach(c=>row.appendChild(c));cells.forEach(c=>{if(!picked.includes(c))c.remove()})})});return root.innerHTML}
-let originalPrint=null,lastReport=null,patching=false;
-async function openCustomizeAndPrint(title,body,opts){const sel=await customize(title,body);if(!sel)return null;return originalPrint(sel.title,apply(body,sel),{...opts,ozellestirilebilir:false})}
-function patch(){if(originalPrint||!w.ReportEngine?.printReport)return !!originalPrint;originalPrint=w.ReportEngine.printReport.bind(w.ReportEngine);w.ReportEngine.printReport=async function(title,body,opts={}){if(!eligible(title,body,opts))return originalPrint(title,body,opts);lastReport={title,body,opts};return openCustomizeAndPrint(title,body,opts)};return true}
-function observePreview(){const mo=new MutationObserver(()=>{const ov=document.getElementById('kaReportPreview');if(!ov||!lastReport||!eligible(lastReport.title,lastReport.body,lastReport.opts))return;if(ov.querySelector('[data-report-customize]'))return;const print=ov.querySelector('[data-report-print]');if(!print)return;const b=document.createElement('button');b.type='button';b.className='dv3btn ka-rr-preview-btn';b.dataset.reportCustomize='1';b.textContent='⚙ Sütunlar';b.title='Sütunları özelleştir';b.onclick=async e=>{e.preventDefault();e.stopPropagation();const r=ov;const sel=await customize(lastReport.title,lastReport.body);if(!sel)return;try{r.remove();await originalPrint(sel.title,apply(lastReport.body,sel),{...lastReport.opts,ozellestirilebilir:false})}catch(err){console.error('[ReportCustomize]',err);w.toast?.('Rapor oluşturulamadı: '+(err?.message||err))}};print.insertAdjacentElement('afterend',b)});mo.observe(document.body,{childList:true,subtree:true});}
-function loadHtml2Canvas(){if(w.html2canvas)return Promise.resolve(w.html2canvas);if(w.__kaH2C)return w.__kaH2C;w.__kaH2C=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=()=>w.html2canvas?ok(w.html2canvas):no(new Error('Görsel kütüphanesi yüklenemedi.'));s.onerror=()=>no(new Error('Görsel kütüphanesi indirilemedi.'));document.head.appendChild(s)});return w.__kaH2C}
-async function capture(){const frame=document.getElementById('kaReportFrame'),ov=document.getElementById('kaReportPreview');if(!frame||!ov||!frame.contentDocument?.body)throw new Error('Rapor önizlemesi bulunamadı.');const doc=frame.contentDocument,el=doc.querySelector('.ka-report')||doc.body;for(const img of [...doc.images])if(!img.complete)await new Promise((ok,no)=>{img.onload=ok;img.onerror=no});const h2c=await loadHtml2Canvas();const canvas=await h2c(el,{backgroundColor:'#fff',scale:2,useCORS:true,logging:false,windowWidth:el.scrollWidth||el.clientWidth,windowHeight:el.scrollHeight||el.clientHeight});return await new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error('PNG oluşturulamadı.')),'image/png'))}
-const name=v=>(String(v||'Koruk_Rapor').replace(/[^\w\sÇĞİÖŞÜçğıöşü-]/g,'').trim().replace(/\s+/g,'_')||'Koruk_Rapor')+'.png';
-const b64=blob=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result||'').split(',')[1]||'');r.onerror=no;r.readAsDataURL(blob)});
-async function imageAction(share){const ov=document.getElementById('kaReportPreview');const title=ov?.querySelector('.ka-report-preview__title b')?.textContent||'Koruk_Rapor';const blob=await capture(),fn=name(title),file=new File([blob],fn,{type:'image/png'});if(typeof w.uygulamaDosyaKaydet==='function'){return w.uygulamaDosyaKaydet(await b64(blob),fn,'image/png',!!share)}if(share&&w.navigator.share&&(!w.navigator.canShare||w.navigator.canShare({files:[file]})))return w.navigator.share({title,files:[file]});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);return true}
-document.addEventListener('click',async e=>{const btn=e.target.closest?.('[data-report-image],[data-report-share]');if(!btn)return;e.preventDefault();e.stopImmediatePropagation();if(btn.dataset.busy)return;btn.dataset.busy='1';const old=btn.textContent;btn.textContent='Hazırlanıyor…';try{await imageAction(btn.hasAttribute('data-report-share'));w.toast?.(btn.hasAttribute('data-report-share')?'Paylaşım hazırlandı.':'Görsel kaydedildi.')}catch(err){console.error('[ReportImage]',err);w.toast?.('Görsel/paylaşım başarısız: '+(err?.message||err))}finally{btn.dataset.busy='';btn.textContent=old}},true);
-function boot(){if(patch())return;let n=0;const t=setInterval(()=>{if(patch()||++n>240)clearInterval(t)},250)}
-boot();observePreview();w.KAReportRuntimeEnhancements={patch,customize,renderImage:capture};
+(function (w) {
+  'use strict';
+  if (w.KAReportRuntimeEnhancements) return;
+
+  const SPECIAL = /puantaj|imza\s*sirküsü|denetim|kontrol\s*formu|takip\s*çizelgesi|takip\s*listesi|toplantı\s*çizelgesi|devamsızlık|devamsizlik|ders\s*programı|oturma\s*planı|oturma\s*plani|nöbet|nobet|yemek\s*menüsü/i;
+
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+
+  const parse = body => new DOMParser()
+    .parseFromString('<div id="ka-report-root">' + String(body || '') + '</div>', 'text/html')
+    .getElementById('ka-report-root');
+
+  const tables = root => [...root.querySelectorAll('table')]
+    .filter(t => t.querySelector('thead th'));
+
+  function eligible(title, body, opts) {
+    if (opts?.ozellestirilebilir === false) return false;
+    const t = String(title || '');
+    if (SPECIAL.test(t) || /data-ka-special-report|data-report-fixed-layout/i.test(String(body || ''))) return false;
+    const ts = tables(parse(body));
+    if (!ts.length) return false;
+    if (ts.some(t => t.querySelector('[rowspan],[colspan]'))) return false;
+    return true;
+  }
+
+  function css() {
+    if (document.getElementById('ka-report-runtime-css')) return;
+    const s = document.createElement('style');
+    s.id = 'ka-report-runtime-css';
+    s.textContent = `
+      .ka-rr-mask{position:fixed;inset:0;z-index:200000;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:12px}
+      .ka-rr-box{width:min(760px,100%);max-height:94vh;overflow:auto;background:var(--ka-card-bg,#171717);color:var(--ka-text,#fff);border:1px solid var(--ka-border,#444);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55)}
+      .ka-rr-head{position:sticky;top:0;z-index:2;padding:16px 18px;background:var(--ka-card-bg,#171717);border-bottom:1px solid var(--ka-border,#444)}
+      .ka-rr-head h2{margin:0;font-size:20px}
+      .ka-rr-head p{margin:5px 0 0;color:var(--ka-text-muted,#aaa);font-size:12px}
+      .ka-rr-body{padding:14px 18px}
+      .ka-rr-sec{border:1px solid var(--ka-border,#444);border-radius:12px;padding:12px;margin-bottom:10px}
+      .ka-rr-sec>strong{display:block;margin-bottom:9px}
+      .ka-rr-item{display:grid;grid-template-columns:26px 1fr auto;gap:7px;align-items:center;padding:7px;border:1px solid var(--ka-border,#444);border-radius:9px;margin:6px 0}
+      .ka-rr-item input[type=text]{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid var(--ka-border,#444);background:var(--ka-input-bg,#111);color:var(--ka-text,#fff)}
+      .ka-rr-actions{position:sticky;bottom:0;display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;background:var(--ka-card-bg,#171717);border-top:1px solid var(--ka-border,#444)}
+      .ka-rr-actions button,.ka-rr-move button{border:1px solid var(--ka-border,#555);background:transparent;color:var(--ka-text,#fff);border-radius:9px;padding:8px 12px;font-weight:700}
+      .ka-rr-actions .primary{background:var(--ka-accent,#ffc400);color:#111;border-color:var(--ka-accent,#ffc400)}
+      .ka-rr-preview-btn{margin-left:6px!important}
+      @media(max-width:560px){.ka-rr-item{grid-template-columns:26px 1fr}.ka-rr-move{grid-column:2}}
+    `;
+    document.head.appendChild(s);
+  }
+
+  function customize(title, body) {
+    const root = parse(body);
+    const ts = tables(root);
+    if (!ts.length) return Promise.resolve(null);
+
+    css();
+    const m = document.createElement('div');
+    m.className = 'ka-rr-mask';
+
+    let sections = '';
+    ts.forEach((t, ti) => {
+      const hs = [...t.querySelectorAll('thead th')];
+      sections += '<section class="ka-rr-sec"><strong>Tablo ' + (ti + 1) + ' — Sütunlar</strong>' +
+        hs.map((h, i) =>
+          '<div class="ka-rr-item" data-i="' + i + '">' +
+          '<input type="checkbox" checked data-c>' +
+          '<input type="text" data-t value="' + esc(h.textContent.trim() || ('Sütun ' + (i + 1))) + '">' +
+          '<span class="ka-rr-move"><button type="button" data-up>↑</button> <button type="button" data-down>↓</button></span>' +
+          '</div>'
+        ).join('') +
+        '</section>';
+    });
+
+    m.innerHTML =
+      '<form class="ka-rr-box">' +
+      '<div class="ka-rr-head"><h2>Raporu Özelleştir</h2><p>' +
+      esc(title || 'Rapor') +
+      ' — Sütunları seçebilir, sıralayabilir ve başlıklarını değiştirebilirsin.</p></div>' +
+      '<div class="ka-rr-body">' +
+      '<section class="ka-rr-sec"><strong>Rapor başlığı</strong>' +
+      '<input name="title" value="' + esc(title || 'Rapor') +
+      '" style="width:100%;box-sizing:border-box;padding:9px;border-radius:8px;border:1px solid var(--ka-border,#444);background:var(--ka-input-bg,#111);color:var(--ka-text,#fff)">' +
+      '</section>' + sections +
+      '</div>' +
+      '<div class="ka-rr-actions"><button type="button" data-cancel>Vazgeç</button>' +
+      '<button class="primary" type="submit">Raporu Oluştur</button></div></form>';
+
+    document.body.appendChild(m);
+
+    m.querySelectorAll('.ka-rr-sec').forEach(sec => {
+      sec.addEventListener('click', e => {
+        const item = e.target.closest('.ka-rr-item');
+        if (!item) return;
+        const list = item.parentElement;
+        if (e.target.closest('[data-up]') && item.previousElementSibling) {
+          list.insertBefore(item, item.previousElementSibling);
+        }
+        if (e.target.closest('[data-down]') && item.nextElementSibling) {
+          list.insertBefore(item.nextElementSibling, item);
+        }
+      });
+    });
+
+    return new Promise(resolve => {
+      const end = value => {
+        m.remove();
+        resolve(value);
+      };
+
+      m.querySelector('[data-cancel]').onclick = () => end(null);
+      m.onclick = e => {
+        if (e.target === m) end(null);
+      };
+
+      m.querySelector('form').onsubmit = e => {
+        e.preventDefault();
+        const selectedColumns = {};
+        const columnTitles = {};
+
+        ts.forEach((_, ti) => {
+          const sec = m.querySelectorAll('.ka-rr-sec')[ti + 1];
+          const items = [...sec.querySelectorAll('.ka-rr-item')];
+          selectedColumns[ti] = items
+            .filter(x => x.querySelector('[data-c]').checked)
+            .map(x => Number(x.dataset.i));
+          columnTitles[ti] = items.map(x => ({
+            index: Number(x.dataset.i),
+            title: x.querySelector('[data-t]').value.trim()
+          }));
+        });
+
+        end({
+          title: m.querySelector('[name=title]').value.trim() || title,
+          selectedColumns,
+          columnTitles
+        });
+      };
+    });
+  }
+
+  function apply(body, selection) {
+    const root = parse(body);
+
+    tables(root).forEach((t, ti) => {
+      const order = Array.isArray(selection.selectedColumns?.[ti])
+        ? selection.selectedColumns[ti]
+        : [];
+      if (!order.length) return;
+
+      const titles = new Map(
+        (selection.columnTitles?.[ti] || [])
+          .map(x => [Number(x.index), String(x.title || '')])
+      );
+
+      [...t.rows].forEach(row => {
+        const cells = [...row.cells];
+        const picked = order.map(i => cells[i]).filter(Boolean);
+
+        if (row.parentElement?.tagName === 'THEAD') {
+          picked.forEach((cell, n) => {
+            const oldIndex = order[n];
+            if (titles.has(oldIndex) && titles.get(oldIndex)) {
+              cell.textContent = titles.get(oldIndex);
+            }
+          });
+        }
+
+        picked.forEach(cell => row.appendChild(cell));
+        cells.forEach(cell => {
+          if (!picked.includes(cell)) cell.remove();
+        });
+      });
+    });
+
+    return root.innerHTML;
+  }
+
+  let originalPrint = null;
+  let lastReport = null;
+
+  async function openCustomizeAndPrint(title, body, opts) {
+    const selection = await customize(title, body);
+    if (!selection) return null;
+    return originalPrint(
+      selection.title,
+      apply(body, selection),
+      { ...(opts || {}), ozellestirilebilir: false }
+    );
+  }
+
+  function patch() {
+    if (originalPrint || !w.ReportEngine?.printReport) return !!originalPrint;
+
+    originalPrint = w.ReportEngine.printReport.bind(w.ReportEngine);
+    w.ReportEngine.printReport = async function (title, body, opts = {}) {
+      if (!eligible(title, body, opts)) {
+        return originalPrint(title, body, opts);
+      }
+      lastReport = { title, body, opts };
+      return openCustomizeAndPrint(title, body, opts);
+    };
+
+    return true;
+  }
+
+  function observePreview() {
+    const mo = new MutationObserver(() => {
+      const ov = document.getElementById('kaReportPreview');
+      if (!ov || !lastReport || !eligible(lastReport.title, lastReport.body, lastReport.opts)) return;
+      if (ov.querySelector('[data-report-customize]')) return;
+
+      const print = ov.querySelector('[data-report-print]');
+      if (!print) return;
+
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dv3btn ka-rr-preview-btn';
+      b.dataset.reportCustomize = '1';
+      b.textContent = '⚙ Sütunlar';
+      b.title = 'Sütunları özelleştir';
+
+      b.onclick = async e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const r = ov;
+        const selection = await customize(lastReport.title, lastReport.body);
+        if (!selection) return;
+
+        try {
+          r.remove();
+          await originalPrint(
+            selection.title,
+            apply(lastReport.body, selection),
+            { ...(lastReport.opts || {}), ozellestirilebilir: false }
+          );
+        } catch (err) {
+          console.error('[ReportCustomize]', err);
+          w.toast?.('Rapor oluşturulamadı: ' + (err?.message || err));
+        }
+      };
+
+      print.insertAdjacentElement('afterend', b);
+    });
+
+    mo.observe(document.body, { childList: true, subtree: true });
+  }
+
+  function loadHtml2Canvas() {
+    if (w.html2canvas) return Promise.resolve(w.html2canvas);
+    if (w.__kaH2C) return w.__kaH2C;
+
+    w.__kaH2C = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.async = true;
+      s.onload = () => w.html2canvas
+        ? resolve(w.html2canvas)
+        : reject(new Error('Görsel kütüphanesi yüklenemedi.'));
+      s.onerror = () => reject(new Error('Görsel kütüphanesi indirilemedi.'));
+      document.head.appendChild(s);
+    });
+
+    return w.__kaH2C;
+  }
+
+  async function capture() {
+    const frame = document.getElementById('kaReportFrame');
+    const ov = document.getElementById('kaReportPreview');
+    if (!frame || !ov || !frame.contentDocument?.body) {
+      throw new Error('Rapor önizlemesi bulunamadı.');
+    }
+
+    const doc = frame.contentDocument;
+    const el = doc.querySelector('.ka-report') || doc.body;
+
+    if (doc.fonts?.ready) {
+      try { await doc.fonts.ready; } catch (_) {}
+    }
+
+    for (const img of [...doc.images]) {
+      if (!img.complete) {
+        await new Promise(resolve => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }
+    }
+
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const rect = el.getBoundingClientRect();
+    if (!rect.width || !rect.height) {
+      throw new Error('Rapor sayfası ölçülemedi.');
+    }
+
+    const h2c = await loadHtml2Canvas();
+    const scale = 4;
+    const width = Math.ceil(el.scrollWidth || rect.width);
+    const height = Math.ceil(el.scrollHeight || rect.height);
+
+    const canvas = await h2c(el, {
+      scale,
+      width,
+      height,
+      windowWidth: width,
+      windowHeight: height,
+      backgroundColor: '#fff',
+      useCORS: true,
+      allowTaint: false,
+      foreignObjectRendering: false,
+      logging: false,
+      imageTimeout: 20000,
+      scrollX: 0,
+      scrollY: 0
+    });
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (blob) resolve(blob);
+        else reject(new Error('PNG oluşturulamadı.'));
+      }, 'image/png');
+    });
+  }
+
+  const cleanName = value =>
+    (String(value || 'Koruk_Rapor')
+      .replace(/[^\w\sÇĞİÖŞÜçğıöşü-]/g, '')
+      .trim()
+      .replace(/\s+/g, '_') || 'Koruk_Rapor') + '.png';
+
+  const blobToBase64 = blob => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || '').split(',')[1] || '');
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+
+  async function imageAction(share) {
+    const ov = document.getElementById('kaReportPreview');
+    const title =
+      ov?.querySelector('.ka-report-preview__title b')?.textContent ||
+      'Koruk_Rapor';
+
+    const blob = await capture();
+    const filename = cleanName(title);
+    const file = new File([blob], filename, { type: 'image/png' });
+
+    if (typeof w.uygulamaDosyaKaydet === 'function') {
+      return w.uygulamaDosyaKaydet(
+        await blobToBase64(blob),
+        filename,
+        'image/png',
+        !!share
+      );
+    }
+
+    if (
+      share &&
+      w.navigator.share &&
+      (!w.navigator.canShare || w.navigator.canShare({ files: [file] }))
+    ) {
+      return w.navigator.share({ title, files: [file] });
+    }
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    return true;
+  }
+
+  document.addEventListener('click', async e => {
+    const btn = e.target.closest?.('[data-report-image],[data-report-share],.ka-report-preview__image,.ka-report-preview__share');
+    if (!btn) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if (btn.dataset.busy) return;
+    btn.dataset.busy = '1';
+
+    const old = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'Hazırlanıyor…';
+
+    try {
+      const share = btn.hasAttribute('data-report-share') || btn.matches('.ka-report-preview__share');
+      await imageAction(share);
+      w.toast?.(share ? 'Paylaşım hazırlandı.' : 'Görsel kaydedildi.');
+    } catch (err) {
+      console.error('[ReportImage]', err);
+      w.toast?.('Görsel/paylaşım başarısız: ' + (err?.message || err));
+    } finally {
+      btn.disabled = false;
+      btn.dataset.busy = '';
+      btn.innerHTML = old;
+    }
+  }, true);
+
+  function boot() {
+    if (patch()) return;
+    let n = 0;
+    const timer = setInterval(() => {
+      if (patch() || ++n > 240) clearInterval(timer);
+    }, 250);
+  }
+
+  boot();
+  observePreview();
+
+  w.KAReportRuntimeEnhancements = {
+    patch,
+    customize,
+    renderImage: capture
+  };
 })(window);
