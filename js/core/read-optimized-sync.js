@@ -15,9 +15,6 @@ const CRITICAL_TYPES=[
   'ogretmenIzinleri','notlar','yemekMenuleri'
 ];
 
-/* core.js içinde henüz ALL_SYNC_TYPES'e alınmamış fakat modüllerin doğrudan
-   AppStore üzerinden kullandığı koleksiyonlar. Mevcut kayıt varsa tekrar
-   register edilmez; böylece core.js'in özel query tanımları korunur. */
 const EXTRA_TYPES=[
   'sosyalKulupler','belirliGunler','zumre','sok','bepPlani','rehberlik','maarifRapor',
   'digerEvrak','nobetRotasyon','dokumanlar','yoklama','haritaFavoriler','personel',
@@ -45,13 +42,17 @@ function registeredNames(){
   return (global.SyncEngine?.definitions?.()||[]).map(x=>x?.type).filter(Boolean);
 }
 
-function registerExtraCollections(){
+/* Core bootstrap devre dışı kalmış olsa bile temiz tarayıcıda kritik okul
+   verileri mutlaka register edilmelidir. Böylece yalnızca EXTRA_TYPES değil,
+   öğretmen/sınıf/servis/ders gibi ana veriler de Firestore'dan çekilebilir. */
+function registerCollections(){
   if(!global.COL||!global.SyncEngine?.register)return;
   const existing=new Set(registeredNames());
-  for(const type of EXTRA_TYPES){
+  for(const type of [...CRITICAL_TYPES,...EXTRA_TYPES]){
     if(existing.has(type))continue;
     const collection=global.COL[type];
-    if(collection)global.SyncEngine.register(type,collection);
+    if(!collection)continue;
+    global.SyncEngine.register(type,collection);
   }
 }
 
@@ -69,12 +70,10 @@ async function initialRemoteSync(){
   if(!navigator.onLine||!global.SyncEngine?.sync||!global.KorukLocalFirst)return false;
   const u=global.KorukLocalFirst.uid?.();
   if(!u)return false;
-  registerExtraCollections();
+  registerCollections();
   const types=registeredNames();
   if(!types.length)return false;
 
-  /* Boş/temiz tarayıcıda mutlaka tam veri çek. Ayrıca ilk başarılı açılıştan
-     sonra kritik okul verisini 15 dakikadan eskiyse yeniden doğrula. */
   const last=Number(await global.KorukLocalFirst.meta(u,'readOptimizedInitialSyncAt')||0);
   const missing=await cacheMissing(CRITICAL_TYPES);
   const stale=!last||Date.now()-last>15*60*1000;
@@ -100,7 +99,6 @@ async function waitAndSync(){
   }
 }
 
-/* app-ready olayı kaçırılmış olsa bile boot tamamlandıysa kontrolü çalıştır. */
 function boot(){
   waitAndSync().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e));
 }
@@ -113,7 +111,7 @@ global.KorukReadOptimized={
   periodicSyncMs:null,
   periodicTypes:[],
   forceSync:async function(types){
-    registerExtraCollections();
+    registerCollections();
     return global.SyncEngine?.sync?.(types?.length?types:registeredNames(),{force:true,manual:true});
   },
   status,
