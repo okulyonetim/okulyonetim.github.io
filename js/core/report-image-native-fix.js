@@ -15,12 +15,15 @@ async function render(){
  if(d.fonts?.ready)try{await d.fonts.ready}catch(_){}
  for(const img of [...d.images])if(!img.complete)await new Promise(r=>{img.onload=r;img.onerror=r});
  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
- const landscape=(ov.querySelector('.ka-report-preview__title small')?.textContent||'').includes('Yatay');
- const target=landscape?3508:2480,rect=root.getBoundingClientRect();
+ const rect=root.getBoundingClientRect();
  if(!rect.width||!rect.height)throw new Error('Rapor sayfası ölçülemedi.');
- const h2c=await loadH2C(w),scale=Math.max(1,Math.min(4,target/rect.width));
- const canvas=await h2c(root,{scale,useCORS:true,allowTaint:false,backgroundColor:'#fff',foreignObjectRendering:false,logging:false,width:Math.ceil(root.scrollWidth||rect.width),height:Math.ceil(root.scrollHeight||rect.height),windowWidth:Math.ceil(root.scrollWidth||rect.width),windowHeight:Math.ceil(root.scrollHeight||rect.height),scrollX:0,scrollY:0,imageTimeout:20000});
- return new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error('PNG oluşturulamadı.')),'image/png',1));
+ const h2c=await loadH2C(w);
+ // En yüksek güvenli PNG kalitesi: 4x CSS piksel ölçeği.
+ const scale=4;
+ const width=Math.ceil(root.scrollWidth||rect.width);
+ const height=Math.ceil(root.scrollHeight||rect.height);
+ const canvas=await h2c(root,{scale,useCORS:true,allowTaint:false,backgroundColor:'#fff',foreignObjectRendering:false,logging:false,width,height,windowWidth:width,windowHeight:height,scrollX:0,scrollY:0,imageTimeout:20000});
+ return new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error('PNG oluşturulamadı.')),'image/png'));
 }
 const b64=blob=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result||'').split(',')[1]||'');r.onerror=no;r.readAsDataURL(blob)});
 async function action(share){
