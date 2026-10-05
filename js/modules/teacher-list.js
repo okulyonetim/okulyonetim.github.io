@@ -4,7 +4,7 @@
  */
 (function(global){
 'use strict';
-const CORE='js/modules/teacher-list-core.js?v=1066';
+const CORE='js/modules/teacher-list-core.js?v=1067';
 const STUDENT_PAGE='js/modules/student-list-page.js?v=1066';
 let corePromise=null,pagePromise=null;
 const GLOBAL='__GENEL__';
@@ -21,7 +21,6 @@ function installGlobalTemplateMode(){
     const rows=(global.DeviceData.list('ogretmenListeSablon')||[]).filter(x=>x.ogretmenId===tid);
     const globalTpl=rows.find(x=>String(x.sinif||'')===GLOBAL);
     if(globalTpl)return globalTpl;
-    /* Eski sınıfa bağlı şablonlardan en güncel olanı ortak şablon olarak kullan. */
     const current=rows.find(x=>String(x.sinif||'')===String(sinif||'').trim());
     const fallback=current||rows.slice().sort((a,b)=>String(b.guncellenme||'').localeCompare(String(a.guncellenme||'')))[0]||null;
     if(fallback){
