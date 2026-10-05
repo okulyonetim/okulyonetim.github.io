@@ -108,3 +108,45 @@ function install(){installPreviewGuard();bindProfileScheduleReport();installNavi
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 global.AppNavigationBehavior={scrollTop:scrollTopNow,scrollTopSoon,closeReportOverlay,decorateReportOverlay,protectDetailBacks,syncShellBackbar,clearPullRefresh:()=>{const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}},openPdfMenuTool,normalizePdfMenuCatalog};
 })(window);
+
+/* Koruk Asistan — İlk giriş veri bootstrap köprüsü.
+ * Amaç: Yeni/boş cihazda öğretmenin ihtiyaç duyduğu tüm yerel-first veriyi
+ * ilk çevrimiçi girişte Firestore'dan IndexedDB'ye almak. Sonraki açılışlarda
+ * mevcut TTL/delta senkronizasyonu aynen devam eder; rapor sistemi ve Firestore
+ * kuralları değiştirilmez.
+ */
+(function(global){
+'use strict';
+if(global.KorukFirstLoginBootstrap)return;
+let running=false;
+async function ensure(){
+  if(running||!global.SyncEngine||!global.KorukLocalFirst)return false;
+  const uid=global.KorukLocalFirst.uid?.();
+  if(!uid)return false;
+  if(await global.KorukLocalFirst.isBootstrapReady?.(uid))return true;
+  if(!global.navigator?.onLine)return false;
+  running=true;
+  try{
+    const result=await global.SyncEngine.sync(undefined,{force:true,full:true});
+    const defs=global.SyncEngine.definitions?.()||[];
+    const registered=new Set(defs.map(x=>x?.type).filter(Boolean));
+    const required=(global.AppBootstrap?.CORE_TYPES||[]).filter(type=>registered.has(type));
+    const snapshot=await global.KorukLocalFirst.userSnapshot?.(uid)||{caches:{}};
+    const caches=snapshot.caches||{};
+    const missing=required.filter(type=>!Object.prototype.hasOwnProperty.call(caches,type));
+    if(!missing.length){
+      await global.KorukLocalFirst.markBootstrap?.(uid,{types:required,completedAt:Date.now(),source:'first-login'});
+      global.dispatchEvent(new CustomEvent('koruk:first-login-bootstrap-complete',{detail:{types:required,result}}));
+      return true;
+    }
+    console.warn('[FirstLoginBootstrap] Eksik yerel veri kaldı:',missing);
+    return false;
+  }catch(error){
+    console.warn('[FirstLoginBootstrap] İlk veri senkronizasyonu başarısız:',error?.message||error);
+    return false;
+  }finally{running=false;}
+}
+global.KorukFirstLoginBootstrap={ensure};
+global.addEventListener('koruk:app-ready',()=>{ensure();},{passive:true});
+global.addEventListener('online',()=>{ensure();},{passive:true});
+})(window);
