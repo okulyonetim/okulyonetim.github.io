@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   syntax:
     runs-on: ubuntu-latest
@@ -13,5 +15,16 @@ jobs:
           node-version: 20
       - name: Check report JavaScript syntax
         run: |
+          set -e
           node --check js/core/report-output.js
           node --check js/core/report-runtime-enhancements.js
+      - name: Verify protected reports remain excluded
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const s=fs.readFileSync('js/core/report-runtime-enhancements.js','utf8');
+          for (const x of ['puantaj','imza\\s*sirk','öğretmen\\s*devamsızlık','servis\\s*aylık\\s*takip','aylık\\s*denetim','yemek\\s*denetim','maaş\\s*değişikliği','dilekçe']) {
+            if(!s.includes(x)) throw new Error('Koruma filtresi eksik: '+x);
+          }
+          console.log('Protected report exclusions: OK');
+          NODE
