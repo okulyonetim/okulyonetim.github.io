@@ -12,42 +12,21 @@
   function installFoodMenuGuards(){
     if(document.documentElement.dataset.foodCrudGuardsInstalled==='1')return;
     document.documentElement.dataset.foodCrudGuardsInstalled='1';
-
-    // food-menu.js mevcut event delegation yapısını korur; burada yalnızca
-    // olayın modüle ulaşmadan önce yetki kontrolü yapılır.
     document.addEventListener('click',e=>{
       const root=e.target?.closest?.('[data-food-menu-module]');
       if(!root)return;
       const add=e.target?.closest?.('[data-fm-add]');
-      if(add&&!can('food.menu.create')){
-        e.preventDefault();e.stopImmediatePropagation();
-        global.toast?.('Yemek menüsü ekleme yetkiniz yok.');
-        return;
-      }
+      if(add&&!can('food.menu.create')){e.preventDefault();e.stopImmediatePropagation();global.toast?.('Yemek menüsü ekleme yetkiniz yok.');return;}
       const remove=e.target?.closest?.('[data-fm-remove]');
-      if(remove&&!can('food.menu.delete')){
-        e.preventDefault();e.stopImmediatePropagation();
-        global.toast?.('Yemek menüsü silme yetkiniz yok.');
-        return;
-      }
+      if(remove&&!can('food.menu.delete')){e.preventDefault();e.stopImmediatePropagation();global.toast?.('Yemek menüsü silme yetkiniz yok.');return;}
       const save=e.target?.closest?.('[data-fm-save]');
-      if(save&&!can('food.menu.edit')){
-        e.preventDefault();e.stopImmediatePropagation();
-        global.toast?.('Yemek menüsü düzenleme yetkiniz yok.');
-      }
+      if(save&&!can('food.menu.edit')){e.preventDefault();e.stopImmediatePropagation();global.toast?.('Yemek menüsü düzenleme yetkiniz yok.');}
     },true);
-
     document.addEventListener('input',e=>{
       const root=e.target?.closest?.('[data-food-menu-module]');
       if(!root)return;
       const item=e.target?.closest?.('[data-fm-item]');
-      if(item&&!can('food.menu.edit')){
-        e.preventDefault();e.stopImmediatePropagation();
-        // Yetkisiz kullanıcı mevcut değeri değiştirmeye başlamışsa
-        // kontrolü kaybetmeden alanı eski değerine döndür.
-        if(item.dataset.permissionLockedValue!==undefined)item.value=item.dataset.permissionLockedValue;
-        global.toast?.('Yemek menüsü düzenleme yetkiniz yok.');
-      }
+      if(item&&!can('food.menu.edit')){e.preventDefault();e.stopImmediatePropagation();global.toast?.('Yemek menüsü düzenleme yetkiniz yok.');}
     },true);
   }
 
@@ -70,18 +49,19 @@
     if(importer&&!importer.__granularStudentImportPermissions){for(const name of ['importStudents','importEOkul']){if(typeof importer[name]!=='function')continue;const original=importer[name].bind(importer);importer[name]=(...args)=>can('people.students.create')?original(...args):deny();}importer.__granularStudentImportPermissions=true;}
     const transport=global.TasimaService;
     if(transport&&!transport.__granularTransportPermissions){
-      if(typeof transport.servisKaydet==='function'){
-        const original=transport.servisKaydet.bind(transport);
-        transport.servisKaydet=(id,data)=>can(id?'transport.services.edit':'transport.services.create')?original(id,data):deny();
-      }
-      if(typeof transport.servisSil==='function'){
-        const original=transport.servisSil.bind(transport);
-        transport.servisSil=id=>can('transport.services.delete')?original(id):deny();
-      }
+      if(typeof transport.servisKaydet==='function'){const original=transport.servisKaydet.bind(transport);transport.servisKaydet=(id,data)=>can(id?'transport.services.edit':'transport.services.create')?original(id,data):deny();}
+      if(typeof transport.servisSil==='function'){const original=transport.servisSil.bind(transport);transport.servisSil=id=>can('transport.services.delete')?original(id):deny();}
       transport.__granularTransportPermissions=true;
     }
+    const docs=global.DokumanlarService;
+    if(docs&&!docs.__granularDocumentPermissions){
+      if(typeof docs.dokumanEkle==='function'){const original=docs.dokumanEkle.bind(docs);docs.dokumanEkle=(...args)=>can('documents.create')?original(...args):deny();}
+      if(typeof docs.dokumanGuncelle==='function'){const original=docs.dokumanGuncelle.bind(docs);docs.dokumanGuncelle=(...args)=>can('documents.edit')?original(...args):deny();}
+      if(typeof docs.dokumanSil==='function'){const original=docs.dokumanSil.bind(docs);docs.dokumanSil=(...args)=>can('documents.delete')?original(...args):deny();}
+      docs.__granularDocumentPermissions=true;
+    }
     installFoodMenuGuards();
-    return !!service||!!personnel||!!importer||!!transport;
+    return !!service||!!personnel||!!importer||!!transport||!!docs;
   }
   let attempts=0;const timer=setInterval(()=>{if(install()||++attempts>=240)clearInterval(timer)},50);
   global.RolePermissionCrudGuards={install};
