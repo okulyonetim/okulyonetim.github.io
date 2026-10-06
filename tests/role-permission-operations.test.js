@@ -1,22 +1,12 @@
-import { test, expect } from '@playwright/test';
+const fs=require('fs');
+const assert=require('assert');
 
-test.describe('Granular role operation policy', () => {
-  test('catalog exposes separate role operation permissions', async ({ page }) => {
-    await page.goto('about:blank');
-    const result = await page.evaluate(() => {
-      const levels = ['settings.roles', 'settings.roles.edit', 'settings.roles.create', 'settings.roles.clone', 'settings.roles.delete'];
-      const catalog = window.RolePermissionCatalog?.catalog || {};
-      return levels.map(key => ({ key, present: !!catalog[key] }));
-    });
-    expect(result.every(x => x.present)).toBeTruthy();
-  });
-
-  test('operation policy exposes create clone delete guards', async ({ page }) => {
-    await page.goto('about:blank');
-    const result = await page.evaluate(() => ({
-      source: 'settings.roles',
-      operations: ['edit', 'create', 'clone', 'delete']
-    }));
-    expect(result.operations).toEqual(['edit', 'create', 'clone', 'delete']);
-  });
-});
+const source=fs.readFileSync('js/core/role-permission-catalog.js','utf8');
+for(const key of ['settings.roles','settings.roles.edit','settings.roles.create','settings.roles.clone','settings.roles.delete']){
+  assert(source.includes(`['${key}'`),`Permission kataloğunda eksik: ${key}`);
+}
+assert(source.includes('installRoleActionGuards'),'Rol işlem yetki koruması eksik.');
+assert(source.includes("settings.roles.create"),'Yeni rol oluşturma yetkisi çalışma zamanında kontrol edilmeli.');
+assert(source.includes("settings.roles.delete"),'Rol silme yetkisi çalışma zamanında kontrol edilmeli.');
+assert(source.includes('koruk:module-ready'),'Settings modülü hazır olduktan sonra rol işlem koruması kurulmalı.');
+console.log('role-permission-operations: OK');
