@@ -19,6 +19,7 @@
   const roleName=r=>String(r?.ad||r?.rolAdi||r?.name||r?.id||'').trim();
   const selectedRole=()=>document.querySelector('#kaRolePermissionEditor select[data-role]')?.value||'';
   const roleById=id=>roles().find(r=>String(r.id)===String(id));
+  const service=()=>global.KullaniciYonetimiService;
   const notify=m=>global.toast?.(m);
   function effective(r,key){
     const y=r?.yetkiler||{};
@@ -81,21 +82,24 @@
     if(!canCreate())return;
     const name=prompt('Yeni rol adı:','Yeni Rol'); if(!name?.trim())return;
     const id='rol_'+Date.now().toString(36); const base={id,ad:name.trim(),yetkiler:{},guncellenmeTarihi:new Date().toISOString()};
-    await global.DeviceData.update('roller',global.COL.roller,id,base); notify('Yeni rol oluşturuldu.'); render();
+    if(!service()?.rolKaydet)throw new Error('KullaniciYonetimiService.rolKaydet bulunamadı');
+    await service().rolKaydet(null,base); notify('Yeni rol oluşturuldu.'); render();
   }
   async function cloneRole(){
     if(!canClone())return;
     const src=roleById(selectedRole()); if(!src)return;
     const name=prompt('Kopyalanacak rolün yeni adı:',`${roleName(src)} Kopya`); if(!name?.trim())return;
     const id='rol_'+Date.now().toString(36); const copy={...src,id,ad:name.trim(),yetkiler:{...(src.yetkiler||{})},guncellenmeTarihi:new Date().toISOString()};
-    await global.DeviceData.update('roller',global.COL.roller,id,copy); notify('Rol kopyalandı.'); render();
+    if(!service()?.rolKaydet)throw new Error('KullaniciYonetimiService.rolKaydet bulunamadı');
+    await service().rolKaydet(null,copy); notify('Rol kopyalandı.'); render();
   }
   async function deleteRole(){
     if(!canDelete())return;
     const id=selectedRole(),r=roleById(id); if(!r)return;
     if(roles().length<=1){notify('Son rol silinemez.');return;}
     if(!confirm(`“${roleName(r)}” rolü silinsin mi?`))return;
-    await global.DeviceData.delete('roller',global.COL.roller,id); notify('Rol silindi.'); render();
+    if(!service()?.rolSil)throw new Error('KullaniciYonetimiService.rolSil bulunamadı');
+    await service().rolSil(id,roles().length); notify('Rol silindi.'); render();
   }
   function bind(host){
     host.querySelector('[data-role]')?.addEventListener('change',()=>render());
@@ -106,8 +110,11 @@
     host.querySelector('[data-save]')?.addEventListener('click',async()=>{
       if(!canEdit())return;const id=selectedRole(),r=roleById(id);if(!r)return;const yetkiler={...(r.yetkiler||{})};
       host.querySelectorAll('[data-permission]').forEach(el=>{yetkiler[el.dataset.permission]=levelValue[el.value]||'gizle';});
-      try{await global.DeviceData.update('roller',global.COL.roller,id,{yetkiler,guncellenmeTarihi:new Date().toISOString()});notify('Rol yetkileri kaydedildi.');render();}
-      catch(e){console.error('[RolePermissionEditor]',e);notify('Rol yetkileri kaydedilemedi.');}
+      try{
+        if(!service()?.rolKaydet)throw new Error('KullaniciYonetimiService.rolKaydet bulunamadı');
+        await service().rolKaydet(id,{yetkiler,guncellenmeTarihi:new Date().toISOString()});
+        notify('Rol yetkileri kaydedildi.');render();
+      }catch(e){console.error('[RolePermissionEditor]',e);notify('Rol yetkileri kaydedilemedi.');}
     });
   }
   function mount(){if(!canOpen())return;const root=document.querySelector('[data-settings-module]');if(root?.querySelector('#kaRolePermissionEditorHost'))return;render();}
