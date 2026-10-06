@@ -1,5 +1,5 @@
 /* Koruk Asistan — Granular CRUD permission guards
- * Tek merkezi runtime katmanından öğrenci/sınıf CRUD işlemlerini korur.
+ * Tek merkezi runtime katmanından öğrenci/sınıf/personel CRUD işlemlerini korur.
  * Firestore/IndexedDB şemasını değiştirmez; mevcut servisleri kullanır.
  */
 (function(global){
@@ -32,6 +32,19 @@
       service.__granularCrudPermissions=true;
     }
 
+    const personnel=global.PersonelService;
+    if(personnel&&!personnel.__granularCrudPermissions){
+      if(typeof personnel.personelKaydet==='function'){
+        const original=personnel.personelKaydet.bind(personnel);
+        personnel.personelKaydet=(id,data)=>can('management.personnel.edit','edit')?original(id,data):deny();
+      }
+      if(typeof personnel.personelSil==='function'){
+        const original=personnel.personelSil.bind(personnel);
+        personnel.personelSil=id=>can('management.personnel.edit','edit')?original(id):deny();
+      }
+      personnel.__granularCrudPermissions=true;
+    }
+
     const importer=global.PeopleImportUI;
     if(importer&&!importer.__granularStudentImportPermissions){
       for(const name of ['importStudents','importEOkul']){
@@ -41,7 +54,7 @@
       }
       importer.__granularStudentImportPermissions=true;
     }
-    return !!service||!!importer;
+    return !!service||!!personnel||!!importer;
   }
 
   let attempts=0;
