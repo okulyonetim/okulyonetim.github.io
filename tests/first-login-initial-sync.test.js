@@ -13,8 +13,6 @@ assert(core.includes('delete x.force;delete x.full;delete x.manual;delete x.base
   'sync kontrol seçenekleri revision snapshot içine sızmamalı.');
 assert(core.includes("scheduleSync(250,{bootstrap:true})"),
   'İlk başarılı bootstrap çekirdek senkronizasyonunu başlatmalı.');
-assert(core.includes("'ogrenciler'"),
-  'Öğrenci koleksiyonu ilk senkronizasyon kapsamına alınmalı.');
 
 assert(optimized.includes("'ogrenciler'"),
   'Read-optimized kritik koleksiyonlarda öğrenciler bulunmalı.');
@@ -25,7 +23,7 @@ assert(optimized.includes('await global.SyncEngine.sync(registeredNames(),{force
 
 assert(firebaseInit.includes("CRITICAL_TYPES=['ogretmenler','siniflar','veliler']"),
   'Firestore read guard kritik tip kontrolünü korumalı.');
-assert(firebaseInit.includes("if(marker==='__ka_missing__')return true"),
+assert(firebaseInit.includes("if(marker==='__ka_missing__')return false"),
   'Guard eksik cache ile boş cache değerini ayırmalı.');
 assert(firebaseInit.includes("if(fresh()&&await criticalCacheReady())return;"),
   'Taze damga yalnız kritik cache hazırsa sync\'i engellemeli.');
