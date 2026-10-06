@@ -10,7 +10,7 @@ if(global.__KA_READ_OPTIMIZED_SYNC__)return;
 global.__KA_READ_OPTIMIZED_SYNC__=true;
 
 const CRITICAL_TYPES=[
-  'ogretmenler','dersProgrami','dersSaatleri','siniflar','veliler','servisler',
+  'ogretmenler','dersProgrami','dersSaatleri','siniflar','ogrenciler','veliler','servisler',
   'nobetAtamalari','nobetYerleri','servisOturma','sinavlar','denemeSinavlari',
   'ogretmenIzinleri','notlar','yemekMenuleri'
 ];
@@ -44,7 +44,7 @@ function registeredNames(){
 
 /* Core bootstrap devre dışı kalmış olsa bile temiz tarayıcıda kritik okul
    verileri mutlaka register edilmelidir. Böylece yalnızca EXTRA_TYPES değil,
-   öğretmen/sınıf/servis/ders gibi ana veriler de Firestore'dan çekilebilir. */
+   öğretmen/sınıf/öğrenci/veli/servis gibi ana veriler de Firestore'dan çekilebilir. */
 function registerCollections(){
   if(!global.COL||!global.SyncEngine?.register)return;
   const existing=new Set(registeredNames());
@@ -105,6 +105,7 @@ function boot(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 global.addEventListener('koruk:app-ready',()=>{initialRemoteSync().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e))});
 global.addEventListener('online',()=>{initialRemoteSync().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e))},{passive:true});
+global.addEventListener('koruk:store-change',event=>{if(event.detail?.path==='session.user'&&event.detail?.value?.uid)initialRemoteSync().catch(e=>console.warn('[ReadOptimizedSync]',e?.message||e))},{passive:true});
 
 global.KorukReadOptimized={
   remoteTTL:Number(global.SyncEngine?.remoteTTL||24*60*60*1000),
