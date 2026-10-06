@@ -7,19 +7,19 @@
   let attempts=0;
   let navigationInstalled=false;
 
-  const loadEditor=()=>new Promise((resolve,reject)=>{
-    const src='js/core/role-permission-editor.js?v=1';
-    if([...document.scripts].some(s=>s.src.includes(src.split('?')[0])))return resolve();
+  const loadScript=(src,message)=>new Promise((resolve,reject)=>{
+    const clean=src.split('?')[0];
+    if([...document.scripts].some(s=>s.src.includes(clean)))return resolve();
     const s=document.createElement('script');
     s.src=src;
     s.async=false;
     s.onload=resolve;
-    s.onerror=()=>reject(new Error('Rol yetki editörü yüklenemedi.'));
+    s.onerror=()=>reject(new Error(message));
     document.head.appendChild(s);
   });
+  const loadEditor=()=>loadScript('js/core/role-permission-editor.js?v=2','Rol yetki editörü yüklenemedi.');
+  const loadCrudGuards=()=>loadScript('js/core/role-permission-crud-guards.js?v=1','Granular CRUD yetki katmanı yüklenemedi.');
 
-  /* Shell rotalarının merkezi katalog karşılıkları. UI'daki route/page değerleri
-     değişmeden kalır; yalnızca hangi permission'ın gerekli olduğu burada tanımlanır. */
   const PAGE_PERMISSIONS=Object.freeze({
     'people:teachers':'people.teachers','people:classes':'people.classes','people:students':'people.students','people:student-attendance':'people.attendance',
     'academic:written':'academic.exams','academic:trial':'academic.trial','academic:results':'academic.results','academic:plans':'academic.plans','academic:schedule':'academic.schedule','academic:calendar':'academic.calendar',
@@ -74,9 +74,6 @@
     });
     document.querySelectorAll('[data-ka-menu-group]').forEach(card=>{
       const group=String(card.dataset.kaMenuGroup||'');
-      const items=[...document.querySelectorAll(`[data-ka-menu-group="${CSS.escape(group)}"] ~ * [data-ka-shell-route]`)];
-      /* Menü kartları ShellUI tarafından yeniden üretildiği için kart bazında
-         katalogdaki module permission'ı doğrudan kontrol ediyoruz. */
       const moduleMap={people:'people',programs:'academic',communication:'communication',documents:'documents',transport:'transport',food:'food',management:'management',settings:'settings',exams:'academic',calendar:'communication'};
       const module=moduleMap[group];
       if(module)card.hidden=!can(modulePermission(module),'read');
@@ -95,6 +92,7 @@
     if(!window.RolePermissionCatalog?.mergeIntoPermissionService?.())return false;
     window.dispatchEvent(new CustomEvent('koruk:permission-catalog-ready'));
     loadEditor().catch(e=>console.warn('[RolePermissionEditor]',e?.message||e));
+    loadCrudGuards().catch(e=>console.warn('[RolePermissionCrudGuards]',e?.message||e));
     watchMenu();
     if(!installNavigationGuards()){
       const timer=setInterval(()=>{
