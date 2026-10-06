@@ -55,7 +55,6 @@
 
   let roleGuardsInstalled=false;
   function installRoleActionGuards(){
-    if(roleGuardsInstalled)return true;
     const install=()=>{
       const service=global.KullaniciYonetimiService;
       const ps=global.PermissionService;
