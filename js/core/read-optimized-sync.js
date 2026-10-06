@@ -9,6 +9,26 @@
 if(global.__KA_READ_OPTIMIZED_SYNC__)return;
 global.__KA_READ_OPTIMIZED_SYNC__=true;
 
+/* Merkezi rol/yetki kataloğunu uygulama bootstrap zincirine al.
+   PermissionService app-loader tarafından oluşturulsa bile bridge hazır olana
+   kadar bekler; böylece ikinci bir runtime yetki sistemi oluşmaz. */
+(function bootstrapRolePermissionCatalog(){
+  const scripts=[
+    'js/core/role-permission-catalog.js?v=1',
+    'js/core/role-permission-bridge.js?v=1'
+  ];
+  const load=(src)=>new Promise((resolve,reject)=>{
+    if([...document.scripts].some(s=>s.src.includes(src.split('?')[0])))return resolve();
+    const s=document.createElement('script');
+    s.src=src;
+    s.async=false;
+    s.onload=resolve;
+    s.onerror=()=>reject(new Error(`Yetki bootstrap dosyası yüklenemedi: ${src}`));
+    document.head.appendChild(s);
+  });
+  load(scripts[0]).then(()=>load(scripts[1])).catch(e=>console.warn('[RolePermissionBootstrap]',e?.message||e));
+})();
+
 const CRITICAL_TYPES=[
   'ogretmenler','dersProgrami','dersSaatleri','siniflar','ogrenciler','veliler','servisler',
   'nobetAtamalari','nobetYerleri','servisOturma','sinavlar','denemeSinavlari',
