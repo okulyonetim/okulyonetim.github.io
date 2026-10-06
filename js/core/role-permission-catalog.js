@@ -44,15 +44,50 @@
     if(!ps)return false;
     const aliases={...(ps.aliases||{})};
     Object.entries(legacyAliases).forEach(([key,list])=>{aliases[key]=[...new Set([...(aliases[key]||[]),...list])];});
-    /* Tek runtime katalog kaynağı artık burasıdır. */
     ps.catalog=catalog;
     ps.LEVELS=LEVELS;
     ps.aliases=Object.freeze(aliases);
     ps.permissionCatalogVersion='2026-10-06';
-    global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService};
+    global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService,installRoleActionGuards};
+    installRoleActionGuards();
     return true;
   }
 
-  global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService};
+  let roleGuardsInstalled=false;
+  function installRoleActionGuards(){
+    if(roleGuardsInstalled)return true;
+    const install=()=>{
+      const service=global.KullaniciYonetimiService;
+      const ps=global.PermissionService;
+      if(!service||!ps)return false;
+      if(service.__rolePermissionGuardsInstalled)return true;
+      const originalSave=service.rolKaydet?.bind(service);
+      const originalDelete=service.rolSil?.bind(service);
+      if(!originalSave||!originalDelete)return false;
+      service.rolKaydet=async function(mevcutId,veri){
+        const permission=mevcutId?'settings.roles.edit':'settings.roles.create';
+        if(global.AKTIF_KULLANICI?.admin!==true&&!ps.can(permission,'edit')){
+          global.toast?.(mevcutId?'Bu rolü düzenleme yetkiniz yok.':'Yeni rol oluşturma yetkiniz yok.');
+          return Promise.reject(new Error('yetkisiz:'+permission));
+        }
+        return originalSave(mevcutId,veri);
+      };
+      service.rolSil=async function(id,count){
+        if(global.AKTIF_KULLANICI?.admin!==true&&!ps.can('settings.roles.delete','edit')){
+          global.toast?.('Rol silme yetkiniz yok.');
+          return Promise.reject(new Error('yetkisiz:settings.roles.delete'));
+        }
+        return originalDelete(id,count);
+      };
+      service.__rolePermissionGuardsInstalled=true;
+      roleGuardsInstalled=true;
+      return true;
+    };
+    if(install())return true;
+    global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='settings')install()},{once:false});
+    return false;
+  }
+
+  global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService,installRoleActionGuards};
   if(global.PermissionService)mergeIntoPermissionService();
 })(window);
