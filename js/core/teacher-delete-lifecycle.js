@@ -13,7 +13,7 @@ const fullName=t=>`${t?.ad||''} ${t?.soyad||''}`.trim()||'Öğretmen';
 let lastTeacherEditId='';
 
 function canDelete(){
-  return !global.PermissionService||global.PermissionService.can?.('people.teachers','edit')===true;
+  return !global.PermissionService||global.PermissionService.can?.('people.teachers.delete','edit')===true;
 }
 function collection(type){return global.COL?.[type]||''}
 async function update(type,id,patch){
@@ -126,7 +126,6 @@ function ensureSaveButtonContrast(modal){
   `;
   modal.appendChild(style);
 }
-
 function teacherIdFromCanonicalModal(modal){
   return String(modal?.querySelector('#teacherForm input[name="id"]')?.value||'').trim();
 }
