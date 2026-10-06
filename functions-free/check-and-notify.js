@@ -2,6 +2,14 @@ const admin = require('firebase-admin');
 const express = require('express');
 
 const app = express();
+app.use(express.json({ limit: '32kb' }));
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Cron-Secret');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
 let dbReady = false;
 let db;
 let kontrolCalisiyor = false;
@@ -25,6 +33,47 @@ function turkiyeSimdi() {
     tarihISO: `${simdi.getUTCFullYear()}-${pad(simdi.getUTCMonth() + 1)}-${pad(simdi.getUTCDate())}`,
     saatHHMM: `${pad(simdi.getUTCHours())}:${pad(simdi.getUTCMinutes())}`
   };
+}
+
+async function sifreyiDogrudanGuncelle(req, res) {
+  try {
+    firebaseBaslat();
+    const authHeader = String(req.headers.authorization || '');
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+    if (!token) return res.status(401).json({ ok: false, hata: 'Oturum doğrulanamadı.' });
+
+    const decoded = await admin.auth().verifyIdToken(token);
+    const isteyenUid = String(decoded.uid || '').trim();
+    if (!isteyenUid) return res.status(401).json({ ok: false, hata: 'Oturum doğrulanamadı.' });
+
+    const isteyenSnap = await db.collection('oy_kullanicilar').doc(isteyenUid).get();
+    const isteyen = isteyenSnap.exists ? isteyenSnap.data() || {} : null;
+    if (!isteyen || isteyen.admin !== true || isteyen.aktif === false) {
+      return res.status(403).json({ ok: false, hata: 'Şifre sıfırlama yetkisi yalnız Süper Admin içindir.' });
+    }
+
+    const hedefUid = String(req.body?.hedefUid || '').trim();
+    const yeniSifre = String(req.body?.yeniSifre || '');
+    if (!hedefUid) return res.status(400).json({ ok: false, hata: 'Hedef kullanıcı UID bulunamadı.' });
+    if (hedefUid === isteyenUid) return res.status(400).json({ ok: false, hata: 'Kendi şifrenizi Profilim bölümünden değiştirin.' });
+    if (yeniSifre.length < 6) return res.status(400).json({ ok: false, hata: 'Şifre en az 6 karakter olmalıdır.' });
+
+    const hedefAuth = await admin.auth().getUser(hedefUid);
+    if (!hedefAuth.email) return res.status(400).json({ ok: false, hata: 'Hedef kullanıcının giriş hesabı bulunamadı.' });
+
+    await admin.auth().updateUser(hedefUid, { password: yeniSifre });
+    console.log(`Admin parola güncellemesi tamamlandı: ${hedefUid}`);
+    return res.status(200).json({ ok: true, completed: true });
+  } catch (err) {
+    console.error('Doğrudan şifre güncelleme hatası:', err.stack || err.message);
+    const code = String(err?.code || '');
+    if (code.includes('auth/id-token-expired') || code.includes('auth/invalid-id-token') || code.includes('auth/argument-error')) {
+      return res.status(401).json({ ok: false, hata: 'Oturum süresi dolmuş. Lütfen yeniden giriş yapın.' });
+    }
+    if (code.includes('auth/user-not-found')) return res.status(404).json({ ok: false, hata: 'Hedef kullanıcı bulunamadı.' });
+    if (code.includes('auth/password-does-not-meet-requirements')) return res.status(400).json({ ok: false, hata: 'Yeni şifre Firebase parola kurallarını karşılamıyor.' });
+    return res.status(500).json({ ok: false, hata: String(err?.message || 'Şifre güncellenemedi.').slice(0, 300) });
+  }
 }
 
 async function sifreSifirlamaIstekleriniIsle() {
@@ -173,6 +222,7 @@ async function kontrolEt() {
 }
 
 app.get('/', (_req, res) => res.status(200).send('OK'));
+app.post('/sifre-guncelle', sifreyiDogrudanGuncelle);
 app.get('/kontrol', async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (secret && req.headers['x-cron-secret'] !== secret) return res.status(401).send('Unauthorized');
