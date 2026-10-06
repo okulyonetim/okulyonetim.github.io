@@ -67,13 +67,13 @@ async function cacheMissing(types){
 }
 
 async function initialRemoteSync(){
-  if(!navigator.onLine||!global.SyncEngine?.schedule||!global.KorukLocalFirst)return false;
+  if(!navigator.onLine||!global.SyncEngine?.sync||!global.KorukLocalFirst)return false;
   const u=global.KorukLocalFirst.uid?.();
   if(!u)return false;
   registerCollections();
   const missing=await cacheMissing(CRITICAL_TYPES);
   if(!missing)return false;
-  global.SyncEngine.schedule(0,{bootstrap:true});
+  await global.SyncEngine.sync(registeredNames(),{force:true,manual:true});
   return true;
 }
 
@@ -102,8 +102,7 @@ global.KorukReadOptimized={
   forceSync:async function(types){
     registerCollections();
     if(types?.length)return global.SyncEngine?.sync?.(types,{force:true,manual:true});
-    global.SyncEngine?.schedule?.(0,{force:true,manual:true});
-    return true;
+    return global.SyncEngine?.sync?.(registeredNames(),{force:true,manual:true});
   },
   status,
   initialRemoteSync
