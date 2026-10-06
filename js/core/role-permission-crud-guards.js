@@ -8,6 +8,49 @@
   const isAdmin=()=>global.AKTIF_KULLANICI?.admin===true||global.AppStore?.get?.('session.user')?.admin===true;
   const can=(key,level='edit')=>isAdmin()||global.PermissionService?.can?.(key,level)===true;
   const deny=()=>{global.toast?.('Bu işlem için yetkiniz yok.');return Promise.reject(new Error('yetkisiz'));};
+
+  function installFoodMenuGuards(){
+    if(document.documentElement.dataset.foodCrudGuardsInstalled==='1')return;
+    document.documentElement.dataset.foodCrudGuardsInstalled='1';
+
+    // food-menu.js mevcut event delegation yapısını korur; burada yalnızca
+    // olayın modüle ulaşmadan önce yetki kontrolü yapılır.
+    document.addEventListener('click',e=>{
+      const root=e.target?.closest?.('[data-food-menu-module]');
+      if(!root)return;
+      const add=e.target?.closest?.('[data-fm-add]');
+      if(add&&!can('food.menu.create')){
+        e.preventDefault();e.stopImmediatePropagation();
+        global.toast?.('Yemek menüsü ekleme yetkiniz yok.');
+        return;
+      }
+      const remove=e.target?.closest?.('[data-fm-remove]');
+      if(remove&&!can('food.menu.delete')){
+        e.preventDefault();e.stopImmediatePropagation();
+        global.toast?.('Yemek menüsü silme yetkiniz yok.');
+        return;
+      }
+      const save=e.target?.closest?.('[data-fm-save]');
+      if(save&&!can('food.menu.edit')){
+        e.preventDefault();e.stopImmediatePropagation();
+        global.toast?.('Yemek menüsü düzenleme yetkiniz yok.');
+      }
+    },true);
+
+    document.addEventListener('input',e=>{
+      const root=e.target?.closest?.('[data-food-menu-module]');
+      if(!root)return;
+      const item=e.target?.closest?.('[data-fm-item]');
+      if(item&&!can('food.menu.edit')){
+        e.preventDefault();e.stopImmediatePropagation();
+        // Yetkisiz kullanıcı mevcut değeri değiştirmeye başlamışsa
+        // kontrolü kaybetmeden alanı eski değerine döndür.
+        if(item.dataset.permissionLockedValue!==undefined)item.value=item.dataset.permissionLockedValue;
+        global.toast?.('Yemek menüsü düzenleme yetkiniz yok.');
+      }
+    },true);
+  }
+
   function install(){
     const service=global.SiniflarService;
     if(service&&!service.__granularCrudPermissions){
@@ -37,6 +80,7 @@
       }
       transport.__granularTransportPermissions=true;
     }
+    installFoodMenuGuards();
     return !!service||!!personnel||!!importer||!!transport;
   }
   let attempts=0;const timer=setInterval(()=>{if(install()||++attempts>=240)clearInterval(timer)},50);
