@@ -67,26 +67,14 @@ async function cacheMissing(types){
 }
 
 async function initialRemoteSync(){
-  if(!navigator.onLine||!global.SyncEngine?.sync||!global.KorukLocalFirst)return false;
+  if(!navigator.onLine||!global.SyncEngine?.schedule||!global.KorukLocalFirst)return false;
   const u=global.KorukLocalFirst.uid?.();
   if(!u)return false;
   registerCollections();
-  const types=registeredNames();
-  if(!types.length)return false;
-
-  const last=Number(await global.KorukLocalFirst.meta(u,'readOptimizedInitialSyncAt')||0);
   const missing=await cacheMissing(CRITICAL_TYPES);
-  const stale=!last||Date.now()-last>15*60*1000;
-  if(!missing&&!stale)return false;
-
-  try{
-    await global.SyncEngine.sync(types,{force:true,manual:true});
-    await global.KorukLocalFirst.meta(u,'readOptimizedInitialSyncAt',Date.now());
-    return true;
-  }catch(error){
-    console.warn('[ReadOptimizedSync] Firestore ilk/veri doğrulama senkronizasyonu başarısız:',error?.message||error);
-    return false;
-  }
+  if(!missing)return false;
+  global.SyncEngine.schedule(0,{bootstrap:true});
+  return true;
 }
 
 async function waitAndSync(){
@@ -113,7 +101,9 @@ global.KorukReadOptimized={
   periodicTypes:[],
   forceSync:async function(types){
     registerCollections();
-    return global.SyncEngine?.sync?.(types?.length?types:registeredNames(),{force:true,manual:true});
+    if(types?.length)return global.SyncEngine?.sync?.(types,{force:true,manual:true});
+    global.SyncEngine?.schedule?.(0,{force:true,manual:true});
+    return true;
   },
   status,
   initialRemoteSync
