@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const src=fs.readFileSync(new URL('../js/core/role-permission-crud-guards.js',import.meta.url),'utf8');
+assert.match(src,/food\.menu\.create/);
+assert.match(src,/food\.menu\.edit/);
+assert.match(src,/food\.menu\.delete/);
+assert.match(src,/\[data-fm-add\]/);
+assert.match(src,/\[data-fm-remove\]/);
+assert.match(src,/\[data-fm-save\]/);
+assert.match(src,/\[data-fm-item\]/);
+console.log('food-menu-runtime-permissions: OK');
