@@ -1,0 +1,10 @@
+const fs=require('fs');
+const guards=fs.readFileSync('js/core/role-permission-crud-guards.js','utf8');
+const catalog=fs.readFileSync('js/core/role-permission-catalog.js','utf8');
+if(!guards.includes('PersonelService'))throw new Error('PersonelService guard missing');
+if(!guards.includes("management.personnel.edit"))throw new Error('Personnel edit permission missing');
+if(!guards.includes('personelKaydet'))throw new Error('Personnel save guard missing');
+if(!guards.includes('personelSil'))throw new Error('Personnel delete guard missing');
+if(!catalog.includes("['management.personnel','Personel','section']"))throw new Error('Personnel section missing from catalog');
+if(!catalog.includes("['management.personnel.edit','Personel düzenleme','action']"))throw new Error('Personnel edit action missing from catalog');
+console.log('personnel-crud-permissions: OK');
