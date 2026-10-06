@@ -1,92 +1,37 @@
 /* Koruk Asistan — Merkezi Rol / Yetki Kataloğu
- *
  * Tek kaynak: modül -> bölüm -> işlem permission kataloğu.
- * Runtime PermissionService bu kataloğu kullanır; eski anahtarlar yalnızca
- * geriye dönük uyumluluk alias'ı olarak korunur.
  */
 (function(global){
   'use strict';
-
-  const LEVELS = Object.freeze({hidden:0, preview:1, read:2, edit:3});
-
-  const entries = [
+  const LEVELS=Object.freeze({hidden:0,preview:1,read:2,edit:3});
+  const entries=[
     ['module.dashboard','Ana Sayfa','page'],['module.people','Öğretmen / Öğrenci','page'],['module.academic','Akademik','page'],['module.management','Yönetim','page'],['module.communication','İletişim','page'],['module.transport','Taşıma','page'],['module.food','Yemek','page'],['module.documents','Doküman / Evrak','page'],['module.reports','Raporlar','page'],['module.tools','Araçlar','page'],['module.settings','Ayarlar','page'],
     ['people.teachers','Öğretmenler','section'],['people.teachers.edit','Öğretmen düzenleme','action'],['people.teachers.delete','Öğretmen silme','action'],['people.students','Öğrenciler','section'],['people.students.create','Öğrenci ekleme','action'],['people.students.edit','Öğrenci düzenleme','action'],['people.students.delete','Öğrenci silme','action'],['people.classes','Sınıflar','section'],['people.classes.create','Sınıf oluşturma','action'],['people.classes.edit','Sınıf düzenleme','action'],['people.classes.delete','Sınıf silme','action'],['people.attendance','Öğrenci yoklama','section'],['people.attendance.edit','Yoklama düzenleme','action'],
     ['academic.exams','Sınav işlemleri','section'],['academic.exams.edit','Sınav düzenleme','action'],['academic.trial','Deneme sınavları','section'],['academic.trial.edit','Deneme sınavı düzenleme','action'],['academic.results','Sınav sonuçları','section'],['academic.results.edit','Sınav sonuçları düzenleme','action'],['academic.plans','Yıllık planlar','section'],['academic.plans.edit','Yıllık plan düzenleme','action'],['academic.schedule','Ders programı','section'],['academic.schedule.edit','Ders programı düzenleme','action'],['academic.calendar','Akademik takvim','section'],['academic.calendar.edit','Akademik takvim düzenleme','action'],
     ['management.duty','Nöbet programı','section'],['management.duty.edit','Nöbet düzenleme','action'],['management.personnel','Personel','section'],['management.personnel.edit','Personel düzenleme','action'],['management.tasks','Aylık işler / görevler','section'],['management.tasks.edit','Aylık işler düzenleme','action'],['management.leaves','İzinler','section'],['management.leaves.edit','İzin düzenleme','action'],['management.teacherLeaves','Öğretmen izinleri','section'],['management.teacherLeaves.edit','Öğretmen izni düzenleme','action'],['management.puantaj','Puantaj / imza sirküsü','section'],['management.puantaj.edit','Puantaj düzenleme','action'],['management.dilekce','Dilekçe işlemleri','section'],['management.dilekce.edit','Dilekçe düzenleme','action'],['management.meetingSchedule','Toplantı çizelgesi','section'],['management.meetingSchedule.edit','Toplantı çizelgesi düzenleme','action'],['management.teacherListBuilder','Öğretmen liste oluşturucu','section'],['management.teacherListBuilder.edit','Öğretmen liste oluşturucu düzenleme','action'],
     ['communication.messages','Mesajlaşma','section'],['communication.messages.send','Mesaj gönderme','action'],['communication.announcements','Duyurular','section'],['communication.announcements.edit','Duyuru düzenleme','action'],['communication.polls','Anketler','section'],['communication.polls.edit','Anket yönetimi','action'],['communication.news','Haberler','section'],['communication.news.edit','Haber yönetimi','action'],['communication.calendar','Takvim','section'],['communication.calendar.edit','Takvim düzenleme','action'],['communication.notes','Notlar','section'],['communication.notes.edit','Not düzenleme','action'],
-    ['transport.services','Taşıma / servisler','section'],['transport.services.edit','Servis düzenleme','action'],['transport.seating','Servis oturma planı','section'],['transport.seating.edit','Servis oturma planı düzenleme','action'],['transport.classSeating','Sınıf oturma planı','section'],['transport.classSeating.edit','Sınıf oturma planı düzenleme','action'],['transport.map','Taşıma haritası','section'],['transport.map.edit','Taşıma haritası düzenleme','action'],['transport.report.inspection','Denetim formu','action'],['transport.report.monthly','Aylık takip','action'],
+    ['transport.services','Taşıma / servisler','section'],['transport.services.create','Servis ekleme','action'],['transport.services.edit','Servis düzenleme','action'],['transport.services.delete','Servis silme','action'],['transport.seating','Servis oturma planı','section'],['transport.seating.edit','Servis oturma planı düzenleme','action'],['transport.classSeating','Sınıf oturma planı','section'],['transport.classSeating.edit','Sınıf oturma planı düzenleme','action'],['transport.map','Taşıma haritası','section'],['transport.map.edit','Taşıma haritası düzenleme','action'],['transport.report.inspection','Denetim formu','action'],['transport.report.monthly','Aylık takip','action'],
     ['food.menu','Yemek menüsü','section'],['food.menu.edit','Yemek menüsü düzenleme','action'],['food.audit','Yemek denetim formu','section'],['food.audit.edit','Yemek denetim formu düzenleme','action'],
     ['documents.view','Dokümanlar','section'],['documents.edit','Doküman düzenleme','action'],['documents.tracking','Evrak takibi','section'],['documents.tracking.edit','Evrak takibi düzenleme','action'],['documents.pdf','PDF araçları','section'],['documents.pdf.edit','PDF işlemleri','action'],['documents.monthlyTasks','Aylık işler belgeleri','section'],
     ['reports.view','Okul raporları','section'],['reports.create','Rapor oluşturma','action'],['reports.customize','Rapor sütun özelleştirme','action'],['reports.pdf','PDF rapor','action'],['reports.excel','Excel rapor','action'],
     ['tools.checklists','Kontrol listeleri','section'],['tools.map','Harita','section'],['tools.schedules','Çizelgeler','section'],['tools.attendance','Devamsızlık','section'],['tools.gradebook','Ödev / not','section'],['tools.rubric','Değerlendirme ölçekleri','section'],['tools.formMaarif','Maarif Model','section'],['tools.formBelirliGunler','Belirli Gün ve Haftalar','section'],['tools.formSok','ŞÖK','section'],['tools.formZumre','Zümre','section'],['tools.formKulup','Sosyal Kulüpler','section'],['tools.formRehberlik','Rehberlik','section'],['tools.formBep','Yıllık Planlar / BEP','section'],['tools.formDigerEvrak','Diğer Evraklar','section'],['tools.backup','Yedekleme','section'],['tools.backup.edit','Yedekleme / geri yükleme','action'],['tools.reminders','Hatırlatıcılar','section'],['tools.reminders.edit','Hatırlatıcı düzenleme','action'],
     ['settings.school','Okul bilgileri','section'],['settings.school.edit','Okul bilgileri düzenleme','action'],['settings.users','Kullanıcı yönetimi','section'],['settings.users.edit','Kullanıcı düzenleme','action'],['settings.roles','Rol yönetimi','section'],['settings.roles.edit','Rol düzenleme','action'],['settings.roles.create','Rol oluşturma','action'],['settings.roles.clone','Rol kopyalama','action'],['settings.roles.delete','Rol silme','action'],['settings.app','Uygulama düzeni','section'],['settings.app.edit','Uygulama düzenini değiştirme','action'],['settings.statistics','Kullanıcı istatistikleri','section'],['settings.statistics.edit','Kullanıcı istatistiklerini sıfırlama','action'],['settings.storage','Depolama ayarları','section'],['settings.storage.edit','Depolama ayarlarını değiştirme','action']
   ];
-
-  const catalog = Object.freeze(entries.map(([key,label,type])=>Object.freeze({key,label,type})));
-
-  const legacyAliases = Object.freeze({
+  const catalog=Object.freeze(entries.map(([key,label,type])=>Object.freeze({key,label,type})));
+  const legacyAliases=Object.freeze({
     'module.dashboard':['anaSayfa'],'module.people':['people'],'module.academic':['academic'],'module.management':['yonetim'],'module.communication':['iletisim'],'module.transport':['tasima','transport'],'module.food':['yemek','food'],'module.documents':['dokumanlar','evrak'],'module.reports':['raporlar'],'module.tools':['araclar','tools'],'module.settings':['ayarlar','sistemAyarlari'],
     'people.teachers':['ogretmenler'],'people.teachers.edit':['ogretmenler'],'people.teachers.delete':['ogretmenler'],'people.students':['ogrenciler'],'people.students.create':['ogrenciler'],'people.students.edit':['ogrenciler'],'people.students.delete':['ogrenciler'],'people.classes':['siniflar'],'people.classes.create':['siniflar'],'people.classes.edit':['siniflar'],'people.classes.delete':['siniflar'],'people.attendance':['yoklama'],'people.attendance.edit':['yoklama'],
     'academic.exams':['sinavIslemleri'],'academic.exams.edit':['sinavIslemleri'],'academic.trial':['denemeSinavlari'],'academic.trial.edit':['denemeSinavlari'],'academic.results':['denemeSonuclari','testSonuclari'],'academic.results.edit':['denemeSonuclari','testSonuclari'],'academic.plans':['yillikPlanlar'],'academic.plans.edit':['yillikPlanlar'],'academic.schedule':['dersProgrami'],'academic.schedule.edit':['dersProgrami'],'academic.calendar':['akademikTakvim'],'academic.calendar.edit':['akademikTakvim'],
     'management.duty':['nobet'],'management.duty.edit':['nobet'],'management.personnel':['personel'],'management.personnel.edit':['personel'],'management.tasks':['periyodikIsler','gorevler'],'management.tasks.edit':['periyodikIsler','gorevler'],'management.leaves':['izinler'],'management.leaves.edit':['izinler'],'management.teacherLeaves':['ogretmenIzinleri'],'management.teacherLeaves.edit':['ogretmenIzinleri'],'management.puantaj':['puantaj'],'management.puantaj.edit':['puantaj'],'management.dilekce':['dilekce'],'management.dilekce.edit':['dilekce'],'management.meetingSchedule':['meetingSchedule'],'management.meetingSchedule.edit':['meetingSchedule'],'management.teacherListBuilder':['ogretmenListeOlusturucu'],'management.teacherListBuilder.edit':['ogretmenListeOlusturucu'],
-    'communication.messages':['mesajlasma','mesajlar'],'communication.messages.send':['mesajlasma','mesajlar'],'communication.announcements':['duyurular'],'communication.announcements.edit':['duyurular'],'communication.polls':['anket','anketler'],'communication.polls.edit':['anket','anketler'],'communication.news':['haberler','haberler'],'communication.news.edit':['haberler','haberler'],'communication.calendar':['takvim'],'communication.calendar.edit':['takvim'],'communication.notes':['notlar'],'communication.notes.edit':['notlar'],
-    'transport.services':['tasima'],'transport.services.edit':['tasima'],'transport.seating':['servisOturma'],'transport.seating.edit':['servisOturma'],'transport.classSeating':['sinifOturma'],'transport.classSeating.edit':['sinifOturma'],'transport.map':['harita'],'transport.map.edit':['harita'],'transport.report.inspection':['tasimaDenetim','denetimFormu'],'transport.report.monthly':['tasimaAylikTakip'],
+    'communication.messages':['mesajlasma','mesajlar'],'communication.messages.send':['mesajlasma','mesajlar'],'communication.announcements':['duyurular'],'communication.announcements.edit':['duyurular'],'communication.polls':['anket','anketler'],'communication.polls.edit':['anket','anketler'],'communication.news':['haberler'],'communication.news.edit':['haberler'],'communication.calendar':['takvim'],'communication.calendar.edit':['takvim'],'communication.notes':['notlar'],'communication.notes.edit':['notlar'],
+    'transport.services':['tasima'],'transport.services.create':['tasima'],'transport.services.edit':['tasima'],'transport.services.delete':['tasima'],'transport.seating':['servisOturma'],'transport.seating.edit':['servisOturma'],'transport.classSeating':['sinifOturma'],'transport.classSeating.edit':['sinifOturma'],'transport.map':['harita'],'transport.map.edit':['harita'],'transport.report.inspection':['tasimaDenetim','denetimFormu'],'transport.report.monthly':['tasimaAylikTakip'],
     'food.menu':['yemek','yemekMenusu'],'food.menu.edit':['yemek','yemekMenusu'],'food.audit':['yemekDenetim','yemekDenetimFormu'],'food.audit.edit':['yemekDenetim','yemekDenetimFormu'],
     'documents.view':['dokumanlar'],'documents.edit':['dokumanlar'],'documents.tracking':['evrak'],'documents.tracking.edit':['evrak'],'documents.pdf':['pdf'],'documents.pdf.edit':['pdf'],'documents.monthlyTasks':['aylikIsler'],
     'reports.view':['raporlar'],'reports.create':['raporlar'],'reports.customize':['raporSutunlari'],'reports.pdf':['raporlar'],'reports.excel':['raporlar'],
     'tools.checklists':['kontrolListeleri'],'tools.map':['harita'],'tools.schedules':['cizelgeler'],'tools.attendance':['devamsizlik'],'tools.gradebook':['odevTakip','notCizelgesi'],'tools.rubric':['rubric'],'tools.formKulup':['sosyalKulupler'],'tools.formBelirliGunler':['belirliGunler'],'tools.formZumre':['zumre'],'tools.formSok':['sok'],'tools.formBep':['bepPlani'],'tools.formRehberlik':['rehberlik'],'tools.formMaarif':['maarifRapor'],'tools.formDigerEvrak':['digerEvrak'],'tools.backup':['yedekleme'],'tools.backup.edit':['yedekleme'],'tools.reminders':['hatirlaticilar'],'tools.reminders.edit':['hatirlaticilar'],
     'settings.users':['kullaniciYonetimi'],'settings.users.edit':['kullaniciYonetimi'],'settings.roles':['kullaniciYonetimi'],'settings.roles.edit':['kullaniciYonetimi'],'settings.roles.create':['kullaniciYonetimi'],'settings.roles.clone':['kullaniciYonetimi'],'settings.roles.delete':['kullaniciYonetimi'],'settings.school':['okulBilgileri'],'settings.school.edit':['okulBilgileri'],'settings.app':['sistemAyarlari'],'settings.app.edit':['sistemAyarlari'],'settings.statistics':['kullaniciIstatistikleri'],'settings.statistics.edit':['kullaniciIstatistikleri'],'settings.storage':['depolamaAyarlari'],'settings.storage.edit':['depolamaAyarlari']
   });
-
-  function mergeIntoPermissionService(){
-    const ps=global.PermissionService;
-    if(!ps)return false;
-    const aliases={...(ps.aliases||{})};
-    Object.entries(legacyAliases).forEach(([key,list])=>{aliases[key]=[...new Set([...(aliases[key]||[]),...list])];});
-    ps.catalog=catalog;
-    ps.LEVELS=LEVELS;
-    ps.aliases=Object.freeze(aliases);
-    ps.permissionCatalogVersion='2026-10-06';
-    global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService,installRoleActionGuards};
-    installRoleActionGuards();
-    return true;
-  }
-
-  let roleGuardsInstalled=false;
-  function installRoleActionGuards(){
-    const install=()=>{
-      const service=global.KullaniciYonetimiService;
-      const ps=global.PermissionService;
-      if(!service||!ps)return false;
-      if(service.__rolePermissionGuardsInstalled)return true;
-      const originalSave=service.rolKaydet?.bind(service);
-      const originalDelete=service.rolSil?.bind(service);
-      if(!originalSave||!originalDelete)return false;
-      service.rolKaydet=async function(mevcutId,veri){
-        const permission=mevcutId?'settings.roles.edit':'settings.roles.create';
-        if(global.AKTIF_KULLANICI?.admin!==true&&!ps.can(permission,'edit')){
-          global.toast?.(mevcutId?'Bu rolü düzenleme yetkiniz yok.':'Yeni rol oluşturma yetkiniz yok.');
-          return Promise.reject(new Error('yetkisiz:'+permission));
-        }
-        return originalSave(mevcutId,veri);
-      };
-      service.rolSil=async function(id,count){
-        if(global.AKTIF_KULLANICI?.admin!==true&&!ps.can('settings.roles.delete','edit')){
-          global.toast?.('Rol silme yetkiniz yok.');
-          return Promise.reject(new Error('yetkisiz:settings.roles.delete'));
-        }
-        return originalDelete(id,count);
-      };
-      service.__rolePermissionGuardsInstalled=true;
-      roleGuardsInstalled=true;
-      return true;
-    };
-    if(install())return true;
-    global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='settings')install()},{once:false});
-    return false;
-  }
-
-  global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService,installRoleActionGuards};
-  if(global.PermissionService)mergeIntoPermissionService();
+  function mergeIntoPermissionService(){const ps=global.PermissionService;if(!ps)return false;const aliases={...(ps.aliases||{})};Object.entries(legacyAliases).forEach(([key,list])=>{aliases[key]=[...new Set([...(aliases[key]||[]),...list])];});ps.catalog=catalog;ps.LEVELS=LEVELS;ps.aliases=Object.freeze(aliases);ps.permissionCatalogVersion='2026-10-06';global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService,installRoleActionGuards};installRoleActionGuards();return true;}
+  function installRoleActionGuards(){const install=()=>{const service=global.KullaniciYonetimiService,ps=global.PermissionService;if(!service||!ps)return false;if(service.__rolePermissionGuardsInstalled)return true;const originalSave=service.rolKaydet?.bind(service),originalDelete=service.rolSil?.bind(service);if(!originalSave||!originalDelete)return false;service.rolKaydet=async function(mevcutId,veri){const permission=mevcutId?'settings.roles.edit':'settings.roles.create';if(global.AKTIF_KULLANICI?.admin!==true&&!ps.can(permission,'edit')){global.toast?.(mevcutId?'Bu rolü düzenleme yetkiniz yok.':'Yeni rol oluşturma yetkiniz yok.');return Promise.reject(new Error('yetkisiz:'+permission));}return originalSave(mevcutId,veri);};service.rolSil=async function(id,count){if(global.AKTIF_KULLANICI?.admin!==true&&!ps.can('settings.roles.delete','edit')){global.toast?.('Rol silme yetkiniz yok.');return Promise.reject(new Error('yetkisiz:settings.roles.delete'));}return originalDelete(id,count);};service.__rolePermissionGuardsInstalled=true;return true;};if(install())return true;global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='settings')install()});return false;}
+  global.RolePermissionCatalog={LEVELS,catalog,legacyAliases,mergeIntoPermissionService,installRoleActionGuards};if(global.PermissionService)mergeIntoPermissionService();
 })(window);
