@@ -56,28 +56,45 @@ async function ensureReportOutput(){
  return global.KAReportOutput;
 }
 function addReportOutputToolbar(id,body,opts){
- const ov=document.getElementById('kaReportPreview');if(!ov||ov.querySelector('[data-reports-outputbar]'))return;
- const anchor=ov.querySelector('[data-report-print]')||ov.querySelector('header button')||ov.querySelector('button');if(!anchor)return;
- const can=k=>global.AKTIF_KULLANICI?.admin===true||global.PermissionService?.can?.(k,'edit')===true||global.PermissionService?.can?.(k,'read')===true;
- const btns=[];if(can('reports.pdf'))btns.push(['PDF','pdf']);if(can('reports.word'))btns.push(['Word','word']);if(can('reports.excel'))btns.push(['Excel','excel']);if(can('reports.png'))btns.push(['PNG','png']);
- if(can('reports.share'))btns.push(['↗ Paylaş','share']);
- const bar=document.createElement('div');bar.dataset.reportsOutputbar='1';bar.className='ka-row ka-wrap';bar.style.cssText='display:flex;gap:6px;flex-wrap:wrap;padding:8px 10px;margin:0 0 6px;align-items:center';
- bar.innerHTML=btns.map(x=>'<button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-report-out="'+x[1]+'">'+x[0]+'</button>').join('');
- bar.addEventListener('click',async e=>{const b=e.target.closest('[data-report-out]');if(!b)return;try{const out=await ensureReportOutput(),fmt=b.dataset.reportOut,title=opts.title||id,rootDoc=new DOMParser().parseFromString(String(body||''),'text/html');
-  if(fmt==='share'){
-   const pick=prompt('Paylaşım biçimi: PDF / Word / Excel / PNG','PDF');if(!pick)return;const f=String(pick).toLowerCase().trim();if(!['pdf','word','excel','png'].includes(f))throw new Error('Geçersiz paylaşım biçimi.');
-   if(f==='pdf'){
-    const html=global.ReportEngine.documentHtml(title,body,global.ReportEngine.normalizeOptions(opts));const png=await global.ReportEngine.renderReportPagePng(html,opts.yon||'dikey');const pdf=await global.ReportEngine.imagesToPdf([new File([png],title+'.png',{type:'image/png'})],{orientation:opts.yon==='yatay'?'landscape':'portrait'});await global.ReportEngine.savePdfBlob(pdf,title+'.pdf',true);
-   }else if(f==='png'){
-    const html=global.ReportEngine.documentHtml(title,body,global.ReportEngine.normalizeOptions(opts));const png=await global.ReportEngine.renderReportPagePng(html,opts.yon||'dikey');const file=new File([png],title+'.png',{type:'image/png'});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]})))await navigator.share({title,files:[file]});else out.download(png,title+'.png');
-   }else{
-    const table=rootDoc.querySelector('table'),rows=table?[...table.rows].map(row=>[...row.cells].map(cell=>String(cell.innerText||cell.textContent||'').trim())):[],blob=f==='word'?out.docx(rows,title):out.xlsx(rows,title);if(!await out.share(blob,title+'.'+(f==='word'?'docx':'xlsx'),title))out.download(blob,title+'.'+(f==='word'?'docx':'xlsx'));
+ const ov=document.getElementById('kaReportPreview');
+ if(!ov||ov.querySelector('[data-reports-outputbar]'))return;
+ const host=ov.querySelector('.ka-report-preview__toolbar')||ov.querySelector('.ka-report-preview__main');
+ if(!host)return;
+ const bar=document.createElement('div');
+ bar.dataset.reportsOutputbar='1';
+ bar.className='ka-row ka-wrap';
+ bar.style.cssText='display:flex;gap:6px;flex-wrap:wrap;padding:8px 10px;border-top:1px solid var(--ka-border,#333);border-bottom:1px solid var(--ka-border,#333);align-items:center;justify-content:center;width:100%;box-sizing:border-box';
+ bar.innerHTML='<button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-report-out="pdf">📄 PDF İndir</button><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-report-out="word">📝 Word İndir</button><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-report-out="excel">📊 Excel İndir</button><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-report-out="png">🖼 PNG İndir</button><button type="button" class="ka-btn ka-btn--sm" data-report-out="share">↗ Paylaş</button>';
+ bar.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-report-out]');if(!b)return;
+  const old=b.textContent;b.disabled=true;b.textContent='Hazırlanıyor…';
+  try{
+   const out=await ensureReportOutput(),fmt=b.dataset.reportOut,title=opts.title||id;
+   const html=global.ReportEngine.documentHtml(title,body,global.ReportEngine.normalizeOptions(opts)),yon=opts.yon||'dikey';
+   if(fmt==='pdf'){
+    const png=await global.ReportEngine.renderReportPagePng(html,yon);
+    const pdf=await global.ReportEngine.imagesToPdf([new File([png],title+'.png',{type:'image/png'})],{orientation:yon==='yatay'?'landscape':'portrait'});
+    await global.ReportEngine.savePdfBlob(pdf,title+'.pdf',false);
+   }else if(fmt==='png'){
+    const png=await global.ReportEngine.renderReportPagePng(html,yon);out.download(png,title+'.png');
+   }else if(fmt==='word'||fmt==='excel'){
+    const doc=new DOMParser().parseFromString(String(body||''),'text/html'),table=doc.querySelector('table');
+    const rows=table?[...table.rows].map(row=>[...row.cells].map(cell=>String(cell.innerText||cell.textContent||'').trim())):[];
+    const blob=fmt==='word'?out.docx(rows,title):out.xlsx(rows,title);
+    out.download(blob,title+'.'+(fmt==='word'?'docx':'xlsx'));
+   }else if(fmt==='share'){
+    const png=await global.ReportEngine.renderReportPagePng(html,yon);
+    const pdf=await global.ReportEngine.imagesToPdf([new File([png],title+'.png',{type:'image/png'})],{orientation:yon==='yatay'?'landscape':'portrait'});
+    const file=new File([pdf],title+'.pdf',{type:'application/pdf'});
+    if(typeof global.uygulamaDosyaKaydet==='function'){
+     const r=new FileReader(),b64=await new Promise((resolve,reject)=>{r.onload=()=>resolve(String(r.result||'').split(',')[1]||'');r.onerror=reject;r.readAsDataURL(pdf)});await global.uygulamaDosyaKaydet(b64,title+'.pdf','application/pdf',true);
+    }else if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]})))await navigator.share({title,files:[file]});
+    else out.download(pdf,title+'.pdf');
    }
-  }else{
-   await out.export({root:rootDoc,title,format:fmt==='word'?'docx':fmt==='excel'?'xlsx':'png'});
-  }
- }catch(err){if(err?.name!=='AbortError')global.toast?.('Rapor çıktısı oluşturulamadı: '+(err?.message||err));}});
- anchor.parentElement?.insertBefore(bar,anchor);
+  }catch(err){if(err?.name!=='AbortError')global.toast?.('Rapor çıktısı oluşturulamadı: '+(err?.message||err));}
+  finally{b.disabled=false;b.textContent=old;}
+ });
+ host.parentElement?.insertBefore(bar,host.nextSibling);
 }
 async function openReport(id,printNow=false){const {s,body}=build(id);if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=3');if(!global.ReportEngine?.printReport)return global.toast?.('Rapor motoru yüklenemedi.');const compactDetail=id==='teacher-lessons-detail';const opts={fileName:s.title||'Rapor',yon:s.orientation==='landscape'?'yatay':'dikey',logoGoster:!!s.showLogo,baslikGoster:true,tarihGoster:false,ustBaslik:s.showUpper?s.upperTitle:'',okulAdi:s.showSchool?s.schoolName:'',fontSize:compactDetail?4.5:s.fontSize,compact:compactDetail,kenarBosluk:compactDetail?5:8,extraHead:style(s)};await global.ReportEngine.printReport(s.showTitle?(s.title||'Rapor'):'',body,opts);addReportOutputToolbar(id,body,{...opts,title:s.title||'Rapor'});if(printNow)setTimeout(()=>document.querySelector('#kaReportPreview [data-report-print]')?.click(),120)}
 function collectDesigner(){if(!editing||!root)return null;const s=settings(editing);root.querySelectorAll('[data-rs]').forEach(el=>s[el.dataset.rs]=el.type==='number'?Number(el.value):el.value);root.querySelectorAll('[data-rflag]').forEach(el=>s[el.dataset.rflag]=el.checked);root.querySelectorAll('[data-col-show]').forEach(el=>{if(s.columns[Number(el.dataset.colShow)])s.columns[Number(el.dataset.colShow)].show=el.checked});root.querySelectorAll('[data-col-label]').forEach(el=>{if(s.columns[Number(el.dataset.colLabel)])s.columns[Number(el.dataset.colLabel)].label=el.value});root.querySelectorAll('[data-col-align]').forEach(el=>{if(s.columns[Number(el.dataset.colAlign)])s.columns[Number(el.dataset.colAlign)].align=el.value});s.teacherFilter=[...root.querySelectorAll('[data-teacher-filter]:checked')].map(el=>String(el.value));s.gradeFilter=[...root.querySelectorAll('[data-grade-filter]:checked')].map(el=>Number(el.value));return s}
