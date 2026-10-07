@@ -108,3 +108,17 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-transport-detail__toolbar [data-service-edit] .ka-transport-action__icon::before{content:'✏️';font-size:1.15rem;line-height:1}
 .ka-transport-detail__toolbar [data-transport-detail-delete] .ka-transport-action__icon::before{content:'🗑️';font-size:1.15rem;line-height:1}
 .ka-transport-detail__toolbar [data-transport-detail-close] .ka-transport-action__icon::before{content:'✖️';font-size:1.15rem;line-height:1}
+
+
+.ka-statistics-page{--ka-stat-hero-start:var(--ka-surface-2);--ka-stat-hero-end:var(--ka-surface-1);display:grid;gap:16px;color:var(--ka-text)}
+.ka-statistics-hero{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid var(--ka-border);border-radius:18px;background:linear-gradient(135deg,var(--ka-stat-hero-start),var(--ka-stat-hero-end))}
+.ka-statistics-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ka-statistics-summary article{display:flex;align-items:center;gap:10px;padding:14px;border:1px solid var(--ka-border);border-radius:14px;background:var(--ka-surface)}
+.ka-statistics-summary article strong{display:block}
+.ka-statistics-user{min-width:0;padding:16px;border:1px solid var(--ka-border);border-radius:16px;background:var(--ka-surface)}
+.ka-statistics-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.ka-statistics-metrics>div{padding:10px;border:1px solid var(--ka-border);border-radius:10px;background:var(--ka-surface-2)}
+.ka-statistics-metrics small,.ka-statistics-metrics strong{display:block}
+.ka-statistics-storage__body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px}
+.ka-statistics-storage__body>div{display:flex;justify-content:space-between;gap:8px}
+@media(max-width:390px){.ka-statistics-summary,.ka-statistics-metrics,.ka-statistics-storage__body{grid-template-columns:1fr}.ka-statistics-hero{align-items:flex-start}}
