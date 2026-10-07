@@ -1,7 +1,7 @@
 /* Koruk Asistan — sade Service Worker
    Görev: uygulama kabuğunu önbelleğe almak, uygulama kodunu ve kabuğunu ağdan güncel tutmak ve Firebase Messaging bildirimlerini taşımak.
    Önemli: Sürümlü JS/CSS istekleri query-string'e göre ayrı cache anahtarı kullanır. */
-const CACHE_ADI='oy-cache-v1241';
+const CACHE_ADI='oy-cache-v1242';
 let messaging=null;
 try{
   importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
