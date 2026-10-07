@@ -142,3 +142,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 html,body{min-height:100dvh}
 
 @media(max-width:390px){.ka-school-logo{width:37px;height:37px}}
+
+.ka-header-notification{position:relative;overflow:visible}
+[data-ka-notification-count]{position:absolute;top:0;right:0}
