@@ -145,3 +145,769 @@ html,body{min-height:100dvh}
 
 .ka-header-notification{position:relative;overflow:visible}
 [data-ka-notification-count]{position:absolute;top:0;right:0}
+
+
+/* Merkezi dashboard görsel stilleri */
+/* Ana sayfa duyuru medya galerisi + okuyan popover + tam ekran zoom */
+.ka-home .kh-announcement-media{margin:2px 9px 9px;border:1px solid var(--ka-border);border-radius:15px;overflow:hidden;background:color-mix(in srgb,var(--ka-muted-bg) 72%,var(--ka-card-bg))}
+.ka-home .kh-announcement-media__track{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x pinch-zoom}
+.ka-home .kh-announcement-media__track::-webkit-scrollbar{display:none}
+.ka-home .kh-announcement-media__slide{position:relative;flex:0 0 100%;min-width:100%;min-height:190px;max-height:360px;padding:0;border:0;background:transparent;display:grid;place-items:center;scroll-snap-align:center;cursor:zoom-in}
+.ka-home .kh-announcement-media__slide img{display:block;width:100%;height:auto;max-height:350px;object-fit:contain;object-position:center;margin:auto}
+.ka-home .kh-announcement-media__slide>span{position:absolute;right:9px;top:9px;min-width:34px;height:25px;padding:0 8px;border-radius:999px;background:rgba(3,13,9,.68);color:var(--ka-text-inverse);display:grid;place-items:center;font-size:9px;font-weight:850;backdrop-filter:blur(8px)}
+.ka-home .kh-announcement-media__dots{height:20px;display:flex;align-items:center;justify-content:center;gap:5px;border-top:1px solid var(--ka-border);background:var(--ka-card-bg)}
+.ka-home .kh-announcement-media__dots i{width:5px;height:5px;border-radius:999px;background:var(--ka-border-strong);transition:width .16s ease,background .16s ease}
+.ka-home .kh-announcement-media__dots i.is-active{width:15px;background:var(--ka-primary)}
+.kh-reader-popover{position:fixed;z-index:2450;max-height:min(360px,58dvh);overflow:hidden;border:1px solid var(--ka-border-strong);border-radius:16px;background:var(--ka-card-raised-bg);color:var(--ka-text);box-shadow:var(--ka-shadow-modal)}
+.kh-reader-popover::before{content:"";position:absolute;top:-7px;left:calc(var(--kh-reader-arrow-x,85%) - 7px);width:14px;height:14px;transform:rotate(45deg);background:var(--ka-card-raised-bg);border-left:1px solid var(--ka-border-strong);border-top:1px solid var(--ka-border-strong)}
+.kh-reader-popover__head{position:relative;z-index:1;display:grid;grid-template-columns:34px minmax(0,1fr) 34px;gap:9px;align-items:center;padding:10px 10px 9px;border-bottom:1px solid var(--ka-border);background:var(--ka-card-raised-bg)}
+.kh-reader-popover__eye{width:34px;height:34px;border-radius:11px;background:var(--ka-primary-soft);display:grid;place-items:center}
+.kh-reader-popover__head>div{display:grid;min-width:0}.kh-reader-popover__head strong{font-size:11px}.kh-reader-popover__head small{margin-top:1px;color:var(--ka-text-muted);font-size:7.8px}
+.kh-reader-popover__head button{width:32px;height:32px;border:0;border-radius:10px;background:var(--ka-muted-bg);color:var(--ka-text);font-size:20px;cursor:pointer}
+.kh-reader-popover__list{max-height:280px;overflow:auto;padding:5px 8px 8px}
+.kh-reader-popover__row{display:grid;grid-template-columns:31px minmax(0,1fr);gap:9px;align-items:center;padding:7px 4px;border-bottom:1px solid color-mix(in srgb,var(--ka-border) 72%,transparent)}
+.kh-reader-popover__row:last-child{border-bottom:0}.kh-reader-popover__row>span{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:var(--ka-primary-soft);color:var(--ka-primary);font-size:10px;font-weight:900}
+.kh-reader-popover__row>div{display:grid;min-width:0}.kh-reader-popover__row strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px}.kh-reader-popover__row small{margin-top:1px;color:var(--ka-text-muted);font-size:7.8px}
+.kh-reader-popover__empty{padding:18px 12px;text-align:center;color:var(--ka-text-muted);font-size:10px}
+.ka-home-announcement-lightbox{position:fixed;inset:0;z-index:2700;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:rgba(0,4,3,.97);color:var(--ka-text-inverse);overscroll-behavior:contain}
+.ka-home-announcement-lightbox__head{display:grid;grid-template-columns:minmax(0,1fr) auto 42px;gap:10px;align-items:center;padding:calc(10px + var(--ka-safe-top)) max(12px,var(--ka-safe-right)) 10px max(12px,var(--ka-safe-left));border-bottom:1px solid rgba(255,255,255,.13);background:rgba(4,13,10,.82);backdrop-filter:blur(10px)}
+.ka-home-announcement-lightbox__head>div{min-width:0;display:grid}.ka-home-announcement-lightbox__head small{color:#72dfb2;font-size:8px;font-weight:850;letter-spacing:.1em}.ka-home-announcement-lightbox__head strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ka-text-inverse);font-size:13px}
+.ka-home-announcement-lightbox__head>span{min-width:48px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.1);font-size:10px;font-weight:850;text-align:center}.ka-home-announcement-lightbox__head>button{width:38px;height:38px;border:0;border-radius:12px;background:rgba(255,255,255,.1);color:var(--ka-text-inverse);font-size:24px;cursor:pointer}
+.ka-home-announcement-lightbox__stage{position:relative;min-height:0;overflow:hidden;display:grid;place-items:center;padding:12px 50px 58px}
+.ka-home-announcement-lightbox__stage>img,.ka-announcement-lightbox__stage>[data-announcement-lightbox-image]{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;object-position:center;transform-origin:center center;will-change:transform;touch-action:none;user-select:none;-webkit-user-drag:none;cursor:zoom-in}
+.ka-home-announcement-lightbox__stage>img.is-zoomed,.ka-announcement-lightbox__stage>[data-announcement-lightbox-image].is-zoomed{cursor:grab}
+.ka-home-announcement-lightbox__stage>button.is-prev,.ka-home-announcement-lightbox__stage>button.is-next{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:54px;border:1px solid rgba(255,255,255,.15);border-radius:13px;background:rgba(255,255,255,.09);color:var(--ka-text-inverse);font-size:30px;display:grid;place-items:center;cursor:pointer;z-index:3}
+.ka-home-announcement-lightbox__stage>button.is-prev{left:5px}.ka-home-announcement-lightbox__stage>button.is-next{right:5px}.ka-home-announcement-lightbox__stage>button:disabled{opacity:.2}
+.ka-home-announcement-lightbox__thumbs{display:flex;gap:7px;justify-content:center;overflow-x:auto;padding:8px max(12px,var(--ka-safe-right)) calc(9px + var(--ka-safe-bottom)) max(12px,var(--ka-safe-left));border-top:1px solid rgba(255,255,255,.12);scrollbar-width:none}.ka-home-announcement-lightbox__thumbs::-webkit-scrollbar{display:none}
+.ka-home-announcement-lightbox__thumbs button{flex:0 0 58px;width:58px;height:48px;padding:2px;border:2px solid transparent;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}.ka-home-announcement-lightbox__thumbs button.is-active{border-color:var(--ka-primary)}.ka-home-announcement-lightbox__thumbs img{width:100%;height:100%;display:block;object-fit:cover;border-radius:5px}
+.ka-announcement-zoom-controls{position:absolute;left:50%;bottom:9px;transform:translateX(-50%);z-index:8;display:flex;align-items:center;gap:5px;padding:5px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(2,10,7,.78);backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.28)}
+.ka-announcement-zoom-controls button{min-width:36px;height:34px;padding:0 9px;border:0;border-radius:9px;background:rgba(255,255,255,.1);color:var(--ka-text-inverse);font-size:18px;font-weight:850;display:grid;place-items:center;cursor:pointer}.ka-announcement-zoom-controls button:nth-child(2){min-width:60px;font-size:9px}
+.ka-announcement-lightbox__stage{overflow:hidden}.ka-announcement-lightbox__stage>[data-announcement-lightbox-image]{transform-origin:center center;will-change:transform;touch-action:none;user-select:none;-webkit-user-drag:none}
+@media(max-width:700px){
+  .ka-home .kh-announcement-media{margin-inline:8px;border-radius:13px}.ka-home .kh-announcement-media__slide{min-height:170px;max-height:330px}.ka-home .kh-announcement-media__slide img{max-height:320px}
+  .ka-home-announcement-lightbox__stage{padding:8px 39px 55px}.ka-home-announcement-lightbox__stage>button.is-prev,.ka-home-announcement-lightbox__stage>button.is-next{width:34px;height:48px;font-size:25px}
+  .ka-home-announcement-lightbox__stage>button.is-prev{left:2px}.ka-home-announcement-lightbox__stage>button.is-next{right:2px}
+  .ka-announcement-lightbox__stage{padding-bottom:58px!important}
+}
+@media(max-width:390px){.ka-home .kh-announcement-media__slide{min-height:155px}.kh-reader-popover{max-width:calc(100vw - 20px)}}
+
+/* ===== HAFTALIK NÖBET PROGRAMI — DİKEY DÜZEN ===== */
+.ka-home .kh-section[data-home-section="week-duty"]>.kh-card{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  overflow:visible!important;
+  overscroll-behavior-x:auto!important;
+  scroll-snap-type:none!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  scrollbar-width:none!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{
+  flex:0 0 auto!important;width:100%!important;max-width:none!important;
+  scroll-snap-align:none!important;overflow:hidden!important;
+  border:0!important;border-bottom:1px solid var(--ka-border)!important;
+  border-radius:0!important;background:var(--ka-card-bg)!important;box-shadow:none!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday:first-child{border-radius:15px 15px 0 0!important}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday:last-child{border-bottom:0!important;border-radius:0 0 15px 15px!important}
+
+/* Kompakt görünüm: günler ve nöbetçi satırları gereksiz dikey boşluk bırakmasın. */
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{
+  padding:7px 13px!important;
+  min-height:0!important;
+  line-height:1.15!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{
+  min-height:32px!important;
+  height:auto!important;
+  padding:5px 13px!important;
+  line-height:1.15!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:not(:first-child){
+  line-height:1.15!important;
+}
+.ka-home .kh-section[data-home-section="week-duty"] .kh-mini + .kh-mini{padding-top:4px!important}
+@media(max-width:390px){
+  .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:auto!important}
+  .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:6px 11px!important}
+  .ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:30px!important;padding:4px 11px!important}
+}
+
+/* ===== BUGÜN ETİKETİ — AÇIK/KOYU TEMA KONTRASTI ===== */
+.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday.today .kh-weekday-head .kh-chip{
+  background:var(--ka-button-bg)!important;
+  color:var(--ka-button-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  font-weight:900!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday.today .kh-weekday-head .kh-chip{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text)!important;
+  border-color:var(--ka-primary)!important;
+}
+
+/* ===== ÖĞRETMENLER — KOYU TEMADA PROFİL GÖR BUTONU ===== */
+[data-theme="dark"] .ka-teacher-actions .ka-btn:first-child{
+  color:#fff!important;
+}
+
+
+/* Merkezi dashboard illüstrasyon stilleri */
+/* Koruk Asistan — dashboard başlık/illüstrasyon katmanı
+   Design-system tokenlarını kullanır; yalnız ana sayfa görsel hiyerarşisini düzeltir. */
+.ka-home .kh-section-head,
+.ka-home .ka-home-section__head{
+  min-height:38px!important;
+  align-items:center!important;
+}
+.ka-home .kh-section-title,
+.ka-home .ka-home-section__head>div:first-child{
+  min-height:38px!important;
+  gap:9px!important;
+}
+.ka-home .kh-section-title>span:last-child,
+.ka-home .kh-section-title>h3,
+.ka-home .ka-home-section__head h3{
+  font-size:18px!important;
+  line-height:1.18!important;
+  font-weight:750!important;
+  letter-spacing:-.25px!important;
+}
+.ka-home .kh-section-art{
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  min-height:38px!important;
+  flex:0 0 38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  background:var(--ka-icon-surface)!important;
+  border:1px solid var(--ka-icon-border)!important;
+}
+.ka-home .kh-section-art svg{
+  width:28px!important;
+  height:28px!important;
+  display:block!important;
+  overflow:visible!important;
+  fill:initial!important;
+  stroke:initial!important;
+  color:initial!important;
+}
+.ka-home .kh-section-art svg *{
+  vector-effect:non-scaling-stroke;
+}
+/* sectionArt'ın çok renkli SVG'sini eski fill:none katmanından kurtar. */
+.ka-home .ka-home-section__icon svg{
+  fill:initial!important;
+  stroke:initial!important;
+  color:initial!important;
+}
+.ka-home .ka-home-section__icon svg *{
+  vector-effect:non-scaling-stroke;
+}
+html[data-theme="dark"] .ka-home .kh-section-art,
+html[data-theme="dark"] .ka-home .ka-home-section__icon{
+  background:#343127!important;
+  border-color:#d8bd45!important;
+}
+@media(max-width:480px){
+  .ka-home .kh-section-title>span:last-child,
+  .ka-home .kh-section-title>h3,
+  .ka-home .ka-home-section__head h3{
+    font-size:17px!important;
+  }
+}
+/* Ana sayfa bölüm ikonları: Menü Kartı düzenleyicisindeki renkli emoji stili */
+.ka-home .kh-section-art .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important;filter:none!important;transform:none!important}
+.ka-home .ka-home-section__icon .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important}
+@media(max-width:480px){.ka-home .kh-section-art .kh-section-emoji,.ka-home .ka-home-section__icon .kh-section-emoji{font-size:23px!important}}
+
+
+/* ===== OKUL ÖZETİ EMOJI İKONLARI — MERKEZ HİZALAMA ===== */
+.ka-school-summary-card{position:relative!important;text-align:center!important}
+.ka-school-summary-card .ka-school-summary-icon{
+  position:absolute!important;
+  top:38px!important;
+  left:50%!important;
+  width:56px!important;
+  height:56px!important;
+  margin:0!important;
+  transform:translateX(-50%)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.ka-school-summary-card .ka-summary-emoji{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;
+  font-size:31px!important;
+  line-height:1!important;
+  font-weight:400!important;
+  filter:none!important;
+  transform:none!important;
+}
+.ka-school-summary-card .ka-summary-art{display:none!important}
+.ka-school-summary-card>small{display:block!important;text-align:center!important;margin-top:102px!important}
+.ka-school-summary-card>b{display:block!important;text-align:center!important}
+.ka-school-summary-card>.ka-school-summary-meta{text-align:center!important}
+@media(max-width:480px){
+  .ka-school-summary-card .ka-summary-emoji{font-size:29px!important}
+}
+
+/* ===== DASHBOARD CONTRAST V1 =====
+   Koyu temada kullanıcı tarafından işaretlenen üç odak kontrolü:
+   hafta sonu ev ikonu, seçili takvim günü ve yukarı dön butonu.
+   Amaç: sarı yüzey + siyah sembol/metin ile net kontrast. */
+html[data-theme="dark"] .ka-home #khBell .kh-bell-rest-icon{
+  background:#ffc400!important;
+  border:2px solid #ffe071!important;
+  color:#111!important;
+  box-shadow:0 0 0 2px rgba(255,196,0,.16),0 6px 18px rgba(255,196,0,.14)!important;
+}
+html[data-theme="dark"] .ka-home #khBell .kh-bell-rest-icon svg{
+  color:#111!important;
+  stroke:#111!important;
+}
+html[data-theme="dark"] .ka-home .kh-day.today{
+  background:#ffc400!important;
+  color:#111!important;
+  border:2px solid #ffe071!important;
+  box-shadow:0 0 0 2px rgba(255,196,0,.16),0 5px 14px rgba(255,196,0,.12)!important;
+}
+html[data-theme="dark"] .ka-home .kh-day.today b{
+  color:#111!important;
+}
+html[data-theme="dark"] .ka-home .kh-day.today,
+html[data-theme="dark"] .ka-home .kh-day.today *,
+html[data-theme="dark"] .ka-home .kh-day.today b,
+html[data-theme="dark"] .ka-home .kh-day.today span{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
+html[data-theme="dark"] .ka-home .kh-day.today.has:after{
+  background:#111!important;
+}
+html[data-theme="dark"] .kh-backtop{
+  background:#ffc400!important;
+  color:#111!important;
+  border:2px solid #ffe071!important;
+  box-shadow:0 5px 18px rgba(255,196,0,.24),0 0 0 2px rgba(255,196,0,.12)!important;
+  font-weight:950!important;
+}
+
+/* ===== DASHBOARD CONTRAST V2 — AÇIK TEMA =====
+   Seçili gün ve yukarı dön kontrolünde sarı dolgunun göz yormaması.
+   Kontrast korunur; parlak neon görünüm ve ağır dış parıltı kaldırılır. */
+html[data-theme="light"] .ka-home .kh-day.today{
+  background:#f4cf62!important;
+  color:#5b4600!important;
+  border:1px solid #ddb735!important;
+  box-shadow:none!important;
+}
+html[data-theme="light"] .ka-home .kh-day.today b{
+  color:#4b3a00!important;
+}
+html[data-theme="light"] .ka-home .kh-day.today.has:after{
+  background:#4b3a00!important;
+}
+html[data-theme="light"] .kh-backtop{
+  background:#e9c34d!important;
+  color:#111!important;
+  border:1px solid #d4aa28!important;
+  box-shadow:0 4px 12px rgba(120,90,0,.18)!important;
+  font-weight:850!important;
+}
+html[data-theme="light"] .kh-backtop:hover,
+html[data-theme="light"] .kh-backtop:focus-visible{
+  background:#f0ca55!important;
+  border-color:#c99e1d!important;
+  box-shadow:0 5px 14px rgba(120,90,0,.22)!important;
+}
+
+
+/* DASHBOARD CURRENT CLASS CARD — VISIBILITY */
+.ka-home .kh-section[data-home-section="lessons"]{display:flex!important;visibility:visible!important;opacity:1!important;flex-direction:column!important;gap:8px!important;}
+.ka-home .kh-section[data-home-section="lessons"] .kh-card{display:block!important;visibility:visible!important;opacity:1!important;}
+
+
+/* ===== DENEME SAYACI — ZAMAN METİNLERİ =====
+   Geri sayım rakamları ve açıklamaları küçük/silik kalmasın. */
+.ka-home .kh-trial-live__timer-head strong{
+  color:var(--ka-text)!important;
+  font-size:28px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:.2px!important;
+  font-variant-numeric:tabular-nums;
+}
+.ka-home .kh-trial-live__timer-head small{
+  color:var(--ka-text)!important;
+  font-size:11px!important;
+  line-height:1.15!important;
+  font-weight:850!important;
+  letter-spacing:.45px!important;
+  opacity:1!important;
+}
+.ka-home .kh-trial-live__timer-head b{
+  color:var(--ka-text)!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:850!important;
+}
+@media(max-width:480px){
+  .ka-home .kh-trial-live__timer-head strong{
+    font-size:27px!important;
+  }
+  .ka-home .kh-trial-live__timer-head small{
+    font-size:10.5px!important;
+  }
+}
+html[data-theme="dark"] .ka-home .kh-trial-live__timer-head strong,
+html[data-theme="dark"] .ka-home .kh-trial-live__timer-head small,
+html[data-theme="dark"] .ka-home .kh-trial-live__timer-head b{
+  color:var(--ka-text)!important;
+}
+
+/* ===== DENEME SINAVI — UYGULAMA GENELİ FONTU ===== */
+.ka-home .kh-trial-live,
+.ka-home .kh-trial-live *{
+  font-family:var(--ka-font)!important;
+}
+.ka-home .kh-trial-live__title{
+  font-weight:750!important;
+}
+.ka-home .kh-trial-live__session,
+.ka-home .kh-trial-live__timer-head b{
+  font-weight:700!important;
+}
+.ka-home .kh-trial-live__timer-head strong{
+  font-family:var(--ka-font)!important;
+  font-weight:800!important;
+  font-variant-numeric:tabular-nums;
+}
+
+
+/* ===== CANLI ZİL KARTI — MERKEZİ TEMA KONTRASTI =====
+   Canlı ders kartındaki sarı/kremsi yüzeylerin koyu temada metni
+   boğmasını önler. Renkler design-system tokenlarından alınır. */
+.ka-home .kh-bell-timeline-card,
+.ka-home .kh-bell-timeline-v2{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-bell-timeline-card{
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-border)!important;
+}
+.ka-home .kh-bell-timeline-copy small,
+.ka-home .kh-bell-timeline-copy span,
+.ka-home .kh-bell-step small,
+.ka-home .kh-bell-progress-v2>span{
+  color:var(--ka-text-muted)!important;
+  opacity:1!important;
+}
+.ka-home .kh-bell-timeline-copy strong,
+.ka-home .kh-bell-step b{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-bell-timeline-head{
+  color:var(--ka-text)!important;
+}
+.ka-home .kh-bell-timeline-current-icon,
+.ka-home .kh-bell-step>i{
+  background:var(--ka-icon-surface)!important;
+  border:1px solid var(--ka-primary)!important;
+  color:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-timeline-current-icon svg,
+.ka-home .kh-bell-step>i svg{
+  color:var(--ka-primary)!important;
+  stroke:currentColor!important;
+}
+.ka-home .kh-bell-timeline-chip{
+  background:var(--ka-primary)!important;
+  border:1px solid var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-countdown-ring{
+  background:conic-gradient(var(--ka-primary) calc(var(--kb-progress,0%)),var(--ka-border) 0)!important;
+  color:var(--ka-text)!important;
+  border:1px solid var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-countdown-ring:before,
+.ka-home .kh-bell-countdown-ring:after{
+  background:var(--ka-card-bg)!important;
+}
+.ka-home .kh-bell-countdown-ring b,
+.ka-home .kh-bell-countdown-ring small{
+  color:var(--ka-text)!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+.ka-home .kh-bell-progress-v2 i{
+  background:var(--ka-border)!important;
+  border-color:var(--ka-border)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-progress-v2 i b{
+  background:var(--ka-primary)!important;
+  box-shadow:none!important;
+}
+.ka-home .kh-bell-progress-v2 strong{
+  color:var(--ka-text)!important;
+  opacity:1!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-card{
+  background:var(--ka-card-bg,#141414)!important;
+  border:1px solid var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-current-icon,
+html[data-theme="dark"] .ka-home .kh-bell-step>i{
+  background:transparent!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-countdown-ring{
+  background:conic-gradient(var(--ka-primary) calc(var(--kb-progress,0%)),var(--ka-border) 0)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-countdown-ring:before,
+html[data-theme="dark"] .ka-home .kh-bell-countdown-ring:after{
+  background:var(--ka-card-bg,#141414)!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-chip{
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+}
+
+
+/* ===== CANLI ZİL — KALAN SÜRE METNİ TAŞMA DÜZELTMESİ =====
+   Geri sayım etiketi halka dışına taşmamalı; özellikle dar telefonlarda
+   halka içindeki iki satır birlikte merkezlenir. */
+.ka-home .kh-bell-step.is-countdown{
+  min-width:108px!important;
+  flex:0 0 108px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:visible!important;
+}
+.ka-home .kh-bell-countdown-ring{
+  width:92px!important;
+  height:92px!important;
+  min-width:92px!important;
+  min-height:92px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  padding:0!important;
+}
+.ka-home .kh-bell-countdown-ring b{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  font-size:18px!important;
+  line-height:1.05!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.ka-home .kh-bell-countdown-ring small{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  font-size:9px!important;
+  line-height:1.1!important;
+  letter-spacing:.25px!important;
+  font-weight:800!important;
+}
+@media(max-width:480px){
+  .ka-home .kh-bell-step.is-countdown{
+    min-width:104px!important;
+    flex-basis:104px!important;
+  }
+  .ka-home .kh-bell-countdown-ring{
+    width:88px!important;
+    height:88px!important;
+    min-width:88px!important;
+    min-height:88px!important;
+  }
+  .ka-home .kh-bell-countdown-ring b{font-size:17px!important}
+  .ka-home .kh-bell-countdown-ring small{font-size:8.5px!important}
+}
+
+
+/* ===== BUGÜNKÜ DERSLER — DÜZENLİ SATIR + TEMA KONTRASTI ===== */
+.ka-home .kh-section[data-home-section="today-lessons"]{
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-card{
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:var(--ka-card-bg,#fff)!important;
+  border:1px solid var(--ka-border,#d2ad2b)!important;
+  border-radius:20px!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
+  width:100%!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:stretch!important;
+  background:var(--ka-card-bg,#fff)!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--ka-border) 45%,transparent)!important;
+  border-radius:0!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row:last-child{
+  border-bottom:0!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+  min-width:0!important;
+  width:100%!important;
+  min-height:58px!important;
+  padding:10px 12px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--ka-text)!important;
+  text-align:left!important;
+  font:inherit!important;
+  overflow:hidden!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main{
+  min-width:0!important;
+  max-width:100%!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:6px!important;
+  overflow:hidden!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+  flex:0 0 auto!important;
+  color:var(--ka-text)!important;
+  font-size:16px!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+  min-width:0!important;
+  color:var(--ka-text-muted)!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:650!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
+  flex:0 0 auto!important;
+  min-width:0!important;
+  padding:5px 9px!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  border:1px solid var(--ka-border)!important;
+  color:var(--ka-text-muted)!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  line-height:1!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip.green{
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan{
+  align-self:center!important;
+  flex:0 0 auto!important;
+  min-width:68px!important;
+  min-height:36px!important;
+  margin:0 10px 0 4px!important;
+  padding:7px 10px!important;
+  box-sizing:border-box!important;
+  border:1px solid var(--ka-primary)!important;
+  border-radius:10px!important;
+  background:var(--ka-primary)!important;
+  color:var(--ka-button-text,#111)!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  line-height:1!important;
+  text-decoration:none!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan span,
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan b{
+  color:inherit!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row.is-now{
+  background:color-mix(in srgb,var(--ka-primary) 9%,var(--ka-card-bg))!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button:active{
+  background:color-mix(in srgb,var(--ka-primary) 12%,var(--ka-card-bg))!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-empty{
+  min-height:70px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:18px!important;
+  box-sizing:border-box!important;
+  color:var(--ka-text-muted)!important;
+  background:var(--ka-card-bg,#fff)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  text-align:center!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-card{
+  background:var(--ka-card-bg,#141414)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
+  background:var(--ka-card-bg,#141414)!important;
+  border-bottom-color:rgba(255,196,0,.22)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+  color:var(--ka-text,#fff)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+  color:var(--ka-text-muted,#b8bec4)!important;
+}
+html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
+  color:var(--ka-text-muted,#b8bec4)!important;
+  background:transparent!important;
+}
+@media(max-width:520px){
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+    padding:9px 10px!important;
+    gap:7px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+    font-size:15px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+    font-size:12px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan{
+    min-width:60px!important;
+    margin-right:7px!important;
+    padding:7px 8px!important;
+  }
+}
+
+
+/* BUGÜNKÜ DERSLER — MOBİLDE KOMPAKT YAZI */
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+  cursor:pointer!important;
+  text-decoration:none!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+}
+.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
+  font-size:10px!important;
+  padding:5px 8px!important;
+}
+@media(max-width:520px){
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
+    min-height:52px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
+    min-height:52px!important;
+    padding:8px 10px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
+    font-size:14px!important;
+  }
+  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
+    font-size:11.5px!important;
+  }
+}
+
+/* ===== KOYU TEMA — SARI DOLGU / SİYAH METİN KONTRASTI =====
+   Sarı dolgu kullanan ana aksiyon yüzeylerinde metin ve ikonlar siyah kalır. */
+html[data-theme="dark"] .ka-home .kh-bell-timeline-chip,
+html[data-theme="dark"] .ka-home .kh-bell-progress-v2 i b,
+html[data-theme="dark"] .food-tab.is-active,
+html[data-theme="dark"] .ka-btn.primary,
+html[data-theme="dark"] .ka-btn--primary,
+html[data-theme="dark"] button.primary,
+html[data-theme="dark"] .primary{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+}
+html[data-theme="dark"] .ka-home .kh-bell-timeline-chip *,
+html[data-theme="dark"] .ka-home .kh-bell-progress-v2 i b *,
+html[data-theme="dark"] .food-tab.is-active *,
+html[data-theme="dark"] .ka-btn.primary *,
+html[data-theme="dark"] .ka-btn--primary *,
+html[data-theme="dark"] button.primary *,
+html[data-theme="dark"] .primary *{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  stroke:#111!important;
+}
+
+
+/* ===== ANA SAYFA BUGÜN İZİNLİ ÖĞRETMENLER — SATIR İÇ BOŞLUĞU ===== */
+.ka-home .kh-section[data-home-section="absences"] .kh-row{
+  padding:18px 20px!important;
+  min-height:74px!important;
+  box-sizing:border-box!important;
+}
+.ka-home .kh-section[data-home-section="absences"] .kh-row-main{
+  min-width:0!important;
+  padding:0!important;
+}
+.ka-home .kh-section[data-home-section="absences"] .kh-row-main b{
+  display:block!important;
+  line-height:1.25!important;
+}
