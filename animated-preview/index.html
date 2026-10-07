@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Koruk Asistan — Animated Preview</title>
+<style>
+:root{--bg:#07130f;--panel:#0d211a;--line:rgba(180,255,211,.13);--text:#eefbf3;--muted:#91b2a1;--accent:#9ff3bd;--accent2:#62d995}
+*{box-sizing:border-box}html,body{margin:0;background:radial-gradient(circle at 50% -10%,#164a35 0,#07130f 48%);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100%}
+body{padding:18px 14px 40px}.wrap{max-width:720px;margin:auto}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}.title{font-size:30px;font-weight:750;margin:5px 0}.sub{color:var(--muted);font-size:14px}
+.scene{position:relative;overflow:hidden;margin-top:18px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(145deg,rgba(24,62,47,.86),rgba(7,19,15,.96));min-height:310px;box-shadow:0 20px 60px #0007}
+.scene:before{content:"";position:absolute;inset:-30%;background:radial-gradient(circle,rgba(159,243,189,.09) 0 1px,transparent 2px);background-size:26px 26px;animation:drift 16s linear infinite}
+.scene-head{position:relative;z-index:3;padding:24px 24px 0}.state{font-size:13px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}.scene-title{font-size:24px;font-weight:700;margin-top:5px}.scene-meta{color:var(--muted);margin-top:4px}
+.stage{position:absolute;left:18px;right:18px;bottom:18px;height:205px}.ground{position:absolute;left:4%;right:4%;bottom:14px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
+.school{position:absolute;left:12%;right:12%;bottom:18px;height:126px;border:1px solid #b8ffd333;border-bottom:0;border-radius:18px 18px 4px 4px;background:linear-gradient(#183b2d,#0b2119);transform:translateY(8px);animation:float 5s ease-in-out infinite}
+.school:before{content:"";position:absolute;left:10%;right:10%;top:-15px;height:15px;border-radius:10px 10px 0 0;background:#204d39;border:1px solid #b8ffd333}
+.windows{position:absolute;inset:25px 16px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.win{border-radius:7px;background:#091a13;border:1px solid #b8ffd31c;position:relative;overflow:hidden}.win:after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 25%,rgba(159,243,189,.9) 50%,transparent 75%);transform:translateX(-120%);animation:shine 3.2s infinite}.win:nth-child(2):after{animation-delay:.5s}.win:nth-child(3):after{animation-delay:1s}.win:nth-child(4):after{animation-delay:1.5s}.win:nth-child(5):after{animation-delay:2s}.win:nth-child(6):after{animation-delay:2.5s}.win:nth-child(7):after{animation-delay:3s}.win:nth-child(8):after{animation-delay:3.5s}
+.people{position:absolute;left:9%;right:9%;bottom:17px;height:75px}.person{position:absolute;bottom:0;width:8px;height:32px;border-radius:8px;background:var(--accent);box-shadow:0 0 16px #9ff3bd55;animation:walk 4s ease-in-out infinite}.person:before{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:var(--accent);left:-2px;top:-8px}.person:nth-child(1){left:3%;animation-delay:0s}.person:nth-child(2){left:18%;animation-delay:.7s}.person:nth-child(3){left:34%;animation-delay:1.4s}.person:nth-child(4){left:52%;animation-delay:2.1s}.person:nth-child(5){left:70%;animation-delay:2.8s}.person:nth-child(6){left:86%;animation-delay:3.5s}
+.route{position:absolute;left:4%;right:4%;bottom:28px;height:50px;border-bottom:1px dashed #9ff3bd44;border-radius:50%}.bus{position:absolute;bottom:22px;left:-8%;width:62px;height:27px;border:1px solid var(--accent);border-radius:9px;background:#0c271c;animation:bus 7s linear infinite}.bus:before{content:"";position:absolute;left:9px;top:7px;width:8px;height:6px;border:1px solid #9ff3bd88;border-radius:2px;box-shadow:13px 0 #0c271c,26px 0 #0c271c}.bus:after{content:"";position:absolute;right:-18px;top:11px;width:18px;height:1px;background:#9ff3bd66;box-shadow:8px 0 #9ff3bd33}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.stat{padding:15px 12px;border:1px solid var(--line);border-radius:18px;background:#0b1d16aa;position:relative;overflow:hidden}.num{font-size:25px;font-weight:750}.label{font-size:11px;color:var(--muted);margin-top:2px}.pulse{position:absolute;right:10px;top:10px;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 #9ff3bd66;animation:pulse 2s infinite}
+.controls{display:flex;gap:8px;margin-top:14px}.controls button{flex:1;border:1px solid var(--line);background:#0b1d16;color:var(--text);border-radius:13px;padding:11px 8px}.controls button.active{border-color:#9ff3bd77;background:#163d2c}
+.note{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.5}
+@keyframes drift{to{transform:translate(26px,26px)}}@keyframes float{50%{transform:translateY(-2px)}}@keyframes shine{0%,65%{transform:translateX(-120%)}100%{transform:translateX(120%)}}@keyframes walk{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}@keyframes bus{0%{left:-8%}100%{left:108%}}@keyframes pulse{70%{box-shadow:0 0 0 8px transparent}}
+@media(max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}.scene{min-height:330px}.school{left:7%;right:7%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Koruk Asistan / Animated Preview</div>
+  <div class="title">Veriye göre yaşayan arayüz</div>
+  <div class="sub">Aynı efekt her karta uygulanmıyor. Sahne, okulun mevcut durumuna göre değişiyor.</div>
+
+  <section class="scene">
+    <div class="scene-head">
+      <div class="state" id="state">Ders zamanı</div>
+      <div class="scene-title" id="sceneTitle">Bilişim Teknolojileri ve Yazılım</div>
+      <div class="scene-meta" id="sceneMeta">5-A · 3. Ders · 40 dakika</div>
+    </div>
+    <div class="stage" id="stage">
+      <div class="school"><div class="windows" id="windows"></div></div>
+      <div class="people" id="people"></div>
+      <div class="ground"></div>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><span class="pulse"></span><div class="num" data-value="12">0</div><div class="label">Öğretmen</div></div>
+    <div class="stat"><span class="pulse"></span><div class="num" data-value="86">0</div><div class="label">Öğrenci</div></div>
+    <div class="stat"><span class="pulse"></span><div class="num" data-value="8">0</div><div class="label">Sınıf</div></div>
+    <div class="stat"><span class="pulse"></span><div class="num" data-value="5">0</div><div class="label">Servis</div></div>
+  </div>
+
+  <div class="controls">
+    <button class="active" data-mode="lesson">Ders</button>
+    <button data-mode="break">Teneffüs</button>
+    <button data-mode="weekend">Hafta sonu</button>
+  </div>
+  <div class="note">Bu ilk görsel motor. Sonraki aşamada sayaçlar, ders adı, nöbetçiler, öğrenci/öğretmen sayıları ve diğer veriler doğrudan mevcut uygulama verilerinden beslenecek.</div>
+</div>
+<script>
+const windows=document.getElementById('windows'),people=document.getElementById('people'),stage=document.getElementById('stage');
+for(let i=0;i<8;i++){const e=document.createElement('div');e.className='win';windows.appendChild(e)}
+for(let i=0;i<6;i++){const e=document.createElement('div');e.className='person';people.appendChild(e)}
+function mode(m){
+  document.querySelectorAll('.controls button').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+  stage.querySelector('.school').style.display=m==='weekend'?'none':'block';
+  people.style.display=m==='break'?'block':m==='weekend'?'none':'block';
+  document.querySelector('.ground').style.display=m==='weekend'?'none':'block';
+  document.querySelectorAll('.route').forEach(x=>x.remove());
+  document.querySelectorAll('.bus').forEach(x=>x.remove());
+  if(m==='lesson'){
+    state.textContent='Ders zamanı';sceneTitle.textContent='Bilişim Teknolojileri ve Yazılım';sceneMeta.textContent='5-A · 3. Ders · 40 dakika';
+  }else if(m==='break'){
+    state.textContent='Teneffüs';sceneTitle.textContent='Koridor hareketlendi';sceneMeta.textContent='Bir sonraki ders için hazırlık sürüyor';
+    const r=document.createElement('div');r.className='route';const b=document.createElement('div');b.className='bus';r.appendChild(b);stage.appendChild(r);
+  }else{
+    state.textContent='Hafta sonu';sceneTitle.textContent='Okul sakin';sceneMeta.textContent='Ders ve zil akışı kapalı';
+  }
+}
+document.querySelectorAll('.controls button').forEach(b=>b.onclick=()=>mode(b.dataset.mode));
+document.querySelectorAll('.num').forEach(el=>{const target=+el.dataset.value;let n=0;const tick=()=>{n=Math.min(target,n+Math.max(1,Math.ceil(target/35)));el.textContent=n;n<target&&requestAnimationFrame(tick)};tick()});
+</script>
+</body>
+</html>
