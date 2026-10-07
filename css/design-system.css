@@ -136,3 +136,7 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-meeting-saved-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ka-meeting-session{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;align-items:center}
 @media(max-width:390px){.ka-meeting-draft-grid{grid-template-columns:1fr}}
+
+
+:root{--ka-safe-top:env(safe-area-inset-top,0px);--ka-safe-bottom:env(safe-area-inset-bottom,0px)}
+html,body{min-height:100dvh}
