@@ -78,7 +78,7 @@ function firebaseyiBaslat(){
 (function studentExamResultDetailsFeatureLoad(){if(document.querySelector('script[data-student-exam-result-details]'))return;const script=document.createElement('script');script.src='js/core/student-exam-result-details.js?v=925';script.async=false;script.dataset.studentExamResultDetails='';document.head.appendChild(script)})();
 (function adminPasswordResetFeatureLoad(){if(document.querySelector('script[data-admin-password-reset]'))return;const script=document.createElement('script');script.src='js/core/admin-password-reset.js?v=948';script.async=false;script.dataset.adminPasswordReset='';document.head.appendChild(script)})();
 (function teacherReminderAcademicYearFeatureLoad(){if(document.querySelector('script[data-teacher-reminder-academic-year]'))return;const script=document.createElement('script');script.src='js/core/teacher-reminder-academic-year.js?v=952';script.async=false;script.dataset.teacherReminderAcademicYear='';document.head.appendChild(script)})();
-(function reportCustomizerFeatureLoad(){if(document.querySelector('script[data-report-customizer]'))return;const script=document.createElement('script');script.src='js/core/report-customizer.js?v=1001';script.async=false;script.dataset.reportCustomizer='';document.head.appendChild(script)})();
+(function reportCustomizerFeatureLoad(){if(document.querySelector('script[data-report-customizer]'))return;const script=document.createElement('script');script.src='js/core/report-customizer.js?v=1002';script.async=false;script.dataset.reportCustomizer='';document.head.appendChild(script)})();
 
 /* Firestore read guard: local-first açılış + realtime korunur; tekrar eden tam pull'lar 5 dk bastırılır. */
 (function installFirestoreReadGuard(){
