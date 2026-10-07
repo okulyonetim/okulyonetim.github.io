@@ -455,7 +455,7 @@ function renderSearch({remember=true}={}){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=3');
       if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
-      const escPrint=v=>String(v??'').replace(/[&<>\\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\"':'&quot;',"'":'&#39;'}[c]));
+      const escPrint=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const filterParts=[];
       if(value.trim())filterParts.push('Arama: '+value.trim());
       if(state.category&&state.category!=='all')filterParts.push('Kategori: '+(SEARCH_CATEGORIES.find(x=>x[0]===state.category)?.[1]||state.category));
