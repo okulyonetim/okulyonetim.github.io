@@ -140,3 +140,5 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 
 :root{--ka-safe-top:env(safe-area-inset-top,0px);--ka-safe-bottom:env(safe-area-inset-bottom,0px)}
 html,body{min-height:100dvh}
+
+@media(max-width:390px){.ka-school-logo{width:37px;height:37px}}
