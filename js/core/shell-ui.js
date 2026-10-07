@@ -446,7 +446,28 @@ function renderSearch({remember=true}={}){
   for(const cb of $$('[data-search-service],[data-search-class],[data-search-club]',root))cb.addEventListener('change',()=>{if(searchActiveFilterCount(root)>0)setSearchCategory(root,'student');refresh()});
   $$('[data-search-gender]',root).forEach(b=>b.addEventListener('click',()=>{$$('[data-search-gender]',root).forEach(x=>{const on=x===b;x.setAttribute('aria-pressed',on?'true':'false');x.classList.toggle('active',on)});if(b.dataset.searchGender)setSearchCategory(root,'student');refresh()}));
   root.querySelector('[data-search-reset]')?.addEventListener('click',()=>{$$('[data-search-service],[data-search-class],[data-search-club]',root).forEach(x=>x.checked=false);const genders=$$('[data-search-gender]',root);genders.forEach((x,i)=>{x.setAttribute('aria-pressed',i===0?'true':'false');x.classList.toggle('active',i===0)});refresh()});
-  root.querySelector('[data-search-print]')?.addEventListener('click',()=>window.print());refresh();setTimeout(()=>input?.focus(),30)
+  root.querySelector('[data-search-print]')?.addEventListener('click',async e=>{
+    const button=e.currentTarget;
+    if(button.disabled)return;
+    const value=input?.value||'',state=searchFilterState(root),rows=searchRows(value,state);
+    if(!rows.length){global.toast?.('Yazdırılacak arama sonucu bulunamadı.');return}
+    button.disabled=true;
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=3');
+      if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
+      const escPrint=v=>String(v??'').replace(/[&<>\\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\"':'&quot;',"'":'&#39;'}[c]));
+      const filterParts=[];
+      if(value.trim())filterParts.push('Arama: '+value.trim());
+      if(state.category&&state.category!=='all')filterParts.push('Kategori: '+(SEARCH_CATEGORIES.find(x=>x[0]===state.category)?.[1]||state.category));
+      if(state.classes.size)filterParts.push('Sınıf: '+[...state.classes].map(id=>arr('siniflar').find(x=>x.id===id)?.ad).filter(Boolean).join(', '));
+      if(state.services.size)filterParts.push('Servis: '+[...state.services].map(id=>arr('servisler').find(x=>x.id===id)?.guzergah||arr('servisler').find(x=>x.id===id)?.servisAdi).filter(Boolean).join(', '));
+      if(state.clubs.size)filterParts.push('Kulüp: '+[...state.clubs].map(id=>arr('sosyalKulupler').find(x=>x.id===id)?.ad).filter(Boolean).join(', '));
+      if(state.gender)filterParts.push('Cinsiyet: '+state.gender);
+      const body=`<div class="ka-report-meta"><strong>Filtrelenmiş sonuçlar: ${rows.length}</strong>${filterParts.length?`<div class="ka-muted">${filterParts.map(escPrint).join(' · ')}</div>`:''}</div><table class="ka-table"><thead><tr><th style="width:36px">#</th><th>Ad / Başlık</th><th>Tür</th><th>Detay</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${escPrint(r.title)}</td><td>${escPrint(r.type)}</td><td>${escPrint(r.meta||'')}</td></tr>`).join('')}</tbody></table>`;
+      await global.ReportEngine.printReport('Arama Sonuçları',body,{fileName:'Arama_Sonuclari',yon:'dikey',logoGoster:false,tarihGoster:true,compact:true,fontSize:9,kenarBosluk:8});
+    }catch(err){console.error('[Search/print]',err);global.toast?.('Arama sonuçları yazdırılamadı: '+(err?.message||err))}
+    finally{button.disabled=false}
+  });refresh();setTimeout(()=>input?.focus(),30)
 }
 function menuLayerOpen(){const layer=$('#kaMenuLayer');return !!(layer&&!layer.hidden&&layer.classList.contains('open'))}
 function mountQuickNote(ov){document.body.appendChild(ov);document.body.classList.add('ka-layer-open');return ov}
