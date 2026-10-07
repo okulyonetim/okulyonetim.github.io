@@ -122,3 +122,17 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-statistics-storage__body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px}
 .ka-statistics-storage__body>div{display:flex;justify-content:space-between;gap:8px}
 @media(max-width:390px){.ka-statistics-summary,.ka-statistics-metrics,.ka-statistics-storage__body{grid-template-columns:1fr}.ka-statistics-hero{align-items:flex-start}}
+
+
+.ka-meeting-page{display:grid;gap:14px;color:var(--ka-text)}
+.ka-meeting-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--ka-border);border-radius:999px}
+.ka-meeting-item{min-width:0;padding:14px;border:1px solid var(--ka-border);border-radius:16px;background:var(--ka-surface)}
+.ka-meeting-report{min-width:0;padding:14px;border:1px solid var(--ka-border);border-radius:16px;background:var(--ka-surface)}
+.ka-meeting-draft-card{min-width:0;padding:13px 14px;border:1px solid var(--ka-border);border-radius:18px;background:var(--ka-surface)}
+.ka-meeting-draft-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ka-meeting-draft-field{min-width:0;display:grid;gap:6px}
+.ka-meeting-report-button{position:static}
+.ka-meeting-report__table th,.ka-meeting-report__table td{text-align:center!important;vertical-align:middle!important}
+.ka-meeting-saved-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ka-meeting-session{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;align-items:center}
+@media(max-width:390px){.ka-meeting-draft-grid{grid-template-columns:1fr}}
