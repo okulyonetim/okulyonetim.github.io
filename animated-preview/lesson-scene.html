@@ -3,47 +3,161 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Koruk Asistan · Ders Sahnesi</title>
+<title>Koruk Asistan — Yaşayan Ders Sahnesi</title>
 <style>
-:root{--bg:#071b16;--surface:#0d2a22;--surface2:#12382d;--text:#eef7f3;--muted:#9db7ad;--accent:#b8d86a;--line:#285344}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 10%,#164c3a 0,#071b16 48%);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:18px}
-.scene{width:min(760px,100%);min-height:560px;background:linear-gradient(160deg,#10352b,#081d18);border:1px solid #234d40;border-radius:30px;overflow:hidden;position:relative;box-shadow:0 24px 70px #0008}
-.head{position:relative;z-index:5;padding:25px 25px 8px}.eyebrow{font-size:12px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}.title{font-size:28px;font-weight:750;margin:7px 0}.meta{color:var(--muted);font-size:14px}
-.art{position:absolute;inset:110px 0 100px;overflow:hidden}
-.floor{position:absolute;left:7%;right:7%;bottom:10%;height:2px;background:#3b6659}
-.board{position:absolute;left:15%;top:18%;width:42%;height:27%;border:2px solid #477166;border-radius:10px;background:#0b211b;box-shadow:0 0 45px #0005}
-.board:after{content:"BİLİŞİM TEKNOLOJİLERİ";position:absolute;left:8%;top:22%;color:#cfe4da;font-size:clamp(10px,2vw,15px);letter-spacing:.04em;animation:write 1.2s both}
-.board:before{content:"";position:absolute;left:8%;right:8%;bottom:23%;height:3px;background:var(--accent);transform-origin:left;animation:progress 6s linear infinite}
-.teacher{position:absolute;right:20%;bottom:13%;width:54px;height:130px;animation:teach 3.2s ease-in-out infinite}
-.teacher .head{padding:0;position:absolute;left:16px;top:0;width:24px;height:24px;border-radius:50%;background:#d5a07b}
-.teacher .body{position:absolute;left:9px;top:27px;width:38px;height:64px;border-radius:15px 15px 8px 8px;background:#315f51}
-.teacher .arm{position:absolute;left:-8px;top:36px;width:55px;height:9px;border-radius:8px;background:#d5a07b;transform-origin:right;animation:arm 1.6s ease-in-out infinite}
-.student{position:absolute;bottom:13%;width:26px;height:60px}.student:before{content:"";position:absolute;left:5px;top:0;width:16px;height:16px;border-radius:50%;background:#d5a07b}.student:after{content:"";position:absolute;left:2px;top:20px;width:22px;height:38px;border-radius:8px;background:#416f60}
-.s1{left:16%;animation:bob 2.2s ease-in-out infinite}.s2{left:27%;animation:bob 2.6s .3s ease-in-out infinite}.s3{left:39%;animation:bob 2.4s .7s ease-in-out infinite}
-.desk{position:absolute;bottom:10%;width:70px;height:7px;border-radius:4px;background:#355b50}.d1{left:13%}.d2{left:25%}.d3{left:37%}
-.time{position:absolute;right:18px;top:16px;border:1px solid #31594c;background:#0a241d;padding:8px 12px;border-radius:99px;font-size:12px;color:var(--accent)}
-.bottom{position:absolute;left:0;right:0;bottom:0;padding:17px 24px;background:linear-gradient(transparent,#071b16 22%);display:flex;justify-content:space-between;align-items:end;z-index:5}.remaining{font-size:15px}.status{font-size:12px;color:var(--muted)}
-.controls{position:absolute;top:18px;right:18px;display:flex;gap:6px;z-index:10}.controls button{border:1px solid #31594c;background:#0b241d;color:#dcece6;border-radius:10px;padding:7px 10px;cursor:pointer}.controls button.active{background:var(--accent);color:#101b14;border-color:var(--accent)}
-@keyframes write{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes progress{from{transform:scaleX(.12)}to{transform:scaleX(1)}}@keyframes teach{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes arm{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(18deg)}}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-body.break .board{opacity:.35;transform:translateY(-8px);transition:.7s}body.break .teacher{transform:translateX(30px);opacity:.25;transition:.7s}body.break .student{animation:walk 3s linear infinite}body.break .student.s1{left:78%}body.break .student.s2{left:66%}body.break .student.s3{left:54%}body.break .remaining:after{content:" · Teneffüs"}body.weekend .board,body.weekend .desk{opacity:.18}body.weekend .teacher,body.weekend .student{opacity:.08}body.weekend .art:after{content:"OKUL SAKİN";position:absolute;inset:35% 0;text-align:center;font-size:clamp(22px,5vw,40px);font-weight:750;letter-spacing:.08em;color:#7eaaa0;opacity:.7}body.weekend .remaining:after{content:" · Hafta sonu"}@keyframes walk{from{transform:translateX(-80px)}to{transform:translateX(120px)}}
+:root{--bg:#061511;--surface:#0b241d;--surface2:#102f26;--ink:#eef8f4;--muted:#9bb9af;--line:#2b5749;--accent:#c9e66f;--blue:#76b9d2}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:#061511}
+body{padding:18px;background:radial-gradient(900px 500px at 80% 0,#164b39 0,#061511 62%);overflow-x:hidden}
+.wrap{width:min(980px,100%);margin:auto}.top{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:14px}
+.brand small{display:block;color:var(--accent);letter-spacing:.2em;font-size:10px}.brand b{font-size:21px}
+.controls{display:flex;gap:6px;flex-wrap:wrap}.controls button{border:1px solid var(--line);background:#0a201a;color:var(--ink);padding:9px 12px;border-radius:11px;cursor:pointer}.controls button.active{background:var(--accent);color:#08150f;border-color:var(--accent)}
+.scene{position:relative;height:650px;border:1px solid #2d5b4d;border-radius:30px;overflow:hidden;background:linear-gradient(160deg,#10372c,#071b15);box-shadow:0 30px 90px #0009}
+.scene:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 18%,#a8d56e12,transparent 28%),linear-gradient(180deg,transparent 65%,#05110d);pointer-events:none;z-index:20}
+.hud{position:absolute;left:26px;right:26px;top:24px;z-index:30}.eyebrow{color:var(--accent);font-size:10px;letter-spacing:.18em}.hud h1{margin:7px 0 5px;font-size:clamp(25px,5vw,42px);line-height:1.02}.meta{font-size:13px;color:var(--muted)}
+.timer{position:absolute;right:0;top:0;border:1px solid var(--line);background:#071b16d9;border-radius:999px;padding:9px 13px;color:var(--accent);font-variant-numeric:tabular-nums}
+.stage{position:absolute;inset:120px 0 86px;overflow:hidden}
+svg{width:100%;height:100%;display:block}
+.ambient{animation:ambient 5s ease-in-out infinite}.slow{animation:slow 7s ease-in-out infinite}.blink{animation:blink 3.5s ease-in-out infinite}
+.draw{stroke-dasharray:400;stroke-dashoffset:400;animation:draw 2.2s cubic-bezier(.2,.8,.2,1) .2s forwards}
+.pop{transform-box:fill-box;transform-origin:center;animation:pop .65s cubic-bezier(.2,1.4,.4,1) both}
+.fade{animation:fade .8s ease both}.write{transform-box:fill-box;transform-origin:left center;animation:write 1.5s ease-in-out infinite}
+.s1{animation-delay:.05s}.s2{animation-delay:.2s}.s3{animation-delay:.35s}.s4{animation-delay:.5s}
+.walk{animation:walk 6s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.walk2{animation:walk2 7s cubic-bezier(.45,.05,.55,.95) .8s infinite alternate}
+.arm{transform-box:fill-box;transform-origin:100% 50%;animation:arm 1.8s ease-in-out infinite}
+.head{transform-box:fill-box;transform-origin:center;animation:head 3.2s ease-in-out infinite}
+.breath{transform-box:fill-box;transform-origin:bottom center;animation:breath 2.6s ease-in-out infinite}
+.float{animation:float 5s ease-in-out infinite}
+.deskGlow{animation:deskGlow 2.8s ease-in-out infinite}
+.lesson-only{}.break-only,.weekend-only{opacity:0}
+.bottom{position:absolute;left:0;right:0;bottom:0;z-index:30;padding:20px 26px;background:linear-gradient(transparent,#061511 35%);display:flex;align-items:end;justify-content:space-between;gap:20px}
+.state b{display:block;font-size:17px}.state span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.progress{width:min(300px,38vw);height:5px;border-radius:10px;background:#17382e;overflow:hidden;margin-top:10px}.progress i{display:block;height:100%;width:42%;background:var(--accent);animation:progress 40s linear infinite}
+.scene.break .lesson-only{opacity:.12;transition:opacity .7s}.scene.break .break-only{opacity:1;transition:opacity .7s}.scene.break .boardText{opacity:0}.scene.break .peopleLesson{opacity:.08}.scene.break .walker{animation-duration:3.2s}
+.scene.weekend .lesson-only,.scene.weekend .break-only{opacity:.08}.scene.weekend .weekend-only{opacity:1}.scene.weekend .light{opacity:.12}.scene.weekend .people{opacity:.06}.scene.weekend .cloud{animation:none;opacity:.25}
+.scene.break .door{transform:scaleX(1.08);transform-origin:center bottom}.scene.break .hallLight{opacity:1}.scene.break .bellPulse{animation:bellPulse 1.2s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}@keyframes pop{0%{opacity:0;transform:scale(.65)}100%{opacity:1;transform:scale(1)}}@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes ambient{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes slow{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}@keyframes blink{0%,92%,100%{opacity:1}95%{opacity:.2}}
+@keyframes write{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(18deg)}}@keyframes arm{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(18deg)}}@keyframes head{0%,100%{transform:rotate(0)}50%{transform:rotate(5deg)}}@keyframes breath{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.025)}}
+@keyframes walk{from{transform:translateX(-15px)}to{transform:translateX(55px)}}@keyframes walk2{from{transform:translateX(20px)}to{transform:translateX(-55px)}}@keyframes float{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-18px);opacity:.8}}
+@keyframes deskGlow{0%,100%{opacity:.2}50%{opacity:.8}}@keyframes progress{from{width:18%}to{width:82%}}@keyframes bellPulse{0%,100%{opacity:.15;transform:scale(.9)}50%{opacity:.8;transform:scale(1.15)}}
+@media(max-width:650px){body{padding:10px}.top{align-items:flex-start;flex-direction:column}.scene{height:620px;border-radius:24px}.hud{left:19px;right:19px}.timer{position:relative;display:inline-block;top:auto;right:auto;margin-top:12px}.stage{inset:145px 0 82px}.bottom{padding:17px 19px}.progress{width:145px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<section class="scene">
-<div class="controls"><button class="active" data-mode="lesson">Ders</button><button data-mode="break">Teneffüs</button><button data-mode="weekend">Hafta sonu</button></div>
-<header class="head"><div class="eyebrow">KORUK ASİSTAN · CANLI SAHNE</div><div class="title">Bilişim Teknolojileri ve Yazılım</div><div class="meta">5-A · 3. Ders · 40 dakika</div><div class="time">09:40</div></header>
-<div class="art">
-<div class="board"></div><div class="teacher"><i class="head"></i><i class="body"></i><i class="arm"></i></div>
-<div class="desk d1"></div><div class="desk d2"></div><div class="desk d3"></div>
-<div class="student s1"></div><div class="student s2"></div><div class="student s3"></div><div class="floor"></div>
+<div class="wrap">
+<div class="top"><div class="brand"><small>KORUK ASİSTAN</small><b>Yaşayan Okul Sahnesi</b></div>
+<div class="controls"><button class="active" data-mode="lesson">Ders</button><button data-mode="break">Teneffüs</button><button data-mode="weekend">Hafta sonu</button></div></div>
+
+<section class="scene" id="scene">
+<div class="hud"><div class="eyebrow">ŞU AN · OKUL DURUMU</div><h1 id="title">Bilişim Teknolojileri ve Yazılım</h1><div class="meta" id="meta">5-A · 3. Ders · 40 dakika</div><div class="timer" id="timer">24:18</div></div>
+
+<div class="stage">
+<svg viewBox="0 0 1000 520" aria-label="Canlı sınıf sahnesi">
+<defs>
+<linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#153e31"/><stop offset="1" stop-color="#0b271f"/></linearGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#163a30"/><stop offset="1" stop-color="#071a14"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="7"/></filter>
+</defs>
+
+<path d="M55 410H945V500H55Z" fill="url(#floor)"/>
+<path d="M80 80H920V410H80Z" fill="url(#wall)" stroke="#315c4e" stroke-width="3"/>
+<path class="draw" d="M80 410H920M80 80H920M80 80V410M920 80V410" fill="none" stroke="#416b5c" stroke-width="3"/>
+
+<!-- windows / outside -->
+<g class="lesson-only">
+<rect x="665" y="120" width="180" height="125" rx="8" fill="#0b201a" stroke="#477166" stroke-width="3"/>
+<path d="M755 120V245M665 182H845" stroke="#477166" stroke-width="2"/>
+<circle class="float" cx="705" cy="153" r="7" fill="#c9e66f"/>
+<circle class="float" cx="804" cy="205" r="5" fill="#76b9d2"/>
+<path class="slow" d="M680 150C720 135 760 145 820 135" fill="none" stroke="#557d6e" stroke-width="2"/>
+</g>
+
+<!-- board -->
+<g class="lesson-only">
+<rect x="115" y="115" width="430" height="180" rx="13" fill="#071b16" stroke="#50776a" stroke-width="4"/>
+<text class="boardText" x="145" y="160" fill="#c9e66f" font-size="21" font-family="system-ui">BİLİŞİM TEKNOLOJİLERİ</text>
+<text class="boardText" x="145" y="192" fill="#a8c6bb" font-size="16" font-family="system-ui">Algoritma → Problem → Çözüm</text>
+<path class="draw" d="M145 222H475" stroke="#c9e66f" stroke-width="4"/>
+<path class="draw" d="M145 250H400" stroke="#6d9e8c" stroke-width="3" style="animation-delay:.5s"/>
+<circle class="blink" cx="490" cy="160" r="6" fill="#c9e66f"/>
+</g>
+
+<!-- teacher -->
+<g class="lesson-only breath" transform="translate(590 275)">
+<circle class="head" cx="0" cy="0" r="25" fill="#d3a079"/>
+<path d="M-29 35Q0 18 29 35L35 112H-35Z" fill="#38685a"/>
+<path class="arm" d="M-20 48L-86 20" stroke="#d3a079" stroke-width="13" stroke-linecap="round"/>
+<path d="M-18 110L-27 158M18 110L27 158" stroke="#233f36" stroke-width="14" stroke-linecap="round"/>
+<circle class="pop" cx="-87" cy="18" r="5" fill="#c9e66f"/>
+</g>
+
+<!-- desks -->
+<g class="lesson-only" stroke="#416a5b" fill="#12362b">
+<path d="M130 390H285L270 420H145Z"/><path d="M345 390H500L485 420H360Z"/><path d="M560 390H715L700 420H575Z"/>
+</g>
+
+<!-- students -->
+<g class="peopleLesson">
+<g class="student s1 breath" transform="translate(185 330)">
+<circle cx="0" cy="0" r="20" fill="#d3a079"/><path d="M-24 29Q0 13 24 29L28 78H-28Z" fill="#4a7868"/>
+<path d="M-15 78L-22 110M15 78L22 110" stroke="#263f37" stroke-width="11" stroke-linecap="round"/>
+</g>
+<g class="student s2 breath" transform="translate(400 330)">
+<circle cx="0" cy="0" r="20" fill="#c89572"/><path d="M-24 29Q0 13 24 29L28 78H-28Z" fill="#567f71"/>
+<path d="M-15 78L-22 110M15 78L22 110" stroke="#263f37" stroke-width="11" stroke-linecap="round"/>
+</g>
+<g class="student s3 breath" transform="translate(615 330)">
+<circle cx="0" cy="0" r="20" fill="#d3a079"/><path d="M-24 29Q0 13 24 29L28 78H-28Z" fill="#3e6b5c"/>
+<path d="M-15 78L-22 110M15 78L22 110" stroke="#263f37" stroke-width="11" stroke-linecap="round"/>
+</g>
+</g>
+
+<!-- ambient particles -->
+<g fill="#c9e66f"><circle class="float" cx="100" cy="330" r="3"/><circle class="float" cx="850" cy="300" r="4"/><circle class="float" cx="900" cy="170" r="3"/><circle class="float" cx="550" cy="100" r="3"/></g>
+
+<!-- break scene -->
+<g class="break-only">
+<rect class="hallLight" x="380" y="150" width="240" height="210" rx="15" fill="#173f31" stroke="#52786a" stroke-width="3"/>
+<path d="M500 150V360" stroke="#52786a" stroke-width="2"/>
+<circle class="bellPulse" cx="500" cy="120" r="28" fill="none" stroke="#c9e66f" stroke-width="4"/>
+<path d="M485 118Q500 98 515 118" fill="none" stroke="#c9e66f" stroke-width="4"/>
+<g class="walker" transform="translate(310 335)">
+<circle cx="0" cy="-25" r="17" fill="#d3a079"/><path d="M-19 2Q0 -10 19 2L22 48H-22Z" fill="#4c796a"/>
+<path d="M-10 47L-18 80M10 47L18 80" stroke="#263f37" stroke-width="9" stroke-linecap="round"/>
+</g>
+<g class="walker" transform="translate(690 350)">
+<circle cx="0" cy="-25" r="17" fill="#c89572"/><path d="M-19 2Q0 -10 19 2L22 48H-22Z" fill="#527f70"/>
+<path d="M-10 47L-18 80M10 47L18 80" stroke="#263f37" stroke-width="9" stroke-linecap="round"/>
+</g>
+<text x="500" y="405" text-anchor="middle" fill="#c9e66f" font-size="24" font-weight="700">TENEFFÜS</text>
+</g>
+
+<!-- weekend -->
+<g class="weekend-only">
+<path d="M180 365H820" stroke="#416b5d" stroke-width="3"/>
+<path d="M270 365V260H730V365" fill="#0a211a" stroke="#416b5d" stroke-width="3"/>
+<path d="M345 260L500 175L655 260" fill="#10372c" stroke="#416b5d" stroke-width="3"/>
+<circle class="float" cx="320" cy="205" r="5" fill="#c9e66f"/><circle class="float" cx="700" cy="230" r="4" fill="#76b9d2"/>
+<text x="500" y="325" text-anchor="middle" fill="#9bb9af" font-size="28" font-weight="700">OKUL SAKİN</text>
+<text x="500" y="350" text-anchor="middle" fill="#6f9589" font-size="15">Ders ve zil akışı kapalı</text>
+</g>
+</svg>
 </div>
-<footer class="bottom"><div><div class="remaining">Ders devam ediyor</div><div class="status">Sahne, okul durumuna göre değişir.</div></div><strong id="clock">24:18</strong></footer>
+
+<div class="bottom"><div class="state"><b id="state">Ders devam ediyor</b><span id="sub">5-A sınıfında anlatım sürüyor · sahne canlı</span><div class="progress"><i></i></div></div><div style="color:var(--muted);font-size:12px;text-align:right">3. Ders<br><strong style="color:var(--ink)">40 dakika</strong></div></div>
 </section>
+</div>
 <script>
-const buttons=[...document.querySelectorAll('[data-mode]')];const body=document.body;
-buttons.forEach(b=>b.onclick=()=>{buttons.forEach(x=>x.classList.remove('active'));b.classList.add('active');body.className=b.dataset.mode;});
-let sec=1458;setInterval(()=>{if(body.classList.contains('weekend'))return;sec=Math.max(0,sec-1);const m=String(Math.floor(sec/60)).padStart(2,'0'),s=String(sec%60).padStart(2,'0');document.querySelector('#clock').textContent=m+':'+s},1000);
+const scene=document.querySelector('#scene'),state=document.querySelector('#state'),sub=document.querySelector('#sub'),title=document.querySelector('#title'),meta=document.querySelector('#meta'),timer=document.querySelector('#timer');
+document.querySelectorAll('[data-mode]').forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ scene.className='scene '+btn.dataset.mode;
+ if(btn.dataset.mode==='lesson'){title.textContent='Bilişim Teknolojileri ve Yazılım';meta.textContent='5-A · 3. Ders · 40 dakika';state.textContent='Ders devam ediyor';sub.textContent='5-A sınıfında anlatım sürüyor · sahne canlı'}
+ if(btn.dataset.mode==='break'){title.textContent='Koridor hareketlendi';meta.textContent='Teneffüs · sonraki ders hazırlanıyor';state.textContent='Teneffüs başladı';sub.textContent='Öğrenciler sınıftan çıkıyor · zil akışı aktif'}
+ if(btn.dataset.mode==='weekend'){title.textContent='Okul sakin';meta.textContent='Hafta sonu · ders akışı kapalı';state.textContent='Okul sakin';sub.textContent='Ders, zil ve sınıf hareketleri durduruldu'}
+});
+let sec=1458;setInterval(()=>{if(scene.classList.contains('weekend'))return;sec=Math.max(0,sec-1);timer.textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')},1000);
 </script>
 </body>
 </html>
