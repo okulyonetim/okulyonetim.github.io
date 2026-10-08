@@ -11,6 +11,7 @@ const teachers=()=>A('ogretmenler').filter(x=>x?.id).sort((a,b)=>tn(a).localeCom
 const students=()=>A('veliler').filter(x=>x?.id).sort((a,b)=>sn(a).localeCompare(sn(b),'tr'));
 const cn=id=>A('siniflar').find(x=>String(x.id)===String(id))?.ad||'';
 const cy=()=>{const d=new Date(),y=d.getFullYear();return d.getMonth()+1>=9?y+'-'+(y+1):(y-1)+'-'+y};
+const emptyRecord=()=>({ad:'',tur:'Komisyon',egitimOgretimYili:cy(),baskanId:'',asilUyeler:[],yedekUyeler:[],gorevler:[],notlar:[],isler:[]});
 const ms=a=>Array.isArray(a)?a.map((x,i)=>({tur:x?.tur==='ogrenci'?'ogrenci':'ogretmen',id:String(x?.id||''),sira:i+1})).filter(x=>x.id):[];
 const ml=x=>x.tur==='ogrenci'?sn(students().find(s=>String(s.id)===x.id))+' · '+cn(students().find(s=>String(s.id)===x.id)?.sinifId):tn(teachers().find(t=>String(t.id)===x.id));
 const rows=()=>A(T).slice().sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr'));
