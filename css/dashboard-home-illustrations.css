@@ -646,3 +646,36 @@ html[data-theme="dark"] .primary *{
   display:block!important;
   line-height:1.25!important;
 }
+
+/* KORUK SAHNE MOTORU — referanstaki SVG + semantic motion yaklaşımı */
+.ka-school-summary-icon{display:block;height:118px;margin:-2px -2px 8px;overflow:hidden;position:relative;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.01));}
+.ka-scene-svg{width:100%;height:100%;display:block;overflow:visible;color:var(--ka-text,#dcebe5);}
+.ka-scene-svg .scene-board,.ka-scene-svg .scene-building{fill:rgba(92,180,140,.08);stroke:currentColor;stroke-width:2;}
+.ka-scene-svg .scene-boardline{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-dasharray:52;animation:kaSceneDraw 3.8s ease-in-out infinite;}
+.ka-scene-svg .scene-teacher-main{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transform-origin:70px 96px;animation:kaSceneTeacher 3.2s ease-in-out infinite;}
+.ka-scene-svg .scene-teacher-small{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;animation:kaSceneBob 2.4s ease-in-out infinite;}
+.ka-scene-svg .scene-dot{fill:currentColor;opacity:.5;animation:kaSceneBlink 1.8s ease-in-out infinite;animation-delay:calc(var(--i,0)*.12s);}
+.ka-scene-students .scene-school{fill:rgba(82,175,130,.08);stroke:currentColor;stroke-width:2;}
+.ka-scene-students .scene-orbit{fill:none;stroke:currentColor;stroke-width:1;opacity:.22;stroke-dasharray:5 7;animation:kaSceneOrbit 9s linear infinite;transform-origin:120px 58px;}
+.ka-scene-students .scene-orbit2{animation-duration:6s;animation-direction:reverse;opacity:.14;}
+.ka-scene-students .scene-student-dot{fill:currentColor;animation:kaSceneParticle 2.6s ease-in-out infinite;transform-origin:120px 58px;}
+.ka-scene-classes .scene-roof,.ka-scene-classes .scene-door{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.ka-scene-classes .scene-window{fill:currentColor;opacity:.14;animation:kaSceneWindow 3s ease-in-out infinite;animation-delay:calc(var(--i)*.18s);}
+.ka-scene-services .scene-road,.ka-scene-services .scene-road2{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-dasharray:8 9;opacity:.28;animation:kaSceneRoad 5s linear infinite;}
+.ka-scene-services .scene-road2{opacity:.12;animation-duration:8s;animation-direction:reverse;}
+.ka-scene-services .scene-bus{fill:currentColor;stroke:currentColor;stroke-width:1.4;animation:kaSceneBus 7s ease-in-out infinite;animation-delay:var(--delay);}
+.ka-scene-services .scene-bus circle{fill:var(--ka-surface,#0c1714);stroke:none;}
+.ka-scene-services .scene-route-dots{fill:currentColor;opacity:.42;animation:kaSceneBlink 2.5s ease-in-out infinite;}
+.ka-school-summary-card{overflow:hidden;}
+@keyframes kaSceneDraw{0%,100%{stroke-dashoffset:52;opacity:.3}35%,70%{stroke-dashoffset:0;opacity:1}}
+@keyframes kaSceneTeacher{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(2deg)}}
+@keyframes kaSceneBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes kaSceneBlink{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes kaSceneOrbit{to{transform:rotate(360deg)}}
+@keyframes kaSceneParticle{0%,100%{transform:scale(.85);opacity:.45}50%{transform:scale(1.35);opacity:1}}
+@keyframes kaSceneWindow{0%,100%{opacity:.12}50%{opacity:.95}}
+@keyframes kaSceneRoad{to{stroke-dashoffset:-34}}
+@keyframes kaSceneBus{0%{transform:translateX(-18px)}50%{transform:translateX(8px)}100%{transform:translateX(24px)}}
+.ka-school-summary-card.is-service .ka-school-summary-icon{--ka-accent:#e8c35a}.ka-school-summary-card.is-class .ka-school-summary-icon{--ka-accent:#7fd5b0}.ka-school-summary-card.is-student .ka-school-summary-icon{--ka-accent:#76b8e8}.ka-school-summary-card.is-teacher .ka-school-summary-icon{--ka-accent:#e5b85c}
+.ka-school-summary-card .ka-scene-svg{color:var(--ka-accent,currentColor);}
+@media(prefers-reduced-motion:reduce){.ka-scene-svg *{animation:none!important}.ka-scene-svg .scene-window{opacity:.7}.ka-scene-svg .scene-dot{opacity:.7}}
