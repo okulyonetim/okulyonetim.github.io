@@ -37,5 +37,5 @@ function bind(){root.querySelector('[data-add]')?.addEventListener('click',()=>o
 function mount(target=document.getElementById('v2ModuleRoot')){if(!target)return false;mounted=true;root=target;unsub?.();unsub=g.AppStore?.subscribe?.('data.'+T,()=>mounted&&requestAnimationFrame(render));render();return true}
 function unmount(){mounted=false;unsub?.();unsub=null;root=null;detail='';document.querySelector('[data-modal]')?.remove()}
 function back(){if(document.querySelector('[data-modal]')){document.querySelector('[data-modal]').remove();return true}if(detail){detail='';render();return true}return false}
-g.CommitteesModule={mount,unmount,openPage:()=>true,back,render,print};
+g.CommitteesModule={mount,unmount,openPage:()=>true,back,render,print};g.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='committees')mount()});
 })(window);
