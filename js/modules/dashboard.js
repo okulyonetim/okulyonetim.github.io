@@ -432,3 +432,22 @@ window.uygulamaBaslat=function(){window.AppLoader?.load?.('dashboard').then(()=>
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard')mount()});
 window.addEventListener('koruk:app-config-changed',()=>requestAnimationFrame(render));
 })();
+
+
+/* KORUK SAHNE ZAMAN KOPRUSU — mevcut SVG/sahnelerin tasarimina dokunmaz. */
+(function(global){
+  'use strict';
+  if(global.KorukSceneClockBridge)return;
+  const STATES=['lesson','break','lunch','after','weekend','before','idle','holiday','empty'];
+  function state(){const s=global.SchoolLiveStatus?.status?.()||{};return STATES.includes(s.mode)?s:{mode:'empty'};}
+  function apply(){
+    const s=state(),bell=document.getElementById('khBell'),stats=document.querySelector('[data-home-section="stats"]'),food=document.querySelector('[data-home-section="food-menu"]');
+    [bell,stats,food].filter(Boolean).forEach(el=>{STATES.forEach(x=>el.classList.remove('ka-scene-state-'+x));el.classList.add('ka-scene-state-'+s.mode);el.dataset.kaSceneState=s.mode;});
+    if(bell){bell.dataset.kaSceneMode=s.mode;bell.dataset.kaScenePeriod=s.period==null?'':String(s.period);bell.dataset.kaSceneRemaining=s.remaining==null?'':String(s.remaining);}
+    try{global.dispatchEvent(new CustomEvent('koruk:dashboard-scene-state',{detail:s}))}catch(_){}
+  }
+  global.KorukSceneClockBridge={state,apply};
+  global.addEventListener('koruk:school-live-tick',apply);
+  global.addEventListener('koruk:dashboard-rendered',()=>requestAnimationFrame(apply));
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(apply,0),{once:true});else setTimeout(apply,0);
+})(window);
