@@ -227,6 +227,20 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
   }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
+  if(name==='committees'){
+    setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||'Kurul ve Komisyonlar');
+    try{
+      const root=$('#v2ModuleRoot');
+      if(!global.CommitteesModule)await global.AppLoader?.loadScript?.('js/modules/committees.js?v=1');
+      if(!global.CommitteesModule?.mount)throw new Error('CommitteesModule hazır değil');
+      if(routeToken!==routeEpoch)return false;
+      root?.replaceChildren?.();
+      const ok=global.CommitteesModule.mount(root);
+      if(ok===false)throw new Error('CommitteesModule.mount başarısız');
+      if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||'Kurul ve Komisyonlar',parentMenu});
+      return true;
+    }catch(e){console.error('[Shell/committees]',e);global.toast?.('Kurul ve Komisyonlar açılamadı.');return false}
+  }
   if(name==='reports'){
     setBottomActive(bottom);
     global.AppLoader?.setActiveModule?.(name);
