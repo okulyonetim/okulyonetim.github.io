@@ -70,8 +70,16 @@
     </div>`;
   }
   function render(){
-    const root=document.querySelector('[data-settings-module]');if(!root||!canOpen())return;
-    let host=root.querySelector('#kaRolePermissionEditorHost');if(!host){host=document.createElement('div');host.id='kaRolePermissionEditorHost';root.prepend(host)}
+    const root=document.querySelector('[data-settings-module]');
+    const page=global.SettingsModule?.currentPage?.()||'home';
+    const content=root?.querySelector('#settingsContent');
+    let host=root?.querySelector('#kaRolePermissionEditorHost');
+    if(page!=='roles'||!root||!content||!canOpen()){
+      host?.remove();
+      return;
+    }
+    if(!host){host=document.createElement('div');host.id='kaRolePermissionEditorHost';content.prepend(host)}
+    else if(host.parentElement!==content)content.prepend(host);
     host.innerHTML=html();bind(host);
   }
   function setGroup(host,group,value){
@@ -117,7 +125,7 @@
       }catch(e){console.error('[RolePermissionEditor]',e);notify('Rol yetkileri kaydedilemedi.');}
     });
   }
-  function mount(){if(!canOpen())return;const root=document.querySelector('[data-settings-module]');if(root?.querySelector('#kaRolePermissionEditorHost'))return;render();}
+  function mount(){render();}
   const observer=new MutationObserver(()=>{if(document.querySelector('[data-settings-module]'))mount()});observer.observe(document.documentElement,{childList:true,subtree:true});
   global.addEventListener('koruk:permission-catalog-ready',mount);global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='settings')setTimeout(mount,0)});
   global.RolePermissionEditor={mount,render,catalog};setTimeout(mount,500);
