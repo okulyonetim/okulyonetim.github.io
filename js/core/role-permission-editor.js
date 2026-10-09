@@ -126,7 +126,7 @@
     });
   }
   function mount(){render();}
-  const observer=new MutationObserver(()=>{if(document.querySelector('[data-settings-module]'))mount()});observer.observe(document.documentElement,{childList:true,subtree:true});
+  const observer=new MutationObserver(records=>{const relevant=records.some(record=>{const target=record.target; if(target?.id==='kaRolePermissionEditorHost'||target?.closest?.('#kaRolePermissionEditorHost'))return false; if(target?.id==='settingsContent')return true; return [...(record.addedNodes||[]),...(record.removedNodes||[])].some(node=>node?.nodeType===1&&(node.matches?.('[data-settings-module],#settingsContent')||node.querySelector?.('[data-settings-module],#settingsContent')))});if(relevant)mount()});observer.observe(document.documentElement,{childList:true,subtree:true});
   global.addEventListener('koruk:permission-catalog-ready',mount);global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='settings')setTimeout(mount,0)});
   global.RolePermissionEditor={mount,render,catalog};setTimeout(mount,500);
 })(window);
