@@ -17,7 +17,7 @@
     s.onerror=()=>reject(new Error(message));
     document.head.appendChild(s);
   });
-  const loadEditor=()=>loadScript('js/core/role-permission-editor.js?v=3','Rol yetki editörü yüklenemedi.');
+  const loadEditor=()=>loadScript('js/core/role-permission-editor.js?v=4','Rol yetki editörü yüklenemedi.');
   const loadCrudGuards=()=>loadScript('js/core/role-permission-crud-guards.js?v=1','Granular CRUD yetki katmanı yüklenemedi.');
 
   const PAGE_PERMISSIONS=Object.freeze({
