@@ -15,7 +15,7 @@ global.__KA_READ_OPTIMIZED_SYNC__=true;
 (function bootstrapRolePermissionCatalog(){
   const scripts=[
     'js/core/role-permission-catalog.js?v=1',
-    'js/core/role-permission-bridge.js?v=1'
+    'js/core/role-permission-bridge.js?v=2'
   ];
   const load=(src)=>new Promise((resolve,reject)=>{
     if([...document.scripts].some(s=>s.src.includes(src.split('?')[0])))return resolve();
