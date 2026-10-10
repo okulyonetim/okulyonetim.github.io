@@ -27,7 +27,9 @@ body{margin:0;background:var(--ka-app-bg);color:var(--ka-text);font-family:var(-
 <div class="ka-card"><div class="ka-card__header"><b>Bugünün nöbetçileri</b></div><div class="ka-card__body ka-stack"><div class="ka-list-card"><div class="ka-row ka-row--between"><div><b>ECE KÜÇÜK MÜDÜR</b><div class="ka-muted">Bahçe</div></div><span class="ka-badge">BUGÜN</span></div></div><div class="ka-row"><span class="ka-badge ka-badge--warning">Uyarı</span><span class="ka-badge ka-badge--danger">Hata</span><span class="ka-badge ka-badge--success">Tamam</span></div><div class="ka-empty">Kayıt bulunmuyor.</div></div></div>
 <h2>Tablo</h2><div class="ka-table-wrap"><table class="ka-table"><thead><tr><th>Gün</th><th>Bahçe</th><th>Okul binası</th></tr></thead><tbody><tr><td>Pazartesi</td><td>Hasret Çeçen</td><td>Ercan Akdeniz</td></tr><tr><td>Salı</td><td>Çiçek Sönmez</td><td>Ünal Balık</td></tr></tbody></table></div>
 <h2>Pencere</h2><div class="row"><button class="ka-btn" id="mo">Pencereyi aç</button></div>
+<h2>Hamburger çekmece menü</h2><div class="row"><button class="ka-btn" id="mn">☰ Menüyü aç</button></div>
 </div></template>
+<section id="kaMenuLayer" class="ka-menu-layer" hidden aria-label="Menü"><div class="ka-menu-page"><div class="ka-menu-head"><h2>Menü</h2><div class="ka-menu-head__actions"><button class="ka-icon-button" type="button" id="mnClose" aria-label="Kapat">✕</button></div></div><div class="ka-menu-grid"><button class="ka-menu-card ka-menu-card--green" type="button"><span class="ka-menu-card__icon">👥</span><strong>Öğrenciler</strong><span class="ka-badge">320</span></button><button class="ka-menu-card ka-menu-card--cyan" type="button"><span class="ka-menu-card__icon">📋</span><strong>Program</strong></button><button class="ka-menu-card ka-menu-card--orange" type="button"><span class="ka-menu-card__icon">📁</span><strong>Evrak</strong><span class="ka-badge">16</span></button><button class="ka-menu-card ka-menu-card--violet" type="button"><span class="ka-menu-card__icon">🚌</span><strong>Servis ve Yemek</strong></button><button class="ka-menu-card ka-menu-card--red" type="button"><span class="ka-menu-card__icon">💬</span><strong>İletişim ve Haberler</strong><span class="ka-badge">3</span></button><button class="ka-menu-card ka-menu-card--slate" type="button"><span class="ka-menu-card__icon">⚙️</span><strong>Ayarlar</strong></button></div></div></section>
 <script>
 (function(){
 var Q=new URLSearchParams(location.search),bar=document.getElementById('bar'),app=document.getElementById('app'),T=window.KorukTheme;
@@ -47,6 +49,13 @@ function col(v){var e=document.createElement('i');e.style.cssText='position:abso
 function rate(){var P=[['Metin / kart','--ka-text','--ka-card-bg'],['Soluk metin / kart','--ka-text-muted','--ka-card-bg'],['Düğme yazısı / düğme','--ka-button-text','--ka-button-bg'],['Vurgu metni / kart','--ka-nav-active-text','--ka-primary-soft'],['Tehlike / kart','--ka-danger','--ka-card-bg'],['Metin / sayfa','--ka-text','--ka-app-bg']],h='';
  P.forEach(function(p){var r=T.contrast(col('var('+p[1]+')'),col('var('+p[2]+')'));h+='<tr><td>'+p[0]+'</td><td>'+r.toFixed(2)+':1</td><td><span class="p '+(r>=4.5?'ok':'no')+'">'+(r>=4.5?'AA ✓':'AA ✗')+'</span></td></tr>'});document.getElementById('ct').innerHTML=h;mark()}
 document.getElementById('mo').onclick=function(){var d=document.createElement('div');d.className='ka-modal-backdrop';d.innerHTML='<div class="ka-modal"><div class="ka-modal__header"><b>Örnek pencere</b></div><div class="ka-modal__body">Pencere, tema ve yoğunluk ayarlarını izler.</div><div class="ka-modal__footer"><button class="ka-btn ka-btn--secondary">Vazgeç</button><button class="ka-btn">Tamam</button></div></div>';d.onclick=function(e){if(e.target===d||e.target.closest('.ka-btn'))d.remove()};document.body.appendChild(d)};
+var ml=document.getElementById('kaMenuLayer');
+function menuOpen(){ml.hidden=false;requestAnimationFrame(function(){ml.classList.add('open')})}
+function menuClose(){ml.classList.remove('open');setTimeout(function(){ml.hidden=true},380)}
+document.getElementById('mn').onclick=menuOpen;
+document.getElementById('mnClose').onclick=menuClose;
+ml.addEventListener('click',function(e){if(e.target===ml)menuClose()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ml.classList.contains('open'))menuClose()});
 if(!NEW){document.getElementById('v3css').disabled=true;document.documentElement.classList.remove('ka-v3')}
 window.addEventListener('koruk:theme-change',function(){setTimeout(rate,0)});rate();
 })();

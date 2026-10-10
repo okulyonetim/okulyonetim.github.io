@@ -1,6 +1,7 @@
 /* Koruk Asistan — V3 tasarım girişi. Sıra önemli: önce tokenlar. */
 @import url("./tokens.css?v=1");
 @import url("./components.css?v=1");
+@import url("./menu.css?v=1");
 @import url("./home.css?v=1");
 @import url("./scenes.css?v=1");
 @import url("./report.css?v=1");
