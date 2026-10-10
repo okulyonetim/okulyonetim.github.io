@@ -76,8 +76,9 @@
   .stats span{font-size:12px;color:var(--muted)}
 
   /* --- sahne 2: kademe ve cinsiyete göre dağılım --- */
-  .dist-wrap{display:flex;gap:34px;flex-wrap:wrap;margin-top:6px}
-  .dist-h{display:block;font-size:10.5px;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;font-weight:700;text-transform:uppercase}
+  .dist-wrap{display:flex;gap:30px;flex-wrap:wrap;margin-top:6px}
+  .dist-h{display:flex;align-items:baseline;gap:8px;font-size:12.5px;letter-spacing:.02em;color:var(--text);margin-bottom:10px;font-weight:700}
+  .dist-h .dist-total{font-family:'Space Grotesk',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:0;color:var(--muted);background:var(--panel);border:1px solid var(--panel-border);border-radius:20px;padding:2px 9px}
   .dist-col .stats{margin-top:0;gap:22px}
 
   .scene-dots{position:absolute;left:34px;bottom:14px;z-index:3;display:flex;gap:7px}
@@ -179,8 +180,8 @@
   .today-row:first-child{border-top:none}
   .today-row.in{opacity:1;transform:none}
   @media (prefers-reduced-motion:reduce){.today-row{opacity:1;transform:none;transition:none}}
-  .today-ic{flex:none;width:34px;height:34px;border-radius:10px;background:var(--panel);border:1px solid var(--panel-border);
-    display:flex;align-items:center;justify-content:center;font-size:16px}
+  .today-ic{flex:none;width:46px;height:46px;border-radius:12px;background:var(--panel);border:1px solid var(--panel-border);
+    display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1}
   .today-row b{display:block;font-weight:600;font-size:13.5px}
   .today-row span{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
   .today-pulse{flex:none;width:7px;height:7px;border-radius:50%;background:var(--coral);position:relative;margin-left:auto}
@@ -272,17 +273,17 @@
           <h1 style="font-size:clamp(23px,3.8vw,30px)">Kademe ve cinsiyete göre</h1>
           <div class="dist-wrap">
             <div class="dist-col">
-              <span class="dist-h">Kademe</span>
+              <span class="dist-h">İlkokul <b class="dist-total">47</b></span>
               <div class="stats">
-                <div><b data-count="47">0</b><span>İlkokul</span></div>
-                <div><b data-count="38">0</b><span>Ortaokul</span></div>
+                <div><b data-count="25">0</b><span>kız</span></div>
+                <div><b data-count="22">0</b><span>erkek</span></div>
               </div>
             </div>
             <div class="dist-col">
-              <span class="dist-h">Cinsiyet</span>
+              <span class="dist-h">Ortaokul <b class="dist-total">38</b></span>
               <div class="stats">
-                <div><b data-count="44">0</b><span>Kız</span></div>
-                <div><b data-count="41">0</b><span>Erkek</span></div>
+                <div><b data-count="19">0</b><span>kız</span></div>
+                <div><b data-count="19">0</b><span>erkek</span></div>
               </div>
             </div>
           </div>
