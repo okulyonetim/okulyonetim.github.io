@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>Konsept D — Öğrenciler</title>
+<title>Konsept D — Sınıflar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -173,6 +173,65 @@
   footer.foot{padding-top:22px;font-size:12px;color:var(--muted);text-align:center}
   @media(max-width:480px){.stats{gap:20px}}
 
+  /* ============ Sınıf listesi satırı (öğretmen/öğrenci kartı yerine) ============ */
+  .class-row{display:flex;align-items:center;gap:14px}
+  .class-badge{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:13.5px;flex:none;color:#fff;
+    background:#1b1d24;border:2px solid var(--c);box-shadow:0 0 0 1px rgba(0,0,0,.3)}
+  .class-info{flex:1;min-width:0}
+  .class-info h3{margin:0;font-size:15.5px;font-weight:700}
+  .class-info p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+  .class-info .teacher-missing{color:var(--coral)}
+  .class-count{flex:none;text-align:right}
+  .class-count b{display:block;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700}
+  .class-count span{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .chev{flex:none;color:var(--muted);font-size:20px;line-height:1}
+
+  .toolbar .addbtn.ghost{background:var(--panel);color:var(--text);border:1px solid var(--panel-border);display:flex;align-items:center;gap:6px}
+
+  /* ============ Detay sayfası sekmeleri (Bilgiler / Öğrenciler / Ders Programı) ============ */
+  .detail-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .detail-tabs button{font:600 13px/1 'Inter',sans-serif;padding:10px 16px;border-radius:30px;border:1px solid var(--panel-border);background:var(--panel);color:var(--muted);cursor:pointer}
+  .detail-tabs button.on{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border-color:transparent}
+  .detail-panel{display:none}
+  .detail-panel.on{display:block}
+
+  .class-action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .class-action-row button{font:600 13px/1 'Inter',sans-serif;padding:13px;border-radius:12px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
+  .class-action-row button.primary{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border-color:transparent}
+
+  .stu-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--panel-border)}
+  .stu-row:first-child{border-top:none}
+  .stu-row .avatar{width:38px;height:38px;font-size:13px}
+  .stu-info{flex:1;min-width:0}
+  .stu-info b{display:block;font-size:13.5px;font-weight:600}
+  .stu-info span{font-size:11.5px;color:var(--muted)}
+  .stu-gender{flex:none;font-size:12px;color:var(--muted)}
+
+  .sched-row{padding:11px 0;border-top:1px solid var(--panel-border);display:flex;gap:14px}
+  .sched-row:first-child{border-top:none}
+  .sched-day{flex:0 0 72px;font-size:12px;color:var(--muted);padding-top:1px}
+  .sched-what b{display:block;font-size:13.5px;font-weight:600}
+  .sched-what span{font-size:11.5px;color:var(--muted)}
+  .sched-period{flex:0 0 52px;font-size:11.5px;color:var(--muted)}
+
+  /* --- sahne 1: sınıf illüstrasyonu — tahta, bayrak, Atatürk köşesi, sıradaki öğrenciler --- */
+  .classroom{display:flex;flex-direction:column;align-items:center;margin-top:8px;max-width:400px}
+  .cr-top{display:flex;align-items:flex-end;justify-content:center;gap:16px;margin-bottom:9px}
+  .cr-flag{width:42px;height:28px;border-radius:3px;box-shadow:0 2px 7px rgba(0,0,0,.4);flex:none}
+  .cr-portrait{width:32px;height:40px;border-radius:3px;background:linear-gradient(160deg,#d8b568,#8a6a28);padding:3px;box-shadow:0 2px 7px rgba(0,0,0,.4);flex:none}
+  .cr-portrait-inner{width:100%;height:100%;background:#eef1f6;border-radius:1px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;padding-top:3px}
+  .cr-portrait-inner svg{width:80%;height:auto}
+  .cr-board{position:relative;width:100%;background:linear-gradient(160deg,#20392c,#132a20 60%,#0f231a);border:7px solid #6b4a2c;border-radius:6px;padding:14px 16px;text-align:center;box-shadow:inset 0 0 18px rgba(0,0,0,.4)}
+  .cr-board::after{content:"";position:absolute;left:13px;right:13px;bottom:-5px;height:6px;background:#6b4a2c;border-radius:0 0 4px 4px}
+  .cr-board span{display:inline-block;color:#eef5ee;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.82;font-weight:600}
+  .cr-desks{display:grid;grid-template-columns:repeat(3,1fr);gap:9px 14px;margin-top:16px;width:100%}
+  .cr-desk{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .cr-desk-head{width:28px;height:28px;border-radius:50%;background:#1b1d24;border:2px solid var(--c);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9.5px;font-weight:800;font-family:'Space Grotesk',sans-serif}
+  @media (prefers-reduced-motion:no-preference){.cr-desk-head{animation:crbob 3.2s ease-in-out infinite;animation-delay:var(--d,0s)}}
+  @keyframes crbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .cr-desk-table{width:44px;height:8px;border-radius:3px;background:var(--panel);border:1px solid var(--panel-border)}
+
   /* --- sahne 3: sınıflara göre öğrenci sayısı — canlı dolan çubuk grafik --- */
   .class-bars{margin-top:8px;max-width:560px}
   .class-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
@@ -250,37 +309,49 @@
         <div class="scene" data-scene="0">
           <div class="cover-top">
             <div>
-              <div class="kicker">KORUK ASİSTAN · ÖĞRENCİ &amp; VELİ MERKEZİ</div>
-              <h1>Öğrenciler</h1>
-              <p>Sınıf, veli ve devamsızlık bilgisi — canlı, tek ekranda.</p>
+              <div class="kicker">KORUK ASİSTAN · SINIF YÖNETİMİ</div>
+              <h1>Sınıflar</h1>
+              <p>Öğrenci, öğretmen, derslik ve ders programlarını tek noktadan yönetin.</p>
             </div>
-            <span class="live"><i class="dot"></i> Bugün 2 yeni kayıt</span>
+            <span class="live"><i class="dot"></i> 9 sınıf aktif</span>
           </div>
-          <div class="stats">
-            <div><b data-count="85">0</b><span>öğrenci</span></div>
-            <div><b data-count="9">0</b><span>sınıf</span></div>
-            <div><b data-count="41">0</b><span>erkek</span></div>
-            <div><b data-count="44">0</b><span>kız</span></div>
+          <div class="classroom" aria-hidden="true">
+            <div class="cr-top">
+              <svg class="cr-flag" viewBox="0 0 30 20"><rect width="30" height="20" rx="2" fill="#e30a17"/><circle cx="11" cy="10" r="5.5" fill="#fff"/><circle cx="12.6" cy="10" r="4.4" fill="#e30a17"/><polygon points="16.3,10 19.8,11.3 17.6,8.2 17.6,11.9 19.9,8.9" fill="#fff"/></svg>
+              <div class="cr-portrait"><div class="cr-portrait-inner"><svg viewBox="0 0 24 28"><path fill="#232733" d="M12 2a5 5 0 0 1 5 5v2a5 5 0 0 1-2 4v2c3 .7 7 2.5 7 6.2V24H4v-2.8c0-3.7 4-5.5 7-6.2v-2a5 5 0 0 1-2-4V7a5 5 0 0 1 5-5z"/></svg></div></div>
+            </div>
+            <div class="cr-board"><span>Yazı Tahtası</span></div>
+            <div class="cr-desks">
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#ef5454;--d:0s">A</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#dd9d27;--d:.2s">Z</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#6f5de0;--d:.4s">M</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#1fb89d;--d:.1s">E</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#c954e0;--d:.3s">Y</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#ff7d46;--d:.5s">H</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#1fa870;--d:.15s">S</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#5b7ef0;--d:.35s">D</span><span class="cr-desk-table"></span></div>
+              <div class="cr-desk"><span class="cr-desk-head" style="--c:#e0547a;--d:.25s">N</span><span class="cr-desk-table"></span></div>
+            </div>
           </div>
         </div>
 
         <div class="scene" data-scene="1">
-          <div class="kicker">ÖĞRENCİ DAĞILIMI</div>
-          <h1 style="font-size:clamp(23px,3.8vw,30px)">Kademe ve cinsiyete göre</h1>
-          <div class="dist-wrap">
+          <div class="kicker">SINIF YÖNETİMİ</div>
+          <h1 style="font-size:clamp(23px,3.8vw,30px)">Genel durum</h1>
+          <div class="stats">
+            <div><b data-count="9">0</b><span>sınıf</span></div>
+            <div><b data-count="85">0</b><span>öğrenci</span></div>
+            <div><b data-count="44">0</b><span>kız</span></div>
+            <div><b data-count="41">0</b><span>erkek</span></div>
+          </div>
+          <div class="dist-wrap" style="margin-top:22px">
             <div class="dist-col">
-              <span class="dist-h">İlkokul <b class="dist-total">39</b></span>
-              <div class="stats">
-                <div><b data-count="20">0</b><span>kız</span></div>
-                <div><b data-count="19">0</b><span>erkek</span></div>
-              </div>
+              <span class="dist-h">İlkokul <b class="dist-total">4 sınıf</b></span>
+              <div class="stats"><div><b data-count="39">0</b><span>öğrenci</span></div></div>
             </div>
             <div class="dist-col">
-              <span class="dist-h">Ortaokul <b class="dist-total">46</b></span>
-              <div class="stats">
-                <div><b data-count="24">0</b><span>kız</span></div>
-                <div><b data-count="22">0</b><span>erkek</span></div>
-              </div>
+              <span class="dist-h">Ortaokul <b class="dist-total">5 sınıf</b></span>
+              <div class="stats"><div><b data-count="46">0</b><span>öğrenci</span></div></div>
             </div>
           </div>
         </div>
@@ -311,81 +382,60 @@
   </section>
 
   <div class="toolbar">
-    <input type="search" id="searchInput" placeholder="Ad, soyad, öğrenci no veya sınıf ara">
-    <button class="addbtn" type="button">+ Öğrenci</button>
+    <input type="search" id="searchInput" placeholder="Sınıf adı, seviye, derslik veya öğretmen ara">
+    <button class="addbtn" type="button">+ Sınıf Ekle</button>
+    <button class="addbtn ghost" type="button">📤 Sınıf Excel</button>
   </div>
 
   <div class="quick-stats">
-    <div><b>85</b><span>Toplam</span></div>
-    <div><b>41</b><span>Erkek</span></div>
-    <div><b>44</b><span>Kız</span></div>
-    <div><b>9</b><span>Sınıf</span></div>
+    <div><b>9</b><span>Toplam Sınıf</span></div>
+    <div><b>85</b><span>Toplam Öğrenci</span></div>
+    <div><b>44</b><span>Kız Öğrenci</span></div>
+    <div><b>41</b><span>Erkek Öğrenci</span></div>
   </div>
 
   <div class="class-chips" id="classChips">
-    <button class="on" data-class="all">Tümü</button>
-    <button data-class="1-A">1-A</button>
-    <button data-class="2-A">2-A</button>
-    <button data-class="3-A">3-A</button>
-    <button data-class="4-A">4-A</button>
-    <button data-class="5-A">5-A</button>
-    <button data-class="5-B">5-B</button>
-    <button data-class="6-A">6-A</button>
-    <button data-class="7-A">7-A</button>
-    <button data-class="8-A">8-A</button>
+    <button class="on" data-level="all">Tümü</button>
+    <button data-level="1">1. Sınıf</button>
+    <button data-level="2">2. Sınıf</button>
+    <button data-level="3">3. Sınıf</button>
+    <button data-level="4">4. Sınıf</button>
+    <button data-level="5">5. Sınıf</button>
+    <button data-level="6">6. Sınıf</button>
+    <button data-level="7">7. Sınıf</button>
+    <button data-level="8">8. Sınıf</button>
   </div>
 
   <div class="grid" id="grid">
-    <div class="card-frame" tabindex="0" role="link" data-class="3-A" data-search="ali imran karagöz 3-a 88" style="--i:0;--glow:#ef5454"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#ef5454">A</span><div class="who"><h3>Ali İmran Karagöz</h3><span>3-A · No: 88</span></div></div>
-      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
-      <a class="phone" href="tel:05078354723">0507 835 47 23</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="1" data-search="1-a 1. sınıf çilem aydın" style="--i:0;--glow:#ef5454"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#ef5454">1-A</span><div class="class-info"><h3>1-A</h3><p>1. seviye · 1-A · <span>Çilem Aydın</span></p></div><div class="class-count"><b>9</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" data-class="5-B" data-search="zeynep nur aydın 5-b 12" style="--i:1;--glow:#dd9d27"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#dd9d27">Z</span><div class="who"><h3>Zeynep Nur Aydın</h3><span>5-B · No: 12</span></div></div>
-      <div class="mini-stats"><div><b>2</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
-      <a class="phone" href="tel:05063696048">0506 369 60 48</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="2" data-search="2-a 2. sınıf atanmadı" style="--i:1;--glow:#dd9d27"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#dd9d27">2-A</span><div class="class-info"><h3>2-A</h3><p>2. seviye · 2-A · <span class="teacher-missing">Sınıf öğretmeni atanmadı</span></p></div><div class="class-count"><b>10</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" data-class="1-A" data-search="miraç emir taş 1-a 5" style="--i:2;--glow:#6f5de0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#6f5de0">M</span><div class="who"><h3>Miraç Emir Taş</h3><span>1-A · No: 5</span></div></div>
-      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
-      <a class="phone" href="tel:05331112233">0533 111 22 33</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="3" data-search="3-a 3. sınıf fatma şenocak" style="--i:2;--glow:#6f5de0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#6f5de0">3-A</span><div class="class-info"><h3>3-A</h3><p>3. seviye · 3-A · <span>Fatma Şenocak</span></p></div><div class="class-count"><b>11</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" data-class="6-A" data-search="elif sude korkmaz 6-a 34" style="--i:3;--glow:#1fb89d"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#1fb89d">E</span><div class="who"><h3>Elif Sude Korkmaz</h3><span>6-A · No: 34</span></div></div>
-      <div class="mini-stats"><div><b>1</b><span>devamsızlık</span></div><div><b>18.5</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
-      <a class="phone" href="tel:05442223344">0544 222 33 44</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="4" data-search="4-a 4. sınıf uygar halisdemir" style="--i:3;--glow:#1fb89d"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#1fb89d">4-A</span><div class="class-info"><h3>4-A</h3><p>4. seviye · 4-A · <span>Uygar Halisdemir</span></p></div><div class="class-count"><b>9</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" data-class="7-A" data-search="yusuf berat çelik 7-a 19" style="--i:4;--glow:#c954e0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#c954e0">Y</span><div class="who"><h3>Yusuf Berat Çelik</h3><span>7-A · No: 19</span></div></div>
-      <div class="mini-stats"><div><b>5</b><span>devamsızlık</span></div><div><b>21</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span><span class="tag duty">Devamsızlık uyarısı</span></div>
-      <a class="phone" href="tel:05353334455">0535 333 44 55</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="5" data-search="5-a 5. sınıf ece küçük müldür" style="--i:4;--glow:#c954e0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#c954e0">5-A</span><div class="class-info"><h3>5-A</h3><p>5. seviye · 5-A · <span>Ece Küçük Müldür</span></p></div><div class="class-count"><b>8</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" data-class="2-A" data-search="hiranur aksoy 2-a 41" style="--i:5;--glow:#ff7d46"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#ff7d46">H</span><div class="who"><h3>Hiranur Aksoy</h3><span>2-A · No: 41</span></div></div>
-      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
-      <a class="phone" href="tel:05464445566">0546 444 55 66</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="5" data-search="5-b 5. sınıf derya yılmaz" style="--i:5;--glow:#ff7d46"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#ff7d46">5-B</span><div class="class-info"><h3>5-B</h3><p>5. seviye · 5-B · <span>Derya Yılmaz</span></p></div><div class="class-count"><b>9</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" data-class="8-A" data-search="mustafa kaan demirtaş 8-a 7" style="--i:6;--glow:#1fa870"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#1fa870">M</span><div class="who"><h3>Mustafa Kaan Demirtaş</h3><span>8-A · No: 7</span></div></div>
-      <div class="mini-stats"><div><b>2</b><span>devamsızlık</span></div><div><b>32.5</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span><span class="tag duty">LGS adayı</span></div>
-      <a class="phone" href="tel:05375556677">0537 555 66 77</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="6" data-search="6-a 6. sınıf veysel karani gül" style="--i:6;--glow:#1fa870"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#1fa870">6-A</span><div class="class-info"><h3>6-A</h3><p>6. seviye · 6-A · <span>Veysel Karani Gül</span></p></div><div class="class-count"><b>10</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" data-class="4-A" data-search="defne yıldırım 4-a 23" style="--i:7;--glow:#5b7ef0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="--c:#5b7ef0">D</span><div class="who"><h3>Defne Yıldırım</h3><span>4-A · No: 23</span></div></div>
-      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
-      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
-      <a class="phone" href="tel:05386667788">0538 666 77 88</a>
+    <div class="card-frame" tabindex="0" role="link" data-level="7" data-search="7-a 7. sınıf miyase gürtürk" style="--i:7;--glow:#5b7ef0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#5b7ef0">7-A</span><div class="class-info"><h3>7-A</h3><p>7. seviye · 7-A · <span>Miyase Gürtürk</span></p></div><div class="class-count"><b>10</b><span>Öğrenci</span></div><span class="chev">›</span></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-level="8" data-search="8-a 8. sınıf nuray polat" style="--i:8;--glow:#e0547a"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="class-row"><span class="class-badge" style="--c:#e0547a">8-A</span><div class="class-info"><h3>8-A</h3><p>8. seviye · 8-A · <span>Nuray Polat</span></p></div><div class="class-count"><b>9</b><span>Öğrenci</span></div><span class="chev">›</span></div>
     </div>  </div>
   </div>
-  <footer class="foot" id="listFoot">8 / 85 kayıt gösteriliyor — bir karta dokunduğunuzda tam profil açılır.</footer>
+  <footer class="foot" id="listFoot">9 / 9 kayıt gösteriliyor — bir sınıfa dokunduğunuzda tam profil açılır.</footer>
 </div>
 
 <!-- Karta tıklayınca animasyonlu açılan tam sayfa öğretmen detayı (bu konsept tek dosya olduğundan
@@ -409,33 +459,38 @@
         <p id="detailBranch"></p>
       </div>
     </div>
-    <div class="mini-stats detail-stats" id="detailStats"></div>
-    <div class="detail-tags" id="detailTags"></div>
-    <a class="detail-phone" id="detailPhone" href="#"></a>
 
-    <div class="detail-section">
-      <h4>Kişisel bilgiler</h4>
-      <div id="detailPersonal"></div>
+    <div class="detail-tabs" id="detailTabs">
+      <button class="on" data-tab="bilgiler" type="button">Bilgiler</button>
+      <button data-tab="ogrenciler" type="button" id="tabOgrencilerBtn">Öğrenciler</button>
+      <button data-tab="ders" type="button">Ders Programı</button>
     </div>
 
-    <div class="detail-section">
-      <h4>İletişim &amp; veli</h4>
-      <div id="detailFamily"></div>
+    <div class="detail-panel on" id="panelBilgiler">
+      <div class="mini-stats detail-stats" id="detailStats"></div>
+      <div class="detail-section">
+        <h4>Genel bilgiler</h4>
+        <div id="detailGeneral"></div>
+      </div>
     </div>
 
-    <div class="detail-section">
-      <h4>Okul bilgileri</h4>
-      <div id="detailSchool"></div>
+    <div class="detail-panel" id="panelOgrenciler">
+      <div class="class-action-row">
+        <button class="primary" type="button">+ Öğrenci Ekle</button>
+        <button type="button">▭ Oturma Planı</button>
+        <button type="button">📄 Excel</button>
+        <button type="button">e-Okul</button>
+      </div>
+      <div class="detail-section" style="padding-top:4px">
+        <div id="detailStudents"></div>
+      </div>
     </div>
 
-    <div class="detail-section">
-      <h4>Devamsızlık</h4>
-      <div id="detailAbsence"></div>
-    </div>
-
-    <div class="detail-section">
-      <h4>Sınav özeti</h4>
-      <div class="exam-tiles" id="detailExamTiles"></div>
+    <div class="detail-panel" id="panelDers">
+      <div class="detail-section">
+        <h4>Ders programı</h4>
+        <div id="detailSchedule"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -474,68 +529,84 @@
     });
   }
 
-  /* ---- Öğrenci detay sayfası (karta tıklayınca/Enter'a basınca animasyonlu açılır) ----
-     Örnek veri: her kart sırasına (0=Ali ... 7=Defne) karşılık gelen kişisel/veli/okul/
-     devamsızlık/sınav kayıtları — ekran görüntülerindeki gerçek uygulamanın alan yapısına göre. */
-  var STUDENT_EXTRA = [
-    { // Ali İmran Karagöz
-      personal:[['Doğum Tarihi','Bilgi girilmemiş'],['Cinsiyet','Erkek'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Sedat Karagöz'],['Yakınlık','Baba'],['İletişim 1','0507 835 47 23'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Ataşehir Mahallesi Bedir Sokak No:27 Merkez / Elazığ']],
-      school:[['Sınıf','3-A'],['Öğrenci Numarası','88'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Bilgi girilmemiş']],
-      absence:[['Bu yıl toplam','0 gün']],
-      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} },
-    { // Zeynep Nur Aydın
-      personal:[['Doğum Tarihi','14.03.2015'],['Cinsiyet','Kız'],['Kan Grubu','0 Rh+'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Hakan Aydın'],['Yakınlık','Baba'],['İletişim 1','0506 369 60 48'],['İletişim 2','Bilgi girilmemiş'],['E-posta','hakan.aydin@example.com'],['Adres','Cumhuriyet Mahallesi Okul Sokak No:5 Merkez / Elazığ']],
-      school:[['Sınıf','5-B'],['Öğrenci Numarası','12'],['Servis','Servis kullanıyor — Hat 3'],['Sosyal Kulüp','Satranç Kulübü']],
-      absence:[['Bu yıl toplam','2 gün'],['Son devamsızlık','28.09.2026']],
-      exam:{deneme:3, test:5, sonNet:'22.5', sonLgs:'—'} },
-    { // Miraç Emir Taş
-      personal:[['Doğum Tarihi','05.09.2018'],['Cinsiyet','Erkek'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Fatma Taş'],['Yakınlık','Anne'],['İletişim 1','0533 111 22 33'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Yeni Mahalle 2. Sokak No:9 Merkez / Elazığ']],
-      school:[['Sınıf','1-A'],['Öğrenci Numarası','5'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Bilgi girilmemiş']],
-      absence:[['Bu yıl toplam','0 gün']],
-      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} },
-    { // Elif Sude Korkmaz
-      personal:[['Doğum Tarihi','22.11.2013'],['Cinsiyet','Kız'],['Kan Grubu','A Rh+'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Murat Korkmaz'],['Yakınlık','Baba'],['İletişim 1','0544 222 33 44'],['İletişim 2','0544 222 33 45'],['E-posta','murat.korkmaz@example.com'],['Adres','Barış Mahallesi 15. Sokak No:3 Merkez / Elazığ']],
-      school:[['Sınıf','6-A'],['Öğrenci Numarası','34'],['Servis','Servis kullanıyor — Hat 1'],['Sosyal Kulüp','Resim Kulübü']],
-      absence:[['Bu yıl toplam','1 gün'],['Son devamsızlık','12.09.2026']],
-      exam:{deneme:5, test:8, sonNet:'18.5', sonLgs:'—'} },
-    { // Yusuf Berat Çelik
-      personal:[['Doğum Tarihi','10.02.2012'],['Cinsiyet','Erkek'],['Kan Grubu','0 Rh-'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Ayşe Çelik'],['Yakınlık','Anne'],['İletişim 1','0535 333 44 55'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Fatih Mahallesi 7. Sokak No:11 Merkez / Elazığ']],
-      school:[['Sınıf','7-A'],['Öğrenci Numarası','19'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Spor Kulübü']],
-      absence:[['Bu yıl toplam','5 gün'],['Son devamsızlık','03.10.2026']],
-      exam:{deneme:7, test:10, sonNet:'21', sonLgs:'—'} },
-    { // Hiranur Aksoy
-      personal:[['Doğum Tarihi','18.06.2017'],['Cinsiyet','Kız'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Emine Aksoy'],['Yakınlık','Anne'],['İletişim 1','0546 444 55 66'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Güneş Mahallesi 3. Sokak No:22 Merkez / Elazığ']],
-      school:[['Sınıf','2-A'],['Öğrenci Numarası','41'],['Servis','Servis kullanıyor — Hat 2'],['Sosyal Kulüp','Bilgi girilmemiş']],
-      absence:[['Bu yıl toplam','0 gün']],
-      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} },
-    { // Mustafa Kaan Demirtaş
-      personal:[['Doğum Tarihi','03.01.2011'],['Cinsiyet','Erkek'],['Kan Grubu','B Rh+'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Serkan Demirtaş'],['Yakınlık','Baba'],['İletişim 1','0537 555 66 77'],['İletişim 2','Bilgi girilmemiş'],['E-posta','serkan.demirtas@example.com'],['Adres','Yıldız Mahallesi 9. Sokak No:45 Merkez / Elazığ']],
-      school:[['Sınıf','8-A'],['Öğrenci Numarası','7'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Kodlama Kulübü']],
-      absence:[['Bu yıl toplam','2 gün'],['Son devamsızlık','19.09.2026']],
-      exam:{deneme:14, test:20, sonNet:'32.5', sonLgs:'420'} },
-    { // Defne Yıldırım
-      personal:[['Doğum Tarihi','27.08.2016'],['Cinsiyet','Kız'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
-      family:[['Veli Adı','Canan Yıldırım'],['Yakınlık','Anne'],['İletişim 1','0538 666 77 88'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Zafer Mahallesi 1. Sokak No:8 Merkez / Elazığ']],
-      school:[['Sınıf','4-A'],['Öğrenci Numarası','23'],['Servis','Servis kullanıyor — Hat 3'],['Sosyal Kulüp','Müzik Kulübü']],
-      absence:[['Bu yıl toplam','0 gün']],
-      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} }
+  /* ---- Sınıf detay sayfası (karta tıklayınca/Enter'a basınca animasyonlu açılır, Bilgiler/
+     Öğrenciler/Ders Programı sekmeli) ----
+     Örnek veri: her sınıfın öğretmeni, derslik/seviye bilgisi, öğrenci sayısı (kız/erkek) ve
+     ders sayısı — ekran görüntülerindeki gerçek uygulamanın alan yapısına göre. Öğrenci listesi
+     ve ders programı, 85 öğrenciyi tek tek elle yazmak yerine aşağıdaki isim havuzlarından ve
+     ders şablonlarından DETERMİNİSTİK olarak üretiliyor (her sayfa yüklemesinde aynı sonucu verir). */
+  var CLASS_DATA = [
+    { code:'1-A', seviye:1, derslik:'1-A', ogretmen:'Çilem Aydın',        ogrenci:9,  kiz:5, erkek:4, ders:2 },
+    { code:'2-A', seviye:2, derslik:'2-A', ogretmen:null,                  ogrenci:10, kiz:5, erkek:5, ders:2 },
+    { code:'3-A', seviye:3, derslik:'3-A', ogretmen:'Fatma Şenocak',       ogrenci:11, kiz:6, erkek:5, ders:2 },
+    { code:'4-A', seviye:4, derslik:'4-A', ogretmen:'Uygar Halisdemir',    ogrenci:9,  kiz:4, erkek:5, ders:2 },
+    { code:'5-A', seviye:5, derslik:'5-A', ogretmen:'Ece Küçük Müldür',    ogrenci:8,  kiz:4, erkek:4, ders:6 },
+    { code:'5-B', seviye:5, derslik:'5-B', ogretmen:'Derya Yılmaz',        ogrenci:9,  kiz:5, erkek:4, ders:6 },
+    { code:'6-A', seviye:6, derslik:'6-A', ogretmen:'Veysel Karani Gül',   ogrenci:10, kiz:5, erkek:5, ders:7 },
+    { code:'7-A', seviye:7, derslik:'7-A', ogretmen:'Miyase Gürtürk',      ogrenci:10, kiz:5, erkek:5, ders:7 },
+    { code:'8-A', seviye:8, derslik:'8-A', ogretmen:'Nuray Polat',         ogrenci:9,  kiz:5, erkek:4, ders:7 }
   ];
+
+  var KIZ_ISIM = ['Zeynep','Elif','Defne','Asel','İrem','Azra','Ecrin','Nehir','Sıla','Lina','Eslem','Meyra','Yağmur','Beren','Nisa','Sena','Duru','Miray','Eylül','Zümra','Hiranur','Ceren','Pelin','Dila','Ada','Rüya'];
+  var ERKEK_ISIM = ['Ali','Mehmet','Yusuf','Emir','Eymen','Alparslan','Kerem','Berat','Kuzey','Miraç','Göktuğ','Çınar','Mustafa','Ömer','Bora','Kaan','Atlas','Efe','Bartu','Arda','Poyraz','Toprak','Tuna','Egemen','Oğuzhan','Baran'];
+  var SOYISIM = ['Yıldız','Kaya','Demir','Şahin','Aydın','Çelik','Doğan','Arslan','Koç','Öztürk','Aksoy','Korkmaz','Taş','Yılmaz','Özdemir','Polat','Güneş','Akın','Türkmen','Bulut','Ergin','Karaca','Uysal','Erdoğan','Sarı','Avcı'];
+
+  /* Her sınıf için kiz+erkek sayısı kadar öğrenci üretir; sınıf index'i isim havuzunda
+     başlangıç noktasını kaydırır, böylece sınıflar arasında isimler tekrar etmez. */
+  function studentsFor(cls, classIdx){
+    var out = [], seed = classIdx * 7, usedNo = {};
+    function pickNo(base){
+      var no = 10 + (base % 85);
+      while (usedNo[no]) no = 10 + ((no - 10 + 1) % 85); // çakışma olursa bir sonraki numaraya kay
+      usedNo[no] = true;
+      return no;
+    }
+    for (var i = 0; i < cls.kiz; i++){
+      var fi = (seed + i * 3) % KIZ_ISIM.length, si = (seed + i * 5) % SOYISIM.length;
+      out.push({ name: KIZ_ISIM[fi] + ' ' + SOYISIM[si], no: pickNo(seed + i * 9), gender: 'Kız' });
+    }
+    for (var j = 0; j < cls.erkek; j++){
+      var fi2 = (seed + j * 4) % ERKEK_ISIM.length, si2 = (seed + j * 6 + 2) % SOYISIM.length;
+      out.push({ name: ERKEK_ISIM[fi2] + ' ' + SOYISIM[si2], no: pickNo(seed + j * 11 + 3), gender: 'Erkek' });
+    }
+    return out;
+  }
+
+  /* Haftalık ders programı: ilkokul sınıfları çoğunlukla sınıf öğretmeniyle, ortaokul sınıfları
+     branş öğretmenleriyle — gerçek uygulamadaki örnek programın (5-A) aynı deseni izliyor. */
+  function scheduleFor(cls){
+    var t = cls.ogretmen || 'Atanmadı';
+    if (cls.seviye <= 4){
+      return [
+        {day:'Pazartesi', period:1, course:'Türkçe', teacher:t},
+        {day:'Pazartesi', period:2, course:'Türkçe', teacher:t},
+        {day:'Pazartesi', period:3, course:'Matematik', teacher:t},
+        {day:'Pazartesi', period:4, course:'Matematik', teacher:t},
+        {day:'Pazartesi', period:5, course:'Hayat Bilgisi', teacher:t},
+        {day:'Pazartesi', period:6, course:'Beden Eğitimi', teacher:'Bilal Baykar'},
+        {day:'Salı', period:1, course:'Türkçe', teacher:t},
+        {day:'Salı', period:2, course:'Müzik', teacher:'Selin Çelik'}
+      ];
+    }
+    return [
+      {day:'Pazartesi', period:1, course:'Türkçe', teacher:t},
+      {day:'Pazartesi', period:2, course:'Türkçe', teacher:t},
+      {day:'Pazartesi', period:3, course:'Spor ve Fizikî Etkinlikler', teacher:'Bilal Baykar'},
+      {day:'Pazartesi', period:4, course:'Spor ve Fizikî Etkinlikler', teacher:'Bilal Baykar'},
+      {day:'Pazartesi', period:5, course:'Bilişim Teknolojileri ve Yazılım', teacher:'Okan Koç'},
+      {day:'Pazartesi', period:6, course:'Matematik', teacher:'Ahmet Yılmaz'},
+      {day:'Pazartesi', period:7, course:'Matematik', teacher:'Ahmet Yılmaz'},
+      {day:'Salı', period:1, course:'Yazarlık ve Yazma', teacher:t}
+    ];
+  }
 
   var overlay = document.getElementById('detailOverlay');
   var detailAvatar = document.getElementById('detailAvatar');
   var detailName = document.getElementById('detailName');
   var detailBranch = document.getElementById('detailBranch');
   var detailStats = document.getElementById('detailStats');
-  var detailTags = document.getElementById('detailTags');
-  var detailPhone = document.getElementById('detailPhone');
   var cardFrames = [].slice.call(document.querySelectorAll('.card-frame'));
+  var tabOgrencilerBtn = document.getElementById('tabOgrencilerBtn');
 
   function fillRows(id, rows){
     var el = document.getElementById(id);
@@ -545,32 +616,59 @@
     }).join('');
   }
 
+  function setTab(name){
+    [].slice.call(document.querySelectorAll('#detailTabs button')).forEach(function(b){
+      b.classList.toggle('on', b.getAttribute('data-tab') === name);
+    });
+    [].slice.call(document.querySelectorAll('.detail-panel')).forEach(function(p){
+      p.classList.toggle('on', p.id === 'panel' + name.charAt(0).toUpperCase() + name.slice(1));
+    });
+  }
+  document.getElementById('detailTabs').addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-tab]');
+    if (btn) setTab(btn.getAttribute('data-tab'));
+  });
+
   function openDetail(idx){
     var card = cardFrames[idx];
-    var avatarEl = card.querySelector('.avatar');
-    var color = avatarEl.style.getPropertyValue('--c');
-    var phoneEl = card.querySelector('.phone');
-    var extra = STUDENT_EXTRA[idx] || {};
+    var badgeEl = card.querySelector('.class-badge');
+    var color = badgeEl.style.getPropertyValue('--c');
+    var cls = CLASS_DATA[idx];
 
-    detailAvatar.textContent = avatarEl.textContent;
+    detailAvatar.textContent = cls.code;
     detailAvatar.style.setProperty('--c', color);
-    detailName.textContent = card.querySelector('h3').textContent;
-    detailBranch.textContent = card.querySelector('.card-top .who span').textContent;
-    detailStats.innerHTML = card.querySelector('.mini-stats').innerHTML;
-    detailTags.innerHTML = card.querySelector('.tags').innerHTML;
-    detailPhone.href = phoneEl.getAttribute('href');
-    detailPhone.textContent = 'Veliyi Ara — ' + phoneEl.textContent;
-    fillRows('detailPersonal', extra.personal);
-    fillRows('detailFamily', extra.family);
-    fillRows('detailSchool', extra.school);
-    fillRows('detailAbsence', extra.absence);
-    var ex = extra.exam || {deneme:0,test:0,sonNet:'—',sonLgs:'—'};
-    document.getElementById('detailExamTiles').innerHTML =
-      '<div><b>' + ex.deneme + '</b><span>Deneme</span></div>' +
-      '<div><b>' + ex.test + '</b><span>Test</span></div>' +
-      '<div><b>' + ex.sonNet + '</b><span>Son Net</span></div>' +
-      '<div><b>' + ex.sonLgs + '</b><span>Son LGS</span></div>';
+    detailName.textContent = cls.code;
+    detailBranch.textContent = cls.seviye + '. seviye · ' + cls.derslik + (cls.ogretmen ? ' · ' + cls.ogretmen : ' · Sınıf öğretmeni atanmadı');
 
+    detailStats.innerHTML =
+      '<div><b>' + cls.ogrenci + '</b><span>öğrenci</span></div>' +
+      '<div><b>' + cls.kiz + '</b><span>kız</span></div>' +
+      '<div><b>' + cls.erkek + '</b><span>erkek</span></div>' +
+      '<div><b>' + cls.ders + '</b><span>ders</span></div>';
+
+    fillRows('detailGeneral', [
+      ['Sınıf Öğretmeni', cls.ogretmen || 'Atanmadı'],
+      ['Derslik', cls.derslik],
+      ['Seviye', cls.seviye + '. sınıf']
+    ]);
+
+    tabOgrencilerBtn.textContent = 'Öğrenciler (' + cls.ogrenci + ')';
+    var students = studentsFor(cls, idx);
+    document.getElementById('detailStudents').innerHTML = students.map(function(s){
+      var initial = s.name.charAt(0);
+      return '<div class="stu-row"><span class="avatar" style="--c:' + color + '">' + initial + '</span>' +
+        '<div class="stu-info"><b>' + s.name + '</b><span>No: ' + s.no + ' · Veli bilgisi yok</span></div>' +
+        '<span class="stu-gender">' + s.gender + '</span></div>';
+    }).join('');
+
+    var schedule = scheduleFor(cls);
+    document.getElementById('detailSchedule').innerHTML = schedule.map(function(r){
+      return '<div class="sched-row"><span class="sched-day">' + r.day + '</span>' +
+        '<span class="sched-period">' + r.period + '. ders</span>' +
+        '<div class="sched-what"><b>' + r.course + '</b><span>' + r.teacher + '</span></div></div>';
+    }).join('');
+
+    setTab('bilgiler');
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     overlay.scrollTop = 0;
@@ -585,7 +683,6 @@
 
   cardFrames.forEach(function(card, idx){
     card.addEventListener('click', function(e){
-      if (e.target.closest('.phone')) return; // telefon linkine dokunurken detay açılmasın
       openDetail(idx);
     });
     card.addEventListener('keydown', function(e){
@@ -699,30 +796,30 @@
   runClassBars(scenes[current]);
   restart();
 
-  /* ---- Sınıfa göre filtre + arama: öğrenciler sınıflara göre filtrelenebilsin ---- */
+  /* ---- Seviyeye göre filtre + arama: sınıflar seviyeye göre filtrelenebilsin ---- */
   var chips = [].slice.call(document.querySelectorAll('#classChips button'));
   var searchInput = document.getElementById('searchInput');
   var listFoot = document.getElementById('listFoot');
-  var activeClass = 'all';
+  var activeLevel = 'all';
 
   function applyFilter(){
     var q = searchInput.value.trim().toLocaleLowerCase('tr');
     var visible = 0;
     cardFrames.forEach(function(card){
-      var matchesClass = activeClass === 'all' || card.getAttribute('data-class') === activeClass;
+      var matchesLevel = activeLevel === 'all' || card.getAttribute('data-level') === activeLevel;
       var matchesSearch = !q || (card.getAttribute('data-search') || '').indexOf(q) !== -1;
-      var show = matchesClass && matchesSearch;
+      var show = matchesLevel && matchesSearch;
       card.style.display = show ? '' : 'none';
       if (show) visible++;
     });
-    listFoot.textContent = visible + ' / ' + cardFrames.length + ' kayıt gösteriliyor — bir karta dokunduğunuzda tam profil açılır.';
+    listFoot.textContent = visible + ' / ' + cardFrames.length + ' kayıt gösteriliyor — bir sınıfa dokunduğunuzda tam profil açılır.';
   }
 
   chips.forEach(function(chip){
     chip.addEventListener('click', function(){
       chips.forEach(function(c){ c.classList.remove('on'); });
       chip.classList.add('on');
-      activeClass = chip.getAttribute('data-class');
+      activeLevel = chip.getAttribute('data-level');
       applyFilter();
     });
   });
