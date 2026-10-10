@@ -92,7 +92,7 @@ document.getElementById('mn').onclick=menuOpen;
 document.getElementById('mnClose').onclick=menuClose;
 ml.addEventListener('click',function(e){if(e.target===ml)menuClose()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ml.classList.contains('open'))menuClose()});
-if(!NEW){document.getElementById('v3css').disabled=true;document.documentElement.classList.remove('ka-v3')}
+if(!NEW){document.getElementById('v3css').disabled=true;document.documentElement.classList.remove('ka-v3')}else{T.apply()}
 window.addEventListener('koruk:theme-change',function(){setTimeout(rate,0)});rate();
 })();
 </script></body></html>
