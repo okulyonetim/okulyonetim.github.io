@@ -47,13 +47,10 @@
   @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
   @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
 
-  .scenes{position:relative;min-height:300px}
-  .scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .5s ease;z-index:1}
-  .scene.active{opacity:1;pointer-events:auto;z-index:2}
-  @media (prefers-reduced-motion:no-preference){
-    .scene.active{animation:sceneIn .55s cubic-bezier(.2,.8,.2,1)}
-  }
-  @keyframes sceneIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .scenes-viewport{position:relative;z-index:1;overflow:hidden;min-height:300px}
+  .scene-track{display:flex;width:300%;height:100%;transition:transform .6s cubic-bezier(.3,.8,.2,1)}
+  @media (prefers-reduced-motion:reduce){.scene-track{transition:none}}
+  .scene{flex:0 0 33.3334%;width:33.3334%;min-width:0}
 
   .kicker{font-size:12px;color:var(--kicker);letter-spacing:.02em;margin-bottom:10px;font-weight:600}
   .scene h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);margin:0 0 8px;letter-spacing:-.01em}
@@ -75,18 +72,18 @@
   .board-wrap{display:flex;justify-content:center}
   .board{width:100%;max-width:560px;background:#16241c;border:10px solid #5b4027;border-radius:10px;padding:26px 28px;box-shadow:0 18px 32px -20px rgba(0,0,0,.5);position:relative}
   .board::before{content:"";position:absolute;left:14px;right:14px;bottom:-16px;height:8px;background:#8a95885c;border-radius:2px;filter:blur(1px)}
-  .board-text{font-family:'Caveat',cursive;font-weight:600;color:#eef3ea;font-size:clamp(22px,3.4vw,30px);line-height:1.35;margin:0;min-height:2.7em}
-  .chalk-cursor{display:inline-block;width:2px;height:1em;background:#eef3ea;vertical-align:middle;margin-left:2px;opacity:.85}
-  @media (prefers-reduced-motion:no-preference){.chalk-cursor{animation:blink 1s step-end infinite}}
-  @keyframes blink{50%{opacity:0}}
-  .board-sign{font-family:'Caveat',cursive;color:#c8b98a;font-size:17px;margin:8px 0 0;text-align:right}
+  .board-text{font-family:'Caveat','Segoe Print','Bradley Hand',cursive;font-weight:600;color:#eef3ea;font-size:clamp(22px,3.4vw,30px);line-height:1.35;margin:0;min-height:2.7em}
+  .board-sign{font-family:'Caveat','Segoe Print','Bradley Hand',cursive;color:#c8b98a;font-size:17px;margin:8px 0 0;text-align:right}
 
-  /* --- sahne 3: haftalık yoğunluk --- */
-  .week{display:flex;align-items:flex-end;gap:14px;height:150px;margin-top:8px;max-width:420px}
-  .week .bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
-  .week .bar i{display:block;width:100%;max-width:34px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,var(--cyan),var(--violet));height:0;transition:height 1s cubic-bezier(.2,.8,.2,1)}
-  .week .bar span{font-size:11.5px;color:var(--muted)}
-  .week-note{font-size:12px;color:var(--muted);margin-top:10px}
+  /* --- sahne 3: sayfa tanıtımı --- */
+  .intro-feats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-top:18px;max-width:480px}
+  .feat{display:flex;gap:10px;align-items:flex-start;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease}
+  .feat.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.feat{opacity:1;transform:none;transition:none}}
+  .feat-ic{flex:none;width:30px;height:30px;border-radius:9px;background:var(--panel);border:1px solid var(--panel-border);display:flex;align-items:center;justify-content:center;color:var(--cyan)}
+  .feat-ic svg{width:16px;height:16px}
+  .feat b{display:block;font-size:13.5px;font-weight:600}
+  .feat span{font-size:11.5px;color:var(--muted)}
 
   .scene-dots{position:absolute;left:34px;bottom:14px;z-index:3;display:flex;gap:7px}
   .scene-dots button{width:7px;height:7px;border-radius:50%;border:none;background:var(--panel-border);cursor:pointer;padding:0}
@@ -102,7 +99,7 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 
   /* dış çerçeve: dönen ışıklı kenarlığı taşır, overflow:hidden ile kırpar (mask'a gerek yok) */
-  .card-frame{position:relative;border-radius:17.5px;padding:1.4px;overflow:hidden;cursor:pointer;border:1px solid var(--panel-border)}
+  .card-frame{position:relative;border-radius:17.5px;padding:2px;overflow:hidden;cursor:pointer;border:1px solid var(--panel-border)}
   @media (prefers-reduced-motion:no-preference){
     .card-frame{opacity:0;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0) * 90ms);transition:transform .2s}
   }
@@ -110,9 +107,13 @@
   .card-frame:hover{transform:translateY(-3px)}
   .card-frame:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 
-  .card-spin{position:absolute;inset:-65%;background:conic-gradient(from 0deg,transparent 0 80%,var(--cyan) 89%,#fff 93%,var(--violet) 97%,transparent 100%)}
-  @media (prefers-reduced-motion:no-preference){.card-spin{animation:borderspin 4.5s linear infinite}}
-  @media (prefers-reduced-motion:reduce){.card-spin{display:none}}
+  .card-spin{position:absolute;inset:-65%;
+    background:conic-gradient(from 0deg,
+      color-mix(in srgb,var(--glow,var(--cyan)) 38%,transparent) 0 72%,
+      var(--glow,var(--cyan)) 85%,#fff 90%,var(--glow,var(--cyan)) 95%,
+      color-mix(in srgb,var(--glow,var(--cyan)) 38%,transparent) 100%)}
+  @media (prefers-reduced-motion:no-preference){.card-spin{animation:borderspin 7s linear infinite}}
+  @media (prefers-reduced-motion:reduce){.card-spin{background:var(--glow,var(--panel-border))}}
   @keyframes borderspin{to{transform:rotate(360deg)}}
   /* opak taban: spin katmanını yalnız 1.4px kenarlıkta görünür bırakır, kartın cam yüzeyinin altından sızmasını engeller */
   .card-base{position:absolute;inset:0;background:var(--bg);border-radius:16px;z-index:1}
@@ -122,7 +123,9 @@
   :root[data-theme="light"] .card-frame:hover .card{background:#fff}
 
   .card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative}
-  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;flex:none;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
+  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:14.5px;letter-spacing:.2px;flex:none;color:#fff;
+    text-shadow:0 0 1px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.85),0 1px 2px rgba(0,0,0,.6);
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
   .card-top .who{min-width:0;position:relative}
   .card-top h3{margin:0;font-size:15px;font-weight:600}
   .card-top span{font-size:12px;color:var(--muted)}
@@ -136,7 +139,7 @@
   .phone:hover{color:var(--cyan)}
 
   footer.foot{padding-top:22px;font-size:12px;color:var(--muted);text-align:center}
-  @media(max-width:480px){.stats{gap:20px}.scenes{min-height:360px}}
+  @media(max-width:480px){.stats{gap:20px}.scenes-viewport{min-height:360px}}
 </style>
 </head>
 <body>
@@ -149,44 +152,44 @@
       <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
     </button>
 
-    <div class="scenes">
-      <div class="scene active" data-scene="0">
-        <div class="cover-top">
-          <div>
-            <div class="kicker">KORUK ASİSTAN · PERSONEL</div>
-            <h1>Öğretmenler</h1>
-            <p>Branş, nöbet ve ders yükü — canlı, tek ekranda.</p>
+    <div class="scenes-viewport">
+      <div class="scene-track" id="sceneTrack">
+        <div class="scene" data-scene="0">
+          <div class="cover-top">
+            <div>
+              <div class="kicker">KORUK ASİSTAN · PERSONEL</div>
+              <h1>Öğretmenler</h1>
+              <p>Branş, nöbet ve ders yükü — canlı, tek ekranda.</p>
+            </div>
+            <span class="live"><i class="dot"></i> Bugün 4 öğretmen nöbetçi</span>
           </div>
-          <span class="live"><i class="dot"></i> Bugün 4 öğretmen nöbetçi</span>
-        </div>
-        <div class="stats">
-          <div><b data-count="12">0</b><span>öğretmen</span></div>
-          <div><b data-count="8">0</b><span>branş</span></div>
-          <div><b data-count="10">0</b><span>nöbet kaydı</span></div>
-        </div>
-      </div>
-
-      <div class="scene" data-scene="1">
-        <div class="kicker">GÜNÜN SÖZÜ</div>
-        <div class="board-wrap">
-          <div class="board">
-            <p class="board-text" id="boardText"><span class="chalk-cursor" id="chalkCursor"></span></p>
-            <p class="board-sign">— Hz. Ali</p>
+          <div class="stats">
+            <div><b data-count="12">0</b><span>öğretmen</span></div>
+            <div><b data-count="8">0</b><span>branş</span></div>
+            <div><b data-count="10">0</b><span>nöbet kaydı</span></div>
           </div>
         </div>
-      </div>
 
-      <div class="scene" data-scene="2">
-        <div class="kicker">BU HAFTA</div>
-        <h1 style="font-size:clamp(22px,3.6vw,30px)">Haftalık yoğunluk</h1>
-        <div class="week" id="weekBars">
-          <div class="bar"><i data-h="55"></i><span>Pzt</span></div>
-          <div class="bar"><i data-h="80"></i><span>Sal</span></div>
-          <div class="bar"><i data-h="45"></i><span>Çar</span></div>
-          <div class="bar"><i data-h="95"></i><span>Per</span></div>
-          <div class="bar"><i data-h="65"></i><span>Cum</span></div>
+        <div class="scene" data-scene="1">
+          <div class="kicker">GÜNÜN SÖZÜ</div>
+          <div class="board-wrap">
+            <div class="board">
+              <p class="board-text" id="boardText"></p>
+              <p class="board-sign">— Hz. Ali</p>
+            </div>
+          </div>
         </div>
-        <p class="week-note">Örnek dağılım — tüm kadronun günlük ders yoğunluğu.</p>
+
+        <div class="scene" data-scene="2">
+          <div class="kicker">BU SAYFADA</div>
+          <h1 style="font-size:clamp(24px,3.8vw,32px)">Tek ekranda her şey</h1>
+          <div class="intro-feats" id="introFeats">
+            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></span><div><b>Hızlı arama</b><span>İsim veya branşla anında bul</span></div></div>
+            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></span><div><b>Haftalık yük</b><span>Ders saatini bir bakışta gör</span></div></div>
+            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></span><div><b>Nöbet takibi</b><span>Kim bugün nöbetçi, hemen belli</span></div></div>
+            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c1-3.8 4-5.8 6.5-5.8s5.5 2 6.5 5.8"/></svg></span><div><b>Profil detayı</b><span>Dokunuşla tam dosya açılır</span></div></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -204,56 +207,56 @@
   </div>
 
   <div class="grid" id="grid">
-    <div class="card-frame" tabindex="0" role="link" style="--i:0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:0;--glow:#ef5454"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#ef5454">BB</span><div class="who"><h3>Bilal Baykar</h3><span>Beden Eğitimi</span></div></div>
       <div class="meter"><i data-w="0"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>0 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün yok</span></div>
       <a class="phone" href="tel:05336324217">0533 632 42 17</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:1"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:1;--glow:#dd9d27"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#dd9d27">ÇS</span><div class="who"><h3>Çiçek Sönmez</h3><span>Sosyal Bilgiler</span></div></div>
       <div class="meter"><i data-w="88"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>21 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün yok</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05063696048">0506 369 60 48</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:2"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:2;--glow:#6f5de0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#6f5de0">EK</span><div class="who"><h3>Elif Kaya</h3><span>Matematik</span></div></div>
       <div class="meter"><i data-w="100"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>24 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 4 ders</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05321112233">0532 111 22 33</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:3"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:3;--glow:#1fb89d"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#1fb89d">MD</span><div class="who"><h3>Mehmet Demir</h3><span>Fen Bilimleri</span></div></div>
       <div class="meter"><i data-w="75"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>18 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 2 ders</span></div>
       <a class="phone" href="tel:05442223344">0544 222 33 44</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:4"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:4;--glow:#c954e0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#c954e0">ZA</span><div class="who"><h3>Zeynep Arslan</h3><span>İngilizce</span></div></div>
       <div class="meter"><i data-w="83"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>20 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 3 ders</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05353334455">0535 333 44 55</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:5"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:5;--glow:#ff7d46"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#ff7d46">AY</span><div class="who"><h3>Ahmet Yılmaz</h3><span>Türkçe</span></div></div>
       <div class="meter"><i data-w="92"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>22 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 5 ders</span></div>
       <a class="phone" href="tel:05464445566">0546 444 55 66</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:6"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:6;--glow:#1fa870"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#1fa870">SÇ</span><div class="who"><h3>Selin Çelik</h3><span>Müzik</span></div></div>
       <div class="meter"><i data-w="42"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>10 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 1 ders</span></div>
       <a class="phone" href="tel:05375556677">0537 555 66 77</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:7"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+    <div class="card-frame" tabindex="0" role="link" style="--i:7;--glow:#5b7ef0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
       <div class="card-top"><span class="avatar" style="background:#5b7ef0">OK</span><div class="who"><h3>Okan Koç</h3><span>Bilişim Teknolojileri</span></div></div>
       <div class="meter"><i data-w="67"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>16 sa / 24</span></div>
@@ -302,43 +305,43 @@
     }, reduce ? 0 : 150);
   });
 
-  /* ---- Kapak sahneleri ---- */
+  /* ---- Kapak sahneleri (kayarak geçiş) ---- */
+  var track = document.getElementById('sceneTrack');
   var scenes = [].slice.call(document.querySelectorAll('.scene'));
   var dots = [].slice.call(document.querySelectorAll('#sceneDots button'));
   var current = 0, timer = null;
   var QUOTE = 'Bana bir harf öğretenin kırk yıl kölesi olurum.';
   var boardText = document.getElementById('boardText');
-  var chalkCursor = document.getElementById('chalkCursor');
   var typed = false;
+  var introShown = false;
 
   function typeBoard(){
     if (typed) return;
     typed = true;
-    if (reduce) { boardText.textContent = QUOTE; boardText.appendChild(chalkCursor); return; }
+    if (reduce) { boardText.textContent = QUOTE; return; }
     var i = 0;
     function tick(){
       boardText.textContent = QUOTE.slice(0, i);
-      boardText.appendChild(chalkCursor);
       i++;
-      if (i <= QUOTE.length) setTimeout(tick, 38);
+      if (i <= QUOTE.length) setTimeout(tick, 18);
     }
     tick();
   }
 
-  function weekBars(){
-    document.querySelectorAll('#weekBars i').forEach(function(el, idx){
-      setTimeout(function(){
-        el.style.height = el.getAttribute('data-h') + '%';
-      }, reduce ? 0 : idx * 90);
+  function showIntro(){
+    if (introShown) return;
+    introShown = true;
+    document.querySelectorAll('#introFeats .feat').forEach(function(el, idx){
+      setTimeout(function(){ el.classList.add('in'); }, reduce ? 0 : idx * 110);
     });
   }
 
   function goTo(n){
     current = (n + scenes.length) % scenes.length;
-    scenes.forEach(function(s, i){ s.classList.toggle('active', i === current); });
+    track.style.transform = 'translateX(-' + (current * (100 / scenes.length)) + '%)';
     dots.forEach(function(d, i){ d.classList.toggle('on', i === current); });
     if (current === 1) typeBoard();
-    if (current === 2) weekBars();
+    if (current === 2) showIntro();
   }
 
   dots.forEach(function(d){
