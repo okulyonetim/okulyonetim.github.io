@@ -99,7 +99,10 @@
      aynı noktadan tekrar geçer (360° döngü). conic-gradient() KULLANILMIYOR; linear-gradient()
      + rotate() kullanılıyor çünkü çok daha eski/yaygın desteklenen bir teknik. */
   .card-frame{position:relative;border-radius:17.5px;padding:2px;overflow:hidden;cursor:pointer;
-    border:1px solid var(--panel-border)}
+    border:1px solid var(--panel-border);
+    /* sabit (yanıp sönmeyen) dış ışık halesi — kartın dışına taşar, overflow:hidden onu kırpmaz
+       çünkü box-shadow kendi kutusunun DIŞINDA çizilir, içerik gibi kırpılan bir "child" değildir */
+    box-shadow:0 0 14px 1px var(--glow,var(--cyan))}
   @media (prefers-reduced-motion:no-preference){
     .card-frame{opacity:0;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0) * 90ms);transition:transform .2s}
   }
@@ -107,11 +110,11 @@
   .card-frame:hover{transform:translateY(-3px)}
   .card-frame:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 
-  /* her zaman hafifçe görünen sabit, SABİT (dönmeyen) ince halka — yanıp sönmez */
-  .card-ring{position:absolute;inset:-2px;background:var(--glow,var(--cyan));opacity:.32;z-index:0}
+  /* her zaman görünen sabit (dönmeyen) parlak halka — yanıp sönmez, ışığın tabanı */
+  .card-ring{position:absolute;inset:-2px;background:var(--glow,var(--cyan));opacity:.75;z-index:0}
   /* kenarlığı dolaşan tek ışık noktası: dar, parlak bir çizgi sürekli döner */
   .card-spin{position:absolute;inset:-75%;z-index:1;
-    background:linear-gradient(115deg,transparent 43%,var(--glow,var(--cyan)) 49%,#fff 50%,var(--glow,var(--cyan)) 51%,transparent 57%)}
+    background:linear-gradient(115deg,transparent 40%,var(--glow,var(--cyan)) 48%,#fff 50%,var(--glow,var(--cyan)) 52%,transparent 60%)}
   @media (prefers-reduced-motion:no-preference){.card-spin{animation:borderspin 4.5s linear infinite}}
   @media (prefers-reduced-motion:reduce){.card-spin{display:none}}
   @keyframes borderspin{to{transform:rotate(360deg)}}
@@ -155,24 +158,48 @@
   .quote-text{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(19px,2.8vw,25px);line-height:1.4;margin:0 0 12px;color:var(--text)}
   .quote-by{font-size:13px;color:var(--kicker);font-weight:600}
 
-  /* ============ Öğretmen detay sayfası (karta tıklayınca açılır) ============ */
-  .detail-overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;
-    background:rgba(4,5,9,.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
-    opacity:0;visibility:hidden;transition:opacity .22s ease}
-  .detail-overlay.open{opacity:1;visibility:visible}
-  .detail-card{position:relative;width:100%;max-width:380px;background:var(--cover-bg);border:1px solid var(--panel-border);border-radius:20px;padding:26px 24px 22px;
-    transform:translateY(14px) scale(.97);opacity:0;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s}
-  .detail-overlay.open .detail-card{transform:none;opacity:1}
-  @media (prefers-reduced-motion:reduce){.detail-overlay,.detail-card{transition:none}}
-  .detail-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
-  .detail-close svg{width:16px;height:16px}
-  .detail-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-right:30px}
-  .detail-avatar{width:56px;height:56px;font-size:19px}
-  .detail-top h2{margin:0;font-size:19px;font-weight:700;font-family:'Space Grotesk',sans-serif}
-  .detail-top p{margin:2px 0 0;font-size:13px;color:var(--muted)}
-  .detail-stats{display:flex;gap:26px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--panel-border)}
-  .detail-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-  .detail-phone{display:block;text-align:center;font-weight:600;font-size:14px;color:#06090f;background:linear-gradient(135deg,var(--violet),var(--cyan));padding:12px;border-radius:12px;text-decoration:none}
+  /* ============ Öğretmen detay sayfası — tam sayfa, animasyonlu açılır ============ */
+  .detail-overlay{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
+    opacity:0;visibility:hidden;transform:translateY(26px);
+    transition:opacity .3s ease,transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s linear .34s}
+  .detail-overlay.open{opacity:1;visibility:visible;transform:none;transition:opacity .3s ease,transform .34s cubic-bezier(.2,.8,.2,1)}
+  @media (prefers-reduced-motion:reduce){.detail-overlay{transition:opacity .15s ease;transform:none}}
+
+  .detail-bar{position:sticky;top:0;z-index:2;display:flex;gap:10px;padding:14px 18px;background:var(--cover-bg);border-bottom:1px solid var(--panel-border)}
+  .detail-bar button{display:flex;align-items:center;justify-content:center;gap:7px;font:600 13.5px/1 'Inter',sans-serif;padding:11px 14px;border-radius:12px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);cursor:pointer}
+  .detail-bar button svg{width:16px;height:16px;flex:none}
+  .detail-print{flex:1}
+  .detail-close{flex:0 0 auto;width:44px;padding:11px}
+
+  .detail-body{max-width:640px;margin:0 auto;padding:22px 20px 60px}
+  .detail-top{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+  .detail-avatar{width:64px;height:64px;font-size:22px}
+  .detail-top h2{margin:0;font-size:21px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+  .detail-top p{margin:3px 0 0;font-size:13.5px;color:var(--muted)}
+  .detail-stats{display:flex;gap:26px;margin-bottom:16px;flex-wrap:wrap}
+  .detail-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .detail-phone{display:block;text-align:center;font-weight:600;font-size:14px;color:#06090f;background:linear-gradient(135deg,var(--violet),var(--cyan));padding:13px;border-radius:12px;text-decoration:none;margin-bottom:22px}
+
+  .detail-section{background:var(--panel);border:1px solid var(--panel-border);border-radius:16px;padding:18px 18px 14px;margin-bottom:14px}
+  .detail-section h4{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:12px;letter-spacing:.03em;color:var(--kicker);font-weight:700;text-transform:uppercase}
+  .detail-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--panel-border);font-size:13.5px}
+  .detail-row:first-of-type{border-top:none}
+  .detail-row b{font-weight:600;color:var(--text);white-space:nowrap}
+  .detail-row span{color:var(--muted);text-align:right}
+  .detail-empty{font-size:13px;color:var(--muted);padding:4px 0 6px}
+
+  /* yazdırma: yalnızca açık olan detay sayfası basılsın, geri kalan her şey gizlensin */
+  @media print{
+    body > *:not(.detail-overlay){display:none !important}
+    .detail-overlay{position:static;opacity:1;visibility:visible;transform:none;overflow:visible;background:#fff;color:#000}
+    .detail-bar,.theme-toggle{display:none !important}
+    .detail-body{max-width:100%;padding:0}
+    .detail-section{background:#fff;border-color:#ccc;break-inside:avoid}
+    .detail-section h4{color:#333}
+    .detail-row b,.detail-top h2{color:#000}
+    .detail-row span,.detail-top p{color:#444}
+    .detail-phone{display:none}
+  }
 </style>
 </head>
 <body>
@@ -290,14 +317,20 @@
   <footer class="foot">8 / 12 kayıt gösteriliyor — bir karta dokunduğunuzda tam profil açılır.</footer>
 </div>
 
-<!-- Karta tıklayınca açılan öğretmen detay sayfası (bu konsept tek dosya olduğundan gerçek bir
-     sayfa yönlendirmesi yerine aynı sayfa üzerinde detay görünümü açılıyor; gerçek uygulamada
-     bu, ayrı bir profil sayfasına geçiş olur) -->
-<div class="detail-overlay" id="detailOverlay" aria-hidden="true">
-  <div class="detail-card" role="dialog" aria-modal="true" aria-labelledby="detailName">
+<!-- Karta tıklayınca animasyonlu açılan tam sayfa öğretmen detayı (bu konsept tek dosya olduğundan
+     gerçek bir sayfa yönlendirmesi yerine aynı dosya içinde tam ekran bir görünüm açılıyor; gerçek
+     uygulamada bu, ayrı bir profil rotasına geçiş olur) -->
+<div class="detail-overlay" id="detailOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detailName">
+  <div class="detail-bar">
+    <button class="detail-print" id="detailPrintBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2M6 14h12v7H6z"/></svg>
+      Yazdır
+    </button>
     <button class="detail-close" id="detailClose" type="button" aria-label="Kapat">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
+  </div>
+  <div class="detail-body">
     <div class="detail-top">
       <span class="avatar detail-avatar" id="detailAvatar"></span>
       <div>
@@ -308,6 +341,31 @@
     <div class="mini-stats detail-stats" id="detailStats"></div>
     <div class="detail-tags" id="detailTags"></div>
     <a class="detail-phone" id="detailPhone" href="#"></a>
+
+    <div class="detail-section">
+      <h4>Sorumlu sınıf</h4>
+      <div class="detail-row"><b id="detailHomeroom">—</b><span>sınıf danışmanlığı</span></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>Ders programı</h4>
+      <div id="detailSchedule"></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>Nöbet programı</h4>
+      <div id="detailDuty"></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>Kulüp / komisyon / kurullar</h4>
+      <div id="detailClubs"></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>İzinler</h4>
+      <div id="detailLeaves"></div>
+    </div>
   </div>
 </div>
 <script>
@@ -340,7 +398,51 @@
     requestAnimationFrame(step);
   });
 
-  /* ---- Öğretmen detay sayfası (karta tıklayınca/Enter'a basınca açılır) ---- */
+  /* ---- Öğretmen detay sayfası (karta tıklayınca/Enter'a basınca animasyonlu açılır) ----
+     Örnek veri: her kart sırasına (0=BB ... 7=OK) karşılık gelen ders/nöbet/kulüp/izin kayıtları. */
+  var TEACHER_EXTRA = [
+    { homeroom:'6-B', // Bilal Baykar
+      schedule:[['Pazartesi · 2.','5-A — Beden Eğitimi'],['Pazartesi · 5.','6-B — Beden Eğitimi'],['Çarşamba · 1.','7-A — Beden Eğitimi'],['Cuma · 3.','8-B — Beden Eğitimi']],
+      duty:[['Salı','Spor salonu'],['Cuma','Bahçe']],
+      clubs:[['Spor Kulübü','Danışman'],['6-B','Sınıf danışmanlığı']],
+      leaves:[] },
+    { homeroom:'7-A', // Çiçek Sönmez
+      schedule:[['Pazartesi · 1.','7-A — Sosyal Bilgiler'],['Salı · 4.','6-A — Sosyal Bilgiler'],['Perşembe · 2.','7-B — Sosyal Bilgiler'],['Cuma · 6.','8-A — Sosyal Bilgiler']],
+      duty:[['Pazartesi','Üst kat koridoru']],
+      clubs:[['Gezi Kulübü','Danışman'],['7-A','Sınıf danışmanlığı']],
+      leaves:[['Mazeret izni','2026-11-05 – 2026-11-05']] },
+    { homeroom:'5-A', // Elif Kaya
+      schedule:[['Pazartesi · 3.','5-A — Matematik'],['Salı · 1.','5-A — Matematik'],['Çarşamba · 5.','6-B — Matematik'],['Perşembe · 4.','7-A — Matematik']],
+      duty:[['Çarşamba','Giriş kat'],['Cuma','Kantin']],
+      clubs:[['Zeka Oyunları Kulübü','Danışman'],['5-A','Sınıf danışmanlığı']],
+      leaves:[] },
+    { homeroom:'8-B', // Mehmet Demir
+      schedule:[['Salı · 2.','8-B — Fen Bilimleri'],['Çarşamba · 3.','7-A — Fen Bilimleri'],['Perşembe · 1.','8-A — Fen Bilimleri']],
+      duty:[['Perşembe','Laboratuvar katı']],
+      clubs:[['Bilim Kulübü','Danışman']],
+      leaves:[['Sağlık raporu','2026-07-16 – 2026-07-17']] },
+    { homeroom:'6-A', // Zeynep Arslan
+      schedule:[['Pazartesi · 3.','7-A — Yabancı Dil'],['Pazartesi · 4.','7-A — Yabancı Dil'],['Salı · 6.','8-A — Yabancı Dil'],['Salı · 7.','5-A — Yabancı Dil']],
+      duty:[['Salı','Öğretmenler odası']],
+      clubs:[['Münazara Kulübü','Danışman'],['6-A','Sınıf danışmanlığı']],
+      leaves:[] },
+    { homeroom:'7-B', // Ahmet Yılmaz
+      schedule:[['Pazartesi · 2.','7-B — Türkçe'],['Salı · 5.','8-A — Türkçe'],['Çarşamba · 4.','6-B — Türkçe'],['Cuma · 1.','5-B — Türkçe']],
+      duty:[['Pazartesi','Kütüphane'],['Perşembe','Bahçe']],
+      clubs:[['Okuma Kulübü','Danışman'],['7-B','Sınıf danışmanlığı']],
+      leaves:[['Yıllık izin','2026-08-03 – 2026-08-10']] },
+    { homeroom:'5-B', // Selin Çelik
+      schedule:[['Salı · 3.','5-B — Müzik'],['Çarşamba · 6.','6-A — Müzik'],['Perşembe · 5.','7-B — Müzik']],
+      duty:[['Çarşamba','Konferans salonu']],
+      clubs:[['Koro Kulübü','Danışman']],
+      leaves:[] },
+    { homeroom:'8-A', // Okan Koç
+      schedule:[['Pazartesi · 6.','8-A — Bilişim Teknolojileri'],['Salı · 2.','7-B — Bilişim Teknolojileri'],['Perşembe · 3.','6-A — Bilişim Teknolojileri'],['Cuma · 5.','5-A — Bilişim Teknolojileri']],
+      duty:[['Pazartesi','Bilgisayar laboratuvarı'],['Cuma','Bilgisayar laboratuvarı']],
+      clubs:[['Kodlama Kulübü','Danışman'],['8-A','Sınıf danışmanlığı']],
+      leaves:[] }
+  ];
+
   var overlay = document.getElementById('detailOverlay');
   var detailAvatar = document.getElementById('detailAvatar');
   var detailName = document.getElementById('detailName');
@@ -348,47 +450,67 @@
   var detailStats = document.getElementById('detailStats');
   var detailTags = document.getElementById('detailTags');
   var detailPhone = document.getElementById('detailPhone');
+  var detailHomeroom = document.getElementById('detailHomeroom');
+  var cardFrames = [].slice.call(document.querySelectorAll('.card-frame'));
 
-  function openDetail(card){
+  function fillRows(id, rows){
+    var el = document.getElementById(id);
+    if (!rows || !rows.length){ el.innerHTML = '<div class="detail-empty">Kayıt yok.</div>'; return; }
+    el.innerHTML = rows.map(function(r){
+      return '<div class="detail-row"><b>' + r[0] + '</b><span>' + r[1] + '</span></div>';
+    }).join('');
+  }
+
+  function openDetail(idx){
+    var card = cardFrames[idx];
     var avatarEl = card.querySelector('.avatar');
     var color = avatarEl.style.getPropertyValue('--c');
+    var phoneEl = card.querySelector('.phone');
+    var extra = TEACHER_EXTRA[idx] || {};
+
     detailAvatar.textContent = avatarEl.textContent;
     detailAvatar.style.setProperty('--c', color);
     detailName.textContent = card.querySelector('h3').textContent;
     detailBranch.textContent = card.querySelector('.card-top .who span').textContent;
     detailStats.innerHTML = card.querySelector('.mini-stats').innerHTML;
     detailTags.innerHTML = card.querySelector('.tags').innerHTML;
-    var phoneEl = card.querySelector('.phone');
     detailPhone.href = phoneEl.getAttribute('href');
-    detailPhone.textContent = phoneEl.textContent;
+    detailPhone.textContent = 'Ara — ' + phoneEl.textContent;
+    detailHomeroom.textContent = extra.homeroom || '—';
+    fillRows('detailSchedule', extra.schedule);
+    fillRows('detailDuty', extra.duty);
+    fillRows('detailClubs', extra.clubs);
+    fillRows('detailLeaves', extra.leaves);
+
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
   }
 
   function closeDetail(){
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
   }
 
-  document.querySelectorAll('.card-frame').forEach(function(card){
+  cardFrames.forEach(function(card, idx){
     card.addEventListener('click', function(e){
       if (e.target.closest('.phone')) return; // telefon linkine dokunurken detay açılmasın
-      openDetail(card);
+      openDetail(idx);
     });
     card.addEventListener('keydown', function(e){
       if (e.target.closest('.phone')) return;
       if (e.key === 'Enter' || e.key === ' '){
         e.preventDefault();
-        openDetail(card);
+        openDetail(idx);
       }
     });
   });
   document.getElementById('detailClose').addEventListener('click', closeDetail);
-  overlay.addEventListener('click', function(e){
-    if (e.target === overlay) closeDetail();
-  });
+  document.getElementById('detailPrintBtn').addEventListener('click', function(){ window.print(); });
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') closeDetail();
+    if (e.key === 'Escape' && overlay.classList.contains('open')) closeDetail();
   });
 
   /* ---- Kapak sahneleri (kayarak geçiş) ---- */
