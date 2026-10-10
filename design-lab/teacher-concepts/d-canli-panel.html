@@ -6,29 +6,38 @@
 <title>Konsept D — Canlı Panel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0a0c11;
-    --panel:rgba(255,255,255,.045);
-    --panel-border:rgba(255,255,255,.08);
-    --text:#eef1f6;
-    --muted:#8891a3;
-    --violet:#7c6cf0;
-    --cyan:#2ee6c8;
-    --coral:#ff6b6b;
+  :root[data-theme="dark"]{
+    --bg:#0a0c11; --panel:rgba(255,255,255,.045); --panel-border:rgba(255,255,255,.09);
+    --text:#eef1f6; --muted:#8891a3; --cover-bg:#0d1017;
+    --violet:#7c6cf0; --cyan:#2ee6c8; --coral:#ff6b6b; --kicker:#2ee6c8;
+    --blob-op:.55; --blob-blend:screen;
+  }
+  :root[data-theme="light"]{
+    --bg:#f3f4fb; --panel:rgba(255,255,255,.72); --panel-border:rgba(20,20,45,.1);
+    --text:#181a22; --muted:#656c82; --cover-bg:#fbfbff;
+    --violet:#6c4df0; --cyan:#0e9488; --coral:#e8503f; --kicker:#6c4df0;
+    --blob-op:.3; --blob-blend:normal;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  .note{max-width:980px;margin:0 auto;padding:14px 22px 0;font-size:12px;color:#454c5c}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .25s,color .25s}
+  .note{max-width:980px;margin:0 auto;padding:14px 22px 0;font-size:12px;color:var(--muted);opacity:.7}
   .page{max-width:980px;margin:0 auto;padding:0 22px 70px}
 
-  /* ---- Kapak: hareketli mesh-gradient sahne ---- */
-  .cover{position:relative;margin-top:16px;border-radius:24px;overflow:hidden;border:1px solid var(--panel-border);background:#0d1017;min-height:300px;padding:40px 34px 30px;display:flex;flex-direction:column;justify-content:flex-end}
-  .blob{position:absolute;border-radius:50%;filter:blur(54px);opacity:.55;mix-blend-mode:screen;will-change:transform}
+  /* ============ Tema anahtarı ============ */
+  .theme-toggle{position:absolute;top:18px;right:18px;z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(6px);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .theme-toggle svg{width:18px;height:18px}
+  .theme-toggle .i-sun{display:none}
+  :root[data-theme="dark"] .theme-toggle .i-sun{display:block}
+  :root[data-theme="dark"] .theme-toggle .i-moon{display:none}
+
+  /* ============ Kapak + sahneler ============ */
+  .cover{position:relative;margin-top:16px;border-radius:24px;overflow:hidden;border:1px solid var(--panel-border);background:var(--cover-bg);padding:40px 34px 20px}
+  .blob{position:absolute;border-radius:50%;filter:blur(54px);opacity:var(--blob-op);mix-blend-mode:var(--blob-blend);will-change:transform}
   .blob1{width:360px;height:360px;background:radial-gradient(circle,var(--violet),transparent 70%);top:-140px;left:-80px}
   .blob2{width:300px;height:300px;background:radial-gradient(circle,var(--cyan),transparent 70%);bottom:-160px;right:-60px}
-  .blob3{width:220px;height:220px;background:radial-gradient(circle,var(--coral),transparent 70%);top:20px;right:120px;opacity:.35}
+  .blob3{width:220px;height:220px;background:radial-gradient(circle,var(--coral),transparent 70%);top:20px;right:120px;opacity:calc(var(--blob-op) * .7)}
   @media (prefers-reduced-motion:no-preference){
     .blob1{animation:drift1 22s ease-in-out infinite}
     .blob2{animation:drift2 26s ease-in-out infinite}
@@ -38,75 +47,153 @@
   @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
   @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
 
-  .cover-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
-  .kicker{font-size:12px;color:var(--cyan);letter-spacing:.02em;margin-bottom:10px;font-weight:500}
-  .cover h1{position:relative;z-index:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,5vw,48px);margin:0 0 8px;letter-spacing:-.01em}
-  .cover p{position:relative;z-index:1;margin:0 0 22px;color:var(--muted);font-size:14.5px;max-width:42ch}
+  .scenes{position:relative;min-height:300px}
+  .scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .5s ease;z-index:1}
+  .scene.active{opacity:1;pointer-events:auto;z-index:2}
+  @media (prefers-reduced-motion:no-preference){
+    .scene.active{animation:sceneIn .55s cubic-bezier(.2,.8,.2,1)}
+  }
+  @keyframes sceneIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
+  .kicker{font-size:12px;color:var(--kicker);letter-spacing:.02em;margin-bottom:10px;font-weight:600}
+  .scene h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);margin:0 0 8px;letter-spacing:-.01em}
+  .scene > p{margin:0 0 20px;color:var(--muted);font-size:14.5px;max-width:42ch}
+
+  .cover-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;padding-right:46px}
   .live{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--panel-border);padding:7px 14px 7px 10px;border-radius:30px;font-size:12.5px;color:var(--text)}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--coral);position:relative;flex:none}
   .dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--coral)}
-  @media (prefers-reduced-motion:no-preference){
-    .dot::after{animation:ping 1.8s cubic-bezier(.2,.7,.3,1) infinite}
-  }
+  @media (prefers-reduced-motion:no-preference){.dot::after{animation:ping 1.8s cubic-bezier(.2,.7,.3,1) infinite}}
   @keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.9);opacity:0}}
 
-  .stats{position:relative;z-index:1;display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
+  .stats{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
   .stats div{display:flex;flex-direction:column}
   .stats b{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700}
   .stats span{font-size:12px;color:var(--muted)}
 
-  /* ---- Araç çubuğu ---- */
+  /* --- sahne 2: yazı tahtası --- */
+  .board-wrap{display:flex;justify-content:center}
+  .board{width:100%;max-width:560px;background:#16241c;border:10px solid #5b4027;border-radius:10px;padding:26px 28px;box-shadow:0 18px 32px -20px rgba(0,0,0,.5);position:relative}
+  .board::before{content:"";position:absolute;left:14px;right:14px;bottom:-16px;height:8px;background:#8a95885c;border-radius:2px;filter:blur(1px)}
+  .board-text{font-family:'Caveat',cursive;font-weight:600;color:#eef3ea;font-size:clamp(22px,3.4vw,30px);line-height:1.35;margin:0;min-height:2.7em}
+  .chalk-cursor{display:inline-block;width:2px;height:1em;background:#eef3ea;vertical-align:middle;margin-left:2px;opacity:.85}
+  @media (prefers-reduced-motion:no-preference){.chalk-cursor{animation:blink 1s step-end infinite}}
+  @keyframes blink{50%{opacity:0}}
+  .board-sign{font-family:'Caveat',cursive;color:#c8b98a;font-size:17px;margin:8px 0 0;text-align:right}
+
+  /* --- sahne 3: haftalık yoğunluk --- */
+  .week{display:flex;align-items:flex-end;gap:14px;height:150px;margin-top:8px;max-width:420px}
+  .week .bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+  .week .bar i{display:block;width:100%;max-width:34px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,var(--cyan),var(--violet));height:0;transition:height 1s cubic-bezier(.2,.8,.2,1)}
+  .week .bar span{font-size:11.5px;color:var(--muted)}
+  .week-note{font-size:12px;color:var(--muted);margin-top:10px}
+
+  .scene-dots{position:absolute;left:34px;bottom:14px;z-index:3;display:flex;gap:7px}
+  .scene-dots button{width:7px;height:7px;border-radius:50%;border:none;background:var(--panel-border);cursor:pointer;padding:0}
+  .scene-dots button.on{background:var(--cyan);width:18px;border-radius:5px;transition:width .25s}
+
+  /* ============ Araç çubuğu ============ */
   .toolbar{display:flex;gap:10px;margin:22px 0 18px;flex-wrap:wrap}
   .toolbar input,.toolbar select{flex:1;min-width:160px;font:14px/1 'Inter',sans-serif;background:var(--panel);border:1px solid var(--panel-border);color:var(--text);padding:12px 14px;border-radius:12px}
   .toolbar input::placeholder{color:var(--muted)}
   .addbtn{font:600 13px/1 'Inter',sans-serif;background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border:none;padding:12px 18px;border-radius:12px;cursor:pointer;white-space:nowrap}
 
-  /* ---- Kartlar: sıralı beliren grid ---- */
+  /* ============ Kartlar ============ */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-  .card{background:var(--panel);border:1px solid var(--panel-border);border-radius:16px;padding:18px;cursor:pointer;transition:border-color .2s,transform .2s,background .2s;opacity:1}
+
+  /* dış çerçeve: dönen ışıklı kenarlığı taşır, overflow:hidden ile kırpar (mask'a gerek yok) */
+  .card-frame{position:relative;border-radius:17.5px;padding:1.4px;overflow:hidden;cursor:pointer;border:1px solid var(--panel-border)}
   @media (prefers-reduced-motion:no-preference){
-    .card{opacity:0;animation:cardIn .5s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0) * 70ms)}
+    .card-frame{opacity:0;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0) * 90ms);transition:transform .2s}
   }
-  @keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  .card:hover{border-color:rgba(124,108,240,.55);background:rgba(255,255,255,.065);transform:translateY(-3px)}
-  .card:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-  .card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;flex:none;color:#06090f}
-  .card-top .who{min-width:0}
+  @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+  .card-frame:hover{transform:translateY(-3px)}
+  .card-frame:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+  .card-spin{position:absolute;inset:-65%;background:conic-gradient(from 0deg,transparent 0 80%,var(--cyan) 89%,#fff 93%,var(--violet) 97%,transparent 100%)}
+  @media (prefers-reduced-motion:no-preference){.card-spin{animation:borderspin 4.5s linear infinite}}
+  @media (prefers-reduced-motion:reduce){.card-spin{display:none}}
+  @keyframes borderspin{to{transform:rotate(360deg)}}
+  /* opak taban: spin katmanını yalnız 1.4px kenarlıkta görünür bırakır, kartın cam yüzeyinin altından sızmasını engeller */
+  .card-base{position:absolute;inset:0;background:var(--bg);border-radius:16px;z-index:1}
+
+  .card{position:relative;z-index:2;background:var(--panel);border-radius:16px;padding:18px;height:100%;transition:background .2s}
+  .card-frame:hover .card{background:rgba(255,255,255,.07)}
+  :root[data-theme="light"] .card-frame:hover .card{background:#fff}
+
+  .card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative}
+  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;flex:none;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
+  .card-top .who{min-width:0;position:relative}
   .card-top h3{margin:0;font-size:15px;font-weight:600}
   .card-top span{font-size:12px;color:var(--muted)}
-  .meter{height:4px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:10px}
+  .meter{height:4px;border-radius:3px;background:var(--panel-border);overflow:hidden;margin-bottom:10px;position:relative}
   .meter i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--cyan));width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
-  .meter-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:14px}
-  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-  .tag{font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.06);color:var(--muted)}
-  .tag.duty{background:rgba(255,107,107,.14);color:var(--coral)}
-  .phone{display:block;font-size:12.5px;color:var(--text);text-decoration:none;border-top:1px solid var(--panel-border);padding-top:10px;font-weight:500}
+  .meter-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:14px;position:relative}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;position:relative}
+  .tag{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--panel-border);color:var(--muted)}
+  .tag.duty{background:rgba(255,107,107,.16);color:var(--coral)}
+  .phone{display:block;font-size:12.5px;color:var(--text);text-decoration:none;border-top:1px solid var(--panel-border);padding-top:10px;font-weight:500;position:relative}
   .phone:hover{color:var(--cyan)}
 
   footer.foot{padding-top:22px;font-size:12px;color:var(--muted);text-align:center}
-
-  @media(max-width:480px){.stats{gap:20px}}
+  @media(max-width:480px){.stats{gap:20px}.scenes{min-height:360px}}
 </style>
 </head>
 <body>
 <p class="note">Konsept D — örnek veri, karşılaştırma için hazırlandı.</p>
 <div class="page">
-  <section class="cover">
+  <section class="cover" id="cover">
     <div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div>
-    <div class="cover-top">
-      <div>
-        <div class="kicker">KORUK ASİSTAN · PERSONEL</div>
-        <h1>Öğretmenler</h1>
-        <p>Branş, nöbet ve ders yükü — canlı, tek ekranda.</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Açık/koyu temayı değiştir">
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+    </button>
+
+    <div class="scenes">
+      <div class="scene active" data-scene="0">
+        <div class="cover-top">
+          <div>
+            <div class="kicker">KORUK ASİSTAN · PERSONEL</div>
+            <h1>Öğretmenler</h1>
+            <p>Branş, nöbet ve ders yükü — canlı, tek ekranda.</p>
+          </div>
+          <span class="live"><i class="dot"></i> Bugün 4 öğretmen nöbetçi</span>
+        </div>
+        <div class="stats">
+          <div><b data-count="12">0</b><span>öğretmen</span></div>
+          <div><b data-count="8">0</b><span>branş</span></div>
+          <div><b data-count="10">0</b><span>nöbet kaydı</span></div>
+        </div>
       </div>
-      <span class="live"><i class="dot"></i> Bugün 4 öğretmen nöbetçi</span>
+
+      <div class="scene" data-scene="1">
+        <div class="kicker">GÜNÜN SÖZÜ</div>
+        <div class="board-wrap">
+          <div class="board">
+            <p class="board-text" id="boardText"><span class="chalk-cursor" id="chalkCursor"></span></p>
+            <p class="board-sign">— Hz. Ali</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene" data-scene="2">
+        <div class="kicker">BU HAFTA</div>
+        <h1 style="font-size:clamp(22px,3.6vw,30px)">Haftalık yoğunluk</h1>
+        <div class="week" id="weekBars">
+          <div class="bar"><i data-h="55"></i><span>Pzt</span></div>
+          <div class="bar"><i data-h="80"></i><span>Sal</span></div>
+          <div class="bar"><i data-h="45"></i><span>Çar</span></div>
+          <div class="bar"><i data-h="95"></i><span>Per</span></div>
+          <div class="bar"><i data-h="65"></i><span>Cum</span></div>
+        </div>
+        <p class="week-note">Örnek dağılım — tüm kadronun günlük ders yoğunluğu.</p>
+      </div>
     </div>
-    <div class="stats">
-      <div><b data-count="12">0</b><span>öğretmen</span></div>
-      <div><b data-count="8">0</b><span>branş</span></div>
-      <div><b data-count="10">0</b><span>nöbet kaydı</span></div>
+
+    <div class="scene-dots" id="sceneDots">
+      <button class="on" data-goto="0" aria-label="1. sahne"></button>
+      <button data-goto="1" aria-label="2. sahne"></button>
+      <button data-goto="2" aria-label="3. sahne"></button>
     </div>
   </section>
 
@@ -117,68 +204,82 @@
   </div>
 
   <div class="grid" id="grid">
-    <div class="card" tabindex="0" role="link" style="--i:0">
-      <div class="card-top"><span class="avatar" style="background:#ff6b6b">BB</span><div class="who"><h3>Bilal Baykar</h3><span>Beden Eğitimi</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#ef5454">BB</span><div class="who"><h3>Bilal Baykar</h3><span>Beden Eğitimi</span></div></div>
       <div class="meter"><i data-w="0"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>0 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün yok</span></div>
       <a class="phone" href="tel:05336324217">0533 632 42 17</a>
-    </div>
-    <div class="card" tabindex="0" role="link" style="--i:1">
-      <div class="card-top"><span class="avatar" style="background:#f5b942">ÇS</span><div class="who"><h3>Çiçek Sönmez</h3><span>Sosyal Bilgiler</span></div></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:1"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#dd9d27">ÇS</span><div class="who"><h3>Çiçek Sönmez</h3><span>Sosyal Bilgiler</span></div></div>
       <div class="meter"><i data-w="88"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>21 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün yok</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05063696048">0506 369 60 48</a>
-    </div>
-    <div class="card" tabindex="0" role="link" style="--i:2">
-      <div class="card-top"><span class="avatar" style="background:#7c6cf0">EK</span><div class="who"><h3>Elif Kaya</h3><span>Matematik</span></div></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:2"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#6f5de0">EK</span><div class="who"><h3>Elif Kaya</h3><span>Matematik</span></div></div>
       <div class="meter"><i data-w="100"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>24 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 4 ders</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05321112233">0532 111 22 33</a>
-    </div>
-    <div class="card" tabindex="0" role="link" style="--i:3">
-      <div class="card-top"><span class="avatar" style="background:#2ee6c8">MD</span><div class="who"><h3>Mehmet Demir</h3><span>Fen Bilimleri</span></div></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:3"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#1fb89d">MD</span><div class="who"><h3>Mehmet Demir</h3><span>Fen Bilimleri</span></div></div>
       <div class="meter"><i data-w="75"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>18 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 2 ders</span></div>
       <a class="phone" href="tel:05442223344">0544 222 33 44</a>
-    </div>
-    <div class="card" tabindex="0" role="link" style="--i:4">
-      <div class="card-top"><span class="avatar" style="background:#e06cf0">ZA</span><div class="who"><h3>Zeynep Arslan</h3><span>İngilizce</span></div></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:4"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#c954e0">ZA</span><div class="who"><h3>Zeynep Arslan</h3><span>İngilizce</span></div></div>
       <div class="meter"><i data-w="83"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>20 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 3 ders</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05353334455">0535 333 44 55</a>
-    </div>
-    <div class="card" tabindex="0" role="link" style="--i:5">
-      <div class="card-top"><span class="avatar" style="background:#ff8f5c">AY</span><div class="who"><h3>Ahmet Yılmaz</h3><span>Türkçe</span></div></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:5"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#ff7d46">AY</span><div class="who"><h3>Ahmet Yılmaz</h3><span>Türkçe</span></div></div>
       <div class="meter"><i data-w="92"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>22 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 5 ders</span></div>
       <a class="phone" href="tel:05464445566">0546 444 55 66</a>
-    </div>
-    <div class="card" tabindex="0" role="link" style="--i:6">
-      <div class="card-top"><span class="avatar" style="background:#4ad0a0">SÇ</span><div class="who"><h3>Selin Çelik</h3><span>Müzik</span></div></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:6"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#1fa870">SÇ</span><div class="who"><h3>Selin Çelik</h3><span>Müzik</span></div></div>
       <div class="meter"><i data-w="42"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>10 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 1 ders</span></div>
       <a class="phone" href="tel:05375556677">0537 555 66 77</a>
-    </div>
-    <div class="card" tabindex="0" role="link" style="--i:7">
-      <div class="card-top"><span class="avatar" style="background:#6c8cf0">OK</span><div class="who"><h3>Okan Koç</h3><span>Bilişim Teknolojileri</span></div></div>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:7"><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="background:#5b7ef0">OK</span><div class="who"><h3>Okan Koç</h3><span>Bilişim Teknolojileri</span></div></div>
       <div class="meter"><i data-w="67"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>16 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 2 ders</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05386667788">0538 666 77 88</a>
-    </div>
+    </div>  </div>
   </div>
   <footer class="foot">8 / 12 kayıt gösteriliyor — bir karta dokunduğunuzda tam profil açılır.</footer>
 </div>
 <script>
-  // Sayaçlar: 0'dan gerçek değere (reduced-motion'da anında).
+(function(){
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Tema ---- */
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem('ka-concept-theme'); } catch(e){}
+  var theme = saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  root.setAttribute('data-theme', theme);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    theme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    try { localStorage.setItem('ka-concept-theme', theme); } catch(e){}
+  });
+
+  /* ---- Sayaçlar ---- */
   document.querySelectorAll('[data-count]').forEach(function(el){
     var target = parseInt(el.getAttribute('data-count'), 10);
     if (reduce) { el.textContent = target; return; }
@@ -191,7 +292,8 @@
     }
     requestAnimationFrame(step);
   });
-  // Haftalık yük çubukları: yüklenince genişler.
+
+  /* ---- Haftalık yük çubukları (kartlar) ---- */
   requestAnimationFrame(function(){
     setTimeout(function(){
       document.querySelectorAll('.meter i').forEach(function(el){
@@ -199,6 +301,60 @@
       });
     }, reduce ? 0 : 150);
   });
+
+  /* ---- Kapak sahneleri ---- */
+  var scenes = [].slice.call(document.querySelectorAll('.scene'));
+  var dots = [].slice.call(document.querySelectorAll('#sceneDots button'));
+  var current = 0, timer = null;
+  var QUOTE = 'Bana bir harf öğretenin kırk yıl kölesi olurum.';
+  var boardText = document.getElementById('boardText');
+  var chalkCursor = document.getElementById('chalkCursor');
+  var typed = false;
+
+  function typeBoard(){
+    if (typed) return;
+    typed = true;
+    if (reduce) { boardText.textContent = QUOTE; boardText.appendChild(chalkCursor); return; }
+    var i = 0;
+    function tick(){
+      boardText.textContent = QUOTE.slice(0, i);
+      boardText.appendChild(chalkCursor);
+      i++;
+      if (i <= QUOTE.length) setTimeout(tick, 38);
+    }
+    tick();
+  }
+
+  function weekBars(){
+    document.querySelectorAll('#weekBars i').forEach(function(el, idx){
+      setTimeout(function(){
+        el.style.height = el.getAttribute('data-h') + '%';
+      }, reduce ? 0 : idx * 90);
+    });
+  }
+
+  function goTo(n){
+    current = (n + scenes.length) % scenes.length;
+    scenes.forEach(function(s, i){ s.classList.toggle('active', i === current); });
+    dots.forEach(function(d, i){ d.classList.toggle('on', i === current); });
+    if (current === 1) typeBoard();
+    if (current === 2) weekBars();
+  }
+
+  dots.forEach(function(d){
+    d.addEventListener('click', function(){
+      goTo(parseInt(d.getAttribute('data-goto'), 10));
+      restart();
+    });
+  });
+
+  function restart(){
+    if (timer) clearInterval(timer);
+    if (reduce) return;
+    timer = setInterval(function(){ goTo(current + 1); }, 6500);
+  }
+  restart();
+})();
 </script>
 </body>
 </html>
