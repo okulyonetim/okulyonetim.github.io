@@ -1,0 +1,196 @@
+/* Koruk Asistan — Okul Özeti mini-sahneleri (üretime uygulanan ilk V3 parçası)
+ * Yalnızca Ana Sayfa'daki "Okul Özeti" kartlarını (.ka-school-summary-card) süsler;
+ * menü, zil kartı, modül kapakları gibi diğer V3 görsellerine DOKUNMAZ.
+ * js/v3/okul-ozeti-skin.js ile birlikte çalışır. Kapatmak: localStorage['ka-skin']='off'.
+ * Kaynağı: css/v3/tokens.css (.sk paleti) + css/v3/scenes.css (hareketler) + css/v3/home.css
+ * dosyalarından bu özelliğin ihtiyaç duyduğu, bağımsız/güvenli alt küme.
+ */
+
+/* ---- sahne renk paleti (tokens.css ile birebir aynı; ka-v3 sınıfı gerektirmez) ---- */
+.sk{--sk1:#6fb9ee;--sk2:#fdf0d0;--sun:#ffd54a;--cl:#fff;--h1:#5c9a50;--h2:#78ae66;--gr:#58994a;--t1:#2e7d32;--t2:#43a047;--t3:#7bc77f;--bwall:#d6ad88;--roof:#b4412f;--glass:#bfe3ff;--lit:#ffd54a;--road:#5e656f;--wallc:#f2e8d2;--floor:#b98b5a;--bird:#334;--ground1:#dcc6a6;--ground2:#cdb28c;--wall:#c9c2b0;--board:#2c5a43;--line:#7c848c;--grass:#5e9e5e;--accent:var(--ka-primary,#d49a00);--accent-soft:var(--ka-primary-soft,rgba(212,154,0,.15));--muted:var(--ka-text-muted,#6b665a);--text:var(--ka-text,#16140f);--surface:var(--ka-card-bg,#fff);--surface2:var(--ka-muted-bg,#efeadf);--bg:var(--ka-app-bg,#f4f1ea);--border:var(--ka-border,#ddd5c4)}
+html[data-theme="dark"] .sk{--sk1:#141b34;--sk2:#4b4f78;--sun:#f1ead0;--cl:rgba(125,130,175,.6);--h1:#2c5237;--h2:#37603f;--gr:#2f5a38;--t1:#1d5a2a;--t2:#2a7238;--t3:#3f8f4c;--bwall:#8c6b55;--roof:#7b2d22;--glass:#6d96b8;--road:#2c3038;--wallc:#3c3b47;--floor:#5a4332;--bird:#ccd;--ground1:#2b2a1f;--ground2:#211f17;--wall:#3a3d42;--board:#1f3d2e;--line:#8c939b;--grass:#3f7d4b}
+
+/* ---- sahne hareketleri (scenes.css ile birebir aynı; tamamı .sk kapsamında) ---- */
+.sk .chk{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--accent);display:grid;place-items:center;color:var(--accent);font-size:22px;flex:none}
+.sk .g1{fill:var(--ground1)}
+.sk .g2{fill:var(--ground2)}
+.sk .dk{fill:#2a2a2a}
+@keyframes sk-draw{0%,5%{stroke-dashoffset:90}25%,85%{stroke-dashoffset:0}95%,100%{stroke-dashoffset:90;opacity:0}}
+@keyframes sk-draw3{0%,5%{stroke-dashoffset:40;opacity:1}30%,85%{stroke-dashoffset:0}95%,100%{opacity:0;stroke-dashoffset:40}}
+@keyframes sk-ptr{0%,100%{transform:rotate(0)}30%{transform:rotate(-9deg)}60%{transform:rotate(5deg)}}
+@keyframes sk-walk{0%{transform:translateX(0);opacity:0}6%{opacity:1}72%{transform:translateX(150px);opacity:1}80%,100%{transform:translateX(158px);opacity:0}}
+@keyframes sk-bob{to{transform:translateY(-2.5px)}}
+.sk .win{animation:sk-win 3s steps(1) infinite}
+.sk .win.w2{animation-delay:1.1s}
+@keyframes sk-win{0%{opacity:.35}50%{opacity:1}}
+.sk .bus{animation:sk-bus 1s ease-in-out infinite alternate}
+@keyframes sk-bus{to{transform:translateY(-1.2px)}}
+.sk .road{stroke:var(--line);stroke-width:1.5;stroke-dasharray:10 12;animation:sk-road .7s linear infinite}
+@keyframes sk-road{to{stroke-dashoffset:-22}}
+.sk .whl{animation:sk-spin .6s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes sk-spin{to{transform:rotate(360deg)}}
+@keyframes sk-tree{from{transform:translateX(150px)}to{transform:translateX(-260px)}}
+.sk .st{stroke:var(--muted);stroke-width:1.6;fill:none;stroke-linecap:round;animation:sk-steam 2.6s ease-in infinite;opacity:0}
+.sk .st.s2{animation-delay:.8s}
+@keyframes sk-steam{0%{opacity:0;transform:translateY(6px)}30%{opacity:.8}100%{opacity:0;transform:translateY(-14px)}}
+.sk .bell{transform-origin:300px 14px;animation:sk-sway 4s ease-in-out infinite}
+@keyframes sk-sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.sk .clp{transform-origin:300px 58px;animation:sk-sway 4s ease-in-out infinite reverse}
+.sk .wv{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;opacity:0}
+@keyframes sk-ring{from{transform:rotate(-16deg)}to{transform:rotate(16deg)}}
+@keyframes sk-wave{0%{opacity:.9;transform:scale(.8)}100%{opacity:0;transform:scale(1.3)}}
+.sk .wv{transform-box:fill-box;transform-origin:center}
+.sk .bd{opacity:0;transition:opacity .4s}
+.sk .sk-c[data-s="1"] .bd1,.sk .sk-c[data-s="2"] .bd2,.sk .sk-c[data-s="3"] .bd3,.sk .sk-c[data-s="4"] .bd4,.sk .sk-c[data-s="5"] .bd5{opacity:1}
+.sk .ch1{stroke:#fff;stroke-width:1.5;stroke-linecap:round;fill:none;stroke-dasharray:50;stroke-dashoffset:50}
+.sk .ch1.b{stroke:var(--accent)}
+.sk .sk-c[data-s="1"] .ch1{animation:sk-dr 2.6s ease-out forwards}
+.sk .sk-c[data-s="1"] .ch1.b{animation-delay:1.2s}
+.sk .sk-c[data-s="4"] .ch1{animation:sk-dr 1.6s .3s ease-out forwards}
+@keyframes sk-dr{to{stroke-dashoffset:0}}
+.sk .orb{transform-origin:214px 33px;animation:sk-orb 4s linear infinite}
+@keyframes sk-orb{to{transform:rotate(360deg)}}
+.sk .star{transform-origin:215px 33px}
+.sk .sk-c[data-s="5"] .star{animation:sk-pop2 .6s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes sk-pop2{from{transform:scale(0) rotate(-90deg)}to{transform:scale(1)}}
+.sk .tch{transition:transform 1s ease-in-out}
+.sk .sk-c[data-s="4"] .tch{transform:translateX(36px)}
+.sk .tarm{transform-origin:251px 46px;transition:transform .6s}
+.sk .sk-c[data-s="1"] .tarm,.sk .sk-c[data-s="3"] .tarm{animation:sk-pt 1.8s ease-in-out infinite}
+@keyframes sk-pt{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+.sk .sk-c[data-s="2"] .tarm{transform:rotate(140deg)}
+.sk .sk-c[data-s="4"] .tarm{transform:rotate(-35deg)}
+.sk .sk-c[data-s="5"] .tarm{animation:sk-hw .35s ease-in-out infinite alternate;transform:rotate(100deg)}
+@keyframes sk-wr{from{transform:rotate(-3deg)}to{transform:rotate(7deg)}}
+.sk .hd{transition:transform .5s}
+.sk .sk-c[data-s="1"] .hd{animation:sk-nod 2.4s ease-in-out infinite}
+@keyframes sk-nod{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
+.sk .sk-c[data-s="3"] .hd{transform:rotate(7deg)}
+.sk .sk-c[data-s="4"] .hd{transform:rotate(-17deg)}
+.sk .sk-c[data-s="5"] .hd{animation:sk-nod .5s ease-in-out infinite}
+.sk .up{opacity:0}
+.sk .sk-c[data-s="2"] .A .up,.sk .sk-c[data-s="5"] .up{opacity:1;animation:sk-hw .5s ease-in-out infinite alternate}
+.sk .sk-c[data-s="2"] .A .rst,.sk .sk-c[data-s="5"] .rst{opacity:0}
+@keyframes sk-hw{from{transform:rotate(-8deg)}to{transform:rotate(10deg)}}
+.sk .sk-c[data-s="4"] .rst{animation:sk-wr .45s ease-in-out infinite alternate}
+.sk .bub{opacity:0;transform-origin:308px 14px}
+.sk .sk-c[data-s="2"] .bub{animation:sk-pop 2.4s .4s ease-out both}
+@keyframes sk-pop{0%{opacity:0;transform:scale(.2)}12%,80%{opacity:1;transform:scale(1)}100%{opacity:0}}
+.sk .cf{opacity:0}
+.sk .sk-c[data-s="5"] .cf{animation:sk-fall 1.4s linear infinite}
+@keyframes sk-fall{0%{opacity:1;transform:translateY(-6px) rotate(0)}100%{opacity:0;transform:translateY(60px) rotate(240deg)}}
+@keyframes sk-flg{from{transform:skewY(-9deg) scaleX(1)}to{transform:skewY(9deg) scaleX(.85)}}
+.sk .v{opacity:0;transition:opacity .45s}
+.sk .v.on{opacity:1}
+.sk .lg,.sk .am{transform-box:fill-box;transform-origin:50% 0}
+.sk .on .walk .lg{animation:sk-sw .45s ease-in-out infinite alternate}
+.sk .on .walk .l2{animation-direction:alternate-reverse}
+.sk .on .walk .am{animation:sk-sw .45s ease-in-out infinite alternate-reverse}
+@keyframes sk-sw{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.sk .on .jmp .kb{animation:sk-jp .6s ease-out infinite alternate}
+.sk .on .jmp.d2 .kb{animation-delay:.3s}
+@keyframes sk-jp{to{transform:translateY(-7px)}}
+.sk .ball{opacity:0}
+.sk .on .ball{opacity:1;animation:sk-bl 1.6s ease-in-out infinite}
+@keyframes sk-bl{0%,100%{transform:translate(272px,60px)}25%,75%{transform:translate(307px,32px)}50%{transform:translate(342px,60px)}}
+.sk .rope{transform-origin:309px 54px}
+.sk .on .rope{animation:sk-rp 1s linear infinite}
+@keyframes sk-rp{0%,100%{transform:scaleY(1)}50%{transform:scaleY(-1)}}
+.sk .on .jmp.rj .kb{animation:sk-rj 1s ease-out infinite}
+@keyframes sk-rj{0%,100%{transform:translateY(-9px)}35%,65%{transform:translateY(0)}}
+.sk .sip{transform-origin:304px 44px}
+.sk .on .sip{animation:sk-sp 3.6s ease-in-out infinite}
+@keyframes sk-sp{0%,40%,100%{transform:rotate(0)}58%,80%{transform:rotate(65deg)}}
+.sk .eat{animation:sk-et 1.4s ease-in-out infinite}
+.sk .eat.e2{animation-delay:.35s}
+.sk .eat.e3{animation-delay:.7s}
+@keyframes sk-et{0%,100%{transform:rotate(0)}50%{transform:rotate(110deg)}}
+.sk .lad{animation:sk-pt 1.4s ease-in-out infinite}
+.sk .on .q .kb{animation:sk-qm 3.5s ease-in-out infinite alternate}
+.sk .on .q.q2 .kb{animation-delay:-1.2s}
+@keyframes sk-qm{to{transform:translateX(30px)}}
+.sk .on .go .kb{animation:sk-go 5s linear infinite}
+.sk .on .go.g2 .kb{animation-delay:-1.7s}
+.sk .on .go.g3 .kb{animation-delay:-3.4s}
+@keyframes sk-go{0%{transform:translateX(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translateX(140px);opacity:0}}
+.sk .on .bus2{animation:sk-bd 5s ease-in infinite}
+@keyframes sk-bd{0%,20%{transform:translateX(0)}100%{transform:translateX(150px)}}
+.sk .on .wvk .a2{transform:rotate(150deg);animation:sk-wv2 .4s ease-in-out infinite alternate}
+@keyframes sk-wv2{from{transform:rotate(135deg)}to{transform:rotate(175deg)}}
+.sk .sway{transform-origin:0 0;animation:sk-swy 4.5s ease-in-out infinite alternate}
+@keyframes sk-swy{from{transform:rotate(-1.6deg)}to{transform:rotate(1.8deg)}}
+.sk .cld{animation:sk-cd 14s ease-in-out infinite alternate}
+@keyframes sk-cd{from{transform:translateX(-12px)}to{transform:translateX(16px)}}
+.sk .cld.wcld{animation:sk-wcd 24s linear infinite}
+@keyframes sk-wcd{0%{transform:translate(-26px,0)}50%{transform:translate(87px,-3px)}100%{transform:translate(220px,0)}}
+.sk .brd{animation:sk-bf 10s linear infinite}
+@keyframes sk-bf{from{transform:translate(-20px,26px)}to{transform:translate(220px,14px)}}
+.sk .flag2{animation:sk-fg 1.3s ease-in-out infinite alternate}
+@keyframes sk-fg{from{transform:skewY(-7deg) scaleX(1)}to{transform:skewY(7deg) scaleX(.88)}}
+.sk .hm{transform-origin:115px 22px;animation:sk-rot 8s linear infinite}
+.sk .hh{transform-origin:115px 22px;animation:sk-rot 96s linear infinite}
+@keyframes sk-rot{to{transform:rotate(360deg)}}
+.sk .chk{fill:none;stroke:#fff;stroke-width:1.3;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:sk-ck 9s ease-in-out infinite}
+.sk .chk.c2{animation-delay:1.2s;stroke:#ffd54a}
+.sk .chk.c3{animation-delay:2.2s}
+@keyframes sk-ck{0%{stroke-dashoffset:1}15%,85%{stroke-dashoffset:0}95%,100%{stroke-dashoffset:1}}
+.sk .fd{animation:sk-fd 9s ease-in-out infinite;opacity:0}
+.sk .fd.d2{animation-delay:2s}
+@keyframes sk-fd{0%,10%{opacity:0}25%,85%{opacity:1}95%,100%{opacity:0}}
+.sk .parm{transform-origin:108px 62px;animation:sk-pt 2.2s ease-in-out infinite}
+.sk .bx{animation:sk-bx 1.4s linear infinite alternate}
+.sk .by{animation:sk-by .7s ease-out infinite alternate}
+@keyframes sk-bx{from{transform:translate(62px,88px)}to{transform:translate(92px,88px)}}
+@keyframes sk-by{from{transform:translateY(0)}to{transform:translateY(-18px)}}
+.sk .on .gw .kb{animation:sk-gw 6s linear infinite}
+.sk .on .gw.g2 .kb{animation-delay:-3s}
+@keyframes sk-gw{0%{transform:translateX(-4px);opacity:0}12%{opacity:1}85%{opacity:1}100%{transform:translateX(30px);opacity:0}}
+.sk .mv{animation:sk-mv 7s linear infinite}
+@keyframes sk-mv{from{transform:translateX(240px)}to{transform:translateX(-50px)}}
+.sk .rd2{stroke:#fff;stroke-width:1.6;stroke-dasharray:10 9;animation:sk-rd2 .5s linear infinite;opacity:.8}
+@keyframes sk-rd2{to{stroke-dashoffset:-19}}
+.sk .pf{animation:sk-pf 1.4s ease-out infinite;opacity:0}
+@keyframes sk-pf{0%{opacity:.5;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(-14px,-6px) scale(1.6)}}
+@keyframes sk-rgs{0%,60%,100%{transform:rotate(0)}65%{transform:rotate(14deg)}75%{transform:rotate(-14deg)}85%{transform:rotate(8deg)}}
+.sk .bd{background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:11px;padding:6px 10px;border-radius:20px;white-space:nowrap}
+.sk .spin{animation:sk-rot 24s linear infinite}
+.sk .sun-glow{animation:sk-sglow 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center;opacity:.35}
+@keyframes sk-sglow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.62;transform:scale(1.22)}}
+.sk .rn{animation:sk-rn .8s linear infinite;opacity:.8}
+@keyframes sk-rn{from{transform:translate(0,-8px)}to{transform:translate(-14px,100px)}}
+.sk .rn:nth-child(3n){opacity:.5;stroke-width:1}
+.sk .rn:nth-child(4n){animation-duration:.66s}
+.sk .sn{animation:sk-sn 5s linear infinite}
+@keyframes sk-sn{from{transform:translate(0,-6px) rotate(0deg)}50%{transform:translate(8px,50px) rotate(160deg)}to{transform:translate(-4px,106px) rotate(320deg)}}
+.sk .bolt{animation:sk-bl3 6s linear infinite;opacity:0}
+@keyframes sk-bl3{0%,75%,100%{opacity:0}76%{opacity:1}77.5%{opacity:.12}79%{opacity:.85}81%,100%{opacity:0}}
+.sk .bolt-far{animation:sk-bl3f 6s linear infinite;animation-delay:-2.4s;opacity:0}
+@keyframes sk-bl3f{0%,75%,100%{opacity:0}76%{opacity:.55}78%{opacity:.08}79.5%{opacity:.4}81%,100%{opacity:0}}
+.sk .fgb{animation:sk-fgb 6s ease-in-out infinite alternate}
+@keyframes sk-fgb{to{transform:translateX(30px)}}
+.sk .on .pw .kb{animation:sk-pw 7s linear infinite}
+@keyframes sk-pw{0%{transform:translateX(0);opacity:0}8%,92%{opacity:1}100%{transform:translateX(190px);opacity:0}}
+.sk .pen{animation:sk-pn .5s ease-in-out infinite alternate}
+@keyframes sk-pn{from{transform:translateX(-14px)}to{transform:translateX(6px)}}
+.sk .flip{animation:sk-fl 5s ease-in-out infinite}
+@keyframes sk-fl{0%,65%,100%{transform:scaleY(1)}80%{transform:scaleY(.05)}}
+.sk .fw{opacity:0}
+.sk .v.on .fw{animation:sk-fw 2.4s ease-out infinite}
+@keyframes sk-fw{0%{transform:scale(.1);opacity:1}70%{opacity:1}100%{transform:scale(1);opacity:0}}
+.sk .on .kite{animation:sk-kt 3s ease-in-out infinite alternate}
+@keyframes sk-kt{from{transform:rotate(-5deg)}to{transform:rotate(6deg)}}
+.sk .on .sail{animation:sk-sl 14s linear infinite}
+@keyframes sk-sl{from{transform:translate(180px,62px)}to{transform:translate(360px,62px)}}
+.sk .wv3{animation:sk-fgb 3s ease-in-out infinite alternate}
+.sk .bfly{animation:sk-bfl 7s ease-in-out infinite}
+@keyframes sk-bfl{0%,100%{transform:translate(250px,60px)}25%{transform:translate(290px,44px)}50%{transform:translate(330px,58px)}75%{transform:translate(300px,70px)}}
+.sk .wg2{transform-origin:0 0;animation:sk-fp .25s ease-in-out infinite alternate}
+@keyframes sk-fp{to{transform:scaleX(.35)}}
+
+/* ---- kart yerleşimi (home.css ile birebir aynı alt küme) ---- */
+.sk-banner svg,.sk-cardscene svg{position:absolute;inset:0;width:100%;height:100%}
+.sk-cardscene{position:relative;display:block;width:calc(100% + 8px);max-width:none;flex:none;align-self:stretch;justify-self:stretch;aspect-ratio:200/112;border-radius:14px;overflow:hidden;margin:-4px -4px 8px}
+html.ka-skin3 .ka-school-summary-card.sk-has-scene>.ka-school-summary-icon{display:none!important}
+.ka-school-summary-card.sk-has-scene>small{margin-top:6px!important}
+.sk-pause *{animation-play-state:paused!important}
+@media (prefers-reduced-motion:reduce){.sk *{animation:none!important}}
