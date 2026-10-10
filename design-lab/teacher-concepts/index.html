@@ -3,22 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Öğretmenler sayfası — 3 konsept</title>
+<title>Öğretmenler sayfası — konseptler</title>
 <style>
   body{margin:0;background:#0e0f10;color:#eee;font:16px/1.5 system-ui,sans-serif;padding:40px 20px}
   .wrap{max-width:720px;margin:0 auto}
   h1{font-size:22px;margin-bottom:6px}
   p{color:#9a9a9a;font-size:14px;margin-top:0}
+  h2.grp{font-size:13px;color:#777;text-transform:none;margin:28px 0 10px;letter-spacing:.02em}
   a.card{display:block;background:#17191b;border:1px solid #27292b;border-radius:10px;padding:18px 20px;margin-bottom:12px;color:#eee;text-decoration:none}
   a.card:hover{border-color:#555}
   a.card b{display:block;font-size:16px;margin-bottom:3px}
   a.card span{font-size:13px;color:#999}
+  a.card.new{border-color:#4a3f7a}
+  a.card.new b::after{content:" · yeni";color:#9b8cff;font-weight:400;font-size:12px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Öğretmenler sayfası — 3 tasarım konsepti</h1>
+  <h1>Öğretmenler sayfası — tasarım konseptleri</h1>
   <p>Mevcut uygulamadan tamamen farklı, örnek veriyle hazırlandı. Birini seç, üstüne konuşalım.</p>
+
+  <h2 class="grp">Hareketli / dinamik — kapaklı (son tur)</h2>
+  <a class="card new" href="d-canli-panel.html"><b>D — Canlı Panel</b><span>Koyu, hareketli mesh-gradient kapak; sayan istatistikler, nöbet için canlı nabız göstergesi, sıralı beliren kartlar.</span></a>
+  <a class="card new" href="e-nabiz.html"><b>E — Nabız</b><span>Açık, canlı renkli kapak; her öğretmende haftalık yükü gösteren dolan halka animasyonu, kart eğilme efekti.</span></a>
+
+  <h2 class="grp">İlk tur (statik, beğenilmedi)</h2>
   <a class="card" href="a-sicil-defteri.html"><b>A — Sicil Defteri</b><span>Açık zemin, kart-katalog rafı, tablo düzeninde sicil kaydı. Yoğun/kurumsal.</span></a>
   <a class="card" href="b-dosya-defteri.html"><b>B — Fakülte Dosyası</b><span>Koyu, zarif; mühür-monogram avatarlı dosya satırları, dergi havası.</span></a>
   <a class="card" href="c-pano.html"><b>C — Öğretmen Panosu</b><span>Açık, renkli; branşa göre renk kodlu rozet kartlarından oluşan pano.</span></a>
