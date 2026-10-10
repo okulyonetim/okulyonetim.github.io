@@ -140,16 +140,20 @@ var ST={key:'',mode:'',tk:0,sec:0,ring:0,cel:''};
 function sky(st){var h=hourNow(),t=tod(h),ck=t+Math.floor(h*4);if(ST.cel===ck&&st.dataset.tod===t)return;ST.cel=ck;st.dataset.tod=t;
   var night=t==='night',f=night?((h-18+24)%24)/12:Math.min(1,Math.max(0,(h-6)/12)),x=24+f*312,y=118-Math.sin(f*Math.PI)*84,el=$(night?'.sk-moon':'.sk-sun',st);
   if(el)el.setAttribute('transform','translate('+x.toFixed(1)+' '+y.toFixed(1)+')')}
-function apply(init){if(!ACT)return;var st=$('.kh-hero [data-sk]');if(!st)return;var l=live(),m=mapMode(l),hk=m==='h'?holidayKind(l):'',key=m+hk,now=Date.now();
+function apply(init){if(!ACT)return;var sts=$$('[data-sk]');if(!sts.length)return;var l=live(),m=mapMode(l),hk=m==='h'?holidayKind(l):'',key=m+hk,now=Date.now();
   if(ST.mode&&ST.mode!==m&&!init&&'ctlb'.indexOf(ST.mode)>-1&&'ctle'.indexOf(m)>-1)ST.ring=now+4000;
   if(key!==ST.key){ST.key=key;ST.tk=0}ST.mode=m;
-  var soon=(m==='c'||m==='t'||m==='l')&&isFinite(l.remaining)&&l.remaining>=0&&l.remaining<=10,ringing=now<ST.ring,shown=(ringing||soon||m==='b')?'b':m;
-  if(st.dataset.m!==shown)st.dataset.m=shown;var room=(shown==='c'||shown==='l')?'in':'out';if(st.dataset.room!==room)st.dataset.room=room;
-  st.classList.toggle('sk-ring',ringing||soon);sky(st);var cap='';
-  if(shown==='c'){var n=ST.tk%5+1,c=$('.sk-c',st);if(c&&c.getAttribute('data-s')!==String(n))c.setAttribute('data-s',String(n));cap=CAPS.c[n-1]}
+  var soon=(m==='c'||m==='t'||m==='l')&&isFinite(l.remaining)&&l.remaining>=0&&l.remaining<=10,ringing=now<ST.ring,shown=(ringing||soon||m==='b')?'b':m,cap='';
+  if(shown==='c'){cap=CAPS.c[ST.tk%5]}
   else if(shown==='b'){cap=CAPS.b}
-  else{var q=shown==='h'?[hk]:SQ[shown],id=q[ST.tk%q.length];$$('.sk-go .v',st).forEach(function(g){var on=g.id==='skv-'+id;if(g.classList.contains('on')!==on)g.classList.toggle('on',on)});cap=CAPS[id]||''}
-  var ce=$('.sk-cap',st);if(ce&&ce.textContent!==cap)ce.textContent=cap}
+  else{var q=shown==='h'?[hk]:SQ[shown],id=q[ST.tk%q.length];cap=CAPS[id]||''}
+  sts.forEach(function(st){
+    if(st.dataset.m!==shown)st.dataset.m=shown;var room=(shown==='c'||shown==='l')?'in':'out';if(st.dataset.room!==room)st.dataset.room=room;
+    st.classList.toggle('sk-ring',ringing||soon);sky(st);
+    if(shown==='c'){var n=ST.tk%5+1,c=$('.sk-c',st);if(c&&c.getAttribute('data-s')!==String(n))c.setAttribute('data-s',String(n))}
+    else if(shown!=='b'){var q2=shown==='h'?[hk]:SQ[shown],id2=q2[ST.tk%q2.length];$$('.sk-go .v',st).forEach(function(g){var on=g.id==='skv-'+id2;if(g.classList.contains('on')!==on)g.classList.toggle('on',on)})}
+    var ce=$('.sk-cap',st);if(ce&&ce.textContent!==cap)ce.textContent=cap
+  })}
 /* ---- hava durumu sahnesi ---- */
 var WSK='';
 function classifyWx(t){t=(t||'').toLocaleLowerCase('tr');
@@ -164,18 +168,22 @@ function wxApply(){var card=$('#khWeather');if(!card)return;var w=$('.sk-wx',car
 /* ---- gerçek hava durumu — uygulamanın kendi veri kaynağı (window.SchoolLiveStatus.weatherView) ---- */
 function liveWx(){try{var L=global.SchoolLiveStatus,w=L&&L.weatherView&&L.weatherView();if(!w)return null;
   return{state:classifyWx((w.emoji||'')+' '+(w.text||'')),temp:Math.round(Number(w.temp)),emoji:w.emoji||'',text:w.text||'',location:w.location||''}}catch(e){return null}}
-/* ---- menü çekmecesi sahnesi (hava durumuna göre) ---- */
-function menuWx(){var layer=$('#kaMenuLayer');if(!layer)return;var head=$('.ka-menu-head',layer);if(!head)return;
-  var w=$('.sk-menu-wx',head);
-  if(!w){w=D.createElement('div');w.className='sk sk-wx sk-menu-wx';w.setAttribute('data-sk-wx','1');w.setAttribute('aria-hidden','true');w.innerHTML='<svg class="on" viewBox="0 0 200 100" preserveAspectRatio="xMidYMax slice">'+wxSvg('m')+'</svg>';head.insertBefore(w,head.firstChild)}
-  var lw=liveWx(),state=(lw&&lw.state)||'pc',h=Math.floor(hourNow()),night=h<6||h>=19,key=state+(night?'n':'d')+(lw?'·'+lw.temp:'');
-  if(w.getAttribute('data-k')!==key){w.setAttribute('data-k',key);
-    var p=WP[state]||WP.pc,c=p[night?1:0],s1=$('#skws1m',w),s2=$('#skws2m',w),sv=$('svg',w);if(s1)s1.setAttribute('stop-color',c[0]);if(s2)s2.setAttribute('stop-color',c[1]);if(sv)sv.style.setProperty('--wcl',p[2][night?1:0]);
-    $$('[data-s]',w).forEach(function(g){g.style.opacity=(g.getAttribute('data-s').split(' ').indexOf(state)>-1&&(!g.getAttribute('data-d')||g.getAttribute('data-d')===(night?'n':'d')))?1:0})}
-  var badge=$('.ka-menu-wx-badge',head);
-  if(lw&&lw.emoji&&!isNaN(lw.temp)){if(!badge){badge=D.createElement('span');badge.className='ka-menu-wx-badge';head.appendChild(badge)}
-    var txt=lw.emoji+' '+lw.temp+'°'+(lw.location?' · '+lw.location:'');if(badge.textContent!==txt)badge.textContent=txt}
-  else if(badge)badge.remove()}
+/* ---- menü çekmecesi: ana sayfadaki ZENGİN çoklu-sahne sistemi (stageHTML/apply/sky) aynen
+   buraya da taşınıyor — öğrenciler bahçede, ders, teneffüs, servis, tatil… hepsi burada da
+   dönüyor (apply() artık TÜM [data-sk] sahnelerini birlikte günceller). Üstüne, gerçek hava
+   durumuna göre (yağmur/kar/sis/şimşek) ince bir yağış katmanı ekleniyor. ---- */
+function precipSvg(){var rn='',sn='';
+  for(var i=0;i<14;i++)rn+='<line class="rn" x1="'+(8+i*14)+'" y1="0" x2="'+(5+i*14)+'" y2="7" stroke="#cfe3f5" stroke-width="1.3" style="animation-delay:-'+(i*.13).toFixed(2)+'s"/>';
+  for(i=0;i<12;i++)sn+='<circle class="sn" cx="'+(10+i*16)+'" cy="0" r="1.7" fill="#fff" style="animation-delay:-'+(i*.4).toFixed(1)+'s"/>';
+  return '<g data-s="rain storm">'+rn+'</g><g data-s="snow">'+sn+'</g><g data-s="storm"><polygon class="bolt" points="120,30 108,52 116,52 108,74 130,46 121,46" fill="#ffe66d"/><polygon class="bolt bolt-far" points="168,22 158,42 165,42 157,62 177,38 169,38" fill="#ffe66d"/></g><g data-s="fog"><rect class="fgb" x="60" y="52" width="150" height="8" rx="4" fill="#fff" opacity=".5"/><rect class="fgb" style="animation-delay:-3s" x="20" y="66" width="170" height="8" rx="4" fill="#fff" opacity=".4"/></g>'}
+function menuStage(){var layer=$('#kaMenuLayer');if(!layer)return;var head=$('.ka-menu-head',layer);if(!head)return;
+  var stage=$('.sk-stage',head);
+  if(!stage){defs();var t=D.createElement('div');t.innerHTML=stageHTML();stage=t.firstChild;head.insertBefore(stage,head.firstChild)}
+  menuPrecip(stage)}
+function menuPrecip(stage){var w=$('.sk-precip',stage);
+  if(!w){w=D.createElement('div');w.className='sk sk-precip';w.setAttribute('aria-hidden','true');w.innerHTML='<svg class="on" viewBox="0 0 200 100" preserveAspectRatio="xMidYMax slice">'+precipSvg()+'</svg>';stage.appendChild(w)}
+  var lw=liveWx(),state=(lw&&lw.state)||'pc';if(w.getAttribute('data-k')===state)return;w.setAttribute('data-k',state);
+  $$('[data-s]',w).forEach(function(g){g.style.opacity=g.getAttribute('data-s').split(' ').indexOf(state)>-1?1:0})}
 /* ---- bölüm bannerları ve özet kartları ---- */
 var BM={'today-duty':B1,'duty':B1,'week-duty':B1,'social':B1,'lessons':B3,'upcoming':B3,'exams':B3,'trial-counter':B3,'calendar':B4,'notes':B5,'polls':B5,'absences':B2,'announcements':B2,'news':B2};
 function banners(){$$('[data-home-section]').forEach(function(sec){if($('[data-sk-banner]',sec))return;var f=BM[sec.getAttribute('data-home-section')];if(!f)return;var head=$('.ka-home-section__head',sec)||sec.firstElementChild;if(!head)return;
@@ -185,7 +193,11 @@ function cardScenes(){$$('.ka-school-summary-card').forEach(function(c){if($('[d
 /* ---- ekran dışındayken animasyonu durdur ---- */
 var IO=global.IntersectionObserver?new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('sk-pause',!e.isIntersecting)})},{rootMargin:'160px'}):null;
 function watch(){if(!IO)return;$$('[data-sk],[data-sk-banner],[data-sk-card],[data-sk-wx]').forEach(function(el){if(!el.__skw){el.__skw=1;IO.observe(el)}})}
-function decorate(){if(!ACT)return;try{defs();if($('.kh-hero')&&!$('.kh-hero [data-sk]')){var t=D.createElement('div');t.innerHTML=stageHTML();var h=$('.kh-hero');h.insertBefore(t.firstChild,h.firstChild);apply(true)}banners();cardScenes();wxApply();menuWx();watch()}catch(e){try{console.warn('[KorukSkin]',e)}catch(_){}}}
+function decorate(){if(!ACT)return;try{defs();var newStage=false;
+  if($('.kh-hero')&&!$('.kh-hero [data-sk]')){var t=D.createElement('div');t.innerHTML=stageHTML();var h=$('.kh-hero');h.insertBefore(t.firstChild,h.firstChild);newStage=true}
+  if($('#kaMenuLayer .ka-menu-head')&&!$('#kaMenuLayer .ka-menu-head [data-sk]')){menuStage();newStage=true}else menuStage();
+  if(newStage)apply(true);
+  banners();cardScenes();wxApply();watch()}catch(e){try{console.warn('[KorukSkin]',e)}catch(_){}}}
 var raf=0,ACT=true;
 function boot(){D.documentElement.classList.add('ka-skin3');decorate();
   try{new MutationObserver(function(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;decorate()})}).observe(D.body,{childList:true,subtree:true})}catch(e){}

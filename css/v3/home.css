@@ -11,7 +11,8 @@ html.ka-skin3 .ka-home .kh-hero .kh-brand{margin-top:2px!important}
 .sk-stage[data-room="in"] .sk-sky{background:linear-gradient(var(--sk-w1),var(--sk-w2))}
 .sk-stage[data-room="in"] .sk-skysvg{opacity:0}
 .sk-stage[data-room="in"]::before{content:"";position:absolute;left:12px;top:14px;width:78px;height:66px;z-index:0;border:4px solid var(--v3-frame);border-radius:4px;background:linear-gradient(var(--v3-frame),var(--v3-frame)) center/4px 100% no-repeat,linear-gradient(var(--v3-frame),var(--v3-frame)) center/100% 4px no-repeat,linear-gradient(var(--sk-s1),var(--sk-s2))}
-.sk-skysvg,.sk-ov{position:absolute;inset:0;width:100%;height:100%;transition:opacity .6s}
+.sk-skysvg,.sk-ov,.sk-precip{position:absolute;inset:0;width:100%;height:100%;transition:opacity .6s}
+.sk-precip{pointer-events:none}.sk-precip svg{position:absolute;inset:0;width:100%;height:100%}
 .sk-stars{opacity:0;transition:opacity .6s}.sk-stage[data-tod="night"] .sk-stars{opacity:1}.sk-stage[data-tod="dusk"] .sk-stars{opacity:.4}
 .sk-sun,.sk-moon{opacity:0;transition:opacity .6s}.sk-stage:not([data-tod="night"]) .sk-sun{opacity:1}.sk-stage[data-tod="night"] .sk-moon{opacity:1}
 .sk-stage[data-tod="night"] .sk-ov{filter:brightness(.55) saturate(.85)}.sk-stage[data-tod="dusk"] .sk-ov,.sk-stage[data-tod="dawn"] .sk-ov{filter:brightness(.85) sepia(.15)}
