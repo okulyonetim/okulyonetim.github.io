@@ -89,8 +89,41 @@ html.ka-v3 #kaMenuLayer .ka-menu-head h2{
   position:relative;z-index:1;
   font-size:17px !important;
   color:var(--v3-on-accent) !important;
+  text-shadow:0 1px 6px var(--ka-overlay);
 }
 html.ka-v3 #kaMenuLayer .ka-menu-head__actions{position:relative;z-index:1}
+/* Hava durumuna göre canlı sahne (js/v3/scene-skin.js: menuWx()) — .sk-wx temel konumlandırması
+   home.css'ten gelir (position:absolute;inset:0;z-index:0); burada yalnız bu bağlamda
+   anlamsız olan "kart arkaplanına solma" efektini kapatıyoruz. */
+html.ka-v3 #kaMenuLayer .ka-menu-head .sk-menu-wx{
+  pointer-events:none !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-head .sk-menu-wx::after{
+  content:none !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-head .ka-menu-wx-badge{
+  position:absolute !important;
+  top:max(14px,var(--ka-safe-top)) !important;
+  left:16px !important;
+  z-index:2 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:4px !important;
+  max-width:72% !important;
+  padding:4px 10px !important;
+  border-radius:99px !important;
+  background:var(--ka-overlay) !important;
+  color:white !important;
+  font-size:11.5px !important;
+  font-weight:800 !important;
+  line-height:1.3 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  backdrop-filter:blur(6px) !important;
+  -webkit-backdrop-filter:blur(6px) !important;
+  pointer-events:none !important;
+}
 html.ka-v3 #kaMenuLayer .ka-menu-head .ka-icon-button,
 html.ka-v3 #kaMenuLayer .ka-menu-head button{
   background:color-mix(in srgb,var(--v3-on-accent) 18%,transparent) !important;
@@ -163,19 +196,33 @@ html.ka-v3 #kaMenuLayer .ka-menu-card:active{
   60%{scale:1.14;rotate:4deg;opacity:1}
   100%{scale:1;rotate:0deg;opacity:1}
 }
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card{
-  animation:kaMenuCardIn .46s cubic-bezier(.22,1,.36,1) both;
+/* Giriş animasyonu bitince ikon sürekli hafifçe "nefes alır" — sahneyi canlı tutar.
+   translate bağımsız bir özellik (transform değil), bu yüzden pozisyon düzeltmesi
+   olan transform:none!important ile çakışmaz (Bug #2 dersi). */
+@keyframes kaMenuIconIdle{
+  0%,100%{translate:0 0;rotate:0deg}
+  50%{translate:0 -3px;rotate:-3deg}
 }
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(1){animation-delay:.08s}
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(2){animation-delay:.14s}
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(3){animation-delay:.20s}
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(4){animation-delay:.26s}
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(5){animation-delay:.32s}
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(6){animation-delay:.38s}
-html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(n+7){animation-delay:.42s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card{
+  --ka-stagger:0s;
+  animation:kaMenuCardIn .46s cubic-bezier(.22,1,.36,1) both;
+  animation-delay:var(--ka-stagger);
+}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(1){--ka-stagger:.08s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(2){--ka-stagger:.14s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(3){--ka-stagger:.20s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(4){--ka-stagger:.26s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(5){--ka-stagger:.32s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(6){--ka-stagger:.38s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(n+7){--ka-stagger:.42s}
 html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card .ka-menu-card__icon{
-  animation:kaMenuIconIn .5s cubic-bezier(.3,1.6,.4,1) both;
-  animation-delay:inherit;
+  /* --ka-stagger üst karttan miras alınır (custom property'ler doğal olarak kalıtsaldır) */
+  animation-name:kaMenuIconIn,kaMenuIconIdle;
+  animation-duration:.5s,2.6s;
+  animation-timing-function:cubic-bezier(.3,1.6,.4,1),ease-in-out;
+  animation-delay:var(--ka-stagger),calc(var(--ka-stagger) + .5s);
+  animation-iteration-count:1,infinite;
+  animation-fill-mode:both,none;
 }
 html.ka-v3 #kaMenuLayer .ka-menu-card__icon{
   position:relative !important;
@@ -288,7 +335,15 @@ html.ka-v3 #kaMenuLayer .ka-menu-list>.ka-btn .ka-avatar{background:var(--ka-pri
   html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card,
   html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card .ka-menu-card__icon{
     animation:none !important;opacity:1 !important;transform:none !important;
+    scale:1 !important;rotate:0deg !important;translate:none !important;
   }
+  html.ka-v3 #kaMenuLayer .sk-menu-wx .spin,
+  html.ka-v3 #kaMenuLayer .sk-menu-wx .cld,
+  html.ka-v3 #kaMenuLayer .sk-menu-wx .rn,
+  html.ka-v3 #kaMenuLayer .sk-menu-wx .sn,
+  html.ka-v3 #kaMenuLayer .sk-menu-wx .bolt,
+  html.ka-v3 #kaMenuLayer .sk-menu-wx .fgb,
+  html.ka-v3 #kaMenuLayer .sk-menu-wx .win{animation:none !important}
 }
 
 /* koyu temadaki eski !important yamaları (örn. [data-theme="dark"] #kaMenuLayer .ka-menu-head

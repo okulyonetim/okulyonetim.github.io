@@ -102,7 +102,8 @@ function IN(){return '<rect y="30" width="200" height="82" fill="var(--wallc)"/>
 var WX={sun:['Güneşli',24,'Rüzgâr 8 km/s · Nem %40','☀️'],pc:['Parçalı bulutlu',16,'Rüzgâr 12 km/s · Nem %58','⛅'],cloud:['Kapalı',14,'Rüzgâr 14 km/s · Nem %66','☁️'],rain:['Yağmurlu',11,'Rüzgâr 18 km/s · Nem %84','🌧️'],storm:['Gök gürültülü sağanak',10,'Rüzgâr 32 km/s · Nem %90','⛈️'],snow:['Karlı',-1,'Rüzgâr 10 km/s · Nem %88','❄️'],fog:['Sisli',7,'Rüzgâr 3 km/s · Nem %95','🌫️']},
   WP={sun:[['#3aa7ee','#cdeeff'],['#0b1226','#1d2b52'],['#fff','#aab']],pc:[['#6fb0e0','#dcedf8'],['#121a33','#2a3556'],['#fff','#5a6280']],cloud:[['#8fa2b3','#c7d0d8'],['#1a2030','#343b4d'],['#e8edf1','#4a5268']],rain:[['#5d7488','#9fb0bd'],['#10151f','#273041'],['#b9c3cc','#3c4456']],storm:[['#3d4a5c','#6b7787'],['#070a12','#1a2030'],['#8a94a0','#2c3342']],snow:[['#a9bccf','#eef3f8'],['#1b2438','#46526b'],['#f3f6f9','#7a869c']],fog:[['#b5bcc2','#dfe3e6'],['#232831','#4a505c'],['#e6e9eb','#5a606c']]},WS='pc';
   function CD(x,y,z){return '<g transform="translate('+x+' '+y+') scale('+z+')" class="cld" style="fill:var(--wcl)"><ellipse rx="16" ry="6"/><ellipse cx="-7" cy="-5" rx="8" ry="6"/><ellipse cx="5" cy="-7" rx="9" ry="7"/></g>'}
-  function wxSvg(){var r='<defs><linearGradient id="skwg" x1="0" y1="0" x2="0" y2="1"><stop id="skws1" offset="0"/><stop id="skws2" offset="1"/></linearGradient></defs><rect width="200" height="100" fill="url(#skwg)"/>',rays='',rn='',sn='';
+  function wxSvg(suf){suf=suf||'';var gId='skwg'+suf,s1Id='skws1'+suf,s2Id='skws2'+suf;
+    var r='<defs><linearGradient id="'+gId+'" x1="0" y1="0" x2="0" y2="1"><stop id="'+s1Id+'" offset="0"/><stop id="'+s2Id+'" offset="1"/></linearGradient></defs><rect width="200" height="100" fill="url(#'+gId+')"/>',rays='',rn='',sn='';
     for(var a=0;a<8;a++){var z=a*Math.PI/4;rays+='<line x1="'+(150+Math.cos(z)*15).toFixed(1)+'" y1="'+(28+Math.sin(z)*15).toFixed(1)+'" x2="'+(150+Math.cos(z)*21).toFixed(1)+'" y2="'+(28+Math.sin(z)*21).toFixed(1)+'" stroke="#ffd54a" stroke-width="2" stroke-linecap="round"/>'}
     for(var i=0;i<14;i++){rn+='<line class="rn" x1="'+(8+i*14)+'" y1="0" x2="'+(5+i*14)+'" y2="7" stroke="#cfe3f5" stroke-width="1.3" style="animation-delay:-'+(i*.13).toFixed(2)+'s"/>'}
     for(i=0;i<12;i++){sn+='<circle class="sn" cx="'+(10+i*16)+'" cy="0" r="1.7" fill="#fff" style="animation-delay:-'+(i*.4).toFixed(1)+'s"/>'}
@@ -151,14 +152,30 @@ function apply(init){if(!ACT)return;var st=$('.kh-hero [data-sk]');if(!st)return
   var ce=$('.sk-cap',st);if(ce&&ce.textContent!==cap)ce.textContent=cap}
 /* ---- hava durumu sahnesi ---- */
 var WSK='';
-function wxState(card){var e=$('.kh-weather-emoji',card),tx=((e&&e.textContent)||'')+' '+(($('.kh-live-main small',card)||{}).textContent||''),t=tx.toLocaleLowerCase('tr');
+function classifyWx(t){t=(t||'').toLocaleLowerCase('tr');
   if(/⛈|🌩|fırtına|gök gürül/.test(t))return'storm';if(/❄|🌨|kar\b|karlı/.test(t))return'snow';if(/🌫|sis/.test(t))return'fog';if(/🌧|🌦|yağmur|yağış|sağanak|çise/.test(t))return'rain';
   if(/☁|kapalı|bulutlu/.test(t)&&!/parçalı|az bulut/.test(t))return'cloud';if(/☀|güneşli|açık/.test(t))return'sun';return'pc'}
+function wxState(card){var e=$('.kh-weather-emoji',card),tx=((e&&e.textContent)||'')+' '+(($('.kh-live-main small',card)||{}).textContent||'');return classifyWx(tx)}
 function wxApply(){var card=$('#khWeather');if(!card)return;var w=$('.sk-wx',card);
   if(!w){w=D.createElement('div');w.className='sk sk-wx';w.setAttribute('data-sk-wx','1');w.setAttribute('aria-hidden','true');w.innerHTML='<svg class="on" viewBox="0 0 200 100" preserveAspectRatio="xMaxYMid slice">'+wxSvg()+'</svg>';card.insertBefore(w,card.firstChild)}
   var state=wxState(card),h=Math.floor(hourNow()),night=h<6||h>=19,key=state+(night?'n':'d');if(w.getAttribute('data-k')===key)return;w.setAttribute('data-k',key);
   var p=WP[state]||WP.pc,c=p[night?1:0],s1=$('#skws1',w),s2=$('#skws2',w),sv=$('svg',w);if(s1)s1.setAttribute('stop-color',c[0]);if(s2)s2.setAttribute('stop-color',c[1]);sv.style.setProperty('--wcl',p[2][night?1:0]);
   $$('[data-s]',w).forEach(function(g){g.style.opacity=(g.getAttribute('data-s').split(' ').indexOf(state)>-1&&(!g.getAttribute('data-d')||g.getAttribute('data-d')===(night?'n':'d')))?1:0})}
+/* ---- gerçek hava durumu — uygulamanın kendi veri kaynağı (window.SchoolLiveStatus.weatherView) ---- */
+function liveWx(){try{var L=global.SchoolLiveStatus,w=L&&L.weatherView&&L.weatherView();if(!w)return null;
+  return{state:classifyWx((w.emoji||'')+' '+(w.text||'')),temp:Math.round(Number(w.temp)),emoji:w.emoji||'',text:w.text||'',location:w.location||''}}catch(e){return null}}
+/* ---- menü çekmecesi sahnesi (hava durumuna göre) ---- */
+function menuWx(){var layer=$('#kaMenuLayer');if(!layer)return;var head=$('.ka-menu-head',layer);if(!head)return;
+  var w=$('.sk-menu-wx',head);
+  if(!w){w=D.createElement('div');w.className='sk sk-wx sk-menu-wx';w.setAttribute('data-sk-wx','1');w.setAttribute('aria-hidden','true');w.innerHTML='<svg class="on" viewBox="0 0 200 100" preserveAspectRatio="xMidYMax slice">'+wxSvg('m')+'</svg>';head.insertBefore(w,head.firstChild)}
+  var lw=liveWx(),state=(lw&&lw.state)||'pc',h=Math.floor(hourNow()),night=h<6||h>=19,key=state+(night?'n':'d')+(lw?'·'+lw.temp:'');
+  if(w.getAttribute('data-k')!==key){w.setAttribute('data-k',key);
+    var p=WP[state]||WP.pc,c=p[night?1:0],s1=$('#skws1m',w),s2=$('#skws2m',w),sv=$('svg',w);if(s1)s1.setAttribute('stop-color',c[0]);if(s2)s2.setAttribute('stop-color',c[1]);if(sv)sv.style.setProperty('--wcl',p[2][night?1:0]);
+    $$('[data-s]',w).forEach(function(g){g.style.opacity=(g.getAttribute('data-s').split(' ').indexOf(state)>-1&&(!g.getAttribute('data-d')||g.getAttribute('data-d')===(night?'n':'d')))?1:0})}
+  var badge=$('.ka-menu-wx-badge',head);
+  if(lw&&lw.emoji&&!isNaN(lw.temp)){if(!badge){badge=D.createElement('span');badge.className='ka-menu-wx-badge';head.appendChild(badge)}
+    var txt=lw.emoji+' '+lw.temp+'°'+(lw.location?' · '+lw.location:'');if(badge.textContent!==txt)badge.textContent=txt}
+  else if(badge)badge.remove()}
 /* ---- bölüm bannerları ve özet kartları ---- */
 var BM={'today-duty':B1,'duty':B1,'week-duty':B1,'social':B1,'lessons':B3,'upcoming':B3,'exams':B3,'trial-counter':B3,'calendar':B4,'notes':B5,'polls':B5,'absences':B2,'announcements':B2,'news':B2};
 function banners(){$$('[data-home-section]').forEach(function(sec){if($('[data-sk-banner]',sec))return;var f=BM[sec.getAttribute('data-home-section')];if(!f)return;var head=$('.ka-home-section__head',sec)||sec.firstElementChild;if(!head)return;
@@ -168,7 +185,7 @@ function cardScenes(){$$('.ka-school-summary-card').forEach(function(c){if($('[d
 /* ---- ekran dışındayken animasyonu durdur ---- */
 var IO=global.IntersectionObserver?new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('sk-pause',!e.isIntersecting)})},{rootMargin:'160px'}):null;
 function watch(){if(!IO)return;$$('[data-sk],[data-sk-banner],[data-sk-card],[data-sk-wx]').forEach(function(el){if(!el.__skw){el.__skw=1;IO.observe(el)}})}
-function decorate(){if(!ACT)return;try{defs();if($('.kh-hero')&&!$('.kh-hero [data-sk]')){var t=D.createElement('div');t.innerHTML=stageHTML();var h=$('.kh-hero');h.insertBefore(t.firstChild,h.firstChild);apply(true)}banners();cardScenes();wxApply();watch()}catch(e){try{console.warn('[KorukSkin]',e)}catch(_){}}}
+function decorate(){if(!ACT)return;try{defs();if($('.kh-hero')&&!$('.kh-hero [data-sk]')){var t=D.createElement('div');t.innerHTML=stageHTML();var h=$('.kh-hero');h.insertBefore(t.firstChild,h.firstChild);apply(true)}banners();cardScenes();wxApply();menuWx();watch()}catch(e){try{console.warn('[KorukSkin]',e)}catch(_){}}}
 var raf=0,ACT=true;
 function boot(){D.documentElement.classList.add('ka-skin3');decorate();
   try{new MutationObserver(function(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;decorate()})}).observe(D.body,{childList:true,subtree:true})}catch(e){}
