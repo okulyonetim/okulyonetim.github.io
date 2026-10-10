@@ -1,0 +1,117 @@
+/* Koruk Asistan — Canlı Zil Sayacı sahnesi (üretime uygulanan ikinci V3 parçası)
+ * Yalnızca Ana Sayfa'nın üstündeki canlı zil kartını (.kh-hero) süsler: derse/teneffüse/
+ * yemeğe/eve gidişe/hafta sonuna/tatile göre değişen, saatin gün içindeki konumuna göre
+ * (şafak/gündüz/akşam/gece) gökyüzü rengi değişen, zil çalmak üzereyken zili sallayan
+ * canlı bir sahne. Menü çekmecesi, bannerlar, Okul Özeti kartları, hava durumu kartı gibi
+ * diğer V3 parçalarına DOKUNMAZ (onlar ayrı, bağımsız dosyalarda).
+ * Veri/iş mantığına dokunmaz, yalnızca görsel katman ekler. Kapatmak için: localStorage['ka-skin']='off'.
+ * Kaynağı: js/v3/scene-skin.js'deki hero/stageHTML()/apply()/sky() sisteminin birebir aynısı
+ * (yalnızca debug amaçlı, üretimde kullanılmayan ve 'tk is not defined' hatası üreten önizleme
+ * satırları (line 45-46 orijinalde) çıkarılmıştır).
+ */
+(function(global){
+'use strict';
+if(global.KorukZilSahnesi)return;
+var OFF=false;try{OFF=localStorage.getItem('ka-skin')==='off'}catch(_){}
+if(OFF){global.KorukZilSahnesi={enabled:false};return}
+/* ---- sahne kütüphanesi (scene-skin.js ile birebir aynı üretim fonksiyonları) ---- */
+function K(x,g,c,k,o,y,z){o=o||'';var pn=g?'#7c3aed':'#1e3a8a',lg=g?'#d9a57b':pn,hc=g?'#5b3a1e':'#2a2a2a',st='" stroke="'+c+'" stroke-width="3" stroke-linecap="round"/>';
+    return '<g class="'+k+'" transform="translate('+x+' '+(y||78)+') scale('+(z||1)+')"><g class="kb">'+(o.indexOf('b')>-1?'<rect x="-10" y="-27" width="6" height="11" rx="2" fill="#7c2d12"/>':'')+
+    '<rect class="lg" x="-4" y="-14" width="3" height="14" fill="'+lg+'"/><rect class="lg l2" x="1" y="-14" width="3" height="14" fill="'+lg+'"/>'+(g?'<path d="M-6-12L-4-17H4L6-12z" fill="'+pn+'"/>':'')+
+    '<rect x="-5" y="-28" width="10" height="15" rx="3" fill="'+c+'"/><path class="am" d="M-5-26L-9-17'+st+'<path class="am a2" d="M5-26L9-17'+st+
+    (o.indexOf('t')>-1?'<rect x="4" y="-19" width="15" height="2.5" rx="1" fill="#cbd5e1"/><ellipse cx="11" cy="-21" rx="5" ry="1.6" fill="#fff"/>':'')+
+    '<circle cy="-34" r="5.5" fill="#d9a57b"/><path d="M-5.5-35a5.5 5.5 0 0 1 11 0z" fill="'+hc+'"/>'+(g?'<path d="M5-37q5 1 3 9" stroke="'+hc+'" stroke-width="2.4" fill="none" stroke-linecap="round"/>':'')+'</g></g>'}
+  function V(id,b){return '<g class="v" id="skv-'+id+'"><rect class="g1" x="-3000" y="78" width="3370" height="14"/>'+b+'</g>'}
+  var TREE='<rect x="205" y="50" width="5" height="28" fill="#6b4a2b"/><circle cx="207" cy="42" r="14" fill="var(--grass)"/>',
+  WH=function(x){return '<g class="whl"><circle cx="'+x+'" cy="75" r="7" class="dk"/><path d="M'+x+' 69v12M'+(x-6)+' 75h12" stroke="#777" stroke-width="1.5"/></g>'},
+  LK=[[232,1,'#ec4899'],[268,0,'#3b82f6'],[304,1,'#f59e0b'],[340,0,'#16a34a']],eb='',ea='';
+  LK.forEach(function(q,n){var x=q[0],g=q[1],hc=g?'#5b3a1e':'#2a2a2a';
+    eb+='<circle cx="'+x+'" cy="42" r="6" fill="#d9a57b"/><path d="M'+(x-6)+' 41a6 6 0 0 1 12 0z" fill="'+hc+'"/>'+(g?'<circle cx="'+(x-6)+'" cy="46" r="2.4" fill="'+hc+'"/><circle cx="'+(x+6)+'" cy="46" r="2.4" fill="'+hc+'"/>':'')+'<rect x="'+(x-7)+'" y="48" width="14" height="14" rx="4" fill="'+q[2]+'"/>';
+    ea+='<ellipse cx="'+x+'" cy="57" rx="9" ry="2" fill="#fff"/><circle cx="'+(x-3)+'" cy="56" r="1.6" fill="#d97706"/><rect x="'+(x+9)+'" y="52" width="4" height="6" rx="1" fill="#e2e8f0"/><g class="eat e'+(n+1)+'" style="transform-origin:'+(x+6)+'px 51px"><path d="M'+(x+6)+' 51L'+(x+3)+' 59" stroke="'+q[2]+'" stroke-width="3" stroke-linecap="round"/><path d="M'+(x+3)+' 59v-4" stroke="#cfd3d8" stroke-width="1.4"/></g>'});
+  var OVL=
+  V('t1',TREE+K(262,1,'#ec4899','jmp')+K(352,0,'#3b82f6','jmp d2')+'<g class="ball"><circle r="4" fill="#fff" stroke="#333"/></g>')+
+  V('t2',K(268,1,'#f59e0b','')+K(350,1,'#ec4899','')+K(309,0,'#22c55e','jmp rj')+'<g class="rope"><path d="M276 54Q309 96 342 54" stroke="#e11d48" stroke-width="1.6" fill="none"/></g>')+
+  V('t3',TREE+'<rect x="262" y="60" width="66" height="4" rx="1" fill="#8a5a2b"/><rect x="268" y="64" width="3" height="14" fill="#6b4a2b"/><rect x="319" y="64" width="3" height="14" fill="#6b4a2b"/><rect x="287" y="56" width="20" height="4" rx="2" fill="#222"/><rect x="285" y="58" width="4" height="20" fill="#222"/><rect x="300" y="36" width="14" height="24" rx="4" fill="#475569"/><circle cx="307" cy="30" r="6.5" fill="#d9a57b"/><path d="M300.5 28a6.5 6.5 0 0 1 13 0z" fill="#2a2a2a"/><g class="sip"><path d="M304 44L292 50" stroke="#475569" stroke-width="4" stroke-linecap="round"/><rect x="283" y="45" width="9" height="9" rx="1.5" fill="#fff"/><path d="M292 47h2.5v4H292" stroke="#fff" fill="none"/></g><path class="st" d="M286 43q-4-5 0-10t0-8"/><path class="st s2" d="M290 43q-4-5 0-10t0-8"/><rect x="338" y="62" width="26" height="3" fill="#8a5a2b"/><rect x="349" y="65" width="3" height="13" fill="#6b4a2b"/><rect x="343" y="52" width="7" height="10" rx="1.5" fill="#64748b"/><circle cx="357" cy="60" r="3.2" fill="#d97706"/>')+
+  V('l1','<rect x="337" y="40" width="14" height="14" rx="4" fill="#fff"/><circle cx="344" cy="34" r="6" fill="#d9a57b"/><rect x="338" y="22" width="12" height="9" rx="3" fill="#fff"/><g class="lad" style="transform-origin:338px 45px"><path d="M338 45L328 49" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/><path d="M328 49v-8" stroke="#94a3b8" stroke-width="1.4"/></g><rect x="316" y="50" width="52" height="4" fill="#cbd5e1"/><rect x="318" y="54" width="48" height="24" fill="#8a5a2b"/><rect x="352" y="42" width="12" height="8" rx="2" fill="#475569"/><path class="st" d="M356 40q-4-5 0-9"/><path class="st s2" d="M361 40q-4-5 0-9"/>'+K(222,0,'#3b82f6','q','t')+K(268,1,'#ec4899','q q2','t'))+
+  V('l2',eb+'<rect x="200" y="58" width="170" height="4" fill="#94a3b8"/><rect x="204" y="62" width="3" height="16" fill="#64748b"/><rect x="360" y="62" width="3" height="16" fill="#64748b"/>'+ea+'<path class="st" d="M268 52q-4-5 0-9"/><path class="st s2" d="M340 52q-4-5 0-9"/>')+
+  V('e1','<rect x="193" y="38" width="48" height="40" fill="var(--wall)"/><path d="M188 38L217 20L246 38z" fill="#b4412f"/><rect x="209" y="54" width="16" height="24" rx="2" class="dk"/><rect class="win" x="198" y="44" width="9" height="8" fill="var(--accent)"/><rect class="win w2" x="227" y="44" width="9" height="8" fill="var(--accent)"/>'+K(222,0,'#3b82f6','walk go','b')+K(222,1,'#ec4899','walk go g2','b')+K(222,0,'#16a34a','walk go g3','b'))+
+  V('e2','<g class="bus2"><rect x="250" y="42" width="92" height="32" rx="7" fill="var(--accent)"/><rect x="258" y="48" width="16" height="11" rx="2" fill="#bfe3ff"/><rect x="278" y="48" width="16" height="11" rx="2" fill="#bfe3ff"/><rect x="298" y="48" width="16" height="11" rx="2" fill="#bfe3ff"/><rect x="318" y="48" width="18" height="14" rx="2" fill="#bfe3ff"/>'+WH(272)+WH(322)+'</g>'+K(206,1,'#ec4899','wvk')+K(228,0,'#3b82f6','wvk'))+
+  V('e3','<rect x="150" y="0" width="240" height="78" fill="#0f172a"/><circle cx="340" cy="18" r="9" fill="#fde68a"/><circle cx="344" cy="15" r="8" fill="#0f172a"/><circle class="win" cx="225" cy="12" r="1.3" fill="#fff"/><circle class="win w2" cx="262" cy="8" r="1.1" fill="#fff"/><circle class="win" cx="300" cy="14" r="1.3" fill="#fff" style="animation-delay:.6s"/><circle class="win w2" cx="360" cy="40" r="1.1" fill="#fff"/><rect x="215" y="36" width="90" height="42" fill="#1e293b"/><path d="M209 36L260 14L311 36z" fill="#7f1d1d"/><rect x="252" y="54" width="16" height="24" rx="2" fill="#0b1220"/><rect x="226" y="44" width="12" height="10" fill="#334155"/><rect class="win" x="282" y="44" width="12" height="10" fill="#fde047"/>'+K(262,0,'#94a3b8','walk go','b'));
+  OVL+=SCN();
+  /* kız / erkek öğrenci: g=1 kız, 0 erkek — yerel koordinat, sağ alt köşe = (0,78) */
+  function S(g,c,k,tx,ty,z){var r='transform-origin:-4px 48px',pn=g?'#7c3aed':'#1e3a8a',lg=g?'#d9a57b':'#1e3a8a';
+    return '<g class="'+k+'" transform="translate('+tx+' '+ty+') scale('+z+')"><rect x="-28" y="58" width="22" height="3" fill="#8a5a2b"/><rect x="-26" y="61" width="2.5" height="17" fill="#8a5a2b"/>'+
+    '<rect x="-19" y="64" width="3.5" height="14" fill="'+lg+'"/>'+(g?'<rect x="-19" y="73" width="3.5" height="5" fill="#fff"/>':'')+'<rect x="-18" y="62" width="18" height="3" rx="1.5" fill="'+pn+'"/>'+
+    '<rect x="-9" y="43" width="9" height="20" rx="3.5" fill="'+c+'"/>'+
+    '<g class="hd" style="transform-origin:-5px 43px"><circle cx="-6" cy="37" r="5.5" fill="#d9a57b"/><path d="M-11.5 36a5.5 5.5 0 0 1 11 0z" fill="'+(g?'#5b3a1e':'#2a2a2a')+'"/>'+
+    (g?'<path d="M-1 33q6 1 4 10" stroke="#5b3a1e" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="-1.5" cy="33" r="1.8" fill="#ffc400"/>':'')+'<circle cx="-8.2" cy="37" r=".8" fill="#222"/></g>'+
+    '<g class="rst" style="'+r+'"><path d="M-4 48L-17 56" stroke="'+c+'" stroke-width="3.6" stroke-linecap="round"/></g>'+
+    '<g class="up" style="'+r+'"><path d="M-4 48L-8 29" stroke="'+c+'" stroke-width="3.6" stroke-linecap="round"/><circle cx="-8" cy="27" r="2.3" fill="#d9a57b"/></g></g>'}
+  var STU=S(0,'#16a34a','stu',316,11.6,.8)+S(1,'#f59e0b','stu',348,11.6,.8)+S(1,'#ec4899','stu A',332,0,1)+S(0,'#3b82f6','stu',364,0,1);
+  function CL(x,y,z,d){return '<g class="cld" style="animation-delay:'+d+'s"><g transform="translate('+x+' '+y+') scale('+z+')" fill="var(--cl)"><ellipse rx="14" ry="5"/><ellipse cx="-6" cy="-4" rx="7" ry="5"/><ellipse cx="4" cy="-6" rx="8" ry="6"/></g></g>'}
+  function PN(x,y,z){return '<g transform="translate('+x+' '+y+') scale('+z+')"><ellipse cx="2" cy="1" rx="10" ry="2" fill="#0003"/><rect x="-1.6" y="-8" width="3.2" height="8" fill="#5a3d22"/><g class="sway"><path d="M-11-6L0-26L11-6z" fill="var(--t1)"/><path d="M-9-16L0-34L9-16z" fill="var(--t2)"/><path d="M-7-26L0-42L7-26z" fill="var(--t3)"/></g></g>'}
+  function FL(a){return a.map(function(f){return '<circle cx="'+f[0]+'" cy="'+f[1]+'" r="1.1" fill="'+f[2]+'"/>'}).join('')}
+  function FLAG(x,y){return '<path d="M'+x+' '+(y+30)+'V'+y+'" stroke="#9aa0a6" stroke-width="1.2"/><g class="flag2" style="transform-origin:'+x+'px '+(y+1)+'px"><rect x="'+x+'" y="'+(y+1)+'" width="19" height="12.5" fill="#e30a17"/><circle cx="'+(x+6.3)+'" cy="'+(y+7.2)+'" r="3.4" fill="#fff"/><circle cx="'+(x+7.3)+'" cy="'+(y+7.2)+'" r="2.7" fill="#e30a17"/><polygon points="'+[[10.6,5.2],[11.3,6.6],[12.8,6.8],[11.7,7.8],[12,9.3],[10.6,8.5],[9.3,9.3],[9.5,7.8],[8.4,6.8],[9.9,6.6]].map(function(q){return (x+q[0]).toFixed(1)+','+(y+q[1]).toFixed(1)}).join(' ')+'" fill="#fff"/></g>'}
+  function FW(x,y,c,d){var r='';for(var a=0;a<12;a++){var q=a*Math.PI/6;r+='<line x1="'+x+'" y1="'+y+'" x2="'+(x+Math.cos(q)*13).toFixed(1)+'" y2="'+(y+Math.sin(q)*13).toFixed(1)+'" stroke="'+c+'" stroke-width="1.2" stroke-linecap="round"/>'}return '<g class="fw" style="transform-origin:'+x+'px '+y+'px;animation-delay:'+d+'s">'+r+'</g>'}
+  function SCN(){var pn='';for(var i=0;i<8;i++){var t=i/7;pn+='<path d="M'+(215+90*t).toFixed(1)+' '+(40+32*t*(1-t)).toFixed(1)+'l3.4 0-1.7 4.5z" fill="'+(i%2?'#fff':'#e30a17')+'"/>'}
+    var bf='<g class="bfly"><g class="wg2"><path d="M0 0q-5-6-6-1q1 5 6 1z" fill="#ec4899"/></g><g class="wg2"><path d="M0 0q5-6 6-1q-1 5-6 1z" fill="#ec4899"/></g></g>';
+    return V('w1',TREE+K(250,0,'#3b82f6','jmp')+K(276,1,'#ec4899','jmp d2')+'<g class="kite" style="transform-origin:254px 52px"><path d="M254 52Q272 38 304 18" stroke="#888" fill="none" stroke-width=".8"/><path d="M304 2l8 12-8 14-8-14z" fill="#ef4444"/><path d="M304 2v26M296 14h16" stroke="#fff8"/><path d="M304 28q-6 8 0 14t0 12" stroke="#ffd54a" stroke-width="1.5" fill="none"/></g>'+FL([[300,84,'#ff6b9a'],[330,86,'#ffd54a'],[350,84,'#fff'],[225,86,'#ffd54a']]))+
+    V('w2',TREE+'<rect x="232" y="40" width="110" height="38" fill="var(--wall)"/><path d="M226 40L287 18L348 40z" fill="#b4412f"/><rect x="278" y="56" width="18" height="22" rx="2" class="dk"/><rect x="240" y="48" width="14" height="12" fill="#475569"/><rect x="320" y="48" width="14" height="12" fill="#475569"/><rect x="270" y="43" width="34" height="9" rx="2" fill="#fff"/><text x="287" y="49.6" text-anchor="middle" font-size="5.5" font-weight="800" fill="#b4412f" font-family="system-ui">KAPALI</text>'+FLAG(287,-12)+bf+PN(358,80,.8))+
+    V('h1','<rect x="150" y="0" width="240" height="78" fill="#0f172a"/><circle class="win" cx="230" cy="8" r="1.2" fill="#fff"/><circle class="win w2" cx="350" cy="30" r="1.2" fill="#fff"/><rect x="232" y="44" width="110" height="34" fill="#1e293b"/><path d="M226 44L287 26L348 44z" fill="#7f1d1d"/><rect class="win" x="242" y="54" width="12" height="10" fill="#fde047"/><rect class="win w2" x="318" y="54" width="12" height="10" fill="#fde047"/><rect x="278" y="58" width="18" height="20" rx="2" fill="#0b1220"/>'+pn+FLAG(287,-4)+FW(210,26,'#f87171',0)+FW(340,18,'#facc15',.8)+FW(268,8,'#60a5fa',1.6))+
+    V('h2','<rect x="170" y="50" width="200" height="26" fill="#38a3e0"/><rect x="170" y="50" width="200" height="3" fill="#8fd3f5"/><path class="wv3" d="M180 60q8-4 16 0t16 0t16 0t16 0t16 0t16 0t16 0" stroke="#fff" stroke-width="1" fill="none" opacity=".7"/><path class="wv3" style="animation-delay:-1.5s" d="M190 68q8-4 16 0t16 0t16 0t16 0t16 0t16 0" stroke="#fff" stroke-width="1" fill="none" opacity=".6"/><rect x="170" y="74" width="200" height="18" fill="#e9d5a1"/><circle cx="350" cy="18" r="9" fill="#ffd54a"/><circle cx="350" cy="18" r="16" fill="#ffd54a" opacity=".25"/><g class="sail"><path d="M0 0h14l-3 4H3z" fill="#8a5a2b"/><path d="M7-12V0H1z" fill="#fff"/><path d="M8-10V0h6z" fill="#ef4444"/></g><path d="M278 56Q300 34 322 56z" fill="#ef4444"/><path d="M289 46Q300 36 311 46l-5 10h-12z" fill="#fff" opacity=".85"/><path d="M300 36V82" stroke="#8a5a2b" stroke-width="1.6"/><rect x="284" y="82" width="32" height="6" rx="1" fill="#06b6d4"/>'+K(338,1,'#06b6d4','jmp','',80)+K(360,0,'#f59e0b','jmp d2','',80)+'<g class="brd"><path d="M0 6q3-3.5 6 0q3-3.5 6 0" stroke="#fff" stroke-width="1" fill="none"/></g>')}
+  var CLS_SVG='<rect class="g1" x="-3000" y="78" width="3370" height="14"/><rect x="190" y="14" width="50" height="38" rx="2" fill="var(--board)" stroke="#8a5a2b" stroke-width="3"/><g class="bd bd1"><path class="ch1" d="M196 24H232"/><path class="ch1 b" d="M196 32H226"/><path class="ch1" d="M198 47l8-9 8 9z"/></g><g class="bd bd2"><text x="196" y="38" font-size="13" font-weight="800" fill="#fff" font-family="system-ui">2+3=?</text></g><g class="bd bd3"><circle cx="214" cy="33" r="5" fill="#ffc400"/><ellipse cx="214" cy="33" rx="14" ry="14" fill="none" stroke="#fff6" stroke-dasharray="2 2"/><g class="orb"><circle cx="228" cy="33" r="2.6" fill="#3b82f6"/></g></g><g class="bd bd4"><text x="196" y="28" font-size="9" font-weight="800" fill="#fff" font-family="system-ui">SORU 1</text><path class="ch1" d="M196 35H232"/><path class="ch1 b" d="M196 43H224"/></g><g class="bd bd5"><polygon class="star" points="215,21 218.2,28.5 226.5,29.2 220.2,34.6 222.2,42.7 215,38.5 207.8,42.7 209.8,34.6 203.5,29.2 211.8,28.5" fill="#ffc400"/></g><g class="tch"><rect x="248" y="62" width="4" height="16" fill="#222"/><rect x="255" y="62" width="4" height="16" fill="#222"/><rect x="247" y="40" width="14" height="24" rx="4" fill="#475569"/><path d="M254 42l-2 4 2 8 2-8z" fill="#ef4444"/><circle cx="254" cy="33" r="6.5" fill="#d9a57b"/><path d="M247.5 31a6.5 6.5 0 0 1 13 0z" fill="#2a2a2a"/><path d="M248 34h4" stroke="#222" stroke-width="1"/><g class="tarm"><path d="M251 46L240 43" stroke="#475569" stroke-width="4" stroke-linecap="round"/><path d="M240 43L214 31" stroke="#e9d9a8" stroke-width="1.4" stroke-linecap="round"/><circle cx="240" cy="43" r="2.2" fill="#d9a57b"/></g></g><g class="skstu">'+STU+'</g><g class="bub"><circle cx="308" cy="14" r="7" fill="var(--surface2)" stroke="var(--accent)"/><text x="305.4" y="18" font-size="11" font-weight="800" fill="var(--accent)" font-family="system-ui">?</text></g><rect class="cf" x="270" y="8" width="3" height="5" fill="#ef4444"/><rect class="cf" x="288" y="6" width="3" height="5" fill="#22c55e" style="animation-delay:.3s"/><rect class="cf" x="306" y="10" width="3" height="5" fill="#3b82f6" style="animation-delay:.7s"/><rect class="cf" x="324" y="5" width="3" height="5" fill="#ffc400" style="animation-delay:.1s"/><rect class="cf" x="342" y="9" width="3" height="5" fill="#ec4899" style="animation-delay:.5s"/><rect class="cf" x="358" y="6" width="3" height="5" fill="#22c55e" style="animation-delay:.9s"/>';
+  var BELL_SVG='<rect class="g1" x="-3000" y="80" width="3370" height="12"/><rect x="296" y="4" width="8" height="10" fill="var(--line)"/><rect x="262" y="2" width="76" height="5" rx="2" fill="#8a5a2b"/><path class="wv" d="M262 36 q-10 12 0 26"/><path class="wv w2" d="M252 30 q-16 18 0 38"/><path class="wv" d="M338 36 q10 12 0 26"/><path class="wv w2" d="M348 30 q16 18 0 38"/><g class="bell"><path d="M300 16 c-14 0 -22 10 -22 26 v12 l-6 8 h56 l-6 -8 v-12 c0 -16 -8 -26 -22 -26z" fill="var(--accent)"/><path d="M286 30 q4 -8 12 -9" stroke="#fff8" stroke-width="2" fill="none" stroke-linecap="round"/><g class="clp"><circle cx="300" cy="66" r="5" fill="#8a5a2b"/></g></g>';
+/* ---- motor (scene-skin.js'deki hero/stage sistemiyle birebir aynı) ---- */
+var D=document;
+function $(s,r){return(r||D).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||D).querySelectorAll(s))}
+function live(){try{var L=global.SchoolLiveStatus;return(L&&L.status&&L.status())||{}}catch(e){return{}}}
+var CAPS={c:['Öğretmen konuyu anlatıyor','Elini kaldıran öğrenci söz alıyor','Fen: gezegenler dönüyor','Öğretmen sıraları geziyor','Aferin! Doğru cevap 🎉'],
+  t1:'Öğrenciler bahçede top oynuyor ⚽',t2:'İp atlayan öğrenciler 🪢',t3:'Öğretmen kahve molasında ☕',l1:'Yemek sırası, afiyet olsun 🍲',l2:'Öğrenciler yemek yiyor 😋',
+  e1:'Öğrenciler eve gidiyor 🎒',e2:'Servis kalkıyor, güle güle 👋',e3:'Okul yarına hazır 🌙',w1:'Hafta sonu: uçurtma keyfi 🪁',w2:'Okul kapalı, pazartesi görüşürüz 🏫',
+  h1:'Bayramınız kutlu olsun 🇹🇷🎆',h2:'İyi tatiller! ☀️🏖️',b:'Zil çalmak üzere 🔔'};
+var SQ={t:['t1','t2','t3'],l:['l1','l2'],e:['e1','e2','e3'],w:['w1','w2']};
+function mapMode(l){var m=l.mode;return m==='lesson'?'c':m==='break'?'t':m==='lunch'?'l':m==='after'?'e':m==='weekend'?'w':m==='holiday'?'h':'b'}
+function holidayKind(l){return /bayram|cumhuriyet|zafer|atat|23 nisan|19 may|30 a/i.test(String(l.sub||'')+' '+String(l.title||''))?'h1':'h2'}
+function hourNow(){var o=global.__KORUK_SKIN_HOUR;if(typeof o==='number')return o;var d=new Date();return d.getHours()+d.getMinutes()/60}
+function tod(h){return h>=5&&h<8?'dawn':h>=8&&h<17?'day':h>=17&&h<20?'dusk':'night'}
+function defs(){if($('#sk-defs'))return;var d=D.createElement('div');d.id='sk-defs';d.className='sk';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
+  d.innerHTML='<svg width="0" height="0"><defs><linearGradient id="gsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sk1)"/><stop offset="1" style="stop-color:var(--sk2)"/></linearGradient><radialGradient id="gsun"><stop offset="0" style="stop-color:var(--sun);stop-opacity:.85"/><stop offset="1" style="stop-color:var(--sun);stop-opacity:0"/></radialGradient><linearGradient id="gbus" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd84a"/><stop offset=".6" stop-color="#f5b800"/><stop offset="1" stop-color="#d99a00"/></linearGradient></defs></svg>';
+  D.body.appendChild(d)}
+var STAGE='';
+function stageHTML(){if(STAGE)return STAGE;var st='';for(var i=0;i<14;i++)st+='<circle class="win'+(i%2?' w2':'')+'" cx="'+(10+i*25)+'" cy="'+(8+(i*37)%60)+'" r="1.1" fill="#fff" style="animation-delay:'+(i*.37).toFixed(2)+'s"/>';
+  STAGE='<div class="sk sk-stage" data-sk="1" data-m="b" data-tod="day" data-room="out" aria-hidden="true"><div class="sk-sky"><svg class="sk-skysvg on" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice"><g class="sk-stars">'+st+'</g><g class="sk-cel sk-sun"><circle r="30" fill="url(#gsun)"/><circle r="10" fill="var(--sun)"/></g><g class="sk-cel sk-moon"><path d="M0-12a12 12 0 1 0 9 20a9 9 0 1 1-9-20z" fill="#f1ead0"/></g>'+CL(70,46,1.3,0)+CL(250,30,1,-6)+'</svg></div>'+
+  '<svg class="sk-ov on" viewBox="165 0 205 92" preserveAspectRatio="xMidYMin slice"><svg class="sk-g sk-gb" x="0" y="0" width="370" height="92" viewBox="0 0 370 92">'+BELL_SVG+'</svg><svg class="sk-g sk-gc sk-c" data-s="1" x="0" y="0" width="370" height="92" viewBox="0 0 370 92">'+CLS_SVG+'</svg><svg class="sk-g sk-go" x="0" y="0" width="370" height="92" viewBox="0 0 370 92">'+OVL+'</svg></svg><div class="sk-cap"></div></div>';
+  return STAGE}
+var ST={key:'',mode:'',tk:0,sec:0,ring:0,cel:''};
+function sky(st){var h=hourNow(),t=tod(h),ck=t+Math.floor(h*4);if(ST.cel===ck&&st.dataset.tod===t)return;ST.cel=ck;st.dataset.tod=t;
+  var night=t==='night',f=night?((h-18+24)%24)/12:Math.min(1,Math.max(0,(h-6)/12)),x=24+f*312,y=118-Math.sin(f*Math.PI)*84,el=$(night?'.sk-moon':'.sk-sun',st);
+  if(el)el.setAttribute('transform','translate('+x.toFixed(1)+' '+y.toFixed(1)+')')}
+function apply(init){if(!ACT)return;var sts=$$('[data-sk]');if(!sts.length)return;var l=live(),m=mapMode(l),hk=m==='h'?holidayKind(l):'',key=m+hk,now=Date.now();
+  if(ST.mode&&ST.mode!==m&&!init&&'ctlb'.indexOf(ST.mode)>-1&&'ctle'.indexOf(m)>-1)ST.ring=now+4000;
+  if(key!==ST.key){ST.key=key;ST.tk=0}ST.mode=m;
+  var soon=(m==='c'||m==='t'||m==='l')&&isFinite(l.remaining)&&l.remaining>=0&&l.remaining<=10,ringing=now<ST.ring,shown=(ringing||soon||m==='b')?'b':m,cap='';
+  if(shown==='c'){cap=CAPS.c[ST.tk%5]}
+  else if(shown==='b'){cap=CAPS.b}
+  else{var q=shown==='h'?[hk]:SQ[shown],id=q[ST.tk%q.length];cap=CAPS[id]||''}
+  sts.forEach(function(st){
+    if(st.dataset.m!==shown)st.dataset.m=shown;var room=(shown==='c'||shown==='l')?'in':'out';if(st.dataset.room!==room)st.dataset.room=room;
+    st.classList.toggle('sk-ring',ringing||soon);sky(st);
+    if(shown==='c'){var n=ST.tk%5+1,c=$('.sk-c',st);if(c&&c.getAttribute('data-s')!==String(n))c.setAttribute('data-s',String(n))}
+    else if(shown!=='b'){var q2=shown==='h'?[hk]:SQ[shown],id2=q2[ST.tk%q2.length];$$('.sk-go .v',st).forEach(function(g){var on=g.id==='skv-'+id2;if(g.classList.contains('on')!==on)g.classList.toggle('on',on)})}
+    var ce=$('.sk-cap',st);if(ce&&ce.textContent!==cap)ce.textContent=cap
+  })}
+/* ---- yalnızca .kh-hero'ya sahne ekler; menü/banner/kart/hava durumuna DOKUNMAZ ---- */
+var IO=global.IntersectionObserver?new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('sk-pause',!e.isIntersecting)})},{rootMargin:'160px'}):null;
+function watch(){if(!IO)return;$$('[data-sk]').forEach(function(el){if(!el.__skw){el.__skw=1;IO.observe(el)}})}
+var raf=0,ACT=true;
+function decorate(){if(!ACT)return;try{defs();var newStage=false;
+  if($('.kh-hero')&&!$('.kh-hero [data-sk]')){var t=D.createElement('div');t.innerHTML=stageHTML();var h=$('.kh-hero');h.insertBefore(t.firstChild,h.firstChild);newStage=true}
+  if(newStage)apply(true);
+  watch()}catch(e){try{console.warn('[KorukZilSahnesi]',e)}catch(_){}}}
+function boot(){D.documentElement.classList.add('ka-skin3');decorate();
+  try{new MutationObserver(function(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;decorate()})}).observe(D.body,{childList:true,subtree:true})}catch(e){}
+  setInterval(function(){ST.sec++;if(ST.sec%5===0)ST.tk++;apply(false)},1000)}
+global.KorukZilSahnesi={enabled:true,refresh:decorate};
+if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})(window);
