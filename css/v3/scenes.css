@@ -108,6 +108,10 @@
 @keyframes sk-swy{from{transform:rotate(-1.6deg)}to{transform:rotate(1.8deg)}}
 .sk .cld{animation:sk-cd 14s ease-in-out infinite alternate}
 @keyframes sk-cd{from{transform:translateX(-12px)}to{transform:translateX(16px)}}
+/* Hava durumu bulutları: rüzgârla sürekli TEK yönde süzülür (ileri-geri sallanmaz),
+   her bulut kendi gecikmesiyle (CD() 4. parametre) desenkronize başlar. */
+.sk .cld.wcld{animation:sk-wcd 24s linear infinite}
+@keyframes sk-wcd{0%{transform:translate(-26px,0)}50%{transform:translate(87px,-3px)}100%{transform:translate(220px,0)}}
 .sk .brd{animation:sk-bf 10s linear infinite}
 @keyframes sk-bf{from{transform:translate(-20px,26px)}to{transform:translate(220px,14px)}}
 .sk .flag2{animation:sk-fg 1.3s ease-in-out infinite alternate}
@@ -139,12 +143,21 @@
 @keyframes sk-rgs{0%,60%,100%{transform:rotate(0)}65%{transform:rotate(14deg)}75%{transform:rotate(-14deg)}85%{transform:rotate(8deg)}}
 .sk .bd{background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:11px;padding:6px 10px;border-radius:20px;white-space:nowrap}
 .sk .spin{animation:sk-rot 24s linear infinite}
+/* Güneş halesi: nefes alır gibi hafifçe büyüyüp solan parlama — statik diskin arkasında */
+.sk .sun-glow{animation:sk-sglow 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center;opacity:.35}
+@keyframes sk-sglow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.62;transform:scale(1.22)}}
 .sk .rn{animation:sk-rn .8s linear infinite;opacity:.8}
 @keyframes sk-rn{from{transform:translate(0,-8px)}to{transform:translate(-14px,100px)}}
+/* Yağmur damlaları tek tip değil: her 3. damla biraz daha ince/soluk, her 4. biraz daha hızlı düşer */
+.sk .rn:nth-child(3n){opacity:.5;stroke-width:1}
+.sk .rn:nth-child(4n){animation-duration:.66s}
 .sk .sn{animation:sk-sn 5s linear infinite}
-@keyframes sk-sn{from{transform:translate(0,-6px)}50%{transform:translate(8px,50px)}to{transform:translate(-4px,106px)}}
-.sk .bolt{animation:sk-bl3 3.5s linear infinite;opacity:0}
-@keyframes sk-bl3{0%,88%,100%{opacity:0}90%,94%{opacity:1}92%{opacity:.2}}
+@keyframes sk-sn{from{transform:translate(0,-6px) rotate(0deg)}50%{transform:translate(8px,50px) rotate(160deg)}to{transform:translate(-4px,106px) rotate(320deg)}}
+/* Şimşek: yakın çakım + hemen ardından daha soluk, uzaktaki ikinci bir çakım — tek düze değil */
+.sk .bolt{animation:sk-bl3 6s linear infinite;opacity:0}
+@keyframes sk-bl3{0%,75%,100%{opacity:0}76%{opacity:1}77.5%{opacity:.12}79%{opacity:.85}81%,100%{opacity:0}}
+.sk .bolt-far{animation:sk-bl3f 6s linear infinite;animation-delay:-2.4s;opacity:0}
+@keyframes sk-bl3f{0%,75%,100%{opacity:0}76%{opacity:.55}78%{opacity:.08}79.5%{opacity:.4}81%,100%{opacity:0}}
 .sk .fgb{animation:sk-fgb 6s ease-in-out infinite alternate}
 @keyframes sk-fgb{to{transform:translateX(30px)}}
 .sk .pw{}
