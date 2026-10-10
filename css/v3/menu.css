@@ -9,6 +9,11 @@
  * güvenilir biçimde geçmek için v3 kuralları da #kaMenuLayer önekiyle + !important
  * yazılır — ama burada TEK, düzenli bir blokta; dağınık yama olarak değil. */
 
+html.ka-v3 #kaMenuLayer{
+  /* --ka-menu-custom: shell-ui.js menü kartı rengi seçildiğinde satır-içi style ile set eder;
+     burada yalnız bir öntanım veriyoruz (satır-içi değer her zaman kazanır). */
+  --ka-menu-custom:var(--ka-primary);
+}
 html.ka-v3 #kaMenuLayer.ka-menu-layer{
   /* tam viewport: kendisi scrim (karartma), gerçek panel .ka-menu-page içinde kayar */
   inset:0 !important;
@@ -38,10 +43,13 @@ html.ka-v3 #kaMenuLayer .ka-menu-page{
   border-radius:0 24px 24px 0 !important;
   overflow:hidden !important;
   transform:translateX(-100%) !important;
-  transition:transform .38s cubic-bezier(.32,.9,.4,1) !important;
+  transition:transform .42s cubic-bezier(.34,1.3,.4,1) !important;
 }
 html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-page{
   transform:translateX(0) !important;
+}
+html.ka-v3 #kaMenuLayer.ka-menu-layer:not(.open) .ka-menu-page{
+  transition:transform .26s cubic-bezier(.4,0,.6,1) !important;
 }
 
 /* sahne başlığı: gökyüzü + tepe — tamamen token/gradient, sabit renk yok */
@@ -111,80 +119,154 @@ html.ka-v3 #kaMenuLayer .ka-menu-card{
   flex-direction:row !important;
   align-items:center !important;
   justify-content:flex-start !important;
-  gap:12px !important;
+  gap:13px !important;
   width:100% !important;
   height:auto !important;
   min-height:0 !important;
   aspect-ratio:auto !important;
-  padding:11px 12px !important;
-  border-radius:14px !important;
+  padding:14px 15px !important;
+  border-radius:17px !important;
   border:0 !important;
-  background:transparent !important;
-  color:var(--ka-text) !important;
-  box-shadow:none !important;
+  color:white !important;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--ka-text) 14%,transparent) !important;
   cursor:pointer !important;
   text-align:left !important;
-  font-weight:700 !important;
-  overflow:visible !important;
+  font-weight:800 !important;
+  overflow:hidden !important;
+  /* açılış animasyonu: soldan kayarak + büyüyerek belirir, kart sırasına göre gecikmeli.
+     ÖNEMLİ: opacity/transform burada !important OLMAMALI — CSS animasyonları !important
+     statik değerleri geçemez (spec önceliği), aksi halde kartlar hep görünmez kalır. */
+  opacity:0;
+  transform:translateX(-18px) scale(.96);
 }
-html.ka-v3 #kaMenuLayer .ka-menu-card:hover,
+html.ka-v3 #kaMenuLayer .ka-menu-card::after{
+  content:"" !important;
+  display:block !important;
+  position:absolute !important;
+  inset:auto -22px -34px auto !important;
+  width:96px !important;height:96px !important;
+  border-radius:50% !important;
+  background:color-mix(in srgb,white 10%,transparent) !important;
+  pointer-events:none !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card::before{content:none !important;display:none !important}
 html.ka-v3 #kaMenuLayer .ka-menu-card:active{
-  background:var(--ka-muted-bg) !important;
-  filter:none !important;
-  transform:none !important;
-  box-shadow:none !important;
+  transform:scale(.97) !important;
+  transition:transform .12s ease !important;
 }
-html.ka-v3 #kaMenuLayer .ka-menu-card::before,
-html.ka-v3 #kaMenuLayer .ka-menu-card::after{content:none !important;display:none !important}
+@keyframes kaMenuCardIn{
+  from{opacity:0;transform:translateX(-18px) scale(.96)}
+  to{opacity:1;transform:translateX(0) scale(1)}
+}
+@keyframes kaMenuIconIn{
+  0%{scale:.4;rotate:-14deg;opacity:0}
+  60%{scale:1.14;rotate:4deg;opacity:1}
+  100%{scale:1;rotate:0deg;opacity:1}
+}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card{
+  animation:kaMenuCardIn .46s cubic-bezier(.22,1,.36,1) both;
+}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(1){animation-delay:.08s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(2){animation-delay:.14s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(3){animation-delay:.20s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(4){animation-delay:.26s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(5){animation-delay:.32s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(6){animation-delay:.38s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card:nth-child(n+7){animation-delay:.42s}
+html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card .ka-menu-card__icon{
+  animation:kaMenuIconIn .5s cubic-bezier(.3,1.6,.4,1) both;
+  animation-delay:inherit;
+}
 html.ka-v3 #kaMenuLayer .ka-menu-card__icon{
-  position:static !important;
-  transform:none !important;
-  width:38px !important;
-  height:38px !important;
-  flex:0 0 38px !important;
+  position:relative !important;
+  left:auto !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  z-index:1 !important;
+  width:42px !important;
+  height:42px !important;
+  flex:0 0 42px !important;
   margin:0 !important;
-  border-radius:12px !important;
-  background:var(--ka-primary-soft) !important;
-  color:var(--ka-primary) !important;
-  font-size:18px !important;
+  border-radius:13px !important;
+  background:color-mix(in srgb,white 22%,transparent) !important;
+  color:white !important;
+  font-size:20px !important;
   display:grid !important;
   place-items:center !important;
+  /* Eski "v1057" bloğu transform:translateX(-50%)!important atıyor; bunu kalıcı olarak
+     sıfırlıyoruz. Açılış animasyonu transform ÜZERİNDEN DEĞİL, bağımsız scale/rotate
+     özellikleriyle çalışır (Bug #1 dersi: !important her zaman animasyonu yener;
+     bu yüzden transform burada !important olsa da animasyon scale/rotate'i engellemez). */
+  transform:none !important;
+  scale:1;
+  rotate:0deg;
 }
 html.ka-v3 #kaMenuLayer .ka-menu-card strong{
-  position:static !important;
+  position:relative !important;
+  z-index:1 !important;
   width:auto !important;
   margin:0 !important;
   padding:0 !important;
-  color:var(--ka-text) !important;
+  color:white !important;
   text-shadow:none !important;
   text-align:left !important;
-  font-size:14px !important;
+  font-size:14.5px !important;
   line-height:1.3 !important;
 }
 html.ka-v3 #kaMenuLayer .ka-menu-card>.ka-badge{
-  position:static !important;
+  position:relative !important;
+  z-index:1 !important;
   margin-left:auto !important;
-  background:var(--ka-muted-bg) !important;
-  color:var(--ka-text-muted) !important;
+  background:color-mix(in srgb,white 24%,transparent) !important;
+  color:white !important;
 }
 html.ka-v3 #kaMenuLayer .ka-menu-card__edit-indicator{
-  position:static !important;
+  position:relative !important;
+  z-index:1 !important;
   margin-right:2px !important;
-  background:var(--ka-primary-soft) !important;
-  color:var(--ka-primary) !important;
+  background:color-mix(in srgb,white 24%,transparent) !important;
+  color:white !important;
 }
-/* özel renkli kart arka planları (settings menüsünde renk seçilmişse) v3'te de korunur
-   ama satır diline uyacak şekilde: dolgu değil, sol şerit */
-html.ka-v3 #kaMenuLayer .ka-menu-card[data-menu-custom-color="true"],
+/* renkli dolgular: gerçek uygulamada zaten var olan modül renk aileleri (aynı eşleme) */
 html.ka-v3 #kaMenuLayer .ka-menu-card--green,
-html.ka-v3 #kaMenuLayer .ka-menu-card--violet,
-html.ka-v3 #kaMenuLayer .ka-menu-card--orange,
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="people"]{
+  background:linear-gradient(135deg,var(--ka-module-people-1),var(--ka-module-people-2)) !important;
+}
 html.ka-v3 #kaMenuLayer .ka-menu-card--cyan,
-html.ka-v3 #kaMenuLayer .ka-menu-card--amber,
-html.ka-v3 #kaMenuLayer .ka-menu-card--red,
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="calendar"]{
+  background:linear-gradient(135deg,var(--ka-module-calendar-1),var(--ka-module-calendar-2)) !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card--orange,
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="documents"]{
+  background:linear-gradient(135deg,var(--ka-module-documents-1),var(--ka-module-documents-2)) !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card--violet,
 html.ka-v3 #kaMenuLayer .ka-menu-card--purple,
-html.ka-v3 #kaMenuLayer .ka-menu-card--slate{
-  background:transparent !important;
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="transport"]{
+  background:linear-gradient(135deg,var(--ka-module-transport-1),var(--ka-module-transport-2)) !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card--red,
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="communication"]{
+  background:linear-gradient(135deg,var(--ka-module-communication-1),var(--ka-module-communication-2)) !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card--amber,
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="programs"]{
+  background:linear-gradient(135deg,var(--ka-module-programs-1),var(--ka-module-programs-2)) !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card--slate,
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="settings"]{
+  background:linear-gradient(135deg,var(--ka-module-settings-1),var(--ka-module-settings-2)) !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="exams"]{
+  background:linear-gradient(135deg,var(--ka-module-exams-1),var(--ka-module-exams-2)) !important;
+}
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-ka-menu-group="management"]{
+  background:linear-gradient(135deg,var(--ka-module-management-1),var(--ka-module-management-2)) !important;
+}
+/* özel renk seçilmiş kart (ayarlardan): tek renk üstünde hafif koyulaştırılmış degrade */
+html.ka-v3 #kaMenuLayer .ka-menu-card[data-menu-custom-color="true"]{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--ka-menu-custom) 94%,white),color-mix(in srgb,var(--ka-menu-custom) 80%,black)) !important;
 }
 
 /* alt-liste (drill-down) satırları: hamburger örneğindeki .it satır stiline yakın */
@@ -203,6 +285,10 @@ html.ka-v3 #kaMenuLayer .ka-menu-list>.ka-btn .ka-avatar{background:var(--ka-pri
 @media(prefers-reduced-motion:reduce){
   html.ka-v3 #kaMenuLayer.ka-menu-layer,
   html.ka-v3 #kaMenuLayer .ka-menu-page{transition:none !important}
+  html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card,
+  html.ka-v3 #kaMenuLayer.ka-menu-layer.open .ka-menu-card .ka-menu-card__icon{
+    animation:none !important;opacity:1 !important;transform:none !important;
+  }
 }
 
 /* koyu temadaki eski !important yamaları (örn. [data-theme="dark"] #kaMenuLayer .ka-menu-head
