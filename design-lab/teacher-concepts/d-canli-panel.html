@@ -36,9 +36,9 @@
   :root[data-theme="dark"] .theme-toggle .i-moon{display:none}
 
   /* ============ Kapak + sahneler ============ */
-  /* Kapak artık sabit yükseklikte değil: JS her sahnede gerçek içerik yüksekliğini ölçüp
-     .scenes-viewport'un height'ını ona göre ayarlıyor (bkz. setViewportHeight()) — böylece
-     "günün sözü" gibi kısa sahnelerde kapağın altında boşluk kalmıyor, kapak kısa ve geniş durur. */
+  /* Tüm sahneler AYNI boyutta: JS sayfa yüklenince her sahnenin doğal yüksekliğini ölçüp
+     en büyüğünü alıyor (bkz. fitViewportHeight()) ve kapağı o sabit yüksekliğe ayarlıyor —
+     sahne değiştikçe kapak boyu değişmiyor, hepsi aynı kart boyutunda kalıyor. */
   .cover{position:relative;margin-top:16px;border-radius:22px;overflow:hidden;border:1px solid var(--panel-border);background:var(--cover-bg);padding:26px 30px 18px}
   .blob{position:absolute;border-radius:50%;filter:blur(54px);opacity:var(--blob-op);mix-blend-mode:var(--blob-blend);will-change:transform}
   .blob1{width:360px;height:360px;background:radial-gradient(circle,var(--violet),transparent 70%);top:-140px;left:-80px}
@@ -53,8 +53,7 @@
   @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
   @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
 
-  .scenes-viewport{position:relative;z-index:1;overflow:hidden;touch-action:pan-y;transition:height .32s cubic-bezier(.2,.8,.2,1)}
-  @media (prefers-reduced-motion:reduce){.scenes-viewport{transition:none}}
+  .scenes-viewport{position:relative;z-index:1;overflow:hidden;touch-action:pan-y}
   .scene-track{display:flex;align-items:flex-start;width:300%;transition:transform .6s cubic-bezier(.3,.8,.2,1)}
   .scene-track.dragging{transition:none}
   @media (prefers-reduced-motion:reduce){.scene-track{transition:none}}
@@ -76,15 +75,10 @@
   .stats b{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700}
   .stats span{font-size:12px;color:var(--muted)}
 
-  /* --- sahne 2: sayfa tanıtımı --- */
-  .intro-feats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 22px;margin-top:8px;max-width:480px}
-  .feat{display:flex;gap:10px;align-items:flex-start;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease}
-  .feat.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.feat{opacity:1;transform:none;transition:none}}
-  .feat-ic{flex:none;width:30px;height:30px;border-radius:9px;background:var(--panel);border:1px solid var(--panel-border);display:flex;align-items:center;justify-content:center;color:var(--cyan)}
-  .feat-ic svg{width:16px;height:16px}
-  .feat b{display:block;font-size:13.5px;font-weight:600}
-  .feat span{font-size:11.5px;color:var(--muted)}
+  /* --- sahne 2: kademe ve cinsiyete göre dağılım --- */
+  .dist-wrap{display:flex;gap:34px;flex-wrap:wrap;margin-top:6px}
+  .dist-h{display:block;font-size:10.5px;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;font-weight:700;text-transform:uppercase}
+  .dist-col .stats{margin-top:0;gap:22px}
 
   .scene-dots{position:absolute;left:34px;bottom:14px;z-index:3;display:flex;gap:7px}
   .scene-dots button{width:7px;height:7px;border-radius:50%;border:none;background:var(--panel-border);cursor:pointer;padding:0}
@@ -178,11 +172,13 @@
     color:#f4f1e6;text-shadow:0 0 1px rgba(255,255,255,.25)}
   .quote-by{font-family:'Caveat',cursive;font-size:18px;color:#bcd6c4;font-weight:600}
 
-  /* ============ Öğretmen detay sayfası — tam sayfa, animasyonlu açılır ============ */
+  /* ============ Öğretmen detay sayfası — tam sayfa, animasyonlu açılır ============
+     Belirgin olsun diye ekranın tamamen altından yukarı kayarak geliyor (translateY(100%) →
+     none), ince bir kayma değil, gerçek bir "sayfa açılışı" hissi versin diye. */
   .detail-overlay{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
-    opacity:0;visibility:hidden;transform:translateY(26px);
-    transition:opacity .3s ease,transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s linear .34s}
-  .detail-overlay.open{opacity:1;visibility:visible;transform:none;transition:opacity .3s ease,transform .34s cubic-bezier(.2,.8,.2,1)}
+    opacity:0;visibility:hidden;transform:translateY(100%);
+    transition:opacity .38s ease,transform .42s cubic-bezier(.16,.8,.24,1),visibility 0s linear .42s}
+  .detail-overlay.open{opacity:1;visibility:visible;transform:none;transition:opacity .38s ease,transform .42s cubic-bezier(.16,.8,.24,1)}
   @media (prefers-reduced-motion:reduce){.detail-overlay{transition:opacity .15s ease;transform:none}}
 
   .detail-bar{position:sticky;top:0;z-index:2;display:flex;gap:10px;padding:14px 18px;background:var(--cover-bg);border-bottom:1px solid var(--panel-border)}
@@ -251,13 +247,23 @@
         </div>
 
         <div class="scene" data-scene="1">
-          <div class="kicker">BU SAYFADA</div>
-          <h1 style="font-size:clamp(24px,3.8vw,32px)">Tek ekranda her şey</h1>
-          <div class="intro-feats" id="introFeats">
-            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></span><div><b>Hızlı arama</b><span>İsim veya branşla anında bul</span></div></div>
-            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></span><div><b>Haftalık yük</b><span>Ders saatini bir bakışta gör</span></div></div>
-            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></span><div><b>Nöbet takibi</b><span>Kim bugün nöbetçi, hemen belli</span></div></div>
-            <div class="feat"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c1-3.8 4-5.8 6.5-5.8s5.5 2 6.5 5.8"/></svg></span><div><b>Profil detayı</b><span>Dokunuşla tam dosya açılır</span></div></div>
+          <div class="kicker">ÖĞRETMEN DAĞILIMI</div>
+          <h1 style="font-size:clamp(23px,3.8vw,30px)">Kademe ve cinsiyete göre</h1>
+          <div class="dist-wrap">
+            <div class="dist-col">
+              <span class="dist-h">Kademe</span>
+              <div class="stats">
+                <div><b data-count="7">0</b><span>İlkokul</span></div>
+                <div><b data-count="5">0</b><span>Ortaokul</span></div>
+              </div>
+            </div>
+            <div class="dist-col">
+              <span class="dist-h">Cinsiyet</span>
+              <div class="stats">
+                <div><b data-count="8">0</b><span>Kadın</span></div>
+                <div><b data-count="4">0</b><span>Erkek</span></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -404,19 +410,24 @@
     try { localStorage.setItem('ka-concept-theme', theme); } catch(e){}
   });
 
-  /* ---- Sayaçlar ---- */
-  document.querySelectorAll('[data-count]').forEach(function(el){
-    var target = parseInt(el.getAttribute('data-count'), 10);
-    if (reduce) { el.textContent = target; return; }
-    var dur = 900, t0 = null;
-    function step(ts){
-      if (!t0) t0 = ts;
-      var p = Math.min(1, (ts - t0) / dur);
-      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  });
+  /* ---- Sayaçlar: bir sahne her aktif olduğunda (ilk gösterimde VE her tekrar dönüşte)
+     baştan (0'dan) sayarak dolar — bkz. goTo() içindeki runCounters() çağrısı. ---- */
+  function runCounters(scene){
+    var els = scene.querySelectorAll('[data-count]');
+    els.forEach(function(el){
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      if (reduce) { el.textContent = target; return; }
+      el.textContent = '0';
+      var dur = 900, t0 = null;
+      function step(ts){
+        if (!t0) t0 = ts;
+        var p = Math.min(1, (ts - t0) / dur);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
 
   /* ---- Öğretmen detay sayfası (karta tıklayınca/Enter'a basınca animasyonlu açılır) ----
      Örnek veri: her kart sırasına (0=BB ... 7=OK) karşılık gelen ders/nöbet/kulüp/izin kayıtları. */
@@ -539,30 +550,20 @@
   var scenes = [].slice.call(document.querySelectorAll('.scene'));
   var dots = [].slice.call(document.querySelectorAll('#sceneDots button'));
   var current = 0, timer = null;
-  var introShown = false;
 
-  /* Kapak yüksekliği artık sabit değil: her sahnenin GERÇEK içerik yüksekliğini ölçüp
-     viewport'u ona göre ayarlıyoruz, böylece "günün sözü" gibi kısa sahnelerde kapağın
-     altında boşluk kalmıyor, kapak kısa ve geniş kalıyor. */
-  function setViewportHeight(){
-    var h = scenes[current].offsetHeight;
-    if (h) viewport.style.height = h + 'px';
-  }
-
-  function showIntro(){
-    if (introShown) return;
-    introShown = true;
-    document.querySelectorAll('#introFeats .feat').forEach(function(el, idx){
-      setTimeout(function(){ el.classList.add('in'); }, reduce ? 0 : idx * 110);
-    });
+  /* Tüm sahneler AYNI boyutta olsun diye: her sahnenin doğal yüksekliğini ölçüp en büyüğünü
+     sabit viewport yüksekliği olarak kullanıyoruz — sahne değişince kapak boyu DEĞİŞMİYOR. */
+  function fitViewportHeight(){
+    var maxH = 0;
+    scenes.forEach(function(s){ if (s.offsetHeight > maxH) maxH = s.offsetHeight; });
+    if (maxH) viewport.style.height = maxH + 'px';
   }
 
   function goTo(n){
     current = (n + scenes.length) % scenes.length;
     track.style.transform = 'translateX(-' + (current * (100 / scenes.length)) + '%)';
     dots.forEach(function(d, i){ d.classList.toggle('on', i === current); });
-    if (current === 1) showIntro();
-    setViewportHeight();
+    runCounters(scenes[current]);
   }
 
   dots.forEach(function(d){
@@ -610,9 +611,10 @@
   viewport.addEventListener('pointercancel', endDrag);
   viewport.addEventListener('pointerleave', function(){ if (dragging) endDrag(); });
 
-  window.addEventListener('resize', setViewportHeight);
+  window.addEventListener('resize', fitViewportHeight);
 
-  setViewportHeight();
+  fitViewportHeight();
+  runCounters(scenes[current]);
   restart();
 })();
 </script>
