@@ -173,20 +173,16 @@
   footer.foot{padding-top:22px;font-size:12px;color:var(--muted);text-align:center}
   @media(max-width:480px){.stats{gap:20px}}
 
-  /* --- sahne 3: BUGÜN — canlı/hareketli akış (doğum günleri, yeni kayıtlar, devamsızlık uyarıları) --- */
-  .today-feed{margin-top:4px;max-width:560px}
-  .today-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--panel-border);
-    opacity:0;transform:translateX(-10px);transition:opacity .4s ease,transform .4s ease}
-  .today-row:first-child{border-top:none}
-  .today-row.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.today-row{opacity:1;transform:none;transition:none}}
-  .today-ic{flex:none;width:46px;height:46px;border-radius:12px;background:var(--panel);border:1px solid var(--panel-border);
-    display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1}
-  .today-row b{display:block;font-weight:600;font-size:13.5px}
-  .today-row span{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
-  .today-pulse{flex:none;width:7px;height:7px;border-radius:50%;background:var(--coral);position:relative;margin-left:auto}
-  .today-pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--coral)}
-  @media (prefers-reduced-motion:no-preference){.today-pulse::after{animation:ping 1.8s cubic-bezier(.2,.7,.3,1) infinite}}
+  /* --- sahne 3: sınıflara göre öğrenci sayısı — canlı dolan çubuk grafik --- */
+  .class-bars{margin-top:8px;max-width:560px}
+  .class-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .class-bar-label{flex:0 0 36px;font-size:12.5px;font-weight:700;color:var(--text)}
+  .class-bar-track{flex:1;height:12px;border-radius:7px;background:var(--panel);border:1px solid var(--panel-border);overflow:hidden}
+  .class-bar-fill{height:100%;border-radius:7px;width:0%;background:linear-gradient(90deg,var(--violet),var(--cyan));
+    transition:width 1s cubic-bezier(.16,.8,.24,1)}
+  .class-bar-fill.max{background:linear-gradient(90deg,var(--coral),#ffb84d)}
+  @media (prefers-reduced-motion:reduce){.class-bar-fill{transition:none}}
+  .class-bar-count{flex:0 0 20px;text-align:right;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700}
 
   /* ============ Öğretmen detay sayfası — tam sayfa, animasyonlu açılır ============
      Belirgin olsun diye ekranın tamamen altından yukarı kayarak geliyor (translateY(100%) →
@@ -262,7 +258,7 @@
           </div>
           <div class="stats">
             <div><b data-count="85">0</b><span>öğrenci</span></div>
-            <div><b data-count="8">0</b><span>sınıf</span></div>
+            <div><b data-count="9">0</b><span>sınıf</span></div>
             <div><b data-count="41">0</b><span>erkek</span></div>
             <div><b data-count="44">0</b><span>kız</span></div>
           </div>
@@ -290,12 +286,18 @@
         </div>
 
         <div class="scene" data-scene="2">
-          <div class="kicker">BUGÜN</div>
-          <h1 style="font-size:clamp(23px,3.8vw,30px)">Canlı akış</h1>
-          <div class="today-feed" id="todayFeed">
-            <div class="today-row"><span class="today-ic">🎂</span><div><b>3 öğrencinin bugün doğum günü var</b><span>4-A, 6-B, 7-A sınıflarından</span></div><span class="today-pulse"></span></div>
-            <div class="today-row"><span class="today-ic">📋</span><div><b>2 yeni öğrenci kaydı</b><span>Bugün sisteme eklendi</span></div></div>
-            <div class="today-row"><span class="today-ic">⚠️</span><div><b>4 devamsızlık bildirimi</b><span>Velilere otomatik gönderildi</span></div></div>
+          <div class="kicker">SINIFLARA GÖRE</div>
+          <h1 style="font-size:clamp(23px,3.8vw,30px)">Öğrenci sayıları</h1>
+          <div class="class-bars" id="classBars">
+            <div class="class-bar-row"><span class="class-bar-label">1-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">2-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="90.9"></div></div><span class="class-bar-count">10</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">3-A</span><div class="class-bar-track"><div class="class-bar-fill max" data-pct="100"></div></div><span class="class-bar-count">11</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">4-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">5-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="72.7"></div></div><span class="class-bar-count">8</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">5-B</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">6-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="90.9"></div></div><span class="class-bar-count">10</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">7-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="90.9"></div></div><span class="class-bar-count">10</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">8-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
           </div>
         </div>
       </div>
@@ -317,7 +319,7 @@
     <div><b>85</b><span>Toplam</span></div>
     <div><b>41</b><span>Erkek</span></div>
     <div><b>44</b><span>Kız</span></div>
-    <div><b>8</b><span>Sınıf</span></div>
+    <div><b>9</b><span>Sınıf</span></div>
   </div>
 
   <div class="class-chips" id="classChips">
@@ -623,12 +625,25 @@
     });
   }
 
+  /* Sınıf çubuk grafiği her sahne ziyaretinde baştan dolsun diye önce sıfırlanıp
+     sonra sırayla (üstten alta) hedef genişliğe animasyonla açılıyor. */
+  function runClassBars(scene){
+    var fills = scene.querySelectorAll('.class-bar-fill');
+    if (!fills.length) return;
+    fills.forEach(function(el){ el.style.width = '0%'; });
+    fills.forEach(function(el, idx){
+      var target = el.getAttribute('data-pct') + '%';
+      setTimeout(function(){ el.style.width = target; }, reduce ? 0 : 90 + idx * 90);
+    });
+  }
+
   function goTo(n){
     current = (n + scenes.length) % scenes.length;
     track.style.transform = 'translateX(-' + (current * (100 / scenes.length)) + '%)';
     dots.forEach(function(d, i){ d.classList.toggle('on', i === current); });
     runCounters(scenes[current]);
     revealStagger(scenes[current]);
+    runClassBars(scenes[current]);
   }
 
   dots.forEach(function(d){
@@ -681,6 +696,7 @@
   fitViewportHeight();
   runCounters(scenes[current]);
   revealStagger(scenes[current]);
+  runClassBars(scenes[current]);
   restart();
 
   /* ---- Sınıfa göre filtre + arama: öğrenciler sınıflara göre filtrelenebilsin ---- */
