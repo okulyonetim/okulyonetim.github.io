@@ -3,18 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
 <title>Konsept D — Canlı Panel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root[data-theme="dark"]{
+    color-scheme:dark;
     --bg:#0a0c11; --panel:rgba(255,255,255,.045); --panel-border:rgba(255,255,255,.09);
     --text:#eef1f6; --muted:#8891a3; --cover-bg:#0d1017;
     --violet:#7c6cf0; --cyan:#2ee6c8; --coral:#ff6b6b; --kicker:#2ee6c8;
     --blob-op:.55; --blob-blend:screen;
   }
   :root[data-theme="light"]{
+    color-scheme:light;
     --bg:#f3f4fb; --panel:rgba(255,255,255,.72); --panel-border:rgba(20,20,45,.1);
     --text:#181a22; --muted:#656c82; --cover-bg:#fbfbff;
     --violet:#6c4df0; --cyan:#0e9488; --coral:#e8503f; --kicker:#6c4df0;
@@ -48,9 +51,9 @@
   @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
 
   .scenes-viewport{position:relative;z-index:1;overflow:hidden;min-height:300px}
-  .scene-track{display:flex;width:300%;height:100%;transition:transform .6s cubic-bezier(.3,.8,.2,1)}
+  .scene-track{display:flex;width:200%;height:100%;transition:transform .6s cubic-bezier(.3,.8,.2,1)}
   @media (prefers-reduced-motion:reduce){.scene-track{transition:none}}
-  .scene{flex:0 0 33.3334%;width:33.3334%;min-width:0}
+  .scene{flex:0 0 50%;width:50%;min-width:0}
 
   .kicker{font-size:12px;color:var(--kicker);letter-spacing:.02em;margin-bottom:10px;font-weight:600}
   .scene h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);margin:0 0 8px;letter-spacing:-.01em}
@@ -68,14 +71,7 @@
   .stats b{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700}
   .stats span{font-size:12px;color:var(--muted)}
 
-  /* --- sahne 2: yazı tahtası --- */
-  .board-wrap{display:flex;justify-content:center}
-  .board{width:100%;max-width:560px;background:#16241c;border:10px solid #5b4027;border-radius:10px;padding:26px 28px;box-shadow:0 18px 32px -20px rgba(0,0,0,.5);position:relative}
-  .board::before{content:"";position:absolute;left:14px;right:14px;bottom:-16px;height:8px;background:#8a95885c;border-radius:2px;filter:blur(1px)}
-  .board-text{font-family:'Caveat','Segoe Print','Bradley Hand',cursive;font-weight:600;color:#eef3ea;font-size:clamp(22px,3.4vw,30px);line-height:1.35;margin:0;min-height:2.7em}
-  .board-sign{font-family:'Caveat','Segoe Print','Bradley Hand',cursive;color:#c8b98a;font-size:17px;margin:8px 0 0;text-align:right}
-
-  /* --- sahne 3: sayfa tanıtımı --- */
+  /* --- sahne 2: sayfa tanıtımı --- */
   .intro-feats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-top:18px;max-width:480px}
   .feat{display:flex;gap:10px;align-items:flex-start;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease}
   .feat.in{opacity:1;transform:none}
@@ -98,37 +94,52 @@
   /* ============ Kartlar ============ */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 
-  /* dış çerçeve: dönen ışıklı kenarlığı taşır, overflow:hidden ile kırpar (mask'a gerek yok) */
-  .card-frame{position:relative;border-radius:17.5px;padding:2px;overflow:hidden;cursor:pointer;border:1px solid var(--panel-border)}
+  /* dış çerçeve: ışıklı kenarlığı taşır, overflow:hidden ile kırpar (mask'a gerek yok).
+     Işık iki bağımsız katmanla sağlanıyor ki biri render olmasa da öbürü görünsün:
+     1) .card-frame üzerinde doğan-sönen box-shadow (hiçbir gradient/mask gerektirmez, en eski
+        tarayıcıda bile çalışır) — ESAS ışık kaynağı budur.
+     2) .card-spin: conic-gradient() DEĞİL, linear-gradient() + rotate() ile dönen parlak bant
+        (linear-gradient, conic-gradient'ten çok daha eski ve her WebView'de desteklenir). */
+  .card-frame{position:relative;border-radius:17.5px;padding:2px;overflow:hidden;cursor:pointer;
+    border:1px solid var(--panel-border);
+    box-shadow:0 0 5px 0 var(--glow,var(--cyan))}
   @media (prefers-reduced-motion:no-preference){
-    .card-frame{opacity:0;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0) * 90ms);transition:transform .2s}
+    .card-frame{opacity:0;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) forwards,glowpulse 2.6s ease-in-out .55s infinite;animation-delay:calc(var(--i,0) * 90ms),0s;transition:transform .2s}
   }
   @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes glowpulse{0%,100%{box-shadow:0 0 4px 0 var(--glow,var(--cyan))}50%{box-shadow:0 0 15px 3px var(--glow,var(--cyan))}}
   .card-frame:hover{transform:translateY(-3px)}
   .card-frame:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 
-  .card-spin{position:absolute;inset:-65%;
-    background:conic-gradient(from 0deg,
-      color-mix(in srgb,var(--glow,var(--cyan)) 38%,transparent) 0 72%,
-      var(--glow,var(--cyan)) 85%,#fff 90%,var(--glow,var(--cyan)) 95%,
-      color-mix(in srgb,var(--glow,var(--cyan)) 38%,transparent) 100%)}
-  @media (prefers-reduced-motion:no-preference){.card-spin{animation:borderspin 7s linear infinite}}
-  @media (prefers-reduced-motion:reduce){.card-spin{background:var(--glow,var(--panel-border))}}
+  /* her zaman görünen sabit renkli halka */
+  .card-ring{position:absolute;inset:-2px;background:var(--glow,var(--cyan));opacity:.55;z-index:0}
+  /* üstünden geçen parlak bant: linear-gradient + rotate, conic-gradient KULLANMAZ */
+  .card-spin{position:absolute;inset:-75%;z-index:1;
+    background:linear-gradient(115deg,transparent 35%,var(--glow,var(--cyan)) 48%,#fff 50%,var(--glow,var(--cyan)) 52%,transparent 65%)}
+  @media (prefers-reduced-motion:no-preference){.card-spin{animation:borderspin 3.2s linear infinite}}
+  @media (prefers-reduced-motion:reduce){.card-spin{display:none}}
   @keyframes borderspin{to{transform:rotate(360deg)}}
-  /* opak taban: spin katmanını yalnız 1.4px kenarlıkta görünür bırakır, kartın cam yüzeyinin altından sızmasını engeller */
-  .card-base{position:absolute;inset:0;background:var(--bg);border-radius:16px;z-index:1}
+  /* opak taban: spin/halka katmanlarını yalnız 2px kenarlıkta görünür bırakır, kartın cam yüzeyinin altından sızmasını engeller */
+  .card-base{position:absolute;inset:0;background:var(--bg);border-radius:16px;z-index:2}
 
-  .card{position:relative;z-index:2;background:var(--panel);border-radius:16px;padding:18px;height:100%;transition:background .2s}
+  .card{position:relative;z-index:3;background:var(--panel);border-radius:16px;padding:18px;height:100%;transition:background .2s}
   .card-frame:hover .card{background:rgba(255,255,255,.07)}
   :root[data-theme="light"] .card-frame:hover .card{background:#fff}
 
   .card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative}
-  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:14.5px;letter-spacing:.2px;flex:none;color:#fff;
-    text-shadow:0 0 1px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.85),0 1px 2px rgba(0,0,0,.6);
-    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
+  /* Harflerin okunurluğu artık hiçbir öğretmenin renginin açık/koyu olmasına bağlı değil:
+     zemin HER ZAMAN sabit koyu bir renk, metin HER ZAMAN düz beyaz — kontrast oranı sabit ve yüksek.
+     Öğretmenin kendi rengi sadece ince bir kenarlık (halka) olarak kalıyor. Önceki sürümde zemin
+     doğrudan --c (öğretmenin rengi, örn. açık sarı #dd9d27) olduğu için bazı renklerde beyaz metin
+     zaten düşük kontrasttı — bu, cihaza özgü bir sorun değil, basit bir kontrast hatasıydı. */
+  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:14.5px;letter-spacing:.2px;flex:none;
+    color:#fff;forced-color-adjust:none;
+    background:#1b1d24;
+    border:2px solid var(--c);
+    box-shadow:0 0 0 1px rgba(0,0,0,.3)}
   .card-top .who{min-width:0;position:relative}
   .card-top h3{margin:0;font-size:15px;font-weight:600}
-  .card-top span{font-size:12px;color:var(--muted)}
+  .card-top .who span{font-size:12px;color:var(--muted)}
   .meter{height:4px;border-radius:3px;background:var(--panel-border);overflow:hidden;margin-bottom:10px;position:relative}
   .meter i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--cyan));width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
   .meter-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:14px;position:relative}
@@ -171,16 +182,6 @@
         </div>
 
         <div class="scene" data-scene="1">
-          <div class="kicker">GÜNÜN SÖZÜ</div>
-          <div class="board-wrap">
-            <div class="board">
-              <p class="board-text" id="boardText"></p>
-              <p class="board-sign">— Hz. Ali</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="scene" data-scene="2">
           <div class="kicker">BU SAYFADA</div>
           <h1 style="font-size:clamp(24px,3.8vw,32px)">Tek ekranda her şey</h1>
           <div class="intro-feats" id="introFeats">
@@ -196,7 +197,6 @@
     <div class="scene-dots" id="sceneDots">
       <button class="on" data-goto="0" aria-label="1. sahne"></button>
       <button data-goto="1" aria-label="2. sahne"></button>
-      <button data-goto="2" aria-label="3. sahne"></button>
     </div>
   </section>
 
@@ -207,57 +207,57 @@
   </div>
 
   <div class="grid" id="grid">
-    <div class="card-frame" tabindex="0" role="link" style="--i:0;--glow:#ef5454"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#ef5454">BB</span><div class="who"><h3>Bilal Baykar</h3><span>Beden Eğitimi</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:0;--glow:#ef5454"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#ef5454">BB</span><div class="who"><h3>Bilal Baykar</h3><span>Beden Eğitimi</span></div></div>
       <div class="meter"><i data-w="0"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>0 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün yok</span></div>
       <a class="phone" href="tel:05336324217">0533 632 42 17</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:1;--glow:#dd9d27"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#dd9d27">ÇS</span><div class="who"><h3>Çiçek Sönmez</h3><span>Sosyal Bilgiler</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:1;--glow:#dd9d27"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#dd9d27">ÇS</span><div class="who"><h3>Çiçek Sönmez</h3><span>Sosyal Bilgiler</span></div></div>
       <div class="meter"><i data-w="88"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>21 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün yok</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05063696048">0506 369 60 48</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:2;--glow:#6f5de0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#6f5de0">EK</span><div class="who"><h3>Elif Kaya</h3><span>Matematik</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:2;--glow:#6f5de0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#6f5de0">EK</span><div class="who"><h3>Elif Kaya</h3><span>Matematik</span></div></div>
       <div class="meter"><i data-w="100"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>24 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 4 ders</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05321112233">0532 111 22 33</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:3;--glow:#1fb89d"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#1fb89d">MD</span><div class="who"><h3>Mehmet Demir</h3><span>Fen Bilimleri</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:3;--glow:#1fb89d"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#1fb89d">MD</span><div class="who"><h3>Mehmet Demir</h3><span>Fen Bilimleri</span></div></div>
       <div class="meter"><i data-w="75"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>18 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 2 ders</span></div>
       <a class="phone" href="tel:05442223344">0544 222 33 44</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:4;--glow:#c954e0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#c954e0">ZA</span><div class="who"><h3>Zeynep Arslan</h3><span>İngilizce</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:4;--glow:#c954e0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#c954e0">ZA</span><div class="who"><h3>Zeynep Arslan</h3><span>İngilizce</span></div></div>
       <div class="meter"><i data-w="83"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>20 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 3 ders</span><span class="tag duty">Nöbetçi</span></div>
       <a class="phone" href="tel:05353334455">0535 333 44 55</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:5;--glow:#ff7d46"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#ff7d46">AY</span><div class="who"><h3>Ahmet Yılmaz</h3><span>Türkçe</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:5;--glow:#ff7d46"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#ff7d46">AY</span><div class="who"><h3>Ahmet Yılmaz</h3><span>Türkçe</span></div></div>
       <div class="meter"><i data-w="92"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>22 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 5 ders</span></div>
       <a class="phone" href="tel:05464445566">0546 444 55 66</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:6;--glow:#1fa870"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#1fa870">SÇ</span><div class="who"><h3>Selin Çelik</h3><span>Müzik</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:6;--glow:#1fa870"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#1fa870">SÇ</span><div class="who"><h3>Selin Çelik</h3><span>Müzik</span></div></div>
       <div class="meter"><i data-w="42"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>10 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 1 ders</span></div>
       <a class="phone" href="tel:05375556677">0537 555 66 77</a>
     </div>  </div>
-    <div class="card-frame" tabindex="0" role="link" style="--i:7;--glow:#5b7ef0"><div class="card-spin"></div><div class="card-base"></div><div class="card">
-      <div class="card-top"><span class="avatar" style="background:#5b7ef0">OK</span><div class="who"><h3>Okan Koç</h3><span>Bilişim Teknolojileri</span></div></div>
+    <div class="card-frame" tabindex="0" role="link" style="--i:7;--glow:#5b7ef0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#5b7ef0">OK</span><div class="who"><h3>Okan Koç</h3><span>Bilişim Teknolojileri</span></div></div>
       <div class="meter"><i data-w="67"></i></div>
       <div class="meter-label"><span>Haftalık</span><span>16 sa / 24</span></div>
       <div class="tags"><span class="tag">Bugün 2 ders</span><span class="tag duty">Nöbetçi</span></div>
@@ -310,23 +310,7 @@
   var scenes = [].slice.call(document.querySelectorAll('.scene'));
   var dots = [].slice.call(document.querySelectorAll('#sceneDots button'));
   var current = 0, timer = null;
-  var QUOTE = 'Bana bir harf öğretenin kırk yıl kölesi olurum.';
-  var boardText = document.getElementById('boardText');
-  var typed = false;
   var introShown = false;
-
-  function typeBoard(){
-    if (typed) return;
-    typed = true;
-    if (reduce) { boardText.textContent = QUOTE; return; }
-    var i = 0;
-    function tick(){
-      boardText.textContent = QUOTE.slice(0, i);
-      i++;
-      if (i <= QUOTE.length) setTimeout(tick, 18);
-    }
-    tick();
-  }
 
   function showIntro(){
     if (introShown) return;
@@ -340,8 +324,7 @@
     current = (n + scenes.length) % scenes.length;
     track.style.transform = 'translateX(-' + (current * (100 / scenes.length)) + '%)';
     dots.forEach(function(d, i){ d.classList.toggle('on', i === current); });
-    if (current === 1) typeBoard();
-    if (current === 2) showIntro();
+    if (current === 1) showIntro();
   }
 
   dots.forEach(function(d){
