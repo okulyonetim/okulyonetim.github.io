@@ -128,7 +128,7 @@ function holidayKind(l){return /bayram|cumhuriyet|zafer|atat|23 nisan|19 may|30 
 function hourNow(){var o=global.__KORUK_SKIN_HOUR;if(typeof o==='number')return o;var d=new Date();return d.getHours()+d.getMinutes()/60}
 function tod(h){return h>=5&&h<8?'dawn':h>=8&&h<17?'day':h>=17&&h<20?'dusk':'night'}
 function defs(){if($('#sk-defs'))return;var d=D.createElement('div');d.id='sk-defs';d.className='sk';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
-  d.innerHTML='<svg width="0" height="0"><defs><linearGradient id="gsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sk1)"/><stop offset="1" style="stop-color:var(--sk2)"/></linearGradient><radialGradient id="gsun"><stop offset="0" style="stop-color:var(--sun);stop-opacity:.85"/><stop offset="1" style="stop-color:var(--sun);stop-opacity:0"/></radialGradient><linearGradient id="gbus" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd84a"/><stop offset=".6" stop-color="#f5b800"/><stop offset="1" stop-color="#d99a00"/></linearGradient></defs></svg>';
+  d.innerHTML='<svg width="0" height="0"><defs><linearGradient id="gsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sk1)"/><stop offset="1" style="stop-color:var(--sk2)"/></linearGradient><radialGradient id="gsun"><stop offset="0" style="stop-color:var(--sun);stop-opacity:.85"/><stop offset="1" style="stop-color:var(--sun);stop-opacity:0"/></radialGradient><linearGradient id="gbus" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd84a"/><stop offset=".6" stop-color="#f5b800"/><stop offset="1" stop-color="#d99a00"/></linearGradient><linearGradient id="gcover" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--v3-accent)"/><stop offset="1" style="stop-color:var(--ka-primary-soft)"/></linearGradient></defs></svg>';
   D.body.appendChild(d)}
 /* ---- hero sahnesi ---- */
 var STAGE='';
@@ -207,6 +207,33 @@ var MI={people:MI_people,programs:MI_programs,communication:MI_communication,doc
 function menuCardIcons(){$$('#kaMenuLayer .ka-menu-card').forEach(function(b){var ic=$('.ka-menu-card__icon',b);if(!ic||ic.hasAttribute('data-sk-icon'))return;
   var key=b.getAttribute('data-ka-menu-group')||MI_KEY_BY_ICON[String(ic.textContent||'').trim()]||'',f=MI[key];if(!f)return;
   ic.setAttribute('data-sk-icon','1');ic.innerHTML='<svg class="sk mi mi-'+key+'" viewBox="0 0 42 42" aria-hidden="true" focusable="false">'+f()+'</svg>'})}
+/* ---- modül kapak sahneleri: liste sayfalarının üst kısmına monte edilen, konuya özgü mini sahne
+   (1. durak: Öğretmenler modülü — js/modules/people.js'teki .ka-teacher-directory/.ka-teacher-intro/
+   .ka-teacher-summary SABİT sınıf adlarına göre eşleşir, üretim dosyasına dokunulmaz). ---- */
+function teacherCoverSvg(){return '<rect width="400" height="150" fill="url(#gcover)"/><rect y="126" width="400" height="24" fill="#000" opacity=".08"/>'+
+  '<rect x="214" y="20" width="150" height="88" rx="4" fill="#2e3b33" stroke="#8a5a2b" stroke-width="5"/>'+
+  '<path class="tc-chalk" pathLength="1" d="M230 48 q14 -10 30 0 q14 10 30 0 q14 -10 30 0" stroke="#fff" stroke-width="1.4" fill="none" opacity=".8"/>'+
+  '<path class="tc-chalk tc-chalk2" pathLength="1" d="M230 66 q40 14 80 0" stroke="#ffd54a" stroke-width="1.4" fill="none" opacity=".75"/>'+
+  '<text x="289" y="92" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" opacity=".85" font-family="system-ui">A+B=C</text>'+
+  '<circle class="tc-dust tc-dust1" cx="244" cy="98" r="1.3" fill="#fff"/><circle class="tc-dust tc-dust2" cx="262" cy="98" r="1" fill="#fff"/><circle class="tc-dust tc-dust3" cx="279" cy="98" r="1.4" fill="#fff"/>'+
+  '<g transform="translate(150 54)">'+
+    '<g class="tc-legA" style="transform-origin:0px 46px"><rect x="-4.6" y="46" width="4.4" height="21" rx="2" fill="#2b3a4a"/></g>'+
+    '<g class="tc-legB" style="transform-origin:6px 46px"><rect x="4" y="46" width="4.4" height="21" rx="2" fill="#1f2a36"/></g>'+
+    '<path d="M-10 20c0-13 8-20 18-20s18 7 18 20v26h-36z" fill="#3b5bdb"/>'+
+    '<g class="tc-arm" style="transform-origin:16px 8px"><rect x="15" y="8" width="4.4" height="20" rx="2.2" fill="#3b5bdb"/><circle cx="17.2" cy="29" r="2.6" fill="#d9a57b"/></g>'+
+    '<circle cx="8" cy="-6" r="9" fill="#d9a57b"/><path d="M-1 -10a9 9 0 0 1 18 0q-4.5-5-9-4.4T-1-10z" fill="#2a1d14"/>'+
+  '</g>'}
+function teacherCoverCount(sum){$$('b',sum).forEach(function(b){if(b.hasAttribute('data-sk-counted'))return;b.setAttribute('data-sk-counted','1');
+  var target=parseInt(b.textContent,10);if(!isFinite(target))return;var dur=800,t0=null;
+  function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur),v=Math.round(target*(1-Math.pow(1-p,3)));b.textContent=String(v);if(p<1)requestAnimationFrame(step)}
+  b.textContent='0';requestAnimationFrame(step)})}
+function teacherCover(){var sec=$('.ka-teacher-directory');if(!sec||sec.hasAttribute('data-sk-cover'))return;
+  var intro=$('.ka-teacher-intro',sec);if(!intro)return;defs();
+  sec.setAttribute('data-sk-cover','1');sec.classList.add('sk-has-cover');
+  var wrap=D.createElement('div');wrap.className='sk sk-tcover';wrap.setAttribute('aria-hidden','true');
+  wrap.innerHTML='<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMax slice">'+teacherCoverSvg()+'</svg>';
+  sec.insertBefore(wrap,sec.firstChild);
+  var sum=$('.ka-teacher-summary',sec);if(sum)teacherCoverCount(sum)}
 /* ---- ekran dışındayken animasyonu durdur ---- */
 var IO=global.IntersectionObserver?new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('sk-pause',!e.isIntersecting)})},{rootMargin:'160px'}):null;
 function watch(){if(!IO)return;$$('[data-sk],[data-sk-banner],[data-sk-card],[data-sk-wx],[data-sk-icon]').forEach(function(el){if(!el.__skw){el.__skw=1;IO.observe(el)}})}
@@ -214,7 +241,7 @@ function decorate(){if(!ACT)return;try{defs();var newStage=false;
   if($('.kh-hero')&&!$('.kh-hero [data-sk]')){var t=D.createElement('div');t.innerHTML=stageHTML();var h=$('.kh-hero');h.insertBefore(t.firstChild,h.firstChild);newStage=true}
   if($('#kaMenuLayer .ka-menu-head')&&!$('#kaMenuLayer .ka-menu-head [data-sk]')){menuStage();newStage=true}else menuStage();
   if(newStage)apply(true);
-  banners();cardScenes();menuCardIcons();wxApply();watch()}catch(e){try{console.warn('[KorukSkin]',e)}catch(_){}}}
+  banners();cardScenes();menuCardIcons();teacherCover();wxApply();watch()}catch(e){try{console.warn('[KorukSkin]',e)}catch(_){}}}
 var raf=0,ACT=true;
 function boot(){D.documentElement.classList.add('ka-skin3');decorate();
   try{new MutationObserver(function(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;decorate()})}).observe(D.body,{childList:true,subtree:true})}catch(e){}

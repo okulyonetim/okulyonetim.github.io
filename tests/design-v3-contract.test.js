@@ -22,7 +22,7 @@ for(const t of ['--ka-primary','--ka-primary-hover','--ka-primary-soft','--ka-bu
 assert(!/--ka-(primary|button-bg|button-text):\s*#/.test(light+dark),'Vurgu tokenları paletten DEĞİL --v3-accent’ten türemeli.');
 assert(/--ka-primary:var\(--v3-accent\)/.test(derived),'--ka-primary --v3-accent’e bağlı olmalı.');
 // 4) Renk disiplini: sabit renk yalnız tokens.css ve scenes.css içinde
-for(const f of ['components','menu','home','report','v3']){
+for(const f of ['components','menu','home','report','v3','covers']){
   const css=rd(`css/v3/${f}.css`).replace(/\/\*[\s\S]*?\*\//g,'');
   const bad=css.match(/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/g);
   assert(!bad,`css/v3/${f}.css içinde sabit renk var (${bad&&bad[0]}); tokens.css’e taşıyın.`);
@@ -30,7 +30,7 @@ for(const f of ['components','menu','home','report','v3']){
 // 5) Kullanılan değişkenler tanımlı olmalı
 const base=rd('css/design-system-base.css');
 const defined=new Set([...(base+tokens).matchAll(/(--[\w-]+)\s*:/g)].map(m=>m[1]));
-for(const f of ['components','menu','home','report','v3']){
+for(const f of ['components','menu','home','report','v3','covers']){
   const css=rd(`css/v3/${f}.css`);const local=new Set([...css.matchAll(/(--[\w-]+)\s*:/g)].map(m=>m[1]));
   for(const m of css.matchAll(/var\((--[\w-]+)/g)) assert(defined.has(m[1])||local.has(m[1]),`css/v3/${f}.css tanımsız değişken kullanıyor: ${m[1]}`);
 }

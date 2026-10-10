@@ -1,0 +1,36 @@
+/* V3 KAPAK — modül liste sayfalarının üstüne monte edilen, konuya özgü mini sahne.
+   Renk YOK: yalnız tokens.css değişkenleri. Sahnenin kendi iç renkleri (tahta, tebeşir, figür)
+   scene-skin.js içindeki SVG'de gömülüdür (C1-C4/MI_* ile aynı yöntem — bu dosyada sabit renk yok).
+   1. durak: Öğretmenler modülü (.ka-teacher-directory, üretim dosyası js/modules/people.js değişmez). */
+html.ka-v3 .ka-teacher-directory.sk-has-cover{position:relative;overflow:hidden;border-radius:var(--ka-radius-lg)}
+html.ka-v3 .sk-tcover{position:absolute;top:0;left:0;right:0;height:150px;z-index:0;pointer-events:none}
+html.ka-v3 .sk-tcover svg{position:absolute;inset:0;width:100%;height:100%}
+html.ka-v3 .sk-tcover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46px;background:linear-gradient(transparent,var(--ka-app-bg));pointer-events:none}
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-intro,
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-summary{position:relative;z-index:1}
+/* design-system-base.css .ka-teacher-directory .ka-teacher-intro{background:var(--ka-card-bg)!important} ile çakışmasın:
+   sahne varken giriş bandının arkası şeffaf olmalı (üstte sahne görünsün). */
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-intro{background:transparent!important}
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-intro small,
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-intro h1,
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-intro p{color:white !important}
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-summary{background:var(--ka-overlay);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:16px;margin-top:8px}
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-summary>div{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-summary>div>b{color:white!important}
+html.ka-v3 .ka-teacher-directory.sk-has-cover .ka-teacher-summary>div>span{color:color-mix(in srgb,white 70%,transparent)!important}
+
+/* tahtaya çizilen tebeşir çizgisi: döngüsel çizim (CLS_SVG'deki .chk ile aynı stroke-dash tekniği) */
+@keyframes tcChalkDraw{0%,8%{stroke-dashoffset:1}35%,75%{stroke-dashoffset:0}92%,100%{stroke-dashoffset:1;opacity:0}}
+.sk .tc-chalk{stroke-dasharray:1;stroke-dashoffset:1;animation:tcChalkDraw 7s ease-in-out infinite}
+.sk .tc-chalk2{animation-delay:1.1s}
+@keyframes tcDust{0%{transform:translateY(0);opacity:0}30%{opacity:.8}100%{transform:translateY(-18px);opacity:0}}
+.sk .tc-dust{animation:tcDust 3s ease-out infinite}
+.sk .tc-dust2{animation-delay:.9s}
+.sk .tc-dust3{animation-delay:1.8s}
+/* öğretmen figürü: ağırlık aktarma (duruş sallantısı) + tahtayı işaret eden kol */
+@keyframes tcLegA{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(3deg)}}
+@keyframes tcLegB{0%,100%{transform:rotate(5deg)}50%{transform:rotate(-3deg)}}
+.sk .tc-legA{animation:tcLegA 3.4s ease-in-out infinite}
+.sk .tc-legB{animation:tcLegB 3.4s ease-in-out infinite}
+@keyframes tcArm{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-14deg)}}
+.sk .tc-arm{animation:tcArm 2.1s ease-in-out infinite}
