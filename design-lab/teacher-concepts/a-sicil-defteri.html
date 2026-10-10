@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Konsept A — Sicil Defteri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f4ee;
+    --paper-line:#dcd6c6;
+    --ink:#1c1b17;
+    --ink-soft:#5c5848;
+    --brass:#8a6a1f;
+    --brass-deep:#5f4a16;
+    --duty:#9c3b2e;
+    --row-alt:#efece1;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e5d8;color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .note{max-width:1040px;margin:14px auto 0;padding:0 20px;font-size:12px;color:#8a8469}
+  .sheet{max-width:1040px;margin:10px auto 60px;background:var(--paper);border:1px solid var(--paper-line);box-shadow:0 1px 0 #fff inset, 0 18px 40px -24px rgba(28,27,23,.35)}
+  .rail{display:flex}
+
+  /* sol: alfabetik kart katalog şeridi */
+  .az{writing-mode:vertical-rl;text-orientation:mixed;display:flex;flex-direction:column;border-right:1px solid var(--paper-line);background:#efece0;flex:0 0 34px}
+  .az span{flex:1;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:#a39c7e;border-bottom:1px solid var(--paper-line)}
+  .az span.on{color:var(--brass-deep);font-weight:600;background:var(--paper)}
+  .az span:last-child{border-bottom:none}
+
+  .main{flex:1;min-width:0}
+
+  header.masthead{padding:34px 38px 22px;border-bottom:2px solid var(--brass)}
+  .masthead .top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .masthead h1{font-family:'Source Serif 4',serif;font-weight:600;font-size:clamp(28px,4vw,38px);margin:0 0 4px;letter-spacing:-.01em}
+  .masthead p{margin:0;color:var(--ink-soft);font-size:14.5px;max-width:46ch}
+  .masthead .kicker{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--brass-deep);margin-bottom:10px}
+  .export{align-self:flex-end;border:1px solid var(--brass);color:var(--brass-deep);background:transparent;padding:9px 16px;font:500 13px/1 'Inter',sans-serif;cursor:pointer;transition:background .15s}
+  .export:hover{background:var(--brass);color:#fff}
+
+  .tally{display:flex;gap:0;border-bottom:1px solid var(--paper-line)}
+  .tally div{flex:1;padding:16px 38px;border-right:1px solid var(--paper-line)}
+  .tally div:last-child{border-right:none}
+  .tally b{font-family:'Source Serif 4',serif;font-size:26px;font-weight:600;display:block}
+  .tally span{font-size:12px;color:var(--ink-soft)}
+
+  .controls{display:flex;gap:10px;padding:16px 38px;border-bottom:1px solid var(--paper-line);flex-wrap:wrap}
+  .controls input,.controls select{font:14px/1 'Inter',sans-serif;border:1px solid var(--paper-line);background:#fff;padding:9px 12px;color:var(--ink)}
+  .controls input{flex:1;min-width:180px}
+  .controls input:focus,.controls select:focus{outline:2px solid var(--brass);outline-offset:1px}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font:500 11.5px/1 'Inter',sans-serif;color:var(--ink-soft);padding:10px 14px;border-bottom:1px solid var(--paper-line);white-space:nowrap}
+  thead th.num,tbody td.num{text-align:right}
+  tbody td{padding:13px 14px;border-bottom:1px solid var(--paper-line);font-size:14px;vertical-align:middle}
+  tbody tr:nth-child(odd){background:var(--row-alt)}
+  tbody tr:hover{background:#e6e0cc}
+  td.sicil{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a39c7e}
+  td.name b{font-family:'Source Serif 4',serif;font-weight:600;font-size:16px;display:block}
+  td.name span{font-size:12.5px;color:var(--ink-soft)}
+  td.branch{color:var(--ink-soft)}
+  .pill{display:inline-block;font-size:11.5px;padding:2px 8px;border:1px solid var(--paper-line);color:var(--ink-soft)}
+  .pill.duty{border-color:var(--duty);color:var(--duty)}
+  td.tel{font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+  td.tel a{color:var(--brass-deep);text-decoration:none}
+  td.tel a:hover{text-decoration:underline}
+  tfoot td{padding:14px 38px;font-size:12.5px;color:var(--ink-soft);border-top:2px solid var(--brass)}
+
+  @media(max-width:720px){
+    .az{display:none}
+    .masthead,.controls{padding-left:20px;padding-right:20px}
+    .tally div{padding:14px 20px}
+    table,thead,tbody,tr,td{display:block}
+    thead{display:none}
+    tbody tr{padding:14px 20px 12px;border-bottom:1px solid var(--paper-line);position:relative}
+    tbody td{border:none;padding:0}
+    td.sicil{position:absolute;top:14px;right:20px;color:#a39c7e}
+    td.name{margin-bottom:8px}
+    td.branch{display:none}
+    td:not(.name):not(.sicil):not(.branch){display:inline-block;margin:7px 10px 0 0;font-size:13px}
+    td.num::before{content:"Haftalık ";color:#a39c7e}
+    td[data-label="Nöbet"]{vertical-align:middle}
+    td.tel{display:block;margin-top:9px}
+    tfoot td{padding:14px 20px}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .sheet{animation:settle .5s ease both}
+  }
+  @keyframes settle{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<p class="note">Konsept A — örnek veri, karşılaştırma için hazırlandı.</p>
+<div class="sheet">
+  <div class="rail">
+    <nav class="az" aria-hidden="true">
+      <span>A</span><span class="on">B</span><span class="on">Ç</span><span>D</span><span>E</span>
+      <span class="on">İ</span><span>K</span><span>L</span><span class="on">M</span><span>N</span>
+      <span class="on">O</span><span class="on">S</span><span class="on">T</span><span>Y</span><span>Z</span>
+    </nav>
+    <div class="main">
+      <header class="masthead">
+        <div class="kicker">KORUK ASİSTAN — PERSONEL SİCİLİ</div>
+        <div class="top">
+          <div>
+            <h1>Öğretmenler</h1>
+            <p>Branş, haftalık ders yükü ve nöbet kaydı tek sicil görünümünde.</p>
+          </div>
+          <button class="export" type="button">Sicili dışa aktar</button>
+        </div>
+      </header>
+
+      <div class="tally">
+        <div><b>12</b><span>kayıtlı öğretmen</span></div>
+        <div><b>8</b><span>branş</span></div>
+        <div><b>10</b><span>nöbet kaydı</span></div>
+      </div>
+
+      <div class="controls">
+        <input type="search" placeholder="Ad, soyad veya branş ara">
+        <select><option>Tüm branşlar</option><option>Matematik</option><option>Türkçe</option></select>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Sicil</th><th>Ad Soyad</th><th>Branş</th><th>Bugün</th>
+            <th class="num">Haftalık</th><th>Nöbet</th><th>Telefon</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sicil" data-label="Sicil">№ 001</td>
+            <td class="name" data-label="Ad Soyad"><b>Bilal Baykar</b><span>Beden Eğitimi</span></td>
+            <td class="branch" data-label="Branş">Beden Eğitimi</td>
+            <td data-label="Bugün">Dersi yok</td>
+            <td class="num" data-label="Haftalık">0 sa</td>
+            <td data-label="Nöbet"><span class="pill">—</span></td>
+            <td class="tel" data-label="Telefon"><a href="tel:05336324217">0533 632 42 17</a></td>
+          </tr>
+          <tr>
+            <td class="sicil">№ 002</td>
+            <td class="name"><b>Çiçek Sönmez</b><span>Sosyal Bilgiler</span></td>
+            <td class="branch">Sosyal Bilgiler</td>
+            <td>Dersi yok</td>
+            <td class="num">21 sa</td>
+            <td><span class="pill duty">Nöbetçi</span></td>
+            <td class="tel"><a href="tel:05063696048">0506 369 60 48</a></td>
+          </tr>
+          <tr>
+            <td class="sicil">№ 003</td>
+            <td class="name"><b>Elif Kaya</b><span>Matematik</span></td>
+            <td class="branch">Matematik</td>
+            <td>4 ders</td>
+            <td class="num">24 sa</td>
+            <td><span class="pill duty">Nöbetçi</span></td>
+            <td class="tel"><a href="tel:05321112233">0532 111 22 33</a></td>
+          </tr>
+          <tr>
+            <td class="sicil">№ 004</td>
+            <td class="name"><b>Mehmet Demir</b><span>Fen Bilimleri</span></td>
+            <td class="branch">Fen Bilimleri</td>
+            <td>2 ders</td>
+            <td class="num">18 sa</td>
+            <td><span class="pill">—</span></td>
+            <td class="tel"><a href="tel:05442223344">0544 222 33 44</a></td>
+          </tr>
+          <tr>
+            <td class="sicil">№ 005</td>
+            <td class="name"><b>Zeynep Arslan</b><span>İngilizce</span></td>
+            <td class="branch">İngilizce</td>
+            <td>3 ders</td>
+            <td class="num">20 sa</td>
+            <td><span class="pill duty">Nöbetçi</span></td>
+            <td class="tel"><a href="tel:05353334455">0535 333 44 55</a></td>
+          </tr>
+          <tr>
+            <td class="sicil">№ 006</td>
+            <td class="name"><b>Ahmet Yılmaz</b><span>Türkçe</span></td>
+            <td class="branch">Türkçe</td>
+            <td>5 ders</td>
+            <td class="num">22 sa</td>
+            <td><span class="pill">—</span></td>
+            <td class="tel"><a href="tel:05464445566">0546 444 55 66</a></td>
+          </tr>
+          <tr>
+            <td class="sicil">№ 007</td>
+            <td class="name"><b>Selin Çelik</b><span>Müzik</span></td>
+            <td class="branch">Müzik</td>
+            <td>1 ders</td>
+            <td class="num">10 sa</td>
+            <td><span class="pill">—</span></td>
+            <td class="tel"><a href="tel:05375556677">0537 555 66 77</a></td>
+          </tr>
+          <tr>
+            <td class="sicil">№ 008</td>
+            <td class="name"><b>Okan Koç</b><span>Bilişim Teknolojileri</span></td>
+            <td class="branch">Bilişim Teknolojileri</td>
+            <td>2 ders</td>
+            <td class="num">16 sa</td>
+            <td><span class="pill duty">Nöbetçi</span></td>
+            <td class="tel"><a href="tel:05386667788">0538 666 77 88</a></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="7">8 / 12 kayıt gösteriliyor — satıra tıklayınca sicil dosyası (profil) açılır.</td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>
