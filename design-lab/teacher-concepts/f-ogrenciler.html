@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Konsept D — Öğrenciler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#0a0c11; --panel:rgba(255,255,255,.045); --panel-border:rgba(255,255,255,.09);
+    --text:#eef1f6; --muted:#8891a3; --cover-bg:#0d1017;
+    --violet:#7c6cf0; --cyan:#2ee6c8; --coral:#ff6b6b; --kicker:#2ee6c8;
+    --blob-op:.55; --blob-blend:screen;
+  }
+  :root[data-theme="light"]{
+    color-scheme:light;
+    --bg:#f3f4fb; --panel:rgba(255,255,255,.72); --panel-border:rgba(20,20,45,.1);
+    --text:#181a22; --muted:#656c82; --cover-bg:#fbfbff;
+    --violet:#6c4df0; --cyan:#0e9488; --coral:#e8503f; --kicker:#6c4df0;
+    --blob-op:.3; --blob-blend:normal;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .25s,color .25s}
+  .note{max-width:980px;margin:0 auto;padding:14px 22px 0;font-size:12px;color:var(--muted);opacity:.7}
+  .page{max-width:980px;margin:0 auto;padding:0 22px 70px}
+
+  /* ============ Tema anahtarı ============ */
+  .theme-toggle{position:absolute;top:18px;right:18px;z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(6px);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .theme-toggle svg{width:18px;height:18px}
+  .theme-toggle .i-sun{display:none}
+  :root[data-theme="dark"] .theme-toggle .i-sun{display:block}
+  :root[data-theme="dark"] .theme-toggle .i-moon{display:none}
+
+  /* ============ Kapak + sahneler ============ */
+  /* Tüm sahneler AYNI boyutta: JS sayfa yüklenince her sahnenin doğal yüksekliğini ölçüp
+     en büyüğünü alıyor (bkz. fitViewportHeight()) ve kapağı o sabit yüksekliğe ayarlıyor —
+     sahne değiştikçe kapak boyu değişmiyor, hepsi aynı kart boyutunda kalıyor. */
+  .cover{position:relative;margin-top:16px;border-radius:22px;overflow:hidden;border:1px solid var(--panel-border);background:var(--cover-bg);padding:26px 30px 18px}
+  .blob{position:absolute;border-radius:50%;filter:blur(54px);opacity:var(--blob-op);mix-blend-mode:var(--blob-blend);will-change:transform}
+  .blob1{width:360px;height:360px;background:radial-gradient(circle,var(--violet),transparent 70%);top:-140px;left:-80px}
+  .blob2{width:300px;height:300px;background:radial-gradient(circle,var(--cyan),transparent 70%);bottom:-160px;right:-60px}
+  .blob3{width:220px;height:220px;background:radial-gradient(circle,var(--coral),transparent 70%);top:20px;right:120px;opacity:calc(var(--blob-op) * .7)}
+  @media (prefers-reduced-motion:no-preference){
+    .blob1{animation:drift1 22s ease-in-out infinite}
+    .blob2{animation:drift2 26s ease-in-out infinite}
+    .blob3{animation:drift3 18s ease-in-out infinite}
+  }
+  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.15)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+
+  .scenes-viewport{position:relative;z-index:1;overflow:hidden;touch-action:pan-y}
+  .scene-track{display:flex;align-items:flex-start;width:300%;transition:transform .6s cubic-bezier(.3,.8,.2,1)}
+  .scene-track.dragging{transition:none}
+  @media (prefers-reduced-motion:reduce){.scene-track{transition:none}}
+  .scene{flex:0 0 33.3334%;width:33.3334%;min-width:0;align-self:flex-start}
+
+  .kicker{font-size:11.5px;color:var(--kicker);letter-spacing:.02em;margin-bottom:6px;font-weight:600}
+  .scene h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(23px,4vw,32px);margin:0 0 6px;letter-spacing:-.01em}
+  .scene > p{margin:0 0 12px;color:var(--muted);font-size:14px;max-width:46ch}
+
+  .cover-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;padding-right:46px}
+  .live{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--panel-border);padding:7px 14px 7px 10px;border-radius:30px;font-size:12.5px;color:var(--text)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--coral);position:relative;flex:none}
+  .dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--coral)}
+  @media (prefers-reduced-motion:no-preference){.dot::after{animation:ping 1.8s cubic-bezier(.2,.7,.3,1) infinite}}
+  @keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+
+  .stats{display:flex;gap:28px;margin-top:14px;flex-wrap:wrap}
+  .stats div{display:flex;flex-direction:column}
+  .stats b{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700}
+  .stats span{font-size:12px;color:var(--muted)}
+
+  /* --- sahne 2: kademe ve cinsiyete göre dağılım --- */
+  .dist-wrap{display:flex;gap:30px;flex-wrap:wrap;margin-top:6px}
+  .dist-h{display:flex;align-items:baseline;gap:8px;font-size:12.5px;letter-spacing:.02em;color:var(--text);margin-bottom:10px;font-weight:700}
+  .dist-h .dist-total{font-family:'Space Grotesk',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:0;color:var(--muted);background:var(--panel);border:1px solid var(--panel-border);border-radius:20px;padding:2px 9px}
+  .dist-col .stats{margin-top:0;gap:22px}
+
+  .scene-dots{position:absolute;left:34px;bottom:14px;z-index:3;display:flex;gap:7px}
+  .scene-dots button{width:7px;height:7px;border-radius:50%;border:none;background:var(--panel-border);cursor:pointer;padding:0}
+  .scene-dots button.on{background:var(--cyan);width:18px;border-radius:5px;transition:width .25s}
+
+  /* ============ Araç çubuğu ============ */
+  .toolbar{display:flex;gap:10px;margin:18px 0 12px;flex-wrap:wrap}
+  .toolbar input{flex:1;min-width:200px;font:14px/1 'Inter',sans-serif;background:var(--panel);border:1px solid var(--panel-border);color:var(--text);padding:12px 14px;border-radius:12px}
+  .toolbar input::placeholder{color:var(--muted)}
+  .addbtn{font:600 13px/1 'Inter',sans-serif;background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border:none;padding:12px 18px;border-radius:12px;cursor:pointer;white-space:nowrap}
+
+  /* genel sayı kutuları (toplam/erkek/kız/sınıf) */
+  .quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .quick-stats div{background:var(--panel);border:1px solid var(--panel-border);border-radius:12px;padding:12px 8px;text-align:center}
+  .quick-stats b{display:block;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700}
+  .quick-stats span{font-size:10px;color:var(--muted);letter-spacing:.03em;text-transform:uppercase}
+  @media(max-width:420px){.quick-stats{grid-template-columns:repeat(2,1fr)}}
+
+  /* sınıfa göre filtre çipleri — öğrenciler sınıflara göre filtrelenebilsin diye */
+  .class-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+  .class-chips::-webkit-scrollbar{display:none}
+  .class-chips button{flex:none;font:600 13px/1 'Inter',sans-serif;padding:9px 16px;border-radius:30px;border:1px solid var(--panel-border);background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+  .class-chips button.on{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border-color:transparent}
+
+  /* ============ Kartlar ============ */
+  /* Tek sütun LİSTE: sayfa açıldığında kartlar yukarıdan başlayarak sırayla (biri bitince diğeri)
+     açılsın istendiği için çok sütunlu grid yerine tek sütunlu liste kullanılıyor — aksi halde
+     aynı satırdaki kartlar aynı anda açılıyormuş gibi görünüyordu. */
+  .grid{display:flex;flex-direction:column;gap:12px}
+
+  /* dış çerçeve: ışıklı kenarlığı taşır, overflow:hidden ile kırpar (mask'a gerek yok).
+     Yanıp sönme YOK — tek, sürekli dönen bir ışık noktası kenarlığı dolaşır ve her turda
+     aynı noktadan tekrar geçer (360° döngü). conic-gradient() KULLANILMIYOR; linear-gradient()
+     + rotate() kullanılıyor çünkü çok daha eski/yaygın desteklenen bir teknik. */
+  .card-frame{position:relative;border-radius:17.5px;padding:2px;overflow:hidden;cursor:pointer;
+    border:1px solid var(--panel-border);
+    /* sabit (yanıp sönmeyen) dış ışık halesi — kartın dışına taşar, overflow:hidden onu kırpmaz
+       çünkü box-shadow kendi kutusunun DIŞINDA çizilir, içerik gibi kırpılan bir "child" değildir */
+    box-shadow:0 0 14px 1px var(--glow,var(--cyan))}
+  @media (prefers-reduced-motion:no-preference){
+    .card-frame{opacity:0;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0) * 90ms);transition:transform .2s}
+  }
+  @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+  .card-frame:hover{transform:translateY(-3px)}
+  .card-frame:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+  /* her zaman görünen sabit (dönmeyen) SOLUK halka — yanıp sönmez, sadece kenarlığın zemini.
+     BİLEREK soluk (opacity .22): parlak dönen ışık (aşağıdaki .card-spin) bunun üstünde çok daha
+     parlak olduğu için fark edilsin — halka çok parlak olursa dönen ışık onun içinde kayboluyor,
+     önceki turda "ışık dönmüyor" şikayetinin sebebi muhtemelen buydu. */
+  .card-ring{position:absolute;inset:-2px;background:var(--glow,var(--cyan));opacity:.22;z-index:0}
+  /* kenarlığı dolaşan parlak ışık: geniş bir "kuyruklu" bant, halkadan belirgin şekilde daha
+     parlak, bu yüzden dönüşü net görünür */
+  .card-spin{position:absolute;inset:-75%;z-index:1;
+    background:linear-gradient(100deg,transparent 8%,var(--glow,var(--cyan)) 38%,#fff 50%,var(--glow,var(--cyan)) 62%,transparent 92%)}
+  @media (prefers-reduced-motion:no-preference){.card-spin{animation:borderspin 4s linear infinite}}
+  @media (prefers-reduced-motion:reduce){.card-spin{display:none}}
+  @keyframes borderspin{to{transform:rotate(360deg)}}
+  /* opak taban: spin/halka katmanlarını yalnız 2px kenarlıkta görünür bırakır, kartın cam yüzeyinin altından sızmasını engeller */
+  .card-base{position:absolute;inset:0;background:var(--bg);border-radius:16px;z-index:2}
+
+  .card{position:relative;z-index:3;background:var(--panel);border-radius:16px;padding:18px;height:100%;transition:background .2s}
+  .card-frame:hover .card{background:rgba(255,255,255,.07)}
+  :root[data-theme="light"] .card-frame:hover .card{background:#fff}
+
+  .card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative}
+  /* Harflerin okunurluğu artık hiçbir öğretmenin renginin açık/koyu olmasına bağlı değil:
+     zemin HER ZAMAN sabit koyu bir renk, metin HER ZAMAN düz beyaz — kontrast oranı sabit ve yüksek.
+     Öğretmenin kendi rengi sadece ince bir kenarlık (halka) olarak kalıyor. Önceki sürümde zemin
+     doğrudan --c (öğretmenin rengi, örn. açık sarı #dd9d27) olduğu için bazı renklerde beyaz metin
+     zaten düşük kontrasttı — bu, cihaza özgü bir sorun değil, basit bir kontrast hatasıydı. */
+  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:14.5px;letter-spacing:.2px;flex:none;
+    color:#fff;forced-color-adjust:none;
+    background:#1b1d24;
+    border:2px solid var(--c);
+    box-shadow:0 0 0 1px rgba(0,0,0,.3)}
+  .card-top .who{min-width:0;position:relative}
+  .card-top h3{margin:0;font-size:15px;font-weight:600}
+  .card-top .who span{font-size:12px;color:var(--muted)}
+  /* saat/24 ilerleme çubuğu kaldırıldı — yerine farklı, "doluluk" çağrıştırmayan iki bilgi */
+  .mini-stats{display:flex;gap:20px;margin-bottom:14px;position:relative}
+  .mini-stats div{display:flex;flex-direction:column}
+  .mini-stats b{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;line-height:1.15}
+  .mini-stats span{font-size:10.5px;color:var(--muted)}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;position:relative}
+  .tag{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--panel-border);color:var(--muted)}
+  .tag.duty{background:rgba(255,107,107,.16);color:var(--coral)}
+  .phone{display:block;font-size:12.5px;color:var(--text);text-decoration:none;border-top:1px solid var(--panel-border);padding-top:10px;font-weight:500;position:relative}
+  .phone:hover{color:var(--cyan)}
+
+  footer.foot{padding-top:22px;font-size:12px;color:var(--muted);text-align:center}
+  @media(max-width:480px){.stats{gap:20px}}
+
+  /* --- sahne 3: sınıflara göre öğrenci sayısı — canlı dolan çubuk grafik --- */
+  .class-bars{margin-top:8px;max-width:560px}
+  .class-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .class-bar-label{flex:0 0 36px;font-size:12.5px;font-weight:700;color:var(--text)}
+  .class-bar-track{flex:1;height:12px;border-radius:7px;background:var(--panel);border:1px solid var(--panel-border);overflow:hidden}
+  .class-bar-fill{height:100%;border-radius:7px;width:0%;background:linear-gradient(90deg,var(--violet),var(--cyan));
+    transition:width 1s cubic-bezier(.16,.8,.24,1)}
+  .class-bar-fill.max{background:linear-gradient(90deg,var(--coral),#ffb84d)}
+  @media (prefers-reduced-motion:reduce){.class-bar-fill{transition:none}}
+  .class-bar-count{flex:0 0 20px;text-align:right;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700}
+
+  /* ============ Öğretmen detay sayfası — tam sayfa, animasyonlu açılır ============
+     Belirgin olsun diye ekranın tamamen altından yukarı kayarak geliyor (translateY(100%) →
+     none), ince bir kayma değil, gerçek bir "sayfa açılışı" hissi versin diye. */
+  .detail-overlay{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
+    opacity:0;visibility:hidden;transform:translateY(100%);
+    transition:opacity .38s ease,transform .42s cubic-bezier(.16,.8,.24,1),visibility 0s linear .42s}
+  .detail-overlay.open{opacity:1;visibility:visible;transform:none;transition:opacity .38s ease,transform .42s cubic-bezier(.16,.8,.24,1)}
+  @media (prefers-reduced-motion:reduce){.detail-overlay{transition:opacity .15s ease;transform:none}}
+
+  .detail-bar{position:sticky;top:0;z-index:2;display:flex;gap:10px;padding:14px 18px;background:var(--cover-bg);border-bottom:1px solid var(--panel-border)}
+  .detail-bar button{display:flex;align-items:center;justify-content:center;gap:7px;font:600 13.5px/1 'Inter',sans-serif;padding:11px 14px;border-radius:12px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);cursor:pointer}
+  .detail-bar button svg{width:16px;height:16px;flex:none}
+  .detail-print{flex:1}
+  .detail-close{flex:0 0 auto;width:44px;padding:11px}
+
+  .detail-body{max-width:640px;margin:0 auto;padding:22px 20px 60px}
+  .detail-top{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+  .detail-avatar{width:64px;height:64px;font-size:22px}
+  .detail-top h2{margin:0;font-size:21px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+  .detail-top p{margin:3px 0 0;font-size:13.5px;color:var(--muted)}
+  .detail-stats{display:flex;gap:26px;margin-bottom:16px;flex-wrap:wrap}
+  .detail-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .detail-phone{display:block;text-align:center;font-weight:600;font-size:14px;color:#06090f;background:linear-gradient(135deg,var(--violet),var(--cyan));padding:13px;border-radius:12px;text-decoration:none;margin-bottom:22px}
+
+  .detail-section{background:var(--panel);border:1px solid var(--panel-border);border-radius:16px;padding:18px 18px 14px;margin-bottom:14px}
+  .detail-section h4{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:12px;letter-spacing:.03em;color:var(--kicker);font-weight:700;text-transform:uppercase}
+  .detail-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--panel-border);font-size:13.5px}
+  .detail-row:first-of-type{border-top:none}
+  .detail-row b{font-weight:600;color:var(--text);white-space:nowrap}
+  .detail-row span{color:var(--muted);text-align:right}
+  .detail-empty{font-size:13px;color:var(--muted);padding:4px 0 6px}
+  .exam-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
+  .exam-tiles div{background:var(--bg);border:1px solid var(--panel-border);border-radius:10px;padding:10px 6px;text-align:center}
+  .exam-tiles b{display:block;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700}
+  .exam-tiles span{font-size:9.5px;color:var(--muted);letter-spacing:.02em;text-transform:uppercase}
+  @media(max-width:420px){.exam-tiles{grid-template-columns:repeat(2,1fr)}}
+
+  /* yazdırma: yalnızca açık olan detay sayfası basılsın, geri kalan her şey gizlensin */
+  @media print{
+    body > *:not(.detail-overlay){display:none !important}
+    .detail-overlay{position:static;opacity:1;visibility:visible;transform:none;overflow:visible;background:#fff;color:#000}
+    .detail-bar,.theme-toggle{display:none !important}
+    .detail-body{max-width:100%;padding:0}
+    .detail-section{background:#fff;border-color:#ccc;break-inside:avoid}
+    .detail-section h4{color:#333}
+    .detail-row b,.detail-top h2{color:#000}
+    .detail-row span,.detail-top p{color:#444}
+    .detail-phone{display:none}
+  }
+</style>
+</head>
+<body>
+<p class="note">Konsept D — örnek veri, karşılaştırma için hazırlandı.</p>
+<div class="page">
+  <section class="cover" id="cover">
+    <div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Açık/koyu temayı değiştir">
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+    </button>
+
+    <div class="scenes-viewport">
+      <div class="scene-track" id="sceneTrack">
+        <div class="scene" data-scene="0">
+          <div class="cover-top">
+            <div>
+              <div class="kicker">KORUK ASİSTAN · ÖĞRENCİ &amp; VELİ MERKEZİ</div>
+              <h1>Öğrenciler</h1>
+              <p>Sınıf, veli ve devamsızlık bilgisi — canlı, tek ekranda.</p>
+            </div>
+            <span class="live"><i class="dot"></i> Bugün 2 yeni kayıt</span>
+          </div>
+          <div class="stats">
+            <div><b data-count="85">0</b><span>öğrenci</span></div>
+            <div><b data-count="9">0</b><span>sınıf</span></div>
+            <div><b data-count="41">0</b><span>erkek</span></div>
+            <div><b data-count="44">0</b><span>kız</span></div>
+          </div>
+        </div>
+
+        <div class="scene" data-scene="1">
+          <div class="kicker">ÖĞRENCİ DAĞILIMI</div>
+          <h1 style="font-size:clamp(23px,3.8vw,30px)">Kademe ve cinsiyete göre</h1>
+          <div class="dist-wrap">
+            <div class="dist-col">
+              <span class="dist-h">İlkokul <b class="dist-total">39</b></span>
+              <div class="stats">
+                <div><b data-count="20">0</b><span>kız</span></div>
+                <div><b data-count="19">0</b><span>erkek</span></div>
+              </div>
+            </div>
+            <div class="dist-col">
+              <span class="dist-h">Ortaokul <b class="dist-total">46</b></span>
+              <div class="stats">
+                <div><b data-count="24">0</b><span>kız</span></div>
+                <div><b data-count="22">0</b><span>erkek</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene" data-scene="2">
+          <div class="kicker">SINIFLARA GÖRE</div>
+          <h1 style="font-size:clamp(23px,3.8vw,30px)">Öğrenci sayıları</h1>
+          <div class="class-bars" id="classBars">
+            <div class="class-bar-row"><span class="class-bar-label">1-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">2-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="90.9"></div></div><span class="class-bar-count">10</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">3-A</span><div class="class-bar-track"><div class="class-bar-fill max" data-pct="100"></div></div><span class="class-bar-count">11</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">4-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">5-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="72.7"></div></div><span class="class-bar-count">8</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">5-B</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">6-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="90.9"></div></div><span class="class-bar-count">10</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">7-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="90.9"></div></div><span class="class-bar-count">10</span></div>
+            <div class="class-bar-row"><span class="class-bar-label">8-A</span><div class="class-bar-track"><div class="class-bar-fill" data-pct="81.8"></div></div><span class="class-bar-count">9</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene-dots" id="sceneDots">
+      <button class="on" data-goto="0" aria-label="1. sahne"></button>
+      <button data-goto="1" aria-label="2. sahne"></button>
+      <button data-goto="2" aria-label="3. sahne"></button>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <input type="search" id="searchInput" placeholder="Ad, soyad, öğrenci no veya sınıf ara">
+    <button class="addbtn" type="button">+ Öğrenci</button>
+  </div>
+
+  <div class="quick-stats">
+    <div><b>85</b><span>Toplam</span></div>
+    <div><b>41</b><span>Erkek</span></div>
+    <div><b>44</b><span>Kız</span></div>
+    <div><b>9</b><span>Sınıf</span></div>
+  </div>
+
+  <div class="class-chips" id="classChips">
+    <button class="on" data-class="all">Tümü</button>
+    <button data-class="1-A">1-A</button>
+    <button data-class="2-A">2-A</button>
+    <button data-class="3-A">3-A</button>
+    <button data-class="4-A">4-A</button>
+    <button data-class="5-A">5-A</button>
+    <button data-class="5-B">5-B</button>
+    <button data-class="6-A">6-A</button>
+    <button data-class="7-A">7-A</button>
+    <button data-class="8-A">8-A</button>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="card-frame" tabindex="0" role="link" data-class="3-A" data-search="ali imran karagöz 3-a 88" style="--i:0;--glow:#ef5454"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#ef5454">A</span><div class="who"><h3>Ali İmran Karagöz</h3><span>3-A · No: 88</span></div></div>
+      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
+      <a class="phone" href="tel:05078354723">0507 835 47 23</a>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-class="5-B" data-search="zeynep nur aydın 5-b 12" style="--i:1;--glow:#dd9d27"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#dd9d27">Z</span><div class="who"><h3>Zeynep Nur Aydın</h3><span>5-B · No: 12</span></div></div>
+      <div class="mini-stats"><div><b>2</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
+      <a class="phone" href="tel:05063696048">0506 369 60 48</a>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-class="1-A" data-search="miraç emir taş 1-a 5" style="--i:2;--glow:#6f5de0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#6f5de0">M</span><div class="who"><h3>Miraç Emir Taş</h3><span>1-A · No: 5</span></div></div>
+      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
+      <a class="phone" href="tel:05331112233">0533 111 22 33</a>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-class="6-A" data-search="elif sude korkmaz 6-a 34" style="--i:3;--glow:#1fb89d"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#1fb89d">E</span><div class="who"><h3>Elif Sude Korkmaz</h3><span>6-A · No: 34</span></div></div>
+      <div class="mini-stats"><div><b>1</b><span>devamsızlık</span></div><div><b>18.5</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
+      <a class="phone" href="tel:05442223344">0544 222 33 44</a>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-class="7-A" data-search="yusuf berat çelik 7-a 19" style="--i:4;--glow:#c954e0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#c954e0">Y</span><div class="who"><h3>Yusuf Berat Çelik</h3><span>7-A · No: 19</span></div></div>
+      <div class="mini-stats"><div><b>5</b><span>devamsızlık</span></div><div><b>21</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span><span class="tag duty">Devamsızlık uyarısı</span></div>
+      <a class="phone" href="tel:05353334455">0535 333 44 55</a>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-class="2-A" data-search="hiranur aksoy 2-a 41" style="--i:5;--glow:#ff7d46"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#ff7d46">H</span><div class="who"><h3>Hiranur Aksoy</h3><span>2-A · No: 41</span></div></div>
+      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
+      <a class="phone" href="tel:05464445566">0546 444 55 66</a>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-class="8-A" data-search="mustafa kaan demirtaş 8-a 7" style="--i:6;--glow:#1fa870"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#1fa870">M</span><div class="who"><h3>Mustafa Kaan Demirtaş</h3><span>8-A · No: 7</span></div></div>
+      <div class="mini-stats"><div><b>2</b><span>devamsızlık</span></div><div><b>32.5</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span><span class="tag duty">LGS adayı</span></div>
+      <a class="phone" href="tel:05375556677">0537 555 66 77</a>
+    </div>  </div>
+    <div class="card-frame" tabindex="0" role="link" data-class="4-A" data-search="defne yıldırım 4-a 23" style="--i:7;--glow:#5b7ef0"><div class="card-ring"></div><div class="card-spin"></div><div class="card-base"></div><div class="card">
+      <div class="card-top"><span class="avatar" style="--c:#5b7ef0">D</span><div class="who"><h3>Defne Yıldırım</h3><span>4-A · No: 23</span></div></div>
+      <div class="mini-stats"><div><b>0</b><span>devamsızlık</span></div><div><b>—</b><span>son test neti</span></div></div>
+      <div class="tags"><span class="tag">Aktif Öğrenci</span></div>
+      <a class="phone" href="tel:05386667788">0538 666 77 88</a>
+    </div>  </div>
+  </div>
+  <footer class="foot" id="listFoot">8 / 85 kayıt gösteriliyor — bir karta dokunduğunuzda tam profil açılır.</footer>
+</div>
+
+<!-- Karta tıklayınca animasyonlu açılan tam sayfa öğretmen detayı (bu konsept tek dosya olduğundan
+     gerçek bir sayfa yönlendirmesi yerine aynı dosya içinde tam ekran bir görünüm açılıyor; gerçek
+     uygulamada bu, ayrı bir profil rotasına geçiş olur) -->
+<div class="detail-overlay" id="detailOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detailName">
+  <div class="detail-bar">
+    <button class="detail-print" id="detailPrintBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2M6 14h12v7H6z"/></svg>
+      Yazdır
+    </button>
+    <button class="detail-close" id="detailClose" type="button" aria-label="Kapat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-top">
+      <span class="avatar detail-avatar" id="detailAvatar"></span>
+      <div>
+        <h2 id="detailName"></h2>
+        <p id="detailBranch"></p>
+      </div>
+    </div>
+    <div class="mini-stats detail-stats" id="detailStats"></div>
+    <div class="detail-tags" id="detailTags"></div>
+    <a class="detail-phone" id="detailPhone" href="#"></a>
+
+    <div class="detail-section">
+      <h4>Kişisel bilgiler</h4>
+      <div id="detailPersonal"></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>İletişim &amp; veli</h4>
+      <div id="detailFamily"></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>Okul bilgileri</h4>
+      <div id="detailSchool"></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>Devamsızlık</h4>
+      <div id="detailAbsence"></div>
+    </div>
+
+    <div class="detail-section">
+      <h4>Sınav özeti</h4>
+      <div class="exam-tiles" id="detailExamTiles"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Tema ---- */
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem('ka-concept-theme'); } catch(e){}
+  var theme = saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  root.setAttribute('data-theme', theme);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    theme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    try { localStorage.setItem('ka-concept-theme', theme); } catch(e){}
+  });
+
+  /* ---- Sayaçlar: bir sahne her aktif olduğunda (ilk gösterimde VE her tekrar dönüşte)
+     baştan (0'dan) sayarak dolar — bkz. goTo() içindeki runCounters() çağrısı. ---- */
+  function runCounters(scene){
+    var els = scene.querySelectorAll('[data-count]');
+    els.forEach(function(el){
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      if (reduce) { el.textContent = target; return; }
+      el.textContent = '0';
+      var dur = 900, t0 = null;
+      function step(ts){
+        if (!t0) t0 = ts;
+        var p = Math.min(1, (ts - t0) / dur);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* ---- Öğrenci detay sayfası (karta tıklayınca/Enter'a basınca animasyonlu açılır) ----
+     Örnek veri: her kart sırasına (0=Ali ... 7=Defne) karşılık gelen kişisel/veli/okul/
+     devamsızlık/sınav kayıtları — ekran görüntülerindeki gerçek uygulamanın alan yapısına göre. */
+  var STUDENT_EXTRA = [
+    { // Ali İmran Karagöz
+      personal:[['Doğum Tarihi','Bilgi girilmemiş'],['Cinsiyet','Erkek'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Sedat Karagöz'],['Yakınlık','Baba'],['İletişim 1','0507 835 47 23'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Ataşehir Mahallesi Bedir Sokak No:27 Merkez / Elazığ']],
+      school:[['Sınıf','3-A'],['Öğrenci Numarası','88'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Bilgi girilmemiş']],
+      absence:[['Bu yıl toplam','0 gün']],
+      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} },
+    { // Zeynep Nur Aydın
+      personal:[['Doğum Tarihi','14.03.2015'],['Cinsiyet','Kız'],['Kan Grubu','0 Rh+'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Hakan Aydın'],['Yakınlık','Baba'],['İletişim 1','0506 369 60 48'],['İletişim 2','Bilgi girilmemiş'],['E-posta','hakan.aydin@example.com'],['Adres','Cumhuriyet Mahallesi Okul Sokak No:5 Merkez / Elazığ']],
+      school:[['Sınıf','5-B'],['Öğrenci Numarası','12'],['Servis','Servis kullanıyor — Hat 3'],['Sosyal Kulüp','Satranç Kulübü']],
+      absence:[['Bu yıl toplam','2 gün'],['Son devamsızlık','28.09.2026']],
+      exam:{deneme:3, test:5, sonNet:'22.5', sonLgs:'—'} },
+    { // Miraç Emir Taş
+      personal:[['Doğum Tarihi','05.09.2018'],['Cinsiyet','Erkek'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Fatma Taş'],['Yakınlık','Anne'],['İletişim 1','0533 111 22 33'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Yeni Mahalle 2. Sokak No:9 Merkez / Elazığ']],
+      school:[['Sınıf','1-A'],['Öğrenci Numarası','5'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Bilgi girilmemiş']],
+      absence:[['Bu yıl toplam','0 gün']],
+      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} },
+    { // Elif Sude Korkmaz
+      personal:[['Doğum Tarihi','22.11.2013'],['Cinsiyet','Kız'],['Kan Grubu','A Rh+'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Murat Korkmaz'],['Yakınlık','Baba'],['İletişim 1','0544 222 33 44'],['İletişim 2','0544 222 33 45'],['E-posta','murat.korkmaz@example.com'],['Adres','Barış Mahallesi 15. Sokak No:3 Merkez / Elazığ']],
+      school:[['Sınıf','6-A'],['Öğrenci Numarası','34'],['Servis','Servis kullanıyor — Hat 1'],['Sosyal Kulüp','Resim Kulübü']],
+      absence:[['Bu yıl toplam','1 gün'],['Son devamsızlık','12.09.2026']],
+      exam:{deneme:5, test:8, sonNet:'18.5', sonLgs:'—'} },
+    { // Yusuf Berat Çelik
+      personal:[['Doğum Tarihi','10.02.2012'],['Cinsiyet','Erkek'],['Kan Grubu','0 Rh-'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Ayşe Çelik'],['Yakınlık','Anne'],['İletişim 1','0535 333 44 55'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Fatih Mahallesi 7. Sokak No:11 Merkez / Elazığ']],
+      school:[['Sınıf','7-A'],['Öğrenci Numarası','19'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Spor Kulübü']],
+      absence:[['Bu yıl toplam','5 gün'],['Son devamsızlık','03.10.2026']],
+      exam:{deneme:7, test:10, sonNet:'21', sonLgs:'—'} },
+    { // Hiranur Aksoy
+      personal:[['Doğum Tarihi','18.06.2017'],['Cinsiyet','Kız'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Emine Aksoy'],['Yakınlık','Anne'],['İletişim 1','0546 444 55 66'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Güneş Mahallesi 3. Sokak No:22 Merkez / Elazığ']],
+      school:[['Sınıf','2-A'],['Öğrenci Numarası','41'],['Servis','Servis kullanıyor — Hat 2'],['Sosyal Kulüp','Bilgi girilmemiş']],
+      absence:[['Bu yıl toplam','0 gün']],
+      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} },
+    { // Mustafa Kaan Demirtaş
+      personal:[['Doğum Tarihi','03.01.2011'],['Cinsiyet','Erkek'],['Kan Grubu','B Rh+'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Serkan Demirtaş'],['Yakınlık','Baba'],['İletişim 1','0537 555 66 77'],['İletişim 2','Bilgi girilmemiş'],['E-posta','serkan.demirtas@example.com'],['Adres','Yıldız Mahallesi 9. Sokak No:45 Merkez / Elazığ']],
+      school:[['Sınıf','8-A'],['Öğrenci Numarası','7'],['Servis','Servis kullanmıyor'],['Sosyal Kulüp','Kodlama Kulübü']],
+      absence:[['Bu yıl toplam','2 gün'],['Son devamsızlık','19.09.2026']],
+      exam:{deneme:14, test:20, sonNet:'32.5', sonLgs:'420'} },
+    { // Defne Yıldırım
+      personal:[['Doğum Tarihi','27.08.2016'],['Cinsiyet','Kız'],['Kan Grubu','Bilgi girilmemiş'],['TC Kimlik No','Bilgi girilmemiş']],
+      family:[['Veli Adı','Canan Yıldırım'],['Yakınlık','Anne'],['İletişim 1','0538 666 77 88'],['İletişim 2','Bilgi girilmemiş'],['E-posta','Bilgi girilmemiş'],['Adres','Zafer Mahallesi 1. Sokak No:8 Merkez / Elazığ']],
+      school:[['Sınıf','4-A'],['Öğrenci Numarası','23'],['Servis','Servis kullanıyor — Hat 3'],['Sosyal Kulüp','Müzik Kulübü']],
+      absence:[['Bu yıl toplam','0 gün']],
+      exam:{deneme:0, test:0, sonNet:'—', sonLgs:'—'} }
+  ];
+
+  var overlay = document.getElementById('detailOverlay');
+  var detailAvatar = document.getElementById('detailAvatar');
+  var detailName = document.getElementById('detailName');
+  var detailBranch = document.getElementById('detailBranch');
+  var detailStats = document.getElementById('detailStats');
+  var detailTags = document.getElementById('detailTags');
+  var detailPhone = document.getElementById('detailPhone');
+  var cardFrames = [].slice.call(document.querySelectorAll('.card-frame'));
+
+  function fillRows(id, rows){
+    var el = document.getElementById(id);
+    if (!rows || !rows.length){ el.innerHTML = '<div class="detail-empty">Kayıt yok.</div>'; return; }
+    el.innerHTML = rows.map(function(r){
+      return '<div class="detail-row"><b>' + r[0] + '</b><span>' + r[1] + '</span></div>';
+    }).join('');
+  }
+
+  function openDetail(idx){
+    var card = cardFrames[idx];
+    var avatarEl = card.querySelector('.avatar');
+    var color = avatarEl.style.getPropertyValue('--c');
+    var phoneEl = card.querySelector('.phone');
+    var extra = STUDENT_EXTRA[idx] || {};
+
+    detailAvatar.textContent = avatarEl.textContent;
+    detailAvatar.style.setProperty('--c', color);
+    detailName.textContent = card.querySelector('h3').textContent;
+    detailBranch.textContent = card.querySelector('.card-top .who span').textContent;
+    detailStats.innerHTML = card.querySelector('.mini-stats').innerHTML;
+    detailTags.innerHTML = card.querySelector('.tags').innerHTML;
+    detailPhone.href = phoneEl.getAttribute('href');
+    detailPhone.textContent = 'Veliyi Ara — ' + phoneEl.textContent;
+    fillRows('detailPersonal', extra.personal);
+    fillRows('detailFamily', extra.family);
+    fillRows('detailSchool', extra.school);
+    fillRows('detailAbsence', extra.absence);
+    var ex = extra.exam || {deneme:0,test:0,sonNet:'—',sonLgs:'—'};
+    document.getElementById('detailExamTiles').innerHTML =
+      '<div><b>' + ex.deneme + '</b><span>Deneme</span></div>' +
+      '<div><b>' + ex.test + '</b><span>Test</span></div>' +
+      '<div><b>' + ex.sonNet + '</b><span>Son Net</span></div>' +
+      '<div><b>' + ex.sonLgs + '</b><span>Son LGS</span></div>';
+
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDetail(){
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  cardFrames.forEach(function(card, idx){
+    card.addEventListener('click', function(e){
+      if (e.target.closest('.phone')) return; // telefon linkine dokunurken detay açılmasın
+      openDetail(idx);
+    });
+    card.addEventListener('keydown', function(e){
+      if (e.target.closest('.phone')) return;
+      if (e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        openDetail(idx);
+      }
+    });
+  });
+  document.getElementById('detailClose').addEventListener('click', closeDetail);
+  document.getElementById('detailPrintBtn').addEventListener('click', function(){ window.print(); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && overlay.classList.contains('open')) closeDetail();
+  });
+
+  /* ---- Kapak sahneleri (kayarak geçiş + elle sürükleyerek değiştirme) ---- */
+  var viewport = document.querySelector('.scenes-viewport');
+  var track = document.getElementById('sceneTrack');
+  var scenes = [].slice.call(document.querySelectorAll('.scene'));
+  var dots = [].slice.call(document.querySelectorAll('#sceneDots button'));
+  var current = 0, timer = null;
+
+  /* Tüm sahneler AYNI boyutta olsun diye: her sahnenin doğal yüksekliğini ölçüp en büyüğünü
+     sabit viewport yüksekliği olarak kullanıyoruz — sahne değişince kapak boyu DEĞİŞMİYOR. */
+  function fitViewportHeight(){
+    var maxH = 0;
+    scenes.forEach(function(s){ if (s.offsetHeight > maxH) maxH = s.offsetHeight; });
+    if (maxH) viewport.style.height = maxH + 'px';
+  }
+
+  function revealStagger(scene){
+    var rows = scene.querySelectorAll('.today-row');
+    rows.forEach(function(el){ el.classList.remove('in'); });
+    rows.forEach(function(el, idx){
+      setTimeout(function(){ el.classList.add('in'); }, reduce ? 0 : idx * 130);
+    });
+  }
+
+  /* Sınıf çubuk grafiği her sahne ziyaretinde baştan dolsun diye önce sıfırlanıp
+     sonra sırayla (üstten alta) hedef genişliğe animasyonla açılıyor. */
+  function runClassBars(scene){
+    var fills = scene.querySelectorAll('.class-bar-fill');
+    if (!fills.length) return;
+    fills.forEach(function(el){ el.style.width = '0%'; });
+    fills.forEach(function(el, idx){
+      var target = el.getAttribute('data-pct') + '%';
+      setTimeout(function(){ el.style.width = target; }, reduce ? 0 : 90 + idx * 90);
+    });
+  }
+
+  function goTo(n){
+    current = (n + scenes.length) % scenes.length;
+    track.style.transform = 'translateX(-' + (current * (100 / scenes.length)) + '%)';
+    dots.forEach(function(d, i){ d.classList.toggle('on', i === current); });
+    runCounters(scenes[current]);
+    revealStagger(scenes[current]);
+    runClassBars(scenes[current]);
+  }
+
+  dots.forEach(function(d){
+    d.addEventListener('click', function(){
+      goTo(parseInt(d.getAttribute('data-goto'), 10));
+      restart();
+    });
+  });
+
+  function restart(){
+    if (timer) clearInterval(timer);
+    if (reduce) return;
+    timer = setInterval(function(){ goTo(current + 1); }, 6500);
+  }
+
+  /* Elle sağa/sola sürükleyerek sahne değiştirme (dokunma + fare, Pointer Events ile) */
+  var dragStartX = 0, dragDelta = 0, dragging = false, viewportW = 0;
+  viewport.addEventListener('pointerdown', function(e){
+    dragging = true;
+    dragDelta = 0;
+    dragStartX = e.clientX;
+    viewportW = viewport.getBoundingClientRect().width;
+    track.classList.add('dragging');
+    if (timer) clearInterval(timer);
+    try { viewport.setPointerCapture(e.pointerId); } catch(err){}
+  });
+  viewport.addEventListener('pointermove', function(e){
+    if (!dragging) return;
+    dragDelta = e.clientX - dragStartX;
+    var basePct = -(current * (100 / scenes.length));
+    var dragPct = (dragDelta / viewportW) * (100 / scenes.length);
+    track.style.transform = 'translateX(' + (basePct + dragPct) + '%)';
+  });
+  function endDrag(){
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove('dragging');
+    var threshold = viewportW * 0.16;
+    if (dragDelta <= -threshold) goTo(current + 1);
+    else if (dragDelta >= threshold) goTo(current - 1);
+    else goTo(current);
+    restart();
+  }
+  viewport.addEventListener('pointerup', endDrag);
+  viewport.addEventListener('pointercancel', endDrag);
+  viewport.addEventListener('pointerleave', function(){ if (dragging) endDrag(); });
+
+  window.addEventListener('resize', fitViewportHeight);
+
+  fitViewportHeight();
+  runCounters(scenes[current]);
+  revealStagger(scenes[current]);
+  runClassBars(scenes[current]);
+  restart();
+
+  /* ---- Sınıfa göre filtre + arama: öğrenciler sınıflara göre filtrelenebilsin ---- */
+  var chips = [].slice.call(document.querySelectorAll('#classChips button'));
+  var searchInput = document.getElementById('searchInput');
+  var listFoot = document.getElementById('listFoot');
+  var activeClass = 'all';
+
+  function applyFilter(){
+    var q = searchInput.value.trim().toLocaleLowerCase('tr');
+    var visible = 0;
+    cardFrames.forEach(function(card){
+      var matchesClass = activeClass === 'all' || card.getAttribute('data-class') === activeClass;
+      var matchesSearch = !q || (card.getAttribute('data-search') || '').indexOf(q) !== -1;
+      var show = matchesClass && matchesSearch;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    listFoot.textContent = visible + ' / ' + cardFrames.length + ' kayıt gösteriliyor — bir karta dokunduğunuzda tam profil açılır.';
+  }
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('on'); });
+      chip.classList.add('on');
+      activeClass = chip.getAttribute('data-class');
+      applyFilter();
+    });
+  });
+  searchInput.addEventListener('input', applyFilter);
+  applyFilter();
+})();
+</script>
+</body>
+</html>

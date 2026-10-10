@@ -1,0 +1,9 @@
+/* Koruk Asistan — V3 tasarım girişi. Sıra önemli: önce tokenlar. */
+@import url("./tokens.css?v=1");
+@import url("./components.css?v=1");
+@import url("./menu.css?v=1");
+@import url("./home.css?v=1");
+@import url("./scenes.css?v=1");
+@import url("./report.css?v=1");
+@import url("./covers.css?v=1");
+html.ka-beta body::after{content:"TASARIM V3 · BETA";position:fixed;right:-34px;top:14px;transform:rotate(35deg);z-index:9999;padding:3px 40px;font:800 10px/1.4 var(--ka-font);letter-spacing:1px;background:var(--v3-beta-bg);color:var(--v3-beta-text);pointer-events:none;opacity:.92}

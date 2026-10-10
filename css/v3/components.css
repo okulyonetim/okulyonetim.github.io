@@ -1,0 +1,25 @@
+/* ==========================================================================
+   V3 BİLEŞENLER — taban CSS bileşenleri zaten token kullanır; burada yalnız token'la ifade edilemeyen cila var.
+   Renk YOK. Modül bölümleri ilgili aşama onaylanınca açılır (docs/YENI-TASARIM-YOL-HARITASI.md).
+   ========================================================================== */
+html.ka-v3 :focus-visible{outline:2px solid var(--v3-accent);outline-offset:2px}
+html.ka-v3 .ka-card{border-radius:var(--ka-radius-lg);box-shadow:var(--ka-shadow-sm)}
+html.ka-v3 .ka-btn{transition:transform var(--ka-transition-fast),background var(--ka-transition-fast),box-shadow var(--ka-transition-fast)}
+html.ka-v3 .ka-btn:active{transform:scale(.97)}
+html.ka-v3 .ka-modal{border-radius:var(--ka-radius-xl);box-shadow:var(--ka-shadow-modal);animation:v3-modal-in var(--ka-transition) both}
+html.ka-v3 .ka-modal-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:v3-fade var(--ka-transition) both}
+@keyframes v3-modal-in{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes v3-fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){html.ka-v3 *{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* Düğme varyantları: mevcut tasarımda Sil/Hayalet düğmeleri birincil renkte görünüyordu; tek yerden düzeltilir. */
+html.ka-v3 .ka-btn.ka-btn--danger,html.ka-v3 #v2ModuleRoot .ka-btn.ka-btn--danger{background:var(--ka-danger)!important;color:var(--ka-on-danger)!important;border-color:transparent!important;box-shadow:none!important}
+html.ka-v3 .ka-btn.ka-btn--ghost,html.ka-v3 #v2ModuleRoot .ka-btn.ka-btn--ghost{background:transparent!important;color:var(--ka-text)!important;border-color:transparent!important;box-shadow:none!important}
+html.ka-v3 .ka-btn.ka-btn--ghost:hover{background:var(--ka-primary-soft)!important}
+/* Tema vurgu rengi seçici (Ayarlar > Görünüm) — renk değerleri JS'ten inline style ile gelir, burada yalnız boyut/şekil */
+html.ka-v3 .ka-accent-picker{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+html.ka-v3 .ka-accent-swatch{width:36px;height:36px;border-radius:50%;border:2px solid transparent;box-shadow:var(--ka-shadow-sm);cursor:pointer;padding:0;transition:transform var(--ka-transition-fast),border-color var(--ka-transition-fast)}
+html.ka-v3 .ka-accent-swatch:active{transform:scale(.92)}
+html.ka-v3 .ka-accent-swatch.active{border-color:var(--ka-text)}
+html.ka-v3 .ka-accent-swatch--reset{display:flex;align-items:center;justify-content:center;background:var(--ka-card-bg);color:var(--ka-text-muted);border-style:dashed;border-color:var(--ka-border);font-size:14px}
+html.ka-v3 .ka-accent-swatch--reset.active{border-style:solid;color:var(--ka-text);border-color:var(--ka-text)}
+/* 2. ÖĞRENCİLER — Aşama 2 · 3. ÖĞRETMENLER — Aşama 3 · 4. NÖBETLER — Aşama 4 · 5. PERSONEL — Aşama 5 · 6. ÇİZELGELER — Aşama 6 */

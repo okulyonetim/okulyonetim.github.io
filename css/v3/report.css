@@ -1,0 +1,7 @@
+/* ==========================================================================
+   V3 RAPOR MERKEZİ — A4 çıktı ve önizleme için TEK stil dosyası (Aşama R).
+   Hedef: report-engine, report-output, schedule-report-redesign, management, transport, food-menu, reports
+   modüllerindeki dağınık <style>/@page blokları buraya taşınır. Renkler tokens.css'teki --ka-report-* değişkenlerinden gelir.
+   ========================================================================== */
+@page{size:A4;margin:12mm}
+.v3-report{background:var(--ka-report-bg);color:var(--ka-report-text);font-family:var(--ka-font)}

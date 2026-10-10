@@ -1,0 +1,89 @@
+/* ==========================================================================
+   KORUK ASİSTAN — V3 MERKEZİ TASARIM TOKENLARI  (TEK KAYNAK)
+   --------------------------------------------------------------------------
+   KURAL 1: Renk, ölçü, yuvarlaklık, gölge, boşluk, hareket değeri YALNIZ bu dosyada tanımlanır.
+   KURAL 2: Diğer v3 dosyaları (components/home/report/scenes) kendi renk kodunu yazmaz; bu değişkenleri kullanır.
+   KURAL 3: Mevcut --ka-* değişkenleri burada yeniden tanımlanır; böylece taban CSS ve tüm modüller kod değişmeden yeni temayı alır.
+   KURAL 4: Vurgu rengi TEK değişkenden gelir (--v3-accent). Ayarlar ekranı/theme.js yalnız bunu değiştirir; hover, yumuşak ton,
+            odak halkası, modül rozetleri vb. otomatik türetilir (aşağıda "2. TÜRETİLMİŞ").
+   Etkinleştirme: <html class="ka-v3"> (theme.js ekler). Sınıf yoksa V3 hiçbir şeyi değiştirmez.
+   ========================================================================== */
+
+/* ---- 1. ÇEKİRDEK PALET — AÇIK ---- */
+html.ka-v3,html.ka-v3[data-theme="light"]{
+  --v3-accent:#f2b600;--v3-on-accent:#1b1812;
+  --ka-app-bg:#f4f1ea;--ka-bg:#f4f1ea;--ka-text:#1b1812;--ka-text-muted:#6d6657;--ka-text-inverse:#fff;
+  --ka-card-bg:#fffdf8;--ka-card-raised-bg:#fff;--ka-muted-bg:#efe9dc;
+  --ka-border:#e3dccb;--ka-border-strong:#cfc6b0;--ka-overlay:rgba(20,16,8,.52);
+  --ka-button-secondary-bg:#fffdf8;--ka-button-secondary-text:#1b1812;--ka-button-secondary-border:#e3dccb;
+  --ka-header-bg:#fffaf0;--ka-header-text:#1b1812;--ka-header-muted:#6d6657;--ka-header-border:#e3dccb;
+  --ka-nav-bg:rgba(255,252,244,.96);--ka-nav-text:#7a7363;--ka-nav-border:#e3dccb;
+  --ka-input-bg:#fffdf8;--ka-input-text:#1b1812;--ka-input-border:#d9d0b8;
+  --ka-success:#22bf73;--ka-warning:#f5a400;--ka-danger:#d92f44;--ka-on-danger:#ffffff;--ka-info:#3b91e8;--ka-accent:#2fbf7a;
+  --ka-shadow-sm:0 2px 10px rgba(60,44,10,.06);--ka-shadow-md:0 10px 26px rgba(60,44,10,.10);--ka-shadow-modal:0 24px 60px rgba(40,28,4,.22);
+  --ka-hero-shadow:0 12px 30px rgba(60,44,10,.10);--ka-hero-border:#e3dccb;
+  --v3-room-1:#f3ead6;--v3-room-2:#e6d9bd;--v3-frame:#f3efe4;
+}
+/* ---- 1b. ÇEKİRDEK PALET — KOYU ---- */
+html.ka-v3[data-theme="dark"]{
+  --v3-accent:#ffc400;--v3-on-accent:#151208;
+  --ka-app-bg:#0d0c0a;--ka-bg:#0d0c0a;--ka-text:#f6f2e8;--ka-text-muted:#a69f8e;--ka-text-inverse:#151208;
+  --ka-card-bg:#17150f;--ka-card-raised-bg:#1d1a13;--ka-muted-bg:#24211a;
+  --ka-border:#2e2a20;--ka-border-strong:#443e2e;--ka-overlay:rgba(0,0,0,.66);
+  --ka-button-secondary-bg:#1d1a13;--ka-button-secondary-text:#f6f2e8;--ka-button-secondary-border:#443e2e;
+  --ka-header-bg:#100e0a;--ka-header-text:#f6f2e8;--ka-header-muted:#a69f8e;--ka-header-border:#2e2a20;
+  --ka-nav-bg:rgba(16,14,10,.97);--ka-nav-text:#a69f8e;--ka-nav-border:#2e2a20;
+  --ka-input-bg:#1d1a13;--ka-input-text:#f6f2e8;--ka-input-border:#443e2e;
+  --ka-success:#2fd180;--ka-warning:#ffb020;--ka-danger:#ff6177;--ka-on-danger:#151208;--ka-info:#5aa9f0;--ka-accent:#35d07f;
+  --ka-shadow-sm:0 2px 10px rgba(0,0,0,.4);--ka-shadow-md:0 10px 26px rgba(0,0,0,.5);--ka-shadow-modal:0 24px 60px rgba(0,0,0,.7);
+  --ka-hero-shadow:0 12px 30px rgba(0,0,0,.5);--ka-hero-border:#2e2a20;
+  --v3-room-1:#3e3d4b;--v3-room-2:#2f2e3a;--v3-frame:#c9c2ad;
+}
+/* ---- 2. TÜRETİLMİŞ — vurgu tek değişkenden, aileler çekirdekten ---- */
+html.ka-v3{
+  --ka-primary:var(--v3-accent);
+  --ka-primary-hover:color-mix(in srgb,var(--v3-accent) 86%,#000);
+  --ka-primary-soft:color-mix(in srgb,var(--v3-accent) 18%,var(--ka-card-bg));
+  --ka-on-accent:var(--v3-on-accent);
+  --ka-button-bg:var(--v3-accent);--ka-button-hover:var(--ka-primary-hover);--ka-button-text:var(--v3-on-accent);
+  --ka-nav-active-bg:var(--ka-primary-soft);--ka-nav-active-text:color-mix(in srgb,var(--v3-accent) 35%,var(--ka-text));
+  --ka-input-focus:var(--v3-accent);--ka-focus:color-mix(in srgb,var(--v3-accent) 35%,transparent);
+  --ka-muted:var(--ka-text-muted);
+  /* modül ailesi */
+  --ka-module-surface:var(--ka-card-bg);--ka-module-surface-raised:var(--ka-card-raised-bg);--ka-module-surface-muted:var(--ka-muted-bg);
+  --ka-module-text:var(--ka-text);--ka-module-muted:var(--ka-text-muted);--ka-module-border:var(--ka-border);--ka-module-border-strong:var(--ka-border-strong);
+  --ka-module-accent:var(--v3-accent);--ka-module-accent-soft:var(--ka-primary-soft);
+  --ka-module-icon-surface:var(--ka-primary-soft);--ka-module-icon-text:var(--ka-text);--ka-module-icon-border:var(--ka-border);
+  --ka-module-input-bg:var(--ka-input-bg);--ka-module-input-text:var(--ka-input-text);--ka-module-input-border:var(--ka-input-border);
+  /* detay / hero / canlı kart / ikon aileleri */
+  --ka-detail-text:var(--ka-text);--ka-detail-border:var(--ka-border);--ka-detail-surface:var(--ka-card-bg);--ka-detail-raised:var(--ka-card-raised-bg);
+  --ka-detail-hero-start:color-mix(in srgb,var(--v3-accent) 22%,var(--ka-card-bg));--ka-detail-hero-end:var(--ka-card-bg);
+  --ka-detail-hero-text:var(--ka-text);--ka-detail-hero-surface:var(--ka-card-raised-bg);--ka-detail-hero-border:var(--ka-border);
+  --ka-hero-bg:linear-gradient(135deg,color-mix(in srgb,var(--v3-accent) 20%,var(--ka-card-bg)),var(--ka-card-bg) 62%);--ka-hero-text:var(--ka-text);--ka-hero-muted:var(--ka-text-muted);
+  --ka-live-text:var(--ka-text);--ka-live-muted:var(--ka-text-muted);
+  --ka-icon-surface:var(--ka-primary-soft);--ka-icon-text:var(--ka-text);--ka-icon-border:var(--ka-border);
+  /* modül renkleri (kategori ikon degradeleri) — tek yerden */
+  --ka-module-people-1:#3b82f6;--ka-module-people-2:#1d4ed8;--ka-module-exams-1:#8b5cf6;--ka-module-exams-2:#6d28d9;
+  --ka-module-programs-1:#2fbf6a;--ka-module-programs-2:#15803d;--ka-module-communication-1:#ec4899;--ka-module-communication-2:#be185d;
+  --ka-module-calendar-1:#f97316;--ka-module-calendar-2:#c2410c;--ka-module-transport-1:#f2b600;--ka-module-transport-2:#b45309;
+  --ka-module-documents-1:#14b8a6;--ka-module-documents-2:#0f766e;--ka-module-management-1:#6366f1;--ka-module-management-2:#4338ca;
+  --ka-module-settings-1:#64748b;--ka-module-settings-2:#334155;
+}
+/* ---- 3. ÖLÇEK — yoğunluk tek çarpandan (theme.js: kompakt .88 / normal 1 / geniş 1.12) ---- */
+html.ka-v3{
+  --v3-density:1;--v3-font:1;
+  --ka-space-1:calc(4px*var(--v3-density));--ka-space-2:calc(8px*var(--v3-density));--ka-space-3:calc(12px*var(--v3-density));--ka-space-4:calc(16px*var(--v3-density));
+  --ka-space-5:calc(20px*var(--v3-density));--ka-space-6:calc(24px*var(--v3-density));--ka-space-8:calc(32px*var(--v3-density));
+  --ka-control-height:calc(46px*var(--v3-density));
+  --ka-radius-sm:10px;--ka-radius-md:14px;--ka-radius-lg:20px;--ka-radius-xl:26px;--ka-radius-pill:999px;
+  --ka-font:Inter,Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ka-transition-fast:120ms ease;--ka-transition:220ms cubic-bezier(.2,.8,.2,1);
+  --v3-sky-day-1:#6fb9ee;--v3-sky-day-2:#fdf0d0;--v3-sky-dawn-1:#f2a97e;--v3-sky-dawn-2:#fde6b8;--v3-sky-dusk-1:#ff8d5e;--v3-sky-dusk-2:#6c5b96;--v3-sky-night-1:#0b1226;--v3-sky-night-2:#2a3556;
+  --v3-beta-bg:var(--v3-accent);--v3-beta-text:var(--v3-on-accent);
+}
+html.ka-v3{font-size:calc(16px*var(--v3-font))}
+/* ---- 4. SAHNE PALETİ (illüstrasyonlar) ---- */
+.sk{--sk1:#6fb9ee;--sk2:#fdf0d0;--sun:#ffd54a;--cl:#fff;--h1:#5c9a50;--h2:#78ae66;--gr:#58994a;--t1:#2e7d32;--t2:#43a047;--t3:#7bc77f;--bwall:#d6ad88;--roof:#b4412f;--glass:#bfe3ff;--lit:#ffd54a;--road:#5e656f;--wallc:#f2e8d2;--floor:#b98b5a;--bird:#334;--ground1:#dcc6a6;--ground2:#cdb28c;--wall:#c9c2b0;--board:#2c5a43;--line:#7c848c;--grass:#5e9e5e;--accent:var(--ka-primary,#d49a00);--accent-soft:var(--ka-primary-soft,rgba(212,154,0,.15));--muted:var(--ka-text-muted,#6b665a);--text:var(--ka-text,#16140f);--surface:var(--ka-card-bg,#fff);--surface2:var(--ka-muted-bg,#efeadf);--bg:var(--ka-app-bg,#f4f1ea);--border:var(--ka-border,#ddd5c4)}
+html[data-theme="dark"] .sk{--sk1:#141b34;--sk2:#4b4f78;--sun:#f1ead0;--cl:rgba(125,130,175,.6);--h1:#2c5237;--h2:#37603f;--gr:#2f5a38;--t1:#1d5a2a;--t2:#2a7238;--t3:#3f8f4c;--bwall:#8c6b55;--roof:#7b2d22;--glass:#6d96b8;--road:#2c3038;--wallc:#3c3b47;--floor:#5a4332;--bird:#ccd;--ground1:#2b2a1f;--ground2:#211f17;--wall:#3a3d42;--board:#1f3d2e;--line:#8c939b;--grass:#3f7d4b}
+
+/* ---- 5. RAPOR TOKENLARI (Aşama R'de doldurulacak; şimdilik mevcut --ka-report-* değerleri aynen kalır) ---- */

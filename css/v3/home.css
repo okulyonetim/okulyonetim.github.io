@@ -1,0 +1,39 @@
+/* Koruk Asistan — V3 ANA SAYFA (hero sahnesi, bannerlar, kartlar). Renk YOK: yalnız tokens.css değişkenleri.
+   Yalnızca html.ka-skin3 varken etkindir (scene-skin.js ekler). Kapatmak: localStorage['ka-skin']='off' veya ?skin=off */
+/* hero */
+html.ka-skin3 .ka-home .kh-hero{padding:0 0 14px!important;border-radius:26px!important}
+html.ka-skin3 .ka-home .kh-hero>*:not([data-sk]){margin-left:14px!important;margin-right:14px!important}
+html.ka-skin3 .ka-home .kh-hero>[data-sk]{margin:0!important}
+html.ka-skin3 .ka-home .kh-hero .kh-brand{margin-top:2px!important}
+.sk-stage{position:relative;height:152px;overflow:hidden;--sk-s1:var(--v3-sky-day-1);--sk-s2:var(--v3-sky-day-2);--sk-w1:var(--v3-room-1);--sk-w2:var(--v3-room-2)}
+.sk-stage[data-tod="dawn"]{--sk-s1:var(--v3-sky-dawn-1);--sk-s2:var(--v3-sky-dawn-2)}.sk-stage[data-tod="dusk"]{--sk-s1:var(--v3-sky-dusk-1);--sk-s2:var(--v3-sky-dusk-2)}.sk-stage[data-tod="night"]{--sk-s1:var(--v3-sky-night-1);--sk-s2:var(--v3-sky-night-2)}
+.sk-sky{position:absolute;inset:0;background:linear-gradient(var(--sk-s1),var(--sk-s2))}
+.sk-stage[data-room="in"] .sk-sky{background:linear-gradient(var(--sk-w1),var(--sk-w2))}
+.sk-stage[data-room="in"] .sk-skysvg{opacity:0}
+.sk-stage[data-room="in"]::before{content:"";position:absolute;left:12px;top:14px;width:78px;height:66px;z-index:0;border:4px solid var(--v3-frame);border-radius:4px;background:linear-gradient(var(--v3-frame),var(--v3-frame)) center/4px 100% no-repeat,linear-gradient(var(--v3-frame),var(--v3-frame)) center/100% 4px no-repeat,linear-gradient(var(--sk-s1),var(--sk-s2))}
+.sk-skysvg,.sk-ov,.sk-precip{position:absolute;inset:0;width:100%;height:100%;transition:opacity .6s}
+.sk-precip{pointer-events:none}.sk-precip svg{position:absolute;inset:0;width:100%;height:100%}
+.sk-stars{opacity:0;transition:opacity .6s}.sk-stage[data-tod="night"] .sk-stars{opacity:1}.sk-stage[data-tod="dusk"] .sk-stars{opacity:.4}
+.sk-sun,.sk-moon{opacity:0;transition:opacity .6s}.sk-stage:not([data-tod="night"]) .sk-sun{opacity:1}.sk-stage[data-tod="night"] .sk-moon{opacity:1}
+.sk-stage[data-tod="night"] .sk-ov{filter:brightness(.55) saturate(.85)}.sk-stage[data-tod="dusk"] .sk-ov,.sk-stage[data-tod="dawn"] .sk-ov{filter:brightness(.85) sepia(.15)}
+.sk-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:44px;background:linear-gradient(transparent,var(--ka-card-bg));pointer-events:none}
+.sk-cap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:absolute;left:12px;top:10px;z-index:2;max-width:70%;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:750;line-height:1.2;background:color-mix(in srgb,var(--ka-card-bg) 82%,transparent);color:var(--ka-text);border:1px solid var(--ka-border);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.sk-cap:empty{display:none}
+.sk-stage[data-m="b"] .sk-go,.sk-stage[data-m="c"] .sk-go{display:none}
+.sk-stage:not([data-m="b"]) .sk-gb,.sk-stage:not([data-m="c"]) .sk-gc{display:none}
+.sk-stage.sk-ring .bell{animation:sk-ring .14s ease-in-out infinite alternate}.sk-stage.sk-ring .clp{animation:sk-ring .14s ease-in-out infinite}.sk-stage.sk-ring .wv{animation:sk-wave .7s ease-out infinite}.sk-stage.sk-ring .wv.w2{animation-delay:.25s}
+/* canlı kartlar */
+html.ka-skin3 .ka-home .kh-live-card{border-radius:18px!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+html.ka-skin3 #khWeather{position:relative;overflow:hidden;min-height:84px}
+html.ka-skin3 #khWeather>*:not(.sk-wx){position:relative;z-index:1}
+.sk-wx{position:absolute;inset:0;z-index:0}.sk-wx svg{position:absolute;inset:0;width:100%;height:100%}
+.sk-wx::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--ka-card-bg) 0%,color-mix(in srgb,var(--ka-card-bg) 92%,transparent) 36%,transparent 74%)}
+/* bölüm bannerları */
+html.ka-skin3 .ka-home .ka-home-section{border-radius:22px!important}
+.sk-banner{position:relative;aspect-ratio:200/80;border-radius:16px;overflow:hidden;margin:2px 0 12px}
+.sk-banner svg,.sk-cardscene svg{position:absolute;inset:0;width:100%;height:100%}
+.sk-cardscene{position:relative;display:block;width:calc(100% + 8px);max-width:none;flex:none;align-self:stretch;justify-self:stretch;aspect-ratio:200/112;border-radius:14px;overflow:hidden;margin:-4px -4px 8px}
+html.ka-skin3 .ka-school-summary-card.sk-has-scene>.ka-school-summary-icon{display:none!important}
+.sk-pause *{animation-play-state:paused!important}
+@media (prefers-reduced-motion:reduce){.sk *{animation:none!important}}
+.sk [data-s]{transition:opacity .6s}.sk .eat.e4{animation-delay:1s}.sk .st.s3{animation-delay:1.6s}

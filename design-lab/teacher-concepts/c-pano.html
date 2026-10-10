@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Konsept C — Öğretmen Panosu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#e9edec;
+    --card:#ffffff;
+    --ink:#20262a;
+    --muted:#6b7378;
+    --line:#dde2e1;
+    --duty:#b4453f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .note{max-width:1100px;margin:0 auto;padding:14px 22px 0;font-size:12px;color:#8a9290}
+
+  .page{max-width:1100px;margin:0 auto;padding:26px 22px 70px}
+
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+  header h1{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(26px,4vw,34px);margin:0 0 4px;letter-spacing:-.01em}
+  header p{margin:0;color:var(--muted);font-size:14px;max-width:40ch}
+  .add{font:600 13px/1 'Inter',sans-serif;background:var(--ink);color:#fff;border:none;padding:11px 18px;border-radius:8px;cursor:pointer}
+
+  .chipline{display:flex;gap:8px;margin-bottom:18px}
+  .chipline span{font:500 12px/1 'Inter',sans-serif;background:var(--card);border:1px solid var(--line);padding:7px 12px;border-radius:20px;color:var(--muted)}
+  .chipline b{color:var(--ink)}
+
+  .toolbar{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+  .toolbar input{flex:1;min-width:200px;font:14px/1 'Inter',sans-serif;background:var(--card);border:1px solid var(--line);padding:11px 14px;border-radius:9px}
+  .branches{display:flex;gap:7px;flex-wrap:wrap}
+  .bchip{font:600 11.5px/1 'Inter',sans-serif;border:1px solid var(--line);background:var(--card);padding:7px 11px;border-radius:20px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+  .bchip i{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .bchip.active{color:var(--ink);border-color:var(--ink)}
+
+  .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:20px 18px}
+
+  .badge{background:var(--card);border-radius:14px;padding:18px 15px 15px;position:relative;box-shadow:0 10px 24px -16px rgba(20,24,26,.35), 0 1px 0 rgba(20,24,26,.04);border:1px solid var(--line);text-align:center;text-decoration:none;color:inherit;display:block;transition:transform .15s,box-shadow .15s;cursor:pointer}
+  .badge:focus-visible{outline:2px solid #20262a;outline-offset:2px}
+  .badge:hover{transform:translateY(-3px) rotate(0deg) !important;box-shadow:0 16px 30px -16px rgba(20,24,26,.4)}
+  .badge:nth-child(3n+1){transform:rotate(-1deg)}
+  .badge:nth-child(3n+2){transform:rotate(.8deg)}
+  .badge:nth-child(3n){transform:rotate(-.5deg)}
+
+  .hole{width:26px;height:7px;border-radius:5px;background:var(--line);margin:0 auto 12px}
+
+  .photo{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:700;font-size:21px;color:#fff;border:3px solid var(--card);box-shadow:0 0 0 2px currentColor}
+
+  .badge h3{font-family:'Archivo',sans-serif;font-size:15.5px;font-weight:700;margin:0 0 2px}
+  .badge .branch{font-size:11.5px;color:var(--muted);margin:0 0 10px}
+
+  .meta{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .meta span{font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:12px;background:#f1f3f2;color:var(--muted)}
+  .meta span.duty{background:#fbe9e7;color:var(--duty)}
+
+  .phone{display:block;font-size:12px;color:var(--ink);text-decoration:none;border-top:1px dashed var(--line);padding-top:9px;font-weight:600}
+  .phone:hover{text-decoration:underline}
+
+  footer.foot{padding-top:24px;font-size:12px;color:var(--muted);text-align:center}
+
+  @media (prefers-reduced-motion:no-preference){
+    .wall{animation:fadein .5s ease both}
+  }
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+<p class="note">Konsept C — örnek veri, karşılaştırma için hazırlandı.</p>
+<div class="page">
+  <header>
+    <div>
+      <h1>Öğretmenler</h1>
+      <p>Okulun personel panosu — branşa göre renkli, tek bakışta.</p>
+    </div>
+    <button class="add" type="button">+ Öğretmen ekle</button>
+  </header>
+
+  <div class="chipline">
+    <span><b>12</b> öğretmen</span>
+    <span><b>8</b> branş</span>
+    <span><b>10</b> nöbet kaydı</span>
+  </div>
+
+  <div class="toolbar">
+    <input type="search" placeholder="Öğretmen veya branş ara">
+  </div>
+  <div class="branches">
+    <span class="bchip active"><i style="background:#20262a"></i> Tümü</span>
+    <span class="bchip"><i style="background:#c1484f"></i> Beden Eğitimi</span>
+    <span class="bchip"><i style="background:#a67a2e"></i> Sosyal Bilgiler</span>
+    <span class="bchip"><i style="background:#3b6e8f"></i> Matematik</span>
+    <span class="bchip"><i style="background:#4f7a52"></i> Fen Bilimleri</span>
+    <span class="bchip"><i style="background:#7a5b96"></i> İngilizce</span>
+    <span class="bchip"><i style="background:#8a4b3b"></i> Türkçe</span>
+    <span class="bchip"><i style="background:#2f8f86"></i> Müzik</span>
+    <span class="bchip"><i style="background:#5a5f8a"></i> Bilişim Teknolojileri</span>
+  </div>
+
+  <div class="wall">
+    <div class="badge" tabindex="0" role="link" style="color:#c1484f">
+      <div class="hole"></div>
+      <div class="photo" style="background:#c1484f">BB</div>
+      <h3>Bilal Baykar</h3>
+      <p class="branch">Beden Eğitimi</p>
+      <div class="meta"><span>0 sa/hafta</span><span>Bugün yok</span></div>
+      <a class="phone" href="tel:05336324217">0533 632 42 17</a>
+    </div>
+    <div class="badge" tabindex="0" role="link" style="color:#a67a2e">
+      <div class="hole"></div>
+      <div class="photo" style="background:#a67a2e">ÇS</div>
+      <h3>Çiçek Sönmez</h3>
+      <p class="branch">Sosyal Bilgiler</p>
+      <div class="meta"><span>21 sa/hafta</span><span class="duty">Nöbetçi</span></div>
+      <a class="phone" href="tel:05063696048">0506 369 60 48</a>
+    </div>
+    <div class="badge" tabindex="0" role="link" style="color:#3b6e8f">
+      <div class="hole"></div>
+      <div class="photo" style="background:#3b6e8f">EK</div>
+      <h3>Elif Kaya</h3>
+      <p class="branch">Matematik</p>
+      <div class="meta"><span>24 sa/hafta</span><span class="duty">Nöbetçi</span></div>
+      <a class="phone" href="tel:05321112233">0532 111 22 33</a>
+    </div>
+    <div class="badge" tabindex="0" role="link" style="color:#4f7a52">
+      <div class="hole"></div>
+      <div class="photo" style="background:#4f7a52">MD</div>
+      <h3>Mehmet Demir</h3>
+      <p class="branch">Fen Bilimleri</p>
+      <div class="meta"><span>18 sa/hafta</span><span>Bugün 2 ders</span></div>
+      <a class="phone" href="tel:05442223344">0544 222 33 44</a>
+    </div>
+    <div class="badge" tabindex="0" role="link" style="color:#7a5b96">
+      <div class="hole"></div>
+      <div class="photo" style="background:#7a5b96">ZA</div>
+      <h3>Zeynep Arslan</h3>
+      <p class="branch">İngilizce</p>
+      <div class="meta"><span>20 sa/hafta</span><span class="duty">Nöbetçi</span></div>
+      <a class="phone" href="tel:05353334455">0535 333 44 55</a>
+    </div>
+    <div class="badge" tabindex="0" role="link" style="color:#8a4b3b">
+      <div class="hole"></div>
+      <div class="photo" style="background:#8a4b3b">AY</div>
+      <h3>Ahmet Yılmaz</h3>
+      <p class="branch">Türkçe</p>
+      <div class="meta"><span>22 sa/hafta</span><span>Bugün 5 ders</span></div>
+      <a class="phone" href="tel:05464445566">0546 444 55 66</a>
+    </div>
+    <div class="badge" tabindex="0" role="link" style="color:#2f8f86">
+      <div class="hole"></div>
+      <div class="photo" style="background:#2f8f86">SÇ</div>
+      <h3>Selin Çelik</h3>
+      <p class="branch">Müzik</p>
+      <div class="meta"><span>10 sa/hafta</span><span>Bugün 1 ders</span></div>
+      <a class="phone" href="tel:05375556677">0537 555 66 77</a>
+    </div>
+    <div class="badge" tabindex="0" role="link" style="color:#5a5f8a">
+      <div class="hole"></div>
+      <div class="photo" style="background:#5a5f8a">OK</div>
+      <h3>Okan Koç</h3>
+      <p class="branch">Bilişim Teknolojileri</p>
+      <div class="meta"><span>16 sa/hafta</span><span class="duty">Nöbetçi</span></div>
+      <a class="phone" href="tel:05386667788">0538 666 77 88</a>
+    </div>
+  </div>
+  <footer class="foot">8 / 12 kayıt gösteriliyor — bir karta dokunduğunuzda tam profil açılır.</footer>
+</div>
+</body>
+</html>

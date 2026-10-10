@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Konsept D — Oturma Planı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#0a0c11; --panel:rgba(255,255,255,.045); --panel-border:rgba(255,255,255,.09);
+    --text:#eef1f6; --muted:#8891a3; --cover-bg:#0d1017;
+    --violet:#7c6cf0; --cyan:#2ee6c8; --coral:#ff6b6b; --kicker:#2ee6c8;
+  }
+  :root[data-theme="light"]{
+    color-scheme:light;
+    --bg:#f3f4fb; --panel:rgba(255,255,255,.72); --panel-border:rgba(20,20,45,.1);
+    --text:#181a22; --muted:#656c82; --cover-bg:#fbfbff;
+    --violet:#6c4df0; --cyan:#0e9488; --coral:#e8503f; --kicker:#6c4df0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+  .note{max-width:760px;margin:0 auto;padding:14px 22px 0;font-size:12px;color:var(--muted);opacity:.7}
+  .page{max-width:760px;margin:0 auto;padding:0 18px 70px}
+
+  /* ============ Üst bar ============ */
+  .op-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--cover-bg);border-bottom:1px solid var(--panel-border);margin-bottom:16px}
+  .op-close{flex:none;font:600 13px/1 'Inter',sans-serif;padding:10px 14px;border-radius:10px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);cursor:pointer}
+  .op-title{flex:1;min-width:0}
+  .op-title b{display:block;font-size:16px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+  .op-title span{font-size:11.5px;color:var(--muted)}
+  .theme-toggle{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .theme-toggle svg{width:16px;height:16px}
+  .theme-toggle .i-sun{display:none}
+  :root[data-theme="dark"] .theme-toggle .i-sun{display:block}
+  :root[data-theme="dark"] .theme-toggle .i-moon{display:none}
+
+  /* ============ Sınıf seçici çipleri ============ */
+  .class-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+  .class-chips::-webkit-scrollbar{display:none}
+  .class-chips button{flex:none;font:600 13px/1 'Inter',sans-serif;padding:9px 16px;border-radius:30px;border:1px solid var(--panel-border);background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+  .class-chips button.on{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border-color:transparent}
+
+  .section{background:var(--panel);border:1px solid var(--panel-border);border-radius:16px;padding:16px 16px 14px;margin-bottom:14px}
+  .section h3{display:flex;align-items:center;gap:8px;justify-content:space-between;margin:0 0 12px;font-size:12px;letter-spacing:.03em;color:var(--kicker);font-weight:700;text-transform:uppercase}
+  .section h3 .badge{font-family:'Space Grotesk',sans-serif;font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--panel-border);border-radius:20px;padding:2px 9px;text-transform:none;letter-spacing:0}
+
+  .action-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+  .action-row button{font:600 12.5px/1 'Inter',sans-serif;padding:13px 6px;border-radius:12px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);cursor:pointer}
+  .action-row button.primary{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border-color:transparent}
+
+  /* ---- Havuz: atanmamış öğrenciler ---- */
+  .pool-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .pool-chip{display:flex;align-items:center;gap:7px;font:600 12.5px/1 'Inter',sans-serif;padding:8px 12px 8px 7px;border-radius:30px;border:2px solid var(--panel-border);background:var(--bg);color:var(--text);cursor:pointer}
+  .pool-chip b{width:22px;height:22px;border-radius:50%;background:#1b1d24;border:2px solid var(--c);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:'Space Grotesk',sans-serif;font-weight:800;flex:none}
+  .pool-chip.selected{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(46,230,200,.18)}
+  .pool-empty{font-size:12.5px;color:var(--muted);padding:4px 0}
+
+  .layout-toggles{display:flex;gap:8px;margin-bottom:14px}
+  .layout-toggles button{flex:1;font:600 12px/1 'Inter',sans-serif;padding:11px 8px;border-radius:12px;border:1px solid var(--panel-border);background:var(--panel);color:var(--muted);cursor:pointer}
+  .layout-toggles button.on{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#06090f;border-color:transparent}
+
+  /* ---- Sınıf canvas: tahta + öğretmen masası + sıralar ---- */
+  .op-canvas{position:relative;border:2px dashed var(--panel-border);border-radius:14px;padding:18px 14px 22px;
+    background-color:var(--bg);
+    background-image:linear-gradient(var(--panel-border) 1px,transparent 1px),linear-gradient(90deg,var(--panel-border) 1px,transparent 1px);
+    background-size:22px 22px}
+  .op-front{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin-bottom:10px}
+  .op-flag{width:34px;height:23px;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.35);flex:none}
+  .op-portrait{width:26px;height:33px;border-radius:3px;background:linear-gradient(160deg,#d8b568,#8a6a28);padding:3px;box-shadow:0 2px 6px rgba(0,0,0,.35);flex:none}
+  .op-portrait-inner{width:100%;height:100%;background:#eef1f6;border-radius:1px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;padding-top:2px}
+  .op-portrait-inner svg{width:78%;height:auto}
+  .op-board{position:relative;max-width:300px;margin:0 auto 10px;background:linear-gradient(160deg,#20392c,#132a20 60%,#0f231a);border:6px solid #6b4a2c;border-radius:6px;padding:10px 14px;text-align:center}
+  .op-board span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#eef5ee;opacity:.82;font-weight:600}
+  .op-teacher-desk{display:flex;align-items:center;justify-content:center;gap:8px;max-width:180px;margin:0 auto 20px;padding:8px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--panel-border);font-size:11.5px;color:var(--muted)}
+  .op-teacher-desk b{color:var(--text);font-weight:700}
+
+  .op-rows{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .op-desk{display:flex;gap:8px}
+  .op-seat{width:64px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+  .op-seat-head{width:34px;height:34px;border-radius:50%;background:#1b1d24;border:2px solid var(--panel-border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:'Space Grotesk',sans-serif;transition:border-color .15s,color .15s,background .15s}
+  .op-seat.filled .op-seat-head{border-color:var(--c);color:#fff;background:#1b1d24}
+  .op-seat-name{font-size:9px;color:var(--muted);text-align:center;line-height:1.2;max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .op-seat-table{width:60px;height:7px;border-radius:3px;background:var(--panel-border)}
+  .op-locked .op-seat{cursor:not-allowed;opacity:.75}
+
+  .op-info{text-align:center;font-size:11.5px;color:var(--muted);margin-top:10px}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--text);color:var(--bg);font:600 13px/1 'Inter',sans-serif;padding:12px 20px;border-radius:30px;z-index:20;transition:opacity .25s,transform .25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media print{
+    body > *:not(.page){display:none !important}
+    .op-bar,.class-chips,.action-row,.layout-toggles,.pool-chip,.theme-toggle{display:none !important}
+    .op-canvas{border-style:solid;background-image:none}
+  }
+</style>
+</head>
+<body>
+<p class="note">Konsept D — örnek veri, karşılaştırma için hazırlandı. Gerçek sürükle-bırak yerine dokunarak yerleştirme kullanılıyor.</p>
+
+<div class="op-bar">
+  <button class="op-close" type="button" onclick="history.length>1?history.back():null">← Kapat</button>
+  <div class="op-title"><b id="opTitle">5-A Oturma Planı</b><span id="opYear">2026 - 2027 eğitim öğretim yılı</span></div>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Açık/koyu temayı değiştir">
+    <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg>
+    <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+  </button>
+</div>
+
+<div class="page">
+  <div class="class-chips" id="classChips"></div>
+
+  <div class="action-row">
+    <button type="button" id="btnClear">🗑 Temizle</button>
+    <button class="primary" type="button" id="btnSave">💾 Kaydet</button>
+    <button type="button" id="btnPdf">📄 PDF</button>
+  </div>
+
+  <div class="section">
+    <h3>👥 Atanmamış Öğrenciler <span class="badge" id="poolCount">0</span></h3>
+    <div class="pool-chips" id="poolChips"></div>
+  </div>
+
+  <div class="section">
+    <h3>🪑 Sınıf Yerleşimi</h3>
+    <div class="layout-toggles">
+      <button type="button" id="btnMoveAll">🔗 Birlikte Taşı</button>
+      <button type="button" id="btnLock">🔒 Masaları Kilitle</button>
+    </div>
+    <div class="op-canvas" id="opCanvas">
+      <div class="op-front">
+        <svg class="op-flag" viewBox="0 0 30 20"><rect width="30" height="20" rx="2" fill="#e30a17"/><circle cx="11" cy="10" r="5.5" fill="#fff"/><circle cx="12.6" cy="10" r="4.4" fill="#e30a17"/><polygon points="16.3,10 19.8,11.3 17.6,8.2 17.6,11.9 19.9,8.9" fill="#fff"/></svg>
+        <div class="op-portrait"><div class="op-portrait-inner"><svg viewBox="0 0 24 28"><path fill="#232733" d="M12 2a5 5 0 0 1 5 5v2a5 5 0 0 1-2 4v2c3 .7 7 2.5 7 6.2V24H4v-2.8c0-3.7 4-5.5 7-6.2v-2a5 5 0 0 1-2-4V7a5 5 0 0 1 5-5z"/></svg></div></div>
+      </div>
+      <div class="op-board"><span>Yazı Tahtası</span></div>
+      <div class="op-teacher-desk">🧑‍🏫 <b id="opTeacher">Öğretmen</b></div>
+      <div class="op-rows" id="opRows"></div>
+    </div>
+    <div class="op-info" id="opInfo">Değişiklikler otomatik kaydedilmez — bitirdiğinizde Kaydet'e basın.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem('ka-concept-theme'); } catch(e){}
+  var theme = saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  root.setAttribute('data-theme', theme);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    theme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    try { localStorage.setItem('ka-concept-theme', theme); } catch(e){}
+  });
+
+  /* ---- Aynı sınıf/öğrenci veri modeli (g-siniflar.html ile BİREBİR aynı) — iki sayfa arasında
+     tutarlılık için isim üretim mantığı burada da aynen tekrarlanıyor. ---- */
+  var CLASS_DATA = [
+    { code:'1-A', ogretmen:'Çilem Aydın',        ogrenci:9,  kiz:5, erkek:4, glow:'#ef5454' },
+    { code:'2-A', ogretmen:null,                  ogrenci:10, kiz:5, erkek:5, glow:'#dd9d27' },
+    { code:'3-A', ogretmen:'Fatma Şenocak',       ogrenci:11, kiz:6, erkek:5, glow:'#6f5de0' },
+    { code:'4-A', ogretmen:'Uygar Halisdemir',    ogrenci:9,  kiz:4, erkek:5, glow:'#1fb89d' },
+    { code:'5-A', ogretmen:'Ece Küçük Müldür',    ogrenci:8,  kiz:4, erkek:4, glow:'#c954e0' },
+    { code:'5-B', ogretmen:'Derya Yılmaz',        ogrenci:9,  kiz:5, erkek:4, glow:'#ff7d46' },
+    { code:'6-A', ogretmen:'Veysel Karani Gül',   ogrenci:10, kiz:5, erkek:5, glow:'#1fa870' },
+    { code:'7-A', ogretmen:'Miyase Gürtürk',      ogrenci:10, kiz:5, erkek:5, glow:'#5b7ef0' },
+    { code:'8-A', ogretmen:'Nuray Polat',         ogrenci:9,  kiz:5, erkek:4, glow:'#e0547a' }
+  ];
+  var KIZ_ISIM = ['Zeynep','Elif','Defne','Asel','İrem','Azra','Ecrin','Nehir','Sıla','Lina','Eslem','Meyra','Yağmur','Beren','Nisa','Sena','Duru','Miray','Eylül','Zümra','Hiranur','Ceren','Pelin','Dila','Ada','Rüya'];
+  var ERKEK_ISIM = ['Ali','Mehmet','Yusuf','Emir','Eymen','Alparslan','Kerem','Berat','Kuzey','Miraç','Göktuğ','Çınar','Mustafa','Ömer','Bora','Kaan','Atlas','Efe','Bartu','Arda','Poyraz','Toprak','Tuna','Egemen','Oğuzhan','Baran'];
+  var SOYISIM = ['Yıldız','Kaya','Demir','Şahin','Aydın','Çelik','Doğan','Arslan','Koç','Öztürk','Aksoy','Korkmaz','Taş','Yılmaz','Özdemir','Polat','Güneş','Akın','Türkmen','Bulut','Ergin','Karaca','Uysal','Erdoğan','Sarı','Avcı'];
+
+  function studentsFor(cls, classIdx){
+    var out = [], seed = classIdx * 7, usedNo = {};
+    function pickNo(base){
+      var no = 10 + (base % 85);
+      while (usedNo[no]) no = 10 + ((no - 10 + 1) % 85);
+      usedNo[no] = true;
+      return no;
+    }
+    for (var i = 0; i < cls.kiz; i++){
+      var fi = (seed + i * 3) % KIZ_ISIM.length, si = (seed + i * 5) % SOYISIM.length;
+      out.push({ name: KIZ_ISIM[fi] + ' ' + SOYISIM[si], no: pickNo(seed + i * 9) });
+    }
+    for (var j = 0; j < cls.erkek; j++){
+      var fi2 = (seed + j * 4) % ERKEK_ISIM.length, si2 = (seed + j * 6 + 2) % SOYISIM.length;
+      out.push({ name: ERKEK_ISIM[fi2] + ' ' + SOYISIM[si2], no: pickNo(seed + j * 11 + 3) });
+    }
+    return out;
+  }
+
+  /* ---- Durum ---- */
+  var classIdx = 4; // varsayılan: 5-A (ekran görüntüsündeki örnekle aynı sınıf)
+  var roster = [];       // {name, no} — o sınıfın tüm öğrencileri
+  var seatOf = [];       // seatIndex -> roster index | null
+  var selectedPool = null; // seçili havuz öğrencisinin roster index'i
+  var locked = false, moveAll = false;
+
+  var chipsEl = document.getElementById('classChips');
+  var poolEl = document.getElementById('poolChips');
+  var poolCountEl = document.getElementById('poolCount');
+  var rowsEl = document.getElementById('opRows');
+  var canvasEl = document.getElementById('opCanvas');
+  var toastEl = document.getElementById('toast');
+
+  CLASS_DATA.forEach(function(cls, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = cls.code;
+    b.className = i === classIdx ? 'on' : '';
+    b.addEventListener('click', function(){ loadClass(i); });
+    chipsEl.appendChild(b);
+  });
+
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function(){ toastEl.classList.remove('show'); }, 1800);
+  }
+
+  function loadClass(idx){
+    classIdx = idx;
+    var cls = CLASS_DATA[idx];
+    roster = studentsFor(cls, idx);
+    // varsayılan: gerçek uygulamadaki gibi tüm öğrenciler sıraya otomatik yerleştirilir
+    seatOf = roster.map(function(_, i){ return i; });
+    selectedPool = null;
+    locked = false; moveAll = false;
+    document.getElementById('btnLock').classList.remove('on');
+    document.getElementById('btnMoveAll').classList.remove('on');
+    document.getElementById('btnLock').textContent = '🔒 Masaları Kilitle';
+
+    document.getElementById('opTitle').textContent = cls.code + ' Oturma Planı';
+    document.getElementById('opTeacher').textContent = cls.ogretmen || 'Sınıf öğretmeni atanmadı';
+    [].slice.call(chipsEl.children).forEach(function(b, i){ b.classList.toggle('on', i === idx); });
+
+    renderDesks(cls);
+    renderPool(cls);
+  }
+
+  function renderDesks(cls){
+    rowsEl.innerHTML = '';
+    var deskCount = Math.ceil(roster.length / 2);
+    var seatIdx = 0;
+    for (var d = 0; d < deskCount; d++){
+      var desk = document.createElement('div');
+      desk.className = 'op-desk';
+      for (var s = 0; s < 2 && seatIdx < roster.length; s++, seatIdx++){
+        desk.appendChild(buildSeat(seatIdx, cls));
+      }
+      rowsEl.appendChild(desk);
+    }
+  }
+
+  function buildSeat(seatIndex, cls){
+    var wrap = document.createElement('div');
+    wrap.className = 'op-seat';
+    wrap.setAttribute('data-seat', seatIndex);
+    var head = document.createElement('div');
+    head.className = 'op-seat-head';
+    var nameEl = document.createElement('div');
+    nameEl.className = 'op-seat-name';
+    var table = document.createElement('div');
+    table.className = 'op-seat-table';
+    wrap.appendChild(head);
+    wrap.appendChild(nameEl);
+    wrap.appendChild(table);
+    wrap.addEventListener('click', function(){ onSeatClick(seatIndex); });
+    paintSeat(wrap, seatIndex, cls);
+    return wrap;
+  }
+
+  function paintSeat(wrap, seatIndex, cls){
+    var head = wrap.querySelector('.op-seat-head');
+    var nameEl = wrap.querySelector('.op-seat-name');
+    var ri = seatOf[seatIndex];
+    if (ri == null){
+      wrap.classList.remove('filled');
+      head.style.removeProperty('--c');
+      head.textContent = '+';
+      nameEl.textContent = '';
+    } else {
+      var s = roster[ri];
+      wrap.classList.add('filled');
+      head.style.setProperty('--c', cls.glow);
+      head.textContent = s.name.charAt(0);
+      nameEl.textContent = s.name.split(' ')[0];
+    }
+  }
+
+  function repaintAllSeats(){
+    var cls = CLASS_DATA[classIdx];
+    [].slice.call(rowsEl.querySelectorAll('.op-seat')).forEach(function(wrap){
+      paintSeat(wrap, parseInt(wrap.getAttribute('data-seat'), 10), cls);
+    });
+  }
+
+  function renderPool(cls){
+    var assignedSet = {};
+    seatOf.forEach(function(ri){ if (ri != null) assignedSet[ri] = true; });
+    var unassigned = [];
+    roster.forEach(function(s, ri){ if (!assignedSet[ri]) unassigned.push(ri); });
+
+    poolCountEl.textContent = unassigned.length;
+    if (!unassigned.length){
+      poolEl.innerHTML = '<div class="pool-empty">Tüm öğrenciler yerleştirildi.</div>';
+      return;
+    }
+    poolEl.innerHTML = '';
+    unassigned.forEach(function(ri){
+      var s = roster[ri];
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'pool-chip' + (selectedPool === ri ? ' selected' : '');
+      chip.innerHTML = '<b style="--c:' + cls.glow + '">' + s.name.charAt(0) + '</b>' + s.name;
+      chip.addEventListener('click', function(){
+        selectedPool = (selectedPool === ri) ? null : ri;
+        renderPool(cls);
+      });
+      poolEl.appendChild(chip);
+    });
+  }
+
+  function onSeatClick(seatIndex){
+    if (locked){ showToast('Masalar kilitli — önce kilidi açın.'); return; }
+    var cls = CLASS_DATA[classIdx];
+    var occupant = seatOf[seatIndex];
+    if (occupant != null){
+      // dolu sandalyeye dokunmak öğrenciyi havuza geri gönderir
+      seatOf[seatIndex] = null;
+      selectedPool = null;
+      repaintAllSeats();
+      renderPool(cls);
+      return;
+    }
+    if (selectedPool != null){
+      seatOf[seatIndex] = selectedPool;
+      selectedPool = null;
+      repaintAllSeats();
+      renderPool(cls);
+    } else {
+      showToast('Önce havuzdan bir öğrenci seçin.');
+    }
+  }
+
+  document.getElementById('btnClear').addEventListener('click', function(){
+    var hasAny = seatOf.some(function(v){ return v != null; });
+    if (!hasAny) return;
+    if (!confirm('Tüm öğrenci yerleşimleri temizlensin mi? Sıra ve sınıf düzeni korunacak.')) return;
+    seatOf = seatOf.map(function(){ return null; });
+    selectedPool = null;
+    repaintAllSeats();
+    renderPool(CLASS_DATA[classIdx]);
+  });
+  document.getElementById('btnSave').addEventListener('click', function(){ showToast('Kaydedildi ✓'); });
+  document.getElementById('btnPdf').addEventListener('click', function(){ window.print(); });
+  document.getElementById('btnMoveAll').addEventListener('click', function(e){
+    moveAll = !moveAll;
+    e.currentTarget.classList.toggle('on', moveAll);
+  });
+  document.getElementById('btnLock').addEventListener('click', function(e){
+    locked = !locked;
+    e.currentTarget.classList.toggle('on', locked);
+    e.currentTarget.textContent = locked ? '🔓 Kilitleri Aç' : '🔒 Masaları Kilitle';
+    canvasEl.classList.toggle('op-locked', locked);
+  });
+
+  loadClass(classIdx);
+})();
+</script>
+</body>
+</html>
