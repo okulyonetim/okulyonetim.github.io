@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tasarım Merkezi — Koruk Asistan</title>
+<link rel="stylesheet" href="css/design-system.css?v=1101">
+<link rel="stylesheet" id="v3css" href="css/v3/v3.css?v=1">
+<script src="js/v3/theme.js?v=1"></script>
+<script src="js/v3/nav.js?v=1" defer></script>
+<style>
+/* Laboratuvar iskeleti — yalnız bu sayfaya ait */
+body{margin:0;background:var(--ka-app-bg);color:var(--ka-text);font-family:var(--ka-font)}
+.bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;background:var(--ka-header-bg);border-bottom:1px solid var(--ka-header-border)}
+.bar b{font-size:13px}.bar .g{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--ka-text-muted)}
+.bar button{min-height:32px;border-radius:10px;border:1px solid var(--ka-border-strong);background:var(--ka-card-bg);color:var(--ka-text);padding:0 10px;font:inherit;font-size:12px;cursor:pointer}
+.bar button.on{background:var(--v3-accent);color:var(--v3-on-accent);border-color:var(--v3-accent)}
+.sw{width:26px;height:26px;border-radius:50%;padding:0!important;border:2px solid var(--ka-card-bg)!important}
+.lab{max-width:760px;margin:0 auto;padding:12px}.lab h2{font-size:12px;letter-spacing:1px;color:var(--ka-text-muted);margin:22px 4px 8px;text-transform:uppercase}
+.ct{width:100%;border-collapse:collapse;font-size:12px}.ct td{padding:5px 6px;border-bottom:1px solid var(--ka-border)}.ct .p{display:inline-block;padding:2px 8px;border-radius:99px;font-weight:800}.ok{background:#1f8f4e;color:#fff}.no{background:#c0392b;color:#fff}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.split iframe{width:100%;height:calc(100vh - 70px);border:1px solid var(--ka-border);border-radius:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+</style></head><body>
+<div class="bar" id="bar"></div><div id="app"></div>
+<template id="t"><div class="lab" id="v2ModuleRoot">
+<h2>Kontrast denetimi (canlı)</h2><table class="ct" id="ct"></table>
+<h2>Düğmeler</h2><div class="row"><button class="ka-btn">Kaydet</button><button class="ka-btn ka-btn--secondary">İkincil</button><button class="ka-btn ka-btn--ghost">Hayalet</button><button class="ka-btn ka-btn--danger">Sil</button><button class="ka-btn ka-btn--sm">Küçük</button><button class="ka-icon-button" aria-label="Ayarlar">⚙️</button><span class="ka-avatar">SK</span></div>
+<h2>Form alanları</h2><div class="ka-card"><div class="ka-card__body ka-stack"><label class="ka-field"><span class="ka-field__label">Ad soyad</span><input class="ka-input" value="Sedat Karagöz"></label><label class="ka-field"><span class="ka-field__label">Not</span><textarea class="ka-input" rows="2">Örnek not metni</textarea></label><label class="ka-check"><input type="checkbox" checked> Bildirimleri aç</label></div></div>
+<h2>Kart, liste, rozet, boş durum</h2>
+<div class="ka-card"><div class="ka-card__header"><b>Bugünün nöbetçileri</b></div><div class="ka-card__body ka-stack"><div class="ka-list-card"><div class="ka-row ka-row--between"><div><b>ECE KÜÇÜK MÜDÜR</b><div class="ka-muted">Bahçe</div></div><span class="ka-badge">BUGÜN</span></div></div><div class="ka-row"><span class="ka-badge ka-badge--warning">Uyarı</span><span class="ka-badge ka-badge--danger">Hata</span><span class="ka-badge ka-badge--success">Tamam</span></div><div class="ka-empty">Kayıt bulunmuyor.</div></div></div>
+<h2>Tablo</h2><div class="ka-table-wrap"><table class="ka-table"><thead><tr><th>Gün</th><th>Bahçe</th><th>Okul binası</th></tr></thead><tbody><tr><td>Pazartesi</td><td>Hasret Çeçen</td><td>Ercan Akdeniz</td></tr><tr><td>Salı</td><td>Çiçek Sönmez</td><td>Ünal Balık</td></tr></tbody></table></div>
+<h2>Pencere</h2><div class="row"><button class="ka-btn" id="mo">Pencereyi aç</button></div>
+</div></template>
+<script>
+(function(){
+var Q=new URLSearchParams(location.search),bar=document.getElementById('bar'),app=document.getElementById('app'),T=window.KorukTheme;
+if(Q.get('split')){bar.innerHTML='<b>🧪 Mevcut | V3</b> <button onclick="location.search=\'\'">← Tek ekran</button>';var a=new URLSearchParams(Q);a.delete('split');a.set('v','old');var b=new URLSearchParams(Q);b.delete('split');b.set('v','new');app.innerHTML='<div class="split"><iframe src="design-lab.html?'+a+'"></iframe><iframe src="design-lab.html?'+b+'"></iframe></div>';return}
+if(Q.get('t'))T.set({mode:Q.get('t')});if(Q.get('a'))T.set({accent:Q.get('a')});
+var NEW=Q.get('v')!=='old';app.appendChild(document.getElementById('t').content.cloneNode(true));
+function grp(label,opts,get,fn){var g=document.createElement('span');g.className='g';g.textContent=label+' ';opts.forEach(function(o){var x=document.createElement('button');x.textContent=o[1];x.dataset.v=o[0];x.onclick=function(){fn(o[0]);mark()};g.appendChild(x)});bar.appendChild(g);g._get=get;return g}
+var gs=[];bar.innerHTML='<b>🧪 Tasarım Merkezi</b>';
+gs.push(grp('Tasarım',[['old','Mevcut'],['new','V3']],function(){return NEW?'new':'old'},function(v){NEW=v==='new';document.getElementById('v3css').disabled=!NEW;document.documentElement.classList.toggle('ka-v3',NEW);if(NEW)T.apply();document.documentElement.style.cssText=NEW?document.documentElement.style.cssText:'';rate()}));
+gs.push(grp('Tema',[['auto','Oto'],['light','Açık'],['dark','Koyu']],function(){return T.get().mode},function(v){T.set({mode:v});rate()}));
+gs.push(grp('Yoğunluk',[['compact','Sıkı'],['normal','Normal'],['roomy','Geniş']],function(){return T.get().density},function(v){T.set({density:v})}));
+gs.push(grp('Yazı',[['.9','S'],['1','M'],['1.12','L']],function(){return String(T.get().font)},function(v){T.set({font:+v})}));
+var ac=document.createElement('span');ac.className='g';ac.textContent='Vurgu ';Object.keys(T.presets).forEach(function(k){var x=document.createElement('button');x.className='sw';x.title=k;x.style.background=T.presets[k];x.onclick=function(){T.set({accent:k});rate()};ac.appendChild(x)});var rs=document.createElement('button');rs.textContent='Sıfırla';rs.onclick=function(){T.reset();rate();mark()};ac.appendChild(rs);bar.appendChild(ac);
+var sp=document.createElement('button');sp.textContent='Yan yana';sp.onclick=function(){var p=new URLSearchParams(location.search);p.set('split','1');location.search=p};bar.appendChild(sp);
+function mark(){gs.forEach(function(g){[].forEach.call(g.querySelectorAll('button'),function(b){b.classList.toggle('on',b.dataset.v===String(g._get()))})})}
+function col(v){var e=document.createElement('i');e.style.cssText='position:absolute;color:'+v;document.body.appendChild(e);var c=getComputedStyle(e).color;e.remove();var k=document.createElement('canvas');k.width=k.height=1;var x=k.getContext('2d');x.fillStyle=c;x.fillRect(0,0,1,1);var d=x.getImageData(0,0,1,1).data;return '#'+[0,1,2].map(function(i){return('0'+d[i].toString(16)).slice(-2)}).join('')}
+function rate(){var P=[['Metin / kart','--ka-text','--ka-card-bg'],['Soluk metin / kart','--ka-text-muted','--ka-card-bg'],['Düğme yazısı / düğme','--ka-button-text','--ka-button-bg'],['Vurgu metni / kart','--ka-nav-active-text','--ka-primary-soft'],['Tehlike / kart','--ka-danger','--ka-card-bg'],['Metin / sayfa','--ka-text','--ka-app-bg']],h='';
+ P.forEach(function(p){var r=T.contrast(col('var('+p[1]+')'),col('var('+p[2]+')'));h+='<tr><td>'+p[0]+'</td><td>'+r.toFixed(2)+':1</td><td><span class="p '+(r>=4.5?'ok':'no')+'">'+(r>=4.5?'AA ✓':'AA ✗')+'</span></td></tr>'});document.getElementById('ct').innerHTML=h;mark()}
+document.getElementById('mo').onclick=function(){var d=document.createElement('div');d.className='ka-modal-backdrop';d.innerHTML='<div class="ka-modal"><div class="ka-modal__header"><b>Örnek pencere</b></div><div class="ka-modal__body">Pencere, tema ve yoğunluk ayarlarını izler.</div><div class="ka-modal__footer"><button class="ka-btn ka-btn--secondary">Vazgeç</button><button class="ka-btn">Tamam</button></div></div>';d.onclick=function(e){if(e.target===d||e.target.closest('.ka-btn'))d.remove()};document.body.appendChild(d)};
+if(!NEW){document.getElementById('v3css').disabled=true;document.documentElement.classList.remove('ka-v3')}
+window.addEventListener('koruk:theme-change',function(){setTimeout(rate,0)});rate();
+})();
+</script></body></html>
