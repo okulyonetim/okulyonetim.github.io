@@ -11443,3 +11443,33 @@ html[data-theme="dark"] .ka-menu-submenu [data-personel-menu-row] span{
 #khBell .kh-bell-countdown-ring::before{background:var(--kb-soft)!important}
 #khBell .kh-bell-holiday-countdown::before{background:var(--kb-soft)!important}
 
+
+/* ===== GLASSMORPHISM: SVG sahne gizle, gradient arka plan göster ===== */
+/* Skin.js'nin eklediği SVG sahne kartlarını gizle */
+.ka-school-summary-card .sk-cardscene{display:none!important}
+
+/* Kart arka planlarının görünmesi için sk-has-scene sınıfı olan kartları da kapsa */
+:root:not([data-theme="dark"]) .ka-school-summary-card.sk-has-scene:not(.is-student):not(.is-class):not(.is-service){
+  background:linear-gradient(145deg,#dbeafe,#eff6ff)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.sk-has-scene.is-student{
+  background:linear-gradient(145deg,#d1fae5,#ecfdf5)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.sk-has-scene.is-class{
+  background:linear-gradient(145deg,#fef3c7,#fffbeb)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.sk-has-scene.is-service{
+  background:linear-gradient(145deg,#ffe4e6,#fff1f2)!important;
+}
+[data-theme="dark"] .ka-school-summary-card.sk-has-scene:not(.is-student):not(.is-class):not(.is-service){
+  background:linear-gradient(145deg,#1a2a5e,#1e3a7a)!important;
+}
+[data-theme="dark"] .ka-school-summary-card.sk-has-scene.is-student{
+  background:linear-gradient(145deg,#0d2e2e,#0f3d35)!important;
+}
+[data-theme="dark"] .ka-school-summary-card.sk-has-scene.is-class{
+  background:linear-gradient(145deg,#2a1a00,#3d2800)!important;
+}
+[data-theme="dark"] .ka-school-summary-card.sk-has-scene.is-service{
+  background:linear-gradient(145deg,#2a0a14,#3d0f1e)!important;
+}
