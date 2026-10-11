@@ -15,7 +15,7 @@ let shellWrapped=false;
 const wrappedBackApis=new WeakSet();
 
 function reportOverlay(){
-  return document.querySelector('.ka-report-customizer-backdrop')||document.getElementById('kaReportPreview')||document.getElementById('kaPdfPreview')||document.getElementById('kaPdfTools')||document.getElementById('kaPdfScanner');
+  return document.querySelector('.ka-report-customizer-backdrop')||document.getElementById('kaReportPreview')||document.getElementById('kaPdfPreview')||document.getElementById('kaPdfTools');
 }
 function scrollTopNow(){
   try{global.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){global.scrollTo?.(0,0);}
@@ -49,7 +49,6 @@ function closeReportOverlay(){
   if(document.querySelector('.ka-report-customizer-backdrop')){if(typeof global.ReportCustomizer?.close==='function')global.ReportCustomizer.close();else document.querySelector('.ka-report-customizer-backdrop')?.remove();return true;}
   if(document.getElementById('kaReportPreview')){if(typeof global.ReportEngine?.closePreview==='function')global.ReportEngine.closePreview();else document.getElementById('kaReportPreview')?.remove();return true;}
   if(document.getElementById('kaPdfPreview')){if(typeof global.ReportEngine?.closePdfPreview==='function')global.ReportEngine.closePdfPreview();else document.getElementById('kaPdfPreview')?.remove();return true;}
-  if(document.getElementById('kaPdfScanner')){if(typeof global.PdfScannerEditor?.close==='function')global.PdfScannerEditor.close();else document.getElementById('kaPdfScanner')?.remove();return true;}
   if(document.getElementById('kaPdfTools')){if(typeof global.ReportEngine?.closePdfTools==='function')global.ReportEngine.closePdfTools();else document.getElementById('kaPdfTools')?.remove();return true;}
   return false;
 }
@@ -68,17 +67,6 @@ async function openPdfMenuTool(mode,event){
   try{
     global.DocumentsModule?.unmount?.();global.EvrakTakipPage?.close?.();
     const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren();
-    if(mode==='images'){
-      if(!global.PdfScannerEditor){
-        if(global.AppLoader?.loadScript)await global.AppLoader.loadScript('js/modules/pdf-scanner-editor.js?v=20261011');
-        if(!global.PdfScannerEditor){
-          await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='js/modules/pdf-scanner-editor.js?v=20261011';s.async=true;s.onload=resolve;s.onerror=()=>reject(new Error('Resimden PDF editörü yüklenemedi.'));document.head.appendChild(s);});
-        }
-      }
-      if(!global.PdfScannerEditor?.open)throw new Error('Resimden PDF editörü hazır değil.');
-      global.PdfScannerEditor.open();
-      return true;
-    }
     if(!global.ReportEngine?.openPdfTools){
       if(global.AppLoader?.loadScript)await global.AppLoader.loadScript('js/modules/report-engine.js');
       if(!global.ReportEngine?.openPdfTools){
