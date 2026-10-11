@@ -70,9 +70,9 @@ async function openPdfMenuTool(mode,event){
     const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren();
     if(mode==='images'){
       if(!global.PdfScannerEditor){
-        if(global.AppLoader?.loadScript)await global.AppLoader.loadScript('js/modules/pdf-scanner-editor.js?v=20261004');
+        if(global.AppLoader?.loadScript)await global.AppLoader.loadScript('js/modules/pdf-scanner-editor.js?v=20261011');
         if(!global.PdfScannerEditor){
-          await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='js/modules/pdf-scanner-editor.js?v=20261004';s.async=true;s.onload=resolve;s.onerror=()=>reject(new Error('Resimden PDF editörü yüklenemedi.'));document.head.appendChild(s);});
+          await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='js/modules/pdf-scanner-editor.js?v=20261011';s.async=true;s.onload=resolve;s.onerror=()=>reject(new Error('Resimden PDF editörü yüklenemedi.'));document.head.appendChild(s);});
         }
       }
       if(!global.PdfScannerEditor?.open)throw new Error('Resimden PDF editörü hazır değil.');
