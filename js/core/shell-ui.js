@@ -67,7 +67,21 @@ function sameView(a,b){return !!a&&!!b&&a.kind===b.kind&&a.name===b.name&&a.bott
 function sameSurface(a,b){if(!a||!b||a.kind!==b.kind)return false;if(a.kind==='route')return a.name===b.name&&(a.page||'')===(b.page||'');if(a.kind==='profile-detail')return a.page===b.page;return ['profile','search'].includes(a.kind)}
 function rememberView(view){if(!view)return;const top=navStack[navStack.length-1];if(sameView(top,view)){syncShellBack();return}if(sameSurface(top,view)){navStack[navStack.length-1]=view;syncShellBack();return}navStack.push(view);if(navStack.length>30)navStack.splice(0,navStack.length-30);syncShellBack()}
 function registerPageRoute(page,handler){page=String(page||'').trim();if(!page||typeof handler!=='function')return()=>{};CUSTOM_PAGE_ROUTES.set(page,handler);return()=>{if(CUSTOM_PAGE_ROUTES.get(page)===handler)CUSTOM_PAGE_ROUTES.delete(page)}}
-function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;registerPageRoute('data',async()=>{global.SettingsModule?.unmount?.();if(!global.KaDataPage?.open)throw new Error('KaDataPage hazır değil.');return global.KaDataPage.open()});
+function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;
+  /* "Veriler" menü öğesi (settings:data) hiç var olmamış bir global.KaDataPage'i
+   * çağırıyordu — her tıklamada sessizce "Sayfa açılamadı." hatasına düşüyor, kullanıcı
+   * boş bir ekranda kalıyordu. Bu sayfanın karşılığı zaten var: Ayarlar modülünün
+   * "Depolama" (storage) sekmesi — aynı settings.storage izniyle korunuyor. */
+  registerPageRoute('data',async(ctx)=>{
+    const root=ctx?.root||$('#v2ModuleRoot');
+    if(!root)return false;
+    root.replaceChildren?.();
+    if(!global.SettingsModule?.mount)await global.AppLoader?.load?.('settings');
+    if(!global.SettingsModule?.mount)throw new Error('SettingsModule hazır değil.');
+    const ok=await global.SettingsModule.mount(root);
+    if(ok===false)throw new Error('SettingsModule.mount başarısız');
+    return global.SettingsModule.openPage('storage','Veriler');
+  });
   const openGradebook=async page=>{
     if(!global.AppLoader?.loadScript)throw new Error('Modül yükleyici hazır değil.');
     await global.AppLoader.loadScript('js/modules/tools.js');
