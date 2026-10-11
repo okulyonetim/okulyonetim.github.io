@@ -28,5 +28,5 @@ function installBelirliGunlerDateSort(){
  try{if(parity.currentType==='belirliGunler')reorderDom()}catch(_){ }
  return true;
 }
-(async()=>{try{await wait(()=>typeof global.AppLoader?.loadScript==='function');const load=global.AppLoader.loadScript;await load('js/modules/rubric-settings-core.js?v=1067');await load('js/modules/belirli-gunler-catalog.js?v=5');await load('js/modules/social-club-report.js?v=1');installEntryGuard();global.BelirliGunlerCatalog?.install?.();let tries=0;const timer=setInterval(()=>{if(installBelirliGunlerDateSort()||++tries>120)clearInterval(timer)},100);global.dispatchEvent?.(new CustomEvent('koruk:belirli-gunler-catalog-ready'))}catch(e){console.warn('[RubricSettings compatibility load]',e?.message||e)}})();
+(async()=>{try{await wait(()=>typeof global.AppLoader?.loadScript==='function');const load=global.AppLoader.loadScript;await load('js/modules/rubric-settings-core.js?v=1068');await load('js/modules/belirli-gunler-catalog.js?v=5');await load('js/modules/social-club-report.js?v=1');installEntryGuard();global.BelirliGunlerCatalog?.install?.();let tries=0;const timer=setInterval(()=>{if(installBelirliGunlerDateSort()||++tries>120)clearInterval(timer)},100);global.dispatchEvent?.(new CustomEvent('koruk:belirli-gunler-catalog-ready'))}catch(e){console.warn('[RubricSettings compatibility load]',e?.message||e)}})();
 })(window);

@@ -30,7 +30,7 @@ define('transport',['js/modules/report-engine.js','js/modules/transport.js?v=948
 define('food',['js/modules/report-engine.js','js/modules/food-menu.js?v=1037']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/modules/report-engine.js','js/modules/documents.js']);
 define('reports',['js/modules/report-engine.js?v=3','js/modules/reports.js?v=16']);
-define('tools',['js/modules/tools.js','js/modules/rubric-settings.js?v=1064','js/modules/rubric-tools.js']);
+define('tools',['js/modules/tools.js','js/modules/rubric-settings.js?v=1065','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js?v=884']);
 define('committees',['js/modules/committees.js?v=2']);
 
