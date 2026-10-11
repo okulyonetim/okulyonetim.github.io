@@ -11209,3 +11209,237 @@ html[data-theme="dark"] .ka-menu-submenu [data-personel-menu-row] span{
 .ka-student-detail .ka-student-quick>button:nth-child(4)>span::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.5'/%3E%3Cpath d='M5 21a7 7 0 0 1 14 0'/%3E%3C/svg%3E");
 }
+
+/* ===== GLASSMORPHISM STAT CARDS — Öğretmen/Öğrenci/Sınıf/Servis ===== */
+/* Light theme: pastel gradient backgrounds per card type */
+:root:not([data-theme="dark"]) .ka-school-summary-card{
+  background:linear-gradient(145deg,#e8eaff,#f0f2ff)!important;
+  border-color:rgba(99,102,241,.18)!important;
+  box-shadow:0 4px 20px rgba(99,102,241,.10)!important;
+  color:#1e1b4b!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card>small{color:rgba(49,46,129,.62)!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card>b{color:#1e1b4b!important}
+:root:not([data-theme="dark"]) .ka-school-summary-meta{color:rgba(49,46,129,.55)!important}
+:root:not([data-theme="dark"]) .ka-school-summary-meta *{color:inherit!important}
+
+/* Öğretmen — indigo/blue */
+:root:not([data-theme="dark"]) .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service){
+  background:linear-gradient(145deg,#dbeafe,#eff6ff)!important;
+  border-color:rgba(59,130,246,.18)!important;
+  box-shadow:0 4px 20px rgba(59,130,246,.10)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service)>small{color:rgba(30,64,175,.65)!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service)>b{color:#1e3a8a!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service) .ka-school-summary-meta{color:rgba(30,64,175,.55)!important}
+
+/* Öğrenci — emerald/teal */
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-student{
+  background:linear-gradient(145deg,#d1fae5,#ecfdf5)!important;
+  border-color:rgba(16,185,129,.18)!important;
+  box-shadow:0 4px 20px rgba(16,185,129,.10)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-student>small{color:rgba(6,78,59,.65)!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-student>b{color:#065f46!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-student .ka-school-summary-meta{color:rgba(6,78,59,.55)!important}
+
+/* Sınıf — amber */
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-class{
+  background:linear-gradient(145deg,#fef3c7,#fffbeb)!important;
+  border-color:rgba(245,158,11,.22)!important;
+  box-shadow:0 4px 20px rgba(245,158,11,.12)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-class>small{color:rgba(120,53,15,.65)!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-class>b{color:#78350f!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-class .ka-school-summary-meta{color:rgba(120,53,15,.55)!important}
+
+/* Servis — rose/red */
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-service{
+  background:linear-gradient(145deg,#ffe4e6,#fff1f2)!important;
+  border-color:rgba(239,68,68,.18)!important;
+  box-shadow:0 4px 20px rgba(239,68,68,.10)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-service>small{color:rgba(136,19,55,.65)!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-service>b{color:#881337!important}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-service .ka-school-summary-meta{color:rgba(136,19,55,.55)!important}
+
+/* Dark theme stat cards: rich dark gradients per type */
+[data-theme="dark"] .ka-school-summary-card{
+  border-color:rgba(255,255,255,.09)!important;
+  box-shadow:0 8px 32px rgba(0,0,0,.35)!important;
+  color:#f5f5f5!important;
+}
+[data-theme="dark"] .ka-school-summary-card>small{color:rgba(255,255,255,.55)!important}
+[data-theme="dark"] .ka-school-summary-card>b{color:#ffffff!important}
+[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta{color:rgba(255,255,255,.45)!important}
+[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{color:inherit!important}
+
+/* Öğretmen dark — deep blue */
+[data-theme="dark"] .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service){
+  background:linear-gradient(145deg,#1a2a5e,#1e3a7a)!important;
+  border-color:rgba(99,149,255,.14)!important;
+}
+
+/* Öğrenci dark — deep teal */
+[data-theme="dark"] .ka-school-summary-card.is-student{
+  background:linear-gradient(145deg,#0d2e2e,#0f3d35)!important;
+  border-color:rgba(16,185,129,.18)!important;
+}
+
+/* Sınıf dark — deep amber */
+[data-theme="dark"] .ka-school-summary-card.is-class{
+  background:linear-gradient(145deg,#2a1a00,#3d2800)!important;
+  border-color:rgba(245,158,11,.18)!important;
+}
+
+/* Servis dark — deep rose */
+[data-theme="dark"] .ka-school-summary-card.is-service{
+  background:linear-gradient(145deg,#2a0a14,#3d0f1e)!important;
+  border-color:rgba(239,68,68,.18)!important;
+}
+
+/* Icon background in light theme: card-colored tint */
+:root:not([data-theme="dark"]) .ka-school-summary-card .ka-school-summary-icon{
+  background:rgba(255,255,255,.65)!important;
+  border-color:rgba(255,255,255,.80)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)!important;
+}
+[data-theme="dark"] .ka-school-summary-card .ka-school-summary-icon{
+  background:rgba(255,255,255,.10)!important;
+  border-color:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+}
+
+/* ::after decorative orb matches card accent */
+:root:not([data-theme="dark"]) .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service)::after{
+  background:rgba(59,130,246,.15)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-student::after{
+  background:rgba(16,185,129,.15)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-class::after{
+  background:rgba(245,158,11,.15)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-service::after{
+  background:rgba(239,68,68,.15)!important;
+}
+
+/* Divider border in student card meta grid */
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-student .ka-school-summary-meta{
+  border-top-color:rgba(6,78,59,.14)!important;
+}
+:root:not([data-theme="dark"]) .ka-school-summary-card.is-student .ka-school-stage+.ka-school-stage{
+  border-left-color:rgba(6,78,59,.14)!important;
+}
+
+/* ===== GLASSMORPHISM BELL CARD — mode-based colored backgrounds ===== */
+/* Base card: lesson mode (blue) — replaces cream/amber default */
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern{
+  background:linear-gradient(145deg,#dbeafe,#eff6ff)!important;
+  border-color:rgba(59,130,246,.18)!important;
+  box-shadow:0 4px 24px rgba(59,130,246,.12)!important;
+  --kb-accent:#1d6bc7;--kb-accent-2:#3b82f6;--kb-soft:rgba(255,255,255,.70);
+  --kb-text:#1e3a8a;--kb-muted:rgba(30,58,138,.55);--kb-line:rgba(59,130,246,.20);--kb-track:rgba(59,130,246,.15);
+}
+[data-theme="dark"] #khBell.kh-bell-modern{
+  background:linear-gradient(145deg,#1a2a5e,#1e3a7a)!important;
+  border-color:rgba(99,149,255,.14)!important;
+  box-shadow:0 8px 40px rgba(0,0,0,.40)!important;
+  --kb-accent:#60a5fa;--kb-accent-2:#93c5fd;--kb-soft:rgba(30,58,138,.55);
+  --kb-text:#e0f2fe;--kb-muted:rgba(224,242,254,.55);--kb-line:rgba(96,165,250,.20);--kb-track:rgba(96,165,250,.18);
+}
+
+/* Weekend mode — indigo */
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern.kh-bell-weekend,
+:root:not([data-theme="dark"]) #khBell.kh-bell-weekend-v2{
+  background:linear-gradient(145deg,#e0e7ff,#eef2ff)!important;
+  border-color:rgba(99,102,241,.18)!important;
+  --kb-accent:#4338ca;--kb-accent-2:#6366f1;--kb-soft:rgba(255,255,255,.70);
+  --kb-text:#3730a3;--kb-muted:rgba(55,48,163,.55);--kb-line:rgba(99,102,241,.20);--kb-track:rgba(99,102,241,.15);
+}
+[data-theme="dark"] #khBell.kh-bell-modern.kh-bell-weekend,
+[data-theme="dark"] #khBell.kh-bell-weekend-v2{
+  background:linear-gradient(145deg,#1a1a3e,#242466)!important;
+  border-color:rgba(129,140,248,.14)!important;
+  --kb-accent:#818cf8;--kb-accent-2:#a5b4fc;--kb-soft:rgba(55,48,163,.55);
+  --kb-text:#e0e7ff;--kb-muted:rgba(224,231,255,.55);--kb-line:rgba(129,140,248,.20);--kb-track:rgba(129,140,248,.18);
+}
+
+/* Holiday mode — amber */
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern.kh-bell-holiday,
+:root:not([data-theme="dark"]) #khBell.kh-bell-holiday-v2{
+  background:linear-gradient(145deg,#fef3c7,#fffbeb)!important;
+  border-color:rgba(245,158,11,.22)!important;
+  --kb-accent:#b45309;--kb-accent-2:#d97706;--kb-soft:rgba(255,255,255,.70);
+  --kb-text:#78350f;--kb-muted:rgba(120,53,15,.55);--kb-line:rgba(245,158,11,.22);--kb-track:rgba(245,158,11,.15);
+}
+[data-theme="dark"] #khBell.kh-bell-modern.kh-bell-holiday,
+[data-theme="dark"] #khBell.kh-bell-holiday-v2{
+  background:linear-gradient(145deg,#2a1a00,#3d2800)!important;
+  border-color:rgba(245,158,11,.18)!important;
+  --kb-accent:#fbbf24;--kb-accent-2:#fde68a;--kb-soft:rgba(120,53,15,.55);
+  --kb-text:#fef3c7;--kb-muted:rgba(254,243,199,.55);--kb-line:rgba(251,191,36,.20);--kb-track:rgba(251,191,36,.18);
+}
+
+/* Break mode — teal */
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern.kh-bell-break{
+  background:linear-gradient(145deg,#d1fae5,#ecfdf5)!important;
+  border-color:rgba(16,185,129,.18)!important;
+  --kb-accent:#047857;--kb-accent-2:#10b981;--kb-soft:rgba(255,255,255,.70);
+  --kb-text:#065f46;--kb-muted:rgba(6,95,70,.55);--kb-line:rgba(16,185,129,.20);--kb-track:rgba(16,185,129,.15);
+  --kb-break:#047857;
+}
+[data-theme="dark"] #khBell.kh-bell-modern.kh-bell-break{
+  background:linear-gradient(145deg,#0d2e2e,#0f3d35)!important;
+  border-color:rgba(16,185,129,.18)!important;
+  --kb-accent:#34d399;--kb-accent-2:#6ee7b7;--kb-soft:rgba(6,95,70,.55);
+  --kb-text:#d1fae5;--kb-muted:rgba(209,250,229,.55);--kb-line:rgba(52,211,153,.20);--kb-track:rgba(52,211,153,.18);
+  --kb-break:#34d399;
+}
+
+/* After-school / completed — purple */
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern.kh-bell-after,
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern .kh-bell-special{
+  background:linear-gradient(145deg,#ede9fe,#f5f3ff)!important;
+}
+:root:not([data-theme="dark"]) #khBell.kh-bell-modern.kh-bell-after{
+  border-color:rgba(139,92,246,.18)!important;
+  --kb-accent:#6d28d9;--kb-accent-2:#8b5cf6;--kb-soft:rgba(255,255,255,.70);
+  --kb-text:#4c1d95;--kb-muted:rgba(76,29,149,.55);--kb-line:rgba(139,92,246,.20);--kb-track:rgba(139,92,246,.15);
+}
+[data-theme="dark"] #khBell.kh-bell-modern.kh-bell-after{
+  background:linear-gradient(145deg,#1e1040,#2d1a5e)!important;
+  border-color:rgba(139,92,246,.18)!important;
+  --kb-accent:#a78bfa;--kb-accent-2:#c4b5fd;--kb-soft:rgba(76,29,149,.55);
+  --kb-text:#ede9fe;--kb-muted:rgba(237,233,254,.55);--kb-line:rgba(167,139,250,.20);--kb-track:rgba(167,139,250,.18);
+}
+
+/* Text inheritance fixes for all themes */
+#khBell.kh-bell-modern .kh-bell-title strong,
+#khBell.kh-bell-modern .kh-bell-special-copy strong,
+#khBell.kh-bell-modern .kh-bell-rest-copy strong,
+#khBell.kh-bell-modern .kh-bell-holiday-copy strong,
+#khBell .kh-bell-timeline-copy strong{color:var(--kb-text)!important}
+#khBell.kh-bell-modern .kh-bell-special-copy span,
+#khBell.kh-bell-modern .kh-bell-rest-copy span,
+#khBell.kh-bell-modern .kh-bell-holiday-copy span,
+#khBell .kh-bell-timeline-copy span{color:var(--kb-muted)!important}
+#khBell.kh-bell-modern .kh-bell-time b{color:var(--kb-text)!important}
+#khBell.kh-bell-modern .kh-bell-time small{color:var(--kb-muted)!important}
+#khBell.kh-bell-modern .kh-bell-time{
+  background:color-mix(in srgb,var(--kb-soft) 60%,transparent)!important;
+  border-color:var(--kb-line)!important;
+}
+#khBell.kh-bell-modern .kh-bell-state{
+  background:var(--kb-soft)!important;
+  border-color:color-mix(in srgb,var(--kb-accent) 32%,transparent)!important;
+  color:var(--kb-accent)!important;
+}
+
+/* Progress dot: use card background to avoid white blob */
+:root:not([data-theme="dark"]) .kh-bell-progress-dot{background:var(--kb-soft,#fff)!important}
+
+/* Countdown ring inner fill */
+#khBell .kh-bell-countdown-ring::before{background:var(--kb-soft)!important}
+#khBell .kh-bell-holiday-countdown::before{background:var(--kb-soft)!important}
+
