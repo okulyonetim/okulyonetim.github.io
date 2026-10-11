@@ -28,50 +28,7 @@ function turkiyeSimdi() {
   return { tarihISO, saatHHMM };
 }
 
-async function sifreSifirlamaIstekleriniIsle() {
-  const snap = await db.collection('oy_idariBilgiler').get();
-  const istekler = snap.docs.filter(doc => {
-    const v = doc.data() || {};
-    return v.tur === 'sifreSifirlama' && (v.durum === 'bekliyor' || v.durum === 'hazir');
-  });
-  let hazirlanan = 0;
-
-  for (const doc of istekler) {
-    const v = doc.data() || {};
-    try {
-      if (!v.hedefUid || !v.email || !v.isteyenUid) throw new Error('Eksik şifre sıfırlama isteği.');
-
-      const isteyenSnap = await db.collection('oy_kullanicilar').doc(v.isteyenUid).get();
-      const isteyen = isteyenSnap.exists ? isteyenSnap.data() : null;
-      if (!isteyen || isteyen.admin !== true || isteyen.aktif === false) throw new Error('Şifre sıfırlama yetkisi doğrulanamadı.');
-
-      const hedefAuth = await admin.auth().getUser(v.hedefUid);
-      if (!hedefAuth.email || hedefAuth.email.toLowerCase() !== String(v.email).toLowerCase()) throw new Error('Hedef kullanıcı giriş hesabı eşleşmiyor.');
-
-      const resetLink = await admin.auth().generatePasswordResetLink(hedefAuth.email);
-      await doc.ref.update({
-        durum: 'hazir',
-        resetLink,
-        hazirlanmaZamani: admin.firestore.FieldValue.serverTimestamp(),
-        hata: admin.firestore.FieldValue.delete()
-      });
-      hazirlanan++;
-      console.log(`Şifre sıfırlama kodu hazırlandı/yenilendi: ${v.hedefUid}`);
-    } catch (err) {
-      console.error('Şifre sıfırlama isteği hatası:', err.message);
-      await doc.ref.update({
-        durum: 'hata',
-        hata: String(err.message || 'İşlem tamamlanamadı.').slice(0, 300),
-        tamamlanmaZamani: admin.firestore.FieldValue.serverTimestamp(),
-        resetLink: admin.firestore.FieldValue.delete()
-      }).catch(() => {});
-    }
-  }
-  return hazirlanan;
-}
-
 async function kontrolEt() {
-  const sifreSifirlamaHazirlanan = await sifreSifirlamaIstekleriniIsle();
   const { tarihISO: bugun, saatHHMM: saat } = turkiyeSimdi();
   const esikSimdi = `${bugun} ${saat}`;
   console.log(`Kontrol: ${esikSimdi}`);
@@ -194,8 +151,7 @@ async function kontrolEt() {
 
   return {
     gonderilen: gonderilecekler.length,
-    mesajBildirimGonderilen: mesajGonderilen,
-    sifreSifirlamaHazirlanan
+    mesajBildirimGonderilen: mesajGonderilen
   };
 }
 

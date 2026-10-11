@@ -3,17 +3,12 @@
 'use strict';
 if(global.__korukAdminPasswordResetBridgeV2)return;
 global.__korukAdminPasswordResetBridgeV2=true;
-const REQUEST_COLLECTION='oy_idariBilgiler',REQUEST_PREFIX='sifreReset_',POLL_MS=2000,QUICK_WAIT_MS=12000;
 const PASSWORD_API='https://okul-8t9q.onrender.com/sifre-guncelle';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clean=v=>String(v||'').trim().toLocaleLowerCase('tr-TR');
 const data=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const me=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||null;
 const notify=m=>typeof global.toast==='function'?global.toast(m):global.alert?.(m);
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-function oob(link){try{return new URL(String(link||'')).searchParams.get('oobCode')||''}catch(_){return''}}
-async function prepared(ref){const s=await ref.get();if(!s.exists)return null;const d=s.data()||{};if(d.tur!=='sifreSifirlama')return null;if(d.durum==='hata')throw new Error(d.hata||'Şifre sıfırlama kodu hazırlanamadı.');return d.durum==='hazir'&&d.resetLink?d:null}
-async function apply(ref,pw){const d=await prepared(ref);if(!d)return null;const code=oob(d.resetLink);if(!code)throw new Error('Firebase sıfırlama kodu okunamadı.');await global.auth.confirmPasswordReset(code,pw);await ref.delete().catch(()=>{});return{completed:true}}
 async function directPasswordUpdate(uid,pw){
   const current=global.auth?.currentUser;
   if(!current||typeof current.getIdToken!=='function')throw new Error('Oturum doğrulanamadı. Lütfen yeniden giriş yapın.');
