@@ -501,33 +501,16 @@ function scheduleWeeklyTeacherTable(teacherId){const rows=arr('dersProgrami').fi
 function scheduleSheetClasses(names){return`<table class="ka-schedule-report-table ka-schedule-report-sheet"><thead><tr><th rowspan="2" class="ka-schedule-report-scope">Sınıf</th>${DAYS.map(d=>`<th colspan="7">${esc(d)}</th>`).join('')}</tr><tr>${DAYS.map(()=>[1,2,3,4,5,6,7].map(p=>`<th>${p}</th>`).join('')).join('')}</tr></thead><tbody>${names.map(name=>`<tr><th class="ka-schedule-report-scope">${esc(name)}</th>${DAYS.map(day=>[1,2,3,4,5,6,7].map(p=>{const d=arr('dersProgrami').find(x=>x.sinif===name&&x.gun===day&&Number(x.saat)===p);return`<td>${d?`<b>${esc(scheduleLessonAbbr(d.ders))}</b><small>${esc(scheduleTeacherInitials(d.ogretmenId))}</small>`:''}</td>`}).join('')).join('')}</tr>`).join('')}</tbody></table>`}
 function scheduleSheetTeachers(ids){const list=teachers().filter(o=>ids.includes(String(o.id)));return`<table class="ka-schedule-report-table ka-schedule-report-sheet"><thead><tr><th rowspan="2" class="ka-schedule-report-scope">Öğretmen</th>${DAYS.map(d=>`<th colspan="7">${esc(d)}</th>`).join('')}</tr><tr>${DAYS.map(()=>[1,2,3,4,5,6,7].map(p=>`<th>${p}</th>`).join('')).join('')}</tr></thead><tbody>${list.map(o=>`<tr><th class="ka-schedule-report-scope">${esc(teacherName(o.id))}</th>${DAYS.map(day=>[1,2,3,4,5,6,7].map(p=>{const d=arr('dersProgrami').find(x=>String(x.ogretmenId)===String(o.id)&&x.gun===day&&Number(x.saat)===p);return`<td>${d?`<b>${esc(d.sinif||'—')}</b><small>${esc(scheduleLessonAbbr(d.ders))}</small>`:''}</td>`}).join('')).join('')}</tr>`).join('')}</tbody></table>`}
 function defaultScheduleReportMeta(){return{school:scheduleSchoolInfo().okulAdi,title:'Ders Programı',year:scheduleAcademicYear(),subtitle:'',showSchool:true,showTitle:true,showYear:true,showSubtitle:false,yon:'yatay'}}
-async function waitForReportCustomizer(){
-  /* firebase-init.js report-customizer.js'yi DOM'a async olarak enjekte eder.
-   * loadScript, <script> tag'ı zaten DOM'daysa hemen resolve eder — IIFE henüz
-   * çalışmamış olsa bile. Bu yüzden window.ReportCustomizer hazır olana kadar
-   * kısa aralıklarla bekleriz (en fazla 3 saniye). */
-  if(globalThis.ReportCustomizer)return;
-  /* Henüz DOM'da değilse yükle */
-  if(globalThis.AppLoader?.loadScript&&
-     ![...document.querySelectorAll('script[src]')].some(s=>s.src?.includes('report-customizer'))){
-    globalThis.AppLoader.loadScript('js/core/report-customizer.js').catch(()=>{});
-  }
-  for(let i=0;i<30;i++){
-    if(globalThis.ReportCustomizer)return;
-    await new Promise(r=>setTimeout(r,100));
-  }
-  /* 3 saniye sonra hâlâ yoksa sessizce devam et */
-}
 async function ensureScheduleReportEngine(){
-  /* report-engine.js bu modülün bağımlılığı olarak zaten yüklenmiş olabilir.
-   * Customizer'ın IIFE'sinin tamamlandığından emin olduktan sonra patch uygula. */
-  await waitForReportCustomizer();
+  /* report-customizer.js ve report-engine.js bu modülün app-loader.js bağımlılıkları
+   * olarak sıralı şekilde önceden yüklenir (customizer önce gelir).
+   * installTrap() sayesinde ReportEngine atanır atanmaz printReport sarmalanmış olur.
+   * Güvence: yine de sarmalanmamışsa elle yamala. */
   if(!globalThis.ReportEngine?.printReport){
     if(globalThis.AppLoader?.loadScript)
       await globalThis.AppLoader.loadScript('js/modules/report-engine.js');
   }
   if(!globalThis.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
-  /* ReportEngine var ama printReport henüz sarmalanmamışsa elle yamala */
   if(!globalThis.ReportEngine.printReport.__kaCustomized)
     globalThis.ReportCustomizer?.patch?.();
   return globalThis.ReportEngine;
