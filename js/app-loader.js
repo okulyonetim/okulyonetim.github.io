@@ -23,13 +23,13 @@ function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
 define('dashboard',['js/modules/school-live-status.js','js/modules/dashboard.js?v=1095']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
-define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1002','js/modules/report-engine.js','js/modules/academic.js?v=894']);
-define('management',['js/core/report-customizer.js?v=1002','js/modules/report-engine.js','js/modules/management.js?v=893']);
+define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1003','js/modules/report-engine.js','js/modules/academic.js?v=894']);
+define('management',['js/core/report-customizer.js?v=1003','js/modules/report-engine.js','js/modules/management.js?v=893']);
 define('communication',['js/modules/communication.js?v=839','js/modules/assistant.js']);
-define('transport',['js/core/report-customizer.js?v=1002','js/modules/report-engine.js','js/modules/transport.js?v=948']);
-define('food',['js/core/report-customizer.js?v=1002','js/modules/report-engine.js','js/modules/food-menu.js?v=1037']);
-define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1002','js/modules/report-engine.js','js/modules/documents.js']);
-define('reports',['js/core/report-customizer.js?v=1002','js/modules/report-engine.js?v=3','js/modules/reports.js?v=19']);
+define('transport',['js/core/report-customizer.js?v=1003','js/modules/report-engine.js','js/modules/transport.js?v=948']);
+define('food',['js/core/report-customizer.js?v=1003','js/modules/report-engine.js','js/modules/food-menu.js?v=1037']);
+define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1003','js/modules/report-engine.js','js/modules/documents.js']);
+define('reports',['js/core/report-customizer.js?v=1003','js/modules/report-engine.js?v=3','js/modules/reports.js?v=20']);
 define('tools',['js/modules/tools.js','js/modules/rubric-settings.js?v=1065','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js?v=885']);
 define('committees',['js/modules/committees.js?v=2']);
