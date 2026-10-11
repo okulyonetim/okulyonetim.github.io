@@ -625,5 +625,5 @@ function back(){
   if(active==='plans'&&planView.planId){releasePlanWake();planView={planId:'',weekIndex:0};render();return true}
   return false;
 }
-window.AcademicModule={mount,unmount,render,prepareLocal,timerState,openPage,openWrittenExam,openPlanForLesson,openAcademicCalendar,closeAcademicCalendar,openTrialCounter,closeTrialCounter,back,openSchedule(){return openPage('schedule','Ders Programı')}};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='academic')mount()});
+window.AcademicModule={mount,unmount,render,prepareLocal,timerState,openPage,openWrittenExam,openPlanForLesson,openAcademicCalendar,closeAcademicCalendar,openTrialCounter,closeTrialCounter,back,openSchedule(){return openPage('schedule','Ders Programı')},openScheduleReportHub};window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='academic')mount()});
 })();
