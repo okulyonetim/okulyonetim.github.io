@@ -146,7 +146,8 @@ function scheduleRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()
  * bu aşamada AppStore koleksiyonları henüz dolu olmayabilir. */
 function waitForCollection(key,timeout=4000){return new Promise(resolve=>{if(arr(key).length)return resolve(true);const t0=Date.now();const unsub=global.AppStore?.subscribe?.('data.'+key,()=>{if(arr(key).length){unsub?.();resolve(true)}});if(!unsub){(function poll(){if(arr(key).length)return resolve(true);if(Date.now()-t0>=timeout)return resolve(false);setTimeout(poll,150)})()}else setTimeout(()=>{unsub?.();resolve(false)},timeout)})}
 /* Rapor önizlemesi açılmadan önce ilgili koleksiyonun hazır olmasını bekle */
-async function waitForReportData(id){const keys={'lesson-times':['dersSaatleri'],'primary-students':['siniflar'],'middle-students':['siniflar'],'all-students':['siniflar'],'teacher-lessons-summary':['ogretmenler','dersProgrami'],'teacher-lessons-detail':['ogretmenler','dersProgrami'],'belirli-days':['belirliGunler']};const needed=keys[id]||[];await Promise.all(needed.map(k=>waitForCollection(k)))}
+async function waitForReportData(id){const keys={/* 'lesson-times' için dersSaatleri beklenmez: web AppStore'da olmayabilir;
+   olmasa da rapor "Kayıtlı veri bulunamadı." mesajıyla hemen açılır — 4 sn bekleme kaldırıldı */'primary-students':['siniflar'],'middle-students':['siniflar'],'all-students':['siniflar'],'teacher-lessons-summary':['ogretmenler','dersProgrami'],'teacher-lessons-detail':['ogretmenler','dersProgrami'],'belirli-days':['belirliGunler']};const needed=keys[id]||[];await Promise.all(needed.map(k=>waitForCollection(k)))}
 /* Yarış düzeltmesi: izin kataloğu (RolePermissionCatalog) uygulama açılışında
  * asenkron olarak PermissionService'e bağlanıyor. Raporlar modülü bu bağlanma
  * tamamlanmadan ÖNCE açılırsa, canReportAction() 'reports.customize'/'reports.pdf'
