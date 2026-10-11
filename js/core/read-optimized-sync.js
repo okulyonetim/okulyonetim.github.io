@@ -14,8 +14,8 @@ global.__KA_READ_OPTIMIZED_SYNC__=true;
    kadar bekler; böylece ikinci bir runtime yetki sistemi oluşmaz. */
 (function bootstrapRolePermissionCatalog(){
   const scripts=[
-    'js/core/role-permission-catalog.js?v=1',
-    'js/core/role-permission-bridge.js?v=3'
+    'js/core/role-permission-catalog.js?v=2',
+    'js/core/role-permission-bridge.js?v=4'
   ];
   const load=(src)=>new Promise((resolve,reject)=>{
     if([...document.scripts].some(s=>s.src.includes(src.split('?')[0])))return resolve();

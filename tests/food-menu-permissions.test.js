@@ -1,6 +1,6 @@
 const assert=require('assert');
 const fs=require('fs');
-const source=fs.readFileSync('js/core/role-permission-catalog.js','utf8');
+const source=fs.readFileSync('js/app-loader.js','utf8');
 for(const key of [
   'food.menu',
   'food.menu.create',

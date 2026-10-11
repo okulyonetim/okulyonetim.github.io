@@ -44,6 +44,8 @@ const firebasePath=path.join(ROOT,'js','firebase-init.js');
 const firebaseSource=fs.existsSync(firebasePath)?fs.readFileSync(firebasePath,'utf8'):'';
 const reportEnginePath=path.join(ROOT,'js','modules','report-engine.js');
 const reportEngineSource=fs.existsSync(reportEnginePath)?fs.readFileSync(reportEnginePath,'utf8'):'';
+const roleEditorPath=path.join(ROOT,'js','core','role-permission-editor.js');
+const roleEditorSource=fs.existsSync(roleEditorPath)?fs.readFileSync(roleEditorPath,'utf8'):'';
 const rulesPath=path.join(ROOT,'firestore.rules');
 const rulesSource=fs.existsSync(rulesPath)?fs.readFileSync(rulesPath,'utf8'):'';
 
@@ -52,11 +54,18 @@ const permissionRequirements=[
   ['hidden seviyesi',loaderSource.includes('hidden:0')],['preview seviyesi',loaderSource.includes('preview:1')],['read seviyesi',loaderSource.includes('read:2')],['edit seviyesi',loaderSource.includes('edit:3')],
   ['eski gizle uyumluluğu',loaderSource.includes("'gizle'")],['eski goruntule uyumluluğu',loaderSource.includes("'goruntule'")],['eski duzenle uyumluluğu',loaderSource.includes("'duzenle'")],
   ['legacy alias tablosu',loaderSource.includes('LEGACY_PERMISSION_ALIASES')],['legacy alias çözümleyici',loaderSource.includes('legacySourceLevel')],
-  ['tasima aliası',loaderSource.includes("'module.transport':['tasima']")],['sınav aliası',loaderSource.includes("'academic.exams':['sinavIslemleri']")],['nöbet aliası',loaderSource.includes("'management.duty':['nobet']")],
-  ['tanımsız rol modülü gizli',loaderSource.includes("Object.keys(role.yetkiler).length?'hidden':'edit'")],
+  ['tasima aliası',loaderSource.includes("'module.transport':['tasima','transport']")],['sınav aliası',loaderSource.includes("'academic.exams':['sinavIslemleri']")],['nöbet aliası',loaderSource.includes("'management.duty':['nobet']")],
+  // Rol hiç "module.*" kuralı tanımlamadıysa varsayılan 'edit' (geriye dönük uyumluluk);
+  // en az bir module.* kuralı tanımlandığı anda tanımsız modüller 'hidden' olur. Eski
+  // sürüm BU AYRIMI yapmıyordu — rolle ilgisiz herhangi bir anahtar bile tüm modülleri
+  // gizliyordu; bu artık düzeltildi (bkz. moduleLevel yorum satırı).
+  ['rol modülü varsayılan erişim kuralı',loaderSource.includes("hasModuleRules?'hidden':'edit'")&&loaderSource.includes("k.startsWith('module.')")],
   ['modül tavanı',loaderSource.includes('const ceiling=moduleLevel(module)')],
   ['DOM permission attribute',loaderSource.includes('[data-ka-permission]')],['yazma koruması',loaderSource.includes('[data-ka-write]')],
-  ['rol katalog editörü',settingsSource.includes('PermissionService?.catalog')],['rol gizli seçeneği',settingsSource.includes("['hidden','Gizli']")],['rol önizleme seçeneği',settingsSource.includes("['preview','Önizleme']")],['rol salt okunur seçeneği',settingsSource.includes("['read','Salt okunur']")],['rol düzenleme seçeneği',settingsSource.includes("['edit','Düzenleme']")],
+  // Tek rol editörü artık js/core/role-permission-editor.js'tedir (settings.js kendi
+  // ayrı editörünü barındırmaz, bu dosyayı doğrudan çağırır).
+  ['rol katalog editörü',roleEditorSource.includes('RolePermissionCatalog?.catalog')||roleEditorSource.includes('PermissionService?.catalog')],
+  ['rol gizli seçeneği',roleEditorSource.includes("hidden:'Gizli'")],['rol önizleme seçeneği',roleEditorSource.includes("preview:'Önizleme'")],['rol salt okunur seçeneği',roleEditorSource.includes("read:'Salt okunur'")],['rol düzenleme seçeneği',roleEditorSource.includes("edit:'Düzenleme'")],
   ['rules read/preview/edit uyumluluğu',rulesSource.includes("['goruntule', 'duzenle', 'preview', 'read', 'edit']")],
   ['rules edit uyumluluğu',rulesSource.includes("['duzenle', 'edit']")]
 ];

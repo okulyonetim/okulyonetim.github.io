@@ -59,7 +59,7 @@ for(const alias of [
   "'academic.schedule':['dersProgrami']","'academic.schedule.edit':['dersProgrami']",
   "'communication.calendar':['takvim']","'communication.calendar.edit':['takvim']",
   "'communication.notes':['notlar']","'communication.notes.edit':['notlar']",
-  "'communication.news':['haberler']","'communication.polls':['anketler']",
+  "'communication.news':['haberler']","'communication.polls':['anketler','anket']",
   "'settings.school':['okulBilgileri']"
 ]) assert(loader.includes(alias),`Legacy permission alias sözleşmesi eksik: ${alias}`);
 assert(loader.includes("'module.academic':['sinavIslemleri','yillikPlan','dersProgrami'"),'Ders Programı legacy yetkisi Academic modül görünürlüğüne de dahil edilmeli.');

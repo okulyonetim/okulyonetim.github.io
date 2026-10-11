@@ -1,5 +1,5 @@
 const fs=require('fs');
-const catalog=fs.readFileSync('js/core/role-permission-catalog.js','utf8');
+const catalog=fs.readFileSync('js/app-loader.js','utf8');
 const guards=fs.readFileSync('js/core/role-permission-crud-guards.js','utf8');
 for(const key of ['transport.services','transport.services.create','transport.services.edit','transport.services.delete','transport.seating','transport.seating.edit']){
   if(!catalog.includes(`'${key}'`))throw new Error(`Missing permission: ${key}`);

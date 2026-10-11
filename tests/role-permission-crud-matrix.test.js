@@ -1,11 +1,13 @@
 /* Role permission CRUD matrix regression tests.
- * Source of truth: js/core/role-permission-catalog.js
+ * Source of truth: js/app-loader.js (PermissionService.catalog / aliases).
+ * role-permission-catalog.js no longer keeps a second copy of the catalog — it mirrors
+ * PermissionService at runtime — so these checks now read the real single source.
  */
 const fs = require('fs');
 const path = require('path');
 
-const catalogPath = path.join(__dirname, '..', 'js', 'core', 'role-permission-catalog.js');
-const source = fs.readFileSync(catalogPath, 'utf8');
+const loaderPath = path.join(__dirname, '..', 'js', 'app-loader.js');
+const source = fs.readFileSync(loaderPath, 'utf8');
 
 const required = [
   'people.students',

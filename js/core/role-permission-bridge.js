@@ -17,7 +17,7 @@
     s.onerror=()=>reject(new Error(message));
     document.head.appendChild(s);
   });
-  const loadEditor=()=>loadScript('js/core/role-permission-editor.js?v=4','Rol yetki editörü yüklenemedi.');
+  const loadEditor=()=>loadScript('js/core/role-permission-editor.js?v=5','Rol yetki editörü yüklenemedi.');
   const loadCrudGuards=()=>loadScript('js/core/role-permission-crud-guards.js?v=1','Granular CRUD yetki katmanı yüklenemedi.');
 
   const PAGE_PERMISSIONS=Object.freeze({
@@ -26,10 +26,10 @@
     'management:duty':'management.duty','management:staff':'management.personnel','management:tasks':'management.tasks','management:leaves':'management.leaves','management:staff-leaves':'management.teacherLeaves','management:leave-annual':'management.teacherLeaves','management:leave-health':'management.teacherLeaves','management:leave-excuse':'management.teacherLeaves','management:leave-other':'management.teacherLeaves','management:puantaj':'management.puantaj','management:dilekce':'management.dilekce','management:meeting-schedule':'management.meetingSchedule',
     'communication:messages':'communication.messages','communication:announcements':'communication.announcements','communication:polls':'communication.polls','communication:news':'communication.news','communication:calendar':'communication.calendar','communication:notes':'communication.notes',
     'transport:services':'transport.services','transport:busSeats':'transport.seating','transport:classSeats':'transport.classSeating','transport:map':'transport.map',
-    'food:daily':'food.menu','food:weekly':'food.menu','food:monthly':'food.menu','food:audit':'food.audit',
+    'food:menu':'food.menu','food:daily':'food.menu','food:weekly':'food.menu','food:monthly':'food.menu','food:audit':'food.audit',
     'documents:evrak':'documents.tracking','documents:teblig':'documents.tracking','documents:pdf-images':'documents.pdf','documents:pdf-merge':'documents.pdf',
     'reports:home':'reports.view',
-    'tools:checklists':'tools.checklists','tools:map':'tools.map','tools:attendance':'tools.attendance','tools:homework':'tools.gradebook','tools:grades':'tools.gradebook','tools:rubric-distribution':'tools.rubric','tools:project-evaluation':'tools.rubric',
+    'tools:checklists':'tools.checklists','tools:map':'tools.map','tools:attendance':'tools.attendance','tools:gradebook':'tools.gradebook','tools:homework':'tools.gradebook','tools:grades':'tools.gradebook','tools:rubric-distribution':'tools.rubric','tools:project-evaluation':'tools.rubric',
     'tools:form-maarif':'tools.formMaarif','tools:form-belirli':'tools.formBelirliGunler','tools:form-sok':'tools.formSok','tools:form-zumre':'tools.formZumre','tools:form-kulup':'tools.formKulup','tools:form-rehberlik':'tools.formRehberlik','tools:form-bep':'tools.formBep','tools:form-diger':'tools.formDigerEvrak','tools:student-list':'management.teacherListBuilder',
     'settings:data':'settings.storage','settings:school':'settings.school','settings:users':'settings.users','settings:statistics':'settings.statistics','settings:roles':'settings.roles','settings:app':'settings.app','settings:storage':'settings.storage','settings:reminders':'tools.reminders'
   });

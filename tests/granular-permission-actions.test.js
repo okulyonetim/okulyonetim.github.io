@@ -9,7 +9,7 @@ const bridge=fs.readFileSync('js/core/role-permission-bridge.js','utf8');
 assert(bridge.includes("PAGE_PERMISSIONS"),'Merkezi sayfa permission eşlemesi bulunmalı.');
 assert(bridge.includes("PermissionService?.can"),'Navigasyon merkezi PermissionService üzerinden kontrol edilmeli.');
 
-const catalog=fs.readFileSync('js/core/role-permission-catalog.js','utf8');
+const catalog=fs.readFileSync('js/app-loader.js','utf8');
 assert(catalog.includes("['people.teachers.delete'"),'Öğretmen silme permission katalogda bulunmalı.');
 assert(catalog.includes("['settings.roles.clone'"),'Rol kopyalama permission katalogda bulunmalı.');
 
