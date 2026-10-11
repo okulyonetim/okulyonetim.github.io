@@ -141,8 +141,16 @@ function bind(){root?.querySelectorAll('[data-sort-remove]').forEach(b=>b.addEve
 }
 function render(){root=document.getElementById('v2ModuleRoot');if(!root)return;const html=active==='designer'&&editing?designer(editing):active==='blank-home'?'<section class="ka-page ka-stack" data-reports-module><article class="ka-card"><div class="ka-card__body"><h2>Raporlarım</h2><p class="ka-muted">Kaydettiğiniz boş listeler.</p></div></article>'+blankHome()+'</section>':active==='blank-editor'?blankEditor():home();if(!(active==='designer'&&editing))lastHomeHtml=html;root.innerHTML=html;bind();global.PermissionService?.apply?.(root)}
 function scheduleRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>{if(!root||!root.isConnected||active!=='home')return;if(home()!==lastHomeHtml)render()},120)}
-function watchReady(){unwatchReady();if(typeof global.AppStore?.subscribeAll==='function')unsubStore=global.AppStore.subscribeAll(scheduleRefresh);global.addEventListener('koruk:app-ready',scheduleRefresh);global.addEventListener('koruk:auth-local-restored',scheduleRefresh)}
-function unwatchReady(){clearTimeout(refreshTimer);if(typeof unsubStore==='function')unsubStore();unsubStore=null;global.removeEventListener('koruk:app-ready',scheduleRefresh);global.removeEventListener('koruk:auth-local-restored',scheduleRefresh)}
+/* Yarış düzeltmesi: izin kataloğu (RolePermissionCatalog) uygulama açılışında
+ * asenkron olarak PermissionService'e bağlanıyor. Raporlar modülü bu bağlanma
+ * tamamlanmadan ÖNCE açılırsa, canReportAction() 'reports.customize'/'reports.pdf'
+ * için henüz hazır olmayan izin servisine sorar ve false döner — bu da "⚙️ Düzenle"
+ * (sütun özelleştirme) ve "🖨 Yazdır" düğmelerinin ilk açılışta hiç görünmemesine
+ * yol açar. Sayfadan çıkıp tekrar girildiğinde katalog artık hazır olduğu için
+ * düğmeler görünür — kullanıcı bunu "ilk seferde açılmıyor, sonra açılıyor" olarak
+ * yaşıyordu. Katalog hazır olduğunda ana sayfayı yeniden çizerek düzeltiyoruz. */
+function watchReady(){unwatchReady();if(typeof global.AppStore?.subscribeAll==='function')unsubStore=global.AppStore.subscribeAll(scheduleRefresh);global.addEventListener('koruk:app-ready',scheduleRefresh);global.addEventListener('koruk:auth-local-restored',scheduleRefresh);global.addEventListener('koruk:permission-catalog-ready',scheduleRefresh);global.addEventListener('koruk:permission-navigation-ready',scheduleRefresh)}
+function unwatchReady(){clearTimeout(refreshTimer);if(typeof unsubStore==='function')unsubStore();unsubStore=null;global.removeEventListener('koruk:app-ready',scheduleRefresh);global.removeEventListener('koruk:auth-local-restored',scheduleRefresh);global.removeEventListener('koruk:permission-catalog-ready',scheduleRefresh);global.removeEventListener('koruk:permission-navigation-ready',scheduleRefresh)}
 async function mount(page='home',target=document.getElementById('v2ModuleRoot')){const epoch=++mountEpoch;active=page&&page!=='designer'?page:'home';editing=null;root=target;if(!root)return false;global.ReportCustomizer?.ensure?.();render();watchReady();try{await loadSavedSettings();await loadBlankLists()}catch(_){ }if(epoch!==mountEpoch||root!==target)return true;render();if(!settingsLoaded)[1500,4000,9000].forEach(ms=>setTimeout(async()=>{if(epoch!==mountEpoch||settingsLoaded)return;try{await loadSavedSettings()}catch(_){ }if(epoch===mountEpoch&&settingsLoaded&&active==='home')render()},ms));return true}
 function unmount(){mountEpoch++;unwatchReady();root=null;editing=null;active='home'}
 function back(){if(active==='designer'){editing=null;active='home';render();return true}return false}
