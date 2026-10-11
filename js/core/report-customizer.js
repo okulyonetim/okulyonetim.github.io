@@ -325,7 +325,7 @@ function patch(){return patchEngine(global.ReportEngine)}
 function installTrap(){
  if(global.ReportEngine){patchEngine(global.ReportEngine);return}
  const desc=Object.getOwnPropertyDescriptor(global,'ReportEngine');
- if(desc&&(desc.get||desc.set))return;
+ if(desc&&(desc.get||desc.set))return;/* başka bir trap zaten var; interval güvencesi devralır */
  let value;
  try{Object.defineProperty(global,'ReportEngine',{configurable:true,enumerable:true,get(){return value},set(v){value=v;try{patchEngine(v)}catch(e){console.warn('[ReportCustomizer]',e)}}})}catch(_){}
 }

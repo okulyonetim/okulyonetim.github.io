@@ -80,5 +80,7 @@ function renderPdfTools(root,mode){root.dataset.mode=mode;root.querySelector('[d
 function openPdfTools(mode='images'){closePdfTools();installReportBackGuard();const ov=document.createElement('div');ov.id='kaPdfTools';ov.className='ka-modal-backdrop';ov.innerHTML=`<section class="ka-modal" role="dialog" aria-modal="true" aria-label="PDF İşlemleri"><div class="ka-modal__header"><div><h2>PDF İşlemleri</h2><p class="ka-muted">Resimlerden PDF oluşturun veya PDF dosyalarını birleştirin.</p></div><button class="ka-icon-button" type="button" data-pdf-tools-close aria-label="Kapat">×</button></div><div class="ka-modal__body" data-pdf-body></div></section>`;document.body.appendChild(ov);ov.querySelector('[data-pdf-tools-close]').onclick=closePdfTools;ov.addEventListener('click',e=>{if(e.target===ov)closePdfTools()});renderPdfTools(ov,mode==='merge'?'merge':'images');return ov;}
 
 global.ReportEngine={esc,fileName,pdfFileName,styleUrl,logoUrl,schoolInfo,normalizeOptions,documentHtml,printHtml,previewHtml,closePreview,printReport,imagesToPdf,mergePdfs,previewPdfBlob,closePdfPreview,savePdfBlob,archivePdf,openPdfTools,closePdfTools,get preparedPdf(){return pdfToolsBlob},get preparedPdfName(){return pdfToolsName}};
+/* Customizer yüklüyse hemen uygula; değilse watch() zaten takip ediyor */
+if(global.ReportCustomizer)global.ReportCustomizer.patch();
 global.uygulamaHtmlYazdir=(html,dosyaAdi,yon)=>previewHtml(html,{title:dosyaAdi||'Rapor Önizleme',fileName:dosyaAdi||'Koruk_Rapor',yon:yon||'dikey'});
 })(window);
