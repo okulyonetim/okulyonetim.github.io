@@ -165,6 +165,21 @@
   --ka-wd-bar-w:var(--ka-sp-4);                   /* soldaki renk çubuğu kalınlığı (0 = çubuksuz) */
   --ka-wd-ink-mix:54%;                            /* gün adı yazısı: gün renginin oranı (kalanı metin rengi; okunurluk için) */
 
+  /* ── ALT MENÜ (alt navigasyon çubuğu) — kutusuz ikonlar, seçili sekmede renkli kapsül, her sekmenin kendi rengi.
+        Çubuğun zemini/yazısı/çizgisi/gölgesi ve menü düğmesi halkası açık-koyu paletlerde: --ka-nav-bg, -text, -border, -shadow, -menu-ring ── */
+  --ka-nav-tab-1:var(--t-accent-rgb);             /* Ana Sayfa — RGB üçlüsü (marka rengini izler) */
+  --ka-nav-tab-2:var(--c-sky);                    /* Profilim — KATEGORİ PALETİ'nden bir renk */
+  --ka-nav-tab-3:var(--c-violet);                 /* Arama */
+  --ka-nav-tab-4:var(--c-emerald);                /* Hızlı Not */
+  --ka-nav-radius:var(--ka-r-8);                  /* çubuğun üst köşeleri (geniş ekranda yüzen çubuk için --ka-r-10) */
+  --ka-nav-blur:26px;                             /* cam bulanıklığı */
+  --ka-nav-label-size:var(--ka-fs-10);            /* sekme yazısı */
+  --ka-nav-pill-w:52px;                           /* seçili sekmenin kapsül genişliği */
+  --ka-nav-pill-a:.18;                            /* kapsül zemin yoğunluğu (0 = kapsülsüz) */
+  --ka-nav-pill-edge-a:.34;                       /* kapsül çizgisi yoğunluğu */
+  --ka-nav-pill-glow-a:.26;                       /* kapsül ışıması (0 = ışımasız) */
+  --ka-nav-ink-mix:44%;                           /* seçili sekmenin yazı/ikon rengi: sekme renginin oranı (kalanı metin rengi) */
+
   /* ── PENCERE BAŞLIĞI — her pencere / alt sayfa / menünün üst şeridi (başlık + kapat düğmesi) ── */
   --ka-sheet-head-bg:transparent;                 /* şerit zemini */
   --ka-sheet-head-stuck-bg:var(--ka-sticky-bg);   /* içerik altından kayan (yapışkan) şeridin zemini */
@@ -270,8 +285,8 @@
   --ka-on-accent-avatar:rgba(255,255,255,.16);
   --ka-on-accent-glow:rgba(255,255,255,.07);
   --ka-accent:#35d07f;
-  --ka-nav-menu-start:var(--t-accent);
-  --ka-nav-menu-end:var(--t-accent-deep);
+  --ka-nav-menu-start:rgb(var(--t-gold-hi-rgb));   /* ortadaki menü düğmesi: gradyan başı */
+  --ka-nav-menu-end:var(--t-accent-deep);           /* gradyan sonu */
   --ka-button-bg:var(--t-accent);
   --ka-button-text:var(--t-on-accent);
   --ka-input-focus:var(--t-accent);
@@ -290,14 +305,13 @@
   --ka-bg:var(--ka-app-bg);
 
   /* ── KABUK — ÜST BAŞLIK · ALT NAVİGASYON · AÇILIR PENCERE ── */
-  --ka-nav-shadow:var(--ka-shadow-md);
   --ka-notification-badge-bg:var(--ka-danger);
   --ka-notification-badge-text:var(--ka-danger-text);
   --ka-notification-badge-border:var(--ka-header-bg);
   --ka-shadow-sm:0 var(--ka-sh-4) var(--ka-sh-14) rgba(var(--ka-shadow-rgb),calc(.07 * var(--ka-shadow-a)));
   --ka-status-bg:rgba(255,255,255,.06);
   --ka-header-text:var(--ka-text);
-  --ka-nav-menu-icon:var(--ka-text);
+  --ka-nav-menu-icon:var(--t-on-accent-ink);        /* menü düğmesinin ikonu */
 
   /* ── BUTON · FORM ALANI ── */
   --ka-button-secondary-text:var(--ka-text);
@@ -1110,10 +1124,9 @@
   --ka-header-muted:#747980;
   --ka-header-border:#e1e3e6;
   --ka-nav-bg:rgba(255,255,255,.98);
-  --ka-nav-text:#737981;
-  --ka-nav-active-bg:#fff7d6;
-  --ka-nav-active-text:var(--t-accent-mid);
-  --ka-nav-border:#e0e2e5;
+  --ka-nav-text:#667085;
+  --ka-nav-border:rgba(15,23,42,.09);
+  --ka-nav-shadow:0 calc(-1 * var(--ka-sh-8)) var(--ka-sh-28) rgba(var(--ka-shadow-rgb),calc(.08 * var(--ka-shadow-a)));
   --ka-nav-menu-ring:var(--t-accent-pale);
   --ka-shadow-md:0 var(--ka-sh-8) var(--ka-sh-22) rgba(15,16,16,calc(.08 * var(--ka-shadow-a)));
   --ka-shadow-modal:0 var(--ka-sh-20) var(--ka-sh-56) rgba(7,10,9,calc(.18 * var(--ka-shadow-a)));
@@ -1225,11 +1238,10 @@ html[data-theme="dark"]{
   --ka-header-bg:#0b0b0b;
   --ka-header-muted:var(--ka-text-muted);
   --ka-header-border:var(--ka-border);
-  --ka-nav-bg:rgba(12,12,12,.98);
-  --ka-nav-text:#858585;
-  --ka-nav-active-bg:#211d0c;
-  --ka-nav-active-text:var(--t-accent);
-  --ka-nav-border:var(--ka-border);
+  --ka-nav-bg:rgba(13,14,22,.98);
+  --ka-nav-text:#9096aa;
+  --ka-nav-border:rgba(255,255,255,.10);
+  --ka-nav-shadow:0 calc(-1 * var(--ka-sh-10)) var(--ka-sh-34) rgba(var(--ka-shadow-rgb),calc(.45 * var(--ka-shadow-a)));
   --ka-nav-menu-ring:var(--t-accent-pale);
   --ka-shadow-md:0 var(--ka-sh-10) var(--ka-sh-28) rgba(var(--ka-shadow-rgb),calc(.36 * var(--ka-shadow-a)));
   --ka-shadow-modal:0 var(--ka-sh-22) var(--ka-sh-64) rgba(var(--ka-shadow-rgb),calc(.58 * var(--ka-shadow-a)));
@@ -11143,7 +11155,7 @@ html[data-theme="dark"] .ka-app-nav.ka-bottom-nav{
   
   
   --gl-orb:1;
-  --nv-bg:rgba(var(--k-blue-0d0d10),.86);--nv-edge:rgba(var(--k-white),.09);--nv-shadow:0 calc(-1 * var(--ka-sh-10)) var(--ka-sh-34) rgba(var(--ka-shadow-rgb),calc(.45 * var(--ka-shadow-a)));--nv-ink:var(--t-accent-ink);--mp-bg:rgba(var(--k-blue-101014),.84);
+  --nv-ink:var(--t-accent-ink);--mp-bg:rgba(var(--k-blue-101014),.84);
   --ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E");
 }
 :root:not([data-theme="dark"]) #kaMenuLayer,
@@ -11152,7 +11164,7 @@ html[data-theme="dark"] .ka-app-nav.ka-bottom-nav{
   
   
   --gl-orb:.5;
-  --nv-bg:rgba(var(--k-white),.88);--nv-edge:rgba(var(--k-black),.08);--nv-shadow:0 calc(-1 * var(--ka-sh-8)) var(--ka-sh-28) rgba(var(--ka-shadow-rgb),calc(.08 * var(--ka-shadow-a)));--nv-ink:var(--t-accent-ink);--mp-bg:rgba(var(--k-blue-fafafc),.88);
+  --nv-ink:var(--t-accent-ink);--mp-bg:rgba(var(--k-blue-fafafc),.88);
   --ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E");
 }
 
@@ -11333,48 +11345,54 @@ html .ka-app-nav.ka-bottom-nav{
   position:fixed;z-index:980;left:0;right:0;bottom:0;height:calc(var(--ka-bottom-nav-height) + var(--ka-safe-bottom));
   display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;gap:var(--ka-sp-2);
   padding:var(--ka-sp-6) max(var(--ka-sp-6),var(--ka-safe-right)) max(var(--ka-sp-6),var(--ka-safe-bottom)) max(var(--ka-sp-6),var(--ka-safe-left));overflow:visible;overscroll-behavior-y:auto;touch-action:auto;
-  background:var(--nv-bg)!important;border:0!important;border-top:var(--ka-border-w) solid var(--nv-edge)!important;box-shadow:var(--nv-shadow)!important;
-  -webkit-backdrop-filter:blur(calc(26px * var(--ka-blur-k))) saturate(1.8);backdrop-filter:blur(calc(26px * var(--ka-blur-k))) saturate(1.8);
+  background:var(--ka-nav-bg)!important;border:0!important;border-top:var(--ka-border-w) solid var(--ka-nav-border)!important;border-radius:var(--ka-nav-radius) var(--ka-nav-radius) 0 0;box-shadow:var(--ka-nav-shadow)!important;
+  -webkit-backdrop-filter:blur(calc(var(--ka-nav-blur) * var(--ka-blur-k))) saturate(1.8);backdrop-filter:blur(calc(var(--ka-nav-blur) * var(--ka-blur-k))) saturate(1.8);
 }
-html .ka-app-nav.ka-bottom-nav::before{content:"";position:absolute;left:14%;right:14%;top:-1px;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(var(--t-accent-rgb),.65),transparent)}
+/* üst kenardaki ince çizgi: dört sekmenin renklerini sırayla taşır */
+html .ka-app-nav.ka-bottom-nav::before{content:"";position:absolute;left:12%;right:12%;top:-1px;height:1px;pointer-events:none;opacity:.7;background:linear-gradient(90deg,transparent,rgb(var(--ka-nav-tab-1)),rgb(var(--ka-nav-tab-2)),rgb(var(--ka-nav-tab-3)),rgb(var(--ka-nav-tab-4)),transparent)}
 html .ka-app-nav.ka-bottom-nav .ka-bottom-item{
+  --bn:var(--ka-nav-tab-1);
   appearance:none;position:relative;min-width:0;min-height:58px;padding:var(--ka-sp-5) var(--ka-sp-2) var(--ka-sp-3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--ka-sp-4);
-  font:inherit;font-size:var(--ka-fs-9-5);line-height:1;font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-01);cursor:pointer;-webkit-tap-highlight-color:transparent;
-  border:0!important;border-radius:var(--ka-btn-radius-lg);background:transparent!important;box-shadow:none!important;color:var(--gl-sub)!important;transition:color var(--ka-dur-200);
+  font:inherit;font-size:var(--ka-nav-label-size);line-height:1;font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-01);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  border:0!important;border-radius:var(--ka-btn-radius-lg);background:transparent!important;box-shadow:none!important;color:var(--ka-nav-text)!important;transition:color var(--ka-dur-200);
 }
+html .ka-app-nav.ka-bottom-nav .ka-bottom-item[data-ka-shell-action="profile"]{--bn:var(--ka-nav-tab-2)}
+html .ka-app-nav.ka-bottom-nav .ka-bottom-item[data-ka-shell-action="search"]{--bn:var(--ka-nav-tab-3)}
+html .ka-app-nav.ka-bottom-nav .ka-bottom-item[data-ka-shell-action="note"]{--bn:var(--ka-nav-tab-4)}
 html .ka-app-nav.ka-bottom-nav .ka-bottom-icon{
-  width:36px;height:calc(32px + var(--ka-btn-grow));display:grid;place-items:center;border-radius:var(--ka-btn-radius);color:inherit;
-  background:var(--gl-field)!important;border:var(--ka-border-w) solid var(--gl-edge)!important;transition:background var(--ka-dur-200),border-color var(--ka-dur-200),box-shadow var(--ka-dur-200);
+  width:var(--ka-nav-pill-w);height:calc(32px + var(--ka-btn-grow));display:grid;place-items:center;border-radius:var(--ka-r-10);color:inherit;
+  background:transparent!important;border:var(--ka-border-w) solid transparent!important;transition:background var(--ka-dur-200),border-color var(--ka-dur-200),box-shadow var(--ka-dur-200),transform var(--ka-dur-200);
 }
 html .ka-app-nav.ka-bottom-nav .ka-bottom-icon svg,
 html .ka-app-nav.ka-bottom-nav .ka-bottom-menu-icon svg{width:var(--ka-ic-21);height:var(--ka-ic-21)}
+html .ka-app-nav.ka-bottom-nav .ka-bottom-item:not(.ka-bottom-menu):active .ka-bottom-icon{transform:scale(.94)}
 html .ka-app-nav.ka-bottom-nav .ka-bottom-item.active:not(.ka-bottom-menu),
-html .ka-app-nav.ka-bottom-nav .ka-bottom-item[aria-current="page"]:not(.ka-bottom-menu){color:var(--nv-ink)!important}
+html .ka-app-nav.ka-bottom-nav .ka-bottom-item[aria-current="page"]:not(.ka-bottom-menu){color:color-mix(in srgb,rgb(var(--bn)) var(--ka-nav-ink-mix),var(--gl-fg))!important;font-weight:var(--ka-fw-900)}
 html .ka-app-nav.ka-bottom-nav .ka-bottom-item.active:not(.ka-bottom-menu) .ka-bottom-icon,
 html .ka-app-nav.ka-bottom-nav .ka-bottom-item[aria-current="page"]:not(.ka-bottom-menu) .ka-bottom-icon{
-  background:rgba(var(--t-accent-rgb),.16)!important;border:var(--ka-border-w) solid rgba(var(--t-accent-rgb),.42)!important;box-shadow:0 0 var(--ka-sh-18) rgba(var(--t-accent-rgb),calc(.24 * var(--ka-shadow-a)));
+  background:rgba(var(--bn),var(--ka-nav-pill-a))!important;border:var(--ka-border-w) solid rgba(var(--bn),var(--ka-nav-pill-edge-a))!important;box-shadow:0 0 var(--ka-sh-18) rgba(var(--bn),calc(var(--ka-nav-pill-glow-a) * var(--ka-shadow-a)));
 }
 html .ka-app-nav.ka-bottom-nav .ka-bottom-menu{overflow:visible}
 html .ka-app-nav.ka-bottom-nav .ka-bottom-menu-icon{
-  width:var(--ka-ic-58);height:var(--ka-ic-58);margin:calc(-1 * var(--ka-sp-22)) 0 0;display:grid;place-items:center;border-radius:var(--ka-r-7);color:var(--t-on-accent-ink);
-  background:linear-gradient(145deg,rgb(var(--t-gold-hi-rgb)),var(--t-accent))!important;border:var(--ka-border-w) solid rgba(var(--k-white),.40)!important;
-  box-shadow:0 var(--ka-sh-10) var(--ka-sh-28) rgba(var(--t-accent-rgb),calc(.38 * var(--ka-shadow-a))),0 1px 0 rgba(var(--k-white),.55) inset,0 calc(-1 * var(--ka-sh-2)) var(--ka-sh-6) rgba(var(--ka-shadow-rgb),calc(.12 * var(--ka-shadow-a))) inset;
+  width:var(--ka-ic-58);height:var(--ka-ic-58);margin:calc(-1 * var(--ka-sp-22)) 0 0;display:grid;place-items:center;border-radius:var(--ka-r-7);color:var(--ka-nav-menu-icon);
+  background:linear-gradient(145deg,var(--ka-nav-menu-start),var(--ka-nav-menu-end))!important;border:var(--ka-border-w) solid rgba(var(--k-white),.40)!important;
+  box-shadow:0 0 0 calc(var(--ka-border-w) * 4) var(--ka-nav-menu-ring),0 var(--ka-sh-10) var(--ka-sh-28) rgba(var(--t-accent-rgb),calc(.38 * var(--ka-shadow-a))),0 1px 0 rgba(var(--k-white),.55) inset,0 calc(-1 * var(--ka-sh-2)) var(--ka-sh-6) rgba(var(--ka-shadow-rgb),calc(.12 * var(--ka-shadow-a))) inset;
   transition:transform var(--ka-dur-200),box-shadow var(--ka-dur-200);
 }
 html .ka-app-nav.ka-bottom-nav .ka-bottom-menu:active .ka-bottom-menu-icon{transform:translateY(1px) scale(.96)}
-html .ka-app-nav.ka-bottom-nav .ka-bottom-menu.active .ka-bottom-menu-icon{box-shadow:0 0 0 calc(var(--ka-border-w) * 4) rgba(var(--t-accent-rgb),.22),0 var(--ka-sh-10) var(--ka-sh-28) rgba(var(--t-accent-rgb),calc(.45 * var(--ka-shadow-a))),0 1px 0 rgba(var(--k-white),.55) inset,0 calc(-1 * var(--ka-sh-2)) var(--ka-sh-6) rgba(var(--ka-shadow-rgb),calc(.12 * var(--ka-shadow-a))) inset}
+html .ka-app-nav.ka-bottom-nav .ka-bottom-menu.active .ka-bottom-menu-icon{box-shadow:0 0 0 calc(var(--ka-border-w) * 4) var(--ka-nav-menu-ring),0 0 var(--ka-sh-28) rgba(var(--t-accent-rgb),calc(.55 * var(--ka-shadow-a))),0 var(--ka-sh-10) var(--ka-sh-28) rgba(var(--t-accent-rgb),calc(.45 * var(--ka-shadow-a))),0 1px 0 rgba(var(--k-white),.55) inset,0 calc(-1 * var(--ka-sh-2)) var(--ka-sh-6) rgba(var(--ka-shadow-rgb),calc(.12 * var(--ka-shadow-a))) inset}
 html .ka-app-nav.ka-bottom-nav .ka-bottom-item:focus-visible{outline:var(--ka-ring-w) solid var(--ka-focus);outline-offset:var(--ka-ring-offset)}
 @media(max-width:380px){
   html .ka-app-nav.ka-bottom-nav .ka-bottom-item{font-size:var(--ka-fs-8-8)}
   html .ka-app-nav.ka-bottom-nav .ka-bottom-menu-icon{width:var(--ka-ic-54);height:var(--ka-ic-54);border-radius:var(--ka-btn-radius-lg)}
-  html .ka-app-nav.ka-bottom-nav .ka-bottom-icon{width:34px}
+  html .ka-app-nav.ka-bottom-nav .ka-bottom-icon{width:calc(var(--ka-nav-pill-w) - var(--ka-sp-6))}
   html #kaMenuLayer.ka-menu-layer .ka-menu-grid{gap:var(--ka-sp-9);padding-inline:var(--ka-sp-9)}
   html #kaMenuLayer.ka-menu-layer .ka-menu-card{min-height:122px}
 }
 
 /* — geniş ekran: yüzen cam çubuk + ortalanmış cam panel — */
 @media(min-width:768px){
-  html .ka-app-nav.ka-bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(680px,calc(100% - 32px));bottom:14px;height:70px;padding:var(--ka-sp-6);border-radius:var(--ka-r-10);border:var(--ka-border-w) solid var(--nv-edge)!important}
+  html .ka-app-nav.ka-bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(680px,calc(100% - 32px));bottom:14px;height:70px;padding:var(--ka-sp-6);border-radius:var(--ka-r-10);border:var(--ka-border-w) solid var(--ka-nav-border)!important}
   html .ka-app-nav.ka-bottom-nav::before{top:-1px;left:20%;right:20%}
   html #kaMenuLayer.ka-menu-layer:not([hidden]){inset:0;display:grid;place-items:center;background:var(--ka-overlay)}
   html #kaMenuLayer.ka-menu-layer .ka-menu-grid,html #kaMenuLayer.ka-menu-layer .ka-menu-list{padding-bottom:var(--ka-sp-28)}

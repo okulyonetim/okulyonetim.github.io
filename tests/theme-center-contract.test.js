@@ -309,3 +309,24 @@ for(const t of ['--ka-wd-1','--ka-wd-2','--ka-wd-3','--ka-wd-4','--ka-wd-5','--k
   for(const r of rules12.filter(r=>/\.kh-weekday\.today(?!.*:not\(#_x\))/.test(r.sel)&&!r.sel.includes('.kh-chip')))
     assert(!/background|color\s*:/.test(r.body),`Eski tek renkli bugün kuralı: ${r.sel} (görünüm --ka-wd-* ile kabukta).`);
 }
+
+// --- 13) Alt menü (alt navigasyon): çubuk, sekmeler, seçili kapsül ve menü düğmesi tek ailede (--ka-nav-*)
+for(const t of ['--ka-nav-tab-1','--ka-nav-tab-2','--ka-nav-tab-3','--ka-nav-tab-4','--ka-nav-radius','--ka-nav-blur','--ka-nav-label-size','--ka-nav-pill-w','--ka-nav-pill-a','--ka-nav-pill-edge-a','--ka-nav-pill-glow-a','--ka-nav-ink-mix',
+  '--ka-nav-menu-start','--ka-nav-menu-end','--ka-nav-menu-icon','--ka-nav-bg','--ka-nav-text','--ka-nav-border','--ka-nav-shadow','--ka-nav-menu-ring'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde alt menü değişkeni eksik: ${t}`);
+{
+  const rules13=parse(masked);
+  const navRules=rules13.filter(r=>/\.ka-bottom-(nav|item|icon|menu)/.test(r.sel));
+  const bar=navRules.find(r=>/^html \.ka-app-nav\.ka-bottom-nav$/.test(r.sel.trim())&&/position\s*:\s*fixed/.test(r.body)&&!r.media.trim());
+  assert(bar&&/background\s*:\s*var\(--ka-nav-bg\)/.test(bar.body)&&/box-shadow\s*:\s*var\(--ka-nav-shadow\)/.test(bar.body)&&/var\(--ka-nav-border\)/.test(bar.body),'Alt menü çubuğu --ka-nav-bg / --ka-nav-border / --ka-nav-shadow ile çizilmeli.');
+  const tabs={profile:2,search:3,note:4};
+  for(const [a,n] of Object.entries(tabs))
+    assert(navRules.find(r=>r.sel.includes(`[data-ka-shell-action="${a}"]`)&&new RegExp('--bn\\s*:\\s*var\\(--ka-nav-tab-'+n+'\\)').test(r.body)),`Alt menü "${a}" sekmesi --ka-nav-tab-${n} rengine bağlı değil.`);
+  assert(navRules.find(r=>/\.ka-bottom-item\s*\{?$|\.ka-bottom-item$/.test(r.sel.trim())&&/--bn\s*:\s*var\(--ka-nav-tab-1\)/.test(r.body)),'Alt menü ilk sekmesi (Ana Sayfa) --ka-nav-tab-1 rengine bağlı olmalı.');
+  const active=navRules.find(r=>/\.ka-bottom-icon$/.test(r.sel.split(',').pop().trim())&&/--ka-nav-pill-a/.test(r.body));
+  assert(active&&/--ka-nav-pill-edge-a/.test(active.body)&&/--ka-nav-pill-glow-a/.test(active.body),'Seçili sekme kapsülü --ka-nav-pill-* ile çizilmeli.');
+  const orb=navRules.find(r=>/\.ka-bottom-menu-icon$/.test(r.sel.trim())&&/--ka-nav-menu-start/.test(r.body));
+  assert(orb&&/--ka-nav-menu-end/.test(orb.body)&&/--ka-nav-menu-ring/.test(orb.body)&&/--ka-nav-menu-icon/.test(orb.body),'Menü düğmesi --ka-nav-menu-* ile çizilmeli.');
+  assert(!navRules.some(r=>/#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d/.test(r.body)),'Alt menü kuralları sabit renk içermemeli (--ka-nav-* kullanın).');
+  assert(!/--nv-(bg|edge|shadow)\b|--ka-nav-active-(bg|text)\b/.test(masked),'Eski alt menü değişkenleri (--nv-bg/-edge/-shadow, --ka-nav-active-*) geri gelmesin.');
+}

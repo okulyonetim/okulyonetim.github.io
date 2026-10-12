@@ -27,6 +27,7 @@ Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/
 | **Pencere / alt sayfa / menü başlığı** (üst şerit: başlık, açıklama, × düğmesi) — boşluk, alt çizgi, yazı boyutu/rengi, kapat düğmesi | **PENCERE** bölümü: `--ka-sheet-head-*`, `--ka-sheet-close-*` (aşağıdaki tabloya bakın) |
 | **Kaydırırken üstte kalan şeritler** (yapışkan araç çubuğu, alt kaydet çubuğu, tablo başlığı / ilk sütun) — zemin | `--ka-sticky-bg`, `--ka-sticky-cell-bg` (bkz. *Yapışkan şeritler*) |
 | **Ana sayfa · Haftanın Nöbet Programı** — her günün yazı rengi, bölüm zemini, sol çubuğu | `--ka-wd-1` … `--ka-wd-5` ve `--ka-wd-bg-a*`, `--ka-wd-bar-w`, `--ka-wd-ink-mix` (bkz. *Haftalık nöbet günleri*) |
+| **Alt menü** (alt navigasyon çubuğu) — çubuk zemini, sekme renkleri, seçili kapsül, ortadaki menü düğmesi | `--ka-nav-*` (bkz. *Alt menü*) |
 | Üst başlık / açılır pencere yüzeyi | `--hd-*`, `--pp-*` |
 | Sayfa zemini, metin, kenarlık | `--ka-app-bg`, `--ka-text`, `--ka-text-muted`, `--ka-border` |
 | Tüm yazıları büyüt/küçült, yoğunluğu değiştir, gölgeyi kapat | `--ka-font-scale`, `--ka-density`, `--ka-shadow-a` (bkz. *Genel düğmeler*) |
@@ -121,6 +122,23 @@ Ana sayfadaki *Haftanın Nöbet Programı* kartında her gün kendi renginde gö
 
 Hepsi aynı rengi isterseniz beş değişkene aynı değeri yazmanız yeterlidir.
 
+### Alt menü (`--ka-nav-*`)
+
+Alt navigasyon çubuğu: yuvarlak üst köşeli cam çubuk, kutusuz çizgi ikonlar, seçili sekmede renkli kapsül ve ortada yükselen menü düğmesi. Her sekmenin kendi rengi vardır; seçili sekmenin kapsülü, ikonu ve yazısı o renkle boyanır, çubuğun üst kenarındaki ince çizgi de dört rengi sırayla taşır.
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-nav-tab-1` … `--ka-nav-tab-4` | Ana Sayfa, Profilim, Arama, Hızlı Not rengi — RGB üçlüsü (varsayılan: marka rengi, sky, violet, emerald). Hepsine aynı değeri yazarsanız tek renkli olur |
+| `--ka-nav-bg`, `--ka-nav-border`, `--ka-nav-shadow` | Çubuk zemini, üst çizgisi, gölgesi (açık ve koyu palet ayrı) |
+| `--ka-nav-text` | Pasif sekme yazı ve ikonları |
+| `--ka-nav-radius`, `--ka-nav-blur` | Çubuğun üst köşe yuvarlaklığı ve cam bulanıklığı |
+| `--ka-nav-label-size` | Sekme yazısı boyutu |
+| `--ka-nav-pill-w`, `--ka-nav-pill-a`, `--ka-nav-pill-edge-a`, `--ka-nav-pill-glow-a` | Seçili kapsülün genişliği, zemin / çizgi / ışıma yoğunluğu (0 = yok) |
+| `--ka-nav-ink-mix` | Seçili sekmenin yazı/ikon rengi: sekme renginin oranı, kalanı metin rengi (okunurluk için) |
+| `--ka-nav-menu-start`, `--ka-nav-menu-end`, `--ka-nav-menu-icon`, `--ka-nav-menu-ring` | Ortadaki menü düğmesinin gradyanı, ikonu ve çevresindeki halka |
+
+Çubuğun yüksekliği `--ka-bottom-nav-height` ile ayarlanır; sayfa alt boşlukları bu değişkenden hesaplanır.
+
 ### Genel düğmeler — tek değer, tüm uygulama
 
 Aşağıdaki değişkenlerin her biri `TEMA MERKEZİ` içinde **tek yerde** durur ve uygulamanın tamamını etkiler. Varsayılanlar mevcut görünümü korur (çarpanlar 1, eklemeler 0).
@@ -181,10 +199,9 @@ Not: marka ve kategori renkleri (`--t-*`, `--c-*`) renk havuzundan ayrıdır; mo
 | `--ka-app-bg` | Uygulamanın tüm ana arka planı |
 | `--ka-header-bg` | Üst header arka planı |
 | `--ka-header-text` | Header ana yazıları |
-| `--ka-nav-bg` | Navigasyon / alt menü arka planı |
-| `--ka-nav-text` | Pasif navigasyon yazı ve ikonları |
-| `--ka-nav-active-bg` | Seçili navigasyon öğesinin zemini |
-| `--ka-nav-active-text` | Seçili navigasyon yazı ve ikonları |
+| `--ka-nav-bg` | Alt menü çubuğunun zemini (açık/koyu palette ayrı) |
+| `--ka-nav-text` | Pasif sekme yazı ve ikonları |
+| `--ka-nav-border`, `--ka-nav-shadow` | Alt menü çubuğunun üst çizgisi ve gölgesi |
 | `--ka-button-bg` | Ana butonların arka planı |
 | `--ka-button-hover` | Ana buton hover/basılı hali |
 | `--ka-button-text` | Ana buton yazısı |
