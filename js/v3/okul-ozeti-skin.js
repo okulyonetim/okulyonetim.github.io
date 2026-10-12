@@ -1,10 +1,12 @@
-/* Koruk Asistan — Okul Özeti Glassmorphism (V5)
- * Gerçek cam efekti: şeffaf yüzey + backdrop-filter + renkli accent.
- * Kapatmak için: localStorage['ka-skin']='off'.
+/* Koruk Asistan — Okul Özeti Glassmorphism (V6)
+ * Tasarım artık design-system-base.css içinde CSS ile yönetilmektedir.
+ * Bu dosya geriye dönük uyumluluk için boş çalışır.
  */
 (function(global){
 'use strict';
 if(global.KorukOkulOzetiSkin)return;
+global.KorukOkulOzetiSkin={enabled:true,refresh:function(){}};
+return;
 var OFF=false;try{OFF=localStorage.getItem('ka-skin')==='off'}catch(_){}
 if(OFF){global.KorukOkulOzetiSkin={enabled:false};return}
 var D=document;
