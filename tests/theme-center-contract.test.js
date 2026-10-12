@@ -181,7 +181,7 @@ function cssViolations(text,label){
 // Çekirdek (TEMA MERKEZİ) dışındaki üretim CSS'i
 const prodBad=[
   ...cssViolations(outside,'design-system-base.css'),
-  ...['css/design-system.css','css/dashboard-announcement-media.css','css/v3/hava-durumu-skin.css','css/v3/okul-ozeti-skin.css']
+  ...['css/design-system.css','css/dashboard-announcement-media.css','css/v3/okul-ozeti-skin.css']
     .flatMap(f=>cssViolations(fs.readFileSync(f,'utf8'),f))
 ];
 assert.strictEqual(prodBad.length,0,`Merkez dışında sabit değer var (${prodBad.length}): \n  ${prodBad.slice(0,6).join('\n  ')}`);
@@ -210,7 +210,7 @@ assert.strictEqual(jsBad.length,0,`JS içine gömülü ekran stilinde sabit değ
 
 // Her kullanılan merdiven değişkeni merkezde tanımlı olmalı (yazım hatası / unutulan basamak = sessiz bozulma)
 const LADDER=/var\(\s*(--(?:ka-(?:fs|fw|lh|ls|sp|sh|ic|rs|dur|ease)-[\w-]+|k-[\w-]+))\s*[,)]/g;
-const sources=[outside,...['css/design-system.css','css/dashboard-announcement-media.css','css/v3/hava-durumu-skin.css','css/v3/okul-ozeti-skin.css'].map(f=>fs.readFileSync(f,'utf8')),
+const sources=[outside,...['css/design-system.css','css/dashboard-announcement-media.css','css/v3/okul-ozeti-skin.css'].map(f=>fs.readFileSync(f,'utf8')),
   ...['js/modules/reports.js','js/modules/food-menu.js','js/core/teacher-reminder-academic-year.js','js/core/report-customizer.js'].map(f=>fs.readFileSync(f,'utf8'))];
 const missing=new Set();
 for(const src of sources)for(const m of src.matchAll(LADDER))if(!new RegExp('(^|[;{\\s])'+m[1].replace(/[-]/g,'\\-')+'\\s*:').test(core))missing.add(m[1]);
@@ -355,4 +355,36 @@ for(const t of ['--ka-btn-primary-blur','--ka-btn-primary-sat','--ka-btn-primary
   // sayfa kurallarında düz (opak) sarı gradyan geri gelmesin; tek istisna: bildirim sayacı rozeti
   const solid=rules14.filter(r=>/rgb\(var\(--t-gold-(?:hi|lo|hover-hi|hover-lo)-rgb\)\)/.test(r.body)&&!/ka-notification-popover__count/.test(r.sel));
   assert(!solid.length,`Opak sarı düğme gradyanı geri geldi: ${solid.map(r=>r.sel.trim().split('\n')[0].slice(0,90)).join(' | ')} (birincil düğme grup kuralına ekleyin).`);
+}
+
+// --- 15) Hava durumu (Gökyüzü Camı): ana sayfa kartı + detay penceresi tek gökyüzü motorunu paylaşır; renk / süre / yoğunluk / gölge --ka-wx-* ailesinden gelir
+{
+  const KINDS=['sun','pc','cloud','rain','storm','snow','fog'];
+  const tokens15=['--ka-wx-speed','--ka-wx-sky-a','--ka-wx-ink','--ka-wx-ink-2','--ka-wx-ink-shadow','--ka-wx-shine','--ka-wx-smoke-1','--ka-wx-smoke-2','--ka-wx-edge','--ka-wx-edge-hi',
+    '--ka-wx-chip','--ka-wx-chip-hi','--ka-wx-chip-edge','--ka-wx-chip-edge-hi','--ka-wx-chip-blur','--ka-wx-panel','--ka-wx-panel-hi','--ka-wx-modal-cloud','--ka-wx-modal-sky-h','--ka-wx-track','--ka-wx-range-1','--ka-wx-range-2',
+    '--ka-wx-sun-core','--ka-wx-sun-mid','--ka-wx-sun-edge','--ka-wx-sun-glow','--ka-wx-ray','--ka-wx-moon','--ka-wx-moon-glow','--ka-wx-star','--ka-wx-rain-1','--ka-wx-flake','--ka-wx-mist-1','--ka-wx-bolt-1',
+    '--ka-wx-t-sun','--ka-wx-t-ray','--ka-wx-t-moon','--ka-wx-t-star','--ka-wx-t-cloud-1','--ka-wx-t-cloud-2','--ka-wx-t-cloud-3','--ka-wx-t-rain','--ka-wx-t-storm','--ka-wx-t-snow','--ka-wx-t-mist-1','--ka-wx-t-bolt',
+    '--ka-fs-56'];
+  for(const t of tokens15)assert(core.includes(t+':'),`TEMA MERKEZİ'nde hava durumu değişkeni eksik: ${t}`);
+  // her durum × gündüz/gece için gökyüzü renkleri merkezde; sis dışında bulut rengi ve yoğunluğu da
+  for(const k of KINDS)for(const d of ['day','night']){
+    for(const p of ['1','2'])assert(core.includes(`--ka-wx-${k}-${d}-${p}:`),`Gökyüzü rengi eksik: --ka-wx-${k}-${d}-${p}`);
+    if(k!=='fog')for(const p of ['cloud','co'])assert(core.includes(`--ka-wx-${k}-${d}-${p}:`),`Gökyüzü bulut değeri eksik: --ka-wx-${k}-${d}-${p}`);
+  }
+  // koyu/açık palette kart ve pencere gölgesi (eşitlik testi 4. bölümde)
+  assert(names(inCore[1].body).has('--ka-wx-shadow')&&names(inCore[1].body).has('--ka-wx-shadow-modal'),'Açık palette --ka-wx-shadow / --ka-wx-shadow-modal tanımlı olmalı.');
+  // CSS her durumun gökyüzü kuralını içerir (pc-gündüz varsayılan); JS'in üretebildiği her durum çizilebilmeli
+  for(const k of KINDS)for(const d of ['day','night']){
+    if(k==='pc'&&d==='day')continue;
+    assert(rules.some(r=>r.sel.includes(`.ka-wx.k-${k}.is-${d}`)&&/--wx-1\s*:/.test(r.body)),`Gökyüzü durum kuralı eksik: .ka-wx.k-${k}.is-${d}`);
+  }
+  const live=fs.readFileSync('js/modules/school-live-status.js','utf8'),skin=fs.readFileSync('js/v3/hava-durumu-skin.js','utf8');
+  for(const k of KINDS)assert(new RegExp(`return'${k}'`).test(live),`SchoolLiveStatus hava kodu → '${k}' durumunu üretmeli.`);
+  assert(/weatherCard/.test(live)&&/weatherCard\(\)/.test(skin),'Kart yapısı SchoolLiveStatus.weatherCard() ile kurulmalı (skin yalnızca yerleştirir).');
+  assert(!/\.sk-wx|wxSvg|<svg[^>]*viewBox="0 0 200 100"/.test(skin),'Eski SVG hava sahnesi geri gelmesin; gökyüzü CSS motorundadır.');
+  assert(!/hava-durumu-skin\.css/.test(index),'Eski css/v3/hava-durumu-skin.css geri yüklenmesin (kart tamamen merkezi CSS\'te).');
+  // dashboard.js dokunulmaz: kartı kendi yazar, yeni yapı skin tarafından üstüne eklenir; eski çocuklar yalnız .ka-wx kartında gizlenir
+  assert(rules.some(r=>/#khWeather\.ka-wx>:is\(\.kh-live-icon,\.kh-live-main,\.kh-weather-arrow\)/.test(r.sel)&&/display\s*:\s*none/.test(r.body)),'.ka-wx kartında dashboard.js’in eski çocukları (.kh-live-icon/.kh-live-main/.kh-weather-arrow) gizlenmeli.');
+  // hareket: ekran dışında duraklar, hareket azaltma tercihinde durur
+  assert(/\.ka-wx\.is-paused \.ka-wx-sky \*/.test(masked)&&/prefers-reduced-motion[^{]*\{[^]*?\.ka-wx-sky \*/.test(masked),'Gökyüzü animasyonları ekran dışında ve hareket azaltma tercihinde durmalı.');
 }

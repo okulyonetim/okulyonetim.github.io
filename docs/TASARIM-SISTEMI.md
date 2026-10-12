@@ -29,6 +29,7 @@ Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/
 | **Kaydırırken üstte kalan şeritler** (yapışkan araç çubuğu, alt kaydet çubuğu, tablo başlığı / ilk sütun) — zemin | `--ka-sticky-bg`, `--ka-sticky-cell-bg` (bkz. *Yapışkan şeritler*) |
 | **Ana sayfa · Haftanın Nöbet Programı** — her günün yazı rengi, bölüm zemini, sol çubuğu | `--ka-wd-1` … `--ka-wd-5` ve `--ka-wd-bg-a*`, `--ka-wd-bar-w`, `--ka-wd-ink-mix` (bkz. *Haftalık nöbet günleri*) |
 | **Alt menü** (alt navigasyon çubuğu) — çubuk zemini, sekme renkleri, seçili kapsül, ortadaki menü düğmesi | `--ka-nav-*` (bkz. *Alt menü*) |
+| **Hava durumu kartı + detay penceresi** — gökyüzü renkleri (durum × gündüz/gece), bulut yoğunluğu, cam çipler, hareket hızı | `--ka-wx-*` (bkz. *Hava durumu*) |
 | Üst başlık / açılır pencere yüzeyi | `--hd-*`, `--pp-*` |
 | Sayfa zemini, metin, kenarlık | `--ka-app-bg`, `--ka-text`, `--ka-text-muted`, `--ka-border` |
 | Tüm yazıları büyüt/küçült, yoğunluğu değiştir, gölgeyi kapat | `--ka-font-scale`, `--ka-density`, `--ka-shadow-a` (bkz. *Genel düğmeler*) |
@@ -161,6 +162,26 @@ Uygulamadaki tüm sarı ana eylem düğmeleri tek malzemeyi paylaşır: üstte b
 
 Yeni bir sarı düğme eklerken kendi `background`/`box-shadow` kuralını **yazmayın**; seçicisini dosya sonundaki "BİRİNCİL DÜĞME — ALTIN CAM" grup kuralının listesine ekleyin (normal, hover, basılı, pasif ve odak durumları aynı listeden gelir). Sözleşme testi, bu bölümün dışında düz sarı (`rgb(var(--t-gold-*-rgb))`) zemin yazılmasına izin vermez. Seçili sekme/hap dolguları, bildirim sayacı rozeti, ikon-avatar kutuları ve ilerleme çubukları bilerek düz sarı kalır.
 
+### Hava durumu — Gökyüzü Camı (`--ka-wx-*`)
+
+Ana sayfadaki hava durumu kartı ve kartı tıklayınca açılan detay penceresi **tek gökyüzü motorunu** paylaşır: hava koduna göre 7 durum (`sun`, `pc` parçalı bulutlu, `cloud`, `rain`, `storm`, `snow`, `fog`) × gündüz/gece. Gökyüzü yalnız CSS ile hareket eder (güneş ışınları, ay, yıldız, bulut, yağmur, kar, sis, şimşek); yazı her gökyüzünde beyazdır, okunabilirliği koyu "duman" katmanı ve cam çipler sağlar. Gündüz/gece, Open-Meteo'nun gün doğumu/batımından hesaplanır (veri yoksa 06:00–19:00).
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-wx-<durum>-<day\|night>-1` / `-2` | O durumun gökyüzünün üst / alt rengi (ör. `--ka-wx-rain-night-1`) |
+| `--ka-wx-<durum>-<day\|night>-cloud`, `-co` | Bulut rengi ve yoğunluğu (sis hariç) |
+| `--ka-wx-sky-a` | Gökyüzü renginin yoğunluğu |
+| `--ka-wx-ink`, `--ka-wx-ink-2`, `--ka-wx-ink-shadow` | Yazı rengi, ikincil yazı ve yazı gölgesi |
+| `--ka-wx-shine`, `--ka-wx-smoke-1`, `--ka-wx-smoke-2` | Üst parlaklık ve yazının altındaki "duman" (okunabilirlik) |
+| `--ka-wx-chip`, `--ka-wx-chip-hi`, `--ka-wx-chip-edge`, `--ka-wx-chip-blur` | Kartın cam çipleri: konum, nem/rüzgâr/basınç kutuları (0 = bulanıksız) |
+| `--ka-wx-panel`, `--ka-wx-panel-hi`, `--ka-wx-modal-cloud`, `--ka-wx-modal-sky-h` | Detay penceresinde kutuların koyuluğu ve bulutların seyrekliği/bölgesi (içerik bulutların üstünden kaydığı için kartınkinden koyu) |
+| `--ka-wx-track`, `--ka-wx-range-1`, `--ka-wx-range-2` | 7 günlük sıcaklık çubuğu: yol ve soğuk/sıcak uç renkleri |
+| `--ka-wx-sun-*`, `--ka-wx-moon*`, `--ka-wx-star*`, `--ka-wx-rain-*`, `--ka-wx-flake*`, `--ka-wx-mist-*`, `--ka-wx-bolt-*` | Güneş, ay, yıldız, yağmur, kar, sis, şimşek renkleri |
+| `--ka-wx-speed` | Tüm hava animasyonlarının hızı (1 = normal, 2 = yarı hız, 0 = durağan); tek tek süreler `--ka-wx-t-*` |
+| `--ka-wx-shadow`, `--ka-wx-shadow-modal` | Kart ve pencere gölgesi (açık/koyu paletlerde ayrı) |
+
+Kart yapısını `js/v3/hava-durumu-skin.js` kurar (içeriği `SchoolLiveStatus.weatherCard()` üretir; `dashboard.js` değişmedi, eski çocukları CSS gizler); pencere `SchoolLiveStatus.openWeather()`'dır. Kapatmak için `localStorage['ka-skin']='off'` (sade eski kart görünür). Yeni bir hava durumu eklemek için `kindOf()`'a eşleme + `.ka-wx.k-<durum>.is-day|is-night` kuralları ve `--ka-wx-<durum>-*` renkleri gerekir.
+
 ### Genel düğmeler — tek değer, tüm uygulama
 
 Aşağıdaki değişkenlerin her biri `TEMA MERKEZİ` içinde **tek yerde** durur ve uygulamanın tamamını etkiler. Varsayılanlar mevcut görünümü korur (çarpanlar 1, eklemeler 0).
@@ -207,7 +228,7 @@ Not: marka ve kategori renkleri (`--t-*`, `--c-*`) renk havuzundan ayrıdır; mo
 
 - **Kâğıt çıktısı** (A4 rapor, yazdırma, PDF — `.ka-report*`, `@media print`, JS içindeki rapor/yazdırma `<style>` blokları) temadan bağımsızdır; renkleri `--ka-report-*` ile, ölçüleri mm/pt ile belirlenir.
 - **Yerleşim geometrisi** merkezde değildir: kolon genişlikleri, `max-width`, `grid-template-columns`, konum kaydırmaları (`top/left/...`), `transform` ve `@media` kırılma noktaları (CSS değişkeni kabul etmez).
-- **Çizim ve illüstrasyonlar:** hava durumu SVG sahnesinin paleti (`js/v3/hava-durumu-skin.js`), çizim defteri (canvas) renkleri.
+- **Çizim ve illüstrasyonlar:** çizim defteri (canvas) renkleri. (Hava durumu gökyüzü artık CSS'tedir ve merkezidir: `--ka-wx-*`.)
 - **Statik dosyalar:** `manifest.json` renkleri, uygulama ikonları, açılış görseli; HTML `<meta theme-color>` ilk değeri (çalışınca merkezden güncellenir).
 - **Kullanıcı verisi:** yöneticinin menü kartına seçtiği özel renkler kullanıcıya aittir; seçilmemiş kartların varsayılan rengi marka renginden okunur.
 - Düğmeler `html` düzeyinde okunur; bir alt öğeye yerel `--ka-density` vermek çalışmaz.
