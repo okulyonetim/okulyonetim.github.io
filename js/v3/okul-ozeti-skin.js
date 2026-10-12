@@ -170,8 +170,26 @@ function addEmoji(card,cfg){
   card.classList.add('sk-glass');
 }
 
+/* ---- Grid arka planı (glassmorphism için zemin şart) ---- */
+function styleGrid(){
+  var dk=isDark();
+  $$('.ka-school-summary-grid').forEach(function(g){
+    if(dk){
+      g.style.setProperty('background','linear-gradient(135deg,rgba(30,58,138,.55) 0%,rgba(6,78,59,.55) 50%,rgba(120,53,15,.55) 100%)','important');
+      g.style.setProperty('border-radius','22px','important');
+      g.style.setProperty('padding','10px','important');
+    }else{
+      g.style.setProperty('background','linear-gradient(135deg,rgba(219,234,254,.85) 0%,rgba(209,250,229,.85) 50%,rgba(254,243,199,.85) 100%)','important');
+      g.style.setProperty('border-radius','22px','important');
+      g.style.setProperty('padding','10px','important');
+    }
+    g.setAttribute('data-sk-grid','1');
+  });
+}
+
 /* ---- Ana döngü ---- */
 function decorate(){
+  styleGrid();
   $$('.ka-school-summary-card').forEach(function(c){
     var cfg=getCfg(c);
     if(!cfg)return;
