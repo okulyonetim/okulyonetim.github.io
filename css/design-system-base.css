@@ -239,25 +239,12 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-school-stage>div{display:flex;justify-content:center;gap:4px;font-size:8px;font-weight:800;white-space:nowrap}
 .ka-school-unassigned{grid-column:1/-1;margin-top:4px;color:var(--ka-text-muted);font-size:8px}
 /* Dark mode */
-[data-theme="dark"] .ka-school-summary-grid{background:
-    radial-gradient(ellipse 80% 60% at 15% 25%,rgba(99,102,241,.65) 0%,transparent 65%),
-    radial-gradient(ellipse 70% 55% at 85% 75%,rgba(16,185,129,.60) 0%,transparent 60%),
-    radial-gradient(ellipse 65% 60% at 60% 5%,rgba(245,158,11,.55) 0%,transparent 55%),
-    #0d0f1a}
-[data-theme="dark"] .ka-school-summary-card{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);box-shadow:0 8px 32px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.08) inset;color:var(--ka-text)}
-[data-theme="dark"] .ka-school-summary-card.is-teacher{border-color:rgba(96,165,250,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
-[data-theme="dark"] .ka-school-summary-card.is-student{border-color:rgba(52,211,153,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
-[data-theme="dark"] .ka-school-summary-card.is-class{border-color:rgba(251,191,36,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
-[data-theme="dark"] .ka-school-summary-card.is-service{border-color:rgba(248,113,113,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
-[data-theme="dark"] .ka-school-summary-card>small{color:rgba(255,255,255,.5)}
-[data-theme="dark"] .ka-school-summary-card.is-student .ka-school-summary-meta{border-top-color:rgba(255,255,255,.1)}
+
+
 [data-theme="dark"] .ka-school-stage+.ka-school-stage{border-left-color:rgba(255,255,255,.1)}
 [data-theme="dark"] .ka-school-stage-icon{background:rgba(255,255,255,.1)}
-[data-theme="dark"] .ka-school-summary-icon{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
-[data-theme="dark"] .ka-school-summary-card.is-teacher .ka-school-summary-icon{background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.28)}
-[data-theme="dark"] .ka-school-summary-card.is-student .ka-school-summary-icon{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.28)}
-[data-theme="dark"] .ka-school-summary-card.is-class .ka-school-summary-icon{background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.28)}
-[data-theme="dark"] .ka-school-summary-card.is-service .ka-school-summary-icon{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.28)}
+
+
 @media(max-width:390px){.ka-school-summary-grid{gap:7px;padding:8px}.ka-school-summary-card{min-height:144px;padding:12px 7px 9px;border-radius:18px}.ka-school-summary-icon{width:39px;height:39px;border-radius:12px;font-size:19px;margin-bottom:6px}.ka-school-summary-card>b{font-size:27px}.ka-school-summary-meta{font-size:8px}.ka-school-stage>strong{font-size:16px}}
 
 /* ===== DASHBOARD REFERENCE SURFACES ===== */
@@ -1232,7 +1219,6 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 @media(max-width:390px){.ka-meeting-form-card .ka-card__body{padding-inline:8px}.ka-meeting-common-grid{gap:7px}.ka-meeting-detail-head>.ka-btn{padding-inline:8px;font-size:10.5px}.ka-meeting-draft-card{padding-inline:9px}.ka-meeting-draft-field{grid-template-columns:31px minmax(0,1fr);gap:6px;padding-inline:5px}.ka-meeting-draft-field__icon{width:29px;height:29px}.ka-meeting-draft-field__icon svg{width:16px;height:16px}.ka-meeting-draft-field__label{font-size:9px}.ka-meeting-draft-card select,.ka-meeting-draft-card input,.ka-meeting-draft-card .ka-input{font-size:12px!important}.ka-meeting-class-summary strong{font-size:12px}.ka-meeting-class-placeholder{font-size:10.5px}.ka-meeting-class-grid{gap:6px}.ka-meeting-chip{padding-inline:8px}.ka-meeting-form-actions>.ka-btn{font-size:11.5px}}
 
 
-
 /* TOPLANTI ÇİZELGESİ — KAYDEDİLEN TOPLANTILAR MOBİL */
 @media(max-width:720px){.ka-meeting-list-head{align-items:flex-start}.ka-meeting-list-head>div{min-width:0}.ka-meeting-list-count{font-size:9.5px}.ka-meeting-saved-head{grid-template-columns:1fr;gap:8px;padding:13px}.ka-meeting-saved-title{align-items:flex-start}.ka-meeting-saved-title strong{font-size:14.5px;white-space:normal;overflow:visible}.ka-meeting-saved-range{justify-self:start;font-size:9.5px}.ka-meeting-session{grid-template-columns:29px minmax(0,1fr);gap:8px;padding:10px 13px}.ka-meeting-session__no{width:27px;height:27px;border-radius:9px;font-size:9.5px}.ka-meeting-session__main>strong{font-size:12.5px}.ka-meeting-session__meta{gap:4px;margin-top:5px}.ka-meeting-session__meta span,.ka-meeting-session__meta time{min-height:22px;padding:3px 6px;font-size:8.8px}.ka-meeting-item__actions{display:grid;grid-template-columns:1fr 1fr;padding:10px 13px}.ka-meeting-item__actions .ka-btn{width:100%;min-width:0;min-height:38px}}
 @media(max-width:390px){.ka-meeting-list-head{display:grid;gap:7px}.ka-meeting-list-count{justify-self:start}.ka-meeting-saved-head{padding:11px}.ka-meeting-session{padding-inline:11px}.ka-meeting-session__meta span,.ka-meeting-session__meta time{font-size:8.4px}.ka-meeting-item__actions{padding-inline:11px}}
@@ -1370,7 +1356,8 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 
 /* Koyu temada katman ayrımı; sabit açık renk yüzey üretme. */
 [data-theme="dark"] .ka-home .kh-hero,[data-theme="dark"] .ka-home .kh-announcement,[data-theme="dark"] .ka-home .kh-trial-live__card{box-shadow:0 5px 20px rgba(0,0,0,.26)}
-[data-theme="dark"] .ka-school-summary-card,[data-theme="dark"] .ka-home .kh-card,[data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{box-shadow:0 3px 14px rgba(0,0,0,.20)}
+[data-theme="dark"] .ka-home .kh-card,
+[data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{box-shadow:0 3px 14px rgba(0,0,0,.20)}
 
 @media(max-width:390px){
   .ka-home{gap:11px!important;padding-left:max(8px,var(--ka-safe-left))!important;padding-right:max(8px,var(--ka-safe-right))!important}
@@ -2334,7 +2321,6 @@ button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .
 @media(max-width:767px){.ka-report-preview__fit,.ka-report-preview__actual{display:none}.ka-report-preview__zoom{grid-template-columns:44px 64px 44px;justify-content:start}.ka-report-preview__viewport{padding:4px}}
 @media(max-width:390px){.ka-report-preview__title b{font-size:13px}.ka-report-preview__title small{display:none}.ka-report-preview__print{min-width:86px;max-width:94px;padding-inline:8px}}
 @media(min-width:768px){.ka-report-preview__toolbar{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 14px}.ka-report-preview__main{grid-template-columns:44px minmax(180px,1fr) auto}.ka-report-preview__zoom{justify-content:end}.ka-report-preview__viewport{padding:12px}}
-
 
 
 /* Öğrenci listesi canlı önizleme / sütun genişliği */
@@ -3540,8 +3526,7 @@ html[data-theme="dark"] .ka-home .kh-announcement,
 html[data-theme="dark"] .ka-home .kh-news,
 html[data-theme="dark"] .ka-home .kh-weather-card,
 html[data-theme="dark"] .ka-home .kh-home-section,
-html[data-theme="dark"] .ka-home-section,
-html[data-theme="dark"] .ka-school-summary-card{
+html[data-theme="dark"] .ka-home-section{
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
   border-color:var(--ka-module-border)!important;
@@ -3549,8 +3534,7 @@ html[data-theme="dark"] .ka-school-summary-card{
 html[data-theme="dark"] .ka-home .kh-row *,
 html[data-theme="dark"] .ka-home .kh-dyn-item *,
 html[data-theme="dark"] .ka-home .kh-social button *,
-html[data-theme="dark"] .ka-home .kh-quick button *,
-html[data-theme="dark"] .ka-school-summary-card *{
+html[data-theme="dark"] .ka-home .kh-quick button *{
   color:inherit;
 }
 html[data-theme="dark"] .ka-home .kh-row-main>b,
@@ -3558,22 +3542,18 @@ html[data-theme="dark"] .ka-home .kh-row-main b,
 html[data-theme="dark"] .ka-home .kh-dyn-item .kh-row-main>b,
 html[data-theme="dark"] .ka-home .kh-dyn-item .kh-row-main b,
 html[data-theme="dark"] .ka-home .kh-social button span:last-child,
-html[data-theme="dark"] .ka-home .kh-quick button span:last-child,
-html[data-theme="dark"] .ka-school-summary-card>small,
-html[data-theme="dark"] .ka-school-summary-card>b{
+html[data-theme="dark"] .ka-home .kh-quick button span:last-child{
   color:var(--ka-module-text)!important;
 }
 html[data-theme="dark"] .ka-home .kh-row-main small,
 html[data-theme="dark"] .ka-home .kh-dyn-item .kh-row-main small,
 html[data-theme="dark"] .ka-home .kh-side,
 html[data-theme="dark"] .ka-home .kh-place,
-html[data-theme="dark"] .ka-home .kh-place b,
-html[data-theme="dark"] .ka-school-summary-meta{
+html[data-theme="dark"] .ka-home .kh-place b{
   color:var(--ka-module-muted)!important;
 }
 html[data-theme="dark"] .ka-home .kh-social-icon,
-html[data-theme="dark"] .ka-home .kh-quick-icon,
-html[data-theme="dark"] .ka-school-summary-icon{
+html[data-theme="dark"] .ka-home .kh-quick-icon{
   background:#2b2b2b!important;
   color:var(--ka-module-accent)!important;
 }
@@ -4166,38 +4146,25 @@ html[data-theme="dark"] .ka-home .kh-section > .kh-section-head svg {
 /* ===== DARK THEME VISIBLE-SURFACE RESET v975 =====
    Bu katman, eski modül CSS'lerinin tema değişkenlerini ezdiği ekranları
    tekrar merkezi koyu yüzeye bağlar. Semantik başarı/uyarı renkleri korunur. */
-[data-theme="dark"] .ka-home,
+/* .ka-home zemini şeffaf: renk html'den gelir, arkadaki cam orb'ları görünür kalır. */
+[data-theme="dark"] .ka-home{
+  background:transparent!important;
+  color:var(--ka-module-text)!important;
+}
 [data-theme="dark"] .ka-home-section,
 [data-theme="dark"] .ka-home-section__body,
-[data-theme="dark"] .ka-school-summary-section,
-[data-theme="dark"] .ka-school-summary-grid{
+[data-theme="dark"] .ka-school-summary-section{
   background:var(--ka-app-bg)!important;
   color:var(--ka-module-text)!important;
 }
-[data-theme="dark"] .ka-school-summary-card{
-  background:var(--ka-module-surface)!important;
-  color:var(--ka-module-text)!important;
-  border-color:var(--ka-module-border-strong)!important;
-  box-shadow:0 6px 18px rgba(0,0,0,.28)!important;
-}
-[data-theme="dark"] .ka-school-summary-card *,
-[data-theme="dark"] .ka-school-summary-card>b,
-[data-theme="dark"] .ka-school-summary-card>small{
-  color:var(--ka-module-text)!important;
-}
-[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta,
-[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{
-  color:var(--ka-module-muted)!important;
-}
-[data-theme="dark"] .ka-school-summary-icon,
+
+
 [data-theme="dark"] .ka-school-stage-icon{
   background:var(--ka-module-icon-surface)!important;
   color:var(--ka-module-accent)!important;
   box-shadow:inset 0 0 0 1px var(--ka-module-border-strong)!important;
 }
-[data-theme="dark"] .ka-school-summary-card::after{
-  background:rgba(255,196,0,.08)!important;
-}
+
 
 /* Ana sayfa eski/nested kartlar: beyaz yüzey sızıntısını kapat. */
 [data-theme="dark"] .ka-home [class*="kh-"],
@@ -4973,7 +4940,6 @@ html[data-theme="dark"] #khBell.kh-bell-modern {
   color:var(--ka-button-text) !important;
   border-color:var(--ka-module-accent) !important;
 }
-
 
 
 /* ===== PEOPLE DETAIL / DARK WEBVIEW FINAL POLISH v979 =====
@@ -5914,7 +5880,6 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:var(--ka-module-text)!
 .ka-reminder-item{background:var(--ka-detail-surface)!important;color:var(--ka-detail-text)!important;border-color:var(--ka-detail-border)!important}
 
 
-
 /* ===== TEK MERKEZ — PEOPLE UI / DARK-LIGHT SURFACE ENFORCEMENT ===== */
 .ka-student-card-actions a,.ka-student-card-actions button,.ka-student-contact,
 .ka-student-row-actions a,.ka-student-row-actions button{
@@ -5944,7 +5909,6 @@ body[data-theme="dark"] .ka-reminder-summary strong{color:var(--ka-module-text)!
   border-color:var(--ka-detail-border)!important;
 }
 .ka-class-detail .ka-card__header{background:var(--ka-detail-header)!important;color:var(--ka-detail-text)!important}
-
 
 
 /* ===== CENTRAL DETAIL TOKENS — STUDENTS / CLASSES / REMINDERS ===== */
@@ -6640,18 +6604,6 @@ html[data-theme="dark"] .ka-home .kh-duty-card small,
 html[data-theme="dark"] .ka-home .kh-place{
   color:var(--ka-module-muted)!important;
 }
-html[data-theme="dark"] .ka-school-summary-card{
-  background:var(--ka-module-surface)!important;
-  color:var(--ka-module-text)!important;
-  border-color:var(--ka-module-border)!important;
-}
-html[data-theme="dark"] .ka-school-summary-card *{
-  color:inherit;
-}
-html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta,
-html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{
-  color:var(--ka-module-muted)!important;
-}
 
 
 /* ===== ANDROID DARK THEME — FINAL VISUAL CONTRACT v1008 =====
@@ -6787,8 +6739,7 @@ html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{
 [data-theme="dark"] #v2ModuleRoot .ka-home .kh-notes,
 [data-theme="dark"] #v2ModuleRoot .ka-home .kh-weekday,
 [data-theme="dark"] #v2ModuleRoot .ka-home .kh-dyn-item,
-[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button,
-[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card{
+[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button{
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
   border-color:var(--ka-module-border)!important;
@@ -6939,8 +6890,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-news,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-notes,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weekday,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-dyn-item,
-html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button,
-html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card{
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button{
   background:var(--ka-module-surface)!important;
   color:var(--ka-module-text)!important;
   border-color:var(--ka-module-border)!important;
@@ -7468,16 +7418,12 @@ html[data-theme="dark"]{
   --ka-input-bg:#151515;--ka-input-text:#f5f5f5;--ka-input-border:#2b2b2b;--ka-border:#242424;--ka-border-strong:#383838;
   --ka-module-surface:#141414;--ka-module-text:#f5f5f5;--ka-module-muted:#a6a6a6;--ka-module-border:#242424;
 }
-html[data-theme="dark"] .ka-home .ka-school-summary-card,
 html[data-theme="dark"] .ka-home .ka-home-section,
 html[data-theme="dark"] .ka-card,
 html[data-theme="dark"] .card,
 html[data-theme="dark"] .module-card{
   background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important;
 }
-html[data-theme="dark"] .ka-home .ka-school-summary-card>small,
-html[data-theme="dark"] .ka-home .ka-school-summary-card>b{color:var(--ka-text)!important}
-html[data-theme="dark"] .ka-home .ka-school-summary-meta{color:var(--ka-text-muted)!important}
 
 
 /* ===== CENTRAL THEME FINAL AUTHORITY v1024 =====
@@ -7557,7 +7503,6 @@ html[data-theme="dark"] #v2ModuleRoot *:not(svg):not(path):not(line):not(circle)
   --module-text:var(--ka-text);
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-card,
-html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home-section,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-row,
@@ -7606,7 +7551,7 @@ html[data-theme="dark"] #v2ModuleRoot b{color:var(--ka-text);}
 html[data-theme="dark"] #v2ModuleRoot .ka-text-muted,
 html[data-theme="dark"] #v2ModuleRoot .muted,
 html[data-theme="dark"] #v2ModuleRoot [class*="muted"]{color:var(--ka-text-muted)!important;}
-html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-meta{color:var(--ka-text-muted)!important;}
+
 html[data-theme="dark"] #v2ModuleRoot .ka-class-hero,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-hero,
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile-hero{color:var(--ka-on-accent)!important;}
@@ -9762,8 +9707,6 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 }
 
 
-
-
 /* ===== CENTRAL THEME HARD OVERRIDE — ÇİZELGE / REHBERLİK v1047 =====
    Son katman: bu ekranların eski modül gradient/renkleri merkezi temayı
    ezemez. Hero, aksiyon, ikon ve kayıt kartları aynı tema tokenlarını kullanır. */
@@ -9882,7 +9825,6 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
   color:var(--ka-text)!important;
   border:1px solid var(--ka-primary)!important;
 }
-
 
 
 /* ===== CENTRAL THEME AUTHORITY — CLASSIC ÇİZELGELER v1048 =====
@@ -11298,40 +11240,7 @@ html[data-theme="dark"] .ka-menu-submenu [data-personel-menu-row] span{
 :root:not([data-theme="dark"]) .ka-school-summary-card.is-service>b{color:#881337!important}
 :root:not([data-theme="dark"]) .ka-school-summary-card.is-service .ka-school-summary-meta{color:rgba(136,19,55,.55)!important}
 
-/* Dark theme stat cards: rich dark gradients per type */
-[data-theme="dark"] .ka-school-summary-card{
-  border-color:rgba(255,255,255,.09)!important;
-  box-shadow:0 8px 32px rgba(0,0,0,.35)!important;
-  color:#f5f5f5!important;
-}
-[data-theme="dark"] .ka-school-summary-card>small{color:rgba(255,255,255,.55)!important}
-[data-theme="dark"] .ka-school-summary-card>b{color:#ffffff!important}
-[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta{color:rgba(255,255,255,.45)!important}
-[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *{color:inherit!important}
-
-/* Öğretmen dark — deep blue */
-[data-theme="dark"] .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service){
-  background:linear-gradient(145deg,#1a2a5e,#1e3a7a)!important;
-  border-color:rgba(99,149,255,.14)!important;
-}
-
-/* Öğrenci dark — deep teal */
-[data-theme="dark"] .ka-school-summary-card.is-student{
-  background:linear-gradient(145deg,#0d2e2e,#0f3d35)!important;
-  border-color:rgba(16,185,129,.18)!important;
-}
-
-/* Sınıf dark — deep amber */
-[data-theme="dark"] .ka-school-summary-card.is-class{
-  background:linear-gradient(145deg,#2a1a00,#3d2800)!important;
-  border-color:rgba(245,158,11,.18)!important;
-}
-
-/* Servis dark — deep rose */
-[data-theme="dark"] .ka-school-summary-card.is-service{
-  background:linear-gradient(145deg,#2a0a14,#3d0f1e)!important;
-  border-color:rgba(239,68,68,.18)!important;
-}
+/* Dark tema okul özeti kartları: dosya sonundaki "OKUL ÖZETİ — GERÇEK CAM (DARK)" bölümünde tek yerde tanımlı. */
 
 /* Icon background in light theme: card-colored tint */
 :root:not([data-theme="dark"]) .ka-school-summary-card .ka-school-summary-icon{
@@ -11339,11 +11248,7 @@ html[data-theme="dark"] .ka-menu-submenu [data-personel-menu-row] span{
   border-color:rgba(255,255,255,.80)!important;
   box-shadow:0 2px 8px rgba(0,0,0,.06)!important;
 }
-[data-theme="dark"] .ka-school-summary-card .ka-school-summary-icon{
-  background:rgba(255,255,255,.10)!important;
-  border-color:rgba(255,255,255,.12)!important;
-  color:#fff!important;
-}
+
 
 /* ::after decorative orb matches card accent */
 :root:not([data-theme="dark"]) .ka-school-summary-card:not(.is-student):not(.is-class):not(.is-service)::after{
@@ -11496,15 +11401,131 @@ html[data-theme="dark"] .ka-menu-submenu [data-personel-menu-row] span{
 :root:not([data-theme="dark"]) .ka-school-summary-card.sk-has-scene.is-service{
   background:linear-gradient(145deg,#ffe4e6,#fff1f2)!important;
 }
-[data-theme="dark"] .ka-school-summary-card.sk-has-scene:not(.is-student):not(.is-class):not(.is-service){
-  background:linear-gradient(145deg,#1a2a5e,#1e3a7a)!important;
+
+
+/* ===== OKUL ÖZETİ — GERÇEK CAM (DARK) v1246 =====
+   Dark okul özeti kartlarının TEK yetkili tanımı. Eski dark kart/grid/zemin kuralları kaldırıldı.
+   backdrop-filter yalnızca kartın FİZİKSEL olarak arkasındaki pikselleri süzer; bu yüzden:
+   1) html::before / html::after / body::before = position:fixed + filter:blur renkli orb'lar (z-index:-1, en arka katman)
+   2) orb ile kart arasındaki opak zemin zinciri şeffaf: body → shell → content → modül kökü → .ka-home → bölüm → gövde → grid
+      (sayfa rengi html'den gelir; görünüm değişmez, yalnızca orb'lar görünür olur)
+   3) kart = yarı saydam yüzey + backdrop-filter; kartın kendi accent blob'u ::before, alt çizgisi ::after
+   Kart kuralları "#v2ModuleRoot" varyantlıdır: "MODULE THEME BRIDGE" ([class*="card"], [class*="summary"] → opak
+   yüzey / gri metin, özgüllük 1,2,0) cam kartları ezmesin diye. Açık tema bu bölümden etkilenmez. */
+@keyframes ka-orb-a{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,40px)}}
+@keyframes ka-orb-b{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,-30px)}}
+
+html[data-theme="dark"]::before,
+html[data-theme="dark"]::after,
+html[data-theme="dark"] body::before{
+  content:"";position:fixed;z-index:-1;border-radius:50%;
+  filter:blur(80px);pointer-events:none;will-change:transform;
 }
-[data-theme="dark"] .ka-school-summary-card.sk-has-scene.is-student{
-  background:linear-gradient(145deg,#0d2e2e,#0f3d35)!important;
+html[data-theme="dark"]::before{
+  width:460px;height:460px;top:-120px;left:-140px;
+  background:radial-gradient(circle,rgba(99,102,241,.30) 0%,transparent 70%);
+  animation:ka-orb-a 14s ease-in-out infinite;
 }
-[data-theme="dark"] .ka-school-summary-card.sk-has-scene.is-class{
-  background:linear-gradient(145deg,#2a1a00,#3d2800)!important;
+html[data-theme="dark"]::after{
+  width:400px;height:400px;bottom:-100px;right:-120px;
+  background:radial-gradient(circle,rgba(16,185,129,.24) 0%,transparent 70%);
+  animation:ka-orb-b 17s ease-in-out infinite;
 }
-[data-theme="dark"] .ka-school-summary-card.sk-has-scene.is-service{
-  background:linear-gradient(145deg,#2a0a14,#3d0f1e)!important;
+html[data-theme="dark"] body::before{
+  width:340px;height:340px;top:42vh;right:-170px;
+  background:radial-gradient(circle,rgba(245,158,11,.16) 0%,transparent 70%);
+  animation:ka-orb-a 19s ease-in-out infinite reverse;
+}
+
+/* Opak zemin zinciri → şeffaf (orb'lar kartın arkasına ulaşsın) */
+html[data-theme="dark"] body,
+html[data-theme="dark"] .ka-app-shell,
+html[data-theme="dark"] .ka-app-content,
+html[data-theme="dark"] #v2ModuleRoot,
+html[data-theme="dark"] .ka-home,
+html[data-theme="dark"] #v2ModuleRoot .ka-home,
+html[data-theme="dark"] .ka-home .ka-school-summary-section,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .ka-school-summary-section,
+html[data-theme="dark"] .ka-home .ka-school-summary-section>.ka-home-section__head,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .ka-school-summary-section>.ka-home-section__head,
+html[data-theme="dark"] .ka-home .ka-school-summary-section>.ka-home-section__body,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .ka-school-summary-section>.ka-home-section__body,
+html[data-theme="dark"] .ka-home .ka-school-summary-grid,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .ka-school-summary-grid{
+  background:transparent!important;
+}
+html[data-theme="dark"] .ka-home .ka-school-summary-section>.ka-home-section__body,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .ka-school-summary-section>.ka-home-section__body,
+html[data-theme="dark"] .ka-home .ka-school-summary-grid,
+html[data-theme="dark"] #v2ModuleRoot .ka-home .ka-school-summary-grid{
+  border:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important;
+}
+html[data-theme="dark"] .ka-home .ka-school-summary-section:active{transform:none!important}
+
+/* Cam kart — tip renkleri (varsayılan: öğretmen) */
+html[data-theme="dark"] .ka-school-summary-card{
+  --sc-rgb:99,102,241;--sc-blob:#818cf8;--sc-num:#a5b4fc;--sc-line:#6366f1;
+}
+html[data-theme="dark"] .ka-school-summary-card.is-student{--sc-rgb:16,185,129;--sc-blob:#34d399;--sc-num:#6ee7b7;--sc-line:#10b981}
+html[data-theme="dark"] .ka-school-summary-card.is-class{--sc-rgb:245,158,11;--sc-blob:#fbbf24;--sc-num:#fcd34d;--sc-line:#f59e0b}
+html[data-theme="dark"] .ka-school-summary-card.is-service{--sc-rgb:239,68,68;--sc-blob:#f87171;--sc-num:#fca5a5;--sc-line:#ef4444}
+
+/* Cam yüzey + ince cam çerçeve */
+html[data-theme="dark"] .ka-school-summary-card,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card{
+  background:rgba(255,255,255,.055)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.8)!important;
+  backdrop-filter:blur(24px) saturate(1.8)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:0 8px 32px rgba(0,0,0,.4),0 1px 0 rgba(255,255,255,.08) inset,0 -1px 0 rgba(0,0,0,.2) inset!important;
+  color:var(--ka-text)!important;
+}
+/* Kartın kendi accent blob'u (içerik üstünde değil, altında) */
+html[data-theme="dark"] .ka-school-summary-card::before{
+  content:"";position:absolute;z-index:0;top:-30px;right:-20px;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,var(--sc-blob),transparent 70%);
+  filter:blur(40px);opacity:.55;pointer-events:none;
+}
+/* Alt accent çizgisi */
+html[data-theme="dark"] .ka-school-summary-card::after{
+  content:""!important;display:block!important;position:absolute!important;z-index:1;
+  left:0!important;right:0!important;bottom:0!important;top:auto!important;width:auto!important;height:2px!important;
+  border-radius:0!important;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--sc-line),transparent)!important;
+}
+/* İçerik blob'un üstünde */
+html[data-theme="dark"] .ka-school-summary-card>small,
+html[data-theme="dark"] .ka-school-summary-card>b,
+html[data-theme="dark"] .ka-school-summary-card>.ka-school-summary-meta{position:relative;z-index:1}
+
+/* İkon kutusu, sayı ve metinler */
+html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-icon,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card .ka-school-summary-icon{
+  background:rgba(var(--sc-rgb),.22)!important;
+  border-color:rgba(var(--sc-rgb),.35)!important;
+  box-shadow:0 0 18px rgba(var(--sc-rgb),.22)!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] .ka-school-summary-card>small,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card>small{color:rgba(255,255,255,.62)!important}
+html[data-theme="dark"] .ka-school-summary-card>b,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card>b{
+  color:var(--sc-num)!important;
+  text-shadow:0 0 30px rgba(var(--sc-rgb),.5);
+}
+html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card .ka-school-summary-meta{color:rgba(255,255,255,.55)!important}
+html[data-theme="dark"] .ka-school-summary-card .ka-school-summary-meta *,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card .ka-school-summary-meta *{color:inherit!important}
+
+@media(hover:hover){
+  html[data-theme="dark"] .ka-school-summary-card:hover{transform:translateY(-3px) scale(1.015)}
+  html[data-theme="dark"] .ka-school-summary-card:hover,
+html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card:hover{border-color:rgba(var(--sc-rgb),.45)!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-theme="dark"]::before,
+  html[data-theme="dark"]::after,
+  html[data-theme="dark"] body::before{animation:none}
+  html[data-theme="dark"] .ka-school-summary-card:hover{transform:none}
 }
