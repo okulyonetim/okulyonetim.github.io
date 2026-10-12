@@ -11010,28 +11010,17 @@ html #v2ModuleRoot .ka-home .kh-holiday-status .kh-holiday-status-days{font-size
 html #v2ModuleRoot .ka-home .kh-holiday-status small{margin-top:4px;font-size:11px;line-height:1.4;color:var(--gl-sub)!important}
 
 /* haftalık nöbet programı: telefonda yatay kaydırmalı gün kartları, geniş ekranda 5 sütun */
-html #v2ModuleRoot .ka-home .kh-section[data-home-section="week-duty"]>.kh-card{
-  display:flex;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 2px 2px;
-  background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0;
-}
-html #v2ModuleRoot .ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}
-html #v2ModuleRoot .ka-home .kh-section[data-home-section="week-duty"]>.kh-card::before,
-html #v2ModuleRoot .ka-home .kh-section[data-home-section="week-duty"]>.kh-card::after{display:none}
-html #v2ModuleRoot .ka-home .kh-weekday{
-  position:relative;overflow:hidden;flex:0 0 min(80%,300px);scroll-snap-align:start;min-width:0;padding:6px 0 4px;border-radius:20px;
-  background:var(--gl-bg);border:1px solid var(--gl-edge)!important;box-shadow:var(--gl-shadow);-webkit-backdrop-filter:var(--gl-blur);backdrop-filter:var(--gl-blur);
-}
-html #v2ModuleRoot .ka-home .kh-weekday.today{border-color:rgba(var(--ac-rgb),.50)!important;background:linear-gradient(180deg,rgba(var(--ac-rgb),.14),var(--gl-bg) 70%)}
+/* haftalık nöbet — tek cam kart, günler alt alta (yatay kaydırma yok) */
+html #v2ModuleRoot .ka-home .kh-section[data-home-section="week-duty"]>.kh-card{display:flex;flex-direction:column}
+html #v2ModuleRoot .ka-home .kh-weekday{position:relative;min-width:0;padding:4px 0 2px;background:transparent}
+html #v2ModuleRoot .ka-home .kh-weekday+.kh-weekday{border-top:1px solid var(--gl-sep)!important}
+html #v2ModuleRoot .ka-home .kh-weekday.today{background:linear-gradient(180deg,rgba(var(--ac-rgb),.14),rgba(var(--ac-rgb),.03))}
 html #v2ModuleRoot .ka-home .kh-weekday-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px 8px;font-size:11px;font-weight:900;letter-spacing:.08em;color:var(--gl-fg)}
 html #v2ModuleRoot .ka-home .kh-weekday-head>span:first-child{color:var(--gl-sub)!important}
 html #v2ModuleRoot .ka-home .kh-weekday.today .kh-weekday-head>span:first-child{color:var(--ac-ink)!important}
 html #v2ModuleRoot .ka-home .kh-mini{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;min-height:44px;padding:7px 14px;border-top:1px solid var(--gl-sep)!important;font-size:12.5px;font-weight:700;color:var(--gl-fg)}
 html #v2ModuleRoot .ka-home .kh-mini.is-me{background:rgba(var(--ac-rgb),.10);box-shadow:inset 3px 0 0 var(--ac)}
 html #v2ModuleRoot .ka-home .kh-mini>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--gl-fg)!important}
-@media(min-width:700px){
-  html #v2ModuleRoot .ka-home .kh-section[data-home-section="week-duty"]>.kh-card{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:visible;padding:0}
-  html #v2ModuleRoot .ka-home .kh-weekday{flex:none}
-}
 
 /* takvim */
 html #v2ModuleRoot .ka-home .kh-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;padding:12px}
