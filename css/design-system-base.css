@@ -215,7 +215,11 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-school-summary-card.is-student{border-color:rgba(16,185,129,.25);box-shadow:0 4px 20px rgba(16,185,129,.12),0 1px 0 rgba(255,255,255,.9) inset}
 .ka-school-summary-card.is-class{border-color:rgba(245,158,11,.28);box-shadow:0 4px 20px rgba(245,158,11,.14),0 1px 0 rgba(255,255,255,.9) inset}
 .ka-school-summary-card.is-service{border-color:rgba(239,68,68,.25);box-shadow:0 4px 20px rgba(239,68,68,.12),0 1px 0 rgba(255,255,255,.9) inset}
-.ka-school-summary-icon{position:relative;z-index:1;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--ka-icon-surface);color:var(--ka-icon-text);border:1px solid var(--ka-icon-border);font-size:21px;margin-bottom:7px;box-shadow:none}
+.ka-school-summary-icon{position:relative;z-index:1;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.45);color:inherit;border:1px solid rgba(255,255,255,.6);font-size:21px;margin-bottom:7px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.ka-school-summary-card.is-teacher .ka-school-summary-icon{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.22)}
+.ka-school-summary-card.is-student .ka-school-summary-icon{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.22)}
+.ka-school-summary-card.is-class .ka-school-summary-icon{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.26)}
+.ka-school-summary-card.is-service .ka-school-summary-icon{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.22)}
 .ka-school-summary-card>small{font-size:10px;letter-spacing:.055em;color:var(--ka-text-muted);font-weight:850}
 .ka-school-summary-card>b{font-size:30px;line-height:1.02;margin:4px 0 6px;color:var(--ka-text);font-weight:900}
 .ka-school-summary-meta{width:100%;min-height:20px;color:var(--ka-text-muted);font-size:9px;display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:wrap}
@@ -230,7 +234,7 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-school-stage>div{display:flex;justify-content:center;gap:4px;font-size:8px;font-weight:800;white-space:nowrap}
 .ka-school-unassigned{grid-column:1/-1;margin-top:4px;color:var(--ka-text-muted);font-size:8px}
 /* Dark mode */
-[data-theme="dark"] .ka-school-summary-grid{background:linear-gradient(135deg,rgba(30,58,138,.6) 0%,rgba(6,78,59,.6) 50%,rgba(120,53,15,.6) 100%)}
+[data-theme="dark"] .ka-school-summary-grid{background:linear-gradient(135deg,rgba(30,58,138,.3) 0%,rgba(6,78,59,.3) 50%,rgba(120,53,15,.3) 100%)}
 [data-theme="dark"] .ka-school-summary-card{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.1);box-shadow:0 8px 28px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.07) inset;color:var(--ka-text)}
 [data-theme="dark"] .ka-school-summary-card.is-teacher{border-color:rgba(96,165,250,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
 [data-theme="dark"] .ka-school-summary-card.is-student{border-color:rgba(52,211,153,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
@@ -240,6 +244,11 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 [data-theme="dark"] .ka-school-summary-card.is-student .ka-school-summary-meta{border-top-color:rgba(255,255,255,.1)}
 [data-theme="dark"] .ka-school-stage+.ka-school-stage{border-left-color:rgba(255,255,255,.1)}
 [data-theme="dark"] .ka-school-stage-icon{background:rgba(255,255,255,.1)}
+[data-theme="dark"] .ka-school-summary-icon{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
+[data-theme="dark"] .ka-school-summary-card.is-teacher .ka-school-summary-icon{background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.28)}
+[data-theme="dark"] .ka-school-summary-card.is-student .ka-school-summary-icon{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.28)}
+[data-theme="dark"] .ka-school-summary-card.is-class .ka-school-summary-icon{background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.28)}
+[data-theme="dark"] .ka-school-summary-card.is-service .ka-school-summary-icon{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.28)}
 @media(max-width:390px){.ka-school-summary-grid{gap:7px;padding:8px}.ka-school-summary-card{min-height:144px;padding:12px 7px 9px;border-radius:18px}.ka-school-summary-icon{width:39px;height:39px;border-radius:12px;font-size:19px;margin-bottom:6px}.ka-school-summary-card>b{font-size:27px}.ka-school-summary-meta{font-size:8px}.ka-school-stage>strong{font-size:16px}}
 
 /* ===== DASHBOARD REFERENCE SURFACES ===== */
