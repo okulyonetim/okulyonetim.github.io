@@ -26,6 +26,7 @@ Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/
 | Kart/cam yüzey opaklığı, kenar, bulanıklık | `--gl-bg`, `--gl-field`, `--gl-edge`, `--gl-sep`, `--gl-blur`, `--gl-shadow` (açık + koyu palet) |
 | **Pencere / alt sayfa / menü başlığı** (üst şerit: başlık, açıklama, × düğmesi) — boşluk, alt çizgi, yazı boyutu/rengi, kapat düğmesi | **PENCERE** bölümü: `--ka-sheet-head-*`, `--ka-sheet-close-*` (aşağıdaki tabloya bakın) |
 | **Kaydırırken üstte kalan şeritler** (yapışkan araç çubuğu, alt kaydet çubuğu, tablo başlığı / ilk sütun) — zemin | `--ka-sticky-bg`, `--ka-sticky-cell-bg` (bkz. *Yapışkan şeritler*) |
+| **Ana sayfa · Haftanın Nöbet Programı** — her günün yazı rengi, bölüm zemini, sol çubuğu | `--ka-wd-1` … `--ka-wd-5` ve `--ka-wd-bg-a*`, `--ka-wd-bar-w`, `--ka-wd-ink-mix` (bkz. *Haftalık nöbet günleri*) |
 | Üst başlık / açılır pencere yüzeyi | `--hd-*`, `--pp-*` |
 | Sayfa zemini, metin, kenarlık | `--ka-app-bg`, `--ka-text`, `--ka-text-muted`, `--ka-border` |
 | Tüm yazıları büyüt/küçült, yoğunluğu değiştir, gölgeyi kapat | `--ka-font-scale`, `--ka-density`, `--ka-shadow-a` (bkz. *Genel düğmeler*) |
@@ -105,6 +106,20 @@ Kaydırırken içeriğin üstünde kalan her şeridin (öğretmen profili araç 
 | `--ka-sticky-cell-bg` | Yapışkan tablo başlığı, ilk sütun ve sekme şeridinin opak, hafif tonlu zemini |
 
 Yeni bir `position:sticky` şerit yazarsanız seçicisini dosya sonundaki *YAPIŞKAN ŞERİTLER* kabuğuna ekleyin; ayrıca `background` yazmayın. Bilerek cam (blur) bırakılan şeritler — uygulama üst başlığı, çalışma alanı başlıkları ve kaydet çubukları — kabuğun dışındadır; yeni bir cam şerit eklenirse `tests/theme-center-contract.test.js` içindeki istisna listesine yazılır (test, kabuğa da istisnaya da girmeyen sticky şeridi reddeder).
+
+### Haftalık nöbet günleri (`--ka-wd-*`)
+
+Ana sayfadaki *Haftanın Nöbet Programı* kartında her gün kendi renginde görünür: gün adı yazısı, gün bölümünün zemini (üstten alta sönen ton) ve soldaki renk çubuğu. Bugünün bölümü aynı renkte ama daha koyu tonla öne çıkar; ayrıca BUGÜN etiketi durur. Gün sırası pazartesiden cumaya sabittir.
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-wd-1` … `--ka-wd-5` | Pazartesi … Cuma rengi — RGB üçlüsü; KATEGORİ PALETİ'nden (`--c-*`) birini yazın (varsayılan: indigo, amber, rose, cyan, violet) |
+| `--ka-wd-bg-a`, `--ka-wd-bg-a-end` | Gün bölümü zemin yoğunluğu: üstte / altta (0 = zemin yok) |
+| `--ka-wd-bg-a-today` | Bugünün bölümünün üst yoğunluğu |
+| `--ka-wd-bar-w` | Soldaki renk çubuğunun kalınlığı (0 = çubuksuz) |
+| `--ka-wd-ink-mix` | Gün adı yazısında gün renginin oranı; kalanı metin rengidir (düşürürseniz yazı koyulaşır/açılır, okunurluk artar) |
+
+Hepsi aynı rengi isterseniz beş değişkene aynı değeri yazmanız yeterlidir.
 
 ### Genel düğmeler — tek değer, tüm uygulama
 

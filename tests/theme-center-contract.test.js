@@ -287,3 +287,25 @@ for(const t of ['--ka-sticky-bg','--ka-sticky-cell-bg'])
     }
   assert(!stickySel.length,`position:sticky kullanan ama opak zemine bağlanmamış şerit: ${[...new Set(stickySel)].join(' | ')} (--ka-sticky-bg kabuğuna ekleyin; cam şerit ise istisna listesine).`);
 }
+
+// --- 12) Ana sayfa haftalık nöbet: her gün kendi rengiyle (--ka-wd-*) — gün adı yazısı, gün bölümü zemini ve sol çubuk tek merkezden
+for(const t of ['--ka-wd-1','--ka-wd-2','--ka-wd-3','--ka-wd-4','--ka-wd-5','--ka-wd-bg-a','--ka-wd-bg-a-end','--ka-wd-bg-a-today','--ka-wd-bar-w','--ka-wd-ink-mix'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde haftalık nöbet gün değişkeni eksik: ${t}`);
+{
+  const rules12=parse(masked);
+  const WD='[data-home-section="week-duty"] .kh-weekday';
+  // gün sırası pazartesiden cumaya: her gün kendi token'ına bağlı
+  for(let i=1;i<=5;i++){
+    const r=rules12.find(r=>r.sel.includes(WD+':nth-child('+i+')')&&new RegExp('--wd\\s*:\\s*var\\(--ka-wd-'+i+'\\)').test(r.body));
+    assert(r,`Haftalık nöbet ${i}. gün (--ka-wd-${i}) kabukta bağlı değil.`);
+  }
+  const paint=rules12.find(r=>r.sel.includes(WD)&&/--ka-wd-bg-a\)/.test(r.body));
+  assert(paint&&/--ka-wd-bar-w/.test(paint.body),'Haftalık nöbet gün bölümü --ka-wd-bg-a / --ka-wd-bar-w ile çizilmeli.');
+  const ink=rules12.find(r=>r.sel.includes(WD)&&/--ka-wd-ink-mix/.test(r.body));
+  assert(ink&&/\.kh-weekday-head/.test(ink.sel),'Gün adı yazısı --ka-wd-ink-mix ile (gün rengi + metin rengi karışımı) boyanmalı.');
+  const wdRules=rules12.filter(r=>r.sel.includes(WD)&&/--wd\b|--ka-wd-/.test(r.body)).map(r=>r.body).join(';');
+  assert(!/#[0-9a-fA-F]{3,8}\b|\d+px/.test(wdRules),'Haftalık nöbet gün kuralları sabit renk/ölçü içermemeli (--ka-wd-* kullanın).');
+  // eski tek renkli "bugün" kuralları geri gelmesin
+  for(const r of rules12.filter(r=>/\.kh-weekday\.today(?!.*:not\(#_x\))/.test(r.sel)&&!r.sel.includes('.kh-chip')))
+    assert(!/background|color\s*:/.test(r.body),`Eski tek renkli bugün kuralı: ${r.sel} (görünüm --ka-wd-* ile kabukta).`);
+}

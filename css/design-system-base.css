@@ -153,6 +153,18 @@
   --ka-sticky-bg:var(--pp-solid);                 /* opak zemin (şeritler) */
   --ka-sticky-cell-bg:color-mix(in srgb,var(--gl-fg) 6%,var(--ka-sticky-bg));  /* opak, hafif tonlu zemin (yapışkan tablo başlığı / ilk sütun / sekme şeridi) */
 
+  /* ── ANA SAYFA · HAFTALIK NÖBET — her gün kendi renginde: gün adı yazısı + gün bölümü zemini + soldaki çubuk ── */
+  --ka-wd-1:var(--c-indigo);                      /* Pazartesi — RGB üçlüsü (KATEGORİ PALETİ'nden bir renk seçin) */
+  --ka-wd-2:var(--c-amber);                       /* Salı */
+  --ka-wd-3:var(--c-rose);                        /* Çarşamba */
+  --ka-wd-4:var(--c-cyan);                        /* Perşembe */
+  --ka-wd-5:var(--c-violet);                      /* Cuma */
+  --ka-wd-bg-a:.12;                               /* gün bölümü zemini: üstte (0 = zemin yok) */
+  --ka-wd-bg-a-end:.03;                           /* gün bölümü zemini: altta */
+  --ka-wd-bg-a-today:.24;                         /* bugünün bölümü: üstte, daha belirgin */
+  --ka-wd-bar-w:var(--ka-sp-4);                   /* soldaki renk çubuğu kalınlığı (0 = çubuksuz) */
+  --ka-wd-ink-mix:54%;                            /* gün adı yazısı: gün renginin oranı (kalanı metin rengi; okunurluk için) */
+
   /* ── PENCERE BAŞLIĞI — her pencere / alt sayfa / menünün üst şeridi (başlık + kapat düğmesi) ── */
   --ka-sheet-head-bg:transparent;                 /* şerit zemini */
   --ka-sheet-head-stuck-bg:var(--ka-sticky-bg);   /* içerik altından kayan (yapışkan) şeridin zemini */
@@ -11043,10 +11055,8 @@ html #v2ModuleRoot .ka-home .kh-holiday-status small{margin-top:var(--ka-sp-4);f
 html #v2ModuleRoot .ka-home .kh-section[data-home-section="week-duty"]>.kh-card{display:flex;flex-direction:column}
 html #v2ModuleRoot .ka-home .kh-weekday{position:relative;min-width:0;padding:var(--ka-sp-4) 0 var(--ka-sp-2);background:transparent}
 html #v2ModuleRoot .ka-home .kh-weekday+.kh-weekday{border-top:var(--ka-border-w) solid var(--gl-sep)!important}
-html #v2ModuleRoot .ka-home .kh-weekday.today{background:linear-gradient(180deg,rgba(var(--ac-rgb),.14),rgba(var(--ac-rgb),.03))}
 html #v2ModuleRoot .ka-home .kh-weekday-head{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-8);padding:var(--ka-sp-10) var(--ka-sp-14) var(--ka-sp-8);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-08);color:var(--gl-fg)}
 html #v2ModuleRoot .ka-home .kh-weekday-head>span:first-child{color:var(--gl-sub)!important}
-html #v2ModuleRoot .ka-home .kh-weekday.today .kh-weekday-head>span:first-child{color:var(--ac-ink)!important}
 html #v2ModuleRoot .ka-home .kh-mini{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--ka-sp-8);align-items:center;min-height:calc(44px + var(--ka-row-grow));padding:var(--ka-sp-7) var(--ka-sp-14);border-top:var(--ka-border-w) solid var(--gl-sep)!important;font-size:var(--ka-fs-12-5);font-weight:var(--ka-fw-700);color:var(--gl-fg)}
 html #v2ModuleRoot .ka-home .kh-mini.is-me{background:rgba(var(--ac-rgb),.10);box-shadow:inset 3px 0 0 var(--ac)}
 html #v2ModuleRoot .ka-home .kh-mini>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--gl-fg)!important}
@@ -11923,3 +11933,13 @@ html[data-theme] :is(.ka-modal__header,.detay-head,.classic-modal-head,.ka-annou
    Hücre kuralındaki ikinci :not(#_x), genel `table th` kabuğunu (aynı özgüllük sınıfı) geçmek içindir ===== */
 html[data-theme] :is(.ka-teacher-profile-toolbar,.ka-class-detail-topbar,.ka-plan-week__footer,.ka-announcement-detail__footer,.sbe-table-toolbar,#transportBusEditor .sbe-table-tools,#transportBusEditor .sbe-footer,.ka-rubric-settings__header,.ka-rubric-settings__footer,.ka-report-customizer__head,.ka-report-customizer__footer):not(#_x){background-color:var(--ka-sticky-bg)!important}
 html[data-theme]:not(#_x) :is(.ka-layout-section-tabs,.ka-gradebook-student,.ka-gradebook-student-head,.ka-results-student,.ka-results-table th,.ka-gradebook-table thead th,.ka-duty-grid thead th,.ka-duty-grid tbody th,.ka-teacher-list-table th,.ka-attendance-personnel-table :is(.ka-att-no,.ka-att-name,.ka-att-role)):not(#_x){background-color:var(--ka-sticky-cell-bg)!important}
+
+/* ===== ANA SAYFA · HAFTALIK NÖBET GÜNLERİ — tek merkez: --ka-wd-* (TEMA MERKEZİ). Gün sırası (nth-child) pazartesiden cumaya sabittir ===== */
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:nth-child(1){--wd:var(--ka-wd-1)}
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:nth-child(2){--wd:var(--ka-wd-2)}
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:nth-child(3){--wd:var(--ka-wd-3)}
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:nth-child(4){--wd:var(--ka-wd-4)}
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:nth-child(5){--wd:var(--ka-wd-5)}
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:not(#_x){background:linear-gradient(180deg,rgba(var(--wd),var(--ka-wd-bg-a)),rgba(var(--wd),var(--ka-wd-bg-a-end)))!important;box-shadow:inset var(--ka-wd-bar-w) 0 0 rgb(var(--wd))!important}
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday.today:not(#_x){background:linear-gradient(180deg,rgba(var(--wd),var(--ka-wd-bg-a-today)),rgba(var(--wd),var(--ka-wd-bg-a-end)))!important}
+html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:not(#_x) .kh-weekday-head>span:first-child{color:color-mix(in srgb,rgb(var(--wd)) var(--ka-wd-ink-mix),var(--gl-fg))!important}
