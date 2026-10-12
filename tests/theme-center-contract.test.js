@@ -312,7 +312,7 @@ for(const t of ['--ka-wd-1','--ka-wd-2','--ka-wd-3','--ka-wd-4','--ka-wd-5','--k
 
 // --- 13) Alt menü (alt navigasyon): çubuk, sekmeler, seçili kapsül ve menü düğmesi tek ailede (--ka-nav-*)
 for(const t of ['--ka-nav-tab-1','--ka-nav-tab-2','--ka-nav-tab-3','--ka-nav-tab-4','--ka-nav-radius','--ka-nav-blur','--ka-nav-label-size','--ka-nav-pill-w','--ka-nav-pill-a','--ka-nav-pill-edge-a','--ka-nav-pill-glow-a','--ka-nav-ink-mix',
-  '--ka-nav-menu-start','--ka-nav-menu-end','--ka-nav-menu-icon','--ka-nav-bg','--ka-nav-text','--ka-nav-border','--ka-nav-shadow','--ka-nav-menu-ring'])
+  '--ka-nav-bg','--ka-nav-text','--ka-nav-border','--ka-nav-shadow','--ka-nav-menu-ring'])
   assert(core.includes(t+':'),`TEMA MERKEZİ'nde alt menü değişkeni eksik: ${t}`);
 {
   const rules13=parse(masked);
@@ -325,8 +325,34 @@ for(const t of ['--ka-nav-tab-1','--ka-nav-tab-2','--ka-nav-tab-3','--ka-nav-tab
   assert(navRules.find(r=>/\.ka-bottom-item\s*\{?$|\.ka-bottom-item$/.test(r.sel.trim())&&/--bn\s*:\s*var\(--ka-nav-tab-1\)/.test(r.body)),'Alt menü ilk sekmesi (Ana Sayfa) --ka-nav-tab-1 rengine bağlı olmalı.');
   const active=navRules.find(r=>/\.ka-bottom-icon$/.test(r.sel.split(',').pop().trim())&&/--ka-nav-pill-a/.test(r.body));
   assert(active&&/--ka-nav-pill-edge-a/.test(active.body)&&/--ka-nav-pill-glow-a/.test(active.body),'Seçili sekme kapsülü --ka-nav-pill-* ile çizilmeli.');
-  const orb=navRules.find(r=>/\.ka-bottom-menu-icon$/.test(r.sel.trim())&&/--ka-nav-menu-start/.test(r.body));
-  assert(orb&&/--ka-nav-menu-end/.test(orb.body)&&/--ka-nav-menu-ring/.test(orb.body)&&/--ka-nav-menu-icon/.test(orb.body),'Menü düğmesi --ka-nav-menu-* ile çizilmeli.');
+  const orb=navRules.find(r=>/\.ka-bottom-menu-icon$/.test(r.sel.trim())&&/--ka-btn-primary-bg/.test(r.body));
+  assert(orb&&/--ka-btn-primary-ink/.test(orb.body)&&/--ka-btn-primary-edge/.test(orb.body)&&/--ka-btn-primary-shadow/.test(orb.body)&&/--ka-nav-menu-ring/.test(orb.body),'Menü düğmesi birincil düğme malzemesiyle (--ka-btn-primary-*) ve --ka-nav-menu-ring halkasıyla çizilmeli.');
   assert(!navRules.some(r=>/#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d/.test(r.body)),'Alt menü kuralları sabit renk içermemeli (--ka-nav-* kullanın).');
-  assert(!/--nv-(bg|edge|shadow)\b|--ka-nav-active-(bg|text)\b/.test(masked),'Eski alt menü değişkenleri (--nv-bg/-edge/-shadow, --ka-nav-active-*) geri gelmesin.');
+  assert(!/--nv-(bg|edge|shadow)\b|--ka-nav-active-(bg|text)\b|--ka-nav-menu-(start|end|icon)\b|--t-accent-pale\b/.test(masked),'Eski alt menü değişkenleri (--nv-*, --ka-nav-active-*, --ka-nav-menu-start/-end/-icon, --t-accent-pale) geri gelmesin.');
+}
+
+// --- 14) Birincil düğme (altın cam): uygulamadaki her sarı "ana eylem" yüzeyi tek malzemeden (--ka-btn-primary-*) — zemin, yazı, çizgi, gölge, bulanıklık, basılı / pasif / odak
+for(const t of ['--ka-btn-primary-blur','--ka-btn-primary-sat','--ka-btn-primary-smoke-rgb','--ka-btn-primary-hover-boost','--ka-btn-primary-press-scale','--ka-btn-primary-press-dim','--ka-btn-primary-disabled-a','--ka-btn-primary-disabled-sat','--ka-btn-primary-filter','--ka-btn-primary-bg','--ka-btn-primary-bg-hover',
+  '--ka-btn-primary-gloss-a','--ka-btn-primary-tint-hi-a','--ka-btn-primary-tint-lo-a','--ka-btn-primary-smoke-a','--ka-btn-primary-ink','--ka-btn-primary-ink-shadow','--ka-btn-primary-edge','--ka-btn-primary-shadow','--ka-btn-primary-ring'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde birincil düğme değişkeni eksik: ${t}`);
+{
+  const rules14=parse(masked);
+  const mat=rules14.find(r=>/^html\[data-theme\]\s+:is\(/.test(r.sel.trim())&&/background\s*:\s*var\(--ka-btn-primary-bg\)/.test(r.body));
+  assert(mat,'Birincil düğme (altın cam) grup kuralı bulunamadı.');
+  for(const prop of [/color\s*:\s*var\(--ka-btn-primary-ink\)/,/border\s*:[^;]*var\(--ka-btn-primary-edge\)/,/box-shadow\s*:\s*var\(--ka-btn-primary-shadow\)/,/backdrop-filter\s*:\s*var\(--ka-btn-primary-filter\)/,/text-shadow\s*:\s*var\(--ka-btn-primary-ink-shadow\)/])
+    assert(prop.test(mat.body),`Birincil düğme kuralı eksik bildirim: ${prop}`);
+  assert(!/#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d|\d+px/.test(mat.body),'Birincil düğme kuralı sabit renk/ölçü içermemeli (--ka-btn-primary-* kullanın).');
+  // her sarı ana eylem düğmesi listede olmalı (yeni sarı düğme: seçicisini listeye ekleyin; sayfa CSS'inde sarı zemin yazmayın)
+  for(const m of ['.btn:not(.ka-btn--secondary)','.ka-btn:not(.ka-btn--secondary)','button.ka-primary','.ka-primary-btn','.kh-backtop','.ogm-add','.dv3btn.primary','.ka-class-add','.ka-class-quick-actions button:first-child','[data-transport-add-student]','.ka-guidance-edit','.ka-cizelge-edit','[data-add-k]','.primary','.ka-menu-edit-toggle.is-active','.ka-attendance-status.is-var.is-selected','.ka-cizelge-action__icon'])
+    assert(mat.sel.includes(m),`Birincil düğme (altın cam) listesinde eksik: ${m}`);
+  // basılı / pasif / odak / üzerine gelme hâlleri aynı listeden ve tokenlardan
+  const head=mat.sel.trim().slice(0,mat.sel.trim().lastIndexOf('):not(#_x):not(#_y)')+1);
+  const state=(suffix,re,msg)=>{const r=rules14.find(r=>r.sel.trim().startsWith(head)&&r.sel.trim().endsWith(suffix));assert(r&&re.test(r.body),msg)};
+  state(':hover:not(:disabled)',/--ka-btn-primary-bg-hover/,'Birincil düğme üzerine gelme hâli --ka-btn-primary-bg-hover ile çizilmeli.');
+  state(':active:not(:disabled)',/--ka-btn-primary-press-scale/,'Birincil düğme basılı hâli --ka-btn-primary-press-scale / -press-dim ile çizilmeli.');
+  state(':is(:disabled,[aria-disabled="true"],.is-disabled)',/--ka-btn-primary-disabled-a/,'Birincil düğme pasif hâli --ka-btn-primary-disabled-a ile çizilmeli.');
+  state(':focus-visible',/--ka-btn-primary-ring/,'Birincil düğme odak halkası --ka-btn-primary-ring ile çizilmeli.');
+  // sayfa kurallarında düz (opak) sarı gradyan geri gelmesin; tek istisna: bildirim sayacı rozeti
+  const solid=rules14.filter(r=>/rgb\(var\(--t-gold-(?:hi|lo|hover-hi|hover-lo)-rgb\)\)/.test(r.body)&&!/ka-notification-popover__count/.test(r.sel));
+  assert(!solid.length,`Opak sarı düğme gradyanı geri geldi: ${solid.map(r=>r.sel.trim().split('\n')[0].slice(0,90)).join(' | ')} (birincil düğme grup kuralına ekleyin).`);
 }

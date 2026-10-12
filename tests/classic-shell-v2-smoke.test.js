@@ -129,7 +129,7 @@ assert(sw.includes("return clients.openWindow?clients.openWindow(hedef):null;}))
 
 for(const selector of ['.ka-bottom-nav','.ka-bottom-menu-icon','.ka-menu-layer','.ka-menu-grid','.ka-profile-page','.ka-search-page','.ka-quick-note','.ka-home-live','.ka-live-weather']) assert(design.includes(selector),`Merkezi design system selectorü eksik: ${selector}`);
 for(const selector of ['.ka-school-meta','.ka-school-meta-label','.ka-school-meta-sep']) assert(design.includes(selector),`Mobil header referans selectorü eksik: ${selector}`);
-for(const token of ['--ka-nav-menu-start','--ka-nav-menu-end','--ka-nav-menu-icon','--ka-nav-menu-ring']) assert(design.includes(token),`Merkezi alt menü tokenı eksik: ${token}`);
+for(const token of ['--ka-nav-menu-ring','--ka-btn-primary-bg','--ka-btn-primary-ink']) assert(design.includes(token),`Merkezi alt menü tokenı eksik: ${token}`);
 for(const group of ['people','exams','programs','communication','calendar','transport','documents','management','settings']) assert(design.includes(`[data-ka-menu-group="${group}"]`),`Klasik Menü renk rolü eksik: ${group}`);
 assert(/grid-template-columns\s*:\s*repeat\(5\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Alt navigasyon beş eşit bölümlü olmalı.');
 assert(/grid-template-columns\s*:\s*repeat\(2\s*,\s*minmax\(0\s*,\s*1fr\)\)/.test(design),'Menü/profil mobil kartları iki sütun sözleşmesini taşımalı.');

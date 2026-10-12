@@ -20,7 +20,8 @@ Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/
 
 | İstek | Değiştirilecek yer |
 |---|---|
-| Marka sarısını başka renk yap | **MARKA PALETİ** bölümü: `--t-accent-rgb` (ana renk) + aynı bölümdeki türevler `--t-accent-deep`, `--t-accent-bright`, `--t-on-accent`, `--t-gold-hi-rgb`, `--t-gold-lo-rgb`, `--t-gold-hover-hi-rgb`, `--t-gold-hover-lo-rgb`, `--t-on-accent-ink`, `--t-accent-dim`; açık palette `--t-tint-rgb`, `--t-accent-text`, `--t-accent-mid`, `--t-accent-ink`, `--t-accent-strong`, `--t-accent-pale`; koyu palette aynı adlar + `--t-accent-shade`. Hepsi `TEMA MERKEZİ` içinde, yan yana. |
+| Marka sarısını başka renk yap | **MARKA PALETİ** bölümü: `--t-accent-rgb` (ana renk) + aynı bölümdeki türevler `--t-accent-deep`, `--t-accent-bright`, `--t-on-accent`, `--t-gold-hi-rgb`, `--t-gold-lo-rgb`, `--t-gold-hover-hi-rgb`, `--t-gold-hover-lo-rgb`, `--t-on-accent-ink`, `--t-accent-dim`; açık palette `--t-tint-rgb`, `--t-accent-text`, `--t-accent-mid`, `--t-accent-ink`, `--t-accent-strong`; koyu palette aynı adlar + `--t-accent-shade`. Hepsi `TEMA MERKEZİ` içinde, yan yana. `--t-gold-*` aynı zamanda sarı düğmelerin cam rengidir. |
+| **Sarı ana eylem düğmeleri** (+ Öğretmen, Şimdi Senkronize Et, Yeni Plan Tanımı, ↑ düğmesi, alt menü düğmesi …) — cam, bulanıklık, kenar, yazı rengi, gölge, hover/basılı/pasif/odak | **BİRİNCİL DÜĞME (ALTIN CAM)** bölümü: `--ka-btn-primary-*` (aşağıdaki tabloya bakın) |
 | **Her sayfanın başlık kartı** (geri düğmesinin altındaki başlık + açıklama + rozet) — zemin, çerçeve, köşe, gölge, yazı boyutu/rengi, ikon kutusu | **SAYFA BAŞLIĞI** bölümü: `--ka-ph-*` (aşağıdaki tabloya bakın) |
 | Ana sayfa bölümü / menü grubu / rozet renkleri | `--c-*` (KATEGORİ PALETİ, RGB üçlüsü) |
 | Kart/cam yüzey opaklığı, kenar, bulanıklık | `--gl-bg`, `--gl-field`, `--gl-edge`, `--gl-sep`, `--gl-blur`, `--gl-shadow` (açık + koyu palet) |
@@ -135,9 +136,30 @@ Alt navigasyon çubuğu: yuvarlak üst köşeli cam çubuk, kutusuz çizgi ikonl
 | `--ka-nav-label-size` | Sekme yazısı boyutu |
 | `--ka-nav-pill-w`, `--ka-nav-pill-a`, `--ka-nav-pill-edge-a`, `--ka-nav-pill-glow-a` | Seçili kapsülün genişliği, zemin / çizgi / ışıma yoğunluğu (0 = yok) |
 | `--ka-nav-ink-mix` | Seçili sekmenin yazı/ikon rengi: sekme renginin oranı, kalanı metin rengi (okunurluk için) |
-| `--ka-nav-menu-start`, `--ka-nav-menu-end`, `--ka-nav-menu-icon`, `--ka-nav-menu-ring` | Ortadaki menü düğmesinin gradyanı, ikonu ve çevresindeki halka |
+| `--ka-nav-menu-ring` | Ortadaki menü düğmesinin çevresindeki halka. Düğmenin kendisi (cam, ikon, kenar, gölge) birincil düğme malzemesini kullanır → aşağıdaki bölüm |
 
 Çubuğun yüksekliği `--ka-bottom-nav-height` ile ayarlanır; sayfa alt boşlukları bu değişkenden hesaplanır.
+
+### Birincil düğme — Altın Cam (`--ka-btn-primary-*`)
+
+Uygulamadaki tüm sarı ana eylem düğmeleri tek malzemeyi paylaşır: üstte beyaz parlama, altında altın tonlu yarı saydam cam, arkasını bulandıran `backdrop-filter`, ince saydam kenar, altın ışıma ve içte parlak çizgi. Açık temada kahverengi, koyu temada krem yazı kullanılır. Malzeme `TEMA MERKEZİ` içindeki **BİRİNCİL DÜĞME (ALTIN CAM)** bölümünde ve açık/koyu palet bloklarında durur; düğmelere tek tek dokunmak gerekmez.
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-btn-primary-blur`, `--ka-btn-primary-sat` | Cam bulanıklığı (`--ka-blur-k` ile ölçeklenir; 0 = bulanıksız) ve arkadaki rengin doygunluğu |
+| `--ka-btn-primary-gloss-a` | Üstteki beyaz parlamanın yoğunluğu |
+| `--ka-btn-primary-tint-hi-a`, `--ka-btn-primary-tint-lo-a` | Altın tonun iki ucunun yoğunluğu (renkler `--t-gold-hi-rgb` / `--t-gold-lo-rgb`) |
+| `--ka-btn-primary-smoke-rgb`, `--ka-btn-primary-smoke-a` | Camın altındaki koyu "duman" katmanı: rengi ve yoğunluğu (açık temada 0; koyu temada yazı okunurluğunu sağlar) |
+| `--ka-btn-primary-ink`, `--ka-btn-primary-ink-shadow` | Yazı/ikon rengi ve yazı gölgesi |
+| `--ka-btn-primary-edge` | Saydam kenar çizgisinin rengi |
+| `--ka-btn-primary-shadow` | Dış ışıma + iç parlak çizgi |
+| `--ka-btn-primary-hover-boost` | Üzerine gelince tona eklenen yoğunluk |
+| `--ka-btn-primary-press-scale`, `--ka-btn-primary-press-dim` | Basılınca küçülme ve kararma (1 = etkisiz) |
+| `--ka-btn-primary-disabled-a`, `--ka-btn-primary-disabled-sat` | Pasif düğmenin opaklığı ve canlılığı |
+| `--ka-btn-primary-ring` | Klavye odak halkasının rengi |
+| `--ka-btn-primary-bg`, `--ka-btn-primary-bg-hover`, `--ka-btn-primary-filter` | Yukarıdakilerden birleşen hazır katmanlar (çoğunlukla elle değiştirilmez) |
+
+Yeni bir sarı düğme eklerken kendi `background`/`box-shadow` kuralını **yazmayın**; seçicisini dosya sonundaki "BİRİNCİL DÜĞME — ALTIN CAM" grup kuralının listesine ekleyin (normal, hover, basılı, pasif ve odak durumları aynı listeden gelir). Sözleşme testi, bu bölümün dışında düz sarı (`rgb(var(--t-gold-*-rgb))`) zemin yazılmasına izin vermez. Seçili sekme/hap dolguları, bildirim sayacı rozeti, ikon-avatar kutuları ve ilerleme çubukları bilerek düz sarı kalır.
 
 ### Genel düğmeler — tek değer, tüm uygulama
 
