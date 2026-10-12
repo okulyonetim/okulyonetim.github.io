@@ -45,8 +45,8 @@ Rapor/A4 baskı renkleri (`--ka-report-*`) kâğıt çıktısı olduğu için te
 | Form kutusu (input/select/textarea) | `--ka-field-radius`, `-sm` | `--ka-field-grow`, `--ka-field-h-md`, `--ka-field-px/py`, `--ka-field-border-w`, `--ka-field-ring`, `--ka-field-textarea-h` |
 | Arama / komut kutusu | `--ka-cmd-radius` | `--ka-cmd-h`, `--ka-cmd-bg`, `--ka-cmd-border`, `--ka-cmd-shadow`, `--ka-cmd-icon` |
 | Kart | `--ka-card-radius`, `-sm` (iç kutu), `-lg` | `--ka-card-pad`, `--ka-card-border-w`, `--ka-card-bg`, `--gl-*` (cam) |
-| Kapak (ana sayfa hero'su, detay sayfası kapağı) | `--ka-cover-radius`, `-sm`, `-lg` | `--ka-hero-bg`, `--ka-hero-border`, `--ka-hero-shadow`, `--ka-detail-hero-*` |
-| **Sayfa başlığı** (her sayfanın üst kartı) | `--ka-ph-radius` | `--ka-ph-*` (aşağıda) |
+| Kapak (ana sayfa hero'su) | `--ka-cover-radius`, `-sm`, `-lg` | `--ka-hero-bg`, `--ka-hero-border`, `--ka-hero-shadow` |
+| **Sayfa başlığı ve detay kapağı** (her sayfanın üst kartı) | `--ka-ph-radius` | `--ka-ph-*` (aşağıda) |
 | Pencere / alt sayfa | `--ka-sheet-radius`, `-lg` | `--ka-sheet-pad`, `--ka-shadow-modal`, `--ka-overlay` |
 | Rozet / etiket | `--ka-chip-radius`, `-sm` | `--ka-chip-h`, `--ka-chip-px`, `--ka-chip-weight` |
 | Sekme | `--ka-tab-radius` | `--ka-tab-h`, `--ka-tab-px`, `--ka-tab-weight` |
@@ -59,7 +59,7 @@ Rapor/A4 baskı renkleri (`--ka-report-*`) kâğıt çıktısı olduğu için te
 
 ### Sayfa başlığı (`--ka-ph-*`)
 
-Tüm modül sayfalarının başlık kartı (öğretmenler, öğrenciler, haberler, yemek, notlar, ayarlar… ~20 farklı yapı) **tek kabukla** çizilir; her değer `TEMA MERKEZİ > SAYFA BAŞLIĞI` bölümündedir.
+Tüm modül sayfalarının başlık kartı (öğretmenler, öğrenciler, haberler, yemek, notlar, ayarlar… ~20 farklı yapı) ve **detay sayfalarının kapakları** (sınıf, öğrenci, öğretmen profili, servis, profilim, arama, istatistik…) **tek kabukla** çizilir; her değer `TEMA MERKEZİ > SAYFA BAŞLIĞI` bölümündedir.
 
 | Değişken | Etkisi |
 |---|---|
@@ -67,6 +67,7 @@ Tüm modül sayfalarının başlık kartı (öğretmenler, öğrenciler, haberle
 | `--ka-ph-border-w`, `--ka-ph-border` | Çerçeve kalınlığı (0 = çerçevesiz) ve rengi |
 | `--ka-ph-radius`, `--ka-ph-shadow`, `--ka-ph-blur` | Köşe, gölge (`none` = düz), cam bulanıklığı |
 | `--ka-ph-pad-y`, `--ka-ph-pad-x`, `--ka-ph-gap`, `--ka-ph-min-h` | İç boşluk, öğeler arası boşluk, en az yükseklik (ör. `120px` = daha kapak gibi) |
+| `--ka-ph-bar-pad-y`, `--ka-ph-bar-pad-x`, `--ka-ph-bar-title-size` | Çubuk biçimli başlık (detay sayfalarının üstündeki geri / başlık / düzenle çubuğu) |
 | `--ka-ph-title`, `-size`, `-weight`, `-tracking`, `-lh` | Başlık yazısı |
 | `--ka-ph-sub`, `-size`, `-lh` | Açıklama yazısı |
 | `--ka-ph-kicker`, `-size`, `-tracking` | Başlık üstündeki küçük etiket |
