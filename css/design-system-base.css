@@ -478,23 +478,12 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-home .kh-outcomes-empty{padding:8px 0;text-align:left}
 .ka-home .kh-plan-button{width:100%;border:0;border-top:1px solid var(--ka-border);background:transparent;color:var(--ka-primary);padding:11px 12px;font-size:10.5px;font-weight:900;text-align:right;cursor:pointer}
 
-/* LEGACY DASHBOARD HERO — REFERENCE PORT */
-.ka-home .kh-hero{position:relative;overflow:hidden;border-radius:28px;padding:22px 18px 18px;color:var(--ka-hero-text);background:radial-gradient(circle at 88% 15%,color-mix(in srgb,var(--ka-card-bg) 95%,transparent) 0 6%,transparent 32%),linear-gradient(125deg,var(--ka-primary-soft) 0%,var(--ka-card-bg) 54%,color-mix(in srgb,var(--ka-warning) 8%,var(--ka-card-bg)) 100%);box-shadow:var(--ka-hero-shadow);border:1px solid var(--ka-hero-border);isolation:isolate}
-.ka-home .kh-hero:before{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:-88px;top:-100px;background:linear-gradient(135deg,color-mix(in srgb,var(--ka-primary) 28%,transparent),color-mix(in srgb,var(--ka-accent) 16%,transparent));filter:blur(2px)}
-.ka-home .kh-hero:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;left:-58px;bottom:-82px;background:linear-gradient(135deg,color-mix(in srgb,var(--ka-warning) 16%,transparent),color-mix(in srgb,var(--ka-primary) 12%,transparent));filter:blur(1px)}
-.ka-home .kh-hero>*{position:relative;z-index:1}
-.ka-home .kh-brand{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--ka-hero-kicker)}
-.ka-home .kh-greeting{font-size:27px;font-weight:900;line-height:1.12;margin:13px 0 5px;letter-spacing:-.02em;color:var(--ka-hero-text)}
-.ka-home .kh-date{font-size:11.5px;font-weight:700;color:var(--ka-hero-muted)}
-.ka-home .kh-live-stack{display:grid;grid-template-columns:1fr;gap:9px;margin-top:16px}
+/* Karşılama kartı + hava durumu: dosya sonundaki "HERO — CAM" bölümünde tek yerde tanımlı. */
 .ka-home .kh-live-card{width:100%;min-height:82px;display:flex;align-items:center;gap:12px;padding:12px 13px;border:1px solid var(--ka-live-border);border-radius:20px;background:color-mix(in srgb,var(--ka-live-bg) 88%,transparent);color:var(--ka-live-text);box-shadow:var(--ka-shadow-sm);text-align:left;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .ka-home .kh-live-card:active{transform:scale(.995)}
-.ka-home .kh-live-icon{width:44px;height:44px;display:grid;place-items:center;flex:none;border-radius:15px;background:var(--ka-live-accent-soft);color:var(--ka-live-accent)}
-.ka-home .kh-live-icon svg{width:24px;height:24px}
-.ka-home .kh-live-main{min-width:0;flex:1;color:var(--ka-live-text)}
-.ka-home .kh-live-main b{display:block;font-size:20px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ka-live-text)}
-.ka-home .kh-live-main small{display:block;margin-top:4px;font-size:10.5px;font-weight:700;color:var(--ka-live-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media(max-width:370px){.ka-home .kh-greeting{font-size:24px}.ka-home .kh-live-card{min-height:74px}.ka-home .kh-live-icon{width:40px;height:40px}}
+
+
+@media(max-width:370px){.ka-home .kh-live-card{min-height:74px}}
 
 /* LEGACY DASHBOARD BACKTOP — REFERENCE PORT */
 .kh-backtop{position:fixed;right:14px;bottom:calc(var(--ka-bottom-nav-height) + 12px + var(--ka-safe-bottom));width:42px;height:42px;border:0;border-radius:14px;background:var(--ka-primary);color:var(--ka-text-inverse);box-shadow:var(--ka-shadow-md);font-size:20px;z-index:90;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity var(--ka-transition),transform var(--ka-transition)}
@@ -566,10 +555,12 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 @media (max-width:1023px){
   .ka-home{padding-left:max(12px,var(--ka-safe-left))!important;padding-right:max(12px,var(--ka-safe-right))!important;gap:20px!important}.ka-home .kh-section{gap:12px}
   .ka-home .kh-shell{width:100%!important;max-width:none!important;margin-left:auto!important;margin-right:auto!important}
-  .ka-home .kh-section,.ka-home .kh-dynamic,.ka-home .kh-news,.ka-home .kh-stats,.ka-home .kh-social,.ka-home .kh-quick,.ka-home .kh-hero{width:100%!important;max-width:none!important}
-  .ka-home .kh-live-stack{display:grid!important;grid-template-columns:1fr!important}
-  .ka-home #khBell{order:1}
-  .ka-home #khWeather{order:2}
+  .ka-home .kh-section,
+.ka-home .kh-dynamic,
+.ka-home .kh-news,
+.ka-home .kh-stats,
+.ka-home .kh-social,
+.ka-home .kh-quick{width:100%!important;max-width:none!important}
 }
 #khBell:not(.kh-bell-modern){opacity:0!important;pointer-events:none!important}
 #khBell.kh-bell-modern{
@@ -630,17 +621,22 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 @keyframes khWeatherFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(3deg)}}
 @keyframes khWeatherShimmer{0%{transform:translateX(-120%)}60%,100%{transform:translateX(140%)}}
 @keyframes khWave{0%,100%{transform:rotate(0)}15%{transform:rotate(18deg)}30%{transform:rotate(-10deg)}45%{transform:rotate(16deg)}60%{transform:rotate(-6deg)}75%{transform:rotate(8deg)}}
-.kh-icon-bell svg{transform-origin:50% 10%;animation:khBellSwing 1.25s ease-in-out infinite}.kh-icon-book svg,.kh-icon-coffee svg,.kh-icon-utensils svg,.kh-icon-home svg{animation:khIconFloat 1.45s ease-in-out infinite}.kh-icon-sun svg{animation:khHolidayGlow 1.8s ease-in-out infinite}.kh-bell-orb.is-live{animation:khIconOrb 1.7s ease-in-out infinite}.kh-bell-special-icon,.kh-bell-special-icon svg{animation:none!important;transition:none!important;transform:none!important}.kh-wave{display:inline-block;transform-origin:70% 70%;animation:khWave 1.35s ease-in-out 1 both}.kh-holiday-bell{grid-template-columns:56px 74px minmax(0,1fr)}.kh-holiday-days{display:grid;place-items:center;align-content:center;min-height:68px;border-radius:18px;background:var(--kb-soft);border:1px solid var(--kb-line);color:var(--kb-accent);text-align:center}.kh-holiday-days b{font-size:34px;line-height:.95;font-weight:950}.kh-holiday-days span{margin-top:4px;font-size:8px;font-weight:950;letter-spacing:.08em}.kh-holiday-countdown{color:var(--kb-accent)!important;font-size:13px!important;font-weight:950!important}.kh-holiday-message{font-style:italic}.kh-holiday-progress{height:8px;margin-top:9px;border-radius:999px;overflow:hidden;background:color-mix(in srgb,var(--kb-accent) 13%,var(--ka-card-bg));border:1px solid color-mix(in srgb,var(--kb-accent) 16%,var(--kb-line))}.kh-holiday-progress>i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--kb-accent),var(--kb-accent-2));transition:width .35s ease}.kh-holiday-progress-label{display:block!important;margin-top:4px!important;color:var(--kb-muted)!important;font-size:8px!important;font-weight:800!important}.kh-holiday-status{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;align-items:center;padding:16px 16px}.kh-holiday-status-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--ka-primary-soft);color:var(--ka-primary);animation:khIconOrb 1.8s ease-in-out infinite}.kh-holiday-status-icon svg{width:25px;height:25px;animation:khHolidayGlow 1.8s ease-in-out infinite}.kh-holiday-status strong,.kh-holiday-status b,.kh-holiday-status small{display:block}.kh-holiday-status b{margin-top:3px;color:var(--ka-primary);font-size:12px}.kh-holiday-status .kh-holiday-status-days{font-size:15px;font-weight:950}.kh-holiday-status small{margin-top:4px;color:var(--ka-text-muted);font-size:10px}
-@media (prefers-reduced-motion:reduce){.kh-bell-orb.is-live:after,.kh-bell-orb.is-live,.kh-bell-special-icon,.kh-bell-progress>i:after,.kh-bell-node.current .kh-bell-node-icon,.kh-icon-bell svg,.kh-icon-book svg,.kh-icon-coffee svg,.kh-icon-utensils svg,.kh-icon-home svg,.kh-icon-sun svg,.kh-weather-emoji,.kh-weather-card:after,.kh-wave,.kh-holiday-status-icon,.kh-holiday-status-icon svg{animation:none!important}}
+.kh-icon-bell svg{transform-origin:50% 10%;animation:khBellSwing 1.25s ease-in-out infinite}.kh-icon-book svg,.kh-icon-coffee svg,.kh-icon-utensils svg,.kh-icon-home svg{animation:khIconFloat 1.45s ease-in-out infinite}.kh-icon-sun svg{animation:khHolidayGlow 1.8s ease-in-out infinite}.kh-bell-orb.is-live{animation:khIconOrb 1.7s ease-in-out infinite}.kh-bell-special-icon,.kh-bell-special-icon svg{animation:none!important;transition:none!important;transform:none!important}.kh-holiday-bell{grid-template-columns:56px 74px minmax(0,1fr)}.kh-holiday-days{display:grid;place-items:center;align-content:center;min-height:68px;border-radius:18px;background:var(--kb-soft);border:1px solid var(--kb-line);color:var(--kb-accent);text-align:center}.kh-holiday-days b{font-size:34px;line-height:.95;font-weight:950}.kh-holiday-days span{margin-top:4px;font-size:8px;font-weight:950;letter-spacing:.08em}.kh-holiday-countdown{color:var(--kb-accent)!important;font-size:13px!important;font-weight:950!important}.kh-holiday-message{font-style:italic}.kh-holiday-progress{height:8px;margin-top:9px;border-radius:999px;overflow:hidden;background:color-mix(in srgb,var(--kb-accent) 13%,var(--ka-card-bg));border:1px solid color-mix(in srgb,var(--kb-accent) 16%,var(--kb-line))}.kh-holiday-progress>i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--kb-accent),var(--kb-accent-2));transition:width .35s ease}.kh-holiday-progress-label{display:block!important;margin-top:4px!important;color:var(--kb-muted)!important;font-size:8px!important;font-weight:800!important}.kh-holiday-status{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;align-items:center;padding:16px 16px}.kh-holiday-status-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--ka-primary-soft);color:var(--ka-primary);animation:khIconOrb 1.8s ease-in-out infinite}.kh-holiday-status-icon svg{width:25px;height:25px;animation:khHolidayGlow 1.8s ease-in-out infinite}.kh-holiday-status strong,.kh-holiday-status b,.kh-holiday-status small{display:block}.kh-holiday-status b{margin-top:3px;color:var(--ka-primary);font-size:12px}.kh-holiday-status .kh-holiday-status-days{font-size:15px;font-weight:950}.kh-holiday-status small{margin-top:4px;color:var(--ka-text-muted);font-size:10px}
+@media (prefers-reduced-motion:reduce){.kh-bell-orb.is-live:after,
+.kh-bell-orb.is-live,
+.kh-bell-special-icon,
+.kh-bell-progress>i:after,
+.kh-bell-node.current .kh-bell-node-icon,
+.kh-icon-bell svg,
+.kh-icon-book svg,
+.kh-icon-coffee svg,
+.kh-icon-utensils svg,
+.kh-icon-home svg,
+.kh-icon-sun svg,
+.kh-holiday-status-icon,
+.kh-holiday-status-icon svg{animation:none!important}}
 
-.ka-home .kh-weather-card{position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:11px;min-height:78px;padding:12px 14px;border-radius:20px;background:color-mix(in srgb,var(--ka-live-bg) 92%,transparent);border:1px solid var(--ka-live-border);box-shadow:var(--ka-shadow-sm);color:var(--ka-live-text);text-align:left}
-.ka-home .kh-weather-card .kh-live-icon{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,color-mix(in srgb,var(--ka-warning) 20%,var(--ka-card-bg)),color-mix(in srgb,var(--ka-primary) 10%,var(--ka-card-bg)));border:1px solid color-mix(in srgb,var(--ka-warning) 20%,var(--ka-border))}
-.ka-home .kh-weather-emoji{font-size:27px;line-height:1;display:inline-block;animation:none;transform:none}.ka-home .kh-weather-card:after{content:none;display:none}
-.ka-home .kh-weather-card .kh-live-main{min-width:0}.ka-home .kh-weather-card .kh-live-main b{display:block;font-size:18px;font-weight:900;color:var(--ka-text)}.ka-home .kh-weather-card .kh-live-main small{display:block;margin-top:3px;font-size:10px;font-weight:700;color:var(--ka-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ka-home .kh-weather-arrow{font-size:24px;font-weight:700;color:var(--ka-muted)}
-.ka-home .kh-live-stack{grid-template-columns:1fr!important}
-@media(min-width:760px){.ka-home .kh-live-stack{grid-template-columns:minmax(0,1.55fr) minmax(260px,.75fr)!important;align-items:stretch}.ka-home #khBell{grid-column:1}.ka-home #khWeather{grid-column:2;align-self:start}}
-@media(max-width:759px){.ka-home #khBell{order:1}.ka-home #khWeather{order:2}}
+
 
 /* ===== REFERENCE MOBILE LESSON + DUTY PROGRAMS =====
    Same canonical renderers; desktop keeps the table, mobile exposes card surfaces. */
@@ -1307,10 +1303,7 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 }
 .ka-home .kh-section{gap:7px!important}.ka-home .kh-section-head{padding:0 3px}.ka-home .kh-section-title{gap:7px;font-size:14.5px;letter-spacing:-.012em}.ka-home .kh-section-title svg{width:18px;height:18px}.ka-home .kh-more{font-size:9.5px;padding:4px 1px}.ka-home .kh-card{border-radius:17px;box-shadow:0 3px 12px color-mix(in srgb,var(--ka-text) 5%,transparent)}
 
-/* Karşılama + canlı ders + hava */
-.ka-home .kh-hero{padding:15px 14px 13px;border-radius:22px;box-shadow:0 5px 18px color-mix(in srgb,var(--ka-text) 7%,transparent)}
-.ka-home .kh-hero:before{width:160px;height:160px;right:-72px;top:-82px}.ka-home .kh-hero:after{width:112px;height:112px;left:-48px;bottom:-62px}
-.ka-home .kh-brand{font-size:8.5px;letter-spacing:.11em}.ka-home .kh-greeting{margin:7px 0 2px;font-size:22px;line-height:1.08;letter-spacing:-.025em}.ka-home .kh-date{font-size:10px}.ka-home .kh-live-stack{gap:8px!important;margin-top:12px}
+/* Canlı ders kartı (kompakt): */
 #khBell.kh-bell-modern{border-radius:17px!important;box-shadow:none!important}
 #khBell .kh-bell-timeline-v2{padding:10px 10px 9px}
 #khBell .kh-bell-timeline-head{grid-template-columns:38px minmax(0,1fr) auto;gap:8px}
@@ -1321,7 +1314,7 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 #khBell .kh-bell-countdown-ring{width:64px;height:64px}#khBell .kh-bell-countdown-ring>b{font-size:12.5px}#khBell .kh-bell-countdown-ring>small{font-size:6.5px}
 #khBell .kh-bell-step>i{width:28px;height:28px}#khBell .kh-bell-timeline::before{top:14px}#khBell .kh-bell-step>small,#khBell .kh-bell-step>span:not(.kh-bell-countdown-ring){font-size:6.5px}#khBell .kh-bell-step>b{font-size:8.2px}
 #khBell .kh-bell-progress-v2{margin-top:7px;gap:6px;font-size:7px}#khBell .kh-bell-progress-v2 i{height:5px}
-.ka-home .kh-weather-card{grid-template-columns:42px minmax(0,1fr) auto;gap:9px;min-height:62px;padding:9px 11px;border-radius:16px;box-shadow:none}.ka-home .kh-weather-card .kh-live-icon{width:42px;height:42px;border-radius:13px}.ka-home .kh-weather-emoji{font-size:23px}.ka-home .kh-weather-card .kh-live-main b{font-size:16px}.ka-home .kh-weather-card .kh-live-main small{margin-top:1px;font-size:8.8px}.ka-home .kh-weather-arrow{font-size:20px}
+
 
 /* Duyuru ve anketler: ana sayfada özet, ayrıntı kendi sayfasında */
 .ka-home .kh-dynamic{gap:7px}.ka-home .kh-announcement{border-radius:17px;box-shadow:0 3px 12px color-mix(in srgb,var(--ka-text) 5%,transparent)}.ka-home .kh-announcement-accent{height:3px}
@@ -1351,13 +1344,14 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 .ka-home .kh-section[data-home-section="week-duty"]>.kh-card{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:0;border:0;background:transparent;box-shadow:none;scrollbar-width:none}.ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex:0 0 min(78%,300px);scroll-snap-align:start;overflow:hidden;border:1px solid var(--ka-border);border-radius:15px;background:var(--ka-card-bg);box-shadow:0 2px 8px color-mix(in srgb,var(--ka-text) 4%,transparent)}.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:8px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:40px;padding:7px 10px}.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{font-size:9.5px}
 
 /* Koyu temada katman ayrımı; sabit açık renk yüzey üretme. */
-[data-theme="dark"] .ka-home .kh-hero,[data-theme="dark"] .ka-home .kh-announcement,[data-theme="dark"] .ka-home .kh-trial-live__card{box-shadow:0 5px 20px rgba(0,0,0,.26)}
+[data-theme="dark"] .ka-home .kh-announcement,
+[data-theme="dark"] .ka-home .kh-trial-live__card{box-shadow:0 5px 20px rgba(0,0,0,.26)}
 [data-theme="dark"] .ka-home .kh-card,
 [data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{box-shadow:0 3px 14px rgba(0,0,0,.20)}
 
 @media(max-width:390px){
   .ka-home{gap:11px!important;padding-left:max(8px,var(--ka-safe-left))!important;padding-right:max(8px,var(--ka-safe-right))!important}
-  .ka-home .kh-hero{padding:13px 11px 11px;border-radius:19px}.ka-home .kh-greeting{font-size:20px}.ka-home .kh-live-stack{margin-top:10px}
+  
   #khBell .kh-bell-timeline-v2{padding:9px 8px 8px}#khBell .kh-bell-timeline-head{grid-template-columns:34px minmax(0,1fr) auto;gap:6px}#khBell .kh-bell-timeline-current-icon{width:34px;height:34px}#khBell .kh-bell-timeline-copy strong{font-size:13.5px}#khBell .kh-bell-countdown-ring{width:60px;height:60px}#khBell .kh-bell-step>i{width:25px;height:25px}
   .ka-home .kh-announcement-head{grid-template-columns:34px minmax(0,1fr) auto;padding-inline:9px}.ka-home .kh-announcement-icon{width:34px;height:34px}.ka-home .kh-announcement-body{padding-inline:9px}.ka-home .kh-announcement-footer{padding-inline:9px}
   .ka-school-summary-grid{gap:6px}.ka-school-summary-card{min-height:104px;padding-inline:6px}.ka-school-summary-icon{width:31px;height:31px}.ka-school-summary-card>b{font-size:21px}.ka-school-stage>strong{font-size:12px}
@@ -1366,7 +1360,7 @@ button.ka-announcement-gallery__item{appearance:none;padding:0;border:1px solid 
 }
 
 @media(min-width:700px){
-  .ka-home{max-width:920px;gap:14px!important;padding-inline:16px!important}.ka-home .kh-hero{padding:18px}.ka-home .kh-greeting{font-size:25px}
+  .ka-home{max-width:920px;gap:14px!important;padding-inline:16px!important}
   .ka-school-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.ka-school-summary-card{min-height:112px}
   .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:min(46%,320px)}
 }
@@ -3347,31 +3341,8 @@ button.ka-primary,
   background:var(--ka-card-bg)!important;
   border-color:var(--ka-border)!important;
 }
-[data-theme="dark"] .ka-home .kh-hero{
-  color:var(--ka-hero-text)!important;
-  background:var(--ka-hero-bg)!important;
-  border-color:var(--ka-hero-border)!important;
-}
-[data-theme="dark"] .ka-home .kh-brand{
-  color:var(--ka-hero-kicker)!important;
-}
-[data-theme="dark"] .ka-home .kh-greeting{
-  color:var(--ka-hero-text)!important;
-}
-[data-theme="dark"] .ka-home .kh-date{
-  color:var(--ka-hero-muted)!important;
-}
-[data-theme="dark"] .ka-home .kh-weather-card{
-  background:var(--ka-live-bg)!important;
-  color:var(--ka-live-text)!important;
-  border-color:var(--ka-live-border)!important;
-}
-[data-theme="dark"] .ka-home .kh-weather-card *{
-  color:var(--ka-live-text);
-}
-[data-theme="dark"] .ka-home .kh-weather-card .kh-live-main small{
-  color:var(--ka-live-muted)!important;
-}
+
+
 [data-theme="dark"] .ka-home .kh-news{
   background:var(--ka-card-bg)!important;
   border-color:var(--ka-border)!important;
@@ -3475,7 +3446,6 @@ html[data-theme="dark"] .ka-home .kh-social button,
 html[data-theme="dark"] .ka-home .kh-quick button,
 html[data-theme="dark"] .ka-home .kh-announcement,
 html[data-theme="dark"] .ka-home .kh-news,
-html[data-theme="dark"] .ka-home .kh-weather-card,
 html[data-theme="dark"] .ka-home .kh-home-section,
 html[data-theme="dark"] .ka-home-section{
   background:var(--ka-module-surface)!important;
@@ -3688,22 +3658,6 @@ html[data-theme="dark"] .ka-profile-page .classic-toolbar{
 [data-theme="dark"] .ka-home .kh-news-label {
   background: #ffc400 !important;
   color: #111 !important;
-}
-
-/* ── HAVA DURUMU KARTI (Resim 3) ── */
-[data-theme="dark"] .ka-home .kh-weather-card {
-  background: #141414 !important;
-  border-color: #333 !important;
-  color: #f5f5f5 !important;
-}
-[data-theme="dark"] .ka-home .kh-weather-card .kh-live-main b {
-  color: #f5f5f5 !important;
-}
-[data-theme="dark"] .ka-home .kh-weather-card .kh-live-main small {
-  color: #a0a0a0 !important;
-}
-[data-theme="dark"] .ka-home .kh-weather-arrow {
-  color: #a0a0a0 !important;
 }
 
 /* ── MENÜ SAYFASI BAŞLIĞI — "Öğretmen & Öğrenciler" (Resim 4) ── */
@@ -6356,7 +6310,6 @@ html[data-theme="dark"] #v2ModuleRoot .ka-teacher-profile .ka-panel,
 html[data-theme="dark"] #v2ModuleRoot .ka-teacher-detail .ka-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-student-detail .ka-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card,
-html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weather-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-announcement,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-task-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-duty-card,
@@ -6504,7 +6457,6 @@ html[data-theme="dark"] .ka-profile-page .ka-profile-section *{
   color:inherit;
 }
 html[data-theme="dark"] .ka-home .kh-card,
-html[data-theme="dark"] .ka-home .kh-weather-card,
 html[data-theme="dark"] .ka-home .kh-task-card,
 html[data-theme="dark"] .ka-home .kh-duty-card,
 html[data-theme="dark"] .ka-home .kh-news,
@@ -6518,7 +6470,6 @@ html[data-theme="dark"] .ka-home .kh-section[data-home-section="calendar"] .kh-r
   border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] .ka-home .kh-card *,
-html[data-theme="dark"] .ka-home .kh-weather-card *,
 html[data-theme="dark"] .ka-home .kh-task-card *,
 html[data-theme="dark"] .ka-home .kh-duty-card *,
 html[data-theme="dark"] .ka-home .kh-news *,
@@ -6672,7 +6623,6 @@ html[data-theme="dark"] .ka-home .kh-place{
   color:var(--ka-module-muted)!important;
 }
 [data-theme="dark"] #v2ModuleRoot .ka-home .kh-card,
-[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weather-card,
 [data-theme="dark"] #v2ModuleRoot .ka-home .kh-task-card,
 [data-theme="dark"] #v2ModuleRoot .ka-home .kh-duty-card,
 [data-theme="dark"] #v2ModuleRoot .ka-home .kh-news,
@@ -6823,7 +6773,6 @@ html[data-theme="dark"] #v2ModuleRoot .ka-search-page .ka-search-empty small{
 
 /* Ana sayfa kartları */
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card,
-html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weather-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-task-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-duty-card,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-news,
@@ -6836,7 +6785,6 @@ html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-quick button{
   border-color:var(--ka-module-border)!important;
 }
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-card *,
-html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-weather-card *,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-task-card *,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-duty-card *,
 html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-news *,
@@ -11588,4 +11536,118 @@ html[data-theme] #khBell.kh-bell-modern .kh-bell-holiday-opening b{color:var(--b
   html[data-theme] #khBell.kh-bell-modern .kh-bell-timeline-current-icon::after,
   html[data-theme] #khBell.kh-bell-modern .kh-bell-progress-v2>i>b::after{animation:none!important}
   html[data-theme] #khBell.kh-bell-modern:hover{transform:none}
+}
+
+/* ===== HERO — CAM (v1248) =====
+   Ana sayfa karşılama kartı + hava durumu kartı: TEK yetkili tanım (koyu + açık tema).
+   Eski hero/brand/greeting/date/live-stack/weather kuralları (base'in 8 ayrı yerindeki 69 kural) kaldırıldı.
+   Okul özeti ve canlı zil kartıyla aynı dil: cam yüzey + blob + üst vurgu çizgisi, tek token seti (--hr-*).
+   Marka rengi --ka-primary / --ka-hero-kicker'dan gelir (aksan seçimi hero'ya da yansır).
+   Hava sahnesi (js/v3/hava-durumu-skin.js) #khWeather içine .sk-wx ekler; burada yalnızca kabuk + okunabilirlik örtüsü (--wx-veil) tanımlı.
+   Seçiciler "html #v2ModuleRoot .ka-home …" (≥ 1,2,1): MODULE THEME BRIDGE ve global koyu `*` kenarlık kuralı ezmesin diye. */
+@keyframes ka-hero-blob{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-14px,10px,0) scale(1.08)}}
+
+/* — tokenlar — */
+html[data-theme="dark"] #v2ModuleRoot .ka-home .kh-hero{
+  --hr-fg:#fff;--hr-sub:rgba(255,255,255,.62);--hr-ink:var(--ka-hero-kicker,#ffc400);
+  --hr-glow:color-mix(in srgb,var(--ka-primary,#ffc400) 30%,transparent);--hr-ring:color-mix(in srgb,var(--ka-primary,#ffc400) 22%,transparent);
+  --hr-bg:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.035));--hr-edge:rgba(255,255,255,.11);
+  --hr-shadow:0 8px 40px rgba(0,0,0,.35),0 1px 0 rgba(255,255,255,.07) inset;
+  --hr-chip:rgba(255,255,255,.07);--hr-chip-edge:rgba(255,255,255,.12);
+  --hr-tile:rgba(255,255,255,.06);--hr-tile-edge:rgba(255,255,255,.10);--wx-veil:rgba(12,15,30,.78);--hr-arrow-shadow:0 1px 6px rgba(0,0,0,.5);
+}
+:root:not([data-theme="dark"]) #v2ModuleRoot .ka-home .kh-hero{
+  --hr-fg:#15171a;--hr-sub:#697077;--hr-ink:var(--ka-hero-kicker,#c39700);
+  --hr-glow:color-mix(in srgb,var(--ka-primary,#ffc400) 34%,transparent);--hr-ring:color-mix(in srgb,var(--ka-primary,#ffc400) 26%,transparent);
+  --hr-bg:linear-gradient(145deg,rgba(255,253,241,.94),rgba(244,245,243,.80));--hr-edge:rgba(0,0,0,.08);
+  --hr-shadow:0 4px 24px rgba(0,0,0,.08);
+  --hr-chip:rgba(255,255,255,.72);--hr-chip-edge:rgba(0,0,0,.07);
+  --hr-tile:rgba(255,255,255,.72);--hr-tile-edge:rgba(0,0,0,.07);--wx-veil:rgba(255,255,255,.88);
+}
+
+/* — kart kabuğu — */
+html #v2ModuleRoot .ka-home .kh-hero{
+  position:relative;isolation:isolate;overflow:hidden;width:100%;
+  padding:22px 18px 18px!important;border-radius:28px!important;
+  background:var(--hr-bg)!important;border:1px solid var(--hr-edge)!important;box-shadow:var(--hr-shadow)!important;
+  color:var(--hr-fg)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);
+}
+html #v2ModuleRoot .ka-home .kh-hero::before{
+  content:"";position:absolute;z-index:0;width:230px;height:230px;border-radius:50%;right:-76px;top:-96px;
+  background:radial-gradient(circle,var(--hr-glow) 0%,transparent 70%);filter:blur(42px);pointer-events:none;
+  animation:ka-hero-blob 9s ease-in-out infinite;
+}
+html #v2ModuleRoot .ka-home .kh-hero::after{
+  content:"";position:absolute;z-index:2;top:0;left:0;right:0;height:2px;border-radius:28px 28px 0 0;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--hr-ink),transparent);opacity:.75;
+}
+html #v2ModuleRoot .ka-home .kh-hero>*{position:relative;z-index:1}
+
+/* — karşılama metinleri — */
+html #v2ModuleRoot .ka-home .kh-brand{
+  display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--hr-ink)!important;
+}
+html #v2ModuleRoot .ka-home .kh-brand::before{
+  content:"";width:7px;height:7px;border-radius:50%;flex:none;background:var(--hr-ink);
+  box-shadow:0 0 0 3px var(--hr-ring),0 0 12px var(--hr-glow);
+}
+html #v2ModuleRoot .ka-home .kh-greeting{
+  margin:12px 0 9px!important;font-size:27px;font-weight:900;line-height:1.12;letter-spacing:-.02em;color:var(--hr-fg)!important;
+}
+html #v2ModuleRoot .ka-home .kh-wave{display:inline-block;transform-origin:70% 70%;animation:khWave 1.35s ease-in-out 1 both}
+html #v2ModuleRoot .ka-home .kh-date{
+  display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;
+  background:var(--hr-chip);border:1px solid var(--hr-chip-edge)!important;
+  font-size:11px;font-weight:800;line-height:1.2;color:var(--hr-sub)!important;
+}
+
+/* — canlı yığın: zil kartı + hava — */
+html #v2ModuleRoot .ka-home .kh-live-stack{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:16px}
+html #v2ModuleRoot .ka-home .kh-live-stack>#khBell{grid-column:1;order:1}
+html #v2ModuleRoot .ka-home .kh-live-stack>#khWeather{grid-column:1;order:2}
+@media(min-width:760px){
+  html #v2ModuleRoot .ka-home .kh-live-stack{grid-template-columns:minmax(0,1.55fr) minmax(260px,.75fr);align-items:stretch}
+  html #v2ModuleRoot .ka-home .kh-live-stack>#khWeather{grid-column:2;align-self:start}
+}
+
+/* — hava durumu kartı — */
+html #v2ModuleRoot .ka-home #khWeather{
+  position:relative;overflow:hidden;display:grid!important;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:12px;
+  width:100%;min-height:80px;padding:12px 14px!important;border-radius:20px!important;text-align:left;cursor:pointer;
+  background:var(--hr-tile)!important;border:1px solid var(--hr-tile-edge)!important;box-shadow:none!important;color:var(--hr-fg)!important;
+  transition:transform .22s cubic-bezier(.23,1,.32,1);
+}
+html #v2ModuleRoot .ka-home #khWeather::after{content:none!important;display:none!important}
+@media(hover:hover){html #v2ModuleRoot .ka-home #khWeather:hover{transform:translateY(-2px)}}
+html #v2ModuleRoot .ka-home #khWeather:active{transform:scale(.995)}
+html #v2ModuleRoot .ka-home #khWeather .kh-live-icon{
+  width:52px;height:52px;display:grid;place-items:center;flex:none;border-radius:17px;
+  background:color-mix(in srgb,var(--ka-primary,#ffc400) 15%,transparent)!important;
+  border:1px solid color-mix(in srgb,var(--ka-primary,#ffc400) 30%,transparent)!important;box-shadow:none!important;
+}
+html #v2ModuleRoot .ka-home #khWeather .kh-weather-emoji{display:inline-block;font-size:27px;line-height:1;animation:none;transform:none}
+html #v2ModuleRoot .ka-home #khWeather .kh-live-main{min-width:0}
+html #v2ModuleRoot .ka-home #khWeather .kh-live-main b{display:block;font-size:20px;font-weight:900;line-height:1.1;letter-spacing:-.01em;color:var(--hr-fg)!important}
+html #v2ModuleRoot .ka-home #khWeather .kh-live-main small{
+  display:block;margin-top:4px;overflow:hidden;font-size:10.5px;font-weight:700;color:var(--hr-sub)!important;white-space:nowrap;text-overflow:ellipsis;
+}
+html #v2ModuleRoot .ka-home #khWeather .kh-weather-arrow{font-size:24px;font-weight:700;line-height:1;color:var(--hr-fg)!important;opacity:.85;text-shadow:var(--hr-arrow-shadow,none)}
+
+/* — kompakt telefon / geniş ekran — */
+@media(max-width:370px){
+  html #v2ModuleRoot .ka-home .kh-hero{padding:16px 13px 13px!important;border-radius:22px!important}
+  html #v2ModuleRoot .ka-home .kh-greeting{margin:10px 0 8px!important;font-size:22px}
+  html #v2ModuleRoot .ka-home #khWeather{grid-template-columns:44px minmax(0,1fr) auto;gap:10px;min-height:70px;padding:10px 12px!important}
+  html #v2ModuleRoot .ka-home #khWeather .kh-live-icon{width:44px;height:44px;border-radius:14px}
+}
+@media(min-width:700px){
+  html #v2ModuleRoot .ka-home .kh-hero{padding:24px 22px 22px!important}
+  html #v2ModuleRoot .ka-home .kh-greeting{font-size:30px}
+}
+@media(prefers-reduced-motion:reduce){
+  html #v2ModuleRoot .ka-home .kh-hero::before{animation:none}
+  html #v2ModuleRoot .ka-home .kh-wave{animation:none}
+  html #v2ModuleRoot .ka-home #khWeather:hover{transform:none}
 }

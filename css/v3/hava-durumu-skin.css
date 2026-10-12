@@ -44,4 +44,4 @@ html[data-theme="dark"] .sk{--sk1:#141b34;--sk2:#4b4f78;--sun:#f1ead0;--cl:rgba(
 html.ka-skin3 #khWeather{position:relative;overflow:hidden;min-height:84px}
 html.ka-skin3 #khWeather>*:not(.sk-wx){position:relative;z-index:1}
 .sk-wx{position:absolute;inset:0;z-index:0}.sk-wx svg{position:absolute;inset:0;width:100%;height:100%}
-.sk-wx::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--ka-card-bg) 0%,color-mix(in srgb,var(--ka-card-bg) 92%,transparent) 36%,transparent 74%)}
+.sk-wx::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--wx-veil,var(--ka-card-bg)) 0%,color-mix(in srgb,var(--wx-veil,var(--ka-card-bg)) 92%,transparent) 36%,transparent 74%)}
