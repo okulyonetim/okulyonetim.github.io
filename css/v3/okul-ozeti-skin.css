@@ -1,32 +1,49 @@
-/* Koruk Asistan — Okul Özeti Glassmorphism (V4)
- * SVG sahne sistemi kaldırıldı. js/v3/okul-ozeti-skin.js ile çalışır.
+/* Koruk Asistan — Okul Özeti Glassmorphism (V5)
+ * Gerçek cam efekti. js/v3/okul-ozeti-skin.js ile çalışır.
  * Kapatmak: localStorage['ka-skin']='off'.
  */
 
-/* Emoji dekorasyon katmanı — skin.js'nin eklediği div */
-[data-sk-card]{
+/* Emoji dekorasyon — JS'in eklediği div */
+[data-sk-emoji]{
   position:absolute;
-  right:10px;top:10px;
-  font-size:36px;
+  right:8px;top:8px;
+  font-size:48px;
   line-height:1;
-  opacity:.18;
+  opacity:.10;
   pointer-events:none;
   user-select:none;
   z-index:0;
 }
 
-/* İkon ve içerik z-index — emoji'nin üstünde görünsün */
-html.ka-skin3 .ka-school-summary-card.sk-has-scene>.ka-school-summary-icon,
-html.ka-skin3 .ka-school-summary-card.sk-has-scene>small,
-html.ka-skin3 .ka-school-summary-card.sk-has-scene>b,
-html.ka-skin3 .ka-school-summary-card.sk-has-scene>.ka-school-summary-meta{
+/* Kart içeriği emoji'nin üstünde */
+html.ka-skin3 .ka-school-summary-card.sk-glass>.ka-school-summary-icon,
+html.ka-skin3 .ka-school-summary-card.sk-glass>small,
+html.ka-skin3 .ka-school-summary-card.sk-glass>b,
+html.ka-skin3 .ka-school-summary-card.sk-glass>.ka-school-summary-meta{
   position:relative;
   z-index:1;
 }
 
-/* İkonu gizleme — kaldırıldı, artık gösterilecek */
-html.ka-skin3 .ka-school-summary-card.sk-has-scene>.ka-school-summary-icon{
+/* İkonu her zaman göster */
+html.ka-skin3 .ka-school-summary-card.sk-glass>.ka-school-summary-icon{
   display:grid!important;
 }
 
-@media (prefers-reduced-motion:reduce){}
+/* Pseudo-element ::after (dekoratif top-right orb) kaldır */
+html.ka-skin3 .ka-school-summary-card.sk-glass::after{
+  display:none!important;
+}
+
+/* Geçiş animasyonu */
+html.ka-skin3 .ka-school-summary-card.sk-glass{
+  transition:transform .22s cubic-bezier(.23,1,.32,1),box-shadow .22s ease!important;
+}
+html.ka-skin3 .ka-school-summary-card.sk-glass:active{
+  transform:scale(.975)!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  html.ka-skin3 .ka-school-summary-card.sk-glass{
+    transition:none!important;
+  }
+}
