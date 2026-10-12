@@ -131,7 +131,7 @@ for(const old of ['people-data.js','academic-data.js','management-data.js','mess
 assert(!registry('academic').includes('academic-calendar-parity.js'),'Academic bundle ayrı takvim parity kaynağı yüklememeli.');
 assert(source.academic.includes('openAcademicCalendar')&&source.academic.includes('kaAcademicCalendarOverlay'),'Akademik Takvim davranışı canonical academic.js içinde yaşamalı.');
 assert(!source.academic.includes('calendarFmtDate(meta.guncellenmeTarihi)')&&!source.academic.includes('meta?.yukleyenAdi?` ·'),'Akademik Takvim üst başlığında tarih/yükleyen metadata gösterilmemeli.');
-assert(registry('transport').includes("'js/modules/report-engine.js'"),'Transport ortak ReportEngine kullanmalı.');
+assert(registryHas('transport','report-engine.js'),'Transport ortak ReportEngine kullanmalı.');
 assert(!registry('tools').includes("'js/modules/map-ui.js'")&&!registry('tools').includes("'js/modules/teacher-list.js'"),'Tools varsayılan bundle rota-özel companion dosyalarını eager yüklememeli.');
 assert(shellUi.includes("if(page==='map')files.push('js/modules/map-ui.js')"),'Harita motoru yalnız Harita rotasında lazy yüklenmeli.');
 assert(shellUi.includes("if(['student-list','homework','grades'].includes(page))files.push('js/modules/teacher-list.js')"),'Öğretmen liste/ödev/not companionı yalnız ilgili rotalarda lazy yüklenmeli.');
