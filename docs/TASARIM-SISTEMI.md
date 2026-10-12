@@ -71,10 +71,10 @@ Tüm modül sayfalarının başlık kartı (öğretmenler, öğrenciler, haberle
 | `--ka-ph-title`, `-size`, `-weight`, `-tracking`, `-lh` | Başlık yazısı |
 | `--ka-ph-sub`, `-size`, `-lh` | Açıklama yazısı |
 | `--ka-ph-kicker`, `-size`, `-tracking` | Başlık üstündeki küçük etiket |
-| `--ka-ph-icon-bg`, `-fg`, `-border`, `-radius`, `-shadow` | Başlıktaki ikon kutusu |
+| `--ka-ph-icon-bg`, `-fg`, `-border`, `-radius`, `-shadow`, `-size` | Başlıktaki ikon kutusu (`-size` yalnız genel `ka-page-head__icon` içindir; özel başlıkların ikon boyutu kendi kurallarındadır) |
 | `--ka-ph-deco` | Sayfaların kendi süs şekilleri/emojileri (`none` kapalı, `block` açık) |
 
-Yeni bir sayfa başlığı eklerken işaretlemeye `class="ka-page-head"` vermek yeter (ikon kutusu için `ka-page-head__icon`). Sayfanın ilk satırı "başlık + sağda rozet/düğme" ise ve ilk kart başlıksa (`section.ka-page`) ayrıca işaretlemeye gerek yoktur.
+Yeni bir sayfa başlığı eklerken işaretlemeye `class="ka-page-head"` vermek yeter (ikon kutusu için `ka-page-head__icon`; yerleşim — ikon, metin bloğu, sağda düğme — kabukta hazırdır, satır içi stil gerekmez). Başlık, formun durduğu kartın **dışında**, kardeş öğe olarak yazılır (`<header class="ka-page-head">…</header><article class="ka-card">…`); başlığı kartın içine koymayın. Sayfanın ilk satırı "başlık + sağda rozet/düğme" ise ve ilk kart başlıksa (`section.ka-page`) ayrıca işaretlemeye gerek yoktur.
 
 ### Genel düğmeler — tek değer, tüm uygulama
 
