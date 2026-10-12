@@ -11,7 +11,7 @@ const masked=css.replace(/\/\*[\s\S]*?\*\//g,m=>m.replace(/[^\n]/g,' '));
 
 // --- 1) Merkez bloğu ve sınırları
 const START=css.indexOf('KORUK ASİSTAN — TEMA MERKEZİ');
-const END_MARK='@media(max-width:767px){:root{--ka-font-size-md:14px}}';
+const END_MARK='@media(max-width:767px){:root{--ka-font-size-md:var(--ka-fs-14)}}';
 const END=css.indexOf(END_MARK);
 assert(START>-1,'TEMA MERKEZİ başlığı bulunamadı.');
 assert(END>START,'TEMA MERKEZİ bloğunun sonu (mobil yazı boyutu kuralı) bulunamadı.');

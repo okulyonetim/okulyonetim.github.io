@@ -7,7 +7,7 @@
 [data-sk-emoji]{
   position:absolute;
   right:8px;top:8px;
-  font-size:48px;
+  font-size:var(--ka-fs-48);
   line-height:1;
   opacity:.10;
   pointer-events:none;
@@ -36,7 +36,7 @@ html.ka-skin3 .ka-school-summary-card.sk-glass::after{
 
 /* Geçiş animasyonu */
 html.ka-skin3 .ka-school-summary-card.sk-glass{
-  transition:transform .22s cubic-bezier(.23,1,.32,1),box-shadow .22s ease!important;
+  transition:transform var(--ka-dur-220) var(--ka-ease-1),box-shadow var(--ka-dur-220) ease!important;
 }
 html.ka-skin3 .ka-school-summary-card.sk-glass:active{
   transform:scale(.975)!important;
