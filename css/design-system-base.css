@@ -203,16 +203,15 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-school-summary-section{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
 .ka-school-summary-section>.ka-home-section__head{padding:2px 4px 12px}
 .ka-school-summary-section>.ka-home-section__body{padding:0}
-/* Glassmorphism sahne — grid kendi zemin blob'larını taşır */
-.ka-school-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px;border-radius:24px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#dbeafe 0%,#d1fae5 50%,#fef3c7 100%)}
-.ka-school-summary-grid::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+/* Glassmorphism sahne */
+.ka-school-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px;border-radius:24px;
   background:
-    radial-gradient(ellipse 70% 60% at 20% 30%,rgba(99,102,241,.35) 0%,transparent 70%),
-    radial-gradient(ellipse 60% 50% at 80% 70%,rgba(16,185,129,.30) 0%,transparent 65%),
-    radial-gradient(ellipse 55% 55% at 55% 10%,rgba(245,158,11,.25) 0%,transparent 60%)}
+    radial-gradient(ellipse 80% 60% at 15% 25%,rgba(99,102,241,.55) 0%,transparent 65%),
+    radial-gradient(ellipse 70% 55% at 85% 75%,rgba(16,185,129,.50) 0%,transparent 60%),
+    radial-gradient(ellipse 65% 60% at 60% 5%,rgba(245,158,11,.45) 0%,transparent 55%),
+    linear-gradient(135deg,#c7d9ff 0%,#bbf5e0 50%,#fde68a 100%)}
 /* Frosted cam kartlar */
-.ka-school-summary-card{appearance:none;position:relative;z-index:1;min-width:0;min-height:154px;padding:16px 12px 13px;font:inherit;cursor:pointer;touch-action:pan-y;user-select:none;border:1px solid rgba(255,255,255,.75);border-radius:21px;background:rgba(255,255,255,.55);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);box-shadow:0 4px 20px rgba(0,0,0,.08),0 1px 0 rgba(255,255,255,.95) inset;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;color:var(--ka-text);transition:transform .2s cubic-bezier(.23,1,.32,1),box-shadow .2s ease}
+.ka-school-summary-card{appearance:none;position:relative;z-index:1;min-width:0;min-height:154px;padding:16px 12px 13px;font:inherit;cursor:pointer;touch-action:pan-y;user-select:none;border:1px solid rgba(255,255,255,.8);border-radius:21px;background:rgba(255,255,255,.45);backdrop-filter:blur(28px) saturate(2);-webkit-backdrop-filter:blur(28px) saturate(2);box-shadow:0 4px 24px rgba(0,0,0,.10),0 1px 0 rgba(255,255,255,1) inset;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;color:var(--ka-text);transition:transform .2s cubic-bezier(.23,1,.32,1),box-shadow .2s ease}
 .ka-school-summary-card:focus-visible{outline:3px solid var(--ka-focus);outline-offset:2px}
 .ka-school-summary-card:active{transform:scale(.975);box-shadow:0 2px 10px rgba(0,0,0,.06)}
 .ka-school-summary-card::after{display:none}
@@ -240,11 +239,11 @@ html:not(.ka-auth-resolved) #girisEkrani{visibility:hidden!important;pointer-eve
 .ka-school-stage>div{display:flex;justify-content:center;gap:4px;font-size:8px;font-weight:800;white-space:nowrap}
 .ka-school-unassigned{grid-column:1/-1;margin-top:4px;color:var(--ka-text-muted);font-size:8px}
 /* Dark mode */
-[data-theme="dark"] .ka-school-summary-grid{background:#0d0f1a}
-[data-theme="dark"] .ka-school-summary-grid::before{background:
-    radial-gradient(ellipse 70% 60% at 20% 30%,rgba(99,102,241,.55) 0%,transparent 70%),
-    radial-gradient(ellipse 60% 50% at 80% 70%,rgba(16,185,129,.45) 0%,transparent 65%),
-    radial-gradient(ellipse 55% 55% at 55% 10%,rgba(245,158,11,.38) 0%,transparent 60%)}
+[data-theme="dark"] .ka-school-summary-grid{background:
+    radial-gradient(ellipse 80% 60% at 15% 25%,rgba(99,102,241,.65) 0%,transparent 65%),
+    radial-gradient(ellipse 70% 55% at 85% 75%,rgba(16,185,129,.60) 0%,transparent 60%),
+    radial-gradient(ellipse 65% 60% at 60% 5%,rgba(245,158,11,.55) 0%,transparent 55%),
+    #0d0f1a}
 [data-theme="dark"] .ka-school-summary-card{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);box-shadow:0 8px 32px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.08) inset;color:var(--ka-text)}
 [data-theme="dark"] .ka-school-summary-card.is-teacher{border-color:rgba(96,165,250,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
 [data-theme="dark"] .ka-school-summary-card.is-student{border-color:rgba(52,211,153,.22);box-shadow:0 8px 28px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.07) inset}
