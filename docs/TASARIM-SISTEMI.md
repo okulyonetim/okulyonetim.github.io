@@ -30,6 +30,31 @@ Rapor/A4 baskı renkleri (`--ka-report-*`) kâğıt çıktısı olduğu için te
 
 **Sürüm kuralı:** `design-system-base.css` her değiştiğinde `css/design-system.css` içindeki `@import ...?v=` ve `index.html` içindeki `css/design-system.css?v=` birer artırılır.
 
+### Bileşenler: buton, kutu, kart, kapak, pencere, rozet, sekme, tablo, arama kutusu
+
+Şekil değerleri de aynı bloktan gelir. **Tek düğme** `--ka-radius-base`'tir (varsayılan 14px): `--ka-r-1…--ka-r-10` köşe ölçeği bundan türer
+(0px yaparsan her şey köşeli, 20px yaparsan çok yuvarlak olur). Her bileşen ailesi kendi değişkenini ölçekteki bir basamağa bağlar ve istenirse tek başına değiştirilir:
+
+| Aile | Köşe | Diğer değişkenler |
+|---|---|---|
+| Buton (`.ka-btn*`, ikon düğmeleri, alt menü öğeleri) | `--ka-btn-radius`, `-sm`, `-lg` | `--ka-btn-grow` (tüm yüksekliklere ±px), `--ka-btn-h-sm/md/lg`, `--ka-btn-px`, `--ka-btn-gap`, `--ka-btn-weight`, `--ka-btn-border-w`; çeşitler: `--ka-btn-danger-*`, `--ka-btn-ghost-*`, `--ka-button-secondary-*` |
+| Form kutusu (input/select/textarea) | `--ka-field-radius`, `-sm` | `--ka-field-grow`, `--ka-field-h-md`, `--ka-field-px/py`, `--ka-field-border-w`, `--ka-field-ring`, `--ka-field-textarea-h` |
+| Arama / komut kutusu | `--ka-cmd-radius` | `--ka-cmd-h`, `--ka-cmd-bg`, `--ka-cmd-border`, `--ka-cmd-shadow`, `--ka-cmd-icon` |
+| Kart | `--ka-card-radius`, `-sm` (iç kutu), `-lg` | `--ka-card-pad`, `--ka-card-border-w`, `--ka-card-bg`, `--gl-*` (cam) |
+| Kapak (hero / sayfa başlığı) | `--ka-cover-radius`, `-sm`, `-lg` | `--ka-hero-bg`, `--ka-hero-border`, `--ka-hero-shadow` |
+| Pencere / alt sayfa | `--ka-sheet-radius`, `-lg` | `--ka-sheet-pad`, `--ka-shadow-modal`, `--ka-overlay` |
+| Rozet / etiket | `--ka-chip-radius`, `-sm` | `--ka-chip-h`, `--ka-chip-px`, `--ka-chip-weight` |
+| Sekme | `--ka-tab-radius` | `--ka-tab-h`, `--ka-tab-px`, `--ka-tab-weight` |
+| Tablo | `--ka-table-radius` | `--ka-table-cell-py/px` |
+
+Genel düğmeler: `--ka-border-w` (tüm çizgi kalınlığı), `--ka-ring-w` (odak halkası), `--ka-blur-k` (bulanıklık çarpanı), `--ka-orb-a/b/c/-blur` (koyu temada arka plan ışık küreleri).
+
+**Kural:** bileşen kuralında sabit köşe (`border-radius:14px`) veya `1px solid` yazılmaz; `var(--ka-r-*)`, aile değişkeni veya `var(--ka-border-w)` kullanılır
+(`tests/theme-center-contract.test.js` denetler; rapor/belge önizleme kâğıt yüzeyleri istisnadır).
+
+**Sınırlar:** yükseklik, iç boşluk ve yazı boyutu eski modüllerde tek tek ayarlanmıştır; bunlar değer korunarak `calc(Npx + var(--ka-btn-grow))` biçimine geçirildi
+(görünüm aynı, topluca ayarlanabilir). Yazı boyutları ve iç boşluklar için henüz tek ölçek yoktur. JS içine gömülü `<style>` blokları ayrıca ele alınmalıdır.
+
 ### Sık kullanılan değişkenler
 
 

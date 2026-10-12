@@ -69,7 +69,7 @@ assert(!/\bdb\s*\.\s*collection\s*\(/.test(dashboard),'Dashboard toplantı enteg
 
 for(const selector of ['.ka-meeting-page{','.ka-meeting-chip{','.ka-meeting-item{','.ka-meeting-report{','.ka-meeting-draft-card{','.ka-meeting-draft-grid{','.ka-meeting-draft-field{']) assert(design.includes(selector),`Merkezi toplantı stili eksik: ${selector}`);
 assert(design.includes('.ka-meeting-draft-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))'),'Toplantı kartı ders/sınıf ve tarih/saat alanlarını okunabilir iki sütunlu düzende göstermeli.');
-assert(design.includes('.ka-meeting-draft-card{min-width:0;padding:13px 14px;border:1px solid var(--ka-border);border-radius:18px'),'Toplantı satır kartı merkezi tasarım sisteminde belirgin kart yüzeyi kullanmalı.');
+assert(design.includes('.ka-meeting-draft-card{min-width:0;padding:13px 14px;border:var(--ka-card-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius)'),'Toplantı satır kartı merkezi tasarım sisteminde belirgin kart yüzeyi kullanmalı.');
 assert(design.includes('.ka-meeting-report-button{position:static'),'Rapor düğmesi mobil alt navigasyonun üzerine sticky olarak binmemeli.');
 assert(design.includes('.ka-meeting-report__table th,.ka-meeting-report__table td{text-align:center!important;vertical-align:middle!important}'),'Toplantı raporundaki tüm sütun başlıkları ve veriler ortalanmalı.');
 assert(design.includes('.ka-meeting-saved-head{')&&design.includes('.ka-meeting-session{display:grid;grid-template-columns:32px minmax(0,1fr)'),'Kaydedilen toplantı kartı merkezi design-system içinde kompakt oturum düzeni kullanmalı.');

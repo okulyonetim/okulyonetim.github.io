@@ -86,3 +86,33 @@ for(const rx of BRAND){
 // --- 6) Sürüm kuralı: giriş noktası ve index aynı CSS'i yüklüyor, sürüm numaraları tanımlı
 assert(/@import url\("\.\/design-system-base\.css\?v=\d+"\)/.test(entry),'design-system.css taban CSS’i sürüm numarasıyla içe aktarmalı.');
 assert(/css\/design-system\.css\?v=\d+/.test(index),'index.html design-system.css’i sürüm numarasıyla yüklemeli.');
+
+// --- 7) Bileşen merkezi: köşe / çizgi / bulanıklık / odak halkası değerleri de merkezden gelir
+for(const t of ['--ka-radius-base','--ka-r-1','--ka-r-6','--ka-r-10','--ka-border-w','--ka-ring-w','--ka-blur-k',
+  '--ka-btn-radius','--ka-btn-radius-sm','--ka-btn-radius-lg','--ka-btn-grow','--ka-btn-h-md','--ka-btn-px','--ka-btn-weight',
+  '--ka-field-radius','--ka-field-grow','--ka-field-h-md','--ka-field-px','--ka-field-ring',
+  '--ka-card-radius','--ka-card-radius-sm','--ka-card-radius-lg','--ka-card-pad',
+  '--ka-cover-radius','--ka-cover-radius-sm','--ka-cover-radius-lg','--ka-sheet-radius','--ka-sheet-radius-lg',
+  '--ka-chip-radius','--ka-chip-h','--ka-tab-radius','--ka-tab-h','--ka-table-radius','--ka-cmd-radius','--ka-cmd-h',
+  '--ka-orb-a','--ka-orb-b','--ka-orb-c','--ka-orb-blur'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde bileşen değişkeni eksik: ${t}`);
+// Rapor / belge önizleme kâğıt yüzeyleri temadan bağımsızdır; onun dışındaki kurallarda sabit köşe/çizgi olmaz.
+const PAPER=/\.ka-report|\.dv3|@page|\.ka-pt-preview/;
+const literalRadius=/(^|[;\s])border(-(top|bottom)-(left|right))?-radius\s*:[^;}]*?(?<![\w.-])(8|9|1[0-9]|2[0-8])(\.\d+)?px/;
+const literalBorder=/(^|[;\s])border(-(top|right|bottom|left))?\s*:\s*1px\b/;
+const badR=[],badB=[];
+for(const r of rules){
+  if(r.start>=START&&r.start<=LIMIT)continue;
+  if(PAPER.test(r.sel))continue;
+  if(literalRadius.test(r.body))badR.push(r.sel.slice(0,60));
+  if(literalBorder.test(r.body))badB.push(r.sel.slice(0,60));
+}
+assert.strictEqual(badR.length,0,`Bileşen kuralında sabit köşe değeri var (var(--ka-r-*) veya aile değişkeni kullanın): ${badR.slice(0,3).join(' | ')}`);
+assert.strictEqual(badB.length,0,`Bileşen kuralında sabit 1px çizgi var (var(--ka-border-w) veya aile değişkeni kullanın): ${badB.slice(0,3).join(' | ')}`);
+
+// Diğer üretim stil dosyaları da aynı kurala tabidir (giriş noktasındaki ek kurallar, duyuru medya stili).
+for(const f of ['css/design-system.css','css/dashboard-announcement-media.css']){
+  const t=fs.readFileSync(f,'utf8').replace(/\/\*[\s\S]*?\*\//g,m=>m.replace(/[^\n]/g,' '));
+  const bad=parse(t).filter(r=>!PAPER.test(r.sel)&&(literalRadius.test(r.body)||literalBorder.test(r.body))).map(r=>r.sel.slice(0,60));
+  assert.strictEqual(bad.length,0,`${f}: bileşen kuralında sabit köşe/1px çizgi var: ${bad.slice(0,3).join(' | ')}`);
+}
