@@ -16,7 +16,7 @@ assert(design.includes('@media'),'Tek design system responsive kuralları kendi 
 assert(design.includes('--ka-safe-top')&&design.includes('safe-area-inset-bottom'),'iOS safe-area altyapısı merkezi design system içinde olmalı.');
 assert(design.includes('100dvh'),'Mobil Safari/Chrome için dinamik viewport kullanılmalı.');
 assert(shell.includes('class="ka-school-meta"')&&shell.includes('Koruk Asistan'),'Mobil/web ortak header okul meta satırını aynı shell içinde taşımalı.');
-assert(design.includes('@media(max-width:390px)')&&design.includes('.ka-school-logo{width:37px;height:37px'),'Dar telefon header ayarı aynı merkezi design system içinde bulunmalı.');
+assert(design.includes('@media(max-width:390px)')&&design.includes('.ka-school-logo{width:var(--ka-ic-37);height:var(--ka-ic-37)'),'Dar telefon header ayarı aynı merkezi design system içinde bulunmalı.');
 assert(shell.includes('data-ka-notification-count')&&design.includes('.ka-header-notification{position:relative;overflow:visible}')&&design.includes('[data-ka-notification-count]{position:absolute;top:0;right:0'),'Bildirim rozeti zilin sağ üst köşesinde merkezi design system ile konumlanmalı.');
 assert(shellUi.includes("arr('sinavlar')")&&shellUi.includes("arr('denemeSinavlari')")&&shellUi.includes("arr('gorevler')")&&shellUi.includes("arr('hatirlaticilar')"),'Header bildirim merkezi ana sayfadaki yaklaşan etkinlik kaynaklarını okumalı.');
 assert(shellUi.includes("module:'academic',page:'written'")&&shellUi.includes("module:'academic',page:'trial'")&&shellUi.includes("module:direct?'management':'communication'")&&shellUi.includes('routeModule(r.module'),'Her bildirim kendi ilgili modül/sayfa hedefine gitmeli.');

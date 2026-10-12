@@ -21,7 +21,7 @@ const outside=masked.slice(0,START)+' '.repeat(END-START)+masked.slice(END+END_M
 // --- 2) Basit kural ayrıştırıcı (iç içe @media/@supports dahil)
 function parse(text){
   const out=[];
-  (function scan(i,end,ctx){
+  (function scan(i,end,ctx,media){
     while(i<end){
       while(i<end&&/\s/.test(text[i]))i++;
       if(i>=end)break;
@@ -45,11 +45,11 @@ function parse(text){
       }
       const body=text.slice(j+1,k-1);
       if(prelude.startsWith('@')){
-        if(/^@(media|supports|layer|container)/.test(prelude))scan(j+1,k-1,ctx+1);
-      }else out.push({sel:prelude.replace(/\s+/g,' '),body,start:i,nested:ctx>0});
+        if(/^@(media|supports|layer|container)/.test(prelude))scan(j+1,k-1,ctx+1,media+' '+prelude);
+      }else out.push({sel:prelude.replace(/\s+/g,' '),body,start:i,nested:ctx>0,media});
       i=k;
     }
-  })(0,text.length,0);
+  })(0,text.length,0,'');
   return out;
 }
 const rules=parse(masked);
@@ -116,3 +116,102 @@ for(const f of ['css/design-system.css','css/dashboard-announcement-media.css'])
   const bad=parse(t).filter(r=>!PAPER.test(r.sel)&&(literalRadius.test(r.body)||literalBorder.test(r.body))).map(r=>r.sel.slice(0,60));
   assert.strictEqual(bad.length,0,`${f}: bileşen kuralında sabit köşe/1px çizgi var: ${bad.slice(0,3).join(' | ')}`);
 }
+
+
+// --- 8) Tüm uygulama merkezden yönetilir: yazı, boşluk, gölge, hareket, renk, köşe, çizgi, ikon boyutu
+for(const t of ['--ka-font-scale','--ka-fw-shift','--ka-lh-k','--ka-tracking-k','--ka-density','--ka-motion-k','--ka-shadow-a','--ka-shadow-k','--ka-shadow-rgb',
+  '--ka-icon-k','--ka-row-grow','--ka-ring-offset','--k-white','--k-black','--ka-fs-12','--ka-fw-800','--ka-sp-12','--ka-sh-8','--ka-ic-44','--ka-dur-200','--ka-rs-4'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde genel düğme/basamak eksik: ${t}`);
+
+function splitDecls(body){
+  const out=[];let cur='',d=0,q=null;
+  for(const c of body){
+    if(q){cur+=c;if(c===q)q=null;continue}
+    if(c==='"'||c==="'"){q=c;cur+=c;continue}
+    if(c==='(')d++;else if(c===')')d--;
+    if(c===';'&&d===0){out.push(cur);cur=''}else cur+=c;
+  }
+  out.push(cur);
+  return out.map(x=>{const i=x.indexOf(':');return i<0?null:[x.slice(0,i).trim().toLowerCase(),x.slice(i+1).trim()]}).filter(Boolean);
+}
+const stripVar=v=>{let p;do{p=v;v=v.replace(/var\([^()]*(?:\([^()]*\)[^()]*)*\)/g,'')}while(v!==p);return v};
+const stripUrl=v=>v.replace(/url\((?:"[^"]*"|'[^']*'|[^)])*\)/g,'').replace(/"[^"]*"|'[^']*'/g,'');
+const PXNZ=/(?<![\w.#-])(?!0+(?:\.0+)?(?:px|rem)\b)-?\d*\.?\d+(?:px|rem)\b/;
+function declViolation(prop,raw){
+  const v=stripUrl(raw);
+  if(/#[0-9a-fA-F]{3,8}\b/.test(v)||/(^|[^\w-])rgba?\(\s*\d/i.test(v))return 'sabit renk (renk havuzu / palet değişkeni kullanın)';
+  const nv=stripVar(v);
+  if(prop==='font-size'&&PXNZ.test(nv))return 'sabit yazı boyutu (--ka-fs-* kullanın)';
+  if(prop==='font-weight'&&/^\s*\d{3,4}\b/.test(nv))return 'sabit yazı kalınlığı (--ka-fw-* kullanın)';
+  if(prop==='letter-spacing'&&/(?<![\w.#-])-?\d*\.?\d+(em|px)\b/.test(nv.replace(/(?<![\w.#-])-?0*\.?0+(em|px)\b/g,'')))return 'sabit harf aralığı (--ka-ls-* kullanın)';
+  if(prop==='line-height'&&(/^\s*\d*\.\d+\s*(!important)?\s*$/.test(nv)||PXNZ.test(nv)))return 'sabit satır yüksekliği (--ka-lh-* kullanın)';
+  if(/^(padding|margin)(-(top|right|bottom|left|inline|block)(-(start|end))?)?$/.test(prop)||/^(grid-)?(row-|column-)?gap$/.test(prop)){
+    if(PXNZ.test(nv))return 'sabit boşluk (--ka-sp-* kullanın)';
+  }
+  if((prop==='transition'||prop==='animation'||/^(transition|animation)-(duration|delay)$/.test(prop))&&/(?<![\w.#-])-?(?!0+(?:\.0+)?m?s\b)\d*\.?\d+m?s\b/.test(nv))return 'sabit süre (--ka-dur-* kullanın)';
+  if(/^border(-(top|bottom)-(left|right))?-radius$/.test(prop)){
+    const m=[...nv.matchAll(/(?<![\w.#-])(\d*\.?\d+)px\b/g)].find(x=>parseFloat(x[1])>0&&parseFloat(x[1])<100);
+    if(m)return 'sabit köşe yarıçapı (--ka-r-* / --ka-rs-* / --ka-ic-* kullanın)';
+  }
+  if(prop==='outline-offset'&&/^\s*2px\b/.test(nv))return 'sabit halka uzaklığı (--ka-ring-offset kullanın)';
+  if(/^(border(-(top|right|bottom|left|inline|block))?|outline)$/.test(prop)&&/^\s*[1-6](\.\d+)?px\s+(solid|dashed|dotted|double)\b/.test(nv))return 'sabit çizgi kalınlığı (--ka-border-w kullanın)';
+  if(prop==='box-shadow'||prop==='text-shadow'){
+    let depth=0,cur='';const layers=[];
+    for(const c of nv){if(c==='(')depth++;else if(c===')')depth--;if(c===','&&depth===0){layers.push(cur);cur=''}else cur+=c}
+    layers.push(cur);
+    for(const L of layers){
+      const lens=L.trim().split(/\s+/).filter(t=>/^-?(\d*\.?\d+px|0)$/.test(t));
+      if(lens.length>=3&&/^-?\d*\.?\d+px$/.test(lens[2])&&parseFloat(lens[2])!==0)return 'sabit gölge boyutu (--ka-sh-* kullanın)';
+    }
+  }
+  return null;
+}
+function cssViolations(text,label){
+  const t=text.replace(/\/\*[\s\S]*?\*\//g,m=>m.replace(/[^\n]/g,' '));
+  const bad=[];
+  for(const r of parse(t)){
+    if(PAPER.test(r.sel)||/print/.test(r.media))continue;
+    for(const [prop,val] of splitDecls(r.body)){
+      const why=declViolation(prop,val);
+      if(why)bad.push(`${label} ${r.sel.slice(0,50)} { ${prop}:${val.slice(0,50)} } → ${why}`);
+    }
+  }
+  return bad;
+}
+// Çekirdek (TEMA MERKEZİ) dışındaki üretim CSS'i
+const prodBad=[
+  ...cssViolations(outside,'design-system-base.css'),
+  ...['css/design-system.css','css/dashboard-announcement-media.css','css/v3/hava-durumu-skin.css','css/v3/okul-ozeti-skin.css']
+    .flatMap(f=>cssViolations(fs.readFileSync(f,'utf8'),f))
+];
+assert.strictEqual(prodBad.length,0,`Merkez dışında sabit değer var (${prodBad.length}): \n  ${prodBad.slice(0,6).join('\n  ')}`);
+
+// JS içine gömülü ekran (UI) stilleri de aynı kurala tabidir; kâğıt/yazdırma stilleri (rapor, çıktı) hariç.
+function jsStyleRegions(file){
+  const s=fs.readFileSync(file,'utf8');
+  if(file.endsWith('reports.js'))return [...s.matchAll(/<style[^>]*>(.*?)<\/style>/gs)].slice(0,2).map(m=>m[1]);
+  if(file.endsWith('food-menu.js')){const i=s.indexOf("const FOOD_MENU_STYLE='<style>'");return [s.slice(i,s.indexOf("</style>';",i))]}
+  const key=file.endsWith('report-customizer.js')?'s.textContent=`':'style.textContent=`';
+  const i=s.indexOf(key)+key.length;return [s.slice(i,s.indexOf('`',i))];
+}
+const jsBad=[];
+for(const f of ['js/modules/reports.js','js/modules/food-menu.js','js/core/teacher-reminder-academic-year.js','js/core/report-customizer.js']){
+  for(const region of jsStyleRegions(f)){
+    for(const seg of region.replace(/\/\*[\s\S]*?\*\//g,' ').split(/[{};]/)){
+      const i=seg.indexOf(':');if(i<0)continue;
+      const prop=seg.slice(0,i).trim().toLowerCase(),val=seg.slice(i+1).trim();
+      if(!/^-?[a-z][a-z-]*$/.test(prop))continue;
+      const why=declViolation(prop,val);
+      if(why)jsBad.push(`${f} { ${prop}:${val.slice(0,50)} } → ${why}`);
+    }
+  }
+}
+assert.strictEqual(jsBad.length,0,`JS içine gömülü ekran stilinde sabit değer var (${jsBad.length}): \n  ${jsBad.slice(0,6).join('\n  ')}`);
+
+// Her kullanılan merdiven değişkeni merkezde tanımlı olmalı (yazım hatası / unutulan basamak = sessiz bozulma)
+const LADDER=/var\(\s*(--(?:ka-(?:fs|fw|lh|ls|sp|sh|ic|rs|dur|ease)-[\w-]+|k-[\w-]+))\s*[,)]/g;
+const sources=[outside,...['css/design-system.css','css/dashboard-announcement-media.css','css/v3/hava-durumu-skin.css','css/v3/okul-ozeti-skin.css'].map(f=>fs.readFileSync(f,'utf8')),
+  ...['js/modules/reports.js','js/modules/food-menu.js','js/core/teacher-reminder-academic-year.js','js/core/report-customizer.js'].map(f=>fs.readFileSync(f,'utf8'))];
+const missing=new Set();
+for(const src of sources)for(const m of src.matchAll(LADDER))if(!new RegExp('(^|[;{\\s])'+m[1].replace(/[-]/g,'\\-')+'\\s*:').test(core))missing.add(m[1]);
+assert.strictEqual(missing.size,0,`Merkezde tanımsız basamak/havuz değişkeni kullanılıyor: ${[...missing].slice(0,8).join(', ')}`);

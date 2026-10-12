@@ -121,30 +121,30 @@ function injectNextLessonFontFix(){
   if(document.getElementById('koruk-next-lesson-font-fix'))return;
   const style=document.createElement('style');style.id='koruk-next-lesson-font-fix';style.textContent=`
 .ka-home .kh-focus h3{
-  font-size:14px!important;
-  line-height:1.2!important;
-  font-weight:800!important;
+  font-size:var(--ka-fs-14)!important;
+  line-height:var(--ka-lh-1-2)!important;
+  font-weight:var(--ka-fw-800)!important;
   letter-spacing:0!important;
 }
 .ka-home .kh-focus .kh-plan-button{
-  font-size:12px!important;
-  line-height:1.2!important;
+  font-size:var(--ka-fs-12)!important;
+  line-height:var(--ka-lh-1-2)!important;
 }
 .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main b{
-  font-size:14px!important;
-  line-height:1.2!important;
-  font-weight:800!important;
+  font-size:var(--ka-fs-14)!important;
+  line-height:var(--ka-lh-1-2)!important;
+  font-weight:var(--ka-fw-800)!important;
   letter-spacing:0!important;
 }
 .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main small{
-  font-size:11.5px!important;
-  line-height:1.2!important;
-  font-weight:600!important;
+  font-size:var(--ka-fs-11-5)!important;
+  line-height:var(--ka-lh-1-2)!important;
+  font-weight:var(--ka-fw-600)!important;
 }
 @media(max-width:480px){
-  .ka-home .kh-focus h3{font-size:14px!important;}
-  .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main b{font-size:14px!important;}
-  .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main small{font-size:11.5px!important;}
+  .ka-home .kh-focus h3{font-size:var(--ka-fs-14)!important;}
+  .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main b{font-size:var(--ka-fs-14)!important;}
+  .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main small{font-size:var(--ka-fs-11-5)!important;}
 }
 `;
   document.head.appendChild(style);

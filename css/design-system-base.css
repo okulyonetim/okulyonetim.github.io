@@ -428,13 +428,11 @@
   --ka-fs-rem-0-78:calc(0.78rem * var(--ka-font-scale)); --ka-fs-rem-0-84:calc(0.84rem * var(--ka-font-scale)); --ka-fs-rem-0-93:calc(0.93rem * var(--ka-font-scale)); --ka-fs-rem-1:calc(1rem * var(--ka-font-scale));
   --ka-fs-rem-1-15:calc(1.15rem * var(--ka-font-scale)); --ka-fs-rem-1-2:calc(1.2rem * var(--ka-font-scale)); --ka-fs-rem-1-25:calc(1.25rem * var(--ka-font-scale)); --ka-fs-rem-1-35:calc(1.35rem * var(--ka-font-scale));
   --ka-fs-rem-1-4:calc(1.4rem * var(--ka-font-scale)); --ka-fs-rem-1-45:calc(1.45rem * var(--ka-font-scale));
-
   /* ── YAZI AĞIRLIĞI — --ka-fw-shift tüm kalınlıkları kaydırır (-150 = daha ince, 0 = olduğu gibi) ── */
   --ka-fw-shift:0;
   --ka-fw-400:calc(400 + var(--ka-fw-shift)); --ka-fw-500:calc(500 + var(--ka-fw-shift)); --ka-fw-600:calc(600 + var(--ka-fw-shift)); --ka-fw-650:calc(650 + var(--ka-fw-shift)); --ka-fw-700:calc(700 + var(--ka-fw-shift));
   --ka-fw-750:calc(750 + var(--ka-fw-shift)); --ka-fw-800:calc(800 + var(--ka-fw-shift)); --ka-fw-820:calc(820 + var(--ka-fw-shift)); --ka-fw-850:calc(850 + var(--ka-fw-shift)); --ka-fw-880:calc(880 + var(--ka-fw-shift));
   --ka-fw-900:calc(900 + var(--ka-fw-shift)); --ka-fw-950:calc(950 + var(--ka-fw-shift));
-
   /* ── SATIR YÜKSEKLİĞİ — --ka-lh-k tüm satır aralıklarını çarpar ── */
   --ka-lh-k:1;
   --ka-lh-1-02:calc(1.02 * var(--ka-lh-k)); --ka-lh-1-04:calc(1.04 * var(--ka-lh-k)); --ka-lh-1-05:calc(1.05 * var(--ka-lh-k)); --ka-lh-1-06:calc(1.06 * var(--ka-lh-k)); --ka-lh-1-08:calc(1.08 * var(--ka-lh-k));
@@ -443,7 +441,6 @@
   --ka-lh-1-32:calc(1.32 * var(--ka-lh-k)); --ka-lh-1-35:calc(1.35 * var(--ka-lh-k)); --ka-lh-1-38:calc(1.38 * var(--ka-lh-k)); --ka-lh-1-4:calc(1.4 * var(--ka-lh-k)); --ka-lh-1-42:calc(1.42 * var(--ka-lh-k));
   --ka-lh-1-45:calc(1.45 * var(--ka-lh-k)); --ka-lh-1-48:calc(1.48 * var(--ka-lh-k)); --ka-lh-1-5:calc(1.5 * var(--ka-lh-k)); --ka-lh-1-55:calc(1.55 * var(--ka-lh-k)); --ka-lh-1-6:calc(1.6 * var(--ka-lh-k));
   --ka-lh-1-65:calc(1.65 * var(--ka-lh-k)); --ka-lh-1-7:calc(1.7 * var(--ka-lh-k));
-
   /* ── HARF ARALIĞI — --ka-tracking-k tüm harf aralıklarını çarpar ── */
   --ka-tracking-k:1;
   --ka-ls-01:calc(0.01em * var(--ka-tracking-k)); --ka-ls-015:calc(0.015em * var(--ka-tracking-k)); --ka-ls-02:calc(0.02em * var(--ka-tracking-k)); --ka-ls-025:calc(0.025em * var(--ka-tracking-k));
@@ -453,7 +450,6 @@
   --ka-ls-12:calc(0.12em * var(--ka-tracking-k)); --ka-ls-13:calc(0.13em * var(--ka-tracking-k)); --ka-ls-14:calc(0.14em * var(--ka-tracking-k)); --ka-ls-n005:calc(-0.005em * var(--ka-tracking-k));
   --ka-ls-n01:calc(-0.01em * var(--ka-tracking-k)); --ka-ls-n015:calc(-0.015em * var(--ka-tracking-k)); --ka-ls-n02:calc(-0.02em * var(--ka-tracking-k)); --ka-ls-n025:calc(-0.025em * var(--ka-tracking-k));
   --ka-ls-n03:calc(-0.03em * var(--ka-tracking-k)); --ka-ls-n035:calc(-0.035em * var(--ka-tracking-k)); --ka-ls-px25:calc(0.25px * var(--ka-tracking-k));
-
   /* ── BOŞLUK MERDİVENİ — iç boşluk, dış boşluk ve aralıklar; --ka-density ile hepsi birlikte sıkılaşır/gevşer (1 = olduğu gibi, .9 = %10 sıkı) ── */
   --ka-density:1;
   --ka-sp-1:calc(1px * var(--ka-density)); --ka-sp-2:calc(2px * var(--ka-density)); --ka-sp-3:calc(3px * var(--ka-density)); --ka-sp-4:calc(4px * var(--ka-density));
@@ -468,7 +464,6 @@
   --ka-sp-58:calc(58px * var(--ka-density)); --ka-sp-60:calc(60px * var(--ka-density)); --ka-sp-62:calc(62px * var(--ka-density)); --ka-sp-74:calc(74px * var(--ka-density));
   --ka-sp-84:calc(84px * var(--ka-density)); --ka-sp-92:calc(92px * var(--ka-density)); --ka-sp-102:calc(102px * var(--ka-density)); --ka-sp-105:calc(105px * var(--ka-density));
   --ka-sp-120:calc(120px * var(--ka-density));
-
   /* ── HAREKET — süre basamakları --ka-motion-k ile çarpılır (0 = animasyonsuz, 2 = yarı hız); eğriler --ka-ease-* ── */
   --ka-motion-k:1;
   --ka-dur-100:calc(100ms * var(--ka-motion-k)); --ka-dur-110:calc(110ms * var(--ka-motion-k)); --ka-dur-120:calc(120ms * var(--ka-motion-k)); --ka-dur-140:calc(140ms * var(--ka-motion-k));
@@ -481,7 +476,6 @@
   --ka-dur-6000:calc(6000ms * var(--ka-motion-k)); --ka-dur-9000:calc(9000ms * var(--ka-motion-k)); --ka-dur-14000:calc(14000ms * var(--ka-motion-k)); --ka-dur-17000:calc(17000ms * var(--ka-motion-k));
   --ka-dur-19000:calc(19000ms * var(--ka-motion-k)); --ka-dur-24000:calc(24000ms * var(--ka-motion-k)); --ka-dur-28000:calc(28000ms * var(--ka-motion-k)); --ka-dur-n2400:calc(-2400ms * var(--ka-motion-k));
   --ka-ease-1:cubic-bezier(.23,1,.32,1); --ka-ease-2:cubic-bezier(.2,.8,.2,1); --ka-ease-3:cubic-bezier(.32,.9,.4,1); --ka-ease-4:cubic-bezier(.2,.8,.3,1);
-
   /* ── GÖLGE — --ka-shadow-a koyuluğu (0 = düz tasarım, gölgesiz), --ka-shadow-k boyutu/yayılımı çarpar, --ka-shadow-rgb gölge rengidir ── */
   --ka-shadow-rgb:0,0,0;
   --ka-shadow-a:1;
@@ -494,7 +488,6 @@
   --ka-sh-40:calc(40px * var(--ka-shadow-k)); --ka-sh-44:calc(44px * var(--ka-shadow-k)); --ka-sh-45:calc(45px * var(--ka-shadow-k)); --ka-sh-48:calc(48px * var(--ka-shadow-k)); --ka-sh-50:calc(50px * var(--ka-shadow-k));
   --ka-sh-56:calc(56px * var(--ka-shadow-k)); --ka-sh-60:calc(60px * var(--ka-shadow-k)); --ka-sh-64:calc(64px * var(--ka-shadow-k)); --ka-sh-70:calc(70px * var(--ka-shadow-k)); --ka-sh-76:calc(76px * var(--ka-shadow-k));
   --ka-sh-80:calc(80px * var(--ka-shadow-k));
-
   /* ── İKON / KARE KUTU BOYUTLARI — --ka-icon-k hepsini çarpar; satır/kutu yükseklikleri --ka-row-grow ile (px ekler) ── */
   --ka-icon-k:1;
   --ka-row-grow:0px;
@@ -515,13 +508,16 @@
   --k-gray-11:17,17,17;  /* ka-cizelge-check ×5, ka-btn ×5, ka-teacher-list ×2 */
   --k-gray-14:20,20,20;  /*  ×1 */
   --k-gray-15:21,21,21;  /* ka-meeting-page ×1 */
-  --k-gray-17:23,23,23;  /* ka-cizelge-action ×18, ka-cizelge-check ×8 */
+  --k-gray-17:23,23,23;  /* ka-cizelge-action ×18, ka-cizelge-check ×8, js:report-customizer ×3 */
   --k-gray-1a:26,26,26;  /* ka-profile-popover__menu ×1 */
+  --k-gray-20:32,32,32;  /* js:report-customizer ×1 */
   --k-gray-24:36,36,36;  /* ka-teacher-directory ×1 */
   --k-gray-25:37,37,37;  /* ka-profile-page ×4 */
   --k-gray-2b:43,43,43;  /* ka-teacher-directory ×3, ka-plan-week ×2, ka-transport-action ×1 */
-  --k-gray-33:51,51,51;  /* ka-teacher-info ×1 */
+  --k-gray-33:51,51,51;  /* js:report-customizer ×4, ka-teacher-info ×1 */
   --k-gray-34:52,52,52;  /* ka-teacher-directory ×2, ka-cizelge-action ×1 */
+  --k-gray-3a:58,58,58;  /* js:report-customizer ×1 */
+  --k-gray-44:68,68,68;  /* js:report-customizer ×4 */
   --k-gray-55:85,85,85;  /* ka-plan-week ×2 */
   --k-gray-58615e:88,97,94;  /* sbe-object ×1 */
   --k-gray-76:118,118,118;  /* sbe-object ×1 */
@@ -532,7 +528,7 @@
   --k-gray-a0:160,160,160;  /* ka-profile-page ×2 */
   --k-gray-a8:168,168,168;  /* ka-schedule-page ×2, ka-muted ×1 */
   --k-gray-a9:169,169,169;  /* ka-teacher-directory ×1 */
-  --k-gray-aa:170,170,170;  /* ka-meeting-saved ×1, ka-payroll-metric ×1, ogm-name ×1 */
+  --k-gray-aa:170,170,170;  /* js:report-customizer ×4, ka-meeting-saved ×1, ka-payroll-metric ×1 */
   --k-gray-bd:189,189,189;  /* ka-plan-week ×2, ka-teacher-directory ×1, ka-transport-page ×1 */
   --k-gray-c7:199,199,199;  /* ka-pt-holiday ×1 */
   --k-gray-d0d0cc:208,208,204;  /* ka-btn- ×1 */
@@ -642,6 +638,7 @@
   --k-amber-d3a800:211,168,0;  /* ka-note-card ×1, ka-note-color ×1 */
   --k-amber-d49a00:212,154,0;  /* .sk ×2 */
   --k-amber-e0b400:224,180,0;  /* ka-note-card ×1 */
+  --k-amber-ffc400:255,196,0;  /* js:report-customizer ×2 */
   --k-amber-f0af13:240,175,19;  /* ka-map-favorite ×1 */
   --k-amber-ffc21a:255,194,26;  /* html  :hover ×1 */
   --k-amber-fbbf24:251,191,36;  /* kh-bell-modern ×3, ka-school-summary ×1 */
@@ -983,7 +980,6 @@
   --k-pink-c15b84:193,91,132;  /* ka-school-summary ×1 */
   --k-pink-db4d89:219,77,137;  /* ka-note-card ×1 */
   --k-pink-fce7f3:252,231,243;  /* ka-note-card ×1 */
-
   /* ── İKON / KARE KUTU BOYUTLARI — --ka-icon-k hepsini çarpar; satır/kutu yükseklikleri --ka-row-grow ile (px ekler) ── */
   --ka-icon-k:1;
   --ka-row-grow:0px;
@@ -993,6 +989,10 @@
   /* ── KÜÇÜK KÖŞE BASAMAKLARI (≤7px) — --ka-radius-base ile orantılı küçülür/büyür ── */
   --ka-rs-3:calc(var(--ka-radius-base) * 3 / 14); --ka-rs-4:calc(var(--ka-radius-base) * 4 / 14); --ka-rs-5:calc(var(--ka-radius-base) * 5 / 14); --ka-rs-6:calc(var(--ka-radius-base) * 6 / 14);
   --ka-rs-7:calc(var(--ka-radius-base) * 7 / 14);
+  /* ── İKON / KARE KUTU BOYUTLARI — --ka-icon-k hepsini çarpar; satır/kutu yükseklikleri --ka-row-grow ile (px ekler) ── */
+  --ka-icon-k:1;
+  --ka-row-grow:0px;
+  --ka-ic-8:calc(8px * var(--ka-icon-k)); --ka-ic-10:calc(10px * var(--ka-icon-k)); --ka-ic-12:calc(12px * var(--ka-icon-k)); --ka-ic-14:calc(14px * var(--ka-icon-k)); --ka-ic-18:calc(18px * var(--ka-icon-k));
 }
 
 /* ── AÇIK PALET ── */

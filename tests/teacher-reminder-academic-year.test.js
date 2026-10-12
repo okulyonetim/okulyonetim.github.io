@@ -9,5 +9,5 @@ assert(src.includes('tatilBaslangicTarihi'),'yaz tatili başlangıcı ayarlardan
 assert(src.includes('okulAcilisTarihi'),'yeni eğitim yılı açılışında hatırlatmalar yeniden açılmalı');
 assert(src.includes('MONTHLY_RE'),'aylık raporlar eğitim yılına göre yeniden tarihlenmeli');
 assert(!src.includes('getFullYear()-1,idx'),'eski takvim-yılı geri sarma mantığı kullanılmamalı');
-assert(init.includes('teacher-reminder-academic-year.js?v=952'),'düzeltme uygulama başlangıcında yüklenmeli');
+assert(init.includes('teacher-reminder-academic-year.js?v=953'),'düzeltme uygulama başlangıcında yüklenmeli');
 console.log('teacher reminder academic year tests passed');
