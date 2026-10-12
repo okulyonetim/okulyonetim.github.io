@@ -1,12 +1,37 @@
 # Koruk Asistan Tasarım Sistemi
 
-Koruk Asistan'ın uygulama genelindeki görsel ayarlarının **tek kaynağı** `css/design-system.css` dosyasıdır. Başka bir CSS dosyasına genel tema rengi, buton rengi, input rengi, header rengi, font veya kart görünümü eklenmemelidir.
+Uygulamanın görsel ayarlarının **tek kaynağı**, `css/design-system-base.css` dosyasının en üstündeki **TEMA MERKEZİ** bloğudur
+(`css/design-system.css` yalnızca bu dosyayı içe aktaran giriş noktasıdır). Renk, yüzey, metin, gölge, bulanıklık, köşe yuvarlaklığı,
+yazı tipi ve boşluk değerleri yalnızca orada tanımlanır; başka hiçbir yerde `html`/`:root` düzeyinde değişken tanımlanmaz.
+
+Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/kenar/gölge/blur), `--hd-*` (üst başlık), `--pp-*` (açılır pencere),
+`--ka-*` (uygulama genelindeki anlamsal renkler) ve ana sayfa/menü/kabuk/sayfa bileşenleri bu değişkenleri kullanır.
 
 ## Nereden değişiklik yapılır?
 
-`css/design-system.css` dosyasının en üstündeki **1. HIZLI TEMA AYARLARI** bölümünü düzenleyin. Açık tema burada tanımlanır. Aynı dosyadaki **2. KOYU TEMA** bölümünde aynı değişkenlerin koyu tema karşılıkları bulunur.
+`css/design-system-base.css` dosyasının başındaki **TEMA MERKEZİ** bloğunu düzenleyin. Blok üç parçadır:
 
-En sık kullanılacak değişkenler:
+1. `:root` (ortak) — ölçüler, yazı tipleri, **MARKA PALETİ**, **KATEGORİ PALETİ** ve palete bağlı türev (`var()`) tanımlar. İki temada aynı olanlar burada durur.
+2. `:root` (açık palet) — yalnızca açık temada farklı olan değerler.
+3. `html[data-theme="dark"]` (koyu palet) — aynı değişkenlerin koyu karşılıkları; açık palet ile aynı sırada tutulur.
+
+### Hızlı tarif
+
+| İstek | Değiştirilecek yer |
+|---|---|
+| Marka sarısını başka renk yap | **MARKA PALETİ** bölümü: `--t-accent-rgb` (ana renk) + aynı bölümdeki türevler `--t-accent-deep`, `--t-accent-bright`, `--t-on-accent`, `--t-gold-hi-rgb`, `--t-gold-lo-rgb`, `--t-on-accent-ink`, `--t-accent-dim`; açık palette `--t-tint-rgb`, `--t-accent-text`, `--t-accent-mid`, `--t-accent-ink`, `--t-accent-strong`, `--t-accent-pale`; koyu palette aynı adlar + `--t-accent-shade`. Hepsi `TEMA MERKEZİ` içinde, yan yana. |
+| Ana sayfa bölümü / menü grubu / rozet renkleri | `--c-*` (KATEGORİ PALETİ, RGB üçlüsü) |
+| Kart/cam yüzey opaklığı, kenar, bulanıklık | `--gl-bg`, `--gl-field`, `--gl-edge`, `--gl-sep`, `--gl-blur`, `--gl-shadow` (açık + koyu palet) |
+| Üst başlık / açılır pencere yüzeyi | `--hd-*`, `--pp-*` |
+| Sayfa zemini, metin, kenarlık | `--ka-app-bg`, `--ka-text`, `--ka-text-muted`, `--ka-border` |
+
+**Kural:** bir bileşen kuralında renk kodu (`#xxxxxx`, `rgb()`) yazmak yerine bu değişkenlerden biri kullanılır. Yeni bir renk gerekiyorsa önce TEMA MERKEZİ'ne eklenir.
+Rapor/A4 baskı renkleri (`--ka-report-*`) kâğıt çıktısı olduğu için temadan bağımsızdır.
+
+**Sürüm kuralı:** `design-system-base.css` her değiştiğinde `css/design-system.css` içindeki `@import ...?v=` ve `index.html` içindeki `css/design-system.css?v=` birer artırılır.
+
+### Sık kullanılan değişkenler
+
 
 | Değişken | Değiştirdiği yer |
 |---|---|
