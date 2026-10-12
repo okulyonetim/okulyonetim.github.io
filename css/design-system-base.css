@@ -262,6 +262,62 @@
   --ka-wx-t-mist-2:calc(19s * var(--ka-wx-speed) * var(--ka-motion-k));
   --ka-wx-t-bolt:calc(6s * var(--ka-wx-speed) * var(--ka-motion-k));
 
+  /* ── ARAÇLAR (LİSTE SAYFASI) — Döküman & Evraklar > Araçlar: araçların kartları (js/modules/araclar-hub.js) ── */
+  --ka-hub-gap:var(--ka-sp-12);                   /* kartlar arası boşluk */
+  --ka-hub-pad:var(--ka-sp-14);                   /* kart iç boşluğu */
+  --ka-hub-radius:var(--ka-card-radius-lg);       /* kart köşesi */
+  --ka-hub-icon-size:52px;                        /* ikon kutusunun kenarı */
+  --ka-hub-icon-radius:var(--ka-r-5);             /* ikon kutusunun köşesi */
+  --ka-hub-icon-fs:var(--ka-fs-28);               /* ikon (emoji) boyutu */
+  --ka-hub-title-fs:var(--ka-fs-16);              /* araç adı */
+  --ka-hub-desc-fs:var(--ka-fs-13);               /* araç açıklaması */
+  --ka-hub-go-fs:var(--ka-fs-28);                 /* sağdaki ok */
+  --ka-hub-press-scale:.985;                      /* basılınca küçülme (1 = küçülmez) */
+
+  /* ── KLASÖR SIRTLIĞI (kâğıt) — Araçlar > Klasör Sırtlığı Oluşturucu (js/modules/folder-spine.js) ──
+        Kâğıt temadan BAĞIMSIZDIR (koyu temada da beyaz kâğıt). Ölçüler gerçek birimdedir (mm / pt); "-k-" ile başlayanlar birimsiz
+        oranlardır ve yalnızca sığdırma hesabında okunur. Renk seçenekleri -sw-1 … -sw-8'dir (sayfadaki renk noktaları buradan gelir). */
+  --ka-spine-paper:#ffffff;                       /* kâğıt zemini */
+  --ka-spine-ink:#18202a;                         /* ana yazı */
+  --ka-spine-ink-soft:#56616f;                    /* ikincil yazı (alt başlık, kod, okul adı) */
+  --ka-spine-on-accent:#ffffff;                   /* renkli zemin üstündeki yazı */
+  --ka-spine-cut:#8a95a3;                         /* kesim çizgisi ve köşe işaretleri */
+  --ka-spine-sw-1:#2457c5;                        /* mavi */
+  --ka-spine-sw-2:#1b7f4b;                        /* yeşil */
+  --ka-spine-sw-3:#c2352f;                        /* kırmızı */
+  --ka-spine-sw-4:#d9731a;                        /* turuncu */
+  --ka-spine-sw-5:#6b3fa0;                        /* mor */
+  --ka-spine-sw-6:#0e8a9b;                        /* turkuaz */
+  --ka-spine-sw-7:#7a1f3d;                        /* bordo */
+  --ka-spine-sw-8:#2f3742;                        /* antrasit */
+  --ka-spine-font:var(--ka-font);                 /* kâğıt yazı tipi */
+  --ka-spine-fw-title:var(--ka-fw-900);           /* başlık kalınlığı */
+  --ka-spine-fw-sub:var(--ka-fw-700);             /* alt başlık kalınlığı */
+  --ka-spine-fw-meta:var(--ka-fw-800);            /* yıl / kod / okul kalınlığı */
+  --ka-spine-ls-meta:var(--ka-ls-06);             /* yıl / kod harf aralığı */
+  --ka-spine-pad:3.5mm;                           /* sırtlık iç boşluğu */
+  --ka-spine-no-radius:1.6mm;                     /* numara kutusunun köşesi */
+  --ka-spine-cut-w:.25mm;                         /* kesim çizgisi kalınlığı */
+  --ka-spine-rule-w:.35mm;                        /* şablonlardaki ince çizgiler */
+  --ka-spine-frame-w:.7mm;                        /* çerçeveli şablon: çerçeve kalınlığı */
+  --ka-spine-frame-gap:2mm;                       /* çerçeveli şablon: kenardan uzaklık */
+  --ka-spine-bar:2.5mm;                           /* sade şablon: alt-üst şerit kalınlığı */
+  --ka-spine-mark:3mm;                            /* köşe işareti uzunluğu */
+  --ka-spine-mark-gap:.8mm;                       /* köşe işareti ile sırtlık arası */
+  --ka-spine-k-logo:.44;                          /* logo kenarı ÷ sırtlık genişliği */
+  --ka-spine-k-no:.44;                            /* numara kutusu ÷ sırtlık genişliği */
+  --ka-spine-k-title:.46;                         /* en büyük başlık boyu ÷ sırtlık genişliği */
+  --ka-spine-k-cross:.62;                         /* alt başlık varken başlığın kaplayacağı enine pay */
+  --ka-spine-k-char:.58;                          /* ortalama harf genişliği ÷ yazı boyu (küçük/karışık harf) */
+  --ka-spine-k-char-caps:.7;                      /* aynısı, büyük harf için */
+  --ka-spine-k-leading:1.16;                      /* satır aralığı çarpanı */
+  --ka-spine-k-meta:.16;                          /* yıl / kod / okul boyu ÷ sırtlık genişliği */
+  --ka-spine-stage-pad:16px;                      /* önizleme sahnesi iç boşluğu */
+  --ka-spine-stage-radius:var(--ka-r-4);          /* önizleme sahnesi köşesi */
+  --ka-spine-stage-bg:rgba(var(--k-black),.07);   /* önizleme sahnesi zemini (kâğıdın altındaki yüzey) */
+  --ka-spine-paper-shadow:0 var(--ka-sh-6) var(--ka-sh-20) rgba(var(--k-black),.28);   /* önizlemedeki kâğıt gölgesi */
+  --ka-spine-sw-size:34px;                        /* renk noktası boyutu */
+
   /* ── PENCERE BAŞLIĞI — her pencere / alt sayfa / menünün üst şeridi (başlık + kapat düğmesi) ── */
   --ka-sheet-head-bg:transparent;                 /* şerit zemini */
   --ka-sheet-head-stuck-bg:var(--ka-sticky-bg);   /* içerik altından kayan (yapışkan) şeridin zemini */
@@ -10962,6 +11018,112 @@ html[data-theme] #v2ModuleRoot .ka-home #khWeather.ka-wx:not(#_x) .ka-wx-body :i
   .ka-wxm{animation:none}
   html #v2ModuleRoot .ka-home #khWeather.ka-wx:hover{transform:none}
 }
+
+/* ===== ARAÇLAR (LİSTE) + KLASÖR SIRTLIĞI OLUŞTURUCU (v1270) =====
+   Araçlar listesi: js/modules/araclar-hub.js · Sırtlık sayfası ve kâğıdı: js/modules/folder-spine.js.
+   Tüm değerler TEMA MERKEZİ'ndeki --ka-hub-* ve --ka-spine-* belirteçlerindendir; burada yalnızca yerleşim vardır.
+   Kâğıt kuralları (.ka-spine, .ka-spine-sheet, .ka-spine-cell, .ka-spine__*) yazdırılan belgeye de gömülür (folder-spine.js → paperCss):
+   bu yüzden yalnızca merkez belirteçlerini kullanır ve #v2ModuleRoot'a bağlı seçici içermez. */
+
+/* — Araçlar listesi — */
+.ka-hub-list{display:grid;gap:var(--ka-hub-gap)}
+.ka-hub-item{display:flex;align-items:center;gap:var(--ka-hub-gap);width:100%;margin:0;padding:var(--ka-hub-pad);text-align:left;font:inherit;cursor:pointer;border-radius:var(--ka-hub-radius);transition:transform var(--ka-dur-150) var(--ka-ease-1),box-shadow var(--ka-dur-150) var(--ka-ease-1)}
+.ka-hub-item:active{transform:scale(var(--ka-hub-press-scale))}
+.ka-hub-item:focus-visible{outline:var(--ka-ring-w) solid var(--ka-focus);outline-offset:var(--ka-ring-offset)}
+.ka-hub-item__icon{display:grid;place-items:center;flex:none;width:var(--ka-hub-icon-size);height:var(--ka-hub-icon-size);border-radius:var(--ka-hub-icon-radius);font-size:var(--ka-hub-icon-fs);line-height:1;background:linear-gradient(145deg,rgba(var(--t-accent-rgb),.22),rgba(var(--t-accent-rgb),.08));border:var(--ka-border-w) solid rgba(var(--t-accent-rgb),.34)}
+.ka-hub-item__copy{display:grid;gap:var(--ka-sp-2);min-width:0;flex:1 1 auto}
+.ka-hub-item__copy strong{font-size:var(--ka-hub-title-fs);font-weight:var(--ka-fw-850);line-height:var(--ka-lh-1-22)}
+.ka-hub-item__copy em{font-style:normal;font-size:var(--ka-hub-desc-fs);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-35)}
+.ka-hub-item__go{flex:none;font-size:var(--ka-hub-go-fs);line-height:1;font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot:not(#_x) .ka-hub-item__copy strong{color:var(--gl-fg)!important}
+html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-hub-item__copy em,.ka-hub-item__go){color:var(--gl-sub)!important}
+
+/* — Sırtlık sayfası: yerleşim ve denetimler — */
+.ka-spine-layout{display:grid;gap:var(--ka-sp-14);grid-template-columns:minmax(0,1fr)}
+.ka-spine-layout [hidden]{display:none!important}
+.ka-spine-form{min-width:0}
+.ka-spine-h{margin:0;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-850)}
+.ka-spine-tight{gap:var(--ka-sp-6)}
+.ka-spine-seg{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+.ka-spine-seg .ka-tab{min-height:var(--ka-tab-h);padding:0 var(--ka-tab-px);font:inherit;font-size:var(--ka-fs-13);cursor:pointer}
+.ka-spine-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-12);align-items:end}
+.ka-spine-grid>.is-wide{grid-column:1/-1}
+.ka-spine-checks{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8) var(--ka-sp-16)}
+.ka-spine-check{display:inline-flex;align-items:center;gap:var(--ka-sp-8);font-size:var(--ka-fs-14);font-weight:var(--ka-fw-700);cursor:pointer}
+.ka-spine-check input{width:var(--ka-sp-18);height:var(--ka-sp-18);margin:0;accent-color:var(--t-accent)}
+input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:transparent;box-shadow:none;accent-color:var(--t-accent)}
+.ka-spine-list{min-height:var(--ka-field-textarea-h);resize:vertical;font-family:var(--ka-font-mono)}
+.ka-spine-note{margin:0;font-size:var(--ka-fs-12-5);line-height:var(--ka-lh-1-35)}
+.ka-spine-sw{display:flex;flex-wrap:wrap;gap:var(--ka-sp-10);align-items:center}
+.ka-spine-sw__dot,.ka-spine-sw__custom{position:relative;flex:none;width:var(--ka-spine-sw-size);height:var(--ka-spine-sw-size);padding:0;margin:0;border-radius:50%;cursor:pointer;overflow:hidden;border:var(--ka-border-w) solid rgba(var(--k-white),.5)}
+.ka-spine-sw__dot{background:var(--sw)}
+.ka-spine-sw__custom{background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red)}
+.ka-spine-sw__custom input{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;opacity:0;cursor:pointer}
+.ka-spine-sw__dot.active{overflow:visible;outline:var(--ka-ring-w) solid var(--t-accent);outline-offset:var(--ka-ring-offset)}
+.ka-spine-stage{display:grid;place-items:center;min-height:var(--ka-sp-120);padding:var(--ka-spine-stage-pad);overflow:hidden;border-radius:var(--ka-spine-stage-radius);background:var(--ka-spine-stage-bg)}
+.ka-spine-fit{position:relative;flex:none;box-shadow:var(--ka-spine-paper-shadow)}
+.ka-spine-fit.is-sample .ka-spine-scale{opacity:.5}
+.ka-spine-scale{position:absolute;left:0;top:0;transform-origin:0 0;transform:scale(var(--sp-k))}
+.ka-spine-pager{display:flex;align-items:center;justify-content:center;gap:var(--ka-sp-12);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}
+.ka-spine-info{margin:0;text-align:center;font-size:var(--ka-fs-12-5);line-height:var(--ka-lh-1-35)}
+.ka-spine-actions{display:flex;flex-wrap:wrap;gap:var(--ka-sp-10)}
+.ka-spine-actions .ka-btn{flex:1 1 auto}
+@media(min-width:900px){
+  .ka-spine-layout{grid-template-columns:minmax(300px,400px) minmax(0,1fr);align-items:start}
+}
+
+/* — Kâğıt: A4 sayfa, hücre ve sırtlık (temadan bağımsız beyaz kâğıt) — */
+.ka-spine-doc{margin:0;background:var(--ka-spine-paper);font-family:var(--ka-spine-font);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ka-spine-sheet{box-sizing:border-box;position:relative;display:grid;grid-template-columns:repeat(var(--sp-cols),var(--sp-w));grid-auto-rows:var(--sp-h);justify-content:center;align-content:center;gap:var(--sp-gap);width:210mm;height:297mm;padding:var(--sp-m);overflow:hidden;background:var(--ka-spine-paper);break-after:page;page-break-after:always}
+.ka-spine-sheet:last-child{break-after:auto;page-break-after:auto}
+.ka-spine-cell{position:relative;width:var(--sp-w);height:var(--sp-h)}
+.ka-spine-sheet.cut-line .ka-spine{outline:var(--ka-spine-cut-w) dashed var(--ka-spine-cut)}
+.ka-spine-sheet.cut-marks .ka-spine-cell::after{--_m:var(--ka-spine-mark);--_t:var(--ka-spine-cut-w);--_l:calc(var(--ka-spine-mark) - var(--ka-spine-mark-gap));--_c:linear-gradient(var(--ka-spine-cut),var(--ka-spine-cut));
+  content:"";position:absolute;inset:calc(var(--ka-spine-mark) * -1);pointer-events:none;
+  background:
+    var(--_c) 0 calc(var(--_m) - var(--_t) / 2) / var(--_l) var(--_t) no-repeat,
+    var(--_c) calc(var(--_m) - var(--_t) / 2) 0 / var(--_t) var(--_l) no-repeat,
+    var(--_c) 100% calc(var(--_m) - var(--_t) / 2) / var(--_l) var(--_t) no-repeat,
+    var(--_c) calc(100% - var(--_m) + var(--_t) / 2) 0 / var(--_t) var(--_l) no-repeat,
+    var(--_c) 0 calc(100% - var(--_m) + var(--_t) / 2) / var(--_l) var(--_t) no-repeat,
+    var(--_c) calc(var(--_m) - var(--_t) / 2) 100% / var(--_t) var(--_l) no-repeat,
+    var(--_c) 100% calc(100% - var(--_m) + var(--_t) / 2) / var(--_l) var(--_t) no-repeat,
+    var(--_c) calc(100% - var(--_m) + var(--_t) / 2) 100% / var(--_t) var(--_l) no-repeat}
+.ka-spine{--sp-ink:var(--ka-spine-ink);--sp-soft:var(--ka-spine-ink-soft);--sp-on:var(--ka-spine-on-accent);
+  box-sizing:border-box;position:relative;display:flex;flex-direction:column;width:var(--sp-w);height:var(--sp-h);overflow:hidden;text-align:center;
+  background:var(--ka-spine-paper);color:var(--sp-ink);font-family:var(--ka-spine-font);font-style:normal;white-space:nowrap}
+.ka-spine__top{display:flex;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--sp-pad) * .6);height:var(--sp-top)}
+.ka-spine__logo{display:block;width:var(--sp-logo);height:var(--sp-logo);object-fit:contain}
+.ka-spine__no{display:grid;place-items:center;width:var(--sp-no);height:var(--sp-no);border-radius:var(--ka-spine-no-radius);background:var(--sp-c);color:var(--sp-on);font-size:var(--sp-nfs);font-weight:var(--ka-fw-900);line-height:1}
+.ka-spine__main{display:flex;flex:1 1 auto;align-items:center;justify-content:center;min-height:0;padding:0 var(--sp-pad)}
+.ka-spine__text{display:flex;align-items:center;justify-content:center;gap:var(--sp-tg);max-width:100%;max-height:100%}
+.ka-spine__title{font-size:var(--sp-tfs);font-weight:var(--ka-spine-fw-title);line-height:var(--ka-lh-1-15);color:var(--sp-ink)}
+.ka-spine__sub{font-size:var(--sp-sfs);font-weight:var(--ka-spine-fw-sub);line-height:var(--ka-lh-1-15);color:var(--sp-soft)}
+.ka-spine.d-down :is(.ka-spine__title,.ka-spine__sub),.ka-spine.d-up :is(.ka-spine__title,.ka-spine__sub){writing-mode:vertical-rl}
+.ka-spine.d-up .ka-spine__text{transform:rotate(180deg)}
+.ka-spine.d-flat .ka-spine__text{flex-direction:column-reverse}
+.ka-spine__foot{display:flex;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-fg);height:var(--sp-foot);padding:0 var(--sp-pad)}
+.ka-spine__year{font-size:var(--sp-yfs);font-weight:var(--ka-spine-fw-title);line-height:var(--ka-lh-1-15);color:var(--sp-c)}
+.ka-spine__code{font-size:var(--sp-cfs);font-weight:var(--ka-spine-fw-meta);letter-spacing:var(--ka-spine-ls-meta);line-height:var(--ka-lh-1-15);color:var(--sp-soft)}
+.ka-spine__school{font-size:var(--sp-mfs);font-weight:var(--ka-spine-fw-meta);line-height:var(--ka-lh-1-15);color:var(--sp-soft)}
+/* şablonlar */
+.ka-spine.t-klasik .ka-spine__top{background:var(--sp-c)}
+.ka-spine.t-klasik .ka-spine__no{background:var(--sp-on);color:var(--sp-c)}
+.ka-spine.t-klasik .ka-spine__foot{border-top:var(--ka-spine-rule-w) solid var(--sp-c)}
+.ka-spine.t-serit :is(.ka-spine__top,.ka-spine__foot){background:var(--sp-c)}
+.ka-spine.t-serit .ka-spine__no{background:var(--sp-on);color:var(--sp-c)}
+.ka-spine.t-serit :is(.ka-spine__year,.ka-spine__code,.ka-spine__school){color:var(--sp-on)}
+.ka-spine.t-koyu{background:var(--sp-c)}
+.ka-spine.t-koyu :is(.ka-spine__title,.ka-spine__sub,.ka-spine__year,.ka-spine__code,.ka-spine__school){color:var(--sp-on)}
+.ka-spine.t-koyu .ka-spine__no{background:var(--sp-on);color:var(--sp-c)}
+.ka-spine.t-koyu .ka-spine__foot{border-top:var(--ka-spine-rule-w) solid rgba(var(--k-white),.55)}
+.ka-spine.t-cerceve::before,.ka-spine.t-cerceve::after{content:"";position:absolute;pointer-events:none;border:var(--ka-spine-frame-w) solid var(--sp-c)}
+.ka-spine.t-cerceve::before{inset:var(--ka-spine-frame-gap)}
+.ka-spine.t-cerceve::after{inset:calc(var(--ka-spine-frame-gap) + var(--ka-spine-frame-w) * 2.2);border-width:var(--ka-spine-rule-w)}
+.ka-spine.t-cerceve .ka-spine__no{border-radius:50%}
+.ka-spine.t-minimal{box-shadow:inset 0 var(--ka-spine-bar) 0 var(--sp-c),inset 0 calc(var(--ka-spine-bar) * -1) 0 var(--sp-c)}
+.ka-spine.t-minimal .ka-spine__no{background:transparent;color:var(--sp-c)}
+.ka-spine.t-minimal .ka-spine__foot{border-top:var(--ka-spine-rule-w) solid var(--sp-c)}
 
 /* ===== CAM SİSTEMİ — TÜM SAYFALAR · MENÜ · ALT NAVİGASYON · BAŞLIK · AÇILIR PENCERELER (v1253) =====
    Ana sayfa zemini + tüm bölüm başlıkları, kartlar, satırlar, çipler ve ikonlar için TEK yetkili tanım (koyu + açık tema).

@@ -182,6 +182,26 @@ Ana sayfadaki hava durumu kartı ve kartı tıklayınca açılan detay penceresi
 
 Kart yapısını `js/v3/hava-durumu-skin.js` kurar (içeriği `SchoolLiveStatus.weatherCard()` üretir; `dashboard.js` değişmedi, eski çocukları CSS gizler); pencere `SchoolLiveStatus.openWeather()`'dır. Kapatmak için `localStorage['ka-skin']='off'` (sade eski kart görünür). Yeni bir hava durumu eklemek için `kindOf()`'a eşleme + `.ka-wx.k-<durum>.is-day|is-night` kuralları ve `--ka-wx-<durum>-*` renkleri gerekir.
 
+### Araçlar listesi ve Klasör Sırtlığı (`--ka-hub-*`, `--ka-spine-*`)
+
+Döküman & Evraklar menüsündeki **Araçlar** öğesi tek bir araca değil, araçların **liste sayfasına** (`js/modules/araclar-hub.js`) açılır; her araç ayrı bir sayfadır ve geri tuşu listeye döner. Şimdilik iki araç var: *İlkokula Başlama Yaşı Hesaplama* (`school-age-calculator`) ve *Klasör Sırtlığı Oluşturucu* (`folder-spine`, ilk açılışta yüklenir). Yeni araç eklemek: `AraclarHub.add({page,icon,title,desc})` + o sayfanın rotasını `ShellUI.registerPageRoute` ile kaydetmek.
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-hub-gap`, `--ka-hub-pad`, `--ka-hub-radius` | Liste kartlarının arası, iç boşluğu ve köşesi (yüzey ortak cam `.ka-surface`'tir) |
+| `--ka-hub-icon-size`, `--ka-hub-icon-radius`, `--ka-hub-icon-fs` | Kart ikon kutusu |
+| `--ka-hub-title-fs`, `--ka-hub-desc-fs`, `--ka-hub-go-fs`, `--ka-hub-press-scale` | Araç adı, açıklama, sağdaki ok ve basılma küçülmesi |
+| `--ka-spine-sw-1` … `-sw-8` | Sırtlık renk seçenekleri (sayfadaki renk noktaları buradan okunur) |
+| `--ka-spine-paper`, `--ka-spine-ink`, `--ka-spine-ink-soft`, `--ka-spine-on-accent`, `--ka-spine-cut` | Kâğıt, yazı, ikincil yazı, renkli zemindeki yazı, kesim çizgisi/işareti. **Temadan bağımsızdır** (koyu temada da beyaz kâğıt) |
+| `--ka-spine-font`, `--ka-spine-fw-title/-sub/-meta`, `--ka-spine-ls-meta` | Kâğıt yazı tipi, kalınlıkları, harf aralığı |
+| `--ka-spine-pad`, `--ka-spine-no-radius`, `--ka-spine-cut-w`, `--ka-spine-rule-w`, `--ka-spine-frame-w/-gap`, `--ka-spine-bar`, `--ka-spine-mark`, `--ka-spine-mark-gap` | Gerçek ölçüler (mm): iç boşluk, numara köşesi, çizgi kalınlıkları, çerçeve, şerit, köşe işareti |
+| `--ka-spine-k-logo`, `-k-no`, `-k-title`, `-k-cross`, `-k-char`, `-k-char-caps`, `-k-leading`, `-k-meta` | Birimsiz oranlar: logo / numara / başlık / alt bilgi boyunun sırtlık genişliğine oranı, harf genişliği, satır aralığı. Yalnızca sığdırma hesabında (`folder-spine.js`) okunur |
+| `--ka-spine-stage-pad`, `--ka-spine-stage-radius`, `--ka-spine-stage-bg`, `--ka-spine-paper-shadow`, `--ka-spine-sw-size` | Sayfa içi önizleme sahnesi ve renk noktaları |
+
+Sırtlık sayfası: ölçü (5 cm / 8 cm / özel), içerik, beş şablon (klasik, şeritli, dolgulu, çerçeveli, sade), renk, yazı yönü (yukarıdan aşağı / aşağıdan yukarı / yatay), seri (tek, numaralı, aylık, liste — liste sınıf ve öğretmen kayıtlarından doldurulabilir) ve kesim (çizgi / köşe işareti / yok). Sırtlıklar A4'e en çok sığacak biçimde dizilir ve `ReportEngine.previewHtml` önizlemesinden yazdırılır / PDF / PNG yapılır.
+
+Önemli: kâğıt kuralları (`.ka-spine`, `.ka-spine-sheet`, `.ka-spine-cell`, `.ka-spine__*`) merkezi CSS'te durur; yazdırılan belge bu kuralları **çalışma anında merkezi stilden çıkarıp** (`paperCss()`) belgeye gömer. Yani önizleme, yazıcı ve PNG çıktısı aynı tek kural kümesini kullanır; ikinci bir stil kopyası yoktur. Bu yüzden kâğıt seçicileri `#v2ModuleRoot`'a bağlı olmamalı ve tema belirteçlerine (`--gl-*`, `--ka-text`…) dayanmamalıdır (kontrat testi 16 bunu denetler). Bir sırtlık görünümünü değiştirmek için ilgili belirteci değiştirmek yeter.
+
 ### Genel düğmeler — tek değer, tüm uygulama
 
 Aşağıdaki değişkenlerin her biri `TEMA MERKEZİ` içinde **tek yerde** durur ve uygulamanın tamamını etkiler. Varsayılanlar mevcut görünümü korur (çarpanlar 1, eklemeler 0).
