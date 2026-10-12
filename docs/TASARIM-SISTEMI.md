@@ -2,7 +2,8 @@
 
 Uygulamanın görsel ayarlarının **tek kaynağı**, `css/design-system-base.css` dosyasının en üstündeki **TEMA MERKEZİ** bloğudur
 (`css/design-system.css` yalnızca bu dosyayı içe aktaran giriş noktasıdır). Renk, yüzey, metin, gölge, bulanıklık, köşe yuvarlaklığı,
-yazı tipi ve boşluk değerleri yalnızca orada tanımlanır; başka hiçbir yerde `html`/`:root` düzeyinde değişken tanımlanmaz.
+çizgi kalınlığı, yazı tipi/boyutu/kalınlığı, boşluk (yoğunluk), hareket süreleri ve ikon boyutları yalnızca orada tanımlanır;
+başka hiçbir yerde `html`/`:root` düzeyinde değişken tanımlanmaz ve bileşen kurallarında sabit değer bulunmaz.
 
 Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/kenar/gölge/blur), `--hd-*` (üst başlık), `--pp-*` (açılır pencere),
 `--ka-*` (uygulama genelindeki anlamsal renkler) ve ana sayfa/menü/kabuk/sayfa bileşenleri bu değişkenleri kullanır.
@@ -19,11 +20,13 @@ Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/
 
 | İstek | Değiştirilecek yer |
 |---|---|
-| Marka sarısını başka renk yap | **MARKA PALETİ** bölümü: `--t-accent-rgb` (ana renk) + aynı bölümdeki türevler `--t-accent-deep`, `--t-accent-bright`, `--t-on-accent`, `--t-gold-hi-rgb`, `--t-gold-lo-rgb`, `--t-on-accent-ink`, `--t-accent-dim`; açık palette `--t-tint-rgb`, `--t-accent-text`, `--t-accent-mid`, `--t-accent-ink`, `--t-accent-strong`, `--t-accent-pale`; koyu palette aynı adlar + `--t-accent-shade`. Hepsi `TEMA MERKEZİ` içinde, yan yana. |
+| Marka sarısını başka renk yap | **MARKA PALETİ** bölümü: `--t-accent-rgb` (ana renk) + aynı bölümdeki türevler `--t-accent-deep`, `--t-accent-bright`, `--t-on-accent`, `--t-gold-hi-rgb`, `--t-gold-lo-rgb`, `--t-gold-hover-hi-rgb`, `--t-gold-hover-lo-rgb`, `--t-on-accent-ink`, `--t-accent-dim`; açık palette `--t-tint-rgb`, `--t-accent-text`, `--t-accent-mid`, `--t-accent-ink`, `--t-accent-strong`, `--t-accent-pale`; koyu palette aynı adlar + `--t-accent-shade`. Hepsi `TEMA MERKEZİ` içinde, yan yana. |
 | Ana sayfa bölümü / menü grubu / rozet renkleri | `--c-*` (KATEGORİ PALETİ, RGB üçlüsü) |
 | Kart/cam yüzey opaklığı, kenar, bulanıklık | `--gl-bg`, `--gl-field`, `--gl-edge`, `--gl-sep`, `--gl-blur`, `--gl-shadow` (açık + koyu palet) |
 | Üst başlık / açılır pencere yüzeyi | `--hd-*`, `--pp-*` |
 | Sayfa zemini, metin, kenarlık | `--ka-app-bg`, `--ka-text`, `--ka-text-muted`, `--ka-border` |
+| Tüm yazıları büyüt/küçült, yoğunluğu değiştir, gölgeyi kapat | `--ka-font-scale`, `--ka-density`, `--ka-shadow-a` (bkz. *Genel düğmeler*) |
+| Modüle özgü bir rengi (otobüs koltuğu, zil durumu, hava durumu…) değiştir | `--k-*` renk havuzu (satır yorumu hangi modül olduğunu söyler) |
 
 **Kural:** bir bileşen kuralında renk kodu (`#xxxxxx`, `rgb()`) yazmak yerine bu değişkenlerden biri kullanılır. Yeni bir renk gerekiyorsa önce TEMA MERKEZİ'ne eklenir.
 Rapor/A4 baskı renkleri (`--ka-report-*`) kâğıt çıktısı olduğu için temadan bağımsızdır.
@@ -47,13 +50,62 @@ Rapor/A4 baskı renkleri (`--ka-report-*`) kâğıt çıktısı olduğu için te
 | Sekme | `--ka-tab-radius` | `--ka-tab-h`, `--ka-tab-px`, `--ka-tab-weight` |
 | Tablo | `--ka-table-radius` | `--ka-table-cell-py/px` |
 
-Genel düğmeler: `--ka-border-w` (tüm çizgi kalınlığı), `--ka-ring-w` (odak halkası), `--ka-blur-k` (bulanıklık çarpanı), `--ka-orb-a/b/c/-blur` (koyu temada arka plan ışık küreleri).
+Şekil düğmeleri: `--ka-border-w` (tüm çizgi kalınlığı), `--ka-ring-w` (odak halkası), `--ka-blur-k` (bulanıklık çarpanı), `--ka-orb-a/b/c/-blur` (koyu temada arka plan ışık küreleri).
 
 **Kural:** bileşen kuralında sabit köşe (`border-radius:14px`) veya `1px solid` yazılmaz; `var(--ka-r-*)`, aile değişkeni veya `var(--ka-border-w)` kullanılır
 (`tests/theme-center-contract.test.js` denetler; rapor/belge önizleme kâğıt yüzeyleri istisnadır).
 
-**Sınırlar:** yükseklik, iç boşluk ve yazı boyutu eski modüllerde tek tek ayarlanmıştır; bunlar değer korunarak `calc(Npx + var(--ka-btn-grow))` biçimine geçirildi
-(görünüm aynı, topluca ayarlanabilir). Yazı boyutları ve iç boşluklar için henüz tek ölçek yoktur. JS içine gömülü `<style>` blokları ayrıca ele alınmalıdır.
+### Genel düğmeler — tek değer, tüm uygulama
+
+Aşağıdaki değişkenlerin her biri `TEMA MERKEZİ` içinde **tek yerde** durur ve uygulamanın tamamını etkiler. Varsayılanlar mevcut görünümü korur (çarpanlar 1, eklemeler 0).
+
+| Değişken | Etkisi | Varsayılan |
+|---|---|---|
+| `--ka-font-scale` | Tüm yazı boyutlarını çarpar (1.1 = hepsi %10 büyük) | `1` |
+| `--ka-fw-shift` | Tüm yazı kalınlıklarını kaydırır (-100 = bir kademe ince) | `0` |
+| `--ka-lh-k` / `--ka-tracking-k` | Satır aralığı / harf aralığı çarpanı | `1` |
+| `--ka-density` | Tüm iç boşluk, dış boşluk ve aralıkları çarpar (.9 = sıkı, 1.1 = ferah) | `1` |
+| `--ka-radius-base` | Tüm köşe yuvarlaklığı (0 = köşeli) | `14px` |
+| `--ka-border-w` | Tüm ince çizgilerin kalınlığı | `1px` |
+| `--ka-ring-w` / `--ka-ring-offset` | Odak halkası kalınlığı / nesneden uzaklığı | `3px` / `2px` |
+| `--ka-shadow-a` | Gölge koyuluğu (0 = düz, gölgesiz tasarım) | `1` |
+| `--ka-shadow-k` / `--ka-shadow-rgb` | Gölge boyutu-yayılımı / gölge rengi | `1` / `0,0,0` |
+| `--ka-blur-k` | Cam bulanıklığı çarpanı | `1` |
+| `--ka-motion-k` | Tüm geçiş ve animasyon sürelerini çarpar (0 = animasyonsuz) | `1` |
+| `--ka-icon-k` | İkon, avatar ve kare kutu boyutları | `1` |
+| `--ka-btn-grow` / `--ka-field-grow` / `--ka-row-grow` | Düğme / form kutusu / satır yüksekliğine px ekler | `0px` |
+| `--ka-font`, `--ka-font-mono` | Yazı tipi ailesi | Inter, JetBrains Mono |
+
+### Basamaklar (merdivenler) ve renk havuzu
+
+Eski modüllerdeki tek tek ayarlanmış değerler kaybolmasın diye **her değer merkezde bir basamak** olarak durur; bileşen kuralları sabit sayı yerine basamağı kullanır. Bir basamağı tek başına değiştirmek, o değeri kullanan her yeri değiştirir.
+
+| Basamak | Örnek | Ne için |
+|---|---|---|
+| `--ka-fs-N` | `--ka-fs-13` | Yazı boyutu (N = px). `--ka-font-scale` ile çarpılır; `--ka-fs-rem-*` rem tabanlı olanlardır |
+| `--ka-fw-N` | `--ka-fw-800` | Yazı kalınlığı |
+| `--ka-lh-N`, `--ka-ls-N` | `--ka-lh-1-25`, `--ka-ls-08` | Satır yüksekliği, harf aralığı (`n` = eksi) |
+| `--ka-sp-N` | `--ka-sp-12` | Boşluk (padding / margin / gap, N = px). `--ka-density` ile çarpılır |
+| `--ka-sh-N` | `--ka-sh-24` | Gölge ölçüleri (kaydırma, bulanıklık, yayılım) |
+| `--ka-ic-N` | `--ka-ic-44` | İkon / kare kutu / avatar boyutu |
+| `--ka-rs-N` | `--ka-rs-4` | Küçük köşeler (≤7px); `--ka-radius-base` ile orantılı |
+| `--ka-dur-N`, `--ka-ease-N` | `--ka-dur-200` | Geçiş süresi (ms), hareket eğrisi |
+| `--k-*` (renk havuzu) | `--k-green-17684f` | Modüllere özgü renkler (rgb üçlüsü). Kategorilere göre gruplanmıştır; her satırın yorumu rengi hangi modüllerin kullandığını söyler |
+
+Not: marka ve kategori renkleri (`--t-*`, `--c-*`) renk havuzundan ayrıdır; modül renkleri (otobüs koltukları, hava durumu, bildirim zili durumları, bordro vb.) havuzdadır.
+
+**Kural:** Merkez dışındaki hiçbir kuralda sabit renk, yazı boyutu, kalınlık, boşluk, gölge ölçüsü, süre, köşe veya çizgi kalınlığı yazılmaz — basamak veya düğme kullanılır. Yeni bir değer gerekiyorsa önce merkeze eklenir.
+`tests/theme-center-contract.test.js` bunu bütün üretim CSS'inde ve JS içine gömülü ekran stillerinde denetler (rapor/belge kâğıt yüzeyleri ve yazdırma kuralları istisnadır).
+
+**Sınırlar (dürüst liste):**
+
+- **Kâğıt çıktısı** (A4 rapor, yazdırma, PDF — `.ka-report*`, `@media print`, JS içindeki rapor/yazdırma `<style>` blokları) temadan bağımsızdır; renkleri `--ka-report-*` ile, ölçüleri mm/pt ile belirlenir.
+- **Yerleşim geometrisi** merkezde değildir: kolon genişlikleri, `max-width`, `grid-template-columns`, konum kaydırmaları (`top/left/...`), `transform` ve `@media` kırılma noktaları (CSS değişkeni kabul etmez).
+- **Çizim ve illüstrasyonlar:** hava durumu SVG sahnesinin paleti (`js/v3/hava-durumu-skin.js`), çizim defteri (canvas) renkleri.
+- **Statik dosyalar:** `manifest.json` renkleri, uygulama ikonları, açılış görseli; HTML `<meta theme-color>` ilk değeri (çalışınca merkezden güncellenir).
+- **Kullanıcı verisi:** yöneticinin menü kartına seçtiği özel renkler kullanıcıya aittir; seçilmemiş kartların varsayılan rengi marka renginden okunur.
+- Düğmeler `html` düzeyinde okunur; bir alt öğeye yerel `--ka-density` vermek çalışmaz.
+- Çarpanlar makul aralıkta (±%10–15) denenmiştir; çok uç değerlerde sabit yükseklikli bazı yerleşimler taşabilir.
 
 ### Sık kullanılan değişkenler
 

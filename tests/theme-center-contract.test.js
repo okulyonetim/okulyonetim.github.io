@@ -215,3 +215,11 @@ const sources=[outside,...['css/design-system.css','css/dashboard-announcement-m
 const missing=new Set();
 for(const src of sources)for(const m of src.matchAll(LADDER))if(!new RegExp('(^|[;{\\s])'+m[1].replace(/[-]/g,'\\-')+'\\s*:').test(core))missing.add(m[1]);
 assert.strictEqual(missing.size,0,`Merkezde tanımsız basamak/havuz değişkeni kullanılıyor: ${[...missing].slice(0,8).join(', ')}`);
+
+// Merkez blokları kendi içinde aynı değişkeni iki kez tanımlamaz (sessiz geçersiz kılma = yönetilemez merkez)
+for(const [label,r] of [['ortak',inCore[0]],['açık',inCore[1]],['koyu',inCore[2]]]){
+  const seen=new Map();
+  for(const m of r.body.matchAll(/(?<![\w-])(--[a-zA-Z0-9-]+)\s*:/g))seen.set(m[1],(seen.get(m[1])||0)+1);
+  const dup=[...seen].filter(([,n])=>n>1).map(([k])=>k);
+  assert.strictEqual(dup.length,0,`TEMA MERKEZİ (${label} blok) içinde birden fazla tanımlanan değişken: ${dup.slice(0,6).join(', ')}`);
+}
