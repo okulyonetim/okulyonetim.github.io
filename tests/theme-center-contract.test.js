@@ -243,3 +243,47 @@ for(const t of ['--ka-ph-bg','--ka-ph-border-w','--ka-ph-border','--ka-ph-radius
   // kabuk kuralı sabit renk/ölçü içermez: yalnız --ka-ph-* değişkenleri
   assert(!/#[0-9a-fA-F]{3,8}\b|rgba?\(|\d+px/.test(head.body),'Sayfa başlığı kabuğu sabit renk/ölçü içermemeli (--ka-ph-* kullanın).');
 }
+
+// --- 10) Pencere başlığı: modal, alt sayfa, detay paneli ve menü üst şeridi tek ailede (--ka-sheet-head-*, --ka-sheet-close-*) toplanır
+for(const t of ['--ka-sheet-head-bg','--ka-sheet-head-stuck-bg','--ka-sheet-head-border-w','--ka-sheet-head-border','--ka-sheet-head-pad-y','--ka-sheet-head-pad-x','--ka-sheet-head-gap',
+  '--ka-sheet-head-title','--ka-sheet-head-title-size','--ka-sheet-head-title-weight','--ka-sheet-head-title-lh','--ka-sheet-head-sub','--ka-sheet-head-sub-size',
+  '--ka-sheet-head-kicker','--ka-sheet-head-kicker-size','--ka-sheet-close-size','--ka-sheet-close-bg','--ka-sheet-close-fg','--ka-sheet-close-border','--ka-sheet-close-radius'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde pencere başlığı değişkeni eksik: ${t}`);
+{
+  const rules10=parse(masked);
+  const shell=rules10.find(r=>/background\s*:\s*var\(--ka-sheet-head-bg\)/.test(r.body));
+  assert(shell,'Pencere başlığı kabuğu --ka-sheet-head-bg ile çizilmeli.');
+  for(const c of ['ka-modal__header','detay-head','classic-modal-head','ka-announcement-detail__header','sbe-header','ka-menu-head'])
+    assert(shell.sel.includes('.'+c),`Pencere başlığı kabuğunda eksik varyant: .${c}`);
+  assert(!/#[0-9a-fA-F]{3,8}\b|rgba?\(|\d+px/.test(shell.body),'Pencere başlığı kabuğu sabit renk/ölçü içermemeli (--ka-sheet-head-* kullanın).');
+  const close=rules10.find(r=>/width\s*:\s*var\(--ka-sheet-close-size\)/.test(r.body));
+  assert(close&&close.sel.includes('.detail-close')&&close.sel.includes('.ka-icon-button'),'Pencere kapat düğmesi --ka-sheet-close-* ile tek kuralda çizilmeli.');
+  // eski kopya kabuklar geri gelmesin: başlık şeridi kendi zeminini/çizgisini tanımlamaz
+  for(const r of rules10.filter(r=>/^(\.ka-modal__header|\.detay-head|\.classic-modal-head)$/.test(r.sel.trim())))
+    assert(!/background|border-bottom|padding\s*:/.test(r.body),`Eski kopya başlık kuralı: ${r.sel} (görünüm --ka-sheet-head-* ile kabukta).`);
+}
+
+// --- 11) Yapışkan şeritler: kaydırırken içeriğin üstünde kalan her şerit / başlık / tablo sütunu opak zemini tek token'dan alır (--ka-sticky-bg)
+for(const t of ['--ka-sticky-bg','--ka-sticky-cell-bg'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde yapışkan şerit değişkeni eksik: ${t}`);
+{
+  const rules11=parse(masked);
+  const strip=rules11.find(r=>/background-color\s*:\s*var\(--ka-sticky-bg\)/.test(r.body));
+  const cell=rules11.find(r=>/background-color\s*:\s*var\(--ka-sticky-cell-bg\)/.test(r.body));
+  assert(strip&&cell,'Yapışkan şerit / hücre kabuğu --ka-sticky-bg / --ka-sticky-cell-bg ile çizilmeli.');
+  for(const c of ['ka-teacher-profile-toolbar','ka-class-detail-topbar','ka-plan-week__footer','ka-announcement-detail__footer','sbe-table-toolbar','ka-rubric-settings__header','ka-rubric-settings__footer','ka-report-customizer__head','ka-report-customizer__footer'])
+    assert(strip.sel.includes('.'+c),`Yapışkan şerit kabuğunda eksik: .${c}`);
+  for(const c of ['ka-layout-section-tabs','ka-gradebook-student','ka-results-student','ka-results-table th','ka-gradebook-table thead th','ka-duty-grid thead th','ka-teacher-list-table th','ka-att-name'])
+    assert(cell.sel.includes(c),`Yapışkan hücre kabuğunda eksik: ${c}`);
+  assert(!/#[0-9a-fA-F]{3,8}\b|rgba?\(|\d+px/.test(strip.body+cell.body),'Yapışkan şerit kabuğu sabit renk/ölçü içermemeli (--ka-sticky-* kullanın).');
+  // unutulan şerit kalmasın: position:sticky tanımlayan her seçici kabukta, cam (blur) istisnada ya da kendi başlık kabuğunda olmalı
+  const covered=new Set(['.detay-head','.ka-pt-header','.ka-payroll-header','html .ka-app-header','.ka-checklist-workspace__header','.ka-gradebook-workspace__header','.ka-attendance-savebar','.ka-layout-savebar','.ka-payroll-actions']);
+  const stickySel=[];
+  for(const r of rules11.filter(r=>/position\s*:\s*sticky/.test(r.body)))
+    for(const sel of r.sel.split(',').map(x=>x.trim()).filter(Boolean)){
+      const last=(sel.match(/\.[\w-]+(?![\w-])(?!.*\.[\w-])/)||[])[0];
+      if(covered.has(sel)||strip.sel.includes(sel)||cell.sel.includes(sel)||(last&&(strip.sel.includes(last)||cell.sel.includes(last))))continue;
+      stickySel.push(sel);
+    }
+  assert(!stickySel.length,`position:sticky kullanan ama opak zemine bağlanmamış şerit: ${[...new Set(stickySel)].join(' | ')} (--ka-sticky-bg kabuğuna ekleyin; cam şerit ise istisna listesine).`);
+}

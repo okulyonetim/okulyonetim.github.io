@@ -24,6 +24,8 @@ Cam görünüm (glassmorphism) bu blokla yönetilir: `--gl-*` (cam yüzey/metin/
 | **Her sayfanın başlık kartı** (geri düğmesinin altındaki başlık + açıklama + rozet) — zemin, çerçeve, köşe, gölge, yazı boyutu/rengi, ikon kutusu | **SAYFA BAŞLIĞI** bölümü: `--ka-ph-*` (aşağıdaki tabloya bakın) |
 | Ana sayfa bölümü / menü grubu / rozet renkleri | `--c-*` (KATEGORİ PALETİ, RGB üçlüsü) |
 | Kart/cam yüzey opaklığı, kenar, bulanıklık | `--gl-bg`, `--gl-field`, `--gl-edge`, `--gl-sep`, `--gl-blur`, `--gl-shadow` (açık + koyu palet) |
+| **Pencere / alt sayfa / menü başlığı** (üst şerit: başlık, açıklama, × düğmesi) — boşluk, alt çizgi, yazı boyutu/rengi, kapat düğmesi | **PENCERE** bölümü: `--ka-sheet-head-*`, `--ka-sheet-close-*` (aşağıdaki tabloya bakın) |
+| **Kaydırırken üstte kalan şeritler** (yapışkan araç çubuğu, alt kaydet çubuğu, tablo başlığı / ilk sütun) — zemin | `--ka-sticky-bg`, `--ka-sticky-cell-bg` (bkz. *Yapışkan şeritler*) |
 | Üst başlık / açılır pencere yüzeyi | `--hd-*`, `--pp-*` |
 | Sayfa zemini, metin, kenarlık | `--ka-app-bg`, `--ka-text`, `--ka-text-muted`, `--ka-border` |
 | Tüm yazıları büyüt/küçült, yoğunluğu değiştir, gölgeyi kapat | `--ka-font-scale`, `--ka-density`, `--ka-shadow-a` (bkz. *Genel düğmeler*) |
@@ -75,6 +77,34 @@ Tüm modül sayfalarının başlık kartı (öğretmenler, öğrenciler, haberle
 | `--ka-ph-deco` | Sayfaların kendi süs şekilleri/emojileri (`none` kapalı, `block` açık) |
 
 Yeni bir sayfa başlığı eklerken işaretlemeye `class="ka-page-head"` vermek yeter (ikon kutusu için `ka-page-head__icon`; yerleşim — ikon, metin bloğu, sağda düğme — kabukta hazırdır, satır içi stil gerekmez). Başlık, formun durduğu kartın **dışında**, kardeş öğe olarak yazılır (`<header class="ka-page-head">…</header><article class="ka-card">…`); başlığı kartın içine koymayın. Sayfanın ilk satırı "başlık + sağda rozet/düğme" ise ve ilk kart başlıksa (`section.ka-page`) ayrıca işaretlemeye gerek yoktur.
+
+### Pencere başlığı (`--ka-sheet-head-*`, `--ka-sheet-close-*`)
+
+Tüm açılır pencerelerin (`.ka-modal__header`, duyuru penceresi dahil), people detay panelinin (`.detay-head`), klasik pencerenin (`.classic-modal-head`), duyuru ayrıntısının, servis oturma düzenleyicisinin ve menü sayfasının üst şeridi **tek kabukla** çizilir; her değer `TEMA MERKEZİ > PENCERE` bölümündedir. Sayfa başlığı kartından (`--ka-ph-*`) ayrıdır: bu, pencere içinde duran düz bir şerittir.
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-sheet-head-bg` | Şerit zemini (`transparent` = pencere yüzeyi görünür) |
+| `--ka-sheet-head-stuck-bg` | İçerik altından kayan (yapışkan) şeridin zemini (varsayılan `--ka-sticky-bg`) |
+| `--ka-sheet-head-border-w`, `--ka-sheet-head-border` | Alt çizgi kalınlığı (0 = çizgisiz) ve rengi |
+| `--ka-sheet-head-pad-y`, `-pad-x`, `-gap` | İç boşluk ve başlık ile kapat düğmesi arası |
+| `--ka-sheet-head-title`, `-size`, `-weight`, `-lh` | Başlık yazısı |
+| `--ka-sheet-head-sub`, `-size` | Açıklama yazısı |
+| `--ka-sheet-head-kicker`, `-size` | Başlık üstündeki küçük etiket (ör. YENİ DUYURU) |
+| `--ka-sheet-close-size`, `-bg`, `-fg`, `-border`, `-radius` | Kapat (×) düğmesi — şeritlerin hepsinde aynı |
+
+Yeni bir pencere yazarken başlık şeridine `ka-modal__header` sınıfı vermek yeter; ayrıca renk, boşluk veya yazı boyutu yazmayın. Servis oturma düzenleyicisinin şeridi, yoğun bir düzenleyici olduğu için kendi sıkı iç boşluğunu korur.
+
+### Yapışkan şeritler (`--ka-sticky-bg`, `--ka-sticky-cell-bg`)
+
+Kaydırırken içeriğin üstünde kalan her şeridin (öğretmen profili araç çubuğu, sınıf detayı üst çubuğu, servis düzenleyici araç/alt çubuğu, rapor özelleştirici başlık/altlığı, alt kaydet çubukları…) ve yapışkan tablo başlığı / ilk sütununun zemini **opaktır**; saydam bırakılırsa alttan kayan yazılar üst üste biner. Zemin tek yerden gelir:
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-sticky-bg` | Yapışkan şeritlerin opak zemini (varsayılan açılır pencere yüzeyi `--pp-solid`) |
+| `--ka-sticky-cell-bg` | Yapışkan tablo başlığı, ilk sütun ve sekme şeridinin opak, hafif tonlu zemini |
+
+Yeni bir `position:sticky` şerit yazarsanız seçicisini dosya sonundaki *YAPIŞKAN ŞERİTLER* kabuğuna ekleyin; ayrıca `background` yazmayın. Bilerek cam (blur) bırakılan şeritler — uygulama üst başlığı, çalışma alanı başlıkları ve kaydet çubukları — kabuğun dışındadır; yeni bir cam şerit eklenirse `tests/theme-center-contract.test.js` içindeki istisna listesine yazılır (test, kabuğa da istisnaya da girmeyen sticky şeridi reddeder).
 
 ### Genel düğmeler — tek değer, tüm uygulama
 
