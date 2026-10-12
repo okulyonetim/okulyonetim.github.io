@@ -223,3 +223,22 @@ for(const [label,r] of [['ortak',inCore[0]],['açık',inCore[1]],['koyu',inCore[
   const dup=[...seen].filter(([,n])=>n>1).map(([k])=>k);
   assert.strictEqual(dup.length,0,`TEMA MERKEZİ (${label} blok) içinde birden fazla tanımlanan değişken: ${dup.slice(0,6).join(', ')}`);
 }
+
+// --- 9) Sayfa başlığı: her sayfanın üst kartı tek ailede (--ka-ph-*) toplanır
+for(const t of ['--ka-ph-bg','--ka-ph-border-w','--ka-ph-border','--ka-ph-radius','--ka-ph-shadow','--ka-ph-blur','--ka-ph-pad-y','--ka-ph-pad-x','--ka-ph-gap','--ka-ph-min-h',
+  '--ka-ph-title','--ka-ph-title-size','--ka-ph-title-weight','--ka-ph-title-tracking','--ka-ph-title-lh','--ka-ph-sub','--ka-ph-sub-size','--ka-ph-sub-lh',
+  '--ka-ph-kicker','--ka-ph-kicker-size','--ka-ph-kicker-tracking','--ka-ph-icon-bg','--ka-ph-icon-fg','--ka-ph-icon-border','--ka-ph-icon-radius','--ka-ph-icon-shadow','--ka-ph-deco'])
+  assert(core.includes(t+':'),`TEMA MERKEZİ'nde sayfa başlığı değişkeni eksik: ${t}`);
+{
+  const rules9=parse(masked);
+  const phRules=rules9.filter(r=>/\.ka-page-head[,)\s]/.test(r.sel)&&/:is\(#v2ModuleRoot/.test(r.sel));
+  assert(phRules.length>=5,'SAYFA BAŞLIĞI birleşik kuralları bulunamadı.');
+  const head=phRules.find(r=>/background\s*:\s*var\(--ka-ph-bg\)/.test(r.body));
+  assert(head,'Sayfa başlığı kabuğu --ka-ph-bg ile çizilmeli.');
+  // bilinen tüm başlık varyantı aynı kabuğa bağlı kalmalı
+  for(const c of ['ka-page-head','ka-cizelge-page-head','ka-guidance-page-head','ka-gradebook-hero','ka-transport-page-hero','ka-map-hero','ka-schedule-hero','ka-teacher-list-hero',
+    'ka-people-page-head','ogm-head','ka-notes-hero','ka-communication-heading','ka-management-intro','ka-evrak-page-head','ka-payroll-header','ka-plan-hero','ka-meeting-page__intro','ka-settings-toolbar'])
+    assert(head.sel.includes('.'+c),`Sayfa başlığı kabuğunda eksik varyant: .${c}`);
+  // kabuk kuralı sabit renk/ölçü içermez: yalnız --ka-ph-* değişkenleri
+  assert(!/#[0-9a-fA-F]{3,8}\b|rgba?\(|\d+px/.test(head.body),'Sayfa başlığı kabuğu sabit renk/ölçü içermemeli (--ka-ph-* kullanın).');
+}

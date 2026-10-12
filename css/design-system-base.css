@@ -111,6 +111,35 @@
   --ka-cover-radius-sm:var(--ka-r-6);
   --ka-cover-radius-lg:var(--ka-r-10);
 
+  /* ── SAYFA BAŞLIĞI — her sayfanın geri düğmesinin altındaki başlık kartı (hepsi bu değerlerle çizilir) ── */
+  --ka-ph-bg:radial-gradient(120% 100% at 100% 0%,rgba(var(--t-accent-rgb),.11),transparent 58%),var(--ka-card-bg);  /* kart zemini; düz başlık için: transparent */
+  --ka-ph-border-w:var(--ka-border-w);   /* çerçeve kalınlığı (0 = çerçevesiz) */
+  --ka-ph-border:var(--gl-edge);         /* çerçeve rengi */
+  --ka-ph-radius:var(--ka-cover-radius); /* köşe */
+  --ka-ph-shadow:var(--gl-shadow);       /* gölge (none = düz) */
+  --ka-ph-blur:var(--gl-blur);           /* cam bulanıklığı */
+  --ka-ph-pad-y:var(--ka-sp-14);         /* iç boşluk: üst-alt */
+  --ka-ph-pad-x:var(--ka-sp-16);         /* iç boşluk: sağ-sol */
+  --ka-ph-gap:var(--ka-sp-12);           /* başlık ile eylem/rozet arası */
+  --ka-ph-min-h:0px;                     /* en az yükseklik (ör. 120px = daha kapak gibi) */
+  --ka-ph-title:var(--gl-fg);            /* başlık rengi */
+  --ka-ph-title-size:var(--ka-fs-22);
+  --ka-ph-title-weight:var(--ka-fw-800);
+  --ka-ph-title-tracking:var(--ka-ls-n02);
+  --ka-ph-title-lh:var(--ka-lh-1-2);
+  --ka-ph-sub:var(--gl-sub);             /* açıklama rengi */
+  --ka-ph-sub-size:var(--ka-fs-13);
+  --ka-ph-sub-lh:var(--ka-lh-1-35);
+  --ka-ph-kicker:var(--hd-chip);         /* başlık üstü küçük etiket (ör. ÖĞRENCİ MERKEZİ) */
+  --ka-ph-kicker-size:var(--ka-fs-10);
+  --ka-ph-kicker-tracking:var(--ka-ls-12);
+  --ka-ph-icon-bg:linear-gradient(135deg,rgba(var(--t-gold-hi-rgb),.30),rgba(var(--t-gold-lo-rgb),.12));  /* başlık ikon kutusu */
+  --ka-ph-icon-fg:var(--hd-chip);
+  --ka-ph-icon-border:rgba(var(--t-accent-rgb),.34);
+  --ka-ph-icon-radius:var(--ka-cover-radius-sm);
+  --ka-ph-icon-shadow:0 var(--ka-sh-6) var(--ka-sh-18) rgba(var(--t-gold-lo-rgb),calc(.14 * var(--ka-shadow-a)));
+  --ka-ph-deco:none;                     /* sayfaların kendi süs şekilleri/emojileri: none = kapalı, block = açık */
+
   /* ── PENCERE · ALT SAYFA · AÇILIR MENÜ ── */
   --ka-sheet-radius:var(--ka-r-6);       /* ortadaki pencere */
   --ka-sheet-radius-lg:var(--ka-r-9);    /* alttan açılan sayfa / büyük pencere */
@@ -11669,18 +11698,7 @@ html[data-theme] .ka-shell-back:not(#_x) span{font-size:var(--ka-fs-13);font-wei
 html[data-theme] .ka-shell-back:not(#_x) svg{width:var(--ka-ic-20);height:var(--ka-ic-20)}
 
 /* — 8) SAYFA BAŞLIKLARI · EYLEM KUTULARI · İSTATİSTİK · ÖĞRETMEN KARTLARI (sayfa aileleri) — */
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero){
-  background:radial-gradient(120% 100% at 100% 0%,rgba(var(--t-accent-rgb),.11),transparent 58%),var(--ka-card-bg)!important;
-  color:var(--gl-fg)!important;border:var(--ka-border-w) solid var(--gl-edge)!important;border-radius:var(--ka-cover-radius);box-shadow:var(--gl-shadow)!important;
-  -webkit-backdrop-filter:var(--gl-blur);backdrop-filter:var(--gl-blur);
-}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero) :is(h1,h2,h3){color:var(--gl-fg)!important}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero) p{color:var(--gl-sub)!important}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero) small{color:var(--hd-chip)!important}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-page-head__icon,.ka-guidance-page-head__icon,.ka-gradebook-hero__icon,.ka-transport-page-hero__icon,.ka-map-hero__icon,.ka-schedule-hero__icon){
-  background:linear-gradient(135deg,rgba(var(--t-gold-hi-rgb),.30),rgba(var(--t-gold-lo-rgb),.12))!important;color:var(--hd-chip)!important;
-  border:var(--ka-border-w) solid rgba(var(--t-accent-rgb),.34)!important;border-radius:var(--ka-cover-radius-sm);box-shadow:0 var(--ka-sh-6) var(--ka-sh-18) rgba(var(--t-gold-lo-rgb),calc(.14 * var(--ka-shadow-a)))!important;
-}
+/* (sayfa başlığı kabuğu: dosyanın sonundaki "SAYFA BAŞLIĞI" bloğunda) */
 html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-action,.ka-guidance-action,.ka-schedule-action){
   background:var(--gl-field)!important;color:var(--gl-fg)!important;border:var(--ka-btn-border-w) solid var(--gl-edge)!important;border-radius:var(--ka-btn-radius-lg);box-shadow:none!important;
   -webkit-backdrop-filter:blur(calc(10px * var(--ka-blur-k)));backdrop-filter:blur(calc(10px * var(--ka-blur-k)));transition:background var(--ka-dur-160),border-color var(--ka-dur-160),transform var(--ka-dur-120);
@@ -11781,19 +11799,6 @@ html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-action,.ka-guidance-acti
 html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-cizelge-action,.ka-guidance-action):is(:disabled,.is-permission-disabled){opacity:.5!important;filter:saturate(.6)}
 html[data-theme] #v2ModuleRoot:not(#_x) .ogm-search>span{z-index:2;pointer-events:none;color:var(--gl-dim)!important;-webkit-text-fill-color:currentColor!important}
 
-/* düz altın dolgulu eski sayfa başlıkları → cam başlık kartı */
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.is-duty-page>.ka-management-intro,.ka-teacher-list-hero){
-  background:radial-gradient(120% 100% at 100% 0%,rgba(var(--t-accent-rgb),.13),transparent 58%),var(--ka-card-bg)!important;
-  color:var(--gl-fg)!important;border:var(--ka-border-w) solid var(--gl-edge)!important;border-radius:var(--ka-cover-radius);box-shadow:var(--gl-shadow)!important;
-  -webkit-backdrop-filter:var(--gl-blur);backdrop-filter:var(--gl-blur);
-}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.is-duty-page>.ka-management-intro,.ka-teacher-list-hero)::after{background:radial-gradient(circle,rgba(var(--t-accent-rgb),.14),transparent 68%)!important;border:0!important}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.is-duty-page>.ka-management-intro,.ka-teacher-list-hero) :is(h1,h2,h3){color:var(--gl-fg)!important}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.is-duty-page>.ka-management-intro,.ka-teacher-list-hero) p{color:var(--gl-sub)!important}
-html[data-theme] #v2ModuleRoot:not(#_x) :is(.is-duty-page>.ka-management-intro,.ka-teacher-list-hero) small{color:var(--hd-chip)!important}
-html[data-theme] #v2ModuleRoot:not(#_x) .ka-teacher-list-hero__icon{
-  background:linear-gradient(135deg,rgba(var(--t-gold-hi-rgb),.30),rgba(var(--t-gold-lo-rgb),.12))!important;color:var(--hd-chip)!important;border:var(--ka-border-w) solid rgba(var(--t-accent-rgb),.34)!important;border-radius:var(--ka-cover-radius-sm);
-}
 html[data-theme] #v2ModuleRoot:not(#_x) .is-duty-page>.ka-management-intro #managementCount{background:var(--gl-field)!important;color:var(--gl-fg)!important;border:var(--ka-border-w) solid var(--gl-edge)!important;border-radius:var(--ka-r-6)}
 
 /* sınıflar sayfası: ana sayfadaki renkli özet panosu değil, sade cam istatistik kutuları */
@@ -11837,13 +11842,7 @@ html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-academic-page,.ka-communication-
   background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;
 }
 
-/* maaş değişikliği formu: yeşil marka zemini yerine cam + altın vurgu */
-html[data-theme] #v2ModuleRoot:not(#_x) .ka-payroll-header{
-  background:radial-gradient(120% 100% at 100% 0%,rgba(var(--t-accent-rgb),.12),transparent 58%),var(--ka-card-bg)!important;color:var(--gl-fg)!important;
-  border:var(--ka-card-border-w) solid var(--gl-edge)!important;border-radius:var(--ka-card-radius-lg);box-shadow:var(--gl-shadow)!important;-webkit-backdrop-filter:var(--gl-blur);backdrop-filter:var(--gl-blur);
-}
-html[data-theme] #v2ModuleRoot:not(#_x) .ka-payroll-header :is(h1,h2,h3,strong,b,span,div){color:inherit!important}
-html[data-theme] #v2ModuleRoot:not(#_x) .ka-payroll-header :is(small,p){color:var(--gl-sub)!important}
+/* maaş değişikliği formu başlığı: SAYFA BAŞLIĞI bloğunda; burada yalnız düğmeleri */
 html[data-theme] #v2ModuleRoot:not(#_x) .ka-payroll-header :is(button,.ka-icon-button,a){background:var(--gl-field)!important;border:var(--ka-btn-border-w) solid var(--gl-edge)!important;color:var(--gl-fg)!important;border-radius:var(--ka-btn-radius-lg)}
 html[data-theme] #v2ModuleRoot:not(#_x) .ka-payroll-total{
   background:linear-gradient(135deg,rgba(var(--t-gold-hi-rgb),.24),rgba(var(--t-gold-lo-rgb),.08)),var(--ka-card-bg)!important;color:var(--gl-fg)!important;
@@ -11872,3 +11871,25 @@ html[data-theme] #v2ModuleRoot:not(#_x) .ka-detail-topbar :is(button,.ka-icon-bu
 
 /* dar ekran: başlık + eylem düğmeleri sığmazsa alt satıra insin (yatay taşma olmasın) */
 html[data-theme] #v2ModuleRoot:not(#_x) .ka-committees-page>.ka-row.ka-row--between{flex-wrap:wrap;gap:var(--ka-sp-10)}
+
+/* ════════════════════════════════════════════════════════════════════
+   SAYFA BAŞLIĞI — her sayfanın üstündeki başlık kartı tek yerden
+   Tüm değerler TEMA MERKEZİ'ndeki "SAYFA BAŞLIĞI" bölümündeki --ka-ph-* tokenlarıdır.
+   Yeni sayfa başlığı eklemek için işaretlemeye class="ka-page-head" vermek yeter.
+   ════════════════════════════════════════════════════════════════════ */
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2))){
+  background:var(--ka-ph-bg)!important;color:var(--ka-ph-title)!important;
+  border:var(--ka-ph-border-w) solid var(--ka-ph-border)!important;border-radius:var(--ka-ph-radius)!important;box-shadow:var(--ka-ph-shadow)!important;
+  -webkit-backdrop-filter:var(--ka-ph-blur);backdrop-filter:var(--ka-ph-blur);
+  padding:var(--ka-ph-pad-y) var(--ka-ph-pad-x)!important;gap:var(--ka-ph-gap)!important;min-height:var(--ka-ph-min-h)!important;
+}
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2)))::before,
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2)))::after{display:var(--ka-ph-deco)!important}
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2))) :is(h1,h2){color:var(--ka-ph-title)!important;font-size:var(--ka-ph-title-size)!important;font-weight:var(--ka-ph-title-weight)!important;letter-spacing:var(--ka-ph-title-tracking)!important;line-height:var(--ka-ph-title-lh)!important}
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2))) h3{color:var(--ka-ph-title)!important}
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2))) p{color:var(--ka-ph-sub)!important;font-size:var(--ka-ph-sub-size)!important;line-height:var(--ka-ph-sub-lh)!important}
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2))) :is(small,[class*="eyebrow"],[class*="kicker"]){color:var(--ka-ph-kicker)!important;font-size:var(--ka-ph-kicker-size)!important;letter-spacing:var(--ka-ph-kicker-tracking)!important}
+html[data-theme] :is(#v2ModuleRoot:not(#_x) :is(.ka-page-head,.ka-cizelge-page-head,.ka-guidance-page-head,.ka-gradebook-hero,.ka-transport-page-hero,.ka-map-hero,.ka-schedule-hero,.ka-teacher-list-hero,.ka-people-page-head,.ogm-head,.ka-notes-hero,.ka-communication-heading,.ka-management-intro,.ka-evrak-page-head,.ka-payroll-header,.ka-plan-hero,.ka-meeting-page__intro,.ka-settings-toolbar),#v2ModuleRoot:not(#_x)>section>.ka-row.ka-row--between:first-child:has(>:is(div,header)>:is(h1,h2)),#v2ModuleRoot:not(#_x)>section.ka-page>article.ka-card:first-child:has(>.ka-card__body>:is(h1,h2))) :is(small,[class*="eyebrow"],[class*="kicker"])>.ka-card__body{padding:0!important;background:none!important;border:0!important;box-shadow:none!important}
+html[data-theme] #v2ModuleRoot:not(#_x) :is(.ka-page-head__icon,.ka-cizelge-page-head__icon,.ka-guidance-page-head__icon,.ka-gradebook-hero__icon,.ka-transport-page-hero__icon,.ka-map-hero__icon,.ka-schedule-hero__icon,.ka-teacher-list-hero__icon,.ka-plan-hero__icon){
+  background:var(--ka-ph-icon-bg)!important;color:var(--ka-ph-icon-fg)!important;border:var(--ka-border-w) solid var(--ka-ph-icon-border)!important;border-radius:var(--ka-ph-icon-radius);box-shadow:var(--ka-ph-icon-shadow)!important;
+}
