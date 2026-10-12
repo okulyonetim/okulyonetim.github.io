@@ -1,6 +1,6 @@
 /* KORUK ASİSTAN — MERKEZİ DESIGN SYSTEM ENTRYPOINT */
 /* Mevcut merkezi tema aynen korunur; bu dosya yalnızca ortak giriş noktasıdır. */
-@import url("./design-system-base.css?v=1248");
+@import url("./design-system-base.css?v=1249");
 
 /* Ders Programı aksiyon butonları: açık ikon kutularında ikon görünürlüğü */
 [data-schedule-add],[data-schedule-import],[data-schedule-report],[data-schedule-sheet-report],[data-schedule-clear]{color:var(--ka-text)!important}
@@ -109,7 +109,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-transport-detail__toolbar [data-transport-detail-delete] .ka-transport-action__icon::before{content:'🗑️';font-size:1.15rem;line-height:1}
 .ka-transport-detail__toolbar [data-transport-detail-close] .ka-transport-action__icon::before{content:'✖️';font-size:1.15rem;line-height:1}
 
-
 .ka-statistics-page{--ka-stat-hero-start:var(--ka-surface-2);--ka-stat-hero-end:var(--ka-surface-1);display:grid;gap:16px;color:var(--ka-text)}
 .ka-statistics-hero{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid var(--ka-border);border-radius:18px;background:linear-gradient(135deg,var(--ka-stat-hero-start),var(--ka-stat-hero-end))}
 .ka-statistics-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -122,7 +121,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-statistics-storage__body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px}
 .ka-statistics-storage__body>div{display:flex;justify-content:space-between;gap:8px}
 @media(max-width:390px){.ka-statistics-summary,.ka-statistics-metrics,.ka-statistics-storage__body{grid-template-columns:1fr}.ka-statistics-hero{align-items:flex-start}}
-
 
 .ka-meeting-page{display:grid;gap:14px;color:var(--ka-text)}
 .ka-meeting-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--ka-border);border-radius:999px}
@@ -137,7 +135,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-meeting-session{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;align-items:center}
 @media(max-width:390px){.ka-meeting-draft-grid{grid-template-columns:1fr}}
 
-
 :root{--ka-safe-top:env(safe-area-inset-top,0px);--ka-safe-bottom:env(safe-area-inset-bottom,0px)}
 html,body{min-height:100dvh}
 
@@ -145,7 +142,6 @@ html,body{min-height:100dvh}
 
 .ka-header-notification{position:relative;overflow:visible}
 [data-ka-notification-count]{position:absolute;top:0;right:0}
-
 
 /* Merkezi dashboard görsel stilleri */
 /* Ana sayfa duyuru medya galerisi + okuyan popover + tam ekran zoom */
@@ -192,149 +188,23 @@ html,body{min-height:100dvh}
 @media(max-width:390px){.ka-home .kh-announcement-media__slide{min-height:155px}.kh-reader-popover{max-width:calc(100vw - 20px)}}
 
 /* ===== HAFTALIK NÖBET PROGRAMI — DİKEY DÜZEN ===== */
-.ka-home .kh-section[data-home-section="week-duty"]>.kh-card{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:0!important;
-  overflow:visible!important;
-  overscroll-behavior-x:auto!important;
-  scroll-snap-type:none!important;
-  padding:0!important;
-  border:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  scrollbar-width:none!important;
-}
-.ka-home .kh-section[data-home-section="week-duty"]>.kh-card::-webkit-scrollbar{display:none}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{
-  flex:0 0 auto!important;width:100%!important;max-width:none!important;
-  scroll-snap-align:none!important;overflow:hidden!important;
-  border:0!important;border-bottom:1px solid var(--ka-border)!important;
-  border-radius:0!important;background:var(--ka-card-bg)!important;box-shadow:none!important;
-}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday:first-child{border-radius:15px 15px 0 0!important}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday:last-child{border-bottom:0!important;border-radius:0 0 15px 15px!important}
 
 /* Kompakt görünüm: günler ve nöbetçi satırları gereksiz dikey boşluk bırakmasın. */
-.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{
-  padding:7px 13px!important;
-  min-height:0!important;
-  line-height:1.15!important;
-}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-mini{
-  min-height:32px!important;
-  height:auto!important;
-  padding:5px 13px!important;
-  line-height:1.15!important;
-}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:first-child{
-  font-size:10px!important;
-  line-height:1.15!important;
-}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-mini>span:not(:first-child){
-  line-height:1.15!important;
-}
-.ka-home .kh-section[data-home-section="week-duty"] .kh-mini + .kh-mini{padding-top:4px!important}
-@media(max-width:390px){
-  .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday{flex-basis:auto!important}
-  .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday-head{padding:6px 11px!important}
-  .ka-home .kh-section[data-home-section="week-duty"] .kh-mini{min-height:30px!important;padding:4px 11px!important}
-}
 
 /* ===== BUGÜN ETİKETİ — AÇIK/KOYU TEMA KONTRASTI ===== */
-.ka-home .kh-section[data-home-section="week-duty"] .kh-weekday.today .kh-weekday-head .kh-chip{
-  background:var(--ka-button-bg)!important;
-  color:var(--ka-button-text)!important;
-  border:1px solid var(--ka-primary)!important;
-  font-weight:900!important;
-  opacity:1!important;
-  text-shadow:none!important;
-}
-html[data-theme="dark"] .ka-home .kh-section[data-home-section="week-duty"] .kh-weekday.today .kh-weekday-head .kh-chip{
-  background:var(--ka-primary)!important;
-  color:var(--ka-button-text)!important;
-  border-color:var(--ka-primary)!important;
-}
 
 /* ===== ÖĞRETMENLER — KOYU TEMADA PROFİL GÖR BUTONU ===== */
 [data-theme="dark"] .ka-teacher-actions .ka-btn:first-child{
   color:#fff!important;
 }
 
-
 /* Merkezi dashboard illüstrasyon stilleri */
 /* Koruk Asistan — dashboard başlık/illüstrasyon katmanı
    Design-system tokenlarını kullanır; yalnız ana sayfa görsel hiyerarşisini düzeltir. */
-.ka-home .kh-section-head,
-.ka-home .ka-home-section__head{
-  min-height:38px!important;
-  align-items:center!important;
-}
-.ka-home .kh-section-title,
-.ka-home .ka-home-section__head>div:first-child{
-  min-height:38px!important;
-  gap:9px!important;
-}
-.ka-home .kh-section-title>span:last-child,
-.ka-home .kh-section-title>h3,
-.ka-home .ka-home-section__head h3{
-  font-size:18px!important;
-  line-height:1.18!important;
-  font-weight:750!important;
-  letter-spacing:-.25px!important;
-}
-.ka-home .kh-section-art{
-  width:38px!important;
-  height:38px!important;
-  min-width:38px!important;
-  min-height:38px!important;
-  flex:0 0 38px!important;
-  display:grid!important;
-  place-items:center!important;
-  border-radius:10px!important;
-  box-sizing:border-box!important;
-  overflow:visible!important;
-  background:var(--ka-icon-surface)!important;
-  border:1px solid var(--ka-icon-border)!important;
-}
-.ka-home .kh-section-art svg{
-  width:28px!important;
-  height:28px!important;
-  display:block!important;
-  overflow:visible!important;
-  fill:initial!important;
-  stroke:initial!important;
-  color:initial!important;
-}
-.ka-home .kh-section-art svg *{
-  vector-effect:non-scaling-stroke;
-}
-/* sectionArt'ın çok renkli SVG'sini eski fill:none katmanından kurtar. */
-.ka-home .ka-home-section__icon svg{
-  fill:initial!important;
-  stroke:initial!important;
-  color:initial!important;
-}
-.ka-home .ka-home-section__icon svg *{
-  vector-effect:non-scaling-stroke;
-}
-html[data-theme="dark"] .ka-home .kh-section-art,
-html[data-theme="dark"] .ka-home .ka-home-section__icon{
-  background:#343127!important;
-  border-color:#d8bd45!important;
-}
-@media(max-width:480px){
-  .ka-home .kh-section-title>span:last-child,
-  .ka-home .kh-section-title>h3,
-  .ka-home .ka-home-section__head h3{
-    font-size:17px!important;
-  }
-}
-/* Ana sayfa bölüm ikonları: Menü Kartı düzenleyicisindeki renkli emoji stili */
-.ka-home .kh-section-art .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important;filter:none!important;transform:none!important}
-.ka-home .ka-home-section__icon .kh-section-emoji{display:block!important;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif!important;font-size:25px!important;line-height:1!important}
-@media(max-width:480px){.ka-home .kh-section-art .kh-section-emoji,.ka-home .ka-home-section__icon .kh-section-emoji{font-size:23px!important}}
 
+/* sectionArt'ın çok renkli SVG'sini eski fill:none katmanından kurtar. */
+
+/* Ana sayfa bölüm ikonları: Menü Kartı düzenleyicisindeki renkli emoji stili */
 
 /* ===== OKUL ÖZETİ EMOJI İKONLARI — MERKEZ HİZALAMA ===== */
 .ka-school-summary-card{position:relative!important;text-align:center!important}
@@ -377,127 +247,19 @@ html[data-theme="dark"] .ka-home .ka-home-section__icon{
    Koyu temada kullanıcı tarafından işaretlenen üç odak kontrolü:
    hafta sonu ev ikonu, seçili takvim günü ve yukarı dön butonu.
    Amaç: sarı yüzey + siyah sembol/metin ile net kontrast. */
-html[data-theme="dark"] .ka-home .kh-day.today{
-  background:#ffc400!important;
-  color:#111!important;
-  border:2px solid #ffe071!important;
-  box-shadow:0 0 0 2px rgba(255,196,0,.16),0 5px 14px rgba(255,196,0,.12)!important;
-}
-html[data-theme="dark"] .ka-home .kh-day.today b{
-  color:#111!important;
-}
-html[data-theme="dark"] .ka-home .kh-day.today,
-html[data-theme="dark"] .ka-home .kh-day.today *,
-html[data-theme="dark"] .ka-home .kh-day.today b,
-html[data-theme="dark"] .ka-home .kh-day.today span{
-  color:#111!important;
-  -webkit-text-fill-color:#111!important;
-}
-html[data-theme="dark"] .ka-home .kh-day.today.has:after{
-  background:#111!important;
-}
-html[data-theme="dark"] .kh-backtop{
-  background:#ffc400!important;
-  color:#111!important;
-  border:2px solid #ffe071!important;
-  box-shadow:0 5px 18px rgba(255,196,0,.24),0 0 0 2px rgba(255,196,0,.12)!important;
-  font-weight:950!important;
-}
 
 /* ===== DASHBOARD CONTRAST V2 — AÇIK TEMA =====
    Seçili gün ve yukarı dön kontrolünde sarı dolgunun göz yormaması.
    Kontrast korunur; parlak neon görünüm ve ağır dış parıltı kaldırılır. */
-html[data-theme="light"] .ka-home .kh-day.today{
-  background:#f4cf62!important;
-  color:#5b4600!important;
-  border:1px solid #ddb735!important;
-  box-shadow:none!important;
-}
-html[data-theme="light"] .ka-home .kh-day.today b{
-  color:#4b3a00!important;
-}
-html[data-theme="light"] .ka-home .kh-day.today.has:after{
-  background:#4b3a00!important;
-}
-html[data-theme="light"] .kh-backtop{
-  background:#e9c34d!important;
-  color:#111!important;
-  border:1px solid #d4aa28!important;
-  box-shadow:0 4px 12px rgba(120,90,0,.18)!important;
-  font-weight:850!important;
-}
-html[data-theme="light"] .kh-backtop:hover,
-html[data-theme="light"] .kh-backtop:focus-visible{
-  background:#f0ca55!important;
-  border-color:#c99e1d!important;
-  box-shadow:0 5px 14px rgba(120,90,0,.22)!important;
-}
-
 
 /* DASHBOARD CURRENT CLASS CARD — VISIBILITY */
-.ka-home .kh-section[data-home-section="lessons"]{display:flex!important;visibility:visible!important;opacity:1!important;flex-direction:column!important;gap:8px!important;}
-.ka-home .kh-section[data-home-section="lessons"] .kh-card{display:block!important;visibility:visible!important;opacity:1!important;}
-
 
 /* ===== DENEME SAYACI — ZAMAN METİNLERİ =====
    Geri sayım rakamları ve açıklamaları küçük/silik kalmasın. */
-.ka-home .kh-trial-live__timer-head strong{
-  color:var(--ka-text)!important;
-  font-size:28px!important;
-  line-height:1.05!important;
-  font-weight:950!important;
-  letter-spacing:.2px!important;
-  font-variant-numeric:tabular-nums;
-}
-.ka-home .kh-trial-live__timer-head small{
-  color:var(--ka-text)!important;
-  font-size:11px!important;
-  line-height:1.15!important;
-  font-weight:850!important;
-  letter-spacing:.45px!important;
-  opacity:1!important;
-}
-.ka-home .kh-trial-live__timer-head b{
-  color:var(--ka-text)!important;
-  font-size:14px!important;
-  line-height:1.2!important;
-  font-weight:850!important;
-}
-@media(max-width:480px){
-  .ka-home .kh-trial-live__timer-head strong{
-    font-size:27px!important;
-  }
-  .ka-home .kh-trial-live__timer-head small{
-    font-size:10.5px!important;
-  }
-}
-html[data-theme="dark"] .ka-home .kh-trial-live__timer-head strong,
-html[data-theme="dark"] .ka-home .kh-trial-live__timer-head small,
-html[data-theme="dark"] .ka-home .kh-trial-live__timer-head b{
-  color:var(--ka-text)!important;
-}
 
 /* ===== DENEME SINAVI — UYGULAMA GENELİ FONTU ===== */
-.ka-home .kh-trial-live,
-.ka-home .kh-trial-live *{
-  font-family:var(--ka-font)!important;
-}
-.ka-home .kh-trial-live__title{
-  font-weight:750!important;
-}
-.ka-home .kh-trial-live__session,
-.ka-home .kh-trial-live__timer-head b{
-  font-weight:700!important;
-}
-.ka-home .kh-trial-live__timer-head strong{
-  font-family:var(--ka-font)!important;
-  font-weight:800!important;
-  font-variant-numeric:tabular-nums;
-}
-
 
 /* Canlı zil kartı renkleri: css/design-system-base.css sonundaki "CANLI ZİL KARTI — CAM" bölümünde tek yerde tanımlı. */
-
 
 /* ===== CANLI ZİL — KALAN SÜRE METNİ TAŞMA DÜZELTMESİ =====
    Geri sayım etiketi halka dışına taşmamalı; özellikle dar telefonlarda
@@ -564,212 +326,9 @@ html[data-theme="dark"] .ka-home .kh-trial-live__timer-head b{
   .ka-home .kh-bell-countdown-ring small{font-size:8.5px!important}
 }
 
-
 /* ===== BUGÜNKÜ DERSLER — DÜZENLİ SATIR + TEMA KONTRASTI ===== */
-.ka-home .kh-section[data-home-section="today-lessons"]{
-  width:100%!important;
-  box-sizing:border-box!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-card{
-  width:100%!important;
-  box-sizing:border-box!important;
-  padding:0!important;
-  overflow:hidden!important;
-  background:var(--ka-card-bg,#fff)!important;
-  border:1px solid var(--ka-border,#d2ad2b)!important;
-  border-radius:20px!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
-  width:100%!important;
-  min-height:58px!important;
-  margin:0!important;
-  padding:0!important;
-  box-sizing:border-box!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  align-items:stretch!important;
-  background:var(--ka-card-bg,#fff)!important;
-  border:0!important;
-  border-bottom:1px solid color-mix(in srgb,var(--ka-border) 45%,transparent)!important;
-  border-radius:0!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row:last-child{
-  border-bottom:0!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
-  min-width:0!important;
-  width:100%!important;
-  min-height:58px!important;
-  padding:10px 12px!important;
-  margin:0!important;
-  box-sizing:border-box!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  color:var(--ka-text)!important;
-  text-align:left!important;
-  font:inherit!important;
-  overflow:hidden!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main{
-  min-width:0!important;
-  max-width:100%!important;
-  display:flex!important;
-  align-items:baseline!important;
-  gap:6px!important;
-  overflow:hidden!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
-  flex:0 0 auto!important;
-  color:var(--ka-text)!important;
-  font-size:16px!important;
-  line-height:1.25!important;
-  font-weight:850!important;
-  white-space:nowrap!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
-  min-width:0!important;
-  color:var(--ka-text-muted)!important;
-  font-size:13px!important;
-  line-height:1.25!important;
-  font-weight:650!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
-  flex:0 0 auto!important;
-  min-width:0!important;
-  padding:5px 9px!important;
-  border-radius:999px!important;
-  background:transparent!important;
-  border:1px solid var(--ka-border)!important;
-  color:var(--ka-text-muted)!important;
-  font-size:11px!important;
-  font-weight:850!important;
-  line-height:1!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip.green{
-  background:var(--ka-primary)!important;
-  border-color:var(--ka-primary)!important;
-  color:var(--ka-button-text,#111)!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan{
-  align-self:center!important;
-  flex:0 0 auto!important;
-  min-width:68px!important;
-  min-height:36px!important;
-  margin:0 10px 0 4px!important;
-  padding:7px 10px!important;
-  box-sizing:border-box!important;
-  border:1px solid var(--ka-primary)!important;
-  border-radius:10px!important;
-  background:var(--ka-primary)!important;
-  color:var(--ka-button-text,#111)!important;
-  font-size:12px!important;
-  font-weight:850!important;
-  line-height:1!important;
-  text-decoration:none!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan span,
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan b{
-  color:inherit!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row.is-now{
-  background:color-mix(in srgb,var(--ka-primary) 9%,var(--ka-card-bg))!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button:active{
-  background:color-mix(in srgb,var(--ka-primary) 12%,var(--ka-card-bg))!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-empty{
-  min-height:70px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  padding:18px!important;
-  box-sizing:border-box!important;
-  color:var(--ka-text-muted)!important;
-  background:var(--ka-card-bg,#fff)!important;
-  font-size:14px!important;
-  font-weight:700!important;
-  text-align:center!important;
-}
-html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-card{
-  background:var(--ka-card-bg,#141414)!important;
-  border-color:var(--ka-primary)!important;
-}
-html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
-  background:var(--ka-card-bg,#141414)!important;
-  border-bottom-color:rgba(255,196,0,.22)!important;
-}
-html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
-  color:var(--ka-text,#fff)!important;
-}
-html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
-  color:var(--ka-text-muted,#b8bec4)!important;
-}
-html[data-theme="dark"] .ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
-  color:var(--ka-text-muted,#b8bec4)!important;
-  background:transparent!important;
-}
-@media(max-width:520px){
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
-    padding:9px 10px!important;
-    gap:7px!important;
-  }
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
-    font-size:15px!important;
-  }
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
-    font-size:12px!important;
-  }
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-plan{
-    min-width:60px!important;
-    margin-right:7px!important;
-    padding:7px 8px!important;
-  }
-}
-
 
 /* BUGÜNKÜ DERSLER — MOBİLDE KOMPAKT YAZI */
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
-  cursor:pointer!important;
-  text-decoration:none!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
-  font-size:14px!important;
-  line-height:1.2!important;
-  font-weight:800!important;
-  letter-spacing:0!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
-  font-size:12px!important;
-  line-height:1.2!important;
-  font-weight:600!important;
-}
-.ka-home .kh-section[data-home-section="today-lessons"] .kh-chip{
-  font-size:10px!important;
-  padding:5px 8px!important;
-}
-@media(max-width:520px){
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row{
-    min-height:52px!important;
-  }
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main-button{
-    min-height:52px!important;
-    padding:8px 10px!important;
-  }
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main b{
-    font-size:14px!important;
-  }
-  .ka-home .kh-section[data-home-section="today-lessons"] .kh-row-main small{
-    font-size:11.5px!important;
-  }
-}
 
 /* ===== KOYU TEMA — SARI DOLGU / SİYAH METİN KONTRASTI =====
    Sarı dolgu kullanan ana aksiyon yüzeylerinde metin ve ikonlar siyah kalır. */
@@ -791,21 +350,7 @@ html[data-theme="dark"] .primary *{
   stroke:#111!important;
 }
 
-
 /* ===== ANA SAYFA BUGÜN İZİNLİ ÖĞRETMENLER — SATIR İÇ BOŞLUĞU ===== */
-.ka-home .kh-section[data-home-section="absences"] .kh-row{
-  padding:18px 20px!important;
-  min-height:74px!important;
-  box-sizing:border-box!important;
-}
-.ka-home .kh-section[data-home-section="absences"] .kh-row-main{
-  min-width:0!important;
-  padding:0!important;
-}
-.ka-home .kh-section[data-home-section="absences"] .kh-row-main b{
-  display:block!important;
-  line-height:1.25!important;
-}
 
 /* Kurul ve Komisyonlar */
 .ka-committee-list{display:flex;flex-direction:column;border:1px solid var(--ka-border);border-radius:18px;overflow:hidden;background:var(--ka-card-bg)}
