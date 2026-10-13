@@ -276,7 +276,7 @@ for(const t of ['--ka-sticky-bg','--ka-sticky-cell-bg'])
     assert(cell.sel.includes(c),`Yapışkan hücre kabuğunda eksik: ${c}`);
   assert(!/#[0-9a-fA-F]{3,8}\b|rgba?\(|\d+px/.test(strip.body+cell.body),'Yapışkan şerit kabuğu sabit renk/ölçü içermemeli (--ka-sticky-* kullanın).');
   // unutulan şerit kalmasın: position:sticky tanımlayan her seçici kabukta, cam (blur) istisnada ya da kendi başlık kabuğunda olmalı
-  const covered=new Set(['.detay-head','.ka-pt-header','.ka-payroll-header','html .ka-app-header','.ka-checklist-workspace__header','.ka-gradebook-workspace__header','.ka-attendance-savebar','.ka-layout-savebar','.ka-payroll-actions']);
+  const covered=new Set(['.detay-head','.ka-pt-header','.ka-payroll-header','html .ka-app-header','.ka-checklist-workspace__header','.ka-gradebook-workspace__header','.ka-attendance-savebar','.ka-layout-savebar','.ka-payroll-actions','.bsg-root .bsg-zoomctl'/* sıfır yükseklikli yüzen yakınlaştırma rayı (zemini yok; düğmeleri kendi yüzeyini çizer) */]);
   const stickySel=[];
   for(const r of rules11.filter(r=>/position\s*:\s*sticky/.test(r.body)))
     for(const sel of r.sel.split(',').map(x=>x.trim()).filter(Boolean)){
