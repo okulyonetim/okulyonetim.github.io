@@ -648,6 +648,26 @@
   --ka-report-transport-input-border:#999;
   --ka-report-transport-focus:#9aa;
   --ka-report-transport-rest:#e3e3e3;
+  --ka-report-transport-muted-ink:#5c6b64;      /* servis oturma çıktısı: okunaklı ikincil yazı */
+  --ka-report-transport-rule:#cfd8d3;           /* ince ayırıcı çizgi */
+  --ka-report-transport-wall:#17634a;           /* araç gövdesi / kapı boşluğu / vurgu çizgisi */
+  --ka-report-transport-body:#f7faf8;           /* araç içi zemin */
+  --ka-report-transport-glass:#dcebe4;          /* ön cam */
+  --ka-report-transport-glass-edge:#8fb8a5;
+  --ka-report-transport-glass-ink:#2f5546;
+  --ka-report-transport-plate:#1f4fa3;          /* plaka TR şeridi */
+  --ka-report-transport-ilk-fill:#e4f3ea;       /* ilkokul (1-4) koltuğu */
+  --ka-report-transport-ilk-edge:#6fae92;
+  --ka-report-transport-ilk-chip:#17634a;
+  --ka-report-transport-orta-fill:#e6edf9;      /* ortaokul (5-8) koltuğu */
+  --ka-report-transport-orta-edge:#7f9fd2;
+  --ka-report-transport-orta-chip:#234a8f;
+  --ka-report-transport-other-fill:#eceff1;     /* diğer sınıf düzeyleri */
+  --ka-report-transport-other-edge:#9aa7ae;
+  --ka-report-transport-other-chip:#4a5a63;
+  --ka-report-transport-bos-edge:#8d9a94;       /* boş / kapalı koltuk çizgisi */
+  --ka-report-transport-driver-edge:#d3a42f;
+  --ka-report-transport-driver-ink:#6b4e00;
   --ka-report-payroll-summary:#e8f0ee;
   --ka-report-payroll-identity:#ece9d8;
   --ka-report-payroll-rest-bg:#f5f5f5;

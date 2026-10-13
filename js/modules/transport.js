@@ -866,7 +866,7 @@ function gridEditorOpen(){return !!window.BusSeatingGrid?.isOpen?.()}
 async function openGridEditor(s){
   if(gridOpening||gridEditorOpen())return;gridOpening=true;
   try{
-    if(!window.BusSeatingGrid?.open)await window.AppLoader?.loadScript?.('js/modules/bus-seating-grid.js?v=2');
+    if(!window.BusSeatingGrid?.open)await window.AppLoader?.loadScript?.('js/modules/bus-seating-grid.js?v=3');
     if(!window.BusSeatingGrid?.open)throw new Error('bus-seating-grid-load');
     const servisId=s.id,p=currentPlan(servisId)||{},raw=window.soPlanElementleriGetir?.(p,p.sablon||'ducato')||[],v2=Number(p.layout?.table?.editorVersion)===2,elements=v2?raw:sbeNormalize(raw);
     const list=students(servisId).map(v=>({id:v.id,name:v.ogrenciAdi||'',className:className(v.sinifId,v.sinifAdi),classId:v.sinifId||'',guardian:v.veliAdi||''}));
@@ -874,7 +874,7 @@ async function openGridEditor(s){
       elements,layout:p.layout||{},sablon:sablonValue(p.sablon||'minibus'),planAdi:p.planAdi||p.ad||'Servis Oturma Planı',students:list,editable:canEditBusSeats(),
       service:{name:serviceName(s),plate:s.plaka||'',driver:s.soforAdi||'',capacity:list.length},school:(arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{}).okulAdi||'KORUK İLK-ORTAOKULU',
       onSave:async payload=>{if(!canEditBusSeats())throw new Error('Bu işlem için yetkiniz yok.');await Promise.resolve(window.ServisOturmaService.planTableKaydet(servisId,payload.sablon,payload.elements,payload.layout,payload.planAdi));window.SyncEngine?.schedule?.(0);try{render()}catch(e){console.error('[Transport/seating-render]',e)}},
-      print:o=>{if(!window.ReportEngine?.printReport){toast?.('Yazdırma modülü hazır değil.');return}return window.ReportEngine.printReport(o.title,o.body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:7,fileName:o.fileName,extraHead:o.extraHead})},
+      print:o=>{if(!window.ReportEngine?.printReport){toast?.('Yazdırma modülü hazır değil.');return}return window.ReportEngine.printReport(o.title,o.body,{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:3,fileName:o.fileName,extraHead:o.extraHead})},
       onClose:()=>{try{render()}catch(_){}}
     });
   }catch(e){
