@@ -14,6 +14,25 @@
   --ka-avatar-size:42px;
   --ka-profile-avatar-size:44px;
   --ka-profile-avatar-compact-size:34px;
+  /* ── PROFİL FOTOĞRAFI · ROZETLİ (başlık, açılan kart, profil sayfası, web yan menüsü, kırpma ekranı tek kaynaktan) ──
+     İnce altın halka + dış hare; kart ve profil sayfasında altında unvan rozeti. Boyut ve renk yalnız buradan değişir. */
+  --ka-avatar-ring-w:1.5px;                                       /* ince halka kalınlığı */
+  --ka-avatar-ring:rgba(var(--t-accent-rgb),.6);                  /* halka rengi */
+  --ka-avatar-halo:rgba(var(--t-accent-rgb),.1);                  /* dış hare rengi */
+  --ka-avatar-halo-w:4px;                                         /* hare genişliği (küçük/orta boyut) */
+  --ka-avatar-halo-w-lg:7px;                                      /* hare genişliği (profil sayfası boyutu) */
+  --ka-avatar-ring-shadow:0 0 0 var(--ka-avatar-ring-w) var(--ka-avatar-ring),0 0 0 calc(var(--ka-avatar-ring-w) + var(--ka-avatar-halo-w)) var(--ka-avatar-halo);
+  --ka-avatar-ring-shadow-lg:0 0 0 var(--ka-avatar-ring-w) var(--ka-avatar-ring),0 0 0 calc(var(--ka-avatar-ring-w) + var(--ka-avatar-halo-w-lg)) var(--ka-avatar-halo);
+  --ka-avatar-gap:var(--ka-card-raised-bg);                       /* rozetin çevresindeki boşluk = üstünde durduğu yüzey */
+  --ka-avatar-chip-bg:var(--ka-btn-primary-bg);                   /* rozet = birincil düğmeyle aynı "altın cam" */
+  --ka-avatar-chip-ink:var(--ka-btn-primary-ink);
+  --ka-avatar-chip-shadow:0 3px 8px rgba(var(--t-accent-rgb),.35);
+  --ka-avatar-chip-max:132px;                                     /* rozet en fazla bu kadar geniş (uzun unvan kısaltılır) */
+  --ka-avatar-chip-max-sm:84px;                                   /* açılan kart ve önizlemedeki küçük avatarın rozet sınırı */
+  --ka-photo-crop-w:420px;                                        /* kırpma penceresi genişliği */
+  --ka-photo-crop-stage:320px;                                    /* kırpma sahnesinin en büyük kenarı */
+  --ka-photo-crop-dim:rgba(var(--k-black),.55);                   /* kadrajın (daire) dışını karartma rengi */
+  --ka-photo-crop-reach:100vmax;                                  /* karartmanın sahneyi tamamen kaplaması için yayılım */
   --ka-font:Inter,Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --ka-font-mono:"JetBrains Mono",Consolas,monospace;
   --ka-font-size-xs:var(--ka-fs-11);
@@ -3271,7 +3290,7 @@ html,body,.ka-app-shell{overscroll-behavior-y:auto;touch-action:auto}
 .ka-app-content{overscroll-behavior-y:auto;touch-action:auto}
 
 /* Profil fotoğrafı ekle/değiştir v1 */
-.ka-profile-photo{position:relative;z-index:2;width:92px;display:grid;justify-items:center;gap:var(--ka-sp-7)}.ka-profile-avatar-wrap{position:relative;width:var(--ka-ic-92);height:var(--ka-ic-92)}.ka-profile-photo-edit{position:absolute;right:-6px;bottom:-6px;width:calc(32px + var(--ka-btn-grow));height:calc(32px + var(--ka-btn-grow));padding:0;border:calc(var(--ka-border-w) * 2) solid rgba(var(--k-white),.9);border-radius:50%;background:var(--ka-card-raised-bg);color:var(--ka-primary);box-shadow:0 var(--ka-sh-5) var(--ka-sh-14) rgba(var(--ka-shadow-rgb),calc(.22 * var(--ka-shadow-a)));display:grid;place-items:center;font-size:var(--ka-fs-14);line-height:1;cursor:pointer}.ka-profile-photo-label{appearance:none;width:92px;min-height:22px;padding:var(--ka-sp-2) var(--ka-sp-3);border:0;border-radius:var(--ka-r-1);background:rgba(var(--k-white),.12);color:rgb(var(--k-white));font-size:var(--ka-fs-8-6);line-height:var(--ka-lh-1-25);font-weight:var(--ka-fw-850);cursor:pointer}.ka-profile-photo-edit:hover,.ka-profile-photo-label:hover{filter:brightness(1.08)}.ka-profile-photo-edit:focus-visible,.ka-profile-photo-label:focus-visible{outline:calc(var(--ka-border-w) * 3) solid rgba(var(--k-white),.48);outline-offset:var(--ka-ring-offset)}.ka-profile-photo-edit:disabled,.ka-profile-photo-label:disabled{opacity:.55;cursor:wait}.ka-profile-photo-edit[aria-busy="true"] span{animation:ka-profile-photo-busy var(--ka-dur-800) linear infinite}@keyframes ka-profile-photo-busy{to{transform:rotate(360deg)}}
+.ka-profile-photo{position:relative;z-index:2;width:92px;display:grid;justify-items:center;gap:var(--ka-sp-7)}.ka-profile-avatar-wrap{position:relative;width:var(--ka-ic-92);height:var(--ka-ic-92)}.ka-profile-photo-edit{position:absolute;right:-6px;top:-6px;width:calc(32px + var(--ka-btn-grow));height:calc(32px + var(--ka-btn-grow));padding:0;border:calc(var(--ka-border-w) * 2) solid rgba(var(--k-white),.9);border-radius:50%;background:var(--ka-card-raised-bg);color:var(--ka-primary);box-shadow:0 var(--ka-sh-5) var(--ka-sh-14) rgba(var(--ka-shadow-rgb),calc(.22 * var(--ka-shadow-a)));display:grid;place-items:center;font-size:var(--ka-fs-14);line-height:1;cursor:pointer}.ka-profile-photo-label{appearance:none;width:92px;min-height:22px;padding:var(--ka-sp-2) var(--ka-sp-3);border:0;border-radius:var(--ka-r-1);background:rgba(var(--k-white),.12);color:rgb(var(--k-white));font-size:var(--ka-fs-8-6);line-height:var(--ka-lh-1-25);font-weight:var(--ka-fw-850);cursor:pointer}.ka-profile-photo-edit:hover,.ka-profile-photo-label:hover{filter:brightness(1.08)}.ka-profile-photo-edit:focus-visible,.ka-profile-photo-label:focus-visible{outline:calc(var(--ka-border-w) * 3) solid rgba(var(--k-white),.48);outline-offset:var(--ka-ring-offset)}.ka-profile-photo-edit:disabled,.ka-profile-photo-label:disabled{opacity:.55;cursor:wait}.ka-profile-photo-edit[aria-busy="true"] span{animation:ka-profile-photo-busy var(--ka-dur-800) linear infinite}@keyframes ka-profile-photo-busy{to{transform:rotate(360deg)}}
 @media(max-width:520px){.ka-profile-photo{width:78px;gap:var(--ka-sp-6)}.ka-profile-avatar-wrap{width:var(--ka-ic-78);height:var(--ka-ic-78)}.ka-profile-photo-label{width:78px;font-size:var(--ka-fs-7-8)}.ka-profile-photo-edit{width:var(--ka-ic-29);height:var(--ka-ic-29);right:-5px;bottom:-5px;font-size:var(--ka-fs-12)}}
 @media(max-width:360px){.ka-profile-photo{width:68px}.ka-profile-avatar-wrap{width:var(--ka-ic-68);height:var(--ka-ic-68)}.ka-profile-photo-label{width:68px;font-size:var(--ka-fs-7-2)}.ka-profile-photo-edit{width:var(--ka-ic-27);height:var(--ka-ic-27)}}
 
@@ -12109,12 +12128,11 @@ html .ka-app-header .ka-header-notification [data-ka-notification-count]{
 html .ka-app-header .ka-header-notification [data-ka-notification-count][hidden]{display:none!important}
 
 html .ka-app-header .ka-header-actions>.ka-header-profile{
-  box-sizing:border-box;display:grid;place-items:center;width:calc(42px + var(--ka-btn-grow));height:calc(42px + var(--ka-btn-grow));min-width:calc(42px + var(--ka-btn-grow));min-height:calc(42px + var(--ka-btn-grow));flex:0 0 42px;padding:var(--ka-sp-2);margin:0;
+  box-sizing:border-box;display:grid;place-items:center;width:calc(42px + var(--ka-btn-grow));height:calc(42px + var(--ka-btn-grow));min-width:calc(42px + var(--ka-btn-grow));min-height:calc(42px + var(--ka-btn-grow));flex:0 0 42px;padding:0;margin:0;
   border:0!important;border-radius:50%;background:var(--hd-tile)!important;color:var(--gl-fg);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-850);cursor:pointer;overflow:hidden;
-  box-shadow:0 0 0 calc(var(--ka-border-w) * 2) rgba(var(--t-accent-rgb),.9),0 0 0 calc(var(--ka-border-w) * 5) rgba(var(--t-accent-rgb),.14),0 var(--ka-sh-6) var(--ka-sh-16) rgba(var(--ka-shadow-rgb),calc(.28 * var(--ka-shadow-a)))!important;
+  box-shadow:var(--ka-avatar-ring-shadow)!important;
   -webkit-tap-highlight-color:transparent;transition:transform var(--ka-dur-120),box-shadow var(--ka-dur-180);
 }
-html:not([data-theme="dark"]) .ka-app-header .ka-header-actions>.ka-header-profile{box-shadow:0 0 0 calc(var(--ka-border-w) * 2) rgba(var(--t-tint-rgb),.95),0 0 0 calc(var(--ka-border-w) * 5) rgba(var(--t-tint-rgb),.16),0 var(--ka-sh-6) var(--ka-sh-14) rgba(var(--k-blue-1e1e3c),calc(.14 * var(--ka-shadow-a)))!important}
 html .ka-app-header .ka-header-profile img{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover}
 
 @media(max-width:380px){
@@ -12143,8 +12161,9 @@ html .ka-header-popover svg{flex:0 0 auto}
 /* — PROFİL — */
 html .ka-profile-popover__identity{display:flex;align-items:center;gap:var(--ka-sp-12);padding:var(--ka-sp-10) var(--ka-sp-10) var(--ka-sp-12);border-bottom:var(--ka-border-w) solid var(--gl-sep)!important}
 html .ka-profile-popover__identity>.ka-avatar{
-  box-sizing:border-box;width:var(--ka-ic-50);height:var(--ka-ic-50);flex:0 0 50px;display:grid;place-items:center;overflow:hidden;padding:var(--ka-sp-2);border-radius:50%;
-  background:var(--pp-row);color:var(--gl-sub);border:0!important;box-shadow:0 0 0 calc(var(--ka-border-w) * 2) rgba(var(--t-accent-rgb),.9),0 0 0 calc(var(--ka-border-w) * 5) rgba(var(--t-accent-rgb),.13);
+  --ka-avatar-gap:var(--pp-solid);--ka-avatar-chip-max:var(--ka-avatar-chip-max-sm);
+  position:relative;box-sizing:border-box;width:var(--ka-ic-58);height:var(--ka-ic-58);flex:0 0 58px;display:grid;place-items:center;overflow:visible;padding:0;border-radius:50%;
+  background:var(--pp-row);color:var(--gl-sub);border:0!important;box-shadow:var(--ka-avatar-ring-shadow);
 }
 html .ka-profile-popover__identity>.ka-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
 html .ka-profile-popover__identity>.ka-avatar svg{width:var(--ka-ic-24);height:var(--ka-ic-24)}
@@ -12701,6 +12720,52 @@ html[data-theme] :is(
   :is(.ka-cizelge-action,.ka-guidance-action).is-primary :is(.ka-cizelge-action__icon,.ka-guidance-action__icon)
 ):not(#_x):not(#_y):focus-visible{outline:var(--ka-ring-w) solid var(--ka-btn-primary-ring);outline-offset:var(--ka-ring-offset)}
 
+/* ===== PROFİL FOTOĞRAFI · ROZETLİ =====
+   Halka ve hare --ka-avatar-* belirteçlerinden gelir (TEMA MERKEZİ). Başlık / açılan kart / web yan menüsü kuralları yukarıda kendi yerlerinde
+   aynı belirteci kullanır; bu bölüm yalnız profil sayfası fotoğrafını daireye çevirir ve unvan rozetini (.ka-avatar-chip) tanımlar. */
+html #v2ModuleRoot .ka-profile-page .ka-profile-avatar{
+  --ka-avatar-gap:var(--ka-card-raised-bg);
+  border-radius:50%!important;border:0!important;box-shadow:var(--ka-avatar-ring-shadow-lg)!important;
+}
+html .ka-profile-avatar-wrap{--ka-avatar-gap:var(--ka-card-raised-bg)}
+html .ka-avatar-chip{
+  position:absolute;left:50%;bottom:calc(var(--ka-sp-6) * -1);transform:translateX(-50%);z-index:3;max-width:var(--ka-avatar-chip-max);margin:0;padding:var(--ka-sp-2) var(--ka-sp-8);
+  border-radius:var(--ka-chip-radius);background:var(--ka-avatar-chip-bg);color:var(--ka-avatar-chip-ink);
+  font-size:var(--ka-fs-10-5);line-height:var(--ka-lh-1-25);font-weight:var(--ka-fw-850);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;
+  box-shadow:var(--ka-avatar-chip-shadow),0 0 0 var(--ka-sp-2) var(--ka-avatar-gap);
+}
+html .ka-profile-photo{gap:var(--ka-sp-14)}
+html .ka-profile-avatar-wrap .ka-avatar-chip{max-width:calc(100% + var(--ka-sp-14))}   /* uzun unvan yan sütundaki yazıya taşmaz, sığmazsa "…" ile kısalır */
+html:not([data-theme="dark"]) .ka-profile-photo-label{background:var(--ka-primary-soft);color:var(--ka-text)}   /* açık temada beyaz yazı görünmüyordu */
+
+/* ===== PROFİL FOTOĞRAFI · KIRPMA EKRANI =====
+   js/core/photo-cropper.js işaretlemesi. Daire kadraj ve önizlemeler halka / rozet belirteçlerini (--ka-avatar-*) kullanır;
+   böylece kırpma ekranında görülen, uygulamadaki gerçek görünümle aynıdır. */
+html .ka-photo-crop{--pc-w:min(var(--ka-photo-crop-stage),44dvh,calc(100vw - 2 * var(--ka-sheet-pad)));width:min(var(--ka-photo-crop-w),100%);display:flex;flex-direction:column;overflow:hidden}
+html .ka-photo-crop:focus{outline:0}
+html .ka-photo-crop .ka-modal__header{flex:0 0 auto;align-items:flex-start;gap:var(--ka-sp-12);padding:var(--ka-sheet-pad) var(--ka-sheet-pad) 0}
+html .ka-photo-crop .ka-modal__header h2{margin:0;font-size:var(--ka-fs-17);line-height:var(--ka-lh-1-25);font-weight:var(--ka-fw-850)}
+html .ka-photo-crop .ka-modal__header p{margin:var(--ka-sp-3) 0 0;font-size:var(--ka-fs-12);line-height:var(--ka-lh-1-4);color:var(--ka-text-muted)}
+html .ka-photo-crop .ka-modal__body{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;display:grid;justify-items:center;gap:var(--ka-sp-10)}
+html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
+.ka-photo-crop__stage{position:relative;width:var(--pc-w);height:var(--pc-w);overflow:hidden;border-radius:var(--ka-r-5);background:var(--ka-surface-muted);touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.ka-photo-crop__stage:active{cursor:grabbing}
+.ka-photo-crop__stage:focus-visible{outline:var(--ka-ring-w) solid var(--ka-focus);outline-offset:var(--ka-ring-offset)}
+.ka-photo-crop__canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ka-photo-crop__mask{position:absolute;inset:8%;border-radius:50%;pointer-events:none;box-shadow:var(--ka-avatar-ring-shadow-lg),0 0 0 var(--ka-photo-crop-reach) var(--ka-photo-crop-dim)}
+.ka-photo-crop__zoom{width:var(--pc-w);display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-10);color:var(--ka-text-muted);font-size:var(--ka-fs-16);font-weight:var(--ka-fw-850)}
+.ka-photo-crop__zoom input{width:100%;min-height:var(--ka-ic-32);margin:0;accent-color:var(--ka-primary)}
+.ka-photo-crop__tools{width:var(--pc-w);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ka-sp-8)}
+.ka-photo-crop__tools .ka-btn{width:100%;justify-content:center;white-space:nowrap;padding-left:var(--ka-sp-6);padding-right:var(--ka-sp-6)}
+.ka-photo-crop__pvs{width:var(--pc-w);display:flex;align-items:flex-end;justify-content:space-around;gap:var(--ka-sp-10);padding:var(--ka-sp-12) var(--ka-sp-10) var(--ka-sp-8);border-radius:var(--ka-r-5);background:var(--ka-surface-muted)}
+.ka-photo-crop__pv{margin:0;display:grid;justify-items:center;gap:var(--ka-sp-12)}
+.ka-photo-crop__pv figcaption{font-size:var(--ka-fs-10-5);line-height:var(--ka-lh-1-25);font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+.ka-photo-crop__pvav{--ka-avatar-gap:var(--ka-surface-muted);position:relative;display:block;border-radius:50%;box-shadow:var(--ka-avatar-ring-shadow)}
+.ka-photo-crop__pvav canvas{display:block;width:100%;height:100%;border-radius:50%}
+.ka-photo-crop__pvav--sm{width:var(--ka-avatar-size);height:var(--ka-avatar-size)}
+.ka-photo-crop__pvav--md{width:var(--ka-ic-58);height:var(--ka-ic-58);--ka-avatar-chip-max:var(--ka-avatar-chip-max-sm)}
+.ka-photo-crop__pvav--lg{width:var(--ka-ic-92);height:var(--ka-ic-92);box-shadow:var(--ka-avatar-ring-shadow-lg)}
+
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen
@@ -12814,7 +12879,7 @@ html .ka-web-me{
   border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-5);background:var(--gl-field);color:var(--gl-fg);text-align:left;cursor:pointer;
 }
 html .ka-web-me:hover{border-color:rgba(var(--t-accent-rgb),.45)}
-html .ka-web-me__avatar{flex:none;width:var(--ka-ic-40);height:var(--ka-ic-40);display:grid;place-items:center;overflow:hidden;border-radius:50%;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-850);background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);box-shadow:0 0 0 calc(var(--ka-border-w) * 2) rgba(var(--t-accent-rgb),.55)}
+html .ka-web-me__avatar{flex:none;width:var(--ka-ic-40);height:var(--ka-ic-40);display:grid;place-items:center;overflow:hidden;border-radius:50%;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-850);background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);box-shadow:var(--ka-avatar-ring-shadow)}
 html .ka-web-me__avatar img{width:100%;height:100%;display:block;object-fit:cover}
 html .ka-web-me__text{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-1)}
 html .ka-web-me__text strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--ka-fs-13-5);font-weight:var(--ka-fw-850)}

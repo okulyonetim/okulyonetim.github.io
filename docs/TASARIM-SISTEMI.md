@@ -261,6 +261,30 @@ Kurallar:
 - Masaüstünde "geri" menü listesine değil önceki sayfaya döner (menü listesi bellekte tutulmaz; kalıcı yan menü vardır). `ShellUI.openMenu()` masaüstünde menü katmanı açmaz.
 - **Telefondan önizleme**: telefon tarayıcısının "Masaüstü sitesi" modu sayfayı ~980px çizdiği için 1100px eşiğine ulaşmaz. Adrese `?web=1` eklenirse `index.html`/`beta.html` başındaki satır içi betik viewport'u `width=1280` yapar (bayrak `localStorage` `ka-web-preview`; `?web=0` kapatır). Bayrak yokken hiçbir şey değişmez; "Masaüstü sitesi" modu açıkken değil, normal (mobil) modda kullanılır.
 
+### Profil fotoğrafı — Rozetli + kırpma ekranı (`--ka-avatar-*`, `--ka-photo-crop-*`)
+
+Profil fotoğrafı her yerde (üst başlık, açılan profil kartı, profil sayfası, web yan menüsü) **aynı iki parçadan** oluşur:
+ince altın halka + dış hare (`--ka-avatar-ring-shadow`, profil sayfasında `--ka-avatar-ring-shadow-lg`) ve açılan kartta / profil sayfasında
+fotoğrafın altında **unvan rozeti** (`.ka-avatar-chip`: Müdür, Öğretmen …). Hepsi `css/design-system-base.css` başındaki TEMA MERKEZİ'nden gelir.
+
+| Ne | Nerede |
+| --- | --- |
+| Halka kalınlığı / rengi / hare genişliği (`--ka-avatar-ring-w`, `--ka-avatar-ring`, `--ka-avatar-halo`, `--ka-avatar-halo-w`, `--ka-avatar-halo-w-lg`) | TEMA MERKEZİ (çekirdek) |
+| Rozet rengi / gölgesi / en büyük genişliği (`--ka-avatar-chip-bg`, `--ka-avatar-chip-ink`, `--ka-avatar-chip-shadow`, `--ka-avatar-chip-max`, `--ka-avatar-chip-max-sm`) | TEMA MERKEZİ (çekirdek); rozet birincil düğmeyle aynı "altın cam"dır |
+| Rozet metni | `ShellUI` → `profileBadge()`: önce kullanıcının `unvan` alanı, yoksa rol adı (Müdür, Öğretmen …), ikisi de yoksa rozet çizilmez |
+| Kırpma ekranı ölçüleri / karartma (`--ka-photo-crop-w`, `--ka-photo-crop-stage`, `--ka-photo-crop-dim`) | TEMA MERKEZİ (çekirdek); kurallar `css/design-system-base.css` en altı "PROFİL FOTOĞRAFI · KIRPMA EKRANI" |
+| Kırpma ekranı davranışı | `js/core/photo-cropper.js` → `PhotoCropper.open(file,{badge})` |
+
+Kırpma ekranı fotoğraf seçilince **yüklemeden önce** açılır ve uygulamadaki gerçek görünümü gösterir:
+- Daire kadraj (uygulamada fotoğraf daire görünür); sürükle, iki parmakla / tekerlekle / kaydırıcıyla yakınlaştır, 90° döndür, sıfırla; klavye: ok tuşları, `+` `-`, `Esc`.
+- Altta üst başlık, profil kartı ve profil sayfası önizlemesi **canlı** güncellenir (aynı halka ve rozetle).
+- Fotoğraf kadrajı hiçbir zaman boş bırakmaz (en küçük ölçek = kadrajı tam kaplayan ölçek). Çıkış, kadrajın kare PNG'sidir; yapay büyütme yoktur (en çok 512 px).
+- Kırpma modülü ağa dokunmaz: yalnız `File` üretir. Yükleme hattı değişmedir: `ShellUI.profilePhotoUpdate` → `kendiProfilFotografimiGuncelle` (`js/auth.js`: tür/boyut doğrulama, 512 px WEBP, Storage, oturum). Böylece tek kayıplı kodlama yapılır.
+- Kırpma modülü yüklenemezse eski akış (ortadan kare kırpma) çalışır. Vazgeçilirse hiçbir şey yüklenmez.
+
+Kural: halka, hare veya rozet görünümünü değiştirmek için **yalnız** yukarıdaki belirteçleri değiştirin; bileşen kurallarına renk/ölçü yazmayın.
+`tests/profile-photo-crop.test.js` bu sözleşmeyi (belirteçler, bileşenlerin aynı belirteci kullanması, kırpma geometrisi, sürümler) doğrular.
+
 ### Genel düğmeler — tek değer, tüm uygulama
 
 Aşağıdaki değişkenlerin her biri `TEMA MERKEZİ` içinde **tek yerde** durur ve uygulamanın tamamını etkiler. Varsayılanlar mevcut görünümü korur (çarpanlar 1, eklemeler 0).
