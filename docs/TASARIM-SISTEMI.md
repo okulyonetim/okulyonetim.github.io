@@ -259,6 +259,7 @@ Kurallar:
 - **Ana sayfa**: `dashboard.js` işaretlemesi değişmez. `.ka-home` bölümleri `data-home-section` anahtarıyla 4px'lik satır ızgarasına yerleştirilir; `web-shell.js` her bölümün yüksekliğini ölçüp `grid-row-end:span N` yazar (sütunlar bağımsız dizilir). Sağ sütun ≥1280px'te açılır; yeni bir bölümü sağ sütuna almak için anahtarını `…[data-home-section="quick"],…` listelerine ekleyin.
 - **Sayfalar kenar çubuğu yüzünden görünüm alanından dardır**: 900px/1024px gibi *görünüm alanına* göre ayarlı ızgara kuralları web kabuğunda taşabilir; taşan sayfa için web bloğuna kısa bir düzeltme ekleyin (örnek: `.ka-attendance-toolbar`).
 - Masaüstünde "geri" menü listesine değil önceki sayfaya döner (menü listesi bellekte tutulmaz; kalıcı yan menü vardır). `ShellUI.openMenu()` masaüstünde menü katmanı açmaz.
+- **Telefondan önizleme**: telefon tarayıcısının "Masaüstü sitesi" modu sayfayı ~980px çizdiği için 1100px eşiğine ulaşmaz. Adrese `?web=1` eklenirse `index.html`/`beta.html` başındaki satır içi betik viewport'u `width=1280` yapar (bayrak `localStorage` `ka-web-preview`; `?web=0` kapatır). Bayrak yokken hiçbir şey değişmez; "Masaüstü sitesi" modu açıkken değil, normal (mobil) modda kullanılır.
 
 ### Genel düğmeler — tek değer, tüm uygulama
 

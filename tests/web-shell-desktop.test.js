@@ -41,6 +41,12 @@ for(const html of [index,beta])assert(html.includes('rel="preload" href="assets/
 for(const [name,html] of [['index.html',index],['beta.html',beta]]){
   assert(/<script src="js\/core\/shell-ui\.js\?v=\d+" defer><\/script>\s*<script src="js\/core\/web-shell\.js\?v=\d+" defer><\/script>/.test(html),`${name}: web-shell.js, shell-ui.js'den hemen sonra yüklenmeli.`);
 }
+for(const [name,html] of [['index.html',index],['beta.html',beta]]){
+  const head=html.slice(0,html.indexOf('</head>'));
+  assert(head.includes("localStorage.getItem('ka-web-preview')!=='1'")&&head.includes("get('web')")&&head.includes('width=1280'),`${name}: telefondan web önizleme anahtarı (?web=1) bulunmalı.`);
+  assert(head.indexOf('ka-web-preview')>head.indexOf('name="viewport"')&&head.indexOf('ka-web-preview')<head.indexOf('design-system.css'),`${name}: önizleme betiği viewport etiketinden sonra, stil dosyasından önce çalışmalı.`);
+  assert(/matchMedia\('\(min-width:1100px\)'\)\.matches\)return/.test(head),`${name}: geniş ekranda önizleme anahtarı hiçbir şey yapmamalı.`);
+}
 assert(/design-system-base\.css\?v=(\d+)/.test(entry),'Merkezi giriş dosyası base CSS sürümünü taşımalı.');
 
 // --- 3) Service Worker: yazı tipi + web kabuğu önbellekte, yazı tipi cache-first
