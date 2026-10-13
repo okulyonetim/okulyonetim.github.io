@@ -231,7 +231,7 @@ function renderStage(){
   const pager=pg.querySelector('[data-pager]');pager.hidden=count<=1;
   pg.querySelector('[data-pager-text]').textContent=(ui.view==='sheet'?'Sayfa ':'Sırtlık ')+(ui.idx+1)+' / '+count;
   const total=sample?0:items.length;
-  pg.querySelector('[data-info]').textContent=`${f(P.W/10)} × ${f(P.H/10)} cm · A4’e ${P.per} sırtlık (${P.cols} × ${P.rows})`+(total?` · ${total} sırtlık → ${Math.ceil(total/P.per)} sayfa`:' · Başlık yazınca önizleme güncellenir');
+  pg.querySelector('[data-info]').textContent=`${f(P.W/10)} × ${f(P.H/10)} cm · A4’e ${P.per} sırtlık (${P.cols} × ${P.rows})`+(total?` · ${total} sırtlık → ${Math.ceil(total/P.per)} sayfa`:' · Başlık yazılmazsa boş sırtlık basılır (elle yazmak için)');
 }
 function syncControls(){
   if(!pg)return;
@@ -252,12 +252,22 @@ function fillList(kind){
   if(!names.length){global.toast?.(kind==='classes'?'Kayıtlı sınıf bulunamadı.':'Kayıtlı öğretmen bulunamadı.');return}
   st.list=names.join('\n');save();refresh();
 }
+/* İçerik yazılmadıysa elle yazılacak boş sırtlıklar basılır (yıl ve okul adı yine de yer alır). */
+function blankItems(){
+  const n=clamp(Math.round(num(st.copies,1)),1,60);
+  return Array.from({length:n},()=>({title:'',sub:'',no:'',code:'',year:String(st.year||'').trim(),school:school()}));
+}
 async function print(){
+  if(!global.ReportEngine?.previewHtml){try{await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=4')}catch(_){}}
   const RE=global.ReportEngine;
-  if(!RE?.previewHtml){global.toast?.('Yazdırma altyapısı yüklenemedi.');return}
-  const items=curItems();
-  if(!items.length){global.toast?.('Önce başlık, alt başlık veya numara yazın.');return}
-  await logoReady;
+  if(!RE?.previewHtml){global.toast?.('Yazdırma altyapısı yüklenemedi. Uygulamayı yenileyip tekrar deneyin.');return}
+  let items=curItems();
+  if(!items.length){
+    if(st.mode==='list'&&!String(st.list||'').trim()){global.toast?.('Listeye en az bir satır yazın.');return}
+    items=blankItems();
+    global.toast?.('Başlık yazılmadığı için boş sırtlıklar hazırlandı; elle yazabilirsiniz.');
+  }
+  await Promise.race([logoReady,new Promise(r=>setTimeout(r,1500))]);   /* logo gelmezse bekleme */
   RE.previewHtml(docHtml(items,pageLayout(st),st),{title:'Klasör Sırtlığı',fileName:'Klasor_Sirtligi',yon:'dikey'});
 }
 function onInput(e){
@@ -276,7 +286,12 @@ function onClick(e){
   if(t.dataset.page){ui.idx+=Number(t.dataset.page);renderStage();return}
   if(t.dataset.fill){fillList(t.dataset.fill);return}
   if(t.hasAttribute('data-fill-page')){st.copies=pageLayout(st).per;save();refresh();return}
-  if(t.hasAttribute('data-print')){print().catch(err=>{console.error('[FolderSpine]',err);global.toast?.('Önizleme açılamadı.')});return}
+  if(t.hasAttribute('data-print')){
+    if(t.disabled)return;
+    const label=t.textContent;t.disabled=true;t.textContent='Hazırlanıyor…';
+    print().catch(err=>{console.error('[FolderSpine]',err);global.toast?.('Önizleme açılamadı: '+(err?.message||err))}).finally(()=>{t.disabled=false;t.textContent=label});
+    return;
+  }
   if(t.hasAttribute('data-reset')){st=defaults();ui={view:'label',idx:0};save();refresh();return}
 }
 function logoPrepare(){
