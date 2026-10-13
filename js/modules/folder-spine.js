@@ -33,14 +33,16 @@ function yearHint(){const d=new Date(),y=d.getFullYear(),s=d.getMonth()>=8?y:y-1
 
 /* ───────── durum ───────── */
 function defaults(){return{size:'5',w:7,h:28,title:'',sub:'',year:yearHint(),no:'',code:'',school:true,logo:true,upper:true,theme:'klasik',accent:swatches()[0]||'',dir:'down',fit:100,mode:'single',copies:4,from:1,count:8,months:'okul',list:'',margin:5,gap:0,cut:'line'}}
-let st=defaults(),ui={view:'label',idx:0},root=null,pg=null,ro=null,logoSrc='',logoReady=Promise.resolve();
+let st=defaults(),ui={view:'label',idx:0},touched=false,root=null,pg=null,ro=null,logoSrc='',logoReady=Promise.resolve();
 /* Kişisel ayarlar cihazın yerel-öncelikli deposunda (KorukLocalFirst.meta) tutulur; doğrudan localStorage kullanılmaz. */
 const uid=()=>global.AKTIF_KULLANICI?.uid||'';
-async function load(){
-  let s={};const u=uid();
-  if(u&&global.KorukLocalFirst?.meta){try{s=(await global.KorukLocalFirst.meta(u,KEY))||{}}catch(_){}}
-  const d=defaults(),o={...d,...s};if(!HEX.test(String(o.accent||'')))o.accent=d.accent;return o;
+/* Sayfa önce varsayılanlarla hemen çizilir; kayıtlı ayarlar gelince (ve kullanıcı bu arada bir şey değiştirmediyse) uygulanır.
+   Depo geç yanıt verse ya da hiç yanıt vermese bile sayfa asla boş kalmaz. */
+async function loadPrefs(){
+  const u=uid();if(!u||!global.KorukLocalFirst?.meta)return null;
+  try{const s=await Promise.race([global.KorukLocalFirst.meta(u,KEY),new Promise(r=>setTimeout(()=>r(null),2500))]);return s&&typeof s==='object'?s:null}catch(_){return null}
 }
+function applyPrefs(saved){const d=defaults(),o={...st,...saved};if(!HEX.test(String(o.accent||'')))o.accent=d.accent;st=o}
 let saveTimer=0;
 function save(){
   clearTimeout(saveTimer);
@@ -260,13 +262,14 @@ async function print(){
 }
 function onInput(e){
   const el=e.target.closest?.('[data-k]');if(!el||!pg?.contains(el))return;
-  const k=el.dataset.k;
+  const k=el.dataset.k;touched=true;
   st[k]=el.type==='checkbox'?el.checked:el.type==='range'?num(el.value,100):el.value;
   save();
   refresh();
 }
 function onClick(e){
   const t=e.target.closest?.('button');if(!t||!pg?.contains(t))return;
+  touched=true;
   if(t.dataset.set){st[t.dataset.set]=t.dataset.val;save();ui.idx=0;refresh();return}
   if(t.dataset.view){ui.view=t.dataset.view;ui.idx=0;refresh();return}
   if(t.dataset.accent){st.accent=t.dataset.accent;save();refresh();return}
@@ -287,13 +290,14 @@ async function open(target){
   root=target||D.getElementById('v2ModuleRoot');
   if(!root)return false;
   close();
-  st=await load();ui={view:'label',idx:0};
+  st=defaults();ui={view:'label',idx:0};touched=false;
   logoReady=logoPrepare();
   root.innerHTML=pageHtml();
   pg=root.querySelector('[data-folder-spine]');
   /* dinleyiciler yalnız bu sayfa bölümüne bağlıdır: başka modül kök alanı doldurunca birlikte gider */
   pg.addEventListener('input',onInput);pg.addEventListener('change',onInput);pg.addEventListener('click',onClick);
   refresh();
+  loadPrefs().then(saved=>{if(saved&&!touched&&pg&&pg.isConnected){applyPrefs(saved);refresh()}});
   const stage=pg.querySelector('[data-stage]');
   if(global.ResizeObserver){ro=new ResizeObserver(()=>{if(!stage.isConnected){close();return}renderStage()});ro.observe(stage)}
   return true;
