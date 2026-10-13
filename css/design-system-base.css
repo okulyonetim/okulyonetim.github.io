@@ -236,6 +236,9 @@
   --ka-wx-track:rgba(255,255,255,.22);            /* 7 günlük sıcaklık çubuğunun yolu */
   --ka-wx-range-1:#7cc4ff;                        /* sıcaklık aralığı: soğuk uç */
   --ka-wx-range-2:#ffd54a;                        /* sıcaklık aralığı: sıcak uç */
+  /* ana sayfadaki kompakt hava kartı: zemin temanın kart yüzeyidir, gökyüzü rengi yalnız ince bir ton olarak karışır (açık/koyu temaya uyar) */
+  --ka-wxc-ink:var(--ka-text);                    /* kart yazısı: temanın yazı rengi */
+  --ka-wxc-ink-2:color-mix(in srgb,var(--ka-text) 76%,transparent);   /* kart ikincil yazısı: hissedilen, konum (renkli zeminde de okunur) */
   --ka-wx-sun-core:#fffbe0; --ka-wx-sun-mid:#ffd54a; --ka-wx-sun-edge:#ffb800;
   --ka-wx-sun-glow:rgba(255,214,102,.5); --ka-wx-sun-glow-hi:rgba(255,214,102,.62);
   --ka-wx-ray:rgba(255,236,160,.42);
@@ -1280,6 +1283,8 @@
   --ka-btn-primary-ring:#8a6200;
   --ka-wx-shadow:0 var(--ka-sh-12) var(--ka-sh-26) rgba(30,50,110,calc(.30 * var(--ka-shadow-a))),0 1px 0 var(--ka-wx-edge-hi) inset;
   --ka-wx-shadow-modal:0 var(--ka-sh-20) var(--ka-sh-56) rgba(30,50,110,calc(.38 * var(--ka-shadow-a)));
+  --ka-wxc-tint:20%;                              /* kart zeminine karışan gökyüzü renginin payı (açık tema: hafif) */
+  --ka-wxc-sky-o:.6;                              /* kartta güneş / bulut / yağmur dokusunun yoğunluğu (0 = yok) */
   --ka-shadow-md:0 var(--ka-sh-8) var(--ka-sh-22) rgba(15,16,16,calc(.08 * var(--ka-shadow-a)));
   --ka-shadow-modal:0 var(--ka-sh-20) var(--ka-sh-56) rgba(7,10,9,calc(.18 * var(--ka-shadow-a)));
   --hd-bg:rgba(255,255,255,.78);
@@ -1405,6 +1410,8 @@ html[data-theme="dark"]{
   --ka-btn-primary-ring:#ffd54a;
   --ka-wx-shadow:0 var(--ka-sh-14) var(--ka-sh-32) rgba(4,10,30,calc(.42 * var(--ka-shadow-a))),0 1px 0 var(--ka-wx-edge-hi) inset;
   --ka-wx-shadow-modal:0 var(--ka-sh-22) var(--ka-sh-64) rgba(4,10,30,calc(.62 * var(--ka-shadow-a)));
+  --ka-wxc-tint:30%;                              /* kart zeminine karışan gökyüzü renginin payı (koyu tema) */
+  --ka-wxc-sky-o:.38;                             /* kartta güneş / bulut / yağmur dokusunun yoğunluğu (koyu temada daha seyrek) */
   --ka-shadow-md:0 var(--ka-sh-10) var(--ka-sh-28) rgba(var(--ka-shadow-rgb),calc(.36 * var(--ka-shadow-a)));
   --ka-shadow-modal:0 var(--ka-sh-22) var(--ka-sh-64) rgba(var(--ka-shadow-rgb),calc(.58 * var(--ka-shadow-a)));
   --hd-bg:rgba(12,12,16,.72);
@@ -10936,41 +10943,52 @@ html #v2ModuleRoot .ka-home #khWeather:not(.ka-wx) .kh-weather-arrow{font-size:v
 .ka-wx-s b{display:block;margin-top:var(--ka-sp-1);font-size:var(--ka-fs-14);font-weight:var(--ka-fw-800);line-height:var(--ka-lh-1-2);white-space:nowrap}
 .ka-wx-s b em{margin-left:var(--ka-sp-3);font-style:normal;font-size:var(--ka-fs-9-5);font-weight:var(--ka-fw-700);opacity:.9}
 
-/* — ana sayfa hava kartı — */
+/* — ana sayfa hava kartı: tek satırlık, temaya uyumlu şerit (sıcaklık · durum · konum · ok). Nem/rüzgâr/basınç yalnız detay penceresindedir. — */
 html #v2ModuleRoot .ka-home #khWeather.ka-wx{
-  display:block;width:100%;min-height:0;padding:var(--ka-sp-14);border-radius:var(--ka-r-8);text-align:left;cursor:pointer;font:inherit;
-  background:var(--wx-bg);border:var(--ka-border-w) solid var(--ka-wx-edge);box-shadow:var(--ka-wx-shadow);color:var(--ka-wx-ink);
-  text-shadow:0 var(--ka-sh-1) var(--ka-sh-8) var(--ka-wx-ink-shadow);-webkit-backdrop-filter:none;backdrop-filter:none;
+  --ka-wx-ink:var(--ka-wxc-ink);--ka-wx-ink-2:var(--ka-wxc-ink-2);--ka-wx-ink-shadow:transparent;--ka-wx-edge:var(--ka-border);
+  --ka-wx-chip:var(--ka-muted-bg);--ka-wx-chip-edge:var(--ka-border);
+  --wx-cloud:color-mix(in srgb,var(--wx-2) 50%,transparent);
+  --ka-wx-rain-0:transparent;--ka-wx-rain-1:color-mix(in srgb,var(--ka-wxc-ink) 40%,transparent);
+  --ka-wx-flake:color-mix(in srgb,var(--ka-wxc-ink) 45%,transparent);--ka-wx-flake-glow:transparent;
+  --ka-wx-mist-1:color-mix(in srgb,var(--ka-wxc-ink) 12%,transparent);--ka-wx-mist-0:transparent;
+  --ka-wx-moon:color-mix(in srgb,var(--wx-2) 55%,var(--ka-wxc-ink));--ka-wx-moon-glow:transparent;
+  --ka-wx-star:var(--ka-wxc-ink);--ka-wx-star-glow:transparent;
+  display:block;width:100%;min-height:0;padding:var(--ka-sp-10) var(--ka-sp-12) var(--ka-sp-10) var(--ka-sp-14);border-radius:var(--ka-r-6);text-align:left;cursor:pointer;font:inherit;
+  background:linear-gradient(165deg,color-mix(in srgb,var(--wx-2) var(--ka-wxc-tint),transparent),color-mix(in srgb,var(--wx-1) var(--ka-wxc-tint),transparent)),var(--ka-card-bg);
+  border:var(--ka-border-w) solid var(--ka-wx-edge);box-shadow:var(--ka-shadow-md);color:var(--ka-wx-ink);
+  text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
   transition:transform var(--ka-dur-220) var(--ka-ease-1);
 }
 html #v2ModuleRoot .ka-home #khWeather.ka-wx::after{content:none;display:none}
-@media(hover:hover){html #v2ModuleRoot .ka-home #khWeather.ka-wx:hover{transform:translateY(-2px)}}
+@media(hover:hover){html #v2ModuleRoot .ka-home #khWeather.ka-wx:hover{transform:translateY(-1px)}}
 html #v2ModuleRoot .ka-home #khWeather.ka-wx:active{transform:scale(.995)}
 html #v2ModuleRoot .ka-home #khWeather.ka-wx>:is(.kh-live-icon,.kh-live-main,.kh-weather-arrow){display:none}
 /* modül tema köprüsü ([class*="card"], span, small, b … !important) kart yazılarını soluklaştırmasın: yazı rengi yalnız --ka-wx-ink / --ka-wx-ink-2 */
 html[data-theme] #v2ModuleRoot .ka-home #khWeather.ka-wx:not(#_x){color:var(--ka-wx-ink)!important;border-color:var(--ka-wx-edge)!important}
 html[data-theme] #v2ModuleRoot .ka-home #khWeather.ka-wx:not(#_x) :is(.ka-wx-body,.ka-wx-body :is(span,small,b,em,sup,i)){color:inherit!important}
-html[data-theme] #v2ModuleRoot .ka-home #khWeather.ka-wx:not(#_x) .ka-wx-body :is(.ka-wx-f,.ka-wx-s small){color:var(--ka-wx-ink-2)!important}
-.ka-wx-body{position:relative;display:flex;flex-direction:column;gap:var(--ka-sp-10)}
-.ka-wx-top{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-10)}
-.ka-wx-mid{display:flex;flex-direction:column;justify-content:center;min-height:96px}
-.ka-wx-mid>*{display:block}
-.ka-wx-t{font-size:var(--ka-fs-56);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-n035);line-height:1;font-variant-numeric:tabular-nums}
-.ka-wx-t sup{margin-left:var(--ka-sp-2);position:relative;top:6px;vertical-align:top;font-size:var(--ka-fs-22);font-weight:var(--ka-fw-700);letter-spacing:0;line-height:1;opacity:.85}
-.ka-wx-c{margin-top:var(--ka-sp-6);font-size:var(--ka-fs-16);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-n01);line-height:var(--ka-lh-1-2)}
-.ka-wx-f{margin-top:var(--ka-sp-2);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-600);color:var(--ka-wx-ink-2)}
+html[data-theme] #v2ModuleRoot .ka-home #khWeather.ka-wx:not(#_x) .ka-wx-body :is(.ka-wx-f,.ka-wx-loc,.ka-wx-s small){color:var(--ka-wx-ink-2)!important}
+.ka-wx-body{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:var(--ka-sp-12)}
+.ka-wx-t{font-size:var(--ka-fs-34);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-n035);line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ka-wx-t sup{margin-left:var(--ka-sp-2);position:relative;top:3px;vertical-align:top;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-700);letter-spacing:0;line-height:1;opacity:.8}
+.ka-wx-mid{display:flex;flex-direction:column;gap:var(--ka-sp-2);min-width:0}
+.ka-wx-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 var(--ka-sp-8);min-width:0;max-height:calc(var(--ka-fs-15) * var(--ka-lh-1-2));overflow:hidden}   /* hissedilen sığmazsa ikinci satıra düşer ve gizlenir */
+.ka-wx-c{flex:none;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-n01);line-height:var(--ka-lh-1-2);white-space:nowrap}
+.ka-wx-f{flex:none;white-space:nowrap;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-600);color:var(--ka-wx-ink-2)}
 .ka-wx-f:empty{display:none}
-.ka-wx-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ka-sp-8);container:wxrow/inline-size}
-@container wxrow (max-width:280px){
-  .ka-wx-s{justify-content:center;gap:0;padding:var(--ka-sp-8) var(--ka-sp-6);text-align:center}
-  .ka-wx-s>svg{display:none}
-  .ka-wx-s b{font-size:var(--ka-fs-13)}
-}
+html #v2ModuleRoot .ka-home #khWeather .ka-wx-loc{height:auto;max-width:100%;padding:0;gap:var(--ka-sp-4);border:0;border-radius:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;font-size:var(--ka-fs-11-5);font-weight:var(--ka-fw-600)}
+html #v2ModuleRoot .ka-home #khWeather .ka-wx-go{width:28px;height:28px;-webkit-backdrop-filter:none;backdrop-filter:none}
+/* kompakt kartta gökyüzü yalnız hafif bir doku: küçük güneş / ay, seyrek bulut, ince yağmur */
+html #v2ModuleRoot .ka-home #khWeather.ka-wx .ka-wx-sky{opacity:var(--ka-wxc-sky-o)}
+html #v2ModuleRoot .ka-home #khWeather.ka-wx .ka-wx-sun{right:6px;top:calc(50% - 22px);width:44px;height:44px;scale:.52}
+html #v2ModuleRoot .ka-home #khWeather.ka-wx.k-pc.is-day .ka-wx-sun{right:34px;scale:.45}
+html #v2ModuleRoot .ka-home #khWeather.ka-wx .ka-wx-moon{right:12px;top:calc(50% - 23px);scale:.7}
+html #v2ModuleRoot .ka-home #khWeather.ka-wx .ka-wx-c1{top:34px;scale:.8}
+html #v2ModuleRoot .ka-home #khWeather.ka-wx .ka-wx-c2{top:46px;scale:.6}
+html #v2ModuleRoot .ka-home #khWeather.ka-wx .ka-wx-c3{top:28px;scale:.5}
 @media(max-width:370px){
-  html #v2ModuleRoot .ka-home #khWeather.ka-wx{padding:var(--ka-sp-12)}
-  .ka-wx-t{font-size:var(--ka-fs-48)}
-  .ka-wx-mid{min-height:84px}
-  .ka-wx-row{gap:var(--ka-sp-6)}
+  html #v2ModuleRoot .ka-home #khWeather.ka-wx{padding:var(--ka-sp-8) var(--ka-sp-10) var(--ka-sp-8) var(--ka-sp-12)}
+  .ka-wx-t{font-size:var(--ka-fs-30)}
+  .ka-wx-body{column-gap:var(--ka-sp-10)}
 }
 
 /* — detay penceresi — */

@@ -385,6 +385,14 @@ for(const t of ['--ka-btn-primary-blur','--ka-btn-primary-sat','--ka-btn-primary
   assert(!/hava-durumu-skin\.css/.test(index),'Eski css/v3/hava-durumu-skin.css geri yüklenmesin (kart tamamen merkezi CSS\'te).');
   // dashboard.js dokunulmaz: kartı kendi yazar, yeni yapı skin tarafından üstüne eklenir; eski çocuklar yalnız .ka-wx kartında gizlenir
   assert(rules.some(r=>/#khWeather\.ka-wx>:is\(\.kh-live-icon,\.kh-live-main,\.kh-weather-arrow\)/.test(r.sel)&&/display\s*:\s*none/.test(r.body)),'.ka-wx kartında dashboard.js’in eski çocukları (.kh-live-icon/.kh-live-main/.kh-weather-arrow) gizlenmeli.');
+  // ana sayfa kartı kompakt ve temaya uyumlu: zemin temanın kart yüzeyi + ince gökyüzü tonu; nem / rüzgâr / basınç yalnız detay penceresinde
+  for(const t of ['--ka-wxc-ink','--ka-wxc-ink-2'])assert(core.includes(t+':'),`TEMA MERKEZİ'nde kompakt hava kartı değişkeni eksik: ${t}`);
+  for(const t of ['--ka-wxc-tint','--ka-wxc-sky-o'])for(const i of [1,2])assert(names(inCore[i].body).has(t),`${t} hem açık hem koyu palette tanımlı olmalı.`);
+  const wcard=rules.find(r=>/#khWeather\.ka-wx$/.test(r.sel.trim())&&/\bbackground\s*:/.test(r.body));
+  assert(wcard&&/--ka-wxc-tint/.test(wcard.body)&&/--ka-card-bg/.test(wcard.body)&&/--ka-wx-ink\s*:\s*var\(--ka-wxc-ink\)/.test(wcard.body),'Ana sayfa hava kartı zemini temanın kart yüzeyi (--ka-card-bg) + --ka-wxc-tint olmalı; yazı --ka-wxc-ink.');
+  assert(!/\.ka-wx-row|\.ka-wx-top/.test(masked),'Kartın eski alt ölçüm satırı (.ka-wx-row / .ka-wx-top) CSS’te kalmamalı.');
+  const wfn=live.slice(live.indexOf('function weatherCard()'),live.indexOf('function openWeather()'));
+  assert(wfn.length>100&&!/stat\(|ka-wx-row|humidity|pressure/.test(wfn),'Ana sayfa kartında nem / rüzgâr / basınç satırı olmamalı (ayrıntı penceresinde).');
   // hareket: ekran dışında duraklar, hareket azaltma tercihinde durur
   assert(/\.ka-wx\.is-paused \.ka-wx-sky \*/.test(masked)&&/prefers-reduced-motion[^{]*\{[^]*?\.ka-wx-sky \*/.test(masked),'Gökyüzü animasyonları ekran dışında ve hareket azaltma tercihinde durmalı.');
 }

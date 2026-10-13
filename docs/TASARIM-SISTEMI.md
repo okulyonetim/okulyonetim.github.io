@@ -164,7 +164,7 @@ Yeni bir sarı düğme eklerken kendi `background`/`box-shadow` kuralını **yaz
 
 ### Hava durumu — Gökyüzü Camı (`--ka-wx-*`)
 
-Ana sayfadaki hava durumu kartı ve kartı tıklayınca açılan detay penceresi **tek gökyüzü motorunu** paylaşır: hava koduna göre 7 durum (`sun`, `pc` parçalı bulutlu, `cloud`, `rain`, `storm`, `snow`, `fog`) × gündüz/gece. Gökyüzü yalnız CSS ile hareket eder (güneş ışınları, ay, yıldız, bulut, yağmur, kar, sis, şimşek); yazı her gökyüzünde beyazdır, okunabilirliği koyu "duman" katmanı ve cam çipler sağlar. Gündüz/gece, Open-Meteo'nun gün doğumu/batımından hesaplanır (veri yoksa 06:00–19:00).
+Ana sayfadaki hava durumu kartı ve kartı tıklayınca açılan detay penceresi **tek gökyüzü motorunu** paylaşır (kart kompakt ve temaya uyumludur, pencere tam renkli gökyüzüdür; aşağıya bakın): hava koduna göre 7 durum (`sun`, `pc` parçalı bulutlu, `cloud`, `rain`, `storm`, `snow`, `fog`) × gündüz/gece. Gökyüzü yalnız CSS ile hareket eder (güneş ışınları, ay, yıldız, bulut, yağmur, kar, sis, şimşek); yazı her gökyüzünde beyazdır, okunabilirliği koyu "duman" katmanı ve cam çipler sağlar. Gündüz/gece, Open-Meteo'nun gün doğumu/batımından hesaplanır (veri yoksa 06:00–19:00).
 
 | Değişken | Etkisi |
 |---|---|
@@ -179,6 +179,11 @@ Ana sayfadaki hava durumu kartı ve kartı tıklayınca açılan detay penceresi
 | `--ka-wx-sun-*`, `--ka-wx-moon*`, `--ka-wx-star*`, `--ka-wx-rain-*`, `--ka-wx-flake*`, `--ka-wx-mist-*`, `--ka-wx-bolt-*` | Güneş, ay, yıldız, yağmur, kar, sis, şimşek renkleri |
 | `--ka-wx-speed` | Tüm hava animasyonlarının hızı (1 = normal, 2 = yarı hız, 0 = durağan); tek tek süreler `--ka-wx-t-*` |
 | `--ka-wx-shadow`, `--ka-wx-shadow-modal` | Kart ve pencere gölgesi (açık/koyu paletlerde ayrı) |
+| `--ka-wxc-ink`, `--ka-wxc-ink-2` | **Ana sayfa kartı** yazısı: temanın yazı rengi ve onun %76'sı (açık temada koyu, koyu temada açık) |
+| `--ka-wxc-tint` | Kart zeminine karışan gökyüzü renginin payı. Zemin temanın kart yüzeyidir (`--ka-card-bg`); açık temada %20, koyu temada %30 (açık/koyu paletlerde ayrı) |
+| `--ka-wxc-sky-o` | Kartta güneş / ay / bulut / yağmur dokusunun yoğunluğu (açık/koyu paletlerde ayrı; 0 = yalnız düz zemin) |
+
+**Ana sayfa kartı** tek satırlık şerittir (sıcaklık · durum + hissedilen · konum · ok; sığmayan "hissedilen" gizlenir). Nem / rüzgâr / basınç / saatlik / 7 günlük ayrıntılar yalnız kartı tıklayınca açılan pencerededir. Kartın zemini hava durumuna göre ince renklenir ama açık ve koyu temaya uyar; yazı rengi temadan gelir. Gökyüzü hareketi kartta hafif bir dokudur.
 
 Kart yapısını `js/v3/hava-durumu-skin.js` kurar (içeriği `SchoolLiveStatus.weatherCard()` üretir; `dashboard.js` değişmedi, eski çocukları CSS gizler); pencere `SchoolLiveStatus.openWeather()`'dır. Kapatmak için `localStorage['ka-skin']='off'` (sade eski kart görünür). Yeni bir hava durumu eklemek için `kindOf()`'a eşleme + `.ka-wx.k-<durum>.is-day|is-night` kuralları ve `--ka-wx-<durum>-*` renkleri gerekir.
 
