@@ -25,5 +25,8 @@ assert(css.includes('.ka-duty-report-table tbody tr.ka-duty-report-weekend td{ba
 assert(src.includes('function dutyReportPrintCss()')&&src.includes('extraHead:dutyReportPrintCss()'),'Native PDF çıktısı nöbet raporu stilini HTML içine gömmeli.');
 assert(src.includes('async function dutyReportLogoDataUrl()')&&src.includes('src="${esc(logoSrc)}"'),'Logo native PDF için gömülebilir veri adresine çevrilmeli.');
 assert(src.includes('mudurAdSoyad')&&src.includes("role.includes('müdür')&&!role.includes('yardımc')"),'Müdür adı ayar, öğretmen kimliği veya müdür rolünden bulunabilmeli.');
+assert(src.includes('function dutyReportAssistants()')&&src.includes('dutyReportAssistants().forEach(x=>'),'Nöbet çizelgesi TELEFONLAR bölümünde müdür yardımcıları da (ad soyad + telefon) yer almalı.');
+assert(src.includes('mudur\\s*(bas)?(yard|yrd)'),'Müdür yardımcısı unvandan (Müdür Yardımcısı / Md. Yrd.) tanınmalı.');
+assert(src.indexOf('phones.push(mudur)')<src.indexOf('dutyReportAssistants().forEach')&&src.indexOf('dutyReportAssistants().forEach')<src.indexOf('chiefPhones.forEach(x=>{if(!phones'),'Telefon sırası: müdür, müdür yardımcıları, nöbetçi amirler.');
 assert(report.includes("page=o.yon==='yatay'?'A4 landscape':'A4 portrait'")&&report.includes('@page{size:${page};margin:0}'));
 console.log('Tablo öncelikli tam A4 nöbet raporu sözleşmesi başarılı.');

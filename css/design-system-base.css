@@ -483,21 +483,21 @@
   --ka-detail-hero-glow:var(--ka-on-accent-glow);
   --ka-avatar-bg:var(--ka-primary-soft);
   --ka-avatar-text:var(--ka-primary);
-  --ka-food-mon-bg:var(--ka-card-raised-bg);
-  --ka-food-mon-border:var(--ka-border);
-  --ka-food-mon-text:var(--ka-text);
-  --ka-food-tue-bg:var(--ka-card-raised-bg);
-  --ka-food-tue-border:var(--ka-border);
-  --ka-food-tue-text:var(--ka-text);
-  --ka-food-wed-bg:var(--ka-card-raised-bg);
-  --ka-food-wed-border:var(--ka-border);
-  --ka-food-wed-text:var(--ka-text);
-  --ka-food-thu-bg:var(--ka-card-raised-bg);
-  --ka-food-thu-border:var(--ka-border);
-  --ka-food-thu-text:var(--ka-text);
-  --ka-food-fri-bg:var(--ka-card-raised-bg);
-  --ka-food-fri-border:var(--ka-border);
-  --ka-food-fri-text:var(--ka-text);
+  --ka-food-d1:#2b64a8;                           /* yemek menüsü: Pazartesi — mavi (beyaz yazıyla ≥ 4,5:1) */
+  --ka-food-d2:#1f7a4d;                           /* Salı — yeşil */
+  --ka-food-d3:#a8660a;                           /* Çarşamba — kehribar */
+  --ka-food-d4:#bf4631;                           /* Perşembe — mercan */
+  --ka-food-d5:#6f4fae;                           /* Cuma — mor */
+  --ka-food-on:#ffffff;                           /* hafta günü rengi üstündeki yazı (A4 çıktı başlıkları) */
+  --ka-food-stripe:linear-gradient(90deg,var(--ka-food-d1) 0 20%,var(--ka-food-d2) 20% 40%,var(--ka-food-d3) 40% 60%,var(--ka-food-d4) 60% 80%,var(--ka-food-d5) 80% 100%);   /* çıktı başlığının altındaki beş renkli şerit */
+  --ka-food-tint:11%;                             /* ekranda gün sekmesi zemini: hafta günü renginin kart yüzeyine karışma oranı */
+  --ka-food-edge:34%;                             /* ekranda gün kartı çizgisi: renk oranı */
+  --ka-food-ink-mix:74%;                          /* ekranda gün rakamı: renk oranı (kalanı tema yazı rengi → koyu temada açılır) */
+  --ka-food-tab-w:64px;                           /* telefonda gün sekmesinin genişliği */
+  --ka-food-step:44px;                            /* ‹ › düğmelerinin ve ay/gün seçicinin yüksekliği */
+  --ka-food-meter-h:6px;                          /* ay doluluk çubuğunun kalınlığı */
+  --ka-food-print-tint:7%;                        /* A4 çıktıda hücre zemini: renk oranı */
+  --ka-food-print-edge:46%;                       /* A4 çıktıda hücre çizgisi: renk oranı */
   --ka-module-people-1:var(--ka-primary);
   --ka-module-people-2:var(--ka-primary-hover);
   --ka-module-exams-1:var(--ka-primary);
@@ -6980,20 +6980,6 @@ html[data-theme="dark"] #v2ModuleRoot .ka-note-card{
 html[data-theme="dark"] #v2ModuleRoot .ka-note-card *{
   color:inherit;
 }
-html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-cal-cell{
-  background:var(--ka-card-raised-bg)!important;
-  border-color:var(--ka-border)!important;
-  color:var(--ka-text)!important;
-}
-html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-cal-date strong,
-html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-cal-date span{
-  color:var(--ka-text)!important;
-}
-html[data-theme="dark"] #v2ModuleRoot [data-food-menu-module] .food-week-item{
-  background:var(--ka-card-raised-bg)!important;
-  color:var(--ka-text)!important;
-}
-
 /* ===== CENTRAL THEME ENFORCEMENT v1015 =====
    Tüm modül renkleri tek merkezden beslenir. */
 
@@ -11169,6 +11155,119 @@ input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:trans
 .ka-spine.lf-on .ka-spine__logo{box-sizing:border-box;padding:var(--ka-spine-logo-frame-pad);border:var(--sp-lw) solid var(--sp-lf);border-radius:var(--ka-spine-logo-frame-radius)}
 .ka-spine.fr-on:not(.t-cerceve)::after{content:"";position:absolute;inset:0;border:var(--sp-ow) solid var(--sp-pc);pointer-events:none}
 .ka-spine.fr-on.t-koyu::after{inset:var(--ka-spine-frame-gap);border-color:var(--sp-on)}
+
+/* ===== YEMEK MENÜSÜ — günlük / haftalık / aylık sayfalar + A4 çıktı =====
+   Tüm renk ve ölçüler TEMA MERKEZİ'ndeki --ka-food-* belirteçlerindendir. Hafta günü renkleri (Pzt mavi · Sal yeşil · Çar kehribar ·
+   Per mercan · Cum mor) ekranda ve çıktıda aynıdır; işaretleme yalnız data-dow="1…5" taşır (js/modules/food-menu.js).
+   Ekran: .ka-fm-* (sayfa kökü .ka-fm) · A4 çıktı: .ka-fmp-* (rapor belgesi merkezi stili bağlar, tema bağımsız beyaz kâğıt). */
+.ka-fm [data-dow="1"],.ka-fmp[data-dow="1"],.ka-fmp [data-dow="1"]{--fm-hue:var(--ka-food-d1)}
+.ka-fm [data-dow="2"],.ka-fmp[data-dow="2"],.ka-fmp [data-dow="2"]{--fm-hue:var(--ka-food-d2)}
+.ka-fm [data-dow="3"],.ka-fmp[data-dow="3"],.ka-fmp [data-dow="3"]{--fm-hue:var(--ka-food-d3)}
+.ka-fm [data-dow="4"],.ka-fmp[data-dow="4"],.ka-fmp [data-dow="4"]{--fm-hue:var(--ka-food-d4)}
+.ka-fm [data-dow="5"],.ka-fmp[data-dow="5"],.ka-fmp [data-dow="5"]{--fm-hue:var(--ka-food-d5)}
+.ka-fm [data-dow]{--fm-ink:color-mix(in srgb,var(--fm-hue) var(--ka-food-ink-mix),var(--ka-text));--fm-tint:color-mix(in srgb,var(--fm-hue) var(--ka-food-tint),var(--ka-card-bg));--fm-edge:color-mix(in srgb,var(--fm-hue) var(--ka-food-edge),var(--ka-border))}
+
+/* — üst çubuk: ay / gün / hafta seçici + doluluk + işlemler — */
+.ka-fm-stepper{display:grid;grid-template-columns:var(--ka-food-step) minmax(0,1fr) var(--ka-food-step);align-items:center;gap:var(--ka-sp-10)}
+.ka-fm-step{display:grid;place-items:center;width:var(--ka-food-step);height:var(--ka-food-step);padding:0;border:var(--ka-border-w) solid var(--ka-border);border-radius:50%;background:var(--ka-card-raised-bg);color:var(--ka-text);font:inherit;font-size:var(--ka-fs-24);font-weight:var(--ka-fw-700);line-height:1;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ka-fm-month{position:relative;display:grid;place-items:center;min-height:var(--ka-food-step);cursor:pointer}
+.ka-fm .ka-fm-month__name{font-size:var(--ka-fs-20);font-weight:var(--ka-fw-850);letter-spacing:var(--ka-ls-n01);text-align:center;color:var(--ka-text)}
+.ka-fm-month :is(select,input){position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;opacity:0;cursor:pointer;font-size:var(--ka-fs-16)}
+.ka-fm-meter{display:flex;justify-content:flex-end;height:var(--ka-food-meter-h);overflow:hidden;border-radius:var(--ka-radius-pill);background:linear-gradient(90deg,var(--ka-food-d1),var(--ka-food-d2),var(--ka-food-d3),var(--ka-food-d4),var(--ka-food-d5))}
+.ka-fm-meter>i{display:block;width:calc(100% - var(--fm-p));background:var(--ka-muted-bg)}
+.ka-fm-meter__text{margin-top:calc(var(--ka-sp-6) * -1);font-size:var(--ka-fs-12-5);color:var(--ka-text-muted)}
+.ka-fm-actions{display:flex;flex-wrap:wrap;gap:var(--ka-sp-10)}
+.ka-fm-actions .ka-btn{flex:1 1 auto}
+
+/* — hafta bölümü ve gün kartı (telefon: sol renkli gün sekmesi + sağda yemekler) — */
+.ka-fm-week{display:grid;gap:var(--ka-sp-8)}
+.ka-fm-week__label{padding:0 var(--ka-sp-4);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-800);color:var(--ka-text-muted)}
+.ka-fm-days{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--ka-sp-10)}
+.ka-fm-day{display:grid;grid-template-columns:var(--ka-food-tab-w) minmax(0,1fr);overflow:hidden;border:var(--ka-border-w) solid var(--fm-edge);border-radius:var(--ka-r-5);background:var(--ka-card-bg)}
+.ka-fm-day--blank{display:none}
+.ka-fm-day.is-today{box-shadow:0 0 0 calc(var(--ka-border-w) * 2) var(--fm-hue)}
+.ka-fm-day__tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--ka-sp-2);padding:var(--ka-sp-10) var(--ka-sp-4);background:var(--fm-tint);color:var(--fm-ink)}
+.ka-fm-day__no{font-style:normal;font-size:var(--ka-fs-24);font-weight:var(--ka-fw-900);line-height:1}
+.ka-fm-day__wd{font-style:normal;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800)}
+.ka-fm-day__now{padding:0 var(--ka-sp-6);border-radius:var(--ka-radius-pill);background:var(--fm-hue);color:var(--ka-food-on);font-style:normal;font-size:var(--ka-fs-10-5);font-weight:var(--ka-fw-800)}
+.ka-fm-day__body{display:flex;flex-direction:column;gap:var(--ka-sp-8);min-width:0;padding:var(--ka-sp-10) var(--ka-sp-10) var(--ka-sp-10) var(--ka-sp-12)}
+.ka-fm-day.is-empty .ka-fm-day__body{justify-content:center}
+.ka-fm-items{display:flex;flex-direction:column;gap:var(--ka-sp-6)}
+.ka-fm-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-4)}
+.ka-fm-input{min-width:0;min-height:var(--ka-ic-40);font-size:var(--ka-fs-15)}
+.ka-fm-x{display:grid;place-items:center;width:var(--ka-sp-34);height:var(--ka-sp-34);padding:0;border:0;border-radius:50%;background:transparent;color:var(--ka-text-muted);font:inherit;font-size:var(--ka-fs-20);line-height:1;cursor:pointer;touch-action:manipulation}
+.ka-fm-add{align-self:flex-start;min-height:var(--ka-sp-34);padding:0 var(--ka-sp-14);border:var(--ka-border-w) dashed var(--fm-edge);border-radius:var(--ka-radius-pill);background:transparent;color:var(--fm-ink);font:inherit;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-800);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ka-fm-day__none{font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
+
+/* — yemek listesi (günlük kahraman kart + haftalık kartlar) — */
+.ka-fm-dishes{display:grid;margin:0;padding:0;list-style:none}
+.ka-fm-dishes li{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-8) 0;border-top:var(--ka-border-w) solid var(--fm-edge);font-size:var(--ka-fs-14);font-weight:var(--ka-fw-700);line-height:var(--ka-lh-1-25)}
+.ka-fm-dishes li:first-child{border-top:0}
+.ka-fm-dishes li::before{content:"";flex:none;width:var(--ka-sp-8);height:var(--ka-sp-8);border-radius:50%;background:var(--fm-hue)}
+.ka-fm-hero{display:grid;gap:var(--ka-sp-14);padding:var(--ka-sp-16);border:var(--ka-border-w) solid var(--fm-edge);border-radius:var(--ka-r-6);background:linear-gradient(160deg,var(--fm-tint),var(--ka-card-bg) 64%)}
+.ka-fm-hero__date{display:flex;align-items:center;gap:var(--ka-sp-14)}
+.ka-fm-hero__no{font-style:normal;font-size:var(--ka-fs-48);font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-n03);line-height:1;color:var(--fm-ink)}
+.ka-fm-hero__meta{display:flex;flex-direction:column;align-items:flex-start;gap:var(--ka-sp-2)}
+.ka-fm .ka-fm-hero__meta b{font-size:var(--ka-fs-20);font-weight:var(--ka-fw-850);color:var(--ka-text)}
+.ka-fm-hero__meta i:not(.ka-fm-day__now){font-style:normal;font-size:var(--ka-fs-14);color:var(--ka-text-muted)}
+.ka-fm-hero .ka-fm-dishes li{padding:var(--ka-sp-12) 0;font-size:var(--ka-fs-17)}
+.ka-fm-hero .ka-fm-dishes li::before{width:var(--ka-sp-10);height:var(--ka-sp-10)}
+.ka-fm-empty{display:grid;justify-items:start;gap:var(--ka-sp-12);padding:var(--ka-sp-16);border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-r-6)}
+.ka-fm-empty__icon{font-style:normal;font-size:var(--ka-fs-31);line-height:1}
+.ka-fm-empty b{font-size:var(--ka-fs-16);font-weight:var(--ka-fw-850)}
+.ka-fm-empty p{margin:var(--ka-sp-2) 0 0;font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
+
+/* — geniş ekran: hafta, gerçek takvim gibi 5 sütun (Pzt–Cum) — */
+@media (min-width:900px){
+  .ka-fm-days{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .ka-fm-day{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
+  .ka-fm-day--blank{display:block;visibility:hidden;border:0}
+  .ka-fm-day__tab{flex-direction:row;justify-content:flex-start;gap:var(--ka-sp-8);padding:var(--ka-sp-8) var(--ka-sp-12)}
+  .ka-fm-day__now{margin-left:auto}
+}
+
+/* — A4 çıktı (yatay: aylık / haftalık · dikey: günlük). Beyaz kâğıt; tema belirteçlerine değil yalnız --ka-food-* ve --ka-report-* belirteçlerine bağlıdır — */
+.ka-fmp{--fm-fs:8pt;display:flex;flex-direction:column;gap:2.4mm;width:100%;height:197mm;overflow:hidden;font-family:var(--ka-font);color:var(--ka-report-text)}
+.ka-fmp--day{height:279mm;gap:6mm}
+.ka-fmp[data-dow],.ka-fmp [data-dow]{--fm-tint:color-mix(in srgb,var(--fm-hue) var(--ka-food-print-tint),var(--ka-report-bg));--fm-edge:color-mix(in srgb,var(--fm-hue) var(--ka-food-print-edge),var(--ka-report-bg))}
+.ka-fmp-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:4mm}
+.ka-fmp-logo{width:16mm;height:16mm;object-fit:contain}
+.ka-fmp-school{display:flex;flex-direction:column;gap:.6mm;min-width:0}
+.ka-fmp-school b{font-size:12pt;font-weight:var(--ka-fw-850);line-height:var(--ka-lh-1-1)}
+.ka-fmp-school i{font-style:normal;font-size:8.5pt;color:var(--ka-text-muted)}
+.ka-fmp-title{display:flex;flex-direction:column;align-items:flex-end;gap:1.2mm;text-align:right}
+.ka-fmp-when{display:flex;align-items:baseline;gap:2.4mm;line-height:1}
+.ka-fmp-when em{font-style:normal;font-size:30pt;font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-n03)}
+.ka-fmp-when i{font-style:normal;font-size:13pt;font-weight:var(--ka-fw-600);color:var(--ka-text-muted)}
+.ka-fmp-title b{font-size:8.5pt;font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-08);color:var(--ka-text-muted)}
+.ka-fmp-stripe{flex:none;height:1.6mm;border-radius:.8mm;background:var(--ka-food-stripe)}
+.ka-fmp-grid{display:grid;flex:1 1 auto;min-height:0;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:auto repeat(var(--fm-rows,1),minmax(min-content,1fr));gap:1.6mm}
+.ka-fmp-h{padding:1.3mm 0;border-radius:1.6mm;background:var(--fm-hue);color:var(--ka-food-on);text-align:center;font-size:8.5pt;font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-04)}
+.ka-fmp-cell{box-sizing:border-box;min-height:17mm;padding:1.4mm 2mm 1.6mm 2.4mm;border:.3mm solid var(--fm-edge);border-left:1.2mm solid var(--fm-hue);border-radius:1.6mm;background:var(--fm-tint);break-inside:avoid;page-break-inside:avoid}
+.ka-fmp-cell.is-blank{border:0;background:transparent}
+.ka-fmp-cell.is-off{background:repeating-linear-gradient(135deg,transparent 0 1.4mm,color-mix(in srgb,var(--fm-hue) 9%,transparent) 1.4mm 2.8mm)}
+.ka-fmp-d{margin-bottom:.9mm;line-height:1}
+.ka-fmp-d em{font-style:normal;font-size:12pt;font-weight:var(--ka-fw-900);color:var(--fm-hue)}
+.ka-fmp-i{display:flex;gap:1.3mm;padding:.35mm 0;font-size:var(--fm-fs);line-height:var(--ka-lh-1-22)}
+.ka-fmp-i::before{content:"";flex:none;width:1.1mm;height:1.1mm;margin-top:calc(var(--fm-fs) * .42);border-radius:50%;background:var(--fm-hue)}
+.ka-fmp-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;padding-top:2mm;border-top:.3mm solid var(--ka-text-muted)}
+.ka-fmp-wish{font-style:normal;font-size:11pt;font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+.ka-fmp-sign{display:flex;flex-direction:column;align-items:center;min-width:48mm;line-height:var(--ka-lh-1-15);text-align:center}
+.ka-fmp-sign b{font-size:10pt;font-weight:var(--ka-fw-850)}
+.ka-fmp-sign i{font-style:normal;font-size:8.5pt}
+.ka-fmp--week .ka-fmp-cell{padding:3mm 3mm 3mm 3.6mm}
+.ka-fmp--week .ka-fmp-d{margin-bottom:2.4mm}
+.ka-fmp--week .ka-fmp-d em{font-size:28pt}
+.ka-fmp--week .ka-fmp-i{padding:1.1mm 0}
+.ka-fmp--week .ka-fmp-i::before{width:1.8mm;height:1.8mm}
+.ka-fmp-hero{display:flex;align-items:center;gap:8mm;padding:8mm 10mm;border-left:3mm solid var(--fm-hue);border-radius:3mm;background:var(--fm-tint)}
+.ka-fmp-hero em{font-style:normal;font-size:72pt;font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-n03);line-height:1;color:var(--fm-hue)}
+.ka-fmp-hero b{display:block;font-size:28pt;font-weight:var(--ka-fw-850);line-height:var(--ka-lh-1-1)}
+.ka-fmp-hero i{display:block;margin-top:1.4mm;font-style:normal;font-size:14pt;color:var(--ka-text-muted)}
+.ka-fmp-dishes{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.ka-fmp-dishes li{display:flex;align-items:center;gap:5mm;padding:4.6mm 0;border-bottom:.3mm solid var(--fm-edge);font-size:var(--fm-fs);font-weight:var(--ka-fw-700);line-height:var(--ka-lh-1-15)}
+.ka-fmp-dishes li::before{content:"";flex:none;width:3.2mm;height:3.2mm;border-radius:50%;background:var(--fm-hue)}
+.ka-fmp-none{padding:12mm 0;font-size:16pt;color:var(--ka-text-muted)}
 
 /* ===== CAM SİSTEMİ — TÜM SAYFALAR · MENÜ · ALT NAVİGASYON · BAŞLIK · AÇILIR PENCERELER (v1253) =====
    Ana sayfa zemini + tüm bölüm başlıkları, kartlar, satırlar, çipler ve ikonlar için TEK yetkili tanım (koyu + açık tema).

@@ -24,10 +24,10 @@ function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if
 define('dashboard',['js/modules/school-live-status.js?v=1069','js/modules/dashboard.js?v=1095']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/academic.js?v=894']);
-define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/management.js?v=894']);
+define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/management.js?v=895']);
 define('communication',['js/modules/communication.js?v=839','js/modules/assistant.js']);
 define('transport',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/transport.js?v=948']);
-define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/food-menu.js?v=1038']);
+define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/food-menu.js?v=1039']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/reports.js?v=21']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/tools.js?v=3','js/modules/rubric-settings.js?v=1065','js/modules/rubric-tools.js']);

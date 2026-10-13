@@ -215,6 +215,22 @@ Sırtlık sayfası: ölçü (3 cm / 5 cm / 8 cm / özel), içerik, altı şablon
 
 Önemli: kâğıt kuralları (`.ka-spine`, `.ka-spine-sheet`, `.ka-spine-cell`, `.ka-spine__*`) merkezi CSS'te durur; yazdırılan belge bu kuralları **çalışma anında merkezi stilden çıkarıp** (`paperCss()`) belgeye gömer. Yani önizleme, yazıcı ve PNG çıktısı aynı tek kural kümesini kullanır; ikinci bir stil kopyası yoktur. Bu yüzden kâğıt seçicileri `#v2ModuleRoot`'a bağlı olmamalı ve tema belirteçlerine (`--gl-*`, `--ka-text`…) dayanmamalıdır (kontrat testi 16 bunu denetler). Bir sırtlık görünümünü değiştirmek için ilgili belirteci değiştirmek yeter.
 
+### Yemek menüsü — günlük, haftalık, aylık ve A4 çıktıları (`--ka-food-*`)
+
+Üç menü sayfası (`js/modules/food-menu.js`) aynı görünümü paylaşır; renk ve ölçülerin tamamı merkezi CSS'te (`css/design-system-base.css` → TEMA MERKEZİ `--ka-food-*` + "YEMEK MENÜSÜ" bloğu) durur, JS içinde renk/ölçü yoktur. Hafta günü rengi tek kaynaktan gelir: Pzt mavi, Salı yeşil, Çarşamba kehribar, Perşembe mercan, Cuma mor.
+
+| Değişken | Etkisi |
+|---|---|
+| `--ka-food-d1` … `-d5`, `--ka-food-on` | Pazartesi–Cuma renkleri ve üzerindeki yazı (ekran gün sekmesi, A4 gün başlığı, çizgiler, madde noktaları) |
+| `--ka-food-stripe` | Başlık altındaki beş renkli şerit (ekran özeti ve A4 çıktı) |
+| `--ka-food-tint`, `--ka-food-edge`, `--ka-food-ink-mix` | Ekranda gün kartı zemini, çizgisi ve rakam rengi için hafta günü renginin karışma oranı (koyu temada rakam otomatik açılır) |
+| `--ka-food-tab-w`, `--ka-food-step`, `--ka-food-meter-h` | Gün sekmesi genişliği, ‹ › düğme yüksekliği, ay doluluk çubuğu kalınlığı |
+| `--ka-food-print-tint`, `--ka-food-print-edge` | A4 çıktıda hücre zemini ve çizgisi (renk oranı) |
+
+Ekran sınıfları `.ka-fm-*`, A4 sınıfları `.ka-fmp-*`. A4 sınıfları açık paleti kullanır ve `#v2ModuleRoot`'a bağlı değildir; böylece koyu temada bile çıktı beyaz kâğıttır. İzin denetimleri `data-fm-add / -remove / -save / -item` işaretlerine dayanır; markup değişse de bu işaretler korunur.
+
+**Çıktılar:** *Aylık* — yatay A4, Pzt–Cum sütunlu takvim ızgarası; yazı boyutu en kalabalık haftaya göre 10,5 pt'den 4,5 pt'ye kadar otomatik seçilir (`foodMenuPrintFontSize`), satırlar sayfayı doldurur (`--fm-rows`). *Haftalık* — yatay A4, beş büyük gün sütunu; yazı 16/14/12/10 pt (en çok yemeği olan güne göre). *Günlük* — dikey A4, yemekhane panosuna asılacak büyük gün kartı ve yemek listesi; yazı 30–15 pt. Üçünde de okul adı/logo, başlık, beş renkli şerit, "Afiyet olsun." ve müdür imzası bulunur; menüsü girilmemiş gün çizgili boş hücre olarak basılır.
+
 ### Genel düğmeler — tek değer, tüm uygulama
 
 Aşağıdaki değişkenlerin her biri `TEMA MERKEZİ` içinde **tek yerde** durur ve uygulamanın tamamını etkiler. Varsayılanlar mevcut görünümü korur (çarpanlar 1, eklemeler 0).

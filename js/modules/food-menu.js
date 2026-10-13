@@ -1,6 +1,8 @@
 /* Koruk Asistan — Yemek Menüsü modülü
  * Günlük / Haftalık / Aylık menü + Yemek Denetim Formu tek dosyada.
  * Veri: DeviceData 'yemekMenuleri' koleksiyonu, ay bazlı ({id:'YYYY-MM', menu:{gün:{items:[]}}}).
+ * Görünüm (ekran + A4 çıktı) tamamen merkezi CSS'tedir: css/design-system-base.css → TEMA MERKEZİ --ka-food-* + "YEMEK MENÜSÜ" bölümü.
+ * Bu dosya yalnızca işaretleme üretir: ekran sınıfları ka-fm-*, çıktı sınıfları ka-fmp-*; hafta günü rengi data-dow özniteliğinden gelir.
  */
 (function(global){
 'use strict';
@@ -39,15 +41,8 @@ function localIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(
 let active='monthly',mounted=false,unsubs=[],pendingPage=null;
 let foodMenuCurrentMonth=foodMenuMonthKey(localIso(new Date())),foodMenuViewDate=localIso(new Date()),foodMenuCache={};
 
-const DAY_THEMES=[
- null,
- {cls:'food-day-mon',name:'Pazartesi'},
- {cls:'food-day-tue',name:'Salı'},
- {cls:'food-day-wed',name:'Çarşamba'},
- {cls:'food-day-thu',name:'Perşembe'},
- {cls:'food-day-fri',name:'Cuma'},
-];
-function themeFor(dow){return DAY_THEMES[dow]||DAY_THEMES[1]}
+const WD_LONG=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const trd=(d,o)=>d.toLocaleDateString('tr-TR',o);
 
 function foodMenuMonthKey(date){const d=new Date(date+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
 
@@ -125,83 +120,18 @@ function foodDayRaw(x){
  return old.length?old:items;
 }
 function foodDayEnsure(x){if(!x||typeof x!=='object')x={};x.items=foodDayRaw(x);return x}
-function foodMenuMonthOptions(selected){const now=new Date(),out=[];for(let n=-2;n<=10;n++){const d=new Date(now.getFullYear(),now.getMonth()+n,1),k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');out.push('<option value="'+k+'" '+(k===selected?'selected':'')+'>'+d.toLocaleDateString('tr-TR',{month:'long',year:'numeric'})+'</option>')}return out.join('')}
-function isToday(iso){return iso===localIso(new Date())}
-
-function foodMenuCalendarRows(key,data,opts){
- opts=opts||{};
- const y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,last=new Date(y,m+1,0).getDate();
- const weekdays=[];
- for(let day=1;day<=last;day++){const dow=new Date(y,m,day).getDay();if(dow>=1&&dow<=5)weekdays.push(day)}
- const weeks=Math.ceil(weekdays.length/5);
- let rows='';
- for(let w=0;w<weeks;w++){
-  rows+='<div class="food-cal-week">';
-  for(let ci=0;ci<5;ci++){
-   const day=weekdays[w*5+ci];
-   if(!day){rows+='<div class="food-cal-cell food-cal-cell--empty"></div>';continue}
-   const d=new Date(y,m,day),iso=localIso(d),dow=d.getDay(),th=themeFor(dow),today=isToday(iso),themeClass='food-cal-cell--'+String(dow);
-   const x=foodDayEnsure(data[day]||{}),items=opts.forPrint?foodDayItems(x):foodDayRaw(x);
-   rows+='<div class="food-cal-cell '+themeClass+' '+th.cls+(today?' food-cal-cell--today':'')+'">'
-    +'<div class="food-cal-date"><strong>'+String(day).padStart(2,'0')+'</strong>'
-    +'<span>'+esc(d.toLocaleDateString('tr-TR',{weekday:'short'}))+'</span>'
-    +'<button class="food-add-btn" type="button" data-fm-add="'+day+'" aria-label="Yemek ekle">+</button></div>'
-    +'<div class="food-cal-items">'+(items.length?items.map((v,j)=>'<div class="food-item-row"><input type="text" data-fm-item="'+day+'" value="'+esc(v)+'" placeholder="Yemek adı"><button class="food-remove-btn" type="button" data-fm-remove="'+day+':'+j+'" aria-label="Sil">×</button></div>').join(''):'<div class="food-cal-empty">Henüz yemek eklenmedi</div>')+'</div></div>';
-  }
-  rows+='</div>';
- }
- return rows;
+const monthKeyOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+const monthLabel=key=>trd(new Date(Number(key.slice(0,4)),Number(key.slice(5,7))-1,1),{month:'long',year:'numeric'});
+function foodMenuMonthOptions(selected){
+ const now=new Date(),keys=new Set([selected]);
+ for(let n=-12;n<=12;n++)keys.add(monthKeyOf(new Date(now.getFullYear(),now.getMonth()+n,1)));
+ return [...keys].filter(Boolean).sort().map(k=>'<option value="'+k+'"'+(k===selected?' selected':'')+'>'+esc(monthLabel(k))+'</option>').join('');
 }
-
-const FOOD_MENU_STYLE='<style>'
- +'.food-day-mon{--fm-day-bg:var(--ka-food-mon-bg);--fm-day-border:var(--ka-food-mon-border);--fm-day-text:var(--ka-food-mon-text)}.food-day-tue{--fm-day-bg:var(--ka-food-tue-bg);--fm-day-border:var(--ka-food-tue-border);--fm-day-text:var(--ka-food-tue-text)}.food-day-wed{--fm-day-bg:var(--ka-food-wed-bg);--fm-day-border:var(--ka-food-wed-border);--fm-day-text:var(--ka-food-wed-text)}.food-day-thu{--fm-day-bg:var(--ka-food-thu-bg);--fm-day-border:var(--ka-food-thu-border);--fm-day-text:var(--ka-food-thu-text)}.food-day-fri{--fm-day-bg:var(--ka-food-fri-bg);--fm-day-border:var(--ka-food-fri-border);--fm-day-text:var(--ka-food-fri-text)}'
- +'[data-food-menu-module] select[data-fm-month]{background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;border:var(--ka-border-w) solid var(--ka-input-border)!important;border-radius:var(--ka-ic-8);padding:var(--ka-sp-6) var(--ka-sp-10);font-size:var(--ka-fs-13)}'
- +'.food-tabs{display:flex;gap:var(--ka-sp-6);overflow-x:auto;padding-bottom:var(--ka-sp-2)}'
- +'.food-tab{padding:var(--ka-sp-8) var(--ka-sp-14);border-radius:999px;border:var(--ka-border-w) solid var(--ka-border);background:var(--ka-card-bg);font-weight:var(--ka-fw-600);font-size:var(--ka-fs-13);white-space:nowrap;cursor:pointer}'
- +'.food-tab.is-active{background:var(--ka-primary);border-color:var(--ka-primary);color:var(--ka-button-text)}'
- +'.food-cal-week{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:var(--ka-sp-8);margin-bottom:var(--ka-sp-8)}'
- +'.food-cal-cell{border:calc(var(--ka-border-w) * 1.5) solid var(--fm-day-border);border-radius:var(--ka-ic-12);padding:var(--ka-sp-8);min-height:130px;background:var(--fm-day-bg);color:var(--ka-text)}'
- +'.food-cal-cell--empty{background:transparent;border:none}'
- +'.food-cal-cell--today{box-shadow:0 0 0 calc(var(--ka-border-w) * 2) var(--ka-primary) inset}'
- +'.food-cal-date{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:var(--ka-sp-4);margin-bottom:var(--ka-sp-6)}'
- +'.food-cal-date strong{font-size:var(--ka-fs-16);color:var(--fm-day-text)}'
- +'.food-cal-date span{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-700);text-transform:uppercase;color:var(--fm-day-text)}'
- +'[data-food-menu-module] select[data-fm-month]{flex:0 0 155px;width:155px;min-width:155px;min-height:44px;appearance:auto;-webkit-appearance:auto;color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important;border-color:var(--ka-input-border)!important;color-scheme:light dark}'
- +'[data-food-menu-module] select[data-fm-month] option{color:var(--ka-input-text)!important;background:var(--ka-input-bg)!important}'
- +'.food-add-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent;width:22px;height:22px;border-radius:50%;background:color-mix(in srgb,var(--ka-card-bg) 92%,transparent);border:calc(var(--ka-border-w) * 1.5) solid var(--fm-day-border);color:var(--fm-day-text);font-weight:var(--ka-fw-700);line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative;z-index:2;pointer-events:auto}'
- +'[data-theme="dark"] [data-food-menu-module] .food-cal-cell{background:color-mix(in srgb,var(--fm-day-text) 8%,var(--ka-card-bg));border-color:color-mix(in srgb,var(--fm-day-text) 82%,var(--ka-border));}'
- +'[data-theme="dark"] [data-food-menu-module] .food-cal-date strong,[data-theme="dark"] [data-food-menu-module] .food-cal-date span{color:var(--fm-day-text)}'
- +'[data-theme="dark"] [data-food-menu-module] .food-add-btn{background:var(--ka-card-raised-bg);border-color:color-mix(in srgb,var(--fm-day-text) 82%,var(--ka-border));color:var(--fm-day-text)}'
- +'[data-theme="dark"] [data-food-menu-module] .food-cal-empty{color:var(--ka-text-muted)}'
- +'.food-cal-items{display:flex;flex-direction:column;gap:var(--ka-sp-4)}'
- +'.food-cal-empty{font-size:var(--ka-fs-12);color:var(--ka-text-muted);padding:var(--ka-sp-4) 0}'
- +'.food-item-row{display:grid;grid-template-columns:1fr auto;gap:var(--ka-sp-4)}'
- +'.food-item-row input{width:100%;min-width:0;box-sizing:border-box;padding:var(--ka-sp-8) var(--ka-sp-12);border-radius:var(--ka-ic-14);border:var(--ka-border-w) solid var(--ka-input-border)!important;font-size:var(--ka-fs-15);background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;-webkit-text-fill-color:var(--ka-input-text)!important;caret-color:var(--ka-primary);color-scheme:var(--ka-color-scheme);box-shadow:none!important;}[data-theme="dark"] [data-food-menu-module] .food-item-row input{background:var(--ka-input-bg)!important;color:var(--ka-input-text)!important;-webkit-text-fill-color:var(--ka-input-text)!important;border-color:var(--ka-input-border)!important;}'
- +'.food-remove-btn{border:none;background:transparent;color:var(--ka-text-muted);font-size:var(--ka-fs-16);cursor:pointer;opacity:.9}'
- +'.food-day-item{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-4);border-bottom:var(--ka-border-w) solid var(--ka-border);font-size:var(--ka-fs-15)}'
- +'.food-day-item:last-child{border-bottom:0}'
- +'.food-day-no{font-weight:var(--ka-fw-700);min-width:24px;color:var(--ka-primary)}'
- +'.food-day-empty{padding:var(--ka-sp-12) 0;color:var(--ka-text-muted)}'
- +'.food-week-item{padding:var(--ka-sp-6) var(--ka-sp-8);border-radius:var(--ka-ic-8);margin-bottom:var(--ka-sp-4);font-size:var(--ka-fs-13);background:var(--fm-day-bg);color:var(--fm-day-text)}'
- +'.food-week-day small{display:block;margin-top:var(--ka-sp-4);font-weight:var(--ka-fw-400);opacity:.7}'
- +'.food-head>p{flex:1 1 100%;margin:0}.food-head .ka-row{flex-wrap:wrap}'
- +'@media (max-width:640px){.food-cal-week{grid-template-columns:1fr}}'
- +'</style>';
-
-/* --- A4 yatay çıktı: ekrandaki düzenleme kutularından bağımsız, sıkışık ve tek sayfaya sığan yazdırma düzeni --- */
-const FOOD_PRINT_STYLE='<style>'
- +'.fm-print{font-family:Arial,Helvetica,sans-serif;color:var(--ka-report-text);width:100%}'
- +'.fm-p-title{text-align:center;line-height:1.15;margin:0 0 2.2mm}'
- +'.fm-p-title b{display:block;font-size:10pt;letter-spacing:.02em}'
- +'.fm-p-title span{display:block;font-size:12.5pt;font-weight:800;margin-top:.8mm;color:var(--ka-primary)}'
- +'.fm-p-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.6mm}'
- +'.fm-p-h{background:var(--fm-day-text);color:var(--ka-danger-text);text-align:center;font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1.1mm 0;border-radius:1.6mm}'
- +'.fm-p-cell{box-sizing:border-box;min-height:16mm;padding:1.2mm 1.8mm 1.4mm;border:.3mm solid var(--fm-day-border);background:var(--fm-day-bg);border-radius:1.8mm;break-inside:avoid;page-break-inside:avoid}'
- +'.fm-p-cell--empty{background:transparent;border:0}'
- +'.fm-p-day{font-size:9.5pt;font-weight:800;line-height:1;color:var(--fm-day-text);margin-bottom:.9mm;padding-bottom:.7mm;border-bottom:.25mm solid var(--bd)}'
- +'.fm-p-item{display:flex;gap:1.2mm;font-size:var(--fs);line-height:1.2;padding:.3mm 0;margin:0;color:var(--ka-report-text)}'
- +'.fm-p-item::before{content:"•";color:var(--fm-day-text);font-weight:700}'
- +'</style>';
+function foodMenuShiftMonth(key,step){return monthKeyOf(new Date(Number(key.slice(0,4)),Number(key.slice(5,7))-1+step,1))}
+/* Hafta sonu atlanır: günlük menüde ‹ › düğmeleri bir önceki / sonraki iş gününe götürür. */
+function foodShiftWeekday(iso,step){const d=new Date(iso+'T00:00:00');do{d.setDate(d.getDate()+step)}while(d.getDay()===0||d.getDay()===6);return localIso(d)}
+function foodWeekStart(iso){const b=new Date(iso+'T00:00:00'),dow=b.getDay()||7;b.setDate(b.getDate()-dow+1);return b}
+function isToday(iso){return iso===localIso(new Date())}
 
 /* Ayın Pzt–Cum hücreleri, sütunlar gerçek haftaya hizalı (boş günler boş hücre). */
 function foodMenuPrintWeeks(key){
@@ -214,63 +144,131 @@ function foodMenuPrintWeeks(key){
  }
  return weeks;
 }
-/* Yazı boyutu: en kalabalık haftaya göre 9pt'ten 6pt'ye kadar, sayfaya sığan en büyük değer. */
+/* Yazı boyutu: en kalabalık haftaya göre 10,5pt'den 4,5pt'ye kadar, sayfaya sığan en büyük değer.
+   Ölçüler ka-fmp-* çıktı düzenine göredir: A4 yatay, kenar 6 mm → ızgara alanı ≈ 150 mm, hücre genişliği ≈ 52 mm. */
 function foodMenuPrintFontSize(weeks,data){
- const AVAIL_MM=170,ROW_OVERHEAD_MM=6.6,GAP_MM=1.6*(weeks.length-1);
- for(let fs=9;fs>=6;fs-=.5){
-  const cpl=Math.max(8,Math.floor(48/(fs*0.19))),lineMm=fs*0.3528*1.2+0.6;
+ const AVAIL_MM=148,ROW_OVERHEAD_MM=9,GAP_MM=1.6*(weeks.length-1);
+ for(let fs=10.5;fs>=4.5;fs-=.5){
+  const cpl=Math.max(8,Math.floor(50/(fs*0.2))),lineMm=fs*0.3528*1.22+0.6;
   let total=GAP_MM;
   weeks.forEach(row=>{
    const lines=Math.max(0,...row.map(d=>d?foodDayItems(data[d]||{}).reduce((n,t)=>n+Math.max(1,Math.ceil(t.length/cpl)),0):0));
-   total+=Math.max(16,ROW_OVERHEAD_MM+lines*lineMm);
+   total+=Math.max(17,ROW_OVERHEAD_MM+lines*lineMm);
   });
   if(total<=AVAIL_MM)return fs;
  }
- return 6;
+ return 4.5;
 }
+/* ── A4 çıktı: ortak parçalar ── */
+function foodPrintHead(kind,whenHtml){
+ const sc=foodSchool(),logo=global.ReportEngine?.logoUrl?.()||'assets/logo.png';
+ return '<header class="ka-fmp-head"><img class="ka-fmp-logo" src="'+esc(logo)+'" alt=""><div class="ka-fmp-school"><b>'+esc(sc.okulAdi)+'</b>'+(sc.ilce?'<i>'+esc(sc.ilce)+'</i>':'')+'</div>'
+  +'<div class="ka-fmp-title"><div class="ka-fmp-when">'+whenHtml+'</div><b>'+esc(kind)+'</b></div></header><div class="ka-fmp-stripe" aria-hidden="true"></div>';
+}
+function foodPrintFoot(){
+ const name=foodPrincipal();
+ return '<footer class="ka-fmp-foot"><i class="ka-fmp-wish">Afiyet olsun.</i>'+(name?'<div class="ka-fmp-sign"><b>'+esc(name.toLocaleUpperCase('tr-TR'))+'</b><i>Okul Müdürü</i></div>':'')+'</footer>';
+}
+function foodPrintCell(day,dow,items){
+ const none=!items.length;
+ return '<div class="ka-fmp-cell'+(none?' is-off':'')+'" data-dow="'+dow+'"><div class="ka-fmp-d"><em>'+String(day).padStart(2,'0')+'</em></div>'
+  +items.map(v=>'<div class="ka-fmp-i">'+esc(v)+'</div>').join('')+'</div>';
+}
+function foodPrintGridHead(){let h='';for(let dow=1;dow<=5;dow++)h+='<div class="ka-fmp-h" data-dow="'+dow+'">'+WD_LONG[dow]+'</div>';return h}
+/* Aylık: tüm ay, Pzt–Cum sütunları gerçek haftaya hizalı. */
 function foodMenuPrintBody(key,data){
  const y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,weeks=foodMenuPrintWeeks(key),fs=foodMenuPrintFontSize(weeks,data);
- const monthName=new Date(y,m,1).toLocaleDateString('tr-TR',{month:'long',year:'numeric'}).toLocaleUpperCase('tr-TR');
- let html='<div class="fm-print" style="--fs:'+fs+'pt">'+FOOD_PRINT_STYLE
-  +'<div class="fm-p-title"><b>'+esc(foodSchool().okulAdi)+'</b><span>'+esc(monthName)+' YEMEK MENÜSÜ</span></div><div class="fm-p-grid">';
- for(let dow=1;dow<=5;dow++){const th=themeFor(dow);html+='<div class="fm-p-h '+th.cls+'">'+th.name+'</div>'}
- weeks.forEach(row=>row.forEach((day,ci)=>{
-  if(!day){html+='<div class="fm-p-cell fm-p-cell--empty"></div>';return}
-  const th=themeFor(ci+1),items=foodDayItems(data[day]||{});
-  html+='<div class="fm-p-cell '+th.cls+'"><div class="fm-p-day">'+String(day).padStart(2,'0')+'</div>'
-   +items.map(v=>'<div class="fm-p-item"><span>'+esc(v)+'</span></div>').join('')+'</div>';
- }));
- return html+'</div></div>';
+ const mon=trd(new Date(y,m,1),{month:'long'});
+ let grid=foodPrintGridHead();
+ weeks.forEach(row=>row.forEach((day,ci)=>{grid+=day?foodPrintCell(day,ci+1,foodDayItems(data[day]||{})):'<div class="ka-fmp-cell is-blank" aria-hidden="true"></div>'}));
+ return '<div class="ka-fmp ka-fmp--month" style="--fm-fs:'+fs+'pt;--fm-rows:'+weeks.length+'">'+foodPrintHead('Yemek menüsü','<em>'+esc(mon)+'</em><i>'+y+'</i>')
+  +'<div class="ka-fmp-grid">'+grid+'</div>'+foodPrintFoot()+'</div>';
+}
+/* Haftalık: seçili haftanın Pzt–Cum günleri, tek sayfa yatay, büyük yazı. */
+function foodWeekPrintBody(iso){
+ const mon=foodWeekStart(iso),fri=new Date(mon);fri.setDate(mon.getDate()+4);
+ let grid=foodPrintGridHead(),most=0;
+ for(let i=0;i<5;i++){
+  const d=new Date(mon);d.setDate(mon.getDate()+i);
+  const items=foodDayItems(foodMenuData(monthKeyOf(d))[d.getDate()]||{});most=Math.max(most,items.length);
+  grid+=foodPrintCell(d.getDate(),d.getDay(),items);
+ }
+ const fs=most<=4?16:most<=6?14:most<=8?12:10,y=fri.getFullYear();
+ const same=mon.getMonth()===fri.getMonth(),when=same?mon.getDate()+'–'+fri.getDate()+' '+trd(fri,{month:'long'}):mon.getDate()+' '+trd(mon,{month:'short'})+' – '+fri.getDate()+' '+trd(fri,{month:'short'});
+ return '<div class="ka-fmp ka-fmp--week" style="--fm-fs:'+fs+'pt">'+foodPrintHead('Haftalık yemek menüsü','<em>'+esc(when)+'</em><i>'+y+'</i>')
+  +'<div class="ka-fmp-grid">'+grid+'</div>'+foodPrintFoot()+'</div>';
+}
+/* Günlük: seçili günün menüsü, A4 dikey, yemekhane panosuna asılacak büyüklükte. */
+function foodDayPrintBody(iso){
+ const d=new Date(iso+'T00:00:00'),items=foodDayItems(foodMenuData(monthKeyOf(d))[d.getDate()]||{}),n=items.length,fs=n<=5?30:n<=7?24:n<=10?19:15,dow=d.getDay();
+ const list=n?'<ul class="ka-fmp-dishes">'+items.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul>':'<div class="ka-fmp-none">Bu gün için menü girilmemiş.</div>';
+ return '<div class="ka-fmp ka-fmp--day" data-dow="'+dow+'" style="--fm-fs:'+fs+'pt">'+foodPrintHead('Günlük yemek menüsü','<em>'+esc(trd(d,{month:'long'}))+'</em><i>'+d.getFullYear()+'</i>')
+  +'<section class="ka-fmp-hero"><em>'+String(d.getDate()).padStart(2,'0')+'</em><div><b>'+WD_LONG[dow]+'</b><i>'+esc(trd(d,{day:'numeric',month:'long',year:'numeric'}))+'</i></div></section>'
+  +list+foodPrintFoot()+'</div>';
 }
 
 const TITLES={daily:'Günlük Menü',weekly:'Haftalık Menü',monthly:'Aylık Menü',audit:'Yemek Denetim Formu'};
+const SUBTITLES={daily:'Seçili günün öğle yemeği menüsü.',weekly:'Pazartesiden Cumaya haftalık menü.',monthly:'Pazartesiden Cumaya. Her güne istediğiniz kadar yemek ekleyebilirsiniz.',audit:'Ücretsiz öğle yemeği denetim ve kontrol formu.'};
+
+/* ── Ekran: ortak parçalar ── */
+const stepBtn=(attr,val,label,glyph)=>'<button class="ka-fm-step" type="button" '+attr+'="'+val+'" aria-label="'+label+'">'+glyph+'</button>';
+function dayTab(day,d,today){
+ return '<div class="ka-fm-day__tab"><em class="ka-fm-day__no">'+String(day).padStart(2,'0')+'</em><i class="ka-fm-day__wd">'+esc(trd(d,{weekday:'short'}))+'</i>'+(today?'<i class="ka-fm-day__now">Bugün</i>':'')+'</div>';
+}
+function foodMenuProgress(weeks,data){let total=0,filled=0;weeks.forEach(r=>r.forEach(d=>{if(!d)return;total++;if(foodDayItems(data[d]||{}).length)filled++}));return{total,filled}}
 
 function dailyView(){
- const now=new Date(),viewDate=foodMenuViewDate||localIso(now);
- const vd=new Date(viewDate+'T00:00:00'),key=foodMenuMonthKey(viewDate),day=vd.getDate();
- const x=foodDayEnsure(foodMenuData(key)[day]||{}),items=foodDayItems(x);
- const menu=items.length?items.map((v,i)=>'<div class="food-day-item"><span class="food-day-no">'+(i+1)+'.</span><span>'+esc(v)+'</span></div>').join(''):'<div class="food-day-empty">Bu gün için aylık menüye yemek girilmemiş.</div>';
- return '<div class="ka-row ka-row--between ka-wrap"><p class="ka-muted">'+esc(vd.toLocaleDateString('tr-TR',{dateStyle:'full'}))+'</p><div class="ka-row"><input class="ka-input" type="date" data-fm-day value="'+esc(viewDate)+'"><button class="ka-btn" type="button" data-fm-print="daily">🖨 A4</button></div></div><div class="ka-card"><div class="ka-card__body">'+menu+'</div></div>';
+ const viewDate=foodMenuViewDate||localIso(new Date()),vd=new Date(viewDate+'T00:00:00'),key=monthKeyOf(vd),day=vd.getDate(),dow=vd.getDay(),weekend=dow===0||dow===6;
+ const items=foodDayItems(foodDayEnsure(foodMenuData(key)[day]||{})),today=isToday(viewDate);
+ const bar='<div class="ka-card ka-fm-bar"><div class="ka-card__body ka-stack"><div class="ka-fm-stepper">'+stepBtn('data-fm-day-step','-1','Önceki gün','‹')
+  +'<label class="ka-fm-month"><span class="ka-fm-month__name">'+esc(trd(vd,{day:'numeric',month:'long'}))+'</span><input type="date" data-fm-day value="'+esc(viewDate)+'" aria-label="Tarih seç"></label>'+stepBtn('data-fm-day-step','1','Sonraki gün','›')+'</div>'
+  +'<div class="ka-fm-actions">'+(today?'':'<button class="ka-btn ka-btn--secondary" type="button" data-fm-today>Bugün</button>')+'<button class="ka-btn" type="button" data-fm-print="daily">🖨 A4 çıktı</button></div></div></div>';
+ let body;
+ if(items.length){
+  body='<article class="ka-fm-hero" data-dow="'+dow+'"><div class="ka-fm-hero__date"><em class="ka-fm-hero__no">'+String(day).padStart(2,'0')+'</em><div class="ka-fm-hero__meta"><b>'+WD_LONG[dow]+'</b><i>'+esc(trd(vd,{month:'long',year:'numeric'}))+'</i>'+(today?'<i class="ka-fm-day__now">Bugün</i>':'')+'</div></div>'
+   +'<ul class="ka-fm-dishes">'+items.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul></article>';
+ }else if(weekend){
+  body='<div class="ka-fm-empty"><i class="ka-fm-empty__icon" aria-hidden="true">🍽️</i><div><b>Hafta sonu</b><p>Okulda yemek servisi yapılmaz. Bir iş günü seçin.</p></div></div>';
+ }else{
+  body='<div class="ka-fm-empty" data-dow="'+dow+'"><i class="ka-fm-empty__icon" aria-hidden="true">🍽️</i><div><b>Bu gün için menü girilmemiş</b><p>Aylık menüde bu güne yemek ekleyebilirsiniz.</p></div><button class="ka-btn ka-btn--secondary" type="button" data-fm-goto="monthly">Aylık menüde ekle</button></div>';
+ }
+ return bar+body;
 }
 
 function weeklyView(){
- const now=new Date(),viewDate=foodMenuViewDate||localIso(now),base=new Date(viewDate+'T00:00:00'),dow=base.getDay()||7,mon=new Date(base);
- mon.setDate(base.getDate()-dow+1);
- const weekEnd=new Date(mon);weekEnd.setDate(mon.getDate()+4);
- const weekTitle=mon.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'})+' – '+weekEnd.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'});
- const rows=Array.from({length:5},(_,i)=>{
+ const viewDate=foodMenuViewDate||localIso(new Date()),mon=foodWeekStart(viewDate),fri=new Date(mon);fri.setDate(mon.getDate()+4);
+ const range=mon.getMonth()===fri.getMonth()?mon.getDate()+'–'+fri.getDate()+' '+trd(fri,{month:'long'}):mon.getDate()+' '+trd(mon,{month:'short'})+' – '+fri.getDate()+' '+trd(fri,{month:'short'});
+ const bar='<div class="ka-card ka-fm-bar"><div class="ka-card__body ka-stack"><div class="ka-fm-stepper">'+stepBtn('data-fm-week-step','-1','Önceki hafta','‹')
+  +'<label class="ka-fm-month"><span class="ka-fm-month__name">'+esc(range)+'</span><input type="date" data-fm-week-date value="'+esc(viewDate)+'" aria-label="Haftadan bir tarih seç"></label>'+stepBtn('data-fm-week-step','1','Sonraki hafta','›')+'</div>'
+  +'<div class="ka-fm-actions"><button class="ka-btn" type="button" data-fm-print="weekly">🖨 A4 çıktı</button></div></div></div>';
+ const days=Array.from({length:5},(_,i)=>{
   const d=new Date(mon);d.setDate(mon.getDate()+i);
-  const iso=localIso(d),k=foodMenuMonthKey(iso),th=themeFor(d.getDay()),items=foodDayItems(foodMenuData(k)[d.getDate()]||{});
-  const menu=items.length?items.map((v,j)=>'<div class="food-week-item '+th.cls+'">'+(j+1)+'. '+esc(v)+'</div>').join(''):'<span class="ka-muted">Menü girilmemiş</span>';
-  return '<tr><th class="'+th.cls+'"><div class="food-week-day">'+esc(d.toLocaleDateString('tr-TR',{weekday:'long'}))+'<small>'+esc(d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}))+'</small></div></th><td>'+menu+'</td></tr>';
+  const iso=localIso(d),items=foodDayItems(foodMenuData(monthKeyOf(d))[d.getDate()]||{});
+  return '<article class="ka-fm-day ka-fm-day--view'+(items.length?'':' is-empty')+(isToday(iso)?' is-today':'')+'" data-dow="'+d.getDay()+'">'+dayTab(d.getDate(),d,isToday(iso))
+   +'<div class="ka-fm-day__body">'+(items.length?'<ul class="ka-fm-dishes">'+items.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul>':'<div class="ka-fm-day__none">Menü girilmemiş</div>')+'</div></article>';
  }).join('');
- return '<div class="ka-row ka-row--between ka-wrap"><p class="ka-muted">'+esc(weekTitle)+'</p><div class="ka-row"><input class="ka-input" type="date" data-fm-week-date value="'+esc(viewDate)+'"><button class="ka-btn" type="button" data-fm-print="weekly">🖨 A4</button></div></div><div class="ka-card"><div class="ka-card__body"><div class="ka-table-wrap"><table class="ka-table"><thead><tr><th>Gün</th><th>Yemekler</th></tr></thead><tbody>'+rows+'</tbody></table></div></div></div>';
+ return bar+'<div class="ka-fm-days">'+days+'</div>';
 }
 
 function monthlyView(){
- const now=new Date(),initial=foodMenuCurrentMonth||foodMenuMonthKey(localIso(now)),data=foodMenuData(initial);
- const rows=foodMenuCalendarRows(initial,data);
- return '<div class="ka-row ka-row--between ka-wrap food-head"><p class="ka-muted">Pazartesi–Cuma. Her güne istediğiniz kadar yemek satırı ekleyebilirsiniz.</p><div class="ka-row"><select data-fm-month>'+foodMenuMonthOptions(initial)+'</select><button class="ka-btn" type="button" data-fm-save>💾 Kaydet</button><button class="ka-btn" type="button" data-fm-print="monthly">🖨 A4</button></div></div>'+rows;
+ const key=foodMenuCurrentMonth||monthKeyOf(new Date()),data=foodMenuData(key),y=Number(key.slice(0,4)),m=Number(key.slice(5,7))-1,weeks=foodMenuPrintWeeks(key),prog=foodMenuProgress(weeks,data);
+ const pct=prog.total?Math.round(prog.filled/prog.total*100):0;
+ const bar='<div class="ka-card ka-fm-bar"><div class="ka-card__body ka-stack"><div class="ka-fm-stepper">'+stepBtn('data-fm-month-step','-1','Önceki ay','‹')
+  +'<label class="ka-fm-month"><span class="ka-fm-month__name">'+esc(monthLabel(key))+'</span><select data-fm-month aria-label="Ay seç">'+foodMenuMonthOptions(key)+'</select></label>'+stepBtn('data-fm-month-step','1','Sonraki ay','›')+'</div>'
+  +'<div class="ka-fm-meter" style="--fm-p:'+pct+'%" role="img" aria-label="'+prog.filled+' / '+prog.total+' gün dolu"><i></i></div><div class="ka-fm-meter__text">'+prog.filled+' / '+prog.total+' iş günü için menü girildi</div>'
+  +'<div class="ka-fm-actions"><button class="ka-btn" type="button" data-fm-save>💾 Kaydet</button><button class="ka-btn ka-btn--secondary" type="button" data-fm-print="monthly">🖨 A4 çıktı</button></div></div></div>';
+ const wk=weeks.map(row=>{
+  const nums=row.filter(Boolean),a=nums[0],b=nums[nums.length-1],label=a===b?a+' '+trd(new Date(y,m,a),{month:'long'}):a+'–'+b+' '+trd(new Date(y,m,a),{month:'long'});
+  const cards=row.map((day,ci)=>{
+   if(!day)return '<div class="ka-fm-day ka-fm-day--blank" aria-hidden="true"></div>';
+   const d=new Date(y,m,day),iso=localIso(d),today=isToday(iso),items=foodDayRaw(foodDayEnsure(data[day]||{})),filled=items.some(v=>String(v).trim());
+   return '<article class="ka-fm-day'+(today?' is-today':'')+(filled?'':' is-empty')+'" data-dow="'+d.getDay()+'" data-fm-day-card="'+day+'">'+dayTab(day,d,today)
+    +'<div class="ka-fm-day__body"><div class="ka-fm-items">'+items.map((v,j)=>'<div class="ka-fm-item"><input class="ka-input ka-fm-input" type="text" data-fm-item="'+day+'" value="'+esc(v)+'" placeholder="Yemek adı"><button class="ka-fm-x" type="button" data-fm-remove="'+day+':'+j+'" aria-label="Sil">×</button></div>').join('')+'</div>'
+    +'<button class="ka-fm-add" type="button" data-fm-add="'+day+'">+ Yemek ekle</button></div></article>';
+  }).join('');
+  return '<section class="ka-fm-week"><div class="ka-fm-week__label" role="heading" aria-level="3">'+esc(label)+'</div><div class="ka-fm-days">'+cards+'</div></section>';
+ }).join('');
+ return bar+wk;
 }
 
 /* --- Yemek Denetim Formu --- */
@@ -278,6 +276,11 @@ function foodInspectors(){const ts=arr('ogretmenler').filter(x=>x?.id).slice().s
 const FOOD_CHECKS=['Yemekler paslanmaz çelik-krom ve ısı yalıtımlı kaplarda taze ve sıcak bir şekilde okula getirildi mi? (Teknik Şartname)','Yemekler, yemek saatinden önce okulda hazır oldu mu? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Yemekler "Aylık Yemek Listesine" uygun olarak getirildi mi? (Teknik Şartname)','Yemeklerin miktarı ve bozuk olup olmadığı durumu "Muayene Kabul Komisyonu" tarafından teslim alınırken ve öğrencilere servis yapılmadan önce kontrol edildi mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Getirilen yemekler imza karşılığı sevk irsaliyesi veya tutanakla okula teslim edildi mi? (Teknik Şartname)','Ambalajlı gıdaların kullanım tarihleri uygun mu? (Teknik Şartname)','Gelen yemeklerden ilgili mevzuatta belirtilen süreye uygun olarak günlük numune alındı mı? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Yemekler öğrencilere zamanında ve sıcak bir şekilde servis edildi mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 13/3-d, 13/4-d, 20/3, Teknik Şartname)','Yemekler, sıhhi ve disposable (tek kullanımlık) malzemelerden oluşan setlerle servis edildi mi? (Teknik Şartname)','Yemekte görevli personel dağıtım esnasında takılması gereken ekipmanları kullanarak yemek servisini gerçekleştirdi mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 13/4-e, Teknik Şartname)','Yemekte görevli personel yemek dağıtımı yaparken hijyen şartlarına uygun bir şekilde hareket etti mi? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)','Yemek sonrası; yemek yenilen bölümün temizliği yapıldı mı? (Millî Eğitim Bakanlığı Taşıma Yoluyla Eğitime Erişim Yönetmeliği 20/3, Teknik Şartname)'];
 let foodState={date:localIso(new Date()),count:String(arr('veliler').length||0),teacher:''};
 function foodSchool(){const x=arr('okulBilgileri').find(r=>r.id==='ayarlar')||arr('okulBilgileri')[0]||global.okulBilgileriAyari||{};return{il:x.il||x.ili||x.sehir||x.ilAdi||'',ilce:x.ilce||x.ilceAdi||x.mudurluk||'',okulAdi:x.okulAdi||x.ad||'KORUK İLK-ORTAOKULU'}}
+/* Çıktıdaki imza: okul bilgilerindeki müdür (öğretmen kaydından); kayıt yoksa imza bloğu çıkmaz. */
+function foodPrincipal(){
+ const x=arr('okulBilgileri').find(r=>r.id==='ayarlar')||arr('okulBilgileri')[0]||global.okulBilgileriAyari||{},t=x.mudurId?arr('ogretmenler').find(o=>String(o.id)===String(x.mudurId)):null;
+ return t?`${t.ad||''} ${t.soyad||''}`.replace(/\s+/g,' ').trim():String(x.mudurAdSoyad||x.mudurAdi||x.mudur||'').trim();
+}
 function foodInspectorName(id){const x=arr('ogretmenler').find(t=>String(t.id)===String(id));return x?`${x.ad||''} ${x.soyad||''}`.replace(/\s+/g,' ').trim():''}
 function foodRows(){return FOOD_CHECKS.map((q,i)=>`<tr><td class="food-q" style="width:60%!important">${i+1}. ${esc(q)}</td><td class="food-blank" style="width:10%!important"></td><td class="food-blank" style="width:10%!important"></td><td class="food-note-cell" style="width:20%!important"></td></tr>`).join('')}
 function foodPrintBody(){const sc=foodSchool(),dt=foodState.date?new Date(foodState.date+'T00:00:00').toLocaleDateString('tr-TR'):'',ins=foodInspectors(),teacher=foodInspectorName(foodState.teacher||'');return`<div class="food-form-page"><style>@page{size:A4 portrait;margin:0}.food-form-page{font-family:Arial,sans-serif;color:#111;font-size:8pt;line-height:1.08;width:100%;min-height:277mm;box-sizing:border-box;padding:5mm 6mm}.food-form-head{border:1px solid #111;text-align:center;padding:2.8mm 2mm 2.4mm;line-height:1.08}.food-form-head div{font-weight:700;font-size:8.5pt}.food-form-head strong{display:block;font-size:10pt;margin-top:1.2mm}.food-form-head b{display:block;font-size:7.4pt;margin-top:.8mm}.food-meta{display:grid;grid-template-columns:1fr 1fr;border-left:1px solid #111;border-right:1px solid #111;border-bottom:1px solid #111}.food-meta>div{display:grid;grid-template-columns:52% 48%;min-height:11mm}.food-meta>div+div{border-left:1px solid #111}.food-meta b{padding:2mm;border-right:1px solid #111;font-size:7.3pt;display:flex;align-items:center}.food-meta span{padding:2mm;font-size:7.6pt;display:flex;align-items:center}.food-note{margin:2.5mm 0 2mm;text-align:center;font-size:7pt;line-height:1.15}.food-table{width:100%;border-collapse:collapse;table-layout:fixed}.food-table th,.food-table td{border:1px solid #111}.food-table th{background:#fff;text-align:center;padding:2mm .8mm;font-size:7.6pt;font-weight:700;line-height:1.08;height:10mm}.food-table td{padding:1.4mm 1.2mm;vertical-align:middle}.food-table .food-q{font-size:7pt;line-height:1.12}.food-table .food-blank{height:12mm}.food-table .food-note-cell{height:12mm}.food-sign-date{text-align:center;margin:5mm 0 3mm;font-size:7.6pt}.food-signatures{display:grid;grid-template-columns:repeat(3,1fr);gap:6mm;text-align:center;direction:ltr}.food-signatures>div{min-height:30mm;display:flex;flex-direction:column;justify-content:flex-end}.food-signatures strong{display:block;min-height:6mm;font-size:7.6pt}.food-signatures span{display:block;font-size:7.3pt;margin-top:1.2mm}.food-signatures small{display:block;font-size:7.1pt;margin-top:.4mm}</style><header class="food-form-head"><div>${esc(sc.il).toLocaleUpperCase('tr-TR')} İLİ &nbsp;&nbsp;&nbsp; ${esc(sc.ilce).toLocaleUpperCase('tr-TR')} İLÇESİ &nbsp;&nbsp;&nbsp; ${esc(sc.okulAdi).toLocaleUpperCase('tr-TR')}</div><strong>ÜCRETSİZ ÖĞLE YEMEĞİ DENETİM VE KONTROL FORMU</strong><b>(TAŞIMA MERKEZ OKUL/KURUM MÜDÜRLÜĞÜNCE KULLANILACAK)</b></header><div class="food-meta"><div><b>YEMEK SUNULAN ÖĞRENCİ SAYISI</b><span>${esc(foodState.count)}</span></div><div><b>DENETİM VE KONTROL TARİHİ</b><span>${esc(dt)}</span></div></div><p class="food-note"><b>Not:</b> Çizelgede yer alan denetim ve kontrol maddeleri ile ilgili "Evet / Hayır" bölümü işaretlendikten sonra belirtilen maddelerle ilgili olarak gerek duyulması halinde çizelgede yer alan "AÇIKLAMALAR" bölümü kullanılacaktır.</p><table class="food-table"><thead><tr><th style="width:60%">KONULAR</th><th style="width:10%">EVET</th><th style="width:10%">HAYIR</th><th style="width:20%">AÇIKLAMALAR</th></tr></thead><tbody>${foodRows()}</tbody></table><div class="food-sign-date">${esc(dt)}</div><div class="food-signatures"><div><strong>${esc(teacher)}</strong><span>Denetleyen</span><small>Öğretmen</small></div><div><strong>${esc(foodInspectorName(ins.yard))}</strong><span>Denetleyen</span><small>Müdür Yardımcısı</small></div><div><strong>${esc(foodInspectorName(ins.mudur))}</strong><span>Denetleyen</span><small>Okul Müdürü</small></div></div></div>`}
@@ -290,18 +293,24 @@ function auditView(){
 async function printMode(mode){
  if(!global.ReportEngine?.printReport){toast?.('Yazdırma bileşeni yüklenemedi.');return}
  try{
-  if(mode==='daily'||mode==='weekly'||mode==='monthly'){
-   const now=new Date(),key=foodMenuCurrentMonth||foodMenuMonthKey(localIso(now)),data=foodMenuData(key);
-   const body=foodMenuPrintBody(key,data);
-   await global.ReportEngine.printReport('Yemek Menüsü',body,{yon:'yatay',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:8,compact:true,fileName:'Yemek_Menusu'});
+  if(mode==='monthly'){
+   const key=foodMenuCurrentMonth||monthKeyOf(new Date());
+   await global.ReportEngine.printReport('Aylık Yemek Menüsü',foodMenuPrintBody(key,foodMenuData(key)),{yon:'yatay',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:8,compact:true,fileName:'Aylik_Yemek_Menusu_'+key});
+  }else if(mode==='weekly'){
+   const iso=foodMenuViewDate||localIso(new Date());
+   await global.ReportEngine.printReport('Haftalık Yemek Menüsü',foodWeekPrintBody(iso),{yon:'yatay',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:6,fontSize:8,compact:true,fileName:'Haftalik_Yemek_Menusu_'+localIso(foodWeekStart(iso))});
+  }else if(mode==='daily'){
+   const iso=foodMenuViewDate||localIso(new Date());
+   await global.ReportEngine.printReport('Günlük Yemek Menüsü',foodDayPrintBody(iso),{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:8,fontSize:8,compact:true,fileName:'Gunluk_Yemek_Menusu_'+iso});
   }else{
    await global.ReportEngine.printReport('Ücretsiz Öğle Yemeği Denetim ve Kontrol Formu',foodPrintBody(),{yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,kenarBosluk:5,fontSize:8,compact:true,fileName:'Ucretsiz_Ogle_Yemegi_Denetim_Formu'});
   }
  }catch(e){toast?.('A4 çıktı hazırlanamadı: '+(e?.message||e))}
 }
 
-function shell(){return '<section class="ka-stack" data-food-menu-module><div class="ka-row ka-row--between"><div><h2 data-food-title>🍽️ Yemek</h2><p class="ka-muted">Günlük, haftalık, aylık menü ve denetim formu.</p></div></div>'+FOOD_MENU_STYLE+'<div id="foodMenuContent" class="ka-stack"></div></section>'}
+function shell(){return '<section class="ka-page ka-stack ka-fm" data-food-menu-module><header class="ka-page-head"><span class="ka-page-head__icon" aria-hidden="true">🍽️</span><div><small>YEMEK</small><h2 data-food-title>Menü</h2><p data-food-sub></p></div></header><div id="foodMenuContent" class="ka-stack"></div></section>'}
 
+function setViewDate(iso){foodMenuViewDate=iso;foodMenuCurrentMonth=monthKeyOf(new Date(iso+'T00:00:00'))}
 function render(){
  if(!mounted)return;
  const out=document.getElementById('foodMenuContent');
@@ -309,13 +318,12 @@ function render(){
  const html=active==='daily'?dailyView():active==='weekly'?weeklyView():active==='monthly'?monthlyView():auditView();
  out.innerHTML=html;
  const h=document.querySelector('[data-food-title]');
- if(h)h.textContent='🍽️ '+(TITLES[active]||'Yemek');
+ if(h)h.textContent=TITLES[active]||'Yemek';
+ const sub=document.querySelector('[data-food-sub]');
+ if(sub)sub.textContent=SUBTITLES[active]||'';
  if(active==='monthly'){
-  const monthSelect=out.querySelector('[data-fm-month]');
-  if(monthSelect){
-   monthSelect.value=foodMenuCurrentMonth||foodMenuMonthKey(localIso(new Date()));
-   monthSelect.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
-  }
+  out.querySelector('[data-fm-month]')?.addEventListener('change',e=>{foodMenuCurrentMonth=e.target.value;render()});
+  out.querySelectorAll('[data-fm-month-step]').forEach(b=>b.addEventListener('click',()=>{foodMenuCurrentMonth=foodMenuShiftMonth(foodMenuCurrentMonth||monthKeyOf(new Date()),Number(b.dataset.fmMonthStep));render()}));
   if(!out.__foodMonthlyEventsBound){
    out.__foodMonthlyEventsBound=true;
    out.addEventListener('input',e=>{
@@ -368,10 +376,22 @@ function render(){
   out.onclick=null;
  }
  if(active==='daily'){
-  out.querySelector('[data-fm-day]')?.addEventListener('change',e=>{if(e.target.value){foodMenuViewDate=e.target.value;foodMenuCurrentMonth=foodMenuMonthKey(e.target.value);render()}});
+  const di=out.querySelector('[data-fm-day]');
+  di?.addEventListener('change',e=>{if(e.target.value){setViewDate(e.target.value);render()}});
+  di?.addEventListener('click',()=>{try{di.showPicker?.()}catch(_){}});
+  out.querySelectorAll('[data-fm-day-step]').forEach(b=>b.addEventListener('click',()=>{setViewDate(foodShiftWeekday(foodMenuViewDate||localIso(new Date()),Number(b.dataset.fmDayStep)));render()}));
+  out.querySelector('[data-fm-today]')?.addEventListener('click',()=>{setViewDate(localIso(new Date()));render()});
+  out.querySelector('[data-fm-goto]')?.addEventListener('click',e=>{
+   active=e.currentTarget.dataset.fmGoto==='monthly'?'monthly':active;render();
+   const day=new Date((foodMenuViewDate||localIso(new Date()))+'T00:00:00').getDate();
+   requestAnimationFrame(()=>document.querySelector('[data-fm-day-card="'+day+'"]')?.scrollIntoView({block:'center'}));
+  });
  }
  if(active==='weekly'){
-  out.querySelector('[data-fm-week-date]')?.addEventListener('change',e=>{if(e.target.value){foodMenuViewDate=e.target.value;render()}});
+  const wi=out.querySelector('[data-fm-week-date]');
+  wi?.addEventListener('change',e=>{if(e.target.value){setViewDate(e.target.value);render()}});
+  wi?.addEventListener('click',()=>{try{wi.showPicker?.()}catch(_){}});
+  out.querySelectorAll('[data-fm-week-step]').forEach(b=>b.addEventListener('click',()=>{const d=new Date((foodMenuViewDate||localIso(new Date()))+'T00:00:00');d.setDate(d.getDate()+7*Number(b.dataset.fmWeekStep));setViewDate(localIso(d));render()}));
  }
  out.querySelector('[data-fm-print]')?.addEventListener('click',e=>printMode(e.currentTarget.dataset.fmPrint));
  if(active==='audit'){
@@ -420,6 +440,6 @@ function openPage(page,title=''){
 }
 function back(){return false}
 
-window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back,printBody:key=>foodMenuPrintBody(key,foodMenuData(key))};
+window.FoodMenuModule={mount,unmount,render,prepareLocal,openPage,back,printBody:key=>foodMenuPrintBody(key,foodMenuData(key)),printWeekBody:foodWeekPrintBody,printDayBody:foodDayPrintBody};
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='food')mount()});
 })(window);

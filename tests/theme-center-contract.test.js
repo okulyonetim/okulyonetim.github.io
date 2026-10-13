@@ -190,12 +190,11 @@ assert.strictEqual(prodBad.length,0,`Merkez dışında sabit değer var (${prodB
 function jsStyleRegions(file){
   const s=fs.readFileSync(file,'utf8');
   if(file.endsWith('reports.js'))return [...s.matchAll(/<style[^>]*>(.*?)<\/style>/gs)].slice(0,2).map(m=>m[1]);
-  if(file.endsWith('food-menu.js')){const i=s.indexOf("const FOOD_MENU_STYLE='<style>'");return [s.slice(i,s.indexOf("</style>';",i))]}
   const key=file.endsWith('report-customizer.js')?'s.textContent=`':'style.textContent=`';
   const i=s.indexOf(key)+key.length;return [s.slice(i,s.indexOf('`',i))];
 }
 const jsBad=[];
-for(const f of ['js/modules/reports.js','js/modules/food-menu.js','js/core/teacher-reminder-academic-year.js','js/core/report-customizer.js']){
+for(const f of ['js/modules/reports.js','js/core/teacher-reminder-academic-year.js','js/core/report-customizer.js']){
   for(const region of jsStyleRegions(f)){
     for(const seg of region.replace(/\/\*[\s\S]*?\*\//g,' ').split(/[{};]/)){
       const i=seg.indexOf(':');if(i<0)continue;
