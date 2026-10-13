@@ -72,7 +72,7 @@ function open(file,opts={}){
     const ctx=canvas.getContext('2d'),mid=doc.createElement('canvas'),midSize=192;mid.width=midSize;mid.height=midSize;const mctx=mid.getContext('2d');
     let view={rot:0,z:1,nx:0,ny:0},raf=0,done=false,dpr=1,side=0,D=0;
     const fit=()=>{
-      dpr=Math.min(3,global.devicePixelRatio||1);side=stage.clientWidth||1;D=mask.getBoundingClientRect().width||side*.84;
+      dpr=Math.min(3,global.devicePixelRatio||1);side=stage.clientWidth||1;D=mask.offsetWidth||side*.84;   // yerleşim ölçüsü (dönüşümlerden etkilenmez)
       const px=Math.round(side*dpr);if(canvas.width!==px||canvas.height!==px){canvas.width=px;canvas.height=px}
       pvs.forEach(c=>{const r=Math.round((c.clientWidth||42)*dpr);if(c.width!==r||c.height!==r){c.width=r;c.height=r}});
     };

@@ -12128,12 +12128,13 @@ html .ka-app-header .ka-header-notification [data-ka-notification-count]{
 html .ka-app-header .ka-header-notification [data-ka-notification-count][hidden]{display:none!important}
 
 html .ka-app-header .ka-header-actions>.ka-header-profile{
-  box-sizing:border-box;display:grid;place-items:center;width:calc(42px + var(--ka-btn-grow));height:calc(42px + var(--ka-btn-grow));min-width:calc(42px + var(--ka-btn-grow));min-height:calc(42px + var(--ka-btn-grow));flex:0 0 42px;padding:0;margin:0;
-  border:0!important;border-radius:50%;background:var(--hd-tile)!important;color:var(--gl-fg);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-850);cursor:pointer;overflow:hidden;
+  position:relative;box-sizing:border-box;display:grid;place-items:center;width:calc(42px + var(--ka-btn-grow));height:calc(42px + var(--ka-btn-grow));min-width:calc(42px + var(--ka-btn-grow));min-height:calc(42px + var(--ka-btn-grow));flex:0 0 42px;padding:0;margin:0;
+  border:0!important;border-radius:50%;background:var(--hd-tile)!important;color:var(--gl-fg);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-850);cursor:pointer;overflow:visible;
   box-shadow:var(--ka-avatar-ring-shadow)!important;
   -webkit-tap-highlight-color:transparent;transition:transform var(--ka-dur-120),box-shadow var(--ka-dur-180);
 }
-html .ka-app-header .ka-header-profile img{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover}
+/* Fotoğraf düğmeyi tek başına doldurur (iç içe kırpma yok): yüzde boyut / grid / overflow:hidden farkları halka ile fotoğraf arasında koyu boşluk bırakmasın */
+html .ka-app-header .ka-header-profile img{position:absolute;inset:calc(var(--ka-border-w) * -.5);width:calc(100% + var(--ka-border-w));height:calc(100% + var(--ka-border-w));display:block;border-radius:50%;object-fit:cover}
 
 @media(max-width:380px){
   html .ka-app-header{padding-left:max(var(--ka-sp-7),var(--ka-safe-left,0px));padding-right:max(var(--ka-sp-7),var(--ka-safe-right,0px))}

@@ -121,7 +121,7 @@ async function kendiProfilFotografimiGuncelle(file){
   const user=auth?.currentUser;if(!user?.uid)throw new Error('Aktif kullanıcı oturumu bulunamadı.');
   if(typeof navigator!=='undefined'&&navigator.onLine===false)throw new Error('Profil fotoğrafını değiştirmek için internet bağlantısı gerekiyor.');
   const blob=await profilFotografiniHazirla(file),storage=await profilFotoStorageHazirla(),path=`dokumanlar/${user.uid}/profil/profil`,ref=storage.ref(path);
-  const snapshot=await ref.put(blob,{contentType:blob.type||'image/webp',customMetadata:{olusturanUid:user.uid,gorunurluk:'kisisel',tur:'profil-fotografi'}}),url=await snapshot.ref.getDownloadURL();
+  const snapshot=await ref.put(blob,{contentType:blob.type||'image/webp',customMetadata:{olusturanUid:user.uid,gorunurluk:'kisisel',tur:'profil-fotografi'}}),base=await snapshot.ref.getDownloadURL(),url=base+(base.includes('?')?'&':'?')+'v='+Date.now();   // aynı yola yazıldığı için indirme adresi değişmez; v= ile tarayıcı eski fotoğrafı göstermez
   await user.updateProfile({photoURL:url});
   const patch={photoURL:url,profilFotoUrl:url,profilFotoGuncellenmeTarihi:new Date().toISOString()};
   AKTIF_KULLANICI={...(AKTIF_KULLANICI||{}),...patch};window.AKTIF_KULLANICI=AKTIF_KULLANICI;window.AppStore?.set?.('session.user',AKTIF_KULLANICI);
