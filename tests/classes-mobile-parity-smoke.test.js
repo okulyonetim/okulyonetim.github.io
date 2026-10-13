@@ -3,6 +3,7 @@ const assert=require('assert');
 
 const classes=fs.readFileSync('js/modules/classes-mobile-parity.js','utf8');
 const seating=fs.readFileSync('js/modules/class-seating.js','utf8');
+const grid=fs.readFileSync('js/modules/class-seating-grid.js','utf8');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
@@ -50,15 +51,16 @@ assert(!mountBody.includes('base.mount?.(root)'),'İlk mount başka People tasar
 const openPageBody=classes.match(/function openPage\([^\n]+/)?.[0]||'';
 assert(openPageBody.includes("next!=='classes'")&&openPageBody.includes("active='classes'"),'Görünüm sahibi alt sayfa seçildikten sonra yalnız ilgili render yolunu açmalı.');
 
-for(const marker of ['tekli-sira','ikili-masa','grup-masasi-4','grup-masasi-6','ogretmen-masasi','kapi','pencere','yazi-tahtasi','data-so-portrait','data-so-landscape','data-so-move-all','data-so-lock','data-so-pool']) assert(seating.includes(marker),`Oturma planı motor öğesi eksik: ${marker}`);
-assert(seating.includes('global.SinifOturmaService.planKaydet(classId,serialize())'),'Oturma planı canonical local-first servisle kaydedilmeli.');
-assert(seating.includes('global.ReportEngine.printReport'),'Oturma planı çıktısı tek ReportEngine kullanmalı.');
-assert(seating.includes('global.SinifOturma={ac:open'),'Legacy public SinifOturma.ac API geri gelmeli.');
-assert(seating.includes('function clearStudentAssignments()')&&seating.includes('Sıra ve sınıf düzeni korunacak.'),'Temizle işlemi yalnız öğrenci yerleşimlerini silmeli; sınıf düzenini korumalı.');
-assert(seating.includes("seat.addEventListener('click'")&&seating.includes('chooseStudent(seat)'),'Sıradaki artı/isim alanına dokunma öğrenci seçiciyi açmalı.');
-assert(seating.includes('(overlay||document.body).appendChild(ov)'),'Öğrenci seçici tam ekran oturma katmanının üstünde açılmalı.');
-assert(seating.includes('const TOUCH_CLICK_LIMIT=18')&&seating.includes('navigator.maxTouchPoints>0')&&seating.includes('if(!dragging&&Math.hypot(screenDx,screenDy)<clickLimit)return')&&seating.includes('const clickLimit=pointerClickLimit(pointerType),dragged=dragging||dist>=clickLimit'),'Mobil dokunma titreşimi masa dokunmasını sürükleme olarak yutmamalı.');
-assert(seating.includes("const printable=orientation==='yatay'?{w:287,h:200}:{w:200,h:287}")&&seating.includes('baslikGoster:false')&&seating.includes('logoGoster:false'),'Sınıf oturma çıktısı seçilen yönde tek A4 yazdırılabilir alana ölçeklenmeli.');
+for(const marker of ['tekli-sira','ikili-masa','grup-masasi-4','grup-masasi-6','ogretmen-masasi','kapi','pencere','yazi-tahtasi']) assert(grid.includes(marker),`Oturma planı motor öğesi eksik: ${marker}`);
+assert(seating.includes('global.SinifOturmaService.planKaydet(id,payload)'),'Oturma planı canonical local-first servisle kaydedilmeli.');
+assert(seating.includes('global.ReportEngine.printReport')&&seating.includes('baslikGoster:false')&&seating.includes('logoGoster:false'),'Oturma planı çıktısı tek ReportEngine kullanmalı.');
+assert(seating.includes('global.SinifOturma={')&&seating.includes('ac:open')&&seating.includes('kapat:')&&seating.includes('serialize:'),'Legacy public SinifOturma.ac/kapat/serialize API korunmalı.');
+assert(seating.includes('js/modules/class-seating-grid.js')&&seating.includes('global.ClassSeatingGrid.open({'),'Köprü yeni hücre ızgarası motorunu yükleyip açmalı.');
+assert(grid.includes('Sıralar kalır, öğrenciler bekleyene alınır')&&grid.includes("commit(()=>{S.asg={};S.pin={}})"),'Temizle işlemi yalnız öğrenci yerleşimlerini silmeli; sınıf düzenini korumalı.');
+assert(grid.includes("openSheet({t:'seat',key})")&&grid.includes("data-act=\"place\""),'Koltuğa dokunma öğrenci seçici sayfasını açmalı.');
+assert(grid.includes('setTimeout(beginDrag,320)')&&grid.includes('if(dist>10){clearTimeout(drag.timer);drag=null}')||grid.includes('else if(dist>10){clearTimeout(drag.timer);drag=null}'),'Dokunmatik sürükleme uzun basışla başlamalı; kaydırma sürüklemeyi iptal etmeli.');
+assert(grid.includes("const PW=land?1085:756,PH=land?756:1085")&&grid.includes('function printModel(')&&grid.includes("setAttribute('data-class-seating-overlay'"),'Sınıf oturma çıktısı seçilen yönde tek A4 alana ölçeklenmeli; geri tuşu katmanı tanımalı.');
+assert(grid.includes('function migrate(')&&grid.includes('surum:2')&&grid.includes('koltuklar'),'Eski piksel planları hücrelere dökülmeli; yeni kayıt eski önizlemeyle uyumlu yazılmalı.');
 
 const peopleRegistry=loader.match(/define\('people',\[([^\]]+)\]\)/)?.[1]||'';
 for(const src of ["'js/modules/people.js'","'js/modules/people-import.js'","'js/modules/people-classic-ui.js'","'js/modules/classes-mobile-parity.js'"]) assert(peopleRegistry.includes(src),`People loader kaynağı eksik: ${src}`);

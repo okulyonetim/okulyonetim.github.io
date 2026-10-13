@@ -668,6 +668,10 @@
   --ka-report-transport-bos-edge:#8d9a94;       /* boş / kapalı koltuk çizgisi */
   --ka-report-transport-driver-edge:#d3a42f;
   --ka-report-transport-driver-ink:#6b4e00;
+  --ka-report-class-girl-fill:#fbe7f0;           /* sınıf oturma çıktısı: kız öğrenci kutusu */
+  --ka-report-class-girl-edge:#d68bb0;
+  --ka-report-class-boy-fill:#e6edf9;            /* erkek öğrenci kutusu */
+  --ka-report-class-boy-edge:#7f9fd2;
   --ka-report-payroll-summary:#e8f0ee;
   --ka-report-payroll-identity:#ece9d8;
   --ka-report-payroll-rest-bg:#f5f5f5;
@@ -13075,6 +13079,67 @@ html[data-theme="dark"] .bsg-root{--bsg-chip-s:42%;--bsg-chip-l:23%;--bsg-chip-i
 @media (min-width:560px) and (max-width:899px){.bsg-root .bsg-app{border-inline:var(--ka-border-w) solid var(--bsg-line)}}
 @media (max-height:640px){.bsg-root .bsg-dock[data-open="1"]{height:62dvh}.bsg-root .bsg-stats{gap:var(--ka-sp-6)}}
 @media (prefers-reduced-motion:reduce){.bsg-root *,.bsg-root *::before,.bsg-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* ═══════════ SINIF OTURMA IZGARASI (js/modules/class-seating-grid.js) — kabuk (üst şerit, durum, alt çekmece, sayfalar, bildirim) servis editörüyle ortaktır ve yukarıdaki .bsg-root kurallarından gelir; burada yalnız sınıfa özgü parçalar var. Her kural .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
+.bsg-root.csg-root{--csg-girl:rgb(var(--k-pink-c15b84));--csg-boy:rgb(var(--k-cyan-4580b7))}
+
+/* Oda: duvar bandı + hücre ızgarası */
+@media (max-width:1099px){.bsg-root.csg-root .bsg-planwrap{padding-inline:var(--ka-sp-8)}}
+.bsg-root .csg-room{--wt:20px;position:relative;width:max-content;margin:calc(var(--ka-sp-32) + var(--ka-sp-6)) auto 0;padding:var(--wt);border:calc(var(--ka-border-w) * 1.5) solid var(--bsg-bus-edge);border-radius:var(--ka-r-5);background:var(--bsg-bus-fill)}
+.bsg-root .csg-wall{position:absolute;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;z-index:2;border-radius:var(--ka-rs-4);font-size:var(--ka-fs-10);font-weight:var(--ka-fw-700);line-height:1;pointer-events:none;-webkit-touch-callout:none}
+.bsg-root .bsg-app[data-mode="edit"] .csg-wall{pointer-events:auto;cursor:pointer}
+.bsg-root .csg-wall.is-top,.bsg-root .csg-wall.is-bottom{left:calc(var(--wt) + var(--s) * var(--cw));width:calc(var(--n) * var(--cw));height:calc(var(--wt) - 6px)}
+.bsg-root .csg-wall.is-left,.bsg-root .csg-wall.is-right{top:calc(var(--wt) + var(--s) * var(--ch));height:calc(var(--n) * var(--ch));width:calc(var(--wt) - 6px)}
+.bsg-root .csg-wall.is-top{top:3px}
+.bsg-root .csg-wall.is-bottom{bottom:3px}
+.bsg-root .csg-wall.is-left{left:3px}
+.bsg-root .csg-wall.is-right{right:3px}
+.bsg-root .csg-wl{display:block;max-width:100%;max-height:100%;overflow:hidden;padding:0 var(--ka-sp-4);text-overflow:ellipsis;white-space:nowrap}
+.bsg-root .csg-wall.is-left .csg-wl,.bsg-root .csg-wall.is-right .csg-wl{writing-mode:vertical-rl;padding:var(--ka-sp-4) 0}
+.bsg-root .csg-wall.is-left .csg-wl{transform:rotate(180deg)}
+.bsg-root .csg-wall.k-board{background:var(--bsg-line-strong);color:var(--bsg-ink)}
+.bsg-root .csg-wall.k-door{border:calc(var(--ka-border-w) * 1.5) solid var(--bsg-accent-line);background:var(--bsg-accent-soft);color:var(--bsg-accent-text)}
+.bsg-root .csg-wall.k-window{border:calc(var(--ka-border-w) * 1.5) solid var(--bsg-line-strong);background:var(--bsg-surface-2);color:var(--bsg-muted)}
+.bsg-root .csg-wall.is-sel{z-index:4;outline:calc(var(--ka-border-w) * 2) solid var(--bsg-accent);outline-offset:1px}
+.bsg-root .csg-wall.is-moving{opacity:.4}
+.bsg-root .csg-wall.is-ghost{z-index:5;border:calc(var(--ka-border-w) * 2) dashed var(--bsg-accent);background:var(--bsg-accent-soft);color:transparent;opacity:.8;pointer-events:none}
+.bsg-root .csg-wall.is-ghost.is-bad{border-color:var(--bsg-danger);background:var(--bsg-danger-soft)}
+.bsg-root .csg-wrh{position:absolute;z-index:5;width:30px;height:30px;touch-action:none;pointer-events:auto}
+.bsg-root .csg-wall.is-top .csg-wrh,.bsg-root .csg-wall.is-bottom .csg-wrh{right:-15px;top:50%;translate:0 -50%;cursor:ew-resize}
+.bsg-root .csg-wall.is-left .csg-wrh,.bsg-root .csg-wall.is-right .csg-wrh{bottom:-15px;left:50%;translate:-50% 0;cursor:ns-resize}
+.bsg-root .csg-wrh::after{content:"";position:absolute;left:8px;top:8px;width:14px;height:14px;border:calc(var(--ka-border-w) * 2) solid var(--bsg-bg);border-radius:50%;background:var(--bsg-accent);box-shadow:var(--bsg-seat-shadow)}
+
+.bsg-root .csg-empty{display:flex;flex-direction:column;align-items:center;gap:var(--ka-sp-6);margin:var(--ka-sp-52) auto 0;max-width:320px;padding:var(--ka-sp-24) var(--ka-sp-16);border:calc(var(--ka-border-w) * 1.5) dashed var(--bsg-line-strong);border-radius:var(--ka-r-5);text-align:center;color:var(--bsg-muted)}
+.bsg-root .csg-empty b{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-700);color:var(--bsg-ink)}
+.bsg-root .csg-empty span{font-size:var(--ka-fs-13)}
+
+/* Sıra: her koltuk bir hücre, ince çizgiyle ayrılır */
+.bsg-root .csg-desk{display:grid;grid-template-columns:repeat(var(--dw),minmax(0,1fr));grid-template-rows:repeat(var(--dh),minmax(0,1fr));gap:var(--ka-sp-1);overflow:hidden;border:calc(var(--ka-border-w) * 1.5) solid var(--bsg-line-strong);border-radius:var(--ka-r-3);background:var(--bsg-line-strong);box-shadow:var(--bsg-seat-shadow)}
+.bsg-root .csg-seat{--g:var(--bsg-line-strong);position:relative;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--ka-sp-5) var(--ka-sp-3);border:0;border-radius:0;background:var(--bsg-surface);color:var(--bsg-ink);text-align:center;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.bsg-root .csg-seat.is-k{--g:var(--csg-girl)}
+.bsg-root .csg-seat.is-e{--g:var(--csg-boy)}
+.bsg-root .csg-seat.is-has{background:color-mix(in srgb,var(--g) 9%,var(--bsg-surface))}
+.bsg-root .csg-seat.is-has{box-shadow:inset 0 calc(var(--ka-border-w) * -3) 0 var(--g)}
+.bsg-root .csg-seat.is-has[data-drag]{cursor:grab;touch-action:pan-y}
+.bsg-root .csg-seat .csg-pin{position:absolute;top:3px;left:4px;display:inline-flex;color:var(--bsg-accent-text);line-height:1}
+.bsg-root .csg-seat .csg-plus{color:var(--bsg-line-strong)}
+.bsg-root .csg-seat.is-tgt{background:var(--bsg-accent-soft)}
+.bsg-root .csg-seat.is-tgt .csg-plus{color:var(--bsg-accent-text)}
+.bsg-root .csg-seat.is-from{box-shadow:inset 0 0 0 2px var(--bsg-accent)}
+.bsg-root .csg-seat.is-ok{background:var(--bsg-accent-soft);box-shadow:inset 0 0 0 2px var(--bsg-accent)}
+.bsg-root .csg-seat.is-no-drop{background:var(--bsg-danger-soft)}
+.bsg-root .csg-seat.is-flash{animation:csg-flash var(--ka-dur-1100) ease 1}
+@keyframes csg-flash{0%,60%{box-shadow:inset 0 0 0 3px var(--bsg-accent)}100%{box-shadow:inset 0 0 0 3px transparent}}
+.bsg-root .csg-seat.is-ed{padding:var(--ka-sp-3)}
+
+/* Cinsiyet noktası ve küçük parçalar */
+.bsg-root .csg-gd{display:inline-block;flex:none;width:9px;height:9px;border-radius:50%;background:var(--bsg-line-strong)}
+.bsg-root .csg-gd.is-k{background:var(--csg-girl)}
+.bsg-root .csg-gd.is-e{background:var(--csg-boy)}
+.bsg-root .bsg-legend .csg-gd{margin-right:calc(var(--ka-sp-2) * -1)}
+.bsg-root .csg-ck{display:inline-flex;flex:none;color:var(--bsg-accent-text)}
+.bsg-root .bsg-seg3.csg-four{grid-template-columns:repeat(4,1fr)}
+.bsg-root .csg-types{margin:0 var(--ka-sp-16) var(--ka-sp-8)}
 
 /* ===== SINIFLAR — liste ve detay (kcl-*) =====
    Sınıflar görünümünün TEK stil bölümü. Yalnız tema belirteçlerini kullanır (açık / koyu / masaüstü aynı kurallar).
