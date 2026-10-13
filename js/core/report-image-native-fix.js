@@ -3,10 +3,11 @@
 'use strict';
 if(global.KAReportImageNativeFix)return;
 const H2C='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+const MAX_SIDE=8192,MAX_AREA=16e6;
 const clean=v=>(String(v||'Koruk_Rapor').replace(/[^\w\sÇĞİÖŞÜçğıöşü-]/g,'').trim().replace(/\s+/g,'_')||'Koruk_Rapor');
 function loadH2C(win){
  if(win?.html2canvas)return Promise.resolve(win.html2canvas);
- return new Promise((resolve,reject)=>{const d=win?.document;if(!d?.head)return reject(new Error('Görsel alanı hazır değil.'));const s=d.createElement('script');s.src=H2C;s.async=true;s.onload=()=>win.html2canvas?resolve(win.html2canvas):reject(new Error('Görsel motoru başlatılamadı.'));s.onerror=()=>reject(new Error('Görsel motoru indirilemedi.'));d.head.appendChild(s)});
+ return new Promise((resolve,reject)=>{const d=win?.document;if(!d?.head)return reject(new Error('Görsel alanı hazır değil.'));const s=d.createElement('script');s.src=H2C;s.async=true;s.onload=()=>win.html2canvas?resolve(win.html2canvas):reject(new Error('Görsel motoru başlatılamadı.'));s.onerror=()=>reject(new Error('Görsel motoru indirilemedi. İnternet bağlantısını kontrol edin.'));d.head.appendChild(s)});
 }
 async function render(){
  const frame=document.getElementById('kaReportFrame'),ov=document.getElementById('kaReportPreview');
@@ -18,12 +19,12 @@ async function render(){
  const rect=root.getBoundingClientRect();
  if(!rect.width||!rect.height)throw new Error('Rapor sayfası ölçülemedi.');
  const h2c=await loadH2C(w);
- // En yüksek güvenli PNG kalitesi: 4x CSS piksel ölçeği.
- const scale=4;
  const width=Math.ceil(root.scrollWidth||rect.width);
  const height=Math.ceil(root.scrollHeight||rect.height);
+ // En yüksek güvenli kalite: 4x'e kadar; ama telefon WebView'inde tuval kenarı ve alanı sınırlı olduğundan (çok sayfalı raporlarda 4x PNG üretilemiyordu) ölçek bu sınırlara göre kısılır.
+ const scale=Math.max(1,Math.min(4,MAX_SIDE/Math.max(width,height),Math.sqrt(MAX_AREA/(width*height))));
  const canvas=await h2c(root,{scale,useCORS:true,allowTaint:false,backgroundColor:'#fff',foreignObjectRendering:false,logging:false,width,height,windowWidth:width,windowHeight:height,scrollX:0,scrollY:0,imageTimeout:20000});
- return new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error('PNG oluşturulamadı.')),'image/png'));
+ return new Promise((ok,no)=>canvas.toBlob(b=>b&&b.size>1024?ok(b):no(new Error('PNG oluşturulamadı (cihaz belleği yetmedi). Raporu daha az sayfayla deneyin.')),'image/png'));
 }
 const b64=blob=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result||'').split(',')[1]||'');r.onerror=no;r.readAsDataURL(blob)});
 async function action(share){
