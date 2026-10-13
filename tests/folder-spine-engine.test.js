@@ -55,7 +55,7 @@ test('sırtlık işaretlemesi: yön ve şablon sınıfları, kaçış, satır i�
   const P=E.pageLayout({...E.defaults(),size:'5'});
   const s={...E.defaults(),theme:'koyu',dir:'up'};
   const h=E.labelHtml({title:'A<B>',sub:'x"y',no:'7',year:'2026',code:'K1',school:'Okul'},P,s);
-  assert(/class="ka-spine t-koyu lb-renk d-up/.test(h));
+  assert(/class="ka-spine t-koyu lb-renk lf-on fr-on d-up/.test(h));
   assert(!/<B>/.test(h)&&/A&lt;B&gt;/.test(h)&&/x&quot;y/.test(h));
   for(const v of ['--sp-w:50mm','--sp-h:280mm','--sp-top:','--sp-foot:','--sp-tfs:','--sp-sfs:'])assert(h.includes(v),v);
   assert(!/color|background|border/.test(h.match(/style="([^"]*)"/)[1]),'satır içi stil yalnız --sp-* ölçü/renk değişkenleri taşır');
@@ -89,7 +89,7 @@ test('okul şeridi (varsayılan şablon): logo kutusu + okul adı şeridi + orta
 test('okul şeridi işaretlemesi: şerit, dönem ve numara rozeti', ()=>{
   const P=E.pageLayout({...E.defaults(),size:'5'}),d=E.defaults();
   const h=E.labelHtml({title:'Gelen Evrak',sub:'',no:'7',year:'2025-2026',code:'',school:'Atatürk İlkokulu'},P,d);
-  assert(/class="ka-spine t-okul lb-renk d-down/.test(h));
+  assert(/class="ka-spine t-okul lb-renk lf-on fr-on d-down/.test(h));
   for(const v of ['ka-spine__band','--sp-c2:','--sp-c2ink:','--sp-band:','--sp-bfs:','--sp-box:'])assert(h.includes(v),v);
   assert(!h.includes('ka-spine__top'),'okul şeridinde tek üst blok yok');
   assert(h.indexOf('ka-spine__band')<h.indexOf('ka-spine__main')&&h.indexOf('ka-spine__main')<h.indexOf('ka-spine__foot'),'sıra: şerit → başlık → dönem');
@@ -103,4 +103,10 @@ test('yazı rengi seçimi için parlaklık hesabı', ()=>{
   assert(E.lum('#d9731a')>.2&&E.lum('#d9731a')<.35,'turuncu orta parlaklıkta');
   assert(E.lum('#14284b')<.03,'lacivert koyu');
   assert.strictEqual(E.lum('nope'),null);
+});
+test('çerçeveler: logo çerçevesi ve dış çerçeve varsayılan açık, ayardan kapanır', ()=>{
+  const P=E.pageLayout({...E.defaults(),size:'5'}),it={title:'A',sub:'',no:'',year:'',code:'',school:''},d=E.defaults();
+  assert.strictEqual(d.logoFrame,true);assert.strictEqual(d.frame,true);
+  for(const th of ['okul','klasik','serit','koyu','cerceve','minimal'])assert(/lf-on fr-on/.test(E.labelHtml(it,P,{...d,theme:th})),th);
+  assert(/lf-off fr-off/.test(E.labelHtml(it,P,{...d,logoFrame:false,frame:false})));
 });

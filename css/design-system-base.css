@@ -304,6 +304,10 @@
   --ka-spine-frame-gap:2mm;                       /* çerçeveli şablon: kenardan uzaklık */
   --ka-spine-bar:2.5mm;                           /* sade şablon: alt-üst şerit kalınlığı */
   --ka-spine-mark:3mm;                            /* köşe işareti uzunluğu */
+  --ka-spine-logo-frame-w:.5mm;                   /* logo çerçevesinin çizgi kalınlığı */
+  --ka-spine-logo-frame-pad:1.2mm;                /* logo ile çerçevesi arası boşluk */
+  --ka-spine-logo-frame-radius:1mm;               /* logo çerçevesinin köşesi */
+  --ka-spine-outline-w:.8mm;                      /* sırtlığı saran dış çerçevenin çizgi kalınlığı */
   --ka-spine-mark-gap:.8mm;                       /* köşe işareti ile sırtlık arası */
   --ka-spine-k-logo:.44;                          /* logo kenarı ÷ sırtlık genişliği */
   --ka-spine-k-no:.44;                            /* numara kutusu ÷ sırtlık genişliği */
@@ -11134,6 +11138,13 @@ input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:trans
 .ka-spine.t-okul .ka-spine__title{color:var(--sp-c)}
 .ka-spine.t-okul .ka-spine__foot{border-top:var(--ka-spine-frame-w) solid var(--sp-c)}
 .ka-spine.t-okul.lb-beyaz .ka-spine__box{background:var(--ka-spine-paper);box-shadow:inset 0 calc(var(--ka-spine-rule-w) * -1) 0 var(--sp-c)}
+/* çerçeveler: logo çerçevesi (lf-on) ve sırtlığı saran dış çerçeve (fr-on). Çerçeveli şablon kendi çift çerçevesini taşır. */
+.ka-spine{--sp-lf:var(--sp-c)}
+.ka-spine:is(.t-okul,.t-klasik,.t-serit,.t-koyu){--sp-lf:var(--sp-on)}
+.ka-spine.t-okul.lb-beyaz{--sp-lf:var(--sp-c)}
+.ka-spine.lf-on .ka-spine__logo{box-sizing:border-box;padding:var(--ka-spine-logo-frame-pad);border:var(--ka-spine-logo-frame-w) solid var(--sp-lf);border-radius:var(--ka-spine-logo-frame-radius)}
+.ka-spine.fr-on:not(.t-cerceve)::after{content:"";position:absolute;inset:0;border:var(--ka-spine-outline-w) solid var(--sp-c);pointer-events:none}
+.ka-spine.fr-on.t-koyu::after{inset:var(--ka-spine-frame-gap);border-color:var(--sp-on)}
 
 /* ===== CAM SİSTEMİ — TÜM SAYFALAR · MENÜ · ALT NAVİGASYON · BAŞLIK · AÇILIR PENCERELER (v1253) =====
    Ana sayfa zemini + tüm bölüm başlıkları, kartlar, satırlar, çipler ve ikonlar için TEK yetkili tanım (koyu + açık tema).

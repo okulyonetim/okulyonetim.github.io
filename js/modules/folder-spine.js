@@ -33,7 +33,7 @@ function yearHint(){const d=new Date(),y=d.getFullYear(),s=d.getMonth()>=8?y:y-1
 
 /* ───────── durum ───────── */
 const VER=2;   /* kayıtlı tercih sürümü: 2'den önce kaydedilenlerin şablonu yeni varsayılana (Okul şeridi) döner */
-function defaults(){const sw=swatches();return{ver:VER,size:'5',w:7,h:28,title:'',sub:'',year:yearHint(),no:'',code:'',school:true,band:'',logo:true,logobg:'renk',upper:true,theme:'okul',accent:sw[8]||sw[0]||'',accent2:sw[3]||sw[0]||'',dir:'down',fit:100,mode:'single',copies:4,from:1,count:8,months:'okul',list:'',margin:5,gap:0,cut:'line'}}
+function defaults(){const sw=swatches();return{ver:VER,size:'5',w:7,h:28,title:'',sub:'',year:yearHint(),no:'',code:'',school:true,band:'',logo:true,logoFrame:true,frame:true,logobg:'renk',upper:true,theme:'okul',accent:sw[8]||sw[0]||'',accent2:sw[3]||sw[0]||'',dir:'down',fit:100,mode:'single',copies:4,from:1,count:8,months:'okul',list:'',margin:5,gap:0,cut:'line'}}
 let st=defaults(),ui={view:'label',idx:0},touched=false,root=null,pg=null,ro=null,logoSrc='',logoReady=Promise.resolve();
 /* Kişisel ayarlar cihazın yerel-öncelikli deposunda (KorukLocalFirst.meta) tutulur; doğrudan localStorage kullanılmaz. */
 const uid=()=>global.AKTIF_KULLANICI?.uid||'';
@@ -170,7 +170,7 @@ function labelHtml(item,P,s,cls=''){
     :`<div class="ka-spine__top">${logoImg}${noHtml}</div>`;
   const mainHtml=`<div class="ka-spine__main">${m.okul?noHtml:''}<div class="ka-spine__text">${m.sFit?`<div class="ka-spine__sub">${lines(m.sFit.lines)}</div>`:''}${m.tFit?`<div class="ka-spine__title">${lines(m.tFit.lines)}</div>`:''}</div></div>`;
   const footHtml=`<div class="ka-spine__foot">${m.yearFit?`<div class="ka-spine__year">${lines(m.yearFit.lines)}</div>`:''}${m.codeFit?`<div class="ka-spine__code">${lines(m.codeFit.lines)}</div>`:''}${m.schoolFit?`<div class="ka-spine__school">${lines(m.schoolFit.lines)}</div>`:''}</div>`;
-  return `<div class="ka-spine t-${esc(s.theme)} lb-${s.logobg==='beyaz'?'beyaz':'renk'} d-${s.dir==='up'?'up':s.dir==='flat'?'flat':'down'} ${cls}" style="${st2.join(';')}">${topHtml}${mainHtml}${footHtml}</div>`;
+  return `<div class="ka-spine t-${esc(s.theme)} lb-${s.logobg==='beyaz'?'beyaz':'renk'} lf-${s.logoFrame===false?'off':'on'} fr-${s.frame===false?'off':'on'} d-${s.dir==='up'?'up':s.dir==='flat'?'flat':'down'} ${cls}" style="${st2.join(';')}">${topHtml}${mainHtml}${footHtml}</div>`;
 }
 function sheetHtml(items,P,s,page){
   const slice=items.slice(page*P.per,(page+1)*P.per);
@@ -233,7 +233,7 @@ ${seg('size',[['5','5 cm · Dar'],['8','8 cm · Geniş'],['ozel','Özel']])}
 </div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><h3 class="ka-spine-h">2 · İçerik</h3>
 <div class="ka-spine-grid">${field('title','Başlık','maxlength="60" placeholder="Örn. Gelen Giden Evrak"','is-wide')}${field('sub','Alt başlık','maxlength="60" placeholder="Örn. Resmî yazışmalar"','is-wide')}${field('year','Dönem (en altta, yatay)','maxlength="20" placeholder="Örn. 2025-2026"')}${field('no','Klasör no','maxlength="4" placeholder="Örn. 1"')}${field('code','Arşiv kodu','maxlength="20" placeholder="Örn. 010.01"','is-wide')}${field('band','Okul adı yazısı','maxlength="60" placeholder="Boşsa okul bilgilerindeki ad kullanılır"','is-wide')}</div>
-<div class="ka-spine-checks">${check('logo','Okul logosu')}${check('school','Okul adı')}${check('upper','BÜYÜK HARF')}</div>
+<div class="ka-spine-checks">${check('logo','Okul logosu')}${check('logoFrame','Logo çerçevesi')}${check('frame','Sırtlık çerçevesi')}${check('school','Okul adı')}${check('upper','BÜYÜK HARF')}</div>
 </div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><h3 class="ka-spine-h">3 · Tasarım</h3>
 <div class="ka-stack ka-spine-tight"><span class="ka-field__label">Şablon</span>${seg('theme',THEMES)}</div>
