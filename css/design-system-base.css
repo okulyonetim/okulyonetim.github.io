@@ -12166,7 +12166,7 @@ html .ka-profile-popover__identity>.ka-avatar{
   position:relative;box-sizing:border-box;width:var(--ka-ic-58);height:var(--ka-ic-58);flex:0 0 58px;display:grid;place-items:center;overflow:visible;padding:0;border-radius:50%;
   background:var(--pp-row);color:var(--gl-sub);border:0!important;box-shadow:var(--ka-avatar-ring-shadow);
 }
-html .ka-profile-popover__identity>.ka-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+html .ka-profile-popover__identity>.ka-avatar img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
 html .ka-profile-popover__identity>.ka-avatar svg{width:var(--ka-ic-24);height:var(--ka-ic-24)}
 html .ka-profile-popover__identity>span:last-child{display:flex;flex-direction:column;gap:var(--ka-sp-3);min-width:0}
 html .ka-profile-popover__identity strong{font-size:var(--ka-fs-15);line-height:var(--ka-lh-1-2);font-weight:var(--ka-fw-850);letter-spacing:var(--ka-ls-n01);color:var(--gl-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -12729,6 +12729,8 @@ html #v2ModuleRoot .ka-profile-page .ka-profile-avatar{
   border-radius:50%!important;border:0!important;box-shadow:var(--ka-avatar-ring-shadow-lg)!important;
 }
 html .ka-profile-avatar-wrap{--ka-avatar-gap:var(--ka-card-raised-bg)}
+/* Fotoğraf her oranda (dikey / yatay / kare) kutuyu tam doldurur: yüzde boyut yerine mutlak yerleşim, böylece avatar hiçbir zaman oval olmaz */
+html #v2ModuleRoot .ka-profile-page .ka-profile-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
 html .ka-avatar-chip{
   position:absolute;left:50%;bottom:calc(var(--ka-sp-6) * -1);transform:translateX(-50%);z-index:3;max-width:var(--ka-avatar-chip-max);margin:0;padding:var(--ka-sp-2) var(--ka-sp-8);
   border-radius:var(--ka-chip-radius);background:var(--ka-avatar-chip-bg);color:var(--ka-avatar-chip-ink);
@@ -12880,8 +12882,8 @@ html .ka-web-me{
   border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-5);background:var(--gl-field);color:var(--gl-fg);text-align:left;cursor:pointer;
 }
 html .ka-web-me:hover{border-color:rgba(var(--t-accent-rgb),.45)}
-html .ka-web-me__avatar{flex:none;width:var(--ka-ic-40);height:var(--ka-ic-40);display:grid;place-items:center;overflow:hidden;border-radius:50%;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-850);background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);box-shadow:var(--ka-avatar-ring-shadow)}
-html .ka-web-me__avatar img{width:100%;height:100%;display:block;object-fit:cover}
+html .ka-web-me__avatar{position:relative;flex:none;width:var(--ka-ic-40);height:var(--ka-ic-40);display:grid;place-items:center;overflow:hidden;border-radius:50%;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-850);background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);box-shadow:var(--ka-avatar-ring-shadow)}
+html .ka-web-me__avatar img{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:50%;object-fit:cover}
 html .ka-web-me__text{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-1)}
 html .ka-web-me__text strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--ka-fs-13-5);font-weight:var(--ka-fw-850)}
 html .ka-web-me__text small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-600);color:var(--ka-text-muted)}

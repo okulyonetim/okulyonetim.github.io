@@ -30,6 +30,11 @@ assert(/\.ka-profile-photo-edit\{[^}]*top:-6px/.test(rest),'Kamera düğmesi roz
 const hdr=rule('html .ka-app-header .ka-header-actions>.ka-header-profile{'),hdrImg=rule('html .ka-app-header .ka-header-profile img{');
 assert(/position:relative/.test(hdr)&&/overflow:visible/.test(hdr)&&!/overflow:hidden/.test(hdr),'Başlık avatar düğmesi iç içe kırpma yapmamalı.');
 assert(/position:absolute/.test(hdrImg)&&/inset:calc\(var\(--ka-border-w\) \* -\.5\)/.test(hdrImg)&&/border-radius:50%/.test(hdrImg)&&/object-fit:cover/.test(hdrImg),'Başlık fotoğrafı düğmeyi kenar boşluksuz doldurmalı.');
+// Her oranda fotoğraf (dikey/yatay/kare) kutuyu tam doldurur → avatar asla oval olmaz (yüzde boyut yerine mutlak yerleşim)
+for(const [sel,label] of [['html .ka-profile-popover__identity>.ka-avatar img{','açılan kart'],['html #v2ModuleRoot .ka-profile-page .ka-profile-avatar img{','profil sayfası'],['html .ka-web-me__avatar img{','web yan menüsü'],['html .ka-app-header .ka-header-profile img{','başlık']]){
+  const r=rule(sel);assert(/position:absolute/.test(r)&&/width:(100%|calc\(100% \+ var\(--ka-border-w\)\))/.test(r)&&/height:(100%|calc\(100% \+ var\(--ka-border-w\)\))/.test(r)&&/object-fit:cover/.test(r)&&/border-radius:50%/.test(r),`${label} fotoğrafı kutuyu mutlak yerleşimle tam doldurmalı (oval görünmemeli).`);
+}
+assert(/position:relative/.test(rule('html .ka-web-me__avatar{')),'Web yan menüsü avatarı mutlak yerleşimli fotoğrafın dayanağı olmalı.');
 // Yükleme sonrası adres: aynı Storage yoluna yazıldığı için adres değişmez → v= ile eski fotoğraf önbellekten gelmesin
 assert(/base=await snapshot\.ref\.getDownloadURL\(\),url=base\+\(base\.includes\('\?'\)\?'&':'\?'\)\+'v='\+Date\.now\(\)/.test(auth),'Fotoğraf adresine sürüm parametresi eklenmeli.');
 assert(auth.includes('await user.updateProfile({photoURL:url})'),'Sürümlü adres kalıcı profile yazılmalı.');
@@ -83,10 +88,10 @@ for(const [name,src] of [['index.html',index],['beta.html',beta]]){
   assert(src.indexOf('photo-cropper.js')>src.indexOf('shell-ui.js'),`${name}: kırpma modülü shell-ui'dan sonra yüklenmeli.`);
 }
 const cssV=Number(index.match(/css\/design-system\.css\?v=(\d+)/)[1]),shellV=Number(index.match(/js\/core\/shell-ui\.js\?v=(\d+)/)[1]);
-assert(cssV>=1142&&shellV>=1078,'Rozetli/kırpma varlıkları gerekli sürümün gerisine düşmemeli.');
+assert(cssV>=1143&&shellV>=1078,'Rozetli/kırpma varlıkları gerekli sürümün gerisine düşmemeli.');
 assert(sw.includes(`'./css/design-system.css?v=${cssV}'`)&&sw.includes(`'./js/core/shell-ui.js?v=${shellV}'`),'Service Worker güncel sürümleri önbelleğe almalı.');
-assert(Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)[1])>=1291,'Service Worker cache sürümü bu değişiklikten geri kalmamalı.');
-assert(Number(read('css/design-system.css').match(/design-system-base\.css\?v=(\d+)/)[1])>=1280,'Ana stil dosyası sürümü yükseltilmeli.');
+assert(Number(sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/)[1])>=1292,'Service Worker cache sürümü bu değişiklikten geri kalmamalı.');
+assert(Number(read('css/design-system.css').match(/design-system-base\.css\?v=(\d+)/)[1])>=1281,'Ana stil dosyası sürümü yükseltilmeli.');
 
 // ── 7) Belge ──
 assert(doc.includes('Profil fotoğrafı')&&doc.includes('Rozetli')&&doc.includes('photo-cropper.js')&&doc.includes('--ka-avatar-ring-shadow'),'docs/TASARIM-SISTEMI.md Rozetli görünümü ve kırpma ekranını anlatmalı.');
