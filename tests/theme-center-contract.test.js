@@ -394,18 +394,18 @@ for(const t of ['--ka-btn-primary-blur','--ka-btn-primary-sat','--ka-btn-primary
   const tokens16=['--ka-hub-gap','--ka-hub-pad','--ka-hub-radius','--ka-hub-icon-size','--ka-hub-icon-radius','--ka-hub-icon-fs','--ka-hub-title-fs','--ka-hub-desc-fs','--ka-hub-go-fs','--ka-hub-press-scale',
     '--ka-spine-paper','--ka-spine-ink','--ka-spine-ink-soft','--ka-spine-on-accent','--ka-spine-cut','--ka-spine-font','--ka-spine-fw-title','--ka-spine-fw-sub','--ka-spine-fw-meta','--ka-spine-ls-meta',
     '--ka-spine-pad','--ka-spine-no-radius','--ka-spine-cut-w','--ka-spine-rule-w','--ka-spine-frame-w','--ka-spine-frame-gap','--ka-spine-bar','--ka-spine-mark','--ka-spine-mark-gap',
-    '--ka-spine-k-logo','--ka-spine-k-no','--ka-spine-k-title','--ka-spine-k-cross','--ka-spine-k-char','--ka-spine-k-char-caps','--ka-spine-k-leading','--ka-spine-k-meta',
+    '--ka-spine-k-logo','--ka-spine-k-no','--ka-spine-k-title','--ka-spine-k-cross','--ka-spine-k-char','--ka-spine-k-char-caps','--ka-spine-k-leading','--ka-spine-k-meta','--ka-spine-k-box','--ka-spine-k-band',
     '--ka-spine-stage-pad','--ka-spine-stage-radius','--ka-spine-stage-bg','--ka-spine-paper-shadow','--ka-spine-sw-size'];
   for(const t of tokens16)assert(core.includes(t+':'),`TEMA MERKEZİ'nde araçlar / sırtlık değişkeni eksik: ${t}`);
-  for(let i=1;i<=8;i++)assert(core.includes(`--ka-spine-sw-${i}:`),`Sırtlık renk seçeneği eksik: --ka-spine-sw-${i}`);
+  for(let i=1;i<=9;i++)assert(core.includes(`--ka-spine-sw-${i}:`),`Sırtlık renk seçeneği eksik: --ka-spine-sw-${i}`);
   // kâğıt temadan bağımsızdır: sırtlık belirteçleri yalnız ortak :root'ta, açık/koyu palette yok
   const sharedNames=names(inCore[0].body);
   for(const t of tokens16)assert(sharedNames.has(t),`${t} ortak :root'ta tanımlı olmalı (kâğıt temadan bağımsız).`);
   assert(![...names(inCore[1].body),...names(inCore[2].body)].some(n=>/^--ka-(spine|hub)-/.test(n)),'Sırtlık / araçlar belirteçleri açık ya da koyu palette yeniden tanımlanmamalı.');
   // kurallar var: liste kartı, sayfa denetimleri, kâğıt (sayfa + hücre + sırtlık + beş şablon + üç yön + üç kesim)
   const has=sel=>rules.some(r=>r.sel.includes(sel));
-  for(const sel of ['.ka-hub-list','.ka-hub-item','.ka-hub-item__icon','.ka-spine-layout','.ka-spine-seg','.ka-spine-stage','.ka-spine-sw__dot','.ka-spine-doc','.ka-spine-sheet','.ka-spine-cell','.ka-spine__top','.ka-spine__main','.ka-spine__title','.ka-spine__foot',
-    '.ka-spine.t-klasik','.ka-spine.t-serit','.ka-spine.t-koyu','.ka-spine.t-cerceve','.ka-spine.t-minimal','.ka-spine.d-down','.ka-spine.d-up','.ka-spine.d-flat','.ka-spine-sheet.cut-line','.ka-spine-sheet.cut-marks'])
+  for(const sel of ['.ka-hub-list','.ka-hub-item','.ka-hub-item__icon','.ka-spine-layout','.ka-spine-seg','.ka-spine-stage','.ka-spine-sw__dot','.ka-spine-doc','.ka-spine-sheet','.ka-spine-cell','.ka-spine__top','.ka-spine__box','.ka-spine__band','.ka-spine__main','.ka-spine__title','.ka-spine__foot',
+    '.ka-spine.t-okul','.ka-spine.t-klasik','.ka-spine.t-serit','.ka-spine.t-koyu','.ka-spine.t-cerceve','.ka-spine.t-minimal','.ka-spine.d-down','.ka-spine.d-up','.ka-spine.d-flat','.ka-spine-sheet.cut-line','.ka-spine-sheet.cut-marks'])
     assert(has(sel),`Araçlar / sırtlık CSS kuralı eksik: ${sel}`);
   // yazdırılan belge bu kuralları çalışma anında merkezi stilden çıkarır (paperCss): kâğıt seçicileri #v2ModuleRoot'a bağlı olmamalı
   const paper=rules.filter(r=>/\.ka-spine(?:-sheet|-cell|-doc)?(?![\w-])|\.ka-spine__/.test(r.sel));

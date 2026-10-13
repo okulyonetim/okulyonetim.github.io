@@ -55,7 +55,7 @@ test('sırtlık işaretlemesi: yön ve şablon sınıfları, kaçış, satır i�
   const P=E.pageLayout({...E.defaults(),size:'5'});
   const s={...E.defaults(),theme:'koyu',dir:'up'};
   const h=E.labelHtml({title:'A<B>',sub:'x"y',no:'7',year:'2026',code:'K1',school:'Okul'},P,s);
-  assert(/class="ka-spine t-koyu d-up/.test(h));
+  assert(/class="ka-spine t-koyu lb-renk d-up/.test(h));
   assert(!/<B>/.test(h)&&/A&lt;B&gt;/.test(h)&&/x&quot;y/.test(h));
   for(const v of ['--sp-w:50mm','--sp-h:280mm','--sp-top:','--sp-foot:','--sp-tfs:','--sp-sfs:'])assert(h.includes(v),v);
   assert(!/color|background|border/.test(h.match(/style="([^"]*)"/)[1]),'satır içi stil yalnız --sp-* ölçü/renk değişkenleri taşır');
@@ -66,4 +66,41 @@ test('sayfa dizilimi: her sayfada en çok per kadar hücre', ()=>{
   const s0=E.sheetHtml(items,P,E.defaults(),0),s1=E.sheetHtml(items,P,E.defaults(),1);
   assert.strictEqual((s0.match(/ka-spine-cell/g)||[]).length,4);assert.strictEqual((s1.match(/ka-spine-cell/g)||[]).length,2);
   assert(/--sp-cols:4/.test(s0)&&/cut-line/.test(s0));
+});
+
+test('okul şeridi (varsayılan şablon): logo kutusu + okul adı şeridi + ortada başlık + altta yatay dönem', ()=>{
+  const P=E.pageLayout({...E.defaults(),size:'5'}),d=E.defaults();
+  assert.strictEqual(d.theme,'okul');
+  const item={title:'OKUL SAĞLIĞI',sub:'(136)',no:'',year:'2022-2023',code:'',school:'Aselsan Konya MTAL'};
+  const m=E.model(item,P,d,true);
+  assert(m.okul&&m.boxS>40&&m.boxS<=50,'logo kutusu sırtlık genişliğinde, yaklaşık kare');
+  assert(m.bandFit&&m.bandFit.lines.length>=1&&m.bandLen>0,'okul adı şeridi hesaplanır');
+  assert(Math.abs(m.top-(m.boxS+m.bandLen))<1e-6,'üst blok = kutu + şerit');
+  assert(m.yearFit&&!m.schoolFit,'dönem altta; okul adı alt bilgide tekrarlanmaz');
+  assert(m.tFit&&m.tFit.fs>4,'başlığa orta alan kalır');
+  const noLogo=E.model(item,P,d,false);
+  assert.strictEqual(noLogo.boxS,0,'logo yoksa kutu çizilmez');assert(noLogo.top<m.top);
+  const klasik=E.model(item,P,{...d,theme:'klasik'},true);
+  assert(!klasik.okul&&!klasik.bandFit&&klasik.schoolFit,'diğer şablonlarda okul adı alt bilgidedir');
+  const own=E.model(item,P,{...d,band:'Özel Okul Adı'},true);
+  assert(/ÖZEL/.test(own.bandFit.lines.join(' '))&&!/ASELSAN/.test(own.bandFit.lines.join(' ')),'okul adı yazısı alanı okul bilgisinin yerine geçer');
+  assert.strictEqual(E.model(item,P,{...d,school:false},true).bandFit,null,'okul adı kapalıysa şerit yok');
+});
+test('okul şeridi işaretlemesi: şerit, dönem ve numara rozeti', ()=>{
+  const P=E.pageLayout({...E.defaults(),size:'5'}),d=E.defaults();
+  const h=E.labelHtml({title:'Gelen Evrak',sub:'',no:'7',year:'2025-2026',code:'',school:'Atatürk İlkokulu'},P,d);
+  assert(/class="ka-spine t-okul lb-renk d-down/.test(h));
+  for(const v of ['ka-spine__band','--sp-c2:','--sp-c2ink:','--sp-band:','--sp-bfs:','--sp-box:'])assert(h.includes(v),v);
+  assert(!h.includes('ka-spine__top'),'okul şeridinde tek üst blok yok');
+  assert(h.indexOf('ka-spine__band')<h.indexOf('ka-spine__main')&&h.indexOf('ka-spine__main')<h.indexOf('ka-spine__foot'),'sıra: şerit → başlık → dönem');
+  assert(h.indexOf('ka-spine__no')>h.indexOf('ka-spine__main'),'numara rozeti ortadaki alanda');
+  assert(/ka-spine__foot"><div class="ka-spine__year">2025-2026/.test(h));
+  assert(!/color|background|border/.test(h.match(/style="([^"]*)"/)[1]));
+  assert(/lb-beyaz/.test(E.labelHtml({title:'A',sub:'',no:'',year:'',code:'',school:''},P,{...d,logobg:'beyaz'})));
+});
+test('yazı rengi seçimi için parlaklık hesabı', ()=>{
+  assert(E.lum('#ffffff')>.99&&E.lum('#000000')<.001);
+  assert(E.lum('#d9731a')>.2&&E.lum('#d9731a')<.35,'turuncu orta parlaklıkta');
+  assert(E.lum('#14284b')<.03,'lacivert koyu');
+  assert.strictEqual(E.lum('nope'),null);
 });

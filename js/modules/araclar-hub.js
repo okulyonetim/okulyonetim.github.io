@@ -37,7 +37,7 @@ async function openSpine({root}){
   const L=global.AppLoader;
   try{global.DocumentsModule?.unmount?.()}catch(_){}
   if(!global.ReportEngine?.previewHtml)await L?.loadScript?.('js/modules/report-engine.js?v=4');
-  if(!global.FolderSpine?.open)await L?.loadScript?.('js/modules/folder-spine.js?v=3');
+  if(!global.FolderSpine?.open)await L?.loadScript?.('js/modules/folder-spine.js?v=4');
   if(!global.FolderSpine?.open)throw new Error('folder-spine-load');
   return global.FolderSpine.open(root);
 }

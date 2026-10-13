@@ -290,6 +290,7 @@
   --ka-spine-sw-6:#0e8a9b;                        /* turkuaz */
   --ka-spine-sw-7:#7a1f3d;                        /* bordo */
   --ka-spine-sw-8:#2f3742;                        /* antrasit */
+  --ka-spine-sw-9:#14284b;                        /* lacivert (Okul şeridi şablonunun varsayılan ana rengi) */
   --ka-spine-font:var(--ka-font);                 /* kâğıt yazı tipi */
   --ka-spine-fw-title:var(--ka-fw-900);           /* başlık kalınlığı */
   --ka-spine-fw-sub:var(--ka-fw-700);             /* alt başlık kalınlığı */
@@ -312,6 +313,8 @@
   --ka-spine-k-char-caps:.7;                      /* aynısı, büyük harf için */
   --ka-spine-k-leading:1.16;                      /* satır aralığı çarpanı */
   --ka-spine-k-meta:.16;                          /* yıl / kod / okul boyu ÷ sırtlık genişliği */
+  --ka-spine-k-box:.96;                           /* okul şeridi şablonu: logo kutusunun yüksekliği ÷ sırtlık genişliği */
+  --ka-spine-k-band:.12;                          /* okul şeridi şablonu: okul adının en büyük boyu ÷ sırtlık genişliği */
   --ka-spine-stage-pad:16px;                      /* önizleme sahnesi iç boşluğu */
   --ka-spine-stage-radius:var(--ka-r-4);          /* önizleme sahnesi köşesi */
   --ka-spine-stage-bg:rgba(var(--k-black),.07);   /* önizleme sahnesi zemini (kâğıdın altındaki yüzey) */
@@ -11124,6 +11127,13 @@ input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:trans
 .ka-spine.t-minimal{box-shadow:inset 0 var(--ka-spine-bar) 0 var(--sp-c),inset 0 calc(var(--ka-spine-bar) * -1) 0 var(--sp-c)}
 .ka-spine.t-minimal .ka-spine__no{background:transparent;color:var(--sp-c)}
 .ka-spine.t-minimal .ka-spine__foot{border-top:var(--ka-spine-rule-w) solid var(--sp-c)}
+/* okul şeridi: üstte logo kutusu · altında okul adı şeridi · ortada dikey başlık · en altta yatay dönem */
+.ka-spine__box{display:grid;flex:none;place-items:center;height:var(--sp-box);background:var(--sp-c)}
+.ka-spine__band{display:grid;flex:none;place-items:center;height:var(--sp-band);padding:0 calc(var(--sp-pad) * .6);background:var(--sp-c2);color:var(--sp-c2ink);font-size:var(--sp-bfs);font-weight:var(--ka-spine-fw-title);line-height:var(--ka-lh-1-15)}
+.ka-spine.t-okul .ka-spine__main{flex-direction:column;gap:var(--sp-tg)}
+.ka-spine.t-okul .ka-spine__title{color:var(--sp-c)}
+.ka-spine.t-okul .ka-spine__foot{border-top:var(--ka-spine-frame-w) solid var(--sp-c)}
+.ka-spine.t-okul.lb-beyaz .ka-spine__box{background:var(--ka-spine-paper);box-shadow:inset 0 calc(var(--ka-spine-rule-w) * -1) 0 var(--sp-c)}
 
 /* ===== CAM SİSTEMİ — TÜM SAYFALAR · MENÜ · ALT NAVİGASYON · BAŞLIK · AÇILIR PENCERELER (v1253) =====
    Ana sayfa zemini + tüm bölüm başlıkları, kartlar, satırlar, çipler ve ikonlar için TEK yetkili tanım (koyu + açık tema).

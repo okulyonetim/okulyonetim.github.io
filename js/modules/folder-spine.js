@@ -18,7 +18,7 @@ const MM=96/25.4,PT=25.4/72;               /* mm→px ve pt→mm */
 const A4={w:210,h:297};
 const MONTHS_SCHOOL=['Eylül','Ekim','Kasım','Aralık','Ocak','Şubat','Mart','Nisan','Mayıs','Haziran'];
 const MONTHS_YEAR=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-const THEMES=[['klasik','Klasik'],['serit','Şeritli'],['koyu','Dolgulu'],['cerceve','Çerçeveli'],['minimal','Sade']];
+const THEMES=[['okul','Okul şeridi'],['klasik','Klasik'],['serit','Şeritli'],['koyu','Dolgulu'],['cerceve','Çerçeveli'],['minimal','Sade']];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 const num=(v,d)=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:d};
@@ -28,11 +28,12 @@ const upper=s=>String(s||'').toLocaleUpperCase('tr-TR');
 const HEX=/^#[0-9a-f]{3,8}$/i;
 function tok(name,fb){try{return global.getComputedStyle(D.documentElement).getPropertyValue(name).trim()||fb}catch(_){return fb}}
 function tnum(name,fb){const n=parseFloat(tok(name,''));return Number.isFinite(n)?n:fb}
-const swatches=()=>{const a=[];for(let i=1;i<=8;i++){const v=tok('--ka-spine-sw-'+i,'');if(HEX.test(v))a.push(v)}return a};
+const swatches=()=>{const a=[];for(let i=1;i<=9;i++){const v=tok('--ka-spine-sw-'+i,'');if(HEX.test(v))a.push(v)}return a};
 function yearHint(){const d=new Date(),y=d.getFullYear(),s=d.getMonth()>=8?y:y-1;return s+'-'+(s+1)}
 
 /* ───────── durum ───────── */
-function defaults(){return{size:'5',w:7,h:28,title:'',sub:'',year:yearHint(),no:'',code:'',school:true,logo:true,upper:true,theme:'klasik',accent:swatches()[0]||'',dir:'down',fit:100,mode:'single',copies:4,from:1,count:8,months:'okul',list:'',margin:5,gap:0,cut:'line'}}
+const VER=2;   /* kayıtlı tercih sürümü: 2'den önce kaydedilenlerin şablonu yeni varsayılana (Okul şeridi) döner */
+function defaults(){const sw=swatches();return{ver:VER,size:'5',w:7,h:28,title:'',sub:'',year:yearHint(),no:'',code:'',school:true,band:'',logo:true,logobg:'renk',upper:true,theme:'okul',accent:sw[8]||sw[0]||'',accent2:sw[3]||sw[0]||'',dir:'down',fit:100,mode:'single',copies:4,from:1,count:8,months:'okul',list:'',margin:5,gap:0,cut:'line'}}
 let st=defaults(),ui={view:'label',idx:0},touched=false,root=null,pg=null,ro=null,logoSrc='',logoReady=Promise.resolve();
 /* Kişisel ayarlar cihazın yerel-öncelikli deposunda (KorukLocalFirst.meta) tutulur; doğrudan localStorage kullanılmaz. */
 const uid=()=>global.AKTIF_KULLANICI?.uid||'';
@@ -42,7 +43,15 @@ async function loadPrefs(){
   const u=uid();if(!u||!global.KorukLocalFirst?.meta)return null;
   try{const s=await Promise.race([global.KorukLocalFirst.meta(u,KEY),new Promise(r=>setTimeout(()=>r(null),2500))]);return s&&typeof s==='object'?s:null}catch(_){return null}
 }
-function applyPrefs(saved){const d=defaults(),o={...st,...saved};if(!HEX.test(String(o.accent||'')))o.accent=d.accent;st=o}
+function applyPrefs(saved){
+  const d=defaults(),sv={...saved};
+  if(!(num(sv.ver,0)>=VER)){delete sv.theme;delete sv.accent}   /* eski kayıt: yeni varsayılan şablon ve renk gelsin */
+  const o={...st,...sv,ver:VER};
+  if(!HEX.test(String(o.accent||'')))o.accent=d.accent;
+  if(!HEX.test(String(o.accent2||'')))o.accent2=d.accent2;
+  if(!THEMES.some(t=>t[0]===o.theme))o.theme=d.theme;
+  st=o;
+}
 let saveTimer=0;
 function save(){
   clearTimeout(saveTimer);
@@ -86,6 +95,7 @@ function fitText(text,along,across,maxFs,k,lead,maxLines=3){
 function model(item,P,s,hasLogo){
   const W=P.W,H=P.H,kLogo=tnum('--ka-spine-k-logo',.44),kNo=tnum('--ka-spine-k-no',.44),kTitle=tnum('--ka-spine-k-title',.46),kCross=tnum('--ka-spine-k-cross',.62),
     kChar=tnum('--ka-spine-k-char',.58),kCaps=tnum('--ka-spine-k-char-caps',.7),kLead=tnum('--ka-spine-k-leading',1.16),kMeta=tnum('--ka-spine-k-meta',.16);
+  const okul=s.theme==='okul';
   let pad=Math.min(tnum('--ka-spine-pad',3.5),W*.12);
   if(s.theme==='cerceve')pad+=tnum('--ka-spine-frame-gap',2)+tnum('--ka-spine-frame-w',.7)*3;
   pad=Math.min(pad,W*.3);
@@ -94,42 +104,73 @@ function model(item,P,s,hasLogo){
   if(!title.trim()&&sub){title=caps?upper(sub):sub;sub=''}   /* yalnız alt başlık (ör. aylık seri) varsa o ana metin olur */
   /* üst blok: logo + numara */
   const ref=Math.min(W,H*.28);   /* kısa ve geniş sırtlıklarda logo / numara / alt bilgi uzunluğu aşmasın */
-  const showLogo=!!(s.logo&&hasLogo),logoS=Math.min(inner,ref*kLogo),noS=Math.min(inner,ref*kNo),parts=[];
-  if(showLogo)parts.push(logoS);if(no)parts.push(noS);
-  const gT=pad*.6,top=parts.length?pad*2+parts.reduce((a,b)=>a+b,0)+gT*(parts.length-1):pad;
+  const showLogo=!!(s.logo&&hasLogo),noS=Math.min(okul?inner*.5:inner,ref*kNo*(okul?.6:1)),parts=[];
+  let logoS=Math.min(inner,ref*kLogo),boxS=0,bandLen=0,bandFit=null;
+  const gT=pad*.6;let top;
+  /* okul adı: Okul şeridi şablonunda renkli şeritte, diğerlerinde alt bilgide; yazı "Okul adı yazısı" alanından (boşsa okul bilgisinden) gelir */
+  const schoolRaw=s.school?(String(s.band||'').trim()||item.school||''):'',schoolTxt=schoolRaw?(caps?upper(schoolRaw):schoolRaw):'';
+  if(okul){
+    /* üst blok: logo kutusu (tam genişlik) + altında okul adı şeridi; numara rozeti ortadaki alana girer */
+    if(showLogo){boxS=Math.min(W,ref*tnum('--ka-spine-k-box',.96));logoS=Math.max(4,Math.min(inner,boxS-2*pad))}
+    bandFit=schoolTxt?fitText(schoolTxt,inner,99,ref*tnum('--ka-spine-k-band',.12),kT,kLead,3):null;
+    bandLen=bandFit?pad*1.4+bandFit.lines.length*bandFit.fs*kLead:0;
+    top=boxS+bandLen;
+  }else{
+    if(showLogo)parts.push(logoS);if(no)parts.push(noS);
+    top=parts.length?pad*2+parts.reduce((a,b)=>a+b,0)+gT*(parts.length-1):pad;
+  }
   const nfs=Math.min(noS*.56,noS*.86/(Math.max(1,no.length)*kChar*1.15));
   /* alt blok: yıl · arşiv kodu · okul */
   const metaMax=ref*kMeta,foot=[];
-  const yearFit=item.year?fitText(item.year,inner,99,metaMax*1.15,kT,kLead,1):null;
+  const yearFit=item.year?fitText(item.year,inner,99,metaMax*(okul?1.5:1.15),kT,kLead,1):null;
   const codeFit=item.code?fitText(item.code,inner,99,metaMax*.85,kChar,kLead,1):null;
-  const schoolTxt=s.school&&item.school?(caps?upper(item.school):item.school):'';
-  const schoolFit=schoolTxt?fitText(schoolTxt,inner,99,metaMax*.72,kT,kLead,3):null;
+  const schoolFit=!okul&&schoolTxt?fitText(schoolTxt,inner,99,metaMax*.72,kT,kLead,3):null;
   [yearFit,codeFit,schoolFit].forEach(x=>{if(x)foot.push(x)});
   const gF=pad*.35,footLen=foot.length?pad*2+foot.reduce((a,x)=>a+x.lines.length*x.fs*kLead,0)+gF*(foot.length-1):pad;
   /* orta blok: başlık + alt başlık */
-  const mainLen=Math.max(10,H-top-footLen),along=vertical?mainLen-pad*1.5:inner,crossAll=vertical?inner:mainLen-pad*1.5,hasSub=!!sub;
+  const noMain=okul&&no?noS+pad*.5:0;   /* Okul şeridinde numara rozeti başlığın üstünde durur */
+  const mainLen=Math.max(10,H-top-footLen-noMain),along=vertical?mainLen-pad*1.5:inner,crossAll=vertical?inner:mainLen-pad*1.5,hasSub=!!sub;
   const tFit=title?fitText(title,along,crossAll*(hasSub?kCross:.94),W*kTitle*(vertical?1:.8),kT,kLead,vertical?3:5):null;
   if(tFit)tFit.fs*=fit;
   const usedT=tFit?tFit.lines.length*tFit.fs*kLead:0,gTS=pad*.5;
   const crossS=Math.max(crossAll*.2,crossAll-usedT-(tFit?gTS:0)-(vertical?0:0));
   const sFit=sub?fitText(sub,along,crossS,(tFit?tFit.fs:W*kTitle)*.62,kChar,kLead,4):null;
   if(sFit)sFit.fs*=fit;
-  return{pad,top,foot:footLen,showLogo,logoS,noS,nfs,no,tFit,sFit,yearFit,codeFit,schoolFit,gTS,gF};
+  return{okul,pad,top,foot:footLen,showLogo,logoS,boxS,bandLen,bandFit,noS,nfs,no,tFit,sFit,yearFit,codeFit,schoolFit,gTS,gF};
 }
 const lines=a=>a.map(esc).join('<br>');
 const accentOf=s=>HEX.test(String(s.accent||''))?s.accent:(swatches()[0]||'');
+const accent2Of=s=>HEX.test(String(s.accent2||''))?s.accent2:(swatches()[3]||accentOf(s));
+/* Renkli zemin üstündeki yazı rengi: kâğıt belirteçlerindeki açık / koyu yazıdan, kontrastı yüksek olan seçilir (renk değeri koda yazılmaz). */
+function lum(c){
+  const h=String(c||'').replace('#','').trim(),v=h.length===3?h.replace(/./g,'$&$&'):h.slice(0,6);
+  if(v.length<6||!/^[0-9a-f]{6}$/i.test(v))return null;
+  const n=parseInt(v,16),lin=x=>{x/=255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)};
+  return .2126*lin(n>>16&255)+.7152*lin(n>>8&255)+.0722*lin(n&255);
+}
+function inkOn(bg){
+  const a=tok('--ka-spine-on-accent',''),b=tok('--ka-spine-ink',''),l=lum(bg);
+  if(l==null)return a;
+  const ratio=(x,y)=>(Math.max(x,y)+.05)/(Math.min(x,y)+.05),la=lum(a),lb=lum(b);
+  return ratio(l,la==null?1:la)>=ratio(l,lb==null?0:lb)?a:b;
+}
 function labelHtml(item,P,s,cls=''){
   const m=model(item,P,s,!!logoSrc),st2=[`--sp-w:${f(P.W)}mm`,`--sp-h:${f(P.H)}mm`,`--sp-c:${accentOf(s)}`,`--sp-pad:${f(m.pad)}mm`,`--sp-top:${f(m.top)}mm`,`--sp-foot:${f(m.foot)}mm`,
-    `--sp-logo:${f(m.logoS)}mm`,`--sp-no:${f(m.noS)}mm`,`--sp-nfs:${pt(m.nfs)}`,`--sp-tg:${f(m.gTS)}mm`,`--sp-fg:${f(m.gF)}mm`];
+    `--sp-c2:${accent2Of(s)}`,`--sp-c2ink:${inkOn(accent2Of(s))}`,`--sp-logo:${f(m.logoS)}mm`,`--sp-no:${f(m.noS)}mm`,`--sp-nfs:${pt(m.nfs)}`,`--sp-tg:${f(m.gTS)}mm`,`--sp-fg:${f(m.gF)}mm`];
+  if(m.okul){st2.push(`--sp-box:${f(m.boxS)}mm`,`--sp-band:${f(m.bandLen)}mm`);if(m.bandFit)st2.push(`--sp-bfs:${pt(m.bandFit.fs)}`)}
   if(m.tFit)st2.push(`--sp-tfs:${pt(m.tFit.fs)}`);
   if(m.sFit)st2.push(`--sp-sfs:${pt(m.sFit.fs)}`);
   if(m.yearFit)st2.push(`--sp-yfs:${pt(m.yearFit.fs)}`);
   if(m.codeFit)st2.push(`--sp-cfs:${pt(m.codeFit.fs)}`);
   if(m.schoolFit)st2.push(`--sp-mfs:${pt(m.schoolFit.fs)}`);
-  const topHtml=`<div class="ka-spine__top">${m.showLogo?`<img class="ka-spine__logo" src="${esc(logoSrc)}" alt="">`:''}${m.no?`<div class="ka-spine__no">${esc(m.no)}</div>`:''}</div>`;
-  const mainHtml=`<div class="ka-spine__main"><div class="ka-spine__text">${m.sFit?`<div class="ka-spine__sub">${lines(m.sFit.lines)}</div>`:''}${m.tFit?`<div class="ka-spine__title">${lines(m.tFit.lines)}</div>`:''}</div></div>`;
+  const logoImg=m.showLogo?`<img class="ka-spine__logo" src="${esc(logoSrc)}" alt="">`:'',noHtml=m.no?`<div class="ka-spine__no">${esc(m.no)}</div>`:'';
+  /* Okul şeridi: [logo kutusu] [okul adı şeridi] · numara rozeti ortadaki alanda. Diğer şablonlar: tek üst blok (logo + numara). */
+  const topHtml=m.okul
+    ?`${m.boxS?`<div class="ka-spine__box">${logoImg}</div>`:''}${m.bandFit?`<div class="ka-spine__band">${lines(m.bandFit.lines)}</div>`:''}`
+    :`<div class="ka-spine__top">${logoImg}${noHtml}</div>`;
+  const mainHtml=`<div class="ka-spine__main">${m.okul?noHtml:''}<div class="ka-spine__text">${m.sFit?`<div class="ka-spine__sub">${lines(m.sFit.lines)}</div>`:''}${m.tFit?`<div class="ka-spine__title">${lines(m.tFit.lines)}</div>`:''}</div></div>`;
   const footHtml=`<div class="ka-spine__foot">${m.yearFit?`<div class="ka-spine__year">${lines(m.yearFit.lines)}</div>`:''}${m.codeFit?`<div class="ka-spine__code">${lines(m.codeFit.lines)}</div>`:''}${m.schoolFit?`<div class="ka-spine__school">${lines(m.schoolFit.lines)}</div>`:''}</div>`;
-  return `<div class="ka-spine t-${esc(s.theme)} d-${s.dir==='up'?'up':s.dir==='flat'?'flat':'down'} ${cls}" style="${st2.join(';')}">${topHtml}${mainHtml}${footHtml}</div>`;
+  return `<div class="ka-spine t-${esc(s.theme)} lb-${s.logobg==='beyaz'?'beyaz':'renk'} d-${s.dir==='up'?'up':s.dir==='flat'?'flat':'down'} ${cls}" style="${st2.join(';')}">${topHtml}${mainHtml}${footHtml}</div>`;
 }
 function sheetHtml(items,P,s,page){
   const slice=items.slice(page*P.per,(page+1)*P.per);
@@ -174,6 +215,7 @@ const field=(key,label,attrs='',extra='')=>`<label class="ka-field ${extra}"><sp
 const check=(key,label)=>`<label class="ka-spine-check"><input type="checkbox" data-k="${key}"><span>${esc(label)}</span></label>`;
 function pageHtml(){
   const sw=swatches();
+  const dots=(attr,key,label)=>`<div class="ka-spine-sw">${sw.map(c=>`<button type="button" class="ka-spine-sw__dot" data-${attr}="${esc(c)}" style="--sw:${esc(c)}" aria-label="${esc(label)} ${esc(c)}"></button>`).join('')}<label class="ka-spine-sw__custom" title="Özel renk"><input type="color" data-k="${key}" aria-label="${esc(label)} (özel)"></label></div>`;
   return `<section class="ka-page ka-stack" data-folder-spine>
 <header class="ka-page-head"><span class="ka-page-head__icon" aria-hidden="true">🗂️</span><div><small>ARAÇLAR</small><h2>Klasör Sırtlığı Oluşturucu</h2><p>Ölçüyü seçin, bilgileri yazın; sırtlıklar A4’e kesim çizgisiyle dizilir ve yazdırılır.</p></div></header>
 <div class="ka-spine-layout">
@@ -190,12 +232,14 @@ ${seg('size',[['5','5 cm · Dar'],['8','8 cm · Geniş'],['ozel','Özel']])}
 <div class="ka-spine-grid">${field('w','Genişlik (cm)','type="number" inputmode="decimal" min="2" max="20" step="0.5"','is-when-size')}${field('h','Uzunluk (cm)','type="number" inputmode="decimal" min="10" max="29" step="0.5"')}</div>
 </div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><h3 class="ka-spine-h">2 · İçerik</h3>
-<div class="ka-spine-grid">${field('title','Başlık','maxlength="60" placeholder="Örn. Gelen Giden Evrak"','is-wide')}${field('sub','Alt başlık','maxlength="60" placeholder="Örn. Resmî yazışmalar"','is-wide')}${field('year','Yıl / dönem','maxlength="20"')}${field('no','Klasör no','maxlength="4" placeholder="Örn. 1"')}${field('code','Arşiv kodu','maxlength="20" placeholder="Örn. 010.01"','is-wide')}</div>
+<div class="ka-spine-grid">${field('title','Başlık','maxlength="60" placeholder="Örn. Gelen Giden Evrak"','is-wide')}${field('sub','Alt başlık','maxlength="60" placeholder="Örn. Resmî yazışmalar"','is-wide')}${field('year','Dönem (en altta, yatay)','maxlength="20" placeholder="Örn. 2025-2026"')}${field('no','Klasör no','maxlength="4" placeholder="Örn. 1"')}${field('code','Arşiv kodu','maxlength="20" placeholder="Örn. 010.01"','is-wide')}${field('band','Okul adı yazısı','maxlength="60" placeholder="Boşsa okul bilgilerindeki ad kullanılır"','is-wide')}</div>
 <div class="ka-spine-checks">${check('logo','Okul logosu')}${check('school','Okul adı')}${check('upper','BÜYÜK HARF')}</div>
 </div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><h3 class="ka-spine-h">3 · Tasarım</h3>
 <div class="ka-stack ka-spine-tight"><span class="ka-field__label">Şablon</span>${seg('theme',THEMES)}</div>
-<div class="ka-stack ka-spine-tight"><span class="ka-field__label">Renk</span><div class="ka-spine-sw" data-sw>${sw.map(c=>`<button type="button" class="ka-spine-sw__dot" data-accent="${esc(c)}" style="--sw:${esc(c)}" aria-label="Renk ${esc(c)}"></button>`).join('')}<label class="ka-spine-sw__custom" title="Özel renk"><input type="color" data-k="accent" aria-label="Özel renk"></label></div></div>
+<div class="ka-stack ka-spine-tight"><span class="ka-field__label">Ana renk</span>${dots('accent','accent','Ana renk')}</div>
+<div class="ka-stack ka-spine-tight" data-when-theme="okul"><span class="ka-field__label">Okul adı şeridinin rengi</span>${dots('accent2','accent2','Şerit rengi')}</div>
+<div class="ka-stack ka-spine-tight" data-when-theme="okul"><span class="ka-field__label">Logo kutusu</span>${seg('logobg',[['renk','Renkli zemin'],['beyaz','Beyaz zemin']])}</div>
 <div class="ka-stack ka-spine-tight"><span class="ka-field__label">Yazı yönü</span>${seg('dir',[['down','Yukarıdan aşağı'],['up','Aşağıdan yukarı'],['flat','Yatay']])}</div>
 <label class="ka-field"><span class="ka-field__label">Başlık boyutu <b data-fit-text></b></span><input class="ka-spine-range" data-k="fit" type="range" min="40" max="100" step="5"></label>
 </div></article>
@@ -219,7 +263,7 @@ function curItems(){return buildItems(st)}
 function stageDims(){const w=pg?.querySelector('[data-stage]');return{w:Math.max(120,(w?.clientWidth||320)-2*tnum('--ka-spine-stage-pad',16))}}
 function renderStage(){
   if(!pg||!pg.isConnected)return;
-  const stage=pg.querySelector('[data-stage]'),P=pageLayout(st),items=curItems(),sample=!items.length,show=sample?[{...SAMPLE,school:st.school?school():''}]:items;
+  const stage=pg.querySelector('[data-stage]'),P=pageLayout(st),items=curItems(),sample=!items.length,show=sample?[{...SAMPLE,year:String(st.year||'').trim(),school:st.school?school():''}]:items;
   const pages=Math.max(1,Math.ceil(show.length/P.per)),count=ui.view==='sheet'?pages:show.length;
   ui.idx=clamp(ui.idx,0,count-1);
   const dim=stageDims(),maxH=clamp((global.innerHeight||800)*.6,280,600);
@@ -237,7 +281,8 @@ function syncControls(){
   if(!pg)return;
   pg.querySelectorAll('[data-set]').forEach(b=>{const on=String(st[b.dataset.set])===b.dataset.val;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
   pg.querySelectorAll('[data-view]').forEach(b=>{const on=ui.view===b.dataset.view;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
-  pg.querySelectorAll('[data-accent]').forEach(b=>{const on=b.dataset.accent.toLowerCase()===String(st.accent).toLowerCase();b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
+  [['accent','accent'],['accent2','accent2']].forEach(([attr,key])=>pg.querySelectorAll(`[data-${attr}]`).forEach(b=>{const on=String(b.dataset[attr]).toLowerCase()===String(st[key]).toLowerCase();b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))}));
+  pg.querySelectorAll('[data-when-theme]').forEach(e=>{e.hidden=e.dataset.whenTheme!==st.theme});
   pg.querySelectorAll('[data-k]').forEach(el=>{const v=st[el.dataset.k];if(el===D.activeElement)return;if(el.type==='checkbox')el.checked=!!v;else el.value=v??''});
   pg.querySelector('[data-fit-text]').textContent='%'+clamp(num(st.fit,100),40,100);
   pg.querySelectorAll('[data-when-mode]').forEach(e=>{e.hidden=e.dataset.whenMode!==st.mode});
@@ -283,6 +328,7 @@ function onClick(e){
   if(t.dataset.set){st[t.dataset.set]=t.dataset.val;save();ui.idx=0;refresh();return}
   if(t.dataset.view){ui.view=t.dataset.view;ui.idx=0;refresh();return}
   if(t.dataset.accent){st.accent=t.dataset.accent;save();refresh();return}
+  if(t.dataset.accent2){st.accent2=t.dataset.accent2;save();refresh();return}
   if(t.dataset.page){ui.idx+=Number(t.dataset.page);renderStage();return}
   if(t.dataset.fill){fillList(t.dataset.fill);return}
   if(t.hasAttribute('data-fill-page')){st.copies=pageLayout(st).per;save();refresh();return}
@@ -318,5 +364,5 @@ async function open(target){
   return true;
 }
 function close(){try{ro?.disconnect()}catch(_){}ro=null;return true}
-global.FolderSpine={open,close,engine:{pageLayout,fitText,buildItems,labelHtml,sheetHtml,model,defaults}};
+global.FolderSpine={open,close,engine:{pageLayout,fitText,buildItems,labelHtml,sheetHtml,model,defaults,lum}};
 })(window);
