@@ -18,18 +18,29 @@ for(const [name,src] of [['classes',classes],['seating',seating]]){
   assert(!/createElement\(\s*['"]style['"]\s*\)/.test(src),`${name}: runtime style üretmemeli.`);
 }
 
-for(const marker of ['SINIF YÖNETİMİ','TOPLAM SINIF','TOPLAM ÖĞRENCİ','KIZ ÖĞRENCİ','ERKEK ÖĞRENCİ','Bilgiler','Öğrenciler (','Ders Programı','GENEL BİLGİLER','Oturma Planı','Excel','e-Okul','data-cmp-search-clear','data-cmp-directory-excel-pick','data-cmp-directory-eokul-pick','ka-class-numbers','is-girl','is-boy','ka-class-edit','ka-class-detail-summary','ka-class-detail-tabs']){
-  assert(classes.includes(marker),`Sınıflar görünür parite öğesi eksik: ${marker}`);
+for(const marker of ['SINIF YÖNETİMİ','Sınıf Ekle','Öğrenciler (','Oturma planı','Plan oluştur','Dersler','Bilgiler','Genel bilgiler','Excel','e-Okul','data-cmp-search-clear','data-cmp-directory-excel-pick','data-cmp-directory-eokul-pick','data-cmp-seating','data-cmp-tab','data-cmp-level','kcl-card','kcl-overview','kcl-tabs','kcl-seat','is-girl','is-boy']){
+  assert(classes.includes(marker),`Sınıflar görünür öğesi eksik: ${marker}`);
 }
-for(const marker of ['.ka-class-toolbar','.ka-class-summary-grid','.ka-class-numbers','.ka-class-edit','.ka-class-detail-summary','.ka-class-detail-tabs','.ka-class-quick-actions','.ka-class-info-row']) assert(design.includes(marker),`Sınıflar merkezi görünüm stili eksik: ${marker}`);
+const baseCss=fs.readFileSync('css/design-system-base.css','utf8');
+const webMark=baseCss.indexOf('/* ===== WEB ARAYÜZÜ (≥1100px)');
+const kclStart=baseCss.indexOf('/* ===== SINIFLAR — liste ve detay (kcl-*)');
+assert(kclStart>0&&kclStart<webMark,'Sınıflar kcl-* stil bölümü WEB ARAYÜZÜ işaretinden önce olmalı.');
+const kclCss=baseCss.slice(kclStart,webMark);
+for(const m of ['.kcl-overview','.kcl-card','.kcl-plate','.kcl-split','.kcl-levels','.kcl-lv','.kcl-tabs','.kcl-stu','.kcl-pv','.kcl-seat','.kcl-day','.kcl-info-row']) assert(kclCss.includes(m),`Sınıflar merkezi görünüm stili eksik: ${m}`);
+assert(!/#[0-9a-fA-F]{3,8}\b/.test(kclCss),'Sınıflar stil bölümü sabit renk içermemeli.');
 assert(!classes.includes("level===x?'ka-btn--danger'")&&!classes.includes("detailTab===key?'ka-btn--danger'"),'Sınıf filtre/sekmelerinde danger rengi aktif durum için kullanılmamalı.');
 assert(!classes.includes('>Aktif<')&&!classes.includes('Aktif</span>'),'Sınıf detayındaki Aktif rozeti geri gelmemeli.');
 const info=classes.match(/function infoBody\([\s\S]*?function studentActions/)?.[0]||'';
-assert(info.includes('GENEL BİLGİLER'),'Bilgiler sekmesi genel bilgileri göstermeli.');
-assert(!info.includes('ogrenciAdi')&&!info.includes('studentCard(')&&!info.includes('Öğrenci Ekle'),'Bilgiler sekmesi öğrenci listesini/işlemlerini tekrar etmemeli.');
-const studentSection=classes.match(/function studentsBody\([\s\S]*?function scheduleBody/)?.[0]||'';
-assert(studentSection.includes('studentActions')&&studentSection.includes('studentCard'),'Öğrenci listesi yalnız Öğrenciler sekmesinin gövdesinde bulunmalı.');
-assert(classes.indexOf("['info','Bilgiler']")<classes.indexOf("['students',`Öğrenciler")&&classes.indexOf("['students',`Öğrenciler")<classes.indexOf("['schedule','Ders Programı']"),'Detay sekme sırası Bilgiler → Öğrenciler → Ders Programı olmalı.');
+assert(info.includes('Genel bilgiler'),'Bilgiler sekmesi genel bilgileri göstermeli.');
+assert(!info.includes('ogrenciAdi')&&!info.includes('studentRow(')&&!info.includes('Öğrenci ekle'),'Bilgiler sekmesi öğrenci listesini/işlemlerini tekrar etmemeli.');
+const studentSection=classes.match(/function studentsBody\([\s\S]*?function seatPreview/)?.[0]||'';
+assert(studentSection.includes('studentActions')&&studentSection.includes('studentRow'),'Öğrenci listesi yalnız Öğrenciler sekmesinin gövdesinde bulunmalı.');
+const detail=classes.match(/function detailView\([\s\S]*?function applyDynamic/)?.[0]||'';
+assert(detail.indexOf("['students',")<detail.indexOf("['seating','Oturma planı']")&&detail.indexOf("['seating','Oturma planı']")<detail.indexOf("['schedule','Dersler']")&&detail.indexOf("['schedule','Dersler']")<detail.indexOf("['info','Bilgiler']"),'Detay sekme sırası Öğrenciler → Oturma planı → Dersler → Bilgiler olmalı.');
+assert(classes.includes("detailTab='students'")&&!classes.includes("detailTab='info'"),'Sınıf detayı Öğrenciler sekmesiyle açılmalı.');
+const card=classes.match(/function classCard\([\s\S]*?function classView/)?.[0]||'';
+assert(card.includes('seatChip(s,st)')&&classes.includes('[data-cmp-class-edit],[data-cmp-seating]'),'Sınıf kartında oturma planı kısayolu olmalı ve kart tıklamasını tetiklememeli.');
+assert(classes.includes('function planInfo(')&&classes.includes('function seatPreview(')&&classes.includes("'data.sinifOturma'"),'Oturma planı sekmesi plan verisini önizlemeli ve plan değişince yenilenmeli.');
 for(const api of ['global.SiniflarService.sinifKaydet','global.SiniflarService.veliKaydet','global.PeopleImportUI.importStudents','global.PeopleImportUI.importEOkul']) assert(classes.includes(api),`Canonical sınıf servisi eksik: ${api}`);
 
 assert(classes.includes("active='pending'"),'Sınıflar görünüm sahibi ilk yüklemede pending başlamalı.');

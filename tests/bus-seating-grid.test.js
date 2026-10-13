@@ -212,7 +212,8 @@ function runWiring(){
   assert(bundles.includes("'js/modules/bus-seating-grid.js'"),'derleme betiği yeni modülü transport paketine eklemeli');
   // CSS: ayrı bölüm, yalnız .bsg-root altında, sabit renk yok
   const i=css.indexOf('SERVİS OTURMA IZGARASI');assert(i>0,'CSS bölümü eksik');
-  const wEnd=css.indexOf('WEB ARAYÜZÜ (≥1100px)',i);assert(wEnd>i,'ızgara CSS’i WEB ARAYÜZÜ bölümünden önce olmalı (web-shell-desktop sözleşmesi)');
+  const wEnd0=css.indexOf('WEB ARAYÜZÜ (≥1100px)',i);assert(wEnd0>i,'ızgara CSS’i WEB ARAYÜZÜ bölümünden önce olmalı (web-shell-desktop sözleşmesi)');
+  const kEnd=css.indexOf('SINIFLAR — liste ve detay (kcl-*)',i),wEnd=kEnd>i&&kEnd<wEnd0?kEnd:wEnd0;
   const sec=css.slice(css.lastIndexOf('/*',i),css.lastIndexOf('/*',wEnd)).replace(/\/\*[\s\S]*?\*\//g,'');
   assert(!/#[0-9a-fA-F]{3,8}\b|\brgba?\(\s*\d/.test(sec),'ızgara CSS’inde sabit renk olmamalı (yalnız var(--ka-*) / var(--t-*))');
   const sels=[...sec.matchAll(/(^|\})\s*([^{}@]+)\{/g)].map(m=>m[2].trim()).filter(s=>s&&!/^\d+%|^(from|to)$|^\d/.test(s));
