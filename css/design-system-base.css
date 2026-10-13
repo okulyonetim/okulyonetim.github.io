@@ -11091,6 +11091,7 @@ input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:trans
 .ka-spine-scale{position:absolute;left:0;top:0;transform-origin:0 0;transform:scale(var(--sp-k))}
 .ka-spine-pager{display:flex;align-items:center;justify-content:center;gap:var(--ka-sp-12);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}
 .ka-spine-info{margin:0;text-align:center;font-size:var(--ka-fs-12-5);line-height:var(--ka-lh-1-35)}
+.ka-spine-stale{margin:0;text-align:center;font-weight:var(--ka-fw-800);color:var(--ka-danger)}
 .ka-spine-actions{display:flex;flex-wrap:wrap;gap:var(--ka-sp-10)}
 .ka-spine-actions .ka-btn{flex:1 1 auto}
 @media(min-width:900px){
@@ -11115,6 +11116,11 @@ input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:trans
     var(--_c) 100% calc(100% - var(--_m) + var(--_t) / 2) / var(--_l) var(--_t) no-repeat,
     var(--_c) calc(100% - var(--_m) + var(--_t) / 2) 100% / var(--_t) var(--_l) no-repeat}
 .ka-spine{--sp-ink:var(--ka-spine-ink);--sp-soft:var(--ka-spine-ink-soft);--sp-on:var(--ka-spine-on-accent);
+  --sp-pc:var(--sp-cp,var(--sp-c));   /* ana rengin kâğıt üstündeki okunur hâli (açık renklerde koyulaştırılır; JS --sp-cp verir) */
+  --sp-ow:max(var(--ka-spine-outline-w),var(--sp-fmin,0mm));   /* çizgi kalınlıkları: önizlemede küçültmeyle incelmesin (--sp-fmin / --sp-lmin yalnız önizlemede verilir) */
+  --sp-lw:max(var(--ka-spine-logo-frame-w),var(--sp-lmin,0mm));
+  --sp-fw:max(var(--ka-spine-frame-w),var(--sp-fmin,0mm));
+  --sp-rw:max(var(--ka-spine-rule-w),var(--sp-lmin,0mm));
   box-sizing:border-box;position:relative;display:flex;flex-direction:column;width:var(--sp-w);height:var(--sp-h);overflow:hidden;text-align:center;
   background:var(--ka-spine-paper);color:var(--sp-ink);font-family:var(--ka-spine-font);font-style:normal;white-space:nowrap}
 .ka-spine__top{display:flex;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--sp-pad) * .6);height:var(--sp-top)}
@@ -11128,40 +11134,40 @@ input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:trans
 .ka-spine.d-up .ka-spine__text{transform:rotate(180deg)}
 .ka-spine.d-flat .ka-spine__text{flex-direction:column-reverse}
 .ka-spine__foot{display:flex;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-fg);height:var(--sp-foot);padding:0 var(--sp-pad)}
-.ka-spine__year{font-size:var(--sp-yfs);font-weight:var(--ka-spine-fw-title);line-height:var(--ka-lh-1-15);color:var(--sp-c)}
+.ka-spine__year{font-size:var(--sp-yfs);font-weight:var(--ka-spine-fw-title);line-height:var(--ka-lh-1-15);color:var(--sp-pc)}
 .ka-spine__code{font-size:var(--sp-cfs);font-weight:var(--ka-spine-fw-meta);letter-spacing:var(--ka-spine-ls-meta);line-height:var(--ka-lh-1-15);color:var(--sp-soft)}
 .ka-spine__school{font-size:var(--sp-mfs);font-weight:var(--ka-spine-fw-meta);line-height:var(--ka-lh-1-15);color:var(--sp-soft)}
 /* şablonlar */
 .ka-spine.t-klasik .ka-spine__top{background:var(--sp-c)}
 .ka-spine.t-klasik .ka-spine__no{background:var(--sp-on);color:var(--sp-c)}
-.ka-spine.t-klasik .ka-spine__foot{border-top:var(--ka-spine-rule-w) solid var(--sp-c)}
+.ka-spine.t-klasik .ka-spine__foot{border-top:var(--sp-rw) solid var(--sp-pc)}
 .ka-spine.t-serit :is(.ka-spine__top,.ka-spine__foot){background:var(--sp-c)}
 .ka-spine.t-serit .ka-spine__no{background:var(--sp-on);color:var(--sp-c)}
 .ka-spine.t-serit :is(.ka-spine__year,.ka-spine__code,.ka-spine__school){color:var(--sp-on)}
 .ka-spine.t-koyu{background:var(--sp-c)}
 .ka-spine.t-koyu :is(.ka-spine__title,.ka-spine__sub,.ka-spine__year,.ka-spine__code,.ka-spine__school){color:var(--sp-on)}
 .ka-spine.t-koyu .ka-spine__no{background:var(--sp-on);color:var(--sp-c)}
-.ka-spine.t-koyu .ka-spine__foot{border-top:var(--ka-spine-rule-w) solid rgba(var(--k-white),.55)}
-.ka-spine.t-cerceve::before,.ka-spine.t-cerceve::after{content:"";position:absolute;pointer-events:none;border:var(--ka-spine-frame-w) solid var(--sp-c)}
+.ka-spine.t-koyu .ka-spine__foot{border-top:var(--sp-rw) solid rgba(var(--k-white),.55)}
+.ka-spine.t-cerceve::before,.ka-spine.t-cerceve::after{content:"";position:absolute;pointer-events:none;border:var(--sp-fw) solid var(--sp-pc)}
 .ka-spine.t-cerceve::before{inset:var(--ka-spine-frame-gap)}
-.ka-spine.t-cerceve::after{inset:calc(var(--ka-spine-frame-gap) + var(--ka-spine-frame-w) * 2.2);border-width:var(--ka-spine-rule-w)}
+.ka-spine.t-cerceve::after{inset:calc(var(--ka-spine-frame-gap) + var(--ka-spine-frame-w) * 2.2);border-width:var(--sp-rw)}
 .ka-spine.t-cerceve .ka-spine__no{border-radius:50%}
 .ka-spine.t-minimal{box-shadow:inset 0 var(--ka-spine-bar) 0 var(--sp-c),inset 0 calc(var(--ka-spine-bar) * -1) 0 var(--sp-c)}
 .ka-spine.t-minimal .ka-spine__no{background:transparent;color:var(--sp-c)}
-.ka-spine.t-minimal .ka-spine__foot{border-top:var(--ka-spine-rule-w) solid var(--sp-c)}
+.ka-spine.t-minimal .ka-spine__foot{border-top:var(--sp-rw) solid var(--sp-pc)}
 /* okul şeridi: üstte logo kutusu · altında okul adı şeridi · ortada dikey başlık · en altta yatay dönem */
 .ka-spine__box{display:grid;flex:none;place-items:center;height:var(--sp-box);background:var(--sp-c)}
 .ka-spine__band{display:grid;flex:none;place-items:center;height:var(--sp-band);padding:0 calc(var(--sp-pad) * .6);background:var(--sp-c2);color:var(--sp-c2ink);font-size:var(--sp-bfs);font-weight:var(--ka-spine-fw-title);line-height:var(--ka-lh-1-15)}
 .ka-spine.t-okul .ka-spine__main{flex-direction:column;gap:var(--sp-tg)}
-.ka-spine.t-okul .ka-spine__title{color:var(--sp-c)}
-.ka-spine.t-okul .ka-spine__foot{border-top:var(--ka-spine-frame-w) solid var(--sp-c)}
-.ka-spine.t-okul.lb-beyaz .ka-spine__box{background:var(--ka-spine-paper);box-shadow:inset 0 calc(var(--ka-spine-rule-w) * -1) 0 var(--sp-c)}
+.ka-spine.t-okul .ka-spine__title{color:var(--sp-pc)}
+.ka-spine.t-okul .ka-spine__foot{border-top:var(--sp-fw) solid var(--sp-pc)}
+.ka-spine.t-okul.lb-beyaz .ka-spine__box{background:var(--ka-spine-paper);box-shadow:inset 0 calc(var(--sp-rw) * -1) 0 var(--sp-pc)}
 /* çerçeveler: logo çerçevesi (lf-on) ve sırtlığı saran dış çerçeve (fr-on). Çerçeveli şablon kendi çift çerçevesini taşır. */
-.ka-spine{--sp-lf:var(--sp-c)}
+.ka-spine{--sp-lf:var(--sp-pc)}
 .ka-spine:is(.t-okul,.t-klasik,.t-serit,.t-koyu){--sp-lf:var(--sp-on)}
-.ka-spine.t-okul.lb-beyaz{--sp-lf:var(--sp-c)}
-.ka-spine.lf-on .ka-spine__logo{box-sizing:border-box;padding:var(--ka-spine-logo-frame-pad);border:var(--ka-spine-logo-frame-w) solid var(--sp-lf);border-radius:var(--ka-spine-logo-frame-radius)}
-.ka-spine.fr-on:not(.t-cerceve)::after{content:"";position:absolute;inset:0;border:var(--ka-spine-outline-w) solid var(--sp-c);pointer-events:none}
+.ka-spine.t-okul.lb-beyaz{--sp-lf:var(--sp-pc)}
+.ka-spine.lf-on .ka-spine__logo{box-sizing:border-box;padding:var(--ka-spine-logo-frame-pad);border:var(--sp-lw) solid var(--sp-lf);border-radius:var(--ka-spine-logo-frame-radius)}
+.ka-spine.fr-on:not(.t-cerceve)::after{content:"";position:absolute;inset:0;border:var(--sp-ow) solid var(--sp-pc);pointer-events:none}
 .ka-spine.fr-on.t-koyu::after{inset:var(--ka-spine-frame-gap);border-color:var(--sp-on)}
 
 /* ===== CAM SİSTEMİ — TÜM SAYFALAR · MENÜ · ALT NAVİGASYON · BAŞLIK · AÇILIR PENCERELER (v1253) =====

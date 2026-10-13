@@ -59,8 +59,9 @@ function save(){
 }
 
 /* ───────── hesap: sayfa dizilimi ───────── */
+const SIZES={'3':3,'5':5,'8':8};   /* hazır genişlikler (cm); 'ozel' ise Genişlik alanı kullanılır */
 function pageLayout(s){
-  const W=clamp(s.size==='5'?5:s.size==='8'?8:num(s.w,7),2,20)*10,H=clamp(num(s.h,28),10,29)*10;
+  const W=clamp(SIZES[s.size]||num(s.w,7),2,20)*10,H=clamp(num(s.h,28),10,29)*10;
   const m=clamp(num(s.margin,5),3,20),mark=tnum('--ka-spine-mark',3);
   let gap=clamp(num(s.gap,0),0,10);
   if(s.cut==='marks')gap=Math.max(gap,mark*2);   /* köşe işaretleri komşu sırtlığa taşmasın */
@@ -154,8 +155,23 @@ function inkOn(bg){
   const ratio=(x,y)=>(Math.max(x,y)+.05)/(Math.min(x,y)+.05),la=lum(a),lb=lum(b);
   return ratio(l,la==null?1:la)>=ratio(l,lb==null?0:lb)?a:b;
 }
+/* Ana rengin KÂĞIT ÜSTÜNDEKİ okunur hâli: çok açık bir renk (sarı, açık mavi…) beyaz kâğıtta başlık ve çerçeveyi görünmez yapar;
+   kontrast düşükse renk koyu yazı rengine doğru, yeterli kontrasta ulaşana dek karıştırılır. Koyu renklere dokunulmaz. */
+function mixHex(a,b,t){
+  const p=h=>{h=String(h||'').replace('#','');if(h.length===3)h=h.replace(/./g,'$&$&');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16))};
+  const x=p(a),y=p(b);
+  return '#'+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,'0')).join('');
+}
+function onPaper(c){
+  const paper=tok('--ka-spine-paper',''),ink=tok('--ka-spine-ink',''),lc=lum(c),lp=lum(paper);
+  if(lc==null||lp==null||!HEX.test(ink)||!HEX.test(c))return c;
+  const ratio=x=>(Math.max(lp,x)+.05)/(Math.min(lp,x)+.05);
+  if(ratio(lc)>=4.5)return c;
+  for(let t=.1;t<=1.001;t+=.1){const m=mixHex(c,ink,t);if(ratio(lum(m))>=4.5)return m}
+  return ink;
+}
 function labelHtml(item,P,s,cls=''){
-  const m=model(item,P,s,!!logoSrc),st2=[`--sp-w:${f(P.W)}mm`,`--sp-h:${f(P.H)}mm`,`--sp-c:${accentOf(s)}`,`--sp-pad:${f(m.pad)}mm`,`--sp-top:${f(m.top)}mm`,`--sp-foot:${f(m.foot)}mm`,
+  const m=model(item,P,s,!!logoSrc),st2=[`--sp-w:${f(P.W)}mm`,`--sp-h:${f(P.H)}mm`,`--sp-c:${accentOf(s)}`,`--sp-cp:${onPaper(accentOf(s))}`,`--sp-pad:${f(m.pad)}mm`,`--sp-top:${f(m.top)}mm`,`--sp-foot:${f(m.foot)}mm`,
     `--sp-c2:${accent2Of(s)}`,`--sp-c2ink:${inkOn(accent2Of(s))}`,`--sp-logo:${f(m.logoS)}mm`,`--sp-no:${f(m.noS)}mm`,`--sp-nfs:${pt(m.nfs)}`,`--sp-tg:${f(m.gTS)}mm`,`--sp-fg:${f(m.gF)}mm`];
   if(m.okul){st2.push(`--sp-box:${f(m.boxS)}mm`,`--sp-band:${f(m.bandLen)}mm`);if(m.bandFit)st2.push(`--sp-bfs:${pt(m.bandFit.fs)}`)}
   if(m.tFit)st2.push(`--sp-tfs:${pt(m.tFit.fs)}`);
@@ -224,11 +240,12 @@ function pageHtml(){
 <div class="ka-spine-stage" data-stage></div>
 <div class="ka-spine-pager" data-pager hidden><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-page="-1" aria-label="Önceki">‹</button><span data-pager-text></span><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-page="1" aria-label="Sonraki">›</button></div>
 <p class="ka-muted ka-spine-info" data-info></p>
+<p class="ka-spine-note ka-spine-stale" data-stale hidden role="alert">Sırtlık görünümü (kutu ve çerçeve) bu cihazda eski sürümde kalmış. Uygulamayı tamamen kapatıp açın; tarayıcıdaysanız sayfayı yenileyin (Ctrl + F5).</p>
 <div class="ka-spine-actions"><button type="button" class="ka-btn" data-print>🖨 Önizle ve yazdır</button></div>
 </div></article>
 <div class="ka-stack ka-spine-form">
 <article class="ka-card"><div class="ka-card__body ka-stack"><h3 class="ka-spine-h">1 · Ölçü</h3>
-${seg('size',[['5','5 cm · Dar'],['8','8 cm · Geniş'],['ozel','Özel']])}
+${seg('size',[['3','3 cm · İnce'],['5','5 cm · Dar'],['8','8 cm · Geniş'],['ozel','Özel']])}
 <div class="ka-spine-grid">${field('w','Genişlik (cm)','type="number" inputmode="decimal" min="2" max="20" step="0.5"','is-when-size')}${field('h','Uzunluk (cm)','type="number" inputmode="decimal" min="10" max="29" step="0.5"')}</div>
 </div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><h3 class="ka-spine-h">2 · İçerik</h3>
@@ -260,6 +277,21 @@ ${seg('mode',[['single','Tek'],['numbered','Numaralı'],['monthly','Aylık'],['l
 </div></div></section>`;
 }
 function curItems(){return buildItems(st)}
+/* Görünüm dosyası (CSS) sürüm uyuşmazlığı denetimi: Okul şeridi kutusu ve çerçeve kuralları yüklü mü?
+   Eski önbellekli CSS ile yeni modül birlikte çalışırsa kutu/çerçeve çizilmez; bunu sessizce geçmek yerine kullanıcıya söyleriz. */
+function cssOk(){
+  let h=null;
+  try{
+    h=D.createElement('div');
+    h.setAttribute('aria-hidden','true');
+    h.innerHTML='<div class="ka-spine t-okul fr-on lf-on" style="position:absolute;left:-9999px;top:0;--sp-w:20mm;--sp-h:20mm;--sp-c:currentColor"><div class="ka-spine__box"></div></div>';
+    D.body.appendChild(h);
+    const sp=h.firstChild,after=global.getComputedStyle(sp,'::after'),box=global.getComputedStyle(sp.firstChild);
+    /* kutu boyalıysa arka plan rengi, stilsiz kardeşinin (şeffaf) arka planından farklıdır */
+    return parseFloat(after.borderTopWidth)>0&&box.backgroundColor!==global.getComputedStyle(h).backgroundColor;
+  }catch(_){return true}
+  finally{try{h&&h.remove()}catch(_){}}
+}
 function stageDims(){const w=pg?.querySelector('[data-stage]');return{w:Math.max(120,(w?.clientWidth||320)-2*tnum('--ka-spine-stage-pad',16))}}
 function renderStage(){
   if(!pg||!pg.isConnected)return;
@@ -268,10 +300,20 @@ function renderStage(){
   ui.idx=clamp(ui.idx,0,count-1);
   const dim=stageDims(),maxH=clamp((global.innerHeight||800)*.6,280,600);
   let html,pw,ph;
-  if(ui.view==='sheet'){pw=A4.w*MM;ph=A4.h*MM;html=sheetHtml(show,P,st,ui.idx)}
-  else{pw=P.W*MM;ph=P.H*MM;html=labelHtml(show[ui.idx],P,st)}
+  try{
+    if(ui.view==='sheet'){pw=A4.w*MM;ph=A4.h*MM;html=sheetHtml(show,P,st,ui.idx)}
+    else{pw=P.W*MM;ph=P.H*MM;html=labelHtml(show[ui.idx],P,st)}
+  }catch(err){
+    /* Önizleme hesabı bir sebeple hata verirse sayfa boş kalmasın: sade bir sırtlık + hata bilgisi göster. */
+    console.error('[FolderSpine] önizleme',err);
+    stage.innerHTML='<p class="ka-muted ka-spine-note">Önizleme çizilemedi. Ayarları değiştirin ya da “Sıfırla”ya dokunun.</p>';
+    return;
+  }
   const k=Math.min(1,dim.w/pw,maxH/ph);
-  stage.innerHTML=`<div class="ka-spine-fit${sample?' is-sample':''}" style="width:${Math.round(pw*k)}px;height:${Math.round(ph*k)}px;--sp-k:${k.toFixed(4)}"><div class="ka-spine-scale">${html}</div></div>`;
+  /* Önizleme küçültüldüğünde çerçeve çizgileri hairline'a inmesin: dış çerçeve ekranda en az ~2 px, ince çizgiler ~1,4 px (yazdırmada alt sınır yok → gerçek kalınlık). */
+  /* Tarayıcı kenarlık kalınlığını dönüşümden ÖNCE tam piksele yuvarlar (aşağı); bu yüzden alt sınır tam piksele yukarı yuvarlanır. */
+  const floorPx=e=>(Math.ceil(e/k)+.02)/MM,fmin=f(floorPx(2)),lmin=f(floorPx(1.4));
+  stage.innerHTML=`<div class="ka-spine-fit${sample?' is-sample':''}" style="width:${Math.round(pw*k)}px;height:${Math.round(ph*k)}px;--sp-k:${k.toFixed(4)};--sp-fmin:${fmin}mm;--sp-lmin:${lmin}mm"><div class="ka-spine-scale">${html}</div></div>`;
   const pager=pg.querySelector('[data-pager]');pager.hidden=count<=1;
   pg.querySelector('[data-pager-text]').textContent=(ui.view==='sheet'?'Sayfa ':'Sırtlık ')+(ui.idx+1)+' / '+count;
   const total=sample?0:items.length;
@@ -358,11 +400,12 @@ async function open(target){
   /* dinleyiciler yalnız bu sayfa bölümüne bağlıdır: başka modül kök alanı doldurunca birlikte gider */
   pg.addEventListener('input',onInput);pg.addEventListener('change',onInput);pg.addEventListener('click',onClick);
   refresh();
+  pg.querySelector('[data-stale]').hidden=cssOk();
   loadPrefs().then(saved=>{if(saved&&!touched&&pg&&pg.isConnected){applyPrefs(saved);refresh()}});
   const stage=pg.querySelector('[data-stage]');
   if(global.ResizeObserver){ro=new ResizeObserver(()=>{if(!stage.isConnected){close();return}renderStage()});ro.observe(stage)}
   return true;
 }
 function close(){try{ro?.disconnect()}catch(_){}ro=null;return true}
-global.FolderSpine={open,close,engine:{pageLayout,fitText,buildItems,labelHtml,sheetHtml,model,defaults,lum}};
+global.FolderSpine={open,close,engine:{pageLayout,fitText,buildItems,labelHtml,sheetHtml,model,defaults,lum,onPaper}};
 })(window);

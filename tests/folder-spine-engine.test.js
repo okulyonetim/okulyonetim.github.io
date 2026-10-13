@@ -18,6 +18,16 @@ test('5 cm sırtlık A4 portreye 4 adet sığar; 8 cm 2 adet', ()=>{
   const b=E.pageLayout({...E.defaults(),size:'8'});
   assert.deepStrictEqual(J([b.W,b.cols,b.per]),[80,2,2]);
 });
+test('3 cm (ince) sırtlık: A4 portreye 6 adet sığar, başlık/şerit/logo kutusu sığar', ()=>{
+  const d={...E.defaults(),size:'3'},P=E.pageLayout(d);
+  assert.deepStrictEqual(J([P.W,P.H,P.cols,P.rows,P.per]),[30,280,6,1,6]);
+  const m=E.model({title:'GELEN GİDEN EVRAK',sub:'',no:'',year:'2025-2026',code:'',school:'Koruk İlk-Ortaokulu'},P,d,true);
+  assert(m.okul&&m.boxS>0&&m.boxS<=P.W,'logo kutusu genişliği aşmaz');
+  assert(m.tFit&&m.tFit.fs>=2,'başlık ince sırtlıkta da çizilir ve okunur boyda kalır');
+  assert(m.top+m.foot<P.H,'üst + alt blok sırtlık boyunu aşmaz');
+  const html=E.labelHtml({title:'Deneme',sub:'',no:'',year:'2025-2026',code:'',school:'Okul'},P,d);
+  assert(/ka-spine__title/.test(html)&&/--sp-w:30mm/.test(html),'30 mm etiket üretilir');
+});
 test('özel ölçü sınırlanır ve sayfaya sığar', ()=>{
   const p=E.pageLayout({...E.defaults(),size:'ozel',w:99,h:99,margin:5});
   assert(p.W<=200&&p.H<=287&&p.cols>=1&&p.rows>=1);

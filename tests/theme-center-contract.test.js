@@ -434,4 +434,11 @@ for(const t of ['--ka-btn-primary-blur','--ka-btn-primary-sat','--ka-btn-primary
   assert(!/MENU_GROUPS|g\.items\.push/.test(age),'school-age-calculator.js menüye öğe eklememeli (Araçlar listesine araclar-hub.js ekler).');
   assert(/araclar-hub\.js\?v=\d+/.test(index)&&/js\/modules\/araclar-hub\.js/.test(fs.readFileSync('beta.html','utf8')),'araclar-hub.js index.html ve beta.html\'de yüklenmeli.');
   assert(index.indexOf('araclar-hub.js')<index.indexOf('school-age-calculator.js'),'araclar-hub.js, school-age-calculator.js\'ten önce yüklenmeli.');
+  // erişim: Klasör Sırtlığı yalnız admin + yönetici rolüne açıktır (liste + doğrudan rota)
+  assert(/page:'folder-spine'[^}]*roles:\['admin','yonetici'\]/.test(hub),'Klasör Sırtlığı aracı roles:[\'admin\',\'yonetici\'] ile kısıtlı olmalı.');
+  assert(/TOOLS\.filter\(allowedFor\)\.map/.test(hub)&&/if\(!can\('folder-spine'\)\)/.test(hub),'Yetkisiz kullanıcı için kart listeden çıkmalı ve folder-spine rotası kapalı olmalı.');
+  // sırtlık: 3/5/8 cm hazır genişlik, kâğıt üstünde okunur ana renk (--sp-cp), önizlemede çizgi alt sınırı, eski-CSS uyarısı
+  assert(/\['3','3 cm/.test(sp)&&/SIZES=\{'3':3,'5':5,'8':8\}/.test(sp),'3 cm genişlik seçeneği bulunmalı.');
+  assert(/--sp-cp:\$\{onPaper\(/.test(sp)&&/--sp-fmin:/.test(sp)&&/data-stale/.test(sp),'Okunur ana renk, önizleme çizgi alt sınırı ve eski-CSS uyarısı bulunmalı.');
+  assert(/\.ka-spine\{[^}]*--sp-pc:var\(--sp-cp,var\(--sp-c\)\)/.test(css.replace(/\n/g,'')),'.ka-spine --sp-pc (kâğıt üstü ana renk) tanımlamalı.');
 }
