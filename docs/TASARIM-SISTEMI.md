@@ -231,6 +231,35 @@ Ekran sınıfları `.ka-fm-*`, A4 sınıfları `.ka-fmp-*`. A4 sınıfları aç�
 
 **Çıktılar:** *Aylık* — yatay A4, Pzt–Cum sütunlu takvim ızgarası; yazı boyutu en kalabalık haftaya göre 10,5 pt'den 4,5 pt'ye kadar otomatik seçilir (`foodMenuPrintFontSize`), satırlar sayfayı doldurur (`--fm-rows`). *Haftalık* — yatay A4, beş büyük gün sütunu; yazı 16/14/12/10 pt (en çok yemeği olan güne göre). *Günlük* — dikey A4, yemekhane panosuna asılacak büyük gün kartı ve yemek listesi; yazı 30–15 pt. Üçünde de okul adı/logo, başlık, beş renkli şerit, "Afiyet olsun." ve müdür imzası bulunur; menüsü girilmemiş gün çizgili boş hücre olarak basılır.
 
+### Yazı tipi — Inter (uygulamaya gömülü)
+
+Tek yazı tipi ailesi **Inter**'dir (değişken, 100–900); `--ka-font` içinde adı geçer, dosyalar `assets/fonts/` altındadır
+(`inter-latin-wght-normal.woff2` + `inter-latin-ext-wght-normal.woff2` — Türkçe **ç ğ ı İ ö ş ü** latin-ext dosyasındadır; lisans: `Inter-OFL.txt`).
+`@font-face` tanımları `design-system-base.css` içinde TEMA MERKEZİ'nin hemen altındadır. Cihazda Inter kurulu olması gerekmez, çevrimdışı çalışır
+(service worker iki dosyayı önbelleğe alır, `index.html` latin dosyasını `preload` eder). Yazı tipini değiştirmek için yalnız bu dosyaları ve `--ka-font`'u değiştirin;
+sayfa CSS'inde `font-family` yazmayın.
+
+### Web arayüzü — sol menü + üst çubuk + geniş ana sayfa (`--ka-web-*`)
+
+Tarayıcıda / geniş ekranda (**≥1100px**) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir. Telefon ve APK (<1100px)
+**hiç değişmez**: web kuralları `@media(min-width:1100px)` içindedir, JS ile üretilen yan menü ve üst çubuk eklentileri bu genişliğin altında `display:none`'dır.
+Ayrı bir web CSS'i / ayrı bir dashboard motoru yoktur; tek kabuk (`index.html`), tek stil dosyası.
+
+| Ne | Nerede |
+| --- | --- |
+| Ölçüler (`--ka-web-side-w`, `--ka-web-top-h`, `--ka-web-page-max`, `--ka-web-gutter`, `--ka-web-gap`, `--ka-web-aside-w`, `--ka-web-row`, `--ka-web-hero-card`) | `css/design-system-base.css` → TEMA MERKEZİ (`--ka-content-max-width` yanında). Genişliğe bağlı olanlar `clamp()` ile 1100→1280px arasında akar; çekirdekte `@media` yoktur. |
+| Görünüm kuralları | `css/design-system-base.css` en altı: "WEB ARAYÜZÜ (≥1100px)" ve "WEB ARAYÜZÜ · ANA SAYFA ÖLÇÜLERİ" |
+| Yan menü + üst çubuk işaretlemesi | `js/core/web-shell.js` (menü içeriği `ShellUI.webMenu()`; rota `ShellUI.routeModule`) |
+| Etkin sayfa / kırıntı / geri | `ShellUI` her yönlendirmede `koruk:shell-route` olayı yollar; `web-shell.js` dinler |
+
+Kurallar:
+- **Menü içeriği telefonla aynı kaynaktan gelir** (`MENU_GROUPS` + admin menü düzeni + yetkiler). Yeni menü öğesi eklemek için yalnız `MENU_GROUPS`'a ekleyin; yan menü kendiliğinden gösterir.
+- **Grup renkleri** telefon menüsüyle aynı eşlemedir (`--mc-rgb`, grup anahtarı → renk). İkincisi `.ka-web-side` altında yinelenir; `tests/web-shell-desktop.test.js` iki eşlemeyi karşılaştırır — birini değiştirirseniz diğerini de değiştirin.
+- **İkonlar**: telefon menüsündeki `data-ka-glyph` → CSS mask eşlemesi `:is(#kaMenuLayer.ka-menu-layer,.ka-web-side)` ile yan menüde de geçerlidir. Yeni bir emoji ikonu eklemek tek yerde (o satırlar) yapılır.
+- **Ana sayfa**: `dashboard.js` işaretlemesi değişmez. `.ka-home` bölümleri `data-home-section` anahtarıyla 4px'lik satır ızgarasına yerleştirilir; `web-shell.js` her bölümün yüksekliğini ölçüp `grid-row-end:span N` yazar (sütunlar bağımsız dizilir). Sağ sütun ≥1280px'te açılır; yeni bir bölümü sağ sütuna almak için anahtarını `…[data-home-section="quick"],…` listelerine ekleyin.
+- **Sayfalar kenar çubuğu yüzünden görünüm alanından dardır**: 900px/1024px gibi *görünüm alanına* göre ayarlı ızgara kuralları web kabuğunda taşabilir; taşan sayfa için web bloğuna kısa bir düzeltme ekleyin (örnek: `.ka-attendance-toolbar`).
+- Masaüstünde "geri" menü listesine değil önceki sayfaya döner (menü listesi bellekte tutulmaz; kalıcı yan menü vardır). `ShellUI.openMenu()` masaüstünde menü katmanı açmaz.
+
 ### Genel düğmeler — tek değer, tüm uygulama
 
 Aşağıdaki değişkenlerin her biri `TEMA MERKEZİ` içinde **tek yerde** durur ve uygulamanın tamamını etkiler. Varsayılanlar mevcut görünümü korur (çarpanlar 1, eklemeler 0).

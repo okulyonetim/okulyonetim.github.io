@@ -36,6 +36,15 @@
   --ka-header-height:64px;
   --ka-bottom-nav-height:72px;
   --ka-content-max-width:1180px;
+  /* ── WEB ARAYÜZÜ (≥1100px: sol menü + üst çubuk + geniş ana sayfa) — "WEB ARAYÜZÜ" bölümü yalnız bunları kullanır ── */
+  --ka-web-side-w:clamp(240px,calc(240px + (100vw - 1100px) * .27),288px);   /* sol menü genişliği: 1100px'te 240px → 1280px'ten itibaren 288px */
+  --ka-web-top-h:68px;                     /* üst çubuk yüksekliği */
+  --ka-web-page-max:1560px;                /* içerik alanı üst sınırı */
+  --ka-web-gutter:clamp(24px,calc(24px + (100vw - 1100px) * .045),32px);      /* içerik yan boşluğu: 24px → 32px */
+  --ka-web-gap:var(--ka-sp-20);            /* kartlar arası boşluk */
+  --ka-web-aside-w:352px;                  /* ana sayfa sağ sütunu (yalnız ≥1280px) */
+  --ka-web-row:4px;                        /* ana sayfa ızgarası satır birimi (web-shell.js bu değeri okur) */
+  --ka-web-hero-card:clamp(420px,calc(420px + (100vw - 1100px) * .56),520px); /* karşılama kartında canlı ders kartı genişliği: 420px → 520px */
   --ka-safe-top:env(safe-area-inset-top,0px);
   --ka-safe-right:env(safe-area-inset-right,0px);
   --ka-safe-bottom:env(safe-area-inset-bottom,0px);
@@ -1481,6 +1490,12 @@ html[data-theme="dark"]{
   --ka-module-muted:#a6a6a6;
 }
 @media(max-width:767px){:root{--ka-font-size-md:var(--ka-fs-14)}}
+
+/* ── YAZI TİPİ — Inter (değişken, 100–900), uygulamaya gömülü: Türkçe karakterler (ç ğ ı İ ö ş ü) tam desteklenir.
+   Cihazda Inter kurulu olması gerekmez; çevrimdışı da çalışır. Aile adı --ka-font içinde (TEMA MERKEZİ). ── */
+@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url("../assets/fonts/inter-latin-ext-wght-normal.woff2") format("woff2-variations"),url("../assets/fonts/inter-latin-ext-wght-normal.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url("../assets/fonts/inter-latin-wght-normal.woff2") format("woff2-variations"),url("../assets/fonts/inter-latin-wght-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
 
 
 *{box-sizing:border-box}html{font-family:var(--ka-font);background:var(--ka-app-bg);color:var(--ka-text);-webkit-text-size-adjust:100%}body{margin:0;min-height:100dvh;background:var(--ka-app-bg);color:var(--ka-text);font-family:var(--ka-font);font-size:var(--ka-font-size-md);line-height:var(--ka-line-height)}button,input,select,textarea{font:inherit}a{color:var(--ka-primary)}option{background:var(--ka-card-bg);color:var(--ka-text)}::selection{background:var(--ka-primary-soft);color:var(--ka-text)}button{-webkit-tap-highlight-color:transparent}h1,h2,h3,h4,h5,h6{margin:0;color:var(--ka-text);line-height:var(--ka-lh-1-2);font-weight:var(--ka-fw-800)}h1{font-size:var(--ka-font-size-2xl)}h2{font-size:var(--ka-font-size-xl)}h3{font-size:var(--ka-font-size-lg)}p{margin:0}
@@ -11759,7 +11774,7 @@ html #v2ModuleRoot .kh-backtop.is-visible{opacity:1;pointer-events:auto;transfor
 /* ===== MENÜ + ALT NAVİGASYON — CAM SİSTEMİ =====
    #kaMenuLayer (menü ızgarası, grup listeleri) ve alt navigasyon çubuğu için TEK yetkili tanım (koyu + açık).
    Eski .ka-menu-* / .ka-bottom-* kuralları (≈250 seçici, menü kartı editörü hariç) silindi.
-   Menü kartı/satır ikonları: shell-ui.js her ikon kutusuna data-ka-glyph="<emoji>" yazar; bilinen emojiler CSS mask ile
+   Menü kartı/satır ikonları (ve web yan menüsü, bkz. .ka-web-side): shell-ui.js / web-shell.js her ikon kutusuna data-ka-glyph="<emoji>" yazar; bilinen emojiler CSS mask ile
    çizgi ikona çevrilir, bilinmeyen (admin'in yazdığı özel) emojiler aynen görünür. Vurgu rengi: grup anahtarına göre
    (--mc-rgb) ya da admin'in seçtiği özel renk (--ka-menu-custom; varsayılan sarı #ffc400 "seçilmemiş" sayılır). */
 
@@ -11909,46 +11924,46 @@ html #kaMenuLayer.ka-menu-layer .ka-menu-submenu .ka-card__body{padding:var(--ka
 html #kaMenuLayer.ka-menu-layer .ka-menu-submenu h3{margin:var(--ka-sp-2) var(--ka-sp-4) 0}
 
 /* — ikon: bilinen emoji → çizgi ikon (mask); bilinmeyenler emoji kalır — */
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="⏰"],[data-ka-glyph="⏰️"],[data-ka-glyph="🕘"],[data-ka-glyph="🕘️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="☀"],[data-ka-glyph="☀️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="☎"],[data-ka-glyph="☎️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="☑"],[data-ka-glyph="☑️"],[data-ka-glyph="✅"],[data-ka-glyph="✅️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Cpath d='m8.5 12.5 2.5 2.5 4.5-5'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="⚙"],[data-ka-glyph="⚙️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="✉"],[data-ka-glyph="✉️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='m3 7 9 6 9-6'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="✏"],[data-ka-glyph="✏️"],[data-ka-glyph="📝"],[data-ka-glyph="📝️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="⭐"],[data-ka-glyph="⭐️"],[data-ka-glyph="🌟"],[data-ka-glyph="🌟️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🍽"],[data-ka-glyph="🍽️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 3v7a3 3 0 0 0 3 3v8M10 3v7a3 3 0 0 1-3 3M7 3v5'/%3E%3Cpath d='M17 3c-2 1.5-3 4-3 7 0 2 1 3 3 3v8'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🎓"],[data-ka-glyph="🎓️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10 12 5 2 10l10 5 10-5Z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5M22 10v6'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🎯"],[data-ka-glyph="🎯️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Ccircle cx='12' cy='12' r='1'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🏅"],[data-ka-glyph="🏅️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='9' r='6'/%3E%3Cpath d='m8.5 14-1.5 8 5-3 5 3-1.5-8'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🏢"],[data-ka-glyph="🏢️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='3' width='16' height='18' rx='2'/%3E%3Cpath d='M9 7h.01M15 7h.01M9 11h.01M15 11h.01M10 21v-4h4v4'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🏫"],[data-ka-glyph="🏫️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 9 9-6 9 6'/%3E%3Cpath d='M5 9v11h14V9M9 20v-6h6v6'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="👥"],[data-ka-glyph="👥️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="👩‍🏫"],[data-ka-glyph="👩‍🏫️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h20'/%3E%3Cpath d='M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3'/%3E%3Cpath d='m7 21 5-5 5 5'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="💬"],[data-ka-glyph="💬️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.8 7L3 21l2-5.2A8 8 0 1 1 21 12Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="💵"],[data-ka-glyph="💵️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='6' width='20' height='12' rx='2'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M6 12h.01M18 12h.01'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="💺"],[data-ka-glyph="💺️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 4a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2l1 8h5a2 2 0 0 1 2 2v1H8a3 3 0 0 1-3-3Z'/%3E%3Cpath d='M7 20h12M8 17v3M18 17v3'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="💼"],[data-ka-glyph="💼️"],[data-ka-glyph="🧑‍💼"],[data-ka-glyph="🧑‍💼️"],[data-ka-glyph="🧰"],[data-ka-glyph="🧰️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📁"],[data-ka-glyph="📁️"],[data-ka-glyph="📂"],[data-ka-glyph="📂️"],[data-ka-glyph="🗂"],[data-ka-glyph="🗂️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📄"],[data-ka-glyph="📄️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z'/%3E%3Cpath d='M14 2v6h6M8 13h8M8 17h6'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📅"],[data-ka-glyph="📅️"],[data-ka-glyph="📆"],[data-ka-glyph="📆️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 11h18'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📈"],[data-ka-glyph="📈️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 17 6-6 4 4 8-8'/%3E%3Cpath d='M15 7h6v6'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📊"],[data-ka-glyph="📊️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20V4M4 20h16'/%3E%3Cpath d='M8 16v-5M12 16V8M16 16v-3'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📋"],[data-ka-glyph="📋️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='2' width='8' height='4' rx='1'/%3E%3Cpath d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/%3E%3Cpath d='m9 14 2 2 4-4'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📏"],[data-ka-glyph="📏️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 17 4 4L21 7l-4-4Z'/%3E%3Cpath d='m7 13 2 2M10 10l2 2M13 7l2 2'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📖"],[data-ka-glyph="📖️"],[data-ka-glyph="📚"],[data-ka-glyph="📚️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📣"],[data-ka-glyph="📣️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 11 14-7v16L3 13v-2Z'/%3E%3Cpath d='M7 13v4a2 2 0 0 0 4 0v-2'/%3E%3Cpath d='M20 9a4 4 0 0 1 0 6'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="📰"],[data-ka-glyph="📰️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h13a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2V4Z'/%3E%3Cpath d='M19 8h2v10a2 2 0 0 1-2 2M8 8h7M8 12h7M8 16h4'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🔒"],[data-ka-glyph="🔒️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='11' width='16' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🔔"],[data-ka-glyph="🔔️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9'/%3E%3Cpath d='M13.7 21a2 2 0 0 1-3.4 0'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🔧"],[data-ka-glyph="🔧️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.7 2.7-2.4-.6-.6-2.4Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🗄"],[data-ka-glyph="🗄️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cx='12' cy='5' rx='8' ry='3'/%3E%3Cpath d='M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🗺"],[data-ka-glyph="🗺️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z'/%3E%3Cpath d='M9 4v14M15 6v14'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🚌"],[data-ka-glyph="🚌️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6v6M15 6v6M2 12h19.6'/%3E%3Cpath d='M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3'/%3E%3Ccircle cx='7' cy='18' r='2'/%3E%3Cpath d='M9 18h5'/%3E%3Ccircle cx='16' cy='18' r='2'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🛡"],[data-ka-glyph="🛡️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🧩"],[data-ka-glyph="🧩️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19.4 11h-1.5V8a2 2 0 0 0-2-2h-3V4.6a2.6 2.6 0 1 0-5.2 0V6H5a2 2 0 0 0-2 2v3h1.5a2.6 2.6 0 1 1 0 5.2H3V19a2 2 0 0 0 2 2h3v-1.5a2.6 2.6 0 1 1 5.2 0V21h3a2 2 0 0 0 2-2v-3h1.5a2.6 2.6 0 1 0 0-5.2Z'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🧪"],[data-ka-glyph="🧪️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3h6M10 3v6L4.5 19.2A1.5 1.5 0 0 0 5.8 21h12.4a1.5 1.5 0 0 0 1.3-1.8L14 9V3'/%3E%3Cpath d='M7.5 15h9'/%3E%3C/svg%3E")}
-html #kaMenuLayer.ka-menu-layer :is([data-ka-glyph="🧭"],[data-ka-glyph="🧭️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m15.5 8.5-2 5-5 2 2-5Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="⏰"],[data-ka-glyph="⏰️"],[data-ka-glyph="🕘"],[data-ka-glyph="🕘️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="☀"],[data-ka-glyph="☀️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="☎"],[data-ka-glyph="☎️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="☑"],[data-ka-glyph="☑️"],[data-ka-glyph="✅"],[data-ka-glyph="✅️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Cpath d='m8.5 12.5 2.5 2.5 4.5-5'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="⚙"],[data-ka-glyph="⚙️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="✉"],[data-ka-glyph="✉️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='m3 7 9 6 9-6'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="✏"],[data-ka-glyph="✏️"],[data-ka-glyph="📝"],[data-ka-glyph="📝️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="⭐"],[data-ka-glyph="⭐️"],[data-ka-glyph="🌟"],[data-ka-glyph="🌟️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🍽"],[data-ka-glyph="🍽️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 3v7a3 3 0 0 0 3 3v8M10 3v7a3 3 0 0 1-3 3M7 3v5'/%3E%3Cpath d='M17 3c-2 1.5-3 4-3 7 0 2 1 3 3 3v8'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🎓"],[data-ka-glyph="🎓️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10 12 5 2 10l10 5 10-5Z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5M22 10v6'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🎯"],[data-ka-glyph="🎯️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Ccircle cx='12' cy='12' r='1'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🏅"],[data-ka-glyph="🏅️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='9' r='6'/%3E%3Cpath d='m8.5 14-1.5 8 5-3 5 3-1.5-8'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🏢"],[data-ka-glyph="🏢️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='3' width='16' height='18' rx='2'/%3E%3Cpath d='M9 7h.01M15 7h.01M9 11h.01M15 11h.01M10 21v-4h4v4'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🏫"],[data-ka-glyph="🏫️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 9 9-6 9 6'/%3E%3Cpath d='M5 9v11h14V9M9 20v-6h6v6'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="👥"],[data-ka-glyph="👥️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="👩‍🏫"],[data-ka-glyph="👩‍🏫️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h20'/%3E%3Cpath d='M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3'/%3E%3Cpath d='m7 21 5-5 5 5'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="💬"],[data-ka-glyph="💬️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.8 7L3 21l2-5.2A8 8 0 1 1 21 12Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="💵"],[data-ka-glyph="💵️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='6' width='20' height='12' rx='2'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M6 12h.01M18 12h.01'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="💺"],[data-ka-glyph="💺️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 4a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2l1 8h5a2 2 0 0 1 2 2v1H8a3 3 0 0 1-3-3Z'/%3E%3Cpath d='M7 20h12M8 17v3M18 17v3'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="💼"],[data-ka-glyph="💼️"],[data-ka-glyph="🧑‍💼"],[data-ka-glyph="🧑‍💼️"],[data-ka-glyph="🧰"],[data-ka-glyph="🧰️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📁"],[data-ka-glyph="📁️"],[data-ka-glyph="📂"],[data-ka-glyph="📂️"],[data-ka-glyph="🗂"],[data-ka-glyph="🗂️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📄"],[data-ka-glyph="📄️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z'/%3E%3Cpath d='M14 2v6h6M8 13h8M8 17h6'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📅"],[data-ka-glyph="📅️"],[data-ka-glyph="📆"],[data-ka-glyph="📆️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 11h18'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📈"],[data-ka-glyph="📈️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 17 6-6 4 4 8-8'/%3E%3Cpath d='M15 7h6v6'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📊"],[data-ka-glyph="📊️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20V4M4 20h16'/%3E%3Cpath d='M8 16v-5M12 16V8M16 16v-3'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📋"],[data-ka-glyph="📋️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='2' width='8' height='4' rx='1'/%3E%3Cpath d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/%3E%3Cpath d='m9 14 2 2 4-4'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📏"],[data-ka-glyph="📏️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 17 4 4L21 7l-4-4Z'/%3E%3Cpath d='m7 13 2 2M10 10l2 2M13 7l2 2'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📖"],[data-ka-glyph="📖️"],[data-ka-glyph="📚"],[data-ka-glyph="📚️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📣"],[data-ka-glyph="📣️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 11 14-7v16L3 13v-2Z'/%3E%3Cpath d='M7 13v4a2 2 0 0 0 4 0v-2'/%3E%3Cpath d='M20 9a4 4 0 0 1 0 6'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="📰"],[data-ka-glyph="📰️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h13a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2V4Z'/%3E%3Cpath d='M19 8h2v10a2 2 0 0 1-2 2M8 8h7M8 12h7M8 16h4'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🔒"],[data-ka-glyph="🔒️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='11' width='16' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🔔"],[data-ka-glyph="🔔️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9'/%3E%3Cpath d='M13.7 21a2 2 0 0 1-3.4 0'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🔧"],[data-ka-glyph="🔧️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.7 2.7-2.4-.6-.6-2.4Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🗄"],[data-ka-glyph="🗄️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cx='12' cy='5' rx='8' ry='3'/%3E%3Cpath d='M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🗺"],[data-ka-glyph="🗺️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z'/%3E%3Cpath d='M9 4v14M15 6v14'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🚌"],[data-ka-glyph="🚌️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6v6M15 6v6M2 12h19.6'/%3E%3Cpath d='M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3'/%3E%3Ccircle cx='7' cy='18' r='2'/%3E%3Cpath d='M9 18h5'/%3E%3Ccircle cx='16' cy='18' r='2'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🛡"],[data-ka-glyph="🛡️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🧩"],[data-ka-glyph="🧩️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19.4 11h-1.5V8a2 2 0 0 0-2-2h-3V4.6a2.6 2.6 0 1 0-5.2 0V6H5a2 2 0 0 0-2 2v3h1.5a2.6 2.6 0 1 1 0 5.2H3V19a2 2 0 0 0 2 2h3v-1.5a2.6 2.6 0 1 1 5.2 0V21h3a2 2 0 0 0 2-2v-3h1.5a2.6 2.6 0 1 0 0-5.2Z'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🧪"],[data-ka-glyph="🧪️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3h6M10 3v6L4.5 19.2A1.5 1.5 0 0 0 5.8 21h12.4a1.5 1.5 0 0 0 1.3-1.8L14 9V3'/%3E%3Cpath d='M7.5 15h9'/%3E%3C/svg%3E")}
+html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) :is([data-ka-glyph="🧭"],[data-ka-glyph="🧭️"]){--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m15.5 8.5-2 5-5 2 2-5Z'/%3E%3C/svg%3E")}
 html #kaMenuLayer.ka-menu-layer .ka-menu-card__icon:is([data-ka-glyph="⏰"],[data-ka-glyph="⏰️"],[data-ka-glyph="🕘"],[data-ka-glyph="🕘️"],[data-ka-glyph="☀"],[data-ka-glyph="☀️"],[data-ka-glyph="☎"],[data-ka-glyph="☎️"],[data-ka-glyph="☑"],[data-ka-glyph="☑️"],[data-ka-glyph="✅"],[data-ka-glyph="✅️"],[data-ka-glyph="⚙"],[data-ka-glyph="⚙️"],[data-ka-glyph="✉"],[data-ka-glyph="✉️"],[data-ka-glyph="✏"],[data-ka-glyph="✏️"],[data-ka-glyph="📝"],[data-ka-glyph="📝️"],[data-ka-glyph="⭐"],[data-ka-glyph="⭐️"],[data-ka-glyph="🌟"],[data-ka-glyph="🌟️"],[data-ka-glyph="🍽"],[data-ka-glyph="🍽️"],[data-ka-glyph="🎓"],[data-ka-glyph="🎓️"],[data-ka-glyph="🎯"],[data-ka-glyph="🎯️"],[data-ka-glyph="🏅"],[data-ka-glyph="🏅️"],[data-ka-glyph="🏢"],[data-ka-glyph="🏢️"],[data-ka-glyph="🏫"],[data-ka-glyph="🏫️"],[data-ka-glyph="👥"],[data-ka-glyph="👥️"],[data-ka-glyph="👩‍🏫"],[data-ka-glyph="👩‍🏫️"],[data-ka-glyph="💬"],[data-ka-glyph="💬️"],[data-ka-glyph="💵"],[data-ka-glyph="💵️"],[data-ka-glyph="💺"],[data-ka-glyph="💺️"],[data-ka-glyph="💼"],[data-ka-glyph="💼️"],[data-ka-glyph="🧑‍💼"],[data-ka-glyph="🧑‍💼️"],[data-ka-glyph="🧰"],[data-ka-glyph="🧰️"],[data-ka-glyph="📁"],[data-ka-glyph="📁️"],[data-ka-glyph="📂"],[data-ka-glyph="📂️"],[data-ka-glyph="🗂"],[data-ka-glyph="🗂️"],[data-ka-glyph="📄"],[data-ka-glyph="📄️"],[data-ka-glyph="📅"],[data-ka-glyph="📅️"],[data-ka-glyph="📆"],[data-ka-glyph="📆️"],[data-ka-glyph="📈"],[data-ka-glyph="📈️"],[data-ka-glyph="📊"],[data-ka-glyph="📊️"],[data-ka-glyph="📋"],[data-ka-glyph="📋️"],[data-ka-glyph="📏"],[data-ka-glyph="📏️"],[data-ka-glyph="📖"],[data-ka-glyph="📖️"],[data-ka-glyph="📚"],[data-ka-glyph="📚️"],[data-ka-glyph="📣"],[data-ka-glyph="📣️"],[data-ka-glyph="📰"],[data-ka-glyph="📰️"],[data-ka-glyph="🔒"],[data-ka-glyph="🔒️"],[data-ka-glyph="🔔"],[data-ka-glyph="🔔️"],[data-ka-glyph="🔧"],[data-ka-glyph="🔧️"],[data-ka-glyph="🗄"],[data-ka-glyph="🗄️"],[data-ka-glyph="🗺"],[data-ka-glyph="🗺️"],[data-ka-glyph="🚌"],[data-ka-glyph="🚌️"],[data-ka-glyph="🛡"],[data-ka-glyph="🛡️"],[data-ka-glyph="🧩"],[data-ka-glyph="🧩️"],[data-ka-glyph="🧪"],[data-ka-glyph="🧪️"],[data-ka-glyph="🧭"],[data-ka-glyph="🧭️"]),
 html #kaMenuLayer.ka-menu-layer .ka-menu-list .ka-avatar:is([data-ka-glyph="⏰"],[data-ka-glyph="⏰️"],[data-ka-glyph="🕘"],[data-ka-glyph="🕘️"],[data-ka-glyph="☀"],[data-ka-glyph="☀️"],[data-ka-glyph="☎"],[data-ka-glyph="☎️"],[data-ka-glyph="☑"],[data-ka-glyph="☑️"],[data-ka-glyph="✅"],[data-ka-glyph="✅️"],[data-ka-glyph="⚙"],[data-ka-glyph="⚙️"],[data-ka-glyph="✉"],[data-ka-glyph="✉️"],[data-ka-glyph="✏"],[data-ka-glyph="✏️"],[data-ka-glyph="📝"],[data-ka-glyph="📝️"],[data-ka-glyph="⭐"],[data-ka-glyph="⭐️"],[data-ka-glyph="🌟"],[data-ka-glyph="🌟️"],[data-ka-glyph="🍽"],[data-ka-glyph="🍽️"],[data-ka-glyph="🎓"],[data-ka-glyph="🎓️"],[data-ka-glyph="🎯"],[data-ka-glyph="🎯️"],[data-ka-glyph="🏅"],[data-ka-glyph="🏅️"],[data-ka-glyph="🏢"],[data-ka-glyph="🏢️"],[data-ka-glyph="🏫"],[data-ka-glyph="🏫️"],[data-ka-glyph="👥"],[data-ka-glyph="👥️"],[data-ka-glyph="👩‍🏫"],[data-ka-glyph="👩‍🏫️"],[data-ka-glyph="💬"],[data-ka-glyph="💬️"],[data-ka-glyph="💵"],[data-ka-glyph="💵️"],[data-ka-glyph="💺"],[data-ka-glyph="💺️"],[data-ka-glyph="💼"],[data-ka-glyph="💼️"],[data-ka-glyph="🧑‍💼"],[data-ka-glyph="🧑‍💼️"],[data-ka-glyph="🧰"],[data-ka-glyph="🧰️"],[data-ka-glyph="📁"],[data-ka-glyph="📁️"],[data-ka-glyph="📂"],[data-ka-glyph="📂️"],[data-ka-glyph="🗂"],[data-ka-glyph="🗂️"],[data-ka-glyph="📄"],[data-ka-glyph="📄️"],[data-ka-glyph="📅"],[data-ka-glyph="📅️"],[data-ka-glyph="📆"],[data-ka-glyph="📆️"],[data-ka-glyph="📈"],[data-ka-glyph="📈️"],[data-ka-glyph="📊"],[data-ka-glyph="📊️"],[data-ka-glyph="📋"],[data-ka-glyph="📋️"],[data-ka-glyph="📏"],[data-ka-glyph="📏️"],[data-ka-glyph="📖"],[data-ka-glyph="📖️"],[data-ka-glyph="📚"],[data-ka-glyph="📚️"],[data-ka-glyph="📣"],[data-ka-glyph="📣️"],[data-ka-glyph="📰"],[data-ka-glyph="📰️"],[data-ka-glyph="🔒"],[data-ka-glyph="🔒️"],[data-ka-glyph="🔔"],[data-ka-glyph="🔔️"],[data-ka-glyph="🔧"],[data-ka-glyph="🔧️"],[data-ka-glyph="🗄"],[data-ka-glyph="🗄️"],[data-ka-glyph="🗺"],[data-ka-glyph="🗺️"],[data-ka-glyph="🚌"],[data-ka-glyph="🚌️"],[data-ka-glyph="🛡"],[data-ka-glyph="🛡️"],[data-ka-glyph="🧩"],[data-ka-glyph="🧩️"],[data-ka-glyph="🧪"],[data-ka-glyph="🧪️"],[data-ka-glyph="🧭"],[data-ka-glyph="🧭️"]){font-size:0!important;line-height:0!important;color:transparent!important}
 html #kaMenuLayer.ka-menu-layer .ka-menu-card__icon:is([data-ka-glyph="⏰"],[data-ka-glyph="⏰️"],[data-ka-glyph="🕘"],[data-ka-glyph="🕘️"],[data-ka-glyph="☀"],[data-ka-glyph="☀️"],[data-ka-glyph="☎"],[data-ka-glyph="☎️"],[data-ka-glyph="☑"],[data-ka-glyph="☑️"],[data-ka-glyph="✅"],[data-ka-glyph="✅️"],[data-ka-glyph="⚙"],[data-ka-glyph="⚙️"],[data-ka-glyph="✉"],[data-ka-glyph="✉️"],[data-ka-glyph="✏"],[data-ka-glyph="✏️"],[data-ka-glyph="📝"],[data-ka-glyph="📝️"],[data-ka-glyph="⭐"],[data-ka-glyph="⭐️"],[data-ka-glyph="🌟"],[data-ka-glyph="🌟️"],[data-ka-glyph="🍽"],[data-ka-glyph="🍽️"],[data-ka-glyph="🎓"],[data-ka-glyph="🎓️"],[data-ka-glyph="🎯"],[data-ka-glyph="🎯️"],[data-ka-glyph="🏅"],[data-ka-glyph="🏅️"],[data-ka-glyph="🏢"],[data-ka-glyph="🏢️"],[data-ka-glyph="🏫"],[data-ka-glyph="🏫️"],[data-ka-glyph="👥"],[data-ka-glyph="👥️"],[data-ka-glyph="👩‍🏫"],[data-ka-glyph="👩‍🏫️"],[data-ka-glyph="💬"],[data-ka-glyph="💬️"],[data-ka-glyph="💵"],[data-ka-glyph="💵️"],[data-ka-glyph="💺"],[data-ka-glyph="💺️"],[data-ka-glyph="💼"],[data-ka-glyph="💼️"],[data-ka-glyph="🧑‍💼"],[data-ka-glyph="🧑‍💼️"],[data-ka-glyph="🧰"],[data-ka-glyph="🧰️"],[data-ka-glyph="📁"],[data-ka-glyph="📁️"],[data-ka-glyph="📂"],[data-ka-glyph="📂️"],[data-ka-glyph="🗂"],[data-ka-glyph="🗂️"],[data-ka-glyph="📄"],[data-ka-glyph="📄️"],[data-ka-glyph="📅"],[data-ka-glyph="📅️"],[data-ka-glyph="📆"],[data-ka-glyph="📆️"],[data-ka-glyph="📈"],[data-ka-glyph="📈️"],[data-ka-glyph="📊"],[data-ka-glyph="📊️"],[data-ka-glyph="📋"],[data-ka-glyph="📋️"],[data-ka-glyph="📏"],[data-ka-glyph="📏️"],[data-ka-glyph="📖"],[data-ka-glyph="📖️"],[data-ka-glyph="📚"],[data-ka-glyph="📚️"],[data-ka-glyph="📣"],[data-ka-glyph="📣️"],[data-ka-glyph="📰"],[data-ka-glyph="📰️"],[data-ka-glyph="🔒"],[data-ka-glyph="🔒️"],[data-ka-glyph="🔔"],[data-ka-glyph="🔔️"],[data-ka-glyph="🔧"],[data-ka-glyph="🔧️"],[data-ka-glyph="🗄"],[data-ka-glyph="🗄️"],[data-ka-glyph="🗺"],[data-ka-glyph="🗺️"],[data-ka-glyph="🚌"],[data-ka-glyph="🚌️"],[data-ka-glyph="🛡"],[data-ka-glyph="🛡️"],[data-ka-glyph="🧩"],[data-ka-glyph="🧩️"],[data-ka-glyph="🧪"],[data-ka-glyph="🧪️"],[data-ka-glyph="🧭"],[data-ka-glyph="🧭️"])::before{content:"";position:absolute;inset:15px;background:var(--mc-ink);-webkit-mask:var(--ic,none) center/contain no-repeat;mask:var(--ic,none) center/contain no-repeat}
@@ -12685,3 +12700,208 @@ html[data-theme] :is(
   .ka-attendance-status.is-var.is-selected,
   :is(.ka-cizelge-action,.ka-guidance-action).is-primary :is(.ka-cizelge-action__icon,.ka-guidance-action__icon)
 ):not(#_x):not(#_y):focus-visible{outline:var(--ka-ring-w) solid var(--ka-btn-primary-ring);outline-offset:var(--ka-ring-offset)}
+
+/* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
+   Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
+   Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen
+   yan menü / üst çubuk eklentileri bu genişliğin altında display:none'dır.
+   Ölçüler TEMA MERKEZİ'ndeki --ka-web-* belirteçlerinden gelir; renk için mevcut --gl-* / --hd-* / --t-accent-* yüzey
+   belirteçleri kullanılır. Menü grup renkleri phone menüsüyle AYNI eşlemedir (--mc-rgb; test iki eşlemeyi karşılaştırır).
+   Yeni yan menü öğesi eklemek için js/core/web-shell.js içindeki işaretlemeye sınıf ekleyin, sayfa CSS'inde renk yazmayın. */
+.ka-web-side,.ka-web-crumb,.ka-web-search,.ka-web-wx,.ka-web-note{display:none}
+@media(min-width:1100px){
+html .ka-app-shell:not([hidden]){padding-left:var(--ka-web-side-w)}
+html .ka-app-nav.ka-bottom-nav,html #kaMenuLayer.ka-menu-layer,html .ka-shell-backbar{display:none!important}
+
+/* — sol menü — */
+html .ka-app-shell>.ka-web-side{
+  position:fixed;z-index:880;left:0;top:0;bottom:0;width:var(--ka-web-side-w);display:flex;flex-direction:column;gap:var(--ka-sp-8);
+  padding:var(--ka-sp-14) var(--ka-sp-12) var(--ka-sp-12);color:var(--gl-fg);
+  background:var(--hd-bg);border-right:var(--ka-card-border-w) solid var(--gl-edge);
+  -webkit-backdrop-filter:blur(calc(26px * var(--ka-blur-k))) saturate(1.8);backdrop-filter:blur(calc(26px * var(--ka-blur-k))) saturate(1.8);
+  --mc-rgb:var(--t-accent-rgb);
+}
+html .ka-web-side button{font-family:inherit;-webkit-tap-highlight-color:transparent}
+html .ka-web-brand{
+  appearance:none;flex:none;display:flex;align-items:center;gap:var(--ka-sp-12);width:100%;margin:0;padding:var(--ka-sp-6) var(--ka-sp-8);
+  border:0;border-radius:var(--ka-r-5);background:transparent;color:inherit;text-align:left;cursor:pointer;
+}
+html .ka-web-brand:hover{background:var(--gl-field)}
+html .ka-web-brand__logo{flex:none;width:var(--ka-ic-44);height:var(--ka-ic-44);border-radius:50%;object-fit:cover}
+html .ka-web-brand__text{min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-1)}
+html .ka-web-brand__text strong{font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-2);font-weight:var(--ka-fw-850);letter-spacing:var(--ka-ls-02);color:var(--gl-fg)}
+html .ka-web-brand__text small{font-size:var(--ka-fs-12);font-weight:var(--ka-fw-600);color:var(--ka-text-muted)}
+html .ka-web-nav{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--ka-sp-2);margin-right:calc(var(--ka-sp-4) * -1);padding-right:var(--ka-sp-4);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--gl-edge) transparent}
+html .ka-web-sep{flex:none;height:var(--ka-border-w);margin:var(--ka-sp-8) var(--ka-sp-8);background:var(--gl-edge)}
+
+/* renk: grup anahtarı → --mc-rgb (phone menüsüyle aynı eşleme) */
+html .ka-web-side [data-ka-menu-group],html .ka-web-side .ka-web-link--home{--mc-rgb:var(--t-accent-rgb)}
+html .ka-web-side [data-tone="green"]{--mc-rgb:var(--c-emerald)}
+html .ka-web-side [data-tone="red"]{--mc-rgb:var(--c-red)}
+html .ka-web-side [data-tone="amber"]{--mc-rgb:var(--c-amber)}
+html .ka-web-side [data-tone="violet"],html .ka-web-side [data-tone="purple"]{--mc-rgb:var(--c-violet)}
+html .ka-web-side [data-tone="orange"]{--mc-rgb:var(--c-orange)}
+html .ka-web-side [data-tone="cyan"]{--mc-rgb:var(--c-cyan)}
+html .ka-web-side [data-tone="slate"]{--mc-rgb:var(--c-slate)}
+html .ka-web-side [data-ka-menu-group="people"]{--mc-rgb:var(--c-indigo)}
+html .ka-web-side [data-ka-menu-group="exams"]{--mc-rgb:var(--c-red)}
+html .ka-web-side [data-ka-menu-group="communication"]{--mc-rgb:var(--c-sky)}
+html .ka-web-side [data-ka-menu-group="programs"]{--mc-rgb:var(--c-blue)}
+html .ka-web-side [data-ka-menu-group="calendar"]{--mc-rgb:var(--c-cyan)}
+html .ka-web-side [data-ka-menu-group="transport"]{--mc-rgb:var(--c-violet)}
+html .ka-web-side [data-ka-menu-group="food"]{--mc-rgb:var(--c-orange)}
+html .ka-web-side [data-ka-menu-group="documents"]{--mc-rgb:var(--c-yellow)}
+html .ka-web-side [data-ka-menu-group="management"]{--mc-rgb:var(--c-emerald)}
+html .ka-web-side [data-ka-menu-group="settings"]{--mc-rgb:var(--c-slate)}
+html .ka-web-side :is([data-ka-menu-group],.ka-web-link--home){
+  --mc:rgb(var(--mc-rgb));
+  --mc-t:color-mix(in srgb,var(--mc) 16%,transparent);--mc-b:color-mix(in srgb,var(--mc) 34%,transparent);
+  --mc-ink:color-mix(in srgb,var(--mc) var(--gl-ink-pct),var(--gl-ink-mix));
+}
+html .ka-web-side .ka-web-group[data-menu-custom-color="true"]:not([style*="var(--t-accent)" i]){--mc:var(--ka-menu-custom)}
+html .ka-web-side .ka-web-sublink[data-menu-custom-color="true"]:not([style*="var(--t-accent)" i]){--mc:var(--ka-menu-item-custom)}
+
+/* satırlar */
+html .ka-web-link{
+  appearance:none;position:relative;width:100%;min-height:calc(44px + var(--ka-row-grow));display:flex;align-items:center;gap:var(--ka-sp-12);margin:0;padding:var(--ka-sp-5) var(--ka-sp-8);
+  border:var(--ka-border-w) solid transparent;border-radius:var(--ka-r-4);background:transparent;color:var(--gl-fg);
+  font-size:var(--ka-fs-14);line-height:var(--ka-lh-1-25);font-weight:var(--ka-fw-750);text-align:left;cursor:pointer;
+  transition:background var(--ka-dur-150) var(--ka-ease-1),border-color var(--ka-dur-150) var(--ka-ease-1);
+}
+html .ka-web-link__label{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+html .ka-web-link:hover{background:var(--gl-field)}
+html .ka-web-link:focus-visible,html .ka-web-sublink:focus-visible,html .ka-web-brand:focus-visible,html .ka-web-me:focus-visible{outline:var(--ka-ring-w) solid var(--ka-focus);outline-offset:calc(var(--ka-ring-offset) * -1)}
+html .ka-web-link__chev{flex:none;width:var(--ka-ic-18);height:var(--ka-ic-18);display:grid;place-items:center;color:var(--ka-text-muted);transition:transform var(--ka-dur-200) var(--ka-ease-1)}
+html .ka-web-link__chev svg{width:var(--ka-ic-14);height:var(--ka-ic-14)}
+html .ka-web-group.is-open>.ka-web-link__chev,html .ka-web-group.is-open>.ka-web-link .ka-web-link__chev{transform:rotate(90deg)}
+html .ka-web-group.has-active>.ka-web-link{background:var(--gl-field)}
+html .ka-web-link--home.is-active{background:rgba(var(--t-accent-rgb),.14);border-color:rgba(var(--t-accent-rgb),.40)}
+
+/* ikon kutusu: bilinen emoji → çizgi ikon (mask, phone menüsüyle aynı --ic eşlemesi); bilinmeyen emoji aynen görünür */
+html .ka-web-ico{
+  position:relative;flex:none;width:var(--ka-ic-32);height:var(--ka-ic-32);display:grid;place-items:center;border-radius:var(--ka-r-2);
+  font-size:var(--ka-fs-16);line-height:1;font-variant-emoji:text;
+  background:var(--mc-t);border:var(--ka-border-w) solid var(--mc-b);color:var(--mc-ink);
+}
+html .ka-web-ico.has-ic{font-size:0;color:transparent}
+html .ka-web-ico.has-ic::before{content:"";position:absolute;inset:calc(var(--ka-ic-32) * .22);background:var(--mc-ink);-webkit-mask:var(--ic,none) center/contain no-repeat;mask:var(--ic,none) center/contain no-repeat}
+html .ka-web-ico--home{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E")}
+html .ka-web-link--home.is-active .ka-web-ico{background:var(--ka-btn-primary-bg);border-color:var(--ka-btn-primary-edge);--mc-ink:var(--ka-btn-primary-ink)}
+html .ka-web-count{flex:none;min-width:var(--ka-ic-24);height:var(--ka-ic-22);padding:0 var(--ka-sp-7);display:grid;place-items:center;border-radius:var(--ka-radius-pill);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-900);line-height:1;background:var(--mc-t);color:var(--mc-ink)}
+
+/* alt sayfalar */
+html .ka-web-sub{display:flex;flex-direction:column;gap:var(--ka-sp-1);margin:var(--ka-sp-2) 0 var(--ka-sp-8) var(--ka-sp-20);padding-left:var(--ka-sp-8);border-left:calc(var(--ka-border-w) * 2) solid var(--mc-b)}
+html .ka-web-sub[hidden]{display:none}
+html .ka-web-sub h4{margin:var(--ka-sp-8) var(--ka-sp-8) var(--ka-sp-2);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-03);color:var(--ka-text-muted)}
+html .ka-web-sublink{
+  appearance:none;position:relative;width:100%;min-height:calc(36px + var(--ka-row-grow));display:flex;align-items:center;gap:var(--ka-sp-10);margin:0;padding:var(--ka-sp-4) var(--ka-sp-8);
+  border:var(--ka-border-w) solid transparent;border-radius:var(--ka-r-3);background:transparent;color:var(--gl-fg);
+  font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-25);font-weight:var(--ka-fw-650);text-align:left;cursor:pointer;transition:background var(--ka-dur-150) var(--ka-ease-1);
+}
+html .ka-web-sublink>span:last-child{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html .ka-web-sublink:hover{background:var(--gl-field)}
+html .ka-web-sublink.is-active{background:var(--mc-t);border-color:var(--mc-b);font-weight:var(--ka-fw-850)}
+html .ka-web-ico--sub{width:var(--ka-ic-24);height:var(--ka-ic-24);border:0;background:transparent;border-radius:var(--ka-r-1);font-size:var(--ka-fs-14);color:var(--ka-text-muted)}
+html .ka-web-ico--sub.has-ic::before{inset:calc(var(--ka-ic-24) * .16);background:var(--ka-text-muted)}
+html .ka-web-sublink.is-active .ka-web-ico--sub.has-ic::before{background:var(--mc-ink)}
+html .ka-web-recent{margin-top:var(--ka-sp-8);padding-top:var(--ka-sp-8);border-top:var(--ka-border-w) solid var(--gl-edge)}
+html .ka-web-recent[hidden]{display:none}
+html .ka-web-recent h3{margin:var(--ka-sp-4) var(--ka-sp-8) var(--ka-sp-4);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-750);color:var(--ka-text-muted)}
+
+/* hesap kartı */
+html .ka-web-me{
+  appearance:none;flex:none;width:100%;display:flex;align-items:center;gap:var(--ka-sp-10);margin:0;padding:var(--ka-sp-8) var(--ka-sp-10);
+  border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-5);background:var(--gl-field);color:var(--gl-fg);text-align:left;cursor:pointer;
+}
+html .ka-web-me:hover{border-color:rgba(var(--t-accent-rgb),.45)}
+html .ka-web-me__avatar{flex:none;width:var(--ka-ic-40);height:var(--ka-ic-40);display:grid;place-items:center;overflow:hidden;border-radius:50%;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-850);background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);box-shadow:0 0 0 calc(var(--ka-border-w) * 2) rgba(var(--t-accent-rgb),.55)}
+html .ka-web-me__avatar img{width:100%;height:100%;display:block;object-fit:cover}
+html .ka-web-me__text{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-1)}
+html .ka-web-me__text strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--ka-fs-13-5);font-weight:var(--ka-fw-850)}
+html .ka-web-me__text small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-600);color:var(--ka-text-muted)}
+html .ka-web-me__chev{flex:none;color:var(--ka-text-muted)}
+html .ka-web-me__chev svg{width:var(--ka-ic-16);height:var(--ka-ic-16)}
+
+/* — üst çubuk (mevcut .ka-app-header yeniden dizilir) — */
+html .ka-app-shell .ka-app-header{align-items:center;justify-content:flex-start;gap:var(--ka-sp-14);min-height:var(--ka-web-top-h);padding:0 var(--ka-web-gutter)}
+html .ka-app-shell .ka-app-header .ka-brand-home,html .ka-app-shell .ka-app-header .ka-header-profile{display:none}
+html .ka-app-header .ka-web-crumb{order:1;display:flex;align-items:center;gap:var(--ka-sp-8);flex:0 0 auto;min-width:0;max-width:48%}
+html .ka-app-header .ka-web-search{order:2;display:flex}
+html .ka-app-header .ka-web-wx{order:3}
+html .ka-app-header .ka-web-note{order:4;display:inline-flex}
+html .ka-app-header .ka-header-actions{order:5;margin-left:0}
+html .ka-web-crumb__back{appearance:none;flex:none;width:calc(36px + var(--ka-btn-grow));height:calc(36px + var(--ka-btn-grow));display:grid;place-items:center;margin:0 var(--ka-sp-2) 0 calc(var(--ka-sp-4) * -1);padding:0;border:var(--ka-border-w) solid var(--gl-edge);border-radius:50%;background:var(--gl-field);color:var(--gl-fg);cursor:pointer}
+html .ka-web-crumb__back[hidden],html .ka-web-crumb__group[hidden],html .ka-web-crumb__sep[hidden]{display:none}
+html .ka-web-crumb__back svg{width:var(--ka-ic-18);height:var(--ka-ic-18)}
+html .ka-web-crumb__group{font-size:var(--ka-fs-14);font-weight:var(--ka-fw-650);color:var(--ka-text-muted);white-space:nowrap}
+html .ka-web-crumb__sep{display:grid;place-items:center;color:var(--ka-text-muted)}
+html .ka-web-crumb__sep svg{width:var(--ka-ic-14);height:var(--ka-ic-14)}
+html .ka-web-crumb__title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--ka-fs-17);line-height:var(--ka-lh-1-2);font-weight:var(--ka-fw-850);letter-spacing:var(--ka-ls-n01);color:var(--gl-fg)}
+html .ka-web-search{
+  align-items:center;gap:var(--ka-sp-10);flex:1 1 280px;max-width:560px;min-width:var(--ka-ic-120);height:calc(44px + var(--ka-btn-grow));margin:0;padding:0 var(--ka-sp-14);
+  border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-4);background:var(--gl-field);color:var(--ka-text-muted);cursor:text;
+  transition:border-color var(--ka-dur-150) var(--ka-ease-1),box-shadow var(--ka-dur-150) var(--ka-ease-1);
+}
+html .ka-web-search svg{flex:none;width:var(--ka-ic-18);height:var(--ka-ic-18)}
+html .ka-web-search>input[data-ka-web-search]:not(#_x):not(#_y){flex:1 1 auto;min-width:0;width:auto;height:100%;min-height:0;margin:0;padding:0!important;border:0!important;border-radius:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;font:inherit;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-600);color:var(--gl-fg)!important;-webkit-text-fill-color:var(--gl-fg);-webkit-appearance:none;appearance:none}
+html .ka-web-search input::-webkit-search-cancel-button{display:none}
+html .ka-web-search input::placeholder{color:var(--ka-text-muted);opacity:1}
+html .ka-web-search kbd{flex:none;padding:var(--ka-sp-2) var(--ka-sp-7);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-1);font-family:var(--ka-font-mono);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+html .ka-web-search:focus-within{border-color:rgba(var(--t-accent-rgb),.6);box-shadow:0 0 0 calc(var(--ka-border-w) * 3) rgba(var(--t-accent-rgb),.2)}
+html .ka-web-search:focus-within kbd{display:none}
+html .ka-app-header .ka-web-wx:not([hidden]){display:inline-flex;align-items:center;gap:var(--ka-sp-8);flex:none;height:calc(44px + var(--ka-btn-grow));margin:0;padding:0 var(--ka-sp-14);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-4);background:var(--gl-field);color:var(--gl-fg);font:inherit;font-size:var(--ka-fs-13);cursor:pointer}
+html .ka-web-wx__icon{font-size:var(--ka-fs-18);line-height:1}
+html .ka-web-wx b{font-size:var(--ka-fs-16);font-weight:var(--ka-fw-850)}
+html .ka-web-wx__text{color:var(--ka-text-muted);font-weight:var(--ka-fw-600);white-space:nowrap}
+html .ka-web-wx__text:empty{display:none}
+html .ka-web-wx:hover{border-color:rgba(var(--t-accent-rgb),.45)}
+html .ka-web-note{align-items:center;justify-content:center;gap:var(--ka-sp-8);flex:none;height:calc(44px + var(--ka-btn-grow));margin:0;padding:0 var(--ka-sp-18);border-radius:var(--ka-r-4);font:inherit;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-850);cursor:pointer}
+html .ka-web-note svg{width:var(--ka-ic-18);height:var(--ka-ic-18)}
+
+/* — içerik alanı — (kenar çubuğu yüzünden içerik görünüm alanından dardır: görünüm alanına göre ayarlı 900px+ ızgaralar burada taşmasın) */
+html .ka-attendance-toolbar{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+html .ka-app-shell .ka-app-content{max-width:var(--ka-web-page-max)!important;padding:var(--ka-web-gap) var(--ka-web-gutter) var(--ka-sp-32)!important}
+}
+@media(min-width:1100px) and (max-height:760px){html .ka-web-recent{display:none}}
+
+/* ===== WEB ARAYÜZÜ · ANA SAYFA ÖLÇÜLERİ (≥1100px) =====
+   dashboard.js'in işaretlemesi DEĞİŞMEZ: .ka-home bölümleri data-home-section anahtarıyla bir ızgaraya yerleştirilir.
+   Izgara 4px'lik satır birimidir (--ka-web-row); js/core/web-shell.js her bölümün yüksekliğini ölçüp grid-row-end:span N yazar,
+   böylece sütunlar birbirinden bağımsız dizilir (duvar örgüsü). ≥1280px: iki ana sütun + sağ sütun (--ka-web-aside-w);
+   1100–1279px: iki eşit sütun. Yeni bir bölümün sağ sütuna gitmesi için anahtarını RAIL listelerine ekleyin. */
+@media(min-width:1100px){
+html #v2ModuleRoot .ka-home{
+  width:100%;max-width:none!important;margin:0;padding-inline:0!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:var(--ka-web-row);grid-auto-flow:row dense;
+  column-gap:var(--ka-web-gap)!important;row-gap:0!important;align-items:start;align-content:start;
+}
+html #v2ModuleRoot .ka-home>*{grid-column:1/-1;align-self:start;min-width:0;margin:0 0 var(--ka-web-gap)!important}
+html #v2ModuleRoot .ka-home>:is([data-home-section="quick"],[data-home-section="upcoming"],[data-home-section="announcements"],[data-home-section="calendar"],[data-home-section="notes"],[data-home-section="polls"],[data-home-section="exams"],[data-home-section="absences"],[data-home-section="food-menu"],[data-home-section="duty"],[data-home-section="today-duty"]){grid-column:auto}
+html #v2ModuleRoot .ka-home>.kh-hero{order:-10}
+html #v2ModuleRoot .ka-home>[data-home-section="food-menu"]{order:-5}
+html #v2ModuleRoot .ka-home>:is([data-home-section="duty"],[data-home-section="today-duty"]){order:-4}
+html #v2ModuleRoot .ka-home>.is-pair{align-self:stretch;display:flex;flex-direction:column}
+html #v2ModuleRoot .ka-home>.is-pair>:last-child{flex:1 1 auto;min-height:0}
+}
+@media(min-width:1280px){
+html #v2ModuleRoot .ka-home{grid-template-columns:minmax(0,1fr) minmax(0,1fr) var(--ka-web-aside-w)}
+html #v2ModuleRoot .ka-home>*{grid-column:1/3}
+html #v2ModuleRoot .ka-home>:is([data-home-section="quick"],[data-home-section="upcoming"],[data-home-section="announcements"],[data-home-section="calendar"],[data-home-section="notes"],[data-home-section="polls"],[data-home-section="exams"],[data-home-section="absences"]){grid-column:3}
+html #v2ModuleRoot .ka-home>[data-home-section="food-menu"]{grid-column:1}
+html #v2ModuleRoot .ka-home>:is([data-home-section="duty"],[data-home-section="today-duty"]){grid-column:2}
+html #v2ModuleRoot .ka-home>.kh-hero{grid-column:1/-1}
+}
+@media(min-width:1100px){
+/* — karşılama kartı: solda selam + özet, sağda canlı ders kartı (hava durumu üst çubukta) — */
+html #v2ModuleRoot .ka-home>.kh-hero{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,var(--ka-web-hero-card));column-gap:var(--ka-sp-28);align-items:center;
+  padding:var(--ka-sp-28) var(--ka-sp-32)!important;
+}
+html #v2ModuleRoot .ka-home>.kh-hero>:is(.kh-brand,.kh-greeting,.kh-date,.ka-web-brief){grid-column:1;justify-self:start;min-width:0}
+html #v2ModuleRoot .ka-home>.kh-hero>.kh-live-stack{grid-column:2;grid-row:1/span 5;grid-template-columns:minmax(0,1fr);width:100%;min-width:0;margin:0!important}
+html #v2ModuleRoot .ka-home>.kh-hero .kh-weather-card{display:none!important}
+html #v2ModuleRoot .ka-home>.kh-hero .kh-greeting{font-size:var(--ka-fs-30);line-height:var(--ka-lh-1-1);letter-spacing:var(--ka-ls-n03)}
+html #v2ModuleRoot .ka-home>[data-home-section="quick"] .kh-quick{grid-template-columns:repeat(2,minmax(0,1fr))}
+html #v2ModuleRoot .ka-home .ka-web-brief{margin:var(--ka-sp-14) 0 0;max-width:46ch;font-size:var(--ka-fs-15);line-height:var(--ka-lh-1-55);font-weight:var(--ka-fw-500);color:var(--ka-text-muted)}
+html #v2ModuleRoot .ka-home .ka-web-brief b{font-weight:var(--ka-fw-800);color:var(--ka-text)}
+}
