@@ -98,7 +98,7 @@ function toolbar(target,targetClassId=''){
 function sessionTeacherId(){const u=global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};return u.bagliOgretmenId||u.ogretmenId||''}
 function teacherProfileId(profile){return $('[data-teacher-message]',profile)?.dataset.teacherMessage||$('[data-teacher-edit]',profile)?.dataset.teacherEdit||$('[data-teacher-report]',profile)?.dataset.teacherReport||''}
 function clubHasTeacher(k,id){return!!(id&&(Array.isArray(k?.ogretmenIdler)?k.ogretmenIdler.includes(id):k?.ogretmenId===id||k?.danismanOgretmenId===id))}
-function teacherRows(type,id){return arr(type).filter(x=>x.ogretmenId===id||(Array.isArray(x.ogretmenIdler)&&x.ogretmenIdler.includes(id)))}
+function teacherRows(type,id){if(type==='sosyalKulupler')return arr(type).filter(x=>Array.isArray(x.ogretmenIdler)?x.ogretmenIdler.includes(id):(x.ogretmenId===id||x.danismanOgretmenId===id));return arr(type).filter(x=>x.ogretmenId===id||(Array.isArray(x.ogretmenIdler)&&x.ogretmenIdler.includes(id)))}
 function classLabel(id){return arr('siniflar').find(s=>s.id===id)?.ad||'Sınıfsız'}
 function clubStudents(kid){return arr('veliler').filter(v=>v.kulupId===kid).sort((a,b)=>{const c=classLabel(a.sinifId).localeCompare(classLabel(b.sinifId),'tr',{numeric:true});return c||String(a.ogrenciAdi||'').localeCompare(String(b.ogrenciAdi||''),'tr')})}
 function canManageClub(k){const tid=sessionTeacherId();return canImport()||clubHasTeacher(k,tid)}
