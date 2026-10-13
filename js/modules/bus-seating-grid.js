@@ -108,7 +108,7 @@ function clusterCells(list){
 function fromStored(inp){
   const raw=(Array.isArray(inp.elements)?inp.elements:[]).filter(e=>e&&e.visible!==false);
   const lay=inp.layout||{},t=lay.table||{},svc=inp.service||{};
-  const m={grid:{cols:0,rows:0},els:[],seats:{},notes:{},studs:{},numMode:t.numbering==='col'?'col':'row',planAdi:inp.planAdi||'Servis Oturma Planı',sablon:inp.sablon||'custom',svcDriver:svc.driver||''};
+  const m={grid:{cols:0,rows:0},els:[],seats:{},notes:{},studs:{},numMode:t.numbering==='col'?'col':'row',planAdi:inp.planAdi||'Servis Oturma Planı',sablon:inp.sablon||'custom',svcDriver:svc.driver||'',dropped:[]};
   (inp.students||[]).forEach(s=>{const o=makeStudent(s);m.studs[o.id]=o});
   markSiblings(m.studs);
   const seen={};raw.forEach((e,i)=>{if(!e.id||seen[e.id])e.id=uid('el'+i);seen[e.id]=1});
@@ -156,7 +156,8 @@ function bindSeat(m,el,e,byName,used){
   else if(nm){
     const all=byName[fold(nm)]||[],c=all.filter(id=>!used[id]);
     if(c.length===1)stu=m.studs[c[0]];
-    else if(c.length>1||!all.length){const o=makeStudent({id:'x:'+el.id,name:nm,className:'',orphan:true});m.studs[o.id]=o;stu=o}   /* belirsiz ya da listede yok: adı kaybolmasın. Zaten başka koltukta oturan öğrencinin ikinci kaydı boş bırakılır. */
+    else if(!all.length&&Object.keys(byName).length){m.dropped.push(nm)}   /* serviste olmayan (taşınmış/ayrılmış) öğrenci: koltuk boşalır. Servis listesi hiç yoksa karar verilemez, ad korunur. */
+    else if(c.length>1||!all.length){const o=makeStudent({id:'x:'+el.id,name:nm,className:'',orphan:true});m.studs[o.id]=o;stu=o}   /* belirsiz ya da liste yok: adı kaybolmasın. Zaten başka koltukta oturan öğrencinin ikinci kaydı boş bırakılır. */
   }
   const d={};
   if(stu){used[stu.id]=1;d.stu=stu.id;const note=String(p.note||'').trim();if(note)m.notes[stu.id]=note}
@@ -1182,7 +1183,7 @@ function open(opts){
   prune(S);
   if(editable&&calc(S).total===0)S.mode='edit';
   S.saved=dirtyKey();
-  if(seeded)S.saved='';   /* yeni oluşturulan plan: kaydedilmemiş sayılsın */
+  if(seeded||(editable&&S.dropped.length))S.saved='';   /* yeni oluşturulan ya da temizlenen plan: kaydedilmemiş sayılsın */
   root=document.createElement('div');root.className='bsg-root';root.id='busSeatingGrid';
   root.innerHTML=SKELETON;
   (opts.host||document.body).appendChild(root);
@@ -1206,6 +1207,7 @@ function open(opts){
   document.addEventListener('click',e=>{if(performance.now()<suppressUntil){e.stopPropagation();e.preventDefault()}},{signal:ac.signal,capture:true});
   global.addEventListener('beforeunload',e=>{if(root&&isDirty()){e.preventDefault();e.returnValue=''}},sg);
   render();
+  if(editable&&S.dropped.length)toast(S.dropped.length+' kişi serviste olmadığı için koltuktan çıkarıldı. Kaydedince kalıcı olur.',null,6500);
   if(typeof ResizeObserver==='function'){
     ro=new ResizeObserver(()=>{if(!root||!S||(eg&&eg.active))return;const o=S.m.cw;applyMetrics();if(o!==S.m.cw)fitNames()});
     ro.observe(R('planwrap'));

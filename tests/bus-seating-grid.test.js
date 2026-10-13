@@ -102,11 +102,14 @@ assert.strictEqual(P.pickTemplate(500),'otobus');
   const m4=P.fromStored({elements:dup,layout:{table:{editorVersion:2,rows:3,cols:3}},students:STU,service:{}});
   const placed=Object.keys(m4.seats).map(k=>m4.seats[k].stu);
   assert.strictEqual(placed.filter(x=>x==='v1').length,1,'bir öğrenci iki koltuğa yerleşmemeli');
-  const orphanSeat=Object.keys(m4.seats).filter(k=>m4.studs[m4.seats[k].stu]&&m4.studs[m4.seats[k].stu].orphan);
-  assert.strictEqual(orphanSeat.length,1,'listede olmayan adı taşıyan koltuk korunmalı');
-  assert.strictEqual(P.realStudents(m4).some(s=>s.orphan),false,'orphan bekleyen listesine girmemeli');
-  const back=P.toStored(m4).elements.filter(e=>e.type==='koltuk'&&e.properties.studentName==='Ayrılmış Öğrenci');
-  assert.strictEqual(back.length,1,'orphan adı kayıtta kaybolmamalı');
+  // serviste olmayan (listede adı geçmeyen) öğrenci koltukta gösterilmez; plan kaydedilirken de yazılmaz
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(m4.dropped)),['Ayrılmış Öğrenci'],'serviste olmayan öğrenci koltuktan çıkarılmalı');
+  assert.strictEqual(Object.keys(m4.seats).some(k=>m4.studs[m4.seats[k].stu]&&m4.studs[m4.seats[k].stu].orphan),false,'serviste olmayan öğrenci koltukta kalmamalı');
+  assert.strictEqual(P.toStored(m4).elements.filter(e=>e.type==='koltuk'&&e.properties.studentName==='Ayrılmış Öğrenci').length,0,'kayıtta serviste olmayan öğrenci adı kalmamalı');
+  // servis öğrenci listesi hiç yoksa (veri yüklenmemiş) ad korunur: karar verilemez
+  const m5=P.fromStored({elements:dup,layout:{table:{editorVersion:2,rows:3,cols:3}},students:[],service:{}});
+  assert.strictEqual(m5.dropped.length,0,'liste boşken ad silinmemeli');
+  assert.strictEqual(P.toStored(m5).elements.filter(e=>e.type==='koltuk'&&e.properties.studentName==='Ayrılmış Öğrenci').length,1,'liste boşken ad kayıtta kalmalı');
 }
 
 /* 5) Otomatik yerleştirme: kardeşler yan yana, kapalı/rezerve koltuk atlanır, kapasite aşımı bildirilir. */
@@ -188,7 +191,7 @@ assert.strictEqual(P.pickTemplate(500),'otobus');
 function runWiring(){
   const tr=fs.readFileSync('js/modules/transport.js','utf8'),loader=fs.readFileSync('js/app-loader.js','utf8'),sw=fs.readFileSync('service-worker.js','utf8');
   const css=fs.readFileSync('css/design-system-base.css','utf8'),entry=fs.readFileSync('css/design-system.css','utf8'),idx=fs.readFileSync('index.html','utf8'),bundles=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
-  assert(/async function openGridEditor\(s\)/.test(tr)&&tr.includes("js/modules/bus-seating-grid.js?v=1"),'transport.js yeni editörü tembel yüklemeli');
+  assert(/async function openGridEditor\(s\)/.test(tr)&&tr.includes("js/modules/bus-seating-grid.js?v=2"),'transport.js yeni editörü tembel yüklemeli');
   assert((tr.match(/function openBusEditor\([\s\S]*?function openLegacyBusEditor/)||[''])[0].includes('openGridEditor(s)'),'openBusEditor yeni editörü açmalı');
   assert(tr.includes('function openLegacyBusEditor(')&&tr.includes('openLegacyBusEditor(s.id)'),'yükleme hatasında eski editöre düşülmeli');
   assert(tr.includes('planTableKaydet(servisId,payload.sablon,payload.elements,payload.layout,payload.planAdi)'),'kayıt ServisOturmaService.planTableKaydet ile yapılmalı');
@@ -198,7 +201,7 @@ function runWiring(){
   assert(tr.includes('SABLON_AD[p?.sablon]'),'servis oturma listesi şablon adlarını okunur göstermeli');
   const tv=loader.match(/js\/modules\/transport\.js\?v=(\d+)/)[1],stv=sw.match(/js\/modules\/transport\.js\?v=(\d+)/)[1];
   assert.strictEqual(tv,stv,'transport.js sürümü yükleyici ve service worker’da aynı olmalı');
-  assert(sw.includes("./js/modules/bus-seating-grid.js?v=1"),'service worker yeni modülü önbelleğe almalı');
+  assert(sw.includes("./js/modules/bus-seating-grid.js?v=2"),'service worker yeni modülü önbelleğe almalı');
   const dsv=idx.match(/css\/design-system\.css\?v=(\d+)/)[1];assert(sw.includes(`./css/design-system.css?v=${dsv}`),'service worker CSS sürümü index.html ile aynı olmalı');
   assert(/design-system-base\.css\?v=\d+/.test(entry));
   assert(bundles.includes("'js/modules/bus-seating-grid.js'"),'derleme betiği yeni modülü transport paketine eklemeli');

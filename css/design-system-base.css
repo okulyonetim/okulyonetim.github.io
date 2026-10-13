@@ -12805,12 +12805,13 @@ html[data-theme="dark"] .bsg-root{--bsg-chip-s:42%;--bsg-chip-l:23%;--bsg-chip-i
 .bsg-root .bsg-ibtn[disabled]{opacity:.32;cursor:default;background:transparent}
 .bsg-root .bsg-btn{height:38px;padding:0 var(--ka-sp-14);display:inline-flex;align-items:center;justify-content:center;gap:var(--ka-sp-8);border:var(--ka-border-w) solid var(--bsg-line-strong);border-radius:var(--ka-r-3);background:var(--bsg-surface);color:var(--bsg-ink);font-weight:var(--ka-fw-650);font-size:var(--ka-fs-13-5);white-space:nowrap}
 .bsg-root .bsg-btn:hover{border-color:var(--bsg-ink)}
-.bsg-root .bsg-btn.bsg-pri{background:var(--bsg-accent);border-color:var(--bsg-accent);color:var(--bsg-accent-ink)}
-.bsg-root .bsg-btn.bsg-pri:hover{filter:brightness(1.05)}
+.bsg-root .bsg-btn.bsg-pri{background:var(--ka-btn-primary-bg);border-color:var(--ka-btn-primary-edge);color:var(--ka-btn-primary-ink);text-shadow:var(--ka-btn-primary-ink-shadow);box-shadow:var(--ka-btn-primary-shadow);-webkit-backdrop-filter:var(--ka-btn-primary-filter);backdrop-filter:var(--ka-btn-primary-filter)}
+.bsg-root .bsg-btn.bsg-pri:hover{background:var(--ka-btn-primary-bg-hover);border-color:var(--ka-btn-primary-edge)}
+.bsg-root .bsg-btn.bsg-pri:active{transform:scale(var(--ka-btn-primary-press-scale))}
 .bsg-root .bsg-btn.bsg-dng{color:var(--bsg-danger);border-color:var(--bsg-danger)}
 .bsg-root .bsg-btn[disabled]{opacity:.45;cursor:default}
 .bsg-root .bsg-savebtn{height:36px;margin-inline:var(--ka-sp-4) var(--ka-sp-2);padding:0 var(--ka-sp-14);flex:none}
-.bsg-root .bsg-savebtn:not(.is-dirty){background:var(--bsg-surface);border-color:var(--bsg-line-strong);color:var(--bsg-muted)}
+.bsg-root .bsg-savebtn:not(.is-dirty){background:var(--bsg-surface);border-color:var(--bsg-line-strong);color:var(--bsg-muted);text-shadow:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 
 /* Durum şeridi */
 .bsg-root .bsg-stats{grid-row:2;display:grid;gap:var(--ka-sp-10);padding:var(--ka-sp-6) var(--ka-sp-16) var(--ka-sp-10)}
@@ -12819,7 +12820,7 @@ html[data-theme="dark"] .bsg-root{--bsg-chip-s:42%;--bsg-chip-l:23%;--bsg-chip-i
 .bsg-root .bsg-st-num span{font-size:var(--ka-fs-18);font-weight:var(--ka-fw-600);color:var(--bsg-muted);letter-spacing:0}
 .bsg-root .bsg-st-lbl{flex:1;min-width:0;padding-bottom:var(--ka-sp-3);color:var(--bsg-muted);font-size:var(--ka-fs-13)}
 .bsg-root .bsg-bar{height:6px;border-radius:var(--ka-r-10);background:var(--bsg-surface-2);overflow:hidden}
-.bsg-root .bsg-bar i{display:block;height:100%;border-radius:inherit;background:var(--bsg-accent);transition:width var(--ka-dur-220)}
+.bsg-root .bsg-bar i{display:block;height:100%;border-radius:inherit;background:var(--ka-btn-primary-bg);transition:width var(--ka-dur-220)}
 .bsg-root .bsg-legend{display:flex;flex-wrap:wrap;gap:var(--ka-sp-6) var(--ka-sp-16);color:var(--bsg-muted);font-size:var(--ka-fs-12-5)}
 .bsg-root .bsg-legend span{display:inline-flex;align-items:center;gap:var(--ka-sp-6)}
 .bsg-root .bsg-legend b{color:var(--bsg-ink);font-weight:var(--ka-fw-700);font-variant-numeric:tabular-nums}
@@ -12901,7 +12902,7 @@ html[data-theme="dark"] .bsg-root{--bsg-chip-s:42%;--bsg-chip-l:23%;--bsg-chip-i
 .bsg-root .bsg-dock.is-over{outline:calc(var(--ka-border-w) * 2) dashed var(--bsg-accent);outline-offset:-6px}
 .bsg-root .bsg-dock-head{display:flex;align-items:center;gap:var(--ka-sp-8);padding:var(--ka-sp-6) var(--ka-sp-8) var(--ka-sp-2) var(--ka-sp-16)}
 .bsg-root .bsg-dock-toggle{flex:1;display:flex;align-items:center;gap:var(--ka-sp-10);min-height:42px;padding:0;border:0;background:none;font-weight:var(--ka-fw-700);font-size:var(--ka-fs-14-5);text-align:left}
-.bsg-root .bsg-badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 var(--ka-sp-7);border-radius:var(--ka-r-10);background:var(--bsg-accent);color:var(--bsg-accent-ink);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-750);font-variant-numeric:tabular-nums}
+.bsg-root .bsg-badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 var(--ka-sp-7);border-radius:var(--ka-r-10);background:var(--bsg-accent-soft);border:var(--ka-border-w) solid var(--bsg-accent-line);color:var(--bsg-accent-text);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-750);font-variant-numeric:tabular-nums}
 .bsg-root .bsg-badge.is-zero{background:var(--bsg-surface-2);color:var(--bsg-muted)}
 .bsg-root .bsg-dock-toggle .bsg-chev{margin-left:auto;transition:transform var(--ka-dur-200);color:var(--bsg-muted)}
 .bsg-root .bsg-dock[data-open="1"] .bsg-chev{transform:rotate(180deg)}
@@ -12966,8 +12967,9 @@ html[data-theme="dark"] .bsg-root{--bsg-chip-s:42%;--bsg-chip-l:23%;--bsg-chip-i
 /* Mod geçişi */
 .bsg-root .bsg-modebar{grid-row:6;padding:var(--ka-sp-8) var(--ka-sp-16) calc(var(--ka-sp-14) + var(--ka-safe-bottom));background:var(--bsg-bg)}
 .bsg-root .bsg-seg{display:grid;grid-template-columns:1fr 1fr;gap:var(--ka-sp-4);padding:var(--ka-sp-4);border-radius:var(--ka-r-5);background:var(--bsg-surface-2)}
-.bsg-root .bsg-seg button{display:flex;align-items:center;justify-content:center;gap:var(--ka-sp-8);height:44px;padding:0;border:0;border-radius:var(--ka-r-3);background:transparent;color:var(--bsg-muted);font-weight:var(--ka-fw-700);font-size:var(--ka-fs-14)}
-.bsg-root .bsg-seg button[aria-pressed="true"]{background:var(--bsg-accent);color:var(--bsg-accent-ink);box-shadow:var(--bsg-seat-shadow)}
+.bsg-root .bsg-seg button{display:flex;align-items:center;justify-content:center;gap:var(--ka-sp-8);height:44px;padding:0;border:var(--ka-border-w) solid transparent;border-radius:var(--ka-r-3);background:transparent;color:var(--bsg-muted);font-weight:var(--ka-fw-700);font-size:var(--ka-fs-14)}
+.bsg-root .bsg-seg button[aria-pressed="true"]{background:rgba(var(--t-accent-rgb),var(--ka-nav-pill-a));border:var(--ka-border-w) solid rgba(var(--t-accent-rgb),var(--ka-nav-pill-edge-a));color:var(--bsg-ink);box-shadow:0 0 var(--ka-sh-18) rgba(var(--t-accent-rgb),calc(var(--ka-nav-pill-glow-a) * var(--ka-shadow-a)))}
+.bsg-root .bsg-seg button[aria-pressed="true"] svg{color:var(--bsg-accent-text)}
 
 /* Sayfa (sheet) */
 .bsg-root .bsg-scrim{position:fixed;inset:0;z-index:40;background:var(--bsg-scrim);opacity:0;visibility:hidden;transition:opacity var(--ka-dur-180),visibility var(--ka-dur-180)}
