@@ -94,7 +94,8 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
   registerPageRoute('grades',async()=>openGradebook('grades'));}
 function setTitle(v){const el=$('#v2ModuleTitle');if(el)el.textContent=v||''}
 function setBottomActive(action){activeAction=action;$$('[data-ka-shell-action]').forEach(b=>{const on=b.dataset.kaShellAction===action;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')})}
-function syncShellBack(){const b=document.querySelector('[data-ka-shell-back]'),bar=document.querySelector('[data-ka-shell-backbar]');if(!b)return;const show=navStack.length>1||!!navStack[0]?.parentMenu;b.hidden=!show;b.setAttribute('aria-hidden',String(!show));if(bar)bar.hidden=!show;try{global.dispatchEvent(new CustomEvent('koruk:shell-route',{detail:{view:currentView(),canBack:show}}))}catch(_){}}
+/* Sayfada birden çok geri düğmesi var (telefon geri çubuğu + web üst çubuğu izi); durum hepsine uygulanır — yalnız ilkini güncellemek telefon düğmesini kalıcı gizli bırakıyordu. */
+function syncShellBack(){const bs=[...document.querySelectorAll('[data-ka-shell-back]')],bar=document.querySelector('[data-ka-shell-backbar]');if(!bs.length)return;const show=navStack.length>1||!!navStack[0]?.parentMenu;bs.forEach(b=>{b.hidden=!show;b.setAttribute('aria-hidden',String(!show))});if(bar)bar.hidden=!show;try{global.dispatchEvent(new CustomEvent('koruk:shell-route',{detail:{view:currentView(),canBack:show}}))}catch(_){}}
 function suspendModuleForShellSurface(){global.AppLoader?.suspendActiveModule?.()}
 function moduleAllowed(name){const meta=global.AppConfig?.module?.(name);return meta?.visible!==false&&global.PermissionService?.moduleLevel?.(name)!=='hidden'}
 function closeMenu(){const layer=$('#kaMenuLayer');if(layer){layer.classList.remove('open');layer.hidden=true;layer.innerHTML=''}menuGroup=null;menuEditing=false;document.body.classList.remove('ka-layer-open')}
