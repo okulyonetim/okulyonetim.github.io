@@ -8,7 +8,7 @@ function device(){if(!global.DeviceData)throw new Error('DeviceData hazır deği
 function localDoc(type,id){return device().get(type,id)}
 function activeUser(){return global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{}}
 function activeTeacherId(){const u=activeUser();return u.bagliOgretmenId||u.ogretmenId||''}
-function isTeacherUser(){const u=activeUser();return u.admin!==true&&!!activeTeacherId()}
+function isTeacherUser(){const u=activeUser();return u.admin!==true&&!!activeTeacherId()&&!global.PermissionService?.isManager?.()}
 function ownsClass(id){const tid=activeTeacherId();if(!tid)return false;const s=localDoc('siniflar',id)||device().list('siniflar').find(x=>x.id===id);return s?.sinifOgretmeniId===tid}
 function fakeDoc(row,id){return{exists:!!row,id:id||row?.id||'',data:()=>row?{...row}:undefined}}
 function fakeQuery(rows){const docs=(rows||[]).map(r=>({id:r.id,data:()=>({...r})}));return{empty:docs.length===0,size:docs.length,docs}}
@@ -37,7 +37,7 @@ const SinifOturmaService={_yetkiKontrol(id){const u=activeUser(),ok=isTeacherUse
 let active='services',query='',serviceFilter='all',serviceDetailId='',mounted=false,unsubs=[],editor=null,pendingPage=null;
 const uiUser=()=>window.AKTIF_KULLANICI||window.AppStore?.get?.('session.user')||{};
 const uiTeacherId=()=>{const u=uiUser();return u.bagliOgretmenId||u.ogretmenId||''};
-const uiTeacher=()=>uiUser().admin!==true&&!!uiTeacherId();
+const uiTeacher=()=>uiUser().admin!==true&&!!uiTeacherId()&&!window.PermissionService?.isManager?.();
 const classOwn=id=>{const t=uiTeacherId(),s=arr('siniflar').find(x=>x.id===id);return !!t&&s?.sinifOgretmeniId===t};
 const canEditBusSeats=()=>!uiTeacher()&&(uiUser().admin===true||!window.PermissionService||window.PermissionService.can('transport.seating.edit','edit'));
 const canEditClassSeat=id=>uiTeacher()?classOwn(id):(uiUser().admin===true||!window.PermissionService||window.PermissionService.can('transport.classSeating.edit','edit')||window.PermissionService.can('people.classes','edit'));

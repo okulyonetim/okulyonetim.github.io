@@ -15,7 +15,7 @@ const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\
 const fullName=o=>[o?.ad,o?.soyad].filter(Boolean).join(' ')||o?.adSoyad||'—';
 const activeUser=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||{};
 const teacherId=()=>{const u=activeUser();return u.bagliOgretmenId||u.ogretmenId||''};
-const isTeacherUser=()=>{const u=activeUser();return u.admin!==true&&!!teacherId()};
+const isTeacherUser=()=>{const u=activeUser();return u.admin!==true&&!!teacherId()&&!global.PermissionService?.isManager?.()};
 const can=(key,min='read')=>!global.PermissionService||global.PermissionService.can(key,min);
 const canTeacherReport=id=>teacherId()===id||(!isTeacherUser()&&can('people.teachers','edit'));
 let root=null,page='teachers',query='',branch='',studentClass='',studentGender='',unsubs=[],detail=null,delegated=false;

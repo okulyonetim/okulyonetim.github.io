@@ -59,7 +59,13 @@ let activeAction='home',menuGroup=null,menuEditing=false,visibilityObserver=null
 let navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
 let routeEpoch=0;
 const TEACHER_HIDDEN_PAGES=new Set(['committees:home','documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
-function isTeacherUser(){const u=user();if(u.admin===true)return false;const r=global.AKTIF_ROL||global.AppStore?.get?.('session.role')||arr('roller').find(x=>x.id===u.rolId)||{};const n=String(r.ad||r.rolAdi||u.rolAdi||u.rol||'').trim().toLocaleLowerCase('tr-TR');return n.includes('öğretmen')||n.includes('ogretmen')||!!(u.bagliOgretmenId||u.ogretmenId)}
+function isTeacherUser(){const u=user();if(u.admin===true)return false;const r=global.AKTIF_ROL||global.AppStore?.get?.('session.role')||arr('roller').find(x=>x.id===u.rolId)||{};const n=String(r.ad||r.rolAdi||u.rolAdi||u.rol||'').trim().toLocaleLowerCase('tr-TR');const byName=n.includes('öğretmen')||n.includes('ogretmen');
+  /* Yönetici / müdür rolü öğretmen kaydına bağlı olsa bile öğretmen kısıtına girmez; "öğretmen" adlı olmayan bir rol
+   * için Roller sayfasında "Yönetim" (Personel İşleri) modülü açıkça seçildiyse de kısıt uygulanmaz. */
+  if(global.PermissionService?.isManager?.())return false;
+  if(!byName&&global.PermissionService?.grantsModule?.('management','read'))return false;
+  return byName||!!(u.bagliOgretmenId||u.ogretmenId)}
+/* shell dışındaki sayfa kapıları (Personel İşleri sayfası vb.) aynı kuralı PermissionService.isTeacherAccount ile uygular. */
 function pageAllowed(name,page=''){return !isTeacherUser()||!TEACHER_HIDDEN_PAGES.has(`${name}:${page||''}`)}
 function teacherMenuGroupAllowed(group){return !isTeacherUser()||group?.key!=='management'}
 function itemAllowed(item){return moduleAllowed(item[2])&&pageAllowed(item[2],item[3]||'')}
