@@ -71,7 +71,10 @@ function teacherProfileShell(body){closeDetail();detail=document.createElement('
 function reportDate(v){if(!v)return'—';const s=String(v),m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}.${m[2]}.${m[1]}`:s}
 function reportDay(v){if(!v)return'—';const s=String(v),d=new Date(/^\d{4}-\d{2}-\d{2}$/.test(s)?`${s}T12:00:00`:s);return Number.isNaN(d.getTime())?'—':DAY[d.getDay()]}
 function reportTable(headers,rows,emptyText='Kayıt yok.'){if(!rows.length)return `<p>${esc(emptyText)}</p>`;return `<table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(v=>`<td>${esc(v??'—')}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
-function reportRelated(type,o){if(type==='sosyalKulupler')return relatedRows(type,o.id);const out=[...relatedRows(type,o.id)],seen=new Set(out.map(x=>x.id).filter(Boolean)),name=norm(fullName(o));for(const x of arr(type)){if(x.id&&seen.has(x.id))continue;const names=[x.ogretmen,x.danisman,x.gorevliOgretmen,x.sorumluOgretmen].filter(Boolean).map(norm),many=[x.gorevliOgretmenler,x.ogretmenler].filter(Array.isArray).flat().map(norm);if(name&&(names.some(n=>n===name||n.includes(name))||many.some(n=>n===name||n===norm(o.id)))){out.push(x);if(x.id)seen.add(x.id)}}return out}
+/* Rapor, profil ve belge durumu AYNI kümeyi görür: kayıt öğretmene yalnız kimlikle (ogretmenId / ogretmenIdler) bağlanır.
+   Kayıttaki eski isim alanları (ogretmen, danisman, gorevliOgretmen …) eşleştirmede kullanılmaz; yoksa başka öğretmene atanmış
+   bir rehberlik / belge kaydı eski isim metni yüzünden bu öğretmenin raporuna girer. */
+function reportRelated(type,o){return relatedRows(type,o.id)}
 function reportDocGroup(o,type,title){const rows=reportRelated(type,o),labels=global.BelgeDurumuService?.etiketler?.(type)||[];if(!rows.length||!labels.length)return'';return `<h3>${esc(title)}</h3>${rows.map(k=>`<p><b>${esc(docSummary(type,k))}</b></p><table><thead><tr>${labels.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody><tr>${labels.map((_,i)=>`<td>${k.kontroller?.[i]?'✓':'□'}</td>`).join('')}</tr></tbody></table>`).join('')}`}
 async function teacherReport(o){try{
  if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');

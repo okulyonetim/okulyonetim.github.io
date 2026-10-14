@@ -61,14 +61,22 @@ const miyase={id:'o2',ad:'Miyase',soyad:'Gürtürk'};
   assert.deepStrictEqual(names(api.reportRelated('sosyalKulupler',{id:'o3',ad:'Veysel',soyad:'Gül'})),['A','B']);
 }
 
-// 4) Kulüp dışındaki türler eskisi gibi çalışır (isim ile eşleştirme yalnız onlarda kalır)
+// 4) Kulüp dışındaki türler de YALNIZ kimlikle eşleşir: eski isim metni (danisman / ogretmen …) başka öğretmene atanmış kaydı getirmez
 {
-  const api=run([],{rehberlik:[{id:'r1',sinif:'5-A',danisman:'Miyase Gürtürk'},{id:'r2',sinif:'6-A',ogretmenId:'o2'},{id:'r3',sinif:'7-A',ogretmenId:'o7'}]});
-  assert.deepStrictEqual(api.reportRelated('rehberlik',miyase).map(x=>x.id),['r2','r1'],'Rehberlik eşleştirmesi (kimlik + isim) değişmemeli.');
+  const api=run([],{rehberlik:[
+    {id:'r1',sinif:'8-A',ogretmenId:'o2'},
+    {id:'r2',sinif:'2-A',ogretmenId:'o7',danisman:'Miyase Gürtürk'},
+    {id:'r3',sinif:'5-A',danisman:'Miyase Gürtürk'},
+    {id:'r4',sinif:'6-A',ogretmenIdler:['o2','o3']},
+    {id:'r5',sinif:'7-A',ogretmenId:'o7'}
+  ],bepPlani:[{id:'b1',ogretmenId:'o7',ad:'SEDAT KARAGÖZ',ogretmenler:['Miyase Gürtürk']},{id:'b2',sinif:'5-A',ders:'Matematik',ogretmenId:'o2'}]});
+  assert.deepStrictEqual(api.reportRelated('rehberlik',miyase).map(x=>x.id),['r1','r4'],'Rehberlik yalnız kimlikle bağlı kayıtlardan gelmeli; başka öğretmene atanmış 2-A eski danışman metniyle gelmemeli.');
+  assert.deepStrictEqual(api.reportRelated('bepPlani',miyase).map(x=>x.id),['b2'],'Diğer belge türlerinde de eski isim alanları eşleştirmeye girmemeli.');
+  for(const t of ['rehberlik','bepPlani'])assert.deepStrictEqual(api.reportRelated(t,miyase).map(x=>x.id),api.relatedRows(t,'o2').map(x=>x.id),'Rapor ile profil aynı kümeyi görmeli: '+t);
 }
 
 // 5) Kaynak sözleşmesi: üç modül aynı kulüp kuralını kullanır, rapor kulüpte isim eşleştirmesi yapmaz
-assert(/function reportRelated\(type,o\)\{if\(type==='sosyalKulupler'\)return relatedRows\(type,o\.id\);/.test(classic),'reportRelated sosyal kulüpte yalnız relatedRows kullanmalı.');
+assert(/function reportRelated\(type,o\)\{return relatedRows\(type,o\.id\)\}/.test(classic),'reportRelated her türde yalnız relatedRows (kimlik) kullanmalı.');
 for(const [name,src] of [['classic-parity.js',parity],['people-import.js',imp]]){
   assert(/function teacherRows\(type,id\)\{if\(type==='sosyalKulupler'\)return arr\(type\)\.filter\(x=>Array\.isArray\(x\.ogretmenIdler\)\?x\.ogretmenIdler\.includes\(id\):/.test(src),`${name}: teacherRows kulüp için dizi-öncelikli kuralı kullanmalı.`);
 }
