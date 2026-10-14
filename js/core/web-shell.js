@@ -87,7 +87,7 @@ function queueRender(){if(renderQueued)return;renderQueued=true;(global.requestA
 
 /* ── aktif sayfa ── */
 function resolveActive(view){
-  if(!view||(view.kind==='route'&&view.name==='dashboard'))return{home:true,group:'',key:''};
+  if(!view||(view.kind==='route'&&view.name==='dashboard'&&!view.page))return{home:true,group:'',key:''};   /* dashboard/guide ve dashboard/about (Ayarlar grubundaki kılavuz sayfaları) ana sayfa sayılmaz */
   if(view.kind==='route'){
     const exact=findItem(view.name,view.page);
     if(exact)return{home:false,group:exact.group.key,key:itemKey(exact.item.route,exact.item.page),item:exact.item,groupLabel:exact.group.label};
