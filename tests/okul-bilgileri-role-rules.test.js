@@ -16,12 +16,16 @@ async function main(){
       await setDoc(doc(db,'oy_kullanicilar','editorUid'),{uid:'editorUid',admin:false,aktif:true,rolId:'okul-editor'});
       await setDoc(doc(db,'oy_kullanicilar','viewerUid'),{uid:'viewerUid',admin:false,aktif:true,rolId:'okul-viewer'});
       await setDoc(doc(db,'oy_kullanicilar','adminUid'),{uid:'adminUid',admin:true,aktif:true});
+      // Yönetici rolü okulBilgileri yetkisi tanımlamasa bile okul bilgilerini yazabilmeli (rol adı Yönetici).
+      await setDoc(doc(db,'oy_roller','yonetici'),{ad:'Yönetici',yetkiler:{'module.settings':'goruntule'}});
+      await setDoc(doc(db,'oy_kullanicilar','managerUid'),{uid:'managerUid',admin:false,aktif:true,rolId:'yonetici',bagliOgretmenId:'t1'});
       await setDoc(doc(db,'oy_okulBilgileri','ayarlar'),{okulAdi:'Koruk Ortaokulu',il:'ELAZIĞ'});
     });
 
     const editor = env.authenticatedContext('editorUid').firestore();
     const viewer = env.authenticatedContext('viewerUid').firestore();
     const admin = env.authenticatedContext('adminUid').firestore();
+    const manager = env.authenticatedContext('managerUid').firestore();
     const anon = env.unauthenticatedContext().firestore();
 
     await assertSucceeds(getDoc(doc(viewer,'oy_okulBilgileri','ayarlar')));
@@ -29,6 +33,8 @@ async function main(){
     await assertSucceeds(updateDoc(doc(editor,'oy_okulBilgileri','ayarlar'),{ilce:'KARAKOÇAN'}));
     await assertFails(updateDoc(doc(viewer,'oy_okulBilgileri','ayarlar'),{ilce:'MERKEZ'}));
     await assertSucceeds(updateDoc(doc(admin,'oy_okulBilgileri','ayarlar'),{ilce:'KARAKOÇAN'}));
+    await assertSucceeds(updateDoc(doc(manager,'oy_okulBilgileri','ayarlar'),{ilce:'MERKEZ'}));
+    await assertSucceeds(getDoc(doc(admin,'oy_okulBilgileri','ayarlar')));
 
     console.log('Okul Bilgileri rol güvenliği testleri başarılı.');
   } finally { await env.cleanup(); }

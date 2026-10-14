@@ -41,7 +41,9 @@ function syncShellBackbar(){
     if(el.closest('[data-ka-shell-backbar]')||el.closest('[hidden],[aria-hidden="true"]'))return false;
     const style=global.getComputedStyle?global.getComputedStyle(el):null;if(style&&(style.display==='none'||style.visibility==='hidden'))return false;
     const text=String(el.getAttribute('aria-label')||el.getAttribute('title')||el.textContent||'').replace(/\s+/g,' ').trim();
-    return /(^|\s)geri(\s|$)/i.test(text)||/←\s*geri/i.test(text)||/‹\s*geri/i.test(text);
+    /* Yalnız gerçekten "Geri" / "← Geri" / "Geri dön" olan düğme yerel geri düğmesidir. "Yedekten Geri Yükle",
+     * "Geri Al" gibi işlem düğmeleri geri çubuğunu gizletmemeli (Veriler sayfasında geri düğmesi kayboluyordu). */
+    return /^(?:[←‹«<⬅◀]\s*)?geri(?:\s+dön)?$/iu.test(text);
   });
   const show=!localBack;bar.hidden=!show;bar.style.display=show?'':'none';
 }

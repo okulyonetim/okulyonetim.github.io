@@ -32,12 +32,14 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId));
     }
 
+    function yoneticiRolAdi(ad) {
+      return ad in ['Yönetici', 'YÖNETİCİ', 'Yonetici', 'YONETICI', 'yönetici', 'yonetici'];
+    }
+
     function yoneticiMi() {
       return rolBelgemVarMi() && (
-        (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.ad == 'Yönetici')
-        || (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.ad == 'YONETICI')
-        || (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.rolAdi == 'Yönetici')
-        || (get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.rolAdi == 'YONETICI')
+        yoneticiRolAdi(get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.get('ad', ''))
+        || yoneticiRolAdi(get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.get('rolAdi', ''))
       );
     }
 
@@ -448,7 +450,8 @@ service cloud.firestore {
 
     match /oy_okulBilgileri/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('okulBilgileri');
+      // Admin ve Yönetici rolü okul bilgilerini her zaman ekleyip düzenleyebilir; diğer roller okulBilgileri yetkisiyle.
+      allow create, update, delete: if adminMi() || yoneticiMi() || moduluDuzenleyebilir('okulBilgileri');
     }
 
     match /oy_dersSaatleri/{id} {
