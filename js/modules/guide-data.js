@@ -27,7 +27,7 @@ const D={
       not:'Dosya büyüktür (şu an yaklaşık 260 MB); Wi‑Fi bağlantısıyla indirmeniz önerilir. Android, uygulamayı ilk kez kurarken “bilinmeyen kaynaklardan yükleme” izni isteyebilir.'
     },
     degisiklikler:'https://github.com/okulyonetim/okulyonetim.github.io/commits/main',
-    pdf:'',
+    pdf:'assets/guide/Koruk_Asistan_Kullanim_Kilavuzu.pdf',
     pdfAciklama:'Tüm rehberleri tek belgede, yazdırmaya uygun A4 düzeninde indirin.'
   },
   sss:[
