@@ -10402,26 +10402,24 @@ html[data-theme="dark"] #v2ModuleRoot [data-classic-cizelge-page] .ka-guidance-p
 @keyframes ka-orb-a{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,40px)}}
 @keyframes ka-orb-b{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,-30px)}}
 
+/* PERFORMANS: orb'lar artık filter:blur(80px) + sonsuz transform animasyonu DEĞİL. Kartların/yan menünün backdrop-filter'ı orb'un altında
+   her kare yeniden bulanıklaştırılıyordu (ölçüm: boşta ana sayfa 6 fps → 56 fps). Bulanıklık, yumuşak kademeli gradient ile verilir; sabittir. */
 html[data-theme="dark"]::before,
 html[data-theme="dark"]::after,
 html[data-theme="dark"] body::before{
-  content:"";position:fixed;z-index:-1;border-radius:50%;
-  filter:blur(var(--ka-orb-blur));pointer-events:none;will-change:transform;
+  content:"";position:fixed;z-index:-1;border-radius:50%;pointer-events:none;
 }
 html[data-theme="dark"]::before{
-  width:460px;height:460px;top:-120px;left:-140px;
-  background:radial-gradient(circle,var(--ka-orb-a) 0%,transparent 70%);
-  animation:ka-orb-a var(--ka-dur-14000) ease-in-out infinite;
+  width:700px;height:700px;top:-240px;left:-260px;
+  background:radial-gradient(circle closest-side,var(--ka-orb-a) 0%,color-mix(in srgb,var(--ka-orb-a) 60%,transparent) 30%,color-mix(in srgb,var(--ka-orb-a) 20%,transparent) 62%,transparent 100%);
 }
 html[data-theme="dark"]::after{
-  width:400px;height:400px;bottom:-100px;right:-120px;
-  background:radial-gradient(circle,var(--ka-orb-b) 0%,transparent 70%);
-  animation:ka-orb-b var(--ka-dur-17000) ease-in-out infinite;
+  width:640px;height:640px;bottom:-220px;right:-240px;
+  background:radial-gradient(circle closest-side,var(--ka-orb-b) 0%,color-mix(in srgb,var(--ka-orb-b) 60%,transparent) 30%,color-mix(in srgb,var(--ka-orb-b) 20%,transparent) 62%,transparent 100%);
 }
 html[data-theme="dark"] body::before{
-  width:340px;height:340px;top:42vh;right:-170px;
-  background:radial-gradient(circle,var(--ka-orb-c) 0%,transparent 70%);
-  animation:ka-orb-a var(--ka-dur-19000) ease-in-out infinite reverse;
+  width:580px;height:580px;top:calc(42vh - 120px);right:-290px;
+  background:radial-gradient(circle closest-side,var(--ka-orb-c) 0%,color-mix(in srgb,var(--ka-orb-c) 60%,transparent) 30%,color-mix(in srgb,var(--ka-orb-c) 20%,transparent) 62%,transparent 100%);
 }
 
 /* Opak zemin zinciri → şeffaf (orb'lar kartın arkasına ulaşsın) */
@@ -10471,7 +10469,7 @@ html[data-theme="dark"] #v2ModuleRoot .ka-school-summary-card{
 html[data-theme="dark"] .ka-school-summary-card::before{
   content:"";position:absolute;z-index:0;top:-30px;right:-20px;width:var(--ka-ic-120);height:var(--ka-ic-120);border-radius:50%;
   background:radial-gradient(circle,var(--sc-blob),transparent 70%);
-  filter:blur(40px);opacity:.55;pointer-events:none;
+  opacity:.4;pointer-events:none;
 }
 /* Alt accent çizgisi */
 html[data-theme="dark"] .ka-school-summary-card::after{
@@ -10604,7 +10602,7 @@ html[data-theme] #khBell.kh-bell-modern{
 }
 html[data-theme] #khBell.kh-bell-modern::before{
   content:"";position:absolute;z-index:0;width:200px;height:200px;border-radius:50%;top:-60px;right:-40px;
-  background:radial-gradient(circle,rgba(var(--bc-rgb),.28) 0%,transparent 70%);filter:blur(55px);pointer-events:none;
+  background:radial-gradient(circle,rgba(var(--bc-rgb),.28) 0%,transparent 70%);pointer-events:none;
 }
 html[data-theme] #khBell.kh-bell-modern::after{
   content:"";position:absolute;z-index:2;top:0;left:0;right:0;height:2px;border-radius:var(--ka-r-9) var(--ka-r-9) 0 0;pointer-events:none;
@@ -10802,8 +10800,7 @@ html #v2ModuleRoot .ka-home .kh-hero{
 }
 html #v2ModuleRoot .ka-home .kh-hero::before{
   content:"";position:absolute;z-index:0;width:230px;height:230px;border-radius:50%;right:-76px;top:-96px;
-  background:radial-gradient(circle,var(--hr-glow) 0%,transparent 70%);filter:blur(42px);pointer-events:none;
-  animation:ka-hero-blob var(--ka-dur-9000) ease-in-out infinite;
+  background:radial-gradient(circle,var(--hr-glow) 0%,transparent 70%);pointer-events:none;
 }
 html #v2ModuleRoot .ka-home .kh-hero::after{
   content:"";position:absolute;z-index:2;top:0;left:0;right:0;height:2px;border-radius:var(--ka-r-10) var(--ka-r-10) 0 0;pointer-events:none;
@@ -11357,16 +11354,16 @@ input.ka-spine-range{width:100%;min-height:0;padding:0;border:0;background:trans
 html:not([data-theme="dark"])::before,
 html:not([data-theme="dark"])::after,
 html:not([data-theme="dark"]) body::before{
-  content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(80px);pointer-events:none;will-change:transform;
+  content:"";position:fixed;z-index:-1;border-radius:50%;pointer-events:none;
 }
 html:not([data-theme="dark"])::before{
-  width:460px;height:460px;top:-120px;left:-140px;background:radial-gradient(circle,rgba(var(--c-indigo),.16) 0%,transparent 70%);animation:ka-orb-a var(--ka-dur-14000) ease-in-out infinite;
+  width:700px;height:700px;top:-240px;left:-260px;background:radial-gradient(circle closest-side,rgba(var(--c-indigo),.16) 0%,rgba(var(--c-indigo),.096) 30%,rgba(var(--c-indigo),.032) 62%,transparent 100%);
 }
 html:not([data-theme="dark"])::after{
-  width:400px;height:400px;bottom:-100px;right:-120px;background:radial-gradient(circle,rgba(var(--c-emerald),.14) 0%,transparent 70%);animation:ka-orb-b var(--ka-dur-17000) ease-in-out infinite;
+  width:640px;height:640px;bottom:-220px;right:-240px;background:radial-gradient(circle closest-side,rgba(var(--c-emerald),.14) 0%,rgba(var(--c-emerald),.084) 30%,rgba(var(--c-emerald),.028) 62%,transparent 100%);
 }
 html:not([data-theme="dark"]) body::before{
-  width:340px;height:340px;top:42vh;right:-170px;background:radial-gradient(circle,rgba(var(--c-amber),.12) 0%,transparent 70%);animation:ka-orb-a var(--ka-dur-19000) ease-in-out infinite reverse;
+  width:580px;height:580px;top:calc(42vh - 120px);right:-290px;background:radial-gradient(circle closest-side,rgba(var(--c-amber),.12) 0%,rgba(var(--c-amber),.072) 30%,rgba(var(--c-amber),.024) 62%,transparent 100%);
 }
 html:not([data-theme="dark"]) body,
 html:not([data-theme="dark"]) .ka-app-shell,
@@ -11490,7 +11487,7 @@ html #v2ModuleRoot .ka-home .kh-trial-live__card::before,
 html #v2ModuleRoot .ka-home .kh-quick button::before,
 html #v2ModuleRoot .ka-home .kh-social button::before{
   content:"";position:absolute;z-index:0;top:-44px;right:-30px;width:150px;height:150px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(var(--ac-rgb),.55),transparent 70%);filter:blur(calc(34px * var(--ka-blur-k)));opacity:var(--gl-blob);
+  background:radial-gradient(circle,rgba(var(--ac-rgb),.55),transparent 70%);opacity:calc(var(--gl-blob) * .75);
 }
 html #v2ModuleRoot .ka-home .kh-card::after,
 html #v2ModuleRoot .ka-home .kh-food-card::after,
@@ -11543,7 +11540,7 @@ html #v2ModuleRoot .ka-home .ka-school-summary-card.is-class{--sc-rgb:var(--c-am
 html #v2ModuleRoot .ka-home .ka-school-summary-card.is-service{--sc-rgb:var(--c-red);--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6v6M15 6v6M2 12h19.6'/%3E%3Cpath d='M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3'/%3E%3Ccircle cx='7' cy='18' r='2'/%3E%3Cpath d='M9 18h5'/%3E%3Ccircle cx='16' cy='18' r='2'/%3E%3C/svg%3E")}
 html #v2ModuleRoot .ka-home .ka-school-summary-card::before{
   content:"";position:absolute;z-index:0;top:-30px;right:-20px;width:var(--ka-ic-120);height:var(--ka-ic-120);border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(var(--sc-rgb),.55),transparent 70%);filter:blur(calc(34px * var(--ka-blur-k)));opacity:var(--gl-blob);
+  background:radial-gradient(circle,rgba(var(--sc-rgb),.55),transparent 70%);opacity:calc(var(--gl-blob) * .75);
 }
 html #v2ModuleRoot .ka-home .ka-school-summary-card::after{
   content:""!important;display:block!important;position:absolute!important;z-index:2;left:0!important;right:0!important;bottom:0!important;top:auto!important;
@@ -11865,7 +11862,7 @@ html body.ka-layer-open{overflow:hidden}
 html #kaMenuLayer.ka-menu-layer .ka-menu-page{position:relative;isolation:isolate;height:100%;display:flex;flex-direction:column;overflow:hidden;background:transparent!important;color:var(--gl-fg)!important}
 /* zemin: bulanık renkli orb'lar (kartların backdrop-filter'ının süzeceği renkler) */
 html #kaMenuLayer.ka-menu-layer .ka-menu-page::before{
-  content:"";position:absolute;inset:-60px;z-index:-1;pointer-events:none;filter:blur(44px);opacity:var(--gl-orb);
+  content:"";position:absolute;inset:-60px;z-index:-1;pointer-events:none;opacity:calc(var(--gl-orb) * .85);
   background:
     radial-gradient(circle 240px at 12% 8%,rgba(var(--c-indigo),.34),transparent 70%),
     radial-gradient(circle 220px at 92% 92%,rgba(var(--c-emerald),.26),transparent 70%),
@@ -11928,7 +11925,7 @@ html #kaMenuLayer.ka-menu-layer .ka-menu-card{
 html #kaMenuLayer.ka-menu-layer .ka-menu-card:active{transform:scale(.97)}
 html #kaMenuLayer.ka-menu-layer .ka-menu-card::before{
   content:"";position:absolute;z-index:0;top:-40px;right:-26px;width:140px;height:140px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,color-mix(in srgb,var(--mc) 60%,transparent),transparent 70%);filter:blur(calc(32px * var(--ka-blur-k)));opacity:var(--gl-blob);
+  background:radial-gradient(circle,color-mix(in srgb,var(--mc) 60%,transparent),transparent 70%);opacity:calc(var(--gl-blob) * .75);
 }
 html #kaMenuLayer.ka-menu-layer .ka-menu-card::after{
   content:"";position:absolute;z-index:2;left:0;right:0;bottom:0;height:2px;pointer-events:none;
