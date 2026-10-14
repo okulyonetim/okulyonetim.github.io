@@ -1353,6 +1353,7 @@
   --ka-shadow-md:0 var(--ka-sh-8) var(--ka-sh-22) rgba(15,16,16,calc(.08 * var(--ka-shadow-a)));
   --ka-shadow-modal:0 var(--ka-sh-20) var(--ka-sh-56) rgba(7,10,9,calc(.18 * var(--ka-shadow-a)));
   --hd-bg:rgba(255,255,255,.78);
+  --hd-bg-solid:rgb(253,253,252);        /* masaüstünde (backdrop-filter kapalı) kaydırılan içeriğin üstünde duran çubuklar: --hd-bg'nin zemin üstündeki opak karşılığı */
   --hd-solid:#ffffff;
   --hd-tile:rgba(0,0,0,.04);
   --hd-tile-edge:rgba(0,0,0,.09);
@@ -1361,6 +1362,7 @@
   --hd-chip:var(--t-accent-text);
   --pp-solid:#ffffff;
   --pp-bg:rgba(255,255,255,.92);
+  --pp-bg-solid:rgb(254,254,254);        /* masaüstünde açılır pencere / modal zemini (--pp-bg'nin opak karşılığı) */
   --pp-edge:rgba(0,0,0,.08);
   --pp-shadow:0 var(--ka-sh-22) var(--ka-sh-56) rgba(30,30,60,calc(.20 * var(--ka-shadow-a))),0 1px 0 rgba(255,255,255,.95) inset;
   --pp-row:rgba(0,0,0,.035);
@@ -1480,6 +1482,7 @@ html[data-theme="dark"]{
   --ka-shadow-md:0 var(--ka-sh-10) var(--ka-sh-28) rgba(var(--ka-shadow-rgb),calc(.36 * var(--ka-shadow-a)));
   --ka-shadow-modal:0 var(--ka-sh-22) var(--ka-sh-64) rgba(var(--ka-shadow-rgb),calc(.58 * var(--ka-shadow-a)));
   --hd-bg:rgba(12,12,16,.72);
+  --hd-bg-solid:rgb(11,11,14);
   --hd-solid:#0c0c10;
   --hd-tile:rgba(255,255,255,.07);
   --hd-tile-edge:rgba(255,255,255,.13);
@@ -1488,6 +1491,7 @@ html[data-theme="dark"]{
   --hd-chip:var(--t-accent-text);
   --pp-solid:#17171e;
   --pp-bg:rgba(22,22,28,.88);
+  --pp-bg-solid:rgb(20,20,26);
   --pp-edge:rgba(255,255,255,.12);
   --pp-shadow:0 var(--ka-sh-26) var(--ka-sh-64) rgba(var(--ka-shadow-rgb),calc(.58 * var(--ka-shadow-a))),0 1px 0 rgba(255,255,255,.09) inset;
   --pp-row:rgba(255,255,255,.055);
@@ -13899,4 +13903,30 @@ html #v2ModuleRoot .ka-home>.kh-hero .kh-greeting{font-size:var(--ka-fs-30);line
 html #v2ModuleRoot .ka-home>[data-home-section="quick"] .kh-quick{grid-template-columns:repeat(2,minmax(0,1fr))}
 html #v2ModuleRoot .ka-home .ka-web-brief{margin:var(--ka-sp-14) 0 0;max-width:46ch;font-size:var(--ka-fs-15);line-height:var(--ka-lh-1-55);font-weight:var(--ka-fw-500);color:var(--ka-text-muted)}
 html #v2ModuleRoot .ka-home .ka-web-brief b{font-weight:var(--ka-fw-800);color:var(--ka-text)}
+}
+
+/* ===== PERFORMANS — MASAÜSTÜ (fare ile kullanılan ekranlar ve ≥1100px) =====
+   backdrop-filter, arkasındaki pikselleri her kaydırma/animasyon karesinde yeniden bulanıklaştırır. Masaüstü tarayıcıda 1080p'de
+   ana sayfada 14 cam yüzey (yan menü, üst çubuk, hero, özet kartları…) birlikte ~1,5 milyon piksel bulanıklaştırıyor ve sayfa ~8 fps'e
+   düşüyordu; bulanıklık kapatılınca 60 fps. Yüzeyler yarı saydam kalır, yalnız arkadaki bulanıklık yoktur; zemindeki orb'lar zaten
+   yumuşak sabit gradient olduğu için görünüm neredeyse aynıdır. Sonsuz canlı zil/ikon animasyonları da kaydırmayı yeniden çizdirdiği için
+   burada durağandır (kaydırmalı haber bandı hariç). Telefon / APK (dokunmatik, <1100px) bu bloktan etkilenmez.
+   `:not(#_x):not(#_y)` önceki !important kurallarını (kimlikli seçiciler dahil) geçmek içindir. */
+@media (hover:hover) and (pointer:fine),(min-width:1100px){
+  html:not(#_x):not(#_y) *,html:not(#_x):not(#_y) *::before,html:not(#_x):not(#_y) *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  /* kaydırılan içeriğin üstünde duran çubuklar / açılır pencereler bulanıklık yerine opak zemin kullanır */
+  html:not(#_x):not(#_y){--pp-bg:var(--pp-bg-solid)}
+  html:not(#_x):not(#_y) :is(.ka-app-header,.ka-academic-calendar__bar,.ka-teacher-list-workspace__footer,.ka-rubric-workspace__header,.ka-gradebook-workspace__header,.ka-checklist-workspace__header,.ka-teacher-list-workspace__head,.ka-map-workspace__header,.ka-notes-workspace__header,.ka-project-workspace__header){background:var(--hd-bg-solid)!important}
+  html:not(#_x):not(#_y) :is(.dv3,.ka-report-preview){--dv-hbg:var(--hd-bg-solid)}
+  html:not(#_x):not(#_y) #khBell .kh-bell-timeline-current-icon::after,
+  html:not(#_x):not(#_y) #khBell .kh-bell-progress-v2>i>b::after,
+  html:not(#_x):not(#_y) .kh-bell-orb.is-live::after,
+  html:not(#_x):not(#_y) .kh-bell-progress>i::after,
+  html:not(#_x):not(#_y) .kh-icon-bell svg,
+  html:not(#_x):not(#_y) .kh-icon-book svg,
+  html:not(#_x):not(#_y) .kh-icon-coffee svg,
+  html:not(#_x):not(#_y) .kh-icon-utensils svg,
+  html:not(#_x):not(#_y) .kh-icon-home svg,
+  html:not(#_x):not(#_y) .kh-icon-sun svg,
+  html:not(#_x):not(#_y) .kh-trial-live__badge i{animation:none!important}
 }
