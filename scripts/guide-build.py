@@ -170,4 +170,5 @@ if __name__=='__main__':
     a=ap.parse_args();only=set(x for x in a.only.split(',') if x)
     if a.cmd=='shots':shots(only)
     else:
-        import guide_pdf  # noqa (Aşama 3)
+        import guide_pdf
+        guide_pdf.build_pdf(ROOT)
