@@ -117,11 +117,13 @@ function studentActions(s){
   return `<div class="kcl-actions"><button class="ka-btn" type="button" data-cmp-student-add="${id}">${ICON.plus}<span>Öğrenci ekle</span></button><button class="ka-btn ka-btn--secondary" type="button" data-cmp-excel-pick="${id}">${ICON.sheet}<span>Excel</span></button><button class="ka-btn ka-btn--secondary" type="button" data-cmp-eokul-pick="${id}">${ICON.sheet}<span>e-Okul</span></button><input type="file" accept=".xlsx,.xls" data-cmp-excel="${id}" hidden><input type="file" accept=".xlsx,.xls" data-cmp-eokul="${id}" hidden></div>`;
 }
 function studentsBody(s,st){return `${studentActions(s)}<div class="kcl-students">${st.list.length?st.list.slice().sort((a,b)=>(a.ogrenciAdi||'').localeCompare(b.ogrenciAdi||'','tr')).map(studentRow).join(''):'<div class="kcl-empty"><b>Bu sınıfta öğrenci yok</b><span>Öğrenci ekleyin veya Excel / e-Okul listesinden aktarın.</span></div>'}</div>`}
-function seatPreview(p){
+function seatPreview(p,st){
   const land=p.sayfaYonu==='yatay',pg=PLAN_PAGE[land?'yatay':'dikey'];
+  const list=(st&&st.list)||[],byId=new Map(list.map(v=>[String(v.id),v])),byName=new Map(list.map(v=>[norm(v.ogrenciAdi),v]));
+  const seatName=k=>{const v=(k.ogrenciId&&byId.get(String(k.ogrenciId)))||(k.isim&&byName.get(norm(k.isim)));return String((v&&v.ogrenciAdi)||k.isim||'').trim()};
   const items=(p.ogeler||[]).filter(o=>o&&(SEAT_COLS[o.tur]||['ogretmen-masasi','kapi','pencere','yazi-tahtasi'].includes(o.tur))).map(o=>{
     const cols=SEAT_COLS[o.tur]||0,box=[o.x/pg.w,o.y/pg.h,o.w/pg.w,o.h/pg.h].map(n=>(Number(n)*100).toFixed(2)).join(',');
-    const seats=cols?(o.koltuklar||[]).map(k=>`<i${k&&(k.ogrenciId||k.isim)?' class="is-full"':''}></i>`).join(''):'';
+    const seats=cols?(o.koltuklar||[]).map(k=>{if(!(k&&(k.ogrenciId||k.isim)))return '<i></i>';const full=seatName(k),words=full.split(/\s+/).filter(Boolean);return `<i class="is-full" title="${esc(full)}"><em>${words.map(w=>`<b>${esc(w)}</b>`).join('')}</em></i>`}).join(''):'';
     return `<span class="kcl-pv-o is-${esc(o.tur)}" data-kcl-box="${box}" data-kcl-rot="${Number(o.rotasyon)||0}"${cols?` data-kcl-cols="${cols}"`:''}>${seats}</span>`;
   }).join('');
   return `<div class="kcl-pv ${land?'is-land':'is-port'}" role="img" aria-label="Sınıf oturma planı önizlemesi">${items}</div>`;
@@ -130,7 +132,7 @@ function seatingBody(s,st){
   const id=esc(s.id),pi=planInfo(s,st);
   if(!pi.plan)return `<section class="kcl-panel kcl-seat-empty"><span class="kcl-seat-art">${ICON.seat}</span><h3>${seatingReady?'Bu sınıf için oturma planı yok':'Oturma planı yükleniyor'}</h3><p>Sıraları yerleştirin, öğrencileri koltuklara atayın ve A4 çıktı alın.</p><button class="ka-btn" type="button" data-cmp-seating="${id}">${ICON.seat}<span>Oturma planı oluştur</span></button></section>`;
   const miss=pi.missing,names=miss.slice(0,14).map(v=>`<span>${esc(v.ogrenciAdi||'Öğrenci')}</span>`).join('')+(miss.length>14?`<span class="is-more">+${miss.length-14}</span>`:'');
-  return `<section class="kcl-panel kcl-seat"><div class="kcl-seat-stage">${seatPreview(pi.plan)}</div><div class="kcl-seat-side"><div class="kcl-seat-stats"><div><span class="kcl-n">${pi.desks}</span><small>sıra</small></div><div><span class="kcl-n">${pi.seats}</span><small>koltuk</small></div><div><span class="kcl-n">${pi.seated}</span><small>yerleşti</small></div><div class="${miss.length?'is-warn':'is-ok'}"><span class="kcl-n">${miss.length}</span><small>yerleşmedi</small></div></div>${miss.length?`<div class="kcl-missing"><h4>Henüz yerleşmeyenler</h4><div class="kcl-names">${names}</div></div>`:`<p class="kcl-done">${ICON.check}<span>Tüm öğrenciler yerleşti.</span></p>`}<button class="ka-btn" type="button" data-cmp-seating="${id}">${ICON.seat}<span>Planı aç</span></button></div></section>`;
+  return `<section class="kcl-panel kcl-seat"><div class="kcl-seat-stage">${seatPreview(pi.plan,st)}</div><div class="kcl-seat-side"><div class="kcl-seat-stats"><div><span class="kcl-n">${pi.desks}</span><small>sıra</small></div><div><span class="kcl-n">${pi.seats}</span><small>koltuk</small></div><div><span class="kcl-n">${pi.seated}</span><small>yerleşti</small></div><div class="${miss.length?'is-warn':'is-ok'}"><span class="kcl-n">${miss.length}</span><small>yerleşmedi</small></div></div>${miss.length?`<div class="kcl-missing"><h4>Henüz yerleşmeyenler</h4><div class="kcl-names">${names}</div></div>`:`<p class="kcl-done">${ICON.check}<span>Tüm öğrenciler yerleşti.</span></p>`}<button class="ka-btn" type="button" data-cmp-seating="${id}">${ICON.seat}<span>Planı aç</span></button></div></section>`;
 }
 function scheduleBody(s){
   const rows=schedule(s);
@@ -144,10 +146,26 @@ function detailView(s){
   const body=detailTab==='students'?studentsBody(s,st):detailTab==='seating'?seatingBody(s,st):detailTab==='schedule'?scheduleBody(s):infoBody(s,st,t);
   return `<section class="kcl-page kcl-detail"><div class="ka-detail-topbar ka-class-detail-topbar"><button class="ka-icon-button" type="button" data-cmp-back aria-label="Sınıflara dön">‹</button><h2>${esc(name)}</h2>${can('people.classes','edit')?`<button class="ka-icon-button" type="button" data-cmp-class-edit="${esc(s.id)}" aria-label="Düzenle">✎</button>`:'<span></span>'}</div><div class="ka-class-hero"><span class="ka-class-hero-avatar">${esc(name)}</span><div><h1>${esc(name)}</h1><p>${classLevel(s)?esc(classLevel(s))+'. seviye':'Seviye bilgisi yok'} · ${esc(s.derslik||'Derslik bilgisi yok')}</p><strong>${esc(t?'Sınıf öğretmeni: '+fullName(t):'Sınıf öğretmeni atanmadı')}</strong></div></div><section class="kcl-overview kcl-overview--detail"><div class="kcl-kpis"><div><span class="kcl-n">${st.total}</span><small>Öğrenci</small></div><div class="is-girl"><span class="kcl-n">${st.girls}</span><small>Kız</small></div><div class="is-boy"><span class="kcl-n">${st.boys}</span><small>Erkek</small></div><div><span class="kcl-n">${rows.length}</span><small>Ders</small></div></div>${genderBar(st.girls,st.boys,'kcl-split--wide')}</section><div class="kcl-tabs" role="tablist">${tabs.map(([key,label])=>`<button class="${detailTab===key?'active':''}" type="button" role="tab" aria-selected="${detailTab===key}" data-cmp-tab="${key}">${esc(label)}</button>`).join('')}</div>${body}</section>`;
 }
+/* Koltuk adları: her kelime kendi satırında, kelime harflere bölünmez; yazı boyutu koltuğa sığana kadar küçülür. */
+let pvRO=null;
+function fitSeatNames(scope){
+  $$('.kcl-pv-o>i.is-full>em',scope).forEach(em=>{
+    const seat=em.parentElement,W=seat.clientWidth-3,H=seat.clientHeight-3,n=em.children.length||1;
+    if(W<=0||H<=0)return;
+    const fits=()=>em.offsetHeight<=H&&[...em.children].every(b=>b.offsetWidth<=W);
+    let fs=Math.min(13,Math.floor(H/(n*1.12)*2)/2);
+    em.style.fontSize=fs+'px';
+    while(fs>3.5&&!fits()){fs-=.5;em.style.fontSize=fs+'px'}
+    em.style.transform=(Number(seat.parentElement.dataset.kclRot)||0)===180?'rotate(180deg)':'';
+  });
+}
 function applyDynamic(scope){
   $$('[data-kcl-g]',scope).forEach(el=>{const g=Number(el.dataset.kclG)||0,b=Number(el.dataset.kclB)||0,k=el.children;if(k[0])k[0].style.flexGrow=String(g);if(k[1])k[1].style.flexGrow=String(b)});
   $$('[data-kcl-pct]',scope).forEach(el=>el.style.height=el.dataset.kclPct+'%');
   $$('[data-kcl-box]',scope).forEach(el=>{const [l,t,w,h]=el.dataset.kclBox.split(',');Object.assign(el.style,{left:l+'%',top:t+'%',width:w+'%',height:h+'%'});const r=Number(el.dataset.kclRot)||0;if(r)el.style.transform=`rotate(${r}deg)`;if(el.dataset.kclCols)el.style.gridTemplateColumns=`repeat(${el.dataset.kclCols},minmax(0,1fr))`});
+  fitSeatNames(scope);
+  pvRO?.disconnect();pvRO=null;
+  if(global.ResizeObserver){const pv=$$('.kcl-pv',scope);if(pv.length){pvRO=new global.ResizeObserver(()=>fitSeatNames(scope));pv.forEach(x=>pvRO.observe(x))}}
 }
 async function ensureSeating(){
   if(seatingReady||seatingBusy||!seatingAllowed())return;
@@ -171,7 +189,7 @@ function bind(){const q=$('[data-cmp-search]',root);if(q)q.oninput=()=>{const po
 function mount(target=document.getElementById('v2ModuleRoot')){root=target||document.getElementById('v2ModuleRoot');if(!root)return false;if(active==='classes'){subscribe();render();ensureSeating();return true}root.replaceChildren();return true}
 function openPage(next){root=root||document.getElementById('v2ModuleRoot');if(!root)return false;if(next!=='classes'){active='delegate';stopSubs();detailId='';detailTab='students';query='';level='';base.mount?.(root);return base.openPage?.(next)!==false}base.unmount?.();active='classes';query='';level='';detailId='';detailTab='students';subscribe();render();ensureSeating();return true}
 function openClass(id){root=root||document.getElementById('v2ModuleRoot');if(!root||!classes().some(x=>x.id===id))return false;base.unmount?.();active='classes';query='';level='';detailId=id;detailTab='students';subscribe();render();ensureSeating();return true}
-function unmount(){stopSubs();document.querySelector('[data-cmp-modal]')?.remove();document.querySelector('[data-cmp-student-modal]')?.remove();global.SinifOturma?.kapat?.();if(active==='delegate')base.unmount?.();active='pending';root=null}
+function unmount(){stopSubs();pvRO?.disconnect();pvRO=null;document.querySelector('[data-cmp-modal]')?.remove();document.querySelector('[data-cmp-student-modal]')?.remove();global.SinifOturma?.kapat?.();if(active==='delegate')base.unmount?.();active='pending';root=null}
 function rerender(){if(active==='classes')render();else if(active==='delegate')base.render?.()}
 const api={mount,openPage,openClass,render:rerender,unmount,isTeacherUser};global.ClassesMobileParity=api;global.PeopleModule=api;
 global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='people')mount()});

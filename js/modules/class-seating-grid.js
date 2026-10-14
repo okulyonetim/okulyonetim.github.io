@@ -486,12 +486,12 @@ function wrapText(text,fs,maxW,wt,me){
 }
 function bestFont(stu,cw,ch,me,maxFs){
   const padW=12,padH=12;
-  for(let fs=maxFs;fs>=6.5;fs-=.5){
+  for(let fs=maxFs;fs>=5.5;fs-=.5){
     const a=wrapText(stu.ad,fs,cw-padW,700,me),b=wrapText(stu.soyad,fs,cw-padW,500,me);
     const widest=Math.max.apply(null,[0].concat(a.map(t=>me(t,fs,700)),b.map(t=>me(t,fs,500))));
     if(widest<=cw-padW&&(a.length+b.length)*fs*1.2<=ch-padH)return fs;
   }
-  return 6.5;
+  return 5.5;
 }
 function printModel(m,info){
   info=info||{};
@@ -512,7 +512,7 @@ function printModel(m,info){
   const best={};seated.forEach(x=>{best[x.s.key]=bestFont(x.stu,cw,ch,me,maxFs)});
   const vals=seated.map(x=>best[x.s.key]).sort((a,b)=>a-b);
   const minFs=vals.length?vals[0]:maxFs,tgtFs=vals.length?vals[Math.floor(vals.length*.15)]:maxFs;
-  const fsOf=k=>Math.max(6.5,Math.min(best[k],tgtFs));
+  const fsOf=k=>Math.max(5.5,Math.min(best[k],tgtFs));
   const parts=[];
   m.els.filter(isBlock).forEach(e=>{
     const pos='left:'+(e.x*cw+3)+'px;top:'+(e.y*ch+3)+'px;width:'+(e.w*cw-6)+'px;height:'+(e.h*ch-6)+'px';
@@ -520,7 +520,7 @@ function printModel(m,info){
       let cells='';
       for(let i=0;i<e.w*e.h;i++){
         const key=e.id+'.'+i,sid=m.asg[key],stu=sid?m.studs[sid]:null;
-        if(stu){cells+='<div class="csgp-s g-'+(stu.g||'x')+'" style="font-size:'+fsOf(key)+'px"><b>'+esc(stu.ad)+'</b>'+(stu.soyad?'<span>'+esc(stu.soyad)+'</span>':'')+'</div>'}
+        if(stu){const fs=fsOf(key),pw=cw-12,ln=a=>a.map(t=>'<i>'+esc(t)+'</i>').join(''),la=wrapText(stu.ad,fs,pw,700,me),lb=stu.soyad?wrapText(stu.soyad,fs,pw,500,me):[];cells+='<div class="csgp-s g-'+(stu.g||'x')+'" style="font-size:'+fs+'px"><b>'+ln(la)+'</b>'+(lb.length?'<span>'+ln(lb)+'</span>':'')+'</div>'}
         else cells+='<div class="csgp-s is-empty"></div>';
       }
       parts.push('<div class="csgp-desk" style="'+pos+';grid-template-columns:repeat('+e.w+',1fr);grid-template-rows:repeat('+e.h+',1fr)">'+cells+'</div>');
@@ -560,7 +560,8 @@ function printModel(m,info){
    '.csgp-w.k-door{background:repeating-linear-gradient(135deg,'+T+'door) 0 6px,'+T+'cell) 6px 12px);border:1.5px dashed '+T+'muted-ink);color:'+T+'text)}'+
    '.csgp-w.k-window{background:'+T+'glass);border:1.5px solid '+T+'glass-edge);color:'+T+'glass-ink)}'+
    '.csgp-desk{position:absolute;display:grid;gap:1.5px;overflow:hidden;border:1.5px solid '+T+'border);border-radius:9px;background:'+T+'border)}'+
-   '.csgp-s{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:0;padding:4px 5px;overflow:hidden;background:'+T+'cell);text-align:center;line-height:1.18;overflow-wrap:anywhere}'+
+   '.csgp-s{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:0;padding:4px 5px;overflow:hidden;background:'+T+'cell);text-align:center;line-height:1.18;font-family:Arial,Helvetica,sans-serif;overflow-wrap:normal;word-break:normal;hyphens:none}'+
+   '.csgp-s i{display:block;font-style:normal;white-space:nowrap}'+
    '.csgp-s b{display:block;font-weight:700}.csgp-s span{display:block;font-weight:500}'+
    '.csgp-s.g-k{background:'+C+'girl-fill)}.csgp-s.g-e{background:'+C+'boy-fill)}.csgp-s.is-empty{background:'+T+'cell)}'+
    '.csgp-box{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 6px;overflow:hidden;text-align:center;border-radius:9px}'+
