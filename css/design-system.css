@@ -1,6 +1,6 @@
 /* KORUK ASİSTAN — MERKEZİ DESIGN SYSTEM ENTRYPOINT */
 /* Mevcut merkezi tema aynen korunur; bu dosya yalnızca ortak giriş noktasıdır. */
-@import url("./design-system-base.css?v=1291");
+@import url("./design-system-base.css?v=1292");
 
 /* Ders Programı aksiyon butonları: açık ikon kutularında ikon görünürlüğü */
 [data-schedule-add],[data-schedule-import],[data-schedule-report],[data-schedule-sheet-report],[data-schedule-clear]{color:var(--ka-text)!important}
@@ -358,3 +358,21 @@ html[data-theme="dark"] .primary *{
 .ka-committee-list-icon{display:grid;place-items:center;width:var(--ka-ic-40);height:var(--ka-ic-40);border-radius:var(--ka-card-radius-sm);background:var(--ka-surface-2);font-size:var(--ka-fs-20);flex:0 0 auto}.ka-committee-list-row small,.ka-committee-member-row small,.ka-committee-work small{display:block;color:var(--ka-muted);margin-top:var(--ka-sp-3)}
 .ka-committee-section{overflow:hidden}.ka-committee-section>.ka-card__header h3{margin:0}.ka-committee-member-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-18)}.ka-committee-member-list{margin-top:var(--ka-sp-8)}.ka-committee-member-row{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) 0;border-bottom:var(--ka-card-border-w) solid var(--ka-border)}.ka-committee-member-row:last-child{border-bottom:0}.ka-committee-person{border:0;background:transparent;color:var(--ka-text);text-align:left;padding:0;cursor:pointer}
 .ka-committee-task-list{margin:0;padding-left:var(--ka-sp-22)}.ka-committee-task-list li{display:flex;gap:var(--ka-sp-8);align-items:center;padding:var(--ka-sp-8) 0;border-bottom:var(--ka-border-w) solid var(--ka-border)}.ka-committee-note{padding:var(--ka-sp-12);border:var(--ka-card-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius-sm);background:var(--ka-surface-2)}.ka-committee-note p{margin:var(--ka-sp-7) 0}.ka-committee-note small{float:right;color:var(--ka-muted)}.ka-committee-work{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) 0;border-bottom:var(--ka-border-w) solid var(--ka-border)}.ka-committee-work label{display:flex;align-items:center;gap:var(--ka-sp-10);flex:1}.ka-committee-work.is-done strong{text-decoration:line-through;opacity:.7}.ka-committee-form-group{padding:var(--ka-sp-14) 0;border-top:var(--ka-card-border-w) solid var(--ka-border)}.ka-committee-form-group h3{margin:0 0 var(--ka-sp-10)}.ka-committee-detail-head{align-items:flex-start;gap:var(--ka-sp-10)}.ka-committee-detail-head h2{margin:var(--ka-sp-3) 0}@media(max-width:700px){.ka-committee-member-groups{grid-template-columns:1fr}.ka-committee-head{align-items:flex-start;flex-direction:column}.ka-committee-head .ka-btn{width:100%}.ka-committee-list-row{padding:var(--ka-sp-13) var(--ka-sp-11)}.ka-committee-list-row>.ka-badge{display:none}.ka-committee-detail-head .ka-btn{padding-inline:var(--ka-sp-10)}}
+
+/* ===== BİLDİRİM (TOAST) — js/core/toast.js =====
+   window.toast(mesaj) tek yuvalı alt bildirimdir; her sayfanın ve tam ekran önizlemenin (rapor, belge) üstünde görünür.
+   Yüzey/yazı/çizgi/gölge mevcut açılır pencere belirteçlerinden (--pp-*, --gl-*) gelir; hata sürümü --ka-danger ile çizilir. */
+.ka-toast{
+  position:fixed;z-index:2000000;left:50%;bottom:calc(var(--ka-safe-bottom,0px) + var(--ka-sp-84));
+  box-sizing:border-box;width:max-content;max-width:min(92vw,var(--ka-sp-120) * 4);
+  padding:var(--ka-sp-12) var(--ka-sp-16);border-radius:var(--ka-r-6);
+  background:var(--pp-bg-solid);color:var(--gl-fg);border:var(--ka-border-w) solid var(--pp-edge);box-shadow:var(--pp-shadow);
+  font:inherit;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-750);line-height:var(--ka-lh-1-35);text-align:center;overflow-wrap:anywhere;
+  opacity:0;transform:translate(-50%,var(--ka-sp-12));pointer-events:none;
+  transition:opacity var(--ka-dur-220) var(--ka-ease-1),transform var(--ka-dur-220) var(--ka-ease-1);
+}
+.ka-toast[hidden]{display:none}
+.ka-toast.is-show{opacity:1;transform:translate(-50%,0);pointer-events:auto;cursor:pointer}
+.ka-toast.is-error{border-color:var(--ka-danger)}
+@media(prefers-reduced-motion:reduce){.ka-toast{transition:none}}
+@media(min-width:1100px){.ka-toast{bottom:var(--ka-sp-28)}}
