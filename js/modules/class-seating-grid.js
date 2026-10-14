@@ -512,7 +512,7 @@ function printModel(m,info){
   const best={};seated.forEach(x=>{best[x.s.key]=bestFont(x.stu,cw,ch,me,maxFs)});
   const vals=seated.map(x=>best[x.s.key]).sort((a,b)=>a-b);
   const minFs=vals.length?vals[0]:maxFs,tgtFs=vals.length?vals[Math.floor(vals.length*.15)]:maxFs;
-  const fsOf=k=>Math.max(5.5,Math.min(best[k],tgtFs));
+  const fsOf=()=>Math.max(5.5,minFs);/* tüm adlar, en küçük sığan boyuta eşitlenir */
   const parts=[];
   m.els.filter(isBlock).forEach(e=>{
     const pos='left:'+(e.x*cw+3)+'px;top:'+(e.y*ch+3)+'px;width:'+(e.w*cw-6)+'px;height:'+(e.h*ch-6)+'px';

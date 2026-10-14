@@ -73,6 +73,7 @@ const ICON={
   stack:'<svg class="kcl-i" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 8 4-8 4-8-4z"/><path d="m4 12 8 4 8-4M4 16l8 4 8-4"/></svg>',
   check:'<svg class="kcl-i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>'
 };
+const PV_WALL={'yazi-tahtasi':'Yazı tahtası','kapi':'Kapı','pencere':'Pencere'},PV_WALL_MIN=26;
 const SEAT_COLS={'tekli-sira':1,'ikili-masa':2,'grup-masasi-4':2,'grup-masasi-6':3};
 const PLAN_PAGE={dikey:{w:794,h:1063},yatay:{w:1123,h:734}};
 const seatingAllowed=()=>can('transport.classSeating','read')||can('people.classes','read');
@@ -117,14 +118,23 @@ function studentActions(s){
   return `<div class="kcl-actions"><button class="ka-btn" type="button" data-cmp-student-add="${id}">${ICON.plus}<span>Öğrenci ekle</span></button><button class="ka-btn ka-btn--secondary" type="button" data-cmp-excel-pick="${id}">${ICON.sheet}<span>Excel</span></button><button class="ka-btn ka-btn--secondary" type="button" data-cmp-eokul-pick="${id}">${ICON.sheet}<span>e-Okul</span></button><input type="file" accept=".xlsx,.xls" data-cmp-excel="${id}" hidden><input type="file" accept=".xlsx,.xls" data-cmp-eokul="${id}" hidden></div>`;
 }
 function studentsBody(s,st){return `${studentActions(s)}<div class="kcl-students">${st.list.length?st.list.slice().sort((a,b)=>(a.ogrenciAdi||'').localeCompare(b.ogrenciAdi||'','tr')).map(studentRow).join(''):'<div class="kcl-empty"><b>Bu sınıfta öğrenci yok</b><span>Öğrenci ekleyin veya Excel / e-Okul listesinden aktarın.</span></div>'}</div>`}
-function seatPreview(p,st){
+function seatPreview(p,st,teacherName){
   const land=p.sayfaYonu==='yatay',pg=PLAN_PAGE[land?'yatay':'dikey'];
   const list=(st&&st.list)||[],byId=new Map(list.map(v=>[String(v.id),v])),byName=new Map(list.map(v=>[norm(v.ogrenciAdi),v]));
   const seatName=k=>{const v=(k.ogrenciId&&byId.get(String(k.ogrenciId)))||(k.isim&&byName.get(norm(k.isim)));return String((v&&v.ogrenciAdi)||k.isim||'').trim()};
   const items=(p.ogeler||[]).filter(o=>o&&(SEAT_COLS[o.tur]||['ogretmen-masasi','kapi','pencere','yazi-tahtasi'].includes(o.tur))).map(o=>{
-    const cols=SEAT_COLS[o.tur]||0,box=[o.x/pg.w,o.y/pg.h,o.w/pg.w,o.h/pg.h].map(n=>(Number(n)*100).toFixed(2)).join(',');
+    let {x,y,w,h}=o;const wall=PV_WALL[o.tur];
+    if(wall){/* ince duvar şeritleri etiket sığsın diye sayfa kenarına doğru kalınlaştırılır */
+      const need=PV_WALL_MIN-Math.min(w,h);
+      if(need>0){
+        if(h>=w){if(o.kenar==='sag'||(o.kenar!=='sol'&&x>=pg.w/2)){w+=Math.max(0,Math.min(need,pg.w-(x+w)))}else{const d=Math.max(0,Math.min(need,x));x-=d;w+=d}}
+        else if(o.kenar==='alt'||(o.kenar!=='ust'&&y>=pg.h/2)){h+=Math.max(0,Math.min(need,pg.h-(y+h)))}else{const d=Math.max(0,Math.min(need,y));y-=d;h+=d}
+      }
+    }
+    const cols=SEAT_COLS[o.tur]||0,box=[x/pg.w,y/pg.h,w/pg.w,h/pg.h].map(n=>(Number(n)*100).toFixed(2)).join(',');
+    const label=wall?`<em class="kcl-pv-l${h>w?' is-v':''}">${esc(wall)}</em>`:o.tur==='ogretmen-masasi'?`<em class="kcl-pv-l">${esc(String(o.isim||teacherName||'Öğretmen').trim())}</em>`:'';
     const seats=cols?(o.koltuklar||[]).map(k=>{if(!(k&&(k.ogrenciId||k.isim)))return '<i></i>';const full=seatName(k),words=full.split(/\s+/).filter(Boolean);return `<i class="is-full" title="${esc(full)}"><em>${words.map(w=>`<b>${esc(w)}</b>`).join('')}</em></i>`}).join(''):'';
-    return `<span class="kcl-pv-o is-${esc(o.tur)}" data-kcl-box="${box}" data-kcl-rot="${Number(o.rotasyon)||0}"${cols?` data-kcl-cols="${cols}"`:''}>${seats}</span>`;
+    return `<span class="kcl-pv-o is-${esc(o.tur)}" data-kcl-box="${box}" data-kcl-rot="${Number(o.rotasyon)||0}"${cols?` data-kcl-cols="${cols}"`:''}>${seats}${label}</span>`;
   }).join('');
   return `<div class="kcl-pv ${land?'is-land':'is-port'}" role="img" aria-label="Sınıf oturma planı önizlemesi">${items}</div>`;
 }
@@ -132,7 +142,7 @@ function seatingBody(s,st){
   const id=esc(s.id),pi=planInfo(s,st);
   if(!pi.plan)return `<section class="kcl-panel kcl-seat-empty"><span class="kcl-seat-art">${ICON.seat}</span><h3>${seatingReady?'Bu sınıf için oturma planı yok':'Oturma planı yükleniyor'}</h3><p>Sıraları yerleştirin, öğrencileri koltuklara atayın ve A4 çıktı alın.</p><button class="ka-btn" type="button" data-cmp-seating="${id}">${ICON.seat}<span>Oturma planı oluştur</span></button></section>`;
   const miss=pi.missing,names=miss.slice(0,14).map(v=>`<span>${esc(v.ogrenciAdi||'Öğrenci')}</span>`).join('')+(miss.length>14?`<span class="is-more">+${miss.length-14}</span>`:'');
-  return `<section class="kcl-panel kcl-seat"><div class="kcl-seat-stage">${seatPreview(pi.plan,st)}</div><div class="kcl-seat-side"><div class="kcl-seat-stats"><div><span class="kcl-n">${pi.desks}</span><small>sıra</small></div><div><span class="kcl-n">${pi.seats}</span><small>koltuk</small></div><div><span class="kcl-n">${pi.seated}</span><small>yerleşti</small></div><div class="${miss.length?'is-warn':'is-ok'}"><span class="kcl-n">${miss.length}</span><small>yerleşmedi</small></div></div>${miss.length?`<div class="kcl-missing"><h4>Henüz yerleşmeyenler</h4><div class="kcl-names">${names}</div></div>`:`<p class="kcl-done">${ICON.check}<span>Tüm öğrenciler yerleşti.</span></p>`}<button class="ka-btn" type="button" data-cmp-seating="${id}">${ICON.seat}<span>Planı aç</span></button></div></section>`;
+  return `<section class="kcl-panel kcl-seat"><div class="kcl-seat-stage">${seatPreview(pi.plan,st,fullName(classTeacher(s)||{}).replace(/^—$/,''))}</div><div class="kcl-seat-side"><div class="kcl-seat-stats"><div><span class="kcl-n">${pi.desks}</span><small>sıra</small></div><div><span class="kcl-n">${pi.seats}</span><small>koltuk</small></div><div><span class="kcl-n">${pi.seated}</span><small>yerleşti</small></div><div class="${miss.length?'is-warn':'is-ok'}"><span class="kcl-n">${miss.length}</span><small>yerleşmedi</small></div></div>${miss.length?`<div class="kcl-missing"><h4>Henüz yerleşmeyenler</h4><div class="kcl-names">${names}</div></div>`:`<p class="kcl-done">${ICON.check}<span>Tüm öğrenciler yerleşti.</span></p>`}<button class="ka-btn" type="button" data-cmp-seating="${id}">${ICON.seat}<span>Planı aç</span></button></div></section>`;
 }
 function scheduleBody(s){
   const rows=schedule(s);
@@ -149,14 +159,28 @@ function detailView(s){
 /* Koltuk adları: her kelime kendi satırında, kelime harflere bölünmez; yazı boyutu koltuğa sığana kadar küçülür. */
 let pvRO=null;
 function fitSeatNames(scope){
-  $$('.kcl-pv-o>i.is-full>em',scope).forEach(em=>{
-    const seat=em.parentElement,W=seat.clientWidth-3,H=seat.clientHeight-3,n=em.children.length||1;
-    if(W<=0||H<=0)return;
-    const fits=()=>em.offsetHeight<=H&&[...em.children].every(b=>b.offsetWidth<=W);
-    let fs=Math.min(13,Math.floor(H/(n*1.12)*2)/2);
-    em.style.fontSize=fs+'px';
-    while(fs>3.5&&!fits()){fs-=.5;em.style.fontSize=fs+'px'}
-    em.style.transform=(Number(seat.parentElement.dataset.kclRot)||0)===180?'rotate(180deg)':'';
+  $$('.kcl-pv',scope).forEach(pv=>{
+    const ems=$$('.kcl-pv-o>i.is-full>em',pv);let min=Infinity;
+    ems.forEach(em=>{
+      const seat=em.parentElement,W=seat.clientWidth-3,H=seat.clientHeight-3,n=em.children.length||1;
+      if(W<=0||H<=0)return;
+      const fits=()=>em.offsetHeight<=H&&[...em.children].every(b=>b.offsetWidth<=W);
+      let fs=Math.min(13,Math.floor(H/(n*1.12)*2)/2);
+      em.style.fontSize=fs+'px';
+      while(fs>3.5&&!fits()){fs-=.5;em.style.fontSize=fs+'px'}
+      min=Math.min(min,fs);
+      em.style.transform=(Number(seat.parentElement.dataset.kclRot)||0)===180?'rotate(180deg)':'';
+    });
+    /* tüm öğrenci adları, en küçük sığan boyuta eşitlenir */
+    if(min<Infinity)ems.forEach(em=>{em.style.fontSize=min+'px'});
+    $$('.kcl-pv-l',pv).forEach(l=>{
+      const box=l.parentElement,v=l.classList.contains('is-v'),L=(v?box.clientHeight:box.clientWidth)-4,T=(v?box.clientWidth:box.clientHeight)-2;
+      if(L<=0||T<=0)return;
+      const along=()=>v?l.offsetHeight:l.offsetWidth,across=()=>v?l.offsetWidth:l.offsetHeight;
+      let fs=Math.min(11,Math.floor(T*.8*2)/2);
+      l.style.fontSize=fs+'px';
+      while(fs>3.5&&(along()>L||across()>T)){fs-=.5;l.style.fontSize=fs+'px'}
+    });
   });
 }
 function applyDynamic(scope){
