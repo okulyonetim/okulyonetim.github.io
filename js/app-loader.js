@@ -22,7 +22,7 @@ const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...file
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
 define('dashboard',['js/modules/school-live-status.js?v=1069','js/modules/dashboard.js?v=1095']);
-define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js']);
+define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/management.js?v=895']);
 define('communication',['js/modules/communication.js?v=839','js/modules/assistant.js']);

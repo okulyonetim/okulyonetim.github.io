@@ -116,5 +116,7 @@ function mount(target=document.getElementById('v2ModuleRoot')){canonical.unmount
 function openPage(next){if(!['teachers','classes','students'].includes(next))return false;root=root||document.getElementById('v2ModuleRoot');if(!root)return false;page=next;query='';branch='';studentClass='';studentGender='';closeDetail();closeModal();if(next==='students'){stopSubs();delegated=true;canonical.mount?.(root);return canonical.openPage?.('students')!==false}if(delegated)canonical.unmount?.();delegated=false;subscribe();render();return true}
 function unmount(){closeDetail();closeModal();stopSubs();if(delegated)canonical.unmount?.();delegated=false;root=null}
 function back(){const modal=document.querySelector('[data-exact-people-modal]');if(modal){modal.remove();return true}if(detail){closeDetail();return true}if(delegated&&canonical.back?.())return true;return false}
-const api={mount,openPage,render,unmount,back};global.PeopleClassicUI=api;global.PeopleModule=api;
+/* helpers: yeni Öğretmenler/Öğrenciler ekranı (people-directory.js) ve raporları aynı kulüp / izin / belge kurallarını buradan okur — kural tek yerde kalır. */
+const helpers={clubBelongsTo,relatedRows,reportRelated,docSummary,teacherOnLeave,leaveRecordActiveOn,leaveDateKey,localDateKey,teacherSchool,teacherClass,dutyPlace};
+const api={mount,openPage,render,unmount,back,helpers};global.PeopleClassicUI=api;global.PeopleModule=api;
 })(window);
