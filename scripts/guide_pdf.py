@@ -190,9 +190,10 @@ class GuideDocTemplate(BaseDocTemplate):
 def load_image_png(source: Path, temp_dir: Path, index: int) -> Path:
     if not source.exists():
         raise FileNotFoundError(f"Ekran görüntüsü eksik: {source.relative_to(ROOT)}")
-    target = temp_dir / f"guide-screen-{index:03d}.png"
+    target = temp_dir / f"guide-screen-{index:03d}.jpg"
     with PILImage.open(source) as im:
-        im.convert("RGB").save(target, "PNG", optimize=True)
+        # JPEG 90 + 4:4:4 renk örneklemesi ekran yazılarının okunabilirliğini korurken PDF boyutunu düşürür.
+        im.convert("RGB").save(target, "JPEG", quality=90, optimize=True, progressive=True, subsampling=0)
     return target
 
 
