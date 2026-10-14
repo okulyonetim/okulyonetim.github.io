@@ -99,8 +99,9 @@ function timetableHtml(tt){
 function groupChecks(o,type,title){
   const rows=H().reportRelated?.(type,o)||[],labels=global.BelgeDurumuService?.etiketler?.(type)||[];
   if(!rows.length||!labels.length)return'';
-  const done=rows.reduce((n,k)=>n+labels.filter((_,i)=>!!k.kontroller?.[i]).length,0),all=rows.length*labels.length;
-  return `<h3 class="pr-sub">${esc(title)} <small>${done}/${all}</small></h3>${table(['Kayıt',...labels],rows.map(k=>[{html:`<span class="pr-left">${esc(H().docSummary?.(type,k)||dash)}</span>`},...labels.map((_,i)=>check(!!k.kontroller?.[i]))]),'Kayıt yok.','pr-checks')}`;
+  const act=k=>global.BelgeDurumuService?.aktifIndexler?.(type,k)||labels.map((_,i)=>i);
+  const done=rows.reduce((n,k)=>n+act(k).filter(i=>!!k.kontroller?.[i]).length,0),all=rows.reduce((n,k)=>n+act(k).length,0);
+  return `<h3 class="pr-sub">${esc(title)} <small>${done}/${all}</small></h3>${table(['Kayıt',...labels],rows.map(k=>[{html:`<span class="pr-left">${esc(H().docSummary?.(type,k)||dash)}</span>`},...labels.map((_,i)=>act(k).includes(i)?check(!!k.kontroller?.[i]):{html:dash})]),'Kayıt yok.','pr-checks')}`;
 }
 function normSection(id){
   const n=global.PeopleImportUI?.teacherNormData?.(id);

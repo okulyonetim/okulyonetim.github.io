@@ -161,8 +161,10 @@ function docGroup(o,type,title,rows){
   if(!rows.length)return'';
   const labels=global.BelgeDurumuService?.etiketler?.(type)||[],editable=canDocStatus(o);
   if(!labels.length)return'';
-  const done=rows.reduce((n,k)=>n+labels.filter((_,i)=>!!k.kontroller?.[i]).length,0),all=rows.length*labels.length,state=done===all&&all?'is-complete':done?'is-partial':'';
-  return `<section class="kcl-panel kpd-docs"><header class="kpd-docs-head"><h3>${esc(title)}</h3><span class="kpd-count ${state}">${done}/${all}</span></header><div class="kpd-bar"><i data-kpd-w="${all?Math.round(done/all*100):0}"></i></div>${rows.map(k=>`<div class="kpd-doc"><strong>${esc(H.docSummary(type,k))}</strong><div class="kpd-checks">${labels.map((l,i)=>{const on=!!k.kontroller?.[i];return `<label class="kpd-check${on?' is-on':''}${editable?'':' is-ro'}"><input type="checkbox" ${on?'checked':''} ${editable?'':'disabled'} data-kpd-doc data-doc-type="${esc(type)}" data-doc-id="${esc(k.id)}" data-doc-index="${i}"><span>${esc(l)}</span></label>`}).join('')}</div></div>`).join('')}</section>`;
+  /* Yıllık / BEP planı sınıf bazında bağımsız atanabilir: yalnız kaydın geçerli kontrolleri gösterilir ve sayılır. */
+  const act=k=>global.BelgeDurumuService?.aktifIndexler?.(type,k)||labels.map((_,i)=>i);
+  const done=rows.reduce((n,k)=>n+act(k).filter(i=>!!k.kontroller?.[i]).length,0),all=rows.reduce((n,k)=>n+act(k).length,0),state=done===all&&all?'is-complete':done?'is-partial':'';
+  return `<section class="kcl-panel kpd-docs"><header class="kpd-docs-head"><h3>${esc(title)}</h3><span class="kpd-count ${state}">${done}/${all}</span></header><div class="kpd-bar"><i data-kpd-w="${all?Math.round(done/all*100):0}"></i></div>${rows.map(k=>`<div class="kpd-doc"><strong>${esc(H.docSummary(type,k))}</strong><div class="kpd-checks">${labels.map((l,i)=>{if(!act(k).includes(i))return'';const on=!!k.kontroller?.[i];return `<label class="kpd-check${on?' is-on':''}${editable?'':' is-ro'}"><input type="checkbox" ${on?'checked':''} ${editable?'':'disabled'} data-kpd-doc data-doc-type="${esc(type)}" data-doc-id="${esc(k.id)}" data-doc-index="${i}"><span>${esc(l)}</span></label>`}).join('')}</div></div>`).join('')}</section>`;
 }
 function teacherTabs(o){
   const sens=canSensitive(o);

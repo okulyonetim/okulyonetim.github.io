@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1069','js/modules/dashboard.js?v=1095']);
+define('dashboard',['js/modules/school-live-status.js?v=1069','js/modules/dashboard.js?v=1096']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/management.js?v=895']);
@@ -30,7 +30,7 @@ define('transport',['js/core/report-customizer.js?v=1004','js/modules/report-eng
 define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/food-menu.js?v=1039']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/reports.js?v=21']);
-define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/tools.js?v=3','js/modules/rubric-settings.js?v=1065','js/modules/rubric-tools.js']);
+define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/tools.js?v=4','js/modules/rubric-settings.js?v=1066','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js?v=887']);
 define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=4','js/modules/committees.js?v=4']);
 

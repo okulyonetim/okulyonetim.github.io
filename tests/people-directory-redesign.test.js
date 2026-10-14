@@ -63,7 +63,8 @@ assert(rep.includes("global.PeopleReports={teacher,student,"),'PeopleReports API
 /* CSS: kcl bölümünden sonra, WEB ARAYÜZÜ'nden önce; yalnız belirteç; kapsamlı seçiciler */
 const kcl=css.indexOf('/* ===== SINIFLAR — liste ve detay (kcl-*)'),kpd=css.indexOf('/* ===== ÖĞRETMENLER & ÖĞRENCİLER — liste ve detay (kpd-*)'),web=css.indexOf('/* ===== WEB ARAYÜZÜ (≥1100px)'),pr=css.indexOf('/* ===== A4 RAPORLAR — öğretmen profili ve öğrenci bilgi raporu (.pr-*)');
 assert(kcl>0&&kcl<kpd&&kpd<pr&&pr<web,'kpd-* ve .pr-* bölümleri kcl-* sonrasında, WEB ARAYÜZÜ öncesinde olmalı.');
-const sec=css.slice(kpd,web).replace(/\/\*[\s\S]*?\*\//g,'');
+/* Yıllık/BEP + Sosyal Kulüpler bölümü (kcz-*) pr-* sonrasında gelir; bu testin kapsamı dışındadır. */
+const kczAt=css.indexOf('/* ===== YILLIK / BEP PLANLARI & SOSYAL KULÜPLER (kcz-*'),sec=css.slice(kpd,kczAt>pr?kczAt:web).replace(/\/\*[\s\S]*?\*\//g,'');
 assert(!/#[0-9a-fA-F]{3,8}\b|\brgba?\(\s*\d/.test(sec),'Öğretmen/öğrenci stilinde sabit renk olmamalı; yalnız belirteçler.');
 assert(!/margin[^;{}]*:\s*-\d/.test(sec),'Negatif px kenar boşluğu kullanılmamalı.');
 const bad=[...sec.matchAll(/(^|\})\s*([^{}@]+)\{/gm)].map(m=>m[2].trim()).filter(s=>s&&!/^\d+%|^(from|to)$/.test(s)).map(s=>s.replace(/:is\([^)]*\)/g,'')).filter(s=>s.split(',').some(x=>!/^(html\[data-theme\] #v2ModuleRoot \.(kpd-|kcl-|pr-)|html\[data-theme\] \.kpd-form|\.ka-report \.pr-)/.test(x.trim())));

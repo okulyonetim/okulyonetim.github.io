@@ -293,7 +293,7 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     global.AppLoader?.setActiveModule?.(name);
     setTitle(title||meta.label||name);
     try{
-      await global.AppLoader?.loadScript?.('js/modules/rubric-settings.js?v=1065');
+      await global.AppLoader?.loadScript?.('js/modules/rubric-settings.js?v=1066');
       await global.AppLoader?.loadScript?.('js/modules/rubric-tools.js');
       await global.AppLoader?.loadScript?.('js/modules/rubric-tools-engine.js');
       if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
