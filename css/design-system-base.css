@@ -13285,6 +13285,9 @@ html[data-theme] #v2ModuleRoot .kcl-pv.is-land{max-width:480px;aspect-ratio:1123
 html[data-theme] #v2ModuleRoot .kcl-pv-o{position:absolute;box-sizing:border-box;display:grid;grid-auto-rows:1fr;gap:var(--ka-sp-1);padding:var(--ka-sp-1);border:var(--ka-border-w) solid var(--ka-border-strong);border-radius:var(--ka-rs-4);background:var(--ka-muted-bg)}
 html[data-theme] #v2ModuleRoot .kcl-pv-o>i{display:block;border:var(--ka-border-w) solid var(--ka-border-strong);border-radius:var(--ka-rs-3);background:var(--ka-card-bg)}
 html[data-theme] #v2ModuleRoot .kcl-pv-o>i.is-full{border-color:rgb(var(--t-accent-rgb));background:rgb(var(--t-accent-rgb))}
+html[data-theme] #v2ModuleRoot .kcl-pv-o>i{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
+html[data-theme] #v2ModuleRoot .kcl-pv-o>i>em{display:flex;flex-direction:column;align-items:center;font-style:normal;font-size:8px;font-weight:700;line-height:1.12;text-align:center;color:var(--t-on-accent)}
+html[data-theme] #v2ModuleRoot .kcl-pv-o>i>em>b{display:block;font-weight:inherit;white-space:nowrap;overflow-wrap:normal;word-break:normal;hyphens:none}
 html[data-theme] #v2ModuleRoot .kcl-pv-o.is-ogretmen-masasi{border-color:var(--ka-info);background:color-mix(in srgb,var(--ka-info) 26%,var(--ka-card-bg))}
 html[data-theme] #v2ModuleRoot .kcl-pv-o.is-yazi-tahtasi{border-color:var(--ka-text-muted);background:var(--ka-text-muted)}
 html[data-theme] #v2ModuleRoot .kcl-pv-o.is-kapi{border-color:var(--ka-warning);background:var(--ka-warning)}
