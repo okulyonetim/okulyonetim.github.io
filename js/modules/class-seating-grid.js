@@ -253,7 +253,7 @@ function fromStored(inp){
   if(objs.length){
     if(Number(plan.surum)===2&&plan.izgara)loadV2(m,plan,objs);else migrate(m,plan,objs);
   }
-  if(!m.grid.cols){m.grid.cols=8;m.grid.rows=7}
+  if(!m.grid.cols){m.grid.cols=STD.cols;m.grid.rows=STD.rows}
   return m;
 }
 
@@ -352,11 +352,12 @@ function deskSpot(m,kind,c){
 /* ═════════ Hazır düzenler ═════════
  * Öğrenci sayısına göre boyutlanır. Hepsi: üstte yazı tahtası, sol üstte öğretmen masası, sağ arka duvarda kapı, sol duvarda pencere. */
 const TEMPLATES={
+  standart:{ad:'Standart sınıf',aciklama:'A4 dikey, 8 × 10: üç sütun ikili sıra, solda pencereler, sağda kapı'},
   sira2:{ad:'İkili sıralar',aciklama:'Sütun sütun ikili sıralar, aralarında koridor'},
   sira1:{ad:'Tekli sıralar',aciklama:'Her öğrenciye ayrı sıra'},
   grup4:{ad:'Grup masaları',aciklama:'4’lü masalarda grup çalışması'},
   u:{ad:'U düzeni',aciklama:'Sıralar U biçiminde, ortası açık'},
-  bos:{ad:'Boş sınıf',aciklama:'Yalnızca duvarlar ve öğretmen masası'}
+  bos:{ad:'Boş sınıf',aciklama:'Standart oda: yalnızca duvarlar ve öğretmen masası'}
 };
 function baseWalls(cols,rows){
   const w=[],bn=Math.min(cols,Math.max(2,Math.min(5,cols-1)));
@@ -365,11 +366,28 @@ function baseWalls(cols,rows){
   const wn=Math.min(Math.max(2,rows-3),rows-1),ws=wn+1<=rows?1:0;w.push(newWall('window','left',ws,wn));
   return w;
 }
+/* Varsayılan oda: A4 dikey, 8 sütun × 10 satır. Üstte tahta (sütun 1-6), sağ üstte kapı (2 hücre), solda üçer hücre aralıklı 2 hücrelik pencereler. */
+const STD={cols:8,rows:10,deskTop:3,perRow:6};
+function standardWalls(rows){
+  const w=[newWall('board','top',1,6),newWall('door','right',0,2)];
+  for(let s=1;s+2<=rows;s+=3)w.push(newWall('window','left',s,2));
+  return w;
+}
 function buildTemplate(key,n,teacherName){
   n=Math.max(1,Number(n)||24);
-  const els=[];let cols,rows;
+  const els=[];let cols,rows,walls=null;
   const teacher=(x,y)=>els.push({id:uid('t'),t:'teacher',x,y,w:2,h:1,name:teacherName||''});
-  if(key==='sira2'){
+  if(key==='standart'||key==='bos'){
+    cols=STD.cols;rows=STD.rows;
+    els.push({id:uid('t'),t:'teacher',x:0,y:1,w:3,h:1,name:teacherName||''});
+    if(key==='standart'){
+      const dr=Math.max(3,Math.ceil(n/STD.perRow));
+      rows=Math.min(LIM.maxRows,Math.max(STD.rows,STD.deskTop+dr));
+      const lim=Math.min(dr,rows-STD.deskTop);
+      for(let r=0;r<lim;r++)for(let j=0;j<3;j++)els.push(newDesk('ikili-masa',3*j,STD.deskTop+r,false));
+    }
+    walls=standardWalls(rows);
+  }else if(key==='sira2'){
     const g=n<=8?1:(n<=16?2:(n<=34?3:4)),dr=Math.min(LIM.maxRows-1,Math.max(1,Math.ceil(n/(2*g))));
     cols=Math.max(LIM.minCols,3*g-1);rows=dr+1;
     teacher(0,0);
@@ -390,11 +408,9 @@ function buildTemplate(key,n,teacherName){
     teacher(Math.max(0,Math.floor((cols-2)/2)),0);
     for(let y=1;y<rows;y++){els.push(newDesk('tekli-sira',0,y,false));els.push(newDesk('tekli-sira',cols-1,y,false))}
     for(let x=1;x<cols-1;x++)els.push(newDesk('tekli-sira',x,rows-1,false));
-  }else{
-    cols=8;rows=7;teacher(0,0);
   }
   cols=clamp(cols,LIM.minCols,LIM.maxCols);rows=clamp(rows,LIM.minRows,LIM.maxRows);
-  baseWalls(cols,rows).forEach(w=>els.push(w));
+  (walls||baseWalls(cols,rows)).forEach(w=>els.push(w));
   const seats=els.reduce((a,e)=>a+(e.t==='desk'?e.w*e.h:0),0);
   return{key,cols,rows,els,seats,yon:cols>rows*1.1?'yatay':'dikey'};
 }
@@ -781,7 +797,8 @@ function elHTML(el,L){
     let seats='';for(let i=0;i<el.w*el.h;i++)seats+=seatHTML(L.byKey[el.id+'.'+i]);
     inner='<div class="bsg-box csg-desk" style="--dw:'+el.w+';--dh:'+el.h+'">'+seats+'</div>';
   }else if(el.t==='teacher'){
-    inner='<div class="bsg-box bsg-drv"><span class="bsg-cap">'+ic('teacher','xs')+' Öğretmen</span><span class="bsg-nmbox">'+(el.name?'<span class="bsg-ad">'+esc(el.name)+'</span>':(edit?'<span class="bsg-ph">Adını yaz</span>':''))+'</span></div>';
+    const one=el.h===1&&!!el.name;   /* tek satırlık masada ad tam görünsün diye başlık yazısı kalkar */
+    inner='<div class="bsg-box bsg-drv'+(one?' is-one':'')+'"><span class="bsg-cap">'+ic('teacher','xs')+(one?'':' Öğretmen')+'</span><span class="bsg-nmbox">'+(el.name?'<span class="bsg-ad">'+esc(el.name)+'</span>':(edit?'<span class="bsg-ph">Adını yaz</span>':''))+'</span></div>';
   }else{
     inner='<div class="bsg-box bsg-area"><span class="bsg-nmbox"><span class="bsg-ad">'+esc(el.label||'')+'</span></span></div>';
   }
@@ -905,7 +922,7 @@ function renderTop(){
   if(sv){
     const d=isDirty();
     sv.disabled=!d||S.saving;sv.classList.toggle('is-dirty',d);
-    sv.innerHTML=S.saving?'Kaydediliyor…':(d?'Kaydet':(S.everSaved?ic('check','sm')+'Kaydedildi':'Kaydet'));
+    sv.innerHTML=S.saving?'Kaydediliyor…':(d?'Kaydet':(S.everSaved?ic('check','sm')+'Kayıtlı':'Kaydet'));
   }
 }
 function render(){
@@ -1479,7 +1496,7 @@ function open(opts){
   let seeded=false;
   if(editable&&!m.els.length){
     seeded=true;
-    const t=buildTemplate('sira2',Math.max(realStudents(m).length,12),m.teacher);
+    const t=buildTemplate('standart',realStudents(m).length,m.teacher);
     applyTemplate(m,t);
     m.asg=autoPlan(m,{mode:'alfa',keep:false}).occ;
   }

@@ -29,6 +29,34 @@ for(const k of Object.keys(P.TEMPLATES)){
 }
 assert(P.buildTemplate('sira2',60,'').seats>=60,'Kalabalık sınıfta koltuk sayısı öğrenciyi karşılamalı.');
 
+/* 1b) Varsayılan düzen: A4 dikey, 8 sütun × 10 satır; tahta üstte (sütun 1-6), kapı sağ üstte, sol duvarda üç pencere, 3 × 3 ikili sıra, öğretmen masası sol üstte. */
+{
+  const t=P.buildTemplate('standart',18,'Öğretmen Adı');
+  assert.strictEqual(t.cols,8);assert.strictEqual(t.rows,10);assert.strictEqual(t.yon,'dikey','Varsayılan sayfa yönü dikey olmalı.');
+  assert.strictEqual(t.seats,18);
+  const desks=t.els.filter(e=>e.t==='desk');
+  assert.strictEqual(desks.length,9);
+  assert.strictEqual(JSON.stringify([...new Set(desks.map(d=>d.x))].sort()),'[0,3,6]');
+  assert.strictEqual(JSON.stringify([...new Set(desks.map(d=>d.y))].sort()),'[3,4,5]');
+  assert(desks.every(d=>d.w===2&&d.h===1),'Sıralar ikili (2 × 1) olmalı.');
+  const te=t.els.find(e=>e.t==='teacher');
+  assert(te.x===0&&te.y===1&&te.w===3&&te.h===1&&te.name==='Öğretmen Adı','Öğretmen masası 3 × 1, 2. satırda sol başta olmalı.');
+  const wall=(k,side)=>t.els.filter(e=>e.t==='wall'&&e.k===k&&e.side===side);
+  assert(wall('board','top').length===1&&wall('board','top')[0].s===1&&wall('board','top')[0].n===6,'Tahta üstte sütun 1-6.');
+  assert(wall('door','right').length===1&&wall('door','right')[0].s===0&&wall('door','right')[0].n===2,'Kapı sağ duvarda ilk iki satır.');
+  assert.strictEqual(JSON.stringify(wall('window','left').map(w=>[w.s,w.n])),'[[1,2],[4,2],[7,2]]','Sol duvarda üç pencere.');
+  assert.strictEqual(P.buildTemplate('standart',6,'').seats,18,'Az öğrencide de varsayılan 18 koltuk korunur.');
+  assert.strictEqual(P.buildTemplate('standart',30,'').rows,10);assert(P.buildTemplate('standart',30,'').seats>=30);
+  const big=P.buildTemplate('standart',60,'');
+  assert(big.rows>10&&big.seats>=60&&big.cols===8,'Kalabalık sınıfta yalnız satır sayısı artar.');
+  assert.strictEqual(Object.keys(P.TEMPLATES)[0],'standart','Standart sınıf hazır düzenlerin başında olmalı.');
+  const bos=P.buildTemplate('bos',0,'');assert(bos.cols===8&&bos.rows===10&&bos.yon==='dikey'&&bos.seats===0);
+  const empty=P.fromStored({plan:null,students:[],teacher:'',className:''});
+  assert(empty.grid.cols===8&&empty.grid.rows===10&&empty.yon==='dikey','Plansız boş model 8 × 10 dikey olmalı.');
+  const src=fs.readFileSync('js/modules/class-seating-grid.js','utf8');
+  assert(src.includes("buildTemplate('standart',realStudents(m).length,m.teacher)"),'Yeni plan ilk açılışta standart düzenle başlamalı.');
+}
+
 /* 2) Gidiş-dönüş: toStored → fromStored aynı düzeni, yerleşimi ve sabit öğrencileri verir. */
 {
   const m=model('sira2'),L=P.calc(m);
@@ -153,7 +181,7 @@ assert(bridge.includes('const isTeacherUser=()=>activeUser().admin!==true&&!!act
 assert(bridge.includes('global.SinifOturmaService.planKaydet(id,payload)')&&bridge.includes('global.SinifOturmaService.planGetir(id)'),'Okuma ve yazma canonical local-first servisten geçmeli.');
 assert(gridSrc.includes("setAttribute('data-class-seating-overlay'"),'Geri tuşu (transport.back) katmanı tanıyabilmeli.');
 const sw=fs.readFileSync('service-worker.js','utf8');
-assert(sw.includes("'./js/modules/class-seating-grid.js?v=1'")&&sw.includes("'./js/modules/class-seating.js'"),'Yeni motor ve köprü offline kabukta olmalı.');
+assert(sw.includes("'./js/modules/class-seating-grid.js?v=2'")&&sw.includes("'./js/modules/class-seating.js'"),'Yeni motor ve köprü offline kabukta olmalı.');
 const css=fs.readFileSync('css/design-system-base.css','utf8');
 const a=css.indexOf('SINIF OTURMA IZGARASI (js/modules/class-seating-grid.js)'),b=css.indexOf('/* ===== SINIFLAR — liste ve detay (kcl-*)');
 assert(a>-1&&b>a,'Sınıf oturma ızgarası CSS bölümü olmalı.');

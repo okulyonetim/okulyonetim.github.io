@@ -8,7 +8,7 @@
 'use strict';
 if(global.SinifOturma)return;
 
-const ENGINE='js/modules/class-seating-grid.js?v=1';
+const ENGINE='js/modules/class-seating-grid.js?v=2';
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 
 let classId='';
