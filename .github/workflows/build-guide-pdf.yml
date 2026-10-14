@@ -43,6 +43,8 @@ jobs:
           sudo apt-get install -y fonts-dejavu-core
       - name: PDF bağımlılıklarını kur
         run: python -m pip install --upgrade pip reportlab Pillow
+      - name: Kılavuz içeriğini ve ekran görüntülerini test et
+        run: node tests/guide-system.test.js
       - name: Ekran görüntülü PDF'yi üret
         run: python3 scripts/guide-build.py pdf
       - name: Oluşan PDF'yi doğrula
