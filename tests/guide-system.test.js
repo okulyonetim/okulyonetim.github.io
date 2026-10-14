@@ -91,6 +91,9 @@ for(const u of urls)assert(allowedUrl.test(u),'İzin verilmeyen bağlantı: '+u)
 assert.strictEqual(D.baglantilar.web,'https://sedonet23.github.io/okul/');
 assert.strictEqual(D.baglantilar.apk,'https://github.com/okulyonetim/okulyonetim.github.io/releases/latest/download/app-release.apk');
 assert.strictEqual(D.baglantilar.optik.apk,'https://github.com/okulyonetim/optikokuyucu/releases/latest/download/optik-okuyucu.apk');
+assert.strictEqual(D.baglantilar.pdf,'assets/guide/Koruk_Asistan_Kullanim_Kilavuzu.pdf','PDF kılavuzunun statik adresi tanımlı olmalı');
+assert(fs.existsSync(path.join(root,'scripts/guide_pdf.py')),'PDF üreticisi bulunmalı');
+assert(/guide_pdf\\.build_pdf\\(ROOT\\)/.test(read('scripts/guide-build.py')),'guide-build.py PDF üreticisini çalıştırmalı');
 
 /* ---------- 4) guide.js statik sözleşmesi: veri yazmaz, Firestore'a bağlanmaz, temayı bozmaz ---------- */
 const guideSrc=read('js/modules/guide.js');
