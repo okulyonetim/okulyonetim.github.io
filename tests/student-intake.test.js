@@ -93,6 +93,8 @@ assert(!h2.includes('Mehmet Demir')&&!h2.includes('Fatma Demir'),'Öğrenciler a
 assert(h2.includes('break-before:page'),'İkinci öğrenci yeni sayfada başlamalı');
 assert(h.includes('ti-print-page--first')&&h.includes('ti-print-page--second'),'Form iki sayfalık yerleşim bölümlerine ayrılmalı');
 assert(h.includes('ti-continuation'),'İkinci sayfada öğrenci tanımlayıcı başlık bulunmalı');
+assert(h.indexOf('>8</span>')<h.indexOf('Sayfa 2 / 2'),'Sağlık bölümü ilk sayfada yer almalı');
+assert(h.indexOf('>9</span>')>h.indexOf('Sayfa 2 / 2'),'İkinci sayfa yaşam koşulları bölümünden başlamalı');
 const intakeSrc=fs.readFileSync('js/modules/student-intake.js','utf8');
 assert(intakeSrc.includes('border:1px solid #aabbb2'),'Hücre kenarlıkları belirgin olmalı');
 assert(intakeSrc.includes('page-break-before:always'),'İkinci sayfa yeni sayfadan başlamalı');
