@@ -264,7 +264,7 @@ function pItem(k,span=1,label,rec,ctx){
 }
 function pRaw(label,value,span=1,cls=''){return{span,html:pCell(label,value,span,cls)}}
 function pCell(label,value,span=1,cls=''){
-  return `<td colspan="${span}" class="${cls}"><div class="ti-cell"><small>${esc(label)}</small><div class="ti-value">${cellH(value)}</div></div></td>`;
+  return `<td colspan="${span}" class="${cls}"><table class="ti-pair"><tbody><tr><td class="ti-label-cell">${esc(label)}</td><td class="ti-answer-cell"><div class="ti-value">${cellH(value)||'&nbsp;'}</div></td></tr></tbody></table></td>`;
 }
 function pGrid(rows){
   return `<table class="ti-grid-table"><colgroup>${Array.from({length:12},()=>'<col style="width:8.333%">').join('')}</colgroup><tbody>${rows.map(row=>{
@@ -275,8 +275,8 @@ function pGrid(rows){
 }
 function pCheck(k,label,span=4,rec,ctx){
   const f=FIELD[k],v=f?!!effVal(f,rec,ctx):false;
-  const suffix=(k==='tasima'||k==='tasimaPlan')&&v?' <span class="ti-check-value">Evet</span>':'';
-  return{span,html:`<td colspan="${span}" class="ti-check-cell"><span class="ti-box${v?' is-on':''}">${v?'✓':''}</span><b>${esc(label||f?.l||k)}</b>${suffix}</td>`};
+  const answer=`<span class="ti-box${v?' is-on':''}">${v?'✓':''}</span>${(k==='tasima'||k==='tasimaPlan')&&v?' <b>Evet</b>':''}`;
+  return{span,html:`<td colspan="${span}" class="ti-check-cell"><table class="ti-pair"><tbody><tr><td class="ti-label-cell">${esc(label||f?.l||k)}</td><td class="ti-answer-cell">${answer}</td></tr></tbody></table></td>`};
 }
 function pChecks(rows){return `<table class="ti-check-table"><colgroup>${Array.from({length:12},()=>'<col style="width:8.333%">').join('')}</colgroup><tbody>${rows.map(row=>`<tr>${row.map(x=>x.html).join('')}</tr>`).join('')}</tbody></table>`;}
 function pSection(no,title){return `<h2 class="ti-section-heading"><span>${no}</span><b>${esc(title)}</b></h2>`;}
@@ -344,12 +344,23 @@ const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSiz
 .ti-section-heading>b{font-weight:800}
 .ti-grid-table,.ti-list-table,.ti-check-table,.ti-signature{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed;margin:0!important}
 .ti-grid-table td,.ti-list-table td,.ti-list-table th,.ti-check-table td,.ti-signature td,.ti-signature th{border:1px solid #aabbb2!important}
-.ti-cell{min-height:7.2mm;padding:1mm 1.2mm;box-sizing:border-box;overflow-wrap:anywhere}
-.ti-cell small{display:block;font-size:5.7pt;color:#52635b;line-height:1.05;margin-bottom:.5mm}
-.ti-value{font-size:7pt;font-weight:700;line-height:1.12;min-height:2mm;white-space:pre-wrap;overflow-wrap:anywhere}
-.ti-grid-table td{padding:0!important;vertical-align:top!important}
+.ti-grid-table td{padding:0!important;vertical-align:middle!important}
+.ti-pair{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed!important;margin:0!important}
+.ti-pair td{border:0!important;vertical-align:middle!important;padding:1.3mm 1.5mm!important;overflow-wrap:anywhere}
+.ti-pair .ti-label-cell{width:38%;background:#eaf2ed!important;color:#314b3e!important;font-size:6.1pt!important;font-weight:600!important;line-height:1.12!important}
+.ti-pair .ti-answer-cell{width:62%;background:#fff!important;color:#17221e!important;font-size:7pt!important;line-height:1.12!important}
+.ti-value{font-size:7pt;font-weight:600;line-height:1.12;min-height:2.5mm;white-space:pre-wrap;overflow-wrap:anywhere}
+.ti-general-cell .ti-pair .ti-label-cell{width:25%}
+.ti-general-cell .ti-pair .ti-answer-cell{width:75%;vertical-align:top!important}
+.ti-general-cell .ti-pair .ti-answer-cell .ti-value{min-height:22mm}
+.ti-health-note .ti-pair .ti-answer-cell .ti-value{min-height:8mm}
+.ti-address-cell .ti-pair .ti-answer-cell .ti-value{min-height:5mm}
+.ti-check-table .ti-pair .ti-label-cell{width:78%;font-size:6.2pt!important}
+.ti-check-table .ti-pair .ti-answer-cell{width:22%;text-align:center;font-size:6.5pt!important}
+.ti-check-table .ti-pair .ti-answer-cell .ti-box{margin:0}
 .ti-grid-table tr:nth-child(even) td{background:#f7faf8!important}
-.ti-grid-table .ti-address-cell .ti-cell{min-height:9mm}\n.ti-grid-table .ti-health-note .ti-cell{min-height:12mm}\n.ti-grid-table .ti-other-note .ti-cell{min-height:10mm}\n.ti-grid-table .ti-transport-note .ti-cell{min-height:15mm}\n.ti-grid-table .ti-general-cell .ti-cell{min-height:24mm}
+.ti-grid-table .ti-other-note .ti-pair .ti-answer-cell .ti-value{min-height:7mm}
+.ti-grid-table .ti-transport-note .ti-pair .ti-answer-cell .ti-value{min-height:10mm}
 .ti-two{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
 .ti-two>div{min-width:0}
 .ti-two .ti-section-heading{margin-top:2mm!important}
