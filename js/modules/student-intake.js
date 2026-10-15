@@ -275,7 +275,8 @@ function pGrid(rows){
 }
 function pCheck(k,label,span=4,rec,ctx){
   const f=FIELD[k],v=f?!!effVal(f,rec,ctx):false;
-  return{span,html:`<td colspan="${span}" class="ti-check-cell"><span class="ti-box${v?' is-on':''}">${v?'✓':''}</span><b>${esc(label||f?.l||k)}</b></td>`};
+  const suffix=(k==='tasima'||k==='tasimaPlan')&&v?' <span class="ti-check-value">Evet</span>':'';
+  return{span,html:`<td colspan="${span}" class="ti-check-cell"><span class="ti-box${v?' is-on':''}">${v?'✓':''}</span><b>${esc(label||f?.l||k)}</b>${suffix}</td>`};
 }
 function pChecks(rows){return `<table class="ti-check-table"><colgroup>${Array.from({length:12},()=>'<col style="width:8.333%">').join('')}</colgroup><tbody>${rows.map(row=>`<tr>${row.map(x=>x.html).join('')}</tr>`).join('')}</tbody></table>`;}
 function pSection(no,title){return `<h2 class="ti-section-heading"><span>${no}</span><b>${esc(title)}</b></h2>`;}
