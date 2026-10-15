@@ -305,11 +305,11 @@ function formHtml(s,rec,{first=true}={}){
     +pSection(7,SEC[6].t)
     +pGrid([[f('kardesSayisi',6),f('kacinciCocuk',6)]])
     +pTable(['#','T.C. kimlik no','Adı soyadı','Doğum tarihi','Doğum yeri','Okul / kurum','Sınıf'],['4%','18%','22%','14%','14%','18%','10%'],kar)
+    +`<footer class="ti-page-footer"><span>Koruk Asistan · Öğrenci Tanıma Formu</span><span>Sayfa 1 / 2</span></footer></div>`;
+  const pageTwo=`<div class="ti-print-page ti-print-page--second"><div class="ti-continuation"><div><b>ÖĞRENCİ TANIMA FORMU · DEVAM</b><small>${esc(adSoyad)} · Okul no: ${esc(s.ogrenciNo||'')} · Sınıf/şube: ${esc(ctx.className||'')}</small></div><span>Sayfa 2 / 2</span></div>`
     +pSection(8,SEC[7].t)
     +pGrid([[f('surekliHastalik',3),f('ilac',3),f('hastalik',3),f('kaza',3)],[f('ameliyat',4),f('cihaz',4),f('ozelEgitim',4)],[f('surekliAcik',6),f('saglikAcik',6)]])
     +pChecks([[ck('engelli',null,4),ck('rehberlik',null,4),ck('psikolojik',null,4)],[ck('sehitGazi',null,6),ck('deprem',null,6)]])
-    +`<footer class="ti-page-footer"><span>Koruk Asistan · Öğrenci Tanıma Formu</span><span>Sayfa 1 / 2</span></footer></div>`;
-  const pageTwo=`<div class="ti-print-page ti-print-page--second"><div class="ti-continuation"><div><b>ÖĞRENCİ TANIMA FORMU · DEVAM</b><small>${esc(adSoyad)} · Okul no: ${esc(s.ogrenciNo||'')} · Sınıf/şube: ${esc(ctx.className||'')}</small></div><span>Sayfa 2 / 2</span></div>`
     +pSection(9,SEC[8].t)
     +pGrid([[f('gelir',3),f('ev',3),f('kiminle',3),f('oda',3)],[f('isinma',3),f('internet',3),f('okulaGelis',3),f('calisiyor',3)],[f('haneKisi',3),f('aileDisi',3),f('boy',3),f('kilo',3)],[f('pansiyon',12)]])
     +`<div class="ti-transport"><div class="ti-transport-title">TAŞIMALI EĞİTİM</div>`
