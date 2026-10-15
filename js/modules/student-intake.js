@@ -288,7 +288,8 @@ function formHtml(s,rec,{first=true}={}){
     +h2(8,S(8).t)+schema(S(8))
     +h2(9,S(9).t)+schema(S(9))
     +h2(10,S(10).t)+schema(S(10))
-    +`<div class="ti-signature-block">${h2(11,S(11).t)}${schema(S(11))}
+    +`<div class="ti-signature-block">`
+    +h2(11,S(11).t)+schema(S(11))
     +`<p class="ti-declaration"><b>Veli beyanı:</b> Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.</p>`
     +`<table class="ti-signature" style="table-layout:fixed"><thead><tr><th style="width:34%">Veli adı soyadı</th><th style="width:44%">Veli imzası</th><th style="width:22%">Tarih</th></tr></thead>`
     +`<tbody><tr><td style="height:25mm;vertical-align:top;white-space:pre-wrap">${esc(veliAd)}</td><td style="height:25mm"></td><td style="vertical-align:top">${esc(dateTR(now.slice(0,10)))}</td></tr></tbody></table></div></div>`;
@@ -297,7 +298,7 @@ function formHtml(s,rec,{first=true}={}){
 }
 const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSize:8,kenarBosluk:7,compact:true,extraHead:`<style>
 .ti-form{font-size:7pt!important;line-height:1.08!important;color:#17221e!important}
-.ti-print-page{box-sizing:border-box;width:100%;break-inside:avoid;page-break-inside:avoid}
+.ti-print-page{box-sizing:border-box;width:100%}
 .ti-print-page--second{break-before:page;page-break-before:always}
 .ti-continuation{margin:0 0 2mm;padding:0 0 1.5mm;border-bottom:1px solid #53665e;font-size:7.5pt;line-height:1.1}
 .ka-report .ti-form table{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed}
