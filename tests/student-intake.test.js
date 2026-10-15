@@ -83,7 +83,7 @@ assert.strictEqual(T.validate({d:{tc:'12345678901',boy:'140',kilo:'35',kardesSay
 /* --- rapor --- */
 const full={ogrenciId:'s1',d:{babaAd:'Mehmet Demir',babaDurum:'Vefat etmiş',anneDurum:'Sağ',birlikte:'Ayrı',kaza:'2',ameliyat:'5',ameliyatDiger:'Bademcik',kiminle:'1',engelli:true,genelAcik:'Uzun\nçok satırlı açıklama',boy:'140'},yakinlar:[{ad:'Fatma Demir',yakinlik:'Diğer',yakinlikDiger:'Büyük teyze',tel:'0555 000 00 00',aciklama:'Gündüz evde'}],kardesler:[{ad:'Ali Demir',sinif:'2-B'}],guncellenme:'2026-10-14T09:30:00.000Z'};
 const h=T.formHtml(students[0],full);
-for(const m of ['ÖĞRENCİ TANIMA FORMU','assets/logo.png','Eğitim öğretim yılı: <b>2026-2027</b>','Form tarihi: <b>14.10.2026</b>','Ayşe Demir','Zeynep Demir','<b>Vefat etmiş</b>','Diğer: Bademcik','Diğer: Büyük teyze','Fatma Demir','Ev kazası','Annesiyle','Ayrı','140 cm','Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.','Veli imzası','height:25mm','pr-dl','bolum-baslik','Uzun\nçok satırlı açıklama'])assert(h.includes(m),'Rapor eksik: '+m);
+for(const m of ['ÖĞRENCİ TANIMA FORMU','assets/logo.png','Eğitim öğretim yılı: <b>2026-2027</b>','Form tarihi: <b>14.10.2026</b>','Ayşe Demir','Zeynep Demir','<b>Vefat etmiş</b>','Diğer: Bademcik','Diğer: Büyük teyze','Fatma Demir','Ev kazası','Annesiyle','Ayrı','140 cm','Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.','Veli imzası','height:30mm','pr-dl','bolum-baslik','Uzun\nçok satırlı açıklama'])assert(h.includes(m),'Rapor eksik: '+m);
 for(let n=1;n<=11;n++)assert(h.includes(`>${n}. `),`Bölüm ${n} başlığı eksik`);
 for(const bad of ['Öğrenci tipi','Öğrenci durumu','Kayıt durumu'])assert(!h.includes(bad));
 assert(!h.includes('Can '),'Başka öğrencinin verisi karışmamalı');
@@ -101,7 +101,7 @@ assert(!h.includes('break-before:page'),'İlk öğrenci boş sayfayla başlamama
 const blank=T.formHtml(students[0],null);
 assert(blank.includes('Ayşe Demir')&&blank.includes('Zeynep Demir'),'Boş formda öğrenci kaydı bilgileri dolu olmalı');
 assert(!blank.includes('Vefat'),'Boş formda sağ/ölü seçili olmamalı');
-assert.strictEqual((blank.match(/<td style="height:6.5mm;overflow-wrap:anywhere">/g)||[]).length,3*5+3*7,'Boş form el yazısı satırları');
+assert.strictEqual((blank.match(/<td style="height:7mm;overflow-wrap:anywhere">/g)||[]).length,3*5+3*7,'Boş form el yazısı satırları');
 
 /* --- cihaz deposu --- */
 (async()=>{
