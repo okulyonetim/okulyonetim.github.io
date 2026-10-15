@@ -259,8 +259,8 @@ const pad=(rows,n,cols)=>{const o=rows.slice();while(o.length<n)o.push(Array(col
 
 /* Yazdırma şablonu: yüklenen iki sayfalı örneğin hücre yerleşimi ve sıralaması. */
 function pItem(k,span=1,label,rec,ctx){
-  const f=FIELD[k];
-  return{span,html:pCell(label||f?.l||k,f?dispVal(f,rec,ctx):'')};
+  const f=FIELD[k],cls=({veliAdres:'ti-address-cell',surekliAcik:'ti-health-note',saglikAcik:'ti-health-note',digerAcik:'ti-other-note',tasimaDiger:'ti-transport-note',genelAcik:'ti-general-cell'})[k]||'';
+  return{span,html:pCell(label||f?.l||k,f?dispVal(f,rec,ctx):'',span,cls)};
 }
 function pRaw(label,value,span=1,cls=''){return{span,html:pCell(label,value,span,cls)}}
 function pCell(label,value,span=1,cls=''){
@@ -349,7 +349,7 @@ const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSiz
 .ti-value{font-size:7pt;font-weight:700;line-height:1.12;min-height:2mm;white-space:pre-wrap;overflow-wrap:anywhere}
 .ti-grid-table td{padding:0!important;vertical-align:top!important}
 .ti-grid-table tr:nth-child(even) td{background:#f7faf8!important}
-.ti-grid-table .ti-general-cell .ti-cell{min-height:24mm}
+.ti-grid-table .ti-address-cell .ti-cell{min-height:9mm}\n.ti-grid-table .ti-health-note .ti-cell{min-height:12mm}\n.ti-grid-table .ti-other-note .ti-cell{min-height:10mm}\n.ti-grid-table .ti-transport-note .ti-cell{min-height:15mm}\n.ti-grid-table .ti-general-cell .ti-cell{min-height:24mm}
 .ti-two{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
 .ti-two>div{min-width:0}
 .ti-two .ti-section-heading{margin-top:2mm!important}
