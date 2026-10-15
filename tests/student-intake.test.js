@@ -95,8 +95,8 @@ assert(h.includes('ti-print-page--first')&&h.includes('ti-print-page--second'),'
 assert(h.includes('ti-continuation'),'İkinci sayfada öğrenci tanımlayıcı başlık bulunmalı');
 assert(h.includes('class="ti-label-cell"')&&h.includes('class="ti-answer-cell"'),'Soru ve cevap ayrı hücrelerde olmalı');
 assert(h.includes('Adı soyadı')&&h.includes('Ayşe Demir'),'Soru ve cevap yan yana basılmalı');
-assert(h.indexOf('>8</span>')<h.indexOf('Sayfa 2 / 2'),'Sağlık bölümü ilk sayfada yer almalı');
-assert(h.indexOf('>9</span>')>h.indexOf('Sayfa 2 / 2'),'İkinci sayfa yaşam koşulları bölümünden başlamalı');
+assert(h.indexOf('>8</span>')>h.indexOf('Sayfa 2 / 2'),'Sağlık bölümü ikinci sayfada yer almalı');
+assert(h.indexOf('>9</span>')>h.indexOf('>8</span>'),'Yaşam koşulları sağlık bölümünden sonra gelmeli');
 const intakeSrc=fs.readFileSync('js/modules/student-intake.js','utf8');
 assert(intakeSrc.includes('border:1px solid #aabbb2'),'Hücre kenarlıkları belirgin olmalı');
 assert(intakeSrc.includes('page-break-before:always'),'İkinci sayfa yeni sayfadan başlamalı');
