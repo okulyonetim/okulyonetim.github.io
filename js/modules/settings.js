@@ -248,7 +248,7 @@ function storage(){
     <button class="ka-btn" type="button" data-storage-export>⬇ Yedeği İndir (JSON)</button>
     ${admin()?'<button class="ka-btn ka-btn--secondary" type="button" data-storage-import>⬆ Yedekten Geri Yükle</button>':''}
   </div>
-  <div class="ka-muted">Yedek dosyası cihazınızdaki IndexedDB verilerini içerir. Raporlar, programlar, öğrenci ve öğretmen kayıtları dahildir.</div>
+  <div class="ka-muted">Yedek dosyası cihazınızdaki IndexedDB verilerini içerir. Raporlar, programlar, öğrenci ve öğretmen kayıtları dahildir. Öğrenci Tanıma Formları bu cihazda saklanır ve yalnızca yönetici yedeğine eklenir.</div>
 </div></article>
 </section>`;}
 async function exportAllData(){
@@ -257,6 +257,8 @@ async function exportAllData(){
     const TYPES=['ogretmenler','dersProgrami','dersSaatleri','siniflar','ogrenciler','veliler','servisler','nobetAtamalari','nobetYerleri','sinavlar','denemeSinavlari','ogretmenIzinleri','notlar','yemekMenuleri','sosyalKulupler','belirliGunler','zumre','sokProgrami','bepPlani','dokumanlar','yoklama','konusmalar','mesajlar','anketler','akademikTakvim','kontrolListeleri','denemeSonuclari','testSonuclari','yillikPlanBasliklari','yillikPlanTanimlari','ogretmenYillikPlanSecimleri','toplantiCizelgesi','ogretmenListeSablon','ogretmenListeKayit','idariBilgiler','okulBilgileri','depolamaAyarlari','hatirlatmaAyarlari'];
     const snapshot={exportTarihi:new Date().toISOString(),versiyon:2,veri:{}};
     for(const t of TYPES){try{snapshot.veri[t]=arr(t)}catch(_){}}
+    /* Öğrenci Tanıma Formları cihaz içi depoda tutulur (senkronize değil); sağlık verisi içerdiği için yalnız yönetici yedeğine girer. */
+    if(admin()){try{await window.AppLoader?.loadScript?.('js/modules/student-intake.js');const forms=await window.StudentIntake?.store?.exportAll?.();if(Array.isArray(forms)&&forms.length)snapshot.tanimaFormlari=forms}catch(_){toast?.('Tanıma formları yedeğe eklenemedi.')}}
     const json=JSON.stringify(snapshot,null,2);
     const blob=new Blob([json],{type:'application/json'});
     const url=URL.createObjectURL(blob);
@@ -287,7 +289,9 @@ async function importBackupData(file){
         catch(_){hata++;}
       }
     }
-    toast?.(`Geri yükleme tamamlandı: ${toplam} kayıt işlendi${hata?`, ${hata} hata`:''}.`);
+    let formSayisi=0;
+    if(Array.isArray(snapshot.tanimaFormlari)&&snapshot.tanimaFormlari.length){try{await window.AppLoader?.loadScript?.('js/modules/student-intake.js');formSayisi=await window.StudentIntake?.store?.importAll?.(snapshot.tanimaFormlari)||0}catch(_){hata++}}
+    toast?.(`Geri yükleme tamamlandı: ${toplam} kayıt işlendi${formSayisi?`, ${formSayisi} tanıma formu`:''}${hata?`, ${hata} hata`:''}.`);
     window.SyncEngine?.schedule?.(60);
   }catch(e){toast?.('Geri yükleme başarısız: '+(e?.message||e));}
 }

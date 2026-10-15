@@ -266,12 +266,14 @@ function studentTabsBody(v){
       if(!att.list.length)return empty('Devamsızlık kaydı yok','Yoklama alındığında bu öğrencinin kayıtları burada görünür.');
       return `<section class="kcl-overview kcl-overview--detail kpd-att"><div class="kcl-kpis"><div><span class="kcl-n">${att.sum.yok}</span><small>Yok</small></div><div><span class="kcl-n">${att.sum.gec}</span><small>Geç</small></div><div><span class="kcl-n">${att.sum.izinli}</span><small>İzinli</small></div><div><span class="kcl-n">${att.sum.var}</span><small>Var</small></div></div></section>${rowsA.length?`<section class="kcl-panel"><h3>Kayıtlar <small class="kpd-sub">${rowsA.length}</small></h3><ul class="kpd-rows">${rowsA.slice(0,60).map(x=>`<li>${dateBlock(x.tarih)}<span class="kpd-row-main"><strong>${esc(R.dayName(x.tarih))}</strong>${x.girenAdi?`<small>${esc(x.girenAdi)}</small>`:''}</span><span class="kpd-state is-${esc(x.durum)}">${esc(label[x.durum]||x.durum)}</span></li>`).join('')}</ul>${rowsA.length>60?`<p class="kpd-note">En son 60 kayıt gösteriliyor.</p>`:''}</section>`:'<p class="kpd-note kpd-note--box">Bu öğrenci için yok / geç / izinli kaydı bulunmuyor.</p>'}`;
     },
+    intake:()=>global.StudentIntake?.tabHtml?.(v)||'',
     _rows:rows,_att:att,_contacts:contacts
   };
 }
 function studentDetail(v){
   const id=esc(v.id),tabs=studentTabsBody(v),M=R.examMath(),phone=studentPhone(v),wa=phone&&waHref(phone);
   const list=[['info','Genel'],['guardian','Veli'],['exams','Sınavlar'],['attendance','Devamsızlık']];
+  if(global.StudentIntake?.available?.())list.push(['intake','Tanıma Formu']);
   if(!list.some(x=>x[0]===S.tab))S.tab='info';
   const lastNet=tabs._rows.map(r=>r.net).find(n=>Number.isFinite(n)),g=v.cinsiyet==='Kız'?' is-girl':v.cinsiyet==='Erkek'?' is-boy':'';
   const acts=[wa?`<a class="kpd-act" href="${esc(wa)}" target="_blank" rel="noopener">${ICON.wa}<b>WhatsApp</b></a>`:`<span class="kpd-act is-off" aria-disabled="true">${ICON.wa}<b>WhatsApp</b></span>`,phone?`<a class="kpd-act" href="${esc(telHref(phone))}">${ICON.phone}<b>Ara</b></a>`:`<span class="kpd-act is-off" aria-disabled="true">${ICON.phone}<b>Ara</b></span>`,`<button class="kpd-act" type="button" data-kpd-act="s-tab-exams">${ICON.doc}<b>Sınavlar</b></button>`,`<button class="kpd-act" type="button" data-kpd-act="s-tab-guardian">${ICON.user}<b>Veli</b></button>`,`<button class="kpd-act" type="button" data-kpd-act="s-report" data-id="${id}">${ICON.print}<b>Rapor</b></button>`].join('');
@@ -401,12 +403,16 @@ function render(){
   }
   root.innerHTML=`<section data-people-module data-kpd>${html}</section>`;
   applyDynamic(root);
+  global.StudentIntake?.hydrate?.(root);
   global.PermissionService?.apply?.(root);
 }
 function scheduleRender(now=false){
   if(now){cancelAnimationFrame(renderQueued);renderQueued=0;render();return}
   if(renderQueued)return;
-  renderQueued=requestAnimationFrame(()=>{renderQueued=0;const s=$('[data-kpd-search]',root||document);s&&document.activeElement===s?refreshResults():render()});
+  renderQueued=requestAnimationFrame(()=>{renderQueued=0;
+    /* KÖK NEDEN DÜZELTMESİ: Tanıma Formunda yazarken veri senkronu tüm ekranı yeniden çizip imleci/yazıyı bozmasın. */
+    if(document.activeElement?.closest?.('[data-ti-mount]'))return;
+    const s=$('[data-kpd-search]',root||document);s&&document.activeElement===s?refreshResults():render()});
 }
 function refreshResults(){
   const out=$('[data-kpd-results]',root);if(!out){render();return}
