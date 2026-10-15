@@ -83,7 +83,7 @@ assert.strictEqual(T.validate({d:{tc:'12345678901',boy:'140',kilo:'35',kardesSay
 /* --- rapor --- */
 const full={ogrenciId:'s1',d:{babaAd:'Mehmet Demir',babaDurum:'Vefat etmiş',anneDurum:'Sağ',birlikte:'Ayrı',kaza:'2',ameliyat:'5',ameliyatDiger:'Bademcik',kiminle:'1',engelli:true,genelAcik:'Uzun\nçok satırlı açıklama',boy:'140'},yakinlar:[{ad:'Fatma Demir',yakinlik:'Diğer',yakinlikDiger:'Büyük teyze',tel:'0555 000 00 00',aciklama:'Gündüz evde'}],kardesler:[{ad:'Ali Demir',sinif:'2-B'}],guncellenme:'2026-10-14T09:30:00.000Z'};
 const h=T.formHtml(students[0],full);
-for(const m of ['ÖĞRENCİ TANIMA FORMU','assets/logo.png','Eğitim öğretim yılı: <b>2026-2027</b>','Form tarihi: <b>14.10.2026</b>','Ayşe Demir','Zeynep Demir','<b>Vefat etmiş</b>','Diğer: Bademcik','Diğer: Büyük teyze','Fatma Demir','Ev kazası','Annesiyle','Ayrı','140 cm','Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.','Veli imzası','class="ti-signature"','ti-grid-table','ti-section-heading','Uzun\nçok satırlı açıklama'])assert(h.includes(m),'Rapor eksik: '+m);
+for(const m of ['ÖĞRENCİ TANIMA FORMU','assets/logo.png','Eğitim öğretim yılı: <b>2026-2027</b>','Form tarihi: <b>14.10.2026</b>','Ayşe Demir','Zeynep Demir','Vefat etmiş','Diğer: Bademcik','Diğer: Büyük teyze','Fatma Demir','Ev kazası','Annesiyle','Ayrı','140 cm','Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.','Veli imzası','class="ti-signature"','ti-grid-table','ti-section-heading','Uzun\nçok satırlı açıklama'])assert(h.includes(m),'Rapor eksik: '+m);
 for(let n=1;n<=11;n++)assert(h.includes(`>${n}. `),`Bölüm ${n} başlığı eksik`);
 for(const bad of ['Öğrenci tipi','Öğrenci durumu','Kayıt durumu'])assert(!h.includes(bad));
 assert(!h.includes('Can '),'Başka öğrencinin verisi karışmamalı');
@@ -93,6 +93,8 @@ assert(!h2.includes('Mehmet Demir')&&!h2.includes('Fatma Demir'),'Öğrenciler a
 assert(h2.includes('break-before:page'),'İkinci öğrenci yeni sayfada başlamalı');
 assert(h.includes('ti-print-page--first')&&h.includes('ti-print-page--second'),'Form iki sayfalık yerleşim bölümlerine ayrılmalı');
 assert(h.includes('ti-continuation'),'İkinci sayfada öğrenci tanımlayıcı başlık bulunmalı');
+assert(h.includes('class="ti-label-cell"')&&h.includes('class="ti-answer-cell"'),'Soru ve cevap ayrı hücrelerde olmalı');
+assert(h.includes('Adı soyadı')&&h.includes('Ayşe Demir'),'Soru ve cevap yan yana basılmalı');
 assert(h.indexOf('>8</span>')<h.indexOf('Sayfa 2 / 2'),'Sağlık bölümü ilk sayfada yer almalı');
 assert(h.indexOf('>9</span>')>h.indexOf('Sayfa 2 / 2'),'İkinci sayfa yaşam koşulları bölümünden başlamalı');
 const intakeSrc=fs.readFileSync('js/modules/student-intake.js','utf8');
