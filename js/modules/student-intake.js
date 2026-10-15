@@ -346,16 +346,16 @@ const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSiz
 .ti-grid-table td,.ti-list-table td,.ti-list-table th,.ti-check-table td,.ti-signature td,.ti-signature th{border:1px solid #aabbb2!important}
 .ti-grid-table td{padding:0!important;vertical-align:middle!important}
 .ti-pair{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed!important;margin:0!important}
-.ti-pair td{border:0!important;vertical-align:middle!important;padding:1.3mm 1.5mm!important;overflow-wrap:anywhere}
-.ti-pair .ti-label-cell{width:38%;background:#eaf2ed!important;color:#314b3e!important;font-size:6.1pt!important;font-weight:600!important;line-height:1.12!important}
-.ti-pair .ti-answer-cell{width:62%;background:#fff!important;color:#17221e!important;font-size:7pt!important;line-height:1.12!important}
-.ti-value{font-size:7pt;font-weight:600;line-height:1.12;min-height:2.5mm;white-space:pre-wrap;overflow-wrap:anywhere}
+.ti-pair td{border:0!important;vertical-align:middle!important;padding:1.3mm 1.5mm!important;overflow-wrap:anywhere;background:#fff!important}
+.ti-pair .ti-label-cell{width:38%;background:#fff!important;color:#303a34!important;font-size:6.1pt!important;font-weight:500!important;line-height:1.15!important;border-right:1px solid #c5cec8!important}
+.ti-pair .ti-answer-cell{width:62%;background:#fff!important;color:#17221e!important;font-size:7pt!important;line-height:1.15!important}
+.ti-value{font-size:7pt;font-weight:500;line-height:1.15;min-height:2.5mm;white-space:pre-wrap;overflow-wrap:anywhere}
 .ti-general-cell .ti-pair .ti-label-cell{width:25%}
 .ti-general-cell .ti-pair .ti-answer-cell{width:75%;vertical-align:top!important}
 .ti-general-cell .ti-pair .ti-answer-cell .ti-value{min-height:22mm}
 .ti-health-note .ti-pair .ti-answer-cell .ti-value{min-height:8mm}
 .ti-address-cell .ti-pair .ti-answer-cell .ti-value{min-height:5mm}
-.ti-check-table .ti-pair .ti-label-cell{width:78%;font-size:6.2pt!important}
+.ti-check-table .ti-pair .ti-label-cell{width:78%;font-size:6.2pt!important;background:#fff!important;font-weight:500!important}
 .ti-check-table .ti-pair .ti-answer-cell{width:22%;text-align:center;font-size:6.5pt!important}
 .ti-check-table .ti-pair .ti-answer-cell .ti-box{margin:0}
 .ti-grid-table tr:nth-child(even) td{background:#f7faf8!important}
