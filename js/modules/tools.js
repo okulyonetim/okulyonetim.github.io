@@ -133,7 +133,18 @@ global.OdevNotCizelgeleriService=OdevNotCizelgeleriService;
 
 async function prepareControlLists(){if(!global.SyncEngine||!global.COL)return;const types=[];for(const tip of ['kontrolListeleri','ogretmenler','siniflar']){if(COL[tip]){SyncEngine.register(tip,COL[tip]);types.push(tip);}}if(COL.kontrolListeTamamlama){const u=user(),admin=!!u.admin,tid=teacherId();SyncEngine.register('kontrolListeTamamlama',COL.kontrolListeTamamlama,{query:q=>admin||!tid?q:q.where('ogretmenId','==',tid)});types.push('kontrolListeTamamlama');}for(const tip of FORM_TYPES){if(COL[tip]){SyncEngine.register(tip,COL[tip]);types.push(tip);}}if(types.length){const hydrated=[...new Set(types)];await SyncEngine.localHydrate(hydrated);if(typeof SyncEngine.pull==='function')await SyncEngine.pull(hydrated);SyncEngine.schedule(100);}}
 async function prepareMap(){if(!global.SyncEngine||!global.COL?.haritaFavoriler)return;const u=user();SyncEngine.register('haritaFavoriler',COL.haritaFavoriler,{query:q=>u.admin===true||!u.uid?q:q.where('olusturanUid','==',u.uid)});await SyncEngine.localHydrate(['haritaFavoriler']);SyncEngine.schedule(100);}
-async function prepareForms(){if(!global.SyncEngine||!global.COL)return;const types=[];for(const tip of FORM_TYPES){if(COL[tip]){SyncEngine.register(tip,COL[tip]);types.push(tip);}}if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
+async function prepareForms(){if(!global.SyncEngine||!global.COL)return;const types=[];for(const tip of FORM_TYPES){if(COL[tip]){SyncEngine.register(tip,COL[tip]);types.push(tip);}}if(types.length){await SyncEngine.localHydrate(types);
+/* KÖK NEDEN DÜZELTMESİ: SyncEngine.schedule() tip almaz; yalnızca AUTO_SYNC_TYPES (duyuru, hatırlatıcı, görev, yemek) çeker.
+   Form tipleri (belirliGunler dahil) hiçbir zaman Firestore'dan çekilmiyordu; yalnızca cihazdaki yerel önbellekten okunuyordu.
+   Önbellek boşalınca/başka cihazda veri Firestore'da dururken ekrana gelmiyordu. prepareControlLists ile aynı desen: tipler açıkça çekilir. */
+try{
+  const bos=types.filter(t=>!(global.AppStore?.data?.(t)||[]).length);
+  await SyncEngine.pull(types);/* 24 saatlik TTL'e uyar; hiç çekilmemiş tipler "stale" sayılır */
+  /* Yerel liste hâlâ boşsa TTL/delta atlanmasın: tam çekim zorla (delta yalnızca değişenleri getirir, boş yerelde eksik kalırdı). */
+  const hala=bos.filter(t=>!(global.AppStore?.data?.(t)||[]).length);
+  if(hala.length&&typeof SyncEngine.sync==='function')await SyncEngine.sync(hala,{force:true,full:true});
+}catch(e){console.warn('[Tools/prepareForms]',e?.message||e)}
+SyncEngine.schedule(100);}}
 async function prepareClubStudents(){if(!global.SyncEngine||!global.COL)return;const types=['ogretmenler','siniflar','veliler','sosyalKulupler'].filter(type=>COL[type]);for(const type of types)SyncEngine.register(type,COL[type]);if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
 async function prepareAttendance(){if(!global.SyncEngine||!global.COL)return;const types=['devamsizlikCizelgesi','ogretmenler','dersProgrami','resmiTatiller','ogretmenIzinleri','dersSaatleri'].filter(t=>COL[t]);for(const type of types)SyncEngine.register(type,COL[type]);if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
 async function prepareGradebooks(){if(!global.SyncEngine||!global.COL)return;const u=user(),types=[];for(const tip of GRADE_TYPES){if(COL[tip]){SyncEngine.register(tip,COL[tip],{query:q=>u.admin===true||!u.uid?q:q.where('sahipUid','==',u.uid)});types.push(tip);}}if(types.length){await SyncEngine.localHydrate(types);SyncEngine.schedule(100);}}
