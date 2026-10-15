@@ -276,24 +276,43 @@ function formHtml(s,rec,{first=true}={}){
   const yak=pad((r.yakinlar||[]).map(y=>[y.ad||'',y.yakinlik==='Diğer'&&y.yakinlikDiger?`Diğer: ${y.yakinlikDiger}`:(y.yakinlik||''),y.tel||'',y.aciklama||'']),3,4).map((x,i)=>[String(i+1),...x]);
   const kar=pad((r.kardesler||[]).map(k=>[k.tc||'',k.ad||'',dateTR(k.dogumTarihi),k.dogumYeri||'',k.okul||'',k.sinif||'']),3,6).map((x,i)=>[String(i+1),...x]);
   const veliAd=effVal(FIELD.veliAd,r,ctx);
-  const body=head
+  const pageOne=head
     +h2(1,S(1).t)+schema(S(1))
     +h2(2,S(2).t)+schema(S(2))
     +h2(3,S(3).t)+schema(S(3))
     +h2(4,S(4).t)+schema(S(4))
     +h2(5,S(5).t)+schema(S(5))
     +h2(6,S(6).t)+grid(['Sıra','Adı soyadı','Yakınlık derecesi','Telefon numarası','Açıklama'],['8%','30%','18%','20%','24%'],yak)
-    +h2(7,S(7).t)+dl(S(7).f.map(f=>({l:f.l,v:dispVal(f,r,ctx)})))+grid(['Sıra','T.C. kimlik no','Adı soyadı','Doğum tarihi','Doğum yeri','Okul / kurum','Sınıf / şube'],['6%','17%','22%','13%','14%','17%','11%'],kar)
+    +h2(7,S(7).t)+dl(S(7).f.map(f=>({l:f.l,v:dispVal(f,r,ctx)})))+grid(['Sıra','T.C. kimlik no','Adı soyadı','Doğum tarihi','Doğum yeri','Okul / kurum','Sınıf / şube'],['6%','17%','22%','13%','14%','17%','11%'],kar);
+  const pageTwo=`<div class="ti-print-page ti-print-page--second"><p class="ti-continuation"><b>ÖĞRENCİ TANIMA FORMU</b> · ${esc(adSoyad)} · No: ${esc(s.ogrenciNo||'')} · ${esc(ctx.className||'')}</p>`
     +h2(8,S(8).t)+schema(S(8))
     +h2(9,S(9).t)+schema(S(9))
     +h2(10,S(10).t)+schema(S(10))
-    +`<div style="break-inside:avoid;page-break-inside:avoid">${h2(11,S(11).t)}${schema(S(11))}`
-    +`<p style="margin:3mm 0 2mm;font-size:9pt"><b>Veli beyanı:</b> Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.</p>`
-    +`<table style="table-layout:fixed"><thead><tr><th style="width:34%">Veli adı soyadı</th><th style="width:44%">Veli imzası</th><th style="width:22%">Tarih</th></tr></thead>`
-    +`<tbody><tr><td style="height:36mm;vertical-align:top;white-space:pre-wrap">${esc(veliAd)}</td><td style="height:36mm"></td><td style="vertical-align:top">${esc(dateTR(now.slice(0,10)))}</td></tr></tbody></table></div>`;
+    +`<div class="ti-signature-block">${h2(11,S(11).t)}${schema(S(11))}
+    +`<p class="ti-declaration"><b>Veli beyanı:</b> Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.</p>`
+    +`<table class="ti-signature" style="table-layout:fixed"><thead><tr><th style="width:34%">Veli adı soyadı</th><th style="width:44%">Veli imzası</th><th style="width:22%">Tarih</th></tr></thead>`
+    +`<tbody><tr><td style="height:25mm;vertical-align:top;white-space:pre-wrap">${esc(veliAd)}</td><td style="height:25mm"></td><td style="vertical-align:top">${esc(dateTR(now.slice(0,10)))}</td></tr></tbody></table></div></div>`;
+  const body=`<div class="ti-print-page ti-print-page--first">${pageOne}</div>`+pageTwo;
   return`<section class="ti-form" data-ti-student="${esc(s.id)}" style="${first?'':'break-before:page;page-break-before:always'}">${body}</section>`;
 }
-const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSize:9,kenarBosluk:10};
+const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSize:8,kenarBosluk:7,compact:true,extraHead:`<style>
+.ti-form{font-size:7pt!important;line-height:1.08!important;color:#17221e!important}
+.ti-print-page{box-sizing:border-box;width:100%;break-inside:avoid;page-break-inside:avoid}
+.ti-print-page--second{break-before:page;page-break-before:always}
+.ti-continuation{margin:0 0 2mm;padding:0 0 1.5mm;border-bottom:1px solid #53665e;font-size:7.5pt;line-height:1.1}
+.ka-report .ti-form table{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed}
+.ka-report .ti-form th,.ka-report .ti-form td{border:1px solid #53665e!important;padding:1.2px 2px!important;font-size:7pt!important;line-height:1.08!important;overflow-wrap:anywhere;vertical-align:middle}
+.ka-report .ti-form th{background:#e8efeb!important;color:#17221e!important;font-weight:700!important;text-align:left!important}
+.ka-report .ti-form td{background:#fff!important;color:#17221e!important}
+.ka-report .ti-form .bolum-baslik{margin:2.5mm 0 1mm!important;padding:1.2mm 2mm!important;border:1px solid #53665e!important;border-left:2px solid #17684f!important;background:#edf3ef!important;color:#17221e!important;font-size:8pt!important;line-height:1.05!important;break-after:avoid;page-break-after:avoid}
+.ka-report .ti-form .pr-dl th{width:20%;font-weight:700!important}
+.ka-report .ti-form .pr-dl td{height:auto!important;min-height:0!important;white-space:pre-wrap;overflow-wrap:anywhere}
+.ka-report .ti-form .pr-dl tr,.ka-report .ti-form table tr{break-inside:avoid;page-break-inside:avoid}
+.ka-report .ti-form .ti-signature-block{break-inside:avoid;page-break-inside:avoid}
+.ka-report .ti-form .ti-declaration{margin:2mm 0 1mm;font-size:7pt;line-height:1.1}
+.ka-report .ti-form .ti-signature td{height:25mm!important}
+@media print{.ti-print-page--second{break-before:page!important;page-break-before:always!important}}
+</style>`};
 async function ensureEngine(){
   if(global.ReportEngine?.printReport)return;
   await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=4');
