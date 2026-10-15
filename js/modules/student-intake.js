@@ -305,11 +305,11 @@ function formHtml(s,rec,{first=true}={}){
     +pSection(7,SEC[6].t)
     +pGrid([[f('kardesSayisi',6),f('kacinciCocuk',6)]])
     +pTable(['#','T.C. kimlik no','Adı soyadı','Doğum tarihi','Doğum yeri','Okul / kurum','Sınıf'],['4%','18%','22%','14%','14%','18%','10%'],kar)
-    +`<footer class="ti-page-footer"><span>Koruk Asistan · Öğrenci Tanıma Formu</span><span>Sayfa 1 / 2</span></footer></div>`;
-  const pageTwo=`<div class="ti-print-page ti-print-page--second"><div class="ti-continuation"><b>ÖĞRENCİ TANIMA FORMU</b> · ${esc(adSoyad)} · No: ${esc(s.ogrenciNo||'')} · ${esc(ctx.className||'')}<span>Sayfa 2 / 2 · Sağlık, yaşam ve onay</span></div>`
     +pSection(8,SEC[7].t)
     +pGrid([[f('surekliHastalik',3),f('ilac',3),f('hastalik',3),f('kaza',3)],[f('ameliyat',4),f('cihaz',4),f('ozelEgitim',4)],[f('surekliAcik',6),f('saglikAcik',6)]])
     +pChecks([[ck('engelli',null,4),ck('rehberlik',null,4),ck('psikolojik',null,4)],[ck('sehitGazi',null,6),ck('deprem',null,6)]])
+    +`<footer class="ti-page-footer"><span>Koruk Asistan · Öğrenci Tanıma Formu</span><span>Sayfa 1 / 2</span></footer></div>`;
+  const pageTwo=`<div class="ti-print-page ti-print-page--second"><div class="ti-continuation"><div><b>ÖĞRENCİ TANIMA FORMU · DEVAM</b><small>${esc(adSoyad)} · Okul no: ${esc(s.ogrenciNo||'')} · Sınıf/şube: ${esc(ctx.className||'')}</small></div><span>Sayfa 2 / 2</span></div>`
     +pSection(9,SEC[8].t)
     +pGrid([[f('gelir',3),f('ev',3),f('kiminle',3),f('oda',3)],[f('isinma',3),f('internet',3),f('okulaGelis',3),f('calisiyor',3)],[f('haneKisi',3),f('aileDisi',3),f('boy',3),f('kilo',3)],[f('pansiyon',12)]])
     +`<div class="ti-transport"><div class="ti-transport-title">TAŞIMALI EĞİTİM</div>`
@@ -365,7 +365,9 @@ const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSiz
 .ti-transport .ti-check-table{margin:0!important}
 .ti-transport .ti-grid-table td{background:#fff!important}
 .ti-transport .ti-cell{min-height:7mm}
-.ti-continuation{display:flex;justify-content:space-between;gap:2mm;align-items:center;margin:0 0 2mm;padding:0 0 1.5mm;border-bottom:1px solid #53665e;font-size:6.8pt;line-height:1.1}
+.ti-continuation{display:flex;justify-content:space-between;gap:2mm;align-items:center;margin:0 0 2.5mm;padding:2mm 2.5mm;border:1px solid #c2d5ca;border-left:1.5mm solid #17684f;background:#f1f7f3;font-size:7.2pt;line-height:1.2}
+.ti-continuation>div{display:flex;flex-direction:column;gap:1mm;min-width:0}
+.ti-continuation small{font-size:6.5pt;color:#52635b}
 .ti-continuation span{white-space:nowrap;font-size:6.2pt}
 .ti-declaration{margin:2.5mm 0 1.5mm;padding:2mm 2.5mm;border-left:1mm solid #17684f;background:#eaf4ef;font-size:7pt;line-height:1.15}
 .ti-signature th{background:#e8f0eb!important;color:#244b3b!important;font-size:6pt!important;text-align:left!important;padding:1.2mm!important}
