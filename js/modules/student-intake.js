@@ -252,7 +252,7 @@ function dl(pairs){
     :`<tr style="break-inside:avoid">${[0,1].map(i=>r[i]?`<th scope="row">${esc(r[i].l)}</th>${td(r[i])}`:'<th></th><td></td>').join('')}</tr>`).join('')}</tbody></table>`;
 }
 function grid(heads,widths,rows){
-  return`<table style="table-layout:fixed"><thead><tr>${heads.map((h,i)=>`<th style="width:${widths[i]}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr style="break-inside:avoid">${r.map(c=>`<td style="height:6.5mm;overflow-wrap:anywhere">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  return`<table style="table-layout:fixed"><thead><tr>${heads.map((h,i)=>`<th style="width:${widths[i]}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr style="break-inside:avoid">${r.map(c=>`<td style="height:7mm;overflow-wrap:anywhere">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 const h2=(no,t)=>`<h2 class="bolum-baslik" style="break-after:avoid;page-break-after:avoid">${no}. ${esc(t)}</h2>`;
 const pad=(rows,n,cols)=>{const o=rows.slice();while(o.length<n)o.push(Array(cols).fill(''));return o};
@@ -292,26 +292,26 @@ function formHtml(s,rec,{first=true}={}){
     +h2(11,S(11).t)+schema(S(11))
     +`<p class="ti-declaration"><b>Veli beyanı:</b> Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.</p>`
     +`<table class="ti-signature" style="table-layout:fixed"><thead><tr><th style="width:34%">Veli adı soyadı</th><th style="width:44%">Veli imzası</th><th style="width:22%">Tarih</th></tr></thead>`
-    +`<tbody><tr><td style="height:25mm;vertical-align:top;white-space:pre-wrap">${esc(veliAd)}</td><td style="height:25mm"></td><td style="vertical-align:top">${esc(dateTR(now.slice(0,10)))}</td></tr></tbody></table></div></div>`;
+    +`<tbody><tr><td style="height:30mm;vertical-align:top;white-space:pre-wrap">${esc(veliAd)}</td><td style="height:30mm"></td><td style="vertical-align:top">${esc(dateTR(now.slice(0,10)))}</td></tr></tbody></table></div></div>`;
   const body=`<div class="ti-print-page ti-print-page--first">${pageOne}</div>`+pageTwo;
   return`<section class="ti-form" data-ti-student="${esc(s.id)}" style="${first?'':'break-before:page;page-break-before:always'}">${body}</section>`;
 }
 const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSize:8,kenarBosluk:7,compact:true,extraHead:`<style>
-.ti-form{font-size:7pt!important;line-height:1.08!important;color:#17221e!important}
+.ti-form{font-size:8pt!important;line-height:1.15!important;color:#17221e!important}
 .ti-print-page{box-sizing:border-box;width:100%}
 .ti-print-page--second{break-before:page;page-break-before:always}
 .ti-continuation{margin:0 0 2mm;padding:0 0 1.5mm;border-bottom:1px solid #53665e;font-size:7.5pt;line-height:1.1}
 .ka-report .ti-form table{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed}
-.ka-report .ti-form th,.ka-report .ti-form td{border:1px solid #53665e!important;padding:1.2px 2px!important;font-size:7pt!important;line-height:1.08!important;overflow-wrap:anywhere;vertical-align:middle}
+.ka-report .ti-form th,.ka-report .ti-form td{border:1px solid #53665e!important;padding:2px 3px!important;font-size:7.8pt!important;line-height:1.15!important;overflow-wrap:anywhere;vertical-align:middle}
 .ka-report .ti-form th{background:#e8efeb!important;color:#17221e!important;font-weight:700!important;text-align:left!important}
 .ka-report .ti-form td{background:#fff!important;color:#17221e!important}
-.ka-report .ti-form .bolum-baslik{margin:2.5mm 0 1mm!important;padding:1.2mm 2mm!important;border:1px solid #53665e!important;border-left:2px solid #17684f!important;background:#edf3ef!important;color:#17221e!important;font-size:8pt!important;line-height:1.05!important;break-after:avoid;page-break-after:avoid}
+.ka-report .ti-form .bolum-baslik{margin:3mm 0 1.3mm!important;padding:1.5mm 2mm!important;border:1px solid #53665e!important;border-left:2px solid #17684f!important;background:#edf3ef!important;color:#17221e!important;font-size:8.5pt!important;line-height:1.1!important;break-after:avoid;page-break-after:avoid}
 .ka-report .ti-form .pr-dl th{width:20%;font-weight:700!important}
 .ka-report .ti-form .pr-dl td{height:auto!important;min-height:0!important;white-space:pre-wrap;overflow-wrap:anywhere}
 .ka-report .ti-form .pr-dl tr,.ka-report .ti-form table tr{break-inside:avoid;page-break-inside:avoid}
 .ka-report .ti-form .ti-signature-block{break-inside:avoid;page-break-inside:avoid}
-.ka-report .ti-form .ti-declaration{margin:2mm 0 1mm;font-size:7pt;line-height:1.1}
-.ka-report .ti-form .ti-signature td{height:25mm!important}
+.ka-report .ti-form .ti-declaration{margin:2.5mm 0 1.5mm;font-size:7.8pt;line-height:1.15}
+.ka-report .ti-form .ti-signature td{height:30mm!important}
 @media print{.ti-print-page--second{break-before:page!important;page-break-before:always!important}}
 </style>`};
 async function ensureEngine(){
