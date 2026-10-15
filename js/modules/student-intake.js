@@ -328,7 +328,7 @@ function formHtml(s,rec,{first=true}={}){
 const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSize:8,kenarBosluk:7,compact:true,extraHead:`<style>
 .ti-form{font-size:7.2pt!important;line-height:1.12!important;color:#17221e!important;font-family:Arial,sans-serif!important}
 .ti-print-page{box-sizing:border-box;width:100%;position:relative;padding-bottom:5mm}
-.ti-print-page--second{break-before:page;page-break-before:always}
+.ti-print-page--second{break-before:page;page-break-before:always;padding-top:8mm}
 .ti-header{display:flex;align-items:center;gap:2.5mm;padding-bottom:2mm;margin-bottom:2mm;border-bottom:1.2mm solid #17684f}
 .ti-logo{width:14mm;height:14mm;object-fit:contain;flex:0 0 auto}
 .ti-headcopy{display:flex;flex-direction:column;min-width:0;flex:1}
@@ -385,7 +385,7 @@ const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSiz
 .ti-signature td{height:28mm!important;vertical-align:top!important;padding:1.5mm!important;font-size:7pt!important}
 .ti-page-footer{display:flex;justify-content:space-between;border-top:1px solid #c7d2cc;margin-top:2mm;padding-top:1mm;font-size:5.7pt;color:#738078}
 @media print{
- .ti-print-page--second{break-before:page!important;page-break-before:always!important}
+ .ti-print-page--second{break-before:page!important;page-break-before:always!important;padding-top:8mm!important}
  .ti-print-page{break-inside:avoid;page-break-inside:avoid}
  .ti-two{display:grid!important;grid-template-columns:1fr 1fr!important}
  .ti-grid-table tr,.ti-list-table tr,.ti-check-table tr,.ti-signature tr{break-inside:avoid;page-break-inside:avoid}
