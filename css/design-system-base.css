@@ -13716,6 +13716,37 @@ html[data-theme] .kcz-form .kcz-switch>input:focus-visible~.kcz-switch__track{ou
    Ölçüler TEMA MERKEZİ'ndeki --ka-web-* belirteçlerinden gelir; renk için mevcut --gl-* / --hd-* / --t-accent-* yüzey
    belirteçleri kullanılır. Menü grup renkleri phone menüsüyle AYNI eşlemedir (--mc-rgb; test iki eşlemeyi karşılaştırır).
    Yeni yan menü öğesi eklemek için js/core/web-shell.js içindeki işaretlemeye sınıf ekleyin, sayfa CSS'inde renk yazmayın. */
+/* Öğrenci Tanıma Formu (student-intake.js) — yalnız --ka-* token'ları; açık/koyu tema otomatik */
+.ti-wrap{display:grid;gap:10px}
+.ti-status{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;padding:8px 2px;color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
+.ti-dirty{color:var(--ka-danger-text,var(--ka-danger))}
+.ti-sec>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;list-style:none;color:var(--ka-text)}
+.ti-sec>summary::-webkit-details-marker{display:none}
+.ti-sec>summary::after{content:"›";margin-left:auto;transition:transform var(--ka-dur-160,.16s);color:var(--ka-text-muted)}
+.ti-sec[open]>summary::after{transform:rotate(90deg)}
+.ti-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.ti-full{grid-column:1/-1}
+.ti-f input,.ti-f select,.ti-f textarea{width:100%;box-sizing:border-box}
+.ti-f input[readonly]{background:var(--ka-surface);opacity:.85}
+.ti-f textarea{min-height:76px;resize:vertical}
+.ti-diger{margin-top:6px;width:100%;box-sizing:border-box}
+.ti-src{font-style:normal;font-weight:700;color:var(--ka-accent);font-size:var(--ka-fs-11)}
+.ti-chk{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--ka-text)}
+.ti-chk input{width:20px;height:20px}
+.ti-row{border:1px solid var(--ka-border);border-radius:var(--ka-card-radius-sm,10px);padding:10px;margin:8px 0;background:var(--ka-card-bg)}
+.ti-row__h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;color:var(--ka-text)}
+.ti-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding:10px 0 4px}
+.ti-bar .ka-btn{flex:1 1 140px;min-height:44px}
+.ti-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:8px}
+.ti-kpis>div{border:1px solid var(--ka-border);border-radius:var(--ka-card-radius-sm,10px);padding:8px;text-align:center;background:var(--ka-card-bg);color:var(--ka-text)}
+.ti-kpis b{display:block;font-size:var(--ka-fs-17)}
+.ti-kpis small{color:var(--ka-text-muted);font-size:var(--ka-fs-11)}
+.ti-bulk-actions{display:flex;flex-wrap:wrap;gap:8px}
+.ti-h{margin:6px 0 2px;font-size:var(--ka-fs-14);color:var(--ka-text)}
+.ti-list{display:grid;gap:2px;max-height:34vh;overflow:auto;border:1px solid var(--ka-border);border-radius:var(--ka-card-radius-sm,10px);padding:4px 8px}
+.ti-pick{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--ka-text)}
+.ti-pick input{width:20px;height:20px}
+
 .ka-web-side,.ka-web-crumb,.ka-web-search,.ka-web-wx,.ka-web-note{display:none}
 @media(min-width:1100px){
 html .ka-app-shell:not([hidden]){padding-left:var(--ka-web-side-w)}
