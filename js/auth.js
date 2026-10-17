@@ -148,6 +148,7 @@ function authOturumuUygula(firebaseUser,kullanici,rol,{cached=false}={}){
   onayBekleniyorGizle();girisEkraniGizle();const app=document.getElementById('app');if(app)app.classList.add('ready','show');authYuzeyiniCoz();
   if(!authSessionActivated){authSessionActivated=true;IstatistikService.girisKaydet();if(typeof KonumGirisService!=='undefined')KonumGirisService.kaydet();if(typeof window._navVerileriniYukle==='function')window._navVerileriniYukle();try{if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.PullToRefreshPlugin)window.Capacitor.Plugins.PullToRefreshPlugin.appHazir()}catch(e){}}
   if(cached)window.dispatchEvent(new CustomEvent('koruk:auth-local-restored',{detail:{uid:kullanici.uid}}));
+  window.dispatchEvent(new CustomEvent('koruk:auth-session-ready',{detail:{uid:kullanici.uid,source:cached?'cache':'server'}}));
   return true
 }
 async function authSunucuOturumuGetir(user,cached){
