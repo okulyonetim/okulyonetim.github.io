@@ -54,8 +54,10 @@ function render(status){
      const message=String(err?.message||err||'');
      if(statusEl)statusEl.textContent=message==='bildirim-engellendi'?'Bildirimler engellenmiş. Tarayıcı veya cihaz ayarlarından izin verin.':message==='bildirim-izni-gerekli'?'Bildirim izni verilmedi. İstediğiniz zaman ayarlardan açabilirsiniz.':message==='token-alinamadi'?'İzin durumu alındı ancak cihaz kaydı tamamlanamadı. İnternet bağlantısını kontrol edip yeniden deneyin.':message||'Bildirimler etkinleştirilemedi.';
      enable.disabled=false;
-     if(message==='bildirim-engellendi'||message==='bildirim-izni-gerekli')enable.textContent='İzin nasıl açılır?';
-     if(enable.textContent==='İzin nasıl açılır?')enable.onclick=null;
+     if(message==='bildirim-engellendi'||message==='bildirim-izni-gerekli'){
+       const currentPermission=await permission();
+       if(currentPermission==='denied'){close();render('denied');return}
+     }
    }finally{busy=false;enable.disabled=false}
  });
 }
