@@ -388,7 +388,8 @@ function printModel(m,info){
   const body='<div class="bsgp">'+page1+page2+'</div>';
   const T='var(--ka-report-transport-';
   const extra='<style>'+
-   '.bsgp{font-family:var(--ka-font,Inter,"Segoe UI",Arial,sans-serif);color:'+T+'text);line-height:1.2}.bsgp *{box-sizing:border-box}'+
+   ':root{--ka-report-transport-text:#17221e;--ka-report-transport-wall:#276653;--ka-report-transport-muted-ink:#68736e;--ka-report-transport-cell:#ffffff;--ka-report-transport-body:#f7fbf9;--ka-report-transport-glass:#dceee6;--ka-report-transport-glass-edge:#94b7a9;--ka-report-transport-glass-ink:#2f6254;--ka-report-transport-plate:#2456a6;--ka-report-transport-rule:#d5ded9;--ka-report-transport-border-soft:#d5ded9;--ka-report-transport-ilk-fill:#e4f4ec;--ka-report-transport-ilk-edge:#70a98e;--ka-report-transport-ilk-chip:#216b54;--ka-report-transport-orta-fill:#e7eefb;--ka-report-transport-orta-edge:#7f9ac6;--ka-report-transport-orta-chip:#284e86;--ka-report-transport-other-fill:#f0f0f0;--ka-report-transport-other-edge:#a3aaa6;--ka-report-transport-other-chip:#555d59;--ka-report-transport-bos-edge:#a9b1ad;--ka-report-transport-driver:#fff3cf;--ka-report-transport-driver-edge:#d2b04f;--ka-report-transport-driver-ink:#69531c;--ka-report-transport-door:#f8f8f8;--ka-report-transport-rest:#f2f2f2}'+
+   '.bsgp{font-family:Arial,"Segoe UI",sans-serif;color:'+T+'text);line-height:1.2}.bsgp *{box-sizing:border-box}'+
    '.bsgp-page{position:relative;height:1097px;overflow:hidden;padding:30px 34px 0}.bsgp-p2{padding-top:41px}'+
    '@media screen{.bsgp-p1{border-bottom:1px dashed '+T+'border-soft)}}'+
    '.bsgp-head{display:flex;align-items:center;gap:16px;height:64px}.bsgp-logo{width:58px;height:58px;border-radius:50%;object-fit:cover;flex:none}'+
