@@ -11,7 +11,7 @@ const onboarding = fs.readFileSync('js/core/notification-onboarding.js', 'utf8')
 const indexHtml = fs.readFileSync('index.html', 'utf8');
 const designSystem = fs.readFileSync('css/design-system.css', 'utf8');
 
-assert(indexHtml.includes('js/core/notification-onboarding.js?v=1'), 'Bildirim bilgilendirme modülü uygulama girişinde yüklenmeli.');
+assert(indexHtml.includes('js/core/notification-onboarding.js?v=2'), 'Bildirim bilgilendirme modülü uygulama girişinde yüklenmeli.');
 
 assert(!fs.existsSync('firebase-messaging-sw.js'), 'Eski ikinci service worker dosyası geri gelmemeli.');
 assert(!fs.existsSync('js/push.js'), 'Emekli push UI kökü geri gelmemeli.');
