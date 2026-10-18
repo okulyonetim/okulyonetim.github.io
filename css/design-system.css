@@ -365,7 +365,7 @@ html[data-theme="dark"] .primary *{
 .ka-committee-detail-title{display:flex;align-items:flex-start;gap:var(--ka-sp-12);min-width:0}
 .ka-committee-detail-title>[data-back]{flex:0 0 auto;margin-top:var(--ka-sp-4)}
 .ka-committee-title-copy{flex:1 1 auto;min-width:0}
-.ka-committee-title-copy h2{margin:var(--ka-sp-4) 0 var(--ka-sp-6);font-size:clamp(var(--ka-fs-24),5vw,var(--ka-fs-34));line-height:var(--ka-lh-1-15);font-weight:var(--ka-fw-800);overflow-wrap:break-word;word-break:normal}
+.ka-committee-title-copy h2{margin:var(--ka-sp-4) 0 var(--ka-sp-6);font-size:clamp(1.5rem,5vw,2.125rem);line-height:1.15;font-weight:800;overflow-wrap:break-word;word-break:normal}
 .ka-committee-title-copy p{margin:0}
 .ka-committee-detail-actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-8);padding-left:calc(var(--ka-ic-40) + var(--ka-sp-12))}
 .ka-committee-detail-actions .ka-btn{min-height:var(--ka-sp-44)}
@@ -381,7 +381,7 @@ html[data-theme="dark"] .primary *{
 @media(max-width:700px){
  .ka-committee-detail{gap:var(--ka-sp-12)}
  .ka-committee-detail-head{gap:var(--ka-sp-10)}
- .ka-committee-title-copy h2{font-size:var(--ka-fs-28);line-height:var(--ka-lh-1-15)}
+ .ka-committee-title-copy h2{font-size:1.75rem;line-height:1.15}
  .ka-committee-detail-actions{padding-left:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-8)}
  .ka-committee-detail-actions .ka-btn{width:100%;justify-content:center;padding-inline:var(--ka-sp-10)}
  .ka-committee-detail-actions [data-del]{justify-self:start}
