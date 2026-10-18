@@ -359,6 +359,15 @@ html[data-theme="dark"] .primary *{
 .ka-committee-section{overflow:hidden}.ka-committee-section>.ka-card__header h3{margin:0}.ka-committee-member-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-18)}.ka-committee-member-list{margin-top:var(--ka-sp-8)}.ka-committee-member-row{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) 0;border-bottom:var(--ka-card-border-w) solid var(--ka-border)}.ka-committee-member-row:last-child{border-bottom:0}.ka-committee-person{border:0;background:transparent;color:var(--ka-text);text-align:left;padding:0;cursor:pointer}
 .ka-committee-task-list{margin:0;padding-left:var(--ka-sp-22)}.ka-committee-task-list li{display:flex;gap:var(--ka-sp-8);align-items:center;padding:var(--ka-sp-8) 0;border-bottom:var(--ka-border-w) solid var(--ka-border)}.ka-committee-note{padding:var(--ka-sp-12);border:var(--ka-card-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius-sm);background:var(--ka-surface-2)}.ka-committee-note p{margin:var(--ka-sp-7) 0}.ka-committee-note small{float:right;color:var(--ka-muted)}.ka-committee-work{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) 0;border-bottom:var(--ka-border-w) solid var(--ka-border)}.ka-committee-work label{display:flex;align-items:center;gap:var(--ka-sp-10);flex:1}.ka-committee-work.is-done strong{text-decoration:line-through;opacity:.7}.ka-committee-form-group{padding:var(--ka-sp-14) 0;border-top:var(--ka-card-border-w) solid var(--ka-border)}.ka-committee-form-group h3{margin:0 0 var(--ka-sp-10)}.ka-committee-detail-head{align-items:flex-start;gap:var(--ka-sp-10)}.ka-committee-detail-head h2{margin:var(--ka-sp-3) 0}@media(max-width:700px){.ka-committee-member-groups{grid-template-columns:1fr}.ka-committee-head{align-items:flex-start;flex-direction:column}.ka-committee-head .ka-btn{width:100%}.ka-committee-list-row{padding:var(--ka-sp-13) var(--ka-sp-11)}.ka-committee-list-row>.ka-badge{display:none}.ka-committee-detail-head .ka-btn{padding-inline:var(--ka-sp-10)}}
 
+/* Kurul ve Komisyonlar — belge türleri ve dayanak notları */
+.ka-chip-list{display:flex;flex-wrap:wrap;gap:var(--ka-sp-6)}
+.ka-committee-legal-note{margin:0;white-space:normal;overflow-wrap:anywhere;line-height:var(--ka-lh-1-5)}
+.ka-committee-doc-options{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:var(--ka-sp-8)}
+.ka-check-row{display:flex;align-items:flex-start;gap:var(--ka-sp-8);padding:var(--ka-sp-8);border:var(--ka-card-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius-sm);background:var(--ka-surface-1);color:var(--ka-text)}
+.ka-check-row input{flex:0 0 auto;margin-top:var(--ka-sp-3)}
+.ka-check-row span{overflow-wrap:anywhere}
+@media(max-width:700px){.ka-committee-doc-options{grid-template-columns:1fr}}
+
 /* ===== BİLDİRİM (TOAST) — js/core/toast.js =====
    window.toast(mesaj) tek yuvalı alt bildirimdir; her sayfanın ve tam ekran önizlemenin (rapor, belge) üstünde görünür.
    Yüzey/yazı/çizgi/gölge mevcut açılır pencere belirteçlerinden (--pp-*, --gl-*) gelir; hata sürümü --ka-danger ile çizilir. */
