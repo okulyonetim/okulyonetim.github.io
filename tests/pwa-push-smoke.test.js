@@ -11,7 +11,7 @@ const onboarding = fs.readFileSync('js/core/notification-onboarding.js', 'utf8')
 const indexHtml = fs.readFileSync('index.html', 'utf8');
 const designSystem = fs.readFileSync('css/design-system.css', 'utf8');
 
-assert(indexHtml.includes('js/core/notification-onboarding.js?v=2'), 'Bildirim bilgilendirme modülü uygulama girişinde yüklenmeli.');
+assert(indexHtml.includes('js/core/notification-onboarding.js?v=3'), 'Bildirim bilgilendirme modülü uygulama girişinde yüklenmeli.');
 
 assert(!fs.existsSync('firebase-messaging-sw.js'), 'Eski ikinci service worker dosyası geri gelmemeli.');
 assert(!fs.existsSync('js/push.js'), 'Emekli push UI kökü geri gelmemeli.');
@@ -64,6 +64,9 @@ assert.strictEqual(bildirimSaatiUygunMu({}, '00:40'), true, 'Saat tercihi olmaya
 
 assert(onboarding.includes("global.PushService.tokenGetir({request:true})"), 'Kullanıcı eylemi mevcut PushService üzerinden izin ve token kaydını başlatmalı.');
 assert(onboarding.includes('dismissedUntil:Date.now()+7*24*60*60*1000'), 'Daha Sonra kartı yedi gün ertelemeli.');
+assert(onboarding.includes('Konum İznini Aç'), 'location permission CTA should be present');
+assert(onboarding.includes('hava durumu, sıcaklık ve hissedilen sıcaklık'), 'location permission purpose should explain local weather');
+assert(onboarding.includes('navigator.geolocation.getCurrentPosition'), 'location permission should use the browser geolocation prompt');
 assert(onboarding.includes("status==='denied'"), 'Reddedilen izin için ayarlara yönelik açıklama akışı bulunmalı.');
 assert(designSystem.includes('.ka-notify-onboarding'), 'Bildirim kartı merkezi tema dosyasında stillenmeli.');
 assert(!onboarding.includes('Notification.requestPermission'), 'İzin isteme doğrudan değil merkezi platform adaptörü üzerinden yapılmalı.');
