@@ -11,7 +11,7 @@ assert(appMenu.length>0&&uiMenu.length>0,'Ayarlar menü katalogları bulunmalı.
 
 for(const block of [appMenu,uiMenu]){
   assert(block.includes("['Ayarlar','⚙️','settings']"),'Ayarlar menüsü canonical Settings girişini korumalı.');
-  assert(block.includes("['Veriler','🗄️','settings','data']"),'Bağımsız Veri Aktarma Merkezi menüden erişilebilir kalmalı.');
+  assert(!block.includes("['Veriler','🗄️','settings','data']"),'Veriler Ayarlar > Sistem Yönetimi içinde durur; menüde ikinci kez yer almamalı.');
   for(const duplicate of [
     "['Okul Bilgileri','🏢','settings','school']",
     "['Ders Saatleri','⏱️','settings','lesson-hours']",
