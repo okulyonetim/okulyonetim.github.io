@@ -16,7 +16,7 @@ const isManager=()=>user().admin===true||!!global.PermissionService?.isManager?.
 function today(){const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`}
 function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return rows('ogretmenler').find(x=>String(x.id)===String(id))||null}
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
-function blank(){const t=teacher();return{id:'',veliAd:'',yakinlik:'',tarih:today(),ogrenciAd:'',sinif:'',no:'',ogretmenAd:teacherName(t),brans:t?.brans||'',gorev:'Sınıf Öğretmeni',neden:'',konusulanlar:'',sonuc:''}}
+function blank(){const t=teacher();return{id:'',veliAd:'',yakinlik:'',tarih:today(),ogrenciAd:'',sinif:'',no:'',ogretmenAd:teacherName(t),brans:t?.brans||'',gorev:'',neden:'',konusulanlar:'',sonuc:''}}
 function ensure(){if(!state)state=blank();return state}
 function classNames(){const set=new Set();rows('siniflar').forEach(x=>{const n=String(x.ad||x.sinifAdi||x.sinif||'').trim();if(n)set.add(n)});return[...set].sort((a,b)=>a.localeCompare(b,'tr',{numeric:true,sensitivity:'base'}))}
 function students(name){const c=rows('siniflar').find(x=>String(x.ad||x.sinifAdi||'').trim()===name),id=c?.id||name;return rows('veliler').filter(v=>v.sinifId===id||v.sinifId===name).sort((a,b)=>String(a.ogrenciAdi||'').localeCompare(String(b.ogrenciAdi||''),'tr'))}
@@ -42,7 +42,7 @@ function render(root=document.getElementById('v2ModuleRoot')){
   <article class="ka-card"><div class="ka-card__body ka-stack"><strong>Görüşme yapılan veli</strong>
    <div class="ka-grid">${field('Adı Soyadı',input('veliAd'))}${field('Öğrenciye yakınlığı',input('yakinlik','text','Anne, baba…','vgfYakinlik'))}<datalist id="vgfYakinlik">${YAKINLIK.map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist>${field('Görüşme tarihi',input('tarih','date'))}</div></div></article>
   <article class="ka-card"><div class="ka-card__body ka-stack"><strong>Görüşmeyi yapan öğretmen</strong>
-   <div class="ka-grid">${field('Adı Soyadı',input('ogretmenAd'))}${field('Branşı',input('brans'))}${field('Görevi',input('gorev'))}</div></div></article>
+   <div class="ka-grid">${field('Adı Soyadı',input('ogretmenAd'))}${field('Branşı',input('brans'))}${field('Görevi (boşsa sınıfa göre otomatik)',input('gorev','text','Sınıf Öğretmeni / Sınıf Rehber Öğretmeni'))}</div></div></article>
   <article class="ka-card"><div class="ka-card__body ka-stack"><strong>Görüşme</strong>${field('Görüşme nedeni',area('neden',3,'Görüşmenin nedeni'))}${field('Görüşme sırasında konuşulanlar',area('konusulanlar',6,'Konuşulan konular'))}${field('Sonuç ve öneriler',area('sonuc',5,'Varılan sonuç ve öneriler'))}</div></article>
   <footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-vgf-reset>${s.id?'Yeni form':'Formu temizle'}</button><button class="ka-btn ka-btn--secondary" type="button" data-vgf-blank>Boş form yazdır</button><button class="ka-btn ka-btn--secondary" type="button" data-vgf-print>🖨 Yazdır / PDF</button><button class="ka-btn" type="button" data-vgf-save>${s.id?'Değişiklikleri kaydet':'Kaydet'}</button></footer>
   ${historyHtml()}
@@ -62,7 +62,9 @@ function bind(root){
  root.querySelectorAll('[data-vgf-del]').forEach(b=>b.addEventListener('click',async()=>{const r=rows('veliGorusmeleri').find(x=>x.id===b.dataset.vgfDel);if(!r||!confirm(`${r.ogrenciAd||'Bu'} görüşme kaydı silinsin mi?`))return;try{await device().remove('veliGorusmeleri',global.COL.veliGorusmeleri,r.id);if(state?.id===r.id)state=blank();global.toast?.('Kayıt silindi.');render(root)}catch(e){global.toast?.('Silinemedi: '+(e?.message||e))}}));
  root.querySelector('[data-vgf-reset]')?.addEventListener('click',()=>{state=blank();pickClass='';render(root)});
 }
-function emptyForm(){return{id:'',gorev:'Sınıf Öğretmeni'}}
+function emptyForm(){return{id:'',blank:true}}
+// Görev boşsa sınıf düzeyinden belirlenir: 1-4. sınıf ilkokul (Sınıf Öğretmeni), 5-8. sınıf ortaokul (Sınıf Rehber Öğretmeni).
+function gorevOf(s){if(s.gorev)return s.gorev;const n=parseInt(String(s.sinif||'').trim(),10);return n>=5?'Sınıf Rehber Öğretmeni':'Sınıf Öğretmeni'}
 function cell(v){return v?esc(v):'&nbsp;'}
 function reportBody(data){
  const s=data||ensure(),dots='......................................';
@@ -75,12 +77,12 @@ function reportBody(data){
  <tr><th rowspan="2" class="vgf-grp">Öğrencinin</th><th class="vgf-sub">Adı Soyadı</th><td colspan="2">${cell(s.ogrenciAd)}</td></tr>
  <tr><th class="vgf-sub">Sınıfı ve Numarası</th><td colspan="2">${cell([s.sinif,s.no].filter(Boolean).join(' / '))}</td></tr>
  <tr><th rowspan="2" class="vgf-grp">Görüşme Yapan Öğretmenin</th><th class="vgf-sub">Adı Soyadı</th><td colspan="2">${cell(s.ogretmenAd)}</td></tr>
- <tr><th class="vgf-sub">Branşı ve Görevi</th><td>${cell(s.brans)}</td><td class="vgf-mid vgf-bold">${cell(s.gorev)}</td></tr>
+ <tr><th class="vgf-sub">Branşı ve Görevi</th><td>${cell(s.brans)}</td><td class="vgf-mid vgf-bold">${cell(s.blank?'':gorevOf(s))}</td></tr>
  <tr class="vgf-reason"><th class="vgf-grp">Görüşme Nedeni</th><td colspan="3">${cell(s.neden)}</td></tr>
  </tbody></table>
  <div class="vgf-box vgf-box--talk"><b>Görüşme Sırasında Konuşulanlar:</b><p>${esc(s.konusulanlar)}</p></div>
  <div class="vgf-box vgf-box--result"><b>Sonuç ve Öneriler:</b><p>${esc(s.sonuc)}</p></div>
- <div class="vgf-sign"><div><b>Görüşme Yapılan<br>Veli Adı Soyadı</b><span>${esc(s.veliAd)||dots}</span><b class="vgf-imza">İmza</b></div><div><b>Sınıf Öğretmeni</b><span>${esc(s.ogretmenAd)||dots}</span><b class="vgf-imza">İmza</b></div></div></article>`
+ <div class="vgf-sign"><div><b>Görüşme Yapılan<br>Veli Adı Soyadı</b><span>${esc(s.veliAd)||dots}</span><b class="vgf-imza">İmza</b></div><div><b>${esc(s.blank?'Sınıf Öğretmeni':gorevOf(s))}</b><span>${esc(s.ogretmenAd)||dots}</span><b class="vgf-imza">İmza</b></div></div></article>`
 }
 function print(data){if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}global.ReportEngine.printReport('Veli Görüşme Formu',reportBody(data),{fileName:'Veli Görüşme Formu',yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true}
 function open(){state=blank();pickClass='';histQuery='';const ok=render();prepare().then(()=>{if(document.querySelector('[data-vgf-page]'))render()});return ok}

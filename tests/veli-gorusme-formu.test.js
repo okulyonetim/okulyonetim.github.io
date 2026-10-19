@@ -76,3 +76,12 @@ test('kağıt stili sözleşmeye uyar (renk belirteçleri, hex yok)', () => {
   assert.ok(c > 0 && c < d);
   css.slice(c, d).split('\n').filter(l => l.includes('{') && !l.startsWith('@media')).forEach(l => assert.match(l.trim(), /^html\[data-theme\] #v2ModuleRoot /));
 });
+
+test('görev: ilkokulda Sınıf Öğretmeni, ortaokulda Sınıf Rehber Öğretmeni; boş formda boş', () => {
+  const m = yukle();
+  const td = h => (h.match(/<td class="vgf-mid vgf-bold">([^<]*)<\/td>/) || [])[1];
+  assert.equal(td(m.reportBody({ sinif: '3-A' })), 'Sınıf Öğretmeni');
+  assert.equal(td(m.reportBody({ sinif: '6-B' })), 'Sınıf Rehber Öğretmeni');
+  assert.equal(td(m.reportBody({ sinif: '6-B', gorev: 'Müdür Yardımcısı' })), 'Müdür Yardımcısı');
+  assert.equal(td(m.reportBody({ blank: true })), '&nbsp;');
+});

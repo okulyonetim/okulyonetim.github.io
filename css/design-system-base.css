@@ -12865,8 +12865,8 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 /* ===== A4 FORM — Veli Görüşme Formu (.vgf-*) =====
    js/modules/parent-meeting.js çıktısının kağıt stili; renk --ka-report-text / --ka-report-bg / --ka-report-border belirteçlerinden gelir. */
 .ka-report .vgf-paper{box-sizing:border-box;min-height:272mm;padding:6mm 7mm;border:.5mm solid var(--ka-report-border);outline:.25mm solid var(--ka-report-border);outline-offset:-1.6mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;display:flex;flex-direction:column}
-.ka-report .vgf-brand{display:flex;align-items:center;justify-content:center;gap:4mm;margin:0 0 3mm;min-height:16mm}
-.ka-report .vgf-brand img{width:16mm;height:16mm;object-fit:contain;flex:none}
+.ka-report .vgf-brand{position:relative;display:flex;align-items:center;justify-content:center;margin:0 0 3mm;min-height:16mm;padding:0 20mm}
+.ka-report .vgf-brand img{position:absolute;left:0;top:50%;transform:translateY(-50%);width:16mm;height:16mm;object-fit:contain}
 .ka-report .vgf-brand__name{font-size:12pt;font-weight:700;text-align:center}
 .ka-report .vgf-paper .vgf-title{font-family:inherit!important;margin:0 0 5mm;text-align:center;font-size:11pt;font-weight:700;letter-spacing:0}
 .ka-report .vgf-table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0}
