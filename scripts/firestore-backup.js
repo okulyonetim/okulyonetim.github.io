@@ -3,10 +3,13 @@
 
 /**
  * Koruk Asistan Firestore logical backup.
- * Writes a dated, compressed JSON archive to a private Google Cloud Storage bucket.
+ * Reads Firestore with the Firebase service account and writes a dated, compressed JSON archive to a
+ * private Supabase Storage bucket (Firebase Storage is no longer used).
  * Required environment:
- *   FIREBASE_SERVICE_ACCOUNT  Service account JSON
- *   FIREBASE_STORAGE_BUCKET   Private bucket name, e.g. the Firebase Storage bucket
+ *   FIREBASE_SERVICE_ACCOUNT      Firebase service account JSON (read access to Firestore)
+ *   SUPABASE_URL                  e.g. https://xxxx.supabase.co
+ *   SUPABASE_SERVICE_ROLE_KEY     Supabase secret key (never exposed to the app)
+ *   SUPABASE_BUCKET               Private bucket name (default: okul_dosyalar)
  */
 const admin = require('firebase-admin');
 const { gzipSync } = require('node:zlib');
@@ -19,10 +22,39 @@ function init() {
   if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT secret is required.');
   const credential = admin.credential.cert(JSON.parse(raw));
   const projectId = JSON.parse(raw).project_id;
-  const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
-  if (!bucketName) throw new Error('FIREBASE_STORAGE_BUCKET secret is required.');
-  admin.initializeApp({ credential, projectId, storageBucket: bucketName });
-  return { db: admin.firestore(), bucket: admin.storage().bucket(bucketName), projectId };
+  const url = String(process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url) throw new Error('SUPABASE_URL is required.');
+  if (!key) throw new Error('SUPABASE_SERVICE_ROLE_KEY secret is required.');
+  admin.initializeApp({ credential, projectId });
+  return { db: admin.firestore(), store: supabaseStore(url, key, process.env.SUPABASE_BUCKET || 'okul_dosyalar'), projectId };
+}
+
+function supabaseStore(url, key, bucket) {
+  const headers = extra => ({ Authorization: `Bearer ${key}`, apikey: key, ...extra });
+  const base = `${url}/storage/v1/object`;
+  const enc = name => name.split('/').map(encodeURIComponent).join('/');
+  async function check(res, what) {
+    if (res.ok) return res;
+    throw new Error(`Supabase ${what} failed: HTTP ${res.status} ${(await res.text().catch(() => '')).slice(0, 300)}`);
+  }
+  return {
+    async save(name, bytes) {
+      await check(await fetch(`${base}/${bucket}/${enc(name)}`, { method: 'POST', headers: headers({ 'Content-Type': 'application/gzip', 'x-upsert': 'true' }), body: bytes }), 'upload');
+      // Integrity check: read the object back and compare size and checksum.
+      const back = await check(await fetch(`${base}/authenticated/${bucket}/${enc(name)}`, { headers: headers() }), 'verify download');
+      const got = Buffer.from(await back.arrayBuffer());
+      if (got.length !== bytes.length || !got.equals(bytes)) throw new Error(`Backup verification failed: uploaded ${bytes.length} bytes, read back ${got.length}.`);
+    },
+    async list(prefix) {
+      const res = await check(await fetch(`${url}/storage/v1/object/list/${bucket}`, { method: 'POST', headers: headers({ 'Content-Type': 'application/json' }), body: JSON.stringify({ prefix, limit: 1000, offset: 0, sortBy: { column: 'created_at', order: 'asc' } }) }), 'list');
+      return (await res.json()).filter(x => x && x.name && x.id);
+    },
+    async remove(names) {
+      if (!names.length) return;
+      await check(await fetch(`${base}/${bucket}`, { method: 'DELETE', headers: headers({ 'Content-Type': 'application/json' }), body: JSON.stringify({ prefixes: names }) }), 'delete');
+    }
+  };
 }
 
 function encode(value) {
@@ -59,7 +91,7 @@ async function readCollection(db, collectionRef, records) {
 }
 
 async function main() {
-  const { db, bucket, projectId } = init();
+  const { db, store, projectId } = init();
   const started = new Date();
   const collections = await db.listCollections();
   const records = [];
@@ -81,36 +113,16 @@ async function main() {
   const compressed = gzipSync(json, { level: 9 });
   const stamp = started.toISOString().replace(/[:.]/g, '-');
   const objectName = `koruk-asistan/firestore/${stamp}.json.gz`;
-  await bucket.file(objectName).save(compressed, {
-    resumable: false,
-    validation: 'crc32c',
-    metadata: {
-      contentType: 'application/gzip',
-      contentEncoding: 'gzip',
-      metadata: {
-        format: payload.format,
-        formatVersion: String(payload.formatVersion),
-        projectId,
-        createdAt: payload.createdAt,
-        documentCount: String(records.length)
-      }
-    }
-  });
+  await store.save(objectName, compressed);
   console.log(JSON.stringify({ ok: true, objectName, documentCount: records.length, collectionCount: collections.length, bytes: compressed.length }));
 
   // Retain dated backups for the configured number of days.
-  const [files] = await bucket.getFiles({ prefix: 'koruk-asistan/firestore/' });
+  const prefix = 'koruk-asistan/firestore';
+  const files = await store.list(prefix);
   const cutoff = Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000;
-  let deleted = 0;
-  for (const file of files) {
-    if (file.name === objectName) continue;
-    const created = Date.parse(file.metadata?.timeCreated || '');
-    if (Number.isFinite(created) && created < cutoff) {
-      await file.delete({ ignoreNotFound: true });
-      deleted++;
-    }
-  }
-  console.log(JSON.stringify({ retentionDays: RETENTION_DAYS, deletedOldBackups: deleted }));
+  const old = files.filter(f => `${prefix}/${f.name}` !== objectName && Date.parse(f.created_at || '') < cutoff).map(f => `${prefix}/${f.name}`);
+  await store.remove(old);
+  console.log(JSON.stringify({ retentionDays: RETENTION_DAYS, deletedOldBackups: old.length }));
   await admin.app().delete();
 }
 

@@ -31,6 +31,8 @@ jobs:
       - name: Run Firestore backup
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          SUPABASE_URL: https://ljmjtliprcsbwpfbqwsr.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_BUCKET: okul_dosyalar
           BACKUP_RETENTION_DAYS: '30'
         run: node scripts/firestore-backup.js
