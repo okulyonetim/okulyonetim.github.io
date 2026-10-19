@@ -45,6 +45,7 @@ const D={
   ],
   surumNotKaynagi:'Notlar, her sürümün yayınlandığı işlemin (commit) açıklamasından özetlenmiştir; yalnızca kullanıcıya görünen değişiklikler ve yalnızca yayınlanmış sürümler listelenir.',
   surumNotlari:[
+    {surum:'1.3.7131',tarih:'2026-10-19',commit:'88fb248',maddeler:['**Kullanım Kılavuzu**na Yazılı Sınavlar, Deneme Sınavları, Öğrenci Yoklama, Yemek Menüsü, Takvim ve Notlar rehberleri eklendi.']},
     {surum:'1.3.7130',tarih:'2026-10-19',commit:'23b9982',maddeler:['Kullanım Kılavuzu PDF\'inde ekran görüntülerinin üzerine numaralı işaretler çizildi.']},
     {surum:'1.3.7109',tarih:'2026-10-18',commit:'1c43f45',maddeler:['**Harita** arama alanındaki simge boşluğu ve öneri listesi düzeltildi.']},
     {surum:'1.3.7108',tarih:'2026-10-18',commit:'0e3f4f3',maddeler:['Servis oturma planı çıktısı büyütüldü; lejant kaldırıldı ve alt bilgi çakışması giderildi.']},
@@ -685,6 +686,128 @@ const D={
       iliskili:['siniflar','ogrenciler','ders-programi']
     },
     {
+      id:'cizelgeler',kategori:'kisiler',ikon:'📊',baslik:'Ödev Takip ve Not Çizelgeleri',
+      ozet:'Sınıf listesinden çizelge oluşturun; ödev durumunu ya da artı/eksi ve puanları öğrenci bazında işaretleyin, PDF alın.',
+      anahtar:'ödev takip çizelgesi not çizelgesi artı eksi puan sınıf öğrenci sütun ödev yaptı yapmadı toplam ortalama pdf kaydet çizelge oluştur',
+      ne:'İki ayrı çizelge sayfası vardır. **Ödev Takip Çizelgesi**, bir sınıfın ödevlerini öğrenci bazında takip eder: her öğrenci için ödev yapıldı (**+**) ya da yapılmadı (**−**) olarak işaretlenir. **Not Çizelgesi** ise performansı **Artı / Eksi (+/−)** ya da **Sayısal Puan** olarak tutar; puan modunda satır toplamı ve ortalaması otomatik hesaplanır. Çizelge, oluşturulduğu anda seçilen sınıfın öğrenci listesiyle başlar. Her kullanıcı kendi çizelgelerini görür; yönetici hesabı tüm çizelgeleri görür.',
+      yol:['İdari İşler','Ödev Takip Çizelgesi  /  Not Çizelgesi'],
+      yolNot:'Her iki sayfa da **İdari İşler** menüsünde yer alır; bu menü, yönetim yetkisi bulunmayan öğretmen hesaplarında gösterilmez. Düzenleme düğmeleri yalnızca çizelgenin sahibinde ve yönetici hesabında görünür.',
+      rota:['tools','homework'],
+      eslesme:['tools:homework','tools:grades'],
+      ekranlar:[
+        {
+          id:'cizelge-odev-liste',baslik:'Ödev Takip Çizelgesi sayfası',dosya:'cizelge-odev-liste.webp',alt:'Ödev Takip Çizelgesi sayfası: öğrenci ve çizelge sayaçları, sınıf, arama ve durum süzgeçleri',baglam:'.ka-gradebook-page',
+          cekim:{rota:['tools','homework'],adimlar:[['kaydir',150]]},
+          isaretler:[
+            {n:1,baslik:'Sayaçlar',aciklama:'Öğrenci ve çizelge sayısı ile işaretlenmiş ödev özeti: Tamamlanan (+), Bekleyen (henüz işaretlenmemiş) ve Eksik (−).',sec:'.ka-gradebook-stats'},
+            {n:2,baslik:'Süzgeçler',aciklama:'Çizelgeleri sınıfa göre süzün, adına göre arayın ya da yalnızca ödev sütunu olmayan ya da ödevi hazır çizelgeleri listeleyin.',sec:'.ka-gradebook-toolbar'},
+            {n:3,baslik:'+ Yeni Çizelge',aciklama:'Yeni çizelge oluşturma formunu açar.',sec:'[data-on-new]'}
+          ]
+        },
+        {
+          id:'cizelge-odev-kartlar',baslik:'Kayıtlı çizelgeler',dosya:'cizelge-odev-kartlar.webp',alt:'Kayıtlı çizelge kartları: çizelge adı, sınıf, öğrenci ve sütun sayısı, Aç ve PDF düğmeleri',
+          cekim:{rota:['tools','homework'],adimlar:[['kaydir','son'],['bekle',400]]},
+          isaretler:[
+            {n:1,baslik:'Çizelge kartı',aciklama:'Çizelgenin adı, sınıfı, öğrenci sayısı ve sütun (ödev) sayısı görünür.',sec:'.ka-gradebook-card'},
+            {n:2,baslik:'Sil (×)',aciklama:'Çizelgeyi onayınızla siler; bu işlem geri alınamaz. Yalnızca sahibi ve yönetici görür.',sec:'.ka-gradebook-card [data-on-delete]'},
+            {n:3,baslik:'Aç',aciklama:'Çizelgeyi tam ekran çalışma alanında açar.',sec:'.ka-gradebook-card [data-on-open]'},
+            {n:4,baslik:'PDF',aciklama:'Çizelgeyi açmadan PDF önizlemesi hazırlar.',sec:'.ka-gradebook-card [data-on-card-report]'}
+          ]
+        },
+        {
+          id:'cizelge-odev-yeni',baslik:'Yeni çizelge formu',dosya:'cizelge-odev-yeni.webp',alt:'Yeni Ödev Takip Çizelgesi formu: çizelge adı, sınıf, Vazgeç ve Oluştur',
+          cekim:{rota:['tools','homework'],adimlar:[['kaydir',150],['tikla','[data-on-new]'],['bekle',600],['yaz','[data-gradebook-modal-form] [name="ad"]','7-A Fen Ödevleri'],['sec','[data-gradebook-modal-form] [name="sinifId"]','c6']]},
+          isaretler:[
+            {n:1,baslik:'Çizelge Adı',aciklama:'Zorunludur. Boş bırakırsanız “Çizelgeye bir isim verin.” uyarısı çıkar.',sec:'[data-gradebook-modal-form] label.ka-field:has([name="ad"])'},
+            {n:2,baslik:'Sınıf',aciklama:'Zorunludur. Çizelge, seçtiğiniz sınıfın o andaki öğrenci listesiyle oluşturulur.',sec:'[data-gradebook-modal-form] label.ka-field:has([name="sinifId"])'},
+            {n:3,baslik:'Vazgeç',aciklama:'Formu kaydetmeden kapatır.',sec:'[data-gradebook-modal-close].ka-btn'},
+            {n:4,baslik:'Oluştur',aciklama:'Çizelgeyi oluşturur, “Çizelge oluşturuldu.” bildirimini gösterir ve çalışma alanında açar.',sec:'[data-gradebook-modal-form] button[type="submit"]'}
+          ]
+        },
+        {
+          id:'cizelge-odev-editor',baslik:'Ödev çalışma alanı',dosya:'cizelge-odev-editor.webp',alt:'Ödev çalışma alanı: üst düğmeler, ödev sütunu ve öğrenci satırları',
+          cekim:{rota:['tools','homework'],adimlar:[['kaydir','son'],['tikla','.ka-gradebook-card [data-on-open]'],['bekle',700]]},
+          isaretler:[
+            {n:1,baslik:'+ Yeni Ödev',aciklama:'Çizelgeye yeni bir ödev sütunu ekler.',sec:'.ka-gradebook-workspace__actions [data-on-add-col]'},
+            {n:2,baslik:'+ Öğrenci',aciklama:'Listede olmayan bir öğrenciyi elle ekler.',sec:'[data-on-add-student]'},
+            {n:3,baslik:'PDF',aciklama:'Çizelgenin PDF önizlemesini hazırlar.',sec:'.ka-gradebook-workspace__actions [data-on-report]'},
+            {n:4,baslik:'Kaydet',aciklama:'Değişiklikleri kaydeder. Kaydedilmemiş değişiklik varsa düğmede * işareti görünür.',sec:'[data-on-save]'},
+            {n:5,baslik:'Kapat',aciklama:'Çalışma alanını kapatır. Kaydedilmemiş değişiklik varsa onay sorar.',sec:'.ka-gradebook-workspace__actions [data-on-close]'},
+            {n:6,baslik:'Sütun araçları',aciklama:'Ödev başlığına dokunarak ödevi düzenleyin. + tüm öğrencilere yaptı, − yapmadı işaretini verir; ↺ ödevdeki tüm işaretleri temizler.',sec:'.ka-gradebook-column-head__tools'},
+            {n:7,baslik:'Öğrenci durumu',aciklama:'Hücreye her dokunuşta durum sırayla değişir: boş → + (yaptı) → − (yapmadı) → boş.',sec:'[data-on-cell]'}
+          ]
+        },
+        {
+          id:'cizelge-odev-yeni-odev',baslik:'Yeni ödev formu',dosya:'cizelge-odev-yeni-odev.webp',alt:'Yeni Ödev formu: ödev başlığı, ders, tarih, açıklama ve Ödevi Ekle düğmesi',
+          cekim:{rota:['tools','homework'],adimlar:[['kaydir','son'],['tikla','.ka-gradebook-card [data-on-open]'],['bekle',700],['tikla','.ka-gradebook-workspace__actions [data-on-add-col]'],['bekle',600],['yaz','[data-gradebook-modal-form] [name="baslik"]','2. Ünite Testi'],['yaz','[data-gradebook-modal-form] [name="ders"]','Türkçe']]},
+          isaretler:[
+            {n:1,baslik:'Ödev Başlığı',aciklama:'Zorunludur. Boş bırakırsanız “Ödev başlığı girin.” uyarısı çıkar.',sec:'[data-gradebook-modal-form] label.ka-field:has([name="baslik"])'},
+            {n:2,baslik:'Ders',aciklama:'İsteğe bağlı; sütun başlığının altında görünür.',sec:'[data-gradebook-modal-form] label.ka-field:has([name="ders"])'},
+            {n:3,baslik:'Tarih ve Açıklama',aciklama:'İsteğe bağlı alanlardır.',sec:'[data-gradebook-modal-form] label.ka-field:has([name="tarih"]), [data-gradebook-modal-form] label.ka-field:has([name="aciklama"])'},
+            {n:4,baslik:'Ödevi Ekle',aciklama:'Sütunu çizelgeye ekler. Çizelge, Kaydet’e dokunana kadar kaydedilmez.',sec:'[data-gradebook-modal-form] button[type="submit"]'}
+          ]
+        },
+        {
+          id:'cizelge-not-kartlar',baslik:'Not Çizelgesi sayfası',dosya:'cizelge-not-kartlar.webp',alt:'Not Çizelgesi sayfası: kayıtlı çizelge kartları, Artı / Eksi ve Sayısal Puan modları',
+          cekim:{rota:['tools','grades'],adimlar:[['kaydir','son'],['bekle',400]]},
+          isaretler:[
+            {n:1,baslik:'Çizelge kartı',aciklama:'Kartta çizelgenin adı, sınıfı ve hücre modu (Artı / Eksi ya da Sayısal puan) yazar.',sec:'.ka-gradebook-card'},
+            {n:2,baslik:'Aç',aciklama:'Çizelgeyi çalışma alanında açar.',sec:'.ka-gradebook-card [data-on-open]'},
+            {n:3,baslik:'PDF',aciklama:'Çizelgeyi açmadan PDF önizlemesi hazırlar.',sec:'.ka-gradebook-card [data-on-card-report]'}
+          ]
+        },
+        {
+          id:'cizelge-not-yeni',baslik:'Yeni Not Çizelgesi formu',dosya:'cizelge-not-yeni.webp',alt:'Yeni Not Çizelgesi formu: çizelge adı, sınıf ve hücre modu seçimi',
+          cekim:{rota:['tools','grades'],adimlar:[['kaydir','son'],['tikla','[data-on-new]'],['bekle',600],['yaz','[data-gradebook-modal-form] [name="ad"]','7-A Proje Notları'],['sec','[data-gradebook-modal-form] [name="sinifId"]','c6']]},
+          isaretler:[
+            {n:1,baslik:'Çizelge Adı ve Sınıf',aciklama:'İkisi de zorunludur.',sec:'[data-gradebook-modal-form] label.ka-field:has([name="ad"]), [data-gradebook-modal-form] label.ka-field:has([name="sinifId"])'},
+            {n:2,baslik:'Hücre Modu',aciklama:'Artı / Eksi (+/−) ya da Sayısal Puan. Bu seçim çizelge oluşturulduktan sonra değiştirilemez.',sec:'[data-gradebook-modal-form] label.ka-field:has([name="hucreModu"])'},
+            {n:3,baslik:'Oluştur',aciklama:'Çizelgeyi oluşturur ve çalışma alanında açar.',sec:'[data-gradebook-modal-form] button[type="submit"]'}
+          ]
+        },
+        {
+          id:'cizelge-not-editor',baslik:'Not çalışma alanı (puan modu)',dosya:'cizelge-not-editor.webp',alt:'Not çalışma alanı: puan kutuları, sütun başlıkları ve satır toplamı',
+          cekim:{rota:['tools','grades'],adimlar:[['kaydir','son'],['tikla','.ka-gradebook-card [data-on-open]'],['bekle',700]]},
+          isaretler:[
+            {n:1,baslik:'+ Sütun',aciklama:'Yeni bir değerlendirme sütunu (etkinlik, proje vb.) ekler.',sec:'.ka-gradebook-workspace__actions [data-on-add-col]'},
+            {n:2,baslik:'Kaydet',aciklama:'Değişiklikleri kaydeder.',sec:'[data-on-save]'},
+            {n:3,baslik:'Sütun başlığı',aciklama:'Başlığa dokunarak sütunu düzenleyin; × sütunu ve içindeki tüm puanları onayınızla siler.',sec:'.ka-gradebook-column-head'},
+            {n:4,baslik:'Puan kutusu',aciklama:'Puanı yazın. Boş bırakılan kutu hesaba katılmaz; negatif ya da geçersiz değer için “Geçerli bir puan girin.” uyarısı çıkar.',sec:'[data-on-score]'}
+          ]
+        },
+        {
+          id:'cizelge-not-toplam',baslik:'Toplam ve ortalama sütunları',dosya:'cizelge-not-toplam.webp',alt:'Not çalışma alanı sağa kaydırılmış: Toplam ve Ortalama sütunları',
+          cekim:{rota:['tools','grades'],adimlar:[['kaydir','son'],['tikla','.ka-gradebook-card [data-on-open]'],['bekle',700],['js','document.querySelector(".ka-gradebook-table-shell").scrollLeft=99999'],['bekle',300]]},
+          isaretler:[
+            {n:1,baslik:'Toplam',aciklama:'Öğrencinin girilen puanlarının toplamı. Hiç puan girilmemişse — görünür.',sec:'.ka-gradebook-summary-head, [data-gradebook-total]'},
+            {n:2,baslik:'Ortalama',aciklama:'Girilen puanların ortalaması; puan girdikçe anında güncellenir.',sec:'[data-gradebook-average]'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Sayfayı açın',metin:'**İdari İşler** menüsünden **Ödev Takip Çizelgesi** ya da **Not Çizelgesi** sayfasını açın.',ekran:'cizelge-odev-liste',isaret:2},
+        {baslik:'Yeni çizelge oluşturun',metin:'**+ Yeni Çizelge**ye dokunun, **Çizelge Adı**nı yazın, **Sınıf**ı seçin (Not Çizelgesi’nde **Hücre Modu**nu da seçin) ve **Oluştur**a dokunun.',ekran:'cizelge-odev-yeni',isaret:4},
+        {baslik:'Ödev ya da sütun ekleyin',metin:'Açılan çalışma alanında **+ Yeni Ödev** (Not Çizelgesi’nde **+ Sütun**) düğmesine dokunun, başlığı yazın ve ekleyin.',ekran:'cizelge-odev-yeni-odev',isaret:4},
+        {baslik:'Öğrencileri işaretleyin',metin:'Ödev çizelgesinde bir öğrencinin hücresine dokunarak **+** ya da **−** durumunu belirleyin; tüm sınıfa tek dokunuşla vermek için sütundaki **+**, **−** ya da **↺** araçlarını kullanın. Puan modunda kutulara puanı yazın.',ekran:'cizelge-odev-editor',isaret:7},
+        {baslik:'Kaydedin',metin:'**Kaydet**e dokunun. “Çizelge kaydedildi.” bildirimi çıkar ve düğmedeki * işareti kalkar.',ekran:'cizelge-odev-editor',isaret:4},
+        {baslik:'PDF alın',metin:'**PDF**ye dokunarak çizelgenin çıktısını hazırlayın. Beşten fazla sütun varsa çıktı yatay hazırlanır.',ekran:'cizelge-odev-editor',isaret:3}
+      ],
+      kayit:'Çalışma alanında yaptığınız değişiklikler (işaret, puan, sütun, öğrenci) **Kaydet**e dokunana kadar yalnızca ekranda tutulur; bu sırada üstte “Kaydedilmemiş değişiklikleriniz var” uyarısı görünür. **Kaydet**e dokunduğunuzda “Çizelge kaydedildi.” bildirimi çıkar; internet varsa kayıt diğer cihazlarla eşitlenir. Kaydedilemezse “Çizelge kaydedilemedi.”, yetkiniz yoksa “Bu işlem için yetkiniz yok.” bildirimi gösterilir.',
+      uyarilar:[
+        'Kaydetmeden **Kapat**a ya da başka bir sayfaya geçmek isterseniz uygulama onay sorar; onaylarsanız kaydedilmemiş değişiklikler kaybolur.',
+        'Çizelge, oluşturulduğu andaki sınıf listesiyle başlar. Sonradan sınıfa eklenen öğrenciler çizelgeye otomatik eklenmez; **+ Öğrenci** ile elle ekleyebilirsiniz.',
+        'Not Çizelgesi’nin hücre modu (Artı / Eksi ya da Sayısal Puan) oluşturulduktan sonra değiştirilemez; farklı bir mod için yeni çizelge oluşturun.',
+        'Bir sütunu silmek, sütundaki tüm işaret ve puanları da siler.'
+      ],
+      sorunlar:[
+        {s:'Sınıf listesinde sınıf çıkmıyor ya da “Önce en az bir sınıf tanımlayın.” uyarısı geliyor.',c:'Çizelge bir sınıfa bağlı oluşturulur. Önce **Sınıflar** sayfasından sınıf tanımlayın.'},
+        {s:'Çizelgedeki öğrenci listesi boş.',c:'Seçtiğiniz sınıfa o sırada öğrenci eklenmemiş olabilir. **+ Öğrenci** ile öğrenci ekleyin ya da öğrencileri sınıfa ekledikten sonra yeni bir çizelge oluşturun.'},
+        {s:'Düzenleme düğmeleri görünmüyor, hücrelere dokunulamıyor.',c:'Çizelgeyi yalnızca sahibi ve yönetici hesabı düzenleyebilir; diğerleri yalnızca PDF alabilir.'},
+        {s:'PDF önizlemesi açılmıyor.',c:'“PDF rapor motoru yüklenemedi.” ya da “PDF önizlemesi açılamadı.” bildirimi çıkıyorsa uygulamayı yeniden açıp tekrar deneyin; sorun sürerse uygulama yöneticisine bildirin.'}
+      ],
+      iliskili:['siniflar','ogrenciler','okul-raporlari']
+    },
+    {
       id:'ders-programi',kategori:'programlar',ikon:'🗓️',baslik:'Ders Programı',
       ozet:'Sınıfların haftalık ders programını düzenleyin; Excel ile toplu yükleyin, A4 ve çarşaf rapor alın.',
       anahtar:'ders programı haftalık ders saati sınıf öğretmen çakışma excel şablon temizle çarşaf rapor yazdır',
@@ -1136,6 +1259,118 @@ const D={
       iliskili:['ogretmenler','okul-raporlari']
     },
     {
+      id:'kurul-komisyonlar',kategori:'belgeler',ikon:'🏛️',baslik:'Kurul ve Komisyonlar',
+      ozet:'Okul kurul ve komisyonlarını, üyelerini, görevlerini, notlarını ve belgelerini tek kayıtta yönetin; rapor alın.',
+      anahtar:'kurul komisyon başkan asil yedek üye görev sorumluluk belge türü ekli belge mevzuat dayanak not iş rapor katalog öğretmenler kurulu satın alma',
+      ne:'Her kurul ya da komisyon için bir kayıt tutulur: **tür** (Kurul, Komisyon, Ekip, Diğer), **eğitim öğretim yılı**, **başkan**, **asil ve yedek üyeler** (öğretmen ve öğrenci), **görev ve sorumluluklar**, **belge türleri**, yüklenen **ekli belgeler**, **mevzuat / dayanak notları**, **notlar** ve takip edilecek **işler**. Kayıt ekranından o kurul ya da komisyonun A4 raporu alınabilir; ayrıca tüm kayıtlar için liste ve görev dağılımı raporları hazırlanır.',
+      yol:['Doküman & Evraklar','Kurul ve Komisyonlar'],
+      yolNot:'Bu sayfa öğretmen hesaplarında gösterilmez. **+ Yeni Kurul / Komisyon**, **Raporlar**, **Düzenle**, silme ve ekleme düğmeleri yalnızca düzenleme yetkisi olan hesaplarda görünür.',
+      rota:['committees','home'],
+      eslesme:['committees:home'],
+      ekranlar:[
+        {
+          id:'kurul-liste',baslik:'Kurul ve Komisyonlar listesi',dosya:'kurul-liste.webp',alt:'Kurul ve Komisyonlar sayfası: Raporlar ve Yeni Kurul / Komisyon düğmeleri, arama, yıl süzgeci ve kayıt listesi',baglam:'.ka-committees-page',
+          cekim:{rota:['committees','home']},
+          isaretler:[
+            {n:1,baslik:'Raporlar',aciklama:'Tüm kayıtların listesi ile öğretmen ve öğrenci görev dağılımı raporlarını açar.',sec:'[data-reports]'},
+            {n:2,baslik:'+ Yeni Kurul / Komisyon',aciklama:'Yeni kayıt formunu açar.',sec:'[data-add]'},
+            {n:3,baslik:'Ara ve yıla göre süz',aciklama:'Kurul ya da komisyon adına göre arayın; Tüm yıllar listesiyle eğitim öğretim yılına göre süzün.',sec:'[data-q], [data-year]'},
+            {n:4,baslik:'Kayıt satırı',aciklama:'Ad, tür, yıl ve başkan ile üye sayısı görünür. Satıra dokunmak kaydın ayrıntısını açar.',sec:'.ka-committee-list-row'}
+          ]
+        },
+        {
+          id:'kurul-form',baslik:'Yeni kurul / komisyon formu',dosya:'kurul-form.webp',alt:'Yeni Kurul / Komisyon formu: katalog kategorisi, hazır kurul, ad, tür, yıl ve başkan',
+          cekim:{rota:['committees','home'],adimlar:[['tikla','[data-add]'],['bekle',700],['yaz','#cf [name="ad"]','Satın Alma Komisyonu']]},
+          isaretler:[
+            {n:1,baslik:'Katalog',aciklama:'İsteğe bağlı. Kategoriyi ve ardından hazır kurul / komisyonu seçerseniz ad, kategori ve tür kendiliğinden dolar. Seçmek kayıt oluşturmaz.',sec:'#cf label.ka-field:has([data-catalog-category]), #cf label.ka-field:has([data-catalog-name])'},
+            {n:2,baslik:'Kurul / komisyon adı',aciklama:'Zorunludur. Katalogdan seçebilir ya da özel bir ad yazabilirsiniz.',sec:'#cf label.ka-field:has([name="ad"])'},
+            {n:3,baslik:'Tür ve yıl',aciklama:'Tür: Kurul, Komisyon, Ekip ya da Diğer. Eğitim öğretim yılı varsayılan olarak içinde bulunulan yılı gösterir.',sec:'#cf label.ka-field:has([name="tur"]), #cf label.ka-field:has([name="yil"])'},
+            {n:4,baslik:'Başkan',aciklama:'Öğretmen listesinden başkanı seçin.',sec:'#cf label.ka-field:has([name="baskan"])'}
+          ]
+        },
+        {
+          id:'kurul-form-uyeler',baslik:'Asil ve yedek üyeler',dosya:'kurul-form-uyeler.webp',alt:'Kurul formunun üyeler bölümü: öğretmen ve öğrenci seçimi, + Öğretmen ve + Öğrenci düğmeleri',
+          cekim:{rota:['committees','home'],adimlar:[['tikla','[data-add]'],['bekle',700],['js','document.querySelector("#cf .ka-committee-form-group").scrollIntoView({block:"start"})'],['bekle',300]]},
+          isaretler:[
+            {n:1,baslik:'Öğretmen seç',aciklama:'Listeden öğretmeni seçip + Öğretmen düğmesine dokunun; üye aşağıdaki listeye eklenir.',sec:'[data-s="asil-ogretmen"]'},
+            {n:2,baslik:'+ Öğretmen',aciklama:'Seçilen öğretmeni asil üye olarak ekler. Aynı kişi ikinci kez eklenemez (“Bu kişi zaten kullanılıyor.”).',sec:'[data-a="asil-ogretmen"]'},
+            {n:3,baslik:'Öğrenci seç',aciklama:'Aynı şekilde öğrenci üye eklenir; listede öğrencinin sınıfı da yazar.',sec:'[data-s="asil-ogrenci"]'},
+            {n:4,baslik:'+ Öğrenci',aciklama:'Seçilen öğrenciyi asil üye olarak ekler. Yedek üyeler için aynı düğmeler Yedek Üyeler bölümünde bulunur.',sec:'[data-a="asil-ogrenci"]'}
+          ]
+        },
+        {
+          id:'kurul-form-gorev',baslik:'Görevler, belge türleri ve dayanak',dosya:'kurul-form-gorev.webp',alt:'Kurul formunun alt bölümü: görev ve sorumluluklar, belge türleri, mevzuat notu ve Kaydet',
+          cekim:{rota:['committees','home'],adimlar:[['tikla','[data-add]'],['bekle',700],['js','document.querySelector("#cf [data-task-template]").scrollIntoView({block:"start"})'],['bekle',300]]},
+          isaretler:[
+            {n:1,baslik:'Şablon görevleri ekle',aciklama:'Seçili kategoriye uygun örnek görevleri listeye ekler; kaydetmeden önce gözden geçirin.',sec:'[data-task-template]'},
+            {n:2,baslik:'+ Ekle',aciklama:'Boş bir görev satırı ekler. Satırın yanındaki × satırı siler.',sec:'[data-ft]'},
+            {n:3,baslik:'Belge türleri',aciklama:'Kurulun tutacağı belgelerin kontrol listesidir; dosya yükleme işlemi değildir.',sec:'.ka-committee-doc-options'}
+          ]
+        },
+        {
+          id:'kurul-detay',baslik:'Kayıt ayrıntısı',dosya:'kurul-detay.webp',alt:'Kurul kaydının ayrıntı sayfası: geri, Düzenle, Rapor, Sil düğmeleri ve Başkan bölümü',baglam:'.ka-committee-detail',
+          cekim:{rota:['committees','home'],adimlar:[['tikla','[data-open="kk1"]'],['bekle',600]]},
+          isaretler:[
+            {n:1,baslik:'Geri',aciklama:'Listeye döner.',sec:'.ka-committee-detail [data-back]'},
+            {n:2,baslik:'Düzenle',aciklama:'Kaydı düzenleme formunda açar (yetki gerekir).',sec:'.ka-committee-detail [data-edit]'},
+            {n:3,baslik:'Rapor',aciklama:'Kurulun A4 raporunu hazırlar: üyeler, görevler, belge türleri ve ekli belgeler yer alır.',sec:'.ka-committee-detail [data-print]'},
+            {n:4,baslik:'Sil',aciklama:'Kaydı onayınızla siler.',sec:'.ka-committee-detail [data-del]'},
+            {n:5,baslik:'Bölümler',aciklama:'Başkan, Asil Üyeler, Yedek Üyeler, Görev ve Sorumluluklar, Belge Türleri, Ekli Belgeler, Mevzuat / Dayanak Notları, Notlar ve İşler bölümleri alt alta gelir.',sec:'.ka-committee-section'}
+          ]
+        },
+        {
+          id:'kurul-detay-alt',baslik:'Belge türleri ve ekli belgeler',dosya:'kurul-detay-alt.webp',alt:'Kurul ayrıntı sayfasında belge türleri ve ekli belgeler bölümleri',
+          cekim:{rota:['committees','home'],adimlar:[['tikla','[data-open="kk1"]'],['bekle',600],['js','document.querySelector("[data-add-attachment]").scrollIntoView({block:"center"})'],['bekle',300]]},
+          isaretler:[
+            {n:1,baslik:'Belge Türleri',aciklama:'Formda işaretlenen belge türleri burada rozet olarak listelenir; kurulun tutması gereken belgelerin kontrol listesidir.',sec:'.ka-committee-section:has(.ka-chip-list)'},
+            {n:2,baslik:'+ Belge Ekle',aciklama:'Bir dosya (PDF, Word, Excel ya da görsel) yükleyip kurul kaydına bağlar. Dosya Dökümanlar servisiyle yüklenir ve kişiseldir.',sec:'[data-add-attachment]'}
+          ]
+        },
+        {
+          id:'kurul-detay-is',baslik:'Notlar ve işler',dosya:'kurul-detay-is.webp',alt:'Kurul ayrıntı sayfasında notlar ve işler bölümleri',
+          cekim:{rota:['committees','home'],adimlar:[['tikla','[data-open="kk1"]'],['bekle',600],['js','document.querySelector("[data-work]").scrollIntoView({block:"center"})'],['bekle',300]]},
+          isaretler:[
+            {n:1,baslik:'+ Not',aciklama:'Başlıklı kısa bir not ekler; not tarihle birlikte saklanır, en yeni not üstte görünür.',sec:'[data-add-note]'},
+            {n:2,baslik:'İş kutusu',aciklama:'İşi tamamlandı olarak işaretler ya da işareti kaldırır (düzenleme yetkisi gerekir). İşin sorumlusu ve son tarihi başlığın altında görünür.',sec:'[data-work]'}
+          ]
+        },
+        {
+          id:'kurul-rapor',baslik:'Raporlar penceresi',dosya:'kurul-rapor.webp',alt:'Kurul ve Komisyon Raporları penceresi: liste, öğretmen görev dağılımı ve öğrenci görev dağılımı',
+          cekim:{rota:['committees','home'],adimlar:[['tikla','[data-reports]'],['bekle',600]]},
+          isaretler:[
+            {n:1,baslik:'Kurul / Komisyon Listesi',aciklama:'Tüm kayıtları tek raporda listeler.',sec:'[data-r="list"]'},
+            {n:2,baslik:'Öğretmen Görev Dağılımı',aciklama:'Her öğretmenin kaç kurulda başkan, asil ve yedek üye olduğunu gösterir.',sec:'[data-r="teachers"]'},
+            {n:3,baslik:'Öğrenci Görev Dağılımı',aciklama:'Öğrencilerin asil ve yedek üyelik sayılarını gösterir.',sec:'[data-r="students"]'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Sayfayı açın',metin:'**Doküman & Evraklar** menüsünden **Kurul ve Komisyonlar**ı açın. Gerekirse adla arayın ya da yıla göre süzün.',ekran:'kurul-liste',isaret:3},
+        {baslik:'Yeni kayıt başlatın',metin:'**+ Yeni Kurul / Komisyon**a dokunun. İsterseniz **Katalog**dan hazır bir kurul seçin; **Kurul / komisyon adı**nı, **Tür**ü, yılı ve **Başkan**ı belirleyin.',ekran:'kurul-form',isaret:2},
+        {baslik:'Üyeleri ekleyin',metin:'**Asil Üyeler** ve **Yedek Üyeler** bölümlerinde öğretmen ya da öğrenciyi seçip **+ Öğretmen** / **+ Öğrenci**ye dokunun.',ekran:'kurul-form-uyeler',isaret:2},
+        {baslik:'Görev, belge türü ve dayanağı girin',metin:'Görev satırlarını yazın ya da **Şablon görevleri ekle**yi kullanın; kurulun tutacağı **Belge Türleri**ni işaretleyin; varsa mevzuat dayanağını yazın. Sonunda **Kaydet**e dokunun.',ekran:'kurul-form-gorev',isaret:1},
+        {baslik:'Ayrıntıyı açın',metin:'Listeden kayda dokunun. Üyeleri, görevleri ve belgeleri ayrıntı sayfasında görürsünüz.',ekran:'kurul-detay',isaret:5},
+        {baslik:'Belge yükleyin',metin:'Ayrıntı sayfasında **+ Belge Ekle**ye dokunun, belge başlığını ve türünü yazın, dosyayı seçip yükleyin.',ekran:'kurul-detay-alt',isaret:2},
+        {baslik:'Not alın ve işleri izleyin',metin:'**+ Not** ile not ekleyin; işlerin kutusunu işaretleyerek tamamlananları belirtin.',ekran:'kurul-detay-is',isaret:2},
+        {baslik:'Rapor alın',metin:'Ayrıntı sayfasındaki **Rapor**a dokunarak o kurulun çıktısını hazırlayın; tüm kayıtlar için liste ekranındaki **Raporlar**ı kullanın.',ekran:'kurul-rapor',isaret:1}
+      ],
+      kayit:'Formda **Kaydet**e dokunduğunuzda “Kaydedildi.” bildirimi çıkar, form kapanır ve kaydın ayrıntı sayfası açılır. Kayıt cihaza işlenir ve internet olduğunda diğer cihazlarla eşitlenir. Belge yüklemesi başarılı olursa “Belge yüklendi ve kurul kaydına bağlandı.” bildirimi çıkar; yüklenemezse “Belge yüklenemedi.” bildirimi gösterilir. Yetkiniz yoksa “Bu işlem için yetkiniz yok.” bildirimi çıkar.',
+      uyarilar:[
+        '**Belge Türleri** işaretleri yalnızca bir kontrol listesidir; dosya yüklemek için ayrıntı sayfasındaki **+ Belge Ekle** kullanılır.',
+        '**Mevzuat / Dayanak Notları** alanına yazılanlar otomatik hukuk doğrulaması değildir; güncel mevzuat okul yönetimince ayrıca doğrulanmalıdır.',
+        'Aynı kişi aynı kurulda hem asil hem yedek üye olarak, ya da başkan ile üye olarak yer alamaz.',
+        'Görev ve sorumluluk satırlarını **Düzenle** formundan değiştirin.',
+        'Kaydı silmek ayrıntı sayfasındaki tüm üye, not ve iş bilgilerini de siler; işlem onay sorar.'
+      ],
+      sorunlar:[
+        {s:'Kurul ve Komisyonlar menüde görünmüyor.',c:'Sayfa öğretmen hesaplarında gösterilmez; yönetici ya da yetkili hesaplarla açılır.'},
+        {s:'+ Yeni Kurul / Komisyon ve Düzenle düğmeleri yok.',c:'Hesabınızın kurul ve komisyon düzenleme yetkisi yoktur; kayıtları yalnızca görüntüleyebilirsiniz.'},
+        {s:'Üye listesinde bir öğretmen ya da öğrenci görünmüyor.',c:'Zaten asil ya da yedek üye olarak eklenmiş kişi listeden çıkar; başkan olarak seçilen öğretmen üye olarak eklenemez.'},
+        {s:'“Belge yükleme servisi hazır değil.” uyarısı çıktı.',c:'Uygulamayı yeniden açıp tekrar deneyin; sürerse uygulama yöneticisine bildirin.'}
+      ],
+      iliskili:['ogretmenler','evrak-takibi','okul-raporlari']
+    },
+    {
       id:'okul-raporlari',kategori:'belgeler',ikon:'📊',baslik:'Okul Raporları',
       ozet:'Hazır raporları önizleyin, düzenleyin; yazdırın, PDF / görsel olarak indirin ya da paylaşın.',
       anahtar:'rapor önizle yazdır pdf görsel png paylaş word excel indir ders giriş çıkış saatleri öğrenci sayıları a4 yatay dikey',
@@ -1302,7 +1537,7 @@ const D={
       iliskili:['kilavuz','ayarlar-veriler']
     }
   ],
-  geometri:/*GEO:BEGIN*/{"ana-ekran-hizli":[[2.1,44,95.9,12.1]],"ana-ekran-ozet":[[2.1,34.2,47.9,31.6]],"ana-ekran-ust":[[6.9,29.6,86.2,35.3],[6.9,64.9,86.2,7.8]],"ayarlar-ana":[[0.3,23.7,99.5,9.7],[0,33.5,100,46]],"deneme-form":[[3.1,29.4,93.8,12.5],[3.1,42.2,93.8,25.2],[6.2,69.1,87.7,12.5]],"deneme-form-alt":[[3.6,44.5,92.8,27.8],[3.1,72.5,93.8,16.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"deneme-form-iki":[[6.2,24.2,87.7,25.2],[6.2,49.4,87.7,12.5],[6.2,61.9,87.7,12.5],[6.2,74.4,87.7,25.2]],"deneme-liste":[[0,22.2,100,6.4],[0,29.3,100,10.2],[0,40.2,100,38.5],[16.2,62.9,80.5,7.9],[72.6,70.7,24.1,6.4]],"deneme-sayac":[[2.3,0.9,13.8,6.4],[16.2,3.6,32.3,4],[6.2,10.7,87.7,8.9],[14.1,20.3,71.8,33.2],[0,82.9,100,9.2]],"deneme-sayac-takvim":[[6.2,36.5,87.7,23.9],[6.2,66.9,87.7,12]],"ders-programi-form":[[3.8,52.1,92.3,9.9],[3.8,65.2,92.3,6.6],[3.8,74.9,46.3,6.6],[3.8,81.5,92.3,9.9],[3.3,92.9,46.9,6.4],[49.7,92.9,46.9,6.4]],"ders-programi-gun":[[2.6,46,94.9,7.9],[2.6,58.8,94.9,9.4]],"ders-programi-ust":[[4.4,37.2,91.3,6.6],[4.4,44.1,46,8.4],[49.6,44.1,46,8.4],[4.4,52.1,46,8.4],[49.6,52.1,46,8.4],[4.4,60.2,46,8.4],[49.6,60.2,46,8.4]],"duyurular-form":[[3.1,20.9,93.8,9.9],[3.1,31.6,93.8,25.4],[3.1,57.8,93.8,22.3],[45.1,92.7,51.9,6.4]],"duyurular-liste":[[0,24.9,100,9.6],[1.3,35.8,80,5.9],[83.1,35.2,16.9,7.1],[0,42.5,100,50.8],[4.1,72.4,91.8,6.4],[4.1,78.7,91.8,6.4]],"evrak-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,9.9],[3.1,59.1,93.8,19.6]],"evrak-form-alt":[[3.1,64.9,93.8,9.9],[3.1,75.1,93.8,14.3],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"evrak-liste":[[63,16.4,32.7,6.4],[3.8,30.7,92.3,6.6],[3.8,37.6,92.3,18.7],[0,62.6,100,22.3],[3.3,77,24.1,6.4]],"gezinme-grup":[[2.8,1.3,13.8,6.4],[83.3,1.3,13.8,6.4],[2.3,10.2,95.4,8.5]],"gezinme-menu":[[57.3,1.5,26.6,5.9],[83.3,1.3,13.8,6.4],[2.3,10.4,47.4,16.8]],"gezinme-ust":[[1,1.3,45.1,5.9],[45.6,0.8,13.8,6.4],[59,0.8,13.8,6.4],[72.3,0.8,13.8,6.4],[85.6,0.9,13.3,6.2],[0,90.9,100,9.1]],"giris-ekran":[[7.2,45.6,85.6,9.7],[7.2,55.5,85.6,9.7],[7.2,66.8,85.6,6.4]],"hakkinda-baglantilar":[[4.1,23.9,91.8,34.4],[4.1,58.5,91.8,40.8]],"hakkinda-ust":[[4.4,15.6,91.3,15.9],[7.9,56.4,48.2,6.4],[4.1,64.8,91.8,31],[7.9,87.7,51.1,6.4]],"kilavuz-pencere":[[3.1,9.9,24.6,5.5],[76.3,9.4,20.6,6.4],[0,16.7,100,74.7],[63.9,92.2,33,6.4]],"kilavuz-sayfa":[[45.6,0.8,13.8,6.4],[7.9,14.9,84.1,9.7],[7.9,24.9,84.1,36],[4.1,65.4,91.8,25.3]],"nobet-atama":[[3.1,62.8,93.8,9.9],[3.1,76.2,93.8,6.6],[3.1,83.1,93.8,6.4],[73.1,92.2,23.8,6.4]],"nobet-cizelge":[[2.6,46.8,94.9,6.4],[2.8,53.3,97.2,6.2],[62.6,58.3,37.4,6.3]],"nobet-ust":[[0,34.1,50.3,9.2],[49.7,34.1,50.3,9.2],[0,43.1,50.3,9.8],[49.7,43.1,50.3,9.8],[0,53.3,100,30.5]],"notlar-hizli":[[3.1,49.9,93.8,40.0],[3.1,89.8,93.8,8.8],[83.1,40.7,13.8,6.4]],"notlar-liste":[[0.0,8.3,100.0,6.6],[4.4,30.0,91.3,6.4],[0.0,38.4,100.0,10.4],[3.8,51.4,92.3,9.4],[0.3,69.3,99.5,8.8]],"notlar-yapilacak":[[3.1,66.1,93.8,9.9],[10.1,76.2,74.3,6.6],[3.1,83.1,93.8,6.4],[54.6,92.2,19.0,6.4],[73.1,92.2,23.8,6.4]],"ogrenciler-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,20],[3.1,69.2,93.8,9.9]],"ogrenciler-form-alt":[[3.1,37,93.8,20],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogrenciler-liste":[[68.2,15.4,27.4,6.4],[3.3,30.3,93.3,6.2],[2.3,39.1,95.4,11],[3.3,50.4,93.3,5.7],[0,58.1,100,6.6],[0,64.5,51.3,6.9],[0,75.2,100,8.3]],"ogrenciler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"ogretmenler-form":[[3.1,18.5,93.8,20],[3.1,38.8,93.8,20],[3.1,59.1,93.8,20]],"ogretmenler-form-alt":[[3.1,6.9,93.8,9.9],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogretmenler-liste":[[65.3,15.4,30.3,6.4],[3.3,30.3,93.3,6.2],[3.3,36.7,93.3,5.7],[0,44.4,100,6.6],[0,50.8,26.9,6.4],[26.3,50.8,35,6.4],[0,61.1,100,21.7],[84.9,75.8,11.3,5.2]],"ogretmenler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"rapor-duzenle":[[7.9,36,84.1,19.7],[7.9,75.8,84.1,9.7],[7.9,85.8,84.1,9.7]],"rapor-liste":[[4.1,32.3,91.8,18.1],[7.9,42.3,30.3,6.4],[38.8,42.3,26.4,6.4],[65.7,42.3,26.3,6.4]],"rapor-onizleme":[[0.8,0.4,13.8,6.4],[55.9,0.4,43.3,6.4],[13.6,6.3,43.3,6.4],[55.9,6.3,43.3,6.4],[0.8,12.3,45.1,6.4],[3.7,19.7,49.3,12.3]],"siniflar-detay":[[2.1,14.5,13.8,6.4],[84.1,14.5,13.8,6.4],[3.3,37.4,93.3,6.2],[0,48,100,7.1],[0,55.6,39.5,6.4],[39,55.6,55.7,6.4],[0,62.5,100,8.3]],"siniflar-form":[[3.1,37.1,93.8,9.9],[3.1,47.3,93.8,20],[3.1,67.5,93.8,9.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"siniflar-liste":[[68.2,15.4,27.5,6.4],[4.4,26.7,91.3,6.4],[3.3,36.9,93.3,6.2],[2.3,45.7,95.4,11],[0,58.8,100,6.6],[0,65.2,55.7,6.4],[0,75.4,100,20.5]],"takvim-ana":[[54,19.5,23.7,6.4],[78.2,19.5,21.8,6.4],[0,27.3,100,8.1],[3.8,37.4,92.3,6.4],[3.8,48,92.3,30.7]],"takvim-etkinlik-form":[[3.1,47.3,93.8,9.9],[3.1,57.4,93.8,20],[3.1,77.7,93.8,11.8],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"takvim-gorev-form":[[3.1,47.3,93.8,9.9],[3.1,69.4,93.8,20],[73.1,92.2,23.8,6.4]],"takvim-gun":[[0,24.1,100,23.5],[72.6,29.9,24.1,6.4],[0,47.8,100,42.1]],"veriler-sayfa":[[0,23.6,100,33.4]],"veriler-yedek":[[3.8,72.9,44.9,6.4],[49.3,72.9,46.9,6.4]],"yazili-form":[[3.6,33.4,92.8,25.8],[3.1,59.5,93.8,20],[3.1,79.8,93.8,9.9]],"yazili-form-alt":[[3.1,34.6,93.8,20],[3.1,54.9,93.8,20],[3.1,75.1,93.8,14.3],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"yazili-liste":[[0,12.3,100,9.7],[0,22.2,100,6.4],[0,29.3,100,10.2],[3.6,41.9,92.8,6.5],[72.3,80.6,24.1,6.4]],"yemek-aylik":[[7.9,32,84.1,6.4],[7.9,38.7,84.1,1.9],[7.9,43.7,42,6.4],[50,43.7,42.1,6.4],[23.8,56.7,69.2,25.1],[23.8,81.6,32.1,5.2]],"yemek-denetim":[[68,30.3,27.9,8.9],[7.9,41.2,84.1,9.7],[7.9,51.1,84.1,9.7],[7.9,59.7,84.1,9.7]],"yemek-gunluk":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,37.1]],"yemek-haftalik":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,20]],"yoklama-devamsiz":[[0,32.3,100,12.3],[0,44.8,100,8.3],[0,59.5,100,12.3],[68.6,64,28.1,6.4]],"yoklama-sinif":[[0,25.9,100,6.2],[2.8,33.6,47.4,9.7],[49.7,33.6,47.4,9.7],[0,44.8,100,8.3],[69,53.6,30.4,6.4],[2.6,66,94.9,5.7],[49.2,85,48,6.4]],"yoklama-tumu":[[2.8,33.6,47.4,9.7],[0,44.8,100,7.8]]}/*GEO:END*/
+  geometri:/*GEO:BEGIN*/{"ana-ekran-hizli":[[2.1,44,95.9,12.1]],"ana-ekran-ozet":[[2.1,34.2,47.9,31.6]],"ana-ekran-ust":[[6.9,29.6,86.2,35.3],[6.9,64.9,86.2,7.8]],"ayarlar-ana":[[0.3,23.7,99.5,9.7],[0,33.5,100,46]],"cizelge-not-editor":[[3.1,8.3,24,6.4],[72.9,8.3,24,6.4],[60,31.5,27.7,11.5],[65.4,44.1,16.9,6.6]],"cizelge-not-kartlar":[[2.6,26.7,94.9,25.2],[6.7,43.7,43.6,6.4],[49.7,43.7,43.6,6.4]],"cizelge-not-toplam":[[56.8,30.5,22.2,18.1],[83.3,46,8.6,2.6]],"cizelge-not-yeni":[[3.1,56.5,93.8,20],[3.1,76.7,93.8,12.7],[72.5,92.2,24.4,6.4]],"cizelge-odev-editor":[[3.1,8.3,24,6.4],[26.3,8.3,24,6.4],[49.6,8.3,24,6.4],[72.9,8.3,24,6.4],[3.1,14.3,93.8,6.4],[67.7,37,21.4,3.8],[72.5,47.2,11.8,5.5]],"cizelge-odev-kartlar":[[2.6,26.7,94.9,25.2],[79.5,28.6,13.8,6.4],[6.7,43.7,43.6,6.4],[49.7,43.7,43.6,6.4]],"cizelge-odev-liste":[[2.6,16.1,94.9,34.1],[2.6,52.4,94.9,25],[70.4,80.2,26.5,6.4]],"cizelge-odev-yeni":[[3.1,69.4,93.8,9.9],[3.1,79.6,93.8,9.9],[48.6,92.2,24.4,6.4],[72.5,92.2,24.4,6.4]],"cizelge-odev-yeni-odev":[[3.1,44.8,93.8,9.9],[3.1,54.9,93.8,9.9],[3.1,65,93.8,24.4],[67.2,92.2,29.8,6.4]],"deneme-form":[[3.1,29.4,93.8,12.5],[3.1,42.2,93.8,25.2],[6.2,69.1,87.7,12.5]],"deneme-form-alt":[[3.6,44.5,92.8,27.8],[3.1,72.5,93.8,16.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"deneme-form-iki":[[6.2,24.2,87.7,25.2],[6.2,49.4,87.7,12.5],[6.2,61.9,87.7,12.5],[6.2,74.4,87.7,25.2]],"deneme-liste":[[0,22.2,100,6.4],[0,29.3,100,10.2],[0,40.2,100,38.5],[16.2,62.9,80.5,7.9],[72.6,70.7,24.1,6.4]],"deneme-sayac":[[2.3,0.9,13.8,6.4],[16.2,3.6,32.3,4],[6.2,10.7,87.7,8.9],[14.1,20.3,71.8,33.2],[0,82.9,100,9.2]],"deneme-sayac-takvim":[[6.2,36.5,87.7,23.9],[6.2,66.9,87.7,12]],"ders-programi-form":[[3.8,52.1,92.3,9.9],[3.8,65.2,92.3,6.6],[3.8,74.9,46.3,6.6],[3.8,81.5,92.3,9.9],[3.3,92.9,46.9,6.4],[49.7,92.9,46.9,6.4]],"ders-programi-gun":[[2.6,46,94.9,7.9],[2.6,58.8,94.9,9.4]],"ders-programi-ust":[[4.4,37.2,91.3,6.6],[4.4,44.1,46,8.4],[49.6,44.1,46,8.4],[4.4,52.1,46,8.4],[49.6,52.1,46,8.4],[4.4,60.2,46,8.4],[49.6,60.2,46,8.4]],"duyurular-form":[[3.1,20.9,93.8,9.9],[3.1,31.6,93.8,25.4],[3.1,57.8,93.8,22.3],[45.1,92.7,51.9,6.4]],"duyurular-liste":[[0,24.9,100,9.6],[1.3,35.8,80,5.9],[83.1,35.2,16.9,7.1],[0,42.5,100,50.8],[4.1,72.4,91.8,6.4],[4.1,78.7,91.8,6.4]],"evrak-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,9.9],[3.1,59.1,93.8,19.6]],"evrak-form-alt":[[3.1,64.9,93.8,9.9],[3.1,75.1,93.8,14.3],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"evrak-liste":[[63,16.4,32.7,6.4],[3.8,30.7,92.3,6.6],[3.8,37.6,92.3,18.7],[0,62.6,100,22.3],[3.3,77,24.1,6.4]],"gezinme-grup":[[2.8,1.3,13.8,6.4],[83.3,1.3,13.8,6.4],[2.3,10.2,95.4,8.5]],"gezinme-menu":[[57.3,1.5,26.6,5.9],[83.3,1.3,13.8,6.4],[2.3,10.4,47.4,16.8]],"gezinme-ust":[[1,1.3,45.1,5.9],[45.6,0.8,13.8,6.4],[59,0.8,13.8,6.4],[72.3,0.8,13.8,6.4],[85.6,0.9,13.3,6.2],[0,90.9,100,9.1]],"giris-ekran":[[7.2,45.6,85.6,9.7],[7.2,55.5,85.6,9.7],[7.2,66.8,85.6,6.4]],"hakkinda-baglantilar":[[4.1,23.9,91.8,34.4],[4.1,58.5,91.8,40.8]],"hakkinda-ust":[[4.4,15.6,91.3,15.9],[7.9,56.4,48.2,6.4],[4.1,64.8,91.8,31],[7.9,87.7,51.1,6.4]],"kilavuz-pencere":[[3.1,9.9,24.6,5.5],[76.3,9.4,20.6,6.4],[0,16.7,100,74.7],[63.9,92.2,33,6.4]],"kilavuz-sayfa":[[45.6,0.8,13.8,6.4],[7.9,14.9,84.1,9.7],[7.9,24.9,84.1,36],[4.1,65.4,91.8,25.3]],"kurul-detay":[[0.0,9.4,13.8,6.4],[0.0,20.1,50.3,6.4],[49.7,20.1,50.3,6.4],[0.0,26.3,13.8,6.4],[0.0,33.8,100.0,14.8]],"kurul-detay-alt":[[0.0,32.4,100.0,12.6],[65.8,46.8,30.3,6.4]],"kurul-detay-is":[[76.4,36.0,19.8,6.4],[3.8,74.4,7.7,3.6]],"kurul-form":[[3.1,18.5,93.8,20.0],[3.1,38.8,93.8,9.9],[3.1,48.9,93.8,20.0],[3.1,69.2,93.8,9.9]],"kurul-form-gorev":[[43.9,7.5,34.5,6.4],[78.9,7.5,18.0,6.4],[3.1,23.8,93.8,69.9]],"kurul-form-uyeler":[[3.1,13.0,93.8,6.6],[3.1,19.9,93.8,6.4],[3.1,26.6,93.8,6.6],[3.1,33.4,93.8,6.4]],"kurul-liste":[[4.4,22.0,31.6,6.4],[42.6,22.0,53.0,6.4],[0.0,30.4,100.0,13.5],[0.3,44.3,99.5,9.3]],"kurul-rapor":[[3.1,78.9,93.8,6.4],[3.1,85.5,93.8,6.4],[3.1,92.2,93.8,6.4]],"nobet-atama":[[3.1,62.8,93.8,9.9],[3.1,76.2,93.8,6.6],[3.1,83.1,93.8,6.4],[73.1,92.2,23.8,6.4]],"nobet-cizelge":[[2.6,46.8,94.9,6.4],[2.8,53.3,97.2,6.2],[62.6,58.3,37.4,6.3]],"nobet-ust":[[0,34.1,50.3,9.2],[49.7,34.1,50.3,9.2],[0,43.1,50.3,9.8],[49.7,43.1,50.3,9.8],[0,53.3,100,30.5]],"notlar-hizli":[[3.1,49.9,93.8,40],[3.1,89.8,93.8,8.8],[83.1,40.7,13.8,6.4]],"notlar-liste":[[0,8.3,100,6.6],[4.4,30,91.3,6.4],[0,38.4,100,10.4],[3.8,51.4,92.3,9.4],[0.3,69.3,99.5,8.8]],"notlar-yapilacak":[[3.1,66.1,93.8,9.9],[10.1,76.2,74.3,6.6],[3.1,83.1,93.8,6.4],[54.6,92.2,19,6.4],[73.1,92.2,23.8,6.4]],"ogrenciler-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,20],[3.1,69.2,93.8,9.9]],"ogrenciler-form-alt":[[3.1,37,93.8,20],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogrenciler-liste":[[68.2,15.4,27.4,6.4],[3.3,30.3,93.3,6.2],[2.3,39.1,95.4,11],[3.3,50.4,93.3,5.7],[0,58.1,100,6.6],[0,64.5,51.3,6.9],[0,75.2,100,8.3]],"ogrenciler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"ogretmenler-form":[[3.1,18.5,93.8,20],[3.1,38.8,93.8,20],[3.1,59.1,93.8,20]],"ogretmenler-form-alt":[[3.1,6.9,93.8,9.9],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogretmenler-liste":[[65.3,15.4,30.3,6.4],[3.3,30.3,93.3,6.2],[3.3,36.7,93.3,5.7],[0,44.4,100,6.6],[0,50.8,26.9,6.4],[26.3,50.8,35,6.4],[0,61.1,100,21.7],[84.9,75.8,11.3,5.2]],"ogretmenler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"rapor-duzenle":[[7.9,36,84.1,19.7],[7.9,75.8,84.1,9.7],[7.9,85.8,84.1,9.7]],"rapor-liste":[[4.1,32.3,91.8,18.1],[7.9,42.3,30.3,6.4],[38.8,42.3,26.4,6.4],[65.7,42.3,26.3,6.4]],"rapor-onizleme":[[0.8,0.4,13.8,6.4],[55.9,0.4,43.3,6.4],[13.6,6.3,43.3,6.4],[55.9,6.3,43.3,6.4],[0.8,12.3,45.1,6.4],[3.7,19.7,49.3,12.3]],"siniflar-detay":[[2.1,14.5,13.8,6.4],[84.1,14.5,13.8,6.4],[3.3,37.4,93.3,6.2],[0,48,100,7.1],[0,55.6,39.5,6.4],[39,55.6,55.7,6.4],[0,62.5,100,8.3]],"siniflar-form":[[3.1,37.1,93.8,9.9],[3.1,47.3,93.8,20],[3.1,67.5,93.8,9.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"siniflar-liste":[[68.2,15.4,27.5,6.4],[4.4,26.7,91.3,6.4],[3.3,36.9,93.3,6.2],[2.3,45.7,95.4,11],[0,58.8,100,6.6],[0,65.2,55.7,6.4],[0,75.4,100,20.5]],"takvim-ana":[[54,19.5,23.7,6.4],[78.2,19.5,21.8,6.4],[0,27.3,100,8.1],[3.8,37.4,92.3,6.4],[3.8,48,92.3,30.7]],"takvim-etkinlik-form":[[3.1,47.3,93.8,9.9],[3.1,57.4,93.8,20],[3.1,77.7,93.8,11.8],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"takvim-gorev-form":[[3.1,47.3,93.8,9.9],[3.1,69.4,93.8,20],[73.1,92.2,23.8,6.4]],"takvim-gun":[[0,24.1,100,23.5],[72.6,29.9,24.1,6.4],[0,47.8,100,42.1]],"veriler-sayfa":[[0,23.6,100,33.4]],"veriler-yedek":[[3.8,72.9,44.9,6.4],[49.3,72.9,46.9,6.4]],"yazili-form":[[3.6,33.4,92.8,25.8],[3.1,59.5,93.8,20],[3.1,79.8,93.8,9.9]],"yazili-form-alt":[[3.1,34.6,93.8,20],[3.1,54.9,93.8,20],[3.1,75.1,93.8,14.3],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"yazili-liste":[[0,12.3,100,9.7],[0,22.2,100,6.4],[0,29.3,100,10.2],[3.6,41.9,92.8,6.5],[72.3,80.6,24.1,6.4]],"yemek-aylik":[[7.9,32,84.1,6.4],[7.9,38.7,84.1,1.9],[7.9,43.7,42,6.4],[50,43.7,42.1,6.4],[23.8,56.7,69.2,25.1],[23.8,81.6,32.1,5.2]],"yemek-denetim":[[68,30.3,27.9,8.9],[7.9,41.2,84.1,9.7],[7.9,51.1,84.1,9.7],[7.9,59.7,84.1,9.7]],"yemek-gunluk":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,37.1]],"yemek-haftalik":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,20]],"yoklama-devamsiz":[[0,32.3,100,12.3],[0,44.8,100,8.3],[0,59.5,100,12.3],[68.6,64,28.1,6.4]],"yoklama-sinif":[[0,25.9,100,6.2],[2.8,33.6,47.4,9.7],[49.7,33.6,47.4,9.7],[0,44.8,100,8.3],[69,53.6,30.4,6.4],[2.6,66,94.9,5.7],[49.2,85,48,6.4]],"yoklama-tumu":[[2.8,33.6,47.4,9.7],[0,44.8,100,7.8]]}/*GEO:END*/
 };
 
 global.KorukGuideData=D;
