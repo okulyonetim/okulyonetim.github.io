@@ -47,7 +47,7 @@ const MENU_GROUPS=[
  {key:'documents',label:'Belgeler',modernLabel:'Doküman & Evraklar',icon:'📁',tone:'amber',route:'documents',items:[['Dökümanlar','📁','documents'],['Evrak Takibi','📄','documents','evrak'],['Resimden PDF Oluştur','🖼️','documents','pdf-images'],['PDF Birleştir','📑','documents','pdf-merge'],['Personel İşleri','👥','management','staff'],['Kurul ve Komisyonlar','🏛️','committees','home']]},
  {key:'transport',label:'Taşıma',modernLabel:'Taşıma',icon:'🚌',tone:'violet',route:'transport',items:[['Taşıma İşlemleri','🚌','transport','services'],['Harita','🗺️','tools','map'],['Servis Oturma','💺','transport','busSeats']]},
  {key:'food',label:'Yemek',modernLabel:'Yemek',icon:'🍽️',tone:'green',route:'food',items:[['Günlük Menü','☀️','food','daily'],['Haftalık Menü','📆','food','weekly'],['Aylık Menü','🗓️','food','monthly'],['Yemek Denetimi','📝','food','audit']]},
- {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['İzin İşlemleri','📋','management','staff-leaves'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Okul Raporları','📊','reports','home'],['Akademik Takvim','📅','academic','calendar']]},
+ {key:'management',label:'Çizelgeler',modernLabel:'İdari İşler',icon:'🗂️',tone:'orange',route:'management',items:[['Sosyal Kulüpler','♡','tools','form-kulup'],['Belirli Gün & Haftalar','📅','tools','form-belirli'],['Zümre','👥','tools','form-zumre'],['ŞÖK','🛡️','tools','form-sok'],['Yıllık / BEP Planı','📋','tools','form-bep'],['Rehberlik','🧭','tools','form-rehberlik'],['Maarif Model Raporları','🏅','tools','form-maarif'],['Diğer Evraklar','📁','tools','form-diger'],['Aylık İşler','🕘','management','tasks'],['Ödev Takip Çizelgesi','✅','tools','homework'],['Not Çizelgesi','📊','tools','grades'],['Devamsızlık Çizelgesi','📅','tools','attendance'],['Toplantı Çizelgesi','📅','management','meeting-schedule']],subLabel:'Diğer İdari İşler',subItems:[['Maaş Değişikliği','💵','payroll'],['Veli Görüşme Formu','👨‍👩‍👧','parentmeeting'],['Tebliğ-Tebellüğ İmza Sirküsü','🔔','documents','teblig'],['Puantaj & İmza Sirküsü','🕘','management','puantaj'],['Dilekçe & İzinler','📄','management','dilekce'],['İzin İşlemleri','📋','management','staff-leaves'],['Diploma Kayıt Talep Dilekçesi','🎓','management','diploma-request'],['Diploma Okul Dilekçesi','🏫','management','diploma-response'],['Kontrol Listeleri','📋','tools','checklists'],['Okul Raporları','📊','reports','home'],['Akademik Takvim','📅','academic','calendar']]},
  {key:'settings',label:'Okul ve Sistem',modernLabel:'Ayarlar',icon:'⚙️',tone:'slate',route:'settings',items:[['Ayarlar','⚙️','settings'],['Kullanım Kılavuzu','📖','dashboard','guide'],['Uygulama Hakkında','ℹ️','dashboard','about']]},
  {key:'exams',label:'Sınavlar ve Not İşlemleri',icon:'📝',tone:'violet',route:'academic',hidden:true,items:[['Deneme Sonuçları','🏅','academic','results'],['Test Sonuçları','📋','academic','results'],['Ders Et. Kat. Puan Dağıtımı','📊','tools','rubric-distribution'],['Proje Değerlendirme Ölçeği','📏','tools','project-evaluation']]},
  {key:'calendar',label:'Takvim & Notlar',icon:'📆',tone:'cyan',route:'communication',hidden:true,items:[['Takvim','📆','communication','calendar'],['Notlar','📒','communication','notes']]}
@@ -245,6 +245,19 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     if(!sameView(top,menuView))rememberView(menuView);
   }
   if(!(name==='tools'&&FORM_PAGES[page]))cleanupFormPage();
+  if(name==='parentmeeting'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+      if(!global.ParentMeetingModule?.open)await global.AppLoader?.loadScript?.('js/modules/parent-meeting.js');
+      if(!global.ParentMeetingModule?.open)throw new Error('Veli görüşme formu yüklenemedi.');
+      setBottomActive(bottom);setTitle('Veli Görüşme Formu');
+      global.ParentMeetingModule.open();if(remember)rememberView({kind:'route',name,bottom,page,title:'Veli Görüşme Formu'});
+    }catch(e){
+      console.error('[Shell/parentmeeting]',e);global.toast?.('Veli görüşme formu açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='payroll'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');

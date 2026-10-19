@@ -12862,6 +12862,31 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .kkr-flag{margin-left:1mm;color:var(--ka-report-people-under);font-size:6.5pt;font-weight:800}
 .ka-report .kkr-empty{padding:3mm;text-align:center!important;color:var(--ka-report-people-muted)}
 
+/* ===== A4 FORM — Veli Görüşme Formu (.vgf-*) =====
+   js/modules/parent-meeting.js çıktısının kağıt stili; renk --ka-report-text / --ka-report-bg / --ka-report-border belirteçlerinden gelir. */
+.ka-report .vgf-paper{box-sizing:border-box;min-height:272mm;padding:6mm 7mm;border:.5mm solid var(--ka-report-border);outline:.25mm solid var(--ka-report-border);outline-offset:-1.6mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;display:flex;flex-direction:column}
+.ka-report .vgf-paper .vgf-title{font-family:inherit!important;margin:0 0 6mm;text-align:center;font-size:11pt;font-weight:700;letter-spacing:0}
+.ka-report .vgf-table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0}
+.ka-report .vgf-paper .vgf-table th,.ka-report .vgf-paper .vgf-table td{border:.25mm solid var(--ka-report-border)!important;padding:1.6mm 2mm!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:10pt!important;line-height:1.3!important;vertical-align:middle;text-align:left;overflow-wrap:anywhere}
+.ka-report .vgf-paper .vgf-table th{font-weight:700!important;text-align:center!important}
+.ka-report .vgf-table .vgf-grp{width:17%}
+.ka-report .vgf-table .vgf-sub{width:22%}
+.ka-report .vgf-table tr:not(.vgf-reason) td{height:6.5mm}
+.ka-report .vgf-paper .vgf-table .vgf-mid{text-align:center!important}
+.ka-report .vgf-paper .vgf-table .vgf-bold{font-weight:700!important}
+.ka-report .vgf-paper .vgf-reason td{height:20mm;vertical-align:top!important;white-space:pre-wrap}
+.ka-report .vgf-box{box-sizing:border-box;margin:0;border:.25mm solid var(--ka-report-border);border-top:0;padding:1.6mm 2mm}
+.ka-report .vgf-box b{display:block;font-size:10pt;font-weight:700}
+.ka-report .vgf-box p{margin:1.5mm 0 0;font-size:10pt;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+.ka-report .vgf-box--talk{min-height:62mm;margin-top:3mm;border-top:.25mm solid var(--ka-report-border)}
+.ka-report .vgf-box--result{min-height:48mm}
+.ka-report .vgf-sign{display:flex;justify-content:space-between;align-items:flex-start;gap:10mm;margin-top:auto;padding:12mm 6mm 4mm}
+.ka-report .vgf-sign>div{display:flex;flex-direction:column;align-items:center;gap:1mm;text-align:center;min-width:55mm}
+.ka-report .vgf-sign b{font-size:10pt;font-weight:700}
+.ka-report .vgf-sign>div>b:first-child{display:block;min-height:9mm}
+.ka-report .vgf-sign span{display:block;font-size:10pt;line-height:6mm;min-height:6mm}
+.ka-report .vgf-sign .vgf-imza{margin-top:9mm!important}
+
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
 .bsg-root{
@@ -14013,6 +14038,15 @@ html[data-theme] .kcz-form .ka-modal__footer .ka-btn--danger{display:inline-flex
 @media(max-width:560px){
   html[data-theme] #v2ModuleRoot .kpj-month{padding:var(--ka-sp-6) var(--ka-sp-8)}
 }
+
+/* ===== VELİ GÖRÜŞME FORMU (vgf-*) — doldur ve yazdır sayfası ===== */
+html[data-theme] #v2ModuleRoot .vgf-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .vgf-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .vgf-head>div{flex:1 1 260px;min-width:0}
+html[data-theme] #v2ModuleRoot .vgf-head h2{margin:0 0 var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .vgf-head p{margin:0}
+html[data-theme] #v2ModuleRoot .vgf-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .vgf-page textarea{width:100%;resize:vertical}
 
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
