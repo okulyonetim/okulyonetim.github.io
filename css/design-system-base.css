@@ -13997,6 +13997,23 @@ html[data-theme] .kcz-form .kcl-empty b{display:block;color:var(--ka-text)}
 }
 @media(prefers-reduced-motion:reduce){html[data-theme] #v2ModuleRoot .kkl-check__mark{transition:none}}
 
+/* ===== AYLIK İŞLER (kpj-*) — ay gezgini, özet, kural editörü ===== */
+html[data-theme] #v2ModuleRoot .kpj-month{display:flex;align-items:center;justify-content:center;gap:var(--ka-sp-10);padding:var(--ka-sp-8) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius);background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .kpj-month>strong{flex:1 1 auto;min-width:0;color:var(--ka-text);font-size:var(--ka-fs-16);font-weight:var(--ka-fw-800);text-align:center}
+html[data-theme] #v2ModuleRoot .kpj-month .kcl-chip{flex:none}
+html[data-theme] #v2ModuleRoot .kpj-note{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) dashed var(--ka-border-strong);border-radius:var(--ka-card-radius);color:var(--ka-text-muted);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .kpj-note__ic{display:grid;place-items:center;flex:none;width:var(--ka-ic-28);height:var(--ka-ic-28);color:var(--ka-text)}
+html[data-theme] #v2ModuleRoot .kpj-note__ic .kcl-i{width:1.3em;height:1.3em}
+html[data-theme] #v2ModuleRoot .kpj-page .kkl-actions .ka-btn{display:inline-flex;align-items:center;gap:var(--ka-sp-7)}
+html[data-theme] .kcz-form .kpj-rule{display:flex;flex-direction:column;gap:var(--ka-sp-12);padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-left:var(--ka-sp-4) solid var(--ka-border-strong);border-radius:var(--ka-r-5);background:var(--ka-card-bg)}
+html[data-theme] .kcz-form .kpj-rule .ka-row{align-items:flex-end;gap:var(--ka-sp-10)}
+html[data-theme] .kcz-form .kpj-months{display:flex;flex-wrap:wrap;gap:var(--ka-sp-6)}
+html[data-theme] .kcz-form .kpj-months .kcz-pick__item>span{padding:0 var(--ka-sp-10)}
+html[data-theme] .kcz-form .ka-modal__footer .ka-btn--danger{display:inline-flex;align-items:center;gap:var(--ka-sp-7)}
+@media(max-width:560px){
+  html[data-theme] #v2ModuleRoot .kpj-month{padding:var(--ka-sp-6) var(--ka-sp-8)}
+}
+
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen

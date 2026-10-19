@@ -99,6 +99,55 @@ async function fcmMulticastInChunks(tokens, data, onResponse) {
   }
 }
 
+
+// ---- Aylık (periyodik) işler: kuralları aylık otomatik üret + bitişten önce hatırlat ----
+// Üretim kimliği uygulamadaki PeriyodikService ile aynıdır (pj_YYYYAA_kuralId): create() var olan kaydı ezmez.
+function periyodikKuralId(g) {
+  if (g && g.id) return String(g.id);
+  return 'k_' + String((g && g.isAdi) || '').toLocaleLowerCase('tr').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function periyodikGunISO(y, a, g) {
+  const son = new Date(Date.UTC(y, a + 1, 0)).getUTCDate();
+  return `${y}-${pad(a + 1)}-${pad(Math.min(Math.max(Number(g) || 1, 1), son))}`;
+}
+function gunFarki(iso, bugun) {
+  return Math.round((new Date(String(iso).slice(0, 10) + 'T00:00:00Z') - new Date(bugun + 'T00:00:00Z')) / 86400000);
+}
+async function periyodikAylikUret(bugun) {
+  const sDoc = await db.collection('oy_periyodikSablon').doc('sablon').get();
+  if (!sDoc.exists) return 0;
+  const sablon = sDoc.data() || {};
+  const engellenen = Array.isArray(sablon.engellenen) ? sablon.engellenen : [];
+  const y = Number(bugun.slice(0, 4)), a = Number(bugun.slice(5, 7)) - 1, ay = bugun.slice(0, 7);
+  const mevcut = await db.collection('oy_periyodikIsler').where('bitis', '>=', ay + '-01').get();
+  const mevcutlar = mevcut.docs.map(d => ({ id: d.id, ...d.data() }));
+  let n = 0;
+  for (const g of (Array.isArray(sablon.gorevler) ? sablon.gorevler : [])) {
+    if (!g || !g.isAdi || g.aktif === false) continue;
+    if (Array.isArray(g.aylar) && g.aylar.length && !g.aylar.map(Number).includes(a + 1)) continue;
+    const kid = periyodikKuralId(g), id = `pj_${ay.replace('-', '')}_${kid}`;
+    if (engellenen.includes(id)) continue;
+    const grup = p => p.ay || String(p.bitis || p.baslangic || '').slice(0, 7);
+    if (mevcutlar.some(p => p.id === id || (p.kuralId === kid && grup(p) === ay) || (p.isAdi === g.isAdi && grup(p) === ay))) continue;
+    const bitAy = Number(g.bitisGun) < Number(g.baslangicGun) ? a + 1 : a;
+    const hg = Number.isFinite(Number(g.hatirlatGun)) ? Math.max(0, Math.min(30, Number(g.hatirlatGun))) : 3;
+    try {
+      await db.collection('oy_periyodikIsler').doc(id).create({
+        isAdi: g.isAdi, baslangic: periyodikGunISO(y, a, g.baslangicGun), bitis: periyodikGunISO(y + (bitAy > 11 ? 1 : 0), bitAy % 12, g.bitisGun),
+        not: g.not || '', kuralId: kid, otomatik: true, ay, hatirlatGun: hg, tamamlandi: false, bildirimGonderildi: false, onBildirimGonderildi: false,
+        eklenmeTarihi: new Date().toISOString()
+      });
+      n++;
+    } catch (e) { if (!String(e && e.message).includes('ALREADY_EXISTS') && e.code !== 6) console.warn('Aylık iş üretilemedi:', e.message); }
+  }
+  if (n) console.log(`Aylık işler üretildi: ${n}`);
+  return n;
+}
+function ileriTarih(iso, gun) {
+  const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + gun);
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+}
+
 async function kontrolEt() {
   const { tarihISO: bugun, saatHHMM: saat } = turkiyeSimdi();
   const esikSimdi = `${bugun} ${saat}`;
@@ -120,11 +169,18 @@ async function kontrolEt() {
     gonderilecekler.push({ baslik: `✅ Görev Vadesi: ${v.baslik || ''}`, govde: v.aciklama || `Son tarih: ${v.sonTarih}`, koleksiyon: 'oy_gorevler', docId: doc.id });
   });
 
-  const pSnap = await db.collection('oy_periyodikIsler').where('bitis', '<=', bugun).limit(100).get();
+  // Periyodik işler: aylık otomatik üret, sonra "X gün önce" ve bitiş/gecikme bildirimlerini topla.
+  await periyodikAylikUret(bugun).catch(e => console.warn('Aylık üretim hatası:', e.message));
+  const pSnap = await db.collection('oy_periyodikIsler').where('bitis', '<=', ileriTarih(bugun, 30)).limit(300).get();
   pSnap.forEach(doc => {
     const v = doc.data() || {};
-    if (v.tamamlandi || v.bildirimGonderildi || !v.bitis) return;
-    gonderilecekler.push({ baslik: `📋 Periyodik İş: ${v.isAdi || ''}`, govde: v.not || `Bitiş: ${v.bitis}`, koleksiyon: 'oy_periyodikIsler', docId: doc.id });
+    if (v.tamamlandi || !v.bitis) return;
+    const fark = gunFarki(v.bitis, bugun), hg = Number.isFinite(Number(v.hatirlatGun)) ? Number(v.hatirlatGun) : 3;
+    if (fark > 0 && hg > 0 && fark <= hg && !v.onBildirimGonderildi) {
+      gonderilecekler.push({ baslik: `⏳ Aylık İş: ${v.isAdi || ''}`, govde: `${fark} gün kaldı (son gün ${v.bitis})`, koleksiyon: 'oy_periyodikIsler', docId: doc.id, alan: 'onBildirimGonderildi' });
+    } else if (fark <= 0 && !v.bildirimGonderildi) {
+      gonderilecekler.push({ baslik: `📋 Aylık İş: ${v.isAdi || ''}`, govde: fark === 0 ? 'Bugün son gün' : `${-fark} gün gecikti`, koleksiyon: 'oy_periyodikIsler', docId: doc.id, alan: 'bildirimGonderildi' });
+    }
   });
 
   const checkpoint = await getMessageCheckpoint();
@@ -158,7 +214,7 @@ async function kontrolEt() {
         });
       } catch (err) { console.error('FCM hatası:', err.message); }
     }
-    await db.collection(item.koleksiyon).doc(item.docId).update({ bildirimGonderildi: true });
+    await db.collection(item.koleksiyon).doc(item.docId).update({ [item.alan || 'bildirimGonderildi']: true });
   }
 
   let mesajGonderilen = 0;
