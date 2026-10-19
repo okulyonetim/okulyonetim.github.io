@@ -142,14 +142,21 @@ win.KorukLocalFirst={meta:async()=>null};win.AKTIF_KULLANICI={uid:'u1'};
   const defined=new Set([...css.matchAll(/(--[\w-]+)\s*:/g)].map(m=>m[1]));
   const undef=[...new Set([...css.slice(a,z).matchAll(/var\((--[\w-]+)/g)].map(m=>m[1]))].filter(v=>!defined.has(v));
   assert.deepStrictEqual(undef,[],'Tanımsız CSS değişkeni kullanılmamalı: '+undef);
-  /* Kâğıt stili (.ka-report ...) ekran bölümlerinin kapsam testlerine girmesin diye dosya sonunda ayrı bölümdür. */
-  const ra=css.indexOf('/* ===== A4 RAPOR — Belirli Gün ve Haftalar');
-  assert(ra>z,'Rapor stili ekran bölümlerinden sonra, ayrı bölümde olmalı.');
-  const rep=css.slice(ra).replace(/\/\*[\s\S]*?\*\//g,'');
+  /* Kâğıt stili (.ka-report ...) ekran bölümlerinin (kcl/kpd/kcz) ve web arayüzü bölümünün kapsam testlerine girmesin diye
+     oturma ızgarası (bsg/csg) bölümlerinden önce, ayrı bir bölümdür. */
+  const ra=css.indexOf('/* ===== A4 RAPOR — Belirli Gün ve Haftalar'),kclAt=css.indexOf('/* ═══════════ SERVİS OTURMA IZGARASI');
+  assert(ra>0&&ra<kclAt&&kclAt<a,'Rapor stili oturma ızgarası ve kcl/kpd/kcz ekran bölümlerinden önce, ayrı bölümde olmalı.');
+  const rep=css.slice(ra,kclAt).replace(/\/\*[\s\S]*?\*\//g,'');
   for(const c of ['.bgr-kpis','.bgr-table','.bgr-st','.bgr-sub','.bgr-legend'])assert(rep.includes(c),'Rapor sınıfı tanımlı olmalı: '+c);
   assert(!/#[0-9a-fA-F]{3,8}\b/.test(rep)&&!/rgba?\(\s*\d/.test(rep),'Rapor stilinde sabit renk olmamalı; --ka-report-people-* belirteçleri kullanılmalı.');
   assert(rep.split(/\}/).every(r=>!r.includes('{')||/^\s*\.ka-report /.test(r)||!r.includes('.bgr-')),'Rapor kuralları .ka-report altında olmalı.');
   const cacheVer=Number((fs.readFileSync('service-worker.js','utf8').match(/oy-cache-v(\d+)/)||[])[1]);
-  assert(cacheVer>=1323,'Servis çalışanı önbelleği yeni sürüme yükseltilmeli.');
+  assert(cacheVer>=1324,'Servis çalışanı önbelleği yeni sürüme yükseltilmeli.');
+  /* Yazdırma: boşluk @page ile verilmeli (padding yalnız ilk/son sayfada kalır); dekoratif arka plan lekeleri basılmamalı. */
+  const eng=fs.readFileSync('js/modules/report-engine.js','utf8');
+  assert(eng.includes("@page{size:${page};margin:${o.akis?o.kenarBosluk+'mm':'0'}}"),'Akış kipinde @page kenar boşluğu kenarBosluk olmalı (her sayfada üst/alt boşluk).');
+  assert(/akis:opts\.akis===true\|\|\(opts\.akis!==false&&!String\(opts\.extraHead\|\|''\)\.trim\(\)\)/.test(eng),'Akış kipi: açıkça istenen ya da özel extraHead olmayan raporlar.');
+  assert(/printCss=o\.akis\?`@media print\{[^`]*html body \.ka-report\{[^`]*padding:0!important/.test(eng),'Akış kipinde yazdırırken .ka-report padding\'i 0 olmalı (boşluk @page\'den gelir).');
+  assert(eng.includes('html::before,html::after,body::before,body::after{content:none!important;display:none!important}'),'Rapor belgesinde uygulamanın arka plan lekeleri (orb) kapatılmalı.');
   console.log('belirli-gunler-redesign: OK');
 })().catch(e=>{console.error(e);process.exit(1)});

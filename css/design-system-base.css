@@ -12807,6 +12807,40 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-photo-crop__pvav--md{width:var(--ka-ic-58);height:var(--ka-ic-58);--ka-avatar-chip-max:var(--ka-avatar-chip-max-sm)}
 .ka-photo-crop__pvav--lg{width:var(--ka-ic-92);height:var(--ka-ic-92);box-shadow:var(--ka-avatar-ring-shadow-lg)}
 
+/* ===== A4 RAPOR — Belirli Gün ve Haftalar etkinlik çizelgesi (.bgr-*) =====
+   js/modules/rubric-settings-core.js beReportHtml çıktısının kağıt stili. Kağıt her zaman beyazdır; renkler
+   --ka-report-people-* belirteçlerinden gelir. ReportEngine'in genel .ka-report th/td kuralları !important olduğundan
+   burada da !important kullanılır. */
+.ka-report .bgr-doc .bolum-baslik{margin:var(--ka-report-people-gap) 0 1mm!important;padding:1.2mm 2.5mm!important;border-left-width:var(--ka-report-people-bar)!important;font-size:10pt!important;line-height:1.2!important;break-after:avoid}
+.ka-report .bgr-sub{margin:0 0 1.5mm;color:var(--ka-report-people-muted);font-size:7.5pt;font-weight:700;break-after:avoid}
+.ka-report .bgr-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 0 3mm;border:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-left:var(--ka-report-people-bar) solid var(--ka-report-people-accent);background:var(--ka-report-people-soft);break-inside:avoid}
+.ka-report .bgr-kpis>div{display:flex;flex-direction:column;align-items:center;gap:.6mm;padding:2.2mm 1.5mm;text-align:center}
+.ka-report .bgr-kpis>div+div{border-left:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
+.ka-report .bgr-kpis b{color:var(--ka-report-people-accent);font-size:16pt;line-height:1}
+.ka-report .bgr-kpis span{color:var(--ka-report-people-muted);font-size:7.5pt;font-weight:700}
+.ka-report .bgr-table{table-layout:fixed}
+.ka-report .bgr-c1,.ka-report .bgr-c2{width:11%}
+.ka-report .bgr-c3{width:25%}
+.ka-report .bgr-c4{width:22%}
+.ka-report .bgr-c5{width:11%}
+.ka-report .bgr-c6{width:20%}
+.ka-report .bgr-l1{width:24%}
+.ka-report .bgr-l2{width:9%}
+.ka-report .bgr-l5{width:49%}
+.ka-report .bgr-table td{text-align:left;overflow-wrap:anywhere}
+.ka-report .bgr-table td.bgr-day{text-align:center!important;white-space:nowrap}
+.ka-report .bgr-table td.bgr-name b{display:block;font-weight:800}
+.ka-report .bgr-table td.bgr-name small{display:block;margin-top:.4mm;color:var(--ka-report-people-muted);font-size:6.5pt}
+.ka-report .bgr-table td.bgr-st{text-align:center!important;font-weight:800!important;white-space:nowrap}
+.ka-report .bgr-table td.bgr-st.is-done{color:var(--ka-report-people-accent)!important}
+.ka-report .bgr-table td.bgr-st.is-late{color:var(--ka-report-people-under)!important}
+.ka-report .bgr-load td.bgr-name{font-weight:800!important}
+.ka-report .bgr-table td.bgr-num{text-align:center!important;font-weight:800!important}
+.ka-report .bgr-table td.bgr-memo{color:var(--ka-report-people-muted)!important;font-size:7pt!important}
+.ka-report .bgr-dash{color:var(--ka-report-people-muted)}
+.ka-report .bgr-legend{margin:3mm 0 0;color:var(--ka-report-people-muted);font-size:7.5pt;line-height:1.35}
+.ka-report .bgr-empty{margin:1mm 0 2mm;padding:3mm 4mm;border:var(--ka-report-people-hair) dashed var(--ka-report-people-line);color:var(--ka-report-people-muted);font-size:9pt}
+
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
 .bsg-root{
@@ -14081,37 +14115,3 @@ html #v2ModuleRoot .ka-home .ka-web-brief b{font-weight:var(--ka-fw-800);color:v
   html:not(#_x):not(#_y) .kh-icon-sun svg,
   html:not(#_x):not(#_y) .kh-trial-live__badge i{animation:none!important}
 }
-
-/* ===== A4 RAPOR — Belirli Gün ve Haftalar etkinlik çizelgesi (.bgr-*) =====
-   js/modules/rubric-settings-core.js beReportHtml çıktısının kağıt stili. Kağıt her zaman beyazdır; renkler
-   --ka-report-people-* belirteçlerinden gelir. ReportEngine'in genel .ka-report th/td kuralları !important olduğundan
-   burada da !important kullanılır. */
-.ka-report .bgr-doc .bolum-baslik{margin:var(--ka-report-people-gap) 0 1mm!important;padding:1.2mm 2.5mm!important;border-left-width:var(--ka-report-people-bar)!important;font-size:10pt!important;line-height:1.2!important;break-after:avoid}
-.ka-report .bgr-sub{margin:0 0 1.5mm;color:var(--ka-report-people-muted);font-size:7.5pt;font-weight:700;break-after:avoid}
-.ka-report .bgr-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 0 3mm;border:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-left:var(--ka-report-people-bar) solid var(--ka-report-people-accent);background:var(--ka-report-people-soft);break-inside:avoid}
-.ka-report .bgr-kpis>div{display:flex;flex-direction:column;align-items:center;gap:.6mm;padding:2.2mm 1.5mm;text-align:center}
-.ka-report .bgr-kpis>div+div{border-left:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
-.ka-report .bgr-kpis b{color:var(--ka-report-people-accent);font-size:16pt;line-height:1}
-.ka-report .bgr-kpis span{color:var(--ka-report-people-muted);font-size:7.5pt;font-weight:700}
-.ka-report .bgr-table{table-layout:fixed}
-.ka-report .bgr-c1,.ka-report .bgr-c2{width:11%}
-.ka-report .bgr-c3{width:25%}
-.ka-report .bgr-c4{width:22%}
-.ka-report .bgr-c5{width:11%}
-.ka-report .bgr-c6{width:20%}
-.ka-report .bgr-l1{width:24%}
-.ka-report .bgr-l2{width:9%}
-.ka-report .bgr-l5{width:49%}
-.ka-report .bgr-table td{text-align:left;overflow-wrap:anywhere}
-.ka-report .bgr-table td.bgr-day{text-align:center!important;white-space:nowrap}
-.ka-report .bgr-table td.bgr-name b{display:block;font-weight:800}
-.ka-report .bgr-table td.bgr-name small{display:block;margin-top:.4mm;color:var(--ka-report-people-muted);font-size:6.5pt}
-.ka-report .bgr-table td.bgr-st{text-align:center!important;font-weight:800!important;white-space:nowrap}
-.ka-report .bgr-table td.bgr-st.is-done{color:var(--ka-report-people-accent)!important}
-.ka-report .bgr-table td.bgr-st.is-late{color:var(--ka-report-people-under)!important}
-.ka-report .bgr-load td.bgr-name{font-weight:800!important}
-.ka-report .bgr-table td.bgr-num{text-align:center!important;font-weight:800!important}
-.ka-report .bgr-table td.bgr-memo{color:var(--ka-report-people-muted)!important;font-size:7pt!important}
-.ka-report .bgr-dash{color:var(--ka-report-people-muted)}
-.ka-report .bgr-legend{margin:3mm 0 0;color:var(--ka-report-people-muted);font-size:7.5pt;line-height:1.35}
-.ka-report .bgr-empty{margin:1mm 0 2mm;padding:3mm 4mm;border:var(--ka-report-people-hair) dashed var(--ka-report-people-line);color:var(--ka-report-people-muted);font-size:9pt}
