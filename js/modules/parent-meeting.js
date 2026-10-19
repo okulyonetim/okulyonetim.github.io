@@ -82,7 +82,7 @@ function reportBody(data){
  </tbody></table>
  <div class="vgf-box vgf-box--talk"><b>Görüşme Sırasında Konuşulanlar:</b><p>${esc(s.konusulanlar)}</p></div>
  <div class="vgf-box vgf-box--result"><b>Sonuç ve Öneriler:</b><p>${esc(s.sonuc)}</p></div>
- <div class="vgf-sign"><div><b>Görüşme Yapılan<br>Veli Adı Soyadı</b><span>${esc(s.veliAd)||dots}</span><b class="vgf-imza">İmza</b></div><div><b>${esc(s.blank?'Sınıf Öğretmeni':gorevOf(s))}</b><span>${esc(s.ogretmenAd)||dots}</span><b class="vgf-imza">İmza</b></div></div></article>`
+ <div class="vgf-sign"><div><b class="vgf-imza">İmza</b><span>${esc(s.veliAd)||dots}</span><b>Veli</b></div><div><b class="vgf-imza">İmza</b><span>${esc(s.ogretmenAd)||dots}</span><b>${esc(s.blank?'Sınıf Öğretmeni':gorevOf(s))}</b></div></div></article>`
 }
 function print(data){if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}global.ReportEngine.printReport('Veli Görüşme Formu',reportBody(data),{fileName:'Veli Görüşme Formu',yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true}
 function open(){state=blank();pickClass='';histQuery='';const ok=render();prepare().then(()=>{if(document.querySelector('[data-vgf-page]'))render()});return ok}

@@ -12875,7 +12875,7 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .vgf-table .vgf-grp{width:17%}
 .ka-report .vgf-table .vgf-sub{width:22%}
 .ka-report .vgf-table tr:not(.vgf-reason) td{height:6.5mm}
-.ka-report .vgf-paper .vgf-table .vgf-mid{text-align:center!important}
+.ka-report .vgf-paper .vgf-table .vgf-mid{text-align:left!important}
 .ka-report .vgf-paper .vgf-table .vgf-bold{font-weight:700!important}
 .ka-report .vgf-paper .vgf-reason td{height:20mm;vertical-align:top!important;white-space:pre-wrap}
 .ka-report .vgf-box{box-sizing:border-box;margin:0;border:.25mm solid var(--ka-report-border);border-top:0;padding:1.6mm 2mm}
@@ -12886,9 +12886,8 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .vgf-sign{display:flex;justify-content:space-between;align-items:flex-start;gap:10mm;margin-top:auto;padding:12mm 6mm 4mm}
 .ka-report .vgf-sign>div{display:flex;flex-direction:column;align-items:center;gap:1mm;text-align:center;min-width:55mm}
 .ka-report .vgf-sign b{font-size:10pt;font-weight:700}
-.ka-report .vgf-sign>div>b:first-child{display:block;min-height:9mm}
 .ka-report .vgf-sign span{display:block;font-size:10pt;line-height:6mm;min-height:6mm}
-.ka-report .vgf-sign .vgf-imza{margin-top:9mm!important}
+.ka-report .vgf-sign .vgf-imza{margin-bottom:9mm}
 
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
