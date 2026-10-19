@@ -55,10 +55,39 @@ const duyurular=[
  {id:'a2',baslik:'Kitap okuma haftası etkinlikleri',icerik:'Kitap okuma haftasında her sınıf bir kitap seçip etkinlik hazırlayacaktır. Sınıf öğretmenleri planlamayı pazartesiye kadar tamamlayacaktır.',tarih:'2026-10-09T08:00:00.000Z',olusturanAdi:'Okul Yöneticisi',arsivlendi:false,resimler:[]},
  {id:'a3',baslik:'Okul servis saatleri',icerik:'Servis kalkış saatlerinde değişiklik yoktur.',tarih:'2026-09-20T08:00:00.000Z',olusturanAdi:'Okul Yöneticisi',arsivlendi:true,resimler:[]}
 ];
+/* ---- Sınavlar, takvim, notlar: kurgusal örnekler (sabit saat: 14 Ekim 2026 çarşamba 10:25) ---- */
+const sinavlar=[
+ {id:'w1',tur:'Yazılı',ders:'Matematik',siniflar:'5-A, 5-B',sinif:'5-A',donem:'1. Dönem',yaziliSirasi:'1. Yazılı',dersSaati:'3',ogretmenId:'t01',tarih:'2026-10-14',senaryoNo:'1',yayinevi:'',notlar:'Sınav kâğıtları sınıfa 3. ders başında götürülecek.'},
+ {id:'w2',tur:'Yazılı',ders:'Türkçe',siniflar:'6-A, 6-B',sinif:'6-A',donem:'1. Dönem',yaziliSirasi:'1. Yazılı',dersSaati:'2',ogretmenId:'t02',tarih:'2026-10-16',senaryoNo:'2',yayinevi:'Örnek Yayınları',notlar:''},
+ {id:'w4',tur:'Yazılı',ders:'İngilizce',siniflar:'8-A',sinif:'8-A',donem:'1. Dönem',yaziliSirasi:'1. Yazılı',dersSaati:'5',ogretmenId:'t05',tarih:'2026-10-09',senaryoNo:'1',yayinevi:'',notlar:''}
+];
+const denemeSinavlari=[
+ {id:'d1',ad:'2. Deneme Sınavı',tarih:'2026-10-14',oturumTuru:'İki Oturum',sozelBaslama:'09:40',sozelSuresiDk:75,sozelBitis:'10:55',araSureDk:20,sayisalBaslama:'11:15',sayisalSuresiDk:75,sayisalBitis:'12:30',baslamaSaati:'09:40',bitisSaati:'12:30',sinavSuresiDk:'',sinflar:'8-A',notlar:'Kitapçıklar sınav öncesi dağıtılacak.'},
+ {id:'d2',ad:'3. Deneme Sınavı',tarih:'2026-10-21',oturumTuru:'Tek Oturum',baslamaSaati:'10:00',bitisSaati:'11:20',sinavSuresiDk:80,sinflar:'8-A',notlar:''},
+ {id:'d3',ad:'1. Deneme Sınavı',tarih:'2026-10-07',oturumTuru:'Tek Oturum',baslamaSaati:'10:00',bitisSaati:'11:20',sinavSuresiDk:80,sinflar:'8-A',notlar:''}
+];
+const yoklama=[
+ {id:'c0_2026-10-14',sinifId:'c0',tarih:'2026-10-14',kayitlar:{v0:'var',v1:'yok',v2:'var',v3:'gec',v4:'var',v5:'izinli',v6:'var'},girenAdi:'Okul Yöneticisi'},
+ {id:'c2_2026-10-14',sinifId:'c2',tarih:'2026-10-14',kayitlar:{v12:'var',v13:'var',v14:'yok',v15:'var',v16:'var'},girenAdi:'Okul Yöneticisi'},
+ {id:'c4_2026-10-14',sinifId:'c4',tarih:'2026-10-14',kayitlar:{v24:'var',v25:'var',v26:'var',v27:'gec',v28:'var'},girenAdi:'Okul Yöneticisi'}
+];
+const hatirlaticilar=[
+ {id:'h1',baslik:'Veli toplantısı hazırlığı',tarih:'2026-10-14',oncelik:'Yüksek',aciklama:'Sunum ve imza listesi hazırlanacak.',tamamlandi:false,sahipUid:'u1'},
+ {id:'h2',baslik:'Zümre toplantısı',tarih:'2026-10-20',oncelik:'Orta',aciklama:'',tamamlandi:false,sahipUid:'u1'}
+];
+const gorevler=[
+ {id:'g1',baslik:'Dönem planlarını topla',sonTarih:'2026-10-16',durum:'devam ediyor',aciklama:'',sahipUid:'u1'},
+ {id:'g2',baslik:'Servis listesini güncelle',sonTarih:'2026-10-12',durum:'yapilacak',aciklama:'',sahipUid:'u1'},
+ {id:'g3',baslik:'Kitap okuma haftası planı',sonTarih:'2026-10-14',durum:'yapilacak',aciklama:'',sahipUid:'u1'}
+];
+const notlar=[
+ {id:'n1',baslik:'Veli toplantısı gündemi',tip:'metin',renk:'sari',tarih:'2026-10-13',icerik:'<p>Dönem başı bilgilendirme, devamsızlık ve sınav takvimi.</p>',etiketler:['toplantı'],sahipUid:'u1'},
+ {id:'n2',baslik:'Bu hafta yapılacaklar',tip:'todo',renk:'yesil',tarih:'2026-10-14',maddeler:[{metin:'Yazılı sınav kâğıtlarını çoğalt',tamamlandi:true},{metin:'Nöbet değişimini bildir',tamamlandi:false},{metin:'Kulüp raporunu hazırla',tamamlandi:false}],etiketler:[],sahipUid:'u1'}
+];
 window.__GUIDE_SEED_MORE__=function(){
   const d=duty();
   const dersListesi=['Matematik','Türkçe','Fen Bilimleri','Sosyal Bilgiler','İngilizce','Beden Eğitimi','Görsel Sanatlar','Din Kültürü','Bilişim Teknolojileri','Hayat Bilgisi','Oyun ve Fiziki Etkinlikler'].map((ad,i)=>({id:'l'+i,ad}));
-  return{dersListesi,dersProgrami:schedule(),dersSaatleri:[{id:'ayarlar',donemler:times}],nobetYerleri:d.places,nobetAtamalari:d.rows,evrak,duyurular,depolamaAyarlari:[{id:'ayarlar',mesaj:{MB:100,aktif:true},duyuru:{MB:100,aktif:true},dokuman:{MB:100,aktif:true},takvim:{MB:100,aktif:true}}]};
+  return{dersListesi,dersProgrami:schedule(),dersSaatleri:[{id:'ayarlar',donemler:times}],nobetYerleri:d.places,nobetAtamalari:d.rows,evrak,duyurular,sinavlar,denemeSinavlari,yoklama,hatirlaticilar,gorevler,notlar,depolamaAyarlari:[{id:'ayarlar',mesaj:{MB:100,aktif:true},duyuru:{MB:100,aktif:true},dokuman:{MB:100,aktif:true},takvim:{MB:100,aktif:true}}]};
 };
 window.__GUIDE_SEED__=function(extra){
   const o={ogretmenler:teachers,siniflar:classes,veliler:students,bransListesi:[...new Set(teachers.map(t=>t.brans))].map((b,i)=>({id:'x'+i,ad:b}))};

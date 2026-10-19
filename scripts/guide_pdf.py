@@ -335,7 +335,8 @@ def build_pdf(root: str | Path | None = None) -> Path:
                     text = para_text(step.get("metin", ""))
                     ref = ""
                     if step.get("ekran"):
-                        ref = f" <font color='#666666'>(Görsel: {html.escape(str(step['ekran']))}{', işaret '+str(step['isaret']) if step.get('isaret') else ''})</font>"
+                        screen_title = next((x.get("baslik") for x in topic.get("ekranlar", []) if x.get("id") == step["ekran"]), None) or str(step["ekran"])
+                        ref = f" <font color='#666666'>(Ekran görüntüsü: {html.escape(str(screen_title), quote=False)}{', işaret '+str(step['isaret']) if step.get('isaret') else ''})</font>"
                     story.append(Paragraph(f"<b>{step_no}. {title}</b><br/>{text}{ref}", styles["body"]))
             if topic.get("kayit"):
                 story.append(Paragraph("Kaydetme ve sonuç", styles["h2"]))

@@ -43,8 +43,16 @@ const D={
     {s:'Kaydet’e bastım ama değişiklik görünmüyor.',c:'Kayıt başarılı olduğunda ekranın üstünde kısa bir bildirim çıkar (örneğin “Öğretmen kaydedildi.”). Hata bildirimi çıktıysa mesajı okuyup gerekli alanı düzeltin; bildirim hiç çıkmadıysa bağlantınızı kontrol edip işlemi tekrarlayın.'},
     {s:'Android uygulamam güncel mi, nasıl öğrenirim?',c:'“Uygulama Hakkında” sayfasında bu cihazdaki sürüm ile yayınlanan son sürüm yan yana gösterilir; “Güncellemeleri Kontrol Et” düğmesiyle yeni sürümü yükleyebilirsiniz.'}
   ],
-  surumNotKaynagi:'Notlar, her sürümün yayınlandığı sürüm kaydındaki (GitHub Releases) işlem açıklamalarından özetlenmiştir; yalnızca yayınlanmış sürümler listelenir.',
+  surumNotKaynagi:'Notlar, her sürümün yayınlandığı işlemin (commit) açıklamasından özetlenmiştir; yalnızca kullanıcıya görünen değişiklikler ve yalnızca yayınlanmış sürümler listelenir.',
   surumNotlari:[
+    {surum:'1.3.7130',tarih:'2026-10-19',commit:'23b9982',maddeler:['Kullanım Kılavuzu PDF\'inde ekran görüntülerinin üzerine numaralı işaretler çizildi.']},
+    {surum:'1.3.7109',tarih:'2026-10-18',commit:'1c43f45',maddeler:['**Harita** arama alanındaki simge boşluğu ve öneri listesi düzeltildi.']},
+    {surum:'1.3.7108',tarih:'2026-10-18',commit:'0e3f4f3',maddeler:['Servis oturma planı çıktısı büyütüldü; lejant kaldırıldı ve alt bilgi çakışması giderildi.']},
+    {surum:'1.3.7104',tarih:'2026-10-18',commit:'6d71232',maddeler:['**Kurul ve Komisyonlar**: hazır katalog havuzu, görev şablonları ile belge ve dayanak alanları eklendi.','Komisyon raporlarına ekli belge listesi dahil edilir; komisyon kayıtları senkronize edilir.']},
+    {surum:'1.3.7093',tarih:'2026-10-18',commit:'a0addfa',maddeler:['Öğretmen raporunda yazdırılan her A4 sayfaya üst ve alt boşluk eklendi.']},
+    {surum:'1.3.7089',tarih:'2026-10-18',commit:'cc6507c',maddeler:['Çevrimdışı açılışta Firebase SDK yüklenemese bile uygulama yerel verilerle açılır.']},
+    {surum:'1.3.7083',tarih:'2026-10-15',commit:'2a14779',maddeler:['**Öğrenci Tanıma Formu** örnek PDF düzenine uyarlandı: iki sayfalı yerleşim, ayrı soru ve cevap hücreleri.']},
+    {surum:'1.3.7049',tarih:'2026-10-14',commit:'dcae216',maddeler:['**Kullanım Kılavuzu**, sayfa içi **Nasıl Kullanılır?** yardımı ve **Uygulama Hakkında** sayfası eklendi.']},
     {surum:'1.3.7048',tarih:'2026-10-14',commit:'fd9cb6b',maddeler:['Düğmelere her basışta çıkan “✓ … seçildi” bildirimi kaldırıldı.']},
     {surum:'1.3.7047',tarih:'2026-10-14',commit:'f675ac0',maddeler:['Raporlarda **Görsel** ve **Paylaş** düğmeleri yeniden çalışır hale geldi; işlem sonucu ekranda bildirim olarak gösterilir.']},
     {surum:'1.3.7046',tarih:'2026-10-14',commit:'b1a44b3',maddeler:['Bilgisayarda uygulama kasması giderildi (cam bulanıklığı efekti ve sürekli çalışan zil animasyonları kapatıldı).']},
@@ -458,6 +466,225 @@ const D={
       iliskili:['ogrenciler','ogretmenler','ders-programi']
     },
     {
+      id:'yazili-sinavlar',kategori:'kisiler',ikon:'📝',baslik:'Yazılı Sınavlar',
+      ozet:'Yazılı sınav takvimini oluşturun; sınıf, ders, tarih ve öğretmen bilgisini tek kayıtta tutun.',
+      anahtar:'yazılı sınav takvim 1. yazılı 2. yazılı senaryo yayınevi dönem sınıf ders tarih öğretmen sınav kaçıncı ders',
+      ne:'Okuldaki yazılı sınavları **sınıf, ders, dönem, tarih, ders saati ve öğretmen** bilgisiyle kaydeder. Sayfanın üstündeki üç sayaç toplam sınavı, **7 gün içindekileri** ve **bugünküleri** gösterir. Sınavlar tarihe göre sıralanır; en ileri tarihli sınav listenin başındadır.',
+      yol:['Öğretmen & Öğrenciler','Yazılı Sınavlar'],
+      yolNot:'Yazılı Ekle ve Düzenle düğmeleri yalnızca sınav düzenleme yetkisi olan hesaplarda görünür. Bir sınavı yönetici, kaydı ekleyen kişi ya da kayıtta öğretmen olarak seçilen öğretmen düzenleyebilir.',
+      rota:['academic','written'],
+      eslesme:['academic:written'],
+      ekranlar:[
+        {
+          id:'yazili-liste',baslik:'Yazılı sınav listesi',dosya:'yazili-liste.webp',alt:'Yazılı Sınavlar sayfası: arama kutusu, Yazılı Ekle düğmesi, sınav sayaçları ve sınav kartları',baglam:'.ka-written-page',
+          cekim:{rota:['academic','written'],adimlar:[['kaydir',120]]},
+          isaretler:[
+            {n:1,baslik:'Ara',aciklama:'Ders, sınıf, dönem, yazılı sırası, tarih, yayınevi ya da nota göre sınavları süzer.',sec:'[data-academic-search-wrap]'},
+            {n:2,baslik:'Yazılı Ekle',aciklama:'Yeni yazılı sınav formunu açar (yetki gerekir).',sec:'[data-written-new]'},
+            {n:3,baslik:'Sayaçlar',aciklama:'Toplam sınav, 7 gün içindeki sınavlar ve bugün yapılacak sınavlar.',sec:'.ka-written-summary'},
+            {n:4,baslik:'Sınav başlığı',aciklama:'Dersin adı, sınıflar ve tarih görünür. Sınav yaklaşınca “Bugün” ya da “… gün kaldı” yazar.',sec:'.ka-written-card__head'},
+            {n:5,baslik:'Düzenle',aciklama:'Kaydı düzenleme formunda açar (yetki gerekir).',sec:'.ka-written-card [data-written-edit]'}
+          ]
+        },
+        {
+          id:'yazili-form',baslik:'Yazılı sınav formu',dosya:'yazili-form.webp',alt:'Yazılı Sınav Ekle formu: sınıf seçimi, dönem, yazılı sırası, ders ve öğretmen',
+          cekim:{rota:['academic','written'],adimlar:[['tikla','[data-written-new]'],['bekle',600],['tikla','.ka-modal .ka-check:has-text("5-A")'],['tikla','.ka-modal .ka-check:has-text("5-B")'],['sec','.ka-modal [data-w-lesson]','Matematik'],['sec','.ka-modal [data-w-teacher]','t01']]},
+          isaretler:[
+            {n:1,baslik:'Sınıf(lar)',aciklama:'Sınavın yapılacağı bir ya da birden fazla sınıfı işaretleyin. En az bir sınıf zorunludur.',sec:'.ka-modal fieldset.ka-field'},
+            {n:2,baslik:'Dönem ve Yazılı Sırası',aciklama:'1. veya 2. dönem; 1. veya 2. yazılı seçilir.',sec:'.ka-modal label.ka-field:has([data-w-period]), .ka-modal label.ka-field:has([data-w-order])'},
+            {n:3,baslik:'Ders',aciklama:'Zorunludur. Liste, Ayarlar › Ders Listesi’nden gelir. Altındaki Öğretmen listesinden dersin öğretmenini seçersiniz; öğretmen hesabıyla giriş yaptıysanız kendi adınız seçili gelir ve değiştirilemez.',sec:'.ka-modal label.ka-field:has([data-w-lesson])'}
+          ]
+        },
+        {
+          id:'yazili-form-alt',baslik:'Formun alt bölümü ve Kaydet',dosya:'yazili-form-alt.webp',alt:'Yazılı Sınav Ekle formunun alt bölümü: tarih, kaçıncı ders, senaryo no, yayınevi, notlar, Vazgeç ve Kaydet',
+          cekim:{rota:['academic','written'],adimlar:[['tikla','[data-written-new]'],['bekle',600],['kaydir','son'],['bekle',400]]},
+          isaretler:[
+            {n:1,baslik:'Tarih ve Kaçıncı Ders',aciklama:'Sınav tarihi varsayılan olarak bugündür. Kaçıncı ders olduğu 1 ile 8 arasında yazılır.',sec:'.ka-modal label.ka-field:has([data-w-date]), .ka-modal label.ka-field:has([data-w-hour])'},
+            {n:2,baslik:'Senaryo No ve Yayınevi',aciklama:'İsteğe bağlı alanlardır.',sec:'.ka-modal label.ka-field:has([data-w-scenario]), .ka-modal label.ka-field:has([data-w-publisher])'},
+            {n:3,baslik:'Notlar',aciklama:'Sınavla ilgili kısa bir not yazabileceğiniz serbest alandır.',sec:'.ka-modal label.ka-field:has([data-w-notes])'},
+            {n:4,baslik:'Vazgeç',aciklama:'Formu kaydetmeden kapatır.',sec:'.ka-modal__footer .ka-btn--secondary'},
+            {n:5,baslik:'Kaydet',aciklama:'Sınavı kaydeder ve “Yazılı sınav kaydedildi.” bildirimini gösterir.',sec:'.ka-modal__footer [data-save]'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Yazılı Sınavlar sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Yazılı Sınavlar** sayfasını açın.',ekran:'yazili-liste',isaret:3},
+        {baslik:'Sınavı bulun',metin:'Arama kutusuna ders, sınıf ya da tarih yazın. Kartın başlığında sınav gününe kaç gün kaldığı görünür.',ekran:'yazili-liste',isaret:1},
+        {baslik:'Yeni sınav ekleyin',metin:'**Yazılı Ekle**ye dokunun. **Sınıf(lar)** bölümünden bir ya da daha fazla sınıf işaretleyin.',ekran:'yazili-form',isaret:1},
+        {baslik:'Dönem, sıra ve dersi seçin',metin:'**Dönem** ve **Yazılı Sırası**nı seçin, ardından **Ders**i ve **Öğretmen**i belirleyin.',ekran:'yazili-form',isaret:3},
+        {baslik:'Tarih ve ayrıntıları girin',metin:'Formu aşağı kaydırın; **Tarih**, **Kaçıncı Ders**, isterseniz **Senaryo No**, **Yayınevi** ve **Notlar** alanlarını doldurun.',ekran:'yazili-form-alt',isaret:1},
+        {baslik:'Kaydedin',metin:'**Kaydet**e dokunun. “Yazılı sınav kaydedildi.” bildirimi çıkar ve sınav listede görünür.',ekran:'yazili-form-alt',isaret:5},
+        {baslik:'Sınavı güncelleyin',metin:'Kartın altındaki **Düzenle**ye dokunun, bilgileri değiştirin ve yeniden **Kaydet**e dokunun.',ekran:'yazili-liste',isaret:5}
+      ],
+      kayit:'**Kaydet**e dokunduğunuzda “Yazılı sınav kaydedildi.” bildirimi çıkar. Sınıf seçmediyseniz “En az bir sınıf seçin.”, ders seçmediyseniz “Ders zorunludur.” uyarısı görünür ve form açık kalır. Yetkiniz yoksa “Bu işlem için yetkiniz yok.”, kaydı ekleyen dışında biri değiştirmeye çalışırsa “Bu kaydı yalnızca ekleyen kişi düzenleyebilir.” bildirimi gösterilir. Mevcut sınavı düzenlerken **Sil** düğmesi görünür; onaylarsanız “Yazılı sınav silindi.” bildirimi çıkar.',
+      uyarilar:[
+        'Silmeden önce “Bu yazılı sınav kaydı silinsin mi?” onayı sorulur. Silinen sınavı bu ekrandan geri getiremezsiniz.',
+        'Sınıf listesi **Sınıflar** sayfasındaki kayıtlardan gelir. Sınıf yoksa formda “Önce sınıf ekleyin.” yazar.',
+        'Sınav tarihi bugünden önceyse kart yalnızca tarihi gösterir; “Bugün” ve “… gün kaldı” bilgisi bugünden itibaren 7 gün içindeki sınavlar için yazılır.'
+      ],
+      sorunlar:[
+        {s:'Yazılı Ekle düğmesi görünmüyor.',c:'Hesabınızda sınav düzenleme yetkisi tanımlı değildir; sınavları yalnızca görüntüleyebilirsiniz. Uygulama yöneticisine başvurun.'},
+        {s:'Düzenle düğmesi bazı sınavlarda yok.',c:'Bir sınavı yalnızca yönetici, kaydı ekleyen kişi ya da kayıtta seçili öğretmen düzenleyebilir.'},
+        {s:'Ders listesi boş.',c:'Ders adları **Ayarlar › Ders Listesi**’nden gelir. Listeye ders eklenmemişse formdaki **Ders** seçeneği boş kalır.'}
+      ],
+      iliskili:['deneme-sinavlari','siniflar','ders-programi']
+    },
+    {
+      id:'deneme-sinavlari',kategori:'kisiler',ikon:'⌛',baslik:'Deneme Sınavları',
+      ozet:'Deneme sınavı takvimini, oturum saatlerini ve otomatik canlı sayacı yönetin.',
+      anahtar:'deneme sınavı sayaç geri sayım oturum sözel sayısal tek oturum iki oturum süre başlama saati canlı kalan süre',
+      ne:'Deneme sınavlarını **tarih, oturum türü, başlama saati, süre ve sınıflar** ile kaydeder. Sınav gününde başlama saati geldiğinde sayaç **kendiliğinden başlar**. Bir sınav kartına dokunarak tam ekran sayacı açabilir; kalan süreyi, aktif oturumu ve oturum takvimini izleyebilirsiniz.',
+      yol:['Öğretmen & Öğrenciler','Deneme Sınavları'],
+      yolNot:'Deneme Sınavı Ekle ve Düzenle düğmeleri sınav düzenleme yetkisi olan hesaplarda görünür. Bir denemeyi yalnızca yönetici ya da kaydı ekleyen kişi düzenleyebilir.',
+      rota:['academic','trial'],
+      eslesme:['academic:trial'],
+      ekranlar:[
+        {
+          id:'deneme-liste',baslik:'Deneme sınavı listesi',dosya:'deneme-liste.webp',alt:'Deneme Sınavları sayfası: Deneme Sınavı Ekle düğmesi, sayaçlar ve canlı sayaçlı sınav kartı',baglam:'.ka-trial-page',
+          cekim:{rota:['academic','trial'],adimlar:[['kaydir',120]]},
+          isaretler:[
+            {n:1,baslik:'Deneme Sınavı Ekle',aciklama:'Yeni deneme sınavı formunu açar (yetki gerekir).',sec:'[data-trial-new]'},
+            {n:2,baslik:'Sayaçlar',aciklama:'Toplam deneme, 7 gün içindeki denemeler ve şu an çalışan sayaçların sayısı.',sec:'.ka-trial-summary'},
+            {n:3,baslik:'Sınav kartı',aciklama:'Sınavın adı, oturum türü, tarihi, oturum saatleri ve sınıfları görünür. Karta dokunmak sayaç ekranını açar.',sec:'.ka-trial-card'},
+            {n:4,baslik:'Canlı sayaç',aciklama:'Sınav sürerken kalan süre ve ilerleme çubuğu kartın içinde de görünür; kartta “CANLI” rozeti yanar.',sec:'.ka-trial-card__live'},
+            {n:5,baslik:'Düzenle',aciklama:'Kaydı düzenleme formunda açar (yetki gerekir).',sec:'.ka-trial-card [data-trial-edit]'}
+          ]
+        },
+        {
+          id:'deneme-form',baslik:'Deneme sınavı formu',dosya:'deneme-form.webp',alt:'Deneme Sınavı Ekle formu: ad, tarih, oturum türü, başlama saati ve sınav süresi',
+          cekim:{rota:['academic','trial'],adimlar:[['tikla','[data-trial-new]'],['bekle',600],['yaz','.ka-modal [data-t-name]','4. Deneme Sınavı'],['yaz','.ka-modal [data-t-start]','10:00'],['yaz','.ka-modal [data-t-duration]','80']]},
+          isaretler:[
+            {n:1,baslik:'Deneme Sınavı Adı',aciklama:'Zorunludur. Boş bırakırsanız form kaydedilmez.',sec:'.ka-modal label.ka-field:has([data-t-name])'},
+            {n:2,baslik:'Tarih ve Oturum Türü',aciklama:'Tarih varsayılan olarak bugündür. Oturum türü Tek Oturum ya da İki Oturum olur.',sec:'.ka-modal label.ka-field:has([data-t-date]), .ka-modal label.ka-field:has([data-t-type])'},
+            {n:3,baslik:'Başlama saati',aciklama:'Sınavın başlama saatini yazın. Altındaki Sınav Süresi (dakika) alanıyla birlikte bitiş saati kendiliğinden hesaplanır; Bitiş Saati alanı elle doldurulmaz.',sec:'.ka-modal label.ka-field:has([data-t-start])'}
+          ]
+        },
+        {
+          id:'deneme-form-iki',baslik:'İki oturumlu deneme',dosya:'deneme-form-iki.webp',alt:'Deneme Sınavı formunda İki Oturum seçilmiş: sözel ve sayısal oturum saatleri ile ara süre',
+          cekim:{rota:['academic','trial'],adimlar:[['tikla','[data-trial-new]'],['bekle',600],['sec','.ka-modal [data-t-type]','İki Oturum'],['yaz','.ka-modal [data-t-vstart]','09:40'],['yaz','.ka-modal [data-t-vduration]','75'],['yaz','.ka-modal [data-t-break]','20'],['yaz','.ka-modal [data-t-nduration]','75'],['goster','.ka-modal label.ka-field:has([data-t-vend])']]},
+          isaretler:[
+            {n:1,baslik:'Sözel oturum',aciklama:'Oturum Türü olarak İki Oturum seçilince bu alanlar açılır. Sözel oturumun başlama saatini ve süresini yazın.',sec:'.ka-modal [data-t-double] > .ka-grid:first-of-type'},
+            {n:2,baslik:'Sözel bitiş',aciklama:'Elle yazılmaz; başlama saati ile süreden hesaplanır.',sec:'.ka-modal label.ka-field:has([data-t-vend])'},
+            {n:3,baslik:'Oturumlar arası süre',aciklama:'Sözel ve sayısal oturum arasındaki ara dakikasıdır. Sayısal oturum bu süre eklenerek başlar.',sec:'.ka-modal label.ka-field:has([data-t-break])'},
+            {n:4,baslik:'Sayısal oturum',aciklama:'Başlama saati kendiliğinden gelir; yalnızca sayısal oturumun süresini yazın.',sec:'.ka-modal [data-t-double] > .ka-grid:last-of-type'}
+          ]
+        },
+        {
+          id:'deneme-form-alt',baslik:'Formun alt bölümü ve Kaydet',dosya:'deneme-form-alt.webp',alt:'Deneme Sınavı Ekle formunun alt bölümü: sınıf seçimi, notlar, Vazgeç ve Kaydet',
+          cekim:{rota:['academic','trial'],adimlar:[['tikla','[data-trial-new]'],['bekle',600],['kaydir','son'],['bekle',400]]},
+          isaretler:[
+            {n:1,baslik:'Sınıflar',aciklama:'Bu denemeyi yapacak sınıfları işaretleyin.',sec:'.ka-modal fieldset.ka-field'},
+            {n:2,baslik:'Notlar',aciklama:'Sınavla ilgili kısa bir not yazabileceğiniz serbest alandır.',sec:'.ka-modal label.ka-field:has([data-t-notes])'},
+            {n:3,baslik:'Vazgeç',aciklama:'Formu kaydetmeden kapatır.',sec:'.ka-modal__footer .ka-btn--secondary'},
+            {n:4,baslik:'Kaydet',aciklama:'Denemeyi kaydeder ve “Deneme sınavı kaydedildi.” bildirimini gösterir.',sec:'.ka-modal__footer [data-save]'}
+          ]
+        },
+        {
+          id:'deneme-sayac',baslik:'Sayaç ekranı',dosya:'deneme-sayac.webp',alt:'Deneme sınavı sayaç ekranı: aktif oturum, kalan süre halkası ve alttaki özet çubuğu',
+          cekim:{rota:['academic','trial'],adimlar:[['tikla','[data-trial-open="d1"]'],['bekle',900]]},
+          isaretler:[
+            {n:1,baslik:'Geri',aciklama:'Sayaç ekranını kapatıp sınav listesine döner.',sec:'[data-trial-counter-close]'},
+            {n:2,baslik:'Durum',aciklama:'Sınavın durumunu yazar: “Sınav devam ediyor”, başlamayı bekliyor ya da tamamlandı.',sec:'[data-trial-counter-state]'},
+            {n:3,baslik:'Aktif oturum',aciklama:'Şu an hangi oturumun (ör. Sözel Oturum) ya da aranın sürdüğünü gösterir.',sec:'.ka-trial-counter__session'},
+            {n:4,baslik:'Kalan süre',aciklama:'Aktif oturumun kalan süresi saat, dakika ve saniye olarak geri sayar.',sec:'.ka-trial-counter__ring'},
+            {n:5,baslik:'Özet çubuğu',aciklama:'Aktif oturumun ve toplam sınavın kalan süresi ile ilerleme yüzdesi her zaman altta görünür.',sec:'.ka-trial-counter__overview'}
+          ]
+        },
+        {
+          id:'deneme-sayac-takvim',baslik:'Oturum takvimi',dosya:'deneme-sayac-takvim.webp',alt:'Sayaç ekranının alt bölümü: oturum takvimi ve sınavı takip et kartları',
+          cekim:{rota:['academic','trial'],adimlar:[['tikla','[data-trial-open="d1"]'],['bekle',900],['kaydir','son'],['bekle',400]]},
+          isaretler:[
+            {n:1,baslik:'Oturum takvimi',aciklama:'Her oturumun saat aralığı ve süresi listelenir. Etiket AKTİF, BİTTİ ya da SIRADA olarak değişir.',sec:'.ka-trial-counter__schedule'},
+            {n:2,baslik:'Sınavı takip et',aciklama:'Toplam süre, başlangıç ve bitiş saati tek satırda görünür.',sec:'.ka-trial-counter__follow'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Deneme Sınavları sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Deneme Sınavları** sayfasını açın.',ekran:'deneme-liste',isaret:2},
+        {baslik:'Yeni deneme ekleyin',metin:'**Deneme Sınavı Ekle**ye dokunun. **Deneme Sınavı Adı**nı yazın (ör. “3. Deneme Sınavı”) ve **Tarih**i seçin.',ekran:'deneme-form',isaret:1},
+        {baslik:'Oturum türünü seçin',metin:'**Tek Oturum** için başlama saatini ve süreyi yazın. **İki Oturum** için sözel oturumun başlama saatini ve süresini, arada kaç dakika ara verileceğini ve sayısal oturumun süresini yazın. Bitiş saatleri kendiliğinden hesaplanır.',ekran:'deneme-form-iki',isaret:1},
+        {baslik:'Sınıfları işaretleyin ve kaydedin',metin:'Formu aşağı kaydırın, denemeyi yapacak **sınıfları** işaretleyin, isterseniz not yazın ve **Kaydet**e dokunun.',ekran:'deneme-form-alt',isaret:4},
+        {baslik:'Sayacı izleyin',metin:'Sınav gününde başlama saati gelince sayaç kendiliğinden başlar. Karttaki **CANLI** rozetinden izleyin ya da karta dokunarak tam ekran sayacı açın.',ekran:'deneme-sayac',isaret:4},
+        {baslik:'Oturum takvimine bakın',metin:'Sayaç ekranını aşağı kaydırarak oturumların saatlerini ve hangisinin **AKTİF**, **BİTTİ** ya da **SIRADA** olduğunu görün.',ekran:'deneme-sayac-takvim',isaret:1}
+      ],
+      kayit:'**Kaydet**e dokunduğunuzda “Deneme sınavı kaydedildi.” bildirimi çıkar. Ad boşsa “Deneme sınavı adı zorunludur.” uyarısı görünür. Yetkiniz yoksa “Bu işlem için yetkiniz yok.”, kaydı ekleyen dışında biri değiştirmeye çalışırsa “Bu kaydı yalnızca ekleyen kişi düzenleyebilir.” bildirimi gösterilir. Mevcut kaydı düzenlerken **Sil** düğmesi çıkar; “Bu deneme sınavı kaydı silinsin mi?” onayından sonra “Deneme sınavı silindi.” bildirimi gösterilir.',
+      uyarilar:[
+        'Sayaç yalnızca **sınav tarihinde** ve başlama saatinden sonra çalışır. Saat gelmeden sayaç ekranında “Sınava … kaldı” yazar.',
+        'Tarih, başlama saati ya da süre eksikse sayaç ekranında “Sayaç bilgisi eksik” uyarısı görünür; **Düzenle** ile bilgileri tamamlayın.',
+        'Süre bittiğinde sayaç ekranında “Sınav tamamlandı” ve toplam süre yazar.'
+      ],
+      sorunlar:[
+        {s:'Sayaç başlamıyor.',c:'Kayıttaki tarihin bugün, başlama saatinin geçmiş olması gerekir. Tarih, başlama saati ve süreyi **Düzenle** ile kontrol edin.'},
+        {s:'Deneme Sınavı Ekle düğmesi görünmüyor.',c:'Hesabınızda sınav düzenleme yetkisi tanımlı değildir. Uygulama yöneticisine başvurun.'},
+        {s:'Bitiş saatini elle yazamıyorum.',c:'Bitiş saatleri süreden otomatik hesaplanır; alanlar bilerek kapalıdır. Süreyi ya da başlama saatini değiştirin.'}
+      ],
+      iliskili:['yazili-sinavlar','siniflar']
+    },
+    {
+      id:'ogrenci-yoklama',kategori:'kisiler',ikon:'☑️',baslik:'Öğrenci Yoklama',
+      ozet:'Sınıf ve tarih seçin; Var, Yok, Geç ya da İzinli işaretleyip yoklamayı tek seferde kaydedin.',
+      anahtar:'yoklama devamsızlık yok geç izinli var sınıf yoklaması tüm sınıflar devamsızlar veli whatsapp günlük',
+      ne:'Günlük sınıf yoklamasını alır. Öğrenciler varsayılan olarak **Var** gelir; yalnızca gelmeyen, geç gelen ya da izinli olanları işaretlemeniz yeterlidir. Yönetici ayrıca bütün sınıfların günlük özetini ve devamsız öğrencileri görür.',
+      yol:['Öğretmen & Öğrenciler','Öğrenci Yoklama'],
+      yolNot:'Yönetici dışındaki hesaplarda yalnızca ders programında dersi bulunan ya da sınıf öğretmeni olunan sınıflar listelenir. **Tüm Sınıflar** ve **Devamsızlar** sekmeleri yalnızca yönetici hesabında görünür.',
+      rota:['tools','student-attendance'],
+      eslesme:['tools:student-attendance'],
+      ekranlar:[
+        {
+          id:'yoklama-sinif',baslik:'Sınıf yoklaması',dosya:'yoklama-sinif.webp',alt:'Öğrenci Yoklama sayfası: sınıf ve tarih seçimi, durum sayaçları ve öğrenci listesi',baglam:'[data-student-page="attendance"]',
+          cekim:{rota:['people','teachers'],adimlar:[['rota',['tools','student-attendance'],'Öğrenci Yoklama'],['tikla','[data-att-student="v1"][data-att-status="yok"]'],['kaydir',0],['bekle',400]]},
+          isaretler:[
+            {n:1,baslik:'Sekmeler',aciklama:'Sınıf Yoklaması, Tüm Sınıflar ve Devamsızlar görünümleri arasında geçer (yalnızca yönetici).',sec:'.ka-attendance-admin-tabs'},
+            {n:2,baslik:'Sınıf',aciklama:'Yoklaması alınacak sınıfı seçin.',sec:'.ka-attendance-filters label.ka-field:has(#studentAttendanceClass)'},
+            {n:3,baslik:'Tarih',aciklama:'Varsayılan olarak bugündür. Başka bir günü seçerseniz o günün kaydı açılır.',sec:'.ka-attendance-filters label.ka-field:has(#studentAttendanceDate)'},
+            {n:4,baslik:'Sayaçlar',aciklama:'Toplam, Var, Yok, Geç ve İzinli sayıları işaretledikçe güncellenir.',sec:'.ka-attendance-summary'},
+            {n:5,baslik:'Tümünü Var',aciklama:'Listedeki bütün öğrencileri Var yapar; ardından gelmeyenleri düzeltirsiniz.',sec:'[data-att-all-present]'},
+            {n:6,baslik:'Durum düğmeleri',aciklama:'Her öğrenci için Var, Yok, Geç ya da İzinli düğmesine dokunun.',sec:'.ka-attendance-statuses'},
+            {n:7,baslik:'Yoklamayı Kaydet',aciklama:'Seçimleri kaydeder.',sec:'[data-att-save]'}
+          ]
+        },
+        {
+          id:'yoklama-tumu',baslik:'Tüm sınıflar (yönetici)',dosya:'yoklama-tumu.webp',alt:'Öğrenci Yoklama, Tüm Sınıflar sekmesi: seçili günde yoklaması alınan sınıfların özeti',
+          cekim:{rota:['people','teachers'],adimlar:[['rota',['tools','student-attendance'],'Öğrenci Yoklama'],['tikla','[data-att-admin-view="all"]'],['bekle',700]]},
+          isaretler:[
+            {n:1,baslik:'Tarih',aciklama:'Özeti görmek istediğiniz günü seçin.',sec:'.ka-attendance-datebar label.ka-field'},
+            {n:2,baslik:'Sınıf kartı',aciklama:'O gün yoklaması alınan her sınıf için öğrenci sayısı ile Var, Yok ve Geç sayıları görünür. Karta dokunmak sınıf yoklamasını açar.',sec:'.ka-attendance-class-card'}
+          ]
+        },
+        {
+          id:'yoklama-devamsiz',baslik:'Devamsızlar (yönetici)',dosya:'yoklama-devamsiz.webp',alt:'Öğrenci Yoklama, Devamsızlar sekmesi: yok ve geç öğrencilerin listesi ile veli iletişim düğmesi',
+          cekim:{rota:['people','teachers'],adimlar:[['rota',['tools','student-attendance'],'Öğrenci Yoklama'],['tikla','[data-att-student="v1"][data-att-status="yok"]'],['tikla','[data-att-student="v2"][data-att-status="gec"]'],['tikla','[data-att-save]'],['bekle',900],['tikla','[data-att-admin-view="absent"]'],['bekle',700]]},
+          isaretler:[
+            {n:1,baslik:'Sınıf ve tarih',aciklama:'Devamsızları görmek istediğiniz sınıfı ve günü seçin.',sec:'.ka-attendance-filters'},
+            {n:2,baslik:'Sayaçlar',aciklama:'Toplam, Yok, Geç, Bilgilendirildi ve Bekliyor sayıları.',sec:'.ka-attendance-summary'},
+            {n:3,baslik:'Devamsız öğrenci',aciklama:'Öğrencinin adı, sınıfı, veli adı ve telefonu ile Yok ya da Geç durumu görünür.',sec:'.ka-attendance-absence'},
+            {n:4,baslik:'WhatsApp',aciklama:'Velinin kayıtlı telefonu için WhatsApp bağlantısını açar. Telefon kayıtlı değilse düğme görünmez.',sec:'.ka-attendance-absence [data-att-contact]'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Öğrenci Yoklama sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Öğrenci Yoklama** sayfasını açın.',ekran:'yoklama-sinif',isaret:1},
+        {baslik:'Sınıfı ve tarihi seçin',metin:'**Sınıf** listesinden sınıfı, **Tarih** alanından günü seçin. Öğrenciler numara sırasına göre listelenir ve hepsi **Var** olarak başlar.',ekran:'yoklama-sinif',isaret:2},
+        {baslik:'Gelmeyenleri işaretleyin',metin:'Gelmeyen öğrencinin **Yok**, geç gelenin **Geç**, izinli olanın **İzinli** düğmesine dokunun. Üstteki sayaçlar anında güncellenir.',ekran:'yoklama-sinif',isaret:6},
+        {baslik:'Gerekirse sıfırlayın',metin:'**Tümünü Var** düğmesi bütün öğrencileri yeniden Var yapar.',ekran:'yoklama-sinif',isaret:5},
+        {baslik:'Kaydedin',metin:'**Yoklamayı Kaydet**e dokunun. “Yoklama kaydedildi.” bildirimi çıkar; aynı sınıf ve günü yeniden açtığınızda kayıtlı durumlar gelir.',ekran:'yoklama-sinif',isaret:7},
+        {baslik:'Yönetici: günün özetine bakın',metin:'**Tüm Sınıflar** sekmesinde o gün yoklaması alınan sınıfların özetini, **Devamsızlar** sekmesinde yok ve geç öğrencileri görürsünüz.',ekran:'yoklama-tumu',isaret:2}
+      ],
+      kayit:'**Yoklamayı Kaydet**e dokunduğunuzda düğme kısa süre “Kaydediliyor…” yazar ve “Yoklama kaydedildi.” bildirimi çıkar. Kaydedilemezse “Yoklama kaydedilemedi.”, yetki yoksa “Bu işlem için yetkiniz yok.” bildirimi gösterilir. Aynı sınıf ve gün için yeniden kaydederseniz önceki kayıt güncellenir.',
+      uyarilar:[
+        '**Kaydet**e dokunmadan sınıfı ya da tarihi değiştirirseniz o sırada yaptığınız işaretlemeler kaybolur; önce kaydedin.',
+        'Durum düğmelerine dokunmak tek başına kaydetmez; yoklama yalnızca **Yoklamayı Kaydet** ile saklanır.',
+        'Devamsızlar sekmesindeki bilgiler yalnızca yöneticiye açıktır ve kayıtlı veli telefonlarını içerir; ekranı başkalarıyla paylaşmayın.'
+      ],
+      sorunlar:[
+        {s:'Sınıf listesinde sınıfım yok.',c:'Yönetici dışındaki hesaplarda yalnızca ders programında dersi olan ya da sınıf öğretmeni olunan sınıflar listelenir. Ders Programı’nda dersinizin tanımlı olup olmadığını kontrol edin.'},
+        {s:'Tüm Sınıflar ve Devamsızlar sekmeleri yok.',c:'Bu sekmeler yalnızca yönetici hesabında görünür.'},
+        {s:'Öğrenci listesi boş.',c:'Seçili sınıfta kayıtlı öğrenci yoktur. Öğrencileri **Öğrenciler** sayfasından ekleyin.'},
+        {s:'WhatsApp düğmesi görünmüyor.',c:'Öğrencinin kaydında veli telefonu yoktur. **Öğrenciler** sayfasında telefonu ekleyin.'}
+      ],
+      iliskili:['siniflar','ogrenciler','ders-programi']
+    },
+    {
       id:'ders-programi',kategori:'programlar',ikon:'🗓️',baslik:'Ders Programı',
       ozet:'Sınıfların haftalık ders programını düzenleyin; Excel ile toplu yükleyin, A4 ve çarşaf rapor alın.',
       anahtar:'ders programı haftalık ders saati sınıf öğretmen çakışma excel şablon temizle çarşaf rapor yazdır',
@@ -587,6 +814,79 @@ const D={
       iliskili:['ogretmenler','ders-programi','okul-raporlari']
     },
     {
+      id:'yemek-menusu',kategori:'programlar',ikon:'🍽️',baslik:'Yemek Menüsü',
+      ozet:'Günlük, haftalık ve aylık öğle yemeği menüsünü görüntüleyin; aylık menüyü düzenleyin, A4 çıktı alın.',
+      anahtar:'yemek menüsü günlük haftalık aylık öğle yemeği menü yemek ekle denetim formu a4 çıktı yazdır',
+      ne:'Okulun öğle yemeği menüsünü gösterir. **Günlük Menü** ve **Haftalık Menü** yalnızca görüntülemedir; menü girişi **Aylık Menü** sayfasında yapılır. Üç sayfadan da menünün **A4 çıktısını** alabilirsiniz. **Yemek Denetimi** ise yazdırılıp elle doldurulan bir kontrol formudur.',
+      yol:['Yemek','Aylık Menü'],
+      yolNot:'**Yemek** menüsünde ayrıca Günlük Menü, Haftalık Menü ve Yemek Denetimi sayfaları vardır. Yemek ekleme, silme ve düzenleme ayrı yetkilerdir; yetkiniz yoksa uygulama bunu bildirir. Yemek Denetimi sayfası öğretmen hesaplarında gösterilmez.',
+      rota:['food','monthly'],
+      eslesme:['food:daily','food:weekly','food:monthly','food:audit'],
+      ekranlar:[
+        {
+          id:'yemek-gunluk',baslik:'Günlük menü',dosya:'yemek-gunluk.webp',alt:'Günlük Menü sayfası: gün seçici, A4 çıktı düğmesi ve seçili günün yemekleri',baglam:'[data-fm-day]',
+          cekim:{rota:['food','daily']},
+          isaretler:[
+            {n:1,baslik:'Gün seçici',aciklama:'Ok düğmeleriyle önceki ya da sonraki iş gününe geçin; ortadaki tarihe dokunarak takvimden gün seçin. Hafta sonu günleri atlanır.',sec:'.ka-fm-stepper'},
+            {n:2,baslik:'A4 çıktı',aciklama:'Seçili günün menüsünü yemekhane panosuna asılabilecek A4 çıktı olarak hazırlar.',sec:'[data-fm-print="daily"]'},
+            {n:3,baslik:'Günün menüsü',aciklama:'Seçili günün yemekleri sıralanır. Başka bir günü görüyorsanız “Bugün” düğmesi çıkar.',sec:'.ka-fm-hero'}
+          ]
+        },
+        {
+          id:'yemek-haftalik',baslik:'Haftalık menü',dosya:'yemek-haftalik.webp',alt:'Haftalık Menü sayfası: hafta seçici ve Pazartesiden Cumaya günlük menü kartları',baglam:'[data-fm-week-date]',
+          cekim:{rota:['food','weekly']},
+          isaretler:[
+            {n:1,baslik:'Hafta seçici',aciklama:'Ok düğmeleriyle önceki ya da sonraki haftaya geçin; tarihe dokunarak haftadan bir gün seçin.',sec:'.ka-fm-stepper'},
+            {n:2,baslik:'A4 çıktı',aciklama:'Haftalık menüyü A4 çıktı olarak hazırlar.',sec:'[data-fm-print="weekly"]'},
+            {n:3,baslik:'Gün kartı',aciklama:'Pazartesiden Cumaya her gün ayrı kartta gösterilir. Menü girilmemiş günde “Menü girilmemiş” yazar.',sec:'.ka-fm-day'}
+          ]
+        },
+        {
+          id:'yemek-aylik',baslik:'Aylık menü (düzenleme)',dosya:'yemek-aylik.webp',alt:'Aylık Menü sayfası: ay seçici, doluluk çubuğu, Kaydet ve A4 çıktı düğmeleri, yemek giriş kutuları',baglam:'[data-fm-month]',
+          cekim:{rota:['food','monthly']},
+          isaretler:[
+            {n:1,baslik:'Ay seçici',aciklama:'Ok düğmeleri ya da listeyle ayı değiştirin.',sec:'.ka-fm-stepper'},
+            {n:2,baslik:'Doluluk çubuğu',aciklama:'Ayın kaç iş günü için menü girildiğini gösterir (ör. 21 / 22).',sec:'.ka-fm-meter'},
+            {n:3,baslik:'Kaydet',aciklama:'Menüyü kaydeder ve senkronizasyon kuyruğuna alır (yetki gerekir).',sec:'[data-fm-save]'},
+            {n:4,baslik:'A4 çıktı',aciklama:'Aylık menüyü yatay A4 çıktı olarak hazırlar.',sec:'[data-fm-print="monthly"]'},
+            {n:5,baslik:'Yemek kutuları',aciklama:'Her günün altında yemek adı yazılan kutular bulunur. Kutudaki × yemeği siler.',sec:'.ka-fm-day .ka-fm-items'},
+            {n:6,baslik:'Yemek ekle',aciklama:'O güne yeni bir yemek kutusu ekler. Bir güne istediğiniz kadar yemek ekleyebilirsiniz.',sec:'.ka-fm-day [data-fm-add]'}
+          ]
+        },
+        {
+          id:'yemek-denetim',baslik:'Yemek denetim formu',dosya:'yemek-denetim.webp',alt:'Yemek Denetim Formu sayfası: yemek sunulan öğrenci sayısı, denetim tarihi, denetleyen öğretmen ve yazdır düğmesi',baglam:'#food-count',
+          cekim:{rota:['food','audit']},
+          isaretler:[
+            {n:1,baslik:'A4 / PDF Yazdır',aciklama:'Formu A4 çıktı olarak hazırlar. Evet, Hayır ve Açıklamalar alanları uygulamada doldurulmaz; çıktı üzerinde elle doldurulur.',sec:'[data-food-print]'},
+            {n:2,baslik:'Öğrenci sayısı',aciklama:'Yemek sunulan öğrenci sayısıdır; kayıtlı öğrenci sayısıyla başlar, çıktıdan önce değiştirebilirsiniz.',sec:'label.ka-field:has(#food-count)'},
+            {n:3,baslik:'Denetim tarihi',aciklama:'Varsayılan olarak bugündür.',sec:'label.ka-field:has(#food-date)'},
+            {n:4,baslik:'Denetleyen öğretmen',aciklama:'Çıktıya yazılacak öğretmeni listeden seçin.',sec:'label.ka-field:has([data-food-teacher])'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Menü sayfasını seçin',metin:'**Yemek** menüsünden **Günlük Menü**, **Haftalık Menü** ya da **Aylık Menü** sayfasını açın.',ekran:'yemek-gunluk',isaret:1},
+        {baslik:'Günü ya da haftayı değiştirin',metin:'Ok düğmeleriyle önceki/sonraki güne ya da haftaya geçin; ortadaki tarihe dokunarak istediğiniz günü seçin.',ekran:'yemek-haftalik',isaret:1},
+        {baslik:'Aylık menüde yemek ekleyin',metin:'**Aylık Menü** sayfasında ayı seçin, günün altındaki **+ Yemek ekle**ye dokunun ve yemeğin adını yazın. Silmek için kutunun yanındaki **×**’e dokunun.',ekran:'yemek-aylik',isaret:6},
+        {baslik:'Kaydedin',metin:'**Kaydet**e dokunun. “Yemek menüsü kaydedildi ve senkronizasyon kuyruğuna alındı.” bildirimi çıkar.',ekran:'yemek-aylik',isaret:3},
+        {baslik:'Çıktı alın',metin:'Herhangi bir menü sayfasında **A4 çıktı**ya dokunarak yazdırma ya da PDF olarak kaydetme ekranını açın.',ekran:'yemek-aylik',isaret:4},
+        {baslik:'Denetim formunu hazırlayın',metin:'**Yemek Denetimi** sayfasında öğrenci sayısını, tarihi ve denetleyen öğretmeni seçip **A4 / PDF Yazdır**a dokunun; formu çıktı üzerinde elle doldurun.',ekran:'yemek-denetim',isaret:1}
+      ],
+      kayit:'Aylık menüde yemek adı yazdıkça, **+ Yemek ekle** ya da **×** kullandıkça değişiklik cihaza hemen işlenir. **Kaydet**e dokunduğunuzda menü kaydedilir ve “Yemek menüsü kaydedildi ve senkronizasyon kuyruğuna alındı.” bildirimi çıkar; menü internet bağlantısı olduğunda diğer cihazlarla eşitlenir. Yetkiniz yoksa “Yemek menüsü ekleme yetkiniz yok.”, “Yemek menüsü silme yetkiniz yok.” ya da “Yemek menüsü düzenleme yetkiniz yok.” bildirimi gösterilir.',
+      uyarilar:[
+        'Günlük ve Haftalık menü sayfalarında yemek eklenemez; bir günün menüsü boşsa “Aylık menüde ekle” bağlantısını kullanın.',
+        'Çıktı alma, cihazın yazdırma ya da PDF kaydetme ekranını açar. Çıktı hazırlanamazsa “A4 çıktı hazırlanamadı” bildirimi görünür.',
+        'Yemek Denetim Formu’nda Evet/Hayır işaretleri uygulamaya kaydedilmez; form yalnızca yazdırılır.'
+      ],
+      sorunlar:[
+        {s:'“Bu gün için menü girilmemiş” yazıyor.',c:'O güne henüz yemek eklenmemiştir. **Aylık menüde ekle**ye dokunun ya da Aylık Menü sayfasında günü bulup yemekleri ekleyin.'},
+        {s:'Hafta sonu menü göremiyorum.',c:'Okulda hafta sonu yemek servisi yapılmaz; menüler Pazartesiden Cumaya girilir.'},
+        {s:'Yemek eklenmiyor ya da silinmiyor.',c:'Hesabınızın menü ekleme, silme ya da düzenleme yetkisi tanımlı olmayabilir. Uygulama yöneticisine başvurun.'},
+        {s:'Yemek Denetimi menüde yok.',c:'Bu sayfa öğretmen hesaplarında gösterilmez.'}
+      ],
+      iliskili:['ders-programi','nobet-programi']
+    },
+    {
       id:'duyurular',kategori:'iletisim',ikon:'📣',baslik:'Duyurular',
       ozet:'Okul duyurularını okuyun; yetkiliyseniz başlık, metin ve görselle yeni duyuru yayınlayın.',
       anahtar:'duyuru yayınla arşiv okundu görsel başlık içerik okuyan kişi',
@@ -638,6 +938,140 @@ const D={
         {s:'Duyuru listesi boş.',c:'“Aktif duyuru bulunamadı” yazıyorsa yayında duyuru yoktur. Arşivlenmiş duyurular için **Arşiv** sekmesine bakın.'}
       ],
       iliskili:['ana-ekran']
+    },
+    {
+      id:'takvim',kategori:'iletisim',ikon:'📆',baslik:'Takvim',
+      ozet:'Etkinlik (hatırlatıcı) ve görevlerinizi aylık takvimde izleyin, ekleyin ve düzenleyin.',
+      anahtar:'takvim etkinlik hatırlatıcı görev son tarih öncelik durum yapılacak devam ediyor tamamlandı geciken yaklaşan 30 gün',
+      ne:'Kişisel **etkinlik (hatırlatıcı)** ve **görevlerinizi** aylık takvim üzerinde gösterir. Üstteki sayaçlar bugünkü etkinlik ve görev sayısını ile geciken işleri verir. Takvimin altında seçili günün kayıtları ve **yaklaşan 30 günün** listesi bulunur. Her kullanıcı yalnızca kendi kayıtlarını görür; yönetici hesabı tüm kayıtları görür.',
+      yol:['İletişim & Haberler','Takvim'],
+      yolNot:'+ Etkinlik ve + Görev düğmeleri ile Düzenle düğmeleri yalnızca takvim düzenleme yetkisi olan hesaplarda görünür.',
+      rota:['communication','calendar'],
+      eslesme:['communication:calendar'],
+      ekranlar:[
+        {
+          id:'takvim-ana',baslik:'Takvim sayfası',dosya:'takvim-ana.webp',alt:'Takvim sayfası: Etkinlik ve Görev ekleme düğmeleri, sayaçlar ve aylık takvim',baglam:'.ka-calendar-page',
+          cekim:{rota:['communication','calendar'],adimlar:[['kaydir',130]]},
+          isaretler:[
+            {n:1,baslik:'+ Etkinlik',aciklama:'Yeni etkinlik (hatırlatıcı) formunu açar.',sec:'[data-cal-add="hat"]'},
+            {n:2,baslik:'+ Görev',aciklama:'Yeni görev formunu açar.',sec:'[data-cal-add="gorev"]'},
+            {n:3,baslik:'Sayaçlar',aciklama:'Bugünkü etkinlik, bugünkü görev ve geciken iş sayıları. Geciken iş: tarihi geçmiş ve tamamlanmamış kayıtlardır.',sec:'.ka-calendar-summary'},
+            {n:4,baslik:'Ay seçici',aciklama:'Okla önceki ya da sonraki aya geçin; Bugün düğmesi bugüne döner.',sec:'.ka-calendar-page .ka-card__body > .ka-row:first-child'},
+            {n:5,baslik:'Takvim günleri',aciklama:'Bir güne dokunarak o günün kayıtlarını görün. Günün altındaki sayı o güne ait etkinlik ve görev toplamıdır; bugün vurgulanır.',sec:'.ka-calendar-grid'}
+          ]
+        },
+        {
+          id:'takvim-gun',baslik:'Seçili gün ve yaklaşan işler',dosya:'takvim-gun.webp',alt:'Takvim sayfasının alt bölümü: seçili günün kayıtları ve yaklaşan 30 günün listesi',
+          cekim:{rota:['communication','calendar'],adimlar:[['kaydir','son'],['bekle',400]]},
+          isaretler:[
+            {n:1,baslik:'Seçili günün kayıtları',aciklama:'Seçili günün başlığı ve kayıt sayısı görünür. Etkinlikler 📌, görevler ✓ simgesiyle gösterilir.',sec:'.ka-calendar-page > section.ka-stack:not([data-calendar-upcoming])'},
+            {n:2,baslik:'Düzenle',aciklama:'Kaydı düzenleme formunda açar (yetki gerekir).',sec:'.ka-list-card [data-cal-edit]'},
+            {n:3,baslik:'Yaklaşan 30 gün',aciklama:'Bugünden itibaren 30 gün içindeki tamamlanmamış etkinlik ve görevler tarih sırasıyla listelenir (en fazla 12 kayıt).',sec:'[data-calendar-upcoming]'}
+          ]
+        },
+        {
+          id:'takvim-etkinlik-form',baslik:'Yeni etkinlik (hatırlatıcı) formu',dosya:'takvim-etkinlik-form.webp',alt:'Yeni Hatırlatıcı formu: başlık, tarih, öncelik, açıklama, Vazgeç ve Kaydet',
+          cekim:{rota:['communication','calendar'],adimlar:[['tikla','[data-cal-add="hat"]'],['bekle',600],['yaz','[data-cal-modal] [name="baslik"]','Zümre toplantısı']]},
+          isaretler:[
+            {n:1,baslik:'Başlık',aciklama:'Zorunludur. Boş bırakırsanız form kaydedilmez.',sec:'[data-cal-modal] label.ka-field:has([name="baslik"])'},
+            {n:2,baslik:'Tarih ve Öncelik',aciklama:'Etkinliğin tarihini seçin. Öncelik Düşük, Orta ya da Yüksek olabilir.',sec:'[data-cal-modal] .ka-grid'},
+            {n:3,baslik:'Açıklama',aciklama:'İsteğe bağlı kısa not.',sec:'[data-cal-modal] label.ka-field:has([name="aciklama"])'},
+            {n:4,baslik:'Vazgeç',aciklama:'Formu kaydetmeden kapatır.',sec:'[data-cal-modal-kapat]'},
+            {n:5,baslik:'Kaydet',aciklama:'Etkinliği kaydeder ve “Hatırlatıcı kaydedildi.” bildirimini gösterir.',sec:'[data-cal-modal] [type="submit"]'}
+          ]
+        },
+        {
+          id:'takvim-gorev-form',baslik:'Yeni görev formu',dosya:'takvim-gorev-form.webp',alt:'Yeni Görev formu: başlık, açıklama, son tarih, durum, Vazgeç ve Kaydet',
+          cekim:{rota:['communication','calendar'],adimlar:[['tikla','[data-cal-add="gorev"]'],['bekle',600],['yaz','[data-cal-modal] [name="baslik"]','Dönem planlarını topla']]},
+          isaretler:[
+            {n:1,baslik:'Başlık',aciklama:'Zorunludur.',sec:'[data-cal-modal] label.ka-field:has([name="baslik"])'},
+            {n:2,baslik:'Son Tarih ve Durum',aciklama:'Görevin bitmesi gereken tarihi seçin. Durum: Yapılacak, Devam Ediyor ya da Tamamlandı.',sec:'[data-cal-modal] .ka-grid'},
+            {n:3,baslik:'Kaydet',aciklama:'Görevi kaydeder ve “Görev kaydedildi.” bildirimini gösterir.',sec:'[data-cal-modal] [type="submit"]'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Takvimi açın',metin:'Menüden **İletişim & Haberler › Takvim** sayfasını açın. Ay seçiciyle istediğiniz aya geçin.',ekran:'takvim-ana',isaret:4},
+        {baslik:'Günü seçin',metin:'Takvimde bir güne dokunun. Altta o günün etkinlik ve görevleri listelenir.',ekran:'takvim-ana',isaret:5},
+        {baslik:'Etkinlik ekleyin',metin:'**+ Etkinlik**e dokunun, **Başlık**ı yazın, **Tarih** ve **Öncelik**i seçin ve **Kaydet**e dokunun.',ekran:'takvim-etkinlik-form',isaret:1},
+        {baslik:'Görev ekleyin',metin:'**+ Görev**e dokunun, **Başlık**ı yazın, **Son Tarih** ve **Durum**u seçin ve **Kaydet**e dokunun.',ekran:'takvim-gorev-form',isaret:2},
+        {baslik:'Kaydı güncelleyin',metin:'Seçili günün listesinde ilgili kaydın **Düzenle** düğmesine dokunun. Görev bittiğinde **Durum**u Tamamlandı yapın; kayıt Geciken İş sayısından düşer.',ekran:'takvim-gun',isaret:2},
+        {baslik:'Yaklaşan işlere bakın',metin:'Sayfanın altındaki **Yaklaşan 30 Gün** bölümü önümüzdeki 30 günün tamamlanmamış kayıtlarını sıralar.',ekran:'takvim-gun',isaret:3}
+      ],
+      kayit:'**Kaydet**e dokunduğunuzda düğme kısa süre “Kaydediliyor…” yazar; ardından “Hatırlatıcı kaydedildi.” ya da “Görev kaydedildi.” bildirimi çıkar ve form kapanır. Başlık boşsa “Başlık zorunlu” uyarısı görünür. Yetkiniz yoksa “Bu işlem için yetkiniz yok.”, başkasına ait bir kaydı değiştirmeye çalışırsanız “Bu kayıt size ait değil.” bildirimi gösterilir.',
+      uyarilar:[
+        'Takvim kayıtları kişiseldir: yönetici dışında kimse başkasının etkinlik ve görevlerini görmez.',
+        'Bir görev, **Son Tarih**i olan gün takvimde işaretlenir. Son Tarih boş bırakılırsa görev takvimde bir güne yerleşmez ve Yaklaşan 30 Gün listesinde görünmez.',
+        'Etkinlik formunun başlığı “Yeni Hatırlatıcı”dır; **+ Etkinlik** düğmesi bu formu açar.'
+      ],
+      sorunlar:[
+        {s:'+ Etkinlik ve + Görev düğmeleri görünmüyor.',c:'Hesabınızda takvim düzenleme yetkisi tanımlı değildir; takvimi yalnızca görüntüleyebilirsiniz. Uygulama yöneticisine başvurun.'},
+        {s:'Eklediğim kayıt takvimde görünmüyor.',c:'Doğru aya ve güne baktığınızdan emin olun. Görevlerde **Son Tarih**, etkinliklerde **Tarih** alanı boşsa kayıt takvim hücrelerinde işaretlenmez.'},
+        {s:'Arkadaşımın kaydını göremiyorum.',c:'Kayıtlar kişiseldir; yalnızca yönetici hesabı tüm kayıtları görür.'}
+      ],
+      iliskili:['notlar','duyurular']
+    },
+    {
+      id:'notlar',kategori:'iletisim',ikon:'📒',baslik:'Notlar',
+      ozet:'Metin, yapılacaklar listesi, çizim, görsel ve tablo notlarınızı tek yerde tutun.',
+      anahtar:'notlar hızlı not metin yapılacaklar çizim görsel tablo etiket renk not defteri kişisel',
+      ne:'Kişisel not defterinizdir. **Metin**, **Yapılacaklar**, **Çizim**, **Görsel** ve **Tablo** olmak üzere beş türde not oluşturabilirsiniz. Üstteki sayaçlar toplam notu, bekleyen yapılacak maddelerini ve bu ay eklenen notları gösterir. Notlarınızı yalnızca siz görürsünüz; yönetici hesabı diğer kullanıcıların notlarını ayrı bir bölümde görür.',
+      yol:['İletişim & Haberler','Notlar'],
+      yolNot:'Alt çubuktaki **Hızlı Not** düğmesi de aynı notlara açılır: yeni not türünü seçersiniz ya da **Notlarımı Görüntüle**ye dokunursunuz. + Yeni Not, Düzenle ve Sil düğmeleri not düzenleme yetkisi olan hesaplarda görünür.',
+      rota:['communication','notes'],
+      eslesme:['communication:notes'],
+      ekranlar:[
+        {
+          id:'notlar-liste',baslik:'Notlarım sayfası',dosya:'notlar-liste.webp',alt:'Notlarım sayfası: arama kutusu, Yeni Not düğmesi, not sayaçları ve not kartları',baglam:'.ka-notes-workspace',
+          cekim:{rota:['communication','notes'],adimlar:[['kaydir',45]]},
+          isaretler:[
+            {n:1,baslik:'Ara',aciklama:'Notları başlık, içerik ya da etikete göre arar.',sec:'.ka-communication-search'},
+            {n:2,baslik:'+ Yeni Not',aciklama:'Hızlı Not penceresini açar; not türünü orada seçersiniz.',sec:'[data-note-add]'},
+            {n:3,baslik:'Sayaçlar',aciklama:'Toplam not, bekleyen yapılacak maddeleri ve bu ay eklenen notlar.',sec:'.ka-notes-summary'},
+            {n:4,baslik:'Not kartı',aciklama:'Notun türü, başlığı, tarihi ve kısa önizlemesi görünür. Karta dokunmak notu tam olarak açar.',sec:'.ka-note-card__head'},
+            {n:5,baslik:'Düzenle ve Sil',aciklama:'Notu düzenleme formunda açar ya da onayınızla siler.',sec:'.ka-note-card__actions'}
+          ]
+        },
+        {
+          id:'notlar-hizli',baslik:'Hızlı Not penceresi',dosya:'notlar-hizli.webp',alt:'Hızlı Not penceresi: Metin Notu, Yapılacaklar, Çizim, Görsel Not, Tablo Notu ve Notlarımı Görüntüle',
+          cekim:{rota:['communication','notes'],adimlar:[['tikla','[data-note-add]'],['bekle',700]]},
+          isaretler:[
+            {n:1,baslik:'Not türleri',aciklama:'Metin Notu (başlık ve metin), Yapılacaklar (kontrol edilebilir görev listesi), Çizim (el yazısı ve serbest çizim), Görsel Not (fotoğraf ve açıklama), Tablo Notu (satır ve sütunlarla kayıt).',sec:'.ka-quick-note-grid'},
+            {n:2,baslik:'Notlarımı Görüntüle',aciklama:'Pencereyi kapatıp tüm notlarınızın listesine gider.',sec:'.ka-quick-note-all'},
+            {n:3,baslik:'Kapat',aciklama:'Notu kaydetmeden pencereyi kapatır.',sec:'#kaQuickNoteModal [data-note-close]'}
+          ]
+        },
+        {
+          id:'notlar-yapilacak',baslik:'Yapılacaklar notu',dosya:'notlar-yapilacak.webp',alt:'Yapılacaklar notu formu: başlık, görev satırı, Görev ekle, İptal ve Kaydet',
+          cekim:{rota:['communication','notes'],adimlar:[['tikla','[data-note-add]'],['bekle',700],['tikla','[data-quick-kind="check"]'],['bekle',700],['yaz','[data-note-title]','Haftalık işler'],['yaz','[data-check-text]','Yazılı sınav kâğıtlarını çoğalt']]},
+          isaretler:[
+            {n:1,baslik:'Başlık',aciklama:'Notun başlığıdır.',sec:'label.ka-field:has([data-note-title])'},
+            {n:2,baslik:'Görev satırı',aciklama:'Görevi yazın. Soldaki kutu görev bittiğinde işaretlenir; sağdaki × satırı siler.',sec:'[data-check-text]'},
+            {n:3,baslik:'+ Görev ekle',aciklama:'Listeye yeni bir görev satırı ekler.',sec:'[data-check-add]'},
+            {n:4,baslik:'İptal',aciklama:'Notu kaydetmeden kapatır.',sec:'[data-note-cancel]'},
+            {n:5,baslik:'Kaydet',aciklama:'Notu kaydeder ve “Not kaydedildi.” bildirimini gösterir.',sec:'[data-note-save]'}
+          ]
+        }
+      ],
+      adimlar:[
+        {baslik:'Notlar sayfasını açın',metin:'Menüden **İletişim & Haberler › Notlar** sayfasını açın ya da alt çubuktaki **Hızlı Not**tan **Notlarımı Görüntüle**ye dokunun.',ekran:'notlar-liste',isaret:3},
+        {baslik:'Yeni not başlatın',metin:'**+ Yeni Not**a dokunun. Açılan **Hızlı Not** penceresinde not türünü seçin.',ekran:'notlar-hizli',isaret:1},
+        {baslik:'Notu yazın',metin:'Örneğin **Yapılacaklar** için başlığı ve görevleri yazın; **+ Görev ekle** ile satır çoğaltın.',ekran:'notlar-yapilacak',isaret:2},
+        {baslik:'Kaydedin',metin:'**Kaydet**e dokunun. “Not kaydedildi.” bildirimi çıkar ve not listede görünür.',ekran:'notlar-yapilacak',isaret:5},
+        {baslik:'Notu açın, düzenleyin ya da silin',metin:'Not kartına dokunarak tam görünümü açın. **Düzenle** ile başlık, renk, etiket ve tarihi değiştirebilir, **Sil** ile notu kaldırabilirsiniz.',ekran:'notlar-liste',isaret:5}
+      ],
+      kayit:'Hızlı Not penceresinde **Kaydet**e dokunduğunuzda “Not kaydedildi.” bildirimi çıkar (görsel ve tablo notları için “Görsel not kaydedildi.”, “Tablo notu kaydedildi.”). Kaydedilemezse ilgili “… kaydedilemedi.” bildirimi gösterilir. Not listesindeki **Düzenle** formunda **Kaydet**e dokunursanız yine “Not kaydedildi.” bildirimi çıkar. Başlıksız ve içeriksiz bir metin notu kaydedilmez: “Başlık veya içerik girilmelidir.” uyarısı görünür.',
+      uyarilar:[
+        '**Sil**e dokunduğunuzda “… silinsin mi?” onayı sorulur. Silinen notu bu ekrandan geri getiremezsiniz.',
+        'Notlar kişiseldir. Yalnızca yönetici hesabı diğer kullanıcıların notlarını “Diğer Kullanıcıların Notları” bölümünde görür.',
+        'Görsel notlarda büyük fotoğraflar cihazın belleğini kullanır; mümkünse kısa ve küçük görseller ekleyin.'
+      ],
+      sorunlar:[
+        {s:'+ Yeni Not ya da Düzenle düğmeleri görünmüyor.',c:'Hesabınızda not düzenleme yetkisi tanımlı değildir. Uygulama yöneticisine başvurun.'},
+        {s:'“Bu not size ait değil.” uyarısı çıktı.',c:'Bir notu yalnızca onu ekleyen kullanıcı düzenleyebilir.'},
+        {s:'Notum listede görünmüyor.',c:'Arama kutusunda bir ifade kalmış olabilir; kutuyu temizleyin.'}
+      ],
+      iliskili:['takvim','giris-gezinme']
     },
     {
       id:'evrak-takibi',kategori:'belgeler',ikon:'🗂️',baslik:'Evrak Takibi',
@@ -868,7 +1302,7 @@ const D={
       iliskili:['kilavuz','ayarlar-veriler']
     }
   ],
-  geometri:/*GEO:BEGIN*/{"ana-ekran-hizli":[[2.1,44,95.9,12.1]],"ana-ekran-ozet":[[2.1,34.2,47.9,31.6]],"ana-ekran-ust":[[6.9,29.6,86.2,35.3],[6.9,64.9,86.2,7.8]],"ayarlar-ana":[[0.3,23.7,99.5,9.7],[0,33.5,100,46]],"ders-programi-form":[[3.8,52.1,92.3,9.9],[3.8,65.2,92.3,6.6],[3.8,74.9,46.3,6.6],[3.8,81.5,92.3,9.9],[3.3,92.9,46.9,6.4],[49.7,92.9,46.9,6.4]],"ders-programi-gun":[[2.6,46,94.9,7.9],[2.6,58.8,94.9,9.4]],"ders-programi-ust":[[4.4,37.2,91.3,6.6],[4.4,44.1,46,8.4],[49.6,44.1,46,8.4],[4.4,52.1,46,8.4],[49.6,52.1,46,8.4],[4.4,60.2,46,8.4],[49.6,60.2,46,8.4]],"duyurular-form":[[3.1,20.9,93.8,9.9],[3.1,31.6,93.8,25.4],[3.1,57.8,93.8,22.3],[45.1,92.7,51.9,6.4]],"duyurular-liste":[[0,24.9,100,9.6],[1.3,35.8,80,5.9],[83.1,35.2,16.9,7.1],[0,42.5,100,50.8],[4.1,72.4,91.8,6.4],[4.1,78.7,91.8,6.4]],"evrak-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,9.9],[3.1,59.1,93.8,19.6]],"evrak-form-alt":[[3.1,64.9,93.8,9.9],[3.1,75.1,93.8,14.3],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"evrak-liste":[[63,16.4,32.7,6.4],[3.8,30.7,92.3,6.6],[3.8,37.6,92.3,18.7],[0,62.6,100,22.3],[3.3,77,24.1,6.4]],"gezinme-grup":[[2.8,1.3,13.8,6.4],[83.3,1.3,13.8,6.4],[2.3,10.2,95.4,8.5]],"gezinme-menu":[[57.3,1.5,26.6,5.9],[83.3,1.3,13.8,6.4],[2.3,10.4,47.4,16.8]],"gezinme-ust":[[1,1.3,45.1,5.9],[45.6,0.8,13.8,6.4],[59,0.8,13.8,6.4],[72.3,0.8,13.8,6.4],[85.6,0.9,13.3,6.2],[0,90.9,100,9.1]],"giris-ekran":[[7.2,45.6,85.6,9.7],[7.2,55.5,85.6,9.7],[7.2,66.8,85.6,6.4]],"hakkinda-baglantilar":[[4.1,23.9,91.8,34.4],[4.1,58.5,91.8,40.8]],"hakkinda-ust":[[4.4,15.6,91.3,15.9],[7.9,56.4,48.2,6.4],[4.1,64.8,91.8,31],[7.9,87.7,51.1,6.4]],"kilavuz-pencere":[[3.1,9.9,24.6,5.5],[76.3,9.4,20.6,6.4],[0,16.7,100,74.7],[63.9,92.2,33,6.4]],"kilavuz-sayfa":[[45.6,0.8,13.8,6.4],[7.9,14.9,84.1,9.7],[7.9,24.9,84.1,36],[4.1,65.4,91.8,25.3]],"nobet-atama":[[3.1,62.8,93.8,9.9],[3.1,76.2,93.8,6.6],[3.1,83.1,93.8,6.4],[73.1,92.2,23.8,6.4]],"nobet-cizelge":[[2.6,46.8,94.9,6.4],[2.8,53.3,97.2,6.2],[62.6,58.3,37.4,6.3]],"nobet-ust":[[0.0,34.1,50.3,9.2],[49.7,34.1,50.3,9.2],[0.0,43.1,50.3,9.8],[49.7,43.1,50.3,9.8],[0.0,53.3,100.0,30.5]],"ogrenciler-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,20],[3.1,69.2,93.8,9.9]],"ogrenciler-form-alt":[[3.1,37,93.8,20],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogrenciler-liste":[[68.2,15.4,27.4,6.4],[3.3,30.3,93.3,6.2],[2.3,39.1,95.4,11],[3.3,50.4,93.3,5.7],[0,58.1,100,6.6],[0,64.5,51.3,6.9],[0,75.2,100,8.3]],"ogrenciler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"ogretmenler-form":[[3.1,18.5,93.8,20],[3.1,38.8,93.8,20],[3.1,59.1,93.8,20]],"ogretmenler-form-alt":[[3.1,6.9,93.8,9.9],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogretmenler-liste":[[65.3,15.4,30.3,6.4],[3.3,30.3,93.3,6.2],[3.3,36.7,93.3,5.7],[0,44.4,100,6.6],[0,50.8,26.9,6.4],[26.3,50.8,35,6.4],[0,61.1,100,21.7],[84.9,75.8,11.3,5.2]],"ogretmenler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"rapor-duzenle":[[7.9,36,84.1,19.7],[7.9,75.8,84.1,9.7],[7.9,85.8,84.1,9.7]],"rapor-liste":[[4.1,32.3,91.8,18.1],[7.9,42.3,30.3,6.4],[38.8,42.3,26.4,6.4],[65.7,42.3,26.3,6.4]],"rapor-onizleme":[[0.8,0.4,13.8,6.4],[55.9,0.4,43.3,6.4],[13.6,6.3,43.3,6.4],[55.9,6.3,43.3,6.4],[0.8,12.3,45.1,6.4],[3.7,19.7,49.3,12.3]],"siniflar-detay":[[2.1,14.5,13.8,6.4],[84.1,14.5,13.8,6.4],[3.3,37.4,93.3,6.2],[0.0,48.0,100.0,7.1],[0.0,55.6,39.5,6.4],[39.0,55.6,55.7,6.4],[0.0,62.5,100.0,8.3]],"siniflar-form":[[3.1,37.1,93.8,9.9],[3.1,47.3,93.8,20.0],[3.1,67.5,93.8,9.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"siniflar-liste":[[68.2,15.4,27.5,6.4],[4.4,26.7,91.3,6.4],[3.3,36.9,93.3,6.2],[2.3,45.7,95.4,11.0],[0.0,58.8,100.0,6.6],[0.0,65.2,55.7,6.4],[0.0,75.4,100.0,20.5]],"veriler-sayfa":[[0,23.6,100,33.4]],"veriler-yedek":[[3.8,72.9,44.9,6.4],[49.3,72.9,46.9,6.4]]}/*GEO:END*/
+  geometri:/*GEO:BEGIN*/{"ana-ekran-hizli":[[2.1,44,95.9,12.1]],"ana-ekran-ozet":[[2.1,34.2,47.9,31.6]],"ana-ekran-ust":[[6.9,29.6,86.2,35.3],[6.9,64.9,86.2,7.8]],"ayarlar-ana":[[0.3,23.7,99.5,9.7],[0,33.5,100,46]],"deneme-form":[[3.1,29.4,93.8,12.5],[3.1,42.2,93.8,25.2],[6.2,69.1,87.7,12.5]],"deneme-form-alt":[[3.6,44.5,92.8,27.8],[3.1,72.5,93.8,16.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"deneme-form-iki":[[6.2,24.2,87.7,25.2],[6.2,49.4,87.7,12.5],[6.2,61.9,87.7,12.5],[6.2,74.4,87.7,25.2]],"deneme-liste":[[0,22.2,100,6.4],[0,29.3,100,10.2],[0,40.2,100,38.5],[16.2,62.9,80.5,7.9],[72.6,70.7,24.1,6.4]],"deneme-sayac":[[2.3,0.9,13.8,6.4],[16.2,3.6,32.3,4],[6.2,10.7,87.7,8.9],[14.1,20.3,71.8,33.2],[0,82.9,100,9.2]],"deneme-sayac-takvim":[[6.2,36.5,87.7,23.9],[6.2,66.9,87.7,12]],"ders-programi-form":[[3.8,52.1,92.3,9.9],[3.8,65.2,92.3,6.6],[3.8,74.9,46.3,6.6],[3.8,81.5,92.3,9.9],[3.3,92.9,46.9,6.4],[49.7,92.9,46.9,6.4]],"ders-programi-gun":[[2.6,46,94.9,7.9],[2.6,58.8,94.9,9.4]],"ders-programi-ust":[[4.4,37.2,91.3,6.6],[4.4,44.1,46,8.4],[49.6,44.1,46,8.4],[4.4,52.1,46,8.4],[49.6,52.1,46,8.4],[4.4,60.2,46,8.4],[49.6,60.2,46,8.4]],"duyurular-form":[[3.1,20.9,93.8,9.9],[3.1,31.6,93.8,25.4],[3.1,57.8,93.8,22.3],[45.1,92.7,51.9,6.4]],"duyurular-liste":[[0,24.9,100,9.6],[1.3,35.8,80,5.9],[83.1,35.2,16.9,7.1],[0,42.5,100,50.8],[4.1,72.4,91.8,6.4],[4.1,78.7,91.8,6.4]],"evrak-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,9.9],[3.1,59.1,93.8,19.6]],"evrak-form-alt":[[3.1,64.9,93.8,9.9],[3.1,75.1,93.8,14.3],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"evrak-liste":[[63,16.4,32.7,6.4],[3.8,30.7,92.3,6.6],[3.8,37.6,92.3,18.7],[0,62.6,100,22.3],[3.3,77,24.1,6.4]],"gezinme-grup":[[2.8,1.3,13.8,6.4],[83.3,1.3,13.8,6.4],[2.3,10.2,95.4,8.5]],"gezinme-menu":[[57.3,1.5,26.6,5.9],[83.3,1.3,13.8,6.4],[2.3,10.4,47.4,16.8]],"gezinme-ust":[[1,1.3,45.1,5.9],[45.6,0.8,13.8,6.4],[59,0.8,13.8,6.4],[72.3,0.8,13.8,6.4],[85.6,0.9,13.3,6.2],[0,90.9,100,9.1]],"giris-ekran":[[7.2,45.6,85.6,9.7],[7.2,55.5,85.6,9.7],[7.2,66.8,85.6,6.4]],"hakkinda-baglantilar":[[4.1,23.9,91.8,34.4],[4.1,58.5,91.8,40.8]],"hakkinda-ust":[[4.4,15.6,91.3,15.9],[7.9,56.4,48.2,6.4],[4.1,64.8,91.8,31],[7.9,87.7,51.1,6.4]],"kilavuz-pencere":[[3.1,9.9,24.6,5.5],[76.3,9.4,20.6,6.4],[0,16.7,100,74.7],[63.9,92.2,33,6.4]],"kilavuz-sayfa":[[45.6,0.8,13.8,6.4],[7.9,14.9,84.1,9.7],[7.9,24.9,84.1,36],[4.1,65.4,91.8,25.3]],"nobet-atama":[[3.1,62.8,93.8,9.9],[3.1,76.2,93.8,6.6],[3.1,83.1,93.8,6.4],[73.1,92.2,23.8,6.4]],"nobet-cizelge":[[2.6,46.8,94.9,6.4],[2.8,53.3,97.2,6.2],[62.6,58.3,37.4,6.3]],"nobet-ust":[[0,34.1,50.3,9.2],[49.7,34.1,50.3,9.2],[0,43.1,50.3,9.8],[49.7,43.1,50.3,9.8],[0,53.3,100,30.5]],"notlar-hizli":[[3.1,49.9,93.8,40.0],[3.1,89.8,93.8,8.8],[83.1,40.7,13.8,6.4]],"notlar-liste":[[0.0,8.3,100.0,6.6],[4.4,30.0,91.3,6.4],[0.0,38.4,100.0,10.4],[3.8,51.4,92.3,9.4],[0.3,69.3,99.5,8.8]],"notlar-yapilacak":[[3.1,66.1,93.8,9.9],[10.1,76.2,74.3,6.6],[3.1,83.1,93.8,6.4],[54.6,92.2,19.0,6.4],[73.1,92.2,23.8,6.4]],"ogrenciler-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,20],[3.1,69.2,93.8,9.9]],"ogrenciler-form-alt":[[3.1,37,93.8,20],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogrenciler-liste":[[68.2,15.4,27.4,6.4],[3.3,30.3,93.3,6.2],[2.3,39.1,95.4,11],[3.3,50.4,93.3,5.7],[0,58.1,100,6.6],[0,64.5,51.3,6.9],[0,75.2,100,8.3]],"ogrenciler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"ogretmenler-form":[[3.1,18.5,93.8,20],[3.1,38.8,93.8,20],[3.1,59.1,93.8,20]],"ogretmenler-form-alt":[[3.1,6.9,93.8,9.9],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogretmenler-liste":[[65.3,15.4,30.3,6.4],[3.3,30.3,93.3,6.2],[3.3,36.7,93.3,5.7],[0,44.4,100,6.6],[0,50.8,26.9,6.4],[26.3,50.8,35,6.4],[0,61.1,100,21.7],[84.9,75.8,11.3,5.2]],"ogretmenler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"rapor-duzenle":[[7.9,36,84.1,19.7],[7.9,75.8,84.1,9.7],[7.9,85.8,84.1,9.7]],"rapor-liste":[[4.1,32.3,91.8,18.1],[7.9,42.3,30.3,6.4],[38.8,42.3,26.4,6.4],[65.7,42.3,26.3,6.4]],"rapor-onizleme":[[0.8,0.4,13.8,6.4],[55.9,0.4,43.3,6.4],[13.6,6.3,43.3,6.4],[55.9,6.3,43.3,6.4],[0.8,12.3,45.1,6.4],[3.7,19.7,49.3,12.3]],"siniflar-detay":[[2.1,14.5,13.8,6.4],[84.1,14.5,13.8,6.4],[3.3,37.4,93.3,6.2],[0,48,100,7.1],[0,55.6,39.5,6.4],[39,55.6,55.7,6.4],[0,62.5,100,8.3]],"siniflar-form":[[3.1,37.1,93.8,9.9],[3.1,47.3,93.8,20],[3.1,67.5,93.8,9.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"siniflar-liste":[[68.2,15.4,27.5,6.4],[4.4,26.7,91.3,6.4],[3.3,36.9,93.3,6.2],[2.3,45.7,95.4,11],[0,58.8,100,6.6],[0,65.2,55.7,6.4],[0,75.4,100,20.5]],"takvim-ana":[[54,19.5,23.7,6.4],[78.2,19.5,21.8,6.4],[0,27.3,100,8.1],[3.8,37.4,92.3,6.4],[3.8,48,92.3,30.7]],"takvim-etkinlik-form":[[3.1,47.3,93.8,9.9],[3.1,57.4,93.8,20],[3.1,77.7,93.8,11.8],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"takvim-gorev-form":[[3.1,47.3,93.8,9.9],[3.1,69.4,93.8,20],[73.1,92.2,23.8,6.4]],"takvim-gun":[[0,24.1,100,23.5],[72.6,29.9,24.1,6.4],[0,47.8,100,42.1]],"veriler-sayfa":[[0,23.6,100,33.4]],"veriler-yedek":[[3.8,72.9,44.9,6.4],[49.3,72.9,46.9,6.4]],"yazili-form":[[3.6,33.4,92.8,25.8],[3.1,59.5,93.8,20],[3.1,79.8,93.8,9.9]],"yazili-form-alt":[[3.1,34.6,93.8,20],[3.1,54.9,93.8,20],[3.1,75.1,93.8,14.3],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"yazili-liste":[[0,12.3,100,9.7],[0,22.2,100,6.4],[0,29.3,100,10.2],[3.6,41.9,92.8,6.5],[72.3,80.6,24.1,6.4]],"yemek-aylik":[[7.9,32,84.1,6.4],[7.9,38.7,84.1,1.9],[7.9,43.7,42,6.4],[50,43.7,42.1,6.4],[23.8,56.7,69.2,25.1],[23.8,81.6,32.1,5.2]],"yemek-denetim":[[68,30.3,27.9,8.9],[7.9,41.2,84.1,9.7],[7.9,51.1,84.1,9.7],[7.9,59.7,84.1,9.7]],"yemek-gunluk":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,37.1]],"yemek-haftalik":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,20]],"yoklama-devamsiz":[[0,32.3,100,12.3],[0,44.8,100,8.3],[0,59.5,100,12.3],[68.6,64,28.1,6.4]],"yoklama-sinif":[[0,25.9,100,6.2],[2.8,33.6,47.4,9.7],[49.7,33.6,47.4,9.7],[0,44.8,100,8.3],[69,53.6,30.4,6.4],[2.6,66,94.9,5.7],[49.2,85,48,6.4]],"yoklama-tumu":[[2.8,33.6,47.4,9.7],[0,44.8,100,7.8]]}/*GEO:END*/
 };
 
 global.KorukGuideData=D;

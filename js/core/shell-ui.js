@@ -104,7 +104,7 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
   registerPageRoute('about',async(ctx)=>{const root=ctx?.root||$('#v2ModuleRoot');if(!root)return false;if(!await ensureGuide())return false;return global.KorukGuide.mountAbout(root)});}
 async function ensureGuide(){
   try{
-    if(!global.KorukGuide){await global.AppLoader?.loadScript?.('js/modules/guide-data.js?v=2');await global.AppLoader?.loadScript?.('js/modules/guide.js?v=1')}
+    if(!global.KorukGuide){await global.AppLoader?.loadScript?.('js/modules/guide-data.js?v=3');await global.AppLoader?.loadScript?.('js/modules/guide.js?v=1')}
     if(!global.KorukGuide)throw new Error('Kılavuz hazır değil.');
     return true;
   }catch(e){console.error('[Shell/guide]',e);global.toast?.('Kılavuz yüklenemedi. Uygulamanın diğer bölümleri etkilenmedi.',{tur:'hata'});return false}
