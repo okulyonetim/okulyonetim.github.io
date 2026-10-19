@@ -89,5 +89,5 @@ async function check(){
   open()}
 const schedule=(ms=2500)=>{tries=0;setTimeout(check,ms)};
 global.addEventListener('koruk:app-ready',()=>schedule());
-global.KorukPermissionGate={open,close,check,states,due,WAIT_DAYS};
+global.KorukPermissionGate={open,close,check,states,due,WAIT_DAYS,denyHelp,ask:key=>key==='notif'?askNotif():askGeo()};
 })(window);
