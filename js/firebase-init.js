@@ -35,7 +35,7 @@ function yapilandirmaEksikMi(){ return firebaseConfig.apiKey === "BURAYA_API_KEY
 /* Dosya depolama: Firebase Storage yerine Supabase Storage. Yükleme/okuma/silme yalnız Firebase girişi doğrulayan
    "dosya" Edge Function'ı üzerinden yapılır (gizli anahtar uygulamada yoktur). Firebase Storage API'sinin kullanılan
    kısmı (ref/child/put/getDownloadURL/delete) aynı imzayla sunulur, çağıran modüller değişmez. */
-const DOSYA_SERVISI = 'https://ljmjtliprcsbwpfbqwsr.supabase.co/functions/v1/dosya';
+const DOSYA_SERVISI = 'https://ljmjtliprcsbwpfbqwsr.supabase.co/functions/v1/quick-endpoint';
 function dosyaDeposuHazirla(){
   async function cagri(islem, yol){
     const kullanici = window.auth && window.auth.currentUser;
