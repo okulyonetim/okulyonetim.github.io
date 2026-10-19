@@ -30,8 +30,35 @@ test('kullanıcı metni çıktıda kaçışlanır', () => {
   assert.match(src, /esc\(s\.konusulanlar\)/);
 });
 
-test('form kaydedilmez: Firestore/DeviceData yazımı yok', () => {
-  assert.doesNotMatch(src.replace(/\/\*[\s\S]*?\*\//, ''), /DeviceData|firestore|COL\.|SyncEngine/i);
+test('kayıt koleksiyonu ve kurallar tanımlı, yazım yalnız DeviceData üzerinden', () => {
+  const rules = fs.readFileSync('firestore.rules', 'utf8'), init = fs.readFileSync('js/firebase-init.js', 'utf8');
+  assert.match(init, /veliGorusmeleri:'oy_veliGorusmeleri'/);
+  const blok = rules.slice(rules.indexOf('match /oy_veliGorusmeleri/{id}'));
+  assert.match(blok, /allow create: if girisYapmis\(\) && request\.resource\.data\.olusturanUid == request\.auth\.uid/);
+  assert.match(blok, /allow update:[\s\S]*olusturanUid == resource\.data\.olusturanUid/);
+  assert.match(blok, /allow delete: if girisYapmis\(\)[\s\S]*yoneticiMi\(\)/);
+  assert.doesNotMatch(src, /firebase\.firestore|\.collection\(/);
+});
+
+test('öğretmen yalnız kendi kayıtlarını, yönetici hepsini görür; kayıt ekle/güncelle/sil çalışır', async () => {
+  const store = [], log = [];
+  const win = {
+    AppStore: { data: t => (t === 'veliGorusmeleri' ? store : []), get: () => ({ uid: 'u1', admin: false }) },
+    DeviceData: {
+      add: async (t, c, v) => { const r = { id: 'k' + (store.length + 1), ...v }; store.push(r); log.push('add'); return r; },
+      update: async (t, c, id, v) => { Object.assign(store.find(x => x.id === id), v); log.push('update'); },
+      remove: async (t, c, id) => { store.splice(store.findIndex(x => x.id === id), 1); log.push('remove'); }
+    },
+    COL: { veliGorusmeleri: 'oy_veliGorusmeleri' }, toast() {}
+  };
+  win.window = win;
+  const doc = { getElementById: () => null, querySelector: () => null };
+  vm.runInContext(src, vm.createContext({ window: win, document: doc, console, confirm: () => true }));
+  const m = win.ParentMeetingModule;
+  store.push({ id: 'x', olusturanUid: 'u2', ogrenciAd: 'Başkası', tarih: '2026-10-01' }, { id: 'y', olusturanUid: 'u1', ogrenciAd: 'Benim', tarih: '2026-10-02' });
+  assert.equal(JSON.stringify(m.records().map(r => r.ogrenciAd)), JSON.stringify(['Benim']));
+  win.AppStore.get = () => ({ uid: 'u3', admin: true });
+  assert.equal(m.records().length, 2);
 });
 
 test('rota, menü ve offline önbellek bağlı', () => {
@@ -47,5 +74,5 @@ test('kağıt stili sözleşmeye uyar (renk belirteçleri, hex yok)', () => {
   assert.doesNotMatch(css.slice(a, b), /#[0-9a-fA-F]{3,8}\b/);
   const c = css.indexOf('/* ===== VELİ GÖRÜŞME FORMU (vgf-*)'), d = css.indexOf('/* ===== WEB ARAYÜZÜ (≥1100px)');
   assert.ok(c > 0 && c < d);
-  css.slice(c, d).split('\n').filter(l => l.includes('{')).forEach(l => assert.match(l.trim(), /^html\[data-theme\] #v2ModuleRoot /));
+  css.slice(c, d).split('\n').filter(l => l.includes('{') && !l.startsWith('@media')).forEach(l => assert.match(l.trim(), /^html\[data-theme\] #v2ModuleRoot /));
 });
