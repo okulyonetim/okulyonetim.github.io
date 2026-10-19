@@ -13854,6 +13854,26 @@ html[data-theme] .kcz-form :is([data-kbe-panel],[data-kbe-nomatch],.kbe-item,.kb
 }
 @media(prefers-reduced-motion:reduce){html[data-theme] .kcz-form .kbe-item{transition:none}}
 
+/* ===== İZİNLER SAYFASI (kpm-*) =====
+   js/core/permission-gate.js — bildirim ve konum izni isteyen pencere. Yalnız belirteçler; seçiciler .kcz-form kapsamlıdır. */
+html[data-theme] .kcz-form.kpm-sheet .kpm-head h2{margin:0}
+html[data-theme] .kcz-form.kpm-sheet .kpm-head p{margin:var(--ka-sp-6) 0 0;color:var(--ka-text-muted);font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-35)}
+html[data-theme] .kcz-form .kpm-item{display:flex;align-items:center;gap:var(--ka-sp-12);padding:var(--ka-sp-12) var(--ka-sp-14);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-card-bg)}
+html[data-theme] .kcz-form .kpm-item.is-on{border-color:color-mix(in srgb,var(--ka-success) 45%,var(--ka-border))}
+html[data-theme] .kcz-form .kpm-ic{display:grid;place-items:center;flex:none;width:var(--ka-ic-44);height:var(--ka-ic-44);border:var(--ka-border-w) solid var(--ka-border);border-radius:50%;background:var(--ka-muted-bg);font-size:var(--ka-fs-20)}
+html[data-theme] .kcz-form .kpm-text{display:flex;flex:1 1 auto;flex-direction:column;gap:var(--ka-sp-3);min-width:0}
+html[data-theme] .kcz-form .kpm-text b{color:var(--ka-text);font-size:var(--ka-fs-14);font-weight:var(--ka-fw-800)}
+html[data-theme] .kcz-form .kpm-text small{color:var(--ka-text-muted);font-size:var(--ka-fs-12);line-height:var(--ka-lh-1-35)}
+html[data-theme] .kcz-form .kpm-text small.kpm-help{color:var(--ka-text)}
+html[data-theme] .kcz-form .kpm-state{flex:none;padding:var(--ka-sp-3) var(--ka-sp-10);border-radius:var(--ka-radius-pill);background:var(--ka-muted-bg);color:var(--ka-text-muted);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);white-space:nowrap}
+html[data-theme] .kcz-form .kpm-state.is-on{background:color-mix(in srgb,var(--ka-success) 18%,var(--ka-card-bg));color:var(--ka-text)}
+html[data-theme] .kcz-form .kpm-item .ka-btn{flex:none}
+@media(max-width:420px){
+  html[data-theme] .kcz-form .kpm-item{flex-wrap:wrap}
+  html[data-theme] .kcz-form .kpm-text{flex-basis:calc(100% - var(--ka-ic-44) - var(--ka-sp-12))}
+  html[data-theme] .kcz-form .kpm-item .ka-btn,html[data-theme] .kcz-form .kpm-state{margin-left:auto}
+}
+
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen
