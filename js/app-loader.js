@@ -31,7 +31,7 @@ define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.j
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/reports.js?v=21']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/tools.js?v=5','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
-define('settings',['js/modules/settings.js?v=890']);
+define('settings',['js/modules/settings.js?v=891']);
 define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/committees.js?v=4']);
 define('guide',['js/modules/guide-data.js?v=4','js/modules/guide.js?v=1']);
 

@@ -1,0 +1,11 @@
+const fs=require('fs'),assert=require('assert');
+const src=fs.readFileSync('js/core/auto-backup.js','utf8'),settings=fs.readFileSync('js/modules/settings.js','utf8');
+assert(!/firestore|firebase/i.test(src.replace(/\/\*[\s\S]*?\*\//,'')),'Otomatik yedek Firestore/Firebase kullanmamalı.');
+assert(/KEEP=7/.test(src)&&/DAY=86400000/.test(src),'Günde bir kez, son 7 yedek.');
+assert(/isAdmin\(\)/.test(src)&&/koruk:app-ready/.test(src),'Yalnız yönetici; uygulama açılınca çalışmalı.');
+assert(/versiyon:2/.test(src)&&/veri\[t\]=rows/.test(src),'Elle yedekle aynı biçim (versiyon 2, veri[tür]).');
+for(const k of ['data-autobackup-toggle','data-autobackup-now','data-autobackup-dl','data-autobackup-restore'])assert(settings.includes(k),'Ayarlar > Veriler: '+k);
+assert(settings.includes('importBackupData(new File('),'Geri yükleme mevcut içe aktarma akışını kullanmalı.');
+for(const f of ['index.html','beta.html'])assert(fs.readFileSync(f,'utf8').includes('js/core/auto-backup.js'),f+' betiği yüklemeli.');
+assert(fs.readFileSync('service-worker.js','utf8').includes('auto-backup.js'),'Servis çalışanı önbelleğe almalı.');
+console.log('auto-backup: OK');

@@ -250,7 +250,15 @@ function storage(){
   <div class="ka-stack">${sablonRows}</div>
 </div></article>
 
-<article class="ka-card"><div class="ka-card__body ka-stack">
+${admin()&&window.KorukAutoBackup?`<article class="ka-card"><div class="ka-card__body ka-stack" data-autobackup>
+  <div><strong>🛡️ Otomatik Yedek</strong><div class="ka-muted">Uygulama açıldığında günde bir kez, bu cihazda son ${window.KorukAutoBackup.KEEP} yedek saklanır. İnternet ya da sunucu gerekmez.</div></div>
+  <label class="ka-check"><input type="checkbox" data-autobackup-toggle ${window.KorukAutoBackup.enabled()?'checked':''}> Otomatik yedek açık</label>
+  <div class="ka-stack" data-autobackup-list><div class="ka-muted">Yedekler okunuyor…</div></div>
+  <div class="ka-row"><button class="ka-btn ka-btn--primary ka-btn--sm" type="button" data-autobackup-now>Şimdi yedekle</button></div>
+  <div class="ka-muted">Bu yedekler uygulama silinirse ya da cihaz verileri temizlenirse kaybolur. Önemli bir yedeği "İndir" ile dosya olarak da saklayın.</div>
+</div></article>
+
+`:''}<article class="ka-card"><div class="ka-card__body ka-stack">
   <div><strong>💾 Veri Yedekleme ve Aktarım</strong><div class="ka-muted">Tüm uygulama verilerini JSON formatında dışa aktarın veya içe aktarın.</div></div>
   <div class="ka-row">
     <button class="ka-btn" type="button" data-storage-export>⬇ Yedeği İndir (JSON)</button>
@@ -262,7 +270,7 @@ function storage(){
 async function exportAllData(){
   try{
     toast?.('Veriler toplanıyor…');
-    const TYPES=['ogretmenler','dersProgrami','dersSaatleri','siniflar','ogrenciler','veliler','servisler','nobetAtamalari','nobetYerleri','sinavlar','denemeSinavlari','ogretmenIzinleri','notlar','yemekMenuleri','sosyalKulupler','belirliGunler','zumre','sokProgrami','bepPlani','dokumanlar','yoklama','konusmalar','mesajlar','anketler','akademikTakvim','kontrolListeleri','denemeSonuclari','testSonuclari','yillikPlanBasliklari','yillikPlanTanimlari','ogretmenYillikPlanSecimleri','toplantiCizelgesi','ogretmenListeSablon','ogretmenListeKayit','idariBilgiler','okulBilgileri','depolamaAyarlari','hatirlatmaAyarlari'];
+    const TYPES=window.KorukAutoBackup?.TYPES||['ogretmenler','dersProgrami','dersSaatleri','siniflar','ogrenciler','veliler','servisler','nobetAtamalari','nobetYerleri','sinavlar','denemeSinavlari','ogretmenIzinleri','notlar','yemekMenuleri','sosyalKulupler','belirliGunler','zumre','sokProgrami','bepPlani','dokumanlar','yoklama','konusmalar','mesajlar','anketler','akademikTakvim','kontrolListeleri','denemeSonuclari','testSonuclari','yillikPlanBasliklari','yillikPlanTanimlari','ogretmenYillikPlanSecimleri','toplantiCizelgesi','ogretmenListeSablon','ogretmenListeKayit','idariBilgiler','okulBilgileri','depolamaAyarlari','hatirlatmaAyarlari'];
     const snapshot={exportTarihi:new Date().toISOString(),versiyon:2,veri:{}};
     for(const t of TYPES){try{snapshot.veri[t]=arr(t)}catch(_){}}
     /* Öğrenci Tanıma Formları cihaz içi depoda tutulur (senkronize değil); sağlık verisi içerdiği için yalnız yönetici yedeğine girer. */
@@ -303,7 +311,20 @@ async function importBackupData(file){
     window.SyncEngine?.schedule?.(60);
   }catch(e){toast?.('Geri yükleme başarısız: '+(e?.message||e));}
 }
+function autoBackupBytes(n){return n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB'}
+async function renderAutoBackup(out){
+  const box=out.querySelector('[data-autobackup-list]'),B=window.KorukAutoBackup;if(!box||!B)return;
+  let rows=[];try{rows=await B.list()}catch(e){box.innerHTML='<div class="ka-muted">Bu cihazda yedek deposu kullanılamıyor.</div>';return}
+  const err=B.lastError();
+  box.innerHTML=(rows.length?rows.map(r=>`<div class="ka-row ka-row--between ka-wrap" style="padding:8px 10px;border:1px solid var(--ka-border);border-radius:10px"><span><strong>${esc(new Date(r.ts).toLocaleString('tr-TR'))}</strong><small class="ka-muted" style="display:block">${r.count} kayıt · ${autoBackupBytes(r.bytes)}${r.manuel?' · elle':''}</small></span><span class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-autobackup-dl="${r.id}">İndir</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-autobackup-restore="${r.id}">Geri yükle</button></span></div>`).join(''):'<div class="ka-muted">Henüz yedek yok. Uygulama açık kaldıkça ilk yedek otomatik alınır; isterseniz "Şimdi yedekle"ye dokunun.</div>')+(err?`<div class="ka-muted">Son otomatik yedek alınamadı: ${esc(err)}</div>`:'');
+  box.querySelectorAll('[data-autobackup-dl]').forEach(b=>b.addEventListener('click',async()=>{try{const json=await B.get(b.dataset.autobackupDl),url=URL.createObjectURL(new Blob([json],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`koruk-asistan-otomatik-yedek-${new Date(Number(b.dataset.autobackupDl)).toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);toast?.('Yedek dosyası indirildi.')}catch(e){toast?.('Yedek indirilemedi: '+(e?.message||e))}}));
+  box.querySelectorAll('[data-autobackup-restore]').forEach(b=>b.addEventListener('click',async()=>{try{const json=await B.get(b.dataset.autobackupRestore);if(!json)throw new Error('yedek-bos');await importBackupData(new File([json],'otomatik-yedek.json',{type:'application/json'}))}catch(e){toast?.('Geri yükleme başarısız: '+(e?.message||e))}}))}
 function bindStorage(out){
+  if(out.querySelector('[data-autobackup]')){
+    renderAutoBackup(out);
+    out.querySelector('[data-autobackup-toggle]')?.addEventListener('change',e=>{window.KorukAutoBackup?.setEnabled?.(e.target.checked);toast?.(e.target.checked?'Otomatik yedek açıldı.':'Otomatik yedek kapatıldı.')});
+    out.querySelector('[data-autobackup-now]')?.addEventListener('click',async e=>{const b=e.currentTarget;b.disabled=true;try{await window.KorukAutoBackup.backupNow({manual:true});toast?.('Yedek alındı.')}catch(err){toast?.(err?.message==='veri-yok'?'Yedeklenecek veri bulunamadı.':'Yedek alınamadı: '+(err?.message||err))}b.disabled=false;renderAutoBackup(out)});
+  }
   out.querySelector('[data-storage-export]')?.addEventListener('click',exportAllData);
   out.querySelector('[data-storage-import]')?.addEventListener('click',()=>{
     let inp=out.querySelector('[data-storage-import-input]');
