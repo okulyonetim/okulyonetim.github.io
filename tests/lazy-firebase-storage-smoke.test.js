@@ -18,6 +18,6 @@ assert(loader.includes("define('documents',[FIREBASE_STORAGE_SDK,'js/modules/rep
 assert(loader.includes("window.firebaseStorageHazirla?.()"),'Lazy Storage SDK yüklendikten sonra mevcut Firebase app storage örneği hazırlanmalı.');
 const startup=firebase.slice(firebase.indexOf('function firebaseyiBaslat(){'));
 assert(!startup.includes('storage = firebase.storage();'),'Firebase başlangıç yolu Storage SDK istememeli.');
-assert(firebase.includes('function firebaseStorageHazirla()')&&firebase.includes("typeof firebase.storage !== 'function'"),'Storage örneği yalnız capability yüklendiğinde hazırlanmalı.');
+assert(firebase.includes('function firebaseStorageHazirla()')&&firebase.includes('function dosyaDeposuHazirla()')&&firebase.includes('/functions/v1/dosya'),'Dosya deposu Supabase Edge Function üzerinden hazırlanmalı.');
 assert(communication.includes('storage.ref()')&&documents.includes('storage.ref()'),'Mevcut mesaj/doküman Storage davranışı korunmalı.');
 console.log('Lazy Firebase Storage başlangıç smoke testi başarılı.');

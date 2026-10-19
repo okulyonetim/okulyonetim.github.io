@@ -32,10 +32,58 @@ window.COL = COL;
 let db = null, auth = null, messaging = null, storage = null, firebaseHazir = false;
 window.db = null; window.auth = null; window.messaging = null; window.storage = null; window.firebaseHazir = false;
 function yapilandirmaEksikMi(){ return firebaseConfig.apiKey === "BURAYA_API_KEY"; }
+/* Dosya depolama: Firebase Storage yerine Supabase Storage. Yükleme/okuma/silme yalnız Firebase girişi doğrulayan
+   "dosya" Edge Function'ı üzerinden yapılır (gizli anahtar uygulamada yoktur). Firebase Storage API'sinin kullanılan
+   kısmı (ref/child/put/getDownloadURL/delete) aynı imzayla sunulur, çağıran modüller değişmez. */
+const DOSYA_SERVISI = 'https://ljmjtliprcsbwpfbqwsr.supabase.co/functions/v1/dosya';
+function dosyaDeposuHazirla(){
+  async function cagri(islem, yol){
+    const kullanici = window.auth && window.auth.currentUser;
+    if(!kullanici || typeof kullanici.getIdToken !== 'function') throw new Error('Dosya işlemi için internet bağlantılı oturum gerekir.');
+    const yanit = await fetch(DOSYA_SERVISI, { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer ' + await kullanici.getIdToken() }, body:JSON.stringify({ islem, yol }) });
+    const veri = await yanit.json().catch(() => ({}));
+    if(!yanit.ok) throw new Error(veri.hata === 'yetkisiz' ? 'Dosya işlemi için yetkiniz yok.' : (veri.hata || 'Dosya servisi yanıt vermedi.'));
+    return veri;
+  }
+  function ref(yol){
+    const temiz = String(yol || '').replace(/^\/+/, '');
+    const r = {
+      fullPath: temiz, name: temiz.split('/').pop(),
+      child: alt => ref(temiz ? temiz + '/' + String(alt).replace(/^\/+/, '') : String(alt)),
+      put(dosya, meta){
+        const boyut = Math.max(1, Number(dosya && dosya.size) || 1), dinleyici = {};
+        const gorev = { snapshot:{ ref:r, bytesTransferred:0, totalBytes:boyut } };
+        const bitti = (async () => {
+          const { url } = await cagri('yukle', temiz);
+          await new Promise((tamam, hata) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('PUT', url); xhr.setRequestHeader('x-upsert', 'true');
+            xhr.upload.onprogress = e => { gorev.snapshot = { ref:r, bytesTransferred:e.loaded, totalBytes:e.total || boyut }; if(dinleyici.sonraki) dinleyici.sonraki(gorev.snapshot); };
+            xhr.onload = () => (xhr.status >= 200 && xhr.status < 300) ? tamam() : hata(new Error('Dosya yüklenemedi (' + xhr.status + ').'));
+            xhr.onerror = () => hata(new Error('Dosya yüklenemedi. Bağlantıyı kontrol edin.'));
+            const form = new FormData(); form.append('cacheControl', '3600'); form.append('', dosya);
+            xhr.send(form);
+          });
+          gorev.snapshot = { ref:r, bytesTransferred:boyut, totalBytes:boyut };
+          return gorev.snapshot;
+        })();
+        gorev.then = (a, b) => bitti.then(a, b);
+        gorev.catch = a => bitti.catch(a);
+        gorev.on = (olay, sonraki, hata, tamam) => { dinleyici.sonraki = sonraki; bitti.then(() => { if(sonraki) sonraki(gorev.snapshot); if(tamam) tamam(); }, e => { if(hata) hata(e); }); return () => {}; };
+        return gorev;
+      },
+      async getDownloadURL(){ return (await cagri('oku', temiz)).url; },
+      async delete(){ await cagri('sil', temiz); },
+      async getMetadata(){ return { customMetadata:{} }; },
+      async updateMetadata(m){ return m; }
+    };
+    return r;
+  }
+  return { ref:yol => ref(yol) };
+}
 function firebaseStorageHazirla(){
   if(storage) return storage;
-  if(typeof firebase.storage !== 'function') throw new Error('firebase-storage-sdk-yok');
-  storage = firebase.storage(); window.storage = storage; return storage;
+  storage = dosyaDeposuHazirla(); window.storage = storage; return storage;
 }
 window.firebaseStorageHazirla = firebaseStorageHazirla;
 function baglantiUyarisiGoster(mesaj){
@@ -58,7 +106,7 @@ function firebaseyiBaslat(){
   if(yapilandirmaEksikMi()){baglantiUyarisiGoster();return false}
   try{
     if(typeof firebase==='undefined')throw new Error('firebase is not defined');
-    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); db=firebase.firestore(); db.settings({experimentalAutoDetectLongPolling:true,merge:true}); auth=firebase.auth(); storage=null; firebaseHazir=true;
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); db=firebase.firestore(); db.settings({experimentalAutoDetectLongPolling:true,merge:true}); auth=firebase.auth(); storage=dosyaDeposuHazirla(); firebaseHazir=true;
     window.db=db; window.auth=auth; window.storage=storage; window.firebaseHazir=true;
     db.enablePersistence({synchronizeTabs:true}).catch(err=>{if(err.code==='failed-precondition')console.warn('Offline destek: birden fazla sekme açık, sadece ilk sekmede etkin.');else if(err.code==='unimplemented')console.warn('Offline destek: bu tarayıcı desteklemiyor.');else console.warn('Offline destek etkinleştirilemedi:',err)});
     try{if(firebase.messaging.isSupported()) messaging=firebase.messaging(); window.messaging=messaging}catch(e){console.warn('Bu tarayıcı push bildirimlerini desteklemiyor.',e)}
