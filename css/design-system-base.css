@@ -12841,6 +12841,27 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .bgr-legend{margin:3mm 0 0;color:var(--ka-report-people-muted);font-size:7.5pt;line-height:1.35}
 .ka-report .bgr-empty{margin:1mm 0 2mm;padding:3mm 4mm;border:var(--ka-report-people-hair) dashed var(--ka-report-people-line);color:var(--ka-report-people-muted);font-size:9pt}
 
+/* ===== A4 RAPOR — Kontrol Listeleri (.kkr-*) =====
+   js/modules/tools.js printChecklist çıktısının kağıt stili; renkler --ka-report-people-* belirteçlerinden gelir. */
+.ka-report .kkr-desc{margin:0 0 2.5mm;color:var(--ka-report-people-muted);font-size:8.5pt;font-weight:700}
+.ka-report .kkr-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 0 2mm;border:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-left:var(--ka-report-people-bar) solid var(--ka-report-people-accent);break-inside:avoid}
+.ka-report .kkr-sum>div{display:flex;flex-direction:column;align-items:center;gap:.6mm;padding:2.2mm 1.5mm;text-align:center}
+.ka-report .kkr-sum>div+div{border-left:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
+.ka-report .kkr-sum b{color:var(--ka-report-people-accent);font-size:16pt;line-height:1}
+.ka-report .kkr-sum span{color:var(--ka-report-people-muted);font-size:7.5pt;font-weight:700}
+.ka-report .kkr-bar{height:2mm;margin:0 0 3mm;border:var(--ka-report-people-hair) solid var(--ka-report-people-line);background:var(--ka-report-people-soft)}
+.ka-report .kkr-bar>i{display:block;height:100%;background:var(--ka-report-people-accent)}
+.ka-report .kkr-table{table-layout:fixed}
+.ka-report .kkr-table td{text-align:left!important;overflow-wrap:anywhere}
+.ka-report .kkr-table th.kkr-no,.ka-report .kkr-table td.kkr-no{width:7%;text-align:center!important}
+.ka-report .kkr-table th.kkr-st,.ka-report .kkr-table td.kkr-st{width:11%;text-align:center!important}
+.ka-report .kkr-table th.kkr-dt,.ka-report .kkr-table td.kkr-dt{width:17%;text-align:center!important;white-space:nowrap}
+.ka-report .kkr-table tr.is-done td:not(.kkr-st){color:var(--ka-report-people-muted)!important}
+.ka-report .kkr-box{display:inline-flex;align-items:center;justify-content:center;width:4mm;height:4mm;border:.3mm solid var(--ka-report-people-ink);background:var(--ka-report-bg);font-size:8pt;font-weight:900;line-height:1}
+.ka-report .kkr-box.is-on{border-color:var(--ka-report-people-accent);background:var(--ka-report-people-accent);color:var(--ka-report-bg)}
+.ka-report .kkr-flag{margin-left:1mm;color:var(--ka-report-people-under);font-size:6.5pt;font-weight:800}
+.ka-report .kkr-empty{padding:3mm;text-align:center!important;color:var(--ka-report-people-muted)}
+
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
 .bsg-root{
@@ -13873,6 +13894,108 @@ html[data-theme] .kcz-form .kpm-item .ka-btn{flex:none}
   html[data-theme] .kcz-form .kpm-text{flex-basis:calc(100% - var(--ka-ic-44) - var(--ka-sp-12))}
   html[data-theme] .kcz-form .kpm-item .ka-btn,html[data-theme] .kcz-form .kpm-state{margin-left:auto}
 }
+
+/* ===== KONTROL LİSTELERİ (kkl-*) =====
+   js/modules/tools.js; kart/özet/süzgeç kcl-/kbe-/kcz- ortak sınıflarını kullanır, burada yalnız listeye özgü parçalar vardır.
+   Pencereler html[data-theme] .kcz-form kapsamındadır. */
+html[data-theme] #v2ModuleRoot .kkl-head{align-items:center;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .kkl-head p{margin:0;min-width:0}
+html[data-theme] #v2ModuleRoot .kkl-head .ka-btn{display:inline-flex;align-items:center;gap:var(--ka-sp-7);flex:none}
+html[data-theme] #v2ModuleRoot .kkl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .kkl-card{cursor:pointer}
+html[data-theme] #v2ModuleRoot .kkl-card.is-geciken{border-color:color-mix(in srgb,var(--ka-warning) 45%,var(--ka-border))}
+html[data-theme] #v2ModuleRoot .kkl-card.is-tamam{background:var(--ka-muted-bg)}
+html[data-theme] #v2ModuleRoot .kkl-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .kkl-card .kcl-card-main strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;line-height:var(--ka-lh-1-2)}
+html[data-theme] #v2ModuleRoot .kkl-meta{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kkl-next{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--ka-sp-6);margin:0;color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .kkl-next b{color:var(--ka-text);font-weight:var(--ka-fw-750);overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .kkl-next small{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .kkl-next small.is-late{color:var(--ka-warning)}
+html[data-theme] #v2ModuleRoot .kkl-foot{justify-content:flex-end}
+
+/* İlerleme halkası ve çubuğu — yüzde --kkl-p değişkeninden gelir */
+html[data-theme] #v2ModuleRoot .kkl-ring{--kkl-p:0;position:relative;display:grid;place-items:center;flex:none;width:var(--ka-ic-52);height:var(--ka-ic-52);border-radius:50%;background:conic-gradient(rgb(var(--t-accent-rgb)) calc(var(--kkl-p) * 1%),var(--ka-muted-bg) 0)}
+html[data-theme] #v2ModuleRoot .kkl-ring::before{content:"";position:absolute;inset:var(--ka-sp-5);border-radius:50%;background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .kkl-ring b{position:relative;color:var(--ka-text);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-850);font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .kkl-ring.is-lg{width:var(--ka-ic-62);height:var(--ka-ic-62)}
+html[data-theme] #v2ModuleRoot .kkl-ring.is-lg b{font-size:var(--ka-fs-14)}
+html[data-theme] #v2ModuleRoot .kkl-bar,html[data-theme] .kcz-form .kkl-bar{display:block;height:var(--ka-sp-6);overflow:hidden;border-radius:var(--ka-radius-pill);background:var(--ka-muted-bg)}
+html[data-theme] #v2ModuleRoot .kkl-bar>i,html[data-theme] .kcz-form .kkl-bar>i{--kkl-p:0;display:block;height:100%;width:calc(var(--kkl-p) * 1%);border-radius:inherit;background:rgb(var(--t-accent-rgb))}
+
+/* Liste çalışma ekranı */
+html[data-theme] #v2ModuleRoot .kkl-wh{display:flex;align-items:flex-start;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .kkl-wh__title{flex:1 1 auto;min-width:0}
+html[data-theme] #v2ModuleRoot .kkl-wh__title h1{margin:0;overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .kkl-wh__title p{margin:var(--ka-sp-4) 0 0}
+html[data-theme] #v2ModuleRoot .kkl-hero{display:flex;align-items:center;gap:var(--ka-sp-14);padding:var(--ka-sp-14);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius);background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .kkl-hero__text{display:flex;flex-direction:column;gap:var(--ka-sp-8);flex:1 1 auto;min-width:0}
+html[data-theme] #v2ModuleRoot .kkl-hero__text strong{color:var(--ka-text);font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .kkl-actions{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kkl-actions .ka-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--ka-sp-7)}
+html[data-theme] #v2ModuleRoot .kkl-tasks{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kkl-danger{display:flex;justify-content:flex-end}
+html[data-theme] #v2ModuleRoot .kkl-danger .ka-btn{display:inline-flex;align-items:center;gap:var(--ka-sp-7)}
+
+/* Madde satırı */
+html[data-theme] #v2ModuleRoot .kkl-task{--kkl-accent:var(--ka-border-strong);display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-left:var(--ka-sp-4) solid var(--kkl-accent);border-radius:var(--ka-card-radius);background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .kkl-task.is-done{background:var(--ka-muted-bg)}
+html[data-theme] #v2ModuleRoot .kkl-task.is-done .kkl-task__text strong{color:var(--ka-text-muted);text-decoration:line-through}
+html[data-theme] #v2ModuleRoot .kkl-task.is-late{border-color:color-mix(in srgb,var(--ka-warning) 45%,var(--ka-border));border-left-color:var(--ka-warning)}
+html[data-theme] #v2ModuleRoot .kkl-check{position:relative;display:grid;place-items:center;flex:none;width:calc(var(--ka-ic-44) + var(--ka-btn-grow));height:calc(var(--ka-ic-44) + var(--ka-btn-grow));cursor:pointer}
+html[data-theme] #v2ModuleRoot .kkl-check>input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+html[data-theme] #v2ModuleRoot .kkl-check__mark{display:grid;place-items:center;width:var(--ka-ic-28);height:var(--ka-ic-28);border:var(--ka-border-w) solid var(--ka-border-strong);border-radius:var(--ka-r-10);background:var(--ka-card-bg);color:transparent;transition:background var(--ka-dur-150),border-color var(--ka-dur-150)}
+html[data-theme] #v2ModuleRoot .kkl-check>input:checked+.kkl-check__mark{border-color:rgba(var(--t-accent-rgb),var(--ka-nav-pill-edge-a));background:rgb(var(--t-accent-rgb));color:var(--ka-btn-primary-ink)}
+html[data-theme] #v2ModuleRoot .kkl-check>input:focus-visible+.kkl-check__mark{outline:var(--ka-ring-w) solid var(--ka-btn-primary-ring);outline-offset:var(--ka-ring-offset)}
+html[data-theme] #v2ModuleRoot .kkl-task__main{appearance:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-10);min-width:0;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+html[data-theme] #v2ModuleRoot .kkl-task__main:focus-visible{outline:var(--ka-ring-w) solid var(--ka-btn-primary-ring);outline-offset:var(--ka-ring-offset);border-radius:var(--ka-r-10)}
+html[data-theme] #v2ModuleRoot .kkl-task__text{display:flex;flex-direction:column;gap:var(--ka-sp-6);min-width:0}
+html[data-theme] #v2ModuleRoot .kkl-task__text strong{color:var(--ka-text);font-size:var(--ka-fs-14);font-weight:var(--ka-fw-750);line-height:var(--ka-lh-1-2);overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .kkl-task__meta{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .kkl-task__no{color:var(--ka-text-muted);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-700);font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .kkl-task__acts{display:flex;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .kkl-chip-meta{display:inline-flex;align-items:center;gap:var(--ka-sp-4);color:var(--ka-text-muted);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-650)}
+html[data-theme] #v2ModuleRoot .kkl-ic,html[data-theme] .kcz-form .kkl-ic{--kkl-accent:var(--ka-border-strong);display:grid;place-items:center;flex:none;width:var(--ka-ic-36);height:var(--ka-ic-36);border:var(--ka-border-w) solid color-mix(in srgb,var(--kkl-accent) 45%,transparent);border-radius:var(--ka-r-10);background:color-mix(in srgb,var(--kkl-accent) 14%,var(--ka-card-bg));font-size:var(--ka-fs-16);line-height:1}
+html[data-theme] .kcz-form .kkl-ic.is-lg{width:var(--ka-ic-52);height:var(--ka-ic-52);font-size:var(--ka-fs-18)}
+
+/* Pencereler */
+html[data-theme] .kcz-form .kkl-sheet__head{display:flex;align-items:center;gap:var(--ka-sp-14)}
+html[data-theme] .kcz-form .kkl-sheet__title{flex:1 1 auto;min-width:0}
+html[data-theme] .kcz-form .kkl-sheet__title h2{margin:0;overflow-wrap:anywhere}
+html[data-theme] .kcz-form .kkl-sheet__head>.ka-icon-button{margin-left:auto;flex:none}
+html[data-theme] .kcz-form .kkl-sheet__acts{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] .kcz-form .kkl-sheet__acts .ka-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--ka-sp-7)}
+html[data-theme] .kcz-form .kkl-field{display:flex;flex-direction:column;gap:var(--ka-sp-6)}
+html[data-theme] .kcz-form .kkl-field[hidden]{display:none}
+html[data-theme] .kcz-form .kkl-icons .kcz-pick__item>span{justify-content:center;padding:0 var(--ka-sp-10);font-size:var(--ka-fs-16)}
+html[data-theme] .kcz-form .kkl-colors .kcz-pick__item>span{justify-content:center;padding:0 var(--ka-sp-10)}
+html[data-theme] .kcz-form .kkl-swatch{--kkl-accent:var(--ka-border-strong);display:block;width:var(--ka-ic-20);height:var(--ka-ic-20);border-radius:50%;background:var(--kkl-accent)}
+html[data-theme] .kcz-form .kkl-dot{display:grid;place-items:center;flex:none;width:var(--ka-ic-24);height:var(--ka-ic-24);border:var(--ka-border-w) solid var(--ka-border-strong);border-radius:50%;color:transparent}
+html[data-theme] .kcz-form .kkl-dot.is-on{border-color:color-mix(in srgb,var(--ka-success) 55%,transparent);background:color-mix(in srgb,var(--ka-success) 16%,var(--ka-card-bg));color:var(--ka-success)}
+html[data-theme] .kcz-form .kkl-sumrows{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] .kcz-form .kkl-sumrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-12);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-card-bg)}
+html[data-theme] .kcz-form .kkl-sumrow__text{display:flex;flex-direction:column;gap:var(--ka-sp-4);min-width:0}
+html[data-theme] .kcz-form .kkl-sumrow__text strong{color:var(--ka-text);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-750);overflow-wrap:anywhere}
+html[data-theme] .kcz-form .kkl-sumrow__text small{color:var(--ka-text-muted);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-650)}
+html[data-theme] .kcz-form .kkl-sumrow>b{color:var(--ka-text);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-850);font-variant-numeric:tabular-nums}
+html[data-theme] .kcz-form .kcl-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+html[data-theme] .kcz-form .kcl-kpis>div{display:flex;flex-direction:column;gap:var(--ka-sp-3);min-width:0;padding:0 var(--ka-sp-10)}
+html[data-theme] .kcz-form .kcl-kpis>div:first-child{padding-left:0}
+html[data-theme] .kcz-form .kcl-kpis>div+div{border-left:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] .kcz-form .kcl-kpis .kcl-n{color:var(--ka-text);font-size:var(--ka-fs-18);font-weight:var(--ka-fw-850);font-variant-numeric:tabular-nums}
+html[data-theme] .kcz-form .kcl-kpis small{color:var(--ka-text-muted);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-650)}
+html[data-theme] .kcz-form .kcl-kpis .is-warn .kcl-n{color:var(--ka-warning)}
+html[data-theme] .kcz-form .kcl-empty{padding:var(--ka-sp-16);border:var(--ka-border-w) dashed var(--ka-border-strong);border-radius:var(--ka-r-5);color:var(--ka-text-muted);text-align:center}
+html[data-theme] .kcz-form .kcl-empty b{display:block;color:var(--ka-text)}
+@media(max-width:560px){
+  html[data-theme] #v2ModuleRoot .kkl-task{grid-template-columns:auto minmax(0,1fr)}
+  html[data-theme] #v2ModuleRoot .kkl-task__acts{grid-column:1/-1;justify-content:flex-end}
+  html[data-theme] #v2ModuleRoot .kkl-task__no{display:none}
+  html[data-theme] #v2ModuleRoot .kkl-task__main{grid-template-columns:auto minmax(0,1fr)}
+  html[data-theme] .kcz-form .kcl-kpis{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:var(--ka-sp-10)}
+  html[data-theme] .kcz-form .kcl-kpis>div:nth-child(3){padding-left:0;border-left:0}
+}
+@media(prefers-reduced-motion:reduce){html[data-theme] #v2ModuleRoot .kkl-check__mark{transition:none}}
 
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
