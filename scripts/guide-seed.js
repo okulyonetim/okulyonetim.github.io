@@ -111,10 +111,23 @@ const kurulKomisyonlar=[
   asilUyeler:[{tur:'ogretmen',id:'t01',sira:1},{tur:'ogretmen',id:'t02',sira:2},{tur:'ogretmen',id:'t05',sira:3},{tur:'ogretmen',id:'t07',sira:4}],yedekUyeler:[],
   gorevler:[],belgeTurleri:[],belgeler:[],mevzuatDayanaklari:'',notlar:[],isler:[]}
 ];
+/* ---- Belirli Gün ve Haftalar: kurgusal örnek etkinlikler (öğretmen kimlikleri yukarıdaki listeden) ---- */
+const bg=(id,ad,bas,bit,ogr,done,extra)=>Object.assign({id,ad,tarihBaslangic:bas,tarihBitis:bit||'',ogretmenIdler:ogr,aciklama:'',kontroller:[!!done]},extra||{});
+const belirliGunler=[
+ bg('bg1','İlköğretim Haftası','2026-09-06','2026-09-10',['t07','t11'],true,{katalogId:'katalog-001',katalogAy:'Eylül',katalogKaynakTarih:'06-10 Eylül',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 06-10 Eylül'}),
+ bg('bg2','Gaziler Günü','2026-09-19','',['t06'],false,{katalogId:'katalog-003',katalogAy:'Eylül',katalogKaynakTarih:'19 Eylül',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 19 Eylül'}),
+ bg('bg3','Hayvanları Koruma Günü','2026-10-04','',['t04'],true,{katalogId:'katalog-006',katalogAy:'Ekim',katalogKaynakTarih:'4 Ekim',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 4 Ekim'}),
+ bg('bg4','Okul Spor Şenliği','2026-10-12','2026-10-16',['t08','t03'],false,{manuel:true,aciklama:'Sınıflar arası voleybol ve ip atlama müsabakaları. Veli katılımı serbest.'}),
+ bg('bg5','Birleşmiş Milletler Günü','2026-10-24','',['t06','t09'],false,{katalogId:'katalog-010',katalogAy:'Ekim',katalogKaynakTarih:'24 Ekim',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 24 Ekim'}),
+ bg('bg6','Cumhuriyet Bayramı','2026-10-29','',['t02','t07','t09','t11'],false,{katalogId:'katalog-012',katalogAy:'Ekim',katalogKaynakTarih:'29 Ekim',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 29 Ekim'}),
+ bg('bg7','Kızılay Haftası','2026-10-29','2026-11-04',['t04'],false,{katalogId:'katalog-013',katalogAy:'Ekim',katalogKaynakTarih:'29 Ekim-4 Kasım',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 29 Ekim-4 Kasım'}),
+ bg('bg8','Atatürk Haftası','2026-11-10','2026-11-16',['t06','t01'],false,{katalogId:'katalog-016',katalogAy:'Kasım',katalogKaynakTarih:'10-16 Kasım',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 10-16 Kasım'}),
+ bg('bg9','Öğretmenler Günü','2026-11-24','',[],false,{katalogId:'katalog-021',katalogAy:'Kasım',katalogKaynakTarih:'24 Kasım',katalogEgitimYili:'2026',aciklama:'Hazır katalog: 24 Kasım'})
+];
 window.__GUIDE_SEED_MORE__=function(){
   const d=duty();
   const dersListesi=['Matematik','Türkçe','Fen Bilimleri','Sosyal Bilgiler','İngilizce','Beden Eğitimi','Görsel Sanatlar','Din Kültürü','Bilişim Teknolojileri','Hayat Bilgisi','Oyun ve Fiziki Etkinlikler'].map((ad,i)=>({id:'l'+i,ad}));
-  return{dersListesi,dersProgrami:schedule(),dersSaatleri:[{id:'ayarlar',donemler:times}],nobetYerleri:d.places,nobetAtamalari:d.rows,evrak,duyurular,sinavlar,denemeSinavlari,yoklama,hatirlaticilar,gorevler,notlar,odevTakip,notCizelgesi,kurulKomisyonlar,depolamaAyarlari:[{id:'ayarlar',mesaj:{MB:100,aktif:true},duyuru:{MB:100,aktif:true},dokuman:{MB:100,aktif:true},takvim:{MB:100,aktif:true}}]};
+  return{dersListesi,dersProgrami:schedule(),dersSaatleri:[{id:'ayarlar',donemler:times}],nobetYerleri:d.places,nobetAtamalari:d.rows,evrak,duyurular,sinavlar,denemeSinavlari,yoklama,hatirlaticilar,gorevler,notlar,odevTakip,notCizelgesi,kurulKomisyonlar,belirliGunler,depolamaAyarlari:[{id:'ayarlar',mesaj:{MB:100,aktif:true},duyuru:{MB:100,aktif:true},dokuman:{MB:100,aktif:true},takvim:{MB:100,aktif:true}}]};
 };
 window.__GUIDE_SEED__=function(extra){
   const o={ogretmenler:teachers,siniflar:classes,veliler:students,bransListesi:[...new Set(teachers.map(t=>t.brans))].map((b,i)=>({id:'x'+i,ad:b}))};

@@ -1,6 +1,6 @@
-/* Koruk Asistan — Belirli Gün ve Haftalar katalog veri kaynağı
+/* Koruk Asistan — Belirli Gün ve Haftalar katalog veri kaynağı ve "Yeni etkinlik" penceresi
  * Hazır katalog + otomatik tarih üretimi + manuel ekleme.
- * Mevcut çizelge formunun doğrudan veri kaynağıdır; ayrı bridge/patch yoktur.
+ * Kayıt biçimi ve CizelgelerService.kayitKaydet çağrıları değişmedi; ortak parçalar ClassicCizelgelerParity.ui üzerinden gelir.
  */
 (function(global){
 'use strict';
@@ -25,29 +25,89 @@ function yearForMonth(startYear,month){return Number(startYear)+(month<9?1:0)}
 function parseSourceDate(source){const s=String(source||'').replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();const nums=s.replace(/\s*\d{4}\s*$/,'').match(/\d{1,2}/g)||[];return nums.length?{start:Number(nums[0]),end:Number(nums.length>1?nums[1]:nums[0])}:null}
 function datesFor(item,startYear){const month=MNUM[item.ay],p=parseSourceDate(item.kaynakTarih);if(!month||!p)return{baslangic:'',bitis:'',gosterim:item.kaynakTarih};const sy=yearForMonth(startYear,month),em=p.end<p.start?(month===12?1:month+1):month,ey=p.end<p.start&&month===12?sy+1:sy;const baslangic=`${sy}-${String(month).padStart(2,'0')}-${String(p.start).padStart(2,'0')}`,bitis=`${ey}-${String(em).padStart(2,'0')}-${String(p.end).padStart(2,'0')}`;return{baslangic,bitis,gosterim:item.kaynakTarih}}
 function currentStartYear(){const d=new Date(),y=d.getFullYear();return String(d.getMonth()+1>=9?y:y-1)}
-function field(label,input){return `<label class="ka-field"><span class="ka-field__label">${label}</span>${input}</label>`}
-function manualTeachers(){return `<div class="ka-stack" style="max-height:190px;overflow:auto;border:1px solid var(--ka-border);border-radius:12px;padding:8px">${arr('ogretmenler').slice().sort((a,b)=>`${a.ad||''} ${a.soyad||''}`.localeCompare(`${b.ad||''} ${b.soyad||''}`,'tr')).map(o=>`<label class="ka-row"><input type="checkbox" name="manualOgretmenIdler" value="${esc(o.id)}"><span>${esc(`${o.ad||''} ${o.soyad||''}`.trim())}</span></label>`).join('')||'<span class="ka-muted">Öğretmen bulunamadı.</span>'}</div>`}
-function optionHtml(start){return CATALOG.map(item=>{const d=datesFor(item,start);return `<option value="${esc(item.id)}" data-baslangic="${esc(d.baslangic)}" data-bitis="${esc(d.bitis)}">${esc(item.ay)} — ${esc(item.ad)} (${esc(item.kaynakTarih)})</option>`}).join('')}
-function catalogModal(){const years=academicYears(),start=currentStartYear();return `<div class="ka-modal-backdrop" data-belirli-katalog-modal style="z-index:1450"><form class="ka-modal" data-belirli-katalog-form><div class="ka-modal__header"><h2>Yeni Etkinlik</h2></div><div class="ka-modal__body ka-stack"><p class="ka-muted">Hazır listedeki gün ve haftaları seçtiğinizde tarih veya tarih aralığı otomatik doldurulur. Birden fazla seçim yapabilirsiniz. Listede olmayanlar için manuel alanları kullanın.</p>${field('Eğitim Yılı',`<select name="katalogYil">${years.map(y=>`<option value="${y.value}" ${y.value===start?'selected':''}>${esc(y.label)}</option>`).join('')}</select>`)}${field('Belirli Gün / Hafta',`<select name="katalogSecim" multiple size="7" style="min-height:190px">${optionHtml(start)}</select>`)}<div class="ka-card" style="padding:12px"><strong>Seçilen tarihler</strong><div data-katalog-selected class="ka-stack" style="margin-top:8px"><span class="ka-muted">Henüz seçim yapılmadı.</span></div></div><hr><div class="ka-card" style="padding:12px"><strong>Manuel Etkinlik Ekle</strong><p class="ka-muted">Listede olmayan bir gün/haftayı ayrıca ekleyebilirsiniz.</p>${field('Etkinlik Adı',`<input name="manualAd" placeholder="Örn. Okulun Kuruluş Yıl Dönümü">`)}<div class="ka-grid">${field('Başlangıç',`<input type="date" name="manualBaslangic">`)}${field('Bitiş (opsiyonel)',`<input type="date" name="manualBitis">`)}</div>${field('Sorumlu Öğretmenler',manualTeachers())}${field('Notlar',`<textarea name="manualAciklama" rows="3"></textarea>`)}</div></div><div class="ka-modal__footer"><button class="ka-btn ka-btn--secondary" type="button" data-belirli-katalog-cancel>Vazgeç</button><span class="ka-grow"></span><button class="ka-btn" type="submit">Seçimleri Kaydet</button></div></form></div>`}
-function renderSelected(modal){const sel=modal?.querySelector('[name="katalogSecim"]'),box=modal?.querySelector('[data-katalog-selected]');if(!sel||!box)return;const vals=[...sel.selectedOptions];box.innerHTML=vals.length?vals.map(o=>`<div class="ka-row ka-row--between"><span><strong>${esc(o.textContent)}</strong><small class="ka-muted" style="display:block">${esc(o.dataset.baslangic||'')}${o.dataset.bitis&&o.dataset.bitis!==o.dataset.baslangic?` → ${esc(o.dataset.bitis)}`:''}</small></span></div>`).join(''):'<span class="ka-muted">Henüz seçim yapılmadı.</span>'}
-function close(){document.querySelector('[data-belirli-katalog-modal]')?.remove();document.body.classList.remove('ka-cizelge-modal-open')}
-function open(){close();document.body.classList.add('ka-cizelge-modal-open');document.body.insertAdjacentHTML('beforeend',catalogModal());const modal=document.querySelector('[data-belirli-katalog-modal]');modal?.querySelector('[data-belirli-katalog-cancel]')?.addEventListener('click',close);modal?.addEventListener('click',e=>{if(e.target===modal)close()});const year=modal?.querySelector('[name="katalogYil"]'),sel=modal?.querySelector('[name="katalogSecim"]');const refresh=()=>{const old=[...sel.selectedOptions].map(o=>o.value),start=String(year.value);sel.innerHTML=optionHtml(start);[...sel.options].forEach(o=>{o.selected=old.includes(o.value)});renderSelected(modal)};year?.addEventListener('change',refresh);sel?.addEventListener('change',()=>renderSelected(modal));renderSelected(modal);modal?.querySelector('[data-belirli-katalog-form]')?.addEventListener('submit',save);return true}
-async function save(e){e.preventDefault();const f=e.currentTarget,fd=new FormData(f),start=String(fd.get('katalogYil')||currentStartYear()),wanted=new Set(fd.getAll('katalogSecim').map(String)),rows=arr('belirliGunler'),by=new Map(rows.filter(r=>r?.katalogId).map(r=>[String(r.katalogId),r]));try{const submit=f.querySelector('[type="submit"]');if(submit)submit.disabled=true;
+const norm=v=>String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ı/g,'i').trim();
+const ui=()=>global.ClassicCizelgelerParity?.ui||null;
+const existingByCatalog=()=>new Map(arr('belirliGunler').filter(r=>r?.katalogId).map(r=>[String(r.katalogId),r]));
+function rangeText(d,item){const u=ui();return d.baslangic&&u?u.beRange(d.baslangic,d.bitis):item.kaynakTarih}
+function rowHtml(item,start,exists){const d=datesFor(item,start);
+  return `<label class="kbe-item" data-kbe-item="${esc(item.id)}" data-kbe-search="${esc(norm(`${item.ay} ${item.ad} ${item.kaynakTarih}`))}"><input type="checkbox" name="katalogSecim" value="${esc(item.id)}"><span class="kbe-item__box" aria-hidden="true"></span><span class="kbe-item__text"><b>${esc(item.ad)}</b><small data-kbe-range>${esc(rangeText(d,item))}</small></span>${exists?'<em class="kbe-item__tag">Eklendi</em>':''}</label>`}
+function listHtml(start){const by=existingByCatalog();
+  return MONTHS.map(m=>{const items=CATALOG.filter(i=>i.ay===m);return items.length?`<section class="kbe-month" data-kbe-month><h4>${esc(m)}<small>${items.length}</small></h4>${items.map(i=>rowHtml(i,start,by.has(i.id))).join('')}</section>`:''}).join('')}
+function sheetHtml(){const u=ui(),years=academicYears(),start=currentStartYear(),items=u.teacherItems();
+  return `<div class="ka-modal-backdrop" data-belirli-katalog-modal data-cizelge-modal style="z-index:1450"><form class="ka-modal kcz-form kbe-sheet kbe-new" data-belirli-katalog-form data-kbe-tab="liste" role="dialog" aria-modal="true" aria-label="Yeni etkinlik">
+  <div class="ka-modal__header"><h2>Yeni etkinlik</h2></div>
+  <div class="ka-modal__body ka-stack">
+  <div class="kbe-tabs" role="tablist" aria-label="Ekleme yöntemi"><button type="button" role="tab" class="active" aria-selected="true" data-kbe-tab-btn="liste">Hazır listeden</button><button type="button" role="tab" aria-selected="false" data-kbe-tab-btn="manuel">Kendi etkinliğim</button></div>
+  <div class="ka-stack" data-kbe-panel="liste">
+    <p class="kbe-lead">Tarihler eğitim yılına göre otomatik doldurulur. Birden fazla etkinlik seçebilirsiniz.</p>
+    ${u.field('Eğitim yılı',`<select name="katalogYil">${years.map(y=>`<option value="${y.value}" ${y.value===start?'selected':''}>${esc(y.label)}</option>`).join('')}</select>`)}
+    <label class="kbe-search"><svg class="kcl-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input type="search" data-kbe-search-input placeholder="Etkinlik veya ay ara" autocomplete="off" enterkeyhint="search" aria-label="Etkinlik veya ay ara"></label>
+    <div class="kcz-quick" role="group" aria-label="Hızlı seçim"><button class="kcz-quick__btn" type="button" data-kbe-select="visible">Görünenleri seç</button><button class="kcz-quick__btn is-clear" type="button" data-kbe-select="clear">Temizle</button></div>
+    <div class="kbe-pick" data-kbe-pick>${listHtml(start)}</div>
+    <p class="kbe-none" data-kbe-nomatch hidden>Aramaya uyan etkinlik yok.</p>
+    <details class="kbe-assign"><summary><span>Sorumlu öğretmen ata</span><span class="kcz-count" data-kcz-count="katalogOgretmenIdler" data-kcz-empty="İsteğe bağlı"></span></summary>${u.kczPicker('katalogOgretmenIdler',items,[],{filter:true,emptyText:'Öğretmen bulunamadı.'})}<small class="ka-muted">Seçtiğiniz öğretmenler, işaretlediğiniz tüm etkinliklere atanır.</small></details>
+  </div>
+  <div class="ka-stack" data-kbe-panel="manuel" hidden>
+    <p class="kbe-lead">Listede olmayan bir gün veya haftayı kendiniz ekleyin.</p>
+    ${u.field('Etkinlik adı',`<input name="manualAd" maxlength="140" autocomplete="off" placeholder="Örn. Okulun kuruluş yıl dönümü">`)}
+    <div class="kbe-dates"><div class="ka-grid">${u.field('Başlangıç tarihi',`<input type="date" name="manualBaslangic">`)}${u.field('Bitiş tarihi (opsiyonel)',`<input type="date" name="manualBitis">`)}</div><p class="kbe-hint" data-kbe-hint aria-live="polite"></p></div>
+    ${u.pickField('Sorumlu öğretmenler','manualOgretmenIdler','Seçilmedi',u.kczPicker('manualOgretmenIdler',items,[],{filter:true,emptyText:'Öğretmen bulunamadı.'}))}
+    ${u.field('Notlar',`<textarea name="manualAciklama" rows="3"></textarea>`)}
+  </div>
+  </div>
+  <div class="ka-modal__footer"><span class="kbe-count" data-kbe-count aria-live="polite">Seçim yok</span><span class="ka-grow"></span><button class="ka-btn ka-btn--secondary" type="button" data-belirli-katalog-cancel>Vazgeç</button><button class="ka-btn" type="submit" data-kbe-submit>Seçilenleri ekle</button></div></form></div>`}
+function close(){document.querySelectorAll('[data-belirli-katalog-modal]').forEach(el=>el.remove());document.body.classList.remove('ka-cizelge-modal-open')}
+function setTab(f,tab){f.dataset.kbeTab=tab;f.querySelectorAll('[data-kbe-tab-btn]').forEach(b=>{const on=b.dataset.kbeTabBtn===tab;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on))});f.querySelectorAll('[data-kbe-panel]').forEach(p=>{p.hidden=p.dataset.kbePanel!==tab});const s=f.querySelector('[data-kbe-submit]');if(s)s.textContent=tab==='liste'?'Seçilenleri ekle':'Etkinliği ekle';refreshCount(f)}
+function refreshCount(f){const out=f.querySelector('[data-kbe-count]');if(!out)return;if((f.dataset.kbeTab||'liste')==='liste'){const n=f.querySelectorAll('input[name="katalogSecim"]:checked').length;out.textContent=n?`${n} etkinlik seçildi`:'Seçim yok';out.classList.toggle('is-set',n>0)}else{const ok=!!f.querySelector('[name="manualAd"]')?.value.trim()&&!!f.querySelector('[name="manualBaslangic"]')?.value;out.textContent=ok?'1 etkinlik eklenecek':'Ad ve başlangıç tarihi girin';out.classList.toggle('is-set',ok)}}
+function filterList(f){const q=norm(f.querySelector('[data-kbe-search-input]')?.value),items=[...f.querySelectorAll('[data-kbe-item]')];items.forEach(el=>{el.hidden=!!q&&!el.dataset.kbeSearch.includes(q)});f.querySelectorAll('[data-kbe-month]').forEach(m=>{m.hidden=![...m.querySelectorAll('[data-kbe-item]')].some(el=>!el.hidden)});const none=f.querySelector('[data-kbe-nomatch]');if(none)none.hidden=items.some(el=>!el.hidden)}
+function refreshRanges(f){const start=String(f.querySelector('[name="katalogYil"]')?.value||currentStartYear());f.querySelectorAll('[data-kbe-item]').forEach(el=>{const item=CATALOG.find(i=>i.id===el.dataset.kbeItem),out=el.querySelector('[data-kbe-range]');if(item&&out)out.textContent=rangeText(datesFor(item,start),item)})}
+function bindManualDates(f){const u=ui(),s=f.querySelector('[name="manualBaslangic"]'),e=f.querySelector('[name="manualBitis"]'),out=f.querySelector('[data-kbe-hint]');if(!u||!s||!e||!out)return;
+  const sync=()=>{const a=u.dayIndex(s.value),b=u.dayIndex(e.value);let msg='',bad=false;e.min=s.value||'';
+    if(Number.isFinite(a)&&e.value&&Number.isFinite(b)){if(b<a){bad=true;msg='Bitiş tarihi başlangıçtan önce olamaz.'}else if(b>a)msg=`${u.beWeekday(a)} – ${u.beWeekday(b)} · ${b-a+1} gün`;else msg=`${u.beWeekday(a)} · tek gün`}
+    else if(Number.isFinite(a))msg=`${u.beWeekday(a)} · tek gün`;
+    out.textContent=msg;out.classList.toggle('is-bad',bad);refreshCount(f)};
+  s.addEventListener('input',sync);e.addEventListener('input',sync);sync()}
+function open(){const u=ui();if(!u){global.toast?.('Etkinlik ekranı hazır değil. Sayfayı yenileyip tekrar deneyin.');return false}
+  close();u.lockModal();document.body.insertAdjacentHTML('beforeend',sheetHtml());
+  const modal=document.querySelector('[data-belirli-katalog-modal]'),f=modal?.querySelector('[data-belirli-katalog-form]');if(!modal||!f)return false;
+  u.bindPickers(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)close()});
+  modal.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+  f.querySelector('[data-belirli-katalog-cancel]')?.addEventListener('click',close);
+  f.querySelectorAll('[data-kbe-tab-btn]').forEach(b=>b.addEventListener('click',()=>setTab(f,b.dataset.kbeTabBtn)));
+  f.querySelector('[name="katalogYil"]')?.addEventListener('change',()=>refreshRanges(f));
+  f.querySelector('[data-kbe-search-input]')?.addEventListener('input',()=>filterList(f));
+  f.querySelectorAll('[data-kbe-select]').forEach(b=>b.addEventListener('click',()=>{const clear=b.dataset.kbeSelect==='clear';f.querySelectorAll('[data-kbe-item]').forEach(el=>{const cb=el.querySelector('input');if(!cb)return;if(clear)cb.checked=false;else if(!el.hidden)cb.checked=true});refreshCount(f)}));
+  f.querySelector('[data-kbe-pick]')?.addEventListener('change',()=>refreshCount(f));
+  f.querySelectorAll('[name="manualAd"]').forEach(i=>i.addEventListener('input',()=>refreshCount(f)));
+  bindManualDates(f);refreshCount(f);
+  f.addEventListener('submit',save);return true}
+async function save(e){e.preventDefault();const f=e.currentTarget,fd=new FormData(f),tab=f.dataset.kbeTab||'liste',submit=f.querySelector('[type="submit"]'),svc=global.CizelgelerService;
+  try{if(submit)submit.disabled=true;let added=0;
 /*
- * ÖNEMLİ: Seçim penceresi artık mevcut katalog kayıtlarını silmez.
- * Kullanıcı bu ekranda yeni etkinlik ekliyor; seçilmeyen mevcut kayıtlar korunur.
+ * ÖNEMLİ: Bu pencere mevcut katalog kayıtlarını silmez.
+ * Kullanıcı yeni etkinlik ekliyor; seçilmeyen mevcut kayıtlar korunur.
  * Böylece örneğin mevcut 10 etkinliğe 2 yeni etkinlik eklendiğinde diğer 8 etkinlik kaybolmaz.
  */
-for(const item of CATALOG){
-  if(!wanted.has(item.id))continue;
-  const existing=by.get(item.id),d=datesFor(item,start);
-  const payload={ad:item.ad,tarihBaslangic:d.baslangic,tarihBitis:d.bitis===d.baslangic?'':d.bitis,ogretmenIdler:existing?.ogretmenIdler||[],aciklama:existing?.aciklama||`Hazır katalog: ${item.kaynakTarih}`,katalogId:item.id,katalogAy:item.ay,katalogKaynakTarih:item.kaynakTarih,katalogEgitimYili:start,kontroller:existing?.kontroller||[false]};
-  await global.CizelgelerService.kayitKaydet('belirliGunler',existing?.id||null,payload);
-}
-const manualAd=String(fd.get('manualAd')||'').trim();
-if(manualAd){const bas=String(fd.get('manualBaslangic')||'');if(!bas)throw new Error('Manuel etkinlik için başlangıç tarihi girin.');await global.CizelgelerService.kayitKaydet('belirliGunler',null,{ad:manualAd,tarihBaslangic:bas,tarihBitis:String(fd.get('manualBitis')||''),ogretmenIdler:fd.getAll('manualOgretmenIdler').map(String).filter(Boolean),aciklama:String(fd.get('manualAciklama')||'').trim(),kontroller:[false],manuel:true})}
-global.toast?.('Belirli gün ve hafta seçimleri kaydedildi.');close();global.ClassicCizelgelerParity?.render?.(true)}catch(err){global.toast?.(err?.message==='yetkisiz'?'Bu işlem için yetkiniz yok.':(err?.message||'Seçimler kaydedilemedi.'))}finally{const submit=f.querySelector('[type="submit"]');if(submit)submit.disabled=false}}
-function installTheme(){if(document.getElementById('belirli-gunler-theme-fix'))return;const style=document.createElement('style');style.id='belirli-gunler-theme-fix';style.textContent='[data-theme="dark"] .ka-cizelge-event-card .ka-cizelge-event-body>div,[data-theme="dark"] .ka-cizelge-event-card .ka-cizelge-event-body>section{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}[data-theme="dark"] .ka-cizelge-event-card .ka-cizelge-section-label{background:transparent!important;color:var(--ka-text-muted)!important}';document.head.appendChild(style)}
-function install(){installTheme();const parity=global.ClassicCizelgelerParity;if(!parity||parity.__belirliCatalogInstalled)return false;const original=parity.openEdit;if(typeof original!=='function')return false;parity.openEdit=function(type,id=''){if(type==='belirliGunler'&&!id)return open();return original.call(parity,type,id)};parity.__belirliCatalogInstalled=true;return true}
-let tries=0;const timer=setInterval(()=>{if(install()||++tries>120)clearInterval(timer)},100);global.BelirliGunlerCatalog={CATALOG,open,datesFor,install};
+  if(tab==='liste'){
+    const start=String(fd.get('katalogYil')||currentStartYear()),wanted=new Set(fd.getAll('katalogSecim').map(String)),assign=fd.getAll('katalogOgretmenIdler').map(String).filter(Boolean),by=existingByCatalog();
+    if(!wanted.size)throw new Error('Listeden en az bir etkinlik seçin.');
+    for(const item of CATALOG){
+      if(!wanted.has(item.id))continue;
+      const existing=by.get(item.id),d=datesFor(item,start);
+      const payload={ad:item.ad,tarihBaslangic:d.baslangic,tarihBitis:d.bitis===d.baslangic?'':d.bitis,ogretmenIdler:[...new Set([...(existing?.ogretmenIdler||[]),...assign])],aciklama:existing?.aciklama||`Hazır katalog: ${item.kaynakTarih}`,katalogId:item.id,katalogAy:item.ay,katalogKaynakTarih:item.kaynakTarih,katalogEgitimYili:start,kontroller:existing?.kontroller||[false]};
+      await svc.kayitKaydet('belirliGunler',existing?.id||null,payload);added++;
+    }
+  }else{
+    const ad=String(fd.get('manualAd')||'').trim(),bas=String(fd.get('manualBaslangic')||''),bit=String(fd.get('manualBitis')||'');
+    if(!ad)throw new Error('Etkinlik adı girin.');
+    if(!bas)throw new Error('Başlangıç tarihi girin.');
+    if(bit&&bit<bas)throw new Error('Bitiş tarihi başlangıçtan önce olamaz.');
+    await svc.kayitKaydet('belirliGunler',null,{ad,tarihBaslangic:bas,tarihBitis:bit,ogretmenIdler:fd.getAll('manualOgretmenIdler').map(String).filter(Boolean),aciklama:String(fd.get('manualAciklama')||'').trim(),kontroller:[false],manuel:true});added=1;
+  }
+  global.toast?.(added>1?`${added} etkinlik kaydedildi.`:'Etkinlik kaydedildi.');close();global.ClassicCizelgelerParity?.render?.(true)
+  }catch(err){global.toast?.(err?.message==='yetkisiz'?'Bu işlem için yetkiniz yok.':(err?.message||'Etkinlik kaydedilemedi.'))}finally{if(submit?.isConnected)submit.disabled=false}}
+/* Yeni etkinlik artık doğrudan ClassicCizelgelerParity.openEdit içinden bu pencereye gelir; yükleyici ile uyum için install korunur. */
+function install(){return true}
+global.BelirliGunlerCatalog={CATALOG,open,close,datesFor,install};
 })(window);
