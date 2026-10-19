@@ -94,6 +94,7 @@ assert.strictEqual(D.baglantilar.optik.apk,'https://github.com/okulyonetim/optik
 assert.strictEqual(D.baglantilar.pdf,'assets/guide/Koruk_Asistan_Kullanim_Kilavuzu.pdf','PDF kılavuzunun statik adresi tanımlı olmalı');
 assert(fs.existsSync(path.join(root,'scripts/guide_pdf.py')),'PDF üreticisi bulunmalı');
 assert(/guide_pdf\.build_pdf\(ROOT\)/.test(read('scripts/guide-build.py')),'guide-build.py PDF üreticisini çalıştırmalı');
+assert(/def draw_marks\(/.test(read('scripts/guide_pdf.py'))&&/geometri/.test(read('scripts/guide_pdf.py')),'PDF üreticisi numaralı işaretleri görsellerin üzerine çizmeli');
 
 /* ---------- 4) guide.js statik sözleşmesi: veri yazmaz, Firestore'a bağlanmaz, temayı bozmaz ---------- */
 const guideSrc=read('js/modules/guide.js');

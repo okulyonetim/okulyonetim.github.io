@@ -22,7 +22,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from PIL import Image as PILImage
+from PIL import Image as PILImage, ImageDraw, ImageFont
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4
@@ -187,26 +187,61 @@ class GuideDocTemplate(BaseDocTemplate):
             self.notify("TOCEntry", (0, flowable.getPlainText(), self.page))
 
 
-def load_image_png(source: Path, temp_dir: Path, index: int) -> Path:
+MARK_COLOR = (11, 95, 214, 255)
+MARK_RING = (255, 255, 255, 255)
+
+
+def draw_marks(im: PILImage.Image, rects: list, marks: list) -> PILImage.Image:
+    """Uygulamadaki ekranla aynı yerleşimle (geometri, % cinsinden) numaralı işaretleri görsele işler."""
+    if not rects or not marks:
+        return im
+    k = 3  # kenar yumuşatma için 3 kat büyük katmanda çiz, sonra küçült
+    w, h = im.size
+    layer = PILImage.new("RGBA", (w * k, h * k), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+    radius = max(15, round(w * 0.028)) * k
+    font = ImageFont.truetype(font_path, int(radius * 1.15))
+    line = max(3, round(w * 0.0045)) * k
+    for mark, rect in zip(marks, rects):
+        x, y, rw, rh = rect
+        x0, y0 = x / 100 * w * k, y / 100 * h * k
+        x1, y1 = x0 + rw / 100 * w * k, y0 + rh / 100 * h * k
+        d.rounded_rectangle((x0 - line, y0 - line, x1 + line, y1 + line), radius=6 * k, outline=MARK_RING, width=line * 2)
+        d.rounded_rectangle((x0, y0, x1, y1), radius=6 * k, outline=MARK_COLOR, width=line)
+        cx = min(max(x0 - 4 * k, radius + line), w * k - radius - line)
+        cy = min(max(y0 - 4 * k, radius + line), h * k - radius - line)
+        d.ellipse((cx - radius - line, cy - radius - line, cx + radius + line, cy + radius + line), fill=MARK_RING)
+        d.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), fill=MARK_COLOR)
+        d.text((cx, cy), str(int(mark.get("n", 0))), font=font, fill=MARK_RING, anchor="mm")
+    layer = layer.resize((w, h), PILImage.LANCZOS)
+    base = im.convert("RGBA")
+    base.alpha_composite(layer)
+    return base.convert("RGB")
+
+
+def load_image_png(source: Path, temp_dir: Path, index: int, rects=None, marks=None) -> Path:
     if not source.exists():
         raise FileNotFoundError(f"Ekran görüntüsü eksik: {source.relative_to(ROOT)}")
     target = temp_dir / f"guide-screen-{index:03d}.jpg"
     with PILImage.open(source) as im:
-        # JPEG 90 + 4:4:4 renk örneklemesi ekran yazılarının okunabilirliğini korurken PDF boyutunu düşürür.
-        im.convert("RGB").save(target, "JPEG", quality=90, optimize=True, progressive=True, subsampling=0)
+        marked = draw_marks(im.convert("RGB"), rects or [], marks or [])
+        # JPEG 86 + 4:4:4 renk örneklemesi ekran yazılarının okunabilirliğini korurken PDF boyutunu düşürür.
+        marked.save(target, "JPEG", quality=86, optimize=True, progressive=True, subsampling=0)
     return target
 
 
-def scaled_image(path: Path, max_width=7.0 * cm, max_height=15.0 * cm):
+def scaled_image(path: Path, max_width=9.6 * cm, max_height=22.0 * cm):
     with PILImage.open(path) as im:
         iw, ih = im.size
     scale = min(max_width / iw, max_height / ih, 1.0)
     return Image(str(path), width=iw * scale, height=ih * scale, hAlign="CENTER")
 
 
-def draw_screen(screen: dict, topic: dict, temp_dir: Path, counter: int, styles: dict):
+def draw_screen(screen: dict, topic: dict, temp_dir: Path, counter: int, styles: dict, geometry: dict | None = None):
     filename = screen.get("dosya", "")
-    png_path = load_image_png(IMAGE_DIR / filename, temp_dir, counter)
+    rects = (geometry or {}).get(screen.get("id"), [])
+    png_path = load_image_png(IMAGE_DIR / filename, temp_dir, counter, rects, screen.get("isaretler", []))
     image = scaled_image(png_path)
     legend = []
     for mark in screen.get("isaretler", []):
@@ -216,7 +251,7 @@ def draw_screen(screen: dict, topic: dict, temp_dir: Path, counter: int, styles:
     if not legend:
         legend = [Paragraph("Bu ekran için ayrıca numaralı işaret tanımlanmamış.", styles["legend"])]
     right = [Paragraph(para_text(screen.get("alt") or screen.get("baslik") or ""), styles["caption"]), Spacer(1, 5)] + legend
-    table = Table([[image, right]], colWidths=[7.25 * cm, CONTENT_W - 7.25 * cm], hAlign="LEFT")
+    table = Table([[image, right]], colWidths=[10.0 * cm, CONTENT_W - 10.0 * cm], hAlign="LEFT")
     table.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("LEFTPADDING", (0, 0), (-1, -1), 3),
@@ -314,10 +349,12 @@ def build_pdf(root: str | Path | None = None) -> Path:
                 for issue in topic["sorunlar"]:
                     story.append(Paragraph("<b>" + para_text(issue.get("s", "")) + "</b><br/>" + para_text(issue.get("c", "")), styles["body"]))
             if topic.get("ekranlar"):
-                story.append(Paragraph("Ekran görüntüleri ve numaralı açıklamalar", styles["h2"]))
-                for screen in topic["ekranlar"]:
+                for pos, screen in enumerate(topic["ekranlar"]):
                     screen_count += 1
-                    story.extend(draw_screen(screen, topic, tmp_path, screen_count, styles))
+                    block = draw_screen(screen, topic, tmp_path, screen_count, styles, data.get("geometri"))
+                    if pos == 0:  # başlık yeni sayfada, görselle birlikte başlasın
+                        block.insert(1, Paragraph("Ekran görüntüleri ve numaralı açıklamalar", styles["small"]))
+                    story.extend(block)
             related = topic.get("iliskili") or []
             if related:
                 related_names = [t.get("baslik") for t in data["konular"] if t.get("id") in related]
