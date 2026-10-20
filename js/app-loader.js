@@ -25,7 +25,7 @@ define('dashboard',['js/modules/school-live-status.js?v=1069','js/modules/dashbo
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/management.js?v=897']);
-define('communication',['js/modules/communication.js?v=840','js/modules/assistant.js']);
+define('communication',['js/modules/communication.js?v=841','js/modules/assistant.js']);
 define('transport',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/transport.js?v=955']);
 define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/food-menu.js?v=1039']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/documents.js']);
