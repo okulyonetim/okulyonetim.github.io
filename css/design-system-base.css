@@ -11797,6 +11797,10 @@ html #v2ModuleRoot .ka-home .kh-trial-live__row-main b{overflow:hidden;text-over
 html #v2ModuleRoot .ka-home .kh-trial-live__row-main small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);color:var(--gl-sub)}
 html #v2ModuleRoot .ka-home .kh-trial-live__row>strong{font-family:var(--ka-font-mono);font-size:var(--ka-fs-18);letter-spacing:var(--ka-ls-02);color:var(--gl-fg)}
 html #v2ModuleRoot .ka-home .kh-trial-live__row .kh-trial-live__bar{grid-column:1/-1;height:5px;margin-top:var(--ka-sp-2)}
+html #v2ModuleRoot .ka-home .kh-trial-live__total{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:var(--ka-sp-8);margin-top:var(--ka-sp-4)}
+html #v2ModuleRoot .ka-home .kh-trial-live__total small{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);color:var(--gl-sub)}
+html #v2ModuleRoot .ka-home .kh-trial-live__total b{font-family:var(--ka-font-mono);font-size:var(--ka-fs-14);font-weight:var(--ka-fw-900);color:var(--gl-fg)}
+html #v2ModuleRoot .ka-home .kh-trial-live__row .kh-trial-live__bar.is-total{height:3px;margin-top:0}
 html #v2ModuleRoot .ka-home .kh-trial-live__meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ka-sp-8);margin-top:var(--ka-sp-10)}
 html #v2ModuleRoot .ka-home .kh-trial-live__meta>span{display:grid;gap:var(--ka-sp-2);min-width:0;padding:var(--ka-sp-9) var(--ka-sp-10);border-radius:var(--ka-r-4);background:var(--gl-field);border:var(--ka-border-w) solid var(--gl-edge)!important}
 html #v2ModuleRoot .ka-home .kh-trial-live__meta small{font-variant-emoji:text;font-size:var(--ka-fs-9);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-05);color:var(--gl-sub)!important}
