@@ -12932,6 +12932,31 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .dlk-ekler{margin-top:auto;padding-top:10mm;font-size:11pt}
 .ka-report .dlk-ekler ol{margin:1mm 0 0;padding-left:6mm}
 
+/* ===== A4 FORM — Gezi planı / onayı / veli izni (.gzi-*) ===== */
+.ka-report .gzi-print{box-sizing:border-box;min-height:272mm;padding:10mm 8mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt}
+.ka-report .gzi-paper{box-sizing:border-box;color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt;line-height:1.4}
+.ka-report .gzi-ust{display:flex;flex-direction:column;align-items:center;text-align:center;margin:0 0 6mm}
+.ka-report .gzi-bilgi{display:flex;justify-content:space-between;gap:6mm;font-size:10.5pt}
+.ka-report .gzi-hitap{margin:8mm 0 4mm;text-align:center;font-weight:700}
+.ka-report .gzi-yazi{margin:0 0 3mm;text-align:justify;line-height:1.5;overflow-wrap:anywhere}
+.ka-report .gzi-ind{text-indent:12mm}
+.ka-report .gzi-imza{display:flex;flex-direction:column;align-items:flex-end;gap:1mm;margin-top:6mm;text-align:center;break-inside:avoid}
+.ka-report .gzi-title{margin:6mm 0 3mm;text-align:center;font-size:12pt;font-weight:700}
+.ka-report .gzi-tablo{width:100%;border-collapse:collapse;font-size:10pt}
+.ka-report .gzi-tablo th,.ka-report .gzi-tablo td{padding:1mm 2mm!important;border:1px solid var(--ka-report-text)!important;text-align:left!important;vertical-align:top;background:transparent!important;color:var(--ka-report-text)!important;font-size:10pt!important;line-height:1.3!important;overflow-wrap:anywhere}
+.ka-report .gzi-tablo th{width:36%;font-weight:700}
+.ka-report .gzi-tablo tr{break-inside:avoid}
+.ka-report .gzi-tablo .gzi-c{text-align:center!important}
+.ka-report .gzi-ek{margin-top:4mm}
+.ka-report .gzi-olur{display:flex;flex-direction:column;align-items:center;gap:1mm;margin-top:8mm;text-align:center;break-inside:avoid}
+.ka-report .gzi-olurb{letter-spacing:1.2mm}
+.ka-report .gzi-olurimza{margin-top:8mm}
+.ka-report .gzi-veli{box-sizing:border-box;min-height:88mm;padding:4mm 6mm;border-bottom:1px dashed var(--ka-report-text);break-inside:avoid}
+.ka-report .gzi-veli:last-child{border-bottom:0}
+.ka-report .gzi-vbaslik{margin:0 0 3mm;text-align:center;font-size:12pt;font-weight:700}
+.ka-report .gzi-vmakam{margin:0 0 3mm;text-align:center;font-weight:700}
+.ka-report .gzi-vmetin{margin:0 0 2mm;text-align:justify;line-height:1.5;text-indent:10mm}
+.ka-report .gzi-vimza{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2mm 6mm;margin-top:4mm;font-size:10.5pt}
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
 .bsg-root{
@@ -14152,6 +14177,13 @@ html[data-theme] #v2ModuleRoot .ka-committee-guide-item{display:block;padding:va
 html[data-theme] #v2ModuleRoot .ka-committee-guide-item>summary{cursor:pointer;display:flex;align-items:center;gap:var(--ka-sp-8);flex-wrap:wrap;min-height:44px}
 html[data-theme] #v2ModuleRoot .ka-committee-guide-item[open]>summary{margin-bottom:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .ka-committee-guide-item p{margin:var(--ka-sp-4) 0}
+/* ===== GEZİ PLANI (gzi-*) — sayfa (ttn-* sayfa stillerini paylaşır) ===== */
+html[data-theme] #v2ModuleRoot .gzi-page .gzi-sube{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) 3em auto;gap:var(--ka-sp-8);align-items:center}
+html[data-theme] #v2ModuleRoot .gzi-page .gzi-sube b{text-align:center}
+html[data-theme] #v2ModuleRoot .gzi-page .gzi-genel{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-8);flex-wrap:wrap}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-print{min-height:270mm;padding:0}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-paper{min-height:0}
+html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-tablo th,html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-tablo td{background:transparent!important;border:1px solid var(--ka-report-text)!important;color:var(--ka-report-text)!important}
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen
