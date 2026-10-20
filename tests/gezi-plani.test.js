@@ -51,3 +51,9 @@ test('Gezi Planı Oluştur sekmesi: ilk sekme, öğrenci çözümleme ve belge �
   const ot = G.BELGE.oturma(s); assert.match(ot, /Kafile K \(Kafile Başkanı\)/); assert.match(ot, /Ali Can \(6\/A\)/);
   assert.match(G.BELGE.plan(s), /06 XY 1/); assert.match(G.BELGE.plan(s), /<td colspan="3">2<\/td>/);
 });
+
+test('EK-10 beyanı ve EK-6 sözleşmesi resmî metinle üretilir', () => {
+  const s = { ...sample(), okul: 'Koruk Ortaokulu', il: 'Elazığ', ilce: 'Merkez', acente: 'Deneme Turizm', ucret: '12.500', saat: '07:00 - 18:00', araclar: [{ plaka: '23 AB 1', sofor: 'Şoför Ş' }] };
+  const b = G.BELGE.surucu(s); assert.match(b, /EK-10 SÜRÜCÜ\/MUAVİN\/REHBER/); assert.match(b, /Kabahatler Kanununun 35 inci/); assert.match(b, /Şoför Ş/);
+  const z = G.BELGE.sozlesme(s); assert.match(z, /EK-6 EĞİTİM KURUMLARI GEZİLERİ ÇERÇEVE SÖZLEŞMESİ/); assert.match(z, /Deneme Turizm/); assert.match(z, /12\.500/); assert.match(z, /07:00/); assert.match(z, /\(Merkez \/ Elazığ\)/);
+});

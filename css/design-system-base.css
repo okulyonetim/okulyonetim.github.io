@@ -12962,6 +12962,10 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .gzi-orta{text-align:center}
 .ka-report .gzi-beyan{margin-top:6mm}
 .ka-report .gzi-paper--tek .gzi-veli{min-height:110mm;border-bottom:0}
+.ka-report .gzi-madde{margin:3mm 0 1mm;font-size:11pt;font-weight:700}
+.ka-report .gzi-imza2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6mm;margin-top:10mm;text-align:center;break-inside:avoid}
+.ka-report .gzi-imza2>div{display:flex;flex-direction:column;gap:2mm}
+.ka-report .gzi-beyan th{width:46%}
 .ka-report .gzi-oturma td{height:13mm;width:23%;font-size:8pt!important;text-align:left!important;padding:.5mm 1.5mm!important}
 .ka-report .gzi-oturma .gzi-koridor{width:8%;border-top:0!important;border-bottom:0!important}
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
