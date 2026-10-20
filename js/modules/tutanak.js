@@ -13,7 +13,7 @@ const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{
 const device=()=>global.DeviceData;
 const isManager=()=>user().admin===true||!!global.PermissionService?.isManager?.();
 const MAX_IMZA=6;
-const FORM_KEYS=['baslik','olayTarih','olaySaat','yer','ders','anlatim','duzTarih','duzSaat','baslikOzel','girisOzel','kapanisOzel'];
+const FORM_KEYS=['baslik','olayTarih','olaySaat','yer','ders','anlatim','duzTarih','duzSaat','baslikOzel','girisOzel','kapanisOzel','bosluk','imzaBosluk'];
 const NOKTA='…………………………………………';
 // Hazır metinler: boş bırakılan yerler (………) kullanıcı tarafından doldurulur; metin yalnız görülen olayı yazar.
 const HAZIR=[
@@ -38,7 +38,7 @@ function nowTime(){const d=new Date();return`${pad(d.getHours())}:${pad(d.getMin
 function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return rows('ogretmenler').find(x=>String(x.id)===String(id))||null}
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
 function unvanOf(t){const b=String(t?.brans||'').trim();return b?(/öğretmen/i.test(b)?b:`${b} Öğretmeni`):''}
-function blank(){const t=teacher();return{id:'',baslik:'',olayTarih:today(),olaySaat:nowTime(),yer:'',ders:'',anlatim:'',duzTarih:today(),duzSaat:nowTime(),baslikOzel:'',girisOzel:'',kapanisOzel:'',imzalar:[{ad:teacherName(t),unvan:unvanOf(t)},{ad:'',unvan:''},{ad:'',unvan:''}]}}
+function blank(){const t=teacher();return{id:'',baslik:'',olayTarih:today(),olaySaat:nowTime(),yer:'',ders:'',anlatim:'',duzTarih:today(),duzSaat:nowTime(),baslikOzel:'',girisOzel:'',kapanisOzel:'',bosluk:'6',imzaBosluk:'20',imzalar:[{ad:teacherName(t),unvan:unvanOf(t)},{ad:'',unvan:''},{ad:'',unvan:''}]}}
 function ensure(){if(!state)state=blank();return state}
 function trDate(v){if(!v)return'';const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?v:`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`}
 function imzaSayisi(s){return(s.imzalar||[]).filter(x=>String(x.ad||'').trim()).length}
@@ -84,7 +84,7 @@ function viewHazirla(s){
  <article class="ka-card"><div class="ka-card__body ka-stack"><strong>📅 Düzenleme zamanı</strong><div class="ka-grid">${field('Düzenleme tarihi',input('duzTarih','date'))}${field('Düzenleme saati',input('duzSaat','time'))}</div><p class="ka-muted">Kapanış cümlesinde geçer: “İş bu tutanak … tarihinde, saat … sıralarında tarafımızca düzenlenerek kayıt altına alınmıştır.”</p></div></article>
  <article class="ka-card"><div class="ka-card__body ka-stack"><strong>💾 Kayıt adı</strong><div class="ttn-save">${input('baslik','text','Örn: 7/B kavga – 12 Eylül')}<button class="ka-btn" type="button" data-ttn-save>${s.id?'Değişiklikleri kaydet':'Kaydet'}</button></div></div></article>
  <footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-ttn-reset>${s.id?'Yeni tutanak':'Temizle'}</button><button class="ka-btn" type="button" data-ttn-print>🖨 Yazdır / PDF</button></footer>
- <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-ttn-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür. Metne dokunup doğrudan değiştirebilirsiniz.</p><div class="ttn-preview"><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="ttn-print">${paper(s,true)}</div></div></div></div></div></article>
+ <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-ttn-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür. Metne dokunup doğrudan değiştirebilirsiniz.</p><div class="ttn-gaps">${gapCtl('bosluk','Anlatım ile son paragraf arası',s)}${gapCtl('imzaBosluk','Son paragraf ile imza arası',s)}</div><div class="ttn-preview"><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="ttn-print">${paper(s,true)}</div></div></div></div></div></article>
  ${historyHtml()}`
 }
 function viewMetinler(){
@@ -102,6 +102,7 @@ function bind(root){
  root.querySelectorAll('[data-ttn-imza]').forEach(el=>el.addEventListener('input',()=>{const s=ensure(),i=Number(el.dataset.ttnImza);if(s.imzalar[i])s.imzalar[i][el.dataset.k]=el.value;updatePreview(root)}));
  const pv=root.querySelector('.ttn-preview');
  if(pv){pv.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-ttn-ed]');if(el&&SAYFA_NOKTA(String(el.innerText||''))){const r=document.createRange();r.selectNodeContents(el);const sel=global.getSelection();sel.removeAllRanges();sel.addRange(r)}});pv.addEventListener('input',e=>{const el=e.target.closest?.('[data-ttn-ed]');if(el)sheetEdit(root,el)});pv.addEventListener('paste',e=>{const el=e.target.closest?.('[data-ttn-ed]');if(!el)return;e.preventDefault();const t=(e.clipboardData||global.clipboardData)?.getData('text')||'';document.execCommand('insertText',false,t)})}
+ root.querySelectorAll('[data-ttn-gap]').forEach(b=>b.addEventListener('click',()=>{const st=ensure(),k=b.dataset.ttnGap;st[k]=String(Math.max(0,Math.min(150,gapOf(st,k)+Number(b.dataset.d))));const v=root.querySelector(`[data-ttn-gapv="${k}"]`);if(v)v.textContent=`${st[k]} mm`;updatePreview(root)}))
  root.querySelector('[data-ttn-zoom]')?.addEventListener('click',()=>{zoomFull=!zoomFull;const b=root.querySelector('[data-ttn-zoom]');if(b)b.textContent=zoomFull?'Sayfaya sığdır':'Yakınlaştır';fit(root)})
  root.querySelectorAll('[data-ttn-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.ttnTab;render(root)}));
  root.querySelectorAll('[data-ttn-tpl]').forEach(b=>b.addEventListener('click',()=>{const h=HAZIR[Number(b.dataset.ttnTpl)],s=ensure();if(!h)return;if(String(s.anlatim||'').trim()&&!confirm('Anlatım alanındaki metin bu kalıpla değiştirilsin mi?'))return;s.anlatim=h.metin;if(h.yer&&!String(s.yer||'').trim())s.yer=h.yer;if(!String(s.baslik||'').trim())s.baslik=h.ad;tab='hazirla';render(root);global.toast?.('Hazır metin forma eklendi.')}));
@@ -119,6 +120,9 @@ function bind(root){
  root.querySelectorAll('[data-ttn-del]').forEach(b=>b.addEventListener('click',async()=>{const r=rows(T).find(x=>x.id===b.dataset.ttnDel);if(!r||!confirm(`“${r.baslik||'Tutanak'}” silinsin mi?`))return;try{await device().remove(T,global.COL.tutanaklar,r.id);if(state?.id===r.id)state=blank();global.toast?.('Tutanak silindi.');render(root)}catch(e){global.toast?.('Silinemedi: '+(e?.message||e))}}))
 }
 function fromRecord(r){const base=blank();return{...base,...Object.fromEntries(FORM_KEYS.map(k=>[k,r[k]||base[k]||''])),imzalar:(r.imzalayanlar||[]).map(x=>({ad:x.ad||'',unvan:x.unvan||''})),id:r.id}}
+const GAP_DEF={bosluk:6,imzaBosluk:20};
+function gapOf(s,k){const n=parseFloat(s[k]);return Number.isFinite(n)?Math.max(0,Math.min(150,n)):GAP_DEF[k]}
+function gapCtl(k,label,s){return`<div class="ttn-gap"><span>${label}</span><div><button class="ka-btn ka-btn--secondary" type="button" data-ttn-gap="${k}" data-d="-4" aria-label="${label} azalt">−</button><b data-ttn-gapv="${k}">${gapOf(s,k)} mm</b><button class="ka-btn ka-btn--secondary" type="button" data-ttn-gap="${k}" data-d="4" aria-label="${label} artır">+</button></div></div>`}
 function fit(root){
  const box=root?.querySelector('.ttn-preview'),wrap=box?.querySelector('.ttn-sheetwrap'),sh=wrap?.querySelector('.ttn-sheet');if(!sh)return;
  sh.style.transform='';const w=sh.offsetWidth,k=zoomFull?1:Math.min(1,(box.clientWidth-2)/w);
@@ -148,7 +152,7 @@ function paper(s,edit){
  const anlatim=String(s.anlatim||'').trim(),ed=(k)=>edit?` contenteditable="true" spellcheck="false" data-ttn-ed="${k}"`:'';
  const dots=`${NOKTA}${NOKTA}`;
  const body=anlatim?esc(anlatim):(edit?dots:`<span class="ttn-dots">${dots}</span>`);
- return`<article class="ttn-paper"><h1 class="ttn-title"${ed('baslik')}>${esc(s.baslikOzel||BASLIK)}</h1><p class="ttn-intro"${ed('intro')}>${esc(s.girisOzel||giris(s))}</p><div class="ttn-body${!anlatim&&edit?' ttn-dots':''}"${ed('body')}>${body}</div><p class="ttn-close"${ed('close')}>${esc(s.kapanisOzel||kapanis(s))}</p><div class="ttn-sign" style="--ttn-n:${list.length}">${list.map(x=>{const e=edit&&x.i>=0;return`<div><b class="ttn-imza-l">İmza</b><span${e?ed('ad:'+x.i):''}>${esc(x.ad)||'…………………………'}</span><b${e?ed('unvan:'+x.i):''}>${esc(x.unvan)}</b></div>`}).join('')}</div></article>`
+ return`<article class="ttn-paper"><h1 class="ttn-title"${ed('baslik')}>${esc(s.baslikOzel||BASLIK)}</h1><p class="ttn-intro"${ed('intro')}>${esc(s.girisOzel||giris(s))}</p><div class="ttn-body${!anlatim&&edit?' ttn-dots':''}" style="margin-bottom:${gapOf(s,'bosluk')}mm"${ed('body')}>${body}</div><p class="ttn-close"${ed('close')}>${esc(s.kapanisOzel||kapanis(s))}</p><div class="ttn-sign" style="--ttn-n:${list.length};margin-top:${gapOf(s,'imzaBosluk')}mm">${list.map(x=>{const e=edit&&x.i>=0;return`<div><b class="ttn-imza-l">İmza</b><span${e?ed('ad:'+x.i):''}>${esc(x.ad)||'…………………………'}</span><b${e?ed('unvan:'+x.i):''}>${esc(x.unvan)}</b></div>`}).join('')}</div></article>`
 }
 function reportBody(data){return`<div class="ttn-print">${paper(data||ensure())}</div>`}
 function print(data){

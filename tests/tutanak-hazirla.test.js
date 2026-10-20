@@ -49,3 +49,10 @@ test('sayfa ve kağıt CSS tokenlarla yazıldı (hex yok)',()=>{
   const m = require('vm'); // paper(s) yazdırma çıktısında contenteditable olmamalı
   assert(/function paper\(s,edit\)/.test(js) && /ed=\(k\)=>edit\?/.test(js));
 }
+
+// Ayarlanabilir boşluklar
+{
+  const fs = require('fs'), assert = require('assert');
+  const js = fs.readFileSync('js/modules/tutanak.js', 'utf8');
+  assert(/data-ttn-gap/.test(js) && /imzaBosluk/.test(js) && /function gapOf/.test(js), 'boşluk ayarı olmalı');
+}

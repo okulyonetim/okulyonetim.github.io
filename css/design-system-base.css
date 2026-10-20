@@ -12907,10 +12907,10 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .ttn-paper{box-sizing:border-box;display:flex;flex-direction:column;flex:1 1 auto;min-height:230mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:12pt;line-height:1.6;text-align:left}
 .ka-report .ttn-paper .ttn-title{font-family:inherit!important;margin:0 0 8mm;text-align:center;font-size:14pt;font-weight:700;letter-spacing:.2mm}
 .ka-report .ttn-intro{margin:0 0 4mm;text-indent:12mm}
-.ka-report .ttn-body{margin:0 0 6mm;white-space:pre-wrap;overflow-wrap:anywhere;min-height:60mm}
+.ka-report .ttn-body{margin:0 0 6mm;white-space:pre-wrap;overflow-wrap:anywhere}
 .ka-report .ttn-dots{display:block;color:var(--ka-report-text);line-height:2.1;overflow-wrap:anywhere}
 .ka-report .ttn-close{margin:0;text-indent:12mm}
-.ka-report .ttn-sign{display:grid;grid-template-columns:repeat(var(--ttn-n,2),minmax(0,1fr));gap:6mm;margin-top:auto;padding:16mm 0 4mm}
+.ka-report .ttn-sign{display:grid;grid-template-columns:repeat(var(--ttn-n,2),minmax(0,1fr));gap:6mm;margin-top:20mm;padding:0 0 4mm}
 .ka-report .ttn-sign>div{display:flex;flex-direction:column;align-items:center;gap:1mm;text-align:center;min-width:0}
 .ka-report .ttn-sign b{font-size:11pt;font-weight:700;overflow-wrap:anywhere}
 .ka-report .ttn-sign span{display:block;font-size:11pt;line-height:6mm;min-height:6mm;overflow-wrap:anywhere}
@@ -14120,6 +14120,10 @@ html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl{display:grid;grid-template-col
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl>div{display:flex;flex-direction:column;gap:var(--ka-sp-4);min-width:0}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl small{color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-guide{margin:0;padding-left:var(--ka-sp-20);display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-gaps{display:grid;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-gap{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-gap>div{display:flex;align-items:center;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-gap b{min-width:3.5em;text-align:center}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-prevhead{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview{overflow-x:auto;width:100%;box-sizing:border-box;padding:0;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-surface-muted)}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheetwrap{margin:0 auto;overflow:clip}
