@@ -29,3 +29,13 @@ test('sayfa ve kağıt CSS tokenlarla yazıldı (hex yok)',()=>{
   assert.ok(a>0&&a<b&&c>0&&c<d);
   assert.ok(!/#[0-9a-f]{3,6}\b/i.test(css.slice(a,b)));assert.ok(!/#[0-9a-f]{3,6}\b/i.test(css.slice(c,d)));
 });
+
+// Çıktıda logo/okul adı olmamalı; önizleme metni her temada okunur olmalı
+{
+  const fs = require('fs'), assert = require('assert');
+  const js = fs.readFileSync('js/modules/tutanak.js', 'utf8');
+  const css = fs.readFileSync('css/design-system-base.css', 'utf8');
+  assert(!/ttn-brand/.test(js) && !/ttn-brand/.test(css), 'tutanakta logo/okul adı bloğu olmamalı');
+  assert(/\.ttn-paper \*\{color:var\(--ka-report-text\)/.test(css), 'önizleme metin rengi sabit olmalı');
+  assert(/öğretmen\/i\.test/.test(js), 'unvan tekrar eklenmemeli');
+}

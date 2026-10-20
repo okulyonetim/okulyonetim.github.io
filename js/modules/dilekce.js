@@ -78,7 +78,7 @@ function today(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()
 function trDate(v){if(!v)return'';const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?v:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`}
 function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return rows('ogretmenler').find(x=>String(x.id)===String(id))||null}
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
-function unvanOf(t){const b=String(t?.brans||'').trim();return b?`${b} Öğretmeni`:'Öğretmen'}
+function unvanOf(t){const b=String(t?.brans||'').trim();return b?(/öğretmen/i.test(b)?b:`${b} Öğretmeni`):'Öğretmen'}
 function okulAdi(){const r=global.ReportEngine?.schoolInfo?.();return String(r?.okulAdi||'').trim()}
 function blank(){const t=teacher();return{id:'',baslik:'',makam:okulAdi(),konu:'',metin:'',acilis:true,ad:teacherName(t),unvan:unvanOf(t),tarih:today(),adres:'',tel:'',tc:'',ekVar:'hayir',ekler:['']}}
 function ensure(){if(!state)state=blank();return state}

@@ -37,7 +37,7 @@ function today(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()
 function nowTime(){const d=new Date();return`${pad(d.getHours())}:${pad(d.getMinutes())}`}
 function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return rows('ogretmenler').find(x=>String(x.id)===String(id))||null}
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
-function unvanOf(t){const b=String(t?.brans||'').trim();return b?`${b} Öğretmeni`:''}
+function unvanOf(t){const b=String(t?.brans||'').trim();return b?(/öğretmen/i.test(b)?b:`${b} Öğretmeni`):''}
 function blank(){const t=teacher();return{id:'',baslik:'',olayTarih:today(),olaySaat:nowTime(),yer:'',ders:'',anlatim:'',duzTarih:today(),duzSaat:nowTime(),imzalar:[{ad:teacherName(t),unvan:unvanOf(t)},{ad:'',unvan:''},{ad:'',unvan:''}]}}
 function ensure(){if(!state)state=blank();return state}
 function trDate(v){if(!v)return'';const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?v:`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`}
@@ -128,10 +128,7 @@ function paper(s){
  const anlatim=String(s.anlatim||'').trim();
  return`<article class="ttn-paper"><h1 class="ttn-title">TUTANAKTIR</h1><p class="ttn-intro">${esc(giris(s))}</p><div class="ttn-body">${anlatim?esc(anlatim):`<span class="ttn-dots">${NOKTA}${NOKTA}</span>`}</div><p class="ttn-close">${esc(kapanis(s))}</p><div class="ttn-sign" style="--ttn-n:${list.length}">${list.map(x=>`<div><b class="ttn-imza-l">İmza</b><span>${esc(x.ad)||'…………………………'}</span><b>${esc(x.unvan)}</b></div>`).join('')}</div></article>`
 }
-function reportBody(data){
- const RE=global.ReportEngine,okul=String(RE?.schoolInfo?.().okulAdi||'').toLocaleUpperCase('tr'),logo=RE?.logoUrl?.()||'assets/logo.png';
- return`<div class="ttn-print"><div class="ttn-brand"><img src="${esc(logo)}" alt=""><div class="ttn-brand__name">${esc(okul)}</div></div>${paper(data||ensure())}</div>`
-}
+function reportBody(data){return`<div class="ttn-print">${paper(data||ensure())}</div>`}
 function print(data){
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
  const s=data||ensure();
