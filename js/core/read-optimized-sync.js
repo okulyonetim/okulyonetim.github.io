@@ -43,7 +43,7 @@ const EXTRA_TYPES=[
   'akademikTakvim','kontrolListeleri','kontrolListeTamamlama','denemeSonuclari',
   'testSonuclari','yillikPlanBasliklari','yillikPlanTanimlari',
   'ogretmenYillikPlanSecimleri','devamsizlikCizelgesi','yillikPlanNotlari',
-  'ogretmenListeSablon','ogretmenListeKayit','toplantiCizelgesi','idariBilgiler','veliGorusmeleri'
+  'ogretmenListeSablon','ogretmenListeKayit','toplantiCizelgesi','idariBilgiler','veliGorusmeleri','kurulKomisyonlar'
 ];
 
 function status(){
