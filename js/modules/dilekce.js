@@ -12,7 +12,7 @@ const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
 const device=()=>global.DeviceData;
 const isManager=()=>user().admin===true||!!global.PermissionService?.isManager?.();
-const FORM_KEYS=['baslik','makam','konu','metin','ad','unvan','tarih','adres','tel'];
+const FORM_KEYS=['baslik','makam','konu','metin','ad','unvan','tarih','adres','tel','hitapOzel','govdeOzel','kapanisOzel','bosluk','imzaBosluk'];
 const KAYIT_KEYS=[...FORM_KEYS];
 const KAPANIS='Gereğini bilgilerinize arz ederim.';
 const KATEGORILER=['İzin','Sağlık','Atama ve görevlendirme','Özlük','Belge talebi','Nöbet ve ders programı','Eğitim ve etkinlik','Şikâyet ve öneri'];
@@ -80,7 +80,7 @@ function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
 function unvanOf(t){const b=String(t?.brans||'').trim();return b?(/öğretmen/i.test(b)?b:`${b} Öğretmeni`):'Öğretmen'}
 function okulAdi(){const r=global.ReportEngine?.schoolInfo?.();return String(r?.okulAdi||'').trim()}
-function blank(){const t=teacher();return{id:'',baslik:'',makam:okulAdi(),konu:'',metin:'',acilis:true,ad:teacherName(t),unvan:unvanOf(t),tarih:today(),adres:'',tel:'',tc:'',ekVar:'hayir',ekler:['']}}
+function blank(){const t=teacher();return{id:'',baslik:'',makam:okulAdi(),konu:'',metin:'',acilis:true,ad:teacherName(t),unvan:unvanOf(t),tarih:today(),adres:'',tel:'',tc:'',ekVar:'hayir',ekler:[''],hitapOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'5',imzaBosluk:'14'}}
 function ensure(){if(!state)state=blank();return state}
 // "Öğretmeni" → "Öğretmeniyim", "Müdür" → "Müdürüm": 1. tekil kişi eki (ünlü uyumu).
 function ben(w){w=String(w||'').trim();if(!w)return'';const m=w.toLocaleLowerCase('tr').match(/[aeıioöuü](?=[^aeıioöuü]*$)/);if(!m)return w;const v={a:'ı','ı':'ı',e:'i',i:'i',o:'u',u:'u','ö':'ü','ü':'ü'}[m[0]],ends=/[aeıioöuüAEIİOÖUÜ]$/.test(w);return`${w}${ends?'y':''}${v}m`}
@@ -88,7 +88,7 @@ function acilisCumlesi(s){const u=String(s.unvan||'').trim();return`Okulunuz ${u
 function hitap(s){const m=String(s.makam||'').trim().toLocaleUpperCase('tr');if(!m)return'……………………… MÜDÜRLÜĞÜNE';return/(LÜĞÜNE|LİĞİNE|LIĞINA|LUĞUNA|MAKAMINA|KURULUNA|BAŞKANLIĞINA)$/.test(m)?m:`${m} MÜDÜRLÜĞÜNE`}
 function records(){const uid=user().uid,all=rows(T),mine=isManager()?all:all.filter(x=>x.olusturanUid===uid);return mine.slice().sort((a,b)=>String(b.tarih||'').localeCompare(String(a.tarih||''))||String(b.eklenmeTarihi||'').localeCompare(String(a.eklenmeTarihi||'')))}
 const norm=v=>String(v||'').toLocaleLowerCase('tr');
-let remoteAt=0;
+let remoteAt=0,zoomFull=false,resizeBound=false;
 function refreshRemote(){const now=Date.now();if(!navigator.onLine||!global.SyncEngine?.sync||now-remoteAt<45000)return;remoteAt=now;Promise.resolve(global.SyncEngine.sync([T],{force:true,full:true})).catch(e=>console.warn('[Dilekçe eşitleme]',e?.message||e))}
 async function prepare(){const SE=global.SyncEngine,col=global.COL?.dilekceKayitlari;if(!SE||!col)return;try{SE.register(T,col);await SE.localHydrate([T]);SE.schedule(100);refreshRemote()}catch(e){console.warn('[Dilekçe]',e?.message||e)}}
 const cleanEkler=s=>(s.ekVar==='evet'?(s.ekler||[]):[]).map(x=>String(x||'').trim()).filter(Boolean);
@@ -129,7 +129,7 @@ function viewHazirla(s){
  ${ekHtml(s)}
  <article class="ka-card"><div class="ka-card__body ka-stack"><strong>💾 Kayıt adı</strong><div class="ttn-save">${input('baslik','text','Örn: Yıllık izin – Temmuz')}<button class="ka-btn" type="button" data-dlk-save>${s.id?'Değişiklikleri kaydet':'Kaydet'}</button></div></div></article>
  <footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-dlk-reset>${s.id?'Yeni dilekçe':'Temizle'}</button><button class="ka-btn" type="button" data-dlk-print>🖨 Yazdır / PDF</button></footer>
- <article class="ka-card"><div class="ka-card__body ka-stack"><strong>Önizleme</strong><div class="ttn-preview ka-report" data-dlk-preview>${paper(s)}</div></div></article>
+ <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-dlk-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür. Metne dokunup doğrudan değiştirebilirsiniz.</p><div class="ttn-gaps">${gapCtl('bosluk','Dilekçe metni ile kapanış arası',s)}${gapCtl('imzaBosluk','Kapanış ile adres/imza arası',s)}</div><div class="ttn-preview" data-dlk-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="dlk-print">${paper(s,true)}</div></div></div></div></div></article>
  ${historyHtml()}`
 }
 function viewMetinler(){
@@ -142,16 +142,40 @@ function viewMetinler(){
 function render(root=document.getElementById('v2ModuleRoot')){
  if(!root)return false;const s=ensure();
  root.innerHTML=`<section class="vgf-page ttn-page dlk-page" data-dlk-page><header class="vgf-head"><div><h2>Dilekçe Oluştur</h2>${s.id?'<span class="ka-badge">Kayıtlı dilekçe düzenleniyor</span>':''}<p class="ka-muted">Okul adı, adınız ve unvanınız hesabınızdan gelir. Metni yazın ya da <b>Hazır Metinler</b>’den seçin; önizleme anında güncellenir.</p></div></header>${tabsHtml()}${tab==='metinler'?viewMetinler():viewHazirla(s)}</section>`;
- bind(root);return true
+ bind(root);fit(root);if(!resizeBound){resizeBound=true;global.addEventListener('resize',()=>fit(document.querySelector('[data-dlk-page]')))}
+ return true
 }
-function updatePreview(root){const box=root?.querySelector('[data-dlk-preview]');if(box)box.innerHTML=paper(ensure())}
+const GAP_DEF={bosluk:5,imzaBosluk:14};
+function gapOf(s,k){const n=parseFloat(s[k]);return Number.isFinite(n)?Math.max(0,Math.min(150,n)):GAP_DEF[k]}
+function gapCtl(k,label,s){return`<div class="ttn-gap"><span>${label}</span><div><button class="ka-btn ka-btn--secondary" type="button" data-dlk-gap="${k}" data-d="-4" aria-label="${label} azalt">−</button><b data-dlk-gapv="${k}">${gapOf(s,k)} mm</b><button class="ka-btn ka-btn--secondary" type="button" data-dlk-gap="${k}" data-d="4" aria-label="${label} artır">+</button></div></div>`}
+function fit(root){
+ const box=root?.querySelector('[data-dlk-preview]'),wrap=box?.querySelector('.ttn-sheetwrap'),sh=wrap?.querySelector('.ttn-sheet');if(!sh)return;
+ sh.style.transform='';const w=sh.offsetWidth,k=zoomFull?1:Math.min(1,(box.clientWidth-2)/w);
+ sh.style.transform=k<1?`scale(${k})`:'';wrap.style.width=`${w*k}px`;wrap.style.height=`${sh.offsetHeight*k}px`
+}
+function updatePreview(root){const box=root?.querySelector('[data-dlk-preview] .dlk-print');if(box)box.innerHTML=paper(ensure(),true);fit(root)}
+const NOKTALI=v=>/^[.…\s]*$/.test(v);
+function sheetEdit(root,el){
+ const s=ensure(),k=el.dataset.dlkEd,v=String(el.innerText||'').replace(/\u00a0/g,' ').replace(/\n+$/,''),sync=(key,val)=>{s[key]=val;const i=root.querySelector(`[data-dlk="${key}"]`);if(i)i.value=val},val=NOKTALI(v)?'':v.trim();
+ if(k==='hitap')s.hitapOzel=v.trim()===hitap(s)?'':v;
+ else if(k==='govde')s.govdeOzel=v;
+ else if(k==='kapanis')s.kapanisOzel=v.trim()===KAPANIS?'':v;
+ else if(k==='konu')sync('konu',val);
+ else if(['adres','tel','ad','unvan','tc'].includes(k))sync(k,val);
+ else if(k.startsWith('ek:')){const n=Number(k.slice(3));if(s.ekler[n]!==undefined){s.ekler[n]=val;const i=root.querySelector(`[data-dlk-ek="${n}"]`);if(i)i.value=val}}
+ fit(root)
+}
 function bind(root){
- root.querySelectorAll('[data-dlk]').forEach(el=>el.addEventListener('input',()=>{ensure()[el.dataset.dlk]=el.value;if(el.dataset.dlk!=='baslik')updatePreview(root)}));
- root.querySelector('[data-dlk-acilis]')?.addEventListener('change',e=>{ensure().acilis=e.target.checked;updatePreview(root)});
+ const pv=root.querySelector('[data-dlk-preview]');
+ if(pv){pv.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-dlk-ed]');if(el&&NOKTALI(String(el.innerText||''))){const r=document.createRange();r.selectNodeContents(el);const sel=global.getSelection();sel.removeAllRanges();sel.addRange(r)}});pv.addEventListener('input',e=>{const el=e.target.closest?.('[data-dlk-ed]');if(el)sheetEdit(root,el)});pv.addEventListener('paste',e=>{const el=e.target.closest?.('[data-dlk-ed]');if(!el)return;e.preventDefault();const t=(e.clipboardData||global.clipboardData)?.getData('text')||'';document.execCommand('insertText',false,t)})}
+ root.querySelectorAll('[data-dlk-gap]').forEach(b=>b.addEventListener('click',()=>{const st=ensure(),k=b.dataset.dlkGap;st[k]=String(Math.max(0,Math.min(150,gapOf(st,k)+Number(b.dataset.d))));const v=root.querySelector(`[data-dlk-gapv="${k}"]`);if(v)v.textContent=`${st[k]} mm`;updatePreview(root)}))
+ root.querySelector('[data-dlk-zoom]')?.addEventListener('click',()=>{zoomFull=!zoomFull;const b=root.querySelector('[data-dlk-zoom]');if(b)b.textContent=zoomFull?'Sayfaya sığdır':'Yakınlaştır';fit(root)})
+ root.querySelectorAll('[data-dlk]').forEach(el=>el.addEventListener('input',()=>{const st=ensure();st[el.dataset.dlk]=el.value;if(['metin','unvan'].includes(el.dataset.dlk))st.govdeOzel='';if(el.dataset.dlk==='makam')st.hitapOzel='';if(el.dataset.dlk!=='baslik')updatePreview(root)}));
+ root.querySelector('[data-dlk-acilis]')?.addEventListener('change',e=>{ensure().acilis=e.target.checked;ensure().govdeOzel='';updatePreview(root)});
  root.querySelectorAll('[data-dlk-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.dlkTab;render(root)}));
  root.querySelectorAll('[data-dlk-cat]').forEach(b=>b.addEventListener('click',()=>{tplCat=Number(b.dataset.dlkCat);render(root)}));
  root.querySelector('[data-dlk-tsearch]')?.addEventListener('input',e=>{tplQuery=e.target.value;const pos=e.target.selectionStart;render(root);const n=root.querySelector('[data-dlk-tsearch]');n?.focus();n?.setSelectionRange?.(pos,pos)});
- root.querySelectorAll('[data-dlk-tpl]').forEach(b=>b.addEventListener('click',()=>{const h=HAZIR[Number(b.dataset.dlkTpl)],s=ensure();if(!h)return;if(String(s.metin||'').trim()&&!confirm('Dilekçe metni bu hazır metinle değiştirilsin mi?'))return;s.metin=h.metin;if(!String(s.konu||'').trim())s.konu=h.konu;if(!String(s.baslik||'').trim())s.baslik=h.ad;tab='hazirla';render(root);global.toast?.('Hazır metin forma eklendi.')}));
+ root.querySelectorAll('[data-dlk-tpl]').forEach(b=>b.addEventListener('click',()=>{const h=HAZIR[Number(b.dataset.dlkTpl)],s=ensure();if(!h)return;if(String(s.metin||'').trim()&&!confirm('Dilekçe metni bu hazır metinle değiştirilsin mi?'))return;s.metin=h.metin;s.govdeOzel='';if(!String(s.konu||'').trim())s.konu=h.konu;if(!String(s.baslik||'').trim())s.baslik=h.ad;tab='hazirla';render(root);global.toast?.('Hazır metin forma eklendi.')}));
  root.querySelector('[data-dlk-ekvar]')?.addEventListener('change',e=>{const s=ensure();s.ekVar=e.target.value;if(!(s.ekler||[]).length)s.ekler=[''];render(root)});
  root.querySelectorAll('[data-dlk-ek]').forEach(el=>el.addEventListener('input',()=>{ensure().ekler[Number(el.dataset.dlkEk)]=el.value;updatePreview(root)}));
  root.querySelector('[data-dlk-ekadd]')?.addEventListener('click',()=>{const s=ensure();if(s.ekler.length<12)s.ekler.push('');render(root)});
@@ -165,12 +189,14 @@ function bind(root){
  root.querySelectorAll('[data-dlk-del]').forEach(b=>b.addEventListener('click',async()=>{const r=rows(T).find(x=>x.id===b.dataset.dlkDel);if(!r||!confirm(`“${r.baslik||'Dilekçe'}” silinsin mi?`))return;try{await device().remove(T,global.COL.dilekceKayitlari,r.id);if(state?.id===r.id)state=blank();global.toast?.('Dilekçe silindi.');render(root)}catch(e){global.toast?.('Silinemedi: '+(e?.message||e))}}))
 }
 const DOT='……………………………';
-function paper(s){
- const govde=[s.acilis?acilisCumlesi(s):'',String(s.metin||'').trim()].filter(Boolean).join(' ');
- const ekler=cleanEkler(s);
- return`<article class="dlk-paper"><h1 class="dlk-hitap">${esc(hitap(s))}</h1>${String(s.konu||'').trim()?`<p class="dlk-konu"><b>Konu:</b> ${esc(s.konu)}</p>`:''}<div class="dlk-body">${govde?esc(govde):`<span class="dlk-dots">${DOT}${DOT}</span>`}</div><p class="dlk-kapanis">${KAPANIS}</p>
- <div class="dlk-foot"><div class="dlk-adres"><b>Adres:</b><span>${esc(s.adres)||DOT}</span><span><b>Tel:</b> ${esc(s.tel)||'…………………'}</span></div><div class="dlk-imza"><span>${esc(trDate(s.tarih))||'…/…/……'}</span><b class="dlk-imza-l">İmza</b><span>${esc(s.ad)||DOT}</span><span>${esc(s.unvan)}</span><span><b>T.C.:</b> ${esc(s.tc)||'…………………'}</span></div></div>
- ${ekler.length?`<div class="dlk-ekler"><b>EKLER:</b><ol>${ekler.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`:''}</article>`
+function paper(s,edit){
+ const govde=s.govdeOzel!==undefined&&String(s.govdeOzel||'').trim()?String(s.govdeOzel).trim():[s.acilis?acilisCumlesi(s):'',String(s.metin||'').trim()].filter(Boolean).join(' ');
+ const ed=k=>edit?` contenteditable="true" spellcheck="false" data-dlk-ed="${k}"`:'';
+ const ekler=[];if(s.ekVar==='evet')(s.ekler||[]).forEach((x,i)=>{if(String(x||'').trim())ekler.push({t:x,i})});
+ const nk=(v,d,k)=>esc(v)||(edit?'':d);
+ return`<article class="dlk-paper"><h1 class="dlk-hitap"${ed('hitap')}>${esc(s.hitapOzel||hitap(s))}</h1>${String(s.konu||'').trim()?`<p class="dlk-konu"><b>Konu:</b> <span${ed('konu')}>${esc(s.konu)}</span></p>`:''}<div class="dlk-body${!govde&&edit?' dlk-dots':''}" style="margin-bottom:${gapOf(s,'bosluk')}mm"${ed('govde')}>${govde?esc(govde):(edit?DOT+DOT:`<span class="dlk-dots">${DOT}${DOT}</span>`)}</div><p class="dlk-kapanis"${ed('kapanis')}>${esc(s.kapanisOzel||KAPANIS)}</p>
+ <div class="dlk-foot" style="margin-top:${gapOf(s,'imzaBosluk')}mm"><div class="dlk-adres"><b>Adres:</b><span${ed('adres')}>${esc(s.adres)||DOT}</span><span><b>Tel:</b> <span${ed('tel')}>${esc(s.tel)||'…………………'}</span></span></div><div class="dlk-imza"><span>${esc(trDate(s.tarih))||'…/…/……'}</span><b class="dlk-imza-l">İmza</b><span${ed('ad')}>${esc(s.ad)||DOT}</span><span${ed('unvan')}>${esc(s.unvan)}</span><span><b>T.C.:</b> <span${ed('tc')}>${esc(s.tc)||'…………………'}</span></span></div></div>
+ ${ekler.length?`<div class="dlk-ekler"><b>EKLER:</b><ol>${ekler.map(x=>`<li${ed('ek:'+x.i)}>${esc(x.t)}</li>`).join('')}</ol></div>`:''}</article>`
 }
 function reportBody(data){return`<div class="dlk-print">${paper(data||ensure())}</div>`}
 function print(data){

@@ -14129,6 +14129,8 @@ html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview{overflow-x:auto;width:100%
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheetwrap{margin:0 auto;overflow:clip}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet{width:210mm;min-height:297mm;margin:0;padding:12mm 15mm;box-sizing:border-box;transform-origin:top left;box-shadow:var(--ka-shadow-md)}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .ttn-print{min-height:270mm;padding:0}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .dlk-print{min-height:270mm;padding:0}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .dlk-paper{min-height:0;flex:1 1 auto}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .ttn-paper{min-height:0;flex:1 1 auto}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet,html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet *{color:var(--ka-report-text)!important}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]{outline:none;border:0;background:transparent;border-radius:var(--ka-r-2);cursor:text}

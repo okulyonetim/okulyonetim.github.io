@@ -24,3 +24,12 @@ test('koleksiyon, kurallar, menü, rota, önbellek ve CSS tanımlı; yazım yaln
   const a=css.indexOf('/* ===== DİLEKÇE OLUŞTUR'),w=css.indexOf('/* ===== WEB ARAYÜZÜ'),c=css.indexOf('/* ===== A4 FORM — Dilekçe'),d=css.indexOf('/* ═══════════ SERVİS OTURMA');
   assert.ok(a>0&&a<w&&c>0&&c<d);assert.ok(!/#[0-9a-f]{3,6}\b/i.test(css.slice(a,w)));assert.ok(!/#[0-9a-f]{3,6}\b/i.test(css.slice(c,d)));
 });
+
+// Tam sayfa, düzenlenebilir önizleme ve ayarlanabilir boşluk
+{
+  const fs = require('fs'), assert = require('assert');
+  const js = fs.readFileSync('js/modules/dilekce.js', 'utf8');
+  assert(/data-dlk-ed/.test(js) && /function sheetEdit/.test(js), 'önizleme üzerinde düzenleme olmalı');
+  assert(/data-dlk-gap/.test(js) && /imzaBosluk/.test(js), 'boşluk ayarı olmalı');
+  assert(/govdeOzel/.test(js) && /hitapOzel/.test(js) && /kapanisOzel/.test(js), 'özel metinler saklanmalı');
+}
