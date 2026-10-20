@@ -18,15 +18,18 @@ const AMAC=[
  y=>`Gezi ile öğrencilerin ${y||'gezilecek yerin'} tarihî, kültürel ve doğal özelliklerini yerinde incelemeleri amaçlanmaktadır. Grup çalışması sayesinde sorumluluk, iş birliği ve arkadaşlık bağlarının güçlenmesi beklenmektedir.`,
  y=>`${y||'Gezi'} gezisi; öğrencilerin okul dışı öğrenme ortamlarında bilgi ve deneyim kazanmalarını, millî ve manevi değerleri benimsemelerini ve toplumsal yaşam kurallarını uygulayarak öğrenmelerini sağlayacaktır.`
 ];
-const blank=()=>({doc:'olustur',gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],kafile:'',kafileTel:'',il:'',okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:'',okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
+const okulB=()=>{const l=rows('okulBilgileri');return l.find(r=>r.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}};
+const makamOto=(il,ilce)=>(!String(ilce||'').trim()||/merkez/i.test(ilce))&&String(il||'').trim()?'valilik':'kaymakamlik';
+const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
  gTarih:'',yer:'',saat:'',program:'',amac:'',amacIdx:0,plaka:'',sofor:'',kira:'',belediye:false,subeler:[{sube:'',k:'',e:''}],veli:'',idareci:'',ogretmenler:[''],ilgiOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'8'});
 let state=null,zoomFull=false,resizeBound=false;
 function pad(n){return String(n).padStart(2,'0')}
 function today(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 function trDate(v){if(!v)return'';const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?v:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`}
-function load(){try{const r=JSON.parse(global.localStorage?.getItem(KEY)||'null');if(r&&typeof r==='object')return{...blank(),...r,ogrenciler:Array.isArray(r.ogrenciler)?r.ogrenciler:[],araclar:Array.isArray(r.araclar)&&r.araclar.length?r.araclar:blank().araclar,subeler:Array.isArray(r.subeler)&&r.subeler.length?r.subeler:[{sube:'',k:'',e:''}],ogretmenler:Array.isArray(r.ogretmenler)&&r.ogretmenler.length?r.ogretmenler:['']}}catch(_){}return blank()}
+function load(){try{const r=JSON.parse(global.localStorage?.getItem(KEY)||'null');if(r&&typeof r==='object')return{...blank(),...r,secSiniflar:Array.isArray(r.secSiniflar)?r.secSiniflar:[],ogrenciler:Array.isArray(r.ogrenciler)?r.ogrenciler:[],araclar:Array.isArray(r.araclar)&&r.araclar.length?r.araclar:blank().araclar,subeler:Array.isArray(r.subeler)&&r.subeler.length?r.subeler:[{sube:'',k:'',e:''}],ogretmenler:Array.isArray(r.ogretmenler)&&r.ogretmenler.length?r.ogretmenler:['']}}catch(_){}return blank()}
 function persist(){try{global.localStorage?.setItem(KEY,JSON.stringify(ensure()))}catch(_){}}
 function ensure(){if(!state)state=load();return state}
+const NK=v=>String(v||'').trim();
 const num=v=>{const n=parseInt(v,10);return Number.isFinite(n)&&n>0?n:0};
 const ayrik=v=>String(v||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
 const toplam=s=>(s.subeler||[]).reduce((a,x)=>a+num(x.k)+num(x.e),0);
@@ -36,6 +39,17 @@ const dolu=a=>(a||[]).filter(x=>x&&(String(x.plaka||'').trim()||String(x.sofor||
 const plakalar=s=>dolu(s.araclar).map(x=>String(x.plaka||'').trim()).filter(Boolean).join(', ')||s.plaka;
 const soforler=s=>dolu(s.araclar).map(x=>String(x.sofor||'').trim()).filter(Boolean).join(', ')||s.sofor;
 const veliSayisi=s=>num(s.veli)||ayrik(s.veliler).length;
+const dogal=(a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true});
+function recount(s){(s.subeler||[]).forEach(x=>{if(!x.sid)return;const l=(s.ogrenciler||[]).filter(o=>o.sid===x.sid);x.k=String(l.filter(o=>o.g==='Kız').length);x.e=String(l.filter(o=>o.g==='Erkek').length)})}
+function syncSecim(s){
+ const sec=new Set(s.secSiniflar||[]),cl=rows('siniflar').filter(c=>sec.has(c.id)).sort(dogal);
+ const tek=rows('veliler');
+ const app=cl.flatMap(c=>tek.filter(v=>v.sinifId===c.id).sort((a,b)=>(parseInt(a.ogrenciNo,10)||0)-(parseInt(b.ogrenciNo,10)||0)).map(v=>({sid:c.id,sinif:c.ad||'',no:String(v.ogrenciNo||''),ad:v.ogrenciAdi||'',tc:'',veli:v.veliAdi||'',tel:v.telefon||v.veliTelefon||'',g:v.cinsiyet||''})));
+ s.ogrenciler=[...(s.ogrenciler||[]).filter(x=>!x.sid),...app];
+ const elle=(s.subeler||[]).filter(x=>!x.sid&&(NK(x.sube)||num(x.k)||num(x.e)));
+ s.subeler=[...cl.map(c=>({sube:c.ad||'',sid:c.id,k:'',e:''})),...elle];if(!s.subeler.length)s.subeler=[{sube:'',k:'',e:''}];
+ recount(s)
+}
 function amacMetni(s){return AMAC[(s.amacIdx||0)%AMAC.length](String(s.yer||'').trim())}
 function tarihYer(s){return`${trDate(s.gTarih)||DOT} tarihinde ${String(s.yer||'').trim()||DOT}`}
 function ilgiMetni(s){return s.ilgiOzel||ILGI}
@@ -65,6 +79,7 @@ ${(sb.length?sb:[{sube:'',k:'',e:''}]).map(x=>`<tr><td class="gzi-c">${esc(x.sub
 <tr><th>GEZİNİN AMACI</th><td colspan="3">${v(s.amac,'')}</td></tr>
 </tbody></table>`
 }
+function ustMakam(s){const il=NK(s.il),ilce=NK(s.ilce);return(s.makamTur==='valilik'?`${il||DOT} VALİLİĞİ`:`${ilce||DOT} KAYMAKAMLIĞI`).toLocaleUpperCase('tr')}
 function baslikPlan(s){return isDisi(s)?'İL DIŞI OKUL GEZİ PLANI':'OKUL GEZİ PLANI'}
 function veliBelge(s,o){
  o=o||{};const okul=String(s.okul||'').trim()||'……………………………………';
@@ -87,7 +102,6 @@ function veliKagit(s){
  const o=s.ogrenciler||[];
  return o.length?o.map(x=>sayfa(`<article class="gzi-paper gzi-paper--tek">${veliBelge(s,x)}</article>`)).join(''):sayfa(paperVeli(s))
 }
-const NK=v=>String(v||'').trim();
 function surucuKagit(s){
  const a=dolu(s.araclar);
  return(a.length?a:[{}]).map(x=>{const r=(l,d,n)=>`<tr><th>${l}</th><td>${esc(d)||n}</td></tr>`;
@@ -140,7 +154,7 @@ function paper(s,edit){
  const hitap=disi?String(s.makam||'').trim()||'…………………… İlçe Milli Eğitim Müdürlüğüne':`${okul} Müdürlüğüne`;
  const imza=disi?{ad:s.mudur,unvan:'Okul Müdürü'}:{ad:s.teklif,unvan:'Müdür Yardımcısı'};
  const olur=disi?{ad:'',unvan:String(s.makamUnvan||'').trim()||'İlçe Milli Eğitim Müdürü'}:{ad:s.mudur,unvan:'Okul Müdürü'};
- return`<article class="gzi-paper"><div class="gzi-ust"><b>T.C.</b><b>${esc(ilce.toLocaleUpperCase('tr'))} KAYMAKAMLIĞI</b><b>${esc(okul)} Müdürlüğü</b></div>
+ return`<article class="gzi-paper"><div class="gzi-ust"><b>T.C.</b><b>${esc(ustMakam(s))}</b><b>${esc(okul)} Müdürlüğü</b></div>
 <div class="gzi-bilgi"><span>Sayı : ${esc(s.sayi)||'821.04/……'}</span><span>${esc(trDate(s.yaziTarih))}</span></div><div class="gzi-bilgi"><span>Konu : Gezi Onayı</span></div>
 <p class="gzi-hitap">${esc(hitap.toLocaleUpperCase('tr'))}</p>
 <p class="gzi-yazi"><b>İlgi :</b> <span${ed('ilgi')}>${esc(ilgiMetni(s))}</span></p>
@@ -161,7 +175,8 @@ function print(data){
 function field(label,html,cls=''){return`<label class="ka-field ${cls}"><span class="ka-field__label">${esc(label)}</span>${html}</label>`}
 function input(key,type='text',ph=''){return`<input class="ka-input" type="${type}" value="${esc(ensure()[key])}" placeholder="${esc(ph)}" data-gz="${key}" autocomplete="off">`}
 function tabsHtml(s){return`<div class="ttn-tabs" role="tablist">${DOCS.map(([k,l])=>`<button type="button" role="tab" class="ka-btn ${s.doc===k?'':'ka-btn--secondary'}" aria-selected="${s.doc===k}" data-gz-doc="${k}">${l}</button>`).join('')}</div>`}
-function subeHtml(s){return`<div class="gzi-sube"><span class="ka-muted">Şube</span><span class="ka-muted">Kız</span><span class="ka-muted">Erkek</span><span class="ka-muted">Toplam</span><span></span>${s.subeler.map((x,i)=>`<input class="ka-input" value="${esc(x.sube)}" placeholder="6/A" data-gz-sube="${i}" data-k="sube" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.k)}" data-gz-sube="${i}" data-k="k" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.e)}" data-gz-sube="${i}" data-k="e" autocomplete="off"><b data-gz-st="${i}">${num(x.k)+num(x.e)}</b><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-subesil="${i}" aria-label="Şubeyi kaldır">✕</button>`).join('')}</div><div class="gzi-genel"><b>Genel toplam: <span data-gz-gt>${toplam(s)}</span></b><button type="button" class="ka-btn ka-btn--secondary" data-gz-subeekle>+ Şube ekle</button></div>`}
+function siniflarHtml(s){const c=rows('siniflar').slice().sort(dogal);if(!c.length)return'<p class="ka-muted">Uygulamada kayıtlı sınıf yok; şubeleri elle girebilirsiniz.</p>';const sec=new Set(s.secSiniflar||[]);return`<strong class="ka-muted">Uygulamadaki sınıflardan seçin</strong><div class="ttn-tabs">${c.map(x=>`<button type="button" class="ka-btn ${sec.has(x.id)?'':'ka-btn--secondary'}" aria-pressed="${sec.has(x.id)}" data-gz-sinif="${esc(x.id)}">${esc(x.ad||'Sınıf')}</button>`).join('')}</div><p class="ka-muted">Seçilen sınıfların kız/erkek sayısı ve öğrencileri otomatik gelir.</p>`}
+function subeHtml(s){return`${siniflarHtml(s)}<div class="gzi-sube"><span class="ka-muted">Şube</span><span class="ka-muted">Kız</span><span class="ka-muted">Erkek</span><span class="ka-muted">Toplam</span><span></span>${s.subeler.map((x,i)=>`<input class="ka-input" value="${esc(x.sube)}" placeholder="6/A" data-gz-sube="${i}" data-k="sube" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.k)}" data-gz-sube="${i}" data-k="k" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.e)}" data-gz-sube="${i}" data-k="e" autocomplete="off"><b data-gz-st="${i}">${num(x.k)+num(x.e)}</b><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-subesil="${i}" aria-label="Şubeyi kaldır">✕</button>`).join('')}</div><div class="gzi-genel"><b>Genel toplam: <span data-gz-gt>${toplam(s)}</span></b><button type="button" class="ka-btn ka-btn--secondary" data-gz-subeekle>+ Şube ekle</button></div>`}
 function ogrHtml(s){return`<datalist id="gzOgr">${rows('ogretmenler').map(t=>`<option value="${esc(t.adSoyad||`${t.ad||''} ${t.soyad||''}`.trim())}">`).join('')}</datalist><div class="ttn-imzalar">${s.ogretmenler.map((x,i)=>`<div class="dlk-ek"><input class="ka-input" list="gzOgr" value="${esc(x)}" placeholder="Öğretmen adı soyadı" data-gz-ogr="${i}" autocomplete="off"><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-ogrsil="${i}" aria-label="Öğretmeni kaldır">✕</button></div>`).join('')}</div><button type="button" class="ka-btn ka-btn--secondary" data-gz-ogrekle>+ Öğretmen ekle</button>`}
 function gapCtl(s){return`<div class="ttn-gap"><span>Üst yazı ile plan tablosu arası</span><div><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="-4" aria-label="Boşluğu azalt">−</button><b data-gz-gapv>${Math.max(0,parseFloat(s.bosluk)||0)} mm</b><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="4" aria-label="Boşluğu artır">+</button></div></div>`}
 function olusturHtml(s){
@@ -172,14 +187,14 @@ function olusturHtml(s){
 <article class="ka-card"><div class="ka-card__body ka-stack"><div class="gzi-genel"><strong>🚐 Araç ve şoför</strong><button type="button" class="ka-btn ka-btn--secondary" data-gz-aracekle>+ Araç</button></div><label class="dlk-check"><input type="checkbox" data-gz-bel ${s.belediye?'checked':''}> <span>Belediye aracı ile gidilecek</span></label>${field('Aracın kira bedeli',input('kira','text','Örn: 5.000 TL'))}${a}</div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>👥 Görevliler</strong><div class="ka-grid">${field('Gezi kafile başkanı',input('kafile','text','Ad Soyad'))}${field('Kafile başkanı telefonu',input('kafileTel','text','05..'))}${field('Katılacak idareci',input('idareci','text','Ad Soyad'))}</div><strong class="ka-muted">Katılacak öğretmen / personel</strong>${ogrHtml(s)}</div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>🤝 Acente ve sözleşme</strong><p class="ka-muted">EK-6 Çerçeve Sözleşmesi ve EK-10 beyanında kullanılır.</p><div class="ka-grid">${field('İl',input('il','text','Örn: Elazığ'))}${field('İlçe',input('ilce','text','Örn: Merkez'))}${field('Okul telefonu',input('okulTel','text','0424 000 00 00'))}${field('Acente / firma adı',input('acente','text','Örn: … Turizm Seyahat Acentesi'))}${field('Firma yetkilisi',input('yetkili','text','Ad Soyad'))}${field('Acente tebligat adresi',input('acenteAdres','text',''))}${field('Acente telefonu',input('acenteTel','text','0312 000 00 00'))}${field('Acente e-posta',input('acenteMail','text','iletisim@acenteadi.com'))}${field('Gece sayısı',input('gece','text','0'))}${field('Gündüz sayısı',input('gunduz','text','1'))}${field('Gezi ücreti (sigorta ve vergiler dahil, TL)',input('ucret','text','Örn: 12.500'))}${field('Ön ödeme oranı (%)',input('onOdeme','text','30'))}${field('Sözleşme tarihi',input('sozTarih','date'))}</div></div></article>
-<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🎓 Katılacak öğrenciler (${(s.ogrenciler||[]).length})</strong><label class="ka-field"><span class="ka-field__label">Excel / Google Form’dan yapıştır</span><textarea class="ka-input" rows="4" data-gz-paste placeholder="Sınıf, No, Ad Soyad, T.C., Veli, Telefon — her satıra bir öğrenci"></textarea></label><div class="gzi-genel"><button type="button" class="ka-btn" data-gz-yapistir>Listeye ekle</button>${(s.ogrenciler||[]).length?'<button type="button" class="ka-btn ka-btn--secondary" data-gz-ogrtemiz>Listeyi temizle</button>':''}</div>${og||'<p class="ka-muted">Öğrenci eklenmedi. Öğrenci listesi, oturma planı ve veli izin belgeleri bu listeden üretilir.</p>'}</div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🎓 Katılacak öğrenciler (${(s.ogrenciler||[]).length})</strong>${siniflarHtml(s)}<label class="ka-field"><span class="ka-field__label">Excel / Google Form’dan yapıştır</span><textarea class="ka-input" rows="4" data-gz-paste placeholder="Sınıf, No, Ad Soyad, T.C., Veli, Telefon — her satıra bir öğrenci"></textarea></label><div class="gzi-genel"><button type="button" class="ka-btn" data-gz-yapistir>Listeye ekle</button>${(s.ogrenciler||[]).length?'<button type="button" class="ka-btn ka-btn--secondary" data-gz-ogrtemiz>Listeyi temizle</button>':''}</div>${og||'<p class="ka-muted">Öğrenci eklenmedi. Öğrenci listesi, oturma planı ve veli izin belgeleri bu listeden üretilir.</p>'}</div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>👨‍👩‍👧 Geziye katılacak veliler (${ayrik(s.veliler).length})</strong><label class="ka-field"><textarea class="ka-input" rows="3" data-gz="veliler" placeholder="Her satıra bir veli adı soyadı">${esc(s.veliler)}</textarea></label></div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>📄 Belgeler</strong><p class="ka-muted">Belgeler yukarıdaki bilgilerle doldurulur; yazdırıp PDF alabilirsiniz. Boş alanlar noktalı boşluk olarak basılır. </p>${BELGELER.map(([k,i,t,d])=>`<div class="dlk-ek"><div><strong>${i} ${t}</strong><p class="ka-muted">${d}</p></div><button type="button" class="ka-btn" data-gz-belge="${k}">🖨 Yazdır / PDF</button></div>`).join('')}<button type="button" class="ka-btn ka-btn--secondary" data-gz-belge="hepsi">Tüm belgeleri tek PDF’de al</button></div></article>`
 }
 function formHtml(s){
  if(isOlustur(s))return olusturHtml(s);
  const o=isOnay(s),p=isPlan(s),v=s.doc==='veli';
- const yazi=o?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏛️ Yazı bilgileri</strong><div class="ka-grid">${field('Kaymakamlık (ilçe)',input('ilce','text','Örn: Mamak'))}${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}${field('Sayı',input('sayi','text','Örn: 821.04/1'))}${field('Yazı tarihi',input('yaziTarih','date'))}${isDisi(s)?field('Onay makamı',input('makam','text','Örn: Mamak İlçe Milli Eğitim Müdürlüğüne'))+field('Olur makamı unvanı',input('makamUnvan','text','İlçe Milli Eğitim Müdürü')):field('Teklif eden (müdür yardımcısı)',input('teklif','text','Örn: Ayşe YILMAZ'))}${field('Okul müdürü',input('mudur','text','Örn: Mehmet DEMİR'))}${field('Olur tarihi',input('olurTarih','date'))}</div>${isDisi(s)?'<p class="ka-muted">İl dışı gezilerde onay makamını ve süreci güncel mevzuattan doğrulayın.</p>':''}</div></article>`:'';
+ const yazi=o?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏛️ Yazı bilgileri</strong><div class="ka-grid">${field('Üst makam',`<select class="ka-input" data-gz="makamTur"><option value="valilik" ${s.makamTur==='valilik'?'selected':''}>Valilik (merkez ilçe)</option><option value="kaymakamlik" ${s.makamTur!=='valilik'?'selected':''}>Kaymakamlık</option></select>`)}${field('İl',input('il','text','Örn: Elazığ'))}${field('İlçe',input('ilce','text','Örn: Mamak'))}${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}${field('Sayı',input('sayi','text','Örn: 821.04/1'))}${field('Yazı tarihi',input('yaziTarih','date'))}${isDisi(s)?field('Onay makamı',input('makam','text','Örn: Mamak İlçe Milli Eğitim Müdürlüğüne'))+field('Olur makamı unvanı',input('makamUnvan','text','İlçe Milli Eğitim Müdürü')):field('Teklif eden (müdür yardımcısı)',input('teklif','text','Örn: Ayşe YILMAZ'))}${field('Okul müdürü',input('mudur','text','Örn: Mehmet DEMİR'))}${field('Olur tarihi',input('olurTarih','date'))}</div>${isDisi(s)?'<p class="ka-muted">İl dışı gezilerde onay makamını ve süreci güncel mevzuattan doğrulayın.</p>':''}</div></article>`:'';
  const veliOkul=v?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏫 Okul</strong>${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}</div></article>`:'';
  const gezi=`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🚌 Gezi bilgileri</strong><div class="ka-grid">${field('Gezi tarihi',input('gTarih','date'))}${field('Gezi yeri',input('yer','text','Örn: Anıtkabir'))}${field('Çıkış / dönüş saati',input('saat','text','08:00 - 14:00'))}</div>${v?'':`<label class="ka-field"><span class="ka-field__label">Gezide gidilecek yerlerin planı</span><textarea class="ka-input" rows="4" data-gz="program" placeholder="08:00 Okuldan hareket&#10;08:45 Anıtkabir giriş&#10;14:00 Okula varış">${esc(s.program)}</textarea><small class="ka-muted">Her satıra bir madde yazın.</small></label><label class="ka-field"><span class="ka-field__label">Gezinin amacı</span><textarea class="ka-input" rows="5" data-gz="amac">${esc(s.amac)}</textarea></label><button type="button" class="ka-btn ka-btn--secondary" data-gz-amac>🔄 Amaç metni öner</button>`}</div></article>`;
  const arac=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🚐 Araç bilgileri</strong><label class="dlk-check"><input type="checkbox" data-gz-bel ${s.belediye?'checked':''}> <span>Belediye aracı ile gidilecek (plan tablosunda belirtilir)</span></label><div class="ka-grid">${field('Plaka / plakalar',input('plaka','text','Birden fazlaysa virgülle ayırın'))}${field('Şoförlerin adı soyadı',input('sofor','text','Birden fazlaysa virgülle ayırın'))}${field('Aracın kira bedeli',input('kira','text','Örn: 5.000 TL'))}</div></div></article>`;
@@ -201,7 +216,7 @@ function fit(root){
 function updatePreview(root){const b=root?.querySelector('[data-gz-preview] .gzi-print');if(b)b.innerHTML=paper(ensure(),true);fit(root);persist()}
 function bind(root){
  const s=ensure();
- root.querySelectorAll('[data-gz]').forEach(el=>el.addEventListener('input',()=>{const k=el.dataset.gz;s[k]=el.value;if(['gTarih','yer'].includes(k)){s.govdeOzel='';if(k==='yer'&&!s.amacManuel)s.amac=amacMetni(s)}if(k==='amac')s.amacManuel=true;if(k==='yer'&&!s.amacManuel){const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac}updatePreview(root)}));
+ root.querySelectorAll('[data-gz]').forEach(el=>el.addEventListener('input',()=>{const k=el.dataset.gz;s[k]=el.value;if(k==='makamTur'||k==='il'||k==='ilce')updatePreview(root);if(['gTarih','yer'].includes(k)){s.govdeOzel='';if(k==='yer'&&!s.amacManuel)s.amac=amacMetni(s)}if(k==='amac')s.amacManuel=true;if(k==='yer'&&!s.amacManuel){const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac}updatePreview(root)}));
  root.querySelectorAll('[data-gz-doc]').forEach(b=>b.addEventListener('click',()=>{s.doc=b.dataset.gzDoc;persist();render(root)}));
  root.querySelector('[data-gz-bel]')?.addEventListener('change',e=>{s.belediye=e.target.checked;updatePreview(root)});
  root.querySelector('[data-gz-amac]')?.addEventListener('click',()=>{s.amacIdx=((s.amacIdx||0)+1)%AMAC.length;s.amac=amacMetni(s);s.amacManuel=false;const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac;updatePreview(root)});
@@ -215,12 +230,13 @@ function bind(root){
  root.querySelector('[data-gz-zoom]')?.addEventListener('click',()=>{zoomFull=!zoomFull;const b=root.querySelector('[data-gz-zoom]');if(b)b.textContent=zoomFull?'Sayfaya sığdır':'Yakınlaştır';fit(root)});
  root.querySelector('[data-gz-print]')?.addEventListener('click',()=>print());
  root.querySelector('[data-gz-reset]')?.addEventListener('click',()=>{if(!confirm('Tüm girdiler temizlensin mi?'))return;const d=s.doc;state={...blank(),doc:d};persist();render(root)});
+ root.querySelectorAll('[data-gz-sinif]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.gzSinif,a=s.secSiniflar||(s.secSiniflar=[]),i=a.indexOf(id);if(i<0)a.push(id);else a.splice(i,1);syncSecim(s);persist();render(root)}));
  root.querySelectorAll('[data-gz-arac]').forEach(el=>el.addEventListener('input',()=>{const x=s.araclar[Number(el.dataset.gzArac)];if(x){x[el.dataset.k]=el.value;persist()}}));
  root.querySelector('[data-gz-aracekle]')?.addEventListener('click',()=>{s.araclar.push({tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'});persist();render(root)});
  root.querySelectorAll('[data-gz-aracsil]').forEach(b=>b.addEventListener('click',()=>{s.araclar.splice(Number(b.dataset.gzAracsil),1);persist();render(root)}));
  root.querySelector('[data-gz-yapistir]')?.addEventListener('click',()=>{const t=root.querySelector('[data-gz-paste]'),y=ogrenciCoz(t?.value);if(!y.length){global.toast?.('Eklenecek öğrenci bulunamadı. Satır: Sınıf, No, Ad Soyad…');return}s.ogrenciler=(s.ogrenciler||[]).concat(y);persist();render(root)});
- root.querySelectorAll('[data-gz-ogrdel]').forEach(b=>b.addEventListener('click',()=>{s.ogrenciler.splice(Number(b.dataset.gzOgrdel),1);persist();render(root)}));
- root.querySelector('[data-gz-ogrtemiz]')?.addEventListener('click',()=>{if(!confirm('Öğrenci listesi temizlensin mi?'))return;s.ogrenciler=[];persist();render(root)});
+ root.querySelectorAll('[data-gz-ogrdel]').forEach(b=>b.addEventListener('click',()=>{s.ogrenciler.splice(Number(b.dataset.gzOgrdel),1);recount(s);persist();render(root)}));
+ root.querySelector('[data-gz-ogrtemiz]')?.addEventListener('click',()=>{if(!confirm('Öğrenci listesi temizlensin mi?'))return;s.ogrenciler=[];s.secSiniflar=[];syncSecim(s);persist();render(root)});
  root.querySelectorAll('[data-gz-belge]').forEach(b=>b.addEventListener('click',()=>printBelge(b.dataset.gzBelge)));
  const pv=root.querySelector('[data-gz-preview]');
  if(pv){
@@ -229,5 +245,5 @@ function bind(root){
  }
 }
 function open(){state=load();return render()}
-global.GeziModule={open,printBelge,BELGE,ogrenciCoz,render,print,reportBody,paper,planTablo,toplam,amacMetni,DOCS,reset:()=>{state=blank();return state}};
+global.GeziModule={syncSecim,open,printBelge,BELGE,ogrenciCoz,render,print,reportBody,paper,planTablo,toplam,amacMetni,DOCS,reset:()=>{state=blank();return state}};
 })(window);

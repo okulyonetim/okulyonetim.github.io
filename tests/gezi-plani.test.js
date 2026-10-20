@@ -57,3 +57,15 @@ test('EK-10 beyanı ve EK-6 sözleşmesi resmî metinle üretilir', () => {
   const b = G.BELGE.surucu(s); assert.match(b, /EK-10 SÜRÜCÜ\/MUAVİN\/REHBER/); assert.match(b, /Kabahatler Kanununun 35 inci/); assert.match(b, /Şoför Ş/);
   const z = G.BELGE.sozlesme(s); assert.match(z, /EK-6 EĞİTİM KURUMLARI GEZİLERİ ÇERÇEVE SÖZLEŞMESİ/); assert.match(z, /Deneme Turizm/); assert.match(z, /12\.500/); assert.match(z, /07:00/); assert.match(z, /\(Merkez \/ Elazığ\)/);
 });
+
+test('sınıf seçimi uygulama verisinden gelir; Valilik/Kaymakamlık başlığı seçilebilir', () => {
+  const data = { siniflar: [{ id: 'c1', ad: '6/A' }], veliler: [{ sinifId: 'c1', ogrenciNo: '2', ogrenciAdi: 'Ali', cinsiyet: 'Erkek', veliAdi: 'Veli' }, { sinifId: 'c1', ogrenciNo: '1', ogrenciAdi: 'Ayşe', cinsiyet: 'Kız' }] };
+  globalThis.AppStore = { data: t => data[t] || [] };
+  const s = { ...G.reset(), secSiniflar: ['c1'], subeler: [{ sube: '', k: '', e: '' }], ogrenciler: [] };
+  G.syncSecim(s);
+  assert.deepStrictEqual([s.subeler[0].sube, s.subeler[0].k, s.subeler[0].e], ['6/A', '1', '1']);
+  assert.strictEqual(s.ogrenciler[0].ad, 'Ayşe'); assert.strictEqual(s.ogrenciler[1].veli, 'Veli');
+  assert.match(G.paper({ ...s, doc: 'onay-ici', makamTur: 'valilik', il: 'Elazığ', ilce: 'Merkez' }), /ELAZIĞ VALİLİĞİ/);
+  assert.match(G.paper({ ...s, doc: 'onay-ici', makamTur: 'kaymakamlik', il: 'Elazığ', ilce: 'Baskil' }), /BASKİL KAYMAKAMLIĞI/);
+  delete globalThis.AppStore;
+});
