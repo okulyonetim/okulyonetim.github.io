@@ -303,7 +303,7 @@ async function routeModule(name,{bottom='menu',page='',title='',remember=true,pa
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||'Kurul ve Komisyonlar');
     try{
       const root=$('#v2ModuleRoot');
-      if(!global.CommitteesModule)await global.AppLoader?.loadScript?.('js/modules/committees.js?v=1');
+      if(!global.CommitteesModule)await global.AppLoader?.loadScript?.('js/modules/committees.js?v=6');
       if(!global.CommitteesModule?.mount)throw new Error('CommitteesModule hazır değil');
       if(routeToken!==routeEpoch)return false;
       root?.replaceChildren?.();

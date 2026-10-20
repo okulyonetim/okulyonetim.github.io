@@ -14147,6 +14147,11 @@ html[data-theme] #v2ModuleRoot .dlk-page .dlk-check{display:flex;align-items:fle
 html[data-theme] #v2ModuleRoot .dlk-page .dlk-chips{display:flex;flex-wrap:wrap;gap:var(--ka-sp-6)}
 html[data-theme] #v2ModuleRoot .dlk-page .dlk-ek{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--ka-sp-8);align-items:center}
 
+/* ===== KURUL ve KOMİSYON — mevzuat rehberi ===== */
+html[data-theme] #v2ModuleRoot .ka-committee-guide-item{display:block;padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-surface-muted)}
+html[data-theme] #v2ModuleRoot .ka-committee-guide-item>summary{cursor:pointer;display:flex;align-items:center;gap:var(--ka-sp-8);flex-wrap:wrap;min-height:44px}
+html[data-theme] #v2ModuleRoot .ka-committee-guide-item[open]>summary{margin-bottom:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-committee-guide-item p{margin:var(--ka-sp-4) 0}
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen

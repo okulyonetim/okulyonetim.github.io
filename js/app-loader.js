@@ -32,7 +32,7 @@ define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/reports.js?v=21']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/tools.js?v=8','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
 define('settings',['js/modules/settings.js?v=891']);
-define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/committees.js?v=5']);
+define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=5','js/modules/committees.js?v=6']);
 define('guide',['js/modules/guide-data.js?v=4','js/modules/guide.js?v=1']);
 
 const MODULE_DEFAULTS=[{key:'committees',label:'Kurul ve Komisyonlar',icon:'🏛️',visible:true,order:95},{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'food',label:'Yemek',icon:'🍽️',visible:true,order:65},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'reports',label:'Raporlar',icon:'📊',visible:true,order:75},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];
