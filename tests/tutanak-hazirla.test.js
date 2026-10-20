@@ -36,6 +36,16 @@ test('sayfa ve kağıt CSS tokenlarla yazıldı (hex yok)',()=>{
   const js = fs.readFileSync('js/modules/tutanak.js', 'utf8');
   const css = fs.readFileSync('css/design-system-base.css', 'utf8');
   assert(!/ttn-brand/.test(js) && !/ttn-brand/.test(css), 'tutanakta logo/okul adı bloğu olmamalı');
-  assert(/\.ttn-paper \*\{color:var\(--ka-report-text\)/.test(css), 'önizleme metin rengi sabit olmalı');
+  assert(/\.ttn-sheet \*\{color:var\(--ka-report-text\)/.test(css), 'önizleme metin rengi sabit olmalı');
   assert(/öğretmen\/i\.test/.test(js), 'unvan tekrar eklenmemeli');
+}
+
+// Tam sayfa, düzenlenebilir önizleme
+{
+  const fs = require('fs'), assert = require('assert');
+  const js = fs.readFileSync('js/modules/tutanak.js', 'utf8');
+  assert(/data-ttn-ed/.test(js) && /function sheetEdit/.test(js), 'önizleme üzerinde düzenleme olmalı');
+  assert(/girisOzel/.test(js) && /kapanisOzel/.test(js), 'özel metinler saklanmalı');
+  const m = require('vm'); // paper(s) yazdırma çıktısında contenteditable olmamalı
+  assert(/function paper\(s,edit\)/.test(js) && /ed=\(k\)=>edit\?/.test(js));
 }

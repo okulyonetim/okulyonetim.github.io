@@ -14120,10 +14120,16 @@ html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl{display:grid;grid-template-col
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl>div{display:flex;flex-direction:column;gap:var(--ka-sp-4);min-width:0}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl small{color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-guide{margin:0;padding-left:var(--ka-sp-20);display:flex;flex-direction:column;gap:var(--ka-sp-8)}
-html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview{overflow-x:auto;width:100%;min-height:0;margin:0;box-sizing:border-box;padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-report-bg)}
-html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview .ttn-paper{min-height:0;font-size:11pt}
-html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview .ttn-paper,html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview .ttn-paper *{color:var(--ka-report-text)!important}
-html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview .ttn-body{min-height:30mm}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-prevhead{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview{overflow-x:auto;width:100%;box-sizing:border-box;padding:0;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-surface-muted)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheetwrap{margin:0 auto;overflow:clip}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet{width:210mm;min-height:297mm;margin:0;padding:12mm 15mm;box-sizing:border-box;transform-origin:top left;box-shadow:var(--ka-shadow-md)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .ttn-print{min-height:270mm;padding:0}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .ttn-paper{min-height:0;flex:1 1 auto}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet,html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet *{color:var(--ka-report-text)!important}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]{outline:none;border:0;background:transparent;border-radius:var(--ka-r-2);cursor:text}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]:hover{box-shadow:0 0 0 .3mm var(--ka-report-border)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]:focus{box-shadow:0 0 0 .5mm var(--ka-primary)}
 @media(max-width:640px){html[data-theme] #v2ModuleRoot .ttn-page .ttn-imza{grid-template-columns:minmax(0,1fr)}html[data-theme] #v2ModuleRoot .ttn-page .ttn-imza__acts{justify-content:flex-end}html[data-theme] #v2ModuleRoot .ttn-page .ttn-save{grid-template-columns:minmax(0,1fr)}html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl{grid-template-columns:minmax(0,1fr)}}
 
 /* ===== DİLEKÇE OLUŞTUR (dlk-*) — sayfa (ttn-* sayfa stillerini paylaşır) ===== */

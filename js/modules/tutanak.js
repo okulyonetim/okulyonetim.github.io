@@ -13,7 +13,7 @@ const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{
 const device=()=>global.DeviceData;
 const isManager=()=>user().admin===true||!!global.PermissionService?.isManager?.();
 const MAX_IMZA=6;
-const FORM_KEYS=['baslik','olayTarih','olaySaat','yer','ders','anlatim','duzTarih','duzSaat'];
+const FORM_KEYS=['baslik','olayTarih','olaySaat','yer','ders','anlatim','duzTarih','duzSaat','baslikOzel','girisOzel','kapanisOzel'];
 const NOKTA='…………………………………………';
 // Hazır metinler: boş bırakılan yerler (………) kullanıcı tarafından doldurulur; metin yalnız görülen olayı yazar.
 const HAZIR=[
@@ -38,13 +38,13 @@ function nowTime(){const d=new Date();return`${pad(d.getHours())}:${pad(d.getMin
 function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return rows('ogretmenler').find(x=>String(x.id)===String(id))||null}
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
 function unvanOf(t){const b=String(t?.brans||'').trim();return b?(/öğretmen/i.test(b)?b:`${b} Öğretmeni`):''}
-function blank(){const t=teacher();return{id:'',baslik:'',olayTarih:today(),olaySaat:nowTime(),yer:'',ders:'',anlatim:'',duzTarih:today(),duzSaat:nowTime(),imzalar:[{ad:teacherName(t),unvan:unvanOf(t)},{ad:'',unvan:''},{ad:'',unvan:''}]}}
+function blank(){const t=teacher();return{id:'',baslik:'',olayTarih:today(),olaySaat:nowTime(),yer:'',ders:'',anlatim:'',duzTarih:today(),duzSaat:nowTime(),baslikOzel:'',girisOzel:'',kapanisOzel:'',imzalar:[{ad:teacherName(t),unvan:unvanOf(t)},{ad:'',unvan:''},{ad:'',unvan:''}]}}
 function ensure(){if(!state)state=blank();return state}
 function trDate(v){if(!v)return'';const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?v:`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`}
 function imzaSayisi(s){return(s.imzalar||[]).filter(x=>String(x.ad||'').trim()).length}
 function records(){const uid=user().uid,all=rows(T),mine=isManager()?all:all.filter(x=>x.olusturanUid===uid);return mine.slice().sort((a,b)=>String(b.olayTarih||'').localeCompare(String(a.olayTarih||''))||String(b.eklenmeTarihi||'').localeCompare(String(a.eklenmeTarihi||'')))}
 const norm=v=>String(v||'').toLocaleLowerCase('tr');
-let remoteAt=0;
+let remoteAt=0,zoomFull=false,resizeBound=false;const BASLIK='TUTANAKTIR';
 function refreshRemote(){const now=Date.now();if(!navigator.onLine||!global.SyncEngine?.sync||now-remoteAt<45000)return;remoteAt=now;Promise.resolve(global.SyncEngine.sync([T],{force:true,full:true})).catch(e=>console.warn('[Tutanak eşitleme]',e?.message||e))}
 async function prepare(){const SE=global.SyncEngine,col=global.COL?.tutanaklar;if(!SE||!col)return;try{SE.register(T,col);await SE.localHydrate([T]);SE.schedule(100);refreshRemote()}catch(e){console.warn('[Tutanak]',e?.message||e)}}
 function cleanImzalar(s){return(s.imzalar||[]).map(x=>({ad:String(x.ad||'').trim(),unvan:String(x.unvan||'').trim()})).filter(x=>x.ad||x.unvan)}
@@ -84,7 +84,7 @@ function viewHazirla(s){
  <article class="ka-card"><div class="ka-card__body ka-stack"><strong>📅 Düzenleme zamanı</strong><div class="ka-grid">${field('Düzenleme tarihi',input('duzTarih','date'))}${field('Düzenleme saati',input('duzSaat','time'))}</div><p class="ka-muted">Kapanış cümlesinde geçer: “İş bu tutanak … tarihinde, saat … sıralarında tarafımızca düzenlenerek kayıt altına alınmıştır.”</p></div></article>
  <article class="ka-card"><div class="ka-card__body ka-stack"><strong>💾 Kayıt adı</strong><div class="ttn-save">${input('baslik','text','Örn: 7/B kavga – 12 Eylül')}<button class="ka-btn" type="button" data-ttn-save>${s.id?'Değişiklikleri kaydet':'Kaydet'}</button></div></div></article>
  <footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-ttn-reset>${s.id?'Yeni tutanak':'Temizle'}</button><button class="ka-btn" type="button" data-ttn-print>🖨 Yazdır / PDF</button></footer>
- <article class="ka-card"><div class="ka-card__body ka-stack"><strong>Önizleme</strong><div class="ttn-preview ka-report">${paper(s)}</div></div></article>
+ <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-ttn-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür. Metne dokunup doğrudan değiştirebilirsiniz.</p><div class="ttn-preview"><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="ttn-print">${paper(s,true)}</div></div></div></div></div></article>
  ${historyHtml()}`
 }
 function viewMetinler(){
@@ -94,11 +94,15 @@ function viewRehber(){return`<article class="ka-card"><div class="ka-card__body 
 function render(root=document.getElementById('v2ModuleRoot')){
  if(!root)return false;const s=ensure();
  root.innerHTML=`<section class="vgf-page ttn-page" data-ttn-page><header class="vgf-head"><div><h2>Tutanak Hazırla</h2>${s.id?'<span class="ka-badge">Kayıtlı tutanak düzenleniyor</span>':''}<p class="ka-muted">Olayı anlatın; tarih-saat ile başlayan tutanak metni ve imza bölümü otomatik oluşur. Yazdırıp ıslak imza ile onaylayın.</p></div></header>${tabsHtml()}${tab==='metinler'?viewMetinler():tab==='rehber'?viewRehber():viewHazirla(s)}</section>`;
- bind(root);return true
+ bind(root);fit(root);if(!resizeBound){resizeBound=true;global.addEventListener('resize',()=>fit(document.querySelector('[data-ttn-page]')))}
+ return true
 }
 function bind(root){
- root.querySelectorAll('[data-ttn]').forEach(el=>el.addEventListener('input',()=>{ensure()[el.dataset.ttn]=el.value;if(el.dataset.ttn!=='baslik')updatePreview(root)}));
+ root.querySelectorAll('[data-ttn]').forEach(el=>el.addEventListener('input',()=>{const st=ensure();st[el.dataset.ttn]=el.value;if(['olayTarih','olaySaat','yer','ders'].includes(el.dataset.ttn))st.girisOzel='';if(['duzTarih','duzSaat'].includes(el.dataset.ttn))st.kapanisOzel='';if(el.dataset.ttn!=='baslik')updatePreview(root)}));
  root.querySelectorAll('[data-ttn-imza]').forEach(el=>el.addEventListener('input',()=>{const s=ensure(),i=Number(el.dataset.ttnImza);if(s.imzalar[i])s.imzalar[i][el.dataset.k]=el.value;updatePreview(root)}));
+ const pv=root.querySelector('.ttn-preview');
+ if(pv){pv.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-ttn-ed]');if(el&&SAYFA_NOKTA(String(el.innerText||''))){const r=document.createRange();r.selectNodeContents(el);const sel=global.getSelection();sel.removeAllRanges();sel.addRange(r)}});pv.addEventListener('input',e=>{const el=e.target.closest?.('[data-ttn-ed]');if(el)sheetEdit(root,el)});pv.addEventListener('paste',e=>{const el=e.target.closest?.('[data-ttn-ed]');if(!el)return;e.preventDefault();const t=(e.clipboardData||global.clipboardData)?.getData('text')||'';document.execCommand('insertText',false,t)})}
+ root.querySelector('[data-ttn-zoom]')?.addEventListener('click',()=>{zoomFull=!zoomFull;const b=root.querySelector('[data-ttn-zoom]');if(b)b.textContent=zoomFull?'Sayfaya sığdır':'Yakınlaştır';fit(root)})
  root.querySelectorAll('[data-ttn-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.ttnTab;render(root)}));
  root.querySelectorAll('[data-ttn-tpl]').forEach(b=>b.addEventListener('click',()=>{const h=HAZIR[Number(b.dataset.ttnTpl)],s=ensure();if(!h)return;if(String(s.anlatim||'').trim()&&!confirm('Anlatım alanındaki metin bu kalıpla değiştirilsin mi?'))return;s.anlatim=h.metin;if(h.yer&&!String(s.yer||'').trim())s.yer=h.yer;if(!String(s.baslik||'').trim())s.baslik=h.ad;tab='hazirla';render(root);global.toast?.('Hazır metin forma eklendi.')}));
  root.querySelector('[data-ttn-add]')?.addEventListener('click',()=>{const s=ensure();if(s.imzalar.length<MAX_IMZA)s.imzalar.push({ad:'',unvan:''});render(root)});
@@ -115,18 +119,36 @@ function bind(root){
  root.querySelectorAll('[data-ttn-del]').forEach(b=>b.addEventListener('click',async()=>{const r=rows(T).find(x=>x.id===b.dataset.ttnDel);if(!r||!confirm(`“${r.baslik||'Tutanak'}” silinsin mi?`))return;try{await device().remove(T,global.COL.tutanaklar,r.id);if(state?.id===r.id)state=blank();global.toast?.('Tutanak silindi.');render(root)}catch(e){global.toast?.('Silinemedi: '+(e?.message||e))}}))
 }
 function fromRecord(r){const base=blank();return{...base,...Object.fromEntries(FORM_KEYS.map(k=>[k,r[k]||base[k]||''])),imzalar:(r.imzalayanlar||[]).map(x=>({ad:x.ad||'',unvan:x.unvan||''})),id:r.id}}
-function updatePreview(root){const box=root?.querySelector('.ttn-preview');if(box)box.innerHTML=paper(ensure());const w=root?.querySelector('.ttn-warn');const n=imzaSayisi(ensure());if(w)w.hidden=n>=2}
+function fit(root){
+ const box=root?.querySelector('.ttn-preview'),wrap=box?.querySelector('.ttn-sheetwrap'),sh=wrap?.querySelector('.ttn-sheet');if(!sh)return;
+ sh.style.transform='';const w=sh.offsetWidth,k=zoomFull?1:Math.min(1,(box.clientWidth-2)/w);
+ sh.style.transform=k<1?`scale(${k})`:'';wrap.style.width=`${w*k}px`;wrap.style.height=`${sh.offsetHeight*k}px`
+}
+function warnUpdate(root){const w=root?.querySelector('.ttn-warn');if(w)w.hidden=imzaSayisi(ensure())>=2}
+function updatePreview(root){const box=root?.querySelector('.ttn-preview .ttn-print');if(box)box.innerHTML=paper(ensure(),true);warnUpdate(root);fit(root)}
+const SAYFA_NOKTA=v=>/^[.…\s]*$/.test(v);
+function sheetEdit(root,el){
+ const s=ensure(),k=el.dataset.ttnEd,v=String(el.innerText||'').replace(/\u00a0/g,' ').replace(/\n+$/,'');
+ if(k==='baslik')s.baslikOzel=v.trim()===BASLIK?'':v;
+ else if(k==='intro')s.girisOzel=v.trim()===giris(s)?'':v;
+ else if(k==='close')s.kapanisOzel=v.trim()===kapanis(s)?'':v;
+ else if(k==='body'){s.anlatim=SAYFA_NOKTA(v)?'':v;const ta=root.querySelector('[data-ttn="anlatim"]');if(ta)ta.value=s.anlatim}
+ else{const[f,i]=k.split(':'),n=Number(i),val=SAYFA_NOKTA(v)?'':v.trim();if(s.imzalar[n]){s.imzalar[n][f]=val;const inp=root.querySelector(`[data-ttn-imza="${n}"][data-k="${f}"]`);if(inp)inp.value=val}warnUpdate(root)}
+ fit(root)
+}
 // Tutanak metni: tarih/saat + (yer, ders) ile başlar; "'te/'ta" ekleri kullanılmaz ("sıralarında").
 function giris(s){
  const t=trDate(s.olayTarih)||'…/…/……',sa=s.olaySaat||'…:…',yer=String(s.yer||'').trim(),ders=String(s.ders||'').trim();
  return`${t} tarihinde saat ${sa} sıralarında${yer?`, ${yer} yerinde`:''}${ders?` (${ders})`:''} aşağıda açıklanan olay meydana gelmiştir.`
 }
 function kapanis(s){return`İş bu tutanak ${trDate(s.duzTarih)||'…/…/……'} tarihinde, saat ${s.duzSaat||'…:…'} sıralarında tarafımızca düzenlenerek kayıt altına alınmıştır.`}
-function paper(s){
- const im=(s.imzalar||[]).filter(x=>String(x.ad||'').trim()||String(x.unvan||'').trim());
- const list=im.length?im:[{ad:'',unvan:''},{ad:'',unvan:''}];
- const anlatim=String(s.anlatim||'').trim();
- return`<article class="ttn-paper"><h1 class="ttn-title">TUTANAKTIR</h1><p class="ttn-intro">${esc(giris(s))}</p><div class="ttn-body">${anlatim?esc(anlatim):`<span class="ttn-dots">${NOKTA}${NOKTA}</span>`}</div><p class="ttn-close">${esc(kapanis(s))}</p><div class="ttn-sign" style="--ttn-n:${list.length}">${list.map(x=>`<div><b class="ttn-imza-l">İmza</b><span>${esc(x.ad)||'…………………………'}</span><b>${esc(x.unvan)}</b></div>`).join('')}</div></article>`
+function paper(s,edit){
+ const list=[];(s.imzalar||[]).forEach((x,i)=>{if(String(x.ad||'').trim()||String(x.unvan||'').trim())list.push({...x,i})});
+ if(!list.length)[0,1].forEach(i=>list.push({ad:'',unvan:'',i:(s.imzalar||[])[i]?i:-1}));
+ const anlatim=String(s.anlatim||'').trim(),ed=(k)=>edit?` contenteditable="true" spellcheck="false" data-ttn-ed="${k}"`:'';
+ const dots=`${NOKTA}${NOKTA}`;
+ const body=anlatim?esc(anlatim):(edit?dots:`<span class="ttn-dots">${dots}</span>`);
+ return`<article class="ttn-paper"><h1 class="ttn-title"${ed('baslik')}>${esc(s.baslikOzel||BASLIK)}</h1><p class="ttn-intro"${ed('intro')}>${esc(s.girisOzel||giris(s))}</p><div class="ttn-body${!anlatim&&edit?' ttn-dots':''}"${ed('body')}>${body}</div><p class="ttn-close"${ed('close')}>${esc(s.kapanisOzel||kapanis(s))}</p><div class="ttn-sign" style="--ttn-n:${list.length}">${list.map(x=>{const e=edit&&x.i>=0;return`<div><b class="ttn-imza-l">İmza</b><span${e?ed('ad:'+x.i):''}>${esc(x.ad)||'…………………………'}</span><b${e?ed('unvan:'+x.i):''}>${esc(x.unvan)}</b></div>`}).join('')}</div></article>`
 }
 function reportBody(data){return`<div class="ttn-print">${paper(data||ensure())}</div>`}
 function print(data){
