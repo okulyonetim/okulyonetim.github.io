@@ -236,6 +236,16 @@ service cloud.firestore {
         && (resource.data.olusturanUid == request.auth.uid || adminMi() || yoneticiMi());
     }
 
+    match /oy_dilekceKayitlari/{id} {
+      allow read: if girisYapmis();
+      allow create: if girisYapmis() && request.resource.data.olusturanUid == request.auth.uid;
+      allow update: if girisYapmis()
+        && request.resource.data.olusturanUid == resource.data.olusturanUid
+        && (resource.data.olusturanUid == request.auth.uid || adminMi() || yoneticiMi());
+      allow delete: if girisYapmis()
+        && (resource.data.olusturanUid == request.auth.uid || adminMi() || yoneticiMi());
+    }
+
     match /oy_toplantiCizelgesi/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if adminMi();
