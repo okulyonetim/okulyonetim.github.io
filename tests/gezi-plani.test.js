@@ -39,3 +39,15 @@ test('menü, yönlendirme, önbellek ve stil bağlı; yeni CSS kapsamlı ve renk
   const blok = css.slice(css.indexOf('A4 FORM — Gezi planı'), css.indexOf('SERVİS OTURMA IZGARASI'));
   assert.ok(blok.length > 500); assert.ok(!/#[0-9a-fA-F]{3,8}\b/.test(blok), 'hex renk olmamalı');
 });
+
+test('Gezi Planı Oluştur sekmesi: ilk sekme, öğrenci çözümleme ve belge üretimi', () => {
+  assert.strictEqual(G.DOCS[0][0], 'olustur');
+  const o = G.ogrenciCoz('Sınıf;No;Ad Soyad\n6/A;12;Ali Can;11111111110;Veli Can;0555\n6/B\t7\tAyşe Su');
+  assert.strictEqual(o.length, 2); assert.strictEqual(o[0].veli, 'Veli Can'); assert.strictEqual(o[1].ad, 'Ayşe Su');
+  const s = { ...sample(), ogrenciler: o, veliler: 'Veli Bir\nVeli İki', kafile: 'Kafile K', araclar: [{ tur: 'Otobüs', plaka: '06 XY 1', sofor: 'Şoför Ş', koltuk: '8' }] };
+  const veli = G.BELGE.veli(s);
+  assert.strictEqual((veli.match(/GEZİ VELİ İZİN BELGESİ/g) || []).length, 2); assert.match(veli, /Ali Can/);
+  assert.match(G.BELGE.liste(s), /Ayşe Su/); assert.match(G.BELGE.surucu(s), /Şoför Ş/);
+  const ot = G.BELGE.oturma(s); assert.match(ot, /Kafile K \(Kafile Başkanı\)/); assert.match(ot, /Ali Can \(6\/A\)/);
+  assert.match(G.BELGE.plan(s), /06 XY 1/); assert.match(G.BELGE.plan(s), /<td colspan="3">2<\/td>/);
+});

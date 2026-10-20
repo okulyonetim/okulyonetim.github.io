@@ -12957,6 +12957,13 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .gzi-vmakam{margin:0 0 3mm;text-align:center;font-weight:700}
 .ka-report .gzi-vmetin{margin:0 0 2mm;text-align:justify;line-height:1.5;text-indent:10mm}
 .ka-report .gzi-vimza{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2mm 6mm;margin-top:4mm;font-size:10.5pt}
+.ka-report .gzi-sayfa{break-after:page}
+.ka-report .gzi-sayfa:last-child{break-after:auto}
+.ka-report .gzi-orta{text-align:center}
+.ka-report .gzi-beyan{margin-top:6mm}
+.ka-report .gzi-paper--tek .gzi-veli{min-height:110mm;border-bottom:0}
+.ka-report .gzi-oturma td{height:13mm;width:23%;font-size:8pt!important;text-align:left!important;padding:.5mm 1.5mm!important}
+.ka-report .gzi-oturma .gzi-koridor{width:8%;border-top:0!important;border-bottom:0!important}
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
 .bsg-root{
@@ -14184,6 +14191,10 @@ html[data-theme] #v2ModuleRoot .gzi-page .gzi-genel{display:flex;align-items:cen
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-print{min-height:270mm;padding:0}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-paper{min-height:0}
 html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-tablo th,html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-tablo td{background:transparent!important;border:1px solid var(--ka-report-text)!important;color:var(--ka-report-text)!important}
+html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-oturma .gzi-koridor{border-top:0!important;border-bottom:0!important}
+html[data-theme] #v2ModuleRoot .gzi-page .gzi-arac{display:flex;flex-direction:column;gap:var(--ka-sp-8);padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-surface-muted)}
+html[data-theme] #v2ModuleRoot .gzi-page .dlk-ek{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--ka-sp-8);align-items:center}
+html[data-theme] #v2ModuleRoot .gzi-page .dlk-ek p{margin:0}
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen

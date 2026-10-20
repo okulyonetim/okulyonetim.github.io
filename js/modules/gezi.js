@@ -9,7 +9,7 @@ if(global.GeziModule)return;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const KEY='ka-gezi-taslak-v1';
-const DOCS=[['plan-ici','🏙️ İl İçi Gezi Planı'],['plan-disi','🚌 İl Dışı Gezi Planı'],['onay-ici','✍️ İl İçi Gezi Onayı'],['onay-disi','📋 İl Dışı Gezi Onayı'],['veli','📝 Veli İzin Belgesi']];
+const DOCS=[['olustur','🧰 Gezi Planı Oluştur'],['plan-ici','🏙️ İl İçi Gezi Planı'],['plan-disi','🚌 İl Dışı Gezi Planı'],['onay-ici','✍️ İl İçi Gezi Onayı'],['onay-disi','📋 İl Dışı Gezi Onayı'],['veli','📝 Veli İzin Belgesi']];
 const DOT='……………………';
 const ILGI='İlköğretim ve Ortaöğretim Kurumları Sosyal Etkinlikler Yönetmeliği (Değişiklik: 01/09/2018 tarih ve 30522 sayılı Resmî Gazete)';
 const AMAC=[
@@ -18,19 +18,24 @@ const AMAC=[
  y=>`Gezi ile öğrencilerin ${y||'gezilecek yerin'} tarihî, kültürel ve doğal özelliklerini yerinde incelemeleri amaçlanmaktadır. Grup çalışması sayesinde sorumluluk, iş birliği ve arkadaşlık bağlarının güçlenmesi beklenmektedir.`,
  y=>`${y||'Gezi'} gezisi; öğrencilerin okul dışı öğrenme ortamlarında bilgi ve deneyim kazanmalarını, millî ve manevi değerleri benimsemelerini ve toplumsal yaşam kurallarını uygulayarak öğrenmelerini sağlayacaktır.`
 ];
-const blank=()=>({doc:'plan-ici',ilce:'',okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
+const blank=()=>({doc:'olustur',gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],kafile:'',kafileTel:'',ilce:'',okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
  gTarih:'',yer:'',saat:'',program:'',amac:'',amacIdx:0,plaka:'',sofor:'',kira:'',belediye:false,subeler:[{sube:'',k:'',e:''}],veli:'',idareci:'',ogretmenler:[''],ilgiOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'8'});
 let state=null,zoomFull=false,resizeBound=false;
 function pad(n){return String(n).padStart(2,'0')}
 function today(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 function trDate(v){if(!v)return'';const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?v:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`}
-function load(){try{const r=JSON.parse(global.localStorage?.getItem(KEY)||'null');if(r&&typeof r==='object')return{...blank(),...r,subeler:Array.isArray(r.subeler)&&r.subeler.length?r.subeler:[{sube:'',k:'',e:''}],ogretmenler:Array.isArray(r.ogretmenler)&&r.ogretmenler.length?r.ogretmenler:['']}}catch(_){}return blank()}
+function load(){try{const r=JSON.parse(global.localStorage?.getItem(KEY)||'null');if(r&&typeof r==='object')return{...blank(),...r,ogrenciler:Array.isArray(r.ogrenciler)?r.ogrenciler:[],araclar:Array.isArray(r.araclar)&&r.araclar.length?r.araclar:blank().araclar,subeler:Array.isArray(r.subeler)&&r.subeler.length?r.subeler:[{sube:'',k:'',e:''}],ogretmenler:Array.isArray(r.ogretmenler)&&r.ogretmenler.length?r.ogretmenler:['']}}catch(_){}return blank()}
 function persist(){try{global.localStorage?.setItem(KEY,JSON.stringify(ensure()))}catch(_){}}
 function ensure(){if(!state)state=load();return state}
 const num=v=>{const n=parseInt(v,10);return Number.isFinite(n)&&n>0?n:0};
 const ayrik=v=>String(v||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
 const toplam=s=>(s.subeler||[]).reduce((a,x)=>a+num(x.k)+num(x.e),0);
+const isOlustur=s=>s.doc==='olustur';
 const isOnay=s=>s.doc==='onay-ici'||s.doc==='onay-disi',isPlan=s=>s.doc==='plan-ici'||s.doc==='plan-disi',isDisi=s=>/disi$/.test(s.doc);
+const dolu=a=>(a||[]).filter(x=>x&&(String(x.plaka||'').trim()||String(x.sofor||'').trim()));
+const plakalar=s=>dolu(s.araclar).map(x=>String(x.plaka||'').trim()).filter(Boolean).join(', ')||s.plaka;
+const soforler=s=>dolu(s.araclar).map(x=>String(x.sofor||'').trim()).filter(Boolean).join(', ')||s.sofor;
+const veliSayisi=s=>num(s.veli)||ayrik(s.veliler).length;
 function amacMetni(s){return AMAC[(s.amacIdx||0)%AMAC.length](String(s.yer||'').trim())}
 function tarihYer(s){return`${trDate(s.gTarih)||DOT} tarihinde ${String(s.yer||'').trim()||DOT}`}
 function ilgiMetni(s){return s.ilgiOzel||ILGI}
@@ -48,23 +53,69 @@ function planTablo(s){
 <tr><th>GEZİ ÇIKIŞ / DÖNÜŞ SAATİ</th><td colspan="3">${v(s.saat,DOT)}</td></tr>
 <tr><th>GEZİDE GİDİLECEK YERLERİN PLANI</th><td colspan="3">${prog.length?prog.map(esc).join('<br>'):DOT}</td></tr>
 <tr><th>GEZİYE GİDECEK ARACIN</th><td colspan="3">${esc(arac)}</td></tr>
-<tr><th>a) Plakaları</th><td colspan="3">${v(s.plaka,'')}</td></tr>
-<tr><th>b) Şoförlerin Adı Soyadı</th><td colspan="3">${v(s.sofor,'')}</td></tr>
+<tr><th>a) Plakaları</th><td colspan="3">${v(plakalar(s),'')}</td></tr>
+<tr><th>b) Şoförlerin Adı Soyadı</th><td colspan="3">${v(soforler(s),'')}</td></tr>
 <tr><th>c) Aracın Kira Bedeli</th><td colspan="3">${v(s.kira,'')}</td></tr>
 <tr><th rowspan="${Math.max(sb.length,1)+2}">GEZİYE KATILACAK SINIFLAR VE ÖĞRENCİ SAYISI</th><td class="gzi-c"><b>ŞUBE</b></td><td class="gzi-c"><b>K</b></td><td class="gzi-c"><b>E</b></td></tr>
 ${(sb.length?sb:[{sube:'',k:'',e:''}]).map(x=>`<tr><td class="gzi-c">${esc(x.sube)}</td><td class="gzi-c">${num(x.k)||''}</td><td class="gzi-c">${num(x.e)||''}</td></tr>`).join('')}
 <tr><td class="gzi-c"><b>TOPLAM</b></td><td class="gzi-c" colspan="2"><b>${toplam(s)}</b></td></tr>
-<tr><th>GEZİYE KATILACAK VELİ SAYISI</th><td colspan="3">${num(s.veli)}</td></tr>
+<tr><th>GEZİYE KATILACAK VELİ SAYISI</th><td colspan="3">${veliSayisi(s)}</td></tr>
 <tr><th>GEZİYE KATILACAK İDARECİ</th><td colspan="3">${v(s.idareci,'')}</td></tr>
 <tr><th>GEZİYE KATILACAK ÖĞRETMENLER</th><td colspan="3">${ogr.length?ogr.map((x,i)=>`${i+1}- ${esc(x)}`).join('<br>'):''}</td></tr>
 <tr><th>GEZİNİN AMACI</th><td colspan="3">${v(s.amac,'')}</td></tr>
 </tbody></table>`
 }
 function baslikPlan(s){return isDisi(s)?'İL DIŞI OKUL GEZİ PLANI':'OKUL GEZİ PLANI'}
+function veliBelge(s,o){
+ o=o||{};const okul=String(s.okul||'').trim()||'……………………………………';
+ return`<section class="gzi-veli"><h2 class="gzi-vbaslik">GEZİ VELİ İZİN BELGESİ</h2><p class="gzi-vmakam">${esc(okul.toLocaleUpperCase('tr'))} MÜDÜRLÜĞÜNE</p><p class="gzi-vmetin">Okulunuzun ${esc(o.sinif)||DOT} sınıfı ${esc(o.no)||DOT} numaralı öğrencisi ${esc(o.ad)||DOT+DOT}’in velisiyim. Öğrencimin <b>${esc(trDate(s.gTarih)||DOT)}</b> tarihinde${s.saat?` <b>${esc(s.saat)}</b> saatleri arasında`:''} <b>${esc(String(s.yer||'').trim()||DOT)}</b> gezisine katılmasına izin veriyorum.</p><p class="gzi-vmetin">Gereğini bilgilerinize arz ederim.</p><div class="gzi-vimza"><span>Tarih: …/…/……</span><span>Veli adı soyadı: ${esc(o.veli)||DOT}</span><span>Telefon: ${esc(o.tel)||DOT}</span><span>İmza: ${DOT}</span></div></section>`}
 function paperVeli(s){
- const okul=String(s.okul||'').trim()||'……………………………………';
- const bir=`<section class="gzi-veli"><h2 class="gzi-vbaslik">GEZİ VELİ İZİN BELGESİ</h2><p class="gzi-vmakam">${esc(okul.toLocaleUpperCase('tr'))} MÜDÜRLÜĞÜNE</p><p class="gzi-vmetin">Okulunuzun ${DOT} sınıfı ${DOT} numaralı öğrencisi ${DOT}${DOT}’in velisiyim. Öğrencimin <b>${esc(trDate(s.gTarih)||DOT)}</b> tarihinde${s.saat?` <b>${esc(s.saat)}</b> saatleri arasında`:''} <b>${esc(String(s.yer||'').trim()||DOT)}</b> gezisine katılmasına izin veriyorum.</p><p class="gzi-vmetin">Gereğini bilgilerinize arz ederim.</p><div class="gzi-vimza"><span>Tarih: …/…/……</span><span>Veli adı soyadı: ${DOT}</span><span>Telefon: ${DOT}</span><span>İmza: ${DOT}</span></div></section>`;
+ const bir=veliBelge(s);
  return`<article class="gzi-paper gzi-paper--veli">${bir}${bir}${bir}</article>`
+}
+const sayfa=h=>`<div class="gzi-sayfa">${h}</div>`;
+const planAyar=s=>({...s,doc:s.gtur==='disi'?'plan-disi':'plan-ici'});
+const baslik=(s,t)=>`<h1 class="gzi-title">${t}</h1><p class="gzi-yazi gzi-orta">${esc(String(s.okul||'').trim()||DOT)} — ${esc(trDate(s.gTarih)||DOT)} tarihli ${esc(String(s.yer||'').trim()||DOT)} gezisi</p>`;
+function listeKagit(s){
+ const o=s.ogrenciler||[],v=ayrik(s.veliler);
+ const th=a=>`<tr>${a.map(x=>`<td class="gzi-c"><b>${x}</b></td>`).join('')}</tr>`;
+ const ogr=`<table class="gzi-tablo gzi-liste"><tbody>${th(['S.No','Sınıf','No','Adı Soyadı','T.C. Kimlik No','Veli','Telefon'])}${(o.length?o:[{}]).map((x,i)=>`<tr><td class="gzi-c">${i+1}</td><td class="gzi-c">${esc(x.sinif)}</td><td class="gzi-c">${esc(x.no)}</td><td>${esc(x.ad)}</td><td class="gzi-c">${esc(x.tc)}</td><td>${esc(x.veli)}</td><td>${esc(x.tel)}</td></tr>`).join('')}</tbody></table>`;
+ const vel=v.length?`<h2 class="gzi-title">GEZİYE KATILACAK VELİLER</h2><table class="gzi-tablo gzi-liste"><tbody>${th(['S.No','Adı Soyadı'])}${v.map((x,i)=>`<tr><td class="gzi-c">${i+1}</td><td>${esc(x)}</td></tr>`).join('')}</tbody></table>`:'';
+ return sayfa(`<article class="gzi-paper">${baslik(s,'GEZİYE KATILACAK ÖĞRENCİ LİSTESİ')}${ogr}${vel}<div class="gzi-imza"><span>${esc(s.mudur)||DOT}</span><b>Okul Müdürü</b></div></article>`)
+}
+function veliKagit(s){
+ const o=s.ogrenciler||[];
+ return o.length?o.map(x=>sayfa(`<article class="gzi-paper gzi-paper--tek">${veliBelge(s,x)}</article>`)).join(''):sayfa(paperVeli(s))
+}
+function surucuKagit(s){
+ const a=dolu(s.araclar);
+ return(a.length?a:[{}]).map(x=>{const r=(l,d)=>`<tr><th>${l}</th><td>${esc(d)}</td></tr>`;
+  return sayfa(`<article class="gzi-paper">${baslik(s,'SÜRÜCÜ / PERSONEL BEYANI')}<table class="gzi-tablo"><tbody>${r('Araç türü',x.tur)}${r('Plaka',x.plaka)}${r('Model',x.model)}${r('Adı soyadı',x.sofor)}${r('T.C. kimlik no',x.tc)}${r('SRC belge no',x.src)}</tbody></table><p class="gzi-yazi gzi-ind gzi-beyan">Yukarıda bilgileri yazılı araçla belirtilen gezide görev alacağımı; sürücü belgemin ve mesleki yeterlilik belgemin geçerli olduğunu, hakkımda öğrencilerle birlikte görev yapmama engel bir adli sicil kaydı bulunmadığını beyan ederim.</p><div class="gzi-imza"><span>Tarih: …/…/……</span><span>${esc(x.sofor)||DOT}</span><b>İmza</b></div></article>`)}).join('')
+}
+function oturmaKagit(s){
+ const kisi=[];
+ if(String(s.kafile||'').trim())kisi.push(`${s.kafile.trim()} (Kafile Başkanı)`);
+ if(String(s.idareci||'').trim())kisi.push(`${s.idareci.trim()} (İdareci)`);
+ ayrik((s.ogretmenler||[]).join('\n')).forEach(x=>kisi.push(`${x} (Öğrt.)`));
+ (s.ogrenciler||[]).forEach(x=>kisi.push(`${x.ad||''}${x.sinif?` (${x.sinif})`:''}`));
+ ayrik(s.veliler).forEach(x=>kisi.push(`${x} (Veli)`));
+ let i=0;const a=dolu(s.araclar).length?dolu(s.araclar):[{tur:'Araç',koltuk:'46'}];
+ return a.map((x,n)=>{
+  const k=num(x.koltuk)||46,satir=[];
+  for(let c=1;c<=k;c+=4){const h=q=>q<=k?`<td><b>${q}</b><br>${esc(kisi[i+q-1]||'')}</td>`:'<td></td>';satir.push(`<tr>${h(c)}${h(c+1)}<td class="gzi-koridor"></td>${h(c+2)}${h(c+3)}</tr>`)}
+  i+=k;
+  return sayfa(`<article class="gzi-paper">${baslik(s,`${esc(String(x.tur||'Araç').toLocaleUpperCase('tr'))} OTURMA PLANI${a.length>1?` — ${n+1}. ARAÇ`:''}`)}<p class="gzi-yazi gzi-orta">${esc(x.plaka||'')}</p><table class="gzi-tablo gzi-oturma"><tbody>${satir.join('')}</tbody></table></article>`)
+ }).join('')
+}
+const BELGE={plan:s=>sayfa(paper(planAyar(s))),liste:listeKagit,veli:veliKagit,surucu:surucuKagit,oturma:oturmaKagit};
+const BELGELER=[['plan','📋','Gezi Planı','Plan tablosu: tarih, yer, araç, katılımcı sayıları ve amaç.'],['liste','🎓','Öğrenci ve Veli Listesi','Sınıf, no, T.C., veli ve telefon bilgileriyle liste.'],['veli','✍️','Veli İzin Belgesi','Her öğrenci için ayrı sayfa; öğrenci eklenmediyse boş belge.'],['surucu','🪪','Sürücü / Personel Beyanı','Her araç için ayrı sayfa; imza bölümüyle.'],['oturma','💺','Oturma Planı','Koltuk koltuk yerleşim; kafile başkanı, görevliler, öğrenciler, veliler sırayla.']];
+function printBelge(k){
+ if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
+ const s=ensure(),keys=k==='hepsi'?BELGELER.map(x=>x[0]):[k];
+ global.ReportEngine.printReport(k==='hepsi'?'Gezi Dosyası':BELGELER.find(x=>x[0]===k)?.[2]||'Gezi',`<div class="gzi-print">${keys.map(x=>BELGE[x](s)).join('')}</div>`,{fileName:'Gezi',yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
+}
+function ogrenciCoz(txt){
+ return String(txt||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const c=(l.includes('\t')?l.split('\t'):l.includes(';')?l.split(';'):l.split(',')).map(x=>x.trim());return{sinif:c[0]||'',no:c[1]||'',ad:c[2]||'',tc:c[3]||'',veli:c[4]||'',tel:c[5]||''}}).filter(x=>x.ad&&!/^(sınıf|sinif)$/i.test(x.sinif))
 }
 function paper(s,edit){
  if(s.doc==='veli')return paperVeli(s);
@@ -98,7 +149,19 @@ function tabsHtml(s){return`<div class="ttn-tabs" role="tablist">${DOCS.map(([k,
 function subeHtml(s){return`<div class="gzi-sube"><span class="ka-muted">Şube</span><span class="ka-muted">Kız</span><span class="ka-muted">Erkek</span><span class="ka-muted">Toplam</span><span></span>${s.subeler.map((x,i)=>`<input class="ka-input" value="${esc(x.sube)}" placeholder="6/A" data-gz-sube="${i}" data-k="sube" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.k)}" data-gz-sube="${i}" data-k="k" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.e)}" data-gz-sube="${i}" data-k="e" autocomplete="off"><b data-gz-st="${i}">${num(x.k)+num(x.e)}</b><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-subesil="${i}" aria-label="Şubeyi kaldır">✕</button>`).join('')}</div><div class="gzi-genel"><b>Genel toplam: <span data-gz-gt>${toplam(s)}</span></b><button type="button" class="ka-btn ka-btn--secondary" data-gz-subeekle>+ Şube ekle</button></div>`}
 function ogrHtml(s){return`<datalist id="gzOgr">${rows('ogretmenler').map(t=>`<option value="${esc(t.adSoyad||`${t.ad||''} ${t.soyad||''}`.trim())}">`).join('')}</datalist><div class="ttn-imzalar">${s.ogretmenler.map((x,i)=>`<div class="dlk-ek"><input class="ka-input" list="gzOgr" value="${esc(x)}" placeholder="Öğretmen adı soyadı" data-gz-ogr="${i}" autocomplete="off"><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-ogrsil="${i}" aria-label="Öğretmeni kaldır">✕</button></div>`).join('')}</div><button type="button" class="ka-btn ka-btn--secondary" data-gz-ogrekle>+ Öğretmen ekle</button>`}
 function gapCtl(s){return`<div class="ttn-gap"><span>Üst yazı ile plan tablosu arası</span><div><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="-4" aria-label="Boşluğu azalt">−</button><b data-gz-gapv>${Math.max(0,parseFloat(s.bosluk)||0)} mm</b><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="4" aria-label="Boşluğu artır">+</button></div></div>`}
+function olusturHtml(s){
+ const a=s.araclar.map((x,i)=>`<div class="gzi-arac"><strong>${i+1}. ARAÇ</strong>${[['tur','Araç türü','Otobüs'],['plaka','Plaka','06 ABC 123'],['model','Model','2019'],['sofor','Şoför adı soyadı','Ad Soyad'],['tc','Şoför T.C. kimlik no','11 haneli'],['src','SRC belge no','SRC-2/12345'],['koltuk','Koltuk sayısı','46']].map(([k,l,ph])=>field(l,`<input class="ka-input" value="${esc(x[k])}" placeholder="${ph}" data-gz-arac="${i}" data-k="${k}" autocomplete="off">`)).join('')}${s.araclar.length>1?`<button type="button" class="ka-btn ka-btn--secondary" data-gz-aracsil="${i}">Aracı kaldır</button>`:''}</div>`).join('');
+ const og=(s.ogrenciler||[]).map((x,i)=>`<div class="dlk-ek"><span>${i+1}. ${esc(x.sinif)} ${esc(x.no)} — ${esc(x.ad)}${x.veli?` · ${esc(x.veli)}`:''}</span><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-ogrdel="${i}" aria-label="Öğrenciyi kaldır">✕</button></div>`).join('');
+ return`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏫 Okul bilgileri</strong><div class="ka-grid">${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}${field('Okul müdürü',input('mudur','text','Örn: Mehmet DEMİR'))}</div></div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><strong>📌 Gezi bilgileri</strong><label class="ka-field"><span class="ka-field__label">Gezi türü</span><select class="ka-input" data-gz="gtur"><option value="ici" ${s.gtur==='ici'?'selected':''}>İl içi gezi</option><option value="disi" ${s.gtur==='disi'?'selected':''}>İl dışı gezi</option></select></label><div class="ka-grid">${field('Gezi tarihi',input('gTarih','date'))}${field('Gezinin yeri',input('yer','text','Örn: Anıtkabir'))}${field('Çıkış / dönüş saati',input('saat','text','08:00 - 14:00'))}</div><label class="ka-field"><span class="ka-field__label">Gezide gidilecek yerlerin planı</span><textarea class="ka-input" rows="4" data-gz="program">${esc(s.program)}</textarea><small class="ka-muted">Her satıra bir madde yazın.</small></label><label class="ka-field"><span class="ka-field__label">Gezinin amacı</span><textarea class="ka-input" rows="4" data-gz="amac">${esc(s.amac)}</textarea></label><button type="button" class="ka-btn ka-btn--secondary" data-gz-amac>🔄 Amaç metni öner</button></div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><div class="gzi-genel"><strong>🚐 Araç ve şoför</strong><button type="button" class="ka-btn ka-btn--secondary" data-gz-aracekle>+ Araç</button></div><label class="dlk-check"><input type="checkbox" data-gz-bel ${s.belediye?'checked':''}> <span>Belediye aracı ile gidilecek</span></label>${field('Aracın kira bedeli',input('kira','text','Örn: 5.000 TL'))}${a}</div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><strong>👥 Görevliler</strong><div class="ka-grid">${field('Gezi kafile başkanı',input('kafile','text','Ad Soyad'))}${field('Kafile başkanı telefonu',input('kafileTel','text','05..'))}${field('Katılacak idareci',input('idareci','text','Ad Soyad'))}</div><strong class="ka-muted">Katılacak öğretmen / personel</strong>${ogrHtml(s)}</div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🎓 Katılacak öğrenciler (${(s.ogrenciler||[]).length})</strong><label class="ka-field"><span class="ka-field__label">Excel / Google Form’dan yapıştır</span><textarea class="ka-input" rows="4" data-gz-paste placeholder="Sınıf, No, Ad Soyad, T.C., Veli, Telefon — her satıra bir öğrenci"></textarea></label><div class="gzi-genel"><button type="button" class="ka-btn" data-gz-yapistir>Listeye ekle</button>${(s.ogrenciler||[]).length?'<button type="button" class="ka-btn ka-btn--secondary" data-gz-ogrtemiz>Listeyi temizle</button>':''}</div>${og||'<p class="ka-muted">Öğrenci eklenmedi. Öğrenci listesi, oturma planı ve veli izin belgeleri bu listeden üretilir.</p>'}</div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><strong>👨‍👩‍👧 Geziye katılacak veliler (${ayrik(s.veliler).length})</strong><label class="ka-field"><textarea class="ka-input" rows="3" data-gz="veliler" placeholder="Her satıra bir veli adı soyadı">${esc(s.veliler)}</textarea></label></div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><strong>📄 Belgeler</strong><p class="ka-muted">Belgeler yukarıdaki bilgilerle doldurulur; yazdırıp PDF alabilirsiniz. Boş alanlar noktalı boşluk olarak basılır. Sürücü beyanı metnini kurumunuzun kullandığı örnekle karşılaştırın.</p>${BELGELER.map(([k,i,t,d])=>`<div class="dlk-ek"><div><strong>${i} ${t}</strong><p class="ka-muted">${d}</p></div><button type="button" class="ka-btn" data-gz-belge="${k}">🖨 Yazdır / PDF</button></div>`).join('')}<button type="button" class="ka-btn ka-btn--secondary" data-gz-belge="hepsi">Tüm belgeleri tek PDF’de al</button></div></article>`
+}
 function formHtml(s){
+ if(isOlustur(s))return olusturHtml(s);
  const o=isOnay(s),p=isPlan(s),v=s.doc==='veli';
  const yazi=o?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏛️ Yazı bilgileri</strong><div class="ka-grid">${field('Kaymakamlık (ilçe)',input('ilce','text','Örn: Mamak'))}${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}${field('Sayı',input('sayi','text','Örn: 821.04/1'))}${field('Yazı tarihi',input('yaziTarih','date'))}${isDisi(s)?field('Onay makamı',input('makam','text','Örn: Mamak İlçe Milli Eğitim Müdürlüğüne'))+field('Olur makamı unvanı',input('makamUnvan','text','İlçe Milli Eğitim Müdürü')):field('Teklif eden (müdür yardımcısı)',input('teklif','text','Örn: Ayşe YILMAZ'))}${field('Okul müdürü',input('mudur','text','Örn: Mehmet DEMİR'))}${field('Olur tarihi',input('olurTarih','date'))}</div>${isDisi(s)?'<p class="ka-muted">İl dışı gezilerde onay makamını ve süreci güncel mevzuattan doğrulayın.</p>':''}</div></article>`:'';
  const veliOkul=v?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏫 Okul</strong>${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}</div></article>`:'';
@@ -136,6 +199,13 @@ function bind(root){
  root.querySelector('[data-gz-zoom]')?.addEventListener('click',()=>{zoomFull=!zoomFull;const b=root.querySelector('[data-gz-zoom]');if(b)b.textContent=zoomFull?'Sayfaya sığdır':'Yakınlaştır';fit(root)});
  root.querySelector('[data-gz-print]')?.addEventListener('click',()=>print());
  root.querySelector('[data-gz-reset]')?.addEventListener('click',()=>{if(!confirm('Tüm girdiler temizlensin mi?'))return;const d=s.doc;state={...blank(),doc:d};persist();render(root)});
+ root.querySelectorAll('[data-gz-arac]').forEach(el=>el.addEventListener('input',()=>{const x=s.araclar[Number(el.dataset.gzArac)];if(x){x[el.dataset.k]=el.value;persist()}}));
+ root.querySelector('[data-gz-aracekle]')?.addEventListener('click',()=>{s.araclar.push({tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'});persist();render(root)});
+ root.querySelectorAll('[data-gz-aracsil]').forEach(b=>b.addEventListener('click',()=>{s.araclar.splice(Number(b.dataset.gzAracsil),1);persist();render(root)}));
+ root.querySelector('[data-gz-yapistir]')?.addEventListener('click',()=>{const t=root.querySelector('[data-gz-paste]'),y=ogrenciCoz(t?.value);if(!y.length){global.toast?.('Eklenecek öğrenci bulunamadı. Satır: Sınıf, No, Ad Soyad…');return}s.ogrenciler=(s.ogrenciler||[]).concat(y);persist();render(root)});
+ root.querySelectorAll('[data-gz-ogrdel]').forEach(b=>b.addEventListener('click',()=>{s.ogrenciler.splice(Number(b.dataset.gzOgrdel),1);persist();render(root)}));
+ root.querySelector('[data-gz-ogrtemiz]')?.addEventListener('click',()=>{if(!confirm('Öğrenci listesi temizlensin mi?'))return;s.ogrenciler=[];persist();render(root)});
+ root.querySelectorAll('[data-gz-belge]').forEach(b=>b.addEventListener('click',()=>printBelge(b.dataset.gzBelge)));
  const pv=root.querySelector('[data-gz-preview]');
  if(pv){
   pv.addEventListener('input',e=>{const el=e.target.closest?.('[data-gz-ed]');if(!el)return;const v=String(el.innerText||'').replace(/ /g,' ').replace(/\n+$/,''),k=el.dataset.gzEd;if(k==='ilgi')s.ilgiOzel=v.trim()===ILGI?'':v;else if(k==='govde')s.govdeOzel=v;else if(k==='kapanis')s.kapanisOzel=v;fit(root);persist()});
@@ -143,5 +213,5 @@ function bind(root){
  }
 }
 function open(){state=load();return render()}
-global.GeziModule={open,render,print,reportBody,paper,planTablo,toplam,amacMetni,DOCS,reset:()=>{state=blank();return state}};
+global.GeziModule={open,printBelge,BELGE,ogrenciCoz,render,print,reportBody,paper,planTablo,toplam,amacMetni,DOCS,reset:()=>{state=blank();return state}};
 })(window);
