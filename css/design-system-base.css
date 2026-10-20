@@ -12901,6 +12901,24 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .vgf-sign span{display:block;font-size:10pt;line-height:6mm;min-height:6mm}
 .ka-report .vgf-sign .vgf-imza{margin-bottom:9mm}
 
+/* ===== A4 FORM — Tutanak (.ttn-*) =====
+   js/modules/tutanak.js çıktısı ve önizlemesi; renk --ka-report-text / --ka-report-bg belirteçlerinden gelir. */
+.ka-report .ttn-print{box-sizing:border-box;min-height:272mm;padding:6mm 7mm;display:flex;flex-direction:column;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:12pt}
+.ka-report .ttn-brand{position:relative;display:flex;align-items:center;justify-content:center;margin:0 0 6mm;min-height:16mm;padding:0 20mm}
+.ka-report .ttn-brand img{position:absolute;left:0;top:50%;transform:translateY(-50%);width:16mm;height:16mm;object-fit:contain}
+.ka-report .ttn-brand__name{font-size:12pt;font-weight:700;text-align:center}
+.ka-report .ttn-paper{box-sizing:border-box;display:flex;flex-direction:column;flex:1 1 auto;min-height:230mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:12pt;line-height:1.6;text-align:left}
+.ka-report .ttn-paper .ttn-title{font-family:inherit!important;margin:0 0 8mm;text-align:center;font-size:14pt;font-weight:700;letter-spacing:.2mm}
+.ka-report .ttn-intro{margin:0 0 4mm;text-indent:12mm}
+.ka-report .ttn-body{margin:0 0 6mm;white-space:pre-wrap;overflow-wrap:anywhere;min-height:60mm}
+.ka-report .ttn-dots{display:block;color:var(--ka-report-text);line-height:2.1;overflow-wrap:anywhere}
+.ka-report .ttn-close{margin:0;text-indent:12mm}
+.ka-report .ttn-sign{display:grid;grid-template-columns:repeat(var(--ttn-n,2),minmax(0,1fr));gap:6mm;margin-top:auto;padding:16mm 0 4mm}
+.ka-report .ttn-sign>div{display:flex;flex-direction:column;align-items:center;gap:1mm;text-align:center;min-width:0}
+.ka-report .ttn-sign b{font-size:11pt;font-weight:700;overflow-wrap:anywhere}
+.ka-report .ttn-sign span{display:block;font-size:11pt;line-height:6mm;min-height:6mm;overflow-wrap:anywhere}
+.ka-report .ttn-sign .ttn-imza-l{margin-bottom:9mm}
+
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
 .bsg-root{
@@ -14074,6 +14092,25 @@ html[data-theme] #v2ModuleRoot .vgf-rec__main small{color:var(--ka-text-muted);f
 html[data-theme] #v2ModuleRoot .vgf-rec__why{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html[data-theme] #v2ModuleRoot .vgf-rec__acts{display:flex;gap:var(--ka-sp-6)}
 @media(max-width:560px){html[data-theme] #v2ModuleRoot .vgf-rec{grid-template-columns:minmax(0,1fr)}html[data-theme] #v2ModuleRoot .vgf-rec__acts{justify-content:flex-end}}
+
+/* ===== TUTANAK HAZIRLA (ttn-*) — sayfa ===== */
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-tabs{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-warn{padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-danger);border-left:var(--ka-sp-4) solid var(--ka-danger);border-radius:var(--ka-r-5);background:color-mix(in srgb,var(--ka-danger) 10%,transparent);color:var(--ka-text);font-size:var(--ka-fs-14)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-warn[hidden]{display:none}
+html[data-theme] #v2ModuleRoot .ttn-page textarea{width:100%;resize:vertical}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-imzalar{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-imza{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:var(--ka-sp-8);align-items:center}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-imza__acts{display:flex;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-save{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--ka-sp-8);align-items:center}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-list{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl>div{display:flex;flex-direction:column;gap:var(--ka-sp-4);min-width:0}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl small{color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-guide{margin:0;padding-left:var(--ka-sp-20);display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview{overflow-x:auto;width:100%;min-height:0;margin:0;box-sizing:border-box;padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-report-bg)}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview .ttn-paper{min-height:0;font-size:11pt}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-preview .ttn-body{min-height:30mm}
+@media(max-width:640px){html[data-theme] #v2ModuleRoot .ttn-page .ttn-imza{grid-template-columns:minmax(0,1fr)}html[data-theme] #v2ModuleRoot .ttn-page .ttn-imza__acts{justify-content:flex-end}html[data-theme] #v2ModuleRoot .ttn-page .ttn-save{grid-template-columns:minmax(0,1fr)}html[data-theme] #v2ModuleRoot .ttn-page .ttn-tpl{grid-template-columns:minmax(0,1fr)}}
 
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
