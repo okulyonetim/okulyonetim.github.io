@@ -33,3 +33,10 @@ test('koleksiyon, kurallar, menü, rota, önbellek ve CSS tanımlı; yazım yaln
   assert(/data-dlk-gap/.test(js) && /imzaBosluk/.test(js), 'boşluk ayarı olmalı');
   assert(/govdeOzel/.test(js) && /hitapOzel/.test(js) && /kapanisOzel/.test(js), 'özel metinler saklanmalı');
 }
+
+test('ekler boşluğu ayarlanır; imza bloğu ortalı; metin iki yana yaslı', () => {
+  const js = fs.readFileSync('js/modules/dilekce.js', 'utf8'), css = fs.readFileSync('css/design-system-base.css', 'utf8');
+  assert(/ekBosluk/.test(js) && /gapCtl\('ekBosluk'/.test(js));
+  assert(/\.ka-report \.dlk-imza\{[^}]*align-items:center[^}]*text-align:center/.test(css));
+  assert(/\.ka-report \.dlk-body\{[^}]*text-align:justify/.test(css));
+});

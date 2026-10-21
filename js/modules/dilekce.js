@@ -12,7 +12,7 @@ const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
 const device=()=>global.DeviceData;
 const isManager=()=>user().admin===true||!!global.PermissionService?.isManager?.();
-const FORM_KEYS=['baslik','makam','konu','metin','ad','unvan','tarih','adres','tel','hitapOzel','govdeOzel','kapanisOzel','bosluk','imzaBosluk'];
+const FORM_KEYS=['baslik','makam','konu','metin','ad','unvan','tarih','adres','tel','hitapOzel','govdeOzel','kapanisOzel','bosluk','imzaBosluk','ekBosluk'];
 const KAYIT_KEYS=[...FORM_KEYS];
 const KAPANIS='Gereğini bilgilerinize arz ederim.';
 const KATEGORILER=['İzin','Sağlık','Atama ve görevlendirme','Özlük','Belge talebi','Nöbet ve ders programı','Eğitim ve etkinlik','Şikâyet ve öneri'];
@@ -80,7 +80,7 @@ function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
 function unvanOf(t){const b=String(t?.brans||'').trim();return b?(/öğretmen/i.test(b)?b:`${b} Öğretmeni`):'Öğretmen'}
 function okulAdi(){const r=global.ReportEngine?.schoolInfo?.();return String(r?.okulAdi||'').trim()}
-function blank(){const t=teacher();return{id:'',baslik:'',makam:okulAdi(),konu:'',metin:'',acilis:true,ad:teacherName(t),unvan:unvanOf(t),tarih:today(),adres:'',tel:'',tc:'',ekVar:'hayir',ekler:[''],hitapOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'5',imzaBosluk:'14'}}
+function blank(){const t=teacher();return{id:'',baslik:'',makam:okulAdi(),konu:'',metin:'',acilis:true,ad:teacherName(t),unvan:unvanOf(t),tarih:today(),adres:'',tel:'',tc:'',ekVar:'hayir',ekler:[''],hitapOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'5',imzaBosluk:'14',ekBosluk:'20'}}
 function ensure(){if(!state)state=blank();return state}
 // "Öğretmeni" → "Öğretmeniyim", "Müdür" → "Müdürüm": 1. tekil kişi eki (ünlü uyumu).
 function ben(w){w=String(w||'').trim();if(!w)return'';const m=w.toLocaleLowerCase('tr').match(/[aeıioöuü](?=[^aeıioöuü]*$)/);if(!m)return w;const v={a:'ı','ı':'ı',e:'i',i:'i',o:'u',u:'u','ö':'ü','ü':'ü'}[m[0]],ends=/[aeıioöuüAEIİOÖUÜ]$/.test(w);return`${w}${ends?'y':''}${v}m`}
@@ -129,7 +129,7 @@ function viewHazirla(s){
  ${ekHtml(s)}
  <article class="ka-card"><div class="ka-card__body ka-stack"><strong>💾 Kayıt adı</strong><div class="ttn-save">${input('baslik','text','Örn: Yıllık izin – Temmuz')}<button class="ka-btn" type="button" data-dlk-save>${s.id?'Değişiklikleri kaydet':'Kaydet'}</button></div></div></article>
  <footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-dlk-reset>${s.id?'Yeni dilekçe':'Temizle'}</button><button class="ka-btn" type="button" data-dlk-print>🖨 Yazdır / PDF</button></footer>
- <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-dlk-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür. Metne dokunup doğrudan değiştirebilirsiniz.</p><div class="ttn-gaps">${gapCtl('bosluk','Dilekçe metni ile kapanış arası',s)}${gapCtl('imzaBosluk','Kapanış ile adres/imza arası',s)}</div><div class="ttn-preview" data-dlk-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="dlk-print">${paper(s,true)}</div></div></div></div></div></article>
+ <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-dlk-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür. Metne dokunup doğrudan değiştirebilirsiniz.</p><div class="ttn-gaps">${gapCtl('bosluk','Dilekçe metni ile kapanış arası',s)}${gapCtl('imzaBosluk','Kapanış ile adres/imza arası',s)}${gapCtl('ekBosluk','Adres/imza ile ekler arası',s)}</div><div class="ttn-preview" data-dlk-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="dlk-print">${paper(s,true)}</div></div></div></div></div></article>
  ${historyHtml()}`
 }
 function viewMetinler(){
@@ -145,7 +145,7 @@ function render(root=document.getElementById('v2ModuleRoot')){
  bind(root);fit(root);if(!resizeBound){resizeBound=true;global.addEventListener('resize',()=>fit(document.querySelector('[data-dlk-page]')))}
  return true
 }
-const GAP_DEF={bosluk:5,imzaBosluk:14};
+const GAP_DEF={bosluk:5,imzaBosluk:14,ekBosluk:20};
 function gapOf(s,k){const n=parseFloat(s[k]);return Number.isFinite(n)?Math.max(0,Math.min(150,n)):GAP_DEF[k]}
 function gapCtl(k,label,s){return`<div class="ttn-gap"><span>${label}</span><div><button class="ka-btn ka-btn--secondary" type="button" data-dlk-gap="${k}" data-d="-4" aria-label="${label} azalt">−</button><b data-dlk-gapv="${k}">${gapOf(s,k)} mm</b><button class="ka-btn ka-btn--secondary" type="button" data-dlk-gap="${k}" data-d="4" aria-label="${label} artır">+</button></div></div>`}
 function fit(root){
@@ -196,7 +196,7 @@ function paper(s,edit){
  const nk=(v,d,k)=>esc(v)||(edit?'':d);
  return`<article class="dlk-paper"><h1 class="dlk-hitap"${ed('hitap')}>${esc(s.hitapOzel||hitap(s))}</h1>${String(s.konu||'').trim()?`<p class="dlk-konu"><b>Konu:</b> <span${ed('konu')}>${esc(s.konu)}</span></p>`:''}<div class="dlk-body${!govde&&edit?' dlk-dots':''}" style="margin-bottom:${gapOf(s,'bosluk')}mm"${ed('govde')}>${govde?esc(govde):(edit?DOT+DOT:`<span class="dlk-dots">${DOT}${DOT}</span>`)}</div><p class="dlk-kapanis"${ed('kapanis')}>${esc(s.kapanisOzel||KAPANIS)}</p>
  <div class="dlk-foot" style="margin-top:${gapOf(s,'imzaBosluk')}mm"><div class="dlk-adres"><b>Adres:</b><span${ed('adres')}>${esc(s.adres)||DOT}</span><span><b>Tel:</b> <span${ed('tel')}>${esc(s.tel)||'…………………'}</span></span></div><div class="dlk-imza"><span>${esc(trDate(s.tarih))||'…/…/……'}</span><b class="dlk-imza-l">İmza</b><span${ed('ad')}>${esc(s.ad)||DOT}</span><span${ed('unvan')}>${esc(s.unvan)}</span><span><b>T.C.:</b> <span${ed('tc')}>${esc(s.tc)||'…………………'}</span></span></div></div>
- ${ekler.length?`<div class="dlk-ekler"><b>EKLER:</b><ol>${ekler.map(x=>`<li${ed('ek:'+x.i)}>${esc(x.t)}</li>`).join('')}</ol></div>`:''}</article>`
+ ${ekler.length?`<div class="dlk-ekler" style="margin-top:${gapOf(s,'ekBosluk')}mm"><b>EKLER:</b><ol>${ekler.map(x=>`<li${ed('ek:'+x.i)}>${esc(x.t)}</li>`).join('')}</ol></div>`:''}</article>`
 }
 function reportBody(data){return`<div class="dlk-print">${paper(data||ensure())}</div>`}
 function print(data){

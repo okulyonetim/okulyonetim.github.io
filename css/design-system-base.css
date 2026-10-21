@@ -12922,14 +12922,14 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .dlk-paper{box-sizing:border-box;display:flex;flex-direction:column;flex:1 1 auto;min-height:250mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:12pt;line-height:1.6;text-align:left}
 .ka-report .dlk-paper .dlk-hitap{font-family:inherit!important;margin:0 0 8mm;text-align:center;font-size:13pt;font-weight:700}
 .ka-report .dlk-konu{margin:0 0 5mm}
-.ka-report .dlk-body{margin:0 0 5mm;text-indent:12mm;white-space:pre-wrap;overflow-wrap:anywhere}
+.ka-report .dlk-body{margin:0 0 5mm;text-indent:12mm;text-align:justify;white-space:pre-wrap;overflow-wrap:anywhere}
 .ka-report .dlk-dots{display:block;line-height:2.1;overflow-wrap:anywhere}
-.ka-report .dlk-kapanis{margin:0;text-indent:12mm}
+.ka-report .dlk-kapanis{margin:0;text-indent:12mm;text-align:justify}
 .ka-report .dlk-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:8mm;margin-top:14mm}
 .ka-report .dlk-adres{display:flex;flex-direction:column;gap:1mm;max-width:50%;min-width:0;overflow-wrap:anywhere}
-.ka-report .dlk-imza{display:flex;flex-direction:column;align-items:flex-end;gap:1mm;text-align:right;min-width:0;overflow-wrap:anywhere}
+.ka-report .dlk-imza{display:flex;flex-direction:column;align-items:center;gap:1mm;text-align:center;min-width:0;overflow-wrap:anywhere}
 .ka-report .dlk-imza .dlk-imza-l{margin:1mm 0 12mm}
-.ka-report .dlk-ekler{margin-top:auto;padding-top:10mm;font-size:11pt}
+.ka-report .dlk-ekler{margin-top:20mm;padding-top:0;font-size:11pt}
 .ka-report .dlk-ekler ol{margin:1mm 0 0;padding-left:6mm}
 
 /* ===== A4 FORM — Gezi planı / onayı / veli izni (.gzi-*) ===== */
