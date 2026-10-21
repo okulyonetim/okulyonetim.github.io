@@ -14204,6 +14204,33 @@ html[data-theme] #v2ModuleRoot .gzi-page .dlk-ek{display:grid;grid-template-colu
 html[data-theme] #v2ModuleRoot .gzi-page .dlk-ek p{margin:0}
 html[data-theme] #v2ModuleRoot .ka-attendance-wa{margin-top:var(--ka-sp-6);align-self:flex-start}
 html[data-theme] #v2ModuleRoot .ka-attendance-template>summary{cursor:pointer;min-height:44px}
+/* ===== AYLIK YÖNETİM AKIŞI (js/modules/monthly-flow.js) ===== */
+html[data-theme] #v2ModuleRoot .maf-months{display:flex;gap:var(--ka-sp-8);overflow-x:auto;padding-bottom:var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .maf-months .ka-btn{flex:0 0 auto}
+html[data-theme] #v2ModuleRoot .maf-bar{height:var(--ka-sp-8);margin-top:var(--ka-sp-8);border-radius:var(--ka-radius-pill);background:var(--ka-surface-muted);border:var(--ka-border-w) solid var(--ka-border);overflow:hidden}
+html[data-theme] #v2ModuleRoot .maf-bar span{display:block;height:100%;background:var(--ka-success)}
+html[data-theme] #v2ModuleRoot .maf-list{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .maf-item{display:flex;gap:var(--ka-sp-12);align-items:flex-start;padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-radius-md);background:var(--ka-surface)}
+html[data-theme] #v2ModuleRoot .maf-item.is-star{border-color:var(--ka-accent)}
+html[data-theme] #v2ModuleRoot .maf-item.is-done .maf-text{color:var(--ka-text-muted);text-decoration:line-through}
+html[data-theme] #v2ModuleRoot .maf-item.is-hidden{opacity:.7;align-items:center}
+html[data-theme] #v2ModuleRoot .maf-check{flex:0 0 auto;width:var(--ka-sp-24);height:var(--ka-sp-24);border-radius:var(--ka-radius-sm);border:var(--ka-border-w) solid var(--ka-border-strong);background:var(--ka-surface);color:var(--ka-text);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0}
+html[data-theme] #v2ModuleRoot .maf-item.is-done .maf-check{background:var(--ka-success);border-color:var(--ka-success)}
+html[data-theme] #v2ModuleRoot .maf-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .maf-text{margin:0;color:var(--ka-text)}
+html[data-theme] #v2ModuleRoot .maf-links{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .maf-link,html[data-theme] #v2ModuleRoot .maf-note,html[data-theme] #v2ModuleRoot .maf-notebtn{display:inline-flex;gap:var(--ka-sp-4);align-items:center;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-radius-md);background:var(--ka-primary-soft);color:var(--ka-text);padding:var(--ka-sp-4) var(--ka-sp-8);font:inherit;font-size:var(--ka-font-size-sm);cursor:pointer;text-align:left}
+html[data-theme] #v2ModuleRoot .maf-notebtn{background:transparent;color:var(--ka-text-muted);align-self:flex-start}
+html[data-theme] #v2ModuleRoot .maf-note{background:var(--ka-surface-muted);align-self:flex-start}
+html[data-theme] #v2ModuleRoot .maf-noteedit{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .maf-noteact{display:flex;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .maf-tools{display:flex;flex-direction:column;gap:var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .maf-icon{border:0;background:transparent;color:var(--ka-text-muted);font-size:var(--ka-font-size-lg);cursor:pointer;line-height:1;padding:var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .maf-icon.is-on{color:var(--ka-accent)}
+html[data-theme] #v2ModuleRoot .maf-add{display:flex;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .maf-add .ka-input{flex:1 1 auto;min-width:0}
+html[data-theme] #v2ModuleRoot .maf-days{margin:0;padding-left:var(--ka-sp-16);color:var(--ka-text)}
+html[data-theme] #v2ModuleRoot .maf-secs{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen
