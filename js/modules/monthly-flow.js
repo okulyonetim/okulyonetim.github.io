@@ -1,7 +1,7 @@
 /* Koruk Asistan — Aylık Yönetim Akışı
  * Eğitim yılının her ayı için idarenin takip edeceği iş ve işlemlerin öz kontrol listesi.
- * Maddeler ilgili uygulama sayfalarına bağlanır; işaret, not, yıldız ve gizleme tercihleri bu cihazda saklanır
- * (KaPrefs; sunucuya yazılmaz, veri yapısı ve kurallar değişmez).
+ * Maddeler ilgili uygulama sayfalarına bağlanır; işaret, not, yıldız ve gizleme tercihleri cihazda (KaPrefs)
+ * saklanır ve kullanıcının kendi tercih belgesine eşitlenir (yeni koleksiyon/kural yok).
  */
 (function(global){
 'use strict';
@@ -153,7 +153,14 @@ const SECTIONS=[
 let root=null,ay='',st=null,notOpen='',showHidden=false,catalogLoaded=false;
 const blank=()=>({done:{},star:{},hide:{},note:{},custom:{},sec:{}});
 function load(){try{const r=JSON.parse(global.KaPrefs?.get(PREF,'')||'null');if(r&&typeof r==='object')return{...blank(),...r}}catch(_){}return blank()}
-function save(){try{global.KaPrefs?.set(PREF,JSON.stringify(st))}catch(_){}}
+/* Hesap bazlı eşitleme: kullanıcının kendi tercih belgesi (oy_kullaniciTercihleri/{uid}); yeni koleksiyon/kural gerekmez.
+   Cihazda her zaman yerel kopya tutulur; çevrimdışıyken ya da hata olursa yalnız yerel çalışır. */
+let pushT=0;
+const ref=()=>{try{const u=global.auth?.currentUser;return u&&global.db?global.db.collection('oy_kullaniciTercihleri').doc(u.uid):null}catch(_){return null}};
+function push(){clearTimeout(pushT);pushT=setTimeout(()=>{const r=ref();if(!r)return;try{r.set({aylikAkis:JSON.stringify(st),aylikAkisT:st.t||Date.now()},{merge:true}).catch(()=>{})}catch(_){}},800)}
+function pull(){const r=ref();if(!r)return;try{r.get().then(d=>{const x=d.exists?d.data():null;if(!x||!x.aylikAkis){if(st&&(st.t||0)>0)push();return}let rem;try{rem=JSON.parse(x.aylikAkis)}catch(_){return}const rt=Number(x.aylikAkisT)||0,lt=(st&&st.t)||0;
+ if(rt>lt){st={...blank(),...rem,t:rt};try{global.KaPrefs?.set(PREF,JSON.stringify(st))}catch(_){}if(root&&root.querySelector('[data-maf-page]')&&!notOpen)render(root)}else if(lt>rt)push()}).catch(()=>{})}catch(_){}}
+function save(){st.t=Date.now();try{global.KaPrefs?.set(PREF,JSON.stringify(st))}catch(_){}push()}
 function ensure(){if(!st)st=load();return st}
 function curKey(){const m=new Date().getMonth()+1;return(MONTHS.find(x=>x.m===m)||MONTHS[MONTHS.length-1]).k}
 const month=()=>MONTHS.find(x=>x.k===ay)||MONTHS[0];
@@ -181,7 +188,7 @@ function render(r=document.getElementById('v2ModuleRoot')){
  const all=itemsOf(mo),vis=all.filter(x=>!s.hide[x.id]),hid=all.filter(x=>s.hide[x.id]);
  const days=(global.BelirliGunlerCatalog?.CATALOG||[]).filter(x=>x[0]===mo.ad);
  r.innerHTML=`<section class="vgf-page maf-page" data-maf-page>
-<header class="vgf-head"><div><h2>Aylık Yönetim Akışı</h2><p class="ka-muted">Her ayın idari iş ve işlemleri. Tamamladığınız maddeyi işaretleyin; işaretler ve notlar bu cihazda saklanır (öz kontrol).</p></div></header>
+<header class="vgf-head"><div><h2>Aylık Yönetim Akışı</h2><p class="ka-muted">Her ayın idari iş ve işlemleri. Tamamladığınız maddeyi işaretleyin; işaretler ve notlar hesabınıza kaydedilir; web ve Android’de aynı görünür.</p></div></header>
 <div class="maf-months" role="tablist">${MONTHS.map(x=>`<button type="button" role="tab" class="ka-btn ${x.k===ay?'':'ka-btn--secondary'}" aria-selected="${x.k===ay}" data-maf-month="${x.k}">${x.ic} ${esc(x.ad)}</button>`).join('')}</div>
 <article class="ka-card maf-progress"><div class="ka-card__body"><strong>${stt.done} / ${stt.total} madde tamamlandı</strong><div class="maf-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${stt.total}" aria-valuenow="${stt.done}"><span style="width:${stt.total?Math.round(stt.done*100/stt.total):0}%"></span></div></div></article>
 ${days.length?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>📅 Belirli gün ve haftalar</strong><ul class="maf-days">${days.map(x=>`<li>${esc(x[2])} — ${esc(x[1])}</li>`).join('')}</ul>${linkHtml('belirli')}</div></article>`:''}
@@ -210,6 +217,6 @@ function bind(r){
  q('[data-maf-sec]',b=>b.addEventListener('click',()=>{const k=b.dataset.mafSec;if(s.sec[k])delete s.sec[k];else s.sec[k]=1;re()}));
  r.querySelector('[data-maf-add]')?.addEventListener('submit',e=>{e.preventDefault();const i=r.querySelector('[data-maf-addtext]'),v=String(i?.value||'').trim();if(!v)return;(s.custom[ay]||(s.custom[ay]=[])).push({id:`${ay}:own:${Date.now().toString(36)}`,t:v.slice(0,300)});re()})
 }
-function open(){st=load();ay=curKey();notOpen='';showHidden=false;return render()}
+function open(){st=load();ay=curKey();notOpen='';showHidden=false;const ok=render();pull();return ok}
 global.MonthlyFlowModule={open,render,MONTHS,SECTIONS,LINKS:L,itemsOf,stats,reset:()=>{st=blank();return st}};
 })(window);
