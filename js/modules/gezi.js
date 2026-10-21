@@ -20,7 +20,7 @@ const AMAC=[
 ];
 const okulB=()=>{const l=rows('okulBilgileri');return l.find(r=>r.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}};
 const makamOto=(il,ilce)=>(!String(ilce||'').trim()||/merkez/i.test(ilce))&&String(il||'').trim()?'valilik':'kaymakamlik';
-const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
+const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],veliAdet:'3',kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
  gTarih:'',yer:'',saat:'',program:'',amac:'',amacIdx:0,plaka:'',sofor:'',kira:'',belediye:false,subeler:[{sube:'',k:'',e:''}],veli:'',idareci:'',ogretmenler:[''],ilgiOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'8'});
 let state=null,zoomFull=false,resizeBound=false;
 function pad(n){return String(n).padStart(2,'0')}
@@ -98,9 +98,11 @@ function listeKagit(s){
  const vel=v.length?`<h2 class="gzi-title">GEZİYE KATILACAK VELİLER</h2><table class="gzi-tablo gzi-liste"><tbody>${th(['S.No','Adı Soyadı'])}${v.map((x,i)=>`<tr><td class="gzi-c">${i+1}</td><td>${esc(x)}</td></tr>`).join('')}</tbody></table>`:'';
  return sayfa(`<article class="gzi-paper">${baslik(s,'GEZİYE KATILACAK ÖĞRENCİ LİSTESİ')}${ogr}${vel}<div class="gzi-imza"><span>${esc(s.mudur)||DOT}</span><b>Okul Müdürü</b></div></article>`)
 }
+const veliAdet=s=>[2,3,4].includes(num(s.veliAdet))?num(s.veliAdet):3;
 function veliKagit(s){
- const o=s.ogrenciler||[];
- return o.length?o.map(x=>sayfa(`<article class="gzi-paper gzi-paper--tek">${veliBelge(s,x)}</article>`)).join(''):sayfa(paperVeli(s))
+ const o=(s.ogrenciler||[]).length?s.ogrenciler:[{}],n=veliAdet(s),out=[];
+ for(let i=0;i<o.length;i+=n){const grup=o.slice(i,i+n);out.push(sayfa(`<article class="gzi-paper gzi-vsayfa gzi-v${n}">${grup.map(x=>veliBelge(s,x)).join('')}</article>`))}
+ return out.join('')
 }
 function surucuKagit(s){
  const a=dolu(s.araclar);
@@ -141,7 +143,7 @@ const BELGELER=[['plan','📋','Gezi Planı','Plan tablosu: tarih, yer, araç, k
 function printBelge(k){
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
  const s=ensure(),keys=k==='hepsi'?BELGELER.map(x=>x[0]):[k];
- global.ReportEngine.printReport(k==='hepsi'?'Gezi Dosyası':BELGELER.find(x=>x[0]===k)?.[2]||'Gezi',`<div class="gzi-print">${keys.map(x=>BELGE[x](s)).join('')}</div>`,{fileName:'Gezi',yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
+ global.ReportEngine.printReport(k==='hepsi'?'Gezi Dosyası':BELGELER.find(x=>x[0]===k)?.[2]||'Gezi',`<div class="gzi-print">${keys.map(x=>BELGE[x](s)).join('')}</div>`,{fileName:'Gezi',yon:'dikey',kenarBosluk:10,logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
 }
 function ogrenciCoz(txt){
  return String(txt||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const c=(l.includes('\t')?l.split('\t'):l.includes(';')?l.split(';'):l.split(',')).map(x=>x.trim());return{sinif:c[0]||'',no:c[1]||'',ad:c[2]||'',tc:c[3]||'',veli:c[4]||'',tel:c[5]||''}}).filter(x=>x.ad&&!/^(sınıf|sinif)$/i.test(x.sinif))
@@ -170,7 +172,7 @@ function reportBody(data){return`<div class="gzi-print">${paper(data||ensure())}
 function print(data){
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
  const s=data||ensure();
- global.ReportEngine.printReport(DOCS.find(x=>x[0]===s.doc)?.[1].replace(/^\S+\s/,'')||'Gezi',reportBody(s),{fileName:'Gezi',yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
+ global.ReportEngine.printReport(DOCS.find(x=>x[0]===s.doc)?.[1].replace(/^\S+\s/,'')||'Gezi',reportBody(s),{fileName:'Gezi',yon:'dikey',kenarBosluk:10,logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
 }
 function field(label,html,cls=''){return`<label class="ka-field ${cls}"><span class="ka-field__label">${esc(label)}</span>${html}</label>`}
 function input(key,type='text',ph=''){return`<input class="ka-input" type="${type}" value="${esc(ensure()[key])}" placeholder="${esc(ph)}" data-gz="${key}" autocomplete="off">`}
@@ -189,7 +191,7 @@ function olusturHtml(s){
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>🤝 Acente ve sözleşme</strong><p class="ka-muted">EK-6 Çerçeve Sözleşmesi ve EK-10 beyanında kullanılır.</p><div class="ka-grid">${field('İl',input('il','text','Örn: Elazığ'))}${field('İlçe',input('ilce','text','Örn: Merkez'))}${field('Okul telefonu',input('okulTel','text','0424 000 00 00'))}${field('Acente / firma adı',input('acente','text','Örn: … Turizm Seyahat Acentesi'))}${field('Firma yetkilisi',input('yetkili','text','Ad Soyad'))}${field('Acente tebligat adresi',input('acenteAdres','text',''))}${field('Acente telefonu',input('acenteTel','text','0312 000 00 00'))}${field('Acente e-posta',input('acenteMail','text','iletisim@acenteadi.com'))}${field('Gece sayısı',input('gece','text','0'))}${field('Gündüz sayısı',input('gunduz','text','1'))}${field('Gezi ücreti (sigorta ve vergiler dahil, TL)',input('ucret','text','Örn: 12.500'))}${field('Ön ödeme oranı (%)',input('onOdeme','text','30'))}${field('Sözleşme tarihi',input('sozTarih','date'))}</div></div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>🎓 Katılacak öğrenciler (${(s.ogrenciler||[]).length})</strong>${siniflarHtml(s)}<label class="ka-field"><span class="ka-field__label">Excel / Google Form’dan yapıştır</span><textarea class="ka-input" rows="4" data-gz-paste placeholder="Sınıf, No, Ad Soyad, T.C., Veli, Telefon — her satıra bir öğrenci"></textarea></label><div class="gzi-genel"><button type="button" class="ka-btn" data-gz-yapistir>Listeye ekle</button>${(s.ogrenciler||[]).length?'<button type="button" class="ka-btn ka-btn--secondary" data-gz-ogrtemiz>Listeyi temizle</button>':''}</div>${og||'<p class="ka-muted">Öğrenci eklenmedi. Öğrenci listesi, oturma planı ve veli izin belgeleri bu listeden üretilir.</p>'}</div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>👨‍👩‍👧 Geziye katılacak veliler (${ayrik(s.veliler).length})</strong><label class="ka-field"><textarea class="ka-input" rows="3" data-gz="veliler" placeholder="Her satıra bir veli adı soyadı">${esc(s.veliler)}</textarea></label></div></article>
-<article class="ka-card"><div class="ka-card__body ka-stack"><strong>📄 Belgeler</strong><p class="ka-muted">Belgeler yukarıdaki bilgilerle doldurulur; yazdırıp PDF alabilirsiniz. Boş alanlar noktalı boşluk olarak basılır. </p>${BELGELER.map(([k,i,t,d])=>`<div class="dlk-ek"><div><strong>${i} ${t}</strong><p class="ka-muted">${d}</p></div><button type="button" class="ka-btn" data-gz-belge="${k}">🖨 Yazdır / PDF</button></div>`).join('')}<button type="button" class="ka-btn ka-btn--secondary" data-gz-belge="hepsi">Tüm belgeleri tek PDF’de al</button></div></article>`
+<article class="ka-card"><div class="ka-card__body ka-stack"><strong>📄 Belgeler</strong>${field('Sayfa başına veli izin belgesi',`<select class="ka-input" data-gz="veliAdet">${[2,3,4].map(n=>`<option value="${n}" ${veliAdet(s)===n?'selected':''}>${n} belge</option>`).join('')}</select>`)}<p class="ka-muted">Belgeler yukarıdaki bilgilerle doldurulur; yazdırıp PDF alabilirsiniz. Boş alanlar noktalı boşluk olarak basılır. </p>${BELGELER.map(([k,i,t,d])=>`<div class="dlk-ek"><div><strong>${i} ${t}</strong><p class="ka-muted">${d}</p></div><button type="button" class="ka-btn" data-gz-belge="${k}">🖨 Yazdır / PDF</button></div>`).join('')}<button type="button" class="ka-btn ka-btn--secondary" data-gz-belge="hepsi">Tüm belgeleri tek PDF’de al</button></div></article>`
 }
 function formHtml(s){
  if(isOlustur(s))return olusturHtml(s);

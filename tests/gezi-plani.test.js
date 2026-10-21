@@ -69,3 +69,15 @@ test('sınıf seçimi uygulama verisinden gelir; Valilik/Kaymakamlık başlığ�
   assert.match(G.paper({ ...s, doc: 'onay-ici', makamTur: 'kaymakamlik', il: 'Elazığ', ilce: 'Baskil' }), /BASKİL KAYMAKAMLIĞI/);
   delete globalThis.AppStore;
 });
+
+test('veli izin belgeleri sayfa başına sabit sayıda; yazdırma yan/üst/alt boşluğu native için ayrıca verilir', () => {
+  const o = Array.from({ length: 7 }, (_, i) => ({ sinif: '6/A', no: String(i + 1), ad: 'Ö' + i }));
+  const s = { ...sample(), ogrenciler: o, veliAdet: '3' };
+  const h = G.BELGE.veli(s);
+  assert.strictEqual((h.match(/class="gzi-sayfa"/g) || []).length, 3);
+  assert.strictEqual((G.BELGE.veli({ ...s, veliAdet: '2' }).match(/class="gzi-sayfa"/g) || []).length, 4);
+  require('../js/modules/report-engine.js');
+  const e = globalThis.ReportEngine.documentHtml('x', '<p>a</p>', { native: true, kenarBosluk: 10 });
+  assert.match(e, /ka-pagepad/); assert.match(e, /@page\{margin:0\}/);
+  assert.ok(!globalThis.ReportEngine.documentHtml('x', '<p>a</p>', {}).includes('ka-pagepad'));
+});

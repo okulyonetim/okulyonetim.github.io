@@ -574,7 +574,7 @@ function renderSearch({remember=true}={}){
     if(!rows.length){global.toast?.('Yazdırılacak arama sonucu bulunamadı.');return}
     button.disabled=true;
     try{
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=5');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=6');
       if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
       const escPrint=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const filterParts=[];
