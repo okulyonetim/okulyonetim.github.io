@@ -3,7 +3,11 @@
    Veri akışı: IndexedDB -> AppStore -> UI; Firestore yalnız arka plan senkronizasyonudur.
    Remote sync politikası bu dosyanın içindedir; dışarıdan monkey-patch edilmez. */
 /* Cihaza özel küçük tercihler (şablon seçimi gibi); veri değildir, senkronize edilmez. */
-(function(g){if(g.KaPrefs)return;g.KaPrefs=Object.freeze({get(k,d=''){try{const v=g.localStorage?.getItem('ka-pref:'+k);return v==null?d:v}catch(_){return d}},set(k,v){try{g.localStorage?.setItem('ka-pref:'+k,String(v))}catch(_){}}})})(window);
+(function(g){if(g.KaPrefs)return;g.KaPrefs=Object.freeze({get(k,d=''){try{const v=g.localStorage?.getItem('ka-pref:'+k);return v==null?d:v}catch(_){return d}},set(k,v){try{g.localStorage?.setItem('ka-pref:'+k,String(v))}catch(_){}},
+/* Hesap bazlı küçük tercih eşitlemesi: kullanıcının kendi oy_kullaniciTercihleri/{uid} belgesi (mevcut kural, yeni koleksiyon yok). Hata/çevrimdışıysa sessizce yerel çalışır. */
+remoteRef(){try{const u=g.auth?.currentUser;return u&&g.db?g.db.collection('oy_kullaniciTercihleri').doc(u.uid):null}catch(_){return null}},
+remoteGet(){const r=this.remoteRef();return r?r.get().then(d=>d.exists?d.data():null).catch(()=>null):Promise.resolve(null)},
+remoteSet(obj){const r=this.remoteRef();return r?r.set(obj,{merge:true}).catch(()=>{}):Promise.resolve()}})})(window);
 (function(){
 'use strict';
 if(window.KorukCore&&window.KorukCore.version===1)return;

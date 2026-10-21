@@ -29,16 +29,14 @@ test('okul türü bölümü maddeleri aya ekler; tamamlanan sayılır', () => {
   const base = M.stats(mo).total;
   assert.strictEqual(M.itemsOf(mo).length, base);
 });
-test('hesap eşitlemesi: uzak kayıt daha yeniyse yerelin yerine geçer; yerel yeniyse uzağa yazılır', async () => {
+test('hesap eşitlemesi: uzak kayıt yeniyse yerelin yerine geçer, yerel yeniyse uzağa yazılır', async () => {
   const wrote = []; let remote = { aylikAkis: JSON.stringify({ done: { 'eylul:0': 1 }, star: {}, hide: {}, note: {}, custom: {}, sec: {} }), aylikAkisT: 5000 };
-  globalThis.auth = { currentUser: { uid: 'u1' } };
-  globalThis.db = { collection: c => { assert.strictEqual(c, 'oy_kullaniciTercihleri'); return { doc: id => { assert.strictEqual(id, 'u1'); return { get: async () => ({ exists: !!remote, data: () => remote }), set: async (d, o) => { wrote.push([d, o]); } }; } }; } };
+  KaPrefs.remoteGet = async () => remote; KaPrefs.remoteSet = async o => { wrote.push(o); };
   delete mem['aylik-akis-v1'];
   const root = { innerHTML: '', querySelector: () => null, querySelectorAll: () => [] };
   globalThis.document = { getElementById: () => root };
-  M.open();
-  await new Promise(r => setTimeout(r, 30));
+  M.open(); await new Promise(r => setTimeout(r, 30));
   assert.strictEqual(wrote.length, 0);
   assert.ok(JSON.parse(mem['aylik-akis-v1']).done['eylul:0']);
-  assert.match(fs.readFileSync('js/modules/monthly-flow.js', 'utf8'), /merge:true/);
+  assert.match(fs.readFileSync('js/core/core.js', 'utf8'), /oy_kullaniciTercihleri/);
 });

@@ -156,10 +156,9 @@ function load(){try{const r=JSON.parse(global.KaPrefs?.get(PREF,'')||'null');if(
 /* Hesap bazlı eşitleme: kullanıcının kendi tercih belgesi (oy_kullaniciTercihleri/{uid}); yeni koleksiyon/kural gerekmez.
    Cihazda her zaman yerel kopya tutulur; çevrimdışıyken ya da hata olursa yalnız yerel çalışır. */
 let pushT=0;
-const ref=()=>{try{const u=global.auth?.currentUser;return u&&global.db?global.db.collection('oy_kullaniciTercihleri').doc(u.uid):null}catch(_){return null}};
-function push(){clearTimeout(pushT);pushT=setTimeout(()=>{const r=ref();if(!r)return;try{r.set({aylikAkis:JSON.stringify(st),aylikAkisT:st.t||Date.now()},{merge:true}).catch(()=>{})}catch(_){}},800)}
-function pull(){const r=ref();if(!r)return;try{r.get().then(d=>{const x=d.exists?d.data():null;if(!x||!x.aylikAkis){if(st&&(st.t||0)>0)push();return}let rem;try{rem=JSON.parse(x.aylikAkis)}catch(_){return}const rt=Number(x.aylikAkisT)||0,lt=(st&&st.t)||0;
- if(rt>lt){st={...blank(),...rem,t:rt};try{global.KaPrefs?.set(PREF,JSON.stringify(st))}catch(_){}if(root&&root.querySelector('[data-maf-page]')&&!notOpen)render(root)}else if(lt>rt)push()}).catch(()=>{})}catch(_){}}
+function push(){clearTimeout(pushT);pushT=setTimeout(()=>{global.KaPrefs?.remoteSet?.({aylikAkis:JSON.stringify(st),aylikAkisT:st.t||Date.now()})},800)}
+function pull(){const g=global.KaPrefs?.remoteGet?.();if(!g)return;g.then(x=>{if(!x||!x.aylikAkis){if(st&&(st.t||0)>0)push();return}let rem;try{rem=JSON.parse(x.aylikAkis)}catch(_){return}const rt=Number(x.aylikAkisT)||0,lt=(st&&st.t)||0;
+ if(rt>lt){st={...blank(),...rem,t:rt};try{global.KaPrefs?.set(PREF,JSON.stringify(st))}catch(_){}if(root&&root.querySelector('[data-maf-page]')&&!notOpen)render(root)}else if(lt>rt)push()})}
 function save(){st.t=Date.now();try{global.KaPrefs?.set(PREF,JSON.stringify(st))}catch(_){}push()}
 function ensure(){if(!st)st=load();return st}
 function curKey(){const m=new Date().getMonth()+1;return(MONTHS.find(x=>x.m===m)||MONTHS[MONTHS.length-1]).k}
