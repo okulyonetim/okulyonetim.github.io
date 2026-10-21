@@ -31,6 +31,13 @@ async function main(){
     const ref1=doc(t1,'oy_yoklama','s1_2026-08-18');
 
     await assertSucceeds(setDoc(ref1,{sinifId:'s1',tarih:'2026-08-18'}));
+
+    // Uygulamanın gerçekte gönderdiği belge (id + updatedAt + kayıtlar) tek seferde oluşturulabilmeli.
+    const appRef=doc(t1,'oy_yoklama','s9_2026-08-19');
+    await assertSucceeds(setDoc(appRef,{id:'s9_2026-08-19',sinifId:'s9',tarih:'2026-08-19',kayitlar:{o1:'yok'},girenUid:'teacher1',girenAdi:'Öğretmen 1',guncellenmeTarihi:'2026-08-19T08:00:00Z',updatedAt:new Date()},{merge:true}));
+    await assertSucceeds(setDoc(appRef,{id:'s9_2026-08-19',sinifId:'s9',tarih:'2026-08-19',kayitlar:{o1:'yok',o2:'gec'},girenUid:'teacher1',girenAdi:'Öğretmen 1',guncellenmeTarihi:'2026-08-19T08:05:00Z',updatedAt:new Date()},{merge:true}));
+    await assertFails(setDoc(doc(t1,'oy_yoklama','s8_2026-08-19'),{id:'s8_2026-08-19',sinifId:'s8',tarih:'2026-08-19',kayitlar:{},girenUid:'teacher2',ekstra:1},{merge:true}));
+    await assertFails(setDoc(doc(hidden,'oy_yoklama','s7_2026-08-19'),{id:'s7_2026-08-19',sinifId:'s7',tarih:'2026-08-19',kayitlar:{}},{merge:true}));
     await assertSucceeds(updateDoc(ref1,{
       'kayitlar.o1':'yok',girenUid:'teacher1',girenAdi:'Öğretmen 1',guncellenmeTarihi:'2026-08-18T10:00:00Z'
     }));

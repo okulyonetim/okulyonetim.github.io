@@ -148,11 +148,12 @@ service cloud.firestore {
       allow read: if girisYapmis();
       allow create: if moduluGorebilir('yoklama')
         && belgeId == request.resource.data.sinifId + '_' + request.resource.data.tarih
-        && request.resource.data.keys().hasOnly(['sinifId', 'tarih']);
+        && request.resource.data.keys().hasOnly(['id', 'sinifId', 'tarih', 'kayitlar', 'girenUid', 'girenAdi', 'guncellenmeTarihi', 'updatedAt'])
+        && (!('girenUid' in request.resource.data) || request.resource.data.girenUid == null || request.resource.data.girenUid == request.auth.uid);
       allow update: if adminMi() || (moduluGorebilir('yoklama')
         && request.resource.data.sinifId == resource.data.sinifId
         && request.resource.data.tarih == resource.data.tarih
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sinifId','tarih','kayitlar','girenUid','girenAdi','guncellenmeTarihi'])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['id','sinifId','tarih','kayitlar','girenUid','girenAdi','guncellenmeTarihi','updatedAt'])
         && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['girenUid']) || request.resource.data.girenUid == request.auth.uid));
       allow delete: if adminMi();
     }
