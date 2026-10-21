@@ -14202,6 +14202,8 @@ html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-oturma .gzi-ko
 html[data-theme] #v2ModuleRoot .gzi-page .gzi-arac{display:flex;flex-direction:column;gap:var(--ka-sp-8);padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-surface-muted)}
 html[data-theme] #v2ModuleRoot .gzi-page .dlk-ek{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--ka-sp-8);align-items:center}
 html[data-theme] #v2ModuleRoot .gzi-page .dlk-ek p{margin:0}
+html[data-theme] #v2ModuleRoot .ka-attendance-wa{margin-top:var(--ka-sp-6);align-self:flex-start}
+html[data-theme] #v2ModuleRoot .ka-attendance-template>summary{cursor:pointer;min-height:44px}
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen

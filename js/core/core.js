@@ -2,6 +2,8 @@
    Tek uygulama çekirdeği: AppStore + EventBus + IndexedDB + SyncEngine + Bootstrap.
    Veri akışı: IndexedDB -> AppStore -> UI; Firestore yalnız arka plan senkronizasyonudur.
    Remote sync politikası bu dosyanın içindedir; dışarıdan monkey-patch edilmez. */
+/* Cihaza özel küçük tercihler (şablon seçimi gibi); veri değildir, senkronize edilmez. */
+(function(g){if(g.KaPrefs)return;g.KaPrefs=Object.freeze({get(k,d=''){try{const v=g.localStorage?.getItem('ka-pref:'+k);return v==null?d:v}catch(_){return d}},set(k,v){try{g.localStorage?.setItem('ka-pref:'+k,String(v))}catch(_){}}})})(window);
 (function(){
 'use strict';
 if(window.KorukCore&&window.KorukCore.version===1)return;
