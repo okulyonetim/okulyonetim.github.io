@@ -27,3 +27,10 @@ const documentsBundle=loader.match(/define\('documents',\[([^\]]+)\]\)/)?.[1]||'
 assert(documentsBundle.includes("'js/modules/report-engine.js'")&&documentsBundle.includes("'js/modules/documents.js'")&&documentsBundle.indexOf("'js/modules/report-engine.js'")<documentsBundle.indexOf("'js/modules/documents.js'"),'Documents açılmadan önce merkezi ReportEngine ek lazy bağımlılıklar olsa da documents.js’den önce yüklenmeli.');
 
 console.log('Documents V2 Tebliğ-Tebellüğ + lazy ReportEngine sözleşmesi başarılı.');
+{
+  const css=fs.readFileSync('css/design-system-base.css','utf8');
+  assert(src.includes('TEBLİĞ/TEBELLÜĞ BELGESİ')&&src.includes('data-belge-report')&&src.includes('Tebliğ Edilen Yazının Kime Gönderildiği'),'Tebliğ/Tebellüğ Belgesi formu (Excel şablonu) bulunmalı.');
+  assert((src.match(/belgeNusha\(b\)/g)||[]).length>=2,'Belge A4 sayfada iki nüsha basılmalı.');
+  assert(css.includes('.ka-report .tbb-kes'),'Nüsha ayırıcı kesik çizgi CSS’i bulunmalı.');
+  console.log('Tebliğ/Tebellüğ Belgesi sözleşmesi başarılı.');
+}

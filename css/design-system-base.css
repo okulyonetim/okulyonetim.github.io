@@ -12971,6 +12971,19 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .gzi-beyan th{width:46%}
 .ka-report .gzi-oturma td{height:13mm;width:23%;font-size:8pt!important;text-align:left!important;padding:.5mm 1.5mm!important}
 .ka-report .gzi-oturma .gzi-koridor{width:8%;border-top:0!important;border-bottom:0!important}
+.ka-report .tbb-sayfa{display:flex;flex-direction:column;gap:0;page-break-inside:avoid}
+.ka-report .tbb-nusha{padding:0 0 3mm;page-break-inside:avoid}
+.ka-report .tbb-ust{display:flex;flex-direction:column;align-items:center;text-align:center;font-weight:700;margin-bottom:3mm}
+.ka-report .tbb-baslik{text-align:center;font-weight:700;font-size:1.15em;margin:3mm 0}
+.ka-report .tbb-tablo td{padding:3.2mm 2mm;vertical-align:middle}
+.ka-report .tbb-l{width:36%}
+.ka-report .tbb-c{width:2%;text-align:center}
+.ka-report .tbb-sag{float:right;text-align:right}
+.ka-report .tbb-beyan{padding-top:3mm}
+.ka-report .tbb-imza{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;text-align:center;margin-top:5mm;min-height:32mm}
+.ka-report .tbb-imza>div{display:flex;flex-direction:column;gap:2mm;align-items:center}
+.ka-report .tbb-imza small{font-size:.7em}
+.ka-report .tbb-kes{border-top:1px dashed currentColor;margin:5mm 0}
 /* ═══════════ SERVİS OTURMA IZGARASI (js/modules/bus-seating-grid.js) — yalnız .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 /* Bileşen değişkenleri: yalnız uygulama tokenlarına bağlanır (açık/koyu tema otomatik). */
 .bsg-root{
