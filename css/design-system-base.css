@@ -12971,6 +12971,8 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .gzi-beyan th{width:46%}
 .ka-report .gzi-oturma td{height:13mm;width:23%;font-size:8pt!important;text-align:left!important;padding:.5mm 1.5mm!important}
 .ka-report .gzi-oturma .gzi-koridor{width:8%;border-top:0!important;border-bottom:0!important}
+.ka-report .dz-yazdir td,.ka-report .dz-yazdir th{vertical-align:top;font-size:.82em}
+.ka-report .dz-imza td{width:50%;text-align:center;padding:6mm}
 .ka-report .tbb-sayfa{display:flex;flex-direction:column;gap:0;page-break-inside:avoid}
 .ka-report .tbb-nusha{padding:0 0 3mm;page-break-inside:avoid}
 .ka-report .tbb-ust{display:flex;flex-direction:column;align-items:center;text-align:center;font-weight:700;margin-bottom:3mm}
@@ -14244,6 +14246,25 @@ html[data-theme] #v2ModuleRoot .maf-add{display:flex;gap:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .maf-add .ka-input{flex:1 1 auto;min-width:0}
 html[data-theme] #v2ModuleRoot .maf-days{margin:0;padding-left:var(--ka-sp-16);color:var(--ka-text)}
 html[data-theme] #v2ModuleRoot .maf-secs{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+/* ===== DİLİMİZİN ZENGİNLİKLERİ (js/modules/dilimiz.js) ===== */
+html[data-theme] #v2ModuleRoot .dz-tabs,html[data-theme] #v2ModuleRoot .dz-aylar{display:flex;gap:var(--ka-sp-8);flex-wrap:wrap}
+html[data-theme] #v2ModuleRoot .dz-list{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .dz-card{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-radius-md);background:var(--ka-surface);overflow:hidden}
+html[data-theme] #v2ModuleRoot .dz-card.is-now{border-color:var(--ka-success)}
+html[data-theme] #v2ModuleRoot .dz-card>summary{display:flex;gap:var(--ka-sp-12);align-items:center;padding:var(--ka-sp-12);cursor:pointer;list-style:none}
+html[data-theme] #v2ModuleRoot .dz-card>summary::-webkit-details-marker{display:none}
+html[data-theme] #v2ModuleRoot .dz-num{flex:0 0 auto;min-width:var(--ka-sp-32);height:var(--ka-sp-32);border-radius:var(--ka-radius-sm);background:var(--ka-primary);color:var(--ka-surface);display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+html[data-theme] #v2ModuleRoot .dz-head{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .dz-sorumlu{color:var(--ka-text)}
+html[data-theme] #v2ModuleRoot .dz-body{padding:0 var(--ka-sp-12) var(--ka-sp-12);display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .dz-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .dz-steps li{display:grid;grid-template-columns:auto 1fr;gap:var(--ka-sp-4) var(--ka-sp-8);padding:var(--ka-sp-8);border-radius:var(--ka-radius-sm);background:var(--ka-surface-muted)}
+html[data-theme] #v2ModuleRoot .dz-no{font-weight:700;color:var(--ka-primary)}
+html[data-theme] #v2ModuleRoot .dz-tarih{grid-column:2;color:var(--ka-text-muted);font-size:var(--ka-font-size-sm)}
+html[data-theme] #v2ModuleRoot .dz-okul{display:flex;flex-direction:column;gap:var(--ka-sp-8);padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-radius-md);background:var(--ka-primary-soft)}
+html[data-theme] #v2ModuleRoot .dz-chips{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .dz-chip{display:inline-flex;align-items:center;gap:var(--ka-sp-4);padding:var(--ka-sp-4) var(--ka-sp-8);border:var(--ka-border-w) solid var(--ka-border-strong);border-radius:var(--ka-radius-pill);background:var(--ka-surface)}
+html[data-theme] #v2ModuleRoot .dz-chip button{border:0;background:transparent;color:var(--ka-text-muted);cursor:pointer;font-size:var(--ka-font-size-lg);line-height:1;padding:0}
 /* ===== WEB ARAYÜZÜ (≥1100px) — sol menü + üst çubuk =====
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir.
    Telefon / APK (<1100px) hiç etkilenmez: aşağıdaki kuralların hepsi @media(min-width:1100px) içindedir, JS ile üretilen
