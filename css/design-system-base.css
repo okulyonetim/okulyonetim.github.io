@@ -14303,6 +14303,17 @@ html[data-theme] #v2ModuleRoot .dz-chip button{border:0;background:transparent;c
 .ti-pick{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--ka-text)}
 .ti-pick input{width:20px;height:20px}
 
+/* Okulumu Kur: kademe seçimi ve kurulum adımları */
+.ka-setup-chips{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+.ka-setup-chip{display:inline-flex;align-items:center;gap:var(--ka-sp-8);min-height:44px;padding:0 var(--ka-sp-16);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-card-bg);color:var(--ka-text);font-weight:var(--ka-fw-600);cursor:pointer}
+.ka-setup-chip.is-on{border-color:var(--ka-primary);background:var(--ka-primary-soft)}
+.ka-setup-chip input{margin:0;accent-color:var(--ka-primary)}
+.ka-setup-bar{width:100%;height:var(--ka-sp-8);border:0;border-radius:var(--ka-radius-pill);overflow:hidden;appearance:none;-webkit-appearance:none;background:var(--ka-primary-soft)}
+.ka-setup-bar::-webkit-progress-bar{background:var(--ka-primary-soft)}
+.ka-setup-bar::-webkit-progress-value{background:var(--ka-primary)}
+.ka-setup-bar::-moz-progress-bar{background:var(--ka-primary)}
+.ka-setup-no{display:inline-flex;align-items:center;justify-content:center;flex:none;width:var(--ka-sp-32);height:var(--ka-sp-32);border-radius:var(--ka-radius-pill);background:var(--ka-primary-soft);color:var(--ka-primary);font-weight:var(--ka-fw-700)}
+.ka-setup-step.is-ready .ka-setup-no{background:var(--ka-success);color:var(--ka-button-text)}
 .ka-web-side,.ka-web-crumb,.ka-web-search,.ka-web-wx,.ka-web-note{display:none}
 @media(min-width:1100px){
 html .ka-app-shell:not([hidden]){padding-left:var(--ka-web-side-w)}

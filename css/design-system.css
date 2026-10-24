@@ -1,6 +1,6 @@
 /* KORUK ASİSTAN — MERKEZİ DESIGN SYSTEM ENTRYPOINT */
 /* Mevcut merkezi tema aynen korunur; bu dosya yalnızca ortak giriş noktasıdır. */
-@import url("./design-system-base.css?v=1326");
+@import url("./design-system-base.css?v=1327");
 
 /* Ders Programı aksiyon butonları: açık ikon kutularında ikon görünürlüğü */
 [data-schedule-add],[data-schedule-import],[data-schedule-report],[data-schedule-sheet-report],[data-schedule-clear]{color:var(--ka-text)!important}
