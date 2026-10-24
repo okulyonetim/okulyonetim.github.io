@@ -188,10 +188,9 @@ function build(initial={}){
     assert(h.toasts.some(m=>/zaten planlı/.test(m)),'Kullanıcıya bilgi verilmeli.');
   }
 
-  // 7) Bağlantılar: menü, yönlendirme, öğretmen gizleme, sürüm
-  assert(shellSrc.includes("name==='settings'&&['setup','school','social',"),'Shell, ayarlar altında setup sayfasını yönlendirmeli.');
-  assert(shellSrc.includes("'settings:setup'"),'Öğretmenlerden Okulumu Kur sayfası gizlenmeli.');
-  assert(loaderSrc.includes("['Okulumu Kur','🧭','settings','setup']"),'Ayarlar menü grubunda Okulumu Kur olmalı.');
+  // 7) Tek giriş yolu ve sürüm
+  assert(!loaderSrc.includes('Okulumu Kur'),'Okulumu Kur menüde ayrı satır olmamalı; tek yol Ayarlar > Akademik Yapı.');
+  assert(!shellSrc.includes('settings:setup')&&!shellSrc.includes("['setup',"),'Okulumu Kur için ayrı shell rotası/gizleme kuralı olmamalı.');
   assert(loaderSrc.includes('js/modules/settings.js?v=892'),'settings.js cache sürümü yenilenmeli.');
 
   console.log('Okulumu Kur kademe / kurulum / bugün-tatil testi başarılı.');

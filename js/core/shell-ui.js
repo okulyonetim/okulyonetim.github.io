@@ -58,7 +58,7 @@ const DASHBOARD_ROUTES={announcements:{module:'communication',page:'announcement
 let activeAction='home',menuGroup=null,menuEditing=false,visibilityObserver=null,headerPopover=null,themeTouched=false,browserBackBound=false,browserExitApproved=false,browserExitFromPop=false;
 let navStack=[{kind:'route',name:'dashboard',bottom:'home',page:'',title:'Ana Sayfa'}];
 let routeEpoch=0;
-const TEACHER_HIDDEN_PAGES=new Set(['settings:setup','committees:home','documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
+const TEACHER_HIDDEN_PAGES=new Set(['committees:home','documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
 function isTeacherUser(){const u=user();if(u.admin===true)return false;const r=global.AKTIF_ROL||global.AppStore?.get?.('session.role')||arr('roller').find(x=>x.id===u.rolId)||{};const n=String(r.ad||r.rolAdi||u.rolAdi||u.rol||'').trim().toLocaleLowerCase('tr-TR');const byName=n.includes('öğretmen')||n.includes('ogretmen');
   /* Yönetici / müdür rolü öğretmen kaydına bağlı olsa bile öğretmen kısıtına girmez; "öğretmen" adlı olmayan bir rol
    * için Roller sayfasında "Yönetim" (Personel İşleri) modülü açıkça seçildiyse de kısıt uygulanmaz. */
@@ -197,7 +197,7 @@ function applySubpage(name,page,title){
     if(ok===false)global.toast?.('Yemek sayfası açılamadı.');
     if(title)setTitle(title);return true;
   }
-  if(name==='settings'&&['setup','school','social','lesson-hours','holiday','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
+  if(name==='settings'&&['school','social','lesson-hours','holiday','users','statistics','account','sync','roles','app','reminders','storage'].includes(page)){
     const ok=global.SettingsModule?.openPage?.(page,title);
     if(ok===false)global.toast?.('Ayarlar sayfası açılamadı.');
     if(title)setTitle(title);return true;
