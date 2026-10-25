@@ -41,31 +41,47 @@ function hucre({genislik,span=1,metinler=[''],gri=false,dikey='',birlesme='',ken
  const ps=birlesme==='continue'?paragraf('',o):metinler.map(m=>paragraf(m,{...o,jc:ortala?'center':'left'})).join('');
  return`<w:tc>${pr}${ps}</w:tc>`;
 }
-const satir=(hucreler,yukseklik,tekrar=false)=>`<w:tr><w:trPr>${tekrar?'':'<w:cantSplit/>'}<w:trHeight w:val="${yukseklik}"/>${tekrar?'<w:tblHeader/>':''}</w:trPr>${hucreler.join('')}</w:tr>`;
+/* Örnekteki gibi: başlık satırları sayfalarda yinelenmez (tblHeader yok); veri satırları bölünmez. */
+const satir=(hucreler,yukseklik,baslik=false)=>`<w:tr><w:trPr>${baslik?'':'<w:cantSplit/>'}<w:trHeight w:val="${yukseklik}"/></w:trPr>${hucreler.join('')}</w:tr>`;
 const satirlaBol=m=>String(m??'').split('\n').map(x=>x.trimEnd());
 
 /* ---------- Sütun düzeni ---------- */
-function kolonlar(plan,basliklar){
- const liste=C.sutunBilgileri(plan,basliklar).map(c=>{
-  const meb=MEB[c.key]||null;
-  return{id:c.id,key:c.key,ad:meb?meb.ad:buyuk(c.ad),grup:c.grup||(meb?meb.grup:buyuk(c.ad)),gen:meb?meb.gen.slice():[992],boy:meb?meb.boy:14};
- });
- const hedef=TABLO_GENISLIGI-IZGARA_SOL[0]-IZGARA_SOL[1],toplam=liste.reduce((t,k)=>t+k.gen.reduce((a,b)=>a+b,0),0);
- if(liste.length&&toplam!==hedef){
-  let kalan=hedef;const hepsi=liste.flatMap(k=>k.gen.map((g,i)=>({k,i,g})));
-  hepsi.forEach((x,j)=>{const w=j===hepsi.length-1?kalan:Math.round(x.g*hedef/toplam);x.k.gen[x.i]=w;kalan-=w});
- }
- return liste;
+/* Çıktı her planda örnek şablonun düzenindedir (9 sütun, 2 satırlı gruplu başlık). Planın sütunları ada/anahtara göre bu yuvalara oturtulur;
+   eşleşmeyen sütun, adıyla birlikte "SÜREÇ BECERİLERİ" yuvasına eklenir (içerik kaybolmaz). */
+const YUVALAR=['unite_tema','icerik_cercevesi','ogrenme_ciktilari','surec_becerileri','olcme_degerlendirme','sosyal_duygusal','degerler','okuryazarlik','belirli_gunler'];
+const KOPRU={surec_bilesenleri:'surec_becerileri',kazanim:'ogrenme_ciktilari',kazanim_aciklamasi:'ogrenme_ciktilari'};
+const BULANIK=[
+ [/kanit|olcme|degerlendirme/,'olcme_degerlendirme'],[/okuryazar/,'okuryazarlik'],[/sosyal|duygusal/,'sosyal_duygusal'],[/belirli|bayram|^gunler?\b/,'belirli_gunler'],
+ [/^degerler?$|deger egitimi/,'degerler'],[/kazan|cikti|ogrenme/,'ogrenme_ciktilari'],[/beceri|surec/,'surec_becerileri'],[/unite|tema/,'unite_tema'],[/konu|icerik/,'icerik_cercevesi']
+];
+/* Farklılaştırma ve Okul temelli planlama örnekte sütun değil, tablonun altındaki iki açıklama satırıdır; eski planlarda her satıra tekrar yazılmış olabilir. */
+const DIPNOT_SUTUNLARI={farklilastirma:'FARKLILAŞTIRMA',okul_temelli:'OKUL TEMELLİ PLANLAMA'};
+function yuvaBul(c){
+ if(DIPNOT_SUTUNLARI[c.key])return{yuva:'',ek:false};
+ if(MEB[c.key])return{yuva:c.key,ek:false};
+ if(KOPRU[c.key])return{yuva:KOPRU[c.key],ek:false};
+ const ad=C.key(c.ad),b=BULANIK.find(([re])=>re.test(ad));
+ return b?{yuva:b[1],ek:false}:{yuva:'surec_becerileri',ek:true};
 }
+function kolonlar(plan,basliklar){
+ const kaynak=new Map(YUVALAR.map(y=>[y,[]]));
+ C.sutunBilgileri(plan,basliklar).forEach(c=>{const e=yuvaBul(c);if(e.yuva)kaynak.get(e.yuva).push({id:c.id,ad:c.ad,ek:e.ek})});
+ return YUVALAR.map(y=>({key:y,ad:MEB[y].ad,grup:MEB[y].grup,gen:MEB[y].gen.slice(),boy:MEB[y].boy,kaynak:kaynak.get(y)}));
+}
+/* Yuvanın bir satırdaki metni: eşlenen sütunların değerleri alt alta (eşleşmeyen sütun "Ad: değer" biçiminde). */
+function yuvaMetni(r,k){
+ return satirlaBol(k.kaynak.map(c=>{const v=String(r.degerler?.[c.id]??'').trim();return v?(c.ek?`${c.ad}: ${v}`:v):''}).filter(Boolean).join('\n'));
+}
+const yuvaBirlesik=(r,k)=>k.kaynak.length>0&&k.kaynak.every(c=>(r.birlesik||[]).includes(c.id));
 
 /* Dikey birleşik hücre durumu: restart (üst hücre) / continue (devam) / '' (tek hücre) */
 function birlesmeDurumlari(satirlar,liste){
  const durum=satirlar.map(()=>({}));
  liste.forEach(k=>{
   satirlar.forEach((r,i)=>{
-   const devam=(r.birlesik||[]).includes(k.id),onceki=i>0?durum[i-1][k.id]:'';
-   const sonraki=(satirlar[i+1]?.birlesik||[]).includes(k.id);
-   durum[i][k.id]=devam&&(onceki==='restart'||onceki==='continue')?'continue':sonraki?'restart':'';
+   const devam=yuvaBirlesik(r,k),onceki=i>0?durum[i-1][k.key]:'';
+   const sonraki=satirlar[i+1]?yuvaBirlesik(satirlar[i+1],k):false;
+   durum[i][k.key]=devam&&(onceki==='restart'||onceki==='continue')?'continue':sonraki?'restart':'';
   });
  });
  return durum;
@@ -79,39 +95,57 @@ function baslikSatirlari(liste){
  const alt=[hucre({genislik:IZGARA_SOL[0],metinler:['HAFTA'],...baslik}),hucre({genislik:IZGARA_SOL[1],metinler:['DERS SAATİ'],...baslik}),...liste.map(k=>hucre({genislik:k.gen.reduce((a,b)=>a+b,0),span:k.gen.length,metinler:[k.ad],...baslik}))];
  return[satir(ust,285,true),satir(alt,285,true)];
 }
-function planSatiri(r,i,liste,durum){
- const hafta=hucre({genislik:IZGARA_SOL[0],metinler:[r.hafta||'—',r.tarih||(r.baslangic?C.tarihMetni(r.baslangic,r.bitis):'')],gri:true,dikey:'btLr',ind:true,boy:13,kalin:true,kenarRengi:'333333'});
- const saat=hucre({genislik:IZGARA_SOL[1],metinler:[r.saat||''],boy:13});
+/* "3" → "3 saat" (eski kayıtlarda yalnız sayı olabilir). */
+const saatMetni=v=>/^\d+(\s*\+\s*\d+)*$/.test(String(v||'').trim())?`${String(v).trim()} saat`:String(v||'').trim();
+function planSatiri(g,i,plan,basliklar,liste,durum,gunler){
+ const r=g.r;
+ /* Örnekte tatil ve sosyal etkinlik dahil her satır sırayla numaralıdır (20. hafta = Yarıyıl tatili); eski kayıtlarda satırın kendi yazdığı numara korunur. */
+ const etiket=r.no===undefined?g.hafta:`${i+1}. hafta`;
+ const hafta=hucre({genislik:IZGARA_SOL[0],metinler:[etiket||'—',g.tarih||''],gri:true,dikey:'btLr',ind:true,boy:13,kalin:true,kenarRengi:'333333'});
+ const saat=hucre({genislik:IZGARA_SOL[1],metinler:[saatMetni(g.saat)],boy:13});
  const icerik=liste.map((k,j)=>{
-  const d=durum[i][k.id],genislik=k.gen.reduce((a,b)=>a+b,0),span=k.gen.length;
+  const d=durum[i][k.key],genislik=k.gen.reduce((a,b)=>a+b,0),span=k.gen.length;
   if(d==='continue')return hucre({genislik,span,birlesme:'continue',boy:k.boy});
   let metinler;
-  if(r.ozel&&j<5)metinler=[r.ozel];
-  else{
-   const deger=r.degerler?.[k.id]||'';
-   metinler=r.bayram&&j<5?[r.bayram,...(deger?satirlaBol(deger):[])]:satirlaBol(deger);
-  }
-  return hucre({genislik,span,metinler,boy:k.boy,birlesme:d});
+  if(g.ozel&&j<5)metinler=[g.ozel];
+  else if(k.key==='belirli_gunler'&&!k.kaynak.length)metinler=C.satirGunleri(plan,basliklar,g,gunler);
+  else{const deger=yuvaMetni(r,k);metinler=g.bayram&&j<5?[g.bayram,...deger]:deger}
+  return hucre({genislik,span,metinler:metinler.length?metinler:[''],boy:k.boy,birlesme:d});
  });
  return satir([hafta,saat,...icerik],1242);
 }
-function dipSatirlari(plan,toplamIzgara,sagGenislik){
- const out=[];
- if(plan.yilSonu)out.push(satir([hucre({genislik:TABLO_GENISLIGI,span:toplamIzgara,metinler:[plan.yilSonu],gri:true,boy:22,kalin:true})],509));
- (plan.dipnotlar||[]).forEach(d=>{
+/* Örnekteki standart alt bölümler: planda yoksa (eski/Excel planları) aynı metinlerle eklenir. */
+const VARSAYILAN_DIPNOTLAR=[
+ {ad:'FARKLILAŞTIRMA',metin:'Farklılaştırma kapsamındaki tüm uygulamalar; öğrencilerin ilgi, ihtiyaç ve istekleri göz önünde bulundurularak öğretmenler tarafından planlanır ve uygulanır.'},
+ {ad:'OKUL TEMELLİ PLANLAMA',metin:'Okul temelli planlama; Zümre Öğretmenler Kurulu tarafından ders kapsamında yapılması kararlaştırılan; okul dışı öğrenme etkinlikleri, araştırma ve gözlem, sosyal etkinlikler, proje çalışmaları, yerel çalışmalar, okuma çalışmaları vb. çalışmalar için ayrılan süredir. Çalışmalar için ayrılan süre eğitim öğretim yılı içinde\nplanlanır ve yıllık planlarda ifade edilir.\n*Bu çerçeve planda belirtilen okul temelli planlama haftaları örnek olarak sunulmuştur. Planlama, zümre öğretmenler kurulunda alınan kararlara göre okul ve ders koşulları göz önünde bulundurularak yapılmalıdır.'}
+];
+/* Plan dipnotu varsa o; yoksa eski planın Farklılaştırma/Okul temelli sütunlarındaki ilk dolu değer; o da yoksa örnekteki standart metin. */
+function dipnotlariBul(plan,basliklar){
+ if((plan.dipnotlar||[]).some(d=>d&&d.metin))return plan.dipnotlar.filter(d=>d&&d.metin);
+ const sutunlar=C.sutunBilgileri(plan,basliklar);
+ return VARSAYILAN_DIPNOTLAR.map(v=>{
+  const kaynak=sutunlar.find(c=>DIPNOT_SUTUNLARI[c.key]===v.ad);
+  const metin=kaynak?(plan.satirlar||[]).map(r=>String(r.degerler?.[kaynak.id]||'').trim()).find(Boolean):'';
+  return{ad:v.ad,metin:metin||v.metin};
+ });
+}
+function dipSatirlari(plan,basliklar,toplamIzgara,sagGenislik){
+ const out=[],yil=String(plan.egitimOgretimYili||'').replace(/\s*[-–]\s*/,'/'),yilSonu=plan.yilSonu||`${yil?yil+' ':''}Eğitim-Öğretim Yılı Sonu`;
+ out.push(satir([hucre({genislik:TABLO_GENISLIGI,span:toplamIzgara,metinler:[yilSonu],gri:true,boy:22,kalin:true})],509));
+ dipnotlariBul(plan,basliklar).forEach(d=>{
   const uzun=String(d.metin||'').length>120;
   out.push(satir([hucre({genislik:1873,span:3,metinler:[d.ad||''],gri:true,boy:13,kalin:true,ortala:false}),hucre({genislik:sagGenislik,span:toplamIzgara-3,metinler:satirlaBol(d.metin),boy:13,ortala:false})],uzun?509:327));
  });
  return out;
 }
 const TABLO_OZELLIKLERI='<w:tblPr><w:tblW w:w="14205" w:type="dxa"/><w:tblInd w:w="-38" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="30" w:type="dxa"/><w:right w:w="30" w:type="dxa"/></w:tblCellMar><w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/></w:tblPr>';
-function anaTablo(plan,basliklar){
+function anaTablo(plan,basliklar,gunler){
  const liste=kolonlar(plan,basliklar);
- if(!liste.length)throw new Error('Planda yazdırılacak sütun yok.');
- const izgara=[...IZGARA_SOL,...liste.flatMap(k=>k.gen)],satirlar=plan.satirlar||[],durum=birlesmeDurumlari(satirlar,liste);
- const govde=satirlar.map((r,i)=>planSatiri(r,i,liste,durum));
+ if(!liste.some(k=>k.kaynak.length))throw new Error('Planda yazdırılacak sütun yok.');
+ const izgara=[...IZGARA_SOL,...liste.flatMap(k=>k.gen)],gorunum=C.satirGorunumu(plan),durum=birlesmeDurumlari(gorunum.map(g=>g.r),liste);
+ const govde=gorunum.map((g,i)=>planSatiri(g,i,plan,basliklar,liste,durum,gunler));
  const sag=TABLO_GENISLIGI-1873;
- return`<w:tbl>${TABLO_OZELLIKLERI}<w:tblGrid>${izgara.map(w=>`<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${baslikSatirlari(liste).join('')}${govde.join('')}${dipSatirlari(plan,izgara.length,sag).join('')}</w:tbl>`;
+ return`<w:tbl>${TABLO_OZELLIKLERI}<w:tblGrid>${izgara.map(w=>`<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${baslikSatirlari(liste).join('')}${govde.join('')}${dipSatirlari(plan,basliklar,izgara.length,sag).join('')}</w:tbl>`;
 }
 
 /* ---------- Başlık, zümre ve onay bölümü ---------- */
@@ -140,14 +174,14 @@ function tarihBicimi(v){
  return m?`${m[3]}.${m[2]}.${m[1]}`:String(v||'').trim();
 }
 /* Gövde: başlık + plan tablosu + zümre öğretmenleri + onay. `bilgi` boşsa yer tutucular noktalı kalır. */
-function govdeXml(plan,basliklar,bilgi={}){
+function govdeXml(plan,basliklar,bilgi={},gunler=[]){
  const b=bilgi||{};
- return[bos(),baslikParagrafi(baslikMetni(plan,b)),bos(),anaTablo(plan,basliklar),bos(),bos(),kucukPar('Zümre Öğretmenleri'),bos(13),zumreTablosu(b),bos(),bos(),
+ return[bos(),baslikParagrafi(baslikMetni(plan,b)),bos(),anaTablo(plan,basliklar,gunler),bos(),bos(),kucukPar('Zümre Öğretmenleri'),bos(13),zumreTablosu(b),bos(),bos(),
   kucukPar('UYGUNDUR.'),kucukPar(tarihBicimi(b.tarih)||NOKTA),bos(13),bos(13),kucukPar(String(b.mudur||'').trim()||NOKTA),kucukPar('OKUL MÜDÜRÜ'),bos()].join('');
 }
-function belgeXml(sablonXml,plan,basliklar,bilgi){
+function belgeXml(sablonXml,plan,basliklar,bilgi,gunler){
  if(!String(sablonXml).includes('{{GOVDE}}'))throw new Error('Şablonda {{GOVDE}} işaretçisi yok.');
- return String(sablonXml).replace('{{GOVDE}}',()=>govdeXml(plan,basliklar,bilgi));
+ return String(sablonXml).replace('{{GOVDE}}',()=>govdeXml(plan,basliklar,bilgi,gunler));
 }
 function cekirdekXml(sablonXml,plan,bilgi){
  const baslik=`${plan.seviye?plan.seviye+'. Sınıf ':''}${plan.dersAdi||''} Yıllık Planı ${plan.egitimOgretimYili||''}`.trim(),simdi=new Date().toISOString().replace(/\.\d+Z$/,'Z');
@@ -173,9 +207,9 @@ async function sablonYukle(){
  return global.JSZip.loadAsync(sablonOnbellek);
 }
 /* Plan → .docx Blob. dolu=false: kişisel bilgiler noktalı bırakılır ("Boş şablonu indir"). */
-async function olustur(plan,basliklar,bilgi,dolu=true){
+async function olustur(plan,basliklar,bilgi,dolu=true,gunler=[]){
  const paket=await sablonYukle(),b=dolu?(bilgi||{}):{};
- paket.file('word/document.xml',belgeXml(await paket.file('word/document.xml').async('string'),plan,basliklar,b));
+ paket.file('word/document.xml',belgeXml(await paket.file('word/document.xml').async('string'),plan,basliklar,b,gunler));
  const cekirdek=paket.file('docProps/core.xml');
  if(cekirdek)paket.file('docProps/core.xml',cekirdekXml(await cekirdek.async('string'),plan,b));
  return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});

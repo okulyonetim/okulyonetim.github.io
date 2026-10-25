@@ -96,9 +96,10 @@ assert.strictEqual((bosXml.match(/…{7}/g)||[]).length,5,'Boş şablonda okul, 
 assert(!bosXml.includes('Hasan Demir')&&!bosXml.includes('Atatürk Ortaokulu'.toLocaleUpperCase('tr')));
 
 /* Başlık satırları her sayfada tekrar eder; tatil satırı tek hücreli gibi yazılır; birleşik hücre bozulmaz */
-assert.strictEqual((dolu.match(/<w:tblHeader\/>/g)||[]).length,2);
+assert.strictEqual((dolu.match(/<w:tblHeader\/>/g)||[]).length,0,'Örnekteki gibi başlık satırları sayfalarda yinelenmez.');
 assert.strictEqual((dolu.match(/<w:vMerge w:val="restart"\/>/g)||[]).length,(dolu.match(/<w:vMerge w:val="restart"\/>/g)||[]).length);
 const restart=(dolu.match(/<w:vMerge w:val="restart"\/>/g)||[]).length,devam=(dolu.match(/<w:vMerge\/>/g)||[]).length;assert(restart>0&&devam>=restart,'Her birleşik grup bir restart ve en az bir devam hücresi taşımalı.');
+assert(dolu.includes('>20. hafta<')&&dolu.includes('>41. hafta<'),'Word çıktısında tatil ve sosyal etkinlik satırları da örnekteki gibi sırayla numaralı olmalı.');
 assert.strictEqual(Wd.dosyaAdi(kayit,true),'5-sinif-sosyal-bilgiler-yillik-plan-2026-2027.docx');assert.strictEqual(Wd.dosyaAdi(kayit,false),'5-sinif-sosyal-bilgiler-yillik-plan-2026-2027-bos-sablon.docx');
 assert.strictEqual(Wd.tarihBicimi('2026-09-14'),'14.09.2026');assert.strictEqual(Wd.tarihBicimi(''),'');
 assert.throws(()=>Wd.belgeXml('<w:body/>',kayit,havuz,{}),/işaretçisi/);
@@ -107,8 +108,20 @@ const kacis=Wd.belgeXml(sablonXml,kayit,havuz,{okul:'A&B <Okul> "1"'});assert(ka
 /* Excel/elle planlar: tanınmayan sütun ve tarihsiz satır da yazılır, geri okunur */
 const elle={dersAdi:'Matematik',seviye:7,egitimOgretimYili:'2026-2027',sutunlar:['a','b'],baslikGruplari:{},satirlar:[{no:1,hafta:'1. hafta',baslangic:'2026-09-14',bitis:'2026-09-20',saat:'5 saat',degerler:{a:'Doğal sayılar',b:'M.7.1.1.1'}}],dipnotlar:[],yilSonu:''};
 const elleXml=Wd.belgeXml(sablonXml,elle,[{id:'a',ad:'Ünite / Tema'},{id:'b',ad:'Özel Sütun'}],{});
-const e2=C.docxAyristir(elleXml);assert.strictEqual(e2.satirlar[0].tarih,'14-20 Eylül');assert.strictEqual(e2.satirlar[0].degerler.unite_tema,'Doğal sayılar');assert.strictEqual(e2.basliklar.length,2);
-assert.strictEqual(e2.hucreGenislikleri.reduce((t,w)=>t+w,0),14205,'Özel sütun düzeni sayfa genişliğine ölçeklenmeli.');
+const e2=C.docxAyristir(elleXml);assert.strictEqual(e2.satirlar[0].tarih,'14-20 Eylül');assert.strictEqual(e2.satirlar[0].degerler.unite_tema,'Doğal sayılar');assert.strictEqual(e2.basliklar.length,9,'Her plan örnekteki 9 sütunlu düzene basılmalı.');
+assert.strictEqual(e2.hucreGenislikleri.reduce((t,w)=>t+w,0),14205);
+assert.strictEqual(e2.satirlar[0].degerler.surec_becerileri,'Özel Sütun: M.7.1.1.1','Eşleşmeyen sütun adıyla birlikte süreç becerileri yuvasına eklenmeli.');
+assert.strictEqual(e2.satirlar[0].saat,'5 saat');
+assert(e2.dipnotlar.length===2&&/FARKLILAŞTIRMA/.test(e2.dipnotlar[0].ad)&&/OKUL TEMELLİ/.test(e2.dipnotlar[1].ad),'Dipnot yoksa örnekteki standart bölümler eklenmeli.');
+assert.strictEqual(e2.yilSonu,'2026/2027 Eğitim-Öğretim Yılı Sonu');
+/* Eski biçimli plan (Excel/eski modül): ham "1.HAFTA(14-20)" yerine örnekteki hafta/tarih/saat yazımı, kendi adlarıyla sütunlar yuvalara oturur, belirli gün okul takviminden dolar */
+const eskiHavuz=[{id:'u',ad:'Ünite'},{id:'k',ad:'Kazanımlar'},{id:'o',ad:'Değerlendirme'},{id:'y',ad:'Yöntem ve Teknikler'}];
+const eskiFen={dersAdi:'Fen Bilimleri',seviye:6,egitimOgretimYili:'2026-2027',sutunlar:['u','k','o','y'],satirlar:[{ay:'EKİM',hafta:'5.HAFTA(12-18)',saat:'4',degerler:{u:'Kuvvet',k:'F.6.1.1.1 Kuvveti açıklar',o:'Gözlem formu',y:'Deney'}}]};
+const eskiXml=Wd.belgeXml(sablonXml,eskiFen,eskiHavuz,{},[{ad:'Dünya Gıda Günü',tarihBaslangic:'2026-10-16'}]);
+const e3=C.docxAyristir(eskiXml);assert.strictEqual(e3.basliklar.length,9);
+const r3=e3.satirlar[0];assert(eskiXml.includes('>5. hafta<'),'Eski "5.HAFTA(12-18)" ham yazılmamalı; "5. hafta" yazılmalı.');assert(!/HAFTA\(/.test(eskiXml));assert.strictEqual(r3.tarih,'12-18 Ekim');assert.strictEqual(r3.saat,'4 saat');
+assert.strictEqual(r3.degerler.unite_tema,'Kuvvet');assert.strictEqual(r3.degerler.ogrenme_ciktilari,'F.6.1.1.1 Kuvveti açıklar');assert.strictEqual(r3.degerler.olcme_degerlendirme,'Gözlem formu');assert.strictEqual(r3.degerler.surec_becerileri,'Yöntem ve Teknikler: Deney');
+assert.strictEqual(r3.degerler.belirli_gunler,'Dünya Gıda Günü');
 
 
 /* ---------- Görünüm yardımcıları: yeni ve eski kayıtlar ---------- */
@@ -142,3 +155,25 @@ assert.strictEqual(C.buHafta(kayit,new Date(2027,6,20)),-1);
 assert.strictEqual(C.buHafta({satirlar:[]},new Date()),-1);
 
 console.log('yillik-plan-v2 çekirdek ve Word testleri geçti');
+
+/* ---------- Gerçek eski plan: uygulamanın eski/bozuk ürettiği Bilişim planı (ham "1.HAFTA(14-18)", her satıra tekrarlanan Farklılaştırma/Okul temelli sütunu, "SOSYAL ETKİNLİK" her sütunda) ---------- */
+{
+ const bz=zip.oku(fs.readFileSync('tests/fixtures/5-sinif-bilisim-teknolojileri-ve-yazilim-eski-cikti.docx'));
+ const bx=bz['word/document.xml'].toString('utf8'),ay=C.docxAyristir(bx);
+ const idm={};ay.basliklar.forEach(b=>idm[b.anahtar]=b.anahtar);
+ const kay=C.kayitHazirla(ay,idm),hv=ay.basliklar.map((b,i)=>({id:b.anahtar,ad:b.ad,sira:i}));
+ const ham=[...bx.matchAll(/>(\d+\.HAFTA\([^)]*\))</g)].map(m=>m[1]),AYLAR=['EYLÜL','EKİM','KASIM','ARALIK','OCAK','ŞUBAT','MART','NİSAN','MAYIS','HAZİRAN'];let ayi=0,onc=0;
+ const eskiBt={dersAdi:kay.dersAdi,seviye:kay.seviye,egitimOgretimYili:kay.egitimOgretimYili,sutunlar:kay.sutunlar,satirlar:kay.satirlar.map((r,i)=>{const g=Number((/\((\d+)/.exec(ham[i]||'')||[])[1]||0);if(g&&g<onc)ayi++;if(g)onc=g;const dg=r.ozel?Object.fromEntries(kay.sutunlar.map(id=>[id,r.ozel])):r.degerler;return{ay:AYLAR[ayi],hafta:ham[i]||'',saat:r.ozel?r.ozel:r.saat,degerler:dg}})};
+ assert.strictEqual(eskiBt.satirlar.length,37);
+ const bgor=C.satirGorunumu(eskiBt);assert.strictEqual(bgor[0].hafta,'1. hafta');assert.strictEqual(bgor[0].tarih,'14-18 Eylül');assert.strictEqual(bgor[36].ozel,'SOSYAL ETKİNLİK','Her sütuna tekrarlanan "SOSYAL ETKİNLİK" özel satır sayılmalı.');assert.strictEqual(bgor[0].ozel,'');
+ const bxml=Wd.belgeXml(sablonXml,eskiBt,hv,{okul:'Koruk Ortaokulu'},[]);
+ assert(!/HAFTA\(/.test(bxml),'Ham "1.HAFTA(14-18)" yazılmamalı.');assert(bxml.includes('>1. hafta<')&&bxml.includes('>14-18 Eylül<')&&bxml.includes('>2 saat<'));
+ const b2=C.docxAyristir(bxml);
+ assert.strictEqual(b2.basliklar.length,9,'Bilişim planı da örnekteki 9 sütunlu düzende çıkmalı.');
+ assert(!b2.basliklar.some(b=>/farkl|okul_temelli/.test(b.anahtar)),'Farklılaştırma/Okul temelli sütun değil, alt açıklama satırı olmalı.');
+ assert.deepStrictEqual(J(b2.dipnotlar.map(d=>d.ad)),['FARKLILAŞTIRMA','OKUL TEMELLİ PLANLAMA']);
+ assert(/zümre öğretmenler kurulu/i.test(b2.dipnotlar[1].metin),'Dipnot, planın kendi metninden alınmalı.');
+ const son=b2.satirlar[36];assert.strictEqual(son.ozel,'SOSYAL ETKİNLİK');assert.strictEqual(son.degerler.sosyal_duygusal||'','','Özel satır yalnız ilk 5 sütuna yazılmalı.');
+ assert.strictEqual(b2.satirlar[0].degerler.surec_becerileri.split('\n')[0].slice(0,2),'a)','Süreç bileşenleri, süreç becerileri yuvasına oturmalı.');
+ assert.strictEqual((bxml.match(/Farklılaştırma kapsamındaki/g)||[]).length,1,'Farklılaştırma metni her satıra tekrarlanmamalı.');
+}

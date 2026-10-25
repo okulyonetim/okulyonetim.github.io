@@ -242,7 +242,7 @@ async function indir(plan,dolu,dugme){
  const eski=dugme?.textContent;if(dugme){dugme.disabled=true;dugme.textContent='Hazırlanıyor…'}
  try{
   const b=bilgiOku();if(dolu)bilgiyiHatirla(plan,b);
-  const W=global.YillikPlanWord,blob=await W.olustur(plan,havuz(),b,dolu);
+  const W=global.YillikPlanWord,blob=await W.olustur(plan,havuz(),b,dolu,okulGunleri());
   await W.indir(blob,W.dosyaAdi(plan,dolu));
   toast?.(dolu?'Word dosyası hazırlandı.':'Boş şablon hazırlandı.');
  }catch(e){toast?.(e?.message||'Word dosyası oluşturulamadı.')}

@@ -157,6 +157,16 @@ const sutunBilgileri=(plan,basliklar)=>{
 };
 const sutunBul=(plan,basliklar,anahtar)=>sutunBilgileri(plan,basliklar).find(c=>c.key===anahtar)?.id||'';
 /* Satır → { r, i, no, hafta, tarih, saat, ozel, bayram, baslangic, bitis }. Eski kayıtta no yoktur: hafta numarası "1.HAFTA(14-20)" metninden alınır. */
+/* Eski/Excel planlarda tatil ve sosyal etkinlik haftası her sütuna aynı metinle yazılmıştır; satır özel satır sayılır. */
+const OZEL_RE=/^(sosyal etkinlik|ara tatil|yariyil tatili|yariyil tatil|ogretim yili sonu)\b/;
+function ozelCikar(r){
+ if(r?.ozel)return String(r.ozel);
+ const degerler=Object.values(r?.degerler||{}).map(v=>line(v)).filter(Boolean);
+ if(degerler.length<2)return'';
+ const sayim=new Map();degerler.forEach(v=>sayim.set(v,(sayim.get(v)||0)+1));
+ const [metin,adet]=[...sayim.entries()].sort((a,b)=>b[1]-a[1])[0];
+ return adet>=2&&adet/degerler.length>=0.6&&OZEL_RE.test(norm(metin))?metin:'';
+}
 function satirGorunumu(plan){
  const yil=plan?.egitimOgretimYili;let sayac=0;
  return(plan?.satirlar||[]).map((r,i)=>{
@@ -164,7 +174,7 @@ function satirGorunumu(plan){
   let no,hafta;
   if(r.no!==undefined){no=Number(r.no)||0;hafta=r.hafta||(no?`${no}. hafta`:'—')}
   else{const m=/^\s*(\d+)/.exec(String(r.hafta||''));no=m?Number(m[1]):++sayac;hafta=`${no}. hafta`}
-  return{r,i,no,hafta,tarih:r.tarih||(bas?tarihMetni(bas,bit):''),saat:r.saat||'',ozel:r.ozel||'',bayram:r.bayram||'',baslangic:bas,bitis:bit};
+  return{r,i,no,hafta,tarih:r.tarih||(bas?tarihMetni(bas,bit):''),saat:r.saat||'',ozel:ozelCikar(r),bayram:r.bayram||'',baslangic:bas,bitis:bit};
  });
 }
 const dersHaftasi=plan=>satirGorunumu(plan).filter(v=>v.no>0).length;
