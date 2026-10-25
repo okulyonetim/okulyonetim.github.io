@@ -68,7 +68,7 @@ function icon(name,size=20,sw=2){
 
 /* ── araç simgeleri: eski menüdeki emoji; bilinenler CSS maskesiyle çizgi simgeye çevrilir (css: [data-ka-glyph]), bilinmeyenler emoji kalır ── */
 const GLYPHS={
-  'student-attendance':'☑️','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
+  'student-attendance':'☑️','bep':'📋','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
   'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','form-rehberlik':'🧭',
   'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️',
   'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
@@ -188,7 +188,7 @@ const TOOLS={};
  ['schedule','Ders Programı','calendar','green','Okulun ders programı','academic','schedule'],
  ['duty','Nöbet Programı','shield','green','Nöbet çizelgesi','management','duty'],
  ['meeting-schedule','Toplantı Çizelgesi','users','green','Toplantı ve kurul çizelgesi','management','meeting-schedule'],
- ['bep','BEP Hazırlama','book','green','Bireyselleştirilmiş eğitim programı hazırlama','bep','home'],
+ ['bep','BEP Hazırlama','book','green','Bireyselleştirilmiş eğitim programı hazırlama','tools','form-bep'],
  ['committees','Kurul ve Komisyonlar','shield','orange','Kurul ve komisyon görevleri','committees','home'],
  ['transport','Taşıma İşlemleri','bus','cyan','Servisler ve güzergâhlar','transport','services'],
  ['bus-seats','Servis Oturma','bus','cyan','Servis oturma planı','transport','busSeats'],
