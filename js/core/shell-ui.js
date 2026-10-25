@@ -30,7 +30,9 @@ const pageAllowed=(name,page='')=>nav().pageAllowed(name,page);
 function navView(id){const i=global.NavPages?.info?.(id);return i?{kind:'nav',name:'nav',bottom:i.tab,page:i.id,title:i.title}:null}
 function sameView(a,b){return !!a&&!!b&&a.kind===b.kind&&a.name===b.name&&a.bottom===b.bottom&&a.page===b.page&&a.title===b.title}
 function sameSurface(a,b){if(!a||!b||a.kind!==b.kind)return false;if(a.kind==='route')return a.name===b.name&&(a.page||'')===(b.page||'');if(a.kind==='profile-detail'||a.kind==='nav')return a.page===b.page;return ['profile','search'].includes(a.kind)}
-function rememberView(view){if(!view)return;const top=navStack[navStack.length-1];if(sameView(top,view)){syncShellBack();return}if(sameSurface(top,view)){navStack[navStack.length-1]=view;syncShellBack();return}navStack.push(view);if(navStack.length>30)navStack.splice(0,navStack.length-30);syncShellBack()}
+/* replaceNext: çok sayfalı aracın sayfaları arasında geçişte yeni sayfa geri yığınına eklenmez, mevcut sayfanın yerine geçer (routeModule {replace:true}). */
+let replaceNext=false;
+function rememberView(view){if(!view)return;if(replaceNext&&navStack.length){replaceNext=false;navStack[navStack.length-1]=view;syncShellBack();return}const top=navStack[navStack.length-1];if(sameView(top,view)){syncShellBack();return}if(sameSurface(top,view)){navStack[navStack.length-1]=view;syncShellBack();return}navStack.push(view);if(navStack.length>30)navStack.splice(0,navStack.length-30);syncShellBack()}
 function registerPageRoute(page,handler){page=String(page||'').trim();if(!page||typeof handler!=='function')return()=>{};CUSTOM_PAGE_ROUTES.set(page,handler);return()=>{if(CUSTOM_PAGE_ROUTES.get(page)===handler)CUSTOM_PAGE_ROUTES.delete(page)}}
 function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;global.__shellBuiltInPageRoutes=true;
   /* "Veriler" menü öğesi (settings:data) hiç var olmamış bir global.KaDataPage'i
@@ -205,7 +207,9 @@ function applySubpage(name,page,title){
 }
 const MODULE_ROOT_SELECTORS=Object.freeze({dashboard:'[data-dashboard-module]',people:'[data-people-module]',academic:'[data-academic-module]',management:'[data-management-module]',communication:'[data-communication-module]',transport:'[data-transport-module]',food:'[data-food-menu-module]',documents:'[data-documents-module]',reports:'[data-reports-module]',tools:'[data-tools-module]',settings:'[data-settings-module]'});
 function moduleRouteMounted(name){const root=$('#v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(selector&&global.AppLoader?.moduleApi?.(name)&&root?.querySelector?.(selector))}
-async function routeModule(name,{bottom='',page='',title='',remember=true,parent=null}={}){
+let routeDepth=0;
+async function routeModule(name,opts={}){if(!routeDepth)replaceNext=opts?.replace===true;routeDepth++;try{return await routeModuleCore(name,opts)}finally{routeDepth--;if(!routeDepth)replaceNext=false}}
+async function routeModuleCore(name,{bottom='',page='',title='',remember=true,parent=null}={}){
   const routeToken=++routeEpoch;
   if(!pageAllowed(name,page)){global.toast?.('Bu sayfa öğretmen kullanıcıları için gizli.');return false}
   /* bottom: alt sekme anahtarı; verilmezse (ya da bu rolde yoksa) rotadan hesaplanır. parent: geri dönülecek sekme sayfası (ör. "tools:sinav"). */

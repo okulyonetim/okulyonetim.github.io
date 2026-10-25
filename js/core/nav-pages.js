@@ -70,12 +70,21 @@ function refreshSetup(){
   $$('[data-nav-setup-bar]').forEach(el=>{if(s){el.max=s.total;el.value=s.ready}});
 }
 
+function starButton(t){
+  const pinned=nav().isFavorite(t.id);
+  return `<button type="button" class="ka-nav-star${pinned?' is-on':''}" data-nav-star="${esc(t.id)}" aria-pressed="${pinned}" aria-label="${pinned?'Sık kullandıklardan çıkar':'Sık kullandıklara ekle'}: ${esc(t.label)}"><svg class="ka-ni" width="22" height="22" viewBox="0 0 24 24" fill="${pinned?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${nav().ICONS.star}</svg></button>`;
+}
 function toolRow(t,{star=false,first=false}={}){
-  const pinned=star&&nav().isFavorite(t.id);
-  const starBtn=star?`<button type="button" class="ka-nav-star${pinned?' is-on':''}" data-nav-star="${esc(t.id)}" aria-pressed="${pinned}" aria-label="${pinned?'Sık kullandıklardan çıkar':'Sık kullandıklara ekle'}: ${esc(t.label)}"><svg class="ka-ni" width="22" height="22" viewBox="0 0 24 24" fill="${pinned?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${nav().ICONS.star}</svg></button>`:chevron();
+  const starBtn=star?starButton(t):chevron();
   return `<div class="ka-nav-row${first?' is-first':''}"><button type="button" class="ka-nav-row__main" data-nav-tool="${esc(t.id)}">${gico(t.glyph,t.tone,40)}<span class="ka-nav-row__copy"><strong>${esc(t.label)}</strong>${t.sub?`<small>${esc(t.sub)}</small>`:''}</span></button>${starBtn}</div>`;
 }
 const rowCard=html=>`<div class="ka-nav-rowcard">${html}</div>`;
+/* İdareci araç kartı: çok sayfalı araçta "N sayfa" etiketi görünür; kart tıklanınca ilk sayfa açılır, sayfalar arası geçiş üstteki şeritten yapılır. */
+function toolCard(t){
+  const n=t.pages?.length>1?t.pages.length:0;
+  return `<div class="ka-nav-card" data-tone="${esc(t.tone)}"><button type="button" class="ka-nav-card__main" data-nav-tool="${esc(t.id)}">${gico(t.glyph,t.tone,40)}<span class="ka-nav-card__copy"><strong>${esc(t.label)}</strong>${t.sub?`<small>${esc(t.sub)}</small>`:''}</span>${n?`<span class="ka-nav-card__pages">${n} sayfa</span>`:''}</button>${starButton(t)}</div>`;
+}
+const cardGrid=tools=>`<div class="ka-nav-cards">${tools.map(toolCard).join('')}</div>`;
 function linkRow(tool,{sub,right=''}={}){
   return `<button type="button" class="ka-nav-row ka-nav-row__main" data-nav-tool="${esc(tool.id)}">${gico(tool.glyph,tool.tone,40)}<span class="ka-nav-row__copy"><strong>${esc(tool.label)}</strong>${(sub??tool.sub)?`<small>${esc(sub??tool.sub)}</small>`:''}</span>${right||chevron()}</button>`;
 }
@@ -101,10 +110,10 @@ function hubTeacher(r){
 function hubManager(r){
   const gs=nav().groups(r),hub=nav().hub(r),favs=nav().favorites(r);
   const favHtml=favs.length?`<div class="ka-nav-section"><h3>Sık kullandıklarım</h3><div class="ka-nav-favs">${favs.map(t=>`<button type="button" class="ka-nav-fav" data-nav-tool="${esc(t.id)}">${gico(t.glyph,t.tone,30)}<span>${esc(t.label)}</span></button>`).join('')}</div></div>`:'';
-  const rows=gs.map(g=>`<button type="button" class="ka-nav-group" data-tone="${esc(g.tone)}" data-nav-page-go="tools:${esc(g.key)}">${gico(g.glyph,g.tone,46)}<span class="ka-nav-group__copy"><strong>${esc(g.label)}</strong><small>${esc(g.blurb||'')}</small></span><span class="ka-nav-group__count"><b>${g.tools.length}</b><small>araç</small></span></button>`).join('');
+  const cats=gs.map(g=>`<section class="ka-nav-cat" data-nav-cat="${esc(g.key)}"><h3 class="ka-nav-cat__title"><span>${esc(g.label)}</span></h3>${cardGrid(g.tools)}</section>`).join('');
   const swap=nav().canSwitch()?`<div class="ka-nav-section ka-nav-section--split"><h3>Hem yönetip hem ders veriyorsanız</h3>${switchCard('compact')}</div>`:'';
-  return pageRoot('tools',head(hub.title,`${nav().toolCount(r)} araç, ${gs.length} grupta`)+searchBox(hub.search)
-    +`<div data-nav-browse class="ka-nav-stack">${favHtml}${rows}${swap}</div><div data-nav-results class="ka-nav-stack" hidden></div>`);
+  return pageRoot('tools',head(hub.title,`${nav().toolCount(r)} araç, ${gs.length} kategoride`)+searchBox(hub.search)
+    +`<div data-nav-browse class="ka-nav-stack">${favHtml}${cats}${swap}</div><div data-nav-results class="ka-nav-stack" hidden></div>`);
 }
 function switchCard(variant='full'){
   if(!nav().canSwitch())return '';
@@ -123,7 +132,8 @@ function renderGroup(key){
   const r=nav().role(),g=nav().group(key,r),hub=nav().hub(r);
   if(!g)return null;
   const banner=g.docs?`<div class="ka-nav-note">${ic('check',18,2.4)}<span>Okul adı, müdür, tarih ve sınıflar Okul bilgilerinden gelir. Her araçta yeniden yazmazsınız.</span></div>`:'';
-  return pageRoot(`tools:${g.key}`,`${head(g.label,`${g.tools.length} araç · ${hub.title}`)}${banner}${rowCard(g.tools.map((t,i)=>toolRow(t,{star:true,first:i===0})).join(''))}<p class="ka-nav-hint">Yıldızla işaretlediğiniz araçlar Araçlar sayfasındaki Sık kullandıklarım bölümünde görünür.</p>`);
+  const list=r==='idareci'?cardGrid(g.tools):rowCard(g.tools.map((t,i)=>toolRow(t,{star:true,first:i===0})).join(''));
+  return pageRoot(`tools:${g.key}`,`${head(g.label,`${g.tools.length} araç · ${hub.title}`)}${banner}${list}<p class="ka-nav-hint">Yıldızla işaretlediğiniz araçlar Araçlar sayfasındaki Sık kullandıklarım bölümünde görünür.</p>`);
 }
 
 /* ── Okul ── */
@@ -306,10 +316,32 @@ function onInput(e){
   browse.hidden=!!q;res.hidden=!q;
   res.innerHTML=q?searchResults(q):'';nav().markGlyphs(res);
 }
+/* ── çok sayfalı araç: sayfa şeridi (araç içindeki sayfalar arasında geçiş) ── */
+function renderSuiteBar(view){
+  const host=$('.ka-app-content'),anchor=$('#v2ModuleRoot'),old=$('[data-nav-suite]',host||document);
+  const suite=view?.kind==='route'?nav().suiteOf(view.name,view.page):null;
+  old?.remove();
+  if(!host||!anchor||!suite)return;
+  const cur=nav().findTool(view.name,view.page)?.id,el=document.createElement('nav');
+  el.className='ka-suite';el.dataset.navSuite=suite.id;el.setAttribute('aria-label',`${suite.label} sayfaları`);
+  el.innerHTML=`<strong class="ka-suite__title">${esc(suite.label)}</strong><div class="ka-tabs ka-suite__tabs" role="tablist">${suite.pages.map(p=>`<button type="button" role="tab" class="ka-tab${p.id===cur?' active':''}" aria-selected="${p.id===cur}" data-nav-suite-page="${esc(p.id)}">${esc(p.label)}</button>`).join('')}</div>`;
+  anchor.parentNode.insertBefore(el,anchor);
+  try{el.querySelector('.active')?.scrollIntoView({inline:'center',block:'nearest'})}catch(_){}
+}
+function onSuiteClick(e){
+  const b=e.target.closest?.('[data-nav-suite-page]');
+  if(!b)return;
+  e.preventDefault();
+  const t=nav().tool(b.dataset.navSuitePage);
+  if(!t)return;
+  Promise.resolve(ui()?.routeModule?.(t.route,{page:t.page,title:t.label,replace:true})).catch(err=>{console.error('[NavPages/suite]',t.id,err);global.toast?.('Sayfa açılamadı.')});
+}
 let wired=false;
 function wire(){
   if(wired)return;wired=true;
   document.addEventListener('click',onClick);
+  document.addEventListener('click',onSuiteClick);
+  global.addEventListener('koruk:shell-route',e=>renderSuiteBar(e.detail?.view));
   document.addEventListener('input',onInput);
   for(const ev of ['koruk:nav-favorites-changed','koruk:permissions-changed','koruk:app-config-changed','koruk:theme-changed'])global.addEventListener(ev,()=>{if(current())refresh()});
   for(const t of ['dersProgrami','nobetAtamalari','nobetYerleri','dersSaatleri','ogretmenler','hatirlaticilar','sinavlar','resmiTatiller','belirliGunler','okulBilgileri'])global.AppStore?.subscribe?.('data.'+t,()=>{if(['program','school','me'].includes(current()))requestAnimationFrame(refresh)});

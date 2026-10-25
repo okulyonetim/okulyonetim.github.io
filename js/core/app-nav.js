@@ -71,11 +71,12 @@ const GLYPHS={
   'student-attendance':'☑️','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
   'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','form-rehberlik':'🧭',
   'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️',
-  'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','tasks':'🕘','monthflow':'📆',
+  'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
   'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
   'committees':'🏛️','transport':'🚌','bus-seats':'💺','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
 };
-const GROUP_GLYPHS={sinifim:'👥',sinav:'📝',planlar:'📅',tutanak:'✏️',veli:'💬',etkinlik:'🚌',belgeler:'📁',personel:'🧑‍💼',evrak:'📁',rapor:'📊'};
+Object.assign(GLYPHS,{'aylik-yonetim':'📆','evrak-belge':'📝','ogretmenden-istenecekler':'📑','personel-isleri':'🧑‍💼','diploma-isleri':'🎓','dokumanlar':'📁','sinav-isleri':'📝'});
+const GROUP_GLYPHS={sinifim:'👥',sinav:'📝',planlar:'📅',tutanak:'✏️',veli:'💬',etkinlik:'🚌',belgeler:'📁',yonetim:'🗂️',evrak:'📁',mali:'💵',guvenlik:'🛡️',ogrenci:'🎓',projeler:'🌱',tasima:'🚌',diger:'🧩'};
 const glyphOf=id=>GLYPHS[id]||'📌';
 function glyph(g,cls=''){return `<span class="ka-glyph${cls?' '+cls:''}" data-ka-glyph="${String(g).replace(/"/g,'&quot;')}" aria-hidden="true">${g}</span>`}
 /* Bilinen emojiye CSS bir çizgi simge (--ic) verir; maskelenebilenler .has-ic alır, bilinmeyenler emoji kalır. */
@@ -118,7 +119,7 @@ const roleLabel=r=>r==='idareci'?'İdareci':'Öğretmen';
 
 /* ── sayfa kapıları ── */
 /* Öğretmen hesabına (PermissionService.isTeacherAccount) kapalı sayfalar; rol arayüzünden bağımsızdır. */
-const TEACHER_HIDDEN=new Set(['committees:home','documents:evrak','management:staff','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
+const TEACHER_HIDDEN=new Set(['committees:home','documents:evrak','management:staff','management:evrak-teslim','management:evrak-teblig-donem1','management:evrak-teblig-sonu','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
 const isTeacherUser=()=>global.PermissionService?.isTeacherAccount?.()===true;
 const pageAllowed=(name,page='')=>!isTeacherUser()||!TEACHER_HIDDEN.has(`${name}:${page||''}`);
 function moduleAllowed(name){
@@ -171,6 +172,9 @@ const TOOLS={};
  ['teblig','Tebliğ-Tebellüğ İmza Sirküsü','pen','indigo','Tebliğ ve tebellüğ imzaları','documents','teblig'],
  ['attendance','Devamsızlık Çizelgesi','calendar','indigo','Personel devamsızlık çizelgesi','tools','attendance'],
  ['evrak','Evrak Takibi','inbox','amber','Gelen ve giden evrak','documents','evrak'],
+ ['evrak-teslim','Teslim İmza Çizelgesi','check','amber','Öğretmenden istenecek evraklar ve imza çizelgesi','management','evrak-teslim'],
+ ['evrak-teblig-donem1','Dönem Sonu Tebliğ Yazısı','doc','amber','Dönem sonu evrak teslimi tebliği','management','evrak-teblig-donem1'],
+ ['evrak-teblig-sonu','Sene Sonu Tebliğ Yazısı','doc','amber','Sene sonu evrak teslimi tebliği','management','evrak-teblig-sonu'],
  ['tasks','Aylık İşler','clock','amber','Aylık işler ve görevler','management','tasks'],
  ['monthflow','Aylık Yönetim Akışı','calendar','amber','Ay ay yönetim iş akışı','monthflow'],
  ['reports','Okul Raporları','chart','rose','Okul raporları ve listeler','reports','home'],
@@ -212,13 +216,28 @@ const GROUPS={
     {key:'belgeler',label:'Belgeler',icon:'folder',tone:'amber',docs:true,ids:['documents','pdf-images','pdf-merge','checklists','school-age-calculator']}
   ],
   idareci:[
-    {key:'personel',label:'Personel işlemleri',icon:'users',tone:'indigo',docs:true,blurb:'İzin, puantaj, maaş, diploma, tebliğ',ids:['staff-leaves','puantaj','dilekce-izin','payroll','diploma-request','diploma-response','teblig','attendance']},
-    {key:'evrak',label:'Evrak ve yazışma',icon:'inbox',tone:'amber',docs:true,blurb:'Evrak takibi, tutanak, dilekçe',ids:['evrak','documents','tutanak','dilekce-olustur','tasks','monthflow','checklists','pdf-images','pdf-merge','form-diger','folder-spine','school-age-calculator']},
-    {key:'sinav',label:'Sınav ve yoklama',icon:'clip',tone:'violet',blurb:'Yoklama, yazılı ve deneme sonuçları',ids:['student-attendance','written','trial','results']},
-    {key:'rapor',label:'Raporlar ve denetim',icon:'chart',tone:'rose',blurb:'Okul raporları, yemek denetimi, listeler',ids:['reports','food-audit','teacher-list-builder','student-list']}
+    {key:'yonetim',label:'Genel Yönetim',icon:'briefcase',tone:'blue',blurb:'Aylık yönetim akışı, raporlar, öğretmen listeleri',ids:['aylik-yonetim','reports','teacher-list-builder']},
+    {key:'evrak',label:'Evrak - Özlük',icon:'inbox',tone:'amber',docs:true,blurb:'Evrak takibi, personel işleri, öğretmenden istenecekler',ids:['evrak','evrak-belge','ogretmenden-istenecekler','personel-isleri','diploma-isleri','dokumanlar','folder-spine']},
+    {key:'mali',label:'Mali İşler',icon:'wallet',tone:'green',blurb:'Maaş ve ödeme işlemleri',ids:['payroll']},
+    {key:'guvenlik',label:'Güvenlik - Denetim',icon:'shield',tone:'rose',blurb:'Denetim formları',ids:['food-audit']},
+    {key:'sinav',label:'Sınav - Kurs',icon:'clip',tone:'violet',blurb:'Yazılı, deneme ve sonuç listeleri',ids:['sinav-isleri']},
+    {key:'ogrenci',label:'Öğrenci İşleri',icon:'users',tone:'blue',blurb:'Yoklama, öğrenci listeleri, kayıt yaşı',ids:['student-attendance','student-list','school-age-calculator']},
+    {key:'projeler',label:'Projeler',icon:'star',tone:'cyan',blurb:'Okul projeleri ve çalışmaları',ids:['dilimiz']},
+    {key:'tasima',label:'Taşıma - Pansiyon - Gezi',icon:'bus',tone:'cyan',blurb:'Gezi planı ve izin belgeleri',ids:['gezi']},
+    {key:'diger',label:'Diğer Araçlar',icon:'grid',tone:'slate',blurb:'Kontrol listeleri',ids:['checklists']}
   ]
 };
-const HUB={ogretmen:{title:'Öğretmen araçları',search:'Araç ara: plan, tutanak, dilekçe'},idareci:{title:'Yönetim araçları',search:'Araç ara: izin, evrak, rapor'}};
+/* ── çok sayfalı araçlar: bir kart, kendi içinde sayfalara ayrılır; sayfalar yukarıdaki TOOLS satırlarıdır ── */
+const SUITES={
+  'aylik-yonetim':{label:'Aylık Yönetim Akışı',tone:'amber',sub:'Ay ay yapılması gereken idari işler',pages:['monthflow','tasks']},
+  'evrak-belge':{label:'Evrak - Belge Oluştur',tone:'orange',sub:'Tutanak, dilekçe ve diğer okul evrakları',pages:['tutanak','dilekce-olustur','form-diger']},
+  'ogretmenden-istenecekler':{label:'Öğretmenden İstenecekler',tone:'amber',sub:'İstenecek evraklar, imza çizelgesi ve tebliğ yazıları',pages:['evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu']},
+  'personel-isleri':{label:'Personel İşleri',tone:'indigo',sub:'İzin, puantaj, devamsızlık, dilekçe ve tebliğ',pages:['staff-leaves','puantaj','dilekce-izin','attendance','teblig']},
+  'diploma-isleri':{label:'Diploma İşlemleri',tone:'indigo',sub:'Diploma kayıt talebi ve okul cevabı',pages:['diploma-request','diploma-response']},
+  'dokumanlar':{label:'Dökümanlar ve PDF',tone:'amber',sub:'Okul dökümanları, resimden PDF, PDF birleştirme',pages:['documents','pdf-images','pdf-merge']},
+  'sinav-isleri':{label:'Sınav İşleri',tone:'violet',sub:'Yazılı sınav, deneme ve sonuç listeleri',pages:['written','trial','results']}
+};
+const HUB={ogretmen:{title:'Öğretmen araçları',search:'Araç ara: plan, tutanak, dilekçe'},idareci:{title:'İdareci araçları',search:'Araç ara: izin, evrak, tebliğ, rapor'}};
 
 /* ── Okul sekmesi bölümleri ── */
 const SCHOOL={
@@ -247,8 +266,14 @@ const tab=(key,r=role())=>TABS[r].find(t=>t.key===key)||null;
 const homeTab=()=>'home';
 
 /* ── katalog okuma ── */
-const tool=id=>TOOLS[id]||null;
-const toolAllowed=t=>!!t&&canOpen(t.route,t.page)&&(!t.need||t.need()===true);
+function suiteTool(id){
+  const s=SUITES[id];if(!s)return null;
+  const pages=s.pages.map(x=>TOOLS[x]).filter(toolAllowed);
+  if(!pages.length)return null;
+  return{id,label:s.label,icon:pages[0].icon,glyph:glyphOf(id),tone:s.tone,sub:s.sub,route:pages[0].route,page:pages[0].page,suite:true,pages};
+}
+const tool=id=>TOOLS[id]||suiteTool(id);
+function toolAllowed(t){return!!t&&canOpen(t.route,t.page)&&(!t.need||t.need()===true)}
 const visible=ids=>ids.map(tool).filter(toolAllowed);
 function groups(r=role()){
   return GROUPS[r].map(g=>({...g,glyph:GROUP_GLYPHS[g.key]||'📁',tools:visible(g.ids)})).filter(g=>g.tools.length);
@@ -265,6 +290,14 @@ function findTool(route,page=''){
   route=String(route||'');page=String(page||'');
   return Object.values(TOOLS).find(t=>t.route===route&&t.page===page)||null;
 }
+function suiteOf(route,page=''){
+  const t=findTool(route,page);
+  if(!t||role()!=='idareci')return null;
+  const id=Object.keys(SUITES).find(k=>SUITES[k].pages.includes(t.id)&&GROUPS.idareci.some(g=>g.ids.includes(k)));
+  const s=id?suiteTool(id):null;
+  return s&&s.pages.length>1?s:null;
+}
+const groupOf=(r,toolId)=>GROUPS[r].find(g=>g.ids.some(id=>id===toolId||SUITES[id]?.pages.includes(toolId)))||null;
 function tabOf(route,page=''){
   route=String(route||'');page=String(page||'');
   if(route==='dashboard'&&!page)return 'home';
@@ -297,7 +330,7 @@ function parentOf(route,page=''){
     if(SCHOOL.ogretmen.some(s=>s.ids.includes(t.id)))return 'school';
   }
   if(['notes','settings','guide','about'].includes(t.id))return r==='ogretmen'&&t.id==='notes'?'program':'me';
-  const g=GROUPS[r].find(x=>x.ids.includes(t.id));
+  const g=groupOf(r,t.id);
   return g?`tools:${g.key}`:'tools';
 }
 
@@ -324,7 +357,7 @@ function search(q,r=role()){
   const n=fold(q);
   if(!n)return[];
   const seen=new Set(),out=[];
-  const add=(t,where)=>{if(!t||seen.has(t.id)||!toolAllowed(t))return;if(fold(`${t.label} ${t.sub}`).includes(n)){seen.add(t.id);out.push({...t,where})}};
+  const add=(t,where)=>{if(!t||seen.has(t.id)||!toolAllowed(t))return;if(fold(`${t.label} ${t.sub} ${(t.pages||[]).map(p=>p.label).join(' ')}`).includes(n)){seen.add(t.id);out.push({...t,where})}};
   GROUPS[r].forEach(g=>g.ids.forEach(id=>add(tool(id),g.label)));
   SCHOOL[r].forEach(s=>s.ids.forEach(id=>add(tool(id),s.label)));
   (r==='idareci'?COMM_IDS:[]).forEach(id=>add(tool(id),'İletişim'));
@@ -340,7 +373,7 @@ function webMenu(){
 
 global.AppNav={
   icon,ICONS,glyph,glyphOf,markGlyphs,role,derivedRole,setRole,canSwitch,otherRole,roleLabel,allowedRole,linkedTeacher,
-  tabs,tab,homeTab,tabOf,parentOf,hub,groups,group,school,comm,programLinks,toolCount,tool,findTool,
+  tabs,tab,homeTab,tabOf,parentOf,hub,groups,group,school,comm,programLinks,toolCount,tool,findTool,suiteOf,
   favorites,isFavorite,toggleFavorite,search,webMenu,
   pageAllowed,moduleAllowed,canOpen,isTeacherUser,toolAllowed,TEACHER_HIDDEN
 };
