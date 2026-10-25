@@ -304,7 +304,8 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
-  if(name==='bep'){
+  if(name==='tools'&&page==='form-bep'){
+    if(global.PermissionService?.moduleLevel?.('tools')==='hidden'||global.RolePermissionBridge?.allowedRoute?.('tools','form-bep')===false)return false;
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.('tools');setTitle(title||'BEP Hazırlama');
     try{
       const root=$('#v2ModuleRoot');
