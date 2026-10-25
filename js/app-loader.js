@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/hafta-sozleri.js?v=1','js/modules/dashboard.js?v=1104']);
+define('dashboard',['js/modules/school-live-status.js?v=1072','js/modules/hafta-sozleri.js?v=1','js/modules/dashboard.js?v=1105']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/management.js?v=898']);
@@ -31,30 +31,93 @@ define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.j
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/dilimiz.js','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/reports.js?v=21']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/tools.js?v=9','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
-define('settings',['js/modules/hafta-sozleri.js?v=1','js/modules/settings.js?v=897']);
+define('settings',['js/modules/hafta-sozleri.js?v=1','js/modules/settings.js?v=898']);
 define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/committees.js?v=6']);
 define('guide',['js/modules/guide-data.js?v=5','js/modules/guide.js?v=2']);
 
 const MODULE_DEFAULTS=[{key:'committees',label:'Kurul ve Komisyonlar',icon:'🏛️',visible:true,order:95},{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'food',label:'Yemek',icon:'🍽️',visible:true,order:65},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'reports',label:'Raporlar',icon:'📊',visible:true,order:75},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];
 function mergeRows(defaults,rows){const by=new Map((rows||[]).map(x=>[x.key,x]));return defaults.map(d=>({...d,...(by.get(d.key)||{}),key:d.key})).sort((a,b)=>Number(a.order||0)-Number(b.order||0))}
 function rawConfig(){return AppStore?.data?.('appConfig')?.find?.(x=>x.id==='uygulama')||{}}
-/* Ana sayfa (Dijital Pano) kartları: [anahtar, ad, yalnız bu rolde]. Dizilim ve açık/kapalı durumu rol başına tutulur. */
-const DASHBOARD_CARDS=[['welcome','Karşılama · zil sayacı · hava durumu'],['news','Kayan haberler'],['food','Günün yemek menüsü'],['duty','Günün nöbetçileri'],['whereNow','Şu an kim nerede (derslikler · öğretmenler)'],['absences','Bugün gelmeyen öğretmenler','idareci'],['announcements','Duyurular'],['polls','Anketler'],['trial','Deneme sınavı sayacı'],['stats','Okul özeti'],['upcoming','Yaklaşanlar'],['specialDays','Belirli gün ve haftalar'],['examCountdown','Sınav geri sayımı'],['sozler','Haftanın ayeti · hadisi · özlü sözü'],['quick','Hızlı işlemler'],['todayLessons','Bugünkü derslerim','ogretmen'],['teacherFocus','Şu anki dersim','ogretmen'],['exams','Yaklaşan yazılı sınavlar'],['calendar','Takvim'],['notes','Notlarım'],['weekDuty','Haftalık nöbet'],['todayDuty','Bugünün tüm nöbetçileri','ogretmen'],['social','Sosyal medya ve okul siteleri']];
-/* Sınav geri sayımı: her sınav kendi satırıdır (ad, tarih, Göster). Ayarlar'da liste kaydedilmediyse yalnız LGS gelir (ilkokul/ortaokul);
-   MEB 2027 takvimini henüz açıklamadı, 12 Haziran 2027 tahminidir. Başka okul türleri sınavı Ayarlar > Ana Sayfa'dan ekler/kapatır. */
-const EXAM_DEFAULTS=[{ad:'LGS (tahmini)',tarih:'2027-06-12',goster:true}];
-const DASHBOARD_DEFAULTS={idareci:['welcome','news','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','sozler','polls','trial','quick'],ogretmen:['welcome','news','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','sozler','polls','trial','quick','notes']};
+/* Ana sayfa (Dijital Pano) kartları: anahtar, ad, açıklama, yalnız bu rolde (isteğe bağlı).
+   Dizilim ve açık/kapalı durumu rol başına tutulur; kart seçenekleri (CARD_OPTIONS) tüm roller için ortaktır. */
+const DASHBOARD_CARDS=[
+ {key:'welcome',label:'Karşılama · zil sayacı · hava durumu',desc:'Saat, tarih, ders/teneffüs sayacı ve hava durumu.'},
+ {key:'news',label:'Kayan haberler',desc:'Haber ve duyuruların yatay kayan şeridi.'},
+ {key:'slayt',label:'Slayt resimleri',desc:'Okul etkinlik ve duyuru resimleri sırayla gösterilir.'},
+ {key:'food',label:'Günün yemek menüsü',desc:'Bugünün yemek listesi.'},
+ {key:'duty',label:'Günün nöbetçileri',desc:'Bugün nöbetçi olan öğretmenler.'},
+ {key:'whereNow',label:'Şu an kim nerede',desc:'Derslikler ve öğretmenlerin anlık durumu.'},
+ {key:'absences',label:'Bugün gelmeyen öğretmenler',desc:'İzinli veya raporlu öğretmenler.',role:'idareci'},
+ {key:'announcements',label:'Duyurular',desc:'Son duyuru ve okundu bilgisi.'},
+ {key:'polls',label:'Anketler',desc:'Açık anketler.'},
+ {key:'trial',label:'Deneme sınavı sayacı',desc:'Devam eden deneme sınavının süre sayacı.'},
+ {key:'stats',label:'Okul özeti',desc:'Öğretmen, sınıf ve öğrenci sayıları.'},
+ {key:'upcoming',label:'Yaklaşanlar',desc:'Yaklaşan sınav, görev, toplantı ve hatırlatıcılar.'},
+ {key:'specialDays',label:'Belirli gün ve haftalar',desc:'Okulunuzun seçtiği gün ve haftalar.'},
+ {key:'examCountdown',label:'Sınav geri sayımı',desc:'LGS gibi sınavlara kalan süre; her sınav ayrı seçilir.'},
+ {key:'sozler',label:'Haftanın ayeti · hadisi · özlü sözü',desc:'Tek kartta sırayla; her tür kendi havuzundan haftada bir değişir.'},
+ {key:'onurPanosu',label:'Onur panosu',desc:'Ayın öğrencisi, en temiz sınıf gibi bölümler.'},
+ {key:'quick',label:'Hızlı işlemler',desc:'Sık kullanılan işlem kısayolları.'},
+ {key:'todayLessons',label:'Bugünkü derslerim',desc:'Öğretmenin bugünkü dersleri.',role:'ogretmen'},
+ {key:'teacherFocus',label:'Şu anki dersim',desc:'Öğretmenin o anda girdiği ders.',role:'ogretmen'},
+ {key:'exams',label:'Yaklaşan yazılı sınavlar',desc:'Yaklaşan yazılı sınav tarihleri.'},
+ {key:'calendar',label:'Takvim',desc:'Aylık takvim ve günün kayıtları.'},
+ {key:'notes',label:'Notlarım',desc:'Kişisel notlar.'},
+ {key:'weekDuty',label:'Haftalık nöbet',desc:'Haftanın nöbet çizelgesi.'},
+ {key:'todayDuty',label:'Bugünün tüm nöbetçileri',desc:'Tüm nöbet yerleri ve nöbetçileri.',role:'ogretmen'},
+ {key:'social',label:'Sosyal medya ve okul siteleri',desc:'Okulun sosyal medya ve site bağlantıları.'}
+];
+/* Kart seçenekleri: toggle (aç/kapat), choice (tek seçim, değerler metin), text (kısa metin). Ayarlar formu ve ana sayfa aynı şemayı kullanır. */
+const CARD_OPTIONS={
+ welcome:[
+  {key:'zil',type:'toggle',label:'Zil sayacını göster',def:true},
+  {key:'hava',type:'toggle',label:'Hava durumunu göster',def:true},
+  {key:'sehir',type:'text',label:'Hava durumu şehri',hint:'Boş bırakırsanız cihazın konumu kullanılır.',def:'',max:40}
+ ],
+ absences:[{key:'detay',type:'choice',label:'Gelmeyen öğretmenler nasıl görünsün?',def:'neden',choices:[['adlar','Yalnız adlar'],['neden','Adlar ve nedeni']]}],
+ whereNow:[{key:'sekme',type:'choice',label:'Açılışta hangi sekme görünsün?',def:'rooms',choices:[['rooms','Derslikler'],['teachers','Öğretmenler']]}],
+ specialDays:[
+  {key:'gun',type:'choice',label:'Kaç gün önceden görünsün?',def:'14',choices:[['7','7 gün'],['14','14 gün'],['30','30 gün']]},
+  {key:'adet',type:'choice',label:'En çok kaç satır?',def:'5',choices:[['3','3'],['5','5'],['8','8']]}
+ ],
+ examCountdown:[{key:'bicim',type:'choice',label:'Geri sayım biçimi',def:'canli',choices:[['canli','Ay · gün · saat · dakika · saniye'],['gun','Yalnız gün']]}],
+ sozler:[
+  {key:'ayet',type:'toggle',label:'Ayet gösterilsin',def:true},
+  {key:'hadis',type:'toggle',label:'Hadis gösterilsin',def:true},
+  {key:'ozluSoz',type:'toggle',label:'Özlü söz gösterilsin',def:true},
+  {key:'sure',type:'choice',label:'Bir söz ekranda ne kadar kalsın?',def:'8',choices:[['5','5 saniye'],['8','8 saniye'],['12','12 saniye'],['20','20 saniye']]}
+ ],
+ slayt:[{key:'sure',type:'choice',label:'Her resim ekranda ne kadar kalsın?',def:'8',choices:[['5','5 saniye'],['8','8 saniye'],['12','12 saniye'],['20','20 saniye']]}]
+};
+function resolveOption(o,v){
+ if(o.type==='toggle')return v===undefined||v===null?o.def:v!==false&&v!=='false';
+ if(o.type==='choice'){const ok=o.choices.some(c=>c[0]===String(v));return ok?String(v):o.def}
+ return String(v??o.def).replace(/\s+/g,' ').trim().slice(0,o.max||60);
+}
+function resolveOptions(raw){
+ const src=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{};
+ return Object.fromEntries(Object.entries(CARD_OPTIONS).map(([card,list])=>[card,Object.fromEntries(list.map(o=>[o.key,resolveOption(o,src[card]?.[o.key])]))]));
+}
+/* Sınav geri sayımı: her sınav kendi satırıdır (ad, tarih, saat, Göster). Ayarlar'da liste kaydedilmediyse yalnız LGS gelir (ilkokul/ortaokul);
+   MEB 2027 takvimini henüz açıklamadı, 13 Haziran 2027 saat 09:30 tahminidir. Başka okul türleri sınavı Ayarlar > Ana Sayfa'dan ekler/kapatır. */
+const EXAM_DEFAULTS=[{ad:'LGS (tahmini)',tarih:'2027-06-13',saat:'09:30',goster:true}];
+const examRows=list=>(Array.isArray(list)?list:EXAM_DEFAULTS).map(x=>({ad:String(x?.ad||'').trim().slice(0,40),tarih:String(x?.tarih||'').slice(0,10),saat:/^\d{2}:\d{2}$/.test(String(x?.saat||''))?String(x.saat):'',goster:x?.goster!==false})).filter(x=>x.ad).slice(0,8);
+/* Onur panosu: bölümler (başlık, simge) ve altındaki kişiler/sınıflar; boşsa kart gizlenir. */
+const onurRows=list=>(Array.isArray(list)?list:[]).map(b=>({baslik:String(b?.baslik||'').trim().slice(0,40),ikon:String(b?.ikon||'').trim().slice(0,4),kisiler:(Array.isArray(b?.kisiler)?b.kisiler:[]).map(k=>({ad:String(k?.ad||'').trim().slice(0,60),aciklama:String(k?.aciklama||'').trim().slice(0,80)})).filter(k=>k.ad).slice(0,12)})).filter(b=>b.baslik).slice(0,8);
+const DASHBOARD_DEFAULTS={idareci:['welcome','news','slayt','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','sozler','onurPanosu','polls','trial','quick'],ogretmen:['welcome','news','slayt','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','sozler','onurPanosu','polls','trial','quick','notes']};
 function dashboardRows(role,raw=rawConfig().dashboardCards){
  role=role==='ogretmen'?'ogretmen':'idareci';
  const saved=raw&&!Array.isArray(raw)&&Array.isArray(raw[role])?raw[role]:[],by=new Map(saved.map(x=>[x.key,x])),on=DASHBOARD_DEFAULTS[role];
- return DASHBOARD_CARDS.filter(c=>!c[2]||c[2]===role).map(([key,label],i)=>{const k=on.indexOf(key),s=by.get(key)||{};return{key,label,visible:s.visible!==undefined?s.visible!==false:k>=0,order:Number.isFinite(Number(s.order))?Number(s.order):k>=0?(k+1)*10:500+i*10}}).sort((a,b)=>a.order-b.order);
+ return DASHBOARD_CARDS.filter(c=>!c.role||c.role===role).map((c,i)=>{const k=on.indexOf(c.key),s=by.get(c.key)||{};return{key:c.key,label:c.label,desc:c.desc,visible:s.visible!==undefined?s.visible!==false:k>=0,order:Number.isFinite(Number(s.order))?Number(s.order):k>=0?(k+1)*10:500+i*10}}).sort((a,b)=>a.order-b.order);
 }
 const dashboardCards=role=>dashboardRows(role);
-function appConfig(){const r=rawConfig();return{modules:mergeRows(MODULE_DEFAULTS,r.modules),dashboardCards:{idareci:dashboardRows('idareci'),ogretmen:dashboardRows('ogretmen')},examCountdowns:(Array.isArray(r.examCountdowns)?r.examCountdowns:EXAM_DEFAULTS).map(x=>({ad:String(x?.ad||'').trim(),tarih:String(x?.tarih||'').slice(0,10),goster:x?.goster!==false})).filter(x=>x.ad),sozHavuzu:r.sozHavuzu&&typeof r.sozHavuzu==='object'&&!Array.isArray(r.sozHavuzu)?r.sozHavuzu:{}}}
+function appConfig(){const r=rawConfig();return{modules:mergeRows(MODULE_DEFAULTS,r.modules),dashboardCards:{idareci:dashboardRows('idareci'),ogretmen:dashboardRows('ogretmen')},cardOptions:resolveOptions(r.cardOptions),examCountdowns:examRows(r.examCountdowns),onurPanosu:onurRows(r.onurPanosu),sozHavuzu:r.sozHavuzu&&typeof r.sozHavuzu==='object'&&!Array.isArray(r.sozHavuzu)?r.sozHavuzu:{}}}
+const cardOption=(card,key)=>{const o=(CARD_OPTIONS[card]||[]).find(x=>x.key===key);return o?resolveOption(o,rawConfig().cardOptions?.[card]?.[key]):undefined};
 function moduleMeta(key){return appConfig().modules.find(x=>x.key===key)||MODULE_DEFAULTS.find(x=>x.key===key)||{key,label:key,icon:'',visible:true,order:999}}
-async function saveConfig(patch){const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user');if(!u?.admin)throw new Error('yetkisiz');const current=appConfig(),next={...current,...patch,id:'uygulama',guncellenmeTarihi:new Date().toISOString()};if(patch.modules)next.modules=mergeRows(MODULE_DEFAULTS,patch.modules);next.dashboardCards=patch.dashboardCards?Object.fromEntries(['idareci','ogretmen'].filter(r=>Array.isArray(patch.dashboardCards[r])).map(r=>[r,patch.dashboardCards[r].map(({key,visible,order})=>({key,visible:visible!==false,order:Number(order)||0}))])):(rawConfig().dashboardCards&&!Array.isArray(rawConfig().dashboardCards)?rawConfig().dashboardCards:{});if(patch.examCountdowns===undefined){const kept=rawConfig().examCountdowns;if(Array.isArray(kept))next.examCountdowns=kept;else delete next.examCountdowns}await DeviceData.set('appConfig',COL.navDuzeni,'uygulama',next,{merge:false});window.dispatchEvent(new CustomEvent('koruk:app-config-changed',{detail:next}));return next}
-const resetConfig=()=>saveConfig({modules:MODULE_DEFAULTS,dashboardCards:{},examCountdowns:null,sozHavuzu:null});
-window.AppConfig={MODULE_DEFAULTS,DASHBOARD_CARDS,DASHBOARD_DEFAULTS,get:appConfig,module:moduleMeta,dashboardCards,save:saveConfig,reset:resetConfig};
+async function saveConfig(patch){const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user');if(!u?.admin)throw new Error('yetkisiz');const current=appConfig(),next={...current,...patch,id:'uygulama',guncellenmeTarihi:new Date().toISOString()};if(patch.modules)next.modules=mergeRows(MODULE_DEFAULTS,patch.modules);next.dashboardCards=patch.dashboardCards?Object.fromEntries(['idareci','ogretmen'].filter(r=>Array.isArray(patch.dashboardCards[r])).map(r=>[r,patch.dashboardCards[r].map(({key,visible,order})=>({key,visible:visible!==false,order:Number(order)||0}))])):(rawConfig().dashboardCards&&!Array.isArray(rawConfig().dashboardCards)?rawConfig().dashboardCards:{});next.cardOptions=patch.cardOptions===null?{}:resolveOptions(patch.cardOptions||rawConfig().cardOptions);if(patch.onurPanosu!==undefined)next.onurPanosu=onurRows(patch.onurPanosu);if(patch.examCountdowns===undefined){const kept=rawConfig().examCountdowns;if(Array.isArray(kept))next.examCountdowns=kept;else delete next.examCountdowns}else if(patch.examCountdowns!==null)next.examCountdowns=examRows(patch.examCountdowns);await DeviceData.set('appConfig',COL.navDuzeni,'uygulama',next,{merge:false});window.dispatchEvent(new CustomEvent('koruk:app-config-changed',{detail:next}));return next}
+/* Varsayılana dön: yerleşim, kart seçenekleri, sınav listesi ve modüller; söz havuzu, onur panosu ve slayt resimleri okulun içeriğidir, korunur. */
+const resetConfig=()=>saveConfig({modules:MODULE_DEFAULTS,dashboardCards:{},cardOptions:null,examCountdowns:null});
+window.AppConfig={MODULE_DEFAULTS,DASHBOARD_CARDS,DASHBOARD_DEFAULTS,CARD_OPTIONS,get:appConfig,module:moduleMeta,dashboardCards,option:cardOption,save:saveConfig,reset:resetConfig};
 
 /* ==============================================================
    ÖĞRETMEN LİSTE OLUŞTURUCU — TEK MERKEZİ UYGULAMA DOSYASI

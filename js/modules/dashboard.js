@@ -6,9 +6,10 @@
  */
 (function(){
 'use strict';if(window.DashboardModule)return;
-let mounted=false,mountPromise=null,unsubs=[],reminderShown=false,trialTimer=null,calendarSelectedDay='',backTopHandler=null,renderFrame=0,renderTimer=0,scrollIdleTimer=null,scrolling=false,pendingRender=false,lastLiveRenderKey='',panoTab='rooms';
+let mounted=false,mountPromise=null,unsubs=[],reminderShown=false,trialTimer=null,calendarSelectedDay='',backTopHandler=null,renderFrame=0,renderTimer=0,scrollIdleTimer=null,scrolling=false,pendingRender=false,lastLiveRenderKey='',panoTab='';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const arr=t=>{const v=window.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
+const opt=(card,key)=>window.AppConfig?.option?.(card,key);
 function isoToday(){const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`}
 function date(v){if(!v)return'—';try{if(typeof v.toDate==='function')return v.toDate().toLocaleDateString('tr-TR');const d=new Date(String(v).length===10?v+'T00:00:00':v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('tr-TR')}catch(_){return String(v)}}
 function user(){return window.AppStore?.get?.('session.user')||window.AKTIF_KULLANICI||{}}
@@ -57,7 +58,8 @@ function sectionArt(id,icon){
   'where-now':'📍',
   'special-days':'📅',
   'exam-countdown':'⏳',
-  'sozler':'📖'
+  'sozler':'📖',
+  'onur-panosu':'🏆'
  };
  return '<span class="kh-section-emoji" aria-hidden="true">'+(m[id]||icon||'📌')+'</span>';
 }
@@ -78,7 +80,7 @@ function weatherCardModel(){const m=window.SchoolLiveStatus?.weatherCard?.();ret
 function refreshWeatherCard(){const card=document.getElementById('khWeather');if(!card)return;const m=weatherCardModel();if(card.__wxSig===m.sig&&card.querySelector('.ka-wx-body'))return;card.__wxSig=m.sig;card.className=`kh-live-card kh-weather-card ${m.cls}`;card.innerHTML=m.html;card.setAttribute('aria-label',m.label)}
 function clockText(){return new Intl.DateTimeFormat('tr-TR',{hour:'2-digit',minute:'2-digit'}).format(new Date())}
 function refreshHeroLive(live=window.SchoolLiveStatus?.status?.()||{}){const card=document.getElementById('khBell')||document.querySelector('[data-dash-live-status]');if(card){const model=bellModel(live);card.className=model.className;card.innerHTML=model.html;if(model.progress)card.style.setProperty('--kb-progress',model.progress);else card.style.removeProperty('--kb-progress')}document.querySelectorAll('[data-dash-clock]').forEach(el=>{const v=clockText();if(el.textContent!==v)el.textContent=v});refreshWeatherCard()}
-function hero(){const live=window.SchoolLiveStatus?.status?.()||{},w=weatherCardModel(),bell=bellModel(live);return `<header class="kh-hero" data-dashboard-card="welcome"><div class="kh-brand">KORUK ASİSTAN</div><div class="kh-greeting">${esc(greeting())}, ${esc(displayName())} <span class="kh-wave" aria-hidden="true">👋</span></div><div class="kh-clock" data-dash-clock aria-label="Saat">${esc(clockText())}</div><div class="kh-date">${esc(new Intl.DateTimeFormat('tr-TR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date()))}</div><div class="kh-live-stack"><button type="button" class="${bell.className}" id="khBell" data-dash-route="settings" data-dash-page="lesson-hours" data-dash-title="Ders Saatleri" data-dash-live-status${bell.progress?` style="--kb-progress:${bell.progress}"`:''}>${bell.html}</button><button type="button" class="kh-live-card kh-weather-card ${w.cls}" id="khWeather" data-dash-weather aria-label="${esc(w.label)}">${w.html}</button></div></header>`}
+function hero(){const live=window.SchoolLiveStatus?.status?.()||{},w=weatherCardModel(),bell=bellModel(live),showBell=opt('welcome','zil')!==false,showWeather=opt('welcome','hava')!==false,liveStack=showBell||showWeather?`<div class="kh-live-stack">${showBell?`<button type="button" class="${bell.className}" id="khBell" data-dash-route="settings" data-dash-page="lesson-hours" data-dash-title="Ders Saatleri" data-dash-live-status${bell.progress?` style="--kb-progress:${bell.progress}"`:''}>${bell.html}</button>`:''}${showWeather?`<button type="button" class="kh-live-card kh-weather-card ${w.cls}" id="khWeather" data-dash-weather aria-label="${esc(w.label)}">${w.html}</button>`:''}</div>`:'';return `<header class="kh-hero" data-dashboard-card="welcome"><div class="kh-brand">KORUK ASİSTAN</div><div class="kh-greeting">${esc(greeting())}, ${esc(displayName())} <span class="kh-wave" aria-hidden="true">👋</span></div><div class="kh-clock" data-dash-clock aria-label="Saat">${esc(clockText())}</div><div class="kh-date">${esc(new Intl.DateTimeFormat('tr-TR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date()))}</div>${liveStack}</header>`}
 function announcementDateTime(v){if(!v)return'';try{const d=new Date(v);if(Number.isNaN(d.getTime()))return date(v);return d.toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(_){return date(v)}}
 function announcementSection(){const d=arr('duyurular').filter(x=>x&&!x.arsivlendi&&x.aktif!==false&&!x.pasif).sort((a,b)=>String(b.tarih||b.eklenmeTarihi||'').localeCompare(String(a.tarih||a.eklenmeTarihi||'')))[0];if(!d)return'';const ok=!!d?.okuyanlar?.[user().uid||''],readerRows=Object.values(d.okuyanlar||{}).filter(Boolean).sort((a,b)=>String(b?.tarih||'').localeCompare(String(a?.tarih||''))),readers=readerRows.length,readerDetails=isAdmin()&&readerRows.length?`<details class="kh-home-readers"><summary>Okuyanları göster</summary>${readerRows.map(r=>`<div><strong>${esc(r?.ad||'Kullanıcı')}</strong><small>${esc(announcementDateTime(r?.tarih||''))}</small></div>`).join('')}</details>`:'',raw=String(d.icerik||d.aciklama||'').replace(/<[^>]*>/g,'').trim(),short=raw.length>180?raw.slice(0,180).trim()+'…':raw;return `<div class="kh-dynamic" data-home-section="announcements"><article class="kh-announcement ${ok?'is-read':'is-unread'}" data-duyuru-id="${esc(d.id||'')}"><div class="kh-announcement-accent"></div><div class="kh-announcement-head"><div class="kh-announcement-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3Z"/><path d="M11.6 16.5 13 21H7l-1.2-6"/></svg></div><div class="kh-announcement-title-wrap"><div class="kh-announcement-kicker">DUYURU</div><h3>${esc(d.baslik||d.ad||'Duyuru')}</h3><div class="kh-announcement-meta">${esc(d.olusturanAdi||'Yönetim')}${d.tarih?' · '+esc(announcementDateTime(d.tarih)):''}</div></div><span class="kh-announcement-status ${ok?'read':'new'}">${ok?'✓ OKUNDU':'YENİ'}</span></div>${short?`<button type="button" class="kh-announcement-body" data-dash-route="communication" data-dash-page="announcements" data-dash-title="Duyurular">${esc(short)}</button>`:''}<div class="kh-announcement-footer"><label class="kh-read-check ${ok?'checked':''}"><input type="checkbox" data-dash-announcement-read="${esc(d.id||'')}" ${ok?'checked disabled':''}><span class="kh-read-box" aria-hidden="true">✓</span><span>${ok?'Okundu olarak işaretlendi':'Okudum'}</span></label>${isAdmin()?`<button type="button" class="kh-read-count" data-dash-route="communication" data-dash-page="announcements" data-dash-title="Duyurular"><span>👁</span><b>${readers}</b> kişi okudu <span class="arrow">›</span></button>`:`<span class="kh-read-count is-static"><span>👁</span><b>${readers}</b> kişi okudu</span>`}</div>${readerDetails}</article></div>`}
 function foodMenuSection(){
@@ -193,7 +195,7 @@ function leaveReminderMatches(r){
     return !type||text.includes(normalizeDay(type))||text.includes('izin')||text.includes('rapor');
   });
 }
-function absencesSection(){if(!isManagerView())return'';const active=activeLeaveRows();if(!active.length)return'';const calendar='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>';return `<section class="kh-section" data-home-section="absences"><div class="kh-section-head"><div class="kh-section-title">${calendar}<span>Bugün Gelmeyen Öğretmenler</span></div><button type="button" class="kh-more" data-dash-route="management" data-dash-page="staff-leaves" data-dash-title="İzin İşlemleri">Tümü ›</button></div><div class="kh-card">${active.map(x=>`<div class="kh-row"><div class="kh-row-main"><b>${esc(x.ogretmenAdi||teacherLabel(x))}</b>${leaveKind(x)?`<small>${esc(leaveKind(x))}</small>`:''}</div><span class="kh-chip amber">İZİNLİ</span></div>`).join('')}</div></section>`}
+function absencesSection(){if(!isManagerView())return'';const active=activeLeaveRows(),detail=opt('absences','detay')!=='adlar';if(!active.length)return'';const calendar='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>';return `<section class="kh-section" data-home-section="absences"><div class="kh-section-head"><div class="kh-section-title">${calendar}<span>Bugün Gelmeyen Öğretmenler</span></div><button type="button" class="kh-more" data-dash-route="management" data-dash-page="staff-leaves" data-dash-title="İzin İşlemleri">Tümü ›</button></div><div class="kh-card">${active.map(x=>`<div class="kh-row"><div class="kh-row-main"><b>${esc(x.ogretmenAdi||teacherLabel(x))}</b>${detail&&leaveKind(x)?`<small>${esc(leaveKind(x))}</small>`:''}</div>${detail?'<span class="kh-chip amber">İZİNLİ</span>':''}</div>`).join('')}</div></section>`}
 function upcomingRows(){const calendarRoute={route:'communication',page:'calendar',routeTitle:'Takvim'},exams=upcoming([...arr('sinavlar'),...arr('denemeSinavlari')],'tarih',14).map(x=>({icon:'📝',title:x.ad||x.ders||x.sinavAdi||'Sınav',when:`${date(x.tarih)}${x.saat?` · ${x.saat}`:''}`,kind:'Sınav',sortKey:eventSortKey(x.tarih,x.saat),...calendarRoute}));const reminders=upcoming(arr('hatirlaticilar'),'tarih',14).filter(x=>!x.tamamlandi&&!leaveReminderMatches({title:x.baslik,subtitle:x.aciklama,tarih:x.tarih})).map(x=>({icon:'🔔',title:x.baslik||'Hatırlatıcı',when:`${date(x.tarih)}${x.saat?` · ${x.saat}`:''}`,kind:'Hatırlatıcı',sortKey:eventSortKey(x.tarih,x.saat),...calendarRoute}));const _tid=teacherId();const tasks=upcoming(arr('gorevler'),'sonTarih',14).filter(x=>!isDone(x)&&(!_tid||(x.sorumluOgretmenIdler||[]).includes(_tid))).map(x=>({icon:'✓',title:x.baslik||'Görev',when:date(x.sonTarih),kind:'Görev',sortKey:eventSortKey(x.sonTarih,x.saat),...calendarRoute}));const specialDays=upcoming(arr('belirliGunler').filter(x=>!(x.kontroller||[])[0]),'tarihBaslangic',14).map(x=>({icon:'🎉',title:x.ad||'Belirli Gün / Hafta',when:date(x.tarihBaslangic),kind:'Belirli Gün / Hafta',sortKey:eventSortKey(x.tarihBaslangic),...calendarRoute}));return[...exams,...reminders,...tasks,...specialDays,...meetingUpcomingRows(14)].sort((a,b)=>a.sortKey.localeCompare(b.sortKey,'tr')).slice(0,8)}
 function teacherUpcomingRows(){const reminders=collectReminders(30).filter(x=>x.kaynak!=='sinav').map(x=>({...x,_time:'23:59'})),meetings=meetingUpcomingRows(30).map(x=>({kaynak:'toplanti',baslik:x.title,altBaslik:`${x.when} · Toplantı`,gunFarki:dayDiff(x.dateKey),_time:x.timeKey||'23:59',git:route('management','meeting-schedule','Toplantı Çizelgesi')}));return[...reminders,...meetings].filter(x=>x.gunFarki>=0).sort((a,b)=>a.gunFarki-b.gunFarki||String(a._time||'23:59').localeCompare(String(b._time||'23:59'))).slice(0,8)}
 function upcomingSection(){if(isManagerView()){const rows=upcomingRows();if(!rows.length)return'';return `<section class="kh-section" data-home-section="upcoming"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('upcoming','')}</span><span>Yaklaşan Etkinlik / Görevler</span></div><button type="button" class="kh-more" data-dash-route="communication" data-dash-page="calendar" data-dash-title="Takvim">Tümü ›</button></div><div class="kh-card">${rows.map(r=>`<button type="button" class="kh-row" data-dash-route="${esc(r.route||'communication')}" data-dash-page="${esc(r.page||'calendar')}" data-dash-title="${esc(r.routeTitle||'Takvim')}"><div class="kh-row-main"><b>${esc(r.title)}</b><small>${esc(r.when||'')}</small></div><div class="kh-side">${esc(r.kind||'Yaklaşıyor')}</div></button>`).join('')}</div></section>`}const rows=teacherUpcomingRows();if(!rows.length)return'';return `<section class="kh-section" data-home-section="upcoming"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('upcoming','')}</span><span>Yaklaşan Etkinlik / Görevler</span></div><button type="button" class="kh-more" data-dash-route="communication" data-dash-page="calendar" data-dash-title="Takvim">Tümü ›</button></div><div class="kh-card">${rows.map((r,i)=>{const s=reminderStatus(r);return `<button type="button" class="kh-row" data-dash-reminder-index="${i}"><div class="kh-row-main"><b>${esc(r.baslik)}</b><small>${esc(r.altBaslik||'')}</small></div><div class="kh-side ${s.cls==='ka-badge--danger'?'is-danger':s.cls==='ka-badge--warning'?'is-warning':''}">${esc(s.label)}</div></button>`}).join('')}</div></section>`}
@@ -293,56 +295,108 @@ function whereNowSection(){
   const rooms=lessons.length?lessons.slice(0,24).map(x=>`<div class="kh-row${per.now?' is-now':''}"><div class="kh-row-main"><b>${esc(classLabel(x))}</b><small>${esc(teacherLabel(x))} · ${esc(lessonLabel(x))}</small></div></div>`).join(''):'<div class="kh-empty">Bu ders saatinde program kaydı yok.</div>';
   const chip={lesson:'blue',duty:'green',free:'slate',leave:'amber'};
   const people=teacherStatusRows(per.p).slice(0,40).map(r=>`<div class="kh-row"><div class="kh-row-main"><b>${esc(r.name)}</b><small>${esc(r.text)}</small></div><span class="kh-chip ${chip[r.s]}">${r.s==='lesson'?'DERSTE':r.s==='duty'?'NÖBETÇİ':r.s==='leave'?'İZİNLİ':'BOŞTA'}</span></div>`).join('')||'<div class="kh-empty">Öğretmen kaydı yok.</div>';
-  const tab=panoTab==='teachers'?'teachers':'rooms';
+  const tab=(panoTab||opt('whereNow','sekme'))==='teachers'?'teachers':'rooms';
   return `<section class="kh-section" data-home-section="where-now">${head(`<span class="kh-pill">${esc(per.label)}</span>`)}<div class="kh-tabs" role="tablist" aria-label="Şu an kim nerede">${Object.entries(PANO_TEXT).map(([k,l])=>`<button type="button" role="tab" class="kh-tab${k===tab?' is-active':''}" aria-selected="${k===tab}" data-dash-tab="${k}">${l}</button>`).join('')}</div><div class="kh-card kh-scroll" data-dash-tabpanel="rooms"${tab==='rooms'?'':' hidden'}>${rooms}</div><div class="kh-card kh-scroll" data-dash-tabpanel="teachers"${tab==='teachers'?'':' hidden'}>${people}</div></section>`;
 }
-/* Yalnız okulun Belirli Gün ve Haftalar sayfasında seçtiği (kaydettiği) günler gösterilir; hazır katalog ana sayfaya karışmaz. */
+/* Yalnız okulun Belirli Gün ve Haftalar sayfasında seçtiği (kaydettiği) günler gösterilir; hazır katalog ana sayfaya karışmaz.
+   Kaç gün önceden ve kaç satır görüneceği Ayarlar > Ana Sayfa'daki kart seçeneklerinden gelir. */
 function specialDaysSection(){
-  const rows=arr('belirliGunler').map(x=>{const start=String(x.tarihBaslangic||'').slice(0,10);return{x,start,end:String(x.tarihBitis||start).slice(0,10)}}).map(r=>({...r,d0:dayDiff(r.start),d1:dayDiff(r.end||r.start)})).filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.start)&&r.d1>=0&&r.d0<=14).sort((x,y)=>x.d0-y.d0).slice(0,5),
-   body=rows.length?rows.map(r=>{const on=r.d0<=0,status=on?(r.d0===0?'Bugün':'Devam ediyor'):r.d0===1?'Yarın':`${r.d0} gün`;return `<button type="button" class="kh-row${on?' is-now':''}" data-dash-route="tools" data-dash-page="form-belirli" data-dash-title="Belirli Gün ve Haftalar"><div class="kh-row-main"><b>${esc(r.x.ad||'Belirli Gün / Hafta')}</b><small>${esc(date(r.start))}${r.end&&r.end!==r.start?' – '+esc(date(r.end)):''}</small></div><span class="kh-side">${esc(status)}</span></button>`}).join(''):`<div class="kh-empty">Önümüzdeki 14 günde okulunuzun seçtiği belirli gün veya hafta yok.</div>`;
+  const days=Number(opt('specialDays','gun'))||14,max=Number(opt('specialDays','adet'))||5,
+   rows=arr('belirliGunler').map(x=>{const start=String(x.tarihBaslangic||'').slice(0,10);return{x,start,end:String(x.tarihBitis||start).slice(0,10)}}).map(r=>({...r,d0:dayDiff(r.start),d1:dayDiff(r.end||r.start)})).filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.start)&&r.d1>=0&&r.d0<=days).sort((x,y)=>x.d0-y.d0).slice(0,max),
+   body=rows.length?rows.map(r=>{const on=r.d0<=0,status=on?(r.d0===0?'Bugün':'Devam ediyor'):r.d0===1?'Yarın':`${r.d0} gün`;return `<button type="button" class="kh-row${on?' is-now':''}" data-dash-route="tools" data-dash-page="form-belirli" data-dash-title="Belirli Gün ve Haftalar"><div class="kh-row-main"><b>${esc(r.x.ad||'Belirli Gün / Hafta')}</b><small>${esc(date(r.start))}${r.end&&r.end!==r.start?' – '+esc(date(r.end)):''}</small></div><span class="kh-side">${esc(status)}</span></button>`}).join(''):`<div class="kh-empty">Önümüzdeki ${days} günde okulunuzun seçtiği belirli gün veya hafta yok.</div>`;
   return `<section class="kh-section" data-home-section="special-days"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('special-days','')}</span><span>Belirli Gün ve Haftalar</span></div><button type="button" class="kh-more" data-dash-route="tools" data-dash-page="form-belirli" data-dash-title="Belirli Gün ve Haftalar">Tümü ›</button></div><div class="kh-card">${body}</div></section>`;
 }
-/* Her sınav Ayarlar > Ana Sayfa'da kendi satırıdır: Göster işaretli ve tarihi geçmemiş olanlar yakından uzağa sıralanır. */
-function examCountdownSection(){
-  const list=(window.AppConfig?.get?.()?.examCountdowns||[]).filter(x=>x.goster!==false&&/^\d{4}-\d{2}-\d{2}$/.test(x.tarih)).map(x=>({...x,days:dayDiff(x.tarih)})).filter(x=>x.days>=0).sort((a,b)=>a.days-b.days).slice(0,4);
-  if(!list.length)return'';
-  return `<section class="kh-section" data-home-section="exam-countdown"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('exam-countdown','')}</span><span>Sınav Geri Sayımı</span></div></div><div class="kh-countdowns">${list.map(x=>`<div class="kh-card kh-countdown" data-exam-name="${esc(x.ad)}"><b>${x.days}</b><small>gün kaldı</small><span>${esc(x.ad)}</span><em>${esc(date(x.tarih))}</em></div>`).join('')}</div></section>`;
+/* Sınav geri sayımı: her sınav Ayarlar > Ana Sayfa'da kendi satırıdır (ad, tarih, saat, Göster). Saat yoksa sınav günü bitene dek geçerlidir.
+   Biçim 'canli': ay · gün · saat · dakika · saniye her saniye güncellenir; 'gun': yalnız kalan gün. */
+const pad2=n=>String(n).padStart(2,'0');
+function examTarget(x){const t=new Date(`${x.tarih}T${x.saat||'23:59'}:00`);return Number.isNaN(t.getTime())?null:t}
+function countdownParts(target,now=new Date()){
+  if(!target||target<=now)return null;
+  let months=(target.getFullYear()-now.getFullYear())*12+target.getMonth()-now.getMonth(),anchor=new Date(now);
+  anchor.setMonth(now.getMonth()+months);
+  if(anchor>target){months--;anchor=new Date(now);anchor.setMonth(now.getMonth()+months)}
+  let ms=target-anchor;const days=Math.floor(ms/864e5);ms-=days*864e5;const h=Math.floor(ms/36e5);ms-=h*36e5;const m=Math.floor(ms/6e4);ms-=m*6e4;
+  return{months,days,h,m,s:Math.floor(ms/1e3),totalDays:Math.max(0,Math.ceil((target-now)/864e5)-1)};
 }
-/* Haftanın ayeti / hadisi / özlü sözü: tek kart, aynı alanda sırayla gösterilir (otomatik geçiş + noktalar + kaydırma).
-   Her tür kendi havuzundan (HaftaSozleri) hafta numarasına göre değişir; havuzu boş tür atlanır. */
-const SAYING_MS=8000,SAYING_HOLD_MS=20000;
-let sayingIndex=0,sayingTimer=null,sayingHold=0;
-function sayingSlides(){const H=window.HaftaSozleri,pool=window.AppConfig?.get?.()?.sozHavuzu;return(H?.TURLER||[]).map(t=>({t,pick:H.buHafta(t.key,pool)})).filter(x=>x.pick)}
+const CD_LABELS=[['months','Ay'],['days','Gün'],['h','Saat'],['m','Dakika'],['s','Saniye']];
+function examCountdownSection(){
+  const live=opt('examCountdown','bicim')!=='gun',now=new Date(),
+   list=(window.AppConfig?.get?.()?.examCountdowns||[]).filter(x=>x.goster!==false&&/^\d{4}-\d{2}-\d{2}$/.test(x.tarih)).map(x=>({...x,target:examTarget(x)})).filter(x=>x.target&&x.target>now).sort((a,b)=>a.target-b.target).slice(0,4);
+  if(!list.length)return'';
+  const when=x=>`${new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long',year:'numeric'}).format(x.target)}${x.saat?` · ${x.saat}`:''}`,
+   card=x=>{const p=countdownParts(x.target,now);return live
+    ?`<div class="kh-card kh-countdown kh-countdown--live" data-exam-countdown="${x.target.getTime()}" data-exam-name="${esc(x.ad)}"><span class="kh-pill">${esc(x.ad)}</span><b class="kh-cd-date">${esc(when(x))}</b><div class="kh-cd-parts">${CD_LABELS.map(([k,l],i)=>`${i?'<i class="kh-cd-sep" aria-hidden="true">:</i>':''}<span class="kh-cd-part"><b data-cd="${k}">${pad2(p[k])}</b><small>${l}</small></span>`).join('')}</div></div>`
+    :`<div class="kh-card kh-countdown" data-exam-countdown="${x.target.getTime()}" data-exam-days data-exam-name="${esc(x.ad)}"><b data-cd="totalDays">${p.totalDays}</b><small>gün kaldı</small><span>${esc(x.ad)}</span><em>${esc(when(x))}</em></div>`};
+  return `<section class="kh-section" data-home-section="exam-countdown"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('exam-countdown','')}</span><span>Sınav Geri Sayımı</span></div></div><div class="kh-countdowns">${list.map(card).join('')}</div></section>`;
+}
+function refreshExamCountdowns(root=document){
+  const now=new Date();
+  root.querySelectorAll?.('[data-exam-countdown]').forEach(el=>{
+    const p=countdownParts(new Date(Number(el.dataset.examCountdown)),now);
+    if(!p){if(mounted)queueRender();return}
+    el.querySelectorAll('[data-cd]').forEach(b=>{const v=b.dataset.cd==='totalDays'?String(p.totalDays):pad2(p[b.dataset.cd]);if(b.textContent!==v)b.textContent=v});
+  });
+}
+/* Otomatik geçişli kartlar (haftanın sözleri, slayt resimleri): aynı alanda sırayla görünür, noktalar ve kaydırma ile elle geçilir.
+   Süre kartın seçeneğinden gelir; imleç üstündeyken, klavye odağındayken, elle geçildikten sonra ve hareket azaltma tercihinde otomatik geçiş durur. */
+const CAROUSEL_HOLD_MS=20000,carousels={saying:{at:0,hold:0,timer:0,ms:()=>(Number(opt('sozler','sure'))||8)*1000},slayt:{at:0,hold:0,timer:0,ms:()=>(Number(opt('slayt','sure'))||8)*1000}};
+const carouselCard=name=>document.querySelector(`[data-carousel="${name}"]`);
+function showSlide(name,i,hold){
+  const st=carousels[name],card=carouselCard(name),slides=card?[...card.querySelectorAll('[data-slide]')]:[];
+  if(slides.length<2)return;
+  const at=((i%slides.length)+slides.length)%slides.length;
+  st.at=at;if(hold)st.hold=Date.now()+CAROUSEL_HOLD_MS;
+  slides.forEach((el,k)=>{el.classList.toggle('is-active',k===at);if(k===at)el.removeAttribute('aria-hidden');else el.setAttribute('aria-hidden','true')});
+  card.querySelectorAll('[data-slide-dot]').forEach((d,k)=>{d.classList.toggle('is-active',k===at);d.setAttribute('aria-selected',k===at?'true':'false')});
+  if(slides[at].dataset.slideKind)card.dataset.slideActive=slides[at].dataset.slideKind;
+}
+function bindCarousels(root){
+  Object.keys(carousels).forEach(name=>{
+    const card=root.querySelector(`[data-carousel="${name}"]`);if(!card)return;
+    card.querySelectorAll('[data-slide-dot]').forEach(d=>d.addEventListener('click',()=>showSlide(name,Number(d.dataset.slideDot),true)));
+    let x0=0,y0=0;
+    card.addEventListener('pointerdown',e=>{x0=e.clientX;y0=e.clientY;carousels[name].hold=Date.now()+CAROUSEL_HOLD_MS});
+    card.addEventListener('pointerup',e=>{const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5)showSlide(name,carousels[name].at+(dx<0?1:-1),true)});
+  });
+}
+function scheduleCarousel(name){
+  const st=carousels[name];clearTimeout(st.timer);
+  st.timer=setTimeout(()=>{
+    const card=carouselCard(name);
+    if(card&&!document.hidden&&Date.now()>=st.hold&&!card.matches(':hover')&&!card.querySelector(':focus-visible')&&!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)showSlide(name,st.at+1,false);
+    if(mounted)scheduleCarousel(name);
+  },st.ms());
+}
+const startCarousels=()=>Object.keys(carousels).forEach(scheduleCarousel);
+const stopCarousels=()=>Object.values(carousels).forEach(st=>{clearTimeout(st.timer);st.timer=0});
+const dotsHtml=(items,at,label)=>items.length>1?`<div class="kh-dots" role="tablist" aria-label="${esc(label)}">${items.map((x,i)=>`<button type="button" role="tab" class="kh-dot${i===at?' is-active':''}" aria-selected="${i===at}" aria-label="${esc(x)}" data-slide-dot="${i}"></button>`).join('')}</div>`:'';
+/* Haftanın ayeti / hadisi / özlü sözü: tek kart; her tür kendi havuzundan (HaftaSozleri) hafta numarasına göre değişir.
+   Kartın seçeneklerinden kapatılan türler ve havuzu boş olan türler atlanır. */
+function sayingSlides(){const H=window.HaftaSozleri,pool=window.AppConfig?.get?.()?.sozHavuzu;return(H?.TURLER||[]).filter(t=>opt('sozler',t.key)!==false).map(t=>({t,pick:H.buHafta(t.key,pool)})).filter(x=>x.pick)}
 function weeklySayingsSection(){
   const slides=sayingSlides();
   if(!slides.length)return'';
-  const at=sayingIndex%slides.length,many=slides.length>1;
-  return `<section class="kh-section" data-home-section="sozler"><div class="kh-card kh-saying-card" data-saying-carousel data-saying-active="${slides[at].t.key}" role="group" aria-roledescription="carousel" aria-label="Haftanın sözleri"><div class="kh-saying-stage">${slides.map((x,i)=>`<figure class="kh-saying${i===at?' is-active':''}" data-saying-slide="${x.t.key}" ${i===at?'':'aria-hidden="true"'}><figcaption class="kh-saying-label">${esc(x.t.baslik)}</figcaption><blockquote>${esc(x.pick.metin)}</blockquote>${x.pick.kaynak?`<p class="kh-saying-src">${esc(x.pick.kaynak)}</p>`:''}</figure>`).join('')}</div>${many?`<div class="kh-saying-dots" role="tablist" aria-label="Söz türü">${slides.map((x,i)=>`<button type="button" role="tab" class="kh-saying-dot${i===at?' is-active':''}" aria-selected="${i===at}" aria-label="${esc(x.t.baslik)}" data-saying-dot="${i}"></button>`).join('')}</div>`:''}</div></section>`;
+  const at=carousels.saying.at%slides.length;
+  return `<section class="kh-section" data-home-section="sozler"><div class="kh-card kh-saying-card" data-carousel="saying" data-slide-active="${slides[at].t.key}" role="group" aria-roledescription="carousel" aria-label="Haftanın sözleri"><div class="kh-saying-stage">${slides.map((x,i)=>`<figure class="kh-saying${i===at?' is-active':''}" data-slide data-slide-kind="${x.t.key}" ${i===at?'':'aria-hidden="true"'}><figcaption class="kh-saying-label">${esc(x.t.baslik)}</figcaption><blockquote>${esc(x.pick.metin)}</blockquote>${x.pick.kaynak?`<p class="kh-saying-src">${esc(x.pick.kaynak)}</p>`:''}</figure>`).join('')}</div>${dotsHtml(slides.map(x=>x.t.baslik),at,'Söz türü')}</div></section>`;
 }
-function showSaying(i,hold){
-  const card=document.querySelector('[data-saying-carousel]'),slides=card?[...card.querySelectorAll('[data-saying-slide]')]:[];
-  if(slides.length<2)return;
-  const at=((i%slides.length)+slides.length)%slides.length;
-  sayingIndex=at;if(hold)sayingHold=Date.now()+SAYING_HOLD_MS;
-  slides.forEach((el,k)=>{el.classList.toggle('is-active',k===at);if(k===at)el.removeAttribute('aria-hidden');else el.setAttribute('aria-hidden','true')});
-  card.querySelectorAll('[data-saying-dot]').forEach((d,k)=>{d.classList.toggle('is-active',k===at);d.setAttribute('aria-selected',k===at?'true':'false')});
-  card.dataset.sayingActive=slides[at].dataset.sayingSlide;
+/* Slayt resimleri: Ayarlar > Ana Sayfa'dan yüklenen resimler (appConfig türünde 'slayt-N' belgeleri) sırayla gösterilir. */
+const slaytImages=()=>arr('appConfig').filter(x=>/^slayt-\d+$/.test(String(x?.id||''))&&/^data:image\//.test(String(x?.veri||''))).sort((a,b)=>Number(a.sira||0)-Number(b.sira||0));
+function slaytSection(){
+  const imgs=slaytImages();
+  if(!imgs.length)return'';
+  const at=carousels.slayt.at%imgs.length;
+  return `<section class="kh-section" data-home-section="slayt"><div class="kh-card kh-slayt-card" data-carousel="slayt" role="group" aria-roledescription="carousel" aria-label="Slayt resimleri"><div class="kh-slayt-stage">${imgs.map((x,i)=>`<figure class="kh-slayt${i===at?' is-active':''}" data-slide ${i===at?'':'aria-hidden="true"'}><img src="${esc(x.veri)}" alt="${esc(x.ad||`Slayt ${i+1}`)}" decoding="async"></figure>`).join('')}</div>${dotsHtml(imgs.map((x,i)=>x.ad||`Slayt ${i+1}`),at,'Slayt')}</div></section>`;
 }
-function bindSayingCarousel(root){
-  const card=root.querySelector('[data-saying-carousel]');if(!card)return;
-  card.querySelectorAll('[data-saying-dot]').forEach(d=>d.addEventListener('click',()=>showSaying(Number(d.dataset.sayingDot),true)));
-  let x0=0,y0=0;
-  card.addEventListener('pointerdown',e=>{x0=e.clientX;y0=e.clientY;sayingHold=Date.now()+SAYING_HOLD_MS});
-  card.addEventListener('pointerup',e=>{const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5)showSaying(sayingIndex+(dx<0?1:-1),true)});
+/* Onur panosu: Ayarlar > Ana Sayfa'da tanımlanan bölümler (ör. Ayın Öğrencisi, En Temiz Sınıf) ve altındaki kişi/sınıflar. */
+function onurPanosuSection(){
+  const parts=(window.AppConfig?.get?.()?.onurPanosu||[]).filter(b=>b.kisiler.length);
+  if(!parts.length)return'';
+  return `<section class="kh-section" data-home-section="onur-panosu"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('onur-panosu','')}</span><span>Onur Panosu</span></div></div><div class="kh-card kh-onur">${parts.map(b=>`<div class="kh-onur-part"><div class="kh-onur-title">${b.ikon?`<span aria-hidden="true">${esc(b.ikon)}</span>`:''}<b>${esc(b.baslik)}</b></div><ul>${b.kisiler.map(k=>`<li><strong>${esc(k.ad)}</strong>${k.aciklama?`<small>${esc(k.aciklama)}</small>`:''}</li>`).join('')}</ul></div>`).join('')}</div></section>`;
 }
-function startSayingTimer(){
-  clearInterval(sayingTimer);
-  sayingTimer=setInterval(()=>{const card=document.querySelector('[data-saying-carousel]');if(!card||document.hidden||Date.now()<sayingHold||card.matches(':hover')||card.querySelector(':focus-visible')||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;showSaying(sayingIndex+1,false)},SAYING_MS);
-}
-const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,sozler:weeklySayingsSection,quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
+const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,sozler:weeklySayingsSection,onurPanosu:onurPanosuSection,slayt:slaytSection,quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
 function shell(){const list=cards(),signature=list.map(x=>x.key).join('|');return`<section class="ka-home" data-dashboard-module data-dashboard-role="${roleKey()}" data-card-signature="${esc(signature)}">${list.map(c=>CARD_RENDERERS[c.key]?safeSection(CARD_RENDERERS[c.key],c.key):'').join('')}</section><button type="button" class="kh-backtop" data-dash-backtop aria-label="Yukarı dön">↑</button>`}
 function bindPresentation(root){
-  bindSayingCarousel(root);
+  bindCarousels(root);
   stabilizeNewsTicker(root);
   root.querySelector('[data-dash-backtop]')?.addEventListener('click',e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})});
   root.querySelector('[data-dash-weather]')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.SchoolLiveStatus?.openWeather?.()});
@@ -489,8 +543,8 @@ function queueRender(){
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const base=['data.yemekMenuleri','data.ogretmenler','data.dersProgrami','data.siniflar','data.veliler','data.servisler','data.hatirlaticilar','data.gorevler','data.sinavlar','data.denemeSinavlari','data.duyurular','data.haberler','data.anketler','data.nobetAtamalari','data.nobetYerleri','data.ogretmenIzinleri','data.notlar','data.yillikPlanTanimlari','data.ogretmenYillikPlanSecimleri','data.okulBilgileri','data.appConfig','data.toplantiCizelgesi','data.belirliGunler','data.ogretmenIzinleri','session.user'],paths=[...new Set([...base,...Object.keys(REMINDER_DEFS).map(t=>'data.'+t)])];paths.forEach(p=>{const u=window.AppStore?.subscribe?.(p,queueRender);if(u)unsubs.push(u)})}
 function liveRenderKey(live){return[ live?.mode||'',live?.remainingDays??'',live?.openingDate||'' ].join('|')}
 const liveTickHandler=e=>{const live=e?.detail||window.SchoolLiveStatus?.status?.()||{},key=liveRenderKey(live);if(key!==lastLiveRenderKey){lastLiveRenderKey=key;queueRender();return}refreshHeroLive(live)};
-function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return Promise.resolve(false);if(mounted&&root.querySelector('[data-dashboard-module]'))return mountPromise||Promise.resolve(true);if(mountPromise)return mountPromise;mounted=true;mountPromise=(async()=>{root.innerHTML=shell();bindPresentation(root);await prepareFoodData();await prepareReminderData();if(!mounted)return false;subscribe();render();clearInterval(trialTimer);trialTimer=setInterval(()=>refreshTrialTimers(),1000);startSayingTimer();window.removeEventListener('koruk:school-live-tick',liveTickHandler);window.addEventListener('koruk:school-live-tick',liveTickHandler);if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=()=>{document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);scrolling=true;clearTimeout(scrollIdleTimer);scrollIdleTimer=setTimeout(()=>{scrolling=false;if(pendingRender){pendingRender=false;queueRender()}},150)};window.addEventListener('scroll',backTopHandler,{passive:true});document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);requestAnimationFrame(()=>maybeShowReminders());[0,6000,25000].forEach(t=>setTimeout(periodicAutoGenerate,t));return true})().finally(()=>{mountPromise=null});return mountPromise}
-function unmount(){mounted=false;mountPromise=null;if(renderFrame)cancelAnimationFrame(renderFrame);renderFrame=0;if(renderTimer)clearTimeout(renderTimer);renderTimer=0;clearInterval(trialTimer);trialTimer=null;clearInterval(sayingTimer);sayingTimer=null;if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=null;clearTimeout(scrollIdleTimer);scrollIdleTimer=null;scrolling=false;pendingRender=false;lastLiveRenderKey='';window.removeEventListener('koruk:school-live-tick',liveTickHandler);closeReminderPopup();unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
+function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return Promise.resolve(false);if(mounted&&root.querySelector('[data-dashboard-module]'))return mountPromise||Promise.resolve(true);if(mountPromise)return mountPromise;mounted=true;mountPromise=(async()=>{root.innerHTML=shell();bindPresentation(root);await prepareFoodData();await prepareReminderData();if(!mounted)return false;subscribe();render();clearInterval(trialTimer);trialTimer=setInterval(()=>{refreshTrialTimers();refreshExamCountdowns()},1000);startCarousels();window.removeEventListener('koruk:school-live-tick',liveTickHandler);window.addEventListener('koruk:school-live-tick',liveTickHandler);if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=()=>{document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);scrolling=true;clearTimeout(scrollIdleTimer);scrollIdleTimer=setTimeout(()=>{scrolling=false;if(pendingRender){pendingRender=false;queueRender()}},150)};window.addEventListener('scroll',backTopHandler,{passive:true});document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);requestAnimationFrame(()=>maybeShowReminders());[0,6000,25000].forEach(t=>setTimeout(periodicAutoGenerate,t));return true})().finally(()=>{mountPromise=null});return mountPromise}
+function unmount(){mounted=false;mountPromise=null;if(renderFrame)cancelAnimationFrame(renderFrame);renderFrame=0;if(renderTimer)clearTimeout(renderTimer);renderTimer=0;clearInterval(trialTimer);trialTimer=null;stopCarousels();if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=null;clearTimeout(scrollIdleTimer);scrollIdleTimer=null;scrolling=false;pendingRender=false;lastLiveRenderKey='';window.removeEventListener('koruk:school-live-tick',liveTickHandler);closeReminderPopup();unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
 window.DashboardModule={mount,unmount,render,collectReminders,maybeShowReminders,prepareReminderData,meetingUpcomingRows};
 window.uygulamaBaslat=function(){window.AppLoader?.load?.('dashboard').then(()=>mount()).catch(e=>console.warn('[Dashboard]',e?.message||e))};
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard')mount()});

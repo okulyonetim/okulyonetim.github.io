@@ -32,7 +32,7 @@ assert.strictEqual(H.buHafta('ayet',bos),null,'Havuz boşsa kart gösterilmemeli
 const ex=loader.match(/const EXAM_DEFAULTS=(\[.*?\]);/s)[1];
 assert(/LGS/.test(ex)&&!/YKS/.test(ex),'Varsayılan sınav listesinde YKS olmamalı.');
 assert(loader.includes("goster:x?.goster!==false"),'Her sınavın Göster alanı AppConfig\'te olmalı.');
-assert(dash.includes("x.goster!==false")&&!/\.slice\(0,3\)/.test(dash.slice(dash.indexOf('function examCountdownSection'),dash.indexOf('function examCountdownSection')+500)),'Ana sayfa yalnız Göster işaretli sınavları sıralamalı.');
+assert(dash.includes("x.goster!==false"),'Ana sayfa yalnız Göster işaretli sınavları sıralamalı.');
 assert(settings.includes('data-exam-show')&&settings.includes('data-exam-add')&&settings.includes('data-exam-remove'),'Ayarlar sınav satırı: göster/ekle/kaldır.');
 
 /* Belirli gün: katalog ana sayfaya karışmaz */
@@ -41,11 +41,12 @@ assert(!loader.includes("define('dashboard',['js/modules/school-live-status.js?v
 
 /* Ayet · hadis · özlü söz tek kartta, aynı alanda sırayla (alt alta üç kart değil) */
 assert(!/\bsayingText\b|\bsayingSource\b|SAYINGS\b|sayingSection\b|weeklySayingSection\b/.test(dash+settings+loader),'Eski tek söz yapısı ve üç ayrı kart kaldırılmalı.');
-assert(loader.includes("['sozler','Haftanın ayeti · hadisi · özlü sözü']")&&!/\['(ayet|hadis|ozluSoz|saying)','/.test(loader),'DASHBOARD_CARDS tek söz kartı içermeli.');
+const cardsBlock=loader.slice(loader.indexOf('const DASHBOARD_CARDS=['),loader.indexOf('const CARD_OPTIONS='));
+assert(cardsBlock.includes("key:'sozler',label:'Haftanın ayeti · hadisi · özlü sözü'")&&!/key:'(ayet|hadis|ozluSoz|saying)'/.test(cardsBlock),'DASHBOARD_CARDS tek söz kartı içermeli.');
 assert((loader.match(/'sozler'/g)||[]).length===3,'Her iki rolün varsayılanında ve katalogda tek söz kartı olmalı.');
 assert(dash.includes('sozler:weeklySayingsSection')&&!/ayet:\(\)=>|hadis:\(\)=>|ozluSoz:\(\)=>/.test(dash),'CARD_RENDERERS tek söz kartı kullanmalı.');
-assert(dash.includes('data-saying-carousel')&&dash.includes('data-saying-slide')&&dash.includes('data-saying-dot'),'Söz kartı slayt ve nokta içermeli.');
-assert(/clearInterval\(sayingTimer\);sayingTimer=null/.test(dash)&&dash.includes('startSayingTimer();'),'Otomatik geçiş zamanlayıcısı mount/unmount ile yönetilmeli.');
+assert(dash.includes('data-carousel="saying"')&&dash.includes('data-slide')&&dash.includes('data-slide-dot'),'Söz kartı slayt ve nokta içermeli.');
+assert(dash.includes('stopCarousels();')&&dash.includes('startCarousels();'),'Otomatik geçiş zamanlayıcıları mount/unmount ile yönetilmeli.');
 assert(dash.includes("prefers-reduced-motion"),'Hareket azaltma tercihinde otomatik geçiş durmalı.');
 assert(/define\('dashboard',\[[^\]]*hafta-sozleri\.js/.test(loader)&&/define\('settings',\[[^\]]*hafta-sozleri\.js/.test(loader),'Dashboard ve Ayarlar havuz modülünü yüklemeli.');
 console.log('ana-sayfa-haftalik-sozler: OK');

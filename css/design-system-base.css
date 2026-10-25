@@ -11541,20 +11541,48 @@ html #v2ModuleRoot .ka-home .kh-countdown span{margin-top:var(--ka-sp-4);font-si
 html #v2ModuleRoot .ka-home .kh-countdown em{font-style:normal;font-size:var(--ka-fs-11-5);font-weight:var(--ka-fw-600);color:var(--gl-sub)!important}
 /* Haftanın sözleri: tek kart, ayet · hadis · özlü söz aynı alanda sırayla görünür; yükseklik en uzun söze göre sabit kalır. */
 html #v2ModuleRoot .ka-home .kh-saying-card{--ac:rgb(var(--ac-rgb));--ac-ink:color-mix(in srgb,rgb(var(--ac-rgb)) var(--gl-ink-pct),var(--gl-ink-mix));touch-action:pan-y;transition:border-color .4s}
-html #v2ModuleRoot .ka-home .kh-saying-card[data-saying-active="ayet"]{--ac-rgb:var(--c-teal)}
-html #v2ModuleRoot .ka-home .kh-saying-card[data-saying-active="hadis"]{--ac-rgb:var(--c-amber)}
-html #v2ModuleRoot .ka-home .kh-saying-card[data-saying-active="ozluSoz"]{--ac-rgb:var(--c-violet)}
+html #v2ModuleRoot .ka-home .kh-saying-card[data-slide-active="ayet"]{--ac-rgb:var(--c-teal)}
+html #v2ModuleRoot .ka-home .kh-saying-card[data-slide-active="hadis"]{--ac-rgb:var(--c-amber)}
+html #v2ModuleRoot .ka-home .kh-saying-card[data-slide-active="ozluSoz"]{--ac-rgb:var(--c-violet)}
 html #v2ModuleRoot .ka-home .kh-saying-stage{display:grid;padding:var(--ka-sp-16) var(--ka-sp-18)}
 html #v2ModuleRoot .ka-home .kh-saying{grid-area:1/1;margin:0;display:grid;align-content:start;gap:var(--ka-sp-8);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
 html #v2ModuleRoot .ka-home .kh-saying.is-active{opacity:1;visibility:visible}
 html #v2ModuleRoot .ka-home .kh-saying-label{padding-right:var(--ka-sp-60);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-1);text-transform:uppercase;color:var(--ac-ink)!important}
 html #v2ModuleRoot .ka-home .kh-saying blockquote{margin:0;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-600);font-style:italic;line-height:var(--ka-lh-1-55);color:var(--gl-fg)!important}
 html #v2ModuleRoot .ka-home .kh-saying-src{margin:0;justify-self:end;text-align:right;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800);color:var(--ac-ink)!important}
-html #v2ModuleRoot .ka-home .kh-saying-dots{position:absolute;z-index:3;top:var(--ka-sp-8);right:var(--ka-sp-10);display:flex;align-items:center}
-html #v2ModuleRoot .ka-home .kh-saying-dot{display:grid;place-items:center;width:var(--ka-sp-20);height:var(--ka-sp-20);padding:0;border:0!important;background:transparent!important;box-shadow:none!important;cursor:pointer}
-html #v2ModuleRoot .ka-home .kh-saying-dot::before{content:"";width:var(--ka-sp-6);height:var(--ka-sp-6);border-radius:var(--ka-radius-pill);background:var(--ac-ink);opacity:.4;transition:width .3s,opacity .3s}
-html #v2ModuleRoot .ka-home .kh-saying-dot.is-active::before{width:var(--ka-sp-16);opacity:1}
-@media(prefers-reduced-motion:reduce){html #v2ModuleRoot .ka-home .kh-saying,html #v2ModuleRoot .ka-home .kh-saying-dot::before{transition:none}}
+html #v2ModuleRoot .ka-home .kh-dots{position:absolute;z-index:3;top:var(--ka-sp-8);right:var(--ka-sp-10);display:flex;align-items:center}
+html #v2ModuleRoot .ka-home .kh-dot{display:grid;place-items:center;width:var(--ka-sp-20);height:var(--ka-sp-20);padding:0;border:0!important;background:transparent!important;box-shadow:none!important;cursor:pointer}
+html #v2ModuleRoot .ka-home .kh-dot::before{content:"";width:var(--ka-sp-6);height:var(--ka-sp-6);border-radius:var(--ka-radius-pill);background:var(--ac-ink);opacity:.4;transition:width .3s,opacity .3s}
+html #v2ModuleRoot .ka-home .kh-dot.is-active::before{width:var(--ka-sp-16);opacity:1}
+@media(prefers-reduced-motion:reduce){html #v2ModuleRoot .ka-home .kh-saying,html #v2ModuleRoot .ka-home .kh-dot::before{transition:none}}
+/* Slayt resimleri: tek kart, resimler aynı alanda sırayla; noktalar resmin altında ortada. */
+html #v2ModuleRoot .ka-home .kh-slayt-card{padding:0;touch-action:pan-y}
+html #v2ModuleRoot .ka-home .kh-slayt-stage{display:grid}
+html #v2ModuleRoot .ka-home .kh-slayt{grid-area:1/1;margin:0;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s}
+html #v2ModuleRoot .ka-home .kh-slayt.is-active{opacity:1;visibility:visible}
+html #v2ModuleRoot .ka-home .kh-slayt img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+html #v2ModuleRoot .ka-home .kh-slayt-card .kh-dots{top:auto;right:auto;bottom:var(--ka-sp-8);left:50%;transform:translateX(-50%);padding:0 var(--ka-sp-6);border-radius:var(--ka-radius-pill);background:var(--gl-bg)}
+/* Onur panosu: bölüm başına simge + başlık ve altında kişi/sınıf listesi. */
+html #v2ModuleRoot .ka-home [data-home-section="onur-panosu"]{--ac-rgb:var(--c-yellow)}
+html #v2ModuleRoot .ka-home [data-home-section="onur-panosu"]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='6'/%3E%3Cpath d='M15.5 13.5 17 22l-5-3-5 3 1.5-8.5'/%3E%3C/svg%3E")}
+html #v2ModuleRoot .ka-home .kh-onur{display:grid;gap:var(--ka-sp-14);padding:var(--ka-sp-16) var(--ka-sp-18)}
+html #v2ModuleRoot .ka-home .kh-onur-part{display:grid;gap:var(--ka-sp-6)}
+html #v2ModuleRoot .ka-home .kh-onur-title{display:flex;align-items:center;gap:var(--ka-sp-8);font-size:var(--ka-fs-14);color:var(--ac-ink)!important}
+html #v2ModuleRoot .ka-home .kh-onur-title b{font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-02)}
+html #v2ModuleRoot .ka-home .kh-onur ul{display:grid;gap:var(--ka-sp-4);margin:0;padding:0;list-style:none}
+html #v2ModuleRoot .ka-home .kh-onur li{display:grid;gap:var(--ka-sp-2)}
+html #v2ModuleRoot .ka-home .kh-onur li strong{font-size:var(--ka-fs-17);font-weight:var(--ka-fw-800);color:var(--gl-fg)!important}
+html #v2ModuleRoot .ka-home .kh-onur li small{font-size:var(--ka-fs-12);font-weight:var(--ka-fw-600);color:var(--gl-sub)!important}
+/* Sınav geri sayımı (canlı biçim): ad, tarih ve ay · gün · saat · dakika · saniye. */
+html #v2ModuleRoot .ka-home .kh-countdowns:has(.kh-countdown--live){grid-template-columns:minmax(0,1fr)}
+html #v2ModuleRoot .ka-home .kh-countdown--live{justify-items:stretch;gap:var(--ka-sp-10)}
+html #v2ModuleRoot .ka-home .kh-countdown--live .kh-pill{justify-self:start}
+html #v2ModuleRoot .ka-home .kh-countdown--live .kh-cd-date{font-size:var(--ka-fs-17);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-2);color:var(--gl-fg)!important}
+html #v2ModuleRoot .ka-home .kh-cd-parts{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--ka-sp-2);padding-top:var(--ka-sp-12);border-top:var(--ka-border-w) solid var(--gl-edge)}
+html #v2ModuleRoot .ka-home .kh-cd-part{display:grid;justify-items:center;gap:var(--ka-sp-2);min-width:0;flex:1 1 0}
+html #v2ModuleRoot .ka-home .kh-countdown--live .kh-cd-part b{font-size:var(--ka-fs-28);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-1);font-variant-numeric:tabular-nums;color:var(--ac-ink)!important}
+html #v2ModuleRoot .ka-home .kh-countdown--live .kh-cd-part small{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);color:var(--gl-sub)!important}
+html #v2ModuleRoot .ka-home .kh-cd-sep{font-style:normal;font-size:var(--ka-fs-20);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-1);color:var(--gl-sub)!important}
 html #v2ModuleRoot .ka-home .kh-empty,
 html #v2ModuleRoot .ka-home .ka-home-empty,
 html #v2ModuleRoot .ka-home .kh-duty-empty{padding:var(--ka-sp-18) var(--ka-sp-16);text-align:center;font-size:var(--ka-fs-12-5);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-35);color:var(--gl-sub)!important}
@@ -14387,7 +14415,8 @@ html[data-theme] #v2ModuleRoot:not(#_x) .ka-evrak .ka-evrak-paper :is(div,p,span
 html[data-theme] #v2ModuleRoot:not(#_x) .ka-evrak .ka-evrak-paper :is(th,td){border-color:var(--ka-report-border)!important}
 /* — AYARLAR > ANA SAYFA: sınav satırları + haftalık söz havuzu (yalnız ladder token) — */
 html #v2ModuleRoot .ka-exam-row,
-html #v2ModuleRoot .ka-soz-row{padding-bottom:var(--ka-sp-12);border-bottom:var(--ka-border-w) solid var(--ka-border)}
+html #v2ModuleRoot .ka-soz-row,
+html #v2ModuleRoot .ka-onur-part{padding-bottom:var(--ka-sp-12);border-bottom:var(--ka-border-w) solid var(--ka-border)}
 html #v2ModuleRoot .ka-soz-now{margin:0;padding:var(--ka-sp-10) var(--ka-sp-12);border-radius:var(--ka-r-4);background:var(--ka-surface-2);border:var(--ka-border-w) solid var(--ka-border);font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-45)}
 html #v2ModuleRoot .ka-soz-details{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-4);background:var(--ka-card-bg)}
 html #v2ModuleRoot .ka-soz-details>summary{cursor:pointer;padding:var(--ka-sp-10) var(--ka-sp-12);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-800)}
@@ -14397,3 +14426,10 @@ html #v2ModuleRoot .ka-soz-item input{flex:none;margin-top:var(--ka-sp-2)}
 html #v2ModuleRoot .ka-soz-item span{display:grid;gap:var(--ka-sp-2);min-width:0}
 html #v2ModuleRoot .ka-soz-item b{font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-45)}
 html #v2ModuleRoot .ka-soz-item small{font-size:var(--ka-fs-11-5);font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+html #v2ModuleRoot .ka-opt-choices{flex-wrap:wrap}
+html #v2ModuleRoot .ka-slayt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--ka-sp-120),1fr));gap:var(--ka-sp-8)}
+html #v2ModuleRoot .ka-slayt-thumb{position:relative;margin:0;border-radius:var(--ka-r-4);overflow:hidden;border:var(--ka-border-w) solid var(--ka-border)}
+html #v2ModuleRoot .ka-slayt-thumb img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+html #v2ModuleRoot .ka-slayt-thumb button{position:absolute;top:var(--ka-sp-4);right:var(--ka-sp-4);display:grid;place-items:center;width:var(--ka-sp-24);height:var(--ka-sp-24);padding:0;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-radius-pill);background:var(--ka-card-bg);color:var(--ka-text);font-size:var(--ka-fs-12);cursor:pointer}
+html #v2ModuleRoot .ka-slayt-empty{grid-column:1/-1}
+html #v2ModuleRoot .ka-app-section{align-items:flex-start}
