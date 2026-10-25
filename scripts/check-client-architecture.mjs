@@ -38,8 +38,8 @@ const loaderPath=path.join(ROOT,'js','app-loader.js');
 const loaderSource=fs.existsSync(loaderPath)?fs.readFileSync(loaderPath,'utf8'):'';
 const settingsPath=path.join(ROOT,'js','modules','settings.js');
 const settingsSource=fs.existsSync(settingsPath)?fs.readFileSync(settingsPath,'utf8'):'';
-const dashboardPath=path.join(ROOT,'js','modules','dashboard.js');
-const dashboardSource=fs.existsSync(dashboardPath)?fs.readFileSync(dashboardPath,'utf8'):'';
+const appNavPath=path.join(ROOT,'js','core','app-nav.js');
+const appNavSource=fs.existsSync(appNavPath)?fs.readFileSync(appNavPath,'utf8'):'';
 const firebasePath=path.join(ROOT,'js','firebase-init.js');
 const firebaseSource=fs.existsSync(firebasePath)?fs.readFileSync(firebasePath,'utf8'):'';
 const reportEnginePath=path.join(ROOT,'js','modules','report-engine.js');
@@ -73,9 +73,8 @@ const missingPermissionRequirements=permissionRequirements.filter(([,ok])=>!ok).
 
 const configRequirements=[
   ['mevcut navDuzeni koleksiyonu',firebaseSource.includes("navDuzeni:'oy_navDuzeni'")],['AppConfig merkezi API',loaderSource.includes('window.AppConfig=')],['AppConfig DeviceData',loaderSource.includes("DeviceData.set('appConfig',COL.navDuzeni")],
-  ['varsayılan açılış modülü',loaderSource.includes('defaultModule')],['navigasyon adı/ikon/sıra',loaderSource.includes('MODULE_DEFAULTS')&&loaderSource.includes('applyNavigation')],['dashboard kart kataloğu',loaderSource.includes('DASHBOARD_DEFAULTS')],
-  ['ayarlar uygulama düzeni',settingsSource.includes('Merkezi Uygulama Düzeni')],['ayarlar navigasyon editörü',settingsSource.includes('data-app-module-row')],['ayarlar dashboard editörü',settingsSource.includes('data-dashboard-card-row')],
-  ['dashboard AppConfig tüketimi',dashboardSource.includes('AppConfig?.dashboardCards')],['dashboard sabit sıra yerine config',dashboardSource.includes('cards().map')]
+  ['modül adı/ikon/sıra varsayılanları',loaderSource.includes('MODULE_DEFAULTS')],['ayarlar modül görünürlük editörü',settingsSource.includes('data-app-module-row')],
+  ['menü AppConfig tüketimi (AppNav tek kaynak)',appNavSource.includes('AppConfig?.module?.(name)')&&appNavSource.includes('const TOOLS={}')]
 ];
 const missingConfigRequirements=configRequirements.filter(([,ok])=>!ok).map(([name])=>name);
 

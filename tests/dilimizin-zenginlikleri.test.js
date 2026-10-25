@@ -20,7 +20,7 @@ test('modül doğrudan Firestore/localStorage kullanmaz; menü, yönlendirme ve 
   const src = fs.readFileSync('js/modules/dilimiz.js', 'utf8');
   assert.ok(!/db\s*\.\s*collection|localStorage/.test(src));
   assert.match(fs.readFileSync('js/core/shell-ui.js', 'utf8'), /page==='dilimiz'/);
-  assert.match(fs.readFileSync('js/app-loader.js', 'utf8'), /'documents','dilimiz'/);
+  assert.match(fs.readFileSync('js/core/app-nav.js', 'utf8'), /\['dilimiz','Dilimizin Zenginlikleri'[^\]]*'documents','dilimiz'\]/);
   assert.match(fs.readFileSync('js/app-loader.js', 'utf8'), /dilimiz\.js','js\/modules\/documents\.js/);
   assert.match(fs.readFileSync('service-worker.js', 'utf8'), /dilimiz\.js/);
 });

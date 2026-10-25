@@ -54,6 +54,7 @@ def new_page(pw,base,seed_js,scheme='light'):
     b=pw.chromium.launch(args=['--lang=tr'],env={**os.environ,'LANGUAGE':'tr','LANG':'tr_TR.UTF-8','LC_ALL':'tr_TR.UTF-8'})   # tarih alanları gg.aa.yyyy görünsün
     ctx=b.new_context(viewport={'width':VIEW[0],'height':VIEW[1]},device_scale_factor=DPR,has_touch=True,is_mobile=True,color_scheme=scheme,
                       locale='tr-TR',timezone_id='Europe/Istanbul',service_workers='block')
+    ctx.add_init_script("try{sessionStorage.setItem('ka-permission-gate-session','1')}catch(e){}")   # izin hatırlatma penceresi ekran görüntüsünü kapatmasın
     ctx.route('**/firebase-storage-compat.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=STUB))
     rel=release_json()
     if rel:ctx.route('https://api.github.com/repos/okulyonetim/okulyonetim.github.io/releases**',lambda r:r.fulfill(status=200,content_type='application/json',headers={'access-control-allow-origin':'*'},body=rel if '/latest' in r.request.url else '['+rel+']'))

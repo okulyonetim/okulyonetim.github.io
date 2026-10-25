@@ -17,7 +17,7 @@ test('modül KaPrefs kullanır, doğrudan localStorage içermez', () => {
 });
 test('menü, rota ve önbellek bağlantıları var', () => {
   assert.match(fs.readFileSync('js/core/shell-ui.js', 'utf8'), /name==='monthflow'/);
-  assert.match(fs.readFileSync('js/app-loader.js', 'utf8'), /'monthflow'/);
+  assert.match(fs.readFileSync('js/core/app-nav.js', 'utf8'), /\['monthflow','Aylık Yönetim Akışı'[^\]]*'monthflow'\]/);
   assert.match(fs.readFileSync('service-worker.js', 'utf8'), /monthly-flow\.js/);
 });
 test('CSS yalnız token kullanır (hex yok)', () => {

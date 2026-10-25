@@ -1,5 +1,5 @@
 /* Koruk Asistan — Klasör Sırtlığı Oluşturucu
- * Araçlar > Klasör Sırtlığı Oluşturucu (js/modules/araclar-hub.js listeden açar; ilk açılışta yüklenir).
+ * Okul › Evrak ve yazışma › Klasör Sırtlığı Oluşturucu (Araçlar sayfasından açılır; ilk açılışta yüklenir).
  * 5 cm / 8 cm / özel ölçüde klasör sırtlığı tasarlar; canlı önizleme verir; tek, numaralı, aylık veya liste (sınıf / öğretmen)
  * serisi üretir; sırtlıkları A4'e kesim çizgisiyle dizer ve ReportEngine önizlemesinden yazdırır / PDF / PNG yapar.
  *

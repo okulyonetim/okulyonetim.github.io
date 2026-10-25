@@ -14,24 +14,19 @@ const core=css.slice(coreStart,coreEnd),rest=css.slice(coreEnd);
 for(const v of ['--ka-avatar-ring-w','--ka-avatar-ring','--ka-avatar-halo','--ka-avatar-halo-w','--ka-avatar-halo-w-lg','--ka-avatar-ring-shadow','--ka-avatar-ring-shadow-lg','--ka-avatar-gap','--ka-avatar-chip-bg','--ka-avatar-chip-ink','--ka-avatar-chip-shadow','--ka-avatar-chip-max','--ka-avatar-chip-max-sm','--ka-photo-crop-w','--ka-photo-crop-stage','--ka-photo-crop-dim','--ka-photo-crop-reach'])
   assert(new RegExp('(^|[;{\\s])'+v.replace(/-/g,'\\-')+'\\s*:').test(core),`Rozetli/kırpma belirteci TEMA MERKEZİ içinde tanımlı olmalı: ${v}`);
 const rule=sel=>{const i=rest.indexOf(sel);assert(i>=0,`Kural bulunamadı: ${sel}`);return rest.slice(i,rest.indexOf('}',i)+1)};
-assert(/box-shadow:var\(--ka-avatar-ring-shadow\)!important/.test(rule('html .ka-app-header .ka-header-actions>.ka-header-profile{')),'Başlık avatarı ortak halka belirtecini kullanmalı.');
-assert(/box-shadow:var\(--ka-avatar-ring-shadow\)/.test(rule('html .ka-profile-popover__identity>.ka-avatar{')),'Açılan kart avatarı ortak halka belirtecini kullanmalı.');
+assert(/box-shadow:var\(--ka-avatar-ring-shadow\)/.test(rule('html #v2ModuleRoot .ka-nav-page .ka-nav-profile__avatar{')),'Ben sayfası avatarı ortak halka belirtecini kullanmalı.');
 assert(/box-shadow:var\(--ka-avatar-ring-shadow\)/.test(rule('html .ka-web-me__avatar{')),'Web yan menüsü avatarı ortak halka belirtecini kullanmalı.');
 assert(/box-shadow:var\(--ka-avatar-ring-shadow-lg\)!important/.test(rule('html #v2ModuleRoot .ka-profile-page .ka-profile-avatar{')),'Profil sayfası avatarı büyük halka belirtecini kullanmalı.');
 assert(/border-radius:50%!important/.test(rule('html #v2ModuleRoot .ka-profile-page .ka-profile-avatar{')),'Profil sayfası fotoğrafı daire olmalı (görünüm her yerde aynı).');
 const chip=rule('html .ka-avatar-chip{');
 assert(/background:var\(--ka-avatar-chip-bg\)/.test(chip)&&/color:var\(--ka-avatar-chip-ink\)/.test(chip)&&/text-overflow:ellipsis/.test(chip),'Unvan rozeti belirteçlerle boyanmalı ve uzun unvanı "…" ile kısaltmalı.');
 assert(/max-width:var\(--ka-avatar-chip-max\)/.test(chip),'Rozet genişliği belirteçten sınırlanmalı.');
-assert(/--ka-avatar-chip-max:var\(--ka-avatar-chip-max-sm\)/.test(rule('html .ka-profile-popover__identity>.ka-avatar{')),'Açılan kartta rozet, küçük avatar sınırını kullanmalı.');
+assert(/--ka-avatar-chip-max:var\(--ka-avatar-chip-max-sm\)/.test(rule('.ka-photo-crop__pvav--md{')),'Kırpma önizlemesinde rozet, küçük avatar sınırını kullanmalı.');
 assert(/max-width:calc\(100% \+ var\(--ka-sp-14\)\)/.test(rule('html .ka-profile-avatar-wrap .ka-avatar-chip{')),'Profil sayfasında uzun rozet yandaki yazıya taşmamalı.');
 assert(/\.ka-profile-photo-edit\{[^}]*top:-6px/.test(rest),'Kamera düğmesi rozetle çakışmaması için üste alınmalı.');
 
-// Başlık avatarı: fotoğraf düğmeyi tek başına doldurur (iç içe kırpma / yüzde boyut yok) → halka ile fotoğraf arasında koyu boşluk kalmaz
-const hdr=rule('html .ka-app-header .ka-header-actions>.ka-header-profile{'),hdrImg=rule('html .ka-app-header .ka-header-profile img{');
-assert(/position:relative/.test(hdr)&&/overflow:visible/.test(hdr)&&!/overflow:hidden/.test(hdr),'Başlık avatar düğmesi iç içe kırpma yapmamalı.');
-assert(/position:absolute/.test(hdrImg)&&/inset:calc\(var\(--ka-border-w\) \* -\.5\)/.test(hdrImg)&&/border-radius:50%/.test(hdrImg)&&/object-fit:cover/.test(hdrImg),'Başlık fotoğrafı düğmeyi kenar boşluksuz doldurmalı.');
 // Her oranda fotoğraf (dikey/yatay/kare) kutuyu tam doldurur → avatar asla oval olmaz (yüzde boyut yerine mutlak yerleşim)
-for(const [sel,label] of [['html .ka-profile-popover__identity>.ka-avatar img{','açılan kart'],['html #v2ModuleRoot .ka-profile-page .ka-profile-avatar img{','profil sayfası'],['html .ka-web-me__avatar img{','web yan menüsü'],['html .ka-app-header .ka-header-profile img{','başlık']]){
+for(const [sel,label] of [['html #v2ModuleRoot .ka-nav-page .ka-nav-profile__avatar img{','Ben sayfası'],['html #v2ModuleRoot .ka-profile-page .ka-profile-avatar img{','profil sayfası'],['html .ka-web-me__avatar img{','web yan menüsü']]){
   const r=rule(sel);assert(/position:absolute/.test(r)&&/width:(100%|calc\(100% \+ var\(--ka-border-w\)\))/.test(r)&&/height:(100%|calc\(100% \+ var\(--ka-border-w\)\))/.test(r)&&/object-fit:cover/.test(r)&&/border-radius:50%/.test(r),`${label} fotoğrafı kutuyu mutlak yerleşimle tam doldurmalı (oval görünmemeli).`);
 }
 assert(/position:relative/.test(rule('html .ka-web-me__avatar{')),'Web yan menüsü avatarı mutlak yerleşimli fotoğrafın dayanağı olmalı.');
@@ -43,7 +38,6 @@ assert(/D=mask\.offsetWidth\|\|/.test(cropSrc),'Kadraj çapı yerleşim ölçüs
 // ── 2) Kabuk: rozet metni ve işaretlemesi ──
 assert(/function profileBadge\(\)\{/.test(shell)&&/u\.unvan\|\|r\.ad\|\|r\.rolAdi/.test(shell),'Rozet metni: unvan, yoksa rol adı.');
 assert(/function profileChip\(\)\{const b=profileBadge\(\);return b\?`<b class="ka-avatar-chip">/.test(shell),'Rozet yoksa hiçbir şey çizilmemeli.');
-assert(shell.includes('<span class="ka-avatar">${photo?`<img src="${esc(photo)}" alt="">`:SVG.profile}${profileChip()}</span>'),'Açılan kartta avatarın altında rozet olmalı.');
 assert(shell.includes('</div>${profileChip()}<button type="button" class="ka-profile-photo-edit"'),'Profil sayfasında avatarın altında rozet olmalı.');
 assert(!/profileInfo\(\)\{[^}]*profileBadge/.test(shell),'profileInfo dönüş sözleşmesi değişmemeli.');
 

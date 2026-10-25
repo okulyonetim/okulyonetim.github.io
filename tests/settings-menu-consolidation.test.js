@@ -1,40 +1,31 @@
+/* Menü kataloğu (js/core/app-nav.js) tek kaynaktır: Ayarlar tek girişten, Settings alt sayfaları ikinci kez araç olarak listelenmez. */
 const fs=require('fs');
 const assert=require('assert');
-const app=fs.readFileSync('js/app-loader.js','utf8');
+const nav=fs.readFileSync('js/core/app-nav.js','utf8');
 const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const settings=fs.readFileSync('js/modules/settings.js','utf8');
-const navigation=fs.readFileSync('js/core/app-navigation-behavior.js','utf8');
+const catalogEnd=nav.indexOf("].forEach(([id,label,ic,tone,sub,route,page='',need])");
+const tools=nav.slice(nav.indexOf('const TOOLS={}'),catalogEnd);
+assert(tools.length>0&&catalogEnd>0,'Araç kataloğu bulunmalı.');
 
-const appMenu=app.slice(app.indexOf('const CLASSIC_MENU_GROUPS=['),app.indexOf('function applyClassicMenuGroups'));
-const uiMenu=ui.slice(ui.indexOf('const MENU_GROUPS=['),ui.indexOf('const FORM_PAGES='));
-assert(appMenu.length>0&&uiMenu.length>0,'Ayarlar menü katalogları bulunmalı.');
+assert(tools.includes("['settings','Ayarlar','sliders','slate','Okul, kullanıcılar, hesap','settings']"),'Ayarlar canonical Settings girişini korumalı.');
+assert(!/'settings','data'\]/.test(tools),'Veriler Ayarlar > Sistem Yönetimi içinde durur; araç olarak ikinci kez yer almamalı.');
+for(const duplicate of ["'settings','lesson-hours'","'settings','users'","'settings','statistics'","'settings','roles'"])
+  assert(!tools.includes(duplicate),`Settings alt sayfası araç listesinde tekrar etmemeli: ${duplicate}`);
 
-for(const block of [appMenu,uiMenu]){
-  assert(block.includes("['Ayarlar','⚙️','settings']"),'Ayarlar menüsü canonical Settings girişini korumalı.');
-  assert(!block.includes("['Veriler','🗄️','settings','data']"),'Veriler Ayarlar > Sistem Yönetimi içinde durur; menüde ikinci kez yer almamalı.');
-  for(const duplicate of [
-    "['Okul Bilgileri','🏢','settings','school']",
-    "['Ders Saatleri','⏱️','settings','lesson-hours']",
-    "['Kullanıcı İşlemleri','🛡️','settings','users']",
-    "['Kullanıcı İstatistikleri','📋','settings','statistics']"
-  ]) assert(!block.includes(duplicate),`Settings alt sayfası shell menüsünde tekrar etmemeli: ${duplicate}`);
-}
-
-assert(appMenu.includes("['Dökümanlar','📁','documents']"),'Dokümanlar arşivi korunmalı.');
-assert(navigation.includes("['PDF İşlemleri','📑','documents','pdf-tools']")&&navigation.includes("page==='pdf-tools'"),'PDF araçları tek bir PDF İşlemleri menü girişinden açılmalı.');
-assert(!navigation.includes("page==='pdf-images'" )||navigation.includes("page==='pdf-images'){openPdfMenuTool('images',event);return;"),'Eski PDF resim rotası yalnızca geriye dönük uyumluluk için tutulabilir.');
-assert(!appMenu.includes("['Mevzuat','📖','documents','mevzuat']")&&!uiMenu.includes("['Mevzuat','📖','documents','mevzuat']"),'Mevzuat menüden tamamen kaldırılmış olmalı.');
+assert(tools.includes("['documents','Dökümanlar','folder'"),'Dokümanlar arşivi korunmalı.');
+assert(tools.includes("'documents','pdf-images']")&&tools.includes("'documents','pdf-merge']"),'PDF araçları (Resimden PDF, PDF Birleştir) doğrudan araç olarak listelenmeli.');
+assert(!/mevzuat/i.test(tools),'Mevzuat menüden tamamen kaldırılmış olmalı.');
 assert(ui.includes("if(name==='documents'&&page==='evrak'"),'Evrak Takibi canonical route korunmalı.');
 assert(!ui.includes("if(name==='documents'&&!page)return false"),'Dökümanlar kök sayfası engellenmemeli.');
 
 for(const canonical of [
-  "['school','Okul Bilgileri'",
+  "['school','Okul bilgileri ve kurulum'",
   "['lesson-hours','Ders Saatleri'",
   "['users','Kullanıcı İşlemleri'",
   "['statistics','Kullanıcı İstatistikleri'"
 ]) assert(settings.includes(canonical),`Detay ayarı canonical SettingsModule içinde kalmalı: ${canonical}`);
 
-assert(app.includes('function applyClassicMenuGroups()'),'Runtime classic menü uygulama akışı korunmalı.');
-assert(ui.includes('function renderMenuList(key)')&&ui.includes('function bindMenuRoutes(root)'),'Shell menü yönlendirme sahibi değişmemeli.');
+assert(!ui.includes('function renderMenuList(')&&!ui.includes('const MENU_GROUPS=['),'Eski ana menü kataloğu/renderlayıcısı geri dönmemeli.');
 assert(!ui.includes('db.collection(')&&!ui.includes('firebase.firestore('),'Shell UI doğrudan Firestore kullanmamalı.');
-console.log('Ayarlar menüsü tek giriş noktası + PDF İşlemleri tek menü girişi sözleşmesi başarılı.');
+console.log('Ayarlar tek giriş noktası + tek araç kataloğu sözleşmesi başarılı.');

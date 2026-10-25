@@ -32,7 +32,7 @@ const D={
   },
   sss:[
     {s:'Kılavuzdaki ekran görüntüleri gerçek mi?',c:'Evet. Görüntüler uygulamanın kendi ekranlarından alınmıştır. Yalnızca içindeki öğretmen, öğrenci, sınıf, telefon ve e-posta bilgileri **kurgusal örnek veridir**; gerçek kişilere ait hiçbir bilgi kullanılmamıştır.'},
-    {s:'Bir modülün rehberini neden göremiyorum?',c:'Kılavuz, menüde göremediğiniz bir modülün rehberini listelemez. Hangi modülleri göreceğinizi okul yönetimi belirler; erişim gerekiyorsa uygulama yöneticisine başvurun.'},
+    {s:'Bir modülün rehberini neden göremiyorum?',c:'Kılavuz, Araçlar sayfasında göremediğiniz bir modülün rehberini listelemez. Hangi modülleri göreceğinizi okul yönetimi belirler; erişim gerekiyorsa uygulama yöneticisine başvurun.'},
     {s:'Üst çubuktaki “?” düğmesi ne yapar?',c:'Açık olduğunuz sayfanın rehberini bir pencerede gösterir. Pencere açılırken sayfa yenilenmez; doldurduğunuz form ya da yaptığınız arama olduğu gibi kalır. Kapatınca kaldığınız yere dönersiniz.'},
     {s:'Ekran görüntüsündeki numaralar ne anlama geliyor?',c:'Her görselin altında aynı numaraları taşıyan bir açıklama listesi vardır. Görsele dokunarak büyütebilir, “İşlem adımları” bölümünde ilgili numaranın vurgulandığını görebilirsiniz.'},
     {s:'Web ve Android uygulaması aynı mı?',c:'Aynı uygulamanın iki kullanım biçimidir. Web sürümü tarayıcıdan açılır; Android sürümü telefona kurulur. Ayrıntı için “Uygulama Hakkında” sayfasına bakın.'}
@@ -71,7 +71,7 @@ const D={
       ozet:'Kılavuzda modül arayın, adım adım rehberleri izleyin; açık sayfanın rehberine üstteki “?” düğmesiyle ulaşın.',
       anahtar:'kılavuz yardım nasıl kullanılır soru işareti arama sss sorun giderme rehber pdf',
       ne:'Kullanım Kılavuzu, uygulamadaki modüllerin gerçek ekran görüntüleriyle hazırlanmış rehberlerini tek yerde toplar. Üst çubuktaki **?** düğmesi ise o an açık olan sayfanın rehberini, sayfadan ayrılmadan bir pencerede gösterir.',
-      yol:['Ayarlar','Kullanım Kılavuzu'],
+      yol:['Ben','Kullanım kılavuzu'],
       yolNot:'Her sayfada üst çubuktaki **?** düğmesine dokunarak da rehbere ulaşabilirsiniz.',
       rota:['dashboard','guide'],
       eslesme:['dashboard:guide'],
@@ -99,7 +99,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Kılavuzu açın',metin:'Menüden **Ayarlar › Kullanım Kılavuzu** sayfasını açın.',ekran:'kilavuz-sayfa',isaret:1},
+        {baslik:'Kılavuzu açın',metin:'Alt çubukta **Ben** sekmesini açıp **Kullanım kılavuzu**na dokunun.',ekran:'kilavuz-sayfa',isaret:1},
         {baslik:'Rehberi bulun',metin:'Arama kutusuna bir sözcük yazın ya da bir **kategori** düğmesine dokunun.',ekran:'kilavuz-sayfa',isaret:2},
         {baslik:'Rehberi açın',metin:'Karttaki **Rehberi Aç** düğmesine dokunun. Ekran görüntülerindeki numaraları altındaki açıklamalarla eşleştirin; görsele dokunarak büyütebilirsiniz.',ekran:'kilavuz-sayfa',isaret:4},
         {baslik:'Bulunduğunuz sayfanın rehberini açın',metin:'Herhangi bir modül sayfasındayken üst çubuktaki **?** düğmesine dokunun. Rehber, sayfanın üzerinde bir pencerede açılır.',ekran:'kilavuz-pencere',isaret:1},
@@ -107,9 +107,9 @@ const D={
       ],
       kayit:'Kılavuz salt okunur içeriktir; hiçbir kayıt oluşturmaz ya da değiştirmez. Rehber penceresi açılırken ve kapanırken arkadaki sayfa yenilenmez.',
       uyarilar:[
-        'Rehberlerin listesi yetkinize göre değişir. Menüde göremediğiniz modülün rehberi listelenmez; rehber penceresindeki “… sayfasına git” düğmesi de yalnızca erişiminiz olan sayfalar için görünür.',
+        'Rehberlerin listesi yetkinize göre değişir. Araçlar sayfasında göremediğiniz modülün rehberi listelenmez; rehber penceresindeki “… sayfasına git” düğmesi de yalnızca erişiminiz olan sayfalar için görünür.',
         'Ekran görüntüleri kurgusal örnek verilerle hazırlanmıştır; sizin ekranınızdaki kayıtlar farklı olacaktır.',
-        'Menü ya da tam ekran önizleme gibi üst çubuğu kaplayan ekranlarda **?** düğmesi görünmez; önce o ekranı kapatın.'
+        'Tam ekran önizleme gibi üst çubuğu kaplayan ekranlarda **?** düğmesi görünmez; önce o ekranı kapatın.'
       ],
       sorunlar:[
         {s:'“Bu ekran için rehber bulunamadı” yazısını görüyorum.',c:'O sayfa için ayrıntılı bir rehber henüz hazırlanmamıştır. Pencerenin altındaki **Tüm Kılavuzu Aç** düğmesiyle diğer rehberlere ulaşabilirsiniz.'},
@@ -119,12 +119,12 @@ const D={
     },
     {
       id:'giris-gezinme',kategori:'baslangic',ikon:'🧭',baslik:'Giriş ve gezinme',
-      ozet:'Kullanıcı adı ve şifrenizle giriş yapın; üst çubuk, alt çubuk ve menüyle modüllere ulaşın.',
-      anahtar:'giriş şifre kullanıcı adı menü alt çubuk üst çubuk bildirim profil çıkış tema arama hızlı not geri',
-      ne:'Uygulamanın giriş ekranı ve her sayfada aynı kalan gezinme düzenidir: **üst çubuk** (ana sayfa, yardım, tema, bildirim, profil), **alt çubuk** (Ana Sayfa, Profilim, Menü, Arama, Hızlı Not) ve modüllerin gruplandığı **Menü**.',
+      ozet:'Kullanıcı adı ve şifrenizle giriş yapın; alt çubuktaki beş sekmeyle ve Araçlar sayfasıyla modüllere ulaşın.',
+      anahtar:'giriş şifre kullanıcı adı araçlar yönetim sekme alt çubuk üst çubuk bildirim arama profil ben çıkış tema geri öğretmen idareci rol arayüz',
+      ne:'Uygulamanın giriş ekranı ve her sayfada aynı kalan gezinme düzenidir: **üst çubuk** (okul logosu, arama, yardım, bildirimler) ve **beş sekmeli alt çubuk**. Arayüz unvanınıza göre seçilir: öğretmenler **Bugün · Programım · Araçlar · Okul · Ben**, idareciler **Özet · Okul · Yönetim · İletişim · Ben** sekmelerini görür. Tüm araçlar ortadaki **Araçlar / Yönetim** düğmesinin altındadır.',
       yolNot:'Giriş ekranı, açık bir oturum yoksa uygulama her açıldığında görünür. Hesabınızı okul yönetimi oluşturur; kendiniz hesap açamazsınız.',
       rota:['dashboard',''],
-      eslesme:['view:menu-list','view:search','view:profile','view:profile-detail','view:upcoming'],
+      eslesme:['view:nav','view:search','view:profile','view:profile-detail'],
       herkes:true,
       ekranlar:[
         {
@@ -137,47 +137,45 @@ const D={
           ]
         },
         {
-          id:'gezinme-ust',baslik:'Üst çubuk ve alt çubuk',dosya:'gezinme-ust.webp',alt:'Ana sayfa: üstte logo, yardım, tema, bildirim ve profil düğmeleri; altta gezinme çubuğu',baglam:'.kh-live-card',
+          id:'gezinme-ust',baslik:'Üst çubuk ve alt çubuk',dosya:'gezinme-ust.webp',alt:'İlk sekme: üstte logo, arama, yardım ve bildirim düğmeleri; altta beş sekmeli gezinme çubuğu',baglam:'.ka-today-hero',
           cekim:{rota:['dashboard','']},
           isaretler:[
-            {n:1,baslik:'Okul logosu',aciklama:'Hangi sayfada olursanız olun Ana Sayfa’ya döndürür.',sec:'.ka-app-header [data-ka-home-trigger]'},
-            {n:2,baslik:'Nasıl kullanılır?',aciklama:'Açık sayfanın rehberini pencerede gösterir.',sec:'[data-ka-guide-help]'},
-            {n:3,baslik:'Tema',aciklama:'Açık ve koyu tema arasında geçiş yapar.',sec:'[data-ka-theme-toggle]'},
+            {n:1,baslik:'Okul logosu',aciklama:'Hangi sayfada olursanız olun ilk sekmeye (Bugün / Özet) döndürür.',sec:'.ka-app-header [data-ka-home-trigger]'},
+            {n:2,baslik:'Arama',aciklama:'Araç, sayfa ve kişi arar. Sonuca dokunmak sayfayı açar.',sec:'[data-ka-header-search]'},
+            {n:3,baslik:'Nasıl kullanılır?',aciklama:'Açık olan sayfanın kılavuzunu gerçek ekran görüntüleriyle açar. Sayfanın kılavuzu yoksa tüm kılavuzu listeler.',sec:'[data-ka-guide-help]'},
             {n:4,baslik:'Bildirimler',aciklama:'Yeni duyuruları ve yaklaşan işleri (hatırlatıcı, sınav) listeler. Üzerindeki sayı bekleyen bildirim sayısıdır.',sec:'[data-ka-header-notification]'},
-            {n:5,baslik:'Profil',aciklama:'Profilim, Ayarlar, tema ve Çıkış Yap seçeneklerini açar.',sec:'[data-ka-header-profile]'},
-            {n:6,baslik:'Alt çubuk',aciklama:'Ana Sayfa, Profilim, Menü (ortadaki düğme), Arama ve Hızlı Not kısayolları.',sec:'.ka-bottom-nav'}
+            {n:5,baslik:'Alt çubuk',aciklama:'Beş sekme: Bugün, Programım, Araçlar, Okul ve Ben (idareciler için Özet, Okul, Yönetim, İletişim, Ben).',sec:'.ka-bottom-nav'},
+            {n:6,baslik:'Araçlar',aciklama:'Ortadaki yükseltilmiş düğme tüm araçları gruplar halinde açar.',sec:'.ka-bottom-menu'}
           ]
         },
         {
-          id:'gezinme-menu',baslik:'Menü',dosya:'gezinme-menu.webp',alt:'Tam ekran menü: modül grupları kart olarak listelenir',
-          cekim:{rota:['dashboard',''],adimlar:[['tikla','[data-ka-shell-action="menu"]'],['bekle',700]]},
+          id:'gezinme-menu',baslik:'Araçlar',dosya:'gezinme-menu.webp',alt:'Araçlar sayfası: arama kutusu ve araç grupları',
+          cekim:{rota:['dashboard',''],adimlar:[['tikla','.ka-bottom-menu'],['bekle',700]]},
           isaretler:[
-            {n:1,baslik:'Düzenle',aciklama:'Menü kartlarını düzenleme moduna alır. Bu düğme yalnızca menüyü düzenleme yetkisi olan kullanıcılarda görünür.',sec:'[data-ka-menu-edit]'},
-            {n:2,baslik:'Kapat',aciklama:'Menüyü kapatır.',sec:'[data-ka-menu-close]'},
-            {n:3,baslik:'Modül grubu',aciklama:'Karta dokunmak gruptaki sayfaları listeler. Köşedeki sayı, grupta kaç sayfa olduğunu gösterir.',sec:'[data-ka-menu-group="people"]'}
+            {n:1,baslik:'Araç ara',aciklama:'Yazdığınız sözcüğe göre araçları listeler; grup aramanıza gerek kalmaz.',sec:'[data-nav-search]'},
+            {n:2,baslik:'Araç grubu',aciklama:'Gruba dokunmak içindeki araçları listeler. Kartın altındaki sayı gruptaki araç sayısıdır.',sec:'[data-nav-page-go^="tools:"]'}
           ]
         },
         {
-          id:'gezinme-grup',baslik:'Grup içindeki sayfalar',dosya:'gezinme-grup.webp',alt:'Öğretmen ve Öğrenciler grubunun sayfa listesi',baglam:'[data-ka-menu-key]',
-          cekim:{rota:['dashboard',''],adimlar:[['tikla','[data-ka-shell-action="menu"]'],['bekle',600],['tikla','[data-ka-menu-group="people"]'],['bekle',700]]},
+          id:'gezinme-grup',baslik:'Grup içindeki araçlar',dosya:'gezinme-grup.webp',alt:'Bir araç grubunun araç listesi; her satırın sağında yıldız düğmesi var',baglam:'.ka-nav-rowcard',
+          cekim:{rota:['dashboard',''],adimlar:[['tikla','.ka-bottom-menu'],['bekle',600],['tikla','[data-nav-page-go^="tools:"]'],['bekle',700]]},
           isaretler:[
-            {n:1,baslik:'Geri',aciklama:'Menüdeki gruplara döner.',sec:'[data-ka-menu-back]'},
-            {n:2,baslik:'Kapat',aciklama:'Menüyü tamamen kapatır.',sec:'[data-ka-menu-close]'},
-            {n:3,baslik:'Sayfa',aciklama:'Dokunduğunuz sayfa açılır. Yalnızca erişim yetkiniz olan sayfalar listelenir.',sec:'[data-personel-menu-row]'}
+            {n:1,baslik:'Araç',aciklama:'Dokunduğunuz araç açılır. Yalnızca erişim yetkiniz olan araçlar listelenir.',sec:'.ka-nav-row__main'},
+            {n:2,baslik:'Yıldız',aciklama:'Aracı **Sık kullandıklarım** bölümüne ekler ya da çıkarır.',sec:'.ka-nav-star'}
           ]
         }
       ],
       adimlar:[
         {baslik:'Giriş yapın',metin:'**Kullanıcı Adı** ve **Şifre** alanlarını doldurup **Giriş Yap**a dokunun.',ekran:'giris-ekran',isaret:3},
-        {baslik:'Ana sayfayı tanıyın',metin:'Girişten sonra Ana Sayfa açılır. Üst çubuktan tema, bildirim ve profil işlemlerine; alt çubuktan temel sayfalara ulaşırsınız.',ekran:'gezinme-ust',isaret:6},
-        {baslik:'Menüyü açın',metin:'Alt çubuğun ortasındaki **Menü** düğmesine dokunun ve bir modül grubu seçin.',ekran:'gezinme-menu',isaret:3},
-        {baslik:'Sayfayı seçin',metin:'Listeden gitmek istediğiniz sayfaya dokunun. Önceki sayfaya dönmek için sayfanın üstündeki **Geri** düğmesini kullanın.',ekran:'gezinme-grup',isaret:3},
-        {baslik:'Oturumu kapatın',metin:'Üst çubukta **profil** düğmesine, ardından **Çıkış Yap**a dokunun.',ekran:'gezinme-ust',isaret:5}
+        {baslik:'Ana sayfayı tanıyın',metin:'Girişten sonra ilk sekme açılır. Üst çubuktan arama, yardım ve bildirimlere, alt çubuktan beş sekmeye ulaşırsınız.',ekran:'gezinme-ust',isaret:5},
+        {baslik:'Araçlar sayfasını açın',metin:'Alt çubuğun ortasındaki **Araçlar** (idarecilerde **Yönetim**) düğmesine dokunun, yukarıdan arayın ya da bir grup seçin.',ekran:'gezinme-menu',isaret:2},
+        {baslik:'Aracı seçin',metin:'Listeden gitmek istediğiniz araca dokunun. Önceki sayfaya dönmek için sayfanın üstündeki **Geri** düğmesini kullanın. Sık kullandığınız araçların yanındaki **yıldız**a dokunursanız Araçlar sayfasının başına eklenir.',ekran:'gezinme-grup',isaret:2},
+        {baslik:'Oturumu kapatın',metin:'Alt çubukta **Ben** sekmesine, ardından **Çıkış yap**a dokunun. Tema, profil fotoğrafı ve ayarlar da aynı sayfadadır.'}
       ],
       kayit:'Giriş işlemi yalnızca kullanıcı adınızı ve şifrenizi doğrular; bu ekranda kayıt oluşturulmaz. Çıkış yaptığınızda oturumunuz kapanır ve uygulamayı tekrar kullanmak için yeniden giriş yapmanız gerekir.',
       uyarilar:[
         'Şifrenizi kimseyle paylaşmayın. Ortak kullanılan bir cihazdaysanız işiniz bitince **Çıkış Yap**ın.',
-        'Menüde ve alt çubukta yalnızca hesabınızın erişim yetkisi olan sayfalar görünür. Bir sayfayı göremiyorsanız okul yönetimine başvurun.',
+        'Araçlar sayfasında ve alt çubukta yalnızca hesabınızın erişim yetkisi olan sayfalar görünür. Bir sayfayı göremiyorsanız okul yönetimine başvurun.',
         'Android’de cihazın geri tuşu önce açık olan pencereyi kapatır; pencere yoksa önceki sayfaya döner.'
       ],
       sorunlar:[
@@ -189,53 +187,46 @@ const D={
       iliskili:['ana-ekran','kilavuz']
     },
     {
-      id:'ana-ekran',kategori:'baslangic',ikon:'🏠',baslik:'Ana Sayfa',
-      ozet:'Canlı ders durumunu, duyuruları, okul özetini ve günün nöbet ile ders bilgilerini tek ekranda görün.',
-      anahtar:'ana sayfa dashboard canlı ders zil kalan süre hava durumu duyuru okul özeti hızlı işlemler nöbetçi takvim notlarım',
-      ne:'Ana Sayfa günün özetidir. Kartlara dokunarak ilgili modüle geçebilirsiniz; hangi kartların ve kısayolların göründüğü yetkinize bağlıdır.',
-      yol:['Ana Sayfa'],
-      yolNot:'Alt çubuktaki **Ana Sayfa** düğmesi ya da üst çubuktaki okul logosu sizi her yerden Ana Sayfa’ya getirir.',
+      id:'ana-ekran',kategori:'baslangic',ikon:'🏠',baslik:'Bugün ve Özet',
+      ozet:'Canlı ders sayacını, bugünkü derslerinizi, nöbetleri, yapılacakları ve duyuruları tek ekranda görün.',
+      anahtar:'bugün özet ana sayfa canlı ders zil kalan süre duyuru nöbetçi yapılacaklar yaklaşanlar hızlı araçlar izinli şu an kim nerede',
+      ne:'İlk sekme günün özetidir. Öğretmenlerde **Bugün**: zil sayacı, bugünkü dersleriniz, nöbetiniz, yapılacaklarınız ve hızlı araçlar. İdarecilerde **Özet**: okulun bugünkü durumu — görevdeki öğretmen sayısı, nöbetçiler, izinliler, şu an kim nerede ve yaklaşan işler. Kartlara dokunarak ilgili araca geçebilirsiniz.',
+      yol:['Bugün / Özet'],
+      yolNot:'Alt çubuktaki ilk sekme ya da üst çubuktaki okul logosu sizi her yerden bu sayfaya getirir.',
       rota:['dashboard',''],
       eslesme:['dashboard:'],
       herkes:true,
       ekranlar:[
         {
-          id:'ana-ekran-ust',baslik:'Karşılama, canlı ders ve duyuru',dosya:'ana-ekran-ust.webp',alt:'Ana sayfanın üst bölümü: karşılama, canlı ders kartı, hava durumu ve duyuru',baglam:'.kh-live-card',
+          id:'ana-ekran-ust',baslik:'Zil sayacı ve göstergeler',dosya:'ana-ekran-ust.webp',alt:'İlk sekmenin üst bölümü (idareci Özet görünümü): zil sayacı ve okul göstergeleri',baglam:'.ka-today-hero',
           cekim:{rota:['dashboard','']},
           isaretler:[
-            {n:1,baslik:'Canlı ders kartı',aciklama:'Şu an kaçıncı derste olunduğunu, kalan süreyi, ders başlangıç ve bitiş saatini ve sıradaki zil saatini gösterir. Kart, zil saatlerine göre canlı güncellenir.',sec:'.kh-bell-modern'},
-            {n:2,baslik:'Hava durumu',aciklama:'Hava durumu bilgisi internet bağlantısıyla alınır; bağlantı yoksa “Veri yükleniyor” görünebilir. Karta dokunmak ayrıntıları açar.',sec:'[data-dash-weather]'}
+            {n:1,baslik:'Zil sayacı',aciklama:'Şu an kaçıncı derste olunduğunu, kalan süreyi ve sıradaki dersi gösterir. Zil saatlerine göre canlı güncellenir; tatilde okulun açılışına kalan günü gösterir.',sec:'.ka-today-hero'},
+            {n:2,baslik:'Göstergeler',aciklama:'İdarecilerde görevdeki öğretmen, bugünkü nöbetçi ve yaklaşan iş sayıları. Karta dokunmak ilgili listeyi açar. Öğretmenlerde bu bölümün yerinde **Bugünkü derslerim** listesi bulunur; derse dokunmak yıllık planı açar.',sec:'.ka-today-kpis'}
           ]
         },
         {
-          id:'ana-ekran-ozet',baslik:'Okul özeti ve hızlı işlemler',dosya:'ana-ekran-ozet.webp',alt:'Ana sayfa: okul özeti kartları ve hızlı işlem düğmeleri',
-          cekim:{rota:['dashboard',''],adimlar:[['goster','.ka-school-summary-card']]},
+          id:'ana-ekran-hizli',baslik:'Hızlı araçlar',dosya:'ana-ekran-hizli.webp',alt:'İlk sekme: Hızlı araçlar bölümünde sık kullanılan işlem düğmeleri',
+          cekim:{rota:['dashboard',''],adimlar:[['goster','.ka-today-quick']]},
           isaretler:[
-            {n:1,baslik:'Okul özeti',aciklama:'Öğretmen, öğrenci, sınıf ve servis sayıları. Karta dokunmak ilgili listeyi açar.',sec:'.ka-school-summary-card'},
-          ]
-        },
-        {
-          id:'ana-ekran-hizli',baslik:'Hızlı işlemler',dosya:'ana-ekran-hizli.webp',alt:'Ana sayfa: Sınav Ekle, Not Ekle, Mesaj Gönder ve Duyurular hızlı işlem düğmeleri',
-          cekim:{rota:['dashboard',''],adimlar:[['goster','.kh-quick']]},
-          isaretler:[
-            {n:1,baslik:'Hızlı işlemler',aciklama:'Sık kullanılan işlemlere kısayol (Sınav Ekle, Not Ekle, Mesaj Gönder, Duyurular). Hesabınızın yetkisi olmayan kısayollar görünmez.',sec:'.kh-quick'}
+            {n:1,baslik:'Hızlı araçlar',aciklama:'Sık kullanılan işlemlere kısayol (öğretmenlerde yoklama, tutanak, yıllık plan ve hızlı not; idarecilerde duyuru, nöbet, tutanak ve evrak). Hesabınızın yetkisi olmayan kısayollar görünmez.',sec:'.ka-today-quick'}
           ]
         }
       ],
       adimlar:[
-        {baslik:'Günün durumuna bakın',metin:'Canlı ders kartı hangi derste olduğunuzu ve dersin bitmesine ne kadar kaldığını gösterir.',ekran:'ana-ekran-ust',isaret:1},
-        {baslik:'Duyuruları okuyun',metin:'Duyuru kartındaki **Okudum** kutusunu işaretleyerek duyuruyu okuduğunuzu bildirin; **Duyurular** sayfasından tüm duyurulara ulaşın.'},
-        {baslik:'Okul özetine dokunun',metin:'Öğretmen, öğrenci, sınıf ya da servis kartına dokunarak ilgili listeyi açın.',ekran:'ana-ekran-ozet',isaret:1},
-        {baslik:'Hızlı işlemleri kullanın',metin:'**Sınav Ekle**, **Mesaj Gönder** gibi düğmeler sizi doğrudan ilgili sayfaya götürür.',ekran:'ana-ekran-hizli',isaret:1},
-        {baslik:'Aşağı kaydırın',metin:'Ana Sayfa’nın devamında bugünün nöbetçileri, bugünkü dersler, takvim, haftanın nöbet programı ve notlarınız yer alır; her bölümün yanındaki **Tümü** / **Program** bağlantısı ilgili sayfayı açar.'}
+        {baslik:'Günün durumuna bakın',metin:'Zil sayacı hangi derste olduğunuzu ve dersin bitmesine ne kadar kaldığını gösterir. İdarecilerde altındaki göstergeler okulun bugünkü durumunu özetler.',ekran:'ana-ekran-ust',isaret:1},
+        {baslik:'Derslerinizi görün',metin:'**Bugünkü derslerim** listesinde dersleriniz saat sırasıyla durur; bir derse dokunarak yıllık planı açın. **Programım** bağlantısı haftalık programınıza götürür.'},
+        {baslik:'Yapılacaklara göz atın',metin:'**Yapılacaklar** hatırlatıcılarınızı, **Yaklaşanlar** ise önümüzdeki günlerin sınav ve takvim kayıtlarını listeler.'},
+        {baslik:'Hızlı araçları kullanın',metin:'**Hızlı araçlar** bölümündeki düğmeler sizi doğrudan ilgili sayfaya götürür.',ekran:'ana-ekran-hizli',isaret:1},
+        {baslik:'Duyuruları okuyun',metin:'Duyuru kartındaki **Okudum** kutusunu işaretleyerek duyuruyu okuduğunuzu bildirin; **Duyurular** sayfasından tüm duyurulara ulaşın.'}
       ],
       kayit:'Ana Sayfa bir görüntüleme ekranıdır. Duyuru kartındaki **Okudum** kutusu dışında kayıt oluşturmaz; kartlara dokunmak yalnızca ilgili sayfayı açar.',
       uyarilar:[
-        'Canlı ders kartı **Ayarlar › Ders Saatleri** bölümündeki zil saatlerine dayanır; karta dokunmak (yetkiniz varsa) bu ayara götürür.',
-        'Kartlardaki sayılar kayıtlı verilerden hesaplanır. Bir sayıya dokunduğunuzda açılan listeden ayrıntıyı doğrulayabilirsiniz.'
+        'Zil sayacı **Okul bilgileri** içindeki ders saatlerine dayanır; saatler eksikse sayaç “Ders saatleri yükleniyor” der.',
+        'Özet sayıları kayıtlı verilerden hesaplanır. Bir karta dokunduğunuzda açılan listeden ayrıntıyı doğrulayabilirsiniz.'
       ],
       sorunlar:[
-        {s:'Hızlı işlem düğmelerinden biri görünmüyor.',c:'Düğmeler hesabınızın yetkisine göre gösterilir. Yetkiniz olmayan bir işlemin kısayolu yoktur.'}
+        {s:'Hızlı araç düğmelerinden biri görünmüyor.',c:'Düğmeler hesabınızın yetkisine göre gösterilir. Yetkiniz olmayan bir işlemin kısayolu yoktur.'}
       ],
       iliskili:['giris-gezinme','duyurular','nobet-programi','ders-programi']
     },
@@ -244,7 +235,7 @@ const D={
       ozet:'Öğretmen kayıtlarını görüntüleyin, ekleyin, düzenleyin; ders programı, nöbet ve görevlerini tek profilde görün.',
       anahtar:'öğretmen personel branş excel dışa aktar profil telefon sınıf öğretmeni ekle düzenle whatsapp',
       ne:'Okuldaki öğretmenlerin kayıtlarını tutar. Her öğretmen için **ders programı, nöbet, görevler ve belgeler** tek profilde toplanır. Diğer modüller (ders programı, nöbet, raporlar) öğretmenleri buradaki kayıttan alır.',
-      yol:['Öğretmen & Öğrenciler','Öğretmenler'],
+      yol:['Okul','Öğretmenler'],
       yolNot:'Öğretmen ekleme ve düzenleme düğmeleri yalnızca bu işlem için yetkisi olan kullanıcılara görünür. Yetkiniz yoksa listeyi ve profilleri görüntüleyebilirsiniz.',
       rota:['people','teachers'],
       eslesme:['people:teachers'],
@@ -296,7 +287,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Öğretmenler sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Öğretmenler** sayfasını açın. Kayıtlı öğretmenler kartlar halinde listelenir.',ekran:'ogretmenler-liste',isaret:2},
+        {baslik:'Öğretmenler sayfasını açın',metin:'Alt çubukta **Okul** sekmesini açıp **Öğretmenler**e dokunun. Kayıtlı öğretmenler kartlar halinde listelenir.',ekran:'ogretmenler-liste',isaret:2},
         {baslik:'Öğretmeni bulun',metin:'Arama kutusuna ad, branş veya telefon yazın; ya da bir **branş** düğmesine dokunarak listeyi daraltın.',ekran:'ogretmenler-liste',isaret:4},
         {baslik:'Yeni öğretmen ekleyin',metin:'**Öğretmen** düğmesine dokunun. Formda en az **Ad** ve **Soyad** alanlarını doldurun.',ekran:'ogretmenler-liste',isaret:1},
         {baslik:'Bilgileri girin',metin:'Ünvan, branş, telefon ve e-posta gibi diğer alanlar isteğe bağlıdır. Sınıf öğretmeniyse formun altındaki **Sınıf öğretmenliği** alanından sınıfı seçin.',ekran:'ogretmenler-form-alt',isaret:1},
@@ -322,7 +313,7 @@ const D={
       ozet:'Öğrenci kayıtlarını seviye, sınıf ve cinsiyete göre süzün; öğrenci ekleyin, düzenleyin ve profilini açın.',
       anahtar:'öğrenci veli numara sınıf seviye cinsiyet ekle düzenle sil whatsapp rapor sınav devamsızlık profil',
       ne:'Okuldaki öğrencilerin ve velilerinin kayıtlarını tutar. Öğrenci profilinde **genel bilgiler, veli, sınavlar ve devamsızlık** sekmeleri bulunur.',
-      yol:['Öğretmen & Öğrenciler','Öğrenciler'],
+      yol:['Okul','Kişiler','Öğrenciler'],
       yolNot:'Öğrenci ekleme, düzenleme ve silme düğmeleri yalnızca bu işlem için yetkisi olan kullanıcılara görünür.',
       rota:['people','students'],
       eslesme:['people:students'],
@@ -374,7 +365,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Öğrenciler sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Öğrenciler** sayfasını açın.',ekran:'ogrenciler-liste',isaret:2},
+        {baslik:'Öğrenciler sayfasını açın',metin:'İdarecilerde **Okul › Kişiler › Öğrenciler**, öğretmenlerde **Araçlar › Sınıfım › Öğrenciler** sayfasını açın.',ekran:'ogrenciler-liste',isaret:2},
         {baslik:'Listeyi daraltın',metin:'Önce **seviye**, ardından çıkan **sınıf** düğmelerinden birine dokunun. Cinsiyet filtresini de kullanabilirsiniz.',ekran:'ogrenciler-liste',isaret:3},
         {baslik:'Öğrenciyi arayın',metin:'Arama kutusuna öğrenci adı, veli adı, numara ya da sınıf yazın.',ekran:'ogrenciler-liste',isaret:5},
         {baslik:'Yeni öğrenci ekleyin',metin:'**Öğrenci** düğmesine dokunun, **Sınıf**ı seçin ve **Öğrenci adı soyadı** alanını doldurun.',ekran:'ogrenciler-liste',isaret:1},
@@ -401,7 +392,7 @@ const D={
       ozet:'Sınıfları ve şubeleri yönetin; sınıf öğretmenini atayın, öğrenci listesini Excel ya da e-Okul dosyasından yükleyin.',
       anahtar:'sınıf şube derslik sınıf öğretmeni excel e-okul içe aktar oturma planı öğrenci listesi ekle düzenle sil',
       ne:'Okuldaki sınıfları ve şubeleri tutar. Her sınıfın detayında **öğrenciler, oturma planı, dersler ve bilgiler** sekmeleri bulunur. Öğrenci listesi bu sayfadan toplu yüklenebilir.',
-      yol:['Öğretmen & Öğrenciler','Sınıflar'],
+      yol:['Okul','Kişiler','Sınıflar'],
       yolNot:'Sınıf ekleme, düzenleme ve içe aktarma düğmeleri yalnızca yetkisi olan kullanıcılara görünür.',
       rota:['people','classes'],
       eslesme:['people:classes'],
@@ -445,7 +436,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Sınıflar sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Sınıflar** sayfasını açın.',ekran:'siniflar-liste',isaret:3},
+        {baslik:'Sınıflar sayfasını açın',metin:'İdarecilerde **Okul › Kişiler › Sınıflar**, öğretmenlerde **Araçlar › Sınıfım › Sınıflar** sayfasını açın.',ekran:'siniflar-liste',isaret:3},
         {baslik:'Sınıf ekleyin',metin:'**Sınıf Ekle** düğmesine dokunun, **Sınıf adı**nı (ör. 7-A) yazın, seviyeyi ve sınıf öğretmenini seçin.',ekran:'siniflar-form',isaret:1},
         {baslik:'Kaydedin',metin:'**Kaydet**e dokunun. “Sınıf kaydedildi.” bildirimi çıkar ve sınıf listede görünür.',ekran:'siniflar-form',isaret:5},
         {baslik:'Sınıfı açın',metin:'Listeden bir sınıf kartına dokunarak sınıfın detayını açın.',ekran:'siniflar-liste',isaret:7},
@@ -471,7 +462,7 @@ const D={
       ozet:'Yazılı sınav takvimini oluşturun; sınıf, ders, tarih ve öğretmen bilgisini tek kayıtta tutun.',
       anahtar:'yazılı sınav takvim 1. yazılı 2. yazılı senaryo yayınevi dönem sınıf ders tarih öğretmen sınav kaçıncı ders',
       ne:'Okuldaki yazılı sınavları **sınıf, ders, dönem, tarih, ders saati ve öğretmen** bilgisiyle kaydeder. Sayfanın üstündeki üç sayaç toplam sınavı, **7 gün içindekileri** ve **bugünküleri** gösterir. Sınavlar tarihe göre sıralanır; en ileri tarihli sınav listenin başındadır.',
-      yol:['Öğretmen & Öğrenciler','Yazılı Sınavlar'],
+      yol:['Yönetim','Sınav ve yoklama','Yazılı Sınavlar'],
       yolNot:'Yazılı Ekle ve Düzenle düğmeleri yalnızca sınav düzenleme yetkisi olan hesaplarda görünür. Bir sınavı yönetici, kaydı ekleyen kişi ya da kayıtta öğretmen olarak seçilen öğretmen düzenleyebilir.',
       rota:['academic','written'],
       eslesme:['academic:written'],
@@ -509,7 +500,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Yazılı Sınavlar sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Yazılı Sınavlar** sayfasını açın.',ekran:'yazili-liste',isaret:3},
+        {baslik:'Yazılı Sınavlar sayfasını açın',metin:'İdarecilerde **Yönetim › Sınav ve yoklama › Yazılı Sınavlar**, öğretmenlerde **Araçlar › Sınav ve not › Yazılı Sınavlar** sayfasını açın.',ekran:'yazili-liste',isaret:3},
         {baslik:'Sınavı bulun',metin:'Arama kutusuna ders, sınıf ya da tarih yazın. Kartın başlığında sınav gününe kaç gün kaldığı görünür.',ekran:'yazili-liste',isaret:1},
         {baslik:'Yeni sınav ekleyin',metin:'**Yazılı Ekle**ye dokunun. **Sınıf(lar)** bölümünden bir ya da daha fazla sınıf işaretleyin.',ekran:'yazili-form',isaret:1},
         {baslik:'Dönem, sıra ve dersi seçin',metin:'**Dönem** ve **Yazılı Sırası**nı seçin, ardından **Ders**i ve **Öğretmen**i belirleyin.',ekran:'yazili-form',isaret:3},
@@ -535,7 +526,7 @@ const D={
       ozet:'Deneme sınavı takvimini, oturum saatlerini ve otomatik canlı sayacı yönetin.',
       anahtar:'deneme sınavı sayaç geri sayım oturum sözel sayısal tek oturum iki oturum süre başlama saati canlı kalan süre',
       ne:'Deneme sınavlarını **tarih, oturum türü, başlama saati, süre ve sınıflar** ile kaydeder. Sınav gününde başlama saati geldiğinde sayaç **kendiliğinden başlar**. Bir sınav kartına dokunarak tam ekran sayacı açabilir; kalan süreyi, aktif oturumu ve oturum takvimini izleyebilirsiniz.',
-      yol:['Öğretmen & Öğrenciler','Deneme Sınavları'],
+      yol:['Yönetim','Sınav ve yoklama','Deneme Sınavları'],
       yolNot:'Deneme Sınavı Ekle ve Düzenle düğmeleri sınav düzenleme yetkisi olan hesaplarda görünür. Bir denemeyi yalnızca yönetici ya da kaydı ekleyen kişi düzenleyebilir.',
       rota:['academic','trial'],
       eslesme:['academic:trial'],
@@ -601,7 +592,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Deneme Sınavları sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Deneme Sınavları** sayfasını açın.',ekran:'deneme-liste',isaret:2},
+        {baslik:'Deneme Sınavları sayfasını açın',metin:'İdarecilerde **Yönetim › Sınav ve yoklama › Deneme Sınavları**, öğretmenlerde **Araçlar › Sınav ve not › Deneme Sınavları** sayfasını açın.',ekran:'deneme-liste',isaret:2},
         {baslik:'Yeni deneme ekleyin',metin:'**Deneme Sınavı Ekle**ye dokunun. **Deneme Sınavı Adı**nı yazın (ör. “3. Deneme Sınavı”) ve **Tarih**i seçin.',ekran:'deneme-form',isaret:1},
         {baslik:'Oturum türünü seçin',metin:'**Tek Oturum** için başlama saatini ve süreyi yazın. **İki Oturum** için sözel oturumun başlama saatini ve süresini, arada kaç dakika ara verileceğini ve sayısal oturumun süresini yazın. Bitiş saatleri kendiliğinden hesaplanır.',ekran:'deneme-form-iki',isaret:1},
         {baslik:'Sınıfları işaretleyin ve kaydedin',metin:'Formu aşağı kaydırın, denemeyi yapacak **sınıfları** işaretleyin, isterseniz not yazın ve **Kaydet**e dokunun.',ekran:'deneme-form-alt',isaret:4},
@@ -626,7 +617,7 @@ const D={
       ozet:'Sınıf ve tarih seçin; Var, Yok, Geç ya da İzinli işaretleyip yoklamayı tek seferde kaydedin.',
       anahtar:'yoklama devamsızlık yok geç izinli var sınıf yoklaması tüm sınıflar devamsızlar veli whatsapp günlük',
       ne:'Günlük sınıf yoklamasını alır. Öğrenciler varsayılan olarak **Var** gelir; yalnızca gelmeyen, geç gelen ya da izinli olanları işaretlemeniz yeterlidir. Yönetici ayrıca bütün sınıfların günlük özetini ve devamsız öğrencileri görür.',
-      yol:['Öğretmen & Öğrenciler','Öğrenci Yoklama'],
+      yol:['Yönetim','Sınav ve yoklama','Öğrenci Yoklama'],
       yolNot:'Yönetici dışındaki hesaplarda yalnızca ders programında dersi bulunan ya da sınıf öğretmeni olunan sınıflar listelenir. **Tüm Sınıflar** ve **Devamsızlar** sekmeleri yalnızca yönetici hesabında görünür.',
       rota:['tools','student-attendance'],
       eslesme:['tools:student-attendance'],
@@ -664,7 +655,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Öğrenci Yoklama sayfasını açın',metin:'Menüden **Öğretmen & Öğrenciler › Öğrenci Yoklama** sayfasını açın.',ekran:'yoklama-sinif',isaret:1},
+        {baslik:'Öğrenci Yoklama sayfasını açın',metin:'İdarecilerde **Yönetim › Sınav ve yoklama › Öğrenci Yoklama**, öğretmenlerde **Araçlar › Sınıfım › Öğrenci Yoklama** sayfasını açın.',ekran:'yoklama-sinif',isaret:1},
         {baslik:'Sınıfı ve tarihi seçin',metin:'**Sınıf** listesinden sınıfı, **Tarih** alanından günü seçin. Öğrenciler numara sırasına göre listelenir ve hepsi **Var** olarak başlar.',ekran:'yoklama-sinif',isaret:2},
         {baslik:'Gelmeyenleri işaretleyin',metin:'Gelmeyen öğrencinin **Yok**, geç gelenin **Geç**, izinli olanın **İzinli** düğmesine dokunun. Üstteki sayaçlar anında güncellenir.',ekran:'yoklama-sinif',isaret:6},
         {baslik:'Gerekirse sıfırlayın',metin:'**Tümünü Var** düğmesi bütün öğrencileri yeniden Var yapar.',ekran:'yoklama-sinif',isaret:5},
@@ -690,8 +681,8 @@ const D={
       ozet:'Sınıf listesinden çizelge oluşturun; ödev durumunu ya da artı/eksi ve puanları öğrenci bazında işaretleyin, PDF alın.',
       anahtar:'ödev takip çizelgesi not çizelgesi artı eksi puan sınıf öğrenci sütun ödev yaptı yapmadı toplam ortalama pdf kaydet çizelge oluştur',
       ne:'İki ayrı çizelge sayfası vardır. **Ödev Takip Çizelgesi**, bir sınıfın ödevlerini öğrenci bazında takip eder: her öğrenci için ödev yapıldı (**+**) ya da yapılmadı (**−**) olarak işaretlenir. **Not Çizelgesi** ise performansı **Artı / Eksi (+/−)** ya da **Sayısal Puan** olarak tutar; puan modunda satır toplamı ve ortalaması otomatik hesaplanır. Çizelge, oluşturulduğu anda seçilen sınıfın öğrenci listesiyle başlar. Her kullanıcı kendi çizelgelerini görür; yönetici hesabı tüm çizelgeleri görür.',
-      yol:['İdari İşler','Ödev Takip Çizelgesi  /  Not Çizelgesi'],
-      yolNot:'Her iki sayfa da **İdari İşler** menüsünde yer alır; bu menü, yönetim yetkisi bulunmayan öğretmen hesaplarında gösterilmez. Düzenleme düğmeleri yalnızca çizelgenin sahibinde ve yönetici hesabında görünür.',
+      yol:['Araçlar','Sınav ve not','Ödev Takip Çizelgesi  /  Not Çizelgesi'],
+      yolNot:'Her iki sayfa da öğretmen arayüzünde **Araçlar › Sınav ve not** altında yer alır; yetkisi olmayan hesapların Araçlar sayfasında görünmez. Düzenleme düğmeleri yalnızca çizelgenin sahibinde ve yönetici hesabında görünür.',
       rota:['tools','homework'],
       eslesme:['tools:homework','tools:grades'],
       ekranlar:[
@@ -785,7 +776,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Sayfayı açın',metin:'**İdari İşler** menüsünden **Ödev Takip Çizelgesi** ya da **Not Çizelgesi** sayfasını açın.',ekran:'cizelge-odev-liste',isaret:2},
+        {baslik:'Sayfayı açın',metin:'**Araçlar › Sınav ve not** altından **Ödev Takip Çizelgesi** ya da **Not Çizelgesi** sayfasını açın.',ekran:'cizelge-odev-liste',isaret:2},
         {baslik:'Yeni çizelge oluşturun',metin:'**+ Yeni Çizelge**ye dokunun, **Çizelge Adı**nı yazın, **Sınıf**ı seçin (Not Çizelgesi’nde **Hücre Modu**nu da seçin) ve **Oluştur**a dokunun.',ekran:'cizelge-odev-yeni',isaret:4},
         {baslik:'Ödev ya da sütun ekleyin',metin:'Açılan çalışma alanında **+ Yeni Ödev** (Not Çizelgesi’nde **+ Sütun**) düğmesine dokunun, başlığı yazın ve ekleyin.',ekran:'cizelge-odev-yeni-odev',isaret:4},
         {baslik:'Öğrencileri işaretleyin',metin:'Ödev çizelgesinde bir öğrencinin hücresine dokunarak **+** ya da **−** durumunu belirleyin; tüm sınıfa tek dokunuşla vermek için sütundaki **+**, **−** ya da **↺** araçlarını kullanın. Puan modunda kutulara puanı yazın.',ekran:'cizelge-odev-editor',isaret:7},
@@ -812,7 +803,7 @@ const D={
       ozet:'Sınıfların haftalık ders programını düzenleyin; Excel ile toplu yükleyin, A4 ve çarşaf rapor alın.',
       anahtar:'ders programı haftalık ders saati sınıf öğretmen çakışma excel şablon temizle çarşaf rapor yazdır',
       ne:'Her sınıf için haftalık ders programını (gün, ders saati, ders, öğretmen) tutar. Aynı öğretmenin aynı saatte iki sınıfa yazılmasını engeller; sınıf ve öğretmen programlarını rapor olarak çıkarır.',
-      yol:['Programlar','Ders Programı'],
+      yol:['Okul','Programlar','Ders Programı'],
       yolNot:'Ders ekleme, Excel ve temizleme düğmeleri yalnızca ders programı düzenleme yetkisi olanlarda görünür. Herkes programı görüntüleyebilir ve rapor alabilir.',
       rota:['academic','schedule'],
       eslesme:['academic:schedule'],
@@ -852,7 +843,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Ders Programı sayfasını açın',metin:'Menüden **Programlar › Ders Programı** sayfasını açın.',ekran:'ders-programi-ust',isaret:1},
+        {baslik:'Ders Programı sayfasını açın',metin:'Öğretmenlerde **Programım** sekmesinden, idarecilerde **Okul › Programlar** altından **Ders Programı**nı açın.',ekran:'ders-programi-ust',isaret:1},
         {baslik:'Sınıfı seçin',metin:'**Sınıf** listesinden programını düzenleyeceğiniz sınıfı seçin.',ekran:'ders-programi-ust',isaret:1},
         {baslik:'Günü seçin',metin:'Gün sekmelerinden günü seçin; o günün ders saatleri kartlar halinde listelenir.',ekran:'ders-programi-gun',isaret:1},
         {baslik:'Ders ekleyin',metin:'**Ders Ekle**ye ya da boş bir saatin kartına dokunun. Formda **Gün**, **Ders saati**, **Ders** ve **Öğretmen** alanlarını doldurun.',ekran:'ders-programi-form',isaret:3},
@@ -879,7 +870,7 @@ const D={
       ozet:'Aylık nöbet çizelgesini görüntüleyin, nöbet yerlerini tanımlayın, öğretmen atayın ve nöbet listesini yazdırın.',
       anahtar:'nöbet nöbetçi öğretmen nöbet yeri bahçe kat çizelge atama otomatik dağıtım amir tatil excel liste yazdır',
       ne:'Günlük nöbet yerlerine (bahçe, zemin kat gibi) nöbetçi öğretmen atar. Bugünün nöbetçilerini ve ayın tüm nöbet çizelgesini gösterir; çizelgeyi yazdırılabilir liste olarak hazırlar.',
-      yol:['Programlar','Nöbet Programı'],
+      yol:['Okul','Programlar','Nöbet Programı'],
       yolNot:'Nöbet yeri tanımlama, Excel ve otomatik dağıtım düğmeleri yalnızca nöbet düzenleme yetkisi olanlarda görünür.',
       rota:['management','duty'],
       eslesme:['management:duty'],
@@ -916,7 +907,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Nöbet Programı sayfasını açın',metin:'Menüden **Programlar › Nöbet Programı** sayfasını açın. Üstte bugünün nöbetçilerini görürsünüz.',ekran:'nobet-ust',isaret:5},
+        {baslik:'Nöbet Programı sayfasını açın',metin:'Öğretmenlerde **Programım** sekmesinden, idarecilerde **Okul › Programlar** altından **Nöbet Programı**nı açın. Üstte bugünün nöbetçilerini görürsünüz.',ekran:'nobet-ust',isaret:5},
         {baslik:'Nöbet yerlerini tanımlayın',metin:'**Nöbet Yerleri**ne dokunun ve **Yeni Nöbet Yeri** ile yerleri ekleyin (ör. Bahçe). Aynı adda ikinci bir yer eklenemez.',ekran:'nobet-ust',isaret:1},
         {baslik:'Ayı seçin',metin:'Çizelgenin üstündeki **Önceki Ay / Sonraki Ay** düğmeleriyle çalışacağınız ayı açın.',ekran:'nobet-cizelge',isaret:1},
         {baslik:'Nöbetçi atayın',metin:'Çizelgede ilgili gün ve yerin hücresine dokunun, **Nöbetçi Öğretmen** listesinden öğretmeni seçip **Kaydet**e dokunun.',ekran:'nobet-atama',isaret:2},
@@ -941,8 +932,8 @@ const D={
       ozet:'Günlük, haftalık ve aylık öğle yemeği menüsünü görüntüleyin; aylık menüyü düzenleyin, A4 çıktı alın.',
       anahtar:'yemek menüsü günlük haftalık aylık öğle yemeği menü yemek ekle denetim formu a4 çıktı yazdır',
       ne:'Okulun öğle yemeği menüsünü gösterir. **Günlük Menü** ve **Haftalık Menü** yalnızca görüntülemedir; menü girişi **Aylık Menü** sayfasında yapılır. Üç sayfadan da menünün **A4 çıktısını** alabilirsiniz. **Yemek Denetimi** ise yazdırılıp elle doldurulan bir kontrol formudur.',
-      yol:['Yemek','Aylık Menü'],
-      yolNot:'**Yemek** menüsünde ayrıca Günlük Menü, Haftalık Menü ve Yemek Denetimi sayfaları vardır. Yemek ekleme, silme ve düzenleme ayrı yetkilerdir; yetkiniz yoksa uygulama bunu bildirir. Yemek Denetimi sayfası öğretmen hesaplarında gösterilmez.',
+      yol:['Okul','Yemek Menüsü'],
+      yolNot:'Yemek Menüsü sayfasında üstteki **Günlük · Haftalık · Aylık** sekmeleri arasında geçilir; **Yemek Denetimi** idarecilerde Yönetim › Raporlar ve denetim altındadır. Yemek ekleme, silme ve düzenleme ayrı yetkilerdir; yetkiniz yoksa uygulama bunu bildirir. Yemek Denetimi sayfası öğretmen hesaplarında gösterilmez.',
       rota:['food','monthly'],
       eslesme:['food:daily','food:weekly','food:monthly','food:audit'],
       ekranlar:[
@@ -988,7 +979,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Menü sayfasını seçin',metin:'**Yemek** menüsünden **Günlük Menü**, **Haftalık Menü** ya da **Aylık Menü** sayfasını açın.',ekran:'yemek-gunluk',isaret:1},
+        {baslik:'Menü sayfasını seçin',metin:'**Okul › Yemek Menüsü** sayfasını açıp üstteki **Günlük**, **Haftalık** ya da **Aylık** sekmesini seçin.',ekran:'yemek-gunluk',isaret:1},
         {baslik:'Günü ya da haftayı değiştirin',metin:'Ok düğmeleriyle önceki/sonraki güne ya da haftaya geçin; ortadaki tarihe dokunarak istediğiniz günü seçin.',ekran:'yemek-haftalik',isaret:1},
         {baslik:'Aylık menüde yemek ekleyin',metin:'**Aylık Menü** sayfasında ayı seçin, günün altındaki **+ Yemek ekle**ye dokunun ve yemeğin adını yazın. Silmek için kutunun yanındaki **×**’e dokunun.',ekran:'yemek-aylik',isaret:6},
         {baslik:'Kaydedin',metin:'**Kaydet**e dokunun. “Yemek menüsü kaydedildi ve senkronizasyon kuyruğuna alındı.” bildirimi çıkar.',ekran:'yemek-aylik',isaret:3},
@@ -1014,7 +1005,7 @@ const D={
       ozet:'Okul duyurularını okuyun; yetkiliyseniz başlık, metin ve görselle yeni duyuru yayınlayın.',
       anahtar:'duyuru yayınla arşiv okundu görsel başlık içerik okuyan kişi',
       ne:'Okul içi duyuruları listeler. Her duyuruda **yeni / okundu** durumu görünür; duyuru yöneticileri duyuru yayınlayabilir, düzenleyebilir, arşivleyebilir ve silebilir.',
-      yol:['İletişim & Haberler','Duyurular'],
+      yol:['İletişim','Duyurular'],
       yolNot:'Yeni duyuru, düzenleme ve silme düğmeleri yalnızca duyuru yönetme yetkisi olanlarda görünür. Herkes duyuruları okuyabilir.',
       rota:['communication','announcements'],
       eslesme:['communication:announcements','view:announcement'],
@@ -1043,7 +1034,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Duyurular sayfasını açın',metin:'Menüden **İletişim & Haberler › Duyurular** sayfasını ya da Ana Sayfa’daki duyuru kartını açın.',ekran:'duyurular-liste',isaret:4},
+        {baslik:'Duyurular sayfasını açın',metin:'İdarecilerde **İletişim**, öğretmenlerde **Okul › İletişim** altından **Duyurular** sayfasını ya da ana sayfadaki duyuru kartını açın.',ekran:'duyurular-liste',isaret:4},
         {baslik:'Duyuruyu okuyun',metin:'Karttaki **Duyuruyu Aç** düğmesine dokunarak metnin ve görsellerin tamamını görün.',ekran:'duyurular-liste',isaret:5},
         {baslik:'Okundu olarak işaretleyin',metin:'**Okundu İşaretle** düğmesine dokunun. Böylece duyuru sizin için “Okundu” olur.',ekran:'duyurular-liste',isaret:6},
         {baslik:'Arşive bakın',metin:'Eski duyurular için **Arşiv** sekmesine dokunun.',ekran:'duyurular-liste',isaret:2},
@@ -1067,7 +1058,7 @@ const D={
       ozet:'Etkinlik (hatırlatıcı) ve görevlerinizi aylık takvimde izleyin, ekleyin ve düzenleyin.',
       anahtar:'takvim etkinlik hatırlatıcı görev son tarih öncelik durum yapılacak devam ediyor tamamlandı geciken yaklaşan 30 gün',
       ne:'Kişisel **etkinlik (hatırlatıcı)** ve **görevlerinizi** aylık takvim üzerinde gösterir. Üstteki sayaçlar bugünkü etkinlik ve görev sayısını ile geciken işleri verir. Takvimin altında seçili günün kayıtları ve **yaklaşan 30 günün** listesi bulunur. Her kullanıcı yalnızca kendi kayıtlarını görür; yönetici hesabı tüm kayıtları görür.',
-      yol:['İletişim & Haberler','Takvim'],
+      yol:['İletişim','Takvim'],
       yolNot:'+ Etkinlik ve + Görev düğmeleri ile Düzenle düğmeleri yalnızca takvim düzenleme yetkisi olan hesaplarda görünür.',
       rota:['communication','calendar'],
       eslesme:['communication:calendar'],
@@ -1114,7 +1105,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Takvimi açın',metin:'Menüden **İletişim & Haberler › Takvim** sayfasını açın. Ay seçiciyle istediğiniz aya geçin.',ekran:'takvim-ana',isaret:4},
+        {baslik:'Takvimi açın',metin:'Öğretmenlerde **Programım**, idarecilerde **İletişim** sekmesinden **Takvim**i açın. Ay seçiciyle istediğiniz aya geçin.',ekran:'takvim-ana',isaret:4},
         {baslik:'Günü seçin',metin:'Takvimde bir güne dokunun. Altta o günün etkinlik ve görevleri listelenir.',ekran:'takvim-ana',isaret:5},
         {baslik:'Etkinlik ekleyin',metin:'**+ Etkinlik**e dokunun, **Başlık**ı yazın, **Tarih** ve **Öncelik**i seçin ve **Kaydet**e dokunun.',ekran:'takvim-etkinlik-form',isaret:1},
         {baslik:'Görev ekleyin',metin:'**+ Görev**e dokunun, **Başlık**ı yazın, **Son Tarih** ve **Durum**u seçin ve **Kaydet**e dokunun.',ekran:'takvim-gorev-form',isaret:2},
@@ -1139,7 +1130,7 @@ const D={
       ozet:'Metin, yapılacaklar listesi, çizim, görsel ve tablo notlarınızı tek yerde tutun.',
       anahtar:'notlar hızlı not metin yapılacaklar çizim görsel tablo etiket renk not defteri kişisel',
       ne:'Kişisel not defterinizdir. **Metin**, **Yapılacaklar**, **Çizim**, **Görsel** ve **Tablo** olmak üzere beş türde not oluşturabilirsiniz. Üstteki sayaçlar toplam notu, bekleyen yapılacak maddelerini ve bu ay eklenen notları gösterir. Notlarınızı yalnızca siz görürsünüz; yönetici hesabı diğer kullanıcıların notlarını ayrı bir bölümde görür.',
-      yol:['İletişim & Haberler','Notlar'],
+      yol:['Ben','Notlarım'],
       yolNot:'Alt çubuktaki **Hızlı Not** düğmesi de aynı notlara açılır: yeni not türünü seçersiniz ya da **Notlarımı Görüntüle**ye dokunursunuz. + Yeni Not, Düzenle ve Sil düğmeleri not düzenleme yetkisi olan hesaplarda görünür.',
       rota:['communication','notes'],
       eslesme:['communication:notes'],
@@ -1177,7 +1168,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Notlar sayfasını açın',metin:'Menüden **İletişim & Haberler › Notlar** sayfasını açın ya da alt çubuktaki **Hızlı Not**tan **Notlarımı Görüntüle**ye dokunun.',ekran:'notlar-liste',isaret:3},
+        {baslik:'Notlar sayfasını açın',metin:'**Ben** sekmesinden (öğretmenlerde **Programım**dan) **Notlarım** sayfasını açın ya da **Hızlı not**tan **Notlarımı Görüntüle**ye dokunun.',ekran:'notlar-liste',isaret:3},
         {baslik:'Yeni not başlatın',metin:'**+ Yeni Not**a dokunun. Açılan **Hızlı Not** penceresinde not türünü seçin.',ekran:'notlar-hizli',isaret:1},
         {baslik:'Notu yazın',metin:'Örneğin **Yapılacaklar** için başlığı ve görevleri yazın; **+ Görev ekle** ile satır çoğaltın.',ekran:'notlar-yapilacak',isaret:2},
         {baslik:'Kaydedin',metin:'**Kaydet**e dokunun. “Not kaydedildi.” bildirimi çıkar ve not listede görünür.',ekran:'notlar-yapilacak',isaret:5},
@@ -1201,7 +1192,7 @@ const D={
       ozet:'Gelen ve giden evrakları kaydedin, sorumlu öğretmen atayın ve işlem durumunu izleyin.',
       anahtar:'evrak takibi gelen giden iç yazışma tutanak durum beklemede işlemde tamamlandı arşivlendi sorumlu öğretmen dosya linki',
       ne:'Resmî evrakları ve yazışmaları kaydeder; her evrak için **tür, tarih, durum ve sorumlu öğretmen(ler)** tutar. Evrakları duruma göre süzüp arayabilirsiniz.',
-      yol:['Döküman & Evraklar','Evrak Takibi'],
+      yol:['Yönetim','Evrak ve yazışma','Evrak Takibi'],
       yolNot:'Evrak ekleme ve düzenleme düğmeleri yalnızca evrak düzenleme yetkisi olanlarda görünür. Görüntüleme yetkiniz yoksa sayfada bu bilgi verilir.',
       rota:['documents','evrak'],
       eslesme:['documents:evrak'],
@@ -1239,7 +1230,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Evrak Takibi sayfasını açın',metin:'Menüden **Döküman & Evraklar › Evrak Takibi** sayfasını açın.',ekran:'evrak-liste',isaret:4},
+        {baslik:'Evrak Takibi sayfasını açın',metin:'**Yönetim › Evrak ve yazışma** altından **Evrak Takibi**ni açın.',ekran:'evrak-liste',isaret:4},
         {baslik:'Evrakı bulun',metin:'Arama kutusuna evrak adı ya da tür yazın; **durum** düğmeleriyle listeyi süzün.',ekran:'evrak-liste',isaret:3},
         {baslik:'Yeni evrak ekleyin',metin:'**Evrak Ekle**ye dokunun, **Evrak Adı**nı yazın, **Tür**, **Tarih** ve **Durum**u seçin.',ekran:'evrak-form',isaret:1},
         {baslik:'Sorumlu atayın',metin:'**Sorumlu Öğretmen(ler)** listesinden bir ya da daha fazla öğretmen seçin. İsterseniz dosya bağlantısını ve açıklamayı ekleyin.',ekran:'evrak-form',isaret:4},
@@ -1263,7 +1254,7 @@ const D={
       ozet:'Okul kurul ve komisyonlarını, üyelerini, görevlerini, notlarını ve belgelerini tek kayıtta yönetin; rapor alın.',
       anahtar:'kurul komisyon başkan asil yedek üye görev sorumluluk belge türü ekli belge mevzuat dayanak not iş rapor katalog öğretmenler kurulu satın alma',
       ne:'Her kurul ya da komisyon için bir kayıt tutulur: **tür** (Kurul, Komisyon, Ekip, Diğer), **eğitim öğretim yılı**, **başkan**, **asil ve yedek üyeler** (öğretmen ve öğrenci), **görev ve sorumluluklar**, **belge türleri**, yüklenen **ekli belgeler**, **mevzuat / dayanak notları**, **notlar** ve takip edilecek **işler**. Kayıt ekranından o kurul ya da komisyonun A4 raporu alınabilir; ayrıca tüm kayıtlar için liste ve görev dağılımı raporları hazırlanır.',
-      yol:['Doküman & Evraklar','Kurul ve Komisyonlar'],
+      yol:['Okul','Kurullar','Kurul ve Komisyonlar'],
       yolNot:'Bu sayfa öğretmen hesaplarında gösterilmez. **+ Yeni Kurul / Komisyon**, **Raporlar**, **Düzenle**, silme ve ekleme düğmeleri yalnızca düzenleme yetkisi olan hesaplarda görünür.',
       rota:['committees','home'],
       eslesme:['committees:home'],
@@ -1345,7 +1336,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Sayfayı açın',metin:'**Doküman & Evraklar** menüsünden **Kurul ve Komisyonlar**ı açın. Gerekirse adla arayın ya da yıla göre süzün.',ekran:'kurul-liste',isaret:3},
+        {baslik:'Sayfayı açın',metin:'**Okul › Kurullar** altından **Kurul ve Komisyonlar**ı açın. Gerekirse adla arayın ya da yıla göre süzün.',ekran:'kurul-liste',isaret:3},
         {baslik:'Yeni kayıt başlatın',metin:'**+ Yeni Kurul / Komisyon**a dokunun. İsterseniz **Katalog**dan hazır bir kurul seçin; **Kurul / komisyon adı**nı, **Tür**ü, yılı ve **Başkan**ı belirleyin.',ekran:'kurul-form',isaret:2},
         {baslik:'Üyeleri ekleyin',metin:'**Asil Üyeler** ve **Yedek Üyeler** bölümlerinde öğretmen ya da öğrenciyi seçip **+ Öğretmen** / **+ Öğrenci**ye dokunun.',ekran:'kurul-form-uyeler',isaret:2},
         {baslik:'Görev, belge türü ve dayanağı girin',metin:'Görev satırlarını yazın ya da **Şablon görevleri ekle**yi kullanın; kurulun tutacağı **Belge Türleri**ni işaretleyin; varsa mevzuat dayanağını yazın. Sonunda **Kaydet**e dokunun.',ekran:'kurul-form-gorev',isaret:1},
@@ -1363,7 +1354,7 @@ const D={
         'Kaydı silmek ayrıntı sayfasındaki tüm üye, not ve iş bilgilerini de siler; işlem onay sorar.'
       ],
       sorunlar:[
-        {s:'Kurul ve Komisyonlar menüde görünmüyor.',c:'Sayfa öğretmen hesaplarında gösterilmez; yönetici ya da yetkili hesaplarla açılır.'},
+        {s:'Kurul ve Komisyonlar Okul sekmesinde görünmüyor.',c:'Sayfa öğretmen hesaplarında gösterilmez; yönetici ya da yetkili hesaplarla açılır.'},
         {s:'+ Yeni Kurul / Komisyon ve Düzenle düğmeleri yok.',c:'Hesabınızın kurul ve komisyon düzenleme yetkisi yoktur; kayıtları yalnızca görüntüleyebilirsiniz.'},
         {s:'Üye listesinde bir öğretmen ya da öğrenci görünmüyor.',c:'Zaten asil ya da yedek üye olarak eklenmiş kişi listeden çıkar; başkan olarak seçilen öğretmen üye olarak eklenemez.'},
         {s:'“Belge yükleme servisi hazır değil.” uyarısı çıktı.',c:'Uygulamayı yeniden açıp tekrar deneyin; sürerse uygulama yöneticisine bildirin.'}
@@ -1375,7 +1366,7 @@ const D={
       ozet:'Hazır raporları önizleyin, düzenleyin; yazdırın, PDF / görsel olarak indirin ya da paylaşın.',
       anahtar:'rapor önizle yazdır pdf görsel png paylaş word excel indir ders giriş çıkış saatleri öğrenci sayıları a4 yatay dikey',
       ne:'Okul genelindeki hazır raporları (ör. ders giriş-çıkış saatleri, öğrenci sayıları) tek yerde toplar. Her rapor için **Düzenle**, **Önizle** ve **Yazdır** seçenekleri vardır; önizlemeden PDF, Word, Excel ve görsel (PNG) olarak indirilebilir ya da paylaşılabilir.',
-      yol:['Döküman & Evraklar','Okul Raporları'],
+      yol:['Yönetim','Raporlar ve denetim','Okul Raporları'],
       yolNot:'Bazı sayfalarda (ör. nöbet çizelgesi, öğretmen ve öğrenci profilleri) rapor düğmeleri kendi sayfalarındadır; hepsi aynı önizleme penceresini kullanır.',
       rota:['reports','home'],
       eslesme:['reports:home','reports:*'],
@@ -1413,7 +1404,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Raporlar sayfasını açın',metin:'Menüden **Döküman & Evraklar › Okul Raporları** sayfasını açın.',ekran:'rapor-liste',isaret:1},
+        {baslik:'Raporlar sayfasını açın',metin:'**Yönetim › Raporlar ve denetim** altından **Okul Raporları**nı açın.',ekran:'rapor-liste',isaret:1},
         {baslik:'Raporu önizleyin',metin:'İlgili raporun kartında **Önizle**ye dokunun; rapor tam ekran bir pencerede açılır.',ekran:'rapor-liste',isaret:3},
         {baslik:'Yazdırın ya da PDF alın',metin:'Önizlemede **Yazdır**a dokunun ve açılan pencerede yazıcıyı ya da “PDF olarak kaydet” seçeneğini seçin.',ekran:'rapor-onizleme',isaret:2},
         {baslik:'Görsel olarak alın',metin:'**Görsel**e dokunun; rapor yüksek kaliteli PNG olarak hazırlanır.',ekran:'rapor-onizleme',isaret:3},
@@ -1439,8 +1430,8 @@ const D={
       ozet:'Hesap, akademik yapı ve sistem ayarlarına ulaşın; verilerinizin yedeğini alın.',
       anahtar:'ayarlar veriler yedek yedekleme json geri yükle depolama sınırları güncellemeleri kontrol et ders saatleri okul bilgileri kullanıcı roller görünüm tema',
       ne:'**Ayarlar** sayfası ayarları üç grupta toplar: **Hesap ve Güvenlik**, **Akademik Yapı** ve **Sistem Yönetimi**. **Veriler** sayfası depolama sınırlarını gösterir ve tüm uygulama verilerinin yedeğini almayı sağlar.',
-      yol:['Ayarlar','Ayarlar'],
-      yolNot:'Hangi ayarları göreceğiniz hesabınızın yetkisine göre değişir. **Veriler** için menüde **Ayarlar › Veriler** yolunu kullanın.',
+      yol:['Ben','Ayarlar'],
+      yolNot:'Hangi ayarları göreceğiniz hesabınızın yetkisine göre değişir. **Veriler** için **Ben › Ayarlar › Sistem Yönetimi › Veriler** yolunu kullanın.',
       rota:['settings',''],
       eslesme:['settings:','settings:*'],
       ekranlar:[
@@ -1469,10 +1460,10 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Ayarlar’ı açın',metin:'Menüden **Ayarlar** grubunu, ardından **Ayarlar** sayfasını açın.',ekran:'ayarlar-ana',isaret:1},
+        {baslik:'Ayarlar’ı açın',metin:'**Ben** sekmesinden **Ayarlar** sayfasını açın.',ekran:'ayarlar-ana',isaret:1},
         {baslik:'Grubu açın',metin:'**Hesap ve Güvenlik**, **Akademik Yapı** ya da **Sistem Yönetimi** grubuna dokunun ve ilgili ayarı seçin.',ekran:'ayarlar-ana',isaret:2},
         {baslik:'Güncellemeleri kontrol edin',metin:'**Hesap ve Güvenlik** grubundaki **Güncellemeleri Kontrol Et** ayarı mevcut sürümü gösterir; Android uygulamasında yeni sürümü buradan yükleyebilirsiniz.'},
-        {baslik:'Veriler sayfasına gidin',metin:'Menüde **Ayarlar › Veriler** sayfasını açın.',ekran:'veriler-sayfa',isaret:1},
+        {baslik:'Veriler sayfasına gidin',metin:'**Ben › Ayarlar › Sistem Yönetimi** altından **Veriler** sayfasını açın.',ekran:'veriler-sayfa',isaret:1},
         {baslik:'Yedek alın',metin:'**Yedeği İndir (JSON)** düğmesine dokunun. “Yedek dosyası indirildi.” bildirimi çıkar ve dosya cihazınıza kaydedilir.',ekran:'veriler-yedek',isaret:1}
       ],
       kayit:'Yedek indirme verileri değiştirmez; yalnızca bir dosya oluşturur ve “Yedek dosyası indirildi.” bildirimi gösterir. Yedekten geri yükleme ise mevcut kayıtların üzerine yazar; bu yüzden önce “DİKKAT: Yedekten geri yükleme mevcut verilerin üzerine yazar. Devam edilsin mi?” onayı sorulur. Bitince “Geri yükleme tamamlandı: N kayıt işlendi” bildirimi çıkar.',
@@ -1493,7 +1484,7 @@ const D={
       ozet:'Uygulamanın sürümünü, güncelleme notlarını ve web / Android indirme bağlantılarını görün.',
       anahtar:'hakkında sürüm güncelleme notları apk android web indir optik okuyucu güncelle yayın',
       ne:'Koruk Asistan’ın ne olduğunu, kurulu sürümü, yayınlanan son Android sürümünü ve güncelleme notlarını gösterir. Web uygulaması, Android uygulaması (APK) ve Optik Okuyucu’nun indirme bağlantıları da burada bulunur.',
-      yol:['Ayarlar','Uygulama Hakkında'],
+      yol:['Ben','Uygulama hakkında'],
       yolNot:'Bu sayfa her kullanıcıya açıktır.',
       rota:['dashboard','about'],
       eslesme:['dashboard:about'],
@@ -1519,7 +1510,7 @@ const D={
         }
       ],
       adimlar:[
-        {baslik:'Sayfayı açın',metin:'Menüden **Ayarlar › Uygulama Hakkında** sayfasını açın.',ekran:'hakkinda-ust',isaret:1},
+        {baslik:'Sayfayı açın',metin:'**Ben** sekmesinden **Uygulama hakkında** sayfasını açın.',ekran:'hakkinda-ust',isaret:1},
         {baslik:'Sürümü kontrol edin',metin:'**Sürüm** kartında bu cihazdaki sürümle yayınlanan son sürümü karşılaştırın; Android’de **Güncellemeleri Kontrol Et**e dokunun.',ekran:'hakkinda-ust',isaret:3},
         {baslik:'Uygulamayı indirin',metin:'Android uygulamasını yüklemek için **Android uygulamasını indir (APK)** bağlantısına dokunun. Dosya tarayıcıda açılır; indirdikten sonra yükleme için cihazın yönergelerini izleyin.',ekran:'hakkinda-baglantilar',isaret:1},
         {baslik:'Optik Okuyucu’yu indirin',metin:'Optik Okuyucu için ayrı APK bağlantısını kullanın; bu uygulama Koruk Asistan’dan ayrı kurulur.',ekran:'hakkinda-baglantilar',isaret:2},
@@ -1537,7 +1528,7 @@ const D={
       iliskili:['kilavuz','ayarlar-veriler']
     }
   ],
-  geometri:/*GEO:BEGIN*/{"ana-ekran-hizli":[[2.1,44,95.9,12.1]],"ana-ekran-ozet":[[2.1,34.2,47.9,31.6]],"ana-ekran-ust":[[6.9,29.6,86.2,35.3],[6.9,64.9,86.2,7.8]],"ayarlar-ana":[[0.3,23.7,99.5,9.7],[0,33.5,100,46]],"cizelge-not-editor":[[3.1,8.3,24,6.4],[72.9,8.3,24,6.4],[60,31.5,27.7,11.5],[65.4,44.1,16.9,6.6]],"cizelge-not-kartlar":[[2.6,26.7,94.9,25.2],[6.7,43.7,43.6,6.4],[49.7,43.7,43.6,6.4]],"cizelge-not-toplam":[[56.8,30.5,22.2,18.1],[83.3,46,8.6,2.6]],"cizelge-not-yeni":[[3.1,56.5,93.8,20],[3.1,76.7,93.8,12.7],[72.5,92.2,24.4,6.4]],"cizelge-odev-editor":[[3.1,8.3,24,6.4],[26.3,8.3,24,6.4],[49.6,8.3,24,6.4],[72.9,8.3,24,6.4],[3.1,14.3,93.8,6.4],[67.7,37,21.4,3.8],[72.5,47.2,11.8,5.5]],"cizelge-odev-kartlar":[[2.6,26.7,94.9,25.2],[79.5,28.6,13.8,6.4],[6.7,43.7,43.6,6.4],[49.7,43.7,43.6,6.4]],"cizelge-odev-liste":[[2.6,16.1,94.9,34.1],[2.6,52.4,94.9,25],[70.4,80.2,26.5,6.4]],"cizelge-odev-yeni":[[3.1,69.4,93.8,9.9],[3.1,79.6,93.8,9.9],[48.6,92.2,24.4,6.4],[72.5,92.2,24.4,6.4]],"cizelge-odev-yeni-odev":[[3.1,44.8,93.8,9.9],[3.1,54.9,93.8,9.9],[3.1,65,93.8,24.4],[67.2,92.2,29.8,6.4]],"deneme-form":[[3.1,29.4,93.8,12.5],[3.1,42.2,93.8,25.2],[6.2,69.1,87.7,12.5]],"deneme-form-alt":[[3.6,44.5,92.8,27.8],[3.1,72.5,93.8,16.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"deneme-form-iki":[[6.2,24.2,87.7,25.2],[6.2,49.4,87.7,12.5],[6.2,61.9,87.7,12.5],[6.2,74.4,87.7,25.2]],"deneme-liste":[[0,22.2,100,6.4],[0,29.3,100,10.2],[0,40.2,100,38.5],[16.2,62.9,80.5,7.9],[72.6,70.7,24.1,6.4]],"deneme-sayac":[[2.3,0.9,13.8,6.4],[16.2,3.6,32.3,4],[6.2,10.7,87.7,8.9],[14.1,20.3,71.8,33.2],[0,82.9,100,9.2]],"deneme-sayac-takvim":[[6.2,36.5,87.7,23.9],[6.2,66.9,87.7,12]],"ders-programi-form":[[3.8,52.1,92.3,9.9],[3.8,65.2,92.3,6.6],[3.8,74.9,46.3,6.6],[3.8,81.5,92.3,9.9],[3.3,92.9,46.9,6.4],[49.7,92.9,46.9,6.4]],"ders-programi-gun":[[2.6,46,94.9,7.9],[2.6,58.8,94.9,9.4]],"ders-programi-ust":[[4.4,37.2,91.3,6.6],[4.4,44.1,46,8.4],[49.6,44.1,46,8.4],[4.4,52.1,46,8.4],[49.6,52.1,46,8.4],[4.4,60.2,46,8.4],[49.6,60.2,46,8.4]],"duyurular-form":[[3.1,20.9,93.8,9.9],[3.1,31.6,93.8,25.4],[3.1,57.8,93.8,22.3],[45.1,92.7,51.9,6.4]],"duyurular-liste":[[0,24.9,100,9.6],[1.3,35.8,80,5.9],[83.1,35.2,16.9,7.1],[0,42.5,100,50.8],[4.1,72.4,91.8,6.4],[4.1,78.7,91.8,6.4]],"evrak-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,9.9],[3.1,59.1,93.8,19.6]],"evrak-form-alt":[[3.1,64.9,93.8,9.9],[3.1,75.1,93.8,14.3],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"evrak-liste":[[63,16.4,32.7,6.4],[3.8,30.7,92.3,6.6],[3.8,37.6,92.3,18.7],[0,62.6,100,22.3],[3.3,77,24.1,6.4]],"gezinme-grup":[[2.8,1.3,13.8,6.4],[83.3,1.3,13.8,6.4],[2.3,10.2,95.4,8.5]],"gezinme-menu":[[57.3,1.5,26.6,5.9],[83.3,1.3,13.8,6.4],[2.3,10.4,47.4,16.8]],"gezinme-ust":[[1,1.3,45.1,5.9],[45.6,0.8,13.8,6.4],[59,0.8,13.8,6.4],[72.3,0.8,13.8,6.4],[85.6,0.9,13.3,6.2],[0,90.9,100,9.1]],"giris-ekran":[[7.2,45.6,85.6,9.7],[7.2,55.5,85.6,9.7],[7.2,66.8,85.6,6.4]],"hakkinda-baglantilar":[[4.1,23.9,91.8,34.4],[4.1,58.5,91.8,40.8]],"hakkinda-ust":[[4.4,15.6,91.3,15.9],[7.9,56.4,48.2,6.4],[4.1,64.8,91.8,31],[7.9,87.7,51.1,6.4]],"kilavuz-pencere":[[3.1,9.9,24.6,5.5],[76.3,9.4,20.6,6.4],[0,16.7,100,74.7],[63.9,92.2,33,6.4]],"kilavuz-sayfa":[[45.6,0.8,13.8,6.4],[7.9,14.9,84.1,9.7],[7.9,24.9,84.1,36],[4.1,65.4,91.8,25.3]],"kurul-detay":[[0.0,9.4,13.8,6.4],[0.0,20.1,50.3,6.4],[49.7,20.1,50.3,6.4],[0.0,26.3,13.8,6.4],[0.0,33.8,100.0,14.8]],"kurul-detay-alt":[[0.0,32.4,100.0,12.6],[65.8,46.8,30.3,6.4]],"kurul-detay-is":[[76.4,36.0,19.8,6.4],[3.8,74.4,7.7,3.6]],"kurul-form":[[3.1,18.5,93.8,20.0],[3.1,38.8,93.8,9.9],[3.1,48.9,93.8,20.0],[3.1,69.2,93.8,9.9]],"kurul-form-gorev":[[43.9,7.5,34.5,6.4],[78.9,7.5,18.0,6.4],[3.1,23.8,93.8,69.9]],"kurul-form-uyeler":[[3.1,13.0,93.8,6.6],[3.1,19.9,93.8,6.4],[3.1,26.6,93.8,6.6],[3.1,33.4,93.8,6.4]],"kurul-liste":[[4.4,22.0,31.6,6.4],[42.6,22.0,53.0,6.4],[0.0,30.4,100.0,13.5],[0.3,44.3,99.5,9.3]],"kurul-rapor":[[3.1,78.9,93.8,6.4],[3.1,85.5,93.8,6.4],[3.1,92.2,93.8,6.4]],"nobet-atama":[[3.1,62.8,93.8,9.9],[3.1,76.2,93.8,6.6],[3.1,83.1,93.8,6.4],[73.1,92.2,23.8,6.4]],"nobet-cizelge":[[2.6,46.8,94.9,6.4],[2.8,53.3,97.2,6.2],[62.6,58.3,37.4,6.3]],"nobet-ust":[[0,34.1,50.3,9.2],[49.7,34.1,50.3,9.2],[0,43.1,50.3,9.8],[49.7,43.1,50.3,9.8],[0,53.3,100,30.5]],"notlar-hizli":[[3.1,49.9,93.8,40],[3.1,89.8,93.8,8.8],[83.1,40.7,13.8,6.4]],"notlar-liste":[[0,8.3,100,6.6],[4.4,30,91.3,6.4],[0,38.4,100,10.4],[3.8,51.4,92.3,9.4],[0.3,69.3,99.5,8.8]],"notlar-yapilacak":[[3.1,66.1,93.8,9.9],[10.1,76.2,74.3,6.6],[3.1,83.1,93.8,6.4],[54.6,92.2,19,6.4],[73.1,92.2,23.8,6.4]],"ogrenciler-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,20],[3.1,69.2,93.8,9.9]],"ogrenciler-form-alt":[[3.1,37,93.8,20],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogrenciler-liste":[[68.2,15.4,27.4,6.4],[3.3,30.3,93.3,6.2],[2.3,39.1,95.4,11],[3.3,50.4,93.3,5.7],[0,58.1,100,6.6],[0,64.5,51.3,6.9],[0,75.2,100,8.3]],"ogrenciler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"ogretmenler-form":[[3.1,18.5,93.8,20],[3.1,38.8,93.8,20],[3.1,59.1,93.8,20]],"ogretmenler-form-alt":[[3.1,6.9,93.8,9.9],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogretmenler-liste":[[65.3,15.4,30.3,6.4],[3.3,30.3,93.3,6.2],[3.3,36.7,93.3,5.7],[0,44.4,100,6.6],[0,50.8,26.9,6.4],[26.3,50.8,35,6.4],[0,61.1,100,21.7],[84.9,75.8,11.3,5.2]],"ogretmenler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"rapor-duzenle":[[7.9,36,84.1,19.7],[7.9,75.8,84.1,9.7],[7.9,85.8,84.1,9.7]],"rapor-liste":[[4.1,32.3,91.8,18.1],[7.9,42.3,30.3,6.4],[38.8,42.3,26.4,6.4],[65.7,42.3,26.3,6.4]],"rapor-onizleme":[[0.8,0.4,13.8,6.4],[55.9,0.4,43.3,6.4],[13.6,6.3,43.3,6.4],[55.9,6.3,43.3,6.4],[0.8,12.3,45.1,6.4],[3.7,19.7,49.3,12.3]],"siniflar-detay":[[2.1,14.5,13.8,6.4],[84.1,14.5,13.8,6.4],[3.3,37.4,93.3,6.2],[0,48,100,7.1],[0,55.6,39.5,6.4],[39,55.6,55.7,6.4],[0,62.5,100,8.3]],"siniflar-form":[[3.1,37.1,93.8,9.9],[3.1,47.3,93.8,20],[3.1,67.5,93.8,9.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"siniflar-liste":[[68.2,15.4,27.5,6.4],[4.4,26.7,91.3,6.4],[3.3,36.9,93.3,6.2],[2.3,45.7,95.4,11],[0,58.8,100,6.6],[0,65.2,55.7,6.4],[0,75.4,100,20.5]],"takvim-ana":[[54,19.5,23.7,6.4],[78.2,19.5,21.8,6.4],[0,27.3,100,8.1],[3.8,37.4,92.3,6.4],[3.8,48,92.3,30.7]],"takvim-etkinlik-form":[[3.1,47.3,93.8,9.9],[3.1,57.4,93.8,20],[3.1,77.7,93.8,11.8],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"takvim-gorev-form":[[3.1,47.3,93.8,9.9],[3.1,69.4,93.8,20],[73.1,92.2,23.8,6.4]],"takvim-gun":[[0,24.1,100,23.5],[72.6,29.9,24.1,6.4],[0,47.8,100,42.1]],"veriler-sayfa":[[0,23.6,100,33.4]],"veriler-yedek":[[3.8,72.9,44.9,6.4],[49.3,72.9,46.9,6.4]],"yazili-form":[[3.6,33.4,92.8,25.8],[3.1,59.5,93.8,20],[3.1,79.8,93.8,9.9]],"yazili-form-alt":[[3.1,34.6,93.8,20],[3.1,54.9,93.8,20],[3.1,75.1,93.8,14.3],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"yazili-liste":[[0,12.3,100,9.7],[0,22.2,100,6.4],[0,29.3,100,10.2],[3.6,41.9,92.8,6.5],[72.3,80.6,24.1,6.4]],"yemek-aylik":[[7.9,32,84.1,6.4],[7.9,38.7,84.1,1.9],[7.9,43.7,42,6.4],[50,43.7,42.1,6.4],[23.8,56.7,69.2,25.1],[23.8,81.6,32.1,5.2]],"yemek-denetim":[[68,30.3,27.9,8.9],[7.9,41.2,84.1,9.7],[7.9,51.1,84.1,9.7],[7.9,59.7,84.1,9.7]],"yemek-gunluk":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,37.1]],"yemek-haftalik":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,20]],"yoklama-devamsiz":[[0,32.3,100,12.3],[0,44.8,100,8.3],[0,59.5,100,12.3],[68.6,64,28.1,6.4]],"yoklama-sinif":[[0,25.9,100,6.2],[2.8,33.6,47.4,9.7],[49.7,33.6,47.4,9.7],[0,44.8,100,8.3],[69,53.6,30.4,6.4],[2.6,66,94.9,5.7],[49.2,85,48,6.4]],"yoklama-tumu":[[2.8,33.6,47.4,9.7],[0,44.8,100,7.8]]}/*GEO:END*/
+  geometri:/*GEO:BEGIN*/{"ana-ekran-hizli":[[0.0,38.0,100.0,24.2]],"ana-ekran-ozet":[[2.1,34.2,47.9,31.6]],"ana-ekran-ust":[[0.0,19.2,100.0,14.4],[0.0,34.3,100.0,24.0]],"ayarlar-ana":[[0.3,23.7,99.5,9.7],[0,33.5,100,46]],"cizelge-not-editor":[[3.1,8.3,24,6.4],[72.9,8.3,24,6.4],[60,31.5,27.7,11.5],[65.4,44.1,16.9,6.6]],"cizelge-not-kartlar":[[2.6,26.7,94.9,25.2],[6.7,43.7,43.6,6.4],[49.7,43.7,43.6,6.4]],"cizelge-not-toplam":[[56.8,30.5,22.2,18.1],[83.3,46,8.6,2.6]],"cizelge-not-yeni":[[3.1,56.5,93.8,20],[3.1,76.7,93.8,12.7],[72.5,92.2,24.4,6.4]],"cizelge-odev-editor":[[3.1,8.3,24,6.4],[26.3,8.3,24,6.4],[49.6,8.3,24,6.4],[72.9,8.3,24,6.4],[3.1,14.3,93.8,6.4],[67.7,37,21.4,3.8],[72.5,47.2,11.8,5.5]],"cizelge-odev-kartlar":[[2.6,26.7,94.9,25.2],[79.5,28.6,13.8,6.4],[6.7,43.7,43.6,6.4],[49.7,43.7,43.6,6.4]],"cizelge-odev-liste":[[2.6,16.1,94.9,34.1],[2.6,52.4,94.9,25],[70.4,80.2,26.5,6.4]],"cizelge-odev-yeni":[[3.1,69.4,93.8,9.9],[3.1,79.6,93.8,9.9],[48.6,92.2,24.4,6.4],[72.5,92.2,24.4,6.4]],"cizelge-odev-yeni-odev":[[3.1,44.8,93.8,9.9],[3.1,54.9,93.8,9.9],[3.1,65,93.8,24.4],[67.2,92.2,29.8,6.4]],"deneme-form":[[3.1,29.4,93.8,12.5],[3.1,42.2,93.8,25.2],[6.2,69.1,87.7,12.5]],"deneme-form-alt":[[3.6,44.5,92.8,27.8],[3.1,72.5,93.8,16.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"deneme-form-iki":[[6.2,24.2,87.7,25.2],[6.2,49.4,87.7,12.5],[6.2,61.9,87.7,12.5],[6.2,74.4,87.7,25.2]],"deneme-liste":[[0,22.2,100,6.4],[0,29.3,100,10.2],[0,40.2,100,38.5],[16.2,62.9,80.5,7.9],[72.6,70.7,24.1,6.4]],"deneme-sayac":[[2.3,0.9,13.8,6.4],[16.2,3.6,32.3,4],[6.2,10.7,87.7,8.9],[14.1,20.3,71.8,33.2],[0,82.9,100,9.2]],"deneme-sayac-takvim":[[6.2,36.5,87.7,23.9],[6.2,66.9,87.7,12]],"ders-programi-form":[[3.8,52.1,92.3,9.9],[3.8,65.2,92.3,6.6],[3.8,74.9,46.3,6.6],[3.8,81.5,92.3,9.9],[3.3,92.9,46.9,6.4],[49.7,92.9,46.9,6.4]],"ders-programi-gun":[[2.6,46,94.9,7.9],[2.6,58.8,94.9,9.4]],"ders-programi-ust":[[4.4,37.2,91.3,6.6],[4.4,44.1,46,8.4],[49.6,44.1,46,8.4],[4.4,52.1,46,8.4],[49.6,52.1,46,8.4],[4.4,60.2,46,8.4],[49.6,60.2,46,8.4]],"duyurular-form":[[3.1,20.9,93.8,9.9],[3.1,31.6,93.8,25.4],[3.1,57.8,93.8,22.3],[45.1,92.7,51.9,6.4]],"duyurular-liste":[[0,24.9,100,9.6],[1.3,35.8,80,5.9],[83.1,35.2,16.9,7.1],[0,42.5,100,50.8],[4.1,72.4,91.8,6.4],[4.1,78.7,91.8,6.4]],"evrak-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,9.9],[3.1,59.1,93.8,19.6]],"evrak-form-alt":[[3.1,64.9,93.8,9.9],[3.1,75.1,93.8,14.3],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"evrak-liste":[[63,16.4,32.7,6.4],[3.8,30.7,92.3,6.6],[3.8,37.6,92.3,18.7],[0,62.6,100,22.3],[3.3,77,24.1,6.4]],"gezinme-grup":[[0.3,30.7,86.2,8.3],[83.8,30.7,15.9,8.3]],"gezinme-menu":[[11,23.1,85.1,3.4],[0,28.7,100,10.2]],"gezinme-ust":[[1,1.3,55.3,5.9],[58.5,0.8,13.8,6.4],[71.8,0.8,13.8,6.4],[85.1,0.8,13.8,6.4],[0,90.9,100,9.1],[39.2,91.8,21.5,8.1]],"giris-ekran":[[7.2,45.6,85.6,9.7],[7.2,55.5,85.6,9.7],[7.2,66.8,85.6,6.4]],"hakkinda-baglantilar":[[4.1,23.9,91.8,34.4],[4.1,58.5,91.8,40.8]],"hakkinda-ust":[[4.4,15.6,91.3,15.9],[7.9,56.4,48.2,6.4],[4.1,64.8,91.8,31],[7.9,87.7,51.1,6.4]],"kilavuz-pencere":[[3.1,9.9,24.6,5.5],[76.3,9.4,20.6,6.4],[0,16.7,100,74.7],[63.9,92.2,33,6.4]],"kilavuz-sayfa":[[45.6,0.8,13.8,6.4],[7.9,14.9,84.1,9.7],[7.9,24.9,84.1,36],[4.1,65.4,91.8,25.3]],"kurul-detay":[[0,9.4,13.8,6.4],[0,20.1,50.3,6.4],[49.7,20.1,50.3,6.4],[0,26.3,13.8,6.4],[0,33.8,100,14.8]],"kurul-detay-alt":[[0,32.4,100,12.6],[65.8,46.8,30.3,6.4]],"kurul-detay-is":[[76.4,36,19.8,6.4],[3.8,74.4,7.7,3.6]],"kurul-form":[[3.1,18.5,93.8,20],[3.1,38.8,93.8,9.9],[3.1,48.9,93.8,20],[3.1,69.2,93.8,9.9]],"kurul-form-gorev":[[43.9,7.5,34.5,6.4],[78.9,7.5,18,6.4],[3.1,23.8,93.8,69.9]],"kurul-form-uyeler":[[3.1,13,93.8,6.6],[3.1,19.9,93.8,6.4],[3.1,26.6,93.8,6.6],[3.1,33.4,93.8,6.4]],"kurul-liste":[[4.4,22,31.6,6.4],[42.6,22,53,6.4],[0,30.4,100,13.5],[0.3,44.3,99.5,9.3]],"kurul-rapor":[[3.1,78.9,93.8,6.4],[3.1,85.5,93.8,6.4],[3.1,92.2,93.8,6.4]],"nobet-atama":[[3.1,62.8,93.8,9.9],[3.1,76.2,93.8,6.6],[3.1,83.1,93.8,6.4],[73.1,92.2,23.8,6.4]],"nobet-cizelge":[[2.6,46.8,94.9,6.4],[2.8,53.3,97.2,6.2],[62.6,58.3,37.4,6.3]],"nobet-ust":[[0,34.1,50.3,9.2],[49.7,34.1,50.3,9.2],[0,43.1,50.3,9.8],[49.7,43.1,50.3,9.8],[0,53.3,100,30.5]],"notlar-hizli":[[3.1,49.9,93.8,40],[3.1,89.8,93.8,8.8],[83.1,40.7,13.8,6.4]],"notlar-liste":[[0,8.3,100,6.6],[4.4,30,91.3,6.4],[0,38.4,100,10.4],[3.8,51.4,92.3,9.4],[0.3,69.3,99.5,8.8]],"notlar-yapilacak":[[3.1,66.1,93.8,9.9],[10.1,76.2,74.3,6.6],[3.1,83.1,93.8,6.4],[54.6,92.2,19,6.4],[73.1,92.2,23.8,6.4]],"ogrenciler-form":[[3.1,18.5,93.8,9.9],[3.1,28.7,93.8,20],[3.1,48.9,93.8,20],[3.1,69.2,93.8,9.9]],"ogrenciler-form-alt":[[3.1,37,93.8,20],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogrenciler-liste":[[68.2,15.4,27.4,6.4],[3.3,30.3,93.3,6.2],[2.3,39.1,95.4,11],[3.3,50.4,93.3,5.7],[0,58.1,100,6.6],[0,64.5,51.3,6.9],[0,75.2,100,8.3]],"ogrenciler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"ogretmenler-form":[[3.1,18.5,93.8,20],[3.1,38.8,93.8,20],[3.1,59.1,93.8,20]],"ogretmenler-form-alt":[[3.1,6.9,93.8,9.9],[3.1,77.6,93.8,11.8],[49.2,92.1,24.4,6.4],[73.1,92.1,23.8,6.4]],"ogretmenler-liste":[[65.3,15.4,30.3,6.4],[3.3,30.3,93.3,6.2],[3.3,36.7,93.3,5.7],[0,44.4,100,6.6],[0,50.8,26.9,6.4],[26.3,50.8,35,6.4],[0,61.1,100,21.7],[84.9,75.8,11.3,5.2]],"ogretmenler-profil":[[2.1,9.2,13.8,6.4],[84.1,9.2,13.8,6.4],[0,16.9,100,13.2],[0,30.7,100,8.1],[3.3,40.8,93.3,6.2],[0,49,100,7.1]],"rapor-duzenle":[[7.9,36,84.1,19.7],[7.9,75.8,84.1,9.7],[7.9,85.8,84.1,9.7]],"rapor-liste":[[4.1,32.3,91.8,18.1],[7.9,42.3,30.3,6.4],[38.8,42.3,26.4,6.4],[65.7,42.3,26.3,6.4]],"rapor-onizleme":[[0.8,0.4,13.8,6.4],[55.9,0.4,43.3,6.4],[13.6,6.3,43.3,6.4],[55.9,6.3,43.3,6.4],[0.8,12.3,45.1,6.4],[3.7,19.7,49.3,12.3]],"siniflar-detay":[[2.1,14.5,13.8,6.4],[84.1,14.5,13.8,6.4],[3.3,37.4,93.3,6.2],[0,48,100,7.1],[0,55.6,39.5,6.4],[39,55.6,55.7,6.4],[0,62.5,100,8.3]],"siniflar-form":[[3.1,37.1,93.8,9.9],[3.1,47.3,93.8,20],[3.1,67.5,93.8,9.9],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"siniflar-liste":[[68.2,15.4,27.5,6.4],[4.4,26.7,91.3,6.4],[3.3,36.9,93.3,6.2],[2.3,45.7,95.4,11],[0,58.8,100,6.6],[0,65.2,55.7,6.4],[0,75.4,100,20.5]],"takvim-ana":[[54,19.5,23.7,6.4],[78.2,19.5,21.8,6.4],[0,27.3,100,8.1],[3.8,37.4,92.3,6.4],[3.8,48,92.3,30.7]],"takvim-etkinlik-form":[[3.1,47.3,93.8,9.9],[3.1,57.4,93.8,20],[3.1,77.7,93.8,11.8],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"takvim-gorev-form":[[3.1,47.3,93.8,9.9],[3.1,69.4,93.8,20],[73.1,92.2,23.8,6.4]],"takvim-gun":[[0,24.1,100,23.5],[72.6,29.9,24.1,6.4],[0,47.8,100,42.1]],"veriler-sayfa":[[0,23.6,100,33.4]],"veriler-yedek":[[3.8,72.9,44.9,6.4],[49.3,72.9,46.9,6.4]],"yazili-form":[[3.6,33.4,92.8,25.8],[3.1,59.5,93.8,20],[3.1,79.8,93.8,9.9]],"yazili-form-alt":[[3.1,34.6,93.8,20],[3.1,54.9,93.8,20],[3.1,75.1,93.8,14.3],[49.2,92.2,24.4,6.4],[73.1,92.2,23.8,6.4]],"yazili-liste":[[0,12.3,100,9.7],[0,22.2,100,6.4],[0,29.3,100,10.2],[3.6,41.9,92.8,6.5],[72.3,80.6,24.1,6.4]],"yemek-aylik":[[7.9,32,84.1,6.4],[7.9,38.7,84.1,1.9],[7.9,43.7,42,6.4],[50,43.7,42.1,6.4],[23.8,56.7,69.2,25.1],[23.8,81.6,32.1,5.2]],"yemek-denetim":[[68,30.3,27.9,8.9],[7.9,41.2,84.1,9.7],[7.9,51.1,84.1,9.7],[7.9,59.7,84.1,9.7]],"yemek-gunluk":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,37.1]],"yemek-haftalik":[[7.9,30,84.1,6.4],[7.9,36.6,84.1,6.4],[4.1,45,91.8,20]],"yoklama-devamsiz":[[0,32.3,100,12.3],[0,44.8,100,8.3],[0,59.5,100,12.3],[68.6,64,28.1,6.4]],"yoklama-sinif":[[0,25.9,100,6.2],[2.8,33.6,47.4,9.7],[49.7,33.6,47.4,9.7],[0,44.8,100,8.3],[69,53.6,30.4,6.4],[2.6,66,94.9,5.7],[49.2,85,48,6.4]],"yoklama-tumu":[[2.8,33.6,47.4,9.7],[0,44.8,100,7.8]]}/*GEO:END*/
 };
 
 global.KorukGuideData=D;

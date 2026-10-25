@@ -78,22 +78,6 @@ function installReportPatch(){
   return true;
 }
 
-function installMenuPullRefresh(){
-  if(global.__kaMenuPullRefresh)return;
-  if(typeof document==='undefined'||typeof Element==='undefined'||typeof getComputedStyle!=='function')return;
-  global.__kaMenuPullRefresh=true;
-  const ARM=96,MAX=78,DEAD=8;let tracking=false,armed=false,startX=0,startY=0,reloading=false;
-  const menuFor=t=>t?.closest?.('.ka-menu-layer:not([hidden])');
-  function scroller(target,menu){for(let el=target instanceof Element?target:null;el&&el!==menu.parentElement;el=el.parentElement){const s=getComputedStyle(el);if((s.overflowY==='auto'||s.overflowY==='scroll'||s.overflowY==='overlay')&&el.scrollHeight>el.clientHeight+2)return el;if(el===menu)break}return menu}
-  function indicator(){let el=document.getElementById('kaPullRefreshIndicator');if(el)return el;el=document.createElement('div');el.id='kaPullRefreshIndicator';el.hidden=true;el.setAttribute('aria-hidden','true');el.innerHTML='<img src="assets/icon-192.png" alt=""><span>Yenilemek için çek</span>';document.body.appendChild(el);return el}
-  function draw(dy){const el=indicator(),visual=Math.min(MAX,Math.max(0,dy)*.48);armed=dy>=ARM;el.hidden=visual<2;el.classList.toggle('is-armed',armed);el.classList.remove('is-refreshing');el.style.setProperty('--ka-pull-y',`${Math.round(visual)}px`);const label=el.querySelector('span');if(label)label.textContent=armed?'Bırakınca yenile':'Yenilemek için çek'}
-  function reset(){tracking=false;armed=false;if(reloading)return;const el=document.getElementById('kaPullRefreshIndicator');if(el){el.classList.remove('is-armed','is-refreshing');el.style.setProperty('--ka-pull-y','0px');el.hidden=true}}
-  document.addEventListener('touchstart',e=>{if(reloading||e.touches?.length!==1)return;const menu=menuFor(e.target);if(!menu)return;const s=scroller(e.target,menu);if(Number(s?.scrollTop||0)>1)return;tracking=true;armed=false;startX=e.touches[0].clientX;startY=e.touches[0].clientY},{capture:true,passive:true});
-  document.addEventListener('touchmove',e=>{if(!tracking||reloading||e.touches?.length!==1)return;const menu=menuFor(e.target);if(!menu){reset();return}const s=scroller(e.target,menu),t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;if(Number(s?.scrollTop||0)>1||dy<0||Math.abs(dx)>Math.abs(dy)+8){reset();return}if(dy<=DEAD)return;e.preventDefault();draw(dy)},{capture:true,passive:false});
-  document.addEventListener('touchend',()=>{if(!tracking||reloading){if(!reloading)reset();return}const refresh=armed;tracking=false;armed=false;if(!refresh){reset();return}reloading=true;const el=indicator();el.hidden=false;el.classList.remove('is-armed');el.classList.add('is-refreshing');el.style.setProperty('--ka-pull-y','74px');const label=el.querySelector('span');if(label)label.textContent='Yenileniyor…';setTimeout(()=>global.location.reload(),120)},{capture:true,passive:true});
-  document.addEventListener('touchcancel',reset,{capture:true,passive:true});
-}
-
-global.ScheduleReportColumnZebra={install:installReportPatch,patchReportEngine,isScheduleReport,COLUMN_ZEBRA_STYLE,GLOBAL_SOFT_STYLE,injectClassTeacher,classTeacherName,installMenuPullRefresh};
-installReportPatch();installMenuPullRefresh();
+global.ScheduleReportColumnZebra={install:installReportPatch,patchReportEngine,isScheduleReport,COLUMN_ZEBRA_STYLE,GLOBAL_SOFT_STYLE,injectClassTeacher,classTeacherName};
+installReportPatch();
 })(window);

@@ -1,4 +1,5 @@
-/* Koruk Asistan — Öğretmen hatırlatmalarında eğitim-öğretim yılı sınırı. */
+/* Koruk Asistan — Hatırlatma politikası: eğitim-öğretim yılı sınırı ve izin kayıtlarının hatırlatıcılardan ayıklanması.
+ * dashboard.js hatırlatma motoru normalizeList()'i çağırır; bu dosya ana sayfa DOM'una dokunmaz. */
 (function(global){
 'use strict';
 if(global.__korukTeacherReminderAcademicYear)return;
@@ -81,74 +82,6 @@ function normalizeList(items,days=reminderDays(),now=today()){
   if(seasonClosed(now))return filterLeaveReminders(items).filter(x=>!ACADEMIC_SOURCES.has(x?.kaynak));
   return filterLeaveReminders(items).map(x=>normalizeReminder(x,days,now)).filter(Boolean).sort((a,b)=>Number(a.gunFarki||0)-Number(b.gunFarki||0));
 }
-function patchDashboardApi(){
-  const d=global.DashboardModule;
-  if(!d||d.__academicReminderPatched)return false;
-  d.__academicReminderPatched=true;
-  const original=d.collectReminders?.bind(d),renderOriginal=d.render?.bind(d);
-  if(original)d.collectReminders=function(days){return normalizeList(original(days),Number.isFinite(Number(days))?Number(days):reminderDays())};
-  if(renderOriginal){
-    d.render=function(){const result=renderOriginal();requestAnimationFrame(()=>{injectTeacherAbsences();normalizeTeacherUpcomingChecklistRows()});return result};
-  }
-  return true;
-}
-function activeTeacherLeaves(){const now=today(),todayIso=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');return rows('ogretmenIzinleri').filter(x=>{const{start,end}=leaveRange(x);return start&&start<=todayIso&&(!end||end>=todayIso)})}
-function absencesMarkup(){
-  const active=activeTeacherLeaves();if(!active.length)return'';
-  const calendar='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>';
-  return `<section class="kh-section" data-home-section="absences"><div class="kh-section-head"><div class="kh-section-title">${calendar}<span>Bugün İzinli Öğretmenler</span></div></div><div class="kh-card">${active.map(x=>`<div class="kh-row"><div class="kh-row-main"><b>${String(leaveTeacherName(x)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</b></div><span class="kh-chip amber">İZİNLİ</span></div>`).join('')}</div></section>`;
-}
-function injectTeacherAbsences(){
-  const root=document.querySelector('[data-dashboard-module]');if(!root)return;
-  const old=root.querySelector('[data-home-section="absences"]');if(old)return;
-  const html=absencesMarkup();if(!html)return;
-  const anchor=root.querySelector('[data-home-section="upcoming"]')||root.querySelector('[data-home-section="quick"]');
-  if(anchor)anchor.insertAdjacentHTML('beforebegin',html);else root.insertAdjacentHTML('beforeend',html);
-}
-function normalizeTeacherUpcomingChecklistRows(){
-  const root=document.querySelector('[data-dashboard-module]');if(!root)return;
-  const section=root.querySelector('[data-home-section="upcoming"]');if(!section)return;
-  section.querySelectorAll('.kh-row').forEach(row=>{
-    const title=row.querySelector('.kh-row-main b'),subtitle=row.querySelector('.kh-row-main small');
-    if(!title||!/^Kontrol Listesi\s*:/i.test(title.textContent||''))return;
-    const content=String(subtitle?.textContent||'').trim();
-    const fallback=(title.textContent||'').replace(/^Kontrol Listesi\s*:\s*/i,'').trim();
-    title.textContent=content||fallback;
-    if(subtitle){subtitle.textContent='';subtitle.style.display='none';}
-  });
-}
-function injectNextLessonFontFix(){
-  if(document.getElementById('koruk-next-lesson-font-fix'))return;
-  const style=document.createElement('style');style.id='koruk-next-lesson-font-fix';style.textContent=`
-.ka-home .kh-focus h3{
-  font-size:var(--ka-fs-14)!important;
-  line-height:var(--ka-lh-1-2)!important;
-  font-weight:var(--ka-fw-800)!important;
-  letter-spacing:0!important;
-}
-.ka-home .kh-focus .kh-plan-button{
-  font-size:var(--ka-fs-12)!important;
-  line-height:var(--ka-lh-1-2)!important;
-}
-.ka-home .kh-section[data-home-section="upcoming"] .kh-row-main b{
-  font-size:var(--ka-fs-14)!important;
-  line-height:var(--ka-lh-1-2)!important;
-  font-weight:var(--ka-fw-800)!important;
-  letter-spacing:0!important;
-}
-.ka-home .kh-section[data-home-section="upcoming"] .kh-row-main small{
-  font-size:var(--ka-fs-11-5)!important;
-  line-height:var(--ka-lh-1-2)!important;
-  font-weight:var(--ka-fw-600)!important;
-}
-@media(max-width:480px){
-  .ka-home .kh-focus h3{font-size:var(--ka-fs-14)!important;}
-  .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main b{font-size:var(--ka-fs-14)!important;}
-  .ka-home .kh-section[data-home-section="upcoming"] .kh-row-main small{font-size:var(--ka-fs-11-5)!important;}
-}
-`;
-  document.head.appendChild(style);
-}
 function patchCalendarApi(){
   const t=global.TakvimRepository;
   if(!t||t.__leaveReminderPatched)return false;
@@ -157,53 +90,13 @@ function patchCalendarApi(){
   t.hatirlaticilariDinle=function(cb){return original(rowsList=>cb(filterLeaveReminders(rowsList)))};
   return true;
 }
-function statusFor(diff){
-  if(diff<0)return{label:`${Math.abs(diff)} gün gecikti`,state:'is-overdue'};
-  if(diff===0)return{label:'Bugün son gün',state:'is-today'};
-  return{label:`${diff} gün kaldı`,state:'is-upcoming'};
-}
-function refreshPopupSummary(modal){
-  const items=[...modal.querySelectorAll('.ka-reminder-item')];
-  if(!items.length){modal.remove();return}
-  const counts={overdue:0,today:0,upcoming:0};
-  items.forEach(el=>{if(el.classList.contains('is-overdue'))counts.overdue++;else if(el.classList.contains('is-today'))counts.today++;else counts.upcoming++});
-  const desc=modal.querySelector('#dashboardReminderDescription'),name=desc?.querySelector('b')?.textContent||'Öğretmen';
-  if(desc){desc.textContent='';const b=document.createElement('b');b.textContent=name;desc.append(b,`, ${items.length} işlemi gözden geçirmeniz gerekiyor.`)}
-  const sum=modal.querySelector('.ka-reminder-summary');
-  if(sum){const a=sum.querySelector('.is-overdue strong'),b=sum.querySelector('.is-today strong'),c=sum.querySelector('.is-upcoming strong');if(a)a.textContent=counts.overdue;if(b)b.textContent=counts.today;if(c)c.textContent=counts.upcoming}
-  const total=modal.querySelector('.ka-reminder-list-head > b');if(total)total.textContent=items.length;
-}
-function patchPopup(modal){
-  if(!modal||modal.dataset.academicYearPatched==='1')return;
-  modal.dataset.academicYearPatched='1';
-  const now=today(),days=reminderDays();
-  if(seasonClosed(now)){modal.remove();return}
-  [...modal.querySelectorAll('.ka-reminder-item')].forEach(item=>{
-    const title=item.querySelector('.ka-reminder-item__copy strong')?.textContent||'',month=monthlyMonth(title);
-    if(isLeaveReminder({baslik:title})){item.remove();return}
-    if(!month)return;
-    const deadline=academicDeadline(month,now),diff=deadline?diffDays(deadline,now):99999;
-    if(diff>days){item.remove();return}
-    const s=statusFor(diff);
-    item.classList.remove('is-overdue','is-today','is-upcoming');item.classList.add(s.state);
-    const badge=item.querySelector('.ka-reminder-item__side b');if(badge)badge.textContent=s.label;
-  });
-  refreshPopupSummary(modal);
-}
-function scan(root=document){
+function scan(){
   patchReminderStore();
-  patchDashboardApi();
   patchCalendarApi();
-  injectNextLessonFontFix();
-  injectTeacherAbsences();
-  normalizeTeacherUpcomingChecklistRows();
-  const modal=root.querySelector?.('#dashboardReminderModal')||document.getElementById('dashboardReminderModal');
-  if(modal)patchPopup(modal);
 }
-const observer=new MutationObserver(records=>{for(const r of records)if(r.addedNodes?.length){scan(document);break}});
-function start(){scan(document);observer.observe(document.documentElement,{childList:true,subtree:true});[0,250,1000,2500].forEach(ms=>setTimeout(()=>scan(document),ms))}
+function start(){scan();[250,1000,2500].forEach(ms=>setTimeout(scan,ms))}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard'||e.detail?.name==='communication'){setTimeout(()=>scan(document),0);setTimeout(()=>scan(document),500);setTimeout(()=>scan(document),1500)}});
+window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='communication'){setTimeout(scan,0);setTimeout(scan,500)}});
 
 global.KorukTeacherReminderAcademicYear={academicStartYear,academicDeadline,seasonClosed,normalizeList,scan};
 })(window);

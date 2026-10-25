@@ -1,12 +1,12 @@
 /* Yönetici rolündeki kullanıcı bir öğretmen kaydına bağlı olsa bile Personel İşleri (ve diğer öğretmenden
  * gizlenen) menü/sayfaları görebilmeli; "öğretmen" adlı roller ise kısıtlı kalmalı.
- * Gerçek kaynak kodu (app-loader.js izin bloğu + shell-ui.js kapıları) vm içinde çalıştırılır. */
+ * Gerçek kaynak kodu (app-loader.js izin bloğu + app-nav.js sayfa kapıları) vm içinde çalıştırılır. */
 const fs=require('fs');
 const vm=require('vm');
 const assert=require('assert');
 
 const loader=fs.readFileSync('js/app-loader.js','utf8');
-const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
+const nav=fs.readFileSync('js/core/app-nav.js','utf8');
 
 // ---- 1) PermissionService bloğu
 const start=loader.indexOf('const PERMISSION_RANK=');
@@ -24,23 +24,15 @@ function build(sessionUser,sessionRole,roles=[]){
   return {PermissionService:win.PermissionService,win,store};
 }
 
-// ---- 2) shell-ui öğretmen kapıları (gerçek fonksiyon gövdeleri)
-function pull(name){
-  const i=shell.indexOf('function '+name+'(');
-  assert(i>=0,name+' bulunamadı.');
-  // fonksiyon sonu: bir sonraki satır başı "function " ya da "const TEACHER..." öncesi
-  let j=shell.indexOf('\nfunction ',i+5);
-  return shell.slice(i,j<0?shell.length:j);
-}
-const shellGates=[pull('isTeacherUser'),pull('pageAllowed'),pull('teacherMenuGroupAllowed')].join('\n');
-const hiddenPages=(shell.match(/const TEACHER_HIDDEN_PAGES=new Set\(\[[^\]]*\]\);/)||[])[0];
-assert(hiddenPages,'TEACHER_HIDDEN_PAGES bulunamadı.');
+// ---- 2) app-nav öğretmen kapıları (gerçek satırlar)
+const line=name=>{const m=nav.match(new RegExp('^const '+name+'=.*$','m'));assert(m,name+' bulunamadı.');return m[0]};
+const shellGates=[line('TEACHER_HIDDEN'),line('isTeacherUser'),line('pageAllowed')].join('\n');
 
 function shellFor(ctx){
   const g={PermissionService:ctx.PermissionService,AKTIF_ROL:ctx.win.AKTIF_ROL,AppStore:ctx.store};
   const sandbox={global:g,user:()=>ctx.win.AKTIF_KULLANICI||{},arr:t=>ctx.store.data(t)};
   vm.createContext(sandbox);
-  vm.runInContext(hiddenPages+'\n'+shellGates+'\nthis.api={isTeacherUser,pageAllowed,teacherMenuGroupAllowed};',sandbox);
+  vm.runInContext(shellGates+'\nthis.api={isTeacherUser,pageAllowed};',sandbox);
   return sandbox.api;
 }
 
@@ -58,7 +50,6 @@ const run=(user,role,roles)=>{const c=build(user,role,roles);return{ctx:c,ps:c.P
   assert.strictEqual(x.ps.isManager(),true,'Yönetici rolü yönetici sayılmalı.');
   assert.strictEqual(x.ps.isTeacherAccount(),false,'Yönetici öğretmen hesabı sayılmamalı.');
   assert.strictEqual(x.sh.isTeacherUser(),false,'ShellUI yönetici hesabını öğretmen saymamalı.');
-  assert.strictEqual(x.sh.teacherMenuGroupAllowed({key:'management'}),true,'Personel İşleri menü kartı yöneticiye görünmeli.');
   for(const p of [['management','staff'],['management','tasks'],['documents','evrak'],['transport','services'],['food','audit'],['tools','form-bep'],['tools','form-kulup'],['committees','home']])
     assert.strictEqual(x.sh.pageAllowed(p[0],p[1]),true,`${p.join(':')} yöneticiye görünmeli.`);
   assert.strictEqual(x.ps.moduleLevel('food'),'edit','Yönetici Yemek modülünde düzenleyebilmeli (öğretmen salt-okunur kuralı yok).');
@@ -82,7 +73,6 @@ const run=(user,role,roles)=>{const c=build(user,role,roles);return{ctx:c,ps:c.P
   assert.strictEqual(x.ps.isManager(),false);
   assert.strictEqual(x.ps.isTeacherAccount(),true);
   assert.strictEqual(x.sh.isTeacherUser(),true);
-  assert.strictEqual(x.sh.teacherMenuGroupAllowed({key:'management'}),false,'Öğretmenden Personel İşleri kartı gizli kalmalı.');
   assert.strictEqual(x.sh.pageAllowed('management','staff'),false);
   assert.strictEqual(x.ps.moduleLevel('food'),'read','Öğretmen Yemek modülünde salt-okunur kalmalı.');
   assert.strictEqual(x.ps.moduleLevel('transport'),'read');
@@ -93,7 +83,7 @@ const run=(user,role,roles)=>{const c=build(user,role,roles);return{ctx:c,ps:c.P
   const role={id:'r2',ad:'Öğretmen',yetkiler:{...moduleRules}};
   const x=run({uid:'u2',rolId:'r2',bagliOgretmenId:'t2'},role,[role]);
   assert.strictEqual(x.sh.isTeacherUser(),true,'Öğretmen adlı rolde kısıt korunmalı.');
-  assert.strictEqual(x.sh.teacherMenuGroupAllowed({key:'management'}),false);
+  assert.strictEqual(x.sh.pageAllowed('management','staff'),false);
 }
 
 // C) Başka adlı bir rolde "Yönetim" modülü Roller sayfasında açıkça seçilmişse öğretmen kaydına bağlı olsa da görünür
@@ -103,7 +93,7 @@ const run=(user,role,roles)=>{const c=build(user,role,roles);return{ctx:c,ps:c.P
   assert.strictEqual(x.ps.isManager(),false);
   assert.strictEqual(x.ps.isTeacherAccount(),false,'Açıkça seçilen Yönetim izni öğretmen bağlantısını aşmalı.');
   assert.strictEqual(x.sh.isTeacherUser(),false);
-  assert.strictEqual(x.sh.teacherMenuGroupAllowed({key:'management'}),true);
+  assert.strictEqual(x.sh.pageAllowed('management','staff'),true);
   // ... ama Yönetim seçilmemişse kısıt sürer
   const role2={id:'r4',ad:'Kurul Başkanı',yetkiler:{'module.dashboard':'goruntule','module.people':'goruntule'}};
   const y=run({uid:'u3',rolId:'r4',bagliOgretmenId:'t3'},role2,[role2]);
@@ -129,7 +119,7 @@ const run=(user,role,roles)=>{const c=build(user,role,roles);return{ctx:c,ps:c.P
 // E) Kaynak sözleşmeleri
 const catalogLabel=(loader.match(/\['module\.management','([^']+)','page'\]/)||[])[1];
 assert(/Personel İşleri/.test(catalogLabel||''),'Roller sayfasında Yönetim modülü "Personel İşleri" adıyla bulunabilmeli.');
-assert(shell.includes("function teacherMenuGroupAllowed(group){return !isTeacherUser()||group?.key!=='management'}"),'teacherMenuGroupAllowed korunmalı.');
+assert(/'management:staff'/.test(line('TEACHER_HIDDEN')),'Personel İşleri sayfası öğretmen hesabına kapalı listede olmalı.');
 const management=fs.readFileSync('js/modules/management.js','utf8');
 assert(management.includes("teacher=u.admin!==true&&!!(u.bagliOgretmenId||u.ogretmenId)&&window.PermissionService?.isTeacherAccount?.()!==false"),'Personel İşleri sayfa kapısı aynı kuralı kullanmalı.');
 for(const f of ['js/modules/transport.js','js/modules/class-seating.js','js/modules/people.js','js/modules/people-classic-ui.js'])

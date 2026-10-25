@@ -65,11 +65,11 @@ assert(START>-1&&END>START,'TEMA MERKEZİ sınırları bulunamadı.');
 const core=masked.slice(START,END);
 const rest=masked.slice(END+END_MARK.length);
 const defined=new Set([...core.matchAll(/(--ka-web-[a-z0-9-]+)\s*:/g)].map(m=>m[1]));
-for(const t of ['--ka-web-side-w','--ka-web-top-h','--ka-web-page-max','--ka-web-gutter','--ka-web-gap','--ka-web-aside-w','--ka-web-row','--ka-web-hero-card'])assert(defined.has(t),`${t} TEMA MERKEZİ'nde tanımlı olmalı.`);
+for(const t of ['--ka-web-side-w','--ka-web-top-h','--ka-web-page-max','--ka-web-gutter','--ka-web-gap'])assert(defined.has(t),`${t} TEMA MERKEZİ'nde tanımlı olmalı.`);
 const used=new Set([...rest.matchAll(/var\((--ka-web-[a-z0-9-]+)/g)].map(m=>m[1]));
 for(const t of used)assert(defined.has(t),`${t} kullanılıyor ama TEMA MERKEZİ'nde tanımlı değil.`);
 for(const t of defined)assert(used.has(t),'Kullanılmayan web belirteci: '+t);
-assert(web.includes('getComputedStyle(home).gridAutoRows')&&/grid-auto-rows:var\(--ka-web-row\)/.test(rest),'Ana sayfa ızgara satır birimi --ka-web-row belirtecinden gelmeli ve web-shell.js bunu hesaplanmış stilden okumalı.');
+assert(!web.includes('gridAutoRows')&&!/--ka-web-(row|aside-w|hero-card)/.test(masked),'Eski ana sayfa ızgara/aside belirteçleri geri dönmemeli: Bugün/Özet sayfası kendi .ka-today ızgarasını kullanır.');
 
 // Basit kural ayrıştırıcı: her kuralı çevreleyen @media koşulunu tutar
 function parse(text){
@@ -107,9 +107,11 @@ function parse(text){
 const HIDE='.ka-web-side,.ka-web-crumb,.ka-web-search,.ka-web-wx,.ka-web-note';
 const WEB_START=masked.indexOf(HIDE+'{display:none}');
 assert(WEB_START>END,'Web arayüzü bölümü (gizleme kuralı) bulunamadı.');
-const webRules=parse(masked.slice(WEB_START));
+const WEB_END=css.indexOf('GEZİNME SAYFALARI + BUGÜN / ÖZET');
+assert(WEB_END>WEB_START,'Web arayüzü bölümünün sonu (GEZİNME SAYFALARI başlığı) bulunamadı.');
+const webRules=parse(masked.slice(WEB_START,WEB_END));
 const wide=r=>{const m=r.media.match(/\(min-width:(\d+)px\)/);return !!m&&Number(m[1])>=1100};
-assert(webRules.length>100,'Web arayüzü kuralları beklenenden az bulundu (ayrıştırma bozulmuş olabilir).');
+assert(webRules.length>=60,'Web arayüzü kuralları beklenenden az bulundu (ayrıştırma bozulmuş olabilir).');
 assert.strictEqual(webRules.filter(r=>r.sel===HIDE&&!r.media).length,1,'Web öğelerini dar ekranda gizleyen kural tek olmalı.');
 for(const r of webRules){
   if(r.sel===HIDE&&!r.media)continue;
@@ -119,38 +121,32 @@ for(const r of webRules){
 for(const r of parse(rest)){
   if(!/\.ka-web-/.test(r.sel)||r.sel===HIDE)continue;
   if(/^\s*--ic\s*:/.test(r.body)&&/\[data-ka-glyph=/.test(r.sel))continue;
+  if(/^(\s*--mc[a-z-]*\s*:[^;]+;?)+\s*$/.test(r.body))continue; // yalnız ton değişkeni tanımlar; öğe telefonda display:none
   assert(wide(r),`.ka-web-* kuralı dar ekranda uygulanıyor: "${r.sel.slice(0,100)}"`);
 }
 
-// --- 5) Menü grup renkleri: telefon menüsü ile yan menü AYNI eşleme (--mc-rgb)
-function groupMap(prefix){
-  const out={};
-  const re=new RegExp(`html ${prefix.replace(/[.#]/g,'\\$&')} \\[data-ka-menu-group="([a-z]+)"\\]\\s*(?:,[^{]*)?\\{--mc-rgb:var\\((--c-[a-z]+)\\)\\}`,'g');
-  for(const m of masked.matchAll(re))out[m[1]]=m[2];
-  return out;
+// --- 5) Yan menü ve telefon sekmeleri AYNI kaynaktan beslenir; renk ton sisteminden (--mc-*) gelir
+const nav=read('js/core/app-nav.js'),navPages=read('js/core/nav-pages.js');
+assert(/function webMenu\(/.test(nav)&&/webMenu,/.test(nav),'AppNav.webMenu() yan menü modelini üretmeli ve dışa vermeli.');
+assert(web.includes('nav()?.webMenu?.()'),'Yan menü modeli AppNav.webMenu()den okunmalı (ikinci menü kataloğu yok).');
+assert(!/data-ka-menu-group|ka-menu-card|kaMenuLayer/.test(masked),'Eski telefon menü katmanı (kaMenuLayer / ka-menu-card / data-ka-menu-group) stillerde kalmamalı.');
+assert(!/data-ka-menu-group|kaMenuLayer/.test(web+shell+navPages),'Eski menü işaretlemesi JS tarafında kalmamalı.');
+assert(masked.includes('html :is(.ka-nav-page,.ka-today,.ka-web-side){--mc-rgb:var(--t-accent-rgb)}'),'Yan menü varsayılan vurgu rengini ton sisteminden almalı.');
+for(const [name,c] of Object.entries({indigo:'--c-indigo',blue:'--c-blue',green:'--c-emerald',red:'--c-red',amber:'--c-amber',orange:'--c-orange',cyan:'--c-cyan',slate:'--c-slate'})){
+  assert(masked.includes(`html :is(.ka-nav-page,.ka-today) [data-tone="${name}"]{--mc-rgb:var(${c})}`),`Ton sistemi "${name}" tonunu ${c} rengine bağlamalı.`);
 }
-const phoneMap=groupMap('#kaMenuLayer.ka-menu-layer');
-const webMap=groupMap('.ka-web-side');
-assert(Object.keys(phoneMap).length>=10,'Telefon menüsü grup renk eşlemesi bulunamadı.');
-assert.deepStrictEqual(webMap,phoneMap,'Yan menü grup renkleri telefon menüsüyle aynı olmalı.');
-for(const [name,c] of Object.entries({green:'--c-emerald',red:'--c-red',amber:'--c-amber',orange:'--c-orange',cyan:'--c-cyan',slate:'--c-slate'})){
-  assert(masked.includes(`html .ka-web-side [data-tone="${name}"]{--mc-rgb:var(${c})}`),`Yan menü "${name}" tonu ${c} rengine bağlı olmalı.`);
-  assert(masked.includes(`html #kaMenuLayer.ka-menu-layer .ka-menu-card--${name}{--mc-rgb:var(${c})}`),`Telefon menüsü "${name}" tonu ${c} rengine bağlı olmalı.`);
-}
-// Simge maskeleri: telefon menüsü ve yan menü aynı kural kümesini paylaşır
-const glyphRules=masked.split('\n').filter(l=>l.includes('[data-ka-glyph=')&&l.includes('{--ic:'));
-assert(glyphRules.length>=35,'Simge maskeleri bulunamadı.');
-assert(glyphRules.every(l=>l.startsWith('html :is(#kaMenuLayer.ka-menu-layer,.ka-web-side) ')),'Simge maskeleri telefon menüsü ve yan menüde ortak kullanılmalı.');
+// Simge maskeleri tek yerde (telefon sayfaları + yan menü)
+assert(!masked.split('\n').some(l=>l.includes('[data-ka-glyph=')&&l.includes('{--ic:')&&/kaMenuLayer/.test(l)),'Simge maskeleri eski menü katmanına bağlı kalmamalı.');
 
 // --- 6) ShellUI: web kancaları ve telefon davranışının korunması
 assert(shell.includes("const WEB_MEDIA='(min-width:1100px)'"),'ShellUI web eşiği 1100px olmalı.');
 assert(/function webMode\(\)\{try\{return global\.matchMedia\?\.\(WEB_MEDIA\)\.matches===true\}catch/.test(shell),'webMode() matchMedia ile belirlenmeli ve hata durumunda telefon sayılmalı.');
-assert(/global\.ShellUI=\{[^}]*\bwebMode\b[^}]*\bwebMenu\b[^}]*\bcurrentView\b[^}]*\bprofileInfo\b/.test(shell),'ShellUI webMode/webMenu/currentView/profileInfo dışa vermeli.');
+assert(/global\.ShellUI=\{[^}]*\bwebMode\b[^}]*\bcurrentView\b[^}]*\bprofileInfo\b/.test(shell),'ShellUI webMode/currentView/profileInfo dışa vermeli.');
+assert(!/\bwebMenu\b/.test(shell)&&!shell.includes('koruk:web-menu-open'),'Menü modeli ShellUI içinde değil AppNav.webMenu()de durur; eski web menü olayı kalmamalı.');
 assert(/function syncShellBack\(\)\{[\s\S]*?koruk:shell-route/.test(shell),'syncShellBack rota olayını yayınlamalı.');
-assert(/remember&&!parentMenu&&page&&!webMode\(\)/.test(shell)&&/remember&&parentMenu&&!webMode\(\)/.test(shell),'Masaüstünde menü listeleri geri yığınına (rota hafızası) yazılmamalı.');
-assert(/function openMenu\(\)\{closeHeaderPopover\(\);if\(webMode\(\)\)\{closeMenu\(\);[^}]*koruk:web-menu-open/.test(shell),'openMenu masaüstünde tam ekran menü yerine web olayını yayınlamalı.');
-assert(shell.includes('[data-ka-web-profile]'),'Profil açılır kutusu yan menü tetikleyicisini dışarı tıklama saymamalı.');
-assert(/function openProfilePopover\(anchorArg\)/.test(shell),'openProfilePopover bağlantı noktasını argüman olarak kabul etmeli.');
+assert(/remember&&parent&&!webMode\(\)/.test(shell),'Masaüstünde üst sayfa geri yığınına (rota hafızası) yazılmamalı.');
+assert(!shell.includes('function openMenu(')&&!shell.includes('function openProfilePopover('),'Tam ekran menü ve profil açılır kutusu kalmamalı: yan menü / Ben sekmesi bunların yerini alır.');
+assert(web.includes('[data-ka-web-profile]'),'Yan menü profil kartı (Ben sekmesine gider) web-shell.js içinde bağlanmalı.');
 
 // --- 7) web-shell.js: sözdizimi, yalın veri erişimi, telefonda etkisiz
 new Function(web);
@@ -160,7 +156,7 @@ assert(lsKeys.length>0&&lsKeys.every(k=>k==='RECENT_KEY'),'web-shell.js yalnızc
 assert(web.includes("const RECENT_KEY='ka-web-recent'"),'Son kullanılanlar anahtarı sabit olmalı.');
 assert(web.includes('const isWeb=()=>ui()?.webMode?.()===true'),'web-shell.js genişlik kararını ShellUI.webMode()den almalı.');
 assert(/routeModule/.test(web),'Menü gezinmesi mevcut ShellUI.routeModule üzerinden yürümeli.');
-assert(web.includes("addEventListener('koruk:shell-route'")&&web.includes('koruk:web-menu-open'),'web-shell.js rota ve menü olaylarını dinlemeli.');
+assert(web.includes("addEventListener('koruk:shell-route'")&&web.includes('koruk:nav-role-changed'),'web-shell.js rota ve rol değişimi olaylarını dinlemeli (yan menü role göre yeniden kurulur).');
 assert(/aria-label/.test(web)&&/aria-current/.test(web),'Yan menü erişilebilirlik öznitelikleri taşımalı.');
 
 // --- 8) Dokümantasyon

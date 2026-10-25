@@ -310,13 +310,16 @@ async function printMode(mode){
 
 function shell(){return '<section class="ka-page ka-stack ka-fm" data-food-menu-module><header class="ka-page-head"><span class="ka-page-head__icon" aria-hidden="true">🍽️</span><div><small>YEMEK</small><h2 data-food-title>Menü</h2><p data-food-sub></p></div></header><div id="foodMenuContent" class="ka-stack"></div></section>'}
 
+const VIEW_TABS=[['daily','Günlük'],['weekly','Haftalık'],['monthly','Aylık']];
+function viewTabs(){return '<div class="ka-fm-views" role="tablist" aria-label="Menü görünümü">'+VIEW_TABS.map(([k,l])=>'<button class="ka-tab'+(k===active?' is-active':'')+'" type="button" role="tab" aria-selected="'+(k===active)+'" data-fm-view="'+k+'">'+l+'</button>').join('')+'</div>'}
 function setViewDate(iso){foodMenuViewDate=iso;foodMenuCurrentMonth=monthKeyOf(new Date(iso+'T00:00:00'))}
 function render(){
  if(!mounted)return;
  const out=document.getElementById('foodMenuContent');
  if(!out)return;
  const html=active==='daily'?dailyView():active==='weekly'?weeklyView():active==='monthly'?monthlyView():auditView();
- out.innerHTML=html;
+ out.innerHTML=(active==='audit'?'':viewTabs())+html;
+ out.querySelectorAll('[data-fm-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.fmView===active)return;active=b.dataset.fmView;render()}));
  const h=document.querySelector('[data-food-title]');
  if(h)h.textContent=TITLES[active]||'Yemek';
  const sub=document.querySelector('[data-food-sub]');

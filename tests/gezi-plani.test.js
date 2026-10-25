@@ -33,7 +33,7 @@ test('amaç önerileri değişir ve gezi yerini kullanır', () => {
   assert.notStrictEqual(a, b); assert.match(a, /Anıtkabir/);
 });
 test('menü, yönlendirme, önbellek ve stil bağlı; yeni CSS kapsamlı ve renk kodsuz', () => {
-  for (const f of ['js/core/shell-ui.js', 'js/app-loader.js']) assert.match(fs.readFileSync(f, 'utf8'), /\['Gezi Planı','🚌','gezi'\]/);
+  assert.match(fs.readFileSync('js/core/app-nav.js', 'utf8'), /\['gezi','Gezi Planı'[^\]]*'gezi'\]/);
   assert.match(fs.readFileSync('js/core/shell-ui.js', 'utf8'), /name==='gezi'/);
   assert.match(fs.readFileSync('service-worker.js', 'utf8'), /js\/modules\/gezi\.js/);
   const blok = css.slice(css.indexOf('A4 FORM — Gezi planı'), css.indexOf('SERVİS OTURMA IZGARASI'));

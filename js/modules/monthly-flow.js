@@ -200,7 +200,7 @@ ${hid.length?`<button type="button" class="ka-btn ka-btn--secondary maf-showhid"
  if(!catalogLoaded){catalogLoaded=true;global.AppLoader?.loadScript?.('js/modules/belirli-gunler-catalog.js').then(()=>{if(global.BelirliGunlerCatalog?.CATALOG&&root&&root.querySelector('[data-maf-page]'))render(root)}).catch(()=>{})}
  return true
 }
-function go(k){const x=L[k];if(!x)return;try{global.ShellUI?.routeModule?.(x[1],{bottom:'menu',page:x[2]||'',title:x[0]})}catch(e){global.toast?.('Sayfa açılamadı.')}}
+function go(k){const x=L[k];if(!x)return;try{global.ShellUI?.routeModule?.(x[1],{page:x[2]||'',title:x[0]})}catch(e){global.toast?.('Sayfa açılamadı.')}}
 function bind(r){
  const s=ensure(),q=(sel,fn)=>r.querySelectorAll(sel).forEach(fn),re=()=>{save();render(r)};
  q('[data-maf-month]',b=>b.addEventListener('click',()=>{ay=b.dataset.mafMonth;notOpen='';showHidden=false;render(r)}));

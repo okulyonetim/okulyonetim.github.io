@@ -1,6 +1,6 @@
 /* Koruk Asistan — PROFİL FOTOĞRAFI KIRPMA EKRANI
    Fotoğraf yüklenmeden önce, uygulamada GERÇEKTE görüneceği daire kadrajıyla kırpılır:
-   sürükle (iki parmakla yakınlaştır / fare tekerleği / kaydırıcı), 90° döndür, sıfırla; altta üst başlık, profil kartı ve
+   sürükle (iki parmakla yakınlaştır / fare tekerleği / kaydırıcı), 90° döndür, sıfırla; altta yan menü, Ben sekmesi kartı ve
    profil sayfası önizlemesi canlı güncellenir. Çıkış kare PNG'dir (tek kayıplı kodlama auth.js'te WEBP'e yapılır).
    Görünüm css/design-system-base.css içindeki "PROFİL FOTOĞRAFI · KIRPMA EKRANI" bölümünden (TEMA MERKEZİ belirteçleri) gelir.
    API: PhotoCropper.open(file,{badge}) → Promise<File|null>  (null = vazgeçildi; hata → reddedilir). */
@@ -62,8 +62,8 @@ function open(file,opts={}){
 <div class="ka-photo-crop__zoom"><span aria-hidden="true">−</span><input type="range" min="1" max="${ZOOM_MAX}" step="0.01" value="1" data-pc-zoom aria-label="Yakınlaştır"><span aria-hidden="true">+</span></div>
 <div class="ka-photo-crop__tools"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-pc-rot="-90"><span aria-hidden="true">↺</span> Sola Çevir</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-pc-rot="90"><span aria-hidden="true">↻</span> Sağa Çevir</button><button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-pc-reset>Sıfırla</button></div>
 <div class="ka-photo-crop__pvs" role="group" aria-label="Gerçek görünüm önizlemesi">
-<figure class="ka-photo-crop__pv"><span class="ka-photo-crop__pvav ka-photo-crop__pvav--sm"><canvas data-pc-pv></canvas></span><figcaption>Üst başlık</figcaption></figure>
-<figure class="ka-photo-crop__pv"><span class="ka-photo-crop__pvav ka-photo-crop__pvav--md"><canvas data-pc-pv></canvas>${chip}</span><figcaption>Profil kartı</figcaption></figure>
+<figure class="ka-photo-crop__pv"><span class="ka-photo-crop__pvav ka-photo-crop__pvav--sm"><canvas data-pc-pv></canvas></span><figcaption>Yan menü</figcaption></figure>
+<figure class="ka-photo-crop__pv"><span class="ka-photo-crop__pvav ka-photo-crop__pvav--md"><canvas data-pc-pv></canvas>${chip}</span><figcaption>Ben kartı</figcaption></figure>
 <figure class="ka-photo-crop__pv"><span class="ka-photo-crop__pvav ka-photo-crop__pvav--lg"><canvas data-pc-pv></canvas>${chip}</span><figcaption>Profil sayfası</figcaption></figure>
 </div></div>
 <div class="ka-modal__footer"><button class="ka-btn ka-btn--secondary" type="button" data-pc-cancel>Vazgeç</button><button class="ka-btn" type="button" data-pc-save>Kaydet</button></div></section>`;

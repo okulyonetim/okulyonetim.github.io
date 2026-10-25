@@ -45,6 +45,9 @@
     return !specific||can(specific,'read');
   };
 
+  /* Menü (AppNav.canOpen) ve rota koruması aynı kuralı kullanır: yetkisiz sayfa hiçbir yüzeyde görünmez. */
+  window.RolePermissionBridge=Object.freeze({allowedRoute});
+
   function installNavigationGuards(){
     if(navigationInstalled)return true;
     const shell=window.ShellUI;
@@ -64,36 +67,11 @@
     return true;
   }
 
-  function filterMenuDom(){
-    if(!window.PermissionService)return;
-    document.querySelectorAll('[data-ka-shell-route]').forEach(el=>{
-      const name=el.dataset.kaShellRoute||'',page=el.dataset.kaShellPage||'';
-      const allowed=allowedRoute(name,page);
-      el.hidden=!allowed;
-      el.setAttribute('aria-hidden',String(!allowed));
-    });
-    document.querySelectorAll('[data-ka-menu-group]').forEach(card=>{
-      const group=String(card.dataset.kaMenuGroup||'');
-      const moduleMap={people:'people',programs:'academic',communication:'communication',documents:'documents',transport:'transport',food:'food',management:'management',settings:'settings',exams:'academic',calendar:'communication'};
-      const module=moduleMap[group];
-      if(module)card.hidden=!can(modulePermission(module),'read');
-    });
-  }
-
-  function watchMenu(){
-    filterMenuDom();
-    if(window.__rolePermissionMenuObserver)return;
-    const observer=new MutationObserver(()=>filterMenuDom());
-    observer.observe(document.body,{childList:true,subtree:true});
-    window.__rolePermissionMenuObserver=observer;
-  }
-
   const run=()=>{
     if(!window.RolePermissionCatalog?.mergeIntoPermissionService?.())return false;
     window.dispatchEvent(new CustomEvent('koruk:permission-catalog-ready'));
     loadEditor().catch(e=>console.warn('[RolePermissionEditor]',e?.message||e));
     loadCrudGuards().catch(e=>console.warn('[RolePermissionCrudGuards]',e?.message||e));
-    watchMenu();
     if(!installNavigationGuards()){
       const timer=setInterval(()=>{
         if(installNavigationGuards()||++attempts>=120)clearInterval(timer);

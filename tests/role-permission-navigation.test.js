@@ -8,6 +8,8 @@ for(const key of ['people:teachers','people:students','academic:schedule','manag
 assert(bridge.includes("const modulePermission=name=>`module.${String(name||'').trim()}`"),'Modül permission çözümleyici eksik.');
 assert(bridge.includes('shell.routeModule=async function(name,options={})'),'Doğrudan rota erişim guardı eksik.');
 assert(bridge.includes("if(!allowedRoute(name,page))"),'Rota erişim kontrolü uygulanmıyor.');
-assert(bridge.includes("el.dataset.kaShellRoute||''"),'Menü öğesi permission filtresi eksik.');
-assert(bridge.includes("card.dataset.kaMenuGroup||''"),'Menü kartı permission filtresi eksik.');
+assert(bridge.includes('window.RolePermissionBridge=Object.freeze({allowedRoute})'),'Menü, rota korumasıyla aynı permission kuralını RolePermissionBridge üzerinden almalı.');
+const appNav=fs.readFileSync('js/core/app-nav.js','utf8');
+assert(appNav.includes("global.RolePermissionBridge?.allowedRoute?.(name,page||'')!==false"),'Araç menüsü (AppNav.canOpen) sayfa düzeyindeki rol izinlerini uygulamalı.');
+assert(!bridge.includes('data-ka-shell-route')&&!bridge.includes('data-ka-menu-group'),'Eski menü DOM filtresi geri dönmemeli: menü yetkiye göre baştan üretilir.');
 console.log('role-permission-navigation.test.js: OK');

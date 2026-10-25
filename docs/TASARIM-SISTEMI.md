@@ -179,23 +179,15 @@ Ana sayfadaki hava durumu kartı ve kartı tıklayınca açılan detay penceresi
 | `--ka-wx-sun-*`, `--ka-wx-moon*`, `--ka-wx-star*`, `--ka-wx-rain-*`, `--ka-wx-flake*`, `--ka-wx-mist-*`, `--ka-wx-bolt-*` | Güneş, ay, yıldız, yağmur, kar, sis, şimşek renkleri |
 | `--ka-wx-speed` | Tüm hava animasyonlarının hızı (1 = normal, 2 = yarı hız, 0 = durağan); tek tek süreler `--ka-wx-t-*` |
 | `--ka-wx-shadow`, `--ka-wx-shadow-modal` | Kart ve pencere gölgesi (açık/koyu paletlerde ayrı) |
-| `--ka-wxc-ink`, `--ka-wxc-ink-2` | **Ana sayfa kartı** yazısı: temanın yazı rengi ve onun %76'sı (açık temada koyu, koyu temada açık) |
-| `--ka-wxc-tint` | Kart zeminine karışan gökyüzü renginin payı. Zemin temanın kart yüzeyidir (`--ka-card-bg`); açık temada %20, koyu temada %30 (açık/koyu paletlerde ayrı) |
-| `--ka-wxc-sky-o` | Kartta güneş / ay / bulut / yağmur dokusunun yoğunluğu (açık/koyu paletlerde ayrı; 0 = yalnız düz zemin) |
 
-**Ana sayfa kartı** tek satırlık şerittir (sıcaklık · durum + hissedilen · konum · ok; sığmayan "hissedilen" gizlenir). Nem / rüzgâr / basınç / saatlik / 7 günlük ayrıntılar yalnız kartı tıklayınca açılan pencerededir. Kartın zemini hava durumuna göre ince renklenir ama açık ve koyu temaya uyar; yazı rengi temadan gelir. Gökyüzü hareketi kartta hafif bir dokudur.
+Hava durumu ana sayfada kart olarak yer almaz: üst çubuktaki hava çipine (masaüstünde üst çubuktaki hava düğmesine) dokunmak ayrıntı penceresini açar. Pencere `SchoolLiveStatus.openWeather()`'dır; içeriği `weatherView()` üretir. Yeni bir hava durumu eklemek için `kindOf()`'a eşleme + `.ka-wx.k-<durum>.is-day|is-night` kuralları ve `--ka-wx-<durum>-*` renkleri gerekir.
 
-Kart yapısını `js/v3/hava-durumu-skin.js` kurar (içeriği `SchoolLiveStatus.weatherCard()` üretir; `dashboard.js` değişmedi, eski çocukları CSS gizler); pencere `SchoolLiveStatus.openWeather()`'dır. Kapatmak için `localStorage['ka-skin']='off'` (sade eski kart görünür). Yeni bir hava durumu eklemek için `kindOf()`'a eşleme + `.ka-wx.k-<durum>.is-day|is-night` kuralları ve `--ka-wx-<durum>-*` renkleri gerekir.
+### Klasör Sırtlığı (`--ka-spine-*`)
 
-### Araçlar listesi ve Klasör Sırtlığı (`--ka-hub-*`, `--ka-spine-*`)
-
-Döküman & Evraklar menüsündeki **Araçlar** öğesi tek bir araca değil, araçların **liste sayfasına** (`js/modules/araclar-hub.js`) açılır; her araç ayrı bir sayfadır ve geri tuşu listeye döner. Şimdilik iki araç var: *İlkokula Başlama Yaşı Hesaplama* (`school-age-calculator`) ve *Klasör Sırtlığı Oluşturucu* (`folder-spine`, ilk açılışta yüklenir). Yeni araç eklemek: `AraclarHub.add({page,icon,title,desc})` + o sayfanın rotasını `ShellUI.registerPageRoute` ile kaydetmek.
+Klasör Sırtlığı Oluşturucu, Araçlar sayfasındaki **Evrak ve yazışma** grubundan (yönetici arayüzünde) açılır; araç listesi `js/core/app-nav.js` içindeki tek araç kaydından gelir. Yeni bir araç eklemek için o kayda satır eklenir ve sayfa rotası `ShellUI.registerPageRoute` ile kaydedilir.
 
 | Değişken | Etkisi |
 |---|---|
-| `--ka-hub-gap`, `--ka-hub-pad`, `--ka-hub-radius` | Liste kartlarının arası, iç boşluğu ve köşesi (yüzey ortak cam `.ka-surface`'tir) |
-| `--ka-hub-icon-size`, `--ka-hub-icon-radius`, `--ka-hub-icon-fs` | Kart ikon kutusu |
-| `--ka-hub-title-fs`, `--ka-hub-desc-fs`, `--ka-hub-go-fs`, `--ka-hub-press-scale` | Araç adı, açıklama, sağdaki ok ve basılma küçülmesi |
 | `--ka-spine-sw-1` … `-sw-9` | Sırtlık renk seçenekleri (sayfadaki renk noktaları buradan okunur). Okul şeridi şablonunun varsayılan ana rengi `-sw-9` (lacivert), şerit rengi `-sw-4` (turuncu) |
 | `--ka-spine-paper`, `--ka-spine-ink`, `--ka-spine-ink-soft`, `--ka-spine-on-accent`, `--ka-spine-cut` | Kâğıt, yazı, ikincil yazı, renkli zemindeki yazı, kesim çizgisi/işareti. **Temadan bağımsızdır** (koyu temada da beyaz kâğıt) |
 | `--ka-spine-font`, `--ka-spine-fw-title/-sub/-meta`, `--ka-spine-ls-meta` | Kâğıt yazı tipi, kalınlıkları, harf aralığı |
@@ -209,7 +201,7 @@ Sırtlık sayfası: ölçü (3 cm / 5 cm / 8 cm / özel), içerik, altı şablon
 
 **Çerçeveler:** her şablonda logo çerçeveli (`lf-on`, `.ka-spine__logo` üstünde; çizgi rengi `--sp-lf` zemine göre açık/koyu) ve sırtlığın tamamı dış çerçeveli (`fr-on`; Dolgulu şablonda içeriden beyaz çizgi, Çerçeveli şablonda kendi çift çerçevesi). İkisi de sayfadaki "Logo çerçevesi" / "Sırtlık çerçevesi" kutularından kapatılabilir.
 
-**Erişim:** Klasör Sırtlığı yalnız **admin** ve rol adı **yönetici** olanlara açıktır (`araclar-hub.js` → araçta `roles:['admin','yonetici']`). Diğer roller (öğretmen vb.) kartı listede görmez; `folder-spine` rotası doğrudan çağrılsa da açılmaz (uyarı + Araçlar listesi). Rol verisi geç gelirse açık liste yeniden çizilir. Başka bir aracı kısıtlamak için araca aynı `roles` alanı verilir.
+**Erişim:** Klasör Sırtlığı yalnız **admin** ve rol adı **yönetici** olanlara açıktır (`app-nav.js` → araç kaydındaki `adminOrManager` koşulu). Diğer roller (öğretmen vb.) kartı listede görmez; `folder-spine` rotası doğrudan çağrılsa da açılmaz (uyarı + Araçlar listesi). Rol verisi geç gelirse açık liste yeniden çizilir. Başka bir aracı kısıtlamak için araca aynı `roles` alanı verilir.
 
 **Okunurluk / dayanıklılık:** ana renk çok açıksa (kâğıtta kontrast < 4,5) başlık, dönem ve çerçeveler `--sp-cp` (JS: `onPaper`) ile koyulaştırılır; koyu renklere dokunulmaz. Önizleme küçültüldüğünde çerçeve çizgileri incelmesin diye `--sp-fmin` / `--sp-lmin` (yalnız önizlemede) alt sınır verir; yazdırmada alt sınır yoktur, gerçek kalınlık (`--ka-spine-*-w`) basılır. Sayfa açılırken küçük bir sınama (`cssOk`) kutu/çerçeve kurallarının yüklü olup olmadığına bakar; eski önbellekli CSS ile yeni modül birlikte çalışıyorsa sayfada "uygulamayı kapatıp açın / yenileyin" uyarısı çıkar.
 
@@ -239,6 +231,28 @@ Tek yazı tipi ailesi **Inter**'dir (değişken, 100–900); `--ka-font` içinde
 (service worker iki dosyayı önbelleğe alır, `index.html` latin dosyasını `preload` eder). Yazı tipini değiştirmek için yalnız bu dosyaları ve `--ka-font`'u değiştirin;
 sayfa CSS'inde `font-family` yazmayın.
 
+### Gezinme ve ana sayfa — rol bazlı arayüz
+
+Uygulamanın iki arayüzü vardır; hangisinin açılacağı **unvandan** belirlenir (`AppNav.role()`: `ogretmen` | `idareci`). Hem yönetip hem ders veren kullanıcı **Ben** sayfasından (ve Yönetim/Araçlar sayfasındaki kartla) diğerine geçebilir (`AppNav.setRole`, olay `koruk:nav-role-changed`).
+
+| Arayüz | Alt sekmeler (ortadaki yükseltilmiş sekme araç menüsüdür) |
+|---|---|
+| Öğretmen | Bugün · Programım · **Araçlar** · Okul · Ben |
+| İdareci | Özet · Okul · **Yönetim** · İletişim · Ben |
+
+| Ne | Nerede |
+| --- | --- |
+| Rol, sekmeler, araç kataloğu (`TOOLS`), gruplar, arama, sık kullanılanlar, yetki süzgeci | `js/core/app-nav.js` — **tek kaynak**; yeni araç = bu dosyada bir satır |
+| Sekme sayfaları (Araçlar/Yönetim, araç grubu, Okul, İletişim, Programım, Ben) | `js/core/nav-pages.js` (işaretleme `ka-nav-*`) |
+| Bugün / Özet ana sayfası | `js/modules/dashboard.js` (işaretleme `ka-today-*`; öğretmen: zil sayacı, bugünkü derslerim, nöbet, hızlı araçlar; idareci: zil sayacı, göstergeler, şu an kim nerede, nöbetçiler, izinliler) |
+| Alt çubuk, geri yığını, sayfa yönlendirme | `js/core/shell-ui.js` (`openTab`, `openPage`, `routeModule`) |
+| Stil | `css/design-system-base.css` → "GEZİNME SAYFALARI + BUGÜN / ÖZET" bölümü; yalnız tema belirteçleri. Satır/çip/ikon rengi işaretlemedeki `data-tone` değerinden gelir (ton sistemi `--mc-rgb` → `--mc-t / -b / -ink`) |
+
+Kurallar:
+- **Yeni araç** yalnız `app-nav.js` içindeki `TOOLS` listesine eklenir ve bir gruba (`ids`) yazılır; Araçlar sayfası, arama, yan menü ve sık kullanılanlar kendiliğinden gösterir. Renk/ikon için sayfa CSS'inde kural yazılmaz.
+- **Arayüz → araç görünürlüğü** `TEACHER_HIDDEN` ve her araçtaki yetki koşuluyla (`need`) süzülür; yetkisi olmayan araç hiçbir yüzeyde (sekme, arama, yan menü) görünmez.
+- Arama kutusu gibi **kendi çerçevesi olan kapsayıcı içindeki girdiler** `ka-field-bare` sınıfını taşır; genel form alanı kuralı bu girdileri dışarıda bırakır.
+
 ### Web arayüzü — sol menü + üst çubuk + geniş ana sayfa (`--ka-web-*`)
 
 Tarayıcıda / geniş ekranda (**≥1100px**) alt gezinme çubuğu yerine kalıcı sol menü ve üst çubuk gösterilir. Telefon ve APK (<1100px)
@@ -247,23 +261,24 @@ Ayrı bir web CSS'i / ayrı bir dashboard motoru yoktur; tek kabuk (`index.html`
 
 | Ne | Nerede |
 | --- | --- |
-| Ölçüler (`--ka-web-side-w`, `--ka-web-top-h`, `--ka-web-page-max`, `--ka-web-gutter`, `--ka-web-gap`, `--ka-web-aside-w`, `--ka-web-row`, `--ka-web-hero-card`) | `css/design-system-base.css` → TEMA MERKEZİ (`--ka-content-max-width` yanında). Genişliğe bağlı olanlar `clamp()` ile 1100→1280px arasında akar; çekirdekte `@media` yoktur. |
-| Görünüm kuralları | `css/design-system-base.css` en altı: "WEB ARAYÜZÜ (≥1100px)" ve "WEB ARAYÜZÜ · ANA SAYFA ÖLÇÜLERİ" |
-| Yan menü + üst çubuk işaretlemesi | `js/core/web-shell.js` (menü içeriği `ShellUI.webMenu()`; rota `ShellUI.routeModule`) |
+| Ölçüler (`--ka-web-side-w`, `--ka-web-top-h`, `--ka-web-page-max`, `--ka-web-gutter`, `--ka-web-gap`) | `css/design-system-base.css` → TEMA MERKEZİ (`--ka-content-max-width` yanında). Genişliğe bağlı olanlar `clamp()` ile 1100→1280px arasında akar; çekirdekte `@media` yoktur. |
+| Görünüm kuralları | `css/design-system-base.css`: "WEB ARAYÜZÜ (≥1100px)" ve "GEZİNME SAYFALARI + BUGÜN / ÖZET" içindeki ≥1100px bloğu |
+| Yan menü + üst çubuk işaretlemesi | `js/core/web-shell.js` (menü içeriği `AppNav.webMenu()`; rota `ShellUI.routeModule`) |
 | Etkin sayfa / kırıntı / geri | `ShellUI` her yönlendirmede `koruk:shell-route` olayı yollar; `web-shell.js` dinler |
 
+`tests/web-shell-desktop.test.js` bu sözleşmeyi (belirteçler, yalnız geniş ekranda geçerli kurallar, `AppNav.webMenu()` tek kaynağı, ShellUI kancaları) doğrular.
+
 Kurallar:
-- **Menü içeriği telefonla aynı kaynaktan gelir** (`MENU_GROUPS` + admin menü düzeni + yetkiler). Yeni menü öğesi eklemek için yalnız `MENU_GROUPS`'a ekleyin; yan menü kendiliğinden gösterir.
-- **Grup renkleri** telefon menüsüyle aynı eşlemedir (`--mc-rgb`, grup anahtarı → renk). İkincisi `.ka-web-side` altında yinelenir; `tests/web-shell-desktop.test.js` iki eşlemeyi karşılaştırır — birini değiştirirseniz diğerini de değiştirin.
-- **İkonlar**: telefon menüsündeki `data-ka-glyph` → CSS mask eşlemesi `:is(#kaMenuLayer.ka-menu-layer,.ka-web-side)` ile yan menüde de geçerlidir. Yeni bir emoji ikonu eklemek tek yerde (o satırlar) yapılır.
-- **Ana sayfa**: `dashboard.js` işaretlemesi değişmez. `.ka-home` bölümleri `data-home-section` anahtarıyla 4px'lik satır ızgarasına yerleştirilir; `web-shell.js` her bölümün yüksekliğini ölçüp `grid-row-end:span N` yazar (sütunlar bağımsız dizilir). Sağ sütun ≥1280px'te açılır; yeni bir bölümü sağ sütuna almak için anahtarını `…[data-home-section="quick"],…` listelerine ekleyin.
+- **Menü içeriği telefonla aynı kaynaktan gelir** (`AppNav.tabs()` + gruplar + yetkiler): yan menüde rolün sekmeleri listelenir, Araçlar/Yönetim sekmesi araç gruplarını alt öğe olarak açar. Yeni bir araç eklemek için yalnız `app-nav.js`'e ekleyin.
+- **Hesap kartı** (alt köşe) Ben sayfasını açar; rol değiştirebilen kullanıcıda altında "… menüsüne geç" düğmesi görünür.
+- **Ana sayfa**: ≥1100px'te `.ka-today` iki sütuna geçer (başlık, zil sayacı ve göstergeler tam genişlik; bölümler iki sütun).
 - **Sayfalar kenar çubuğu yüzünden görünüm alanından dardır**: 900px/1024px gibi *görünüm alanına* göre ayarlı ızgara kuralları web kabuğunda taşabilir; taşan sayfa için web bloğuna kısa bir düzeltme ekleyin (örnek: `.ka-attendance-toolbar`).
-- Masaüstünde "geri" menü listesine değil önceki sayfaya döner (menü listesi bellekte tutulmaz; kalıcı yan menü vardır). `ShellUI.openMenu()` masaüstünde menü katmanı açmaz.
+- Masaüstünde "geri" önceki sayfaya döner; kalıcı yan menü vardır, ayrı bir menü katmanı yoktur. Üst çubuktaki arama düğmesi masaüstünde gizlidir (geniş arama alanı vardır).
 - **Telefondan önizleme**: telefon tarayıcısının "Masaüstü sitesi" modu sayfayı ~980px çizdiği için 1100px eşiğine ulaşmaz. Adrese `?web=1` eklenirse `index.html`/`beta.html` başındaki satır içi betik viewport'u `width=1280` yapar (bayrak `localStorage` `ka-web-preview`; `?web=0` kapatır). Bayrak yokken hiçbir şey değişmez; "Masaüstü sitesi" modu açıkken değil, normal (mobil) modda kullanılır.
 
 ### Profil fotoğrafı — Rozetli + kırpma ekranı (`--ka-avatar-*`, `--ka-photo-crop-*`)
 
-Profil fotoğrafı her yerde (üst başlık, açılan profil kartı, profil sayfası, web yan menüsü) **aynı iki parçadan** oluşur:
+Profil fotoğrafı her yerde (Ben sekmesindeki kart, profil sayfası, web yan menüsü) **aynı iki parçadan** oluşur:
 ince altın halka + dış hare (`--ka-avatar-ring-shadow`, profil sayfasında `--ka-avatar-ring-shadow-lg`) ve açılan kartta / profil sayfasında
 fotoğrafın altında **unvan rozeti** (`.ka-avatar-chip`: Müdür, Öğretmen …). Hepsi `css/design-system-base.css` başındaki TEMA MERKEZİ'nden gelir.
 
@@ -277,7 +292,7 @@ fotoğrafın altında **unvan rozeti** (`.ka-avatar-chip`: Müdür, Öğretmen �
 
 Kırpma ekranı fotoğraf seçilince **yüklemeden önce** açılır ve uygulamadaki gerçek görünümü gösterir:
 - Daire kadraj (uygulamada fotoğraf daire görünür); sürükle, iki parmakla / tekerlekle / kaydırıcıyla yakınlaştır, 90° döndür, sıfırla; klavye: ok tuşları, `+` `-`, `Esc`.
-- Altta üst başlık, profil kartı ve profil sayfası önizlemesi **canlı** güncellenir (aynı halka ve rozetle).
+- Altta yan menü, Ben kartı ve profil sayfası önizlemesi **canlı** güncellenir (aynı halka ve rozetle).
 - Fotoğraf kadrajı hiçbir zaman boş bırakmaz (en küçük ölçek = kadrajı tam kaplayan ölçek). Çıkış, kadrajın kare PNG'sidir; yapay büyütme yoktur (en çok 512 px).
 - Kırpma modülü ağa dokunmaz: yalnız `File` üretir. Yükleme hattı değişmedir: `ShellUI.profilePhotoUpdate` → `kendiProfilFotografimiGuncelle` (`js/auth.js`: tür/boyut doğrulama, 512 px WEBP, Storage, oturum). Böylece tek kayıplı kodlama yapılır.
 - Kırpma modülü yüklenemezse eski akış (ortadan kare kırpma) çalışır. Vazgeçilirse hiçbir şey yüklenmez.

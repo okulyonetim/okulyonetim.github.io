@@ -12,10 +12,9 @@ new Function(page);new Function(dashboard);
 
 assert(firebase.includes("toplantiCizelgesi:'oy_toplantiCizelgesi'"),'Toplantı çizelgesi gerçek COL haritasında olmalı.');
 assert(firebase.includes("dersListesi:'oy_dersListesi'"),'Ortaokul zümresi gerçek ders listesi koleksiyonunu kullanabilmeli.');
-assert(loader.includes("['Toplantı Çizelgesi','📅','management','meeting-schedule']"),'Toplantı Çizelgesi Personel İşleri menüsünde olmalı.');
+assert(/\['meeting-schedule','Toplantı Çizelgesi'[^\]]*'management','meeting-schedule'\]/.test(fs.readFileSync('js/core/app-nav.js','utf8')),'Toplantı Çizelgesi araç kataloğunda (Programlar) olmalı.');
 assert(loader.includes("registerPageRoute('meeting-schedule'"),'Toplantı Çizelgesi custom route kayıtlı olmalı.');
 assert(loader.includes("loadScript('js/modules/meeting-schedule.js')"),'Toplantı sayfası lazy yüklenmeli.');
-assert(shell.includes("['Toplantı Çizelgesi','📅','management','meeting-schedule']"),'Shell varsayılan menüsü de toplantı sayfasını bilmeli.');
 
 assert(rules.includes('match /oy_toplantiCizelgesi/{id}'),'Firestore toplantı çizelgesi kuralı bulunmalı.');
 const meetingRule=rules.slice(rules.indexOf('match /oy_toplantiCizelgesi/{id}'),rules.indexOf('match /oy_ogretmenler/{id}'));

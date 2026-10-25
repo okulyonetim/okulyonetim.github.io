@@ -20,7 +20,7 @@ test('koleksiyon, kurallar, menü, rota ve önbellek tanımlı; yazım yalnız D
   assert.match(blok,/allow create: if girisYapmis\(\) && request\.resource\.data\.olusturanUid == request\.auth\.uid/);
   assert.match(blok,/allow update:[\s\S]*olusturanUid == resource\.data\.olusturanUid/);
   assert.match(blok,/allow delete: if girisYapmis\(\)[\s\S]*yoneticiMi\(\)/);
-  assert.match(shell,/\['Tutanak Hazırla','📝','tutanak'\]/);assert.match(loader,/\['Tutanak Hazırla','📝','tutanak'\]/);
+  assert.match(fs.readFileSync('js/core/app-nav.js','utf8'),/\['tutanak','Tutanak Hazırla'[^\]]*'tutanak'\]/);
   assert.match(shell,/name==='tutanak'/);assert.match(sw,/js\/modules\/tutanak\.js/);
   assert.doesNotMatch(src,/firebase\.firestore|\.collection\(/);
 });

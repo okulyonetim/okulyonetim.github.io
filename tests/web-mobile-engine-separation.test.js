@@ -20,7 +20,7 @@ assert(design.includes('@media(max-width:390px)')&&design.includes('.ka-school-l
 assert(shell.includes('data-ka-notification-count')&&design.includes('.ka-header-notification{position:relative;overflow:visible}')&&design.includes('[data-ka-notification-count]{position:absolute;top:0;right:0'),'Bildirim rozeti zilin sağ üst köşesinde merkezi design system ile konumlanmalı.');
 assert(shellUi.includes("arr('sinavlar')")&&shellUi.includes("arr('denemeSinavlari')")&&shellUi.includes("arr('gorevler')")&&shellUi.includes("arr('hatirlaticilar')"),'Header bildirim merkezi ana sayfadaki yaklaşan etkinlik kaynaklarını okumalı.');
 assert(shellUi.includes("module:'academic',page:'written'")&&shellUi.includes("module:'academic',page:'trial'")&&shellUi.includes("module:direct?'management':'communication'")&&shellUi.includes('routeModule(r.module'),'Her bildirim kendi ilgili modül/sayfa hedefine gitmeli.');
-assert(shellUi.includes('function openProfilePopover(')&&shellUi.includes('p=popoverBase(anchor'),'Profil fotoğrafı bildirim penceresiyle aynı popover altyapısını kullanmalı.');
+assert(!shellUi.includes('openProfilePopover')&&shellUi.includes('renderProfile')&&shellUi.includes('p=popoverBase(anchor'),'Profil açılır kutusu kalmamalı: profil "Ben" sekmesindeki sayfadır; bildirim penceresi popover altyapısını kullanır.');
 assert(!live.includes("bell.addEventListener('click'")&&!live.includes("routeModule?.('communication',{bottom:'menu'})"),'Canlı durum motoru header zilini ikinci kez bağlayıp İletişim/Duyurular sayfasına yönlendirmemeli.');
 assert(loader.includes("define('dashboard'"),'Dashboard lazy modül olarak tanımlanmalı.');
 assert(!loader.includes('dashboard-v2-init.js'),'Ayrı eski web dashboard motoru loadera dönmemeli.');

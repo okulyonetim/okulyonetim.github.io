@@ -115,11 +115,11 @@ function build(initial={}){
     assert(sv.toasts.some(m=>/En az bir kademe/.test(m)));
   }
 
-  // 4) Okulumu Kur sayfası: eksik ve hazır durumları
+  // 4) Okul bilgileri sayfasındaki kurulum paneli: eksik ve hazır durumları
   {
     const empty=build();
     await empty.ctx.SettingsModule.mount();
-    assert.strictEqual(empty.ctx.SettingsModule.openPage('setup','Okulumu Kur'),true,'Yönetici kurulum sayfasını açabilmeli.');
+    assert.strictEqual(empty.ctx.SettingsModule.openPage('school','Okul Bilgileri'),true,'Yönetici Okul bilgileri sayfasını (kurulum durumu dahil) açabilmeli.');
     let html=empty.out.innerHTML;
     assert(html.includes('data-setup-page')&&html.includes('0 / 5 adım hazır'),'Boş okulda hiçbir adım hazır olmamalı.');
     assert((html.match(/data-setup-step=/g)||[]).length===5,'Beş kurulum adımı gösterilmeli.');
@@ -132,7 +132,7 @@ function build(initial={}){
       siniflar:[{id:'c1'},{id:'c2'}],dersProgrami:[{id:'p1'}],nobetAtamalari:[{id:'n1'}]
     });
     await full.ctx.SettingsModule.mount();
-    full.ctx.SettingsModule.openPage('setup','Okulumu Kur');
+    full.ctx.SettingsModule.openPage('school','Okul Bilgileri');
     html=full.out.innerHTML;
     assert(html.includes('5 / 5 adım hazır'),'Tüm veriler varken beş adım hazır görünmeli.');
     assert(html.includes('Müdür: Ayşe Yılmaz'),'Müdür seçimi özetlenmeli.');
@@ -146,7 +146,7 @@ function build(initial={}){
       ogretmenler:[{id:'t3',ad:'Ali',soyad:'Kaya',unvan:'Öğretmen'}]
     });
     await partial.ctx.SettingsModule.mount();
-    partial.ctx.SettingsModule.openPage('setup','Okulumu Kur');
+    partial.ctx.SettingsModule.openPage('school','Okul Bilgileri');
     html=partial.out.innerHTML;
     assert(html.includes('Eksik: Ortaokul kurum kodu, müdür'),'Eksik alanlar adıyla listelenmeli: '+html.slice(html.indexOf('Eksik:'),html.indexOf('Eksik:')+120));
     assert(html.includes('Müdür Yardımcısı” olan kişi yok'),'Müdür yardımcısı yoksa ipucu çıkmalı.');
@@ -157,12 +157,13 @@ function build(initial={}){
     assert(/^\d{4}-\d{2}-\d{2}T/.test(partial.saved.at(-1).v.kurulumTarihi));
   }
 
-  // 5) Yetki: öğretmen/yetkisiz kullanıcı kurulum sayfasını açamaz
+  // 5) Yetki: öğretmen/yetkisiz kullanıcı kurulum panelini görmez
   {
     const t=build();
     t.ctx.AKTIF_KULLANICI={admin:false,ogretmenId:'t3'};
     await t.ctx.SettingsModule.mount();
-    assert.strictEqual(t.ctx.SettingsModule.openPage('setup','Okulumu Kur'),false,'Yetkisiz kullanıcı kurulum sayfasını açamamalı.');
+    t.ctx.SettingsModule.openPage('school','Okul Bilgileri');
+    assert(!t.out.innerHTML.includes('data-setup-page'),'Düzenleme yetkisi olmayan kullanıcı kurulum panelini görmemeli.');
   }
 
   // 6) Bugün tatil: tek günlük aralık yazar, çakışmayı reddeder
@@ -189,9 +190,9 @@ function build(initial={}){
   }
 
   // 7) Tek giriş yolu ve sürüm
-  assert(!loaderSrc.includes('Okulumu Kur'),'Okulumu Kur menüde ayrı satır olmamalı; tek yol Ayarlar > Akademik Yapı.');
+  assert(!loaderSrc.includes('Okulumu Kur'),'Okulumu Kur menüde ayrı satır olmamalı; tek yol Ayarlar > Okul Bilgileri.');
   assert(!shellSrc.includes('settings:setup')&&!shellSrc.includes("['setup',"),'Okulumu Kur için ayrı shell rotası/gizleme kuralı olmamalı.');
-  assert(loaderSrc.includes('js/modules/settings.js?v=892'),'settings.js cache sürümü yenilenmeli.');
+  assert(loaderSrc.includes('js/modules/settings.js?v=893'),'settings.js cache sürümü yenilenmeli.');
 
   console.log('Okulumu Kur kademe / kurulum / bugün-tatil testi başarılı.');
 })().catch(e=>{console.error(e);process.exit(1)});

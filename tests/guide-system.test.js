@@ -118,8 +118,8 @@ const G=loadGuide('all');
 assert.strictEqual(G.contextKey(null),'dashboard:');
 assert.strictEqual(G.contextKey({kind:'route',name:'people',page:'teachers'}),'people:teachers');
 assert.strictEqual(G.contextKey({kind:'route',name:'settings'}),'settings:');
-assert.strictEqual(G.contextKey({kind:'menu-list'}),'view:menu-list');
-const map={'people:teachers':'ogretmenler','people:students':'ogrenciler','people:classes':'siniflar','academic:schedule':'ders-programi','management:duty':'nobet-programi','communication:announcements':'duyurular','documents:evrak':'evrak-takibi','reports:home':'okul-raporlari','reports:':'okul-raporlari','settings:':'ayarlar-veriler','dashboard:':'ana-ekran','dashboard:guide':'kilavuz','dashboard:about':'hakkinda','view:menu-list':'giris-gezinme'};
+assert.strictEqual(G.contextKey({kind:'nav',name:'nav',page:'tools'}),'view:nav');
+const map={'people:teachers':'ogretmenler','people:students':'ogrenciler','people:classes':'siniflar','academic:schedule':'ders-programi','management:duty':'nobet-programi','communication:announcements':'duyurular','documents:evrak':'evrak-takibi','reports:home':'okul-raporlari','reports:':'okul-raporlari','settings:':'ayarlar-veriler','dashboard:':'ana-ekran','dashboard:guide':'kilavuz','dashboard:about':'hakkinda','view:nav':'giris-gezinme'};
 for(const [key,id] of Object.entries(map)){const t=G.topicFor(key);assert(t&&t.id===id,`topicFor(${key}) → ${t&&t.id}, beklenen ${id}`)}
 assert.strictEqual(G.topicFor('exams:written'),null,'Rehberi olmayan sayfa null dönmeli (pencere "bulunamadı" mesajı gösterir)');
 /* her konunun kendi rotası kendi rehberine götürmeli */
@@ -150,8 +150,8 @@ for(const page of['index.html','beta.html']){
 const shell=read('js/core/shell-ui.js');
 assert(/registerPageRoute\('guide'/.test(shell)&&/registerPageRoute\('about'/.test(shell),'guide/about sayfa rotaları kayıtlı olmalı');
 assert(/data-ka-guide-help/.test(shell)&&/openGuideHelp/.test(shell),'Kabuk "?" düğmesini işlemeli');
-assert(/\['Kullanım Kılavuzu','📖','dashboard','guide'\]/.test(read('js/app-loader.js')),'Menüde Kullanım Kılavuzu öğesi olmalı');
-assert(/\['Uygulama Hakkında','ℹ️','dashboard','about'\]/.test(read('js/app-loader.js')),'Menüde Uygulama Hakkında öğesi olmalı');
+assert(/\['guide','Kullanım kılavuzu','book','green','[^']*','dashboard','guide'\]/.test(read('js/core/app-nav.js')),'Araç kataloğunda (app-nav.js) Kullanım kılavuzu öğesi olmalı');
+assert(/\['about','Uygulama hakkında','sparkle','violet','[^']*','dashboard','about'\]/.test(read('js/core/app-nav.js')),'Araç kataloğunda (app-nav.js) Uygulama hakkında öğesi olmalı');
 assert(/define\('guide',\['js\/modules\/guide-data\.js\?v=\d+','js\/modules\/guide\.js\?v=\d+'\]\)/.test(read('js/app-loader.js')),'AppLoader guide modülünü tanımlamalı');
 const sw=read('service-worker.js');
 assert(sw.includes('./js/modules/guide-data.js?v=')&&sw.includes('./js/modules/guide.js?v='),'Service worker kılavuz dosyalarını ön belleğe almalı (çevrimdışı çalışsın)');

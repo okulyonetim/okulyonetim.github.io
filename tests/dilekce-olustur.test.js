@@ -19,7 +19,7 @@ test('koleksiyon, kurallar, menü, rota, önbellek ve CSS tanımlı; yazım yaln
   assert.match(init,/dilekceKayitlari:'oy_dilekceKayitlari'/);
   const b=rules.slice(rules.indexOf('match /oy_dilekceKayitlari/{id}'));
   assert.match(b,/allow create: if girisYapmis\(\) && request\.resource\.data\.olusturanUid == request\.auth\.uid/);assert.match(b,/allow delete: if girisYapmis\(\)[\s\S]*yoneticiMi\(\)/);
-  assert.match(shell,/\['Dilekçe Oluştur','📄','dilekcehazirla'\]/);assert.match(loader,/\['Dilekçe Oluştur','📄','dilekcehazirla'\]/);assert.match(shell,/name==='dilekcehazirla'/);assert.match(sw,/js\/modules\/dilekce\.js/);
+  assert.match(fs.readFileSync('js/core/app-nav.js','utf8'),/\['dilekce-olustur','Dilekçe Oluştur'[^\]]*'dilekcehazirla'\]/);assert.match(shell,/name==='dilekcehazirla'/);assert.match(sw,/js\/modules\/dilekce\.js/);
   assert.doesNotMatch(src,/firebase\.firestore|\.collection\(/);
   const a=css.indexOf('/* ===== DİLEKÇE OLUŞTUR'),w=css.indexOf('/* ===== WEB ARAYÜZÜ'),c=css.indexOf('/* ===== A4 FORM — Dilekçe'),d=css.indexOf('/* ═══════════ SERVİS OTURMA');
   assert.ok(a>0&&a<w&&c>0&&c<d);assert.ok(!/#[0-9a-f]{3,6}\b/i.test(css.slice(a,w)));assert.ok(!/#[0-9a-f]{3,6}\b/i.test(css.slice(c,d)));

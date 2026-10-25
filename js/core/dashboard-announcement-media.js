@@ -1,19 +1,17 @@
-/* Okul Yönetim — ana sayfa duyuru medya deneyimi
- * Duyuru kartındaki resimleri yatay kaydırılabilir galeriye çevirir,
- * tam ekran pinch/double-tap zoom sağlar ve yönetici okuyan bilgisini
- * ana sayfadan ayrılmadan göz ikonuna bağlı küçük popover içinde gösterir.
+/* Okul Yönetim — duyuru medya hizmeti
+ * Ana sayfa duyuru kartı galerisini üretir (renderGallery/bindGallery), tam ekran pinch/double-tap zoom sağlar
+ * ve yönetici okuyan bilgisini göz ikonuna bağlı küçük popover içinde gösterir.
+ * Ana sayfa kartının işaretlemesini dashboard.js üretir; bu dosya DOM'u sonradan değiştirmez,
+ * yalnız Duyurular sayfasındaki resim büyütücüye yakınlaştırma ekler.
  */
 (function(global){
 'use strict';
 if(global.DashboardAnnouncementMedia)return;
 
-const VERSION='922';
 let scanQueued=false,activeHomeViewer=null,activeReaderPopup=null;
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const arr=key=>{const v=global.AppStore?.data?.(key);return Array.isArray(v)?v:[]};
-const currentUser=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
-const isAdmin=()=>currentUser().admin===true;
 function safeUrl(value){
   const raw=String(value||'').trim();
   if(!raw||!/^https?:\/\//i.test(raw)||/[\s"'<>]/.test(raw))return'';
@@ -36,9 +34,6 @@ function readTime(value){
   const d=new Date(value);
   if(Number.isNaN(d.getTime()))return String(value);
   return d.toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-}
-function ensureStyles(){
-  return document.querySelector('link[data-dashboard-announcement-media-style]')||null;
 }
 function closeReaderPopup(){
   activeReaderPopup?.remove?.();
@@ -191,35 +186,6 @@ function renderGallery(item){
   const images=imagesOf(item);if(!images.length)return'';
   return `<section class="kh-announcement-media" data-home-announcement-gallery="${esc(item.id||'')}"><div class="kh-announcement-media__track" data-home-announcement-track>${images.map((r,i)=>`<button type="button" class="kh-announcement-media__slide" data-home-announcement-image="${esc(item.id||'')}" data-home-announcement-image-index="${i}" aria-label="Duyuru görseli ${i+1} tam ekran aç"><img src="${esc(r.url)}" alt="Duyuru görseli ${i+1}" loading="lazy">${images.length>1?`<span>${i+1}/${images.length}</span>`:''}</button>`).join('')}</div>${images.length>1?`<div class="kh-announcement-media__dots">${images.map((_,i)=>`<i data-home-announcement-dot class="${i===0?'is-active':''}"></i>`).join('')}</div>`:''}</section>`;
 }
-function enhanceDashboardCards(){
-  const root=document.querySelector('[data-dashboard-module]');if(!root)return;
-  root.querySelectorAll('.kh-announcement[data-duyuru-id]').forEach(card=>{
-    const id=card.dataset.duyuruId,item=arr('duyurular').find(x=>String(x.id)===String(id));if(!item)return;
-    const signature=imagesOf(item).map(x=>x.url).join('|');
-    if(card.dataset.announcementMediaSignature!==signature){
-      let gallery=card.querySelector('[data-home-announcement-gallery]');
-      if(!gallery){
-        const html=renderGallery(item);
-        if(html){
-          const body=card.querySelector('.kh-announcement-body'),head=card.querySelector('.kh-announcement-head');
-          (body||head)?.insertAdjacentHTML('afterend',html);
-          gallery=card.querySelector('[data-home-announcement-gallery]');
-        }
-      }
-      if(gallery)bindGallery(gallery);
-      card.dataset.announcementMediaSignature=signature;
-    }
-    card.querySelector('.kh-home-readers')?.remove();
-    const readerButton=card.querySelector('button.kh-read-count');
-    if(readerButton&&isAdmin()){
-      readerButton.dataset.homeAnnouncementReaders=id;
-      readerButton.removeAttribute('data-dash-route');
-      readerButton.removeAttribute('data-dash-page');
-      readerButton.removeAttribute('data-dash-title');
-      readerButton.setAttribute('aria-haspopup','dialog');
-    }
-  });
-}
 function enhanceCommunicationLightbox(box){
   if(!box||box.dataset.dashboardZoomEnhanced==='1')return;
   const stage=box.querySelector('.ka-announcement-lightbox__stage'),img=stage?.querySelector('[data-announcement-lightbox-image]');if(!stage||!img)return;
@@ -233,8 +199,6 @@ function enhanceCommunicationLightbox(box){
 }
 function scan(){
   scanQueued=false;
-  ensureStyles();
-  enhanceDashboardCards();
   document.querySelectorAll('[data-announcement-lightbox]').forEach(enhanceCommunicationLightbox);
 }
 function scheduleScan(){if(scanQueued)return;scanQueued=true;requestAnimationFrame(scan)}
@@ -258,13 +222,12 @@ function onDocumentClick(e){
   if(activeReaderPopup&&!e.target.closest?.('[data-home-reader-popover]'))closeReaderPopup();
 }
 function start(){
-  ensureStyles();scan();
+  scan();
   document.addEventListener('click',onDocumentClick,true);
   global.addEventListener('resize',closeReaderPopup,{passive:true});
   global.addEventListener('scroll',closeReaderPopup,{passive:true,capture:true});
   new MutationObserver(scheduleScan).observe(document.documentElement,{childList:true,subtree:true});
-  global.AppStore?.subscribe?.('data.duyurular',scheduleScan);
 }
-global.DashboardAnnouncementMedia={scan,openHomeViewer,closeHomeViewer,openReaderPopup,closeReaderPopup,enhanceCommunicationLightbox,attachZoomSurface};
+global.DashboardAnnouncementMedia={scan,renderGallery,bindGallery,openHomeViewer,closeHomeViewer,openReaderPopup,closeReaderPopup,enhanceCommunicationLightbox,attachZoomSurface};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(window);

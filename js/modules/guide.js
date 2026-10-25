@@ -113,7 +113,7 @@ function goButton(t){
 async function go(t){
   if(!t?.rota||!canOpen(t.rota))return false;
   close();
-  try{return await global.ShellUI?.routeModule?.(t.rota[0],{page:t.rota[1]||'',title:t.baslik,bottom:'menu'})}
+  try{return await global.ShellUI?.routeModule?.(t.rota[0],{page:t.rota[1]||'',title:t.baslik})}
   catch(e){console.error('[Guide/go]',e);toast('Sayfa açılamadı.');return false}
 }
 
@@ -243,7 +243,7 @@ function openTopic(id){return openLayer(id,{})}
 
 /* ---------- merkezi kılavuz sayfası ---------- */
 async function openCentral(id){
-  try{return await global.ShellUI?.routeModule?.('dashboard',{page:'guide',title:'Kullanım Kılavuzu',bottom:'menu'})}
+  try{return await global.ShellUI?.routeModule?.('dashboard',{page:'guide',title:'Kullanım Kılavuzu'})}
   catch(e){console.error('[Guide/open]',e);toast('Kılavuz açılamadı.');return false}
 }
 function pageHead(){
@@ -313,7 +313,7 @@ function mountPage(root,{topic=''}={}){
     const cat=e.target.closest('[data-guide-cat]');if(cat){view.cat=cat.dataset.guideCat;paintList();return}
     if(e.target.closest('[data-guide-back]')){st.id='';st.step=0;draw();global.scrollTo?.(0,0);return}
     const g=e.target.closest('[data-guide-go]');if(g){go(byId(g.dataset.guideGo));return}
-    if(e.target.closest('[data-guide-about]')){global.ShellUI?.routeModule?.('dashboard',{page:'about',title:'Uygulama Hakkında',bottom:'menu'});return}
+    if(e.target.closest('[data-guide-about]')){global.ShellUI?.routeModule?.('dashboard',{page:'about',title:'Uygulama Hakkında'});return}
     const p=e.target.closest('[data-guide-pdf]');if(p){downloadPdf(p)}
   });
   bindTopic(page,st,()=>{draw();global.scrollTo?.(0,0);doc.querySelector('.ka-app-content')?.scrollTo?.(0,0)});

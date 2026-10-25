@@ -63,8 +63,7 @@ test('öğretmen yalnız kendi kayıtlarını, yönetici hepsini görür; kayıt
 
 test('rota, menü ve offline önbellek bağlı', () => {
   assert.match(shell, /name==='parentmeeting'/);
-  assert.match(shell, /\['Veli Görüşme Formu','[^']+','parentmeeting'\]/);
-  assert.match(loader, /\['Veli Görüşme Formu','[^']+','parentmeeting'\]/);
+  assert.match(fs.readFileSync('js/core/app-nav.js', 'utf8'), /\['parentmeeting','Veli Görüşme Formu'[^\]]*'parentmeeting'\]/);
   assert.ok(sw.includes("'./js/modules/parent-meeting.js'"));
 });
 
