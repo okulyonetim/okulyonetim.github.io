@@ -19,13 +19,13 @@ assert(src.includes('holidayMode()'),'Tatil modunda hatırlatma popupı gösteri
 assert(src.includes('.sort((a,b)=>a.gunFarki-b.gunFarki)'),'En geciken/en yakın madde üstte kalmalı.');
 assert(src.includes("function teacherUpcomingRows(){const reminders=collectReminders(30).filter(x=>x.kaynak!=='sinav')"),'Öğretmen yaklaşan etkinlik kartı merkezi 30 günlük reminder motorunu korumalı ve ayrı yazılı kartındaki sınavları tekrar etmemeli.');
 assert(src.includes("meetings=meetingUpcomingRows(30)")&&src.includes("git:route('management','meeting-schedule','Toplantı Çizelgesi')"),'Öğretmen yaklaşan etkinlik kartı toplantıları aynı satır modeline uyarlayıp Toplantı Çizelgesine yönlendirmeli.');
-assert(src.includes("function upcomingSection(){")&&src.includes("sectionHtml('Yaklaşanlar'")&&src.includes("sectionHtml('Yapılacaklar'"),'Yönetici Yaklaşanlar bölümü öğretmen Yapılacaklar zaman çizelgesinden ayrı bölüm olarak çizilmeli.');
+assert(src.includes("if(isManagerView()){const rows=upcomingRows();if(!rows.length)return'';return `<section class=\"kh-section\" data-home-section=\"upcoming\""),'Yönetici Yaklaşan Etkinlik / Görevler kartı öğretmen zaman çizelgesinden ayrılmalı ve legacy kh-section sözleşmesini kullanmalı.');
 assert(src.includes('data-dash-reminder-index'),'Öğretmen teslim/görev satırları doğrudan kendi hatırlatma hedefini açabilmeli.');
 assert(src.includes("teacherUpcomingRows()[Number(btn.dataset.dashReminderIndex)]?.git?.()"),'Öğretmen satırı merkezi reminder hedefini kullanmalı; ikinci route eşlemesi oluşturulmamalı.');
 assert(src.includes("Object.keys(REMINDER_DEFS).map(t=>'data.'+t)"),'Dashboard tüm hatırlatma kaynaklarının AppStore değişikliklerine abone olmalı.');
 assert(src.includes("'data.toplantiCizelgesi'"),'Dashboard toplantı değişikliklerine AppStore üzerinden abone olmalı.');
 assert(src.includes("SyncEngine.register('toplantiCizelgesi',COL.toplantiCizelgesi)"),'Dashboard toplantıları mevcut local-first hydrate hattına katmalı.');
-assert(src.includes("evrak:'📄'"),'Evrak teslimleri öğretmen kartında görünür bir kaynak olmalı.');
+assert(src.includes("evrak:{icon:'📄'"),'Evrak teslimleri hatırlatma kaynakları arasında görünür bir simgeyle tanımlı olmalı.');
 assert(src.includes("function collectReminders(daysOverride=null)"),'Hatırlatma motoru popup ve kart için tek motorla farklı görünüm ufku desteklemeli.');
 assert(src.includes("scanDocuments(id,days)"),'Öğretmen zaman çizelgesi gerçek evrak takip kaynağını merkezi motor üzerinden kullanmalı.');
 console.log('Dashboard birleşik öğretmen teslim/görev + toplantı zaman çizelgesi sözleşmesi başarılı.');

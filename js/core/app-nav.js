@@ -66,6 +66,23 @@ function icon(name,size=20,sw=2){
   return `<svg class="ka-ni" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]||ICONS.grid}</svg>`;
 }
 
+/* ── araç simgeleri: eski menüdeki emoji; bilinenler CSS maskesiyle çizgi simgeye çevrilir (css: [data-ka-glyph]), bilinmeyenler emoji kalır ── */
+const GLYPHS={
+  'student-attendance':'☑️','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
+  'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','form-rehberlik':'🧭',
+  'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️',
+  'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','tasks':'🕘','monthflow':'📆',
+  'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
+  'committees':'🏛️','transport':'🚌','bus-seats':'💺','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
+};
+const GROUP_GLYPHS={sinifim:'👥',sinav:'📝',planlar:'📅',tutanak:'✏️',veli:'💬',etkinlik:'🚌',belgeler:'📁',personel:'🧑‍💼',evrak:'📁',rapor:'📊'};
+const glyphOf=id=>GLYPHS[id]||'📌';
+function glyph(g,cls=''){return `<span class="ka-glyph${cls?' '+cls:''}" data-ka-glyph="${String(g).replace(/"/g,'&quot;')}" aria-hidden="true">${g}</span>`}
+/* Bilinen emojiye CSS bir çizgi simge (--ic) verir; maskelenebilenler .has-ic alır, bilinmeyenler emoji kalır. */
+function markGlyphs(root=document){
+  root.querySelectorAll?.('.ka-glyph[data-ka-glyph]').forEach(el=>{let known=false;try{known=getComputedStyle(el).getPropertyValue('--ic').trim().length>0}catch(_){}el.classList.toggle('has-ic',known)});
+}
+
 /* ── rol ── */
 const VIEW_KEY='ka-nav-view';
 const viewKey=()=>`${VIEW_KEY}:${user().uid||'-'}`;
@@ -181,7 +198,7 @@ const TOOLS={};
  ['settings','Ayarlar','sliders','slate','Okul, kullanıcılar, hesap','settings'],
  ['guide','Kullanım kılavuzu','book','green','Adım adım kullanım','dashboard','guide'],
  ['about','Uygulama hakkında','sparkle','violet','Sürüm ve bilgiler','dashboard','about']
-].forEach(([id,label,ic,tone,sub,route,page='',need])=>{TOOLS[id]={id,label,icon:ic,tone,sub,route,page,need}});
+].forEach(([id,label,ic,tone,sub,route,page='',need])=>{TOOLS[id]={id,label,icon:ic,glyph:glyphOf(id),tone,sub,route,page,need}});
 
 /* ── araç grupları (Öğretmen: Araçlar · İdareci: Yönetim) ── */
 const GROUPS={
@@ -234,7 +251,7 @@ const tool=id=>TOOLS[id]||null;
 const toolAllowed=t=>!!t&&canOpen(t.route,t.page)&&(!t.need||t.need()===true);
 const visible=ids=>ids.map(tool).filter(toolAllowed);
 function groups(r=role()){
-  return GROUPS[r].map(g=>({...g,tools:visible(g.ids)})).filter(g=>g.tools.length);
+  return GROUPS[r].map(g=>({...g,glyph:GROUP_GLYPHS[g.key]||'📁',tools:visible(g.ids)})).filter(g=>g.tools.length);
 }
 function group(key,r=role()){return groups(r).find(g=>g.key===key)||null}
 function school(r=role()){
@@ -318,11 +335,11 @@ function search(q,r=role()){
 /* ── web yan menüsü: sekmeler; Araçlar sekmesinin altında grupları ── */
 function webMenu(){
   const r=role();
-  return tabs(r).map(t=>({key:t.key,label:t.label,icon:t.icon,children:t.key==='tools'?groups(r).map(g=>({key:`tools:${g.key}`,label:g.label,count:g.tools.length})):[]}));
+  return tabs(r).map(t=>({key:t.key,label:t.label,icon:t.icon,children:t.key==='tools'?groups(r).map(g=>({key:`tools:${g.key}`,label:g.label,glyph:g.glyph,count:g.tools.length})):[]}));
 }
 
 global.AppNav={
-  icon,ICONS,role,derivedRole,setRole,canSwitch,otherRole,roleLabel,allowedRole,linkedTeacher,
+  icon,ICONS,glyph,glyphOf,markGlyphs,role,derivedRole,setRole,canSwitch,otherRole,roleLabel,allowedRole,linkedTeacher,
   tabs,tab,homeTab,tabOf,parentOf,hub,groups,group,school,comm,programLinks,toolCount,tool,findTool,
   favorites,isFavorite,toggleFavorite,search,webMenu,
   pageAllowed,moduleAllowed,canOpen,isTeacherUser,toolAllowed,TEACHER_HIDDEN

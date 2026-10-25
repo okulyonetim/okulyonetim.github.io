@@ -51,7 +51,7 @@ function tabHtml(t){
   const kids=t.children||[],open=kids.length&&t.key===openKey;
   const head=`<button class="ka-web-link${kids.length?' ka-web-link--group':''}" type="button" data-ka-web-tab="${esc(t.key)}"${kids.length?` aria-expanded="${!!open}"`:''}><span class="ka-web-ico" aria-hidden="true">${nav().icon(t.icon,20)}</span><span class="ka-web-link__label">${esc(t.label)}</span>${kids.length?`<span class="ka-web-link__chev" aria-hidden="true">${SVG.chevron}</span>`:''}</button>`;
   if(!kids.length)return `<div class="ka-web-group" data-ka-web-group-wrap="${esc(t.key)}">${head}</div>`;
-  return `<div class="ka-web-group${open?' is-open':''}" data-ka-web-group-wrap="${esc(t.key)}">${head}<div class="ka-web-sub" ${open?'':'hidden'}>${kids.map(k=>`<button class="ka-web-sublink" type="button" data-ka-web-page="${esc(k.key)}" data-ka-web-title="${esc(k.label)}"><span>${esc(k.label)}</span><span class="ka-web-count">${k.count}</span></button>`).join('')}</div></div>`;
+  return `<div class="ka-web-group${open?' is-open':''}" data-ka-web-group-wrap="${esc(t.key)}">${head}<div class="ka-web-sub" ${open?'':'hidden'}>${kids.map(k=>`<button class="ka-web-sublink" type="button" data-ka-web-page="${esc(k.key)}" data-ka-web-title="${esc(k.label)}"><span class="ka-web-ico ka-web-ico--sub" aria-hidden="true">${nav().glyph(k.glyph)}</span><span>${esc(k.label)}</span><span class="ka-web-count">${k.count}</span></button>`).join('')}</div></div>`;
 }
 function renderMenu(){
   renderQueued=false;
@@ -61,7 +61,7 @@ function renderMenu(){
   const scroller=$('.ka-web-nav',side),top=scroller?scroller.scrollTop:0;
   const act=resolveActive(ui()?.currentView?.());
   if(act.tab==='tools')openKey='tools';
-  host.innerHTML=model.map(tabHtml).join('');
+  host.innerHTML=model.map(tabHtml).join('');nav().markGlyphs(host);
   if(scroller)scroller.scrollTop=top;
   paintActive();renderRecent();renderIdentity();renderCrumb(ui()?.currentView?.());
 }
@@ -126,7 +126,7 @@ function renderRecent(){
   const cur=ui()?.currentView?.(),curTool=cur?.kind==='route'?nav().findTool(cur.name,cur.page):null;
   const rows=safeRead().map(x=>nav().tool(x.id)).filter(t=>t&&nav().toolAllowed(t)&&t.id!==curTool?.id).slice(0,RECENT_MAX);
   wrap.hidden=!rows.length;
-  list.innerHTML=rows.map(t=>`<button class="ka-web-sublink ka-web-sublink--recent" type="button" data-ka-web-tool="${esc(t.id)}"><span class="ka-web-ico ka-web-ico--sub" aria-hidden="true">${nav().icon(t.icon,16)}</span><span>${esc(t.label)}</span></button>`).join('');
+  list.innerHTML=rows.map(t=>`<button class="ka-web-sublink ka-web-sublink--recent" type="button" data-ka-web-tool="${esc(t.id)}"><span class="ka-web-ico ka-web-ico--sub" aria-hidden="true">${nav().glyph(t.glyph)}</span><span>${esc(t.label)}</span></button>`).join('');nav().markGlyphs(list);
 }
 
 /* ── kimlik (okul adı, hesap kartı, hava) ── */
@@ -203,6 +203,78 @@ function bind(side){
   });
 }
 
+/* ── ana sayfa: kısa özet cümlesi + sütunlar arası duvar örgüsü (satır yüksekliği ölçümü) ── */
+const DAY_NAMES=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const pad2=n=>String(n).padStart(2,'0');
+const isoOf=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const fold=v=>String(v||'').toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');
+const rows=t=>{try{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]}catch(_){return[]}};
+const bold=v=>`<b>${esc(v)}</b>`;
+function briefHtml(){
+  const now=new Date(),today=isoOf(now),u=global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{},tid=u.bagliOgretmenId||u.ogretmenId||'',admin=u.admin===true;
+  const parts=[];
+  const duties=rows('nobetAtamalari').filter(x=>String(x?.tarih||'').slice(0,10)===today);
+  if(admin||!tid){
+    const teachers=rows('ogretmenler').filter(x=>x?.aktif!==false).length;
+    if(teachers)parts.push(`Bugün ${bold(teachers+' öğretmen')} görevde${duties.length?`, ${bold(duties.length+' nöbetçi')} var`:''}.`);
+    else if(duties.length)parts.push(`Bugün ${bold(duties.length+' nöbetçi')} var.`);
+  }else{
+    const day=fold(DAY_NAMES[now.getDay()]),mine=rows('dersProgrami').filter(x=>fold(x?.gun)===day&&x?.ogretmenId===tid).length;
+    if(mine)parts.push(`Bugün ${bold(mine+' dersiniz')} var.`);
+    const myDuty=duties.find(x=>x?.ogretmenId===tid);
+    if(myDuty)parts.push(`Bugün ${bold('nöbetçisiniz')}${myDuty.nobetYeri?` (${esc(myDuty.nobetYeri)})`:''}.`);
+  }
+  const key=today.slice(0,7),dayKey=String(now.getDate()),rec=rows('yemekMenuleri').find(x=>String(x?.id||'')===key),row=rec?.menu?.[dayKey]||rec?.menu?.[now.getDate()]||{};
+  const items=(Array.isArray(row?.items)?row.items:[row?.corba,row?.ana]).map(v=>String(v??'').trim()).filter(Boolean);
+  if(items.length&&now.getDay()>0&&now.getDay()<6)parts.push(`Öğle yemeğinde ${bold(items.slice(0,2).join(', '))} var.`);
+  const base=new Date(today+'T00:00:00'),next=rows('belirliGunler').map(x=>({n:x?.ad,d:String(x?.tarihBaslangic||'').slice(0,10)})).filter(x=>x.n&&/^\d{4}-\d{2}-\d{2}$/.test(x.d)).map(x=>({...x,days:Math.round((new Date(x.d+'T00:00:00')-base)/86400000)})).filter(x=>x.days>=0&&x.days<=30).sort((a,b)=>a.days-b.days)[0];
+  if(next)parts.push(`En yakın özel gün: ${bold(next.n)} (${next.days===0?'bugün':next.days+' gün sonra'}).`);
+  return parts.join(' ');
+}
+function decorateHome(){
+  const hero=$('#v2ModuleRoot .ka-home>.kh-hero');if(!hero)return;
+  const html=briefHtml(),cur=$('.ka-web-brief',hero);
+  if(!html){cur?.remove();return}
+  if(cur){if(cur.innerHTML!==html)cur.innerHTML=html;return}
+  const p=doc.createElement('p');p.className='ka-web-brief';p.innerHTML=html;
+  const anchor=$('.kh-date',hero)||$('.kh-greeting',hero);if(anchor)anchor.after(p);else hero.appendChild(p);
+}
+let homeRO=null,homeMO=null,layoutQueued=false,homeNode=null;
+function layoutHome(){
+  layoutQueued=false;
+  const home=$('#v2ModuleRoot .ka-home');
+  if(!home||!isWeb())return;
+  const row=parseFloat(getComputedStyle(home).gridAutoRows)||4;
+  if(!homeRO&&global.ResizeObserver)homeRO=new ResizeObserver(queueLayout);
+  const pair=['food-menu','duty','today-duty'].map(k=>$(`:scope>[data-home-section="${k}"]`,home)).filter(Boolean).slice(0,2);
+  const wide=global.matchMedia?.('(min-width:1280px)').matches===true,pairOn=wide&&pair.length===2;
+  /* doğal yükseklikleri ölç (is-pair kalkık), sonra çifti en yüksek olana eşitle */
+  home.querySelectorAll(':scope>.is-pair').forEach(el=>el.classList.remove('is-pair'));
+  const spans=new Map();
+  for(const el of home.children){
+    const m=parseFloat(getComputedStyle(el).marginBottom)||0,h=el.getBoundingClientRect().height+m;
+    spans.set(el,Math.max(1,Math.ceil(h/row)));
+    if(pairOn&&pair.includes(el))homeRO?.unobserve(el);else homeRO?.observe(el);
+  }
+  if(pairOn){const n=Math.max(...pair.map(el=>spans.get(el)||1));pair.forEach(el=>{spans.set(el,n);el.classList.add('is-pair')})}
+  for(const [el,n] of spans){const span='span '+n;if(el.style.gridRowEnd!==span)el.style.gridRowEnd=span}
+}
+function queueLayout(){if(layoutQueued)return;layoutQueued=true;(global.requestAnimationFrame||setTimeout)(layoutHome)}
+function onModuleRootChange(){
+  const home=$('#v2ModuleRoot .ka-home');
+  if(!home){homeNode=null;return}
+  if(!isWeb())return;
+  decorateHome();layoutHome();
+  if(home!==homeNode){homeNode=home;try{homeRO?.disconnect()}catch(_){}}
+  layoutHome();
+}
+function watchHome(){
+  const root=$('#v2ModuleRoot');if(!root||homeMO||!global.MutationObserver)return;
+  homeMO=new MutationObserver(onModuleRootChange);homeMO.observe(root,{childList:true});
+  global.addEventListener('resize',queueLayout,{passive:true});
+  onModuleRootChange();
+}
+
 /* ── olaylar ── */
 function onRoute(e){
   const view=e?.detail?.view||ui()?.currentView?.();
@@ -222,6 +294,7 @@ function wire(){
   for(const ev of ['koruk:app-ready','koruk:app-config-changed','koruk:permissions-changed','koruk:auth-local-restored','koruk:nav-role-changed'])global.addEventListener(ev,queueRender);
   global.AppStore?.subscribe?.('session.user',queueRender);
   global.AppStore?.subscribe?.('ui.weather',renderWeather);
+  for(const t of ['ogretmenler','nobetAtamalari','yemekMenuleri','belirliGunler','dersProgrami'])global.AppStore?.subscribe?.('data.'+t,()=>{if(isWeb())decorateHome()});
   global.AppStore?.subscribe?.('ui.theme',()=>{queueRender()});
   for(const t of ['ogretmenler','kullanicilar','okulBilgileri'])global.AppStore?.subscribe?.('data.'+t,renderIdentity);
   const brand=$('.ka-brand-home');
@@ -229,12 +302,12 @@ function wire(){
   const title=$('#v2ModuleTitle');
   if(title&&global.MutationObserver)new MutationObserver(()=>renderCrumb(ui()?.currentView?.())).observe(title,{childList:true,characterData:true,subtree:true});
   const mq=global.matchMedia?.('(min-width:1100px)');
-  const onMq=()=>{if(mq?.matches){queueRender();renderWeather()}};
+  const onMq=()=>{if(mq?.matches){queueRender();renderWeather();onModuleRootChange()}};
   if(mq?.addEventListener)mq.addEventListener('change',onMq);else mq?.addListener?.(onMq);
   setInterval(()=>{if(isWeb())renderWeather()},15000);
 }
 function init(){
-  build();wire();
+  build();wire();watchHome();
   if(isWeb()){queueRender();renderWeather()}
 }
 global.KorukWebShell={init,renderMenu:queueRender,renderWeather};

@@ -244,7 +244,7 @@ Uygulamanın iki arayüzü vardır; hangisinin açılacağı **unvandan** belirl
 | --- | --- |
 | Rol, sekmeler, araç kataloğu (`TOOLS`), gruplar, arama, sık kullanılanlar, yetki süzgeci | `js/core/app-nav.js` — **tek kaynak**; yeni araç = bu dosyada bir satır |
 | Sekme sayfaları (Araçlar/Yönetim, araç grubu, Okul, İletişim, Programım, Ben) | `js/core/nav-pages.js` (işaretleme `ka-nav-*`) |
-| Bugün / Özet ana sayfası | `js/modules/dashboard.js` (işaretleme `ka-today-*`; öğretmen: zil sayacı, bugünkü derslerim, nöbet, hızlı araçlar; idareci: zil sayacı, göstergeler, şu an kim nerede, nöbetçiler, izinliler) |
+| Bugün / Özet ana sayfası (canlı pano) | `js/modules/dashboard.js` (işaretleme `ka-home` / `kh-*`; kartlar `AppConfig.dashboardCards(rol)` listesinden, Ayarlar > Ana Sayfa'dan açılıp kapatılır ve sıralanır; hero: büyük saat, zil sayacı, hava durumu; haberler, yemek menüsü, nöbetçiler, şu an kim nerede, gelmeyen öğretmenler, belirli günler, sınav geri sayımı) |
 | Alt çubuk, geri yığını, sayfa yönlendirme | `js/core/shell-ui.js` (`openTab`, `openPage`, `routeModule`) |
 | Stil | `css/design-system-base.css` → "GEZİNME SAYFALARI + BUGÜN / ÖZET" bölümü; yalnız tema belirteçleri. Satır/çip/ikon rengi işaretlemedeki `data-tone` değerinden gelir (ton sistemi `--mc-rgb` → `--mc-t / -b / -ink`) |
 
@@ -271,7 +271,7 @@ Ayrı bir web CSS'i / ayrı bir dashboard motoru yoktur; tek kabuk (`index.html`
 Kurallar:
 - **Menü içeriği telefonla aynı kaynaktan gelir** (`AppNav.tabs()` + gruplar + yetkiler): yan menüde rolün sekmeleri listelenir, Araçlar/Yönetim sekmesi araç gruplarını alt öğe olarak açar. Yeni bir araç eklemek için yalnız `app-nav.js`'e ekleyin.
 - **Hesap kartı** (alt köşe) Ben sayfasını açar; rol değiştirebilen kullanıcıda altında "… menüsüne geç" düğmesi görünür.
-- **Ana sayfa**: ≥1100px'te `.ka-today` iki sütuna geçer (başlık, zil sayacı ve göstergeler tam genişlik; bölümler iki sütun).
+- **Ana sayfa**: ≥1100px'te `.ka-home` duvar örgüsü ızgarasına geçer (`web-shell.js` her bölümün yüksekliğini ölçüp `grid-row-end:span N` yazar; ≥1280px'te sağ sütun `--ka-web-aside-w`).
 - **Sayfalar kenar çubuğu yüzünden görünüm alanından dardır**: 900px/1024px gibi *görünüm alanına* göre ayarlı ızgara kuralları web kabuğunda taşabilir; taşan sayfa için web bloğuna kısa bir düzeltme ekleyin (örnek: `.ka-attendance-toolbar`).
 - Masaüstünde "geri" önceki sayfaya döner; kalıcı yan menü vardır, ayrı bir menü katmanı yoktur. Üst çubuktaki arama düğmesi masaüstünde gizlidir (geniş arama alanı vardır).
 - **Telefondan önizleme**: telefon tarayıcısının "Masaüstü sitesi" modu sayfayı ~980px çizdiği için 1100px eşiğine ulaşmaz. Adrese `?web=1` eklenirse `index.html`/`beta.html` başındaki satır içi betik viewport'u `width=1280` yapar (bayrak `localStorage` `ka-web-preview`; `?web=0` kapatır). Bayrak yokken hiçbir şey değişmez; "Masaüstü sitesi" modu açıkken değil, normal (mobil) modda kullanılır.

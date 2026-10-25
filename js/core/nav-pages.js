@@ -39,6 +39,7 @@ function info(id,r=nav().role()){
 
 /* ── ortak parçalar ── */
 const ico=(name,tone,size=40,glyph=20)=>`<span class="ka-nav-ico" data-tone="${esc(tone||'slate')}" data-size="${size}">${ic(name,glyph)}</span>`;
+const gico=(g,tone,size=40)=>`<span class="ka-nav-ico" data-tone="${esc(tone||'slate')}" data-size="${size}">${nav().glyph(g)}</span>`;
 const pill=(text,tone='slate')=>`<span class="ka-nav-pill" data-tone="${tone}">${esc(text)}</span>`;
 const chevron=()=>`<span class="ka-nav-chev" aria-hidden="true">${ic('chev',18)}</span>`;
 const head=(title,sub,right='')=>`<header class="ka-nav-head"><div><h2>${esc(title)}</h2>${sub?`<p>${esc(sub)}</p>`:''}</div>${right}</header>`;
@@ -72,14 +73,14 @@ function refreshSetup(){
 function toolRow(t,{star=false,first=false}={}){
   const pinned=star&&nav().isFavorite(t.id);
   const starBtn=star?`<button type="button" class="ka-nav-star${pinned?' is-on':''}" data-nav-star="${esc(t.id)}" aria-pressed="${pinned}" aria-label="${pinned?'Sık kullandıklardan çıkar':'Sık kullandıklara ekle'}: ${esc(t.label)}"><svg class="ka-ni" width="22" height="22" viewBox="0 0 24 24" fill="${pinned?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${nav().ICONS.star}</svg></button>`:chevron();
-  return `<div class="ka-nav-row${first?' is-first':''}"><button type="button" class="ka-nav-row__main" data-nav-tool="${esc(t.id)}">${ico(t.icon,t.tone,40,20)}<span class="ka-nav-row__copy"><strong>${esc(t.label)}</strong>${t.sub?`<small>${esc(t.sub)}</small>`:''}</span></button>${starBtn}</div>`;
+  return `<div class="ka-nav-row${first?' is-first':''}"><button type="button" class="ka-nav-row__main" data-nav-tool="${esc(t.id)}">${gico(t.glyph,t.tone,40)}<span class="ka-nav-row__copy"><strong>${esc(t.label)}</strong>${t.sub?`<small>${esc(t.sub)}</small>`:''}</span></button>${starBtn}</div>`;
 }
 const rowCard=html=>`<div class="ka-nav-rowcard">${html}</div>`;
 function linkRow(tool,{sub,right=''}={}){
-  return `<button type="button" class="ka-nav-row ka-nav-row__main" data-nav-tool="${esc(tool.id)}">${ico(tool.icon,tool.tone,40,20)}<span class="ka-nav-row__copy"><strong>${esc(tool.label)}</strong>${(sub??tool.sub)?`<small>${esc(sub??tool.sub)}</small>`:''}</span>${right||chevron()}</button>`;
+  return `<button type="button" class="ka-nav-row ka-nav-row__main" data-nav-tool="${esc(tool.id)}">${gico(tool.glyph,tool.tone,40)}<span class="ka-nav-row__copy"><strong>${esc(tool.label)}</strong>${(sub??tool.sub)?`<small>${esc(sub??tool.sub)}</small>`:''}</span>${right||chevron()}</button>`;
 }
 function tile(t,{wide=false,extra=''}={}){
-  return `<button type="button" class="ka-nav-tile${wide?' is-wide':''}" data-nav-tool="${esc(t.id)}">${ico(t.icon,t.tone,32,17)}<span class="ka-nav-tile__label">${esc(t.label)}</span>${extra}</button>`;
+  return `<button type="button" class="ka-nav-tile${wide?' is-wide':''}" data-nav-tool="${esc(t.id)}">${gico(t.glyph,t.tone,32)}<span class="ka-nav-tile__label">${esc(t.label)}</span>${extra}</button>`;
 }
 function pageRoot(id,inner,extra=''){return `<section class="ka-nav-page" data-nav-page="${esc(id)}"${extra}>${inner}</section>`}
 const emptyState=text=>`<div class="ka-empty">${esc(text)}</div>`;
@@ -92,15 +93,15 @@ function searchResults(q){
 }
 function hubTeacher(r){
   const gs=nav().groups(r),favs=nav().favorites(r),hub=nav().hub(r);
-  const favHtml=favs.length?`<div class="ka-nav-section"><h3>Sık kullandıklarım</h3><div class="ka-nav-favs">${favs.map(t=>`<button type="button" class="ka-nav-fav" data-nav-tool="${esc(t.id)}">${ico(t.icon,t.tone,30,16)}<span>${esc(t.label)}</span></button>`).join('')}</div></div>`:'';
-  const tiles=gs.map(g=>`<button type="button" class="ka-nav-gtile" data-nav-page-go="tools:${esc(g.key)}">${ico(g.icon,g.tone,40,20)}<span class="ka-nav-gtile__copy"><strong>${esc(g.label)}</strong><small>${g.tools.length} araç</small></span></button>`).join('');
+  const favHtml=favs.length?`<div class="ka-nav-section"><h3>Sık kullandıklarım</h3><div class="ka-nav-favs">${favs.map(t=>`<button type="button" class="ka-nav-fav" data-nav-tool="${esc(t.id)}">${gico(t.glyph,t.tone,30)}<span>${esc(t.label)}</span></button>`).join('')}</div></div>`:'';
+  const tiles=gs.map(g=>`<button type="button" class="ka-nav-gtile" data-nav-page-go="tools:${esc(g.key)}">${gico(g.glyph,g.tone,40)}<span class="ka-nav-gtile__copy"><strong>${esc(g.label)}</strong><small>${g.tools.length} araç</small></span></button>`).join('');
   return pageRoot('tools',head(hub.title,`${nav().toolCount(r)} araç, ${gs.length} grupta`)+searchBox(hub.search)
     +`<div data-nav-browse class="ka-nav-stack">${favHtml}<div class="ka-nav-gtiles">${tiles}</div></div><div data-nav-results class="ka-nav-stack" hidden></div>`);
 }
 function hubManager(r){
   const gs=nav().groups(r),hub=nav().hub(r),favs=nav().favorites(r);
-  const favHtml=favs.length?`<div class="ka-nav-section"><h3>Sık kullandıklarım</h3><div class="ka-nav-favs">${favs.map(t=>`<button type="button" class="ka-nav-fav" data-nav-tool="${esc(t.id)}">${ico(t.icon,t.tone,30,16)}<span>${esc(t.label)}</span></button>`).join('')}</div></div>`:'';
-  const rows=gs.map(g=>`<button type="button" class="ka-nav-group" data-tone="${esc(g.tone)}" data-nav-page-go="tools:${esc(g.key)}">${ico(g.icon,g.tone,46,22)}<span class="ka-nav-group__copy"><strong>${esc(g.label)}</strong><small>${esc(g.blurb||'')}</small></span><span class="ka-nav-group__count"><b>${g.tools.length}</b><small>araç</small></span></button>`).join('');
+  const favHtml=favs.length?`<div class="ka-nav-section"><h3>Sık kullandıklarım</h3><div class="ka-nav-favs">${favs.map(t=>`<button type="button" class="ka-nav-fav" data-nav-tool="${esc(t.id)}">${gico(t.glyph,t.tone,30)}<span>${esc(t.label)}</span></button>`).join('')}</div></div>`:'';
+  const rows=gs.map(g=>`<button type="button" class="ka-nav-group" data-tone="${esc(g.tone)}" data-nav-page-go="tools:${esc(g.key)}">${gico(g.glyph,g.tone,46)}<span class="ka-nav-group__copy"><strong>${esc(g.label)}</strong><small>${esc(g.blurb||'')}</small></span><span class="ka-nav-group__count"><b>${g.tools.length}</b><small>araç</small></span></button>`).join('');
   const swap=nav().canSwitch()?`<div class="ka-nav-section ka-nav-section--split"><h3>Hem yönetip hem ders veriyorsanız</h3>${switchCard('compact')}</div>`:'';
   return pageRoot('tools',head(hub.title,`${nav().toolCount(r)} araç, ${gs.length} grupta`)+searchBox(hub.search)
     +`<div data-nav-browse class="ka-nav-stack">${favHtml}${rows}${swap}</div><div data-nav-results class="ka-nav-stack" hidden></div>`);
@@ -257,7 +258,7 @@ function render(id,{root=$('#v2ModuleRoot'),fresh=true}={}){
   if(fresh&&parse(id).kind==='program')progDate='';
   const out=html(id);
   if(out==null)return false;
-  root.innerHTML=out;
+  root.innerHTML=out;nav().markGlyphs(root);
   return true;
 }
 function current(){return $('#v2ModuleRoot [data-nav-page]')?.dataset.navPage||''}
@@ -303,7 +304,7 @@ function onInput(e){
   if(!browse||!res)return;
   const q=input.value.trim();
   browse.hidden=!!q;res.hidden=!q;
-  res.innerHTML=q?searchResults(q):'';
+  res.innerHTML=q?searchResults(q):'';nav().markGlyphs(res);
 }
 let wired=false;
 function wire(){

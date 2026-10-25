@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1070','js/modules/dashboard.js?v=1100']);
+define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/dashboard.js?v=1101']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/management.js?v=898']);
@@ -31,18 +31,27 @@ define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.j
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/dilimiz.js','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/reports.js?v=21']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/tools.js?v=9','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
-define('settings',['js/modules/settings.js?v=893']);
+define('settings',['js/modules/settings.js?v=894']);
 define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/committees.js?v=6']);
 define('guide',['js/modules/guide-data.js?v=5','js/modules/guide.js?v=2']);
 
 const MODULE_DEFAULTS=[{key:'committees',label:'Kurul ve Komisyonlar',icon:'🏛️',visible:true,order:95},{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'food',label:'Yemek',icon:'🍽️',visible:true,order:65},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'reports',label:'Raporlar',icon:'📊',visible:true,order:75},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];
 function mergeRows(defaults,rows){const by=new Map((rows||[]).map(x=>[x.key,x]));return defaults.map(d=>({...d,...(by.get(d.key)||{}),key:d.key})).sort((a,b)=>Number(a.order||0)-Number(b.order||0))}
 function rawConfig(){return AppStore?.data?.('appConfig')?.find?.(x=>x.id==='uygulama')||{}}
-function appConfig(){return{modules:mergeRows(MODULE_DEFAULTS,rawConfig().modules)}}
+/* Ana sayfa (Dijital Pano) kartları: [anahtar, ad, yalnız bu rolde]. Dizilim ve açık/kapalı durumu rol başına tutulur. */
+const DASHBOARD_CARDS=[['welcome','Karşılama · zil sayacı · hava durumu'],['news','Kayan haberler'],['food','Günün yemek menüsü'],['duty','Günün nöbetçileri'],['whereNow','Şu an kim nerede (derslikler · öğretmenler)'],['absences','Bugün gelmeyen öğretmenler','idareci'],['announcements','Duyurular'],['polls','Anketler'],['trial','Deneme sınavı sayacı'],['stats','Okul özeti'],['upcoming','Yaklaşanlar'],['specialDays','Belirli gün ve haftalar'],['examCountdown','Sınav geri sayımı'],['saying','Haftanın sözü'],['quick','Hızlı işlemler'],['todayLessons','Bugünkü derslerim','ogretmen'],['teacherFocus','Şu anki dersim','ogretmen'],['exams','Yaklaşan yazılı sınavlar'],['calendar','Takvim'],['notes','Notlarım'],['weekDuty','Haftalık nöbet'],['todayDuty','Bugünün tüm nöbetçileri','ogretmen'],['social','Sosyal medya ve okul siteleri']];
+const DASHBOARD_DEFAULTS={idareci:['welcome','news','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','polls','trial','quick'],ogretmen:['welcome','news','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','polls','trial','quick','notes']};
+function dashboardRows(role,raw=rawConfig().dashboardCards){
+ role=role==='ogretmen'?'ogretmen':'idareci';
+ const saved=raw&&!Array.isArray(raw)&&Array.isArray(raw[role])?raw[role]:[],by=new Map(saved.map(x=>[x.key,x])),on=DASHBOARD_DEFAULTS[role];
+ return DASHBOARD_CARDS.filter(c=>!c[2]||c[2]===role).map(([key,label],i)=>{const k=on.indexOf(key),s=by.get(key)||{};return{key,label,visible:s.visible!==undefined?s.visible!==false:k>=0,order:Number.isFinite(Number(s.order))?Number(s.order):k>=0?(k+1)*10:500+i*10}}).sort((a,b)=>a.order-b.order);
+}
+const dashboardCards=role=>dashboardRows(role);
+function appConfig(){const r=rawConfig();return{modules:mergeRows(MODULE_DEFAULTS,r.modules),dashboardCards:{idareci:dashboardRows('idareci'),ogretmen:dashboardRows('ogretmen')},examCountdowns:Array.isArray(r.examCountdowns)?r.examCountdowns:[],sayingText:String(r.sayingText||''),sayingSource:String(r.sayingSource||'')}}
 function moduleMeta(key){return appConfig().modules.find(x=>x.key===key)||MODULE_DEFAULTS.find(x=>x.key===key)||{key,label:key,icon:'',visible:true,order:999}}
-async function saveConfig(patch){const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user');if(!u?.admin)throw new Error('yetkisiz');const current=appConfig(),next={...current,...patch,id:'uygulama',guncellenmeTarihi:new Date().toISOString()};if(patch.modules)next.modules=mergeRows(MODULE_DEFAULTS,patch.modules);await DeviceData.set('appConfig',COL.navDuzeni,'uygulama',next,{merge:false});window.dispatchEvent(new CustomEvent('koruk:app-config-changed',{detail:next}));return next}
-const resetConfig=()=>saveConfig({modules:MODULE_DEFAULTS});
-window.AppConfig={MODULE_DEFAULTS,get:appConfig,module:moduleMeta,save:saveConfig,reset:resetConfig};
+async function saveConfig(patch){const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user');if(!u?.admin)throw new Error('yetkisiz');const current=appConfig(),next={...current,...patch,id:'uygulama',guncellenmeTarihi:new Date().toISOString()};if(patch.modules)next.modules=mergeRows(MODULE_DEFAULTS,patch.modules);next.dashboardCards=patch.dashboardCards?Object.fromEntries(['idareci','ogretmen'].filter(r=>Array.isArray(patch.dashboardCards[r])).map(r=>[r,patch.dashboardCards[r].map(({key,visible,order})=>({key,visible:visible!==false,order:Number(order)||0}))])):(rawConfig().dashboardCards&&!Array.isArray(rawConfig().dashboardCards)?rawConfig().dashboardCards:{});await DeviceData.set('appConfig',COL.navDuzeni,'uygulama',next,{merge:false});window.dispatchEvent(new CustomEvent('koruk:app-config-changed',{detail:next}));return next}
+const resetConfig=()=>saveConfig({modules:MODULE_DEFAULTS,dashboardCards:{},examCountdowns:[],sayingText:'',sayingSource:''});
+window.AppConfig={MODULE_DEFAULTS,DASHBOARD_CARDS,DASHBOARD_DEFAULTS,get:appConfig,module:moduleMeta,dashboardCards,save:saveConfig,reset:resetConfig};
 
 /* ==============================================================
    ÖĞRETMEN LİSTE OLUŞTURUCU — TEK MERKEZİ UYGULAMA DOSYASI

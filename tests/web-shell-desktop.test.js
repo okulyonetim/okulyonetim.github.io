@@ -65,11 +65,11 @@ assert(START>-1&&END>START,'TEMA MERKEZİ sınırları bulunamadı.');
 const core=masked.slice(START,END);
 const rest=masked.slice(END+END_MARK.length);
 const defined=new Set([...core.matchAll(/(--ka-web-[a-z0-9-]+)\s*:/g)].map(m=>m[1]));
-for(const t of ['--ka-web-side-w','--ka-web-top-h','--ka-web-page-max','--ka-web-gutter','--ka-web-gap'])assert(defined.has(t),`${t} TEMA MERKEZİ'nde tanımlı olmalı.`);
+for(const t of ['--ka-web-side-w','--ka-web-top-h','--ka-web-page-max','--ka-web-gutter','--ka-web-gap','--ka-web-aside-w','--ka-web-row','--ka-web-hero-card'])assert(defined.has(t),`${t} TEMA MERKEZİ'nde tanımlı olmalı.`);
 const used=new Set([...rest.matchAll(/var\((--ka-web-[a-z0-9-]+)/g)].map(m=>m[1]));
 for(const t of used)assert(defined.has(t),`${t} kullanılıyor ama TEMA MERKEZİ'nde tanımlı değil.`);
 for(const t of defined)assert(used.has(t),'Kullanılmayan web belirteci: '+t);
-assert(!web.includes('gridAutoRows')&&!/--ka-web-(row|aside-w|hero-card)/.test(masked),'Eski ana sayfa ızgara/aside belirteçleri geri dönmemeli: Bugün/Özet sayfası kendi .ka-today ızgarasını kullanır.');
+assert(web.includes('getComputedStyle(home).gridAutoRows')&&/grid-auto-rows:var\(--ka-web-row\)/.test(rest),'Ana sayfa ızgara satır birimi --ka-web-row belirtecinden gelmeli ve web-shell.js bunu hesaplanmış stilden okumalı.');
 
 // Basit kural ayrıştırıcı: her kuralı çevreleyen @media koşulunu tutar
 function parse(text){
@@ -107,7 +107,7 @@ function parse(text){
 const HIDE='.ka-web-side,.ka-web-crumb,.ka-web-search,.ka-web-wx,.ka-web-note';
 const WEB_START=masked.indexOf(HIDE+'{display:none}');
 assert(WEB_START>END,'Web arayüzü bölümü (gizleme kuralı) bulunamadı.');
-const WEB_END=css.indexOf('GEZİNME SAYFALARI + BUGÜN / ÖZET');
+const WEB_END=css.indexOf('GEZİNME SAYFALARI =====');
 assert(WEB_END>WEB_START,'Web arayüzü bölümünün sonu (GEZİNME SAYFALARI başlığı) bulunamadı.');
 const webRules=parse(masked.slice(WEB_START,WEB_END));
 const wide=r=>{const m=r.media.match(/\(min-width:(\d+)px\)/);return !!m&&Number(m[1])>=1100};
@@ -131,9 +131,9 @@ assert(/function webMenu\(/.test(nav)&&/webMenu,/.test(nav),'AppNav.webMenu() ya
 assert(web.includes('nav()?.webMenu?.()'),'Yan menü modeli AppNav.webMenu()den okunmalı (ikinci menü kataloğu yok).');
 assert(!/data-ka-menu-group|ka-menu-card|kaMenuLayer/.test(masked),'Eski telefon menü katmanı (kaMenuLayer / ka-menu-card / data-ka-menu-group) stillerde kalmamalı.');
 assert(!/data-ka-menu-group|kaMenuLayer/.test(web+shell+navPages),'Eski menü işaretlemesi JS tarafında kalmamalı.');
-assert(masked.includes('html :is(.ka-nav-page,.ka-today,.ka-web-side){--mc-rgb:var(--t-accent-rgb)}'),'Yan menü varsayılan vurgu rengini ton sisteminden almalı.');
+assert(masked.includes('html :is(.ka-nav-page,.ka-web-side){--mc-rgb:var(--t-accent-rgb)}'),'Yan menü varsayılan vurgu rengini ton sisteminden almalı.');
 for(const [name,c] of Object.entries({indigo:'--c-indigo',blue:'--c-blue',green:'--c-emerald',red:'--c-red',amber:'--c-amber',orange:'--c-orange',cyan:'--c-cyan',slate:'--c-slate'})){
-  assert(masked.includes(`html :is(.ka-nav-page,.ka-today) [data-tone="${name}"]{--mc-rgb:var(${c})}`),`Ton sistemi "${name}" tonunu ${c} rengine bağlamalı.`);
+  assert(masked.includes(`html :is(.ka-nav-page) [data-tone="${name}"]{--mc-rgb:var(${c})}`),`Ton sistemi "${name}" tonunu ${c} rengine bağlamalı.`);
 }
 // Simge maskeleri tek yerde (telefon sayfaları + yan menü)
 assert(!masked.split('\n').some(l=>l.includes('[data-ka-glyph=')&&l.includes('{--ic:')&&/kaMenuLayer/.test(l)),'Simge maskeleri eski menü katmanına bağlı kalmamalı.');

@@ -36,6 +36,11 @@ const rep=(n)=>'<i></i>'.repeat(n);
 function skyHtml(){return `<span class="ka-wx-sky" aria-hidden="true"><span class="ka-wx-sun"></span><span class="ka-wx-moon"></span><span class="ka-wx-stars">${rep(7)}</span><span class="ka-wx-clouds"><i class="ka-wx-cld ka-wx-c1"></i><i class="ka-wx-cld ka-wx-c2"></i><i class="ka-wx-cld ka-wx-c3"></i></span><span class="ka-wx-rain">${rep(14)}</span><span class="ka-wx-snow">${rep(12)}</span><span class="ka-wx-fog">${rep(3)}</span><span class="ka-wx-bolt"></span></span>`}
 const wxCls=v=>`ka-wx k-${v.kind} ${v.night?'is-night':'is-day'}`;
 const stat=(ic,label,val,unit)=>`<span class="ka-wx-s">${ICON[ic]}<span><small>${label}</small><b>${val}${unit?`<em>${unit}</em>`:''}</b></span></span>`;
+/* Ana sayfa kartı (#khWeather) içeriği — dashboard.js bunu karta yerleştirir */
+function weatherCard(){const v=weatherView(),x=v||{kind:'pc',night:isNight(null),text:'Hava durumu',temp:null,location:'Veri yükleniyor',apparent:null},has=x.temp!=null,feels=v?`Hissedilen ${deg(x.apparent)}°`:'';
+/* Ana sayfa kartı kompakttır: sıcaklık · durum + hissedilen · konum · ok. Nem / rüzgâr / basınç / saatlik ayrıntılar yalnız kartı açınca görünen pencerededir (openWeather). */
+const html=skyHtml()+`<span class="ka-wx-body"><span class="ka-wx-t">${has?deg(x.temp):'--'}${has?'<sup>°C</sup>':''}</span><span class="ka-wx-mid"><span class="ka-wx-line"><span class="ka-wx-c">${esc(x.text)}</span><span class="ka-wx-f">${esc(feels)}</span></span><span class="ka-wx-loc">${ICON.pin}<span>${esc(x.location||'Konum')}</span></span></span><span class="ka-wx-go" aria-hidden="true">${ICON.go}</span></span>`;
+return{cls:wxCls(x),kind:x.kind,night:x.night,html,sig:[x.kind,x.night?1:0,x.temp,x.text,x.location,x.apparent].join('|'),label:has?`Hava durumu: ${deg(x.temp)} derece, ${x.text}${x.location?', '+x.location:''}. Ayrıntıları aç`:'Hava durumu. Ayrıntıları aç'}}
 /* Detay penceresi: aynı gökyüzü motoru + cam çipler (css: .ka-wxm) */
 function openWeather(){const w=weatherInfo();if(!w)return;closeWeather();const v=weatherView(),daily=Array.isArray(w.daily)?w.daily.slice(0,7):[],hourly=Array.isArray(w.hourly)?w.hourly.slice(0,16):[];
 const pills=[v.hi!=null?`En yüksek ${deg(v.hi)}°`:'',v.lo!=null?`En düşük ${deg(v.lo)}°`:''].filter(Boolean).map(t=>`<span class="ka-wx-pill">${t}</span>`).join('');
@@ -61,7 +66,7 @@ function tick(){const now=new Date(),key=`${now.getHours()}:${now.getMinutes()}:
 function start(){if(timer)return;hydrateLessonHours().then(()=>{updateHeader();lastTick='';tick()});initWeather();tick();timer=setInterval(tick,1000);global.AppStore?.subscribe?.('data.ogretmenler',()=>requestAnimationFrame(decorate));global.AppStore?.subscribe?.('session.user',()=>requestAnimationFrame(decorate));global.AppStore?.subscribe?.('data.dersSaatleri',()=>{lastTick='';tick()})}
 function stop(){clearInterval(timer);timer=null;lastTick='';closeWeather()}
 function loadClassicParity(){const jobs=[];if(!global.ClassicParity)jobs.push(global.AppLoader?.loadScript?.('js/modules/classic-parity.js'));if(!global.ClassicExcelParity)jobs.push(global.AppLoader?.loadScript?.('js/modules/classic-excel-parity.js'));if(!global.ClassicPersonnelParity)jobs.push(global.AppLoader?.loadScript?.('js/modules/classic-personnel-parity.js'));return Promise.all(jobs.filter(Boolean)).then(()=>true).catch(e=>{console.warn('[SchoolLiveStatus] classic parity:',e?.message||e);return false})}
-global.SchoolLiveStatus={status,schedule,decorate,start,stop,refreshWeather,weather:weatherInfo,weatherView,openWeather,closeWeather};
+global.SchoolLiveStatus={status,schedule,decorate,start,stop,refreshWeather,weather:weatherInfo,weatherView,openWeather,closeWeather,weatherCard};
 global.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard'){requestAnimationFrame(start);loadClassicParity()}});
 global.addEventListener('online',()=>{const w=weatherInfo();if(!w||Date.now()-Number(w.updatedAt||0)>20*60*1000)refreshWeather()});
 })(window);
