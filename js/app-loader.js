@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/belirli-gunler-catalog.js?v=6','js/modules/dashboard.js?v=1102']);
+define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/hafta-sozleri.js?v=1','js/modules/dashboard.js?v=1103']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/management.js?v=898']);
@@ -31,7 +31,7 @@ define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.j
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/dilimiz.js','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/reports.js?v=21']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/tools.js?v=9','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
-define('settings',['js/modules/settings.js?v=895']);
+define('settings',['js/modules/hafta-sozleri.js?v=1','js/modules/settings.js?v=896']);
 define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/committees.js?v=6']);
 define('guide',['js/modules/guide-data.js?v=5','js/modules/guide.js?v=2']);
 
@@ -39,20 +39,21 @@ const MODULE_DEFAULTS=[{key:'committees',label:'Kurul ve Komisyonlar',icon:'🏛
 function mergeRows(defaults,rows){const by=new Map((rows||[]).map(x=>[x.key,x]));return defaults.map(d=>({...d,...(by.get(d.key)||{}),key:d.key})).sort((a,b)=>Number(a.order||0)-Number(b.order||0))}
 function rawConfig(){return AppStore?.data?.('appConfig')?.find?.(x=>x.id==='uygulama')||{}}
 /* Ana sayfa (Dijital Pano) kartları: [anahtar, ad, yalnız bu rolde]. Dizilim ve açık/kapalı durumu rol başına tutulur. */
-const DASHBOARD_CARDS=[['welcome','Karşılama · zil sayacı · hava durumu'],['news','Kayan haberler'],['food','Günün yemek menüsü'],['duty','Günün nöbetçileri'],['whereNow','Şu an kim nerede (derslikler · öğretmenler)'],['absences','Bugün gelmeyen öğretmenler','idareci'],['announcements','Duyurular'],['polls','Anketler'],['trial','Deneme sınavı sayacı'],['stats','Okul özeti'],['upcoming','Yaklaşanlar'],['specialDays','Belirli gün ve haftalar'],['examCountdown','Sınav geri sayımı'],['saying','Haftanın ayeti / hadisi'],['quick','Hızlı işlemler'],['todayLessons','Bugünkü derslerim','ogretmen'],['teacherFocus','Şu anki dersim','ogretmen'],['exams','Yaklaşan yazılı sınavlar'],['calendar','Takvim'],['notes','Notlarım'],['weekDuty','Haftalık nöbet'],['todayDuty','Bugünün tüm nöbetçileri','ogretmen'],['social','Sosyal medya ve okul siteleri']];
-/* Sınav geri sayımı: Ayarlar'da liste kaydedilmediyse bu tahmini tarihler gösterilir (ÖSYM/MEB 2027 takvimini henüz açıklamadı); resmî tarih çıkınca Ayarlar > Ana Sayfa'dan güncellenir. */
-const EXAM_DEFAULTS=[{ad:'LGS (tahmini)',tarih:'2027-06-12'},{ad:'YKS (tahmini)',tarih:'2027-06-19'}];
-const DASHBOARD_DEFAULTS={idareci:['welcome','news','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','saying','polls','trial','quick'],ogretmen:['welcome','news','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','saying','polls','trial','quick','notes']};
+const DASHBOARD_CARDS=[['welcome','Karşılama · zil sayacı · hava durumu'],['news','Kayan haberler'],['food','Günün yemek menüsü'],['duty','Günün nöbetçileri'],['whereNow','Şu an kim nerede (derslikler · öğretmenler)'],['absences','Bugün gelmeyen öğretmenler','idareci'],['announcements','Duyurular'],['polls','Anketler'],['trial','Deneme sınavı sayacı'],['stats','Okul özeti'],['upcoming','Yaklaşanlar'],['specialDays','Belirli gün ve haftalar'],['examCountdown','Sınav geri sayımı'],['ayet','Haftanın ayeti'],['hadis','Haftanın hadisi'],['ozluSoz','Haftanın özlü sözü'],['quick','Hızlı işlemler'],['todayLessons','Bugünkü derslerim','ogretmen'],['teacherFocus','Şu anki dersim','ogretmen'],['exams','Yaklaşan yazılı sınavlar'],['calendar','Takvim'],['notes','Notlarım'],['weekDuty','Haftalık nöbet'],['todayDuty','Bugünün tüm nöbetçileri','ogretmen'],['social','Sosyal medya ve okul siteleri']];
+/* Sınav geri sayımı: her sınav kendi satırıdır (ad, tarih, Göster). Ayarlar'da liste kaydedilmediyse yalnız LGS gelir (ilkokul/ortaokul);
+   MEB 2027 takvimini henüz açıklamadı, 12 Haziran 2027 tahminidir. Başka okul türleri sınavı Ayarlar > Ana Sayfa'dan ekler/kapatır. */
+const EXAM_DEFAULTS=[{ad:'LGS (tahmini)',tarih:'2027-06-12',goster:true}];
+const DASHBOARD_DEFAULTS={idareci:['welcome','news','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','ayet','hadis','ozluSoz','polls','trial','quick'],ogretmen:['welcome','news','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','ayet','hadis','ozluSoz','polls','trial','quick','notes']};
 function dashboardRows(role,raw=rawConfig().dashboardCards){
  role=role==='ogretmen'?'ogretmen':'idareci';
  const saved=raw&&!Array.isArray(raw)&&Array.isArray(raw[role])?raw[role]:[],by=new Map(saved.map(x=>[x.key,x])),on=DASHBOARD_DEFAULTS[role];
  return DASHBOARD_CARDS.filter(c=>!c[2]||c[2]===role).map(([key,label],i)=>{const k=on.indexOf(key),s=by.get(key)||{};return{key,label,visible:s.visible!==undefined?s.visible!==false:k>=0,order:Number.isFinite(Number(s.order))?Number(s.order):k>=0?(k+1)*10:500+i*10}}).sort((a,b)=>a.order-b.order);
 }
 const dashboardCards=role=>dashboardRows(role);
-function appConfig(){const r=rawConfig();return{modules:mergeRows(MODULE_DEFAULTS,r.modules),dashboardCards:{idareci:dashboardRows('idareci'),ogretmen:dashboardRows('ogretmen')},examCountdowns:Array.isArray(r.examCountdowns)?r.examCountdowns:EXAM_DEFAULTS,sayingText:String(r.sayingText||''),sayingSource:String(r.sayingSource||'')}}
+function appConfig(){const r=rawConfig();return{modules:mergeRows(MODULE_DEFAULTS,r.modules),dashboardCards:{idareci:dashboardRows('idareci'),ogretmen:dashboardRows('ogretmen')},examCountdowns:(Array.isArray(r.examCountdowns)?r.examCountdowns:EXAM_DEFAULTS).map(x=>({ad:String(x?.ad||'').trim(),tarih:String(x?.tarih||'').slice(0,10),goster:x?.goster!==false})).filter(x=>x.ad),sozHavuzu:r.sozHavuzu&&typeof r.sozHavuzu==='object'&&!Array.isArray(r.sozHavuzu)?r.sozHavuzu:{}}}
 function moduleMeta(key){return appConfig().modules.find(x=>x.key===key)||MODULE_DEFAULTS.find(x=>x.key===key)||{key,label:key,icon:'',visible:true,order:999}}
 async function saveConfig(patch){const u=window.AKTIF_KULLANICI||AppStore?.get?.('session.user');if(!u?.admin)throw new Error('yetkisiz');const current=appConfig(),next={...current,...patch,id:'uygulama',guncellenmeTarihi:new Date().toISOString()};if(patch.modules)next.modules=mergeRows(MODULE_DEFAULTS,patch.modules);next.dashboardCards=patch.dashboardCards?Object.fromEntries(['idareci','ogretmen'].filter(r=>Array.isArray(patch.dashboardCards[r])).map(r=>[r,patch.dashboardCards[r].map(({key,visible,order})=>({key,visible:visible!==false,order:Number(order)||0}))])):(rawConfig().dashboardCards&&!Array.isArray(rawConfig().dashboardCards)?rawConfig().dashboardCards:{});if(patch.examCountdowns===undefined){const kept=rawConfig().examCountdowns;if(Array.isArray(kept))next.examCountdowns=kept;else delete next.examCountdowns}await DeviceData.set('appConfig',COL.navDuzeni,'uygulama',next,{merge:false});window.dispatchEvent(new CustomEvent('koruk:app-config-changed',{detail:next}));return next}
-const resetConfig=()=>saveConfig({modules:MODULE_DEFAULTS,dashboardCards:{},examCountdowns:null,sayingText:'',sayingSource:''});
+const resetConfig=()=>saveConfig({modules:MODULE_DEFAULTS,dashboardCards:{},examCountdowns:null,sozHavuzu:null});
 window.AppConfig={MODULE_DEFAULTS,DASHBOARD_CARDS,DASHBOARD_DEFAULTS,get:appConfig,module:moduleMeta,dashboardCards,save:saveConfig,reset:resetConfig};
 
 /* ==============================================================

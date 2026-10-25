@@ -57,7 +57,9 @@ function sectionArt(id,icon){
   'where-now':'📍',
   'special-days':'📅',
   'exam-countdown':'⏳',
-  'saying':'📖'
+  'saying-ayet':'📖',
+  'saying-hadis':'📜',
+  'saying-ozlu':'💡'
  };
  return '<span class="kh-section-emoji" aria-hidden="true">'+(m[id]||icon||'📌')+'</span>';
 }
@@ -296,42 +298,27 @@ function whereNowSection(){
   const tab=panoTab==='teachers'?'teachers':'rooms';
   return `<section class="kh-section" data-home-section="where-now">${head(`<span class="kh-pill">${esc(per.label)}</span>`)}<div class="kh-tabs" role="tablist" aria-label="Şu an kim nerede">${Object.entries(PANO_TEXT).map(([k,l])=>`<button type="button" role="tab" class="kh-tab${k===tab?' is-active':''}" aria-selected="${k===tab}" data-dash-tab="${k}">${l}</button>`).join('')}</div><div class="kh-card kh-scroll" data-dash-tabpanel="rooms"${tab==='rooms'?'':' hidden'}>${rooms}</div><div class="kh-card kh-scroll" data-dash-tabpanel="teachers"${tab==='teachers'?'':' hidden'}>${people}</div></section>`;
 }
-/* Kayıtlı etkinlik yoksa MEB belirli gün ve haftalar kataloğu (BelirliGunlerCatalog) bu eğitim yılının tarihleriyle gösterilir. */
-function catalogSpecialDays(){const cat=window.BelirliGunlerCatalog;if(!cat?.CATALOG||!cat.datesFor)return[];const d=new Date(),sy=String(d.getMonth()+1>=9?d.getFullYear():d.getFullYear()-1),saved=arr('belirliGunler'),norm=v=>String(v||'').toLocaleLowerCase('tr').trim(),done=new Set(saved.flatMap(x=>[String(x.katalogId||''),norm(x.ad)]).filter(Boolean));return cat.CATALOG.filter(i=>!done.has(i.id)&&!done.has(norm(i.ad))).map(i=>{const r=cat.datesFor(i,sy);return{x:{ad:i.ad},start:r.baslangic,end:r.bitis||r.baslangic}})}
+/* Yalnız okulun Belirli Gün ve Haftalar sayfasında seçtiği (kaydettiği) günler gösterilir; hazır katalog ana sayfaya karışmaz. */
 function specialDaysSection(){
-  const saved=arr('belirliGunler').map(x=>{const start=String(x.tarihBaslangic||'').slice(0,10);return{x,start,end:String(x.tarihBitis||start).slice(0,10)}}),rows=[...saved,...catalogSpecialDays()].map(r=>({...r,d0:dayDiff(r.start),d1:dayDiff(r.end||r.start)})).filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.start)&&r.d1>=0&&r.d0<=14).sort((x,y)=>x.d0-y.d0).slice(0,5);
-  if(!rows.length)return'';
-  const body=rows.map(r=>{const on=r.d0<=0,status=on?(r.d0===0?'Bugün':'Devam ediyor'):r.d0===1?'Yarın':`${r.d0} gün`;return `<button type="button" class="kh-row${on?' is-now':''}" data-dash-route="tools" data-dash-page="form-belirli" data-dash-title="Belirli Gün ve Haftalar"><div class="kh-row-main"><b>${esc(r.x.ad||'Belirli Gün / Hafta')}</b><small>${esc(date(r.start))}${r.end&&r.end!==r.start?' – '+esc(date(r.end)):''}</small></div><span class="kh-side">${esc(status)}</span></button>`}).join('');
+  const rows=arr('belirliGunler').map(x=>{const start=String(x.tarihBaslangic||'').slice(0,10);return{x,start,end:String(x.tarihBitis||start).slice(0,10)}}).map(r=>({...r,d0:dayDiff(r.start),d1:dayDiff(r.end||r.start)})).filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.start)&&r.d1>=0&&r.d0<=14).sort((x,y)=>x.d0-y.d0).slice(0,5),
+   body=rows.length?rows.map(r=>{const on=r.d0<=0,status=on?(r.d0===0?'Bugün':'Devam ediyor'):r.d0===1?'Yarın':`${r.d0} gün`;return `<button type="button" class="kh-row${on?' is-now':''}" data-dash-route="tools" data-dash-page="form-belirli" data-dash-title="Belirli Gün ve Haftalar"><div class="kh-row-main"><b>${esc(r.x.ad||'Belirli Gün / Hafta')}</b><small>${esc(date(r.start))}${r.end&&r.end!==r.start?' – '+esc(date(r.end)):''}</small></div><span class="kh-side">${esc(status)}</span></button>`}).join(''):`<div class="kh-empty">Önümüzdeki 14 günde okulunuzun seçtiği belirli gün veya hafta yok.</div>`;
   return `<section class="kh-section" data-home-section="special-days"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('special-days','')}</span><span>Belirli Gün ve Haftalar</span></div><button type="button" class="kh-more" data-dash-route="tools" data-dash-page="form-belirli" data-dash-title="Belirli Gün ve Haftalar">Tümü ›</button></div><div class="kh-card">${body}</div></section>`;
 }
+/* Her sınav Ayarlar > Ana Sayfa'da kendi satırıdır: Göster işaretli ve tarihi geçmemiş olanlar yakından uzağa sıralanır. */
 function examCountdownSection(){
-  const list=(window.AppConfig?.get?.()?.examCountdowns||[]).map(x=>({ad:String(x?.ad||'').trim(),tarih:String(x?.tarih||'').slice(0,10)})).filter(x=>x.ad&&/^\d{4}-\d{2}-\d{2}$/.test(x.tarih)).map(x=>({...x,days:dayDiff(x.tarih)})).filter(x=>x.days>=0).sort((a,b)=>a.days-b.days).slice(0,3);
+  const list=(window.AppConfig?.get?.()?.examCountdowns||[]).filter(x=>x.goster!==false&&/^\d{4}-\d{2}-\d{2}$/.test(x.tarih)).map(x=>({...x,days:dayDiff(x.tarih)})).filter(x=>x.days>=0).sort((a,b)=>a.days-b.days).slice(0,4);
   if(!list.length)return'';
-  return `<section class="kh-section" data-home-section="exam-countdown"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('exam-countdown','')}</span><span>Sınav Geri Sayımı</span></div></div><div class="kh-countdowns">${list.map(x=>`<div class="kh-card kh-countdown"><b>${x.days}</b><small>gün kaldı</small><span>${esc(x.ad)}</span><em>${esc(date(x.tarih))}</em></div>`).join('')}</div></section>`;
+  return `<section class="kh-section" data-home-section="exam-countdown"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('exam-countdown','')}</span><span>Sınav Geri Sayımı</span></div></div><div class="kh-countdowns">${list.map(x=>`<div class="kh-card kh-countdown" data-exam-name="${esc(x.ad)}"><b>${x.days}</b><small>gün kaldı</small><span>${esc(x.ad)}</span><em>${esc(date(x.tarih))}</em></div>`).join('')}</div></section>`;
 }
-/* Haftanın ayeti / hadisi: Ayarlar'da metin girilmediyse hafta numarasına göre bu listeden döner. */
-const SAYINGS=[
- ['Ayet','Oku! Yaratan Rabbinin adıyla oku.','Alak Suresi, 1'],
- ['Hadis','Kolaylaştırınız, zorlaştırmayınız; müjdeleyiniz, nefret ettirmeyiniz.','Buhârî, İlim 11'],
- ['Ayet','De ki: Hiç bilenlerle bilmeyenler bir olur mu?','Zümer Suresi, 9'],
- ['Hadis','Sizin en hayırlınız, Kur’an’ı öğrenen ve öğretendir.','Buhârî, Fezâilü’l-Kur’ân 21'],
- ['Ayet','İyilik ve takva konusunda yardımlaşın; günah ve düşmanlık konusunda yardımlaşmayın.','Mâide Suresi, 2'],
- ['Hadis','Kim ilim öğrenmek için bir yola girerse, Allah ona cennet yolunu kolaylaştırır.','Müslim, Zikir 38'],
- ['Ayet','Müminler ancak kardeştirler. Öyleyse kardeşlerinizin arasını düzeltin.','Hucurât Suresi, 10'],
- ['Hadis','Mümin, müminin bir duvarın tuğlaları gibidir; birbirini destekler.','Buhârî, Müslim'],
- ['Ayet','Allah, adaleti, iyiliği ve akrabaya yardım etmeyi emreder.','Nahl Suresi, 90'],
- ['Hadis','Hiçbiriniz, kendisi için istediğini kardeşi için de istemedikçe iman etmiş olmaz.','Buhârî, İman 7'],
- ['Ayet','Elbette zorlukla beraber bir kolaylık vardır.','İnşirah Suresi, 5'],
- ['Hadis','Güzel söz sadakadır.','Buhârî, Müslim'],
- ['Ayet','Gerçek şu ki, insan için kendi çalışmasından başka bir şey yoktur.','Necm Suresi, 39'],
- ['Hadis','Ameller niyetlere göredir.','Buhârî, Bed’ü’l-Vahy 1']
-];
-function sayingSection(){
-  const cfg=window.AppConfig?.get?.()||{},own=String(cfg.sayingText||'').trim(),week=Math.floor(new Date(isoToday()+'T00:00:00').getTime()/(7*864e5)),auto=SAYINGS[week%SAYINGS.length],
-   text=own||auto[1],src=own?String(cfg.sayingSource||'').trim():auto[2],title=own?'Haftanın Sözü':`Haftanın ${auto[0]==='Ayet'?'Ayeti':'Hadisi'}`;
-  return `<section class="kh-section" data-home-section="saying"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('saying','')}</span><span>${title}</span></div></div><figure class="kh-card kh-saying"><blockquote>${esc(text)}</blockquote>${src?`<figcaption>${esc(src)}</figcaption>`:''}</figure></section>`;
+/* Haftanın ayeti / hadisi / özlü sözü: üç ayrı kart, her biri kendi havuzundan (HaftaSozleri) hafta numarasına göre değişir. */
+const SAYING_IDS={ayet:'saying-ayet',hadis:'saying-hadis',ozluSoz:'saying-ozlu'};
+function weeklySayingSection(tur){
+  const meta=window.HaftaSozleri?.TURLER?.find(x=>x.key===tur),pick=window.HaftaSozleri?.buHafta?.(tur,window.AppConfig?.get?.()?.sozHavuzu);
+  if(!meta||!pick)return'';
+  const id=SAYING_IDS[tur];
+  return `<section class="kh-section" data-home-section="${id}"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt(id,'')}</span><span>${esc(meta.baslik)}</span></div></div><figure class="kh-card kh-saying" data-saying-kind="${tur}"><blockquote>${esc(pick.metin)}</blockquote>${pick.kaynak?`<figcaption>${esc(pick.kaynak)}</figcaption>`:''}</figure></section>`;
 }
-const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,saying:sayingSection,quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
+const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,ayet:()=>weeklySayingSection('ayet'),hadis:()=>weeklySayingSection('hadis'),ozluSoz:()=>weeklySayingSection('ozluSoz'),quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
 function shell(){const list=cards(),signature=list.map(x=>x.key).join('|');return`<section class="ka-home" data-dashboard-module data-dashboard-role="${roleKey()}" data-card-signature="${esc(signature)}">${list.map(c=>CARD_RENDERERS[c.key]?safeSection(CARD_RENDERERS[c.key],c.key):'').join('')}</section><button type="button" class="kh-backtop" data-dash-backtop aria-label="Yukarı dön">↑</button>`}
 function bindPresentation(root){
   stabilizeNewsTicker(root);
