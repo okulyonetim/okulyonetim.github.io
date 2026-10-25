@@ -304,6 +304,21 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
+  if(name==='tools'&&page==='form-bep'){
+    if(global.PermissionService?.moduleLevel?.('tools')==='hidden'||global.RolePermissionBridge?.allowedRoute?.('tools','form-bep')===false)return false;
+    setBottomActive(bottom);global.AppLoader?.setActiveModule?.('tools');setTitle(title||'BEP Hazırlama');
+    try{
+      const root=$('#v2ModuleRoot');
+      if(!global.BepModule)await global.AppLoader?.loadScript?.('js/modules/bep.js?v=1');
+      if(!global.BepModule?.mount)throw new Error('BepModule hazır değil');
+      if(routeToken!==routeEpoch)return false;
+      root?.replaceChildren?.();
+      const ok=global.BepModule.mount(root);
+      if(ok===false)throw new Error('BepModule.mount başarısız');
+      if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||'BEP Hazırlama'});
+      return true;
+    }catch(e){console.error('[Shell/bep]',e);global.toast?.('BEP modülü açılamadı.');return false}
+  }
   if(name==='committees'){
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||'Kurul ve Komisyonlar');
     try{
