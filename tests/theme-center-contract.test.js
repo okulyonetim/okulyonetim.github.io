@@ -270,7 +270,7 @@ for(const t of ['--ka-sticky-bg','--ka-sticky-cell-bg'])
   const strip=rules11.find(r=>/background-color\s*:\s*var\(--ka-sticky-bg\)/.test(r.body));
   const cell=rules11.find(r=>/background-color\s*:\s*var\(--ka-sticky-cell-bg\)/.test(r.body));
   assert(strip&&cell,'Yapışkan şerit / hücre kabuğu --ka-sticky-bg / --ka-sticky-cell-bg ile çizilmeli.');
-  for(const c of ['ka-teacher-profile-toolbar','ka-class-detail-topbar','ka-plan-week__footer','ka-announcement-detail__footer','sbe-table-toolbar','ka-rubric-settings__header','ka-rubric-settings__footer','ka-report-customizer__head','ka-report-customizer__footer'])
+  for(const c of ['ka-teacher-profile-toolbar','ka-class-detail-topbar','ka-announcement-detail__footer','sbe-table-toolbar','ka-rubric-settings__header','ka-rubric-settings__footer','ka-report-customizer__head','ka-report-customizer__footer'])
     assert(strip.sel.includes('.'+c),`Yapışkan şerit kabuğunda eksik: .${c}`);
   for(const c of ['ka-layout-section-tabs','ka-gradebook-student','ka-results-student','ka-results-table th','ka-gradebook-table thead th','ka-duty-grid thead th','ka-teacher-list-table th','ka-att-name'])
     assert(cell.sel.includes(c),`Yapışkan hücre kabuğunda eksik: ${c}`);

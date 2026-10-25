@@ -46,12 +46,10 @@ const satirlaBol=m=>String(m??'').split('\n').map(x=>x.trimEnd());
 
 /* ---------- Sütun düzeni ---------- */
 function kolonlar(plan,basliklar){
- const havuz=new Map((basliklar||[]).map(b=>[b.id,b]));
- const liste=(plan.sutunlar||[]).map(id=>{
-  const b=havuz.get(id);if(!b)return null;
-  const bilgi=C.baslikBilgisi(b.ad),meb=MEB[bilgi.key]||null;
-  return{id,key:bilgi.key,meb,ad:meb?meb.ad:buyuk(b.ad),grup:(plan.baslikGruplari&&plan.baslikGruplari[id])||(meb?meb.grup:buyuk(b.ad)),gen:meb?meb.gen.slice():[992],boy:meb?meb.boy:14};
- }).filter(Boolean);
+ const liste=C.sutunBilgileri(plan,basliklar).map(c=>{
+  const meb=MEB[c.key]||null;
+  return{id:c.id,key:c.key,ad:meb?meb.ad:buyuk(c.ad),grup:c.grup||(meb?meb.grup:buyuk(c.ad)),gen:meb?meb.gen.slice():[992],boy:meb?meb.boy:14};
+ });
  const hedef=TABLO_GENISLIGI-IZGARA_SOL[0]-IZGARA_SOL[1],toplam=liste.reduce((t,k)=>t+k.gen.reduce((a,b)=>a+b,0),0);
  if(liste.length&&toplam!==hedef){
   let kalan=hedef;const hepsi=liste.flatMap(k=>k.gen.map((g,i)=>({k,i,g})));
@@ -161,9 +159,12 @@ function slug(s){return String(s||'').toLocaleLowerCase('tr').replace(/ç/g,'c')
 function dosyaAdi(plan,dolu){
  return[plan.seviye?`${plan.seviye}-sinif`:'',slug(plan.dersAdi),'yillik-plan',String(plan.egitimOgretimYili||'').replace(/\s+/g,''),dolu?'':'bos-sablon'].filter(Boolean).join('-')+'.docx';
 }
+/* JSZip yerel kopyadan, yalnız Word indirilirken/içe aktarılırken merkezi yükleyiciyle (AppLoader) getirilir. */
 function betikYukle(src,hazir){
  if(hazir())return Promise.resolve();
- return new Promise((ok,hata)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>hata(new Error('Word paketleyici yüklenemedi.'));document.head.appendChild(s)});
+ const hata=()=>new Error('Word paketleyici yüklenemedi.');
+ if(!global.AppLoader?.loadScript)return Promise.reject(hata());
+ return global.AppLoader.loadScript(src).then(()=>{if(!hazir())throw hata()});
 }
 let sablonOnbellek=null;
 async function sablonYukle(){
@@ -179,5 +180,21 @@ async function olustur(plan,basliklar,bilgi,dolu=true){
  if(cekirdek)paket.file('docProps/core.xml',cekirdekXml(await cekirdek.async('string'),plan,b));
  return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});
 }
-global.YillikPlanWord={olustur,belgeXml,govdeXml,anaTablo,baslikMetni,cekirdekXml,dosyaAdi,adListesi,tarihBicimi,DOCX_TURU,SABLON_YOLU};
+/* Yüklenen .docx dosyasının word/document.xml metni (içe aktarma). */
+async function belgeXmlOku(arrayBuffer){
+ await betikYukle(JSZIP_YOLU,()=>typeof global.JSZip!=='undefined');
+ let paket;try{paket=await global.JSZip.loadAsync(arrayBuffer)}catch(_){throw new Error('Dosya geçerli bir Word (.docx) belgesi değil.')}
+ const parca=paket.file('word/document.xml');if(!parca)throw new Error('Word belgesinde içerik bulunamadı.');
+ return parca.async('string');
+}
+/* Blob'u cihaza kaydeder: uygulamada yerel kaydetme, tarayıcıda indirme. */
+async function indir(blob,ad){
+ if(typeof global.uygulamaDosyaKaydet==='function'){
+  const b64=await new Promise((ok,hata)=>{const r=new FileReader();r.onload=()=>ok(String(r.result||'').split(',')[1]||'');r.onerror=()=>hata(r.error||new Error('Dosya hazırlanamadı.'));r.readAsDataURL(blob)});
+  return global.uygulamaDosyaKaydet(b64,ad,DOCX_TURU,false);
+ }
+ const url=global.URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=ad;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>global.URL.revokeObjectURL(url),1200);
+ return{web:true};
+}
+global.YillikPlanWord={belgeXmlOku,indir,olustur,belgeXml,govdeXml,anaTablo,baslikMetni,cekirdekXml,dosyaAdi,adListesi,tarihBicimi,DOCX_TURU,SABLON_YOLU};
 })(typeof window!=='undefined'?window:globalThis);

@@ -110,4 +110,35 @@ const elleXml=Wd.belgeXml(sablonXml,elle,[{id:'a',ad:'Ünite / Tema'},{id:'b',ad
 const e2=C.docxAyristir(elleXml);assert.strictEqual(e2.satirlar[0].tarih,'14-20 Eylül');assert.strictEqual(e2.satirlar[0].degerler.unite_tema,'Doğal sayılar');assert.strictEqual(e2.basliklar.length,2);
 assert.strictEqual(e2.hucreGenislikleri.reduce((t,w)=>t+w,0),14205,'Özel sütun düzeni sayfa genişliğine ölçeklenmeli.');
 
+
+/* ---------- Görünüm yardımcıları: yeni ve eski kayıtlar ---------- */
+const gor=C.satirGorunumu(kayit);assert.strictEqual(gor.length,41);assert.strictEqual(C.dersHaftasi(kayit),38);
+assert.strictEqual(gor[0].hafta,'1. hafta');assert.strictEqual(gor[0].tarih,'14-20 Eylül');assert.strictEqual(gor[20].hafta,'—');assert.strictEqual(gor[20].no,0);assert.strictEqual(gor[20].ozel,'YARIYIL TATİLİ');
+const eskiPlan={egitimOgretimYili:'2026-2027',sutunlar:['a'],satirlar:[{ay:'EYLÜL',hafta:'1.HAFTA(14-20)',saat:'3',degerler:{a:'Konu'}},{ay:'EYLÜL',hafta:'2.HAFTA(21-27)',degerler:{}},{ay:'EKİM',hafta:'3.HAFTA(28-3)',degerler:{}}]};
+const eg=C.satirGorunumu(eskiPlan);assert.deepStrictEqual(J(eg.map(v=>v.hafta)),['1. hafta','2. hafta','3. hafta']);assert.strictEqual(eg[0].tarih,'14-20 Eylül');assert.strictEqual(eg[2].baslangic,'2026-10-28');assert.strictEqual(eg[2].bitis,'2026-11-03');assert.strictEqual(C.dersHaftasi(eskiPlan),3);
+const yuk=C.satirYukselt(eskiPlan.satirlar[2],'2026-2027');assert.strictEqual(yuk.baslangic,'2026-10-28');assert.strictEqual(yuk.hafta,'3. hafta');assert.strictEqual(yuk.no,3);assert.strictEqual(yuk.ay,'EKİM');assert.deepStrictEqual(J(yuk.birlesik),[]);
+const sut=C.sutunBilgileri(kayit,havuz);assert.strictEqual(sut.length,9);assert.strictEqual(sut[0].key,'unite_tema');assert.strictEqual(sut[0].grup,'TEMA/İÇERİK ÇERÇEVESİ');assert.strictEqual(C.sutunBul(kayit,havuz,'belirli_gunler'),'h8');assert.strictEqual(C.sutunBul(kayit,havuz,'yok'),'');
+assert.strictEqual(C.planAnahtari(kayit),'5|sosyal bilgiler|2026-2027');assert.strictEqual(C.planAnahtari({seviye:'5',dersAdi:'Sosyal Bilgiler Dersi',egitimOgretimYili:'2026-2027'}),C.planAnahtari(kayit));
+assert.strictEqual(C.okulYili(new Date(2026,9,25)),'2026-2027');assert.strictEqual(C.okulYili(new Date(2027,2,1)),'2026-2027');assert.strictEqual(C.okulYili(new Date(2026,6,1)),'2026-2027');assert.strictEqual(C.okulYili(new Date(2026,5,30)),'2025-2026');
+/* Belirli gün etiketleri: planın sütunu "A - B" ve satır sonuyla bölünür; bayram başlığı öne alınır; sütun yoksa okulun günlerinden dolar */
+const tg=C.satirGunleri(kayit,havuz,gor[6]);assert.deepStrictEqual(J(tg),['29 Ekim Cumhuriyet Bayramı','Kızılay Haftası(29 Ekim-4 Kasım)']);
+const kb=C.satirGunleri(kayit,havuz,gor[35]);assert(/KURBAN/.test(kb[0])&&kb.some(x=>/19 Mayıs/.test(x)),'Bayram başlığı ilk etiket olmalı.');
+const sutunsuz={...kayit,sutunlar:kayit.sutunlar.filter(i=>i!=='h8')};
+assert.deepStrictEqual(J(C.satirGunleri(sutunsuz,havuz,C.satirGorunumu(sutunsuz)[6],[{ad:'Cumhuriyet Bayramı',tarihBaslangic:'2026-10-29'}])),['Cumhuriyet Bayramı']);
+
+
+/* Ders adı anahtarı: farklı yazımlar aynı derse çözülür (Excel ve Word, ana sayfa ve ders programı aynı kuralı kullanır) */
+assert.strictEqual(C.dersAnahtari('Beden Eğitimi ve Spor Dersi'),C.dersAnahtari('BEDEN EĞİTİMİ'));
+assert.strictEqual(C.dersAnahtari('Fen Bilimleri'),C.dersAnahtari('FEN BİLİMLERİ DERSİ'));
+assert.strictEqual(C.dersAnahtari('English'),C.dersAnahtari('İngilizce'));
+assert.strictEqual(C.dersAnahtari('Bilişim Teknolojileri ve Yazılım'),C.dersAnahtari('Bilişim Teknolojileri'));
+assert.notStrictEqual(C.dersAnahtari('Matematik'),C.dersAnahtari('Fen Bilimleri'));
+/* "Bu hafta": yalnız bugün satırın tarih aralığındaysa; tatil dışı boşlukta -1 */
+assert.strictEqual(C.buHafta(kayit,new Date(2026,8,16)),0);
+assert.strictEqual(C.buHafta(kayit,new Date(2026,8,20)),0,'Aralığın son günü hâlâ aynı hafta.');
+assert.strictEqual(C.buHafta(kayit,new Date(2026,8,21)),1);
+assert.strictEqual(C.buHafta(kayit,new Date(2026,7,1)),-1,'Eğitim yılı başlamadan -1 döner.');
+assert.strictEqual(C.buHafta(kayit,new Date(2027,6,20)),-1);
+assert.strictEqual(C.buHafta({satirlar:[]},new Date()),-1);
+
 console.log('yillik-plan-v2 çekirdek ve Word testleri geçti');

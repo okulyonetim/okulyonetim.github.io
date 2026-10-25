@@ -43,12 +43,19 @@ for(const token of ['const MODULE_ROOT_SELECTORS=Object.freeze','function module
 }
 assert(!css.includes('.ka-route-switching{visibility:hidden!important}'),'Render geçişi CSS visibility yamasıyla gizlenmemeli.');
 
-for(const token of ['planCurrentWeekIndex','planTracked','ogretmenYillikPlanSecimleri','yillikPlanNotlari','data-plan-select','data-plan-note','data-plan-prev','data-plan-next']) assert(academic.includes(token),`Yıllık Plan gerçek haftalık takip sözleşmesi eksik: ${token}`);
-for(const token of ['data-plan-week-overlay','ka-plan-week--overlay','data-plan-wake','data-plan-menu','bindPlanWeekGestures','openPlanMenu','openPlanWeekPicker','openPlanWeekEditor','openPlanSignDate','navigator.wakeLock','touchstart','touchend','data-plan-full']) assert(academic.includes(token),`Yıllık Plan tam ekran haftalık görünür paritesi eksik: ${token}`);
+/* Yıllık Plan: ekranlar yillik-plan-ui/-dialog/-excel, okuma kuralları -core, Word çıktısı -word modüllerindedir (academic.js yalnız kabuğa bağlar). */
+const ypRead=f=>fs.readFileSync(`js/modules/${f}.js`,'utf8'),ypCore=ypRead('yillik-plan-core'),ypUi=ypRead('yillik-plan-ui'),ypDialog=ypRead('yillik-plan-dialog'),ypWord=ypRead('yillik-plan-word'),ypExcel=ypRead('yillik-plan-excel');
+for(const token of ['ogretmenYillikPlanSecimleri','yillikPlanNotlari','data-yp-secim','data-yp-not-kaydet','data-yp-buhafta','data-yp-satir-ac','data-yp-sinif','data-yp-filtre','data-yp-indir']) assert(ypUi.includes(token),`Yıllık Plan hub/sınıf/ders takip sözleşmesi eksik: ${token}`);
+for(const token of ['planUi()','YillikPlanUI.create','planUiInstance?.geri()']) assert(academic.includes(token),`Academic yıllık plan ekranını yeni modüle bağlamalı: ${token}`);
+for(const token of ['ka-plan-week--overlay','data-plan-wake','bindPlanWeekGestures','navigator.wakeLock','mammoth','printAnnualPlan','openPlanWeekEditor','planCurrentWeekIndex']) assert(!academic.includes(token)&&!ypUi.includes(token)&&!ypDialog.includes(token),`Eski yıllık plan yapısı geri dönmemeli: ${token}`);
 assert(!fs.existsSync('js/modules/yillik-plan.js'),'Yıllık Plan ayrı runtime JS dosyasına geri bölünmemeli.');
-for(const token of ['data-plan-headings','data-plan-new','data-plan-edit','openPlanHeadings','openPlanDefinition','openPlanRows','openPlanRowEditor','baslikEkle','baslikSil','tanimEkle','tanimGuncelle','tanimSil']) assert(academic.includes(token),`Yıllık Plan yönetim sözleşmesi eksik: ${token}`);
-for(const token of ['data-plan-word','openPlanWordImport','ensurePlanWordReader','mammoth.browser.min.js','data-plan-import-match','printAnnualPlan','ReportEngine.printReport']) assert(academic.includes(token),`Yıllık Plan Word/çıktı sözleşmesi eksik: ${token}`);
-assert(academic.includes('AppLoader?.loadScript?.'),'Word parser uygulama açılışında değil merkezi lazy loader ile yüklenmeli.');
+for(const token of ['data-yp-word','data-yp-excel','data-yp-menu','data-yp-tanim','data-yp-satir']) assert(ypUi.includes(token),`Yıllık Plan yönetim eylemi eksik: ${token}`);
+for(const token of ['baslikEkle','baslikSil','tanimEkle','tanimGuncelle','tanimSil','secimKaydet']) assert(ypDialog.includes(token),`Yıllık Plan yönetim sözleşmesi eksik: ${token}`);
+for(const token of ['docxAyristir','belgeXmlOku','kayitHazirla']) assert(ypDialog.includes(token),`Yıllık Plan Word içe aktarma sözleşmesi eksik: ${token}`);
+for(const token of ['async function olustur','async function indir','assets/yillik-plan/sablon.docx','assets/vendor/jszip.min.js']) assert(ypWord.includes(token),`Yıllık Plan Word çıktı sözleşmesi eksik: ${token}`);
+assert(ypWord.includes('betikYukle')&&!ypDialog.includes('cdnjs'),'Word paketleyici yerel kopyadan, uygulama açılışında değil gerektiğinde yüklenmeli.');
+assert(ypExcel.includes('exceljs()')&&ypExcel.includes('C.satirYukselt'),'Excel içe aktarma ExcelJS yükleyicisini ve çekirdek satır biçimini kullanmalı.');
+assert(ypCore.includes('function docxAyristir')&&ypCore.includes('function buHafta')&&ypCore.includes('function numaralandir'),'Yıllık Plan çekirdeği ayrıştırma, bu-hafta ve numaralama kurallarını tek yerde taşımalı.');
 assert(academic.includes("PermissionService?.can?.('academic.plans','edit')")&&academic.includes("PermissionService?.can?.('academic.plans','read')"),'Yıllık Plan merkezi PermissionService kullanmalı.');
 assert(academic.includes("title==='Deneme Sonuçları'")&&academic.includes("title==='Test Sonuçları'"),'Deneme ve Test Sonuçları ayrı filtrelenmiş sayfa davranışını korumalı.');
 for(const token of ['ka-results-page','ka-results-summary','ssResultCard','ssResultDetail','data-ss-open','data-ss-back','ka-results-detail__actions','ka-results-table','ka-results-modal','ka-results-entry-grid']) assert(academic.includes(token),`Sınav Sonuçları görünür paritesi eksik: ${token}`);
@@ -58,8 +65,8 @@ assert(shell.includes("name==='academic'&&['schedule','written','trial','results
 assert(shell.includes('AcademicModule?.openPage?.(page,title)'),'Shell Academic sayfasını tab click ile değil openPage API ile açmalıdır.');
 assert(!shell.includes('[data-academic-tab='),'Shell Academic tab selector kullanmamalı.');
 assert(academic.includes('async function openPlanForLesson'),'AcademicModule ders ve sınıftan yıllık plan açma API si sağlamalı.');
-assert(academic.includes('planClassLevel')&&academic.includes('planLessonKey')&&academic.includes('planCurrentWeekIndex'),'Ders-sınıf yıllık plan eşleşmesi sınıf seviyesi, ders adı ve mevcut hafta üzerinden yapılmalı.');
-assert(academic.includes('new Set(planSelection()?.planIdler||[])'),'Takip edilen yıllık plan eşleşmede öncelikli olmalı.');
+assert(ypUi.includes('C.sinifSayisi')&&ypUi.includes('C.dersAnahtari')&&ypUi.includes('C.buHafta'),'Ders-sınıf yıllık plan eşleşmesi sınıf seviyesi, ders adı ve mevcut hafta üzerinden çekirdekle yapılmalı.');
+assert(ypUi.includes('new Set(secilenPlanlar().map'),'Takip edilen yıllık plan eşleşmede öncelikli olmalı.');
 
 // Akademik Takvim: tam poster çalışma alanı doğrudan canonical AcademicModule içinde yaşamalı.
 assert(!fs.existsSync('js/modules/academic-calendar-parity.js'),'Akademik Takvim ayrı parity dosyası olarak geri dönmemeli.');

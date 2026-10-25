@@ -111,6 +111,13 @@ function suAnkiHafta(plan,simdi=new Date()){
  return 0;
 }
 
+/* Bugün planın hangi satırının tarih aralığındaysa onun sırası; hiçbirinde değilse -1 ("bu hafta" vurgusu yalnız gerçekten içindeyken). */
+function buHafta(plan,simdi=new Date()){
+ const now=new Date(simdi);now.setHours(0,0,0,0);const yil=plan?.egitimOgretimYili,rows=plan?.satirlar||[];
+ for(let i=0;i<rows.length;i++){const r=satirAraligi(rows[i],yil);if(r&&now>=r.start&&now<=r.end)return i}
+ return -1;
+}
+
 /* ---------- Numaralama: yarıyıl tatili ve sosyal etkinlik "—", diğerleri 1…N ---------- */
 const NUMARASIZ=/yariyil tatil|sosyal etkinlik/;
 function numaralandir(satirlar){
@@ -118,7 +125,6 @@ function numaralandir(satirlar){
  (satirlar||[]).forEach(r=>{const siz=NUMARASIZ.test(norm(r.ozel||''));r.no=siz?0:++n;r.hafta=siz?'—':`${r.no}. hafta`});
  return n;
 }
-const dersHaftasi=plan=>(plan?.satirlar||[]).filter(r=>Number(r.no)>0).length;
 
 /* ---------- Ünite / tema listesi ---------- */
 function uniteAdlari(metin){
@@ -143,10 +149,45 @@ function uniteler(plan,basliklar){
  return h?uniteListesi(plan?.satirlar,h.id):[];
 }
 
+/* ---------- Görünüm yardımcıları: yeni ve eski kayıtlar aynı biçimde okunur ---------- */
+const isoD=d=>iso(d.getFullYear(),d.getMonth()+1,d.getDate());
+const sutunBilgileri=(plan,basliklar)=>{
+ const havuz=new Map((basliklar||[]).map(b=>[b.id,b]));
+ return(plan?.sutunlar||[]).map(id=>{const b=havuz.get(id);if(!b)return null;const bilgi=baslikBilgisi(b.ad);return{id,key:bilgi.key,ad:bilgi.name,grup:(plan.baslikGruplari&&plan.baslikGruplari[id])||''}}).filter(Boolean);
+};
+const sutunBul=(plan,basliklar,anahtar)=>sutunBilgileri(plan,basliklar).find(c=>c.key===anahtar)?.id||'';
+/* Satır → { r, i, no, hafta, tarih, saat, ozel, bayram, baslangic, bitis }. Eski kayıtta no yoktur: hafta numarası "1.HAFTA(14-20)" metninden alınır. */
+function satirGorunumu(plan){
+ const yil=plan?.egitimOgretimYili;let sayac=0;
+ return(plan?.satirlar||[]).map((r,i)=>{
+  const aralik=satirAraligi(r,yil),bas=aralik?isoD(aralik.start):'',bit=aralik?isoD(aralik.end):'';
+  let no,hafta;
+  if(r.no!==undefined){no=Number(r.no)||0;hafta=r.hafta||(no?`${no}. hafta`:'—')}
+  else{const m=/^\s*(\d+)/.exec(String(r.hafta||''));no=m?Number(m[1]):++sayac;hafta=`${no}. hafta`}
+  return{r,i,no,hafta,tarih:r.tarih||(bas?tarihMetni(bas,bit):''),saat:r.saat||'',ozel:r.ozel||'',bayram:r.bayram||'',baslangic:bas,bitis:bit};
+ });
+}
+const dersHaftasi=plan=>satirGorunumu(plan).filter(v=>v.no>0).length;
+const planAnahtari=plan=>`${Number(plan?.seviye)||0}|${dersAnahtari(plan?.dersAdi)}|${plan?.egitimOgretimYili||''}`;
+const okulYili=(simdi=new Date())=>{const y=simdi.getFullYear(),b=simdi.getMonth()>=6?y:y-1;return`${b}-${b+1}`};
+/* Excel içe aktarıcının eski biçimli satırı ({ay,hafta:'1.HAFTA(14-20)',saat,degerler}) → yeni satır biçimi */
+function satirYukselt(row,yil){
+ const a=satirAraligi(row,yil),bas=a?isoD(a.start):'',bit=a?isoD(a.end):'',m=/^\s*(\d+)/.exec(String(row?.hafta||''));
+ return{no:m?Number(m[1]):0,hafta:m?`${Number(m[1])}. hafta`:String(row?.hafta||''),tarih:bas?tarihMetni(bas,bit):'',baslangic:bas,bitis:bit,ay:row?.ay||(bas?AY_ADI[toDate(bas).getMonth()]:''),saat:row?.saat||'',ozel:'',bayram:'',birlesik:[],degerler:{...(row?.degerler||{})}};
+}
+
 /* ---------- Belirli gün / haftalar (planda sütun yoksa okulun günlerinden doldurulur) ---------- */
 function haftaGunleri(row,yil,gunler){
  const r=satirAraligi(row,yil);if(!r)return[];const out=[];
  (gunler||[]).forEach(g=>{const a=toDate(g.tarihBaslangic||g.baslangic),b=toDate(g.tarihBitis||g.bitis||g.tarihBaslangic||g.baslangic);if(a&&b&&a<=r.end&&b>=r.start&&g.ad&&!out.includes(g.ad))out.push(g.ad)});
+ return out;
+}
+/* Satırın belirli gün etiketleri: planın kendi sütunu varsa o ("A - B" ve satır sonuyla ayrılır), yoksa okulun günlerinden tarih eşlemesiyle. */
+function satirGunleri(plan,basliklar,gorunum,okulGunleri){
+ const kolon=sutunBul(plan,basliklar,'belirli_gunler'),out=[],ekle=t=>{const x=line(t);if(x&&!out.some(o=>key(o)===key(x)))out.push(x)};
+ if(gorunum.bayram)ekle(gorunum.bayram);
+ if(kolon)String(gorunum.r.degerler?.[kolon]||'').split(/\n|\s+[-–]\s+/).forEach(ekle);
+ else haftaGunleri(gorunum.r,plan?.egitimOgretimYili,okulGunleri).forEach(ekle);
  return out;
 }
 
@@ -224,9 +265,17 @@ function kayitHazirla(ayrisan,anahtarId){
  const satirlar=ayrisan.satirlar.map(r=>({no:r.no,hafta:r.hafta,tarih:r.tarih,baslangic:r.baslangic,bitis:r.bitis,ay:r.baslangic?AY_ADI[toDate(r.baslangic).getMonth()]:'',saat:r.saat,ozel:r.ozel||'',bayram:r.bayram||'',birlesik:(r.birlesik||[]).map(k=>anahtarId[k]).filter(Boolean),degerler:cevir(r.degerler)}));
  return{dersAdi:ayrisan.dersAdi,seviye:ayrisan.seviye,egitimOgretimYili:ayrisan.egitimOgretimYili,grup:ayrisan.grup||'zorunlu',yayin:ayrisan.yayin||'',sutunlar,baslikGruplari:gruplar,satirlar,yilSonu:ayrisan.yilSonu||'',dipnotlar:ayrisan.dipnotlar||[],kaynak:ayrisan.kaynak||'word'};
 }
-const dersAnahtari=v=>{const k=key(v).replace(/\b(dersi|lesson)\b/g,'').trim();return k};
+/* Ders adları farklı yazılsa da aynı derse çözülür (Beden Eğitimi / Beden Eğitimi ve Spor, Fen Bilimleri, İngilizce / English…). */
+const dersAnahtari=v=>{
+ const k=key(v).replace(/\b(dersi|lesson)\b/g,'').replace(/\s+/g,' ').trim();
+ if(k.includes('beden egitimi'))return'beden_egitimi';
+ if(k.includes('bilisim teknolojileri'))return'bilisim_teknolojileri';
+ if(k.includes('fen bilimleri'))return'fen_bilimleri';
+ if(k.includes('ingilizce')||k.includes('english'))return'ingilizce';
+ return k;
+};
 const sinifSayisi=v=>{const m=String(v||'').match(/\d+/);return m?Number(m[0]):null};
 
-global.YillikPlanCore={norm,line,key,AY_ADI,AY_KISA,BASLIKLAR,baslikBilgisi,xmlAgaci,hucreMetni,tarihAraligi,tarihMetni,satirAraligi,suAnkiHafta,numaralandir,dersHaftasi,uniteAdlari,uniteListesi,uniteler,haftaGunleri,
+global.YillikPlanCore={norm,line,key,AY_ADI,AY_KISA,BASLIKLAR,baslikBilgisi,xmlAgaci,hucreMetni,tarihAraligi,tarihMetni,satirAraligi,suAnkiHafta,buHafta,numaralandir,dersHaftasi,sutunBilgileri,sutunBul,satirGorunumu,planAnahtari,okulYili,satirYukselt,satirGunleri,uniteAdlari,uniteListesi,uniteler,haftaGunleri,
  baslikBilgi,baslikHarfi,docxAyristir,kayitHazirla,dersAnahtari,sinifSayisi};
 })(typeof window!=='undefined'?window:globalThis);
