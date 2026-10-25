@@ -57,9 +57,7 @@ function sectionArt(id,icon){
   'where-now':'📍',
   'special-days':'📅',
   'exam-countdown':'⏳',
-  'saying-ayet':'📖',
-  'saying-hadis':'📜',
-  'saying-ozlu':'💡'
+  'sozler':'📖'
  };
  return '<span class="kh-section-emoji" aria-hidden="true">'+(m[id]||icon||'📌')+'</span>';
 }
@@ -310,17 +308,41 @@ function examCountdownSection(){
   if(!list.length)return'';
   return `<section class="kh-section" data-home-section="exam-countdown"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('exam-countdown','')}</span><span>Sınav Geri Sayımı</span></div></div><div class="kh-countdowns">${list.map(x=>`<div class="kh-card kh-countdown" data-exam-name="${esc(x.ad)}"><b>${x.days}</b><small>gün kaldı</small><span>${esc(x.ad)}</span><em>${esc(date(x.tarih))}</em></div>`).join('')}</div></section>`;
 }
-/* Haftanın ayeti / hadisi / özlü sözü: üç ayrı kart, her biri kendi havuzundan (HaftaSozleri) hafta numarasına göre değişir. */
-const SAYING_IDS={ayet:'saying-ayet',hadis:'saying-hadis',ozluSoz:'saying-ozlu'};
-function weeklySayingSection(tur){
-  const meta=window.HaftaSozleri?.TURLER?.find(x=>x.key===tur),pick=window.HaftaSozleri?.buHafta?.(tur,window.AppConfig?.get?.()?.sozHavuzu);
-  if(!meta||!pick)return'';
-  const id=SAYING_IDS[tur];
-  return `<section class="kh-section" data-home-section="${id}"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt(id,'')}</span><span>${esc(meta.baslik)}</span></div></div><figure class="kh-card kh-saying" data-saying-kind="${tur}"><blockquote>${esc(pick.metin)}</blockquote>${pick.kaynak?`<figcaption>${esc(pick.kaynak)}</figcaption>`:''}</figure></section>`;
+/* Haftanın ayeti / hadisi / özlü sözü: tek kart, aynı alanda sırayla gösterilir (otomatik geçiş + noktalar + kaydırma).
+   Her tür kendi havuzundan (HaftaSozleri) hafta numarasına göre değişir; havuzu boş tür atlanır. */
+const SAYING_MS=8000,SAYING_HOLD_MS=20000;
+let sayingIndex=0,sayingTimer=null,sayingHold=0;
+function sayingSlides(){const H=window.HaftaSozleri,pool=window.AppConfig?.get?.()?.sozHavuzu;return(H?.TURLER||[]).map(t=>({t,pick:H.buHafta(t.key,pool)})).filter(x=>x.pick)}
+function weeklySayingsSection(){
+  const slides=sayingSlides();
+  if(!slides.length)return'';
+  const at=sayingIndex%slides.length,many=slides.length>1;
+  return `<section class="kh-section" data-home-section="sozler"><div class="kh-card kh-saying-card" data-saying-carousel data-saying-active="${slides[at].t.key}" role="group" aria-roledescription="carousel" aria-label="Haftanın sözleri"><div class="kh-saying-stage">${slides.map((x,i)=>`<figure class="kh-saying${i===at?' is-active':''}" data-saying-slide="${x.t.key}" ${i===at?'':'aria-hidden="true"'}><figcaption class="kh-saying-label">${esc(x.t.baslik)}</figcaption><blockquote>${esc(x.pick.metin)}</blockquote>${x.pick.kaynak?`<p class="kh-saying-src">${esc(x.pick.kaynak)}</p>`:''}</figure>`).join('')}</div>${many?`<div class="kh-saying-dots" role="tablist" aria-label="Söz türü">${slides.map((x,i)=>`<button type="button" role="tab" class="kh-saying-dot${i===at?' is-active':''}" aria-selected="${i===at}" aria-label="${esc(x.t.baslik)}" data-saying-dot="${i}"></button>`).join('')}</div>`:''}</div></section>`;
 }
-const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,ayet:()=>weeklySayingSection('ayet'),hadis:()=>weeklySayingSection('hadis'),ozluSoz:()=>weeklySayingSection('ozluSoz'),quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
+function showSaying(i,hold){
+  const card=document.querySelector('[data-saying-carousel]'),slides=card?[...card.querySelectorAll('[data-saying-slide]')]:[];
+  if(slides.length<2)return;
+  const at=((i%slides.length)+slides.length)%slides.length;
+  sayingIndex=at;if(hold)sayingHold=Date.now()+SAYING_HOLD_MS;
+  slides.forEach((el,k)=>{el.classList.toggle('is-active',k===at);if(k===at)el.removeAttribute('aria-hidden');else el.setAttribute('aria-hidden','true')});
+  card.querySelectorAll('[data-saying-dot]').forEach((d,k)=>{d.classList.toggle('is-active',k===at);d.setAttribute('aria-selected',k===at?'true':'false')});
+  card.dataset.sayingActive=slides[at].dataset.sayingSlide;
+}
+function bindSayingCarousel(root){
+  const card=root.querySelector('[data-saying-carousel]');if(!card)return;
+  card.querySelectorAll('[data-saying-dot]').forEach(d=>d.addEventListener('click',()=>showSaying(Number(d.dataset.sayingDot),true)));
+  let x0=0,y0=0;
+  card.addEventListener('pointerdown',e=>{x0=e.clientX;y0=e.clientY;sayingHold=Date.now()+SAYING_HOLD_MS});
+  card.addEventListener('pointerup',e=>{const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5)showSaying(sayingIndex+(dx<0?1:-1),true)});
+}
+function startSayingTimer(){
+  clearInterval(sayingTimer);
+  sayingTimer=setInterval(()=>{const card=document.querySelector('[data-saying-carousel]');if(!card||document.hidden||Date.now()<sayingHold||card.matches(':hover')||card.querySelector(':focus-visible')||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;showSaying(sayingIndex+1,false)},SAYING_MS);
+}
+const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,sozler:weeklySayingsSection,quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
 function shell(){const list=cards(),signature=list.map(x=>x.key).join('|');return`<section class="ka-home" data-dashboard-module data-dashboard-role="${roleKey()}" data-card-signature="${esc(signature)}">${list.map(c=>CARD_RENDERERS[c.key]?safeSection(CARD_RENDERERS[c.key],c.key):'').join('')}</section><button type="button" class="kh-backtop" data-dash-backtop aria-label="Yukarı dön">↑</button>`}
 function bindPresentation(root){
+  bindSayingCarousel(root);
   stabilizeNewsTicker(root);
   root.querySelector('[data-dash-backtop]')?.addEventListener('click',e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})});
   root.querySelector('[data-dash-weather]')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.SchoolLiveStatus?.openWeather?.()});
@@ -467,8 +489,8 @@ function queueRender(){
 function subscribe(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];const base=['data.yemekMenuleri','data.ogretmenler','data.dersProgrami','data.siniflar','data.veliler','data.servisler','data.hatirlaticilar','data.gorevler','data.sinavlar','data.denemeSinavlari','data.duyurular','data.haberler','data.anketler','data.nobetAtamalari','data.nobetYerleri','data.ogretmenIzinleri','data.notlar','data.yillikPlanTanimlari','data.ogretmenYillikPlanSecimleri','data.okulBilgileri','data.appConfig','data.toplantiCizelgesi','data.belirliGunler','data.ogretmenIzinleri','session.user'],paths=[...new Set([...base,...Object.keys(REMINDER_DEFS).map(t=>'data.'+t)])];paths.forEach(p=>{const u=window.AppStore?.subscribe?.(p,queueRender);if(u)unsubs.push(u)})}
 function liveRenderKey(live){return[ live?.mode||'',live?.remainingDays??'',live?.openingDate||'' ].join('|')}
 const liveTickHandler=e=>{const live=e?.detail||window.SchoolLiveStatus?.status?.()||{},key=liveRenderKey(live);if(key!==lastLiveRenderKey){lastLiveRenderKey=key;queueRender();return}refreshHeroLive(live)};
-function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return Promise.resolve(false);if(mounted&&root.querySelector('[data-dashboard-module]'))return mountPromise||Promise.resolve(true);if(mountPromise)return mountPromise;mounted=true;mountPromise=(async()=>{root.innerHTML=shell();bindPresentation(root);await prepareFoodData();await prepareReminderData();if(!mounted)return false;subscribe();render();clearInterval(trialTimer);trialTimer=setInterval(()=>refreshTrialTimers(),1000);window.removeEventListener('koruk:school-live-tick',liveTickHandler);window.addEventListener('koruk:school-live-tick',liveTickHandler);if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=()=>{document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);scrolling=true;clearTimeout(scrollIdleTimer);scrollIdleTimer=setTimeout(()=>{scrolling=false;if(pendingRender){pendingRender=false;queueRender()}},150)};window.addEventListener('scroll',backTopHandler,{passive:true});document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);requestAnimationFrame(()=>maybeShowReminders());[0,6000,25000].forEach(t=>setTimeout(periodicAutoGenerate,t));return true})().finally(()=>{mountPromise=null});return mountPromise}
-function unmount(){mounted=false;mountPromise=null;if(renderFrame)cancelAnimationFrame(renderFrame);renderFrame=0;if(renderTimer)clearTimeout(renderTimer);renderTimer=0;clearInterval(trialTimer);trialTimer=null;if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=null;clearTimeout(scrollIdleTimer);scrollIdleTimer=null;scrolling=false;pendingRender=false;lastLiveRenderKey='';window.removeEventListener('koruk:school-live-tick',liveTickHandler);closeReminderPopup();unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
+function mount(root=document.getElementById('v2ModuleRoot')){if(!root)return Promise.resolve(false);if(mounted&&root.querySelector('[data-dashboard-module]'))return mountPromise||Promise.resolve(true);if(mountPromise)return mountPromise;mounted=true;mountPromise=(async()=>{root.innerHTML=shell();bindPresentation(root);await prepareFoodData();await prepareReminderData();if(!mounted)return false;subscribe();render();clearInterval(trialTimer);trialTimer=setInterval(()=>refreshTrialTimers(),1000);startSayingTimer();window.removeEventListener('koruk:school-live-tick',liveTickHandler);window.addEventListener('koruk:school-live-tick',liveTickHandler);if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=()=>{document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);scrolling=true;clearTimeout(scrollIdleTimer);scrollIdleTimer=setTimeout(()=>{scrolling=false;if(pendingRender){pendingRender=false;queueRender()}},150)};window.addEventListener('scroll',backTopHandler,{passive:true});document.querySelector('[data-dash-backtop]')?.classList.toggle('is-visible',window.scrollY>520);requestAnimationFrame(()=>maybeShowReminders());[0,6000,25000].forEach(t=>setTimeout(periodicAutoGenerate,t));return true})().finally(()=>{mountPromise=null});return mountPromise}
+function unmount(){mounted=false;mountPromise=null;if(renderFrame)cancelAnimationFrame(renderFrame);renderFrame=0;if(renderTimer)clearTimeout(renderTimer);renderTimer=0;clearInterval(trialTimer);trialTimer=null;clearInterval(sayingTimer);sayingTimer=null;if(backTopHandler)window.removeEventListener('scroll',backTopHandler);backTopHandler=null;clearTimeout(scrollIdleTimer);scrollIdleTimer=null;scrolling=false;pendingRender=false;lastLiveRenderKey='';window.removeEventListener('koruk:school-live-tick',liveTickHandler);closeReminderPopup();unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
 window.DashboardModule={mount,unmount,render,collectReminders,maybeShowReminders,prepareReminderData,meetingUpcomingRows};
 window.uygulamaBaslat=function(){window.AppLoader?.load?.('dashboard').then(()=>mount()).catch(e=>console.warn('[Dashboard]',e?.message||e))};
 window.addEventListener('koruk:module-ready',e=>{if(e.detail?.name==='dashboard')mount()});

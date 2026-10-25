@@ -11342,15 +11342,9 @@ html #v2ModuleRoot .ka-home [data-home-section="today-duty"]{--ic:url("data:imag
 
 html #v2ModuleRoot .ka-home [data-home-section="special-days"]{--ac-rgb:var(--c-pink)}
 html #v2ModuleRoot .ka-home [data-home-section="exam-countdown"]{--ac-rgb:var(--c-red)}
-html #v2ModuleRoot .ka-home [data-home-section="saying-ayet"]{--ac-rgb:var(--c-teal)}
-html #v2ModuleRoot .ka-home [data-home-section="saying-hadis"]{--ac-rgb:var(--c-amber)}
-html #v2ModuleRoot .ka-home [data-home-section="saying-ozlu"]{--ac-rgb:var(--c-violet)}
 html #v2ModuleRoot .ka-home [data-home-section="where-now"]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E")}
 html #v2ModuleRoot .ka-home [data-home-section="special-days"]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z'/%3E%3C/svg%3E")}
 html #v2ModuleRoot .ka-home [data-home-section="exam-countdown"]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='13' r='8'/%3E%3Cpath d='M12 9v4l2.5 2.5M9 2h6'/%3E%3C/svg%3E")}
-html #v2ModuleRoot .ka-home [data-home-section="saying-ayet"]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4h7a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H2z'/%3E%3Cpath d='M22 4h-7a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h8z'/%3E%3C/svg%3E")}
-html #v2ModuleRoot .ka-home [data-home-section="saying-hadis"]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4'/%3E%3Cpath d='M19 17V5a2 2 0 0 0-2-2H4'/%3E%3C/svg%3E")}
-html #v2ModuleRoot .ka-home [data-home-section="saying-ozlu"]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/%3E%3C/svg%3E")}
 
 /* — 3) BÖLÜM + BAŞLIK — */
 html #v2ModuleRoot .ka-home .kh-section{display:flex;flex-direction:column;gap:var(--ka-sp-10);width:100%;max-width:none;min-width:0;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible}
@@ -11545,9 +11539,22 @@ html #v2ModuleRoot .ka-home .kh-countdown b{font-size:var(--ka-fs-32);font-weigh
 html #v2ModuleRoot .ka-home .kh-countdown small{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);color:var(--gl-sub)!important}
 html #v2ModuleRoot .ka-home .kh-countdown span{margin-top:var(--ka-sp-4);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-800);color:var(--gl-fg)!important}
 html #v2ModuleRoot .ka-home .kh-countdown em{font-style:normal;font-size:var(--ka-fs-11-5);font-weight:var(--ka-fw-600);color:var(--gl-sub)!important}
-html #v2ModuleRoot .ka-home .kh-saying{margin:0;padding:var(--ka-sp-16) var(--ka-sp-18);display:grid;gap:var(--ka-sp-8)}
-html #v2ModuleRoot .ka-home .kh-saying blockquote{margin:0;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-55);color:var(--gl-fg)!important}
-html #v2ModuleRoot .ka-home .kh-saying figcaption{font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800);color:var(--ac-ink)!important}
+/* Haftanın sözleri: tek kart, ayet · hadis · özlü söz aynı alanda sırayla görünür; yükseklik en uzun söze göre sabit kalır. */
+html #v2ModuleRoot .ka-home .kh-saying-card{--ac:rgb(var(--ac-rgb));--ac-ink:color-mix(in srgb,rgb(var(--ac-rgb)) var(--gl-ink-pct),var(--gl-ink-mix));touch-action:pan-y;transition:border-color .4s}
+html #v2ModuleRoot .ka-home .kh-saying-card[data-saying-active="ayet"]{--ac-rgb:var(--c-teal)}
+html #v2ModuleRoot .ka-home .kh-saying-card[data-saying-active="hadis"]{--ac-rgb:var(--c-amber)}
+html #v2ModuleRoot .ka-home .kh-saying-card[data-saying-active="ozluSoz"]{--ac-rgb:var(--c-violet)}
+html #v2ModuleRoot .ka-home .kh-saying-stage{display:grid;padding:var(--ka-sp-16) var(--ka-sp-18)}
+html #v2ModuleRoot .ka-home .kh-saying{grid-area:1/1;margin:0;display:grid;align-content:start;gap:var(--ka-sp-8);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+html #v2ModuleRoot .ka-home .kh-saying.is-active{opacity:1;visibility:visible}
+html #v2ModuleRoot .ka-home .kh-saying-label{padding-right:var(--ka-sp-60);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-1);text-transform:uppercase;color:var(--ac-ink)!important}
+html #v2ModuleRoot .ka-home .kh-saying blockquote{margin:0;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-600);font-style:italic;line-height:var(--ka-lh-1-55);color:var(--gl-fg)!important}
+html #v2ModuleRoot .ka-home .kh-saying-src{margin:0;justify-self:end;text-align:right;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800);color:var(--ac-ink)!important}
+html #v2ModuleRoot .ka-home .kh-saying-dots{position:absolute;z-index:3;top:var(--ka-sp-8);right:var(--ka-sp-10);display:flex;align-items:center}
+html #v2ModuleRoot .ka-home .kh-saying-dot{display:grid;place-items:center;width:var(--ka-sp-20);height:var(--ka-sp-20);padding:0;border:0!important;background:transparent!important;box-shadow:none!important;cursor:pointer}
+html #v2ModuleRoot .ka-home .kh-saying-dot::before{content:"";width:var(--ka-sp-6);height:var(--ka-sp-6);border-radius:var(--ka-radius-pill);background:var(--ac-ink);opacity:.4;transition:width .3s,opacity .3s}
+html #v2ModuleRoot .ka-home .kh-saying-dot.is-active::before{width:var(--ka-sp-16);opacity:1}
+@media(prefers-reduced-motion:reduce){html #v2ModuleRoot .ka-home .kh-saying,html #v2ModuleRoot .ka-home .kh-saying-dot::before{transition:none}}
 html #v2ModuleRoot .ka-home .kh-empty,
 html #v2ModuleRoot .ka-home .ka-home-empty,
 html #v2ModuleRoot .ka-home .kh-duty-empty{padding:var(--ka-sp-18) var(--ka-sp-16);text-align:center;font-size:var(--ka-fs-12-5);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-35);color:var(--gl-sub)!important}

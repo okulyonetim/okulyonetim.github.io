@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/hafta-sozleri.js?v=1','js/modules/dashboard.js?v=1103']);
+define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/hafta-sozleri.js?v=1','js/modules/dashboard.js?v=1104']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/management.js?v=898']);
@@ -31,7 +31,7 @@ define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.j
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/dilimiz.js','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/reports.js?v=21']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/tools.js?v=9','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
-define('settings',['js/modules/hafta-sozleri.js?v=1','js/modules/settings.js?v=896']);
+define('settings',['js/modules/hafta-sozleri.js?v=1','js/modules/settings.js?v=897']);
 define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/committees.js?v=6']);
 define('guide',['js/modules/guide-data.js?v=5','js/modules/guide.js?v=2']);
 
@@ -39,11 +39,11 @@ const MODULE_DEFAULTS=[{key:'committees',label:'Kurul ve Komisyonlar',icon:'🏛
 function mergeRows(defaults,rows){const by=new Map((rows||[]).map(x=>[x.key,x]));return defaults.map(d=>({...d,...(by.get(d.key)||{}),key:d.key})).sort((a,b)=>Number(a.order||0)-Number(b.order||0))}
 function rawConfig(){return AppStore?.data?.('appConfig')?.find?.(x=>x.id==='uygulama')||{}}
 /* Ana sayfa (Dijital Pano) kartları: [anahtar, ad, yalnız bu rolde]. Dizilim ve açık/kapalı durumu rol başına tutulur. */
-const DASHBOARD_CARDS=[['welcome','Karşılama · zil sayacı · hava durumu'],['news','Kayan haberler'],['food','Günün yemek menüsü'],['duty','Günün nöbetçileri'],['whereNow','Şu an kim nerede (derslikler · öğretmenler)'],['absences','Bugün gelmeyen öğretmenler','idareci'],['announcements','Duyurular'],['polls','Anketler'],['trial','Deneme sınavı sayacı'],['stats','Okul özeti'],['upcoming','Yaklaşanlar'],['specialDays','Belirli gün ve haftalar'],['examCountdown','Sınav geri sayımı'],['ayet','Haftanın ayeti'],['hadis','Haftanın hadisi'],['ozluSoz','Haftanın özlü sözü'],['quick','Hızlı işlemler'],['todayLessons','Bugünkü derslerim','ogretmen'],['teacherFocus','Şu anki dersim','ogretmen'],['exams','Yaklaşan yazılı sınavlar'],['calendar','Takvim'],['notes','Notlarım'],['weekDuty','Haftalık nöbet'],['todayDuty','Bugünün tüm nöbetçileri','ogretmen'],['social','Sosyal medya ve okul siteleri']];
+const DASHBOARD_CARDS=[['welcome','Karşılama · zil sayacı · hava durumu'],['news','Kayan haberler'],['food','Günün yemek menüsü'],['duty','Günün nöbetçileri'],['whereNow','Şu an kim nerede (derslikler · öğretmenler)'],['absences','Bugün gelmeyen öğretmenler','idareci'],['announcements','Duyurular'],['polls','Anketler'],['trial','Deneme sınavı sayacı'],['stats','Okul özeti'],['upcoming','Yaklaşanlar'],['specialDays','Belirli gün ve haftalar'],['examCountdown','Sınav geri sayımı'],['sozler','Haftanın ayeti · hadisi · özlü sözü'],['quick','Hızlı işlemler'],['todayLessons','Bugünkü derslerim','ogretmen'],['teacherFocus','Şu anki dersim','ogretmen'],['exams','Yaklaşan yazılı sınavlar'],['calendar','Takvim'],['notes','Notlarım'],['weekDuty','Haftalık nöbet'],['todayDuty','Bugünün tüm nöbetçileri','ogretmen'],['social','Sosyal medya ve okul siteleri']];
 /* Sınav geri sayımı: her sınav kendi satırıdır (ad, tarih, Göster). Ayarlar'da liste kaydedilmediyse yalnız LGS gelir (ilkokul/ortaokul);
    MEB 2027 takvimini henüz açıklamadı, 12 Haziran 2027 tahminidir. Başka okul türleri sınavı Ayarlar > Ana Sayfa'dan ekler/kapatır. */
 const EXAM_DEFAULTS=[{ad:'LGS (tahmini)',tarih:'2027-06-12',goster:true}];
-const DASHBOARD_DEFAULTS={idareci:['welcome','news','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','ayet','hadis','ozluSoz','polls','trial','quick'],ogretmen:['welcome','news','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','ayet','hadis','ozluSoz','polls','trial','quick','notes']};
+const DASHBOARD_DEFAULTS={idareci:['welcome','news','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','sozler','polls','trial','quick'],ogretmen:['welcome','news','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','sozler','polls','trial','quick','notes']};
 function dashboardRows(role,raw=rawConfig().dashboardCards){
  role=role==='ogretmen'?'ogretmen':'idareci';
  const saved=raw&&!Array.isArray(raw)&&Array.isArray(raw[role])?raw[role]:[],by=new Map(saved.map(x=>[x.key,x])),on=DASHBOARD_DEFAULTS[role];

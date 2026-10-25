@@ -192,7 +192,7 @@ function build(initial={}){
   // 7) Tek giriş yolu ve sürüm
   assert(!loaderSrc.includes('Okulumu Kur'),'Okulumu Kur menüde ayrı satır olmamalı; tek yol Ayarlar > Okul Bilgileri.');
   assert(!shellSrc.includes('settings:setup')&&!shellSrc.includes("['setup',"),'Okulumu Kur için ayrı shell rotası/gizleme kuralı olmamalı.');
-  assert(loaderSrc.includes('js/modules/settings.js?v=896'),'settings.js cache sürümü yenilenmeli.');
+  assert(loaderSrc.includes('js/modules/settings.js?v=897'),'settings.js cache sürümü yenilenmeli.');
 
   console.log('Okulumu Kur kademe / kurulum / bugün-tatil testi başarılı.');
 })().catch(e=>{console.error(e);process.exit(1)});

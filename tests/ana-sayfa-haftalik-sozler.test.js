@@ -39,9 +39,13 @@ assert(settings.includes('data-exam-show')&&settings.includes('data-exam-add')&&
 assert(!dash.includes('catalogSpecialDays')&&!dash.includes('BelirliGunlerCatalog'),'Ana sayfa yalnız okulun seçtiği belirli günleri göstermeli.');
 assert(!loader.includes("define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/belirli-gunler-catalog"),'Dashboard artık katalog yüklemez.');
 
-/* Eski tek kart ve alanları kalmamış olmalı */
-assert(!/\bsayingText\b|\bsayingSource\b|SAYINGS\b|sayingSection\b/.test(dash+settings+loader),'Eski tek haftalık söz yapısı kaldırılmalı.');
-assert(!/\['saying',/.test(loader)&&['ayet','hadis','ozluSoz'].every(k=>loader.includes(`['${k}','Haftanın`)),'DASHBOARD_CARDS üç ayrı söz kartı içermeli.');
-assert(loader.includes("define('dashboard',[")&&/define\('dashboard',\[[^\]]*hafta-sozleri\.js/.test(loader)&&/define\('settings',\[[^\]]*hafta-sozleri\.js/.test(loader),'Dashboard ve Ayarlar havuz modülünü yüklemeli.');
-['saying-ayet','saying-hadis','saying-ozlu'].forEach(id=>assert(dash.includes(`'${id}'`),id+' bölümü olmalı.'));
+/* Ayet · hadis · özlü söz tek kartta, aynı alanda sırayla (alt alta üç kart değil) */
+assert(!/\bsayingText\b|\bsayingSource\b|SAYINGS\b|sayingSection\b|weeklySayingSection\b/.test(dash+settings+loader),'Eski tek söz yapısı ve üç ayrı kart kaldırılmalı.');
+assert(loader.includes("['sozler','Haftanın ayeti · hadisi · özlü sözü']")&&!/\['(ayet|hadis|ozluSoz|saying)','/.test(loader),'DASHBOARD_CARDS tek söz kartı içermeli.');
+assert((loader.match(/'sozler'/g)||[]).length===3,'Her iki rolün varsayılanında ve katalogda tek söz kartı olmalı.');
+assert(dash.includes('sozler:weeklySayingsSection')&&!/ayet:\(\)=>|hadis:\(\)=>|ozluSoz:\(\)=>/.test(dash),'CARD_RENDERERS tek söz kartı kullanmalı.');
+assert(dash.includes('data-saying-carousel')&&dash.includes('data-saying-slide')&&dash.includes('data-saying-dot'),'Söz kartı slayt ve nokta içermeli.');
+assert(/clearInterval\(sayingTimer\);sayingTimer=null/.test(dash)&&dash.includes('startSayingTimer();'),'Otomatik geçiş zamanlayıcısı mount/unmount ile yönetilmeli.');
+assert(dash.includes("prefers-reduced-motion"),'Hareket azaltma tercihinde otomatik geçiş durmalı.');
+assert(/define\('dashboard',\[[^\]]*hafta-sozleri\.js/.test(loader)&&/define\('settings',\[[^\]]*hafta-sozleri\.js/.test(loader),'Dashboard ve Ayarlar havuz modülünü yüklemeli.');
 console.log('ana-sayfa-haftalik-sozler: OK');
