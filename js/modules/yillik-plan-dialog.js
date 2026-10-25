@@ -118,6 +118,23 @@ function satir(planId,index){
 }
 
 /* ---------- Word'den toplu içe aktarma ---------- */
+/* Plan başlıklarını okulun başlık havuzuna bağlar; havuzda olmayanı ekler (Word aktarımı ve katalog kopyası ortak kullanır). */
+function baslikCozucu(){
+ const havuz=ui.havuz(),kimlik=new Map(havuz.map(h=>[C.baslikBilgisi(h.ad).key,h.id]));let yeni=0;
+ return async b=>{
+  if(kimlik.has(b.anahtar))return kimlik.get(b.anahtar);
+  const ref=await service().baslikEkle({ad:b.ad,sira:havuz.length+yeni++});if(!ref?.id)throw new Error(`“${b.ad}” başlığı oluşturulamadı.`);kimlik.set(b.anahtar,ref.id);return ref.id;
+ };
+}
+async function katalogKopyala(plan,dugme){
+ const ay=plan?._ayrisan;if(!ay)return;
+ const eski=dugme?.textContent;if(dugme){dugme.disabled=true;dugme.textContent='Kopyalanıyor…'}
+ try{
+  const baslikId=baslikCozucu(),anahtarId={};for(const b of ay.basliklar)anahtarId[b.anahtar]=await baslikId(b);
+  await service().tanimEkle(C.kayitHazirla({...ay,kaynak:'katalog'},anahtarId));
+  toast?.('Plan okulunuzun planlarına kopyalandı.');ui.geri();
+ }catch(err){if(dugme){dugme.disabled=false;dugme.textContent=eski}toast?.(hataMetni(err,'Plan kopyalanamadı.'))}
+}
 function wordIceAktar(){
  let kayitlar=[];
  const ov=modal('📄 Word’den içe aktar',`<p class="ka-muted">MEB biçimli “Ünitelendirilmiş Yıllık Plan” Word dosyalarını (.docx) seçin. Birden çok dosya aynı anda eklenebilir; tablo, birleşik hücre ve tatil satırları olduğu gibi okunur.</p><label class="ka-field"><span class="ka-field__label">Word dosyaları</span><input type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple data-yp-dosya></label><label class="ka-field"><span class="ka-field__label">Yayın (isteğe bağlı)</span><input data-yp-yayin placeholder="Örn: MEB Yayınları"></label><div class="ka-yp-import" data-yp-onizleme></div><label class="ka-field" data-yp-politika hidden><span class="ka-field__label">Kayıtlı plan bulunan dersler</span><select data-yp-politika-sec><option value="guncelle">Mevcut planı bu dosyayla güncelle</option><option value="atla">Atla, mevcut planı koru</option></select></label>`);
@@ -160,11 +177,7 @@ function wordIceAktar(){
   if(secilen.some(k=>!k.dersAdi.trim()||!(k.seviye>=1&&k.seviye<=12)))return toast?.('Seçili dosyalarda ders adı ve sınıf doldurulmalı.');
   const atla=ov.querySelector('[data-yp-politika-sec]').value==='atla',yayin=ov.querySelector('[data-yp-yayin]').value.trim(),eski=kaydet.textContent;
   kaydet.disabled=true;
-  const havuz=ui.havuz(),kimlik=new Map(havuz.map(h=>[C.baslikBilgisi(h.ad).key,h.id]));let yeniBaslik=0,eklenen=0,guncellenen=0,atlanan=0,sira=0;
-  const baslikId=async b=>{
-   if(kimlik.has(b.anahtar))return kimlik.get(b.anahtar);
-   const ref=await service().baslikEkle({ad:b.ad,sira:havuz.length+yeniBaslik++});if(!ref?.id)throw new Error(`“${b.ad}” başlığı oluşturulamadı.`);kimlik.set(b.anahtar,ref.id);return ref.id;
-  };
+  const baslikId=baslikCozucu();let eklenen=0,guncellenen=0,atlanan=0,sira=0;
   try{
    for(const k of secilen){
     kaydet.textContent=`Aktarılıyor… ${++sira}/${secilen.length}`;
@@ -179,7 +192,7 @@ function wordIceAktar(){
  };
 }
 
-return{menu,basliklar,tanim,secim,satir,wordIceAktar};
+return{menu,basliklar,tanim,secim,satir,wordIceAktar,katalogKopyala};
 }
 global.YillikPlanDialog={create,dosyaOku,SINIFLAR};
 })(window);

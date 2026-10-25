@@ -21,8 +21,13 @@ const service=()=>global.YillikPlanService;
 const yazabilir=()=>service()?._yaziYetkisiVar?.()===true;
 
 /* ---------- Veri ---------- */
-const havuz=()=>arr('yillikPlanBasliklari').slice().sort((a,b)=>Number(a.sira||0)-Number(b.sira||0));
-const planlar=()=>arr('yillikPlanTanimlari').filter(p=>p&&p.dersAdi);
+const okulHavuzu=()=>arr('yillikPlanBasliklari').slice().sort((a,b)=>Number(a.sira||0)-Number(b.sira||0));
+const havuz=()=>katalog.sanalHavuz.length?[...okulHavuzu(),...katalog.sanalHavuz]:okulHavuzu();
+const okulPlanlari=()=>arr('yillikPlanTanimlari').filter(p=>p&&p.dersAdi);
+/* Hazır katalog: sınıf açılınca data/yillik-plan/{sinif}.json tembel yüklenir; okulda aynı planın kendi kaydı varsa katalog gizlenir. */
+const katalog={dizin:null,dizinIstendi:false,siniflar:new Map(),planlar:[],sanalHavuz:[]};
+const katalogGorunen=()=>{const var_=new Set(okulPlanlari().map(C.planAnahtari));return katalog.planlar.filter(p=>!var_.has(C.planAnahtari(p)))};
+const planlar=()=>[...okulPlanlari(),...katalogGorunen()];
 const planYili=p=>p.egitimOgretimYili||C.okulYili();
 function yillar(){const s=new Set(planlar().map(planYili));s.add(C.okulYili());return[...s].sort().reverse()}
 const yil=()=>durum.yil&&yillar().includes(durum.yil)?durum.yil:C.okulYili();
@@ -70,6 +75,44 @@ function planlarim(){
  [...secilenPlanlar(),...programPlanlari()].forEach(p=>{if(planYili(p)===yil()&&!gor.has(p.id))gor.set(p.id,p)});
  return[...gor.values()].sort((a,b)=>Number(a.seviye)-Number(b.seviye)||String(a.dersAdi).localeCompare(String(b.dersAdi),'tr'));
 }
+const katalogMu=p=>!!p?._ayrisan;
+const KATALOG_YOLU='data/yillik-plan/';
+async function katalogDosya(ad){
+ const r=await fetch(`${KATALOG_YOLU}${ad}.json`,{cache:'no-cache'});
+ if(!r.ok)throw new Error(`Katalog alınamadı (${r.status})`);
+ return r.json();
+}
+/* Katalog planı ekranda okul planı gibi okunur: başlıklar okul havuzundaki eşleriyle, yoksa sanal başlıkla bağlanır. */
+function katalogPlaniKur(ay){
+ const kimlik=new Map(okulHavuzu().map(h=>[C.baslikBilgisi(h.ad).key,h.id])),anahtarId={};
+ ay.basliklar.forEach(b=>{
+  if(kimlik.has(b.anahtar)){anahtarId[b.anahtar]=kimlik.get(b.anahtar);return}
+  anahtarId[b.anahtar]=`katalog_${b.anahtar}`;
+  if(!katalog.sanalHavuz.some(h=>h.id===anahtarId[b.anahtar]))katalog.sanalHavuz.push({id:anahtarId[b.anahtar],ad:b.ad,sira:1000+katalog.sanalHavuz.length});
+ });
+ return{...C.kayitHazirla({...ay,kaynak:'katalog'},anahtarId),id:`katalog:${ay.seviye}:${C.dersAnahtari(ay.dersAdi)}:${ay.egitimOgretimYili}`,kaynak:'katalog',_ayrisan:ay};
+}
+function katalogDizinYukle(){
+ if(katalog.dizinIstendi)return;katalog.dizinIstendi=true;
+ katalogDosya('index').then(d=>{katalog.dizin=d?.siniflar||{};kok&&ctx.yenile()}).catch(()=>{katalog.dizin={}});
+}
+function katalogYukle(n){
+ const sn=C.sinifSayisi(n);if(!sn||katalog.siniflar.has(sn))return;
+ katalog.siniflar.set(sn,'yukleniyor');
+ katalogDosya(String(sn)).then(d=>{
+  katalog.siniflar.set(sn,'hazir');
+  const yeni=(d?.planlar||[]).map(katalogPlaniKur);
+  katalog.planlar=[...katalog.planlar.filter(p=>Number(p.seviye)!==sn),...yeni];
+  kok&&ctx.yenile();
+ }).catch(()=>katalog.siniflar.set(sn,'yok'));
+}
+/* Hub kutusundaki ders sayısı: yüklü sınıfta gerçek liste, yüklenmemişte katalog dizini (okulda olanlar çift sayılmaz). */
+function sinifAdedi(n,yl){
+ const liste=planlar().filter(p=>Number(p.seviye)===n&&planYili(p)===yl).length;
+ if(katalog.siniflar.get(n)==='hazir')return liste;
+ const var_=new Set(okulPlanlari().map(C.planAnahtari));
+ return liste+(katalog.dizin?.[n]||[]).filter(x=>!var_.has(x.anahtar)&&String(x.anahtar).endsWith(`|${yl}`)).length;
+}
 function dersPlani(dersAdi,sinif){
  const sn=C.sinifSayisi(sinif),k=C.dersAnahtari(dersAdi);if(!sn||!k)return null;
  const secili=new Set(secilenPlanlar().map(p=>p.id));
@@ -93,7 +136,7 @@ function ozetSutunlari(plan,havuzu){
 }
 function dersBaglami(plan){
  const havuzu=havuz();
- return{plan,havuzu,ozet:ozetSutunlari(plan,havuzu),gorunum:C.satirGorunumu(plan),simdi:C.buHafta(plan),gunler:okulGunleri(),tid:String(teacherId()||''),yazar:yazabilir()};
+ return{plan,havuzu,ozet:ozetSutunlari(plan,havuzu),gorunum:C.satirGorunumu(plan),simdi:C.buHafta(plan),gunler:okulGunleri(),tid:katalogMu(plan)?'':String(teacherId()||''),yazar:!katalogMu(plan)&&yazabilir()};
 }
 const metinler=t=>String(t||'').split('\n').map(s=>s.trim()).filter(Boolean);
 const paragraflar=t=>metinler(t).map(s=>{const m=KOD_RE.exec(s);return m?`<p><b>${esc(m[1])}</b> ${esc(s.slice(m[0].length))}</p>`:`<p>${esc(s)}</p>`}).join('');
@@ -117,10 +160,10 @@ function planKarti(p){
  return`<button class="ka-yp-ders" type="button" data-yp-ac="${esc(p.id)}"><span class="ka-yp-ders__icon" aria-hidden="true">${ikon(p.dersAdi)}</span><span class="ka-yp-ders__body"><strong>${esc(p.dersAdi)}</strong><small>${hafta} ders haftası${unite?` · ${unite} ünite/tema`:''}</small>${p.yayin?`<em>${esc(p.yayin)}</em>`:''}</span><span class="ka-yp-ders__go" aria-hidden="true">›</span></button>`;
 }
 function hubHtml(){
- const yl=yil(),liste=planlarim(),tumPlan=planlar().filter(p=>planYili(p)===yl),yilSec=yillar();
+ const yl=yil(),liste=planlarim(),yilSec=yillar();
  const bu=liste.length?`<section class="ka-yp-card ka-yp-mine"><div class="ka-yp-card__bar"><h3>Planlarım</h3>${teacherId()?'<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-yp-secim>＋ Plan ekle / değiştir</button>':''}</div><div class="ka-yp-mine__list">${liste.map(p=>{const i=C.buHafta(p),g=i>=0?C.satirGorunumu(p)[i]:null,o=ozetSutunlari(p,havuz()),tema=g&&o.unite?metinler(g.r.degerler?.[o.unite.id])[0]:'';return`<button class="ka-yp-mine__item" type="button" data-yp-ac="${esc(p.id)}"><span aria-hidden="true">${ikon(p.dersAdi)}</span><b>${esc(planBasligi(p))}</b><small>${tema?`Bu hafta: ${esc(tema)}`:`${C.dersHaftasi(p)} ders haftası`}</small></button>`}).join('')}</div></section>`
   :(teacherId()?'<section class="ka-yp-card ka-yp-mine"><div class="ka-yp-card__bar"><h3>Planlarım</h3><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-yp-secim>＋ Plan ekle</button></div><p class="ka-muted">Derslerinizin planlarını burada toplayın; ders programınızdaki dersler otomatik görünür.</p></section>':'');
- const bolumler=gorunenKademeler().map(k=>`<section class="ka-yp-stage"><h3>${KADEMELER[k].ad}</h3><div class="ka-yp-tiles">${KADEMELER[k].siniflar.map(n=>{const adet=tumPlan.filter(p=>Number(p.seviye)===n).length;return`<button class="ka-yp-tile${adet?'':' is-empty'}" type="button" data-yp-sinif="${n}"><b>${sinifAdi(n)}</b><span>${adet?`${adet} ders`:'Plan yok'}</span></button>`}).join('')}</div></section>`).join('');
+ const bolumler=gorunenKademeler().map(k=>`<section class="ka-yp-stage"><h3>${KADEMELER[k].ad}</h3><div class="ka-yp-tiles">${KADEMELER[k].siniflar.map(n=>{const adet=sinifAdedi(n,yl);return`<button class="ka-yp-tile${adet?'':' is-empty'}" type="button" data-yp-sinif="${n}"><b>${sinifAdi(n)}</b><span>${adet?`${adet} ders`:'Plan yok'}</span></button>`}).join('')}</div></section>`).join('');
  const yilSecici=yilSec.length>1?`<label class="ka-yp-year"><span>Eğitim yılı</span><select data-yp-yil>${yilSec.map(y=>`<option value="${esc(y)}"${y===yl?' selected':''}>${esc(y)}</option>`).join('')}</select></label>`:'';
  return`<section class="ka-stack ka-yp" data-yp-root>${ustBilgi('📚','MEB MÜFREDATI',`${yl} Yıllık Planlar`,'Sınıfını seç, dersin planını incele ve MEB biçimli Word olarak indir.',false)}${eylemler()}${bu}${bolumler}<div class="ka-yp-foot">${yilSecici}<label class="ka-check"><input type="checkbox" data-yp-tum${durum.tum?' checked':''}> Tüm sınıfları göster (1–12)</label></div></section>`;
 }
@@ -161,8 +204,9 @@ function dersHtml(plan){
  const dipnot=(plan.dipnotlar||[]).filter(d=>d&&d.metin).map(d=>`<details class="ka-yp-note-card"><summary>${esc(d.ad||'Not')}</summary>${paragraflar(d.metin)}</details>`).join('');
  const tablo=`<section class="ka-yp-card ka-yp-table"><div class="ka-yp-table__bar"><h3>Hafta hafta öğrenme çıktıları</h3>${b.simdi>=0?'<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-yp-buhafta>Bu hafta ↓</button>':''}</div><div class="ka-yp-table__head" aria-hidden="true"><span>Hafta</span><span>Ünite / Tema / Konu</span><span>Öğrenme çıktıları</span></div>${satirlar||'<div class="ka-empty">Bu planda henüz hafta satırı yok.</div>'}${plan.yilSonu?`<div class="ka-yp-end">${esc(plan.yilSonu)}</div>`:''}${b.yazar?'<div class="ka-yp-table__add"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-yp-satir-ekle>＋ Hafta satırı ekle</button></div>':''}</section>${dipnot?`<section class="ka-yp-notes">${dipnot}</section>`:''}`;
  const rozetler=[hafta?`${hafta} ders haftası`:'',uniteler.length?`${uniteler.length} ünite/tema`:'',plan.yayin||'',(GRUPLAR.find(g=>g.key===planGrubu(plan))||{}).kisa||''].filter(Boolean);
+ const katalogKutusu=katalogMu(plan)?`<section class="ka-yp-card ka-yp-catalog"><div><h3>Hazır MEB planı</h3><p class="ka-muted">Bu plan hazır katalogdan geliyor. Okulunuzun planı olarak kopyalarsanız düzenleyebilir, hafta notu ekleyebilir ve Planlarım’a alabilirsiniz.</p></div>${yazabilir()?'<button class="ka-btn" type="button" data-yp-kopyala>📋 Okul planı olarak kopyala</button>':''}</section>`:'';
  const araclar=`<div class="ka-yp-acts">${tid?`<button class="ka-btn ka-btn--secondary" type="button" data-yp-takip="${takipte?'cikar':'ekle'}">${takipte?'✓ Planlarımda':'＋ Planlarıma ekle'}</button>`:''}${b.yazar?'<button class="ka-btn ka-btn--secondary" type="button" data-yp-tanim>✎ Plan bilgilerini düzenle</button>':''}</div>`;
- return`<section class="ka-stack ka-yp" data-yp-root data-yp-plan="${esc(plan.id)}">${ustBilgi(ikon(plan.dersAdi),`${sinifAdi(plan.seviye)} · ${planYili(plan)}`,`${planBasligi(plan)} Yıllık Planı ${planYili(plan)}`,rozetler.join(' · '),true)}${araclar}<div class="ka-yp-top">${bilgiKarti}${uniteKarti}</div>${tablo}</section>`;
+ return`<section class="ka-stack ka-yp" data-yp-root data-yp-plan="${esc(plan.id)}">${ustBilgi(ikon(plan.dersAdi),`${sinifAdi(plan.seviye)} · ${planYili(plan)}`,`${planBasligi(plan)} Yıllık Planı ${planYili(plan)}`,rozetler.join(' · '),true)}${araclar}${katalogKutusu}<div class="ka-yp-top">${bilgiKarti}${uniteKarti}</div>${tablo}</section>`;
 }
 /* ---------- Word için kişisel bilgiler ---------- */
 function ogretmenAdi(id){const o=arr('ogretmenler').find(x=>String(x.id)===String(id));return o?`${o.ad||''} ${o.soyad||''}`.trim():''}
@@ -207,7 +251,7 @@ async function indir(plan,dolu,dugme){
 
 /* ---------- Gezinme ---------- */
 const aktifPlan=()=>durum.sayfa==='ders'?bul(durum.planId):null;
-function git(sayfa,ek={}){Object.assign(durum,{sayfa,acik:new Set(),bilgi:{}},ek);ctx.yenile()}
+function git(sayfa,ek={}){Object.assign(durum,{sayfa,acik:new Set(),bilgi:{}},ek);if(sayfa==='sinif')katalogYukle(durum.sinif);ctx.yenile()}
 function hub(){Object.assign(durum,{sayfa:'hub',sinif:0,planId:'',arama:'',filtre:'tumu',acik:new Set(),bilgi:{}})}
 function ac(id){const p=bul(id);if(!p)return;Object.assign(durum,{sayfa:'ders',planId:id,sinif:Number(p.seviye)||durum.sinif,acik:new Set(),bilgi:{},kaydir:false});ctx.yenile()}
 function geri(){
@@ -218,12 +262,13 @@ function geri(){
 function dersiAc(dersAdi,sinif){
  hub();const p=dersPlani(dersAdi,sinif);
  if(p){Object.assign(durum,{sayfa:'ders',planId:p.id,sinif:Number(p.seviye),kaydir:true,yil:planYili(p)});return true}
- const sn=C.sinifSayisi(sinif);if(sn)Object.assign(durum,{sayfa:'sinif',sinif:sn});
+ const sn=C.sinifSayisi(sinif);if(sn){Object.assign(durum,{sayfa:'sinif',sinif:sn});katalogYukle(sn)}
  return false;
 }
 
 /* ---------- Çizim ve olaylar ---------- */
 function render(){
+ katalogDizinYukle();
  if(durum.sayfa==='ders'){const p=aktifPlan();if(p)return{count:C.dersHaftasi(p),html:dersHtml(p)};Object.assign(durum,{sayfa:'sinif',planId:''});if(!durum.sinif)durum.sayfa='hub'}
  if(durum.sayfa==='sinif')return{count:sinifPlanlari(durum.sinif).length,html:sinifHtml()};
  return{count:planlar().filter(p=>planYili(p)===yil()).length,html:hubHtml()};
@@ -249,7 +294,7 @@ async function takip(plan,ekle){
  try{await service().secimKaydet(tid,[...ids]);toast?.(ekle?'Planlarıma eklendi.':'Planlarımdan çıkarıldı.')}catch(_){toast?.('Kaydedilemedi.')}
 }
 function tikla(e){
- const hedef=e.target.closest('[data-yp-ac],[data-yp-sinif],[data-yp-geri],[data-yp-filtre],[data-yp-satir-ac],[data-yp-satir],[data-yp-satir-ekle],[data-yp-indir],[data-yp-buhafta],[data-yp-not-kaydet],[data-yp-takip],[data-yp-tanim],[data-yp-word],[data-yp-excel],[data-yp-menu],[data-yp-secim]');
+ const hedef=e.target.closest('[data-yp-ac],[data-yp-sinif],[data-yp-geri],[data-yp-filtre],[data-yp-satir-ac],[data-yp-satir],[data-yp-satir-ekle],[data-yp-indir],[data-yp-buhafta],[data-yp-not-kaydet],[data-yp-takip],[data-yp-tanim],[data-yp-word],[data-yp-excel],[data-yp-menu],[data-yp-secim],[data-yp-kopyala]');
  if(!hedef||!kok?.contains(hedef))return;const d=hedef.dataset,p=aktifPlan();
  if(d.ypAc!==undefined)return ac(d.ypAc);
  if(d.ypSinif!==undefined)return git('sinif',{sinif:Number(d.ypSinif),arama:'',filtre:'tumu'});
@@ -267,6 +312,7 @@ function tikla(e){
  if(d.ypExcel!==undefined)return excel.ac();
  if(d.ypMenu!==undefined)return dialog.menu();
  if(d.ypSecim!==undefined)return dialog.secim();
+ if(d.ypKopyala!==undefined&&p)return void dialog.katalogKopyala(p,hedef);
 }
 function degisti(e){
  const t=e.target;
@@ -301,7 +347,7 @@ function korunacak(){
  return false;
 }
 function unmount(){kok=null;bekleyen=false}
-const api={render,bind,hub,dersiAc,ac,geri,korunacak,unmount,bul,havuz,planlar,planYili,yil,kademeler,secilenPlanlar,
+const api={render,bind,hub,dersiAc,ac,geri,korunacak,unmount,bul,havuz:okulHavuzu,planlar:okulPlanlari,planYili,yil,kademeler,secilenPlanlar,
  get sayfa(){return durum.sayfa},get aktifPlanId(){return durum.planId},satirYenile};
 excel=global.YillikPlanExcel.create(ctx);
 dialog=global.YillikPlanDialog.create({...ctx,ui:api,yazabilir});
