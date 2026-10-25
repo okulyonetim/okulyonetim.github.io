@@ -216,7 +216,7 @@ const GROUPS={
     {key:'belgeler',label:'Belgeler',icon:'folder',tone:'amber',docs:true,ids:['documents','pdf-images','pdf-merge','checklists','school-age-calculator']}
   ],
   idareci:[
-    {key:'yonetim',label:'Genel Yönetim',icon:'briefcase',tone:'blue',blurb:'Aylık yönetim akışı, raporlar, öğretmen listeleri',ids:['aylik-yonetim','reports','teacher-list-builder']},
+    {key:'yonetim',label:'Genel Yönetim',icon:'briefcase',tone:'blue',blurb:'Aylık yönetim akışı, yıllık planlar, raporlar, öğretmen listeleri',ids:['aylik-yonetim','plans','reports','teacher-list-builder']},
     {key:'evrak',label:'Evrak - Özlük',icon:'inbox',tone:'amber',docs:true,blurb:'Evrak takibi, personel işleri, öğretmenden istenecekler',ids:['evrak','evrak-belge','ogretmenden-istenecekler','personel-isleri','diploma-isleri','dokumanlar','folder-spine']},
     {key:'mali',label:'Mali İşler',icon:'wallet',tone:'green',blurb:'Maaş ve ödeme işlemleri',ids:['payroll']},
     {key:'guvenlik',label:'Güvenlik - Denetim',icon:'shield',tone:'rose',blurb:'Denetim formları',ids:['food-audit']},
