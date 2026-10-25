@@ -1,7 +1,7 @@
 const assert=require('assert'),fs=require('fs'),vm=require('vm'),zip=require('./helpers/zip');
 
-const ctx={};ctx.window=ctx;vm.createContext(ctx);vm.runInContext(fs.readFileSync('js/modules/yillik-plan-core.js','utf8'),ctx);
-const C=ctx.YillikPlanCore,J=x=>JSON.parse(JSON.stringify(x));
+const ctx={};ctx.window=ctx;vm.createContext(ctx);['yillik-plan-core','yillik-plan-word'].forEach(f=>vm.runInContext(fs.readFileSync(`js/modules/${f}.js`,'utf8'),ctx));
+const C=ctx.YillikPlanCore,Wd=ctx.YillikPlanWord,J=x=>JSON.parse(JSON.stringify(x));
 const docx=zip.oku(fs.readFileSync('tests/fixtures/5-sinif-sosyal-bilgiler-yillik-plan-2026-2027.docx'));
 const xml=docx['word/document.xml'].toString('utf8');
 
@@ -72,4 +72,42 @@ assert.strictEqual(C.dersAnahtari('Sosyal Bilgiler Dersi'),C.dersAnahtari('sosya
 
 /* Başlık takma adları: Excel ve Word içe aktarıcıları aynı kuralı paylaşır */
 [['Öğrenme Çıktıları','ogrenme_ciktilari'],['Ölçme ve Değerlendirme','olcme_degerlendirme'],['Belirli Gün ve Haftalar','belirli_gunler'],['Ünite/Tema','unite_tema'],['Değerler','degerler']].forEach(([ad,k])=>assert.strictEqual(C.baslikBilgisi(ad).key,k,ad+' → '+k));
-console.log('yillik-plan-v2 çekirdek testleri geçti');
+
+/* ---------- Word çıktısı: şablona basılan plan, aynı ayrıştırıcıyla geri okunduğunda eşit ---------- */
+const sablon=zip.oku(fs.readFileSync('assets/yillik-plan/sablon.docx'));
+assert(!/evrakburada/i.test(Object.values(sablon).map(b=>b.toString('utf8')).join('')),'Şablon başka bir uygulamanın adını taşımamalı.');
+const sablonXml=sablon['word/document.xml'].toString('utf8');assert(sablonXml.includes('{{GOVDE}}')&&sablonXml.includes('w:orient="landscape"'),'Şablon yatay sayfa ve gövde işaretçisi içermeli.');
+const havuz=J(p.basliklar).map((b,i)=>({id:'h'+i,ad:b.ad}));
+const bilgi={okul:'Atatürk Ortaokulu',ogretmen:'Ali Veli',zumre:'Ayşe Yılmaz, Mehmet Kaya\nAli Veli',mudur:'Hasan Demir',tarih:'2026-09-14'};
+const dolu=Wd.belgeXml(sablonXml,kayit,havuz,bilgi),q=C.docxAyristir(dolu);
+assert.strictEqual(q.dersAdi,'Sosyal Bilgiler');assert.strictEqual(q.seviye,5);assert.strictEqual(q.egitimOgretimYili,'2026-2027');assert.strictEqual(q.satirlar.length,41);assert.strictEqual(C.dersHaftasi(q),38);
+assert.deepStrictEqual(J(q.basliklar.map(b=>b.anahtar)),J(p.basliklar.map(b=>b.anahtar)));assert.deepStrictEqual(J(q.basliklar.map(b=>b.grup)),J(p.basliklar.map(b=>b.grup)));
+assert.deepStrictEqual(J(q.hucreGenislikleri),J(p.hucreGenislikleri),'Izgara genişlikleri örnekle aynı olmalı.');
+assert.strictEqual(q.yilSonu,p.yilSonu);assert.deepStrictEqual(J(q.dipnotlar),J(p.dipnotlar));
+p.satirlar.forEach((r,i)=>{const o=q.satirlar[i];['hafta','no','tarih','baslangic','bitis','saat','ozel','bayram'].forEach(k=>assert.strictEqual(o[k],r[k],`satır ${i+1} ${k}`));assert.deepStrictEqual(J(o.birlesik),J(r.birlesik),`satır ${i+1} birleşik`);assert.deepStrictEqual(J(o.degerler),J(r.degerler),`satır ${i+1} değerler`)});
+
+/* Başlık, zümre ve onay bilgileri; boş şablonda noktalı yer tutucular */
+assert(dolu.includes('2026/2027 EĞİTİM-ÖĞRETİM YILI ATATÜRK ORTAOKULU 5. SINIF SOSYAL BİLGİLER DERSİ ÜNİTELENDİRİLMİŞ YILLIK PLANI'));
+assert(dolu.includes('14.09.2026')&&dolu.includes('Hasan Demir')&&dolu.includes('OKUL MÜDÜRÜ')&&dolu.includes('UYGUNDUR.'));
+assert.deepStrictEqual(J(Wd.adListesi(bilgi)),['Ali Veli','Ayşe Yılmaz','Mehmet Kaya'],'Zümre adları tekrarsız, öğretmen ilk sırada olmalı.');
+const bosXml=Wd.belgeXml(sablonXml,kayit,havuz,{});
+assert(bosXml.includes('2026/2027 EĞİTİM-ÖĞRETİM YILI '+'…'.repeat(7)+' 5. SINIF SOSYAL BİLGİLER'),'Boş şablonda okul adı noktalı kalmalı.');
+assert.strictEqual((bosXml.match(/…{7}/g)||[]).length,5,'Boş şablonda okul, iki zümre, tarih ve müdür noktalı olmalı.');
+assert(!bosXml.includes('Hasan Demir')&&!bosXml.includes('Atatürk Ortaokulu'.toLocaleUpperCase('tr')));
+
+/* Başlık satırları her sayfada tekrar eder; tatil satırı tek hücreli gibi yazılır; birleşik hücre bozulmaz */
+assert.strictEqual((dolu.match(/<w:tblHeader\/>/g)||[]).length,2);
+assert.strictEqual((dolu.match(/<w:vMerge w:val="restart"\/>/g)||[]).length,(dolu.match(/<w:vMerge w:val="restart"\/>/g)||[]).length);
+const restart=(dolu.match(/<w:vMerge w:val="restart"\/>/g)||[]).length,devam=(dolu.match(/<w:vMerge\/>/g)||[]).length;assert(restart>0&&devam>=restart,'Her birleşik grup bir restart ve en az bir devam hücresi taşımalı.');
+assert.strictEqual(Wd.dosyaAdi(kayit,true),'5-sinif-sosyal-bilgiler-yillik-plan-2026-2027.docx');assert.strictEqual(Wd.dosyaAdi(kayit,false),'5-sinif-sosyal-bilgiler-yillik-plan-2026-2027-bos-sablon.docx');
+assert.strictEqual(Wd.tarihBicimi('2026-09-14'),'14.09.2026');assert.strictEqual(Wd.tarihBicimi(''),'');
+assert.throws(()=>Wd.belgeXml('<w:body/>',kayit,havuz,{}),/işaretçisi/);
+/* XML kaçışı: özel karakterli okul adı belgeyi bozmamalı */
+const kacis=Wd.belgeXml(sablonXml,kayit,havuz,{okul:'A&B <Okul> "1"'});assert(kacis.includes('A&amp;B &lt;OKUL&gt; &quot;1&quot;'));assert.doesNotThrow(()=>C.docxAyristir(kacis));
+/* Excel/elle planlar: tanınmayan sütun ve tarihsiz satır da yazılır, geri okunur */
+const elle={dersAdi:'Matematik',seviye:7,egitimOgretimYili:'2026-2027',sutunlar:['a','b'],baslikGruplari:{},satirlar:[{no:1,hafta:'1. hafta',baslangic:'2026-09-14',bitis:'2026-09-20',saat:'5 saat',degerler:{a:'Doğal sayılar',b:'M.7.1.1.1'}}],dipnotlar:[],yilSonu:''};
+const elleXml=Wd.belgeXml(sablonXml,elle,[{id:'a',ad:'Ünite / Tema'},{id:'b',ad:'Özel Sütun'}],{});
+const e2=C.docxAyristir(elleXml);assert.strictEqual(e2.satirlar[0].tarih,'14-20 Eylül');assert.strictEqual(e2.satirlar[0].degerler.unite_tema,'Doğal sayılar');assert.strictEqual(e2.basliklar.length,2);
+assert.strictEqual(e2.hucreGenislikleri.reduce((t,w)=>t+w,0),14205,'Özel sütun düzeni sayfa genişliğine ölçeklenmeli.');
+
+console.log('yillik-plan-v2 çekirdek ve Word testleri geçti');

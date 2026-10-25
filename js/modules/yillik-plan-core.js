@@ -168,7 +168,7 @@ function govdeOgeleri(xml){
  const kok=xmlAgaci(xml),body=ilk(ilk(kok,'w:document')||kok,'w:body')||kok;
  return body.cocuk;
 }
-const HAFTA_RE=/^\s*(\d{1,2})\s*\.\s*hafta/i;
+const HAFTA_RE=/^\s*(?:(\d{1,2})\s*\.\s*hafta|[—–])/i;
 function kolonTanimlari(ust,alt2){
  const gruplar=[];ust.forEach(c=>gruplar.push({bas:c.kolon,son:c.kolon+c.span-1,ad:c.metin}));
  return alt2.map(c=>{const g=gruplar.find(x=>c.kolon>=x.bas&&c.kolon<=x.son);return{kolon:c.kolon,span:c.span,ad:c.metin,grup:g?g.ad:''}});
@@ -194,7 +194,7 @@ function docxAyristir(documentXml,secenek={}){
    continue;
   }
   const [,...tarihSatirlari]=ilkH.metin.split('\n'),tarih=tarihSatirlari.map(line).filter(Boolean).join(' ').replace(/\s*\d+\s*saat\s*$/i,''),
-   aralik=tarihAraligi(tarih,yil)||{baslangic:'',bitis:''},kolonOf=k=>hucreler.find(c=>c.kolon===k),satir={no:0,hafta:'',kaynakNo:Number(HAFTA_RE.exec(ilkH.metin)[1]),tarih,baslangic:aralik.baslangic,bitis:aralik.bitis,saat:(kolonOf(saatK.kolon)?.metin||'').trim(),ozel:'',bayram:'',birlesik:[],degerler:{}};
+   aralik=tarihAraligi(tarih,yil)||{baslangic:'',bitis:''},kolonOf=k=>hucreler.find(c=>c.kolon===k),satir={no:0,hafta:'',kaynakNo:Number(HAFTA_RE.exec(ilkH.metin)[1])||0,tarih,baslangic:aralik.baslangic,bitis:aralik.bitis,saat:(kolonOf(saatK.kolon)?.metin||'').trim(),ozel:'',bayram:'',birlesik:[],degerler:{}};
   const hamlar=icerik.map(k=>{const c=kolonOf(k.kolon);if(!c)return{k,metin:'',devam:false};if(c.vm==='continue')return{k,metin:sonDeger[k.key]||'',devam:true};if(c.vm==='restart')sonDeger[k.key]=c.metin;else delete sonDeger[k.key];return{k,metin:c.metin,devam:false}});
   /* Tatil/özel satır: ilk beş içerik hücresinden en az üçü aynı metni taşıyorsa (ARA TATİL, YARIYIL TATİLİ, SOSYAL ETKİNLİK, bayram) */
   const ilkBes=hamlar.slice(0,5).map(h=>h.metin).filter(Boolean),sayac=new Map();ilkBes.forEach(m=>sayac.set(norm(m),(sayac.get(norm(m))||0)+1));
