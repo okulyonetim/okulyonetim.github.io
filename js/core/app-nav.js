@@ -188,6 +188,7 @@ const TOOLS={};
  ['schedule','Ders Programı','calendar','green','Okulun ders programı','academic','schedule'],
  ['duty','Nöbet Programı','shield','green','Nöbet çizelgesi','management','duty'],
  ['meeting-schedule','Toplantı Çizelgesi','users','green','Toplantı ve kurul çizelgesi','management','meeting-schedule'],
+ ['bep','BEP Hazırlama','book','green','Bireyselleştirilmiş eğitim programı hazırlama','bep','home'],
  ['committees','Kurul ve Komisyonlar','shield','orange','Kurul ve komisyon görevleri','committees','home'],
  ['transport','Taşıma İşlemleri','bus','cyan','Servisler ve güzergâhlar','transport','services'],
  ['bus-seats','Servis Oturma','bus','cyan','Servis oturma planı','transport','busSeats'],
