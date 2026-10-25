@@ -36,8 +36,8 @@ assert(dash.includes("x.goster!==false"),'Ana sayfa yalnız Göster işaretli s�
 assert(settings.includes('data-exam-show')&&settings.includes('data-exam-add')&&settings.includes('data-exam-remove'),'Ayarlar sınav satırı: göster/ekle/kaldır.');
 
 /* Belirli gün: katalog ana sayfaya karışmaz */
-assert(!dash.includes('catalogSpecialDays')&&!dash.includes('BelirliGunlerCatalog'),'Ana sayfa yalnız okulun seçtiği belirli günleri göstermeli.');
-assert(!loader.includes("define('dashboard',['js/modules/school-live-status.js?v=1071','js/modules/belirli-gunler-catalog"),'Dashboard artık katalog yüklemez.');
+assert(!dash.includes('catalogSpecialDays')&&dash.includes('BelirliGunlerCatalog?.resmiGunler')&&!dash.includes('BelirliGunlerCatalog.CATALOG')&&!dash.includes('BelirliGunlerCatalog?.CATALOG'),'Ana sayfa okulun seçtiği günlere yalnız resmî bayram ve anma günlerini ekler; tüm katalog karışmaz.');
+assert(/define\('dashboard',\[[^\]]*belirli-gunler-catalog\.js[^\]]*dashboard\.js/.test(loader),'Dashboard resmî günler için kataloğu yüklemeli.');
 
 /* Ayet · hadis · özlü söz tek kartta, aynı alanda sırayla (alt alta üç kart değil) */
 assert(!/\bsayingText\b|\bsayingSource\b|SAYINGS\b|sayingSection\b|weeklySayingSection\b/.test(dash+settings+loader),'Eski tek söz yapısı ve üç ayrı kart kaldırılmalı.');

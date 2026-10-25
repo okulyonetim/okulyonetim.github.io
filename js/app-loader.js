@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1072','js/modules/hafta-sozleri.js?v=1','js/modules/dashboard.js?v=1105']);
+define('dashboard',['js/modules/school-live-status.js?v=1072','js/modules/hafta-sozleri.js?v=1','js/modules/belirli-gunler-catalog.js?v=6','js/modules/dashboard.js?v=1106']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/academic.js?v=894']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=6','js/modules/management.js?v=898']);
@@ -53,7 +53,7 @@ const DASHBOARD_CARDS=[
  {key:'trial',label:'Deneme sınavı sayacı',desc:'Devam eden deneme sınavının süre sayacı.'},
  {key:'stats',label:'Okul özeti',desc:'Öğretmen, sınıf ve öğrenci sayıları.'},
  {key:'upcoming',label:'Yaklaşanlar',desc:'Yaklaşan sınav, görev, toplantı ve hatırlatıcılar.'},
- {key:'specialDays',label:'Belirli gün ve haftalar',desc:'Okulunuzun seçtiği gün ve haftalar.'},
+ {key:'specialDays',label:'Belirli gün ve haftalar',desc:'Okulunuzun seçtiği gün ve haftalar; resmî bayram ve anma günleri.'},
  {key:'examCountdown',label:'Sınav geri sayımı',desc:'LGS gibi sınavlara kalan süre; her sınav ayrı seçilir.'},
  {key:'sozler',label:'Haftanın ayeti · hadisi · özlü sözü',desc:'Tek kartta sırayla; her tür kendi havuzundan haftada bir değişir.'},
  {key:'onurPanosu',label:'Onur panosu',desc:'Ayın öğrencisi, en temiz sınıf gibi bölümler.'},
@@ -78,7 +78,8 @@ const CARD_OPTIONS={
  whereNow:[{key:'sekme',type:'choice',label:'Açılışta hangi sekme görünsün?',def:'rooms',choices:[['rooms','Derslikler'],['teachers','Öğretmenler']]}],
  specialDays:[
   {key:'gun',type:'choice',label:'Kaç gün önceden görünsün?',def:'14',choices:[['7','7 gün'],['14','14 gün'],['30','30 gün']]},
-  {key:'adet',type:'choice',label:'En çok kaç satır?',def:'5',choices:[['3','3'],['5','5'],['8','8']]}
+  {key:'adet',type:'choice',label:'En çok kaç satır?',def:'5',choices:[['3','3'],['5','5'],['8','8']]},
+  {key:'resmi',type:'toggle',label:'Resmî bayram ve anma günleri de görünsün',def:true}
  ],
  examCountdown:[{key:'bicim',type:'choice',label:'Geri sayım biçimi',def:'canli',choices:[['canli','Ay · gün · saat · dakika · saniye'],['gun','Yalnız gün']]}],
  sozler:[
@@ -101,7 +102,11 @@ function resolveOptions(raw){
 /* Sınav geri sayımı: her sınav kendi satırıdır (ad, tarih, saat, Göster). Ayarlar'da liste kaydedilmediyse yalnız LGS gelir (ilkokul/ortaokul);
    MEB 2027 takvimini henüz açıklamadı, 13 Haziran 2027 saat 09:30 tahminidir. Başka okul türleri sınavı Ayarlar > Ana Sayfa'dan ekler/kapatır. */
 const EXAM_DEFAULTS=[{ad:'LGS (tahmini)',tarih:'2027-06-13',saat:'09:30',goster:true}];
-const examRows=list=>(Array.isArray(list)?list:EXAM_DEFAULTS).map(x=>({ad:String(x?.ad||'').trim().slice(0,40),tarih:String(x?.tarih||'').slice(0,10),saat:/^\d{2}:\d{2}$/.test(String(x?.saat||''))?String(x.saat):'',goster:x?.goster!==false})).filter(x=>x.ad).slice(0,8);
+/* Eski sürümlerin her kayıtta belge içine yazdığı varsayılan satırlar (okulun girdiği veri değildir): LGS 12 Haziran ve YKS.
+   Yalnız bunlardan oluşan liste varsayılana döner; YKS satırı hiçbir listede kalmaz. */
+const RETIRED_EXAMS=new Set(['LGS (tahmini)|2027-06-12','YKS (tahmini)|2027-06-19']);
+const retiredExam=x=>RETIRED_EXAMS.has(`${x?.ad}|${x?.tarih}`);
+const examRows=list=>(Array.isArray(list)?(list.length&&list.every(retiredExam)?EXAM_DEFAULTS:list.filter(x=>!retiredExam(x))):EXAM_DEFAULTS).map(x=>({ad:String(x?.ad||'').trim().slice(0,40),tarih:String(x?.tarih||'').slice(0,10),saat:/^\d{2}:\d{2}$/.test(String(x?.saat||''))?String(x.saat):'',goster:x?.goster!==false})).filter(x=>x.ad).slice(0,8);
 /* Onur panosu: bölümler (başlık, simge) ve altındaki kişiler/sınıflar; boşsa kart gizlenir. */
 const onurRows=list=>(Array.isArray(list)?list:[]).map(b=>({baslik:String(b?.baslik||'').trim().slice(0,40),ikon:String(b?.ikon||'').trim().slice(0,4),kisiler:(Array.isArray(b?.kisiler)?b.kisiler:[]).map(k=>({ad:String(k?.ad||'').trim().slice(0,60),aciklama:String(k?.aciklama||'').trim().slice(0,80)})).filter(k=>k.ad).slice(0,12)})).filter(b=>b.baslik).slice(0,8);
 const DASHBOARD_DEFAULTS={idareci:['welcome','news','slayt','announcements','duty','absences','whereNow','stats','upcoming','food','examCountdown','specialDays','sozler','onurPanosu','polls','trial','quick'],ogretmen:['welcome','news','slayt','food','todayLessons','whereNow','duty','announcements','teacherFocus','upcoming','specialDays','examCountdown','sozler','onurPanosu','polls','trial','quick','notes']};

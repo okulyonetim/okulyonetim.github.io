@@ -109,5 +109,9 @@ async function save(e){e.preventDefault();const f=e.currentTarget,fd=new FormDat
   }catch(err){global.toast?.(err?.message==='yetkisiz'?'Bu işlem için yetkiniz yok.':(err?.message||'Etkinlik kaydedilemedi.'))}finally{if(submit?.isConnected)submit.disabled=false}}
 /* Yeni etkinlik artık doğrudan ClassicCizelgelerParity.openEdit içinden bu pencereye gelir; yükleyici ile uyum için install korunur. */
 function install(){return true}
-global.BelirliGunlerCatalog={CATALOG,open,close,datesFor,install};
+/* Resmî bayram ve anma günleri: her okulun kutladığı/andığı günlerdir; ana sayfa bunları okulun seçtiği günlere ek olarak gösterir.
+   Kayıt biçimi belirliGunler ile aynıdır; geçerli ve sonraki eğitim yılı birlikte döner (yıl sonuna yakın pencereler boş kalmasın). */
+const RESMI=new Set(['Cumhuriyet Bayramı','Atatürk Haftası','Ulusal Egemenlik ve Çocuk Bayramı','Atatürk’ü Anma ve Gençlik ve Spor Bayramı']);
+function resmiGunler(){const y=Number(currentStartYear());return[y,y+1].flatMap(start=>CATALOG.filter(i=>RESMI.has(i.ad)).map(i=>{const d=datesFor(i,start);return{katalogId:i.id,ad:i.ad,tarihBaslangic:d.baslangic,tarihBitis:d.bitis===d.baslangic?'':d.bitis}})).filter(x=>x.tarihBaslangic)}
+global.BelirliGunlerCatalog={CATALOG,open,close,datesFor,resmiGunler,install};
 })(window);
