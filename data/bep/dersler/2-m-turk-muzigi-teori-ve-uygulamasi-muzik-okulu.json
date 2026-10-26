@@ -1,0 +1,104 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TAMPERE SES SİSTEMİNDE TAM VE YARIM SES",
+      "a": [
+        {
+          "k": "TMT.2.1.1",
+          "m": "Tam ses ve yarım sesi işitebilme",
+          "s": [
+            "Tam-yarım sesi tanır.",
+            "Tam-yarım sesi işitsel olarak ayırt eder.",
+            "Tam-yarım sesi uygular."
+          ]
+        },
+        {
+          "k": "TMT.2.1.2",
+          "m": "Tam ses ve yarım sesi okuyabilme",
+          "s": [
+            "Tam-yarım sesi tanır.",
+            "Tam-yarım sesi ayırt eder.",
+            "Tam-yarım sesi uygular."
+          ]
+        },
+        {
+          "k": "TMT.2.1.3",
+          "m": "Tam ses ve yarım sesi yazabilme",
+          "s": [
+            "Tam-yarım sesi tanır.",
+            "Tam-yarım sesi işitsel olarak ayırt eder.",
+            "Tam-yarım sesi uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SESLERDE PESLEŞTİRME VE TİZLEŞTİRME",
+      "a": [
+        {
+          "k": "TMT.2.2.1",
+          "m": "Sesleri pestleştirme ve tizleştirmeyi işitebilme",
+          "s": [
+            "Seslerde pestleştirme ve tizleştirmeyi tanır.",
+            "Seslerde pestleştirme ve tizleştirmeyi işitsel olarak ayırt eder.",
+            "Seslerde pestleştirme ve tizleştirmeyi kavramsal olarak ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.2.2.2",
+          "m": "Pestleştirilmiş ve tizleştirilmiş sesleri okuyabilme",
+          "s": [
+            "Pestleştirilmiş ve tizleştirilmiş sesleri tanır.",
+            "Pestleştirilmiş ve tizleştirilmiş sesleri ayırt eder.",
+            "Pestleştirilmiş ve tizleştirilmiş sesleri uygular."
+          ]
+        },
+        {
+          "k": "TMT.2.2.3",
+          "m": "Pestleştirilmiş ve tizleştirilmiş sesleri yazabilme",
+          "s": [
+            "Pestleştirilmiş ve tizleştirilmiş sesleri tanır.",
+            "Pestleştirilmiş ve tizleştirilmiş sesleri işitsel olarak ayırt eder.",
+            "Pestleştirilmiş ve tizleştirilmiş sesleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SESLERI NATÜREL HÂLE GETİRME",
+      "a": [
+        {
+          "k": "TMT.2.3.1",
+          "m": "Ses değiştirici işareti almış seslerin natürel (bekar) işareti alarak doğal hale dönüştüğünü işitebilme",
+          "s": [
+            "Diyez işareti veya bemol işareti ile değiştirilen seslerin, doğal hâle natürel (bekar) işareti ile döndürülebileceği durumları tanır.",
+            "Diyez işareti veya bemol işareti ile değiştirilen seslerin, doğal hâle natürel (bekar) işareti ile döndürüldüğünü işitsel olarak ayırt eder.",
+            "Diyez işareti veya bemol işareti ile değiştirilen seslerin, doğal hâle natürel (bekar) işareti ile döndürüldüğünü ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.2.3.2",
+          "m": "Ses değiştirici işareti almış ve daha sonra natürel (bekar) işareti alarak doğal haline dönüşmüş sesleri okuyabilme",
+          "s": [
+            "Diyez işareti ile tizleştirilen veya bemol işareti ile pesleştirilen ve daha sonra doğal hâle natürel (bekar) işareti ile dönüştürülmüş sesleri tanır.",
+            "Diyez işareti ile tizleştirilen veya bemol işareti ile pesleştirilen ve daha sonra doğal hâle natürel (bekar) işareti ile dönüştürülmüş sesleri ayırt eder.",
+            "Diyez işareti ile tizleştirilen veya bemol işareti ile pesleştirilen ve daha sonra doğal hâle natürel (bekar) işareti ile dönüştürülmüş sesleri kullanır."
+          ]
+        },
+        {
+          "k": "TMT.2.3.3",
+          "m": "Ses değiştirici işaret almış seslerin natürel (bekar) işareti alarak doğal sese dönüşeceğini yazabilme",
+          "s": [
+            "Diyez işareti ile tizleştirilen veya bemol işareti ile pesleştirilen ve daha sonra doğal hâle natürel (bekar) işareti ile dönüştürülmüş sesleri tanır.",
+            "Diyez işareti ile tizleştirilen veya bemol işareti ile pesleştirilen ve daha sonra doğal hâle natürel (bekar) işareti ile dönüştürülmüş sesleri ayırt eder.",
+            "Diyez işareti ile tizleştirilen veya bemol işareti ile pesleştirilen ve daha sonra doğal hâle natürel (bekar) işareti ile dönüştürülmüş sesleri kullanır."
+          ]
+        }
+      ]
+    }
+  ]
+}

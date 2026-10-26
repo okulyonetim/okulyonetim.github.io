@@ -1,0 +1,106 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KAVAL ÇEŞİTLERİ, BAKIMI VE SEÇİMİ",
+      "a": [
+        {
+          "k": "KVL.2.1.1",
+          "m": "Dilli kavalı çözümleyebilme",
+          "s": [
+            "Çeşitli görseller aracılığıyla dilli kavala ilişkin parçaları belirler.",
+            "Dilli kavalın parçaları arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "KVL.2.1.2",
+          "m": "Dilli kaval ile icra edilen eserleri dinleyebilme",
+          "s": [
+            "Dinlediği eserler üzerinden dilli kavalı fark eder.",
+            "Dinlediği eserler üzerinden dilli kavalı ayırt eder.",
+            "Dinlediği eserler üzerinden dilli kavalın ses özelliklerini açıklar."
+          ]
+        },
+        {
+          "k": "KVL.2.1.3",
+          "m": "Dilli ve dilsiz kavalı seçebilme",
+          "s": [
+            "Dilli ve dilsiz kavalı seçer."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.2.1.4",
+          "m": "Kavalın bakım adımlarını belirleyebilme",
+          "s": [
+            "Kavalın bakım adımlarını belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.2.1.5",
+          "m": "Fiziksel özelliklerine göre doğru kavalı seçebilme",
+          "s": [
+            "Fiziksel özelliklerine göre doğru kavalı seçer."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA USTA İCRACILAR",
+      "a": [
+        {
+          "k": "KVL.2.2.1",
+          "m": "Kavalda usta icracıları tanıyabilme",
+          "s": [
+            "Kavalda usta icracıları tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.2.2.2",
+          "m": "Kavalda usta icracıların stillerini tanıyabilme",
+          "s": [
+            "Kavalda usta icracıların stillerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.2.2.3",
+          "m": "Farklı bölgelerdeki kaval icra tarzlarını tanıyabilme",
+          "s": [
+            "Farklı bölgelerdeki kaval icra tarzlarını tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA TEMEL DAVRANIŞLAR 1",
+      "a": [
+        {
+          "k": "KVL.2.3.1",
+          "m": "Kavalın nasıl tutulacağını yorumlayabilme",
+          "s": [
+            "Kavalın nasıl tutulacağını inceler.",
+            "Kavalın nasıl tutulacağını fiziksel özelliklerine göre uygular.",
+            "Kavalın nasıl tutulacağını fiziksel özelliklerine ifade eder."
+          ]
+        },
+        {
+          "k": "KVL.2.3.2",
+          "m": "Kaval üzerinde parmakların pozisyonunu yorumlayabilme",
+          "s": [
+            "Kaval üzerinde parmakların alması gereken şekli inceler.",
+            "Kaval üzerinde parmakların alması gereken şekli fiziksel özelliklerine göre uygular.",
+            "Kaval üzerinde parmakların alması gereken şekli fiziksel özelliklerine göre ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

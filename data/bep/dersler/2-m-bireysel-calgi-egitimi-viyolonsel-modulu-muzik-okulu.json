@@ -1,0 +1,60 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİ VE VİYOLONSEL",
+      "a": [
+        {
+          "k": "VLS.2.1.1",
+          "m": "Viyolonselin Türk müziğindeki yeri ve önemine ilişkin bilgi toplayabilme",
+          "s": [
+            "Viyolonselin Türk müziğindeki yerine ve önemine ilişkin bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Viyolonselin Türk müziğindeki yeri ve önemine ilişkin bilgileri toplar.",
+            "Viyolonselin Türk müziğindeki yeri ve önemine ilişkin topladığı bilgileri doğrular.",
+            "Viyolonselin Türk müziğindeki yeri ve önemine ilişkin bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "VİYOLONSELİMİ KORUYORUM VE TELLERİNİ TANIYORUM",
+      "a": [
+        {
+          "k": "VLS.2.2.1",
+          "m": "Viyolonselin korunması, bakımı ve kullanım şeklini gözlemleyebilme",
+          "s": [
+            "Viyolonselin bakımı, korunması ve kullanım şeklini gözlemlemek için amaç belirler.",
+            "Koruma, bakım ve kullanım şekillerine ilişkin veri toplar.",
+            "Gözlemleri doğrultusunda topladığı verileri kaydeder."
+          ]
+        },
+        {
+          "k": "VLS.2.2.2",
+          "m": "Viyolonseldeki boş tel seslerini ve tel numaralarını tanıyabilme",
+          "s": [
+            "Viyolonseldeki boş tel seslerini ve tel numaralarını tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "BOŞ TELLERDE YAY ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "VLS.2.3.1",
+          "m": "Boş tellerde yay çekme-itme hareketlerini uygulayarak çalabilme",
+          "s": [
+            "Çalınacak etüdü çözümler.",
+            "Boş tellerde yay çekme ve itme hareketlerini uygularken duruş ve tutuş pozisyonunu alır.",
+            "Boş tellerde yay çekme-itme hareketlerini çalgıya özgü tekniklerle kullanır.",
+            "Boş tellerde yay çekme-itme hareketlerini müziksel bileşenlerle ilişkilendirerek uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

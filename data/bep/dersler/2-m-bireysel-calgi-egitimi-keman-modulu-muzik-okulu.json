@@ -1,0 +1,92 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGIDA DURUŞ VE TUTUŞ TEKNİĞİ",
+      "a": [
+        {
+          "k": "KMN.2.1.1",
+          "m": "Doğru duruş ve tutuş pozisyonunu tanıyabilme",
+          "s": [
+            "Doğru duruş ve tutuş pozisyonunu tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SOL EL ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.2.2.1",
+          "m": "Sol elini tuşe üzerine doğru şekilde yerleştirebilme",
+          "s": [
+            "Sol elini tuşe üzerine doğru şekilde yerleştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KMN.2.2.2",
+          "m": "Sol el tutuşu ve başparmak uyumunu gözlemleyebilme",
+          "s": [
+            "Başparmağın pozisyonunu belirler.",
+            "Parmakların alması gereken şeklin verisini toplar.",
+            "Parmakların tuşe üzerinde pozisyonlandırılmasını sınıflandırır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DETAŞE (DETACHE) TEKNİĞİYLE SAĞ EL POZISYONU",
+      "a": [
+        {
+          "k": "KMN.2.3.1",
+          "m": "Detaşe tekniğini uygulayıp yorumlayabilme",
+          "s": [
+            "Detaşe tekniğinde yay çalışmalarını inceler.",
+            "Yayda detaşe tekniğini uygular.",
+            "Yay kullanma tekniklerini fiziksel özelliklere uygun olarak ifade eder."
+          ]
+        },
+        {
+          "k": "KMN.2.3.2",
+          "m": "Detaşe tekniğiyle yayda ses elde edebilme",
+          "s": [
+            "Çalacağı eseri detaşe tekniğiyle çözümler.",
+            "Yayı tellere göre çevirirken sağ elde dik duruş pozisyonu alır.",
+            "Çalgısını ezgisel yapıya ve tekniğe uygun kullanır.",
+            "Müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "LEGATO TEKNİĞİYLE SAĞ EL ÇALIŞMASI",
+      "a": [
+        {
+          "k": "KMN.2.4.1",
+          "m": "Yayda legato tekniğini uygulayıp çalabilme",
+          "s": [
+            "Legato tekniğiyle çalınacak eseri çözümler.",
+            "Yayda legato tekniğiyle doğru duruş ve tutuş pozisyonu alır.",
+            "Legato tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Legato tekniğini kullanırken, müziksel bileşenleri uygulayarak çalar."
+          ]
+        },
+        {
+          "k": "KMN.2.4.2",
+          "m": "Legato tekniğiyle yapılan yay çalışmasında teknik bilgi toplayabilme",
+          "s": [
+            "Doğru çalışma sergilemek için hangi araçları kullanacağını belirler.",
+            "Ayna karşısında yapılan çalışmaları kaydederek bilgileri bulur.",
+            "Legato tekniğinde yay tekniğini, ayna karşısında doğrular.",
+            "Yayda bağlı çalma tekniğindeki bilgileri kaydeder."
+          ]
+        }
+      ]
+    }
+  ]
+}

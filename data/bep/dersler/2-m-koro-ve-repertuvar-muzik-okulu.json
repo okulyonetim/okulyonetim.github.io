@@ -1,0 +1,137 @@
+{
+  "ders": "Koro ve Repertuvar (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KOROYU TANIYALIM",
+      "a": [
+        {
+          "k": "KOREP.2.1.1",
+          "m": "Yaş gruplarına göre oluşan koro türlerini açıklayabilme",
+          "s": [
+            "Yaş gruplarına göre oluşan koro türlerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KORO OLUŞTURALIM",
+      "a": [
+        {
+          "k": "KOREP.2.2.1",
+          "m": "Birlikte şarkı söyleme kurallarını açıklayabilme",
+          "s": [
+            "Birlikte şarkı söyleme kurallarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.2.2.2",
+          "m": "Birlikte şarkı söylemek için ses sağlığını korumanın önemini açıklayabilme",
+          "s": [
+            "Birlikte şarkı söylemek için ses sağlığını korumanın önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.2.2.3",
+          "m": "Koro ile birlikte bedensel duruş çalışmaları yapabilme",
+          "s": [
+            "Koro ile birlikte bedensel duruş çalışmaları yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.2.2.4",
+          "m": "Koro ile birlikte bedensel esneme çalışmaları yapabilme",
+          "s": [
+            "Koro ile birlikte bedensel esneme çalışmaları yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.2.2.5",
+          "m": "Koro ile birlikte nefes çalışmaları yapabilme",
+          "s": [
+            "Koro ile birlikte nefes çalışmaları yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.2.2.6",
+          "m": "Koro ile birlikte ses açma çalışmaları yapabilme",
+          "s": [
+            "Koro ile birlikte ses açma çalışmaları yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KORODA SÖYLEYELİM",
+      "a": [
+        {
+          "k": "KOREP.2.3.1",
+          "m": "İstiklal Marşı’nı saygıyla söyleyebilme",
+          "s": [
+            "İstiklal Marşı’nı saygıyla söylemek için hazırlanır.",
+            "İstiklal Marşı’nı saygıyla söylerken uygun teknikleri kullanır.",
+            "İstiklal Marşı'nı saygıyla söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.2.3.2",
+          "m": "Belirli gün ve haftalarla ilgili eserler söyleyebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri söylemeye hazırlanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken uygun teknikleri kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.2.3.3",
+          "m": "Okul şarkıları repertuvarında bulunan eserleri söyleyebilme",
+          "s": [
+            "Okul şarkıları repertuvarında bulunan eserleri söylemeye hazırlanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken uygun teknikleri kullanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.2.3.4",
+          "m": "Türk müziğinden basit eserleri söyleyebilme",
+          "s": [
+            "Türk müziğinden basit eserleri söylemeye hazırlanır.",
+            "Türk müziğinden basit eserleri söylerken uygun teknikleri kullanır.",
+            "Türk müziğinden basit eserleri müziksel bileşenlerine uygun şekilde söyler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KONSER ETKİNLİKLERİ",
+      "a": [
+        {
+          "k": "KOREP.2.4.1",
+          "m": "Türk müziği etkinliklerine katılmanın önemini açıklayabilme",
+          "s": [
+            "Türk müziği etkinliklerine katılmanın önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.2.4.2",
+          "m": "Koro eserlerini sınıf korosu konserinde söyleyebilme",
+          "s": [
+            "Koro eserlerini sınıf korosu konserinde söylemeye hazırlanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

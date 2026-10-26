@@ -1,0 +1,2018 @@
+{
+  "ders": "Türkçe",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HATIRLATMA HAFTASI",
+      "a": [
+        {
+          "k": "T.D.1.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Verilen görseller arasından öğrendiği sesin geçtiği görseli/görselleri seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.1.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Sese karşılık gelen sembolü/harfi tanır.",
+            "Görselden/görsellerden hareketle dinleyeceği/izleyeceği metin hakkında tahminde bulunur.",
+            "Dinlediklerini yaşantı ve ön bilgileriyle karşılaştırarak çıkarımda bulunur.",
+            "Dinlediği sesin bulunduğu sözcüklere örnekler verir.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.1.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme",
+          "s": [
+            "Seslere karşılık gelen sembolleri/harfleri ayırt eder.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.D.1.4",
+          "m": "Dinleme/izleme sürecini değerlendirebilme KONUŞMA:",
+          "s": [
+            "Dinleme/izleme sürecini değerlendirir KONUŞMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.K.1.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar."
+          ]
+        },
+        {
+          "k": "T.K.1.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Ön bilgilerinden hareketle dinlediği sesin içinde geçtiği sözcükler hakkında konuşur.",
+            "Dinlediği/izlediği metni anlatır."
+          ]
+        },
+        {
+          "k": "T.K.1.3",
+          "m": "Konuşma kurallarını uygulayabilme",
+          "s": [
+            "Öğrendiği ses, hece, sözcük veya cümleleri işitilebilir bir ses düzeyinde söyler.",
+            "Dinlediğini/izlediğini telaffuza dikkat ederek anlatır."
+          ]
+        },
+        {
+          "k": "T.K.1.4",
+          "m": "Konuşma sürecini değerlendirebilme OKUMA:",
+          "s": [
+            "Konuşma sürecini değerlendirir OKUMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.O.1.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Harf ve heceleri doğru seslendirir.",
+            "Sözcükleri doğru okur.",
+            "Telaffuza dikkat ederek okur.",
+            "Öğrendiği ses, hece, sözcük veya cümleleri işitilebilir bir ses düzeyinde okur."
+          ]
+        },
+        {
+          "k": "T.O.1.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.1.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.1.4",
+          "m": "Okuma sürecine etki eden durumları gözden geçirebilme",
+          "s": [
+            "Okuduğu ortamın fiziksel özelliklerini açıklar."
+          ]
+        },
+        {
+          "k": "T.O.1.5",
+          "m": "Okuma sürecini değerlendirebilme YAZMA:",
+          "s": [
+            "Okuma sürecini değerlendirir YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.1.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Yazma materyalini kurala uygun kullanır.",
+            "Hece, sözcük veya cümleler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.1.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Görsellerle ilgili sözcük veya cümleler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.1.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Harfleri temel formuna ve yazım yönlerine göre yazar.",
+            "Rakamları temel formuna ve yazım yönlerine göre yazar.",
+            "Harf, sözcük veya cümleler arasında uygun boşluk bırakır.",
+            "Harflerin büyük yazılışını yerinde kullanır.",
+            "Büyük harfleri kuralına uygun yazar."
+          ]
+        },
+        {
+          "k": "T.Y.1.4",
+          "m": "Yazma sürecini değerlendirebilme",
+          "s": [
+            "Yazılarında hatalarını bulur.",
+            "Yazılarında belirlediği hataları düzeltir.",
+            "Yazılarındaki uygun davranışları sonraki yazılarına aktarır"
+          ]
+        },
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.D.2.4",
+          "m": "Dinleme/izleme sürecine etki eden durumları gözden geçirebilme",
+          "s": [
+            "Dinleme/izleme yapacağı ortamın uygunluğunu gözden geçirir."
+          ]
+        },
+        {
+          "k": "T.D.2.5",
+          "m": "Dinleme/izleme sürecini değerlendirebilme KONUŞMA:",
+          "s": [
+            "Dinleme/izleme sürecindeki hatalarını belirler.",
+            "Dinlemesinde/izlemesinde belirlediği hatalarını düzeltir."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metindeki karakter, olay ve bilgileri açıklar.",
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.2.4",
+          "m": "Okuma sürecine etki eden durumları gözden geçirebilme YAZMA:",
+          "s": [
+            "Okuma yapacağı ortamın fiziksel özelliklerini dikkate alarak okur."
+          ]
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.2.5",
+          "m": "Yazma sürecini değerlendirebilme",
+          "s": [
+            "Yazılarında hatalarını bulur.",
+            "Yazılarında belirlediği hataları düzeltir.",
+            "Yazılarındaki uygun davranışları sonraki yazılarına aktarır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DEĞERLERİMİZLE VARIZ",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ATATÜRK VE ÇOCUK",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        },
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DOĞADA NELER OLUYOR?",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.5",
+          "m": "Konuşma sürecini değerlendirebilme OKUMA:",
+          "s": [
+            "Konuşmasında fark ettiği hataları düzeltir.",
+            "Konuşmasındaki olumlu davranışları sonraki konuşmalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "OKUMA SERÜVENİMİZ",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.5",
+          "m": "Konuşma sürecini değerlendirebilme OKUMA:",
+          "s": [
+            "Konuşmasında fark ettiği hataları düzeltir.",
+            "Konuşmasındaki olumlu davranışları sonraki konuşmalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        },
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.D.2.4",
+          "m": "Dinleme/izleme sürecine etki eden durumları gözden geçirebilme",
+          "s": [
+            "Dinleme/izleme yapacağı ortamın uygunluğunu gözden geçirir."
+          ]
+        },
+        {
+          "k": "T.D.2.5",
+          "m": "Dinleme/izleme sürecini değerlendirebilme KONUŞMA:",
+          "s": [
+            "Dinleme/izleme sürecindeki hatalarını belirler.",
+            "Dinlemesinde/izlemesinde belirlediği hatalarını düzeltir."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metindeki karakter, olay ve bilgileri açıklar.",
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.2.4",
+          "m": "Okuma sürecine etki eden durumları gözden geçirebilme YAZMA:",
+          "s": [
+            "Okuma yapacağı ortamın fiziksel özelliklerini dikkate alarak okur."
+          ]
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.2.5",
+          "m": "Yazma sürecini değerlendirebilme",
+          "s": [
+            "Yazılarında hatalarını bulur.",
+            "Yazılarında belirlediği hataları düzeltir.",
+            "Yazılarındaki uygun davranışları sonraki yazılarına aktarır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PEKİŞTİRME HAFTASI",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.D.2.4",
+          "m": "Dinleme/izleme sürecine etki eden durumları gözden geçirebilme",
+          "s": [
+            "Dinleme/izleme yapacağı ortamın uygunluğunu gözden geçirir."
+          ]
+        },
+        {
+          "k": "T.D.2.5",
+          "m": "Dinleme/izleme sürecini değerlendirebilme KONUŞMA:",
+          "s": [
+            "Dinleme/izleme sürecindeki hatalarını belirler.",
+            "Dinlemesinde/izlemesinde belirlediği hatalarını düzeltir."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metindeki karakter, olay ve bilgileri açıklar.",
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.2.4",
+          "m": "Okuma sürecine etki eden durumları gözden geçirebilme YAZMA:",
+          "s": [
+            "Okuma yapacağı ortamın fiziksel özelliklerini dikkate alarak okur."
+          ]
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YETENEKLERİMİZİ TANIYORUZ",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okumaları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.2.4",
+          "m": "Yazma sürecine etki eden durumları gözden geçirebilme",
+          "s": [
+            "Yazma yapacağı ortamın uygunluğunu gözden geçirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MUCİT ÇOCUK",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okumaları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        },
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.4",
+          "m": "Konuşma sürecine etki eden durumları gözden geçirebilme OKUMA:",
+          "s": [
+            "Konuşma yapacağı ortamın uygunluğunu gözden geçirir."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme YAZMA:",
+          "s": [
+            "Okuduklarını çözümler YAZMA:."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜLTÜR HAZİNEMİZ",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinledikleri/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metindeki karakter, olay ve bilgileri açıklar.",
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.2.5",
+          "m": "Okuma sürecini değerlendirebilme YAZMA:",
+          "s": [
+            "Okuma sürecindeki hatalarını belirler.",
+            "Okuma sürecinde belirlediği hatalarını düzeltir.",
+            "Okuma sürecindeki olumlu davranışlarını sonraki okumalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "7.TEMA: KÜLTÜR HAZİNEMİZ 8. TEMA: HAKLARIMIZI BİLİYORUZ",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinledikleri/izlediklerini çözümleyebilme KONUŞMA:",
+          "s": [
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme OKUMA:",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metindeki karakter, olay ve bilgileri açıklar.",
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.2.5",
+          "m": "Okuma sürecini değerlendirebilme YAZMA:",
+          "s": [
+            "Okuma sürecindeki hatalarını belirler.",
+            "Okuma sürecinde belirlediği hatalarını düzeltir.",
+            "Okuma sürecindeki olumlu davranışlarını sonraki okumalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KURBAN BAYRAMI (15, 16, 17, 18, 19 MAYIS 2027) HAKLARIMIZI BİLİYORUZ",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.D.2.5",
+          "m": "Dinleme/izleme sürecini değerlendirebilme KONUŞMA:",
+          "s": [
+            "Dinleme/izleme sürecindeki hatalarını belirler.",
+            "Dinlemesinde/izlemesinde belirlediği hatalarını düzeltir."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.5",
+          "m": "Konuşma sürecini değerlendirebilme OKUMA:",
+          "s": [
+            "Konuşmasında fark ettiği hataları düzeltir.",
+            "Konuşmasındaki olumlu davranışları sonraki konuşmalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metindeki karakter, olay ve bilgileri açıklar.",
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.2.4",
+          "m": "Okuma sürecine etki eden durumları gözden geçirebilme",
+          "s": [
+            "Okuma yapacağı ortamın fiziksel özelliklerini dikkate alarak okur."
+          ]
+        },
+        {
+          "k": "T.O.2.5",
+          "m": "Okuma sürecini değerlendirebilme YAZMA:",
+          "s": [
+            "Okuma sürecindeki hatalarını belirler.",
+            "Okuma sürecinde belirlediği hatalarını düzeltir.",
+            "Okuma sürecindeki olumlu davranışlarını sonraki okumalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HAKLARIMIZI BİLİYORUZ",
+      "a": [
+        {
+          "k": "T.D.2.1",
+          "m": "Dinleme/izlemeyi yönetebilme",
+          "s": [
+            "Dinleyeceklerini/izleyeceklerini amacına ve ilgi alanına uygun olarak seçer.",
+            "Dinleme kurallarına uygun olarak dinler.",
+            "Dinleme esnasında konuşmaya dâhil olmak için uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.D.2.2",
+          "m": "Dinledikleri/izledikleri ile ilgili anlam oluşturabilme",
+          "s": [
+            "Görsellerden hareketle dinleyeceği/izleyeceği metnin konusunu tahmin eder.",
+            "Dinlediklerinde/izlediklerinde geçen olayların öncesi hakkında tahminde bulunur.",
+            "Dinlediklerinde/izlediklerinde geçen olayların sonrası hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.D.2.3",
+          "m": "Dinlediklerini/izlediklerini çözümleyebilme",
+          "s": [
+            "Dinlediği/izlediği metindeki olayları belirler.",
+            "Dinlediği/izlediği metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.D.2.5",
+          "m": "Dinleme/izleme sürecini değerlendirebilme KONUŞMA:",
+          "s": [
+            "Dinleme/izleme sürecindeki hatalarını belirler.",
+            "Dinlemesinde/izlemesinde belirlediği hatalarını düzeltir."
+          ]
+        },
+        {
+          "k": "T.K.2.1",
+          "m": "Konuşmalarını yönetebilme",
+          "s": [
+            "Konuşma sırasında dinleyiciler ile göz teması kurar.",
+            "İletişim sırasında uygun zamanda söz alır."
+          ]
+        },
+        {
+          "k": "T.K.2.2",
+          "m": "Konuşmalarında içerik oluşturabilme",
+          "s": [
+            "Dinlediklerini/izlediklerini ifade ederken ön bilgilerini kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle anlatır.",
+            "Konuşmalarını desteklemek için görseller kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.3",
+          "m": "Konuşma kurallarını uygulayabilme",
+          "s": [
+            "Konuşmalarında konuşma hızını ayarlar.",
+            "Konuşmalarında vurgu ve tonlamaya dikkat eder.",
+            "Konuşmalarında, sözcükleri yerinde ve anlamına uygun kullanır.",
+            "Konuşmalarında anlamlı ve kurallı cümleler kullanır."
+          ]
+        },
+        {
+          "k": "T.K.2.5",
+          "m": "Konuşma sürecini değerlendirebilme",
+          "s": [
+            "Konuşmasında fark ettiği hataları düzeltir.",
+            "Konuşmasındaki olumlu davranışları sonraki konuşmalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.O.2.1",
+          "m": "Okuma sürecini yönetebilme",
+          "s": [
+            "Okuyacağı metnin başlığı ve görsellerini inceler.",
+            "Kuralına uygun sesli ve sessiz okur.",
+            "Noktalama işaretlerine dikkat ederek okur."
+          ]
+        },
+        {
+          "k": "T.O.2.2",
+          "m": "Okudukları ile ilgili anlam oluşturabilme",
+          "s": [
+            "Okuduğu metindeki bilgiler ile ön bilgileri arasında bağlantı kurar.",
+            "Okuyacağı metnin başlığından ve görsellerinden hareketle metnin konusu hakkında tahminde bulunur.",
+            "Metnin başlığı ve görsellerinden hareketle metinde geçen bilgiler/olaylar hakkında tahminde bulunur."
+          ]
+        },
+        {
+          "k": "T.O.2.3",
+          "m": "Okuduklarını çözümleyebilme",
+          "s": [
+            "Okuduğu metindeki karakter, olay ve bilgileri açıklar.",
+            "Okuduğu metnin konusunu bulur."
+          ]
+        },
+        {
+          "k": "T.O.2.4",
+          "m": "Okuma sürecine etki eden durumları gözden geçirebilme",
+          "s": [
+            "Okuma yapacağı ortamın fiziksel özelliklerini dikkate alarak okur."
+          ]
+        },
+        {
+          "k": "T.O.2.5",
+          "m": "Okuma sürecini değerlendirebilme YAZMA:",
+          "s": [
+            "Okuma sürecindeki hatalarını belirler.",
+            "Okuma sürecinde belirlediği hatalarını düzeltir.",
+            "Okuma sürecindeki olumlu davranışlarını sonraki okumalarına aktarır."
+          ]
+        },
+        {
+          "k": "T.Y.2.1",
+          "m": "Yazılı anlatım becerilerini yönetebilme",
+          "s": [
+            "Verilen bir yazma görevini hazırlık yaparak yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.2",
+          "m": "Yazılarında içerik oluşturabilme",
+          "s": [
+            "Bir metinde eksik bırakılan cümleleri ön bilgilerini kullanarak yazar.",
+            "Yarım bırakılan bir metni ön bilgilerinden hareketle yazar.",
+            "Bir sözcüğün anlamına ilişkin tahminlerini bağlamdan yararlanarak yazar.",
+            "Yazılarında sözcükleri anlamına uygun kullanır.",
+            "Dinlediği/izlediği veya okuduğu bir metindeki olayları oluş sırasına göre kendi ifadeleriyle yazar.",
+            "Basit yönergeler yazar."
+          ]
+        },
+        {
+          "k": "T.Y.2.3",
+          "m": "Yazma kurallarını uygulayabilme",
+          "s": [
+            "Anlamını bilmediği sözcüğün anlamını çevrim içi veya basılı kaynaklardan araştırarak yazar.",
+            "Yazılarında sözcükleri yerinde kullanır.",
+            "Yazılarında yazım alanını uygun şekilde (yazıyı sayfaya hizalama, paragraf başı, satır sonuna sığmayan sözcükler vb.) kullanır.",
+            "Yazılarında noktalama işaretlerini (nokta, kesme işareti, virgül, iki nokta, ünlem, tırnak işareti, soru işareti, kısa çizgi) kuralına uygun kullanır."
+          ]
+        }
+      ]
+    }
+  ]
+}

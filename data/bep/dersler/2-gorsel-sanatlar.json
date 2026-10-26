@@ -1,0 +1,135 @@
+{
+  "ders": "Görsel Sanatlar",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAYAT VE SANAT",
+      "a": [
+        {
+          "k": "GS.2.1.1",
+          "m": "Çevresindeki nesnelerin ana renklerini, ara renklerini ve doğadaki tekrarlarını algılayabilme",
+          "s": [
+            "Çevresindeki nesnelerin ana renklerini, ara renklerini ve doğadaki tekrarlarını gözlemler.",
+            "Yapay nesnelerdeki ana ve ara renk tekrarlarını, doğal nesnelerdeki örnekleriyle karşılaştırır."
+          ]
+        },
+        {
+          "k": "GS.2.1.2",
+          "m": "Renk ve biçim ilişkisini kurarak insan ve çevre bağlamındaki düşüncelerine yönelik sanatsal üretim yapabilme",
+          "s": [
+            "Renk ve biçim ilişkisini kurarak hayal ettiği çevreye ilişkin düşüncelerini yansıtan kompozisyon tasarlar.",
+            "Renk ve biçim ilişkisini kurarak hayal ettiği çevreye ilişkin düşüncelerini yansıtan kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATIN GÖRSEL DİLİ",
+      "a": [
+        {
+          "k": "GS.2.2.1",
+          "m": "Türk devletlerinin bayraklarındaki görsel mesajları okuyabilme",
+          "s": [
+            "Türkiye Cumhuriyeti’nin ve eski Türk devletlerinin bayraklarındaki sembollerin görsel mesajlarını algılar.",
+            "Türkiye Cumhuriyeti’nin ve eski Türk devletlerinin bayraklarındaki sembollerin görsel mesajlarını anlamlandırır."
+          ]
+        },
+        {
+          "k": "GS.2.2.2",
+          "m": "Millî kültüre ait motiflerle birim ve biçim ilişkisi kurarak sanatsal üretim yapabilme",
+          "s": [
+            "Millî kültüre ait motiflerle birim ve biçim ilişkisi kurarak kompozisyon tasarlar.",
+            "Millî kültüre ait motiflerle birim ve biçim ilişkisi kurarak kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATÇILAR VE ESERLERİ",
+      "a": [
+        {
+          "k": "GS.2.3.1",
+          "m": "Çağdaş Türk resim sanatında natürmort temalı eserleri inceleyebilme",
+          "s": [
+            "Natürmort temalı eseri sanatsal açıdan betimler.",
+            "Natürmort temalı eseri sanatsal açıdan çözümler.",
+            "Natürmort temalı eseri sanatsal açıdan yorumlar.",
+            "Natürmort temalı eser hakkında sanatsal yargıda bulunur."
+          ]
+        },
+        {
+          "k": "GS.2.3.2",
+          "m": "Ana renkler, ara renkler ve biçim zıtlıklarıyla natürmort yapabilme",
+          "s": [
+            "Ana, ara renkler ve biçim zıtlıklarıyla natürmort tasarlar.",
+            "Ana, ara renkler ve biçim zıtlıklarıyla natürmort oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇİZİM VE GÖRSEL İFADE",
+      "a": [
+        {
+          "k": "GS.2.4.1",
+          "m": "Farklı çizgi türlerini kullanarak doğa peyzajı yapabilme",
+          "s": [
+            "Farklı çizgi türlerini kullanarak doğa peyzajı tasarlar.",
+            "Farklı çizgi türlerini kullanarak doğa peyzajı oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RENK VE ESTETİK",
+      "a": [
+        {
+          "k": "GS.2.5.1",
+          "m": "Ana, ara renkleri ve farklı çizgi türlerini kullanarak kent peyzajı yapabilme",
+          "s": [
+            "Ana, ara renkleri ve farklı çizgi türlerini kullanarak binaları ve doğa unsurlarını içeren kent peyzajı tasarlar.",
+            "Ana, ara renkleri ve farklı çizgi türlerini kullanarak binaları ve doğa unsurlarını içeren kent peyzajı oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MİLLÎ DEĞERLER VE SANAT",
+      "a": [
+        {
+          "k": "GS.2.6.1",
+          "m": "Doğa ve vatan sevgisini ilişkilendirerek sanatsal üretim yapabilme",
+          "s": [
+            "Doğa ve vatan sevgisini ilişkilendirerek kompozisyon tasarlar.",
+            "Doğa ve vatan sevgisini ilişkilendirerek kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZE VE KÜLTÜR",
+      "a": [
+        {
+          "k": "GS.2.7.1",
+          "m": "Oyuncak müzesi koleksiyonunu sınıflandırabilme",
+          "s": [
+            "Oyuncak müzesindeki eserlere ait özellikleri belirler.",
+            "Oyuncak müzesinde bulunan eserleri tarihlerine, kültürel kökenlerine veya kullanım amaçlarına göre ayrıştırır.",
+            "Oyuncak müzesindeki eserleri malzemelerine göre tasnif eder.",
+            "Oyuncak müzesinde tasnif ettiği eserleri etiketler."
+          ]
+        },
+        {
+          "k": "GS.2.7.2",
+          "m": "Okulunda oyuncak müzesi yapabilme",
+          "s": [
+            "Oyuncak müzesi koleksiyonuna uygun oyuncaklarla müze tasarlar.",
+            "Oyuncak müzesi koleksiyonuna uygun eserlerle müze oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

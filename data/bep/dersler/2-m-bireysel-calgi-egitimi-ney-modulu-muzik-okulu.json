@@ -1,0 +1,113 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "NEYİN ÖZELLİKLERİ, BAKIMI VE SEÇİMİ",
+      "a": [
+        {
+          "k": "NEY.2.1.1",
+          "m": "Neyi çözümleyebilme",
+          "s": [
+            "Çeşitli görseller aracılığıyla neye ilişkin parçaları belirler.",
+            "Neyin parçaları arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "NEY.2.1.2",
+          "m": "Ney ile icra edilen eserleri dinleyebilme",
+          "s": [
+            "Dinlediği eserler üzerinden neyi fark eder.",
+            "Dinlediği eserler üzerinden neyi ayırt eder.",
+            "Dinlediği eserler üzerinden neyin ses özelliklerini açıklar."
+          ]
+        },
+        {
+          "k": "NEY.2.1.3",
+          "m": "Neyin bakım adımlarını belirleyebilme",
+          "s": [
+            "Neyin bakım adımlarını belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "NEY.2.1.4",
+          "m": "Fiziksel özelliklerine göre doğru neyi seçebilme",
+          "s": [
+            "Fiziksel özelliklerine göre doğru neyi seçer."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "USTA NEYZENLER",
+      "a": [
+        {
+          "k": "NEY.2.2.1",
+          "m": "Neyde usta icracıları tanıyabilme",
+          "s": [
+            "Neyde usta icracıları tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "NEY.2.2.2",
+          "m": "Neyde usta icracıların stillerini tanıyabilme.",
+          "s": [
+            "Neyde usta icracıların stillerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE TEMEL DAVRANIŞLAR 1",
+      "a": [
+        {
+          "k": "NEY.2.3.1",
+          "m": "Neyin nasıl tutulacağını yorumlayabilme",
+          "s": [
+            "Neyin nasıl tutulacağını inceler.",
+            "Neyin nasıl tutulacağını fiziksel özelliklerine göre uygular.",
+            "Neyin nasıl tutulacağını fiziksel özelliklerine göre ifade eder."
+          ]
+        },
+        {
+          "k": "NEY.2.3.2",
+          "m": "Ney üzerinde parmakların pozisyonunu yorumlayabilme",
+          "s": [
+            "Ney üzerinde parmakların alması gereken şekli inceler.",
+            "Ney üzerinde parmakların alması gereken şekli fiziksel özelliklerine göre uygular.",
+            "Ney üzerinde parmakların alması gereken şekli fiziksel özelliklerine göre ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE TEMEL DAVRANIŞLAR 2",
+      "a": [
+        {
+          "k": "NEY.2.4.1",
+          "m": "Doğru oturma pozisyonunda baş ve boyunun alması gereken şekli yorumlayabilme",
+          "s": [
+            "Baş ve boynun alması gereken şekli inceler.",
+            "Baş ve boynun alması gereken şekli fiziksel özelliklerine göre uygular.",
+            "Baş ve boynun alması gereken kopmadan fiziksel özelliklerine göre ifade eder."
+          ]
+        },
+        {
+          "k": "NEY.2.4.2",
+          "m": "Doğru oturma pozisyonunda, sırt ve bacakların alması gereken şekli yorumlayabilme.",
+          "s": [
+            "Sırt ve bacakların alması gereken şekli inceler.",
+            "Sırt ve bacakların alması gereken fiziksel özelliklerine göre uygular.",
+            "Sırt ve bacakların alması gereken şekli fiziksel özelliklerine göre yeniden ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

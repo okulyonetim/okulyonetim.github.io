@@ -1,0 +1,50 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KANUNDA BOŞLUKSUZ MANDALLARI TANIYORUM",
+      "a": [
+        {
+          "k": "KNN.2.1",
+          "m": "Boşluksuz mandal gruplarını sınıflandırabilme",
+          "s": [
+            "Kanundaki mandalların hangilerinin boşluksuz olduğunu saptamak için ölçütler belirler.",
+            "Kanundaki mandalları, boşluksuz olup olmamalarına göre sınıflandırır.",
+            "Kanundaki mandalları boşluksuz oluşuna göre tasnif eder.",
+            "Kanundaki mandalları boşluksuz oluşuna göre isimlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA BOŞLUKLU MANDALLARI TANIYORUM",
+      "a": [
+        {
+          "k": "KNN.2.2.1",
+          "m": "Boşluklu ve boşluksuz mandal gruplarını karşılaştırabilme",
+          "s": [
+            "Kanundaki mandalların hangilerinin boşluksuz hangilerinin boşluklu olduğuna ilişkin özellikleri belirler.",
+            "Kanundaki mandalları boşluklu oluşuna göre ayırır.",
+            "Kanundaki mandalların boşluklu oluşuna ilişkin farklılıklarını listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA BURGULAR, TELLER, EŞİK VE MANDALLARI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.2.3",
+          "m": "Burgular, teller, eşik ve mandalların görevlerini çözümleyebilme",
+          "s": [
+            "Kanundaki burgular, teller, eşik ve mandalların hangileri olduğuna ilişkin parçaları belirler.",
+            "Kanundaki burgular, teller, eşik ve mandalların arasındaki ilişkileri belirler."
+          ]
+        }
+      ]
+    }
+  ]
+}

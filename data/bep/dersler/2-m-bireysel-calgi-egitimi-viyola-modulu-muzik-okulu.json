@@ -1,0 +1,75 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGININ KORUNMASI VE BAKIMI",
+      "a": [
+        {
+          "k": "VİY.2.1.1",
+          "m": "Viyolanın korunması ve bakımını gözlemleyebilme",
+          "s": [
+            "Viyolanın korunması ve bakımını gözlemlemek için amaç belirler.",
+            "Koruma ve bakıma ilişkin veri toplar.",
+            "Gözlemleri doğrultusunda topladığı verileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BOŞ TELLERDE YAY ÇEKME-İTME",
+      "a": [
+        {
+          "k": "VİY.2.2.1",
+          "m": "Boş tellerde yay çekme-itme hareketleriyle çalabilme",
+          "s": [
+            "Yay çekme-itme hareketlerini çözümler.",
+            "Boş tellerde yay çekme ve itme hareketlerini uygularken duruş ve tutuş pozisyonunu alır.",
+            "Boş tellerde yay çekme-itme hareketlerini çalgıya özgü tekniklerle kullanır.",
+            "Boş tellerde yay çekme-itme hareketlerini müziksel bileşenlerle ilişkilendirerek uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "POZİSYON VE AÇIK TEL ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "VİY.2.3.1",
+          "m": "Viyoladaki boş teller üzerindeki notaların yerlerini çözümleyebilme ,",
+          "s": [
+            "Viyolanın boş tellerindeki notaları ve fiziksel yerlerini belirler.",
+            "Boş teller üzerindeki notaların yerleri arasındaki sıralamayı ve ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "VİY.2.3.2",
+          "m": "Viyolada 1. pozisyonda çalabilme",
+          "s": [
+            "Viyolada 1. pozisyonu çözümler.",
+            "Viyolada 1. pozisyonda çalabilmek için çalgıya özgü duruş ve tutuş pozisyonunu alır.",
+            "Viyolada 1. pozisyonu çalabilmek için uygun parmak ve yay tekniklerini kullanır.",
+            "Viyolada 1. pozisyonu müziksel bileşenlere uygun şekilde çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DÜZEYİME UYGUN ETÜT ÇALIŞMALARI YAPIYORUM",
+      "a": [
+        {
+          "k": "VİY.2.4.1",
+          "m": "Viyolada 1. pozisyon etütleri çalabilme",
+          "s": [
+            "Viyolada 1. pozisyon etütleri çözümler.",
+            "Viyolada 1. pozisyon etütleri çalabilmek için çalgıya özgü duruş ve tutuş pozisyonunu alır.",
+            "Viyolada 1. pozisyon etütleri çalabilmek için uygun parmak ve yay tekniklerini kullanır.",
+            "Viyolada 1. pozisyon etütleri müziksel bileşenlere uygun şekilde çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

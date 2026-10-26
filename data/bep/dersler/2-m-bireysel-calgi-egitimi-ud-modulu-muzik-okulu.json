@@ -1,0 +1,50 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "UDUN BOŞ TELLERİNİ TANIYALIM",
+      "a": [
+        {
+          "k": "UD.2.1.1",
+          "m": "Boş telleri tanıyarak dinleyebilme",
+          "s": [
+            "Boş telleri duyarak tanır.",
+            "Boş telleri ayırt eder.",
+            "Boş telleri açıklar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TELDEN RİTİM DOĞAR",
+      "a": [
+        {
+          "k": "UD.2.2.1",
+          "m": "Boş telleri çeşitli ritmik vurgular ile çalabilme",
+          "s": [
+            "Boş tel uygulamaları için verilen egzersizleri çözümler.",
+            "Boş tel uygulamaları için mızrap tutuş ve oturuş pozisyonunu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIM UD",
+      "a": [
+        {
+          "k": "UD.2.3.1",
+          "m": "Tavır özellikleri bakımından ölçütler bularak genellemeler yapabilme",
+          "s": [
+            "Gözlemlediği icrada mızrap kontrolü ve ritim ölçütlerine ilişkin örüntüler bulur.",
+            "Mızrap tutuşu ve basit ritim kalıpları ile ilgili genellemeler yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

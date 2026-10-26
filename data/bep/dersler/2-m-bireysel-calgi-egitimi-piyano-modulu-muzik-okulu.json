@@ -1,0 +1,83 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "PİYANODA TEMEL KAVRAMLAR 1",
+      "a": [
+        {
+          "k": "PYN.2.1.1",
+          "m": "Piyanoda nota değerlerini çalabilme",
+          "s": [
+            "Piyanoda nota değerlerinin yer aldığı eseri çözümler.",
+            "Piyanoda nota değerlerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Piyanoda nota değerlerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Piyanoda nota değerlerini müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.2.1.2",
+          "m": "Notasyonlarda yer alan müzik yazı ve işaretleri çalabilme",
+          "s": [
+            "Notasyonlarda yer alan müzik yazı ve işaretlerinin yer aldığı eseri çözümler.",
+            "Notasyonlarda yer alan müzik yazı ve işaretleri çalmada duruş ve tutuş pozisyonu alır.",
+            "Notasyonlarda yer alan müzik yazı ve işaretleri çalmada çalgıya özgü teknikleri kullanır.",
+            "Notasyonlarda yer alan müzik yazı ve işaretlerinin müzik bileşenlerini uygun çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA SESLENDİRME",
+      "a": [
+        {
+          "k": "PYN.2.2.1",
+          "m": "Do notasının kalın ve ince oktavlarını çalabilme",
+          "s": [
+            "Do notasının kalın ve ince oktavlarında çalınacak eseri çözümler.",
+            "Do notasını kalın ve ince oktavlarında çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Do notasının kalın ve ince oktavlarında çalgıya özgü teknikleri kullanır.",
+            "Do notasının kalın ve ince oktavlarının müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.2.2.2",
+          "m": "Sağ ve sol elde ayrı ayrı do dizisinde 5 parmak çalabilme",
+          "s": [
+            "Sağ ve sol elde ayrı ayrı do dizisinde 5 parmak çalınacak eseri çözümler.",
+            "Sağ ve sol elde ayrı ayrı do dizisinde 5 parmak duruş ve tutuş pozisyonu alır.",
+            "Sağ ve sol elde ayrı ayrı do dizisinde 5 parmak çalgıya özgü teknikleri kullanır.",
+            "Sağ ve sol elde ayrı ayrı do dizisinde 5 parmak müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.2.2.3",
+          "m": "Sağ ve sol elde aynı anda do dizisinde 5 parmak çalabilme",
+          "s": [
+            "Sağ ve sol elde aynı anda do dizisinde 5 parmak çalınacak eseri çözümler.",
+            "Sağ ve sol elde aynı anda do dizisinde 5 parmak duruş ve tutuş pozisyonu alır.",
+            "Sağ ve sol elde aynı anda do dizisinde 5 parmak çalgıya özgü teknikleri kullanır.",
+            "Sağ ve sol elde aynı anda do dizisinde 5 parmak müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA DİNLETİLEN ESERİ ÇALMA",
+      "a": [
+        {
+          "k": "PYN.2.3.1",
+          "m": "Dinletilen çocuk şarkısını piyanoda sağ el ile çalabilme",
+          "s": [
+            "Dinletilen çocuk şarkısını piyanoda sağ el ile çalınacak eseri çözümler.",
+            "Dinletilen çocuk şarkısını piyanoda sağ el ile çalmada duruş ve tutuş pozisyonu alır.",
+            "Dinletilen çocuk şarkısını piyanoda sağ el ile çalmada çalgıya özgü teknikleri kullanır.",
+            "Dinletilen çocuk şarkısını piyanoda sağ el çalmada ile müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

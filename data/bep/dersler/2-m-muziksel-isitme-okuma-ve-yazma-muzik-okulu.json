@@ -1,0 +1,113 @@
+{
+  "ders": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "DÖRTLÜK VE SEKİZLİK NOTALAR",
+      "a": [
+        {
+          "k": "MİOY.2.1.1",
+          "m": "Dörtlük ve sekizlik notaları işitebilme",
+          "s": [
+            "Dörtlük ve sekizlik notaları tanır.",
+            "Dörtlük ve sekizlik notaları ayırt eder.",
+            "Dörtlük ve sekizlik notaları ifade eder."
+          ]
+        },
+        {
+          "k": "MİOY.2.1.2",
+          "m": "Dörtlük ve sekizlik notaları okuyabilme",
+          "s": [
+            "Dörtlük ve sekizlik notaları tanır.",
+            "Dörtlük ve sekizlik notaları ayırt eder.",
+            "Dörtlük ve sekizlik notaları uygular."
+          ]
+        },
+        {
+          "k": "MİOY.2.1.3",
+          "m": "Dörtlük ve sekizlik notaları yazabilme",
+          "s": [
+            "Dörtlük ve sekizlik notaları kavramını tanır.",
+            "Dörtlük ve sekizlik notaları ayırt eder.",
+            "Dörtlük ve sekizlik notaları uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ARALIKLARI ÖĞRENİYORUM-2",
+      "a": [
+        {
+          "k": "MİOY.2.3.1",
+          "m": "Küçük üçlü ve büyük üçlü aralıkları işitebilme",
+          "s": [
+            "Küçük üçlü ve büyük üçlü aralık bileşenlerini tanır.",
+            "Küçük üçlü ve büyük üçlü aralık bileşenlerini ayırt eder.",
+            "Küçük üçlü ve büyük üçlü aralık bileşenlerini ifade eder."
+          ]
+        },
+        {
+          "k": "MİOY.2.3.2",
+          "m": "Küçük üçlü ve büyük üçlü aralık kavramını okuyabilme",
+          "s": [
+            "Küçük üçlü ve büyük üçlü aralık kavramını tanır.",
+            "Küçük üçlü ve büyük üçlü kavramını ayırt eder.",
+            "Küçük üçlü ve büyük üçlü aralık kavramını uygular."
+          ]
+        },
+        {
+          "k": "MİOY.2.3.3",
+          "m": "Küçük üçlü ve büyük üçlü aralık kavramını yazabilme",
+          "s": [
+            "Küçük üçlü ve büyük üçlü aralık kavramını tanır.",
+            "Küçük üçlü ve büyük üçlü aralık kavramını ayırt eder.",
+            "Küçük üçlü ve büyük üçlü aralık kavramını uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK YAZI VE TERİMLERİNİ ÖĞRENİYORUM-3",
+      "a": [
+        {
+          "k": "MİOY.2.4.1",
+          "m": "Nota yazım kurallarına uygun yazabilme",
+          "s": [
+            "Nota yazım kurallarının bileşenlerini tanır.",
+            "Nota yazım kurallarının bileşenlerini ayırt eder.",
+            "Nota yazım kurallarının bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.2.4.2",
+          "m": "Uzatma noktası ve bağ işaretlerini okuyabilme",
+          "s": [
+            "Uzatma noktası ve bağ işaretlerini tanır.",
+            "Uzatma noktası ve bağ işaretlerini ayırt eder.",
+            "Uzatma noktası ve bağ işaretlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.2.4.3",
+          "m": "Uzatma noktası ve bağ işaretlerini yazabilme",
+          "s": [
+            "Uzatma noktası ve bağ işaretlerini tanır.",
+            "Uzatma noktası ve bağ işaretlerini ayırt eder.",
+            "Uzatma noktası ve bağ işaretlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.2.4.4",
+          "m": "Uzatma noktası ve bağ işaretlerini işitebilme",
+          "s": [
+            "Uzatma noktası ve bağ işaretlerini tanır.",
+            "Uzatma noktası ve bağ işaretlerini ayırt eder.",
+            "Uzatma noktası ve bağ işaretlerini ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

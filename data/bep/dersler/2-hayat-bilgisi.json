@@ -1,0 +1,235 @@
+{
+  "ders": "Hayat Bilgisi",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "BEN VE OKULUM",
+      "a": [
+        {
+          "k": "HB.2.1.1",
+          "m": "Planlı olmanın kişisel yaşama etkilerini fark edebilme",
+          "s": [
+            "Planlı olmanın kişisel yaşama etkilerini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.1.2",
+          "m": "Öğretmen ve arkadaşlarıyla etkili iletişim kurabilme",
+          "s": [
+            "Öğretmen ve arkadaşlarıyla etkili iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.1.3",
+          "m": "Arkadaşlık ilişkilerini düzenleyebilme",
+          "s": [
+            "Arkadaşlık ilişkilerini düzenler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.1.4",
+          "m": "Sınıf içi karar alma süreçlerinde sosyal temas oluşturabilme",
+          "s": [
+            "Sınıf içi karar alma süreçlerinde grup iletişimini başlatır.",
+            "Sınıf içi karar alma süreçlerinde grup etkileşimine katılır.",
+            "Sınıf içi karar alma süreçlerinde grup iletişimine katkıda bulunur.",
+            "Sınıf içi karar alma süreçlerinde grup iletişimini değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAĞLIĞIM VE GÜVENLİĞİM",
+      "a": [
+        {
+          "k": "HB.2.2.1",
+          "m": "Sağlıklı büyüme ve gelişme ile alışkanlıkları arasındaki ilişkiyi çözümleyebilme",
+          "s": [
+            "Sağlıklı büyüme ve gelişmeye yönelik alışkanlıkları belirler.",
+            "Sağlıklı büyüme ve gelişme ile alışkanlıkları arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "HB.2.2.2",
+          "m": "Çevrim içi ortamlarda kişisel güvenliğini sağlayabilme",
+          "s": [
+            "Çevrim içi ortamlarda kişisel güvenliğini sağlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.2.3",
+          "m": "Temel trafik işaret levhalarını tanıyabilme",
+          "s": [
+            "Temel trafik işaret levhalarını tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.2.4",
+          "m": "Acil bir durumda yetkililerle etkili iletişim kurabilme",
+          "s": [
+            "Acil bir durumda yetkililerle etkili iletişim kurar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "AİLEM VE TOPLUM",
+      "a": [
+        {
+          "k": "HB.2.3.1",
+          "m": "Ailenin önemini yorumlayabilme",
+          "s": [
+            "Ailenin önemine ilişkin verilen örnekleri inceler.",
+            "Ailenin önemine ilişkin verilen örnekleri bağlamdan kopmadan özgün örneklere dönüştürür.",
+            "Ailenin önemine ilişkin oluşturduğu özgün örnekleri kendi cümleleri ile ifade eder."
+          ]
+        },
+        {
+          "k": "HB.2.3.2",
+          "m": "Toplumsal yaşamda nezaket ve görgü kurallarına uygun davranabilme",
+          "s": [
+            "Toplumsal yaşamda nezaket ve görgü kurallarına uygun davranır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.3.3",
+          "m": "Yakın çevresinde üzerine düşen görev ve sorumlulukları günlük yaşamına yansıtabilme",
+          "s": [
+            "Yakın çevresinde üzerine düşen görev ve sorumluluklarını gözden geçirir.",
+            "Yakın çevresinde üzerine düşen görev ve sorumluluklarına ilişkin çıkarımda bulu nur.",
+            "Yakın çevresinde üzerine düşen görev ve sorumluluklarına ilişkin değerlendirme yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAŞADIĞIM YER VE ÜLKEM",
+      "a": [
+        {
+          "k": "HB.2.4.1",
+          "m": "Yakın çevresinde bulunan tarihî mekân ve doğal güzellikleri belirleyebilme",
+          "s": [
+            "Yakın çevresinde bulunan tarihî mekân ve doğal güzellikleri belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.4.2",
+          "m": "Yaşadığı yerin yönetim birimleri ile ilgili kaynaklardan bilgi toplayabilme",
+          "s": [
+            "Yaşadığı yerin yönetim birimleri ile ilgili bilgi toplayacağı kaynakları belirler.",
+            "Yaşadığı yerin yönetim birimleri ile ilgili belirlediği kaynaklardan bilgileri bulur.",
+            "Yaşadığı yerin yönetim birimleri ile ilgili kullanacağı kaynakların uygunluğunu açık lar.",
+            "Yaşadığı yerin yönetim birimleri ile ilgili kaynaklardan ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "HB.2.4.3",
+          "m": "Mustafa Kemal Atatürk’ün öğrencilik hayatını ifade edebilme",
+          "s": [
+            "Mustafa Kemal Atatürk’ün öğrencilik hayatını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.4.4",
+          "m": "Millî gün ve bayramların önemini yorumlayabilme",
+          "s": [
+            "Millî gün ve bayramların önemine ilişkin verilen örnekleri inceler.",
+            "Millî gün ve bayramların önemine ilişkin verilen örnekleri bağlamdan kopmadan özgün örneklere dönüştürür.",
+            "Millî gün ve bayramların önemine ilişkin oluşturduğu özgün örnekleri kendi cümle leri ile ifade eder."
+          ]
+        },
+        {
+          "k": "HB.2.4.5",
+          "m": "Dinî gün ve bayramların önemini yorumlayabilme",
+          "s": [
+            "Dinî gün ve bayramların önemine ilişkin verilen örnekleri inceler.",
+            "Dinî gün ve bayramların önemine ilişkin verilen örnekleri bağlamdan kopmadan özgün örneklere dönüştürür.",
+            "Dinî gün ve bayramların önemine ilişkin oluşturduğu özgün örnekleri kendi cümle leri ile ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DOĞA VE ÇEVRE",
+      "a": [
+        {
+          "k": "HB.2.5.1",
+          "m": "Hava olayları ve mevsimler arasındaki ilişkiyi çözümleyebilme",
+          "s": [
+            "Hava olayları ve mevsimlerin özelliklerini belirler.",
+            "Hava olayları ve mevsimler arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "HB.2.5.2",
+          "m": "Doğadan yararlanarak yönünü belirleyebilme",
+          "s": [
+            "Doğadan yararlanarak yönünü belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.2.5.3",
+          "m": "Afetlere karşı alınması gereken önlemlere ilişkin bilgi toplayabilme",
+          "s": [
+            "Afetlere karşı alınması gereken önlemlere ilişkin bilgi toplamak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak afetlere karşı alınması gereken önlemlere ilişkin bil gileri bulur.",
+            "Afetlere karşı alınması gereken önlemlere ilişkin bulduğu bilgileri doğrular.",
+            "Afetlere karşı alınması gereken önlemlere ilişkin bulduğu bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "HB.2.5.4",
+          "m": "Doğal kaynakları tasarruflu kullanma davranışlarını günlük yaşamına yansıtabilme",
+          "s": [
+            "Doğal kaynakları kullanırken davranışlarını gözden geçirir.",
+            "Doğal kaynakları tasarruflu kullanmaya yönelik çıkarımlarda bulunur.",
+            "Doğal kaynakları tasarruflu kullanmaya yönelik ulaştığı çıkarımları değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLİM, TEKNOLOJİ VE SANAT",
+      "a": [
+        {
+          "k": "HB.2.6.1",
+          "m": "Bilim insanlarının bilime katkılarına yönelik kaynaklardan bilgi toplayabilme",
+          "s": [
+            "Bilim insanlarının bilime katkılarına ilişkin bilgi toplayacağı kaynakları belirler.",
+            "Bilim insanlarının bilime katkılarına ilişkin belirlediği kaynaklardan bilgileri bulur.",
+            "Bilim insanlarının bilime katkılarına ilişkin ulaştığı kaynakların uygunluğunu açıklar.",
+            "Bilim insanlarının bilime katkılarına ilişkin kaynaklardan ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "HB.2.6.2",
+          "m": "Teknolojik bir ürünün değişim ve sürekliliğine dair kanıta dayalı öngörüde bulunabilme",
+          "s": [
+            "Teknolojik bir ürünün zaman içindeki değişimini kanıtlara dayalı olarak ilişkilendi rir.",
+            "Teknolojik bir ürünün gelecekteki değişimine ilişkin çıkarım yapar."
+          ]
+        },
+        {
+          "k": "HB.2.6.3",
+          "m": "Sanatın günlük yaşamdaki yerini belirleyebilme",
+          "s": [
+            "Sanatın günlük yaşamdaki yerini belirler."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

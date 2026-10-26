@@ -1,0 +1,130 @@
+{
+  "ders": "Beden Eğitimi ve Oyun",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAREKETİMİ GELİŞTİRİYORUM",
+      "a": [
+        {
+          "k": "BEO.2.1.1",
+          "m": "Temel hareket becerilerini sergileyebilme",
+          "s": [
+            "Yer değiştirme, nesne kontrolü ve denge becerileri arasındaki farkları algılar.",
+            "Yer değiştirme, nesne kontrolü ve denge becerilerinin basamaklarını gösterir.",
+            "Yer değiştirme, nesne kontrolü ve denge becerilerini farklı durumlarda uygular."
+          ]
+        },
+        {
+          "k": "BEO.2.1.2",
+          "m": "Oyunlarda grupla hareket edebilme",
+          "s": [
+            "Grupla hareket ederken rolleri tanımlar.",
+            "Grupla hareket ederken rolleri yerine getirir.",
+            "Grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "OYUNUN KURALLARINI UYGULUYORUM",
+      "a": [
+        {
+          "k": "BEO.2.2.1",
+          "m": "Oyunlarda hareket kavramlarını uygulayabilme",
+          "s": [
+            "Beden farkındalığı, alan farkındalığı, efor ve hareket ilişkileri kavram bileşenlerini ayırt eder.",
+            "Temel hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Oyunlarda hareket kavramlarına ve temel hareket becerilerine uygun olarak hareket eder."
+          ]
+        },
+        {
+          "k": "BEO.2.2.2",
+          "m": "Oyun kurallarını uygulayabilme",
+          "s": [
+            "Oyun kurallarını uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.2.2.3",
+          "m": "Oyunlarda belirlenen taktik ve stratejiyi geliştirebilme",
+          "s": [
+            "Oyunlarda taktiksel problemi belirler.",
+            "Oyunlarda belirlenen problemin çözümüne ilişkin öneri sunar.",
+            "Oyunlarda taktik ve stratejiyi uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RİTİMLE HAREKET EDİYORUM",
+      "a": [
+        {
+          "k": "BEO.2.3.1",
+          "m": "Belirlenen tempodaki müziğe uygun hareket edebilme",
+          "s": [
+            "Belirlenen tempodaki müziğe uygun hareket eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.2.3.2",
+          "m": "Eşle veya grupla ritmik hareket etme becerisini sergileyebilme",
+          "s": [
+            "Eşle veya grupla temel hareket becerilerini kullanarak verilen ritmi algılar.",
+            "Eşle veya grupla temel hareket becerilerini kullanarak ritme uygun hareket eder.",
+            "Eşle veya grupla temel hareket becerilerini kullanarak ritmik hareket becerilerini sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAĞLIĞIM İÇİN FİZİKSEL AKTİVİTEYE KATILIYORUM",
+      "a": [
+        {
+          "k": "BEO.2.4.1",
+          "m": "Fiziksel aktivite sırasında vücudunda meydana gelen değişimleri açıklayabilme",
+          "s": [
+            "Fiziksel aktivite sırasında vücudunda meydana gelen değişimleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.2.4.2",
+          "m": "Kendisinin ve yakın çevresinin fiziksel aktiviteye katılımlarını karşılaştırabilme",
+          "s": [
+            "Kendisinin ve yakın çevresinin fiziksel aktivite katılım durumlarını belirler.",
+            "Kendisinin ve yakın çevresinin fiziksel aktivite katılım durumları arasındaki benzerlikleri listeler.",
+            "Kendisinin ve yakın çevresinin fiziksel aktivite katılım durumları arasındaki farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "BEO.2.4.3",
+          "m": "Fiziksel aktiviteye katılım hedefleri belirleyebilme",
+          "s": [
+            "Fiziksel aktiviteye katılım hedefleri belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.2.4.4",
+          "m": "Fiziksel aktivite ve sağlık arasındaki ilişkiyi açıklayabilme",
+          "s": [
+            "Fiziksel aktivite ve sağlık arasındaki ilişkiyi açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.2.4.5",
+          "m": "Oyun ve fiziksel aktiviteler sırasında güvenli ortam oluşturabilme",
+          "s": [
+            "Oyun ve fiziksel aktiviteler sırasında ortaya çıkabilecek riskleri tanımlar.",
+            "Oyun ve fiziksel aktiviteler sırasında ortaya çıkabilecek riskler karşısında önleyici tedbirler alır."
+          ]
+        }
+      ]
+    }
+  ]
+}

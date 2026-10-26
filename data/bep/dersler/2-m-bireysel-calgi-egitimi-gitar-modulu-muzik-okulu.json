@@ -1,0 +1,78 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGININ BAKIMI VE KORUNMASI",
+      "a": [
+        {
+          "k": "GTR.2.1.1",
+          "m": "Gitarın günlük bakımının nasıl yapılacağını açıklayabilme",
+          "s": [
+            "Gitarın günlük bakımının nasıl yapılacağını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KLAVYEDEKİ NOTALARI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "GTR.2.2.1",
+          "m": "Gitar klavyesindeki ilk 5 perdenin notalarını belirleyebilme",
+          "s": [
+            "Gitar klavyesindeki ilk 5 perdenin notalarını belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GTR.2.2.2",
+          "m": "Gitar klavyesindeki 5’ten 12’ye kadar olan perdelerin notalarını belirleyebilme",
+          "s": [
+            "Gitar klavyesindeki 5’ten 12’ye kadar olan perdelerin notalarını belirler."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA SAĞ EL (TİRANDO) TEKNİĞİ",
+      "a": [
+        {
+          "k": "GTR.2.3.1",
+          "m": "Sağ el tekniklerini çalabilme",
+          "s": [
+            "Sağ el tekniklerini çözümler.",
+            "Gitarda doğru duruş ve tutuş pozisyonu alır.",
+            "Sağ elde gösterilen teknikleri kullanır.",
+            "Verilen egzersizleri tirando tekniğini kullanarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA SOL EL ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "GTR.2.4.1",
+          "m": "Gitarda sol eli pozisyon ve konumuna uygun şekilde kullanabilme",
+          "s": [
+            "Gitarda sol eli pozisyon ve konumuna uygun şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GTR.2.4.2",
+          "m": "Gitarda beşinci pozisyonda egzersiz yapabilme",
+          "s": [
+            "Gitarda beşinci pozisyonda egzersiz yapar."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

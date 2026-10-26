@@ -1,0 +1,83 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "2. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BAĞLAMADA RE PERDESİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.2.1.1",
+          "m": "Bağlamada re perdesini çalabilme",
+          "s": [
+            "Bağlamada re perdesini çözümler.",
+            "Bağlamada re perdesi ile duruş ve tutuş pozisyonu alır.",
+            "Bağlamada re perdesi üzerinde çalgıya özgü teknikleri kullanır.",
+            "Bağlamada re perdesinde müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BAĞL.2.1.2",
+          "m": "Bağlamada dörtlük ve sekizlik notaları tezene ile çalabilme",
+          "s": [
+            "Bağlamada re perdesindeki dörtlük ve sekizlik notaları çözümler.",
+            "Bağlamada re perdesindeki dörtlük ve sekizlik notaları çalarken doğru duruş ve tutuş pozisyonunu uygular.",
+            "Bağlamada re perdesindeki dörtlük ve sekizlik notaları tezene ile çalar ve çalgıya özgü teknikleri kullanır.",
+            "Bağlamada re perdesindeki dörtlük ve sekizlik notaları müziksel bileşenlerle birlikte uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA Mİ VE FA PERDELERİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.2.2.1",
+          "m": "Bağlamada mi perdesini çalabilme",
+          "s": [
+            "Bağlamada mi perdesini çözümler.",
+            "Bağlamada mi perdesinde duruş ve tutuş pozisyonu alır.",
+            "Bağlamada mi perdesinde çalgıya özgü teknikleri doğru kullanır.",
+            "Bağlamada mi perdesinde müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BAĞL.2.2.2",
+          "m": "Bağlamada fa perdesini çalabilme",
+          "s": [
+            "Bağlamada fa perdesini çözümler.",
+            "Bağlamada fa perdesinde duruş ve tutuş pozisyonu alır.",
+            "Bağlamada fa perdesinde çalgıya özgü teknikleri doğru kullanır.",
+            "Bağlamada fa perdesinde müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA SOL VE LA PERDELERİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.2.3.1",
+          "m": "Bağlamada sol perdesini çalabilme",
+          "s": [
+            "Bağlamada sol perdesini çözümler.",
+            "Bağlamada sol perdesinde duruş ve tutuş pozisyonu alır.",
+            "Bağlamada sol perdesinde çalgıya özgü teknikleri kullanır.",
+            "Bağlamada sol perdesinde müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BAĞL.2.3.2",
+          "m": "Bağlamada la perdesini çalabilme",
+          "s": [
+            "Bağlamada la perdesini çözümler.",
+            "Bağlamada la perdesinde duruş ve tutuş pozisyonu alır.",
+            "Bağlamada la perdesinde çalgıya özgü teknikleri kullanır.",
+            "Bağlamada la perdesinde müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}
