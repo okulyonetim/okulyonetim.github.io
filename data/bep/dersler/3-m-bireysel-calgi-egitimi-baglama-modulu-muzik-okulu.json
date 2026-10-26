@@ -1,0 +1,78 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BAĞLAMADA TARTIMLARI UYGULUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.3.1.1",
+          "m": "Bağlamada tartım kalıplarını çalabilme",
+          "s": [
+            "Bağlamada tartımların tezene vuruş tekniklerini çözümler.",
+            "Bağlamada tartımların tezene vuruş tekniklerini uygulamak için duruş ve tutuş pozisyonu alır.",
+            "Bağlamada tartımların tezene vuruşlarını ve çalgıya özgü teknikleri kullanır.",
+            "Bağlamada tartımlar ile müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA Sİ VE DO PERDELERİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.3.2.1",
+          "m": "Bağlamada si ve do perdelerini çalabilme",
+          "s": [
+            "Bağlamada si ve do perdelerini çözümler.",
+            "Bağlamada si ve do perdelerinde duruş ve tutuş pozisyonu alır.",
+            "Bağlamada si ve do perdelerinde çalgıya özgü teknikleri kullanır.",
+            "Bağlamada si ve do perdelerinde müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA 3 VE 5 ZAMANLI USULLERİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.3.3.1",
+          "m": "Bağlamada üç zamanlı usulde eserler çalabilme",
+          "s": [
+            "Bağlamada üç zamanlı usuldeki eserleri çözümler.",
+            "Bağlamada üç zamanlı usulde eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlamada üç zamanlı usuldeki eserlerde çalgıya özgü teknikleri kullanır.",
+            "Bağlamada üç zamanlı usuldeki eserlerde müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BAĞL.3.3.2",
+          "m": "Bağlamada beş zamanlı usulde çalabilme",
+          "s": [
+            "Bağlamada beş zamanlı usuldeki eserleri çözümler.",
+            "Bağlamada beş zamanlı usulde eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlamada beş zamanlı usuldeki eserlerde çalgıya özgü teknikleri kullanır.",
+            "Bağlamada beş zamanlı usuldeki eserlerde müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA SENKOPLU VURUŞLARI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.3.4.1",
+          "m": "Bağlamada senkop vuruşları çalabilme",
+          "s": [
+            "Bağlamada senkop çalmayı çözümler.",
+            "Bağlamada senkop çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlamada senkoplu tezene ile çalgıya özgü teknikleri kullanır.",
+            "Bağlamada senkoplu tezene tekniği ile müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

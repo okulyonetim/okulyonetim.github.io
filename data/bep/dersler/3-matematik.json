@@ -1,0 +1,343 @@
+{
+  "ders": "Matematik",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "SAYILAR VE NİCELİKLER (1)",
+      "a": [
+        {
+          "k": "MAT.3.1.1",
+          "m": "Niceliklerin büyüklüklerine karşılık gelen 1000’e kadar olan sayıların temsillerinden yararlanabilme",
+          "s": [
+            "Niceliklerin büyüklüklerinin temsillerini tanır.",
+            "Niceliklerin büyüklüklerine uygun sayı temsillerini belirler.",
+            "Niceliklerin büyüklüklerine karşılık gelen uygun sayıları okur ve yazar."
+          ]
+        },
+        {
+          "k": "MAT.3.1.2",
+          "m": "1000’e kadar olan sayıları çözümleyebilme",
+          "s": [
+            "Üç basamaklı sayıların basamaklarını belirler.",
+            "Üç basamaklı sayıların basamak ve basamak değerleri arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MAT.3.1.3",
+          "m": "Sayıları sıralayabilme",
+          "s": [
+            "1000’e kadar olan sayıları öncelik/sonralık ilişkisine göre belirler.",
+            "1000’e kadar olan sayıları bulundukları onluklara ve yüzlüklere göre ayırır.",
+            "1000’e kadar olan sayıları en yakın onluklara ve yüzlüklere göre tasnif eder.",
+            "1000’e kadar olan sayıları en yakın onluklara ve yüzlüklere göre ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.3.1.4",
+          "m": "Sayıları ileriye ve geriye doğru ritmik sayabilme",
+          "s": [
+            "Modeller üzerinde ileriye ve geriye doğru ritmik saymaya ilişkin gözlem yapar.",
+            "60 içinde altışar, 70 içinde yedişer, 80 içinde sekizer, 90 içinde dokuzar; 1000 içinde onar ve yüzer ileriye ve geriye doğru ritmik sayarken örüntü bulur.",
+            "İleriye ve geriye doğru ritmik sayarken bulduğu örüntüyü geneller."
+          ]
+        },
+        {
+          "k": "MAT.3.1.5",
+          "m": "Sayıları tek-çift olarak sınıflandırabilme",
+          "s": [
+            "Sayıları tek-çift ilişkisine göre belirler.",
+            "Sayıları tek-çift olma durumlarına göre ayırt eder.",
+            "Sayıları tek-çift olma durumlarına göre tasnif eder.",
+            "Sayıları tek-çift sayı olarak ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.3.1.6",
+          "m": "Tek ve çift sayıların toplamlarının tek ya da çift olma durumu arasındaki ilişkiye yönelik tümevarımsal akıl yürütebilme",
+          "s": [
+            "Tek ve çift sayıların toplamlarına yönelik örnek durumların tek ya da çift olma özelliklerini belirler.",
+            "Toplanan sayılar ile elde edilen toplamın tek ya da çift olma durumları arasındaki örüntüyü belirler.",
+            "Tek ve çift sayıların toplamlarının tek ya da çift olma durumuna ilişkin genelleme yapar."
+          ]
+        },
+        {
+          "k": "MAT.3.1.7",
+          "m": "Sayı ve sayı temsiline dönüşen şekil örüntülerine dayalı çıkarım yapabilme",
+          "s": [
+            "Örüntüde kullanılan sayılar ve sayı temsiline dönüşen şekiller arasındaki ilişkiye yönelik varsayımda bulunur.",
+            "Belirlediği varsayıma göre sayı ve sayı temsiline dönüşen şekil örüntülerini örnekler üzerinde listeler.",
+            "Gösterilen örüntünün varsayımı karşılayıp karşılamadığını örneklerle sınar.",
+            "Karşılaştırılan sayı ve sayı temsiline dönüşen şekil örüntülerinin kuralını sözlü olarak ifade eder.",
+            "Gösterilen örüntü ile ilgili değerlendirmede bulunur."
+          ]
+        },
+        {
+          "k": "MAT.3.1.8",
+          "m": "Bir çokluktaki ilişkilerden yararlanarak 100’e kadar olan nesnelerin sayısını tahmin edebilme",
+          "s": [
+            "Bir çokluktaki parça-bütün ve dağılım ilişkisini gözlem ve deneyimleri ile ilişkilendirir.",
+            "Bir çokluğun büyüklüğünü stratejiye dayanarak tahmin eder.",
+            "Tahmini ile sayma sonucunu karşılaştırarak tahmininin doğruluğuna yönelik bir yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAYILAR VE NİCELİKLER (2)",
+      "a": [
+        {
+          "k": "MAT.3.1.9",
+          "m": "Bütün, yarım ve çeyreğin kesirle gösterimi için modellerden yararlanabilme",
+          "s": [
+            "Bütün, yarım ve çeyrek modellerinin temsillerini tanır.",
+            "Bütün, yarım ve çeyrek modellerine uygun kesir temsillerini belirler.",
+            "Belirlediği temsili bütün, yarım ve çeyrek modelleri için kullanır."
+          ]
+        },
+        {
+          "k": "MAT.3.1.10",
+          "m": "Bir bütünü eş parçalar oluşturacak şekilde birim kesir olarak çözümleyebilme",
+          "s": [
+            "Bir bütünü oluşturan eş parçaları belirler.",
+            "Bütün ile eş parçaların her biri arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "MAT.3.1.11",
+          "m": "Bir kesrin payı ile paydası arasındaki ilişkiyi çözümleyebilme",
+          "s": [
+            "Bir kesrin pay ve paydasına ait parçaları belirler.",
+            "Bir kesrin pay ve paydasına ait parçalar arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "MAT.3.1.12",
+          "m": "Analog ve dijital saatlerde zamanı okuyabilme ve yazabilme",
+          "s": [
+            "Analog ve dijital saatlerde zamanı okur ve yazar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MAT.3.1.13",
+          "m": "Zaman ölçü birimlerini çözümleyebilme",
+          "s": [
+            "Zaman ölçü birimlerini (yıl, ay, hafta, gün, saat, dakika, saniye) belirler.",
+            "Zaman ölçü birimleri arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MAT.3.1.14",
+          "m": "Olayların oluş sürelerini tahmin ederek yargıda bulunabilme",
+          "s": [
+            "Olayların oluş sürelerini birbirleriyle ilişkilendirir.",
+            "Olayların oluş sürelerine ilişkin deneyimlerinden faydalanarak çıkarım yapar.",
+            "Olayların oluş sürelerine ilişkin yapılan çıkarımla gerçekte olan sürelerine ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "MAT.3.1.15",
+          "m": "Uzunluk ve kütle birimleri arasındaki ilişkileri kullanarak bu birimleri kendi içerisinde çözümleyebilme",
+          "s": [
+            "Standart kütle ve uzunluk birimlerine ilişkin parçaları belirler.",
+            "Santimetre, metre, kilometre ve gram, kilogram ve ton arasındaki ilişkileri kendi içerisinde belirler."
+          ]
+        },
+        {
+          "k": "MAT.3.1.16",
+          "m": "Madenî ve kâğıt paraları değerlerine göre ilişkilendirerek yorumlayabilme",
+          "s": [
+            "Paraları değerlerine göre inceler.",
+            "Madenî paraları ve kâğıt paraları değerlerine göre dönüştürür.",
+            "Paranın değerini, anlamını değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE",
+      "a": [
+        {
+          "k": "MAT.3.2.1",
+          "m": "Toplama ve çıkarma işlemlerinin sonuçlarını tahminde bulunarak ve zihinden işlem yaparak muhakeme edebilme",
+          "s": [
+            "Toplama ve çıkarma işlemlerine ilişkin ögeleri belirler.",
+            "Toplama ve çıkarma işlemlerine ilişkin ögeler arasındaki ilişkileri belirler.",
+            "Toplama ve çıkarma işlemine yönelik tahminî ve zihinden işlem sonuçları arasında ilişki kurar.",
+            "Tahminî ve zihinden işlem sonuçlarının tutarlılığını ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.3.2.2",
+          "m": "Toplama ve çıkarma işlemlerini çözümleyebilme",
+          "s": [
+            "Toplama ve çıkarma işlemlerinin adımlarını belirler.",
+            "Toplama ve çıkarmanın işlem süreçlerini birbiri ile ilişkilendirir."
+          ]
+        },
+        {
+          "k": "MAT.3.2.3",
+          "m": "Çarpma ve bölme işlemlerinin sonuçlarını tahminde bulunarak ve zihinden işlem yaparak muhakeme edebilme",
+          "s": [
+            "Çarpma ve bölme işlemlerine ilişkin bileşenleri belirler.",
+            "Çarpma ve bölme işlemlerine ilişkin bileşenler arasındaki ilişkileri belirler.",
+            "Çarpma ve bölme işlemine yönelik tahminî ve zihinden işlem sonuçlarını ifade eder.",
+            "Tahminî ve zihinden işlem sonuçlarını kendi cümleleri ile açıklar."
+          ]
+        },
+        {
+          "k": "MAT.3.2.4",
+          "m": "Çarpma ve bölme işlemlerini çözümleyebilme",
+          "s": [
+            "Çarpma ve bölme işlemlerinin adımlarını belirler.",
+            "Çarpma ve bölme işlemlerini birbiri ile ilişkilendirir."
+          ]
+        },
+        {
+          "k": "MAT.3.2.5",
+          "m": "Dört işlem gerektiren durumlar için verilen yönergeleri takip ederek yorumlayabilme",
+          "s": [
+            "Dört işleme ait bileşenleri inceler.",
+            "İncelediği bileşenleri işlem diline dönüştürür.",
+            "Oluşturduğu yapıyı temsillerle yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.3.2.6",
+          "m": "Dört işlem gerektiren günlük yaşam problemlerini çözebilme",
+          "s": [
+            "Problemi anlayarak verilenleri ve istenilenleri belirler.",
+            "Problemde verilenlerin ve istenilenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Probleme ilişkin verilenleri belirleyerek uygun matematiksel temsillere dönüştürür.",
+            "Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar.",
+            "Problemlerin sonucuna ilişkin tahminde bulunarak işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji ya da stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol ederek çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir.",
+            "Çözüme ulaştıran stratejilerin hangi problemlere uygulanabileceğini geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.3.2.7",
+          "m": "Dört işlem gerektiren problem durumlarını yapılandırabilme",
+          "s": [
+            "Dört işlem gerektiren problem durumlarına yönelik hiyerarşik, nedensel ya da mantıksal ilişkiler ortaya koyar.",
+            "Dört işlem yapmayı gerektiren deneyimleriyle elde ettiği ilişkilere dayalı bir problem oluşturur."
+          ]
+        },
+        {
+          "k": "MAT.3.2.8",
+          "m": "Dört işlem bağlamında eşitliğin farklı anlamlarını yorumlayabilme",
+          "s": [
+            "Dört işlemde eşitliğin kullanımını inceler.",
+            "Aynı sonucu veren dört işlemi eşitliğin anlamını kullanarak farklı sayılarla ifade eder.",
+            "Eşitliğin anlamlarını dört işlem bağlamında ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NESNELERİN GEOMETRİSİ (1)",
+      "a": [
+        {
+          "k": "MAT.3.3.1",
+          "m": "Geometrik cisimlerin özelliklerini yorumlayabilme",
+          "s": [
+            "Geometrik cisimlerin özelliklerini inceler.",
+            "Geometrik cisimlerin köşe, yüz ve ayrıt özelliklerini ifade eder.",
+            "Köşe, yüz ve ayrıt terimlerini kendi ifadeleri ile açıklar."
+          ]
+        },
+        {
+          "k": "MAT.3.3.2",
+          "m": "Kenar sayılarına göre geometrik şekilleri sınıflandırabilme",
+          "s": [
+            "Geometrik şekillerin kenarlarını belirler.",
+            "Geometrik şekilleri kenar sayılarına göre ayırır.",
+            "Geometrik şekilleri kenar sayılarına göre tasnif eder.",
+            "Geometrik şekilleri kenar sayılarına göre adlandırır."
+          ]
+        },
+        {
+          "k": "MAT.3.3.3",
+          "m": "Matematiksel araç ve teknolojileri kullanarak çeşitli geometrik şekilleri ve cisimleri çizebilme",
+          "s": [
+            "Geometrik şekil ve cisim çizmeyi gerektiren matematiksel araç ve teknolojileri tanır.",
+            "Geometrik şekil ve cisim çizmek için gerekli araçları ve teknolojiyi belirler.",
+            "Belirlenen araç ve teknolojiyi kullanır."
+          ]
+        },
+        {
+          "k": "MAT.3.3.4",
+          "m": "Standart olmayan ve standart ölçme araçları ile geometrik şekillerin çevre uzunluğunu tahmin edebilme",
+          "s": [
+            "Standart olmayan ve standart uzunluk ölçme araçlarına ilişkin deneyimini, tahmine konu olan şeklin çevre uzunluğu ile ilişkilendirir.",
+            "Belirlenen standart olmayan ve standart uzunluk ölçme aracına göre çevre uzunluğuna ilişkin tahminde bulunur.",
+            "Tahminini ölçüm sonuçlarıyla karşılaştırarak tahminine ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "MAT.3.3.5",
+          "m": "Standart sıvı ölçü birimleri cinsinden sıvı miktarını tahmin edebilme",
+          "s": [
+            "Standart sıvı ölçü birimlerine ilişkin deneyimini tahmine konu olan sıvı miktarı ile ilişkilendirir.",
+            "Belirlenen standart sıvı ölçü birimi cinsinden sıvının miktarına ilişkin tahminde bulunur.",
+            "Tahminini ölçüm sonuçlarıyla karşılaştırarak tahminine ilişkin yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NESNELERİN GEOMETRİSİ (2)",
+      "a": [
+        {
+          "k": "MAT.3.3.6",
+          "m": "Birden fazla simetri doğrusu olan şekilleri çözümleyebilme",
+          "s": [
+            "Kare, dikdörtgen ve dairenin birden fazla simetri doğrusu olduğunu belirler.",
+            "Simetri doğrusuna göre oluşan parçaların birbirine eş olduğunu belirler."
+          ]
+        },
+        {
+          "k": "MAT.3.3.7",
+          "m": "Bir parçası verilen simetrik şekli simetri doğrusuna göre yapılandırabilme",
+          "s": [
+            "Bir parçası verilen simetrik şekli inceleyerek mantıksal ilişkiler ortaya koyar.",
+            "Bir parçası verilen simetrik şekli yatay ve dikey simetri doğrusuna göre tamamlar."
+          ]
+        },
+        {
+          "k": "MAT.3.3.8",
+          "m": "Yönerge ile yapılandırılan ve bir parçası verilen bir şekli tamamlayarak simetrisini oluşturmaya ilişkin kodlama stratejilerini kullanarak yargıda bulunabilme",
+          "s": [
+            "Bir parçası verilen şekli tamamlayarak simetrisini oluşturmaya ilişkin yönergeleri yeniden ifade eder.",
+            "Yönergeleri takip ederek bir parçası verilen şekli tamamlayarak simetrisini oluşturur.",
+            "Bir şeklin simetrisini oluşturmaya ilişkin yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "VERİYE DAYALI ARAŞTIRMA",
+      "a": [
+        {
+          "k": "MAT.3.4.1",
+          "m": "Kategorik ve sayma ile elde edilen nicel veriye dayalı tek veri grubu ile çalışabilme ve veriye dayalı karar verebilme",
+          "s": [
+            "Kategorik ve nicel veriye dayalı istatistiksel araştırma gerektiren günlük yaşam durumları belirler.",
+            "Kategorik ve nicel veriye dayalı betimleme gerektirebilecek araştırma soruları oluşturur.",
+            "Kategorik ve nicel verileri toplamak için plan yapar.",
+            "Kategorik verileri toplar ve analize hazırlar.",
+            "Toplanan verileri analiz etmek için görselleştirme araçlarından çetele, sıklık tablosu veya nokta grafiğini seçer.",
+            "Seçtiği araçlarla verileri görselleştirerek analiz eder.",
+            "Araştırma sonuçlarını yorumlar.",
+            "Araştırma sonuçlarını araştırma sorularına göre değerlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

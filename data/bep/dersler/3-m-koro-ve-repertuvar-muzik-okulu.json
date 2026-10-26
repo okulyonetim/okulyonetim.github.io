@@ -1,0 +1,116 @@
+{
+  "ders": "Koro ve Repertuvar (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KOROYU TANIYALIM",
+      "a": [
+        {
+          "k": "KOREP.3.1.1",
+          "m": "Üyelerine göre koro türlerini açıklayabilme",
+          "s": [
+            "Üyelerine göre koro türlerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KORO OLUŞTURALIM",
+      "a": [
+        {
+          "k": "KOREP.3.2.1",
+          "m": "Koro eserlerini anlamlarına uygun hızda söyleyebilme",
+          "s": [
+            "Koro eserlerini anlamlarına uygun hızda söylemek için hazırlanır.",
+            "Koro eserlerini anlamlarına uygun hızda söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini anlamına uygun hızda söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.3.2.2",
+          "m": "Koro eserlerini anlamlarına uygun gürlükte söyleyebilme",
+          "s": [
+            "Koro eserlerini anlamlarına uygun gürlükte söylemek için hazırlanır.",
+            "Koro eserlerini anlamlarına uygun gürlükte söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini anlamına uygun gürlükte söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.3.2.3",
+          "m": "Müzik eserlerinin hızına uygun bedensel hareketler yapabilme",
+          "s": [
+            "Müzik eserlerinin hızına uygun bedensel hareketler belirler.",
+            "Müzik eserlerinin hızına uygun bedensel hareketler sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KORODA SÖYLEYELİM",
+      "a": [
+        {
+          "k": "KOREP.3.3.1",
+          "m": "İstiklal Marşı’nı uygun hız ve gürlükte söyleyebilme",
+          "s": [
+            "İstiklal Marşı’nı uygun hız ve gürlükte söylemeye hazırlanır.",
+            "İstiklal Marşı’nı söylerken uygun teknikleri kullanır.",
+            "İstiklal Marşı’nı söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.3.3.2",
+          "m": "Belirli gün ve haftalarla ilgili eserler söyleyebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri söylemeye hazırlanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken uygun teknikleri kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.3.3.3",
+          "m": "Okul şarkıları repertuvarında bulunan eserleri söyleyebilme",
+          "s": [
+            "Okul şarkıları repertuvarında bulunan eserleri söylemeye hazırlanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken uygun teknikleri kullanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.3.3.4",
+          "m": "Türk müziğinden basit eserleri söyleyebilme",
+          "s": [
+            "Türk müziğinden basit eserleri söylemeye hazırlanır.",
+            "Türk müziğinden basit eserleri söylerken uygun teknikleri kullanır.",
+            "Türk müziğinden basit eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KONSER ETKİNLİKLERİ",
+      "a": [
+        {
+          "k": "KOREP.3.4.1",
+          "m": "Türk müziği etkinliklerine katılmanın önemini yansıtabilme",
+          "s": [
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerini gözden geçirir.",
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerinden hareketle çıkarım yapar.",
+            "Ulaştığı çıkarımları değerlendirir."
+          ]
+        },
+        {
+          "k": "KOREP.3.4.2",
+          "m": "Koro eserlerini sınıf korosu konserinde söyleyebilme",
+          "s": [
+            "Koro eserlerini sınıf korosu konserinde söylemeye hazırlanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

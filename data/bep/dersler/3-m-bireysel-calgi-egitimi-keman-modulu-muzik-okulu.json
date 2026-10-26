@@ -1,0 +1,100 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "FARKLI SÜRELERLE SAĞ EL ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.3.1.1",
+          "m": "Çalgısında farklı süre değerlerini kullanarak yay tekniklerini uygulayabilme",
+          "s": [
+            "Çalgısında farklı süre değerlerini kullanarak yay tekniklerini uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KMN.3.1.2",
+          "m": "Farklı sürelerde yayda vuruşları sınıflandırabilme",
+          "s": [
+            "Çalgısında farklı vuruşları belirler.",
+            "Vuruşları birbirinden ayırır.",
+            "Vuruş çalışmalarını sıraya koyar.",
+            "Yay çalışmasını kendine uygun şekilde etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAY BÖLME VE SUS ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.3.2.1",
+          "m": "Yayı bölerek nota süreleri çalabilme",
+          "s": [
+            "Sürelere bölünen yayda susu ve etüdü çözümler.",
+            "Dik duruş ve tutuş pozisyonu aldıktan sonra alt yayda 4'lük 1 vuruş çalar.",
+            "Üst yayda çalgıya özgü teknikleri kullanır.",
+            "Orta yayı çalışmasını ezgisel yapıya uygun çalar."
+          ]
+        },
+        {
+          "k": "KMN.3.2.2",
+          "m": "Yarım yay çalışmalarında nota değerleri ile yarım yay çalışmalarını sentezleyebilme",
+          "s": [
+            "Çalışmalarda kullanacağı vuruşları belirler.",
+            "Yapılan yay çalışmaları arasında süre ilişkisi kurar.",
+            "Karma yay çalışmaları yaparak özgün bir çalışma oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TELLER ARASINDA GEÇİŞLİ YAY ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.3.3.1",
+          "m": "Bütün tellerde farklı sürelerde yay çalışması sergileyebilme",
+          "s": [
+            "Tellerde ritmik yapıya uygun hareketler belirler.",
+            "Tel çalışmaları yaparken uygun ritimsel ve ezgisel hareketler sergiler."
+          ]
+        },
+        {
+          "k": "KMN.3.3.2",
+          "m": "İkili yay çalışmalarında çözümleyebilme",
+          "s": [
+            "Yay geçişlerine ilişkin çalışmaları belirler.",
+            "Bütün tellerde etütlerle nota değerleri arasındaki ilişkiyi belirler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TELLERDE 1. PARMAK ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.3.4.1",
+          "m": "Sol elini tuşeye yerleştirerek çalma becerisi sergileyebilme",
+          "s": [
+            "1. parmak çalışmasında çalınacak eseri çözümler.",
+            "Sol el parmaklarını tuşeye yerleştirirken dik duruş ve tutuş pozisyonu alır.",
+            "Doğru duruş ve tutuş tekniğini kullanarak sol elde teknikleri doğru kullanır.",
+            "Tuşede 1. parmak sesleri ezgisel yapıya uygun çalar."
+          ]
+        },
+        {
+          "k": "KMN.3.4.2",
+          "m": "Tuşede parmak basımındabaşlangıç çalışmalarını özetleyebilme",
+          "s": [
+            "Tellerde 1. parmak çalışmalarını sergilerken çözümleme yapar.",
+            "Seslerin yerlerini sınıflandırır.",
+            "Öğrendiği 1. parmak çalışmalarını yorumlar."
+          ]
+        }
+      ]
+    }
+  ]
+}

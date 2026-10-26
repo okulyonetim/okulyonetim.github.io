@@ -1,0 +1,53 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "3. POZİSYONU TANIYORUM",
+      "a": [
+        {
+          "k": "VİY.3.1.1",
+          "m": "Viyolada üçüncü pozisyonda çalabilme",
+          "s": [
+            "Üçüncü pozisyonu kullanarak nota etüdü çözümler.",
+            "Viyolada üçüncü pozisyon için duruş ve tutuş pozisyonu alır.",
+            "Üçüncü pozisyonda viyolaya özgü teknikleri uygular",
+            "Üçüncü pozisyonda çalarken müziksel bileşenlerine uygun şekilde çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DÜZEYİME UYGUN ETÜT ÇALIŞMALARI YAPIYORUM",
+      "a": [
+        {
+          "k": "VİY.3.2.1",
+          "m": "Düzeyine uygun etütleri çalabilme",
+          "s": [
+            "Çalınacak etütleri çözümler.",
+            "Etütleri çalarken duruş ve tutuş pozisyonunu alır.",
+            "Etütleri çalarken viyolaya özgü teknikleri uygular.",
+            "Etütleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "1-3 GEÇİŞLİ ETÜT ÇALIŞMALARI YAPIYORUM",
+      "a": [
+        {
+          "k": "VİY.3.3.1.1",
+          "m": "ve 3. pozisyon geçişlerini içeren etütleri çalabilme",
+          "s": [
+            "Pozisyon geçişlerini içeren etütleri çözümler.",
+            "Pozisyon geçişlerinde duruş ve tutuş pozisyonu alır.",
+            "Pozisyon geçişlerinde viyolaya özgü teknikleri uygular.",
+            "Pozisyon geçişli etütleri müziksel bileşenlerine uygun şekilde çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

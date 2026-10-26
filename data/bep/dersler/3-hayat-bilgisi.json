@@ -1,0 +1,220 @@
+{
+  "ders": "Hayat Bilgisi",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "BEN VE OKULUM",
+      "a": [
+        {
+          "k": "HB.3.1.1",
+          "m": "Güçlü ve gelişime açık olduğu alanlara karar verebilme",
+          "s": [
+            "Güçlü ve gelişime açık olduğu alanlara ilişkin karar vermeye yönelik amacını be lirler.",
+            "Güçlü ve gelişime açık olduğu alanlara ilişkin karar vermeye yönelik bilgi toplar.",
+            "Güçlü ve gelişime açık olduğu alanlara ilişkin karar vermeye yönelik seçenekler oluşturur.",
+            "Güçlü ve gelişime açık olduğu alanlara ilişkin karar vermeye yönelik seçenekler üzerinde mantıksal denetleme yapar.",
+            "Güçlü ve gelişime açık olduğu alanlara ilişkin karar vermeye yönelik seçenekler arasından seçim yapar.",
+            "Güçlü ve gelişime açık olduğu alanlara ilişkin verdiği karara yönelik yansıtma ya par."
+          ]
+        },
+        {
+          "k": "HB.3.1.2",
+          "m": "Okuldaki hak ve sorumluluklarına uygun davranabilme",
+          "s": [
+            "Okuldaki hak ve sorumluluklarına uygun davranır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.3.1.3",
+          "m": "Çocuk haklarını tanıtmak için fikirlerini eyleme dönüştürebilme",
+          "s": [
+            "Çocuk haklarını tanıtmak için plan yapar.",
+            "Çocuk haklarını tanıtmak için yaptığı planı uygular.",
+            "Çocuk haklarını tanıtmak için uyguladığı planı değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAĞLIĞIM VE GÜVENLİĞİM",
+      "a": [
+        {
+          "k": "HB.3.2.1",
+          "m": "Sağlığını korumaya yönelik davranışlarını düzenleyebilme",
+          "s": [
+            "Sağlığını korumaya yönelik davranışlarını düzenler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.3.2.2",
+          "m": "Güvenliğini tehdit eden bir durumla karşılaştığında yapılması gerekenleri sorgulayabilme",
+          "s": [
+            "Güvenliğini tehdit eden durumları tanımlar.",
+            "Güvenliğini tehdit eden bir durumla karşılaştığında yapılması gerekenler hakkında sorular sorar.",
+            "Güvenliğini tehdit eden bir durumla karşılaştığında yapılması gerekenler hakkında bilgi toplar.",
+            "Güvenliğini tehdit eden bir durumla karşılaştığında yapılması gerekenler hakkında topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Güvenliğini tehdit eden bir durumla karşılaştığında yapılması gerekenler hakkında çıkarım yapar."
+          ]
+        },
+        {
+          "k": "HB.3.2.3",
+          "m": "Trafik kurallarına uymanın önemine ilişkin özgün ürünler sentezleyebilme",
+          "s": [
+            "Trafik kurallarına uymanın önemini belirler.",
+            "Trafik kurallarına uyma ile güvenliği arasında ilişki kurar.",
+            "Trafik kurallarına uymanın önemine ilişkin özgün bir ürün oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "AİLEM VE TOPLUM",
+      "a": [
+        {
+          "k": "HB.3.3.1",
+          "m": "Aile ve toplum arasındaki ilişkiyi çözümleyebilme",
+          "s": [
+            "Aile ve toplumun özelliklerini belirler.",
+            "Aile ve toplum arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "HB.3.3.2",
+          "m": "Yardıma ihtiyacı olan bireylerin yaşamını kolaylaştırmak için fikirlerini eyleme dönüştürebilme",
+          "s": [
+            "Yardıma ihtiyacı olan bireylerin yaşamını kolaylaştırmak için plan yapar.",
+            "Yardıma ihtiyacı olan bireylerin yaşamını kolaylaştırmak için yaptığı planı uygular.",
+            "Yardıma ihtiyacı olan bireylerin yaşamını kolaylaştırmak için yaptığı planı değer lendirir."
+          ]
+        },
+        {
+          "k": "HB.3.3.3",
+          "m": "Mesleklerin toplumsal yaşamdaki önemini yorumlayabilme",
+          "s": [
+            "Mesleklerin toplumsal yaşamdaki önemine ilişkin verilen örnekleri inceler.",
+            "Mesleklerin toplumsal yaşamdaki önemine ilişkin verilen örnekleri bağlamdan kopmadan özgün örneklere dönüştürür.",
+            "Mesleklerin toplumsal yaşamdaki önemine ilişkin oluşturduğu özgün örnekleri kendi cümleleri ile ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAŞADIĞIM YER VE ÜLKEM",
+      "a": [
+        {
+          "k": "HB.3.4.1",
+          "m": "Yakın çevresindeki tarihî mekân ve doğal güzelliklerin korunmasının önemini fark edebilme",
+          "s": [
+            "Yakın çevresindeki tarihî mekân ve doğal güzelliklerin korunmasının önemini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.3.4.2",
+          "m": "Ülkemizin yönetim şekli ile ilgili kaynaklardan bilgi toplayabilme",
+          "s": [
+            "Ülkemizin yönetim şekli ile ilgili bilgi toplayacağı kaynakları belirler.",
+            "Ülkemizin yönetim şekli ile ilgili belirlediği kaynaklardan bilgileri bulur.",
+            "Ülkemizin yönetim şekli ile ilgili ulaştığı kaynakların uygunluğunu açıklar.",
+            "Ülkemizin yönetim şekli ile ilgili kaynaklardan ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "HB.3.4.3",
+          "m": "Mustafa Kemal Atatürk’ün kişilik özelliklerini çözümleyebilme",
+          "s": [
+            "Mustafa Kemal Atatürk’ün kişilik özelliklerini ve elde ettiği başarıları belirler.",
+            "Mustafa Kemal Atatürk’ün kişilik özellikleri ile başarıları arasında ilişki kurar."
+          ]
+        },
+        {
+          "k": "HB.3.4.4",
+          "m": "Millî birlik ve beraberliğimizin ülkemize katkılarını açıklayabilme",
+          "s": [
+            "Millî birlik ve beraberliğimizin ülkemize katkılarını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "DOĞA VE ÇEVRE",
+      "a": [
+        {
+          "k": "HB.3.5.1",
+          "m": "Doğadaki varlıkların insan yaşamı için önemini yorumlayabilme",
+          "s": [
+            "Doğadaki varlıkların insan yaşamı için önemine ilişkin verilen örnekleri inceler.",
+            "Doğadaki varlıkların insan yaşamı için önemine ilişkin verilen örnekleri bağlamdan kopmadan özgün örneklere dönüştürür.",
+            "Doğadaki varlıkların insan yaşamı için önemine ilişkin oluşturduğu özgün örnekleri kendi cümleleri ile ifade eder."
+          ]
+        },
+        {
+          "k": "HB.3.5.2",
+          "m": "Krokiyi kullanarak bulunduğu yerin konumunu algılayabilme",
+          "s": [
+            "Krokiyi kullanarak bulunduğu yerin konumunu belirler.",
+            "Bulunduğu yerin konumsal görselleştirmesini yapar.",
+            "Bulunduğu yerin konumsal özelliklerini özetler."
+          ]
+        },
+        {
+          "k": "HB.3.5.3",
+          "m": "Afetlere yönelik yapılması gerekenleri sınıflandırabilme",
+          "s": [
+            "Afetlere yönelik yapılması gerekenlere ilişkin ölçütleri afet öncesi, afet anı ve afet sonrası olarak belirler.",
+            "Afetlere yönelik yapılması gerekenleri afet öncesi, afet anı ve afet sonrası olarak ayrıştırır.",
+            "Afetlere yönelik yapılması gerekenleri afet öncesi, afet anı ve afet sonrası olarak tasnif eder.",
+            "Afetlere yönelik yapılması gerekenleri afet öncesi, afet anı ve afet sonrası olarak etiketler."
+          ]
+        },
+        {
+          "k": "HB.3.5.4",
+          "m": "Çevresel sürdürülebilirliğe yönelik kaynaklardan bilgi toplayabilme",
+          "s": [
+            "Çevresel sürdürülebilirliğe yönelik bilgi toplayacağı kaynakları belirler.",
+            "Çevresel sürdürülebilirliğe yönelik belirlediği kaynaklardan bilgileri bulur.",
+            "Çevresel sürdürülebilirliğe yönelik ulaştığı kaynakların uygunluğunu açıklar.",
+            "Çevresel sürdürülebilirliğe yönelik kaynaklardan ulaştığı bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLİM, TEKNOLOJİ VE SANAT",
+      "a": [
+        {
+          "k": "HB.3.6.1",
+          "m": "Bilimsel gelişmelerin günlük yaşama etkisini yorumlayabilme",
+          "s": [
+            "Bilimsel gelişmelerin günlük yaşama etkisine ilişkin verilen örnekleri inceler.",
+            "Bilimsel gelişmelerin günlük yaşama etkisine ilişkin verilen örnekleri bağlamdan kopmadan özgün örneklere dönüştürür.",
+            "Bilimsel gelişmelerin günlük yaşama etkisine ilişkin oluşturduğu özgün örnekleri kendi cümleleri ile ifade eder."
+          ]
+        },
+        {
+          "k": "HB.3.6.2",
+          "m": "Teknolojik gelişmelerin günlük yaşama etkisini çözümleyebilme",
+          "s": [
+            "Teknolojik gelişmelerin günlük yaşama etkisini belirler.",
+            "Teknolojik gelişmelerle günlük yaşam arasında ilişki kurar."
+          ]
+        },
+        {
+          "k": "HB.3.6.3",
+          "m": "Sanatçıların sanata katkılarına yönelik kaynaklardan bilgi toplayabilme",
+          "s": [
+            "Sanatçıların sanata katkılarına yönelik bilgi toplayacağı kaynakları belirler.",
+            "Sanatçıların sanata katkılarına yönelik belirlediği kaynaklardan bilgileri bulur.",
+            "Sanatçıların sanata katkılarına yönelik ulaştığı kaynakların uygunluğunu açıklar.",
+            "Sanatçıların sanata katkılarına yönelik kaynaklardan ulaştığı bilgileri kaydeder."
+          ]
+        }
+      ]
+    }
+  ]
+}

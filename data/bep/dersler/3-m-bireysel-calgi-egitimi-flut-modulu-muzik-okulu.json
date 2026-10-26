@@ -1,0 +1,123 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "FLÜTTE SES ÜRETME 2",
+      "a": [
+        {
+          "k": "FLT.3.1.1",
+          "m": "Flütte “ikinci oktav do, sol diyez“ seslerini çalabilme",
+          "s": [
+            "İkinci oktav do, sol diyez seslerini çözümler.",
+            "İkinci oktav do, sol diyez seslerini çalabilmek için duruş ve tutuş pozisyonunu alır.",
+            "İkinci oktav do, sol diyez seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.3.1.2",
+          "m": "Flütte “fa, mi“ seslerini çalabilme",
+          "s": [
+            "Fa, mi seslerini çözümler.",
+            "Fa, mi seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Fa, mi seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.3.1.3",
+          "m": "Flütte “si bemol“ seslerini çalabilme",
+          "s": [
+            "Si bemol sesini çözümler.",
+            "Si bemol seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Si bemol seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.3.1.4",
+          "m": "Flütte öğrendiği seslerden oluşan egzersiz ve etüt çalabilme.",
+          "s": [
+            "Öğrendiği seslerinden oluşan etüt ve egzersizleri çözümler.",
+            "Öğrendiği seslerle egzersiz, etüt çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Öğrendiği sesleri kullanarak verilen egzersizi, etüdü çalabilmek için flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri ve etütleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FLÜTTE ARTİKÜLASYON (SESLETİM)",
+      "a": [
+        {
+          "k": "FLT.3.2.1",
+          "m": "Artikülasyonu uygulayarak çalabilme",
+          "s": [
+            "Artikülasyonu uygulayacağı egzersizi veya etütü çözümler.",
+            "Artikülasyonu uygulayabilmek için duruş ve tutuş pozisyonu alır.",
+            "Artikülasyonu kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri ve etütlerde artikülasyonu uygulayarak müziksel bileşenlere uygun çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FLÜT TEKNİKLERİ",
+      "a": [
+        {
+          "k": "FLT.3.3.1",
+          "m": "Temel dil vurma tekniği ile çalabilme",
+          "s": [
+            "Temel dil vurma tekniğini kullanacağı egzersizi veya etütü çözümler.",
+            "Temel dil vurma tekniğini uygulayabilmek için duruş ve tutuş pozisyonu alır.",
+            "Temel dil vurma tekniğini kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri ve etütleri temel dil vurma tekniği kullanarak müziksel bileşenlere uygun çalar."
+          ]
+        },
+        {
+          "k": "FLT.3.3.2",
+          "m": "Bağlı çalma tekniği (legato) ile çalabilme",
+          "s": [
+            "Bağlı çalma tekniğini kullanacağı egzersizi veya etütü çözümler.",
+            "Bağlı çalma tekniğini uygulayabilmek için duruş ve tutuş pozisyonu alır.",
+            "Bağlı çalma tekniğini kullanır.",
+            "Öğrendiği seslerden oluşan egzersizler/etütleri bağlı çalma tekniği kullanarak müziksel bileşenlere uygun çalar."
+          ]
+        },
+        {
+          "k": "FLT.3.3.3",
+          "m": "Dil ve bağ ilişkisini kurarak çalabilme",
+          "s": [
+            "Dil ve bağ ilişkisini kullanacağı egzersizi veya etütü çözümler.",
+            "Dil ve bağ ilişkisini kurabilmek için duruş ve tutuş pozisyonu alır.",
+            "Dil ve bağ ilişkisini kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri ve etütleri dil ve bağ ilişkisi kurarak müziksel bileşenlere uygun çalar."
+          ]
+        },
+        {
+          "k": "FLT.3.3.4",
+          "m": "Staccato tekniği ile çalabilme",
+          "s": [
+            "Staccato tekniğini kullanacağı egzersizi veya etütü çözümler.",
+            "Staccato tekniğini uygulayabilmek için duruş ve tutuş pozisyonu alır.",
+            "Staccato tekniğini doğru kullanır.",
+            "Egzersizleri ve etütleri staccato tekniği kullanarak müziksel bileşenlere uygun çalar."
+          ]
+        },
+        {
+          "k": "FLT.3.3.5",
+          "m": "Dil, bağ ve staccato ilişkisini kurarak çalabilme",
+          "s": [
+            "Dil, bağ ve staccato ilişkisini kullanacağı egzersizi veya etütü çözümler.",
+            "Dil, bağ ve staccato ilişkisini kurabilmek için duruş ve tutuş pozisyonu alır.",
+            "Dil, bağ ve staccato ilişkisini doğru kullanır.",
+            "Egzersizlerİ ve etütleri dil ve bağ ilişkisi kurarak müziksel bileşenlere uygun çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

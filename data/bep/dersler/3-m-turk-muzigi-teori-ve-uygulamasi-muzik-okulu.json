@@ -1,0 +1,57 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TAMPERE SES SİSTEMİNDE DİZİ KAVRAMI",
+      "a": [
+        {
+          "k": "TMT.3.1.1",
+          "m": "Müzikte dizi (gam) kavramını işitebilme",
+          "s": [
+            "Dizi kavramını tanır.",
+            "Dizi kavramını işitsel olarak ayırt eder.",
+            "Dizi kavramını uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ARALIKLAR",
+      "a": [
+        {
+          "k": "TMT.3.2.1",
+          "m": "Aralık kavramını yazabilme",
+          "s": [
+            "Aralık kavramını tanır.",
+            "Aralıkları ayırt eder.",
+            "Aralıkları uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TAMPERE SES SİSTEMİ VE TÜRK MÜZİĞİ SES SİSTEMİ",
+      "a": [
+        {
+          "k": "TMT.3.3.1",
+          "m": "Tampere ses sisteminin oluşumunu fark edebilme",
+          "s": [
+            "Tampere ses sisteminin oluşumunu fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TMT.3.3.2",
+          "m": "Türk müziği ses sisteminin oluşumunu fark edebilme",
+          "s": [
+            "Türk müziği ses sisteminin oluşumunu fark eder."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

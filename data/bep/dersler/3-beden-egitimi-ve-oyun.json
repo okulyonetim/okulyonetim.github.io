@@ -1,0 +1,142 @@
+{
+  "ders": "Beden Eğitimi ve Oyun",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "İŞ BİRLİKLİ OYUNLARLA HAREKET EDİYORUM",
+      "a": [
+        {
+          "k": "BEO.3.1.1",
+          "m": "İş birlikli oyunlarda adil oyun anlayışına uygun davranabilme",
+          "s": [
+            "İş birlikli oyunlarda adil oyun anlayışını açıklar.",
+            "İş birlikli oyunlarda adil oyun anlayışına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BEO.3.1.3",
+          "m": "İş birlikli oyunlarda taktik ve strateji geliştirebilme",
+          "s": [
+            "İş birlikli oyunlarda taktiksel problemi belirler.",
+            "İş birlikli oyunlarda belirlenen problemin çözümüne ilişkin öneri sunar.",
+            "İş birlikli oyunlarda taktik ve strateji uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "OYUNUN KURALLARINI YENIDEN OLUŞTURUYORUM",
+      "a": [
+        {
+          "k": "BEO.3.2.1",
+          "m": "Oyunlarda birleştirilmiş hareket becerilerini sergileyebilme",
+          "s": [
+            "Oyunlarda birleştirilmiş hareket becerilerini algılar.",
+            "Oyunlarda birleştirilmiş hareket becerilerinin basamaklarını gösterir.",
+            "Oyunlarda birleştirilmiş hareket becerilerini farklı durum veya ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "BEO.3.2.2",
+          "m": "Oyunun kurallarını yeniden belirleyebilme",
+          "s": [
+            "Oyunun kurallarını yeniden belirler."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "FARKLI RITIMLERLE HAREKET EDIYORUM",
+      "a": [
+        {
+          "k": "BEO.3.3.1",
+          "m": "Farklı tempodaki müziğe uygun hareket edebilme",
+          "s": [
+            "Farklı tempodaki müziğe uygun hareket eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.3.3.2",
+          "m": "Eşle veya grupla ritmik hareket edebilme",
+          "s": [
+            "Eşle veya grupla hareket ederek verilen ritmi algılar.",
+            "Eşle veya grupla ritme uygun hareket eder.",
+            "Eşle veya grupla uyumlu ritmik hareket becerilerini sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAĞLIĞIM İÇIN FIZIKSEL AKTIVITEYE KATILIYORUM",
+      "a": [
+        {
+          "k": "BEO.3.4.1",
+          "m": "Fiziksel Aktivite sırasında vücudunda meydana gelen değişimleri sorgulayabilme",
+          "s": [
+            "Fiziksel aktivite sırasında vücudunda meydana gelen değişimleri tanımlar.",
+            "Fiziksel aktivite sırasında vücudunda meydana gelen değişimler hakkında sorular sorar.",
+            "Fiziksel aktivite sırasında vücudunda meydana gelen değişimler hakkında bilgi toplar.",
+            "Topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BEO.3.4.2",
+          "m": "Fiziksel hareketsizliğin sonuçlarını açıklayabilme",
+          "s": [
+            "Fiziksel hareketsizliğin sonuçlarını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "HAREKET EDEREK ÇEVREMI KEŞFEDIYORUM",
+      "a": [
+        {
+          "k": "BEO.3.5.1",
+          "m": "Fiziksel aktiviteye katılabileceği farklı çevreleri belirleyebilme",
+          "s": [
+            "Fiziksel aktiviteye katılabileceği farklı çevreleri belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.3.5.2",
+          "m": "Farklı çevre koşullarında fiziksel aktiviteye katılabilme",
+          "s": [
+            "Farklı çevre koşullarında fiziksel aktivite ihtiyacını fark eder.",
+            "Farklı çevre koşullarında fiziksel aktivite ihtiyacına yönelik plan yapar.",
+            "Farklı çevre koşullarında fiziksel aktiviteye ilişkin hazırladığı planı uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜLTÜREL BIRIKIMLERIMIZ VE GELENEKSEL OYUNLAR",
+      "a": [
+        {
+          "k": "BEO.3.6.1",
+          "m": "Geleneksel çocuk oyunlarında hareket becerilerini sergileyebilme",
+          "s": [
+            "Geleneksel çocuk oyunlarında yer alan hareket becerilerini algılar.",
+            "Geleneksel çocuk oyunlarında yer alan hareket becerilerinin basamaklarını gösterir.",
+            "Geleneksel çocuk oyunlarında yer alan hareket becerilerini farklı oyunlarda uygular."
+          ]
+        },
+        {
+          "k": "BEO.3.6.2",
+          "m": "Başarılı Türk sporcuları tanıyabilme",
+          "s": [
+            "Başarılı Türk sporcuları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "ders": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "4'LÜ TAMPERE SES DİZİSİ",
+      "a": [
+        {
+          "k": "MİOY.3.1.1",
+          "m": "4'lü tampere ses dizisini yazabilme",
+          "s": [
+            "4'lü ses tampere dizisini tanır.",
+            "4'lü tampere ses dizisini ayırt eder.",
+            "4'lü tampere ses dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.1.2",
+          "m": "4'lü tampere ses dizisini okuyabilme",
+          "s": [
+            "4'lü tampere ses dizisini tanır.",
+            "4'lü tampere ses dizisini ayırt eder.",
+            "4'lü tampere ses dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.1.3",
+          "m": "4'lü tampere ses dizisini işitebilme",
+          "s": [
+            "4'lü tampere ses dizisini tanır.",
+            "4'lü tampere ses dizisini ayırt eder.",
+            "4'lü tampere ses dizisini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK YAZI VE TERİMLERİNİ ÖĞRENİYORUM-4",
+      "a": [
+        {
+          "k": "MİOY.3.2.1",
+          "m": "Müzikte hız ve gürlük işaretlerini okuyabilme",
+          "s": [
+            "Müzikte hız ve gürlük işaretlerini tanır.",
+            "Müzikte hız ve gürlük işaretlerini ayırt eder.",
+            "Müzikte hız ve gürlük işaretlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.2.2",
+          "m": "Müzikte hız ve gürlük ifadelerini yazabilme",
+          "s": [
+            "Müzikte hız ve gürlük ifadelerinin bileşenlerini tanır.",
+            "Müzikte hız ve gürlük ifadelerinin bileşenlerini ayırt eder.",
+            "Müzikte hız ve gürlük ifadelerinin bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.2.3",
+          "m": "Müzikte hız ve gürlük ifadelerini işitebilme",
+          "s": [
+            "Müzikte hız ve gürlük ifadelerinin bileşenlerini tanır.",
+            "Müzikte hız ve gürlük ifadelerinin bileşenlerini ayırt eder.",
+            "Müzikte hız ve gürlük ifadelerinin bileşenlerini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DO MAJÖR",
+      "a": [
+        {
+          "k": "MİOY.3.3.1",
+          "m": "Do majör dizisini yazabilme",
+          "s": [
+            "Do majör dizisini tanır.",
+            "Do majör dizisini ayırt eder.",
+            "Do majör dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.3.2",
+          "m": "Do majör dizisini okuyabilme",
+          "s": [
+            "Do majör dizisini tanır.",
+            "Do majör dizisini ayırt eder.",
+            "Do majör dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.3.3",
+          "m": "Do majör dizisini işitebilme",
+          "s": [
+            "Do majör dizisini tanır.",
+            "Do majör dizisini ayırt eder.",
+            "Do majör dizisini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "LA MİNÖR",
+      "a": [
+        {
+          "k": "MİOY.3.4.1",
+          "m": "La minör dizisini yazabilme",
+          "s": [
+            "La minör dizisini tanır.",
+            "La minör dizisini ayırt eder.",
+            "La minör dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.4.2",
+          "m": "La minör dizisini okuyabilme",
+          "s": [
+            "La minör dizisinin bileşenlerini tanır.",
+            "La minör dizisinin bileşenlerini ayırt eder.",
+            "La minör dizisinin bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.3.4.3",
+          "m": "La minör dizisini işitebilme",
+          "s": [
+            "La minör dizisini tanır.",
+            "La minör dizisini ayırt eder.",
+            "La minör dizisini ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "NOTALARI KEŞFET",
+      "a": [
+        {
+          "k": "VLS.3.1.1",
+          "m": "Viyolonseldeki boş teller üzerindeki notaların yerlerini çözümleyebilme",
+          "s": [
+            "Viyolonselin boş tellerindeki notaları ve fiziksel yerlerini belirler.",
+            "Boş teller üzerindeki notaların yerleri arasındaki sıralamayı ve ilişkileri belirler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RE VE LA TELLERİNDE SESLERİN İZİNDE",
+      "a": [
+        {
+          "k": "VLS.3.2.1",
+          "m": "Re ve la telleri üzerindeki notaları temel parmak pozisyonlarında çalabilme",
+          "s": [
+            "Re ve la tellerinde çalınacak etüdü çözümler.",
+            "Re ve la tellerindeki notaları çalarken duruş ve tutuş pozisyonunu alır.",
+            "Re ve la tellerindeki notaları çalarken çalgıya özgü teknikleri kullanır.",
+            "Re ve la telleri üzerindeki notaları çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.3.2.2",
+          "m": "Notaların fa anahtarı üzerindeki yerini çözümleyebilme",
+          "s": [
+            "Notaların fa anahtarı üzerindeki yerlerini çözümlemek için bileşenleri belirler.",
+            "Notaların fa anahtarı üzerindeki yerlerini çözümlemek için ilişkileri belirler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SOL VE DO TELLERİNDE SESLERİN İZİNDE",
+      "a": [
+        {
+          "k": "VLS.3.3.1",
+          "m": "Sol ve do telleri üzerindeki notaları temel parmak pozisyonlarında çalabilme",
+          "s": [
+            "Sol ve do tellerinde çalınacak etüdü çözümler.",
+            "Sol ve do tellerindeki notaları çalarken duruş ve tutuş pozisyonunu alır.",
+            "Sol ve do tellerindeki notaları çalarken çalgıya özgü teknikleri kullanır.",
+            "Sol ve do tellerindeki notaları çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.3.3.2",
+          "m": "Notaların fa anahtarı üzerindeki yerini çözümleyebilme",
+          "s": [
+            "Notaların fa anahtarı üzerindeki yerlerini çözümlemek için bileşenleri belirler.",
+            "Notaların fa anahtarı üzerindeki yerlerini çözümlemek için ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "VLS.3.3.3",
+          "m": "Viyolonselde boş tellerde temel notalarla oluşturulan etütleri çalabilme",
+          "s": [
+            "Temel notalardan oluşan etütleri çözümler.",
+            "Temel notaları çalarken duruş ve tutuş pozisyonunu alır.",
+            "Temel notaları çalarken çalgıya özgü teknikleri kullanır.",
+            "Temel notaları çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

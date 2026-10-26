@@ -1,0 +1,118 @@
+{
+  "ders": "Müzik Kültürü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "MÜZİK KÜLTÜRÜNÜ ÖĞRENIYORUM",
+      "a": [
+        {
+          "k": "MK.3.1.1",
+          "m": "Kültür kavramını tanımlayabilme",
+          "s": [
+            "Kültür kavramını tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.3.1.2",
+          "m": "Müzik kültürünün oluşumunu sorgulayabilme",
+          "s": [
+            "Müzik kültürünün oluşumundaki etkenleri tanımlar.",
+            "Müzik kültürünü oluşturan etkenler hakkında sorular sorar.",
+            "Müzik kültürünü oluşturan etkenler hakkında bilgi toplar.",
+            "Toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "MK.3.1.3",
+          "m": "Müzik kültürünü öğrenmenin yararlarını açıklayabilme",
+          "s": [
+            "Müzik kültürünü öğrenmenin yararlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.3.1.4",
+          "m": "Farklı müzik kültürlerini öğrenmenin önemini açıklayabilme",
+          "s": [
+            "Farklı müzik kültürlerini öğrenmenin önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK KÜLTÜRÜMÜ GELİŞTİRIYORUM",
+      "a": [
+        {
+          "k": "MK.3.2.1",
+          "m": "Müzik kültürünü geliştirme yollarını sorgulayabilme",
+          "s": [
+            "Müzik kültürünü geliştirme yollarını tanımlar.",
+            "Müzik kültürünü nasıl geliştirebileceğine ilişkin sorular sorar.",
+            "Müzik kültürünü geliştiren unsurlar hakkında bilgi toplar.",
+            "Topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Topladığı bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "MK.3.2.2",
+          "m": "Müzik dinleme ve çalma ortamlarındaki doğru davranış kurallarını açıklayabilme",
+          "s": [
+            "Müzik dinleme ve çalma ortamlarındaki doğru davranış kurallarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.3.2.3",
+          "m": "Çalgısının bakımı ve temizliğini düzenli yapabilme",
+          "s": [
+            "Çalgısının bakımı ve temizliğini düzenli yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÜLKEMİZİN MÜZİK KÜLTÜRÜNÜ TANIYORUM",
+      "a": [
+        {
+          "k": "MK.3.3.1",
+          "m": "Müzik kültürümüzün genel özelliklerini açıklayabilme",
+          "s": [
+            "Müzik kültürümüzün genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.3.3.2",
+          "m": "Müzik kültürümüzdeki çeşitliliği ve zenginliği fark edebilme",
+          "s": [
+            "Müzik kültürümüzdeki çeşitliliği ve zenginliği fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.3.3.3",
+          "m": "Müzik kültürümüze özgü çalgıları tanıyabilme",
+          "s": [
+            "Müzik kültürümüze özgü çalgıları tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.3.3.4",
+          "m": "Müzik kültürümüzün doğa ile bağını yorumlayabilme",
+          "s": [
+            "Müzik kültürümüzdeki doğal unsurları inceler.",
+            "Bildiği türkülerdeki doğal unsurlara örnek verir.",
+            "Müzik kültürümüzün doğa ile bağını kendi cümleleriyle ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

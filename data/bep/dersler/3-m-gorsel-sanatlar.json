@@ -1,0 +1,134 @@
+{
+  "ders": "Görsel Sanatlar",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "HAYAT VE SANAT",
+      "a": [
+        {
+          "k": "GS.3.1.1",
+          "m": "Doğadaki ve sanat eserlerindeki sıcak ve soğuk renk uyumlarını algılayabilme",
+          "s": [
+            "Doğadaki ve sanat eserlerindeki sıcak ve soğuk renkleri gözlemler.",
+            "Doğadaki ve sanat eserlerindeki sıcak ve soğuk renklerin estetik etkilerini karşılaştırır."
+          ]
+        },
+        {
+          "k": "GS.3.1.2",
+          "m": "Sıcak veya soğuk renk uyumunu kullanarak Türkiye’deki tarihî mekânlara ve doğal güzelliklere ilişkin izlenimlerini yansıtan resim yapabilme",
+          "s": [
+            "Sıcak veya soğuk renk uyumunu kullanarak izlenimlerini yansıtan kompozisyon tasarlar.",
+            "Sıcak veya soğuk renk uyumunu kullanarak izlenimlerini yansıtan kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATIN GÖRSEL DİLİ",
+      "a": [
+        {
+          "k": "GS.3.2.1",
+          "m": "Anadolu halk kültüründeki sembol ve karakterlerin görsel mesajlarını okuyabilme",
+          "s": [
+            "Anadolu halk kültürüne ait mitolojik, fantastik veya mizahî karakterlerin görsel mesajlarını algılar.",
+            "Anadolu halk kültürüne ait mitolojik, fantastik veya mizahî karakterlerin görsel mesajlarını anlamlandırır."
+          ]
+        },
+        {
+          "k": "GS.3.2.2",
+          "m": "Anadolu halk kültüründeki sembolleri ve karakterleri kullanarak mozaik çalışmasıyapabilme",
+          "s": [
+            "Anadolu halk kültüründeki mitolojik, fantastik veya mizahî hikâyeleri inceleyerek kompozisyon tasarlar.",
+            "Anadolu halk kültürüne ait sembolleri ve karakterleri kullanarak kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATÇILAR VE ESERLERİ",
+      "a": [
+        {
+          "k": "GS.3.3.1",
+          "m": "Çağdaş Türk resim sanatındaki figüratif resimleri inceleyebilme",
+          "s": [
+            "Figüratif resmi sanatsal açıdan betimler.",
+            "Figüratif resmi sanatsal açıdan çözümler.",
+            "Figüratif resmi sanatsal açıdan yorumlar.",
+            "Figüratif resim hakkında sanatsal yargıda bulunur."
+          ]
+        },
+        {
+          "k": "GS.3.3.2",
+          "m": "Günlük yaşam sahnelerini yansıtan figüratif resim yapabilme",
+          "s": [
+            "Oran-orantı, yön ve uzaklık ilişkilerini kurarak figüratif kompozisyon tasarlar.",
+            "Oran-orantı, yön ve uzaklık ilişkilerini kurarak figüratif kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇİZİM VE GÖRSEL İFADE",
+      "a": [
+        {
+          "k": "GS.3.4.1",
+          "m": "Hikâyeden hareketle imgesel çizim yapabilme",
+          "s": [
+            "Radyo tiyatrosunda anlatılan hikâyeyi hayal gücüyle tasarlar.",
+            "Tasarladığı hikâye ve karakterleri yansıtan desen oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RENK VE ESTETİK",
+      "a": [
+        {
+          "k": "GS.3.5.1",
+          "m": "Zıt renkleri kullanarak imgesel resim yapabilme",
+          "s": [
+            "Arkası yarın tekniği ile anlatılan hikâyenin devamını hayal gücüyle tasarlar.",
+            "Hikâye akışını, karakterleri ve olayları zıt renklerle yansıtan kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MİLLÎ DEĞERLER VE SANAT",
+      "a": [
+        {
+          "k": "GS.3.6.1",
+          "m": "Cumhuriyet’in ilk yıllarında görsel sanatlara verilen önemi yansıtan sanatsal üretim yapabilme",
+          "s": [
+            "1923-1945 yılları arasında görsel sanatlara verilen önemi yansıtan kompozisyon tasarlar.",
+            "1923-1945 yılları arasında görsel sanatlara verilen önemi yansıtan kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZE VE KÜLTÜR",
+      "a": [
+        {
+          "k": "GS.3.7.1",
+          "m": "Geçmiş ve günümüz teknolojilerini estetik ve işlevsel açıdan karşılaştırabilme",
+          "s": [
+            "Geçmiş ve günümüz teknolojilerinin estetik ve işlevsel özelliklerini belirler.",
+            "Belirlenen özelliklere göre geçmiş ve günümüz teknolojileri arasındaki benzerlikleri listeler.",
+            "Belirlenen özelliklere göre geçmiş ve günümüz teknolojileri arasındaki farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "GS.3.7.2",
+          "m": "Okulunda bilim ve teknoloji müzesi yapabilme",
+          "s": [
+            "Bilim ve teknoloji müzesi koleksiyonuna uygun eser tasarlar.",
+            "Bilim ve teknoloji müzesi koleksiyonuna uygun eserlerle müze oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

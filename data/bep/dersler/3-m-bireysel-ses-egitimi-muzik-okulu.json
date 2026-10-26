@@ -1,0 +1,110 @@
+{
+  "ders": "Bireysel Ses Eğitimi (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "İNSAN SESİ",
+      "a": [
+        {
+          "k": "BSE.3.1.1",
+          "m": "Akciğerlerini bedeninde gösterebilme",
+          "s": [
+            "Akciğerlerini bedeninde gösterir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.3.1.2",
+          "m": "İnsana ait ses türlerini sınıflandırabilme",
+          "s": [
+            "İnsan sesi türlerine ilişkin değişkenleri belirler.",
+            "İnsan seslerini yaş, cinsiyet gibi türlere ayırır.",
+            "İnsan sesi türlerini kalınlık ve incelik özelliklerine göre tasnif eder.",
+            "İnsan sesi türlerini isimlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SES EĞİTİMİ",
+      "a": [
+        {
+          "k": "BSE.3.2.1",
+          "m": "Nefes çalışmaları yapabilme",
+          "s": [
+            "Nefes çalışmaları yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.3.2.2",
+          "m": "Nefes-ses bağlantısı oluşturabilme",
+          "s": [
+            "Nefes-ses bağlantısı oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.3.2.3",
+          "m": "Düzeyine uygun eserleri seslendirebilme",
+          "s": [
+            "Düzeyine uygun eserleri bedenini söylemeye hazır hâle getirerek seslendirir.",
+            "Düzeyine uygun eserleri uygun söyleme tekniklerini kullanarak seslendirir.",
+            "Düzeyine uygun eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.3.2.4",
+          "m": "Seslendireceği eserle ilgili artikülasyon çalışmaları yapabilme",
+          "s": [
+            "Seslendireceği eserle ilgili artikülasyon çalışmaları yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "BSE.3.3.1",
+          "m": "Millî ve manevi değerlerle ilgili eserler seslendirebilme",
+          "s": [
+            "Millî ve manevi değerlerle ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.3.3.2",
+          "m": "Atatürk ile ilgili şarkıları seslendirebilme",
+          "s": [
+            "Atatürk ile ilgili şarkıları seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Atatürk ile ilgili şarkıları seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Atatürk ile ilgili şarkıları seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.3.3.3",
+          "m": "Belirli gün ve haftalarla ilgili müzikleri anlamına uygun seslendirebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.3.3.4",
+          "m": "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirebilme",
+          "s": [
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

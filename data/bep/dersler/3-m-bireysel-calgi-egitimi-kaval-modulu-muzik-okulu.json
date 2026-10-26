@@ -1,0 +1,84 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KAVALDA TEMEL DAVRANIŞLAR 2",
+      "a": [
+        {
+          "k": "KVL.3.1.1",
+          "m": "Doğru oturma pozisyonunda baş ve boynun alması gereken şekli yorumlayabilme",
+          "s": [
+            "Baş ve boynun alması gereken şekli inceler.",
+            "Baş ve boynun alması gereken şekli fiziksel özelliklerine göre uygular.",
+            "Baş ve boynun alması gereken şekli fiziksel özelliklerine göre ifade eder."
+          ]
+        },
+        {
+          "k": "KVL.3.1.2",
+          "m": "Doğru oturma pozisyonunda, sırt ve bacakların alması gereken şekli yorumlayabilme",
+          "s": [
+            "Sırt ve bacakların alması gereken şekli inceler.",
+            "Sırt ve bacakların alması gereken şekli fiziksel özelliklerine göre uygular.",
+            "Sırt ve bacakların alması gereken şekli fiziksel özelliklerine göre yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEFES TEKNİKLERİ",
+      "a": [
+        {
+          "k": "KVL.3.2.1",
+          "m": "Nefes kontrolünü yapabilme",
+          "s": [
+            "Nefes kontrolünü yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.3.2.2",
+          "m": "Göğüs nefesini açıklayabilme",
+          "s": [
+            "Göğüs nefesini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.3.2.3",
+          "m": "Diyafram nefesini açıklayabilme",
+          "s": [
+            "Diyafram nefesini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDAN SES ELDE EDEBILME",
+      "a": [
+        {
+          "k": "KVL.3.3.1",
+          "m": "Kavaldan ses çıkartmadan önce dudağın alması gereken pozisyonu yorumlayabilme",
+          "s": [
+            "Dudağın alması gereken şekli inceler.",
+            "Doğru dudak pozisyonunu fiziksel özelliklerine uygun olarak uygular.",
+            "Dudağın alması gereken şekli fiziksel özelliklerine uygun olarak ifade eder."
+          ]
+        },
+        {
+          "k": "KVL.3.3.2",
+          "m": "Doğru tutuş, duruş ve dudak pozisyonunda kavaldan ses elde edebilme",
+          "s": [
+            "Elde edeceği sesi çözümler.",
+            "Doğru tutuş, duruş ve dudak pozisyonunu sergiler.",
+            "Kavala özgü teknikleri kullanır.",
+            "Sesi, yapısına uygun olarak elde eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

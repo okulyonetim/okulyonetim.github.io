@@ -1,0 +1,228 @@
+{
+  "ders": "Fen Bilimleri",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. ÜNİTE: BİLİMSEL KEŞİF YOLCULUĞU",
+      "a": [
+        {
+          "k": "FB.3.1.1",
+          "m": "Bilimsel bilgiye ulaşma yollarını sorgulayabilme",
+          "s": [
+            "Merak ettiği bilimsel bir konuyu tanımlar.",
+            "İlgili konu hakkında sorular sorar.",
+            "Sorularını cevaplamaya yönelik bilgi toplar.",
+            "Bilimsel bilgiye ulaşma yollarının uygunluğunu değerlendirir.",
+            "Toplanan bilgiler üzerinden bilimsel bilgiye ulaşma yollarına ilişkin çıkarım yapar."
+          ]
+        },
+        {
+          "k": "FB.3.1.2",
+          "m": "Bilim insanlarının özelliklerini genelleyebilme",
+          "s": [
+            "Bilim insanları hakkında bilgi toplar.",
+            "Bilim insanlarının ortak özelliklerini belirler.",
+            "Bilim insanlarının ortak olmayan özelliklerini belirler.",
+            "Örüntüler üzerinden bilim insanlarının özellikleri hakkında önermede bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: CANLILAR DÜNYASINA YOLCULUK",
+      "a": [
+        {
+          "k": "FB.3.2.1",
+          "m": "Canlıları; mikroskopla görülebilen canlılar, mantarlar, bitkiler ve hayvanlar olarak sınıflandırabilme",
+          "s": [
+            "Canlıların benzer ve farklı niteliklerini belirler.",
+            "Canlıları niteliklerine göre ayırır.",
+            "Canlıları gruplandırır.",
+            "Canlıları etiketler."
+          ]
+        },
+        {
+          "k": "FB.3.2.2",
+          "m": "Canlıların çevrelerini farklı yollarla algılamaları konusunda bilimsel çıkarım yapabilme",
+          "s": [
+            "Canlıların çevrelerini algılama biçimlerine ilişkin nitelikleri tanımlar.",
+            "Duyu organlarının işlevleri ile ilgili veri toplayarak kaydeder.",
+            "Canlıların çevrelerini farklı biçimlerde algılamalarına ilişkin verileri yorumlayarak değerlendirir."
+          ]
+        },
+        {
+          "k": "FB.3.2.3",
+          "m": "Canlıların yaşam döngülerini açıklamada tümevarımsal akıl yürütebilme",
+          "s": [
+            "Canlıların yaşam döngüleri ile ilgili örüntüleri bulur.",
+            "Canlıların yaşam döngüleri ile ilgili genelleme yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: YER BİLİMCİLER İŞ BAŞINDA",
+      "a": [
+        {
+          "k": "FB.3.3.1",
+          "m": "Kayaçlar, madenler ve mineraller ile ilgili tümdengelimsel akıl yürütebilme",
+          "s": [
+            "Kayaçlar, madenler ve mineralleri belirler.",
+            "Kayaçlar, madenler ve mineraller arasında ilişki kurar.",
+            "Kayaçlar, madenler ve mineraller arasında genelden genele veya genelden özele çıkarım yapar."
+          ]
+        },
+        {
+          "k": "FB.3.3.2",
+          "m": "Fosil oluşumu ile ilgili bilgileri sentezleyebilme",
+          "s": [
+            "Fosil oluşumunu gösteren sürecin bütün ve parçalarını belirler.",
+            "Süreci oluşturan aşamalar arasında ilişki kurar.",
+            "Fosillerin oluşum sürecini oluşturan aşamaları uygun sırayla bir bütün hâline getirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: MADDEYİ TANIYALIM, KARIŞTIRIP AYIRALIM",
+      "a": [
+        {
+          "k": "FB.3.4.1",
+          "m": "Çevresindeki maddeleri hâllerine göre sınıflandırabilme",
+          "s": [
+            "Çevresindeki maddelerin niteliklerini tanımlar.",
+            "Çevresindeki maddeleri niteliklerine göre ayırır.",
+            "Çevresindeki maddeleri hâllerine göre gruplandırır.",
+            "Maddeleri hâllerine göre katı, sıvı ve gaz olarak etiketler."
+          ]
+        },
+        {
+          "k": "FB.3.4.2",
+          "m": "Günlük yaşamda karşılaştığı karışımların ayrılmasında kullanılabilecek uygun yöntemleri kullanarak deney yapabilme",
+          "s": [
+            "Karışımların ayrılmasında kullanılabilecek yöntemlerle ilgili deney tasarlar.",
+            "Deneyle ilgili ölçme ve veri analizi yapar."
+          ]
+        },
+        {
+          "k": "FB.3.4.3",
+          "m": "Atıkların ayrıştırılmasına ilişkin problem çözebilme",
+          "s": [
+            "Atıkların ayrıştırılmasına ilişkin problemi yapılandırır.",
+            "Atıkların ayrıştırılmasına ilişkin problemi özetler.",
+            "Atıkların ayrıştırılmasına ilişkin çözüm önerilerini gözleme ya da veriye dayalı tahmin eder.",
+            "Atıkların ayrıştırılmasına ilişkin problemin çözümüne yönelik önermeler üzerinden akıl yürütür.",
+            "Atıkların ayrıştırılmasına ilişkin problemin çözümüne yönelik yansıtmada/değerlendirmede bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. ÜNİTE: HAREKETİ KEŞFEDİYORUM",
+      "a": [
+        {
+          "k": "FB.3.5.1",
+          "m": "Varlıkların hareket durumlarını gözleme dayalı tahmin edebilme",
+          "s": [
+            "Varlıkların hareket durumlarına ilişkin ön gözlem ve/veya deneyimlerini ilişkilendirir.",
+            "Varlıkların hareket durumlarına ilişkin çıkarım yapar.",
+            "Varlıkların hareket durumlarının sonuçlarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "FB.3.5.2",
+          "m": "Kuvvetin varlıklar üzerindeki etkilerini bilimsel gözleme dayalı tahmin edebilme",
+          "s": [
+            "Varlıkların hareketinin ve şekil değiştirmesinin nedenine ilişkin ön bilgi ve deneyimleriyle önerme oluşturur.",
+            "Varlıkların hareketinin ve şekil değiştirmesinin nedenine ilişkin gözleme dayalı olan önermeleri karşılaştırır.",
+            "Kuvvetin varlıkların hareketine ve şekil değiştirmesine etkilerine ilişkin tahminlerini temellendirmek için gözlem verilerinden sonuç çıkarır.",
+            "Kuvvetin varlıkların hareketine ve şekil değiştirmesine etkileri ile ilgili gözlemlenmemiş duruma ilişkin tahminde bulunur.",
+            "Kuvvetin varlıkların hareketine ve şekil değiştirmesine etkileri ile ilgili tahminlerinin geçerliliğini sorgular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "6. ÜNİTE: YAŞAMIMIZI KOLAYLAŞTIRAN ELEKTRİK",
+      "a": [
+        {
+          "k": "FB.3.6.1",
+          "m": "Bazı araç gerecin elektrikli olduğuna ilişkin bilimsel çıkarım yapabilme",
+          "s": [
+            "Farklı araç gerecin niteliklerini tanımlar.",
+            "Elektrikli araç gereçle ilgili veri toplayarak kaydeder.",
+            "Elektrikli araç gereçle ilgili verileri değerlendirir."
+          ]
+        },
+        {
+          "k": "FB.3.6.2",
+          "m": "Elektrikli araç gerecin güvenli kullanımı ile ilgili eleştirel düşünebilme",
+          "s": [
+            "Elektrikli araç gerecin güvenli kullanımı ile ilgili verilen bir olay/konu/problem veya durumu sorgular.",
+            "Elektrikli araç gerecin kullanımında güvenliğin sağlanabileceğine yönelik akıl yürütür.",
+            "Akıl yürütmeyle ulaştığı çıkarımları yansıtır."
+          ]
+        },
+        {
+          "k": "FB.3.6.3",
+          "m": "Elektriği tasarruflu kullanma konusunda bilimsel veriye dayalı tahmin edebilme",
+          "s": [
+            "Elektriği tasarruflu kullanma konusunda verilere ve/veya ön bilgilere dayalı önerme oluşturur.",
+            "Elektriği tasarruflu kullanma üzerine nicel ölçüm verilerine dayalı önermelerini gerekçelendirir.",
+            "Hesaplamalarına dayalı olarak tahmin eder.",
+            "Tahminlerin geçerliliğini sorgular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "7. ÜNİTE: TOPRAĞI TANIYORUM, TARIMI KEŞFEDİYORUM",
+      "a": [
+        {
+          "k": "FB.3.7.1",
+          "m": "Toprak oluşumunu ve yapısını bilimsel olarak gözlemleyebilme",
+          "s": [
+            "Toprağın oluşumuna ve yapısına ilişkin nitelikleri tanımlar.",
+            "Toprağın yapısına ilişkin veri toplayarak kaydeder.",
+            "Toprağın yapısına ilişkin topladığı verileri açıklar."
+          ]
+        },
+        {
+          "k": "FB.3.7.2",
+          "m": "Bir bitkinin yetişmesi için gerekenleri genelleyebilme",
+          "s": [
+            "Çevresinde bulunan tarım ürünlerinin nasıl yetiştirildiği konusunda araştırma yaparak bilgi toplar.",
+            "Bitki yetiştirmek için gerekli ortak özellikleri belirler.",
+            "Farklı bitkilerin yetiştirilmesinde ortak olmayan özellikleri belirler.",
+            "Bir bitki yetiştirmek için yapılması gerekenler konusunda önermede bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "8. ÜNİTE: CANLILARIN YAŞAM ALANLARINA YOLCULUK",
+      "a": [
+        {
+          "k": "FB.3.8.1",
+          "m": "Canlıların yaşam alanlarının özelliklerini belirlemeye yönelik kanıt kullanabilme",
+          "s": [
+            "Canlıların yaşam alanlarının özelliklerine ilişkin veri toplayarak kaydeder.",
+            "Canlıların yaşam alanlarına ilişkin veri setleri oluşturur.",
+            "Canlıların yaşam alanlarının özelliklerine ilişkin veriye dayalı açıklama yapar."
+          ]
+        },
+        {
+          "k": "FB.3.8.2",
+          "m": "Yaşam alanındaki canlı çeşitliliğini operasyonel olarak tanımlayabilme",
+          "s": [
+            "Yaşam alanınının özelliklerini tanımlar.",
+            "Yaşam alanındaki canlı çeşitliliği ile ilgili ölçüm yapar.",
+            "Canlı çeşitliliğinin tanımını yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

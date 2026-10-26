@@ -1,0 +1,51 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "RİTİM KALIPLARINI OKUMA",
+      "a": [
+        {
+          "k": "UD.3.1.1",
+          "m": "Seslendireceği egzersizleri okuyabilme",
+          "s": [
+            "Ritmik bileşenleri tanır.",
+            "Ritmik bileşenleri ayırt eder.",
+            "Ritmik bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RİTİM KALIPLARINI YAZMA",
+      "a": [
+        {
+          "k": "UD.3.2.1",
+          "m": "Seslendireceği egzersizleri yazabilme",
+          "s": [
+            "Ritmik bileşenleri tanır.",
+            "Ritmik bileşenleri işitsel olarak ayırt eder.",
+            "Ritmik ve ezgisel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ANA KOLONLARI TANIYORUM",
+      "a": [
+        {
+          "k": "UD.3.3.1",
+          "m": "Gerdaniye, neva ve dügâh tellerini çalabilme",
+          "s": [
+            "Çalacağı egzersizleri çözümler.",
+            "Çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

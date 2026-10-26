@@ -1,0 +1,96 @@
+{
+  "ders": "Çalgı Toplulukları (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGI TOPLULUKLARININ TARİHİ",
+      "a": [
+        {
+          "k": "Ç.T.3.1.1",
+          "m": "Birlikte müzik çalmanın eski çağlara dayandığını açıklayabilme",
+          "s": [
+            "Birlikte müzik çalmanın eski çağlara dayandığını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "Ç.T.3.1.2",
+          "m": "Farklı tür ve stillerdeki çalgı topluluklarının özelliklerini çözümleyebilme",
+          "s": [
+            "Farklı tür ve stillerdeki çalgı topluluklarını belirler.",
+            "Farklı tür ve stillerdeki çalgı toplulukları arasındaki ilişkileri belirler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI TÜRLERİ",
+      "a": [
+        {
+          "k": "ÇT.3.2.1",
+          "m": "Çalgılar ve özelliklerini açıklayabilme",
+          "s": [
+            "Çalgılar ve özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "Ç.T.3.2.2",
+          "m": "Çalgı türlerini sınıflandırabilme",
+          "s": [
+            "Dinlediği müziklerdeki çalgıları belirler.",
+            "Dinlediği müziklerdeki çalgıları ayırır.",
+            "Dinlediği müziklerdeki çalgıları tasnif eder.",
+            "Dinlediği müziklerdeki çalgıları belirleyerek adlandırır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDEKİ ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "Ç.T.3.3.1",
+          "m": "Türk müziği çalgılarını tanıyabilme",
+          "s": [
+            "Türk müziği çalgılarını tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "Ç.T.3.3.2",
+          "m": "Türk müziği çalgılarını sınıflandırabilme",
+          "s": [
+            "Türk müziğindeki çalgıları belirler.",
+            "Türk müziğindeki çalgıları ayırır.",
+            "Türk müziğindeki çalgıları tasnif eder.",
+            "Türk müziğindeki çalgıları adlandırır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİRLİKTE ÇALMAYA GİRİŞ",
+      "a": [
+        {
+          "k": "Ç.T.3.4.1",
+          "m": "Birlikte çalmanın önemini açıklayabilme",
+          "s": [
+            "Birlikte çalmanın önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "Ç.T.3.4.2",
+          "m": "Birlikte çalmada dikkat edilecek hususları belirleyebilme",
+          "s": [
+            "Birlikte çalmada dikkat edilecek hususları belirler."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

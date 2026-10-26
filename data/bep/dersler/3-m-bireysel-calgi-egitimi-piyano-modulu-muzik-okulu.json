@@ -1,0 +1,103 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "PİYANODA ORTA DO POZİSYONU",
+      "a": [
+        {
+          "k": "PYN.3.1.1",
+          "m": "Sağ ve sol elde orta do pozisyonunda 5 parmak nota çalabilme",
+          "s": [
+            "Sağ ve sol elde orta do konumunda 5 parmak notanın yer aldığı eseri çözümler.",
+            "Sağ ve sol elde orta do konumunda 5 parmak notayı çalmada duruş ve tutuş pozisyonu alır.",
+            "Sağ ve sol elde orta do konumunda 5 parmak notayı çalmada çalgıya özgü teknikleri kullanır.",
+            "Sağ ve sol elde orta do konumunda 5 parmak notayı ezgisel yapıya uygun çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TONALİTE 1",
+      "a": [
+        {
+          "k": "PYN.3.2.1",
+          "m": "Do majör tonalitesindeki eseri çalabilme",
+          "s": [
+            "Do majör tonalitesindeki eseri çözümler.",
+            "Do majör tonalitesinde eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Do majör tonalitesinde eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Do majör tonalitesindeki eseri müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.3.2.2",
+          "m": "Sol majör tonalitesindeki eseri çalabilme",
+          "s": [
+            "Sol majör tonalitesindeki eseri çözümler.",
+            "Sol majör tonalitesinde eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Sol majör tonalitesinde eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Sol majör tonalitesindeki eseri müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.3.2.3",
+          "m": "Fa majör tonalitesindeki eseri çalabilme",
+          "s": [
+            "Fa majör tonalitesindeki eseri çözümler.",
+            "Fa majör tonalitesinde eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Fa majör tonalitesinde eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Fa majör tonalitesindeki eseri müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.3.2.4",
+          "m": "La minör tonalitesindeki eseri çalabilme",
+          "s": [
+            "La minör tonalitesindeki eseri çözümler.",
+            "La minör tonalitesinde eser çalmada duruş ve tutuş pozisyonu alır.",
+            "La minör tonalitesinde eser çalmada çalgıya özgü teknikleri kullanır.",
+            "La minör tonalitesindeki eseri müzik bileşenlerine uygun çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TEKNİK 1",
+      "a": [
+        {
+          "k": "PYN.3.3.1",
+          "m": "Parmak geçişlerine uygun çalabilme",
+          "s": [
+            "Parmak geçişlerinin yer aldığı eser çözümler.",
+            "Parmak geçişleri tekniğini çalmada duruş ve tutuş pozisyonu alır.",
+            "Parmak geçişleri tekniğinde çalgıya özgü teknikleri kullanır.",
+            "Parmak geçişlerini müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.3.3.2",
+          "m": "Sağ ve sol elde yer alan notaları birlikte çalabilme",
+          "s": [
+            "Sağ ve sol elde notaların yer aldığı eseri çözümler.",
+            "Sağ ve sol elde yer alan notaları birlikte çalmada duruş ve tutuş pozisyonu alır.",
+            "Sağ ve sol elde yer alan notaları çalmada çalgıya özgü teknikleri kullanır.",
+            "Sağ ve sol elde yer alan notaları müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.3.3.3",
+          "m": "Çift ve üç ses çalabilme",
+          "s": [
+            "Çift ve üç sesin yer aldığı eseri çözümler.",
+            "Çift ve üç seste duruş ve tutuş pozisyonu alır.",
+            "Çift ve üç sesi çalmada çalgıya özgü teknikleri kullanır.",
+            "Çift ve üç sesi müzik bileşenlerine uygun çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

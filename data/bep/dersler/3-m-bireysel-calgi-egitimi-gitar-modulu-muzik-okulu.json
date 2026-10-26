@@ -1,0 +1,51 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "GİTARDA SAĞ EL (APOYANDO) TEKNİĞİ",
+      "a": [
+        {
+          "k": "GTR.3.1.1",
+          "m": "Sağ el (apoyando) tekniğini tanıyabilme",
+          "s": [
+            "Sağ el (apoyando) tekniğini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA DİZİ ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "GTR.3.2.1",
+          "m": "Gitarda dizi çalabilme",
+          "s": [
+            "Çalınacak diziyi çözümleyebilme",
+            "Çalgıya özgü duruş ve tutuş pozisyonu alabilme",
+            "Çalgıya özgü teknikleri kullanabilme",
+            "Verilen dizileri müziksel bileşenleri uygulayarak çalabilme"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA TEK SESLİ EZGİLER",
+      "a": [
+        {
+          "k": "GTR.3.3.1",
+          "m": "Gitarda tek sesli ezgileri çalabilme",
+          "s": [
+            "Çalınacak ezgiyi çözümler.",
+            "Gitara özgü duruş ve tutuş pozisyonu alır.",
+            "Gitara özgü teknikleri kullanır.",
+            "Ezgilere müziksel bileşenleri uygulayarak çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

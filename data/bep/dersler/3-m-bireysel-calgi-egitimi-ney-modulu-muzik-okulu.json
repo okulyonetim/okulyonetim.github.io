@@ -1,0 +1,62 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+  "grup": "3. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "NEFES TEKNİKLERİ",
+      "a": [
+        {
+          "k": "NEY.3.1.1",
+          "m": "Nefes kontrolünü yapabilme",
+          "s": [
+            "Nefes kontrolünü yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "NEY.3.1.2",
+          "m": "Göğüs nefesini açıklayabilme",
+          "s": [
+            "Göğüs nefesini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "NEY.3.1.3",
+          "m": "Diyafram nefesini açıklayabilme",
+          "s": [
+            "Diyafram nefesini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE İKİNCİ KADEME SES ALANINDA ANA SESLER",
+      "a": [
+        {
+          "k": "NEY.3.3.1",
+          "m": "Açık neva, çargâh ve buselik notalarını çalabilme",
+          "s": [
+            "Açık neva, çargâh ve buselik notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        },
+        {
+          "k": "NEY.3.3.2",
+          "m": "Dügâh ve rast notalarını çalabilme",
+          "s": [
+            "Dügâh ve rast notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}
