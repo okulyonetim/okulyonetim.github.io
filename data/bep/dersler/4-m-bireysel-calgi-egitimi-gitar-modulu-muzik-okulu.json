@@ -1,0 +1,55 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "GİTARDA SAĞ EL BAŞPARMAĞIMI KULLANIYORUM",
+      "a": [
+        {
+          "k": "GTR.4.1.1",
+          "m": "Gitarda sağ el başparmağını kullanabilme",
+          "s": [
+            "Gitarda sağ el başparmağını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GTR.4.1.2",
+          "m": "Gitarda sağ el egzersizleri yapabilme",
+          "s": [
+            "Gitarda sağ el egzersizleri yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA TEMEL AKORLAR",
+      "a": [
+        {
+          "k": "GTR.4.3.1",
+          "m": "Gitarda temel akorları uygulayabilme",
+          "s": [
+            "Gitarda temel akorları uygular."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA ARPEJ TEKNİĞİ",
+      "a": [
+        {
+          "k": "GTR.4.2.1",
+          "m": "Gitarda arpej tekniğini uygulayabilme",
+          "s": [
+            "Gitarda arpej tekniğini uygular."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

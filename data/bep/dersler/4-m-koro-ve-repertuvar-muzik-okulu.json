@@ -1,0 +1,115 @@
+{
+  "ders": "Koro ve Repertuvar (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KOROYU TANIYALIM",
+      "a": [
+        {
+          "k": "KOREP.4.1.1",
+          "m": "Kuruluş amacına göre koroları açıklayabilme",
+          "s": [
+            "Kuruluş amacına göre koroları açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.4.1.2",
+          "m": "Sayısal oluşumlarına göre koroları açıklayabilme",
+          "s": [
+            "Sayısal oluşumlarına göre koroları açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KORO OLUŞTURALIM",
+      "a": [
+        {
+          "k": "KOREP.4.2.1",
+          "m": "Diyaframın yapısını ve önemini açıklayabilme",
+          "s": [
+            "Diyaframın yapısını ve önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KORODA SÖYLEYELİM",
+      "a": [
+        {
+          "k": "KOREP.4.3.1",
+          "m": "İstiklal Marşı’nı anlamsal bütünlüğe dikkat ederek söyleyebilme",
+          "s": [
+            "İstiklal Marşı’nı anlamsal bütünlüğe dikkat ederek söylemeye hazırlanır.",
+            "İstiklal Marşı’nı anlamsal bütünlüğe dikkat ederek söylerken uygun teknikleri kullanır.",
+            "İstiklal Marşı’nı anlamsal bütünlüğe dikkat ederek söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.4.3.2",
+          "m": "Belirli gün ve haftalarla ilgili eserleri söyleyebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri söylemeye hazırlanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken uygun teknikleri kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.4.3.3",
+          "m": "Okul şarkıları repertuvarında bulunan eserleri söyleyebilme",
+          "s": [
+            "Okul şarkıları repertuvarında bulunan eserleri söylemeye hazırlanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken uygun teknikleri kullanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.4.3.4",
+          "m": "Türk müziğinden basit eserleri söyleyebilme",
+          "s": [
+            "Türk müziğinden basit eserleri söylemeye hazırlanır.",
+            "Türk müziğinden basit eserleri söylerken uygun teknikleri kullanır.",
+            "Türk müziğinden basit eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.4.3.5",
+          "m": "Atatürk’ün sevdiği şarkı ve türküleri söyleyebilme",
+          "s": [
+            "Atatürk’ün sevdiği şarkı ve türküleri söylemeye hazırlanır.",
+            "Atatürk’ün sevdiği şarkı ve türküleri söylerken uygun teknikleri kullanır.",
+            "Atatürk'ün sevdiği şarkı ve türküleri söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KONSER ETKİNLİKLERİ",
+      "a": [
+        {
+          "k": "KOREP.4.4.1",
+          "m": "Türk müziği etkinliklerine katılmanın önemini yansıtabilme",
+          "s": [
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerini gözden geçirir.",
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerinden hareketle çıkarım yapar.",
+            "Ulaştığı çıkarımları değerlendirir."
+          ]
+        },
+        {
+          "k": "KOREP.4.4.2",
+          "m": "Koro eserlerini sınıf korosu konserinde söyleyebilme",
+          "s": [
+            "Koro eserlerini sınıf korosu konserinde söylemeye hazırlanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

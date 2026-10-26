@@ -1,0 +1,88 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "NEYDE ÜÇÜNCÜ KADEME SES ALANINDA ANA SESLER",
+      "a": [
+        {
+          "k": "NEY.4.1.1",
+          "m": "Hüseyni ve acem notalarını çalabilme",
+          "s": [
+            "Hüseyni ve acem notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        },
+        {
+          "k": "NEY.4.1.2",
+          "m": "Açık gerdaniye ve açık muhayyer notalarını çalabilme",
+          "s": [
+            "Açık gerdaniye ve açık muhayyer notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Seslendireceği seslerin yapısına uygun olarak notaları çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE İKİNCİ VE ÜÇÜNCÜ KADEME SES ALANINDA ANA SESLERDEN OLUŞAN ETÜTLER",
+      "a": [
+        {
+          "k": "NEY.4.2.1",
+          "m": "İkinci ve üçüncü kademe ses alanındaki ana seslerden oluşan etütleri çalabilme",
+          "s": [
+            "İkinci ve üçüncü kademe ses alanındaki ana seslerden oluşan etütleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak ikinci ve üçüncü kademe ses alanındaki ana seslerden oluşan etütleri çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE İKİNCİ VE ÜÇÜNCÜ KADEME SES ALANINDA ANA SESLERDEN OLUŞAN ESERLER",
+      "a": [
+        {
+          "k": "NEY.4.3.1",
+          "m": "İkinci ve üçüncü kademe ses alanındaki ana seslerden oluşan Türk müziği eserlerini çalabilme",
+          "s": [
+            "İkinci ve üçüncü kademe ses alanındaki ana seslerden oluşan Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak ikinci ve üçüncü kademe ses alanındaki ana seslerden oluşan Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE İKİNCİ KADEME SES ALANINDA ARA SESLER",
+      "a": [
+        {
+          "k": "NEY.4.4.1",
+          "m": "Kürdi ve nim hicaz notalarını çalabilme",
+          "s": [
+            "Kürdi ve nim hicaz, notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları uygun olarak çalar."
+          ]
+        },
+        {
+          "k": "NEY.4.4.2",
+          "m": "Segâh notasını çalabilme",
+          "s": [
+            "Segâh notasını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notayı yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,334 @@
+{
+  "ders": "Fen Bilimleri",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Yer kabuğunun kara tabakasının kayaçlardan oluştuğunu belirtir.",
+          "s": [
+            "Kayaçların sınıflandırılmasına girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kayaçlarla madenleri ilişkilendirir ve kayaçların ham madde olarak önemini tartışır.",
+          "s": [
+            "Türkiye’deki önemli kayaçlara ve madenlere değinilir; altın, bor, mermer, linyit, bakır, taş kömürü, gümüş vb. örnekler verilir.",
+            "Fosil çeşitlerine girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Fosillerin oluşumunu açıklar.",
+          "s": [
+            "Fosillerin oluşumunu açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dünya’nın dönme ve dolanma hareketleri arasındaki farkı açıklar.",
+          "s": [
+            "Dönme ve dolanma hareketine günlük yaşamdan örnek verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dünya’nın hareketleri sonucu gerçekleşen olayları açıklar.",
+          "s": [
+            "Dünya’nın dönme hareketine değinilir.",
+            "Dünya’nın dolanma hareketine değinilir.",
+            "Dünya’nın dönmesine bağlı olarak Güneş’in gün içerisindeki konumunun değişimine değinilir.",
+            "Gece ve gündüzün oluşumuna değinilir.",
+            "Gün, yıl, zaman kavramları verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Canlı yaşamı ve besin içerikleri arasındaki ilişkiyi açıklar.",
+          "s": [
+            "Protein, karbonhidrat, yağ, vitamin, su ve minerallerin ayrıntılı yapısına girilmeden yalnızca önemleri vurgulanır.",
+            "Vitamin çeşitlerine girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Su ve minerallerin bütün besinlerde bulunduğu çıkarımını yapar.",
+          "s": [
+            "Su ve minerallerin bütün besinlerde bulunduğu çıkarımını yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Sağlıklı bir yaşam için besinlerin tazeliğinin ve doğallığının önemini, araştırma verilerine dayalı olarak tartışır.",
+          "s": [
+            "Dondurulmuş besinler, paketlenmiş besinler, son kullanma tarihi gibi kavramlar üzerinde durulur. Ayrıca besinlerin temizliği konusuna öğrencilerin dikkati çekilir.",
+            "Obezitenin beslenme alışkanlığı ile ilişkisi vurgulanır. Besin israfının önlenmesine dikkat çekilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "İnsan sağlığı ile dengeli beslenmeyi ilişkilendirir.",
+          "s": [
+            "İnsan sağlığı ile dengeli beslenmeyi ilişkilendirir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Alkol ve sigara kullanımının insan sağlığına olan olumsuz etkilerinin farkına varır.",
+          "s": [
+            "Alkol ve sigara kullanımının insan sağlığına olan olumsuz etkilerinin farkına varır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Yakın çevresinde sigara kullanımını azaltmaya yönelik sorumluluk üstlenir.",
+          "s": [
+            "Yakın çevresindeki kişilere sigaranın sağlığa zararlı olduğu konusunda uyarılarda bulunması beklenir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kuvvetin, cisimlere hareket kazandırmasına ve cisimlerin şekillerini değiştirmesine yönelik deneyler yapar.",
+          "s": [
+            "Kuvvetin, cisimlere hareket kazandırmasına ve cisimlerin şekillerini değiştirmesine yönelik deneyler yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Mıknatısı tanır ve kutupları olduğunu keşfeder.",
+          "s": [
+            "Mıknatısın uyguladığı kuvvetin, temas gerektiren kuvvetlerden farklı olarak temas gerektirmediği vurgulanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Mıknatısın etki ettiği maddeleri deney yaparak keşfeder.",
+          "s": [
+            "Mıknatısın etki ettiği maddeleri deney yaparak keşfeder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Mıknatısların günlük yaşamdaki kullanım alanlarına örnekler verir.",
+          "s": [
+            "Mıknatısların günlük yaşamdaki kullanım alanlarına örnekler verir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Mıknatısların yeni kullanım alanları konusunda fikirlerini açıklar.",
+          "s": [
+            "Mıknatısların yeni kullanım alanları konusunda fikirlerini açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Beş duyu organını kullanarak maddeyi niteleyen temel özellikleri açıklar.",
+          "s": [
+            "Maddeyi niteleyen; suda yüzme ve batma, suyu emme ve emmeme ve mıknatısla çekilme gibi özellikleri konusu işlenirken duyu organlarını kullanmaları sağlanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Farklı maddelerin kütle ve hacimlerini ölçerek karşılaştırır.",
+          "s": [
+            "Gazların kütle ve hacimlerine girilmez.",
+            "Kütlesi ve hacmi olan varlıkların madde olduğu belirtilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ölçülebilir özelliklerini kullanarak maddeyi tanımlar.",
+          "s": [
+            "Ölçülebilir özelliklerini kullanarak maddeyi tanımlar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Maddelerin hâllerine ait temel özellikleri karşılaştırır.",
+          "s": [
+            "Tanecikli ve boşluklu yapıya girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Aynı maddenin farklı hâllerine örnekler verir.",
+          "s": [
+            "Aynı maddenin farklı hâllerine örnekler verir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Maddelerin ısınıp soğumasına yönelik deneyler tasarlar.",
+          "s": [
+            "Maddelerin ısınıp soğumasına yönelik deneyler tasarlar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Maddelerin ısı etkisiyle hâl değiştirebileceğine yönelik deney tasarlar.",
+          "s": [
+            "Hâl değişimlerinden sadece erime, donma ve buharlaşmaya değinilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Günlük yaşamında sıklıkla kullandığı maddeleri saf madde ve karışım şeklinde sınıflandırarak aralarındaki farkları açıklar.",
+          "s": [
+            "Günlük yaşamında sıklıkla kullandığı maddeleri saf madde ve karışım şeklinde sınıflandırarak aralarındaki farkları açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Günlük yaşamda karşılaştığı karışımların ayrılmasında kullanılabilecek yöntemlerden uygun olanı seçer.",
+          "s": [
+            "Eleme, süzme ve mıknatısla ayırma yöntemleri üzerinde durulur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Karışımların ayrılmasını, ülke ekonomisine katkısı ve kaynakların etkili kullanımı bakımından tartışır.",
+          "s": [
+            "Karışımların ayrılmasını, ülke ekonomisine katkısı ve kaynakların etkili kullanımı bakımından tartışır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Geçmişte ve günümüzde kullanılan aydınlatma araçlarını karşılaştırır.",
+          "s": [
+            "Teknolojinin aydınlatma araçlarının gelişimine olan katkısı vurgulanır, kronolojik sıralama ve ayrıntı verilmez.",
+            "Aydınlatma araçlarının yaşamımızdaki önemi vurgulanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Gelecekte kullanılabilecek aydınlatma araçlarına yönelik tasarım yapar.",
+          "s": [
+            "Tasarımını çizim yaparak ifade etmesi istenir, üç boyutlu tasarıma girilmez.",
+            "Uygun aydınlatmanın göz sağlığı açısından önemi vurgulanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Uygun aydınlatma hakkında araştırma yapar.",
+          "s": [
+            "Uygun aydınlatma hakkında araştırma yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Aydınlatma araçlarının tasarruflu kullanımının aile ve ülke ekonomisi bakımından önemini tartışır.",
+          "s": [
+            "Aydınlatma araçlarının tasarruflu kullanımının aile ve ülke ekonomisi bakımından önemini tartışır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Işık kirliliğinin nedenlerini sorgular.",
+          "s": [
+            "Işık kirliliğinin nedenlerini sorgular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Işık kirliliğinin, doğal hayata ve gök cisimlerinin gözlenmesine olan olumsuz etkilerini açıklar.",
+          "s": [
+            "Işık kirliliğinin, doğal hayata ve gök cisimlerinin gözlenmesine olan olumsuz etkilerini açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Işık kirliliğini azaltmaya yönelik çözümler üretir.",
+          "s": [
+            "Işık kirliliğini azaltmaya yönelik çözümler üretir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Geçmişte ve günümüzde kullanılan ses teknolojilerini karşılaştırır.",
+          "s": [
+            "Teknolojinin ses araçlarının gelişimine olan katkısı vurgulanır, kronolojik sıralama ve ayrıntı verilmez.",
+            "Ses şiddetini değiştirmeye, işitme yetimizi geliştirmeye ve sesi kaydetmeye yarayan teknolojiler üzerinde durulur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Şiddetli sese sahip teknolojik araçların olumlu ve olumsuz etkilerini araştırır.",
+          "s": [
+            "Şiddetli sese sahip teknolojik araçların olumlu ve olumsuz etkilerini araştırır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ses kirliliğinin nedenlerini sorgular.",
+          "s": [
+            "Ses kirliliğinin nedenlerini sorgular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ses kirliliğinin insan sağlığı ve çevre üzerindeki olumsuz etkilerini açıklar.",
+          "s": [
+            "Ses kirliliğinin insan sağlığı ve çevre üzerindeki olumsuz etkilerini açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ses kirliliğini azaltmaya yönelik çözümler üretir.",
+          "s": [
+            "Ses kirliliğini azaltmaya yönelik çözümler üretir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kaynakların kullanımında tasarruflu davranmaya özen gösterir.",
+          "s": [
+            "Elektrik, su, besin gibi kaynakların tasarruflu kullanılmasının önemi vurgulanır.",
+            "Yeniden kullanmanın önemi üzerinde durulur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Yaşam için gerekli olan kaynakların ve geri dönüşümün önemini fark eder.",
+          "s": [
+            "Su, besin, elektrik gibi kaynaklara değinilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Basit elektrik devresini oluşturan devre elemanlarını işlevleri ile tanır.",
+          "s": [
+            "Devre elemanı olarak pil, ampul, kablo ve anahtar tanıtılır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çalışan bir elektrik devresi kurar.",
+          "s": [
+            "Ampul, pilden ve anahtardan oluşan devre kurulması istenir.",
+            "Elektrik düğmeleri ile lambalar arasında, duvar içinden geçen bağlantı kabloları olduğu vurgulanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Evde ve okuldaki elektrik düğmelerinin ve kabloların birer devre elemanı olduğunu bilir.",
+          "s": [
+            "Evde ve okuldaki elektrik düğmelerinin ve kabloların birer devre elemanı olduğunu bilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrencilerin yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları sağlanır.",
+          "s": [
+            "Öğrencilerin yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları sağlanır."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "PİYANODA TEMEL KAVRAMLAR 2",
+      "a": [
+        {
+          "k": "PYN.4.1.1",
+          "m": "Müzik cümlesini eser veya etüt içinde çalabilme",
+          "s": [
+            "Müzik cümlesini çalmada eseri çözümler.",
+            "Müzik cümlesini çalmada duruş ve tutuş pozisyonu alır.",
+            "Müzik cümlesini çalmada çalgıya özgü teknikleri kullanır.",
+            "Müzik cümlesini müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.4.1.2",
+          "m": "Gürlük terimlerini eser veya etüt içinde çalabilme",
+          "s": [
+            "Gürlük terimlerini çalmada eseri çözümler.",
+            "Gürlük terimlerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Gürlük terimlerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Gürlük terimlerini müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.4.1.3",
+          "m": "Kuvvetlenerek ve hafifleyerek işaretlerini eser veya etüt içinde çalabilme",
+          "s": [
+            "Kuvvetlenerek ve hafifleyerek işaretlerinin yer aldığı eseri veya etüdü çözümler.",
+            "Kuvvetlenerek ve hafifleyerek işaretlerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Kuvvetlenerek ve hafifleyerek işaretlerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Kuvvetlenerek ve hafifleyerek işaretlerini müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.4.1.4",
+          "m": "Temel hız terimlerini eser veya etütlerde çalabilme",
+          "s": [
+            "Temel hız terimlerinin yer aldığı eser veya etüdü çözümler.",
+            "Temel hız terimlerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Temel hız terimlerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Temel hız terimlerini müzik bileşenlerine uygun çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TEKNİK 2",
+      "a": [
+        {
+          "k": "PYN.4.2.1",
+          "m": "Arpej tekniğini eser veya etüt içinde çalabilme",
+          "s": [
+            "Arpej tekniğinin yer aldığı eser veya etüdü çözümler.",
+            "Arpej tekniğini çalmada duruş ve tutuş pozisyonu alır.",
+            "Arpej tekniğini çalmada çalgıya özgü teknikleri kullanır.",
+            "Arpej tekniğini müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.4.2.2",
+          "m": "Aksak ritim kalıbını eser veya etüt içinde çalabilme",
+          "s": [
+            "Aksak ritim kalıbının yer aldığı eser veya etüdü çözümler.",
+            "Aksak ritim kalıbını çalmada duruş ve tutuş pozisyonu alır.",
+            "Aksak ritim kalıbını çalmada çalgıya özgü teknikleri kullanır.",
+            "Aksak ritim kalıbını müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.4.2.3",
+          "m": "Noktalı ve bağlı notaları eser veya etüt içinde çalabilme",
+          "s": [
+            "Noktalı ve bağlı notaların yer aldığı eser veya etüdü çözümler.",
+            "Noktalı ve bağlı notaları çalmada duruş ve tutuş pozisyonu alır.",
+            "Noktalı ve bağlı notaları çalmada çalgıya özgü teknikleri kullanır.",
+            "Noktalı ve bağlı notaları müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.4.2.4",
+          "m": "Piyanoda re, mi, fa, sol ve la konumunun do konumuna göre farkını karşılaştırabilme",
+          "s": [
+            "Piyanoda re, mi, fa, sol ve la konumunda do konumuna göre özellikleri belirler.",
+            "Piyanoda re, mi, fa, sol ve la konumunda do konumuna göre benzerlikleri listeler.",
+            "Piyanoda re, mi, fa, sol ve la konumunda do konumuna göre farklılıkları listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA ÇARGÂH MAKAMI",
+      "a": [
+        {
+          "k": "PYN.4.3.1",
+          "m": "Çargâh makamı dizisi çalabilme",
+          "s": [
+            "Çargâh makamı dizisini çözümler.",
+            "Çargâh makamı dizisini çalmada duruş ve tutuş pozisyonu alır.",
+            "Çargâh makamı dizisinde çalgıya özgü teknikleri kullanır.",
+            "Çargâh makamı dizisini müzik bileşenlerine uygun çalar."
+          ]
+        },
+        {
+          "k": "PYN.4.3.2",
+          "m": "Çargâh makamına yönelik eser çalabilme",
+          "s": [
+            "Çargâh makamına yönelik eseri çözümler.",
+            "Çargâh makamına yönelik eseri çalmada duruş ve tutuş pozisyonu alır.",
+            "Çargâh makamına yönelik eserin çalgıya özgü teknikleri kullanır.",
+            "Çargâh makamına yönelik eseri müzik bileşenlerine uygun çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

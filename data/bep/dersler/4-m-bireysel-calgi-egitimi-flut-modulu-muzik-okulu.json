@@ -1,0 +1,67 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "FLÜTTE MÜZİKALİTE",
+      "a": [
+        {
+          "k": "FLT.4.1.1",
+          "m": "Nüans hakkında bilgi toplayabilme",
+          "s": [
+            "Nüans bilgisine ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak nüans hakkında bilgiler bulur.",
+            "Nüans hakkında ulaşılan bilgileri doğrular.",
+            "Nüans hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "FLT.4.1.2",
+          "m": "Nüansı dinleyebilme",
+          "s": [
+            "Nüansı tanır.",
+            "Nüansı ayırt eder.",
+            "Nüansı açıklar."
+          ]
+        },
+        {
+          "k": "FLT.4.1.3",
+          "m": "Nüansı çalabilme",
+          "s": [
+            "Nüansı kullanacağı egzersiz veya etütü çözümler.",
+            "Nüansı uygularken duruş ve tutuş pozisyonu alır.",
+            "Nüansı uygularken flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan etüt ve egzersiz çalarken nüans ve müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FLÜTTE SES ÜRETME 3",
+      "a": [
+        {
+          "k": "FLT.4.2.1",
+          "m": "Flütte “fa diyez, mi bemol, re“ seslerini çalabilme",
+          "s": [
+            "Fa diyez, mi bemol, re seslerini çözümler.",
+            "Fa diyez, mi bemol, re seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Fa diyez, mi bemol, re seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Egzersizleri ve etütleri çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.4.2.2",
+          "m": "Flütte öğrendiği seslerden oluşan egzersiz ve etütleri çalabilme",
+          "s": [
+            "Öğrendiği seslerden oluşan egzersiz ve etütleri çözümler.",
+            "Öğrendiği seslerle egzersiz, etüt çalabilmek için flüte özgü duruş ve tutuş pozisyonu alır.",
+            "Öğrendiği sesleri kullanarak verilen egzersizi, etütü çalabilmek için flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri ve etütleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BÜTÜN TELLERDE 1 VE 2. PARMAK ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.4.1.1",
+          "m": "Tellerde 1 ve 2. parmak çalışmalarını müziksel bileşenlere uygun çalabilme",
+          "s": [
+            "1 ve 2. parmak çalışmalarında çalınacak eseri çözümler.",
+            "1 ve 2. parmak çalışmalarında tellerde doğru pozisyonu alır.",
+            "Bütün tellerde çalarken çalgıya özgü teknikleri kullanır.",
+            "Öğrendiği notalar arasındaki bileşenleri belirler."
+          ]
+        },
+        {
+          "k": "KMN.4.1.2",
+          "m": "Tellerde öğrendiği notaların diziliş sırasını çözümleyebilme",
+          "s": [
+            "Tellerde çalışılan 1 ve 2. parmağın diziliş hizasına ilişkin parçaları belirler.",
+            "Öğrendiği notalar arasındaki ilişkiyi belirler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BÜTÜN TELLERDE 3 VE 4. PARMAK ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.4.2.1",
+          "m": "Tellerde 3 ve 4. parmak çalışmalarını doğru duruş ve tutuşa uygun çalabilme",
+          "s": [
+            "3 ve 4. parmaklarda çalınacak eseri çözümler.",
+            "Tellerde notaları çalarken tutuş ve duruş pozisyonu alır.",
+            "Sol teli ve mi telindeki notalarda çalgıya özgü teknikleri kullanır.",
+            "Tellerde notaları çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KMN.4.2.2.3",
+          "m": "ve 4. parmak perdelerinde parmak dizilişini gözlemleyebilme",
+          "s": [
+            "Etüt çalışması yaparken yay geçişlerinde ölçüt belirler.",
+            "Bütün tellerde 3 ve 4. parmağı kullanarak tel geçiş çalışmaları için veri toplar.",
+            "Tel geçişlerini sınıflandırır ve kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BÜTÜN TELLERDE 1. KONUMDA KARIŞIK ETÜT VE ESER ÇALIŞMALARI, NÜANSLAR, SES, SES DEĞİŞTİRİCİ İŞARETLER, STACCATO TEKNİĞİ",
+      "a": [
+        {
+          "k": "KMN.4.3.1",
+          "m": "Pozisyon kullanarak etüt ve eser çalabilme",
+          "s": [
+            "1. pozisyonda çalacağı eseri çözümler.",
+            "1. pozisyonda eser ve etüt çalarken dik duruş ve tutuş sergiler.",
+            "1. pozisyonda eser ve etüt çalarken çalgıya özgü teknikleri kullanır.",
+            "1. pozisyonda eser ve etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KMN.4.3.2",
+          "m": "Ses değiştirici işaretleri yorumlayabilme",
+          "s": [
+            "Diyez, bemol ve natürel işaretlerinin yerlerini inceler.",
+            "Ses değiştirici işaretleri öğrendiği çalışmalarla birleştirerek dönüştürür.",
+            "Ses değiştirici işaretleri kendi yorumuyla çalımını değiştirmeden yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "KMN.4.3.3",
+          "m": "Kemanda nüansları kullanıp çalabilme",
+          "s": [
+            "Nüans terimlerini çalacağı eseri çözümler.",
+            "Nüans terimlerini çalarken dik duruş ve tutuş pozisyonunu alır.",
+            "Nüans terimlerini çalarken çalgıya özgü teknikleri kullanır.",
+            "Nüans terimlerini kullanırken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

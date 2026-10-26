@@ -1,0 +1,73 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BAĞLAMADA OKTAV NOTALARI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.4.1.1",
+          "m": "Bağlamada oktav sesleri çalabilme",
+          "s": [
+            "Bağlama ile oktav sesleri çözümler.",
+            "Bağlama ile oktav seslerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile oktav seslerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Bağlama ile oktav seslerin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA KOMA PERDELERİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.4.2.1",
+          "m": "Bağlamada koma seslerini çalabilme",
+          "s": [
+            "Bağlamadaki koma sesleri çözümler.",
+            "Bağlama ile koma seslerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile koma seslerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Bağlama ile koma seslerinin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA TEMEL MAKAMLARI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.4.3.1",
+          "m": "Bağlamada hüseyni makamını çalabilme",
+          "s": [
+            "Bağlamada hüseyni makamını çözümler.",
+            "Bağlama ile hüseyni makamını çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile hüseyni makamını çalmada çalgıya özgü teknikleri kullanır.",
+            "Bağlama ile hüseyni makamının müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "BAĞL.4.3.2",
+          "m": "Bağlamada kürdi makamını çalabilme",
+          "s": [
+            "Bağlamada kürdi makamını çözümler.",
+            "Bağlama ile kürdi makamını çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile kürdi makamını çalmada çalgıya özgü teknikleri kullanır.",
+            "Bağlama ile kürdi makamının müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "BAĞL.4.3.3",
+          "m": "Bağlamada hicaz makamını çalabilme",
+          "s": [
+            "Bağlamada hicaz makamını çözümler.",
+            "Bağlama ile hicaz makamını çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile hicaz makamını çalmada çalgıya özgü teknikleri kullanır.",
+            "Bağlama ile hicaz makamının müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

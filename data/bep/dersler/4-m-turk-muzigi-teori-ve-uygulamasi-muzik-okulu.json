@@ -1,0 +1,77 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİNDE PERDE VE KOMA",
+      "a": [
+        {
+          "k": "TMT.4.1.1",
+          "m": "Türk müziği ses sistemindeki perde ve komalar ile ilgili bilgileri okuyabilme",
+          "s": [
+            "Türk müziği ses sisteminde perde ve koma kavramını tanır.",
+            "Türk müziği ses sisteminde perde ve koma kavramını ayırt eder.",
+            "Türk müziği ses sisteminde perde ve koma kavramını uygular."
+          ]
+        },
+        {
+          "k": "TMT.4.1.2",
+          "m": "Türk müziği ses sistemindeki perde ve komalar ile ilgili bilgileri yazabilme",
+          "s": [
+            "Türk müziği ses sisteminde perde ve koma kavramının Ritmik ve/veya ezgisel/ armonik bileşenlerini tanır.",
+            "Türk müziği ses sisteminde perde ve koma kavramınn Ritmik ve/veya ezgisel/ armonik bileşenleriniı ayırt eder.",
+            "Türk müziği ses sisteminde perde ve koma kavramının Ritmik ve/veya ezgisel/ armonik bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDE SES DEĞİŞTİRİCİ İŞARETLER",
+      "a": [
+        {
+          "k": "TMT.4.2.1",
+          "m": "Ses değiştirici işaretlerle değiştirilen sesleri işitebilme",
+          "s": [
+            "Türk müziğinde kullanılan ses değiştirici işaretleri tanır.",
+            "Türk müziğinde kullanılan ses değiştirici işaretleri işitsel olarak ayırt eder.",
+            "Türk müziğinde kullanılan ses değiştirici işaretleri uygular."
+          ]
+        },
+        {
+          "k": "TMT.4.2.2",
+          "m": "Ses değiştirici işaretleri yazabilme",
+          "s": [
+            "Türk müziğinde kullanılan ses değiştirici işaretleri tanır.",
+            "Türk müziğinde kullanılan ses değiştirici işaretleri ayırt eder.",
+            "Türk müziğinde kullanılan ses değiştirici işaretleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDE İKİLİ ARALIK",
+      "a": [
+        {
+          "k": "TMT.4.3.1",
+          "m": "İkili aralığı işitebilme",
+          "s": [
+            "Türk müziğinde ikili ses aralığının bileşenlerini tanır.",
+            "Türk müziğinde ikili ses aralığının bileşenlerini işitsel olarak ayırt eder.",
+            "Türk müziğinde ikili ses aralığının bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "TMT.4.3.2",
+          "m": "İkili aralığı yazabilme",
+          "s": [
+            "Türk müziğinde ikili ses aralığının bileşenlerini tanır.",
+            "Türk müziğinde ikili ses aralığının bileşenlerini işitsel olarak ayırt eder.",
+            "Türk müziğinin ikili ses aralığının bileşenlerini uygular"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "1. TEMA YAYIN BÖLÜMLERİ",
+      "a": [
+        {
+          "k": "VLS.4.1.1",
+          "m": "Yayın farklı bölümlerini kullanarak etüt çalabilme",
+          "s": [
+            "Yayın farklı bölümlerini kullanacağı etüdü çözümler.",
+            "Yayın farklı bölümlerini kullanmak için duruş ve tutuş pozisyonunu alır.",
+            "Yayın uç, orta ve dip bölümlerini çalgıya özgü teknikle kullanır.",
+            "Yayın farklı bölgelerini kullanarak etüt çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAY TEKNİKLERİ 1",
+      "a": [
+        {
+          "k": "VLS.4.2.1",
+          "m": "Detaşe tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Detaşe tekniğini kullanacağı etüdü çözümler.",
+            "Detaşe tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Detaşe tekniğini çalgıya özgü teknikle kullanır.",
+            "Detaşe tekniği ile etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.4.2.2",
+          "m": "Legato tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Legato tekniğini kullanacağı etüdü çözümler.",
+            "Legato tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Legato tekniğini çalgıya özgü teknikle kullanır.",
+            "Legato tekniği ile etüt çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TELLERDEKİ YOLCULUĞUM GENİŞLİYOR",
+      "a": [
+        {
+          "k": "VLS.4.3.1",
+          "m": "Diyez, bemol ve natürel işaretlerinin görevlerini karşılaştırabilme",
+          "s": [
+            "Diyez, bemol ve natürel işaretlerinin özelliklerini belirler.",
+            "Diyez, bemol ve natürel işaretlerinin benzerliklerini listeler.",
+            "Diyez, bemol ve natürel işaretlerinin farklılıklarını listeler."
+          ]
+        },
+        {
+          "k": "VLS.4.3.2",
+          "m": "Diyez, bemol ve natürel işaretlerinin klavye üzerindeki yerlerine göre çalabilme",
+          "s": [
+            "Diyez, bemol ve natürel işaretlerini çalacağı etüdü çözümler.",
+            "Diyez, bemol ve natürel işaretlerini çalarken duruş ve tutuş pozisyonunu alır.",
+            "Diyez, bemol ve natürel işaretlerini çalgıya özgü tekniklerle kullanır.",
+            "Diyez, bemol ve natürel işaretlerini çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.4.3.3",
+          "m": "Batı müziğindeki ses değiştirici işaretlerle eser çalabilme",
+          "s": [
+            "Batı müziğindeki ses değiştirici işaretlerin kullanıldığı eseri çözümler.",
+            "Batı müziğindeki ses değiştirici işaretleri çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Batı müziğindeki ses değiştirici işaretleri çalarken çalgıya özgü teknikleri kullanır.",
+            "Batı müziğindeki ses değiştirici işaretleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

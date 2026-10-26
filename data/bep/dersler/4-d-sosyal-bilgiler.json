@@ -1,0 +1,251 @@
+{
+  "ders": "Sosyal Bilgiler",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Resmî kimlik belgesini inceleyerek kişisel kimliğine ilişkin çıkarımlarda bulunur.",
+          "s": [
+            "Resmî kimlik belgesini inceleyerek bu belgenin içerdiği bilgileri açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Yaşamına ilişkin belli başlı olayları kronolojik sıraya koyar.",
+          "s": [
+            "Kendi hayatında önemli gördüğü (doğum, ilk konuşma, okula başlama vb.) olayları kronolojik olarak sıralar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Bireysel ilgi, ihtiyaç ve yeteneklerini tanır.",
+          "s": [
+            "İlgi ve istekleri doğrultusunda okulunda veya yakın çevresindeki eğitsel sosyal etkinliklere katılır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kendisini farklı özelliklere sahip diğer bireylerin yerine koyar.",
+          "s": [
+            "Farklı yeteneklere, beğenilere ve kişilik özelliklerine sahip bireylerin yanı sıra dezavantajlı (engelli, yoksul, devlet bakımına muhtaç veya kronik sağlık sorunları yaşayan) bireylerin durumlarına da değinerek empati kurar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Diğer bireylerin farklı özelliklerini saygı ile karşılar.",
+          "s": [
+            "Diğer bireylerin farklı özelliklerini saygı ile karşılar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Sözlü, yazılı, görsel kaynaklar ve nesnelerden yararlanarak aile tarihi çalışması yapar.",
+          "s": [
+            "Sözlü, yazılı, görsel kaynaklar ve nesnelerden yararlanarak aile tarihi çalışması yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ailesi ve çevresindeki millî kültürü yansıtan ögeleri araştırarak örnekler verir.",
+          "s": [
+            "Yakın çevresinde yer alan bir müze, cami, türbe, köprü, medrese, kervansaray gibi tarihî bir mekân gezisi ya da sözlü/yerel tarih çalışmaları yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Geleneksel çocuk oyunlarını değişim ve süreklilik açısından günümüzdeki oyunlarla karşılaştırır.",
+          "s": [
+            "Geleneksel çocuk oyunlarını değişim ve süreklilik açısından günümüzdeki oyunlarla karşılaştırır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Millî Mücadele kahramanlarının hayatlarından hareketle Millî Mücadele’nin önemini kavrar.",
+          "s": [
+            "Kazanımı biyografi öğretimi bağlamında ele alarak açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çevresindeki herhangi bir yerin konumu ile ilgili çıkarımlarda bulunur.",
+          "s": [
+            "Yönler ile doğal ve beşerî unsurlara yakınlık, uzaklık açısından konum analizi yapar.",
+            "Doğal ve teknolojik yön bulma yöntemlerini ve araçlarını kullanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Günlük yaşamında kullandığı mekânların krokisini çizer.",
+          "s": [
+            "Sığınak, acil toplanma yeri, acil çıkış ve diğer güvenli alanları kroki üzerinde gösterir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Yaşadığı çevredeki doğal ve beşerî unsurları ayırt eder.",
+          "s": [
+            "Yakın çevresini tüm unsurlarıyla birlikte tanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çevresinde meydana gelen hava olaylarını gözlemleyerek bulgularını resimli grafiklere aktarır.",
+          "s": [
+            "Gözlem süresi boyunca farklı hava olaylarını izler ve grafik okuma/oluşturma becerilerini uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Yaşadığı yer ve çevresindeki yer şekilleri ve nüfus özellikleri hakkında çıkarımlarda bulunur.",
+          "s": [
+            "Türkiye’nin Siyasi ve Fiziki Haritasını inceler.",
+            "Şiir, hikâye, destan gibi edebi ürünlerden yararlanarak çıkarımlarını destekler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Afet öncesi, sırası ve sonrasına yönelik gerekli hazırlıkları yapar.",
+          "s": [
+            "Afet ve acil durum aile planı hazırlayarak afet öncesi, sırası ve sonrasında yapılması gerekenleri listeler.",
+            "Afet ve acil durum çantası hazırlar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çevresindeki teknolojik ürünleri, kullanım alanlarına göre sınıflandırır.",
+          "s": [
+            "Çevresindeki teknolojik ürünleri, kullanım alanlarına göre sınıflandırır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Teknolojik ürünlerin geçmişteki ve bugünkü kullanımlarını karşılaştırır.",
+          "s": [
+            "Teknolojinin hayatımızda ve çevremizde meydana getirdiği olumlu ve olumsuz etkileri ayırt eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kullandığı teknolojik ürünlerin mucitlerini ve bu ürünlerin zaman içerisindeki gelişimini araştırır.",
+          "s": [
+            "Kullandığı teknolojik ürünlerin mucitlerini ve bu ürünlerin zaman içerisindeki gelişimini araştırır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çevresindeki ihtiyaçlardan yola çıkarak kendine özgü ürünler tasarlamaya yönelik fikirler geliştirir.",
+          "s": [
+            "Örnek girişimcileri ve başarı öykülerini inceler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Teknolojik ürünleri kendisine, başkalarına ve doğaya zarar vermeden kullanır.",
+          "s": [
+            "Teknolojik ürünler için hazırlanan kullanım kılavuzlarındaki talimatlara uyar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "İstek ve ihtiyaçlarını ayırt ederek ikisi arasında bilinçli seçimler yapar.",
+          "s": [
+            "Kaynakların sınırlılığı, fayda ve maliyet dengesini gözetir.",
+            "İstek ve ihtiyaçların birbirinden farklı olduğunu açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ailesi ve yakın çevresindeki başlıca ekonomik faaliyetleri tanır.",
+          "s": [
+            "Gelir, gider, bütçe, üretim, dağıtım, tüketim ve meslek gibi kavramları kullanarak yakın çevresindeki ekonomik faaliyetleri raporlaştırır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Sorumluluk sahibi bir birey olarak bilinçli tüketici davranışları sergiler.",
+          "s": [
+            "Sorumluluk sahibi bir birey olarak bilinçli tüketici davranışları sergiler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kendine ait örnek bir bütçe oluşturur.",
+          "s": [
+            "Örnek bir bütçe miktarı üzerinden gelir-gider tablosu oluşturur.",
+            "Bütçe oluştururken yöresel şartları ve gelir düzeyini dikkate alır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çevresindeki kaynakları israf etmeden kullanır.",
+          "s": [
+            "Sahip olduğu kaynakları bilinçli kullanarak tasarrufta bulunur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çocuk olarak sahip olduğu haklara örnekler verir.",
+          "s": [
+            "Çocuk Haklarına Dair Sözleşme’deki maddeleri açıklar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Aile ve okul yaşamındaki söz ve eylemlerinin sorumluluğunu alır.",
+          "s": [
+            "Aile ve okul yaşamındaki söz ve eylemlerinin sorumluluğunu alır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Okul yaşamında gerekli gördüğü eğitsel sosyal etkinlikleri önerir.",
+          "s": [
+            "Okul yaşamında gerekli gördüğü eğitsel sosyal etkinlikleri önerir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ülkesinin bağımsızlığı ile bireysel özgürlüğü arasındaki ilişkiyi açıklar.",
+          "s": [
+            "Türkiye Büyük Millet Meclisinin açılışı ile ulusal egemenliği ilişkilendirir.",
+            "Bir birey olarak ülkesinin bağımsızlığı için üstlenebileceği rollere örnekler verir.",
+            "15 Temmuz Demokrasi ve Millî Birlik Günü’nün bireysel özgürlüğe ve bağımsızlığa katkısını ifade eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dünya üzerindeki çeşitli ülkeleri tanıtır.",
+          "s": [
+            "Araştırdığı bir ülkenin önemli özelliklerini görsel materyaller kullanarak tanıtır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Türkiye’nin komşuları ve diğer Türk Cumhuriyetleri ile olan ilişkilerini kavrar.",
+          "s": [
+            "Kıyafet, yemek, oyun, aile ilişkileri gibi kültürel unsurları iletişim araçlarıyla inceler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Farklı ülkelere ait kültürel unsurlarla ülkemizin sahip olduğu kültürel unsurları karşılaştırır.",
+          "s": [
+            "Farklı ülkelere ait kültürel unsurlarla ülkemizin sahip olduğu kültürel unsurları karşılaştırır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Farklı kültürlere saygı gösterir.",
+          "s": [
+            "Farklı kültürlere saygı gösterir."
+          ]
+        }
+      ]
+    }
+  ]
+}

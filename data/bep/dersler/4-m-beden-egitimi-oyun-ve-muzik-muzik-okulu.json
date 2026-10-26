@@ -1,0 +1,180 @@
+{
+  "ders": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "HAREKET ET, SAĞLIKLI KAL",
+      "a": [
+        {
+          "k": "BOM.4.1.1",
+          "m": "Isınma ve hazırlık çalışmalarını bir araya getirerek özgün bir bütün oluşturabilme",
+          "s": [
+            "Isınma ve derse hazırlık çalışmalarında kullanacağı hareketleri belirler.",
+            "Isınma ve derse hazırlık çalışmalarında yapılan hareketler ile kendi özgün çalışmasında kullanacağı hareketler arasında ilişki kurar.",
+            "Isınma ve derse hazırlık çalışmalarında yapılan hareketleri kullanarak özgün bir bütün oluşturur."
+          ]
+        },
+        {
+          "k": "BOM.4.1.2",
+          "m": "Nefes çalışmaları yapabilme",
+          "s": [
+            "Nefes çalışmaları yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BOM.4.1.3",
+          "m": "Dönüş hareketlerini sergileyebilme",
+          "s": [
+            "Dönüş hareketlerini algılar.",
+            "Dönüş hareketlerinin basamaklarını gösterir.",
+            "Dönüş hareketlerini uygular."
+          ]
+        },
+        {
+          "k": "BOM.4.1.4",
+          "m": "Öğrendiği hareketleri bir araya getirerek özgün bir bütün oluşturabilme",
+          "s": [
+            "Öğrendiği temel hareketleri belirler.",
+            "Hareketler arasında ilişki kurar.",
+            "Hareketleri birleştirerek özgün bir bütün oluşturur."
+          ]
+        },
+        {
+          "k": "BOM.4.1.5",
+          "m": "Sağlıklı beslenmenin önemini açıklayabilme",
+          "s": [
+            "Sağlıklı beslenmenin önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "FARKLI RİTİMLERLE HAREKET EDİYORUM",
+      "a": [
+        {
+          "k": "BOM.4.2.1",
+          "m": "Vücudunu ritim çalgısı gibi kullanarak dinlediği müziklerin ritmine uygun hareketler sergileyebilme",
+          "s": [
+            "Vücudunu ritim çalgısı gibi kullanarak müziklere uygun hareket belirler.",
+            "Vücudunu ritim çalgısı gibi kullanarak belirlediği hareketleri sergiler."
+          ]
+        },
+        {
+          "k": "BOM.4.2.2",
+          "m": "Dinlediği ve söylediği müziklere ritim çalgıları ile eşlik edebilme",
+          "s": [
+            "Dinlediği veya söylediği müziklere nasıl eşlik edebileceği ile ilgili amacını belirler.",
+            "Dinlediği veya söylediği müziklere eşlik ederken kullanacağı ritim çalgıları ve ritim kalıplarını seçer.",
+            "Seçtiği ritim çalgıları ve ritim kalıpları ile müziklere eşlik ederek bir ürün oluşturur."
+          ]
+        },
+        {
+          "k": "BOM.4.2.3",
+          "m": "Farklı ritmik yapıdaki ezgilere uygun hareket oluşturabilme",
+          "s": [
+            "5/8’lik ezgilere uygun hareketler belirler.",
+            "5/8’lik ezgilere uygun hareketler seçer.",
+            "5/8’lik ezgiler için seçtiği hareketleri sergiler."
+          ]
+        },
+        {
+          "k": "BOM.4.2.4",
+          "m": "Müziklerdeki aynı ve farklı söz kümelerini harekete dönüştürebilme",
+          "s": [
+            "Müziklerdeki aynı ve farklı söz kümelerini belirler.",
+            "Müziklerdeki aynı ve farklı söz kümelerinde kullanacağı hareketleri seçer.",
+            "Seçtiği hareketleri sergiler."
+          ]
+        },
+        {
+          "k": "BOM.4.2.5",
+          "m": "Müziklerde yer alan aynı ve farklı ezgi cümlelerini dansa dönüştürebilme",
+          "s": [
+            "Müziklerdeki aynı ve farklı ezgi cümlelerinin ezgisel yapısına uygun hareketler belirler.",
+            "Müziklerdeki aynı ve farklı ezgi cümlelerinin ezgisel yapısına uygun hareketler sergiler"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GÜVENELİM, OYNAYALIM",
+      "a": [
+        {
+          "k": "BOM.4.3.1",
+          "m": "Oyun ve etkinliklerde ekip arkadaşına güvenmenin önemini açıklayabilme",
+          "s": [
+            "Oyun ve etkinliklerde ekip arkadaşına güvenmenin önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BOM.4.3.2",
+          "m": "Oyun ve fiziksel etkinliklerde ekip çalışmasının önemini açıklayabilme",
+          "s": [
+            "Oyun ve fiziksel etkinliklerde ekip çalışmasının önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BOM.4.3.3",
+          "m": "Kurallı takım oyunları oluşturabilme",
+          "s": [
+            "Oluşturacağı oyunu ve kuralları belirler.",
+            "Oyunun amacı ve kuralları arasında ilişki kurar.",
+            "Basit kurallı oyun oluşturur."
+          ]
+        },
+        {
+          "k": "BOM.4.3.4",
+          "m": "Müzikli geleneksel çocuk oyunlarını oynayabilme",
+          "s": [
+            "Müzikli geleneksel çocuk oyunlarını oynar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TEKE YÖRESİ OYUNLARINI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BOM.4.4.1",
+          "m": "Teke yöresi halk oyunlarının genel özelliklerini açıklayabilme",
+          "s": [
+            "Teke yöresi halk oyunlarının genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BOM.4.4.2",
+          "m": "Teke yöresi geleneksel giyim kuşam özelliklerini açıklayabilme",
+          "s": [
+            "Teke yöresi geleneksel giyim kuşam özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BOM.4.4.3",
+          "m": "Teke yöresi halk oyunları müziklerinin özelliklerini fark edebilme",
+          "s": [
+            "Teke yöresi halk oyunları müziklerinin müziksel bileşenlerini tanır.",
+            "Teke yöresi halk oyunları müziklerinin müziksel bileşenlerini ayırt eder.",
+            "Teke yöresi halk oyunları müziklerinin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "BOM.4.4.4",
+          "m": "Teke yöresi halk oyunları adımlarını sergileyebilme",
+          "s": [
+            "Teke yöresi halk oyunlarının ritmik yapısına uygun hareketler belirler.",
+            "Teke yöresi halk oyunlarını ritimsel ve ezgisel yapısına uygun olarak sergiler."
+          ]
+        }
+      ]
+    }
+  ]
+}

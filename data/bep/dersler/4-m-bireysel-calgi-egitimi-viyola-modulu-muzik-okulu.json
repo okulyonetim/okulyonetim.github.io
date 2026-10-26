@@ -1,0 +1,53 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "2. POZİSYONU TANIYORUM",
+      "a": [
+        {
+          "k": "VİY.4.1.1",
+          "m": "İkinci pozisyonda çalabilme",
+          "s": [
+            "2. pozisyonu kullanarak nota etüdü çözümler.",
+            "Viyolada 2. pozisyon için duruş ve tutuş pozisyonu alır.",
+            "2. pozisyonda viyolaya özgü teknikleri uygular.",
+            "2. pozisyonda çalarken müziksel bileşenlerine uygun şekilde çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. POZİSYONDA ESER ÇALIŞMALARI YAPIYORUM",
+      "a": [
+        {
+          "k": "VİY.4.2.1",
+          "m": "Viyolada 2. pozisyon eserleri çalabilme",
+          "s": [
+            "Viyolada 2. pozisyon eserleri çözümler.",
+            "Viyolada 2. pozisyon eserleri çalabilmek için çalgıya özgü duruş ve tutuş pozisyonunu alır.",
+            "Viyolada 2. pozisyon eserleri çalabilmek için uygun parmak ve yay tekniklerini kullanır.",
+            "Viyolada 2. pozisyon eserleri müziksel bileşenlere uygun şekilde çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "1-2-3. POZİSYONA UYGUN ETÜT ÇALIŞMALARI YAPIYORUM",
+      "a": [
+        {
+          "k": "VİY.4.3.1",
+          "m": "Viyolada 1, 2 ve 3. pozisyon etütleri çalabilme",
+          "s": [
+            "Viyolada 1, 2 ve 3. pozisyon etütleri çözümler.",
+            "Viyolada 1, 2 ve 3. pozisyon etütleri çalabilmek için çalgıya özgü duruş ve tutuş pozisyonunu alır.",
+            "Viyolada 1, 2 ve 3. pozisyon etütleri çalabilmek için uygun parmak ve yay tekniklerini kullanır.",
+            "Viyolada 1, 2 ve 3. pozisyon etütleri müziksel bileşenlere uygun şekilde çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

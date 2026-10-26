@@ -1,0 +1,117 @@
+{
+  "ders": "Bireysel Ses Eğitimi (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "İNSAN SESİ",
+      "a": [
+        {
+          "k": "BSE.4.1.1",
+          "m": "Ses tellerinin görüntüsünü tanıyabilme",
+          "s": [
+            "Ses tellerinin görüntüsünü tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.4.1.2",
+          "m": "Sesin oluşumu sırasında ses tellerinde meydana gelen hareketleri yorumlayabilme",
+          "s": [
+            "Ses tellerinin hareketlerini inceler.",
+            "Bu hareketlerin oluşumunda havanın etkisini yorumlar.",
+            "Havanın etkisiyle oluşan seslere benzer somut örnekler vererek ses tellerinin hareketini yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SES EĞİTİMİ",
+      "a": [
+        {
+          "k": "BSE.4.2.1",
+          "m": "Diyaframı tanıyabilme",
+          "s": [
+            "Diyaframı tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.4.2.2",
+          "m": "Düzeyine uygun eserleri seslendirebilme",
+          "s": [
+            "Anatomik yapısına ve ses özelliklerine uygun eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Anatomik yapısına ve ses özelliklerine uygun eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Anatomik yapısına ve ses özelliklerine uygun eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.4.2.3",
+          "m": "Dilin özelliklerine uygun artikülasyon metinleri okuyabilme",
+          "s": [
+            "Dilin özelliklerine uygun artikülasyon metinleri okur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.4.2.4",
+          "m": "Açık ve anlaşılır konuşmanın günlük yaşamdaki önemini açıklayabilme",
+          "s": [
+            "Açık ve anlaşılır konuşmanın günlük yaşamdaki önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.4.2.5",
+          "m": "Dilin özelliklerine uygun şekilde şarkı söylemenin önemini açıklayabilme",
+          "s": [
+            "Dilin özelliklerine uygun şekilde şarkı söylemenin önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "BSE.4.3.1",
+          "m": "Millî ve manevi değerlerle ilgili eserler seslendirebilme",
+          "s": [
+            "Millî ve manevi değerlerle ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.4.3.2",
+          "m": "Atatürk ile ilgili şarkıları seslendirebilme",
+          "s": [
+            "Atatürk ile ilgili şarkıları seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Atatürk ile ilgili şarkıları seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Atatürk ile ilgili şarkıları seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.4.3.3",
+          "m": "Belirli gün ve haftaların anlamına uygun eserler seslendirebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.4.3.4",
+          "m": "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirebilme",
+          "s": [
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

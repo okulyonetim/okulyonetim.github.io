@@ -1,0 +1,102 @@
+{
+  "ders": "Çalgı Toplulukları (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ODA MÜZİĞİ VE FASIL MÜZİĞİ",
+      "a": [
+        {
+          "k": "Ç.T.4.1.1",
+          "m": "Oda ve fasıl müziği ile oda müziği toplulukları özelliklerini açıklayabilme",
+          "s": [
+            "Oda ve fasıl müziği ile oda müziği toplulukları özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "Ç.T.4.1.2",
+          "m": "Oda ve fasıl müziği toplulukları özelliklerini çözümleyebilme",
+          "s": [
+            "Oda ve fasıl müziği topluluklarının özelliklerini belirler.",
+            "Oda müziği ve fasıl müziği özellikleri arasında ilişki kurar."
+          ]
+        },
+        {
+          "k": "Ç.T.4.1.3",
+          "m": "Oda müziği topluluklarını sınıflandırabilme",
+          "s": [
+            "Oda müziği topluluklarını belirler.",
+            "Oda müziği topluluklarını ayırır.",
+            "Oda müziği topluluklarını tasnif eder.",
+            "Oda müziği topluluklarını adlandırır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TEK SESLİ TOPLU İCRA",
+      "a": [
+        {
+          "k": "ÇT.4.2.1",
+          "m": "Tek sesli eserleri toplu çalabilme",
+          "s": [
+            "Tek sesli toplu icrada çalınacak eseri çözümler.",
+            "Tek sesli toplu icrada çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Tek sesli toplu icrada çalgılara özgü teknikleri kullanır.",
+            "Tek sesli toplu icrada müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLU İCRA (İKİLİ GRUP)",
+      "a": [
+        {
+          "k": "ÇT.4.3.1",
+          "m": "İkili eserler dinleyebilme",
+          "s": [
+            "Dinlediği ikili eserlerin müziksel bileşenlerini tanır.",
+            "Dinlediği ikili eserlerin müziksel bileşenlerini ayırt eder.",
+            "Dinlediği ikili eserlerin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "ÇT.4.3.2",
+          "m": "İkili şarkılar çalabilme",
+          "s": [
+            "İkili şarkılarda çalacağı eseri çözümler.",
+            "İkili şarkılar çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "İkili şarkılar çalarken çalgıya özgü teknikleri kullanır.",
+            "İkili şarkılar çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLU İCRA (ÜÇLÜ GRUP)",
+      "a": [
+        {
+          "k": "ÇT.4.4.1",
+          "m": "Üçlü grup eserleri dinleyebilme",
+          "s": [
+            "Dinlediği üçlü eserlerin müziksel bileşenlerini tanır.",
+            "Dinlediği üçlü eserlerin müziksel bileşenlerini ayırt eder.",
+            "Dinlediği üçlü eserlerin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "ÇT.4.4.2",
+          "m": "Üçlü şarkılar çalabilme",
+          "s": [
+            "Üçlü şarkılarda çalınacak eseri çözümler.",
+            "Üçlü şarkı çalışmalarında çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Üçlü şarkılar çalarken çalgıya özgü teknikleri kullanır.",
+            "Üçlü şarkılar çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

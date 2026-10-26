@@ -1,0 +1,156 @@
+{
+  "ders": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "AKORLARI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "MİOY.4.1.1",
+          "m": "Majör, minör, eksilmiş ve artmış akorları yazabilme",
+          "s": [
+            "Majör, minör, eksilmiş ve artmış akorları tanır.",
+            "Majör, minör, eksilmiş ve artmış akorları ayırt eder.",
+            "Majör, minör, eksilmiş ve artmış akorları uygular."
+          ]
+        },
+        {
+          "k": "MİOY.4.1.2",
+          "m": "Majör, minör, eksilmiş ve artmış akorları işitebilme",
+          "s": [
+            "Majör, minör, eksilmiş ve artmış akor bileşenlerini tanır.",
+            "Majör, minör, eksilmiş ve artmış akor bileşenlerini işitsel olarak ayırt eder.",
+            "Majör, minör, eksilmiş ve artmış akor bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FA MAJÖR",
+      "a": [
+        {
+          "k": "MİOY.4.2.1",
+          "m": "Fa majör dizisini yazabilme",
+          "s": [
+            "Fa majör dizisini tanır.",
+            "Fa majör dizisini ayırt eder.",
+            "Fa majör dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.4.2.2",
+          "m": "Fa majör dizisini okuyabilme",
+          "s": [
+            "Fa majör dizi bileşenlerini tanır.",
+            "Fa majör dizi bileşenlerini işitsel olarak ayırt eder.",
+            "Fa majör dizi bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.4.2.3",
+          "m": "Fa Majör dizisini işitebilme",
+          "s": [
+            "Fa majör dizi bileşenlerini tanır.",
+            "Fa majör dizi bileşenlerini işitsel olarak ayırt eder.",
+            "Fa majör dizi bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RE MİNÖR",
+      "a": [
+        {
+          "k": "MİOY.4.3.1",
+          "m": "Re minör dizisini yazabilme",
+          "s": [
+            "Re minör dizisini tanır",
+            "Re minör dizisini eder.",
+            "Re minör dizisini dizileri uygular."
+          ]
+        },
+        {
+          "k": "MİOY.4.3.2",
+          "m": "Re minör dizisini okuyabilme",
+          "s": [
+            "Re minör dizisinin bileşenlerini tanır.",
+            "Re minör dizisinin bileşenlerini işitsel olarak ayırt eder.",
+            "Re minör dizisinin bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.4.3.3",
+          "m": "Re minör dizisini işitebilme",
+          "s": [
+            "Re minör dizisinin bileşenlerini tanır.",
+            "Re minör dizisinin bileşenlerini işitsel olarak ayırt eder.",
+            "Re minör dizisinin bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİ USULLERİNİ ÖĞRENİYORUM-2",
+      "a": [
+        {
+          "k": "MİOY.4.4.1",
+          "m": "Türk aksağı ve yürük semai usul yapılarını yazabilme.",
+          "s": [
+            "Türk aksağı ve yürük semai usul yapılarını tanır.",
+            "Türk aksağı ve yürük semai usul yapılarını ayırt eder.",
+            "Türk aksağı ve yürük semai usul yapılarını uygular."
+          ]
+        },
+        {
+          "k": "MİOY.4.4.2",
+          "m": "Türk aksağı ve yürük semai usul yapılarını okuyabilme.",
+          "s": [
+            "Türk aksağı ve yürük semai usul yapılarını tanır.",
+            "Türk aksağı ve yürük semai usul yapılarını ayırt eder.",
+            "Türk aksağı ve yürük semai usul yapılarını uygular."
+          ]
+        },
+        {
+          "k": "MİOY.4.4.3",
+          "m": "Türk aksağı ve yürük semai usul yapılarını işitebilme.",
+          "s": [
+            "Türk aksağı ve yürük semai usul yapılarını tanır.",
+            "Türk aksağı ve yürük semai usul yapılarını ayırt eder.",
+            "Türk aksağı ve yürük semai usul yapılarını ifade eder."
+          ]
+        },
+        {
+          "k": "MİOY.4.4.4",
+          "m": "Dinlediği eserlerin usullerine uygun hareket sergileyebilme.",
+          "s": [
+            "Dinlediği eserlerin usul yapısına uygun hareketler belirler.",
+            "Dinlediği eserlerin usul yapısına uygun hareketler sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİ SES SİSTEMİ",
+      "a": [
+        {
+          "k": "MİOY.4.5.1",
+          "m": "Türk müziği ses sistemini tanıyabilme",
+          "s": [
+            "Türk müziği ses sistemini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MİOY.4.5.2",
+          "m": "Türk müziğinde ikili aralıkları ve değiştirme işaretlerini çözümleyebilme",
+          "s": [
+            "İkili aralıklar ve değiştirici işaretlere ilişkin parçaları belirler.",
+            "İkili aralıklar ve değiştirici işaretler arasındaki ilişkiyi belirler."
+          ]
+        }
+      ]
+    }
+  ]
+}

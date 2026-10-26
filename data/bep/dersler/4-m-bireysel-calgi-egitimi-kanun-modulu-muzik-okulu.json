@@ -1,0 +1,83 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KANUNDA KÜRDİ DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.4.1.1",
+          "m": "Kürdi dizisini, özelliklerini örnek etüt ve eserlerle birlikte çalabilme",
+          "s": [
+            "Kürdi dizisini seslerini ve mandal sayılarını öğrenmesi için yazılmış etüt veya eserleri çözümler.",
+            "Kürdi dizisini seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Kürdi dizisini seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Kürdi dizisini seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUN ÇALARKEN SOFYAN USULÜNÜ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.4.2.1",
+          "m": "Sofyan usulünü vurarak çalabilme",
+          "s": [
+            "Sofyan usulünü sağ ve sol dizinin üstüne vurarak çalmak için yazılmış etüt veya eserleri çözümler.",
+            "Sofyan usulünü sağ ve sol dizinin üstüne vurarak çalmak için duruş pozisyonu alır.",
+            "Sofyan usulünü sağ ve sol dizinin üstüne vurarak çalmak için usule uygun teknikleri kullanır.",
+            "Sofyan usulünü sağ ve sol dizinin üstüne vurarak çalmak için usulün bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA TREMOLO TEKNİĞİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.4.3.1",
+          "m": "Tremolo tekniğini çaldığı eserlerde uygulayabilme",
+          "s": [
+            "Tremolo tekniğini çaldığı etüt veya eserleri çözümler.",
+            "Tremolo tekniğini eserlerde çalmak için uygun duruş ve tutuş pozisyonu alır.",
+            "Tremolo tekniğini eserlerde çalmak için uygun teknikleri kullanır.",
+            "Tremolo tekniğini eserlerde çalmak için uygun müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA RAST DİZİSİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.4.4.1",
+          "m": "Rast dizisini, özelliklerini örnek etüt ve eserlerle çalabilme",
+          "s": [
+            "Rast dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Rast rast dizisinin seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Rast dizisinin seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Rast dizisinin seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUN ÇALARKEN TÜRK AKSAĞI VE YÜRÜK SEMAÎ USULLERİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.4.5.1",
+          "m": "Türk aksağı ve yürük semai usullerini usul vurarak çalabilme",
+          "s": [
+            "Türk aksağı ve yürük semaî usullerinde yazılmış etüt veya eserleri çözümler.",
+            "Türk aksağı ve yürük semaî usullerini vurarak çalmak için duruş pozisyonu alır.",
+            "Türk aksağı ve yürük semaî usullerini vurarak çalmak için usule uygun teknikleri kullanır.",
+            "Türk aksağı ve yürük semaî usullerini vurarak çalmak için usulün bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

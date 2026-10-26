@@ -1,0 +1,149 @@
+{
+  "ders": "Müzik Kültürü (Müzik Okulu)",
+  "grup": "4. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNİ TANIYORUM",
+      "a": [
+        {
+          "k": "MK.4.1.1",
+          "m": "Türk sanat müziğinin genel özelliklerini açıklayabilme",
+          "s": [
+            "Türk sanat müziğinin genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.1.2",
+          "m": "Türk sanat müziğinde kullanılan çalgıları sınıflandırabilme",
+          "s": [
+            "Türk sanat müziğinde kullanılan çalgıların farklı ses üretme biçimlerinin olduğunu belirler.",
+            "Türk sanat müziğinde kullanılan çalgıları ses üretme biçimlerine göre ayırır.",
+            "Türk sanat müziğinde kullanılan çalgıları ses üretme biçimlerine göre gruplandırır.",
+            "Türk sanat müziği çalgılarını adlandırır."
+          ]
+        },
+        {
+          "k": "MK.4.1.3",
+          "m": "Türk sanat müziği biçimlerini açıklayabilme",
+          "s": [
+            "Türk sanat müziği biçimlerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.1.4",
+          "m": "Türk müziği eğitiminde meşk geleneğinin özelliklerini genelleyebilme",
+          "s": [
+            "Meşk geleneği hakkında bilgi toplar.",
+            "Meşk usulü ile yapılan eğitimin ortak özelliklerini belirler.",
+            "Meşk usulü ile yapılan eğitimin ortak olmayan özelliklerini belirler.",
+            "Meşk geleneğinin özellikleri hakkında önermede bulunur."
+          ]
+        },
+        {
+          "k": "MK.4.1.5",
+          "m": "Türk sanat müziğinin önemli temsilcilerini açıklayabilme",
+          "s": [
+            "Türk sanat müziğinin önemli temsilcilerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK HALK MÜZIĞINI TANIYORUM",
+      "a": [
+        {
+          "k": "MK.4.2.1",
+          "m": "Türk halk müziğinin genel özelliklerini açıklayabilme",
+          "s": [
+            "Türk halk müziğinin genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.2.2",
+          "m": "Türk halk müziğinde kullanılan çalgıları sınıflandırabilme",
+          "s": [
+            "Türk halk müziğinde kullanılan çalgıları belirler.",
+            "Türk halk müziğinde kullanılan çalgıları özelliklerine göre ayırır.",
+            "Türk halk müziğinde kullanılan çalgıları ses üretme biçimlerine göre tasnif eder.",
+            "Türk halk müziği çalgılarını örneklendirir."
+          ]
+        },
+        {
+          "k": "MK.4.2.3",
+          "m": "Türk halk müziği türlerini belirleyebilme",
+          "s": [
+            "Türk halk müziği türlerini belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.2.4",
+          "m": "Türk halk müziğinin coğrafi ve kültürel özelliklerini çözümleyebilme",
+          "s": [
+            "Türk halk müziğinin yerel ve bölgesel özellikler taşıdığını belirler.",
+            "Türk halk müziğinin yerel ve bölgesel unsurları arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MK.4.2.5",
+          "m": "Türk halk müziğinde âşıklık geleneğinin özelliklerini açıklayabilme",
+          "s": [
+            "Türk halk müziğinde âşıklık geleneğinin özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.2.6",
+          "m": "Türk halk müziğinin önemli temsilcilerini açıklayabilme",
+          "s": [
+            "Türk halk müziğinin önemli temsilcilerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDEKİ ÇEŞİTLİLİĞİ KEŞFEDİYORUM",
+      "a": [
+        {
+          "k": "MK.4.3.1",
+          "m": "Çok sesli Türk müziğinin genel özelliklerini açıklayabilme",
+          "s": [
+            "Çok sesli Türk müziğinin genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.3.2",
+          "m": "Türk popüler müziğinin genel özelliklerini açıklayabilme",
+          "s": [
+            "Türk popüler müziğinin genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.3.3",
+          "m": "Mehter müziğinin genel özelliklerini açıklayabilme",
+          "s": [
+            "Mehter müziğinin genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MK.4.3.4",
+          "m": "Dinî müziğin genel özelliklerini ve türlerini açıklayabilme",
+          "s": [
+            "Dinî müziğin genel özelliklerini ve türlerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}
